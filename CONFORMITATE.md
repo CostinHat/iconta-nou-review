@@ -5702,6 +5702,397 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **[ZZ5, 29.08.2026] RE-CITITĂ pe decizia R36 — DOMENIUL i se schimbă, condiția nu.** Sub varianta (a), notele produse **automat** devin regula, nu excepția: azi **48** de funcții de producție scriu în `inregistrari`, iar cele mai multe sunt acte automate. Consecința pe „autor": **o notă automată n-are autor-persoană prin construcție** — actul o produce, nu cineva. Deci partea a doua a condiției se citește ca *„nota își numește actul care a produs-o"*, nu *„nota poartă un utilizator"*: pentru actele automate, `sursa` **e** autorul, ceea ce face prima jumătate a condiției (nomenclator închis, într-un loc unic) **mai grea și mai importantă**, nu mai ușoară. Ce nu se schimbă: cifra 48 și cerința de validare la scriere. *(Se scrie aici fiindcă altfel următorul cititor ar căuta o coloană `user_id` pe o notă pe care n-a scris-o niciun om.)*
 - **condiția de deblocare**: `sursa` devine nomenclator închis, într-un loc unic, cu validare la scriere (după modelul `nomenclator_status_factura`); și `inregistrari` primește autor, pe regulile lui `state_plata` — **pentru actele automate, „autor" înseamnă actul, iar `sursa` îl poartă** (vezi re-citirea ZZ5). Se închide când un scan pe `INSERT INTO ... inregistrari` găsește **zero** literale de `sursa` în afara nomenclatorului, iar coloana de autor e nenulă pe orice notă nouă.
 
+### R131 — Cele 13 descărcări de fișier înlocuiau motivul serverului cu propriul lor număr
+
+- **felul**: VERIFICARE
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `277e4300`
+- **rezolvată pe commit**: `ba7305b4`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când niciun apel de descărcare nu mai ocolește `_refuzNevazut`, adică `scan_descarcare_muta` nu mai găsește nicio cerere care înlocuiește motivul serverului cu un număr propriu.
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · stratul de prezentare · orice ecran care descarcă un fișier
+- **ce blochează**: diagnosticarea din afară. Serverul refuza corect și își numea motivul; omul
+  citea un număr sau o frază fixă, iar la două locuri **„Eroare — reîncearcă"** — un sfat care nu
+  poate reuși niciodată, fiindcă factura tot nu există la a doua apăsare. *Consecința nu e
+  neplăcerea, e că nimeni nu poate spune ce s-a întâmplat.*
+- **ce s-a măsurat** *(04.09.2026, `core/scan_descarcare_muta.py`)*: din **31** de apeluri `fetch`
+  directe din `static/js/`, **14** nu citeau corpul răspunsului pe drumul de eșec, iar **toate 13
+  descărcările de fișier** aveau literalmente aceeași formă —
+  `if (!r.ok) throw new Error("eroare " + r.status)`. A patrusprezecea era importul extrasului
+  bancar, care avea `api.postForm` la îndemână și nu-l folosea.
+- **de ce ocoleau stratul comun**: un răspuns binar (PDF, XML, ZIP, imagine) nu poate trece prin
+  `api.get`, care face `r.json()`. Deci ocoleau și `_refuzNevazut` (`refuz_vazut_v1`, 27.08.2026),
+  bannerul care din 27 august garantează că un refuz la scriere nu rămâne nevăzut. *Excepția tehnică
+  a devenit o gaură în garanție.*
+- **reparația, UNA**: `cereBlob` / `descarca` / `deschide` în `api.js` — același loc care citește
+  `detail`, construiește eroarea structurată (`cod`, `mesaj`, `erori_campuri`, `detaliu`) și pune
+  bannerul. Nu treisprezece reparații, formular cu formular.
+- **decizia din reparație, scrisă**: bannerul se pune **și pe `GET`**. Excepția „GET-urile tac" din
+  `_refuzNevazut` există pentru badge-uri și contoare care se încarcă singure; o descărcare pe care
+  omul a cerut-o **apăsând un buton** nu e o citire de fundal, iar dacă fișierul nu vine, tăcerea e
+  chiar defectul. De asta se trimite `"DESCARCARE"`, nu metoda HTTP.
+- **calibrare**: instrumentul e pus să greșească în ambele direcții (METODA §22) —
+  `core/test_descarcare_muta.py`, 8 teste din care **6 de calibrare**: două forme mute injectate
+  trebuie găsite, două forme bune (una cu citirea corpului, una în lanț `.then`) nu trebuie acuzate,
+  iar una verifică **propriul mod de eșec** al instrumentului: dacă blocul unui `fetch` s-ar întinde
+  peste apelul următor, `.json()` de la primul ar „acoperi" tăcerea celui de-al doilea.
+  Prima variantă chiar greșea: punea forma din `app.js` în categoria „fără ramură de eșec".
+- **probat pe viu** *(`frontend_test/proba_r131_descarcare_muta.py`, browser real, cod publicat)*:
+  refuzul ajunge verbatim (`factură inexistentă`, cod `404`), bannerul are **311×70 px pe ecran**,
+  `role="alert"`, spune motivul, **nu se dublează** când ecranul l-a arătat deja, iar `deschide()`
+  se poartă la fel.
+- **clichet**: `MUTE = 0`. Un `fetch` nou care înghite motivul pică. Două fișiere sunt exceptate cu
+  motivul scris deasupra listei: `api.js` (el e reparația) și `versiune.js` (singura cerere către un
+  **fișier static**, fără `detail` și necerută de om).
+- **unde ajunge efectul**: pe orice ecran care scoate un document — factură, chitanță, adeverință,
+  fluturaș, balanță, contract, arhiva GDPR, fișierul SEPA care pleacă la bancă. Refuzul care
+  ajungea până la marginea aplicației și se oprea acolo ajunge acum la om, cu cuvintele serverului.
+
+### R132 — Infrastructura de testare vizuală rula de nouă zile pe bytecode fără sursă
+
+- **felul**: VERIFICARE
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `277e4300`
+- **rezolvată pe commit**: `ba7305b4`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când fiecare fișier al infrastructurii vizuale există ca SURSĂ pe disc, iar `core/test_infra_vizuala.py` cere sursa, nu doar importul — deci un `.pyc` rămas nu mai poate ține nimic în viață.
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · `frontend_test/` · toate scanurile vizuale gardate
+- **ce blochează**: nimic — până la prima curățenie. Și atunci, tot.
+- **ce s-a măsurat** *(04.09.2026)*: `frontend_test/w_auth.py` — tokenul mințit și navigarea la
+  firma `tenant_003`, de care atârnă `interactiune_scan`, `axe_scan`, `mobil_scan` și `nav_ecrane` —
+  **nu exista pe disc**. `git log` îl arată scos din urmărire pe **26.08**, odată cu `b87dad49`
+  („Scoate din urmărire cele 234 de artefacte măturate din greșeală în `5cc3c5e`"), dar a fost și
+  **șters**. Rămăsese doar `__pycache__/w_auth.cpython-312.pyc`, 4.605 octeți, datat 26 aug 13:30.
+  **24 de fișiere** îl importau.
+- **de ce n-a devenit nimic roșu**: Python încarcă un `.pyc` fără să-i ceară sursa. Scanurile
+  mergeau, gărzile lor treceau, `test_acoperire_vizuala` era verde. *Un
+  `find -name __pycache__ -delete` — curățenia obișnuită, cea care e chiar regulă în casă
+  (`mutatie-curata-pycache`) — ar fi oprit tăcut toată infrastructura vizuală, iar cauza ar fi fost
+  de negăsit: fișierul care lipsea nu era numit nicăieri.*
+- **de ce n-a văzut-o garda care există pentru exact asta**: `core/test_infra_vizuala.py` cerea
+  fișiere **dintr-o listă scrisă de mână**, iar `w_auth` nu era în ea și nici măcar în același
+  director (`frontend_test/`, nu `frontend_test/vizual/`). *O listă scrisă de mine vede exact ce
+  mi-am amintit să scriu.*
+- **reparația**: sursa **reconstruită din bytecode** (dezasamblare funcție cu funcție: `BAZA`,
+  `INIT`, `new_page`, `deschide_firma`, `shot`, `txt`, plus dicționarul de utilizator cu cele 12
+  chei), verificată rulând scanurile pe ea. Garda **derivă** acum ce trebuie să existe din chiar
+  `import`-urile uneltelor, cu `ast` — nu dintr-o listă.
+- **calibrare, pe viu**: `w_auth.py` mutat → garda cade numind modulul și cele patru unelte care-l
+  cer; pus la loc → trece. Plus un test anti-vacuu: dacă parserul n-ar găsi importurile, testul de
+  sus ar trece despre nimic.
+- **unde ajunge efectul**: pe tot ce se sprijină pe scanurile vizuale — contrastul, revărsarea la
+  393 px, țintele de atingere, comportamentul la apăsare. Nu era stricat; era **nesprijinit**, și
+  ar fi căzut la prima mătură.
+
+### R133 — Două instrumente de măsură citeau JS-ul printr-un cititor care orbea la o linie cu trei ghilimele
+
+- **felul**: VERIFICARE
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `277e4300`
+- **rezolvată pe commit**: `ba7305b4`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când cele două clichete care stăteau pe cititorul de JS sunt remăsurate cu cititorul reparat, iar valorile lor sunt scrise din ieșirea instrumentului.
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · `core/scan_refuz_tacut.py` (27.08) ·
+  `core/test_aritmetica_in_prezentare.py` (24.08)
+- **ce blochează**: nimic din aplicație — și tocmai de-aia e greu de văzut. Blochează **încrederea
+  în două clichete**, și prin ele în orice afirmație care stă pe ele.
+- **cum a ieșit la iveală**: poarta lotului 10 a respins cu *„scrieri NOI care pot refuza fără să
+  spună motivul: 18 > 16"*. Prima citire a mesajului e „lotul a stricat două ecrane". Măsurat pe
+  un worktree detașat la `277e4300`, cu cititorul reparat: **18 și acolo**. Lotul n-a adăugat
+  nimic — a **mutat o linie de cod**, iar orbirea s-a mutat odată cu ea.
+- **cauza**: `_curata_sir` nu oprea un șir `'` sau `"` la capătul rândului, deși gramatica JS o
+  cere. Sora ei din **același fișier** — `_sfarsit_sir` — avea regula scrisă, cu comentariu cu tot.
+  Asimetrie din naștere. Declanșatorul e o singură linie cu **trei** ghilimele:
+  `cd.match(/filename="([^"]+)"/)`; a treia deschidea un „șir" care înghițea tot până la
+  următoarea ghilimea din **fișier**.
+- **ce s-a măsurat** *(04.09.2026, pe worktree detașat la `277e4300` — aceleași fișiere, doi
+  cititori)*:
+
+  | | cititorul vechi | cititorul reparat |
+  |---|---|---|
+  | scrieri care refuză fără să spună motivul | **16** | **18** |
+  | citiri tăcute (badge-uri, contoare) | 71 | 74 |
+  | `catch`-uri care arată ceva | 242 | 253 |
+  | aritmetică pe nume neutre | **2** | **1** |
+
+  Suprafața oarbă, tot pe `277e4300`: `ecrane/facturi_ecran.js` de la rândul **530** încolo (639
+  de rânduri, 312 scurgeri) și `api.js` de la **397** (59 de rânduri). În arborele lotului 10,
+  aceeași linie mutată în `api.js` orbea **315 rânduri** de acolo.
+- **de ce n-a aprins nimic, nouă zile**: amândouă cifrele sunt clichete, deci plafoane. Orbirea a
+  **coborât** unul (16 în loc de 18 — clichetul părea ținut) și a **urcat** celălalt (2 în loc de
+  1 — clichetul părea o măsurătoare, iar a doua instanță era o ACUZAȚIE FALSĂ: „aritmetica" erau
+  chiar barele expresiei regulate din `.match(/…/)`, iar „cota" era 10-le din `slice(0, 10)`).
+  *Un instrument care greșește în AMÂNDOUĂ direcțiile n-are **niciun** plafon* —
+  `METODA_VERIFICARE.md` §22.
+- **reparația, UNA**: cititorul e acum unul singur, `core/cititor_js.py`, iar cele două copii sunt
+  scoase. Două schimbări de fond: un șir simplu se oprește la capătul rândului, iar **expresiile
+  regulate se albesc ca text** — fără asta, un `/\d{2}/` strică numărătoarea acoladelor și un
+  `/(19|21)/` arată ca o cotă cu aritmetică.
+- **calibrare**: `core/test_cititor_js.py`, **16 teste**, în amândouă direcțiile — trei pe direcția
+  „ratează cod" (linia care a născut orbirea, expresia regulată cu ghilimele, acoladele dintr-un
+  cuantificator) și **șase** pe direcția „acuză pe nedrept" (cinci feluri de împărțire care NU
+  trebuie luate drept expresie regulată, plus `/` care nu se închide pe rând). Plus proprietatea
+  care nu poate îmbătrâni: pe **tot** corpusul `static/js`, acoladele și parantezele textului citit
+  trebuie să rămână în echilibru. **Mutație dovedită**: cu cititorul de dinainte, `api.js` iese
+  `{42 }41` — garda cade numind fișierul.
+- **ce rămâne adevărat despre cele 18**: niciuna nu e un refuz înghițit. Cele două care „au apărut"
+  sunt instanțe ale modurilor de eșec **declarate** ale instrumentului — una cheamă o funcție
+  proprie care afișează (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare
+  (`produse/potriveste`, modul 3: un `POST` folosit ca citire).
+- **unde ajunge efectul**: pe orice cifră măsurată pe JS printr-unul din cele două instrumente, de
+  la 24.08 și 27.08 încoace. Iar clasa e mai largă decât cele două instrumente: **un cititor comun
+  copiat e un defect copiat** — încă o instanță a gardului care nu se
+  verifică pe sine, și prima în care cauza e COPIA, nu logica.
+
+### R134 — Toate porțile lui `PUT /tenants/{id}` refuzau cu `500`, deci mesajele lor n-au ajuns niciodată la un om
+
+- **felul**: ARTEFACT
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `ba7305b4`
+- **rezolvată pe commit**: `77ae38be`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când fiecare poartă a lui `PUT /tenants/{id}` iese cu codul ei, nu cu `500` — adică mesajul porții ajunge la om în loc să fie înghițit de o eroare de server.
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · identitatea firmei · **PRAG 1**
+- **ce blochează**: diagnosticarea, și încrederea. Pe 27.08 ruta a primit **toate** porțile de la
+  creare — cifra de control a CUI-ului, unicitatea CUI-ului, unicitatea denumirii —, iar motivul de
+  atunci a fost scris în registru: *„o regulă care se poate ocoli nu e o regulă"*. Porțile chiar
+  există și chiar refuză. Doar că refuză ridicând `ValueError`, iar ruta nu-l prindea: fiecare refuz
+  ieșea `500 Internal Server Error`.
+- **ce s-a măsurat** *(04.09.2026, cerere reală cu token emis server-side)*:
+  `PUT /tenants/4838 {"cui": "123"}` → **`500 Internal Server Error`**; la fel `{"cui":"95141530"}`
+  (cifră de control greșită). Mesajul scris în cod — *„CUI invalid: cifra de control nu
+  corespunde"* — nu apare nicăieri în răspuns.
+- **de ce n-a prins-o campania până acum**: lotul 9 a probat ruta cu **corp gol**, iar corpul gol
+  e chiar singura intrare care NU trece prin porți (`nume is None and cui is None` → `{"ok": True,
+  "neschimbat": True}`). *O probă cu corp gol măsoară ruta pe drumul pe care ea nu face nimic.*
+- **reparația**: `try/except ValueError → HTTPException(422, str(e))` în rută. Refuzurile ajung
+  întregi, în forma pe care ecranul o știe citi.
+- **reprobat** *(instanță proaspătă pe `:8011`, cod nou)*: `{"cui": "123"}` → **`422`**
+  *„CUI invalid: cifra de control nu corespunde ('123')"*. Starea firmei, verificată în bază după
+  toate cele trei refuzuri: **neatinsă**.
+- **gardă**: `core/test_simetrie_denumire.py::test_ruta_PUT_tenants_PRINDE_refuzul_si_nu_da_500` —
+  **structurală** (AST pe `main.py`), nu pe text: cere un `try` care cheamă `actualizeaza_tenant` și
+  al cărui `except` prinde `ValueError`. **Mutație dovedită**: scos `try`-ul → 1 → **0**.
+- **unde ajunge efectul**: pe fiecare poartă de identitate a firmei. O poartă al cărei refuz arată
+  ca o cădere nu învață pe nimeni nimic despre date — învață că aplicația e stricată.
+
+### R135 — O denumire de firmă fără nicio literă trecea, și pleca pe `den` în D394
+
+- **felul**: ARTEFACT
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `ba7305b4`
+- **rezolvată pe commit**: `77ae38be`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când scriitorul UNIC al denumirii trece printr-o verificare care cere ca denumirea să fie un nume, calibrată în amândouă direcțiile.
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · identitatea firmei · **PRAG 1**
+- **ce blochează**: adevărul a ceea ce se depune. Denumirea firmei e o **identitate fiscală**: pleacă
+  pe `den` din D394, pe antetul facturii tipărite, în contracte și adeverințe.
+- **ce s-a măsurat** *(04.09.2026, apăsând pe ecranul «Date firmă» cu formularul umplut cu semne)*:
+  `PUT /tenants/4838 {"nume": "«»@#$%"}` → **`200`**, iar denumirea s-a scris în **amândouă**
+  locurile (`public.tenants.nume` și `tenant_003.firma_profil.nume`) — simetria din R81 a
+  funcționat perfect, și a propagat perfect o denumire care nu e o denumire.
+  *Numele vechi s-a refăcut citindu-l de la sursă — `denP` pentru CUI 95141537 în D394-urile
+  DEPUSE, confirmat de textul unei notificări —, nu din memorie.*
+- **de ce n-a oprit-o nimic**: singura verificare era „nu poate fi goală". `«»@#$%` nu e gol.
+- **reparația**: `cere_denumire_scriibila()` — funcție **pură**, chemată din scriitorul UNIC
+  (`scrie_denumirea`), deci poarta nu se poate ocoli prin nicio cale de redenumire.
+- **calibrare, în amândouă direcțiile**: 6 denumiri reale trebuie să treacă (ampersand, puncte,
+  cifre în nume, diacritice, spații la capete) · 8 șiruri care nu sunt denumiri trebuie refuzate
+  (inclusiv `123` — un cod nu e o denumire, iar `den` din D394 nu e un câmp numeric).
+- **gardă**: `test_scriitorul_unic_TRECE_prin_verificare`, **structurală** (AST): apelul trebuie să
+  existe în `scrie_denumirea`. **Mutație dovedită**: scos apelul → 1 → **0**.
+- **ce NU face, declarat**: nu verifică dacă denumirea e cea **reală** a firmei — aia e confruntarea
+  cu ANAF, și e altă poartă (R81). Cere doar să fie un nume.
+- **unde ajunge efectul**: pe orice document care poartă denumirea firmei. R134 îl făcea invizibil:
+  cât timp orice refuz ieșea `500`, nimeni n-ar fi deosebit „poarta lipsește" de „poarta a căzut".
+
+### R136 — Ecranul «Date firmă» trimitea redenumirea ÎNAINTEA a ceea ce putea fi refuzat
+
+- **felul**: ARTEFACT
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `ba7305b4`
+- **rezolvată pe commit**: `77ae38be`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când ecranul scrie întâi ce poate fi refuzat și abia la urmă ce schimbă identitatea firmei, iar un refuz de la urmă e spus pe litere, nu ca „nu am putut salva”.
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/date_firma.js` · **PRAG 1**
+- **ce blochează**: potrivirea dintre ce citește omul și ce e în date. O apăsare pe «Salvează»
+  trimitea **trei** scrieri înlănțuite în client: redenumirea, datele de profil, vectorul fiscal.
+  Prima trecea, a doua era refuzată — iar omul citea *„Nu am putut salva"* pe un ecran în care firma
+  **tocmai fusese redenumită**, în două tabele.
+- **ce s-a măsurat** *(04.09.2026, din `public.audit_log`, cererile probei)*:
+  `POST /tenants/4838/contracte/sabloane` `200` · **`PUT /tenants/4838` `200`** ·
+  `POST /tenants/4838/firma-profil/date` **`422`**, în aceeași secundă. Refuz pe ecran, redenumire
+  în date.
+- **clasa, și a câta oară**: aceeași cu **R128** — *„poarta cădea DUPĂ aprobare, iar înlănțuirea
+  trăia în client"*. A doua instanță, alt ecran. *Un act care se refuză n-are voie să lase în urmă
+  jumătate din el.*
+- **reparația**: **ordinea**. Se scrie întâi ce poate fi refuzat (profilul, vectorul) și abia la
+  urmă ce schimbă **identitatea** firmei. Iar dacă redenumirea e refuzată după ce restul a trecut,
+  mesajul o spune pe litere — *„Restul datelor s-au salvat, dar DENUMIREA nu: …"* —, nu „nu am putut
+  salva", care ar fi, acolo, o afirmație falsă despre date.
+- **reprobat** *(browser real, instanță proaspătă `:8011`, cod publicat)*: același formular umplut
+  cu semne → ecranul **vorbește** (*„CUI-ul «»@#$% nu e valid (lipsă). CUI-ul firmei intră în fiecare
+  declarație depusă…"*) și **nu se schimbă nimic în bază** — amprenta tuturor celor 52 de tabele ale
+  schemei, identică înainte și după.
+- **ce RĂMÂNE, declarat**: clasa nu e închisă, e **îngustată**. Dacă ultima cerere (redenumirea)
+  cade după ce primele două au trecut, profilul și vectorul rămân salvate. Un singur act ar cere o
+  rută care unește trei căi cu **roluri diferite** (`cere_cabinet` vs `admin_firma`) și un apel ANAF
+  live — o construcție, nu o reparație de lot. Ce s-a obținut: partea care se poate refuza nu mai
+  lasă în urmă schimbarea de identitate, iar restul e **spus**.
+
+### R137 — Sonda de ecran număra rânduri, deci era oarbă exact la felul de scriere pe care îl face un ecran de date
+
+- **felul**: VERIFICARE
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `ba7305b4`
+- **rezolvată pe commit**: `77ae38be`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când starea schemei se măsoară ca `count/amprentă`, deci o MODIFICARE — nu doar o inserare — face sonda să vadă că s-a schimbat ceva.
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · `frontend_test/vizual/proba_ecrane_formular.py`
+- **ce blochează**: adevărul propoziției „proba n-a schimbat nimic".
+- **ce s-a măsurat** *(04.09.2026)*: sonda declara starea schemei ca `count(*)` pe fiecare din cele
+  52 de tabele. La prima rulare pe ecranele de firmă a apăsat «Salvează» pe «Date firmă» și
+  serverul a **redenumit firma** — două `UPDATE`-uri. Numărul de rânduri n-a mișcat. Raportul
+  sondei: *„SCHIMBARI DE STARE, cap la cap: niciuna"*.
+  *Consecința s-a văzut imediat și în altă parte: următoarele 14 ecrane au dat «navigare eșuată»,
+  fiindcă navigarea caută firma DUPĂ NUME, iar numele nu mai era al ei.*
+- **cauza, scrisă ca să se recunoască**: `count(*)` măsoară inserările și ștergerile. Un ecran de
+  **date** nu inserează — modifică. *Instrumentul era orb fix pe clasa de ecrane pe care tocmai
+  începuse să le probeze.*
+- **reparația**: starea unui tabel e acum `count/amprentă` —
+  `md5(string_agg(md5(rand::text) ORDER BY …))`. O modificare a oricărei coloane a oricărui rând
+  schimbă amprenta.
+- **al doilea lucru, din aceeași clasă**: verdictul **`TACE`** era dat și butonului «Adaugă document
+  (pozează / încarcă)» de pe ecranul bonurilor — care nu tace: cheamă `input[type=file].click()`,
+  adică deschide selectorul de fișiere al sistemului, pe care sonda nu-l vede. *Un instrument care
+  nu poate vedea un răspuns n-are voie să-l numească tăcere.* Verdictele sunt acum **patru**: a
+  vorbit · a scris · **a cerut un fișier** · TACE. Ascultat prin evenimentul `filechooser`, nu
+  ghicit după textul butonului.
+- **al treilea**: curățenia de după probă era de mână. Acum e o unealtă —
+  `frontend_test/vizual/curata_proba_ecrane.py` —, **cu granița ei scrisă**: un `INSERT` se poate
+  desface, un `UPDATE` nu. Pe un rând preexistent instrumentul **refuză** și numește tabelul și
+  coloana, în loc să șteargă date reale.
+- **unde ajunge efectul**: pe fiecare propoziție de forma „proba n-a lăsat nimic în urmă", de la
+  lotul 10 încoace. Cea din lotul 10 rămâne adevărată — verificată acum și cu amprentă —, dar era
+  adevărată **din noroc**: acele ecrane inserau.
+
+### R138 — Un `@` nu e o adresă de email: patru rute creau un cont sau trimiteau un email pe orice șir care conținea unul
+
+- **felul**: ARTEFACT
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `77ae38be`
+- **rezolvată pe commit**: `bddfb287`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când toate locurile care refuză cu `EMAIL_INVALID` folosesc aceeași verificare de formă (`core/common.email_valid`), iar niciunul nu se mai mulțumește cu prezența unui `@`.
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · identitatea utilizatorului · **PRAG 1**
+- **ce blochează**: cine intră în aplicație. Ruta `/asistenti` **inserează un `angajat`** în
+  `public.users` și îi trimite linkul de activare; `/tenants/{id}/acces-client`,
+  `/portal/acces-cont/email` și `/portal/acces-cont/acces` dau sau mută accesul unui client.
+- **ce s-a măsurat** *(04.09.2026, apăsând «Trimite invitația» pe ecranul «Asistenți», cu formularul
+  umplut cu `«»@#$%`)*: șirul **conține** un `@`, deci singura verificare a rutei —
+  `if "@" not in email` — nu cădea. `POST /asistenti` ar fi făcut `INSERT` în `public.users` cu
+  emailul `«»@#$%`, rol `angajat`, cabinet 1968, și ar fi chemat `trimite_email_html` pe el.
+- **clasa, măsurată în întregime, nu doar instanța**: din **cele șase** locuri care refuză cu
+  `EMAIL_INVALID`, **unul singur** verifica formatul (`POST /auth/register`, prin `_EMAIL_RE`),
+  **patru** se mulțumeau cu `"@" not in email`, iar al șaselea (`/facturi/{id}/email`) cerea și un
+  punct, undeva. *Aceeași aplicație știa răspunsul într-un loc și nu-l avea în altul — instanța a
+  patra a clasei în două zile.*
+- **reparația**: faptul „ce e o adresă de email" trece în `core/common.email_valid()`, **un singur
+  loc**. Regexul nu e nou și nu s-a inventat aici: e chiar cel care trăia în `main.py`
+  (`[email_valid_v1]`) și, copiat, în `core/notificari_scadenta.py`. Ce s-a schimbat e că acum e
+  **unul**, iar cele cinci locuri slabe îl cheamă.
+- **calibrare, în amândouă direcțiile**: refuză `«»@#$%`, `a@b`, `a b@c.ro`, `""`, `None` · acceptă
+  `nume@exemplu.ro`, `x@y.z`. *O calibrare care doar dovedește că refuză nu spune nimic despre
+  supra-refuz — iar aici supra-refuzul ar bloca invitarea unui asistent real.*
+- **reprobat** *(browser real, instanță proaspătă `:8011`, apăsând chiar butonul)*: ecranul
+  «Asistenți» răspunde **„Adresă de email invalidă. Verifică formatul (exemplu: nume@exemplu.ro)."**
+  — și nu se scrie nimic: amprenta tuturor tabelelor, identică înainte și după.
+- **ce NU afirmă, declarat**: că adresa **există**. Verifică forma, nu destinatarul — de-aia numele
+  e `email_valid`, nu `email_bun`, și de-aia eșecul trimiterii rămâne tratat separat (R73).
+- **unde ajunge efectul**: pe fiecare cont creat prin invitație și pe fiecare acces de portal dat
+  vreodată. *Butonul nu se putea apăsa în probă decât DUPĂ reparație: înainte de ea, apăsarea ar fi
+  produs chiar contul și emailul pe care le descrie defectul.*
+
+### R139 — Refuzul de pe linia facturii spunea CARE câmp, nu CE e greșit — iar cuvântul pe care îl folosea era fals
+
+- **felul**: ARTEFACT
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `77ae38be`
+- **rezolvată pe commit**: `bddfb287`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când fiecare câmp refuzat de pe o linie de factură poartă un `mesaj` propriu — ce e greșit —, nu doar `eticheta` lui, iar rezumatul nu mai spune „completează” despre un câmp completat.
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/facturi_api.linii_campuri_lipsa` · **PRAG 1**
+- **ce blochează**: înțelesul refuzului pentru cine îl citește. Cerința campaniei are trei părți —
+  **care câmp**, **ce e greșit**, **în termenii contabilului**. Mesajul le dădea pe prima, pe a doua
+  deloc, iar pe a treia o contrazicea.
+- **ce s-a măsurat** *(04.09.2026, pe ecranul «Emite factură» cu formularul umplut cu semne și
+  cantitate `-99999999`)*: serverul răspunde `422` cu
+  `campuri: [{camp: "em-l0-cantitate", eticheta: "Linia 1: cantitate"}]` — **fără `mesaj` per
+  câmp**. `api.js:41` normalizează `campuri` la `{camp, mesaj: x.mesaj || x.eticheta}`, deci
+  **eticheta devine mesajul**: lângă caseta cantității, care conținea `-99999999`, contabilul citea
+  *„Linia 1: cantitate"* — numele câmpului pe care tocmai se uita.
+- **al doilea lucru, mai grav decât primul**: rezumatul de deasupra spunea *„**Completează** liniile:
+  …"* despre un câmp care **era completat**. Ce era greșit nu era absența, ci semnul. *Un refuz care
+  numește altă problemă decât cea reală trimite omul să caute unde nu e nimic.*
+- **reparația**: fiecare câmp își poartă **motivul**, iar cele trei cauze se deosebesc fiindcă au
+  remedii diferite — gol · nu e număr · negativ. Funcția e sursa unică pentru amândoi apelanții
+  (emitere `em-l` și facturi-recurente `fr-l`), deci reparația nu se face de două ori.
+- **calibrare, în amândouă direcțiile**: `-99999999` → *„Cantitatea e negativă (-99999999). Pe o
+  factură de emis cantitatea trebuie să fie mai mare decât zero; pentru o stornare se emite o
+  factură de corecție."* · `0` → *„Cantitatea lipsește…"* · `"abc"` → *„Cantitatea nu e un
+  număr…"* · o linie **validă** → listă goală, adică niciun refuz nou.
+- **reprobat** *(instanță proaspătă `:8011`, cererea reală către rută)*: mesajul per câmp ajunge
+  acum lângă caseta lui, iar rezumatul spune *„Liniile facturii nu sunt bune: Linia 1: cantitate —
+  Cantitatea e negativă…"*.
+- **unde ajunge efectul**: pe emitere și pe facturile recurente — singurele două căi prin care o
+  linie de factură se introduce de mână.
+
+### R140 — Registrul de încasări și plăți refuza în limba programatorului, și nimeni nu-l putea deschide ca să vadă
+
+- **felul**: ARTEFACT
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `77ae38be`
+- **rezolvată pe commit**: `bddfb287`
+- **reluări**: 0
+- **condiția de deblocare**: se închide când cele opt refuzuri ale registrului de partidă simplă spun ce e greșit în termenii contabilului, cu diacritice, și cu opțiunile enumerate acolo unde câmpul e un nomenclator.
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/rip_api._valideaza` · partidă simplă · **PRAG 1**
+- **ce blochează**: singura cale de refuz a partidei simple. `_valideaza` e poarta pentru fiecare
+  operațiune din Registrul-jurnal de încasări și plăți (OMFP 170/2015) și pentru fișa D212.
+- **cum s-a găsit, și de ce nu se putea găsi până azi**: cardul `#fa-rip` se randează **numai** la
+  `regim_contabil == "simpla"`, iar regimul se derivă din `tip_firma`. Măsurat înainte de a construi
+  ceva: **toate cele 19 firme din bază erau `srl`**. Ecranul nu era neprobat — era **imposibil de
+  deschis**, și toată ramura de partidă simplă cu el. *Punctul orb e FIRMA, nu ecranul.*
+- **ce s-a măsurat** *(04.09.2026, pe firma de partidă simplă creată prin `POST /tenants` cu
+  `tip_firma: "pfa"`)*: opt refuzuri, dintre care `suma trebuie să fie > 0`,
+  `metoda invalida (numerar/banca)`, `tip invalid` și
+  `pentru valuta != RON: suma_valuta si curs_valutar obligatorii`. Un `!=` și două nume de coloană
+  într-o propoziție adresată unui contabil; **șapte din opt** și fără diacritice.
+- **reparația**: cele opt mesaje, rescrise pentru cine le citește; categoriile se **enumeră** în
+  mesaj (ca la `casa_api`), fiindcă un refuz care spune „categorie invalidă" îl lasă pe om să
+  ghicească ce e valid.
+- **ce s-a păstrat deliberat**: temeiul de la explicație (OMFP 170/2015) e singurul care era acolo și
+  singurul care rămâne. **Nu s-a adăugat niciun temei nou** — un temei citat din memorie intră în
+  corpus ca fapt. Măsurat înainte și după: clichetele refuzurilor **n-au mișcat**.
+- **calibrare, în amândouă direcțiile**: toate cele opt refuzuri probate pe cazul lor · o operațiune
+  **validă** întoarce `None`, deci reparația n-a introdus niciun refuz nou.
+- **reprobat** *(browser real, `:8011`, ecranul «Încasări/plăți» al firmei de partidă simplă)*:
+  «Adaugă (ciornă)» pe formular invalid → *„Suma trebuie să fie mai mare decât zero. O corecție se
+  face printr-o operațiune de sens contrar, nu printr-o sumă negativă."* Nimic scris în bază.
+- **ce RĂMÂNE, declarat**: același șir `"suma trebuie să fie > 0"` mai trăiește în `core/casa_api.py`
+  și în `main.py` (chitanța). **Nu s-au atins**: sunt pe calea partidei duble, deja probată în alte
+  loturi, iar rescrierea lor fără a le reproba ar fi o schimbare nemăsurată. *Se consemnează ca să nu
+  treacă drept dispărute.*
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
@@ -8574,345 +8965,3 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **calibrare**: cazul cunoscut a fost **găsit**: `graf_temei` avea calibrare completă în ambele direcții din 01.08 și a trecut 22 de zile conflat — deci măsurătoarea distinge „are calibrare" de „are calibrarea potrivită", care e chiar întrebarea interdicției.
 - **ce nu vede**: „calibrare negativă" se recunoaște ca aserțiune sub `not` / `not in` cu literal. Un instrument calibrat negativ prin altă formă — o fixtură known-bad, un golden care trebuie să difere — nu se numără. Iar domeniul măsurătorii a fost `core/` și `scripts/`: instrumentele din rădăcină au intrat abia la cererea din 23.08.
 - **unde ajunge efectul**: un instrument necalibrat pe modul lui de eșec produce cifre care se citesc ca măsurători și sunt opinii. Efectul nu e o cifră greșită într-un raport — e că **toate măsurătorile care stau pe el moștenesc orbirea**, iar direcția tăcută (ratează, nu inventează) nu aprinde nimic. `graf_temei` a arătat 12 consumatori ai salariului minim în loc de 83, timp de 22 de zile, fără ca vreun test să pice
-
-
-### R131 — Cele 13 descărcări de fișier înlocuiau motivul serverului cu propriul lor număr
-
-- **felul**: VERIFICARE
-- **cine deblochează**: EU
-- **unde intră**: stratul de prezentare · orice ecran care descarcă un fișier
-- **ce blochează**: diagnosticarea din afară. Serverul refuza corect și își numea motivul; omul
-  citea un număr sau o frază fixă, iar la două locuri **„Eroare — reîncearcă"** — un sfat care nu
-  poate reuși niciodată, fiindcă factura tot nu există la a doua apăsare. *Consecința nu e
-  neplăcerea, e că nimeni nu poate spune ce s-a întâmplat.*
-- **ce s-a măsurat** *(04.09.2026, `core/scan_descarcare_muta.py`)*: din **31** de apeluri `fetch`
-  directe din `static/js/`, **14** nu citeau corpul răspunsului pe drumul de eșec, iar **toate 13
-  descărcările de fișier** aveau literalmente aceeași formă —
-  `if (!r.ok) throw new Error("eroare " + r.status)`. A patrusprezecea era importul extrasului
-  bancar, care avea `api.postForm` la îndemână și nu-l folosea.
-- **de ce ocoleau stratul comun**: un răspuns binar (PDF, XML, ZIP, imagine) nu poate trece prin
-  `api.get`, care face `r.json()`. Deci ocoleau și `_refuzNevazut` (`refuz_vazut_v1`, 27.08.2026),
-  bannerul care din 27 august garantează că un refuz la scriere nu rămâne nevăzut. *Excepția tehnică
-  a devenit o gaură în garanție.*
-- **reparația, UNA**: `cereBlob` / `descarca` / `deschide` în `api.js` — același loc care citește
-  `detail`, construiește eroarea structurată (`cod`, `mesaj`, `erori_campuri`, `detaliu`) și pune
-  bannerul. Nu treisprezece reparații, formular cu formular.
-- **decizia din reparație, scrisă**: bannerul se pune **și pe `GET`**. Excepția „GET-urile tac" din
-  `_refuzNevazut` există pentru badge-uri și contoare care se încarcă singure; o descărcare pe care
-  omul a cerut-o **apăsând un buton** nu e o citire de fundal, iar dacă fișierul nu vine, tăcerea e
-  chiar defectul. De asta se trimite `"DESCARCARE"`, nu metoda HTTP.
-- **calibrare**: instrumentul e pus să greșească în ambele direcții (METODA §22) —
-  `core/test_descarcare_muta.py`, 8 teste din care **6 de calibrare**: două forme mute injectate
-  trebuie găsite, două forme bune (una cu citirea corpului, una în lanț `.then`) nu trebuie acuzate,
-  iar una verifică **propriul mod de eșec** al instrumentului: dacă blocul unui `fetch` s-ar întinde
-  peste apelul următor, `.json()` de la primul ar „acoperi" tăcerea celui de-al doilea.
-  Prima variantă chiar greșea: punea forma din `app.js` în categoria „fără ramură de eșec".
-- **probat pe viu** *(`frontend_test/proba_r131_descarcare_muta.py`, browser real, cod publicat)*:
-  refuzul ajunge verbatim (`factură inexistentă`, cod `404`), bannerul are **311×70 px pe ecran**,
-  `role="alert"`, spune motivul, **nu se dublează** când ecranul l-a arătat deja, iar `deschide()`
-  se poartă la fel.
-- **clichet**: `MUTE = 0`. Un `fetch` nou care înghite motivul pică. Două fișiere sunt exceptate cu
-  motivul scris deasupra listei: `api.js` (el e reparația) și `versiune.js` (singura cerere către un
-  **fișier static**, fără `detail` și necerută de om).
-- **unde ajunge efectul**: pe orice ecran care scoate un document — factură, chitanță, adeverință,
-  fluturaș, balanță, contract, arhiva GDPR, fișierul SEPA care pleacă la bancă. Refuzul care
-  ajungea până la marginea aplicației și se oprea acolo ajunge acum la om, cu cuvintele serverului.
-
-### R132 — Infrastructura de testare vizuală rula de nouă zile pe bytecode fără sursă
-
-- **felul**: VERIFICARE
-- **cine deblochează**: EU
-- **unde intră**: `frontend_test/` · toate scanurile vizuale gardate
-- **ce blochează**: nimic — până la prima curățenie. Și atunci, tot.
-- **ce s-a măsurat** *(04.09.2026)*: `frontend_test/w_auth.py` — tokenul mințit și navigarea la
-  firma `tenant_003`, de care atârnă `interactiune_scan`, `axe_scan`, `mobil_scan` și `nav_ecrane` —
-  **nu exista pe disc**. `git log` îl arată scos din urmărire pe **26.08**, odată cu `b87dad49`
-  („Scoate din urmărire cele 234 de artefacte măturate din greșeală în `5cc3c5e`"), dar a fost și
-  **șters**. Rămăsese doar `__pycache__/w_auth.cpython-312.pyc`, 4.605 octeți, datat 26 aug 13:30.
-  **24 de fișiere** îl importau.
-- **de ce n-a devenit nimic roșu**: Python încarcă un `.pyc` fără să-i ceară sursa. Scanurile
-  mergeau, gărzile lor treceau, `test_acoperire_vizuala` era verde. *Un
-  `find -name __pycache__ -delete` — curățenia obișnuită, cea care e chiar regulă în casă
-  (`mutatie-curata-pycache`) — ar fi oprit tăcut toată infrastructura vizuală, iar cauza ar fi fost
-  de negăsit: fișierul care lipsea nu era numit nicăieri.*
-- **de ce n-a văzut-o garda care există pentru exact asta**: `core/test_infra_vizuala.py` cerea
-  fișiere **dintr-o listă scrisă de mână**, iar `w_auth` nu era în ea și nici măcar în același
-  director (`frontend_test/`, nu `frontend_test/vizual/`). *O listă scrisă de mine vede exact ce
-  mi-am amintit să scriu.*
-- **reparația**: sursa **reconstruită din bytecode** (dezasamblare funcție cu funcție: `BAZA`,
-  `INIT`, `new_page`, `deschide_firma`, `shot`, `txt`, plus dicționarul de utilizator cu cele 12
-  chei), verificată rulând scanurile pe ea. Garda **derivă** acum ce trebuie să existe din chiar
-  `import`-urile uneltelor, cu `ast` — nu dintr-o listă.
-- **calibrare, pe viu**: `w_auth.py` mutat → garda cade numind modulul și cele patru unelte care-l
-  cer; pus la loc → trece. Plus un test anti-vacuu: dacă parserul n-ar găsi importurile, testul de
-  sus ar trece despre nimic.
-- **unde ajunge efectul**: pe tot ce se sprijină pe scanurile vizuale — contrastul, revărsarea la
-  393 px, țintele de atingere, comportamentul la apăsare. Nu era stricat; era **nesprijinit**, și
-  ar fi căzut la prima mătură.
-
-### R133 — Două instrumente de măsură citeau JS-ul printr-un cititor care orbea la o linie cu trei ghilimele
-
-- **felul**: VERIFICARE
-- **cine deblochează**: EU
-- **unde intră**: instrumentele de măsură · `core/scan_refuz_tacut.py` (27.08) ·
-  `core/test_aritmetica_in_prezentare.py` (24.08)
-- **ce blochează**: nimic din aplicație — și tocmai de-aia e greu de văzut. Blochează **încrederea
-  în două clichete**, și prin ele în orice afirmație care stă pe ele.
-- **cum a ieșit la iveală**: poarta lotului 10 a respins cu *„scrieri NOI care pot refuza fără să
-  spună motivul: 18 > 16"*. Prima citire a mesajului e „lotul a stricat două ecrane". Măsurat pe
-  un worktree detașat la `277e4300`, cu cititorul reparat: **18 și acolo**. Lotul n-a adăugat
-  nimic — a **mutat o linie de cod**, iar orbirea s-a mutat odată cu ea.
-- **cauza**: `_curata_sir` nu oprea un șir `'` sau `"` la capătul rândului, deși gramatica JS o
-  cere. Sora ei din **același fișier** — `_sfarsit_sir` — avea regula scrisă, cu comentariu cu tot.
-  Asimetrie din naștere. Declanșatorul e o singură linie cu **trei** ghilimele:
-  `cd.match(/filename="([^"]+)"/)`; a treia deschidea un „șir" care înghițea tot până la
-  următoarea ghilimea din **fișier**.
-- **ce s-a măsurat** *(04.09.2026, pe worktree detașat la `277e4300` — aceleași fișiere, doi
-  cititori)*:
-
-  | | cititorul vechi | cititorul reparat |
-  |---|---|---|
-  | scrieri care refuză fără să spună motivul | **16** | **18** |
-  | citiri tăcute (badge-uri, contoare) | 71 | 74 |
-  | `catch`-uri care arată ceva | 242 | 253 |
-  | aritmetică pe nume neutre | **2** | **1** |
-
-  Suprafața oarbă, tot pe `277e4300`: `ecrane/facturi_ecran.js` de la rândul **530** încolo (639
-  de rânduri, 312 scurgeri) și `api.js` de la **397** (59 de rânduri). În arborele lotului 10,
-  aceeași linie mutată în `api.js` orbea **315 rânduri** de acolo.
-- **de ce n-a aprins nimic, nouă zile**: amândouă cifrele sunt clichete, deci plafoane. Orbirea a
-  **coborât** unul (16 în loc de 18 — clichetul părea ținut) și a **urcat** celălalt (2 în loc de
-  1 — clichetul părea o măsurătoare, iar a doua instanță era o ACUZAȚIE FALSĂ: „aritmetica" erau
-  chiar barele expresiei regulate din `.match(/…/)`, iar „cota" era 10-le din `slice(0, 10)`).
-  *Un instrument care greșește în AMÂNDOUĂ direcțiile n-are **niciun** plafon* —
-  `METODA_VERIFICARE.md` §22.
-- **reparația, UNA**: cititorul e acum unul singur, `core/cititor_js.py`, iar cele două copii sunt
-  scoase. Două schimbări de fond: un șir simplu se oprește la capătul rândului, iar **expresiile
-  regulate se albesc ca text** — fără asta, un `/\d{2}/` strică numărătoarea acoladelor și un
-  `/(19|21)/` arată ca o cotă cu aritmetică.
-- **calibrare**: `core/test_cititor_js.py`, **16 teste**, în amândouă direcțiile — trei pe direcția
-  „ratează cod" (linia care a născut orbirea, expresia regulată cu ghilimele, acoladele dintr-un
-  cuantificator) și **șase** pe direcția „acuză pe nedrept" (cinci feluri de împărțire care NU
-  trebuie luate drept expresie regulată, plus `/` care nu se închide pe rând). Plus proprietatea
-  care nu poate îmbătrâni: pe **tot** corpusul `static/js`, acoladele și parantezele textului citit
-  trebuie să rămână în echilibru. **Mutație dovedită**: cu cititorul de dinainte, `api.js` iese
-  `{42 }41` — garda cade numind fișierul.
-- **ce rămâne adevărat despre cele 18**: niciuna nu e un refuz înghițit. Cele două care „au apărut"
-  sunt instanțe ale modurilor de eșec **declarate** ale instrumentului — una cheamă o funcție
-  proprie care afișează (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare
-  (`produse/potriveste`, modul 3: un `POST` folosit ca citire).
-- **unde ajunge efectul**: pe orice cifră măsurată pe JS printr-unul din cele două instrumente, de
-  la 24.08 și 27.08 încoace. Iar clasa e mai largă decât cele două instrumente: **un cititor comun
-  copiat e un defect copiat** — încă o instanță a gardului care nu se
-  verifică pe sine, și prima în care cauza e COPIA, nu logica.
-
-### R134 — Toate porțile lui `PUT /tenants/{id}` refuzau cu `500`, deci mesajele lor n-au ajuns niciodată la un om
-
-- **felul**: ARTEFACT
-- **cine deblochează**: EU
-- **unde intră**: E2 · identitatea firmei · **PRAG 1**
-- **ce blochează**: diagnosticarea, și încrederea. Pe 27.08 ruta a primit **toate** porțile de la
-  creare — cifra de control a CUI-ului, unicitatea CUI-ului, unicitatea denumirii —, iar motivul de
-  atunci a fost scris în registru: *„o regulă care se poate ocoli nu e o regulă"*. Porțile chiar
-  există și chiar refuză. Doar că refuză ridicând `ValueError`, iar ruta nu-l prindea: fiecare refuz
-  ieșea `500 Internal Server Error`.
-- **ce s-a măsurat** *(04.09.2026, cerere reală cu token emis server-side)*:
-  `PUT /tenants/4838 {"cui": "123"}` → **`500 Internal Server Error`**; la fel `{"cui":"95141530"}`
-  (cifră de control greșită). Mesajul scris în cod — *„CUI invalid: cifra de control nu
-  corespunde"* — nu apare nicăieri în răspuns.
-- **de ce n-a prins-o campania până acum**: lotul 9 a probat ruta cu **corp gol**, iar corpul gol
-  e chiar singura intrare care NU trece prin porți (`nume is None and cui is None` → `{"ok": True,
-  "neschimbat": True}`). *O probă cu corp gol măsoară ruta pe drumul pe care ea nu face nimic.*
-- **reparația**: `try/except ValueError → HTTPException(422, str(e))` în rută. Refuzurile ajung
-  întregi, în forma pe care ecranul o știe citi.
-- **reprobat** *(instanță proaspătă pe `:8011`, cod nou)*: `{"cui": "123"}` → **`422`**
-  *„CUI invalid: cifra de control nu corespunde ('123')"*. Starea firmei, verificată în bază după
-  toate cele trei refuzuri: **neatinsă**.
-- **gardă**: `core/test_simetrie_denumire.py::test_ruta_PUT_tenants_PRINDE_refuzul_si_nu_da_500` —
-  **structurală** (AST pe `main.py`), nu pe text: cere un `try` care cheamă `actualizeaza_tenant` și
-  al cărui `except` prinde `ValueError`. **Mutație dovedită**: scos `try`-ul → 1 → **0**.
-- **unde ajunge efectul**: pe fiecare poartă de identitate a firmei. O poartă al cărei refuz arată
-  ca o cădere nu învață pe nimeni nimic despre date — învață că aplicația e stricată.
-
-### R135 — O denumire de firmă fără nicio literă trecea, și pleca pe `den` în D394
-
-- **felul**: ARTEFACT
-- **cine deblochează**: EU
-- **unde intră**: E2 · identitatea firmei · **PRAG 1**
-- **ce blochează**: adevărul a ceea ce se depune. Denumirea firmei e o **identitate fiscală**: pleacă
-  pe `den` din D394, pe antetul facturii tipărite, în contracte și adeverințe.
-- **ce s-a măsurat** *(04.09.2026, apăsând pe ecranul «Date firmă» cu formularul umplut cu semne)*:
-  `PUT /tenants/4838 {"nume": "«»@#$%"}` → **`200`**, iar denumirea s-a scris în **amândouă**
-  locurile (`public.tenants.nume` și `tenant_003.firma_profil.nume`) — simetria din R81 a
-  funcționat perfect, și a propagat perfect o denumire care nu e o denumire.
-  *Numele vechi s-a refăcut citindu-l de la sursă — `denP` pentru CUI 95141537 în D394-urile
-  DEPUSE, confirmat de textul unei notificări —, nu din memorie.*
-- **de ce n-a oprit-o nimic**: singura verificare era „nu poate fi goală". `«»@#$%` nu e gol.
-- **reparația**: `cere_denumire_scriibila()` — funcție **pură**, chemată din scriitorul UNIC
-  (`scrie_denumirea`), deci poarta nu se poate ocoli prin nicio cale de redenumire.
-- **calibrare, în amândouă direcțiile**: 6 denumiri reale trebuie să treacă (ampersand, puncte,
-  cifre în nume, diacritice, spații la capete) · 8 șiruri care nu sunt denumiri trebuie refuzate
-  (inclusiv `123` — un cod nu e o denumire, iar `den` din D394 nu e un câmp numeric).
-- **gardă**: `test_scriitorul_unic_TRECE_prin_verificare`, **structurală** (AST): apelul trebuie să
-  existe în `scrie_denumirea`. **Mutație dovedită**: scos apelul → 1 → **0**.
-- **ce NU face, declarat**: nu verifică dacă denumirea e cea **reală** a firmei — aia e confruntarea
-  cu ANAF, și e altă poartă (R81). Cere doar să fie un nume.
-- **unde ajunge efectul**: pe orice document care poartă denumirea firmei. R134 îl făcea invizibil:
-  cât timp orice refuz ieșea `500`, nimeni n-ar fi deosebit „poarta lipsește" de „poarta a căzut".
-
-### R136 — Ecranul «Date firmă» trimitea redenumirea ÎNAINTEA a ceea ce putea fi refuzat
-
-- **felul**: ARTEFACT
-- **cine deblochează**: EU
-- **unde intră**: E2 · `static/js/ecrane/date_firma.js` · **PRAG 1**
-- **ce blochează**: potrivirea dintre ce citește omul și ce e în date. O apăsare pe «Salvează»
-  trimitea **trei** scrieri înlănțuite în client: redenumirea, datele de profil, vectorul fiscal.
-  Prima trecea, a doua era refuzată — iar omul citea *„Nu am putut salva"* pe un ecran în care firma
-  **tocmai fusese redenumită**, în două tabele.
-- **ce s-a măsurat** *(04.09.2026, din `public.audit_log`, cererile probei)*:
-  `POST /tenants/4838/contracte/sabloane` `200` · **`PUT /tenants/4838` `200`** ·
-  `POST /tenants/4838/firma-profil/date` **`422`**, în aceeași secundă. Refuz pe ecran, redenumire
-  în date.
-- **clasa, și a câta oară**: aceeași cu **R128** — *„poarta cădea DUPĂ aprobare, iar înlănțuirea
-  trăia în client"*. A doua instanță, alt ecran. *Un act care se refuză n-are voie să lase în urmă
-  jumătate din el.*
-- **reparația**: **ordinea**. Se scrie întâi ce poate fi refuzat (profilul, vectorul) și abia la
-  urmă ce schimbă **identitatea** firmei. Iar dacă redenumirea e refuzată după ce restul a trecut,
-  mesajul o spune pe litere — *„Restul datelor s-au salvat, dar DENUMIREA nu: …"* —, nu „nu am putut
-  salva", care ar fi, acolo, o afirmație falsă despre date.
-- **reprobat** *(browser real, instanță proaspătă `:8011`, cod publicat)*: același formular umplut
-  cu semne → ecranul **vorbește** (*„CUI-ul «»@#$% nu e valid (lipsă). CUI-ul firmei intră în fiecare
-  declarație depusă…"*) și **nu se schimbă nimic în bază** — amprenta tuturor celor 52 de tabele ale
-  schemei, identică înainte și după.
-- **ce RĂMÂNE, declarat**: clasa nu e închisă, e **îngustată**. Dacă ultima cerere (redenumirea)
-  cade după ce primele două au trecut, profilul și vectorul rămân salvate. Un singur act ar cere o
-  rută care unește trei căi cu **roluri diferite** (`cere_cabinet` vs `admin_firma`) și un apel ANAF
-  live — o construcție, nu o reparație de lot. Ce s-a obținut: partea care se poate refuza nu mai
-  lasă în urmă schimbarea de identitate, iar restul e **spus**.
-
-### R137 — Sonda de ecran număra rânduri, deci era oarbă exact la felul de scriere pe care îl face un ecran de date
-
-- **felul**: VERIFICARE
-- **cine deblochează**: EU
-- **unde intră**: instrumentele de măsură · `frontend_test/vizual/proba_ecrane_formular.py`
-- **ce blochează**: adevărul propoziției „proba n-a schimbat nimic".
-- **ce s-a măsurat** *(04.09.2026)*: sonda declara starea schemei ca `count(*)` pe fiecare din cele
-  52 de tabele. La prima rulare pe ecranele de firmă a apăsat «Salvează» pe «Date firmă» și
-  serverul a **redenumit firma** — două `UPDATE`-uri. Numărul de rânduri n-a mișcat. Raportul
-  sondei: *„SCHIMBARI DE STARE, cap la cap: niciuna"*.
-  *Consecința s-a văzut imediat și în altă parte: următoarele 14 ecrane au dat «navigare eșuată»,
-  fiindcă navigarea caută firma DUPĂ NUME, iar numele nu mai era al ei.*
-- **cauza, scrisă ca să se recunoască**: `count(*)` măsoară inserările și ștergerile. Un ecran de
-  **date** nu inserează — modifică. *Instrumentul era orb fix pe clasa de ecrane pe care tocmai
-  începuse să le probeze.*
-- **reparația**: starea unui tabel e acum `count/amprentă` —
-  `md5(string_agg(md5(rand::text) ORDER BY …))`. O modificare a oricărei coloane a oricărui rând
-  schimbă amprenta.
-- **al doilea lucru, din aceeași clasă**: verdictul **`TACE`** era dat și butonului «Adaugă document
-  (pozează / încarcă)» de pe ecranul bonurilor — care nu tace: cheamă `input[type=file].click()`,
-  adică deschide selectorul de fișiere al sistemului, pe care sonda nu-l vede. *Un instrument care
-  nu poate vedea un răspuns n-are voie să-l numească tăcere.* Verdictele sunt acum **patru**: a
-  vorbit · a scris · **a cerut un fișier** · TACE. Ascultat prin evenimentul `filechooser`, nu
-  ghicit după textul butonului.
-- **al treilea**: curățenia de după probă era de mână. Acum e o unealtă —
-  `frontend_test/vizual/curata_proba_ecrane.py` —, **cu granița ei scrisă**: un `INSERT` se poate
-  desface, un `UPDATE` nu. Pe un rând preexistent instrumentul **refuză** și numește tabelul și
-  coloana, în loc să șteargă date reale.
-- **unde ajunge efectul**: pe fiecare propoziție de forma „proba n-a lăsat nimic în urmă", de la
-  lotul 10 încoace. Cea din lotul 10 rămâne adevărată — verificată acum și cu amprentă —, dar era
-  adevărată **din noroc**: acele ecrane inserau.
-
-### R138 — Un `@` nu e o adresă de email: patru rute creau un cont sau trimiteau un email pe orice șir care conținea unul
-
-- **felul**: ARTEFACT
-- **cine deblochează**: EU
-- **unde intră**: E2 · identitatea utilizatorului · **PRAG 1**
-- **ce blochează**: cine intră în aplicație. Ruta `/asistenti` **inserează un `angajat`** în
-  `public.users` și îi trimite linkul de activare; `/tenants/{id}/acces-client`,
-  `/portal/acces-cont/email` și `/portal/acces-cont/acces` dau sau mută accesul unui client.
-- **ce s-a măsurat** *(04.09.2026, apăsând «Trimite invitația» pe ecranul «Asistenți», cu formularul
-  umplut cu `«»@#$%`)*: șirul **conține** un `@`, deci singura verificare a rutei —
-  `if "@" not in email` — nu cădea. `POST /asistenti` ar fi făcut `INSERT` în `public.users` cu
-  emailul `«»@#$%`, rol `angajat`, cabinet 1968, și ar fi chemat `trimite_email_html` pe el.
-- **clasa, măsurată în întregime, nu doar instanța**: din **cele șase** locuri care refuză cu
-  `EMAIL_INVALID`, **unul singur** verifica formatul (`POST /auth/register`, prin `_EMAIL_RE`),
-  **patru** se mulțumeau cu `"@" not in email`, iar al șaselea (`/facturi/{id}/email`) cerea și un
-  punct, undeva. *Aceeași aplicație știa răspunsul într-un loc și nu-l avea în altul — instanța a
-  patra a clasei în două zile.*
-- **reparația**: faptul „ce e o adresă de email" trece în `core/common.email_valid()`, **un singur
-  loc**. Regexul nu e nou și nu s-a inventat aici: e chiar cel care trăia în `main.py`
-  (`[email_valid_v1]`) și, copiat, în `core/notificari_scadenta.py`. Ce s-a schimbat e că acum e
-  **unul**, iar cele cinci locuri slabe îl cheamă.
-- **calibrare, în amândouă direcțiile**: refuză `«»@#$%`, `a@b`, `a b@c.ro`, `""`, `None` · acceptă
-  `nume@exemplu.ro`, `x@y.z`. *O calibrare care doar dovedește că refuză nu spune nimic despre
-  supra-refuz — iar aici supra-refuzul ar bloca invitarea unui asistent real.*
-- **reprobat** *(browser real, instanță proaspătă `:8011`, apăsând chiar butonul)*: ecranul
-  «Asistenți» răspunde **„Adresă de email invalidă. Verifică formatul (exemplu: nume@exemplu.ro)."**
-  — și nu se scrie nimic: amprenta tuturor tabelelor, identică înainte și după.
-- **ce NU afirmă, declarat**: că adresa **există**. Verifică forma, nu destinatarul — de-aia numele
-  e `email_valid`, nu `email_bun`, și de-aia eșecul trimiterii rămâne tratat separat (R73).
-- **unde ajunge efectul**: pe fiecare cont creat prin invitație și pe fiecare acces de portal dat
-  vreodată. *Butonul nu se putea apăsa în probă decât DUPĂ reparație: înainte de ea, apăsarea ar fi
-  produs chiar contul și emailul pe care le descrie defectul.*
-
-### R139 — Refuzul de pe linia facturii spunea CARE câmp, nu CE e greșit — iar cuvântul pe care îl folosea era fals
-
-- **felul**: ARTEFACT
-- **cine deblochează**: EU
-- **unde intră**: E2 · `core/facturi_api.linii_campuri_lipsa` · **PRAG 1**
-- **ce blochează**: înțelesul refuzului pentru cine îl citește. Cerința campaniei are trei părți —
-  **care câmp**, **ce e greșit**, **în termenii contabilului**. Mesajul le dădea pe prima, pe a doua
-  deloc, iar pe a treia o contrazicea.
-- **ce s-a măsurat** *(04.09.2026, pe ecranul «Emite factură» cu formularul umplut cu semne și
-  cantitate `-99999999`)*: serverul răspunde `422` cu
-  `campuri: [{camp: "em-l0-cantitate", eticheta: "Linia 1: cantitate"}]` — **fără `mesaj` per
-  câmp**. `api.js:41` normalizează `campuri` la `{camp, mesaj: x.mesaj || x.eticheta}`, deci
-  **eticheta devine mesajul**: lângă caseta cantității, care conținea `-99999999`, contabilul citea
-  *„Linia 1: cantitate"* — numele câmpului pe care tocmai se uita.
-- **al doilea lucru, mai grav decât primul**: rezumatul de deasupra spunea *„**Completează** liniile:
-  …"* despre un câmp care **era completat**. Ce era greșit nu era absența, ci semnul. *Un refuz care
-  numește altă problemă decât cea reală trimite omul să caute unde nu e nimic.*
-- **reparația**: fiecare câmp își poartă **motivul**, iar cele trei cauze se deosebesc fiindcă au
-  remedii diferite — gol · nu e număr · negativ. Funcția e sursa unică pentru amândoi apelanții
-  (emitere `em-l` și facturi-recurente `fr-l`), deci reparația nu se face de două ori.
-- **calibrare, în amândouă direcțiile**: `-99999999` → *„Cantitatea e negativă (-99999999). Pe o
-  factură de emis cantitatea trebuie să fie mai mare decât zero; pentru o stornare se emite o
-  factură de corecție."* · `0` → *„Cantitatea lipsește…"* · `"abc"` → *„Cantitatea nu e un
-  număr…"* · o linie **validă** → listă goală, adică niciun refuz nou.
-- **reprobat** *(instanță proaspătă `:8011`, cererea reală către rută)*: mesajul per câmp ajunge
-  acum lângă caseta lui, iar rezumatul spune *„Liniile facturii nu sunt bune: Linia 1: cantitate —
-  Cantitatea e negativă…"*.
-- **unde ajunge efectul**: pe emitere și pe facturile recurente — singurele două căi prin care o
-  linie de factură se introduce de mână.
-
-### R140 — Registrul de încasări și plăți refuza în limba programatorului, și nimeni nu-l putea deschide ca să vadă
-
-- **felul**: ARTEFACT
-- **cine deblochează**: EU
-- **unde intră**: E2 · `core/rip_api._valideaza` · partidă simplă · **PRAG 1**
-- **ce blochează**: singura cale de refuz a partidei simple. `_valideaza` e poarta pentru fiecare
-  operațiune din Registrul-jurnal de încasări și plăți (OMFP 170/2015) și pentru fișa D212.
-- **cum s-a găsit, și de ce nu se putea găsi până azi**: cardul `#fa-rip` se randează **numai** la
-  `regim_contabil == "simpla"`, iar regimul se derivă din `tip_firma`. Măsurat înainte de a construi
-  ceva: **toate cele 19 firme din bază erau `srl`**. Ecranul nu era neprobat — era **imposibil de
-  deschis**, și toată ramura de partidă simplă cu el. *Punctul orb e FIRMA, nu ecranul.*
-- **ce s-a măsurat** *(04.09.2026, pe firma de partidă simplă creată prin `POST /tenants` cu
-  `tip_firma: "pfa"`)*: opt refuzuri, dintre care `suma trebuie să fie > 0`,
-  `metoda invalida (numerar/banca)`, `tip invalid` și
-  `pentru valuta != RON: suma_valuta si curs_valutar obligatorii`. Un `!=` și două nume de coloană
-  într-o propoziție adresată unui contabil; **șapte din opt** și fără diacritice.
-- **reparația**: cele opt mesaje, rescrise pentru cine le citește; categoriile se **enumeră** în
-  mesaj (ca la `casa_api`), fiindcă un refuz care spune „categorie invalidă" îl lasă pe om să
-  ghicească ce e valid.
-- **ce s-a păstrat deliberat**: temeiul de la explicație (OMFP 170/2015) e singurul care era acolo și
-  singurul care rămâne. **Nu s-a adăugat niciun temei nou** — un temei citat din memorie intră în
-  corpus ca fapt. Măsurat înainte și după: clichetele refuzurilor **n-au mișcat**.
-- **calibrare, în amândouă direcțiile**: toate cele opt refuzuri probate pe cazul lor · o operațiune
-  **validă** întoarce `None`, deci reparația n-a introdus niciun refuz nou.
-- **reprobat** *(browser real, `:8011`, ecranul «Încasări/plăți» al firmei de partidă simplă)*:
-  «Adaugă (ciornă)» pe formular invalid → *„Suma trebuie să fie mai mare decât zero. O corecție se
-  face printr-o operațiune de sens contrar, nu printr-o sumă negativă."* Nimic scris în bază.
-- **ce RĂMÂNE, declarat**: același șir `"suma trebuie să fie > 0"` mai trăiește în `core/casa_api.py`
-  și în `main.py` (chitanța). **Nu s-au atins**: sunt pe calea partidei duble, deja probată în alte
-  loturi, iar rescrierea lor fără a le reproba ar fi o schimbare nemăsurată. *Se consemnează ca să nu
-  treacă drept dispărute.*
