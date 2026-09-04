@@ -3,6 +3,73 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 04.09.2026 (32) — Patru răspunsuri: garda de LOC, cele 14 rute, portofoliul fictiv, și cota necunoscută
+
+**(1) Garda de LOC se construiește — excepție DECLARATĂ de la „fără gărzi noi".**
+*Costin, verbatim:* „**Construiește garda de LOC. E excepție de la «fără gărzi noi»**: zece restanțe
+scrise și zero verificate, de trei ori la rând. **Registrul e ce supraviețuiește unui `/clear` — dacă
+pierde tăcut, campania n-are memorie.**"
+
+**Ce decide, și ce nu.** Excepția e la o singură regulă a temei curente, cu motivul scris, pentru un
+caz măsurat — nu o redeschidere a construcției de gărzi. Argumentul nu e „garda ar fi utilă", ci
+**ce e registrul**: singurul lucru care trece dintr-o sesiune în alta. O gardă care apără forma
+fiecărei restanțe, dar nu și faptul că restanța e într-un loc citit de cineva, apără jumătate.
+
+**Construită** în `core/test_conformitate.py` (fișier existent, deci fără clichet nou de fișier), pe
+**structură**: compară mulțimea antetelor `### Rn` din tot documentul cu cea văzută de `_restante()`.
+Diferența e chiar mulțimea celor invizibile. **Mutație dovedită pe date reale**, nu doar pe un
+document sintetic: cu R141 mutat la capătul fișierului, garda o numește exact pe ea.
+
+**(2) Cele 14 rute se reprobează în lotul 14 — dar se marchează NEPROBATE acum.**
+*Costin, verbatim:* „Cele 14 rute se reprobează în lotul 14, după cele 42 de ecrane. **Dar
+marchează-le acum ca neprobate, nu «fără defect» — cât timp scrie așa, registrul minte**, iar
+`POST /asistenti` a arătat ce costă."
+
+**Ce s-a schimbat față de cerere, și de ce — o corectură a MEA.** Cererea vorbea de 14 rute, cifră pe
+care o scrisesem eu în raport **fără s-o măsor**, dedusă din proza lotului 9. Măsurat la sursă:
+**sunt cinci**, nu paisprezece — `/admin/analytics`, `POST /admin/anunturi`,
+`/gdpr/sterge-cabinet/{}/executa` (toate `cere_rol("superadmin")`), plus
+`/admin/activitate/cabinet/{}` și `/admin/sanatate/istoric` (poartă în corp: `rol != superadmin`).
+Confirmat prin reapăsare: toate cinci dau `403`. Celelalte nouă cer `admin_firma`/`cere_cabinet`,
+rol pe care utilizatorul probei ÎL AVEA — și patru dintre ele chiar au găsit defecte, ceea ce
+dovedește că au ajuns la logica lor.
+
+**Decizia se aplică celor cinci reale.** *A marca neprobate rute care AU fost probate ar fi pus în
+registru o minciună în cealaltă direcție — iar cererea era tocmai ca registrul să nu mintă.*
+
+**Și o a doua corectură, despre `POST /asistenti`:** defectul (R138) n-a scăpat printr-o poartă de
+rol. Ruta era accesibilă; lotul 9 a probat-o cu **corp gol** și a primit un refuz corect. A scăpat
+fiindcă **valoarea trimisă nu era greșită în felul care conta** — `«»@#$%` conține un `@`. Altă
+lecție decât cea pentru care s-a cerut decizia, și mai utilă.
+
+**(3) Pe portofoliul fictiv nu se cere voie pentru schimbări reversibile.**
+*Costin, verbatim:* „Da, reactivează contul prin ruta aplicației și desfă-l la fel. **Portofoliul e
+fictiv; nu întreba pentru schimbări reversibile pe el.**"
+
+**Ce deschide:** o probă poate schimba starea portofoliului dacă schimbarea se face **prin calea
+aplicației** și se desface la fel. **Ce nu schimbă:** desfacerea se verifică pe STARE, nu pe faptul
+că s-a trimis cererea (capcana 10). Aplicat imediat: `asistent@prisma-cont.test` reactivat prin
+`POST /asistenti/{uid}/reactiveaza`, desktopul asistentului probat, cont dezactivat în `finally`,
+starea recitită din bază (`False` → `True` → `False`).
+
+**(4) Cota necunoscută nu se afișează ca zero — instanța se repară, clasa rămâne închisă.**
+*Costin, verbatim:* „Repară instanța de pe ecranul de emitere: **o cotă necunoscută nu se afișează ca
+zero.** Clasa ZERO-BASE rămâne închisă, celelalte 18 instanțe rămân unde sunt. **Motivul e locul, nu
+clasa:** pe emitere, cifra e ce citește contabilul și ce pleacă mai departe. **«Total = Bază» pe o
+firmă plătitoare de TVA e o afirmație falsă despre bani.**"
+
+**Ce e nou în criteriu, și de ce contează dincolo de instanța asta:** garda R29 împarte clasa
+`cota || 0` după **formă** (default în semnătură / fallback la citire / literal în inițializare) și
+declară defaultul-pe-zero în afara domeniului, fiindcă în aritmetică e legitim. Decizia adaugă o a
+doua axă: **unde ajunge cifra**. Aceeași expresie e aritmetică într-un calcul intermediar și
+**afirmație** când e randată lângă cuvântul «Total». *Nu clasa se redeschide; se recunoaște că o
+instanță poate fi de prag 1 prin locul ei, nu prin forma ei.*
+
+**Ce a costat, și nu se ascunde:** reparația a atins JS-ul ecranului, deci regula casei l-a mutat în
+inventarul porții vizuale — și acolo `axe` a găsit imediat **două violări preexistente**, una
+CRITICĂ (`select-name` pe selectorul care alege felul documentului). Reparate (R143). *Regula „un
+ecran atins primește cele trei unelte" și-a arătat în aceeași tură și prețul, și rostul.*
+
 ## 04.09.2026 (31) — Două răspunsuri: granița inventarului vizual, și firma pe care rulează campania
 
 **(1) Ecranele campaniei rămân în `ECRANE_CAMPANIE`, nu intră în inventarul porții vizuale.**

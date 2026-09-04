@@ -928,3 +928,54 @@ def test_partialele_declara_FELUL_limitei(conf):
     assert vazute, "nicio secțiune PARȚIAL — garda ar raporta verde pe zero rânduri"
     assert not rele, "PARȚIAL fără felul limitei declarat:\n" + "\n".join(rele)
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GARDA DE LOC (04.09.2026, R141). Excepție declarată de la „fără gărzi noi" a campaniei —
+# cerută de Costin: *„Registrul e ce supraviețuiește unui `/clear`; dacă pierde tăcut, campania
+# n-are memorie."*
+#
+# CE FACE IMPOSIBIL: ca o restanță să fie SCRISĂ fără să fie VERIFICATĂ. Toate gărzile de mai sus
+# citesc `_restante()`, adică numai blocul dintre `## RESTANȚE` și următorul `## `. O secțiune
+# `### Rn` scrisă în afara lui trece prin toate, fiindcă niciuna n-o vede — și la fel o ratează
+# `scripts/raport_b.py`, care derivă secțiunea B a raportului din același bloc.
+#
+# INSTANȚA: R131…R140. Le-am scris eu, de TREI ori la rând (loturile 10, 11, 12), la capătul
+# fișierului în loc de în secțiune. Zece restanțe scrise, zero verificate. S-a văzut abia când
+# le-am mutat înăuntru: trei gărzi au căzut deodată, pe 40 de câmpuri lipsă.
+#
+# DE CE E STRUCTURALĂ, nu pe text: nu caută un șir în document, ci compară DOUĂ MULȚIMI de
+# antete — cele de nivel `###` care încep cu `R<cifre>` din tot fișierul, față de cele văzute de
+# `_restante()`. Diferența e chiar mulțimea celor invizibile. (METODA §23.)
+def test_nicio_restanta_nu_e_scrisa_in_afara_sectiunii_ei():
+    """O restanță scrisă altundeva decât în `## RESTANȚE` e invizibilă pentru TOATE gărzile de aici.
+
+    Numele fiecărei restanțe se citește din antet, la nivelul documentului — nu dintr-un șir căutat
+    în text.
+    """
+    conf_text = io.open(CONF, encoding="utf-8").read()
+    toate = set(re.findall(r"^### (R\d+)\s*[—-]", conf_text, flags=re.M))
+    inauntru = set(_restante(conf_text))
+    assert toate, "anti-vacuu: niciun antet `### Rn` în tot fișierul — regexul s-a rupt"
+    assert inauntru, "anti-vacuu: `_restante()` nu vede nicio restanță"
+    afara = sorted(toate - inauntru, key=lambda c: int(c[1:]))
+    assert not afara, (
+        "restanțe scrise ÎN AFARA blocului `## RESTANȚE`, deci nevăzute de nicio gardă de aici și "
+        "nici de `scripts/raport_b.py`: %s.%s"
+        "Mută-le în secțiune. O restanță pe care n-o vede nimeni nu e o restanță scrisă, e una "
+        "pierdută — v. R141." % (", ".join(afara), chr(10)))
+
+
+def test_garda_de_loc_chiar_poate_cadea():
+    """CALIBRARE pe propriul mod de eșec: o restanță pusă după secțiune TREBUIE să fie găsită.
+
+    Fără proba asta, garda de mai sus ar trece verde și dacă ambele mulțimi ar fi calculate din
+    același loc — cazul în care n-ar putea deosebi niciodată nimic.
+    """
+    bun = "## RESTANȚE\n\n### R9 — în secțiune\n- **felul**: SURSĂ\n\n## E1 — altceva\n"
+    toate = set(re.findall(r"^### (R\d+)\s*[—-]", bun, flags=re.M))
+    assert toate - set(_restante(bun)) == set(), "garda acuză o restanță care E în secțiune"
+
+    rau = bun + "\n### R10 — scrisă DUPĂ secțiune, unde n-o vede nimeni\n- **felul**: SURSĂ\n"
+    toate = set(re.findall(r"^### (R\d+)\s*[—-]", rau, flags=re.M))
+    assert toate - set(_restante(rau)) == {"R10"}, (
+        "garda NU vede o restanță scrisă în afara secțiunii — exact cazul pentru care există")

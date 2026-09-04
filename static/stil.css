@@ -1818,7 +1818,7 @@ html, body {
 .em-numar { font-size: var(--text-mic); color:#475569; }
 .em-numar b { color:#0f172a; }
 .em-sectiune { margin:18px 0; }
-.em-eticheta { font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#64748b; margin-bottom:8px; }
+.em-eticheta { font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#475569; margin-bottom:8px; }  /* [R143] contrast: #64748b cadea sub prag; #475569 e culoarea deja folosita de .em-total-rand */
 .em-benef { display:flex; gap:8px; margin-bottom:8px; }
 .em-cui { flex:1; }
 .em-nume { width:100%; }
@@ -1837,7 +1837,7 @@ html, body {
    se aseaza inapoi pe randul 1 -> butonul de sters NU mai sare pe rand nou. */
 .em-linie .msg-eroare { grid-column:1/-1; grid-row:2; align-self:start; }
 /* [ui13] antet de coloane pt liniile de factura, aliniat la grila .em-linie */
-.em-linie-antet { display:grid; grid-template-columns: 1fr 80px 100px 54px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#64748b; margin-bottom:2px; }
+.em-linie-antet { display:grid; grid-template-columns: 1fr 80px 100px 54px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#475569; margin-bottom:2px; }  /* [R143] contrast, ca la .em-eticheta */
 .em-linie-antet span { padding:0 10px; }
 .em-linie-antet .ant-cant, .em-linie-antet .ant-pret, .em-linie-antet .ant-cota { text-align:center; padding:0; }
 .em-l-cota { text-align:center; font-weight:700; font-size: var(--text-mic); color:#64748b; }

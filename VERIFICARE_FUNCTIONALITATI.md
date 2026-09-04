@@ -1064,3 +1064,51 @@ care chiar pleacă prin email.
 7. **Douăzeci și unu de ecrane rămân `neprobat — parcurs`**, cu motivul scris pe fiecare rând: fără
    niciun câmp în DOM (afișare pură), sau cu formularul la doi pași de deschizător. *Un `campuri=0`
    nu e „fără defect".*
+
+### După raport — cele patru decizii ale lui Costin, aplicate
+
+**(1) Garda de LOC** — construită în `core/test_conformitate.py`, pe structură: compară mulțimea
+antetelor `### Rn` din tot documentul cu cea văzută de `_restante()`. **Mutație dovedită pe date
+reale**, nu doar pe document sintetic: cu R141 scos din secțiune, garda o numește exact pe ea.
+
+**(2) Cele „14" rute — sunt CINCI, și cifra era a mea.** O scrisesem în raport dedusă din proza
+lotului 9, fără s-o măsor. Măsurat la sursă și confirmat prin reapăsare: `403` real pe
+`/admin/analytics` · `POST /admin/anunturi` · `/gdpr/sterge-cabinet/{}/executa` ·
+`/admin/activitate/cabinet/{}` · `/admin/sanatate/istoric`. Celelalte nouă cer `admin_firma` sau
+`cere_cabinet` — rol pe care utilizatorul probei îl avea, iar patru dintre ele **chiar au găsit
+defecte**, ceea ce dovedește că au ajuns la logica lor. Cele cinci sunt acum `neprobat`, cu motivul
+pe rând; se reprobează în lotul 14.
+
+*Și o corectură despre `POST /asistenti`:* R138 n-a scăpat printr-o poartă de rol — ruta era
+accesibilă. Lotul 9 a probat-o cu **corp gol** și a primit un refuz corect. A scăpat fiindcă
+valoarea trimisă nu era greșită **în felul care conta**: `«»@#$%` conține un `@`.
+
+**(3) Desktopul asistentului (#470), probat pe cont reactivat prin ruta aplicației.** 7 carduri,
+**0 câmpuri și 0 selecturi**, 0 erori JS; bara a treia — motivațională, doar la rolul `angajat` — se
+randează cu cifre reale. Contul a fost dezactivat la loc în `finally`, iar starea **recitită din
+bază**: `False` → `True` → `False`. Cardurile lui deschid ecrane deja probate pe contul de cabinet.
+
+**(4) Cota necunoscută nu se mai afișează ca zero (R142).** Pe o linie cu valoare și fără cotă
+stabilită, «TVA» și «Total» sunt acum `—`, cu o notă care spune de unde vine cota. O linie de
+valoare zero **nu** blochează totalul: la valoare zero TVA-ul e zero oricare ar fi cota.
+
+*Calibrat în amândouă direcțiile, în browser:* linie goală → «Total 0,00» · linie cu valoare, cotă
+neștiută → «—» + notă · **după ce cota se propune (21%) → «TVA 420,00 · Total 2.420,00»**. A treia
+direcție e cea care contează: reparația nu supra-refuză.
+
+*Și o corectură a propriei reparații, prinsă reprobând:* prima formă a notei spunea *„Alege
+articolul, **sau cota**"* — și nu există niciun control de cotă; coloana e un `<span>`, iar valoarea
+vine numai din `POST /produse/potriveste`, propusă din denumire. **Un refuz care trimite omul să
+facă ceva ce nu poate face e mai rău decât unul scurt.**
+
+**Ce a costat reparația, și n-a fost prevăzut:** R142 a atins JS-ul ecranului, deci regula casei l-a
+mutat în inventarul porții vizuale — iar `axe` a găsit imediat **două violări preexistente**, una
+CRITICĂ: `select-name` pe `#em-moneda` (etichetă fără `for=`) și pe `#em-tip`, selectorul care alege
+FACTURĂ / PROFORMĂ / AVIZ. Plus contrast sub prag pe două reguli. Reparate (**R143**), ecranul e acum
+în inventar cu **zero** violări. *Regula „un ecran atins primește cele trei unelte" și-a arătat în
+aceeași tură și prețul, și rostul.*
+
+### Cifrele campaniei, după aplicarea deciziilor
+
+**317 probate · 47 rămase** din 364. Scăderea față de 322/42 nu e o regresie: sunt cele **cinci** rute
+mutate din „fără defect" în „neprobat", fiindcă așa e adevărat.

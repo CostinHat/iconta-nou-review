@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -171,7 +171,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-total" id="em-total"></div>
     <div class="em-moneda-rand">
-      <label class="em-moneda-eticheta">Monedă</label>
+      <label class="em-moneda-eticheta" for="em-moneda">Monedă</label>
       <select class="camp-input" id="em-moneda">
         <option value="RON" selected>RON (lei)</option>
         <option value="EUR">EUR</option>
@@ -195,7 +195,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       </select>
     </div>
     <div class="em-actiuni">
-      <select id="em-tip" class="camp-input" style="max-width:180px;margin-right:8px">
+      <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">
         <option value="factura">Factura</option>
         <option value="proforma">Proforma</option>
         <option value="aviz">Aviz insotire</option>
@@ -291,23 +291,45 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     recalc();
   }
 
+  // [R142, 04.09.2026] O COTA NECUNOSCUTA NU E O COTA DE ZERO.
+  //
+  // Pana azi linia de mai jos scria `(l.cota_tva || 0)`, deci o linie fara cota stabilita intra in
+  // suma cu TVA zero — iar ecranul afisa «TVA 0,00» si «Total = Baza» pe o firma PLATITOARE de TVA.
+  // Gasit apasand, in lotul 12: formular umplut, cota nealeasa, si totalul afirma linistit ca
+  // factura n-are TVA. *Cifra de aici e ce citeste contabilul si ce pleaca mai departe; „Total =
+  // Baza" pe un platitor de TVA e o afirmatie falsa despre bani.*
+  //
+  // Ecranul STIA deja raspunsul, cu doua sute de linii mai sus: coloana COTA a liniei randeaza „—"
+  // cand `cota_tva == null` (randLinie). Acelasi ecran spunea „nu se stie" intr-o coloana si „zero"
+  // in alta, despre acelasi lucru.
+  //
+  // CE NU SE SCHIMBA, si se declara: clasa `cota || 0` din restul aplicatiei ramane inchisa — garda
+  // R29 o declara explicit in afara domeniului ei („defaultul pe ZERO, alta clasa, legitima in
+  // aritmetica, 18 instante reale"), iar decizia lui Costin (04.09) e ca se repara INSTANTA de aici,
+  // pentru ca aici cifra e citita de om, nu clasa. Celelalte 18 raman unde sunt.
+  //
+  // O linie de valoare ZERO nu blocheaza totalul: la valoare zero, TVA-ul e zero orice cota ar avea,
+  // deci necunoasterea ei nu schimba nimic. Asa, o linie goala nou-adaugata nu face totalul „—".
   function recalc() {
-    let baza = 0, tva = 0;
+    let baza = 0, tva = 0, faraCota = 0;
     linii.forEach((l) => {
       if (!l) return;
       const val = (l.cantitate || 0) * (l.pret_unitar || 0);
       baza += val;
+      if (val !== 0 && (l.cota_tva === null || l.cota_tva === undefined)) { faraCota++; return; }
       // [interdictia 4, 23.08.2026] ROTUNJIRE PE LINIE, ca la server. Suma nerotunjita diverge:
       // 50 de randuri de 3 x 19,99 la 21% -> serverul 629,50, ecranul arata 629,69. Contabilul vedea
       // un total pe care factura salvata nu-l avea. Calculul RAMANE o duplicare a regulii fiscale in
       // prezentare (chiar interdictia 4) - aici se opreste doar cifra gresita, nu duplicarea.
       tva += Math.round(val * ((l.cota_tva || 0) / 100) * 100) / 100;
     });
-    const total = baza + tva;
+    const cu = (x) => `${bani(x)} ${monedaSel}`;   // `bani()` e formatorul canonic (api.js); aici doar i se adauga moneda
+    const nestiut = faraCota > 0;
     corp.querySelector("#em-total").innerHTML = `
-      <div class="em-total-rand"><span>Bază</span><b>${baza.toLocaleString("ro-RO", {minimumFractionDigits:2, maximumFractionDigits:2})} ${monedaSel}</b></div>
-      <div class="em-total-rand"><span>TVA</span><b>${tva.toLocaleString("ro-RO", {minimumFractionDigits:2, maximumFractionDigits:2})} ${monedaSel}</b></div>
-      <div class="em-total-rand em-total-mare"><span>Total</span><b>${total.toLocaleString("ro-RO", {minimumFractionDigits:2, maximumFractionDigits:2})} ${monedaSel}</b></div>`;
+      <div class="em-total-rand"><span>Bază</span><b>${cu(baza)}</b></div>
+      <div class="em-total-rand"><span>TVA</span><b>${nestiut ? "—" : cu(tva)}</b></div>
+      <div class="em-total-rand em-total-mare"><span>Total</span><b>${nestiut ? "—" : cu(baza + tva)}</b></div>
+      ${nestiut ? `<p class="ecran-nota" id="em-total-nota">TVA-ul nu se poate calcula încă: cota nu e stabilită pe ${faraCota} lini${faraCota === 1 ? "e" : "i"}. Se propune automat din denumire — scrie denumirea articolului (sau alege-l din stoc) și așteaptă propunerea.</p>` : ""}`;
   }
 
   corp.querySelector("#em-add-linie").addEventListener("click", () => { linii.push(linieNoua()); deseneazaLinii(); });

@@ -109,6 +109,18 @@ def ecran_supervizor(pg):
     pg.wait_for_timeout(800)
 
 
+def ecran_emitere(pg):
+    """Firma -> «Facturi» -> deschizatorul de emitere (`emitere_ecran.js`, ecran propriu — #478).
+
+    Lotul 11 a raportat `campuri=0` pe `fa-facturi` tocmai fiindca emiterea nu traieste acolo."""
+    deschide_firma(pg)
+    pg.click("#fa-facturi", timeout=8000)
+    pg.wait_for_timeout(1400)
+    pg.get_by_text("Emite", exact=False).first.click(timeout=8000)
+    pg.wait_for_timeout(1600)
+
+
+
 ECRANE = [
     ("supervizor", ecran_supervizor),
     ("import_mijloace_fixe", ecran_import_mijloace_fixe),
@@ -126,6 +138,10 @@ ECRANE = [
     ("casa", ecran_casa),
     ("verificari", ecran_verificari),
     ("datefirma", ecran_datefirma),
+    # [LOTUL 12, R142] «Emite factura» a intrat aici prin aceeasi regula ca «Date firma»:
+    # lotul i-a ATINS JS-ul (o cota necunoscuta nu se mai afiseaza ca zero). Un ecran atins
+    # primeste cele trei unelte vizuale pe el; unul doar probat, nu.
+    ("emitere", ecran_emitere),
 ]
 
 
@@ -302,17 +318,6 @@ def ecran_control_verdict(pg):
     pg.wait_for_timeout(1600)
 
 
-def ecran_emitere(pg):
-    """Firma -> «Facturi» -> deschizatorul de emitere (`emitere_ecran.js`, ecran propriu — #478).
-
-    Lotul 11 a raportat `campuri=0` pe `fa-facturi` tocmai fiindca emiterea nu traieste acolo."""
-    deschide_firma(pg)
-    pg.click("#fa-facturi", timeout=8000)
-    pg.wait_for_timeout(1400)
-    pg.get_by_text("Emite", exact=False).first.click(timeout=8000)
-    pg.wait_for_timeout(1600)
-
-
 def ecran_flux_concediu(pg):
     """Firma -> «Salariați» -> fluxul de concediu (`flux_concediu.js`)."""
     deschide_firma(pg)
@@ -343,7 +348,6 @@ ECRANE_CABINET = [
     ("validat", CONT_CABINET, _card_fn("validat")),                # 498
     ("ansamblu", CONT_CABINET, ecran_ansamblu),                    # 469
     ("navigator_clopot", CONT_CABINET, ecran_clopot),              # 500
-    ("emitere", CONT_CABINET, ecran_emitere),                      # 478
     ("flux_concediu", CONT_CABINET, ecran_flux_concediu),          # 481
     ("admin_desktop", CONT_ADMIN, ecran_admin_desktop),            # 464
     ("admin_anunturi", CONT_ADMIN, ecran_admin_anunturi),          # 464 (formularul)
