@@ -73,6 +73,7 @@ def ecran_rapoarte(pg): _ecran_shell(pg, "fa-rapoarte")
 def ecran_etransport(pg): _ecran_shell(pg, "fa-etransport")
 def ecran_centrecost(pg): _ecran_shell(pg, "fa-centrecost")
 def ecran_casa(pg): _ecran_shell(pg, "fa-casa")
+def ecran_operatiuni(pg): _ecran_shell(pg, "fa-operatiuni")  # [LOTUL 13, R145] JS atins
 
 
 # [R33 b'', 26.08.2026] Ecranul «Verificari» lipsea din inventarul vizual, desi e chiar ecranul
@@ -142,6 +143,9 @@ ECRANE = [
     # lotul i-a ATINS JS-ul (o cota necunoscuta nu se mai afiseaza ca zero). Un ecran atins
     # primeste cele trei unelte vizuale pe el; unul doar probat, nu.
     ("emitere", ecran_emitere),
+    # [LOTUL 13, R145] «Operatiuni speciale» a intrat aici prin aceeasi regula: lotul i-a ATINS
+    # JS-ul (campurile de chirie/comodat/refacturare, plus conditia cu mai multe valori).
+    ("operatiuni", ecran_operatiuni),
 ]
 
 
@@ -163,7 +167,7 @@ ECRANE = [
 _FA_CAMPANIE = [
     "fa-acces", "fa-balanta", "fa-bilant", "fa-bonuri", "fa-contracte", "fa-control",
     "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-magazin", "fa-marja",
-    "fa-mijloace", "fa-operatiuni", "fa-produse", "fa-raportz", "fa-regfiscal",
+    "fa-mijloace", "fa-produse", "fa-raportz", "fa-regfiscal",
     "fa-reginventar", "fa-registre321", "fa-rip", "fa-solicitari",
 ]
 

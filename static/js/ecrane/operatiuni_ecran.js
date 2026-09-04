@@ -7,7 +7,10 @@ const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039
   provizion:"F071", sponsorizare:"F086", subventie:"F090", obiect_inv:"F063", inventariere:"F052" };
 
 // tipuri de camp: data | numar | text | select(optiuni) | bool
-// conditie: {camp: "tip", val: "rata"} - campul apare doar cand alt camp are valoarea
+// conditie: {camp: "tip", val: "rata"} - campul apare doar cand alt camp are valoarea.
+// [R145] `val` poate fi si o LISTA: campul apare la oricare din valori. Trebuia fiindca ruta
+// `nota-chirie` cere acelasi camp (`chirie`) la doua feluri, iar declarat de doua ori producea
+// doua elemente cu acelasi `id` — al doilea nu se mai colecta.
 const C = (nume, eticheta, tip = "numar", extra = {}) => ({ nume, eticheta, tip, ...extra });
 
 const REGISTRU = [
@@ -241,10 +244,27 @@ const REGISTRU = [
     C("suma", "Suma", "numar", { optional: true }),
     C("moment", "Moment", "select", { optiuni: [["drept","La dreptul de a primi"],["incasare","La incasare"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
+  // [R145, 04.09.2026] Formularul colecta UN camp, «Suma», si il trimitea asa. Ruta `nota-chirie`
+  // cere insa nume DIFERITE dupa `fel` — `valoare` la comodat, `chirie` la chirii, iar la refacturare
+  // DOUA sume (`total_factura` + `parte_refacturata`). Deci operatiunea nu putea reusi niciodata din
+  // interfata, pe niciun fel: cu date perfect valide, raspunsul era «Lipseste campul `valoare` din
+  // cererea trimisa». Gasit apasand, in lotul 13, si confirmat cu date VALIDE — intrebarea nu era
+  // daca refuza, ci daca poate reusi vreodata.
+  //
+  // Reparat in ECRAN, nu in ruta, si cu `cond` — mecanismul exista deja aici (leasing il foloseste
+  // de la nasterea lui). Numele campurilor sunt acum CELE DIN CONTRACTUL RUTEI, luate din docstringul
+  // ei, nu inventate. Refacturarea primeste cele doua sume pe care le cere, si «Suma» dispare: un
+  // camp care nu ajunge nicaieri e mai rau decat unul lipsa, fiindca omul crede ca l-a completat.
   { cat: "Diverse", cheie: "chirie", titlu: "Chirii / comodat / refacturări", ruta: "nota-chirie", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["comodat","Comodat"],["chirie_platita","Chirie platita (612)"],["chirie_incasata","Chirie incasata (706)"],["refacturare","Refacturare utilitati"]] }),
-    C("suma", "Suma"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
+    C("valoare", "Valoarea bunului", "numar", { cond: { camp: "fel", val: "comodat" } }),
+    C("moment", "Moment", "select", { cond: { camp: "fel", val: "comodat" }, optiuni: [["primire","Primire"],["restituire","Restituire"]], optional: true }),
+    C("chirie", "Chiria", "numar", { cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata"] } }),
+    C("proprietar", "Proprietar", "select", { cond: { camp: "fel", val: "chirie_platita" }, optiuni: [["pj","Persoana juridica"],["pf","Persoana fizica"]], optional: true }),
+    C("total_factura", "Total factura utilitati", "numar", { cond: { camp: "fel", val: "refacturare" } }),
+    C("parte_refacturata", "Partea refacturata", "numar", { cond: { camp: "fel", val: "refacturare" } }),
+    C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "perisabilitati", titlu: "Perisabilități și scăzăminte", ruta: "nota-perisabilitati", campuri: [
     C("data", "Data", "data"),
@@ -308,7 +328,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     if (c) corp = c;
     const ziAzi = new Date().toISOString().slice(0, 10);
     const camp = (c) => {
-      const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${c.cond.val}"` : "";
+      const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${[].concat(c.cond.val).join("|")}"` : "";
       let input;
       if (c.tip === "select") {
         input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">${(c.optional ? '<option value="">-</option>' : "") + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
@@ -355,7 +375,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     const actualizeazaCond = () => {
       corp.querySelectorAll(".camp[data-cond-camp]").forEach((l) => {
         const sel = corp.querySelector(`#op-${l.dataset.condCamp}`);
-        l.style.display = sel && sel.value === l.dataset.condVal ? "" : "none";
+        l.style.display = sel && l.dataset.condVal.split("|").includes(sel.value) ? "" : "none";
       });
     };
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>

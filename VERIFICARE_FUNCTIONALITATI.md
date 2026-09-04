@@ -1112,3 +1112,107 @@ aceeași tură și prețul, și rostul.*
 
 **317 probate · 47 rămase** din 364. Scăderea față de 322/42 nu e o regresie: sunt cele **cinci** rute
 mutate din „fără defect" în „neprobat", fiindcă așa e adevărat.
+
+---
+
+## LOT 13 — «Operațiuni speciale»: treizeci și două de formulare sub un singur rând de listă
+
+### Ce a arătat măsurarea populației
+
+Cele 42 de ecrane rămase nu sunt un rest omogen. Grupate mecanic, după motivul scris pe fiecare
+rând: **12** fără niciun câmp în DOM (afișare pură) · **13** cu formularul la doi pași de
+deschizător · **7** numai cu câmpuri de FILTRU · **3** al căror buton iese din aplicație · **7**
+neîncadrate, între care patru neparcurse niciodată.
+
+Diagnosticul grupei celei mari a răsturnat presupunerea: ecranele cu `campuri=0` **nu sunt „fără
+formular" — sunt MENIURI.** Formularul e cu un nivel mai jos.
+
+### Descinderea prin meniuri aduce puțin — cu o excepție care aduce mult
+
+Măsurat pe zece ecrane: `facturi` are 6 opțiuni, dintre care **una** duce la un formular (emiterea,
+deja probată la #478) · `verificari` are 6, toate rezultate, nu formulare · `jurnal` are 4 rânduri de
+listă · `mijloace` are **zero** — și nu e stricat: e o **stare goală**, cu un mesaj care numește chiar
+calea de adăugare (*„Se adaugă la migrare sau prin Operațiuni speciale → Inventariere anuală"*).
+*Punctul orb e FIRMA: firma campaniei n-are mijloace fixe.*
+
+Excepția e **«Operațiuni speciale»**: **32 de feluri de operațiune**, fiecare cu formularul lui și cu
+propriul buton «Generează nota (ciornă)» — toate sub **un singur rând** al listei (`#447`). Un
+„probat" pe rândul acela ar fi spus, până azi, ceva despre **unul din 32**.
+
+### A treia oară în aceeași tură când propriul meu instrument a raportat fals
+
+Prima enumerare a celor 32 a apăsat pe **poziția din DOM** (`data-op="i"`), după o re-navigare — iar
+pozițiile se re-atribuie, deci clicurile cădeau alături. Rezultatul arăta ca o descoperire:
+*„niciun formular nu se deschide, 0 din 32"*. Probat cu grijă pe un singur caz, «Leasing» deschide un
+formular întreg. Se navighează pe **NUME**.
+
+*(Celelalte două din tura asta: „a vorbit" acordat unui text nou care nu răspundea la nimic, și cifra
+„14 rute" dedusă din proză. Toate trei prinse înainte de a fi raportate ca fapt.)*
+
+### Și a patra: santinela de dată nu ateriza
+
+La prima rulare reală, **toate cele 32** au răspuns identic: *„Camp obligatoriu: Data"*. Cauza nu era
+aplicația: `1899-02-30` **nu e o zi din calendar**, deci `input[type=date]` refuză valoarea în
+browser și câmpul rămâne **gol**. Proba măsura un câmp LIPSĂ, nu o dată imposibilă — și o făcea așa
+**din lotul 10 încoace**, pe fiecare câmp de dată al campaniei. Înlocuită cu `1899-01-01`: o zi care
+există, și e la fel de imposibilă ca dată contabilă.
+
+*Abia atunci cele 32 de formulare au fost probate cu adevărat.*
+
+### Rezultatul: 32 au vorbit, 0 au scris, 0 au tăcut
+
+Iar calitatea mesajelor se vede acum, nu se presupune. Cele bune numesc câmpul, spun ce e greșit și
+citează temeiul:
+
+- *„Contul «»@#$% nu există în planul firmei (câmpul „cont_imobilizare")."* — Leasing
+- *„Procentul taxei vamale e între 0 și 100 — am primit -99999999."* — Import extracomunitar
+- *„Cota 1000 nu e o cotă în vigoare (art. 291 Cod fiscal) la data operațiunii (2026-09-01). Cotele
+  de atunci: 0%, 11.00%, 21.00%."* — apărut la reprobare, și e exemplar
+
+### Cele două defecte, amândouă de prag 1
+
+**R144 — «Aur de investiții (art. 313)» cădea cu `500`.** `Decimal(str("«»@#$%"))` ridică
+`decimal.InvalidOperation`, care e `ArithmeticError`, **nu** `ValueError` — iar ruta prinde numai
+`ValueError`. Deci textul tastat de un om ieșea ca eroare de server, iar contabilul citea *„eroare
+500"* în loc să afle ce câmp e greșit. **Aceeași clasă ca R134.** Reparat în motorul pur, pe
+contractul lui — și pe **toate patru** intrările numerice, nu doar pe cea care a căzut: *a repara
+doar instanța ar fi lăsat trei uși deschise pe același hol.*
+
+**R145 — «Chirii / comodat / refacturări» nu putea reuși NICIODATĂ din ecran.** Formularul colecta un
+singur câmp, «Suma», și îl trimitea așa; ruta cere nume **diferite după `fel`** — `valoare` la
+comodat, `chirie` la chirii, iar la refacturare **două** sume (`total_factura` + `parte_refacturata`).
+Confirmat cu **date perfect valide**: răspunsul era *„Lipsește câmpul `valoare` din cererea
+trimisă"*. *Întrebarea nu era dacă refuză, ci dacă poate reuși vreodată.*
+
+Reparat în ecran, cu `cond` — mecanismul exista deja acolo. Iar reparația a scos un al doilea defect,
+al ei: câmpul `chirie` e cerut la **două** feluri, iar declarat de două ori producea **două elemente
+cu același `id`**, deci valoarea nu se mai colecta pe al doilea. Condiția acceptă acum o listă de
+valori.
+
+**Reprobat pe toate patru felurile, cu date valide:** comodat → 1 notă · chirie plătită → 1 · chirie
+încasată → 1 · refacturare → **2** (cum spune contractul ei). Cele 6 note ale probei s-au șters
+**prin ruta aplicației** (`DELETE /tenants/{}/jurnal/{}`), iar starea s-a recitit din bază.
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **Șase din cele 32 de refuzuri vorbesc încă limba programatorului**: *„suma incasata trebuie sa
+   fie pozitiva"* · *„bacsis invalid"* · *„mijloc fix inexistent/inactiv"* · *„valoare invalidă"*
+   (nu spune care) · *„tara '' nu este stat membru UE (VIES)"* · *„nicio varianta de formula valabila
+   la 1899-01-01"*. Aceeași clasă ca R140, cu precedentul deciziei lui Costin — dar fiecare cere
+   reparație **și** reprobare proprie. Măsurate și numite; se repară în lotul următor.
+2. **Cele 32 de formulare au etichete fără diacritice** („Tip operatiune", „Valoare reziduala",
+   „Dobanda totala"). Text afișat, aceeași clasă pe care garda de diacritice n-o vede.
+3. **Ecranul de operațiuni a intrat în inventarul porții vizuale** (regula: un ecran al cărui JS se
+   atinge), și trece **fără nicio violare** — spre deosebire de emitere, care a avut două.
+4. **Restul celor 42**: 12 fără câmp în DOM și 7 numai cu filtre așteaptă un **verdict**, nu o probă
+   — dar verdictul trebuie dat pe un criteriu mecanic, nu pe eyeball, fiindcă „0 câmpuri" poate
+   însemna și „firma asta nu produce starea" (v. `mijloace`). Instrumentul care deosebește cele două
+   nu e construit.
+
+### Cifre
+
+- unități mutate: **2** (`#447`, `#485`). Campania: **319 probate · 45 rămase** din 364.
+- formulare probate efectiv: **32**, sub un singur rând de listă.
+- defecte găsite: **2** · reparate: **2** · reprobate: **2**.
+- instrumentul propriu, corectat de **două** ori în timpul lotului: navigarea pe nume, și santinela
+  de dată care nu ateriza.

@@ -1,0 +1,293 @@
+{
+ "erori_js": [],
+ "operatiuni": [
+  {
+   "op": "Leasing",
+   "camp": 5,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Contul «»@#$% nu există în planul firmei (câmpul „cont_imobilizare”). Îl adaugi din Plan de conturi (Import date › Plan de conturi), apoi reia operațiunea.",
+   "a_scris": null
+  },
+  {
+   "op": "Credite bancare",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Decontări asociați (455/457)",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Salariul brut trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Avansuri (409/419)",
+   "camp": 4,
+   "sel": 1,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Vânzare către agricultor (regim special)",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Prețul achiziției și procentul de compensare trebuie să fie numere pozitive — o achiziție consemnează o operațiune efectuată.",
+   "a_scris": null
+  },
+  {
+   "op": "Reevaluare imobilizări (105)",
+   "camp": 4,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "mijloc fix inexistent/inactiv",
+   "a_scris": null
+  },
+  {
+   "op": "Obiecte de inventar (303)",
+   "camp": 4,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Valoarea introdusă e invalidă (trebuie un număr pozitiv).",
+   "a_scris": null
+  },
+  {
+   "op": "Provizioane și ajustări",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Producție (711/345)",
+   "camp": 4,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Costul standard trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Inventariere anuală",
+   "camp": 4,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Contul «»@#$% nu există în planul firmei (câmpul „cont_stoc”). Îl adaugi din Plan de conturi (Import date › Plan de conturi), apoi reia operațiunea.",
+   "a_scris": null
+  },
+  {
+   "op": "TVA la încasare (art. 282)",
+   "camp": 4,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "suma incasata trebuie sa fie pozitiva",
+   "a_scris": null
+  },
+  {
+   "op": "Vânzare regim marjă (second-hand)",
+   "camp": 5,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Prețurile introduse sunt invalide (trebuie numere pozitive).",
+   "a_scris": null
+  },
+  {
+   "op": "Marjă agenții de turism",
+   "camp": 6,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Sumele introduse sunt invalide (trebuie numere pozitive).",
+   "a_scris": null
+  },
+  {
+   "op": "Taxare inversă internă (art. 331)",
+   "camp": 8,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Contul «»@#$% nu există în planul firmei (câmpul „cont_destinatie”). Îl adaugi din Plan de conturi (Import date › Plan de conturi), apoi reia operațiunea.",
+   "a_scris": null
+  },
+  {
+   "op": "Achiziție de la agricultor (compensare 8%)",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Prețul achiziției și procentul de compensare trebuie să fie numere pozitive — o achiziție consemnează o operațiune efectuată.",
+   "a_scris": null
+  },
+  {
+   "op": "Aur de investiții (art. 313)",
+   "camp": 5,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "nu este aur de investitii: Puritatea trebuie să fie un număr (am primit '«»@#$%')",
+   "a_scris": null
+  },
+  {
+   "op": "Reevaluare lunară solduri valută",
+   "camp": 5,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Moneda '«»@#$%' nu e cotată de BNR, deci factura nu se poate exprima în lei. Verifică simbolul (trei litere, ex. EUR, USD). Monedele din ultimul nomenclator citit de la BNR: AED, AUD, BRL, CAD, CHF, CNY, CZK, DKK, EGP, EUR, GBP, HKD, HUF, I",
+   "a_scris": null
+  },
+  {
+   "op": "Decontare în valută (665/765)",
+   "camp": 6,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Moneda '«»@#$%' nu e cotată de BNR, deci factura nu se poate exprima în lei. Verifică simbolul (trei litere, ex. EUR, USD). Monedele din ultimul nomenclator citit de la BNR: AED, AUD, BRL, CAD, CHF, CNY, CZK, DKK, EGP, EUR, GBP, HKD, HUF, I",
+   "a_scris": null
+  },
+  {
+   "op": "Achiziție intracomunitară",
+   "camp": 9,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Valoarea achiziției trebuie să fie un număr pozitiv — o achiziție consemnează o operațiune efectuată. Pentru o corecție în minus se face o stornare, nu o valoare negativă.",
+   "a_scris": null
+  },
+  {
+   "op": "Livrare/prestare intracomunitară (VIES live)",
+   "camp": 5,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "tara '' nu este stat membru UE (VIES)",
+   "a_scris": null
+  },
+  {
+   "op": "Import extracomunitar (DVI)",
+   "camp": 8,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Procentul taxei vamale e între 0 și 100 — am primit -99999999. Taxa vamală e o parte din valoarea în vamă, nu un multiplu al ei.",
+   "a_scris": null
+  },
+  {
+   "op": "Export extracomunitar (DVE)",
+   "camp": 5,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "valoare invalidă",
+   "a_scris": null
+  },
+  {
+   "op": "Decont deplasare / diurnă",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Contracte speciale (zilieri, mandat, cenzori)",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "nicio varianta de formula valabila la 1899-01-01",
+   "a_scris": null
+  },
+  {
+   "op": "Bacșiș (HoReCa)",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "bacsis invalid",
+   "a_scris": null
+  },
+  {
+   "op": "Sponsorizare (credit fiscal)",
+   "camp": 5,
+   "sel": 2,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Subvenții (445/741)",
+   "camp": 3,
+   "sel": 1,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Chirii / comodat / refacturări",
+   "camp": 4,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Lipsește câmpul `valoare` din cererea trimisă. Operațiunea nu se poate consemna fără el.",
+   "a_scris": null
+  },
+  {
+   "op": "Perisabilități și scăzăminte",
+   "camp": 7,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Contul «»@#$% nu există în planul firmei (câmpul „cont_stoc”). Îl adaugi din Plan de conturi (Import date › Plan de conturi), apoi reia operațiunea.",
+   "a_scris": null
+  },
+  {
+   "op": "SGR - garanție ambalaje",
+   "camp": 4,
+   "sel": 1,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Operațiuni ONG (OMFP 3103/2017)",
+   "camp": 3,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Suma trebuie să fie un număr pozitiv.",
+   "a_scris": null
+  },
+  {
+   "op": "Lichidare / radiere firmă",
+   "camp": 5,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "cotă TVA obligatorie: operațiunea trebuie să declare explicit cota (o operațiune fără cotă e intrare incompletă, nu cotă standard)",
+   "a_scris": null
+  }
+ ]
+}
