@@ -601,3 +601,46 @@ fiecare fel a fost prins la prima reprobare, iar două dintre defectele reale al
   și toate pe **corpul gol**. *La 28 de căi probate cu aceeași intrare, șase au căzut: nu e un
   accident, e o clasă — rutele care citesc `corp["camp"]` fără să treacă prin nicio validare.*
 - `_cere_perioada` are acum **optsprezece** apelanți.
+
+---
+
+## LOT 8 — ȘAPTE trasee (50 de probe INVALIDE pe 43 de unități)
+
+T28 operațiunile intracomunitare · T29 regimurile speciale de TVA · T30 operațiunile în valută ·
+T31 completările manuale la declarații · T32 partida simplă · T33 exportul contabil · T34 rapoartele
+comerciale și centrele de cost.
+
+**Ce s-a lăsat în urmă:** nimic — toate probele au fost refuzate.
+
+| # | rută | ce s-a introdus | ce a făcut aplicația | reparat |
+|---|---|---|---|---|
+| 246 | `POST /vanzare-ic` | corp gol | **`502` · *„VIES indisponibil: 'cod_tva_client'"*** — două lucruri într-un singur mesaj: o **afirmație falsă despre un serviciu extern** (contabilul crede că VIES e picat, când de fapt n-a completat un câmp) și **`str(KeyError)`**, adică numele câmpului între ghilimele simple. Cauza: citirea câmpului era **înăuntrul** `try`-ului care prinde `Exception` | **DA** — *ce nu s-a trimis nu se află de la VIES* |
+| 239 · 262 · 265 · 268 | `d390-clasificare` · `d300-manual` · `d301-operatiuni` · `registru-evidenta-fiscala` | `luna=13` / `an=1900` | **AU CĂZUT** — `500` de patru ori | **DA** — `_cere_perioada` |
+| 260 · 261 | `decontare-valuta` · `reevaluare-valuta` | `moneda=XYZ` | **A CĂZUT** — `500`. Rutele prind `(ValueError, KeyError)`, dar `MonedaNecotata` e subclasă de `CursIndisponibil`, care e `Exception`. **Reparația din lotul 2** — care deosebește „moneda nu există" de „cursul nu se poate lua acum" — trăia **numai pe calea facturii**; celelalte două căi n-o vedeau | **DA**, pe amândouă: `422` pentru monedă inexistentă, `409` pentru curs indisponibil |
+| 243 · 276 · 281 · 282 · 286 | `intrastat-praguri` · `rip/registru` · `api/v1/kpi` · `cabinet/consolidare` · `centre-cost/varianta` | `an=1900` / `luna=13` | **TĂCERE** — `200`. `api/v1/kpi` întorcea chiar `{"an":2026,"luna":13,...}`, repetând luna imposibilă înapoi; `cabinet/consolidare` întorcea **firmele cabinetului**, cu KPI calculat pe luna 13 | **DA** |
+| 289 | `GET /rapoarte-comerciale` | `pana < de` | `200` cu raport gol — „n-ai vândut nimic în perioada asta" arăta identic cu „perioada e scrisă invers". **A treia instanță** a clasei, după SAF-T (lot 6) și zilele lucrătoare (lot 7) | **DA** |
+
+### Ce a răspuns `200` și **nu** e defect
+
+- **`#258` `POST /vanzare-marja`** cu preț de vânzare **sub** cel de cumpărare: `200`, cu
+  `"motiv": "marja negativa/zero - fara TVA, se reporteaza in jurnalul de marja"`. **E corect
+  fiscal** — regimul de marjă permite vânzarea în pierdere, iar marja negativă nu produce TVA, se
+  raportează. *Aplicația nu doar acceptă: explică de ce.*
+- **`#291` `GET /rapoarte-salvate`** fără parametri: listă goală, care e chiar răspunsul.
+
+### Trei probe oarbe, același fel ca la lotul 7
+
+`#283` (centre de cost) n-are `an` în semnătură, `#286` are `an` dar nu `luna`, iar `#289` primește
+un **interval** (`de`/`pana`), nu an/lună. Corectate; **`#286` și `#289` au devenit defecte reale
+abia după corectare.**
+
+### Cifre
+
+- probe INVALIDE rulate: **50**, pe **43 de unități**, în **șapte trasee** · defecte găsite: **14** ·
+  reparate: **14** · reprobate: **14**.
+- distribuția la ultima trecere: **39 × 422 · 6 × 400 · 3 × 404 · 2 × 200** (ambele explicate mai
+  sus) · **0 × 500** · **0 × 502**. Înainte: **5 × 500**, **1 × 502**, **9 × 200**.
+- clase: **cădere pe perioadă** (4) · **cădere pe monedă inexistentă** (2 căi) · **afirmație falsă
+  despre un serviciu extern** (1) · **tăcere pe perioadă** (5) · **interval inversat** (1).
+- `_cere_perioada` are acum **treizeci și șapte** de apelanți. *Fiecare lot îl găsește într-un loc
+  nou — iar asta e chiar măsura clasei: nu era o scăpare, era o lipsă de sistem.*

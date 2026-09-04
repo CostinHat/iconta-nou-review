@@ -5237,6 +5237,7 @@ def _schema_cabinet_sau_404(ctx, tenant_id):
 @app.get("/tenants/{tenant_id}/d390-clasificare")
 def d390_clasificare_stare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Operatiunile auto-derivate (cu tipul curent) + liniile manuale, pt ecranul de clasificare."""
+    _cere_perioada(an, luna)
     from core import d390_clasificare_api as _cl
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -5291,6 +5292,7 @@ def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends
 @app.get("/tenants/{tenant_id}/d301-operatiuni")
 def d301_operatiuni_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Operatiunile lunii + nomenclatoare (tipuri, valute, cote period-aware) pt ecranul D301."""
+    _cere_perioada(an, luna)
     from core import d301_operatiuni_api as _op
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -5327,6 +5329,7 @@ def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=D
 def d300_manual_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Randurile manuale ale perioadei + randurile inca disponibile de adaugat (allow-list minus
     auto-derivate minus deja introduse), cu etichete oficiale din backend."""
+    _cere_perioada(an, luna)
     from core import d300_manual_api as _dm
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -5955,6 +5958,7 @@ def registru_fiscal_citeste(tenant_id: int, an: int, varianta: str = "profit",
     D101. `venituri_pf` — CF art. 68 alin. (8)-(9) + OMFP 3254/2017, ținut pe fiecare sursă din
     fiecare categorie de venit.
     """
+    _cere_perioada(an=an)
     from core import registru_evidenta_fiscala as _ref
     if varianta not in _ref.VARIANTE:
         raise HTTPException(404, "variantă necunoscută: %r" % varianta)
@@ -6218,6 +6222,7 @@ def apiv1_facturi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] 
 @app.get("/api/v1/firme/{tenant_id}/kpi")  # api_public_v1
 def apiv1_kpi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
               actx=Depends(cere_api_key)):
+    _cere_perioada(an, luna)
     from datetime import date as _d
     from core import kpi_client as _kpi
     schema = _api_schema(actx, tenant_id)
@@ -6413,6 +6418,7 @@ def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_rol("admi
 @app.get("/cabinet/consolidare")  # consolidare_v1
 def cabinet_consolidare(an: Optional[int] = None, luna: Optional[int] = None,
                         ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     from datetime import date as _d
     from core import kpi_client as _kpi
     azi = _d.today()
@@ -7289,6 +7295,13 @@ def _perioada_an(de, pana):
 
 @app.get("/tenants/{tenant_id}/rapoarte-comerciale")
 def rapoarte_comerciale(tenant_id: int, de: str = None, pana: str = None, ctx=Depends(cere_cabinet)):
+    # [lotul 8] Un interval INVERSAT intorcea un raport gol — „n-ai vandut nimic in perioada asta"
+    # arata identic cu „perioada e scrisa invers". A treia instanta a clasei, dupa SAF-T (lot 6) si
+    # zilele lucratoare (lot 7).
+    if de and pana and str(pana) < str(de):
+        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului (%s). "
+                                 "Raportul se cere pe un interval, iar intervalul are o ordine."
+                                 % (pana, de))
     from core import rapoarte_comerciale_api as _rc
     de, pana = _perioada_an(de, pana)
     with db.get_conn() as conn:
@@ -7710,6 +7723,12 @@ def centre_cost_activ(tenant_id: int, centru_id: int, corp: dict = Body(...), ct
 
 @app.get("/tenants/{tenant_id}/centre-cost/raport")
 def centre_cost_raport(tenant_id: int, de: str, pana: str, ctx=Depends(cere_cabinet)):
+    # [lotul 8] A patra instanta a clasei „un interval are o ordine", dupa SAF-T (lot 6), zilele
+    # lucratoare (lot 7) si rapoartele comerciale (tot lotul 8).
+    if de and pana and str(pana) < str(de):
+        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului (%s). "
+                                 "Raportul se cere pe un interval, iar intervalul are o ordine."
+                                 % (pana, de))
     """Realizat pe centru de cost, perioada [de, pana] (note validate, clasele 6/7)."""
     from core import centre_cost_api as _cc
     with db.get_conn() as conn:
@@ -7722,6 +7741,7 @@ def centre_cost_raport(tenant_id: int, de: str, pana: str, ctx=Depends(cere_cabi
 @app.get("/tenants/{tenant_id}/centre-cost/varianta")
 def centre_cost_varianta(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     """Buget vs realizat pe an, per centru (note validate, clasele 6/7)."""
+    _cere_perioada(an=an)
     from core import centre_cost_api as _cc
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -7773,6 +7793,7 @@ def _rip_ctx(conn, ctx, tenant_id):
 
 @app.get("/tenants/{tenant_id}/rip/registru")
 def rip_lista(tenant_id: int, an: int, luna: int = None, status: str = None, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     from core import rip_api as _r
     with db.get_conn() as conn:
         return _r.lista(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, status)
@@ -9631,8 +9652,17 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         _cere_luna_deschisa(conn, schema, corp.get("data"))
+        # [lotul 8, 04.09.2026] Citirea campului era INAUNTRUL `try`-ului care prinde `Exception`,
+        # deci un camp lipsa iesea ca „VIES indisponibil: 'cod_tva_client'" — o afirmatie falsa
+        # despre un serviciu extern, cu numele campului intre ghilimele simple. *Ce nu s-a trimis
+        # nu se afla de la VIES.*
+        _cod_client = str(corp.get("cod_tva_client") or "").strip()
+        if not _cod_client:
+            raise HTTPException(422, "Lipsește codul de TVA al clientului. Fără el livrarea "
+                                     "intracomunitară nu se poate verifica în VIES și nu ajunge "
+                                     "în D390.")
         try:
-            v = _ic.verifica_vies(corp["cod_tva_client"])
+            v = _ic.verifica_vies(_cod_client)
         except ValueError as e:
             raise HTTPException(422, str(e))
         except Exception as e:
@@ -9769,6 +9799,7 @@ def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     """Monitor praguri Intrastat (Ordin INS 1604/2025, 1.000.000 lei/flux):
     introduceri = facturi primite de la parteneri UE; expedieri = facturi emise
     catre parteneri UE. Cumulat pe an, status + luna depasirii per flux."""
+    _cere_perioada(an=an)
     from core import intrastat as _is
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -9846,7 +9877,12 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
         _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             data = _date.fromisoformat(corp["data"])
-            curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
+            try:
+                curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
+            except _cb.MonedaNecotata as _mn:   # [lotul 8] iesea ca `500`
+                raise HTTPException(422, str(_mn))
+            except _cb.CursIndisponibil as _ci:
+                raise HTTPException(409, str(_ci))
             r = _dc.nota_decontare(corp["valoare_valuta"], corp["curs_evidenta"],
                                    curs_dec, corp["tip"],
                                     _cv.cere_cont(conn, schema, corp.get("cont_tert"), "cont_tert"),
@@ -9894,7 +9930,12 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         linii, detalii = [], []
         try:
             for s in solduri:
-                curs_bnr, _dcurs, _sursa = _cb.curs_pentru(conn, s.get("moneda", "EUR"), data)
+                try:
+                    curs_bnr, _dcurs, _sursa = _cb.curs_pentru(conn, s.get("moneda", "EUR"), data)
+                except _cb.MonedaNecotata as _mn:   # [lotul 8] aceeasi gaura, a doua cale
+                    raise HTTPException(422, str(_mn))
+                except _cb.CursIndisponibil as _ci:
+                    raise HTTPException(409, str(_ci))
                 r = _dc.reevaluare_sold(s["valoare_valuta"], s["curs_evidenta"],
                                         curs_bnr, s["tip"], str(s["cont"]))
                 if r:

@@ -286,6 +286,124 @@ def probe_T02(cheie=None):
     return p
 
 
+#: LOTUL 8 — corpul gol, pe toate caile care primesc unul. Aceeasi proba de deschidere ca la lotul
+#: 7, unde din 28 de cai sase au cazut cu `500`.
+_CORP_GOL_L8 = [
+    (240, "POST", "/tenants/%d/d390-clasificare/manual"),
+    (242, "PUT", "/tenants/%d/d390-clasificare/reclasificare"),
+    (245, "POST", "/tenants/%d/registre-art321/cumparari"),
+    (246, "POST", "/tenants/%d/vanzare-ic"),
+    (253, "POST", "/tenants/%d/export-extracomunitar"),
+    (256, "POST", "/tenants/%d/vanzare-agricultor"),
+    (257, "POST", "/tenants/%d/vanzare-aur-investitii"),
+    (258, "POST", "/tenants/%d/vanzare-marja"),
+    (259, "POST", "/tenants/%d/vanzare-marja-turism"),
+    (260, "POST", "/tenants/%d/decontare-valuta"),
+    (261, "POST", "/tenants/%d/reevaluare-valuta"),
+    (263, "POST", "/tenants/%d/d300-manual"),
+    (266, "POST", "/tenants/%d/d301-operatiuni"),
+    (269, "POST", "/tenants/%d/registru-evidenta-fiscala"),
+    (271, "POST", "/tenants/%d/rip/import-banca"),
+    (272, "POST", "/tenants/%d/rip/import-casa"),
+    (273, "POST", "/tenants/%d/rip/operatiuni"),
+    (277, "POST", "/tenants/%d/facturi/export-saga"),
+    (278, "POST", "/tenants/%d/facturi/export-winmentor"),
+    (284, "POST", "/tenants/%d/centre-cost"),
+    (292, "POST", "/tenants/%d/rapoarte-salvate"),
+]
+
+#: Subiecte inexistente.
+_INEXISTENT_L8 = [
+    (241, "DELETE", "/tenants/%d/d390-clasificare/manual/999999", None),
+    (267, "DELETE", "/tenants/%d/d301-operatiuni/999999", None),
+    (287, "PUT", "/tenants/%d/centre-cost/999999", {"denumire": "X"}),
+    (288, "PUT", "/tenants/%d/centre-cost/999999/buget", {"buget": 1000}),
+]
+
+
+def probe_LOT8():
+    """LOTUL 8 — T28…T34, 43 de unitati in sapte trasee."""
+    F = FIRMA
+    p = []
+    for nr, met, cale in _CORP_GOL_L8:
+        p.append((nr, "%s %s — corp gol" % (met, cale.split("/")[-1]), met, cale % F, {},
+                  "corp JSON gol"))
+    for nr, met, cale, corp in _INEXISTENT_L8:
+        p.append((nr, "%s %s — subiect inexistent" % (met, cale.split("/")[-2]), met, cale % F,
+                  corp, "id=999999"))
+    p += [
+        # ── T28 operatiunile intracomunitare ─────────────────────────────────
+        (239, "GET /d390-clasificare — luna 13", "GET",
+         "/tenants/%d/d390-clasificare?an=2026&luna=13" % F, None, "luna=13"),
+        (243, "GET /intrastat-praguri — an 1900", "GET",
+         "/tenants/%d/intrastat-praguri?an=1900" % F, None, "an=1900"),
+        (244, "GET /registre-art321/{fel} — fel inexistent", "GET",
+         "/tenants/%d/registre-art321/ceva-ce-nu-exista" % F, None, "fel=ceva-ce-nu-exista"),
+        (248, "GET /verifica-vies — cod TVA care nu e cod TVA", "GET",
+         "/tenants/%d/verifica-vies?cod=NU-E-UN-COD" % F, None, "cod=NU-E-UN-COD"),
+        (246, "POST /vanzare-ic — cota inexistenta", "POST", "/tenants/%d/vanzare-ic" % F,
+         {"data": "2026-09-04", "valoare": 1000, "cota": 99, "tip": "bunuri",
+          "cod_tva_client": "DE123456789", "numar": "V-1"}, "cota=99"),
+        # ── T29 regimurile speciale ──────────────────────────────────────────
+        (255, "GET /jurnal-marja — luna 13", "GET",
+         "/tenants/%d/jurnal-marja?an=2026&luna=13" % F, None, "luna=13"),
+        (258, "POST /vanzare-marja — pret de vanzare sub cel de cumparare", "POST",
+         "/tenants/%d/vanzare-marja" % F,
+         {"data": "2026-09-04", "pret_vanzare": 100, "pret_cumparare": 500, "cota": 21},
+         "pret_vanzare < pret_cumparare"),
+        # ── T30 valuta ───────────────────────────────────────────────────────
+        (260, "POST /decontare-valuta — moneda inexistenta", "POST",
+         "/tenants/%d/decontare-valuta" % F,
+         {"data": "2026-09-04", "moneda": "XYZ", "valoare_valuta": 100, "curs_evidenta": 5,
+          "tip": "creanta", "cont_tert": "4111"}, "moneda=XYZ"),
+        # ── T31 completarile manuale ─────────────────────────────────────────
+        (262, "GET /d300-manual — luna 13", "GET",
+         "/tenants/%d/d300-manual?an=2026&luna=13" % F, None, "luna=13"),
+        (263, "POST /d300-manual — rand de declaratie inexistent", "POST",
+         "/tenants/%d/d300-manual" % F,
+         {"an": 2026, "luna": 8, "rand": "R999", "valoare": 100}, "rand=R999"),
+        (265, "GET /d301-operatiuni — luna 13", "GET",
+         "/tenants/%d/d301-operatiuni?an=2026&luna=13" % F, None, "luna=13"),
+        (268, "GET /registru-evidenta-fiscala — an 1900", "GET",
+         "/tenants/%d/registru-evidenta-fiscala?an=1900" % F, None, "an=1900"),
+        # ── T32 partida simpla ───────────────────────────────────────────────
+        (270, "GET /rip/d212/{an} — an 1900", "GET", "/tenants/%d/rip/d212/1900" % F, None,
+         "an=1900"),
+        (276, "GET /rip/registru — luna 13", "GET",
+         "/tenants/%d/rip/registru?an=2026&luna=13" % F, None, "luna=13"),
+        (273, "POST /rip/operatiuni — suma negativa", "POST", "/tenants/%d/rip/operatiuni" % F,
+         {"data": "2026-09-04", "fel": "incasare", "suma": -100}, "suma=-100"),
+        # ── T33 exportul contabil ────────────────────────────────────────────
+        (277, "POST /facturi/export-saga — luna 13", "POST",
+         "/tenants/%d/facturi/export-saga" % F, {"an": 2026, "luna": 13}, "luna=13"),
+        (278, "POST /facturi/export-winmentor — luna 13", "POST",
+         "/tenants/%d/facturi/export-winmentor" % F, {"an": 2026, "luna": 13}, "luna=13"),
+        # ── T34 rapoartele ───────────────────────────────────────────────────
+        (281, "GET /api/v1/.../kpi — luna 13", "GET",
+         "/api/v1/firme/%d/kpi?an=2026&luna=13" % F, None, "luna=13"),
+        (282, "GET /cabinet/consolidare — luna 13", "GET",
+         "/cabinet/consolidare?an=2026&luna=13", None, "luna=13"),
+        # `#283` n-are `an` in semnatura; se probeaza filtrul pe care il ARE.
+        (283, "GET /centre-cost — filtru `doar_active` care nu e da/nu", "GET",
+         "/tenants/%d/centre-cost?doar_active=poate" % F, None, "doar_active=poate"),
+        (285, "GET /centre-cost/raport — sfarsit inaintea inceputului", "GET",
+         "/tenants/%d/centre-cost/raport?de=2026-09-30&pana=2026-09-01" % F, None, "pana < de"),
+        # `#286` are `an`, nu `luna`.
+        (286, "GET /centre-cost/varianta — an 1900", "GET",
+         "/tenants/%d/centre-cost/varianta?an=1900" % F, None, "an=1900"),
+        # `#289` primeste un INTERVAL (`de`/`pana`), nu an/luna.
+        (289, "GET /rapoarte-comerciale — sfarsit inaintea inceputului", "GET",
+         "/tenants/%d/rapoarte-comerciale?de=2026-09-30&pana=2026-09-01" % F, None,
+         "pana < de"),
+        (290, "GET /rapoarte-comerciale/fisa — partener inexistent", "GET",
+         "/tenants/%d/rapoarte-comerciale/fisa?partener=NU-EXISTA&an=2026" % F, None,
+         "partener=NU-EXISTA"),
+        (291, "GET /rapoarte-salvate — fara parametri", "GET",
+         "/tenants/%d/rapoarte-salvate" % F, None, "niciun parametru"),
+    ]
+    return p
+
+
 #: LOTUL 7 — corpul gol, pe toate caile care primesc unul. E proba cea mai ieftina si cea care
 #: scoate contractul la iveala: ce raspunde o ruta cand nu i se da nimic spune ce considera ea
 #: obligatoriu. (nr, metoda, cale, are_tenant)
@@ -1027,7 +1145,8 @@ def _ruleaza_cu_cheie(lot, tok, tok_client=None):
                           "ACHIZITII": probe_ACHIZITII,
                           "T07T09T10": probe_T07T09T10,
                           "LOT6": probe_LOT6,
-                          "LOT7": probe_LOT7}[lot]():
+                          "LOT7": probe_LOT7,
+                          "LOT8": probe_LOT8}[lot]():
             antete, t = None, tok
             if eticheta in CU_CLIENT:
                 t = tok_client
@@ -1090,7 +1209,7 @@ def _sterge_cheia(kid):
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
-    if lot in ("T02", "T05", "T03T04", "ACHIZITII", "T07T09T10", "LOT6", "LOT7"):
+    if lot in ("T02", "T05", "T03T04", "ACHIZITII", "T07T09T10", "LOT6", "LOT7", "LOT8"):
         return _ruleaza_cu_cheie(lot, tok, tok_client)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []

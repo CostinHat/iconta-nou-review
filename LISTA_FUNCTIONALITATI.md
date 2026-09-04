@@ -398,16 +398,16 @@
 |---|---|---|---|---|---|
 | 237 | public verifica cui | `GET /public/verifica-cui/{cui}` · fără gardă | citire / afisare — `public_verifica_cui()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 238 | AIC bunuri/servicii primite (art | `POST /tenants/{tenant_id}/achizitie-ic` · rol `admin_firma` | creare sau executie — `achizitie_ic()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
-| 239 | Operatiunile auto-derivate (cu tipul curent) + liniile manuale, pt ecranul de clasificare. | `GET /tenants/{tenant_id}/d390-clasificare` · `cere_cabinet` | citire / afisare — `d390_clasificare_stare()` | da | neprobat |
-| 240 | Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. | `POST /tenants/{tenant_id}/d390-clasificare/manual` · `cere_cabinet` | creare sau executie — `d390_manual_adauga()` | da | neprobat |
-| 241 | d390 manual sterge | `DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}` · `cere_cabinet` | stergere — `d390_manual_sterge()` | da | neprobat |
-| 242 | Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}. | `PUT /tenants/{tenant_id}/d390-clasificare/reclasificare` · `cere_cabinet` | modificare — `d390_reclasificare()` | da | neprobat |
-| 243 | Monitor praguri Intrastat (Ordin INS 1604/2025, 1.000.000 lei/flux): introduceri = facturi primite de la parteneri UE; … | `GET /tenants/{tenant_id}/intrastat-praguri` · `cere_cabinet` | citire / afisare — `intrastat_praguri()` | nu | neprobat |
-| 244 | [lista 3, 30.08.2026] Cele doua registre cerute de art | `GET /tenants/{tenant_id}/registre-art321/{fel}` · `cere_cabinet` | citire / afisare — `registre_art321_citeste()` | nu | neprobat |
-| 245 | Inscrie un rand | `POST /tenants/{tenant_id}/registre-art321/{fel}` · `cere_cabinet` | creare sau executie — `registre_art321_adauga()` | nu | neprobat |
-| 246 | LIC bunuri (art | `POST /tenants/{tenant_id}/vanzare-ic` · `cere_cabinet` | creare sau executie — `vanzare_ic()` | da | neprobat |
+| 239 | Operatiunile auto-derivate (cu tipul curent) + liniile manuale, pt ecranul de clasificare. | `GET /tenants/{tenant_id}/d390-clasificare` · `cere_cabinet` | citire / afisare — `d390_clasificare_stare()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 240 | Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. | `POST /tenants/{tenant_id}/d390-clasificare/manual` · `cere_cabinet` | creare sau executie — `d390_manual_adauga()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 241 | d390 manual sterge | `DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}` · `cere_cabinet` | stergere — `d390_manual_sterge()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 242 | Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}. | `PUT /tenants/{tenant_id}/d390-clasificare/reclasificare` · `cere_cabinet` | modificare — `d390_reclasificare()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 243 | Monitor praguri Intrastat (Ordin INS 1604/2025, 1.000.000 lei/flux): introduceri = facturi primite de la parteneri UE; … | `GET /tenants/{tenant_id}/intrastat-praguri` · `cere_cabinet` | citire / afisare — `intrastat_praguri()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 244 | [lista 3, 30.08.2026] Cele doua registre cerute de art | `GET /tenants/{tenant_id}/registre-art321/{fel}` · `cere_cabinet` | citire / afisare — `registre_art321_citeste()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 245 | Inscrie un rand | `POST /tenants/{tenant_id}/registre-art321/{fel}` · `cere_cabinet` | creare sau executie — `registre_art321_adauga()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 246 | LIC bunuri (art | `POST /tenants/{tenant_id}/vanzare-ic` · `cere_cabinet` | creare sau executie — `vanzare_ic()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 | 247 | verifica cui | `GET /tenants/{tenant_id}/verifica-cui/{cui}` · `cere_context` | citire / afisare — `verifica_cui()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 248 | Verifica un cod TVA UE in VIES (API oficial CE). | `GET /tenants/{tenant_id}/verifica-vies` · `cere_context` | citire / afisare — `verifica_vies_ep()` | nu | neprobat |
+| 248 | Verifica un cod TVA UE in VIES (API oficial CE). | `GET /tenants/{tenant_id}/verifica-vies` · `cere_context` | citire / afisare — `verifica_vies_ep()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 
 ### T29 — Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă (11)
 
@@ -417,52 +417,52 @@
 | 250 | corp: {data, denumire, valoare (fara TVA), tip software/licenta/brevet/ dezvoltare/constituire, dnf_luni?, cota?, cod?} | `POST /tenants/{tenant_id}/achizitie-necorporala` · rol `admin_firma` | creare sau executie — `achizitie_necorporala()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 | 251 | Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) | `POST /tenants/{tenant_id}/achizitie-neinregistrat` · rol `admin_firma` | creare sau executie — `achizitie_neinregistrat()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 | 252 | corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} | `POST /tenants/{tenant_id}/achizitie-taxare-inversa` · rol `admin_firma` | creare sau executie — `achizitie_taxare_inversa()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
-| 253 | corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?} | `POST /tenants/{tenant_id}/export-extracomunitar` · `cere_cabinet` | creare sau executie — `export_extracomunitar()` | da | neprobat |
+| 253 | corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?} | `POST /tenants/{tenant_id}/export-extracomunitar` · `cere_cabinet` | creare sau executie — `export_extracomunitar()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 | 254 | corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinat… | `POST /tenants/{tenant_id}/import-extracomunitar` · `cere_cabinet` | creare sau executie — `import_extracomunitar()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
-| 255 | tip: secondhand/turism; luna: YYYY-MM | `GET /tenants/{tenant_id}/jurnal-marja` · `cere_cabinet` | citire / afisare — `jurnal_marja()` | nu | neprobat |
-| 256 | corp: {data, pret (fara taxa), descriere?} | `POST /tenants/{tenant_id}/vanzare-agricultor` · `cere_cabinet` | creare sau executie — `vanzare_agricultor()` | da | neprobat |
-| 257 | corp: {data, tip lingou/plancheta/moneda, puritate, an_emisie?, pret_unitar?, valoare_aur?, suma, optiune_taxare?, cali… | `POST /tenants/{tenant_id}/vanzare-aur-investitii` · `cere_cabinet` | creare sau executie — `vanzare_aur_investitii()` | da | neprobat |
-| 258 | corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?} | `POST /tenants/{tenant_id}/vanzare-marja` · `cere_cabinet` | creare sau executie — `vanzare_marja()` | da | neprobat |
-| 259 | corp: {data, calitate_client PF/PJ, locuri [RO/UE/NONUE], optiune_normal?, intermediar?, cota?, descriere?} + per regim… | `POST /tenants/{tenant_id}/vanzare-marja-turism` · `cere_cabinet` | creare sau executie — `vanzare_marja_turism()` | da | neprobat |
+| 255 | tip: secondhand/turism; luna: YYYY-MM | `GET /tenants/{tenant_id}/jurnal-marja` · `cere_cabinet` | citire / afisare — `jurnal_marja()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 256 | corp: {data, pret (fara taxa), descriere?} | `POST /tenants/{tenant_id}/vanzare-agricultor` · `cere_cabinet` | creare sau executie — `vanzare_agricultor()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 257 | corp: {data, tip lingou/plancheta/moneda, puritate, an_emisie?, pret_unitar?, valoare_aur?, suma, optiune_taxare?, cali… | `POST /tenants/{tenant_id}/vanzare-aur-investitii` · `cere_cabinet` | creare sau executie — `vanzare_aur_investitii()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 258 | corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?} | `POST /tenants/{tenant_id}/vanzare-marja` · `cere_cabinet` | creare sau executie — `vanzare_marja()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 259 | corp: {data, calitate_client PF/PJ, locuri [RO/UE/NONUE], optiune_normal?, intermediar?, cota?, descriere?} + per regim… | `POST /tenants/{tenant_id}/vanzare-marja-turism` · `cere_cabinet` | creare sau executie — `vanzare_marja_turism()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 
 ### T30 — Operațiunile în valută (2)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 260 | Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 | `POST /tenants/{tenant_id}/decontare-valuta` · `cere_cabinet` | creare sau executie — `decontare_valuta()` | da | neprobat |
-| 261 | Reevaluare lunara solduri valuta (OMFP 1802 pct | `POST /tenants/{tenant_id}/reevaluare-valuta` · `cere_cabinet` | creare sau executie — `reevaluare_valuta()` | da | neprobat |
+| 260 | Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 | `POST /tenants/{tenant_id}/decontare-valuta` · `cere_cabinet` | creare sau executie — `decontare_valuta()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 261 | Reevaluare lunara solduri valuta (OMFP 1802 pct | `POST /tenants/{tenant_id}/reevaluare-valuta` · `cere_cabinet` | creare sau executie — `reevaluare_valuta()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 
 ### T31 — Completările manuale la o declarație (D300, D301) (8)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 262 | Randurile manuale ale perioadei + randurile inca disponibile de adaugat (allow-list minus auto-derivate minus deja intr… | `GET /tenants/{tenant_id}/d300-manual` · `cere_cabinet` | citire / afisare — `d300_manual_lista()` | da | neprobat |
-| 263 | Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}. | `POST /tenants/{tenant_id}/d300-manual` · `cere_cabinet` | creare sau executie — `d300_manual_adauga()` | da | neprobat |
+| 262 | Randurile manuale ale perioadei + randurile inca disponibile de adaugat (allow-list minus auto-derivate minus deja intr… | `GET /tenants/{tenant_id}/d300-manual` · `cere_cabinet` | citire / afisare — `d300_manual_lista()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 263 | Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}. | `POST /tenants/{tenant_id}/d300-manual` · `cere_cabinet` | creare sau executie — `d300_manual_adauga()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 | 264 | d300 manual sterge | `DELETE /tenants/{tenant_id}/d300-manual/{rid}` · `cere_cabinet` | stergere — `d300_manual_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 265 | Operatiunile lunii + nomenclatoare (tipuri, valute, cote period-aware) pt ecranul D301. | `GET /tenants/{tenant_id}/d301-operatiuni` · `cere_cabinet` | citire / afisare — `d301_operatiuni_lista()` | da | neprobat |
-| 266 | Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}. | `POST /tenants/{tenant_id}/d301-operatiuni` · `cere_cabinet` | creare sau executie — `d301_operatiuni_adauga()` | da | neprobat |
-| 267 | d301 operatiuni sterge | `DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}` · `cere_cabinet` | stergere — `d301_operatiuni_sterge()` | da | neprobat |
-| 268 | [lista 3, 30.08.2026] Registrul de evidență fiscală | `GET /tenants/{tenant_id}/registru-evidenta-fiscala` · `cere_cabinet` | citire / afisare — `registru_fiscal_citeste()` | nu | neprobat |
-| 269 | Înscrie un rând în varianta PERSOANE FIZICE — singura care se completează | `POST /tenants/{tenant_id}/registru-evidenta-fiscala` · `cere_cabinet` | creare sau executie — `registru_fiscal_adauga()` | nu | neprobat |
+| 265 | Operatiunile lunii + nomenclatoare (tipuri, valute, cote period-aware) pt ecranul D301. | `GET /tenants/{tenant_id}/d301-operatiuni` · `cere_cabinet` | citire / afisare — `d301_operatiuni_lista()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 266 | Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}. | `POST /tenants/{tenant_id}/d301-operatiuni` · `cere_cabinet` | creare sau executie — `d301_operatiuni_adauga()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 267 | d301 operatiuni sterge | `DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}` · `cere_cabinet` | stergere — `d301_operatiuni_sterge()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 268 | [lista 3, 30.08.2026] Registrul de evidență fiscală | `GET /tenants/{tenant_id}/registru-evidenta-fiscala` · `cere_cabinet` | citire / afisare — `registru_fiscal_citeste()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 269 | Înscrie un rând în varianta PERSOANE FIZICE — singura care se completează | `POST /tenants/{tenant_id}/registru-evidenta-fiscala` · `cere_cabinet` | creare sau executie — `registru_fiscal_adauga()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 
 ### T32 — Registrul de încasări și plăți (partida simplă) (7)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 270 | rip d212 | `GET /tenants/{tenant_id}/rip/d212/{an}` · `cere_cabinet` | citire / afisare — `rip_d212()` | nu | neprobat |
-| 271 | rip import banca | `POST /tenants/{tenant_id}/rip/import-banca` · `cere_cabinet` | creare sau executie — `rip_import_banca()` | nu | neprobat |
-| 272 | rip import casa | `POST /tenants/{tenant_id}/rip/import-casa` · `cere_cabinet` | creare sau executie — `rip_import_casa()` | nu | neprobat |
-| 273 | rip adauga | `POST /tenants/{tenant_id}/rip/operatiuni` · `cere_cabinet` | creare sau executie — `rip_adauga()` | nu | neprobat |
+| 270 | rip d212 | `GET /tenants/{tenant_id}/rip/d212/{an}` · `cere_cabinet` | citire / afisare — `rip_d212()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 271 | rip import banca | `POST /tenants/{tenant_id}/rip/import-banca` · `cere_cabinet` | creare sau executie — `rip_import_banca()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 272 | rip import casa | `POST /tenants/{tenant_id}/rip/import-casa` · `cere_cabinet` | creare sau executie — `rip_import_casa()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 273 | rip adauga | `POST /tenants/{tenant_id}/rip/operatiuni` · `cere_cabinet` | creare sau executie — `rip_adauga()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 | 274 | rip sterge | `DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}` · `cere_cabinet` | stergere — `rip_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 275 | rip valideaza | `PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza` · `cere_cabinet` | modificare — `rip_valideaza()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 276 | rip lista | `GET /tenants/{tenant_id}/rip/registru` · `cere_cabinet` | citire / afisare — `rip_lista()` | nu | neprobat |
+| 276 | rip lista | `GET /tenants/{tenant_id}/rip/registru` · `cere_cabinet` | citire / afisare — `rip_lista()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 
 ### T33 — Exportul contabil (SAGA, WinMentor) (3)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 277 | export saga luna | `POST /tenants/{tenant_id}/facturi/export-saga` · rol `admin_firma` | creare sau executie — `export_saga_luna()` | nu | neprobat |
-| 278 | Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip | `POST /tenants/{tenant_id}/facturi/export-winmentor` · rol `admin_firma` | creare sau executie — `export_winmentor_luna()` | nu | neprobat |
+| 277 | export saga luna | `POST /tenants/{tenant_id}/facturi/export-saga` · rol `admin_firma` | creare sau executie — `export_saga_luna()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 278 | Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip | `POST /tenants/{tenant_id}/facturi/export-winmentor` · rol `admin_firma` | creare sau executie — `export_winmentor_luna()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 | 279 | export saga factura | `GET /tenants/{tenant_id}/facturi/{factura_id}/export-saga` · `cere_context` | citire / afisare — `export_saga_factura()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T34 — Rapoartele comerciale, centrele de cost și rapoartele salvate (14)
@@ -470,18 +470,18 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 280 | Prezentarea de ansamblu a aplicatiei (semnul "?" GENERAL din bara de stare + pagina de bun-venit) | `GET /ansamblu` · `cere_context` | citire / afisare — `ansamblu_aplicatie()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 281 | apiv1 kpi | `GET /api/v1/firme/{tenant_id}/kpi` · `cere_api_key` | citire / afisare — `apiv1_kpi()` | nu | neprobat |
-| 282 | cabinet consolidare | `GET /cabinet/consolidare` · `cere_cabinet` | citire / afisare — `cabinet_consolidare()` | nu | neprobat |
-| 283 | centre cost lista | `GET /tenants/{tenant_id}/centre-cost` · `cere_cabinet` | citire / afisare — `centre_cost_lista()` | nu | neprobat |
-| 284 | centre cost adauga | `POST /tenants/{tenant_id}/centre-cost` · `cere_cabinet` | creare sau executie — `centre_cost_adauga()` | nu | neprobat |
-| 285 | Realizat pe centru de cost, perioada [de, pana] (note validate, clasele 6/7). | `GET /tenants/{tenant_id}/centre-cost/raport` · `cere_cabinet` | citire / afisare — `centre_cost_raport()` | nu | neprobat |
-| 286 | Buget vs realizat pe an, per centru (note validate, clasele 6/7). | `GET /tenants/{tenant_id}/centre-cost/varianta` · `cere_cabinet` | citire / afisare — `centre_cost_varianta()` | nu | neprobat |
-| 287 | centre cost activ | `PUT /tenants/{tenant_id}/centre-cost/{centru_id}` · `cere_cabinet` | modificare — `centre_cost_activ()` | nu | neprobat |
-| 288 | Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an. | `PUT /tenants/{tenant_id}/centre-cost/{centru_id}/buget` · `cere_cabinet` | modificare — `centre_cost_buget()` | nu | neprobat |
-| 289 | rapoarte comerciale | `GET /tenants/{tenant_id}/rapoarte-comerciale` · `cere_cabinet` | citire / afisare — `rapoarte_comerciale()` | nu | neprobat |
-| 290 | rapoarte comerciale fisa | `GET /tenants/{tenant_id}/rapoarte-comerciale/fisa` · `cere_cabinet` | citire / afisare — `rapoarte_comerciale_fisa()` | nu | neprobat |
-| 291 | rapoarte salvate lista | `GET /tenants/{tenant_id}/rapoarte-salvate` · `cere_cabinet` | citire / afisare — `rapoarte_salvate_lista()` | nu | neprobat |
-| 292 | rapoarte salvate creeaza | `POST /tenants/{tenant_id}/rapoarte-salvate` · `cere_cabinet` | creare sau executie — `rapoarte_salvate_creeaza()` | nu | neprobat |
+| 281 | apiv1 kpi | `GET /api/v1/firme/{tenant_id}/kpi` · `cere_api_key` | citire / afisare — `apiv1_kpi()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 282 | cabinet consolidare | `GET /cabinet/consolidare` · `cere_cabinet` | citire / afisare — `cabinet_consolidare()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 283 | centre cost lista | `GET /tenants/{tenant_id}/centre-cost` · `cere_cabinet` | citire / afisare — `centre_cost_lista()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 284 | centre cost adauga | `POST /tenants/{tenant_id}/centre-cost` · `cere_cabinet` | creare sau executie — `centre_cost_adauga()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 285 | Realizat pe centru de cost, perioada [de, pana] (note validate, clasele 6/7). | `GET /tenants/{tenant_id}/centre-cost/raport` · `cere_cabinet` | citire / afisare — `centre_cost_raport()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 286 | Buget vs realizat pe an, per centru (note validate, clasele 6/7). | `GET /tenants/{tenant_id}/centre-cost/varianta` · `cere_cabinet` | citire / afisare — `centre_cost_varianta()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 287 | centre cost activ | `PUT /tenants/{tenant_id}/centre-cost/{centru_id}` · `cere_cabinet` | modificare — `centre_cost_activ()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 288 | Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an. | `PUT /tenants/{tenant_id}/centre-cost/{centru_id}/buget` · `cere_cabinet` | modificare — `centre_cost_buget()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 289 | rapoarte comerciale | `GET /tenants/{tenant_id}/rapoarte-comerciale` · `cere_cabinet` | citire / afisare — `rapoarte_comerciale()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 290 | rapoarte comerciale fisa | `GET /tenants/{tenant_id}/rapoarte-comerciale/fisa` · `cere_cabinet` | citire / afisare — `rapoarte_comerciale_fisa()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 291 | rapoarte salvate lista | `GET /tenants/{tenant_id}/rapoarte-salvate` · `cere_cabinet` | citire / afisare — `rapoarte_salvate_lista()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
+| 292 | rapoarte salvate creeaza | `POST /tenants/{tenant_id}/rapoarte-salvate` · `cere_cabinet` | creare sau executie — `rapoarte_salvate_creeaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 8 |
 | 293 | rapoarte salvate sterge | `DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}` · `cere_cabinet` | stergere — `rapoarte_salvate_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T35 — Pachetul lunar către client și solicitările lui (38)
