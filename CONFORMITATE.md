@@ -2932,25 +2932,44 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   `public.curs_bnr_zilnic`: **4.773 de rânduri, 37 de monede, 05.01.2026 … 10.07.2026** — deci
   preluarea funcționa și s-a oprit; ultima zi adusă e 10.07.2026.
 - **condiția de deblocare**: trebuie adresa oficială curentă a fluxului de cursuri de schimb al BNR (sau condițiile de acces la el), de la BNR, pentru că lipsa ei blochează preluarea cursului zilei — iar fără curs, facturile în valută se calculează cu unul vechi de aproape două luni.
-  Detaliat: cererea e către BNR — noua adresă a fișierului XML, ori regimul de acces dacă a fost
-  restrâns. Se închide când o preluare reușită aduce cotația zilei curente. *Nu se ghicește o adresă:
-  o adresă presupusă care întoarce `404` arată identic cu una blocată, iar aplicația ar continua să
-  spună „nu e disponibil momentan".*
-- **ce s-a reparat totuși, în aplicație** *(nu închide restanța)*: „moneda nu e cotată de BNR" nu se
-  mai confundă cu „cursul nu se poate lua acum" — `curs_bnr.MonedaNecotata`, cu nomenclatorul luat
-  din cache. Găsit apăsând, în lotul 2 al campaniei: `moneda=XYZ` primea `409` *„Cursul BNR nu e
-  disponibil momentan."*, iar „momentan" îl trimitea pe contabil ori să reîncerce ceva ce nu va
-  reuși niciodată, ori — mai rău — să introducă un **curs manual** pentru o monedă inexistentă.
-- **ce NU s-a reparat, și de ce nu**: folosirea tăcută a cursului vechi. O reparație aici ar cere o
-  decizie de produs — până la câte zile vechime e acceptabil un curs, și ce se întâmplă peste ea
-  (refuz? avertisment pe factură?). *E decizia lui Costin, nu una tehnică.*
+  **PRIMITĂ** *(Costin, 04.09.2026)*: `curs.bnr.ro`. Verificat la sursă înainte de cablare, cum a
+  cerut: toate patru căile răspund `200` — `/nbrfxrates.xml`, `/nbrfxrates10days.xml` (10 zile
+  **bancare**), `/files/xml/years/nbrfxrates2026.xml`, `/xsd/nbrfxrates.xsd`.
+- **ce a mai scos verificarea, și adresa n-o arăta**: **namespace-ul XML** a trecut de la `http://`
+  la `https://www.bnr.ro/xsd`. Măsurat pe conținutul nou, `parse_xml` întorcea **0 zile**. *Cablând
+  numai gazda, aș fi „reparat" fluxul și aș fi raportat verde despre un drum care tot nu aducea
+  nimic.* Namespace-ul se citește acum din rădăcină, iar un document care nu e `DataSet` cu `Body`
+  ridică `FormatNecunoscut` în loc să întoarcă o hartă goală.
+- **pragul de vechime, decis** *(Costin, 04.09.2026 — `DECIZII.md` 26)*: **5 zile calendaristice**,
+  între data cursului și data facturii. Sub prag, cursul se folosește **și se arată** — data lui iese
+  acum și din răspunsul rutei (`data_curs`, `curs_vechime_zile`), nu doar din PDF. Peste prag,
+  emiterea **automată** se oprește cu `409` care își numește ieșirea, iar cursul de mână vine cu
+  **data lui** și cu **autorul**, consemnați în bază (`curs_manual_de`, `curs_manual_la`; migrare
+  aplicată pe **19 din 19** scheme).
+- **trei defecte găsite APĂSÂND, în timpul probei, toate reparate**:
+  **(1)** `curs_pentru` era cache-first **necondiționat** — găsea în cache cursul din 10.07 și îl
+  întorcea, fără să mai încerce rețeaua niciodată; probat pe EUR la 04.09: vechime **56 de zile**, cu
+  `sursa="bnr"`. *Un cache care răspunde mereu face inutilă orice reparație a sursei.*
+  **(2)** prima formă a pragului se aplica **doar** pe drumul din cache, fiindcă bucla de rețea
+  întorcea cursul direct; prins la calibrare, **în direcția refuzului** — cu `prag_zile=0` refuzul nu
+  s-a aprins.
+  **(3)** `_salveaza_cache` făcea `conn.commit()` pe conexiunea **apelantului**, adică pe tranzacția
+  în care tocmai se inserase factura; un refuz de curs făcea `rollback()` care nu mai avea ce anula,
+  iar în bază rămânea o factură numerotată și contată, fără curs și fără TVA în lei (probat:
+  `CMT151`). *Reparând sursa, am aprins un defect pe care sursa stricată îl ținea ascuns.*
+- **calibrare**: lanțul probat prin aplicație, pe instanță proaspătă — factură în EUR la 04.09 ia
+  cursul din 03.09 (`vechime 1`, `sursa bnr`); la 15.09 cel mai recent e din 03.09 (`vechime 12`) și
+  emiterea se oprește cu `409`; cursul manual fără data lui și cursul cu data **după** data facturii
+  se refuză; cu data lui, factura trece și urma e în bază. PDF-ul poartă cursul și data lui pe
+  amândouă drumurile (*„curs BNR 5,2536 - 03.09.2026"*, *„curs introdus manual 5,2601 -
+  11.09.2026"*). Cache-ul a crescut de la 4.773 la 5.143 de rânduri, cu ultima zi **03.09.2026**.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `c63b3ff3`
-- **rezolvată pe commit**: —
-- **unde ajunge efectul**: TVA-ul în lei al facturilor în valută se calculează cu un curs care nu e
-  al zilei, fără ca nimic să spună asta — nici pe ecran, nici în răspunsul rutei. *Diferența intră în
-  D300 și în balanță ca și cum ar fi cursul corect.*
+- **rezolvată pe commit**: `afed67b0`
+- **unde ajunge efectul**: TVA-ul în lei al facturilor în valută se calculează din nou cu cursul
+  zilei, iar când nu se poate, se spune — pe ecran, în răspunsul rutei și pe document. *Ce nu se mai
+  poate întâmpla: o factură în valută cu un curs de două luni, despre care nimeni nu află.*
 
 ### R127 — Depunerea se încheia VIZIBIL pe un drum și TĂCUT pe celălalt, cu același buton
 
