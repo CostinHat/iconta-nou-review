@@ -6140,6 +6140,86 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **unde ajunge efectul**: pe fiecare raport de la lotul 10 încoace. Secțiunea B a fost derivată de
   patru ori dintr-un registru din care lipseau, tăcut, zece dintre cele mai recente rezolvări.
 
+### R142 — Pe ecranul de emitere, o cotă de TVA NECUNOSCUTĂ se afișa ca zero, iar «Total» ieșea egal cu «Bază»
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/emitere_ecran.js` · **PRAG 1**
+- **ce blochează**: adevărul cifrei pe care o citește contabilul înainte de a emite. Pe o firmă
+  **plătitoare de TVA**, «TVA 0,00» și «Total = Bază» sunt o afirmație despre bani, iar ea era falsă.
+- **condiția de deblocare**: se închide când o cotă neștiută nu mai produce o cifră: totalul spune
+  că nu se poate ști, în loc să afirme zero.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `acdf6221`
+- **rezolvată pe commit**: `958a7b3a`
+- **ce s-a măsurat** *(04.09.2026, lotul 12, apăsând)*: `recalc()` calcula
+  `tva += val * ((l.cota_tva || 0) / 100)`. O linie cu valoare și fără cotă stabilită intra în sumă
+  cu TVA **zero**. Măsurat pe ecran: linie de 2×1.000 RON, cotă nealeasă → «Bază 2.000,00 · TVA 0,00
+  · Total 2.000,00».
+- **ecranul ȘTIA deja răspunsul, cu 80 de linii mai sus**: coloana COTĂ a liniei randează `—` când
+  `cota_tva == null` (`randLinie`). *Același ecran spunea „nu se știe" într-o coloană și „zero" în
+  alta, despre același lucru.*
+- **de ce s-a reparat AICI și nu în clasă** *(decizia lui Costin, 04.09)*: clasa `cota || 0` rămâne
+  **închisă** — garda R29 o declară explicit în afara domeniului ei (*„defaultul pe ZERO, altă
+  clasă, legitimă în aritmetică, **18 instanțe reale**"*), iar celelalte 18 rămân unde sunt. Motivul
+  reparației e **locul, nu clasa**: pe emitere cifra e ce citește omul și ce pleacă mai departe.
+- **reparația**: o linie de **valoare zero** nu blochează totalul (la valoare zero, TVA-ul e zero
+  oricare ar fi cota — deci necunoașterea ei nu schimbă nimic, iar o linie goală nou-adăugată nu
+  face totalul `—`). O linie cu valoare și fără cotă face «TVA» și «Total» să fie `—`, cu o notă
+  care spune câte linii și ce se poate face.
+- **și o corectură a propriei reparații, prinsă reprobând**: prima formă a notei spunea *„Alege
+  articolul, **sau cota**, pe fiecare linie"* — și **nu există niciun control de cotă**: coloana e un
+  `<span>`, iar valoarea vine numai din `POST /produse/potriveste`, propusă din DENUMIRE. *Un refuz
+  care trimite omul să facă ceva ce nu poate face e mai rău decât unul scurt.* Nota spune acum de
+  unde vine cota.
+- **calibrare, în amândouă direcțiile** *(browser real, `:8011`, cod publicat)*: linie goală →
+  «Total 0,00», neschimbat · linie cu valoare, cotă neștiută → «TVA —· Total —» + nota · **după ce
+  cota se propune (21%) → «TVA 420,00 · Total 2.420,00»**. A treia e cea care contează: reparația
+  **nu supra-refuză**, cifrele revin de îndată ce se știu.
+- **ce NU repară, declarat**: dacă `POST /produse/potriveste` n-ar răspunde niciodată, cota ar rămâne
+  neștiută și totalul ar rămâne `—`. Măsurat azi: ruta răspunde `ok` pentru orice denumire, inclusiv
+  una fără sens (cotă standard, cu justificare pe art. 291). Deci calea nu e moartă — dar dependența
+  e reală și se scrie.
+- **unde ajunge efectul**: pe fiecare factură emisă din interfață. *Nu pe cifra SALVATĂ — serverul
+  își calcula oricum totalurile din `totaluri_din_linii`; pe cifra CITITĂ înainte de a apăsa.*
+
+### R143 — Ecranul de emitere avea două violări de accesibilitate, dintre care una critică, și nimic nu le vedea
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/emitere_ecran.js` · `static/stil.css`
+- **ce blochează**: folosirea ecranului de emitere cu un cititor de ecran, și citirea lui la contrast
+  scăzut.
+- **condiția de deblocare**: se închide când `axe` nu mai raportează nicio violare pe ecranul de
+  emitere, pe desktop **și** pe mobil, iar ecranul e în inventarul porții vizuale.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `acdf6221`
+- **rezolvată pe commit**: `958a7b3a`
+- **cum au ieșit la iveală, și de ce abia acum**: regula casei spune că **un ecran al cărui JS se
+  ATINGE trece în `nav_ecrane.ECRANE`**, cu cele trei unelte vizuale rulate pe el. R142 a atins
+  `emitere_ecran.js`, deci ecranul a intrat în inventar — și `test_fara_violari` a căzut imediat.
+  *Violările erau acolo dinainte; ce lipsea era ca ecranul să fie privit.*
+- **ce s-a măsurat** *(axe, desktop și mobil)*: **`select-name`, impact CRITIC, 2 instanțe** —
+  `#em-moneda` avea etichetă, dar fără `for=`, deci nelegată; `#em-tip` **n-avea niciuna**, și e chiar
+  selectorul care alege FACTURĂ / PROFORMĂ / AVIZ, adică felul documentului care pleacă. Plus
+  **`color-contrast`, impact serios, 7 desktop / 6 mobil** pe `.em-eticheta`, iar după prima reparație
+  încă **4** pe `.em-linie-antet > span` (antetul de coloane).
+- **reparația**: `for="em-moneda"` pe eticheta existentă · `aria-label="Tipul documentului emis"` pe
+  selectorul de tip · `#64748b` → `#475569` pe cele două reguli măsurate ca sub prag. **Culoarea nu e
+  nouă**: e cea folosită deja de `.em-total-rand`, în același ecran.
+- **ce NU s-a atins, și de ce**: alte **patru** reguli `.em-*` folosesc tot `#64748b` (`em-hint`,
+  `em-cui-stare`, `em-l-cota`, `em-cui-info`). Instrumentul **nu le-a raportat** — fie nu sunt randate
+  în starea scanată, fie trec pe fundalul lor. *Nu s-au schimbat: se repară ce s-a măsurat, nu ce
+  seamănă cu ce s-a măsurat.* Clasa nu e golită, și se spune.
+- **reprobat**: `interactiune_scan.py` rerulat; `test_fara_violari` **verde**, cu `emitere` în
+  inventar (17 ecrane, de la 16).
+- **unde ajunge efectul**: pe ecranul prin care se emit facturile. *Și, mai departe, pe fiecare ecran
+  care intră de acum în inventar: regula „un ecran atins primește cele trei unelte" tocmai și-a arătat
+  prețul și rostul — a costat trei reparații mici și a scos o violare critică pe care campania de
+  probare, care întreabă altceva, n-avea cum s-o vadă.*
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
