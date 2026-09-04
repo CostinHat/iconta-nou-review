@@ -6093,6 +6093,53 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   loturi, iar rescrierea lor fără a le reproba ar fi o schimbare nemăsurată. *Se consemnează ca să nu
   treacă drept dispărute.*
 
+### R141 — Unsprezece restanțe erau scrise în AFARA blocului pe care îl citește garda, deci nu le-a verificat nimeni
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · `CONFORMITATE.md` · `scripts/raport_b.py`
+- **ce blochează**: adevărul secțiunii **B. UNDE SUNTEM** — singura parte a raportului care se
+  **derivă**, tocmai ca să nu fie scrisă din memorie — și, mai grav, aplicarea gărzii care cere ca o
+  restanță să fie completă.
+- **condiția de deblocare**: se închide când fiecare restanță scrisă e **în** blocul
+  `## RESTANȚE`, deci ajunge sub `_restante()` din `raport_b.py` și sub
+  `core/test_conformitate.py`, iar câmpurile ei sunt cele cerute de nomenclator.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `bddfb287`
+- **rezolvată pe commit**: `891e997e`
+- **ce s-a măsurat** *(04.09.2026, derivând §B pentru raportul lotului 12)*: `_restante()` citește
+  **numai** blocul dintre `^## RESTANȚE$` și următorul `^## ` (`raport_b.py:47`). **R131…R140**
+  fuseseră adăugate la **capătul fișierului**, după cele 77 de secțiuni de interdicție — deci în
+  afara blocului. Extractorul vedea **130** de restanțe; în fișier erau **140**.
+- **cauza nu era câmpul, era LOCUL — și prima ipoteză a fost greșită.** Am crezut întâi că lipsește
+  doar `stare`, l-am adăugat la toate zece, și **nimic nu s-a schimbat**: blocul tot nu era citit.
+  *Un câmp adăugat într-un loc pe care nimeni nu-l citește arată exact ca o reparație.*
+- **cât de departe mergea**: `core/test_conformitate.py` citește **același bloc**. Deci cele zece
+  n-au trecut niciodată garda restanțelor — nu fiindcă ar fi trecut-o, ci fiindcă nu erau în ea.
+  Dovada a venit din mutare: cum au intrat înăuntru, **trei gărzi au căzut deodată**, pe **40 de
+  câmpuri** lipsă (`cine deblochează`, `reluări`, `condiția de deblocare`, `rezolvată pe commit`),
+  plus patru `unde intră` fără etapă și zece `cine deblochează` = „EU", valoare care nu e în
+  nomenclator (`EXTERN` / `INTERN` / `DECIZIE`). *Zece restanțe scrise, zero verificate.*
+- **cine a introdus-o**: **eu**, de trei ori — R131–R133 (lotul 10), R134–R137 (lotul 11),
+  R138–R140 (lotul 12). De fiecare dată am adăugat la sfârșitul fișierului în loc să adaug în
+  secțiune, și de fiecare dată n-a spus nimic nimic.
+- **reparația**: cele zece s-au **mutat** în `## RESTANȚE`, cu textul neatins, și li s-au completat
+  câmpurile. Hash-urile sunt **derivate**: `git log -S "### Rn —" --reverse -- CONFORMITATE.md` dă
+  commitul care a introdus secțiunea, iar părintele lui e commitul pe care s-a deschis; cele de
+  rezolvare sunt commiturile loturilor. Condițiile de deblocare sunt **rezumate din textul propriu**
+  al fiecărei restanțe, de la „reparația" — nu reconstruite din amintire.
+- **verificat după**: extractorul vede **141** de restanțe; cele zece apar în lista REZOLVATE;
+  `restanțe DESCHISE` rămâne **50**, neschimbat — corect, fiindcă toate erau închise. *Ce lipsea din
+  §B nu era o restanță deschisă ascunsă, ci istoria a ceea ce s-a reparat.*
+- **ce RĂMÂNE, declarat**: **nu există gardă care să ceară LOCUL.** `test_conformitate` verifică
+  temeinic forma fiecărei restanțe pe care o vede — dar nu poate spune nimic despre una pe care n-o
+  vede, iar „câte restanțe ar trebui să fie în bloc" nu e o întrebare pe care și-o pune. A patra
+  oară se poate întâmpla la fel. Gardă nouă ar fi, iar tema campaniei spune explicit *„fără gărzi
+  noi"* — **se cere ca decizie**.
+- **unde ajunge efectul**: pe fiecare raport de la lotul 10 încoace. Secțiunea B a fost derivată de
+  patru ori dintr-un registru din care lipseau, tăcut, zece dintre cele mai recente rezolvări.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
