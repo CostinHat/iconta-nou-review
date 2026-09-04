@@ -252,13 +252,22 @@ def importa(conn, randuri):
     Refuzul e PRIMA POARTA: nimic nu se scrie dintr-un import cu randuri invalide.
     Intoarce {importati}. NU exista skip: importa ridica la primul CNP invalid (prima poarta).
     """
+    # [lotul 6] Aceeasi clasa ca la articole: o cerere fara randuri nu e un import de zero.
+    if not randuri:
+        raise ValueError("nu ai trimis niciun rând. Un import fără rânduri n-are ce adăuga în "
+                         "evidența salariaților; dacă voiai altceva, e altă operațiune.")
     er = verifica_randuri(randuri)
     if er:
         det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in er[:6])
         if len(er) > 6:
             det += " (și încă %d)" % (len(er) - 6)
-        raise ValueError("%d rânduri nu pot intra în evidență: %s. Salariații intră în "
-                         "D112 și REGES - datele trebuie să fie cele reale." % (len(er), det))
+        # [lotul 6] Se numara RANDURILE distincte, nu erorile: un singur rand cu doua probleme
+        # spunea „2 rânduri nu pot intra", iar omul cauta al doilea. A DOUA instanta a defectului
+        # reparat in lotul 1 pe istoricul de declaratii — acolo, cu aceleasi cuvinte.
+        _n = len({e["rand"] for e in er})
+        _cate = ("Un rând nu poate intra" if _n == 1 else "%d rânduri nu pot intra" % _n)
+        raise ValueError("%s în evidență: %s. Salariații intră în D112 și REGES - datele trebuie "
+                         "să fie cele reale." % (_cate, det))
     importati = 0
     with conn.cursor() as cur:
         # asiguram constrangerea unica pe cnp pentru upsert (idempotent)

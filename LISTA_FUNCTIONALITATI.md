@@ -20,9 +20,9 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 1 | Callback OAuth (URL inregistrat la ANAF, exact) | `GET /anaf/oauth/callback` · fără gardă | citire / afisare — `anaf_oauth_callback()` | ? | neprobat |
-| 2 | URL-ul de autorizare ANAF pentru principalul apelantului | `GET /spv/autorizare` · fără gardă | citire / afisare — `spv_autorizare()` | ? | neprobat |
-| 3 | Starea conexiunii SPV pentru ecran (fara secrete, fara apel ANAF). | `GET /spv/stare` · fără gardă | citire / afisare — `spv_stare()` | ? | neprobat |
+| 1 | Callback OAuth (URL inregistrat la ANAF, exact) | `GET /anaf/oauth/callback` · fără gardă | citire / afisare — `anaf_oauth_callback()` | ? | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 2 | URL-ul de autorizare ANAF pentru principalul apelantului | `GET /spv/autorizare` · fără gardă | citire / afisare — `spv_autorizare()` | ? | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 3 | Starea conexiunii SPV pentru ecran (fara secrete, fara apel ANAF). | `GET /spv/stare` · fără gardă | citire / afisare — `spv_stare()` | ? | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 
 ### T01 — Declarația — generare, validare, coadă, aprobare, depunere (16)
 
@@ -148,11 +148,11 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 94 | banca parse extras | `POST /tenants/{tenant_id}/banca/parse-extras` · `cere_cabinet` | creare sau executie — `banca_parse_extras()` | nu | neprobat |
-| 95 | banca rec lista | `GET /tenants/{tenant_id}/banca/reconciliere` · `cere_cabinet` | citire / afisare — `banca_rec_lista()` | da | neprobat |
+| 94 | banca parse extras | `POST /tenants/{tenant_id}/banca/parse-extras` · `cere_cabinet` | creare sau executie — `banca_parse_extras()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 95 | banca rec lista | `GET /tenants/{tenant_id}/banca/reconciliere` · `cere_cabinet` | citire / afisare — `banca_rec_lista()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 96 | banca rec facturi | `GET /tenants/{tenant_id}/banca/reconciliere/facturi-deschise` · `cere_cabinet` | citire / afisare — `banca_rec_facturi()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 97 | banca rec import | `POST /tenants/{tenant_id}/banca/reconciliere/import` · `cere_cabinet` | creare sau executie — `banca_rec_import()` | da | neprobat |
-| 98 | banca rec conteaza | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza` · `cere_cabinet` | creare sau executie — `banca_rec_conteaza()` | da | neprobat |
+| 97 | banca rec import | `POST /tenants/{tenant_id}/banca/reconciliere/import` · `cere_cabinet` | creare sau executie — `banca_rec_import()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 98 | banca rec conteaza | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza` · `cere_cabinet` | creare sau executie — `banca_rec_conteaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 99 | banca rec ignora | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora` · `cere_cabinet` | creare sau executie — `banca_rec_ignora()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 100 | banca rec reactiveaza | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza` · `cere_cabinet` | creare sau executie — `banca_rec_reactiveaza()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
@@ -167,41 +167,41 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 103 | casa adauga | `POST /tenants/{tenant_id}/casa/operatiuni` · `cere_cabinet` | creare sau executie — `casa_adauga()` | da | neprobat |
+| 103 | casa adauga | `POST /tenants/{tenant_id}/casa/operatiuni` · `cere_cabinet` | creare sau executie — `casa_adauga()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 104 | casa sterge | `DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}` · `cere_cabinet` | stergere — `casa_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 105 | casa registru | `GET /tenants/{tenant_id}/casa/registru` · `cere_cabinet` | citire / afisare — `casa_registru()` | da | neprobat |
+| 105 | casa registru | `GET /tenants/{tenant_id}/casa/registru` · `cere_cabinet` | citire / afisare — `casa_registru()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 
 ### T10 — Inventarierea (5)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 106 | Sectiunea Assets SAF-T pentru anul dat (D406 anual | `GET /tenants/{tenant_id}/d406-active` · `cere_cabinet` | citire / afisare — `d406_active_xml()` | da | neprobat |
-| 107 | Sectiunea PhysicalStock SAF-T pe perioada (D406 la cerere ANAF) | `GET /tenants/{tenant_id}/d406-stocuri` · `cere_cabinet` | citire / afisare — `d406_stocuri_xml()` | da | neprobat |
+| 106 | Sectiunea Assets SAF-T pentru anul dat (D406 anual | `GET /tenants/{tenant_id}/d406-active` · `cere_cabinet` | citire / afisare — `d406_active_xml()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 107 | Sectiunea PhysicalStock SAF-T pe perioada (D406 la cerere ANAF) | `GET /tenants/{tenant_id}/d406-stocuri` · `cere_cabinet` | citire / afisare — `d406_stocuri_xml()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 108 | rip inventar | `GET /tenants/{tenant_id}/rip/inventar/{an}` · `cere_cabinet` | citire / afisare — `rip_inventar()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 109 | cv inventar | `POST /tenants/{tenant_id}/stocuri/inventar` · `cere_cabinet` | creare sau executie — `cv_inventar()` | da | neprobat |
+| 109 | cv inventar | `POST /tenants/{tenant_id}/stocuri/inventar` · `cere_cabinet` | creare sau executie — `cv_inventar()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 110 | Compara soldul contabil (solduri_initiale + note validate) pe fiecare cont de stoc folosit in articole cu valoarea insu… | `GET /tenants/{tenant_id}/verificare-stocuri` · `cere_cabinet` | citire / afisare — `verificare_stocuri()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T11 — Închiderea lunii (7)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 111 | [cap.23, 21.08.2026] Starea INCHIDERII lunii pe domeniul `facturi`: confirmat / cine / cand, daca se poate confirma acu… | `GET /tenants/{tenant_id}/facturi/perioada` · `cere_context` | citire / afisare — `tenant_facturi_perioada()` | nu | neprobat |
-| 112 | [cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate sprijini pe ea cand s… | `POST /tenants/{tenant_id}/facturi/perioada/confirma` · rol `admin_firma` | creare sau executie — `tenant_facturi_perioada_confirma()` | nu | neprobat |
-| 113 | [cap.23] Redeschide luna (o corectie de facturi cere redeschiderea) | `POST /tenants/{tenant_id}/facturi/perioada/redeschide` · rol `admin_firma` | creare sau executie — `tenant_facturi_perioada_redeschide()` | nu | neprobat |
-| 114 | perioada deblocheaza | `DELETE /tenants/{tenant_id}/perioade-blocate` · rol `admin_firma` | stergere — `perioada_deblocheaza()` | nu | neprobat |
+| 111 | [cap.23, 21.08.2026] Starea INCHIDERII lunii pe domeniul `facturi`: confirmat / cine / cand, daca se poate confirma acu… | `GET /tenants/{tenant_id}/facturi/perioada` · `cere_context` | citire / afisare — `tenant_facturi_perioada()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 112 | [cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate sprijini pe ea cand s… | `POST /tenants/{tenant_id}/facturi/perioada/confirma` · rol `admin_firma` | creare sau executie — `tenant_facturi_perioada_confirma()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 113 | [cap.23] Redeschide luna (o corectie de facturi cere redeschiderea) | `POST /tenants/{tenant_id}/facturi/perioada/redeschide` · rol `admin_firma` | creare sau executie — `tenant_facturi_perioada_redeschide()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 114 | perioada deblocheaza | `DELETE /tenants/{tenant_id}/perioade-blocate` · rol `admin_firma` | stergere — `perioada_deblocheaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 115 | perioade blocate lista | `GET /tenants/{tenant_id}/perioade-blocate` · `cere_cabinet` | citire / afisare — `perioade_blocate_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 116 | perioada blocheaza | `POST /tenants/{tenant_id}/perioade-blocate` · rol `admin_firma` | creare sau executie — `perioada_blocheaza()` | nu | neprobat |
-| 117 | perioade istoric | `GET /tenants/{tenant_id}/perioade-blocate/istoric` · `cere_cabinet` | citire / afisare — `perioade_istoric()` | nu | neprobat |
+| 116 | perioada blocheaza | `POST /tenants/{tenant_id}/perioade-blocate` · rol `admin_firma` | creare sau executie — `perioada_blocheaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 117 | perioade istoric | `GET /tenants/{tenant_id}/perioade-blocate/istoric` · `cere_cabinet` | citire / afisare — `perioade_istoric()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 
 ### T12 — Închiderea anului și situațiile financiare (5)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 118 | [R3, lista 3, 30.08.2026] CATEGORIA DE MARIME — precondiția situațiilor financiare | `GET /tenants/{tenant_id}/categorie-marime` · `cere_cabinet` | citire / afisare — `cabinet_categorie_marime()` | nu | neprobat |
-| 119 | s1003 valideaza | `POST /tenants/{tenant_id}/s1003-valideaza` · `cere_cabinet` | creare sau executie — `s1003_valideaza()` | da | neprobat |
-| 120 | s1003 xml | `GET /tenants/{tenant_id}/s1003-xml` · `cere_cabinet` | citire / afisare — `s1003_xml()` | da | neprobat |
-| 121 | s1005 valideaza | `POST /tenants/{tenant_id}/s1005-valideaza` · `cere_cabinet` | creare sau executie — `s1005_valideaza()` | da | neprobat |
-| 122 | s1005 xml | `GET /tenants/{tenant_id}/s1005-xml` · `cere_cabinet` | citire / afisare — `s1005_xml()` | da | neprobat |
+| 118 | [R3, lista 3, 30.08.2026] CATEGORIA DE MARIME — precondiția situațiilor financiare | `GET /tenants/{tenant_id}/categorie-marime` · `cere_cabinet` | citire / afisare — `cabinet_categorie_marime()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 119 | s1003 valideaza | `POST /tenants/{tenant_id}/s1003-valideaza` · `cere_cabinet` | creare sau executie — `s1003_valideaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 120 | s1003 xml | `GET /tenants/{tenant_id}/s1003-xml` · `cere_cabinet` | citire / afisare — `s1003_xml()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 121 | s1005 valideaza | `POST /tenants/{tenant_id}/s1005-valideaza` · `cere_cabinet` | creare sau executie — `s1005_valideaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 122 | s1005 xml | `GET /tenants/{tenant_id}/s1005-xml` · `cere_cabinet` | citire / afisare — `s1005_xml()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 
 ### T13 — Trecerea de regim fiscal (8)
 
@@ -210,11 +210,11 @@
 | 123 | Lista firmelor cabinetului cu status vector (completat sau nu). | `GET /migrare/vector` · `cere_cabinet` | citire / afisare — `migrare_vector_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 124 | firma profil get | `GET /tenants/{tenant_id}/firma-profil` · `cere_context` | citire / afisare — `firma_profil_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 125 | firma profil date | `GET /tenants/{tenant_id}/firma-profil/date` · `cere_context` | citire / afisare — `firma_profil_date()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 126 | firma profil date salveaza | `POST /tenants/{tenant_id}/firma-profil/date` · `cere_cabinet` | creare sau executie — `firma_profil_date_salveaza()` | da | neprobat |
-| 127 | firma profil model | `POST /tenants/{tenant_id}/firma-profil/model` · `cere_context` | creare sau executie — `firma_profil_model()` | da | neprobat |
-| 128 | firma profil regim tva | `POST /tenants/{tenant_id}/firma-profil/regim-tva` · rol `admin_firma` | creare sau executie — `firma_profil_regim_tva()` | da | neprobat |
+| 126 | firma profil date salveaza | `POST /tenants/{tenant_id}/firma-profil/date` · `cere_cabinet` | creare sau executie — `firma_profil_date_salveaza()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 127 | firma profil model | `POST /tenants/{tenant_id}/firma-profil/model` · `cere_context` | creare sau executie — `firma_profil_model()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 128 | firma profil regim tva | `POST /tenants/{tenant_id}/firma-profil/regim-tva` · rol `admin_firma` | creare sau executie — `firma_profil_regim_tva()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 129 | vector citeste | `GET /tenants/{tenant_id}/vector` · `cere_cabinet` | citire / afisare — `vector_citeste()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 130 | vector salveaza | `POST /tenants/{tenant_id}/vector` · rol `admin_firma` | creare sau executie — `vector_salveaza()` | da | neprobat |
+| 130 | vector salveaza | `POST /tenants/{tenant_id}/vector` · rol `admin_firma` | creare sau executie — `vector_salveaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 
 ### T14 — Preluarea unei firme (32)
 
@@ -222,9 +222,9 @@
 |---|---|---|---|---|---|
 | 131 | F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior (balanta echilibrata, d… | `POST /control-fiscal/{tenant_id}/audit-preluare` · rol `admin_firma` | creare sau executie — `control_fiscal_audit_preluare()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 132 | migrare asociati status | `GET /migrare/asociati` · `cere_cabinet` | citire / afisare — `migrare_asociati_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 133 | Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF. | `POST /migrare/fisier` · `cere_cabinet` | creare sau executie — `migrare_fisier()` | nu | neprobat |
-| 134 | Creează câte un tenant pentru fiecare firmă selectată | `POST /migrare/importa` · rol `admin_firma` | creare sau executie — `migrare_importa()` | da | neprobat |
-| 135 | Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF. | `POST /migrare/incarca` · `cere_cabinet` | creare sau executie — `migrare_incarca()` | nu | neprobat |
+| 133 | Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF. | `POST /migrare/fisier` · `cere_cabinet` | creare sau executie — `migrare_fisier()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 134 | Creează câte un tenant pentru fiecare firmă selectată | `POST /migrare/importa` · rol `admin_firma` | creare sau executie — `migrare_importa()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 135 | Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF. | `POST /migrare/incarca` · `cere_cabinet` | creare sau executie — `migrare_incarca()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 136 | migrare istoric status | `GET /migrare/istoric-declaratii` · `cere_cabinet` | citire / afisare — `migrare_istoric_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 137 | migrare mijloace status | `GET /migrare/mijloace-fixe` · `cere_cabinet` | citire / afisare — `migrare_mijloace_status()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 138 | Lista firmelor cabinetului cu status parteneri (are/n-are, cati parteneri). | `GET /migrare/parteneri` · `cere_cabinet` | citire / afisare — `migrare_parteneri_status()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
@@ -232,26 +232,26 @@
 | 140 | Lista firmelor cabinetului cu status salariati (are/n-are, cati). | `GET /migrare/salariati` · `cere_cabinet` | citire / afisare — `migrare_salariati_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 141 | Lista firmelor cabinetului cu status solduri (are/n-are, câte conturi). | `GET /migrare/solduri` · `cere_cabinet` | citire / afisare — `migrare_solduri_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 142 | Starea fiecărui strat de migrare + reminderul (straturi în lucru). | `GET /migrare/status` · `cere_cabinet` | citire / afisare — `migrare_status_citeste()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 143 | Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru). | `POST /migrare/status` · rol `admin_firma` | creare sau executie — `migrare_status_seteaza()` | nu | neprobat |
-| 144 | [p_pfa_rip 20.07] Straturile de migrare aplicabile unui regim (srl/pfa) | `GET /migrare/straturi` · `cere_cabinet` | citire / afisare — `migrare_straturi_aplicabile()` | nu | neprobat |
-| 145 | Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status. | `POST /migrare/valideaza` · `cere_cabinet` | creare sau executie — `migrare_valideaza()` | nu | neprobat |
-| 146 | articole import salveaza | `POST /tenants/{tenant_id}/articole-import` · rol `admin_firma` | creare sau executie — `articole_import_salveaza()` | nu | neprobat |
-| 147 | articole import incarca | `POST /tenants/{tenant_id}/articole-import/incarca` · `cere_cabinet` | creare sau executie — `articole_import_incarca()` | nu | neprobat |
+| 143 | Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru). | `POST /migrare/status` · rol `admin_firma` | creare sau executie — `migrare_status_seteaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 144 | [p_pfa_rip 20.07] Straturile de migrare aplicabile unui regim (srl/pfa) | `GET /migrare/straturi` · `cere_cabinet` | citire / afisare — `migrare_straturi_aplicabile()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 145 | Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status. | `POST /migrare/valideaza` · `cere_cabinet` | creare sau executie — `migrare_valideaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 146 | articole import salveaza | `POST /tenants/{tenant_id}/articole-import` · rol `admin_firma` | creare sau executie — `articole_import_salveaza()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 147 | articole import incarca | `POST /tenants/{tenant_id}/articole-import/incarca` · `cere_cabinet` | creare sau executie — `articole_import_incarca()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 148 | asociati import salveaza | `POST /tenants/{tenant_id}/asociati-import` · rol `admin_firma` | creare sau executie — `asociati_import_salveaza()` | da | probat invalid 03.09.2026 — **golea la intrare vidă, reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1b |
-| 149 | asociati import incarca | `POST /tenants/{tenant_id}/asociati-import/incarca` · `cere_cabinet` | creare sau executie — `asociati_import_incarca()` | da | neprobat |
+| 149 | asociati import incarca | `POST /tenants/{tenant_id}/asociati-import/incarca` · `cere_cabinet` | creare sau executie — `asociati_import_incarca()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 150 | mijloace import salveaza | `POST /tenants/{tenant_id}/mijloace-fixe-import` · rol `admin_firma` | creare sau executie — `mijloace_import_salveaza()` | nu | probat invalid 03.09.2026 — **golea la intrare vidă, reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1b |
-| 151 | mijloace import incarca | `POST /tenants/{tenant_id}/mijloace-fixe-import/incarca` · `cere_cabinet` | creare sau executie — `mijloace_import_incarca()` | nu | neprobat |
+| 151 | mijloace import incarca | `POST /tenants/{tenant_id}/mijloace-fixe-import/incarca` · `cere_cabinet` | creare sau executie — `mijloace_import_incarca()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 152 | Rezumatul partenerilor salvati pentru o firma. | `GET /tenants/{tenant_id}/parteneri` · `cere_cabinet` | citire / afisare — `parteneri_rezumat()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 153 | Salveaza soldurile partenerilor unei firme (inlocuieste ce era). | `POST /tenants/{tenant_id}/parteneri` · rol `admin_firma` | creare sau executie — `parteneri_salveaza()` | nu | probat invalid 03.09.2026 — **golea la intrare vidă, reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1b |
-| 154 | Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. | `POST /tenants/{tenant_id}/parteneri/incarca` · `cere_cabinet` | creare sau executie — `parteneri_incarca()` | nu | neprobat |
-| 155 | retete import salveaza | `POST /tenants/{tenant_id}/retete-import` · rol `admin_firma` | creare sau executie — `retete_import_salveaza()` | nu | neprobat |
-| 156 | retete import incarca | `POST /tenants/{tenant_id}/retete-import/incarca` · `cere_cabinet` | creare sau executie — `retete_import_incarca()` | nu | neprobat |
-| 157 | Import registru incasari-plati la preluarea unui PFA | `POST /tenants/{tenant_id}/rip-import/incarca` · rol `admin_firma` | creare sau executie — `rip_import_incarca()` | nu | neprobat |
-| 158 | Importa salariatii cu CNP valid (upsert pe CNP) | `POST /tenants/{tenant_id}/salariati-import` · rol `admin_firma` | creare sau executie — `salariati_import_salveaza()` | da | neprobat |
-| 159 | Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza). | `POST /tenants/{tenant_id}/salariati-import/incarca` · `cere_cabinet` | creare sau executie — `salariati_import_incarca()` | da | neprobat |
+| 154 | Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. | `POST /tenants/{tenant_id}/parteneri/incarca` · `cere_cabinet` | creare sau executie — `parteneri_incarca()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 155 | retete import salveaza | `POST /tenants/{tenant_id}/retete-import` · rol `admin_firma` | creare sau executie — `retete_import_salveaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 156 | retete import incarca | `POST /tenants/{tenant_id}/retete-import/incarca` · `cere_cabinet` | creare sau executie — `retete_import_incarca()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 157 | Import registru incasari-plati la preluarea unui PFA | `POST /tenants/{tenant_id}/rip-import/incarca` · rol `admin_firma` | creare sau executie — `rip_import_incarca()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 158 | Importa salariatii cu CNP valid (upsert pe CNP) | `POST /tenants/{tenant_id}/salariati-import` · rol `admin_firma` | creare sau executie — `salariati_import_salveaza()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 159 | Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza). | `POST /tenants/{tenant_id}/salariati-import/incarca` · `cere_cabinet` | creare sau executie — `salariati_import_incarca()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 | 160 | Rezumatul soldurilor salvate pentru o firmă. | `GET /tenants/{tenant_id}/solduri` · `cere_cabinet` | citire / afisare — `solduri_rezumat()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 161 | Salvează soldurile inițiale ale unei firme (înlocuiește ce era). | `POST /tenants/{tenant_id}/solduri` · rol `admin_firma` | creare sau executie — `solduri_salveaza()` | da | neprobat |
-| 162 | Parsează o balanță și întoarce preview (nu salvează). | `POST /tenants/{tenant_id}/solduri/incarca` · `cere_cabinet` | creare sau executie — `solduri_incarca()` | da | neprobat |
+| 161 | Salvează soldurile inițiale ale unei firme (înlocuiește ce era). | `POST /tenants/{tenant_id}/solduri` · rol `admin_firma` | creare sau executie — `solduri_salveaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
+| 162 | Parsează o balanță și întoarce preview (nu salvează). | `POST /tenants/{tenant_id}/solduri/incarca` · `cere_cabinet` | creare sau executie — `solduri_incarca()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 6 |
 
 ### T15 — Salariatul — angajare, contract, adeverință, REGES (17)
 

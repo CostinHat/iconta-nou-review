@@ -349,6 +349,27 @@ def salveaza_date(conn, date, tenant_id=None):
             return {"ok": False, "camp": camp,
                     "mesaj": "%s e obligatoriu — fără el nu se pot depune: %s."
                              % (ETICHETE.get(camp, camp), ", ".join(decl))}
+    # [lotul 6, 04.09.2026] CUI-ul firmei: cifra de control, si SIMETRIA celor doua locuri.
+    # Probat: `{"cui": "RO1234567890"}` intra fara nicio verificare, si numai in `firma_profil` —
+    # `public.tenants.cui` ramanea cel vechi. Validatorul exista deja in aplicatie, pentru
+    # PARTENERI (`solduri_parteneri_api.valideaza_cui`); firma proprie n-avea niciunul.
+    if "cui" in curat:
+        _cui = (curat["cui"] or "").strip()
+        if _cui:
+            from core.solduri_parteneri_api import valideaza_cui as _vcui
+            _ok, _motiv = _vcui(_cui)
+            if not _ok:
+                return {"ok": False, "camp": "cui",
+                        "mesaj": "CUI-ul %s nu e valid (%s). CUI-ul firmei intră în fiecare "
+                                 "declarație depusă — unul greșit nu se oprește aici, îl respinge "
+                                 "ANAF, după depunere." % (_cui, _motiv)}
+            if tenant_id is None:
+                return {"ok": False, "camp": "cui",
+                        "mesaj": "CUI-ul se schimbă prin calea care atinge amândouă locurile în "
+                                 "care e scris; cererea asta n-a spus despre ce firmă e vorba."}
+            from core import tenant_provisioning as _tp
+            _tp.alege_cui(conn, tenant_id, _cui)
+            curat.pop("cui")     # scris deja, simetric — nu se mai scrie o data, doar aici
     # [F182] cont venit implicit: optional, dar daca vine trebuie sa fie cont de venit (clasa 70) valid.
     # Refuz un cont invalid la sursa — altfel emiterea ar scrie o nota contabila pe un cont gresit.
     if "cont_venit_implicit" in (date or {}):

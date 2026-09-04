@@ -3,6 +3,27 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 04.09.2026 (29) — Lotul se măsoară în sesiuni, nu în ore
+
+**Costin, verbatim:** *„Mărește lotul: grupează mai multe trasee într-unul singur, nu unul-două.
+Ținta e cât încape într-o sesiune fără `/clear`, nu cât încape într-o oră. O singură poartă și o
+singură scriere de registre pe lot, la sfârșit — nu una la fiecare traseu. Raportul rămâne la
+sfârșitul lotului, dar nu aștepți nimic: continui direct cu următorul."*
+
+**Ce se schimbă, măsurat.** Loturile 1–5 aveau între 2 și 11 unități, fiecare cu poarta lui (23 de
+minute) și cu scrierea lui de registre. Lotul 6 are **45 de unități în opt trasee**, o singură
+poartă și o singură scriere. *Costul fix al unui lot — poarta, registrele, raportul — nu depinde de
+mărimea lui; deci un lot mic îl plătește de tot atâtea ori de câte ori e mic.*
+
+**Ce NU se schimbă, și e chiar motivul pentru care creșterea e sigură:** probele se scriu tot pe
+clase, reparațiile tot la sursă, iar reprobarea tot pe instanță proaspătă. La 45 de unități, scrisul
+probelor una câte una ar fi devenit el însuși o sursă de greșeli — de-aia lotul 6 are trei
+generatoare (perioadă, import gol, fișier necitit) care acoperă 33 din cele 63 de probe.
+
+**Riscul pe care îl aduce, scris:** un lot mare ține mai mult cod nereprobat deodată. Se plătește
+prin *reprobarea completă* la sfârșit — care, în lotul 6, a și găsit **trei `500` introduse de
+reparațiile mele**. *Reprobarea nu e o formalitate de confirmare; e a doua probă.*
+
 ## 04.09.2026 (28) — Campania nu-și mai cere permisiunea la fiecare lot
 
 **Costin, verbatim:** *„Nu mai întreba care traseu urmează. Le iei în ordinea din listă, unul după

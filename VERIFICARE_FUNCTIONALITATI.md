@@ -438,3 +438,105 @@ o trecere cu date valide. *Se scrie ce s-a măsurat, nu ce am vrut să măsor.*
   telegrafic** (2 locuri, `HTTPException`) · **nume care nu e al cererii** (3).
 - **cea mai largă reparație a campaniei**: `common.cota_ceruta` verifică acum cota la data
   operațiunii — **35 de operațiuni** apărate deodată, fără niciun apelant modificat.
+
+---
+
+## LOT 6 — OPT trasee într-unul singur (63 de probe INVALIDE pe 45 de unități)
+
+**Costin, 04.09.2026:** *„Mărește lotul: grupează mai multe trasee într-unul singur, nu unul-două.
+Ținta e cât încape într-o sesiune fără `/clear`, nu cât încape într-o oră. O singură poartă și o
+singură scriere de registre pe lot, la sfârșit."* Lotul ăsta e primul de mărimea cerută.
+
+| traseu | unități | ce e |
+|---|---|---|
+| **T-SPV** | 3 | conectorul SPV/ANAF |
+| **T07** | 4 | extrasul bancar și potrivirea |
+| **T09** | 2 | casa și registrul de casă |
+| **T10** | 3 | inventarierea |
+| **T11** | 6 | închiderea lunii |
+| **T12** | 5 | închiderea anului și situațiile financiare |
+| **T13** | 4 | trecerea de regim fiscal |
+| **T14** | 18 | preluarea unei firme |
+
+*T08 nu apare: unitățile lui au fost probate în lotul 5, ca parte a suprafeței achizițiilor.*
+
+**Probele s-au scris pe CLASE, nu una câte una.** La 45 de unități, scrisul de mână ar fi fost el
+însuși o sursă de greșeli: trei generatoare — perioadă imposibilă, import JSON cu `randuri` gol,
+încărcare a aceluiași `.txt` care nu e tabel — acoperă 33 din cele 63 de probe.
+
+**Ce s-a lăsat în urmă:** nimic — **dar o probă a schimbat CUI-ul firmei** și a trebuit pus la loc
+cu mâna (v. mai jos). Verificat la final: `facturi` 3, `inregistrari` 4, `plan_conturi` 185,
+`articole` 9, `salariati` 2, `firma_profil.cui` = `public.tenants.cui` = `95141537`, `api_chei` 0.
+
+### Cel mai grav: CUI-ul firmei — nicio verificare, și scris într-un singur loc din două
+
+| # | rută | ce s-a introdus | ce a făcut aplicația | reparat |
+|---|---|---|---|---|
+| 126 | `POST /tenants/{id}/firma-profil/date` | `{"cui": "RO1234567890"}` — cifră de control greșită | **`200`, ȘI L-A SCRIS.** Măsurat imediat după: `firma_profil.cui` devenise `RO1234567890`, iar `public.tenants.cui` rămăsese `95141537` | **DA**, în două părți |
+
+**Două lucruri deodată, și al doilea nu era numit nicăieri:**
+
+1. **Niciun control** — deși aplicația **știe** să valideze un CUI: `solduri_parteneri_api.valideaza_cui`
+   verifică cifra de control a **partenerilor**. Firma proprie n-avea niciun control. *A cincea
+   instanță a clasei „știe într-un loc și nu și în celălalt", după cont/fișă (lot 3),
+   salariat/concediu (lot 4) și celelalte.*
+2. **SORA LUI R81.** CUI-ul firmei stă în **două locuri** — `public.tenants.cui` și
+   `{schema}.firma_profil.cui` — iar ecranul „Date firmă" scria numai în al doilea. R81 a închis
+   exact clasa asta pentru **denumire**, cu un scriitor unic care atinge amândouă locurile în
+   aceeași tranzacție; **CUI-ul a rămas afară, și nimeni n-o numise.** Acum are `alege_cui`, scris
+   lângă `alege_denumirea`, cu aceeași regulă: nu comite, fiindcă simetria **este** proprietatea
+   tranzacției.
+
+*CUI-ul firmei intră în fiecare declarație depusă. Unul greșit nu se oprește la noi — îl respinge
+ANAF, după depunere.* Refuzul de acum: `422` · *„CUI-ul RO1234567890 nu e valid (cifra de control).
+CUI-ul firmei intră în fiecare declarație depusă — unul greșit nu se oprește aici, îl respinge ANAF,
+după depunere."*
+
+### Restul, pe clase
+
+| clasă | unde | ce era | ce e acum |
+|---|---|---|---|
+| **cădere `500`** | `#105` `casa/registru?luna=13` · `#103` `casa/operatiuni` cu `data=2026-02-31` · `#112` `perioada/confirma?luna=13` | `Internal Server Error` | `422`, cu câmpul numit |
+| **afirmație despre o perioadă care nu există** | `#111` `facturi/perioada?luna=13` | `200` · `{"confirmat":false,"poate_confirma":true}` — **un verdict despre închiderea lunii 13** | `422` · *„luna invalidă: 13"* |
+| **tăcere pe perioadă** | `#105` `an=1900` · `#117` istoric (×2) · `#118` categorie-mărime · `#120`/`#122` XML-urile de bilanț | `200` cu listă goală, sau un artefact cu **motiv scris** despre exercițiul 1900 | `422`, prin `_cere_perioada` — al **cincisprezecelea** apelant al aceluiași ajutor |
+| **„am făcut" despre ce nu există** | `#113` `perioada/redeschide?luna=13` | `200` · `{"ok":true}` — a *redeschis* luna 13 | `422` |
+| **tăcere pe nomenclator** | `#95` `banca/reconciliere?status=INEXISTENT` · `#144` `migrare/straturi?tip_firma=inexistent` | `200` cu listă goală · `200` cu **lista întreagă**, ca și cum ar fi răspunsul pentru tipul cerut | `422`, cu nomenclatorul enumerat |
+| **actul absent raportat ca rezultatul lui** | `#109` `stocuri/inventar` cu corp gol | `200` · `{"rezultate":[]}` — „am inventariat și n-am găsit diferențe" despre o numărătoare care nu s-a făcut | `422` · *„Un inventar fără linii nu e o inventariere fără diferențe — e o inventariere care nu s-a făcut."* |
+| **document oficial pe o perioadă imposibilă** | `#107` `d406-stocuri` cu sfârșit înaintea începutului | `200` cu **XML SAF-T generat** | `422`, plus mesajul de dată care spune acum **care** din cele două e greșită |
+| **valoare fără formă, acceptată** | `#127` `firma-profil/model` cu `culoare="ceva-ce-nu-e-culoare"` | `200` — și culoarea ajunge în PDF-ul facturii, unde generatorul o citește ca hex | `422`, cu forma cerută și un exemplu |
+| **cerere fără conținut raportată ca succes** | `#146` `articole-import` · `#158` `salariati-import`, cu `randuri=[]` | `200` · `{"create":0}` / `{"importati":0}` | `422` — **a doua și a treia cale** a clasei închise în lotul 1b |
+| **cifră falsă în refuz** | `#158` `salariati-import` cu un rând fără câmpuri | *„**2 rânduri** nu pot intra"* pentru **un** rând — numără erorile, nu rândurile | *„Un rând nu poate intra…"* — **a doua instanță** a defectului reparat în lotul 1, cu aceleași cuvinte |
+| **fișier necitit raportat ca fișier gol** | `#133` `migrare/fisier` · `#135` `migrare/incarca` · `#154` `parteneri/incarca` | `200` cu rezultate goale, pe un `.txt` cu o linie de proză | `422` · *„un fișier necitit nu e un fișier gol"*. Ruta `istoric-declaratii-import/incarca` refuza deja, din lotul 1 — **a șasea instanță** a clasei „știe într-un loc, nu și în celălalt" |
+| **mesaj care nu numește câmpul** | `#103` `categorie necunoscută: None` · `#107` `date format YYYY-MM-DD` | telegrafic, fără nomenclator și fără să spună care dată | propoziții, cu valorile posibile enumerate |
+
+### Trei `500` introduse de reparațiile MELE, prinse la reprobare
+
+Reprobarea a scos trei căderi noi, toate ale mele: refuzul importului de articole ieșea ca `500`
+(ruta nu prindea `ValueError`), iar cele două refuzuri de fișier aveau `%%s` într-un șir interpolat.
+*Reprobarea nu e o formalitate de confirmare — e a doua probă, și a găsit ce prima n-avea cum.*
+
+### Ce n-a fost defect, deși a răspuns `200`
+
+- **`#2` `spv/autorizare`** întoarce URL-ul de autorizare — asta e treaba ei; **`#3` `spv/stare`**
+  spune `{"conectat": false}`, corect.
+- **`#1` `anaf/oauth/callback`** cu un cod inventat redirecționează la pagina de retur **cu
+  `?eroare=`** — verificat în cod, nu dedus din codul HTTP.
+- **`#109`** cu articol inexistent sau cantitate negativă răspunde `200`, dar cu `eroare` **pe
+  linie** (`cvi-a999999-faptic`) — contractul field-keyed al ecranului. Refuzul există, la nivelul
+  la care ecranul îl poate arăta.
+- **`#126`** cu corp gol răspunde `200` cu profilul neschimbat. Un „salvează" fără câmpuri e un
+  no-op; `{"ok": true}` e discutabil, dar nu afirmă nimic fals.
+- **`#119` / `#121`** (validarea bilanțului) refuză `an=1900` — dar pentru **alt motiv**: lipsește
+  numărul de la registrul comerțului, verificat mai devreme. Refuzul e corect și motivat; anul nu
+  ajunge să fie evaluat. *Se scrie ce s-a măsurat.*
+
+### Cifre
+
+- probe INVALIDE rulate: **63**, pe **45 de unități**, în **opt trasee** · defecte găsite: **20** ·
+  reparate: **20** · reprobate: **20**, toate schimbate.
+- distribuția la ultima trecere: **40 × 422 · 15 × 400 · 2 × 404 · 6 × 200** (toate șase explicate
+  mai sus) · **0 × 500**. Înainte: **3 × 500** și **24 × 200**.
+- **niciun defect al probei** — a doua oară la rând, după ce regula „corp de bază valid, minus o
+  singură abatere" a intrat în ham la lotul 5.
+- `_cere_perioada`, ajutorul scris în lotul 3 pentru **patru** rute, are acum **cincisprezece**
+  apelanți. *Fiecare lot îl găsește într-un loc nou.*

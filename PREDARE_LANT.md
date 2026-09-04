@@ -4,12 +4,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-04**, **a patra a zilei** — scrisă în noaptea de 03 spre 04.09, la
+- **ultima rescriere**: **2026-09-04**, **a cincea a zilei** — scrisă în noaptea de 03 spre 04.09, la
   capătul lotului 2. Actualizare, nu rescriere: lotul 2 al campaniei, cele trei decizii primite de la
   Costin, și o restanță EXTERNĂ nouă. *Restul documentului e cel de la a doua rescriere din 03.09 și
   rămâne valabil.* **Ziua s-a schimbat sub tură** — capcana 6 —, iar commitul registrului a așteptat
   miezul nopții: cu antetul pe 03.09 și commitul pe 04.09, poarta ar fi căzut la tura următoare.
-- **pe commit**: `490534e7` — ultimul commit intrat. *Predarea se scrie ÎNAINTE
+- **pe commit**: `80468016` — ultimul commit intrat. *Predarea se scrie ÎNAINTE
   de commitul care o poartă; numele de aici e al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **DE CE ÎNCĂ O DATĂ**: trei afirmații ale documentului de acum câteva ore au devenit false.
@@ -54,9 +54,9 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
 | **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
 | **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date**: cele 75 de ecrane + **289 de rute cu câmpuri de completat**. Tăiat de Costin pe 03.09, fiindcă 553 depășea pragul de la care comanda cerea oprire |
 | **ce a ieșit, marcat în listă cu motivul** | **189** = 138 de rute fără câmpuri de completat · 14 joburi de fundal (nu primesc nimic de la un om) · 37 de instrumente din `scripts/` (nu le atinge un contabil) |
-| **probate** | **80** (lot 1 = T01, 11 · lot 1b = 3 căi de import · lot 2 = T02, 11 · lot 3 = T05, 32 · lot 4 = T03+T04, 12 · **lot 5 = facturile primite și achizițiile, 11**) |
-| **RĂMASE DE PROBAT** | **284** |
-| **defecte** | găsite **61**, reparate **61**, reprobate **61** *(lot 1: 11 · lot 2: 19 · lot 3: 11 · lot 4: 10 · lot 5: 10)* |
+| **probate** | **125** (lot 1 = T01, 11 · lot 1b = 3 căi de import · lot 2 = T02, 11 · lot 3 = T05, 32 · lot 4 = T03+T04, 12 · lot 5 = achizițiile, 11 · **lot 6 = OPT trasee, 45**) |
+| **RĂMASE DE PROBAT** | **239** |
+| **defecte** | găsite **81**, reparate **81**, reprobate **81** *(lot 1: 11 · lot 2: 19 · lot 3: 11 · lot 4: 10 · lot 5: 10 · lot 6: 20)* |
 
 ### Unde stau rezultatele — două fișiere, două roluri
 
@@ -67,7 +67,7 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
   după reparație**, ce s-a introdus, ce s-a reparat. Aici stă și secțiunea **„ce a rămas nereparat,
   și de ce"** — locul recunoscut de garda din `commit-msg` (al patrulea, adăugat pe 03.09).
 - **`frontend_test/proba_verificare_functionalitati.py`** — hamul. Cereri reale, token emis
-  server-side, corpul răspunsului **neatins**. Loturi: `T01`, `IMPORT-GOL`, `T02`, `T05`, `T03T04`, **`ACHIZITII`**. Lotul `T02`
+  server-side, corpul răspunsului **neatins**. Loturi: `T01`, `IMPORT-GOL`, `T02`, `T05`, `T03T04`, `ACHIZITII`, **`LOT6`**. Lotul `T02`
   își emite singur cheia de API (prin `POST /cabinet/api-chei`, nu printr-un `INSERT`), o revocă și
   îi șterge rândul, și **pune numerotarea firmei la loc în `finally`, verificând starea, nu că a
   trimis cererea**. Subiect: cabinetul
@@ -122,9 +122,14 @@ Costin 04.09.2026: *„Le iei în ordinea din listă, unul după altul, până t
 rămase. Raportezi la sfârșitul fiecărui lot, dar nu aștepți răspuns ca să continui. Te oprești doar
 dacă apare ceva ce contrazice o decizie luată."*).
 
-Făcute: T01, T02, T03, T04, T05, și suprafața achizițiilor (T06 și T08 acoperite integral pe
-perimetru; din T28 și T29, numai achizițiile). Au rămas **284** de unități. **Următorul în ordine:
-T07 — extrasul bancar și potrivirea.**
+**LOTURILE SUNT ACUM MARI** (`DECIZII.md` 29, Costin 04.09.2026: *„grupează mai multe trasee
+într-unul singur, nu unul-două. Ținta e cât încape într-o sesiune fără `/clear`… O singură poartă și
+o singură scriere de registre pe lot, la sfârșit."*). Lotul 6 a avut **opt trasee și 45 de unități**.
+
+Făcute: T01–T05, suprafața achizițiilor (T06, T08, parte din T28/T29), T-SPV, T07, T09–T14. Au rămas
+**239** de unități. **Următorul în ordine: T15 — salariatul (11), T16 — pontajul (4), T17 — plata
+salariilor (2), T18 — chitanța (2), T19 — scadențarul (1), T20 — mișcarea de stoc (9), și mai
+departe.**
 Probarea cu **date valide** (lanțul complet până la rândul corect din declarație) **n-a început
 pentru niciun lot**: e partea scumpă a temei și n-a fost comandată încă.
 
@@ -344,7 +349,7 @@ ora commitului*.
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **831** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **844** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

@@ -23,6 +23,7 @@ nu se ocroteste nimic.
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T05
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T03T04
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py ACHIZITII
+    ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T07T09T10
 """
 import json
 import os
@@ -283,6 +284,214 @@ def probe_T02(cheie=None):
           "linii": [dict(linie_ok, cota_tva=99)]}, "cota_tva=99"),
     ]
     return p
+
+
+#: Rutele care primesc o PERIOADA: (nr, cale-sablon, are_luna).
+_PERIOADA = [
+    (105, "/tenants/%d/casa/registru", True),
+    (106, "/tenants/%d/d406-active", False),
+    (111, "/tenants/%d/facturi/perioada", True),
+    (117, "/tenants/%d/perioade-blocate/istoric", True),
+    (118, "/tenants/%d/categorie-marime", False),
+    (120, "/tenants/%d/s1003-xml", False),
+    (122, "/tenants/%d/s1005-xml", False),
+]
+
+#: Importurile care primesc `randuri` prin JSON. Clasa „import care goleste la intrare vida" a fost
+#: inchisa in lotul 1b pe trei dintre ele; aici se probeaza CELELALTE, plus randul fara campuri.
+_IMPORT_JSON = [
+    (146, "/tenants/%d/articole-import"),
+    (155, "/tenants/%d/retete-import"),
+    (158, "/tenants/%d/salariati-import"),
+    (161, "/tenants/%d/solduri"),
+]
+
+#: Incarcarile de fisier (multipart). Proba: un `.txt` cu o linie de proza — nici CSV, nici XLSX.
+_INCARCARI = [
+    (94, "/tenants/%d/banca/parse-extras"),
+    (97, "/tenants/%d/banca/reconciliere/import"),
+    (147, "/tenants/%d/articole-import/incarca"),
+    (149, "/tenants/%d/asociati-import/incarca"),
+    (151, "/tenants/%d/mijloace-fixe-import/incarca"),
+    (154, "/tenants/%d/parteneri/incarca"),
+    (156, "/tenants/%d/retete-import/incarca"),
+    (157, "/tenants/%d/rip-import/incarca"),
+    (159, "/tenants/%d/salariati-import/incarca"),
+    (162, "/tenants/%d/solduri/incarca"),
+]
+
+#: Incarcarile de la nivel de CABINET (fara tenant in cale).
+_INCARCARI_CABINET = [(133, "/migrare/fisier"), (135, "/migrare/incarca")]
+
+
+def probe_LOT6():
+    """LOTUL 6 — opt trasee, 45 de unitati. V. antetul modulului."""
+    F = FIRMA
+    p = []
+    for nr, cale, are_luna in _PERIOADA:
+        c = cale % F
+        if are_luna:
+            p.append((nr, "GET %s — luna 13" % cale.split("/")[-1], "GET",
+                      c + "?an=2026&luna=13", None, "luna=13"))
+        p.append((nr, "GET %s — an 1900" % cale.split("/")[-1], "GET",
+                  c + ("?an=1900&luna=1" if are_luna else "?an=1900"), None, "an=1900"))
+    for nr, cale in _IMPORT_JSON:
+        p.append((nr, "POST %s — randuri goale" % cale.split("/")[-1], "POST", cale % F,
+                  {"randuri": []}, "randuri=[]"))
+        p.append((nr, "POST %s — rand fara campuri" % cale.split("/")[-1], "POST", cale % F,
+                  {"randuri": [{}]}, "randuri=[{}]"))
+    p += [
+        # ── T-SPV ────────────────────────────────────────────────────────────
+        (2, "GET /spv/autorizare — fara parametri", "GET", "/spv/autorizare", None,
+         "niciun parametru"),
+        (3, "GET /spv/stare — pe un cont fara SPV", "GET", "/spv/stare", None, "cont fara SPV"),
+        (1, "GET /anaf/oauth/callback — cod de autorizare inventat", "GET",
+         "/anaf/oauth/callback?code=cod-inventat&state=stare-inventata", None,
+         "code=cod-inventat"),
+        # ── T07 ──────────────────────────────────────────────────────────────
+        (95, "GET /banca/reconciliere — status inexistent", "GET",
+         "/tenants/%d/banca/reconciliere?status=INEXISTENT" % F, None, "status=INEXISTENT"),
+        (98, "POST /banca/reconciliere/{id}/conteaza — linie inexistenta", "POST",
+         "/tenants/%d/banca/reconciliere/%d/conteaza" % (F, INEXISTENT), {}, "linie_id=999999"),
+        # ── T09 ──────────────────────────────────────────────────────────────
+        (103, "POST /casa/operatiuni — corp gol", "POST", "/tenants/%d/casa/operatiuni" % F, {},
+         "corp JSON gol"),
+        (103, "POST /casa/operatiuni — categorie inexistenta", "POST",
+         "/tenants/%d/casa/operatiuni" % F,
+         {"data": "2026-09-04", "categorie": "ceva-ce-nu-exista", "suma": 100},
+         "categorie=ceva-ce-nu-exista"),
+        (103, "POST /casa/operatiuni — suma negativa", "POST",
+         "/tenants/%d/casa/operatiuni" % F,
+         {"data": "2026-09-04", "categorie": "incasare_client", "suma": -100}, "suma=-100"),
+        (103, "POST /casa/operatiuni — data inexistenta in calendar", "POST",
+         "/tenants/%d/casa/operatiuni" % F,
+         {"data": "2026-02-31", "categorie": "incasare_client", "suma": 100},
+         "data=2026-02-31"),
+        # ── T10 ──────────────────────────────────────────────────────────────
+        (107, "GET /d406-stocuri — date inexistente in calendar", "GET",
+         "/tenants/%d/d406-stocuri?data_start=2026-02-31&data_end=2026-03-02&cui=RO1234567897" % F,
+         None, "data_start=2026-02-31"),
+        (107, "GET /d406-stocuri — sfarsit inaintea inceputului", "GET",
+         "/tenants/%d/d406-stocuri?data_start=2026-09-30&data_end=2026-09-01&cui=RO1234567897" % F,
+         None, "data_end < data_start"),
+        (109, "POST /stocuri/inventar — corp gol", "POST", "/tenants/%d/stocuri/inventar" % F, {},
+         "corp JSON gol"),
+        (109, "POST /stocuri/inventar — articol inexistent", "POST",
+         "/tenants/%d/stocuri/inventar" % F,
+         {"data": "2026-09-04", "linii": [{"articol_id": INEXISTENT, "faptic": 5}]},
+         "articol_id=999999"),
+        (109, "POST /stocuri/inventar — cantitate faptica negativa", "POST",
+         "/tenants/%d/stocuri/inventar" % F,
+         {"data": "2026-09-04", "linii": [{"articol_id": 1, "faptic": -5}]}, "faptic=-5"),
+        # ── T11 inchiderea lunii ─────────────────────────────────────────────
+        (112, "POST /facturi/perioada/confirma — corp gol", "POST",
+         "/tenants/%d/facturi/perioada/confirma" % F, {}, "corp JSON gol"),
+        (112, "POST /facturi/perioada/confirma — luna 13", "POST",
+         "/tenants/%d/facturi/perioada/confirma" % F, {"an": 2026, "luna": 13}, "luna=13"),
+        (113, "POST /facturi/perioada/redeschide — luna 13", "POST",
+         "/tenants/%d/facturi/perioada/redeschide" % F, {"an": 2026, "luna": 13}, "luna=13"),
+        (116, "POST /perioade-blocate — corp gol", "POST",
+         "/tenants/%d/perioade-blocate" % F, {}, "corp JSON gol"),
+        (116, "POST /perioade-blocate — luna 13", "POST", "/tenants/%d/perioade-blocate" % F,
+         {"an": 2026, "luna": 13, "motiv": "proba"}, "luna=13"),
+        (116, "POST /perioade-blocate — motiv gol", "POST", "/tenants/%d/perioade-blocate" % F,
+         {"an": 2026, "luna": 8, "motiv": ""}, "motiv=\"\""),
+        (114, "DELETE /perioade-blocate — perioada neblocata", "DELETE",
+         "/tenants/%d/perioade-blocate?an=1995&luna=1" % F, None, "an=1995 (perioada neblocata)"),
+        # ── T12 inchiderea anului ────────────────────────────────────────────
+        (119, "POST /s1003-valideaza — an 1900", "POST",
+         "/tenants/%d/s1003-valideaza?an=1900" % F, {}, "an=1900"),
+        (121, "POST /s1005-valideaza — an 1900", "POST",
+         "/tenants/%d/s1005-valideaza?an=1900" % F, {}, "an=1900"),
+        # ── T13 trecerea de regim ────────────────────────────────────────────
+        (126, "POST /firma-profil/date — corp gol", "POST",
+         "/tenants/%d/firma-profil/date" % F, {}, "corp JSON gol"),
+        (126, "POST /firma-profil/date — CUI care nu trece cifra de control", "POST",
+         "/tenants/%d/firma-profil/date" % F, {"cui": "RO1234567890"},
+         "cui=RO1234567890 (cifra de control gresita)"),
+        (127, "POST /firma-profil/model — culoare care nu e culoare", "POST",
+         "/tenants/%d/firma-profil/model" % F, {"culoare": "ceva-ce-nu-e-culoare"},
+         "culoare=ceva-ce-nu-e-culoare"),
+        (128, "POST /firma-profil/regim-tva — regim inexistent", "POST",
+         "/tenants/%d/firma-profil/regim-tva" % F, {"regim": "ceva-ce-nu-exista"},
+         "regim=ceva-ce-nu-exista"),
+        (130, "POST /vector — corp gol", "POST", "/tenants/%d/vector" % F, {}, "corp JSON gol"),
+        (130, "POST /vector — periodicitate inexistenta", "POST", "/tenants/%d/vector" % F,
+         {"tip_decont": "ceva-ce-nu-exista"}, "tip_decont=ceva-ce-nu-exista"),
+        # ── T14 preluarea unei firme ─────────────────────────────────────────
+        (134, "POST /migrare/importa — corp gol", "POST", "/migrare/importa", {}, "corp JSON gol"),
+        (143, "POST /migrare/status — corp gol", "POST", "/migrare/status", {}, "corp JSON gol"),
+        (144, "GET /migrare/straturi — tip de firma inexistent", "GET",
+         "/migrare/straturi?tip_firma=ceva-ce-nu-exista", None, "tip_firma=ceva-ce-nu-exista"),
+        (145, "POST /migrare/valideaza — corp gol", "POST", "/migrare/valideaza", {},
+         "corp JSON gol"),
+    ]
+    # incarcarile de fisier: acelasi `.txt` care nu e tabel, pe toate douasprezece
+    for nr, cale in _INCARCARI:
+        p.append((nr, "POST %s — fisier text in loc de tabel" % cale.split("/")[-2:][0], "POST",
+                  cale % F, "FISIER", "fisier .txt cu o linie de proza"))
+    for nr, cale in _INCARCARI_CABINET:
+        p.append((nr, "POST %s — fisier text in loc de tabel" % cale, "POST", cale, "FISIER",
+                  "fisier .txt cu o linie de proza"))
+    return p
+
+
+def probe_T07T09T10():
+    """LOTUL 6 — extrasul bancar (T07), casa (T09), inventarierea (T10). Noua unitati in
+    perimetrul etapei 1: `#94`, `#95`, `#97`, `#98` · `#103`, `#105` · `#106`, `#107`, `#109`.
+
+    **Corp de baza VALID, minus o singura abatere** — regula scrisa la lotul 5, dupa patru grupuri
+    de probe oarbe."""
+    F = FIRMA
+    casa_ok = {"data": "2026-09-04", "categorie": "incasare_client", "suma": 100,
+               "document": "CH-1"}
+    return [
+        # ── T07 extrasul bancar ──────────────────────────────────────────────
+        (95, "GET /banca/reconciliere — status inexistent", "GET",
+         "/tenants/%d/banca/reconciliere?status=INEXISTENT" % F, None, "status=INEXISTENT"),
+        (98, "POST /banca/reconciliere/{id}/conteaza — linie inexistenta", "POST",
+         "/tenants/%d/banca/reconciliere/%d/conteaza" % (F, INEXISTENT), {},
+         "linie_id=999999"),
+        (98, "POST /banca/reconciliere/{id}/conteaza — cont inexistent", "POST",
+         "/tenants/%d/banca/reconciliere/%d/conteaza" % (F, INEXISTENT), {"cont": "9999"},
+         "cont=9999"),
+        # ── T09 casa ─────────────────────────────────────────────────────────
+        (103, "POST /casa/operatiuni — corp gol", "POST", "/tenants/%d/casa/operatiuni" % F, {},
+         "corp JSON gol"),
+        (103, "POST /casa/operatiuni — categorie inexistenta", "POST",
+         "/tenants/%d/casa/operatiuni" % F, dict(casa_ok, categorie="ceva-ce-nu-exista"),
+         "categorie=ceva-ce-nu-exista"),
+        (103, "POST /casa/operatiuni — suma negativa", "POST",
+         "/tenants/%d/casa/operatiuni" % F, dict(casa_ok, suma=-100), "suma=-100"),
+        (103, "POST /casa/operatiuni — data inexistenta in calendar", "POST",
+         "/tenants/%d/casa/operatiuni" % F, dict(casa_ok, data="2026-02-31"),
+         "data=2026-02-31 (31 februarie)"),
+        (105, "GET /casa/registru — luna 13", "GET",
+         "/tenants/%d/casa/registru?an=2026&luna=13" % F, None, "luna=13"),
+        (105, "GET /casa/registru — an 1900", "GET",
+         "/tenants/%d/casa/registru?an=1900&luna=1" % F, None, "an=1900"),
+        # ── T10 inventarierea ────────────────────────────────────────────────
+        (106, "GET /d406-active — an 1900", "GET",
+         "/tenants/%d/d406-active?an=1900" % F, None, "an=1900"),
+        (107, "GET /d406-stocuri — date inexistente in calendar", "GET",
+         "/tenants/%d/d406-stocuri?data_start=2026-02-31&data_end=2026-03-02&cui=RO1234567897" % F,
+         None, "data_start=2026-02-31"),
+        (107, "GET /d406-stocuri — sfarsit inaintea inceputului", "GET",
+         "/tenants/%d/d406-stocuri?data_start=2026-09-30&data_end=2026-09-01&cui=RO1234567897" % F,
+         None, "data_end < data_start"),
+        (107, "GET /d406-stocuri — CUI care nu trece cifra de control", "GET",
+         "/tenants/%d/d406-stocuri?data_start=2026-09-01&data_end=2026-09-30&cui=RO1234567890" % F,
+         None, "cui=RO1234567890 (cifra de control gresita)"),
+        (109, "POST /stocuri/inventar — corp gol", "POST",
+         "/tenants/%d/stocuri/inventar" % F, {}, "corp JSON gol"),
+        (109, "POST /stocuri/inventar — articol inexistent", "POST",
+         "/tenants/%d/stocuri/inventar" % F,
+         {"data": "2026-09-04", "linii": [{"articol_id": INEXISTENT, "faptic": 5}]},
+         "articol_id=999999"),
+        (109, "POST /stocuri/inventar — cantitate faptica negativa", "POST",
+         "/tenants/%d/stocuri/inventar" % F,
+         {"data": "2026-09-04", "linii": [{"articol_id": 1, "faptic": -5}]}, "faptic=-5"),
+    ]
 
 
 def probe_ACHIZITII():
@@ -666,7 +875,9 @@ def _ruleaza_cu_cheie(lot, tok):
     out = []
     try:
         for nr, eticheta, metoda, cale, payload, introdus in {"T02": probe_T02, "T05": probe_T05, "T03T04": probe_T03T04,
-                          "ACHIZITII": probe_ACHIZITII}[lot]():
+                          "ACHIZITII": probe_ACHIZITII,
+                          "T07T09T10": probe_T07T09T10,
+                          "LOT6": probe_LOT6}[lot]():
             antete, t = None, tok
             if CU_CHEIE_API in cale:
                 t = None
@@ -676,7 +887,14 @@ def _ruleaza_cu_cheie(lot, tok):
                     antete = {"X-Api-Key": "ick_cheie-care-nu-exista"}
                 else:
                     antete = {"X-Api-Key": cheie["cheie"]}
-            cod, corp = cere(metoda, cale, payload, t, antete=antete)
+            if payload == "FISIER":
+                # [lotul 6] Douasprezece rute de incarcare primesc acelasi fisier: un `.txt` cu o
+                # linie de proza. Clasa e comuna, deci si proba.
+                _b, _tip = multipart("fisier", "nu_e_un_tabel.txt",
+                                     "linia unu, care nu e nici CSV nici XLSX")
+                cod, corp = cere(metoda, cale, None, t, brut=_b, tip_continut=_tip)
+            else:
+                cod, corp = cere(metoda, cale, payload, t, antete=antete)
             out.append({"nr": nr, "eticheta": eticheta, "metoda": metoda, "cale": cale,
                         "introdus": introdus, "cod": cod, "corp": corp})
             _tipar(nr, eticheta, introdus, cod, corp)
@@ -720,7 +938,7 @@ def _sterge_cheia(kid):
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
-    if lot in ("T02", "T05", "T03T04", "ACHIZITII"):
+    if lot in ("T02", "T05", "T03T04", "ACHIZITII", "T07T09T10", "LOT6"):
         return _ruleaza_cu_cheie(lot, tok)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []

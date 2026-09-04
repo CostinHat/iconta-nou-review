@@ -1870,7 +1870,11 @@ async def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_cabine
     except Exception as e:
         raise HTTPException(400, f"fișier ilizibil: {e}")
     if not cui_uri:
-        return {"rezultate": []}
+        # [lotul 6] „0 rezultate" arata identic cu „fisierul n-a fost citit".
+        raise HTTPException(422, "Din fișierul %s n-am putut citi niciun cod fiscal. "
+                                 "Se așteaptă un CSV sau un XLSX cu o coloană de CUI-uri "
+                                 "— un fișier necitit nu e un fișier gol."
+                                 % (fisier.filename or "trimis",))
     try:
         rez = anaf_api.valideaza_cui(cui_uri)
     except Exception as e:
@@ -1887,7 +1891,11 @@ async def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_cabin
     except ValueError as e:
         raise HTTPException(400, str(e))
     if not cui_uri:
-        return {"rezultate": [], "extrase": 0}
+        # [lotul 6] idem — aceeasi clasa, a doua cale.
+        raise HTTPException(422, "Din fișierul %s n-am putut citi niciun cod fiscal. "
+                                 "Se așteaptă un CSV sau un XLSX cu o coloană de CUI-uri "
+                                 "— un fișier necitit nu e un fișier gol."
+                                 % (fisier.filename or "trimis",))
     try:
         rez = anaf_api.valideaza_cui(cui_uri)
     except Exception as e:
@@ -1952,6 +1960,11 @@ def migrare_status_citeste(ctx=Depends(cere_cabinet)):
 
 @app.get("/migrare/straturi")
 def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet)):
+    # [lotul 6] `tip_firma=ceva-ce-nu-exista` intorcea lista INTREAGA de straturi, ca si cum ar fi
+    # raspunsul pentru tipul ala. Un nomenclator nerecunoscut nu se rotunjeste la „toate".
+    _TIPURI_FIRMA = ("srl", "pfa", "ii", "ong", "sa")
+    if tip_firma not in _TIPURI_FIRMA:
+        raise HTTPException(422, nomenclator_cerut("tip_firma", _TIPURI_FIRMA))
     """[p_pfa_rip 20.07] Straturile de migrare aplicabile unui regim (srl/pfa).
     Sursa unica de adevar = migrare_api.straturi_pentru (filtreaza pe STRATURI_META),
     ca meniul per-firma sa nu reinventeze in JS ce strat apartine carui regim."""
@@ -2179,6 +2192,12 @@ async def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
         randuri = solduri_parteneri_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
         raise HTTPException(400, str(e))
+    # [lotul 6] Un `.txt` cu o linie de proza intorcea `{"randuri": []}` — „fisierul n-are parteneri"
+    # arata identic cu „fisierul n-a fost citit". A treia cale cu aceeasi gaura in lotul asta.
+    if not randuri:
+        raise HTTPException(422, "Din fișierul %s n-am putut citi niciun partener. Se așteaptă un "
+                                 "CSV sau un XLSX cu solduri pe parteneri — un fișier necitit nu e "
+                                 "un fișier gol." % (fisier.filename or "trimis",))
     td = round(sum(r["debit"] for r in randuri), 2)
     tc = round(sum(r["credit"] for r in randuri), 2)
     with db.get_conn(schema) as conn:
@@ -2366,7 +2385,10 @@ def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends
     schema = _schema_sau_404(ctx, tenant_id)
     randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn(schema) as conn:
-        return articole_import_api.importa(conn, schema, randuri, data_sold=date.data_sold)
+        try:
+            return articole_import_api.importa(conn, schema, randuri, data_sold=date.data_sold)
+        except (ValueError, KeyError) as e:    # [lotul 6] refuzul ajunge ca mesaj, nu ca 500
+            raise HTTPException(422, _mesaj_intrare(e))
 # ============================================================
 #  MIGRARE STRAT 6 — MIJLOACE FIXE (registru amortizare)
 # ============================================================
@@ -3003,6 +3025,8 @@ def util_zile_lucratoare(start: str, end: str, ctx=Depends(cere_context)):
 
 class ModelFacturaIn(BaseModel):
     font: Optional[str] = None
+    #: [lotul 6] `culoare="ceva-ce-nu-e-culoare"` intra in profil si ajungea in PDF-ul facturii,
+    #: unde generatorul o citeste ca hex. Se cere forma, aici, unde se poate spune.
     culoare: Optional[str] = None
     logo: Optional[str] = None      # data URI base64; "" sterge; None = nu schimba
 
@@ -3064,6 +3088,11 @@ def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),
 
 @app.post("/tenants/{tenant_id}/firma-profil/model")
 def firma_profil_model(tenant_id: int, date: ModelFacturaIn, ctx=Depends(cere_context)):
+    import re as _re
+    if date.culoare and not _re.fullmatch(r"#[0-9a-fA-F]{6}", date.culoare.strip()):
+        raise HTTPException(422, "Culoarea se scrie ca un cod hexazecimal de șase cifre, cu diez "
+                                 "(de exemplu #1d4ed8) — am primit %r. Ea ajunge pe factura "
+                                 "tipărită." % date.culoare)
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         return _fp.salveaza_model(conn, font=date.font, culoare=date.culoare, logo=date.logo)
@@ -4785,6 +4814,8 @@ def perioada_deblocheaza(tenant_id: int, an: int, luna: int, motiv: str = "",
 # și de ce.
 def perioade_istoric(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
                      ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)   # [lotul 6] `luna=13` si `an=1900` dadeau `{"istoric": []}`
+    _cere_perioada(an, luna)   # [lotul 6] `luna=13` si `an=1900` intorceau `{"istoric": []}`
     from core import migrare_inchideri as _ui
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
@@ -5389,6 +5420,7 @@ class ConfirmaPontajIn(BaseModel):
 def tenant_facturi_perioada(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
     """[cap.23, 21.08.2026] Starea INCHIDERII lunii pe domeniul `facturi`: confirmat / cine / cand,
     daca se poate confirma acum si — daca nu — DE CE (documente primite de la ANAF, neinregistrate)."""
+    _cere_perioada(an, luna)
     from core import inchidere_luna as _il
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -5403,6 +5435,9 @@ def tenant_facturi_perioada_confirma(tenant_id: int, date: ConfirmaPontajIn,
     REFUZA motivat daca stim de e-Facturi primite si neinregistrate — nu lasam pe cineva sa declare
     complet ceva ce noi vedem deja ca nu e."""
     from core import inchidere_luna as _il
+    # [lotul 6] `luna=13` cadea cu `500` la confirmare si raspundea `{"ok": true}` la
+    # redeschidere — adica „am redeschis" despre o luna care nu exista.
+    _cere_perioada(date.an, date.luna)
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         try:
@@ -5418,6 +5453,9 @@ def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,
     """[cap.23] Redeschide luna (o corectie de facturi cere redeschiderea). Simetric cu confirmarea;
     o modificare de facturi o face oricum AUTOMAT (facturi_api._redeschide_luna)."""
     from core import inchidere_luna as _il
+    # [lotul 6] `luna=13` cadea cu `500` la confirmare si raspundea `{"ok": true}` la
+    # redeschidere — adica „am redeschis" despre o luna care nu exista.
+    _cere_perioada(date.an, date.luna)
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         st = _il.redeschide(conn, schema, date.an, date.luna)
@@ -7172,6 +7210,12 @@ async def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=D
 
 @app.get("/tenants/{tenant_id}/banca/reconciliere")
 def banca_rec_lista(tenant_id: int, status: str = None, ctx=Depends(cere_cabinet)):
+    # [lotul 6] `status=INEXISTENT` intorcea `{"linii": []}` — „nicio linie in starea asta" arata
+    # identic cu „starea asta nu exista". Aceeasi clasa ca `GET /coada` din lotul 1.
+    _STARI_REC = ("noua", "potrivita", "contata", "ignorata")
+    if status is not None and status not in _STARI_REC:
+        raise HTTPException(422, "stare necunoscută: %r (stările reconcilierii: %s)"
+                                 % (status, ", ".join(_STARI_REC)))
     from core import reconciliere_api as _rec
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -7781,6 +7825,7 @@ def concedii_coduri(tenant_id: int, la_data: Optional[str] = None, ctx=Depends(c
 
 @app.get("/tenants/{tenant_id}/casa/registru")
 def casa_registru(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     from core import casa_api as _c
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
@@ -7908,7 +7953,10 @@ def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _s.inventar(conn, schema, corp)
+        try:
+            return _s.inventar(conn, schema, corp)
+        except (ValueError, KeyError) as e:      # [lotul 6] refuzul ajunge ca mesaj, nu ca 500
+            raise HTTPException(422, _mesaj_intrare(e))
 
 
 @app.get("/tenants/{tenant_id}/stocuri/locatii")
@@ -8019,6 +8067,7 @@ def cabinet_categorie_marime(tenant_id: int, an: int, ctx=Depends(cere_cabinet))
     `s1003-valideaza` nu se ating. *Aplicația spune ce știe; nu decide în locul omului pe baza unei
     derivări care poate să nu aibă datele.*
     """
+    _cere_perioada(an=an)
     from core import categorie_marime as _cm
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -8030,6 +8079,7 @@ def cabinet_categorie_marime(tenant_id: int, an: int, ctx=Depends(cere_cabinet))
 
 @app.get("/tenants/{tenant_id}/s1005-xml")
 def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an=an)
     from core import bilant_api as _ba
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -8093,6 +8143,7 @@ def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
 # --- S1003 (bilant mici) ---
 @app.get("/tenants/{tenant_id}/s1003-xml")
 def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an=an)
     from core import bilant_api as _ba
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -8794,7 +8845,16 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
     try:
         ds, de = _date.fromisoformat(data_start), _date.fromisoformat(data_end)
     except ValueError:
-        raise HTTPException(422, "date format YYYY-MM-DD")
+        # [lotul 6] „date format YYYY-MM-DD" nu spunea CARE dintre cele doua e gresita.
+        raise HTTPException(422, "Datele de început și de sfârșit se scriu ca AAAA-LL-ZZ, cu zile "
+                                 "care există în calendar — am primit %r și %r."
+                                 % (data_start, data_end))
+    # [lotul 6] Un interval INVERSAT producea un XML SAF-T, adica un fisier oficial despre o
+    # perioada care nu exista. Raportul se cere pe un interval, iar un interval are o ordine.
+    if de < ds:
+        raise HTTPException(422, "Sfârșitul perioadei (%s) e înaintea începutului (%s). "
+                                 "Raportul se cere pe un interval, iar intervalul are o ordine."
+                                 % (de.isoformat(), ds.isoformat()))
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:

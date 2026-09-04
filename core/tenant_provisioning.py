@@ -352,6 +352,28 @@ def scrie_denumirea(conn, tenant_id, nume, verifica_unicitatea=True):
     return schema_name
 
 
+def alege_cui(conn, tenant_id, cui):
+    """Scrie CUI-ul firmei in AMANDOUA locurile, in aceeasi tranzactie. Sora lui `alege_denumirea`.
+
+    [lotul 6, 04.09.2026] R81 a inchis clasa „un lucru al firmei, doua locuri, o singura scriere"
+    pentru DENUMIRE. Proba de azi a aratat ca **CUI-ul era in aceeasi situatie si nimeni n-o
+    numise**: ecranul „Date firma" scria numai `firma_profil.cui`, iar `public.tenants.cui` ramanea
+    cel de la infiintare. Divergenta se producea tacut, iar CUI-ul intra in fiecare declaratie.
+
+    Ca si acolo: **nu comite** — apelantul detine tranzactia, fiindca simetria ESTE proprietatea
+    tranzactiei."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s", (tenant_id,))
+        r = cur.fetchone()
+    if not r:
+        raise ValueError("firmă inexistentă")
+    schema_name = r[0]
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.tenants SET cui = %s WHERE id = %s", (cui, tenant_id))
+        cur.execute('UPDATE "%s".firma_profil SET cui = %%s WHERE id = 1' % schema_name, (cui,))
+    return schema_name
+
+
 def _consemneaza_alegerea(conn, tenant_id, alege, user_id, nume, nume_anaf):
     """Scrie CE s-a ales, CÂND și de CINE. Un singur loc pentru amândouă căile.
 

@@ -28,9 +28,20 @@ def _fara_decimal(x):
 def adauga(conn, schema, op):
     """op: {data, categorie, suma, document?, partener?, cui?}.
     Creează operațiunea + nota ciornă. Întoarce operațiunea + avertismente plafon."""
+    # [lotul 6, 04.09.2026] `data="2026-02-31"` mergea neatinsa in `INSERT` si cadea in driver:
+    # contabilul primea `500`. O zi care nu exista in calendar e o greseala de tastare.
+    import datetime as _dt
+    _d = op.get("data")
+    if _d and not hasattr(_d, "year"):
+        try:
+            _dt.date.fromisoformat(str(_d)[:10])
+        except ValueError:
+            return {"eroare": "Data operațiunii: %r nu e o dată din calendar. Aștept forma "
+                              "AAAA-LL-ZZ, cu o zi care există în luna aia." % (_d,)}
     cat = op.get("categorie")
     if cat not in CONTURI:
-        return {"eroare": f"categorie necunoscută: {cat}"}
+        return {"eroare": "Categoria %r nu e una dintre cele pe care le cunoaște registrul de "
+                          "casă. Valorile posibile: %s." % (cat, ", ".join(sorted(CONTURI)))}
     suma = Decimal(str(op.get("suma", 0)))
     if suma <= 0:
         return {"eroare": "suma trebuie să fie > 0"}

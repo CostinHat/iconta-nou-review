@@ -139,6 +139,12 @@ def inventar(conn, schema, corp):
     """corp: {data, linii: [{articol_id, faptic}]}. Diferente la CMP:
     plus -> intrare + nota 371=607 (ciorna); minus -> iesire + nota 607=371 (ciorna).
     Temei: OMFP 1802/2014, functiunea conturilor 371/607."""
+    # [lotul 6, 04.09.2026] Un inventar FARA linii intorcea `{"rezultate": []}` — adica „am
+    # inventariat si n-am gasit nimic de corectat", cand de fapt nu se numarase nimic. Inventarierea
+    # e un act: absenta lui nu se raporteaza ca rezultatul lui.
+    if not (corp.get("linii") or []):
+        raise ValueError("Inventarul n-are niciun articol numărat. Un inventar fără linii nu e o "
+                         "inventariere fără diferențe — e o inventariere care nu s-a făcut.")
     rez = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         for l in corp.get("linii", []):

@@ -100,6 +100,11 @@ def rezumat(articole):
 def importa(conn, schema, articole, data_sold=None):
     """Creeaza articolele noi + intrarea initiala pentru cele cu stoc. Existentele se sar."""
     import datetime as _dt
+    # [lotul 6] O cerere fara niciun rand nu e un import cu zero rezultate: e o cerere fara
+    # continut. „create: 0" arata identic cu un import inofensiv. Clasa e cea din lotul 1b.
+    if not articole:
+        raise ValueError("nu ai trimis niciun articol. Un import fără rânduri n-are ce adăuga în "
+                         "nomenclatorul de articole; dacă voiai altceva, e altă operațiune.")
     d = data_sold or _dt.date.today().isoformat()
     create, sarite = 0, []
     with conn.cursor() as cur:
