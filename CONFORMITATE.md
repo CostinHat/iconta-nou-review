@@ -6220,6 +6220,79 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   prețul și rostul — a costat trei reparații mici și a scos o violare critică pe care campania de
   probare, care întreabă altceva, n-avea cum s-o vadă.*
 
+### R144 — «Aur de investiții» cădea cu `500` pe o puritate care nu e număr, deci refuzul lui n-a existat niciodată
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/tva_aur.py` · **PRAG 1**
+- **ce blochează**: refuzul însuși. Un `500` nu e un refuz — e o cădere care ascunde ce ar fi trebuit
+  să spună aplicația despre câmpul greșit.
+- **condiția de deblocare**: se închide când o valoare care nu e număr produce un motiv scris, nu o
+  excepție — pe toate intrările numerice ale motorului, nu doar pe cea care a căzut.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `8b3b2824`
+- **rezolvată pe commit**: `f1fdf6f4`
+- **ce s-a măsurat** *(04.09.2026, lotul 13, apăsând «Generează nota» pe formularul umplut cu semne)*:
+  `POST /tenants/4838/vanzare-aur-investitii` → **`500`**, iar pe ecran scria *„eroare 500"*. Din
+  cele **32** de operațiuni speciale probate, **una singură** a căzut așa.
+- **cauza, scrisă ca să se recunoască**: `_d(x)` face `Decimal(str(x))`, iar pe `«»@#$%` asta ridică
+  `decimal.InvalidOperation` — care e `ArithmeticError`, **nu** `ValueError`. Ruta din `main.py`
+  prinde numai `ValueError`, deci excepția a trecut pe lângă ea. *O poartă care prinde o singură
+  familie de excepții e o poartă care lasă să treacă restul familiilor.*
+- **clasa, și a câta oară**: aceeași cu **R134** — *„toate porțile răspundeau `500`, deci mesajele
+  lor n-au ajuns niciodată la un om"*. A doua instanță, alt modul.
+- **reparația**: în motorul PUR, nu la rută, fiindcă funcția are deja contractul potrivit — întoarce
+  `(False, motiv)` pentru orice nu e aur de investiții. *„Puritatea nu e un număr" e un motiv ca
+  oricare altul, nu o excepție.* Și pe **toate patru** intrările numerice (`puritate`, `an_emisie`,
+  `pret`, `valoare_aur`): a repara doar instanța ar fi lăsat trei uși deschise pe același hol.
+- **calibrare, în amândouă direcțiile**: patru intrări nenumerice sau lipsă → refuz cu motiv care
+  numește câmpul · un lingou de 995 și o monedă validă → `(True, None)`, deci reparația nu
+  supra-refuză. Cele **12 teste** existente ale modulului trec neatinse.
+- **reprobat** *(browser real, `:8011`)*: *„nu este aur de investitii: Puritatea trebuie să fie un
+  număr (am primit '«»@#$%')"*.
+- **ce NU s-a atins, declarat**: mesajele **vechi** ale modulului sunt fără diacritice („puritate sub
+  995 la mie"). Sunt altă clasă — se consemnează, nu se mătură odată cu reparația asta.
+
+### R145 — «Chirii / comodat / refacturări» nu putea reuși NICIODATĂ din ecran: formularul trimitea alt câmp decât cere ruta
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/operatiuni_ecran.js` · **PRAG 1**
+- **ce blochează**: o operațiune contabilă întreagă — comodat, chirie plătită, chirie încasată,
+  refacturare de utilități. Nu o parte din ea: **toată**, pe orice `fel`.
+- **condiția de deblocare**: se închide când fiecare `fel` al operațiunii poate produce nota, din
+  ecran, cu date valide — verificat prin apăsare, nu prin citirea codului.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `8b3b2824`
+- **rezolvată pe commit**: `f1fdf6f4`
+- **ce s-a măsurat** *(04.09.2026, cu date VALIDE — întrebarea nu era dacă refuză)*: ecranul trimite
+  `{"data":"2026-09-01","fel":"comodat","suma":1000,…}`, iar ruta cere `corp["valoare"]`. Răspuns:
+  *„Lipsește câmpul `valoare` din cererea trimisă. Operațiunea nu se poate consemna fără el."*
+  Contractul rutei, din docstringul ei: `comodat{valoare}` · `chirie_platita{chirie, proprietar}` ·
+  `chirie_incasata{chirie}` · `refacturare{total_factura, parte_refacturata}`. Formularul avea **un
+  singur** câmp, «Suma», pentru toate patru.
+- **de ce n-a prins-o nimic**: proba cu date INVALIDE primea un refuz — corect ca formă, deci
+  nedeosebit de restul. *Un formular care nu poate reuși arată, sub date greșite, exact ca unul care
+  funcționează.* S-a văzut abia întrebând dacă poate REUȘI.
+- **reparația**: în ECRAN, nu în rută, și cu `cond` — mecanismul de câmpuri condiționate exista deja
+  acolo, folosit de leasing de la nașterea lui. Numele câmpurilor sunt **cele din contractul rutei**,
+  luate din docstringul ei. Refacturarea primește cele două sume pe care le cere, iar «Suma» dispare:
+  *un câmp care nu ajunge nicăieri e mai rău decât unul lipsă, fiindcă omul crede că l-a completat.*
+- **al doilea defect, al reparației mele, prins reprobând**: câmpul `chirie` e cerut la **două**
+  feluri, iar declarat de două ori producea **două elemente cu același `id`** — deci valoarea nu se
+  mai colecta pe al doilea fel. `cond.val` acceptă acum și o listă de valori. *Reparația a avut nevoie
+  de propria ei reprobare ca să fie adevărată.*
+- **calibrare, în amândouă direcțiile**: cu cotă imposibilă (1000) → refuz exemplar, cu temeiul
+  citat (*„Cota 1000 nu e o cotă în vigoare (art. 291 Cod fiscal) la data operațiunii (2026-09-01).
+  Cotele de atunci: 0%, 11.00%, 21.00%"*) · cu date valide → **comodat 1 notă · chirie plătită 1 ·
+  chirie încasată 1 · refacturare 2**, exact cum spune contractul rutei.
+- **curățenia**: cele 6 note ale probei s-au șters **prin ruta aplicației**
+  (`DELETE /tenants/{}/jurnal/{}`), iar starea s-a recitit din bază — nu s-a presupus.
+- **unde ajunge efectul**: pe patru feluri de notă contabilă care, până azi, nu se puteau face din
+  interfață deloc. *Nu se știe de când: câmpul `suma` e în forma inițială a ecranului.*
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
