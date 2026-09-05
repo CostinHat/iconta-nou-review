@@ -12,7 +12,7 @@ import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=05a5b55996
 import { declaratiiPerFirma } from "./declaratii.js?v=bd6aabd15a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=f019079e5a";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
-import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
+import { ecranMagazin } from "./woo_ecran.js?v=5616e025cb";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=15df1681cd";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
 

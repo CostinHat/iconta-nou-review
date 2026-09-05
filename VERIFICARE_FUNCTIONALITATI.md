@@ -1402,7 +1402,10 @@ greșit **și unde se repară**. `raportz` → *„totalul pe cote trebuie să f
 
 ### Cifre
 
-- unități mutate: **6** (5 rute + `#454`). Campania: **340 probate · 24 rămase** din 364.
+- unități mutate: **10** (5 rute + `#454` + cele patru ecrane din Partea 2). Campania:
+  **344 probate · 20 rămase** din 364. *Rândul spunea „340 · 24”: cifrele momentului în care
+  a fost scris, nu ale capătului lotului — cele patru ecrane cu formular real s-au mutat după.
+  Corectat în lotul 15, numărând mecanic coloana «stare probare».*
 - defecte găsite: **3** · reparate: **3** · reprobate: **3**. Plus două reparații de instrument
   (santinela de dată, verbul lipsă) și un mesaj fără diacritice.
 - `fa-rip` a ieșit din `ECRANE_CAMPANIE`: nu se randează pe firma acelei liste, deci raporta
@@ -1415,3 +1418,144 @@ greșit **și unde se repară**. `raportz` → *„totalul pe cote trebuie să f
    deci variantele care randează câmpurile de sume nu se explorează niciodată. **Limită a sondei**,
    scrisă acum: nu e „ecran fără formular".
 3. **`fa-bilant` și `fa-marja`** — filtre și acțiuni pe rezultat, fără formular de înregistrat.
+
+## LOT 15 — cele 20 rămase: cinci feluri de orbire a sondei, opt defecte, și 364 din 364
+
+**Ce erau cele 20.** Fiecare purta în registru un motiv pentru care n-a fost probat — „formularul e
+la doi pași", „butonul iese din aplicație", „starea datelor nu produce formularul". Citite la sursă,
+**patru din cele opt motive scrise erau false**, iar restul descriau nu ecranul, ci **sonda**.
+Lotul n-a fost o campanie de probare: a fost una de **reparare a instrumentului**, urmată de probare.
+
+### Partea 1: cele CINCI feluri de orbire, fiecare numită de ecranul care a produs-o
+
+| # | ce nu vedea sonda | ecranul care a arătat-o | ce s-a schimbat |
+|---|---|---|---|
+| **1** | **„a vorbit" se măsura numai în jurul apăsării** | `fa-etransport` | textul se ia și ÎNAINTE de umplere; verdict propriu: **a vorbit la completare** |
+| **2** | **un buton DEZACTIVAT era invizibil, nu raportat** | `fa-casa`, `pachete` | se raportează, cu `title`-ul lui |
+| **3** | **domeniul nu cuprindea ferestrele PESTE fereastră** | `pachete`, `recomanda` | domeniul e ultimul container vizibil care ARE ce conține |
+| **4** | **`campuri=0` nu deosebea „n-are formular" de „nu l-am găsit"** | 27 de ecrane | se numără `intrari_dom` — toate intrările din DOM, văzute sau nu |
+| **5** | **două verbe de submit lipseau din listă** | `fa-registratura`, `fa-mijloace` | „înregistr", „reevalu" — măsurate pe tot `static/js` înainte de adăugare |
+
+**Și o a șasea, de altă natură: condiția de oprire a căutării.** Sonda se oprea la primul ecran cu
+CÂMPURI. `pachete` are două câmpuri în **pasul de alegere** și niciun buton de submit — deci sonda
+se oprea acolo și raporta „niciun buton probabil" despre un ecran al cărui formular real era **doi
+pași mai încolo**. Acum se merge până la un buton care POATE fi apăsat, cel mult trei trepte, și se
+scrie DRUMUL, nu doar ultima apăsare. *Un formular găsit nu e un formular probat: proba are nevoie
+de buton.*
+
+**Ce a costat greșeala mea de măsurare, prinsă înainte de raport:** prima formă a buclei aduna
+umplerile fiecărei trepte, iar `fa-casa` — al cărui buton rămâne stins, deci bucla mai încearcă o
+treaptă — a ieșit cu `campuri=10` pe un formular de **cinci**. *O cifră care crește cu numărul de
+încercări nu descrie ecranul, descrie sonda.*
+
+### Partea 2: opt defecte, toate reparate și reprobate
+
+**R152 — magazinul „conectat" la ceva cu care nu vorbise nimeni.** `PUT
+/tenants/{}/woocommerce/config` scria `url`, `ck`, `cs` fără nicio verificare, iar ecranul anunța
+apoi **`Stare: conectat la «»@#$%`**. Două neadevăruri într-un rând: șirul nu e o adresă, și nicio
+conexiune nu s-a încercat. Reparat în amândouă locurile — ruta refuză
+(«Adresa magazinului nu e o adresă web: '«»@#$%'. Aștept ceva de forma https://magazin.ro.»), iar
+ecranul spune de acum ce știe: **„configurat pentru"**, nu „conectat la".
+
+**R153 — un document înregistrat într-un an în care aplicația nu se poate uita.** Cu `1899-01-01` în
+căsuța de dată, `POST /tenants/{}/registratura` **a scris** (`registratura_api.inregistreaza` ia
+`int(data[:4])` fără nicio margine), iar re-citirea registrului pe acel an a răspuns **`an invalid:
+1899 (aștept 1990-2100)`** — refuzul propriei scrieri, o secundă mai târziu. *Aceeași aplicație știa
+răspunsul la citire și nu-l avea la scriere* — clasa lotului 14, de data asta între cele două capete
+ale **aceleiași rute**. Criteriul e împrumutat de la citire (`_cere_perioada`), nu rescris.
+
+**R154 — „n-am putut trimite" despre ceva ce nu era o adresă.** `POST /recomanda` cu
+`{"emails": ["«»@#$%"]}` întorcea **`200 {"stare": "esuat"}`** — după ce chemase furnizorul de email
+cu un șir care nu poate fi adresa nimănui. Constanta de refuz a rutei se cheamă chiar
+`EMAIL_NICIUNUL_VALID`: **verificarea era promisă în registrul de mesaje și nu exista în cod.**
+A cincea și a șasea instanță a clasei R138 (cealaltă cale e `POST /portal/recomanda`, prin același
+ajutor). Refuzul e pe TOATĂ lista, nu pe adresele rele: o trimitere parțială ar fi lăsat omul cu
+„3 trimise" fără să știe că a patra n-a plecat niciodată.
+
+**R155 — „încearcă o poză mai clară" despre un fișier care nu era o poză.** Un text numit `.png`,
+încărcat la «Adaugă document (pozează / încarcă)», ajungea la furnizorul de AI și se întorcea cu
+*„nu am putut citi bonul; încearcă o poză mai clară"* — o îndrumare pe care omul o poate urma la
+nesfârșit. Tipul se citește acum din **primii octeți**, nu din `content_type`-ul browserului (care
+se deduce din extensie, deci minte exact în cazul ăsta) — METODA §23: structură, nu text. Refuzul
+cade înaintea apelului plătit.
+
+**R156 — ecranul acoperea refuzul precis al serverului.** `an=-99999999` pe pachete: serverul refuză
+corect (`an invalid: -99999999 (aștept 1990-2100)`, din `_cere_perioada`), iar `pachete.js` scria
+**„Nu am putut încărca datele."** — „n-am putut" despre ceva ce aplicația ȘTIA.
+
+**R157 — singurul TACE al lotului.** `admin_raportari`, apăsat cu răspunsul GOL: **nimic nu se
+întâmplă și nimic nu se spune.** În client era un `return` gol; serverul are chiar codul `TEXT_GOL`,
+dar cererea nu pleca niciodată. Acum: *„Scrie un răspuns sau atașează o imagine înainte de a
+trimite."*
+
+**R158 — la fel, pe ecranul de recomandare.** `catch` care înlocuia mesajul serverului cu „Eroare la
+trimitere." Ce ajungea totuși la om venea din pastila globală a lui `api.js` — deci **ecranul spunea
+una și bara alta**.
+
+**R159 — «Ciornă salvată.» după o salvare care fusese refuzată.** `_salveaza` refuza corect casuța
+goală („Scrie povestea întâi."), dar apelantul tipărea imediat după, necondiționat, „Ciornă
+salvată." — iar al doilea mesaj îl acoperea pe primul. La fel la «Aprobă». *Un mesaj de reușită care
+nu se uită la rezultat nu e o confirmare, e o afirmație falsă.*
+
+### Partea 3: starea care lipsea, construită prin lanțul aplicației
+
+Două ecrane nu erau „fără formular", ci **fără date care să-l producă** — `PLAN_LUCRU`, regula 3:
+
+| ecran | ce lipsea | cum s-a construit |
+|---|---|---|
+| `fa-mijloace` (#446 / #484) | firma n-avea niciun activ, deci registrul randa starea goală | `POST /tenants/{}/nota-inventariere` cu `operatie: plus_mf` — calea ecranului «Operațiuni speciale». Cod `MF-PROBA-L15`, 1.200,00 lei, DNF 60 de luni |
+| `admin_raportari` (#467) | lista de sesizări era goală | `POST /raportari`, subiect `PROBA LOT 15` — calea ecranului «Raportează» (#490) |
+
+Nimic prin `INSERT`: *dacă o stare nu se poate produce prin lanțul aplicației, nu e o stare a
+aplicației.* Amândouă desfăcute la sfârșitul lotului, cu verificarea stării, nu a cererii.
+
+### Partea 4: cele patru motive scrise care erau FALSE
+
+*Se scriu fiindcă toate patru au stat în registru zile la rând, citite ca fapte.*
+
+| ce scria registrul | ce e adevărat |
+|---|---|
+| `fa-magazin`: „configurarea WooCommerce cere întâi o conexiune" | formularul se deschide la **o apăsare**, fără nicio conexiune. Motivul real: „Configurează magazinul" nu conținea niciun cuvânt din lista de deschizătoare |
+| `fa-verificari`: „verificările se randează pe alegerea unei luni" | ecranul **n-are niciun câmp**, pe nicio lună — `intrari_dom=0` |
+| `fa-control`: „formularul cere un pas înainte (alegerea unui control)" | nu există formular pe niciun drum — `intrari_dom=0` |
+| `pachete`: „singurul buton care ia formularul e «✨ Generează cu AI»" | «Salvează ciornă» ia `#pacm-text` și merge în `POST /pachete/{}/poveste`, care **nu iese nicăieri** |
+
+**Și o a cincea, despre listă însăși:** `#442` avea scris ca handler `firme.js::ecranSolicitariCabinet`
+— care e handlerul lui `#fa-solicitari`. `#fa-import` duce la `meniuMigrarePerFirma`. Scanul a
+atribuit funcția greșită, iar rândul a purtat-o de la generare.
+
+### Partea 5: ce s-a probat, pe verdict
+
+- **fără suprafață de intrare** (nimeni nu poate tasta nimic în ele), măsurat `intrari_dom=0`:
+  `fa-control` · `fa-facturi` · `fa-import` · `fa-verificari` · `admin_sanatate`.
+- **are formular, și vorbește**: `fa-acces` · `fa-etransport` · `fa-mijloace` · `fa-registratura` ·
+  `fa-magazin` · `fa-declaratii` (panoul manual) · `validat` (dialogul de motiv) · `pachete` ·
+  `recomanda` · `admin_raportari`.
+- **refuză prin buton stins**: `fa-casa` — «Adaugă (notă ciornă)» rămâne dezactivat, cu motivul în
+  `title`. *Observație, nu defect: motivul se vede doar la survol. Nu s-a reparat — nu e prag 1, și
+  o schimbare de așezare cere confirmare.*
+- **probat cu un FIȘIER, nu cu un formular**: `fa-bonuri`.
+
+### Partea 6: starea lăsată de probe, și desfacerea ei
+
+`curata_proba_ecrane.py` a desfăcut INSERT-urile purtătoare de semnătură (centre de cost, raport
+salvat, înregistrarea din registratură, un șablon de contract) și a **refuzat corect** modificarea
+din `firma_profil` — un UPDATE nu se desface pe ghicite. Restul, desfăcut pe obiecte numite
+(`frontend_test/curata_lot15.py`), cu **verificarea stării după**, nu a cererii:
+
+- `tenant_003.firma_profil.wc_*` → `NULL`. Valoarea de dinainte nu s-a luat din memorie: sonda
+  apăsase «Configurează magazinul», adică ramura `!cfg.configurat` — starea observată era
+  „neconfigurat", și exact aia s-a pus la loc.
+- `public.declaratii_coada` **8149** — proba dialogului de motiv a **respins un element real** al
+  portofoliului. Pus la loc: `la_senior`, motiv șters. *O probă care schimbă starea portofoliului o
+  lasă schimbată — capcana 9, a doua instanță.*
+- povestea lunii scrisă cu santinela · mijlocul fix și nota lui · sesizarea și cele 4 mesaje ale ei.
+
+### Cifre
+
+- unități mutate: **20** (toate ECRANE). Campania: **364 probate · 0 rămase** din 364 — numărate
+  mecanic, parcurgând coloana «stare probare».
+- defecte găsite: **8** · reparate: **8** · reprobate: **8** (R152…R159).
+- reparații de instrument: **6** (cele cinci feluri de orbire + condiția de oprire), plus o cifră a
+  sondei corectată înainte de raport.
+- motive scrise în registru care s-au dovedit false: **5**.

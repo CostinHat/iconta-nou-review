@@ -7388,6 +7388,56 @@ sărită nu se poate exercita din suită — dacă indexul ar fi numai-curățen
 
 **Regula pe care o cablează:** `PLAN_LUCRU.md`, regula 7 de conducere a lucrului.
 
+## 05.09.2026 — Lotul 15: un gard care cerea 16 ecrane din 18, și două datorii numite
+
+**GĂRZI NOI: niciuna.** Campania cere explicit *„fără gărzi noi"*, iar lotul a respectat-o. Ce e
+mai jos e o **reparație de gard** și două **datorii**, scrise ca să nu trăiască doar în raport.
+
+### R160 — `ecrane_asteptate()` tăia lista la prima paranteză dreaptă din text
+
+Cuplajul dintre unealta vizuală și gardul ei stă într-o funcție de patru rânduri:
+`acoperire_hash.ecrane_asteptate()` citește `nav_ecrane.ECRANE` cu regex, ca să nu importe un
+modul care are nevoie de browser. Regexul era `ECRANE\s*=\s*\[(.*?)\]` — **negreedy**, deci se
+oprea la **prima** paranteză dreaptă. Iar prima nu e capătul listei: e cea din comentariul
+`# [LOTUL 12, R142]`, scris deasupra intrării «emitere».
+
+**Măsurat azi:** din 18 nume, gardul cerea **16**. `emitere` și `operatiuni` puteau lipsi din
+artefactul vizual fără ca nimic să cadă — **din chiar tura care le adăugase**, fiindcă acea tură
+adăugase și comentariul care taie lista. *A treia instanță a clasei „gardul care nu se verifică pe
+sine": un gard care se uită exact unde nu e problema raportează verde despre o lume pe care n-o
+vede.*
+
+**Reparat:** blocul se ia până la un `]` la **început de rând** (așa se închide lista), iar
+comentariile se scot **înainte** de căutarea numelor — altfel un nume citat într-un comentariu ar
+intra în lista pe care gardul o cere. Plus **anti-vacuu**: dacă blocul nu se găsește sau iese gol,
+funcția **ridică**. Un `[]` întors tăcut ar face gardul să nu ceară nimic.
+
+**Calibrare:** înainte 16, după 21 (16 + `emitere` + `operatiuni` + cele trei mutate azi).
+
+### Datoria 1 — `admin_raportari` are JS atins, dar nu poate intra în `ECRANE`
+
+Regula casei, scrisă în `nav_ecrane.py`: *un ecran al cărui JS se ATINGE trece în `ECRANE`, cu cele
+trei unelte rulate pe el.* Lotul a atins patru fișiere de ecran; **trei** au trecut (`magazin`,
+`pachete`, `recomanda`). Al patrulea nu poate: `admin_raportari` trăiește pe desktopul de
+**superadmin**, iar cele trei unelte vizuale sunt, **prin construcție**, pe un singur cont —
+`interactiune_scan.py` face `ctx.add_init_script(INIT)`, o dată, iar `INIT` e sesiunea patronului de
+cabinet.
+
+**Ce ar cere:** un context per cont în cele trei unelte, exact tiparul pe care
+`proba_ecrane_formular.py` îl are deja (`ECRANE_CABINET` poartă contul lângă fiecare ecran). E
+**construcție**, nu campanie — și lista internă e închisă. Scrisă aici ca să nu se piardă:
+*regula n-a fost respectată pe un ecran, iar motivul e o limită a uneltei, nu o scăpare.*
+
+### Datoria 2 — un buton stins își spune motivul doar la survol
+
+`fa-casa`: cu sumă negativă, «Adaugă (notă ciornă)» **rămâne dezactivat**, iar motivul —
+*„Completează data și suma întâi"* — trăiește în atributul `title`. Pe desktop se vede la survol;
+pe atingere, nu se vede deloc (clasa `title-only pe touch`, pe care scanul de interacțiune o
+măsoară deja pe alte ecrane).
+
+**Nu s-a reparat, și de ce:** nu e prag 1 — nimic fals, nimic acceptat greșit, iar refuzul EXISTĂ.
+Mutarea motivului lângă câmp e o schimbare de așezare, iar aceea cere confirmare.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **517 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

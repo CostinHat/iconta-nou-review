@@ -1,5 +1,5 @@
 {
- "ui_hash": "794eb28395dc2691",
+ "ui_hash": "41130d17e3991466",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -329,6 +329,63 @@
    "apasare": {
     "vazute": 39,
     "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "magazin": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 6,
+    "apasate": 4,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "pachete": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 2,
+    "apasate": 1,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "recomanda": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 4,
+    "apasate": 1,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },

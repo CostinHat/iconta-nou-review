@@ -91,8 +91,11 @@ async function pasLucru(corp, nav) {
     S.rezumat = rz;
     if (pv && pv.exista) { S.text = pv.text || ""; S.status = pv.status; }
     else { S.text = ""; S.status = null; }
-  } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca datele.</p>
+  } catch (e) {
+    // [R156, 05.09.2026] Serverul refuza precis (`an invalid: -99999999 (aștept 1990-2100)`,
+    // din `_cere_perioada`), iar ecranul il inlocuia cu „Nu am putut încărca datele.” — adica
+    // spunea „n-am putut” despre ceva ce aplicatia STIA. `api.js` pune mesajul in `e.mesaj`.
+    corp.innerHTML = `<p class="ecran-nota">${esc((e && e.mesaj) || "Nu am putut încărca datele.")}</p>
       `;
     return;
   }
@@ -208,11 +211,13 @@ function deschideModal(corp, nav) {
   });
 
   ov.querySelector("#pacm-salveaza").addEventListener("click", async () => {
-    await _salveaza(ta.value, "ciorna", stareEl); actualizeazaStare();
+    if (!await _salveaza(ta.value, "ciorna", stareEl)) return;  // [R159] refuzul ramane pe ecran
+    actualizeazaStare();
     arataMesaj(stareEl, "Ciornă salvată.", "info"); _reflectaStareEcran(corp);
   });
   ov.querySelector("#pacm-aproba").addEventListener("click", async () => {
-    await _salveaza(ta.value, "aprobat", stareEl); actualizeazaStare();
+    if (!await _salveaza(ta.value, "aprobat", stareEl)) return;  // [R159]
+    actualizeazaStare();
     arataMesaj(stareEl, "Aprobată ✓", "ok"); _reflectaStareEcran(corp);
   });
   btnTrimite.addEventListener("click", async () => {
@@ -233,13 +238,19 @@ function _reflectaStareEcran(corp) {
   if (el) el.textContent = S.status === "aprobat" ? "Povestea e aprobată ✓" : (S.text ? "Există o ciornă salvată" : "");
 }
 
+// [R159, 05.09.2026] Intoarce ACUM daca s-a salvat, si apelantii se uita la raspuns.
+// Pana azi intorcea `undefined` pe toate cele trei cai — refuz, esec, reusita — iar cei doi
+// apelanti tipareau «Ciornă salvată.» / «Aprobată ✓» oricum. *Un mesaj de reusita care nu se
+// uita la rezultat nu e o confirmare, e o afirmatie falsa.* Si `r.ok === false` era inghitit.
 async function _salveaza(text, status, stareEl) {  // audit_cab_lot1_v1
   text = (text||"").trim();
-  if (!text) { if (stareEl) arataMesaj(stareEl, "Scrie povestea întâi.", "eroare"); return; }
+  if (!text) { if (stareEl) arataMesaj(stareEl, "Scrie povestea întâi.", "eroare"); return false; }
   try {
     const r = await api.post(`/pachete/${S.tenant_id}/poveste?an=${S.an}&luna=${S.luna}`, { text, status });
-    if (r && r.ok) { S.status = status; S.text = text; }
-  } catch { if (stareEl) arataMesaj(stareEl, "Nu am putut salva.", "eroare"); }
+    if (r && r.ok) { S.status = status; S.text = text; return true; }
+    if (stareEl) arataMesaj(stareEl, (r && r.mesaj) || "Nu am putut salva.", "eroare");
+    return false;
+  } catch (e) { if (stareEl) arataMesaj(stareEl, (e && e.mesaj) || "Nu am putut salva.", "eroare"); return false; }
 }
 
 // audit_cab_lot1_v1

@@ -226,7 +226,16 @@ async function trimiteRaspuns(corp, nav, id, fir) {
   const text = (ta.value || "").trim();
   const inputImg = fir.querySelector("#rap-img");
   const fisier = inputImg.files[0] || null;
-  if (!text && !fisier) return;
+  // [R157, 05.09.2026] Aici era un `return` gol: apasat cu casuta goala, ecranul nu facea
+  // nimic si NU spunea nimic — singurul verdict care e defect in campanie. Serverul stie
+  // raspunsul (`raportari_api.adauga_mesaj` -> `TEXT_GOL`), dar cererea nu pleca niciodata.
+  if (!text && !fisier) {
+    const b0 = fir.querySelector("#rap-trimite");
+    b0.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+    b0.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">'
+      + 'Scrie un răspuns sau atașează o imagine înainte de a trimite.</span>');
+    return;
+  }
 
   const btn = fir.querySelector("#rap-trimite");
   btn.disabled = true; btn.textContent = "Se trimite…";

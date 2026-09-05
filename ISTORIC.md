@@ -7836,3 +7836,55 @@ măsoară dezordinea, nu instrumentul.* Acum își produce singur condiția.
 *Asta e observația care merită dusă mai departe: o gardă poate fi corectă și totuși legată de o stare
 pe care n-a declarat-o. Aici, cele două stări nedeclarate erau „există dezordine în arbore" și „metoda
 numește numai lucruri vii".*
+
+## 05.09.2026 — Lotul 15: cele 20 rămase, opt defecte, și 364 din 364
+
+Campania „vorbește aplicația când primește date greșite?" s-a închis pe etapa 1. Ce a rămas de
+făcut nu erau douăzeci de ecrane grele: erau **cinci feluri în care sonda era oarbă**, plus patru
+motive scrise în registru care s-au dovedit false la citirea codului.
+
+**Cele cinci orbiri, fiecare numită de ecranul care a produs-o.** „A vorbit" se măsura numai în
+jurul apăsării — deci `fa-etransport`, care scrie *„Fereastră expirată: UIT ar fi fost valabil până
+la 15.01.1899."* **în timp ce completezi** și stinge butonul, arăta ca un ecran fără nimic de
+apăsat. Un buton dezactivat cădea în același `return` cu „nu e vizibil", deci `fa-casa` arăta ca un
+ecran fără buton. Domeniul sondei era `.fereastra`, iar `pachete` și `recomanda` își pun modalul pe
+`document.body` — formularul real stătea **în afara** domeniului. `campuri=0` nu deosebea „n-are
+formular" de „nu l-am găsit". Și două verbe de submit lipseau din listă: «Înregistrează»,
+«Reevaluează».
+
+**A șasea, de altă natură: condiția de oprire.** Sonda se oprea la primul ecran cu CÂMPURI — dar
+`pachete` are două câmpuri în pasul de ALEGERE și niciun buton de submit. Acum se merge până la un
+buton care poate fi apăsat, cel mult trei trepte, și se scrie drumul. *Un formular găsit nu e un
+formular probat: proba are nevoie de buton.*
+
+**Opt defecte, toate reparate și reprobate.** Trei sunt aceeași propoziție spusă în trei locuri:
+**„n-am putut" în loc de „nu recunosc"**. `POST /recomanda` trimitea către `«»@#$%` și răspundea
+`stare: esuat` (R154). Ecranul bonurilor primea un fișier text numit `.png` și răspundea *„încearcă
+o poză mai clară"* (R155). Ecranul pachetelor înlocuia refuzul precis al serverului cu *„Nu am putut
+încărca datele."* (R156). **Două sunt afirmații false pe ecran:** „conectat la" un magazin cu care
+nu vorbise nimeni (R152) și „Ciornă salvată." după o salvare refuzată (R159). **Una e singurul TACE
+al campaniei:** răspunsul gol la o sesizare nu făcea nimic și nu spunea nimic — `return` gol în
+client, deși serverul are chiar codul `TEXT_GOL` (R157). **Una e o ruptură între cele două capete
+ale aceleiași rute:** registratura scria anul 1899, pe care tot ea îl refuză la citire (R153).
+
+**Și a noua, găsită din greșeală, în chiar unealta care ar fi trebuit să vadă.** Mutând trei ecrane
+în inventarul porții vizuale, am descoperit că `acoperire_hash.ecrane_asteptate()` tăia lista la
+**prima paranteză dreaptă din text** — care nu e capătul listei, ci cea din comentariul
+`# [LOTUL 12, R142]`. Gardul cerea **16 ecrane din 18**, iar cele două lipsă erau exact cele
+adăugate de tura care scrisese comentariul. **R160.** *A treia instanță a clasei „gardul care nu se
+verifică pe sine", și prima găsită fiindcă am vrut să adaug ceva la el.*
+
+**Ce a cerut regula 3, și ce a costat.** Două ecrane nu erau „fără formular", ci fără date care
+să-l producă: registrul de mijloace fixe pe o firmă fără active, și ecranul de sesizări pe o listă
+goală. Amândouă construite prin lanțul aplicației — `POST /nota-inventariere` cu `plus_mf`,
+`POST /raportari` —, niciodată prin `INSERT`. Amândouă desfăcute la sfârșit, verificând **starea**,
+nu cererea.
+
+**Ce a lăsat proba în urmă, și s-a pus la loc.** Dialogul de motiv al ecranului «De depus» n-are cum
+fi probat fără un element în coadă — iar proba a **respins un element real** al portofoliului, cu
+motivul `«»@#$%`. Pus la loc: `la_senior`, motiv șters, verificat prin recitire. *A doua instanță a
+capcanei 9: o probă care schimbă starea portofoliului o lasă schimbată.*
+
+**Ce se poate spune acum, și nu se putea ieri:** din 54 de ecrane parcurse cap la cap, **zero
+tac**. Iar cele 27 despre care raportul spune „fără suprafață de intrare" n-o mai spun pe temeiul că
+sonda n-a găsit nimic: o spun pe `intrari_dom = 0`, măsurat în DOM.

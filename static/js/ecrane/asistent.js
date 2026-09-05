@@ -9,9 +9,9 @@ import { randeazaControl } from "./control.js?v=d09ca9ab5a";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=decc4f494a";
 import { randeazaListaFirme } from "./firme.js?v=472c63e663";
-import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
+import { randeazaRecomanda } from "./recomanda.js?v=16ee976c05"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
+import { randeazaPachete } from "./pachete.js?v=56eccd0e11"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=bd6aabd15a"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=f4a7f55d61"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 

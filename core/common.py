@@ -168,6 +168,36 @@ def cfg_secret(cheie):
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
+# ── [R155, 05.09.2026] CE E O IMAGINE ────────────────────────────────────────
+# Gasit apasand: un fisier TEXT numit `.png`, incarcat la «Adaugă document (pozează /
+# încarcă)», ajungea la furnizorul de AI si se intorcea cu «nu am putut citi bonul; incearca
+# o poza mai clara». Doua lucruri stricate intr-o propozitie: cauza numita gresit (fisierul nu
+# era o poza neclara — nu era o poza) si o indrumare pe care omul o poate urma la nesfarsit.
+# *Un instrument care intoarce «n-am putut» acolo unde ar trebui sa spuna «nu recunosc»
+# ascunde chiar felul intrarii* — capcana 16 din predare, pe alt obiect.
+#
+# Tipul se ia din PRIMII OCTETI, nu din `content_type`-ul trimis de browser (care se deduce
+# din extensie, deci minte exact in cazul asta) si nu din numele fisierului — METODA §23:
+# structura, nu text. Mulțimea e cea pe care o accepta `ai_client.citeste_imagini`.
+_MAGIE_IMAGINE = (
+    (b"\xff\xd8\xff", "image/jpeg"),
+    (b"\x89PNG\r\n\x1a\n", "image/png"),
+    (b"GIF87a", "image/gif"),
+    (b"GIF89a", "image/gif"),
+)
+
+
+def tip_imagine(octeti):
+    """Tipul MIME citit din octetii fisierului, sau None daca nu e o imagine cunoscuta."""
+    b = bytes(octeti or b"")
+    for magie, tip in _MAGIE_IMAGINE:
+        if b.startswith(magie):
+            return tip
+    if b[:4] == b"RIFF" and b[8:12] == b"WEBP":
+        return "image/webp"
+    return None
+
+
 def email_valid(e):
     """True daca `e` are FORMA unei adrese de email. Nu spune ca adresa exista."""
     return bool(e) and bool(_EMAIL_RE.match(str(e).strip()))

@@ -31,7 +31,8 @@ from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt 
 from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
-                         EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
+                         EMAIL_NICIUNUL_VALID, EMAIL_INVALID_LISTA, CUI_FIRMA_LIPSA,
+                         PERIOADA_INCHISA,
                               MESAJ_Z_DUPLICAT, MESAJ_Z_FARA_CHEIE,
                               MESAJ_CLIENT_ALT_CABINET, MESAJ_EMAIL_ACELASI,
                               MESAJ_DOAR_TITULARUL, MESAJ_LINK_LOGARE_CERUT,
@@ -5727,7 +5728,16 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
         b = await f.read()
         if len(b) > 8_000_000:
             raise HTTPException(400, "imagine prea mare (max 8MB)")
-        imagini.append((b, f.content_type or "image/jpeg"))
+        # [R155, 05.09.2026] Tipul se citeste din octeti, nu din ce spune browserul: un fisier
+        # text numit `.png` soseste cu `content_type: image/png`. Refuzul cade INAINTE de apelul
+        # la furnizorul de AI — deci si o cerere platita mai putin pentru un fisier care oricum
+        # n-avea ce sa spuna.
+        _tip = _common.tip_imagine(b)
+        if not _tip:
+            raise HTTPException(422, "«%s» nu e o imagine: primii octeți nu sunt de JPEG, PNG, "
+                                     "GIF sau WEBP. Fotografiază bonul, sau încarcă poza lui."
+                                % (f.filename or "fișierul trimis"))
+        imagini.append((b, _tip))
     prompt = ("Primesti un document pozat (un singur document, posibil pe mai multe imagini, in ordine). "
               "Clasifica-l: bon fiscal SAU chitanta. Raspunde DOAR cu JSON, fara alt text: "
               '{"tip": "bon", "comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
@@ -6501,6 +6511,17 @@ def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_rol("admi
     # canalul e pornit, golite il opreste". Aceeasi clasa ca importurile din lotul 1b: *o
     # operatiune de inlocuire care primeste un set vid nu are voie sa execute partea de stergere.*
     # Oprirea ramane posibila — dar ceruta, nu dedusa din tacere.
+    # [R152, 05.09.2026] Gasit apasand: formularul umplut cu `«»@#$%` a fost ACCEPTAT, iar
+    # ecranul a anuntat «Stare: conectat la «»@#$%». Doua neadevaruri intr-un rand — sirul nu
+    # e o adresa, si nicio conexiune nu s-a incercat. Aici cade primul; al doilea, in
+    # `woo_ecran.js`, care spune de acum ce stie: „configurat pentru”.
+    _u = ((corp or {}).get("url") or "").strip()
+    if _u:
+        from urllib.parse import urlparse as _urlparse
+        _p = _urlparse(_u)
+        if _p.scheme not in ("http", "https") or "." not in (_p.netloc or ""):
+            raise HTTPException(422, "Adresa magazinului nu e o adresă web: %r. Aștept ceva "
+                                     "de forma https://magazin.ro." % _u)
     _campuri = [k for k in ("url", "ck", "cs") if k in (corp or {})]
     if not _campuri:
         raise HTTPException(422, "N-ai trimis niciun câmp. Cererea asta ar fi golit adresa "
@@ -6605,6 +6626,19 @@ def _trimite_recomandari(emails, html, subiect):
         raise HTTPException(400, EMAIL_NICIUNUL_VALID)
     if len(emails) > 20:
         raise HTTPException(400, "Maxim 20 de emailuri odata.")
+    # [R154, 05.09.2026] Masurat apasand: `{"emails": ["«»@#$%"]}` intorcea
+    # `200 {"stare": "esuat"}` — adica aplicatia SPUNEA ca n-a putut trimite, dupa ce chemase
+    # furnizorul de email cu un sir care nu poate fi adresa nimanui. Constanta de deasupra se
+    # cheama chiar `EMAIL_NICIUNUL_VALID`, deci verificarea era promisa in registrul de mesaje
+    # si nu exista in cod. Criteriul e cel din R138 (`core.common.email_valid`), imprumutat, nu
+    # rescris — a doua definitie a aceluiasi lucru e inceputul unei divergente tacute.
+    #
+    # REFUZUL E PE TOATA LISTA, nu pe adresele rele: o trimitere partiala ar fi lasat omul cu
+    # „3 trimise” si fara sa stie ca a patra n-a plecat niciodata — aceeasi coercitie tacuta ca
+    # la R150. Se refuza tot, si se spune CARE adresa nu e adresa.
+    rele = [e for e in emails if not _email_valid(e)]
+    if rele:
+        raise HTTPException(422, EMAIL_INVALID_LISTA % ", ".join(rele[:5]))
     rezultate = []
     for em in emails:
         ok = _obs.trimite_email_html(em, subiect, html)
@@ -7508,6 +7542,22 @@ def registratura_lista(tenant_id: int, an: int = None, ctx=Depends(cere_cabinet)
 
 @app.post("/tenants/{tenant_id}/registratura")
 def registratura_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    # [R153, 05.09.2026] Gasit apasand: cu `1899-01-01` in casuta de data, inregistrarea
+    # INTRA (`registratura_api.inregistreaza` ia `int(data[:4])` fara nicio margine), iar
+    # re-citirea registrului pe acel an — `_cere_perioada` — o refuza cu
+    # `an invalid: 1899 (aștept 1990-2100)`. Documentul ramanea intr-un an in care aplicatia
+    # nu se poate uita. *Aceeasi aplicatie stia raspunsul la citire si nu-l avea la scriere* —
+    # clasa din lotul 14, de data asta intre cele doua capete ale ACELEIASI rute.
+    # Criteriul e imprumutat de la citire, nu rescris.
+    _d = (corp.get("data") or "").strip()
+    if _d:
+        from datetime import date as _date_reg
+        try:
+            _zi = _date_reg.fromisoformat(_d)
+        except ValueError:
+            raise HTTPException(422, "Data înregistrării nu e o dată: %r "
+                                     "(aștept AAAA-LL-ZZ)." % _d)
+        _cere_perioada(an=_zi.year)
     from core import registratura_api as _reg
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)

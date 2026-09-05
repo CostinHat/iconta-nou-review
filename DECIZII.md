@@ -13871,3 +13871,35 @@ stat fără apelant de producție și nimic n-a semnalat-o: `test_module_nelegat
 modulul era chemat prin altă funcție. *Clasa e declarată chiar în antetul acelui gard („CE NU
 ACOPERĂ: nivelul funcție") — azi a costat un strat întreg de contract, nelegat, timp de trei ture.*
 Garda nouă cade dacă apelul dispare din `main.py`, cu mutație probată.
+
+**(59) Un buton care TRIMITE intră în probă dacă refuzul cade ÎNAINTEA plecării — și asta se
+citește la sursă, nu se deduce din nume** *(lotul 15, 05.09.2026)*. Lista `OPRITE` a sondei de ecran
+decide după numele butonului, iar numele nu spune unde ajunge acțiunea: cele două «Trimite
+invitația» chiar trimit un email, dar unul (`POST /tenants/{}/client-acces`) verifică forma adresei
+înainte de orice inserare sau trimitere (R138), iar celălalt (`POST /recomanda`) o face de azi
+(R154). Deci pe santinela campaniei nu pleacă nimic, și întrebarea campaniei se poate pune.
+Excepțiile se scriu pe **textul întreg**, cu ruta numită lângă ele — un „trimite" deblocat ca
+bucată ar fi deblocat și ce pleacă cu adevărat. *Alternativa era ca două ecrane cu formular real să
+rămână pentru totdeauna „neprobate, cu motiv".*
+
+**(60) Un refuz pe o LISTĂ e pe toată lista, nu doar pe elementele rele** *(lotul 15,
+05.09.2026)*. La R154 puteam trimite către adresele bune și raporta eșec doar pe cele rele. N-am
+făcut-o: omul ar fi rămas cu „3 trimise" fără să știe că a patra n-a plecat niciodată — aceeași
+coerciție tăcută ca la R150, doar că pe o mulțime. Se refuză tot, **și se spune care adresă nu e
+adresă**. Costul: o listă de 20 cu o greșeală de tastare cere o a doua apăsare. Câștigul: ce scrie
+pe ecran e adevărat.
+
+**(61) Un buton care rămâne stins E un răspuns — dar unul care se vede doar la survol se
+CONSEMNEAZĂ, nu se repară** *(lotul 15, 05.09.2026)*. `fa-casa` refuză suma negativă ținând butonul
+de fond dezactivat, cu motivul în `title`. Nu e prag 1: nimic fals, nimic acceptat greșit, iar
+refuzul există. Mutarea motivului lângă câmp e o schimbare de **așezare**, iar aceea cere
+confirmarea lui Costin. Scrisă în `GARZI.md` ca datorie numită. *Decizia e despre graniță, nu despre
+ecran: „refuzul e slab" nu deschide dreptul de a rearanja.*
+
+**(62) Verbele de submit se adaugă în sondă DUPĂ ce se măsoară ce mai deblochează, pe tot
+`static/js`** *(lotul 15, 05.09.2026)*. „înregistr" și „reevalu" au intrat în lista butoanelor
+probate abia după `frontend_test/butoane_cu.py`, care numără toate butoanele care conțin cuvântul:
+„înregistr" apare pe **două** (registratura + «Înregistrează cabinetul» din `login.js`, ecran pe
+care nicio probă autentificată nu-l randează), „reevalu" pe **unul**. *Un cuvânt adăugat pe
+intuiție deblochează butoane nevăzute — iar unele scriu.* Instrumentul rămâne, ca următorul verb să
+nu se adauge pe încredere.

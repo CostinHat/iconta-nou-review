@@ -122,102 +122,13 @@ def ecran_emitere(pg):
 
 
 
-ECRANE = [
-    ("supervizor", ecran_supervizor),
-    ("import_mijloace_fixe", ecran_import_mijloace_fixe),
-    ("vector_fiscal", ecran_vector_fiscal),
-    ("plan_conturi", ecran_plan_conturi),
-    ("solduri_parteneri", ecran_solduri_parteneri),
-    ("stat_plata", ecran_stat_plata),
-    ("declaratii", ecran_declaratii),
-    ("stocuri", ecran_stocuri),
-    ("registratura", ecran_registratura),
-    ("banca", ecran_banca),
-    ("rapoarte", ecran_rapoarte),
-    ("etransport", ecran_etransport),
-    ("centrecost", ecran_centrecost),
-    ("casa", ecran_casa),
-    ("verificari", ecran_verificari),
-    ("datefirma", ecran_datefirma),
-    # [LOTUL 12, R142] «Emite factura» a intrat aici prin aceeasi regula ca «Date firma»:
-    # lotul i-a ATINS JS-ul (o cota necunoscuta nu se mai afiseaza ca zero). Un ecran atins
-    # primeste cele trei unelte vizuale pe el; unul doar probat, nu.
-    ("emitere", ecran_emitere),
-    # [LOTUL 13, R145] «Operatiuni speciale» a intrat aici prin aceeasi regula: lotul i-a ATINS
-    # JS-ul (campurile de chirie/comodat/refacturare, plus conditia cu mai multe valori).
-    ("operatiuni", ecran_operatiuni),
-]
-
-
-# ── LOTUL 11 (04.09.2026): cele 21 de ecrane de firma ramase ─────────────────
-# DE CE O A DOUA LISTA, si nu `ECRANE` marita — masurat, nu presupus. Fiecare nume din `ECRANE` e
-# cerut de `test_acoperire_vizuala.test_toate_ecranele_scanate` in artefactul vizual, iar
-# `test_fara_violari` cade pe orice violare axe (desktop SI mobil), tinta de atingere sub 24px,
-# revarsare la 393px sau eroare de consola. A muta cele 21 de mai jos in `ECRANE` ar fi, prin
-# constructie, o campanie de ACCESIBILITATE — nu campania „vorbeste aplicatia cand primeste date
-# gresite?". Sunt doua intrebari, cu doua costuri, si nu se decid una prin cealalta.
-#
-# CE RAMANE ADEVARAT: locul de adevar e tot UNUL — fisierul asta. Ce se declara e la ce raspunde
-# fiecare lista. Iar regula portii verzi vizuale nu se schimba: **un ecran al carui JS se ATINGE
-# trece in `ECRANE`, cu cele trei unelte rulate pe el.** Lista de mai jos e pentru ecranele pe care
-# campania le PROBEAZA fara sa le atinga.
-#
-# Navigarea lor e aceeasi — deschide firma, apasa cardul —, deci se genereaza, nu se scrie de 21
-# de ori. Un ecran care cere mai mult de o apasare primeste functie proprie, ca `_import_strat`.
-_FA_CAMPANIE = [
-    "fa-acces", "fa-balanta", "fa-bilant", "fa-bonuri", "fa-contracte", "fa-control",
-    "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-magazin", "fa-marja",
-    "fa-mijloace", "fa-produse", "fa-raportz", "fa-regfiscal",
-    # [LOTUL 14] `fa-rip` a IESIT de aici: nu se randeaza pe firma acestei liste (SRL), deci
-    # raporta „navigare esuata" la fiecare rulare. E probat de `rip_pfa` din ECRANE_CABINET,
-    # pe firma de partida simpla — acolo unde cardul exista.
-    "fa-reginventar", "fa-registre321", "fa-solicitari",
-]
-
-
-def _fa_card(fid):
-    """Inchide `fid` pe functie, nu pe variabila de bucla — altfel toate cele 21 ar deschide
-    ultimul ecran, si raportul ar arata 21 de ecrane parcurse cu un singur ecran probat."""
-    def f(pg):
-        _ecran_shell(pg, fid)
-    f.__name__ = "ecran_" + fid.replace("-", "_")
-    return f
-
-
-ECRANE_CAMPANIE = [(fid[3:].replace("-", "_"), _fa_card(fid)) for fid in _FA_CAMPANIE]
-
-# ── LOTUL 12 (04.09.2026): ecranele care NU sunt ale unei firme ──────────────
-# Cele doua liste de mai sus au acelasi drum de intrare: `deschide_firma` + un card `#fa-*`.
-# Cele 33 de unitati ramase in campanie (`#462`–`#501`) sunt de alta natura: traiesc pe DESKTOPUL
-# unui rol — cabinet, admin, portal — si nu se ajunge la ele prin nicio firma.
-#
-# DE CE POARTA FIECARE ECRAN UN CONT. `app.js` alege desktopul din `sesiune.rol()` **la pornire**
-# (`randeaza()`, switch pe rol), deci rolul nu e un parametru al navigarii: e o proprietate a
-# FILEI. Un `admin_*` cerut in aceeasi fila ca un ecran de cabinet ar randa desktopul cabinetului
-# si sonda ar raporta „navigare esuata" despre un ecran care functioneaza. De-aia intrarile de
-# aici sunt de TREI campuri, nu doua — iar hamul deschide cate un context per cont.
-#
-# MASURAT AZI, si de-aia lipseste desktopul asistentului (`asistent.js`): din cele 14 conturi ale
-# bazei, singurul cu rol `angajat` e INACTIV, deci `sesiune_pentru_user` il refuza. Ecranul nu e
-# „fara defect": e fara subiect. Se probeaza cand exista un asistent activ, prin calea aplicatiei
-# (`/asistenti/{id}/reactiveaza`), nu printr-un UPDATE.
-CONT_CABINET = EMAIL_IMPLICIT              # admin_firma, cabinetul 1968
-CONT_ADMIN = "admin@prisma-cont.test"      # superadmin
-CONT_TEST = "fir-intrare@prisma-cont.test"  # admin_firma al cabinetului de test 4163
-
-# [LOTUL 12, `DECIZII.md` 31] A DOUA FIRMA, si de ce era obligatorie.
-# `#fa-rip` — Registrul de incasari si plati — se randeaza numai la `regim_contabil == "simpla"`
-# (`firme.js`, cardul `rip`), iar regimul se deriva din `tip_firma` (`migrare_api.regim_contabil`:
-# `pfa` -> simpla, orice altceva -> dubla). Masurat INAINTE de a construi ceva: **toate cele 19
-# firme din baza erau `srl`**. Deci nu era un ecran neprobat — era un ecran pe care nimeni nu-l
-# putuse deschide vreodata, si toata ramura de partida simpla cu el.
-#
-# Firma s-a facut prin LANTUL APLICATIEI (`POST /tenants` cu `tip_firma: "pfa"`), nu printr-un
-# `INSERT`, si la cabinetul declarat de TEST (4163), ca sa nu miste numaratoarea firmelor reale.
-# CUI-ul ei trece cifra de control ANAF — cerinta `core/test_cui_cnp_test_valid.py`.
-FIRMA_PFA = "PFA TEST PARTIDA SIMPLA"
-
-
+# [LOTUL 15] Cele trei ecrane al caror JS l-a atins lotul. `magazin` e un card de firma;
+# `pachete` si `recomanda` sunt carduri de cabinet pe contul IMPLICIT, deci intra aici fara
+# sa ceara altceva de la unelte. Definitiile lor traiau in celelalte doua liste — s-au MUTAT,
+# nu s-au copiat: aserțiunea de la capatul fisierului cade la orice suprapunere.
+# [LOTUL 15] Ajutoarele de desktop si cardurile de cabinet au urcat AICI, de sub sectiunea
+# lotului 12: `ECRANE` le foloseste acum, si `ECRANE` trebuie sa ramana un literal de lista —
+# `acoperire_hash.ecrane_asteptate()` il citeste cu regex, nu prin import.
 def _desktop(pg, cont_marker=".cab-card"):
     """Desktopul rolului, RANDAT. Nu intra in nicio firma."""
     pg.goto(BAZA + "/", wait_until="domcontentloaded")
@@ -288,6 +199,111 @@ def ecran_recomanda(pg):
     pg.wait_for_timeout(900)
 
 
+def ecran_magazin(pg): _ecran_shell(pg, "fa-magazin")
+def ecran_pachete(pg): _card(pg, "pachete")
+
+
+ECRANE = [
+    ("supervizor", ecran_supervizor),
+    ("import_mijloace_fixe", ecran_import_mijloace_fixe),
+    ("vector_fiscal", ecran_vector_fiscal),
+    ("plan_conturi", ecran_plan_conturi),
+    ("solduri_parteneri", ecran_solduri_parteneri),
+    ("stat_plata", ecran_stat_plata),
+    ("declaratii", ecran_declaratii),
+    ("stocuri", ecran_stocuri),
+    ("registratura", ecran_registratura),
+    ("banca", ecran_banca),
+    ("rapoarte", ecran_rapoarte),
+    ("etransport", ecran_etransport),
+    ("centrecost", ecran_centrecost),
+    ("casa", ecran_casa),
+    ("verificari", ecran_verificari),
+    ("datefirma", ecran_datefirma),
+    # [LOTUL 12, R142] «Emite factura» a intrat aici prin aceeasi regula ca «Date firma»:
+    # lotul i-a ATINS JS-ul (o cota necunoscuta nu se mai afiseaza ca zero). Un ecran atins
+    # primeste cele trei unelte vizuale pe el; unul doar probat, nu.
+    ("emitere", ecran_emitere),
+    # [LOTUL 13, R145] «Operatiuni speciale» a intrat aici prin aceeasi regula: lotul i-a ATINS
+    # JS-ul (campurile de chirie/comodat/refacturare, plus conditia cu mai multe valori).
+    ("operatiuni", ecran_operatiuni),
+    # [LOTUL 15] atinse de reparatiile R152 / R156+R159 / R158 — v. comentariul de mai sus
+    ("magazin", ecran_magazin),
+    ("pachete", ecran_pachete),
+    ("recomanda", ecran_recomanda),
+]
+
+
+# ── LOTUL 11 (04.09.2026): cele 21 de ecrane de firma ramase ─────────────────
+# DE CE O A DOUA LISTA, si nu `ECRANE` marita — masurat, nu presupus. Fiecare nume din `ECRANE` e
+# cerut de `test_acoperire_vizuala.test_toate_ecranele_scanate` in artefactul vizual, iar
+# `test_fara_violari` cade pe orice violare axe (desktop SI mobil), tinta de atingere sub 24px,
+# revarsare la 393px sau eroare de consola. A muta cele 21 de mai jos in `ECRANE` ar fi, prin
+# constructie, o campanie de ACCESIBILITATE — nu campania „vorbeste aplicatia cand primeste date
+# gresite?". Sunt doua intrebari, cu doua costuri, si nu se decid una prin cealalta.
+#
+# CE RAMANE ADEVARAT: locul de adevar e tot UNUL — fisierul asta. Ce se declara e la ce raspunde
+# fiecare lista. Iar regula portii verzi vizuale nu se schimba: **un ecran al carui JS se ATINGE
+# trece in `ECRANE`, cu cele trei unelte rulate pe el.** Lista de mai jos e pentru ecranele pe care
+# campania le PROBEAZA fara sa le atinga.
+#
+# Navigarea lor e aceeasi — deschide firma, apasa cardul —, deci se genereaza, nu se scrie de 21
+# de ori. Un ecran care cere mai mult de o apasare primeste functie proprie, ca `_import_strat`.
+_FA_CAMPANIE = [
+    "fa-acces", "fa-balanta", "fa-bilant", "fa-bonuri", "fa-contracte", "fa-control",
+    # [LOTUL 15] `fa-magazin` a trecut in `ECRANE`: lotul i-a atins JS-ul (R152).
+    "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-marja",
+    "fa-mijloace", "fa-produse", "fa-raportz", "fa-regfiscal",
+    # [LOTUL 14] `fa-rip` a IESIT de aici: nu se randeaza pe firma acestei liste (SRL), deci
+    # raporta „navigare esuata" la fiecare rulare. E probat de `rip_pfa` din ECRANE_CABINET,
+    # pe firma de partida simpla — acolo unde cardul exista.
+    "fa-reginventar", "fa-registre321", "fa-solicitari",
+]
+
+
+def _fa_card(fid):
+    """Inchide `fid` pe functie, nu pe variabila de bucla — altfel toate cele 21 ar deschide
+    ultimul ecran, si raportul ar arata 21 de ecrane parcurse cu un singur ecran probat."""
+    def f(pg):
+        _ecran_shell(pg, fid)
+    f.__name__ = "ecran_" + fid.replace("-", "_")
+    return f
+
+
+ECRANE_CAMPANIE = [(fid[3:].replace("-", "_"), _fa_card(fid)) for fid in _FA_CAMPANIE]
+
+# ── LOTUL 12 (04.09.2026): ecranele care NU sunt ale unei firme ──────────────
+# Cele doua liste de mai sus au acelasi drum de intrare: `deschide_firma` + un card `#fa-*`.
+# Cele 33 de unitati ramase in campanie (`#462`–`#501`) sunt de alta natura: traiesc pe DESKTOPUL
+# unui rol — cabinet, admin, portal — si nu se ajunge la ele prin nicio firma.
+#
+# DE CE POARTA FIECARE ECRAN UN CONT. `app.js` alege desktopul din `sesiune.rol()` **la pornire**
+# (`randeaza()`, switch pe rol), deci rolul nu e un parametru al navigarii: e o proprietate a
+# FILEI. Un `admin_*` cerut in aceeasi fila ca un ecran de cabinet ar randa desktopul cabinetului
+# si sonda ar raporta „navigare esuata" despre un ecran care functioneaza. De-aia intrarile de
+# aici sunt de TREI campuri, nu doua — iar hamul deschide cate un context per cont.
+#
+# MASURAT AZI, si de-aia lipseste desktopul asistentului (`asistent.js`): din cele 14 conturi ale
+# bazei, singurul cu rol `angajat` e INACTIV, deci `sesiune_pentru_user` il refuza. Ecranul nu e
+# „fara defect": e fara subiect. Se probeaza cand exista un asistent activ, prin calea aplicatiei
+# (`/asistenti/{id}/reactiveaza`), nu printr-un UPDATE.
+CONT_CABINET = EMAIL_IMPLICIT              # admin_firma, cabinetul 1968
+CONT_ADMIN = "admin@prisma-cont.test"      # superadmin
+CONT_TEST = "fir-intrare@prisma-cont.test"  # admin_firma al cabinetului de test 4163
+
+# [LOTUL 12, `DECIZII.md` 31] A DOUA FIRMA, si de ce era obligatorie.
+# `#fa-rip` — Registrul de incasari si plati — se randeaza numai la `regim_contabil == "simpla"`
+# (`firme.js`, cardul `rip`), iar regimul se deriva din `tip_firma` (`migrare_api.regim_contabil`:
+# `pfa` -> simpla, orice altceva -> dubla). Masurat INAINTE de a construi ceva: **toate cele 19
+# firme din baza erau `srl`**. Deci nu era un ecran neprobat — era un ecran pe care nimeni nu-l
+# putuse deschide vreodata, si toata ramura de partida simpla cu el.
+#
+# Firma s-a facut prin LANTUL APLICATIEI (`POST /tenants` cu `tip_firma: "pfa"`), nu printr-un
+# `INSERT`, si la cabinetul declarat de TEST (4163), ca sa nu miste numaratoarea firmelor reale.
+# CUI-ul ei trece cifra de control ANAF — cerinta `core/test_cui_cnp_test_valid.py`.
+FIRMA_PFA = "PFA TEST PARTIDA SIMPLA"
+
+
 def ecran_admin_anunturi(pg):
     """Admin -> «Anunturi» -> pasul «Mesaj» (`admin.js::pasMesaj`).
 
@@ -348,9 +364,9 @@ ECRANE_CABINET = [
     # aserțiunea de mai jos la prima rulare — doua ecrane diferite cu acelasi nume scurt.
     ("control_portofoliu", CONT_CABINET, _card_fn("control")),     # 474
     ("control_verdict", CONT_CABINET, ecran_control_verdict),      # 475
-    ("pachete", CONT_CABINET, _card_fn("pachete")),                # 486
+    # [LOTUL 15] `pachete` a trecut in `ECRANE` (JS atins: R156, R159)
     ("raporteaza", CONT_CABINET, _card_fn("raport")),              # 490
-    ("recomanda", CONT_CABINET, ecran_recomanda),                  # 491
+    # [LOTUL 15] `recomanda` a trecut in `ECRANE` (JS atins: R158)
     ("termene", CONT_CABINET, _card_fn("termene")),                # 496
     ("validat", CONT_CABINET, _card_fn("validat")),                # 498
     ("ansamblu", CONT_CABINET, ecran_ansamblu),                    # 469

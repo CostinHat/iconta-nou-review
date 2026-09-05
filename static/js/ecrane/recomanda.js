@@ -70,7 +70,10 @@ export function randeazaRecomanda(corp, nav) {
         arataMesaj(msg, "Nu am putut trimite.", "eroare");
       }
     } catch (e) {
-      arataMesaj(msg, "Eroare la trimitere.", "eroare");
+      // [R158, 05.09.2026] Refuzul serverului numeste ADRESA gresita (R154); mesajul generic
+      // de aici il acoperea. Ce ajungea totusi la om venea din pastila globala a lui `api.js`,
+      // deci ecranul spunea una si bara alta.
+      arataMesaj(msg, (e && e.mesaj) || "Eroare la trimitere.", "eroare");
     }
   });
 }

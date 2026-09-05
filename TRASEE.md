@@ -1711,7 +1711,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T23 — Bonul de la client — portalul și decontul
 
-**Clasa:** MECANIC · **rute:** 9 (din care schimba date: 5) · **refuzuri explicite:** 20
+**Clasa:** MECANIC · **rute:** 9 (din care schimba date: 5) · **refuzuri explicite:** 21
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 3 din 5.**
 
@@ -1752,7 +1752,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T25 — Comanda din magazinul online (WooCommerce)
 
-**Clasa:** MANUAL · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 2
+**Clasa:** MANUAL · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 3
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 2.**
 
@@ -1772,7 +1772,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T26 — Registratura
 
-**Clasa:** MECANIC · **rute:** 2 (din care schimba date: 1) · **refuzuri explicite:** 3
+**Clasa:** MECANIC · **rute:** 2 (din care schimba date: 1) · **refuzuri explicite:** 4
 
 **Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **1 din 1 rute care schimba date.**
 

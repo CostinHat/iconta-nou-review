@@ -3,13 +3,30 @@
  "scheme": [
   "tenant_003"
  ],
- "schimbari": {},
- "scrieri": [],
+ "schimbari": {
+  "tenant_003.firma_profil": [
+   "1/ebf17ed6",
+   "1/36a4e20e"
+  ]
+ },
+ "scrieri": [
+  [
+   "magazin",
+   "Salvează",
+   {
+    "tenant_003.firma_profil": [
+     "1/ebf17ed6",
+     "1/36a4e20e"
+    ]
+   }
+  ]
+ ],
  "ecrane": {
   "acces": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 2,
+   "intrari_dom": 2,
    "deschis_cu": "Invită client nou",
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -19,6 +36,7 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -28,15 +46,19 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 2,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": "(ANAF) Descarcă XML an invalid: -99999999 (aștept 1990-2100)"
   },
   "bonuri": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 1,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -57,20 +79,21 @@
   "contracte": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
-   "campuri_umplute": 2,
-   "deschis_cu": "+ Șablon nou",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
-     "buton": "Salvează",
+     "buton": "Generează",
      "text_nou": true,
-     "delta_text": " exista deja un sablon cu acest nume",
+     "delta_text": "RL · CUI 95141537 ✕ Generează contract Șablon: «»@#$% Partener (client) — alege clientul — Datele partenerului se iau din client; câmpurile lipsă rămân goale în contract. Descarcă PDF Înapoi",
      "a_scris": null,
      "a_cerut_fisier": null,
-     "santinele": "2->2",
-     "campuri": "2->2",
-     "fara_date": null,
+     "santinele": "0->0",
+     "campuri": "0->0",
+     "fara_date": true,
      "verdict": "a vorbit"
     }
    ]
@@ -79,6 +102,7 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -88,6 +112,7 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -109,39 +134,32 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 0,
    "deschis_cu": null,
    "selectii": 1,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": "41537 ✕ Cartea mare Nu am putut încărca fișa de cont. eroare 500"
   },
   "jurnal": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
-   "campuri_umplute": 4,
-   "deschis_cu": "+ Notă nouă",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
      "buton": "Generează amortizarea",
      "text_nou": true,
-     "delta_text": "uă Blochează luna? Nimic de amortizat. Notă nouă · 01.09.2026 Descriere Linii: cont debit = cont credit · sumă = — centru — − + linie Salvează Renunță Nr. crt. 5 · 01.09.2026 · proba cota perioada - O",
+     "delta_text": "uă Blochează luna? Nimic de amortizat. Nr. crt. 5 · 01.09.2026 · proba cota perioada - OMFP 1802 · ● Ciornă 5121 = 5191 · 100,00 · sursa: banca Document justificativ: nederivat — nota n-are referință ",
      "a_scris": null,
      "a_cerut_fisier": null,
-     "santinele": "4->4",
-     "campuri": "4->4",
-     "fara_date": null,
-     "verdict": "a vorbit"
-    },
-    {
-     "buton": "Salvează",
-     "text_nou": true,
-     "delta_text": "ouă Blochează luna? linia 1: contul «»@#$% nu exista in planul de conturi al firmei. Se adauga in Plan de conturi (Import date › Plan de conturi), sau se corecteaza aici — o nota cu un cont inexistent",
-     "a_scris": null,
-     "a_cerut_fisier": null,
-     "santinele": "4->4",
-     "campuri": "4->4",
-     "fara_date": null,
+     "santinele": "0->0",
+     "campuri": "0->0",
+     "fara_date": true,
      "verdict": "a vorbit"
     }
    ]
@@ -149,16 +167,35 @@
   "magazin": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
-   "campuri_umplute": 0,
-   "deschis_cu": null,
+   "campuri_umplute": 3,
+   "intrari_dom": 3,
+   "deschis_cu": "Configurează magazinul",
    "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [
+    {
+     "buton": "Salvează",
+     "text_nou": true,
+     "delta_text": "RL · CUI 95141537 ✕ Magazin online Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30). Configurare salvata. Stare: conectat la «»@#$% Sincronizează acum Modifică configurarea",
+     "a_scris": {
+      "tenant_003.firma_profil": [
+       "1/ebf17ed6",
+       "1/36a4e20e"
+      ]
+     },
+     "a_cerut_fisier": null,
+     "santinele": "3->0",
+     "campuri": "3->0",
+     "fara_date": null,
+     "verdict": "a scris"
+    }
+   ]
   },
   "marja": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 2,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -168,6 +205,7 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -177,6 +215,7 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 1,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -198,6 +237,7 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 7,
+   "intrari_dom": 8,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -219,24 +259,31 @@
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 2,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": "ntocmi registrul pe -99999999. an invalid: -99999999 (aștept 1990-2100)"
   },
   "reginventar": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 0,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": " Registrul-inventar Nu am putut încărca registrul. exercițiu invalid: -99999999 (aștept 1990-2100)"
   },
   "registre321": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 13,
+   "intrari_dom": 14,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,
@@ -254,13 +301,11 @@
     }
    ]
   },
-  "rip": {
-   "eroare_navigare": "Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#fa-rip\")\n"
-  },
   "solicitari": {
    "cont": "patron@prisma-cont.test",
    "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 1,
    "deschis_cu": null,
    "selectii": 0,
    "scris_la_deschidere": null,

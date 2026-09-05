@@ -14,7 +14,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
       <h2 class="pf-titlu">Magazin online</h2>
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
-      <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "conectat la " + cfg.url : "neconfigurat"}</p>
+      <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "configurat pentru " + cfg.url : "neconfigurat"}</p>
       ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" style="margin-bottom:12px">Sincronizează acum</button><br>' : ""}
       <button class="buton-secundar" id="wc-btn-config">${cfg.configurat ? "Modifică configurarea" : "Configurează magazinul"}</button>
       <div class="em-rezultat" id="wc-rezultat"></div>

@@ -1,35 +1,29 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **construcția internă e ÎNCHISĂ**, iar poarta a fost trecută de un om (03.09.2026)
+# PREDARE LANȚ — **campania etapei 1 e ÎNCHISĂ: 364 din 364** (05.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-05**, la capătul unei ture lungi (loturile **12, 13, 14** + trei
-  serii de decizii). Antetul, secțiunea campaniei și cele două liste de mai jos sunt **rescrise**;
+- **ultima rescriere**: **2026-09-05**, la capătul turei care a închis **lotul 15** — cele 20 de
+  ecrane rămase. Antetul, secțiunea campaniei și cele două liste de mai jos sunt **rescrise**;
   restul documentului e cel din 03–04.09 și poartă data lui.
-- **pe commit**: `683faec4`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **pe commit**: `b0270f9d`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **DE CE ACUM**: `/clear`. Tura a produs **paisprezece commituri** și a închis loturile 12, 13 și
-  14; ce urmează nu poate porni din memoria ei.
+- **DE CE ACUM**: capătul campaniei. Ce urmează **nu se alege de aici** — v. „DACĂ CONTINUI DE AICI".
 - **CE E REMĂSURAT ÎN TURA ASTA**: cifrele campaniei — **mecanic**, parcurgând coloana «stare
-  probare» · cele patru clichete generate · cardurile pe partidă simplă vs dublă · cele 17 locuri
-  care validează o cotă.
+  probare» · cele patru clichete generate · numărul de ecrane cerute de gardul acoperirii vizuale
+  (16 → 21, R160).
 - **vechime măsurată, nu estimată**: **0 commituri** de la ultima atingere a fișierului.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **campania e la 344 din 364, și restul are motive scrise**
+## PRIMUL LUCRU DE ȘTIUT: **campania e ÎNCHISĂ pe etapa 1, și n-a rămas niciun ecran neatins**
 
-Tema — *vorbește aplicația când primește date greșite?* — e deschisă de Costin pe 03.09.2026 și e
-**în lucru**. Comanda, în șapte puncte: lista funcționalităților **derivată din cod** · pentru
-fiecare, date invalide și valide · probare **întâi cu invalide**, cu **mesajul verbatim** notat ·
-orice defect **se repară pe loc** · se reprobează după reparație · rezultatele într-un fișier · fără
-gărzi noi, fără restanțe deschise, o singură publicare per lot.
-
-**La invalide se urmărește un singur lucru: aplicația VORBEȘTE.** Tăcerea e defect, chiar dacă
-valoarea n-a intrat. Refuzul spune **care câmp**, **ce e greșit**, în termeni de contabil, cu temei
-acolo unde aplică o regulă fiscală. Nu cade, nu dă 500, nu pierde ce s-a tastat, și **nu confundă
-„e invalid" cu „n-am putut verifica"**.
+Tema — *vorbește aplicația când primește date greșite?* — deschisă de Costin pe 03.09.2026, s-a
+închis pe **05.09.2026**, la lotul 15. Comanda, în șapte puncte: lista funcționalităților **derivată
+din cod** · pentru fiecare, date invalide și valide · probare **întâi cu invalide**, cu **mesajul
+verbatim** notat · orice defect **se repară pe loc** · se reprobează după reparație · rezultatele
+într-un fișier · fără gărzi noi, fără restanțe deschise, o singură publicare per lot.
 
 ### Unde e campania
 
@@ -37,72 +31,84 @@ acolo unde aplică o regulă fiscală. Nu cade, nu dă 500, nu pierde ce s-a tas
 |---|---|
 | **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
 | **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date** |
-| **probate** | **344** |
-| **RĂMASE** | **20**, toate ECRANE. **Niciunul „neatins"**: fiecare rând poartă motivul |
-| **defecte** | găsite **145**, reparate **144**, reprobate **144** · una **deschisă ca decizie** (R151) |
+| **probate** | **364** |
+| **RĂMASE** | **0** |
+| **defecte** | găsite **154**, reparate **153**, reprobate **153** · una **deschisă ca decizie** (R151) |
 | **cum se numără** | **mecanic**, parcurgând coloana «stare probare». Cifrele scrise de mână au fost greșite de trei ori |
 
-### Cele 20 rămase, pe motiv
+### Ce a fost lotul 15, și de ce merită citit înainte de orice altă probă de ecran
 
-| motiv | câte | care |
-|---|---|---|
-| **formularul e la doi pași** de deschizător (sonda face unul) | 8 | `fa-bonuri` · `fa-casa` · `fa-declaratii` · `fa-facturi` · `fa-magazin` · `fa-mijloace` · `fa-verificari` · `mijloace_ecran` |
-| **butonul iese din aplicație** (email, SPV, furnizor AI) | 4 | `pachete` · `recomanda` · `validat` · `admin_sanatate` |
-| **starea datelor nu produce formularul** pe firma campaniei | 3 | `admin_raportari` (listă goală) · `fa-mijloace` (firma n-are active) · `fa-control` |
-| **cere un pas de alt fel** (fereastră, alegere de perioadă, conexiune) | 5 | `fa-acces` · `fa-etransport` · `fa-import` · `fa-registratura` · `declaratii` |
+Cele 20 rămase **nu erau ecrane grele**. Erau **cinci feluri în care sonda era oarbă**, plus patru
+motive scrise în registru care s-au dovedit false la citirea codului. Reparațiile de instrument sunt
+în antetul lui `frontend_test/vizual/proba_ecrane_formular.py`, fiecare numită de ecranul care a
+produs-o:
 
-*Cifra 20 e mai mică decât suma de mai sus fiindcă două ecrane au două motive; motivul principal e
-cel scris pe rândul lor.*
+1. **„A vorbit" se măsura numai în jurul apăsării.** Un ecran care validează LA TASTARE răspunde
+   înainte de orice buton. `fa-etransport` scrie *„Fereastră expirată: UIT ar fi fost valabil până la
+   15.01.1899."* în timp ce completezi — și stinge butonul. Arăta ca un ecran fără nimic de apăsat.
+2. **Un buton DEZACTIVAT era invizibil, nu raportat.** Cădea în același `return` cu „nu e vizibil".
+3. **Domeniul nu cuprindea ferestrele PESTE fereastră.** `pachete` și `recomanda` își pun modalul pe
+   `document.body` — formularul REAL stătea în afara domeniului sondei.
+4. **`campuri=0` nu deosebea „n-are formular" de „nu l-am găsit".** Acum se numără `intrari_dom`.
+5. **Două verbe de submit lipseau**: «Înregistrează», «Reevaluează». Adăugate **după** măsurarea lor
+   pe tot `static/js` (`frontend_test/butoane_cu.py`), nu pe intuiție.
 
----
-## CE S-A ÎNCHIS ÎN TURA ASTA, ȘI CE A ÎNVĂȚAT-O
+**Și a șasea, de altă natură: condiția de oprire.** Sonda se oprea la primul ecran cu CÂMPURI — dar
+`pachete` are două câmpuri în pasul de ALEGERE și niciun buton de submit. *Un formular găsit nu e un
+formular probat: proba are nevoie de buton.*
 
-**Lotul 12** — cele 33 de unități la nivel de fișier (ecrane de cabinet/admin) + **prima firmă de
-partidă simplă din bază**. Măsurat înainte: toate cele 19 firme erau `srl`, deci `#fa-rip` nu era un
-ecran neprobat, era unul pe care **nimeni nu-l putuse deschide vreodată**. Trei defecte: **R138** (un
-`@` nu e o adresă de email — patru rute creau un cont sau dădeau un acces pe orice șir cu un `@`),
-**R139**, **R140**.
+### Cele nouă defecte ale lotului, pe clasă
 
-**Lotul 13** — «Operațiuni speciale» e un rând de listă și **32 de formulare**. Două defecte de prag
-1: **R144** (`500` pe o puritate care nu e număr) și **R145** (operațiunea nu putea reuși NICIODATĂ
-din ecran — formularul trimitea `suma`, ruta cerea `valoare`/`chirie`/`total_factura`).
+| clasă | instanțe |
+|---|---|
+| **„n-am putut" în loc de „nu recunosc"** | **R154** (`/recomanda` trimitea către `«»@#$%` și răspundea `stare: esuat`) · **R155** (un text numit `.png` primea *„încearcă o poză mai clară"*) · **R156** (ecranul acoperea refuzul precis al serverului) |
+| **afirmație falsă pe ecran** | **R152** („conectat la" un magazin cu care nu vorbise nimeni) · **R159** („Ciornă salvată." după o salvare refuzată) |
+| **TACE** — singurul verdict care e defect prin definiția campaniei | **R157** (răspunsul gol la o sesizare: nimic nu se întâmplă, nimic nu se spune) |
+| **aplicația știe la un capăt și nu știe la celălalt** | **R153** (registratura scria anul 1899, pe care tot ea îl refuză la citire) |
+| **mesajul serverului acoperit de unul generic** | **R158** |
+| **gardul care nu se verifică pe sine** | **R160** — v. mai jos |
 
-**Lotul 14** — cele 5 rute de rol + cele 5 ecrane cu formular real. **R150**: un cabinet inexistent
-răspundea `200 {"activitate": []}`, și trei rute strângeau tăcut o valoare imposibilă.
-
-**Decizia de arhitectură (33), și ce a produs.** *„Cota se validează față de PERIOADA în care a fost
-în vigoare, nu față de o listă de cote acceptate. Data operațiunii decide — sau exigibilitatea, unde
-diferă."* Măsurat: **17** locuri validează o cotă, **0** compară cu o listă fixă, **17** compară cu
-perioada. Regula era deja implementată **acolo unde se validează**; ce era rupt era **marginea** ei
-(**R146**) și **care dată se citește** (**R148**, **R149**).
-
----
-## PATRU LUCRURI PE CARE LE-AM ÎNVĂȚAT DESPRE PROPRIILE MELE MĂSURĂTORI
-
-*Toate patru s-au întâmplat în tura asta, și toate patru au fost prinse **înainte** de a fi
-raportate ca fapt. Se scriu fiindcă următoarea tură va face la fel dacă nu le știe.*
-
-1. **Santinela care nu aterizează.** `1899-02-30` nu e o zi din calendar, deci `input[type=date]` o
-   refuză și câmpul rămâne **gol** — din lotul 10 încoace, fiecare câmp de dată al campaniei a fost
-   probat ca LIPSĂ, nu ca dată imposibilă. Reparată de două ori: în `proba_operatiuni.py` (lotul 13)
-   și, abia apoi, în **sonda principală** (lotul 14).
-2. **Clicul pe poziție, după re-navigare.** Pozițiile din DOM se re-atribuie; enumerarea celor 32 de
-   operațiuni raporta *„0 din 32 nu se deschid"*. Se navighează pe **NUME**.
-3. **„A vorbit" acordat unui text care nu răspunde.** O fereastră care se închide produce text nou.
-   Deosebirea se face **structural** — câte câmpuri mai poartă valoarea-santinelă —, nu pe text.
-4. **O cifră dedusă din proză.** „14 rute marcate fără defect pe un 403" — erau **cinci**. Măsurate
-   la sursă, confirmate prin reapăsare.
-
-*Și una despre reparații: `valoare invalidă` era în **patru** locuri, `bacsis invalid` în **două**
-cu înțelesuri diferite. A repara doar instanța găsită apăsând lasă uși deschise pe același hol.*
+**R160 merită citit separat.** `acoperire_hash.ecrane_asteptate()` tăia lista `ECRANE` la **prima
+paranteză dreaptă din text** — care nu e capătul listei, ci cea din comentariul `# [LOTUL 12, R142]`.
+Gardul acoperirii vizuale cerea **16 ecrane din 18**, iar cele două lipsă erau exact cele adăugate de
+tura care scrisese comentariul. Găsit **fiindcă am vrut să adaug ceva la el**, nu fiindcă l-am
+verificat. *A treia instanță a clasei.*
 
 ---
-## CE CERE POARTA, ÎN PLUS FAȚĂ DE CE ȘTIA PREDAREA DE IERI
+## CE A ÎNVĂȚAT TURA ASTA DESPRE PROPRIILE EI MĂSURĂTORI
+
+1. **Un motiv scris în registru îmbătrânește ca orice cifră.** Patru din cele opt motive pentru care
+   ecranele erau „neprobate" s-au dovedit **false** la citirea codului: „configurarea WooCommerce
+   cere întâi o conexiune" (formularul se deschide la o apăsare), „verificările se randează pe
+   alegerea unei luni" (ecranul n-are niciun câmp, pe nicio lună), „formularul cere un pas înainte"
+   (nu există formular pe niciun drum), „singurul buton care ia formularul e «Generează cu AI»"
+   («Salvează ciornă» ia formularul și nu iese nicăieri). *Un motiv e o măsurătoare, și se
+   reverifică.*
+2. **O cifră a sondei care crește cu numărul de încercări descrie sonda, nu ecranul.** Prima formă a
+   buclei de deschidere aduna umplerile fiecărei trepte: `fa-casa` a ieșit cu `campuri=10` pe un
+   formular de **cinci**. Prinsă înainte de raport.
+3. **O probă „pe gol" care nu golește măsoară altceva.** Modalul poveștii se deschide cu ciorna
+   salvată anterior — deci prima probă a lui R159 a măsurat o salvare obișnuită și era gata s-o
+   citească drept „refuz trecut".
+4. **Verbul unui buton nu se adaugă pe intuiție.** „înregistr" și „reevalu" au intrat în lista
+   sondei abia după ce s-a numărat ce mai deblochează, pe tot `static/js`. *Un cuvânt adăugat pe
+   încredere deblochează butoane nevăzute — iar unele scriu.*
+
+*Și una despre starea portofoliului:* dialogul de motiv al ecranului «De depus» n-are cum fi probat
+fără un element în coadă, iar proba a **respins un element real** (`declaratii_coada` 8149). Pus la
+loc, verificat prin recitire. **A doua instanță a capcanei 9.**
+
+---
+## CE CERE POARTA, ÎN PLUS FAȚĂ DE PREDAREA DE IERI
 
 - **PATRU blocuri generate**, nu trei — al patrulea e tabelul listei 3 din `CONFORMITATE.md`
   (`scan_lista3.proba_md()`), și a picat poarta când am creat firma de partidă simplă.
 - **Clichetul de umbră (77u) urcă la fiecare reparație de mesaj** — a crescut de **trei ori** în
-  tura asta, de fiecare dată fiindcă aplicația refuză mai bine, și a picat poarta de fiecare dată.
+  tura de 04.09 și **încă o dată** în lotul 15, de fiecare dată fiindcă aplicația refuză mai
+  bine, și a picat poarta de fiecare dată. **Și blocul din `TRASEE.md` la fel**: un refuz
+  explicit în plus pe un traseu (20 → 21). *Cele două se REDAU, nu se scriu singure —
+  `scan_ramas.py --clichete-md` și `scan_trasee.py --md` tipăresc; scrierea între marcaje o
+  face `intre_marcaje`. Am crezut că se scriu singure și poarta m-a corectat.*
   *Cifra nu se scrie aici: trăiește numai în blocul generat, unde se recalculează. Am scris-o o dată
   în proza asta și garda a prins-o pe loc — exact clasa pentru care există.*
 - **O restanță trebuie să fie ÎN blocul `## RESTANȚE`** — garda de LOC, construită azi ca excepție
@@ -291,7 +297,9 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 50** (din care ale etapei E1: **22**), derivat cu `scripts/raport_b.py`.
+- **restanțe deschise: 51** (din care ale etapei E1: **22**), derivat cu `scripts/raport_b.py`.
+  *Scria 50 — cifra dinaintea lui R151. Cele noua restante ale lotului 15 sunt toate REZOLVATE,
+  deci nu misca numarul; ce l-a miscat a fost decizia deschisa de ieri.*
   **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
 - **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
@@ -326,7 +334,7 @@ ora commitului*.
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **873** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **877** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -610,8 +618,10 @@ a ce e adevărat **acum**.
 ---
 ## DACĂ CONTINUI DE AICI
 
-1. **NU DESCHIDE NICIO TEMĂ.** `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118". Cele 50 de restanțe **nu
-   sunt o coadă de sarcini**.
+1. **NU DESCHIDE NICIO TEMĂ.** `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118". Cele 51 de restanțe **nu
+   sunt o coadă de sarcini**. **Nici campania nu mai e o temă deschisă**: etapa 1 s-a închis pe
+   05.09.2026, la 364 din 364. Dacă urmează o etapă 2 — celelalte 189 de unități, cele fără
+   câmpuri de completat —, **perimetrul ei îl taie Costin**, cum l-a tăiat pe al etapei 1.
 2. **Ce e permis fără să întrebi:** un **prag 1** găsit apăsând.
 3. **Următoarea temă vine de la Costin, după pilot.**
 4. **Înainte de orice probă pe ecran:** `publica_static.py --din-arbore`.

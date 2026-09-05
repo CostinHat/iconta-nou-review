@@ -72,6 +72,10 @@ FARA_CABINET = "Nu ești asociat niciunui cabinet. Contactează administratorul 
 EMAIL_INVALID = "Adresă de email invalidă. Verifică formatul (exemplu: nume@exemplu.ro)."
 EMAIL_EXISTA = "Există deja un cont cu acest email. Autentifică-te sau folosește alt email."
 EMAIL_NICIUNUL_VALID = "Niciunul dintre emailuri nu e valid. Verifică lista de adrese."
+# [R154, 05.09.2026] „Nu e o adresă” și „n-am putut trimite” sunt două lucruri, iar
+# `_trimite_recomandari` le spunea pe amândouă cu al doilea: `«»@#$%` primea `stare: esuat`.
+EMAIL_INVALID_LISTA = ("Nu e adresă de email: %s. Corectează lista — nu s-a trimis nimic, "
+                       "nici către adresele bune.")
 CUI_FIRMA_LIPSA = "CUI-ul firmei lipsește din Profilul firmei. Completează-l înainte de a genera declarația."
 PERIOADA_INCHISA = ("Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o "
                     "redeschidă sau înregistrează în luna curentă.")

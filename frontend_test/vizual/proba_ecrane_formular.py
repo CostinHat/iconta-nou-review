@@ -72,6 +72,43 @@ firma. Un `<select>` nu poate primi `«»@#$%`: nu se tasteaza in el. Deci alege
 deschide formularul**, nu obiectul probei — se ia prima optiune cu valoare nevida, iar cate s-au
 ales se scrie in artefact (`selectii`). *Ce se probeaza ramane ce se poate TASTA gresit.*
 
+──────────────────────────────────────────────────────────────────────────────
+CE A ADAUGAT LOTUL 15 (05.09.2026) — CINCI feluri de ORBIRE, fiecare gasita citind ecranul pe
+care sonda il declarase „neprobat". Toate cinci produceau ACELASI raport: `campuri=0` sau
+`butoane=[]`, adica un ecran neatins purtand numele unuia parcurs.
+
+**(1) „A VORBIT" SE MASURA NUMAI IN JURUL APASARII.** Un ecran care valideaza LA TASTARE
+raspunde inainte de orice buton — si sonda nu-l vedea, fiindca `t0` se lua DUPA umplere.
+Instanta: `fa-etransport`. Cu data `1899-01-01` ecranul scrie *„Fereastra expirata: UIT ar fi
+fost valabil pana la ..."* si DEZACTIVEAZA butonul; sonda vedea un ecran fara buton de apasat si
+raporta nimic. Acum textul se ia si INAINTE de umplere, iar diferenta e un verdict propriu:
+**„a vorbit la completare"**.
+
+**(2) UN BUTON DEZACTIVAT ERA INVIZIBIL, NU RAPORTAT.** `JS_BUTOANE` sarea `b.disabled`, deci un
+ecran al carui buton de fond se aprinde abia cand datele sunt bune arata identic cu unul care
+n-are buton. Instante: `fa-casa` («Adauga (nota ciorna)», dezactivat cat timp suma nu e > 0),
+`fa-etransport`, `pachete` («Continua →»). Acum se raporteaza, cu `title`-ul lor — *un buton care
+refuza sa se aprinda E un raspuns, doar ca nu unul pe care il vede cine cauta text nou.*
+
+**(3) DOMENIUL NU CUPRINDEA FERESTRELE PESTE FEREASTRA.** `.fereastra` e frontiera unui ecran,
+dar `pachete` si `recomanda` isi pun modalul cu `document.body.appendChild` — deci FORMULARUL
+REAL statea in afara domeniului, iar sonda masura pasul de dinaintea lui. Instanta masurata:
+lotul 12 a scris despre `pachete` ca „singurul buton care ia formularul e «Genereaza cu AI»" —
+fals: «Salveaza ciorna» ia `#pacm-text` si merge in `POST /pachete/{}/poveste`, care nu iese
+nicaieri. Acum domeniul e ULTIMUL container vizibil dintre `.fereastra` si supra-ferestre, si
+numai daca are ce contine (camp sau buton) — pe EFECT, nu pe nume de clasa.
+
+**(4) `campuri=0` NU DEOSEBEA „N-ARE FORMULAR" DE „NU L-AM GASIT".** Se numara acum si
+`intrari_dom` — toate `input/textarea/select` din pagina, vazute sau nu. `campuri=0` cu
+`intrari_dom=0` e un VERDICT (ecran fara suprafata de intrare); `campuri=0` cu `intrari_dom>0`
+e o RATARE a sondei, si se vede ca atare.
+
+**(5) DOUA VERBE DE SUBMIT LIPSEAU DIN LISTA.** «Inregistreaza» (registratura) si «Reevalueaza»
+(mijloace fixe). Masurate INAINTE de adaugare, cu `butoane_cu.py`, pe tot `static/js`: „inregistr"
+apare pe DOUA butoane (registratura + «Inregistreaza cabinetul» din `login.js`, ecran pe care
+nicio proba autentificata nu-l randeaza), „reevalu" pe UNUL. *A patra oara cand un ecran cu
+formular real a fost declarat fara defect fiindca butonul lui se cheama altfel.*
+
 CUM SE RULEAZA:
     PROBA_ECRANE=poarta      — numai ecranele din `nav_ecrane.ECRANE` (inventarul portii vizuale)
     PROBA_ECRANE=campanie    — numai ecranele din `nav_ecrane.ECRANE_CAMPANIE`
@@ -110,7 +147,14 @@ import nav_ecrane  # noqa: E402
 # altul: acelasi cuvant, pe ecranul de jurnal, TRANSFORMA o ciorna in inregistrare contabila
 # reala (`/jurnal/{}/valideaza`). *Un cuvant care inseamna doua lucruri nu poate intra intr-o
 # lista care decide dupa nume.*
-PROBATE = ("salveaz", "salvez", "salvare", "adaug", "genereaz", "emite", "înscrie", "inscrie")
+# [LOTUL 15] „inregistr" si „reevalu" adaugate dupa MASURAREA lor pe tot `static/js`
+# (`frontend_test/butoane_cu.py`), nu dupa nume: butonul de fond al registraturii se cheama
+# «Înregistrează» (`POST /tenants/{}/registratura`), iar cel al mijloacelor fixe «Reevaluează»
+# (`POST /tenants/{}/reevaluare-imobilizare`) — amandoua scriu in schema firmei si nu ies nicaieri.
+# Ce mai deblocheaza „inregistr", declarat: «Înregistrează cabinetul» din `login.js` — ecran pe
+# care nicio proba AUTENTIFICATA nu-l randeaza (sesiunea e pusa inainte de prima navigare).
+PROBATE = ("salveaz", "salvez", "salvare", "adaug", "genereaz", "emite", "înscrie", "inscrie",
+           "înregistr", "inregistr", "reevalu")
 # [LOTUL 12] „cu ai" / „analiza ai" s-au adaugat pe ACELASI temei ca `depun`/`trimit`, nu pe altul:
 # ies din aplicatie. Verificat la sursa, nu dedus din nume — `/tipare/ai` cheama `tipare_api.analiza_ai`,
 # care cheama `core.ai_client` (main.py:901), iar `/pachete/{}/genereaza` trece prin `genereaza_poveste`.
@@ -128,12 +172,34 @@ OPRITE = ("sterg", "șterg", "import", "depun", "trimit", "cu ai", "analiza ai",
 # refuza mereu invata pe cineva sa-l ocoleasca* — se repara instrumentul, nu se ia excepția pe furis.
 EXCEPTII_OPRITE = {
     "trimite": "POST /admin/anunturi — INSERT in public.anunturi_cabinet (main.py:676), fara iesire",
+    # [LOTUL 15] Cele doua butoane «Trimite invitația» chiar TRIMIT un email — dar refuzul cade
+    # INAINTEA plecarii, si asta s-a citit la sursa, nu s-a presupus:
+    #   · `POST /tenants/{}/client-acces` (main.py:1539) verifica `_email_valid` inainte de orice
+    #     inserare sau trimitere — reparatia R138 din lotul 12;
+    #   · `POST /recomanda` (main.py:7168) o face de azi — R154; pana azi trimitea catre `«»@#$%`
+    #     si raspundea `stare: esuat`.
+    # Deci pe santinela campaniei nu pleaca nimic, si intrebarea campaniei se poate pune. Cheile
+    # sunt textele INTREGI, si sunt doua fiindca ecranele scriu numele diferit — unul cu diacritice,
+    # celalalt fara. *Un „trimite" deblocat ca bucata ar fi deblocat si ce pleaca cu adevarat.*
+    "trimite invitatia": "POST /tenants/{}/client-acces (main.py:1539) — `_email_valid` inainte de trimitere",
+    "trimite invitația": "POST /recomanda (main.py:7168) — `_email_valid` pe toata lista, R154",
 }
 # Deschizatoarele NU sunt aceleasi cu cele probate: „Adauga" e in amandoua liste, fiindca pe un
 # ecran deschide fereastra, iar in fereastra e chiar butonul de salvare. Se decide dupa EFECT
 # (a aparut un camp de completat?), nu dupa nume.
+# [LOTUL 15] „configur" adaugat: pe `fa-magazin` formularul de configurare (3 campuri) se deschide
+# cu «Configurează magazinul» / «Modifică configurarea» — masurat, e SINGURUL buton din tot
+# `static/js` care contine cuvantul. Fara el, ecranul raporta `campuri=0`, iar registrul scria
+# despre el ca „configurarea cere intai o conexiune" — o afirmatie pe care codul o contrazice:
+# formularul se deschide la o apasare, fara nicio conexiune.
+#
+# „continu" — masurat: CINCI butoane in tot `static/js`, toate cinci treapta unui vrajitor
+# (`declaratii`, `emitere` ×2, `login`, `pachete`). Niciunul nu trimite nimic: duc la pasul
+# urmator. „scrie poves" — unul singur, deschizatorul modalului din `pachete`; scris pe intentia
+# INTREAGA, nu pe „scrie", fiindca „scrie" singur ar fi prins si «Scrie nota ciornă» de pe statul
+# de plata, care e un SUBMIT (`POST /tenants/{}/salarii-contare`), nu un deschizator.
 DESCHIZATOARE = ("adaug", "nou", "noua", "nouă", "emite", "creeaz", "inregistr", "înregistr",
-                 "editeaz", "deschide", "completeaz")
+                 "editeaz", "deschide", "completeaz", "configur", "continu", "scrie poves")
 
 INVALID_TEXT = "«»@#$%"
 INVALID_NUMAR = "-99999999"
@@ -159,11 +225,41 @@ JS_TEXT = "() => (document.body.innerText || '').replace(/\\s+/g, ' ').trim()"
 
 # [LOTUL 12] Domeniul, intr-un singur loc. O fereastra modala e frontiera fireasca a unui ecran;
 # cand nu exista — desktopurile de rol —, ecranul E pagina. Amandoua se declara in artefact.
-JS_DOMENIU = """
-() => (document.querySelector(".fereastra") ? "fereastra" : "pagina")
+#
+# [LOTUL 15] A TREIA POSIBILITATE: o fereastra PESTE fereastra. `pachete` si `recomanda` isi pun
+# modalul cu `document.body.appendChild`, deci el nu e in `.fereastra` — iar formularul REAL al
+# ecranului statea in afara domeniului. Se ia ULTIMUL container vizibil (ordinea din DOM = ordinea
+# stivuirii) dintre `.fereastra` si supra-ferestre, si numai daca ARE ce contine: un camp sau un
+# buton. Conditia din urma e pe EFECT — o clasa care contine „overlay" poate fi si un simplu voal.
+_JS_RAD = """
+const _viz = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+const _cand = Array.from(document.querySelectorAll('.fereastra, [class*="overlay"]'))
+  .filter((e) => _viz(e) && e.querySelector("input, textarea, select, button"));
+const R = _cand.length ? _cand[_cand.length - 1] : document.body;
 """
 
-_JS_RAD = 'const R = document.querySelector(".fereastra") || document.body;'
+JS_DOMENIU = """
+() => {
+  %s
+  if (R === document.body) return "pagina";
+  return (R.className || "").split(/\\s+/).filter(Boolean)[0] || "container";
+}
+""" % _JS_RAD
+
+# [LOTUL 15] Cate suprafete de intrare are ecranul IN DOM — vazute sau nu, active sau nu.
+# `campuri=0` singur nu deosebeste „ecranul n-are formular" de „nu i l-am gasit"; cu cifra asta
+# alaturi, deosebirea e mecanica: `intrari_dom=0` e un VERDICT, `intrari_dom>0` e o ratare a sondei.
+JS_INTRARI_DOM = """
+() => {
+  let n = 0;
+  for (const e of document.querySelectorAll("input, textarea, select")) {
+    const t = (e.getAttribute("type") || "text").toLowerCase();
+    if (t === "hidden") continue;
+    n++;
+  }
+  return n;
+}
+"""
 
 JS_NR_CAMPURI = """
 () => {
@@ -247,13 +343,17 @@ JS_SANTINELA = """
 }
 """ % _JS_RAD
 
+# [LOTUL 15] Un buton DEZACTIVAT nu se mai sare in tacere: se raporteaza, cu `title`-ul lui.
+# Pana azi `b.disabled` cadea in acelasi `return` cu „nu e vizibil", deci un ecran al carui buton
+# de fond se aprinde abia cand datele sunt bune (`fa-casa`, `fa-etransport`, `pachete`) arata
+# exact ca unul care n-are buton. *Refuzul de a se aprinde E raspunsul ecranului la datele mele.*
 JS_BUTOANE = """
 (g) => {
   %s
   const out = [];
   R.querySelectorAll("button, .buton-primar").forEach((b, i) => {
     const r = b.getBoundingClientRect();
-    if (!(r.width > 0 && r.height > 0) || b.disabled) return;
+    if (!(r.width > 0 && r.height > 0)) return;
     const t = (b.textContent || "").toLowerCase();
     // exceptia se cere pe textul INTREG si trece INAINTEA opririi — v. EXCEPTII_OPRITE
     const exceptat = g.exceptii.includes(t.trim());
@@ -261,8 +361,14 @@ JS_BUTOANE = """
       if (g.oprite.some((x) => t.includes(x))) return;
       if (!g.probate.some((x) => t.includes(x))) return;
     }
-    b.setAttribute("data-proba-formular", String(i));
-    out.push({ i, text: (b.textContent || "").trim().slice(0, 40), exceptat: exceptat || undefined });
+    const rec = { i, text: (b.textContent || "").trim().slice(0, 40), exceptat: exceptat || undefined };
+    if (b.disabled) {
+      rec.dezactivat = true;
+      rec.titlu = (b.getAttribute("title") || "").trim().slice(0, 120);
+    } else {
+      b.setAttribute("data-proba-formular", String(i));
+    }
+    out.push(rec);
   });
   return out;
 }
@@ -408,10 +514,14 @@ with sync_playwright() as p:
         except Exception:  # noqa: BLE001
             pass
 
-    def pregateste(pg, deschide):
+    def pregateste(pg, deschide, ecou=None):
         """Ecran -> alege selecturile -> (daca trebuie) deschide fereastra -> umple.
 
-        Intoarce (campuri, deschis_cu, selectii, domeniu)."""
+        Intoarce (campuri, deschis_cu, selectii, domeniu).
+
+        [LOTUL 15] `ecou` — un dictionar in care se scrie ce a spus ecranul LA COMPLETARE.
+        Un ecran care valideaza la tastare raspunde inainte de orice buton; masurand numai in
+        jurul apasarii, sonda ii spunea „fara buton de apasat" (`fa-etransport`)."""
         def _umple():
             sel = pg.evaluate(JS_SELECTURI)
             if sel:
@@ -419,32 +529,57 @@ with sync_playwright() as p:
             n = pg.evaluate(JS_NR_CAMPURI)
             if n == 0:
                 return None, sel
-            return pg.evaluate(JS_UMPLE, {"text": INVALID_TEXT, "numar": INVALID_NUMAR,
-                                          "data": INVALID_DATA}), sel
+            t_pre = pg.evaluate(JS_TEXT)
+            k = pg.evaluate(JS_UMPLE, {"text": INVALID_TEXT, "numar": INVALID_NUMAR,
+                                       "data": INVALID_DATA})
+            pg.wait_for_timeout(900)       # validarea la tastare poate fi asincrona
+            t_post = pg.evaluate(JS_TEXT)
+            if ecou is not None and t_post != t_pre:
+                ecou["vorbit_la_completare"] = True
+                ecou["delta_completare"] = (
+                    (t_post[len(t_pre):] if t_post.startswith(t_pre) else "")[:200] or _dif(t_pre, t_post))
+            return k, sel
 
+        def _apasabile():
+            """Butoanele de submit APASABILE de aici. Un buton dezactivat nu inchide cautarea."""
+            bs = pg.evaluate(JS_BUTOANE, {"probate": list(PROBATE), "oprite": list(OPRITE),
+                                          "exceptii": list(EXCEPTII_OPRITE)})
+            return [x for x in bs if not x.get("dezactivat")]
+
+        # [LOTUL 15] CONDITIA DE OPRIRE S-A SCHIMBAT: pana azi cautarea se oprea la primul ecran
+        # cu CAMPURI, iar asta e alta intrebare decat cea a campaniei. `pachete` are doua campuri
+        # in PASUL DE ALEGERE (firma, anul) si niciun buton de submit; sonda se oprea acolo,
+        # umplea alegerea si raporta „niciun buton probabil" — despre un ecran al carui formular
+        # real (`#pacm-text` + «Salveaza ciorna») era doi pasi mai incolo. Acum se merge pana la
+        # un buton care POATE fi apasat, cel mult trei trepte, si se scrie DRUMUL, nu doar ultima
+        # apasare. *Un formular gasit nu e un formular probat: proba are nevoie de buton.*
         deschide(pg)
         pg.wait_for_timeout(500)
-        n, sel = _umple()
-        if n:
-            return n, None, sel, pg.evaluate(JS_DOMENIU)
-        candidati = pg.evaluate(JS_DESCHIZATOARE, {"deschizatoare": list(DESCHIZATOARE),
-                                                   "oprite": list(OPRITE)})
-        for cand in candidati[:3]:
+        drum = []
+        _, sel = _umple()
+        for _treapta in range(3):
+            if _apasabile():
+                break
+            candidati = pg.evaluate(JS_DESCHIZATOARE, {"deschizatoare": list(DESCHIZATOARE),
+                                                       "oprite": list(OPRITE)})
+            candidati = [c for c in candidati if c["text"] not in drum]
+            if not candidati:
+                break
+            cand = candidati[0]
             try:
                 pg.click('[data-proba-deschide="%d"]' % cand["i"], timeout=4000)
             except Exception:  # noqa: BLE001
-                continue
+                break
+            drum.append(cand["text"])
             pg.wait_for_timeout(1200)
-            n2, sel2 = _umple()
-            if n2:
-                return n2, cand["text"], sel + sel2, pg.evaluate(JS_DOMENIU)
+            _, sel2 = _umple()
             sel += sel2
-            # n-a deschis nimic: se revine pe ecran curat si se incearca urmatorul
-            deschide(pg)
-            pg.wait_for_timeout(400)
-            pg.evaluate(JS_DESCHIZATOARE, {"deschizatoare": list(DESCHIZATOARE),
-                                           "oprite": list(OPRITE)})
-        return 0, None, sel, pg.evaluate(JS_DOMENIU)
+        # Se raporteaza CATE CAMPURI ARE ecranul acum, nu de cate ori s-a scris in ele. Prima
+        # forma a buclei aduna umplerile fiecarei trepte, iar `fa-casa` — al carui buton ramane
+        # stins, deci bucla mai incearca o treapta — a iesit cu `campuri=10` pe un formular de
+        # CINCI. *O cifra care creste cu numarul de incercari nu descrie ecranul, descrie sonda.*
+        return pg.evaluate(JS_NR_CAMPURI), (" › ".join(drum) if drum else None), sel, \
+            pg.evaluate(JS_DOMENIU)
 
     for cont in CONTURI:
         try:
@@ -464,8 +599,9 @@ with sync_playwright() as p:
 
         for nume, _c, deschide in [x for x in ECRANELE if x[1] == cont]:
             s_inainte_nav = stare(conn, TABELE)
+            ecou = {}
             try:
-                umplute, deschis_cu, selectii, domeniu = pregateste(pg, deschide)
+                umplute, deschis_cu, selectii, domeniu = pregateste(pg, deschide, ecou)
             except Exception as ex:  # noqa: BLE001
                 rez[nume] = {"eroare_navigare": str(ex)[:120]}
                 print("%-24s NAVIGARE ESUATA: %s" % (nume, str(ex)[:70]))
@@ -478,13 +614,23 @@ with sync_playwright() as p:
             butoane = pg.evaluate(JS_BUTOANE, {"probate": list(PROBATE), "oprite": list(OPRITE),
                                        "exceptii": list(EXCEPTII_OPRITE)})
             ecran = {"cont": cont, "domeniu": domeniu, "campuri_umplute": umplute,
+                     "intrari_dom": pg.evaluate(JS_INTRARI_DOM),
                      "deschis_cu": deschis_cu, "selectii": selectii,
                      "scris_la_deschidere": sch_nav or None, "butoane": []}
+            ecran.update(ecou)
             _SANT = {"text": INVALID_TEXT, "numar": INVALID_NUMAR, "data": INVALID_DATA}
             for bt in butoane:
+                # [LOTUL 15] dezactivat = raspuns, nu absenta. Nu se apasa (nici nu s-ar putea).
+                if bt.get("dezactivat"):
+                    ecran["butoane"].append({"buton": bt["text"], "titlu": bt.get("titlu", ""),
+                                             "verdict": "dezactivat"})
+                    continue
                 # Butonul care a DESCHIS formularul nu se apasa a doua oara: el nu trimite nimic,
                 # doar re-randeaza — si asta se citea ca „a vorbit". (`asistenti`, prima rulare.)
-                if deschis_cu and bt["text"].strip().lower() == deschis_cu.strip().lower():
+                # [LOTUL 15] `deschis_cu` e acum un DRUM („A › B"), nu o singura apasare — deci
+                # apartenenta, nu egalitate: altfel prima treapta a unui drum de doua s-ar reapasa.
+                _drum = [x.strip().lower() for x in (deschis_cu or "").split("›")]
+                if deschis_cu and bt["text"].strip().lower() in _drum:
                     ecran["butoane"].append({"buton": bt["text"], "verdict": "sarit: e deschizatorul"})
                     continue
                 t0 = pg.evaluate(JS_TEXT)
@@ -544,8 +690,9 @@ with sync_playwright() as p:
                 except Exception:  # noqa: BLE001
                     break
             rez[nume] = ecran
-            print("%-24s [%-9s] campuri=%-3s sel=%-3s %-22s %s" % (
-                nume, domeniu, ecran["campuri_umplute"], selectii,
+            print("%-24s [%-9s] campuri=%-3s dom=%-3s sel=%-3s %s%-22s %s" % (
+                nume, domeniu, ecran["campuri_umplute"], ecran["intrari_dom"], selectii,
+                "VORBESTE-LA-COMPLETARE " if ecou.get("vorbit_la_completare") else "",
                 ("(deschis cu «%s»)" % deschis_cu[:16]) if deschis_cu else "",
                 "  ".join("[%s → %s]" % (x.get("buton", "?")[:22],
                                          x.get("verdict", x.get("click", "?")))
@@ -580,6 +727,21 @@ print("TOTAL butoane apasate: %d (din care pe formular umplut: %d)" % (len(tot),
 for _k, _n in _v.most_common():
     print("   %-26s %d" % (_k, _n))
 print("TAC (singurul defect): %d" % _v["TACE"])
+# [LOTUL 15] Cele doua feluri de `campuri=0` se numara SEPARAT — v. schimbarea (4) din antet.
+_fara_suprafata = [n for n in fara_campuri if rez[n].get("intrari_dom") == 0]
+_negasit = [n for n in fara_campuri if rez[n].get("intrari_dom")]
+print("ecrane FARA SUPRAFATA DE INTRARE (verdict: nimeni nu poate tasta nimic in ele): %d — %s"
+      % (len(_fara_suprafata), ", ".join(sorted(_fara_suprafata)) or "niciunul"))
+print("ecrane cu intrari IN DOM pe care sonda NU le-a gasit (ratare a sondei, NU verdict): %d — %s"
+      % (len(_negasit), ", ".join("%s(%d)" % (n, rez[n]["intrari_dom"]) for n in sorted(_negasit))
+         or "niciunul"))
+print("ecrane care VORBESC LA COMPLETARE: %d — %s" % (
+    sum(1 for e in rez.values() if e.get("vorbit_la_completare")),
+    ", ".join(sorted(n for n, e in rez.items() if e.get("vorbit_la_completare"))) or "niciunul"))
+print("butoane DEZACTIVATE de datele gresite: %d — %s" % (
+    sum(1 for e in rez.values() for x in e.get("butoane", []) if x.get("verdict") == "dezactivat"),
+    ", ".join("%s«%s»" % (n, x["buton"]) for n, e in sorted(rez.items())
+              for x in e.get("butoane", []) if x.get("verdict") == "dezactivat") or "niciunul"))
 print("ecrane FARA niciun camp de completat (deci NEPROBATE, nu «fara defect»): %d — %s"
       % (len(fara_campuri), ", ".join(sorted(fara_campuri)) or "niciunul"))
 print("ecrane fara CONT viu: %d — %s" % (len(fara_cont), ", ".join(sorted(fara_cont)) or "niciunul"))

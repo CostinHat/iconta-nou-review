@@ -1,18 +1,21 @@
 {
  "set": "tot",
- "schema": "tenant_003",
+ "scheme": [
+  "tenant_003",
+  "tenant_048"
+ ],
  "schimbari": {
-  "centre_cost": [
+  "tenant_003.centre_cost": [
    "0/-",
-   "1/f199b519"
+   "1/cf8abb0b"
   ],
-  "contracte_sabloane": [
+  "tenant_003.contracte_sabloane": [
    "0/-",
-   "1/13a07868"
+   "1/cb69d0bc"
   ],
-  "rapoarte_salvate": [
+  "tenant_003.rapoarte_salvate": [
    "0/-",
-   "1/6005eb90"
+   "1/0e94f864"
   ]
  },
  "scrieri": [
@@ -20,9 +23,9 @@
    "rapoarte",
    "Salvează varianta curentă",
    {
-    "rapoarte_salvate": [
+    "tenant_003.rapoarte_salvate": [
      "0/-",
-     "1/6005eb90"
+     "1/0e94f864"
     ]
    }
   ],
@@ -30,9 +33,9 @@
    "centrecost",
    "Adaugă",
    {
-    "centre_cost": [
+    "tenant_003.centre_cost": [
      "0/-",
-     "1/f199b519"
+     "1/cf8abb0b"
     ]
    }
   ],
@@ -40,29 +43,41 @@
    "contracte",
    "Salvează",
    {
-    "contracte_sabloane": [
+    "tenant_003.contracte_sabloane": [
      "0/-",
-     "1/13a07868"
+     "1/cb69d0bc"
     ]
    }
   ]
  ],
  "ecrane": {
   "supervizor": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "import_mijloace_fixe": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 1,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "vector_fiscal": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -71,34 +86,54 @@
      "delta_text": " SRL · CUI 95141537 ✕ Import date Vector fiscal salvat. Alege ce vrei să aduci pentru această firmă. Vector fiscal TVA, regim, intracomunitar Solduri inițiale Balanța de deschidere Solduri parteneri 4",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->0",
+     "fara_date": true,
      "verdict": "a vorbit"
     }
    ]
   },
   "plan_conturi": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 3,
+   "intrari_dom": 3,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
      "buton": "Adaugă cont",
      "text_nou": true,
-     "delta_text": "adaugă un cont nou. Niciun cont găsit cu acest termen. Adaugă cont nou * Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit '«»@#$%'. Dacă e un analitic,",
+     "delta_text": ". Adaugă cont nou * Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit '«»@#$%'. Dacă e un analitic, scrie-l după contul sintetic (de exemplu 4111.01). A",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "3->3",
+     "campuri": "3->3",
+     "fara_date": null,
      "verdict": "a vorbit"
     }
-   ]
+   ],
+   "vorbit_la_completare": true,
+   "delta_completare": "adaugă un cont nou. Niciun cont găsit cu acest termen. Adaugă cont nou * Adaugă cont"
   },
   "solduri_parteneri": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 1,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "stat_plata": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 14,
+   "intrari_dom": 17,
    "deschis_cu": "+ Salariat nou",
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -107,19 +142,32 @@
      "delta_text": "ială) Salariu brut* Salariul brut este obligatoriu și trebuie să fie mai mare ca 0. Persoane în întreținere Data nașterii (pentru deducerea tinerilor sub 26 de ani) Copii ≤ 18 ani înscriși în învățămâ",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "14->14",
+     "campuri": "14->14",
+     "fara_date": null,
      "verdict": "a vorbit"
     }
-   ]
+   ],
+   "vorbit_la_completare": true,
+   "delta_completare": "ASS Ocupație (COR)* nicio ocupație găsită IBAN (cont salariu pe card) Tichet de masă (lei/zi lucrată, 0 = fără) Scutit contribuție minimă Salvează Gata, înapoi la listă"
   },
   "declaratii": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
-   "deschis_cu": null,
+   "intrari_dom": 0,
+   "deschis_cu": "Continuă →",
+   "selectii": 1,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "stocuri": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 22,
+   "intrari_dom": 24,
    "deschis_cu": null,
+   "selectii": 2,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -128,14 +176,20 @@
      "delta_text": "rcă gestiunea lunii Completează articolele: Articolul 1: cantitate; Articolul 1: pret achizitie + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · p",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "22->22",
+     "campuri": "22->22",
+     "fara_date": null,
      "verdict": "a vorbit"
     },
     {
      "buton": "Salvează nivelul minim",
      "text_nou": true,
-     "delta_text": "rcă gestiunea lunii Alege întâi articolul din listă. + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · preț raft (cu TVA) · cotă TVA alege 21% 11% ",
+     "delta_text": "rcă gestiunea lunii nivel minim negativ + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · preț raft (cu TVA) · cotă TVA alege 21% 11% × Cost acceso",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "22->22",
+     "campuri": "22->22",
+     "fara_date": null,
      "verdict": "a vorbit"
     },
     {
@@ -144,45 +198,79 @@
      "delta_text": "rcă gestiunea lunii Adaugă cel puțin un ingredient. + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · preț raft (cu TVA) · cotă TVA alege 21% 11% ×",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "22->22",
+     "campuri": "22->22",
+     "fara_date": null,
      "verdict": "a vorbit"
     }
    ]
   },
   "registratura": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 3,
+   "intrari_dom": 4,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [
+    {
+     "buton": "Înregistrează",
+     "text_nou": true,
+     "delta_text": "tener Înregistrează an invalid: 1899 (aștept 1990-2100) Niciun document înregistrat în 2026 încă. Prima înregistrare primește numărul 1.",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "3->3",
+     "campuri": "3->3",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
   },
   "banca": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 1,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "rapoarte": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 2,
    "deschis_cu": null,
+   "selectii": 1,
    "scris_la_deschidere": null,
    "butoane": [
     {
      "buton": "Salvează varianta curentă",
      "text_nou": true,
-     "delta_text": "L Variantele firmei «»@#$% anul 2026 · creată de Elena Dobrescu Încarcă Șterge Salvează varianta curentă",
+     "delta_text": "0 Variantele firmei «»@#$% anul 2026 · partener 95275466 · creată de Elena Dobrescu Încarcă Șterge Salvează varianta curentă",
      "a_scris": {
-      "rapoarte_salvate": [
+      "tenant_003.rapoarte_salvate": [
        "0/-",
-       "1/6005eb90"
+       "1/0e94f864"
       ]
      },
      "a_cerut_fisier": null,
-     "verdict": "a vorbit"
+     "santinele": "1->0",
+     "campuri": "1->1",
+     "fara_date": null,
+     "verdict": "a scris"
     }
    ]
   },
   "etransport": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 23,
+   "intrari_dom": 27,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -191,13 +279,22 @@
      "delta_text": "e marfă* Cantitate* Bun 1: Cantitate UM* Gr. netă (kg)* Bun 1: Greutate netă Gr. brută (kg)* Bun 1: Greutate brută Valoare fără TVA* Bun 1: Valoare fără TVA × Șterge bunul 1 + Bun Partener comercial C",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "23->23",
+     "campuri": "23->23",
+     "fara_date": null,
      "verdict": "a vorbit"
     }
-   ]
+   ],
+   "vorbit_la_completare": true,
+   "delta_completare": "umar Fereastră UIT: Fereastră expirată: UIT ar fi fost valabil până la 15.01.1899. Trimite UIT în SPV Doar generează XML (manual) UIT-uri trimise Nicio notificare trimisă încă. UIT-ul apare aici după "
   },
   "centrecost": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 4,
+   "intrari_dom": 4,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -205,90 +302,52 @@
      "text_nou": true,
      "delta_text": "la note noi. Adaugă «»@#$% activ Dezactivează REALIZAT PE CENTRE Din notele validate: cheltuieli (clasa 6) și venituri (clasa 7) pe fiecare centru, în perioada aleasă. – Vezi realizat BUGETE ȘI VARIAN",
      "a_scris": {
-      "centre_cost": [
+      "tenant_003.centre_cost": [
        "0/-",
-       "1/f199b519"
+       "1/cf8abb0b"
       ]
      },
      "a_cerut_fisier": null,
-     "verdict": "a vorbit"
+     "santinele": "4->0",
+     "campuri": "4->4",
+     "fara_date": null,
+     "verdict": "a scris"
     }
    ]
   },
   "casa": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 5,
-   "deschis_cu": null,
+   "intrari_dom": 6,
+   "deschis_cu": "+ Dispoziție nouă",
+   "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [
+    {
+     "buton": "Adaugă (notă ciornă)",
+     "titlu": "Completează data și suma întâi",
+     "verdict": "dezactivat"
+    }
+   ]
   },
   "verificari": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
-   "scris_la_deschidere": null,
-   "butoane": []
-  },
-  "acces": {
-   "campuri_umplute": 2,
-   "deschis_cu": "Invită client nou",
-   "scris_la_deschidere": null,
-   "butoane": []
-  },
-  "balanta": {
-   "campuri_umplute": 0,
-   "deschis_cu": null,
-   "scris_la_deschidere": null,
-   "butoane": []
-  },
-  "bilant": {
-   "campuri_umplute": 1,
-   "deschis_cu": null,
-   "scris_la_deschidere": null,
-   "butoane": []
-  },
-  "bonuri": {
-   "campuri_umplute": 0,
-   "deschis_cu": null,
-   "scris_la_deschidere": null,
-   "butoane": [
-    {
-     "buton": "Adaugă document (pozează / încarcă)",
-     "text_nou": false,
-     "delta_text": "ază, aici certifici.",
-     "a_scris": null,
-     "a_cerut_fisier": true,
-     "verdict": "a cerut un fisier"
-    }
-   ]
-  },
-  "contracte": {
-   "campuri_umplute": 2,
-   "deschis_cu": "+ Șablon nou",
-   "scris_la_deschidere": null,
-   "butoane": [
-    {
-     "buton": "Salvează",
-     "text_nou": true,
-     "delta_text": "RL · CUI 95141537 ✕ Contracte Șabloane proprii cu marcaje {{...}}; generarea completează datele partenerului și scoate PDF. Șablon salvat. + Șablon nou «»@#$% Generează Editează Șterge",
-     "a_scris": {
-      "contracte_sabloane": [
-       "0/-",
-       "1/13a07868"
-      ]
-     },
-     "a_cerut_fisier": null,
-     "verdict": "a vorbit"
-    }
-   ]
-  },
-  "control": {
-   "campuri_umplute": 0,
-   "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "datefirma": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 17,
+   "intrari_dom": 23,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -297,72 +356,300 @@
      "delta_text": " activități diverse CUI-ul «»@#$% nu e valid (lipsa). CUI-ul firmei intră în fiecare declarație depusă — unul greșit nu se oprește aici, îl respinge ANAF, după depunere. Salvează",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "17->17",
+     "campuri": "17->17",
+     "fara_date": null,
      "verdict": "a vorbit"
     }
    ]
   },
-  "facturi": {
-   "campuri_umplute": 0,
+  "emitere": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 6,
+   "intrari_dom": 11,
    "deschis_cu": null,
+   "selectii": 1,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "+ Adaugă linie",
+     "text_nou": true,
+     "delta_text": "D111S · stoc 12.000 — × — fără articol (serviciu) — Agrafe birou 28mm · stoc 150.000 Bandă adezivă 48mm · stoc 90.000 Caiet dictando 80 file · stoc 250.000 Calculator birou Casio · stoc 8.000 Cerneală",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "6->6",
+     "campuri": "6->9",
+     "fara_date": null,
+     "verdict": "a crescut formularul"
+    },
+    {
+     "buton": "Emite factură",
+     "text_nou": true,
+     "delta_text": "D111S · stoc 12.000 21% × + Adaugă linie Bază 9.999.999.800.000.000,00 RON TVA 2.099.999.958.000.000,00 RON Total 12.099.999.758.000.000,00 RON Monedă RON (lei) EUR USD GBP CHF HUF PLN CLASIFICARE TVA",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "6->6",
+     "campuri": "6->6",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ],
+   "vorbit_la_completare": true,
+   "delta_completare": "+ Adaugă linie Bază 9.999.999.800.000.000,00 RON TVA — Total — TVA-ul nu se poate calcula încă: cota nu e stabilită pe 1 linie. Se propune automat din denumire — scrie denumirea articolului (sau alege"
+  },
+  "operatiuni": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Reevaluare imobilizări (105)",
+     "text_nou": true,
+     "delta_text": " SRL · CUI 95141537 › Operațiuni speciale ✕ Reevaluare imobilizări (105) ? Data* Operație* Reevaluare MF Transfer surplus la 1175 ID mijloc fix* Valoare justa* Descriere Generează nota (ciornă)",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->4",
+     "fara_date": true,
+     "verdict": "a crescut formularul"
+    },
+    {
+     "buton": "Achiziție de la neînregistrat (persoană ",
+     "text_nou": true,
+     "delta_text": " SRL · CUI 95141537 › Operațiuni speciale ✕ Achiziție de la neînregistrat (persoană fizică) — D394 op. N Data* Furnizor (persoană fizică)* Valoare* Cont cheltuială/stoc* Nr. document (borderou) Catego",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->6",
+     "fara_date": true,
+     "verdict": "a crescut formularul"
+    },
+    {
+     "buton": "Reevaluare lunară solduri valută",
+     "text_nou": true,
+     "delta_text": " SRL · CUI 95141537 › Operațiuni speciale ✕ Reevaluare lunară solduri valută Data (ultima zi a lunii)* Solduri Cont Sold in valuta Moneda Curs evidenta Tip Creanta Datorie Disponibil + Rand Generează ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->5",
+     "fara_date": true,
+     "verdict": "a crescut formularul"
+    }
+   ]
+  },
+  "acces": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 2,
+   "intrari_dom": 2,
+   "deschis_cu": "Invită client nou",
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Trimite invitatia",
+     "text_nou": true,
+     "delta_text": "ent Nume (optional) Adresă de email invalidă. Verifică formatul (exemplu: nume@exemplu.ro). Trimite invitatia Renunță",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "2->2",
+     "campuri": "2->2",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "balanta": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
+  },
+  "bilant": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 1,
+   "intrari_dom": 2,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": "(ANAF) Descarcă XML an invalid: -99999999 (aștept 1990-2100)"
+  },
+  "bonuri": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 1,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă document (pozează / încarcă)",
+     "text_nou": false,
+     "delta_text": "ază, aici certifici.",
+     "a_scris": null,
+     "a_cerut_fisier": true,
+     "santinele": "0->0",
+     "campuri": "0->0",
+     "fara_date": true,
+     "verdict": "a cerut un fisier"
+    }
+   ]
+  },
+  "contracte": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 2,
+   "intrari_dom": 2,
+   "deschis_cu": "+ Șablon nou",
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Salvează",
+     "text_nou": true,
+     "delta_text": "RL · CUI 95141537 ✕ Contracte Șabloane proprii cu marcaje {{...}}; generarea completează datele partenerului și scoate PDF. Șablon salvat. + Șablon nou «»@#$% Generează Editează Șterge",
+     "a_scris": {
+      "tenant_003.contracte_sabloane": [
+       "0/-",
+       "1/cb69d0bc"
+      ]
+     },
+     "a_cerut_fisier": null,
+     "santinele": "2->0",
+     "campuri": "2->0",
+     "fara_date": null,
+     "verdict": "a scris"
+    }
+   ]
+  },
+  "control": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "facturi": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Emite factură\n        Creează o factură ",
+     "text_nou": true,
+     "delta_text": " SRL · CUI 95141537 › Facturi ✕ Emite factură Număr: CMT150 BENEFICIAR CUI beneficiar Verifică Denumire beneficiar* Adresă beneficiar (art. 319) PRODUSE ȘI SERVICII Linie: denumire · cantitate · preț ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->6",
+     "fara_date": true,
+     "verdict": "a crescut formularul"
+    }
+   ]
   },
   "fisacont": {
-   "campuri_umplute": 1,
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
+   "selectii": 1,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": "41537 ✕ Cartea mare Nu am putut încărca fișa de cont. eroare 500"
   },
   "jurnal": {
-   "campuri_umplute": 4,
-   "deschis_cu": "+ Notă nouă",
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
      "buton": "Generează amortizarea",
      "text_nou": true,
-     "delta_text": "uă Blochează luna? Nimic de amortizat. Notă nouă · 01.09.2026 Descriere Linii: cont debit = cont credit · sumă = — centru — «»@#$% − + linie Salvează Renunță Nr. crt. 5 · 04.09.2026 · Vanzare regim ma",
+     "delta_text": "uă Blochează luna? Nimic de amortizat. Nr. crt. 5 · 01.09.2026 · proba cota perioada - OMFP 1802 · ● Ciornă 5121 = 5191 · 100,00 · sursa: banca Document justificativ: nederivat — nota n-are referință ",
      "a_scris": null,
      "a_cerut_fisier": null,
-     "verdict": "a vorbit"
-    },
-    {
-     "buton": "Salvează",
-     "text_nou": true,
-     "delta_text": "ouă Blochează luna? linia 1: contul «»@#$% nu exista in planul de conturi al firmei. Se adauga in Plan de conturi (Import date › Plan de conturi), sau se corecteaza aici — o nota cu un cont inexistent",
-     "a_scris": null,
-     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->0",
+     "fara_date": true,
      "verdict": "a vorbit"
     }
    ]
   },
   "magazin": {
-   "campuri_umplute": 0,
-   "deschis_cu": null,
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 3,
+   "intrari_dom": 3,
+   "deschis_cu": "Configurează magazinul",
+   "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [
+    {
+     "buton": "Salvează",
+     "text_nou": true,
+     "delta_text": " Adresa magazinului nu e o adresă web: '«»@#$%'. Aștept ceva de forma https://magazin.ro.",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "3->3",
+     "campuri": "3->3",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
   },
   "marja": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 2,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "mijloace": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
-   "scris_la_deschidere": null,
-   "butoane": []
-  },
-  "operatiuni": {
-   "campuri_umplute": 0,
-   "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
   },
   "produse": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 1,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -371,13 +658,20 @@
      "delta_text": "ți corecta oricând. Denumire produs sau serviciu* Preț · unitate de măsură · cotă TVA cotă (auto) 21% 11% scutit / fără TVA (art. 292) Salvează Renunță Niciun produs încă. Adaugă primul produs — cota ",
      "a_scris": null,
      "a_cerut_fisier": null,
-     "verdict": "a vorbit"
+     "santinele": "1->1",
+     "campuri": "1->4",
+     "fara_date": null,
+     "verdict": "a crescut formularul"
     }
    ]
   },
   "raportz": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 7,
+   "intrari_dom": 8,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": [
     {
@@ -386,36 +680,386 @@
      "delta_text": "ucuri) Numerar Card totalul pe cote trebuie să fie pozitiv Generează notă",
      "a_scris": null,
      "a_cerut_fisier": null,
+     "santinele": "7->7",
+     "campuri": "7->7",
+     "fara_date": null,
      "verdict": "a vorbit"
     }
    ]
   },
   "regfiscal": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 2,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": "ntocmi registrul pe -99999999. an invalid: -99999999 (aștept 1990-2100)"
   },
   "reginventar": {
-   "campuri_umplute": 1,
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": " Registrul-inventar Nu am putut încărca registrul. exercițiu invalid: -99999999 (aștept 1990-2100)"
   },
   "registre321": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 13,
+   "intrari_dom": 14,
    "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
-   "butoane": []
-  },
-  "rip": {
-   "eroare_navigare": "Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#fa-rip\")\n"
+   "butoane": [
+    {
+     "buton": "Înscrie în registru",
+     "text_nou": true,
+     "delta_text": "re și sub ce normă. Nu am înscris rândul: registrul cere un câmp pe care nu l-am primit. Cantitatea — cerut de normă, nu poate lipsi Denumirea partenerului Adresa partenerului Data transportului Descr",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "13->13",
+     "campuri": "13->13",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
   },
   "solicitari": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
    "campuri_umplute": 1,
+   "intrari_dom": 1,
    "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Trimite",
+     "text_nou": true,
+     "delta_text": "#$% Tu · 05.09.2026 «»@#$% Tu · 05.09.2026 Trimite",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "1->0",
+     "campuri": "1->1",
+     "fara_date": null,
+     "verdict": "a plecat de pe formular"
+    }
+   ]
+  },
+  "cabinet_desktop": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "pagina",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
    "scris_la_deschidere": null,
    "butoane": []
+  },
+  "activitate_cabinet": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "tipare": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "asistenti": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 3,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă asistent",
+     "text_nou": true,
+     "delta_text": "me Adaugă asistent Email asistent* Nume (opțional) Poate valida (Nivel 2) Trimite invitația Elena Dobrescu administrator · 14 firme Editează Vizualizează ✓ Poate pregăti ✓ Poate valida ✓ Poate depune ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->2",
+     "fara_date": true,
+     "verdict": "a crescut formularul"
+    }
+   ]
+  },
+  "capacitate": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă asistenți",
+     "text_nou": true,
+     "delta_text": "i asistență tehnică ← Capacitate ✕ Asistenți Asistenții cabinetului: roluri, permisiuni și firmele pe care le lucrează. Tu decizi cine poate pregăti, valida și depune declarații. 2 asistenți · 1 activ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->0",
+     "fara_date": true,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "control_portofoliu": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "control_verdict": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "pachete": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 2,
+   "intrari_dom": 4,
+   "deschis_cu": null,
+   "selectii": 1,
+   "scris_la_deschidere": null,
+   "butoane": [],
+   "vorbit_la_completare": true,
+   "delta_completare": "mă — alege firma — An Lună ianuarie februarie martie aprilie mai iunie iulie august septembrie octombrie noiembrie decembrie Continuă →"
+  },
+  "raporteaza": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 1,
+   "intrari_dom": 2,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă captură",
+     "text_nou": false,
+     "delta_text": "nicio sesizare încă.",
+     "a_scris": null,
+     "a_cerut_fisier": true,
+     "santinele": "1->1",
+     "campuri": "1->1",
+     "fara_date": null,
+     "verdict": "a cerut un fisier"
+    }
+   ]
+  },
+  "recomanda": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 1,
+   "intrari_dom": 1,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Trimite invitația",
+     "text_nou": true,
+     "delta_text": " Nu e adresă de email: «»@#$%. Corectează lista — nu s-a trimis nimic, nici către adresele bune.",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "1->1",
+     "campuri": "1->1",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "termene": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "validat": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "ansamblu": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "navigator_clopot": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "pagina",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "flux_concediu": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 9,
+   "intrari_dom": 18,
+   "deschis_cu": "+ Certificat nou",
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Calculează și salvează",
+     "text_nou": true,
+     "delta_text": "Zile lucrătoare CM* Zilele lucrătoare CM trebuie să fie cel puțin 1. Episod de boală Certificat de continuare (același episod de boală) Baza de calcul (ultimele 6 luni) Venituri brute 6 luni* Complete",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "8->8",
+     "campuri": "9->9",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "admin_desktop": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "pagina",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_anunturi": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 2,
+   "intrari_dom": 2,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Trimite",
+     "text_nou": true,
+     "delta_text": " Alege întâi destinatarii (Cabinete).",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "2->2",
+     "campuri": "2->2",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "admin_raportari": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_activitate": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_analytics": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_sanatate": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "intrari_dom": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "rip_pfa": {
+   "cont": "fir-intrare@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 4,
+   "intrari_dom": 8,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă (ciornă)",
+     "text_nou": true,
+     "delta_text": "2 Registru-inventar Suma trebuie să fie mai mare decât zero. O corecție se face printr-o operațiune de sens contrar, nu printr-o sumă negativă. + Operațiune nouă Operațiune nouă Data* Tip Încasare Pla",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "4->4",
+     "campuri": "4->4",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
   }
  },
  "erori_js": []
