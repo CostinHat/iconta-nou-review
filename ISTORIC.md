@@ -7990,3 +7990,38 @@ explicată, cu temei, în chiar codul care o produce: nivelul part-time e minimu
 facilitatea, iar regula validatorului a rămas pe minimul vechi. Aplicația are dreptate, arbitrul e
 în urmă, iar decizia e scrisă din 20.08. *A treia oară în etapa asta când citirea la sursă a oprit
 un „defect” care nu era.*
+
+
+## 05.09.2026 — Etapa 2, lotul E: D406/SAF-T și D205. Etapa 2 e completă pe toate cele nouă
+
+**Un defect, desfăcut în patru.** Confruntarea aceleiași perioade între trei declarații a arătat că
+facturile din august apar în D300 și D394 pe trimestrul III, dar nu în D406. `d406.pull` avea
+fereastră strict lunară — n-a primit niciodată reparația din 06.08 pe care au primit-o d300 și
+d394 —, deci **SAF-T-ul oricărei firme care nu e pe TVA lunar conținea o lună din trei** (R165).
+Lărgind fereastra, poarta „a doua cale” a refuzat să genereze, numind conturile și ambele valori:
+reparasem o singură parte (R165b). Iar antetul a rămas pe luna-ancoră, transformând o lipsă într-o
+**minciună** — fișier cu iulie–septembrie, antet care spune „luna 9” (R165c). Cerându-i
+validatorului oficial să confirme antetul, a răspuns `gri` **cu validatorul instalat**: ruta lua
+perioada din corpul cererii, dar D406 se cere pe `trim`, deci **nu exista niciun corp care să
+treacă și generarea și validarea** (R166). Reparând drumul până la poartă, poarta a vorbit din
+primul apel: *„Tipul declarației L nu corespunde cu perioada declarată: 7.2026 - 9.2026”* (R166b).
+
+*Asta cumperi când repari drumul până la un arbitru: arbitrul începe să judece. Validatorul oficial
+a găsit ultima piesă mai repede decât aș fi găsit-o eu — fiindcă el compară exact cele două lucruri
+pe care le lăsasem să vină din surse diferite.*
+
+**Proba mea a ascuns unul dintre defecte o rulare întreagă.** Verificarea antetului căuta
+`<SelectionStartDate>`, cealaltă ramură a lui `<xs:choice>` din schemă, pe care fișierul nu o
+emite. Negăsind-o, aserțiunea era sărită și proba tipărea liniștit `{"start": null}`. Un gard cu
+domeniul de căutare greșit e verde despre o lume pe care n-o vede — clasa era deja scrisă în
+memorie, azi și-a găsit instanța în chiar instrumentul cu care măsuram.
+
+**D205 a ieșit curat, după ce mi-am corectat de două ori așteptarea**: numele atributelor le luasem
+din schița de antet (`divid_D1`) în loc de linia care emite (`divid_D`), iar așteptarea o scrisesem
+în absolut pe o firmă care avea deja dividende. Forma care ține e pe **deltă**, cu baza **măsurată
+la începutul rulării**: 20.000 → 30.000 pe `divid_D`/`divid_P`/`baza1`, 3.200 → 4.800 pe `imp1`
+(16%, Legea 141/2025), plus invariantul absolut `imp1 = 16% × baza1`, care ține și la reluare.
+
+**Confruntare lot E: 0 nepotriviri.** DUK `valid` pe amândouă — D406 pentru prima oară din
+aplicație. Gardă nouă: `core/test_d406_fereastra.py`, 15 teste, 3 mutații / 3 roșii, cu antetul
+asertat ca arbore și contractul rutei pe AST.

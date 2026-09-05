@@ -1916,3 +1916,136 @@ Pe `tenant_001` rămâne un salariat: `PROBA E2 D Salariat`, CNP `1900101511112`
 angajat 01.08.2026, **cu data încetării 31.08.2026** — deci nu apare în lunile următoare. Codul COR
 e luat din nomenclatorul aplicației, nu inventat; CNP-ul are cifra de control calculată. Proba își
 recunoaște salariatul și, la a doua rulare, **reprobează R164** în loc să mai creeze unul.
+
+
+---
+
+## ETAPA 2 — LOT E: D406/SAF-T și D205 (05.09.2026)
+
+Ultimele două din cele nouă. Cu ele, etapa 2 acoperă toate declarațiile pentru care există
+generator în cod.
+
+### Perimetrul lotului, măsurat
+
+| declarație | nucleu | periferie | tabele |
+|---|---|---|---|
+| d406 | 34 | 90 | 8 |
+| d205 | 3 | 107 | 4 |
+
+**Cele 34 nu s-au probat una câte una, și o spun.** Nucleul lui D406 se suprapune aproape complet
+cu ce s-a probat deja în loturile A și C — facturi emise și primite, note contabile, plăți: SAF-T
+citește aceleași fapte pe care le citesc D300 și D394. Ce a probat lotul E **în plus** e ce are
+D406 și n-au celelalte: **fereastra** (ce perioadă intră în fișier) și **antetul** (ce perioadă
+declară fișierul despre sine). Se scrie aici ca tabelul de mai sus să nu se citească drept „34 de
+unități probate azi”.
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| veriga | așteptat | obținut |
+|---|---|---|
+| 1 · D406 | firmă TRIMESTRIALĂ → fișierul conține TOT trimestrul; facturile din august sunt acolo | **defect (R165)** — conținea doar septembrie. După reparație: `CMT150`, `CMT151`, `PROBA-E2-A-P1`, prezente |
+| 2 · D406 | antetul declară perioada **acoperită**, nu luna-ancoră | **defect (R165c)** — declara `9/2026 – 9/2026` pe un fișier cu iulie–septembrie. Acum `7/2026 – 9/2026` |
+| 3 · D406 | facturi emise: SAF-T == `nrFacturi` din D394 | **4 == 4** |
+| 4 · D406 | validatorul oficial **rulează** | **defect (R166)** — validarea D406 era inaccesibilă, ieșea `gri` mereu. Reparat → validatorul a numit **R166b**. Acum **valid** |
+| 5 · D205 | `divid_D`, `divid_P`, `baza1` cresc cu 10.000 · `imp1` cu 1.600 (16%) | exact: 20.000 → 30.000 pe primele trei, 3.200 → 4.800 |
+| 6 · D205 | `Tbaza` = Σ `baza1` · `Timp` = Σ `imp1` · `nrben` = nr. beneficiari | 30.000 / 4.800 / 1 |
+
+**Confruntare lot E: 0 nepotriviri.** DUK: `valid` pe D406 **și** pe D205.
+
+### Lanțul care s-a deschis singur
+
+Cele patru reparații ale lotului nu sunt patru defecte găsite separat. Sunt **unul singur, desfăcut
+în patru** — fiecare pas a făcut vizibil pasul următor:
+
+1. **R165** — fereastra datelor era lunară pe o declarație care urmează perioada fiscală TVA. Găsit
+   confruntând aceeași perioadă între trei declarații: D300 și D394 vedeau tot trimestrul, D406 nu.
+2. **R165c** — largind fereastra, antetul a rămas în urmă și a început să **mintă**: fișier cu
+   iulie–septembrie, antet care spune „luna 9”. *Reparația (a) transformase o lipsă într-o
+   minciună.* Am scris fraza asta în docstringul lui R165 și tot n-am reparat-o: `di`/`ds` au
+   rămas **variabile moarte** în `_header`.
+3. **R166** — după ce am cerut validatorului să confirme antetul, el a răspuns `gri` cu validatorul
+   INSTALAT. Sonda directă pe rută, în ambele forme ale corpului: `trim` generează dar nu
+   validează, `luna` nici măcar nu generează. **Nu exista niciun corp care să treacă amândouă
+   porțile** — validarea D406 din aplicație nu era rară, era imposibilă.
+4. **R166b** — reparând drumul până la poartă, poarta a vorbit: *„HeaderComment: Tipul declarației
+   L nu corespunde cu perioada declarată: 7.2026 - 9.2026”*. Constanta `HEADER_COMMENT = "L"` era
+   acolo de la început; nimeni n-o putea vedea.
+
+*Asta cumperi când repari drumul până la un arbitru: arbitrul începe să judece. Iar validatorul
+oficial a găsit ultima piesă mai repede decât aș fi găsit-o eu — pentru că el compară exact cele
+două lucruri pe care le pusesem să vină din surse diferite.*
+
+### Trei greșeli ale mele, consemnate
+
+- **Numele atributelor le-am luat din schița de antet, nu din codul care emite.** Așteptarea cerea
+  `divid_D1`/`divid_P1` — forma generică pe coloane din docstring. XML-ul emite `divid_D`/`divid_P`
+  (`d205.build_xml`, l.300), sursate din structura ANAF și din formatul oficial de import. Două
+  „nepotriviri” care nu existau.
+- **Am scris așteptarea în absolut pe o firmă care avea deja dividende.** `baza1 = 20.000` pe un
+  dividend de 10.000 părea dublare; era 10.000 ai firmei + 10.000 ai mei. Așteptarea corectă e pe
+  **deltă**, cu baza **măsurată la începutul rulării**, nu presupusă.
+- **Proba raporta `null` în loc să cadă.** Verificarea antetului căuta `<SelectionStartDate>` —
+  cealaltă ramură a lui `<xs:choice>` din schemă, pe care fișierul nu o emite. Negăsind-o, `if m1:`
+  sărea aserțiunea și tipărea liniștit `{"start": null, "end": null}`. **R165c a stat ascunsă în
+  spatele propriei mele probe o rulare întreagă.** Un gard cu domeniul de căutare greșit e verde
+  despre o lume pe care n-o vede. Proba cere acum una din cele două ramuri, altfel pică.
+
+### Gardă, cu calibrare în ambele direcții
+
+`core/test_d406_fereastra.py` — **15 teste**: fereastra pe toate cele cinci feluri de perioadă
+fiscală (L, T, S→T, A→T, neplătitor→T), tipul depunerii derivat din întindere, antetul citit ca
+**arbore** (nu `"..." in xml`), contractul rutei de validare verificat pe **AST**, plus aserțiune
+anti-vacuu care pică dacă `<Header>` lipsește.
+
+**Calibrare negativă, 3 mutații / 3 roșii** — fiecare mutație readuce exact codul de dinaintea
+reparației: `HeaderComment` redevine constantă → 1 roșu · `SelectionCriteria` redevine luna-ancoră
+→ 1 roșu · ruta ia iar perioada din corpul cererii → 1 roșu. Fișierele s-au restaurat byte cu byte
+(`md5sum -c`, OK pe amândouă).
+
+**Și în cealaltă direcție, pe aplicația vie:** firmă LUNARĂ → `9/2026 – 9/2026`, `HeaderComment=L`,
+DUK **valid** (neschimbat) · firmă TRIMESTRIALĂ → `7/2026 – 9/2026`, `HeaderComment=T`, DUK
+**valid** (reparat). Reparația nu mișcă ce era corect.
+
+### Ce NU acoperă lotul, spus
+
+- **Secțiunile SAF-T față de normă.** Stocurile și activele au perioade proprii de raportare; aici
+  s-a probat fereastra și drumul valorii, nu acoperirea secțiunilor.
+- **`C`, `NL`, `NT` din nomenclatorul `HeaderComment`.** Depunerea la cerere nu e o proprietate a
+  perioadei, iar rezidența nu e modelată în `firma_profil` — antetul scrie `<Country>RO</Country>`
+  necondiționat. Se numește limita, în loc să se aleagă un cod pe ghicite.
+
+### Scenariul, DECLARAT
+
+Pe `tenant_003` nu rămâne nimic nou — D406 s-a generat din faptele lotului A. Pe `tenant_013`
+(`ALFA MICRO SRL`) proba adaugă **la fiecare rulare** o pereche numerotată de note (`PROBA-E2-E #k
+distribuire` 121=457 și `plata` 457=5121, 10.000 fiecare), deci firma acumulează 10.000 lei de
+dividend per rulare. E deliberat: `jurnal_api.sterge` refuză orice notă care nu e ciornă — și așa
+trebuie, o înregistrare validată nu dispare —, iar marcarea idempotentă ar lăsa **delta
+nemăsurată** la a doua rulare. Exact asta s-a întâmplat la prima reluare a lotului E, iar proba s-a
+redus tăcut la invarianții absoluți. Costul se scrie; tăcerea, nu.
+
+### Ce a cerut poarta, și de ce fiecare obiecție era întemeiată
+
+Prima rulare a porții: **24 de teste roșii**. Niciunul n-a fost zgomot; le scriu pe toate, fiindcă
+trei dintre ele sunt despre mine, nu despre cod.
+
+| garda | ce a spus | ce am făcut |
+|---|---|---|
+| `test_non_tautologie` (×2) | a doua cale nu are voie să importe generatorul | regula urcă în `common` — al treilea loc, neutru (`DECIZII.md` 71) |
+| 10 × `test_d406_*` | fixturile n-au vector fiscal, iar `pull` îl cere acum | fixturile îl **declară**; refuzul rămâne, e chiar norma „fără default fiscal tăcut" din 06.08 |
+| `test_garzi_pe_text` (×5) | **gardul meu nou** asertează pe text, `0 → 2` | refuzul devine **obiect cu atribute**; gardul citește câmpurile, nu propoziția |
+| `test_refuzuri` | refuz fără temei într-un modul care citează legea, `6 → 7` | `TEMEI_HEADER_COMMENT`, ca date |
+| `test_diacritice_afisate` | mesaj afișat fără diacritice | scris cu diacritice |
+| `test_cale_a_doua` | ai schimbat și verificatorul, și verificatul — scrie decizia | `DECIZII.md` 71, în **același** commit |
+| `test_clichete_generate`, `test_garzi_inventar` (×3) | blocurile generate nu mai corespund | regenerate (după `git add` — inventarul depinde de fișierele urmărite) |
+| `test_reluari_decizie` | R151 a trecut de 5 commituri cu `reluări: 0` | contorul urcă la 1, iar **întrebarea se formulează** |
+
+**Cele trei care sunt despre mine.** Gardul pe care l-am scris azi, cu docstringul care predică
+METODA §23, asertează pe text în două locuri. Refuzul pe care l-am scris azi, într-un modul care
+citează legea, nu poartă temeiul. Mesajul de refuz pe care l-am scris azi, text afișat, e fără
+diacritice. *Niciuna n-ar fi fost prinsă de mine; toate trei erau deja gardate.* Iar cea mai
+folositoare — `test_non_tautologie` — mi-a respins **designul**, nu o scăpare: împrumutasem
+fereastra din chiar generatorul pe care a doua cale trebuie să-l verifice independent.
+
+A doua rulare: **4075 passed, 11 skipped, 14 xfailed**, verificator 0 roșu, four-way închis pe
+`83c97f6c`.

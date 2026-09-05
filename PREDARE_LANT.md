@@ -612,6 +612,15 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
 16. **[04.09] Un instrument care întoarce „gol" acolo unde ar trebui să spună „nu recunosc" ascunde
     schimbări de format.** `parse_xml` întorcea `{}` pentru orice XML necunoscut; luni în șir asta
     s-a citit ca „BNR n-are cursul". Acum ridică `FormatNecunoscut`.
+17. **[05.09] O aserțiune păzită de `if <s-a găsit>:` nu e o aserțiune, e o observație.** Proba
+    lotului E verifica antetul SAF-T căutând `<SelectionStartDate>` — cealaltă ramură a lui
+    `<xs:choice>` din schemă, pe care fișierul nu o emite. Negăsind-o, a sărit verificarea și a
+    tipărit liniștit `{"start": null}`, ascunzând R165c o rulare întreagă. **Când norma dă mai
+    multe forme, proba cere UNA DIN ELE și pică dacă nu găsește niciuna.**
+18. **[05.09] „La sursă" înseamnă la linia care produce valoarea, nu la textul care o rezumă.**
+    Două așteptări greșite în același lot, din docstringuri **corecte ca descriere a normei**:
+    `divid_D1` (schița pe coloane) în loc de `divid_D` (ce emite `build_xml`), și
+    `SelectionStartDate` în loc de tuplul `Period*`. Norma dă `<xs:choice>`; codul alege o ramură.
 
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
@@ -621,21 +630,31 @@ a ce e adevărat **acum**.
 
 1. **NU DESCHIDE NICIO TEMĂ** în afara campaniei. `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118".
    Cele 51 de restanțe **nu sunt o coadă de sarcini**.
-   **ETAPA 2 E DESCHISĂ** (Costin, 05.09.2026): probarea cu date **VALIDE**, pe lanțul până în
+   **ETAPA 2 E COMPLETĂ PE TOATE CELE NOUĂ** (05.09.2026, lotul E a închis-o): probarea cu date **VALIDE**, pe lanțul până în
    declarație. Perimetrul, tăiat de el de două ori în aceeași zi: numai unitățile care
    alimentează **cele nouă declarații pe care aplicația le GENEREAZĂ** — D100, D101, D112,
    D205, D300, D301, D390, D394, D406/SAF-T. Derivat mecanic cu
-   `scripts/scan_lanturi_declaratie.py`: **197** de unități ating o declarație, **190** intră în
-   cele nouă, **103** sunt NUCLEU pentru cel puțin una. Nucleul pe declarație: d112 **81** ·
-   d406 **29** · d300 **28** · d394 **18** · d390 **8** · d205 **3** · d301 **3** · d100 **0** ·
-   d101 **0**.
+   `scripts/scan_lanturi_declaratie.py`: **197** de unități ating o declarație, **162** intră în
+   cele nouă, **72** sunt NUCLEU pentru cel puțin una. Nucleul pe declarație: d406 **34** ·
+   d300 **33** · d112 **24** · d394 **23** · d390 **13** · d205 **3** · d301 **3** · d100 **0** ·
+   d101 **0**. *(Cifrele poartă corectura din `DECIZII.md` 68 — un comparator de declarații nu e
+   un hrănitor. Se derivă din instrument, nu se cred din predare.)*
    **Trecute: lotul A** (D300 + D394) — 16 rânduri confruntate, toate potrivite; TVA colectată
    D394 = `R17_2` din D300 — **și lotul B** (D390 + D301) — reclasificarea mișcă numai tipul,
    linia manuală ajunge cu suma ei, iar desfacerea readuce declarația EXACT la starea de bază.
    **și lotul C** (D100 + D101, hrănite de nota contabilă) — ciorna nu mișcă nimic, validarea
    mișcă exact cu suma notei, iar impozitul din D100 e 16% din rezultatul calculat de D101.
    **și lotul D** (D112) — declarant → salariat → stat de plată → rând; contribuțiile din
-   declarație sunt leu cu leu cele din statul de plată. **Rămân două**: D205 și D406/SAF-T.
+   declarație sunt leu cu leu cele din statul de plată. **și lotul E** (D406/SAF-T + D205) —
+   **etapa 2 e închisă, toate cele nouă sunt probate**.
+   *Lotul E a scos un defect desfăcut în patru — **R165** (SAF-T-ul unei firme trimestriale
+   raporta o lună din trei), **R165b** (oglinda de reconciliere, prinsă de propria noastră
+   gardă), **R165c** (antetul rămas pe luna-ancoră: reparația transformase o lipsă într-o
+   minciună), **R166** (validarea D406 era INACCESIBILĂ — niciun corp nu trecea și generarea și
+   validarea), **R166b** (numit de validatorul oficial la prima lui rulare reală). **Fiecare pas
+   a făcut vizibil pasul următor.***
+   *Și o lecție despre instrument: **proba mea a ascuns R165c o rulare întreagă**, fiindcă
+   verifica antetul căutând ramura pe care fișierul n-o emite — v. lecția 17.*
    *Lotul D a scos **R164** (al doilea `500` al zilei pe o intrare PLAUZIBILĂ) și a ascuțit
    instrumentul de perimetru: un comparator de declarații nu e un hrănitor, deci se scoate
    din închidere — nucleu total 103 → 72, `DECIZII.md` 68.*

@@ -6911,6 +6911,166 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   mai devreme, ca înainte.
 - **unde ajunge efectul**: `POST /tenants/{}/salariati` — ecranul «Salariați», la fiecare angajare.
 
+### R165 — SAF-T-ul unei firme TRIMESTRIALE raporta o singură lună din trei
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/common.py::fereastra_d406` (regula) · `core/d406.py::pull` și
+  `core/d406_reconciliere.py` (cele două căi care o folosesc) · **PRAG 1**
+- **ce blochează**: depunerea D406 a oricărei firme care nu e pe TVA lunar. Două treimi din
+  facturi, note și plăți nu ajungeau la ANAF — și nimic nu semnala, fiindcă fișierul era corect ca
+  formă.
+- **condiția de deblocare**: se închide când fereastra raportării urmează perioada fiscală TVA, iar
+  o firmă trimestrială primește tot trimestrul.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `3bf1f7ea`
+- **rezolvată pe commit**: `83c97f6c`
+- **cum s-a găsit**: confruntând **aceeași perioadă între trei declarații**, în lotul E al etapei 2.
+  Pe `tenant_003`, facturile din 15–17.08.2026 apar în D300 și în D394 pe trimestrul III și **nu**
+  apar în D406 pe același trimestru.
+- **ce s-a măsurat**: `declaratii_api` convertește `trim` în lună-ancoră (T3 → 9) pentru tot setul
+  TVA, cu comentariul *„generatoarele d300/d394/d406 sunt ancorate pe LUNĂ (agregă trimestrul din
+  ultima lună)”*. Pentru d300 și d394 e adevărat — ele folosesc `common.fereastra_tva(perioada,
+  perioada_tva_tip(prof))`, reparația din 06.08.2026. **`d406.pull` n-a primit niciodată acea
+  reparație**: fereastra lui era `[an-lună-01, an-(lună+1)-01)`.
+- **temeiul, verbatim** (`anaf_surse/opanaf_1783_2021_saft_d406.txt`, Anexa 4): pct. 2 —
+  *„Contribuabilii/Plătitorii transmit Declarația informativă D406 lunar sau TRIMESTRIAL, urmând
+  PERIOADA FISCALĂ APLICABILĂ PENTRU TAXA PE VALOAREA ADĂUGATĂ (TVA). Contribuabilii care au ca
+  perioadă fiscală aplicabilă pentru TVA semestrul sau anul transmit Declarația informativă D406
+  TRIMESTRIAL.”* · pct. 3 — *„Contribuabilii care NU sunt înregistrați în scopuri de TVA transmit
+  Declarația informativă D406 TRIMESTRIAL.”*
+- **reparația**: un singur ajutor, `common.fereastra_d406`, care folosește **aceleași** funcții ca
+  decontul (`perioada_tva_tip` + `fereastra_tva`) și adaugă maparea proprie D406 (S și A cad pe T,
+  neplătitorul la fel). O a doua implementare a aceleiași ferestre ar fi fost începutul aceleiași
+  divergențe tăcute.
+- **partea (b), pe care a prins-o o gardă a casei**: la prima rulare cu fereastra lărgită, poarta
+  „a doua cale” a **refuzat să genereze**, numind conturile și ambele valori — `cont 4111 debit:
+  saft=6789.00 vs cale2=0.00`. Reparasem o singură parte: `d406_reconciliere._rulaje_independente`
+  își declară singură contractul ca fiind cel al lui d406, iar contractul se schimbase. *O gardă
+  care refuză să emită un fișier contradictoriu face exact ce trebuie.*
+- **și a doua gardă a avut dreptate, împotriva primei mele reparații**: prima formă a lui (b)
+  împrumuta fereastra **din generator** (`from core.d406 import fereastra_d406`), iar
+  `test_non_tautologie` a respins-o — *a doua cale nu are voie să importe generatorul*. Corect:
+  o cale care își ia codul din cea pe care o verifică nu mai verifică nimic. Dar nici a doua
+  definiție a ferestrei nu se putea scrie — divergența lor tăcută E chiar defectul R165.
+  **Ieșirea nu e niciuna din cele două**: regula urcă în `core/common.py`, lângă
+  `perioada_tva_tip` și `fereastra_tva`, de unde o iau amândouă căile fără să se atingă.
+  Independența celei de-a doua căi rămâne în **SQL și în calcul**, care sunt integral ale ei;
+  perioada nu e o alegere de implementare, e o normă. `DECIZII.md` 71.
+- **calibrare, în amândouă direcțiile**: firmă TRIMESTRIALĂ → fișierul poartă iulie–septembrie
+  (facturile din august, prezente) · firmă LUNARĂ → fișierul poartă exact septembrie, ca înainte ·
+  `S` și `A` → trimestrial · neplătitor de TVA → trimestrial. Gard:
+  `core/test_d406_fereastra.py`.
+- **unde ajunge efectul**: `POST /declaratii/d406` — fișierul SAF-T al fiecărei firme care nu e pe
+  TVA lunar, adică majoritatea firmelor mici.
+
+### R165c — Antetul declara o lună pe un fișier care purta trimestrul
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/d406.py::_header` · **PRAG 1**
+- **ce blochează**: aceeași depunere. **R165 (a) transformase o LIPSĂ într-o MINCIUNĂ**: fișierul
+  conținea iulie–septembrie și declara despre sine `PeriodStart = PeriodEnd = 9`.
+- **condiția de deblocare**: se închide când perioada declarată în antet e perioada acoperită de
+  date.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `3bf1f7ea`
+- **rezolvată pe commit**: `83c97f6c`
+- **cum s-a găsit**: **nu de proba mea, care raporta `null`** (v. mai jos), ci citind `_header`
+  după ce artefactul a arătat antetul gol.
+- **ce s-a măsurat**: `SelectionCriteria` scria `res.luna` de patru ori. Reparația R165 adăugase
+  `data_inceput`/`data_sfarsit` și le citea în `di`/`ds`... care rămâneau **variabile moarte**:
+  `grep` pe corpul funcției le găsește o singură dată, la atribuire. *Reparasem intenția, nu codul
+  — și scrisesem chiar fraza „un fișier care spune «septembrie» purtând iulie-septembrie ar înlocui
+  o lipsă cu o minciună” în docstringul reparației care n-o făcea.*
+- **temeiul, verbatim** (`anaf_surse/d406_schema_anaf.xlsx`, 5.12 SelectionCriteriaStructure):
+  `PeriodStart` — *„The first accounting period covered by SAF-T”* · `PeriodEnd` — *„The last
+  accounting period covered by the SAF-T”*. Perioada **acoperită**, nu perioada de depunere și nu
+  luna-ancoră.
+- **de ce n-a prins-o proba mea**: verificarea căuta `<SelectionStartDate>` — cealaltă ramură a lui
+  `<xs:choice>` din schemă, pe care fișierul nu o emite. Negăsind-o, `if m1:` sărea aserțiunea și
+  raporta `{"start": null, "end": null}` ca pe o observație. Proba are acum aserțiune anti-vacuu:
+  dacă niciuna din cele două ramuri nu e găsită, pică.
+- **reparația**: antetul folosește `di`/`ds` — aceleași două date care produc și tipul depunerii.
+- **calibrare, în amândouă direcțiile**: trimestrial → `7/2026 – 9/2026` · lunar → `9/2026 –
+  9/2026`, neschimbat · fără fereastră (apelanții `d406_active`/`d406_stocuri`) → lună-ancoră, ca
+  înainte.
+- **unde ajunge efectul**: antetul fiecărui fișier SAF-T — primul lucru pe care îl citește ANAF.
+
+### R166 — Validarea D406 din aplicație era INACCESIBILĂ: orice apel ieșea `gri`
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py::declaratie_valideaza` · **PRAG 1**
+- **ce blochează**: confruntarea cu arbitrul oficial, pentru **toate** fișierele D406 emise vreodată
+  de aplicație. Contabilul primea „nu am putut valida” și nu avea cum să afle de ce.
+- **condiția de deblocare**: se închide când o cerere de validare D406 pe care aplicația o acceptă
+  la generare ajunge efectiv la DUKIntegrator.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `3bf1f7ea`
+- **rezolvată pe commit**: `83c97f6c`
+- **cum s-a găsit**: întrebând de ce DUK întoarce `gri` cu validatorul **instalat**
+  (`duk.poate_valida("d406") == True`, jar-ul la locul lui, java 17 funcțional).
+- **ce s-a măsurat**, sondă directă pe rută, în ambele forme ale corpului:
+  `{"an": 2026, "trim": 3}` → `200 gri`, temei *„Validarea D406 cere an și lună (validatorul SAF-T
+  le primește ca parametri).”* · `{"an": 2026, "luna": 9}` → **422**, generatorul D406 nu acceptă
+  `luna`. **Nu există niciun corp care să treacă amândouă porțile.**
+- **cauza**: ruta lua perioada din **corpul cererii** (`body.get("luna")`), iar conversia
+  `trim` → lună-ancoră se petrece înăuntrul lui `declaratii_api` și nu ajunge înapoi în `body`.
+  Comentariul din rută (27.07.2026) spune că fără an/lună validarea D406 *„nu s-a făcut
+  NICIODATĂ”* și că s-a dovedit manual că **calea** merge — dar dovada s-a făcut chemând
+  validatorul direct. *Calea mergea; drumul până la ea, nu.*
+- **reparația**: perioada se ia de pe **rezultatul generatorului** (`res.an`/`res.luna`) — valoarea
+  folosită efectiv —, cu corpul ca rezervă. Nicio a doua conversie `trim` → lună: aia ar fi fost
+  exact greșeala din R165.
+- **calibrare, în amândouă direcțiile**: D406 trimestrial → validatorul **rulează** (și a găsit
+  R166b) · D406 lunar → rulează, `valid` · celelalte opt declarații → neschimbate, `duk.valideaza`
+  folosește an/lună **doar** pe calea SAF-T · `gri` rămâne `gri` când chiar nu putem valida. Gard:
+  `core/test_d406_fereastra.py`, aserțiune pe **AST**, nu pe text.
+- **unde ajunge efectul**: `POST /declaratii/d406/valideaza` — butonul «Validează» de pe ecranul
+  declarației, pentru fiecare firmă.
+
+### R166b — `HeaderComment` spunea „L” pe o declarație trimestrială
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/d406.py::_header` · **PRAG 1**
+- **ce blochează**: depunerea propriu-zisă — validatorul oficial **respinge** fișierul.
+- **condiția de deblocare**: se închide când tipul depunerii se derivă din perioada declarată.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `3bf1f7ea`
+- **rezolvată pe commit**: `83c97f6c`
+- **cum s-a găsit**: **de validatorul oficial ANAF**, la prima lui rulare reală din aplicație —
+  adică imediat ce R166 a făcut validarea accesibilă:
+  `E: Header (1) secțiune HeaderComment (1) / eroare regulă: HeaderComment: Tipul declaratiei L nu
+  corespunde cu perioada declarata: 7.2026 - 9.2026`
+- **ce s-a măsurat**: `HEADER_COMMENT = "L"` era o **constantă**. Eroarea exista de când există
+  generatorul; nimeni n-o putea vedea, fiindcă validarea ieșea `gri` mereu.
+- **temeiul, verbatim** (`anaf_surse/d406_schema_anaf.xlsx`, foaia de modificări, 27.10.2021):
+  *„Câmpul S.H.11 HeaderComment a fost modificat din element opțional în element OBLIGATORIU (…)
+  pentru a permite raportarea tipului de declarație transmisă, astfel: - L - pentru declarații
+  lunare - T - pentru declarații trimestriale - A - pentru declarații anuale - C - pentru
+  declarații la cerere - NL - nerezidenți declarație lunară - NT - nerezidenți declarație
+  trimestrială”*
+- **reparația**: `header_comment(di, ds)` derivă codul din numărul de luni acoperite — aceleași
+  două date care produc `SelectionCriteria`. Validatorul compară exact perechea asta, deci cele
+  două nu pot diverge decât dacă vin din surse diferite.
+- **fără default fiscal tăcut**: o întindere care nu e 1, 3 sau 12 luni **oprește generarea** cu un
+  mesaj care spune ce a găsit și ce tipuri există. Un cod ghicit ar fi fost exact clasa pe care o
+  păzește verificatorul `DEFAULT_FISCAL_TACIT`.
+- **ce NU acoperă, spus**: `C` (la cerere) și `NL`/`NT` (nerezidenți) nu se emit — depunerea la
+  cerere nu e o proprietate a perioadei, iar rezidența nu e modelată în `firma_profil`.
+- **calibrare, în amândouă direcțiile**: trimestrial → `T`, DUK **valid** · lunar → `L`, DUK
+  **valid**, neschimbat · anual → `A` · două luni → `ValueError` care numește întinderea și
+  tipurile existente. Plus **mutație**: constanta reintrodusă → gard roșu.
+- **unde ajunge efectul**: fiecare fișier SAF-T al unei firme care nu e pe TVA lunar era **respins
+  de ANAF**, iar aplicația n-avea cum să afle.
+
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
