@@ -6458,6 +6458,46 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   e modelată**. Ruta cere faptul generator; dacă operațiunea e în excepție, contabilul ar trebui să
   poată spune asta. *Nu se ghicește care din cele două e cazul: se consemnează.*
 
+### R150 — Un cabinet inexistent răspundea „n-a făcut nimic", iar trei rute înlocuiau tăcut o valoare imposibilă cu una convenabilă
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py` — `admin_activitate_cabinet`, `admin_analytics`,
+  `admin_sanatate_istoric` · **PRAG 1**
+- **ce blochează**: adevărul a ceea ce citește administratorul. Într-un caz o **absență** e
+  prezentată ca fapt despre subiect; în celelalte trei, cifra afișată nu e cea cerută.
+- **condiția de deblocare**: se închide când un subiect inexistent primește `404`, iar o valoare în
+  afara intervalului primește un refuz care numește câmpul și limitele — nu o substituire tăcută.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `1112d42e`
+- **rezolvată pe commit**: `ea1530ed`
+- **cum s-au găsit, și de ce abia acum**: cele trei rute erau printre cele **cinci** pe care lotul 9
+  le marcase *„fără defect"* pe temeiul unui `403` de ROL — cererile nu ajunseseră niciodată la
+  verificările lor. Reprobate în lotul 14 cu token de **superadmin**. *Trei din cinci aveau defecte.*
+- **(1) absența citită ca fapt**: `GET /admin/activitate/cabinet/999999` → **`200
+  {"activitate": []}`**. Ruta nu verifica deloc existența cabinetului: `WHERE u.accounting_firm_id =
+  999999` întoarce zero rânduri, iar zero rânduri s-au citit ca un răspuns despre subiect. *Absența
+  înregistrărilor și inexistența subiectului sunt două lucruri diferite* — clasa păzită de
+  `core/test_absenta_nu_e_neaplicabil.py`, pe alt obiect.
+- **(2) coerciția tăcită, trei locuri**: `zile=-5` → **1**, `zile=99999` → **365**, `ore=-5` → **1
+  oră**, `ore=99999` → **168**, `limita=-5` → **1**. *O coerciție tăcită nu e o protecție, e o
+  afirmație falsă despre ce s-a cerut: omul care a cerut 99999 de ore crede că se uită la 99999.*
+- **gradul lor nu e același, și se spune**: `admin_analytics` **își echivala** valoarea folosită în
+  răspuns (`{"zile": 1}`), deci se putea vedea. Celelalte două, nu. S-au tratat la fel toate trei —
+  ce se vede depinde de cine citește răspunsul, nu de rută.
+- **reparația**: un helper unic, `_interval_cerut(valoare, nume, minim, maxim, unitate)`, care
+  refuză cu limitele numite; și o verificare de existență înaintea interogării.
+- **calibrare, în amândouă direcțiile**: cabinet 999999 → `404` cu deosebirea scrisă în mesaj ·
+  cabinet real 1968 → `200` cu activitatea · `ore=-5` și `ore=99999` → `422` cu intervalul ·
+  `ore=24`, `zile=30` și lipsa parametrului (implicit 30) → `200`. **Reparația nu supra-refuză.**
+- **și o observație despre proba lotului 9, care merită scrisă**: parametrul probat acolo pe ruta de
+  sănătate era `?zile=-5`, iar ruta primește `ore`. **Coerciția n-ar fi ieșit la iveală nici dacă
+  rolul ar fi fost potrivit** — FastAPI lasă parametrii necunoscuți să treacă fără să se plângă
+  nimeni. Aceeași clasă pe care lotul 9 și-o consemnase singur, la alte șase probe.
+- **unde ajunge efectul**: pe ecranele de administrare — activitatea unui cabinet, analytics-ul
+  public, istoricul de sănătate al serverului.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
