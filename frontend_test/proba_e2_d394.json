@@ -1,0 +1,176 @@
+{
+ "firma": "Comert Micro TVA SRL",
+ "tenant_id": 4838,
+ "perioada": {
+  "an": 2026,
+  "trim": 3
+ },
+ "facturi_sursa": [
+  {
+   "id": 26,
+   "numar": "PROBA-E2-A-P1",
+   "data_emitere": "2026-08-17",
+   "directie": "primita",
+   "total": 605.0,
+   "tva": 105.0,
+   "status": "emisa",
+   "moneda": "RON",
+   "tert_nume": "Furnizor Proba E2 SRL",
+   "tert_cui": "95141537",
+   "tert_adresa": null,
+   "tip": "factura",
+   "transformat_in_id": null,
+   "storno_din_id": null,
+   "contabilizata": false
+  },
+  {
+   "id": 25,
+   "numar": "CMT151",
+   "data_emitere": "2026-08-16",
+   "directie": "emisa",
+   "total": 222.0,
+   "tva": 22.0,
+   "status": "de_preluat",
+   "moneda": "RON",
+   "tert_nume": "Distributie Profit IC SRL",
+   "tert_cui": "95275466",
+   "tert_adresa": null,
+   "tip": "factura",
+   "transformat_in_id": null,
+   "storno_din_id": null,
+   "contabilizata": true
+  },
+  {
+   "id": 24,
+   "numar": "CMT150",
+   "data_emitere": "2026-08-15",
+   "directie": "emisa",
+   "total": 1210.0,
+   "tva": 210.0,
+   "status": "de_preluat",
+   "moneda": "RON",
+   "tert_nume": "Distributie Profit IC SRL",
+   "tert_cui": "95275466",
+   "tert_adresa": null,
+   "tip": "factura",
+   "transformat_in_id": null,
+   "storno_din_id": null,
+   "contabilizata": true
+  },
+  {
+   "id": 3,
+   "numar": "CMT149",
+   "data_emitere": "2026-08-14",
+   "directie": "emisa",
+   "total": 2904.0,
+   "tva": 504.0,
+   "status": "de_preluat",
+   "moneda": "RON",
+   "tert_nume": "Agentie Turism Marja SRL",
+   "tert_cui": null,
+   "tert_adresa": "Str. Republicii nr. 22, Ploiești",
+   "tip": "factura",
+   "transformat_in_id": null,
+   "storno_din_id": null,
+   "contabilizata": true
+  },
+  {
+   "id": 2,
+   "numar": "CMT148",
+   "data_emitere": "2026-08-14",
+   "directie": "emisa",
+   "total": 3885.0,
+   "tva": 385.0,
+   "status": "de_preluat",
+   "moneda": "RON",
+   "tert_nume": "Distributie Profit IC SRL",
+   "tert_cui": "95275466",
+   "tert_adresa": "Bd. Unirii nr. 15, București",
+   "tip": "factura",
+   "transformat_in_id": null,
+   "storno_din_id": null,
+   "contabilizata": true
+  }
+ ],
+ "asteptare": {
+  "1/21": {
+   "baza": "1000.0",
+   "tva": "210.0",
+   "nr": "1",
+   "bazaA": "500.0",
+   "tvaA": "105.0",
+   "nrA": "1"
+  },
+  "1/11": {
+   "baza": "3700.0",
+   "tva": "407.0",
+   "nr": "2",
+   "bazaA": "0",
+   "tvaA": "0",
+   "nrA": "0"
+  },
+  "2/21": {
+   "baza": "2400.0",
+   "tva": "504.0",
+   "nr": "1",
+   "bazaA": "0",
+   "tvaA": "0",
+   "nrA": "0"
+  }
+ },
+ "rezumat1": {
+  "1/11": {
+   "tip_partener": "1",
+   "cota": "11",
+   "bazaA": "0",
+   "bazaAI": "0",
+   "bazaC": "0",
+   "bazaL": "3700",
+   "facturiA": "0",
+   "facturiAI": "0",
+   "facturiC": "0",
+   "facturiL": "2",
+   "tvaA": "0",
+   "tvaAI": "0",
+   "tvaC": "0",
+   "tvaL": "407"
+  },
+  "1/21": {
+   "tip_partener": "1",
+   "cota": "21",
+   "bazaA": "500",
+   "bazaAI": "0",
+   "bazaC": "0",
+   "bazaL": "1000",
+   "facturiA": "1",
+   "facturiAI": "0",
+   "facturiC": "0",
+   "facturiL": "1",
+   "tvaA": "105",
+   "tvaAI": "0",
+   "tvaC": "0",
+   "tvaL": "210"
+  },
+  "2/21": {
+   "tip_partener": "2",
+   "cota": "21",
+   "bazaL": "2400",
+   "facturiL": "1",
+   "tvaL": "504"
+  }
+ },
+ "avertismente": [
+  "D394 09/2026: 2 parteneri TVA RO, 1 neînregistrați, 0 UE, 0 non-UE; 4 operațiuni."
+ ],
+ "incrucisat": {
+  "D394_tvaL_total": 1121,
+  "D300_R17_2": 1121,
+  "coincid": true
+ },
+ "duk": {
+  "cod": 200,
+  "stare": "valid",
+  "erori": ""
+ },
+ "nepotriviri": []
+}

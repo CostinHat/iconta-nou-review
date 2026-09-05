@@ -7438,9 +7438,35 @@ măsoară deja pe alte ecrane).
 **Nu s-a reparat, și de ce:** nu e prag 1 — nimic fals, nimic acceptat greșit, iar refuzul EXISTĂ.
 Mutarea motivului lângă câmp e o schimbare de așezare, iar aceea cere confirmare.
 
+## 05.09.2026 — Etapa 2, lotul A: două reparații pe ecranul de casă, și o proprietate care ar putea deveni gardă
+
+**GĂRZI NOI: niciuna.** Lotul a reparat două defecte (R161, R162) și a construit un instrument de
+perimetru; niciunul nu cere o gardă nouă, iar lista internă rămâne închisă.
+
+### Ce a scos la iveală reprobarea, și merită ținut minte
+
+**R161 → R162, într-un singur pas.** Reparând un REFUZ (butonul stins al casei), reprobarea cu date
+BUNE a arătat că **calea de reușită tăcea**: dispoziția intra, iar mesajul se ștergea în aceeași
+clipă, fiindcă `deseneaza()` refăcea `corp.innerHTML` peste el. *Nimeni nu căuta acolo: campania
+etapei 1 măsura ce spune aplicația la date GREȘITE, iar acolo tăcerea era pe calea bună.* Etapa 2,
+prin construcție, calcă exact pe calea de reușită — și primul lucru pe care l-a găsit e un mesaj
+care nu ajunge la om.
+
+### O PROPRIETATE care ar putea deveni gardă, scrisă ca datorie
+
+**TVA colectată din D394 == `R17_2` din D300**, pe aceeași firmă și aceeași perioadă. Verificată
+manual în lotul A (1.121 = 1.121) și trecută de amândouă declarațiile prin DUK. E chiar felul de
+defect pe care DUK nu-l poate vedea: *o cifră așezată în rândul greșit trece de validatorul de
+formă în amândouă declarațiile, dar nu trece de egalitatea asta.*
+
+Perechea EXISTĂ deja în supervizor, dar pe alt obiect: `EFACTURA_VS_D394` compară recipisa de la
+ANAF cu ce a declarat generatorul. Asta ar fi a doua față a ei — **generator contra generator**, pe
+lanțul de intrare. **Nu s-a construit**: lista internă e închisă, iar comanda etapei 2 cere probe,
+nu gărzi. Scrisă aici ca să nu se piardă.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**517 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**518 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
 ### `core/` — 499
 
@@ -7944,7 +7970,7 @@ Mutarea motivului lângă câmp e o schimbare de așezare, iar aceea cere confir
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 18
+### `scripts/` — 19
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -7955,6 +7981,7 @@ Mutarea motivului lângă câmp e o schimbare de așezare, iar aceea cere confir
 - `scripts/scan_functionalitati.py` — scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
 - `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
+- `scripts/scan_lanturi_declaratie.py` — ETAPA 2 — CARE unitate alimentează CARE declarație, derivat din cod.
 - `scripts/scan_lista3.py` — scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana.
 - `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
 - `scripts/scan_predare_cifre.py` — Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat.

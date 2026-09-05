@@ -2789,6 +2789,8 @@ async function ecranCasa(corp, nav, t) {
   ];
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  // [R162] mesajul de reusita TRAVERSEAZA re-randarea — v. antetul reparatiei
+  let mesajSucces = "";
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let reg = { operatiuni: [], sold_final: "0", avertismente: [] };
@@ -2810,6 +2812,7 @@ async function ecranCasa(corp, nav, t) {
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Cas\u0103 ${semnAjutor("F015")}</h2>
+      ${mesajSucces ? '<p class="pf-intro" style="color:var(--verde);font-weight:600">' + mesajSucces + '</p>' : ""}
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 sold final <b>${bani(reg.sold_final)} lei</b>
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
@@ -2832,10 +2835,11 @@ async function ecranCasa(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
         <div class="em-cui-stare" id="c-cui-stare"></div>
-        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga" disabled title="Completeaz\u0103 data \u0219i suma \u00eent\u00e2i">Adaugă (notă ciornă)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga">Adaugă (notă ciornă)</button></p>
         <div id="c-mesaj"></div>
       </div>
       <div class="pf-lista">${randuri}</div>`;
+    mesajSucces = "";  // [R162] se goleste dupa randare, ca sa nu ramana lipit la urmatoarea
 
     const _tg = (btnId, zonaId) => {  /* cap2_toggle_v1 */
       const b = corp.querySelector(btnId), z = corp.querySelector(zonaId);
@@ -2869,11 +2873,23 @@ async function ecranCasa(corp, nav, t) {
     });
     corp.querySelector("#c-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#c-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
-    { const _cA = corp.querySelector("#c-adauga"), _cD = corp.querySelector("#c-data"), _cS = corp.querySelector("#c-suma");
-      const _cChk = () => { if (_cA) _cA.disabled = !(_cD && _cD.value && _cS && parseFloat(_cS.value) > 0); };
-      [_cD, _cS].forEach((el) => el && el.addEventListener("input", _cChk)); _cChk(); }
+    // [R161, 05.09.2026] Butonul nu mai sta STINS cu motivul in `title`. Se apasa mereu, iar
+    // refuzul se aseaza langa campul vinovat (`eroareCamp`: contur rosu + `aria-invalid` +
+    // mesaj ancorat) — acelasi ajutor ca in restul aplicatiei. *Un buton care nu se poate
+    // apasa nu poate raspunde, iar un motiv care traieste in `title` nu se vede pe atingere.*
     corp.querySelector("#c-adauga").addEventListener("click", async () => {
       const zonaM = corp.querySelector("#c-mesaj");
+      curataEroriCamp(corp);
+      const _d = corp.querySelector("#c-data").value;
+      const _s = parseFloat(corp.querySelector("#c-suma").value);
+      let _lipsa = false;
+      // doua campuri, doua mesaje: care lipseste se spune pe randul lui, amandoua daca e cazul
+      if (!_d) { eroareCamp(corp, "c-data", "Completează data dispoziției."); _lipsa = true; }
+      if (!(_s > 0)) {
+        eroareCamp(corp, "c-suma", "Suma trebuie să fie un număr mai mare ca 0.");
+        _lipsa = true;
+      }
+      if (_lipsa) return;
       try {
         const r = await api.post(`/tenants/${t.id}/casa/operatiuni`, {
           data: corp.querySelector("#c-data").value,
@@ -2884,7 +2900,8 @@ async function ecranCasa(corp, nav, t) {
           document: corp.querySelector("#c-doc").value || null,
         });
         const av = (r.avertismente || []).length;
-        zonaM.innerHTML = `<p class="pf-intro">Nota ${esc(r.nota)} creata ca ciorna.${av ? ` <b style="color:var(--galben)">${av} avertisment(e) plafon.</b>` : ""}</p>`;
+        // [R162] se scrie in `mesajSucces`, nu in zona pe care `deseneaza()` o sterge
+        mesajSucces = `Nota ${esc(r.nota)} a fost creată ca ciornă.${av ? ` ${av} avertisment(e) de plafon.` : ""}`;
         deseneaza();
       } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
     });

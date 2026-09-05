@@ -7888,3 +7888,37 @@ capcanei 9: o probă care schimbă starea portofoliului o lasă schimbată.*
 **Ce se poate spune acum, și nu se putea ieri:** din 54 de ecrane parcurse cap la cap, **zero
 tac**. Iar cele 27 despre care raportul spune „fără suprafață de intrare" n-o mai spun pe temeiul că
 sonda n-a găsit nimic: o spun pe `intrari_dom = 0`, măsurat în DOM.
+
+## 05.09.2026 — Etapa 2 se deschide: lanțul până în declarație, pe date valide
+
+Etapa 1 întreba *ce spune aplicația când primește date greșite*. Etapa 2 întreabă altceva, și e mai
+greu de trecut: *valoarea bună ajunge în rândul bun, cu suma bună?* Costin a tăiat perimetrul de
+două ori în aceeași zi — întâi la unitățile care ating o declarație (**197** din 364), apoi la
+**cele nouă declarații pe care aplicația chiar le generează** (D100, D101, D112, D205, D300, D301,
+D390, D394, D406/SAF-T), cu restul numite, nu ascunse.
+
+**Gruparea a cerut un instrument, și prima formă a lui n-a mers.** Atribuirea naivă — „unitatea
+alimentează generatorul dacă scrie într-un tabel pe care el îl citește" — dădea grupe de **171** de
+unități, fiindcă `inregistrari` e citit de aproape toate generatoarele. Suma apartenențelor:
+**2204**, pentru 194 de unități. *Măsurat înainte de a alege*, apoi refăcut pe specificitatea
+tabelului: **103** unități sunt nucleu pentru cel puțin o declarație, iar cea mai mare grupă
+(d112) are **81**.
+
+**Lotul A — D300 și D394, hrănite de aceleași facturi.** Așteptarea scrisă înainte, rând cu rând,
+din generator și din structura ANAF: o factură emisă 21% intră în `R9`, una 11% în `R10`, o primită
+21% în `R22` (Rd.24), rândul manual în rândul lui. Rezultatul: **16 rânduri confruntate, 16
+potrivite**; `<rezumat1>`-urile din D394 exacte pe fiecare pereche (tip_partener, cotă); ciclul
+complet al rândului manual — intră, se vede, se șterge, **dispare din decont**. Și confruntarea
+care contează cel mai mult: **TVA colectată din D394 = `R17_2` din D300 = 1.121**.
+
+**Zero defecte în lanț — dar de două ori așteptarea MEA a fost cea greșită.** Rândul manual e
+upsert, nu adăugare; `nrFacturi` numără numai facturile emise. Amândouă prinse citind la sursă. Iar
+înaintea lor, un al treilea fals-pozitiv oprit la fel: era să raportez `totalPlata_A` ca „sumă de
+plată greșită", până am citit în structura ANAF că e **sumă de control**. *Trei într-un singur lot
+— forma asta de probă produce fals-pozitive cu aceeași ușurință cu care găsește defecte, iar
+singurul filtru e citirea la sursă.*
+
+**Ce a găsit totuși lotul, și n-a găsit etapa 1.** Reparând butonul stins al casei (R161, cerut de
+Costin), reprobarea cu date BUNE a arătat că pe calea de REUȘITĂ ecranul tăcea: dispoziția intra, și
+mesajul se ștergea în aceeași clipă (R162). *Etapa 1 măsura tăcerea la date greșite; tăcerea de pe
+calea bună a stat nevăzută până acum.*

@@ -13903,3 +13903,27 @@ probate abia după `frontend_test/butoane_cu.py`, care numără toate butoanele 
 care nicio probă autentificată nu-l randează), „reevalu" pe **unul**. *Un cuvânt adăugat pe
 intuiție deblochează butoane nevăzute — iar unele scriu.* Instrumentul rămâne, ca următorul verb să
 nu se adauge pe încredere.
+
+**(63) Perimetrul etapei 2 se DERIVĂ cu un instrument, iar gruparea pe declarație se face pe
+SPECIFICITATEA TABELULUI** *(lotul A, 05.09.2026)*. Prima formă a atribuirii — „unitatea
+alimentează generatorul dacă scrie într-un tabel pe care el îl citește" — degenera: `inregistrari`
+e citit de aproape toate generatoarele, deci cea mai mare grupă avea **171** de unități și suma
+apartenențelor era **2204** pentru 194 de unități distincte. *O grupare în care aproape totul
+aparține aproape peste tot nu grupează nimic.* Deosebirea NUCLEU / PERIFERIE se face pe câte
+generatoare citesc tabelul (prag **5**, măsurat), nu pe judecata mea. Alternativa — să aleg eu ce
+intră în fiecare lot — ar fi fost exact perimetrul ALES pe care regula 4 din `PLAN_LUCRU` îl
+interzice.
+
+**(64) Așteptarea unui lanț se scrie ca FORMULĂ și poartă SEMANTICA intrării, nu doar cifra**
+*(lotul A, 05.09.2026)*. De două ori în același lot așteptarea mea a fost cea greșită, nu
+aplicația: rândul manual D300 e **upsert**, nu adăugare (a doua rulare cerea 600, corect era 300),
+iar `nrFacturi` din D394 numără **numai facturile emise** (cerusem 5, corect era 4). Amândouă
+prinse citind la sursă — docstringul funcției și structura ANAF. *O așteptare scrisă din memorie
+transformă un comportament corect într-un „defect", și e cu atât mai periculoasă cu cât forma
+probei o face să pară verificată.*
+
+**(65) O probă de lanț trebuie să fie RE-RULABILĂ** *(lotul A, 05.09.2026)*. Probele etapei 2
+construiesc fapte reale (facturi, note), nu santinele care se pot șterge. Dacă a doua rulare ar mai
+adăuga un set, scenariul declarat s-ar dubla tăcut, iar cifrele din registru ar descrie altceva
+decât e în bază. `proba_e2_d300.py` își recunoaște propriile facturi după (direcție, dată, total) și
+nu le mai adaugă. *O probă care nu se poate rula de două ori nu e o probă, e o singură lovitură.*

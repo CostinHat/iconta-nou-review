@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **campania etapei 1 e ÎNCHISĂ: 364 din 364** (05.09.2026)
+# PREDARE LANȚ — **etapa 1 ÎNCHISĂ (364/364); etapa 2 DESCHISĂ, lotul A trecut** (05.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
@@ -10,7 +10,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 - **pe commit**: `b0270f9d`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **DE CE ACUM**: capătul campaniei. Ce urmează **nu se alege de aici** — v. „DACĂ CONTINUI DE AICI".
+- **DE CE ACUM**: capătul lotului A din **etapa 2**. Ce urmează **nu se alege de aici** —
+  v. „DACĂ CONTINUI DE AICI".
 - **CE E REMĂSURAT ÎN TURA ASTA**: cifrele campaniei — **mecanic**, parcurgând coloana «stare
   probare» · cele patru clichete generate · numărul de ecrane cerute de gardul acoperirii vizuale
   (16 → 21, R160).
@@ -618,10 +619,20 @@ a ce e adevărat **acum**.
 ---
 ## DACĂ CONTINUI DE AICI
 
-1. **NU DESCHIDE NICIO TEMĂ.** `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118". Cele 51 de restanțe **nu
-   sunt o coadă de sarcini**. **Nici campania nu mai e o temă deschisă**: etapa 1 s-a închis pe
-   05.09.2026, la 364 din 364. Dacă urmează o etapă 2 — celelalte 189 de unități, cele fără
-   câmpuri de completat —, **perimetrul ei îl taie Costin**, cum l-a tăiat pe al etapei 1.
+1. **NU DESCHIDE NICIO TEMĂ** în afara campaniei. `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118".
+   Cele 51 de restanțe **nu sunt o coadă de sarcini**.
+   **ETAPA 2 E DESCHISĂ** (Costin, 05.09.2026): probarea cu date **VALIDE**, pe lanțul până în
+   declarație. Perimetrul, tăiat de el de două ori în aceeași zi: numai unitățile care
+   alimentează **cele nouă declarații pe care aplicația le GENEREAZĂ** — D100, D101, D112,
+   D205, D300, D301, D390, D394, D406/SAF-T. Derivat mecanic cu
+   `scripts/scan_lanturi_declaratie.py`: **197** de unități ating o declarație, **190** intră în
+   cele nouă, **103** sunt NUCLEU pentru cel puțin una. Nucleul pe declarație: d112 **81** ·
+   d406 **29** · d300 **28** · d394 **18** · d390 **8** · d205 **3** · d301 **3** · d100 **0** ·
+   d101 **0**.
+   **Trecut: lotul A** (D300 + D394) — 16 rânduri confruntate, toate potrivite; DUK valid pe
+   amândouă; TVA colectată D394 = `R17_2` din D300. **Rămân opt loturi**, unul per declarație.
+   *Regula formei: așteptarea se scrie ÎNAINTE, ca formulă, și poartă semantica intrării —
+   `DECIZII.md` 64. De trei ori în lotul A un „defect" era de fapt așteptarea mea.*
 2. **Ce e permis fără să întrebi:** un **prag 1** găsit apăsând.
 3. **Următoarea temă vine de la Costin, după pilot.**
 4. **Înainte de orice probă pe ecran:** `publica_static.py --din-arbore`.

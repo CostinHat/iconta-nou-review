@@ -1,0 +1,251 @@
+{
+ "firma": "Comert Micro TVA SRL",
+ "tenant_id": 4838,
+ "schema": "tenant_003",
+ "perioada": {
+  "an": 2026,
+  "trim": 3
+ },
+ "pasi": [
+  {
+   "nume": "bază: rânduri nenule",
+   "randuri": {
+    "R10_1": "3700",
+    "R10_2": "407",
+    "R17_1": "7100",
+    "R17_2": "1121",
+    "R22_1": "500",
+    "R22_2": "105",
+    "R27_1": "500",
+    "R27_2": "105",
+    "R28_2": "105",
+    "R32_2": "105",
+    "R34_2": "1016",
+    "R37_2": "1016",
+    "R41_2": "1016",
+    "R9_1": "3400",
+    "R9_2": "714"
+   }
+  },
+  {
+   "nume": "intrări de adăugat în rularea asta",
+   "adaug": {
+    "e21": false,
+    "e11": false,
+    "p21": false
+   }
+  },
+  {
+   "nume": "AȘTEPTARE (scrisă înainte de probă)",
+   "randuri": {
+    "R9_1": 3400,
+    "R9_2": 714,
+    "R10_1": 3700,
+    "R10_2": 407,
+    "R22_1": 500,
+    "R22_2": 105,
+    "R14_1": 300,
+    "R17_1": 7400,
+    "R17_2": 1121,
+    "R34_2": 1016
+   }
+  },
+  {
+   "nume": "intrare 1 — factură emisă 21%, bază 1000.00",
+   "cod": 0,
+   "raspuns": "deja intrată la o rulare anterioară"
+  },
+  {
+   "nume": "intrare 2 — factură emisă 11%, bază 200.00",
+   "cod": 0,
+   "raspuns": "deja intrată la o rulare anterioară"
+  },
+  {
+   "nume": "intrare 3 — factură primită 21%, bază 500.00",
+   "cod": 0,
+   "raspuns": "deja intrată la o rulare anterioară"
+  },
+  {
+   "nume": "intrare 4 — rând manual R14, bază 300.00",
+   "cod": 200,
+   "raspuns": {
+    "ok": true,
+    "id": 3,
+    "rand": "R14",
+    "baza": 300,
+    "tva": 0
+   }
+  },
+  {
+   "nume": "generare după intrări",
+   "avertismente": [],
+   "randuri": {
+    "R10_1": "3700",
+    "R10_2": "407",
+    "R14_1": "300",
+    "R17_1": "7400",
+    "R17_2": "1121",
+    "R22_1": "500",
+    "R22_2": "105",
+    "R27_1": "500",
+    "R27_2": "105",
+    "R28_2": "105",
+    "R32_2": "105",
+    "R34_2": "1016",
+    "R37_2": "1016",
+    "R41_2": "1016",
+    "R9_1": "3400",
+    "R9_2": "714"
+   }
+  },
+  {
+   "nume": "intrare 4b — rândul manual, citit din listă",
+   "cod": 200,
+   "randuri": [
+    {
+     "id": 3,
+     "rand": "R14",
+     "eticheta": "Livrări de bunuri și prestări de servicii scutite cu drept de deducere, altele decât cele de la rd. 1-3",
+     "baza": 300,
+     "tva": 0,
+     "descriere": "PROBA-E2-A scutit cu drept de deducere",
+     "cu_tva": false
+    }
+   ]
+  },
+  {
+   "nume": "intrare 4c — rândul manual, șters",
+   "cod": 200,
+   "id": 3,
+   "raspuns": {
+    "ok": true
+   }
+  }
+ ],
+ "baza": {
+  "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+  "xmlns": "mfp:anaf:dgti:d300:declaratie:v12",
+  "schemaLocation": "mfp:anaf:dgti:d300:declaratie:v12 D300.xsd",
+  "luna": "9",
+  "an": "2026",
+  "depusReprezentant": "0",
+  "bifa_interne": "0",
+  "temei": "0",
+  "nume_declar": "Dobrescu",
+  "prenume_declar": "Elena",
+  "functie_declar": "ADMINISTRATOR",
+  "cui": "95141537",
+  "den": "Comert Micro TVA SRL",
+  "adresa": "Str. Testului nr. 1 Bucuresti București",
+  "banca": "Banca Test",
+  "cont": "RO49AAAA1B31007593840000",
+  "caen": "4711",
+  "tip_decont": "T",
+  "pro_rata": "100.00",
+  "bifa_cereale": "N",
+  "bifa_mob": "N",
+  "bifa_disp": "N",
+  "bifa_cons": "N",
+  "solicit_ramb": "N",
+  "nr_evid": "10302010926251026000040",
+  "totalPlata_A": "20910",
+  "R10_1": "3700",
+  "R10_2": "407",
+  "R17_1": "7100",
+  "R17_2": "1121",
+  "R22_1": "500",
+  "R22_2": "105",
+  "R27_1": "500",
+  "R27_2": "105",
+  "R28_2": "105",
+  "R32_2": "105",
+  "R34_2": "1016",
+  "R37_2": "1016",
+  "R41_2": "1016",
+  "R9_1": "3400",
+  "R9_2": "714"
+ },
+ "asteptare": {
+  "R10_1": 3700,
+  "R10_2": 407,
+  "R17_1": 7400,
+  "R17_2": 1121,
+  "R22_1": 500,
+  "R22_2": 105,
+  "R27_1": 500,
+  "R27_2": 105,
+  "R28_2": 105,
+  "R32_2": 105,
+  "R34_2": 1016,
+  "R37_2": 1016,
+  "R41_2": 1016,
+  "R9_1": 3400,
+  "R9_2": 714,
+  "R14_1": 300
+ },
+ "dupa": {
+  "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+  "xmlns": "mfp:anaf:dgti:d300:declaratie:v12",
+  "schemaLocation": "mfp:anaf:dgti:d300:declaratie:v12 D300.xsd",
+  "luna": "9",
+  "an": "2026",
+  "depusReprezentant": "0",
+  "bifa_interne": "0",
+  "temei": "0",
+  "nume_declar": "Dobrescu",
+  "prenume_declar": "Elena",
+  "functie_declar": "ADMINISTRATOR",
+  "cui": "95141537",
+  "den": "Comert Micro TVA SRL",
+  "adresa": "Str. Testului nr. 1 Bucuresti București",
+  "banca": "Banca Test",
+  "cont": "RO49AAAA1B31007593840000",
+  "caen": "4711",
+  "tip_decont": "T",
+  "pro_rata": "100.00",
+  "bifa_cereale": "N",
+  "bifa_mob": "N",
+  "bifa_disp": "N",
+  "bifa_cons": "N",
+  "solicit_ramb": "N",
+  "nr_evid": "10302010926251026000040",
+  "totalPlata_A": "21510",
+  "R10_1": "3700",
+  "R10_2": "407",
+  "R14_1": "300",
+  "R17_1": "7400",
+  "R17_2": "1121",
+  "R22_1": "500",
+  "R22_2": "105",
+  "R27_1": "500",
+  "R27_2": "105",
+  "R28_2": "105",
+  "R32_2": "105",
+  "R34_2": "1016",
+  "R37_2": "1016",
+  "R41_2": "1016",
+  "R9_1": "3400",
+  "R9_2": "714"
+ },
+ "avertismente": [],
+ "confruntare": {
+  "potrivite": 16,
+  "nepotrivite": []
+ },
+ "suma_control": {
+  "calculata": 21510,
+  "din_xml": 21510,
+  "coincid": true
+ },
+ "dupa_stergere": {
+  "R14_1": 0,
+  "asteptat": 0,
+  "gol_dupa_stergere": true
+ },
+ "duk": {
+  "cod": 200,
+  "stare": "valid",
+  "erori": "",
+  "severitate": null
+ }
+}

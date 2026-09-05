@@ -1573,3 +1573,125 @@ din `firma_profil` — un UPDATE nu se desface pe ghicite. Restul, desfăcut pe 
 - reparații de instrument: **6** (cele cinci feluri de orbire + condiția de oprire), plus o cifră a
   sondei corectată înainte de raport.
 - motive scrise în registru care s-au dovedit false: **5**.
+
+---
+
+# ETAPA 2 — probarea cu date VALIDE, pe lanțul până în declarație
+
+**Comanda** (Costin, 05.09.2026): *„Grupează pe declarație, nu pe funcționalitate: toate unitățile
+care alimentează aceeași declarație se probează într-o singură generare a ei, cu toate așteptările
+verificate deodată… Pentru fiecare lanț: scrie așteptarea înainte de probă — ce rând, ce sumă.
+Apoi probezi: valoarea intră, se înregistrează, ajunge în declarație în rândul corect și cu suma
+corectă, declarația se generează și se validează. **DUK verde nu e proba** — el confirmă forma; o
+cifră în rândul greșit trece la fel de bine."*
+
+**Perimetrul, restrâns de Costin în aceeași zi**: *„doar pe declarațiile pe care aplicația le
+generează: D100, D101, D112, D205, D300, D301, D390, D394, D406/SAF-T … doar cele nouă pentru care
+există generator în cod."*
+
+## Perimetrul, MĂSURAT (nu estimat)
+
+`scripts/scan_lanturi_declaratie.py` — instrument nou, care împrumută totul de la
+`scan_functionalitati` și `scan_trasee` (nicio a doua definiție a aceluiași lucru):
+
+| cifră | ce e |
+|---|---|
+| **197** | unități cu «atinge date care ajung într-o declarație» = `da`, din cele 364 ale etapei 1 |
+| **190** | atribuite cel puțin uneia din **cele nouă** |
+| **103** | sunt **NUCLEU** pentru cel puțin o declarație |
+| **3** | sunt **actul de generare** (`GET /declaratii/tipuri`, `POST /declaratii/{tip}`, `POST /declaratii/{tip}/valideaza`) — comune tuturor celor nouă, nu ale uneia |
+| **4** | alimentează bilanțul (`s1003`/`s1005`), care **nu e** între cele nouă |
+| **45** | module de declarație **în afara** celor nouă, numite: `bilant`, `bilant_api`, `d104`, `d106`, `d107`, `d110`, `d177`, `d207`, `d307`, `d311`, `d710`, … |
+
+**Nucleul pe declarație:** d112 **81** · d406 **29** · d300 **28** · d394 **18** · d390 **8** ·
+d205 **3** · d301 **3** · d100 **0** · d101 **0**.
+
+**De ce „nucleu" și „periferie", măsurat înainte de a alege.** Prima formă a atribuirii — „scrie
+într-un tabel pe care generatorul îl citește" — **degenerează**: `inregistrari` e citit de aproape
+toate generatoarele, deci orice rută care scrie o notă „alimentează" treizeci de declarații.
+Măsurat: cea mai mare grupă avea **171** de unități, iar suma apartenențelor **2204** pentru 194 de
+unități distincte — fiecare unitate ar fi intrat, în medie, în unsprezece loturi. *O grupare în care
+aproape totul aparține aproape peste tot nu grupează nimic.* Deosebirea se face pe **specificitatea
+tabelului** (câte generatoare îl citesc), nu pe judecată.
+
+---
+
+## LOT A — declarațiile de TVA hrănite de facturi: D300 și D394
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), plătitor de TVA cu perioadă **trimestrială**.
+**Perioada:** trimestrul **III/2026**. Sumele sunt alese rotunde, ca TVA-ul să nu depindă de
+rotunjire.
+
+### Așteptarea, scrisă ÎNAINTE — și de unde vine fiecare rând
+
+Regula fiecărui lanț e citită din generator (`core/d300.py`, antet) și din structura ANAF
+(`anaf_surse/d300_struct_anaf.txt`), nu din memorie:
+
+| lanț | intrarea | rândul | temeiul citirii |
+|---|---|---|---|
+| 1 | factură **emisă** 21%, bază 1.000 | `R9_1` = +1000, `R9_2` = +210 | `_LIVRARE_RAND = {21: "R9"}` |
+| 2 | factură **emisă** 11%, bază 200 | `R10_1` = +200, `R10_2` = +22 | `_LIVRARE_RAND = {11: "R10"}` |
+| 3 | factură **primită** 21%, bază 500 | `R22_1` = 500, `R22_2` = 105 (Rd.24) | `_ACHIZ_RAND = {21: "R22"}` |
+| 4 | rând **manual** D300 | `R14_1` = 300, exact | `d300_manual_api.adauga` (upsert) |
+| 5 | totalurile **calculate** | `R17`, `R27`, `R28`, `R32`, `R34_2` | formulele din `calcul_d300` |
+
+### Ce a ieșit
+
+**D300: 16 rânduri confruntate, 16 potrivite, 0 nepotrivite.** Suma de control coincide (21.510,
+calculată din XML și comparată cu `totalPlata_A`). Ciclul complet al rândului manual: intră → se
+vede în listă → se șterge → **dispare din decont** (`R14_1` revine la 0). DUK: **valid**.
+
+**D394: 0 nepotriviri**, pe o așteptare derivată din **faptele-sursă** (lista de facturi a firmei),
+nu ca delta: fiecare `<rezumat1>` pe perechea (tip_partener, cotă), cu numărul de facturi, baza și
+TVA-ul. DUK: **valid**.
+
+**ȘI CONFRUNTAREA ÎNTRE CELE DOUĂ DECLARAȚII** — proba care nu poate fi trecută de o cifră așezată
+în rândul greșit: **TVA colectată din D394 = 1.121 = `R17_2` din D300**. *Perechea din supervizor
+(`EFACTURA_VS_D394`), aplicată pe lanțul de intrare.*
+
+### Defecte în aplicație: **niciunul**. Dar de DOUĂ ORI așteptarea MEA a fost cea greșită
+
+Ambele prinse citind la sursă, înainte de a fi raportate ca defect. Se scriu fiindcă asta e chiar
+riscul formei ăsteia de probă: *o așteptare scrisă din memorie transformă un comportament corect
+într-un „defect".*
+
+1. **Rândul manual e UPSERT, nu adăugare.** A doua rulare cerea `R14_1 = 600` (300 + 300);
+   aplicația a răspuns 300, și avea dreptate — `d300_manual_api.adauga` face *„upsert pe
+   UNIQUE(an, luna, rand)"*, scris în chiar docstringul funcției. *Așteptarea trebuie să poarte
+   SEMANTICA intrării — adaugă vs. înlocuiește —, nu doar cifra.*
+2. **`nrFacturi` numără numai facturile EMISE.** Cerusem 5 (toate facturile trimestrului), am
+   primit 4. Structura ANAF îl definește ca *„Nr total facturi emise în perioadă"*, iar
+   `d394.nr_facturi_emise` îl numără exact așa. **Al doilea fals-pozitiv oprit de citirea la sursă**
+   în același lot — primul fusese `totalPlata_A`, pe care era să-l numesc „sumă de plată greșită"
+   până am citit că e **sumă de control**: `totalPlata_A = suma(camp 27 la 124)`.
+
+### Ce s-a reparat în lotul ăsta (din punctul 1 al comenzii)
+
+**R161 — `fa-casa`: motivul refuzului iese din `title`.** Butonul de fond stătea DEZACTIVAT, cu
+explicația doar în atributul `title` — pe atingere, invizibilă. Acum se apasă mereu, iar refuzul se
+așază **lângă câmpul vinovat**, cu `eroareCamp` (contur roșu + `aria-invalid` + mesaj ancorat):
+*„Completează data dispoziției."* și *„Suma trebuie să fie un număr mai mare ca 0."*, fiecare pe
+rândul lui, amândouă deodată când amândouă lipsesc.
+
+**R162 — «Nota … a fost creată ca ciornă» se scria și se ștergea în aceeași clipă.** Găsit
+**reprobând R161**: cu date bune dispoziția INTRA (rând în `casa_operatiuni`, notă ciornă), iar
+ecranul nu spunea nimic — mesajul se scria în `#c-mesaj`, iar `deseneaza()` refăcea imediat
+`corp.innerHTML`. *Un mesaj de reușită care pierde o cursă cu re-randarea e mai rău decât niciunul*
+— lecția 7 din predare, găsită a doua oară. Reparat cu tiparul care exista deja în casă
+(`mesajSucces` care traversează re-randarea).
+
+### Unitățile atinse de lotul A
+
+`POST /tenants/{}/facturi/emite` · `POST /tenants/{}/facturi` (primită) ·
+`GET /tenants/{}/facturi` · `POST|GET|DELETE /tenants/{}/d300-manual` ·
+`POST /declaratii/{tip}` · `POST /declaratii/{tip}/valideaza` — plus `POST /tenants/{}/casa/operatiuni`
+prin reparațiile R161/R162.
+
+### Scenariul, DECLARAT (se poate reface sau desface)
+
+Pe `tenant_003`, trimestrul III/2026, rămân în urmă: factura emisă **CMT150** (1.000 + 210 TVA,
+15.08.2026), factura emisă **CMT151** (200 + 22, 16.08.2026) și factura primită **PROBA-E2-A-P1**
+(500 + 105, 17.08.2026). Rândul manual R14 se creează și se șterge în aceeași rulare, deci nu
+rămâne. **Probele sunt re-rulabile**: `proba_e2_d300.py` își recunoaște propriile facturi după
+(direcție, dată, total) și nu le mai adaugă a doua oară — *o probă de lanț care nu se poate rula de
+două ori nu e o probă, e o singură lovitură.*
