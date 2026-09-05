@@ -6767,6 +6767,64 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **unde ajunge efectul**: poarta verde vizuală (CLAUDE.md §2.3 pct.11) — cele trei unelte rulate pe
   ecranele atinse.
 
+### R161 — Butonul de casă rămânea stins, iar motivul trăia într-un `title` pe care atingerea nu-l vede
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/firme.js::ecranCasa` · **PRAG 1**
+- **ce blochează**: dispoziția de casă — omul apasă, nu se întâmplă nimic, și nu află de ce. Pe
+  atingere, unde `title` nu se afișează deloc, refuzul e **invizibil**.
+- **condiția de deblocare**: se închide când motivul refuzului e text vizibil lângă câmpul vinovat,
+  ca în restul aplicației.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `02daf6dd`
+- **rezolvată pe commit**: `19bd6d3a`
+- **cum s-a găsit**: măsurat în lotul 15 al etapei 1 (verdictul nou **«dezactivat»** al sondei de
+  ecran, cu `title`-ul raportat), consemnat acolo ca observație — și **cerut de Costin** pe
+  05.09.2026: *„fa-casa: repară acum. Motivul refuzului iese din title și devine text vizibil lângă
+  câmp, ca la restul campaniei."*
+- **ce s-a măsurat**: `#c-adauga` pornea `disabled`, iar un `_cChk()` îl aprindea abia când data
+  era completată și suma > 0. Explicația — *„Completează data și suma întâi"* — era în atributul
+  `title`.
+- **reparația**: butonul se apasă **mereu**; refuzul cade la apăsare și se așază lângă câmp cu
+  `eroareCamp` (contur roșu + `aria-invalid` + mesaj ancorat), ajutorul deja folosit în restul
+  aplicației. Două câmpuri, două mesaje, pe rândurile lor: *„Completează data dispoziției."* și
+  *„Suma trebuie să fie un număr mai mare ca 0."*
+- **calibrare, în amândouă direcțiile**: pe gol → **două** mesaje și **două** câmpuri marcate ·
+  sumă negativă → **un** mesaj, cel al sumei · date bune → **niciun** mesaj de câmp, și dispoziția
+  intră. *Un buton care nu se poate apăsa nu poate răspunde, iar campania măsoară răspunsul la
+  apăsare.*
+- **unde ajunge efectul**: ecranul «Casă» al fiecărei firme.
+
+### R162 — «Nota a fost creată ca ciornă» se scria și se ștergea în aceeași clipă
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/firme.js::ecranCasa` · **PRAG 1**
+- **ce blochează**: confirmarea unui act contabil. Dispoziția INTRĂ — rând în `casa_operatiuni` și
+  notă ciornă —, iar ecranul nu spune nimic; lista se schimbă sub ochii omului, fără un cuvânt.
+- **condiția de deblocare**: se închide când mesajul de reușită supraviețuiește re-randării.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `02daf6dd`
+- **rezolvată pe commit**: `19bd6d3a`
+- **cum s-a găsit**: **reprobând R161.** Cu date bune, proba a raportat zona de mesaj GOALĂ, iar
+  baza avea rândul nou (`casa_operatiuni` id 2, nota 76). *Reparația unui refuz a scos la iveală
+  tăcerea de pe calea de reușită — n-o căuta nimeni acolo.*
+- **ce s-a măsurat**: două rânduri lipite — `zonaM.innerHTML = "Nota … creata ca ciorna"` urmat de
+  `deseneaza()`, care reface `corp.innerHTML` și șterge tocmai ce s-a scris. *Un mesaj de reușită
+  care pierde o cursă cu re-randarea e mai rău decât niciunul* — lecția 7 din predare, a doua
+  instanță.
+- **reparația**: tiparul care exista deja în casă (`woo_ecran.js`, `ecranContracte`): un
+  `mesajSucces` care **traversează** re-randarea — se scrie înainte de `deseneaza()`, se randează în
+  șablon, se golește imediat după, ca să nu rămână lipit la desenarea următoare.
+- **calibrare, în amândouă direcțiile**: cu date bune → *„Nota 5311=4111 a fost creată ca ciornă."*
+  rămâne pe ecran după re-randare · cu date rele → refuzul de câmp (R161), și **niciun** mesaj de
+  reușită.
+- **unde ajunge efectul**: ecranul «Casă» — și, prin tipar, orice ecran care scrie un mesaj înainte
+  de a se redesena.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
