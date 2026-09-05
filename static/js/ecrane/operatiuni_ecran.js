@@ -122,8 +122,23 @@ const REGISTRU = [
     C("sens", "Sens", "select", { optiuni: [["incasare","Incasare de la client (4428=4427)"],["plata","Plata catre furnizor (4426=4428)"]] }),
     C("suma_incasata", "Suma incasata/platita (cu TVA)"),
     // [R149] Cota se ia din legea de la FAPTUL GENERATOR, nu de la incasare (art. 291 alin. 5).
-    C("data_fapt_generator", "Data livrarii/prestarii (faptul generator)", "data",
-      { ajutor: "Cota de TVA e cea in vigoare la data livrarii, nu la data incasarii (art. 291 alin. 5 Cod fiscal)." }),
+    C("data_fapt_generator", "Data livr\u0103rii/prest\u0103rii (faptul generator)", "data",
+      { ajutor: "Cota de TVA e cea \u00een vigoare la data livr\u0103rii, nu la data \u00eencas\u0103rii (art. 291 alin. 5 Cod fiscal)." }),
+    // [R151] Art. 291 alin. (5) are DOUA ramuri, iar aplicatia nu poate sti care e cazul: datele
+    // operatiunii nu spun care document a fost primul. Se CERE (decizia lui Costin, 05.09.2026),
+    // cu `neales` ca sa nu vina niciuna preselectata.
+    C("ramura_291_5", "Care a fost primul: livrarea, sau factura/avansul?", "select",
+      { neales: "\u2014 alege \u2014",
+        optiuni: [["fapt_generator", "Livrarea sau prestarea a fost prima \u2014 cota de la data livr\u0103rii"],
+                  ["factura_avans", "Factura ori avansul au fost \u00eenainte de livrare \u2014 cota de la data lor"]],
+        ajutor: "Art. 291 alin. (5): la TVA la \u00eencasare cota e cea de la faptul generator, "
+          + "DAR dac\u0103 factura ori avansul au fost emise \u00eenainte de livrare, se aplic\u0103 cota de la "
+          + "data acelui document. Alegerea nu se poate deduce din datele opera\u021biunii, de aceea "
+          + "se cere aici." }),
+    C("data_factura_avans", "Data facturii ori a avansului", "data",
+      { cond: { camp: "ramura_291_5", val: "factura_avans" },
+        ajutor: "Trebuie s\u0103 fie \u00eenainte de data livr\u0103rii \u2014 altfel excep\u021bia nu se aplic\u0103, "
+          + "iar opera\u021biunea e \u00een situa\u021bia general\u0103." }),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "marja", titlu: "Vânzare regim marjă (second-hand)", ruta: "vanzare-marja", campuri: [
@@ -339,7 +354,13 @@ export async function ecranOperatiuni(corp, nav, t) {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${[].concat(c.cond.val).join("|")}"` : "";
       let input;
       if (c.tip === "select") {
-        input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">${(c.optional ? '<option value="">-</option>' : "") + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
+        // [R151] `neales` = o intrebare la care aplicatia NU are voie sa raspunda in locul
+        // omului. Fara ea, un `select` obligatoriu vine cu prima optiune deja aleasa — ceea ce
+        // pentru o alegere JURIDICA (art. 291 alin. 5) ar fi un default tacit imbracat in
+        // interfata. Campul ramane OBLIGATORIU: gol -> „Camp obligatoriu", ca la orice altul.
+        const gol = c.optional ? '<option value="">-</option>'
+          : (c.neales ? `<option value="" selected>${esc(c.neales)}</option>` : "");
+        input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">${gol + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
       } else if (c.tip === "data") {
         input = `<input type="date" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">`;
       } else if (c.tip === "numar") {

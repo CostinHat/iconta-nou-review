@@ -13987,3 +13987,34 @@ Independența celei de-a doua căi e în **SQL și în calcul**, care rămân in
 e o alegere de implementare, e o normă (OPANAF 1783/2021 Anexa 4). *Verificatorul n-a fost aliniat
 ca să tacă: el a refuzat să genereze, numind conturile și ambele valori, și a avut dreptate —
 reparasem o singură parte.*
+
+
+**(72) Când alegerea nu se poate deriva, se cere de la om — la operațiune** *(R151, decizia lui
+Costin, 05.09.2026)*. Art. 291 alin. (5) are două ramuri, iar aplicația nu poate ști care e cazul:
+datele operațiunii nu spun care document a fost primul. Cele două variante scrise în restanță erau
+**(a) se întreabă contabilul** și **(b) se derivă din documentele firmei**. Răspunsul, verbatim:
+*„se cere de la contabil, la operațiune — nu se derivă. (…) data facturii vs. data livrării nu se
+poate stabili mecanic din datele de azi; a ghici ar produce o cifră validă și falsă."*
+
+Consecința, dusă până la capăt: alegerea nu poate veni **preselectată**. Un `select` obligatoriu se
+randează cu prima opțiune deja aleasă — ceea ce pentru o alegere juridică ar fi fost exact defaultul
+tăcut pe care decizia îl interzice, doar că îmbrăcat în interfață. De-aia a apărut `neales`.
+
+*Și granița decisă odată cu ea*: se cere **ce nu se poate deriva**; nu se cere ce se poate verifica.
+Când contabilul alege ramura de excepție și dă o dată **ulterioară** livrării, aplicația are amândouă
+datele — deci nu întreabă a doua oară, ci arată contradicția.
+
+**(73) Un singur nume `TEMEI*` mută un fișier întreg în datorie — deci temeiul se pune unde e regula,
+nu unde e ruta** *(R151, 05.09.2026)*. Prima formă a reparației punea constanta `TEMEI_291_5` în
+`main.py`. Clichetul refuzurilor a răspuns imediat: **`main.py` 0 → 389**. Nu e un fals pozitiv, e
+chiar regula de migrare a interdicției 77 — *„când un modul ÎNCEPE să citeze legea, refuzurile lui
+trec în datorie, inclusiv cele scrise înainte"*. Dar cele 389 amestecă refuzuri de formă cu refuzuri
+normative, iar norma spune ea însăși că *„un clichet pe o populație amestecată e prea mare ca să
+scadă și prea vag ca să însemne ceva"*.
+
+Ieșirea nu e nici să ascund temeiul în proză, nici să botez constanta altfel ca să nu fie văzută —
+aia ar fi eludare prin numire. Regula își primește **modulul ei**, `core/cota_tva_incasare.py`, unde
+fiecare refuz poartă temeiul ca date, deci datoria fișierului e **zero prin construcție**. Ruta doar
+îl cheamă. *E și designul mai bun: care dată decide cota e o normă fiscală, nu o operațiune de
+rutare.* Cele 389 rămân unde erau — în umbra măsurată și declarată —, iar cifra se scrie aici ca să
+nu se piardă.

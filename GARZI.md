@@ -7466,9 +7466,9 @@ nu gărzi. Scrisă aici ca să nu se piardă.
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**519 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**520 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 500
+### `core/` — 501
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7951,6 +7951,7 @@ nu gărzi. Scrisă aici ca să nu se piardă.
 - `core/test_tip_decont_lung.py` — core/test_tip_decont_lung.py — GARD: periodicitatea decont TVA ajunge la UI in forma LUNGA.
 - `core/test_trasee.py` — GARD: inventarul traseelor nu îmbătrânește tăcut, iar instrumentul lui nu minte.
 - `core/test_tva_incasare.py` — Teste gardian pentru core/tva_incasare.py (art. 282 CF, OUG 8/2026).
+- `core/test_tva_incasare_291_5.py` — Garda R151 — cele două ramuri ale art. 291 alin. (5) se CER, nu se ghicesc.
 - `core/test_unde.py` — GARDĂ: `unde` e o REFERINȚĂ citabilă mecanic, nu proză. (P8, 22.08.2026)
 - `core/test_upsert_motivat.py` — [Regula 4 — fara mutatie tacuta] GARD: orice INSERT ... ON CONFLICT DO UPDATE din codul de PRODUCTIE
 - `core/test_valoare_in_citat.py` — GARDĂ pentru interdicția 53: citatul conține VALOAREA pe care o justifică.

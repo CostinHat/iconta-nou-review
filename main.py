@@ -10038,6 +10038,7 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
     """corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?}.
     incasare: 4428=4427 devine exigibil TVA colectat (suta marita);
     plata: 4426=4428 devine deductibil TVA achitat furnizorului. Nota ciorna."""
+    from core import cota_tva_incasare as _c295
     from core import tva_incasare as _ti
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -10062,19 +10063,25 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
             # Pana azi ruta valida cota pe `corp["data"]` = data incasarii. Consecinta: o livrare din
             # era 19%, incasata azi, ar fi avut cota 19 REFUZATA ca „nu e in vigoare" — o cifra
             # corecta respinsa. Se cere data faptului generator, si pe ea se verifica.
-            _dfg = corp.get("data_fapt_generator")
-            if not _dfg:
-                raise ValueError(
-                    "Data faptului generator (livrarea sau prestarea) e obligatorie: la TVA la "
-                    "încasare cota se ia din legea în vigoare ATUNCI, nu la data încasării "
-                    "(art. 291 alin. 5 Cod fiscal).")
-            tva = _ti.tva_din_incasare(corp["suma_incasata"],
-                                       _common.cota_ceruta({**corp, "data": _dfg}))
+            # [R151, 05.09.2026] Care data decide cota — cele doua ramuri ale art. 291 alin. (5)
+            # — e o REGULA FISCALA, si sta in modulul ei, `core/cota_tva_incasare`, unde fiecare
+            # refuz isi poarta temeiul ca date. Ruta doar o cheama: aici nu se decide nimic
+            # despre norma, se transporta alegerea contabilului.
+            _al = _c295.alegerea(corp)
+            tva = _ti.tva_din_incasare(
+                corp["suma_incasata"],
+                _common.cota_ceruta({**corp, "data": _al.data_cotei}))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, _mesaj_intrare(e))
         debit, credit = ("4428", "4427") if sens == "incasare" else ("4426", "4428")
+        # [R151] Descrierea implicita numeste RAMURA aleasa: peste sase luni, cine citeste nota
+        # trebuie sa poata reconstitui de ce cota e aia si nu alta. Fraza vine de la regula
+        # (`cota_tva_incasare.descrierea`), nu se compune aici. O descriere scrisa de om nu se
+        # suprascrie — ea e a lui.
         desc = corp.get("descriere") or (
-            "TVA la incasare - exigibilitate la " + ("incasare (art. 282)" if sens == "incasare" else "plata furnizor"))
+            "TVA la incasare - exigibilitate la "
+            + ("incasare (art. 282)" if sens == "incasare" else "plata furnizor")
+            + "; " + _c295.descrierea(_al))
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'facturi','ciorna') RETURNING id""", (corp["data"], desc[:200]))
