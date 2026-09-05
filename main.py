@@ -568,7 +568,7 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
 def admin_sanatate_istoric(ore: int = 24, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
         raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    ore = min(max(ore, 1), 168)
+    ore = _interval_cerut(ore, "Numărul de ore de istoric", 1, 168, "ore")   # [R150]
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("""
@@ -788,9 +788,20 @@ def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
 def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
         raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    limita = min(max(limita, 1), 2000)
+    limita = _interval_cerut(limita, "Numărul de înregistrări", 1, 2000, "înregistrări")
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            # [R150] Pana azi, un cabinet INEXISTENT primea `{"activitate": []}` — adica raspunsul
+            # „cabinetul asta n-a facut nimic" la o intrebare despre un cabinet care nu exista.
+            # Gasit apasand, in lotul 14: `GET /admin/activitate/cabinet/999999` -> `200`.
+            # *Absenta inregistrarilor si inexistenta subiectului sunt doua lucruri diferite, iar
+            # primul e o afirmatie despre cabinet.* Clasa e chiar cea pazita de
+            # `core/test_absenta_nu_e_neaplicabil.py`, pe alt obiect.
+            cur.execute("SELECT 1 FROM public.accounting_firms WHERE id = %s", (firm_id,))
+            if not cur.fetchone():
+                raise HTTPException(404, "Nu există niciun cabinet cu numărul %d. "
+                                         "Verifică numărul: un cabinet fără activitate ar fi "
+                                         "răspuns cu o listă goală, nu cu asta." % firm_id)
             cur.execute("""
                 SELECT a.id, a.actiune, a.tenant_id, a.created_at, u.nume, u.prenume
                 FROM public.audit_log a
@@ -4677,6 +4688,29 @@ def _perioada_blocata(conn, schema, data_nota):
     with conn.cursor() as cur:
         return _cf.luna_blocata(cur, schema, data_nota)
 
+def _interval_cerut(valoare, nume, minim, maxim, unitate):
+    """[R150, 05.09.2026] O valoare in afara intervalului se REFUZA, cu numele campului si limitele.
+
+    Pana azi cele trei rute de mai jos faceau `min(max(v, jos), sus)` — adica inlocuiau tacut o
+    valoare imposibila cu una convenabila. Masurat, apasand: `?ore=-5` intorcea `200` cu istoricul
+    ultimei ore, iar `?ore=99999` intorcea 168 de ore. Omul care a cerut 99999 crede ca se uita la
+    99999. *O coercitie tacita nu e o protectie, e o afirmatie falsa despre ce s-a cerut.*
+
+    `admin_analytics` era cazul cel mai bland — el ISI ECHIVALA valoarea folosita in raspuns
+    (`{"zile": 1}`), deci se putea vedea. Celelalte doua, nu. Se trateaza la fel toate trei: o
+    intrare imposibila primeste un refuz care spune intervalul.
+    """
+    try:
+        v = int(valoare)
+    except (TypeError, ValueError):
+        raise HTTPException(422, "%s trebuie să fie un număr întreg de %s. Am primit %r."
+                            % (nume, unitate, valoare))
+    if v < minim or v > maxim:
+        raise HTTPException(422, "%s se cere între %d și %d %s. Am primit %d."
+                            % (nume, minim, maxim, unitate, v))
+    return v
+
+
 def _cere_luna_deschisa(conn, schema, data):
     """[R42 (a), 25.08.2026] P15 pe o notă NOUĂ, nu doar pe una existentă.
 
@@ -7517,7 +7551,7 @@ def contracte_sabloane_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depe
     if not rez.get("ok"):
         mesaje = {"NUME_GOL": "numele sablonului e obligatoriu",
                   "CONTINUT_GOL": "continutul sablonului e obligatoriu",
-                  "NUME_EXISTA": "exista deja un sablon cu acest nume",
+                  "NUME_EXISTA": "Există deja un șablon cu numele ăsta. Alege alt nume, sau editează-l pe cel existent.",
                   "MARCAJ_INVALID": "marcaj necunoscut: {{%s}}" % rez.get("marcaj"),
                   "INEXISTENT": "sablon inexistent"}
         raise HTTPException(422, mesaje.get(rez.get("cod"), "eroare"))
@@ -11489,7 +11523,7 @@ def eveniment_public(date: EvenimentPublicIn):
 def admin_analytics(zile: int = 30, ctx=Depends(cere_rol("superadmin"))):
     """Cifre agregate din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
     Fara date personale (tabela nu contine niciun identificator)."""
-    zile = max(1, min(int(zile or 30), 365))
+    zile = _interval_cerut(zile if zile is not None else 30, "Numărul de zile", 1, 365, "zile")  # [R150]
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
         cur.execute("SELECT tip, COUNT(*) AS n FROM public.eveniment_public "
                     "WHERE creat_la >= now() - (%s || ' days')::interval GROUP BY tip ORDER BY n DESC", (zile,))

@@ -168,7 +168,10 @@ _FA_CAMPANIE = [
     "fa-acces", "fa-balanta", "fa-bilant", "fa-bonuri", "fa-contracte", "fa-control",
     "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-magazin", "fa-marja",
     "fa-mijloace", "fa-produse", "fa-raportz", "fa-regfiscal",
-    "fa-reginventar", "fa-registre321", "fa-rip", "fa-solicitari",
+    # [LOTUL 14] `fa-rip` a IESIT de aici: nu se randeaza pe firma acestei liste (SRL), deci
+    # raporta „navigare esuata" la fiecare rulare. E probat de `rip_pfa` din ECRANE_CABINET,
+    # pe firma de partida simpla — acolo unde cardul exista.
+    "fa-reginventar", "fa-registre321", "fa-solicitari",
 ]
 
 

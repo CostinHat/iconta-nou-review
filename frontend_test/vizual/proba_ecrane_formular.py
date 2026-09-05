@@ -100,7 +100,17 @@ import nav_ecrane  # noqa: E402
 # (main.py:3224) creeaza factura in baza si NU trimite nimic la SPV — deci nu intra sub regula
 # `depun`/`trimit`. Consuma insa un numar din serie: daca e acceptata, verdictul e «a scris», si
 # curatenia de dupa proba are ce sa numeasca.
-PROBATE = ("salveaz", "salvez", "salvare", "adaug", "genereaz", "emite")
+# [LOTUL 14] „inscrie" adaugat dupa ce diagnosticul a aratat ca butonul de fond al registrului de
+# inventar si al registrelor art. 321 se cheama «Înscrie în registru» — un submit ca oricare
+# altul, doar cu alt verb. Fara el, doua ecrane cu formular real (10 si 14 campuri) se umpleau
+# si nu se apasa nimic.
+#
+# NU s-a adaugat „valideaz", desi «Validează (ANAF)» de pe bilant ia continutul formularului si
+# ruleaza validatorul DUK LOCAL (`subprocess`, main.py:8303), deci n-ar iesi nicaieri. Motivul e
+# altul: acelasi cuvant, pe ecranul de jurnal, TRANSFORMA o ciorna in inregistrare contabila
+# reala (`/jurnal/{}/valideaza`). *Un cuvant care inseamna doua lucruri nu poate intra intr-o
+# lista care decide dupa nume.*
+PROBATE = ("salveaz", "salvez", "salvare", "adaug", "genereaz", "emite", "înscrie", "inscrie")
 # [LOTUL 12] „cu ai" / „analiza ai" s-au adaugat pe ACELASI temei ca `depun`/`trimit`, nu pe altul:
 # ies din aplicatie. Verificat la sursa, nu dedus din nume — `/tipare/ai` cheama `tipare_api.analiza_ai`,
 # care cheama `core.ai_client` (main.py:901), iar `/pachete/{}/genereaza` trece prin `genereaza_poveste`.
@@ -127,7 +137,12 @@ DESCHIZATOARE = ("adaug", "nou", "noua", "nouă", "emite", "creeaz", "inregistr"
 
 INVALID_TEXT = "«»@#$%"
 INVALID_NUMAR = "-99999999"
-INVALID_DATA = "1899-02-30"
+# [LOTUL 14] `1899-02-30` NU aterizeaza intr-un `input[type=date]`: 30 februarie nu exista, deci
+# browserul refuza valoarea si campul ramane gol. Consecinta: din lotul 10 incoace, fiecare camp
+# de data al campaniei a fost probat ca LIPSA, nu ca data imposibila. Gasit in lotul 13 pe
+# `proba_operatiuni.py` si reparat acolo; aceeasi santinela statea aici, in sonda principala.
+# `1899-01-01` exista (deci aterizeaza) si e la fel de imposibila ca data contabila.
+INVALID_DATA = "1899-01-01"
 
 # [LOTUL 12] STAREA SE MASOARA PE TOATE SCHEMELE ATINSE, nu pe una.
 # Pana azi era o singura schema, si asta a fost adevarat cat timp toate ecranele erau ale aceleiasi

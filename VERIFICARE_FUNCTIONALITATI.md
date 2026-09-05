@@ -1330,3 +1330,88 @@ faptul generator în 2026 → `422`, cu cotele de atunci și temeiul citat.
    spune că se presupune.
 3. **`categorie_marime.prag(categorie, criteriu)`** n-are parametru de perioadă, deși pragurile de
    mărime se schimbă prin lege. E chiar subiectul restanței **R3**, deschisă — nu s-a deschis aici.
+
+---
+
+## LOT 14 — cele cinci rute de rol, și cele cinci ecrane cu formular real
+
+### Partea 1: rutele pe care lotul 9 le-a marcat „fără defect" pe temeiul unui `403`
+
+Reprobate cu token de **superadmin**, deci cererile au ajuns la verificările lor proprii. Aceleași
+cereri invalide ca în lotul 9 — ca să se vadă ce răspund ELE, nu poarta de rol.
+
+**Trei defecte din cinci** (**R150**), toate reparate și reprobate:
+
+1. **Un cabinet INEXISTENT răspundea `200 {"activitate": []}`.** Adică *„cabinetul ăsta n-a făcut
+   nimic"* la o întrebare despre un cabinet care nu există. Ruta nu verifica deloc existența —
+   `WHERE u.accounting_firm_id = 999999` întoarce zero rânduri, iar zero rânduri s-au citit ca un
+   fapt despre subiect. *Absența înregistrărilor și inexistența subiectului sunt două lucruri
+   diferite* — clasa păzită de `core/test_absenta_nu_e_neaplicabil.py`, pe alt obiect.
+2. **`/admin/analytics?zile=-5` → `zile=1`, tăcut.** Și `zile=99999` → `365`.
+3. **`/admin/sanatate/istoric?ore=-5` → 1 oră, `ore=99999` → 168**, fără ca valoarea folosită să
+   apară în răspuns. *Analytics era cazul cel mai blând — el își ECHIVALA valoarea în răspuns
+   (`{"zile": 1}`), deci se putea vedea. Celelalte două, nu.*
+
+**Ce le leagă:** o coerciție tăcită nu e o protecție, e o afirmație falsă despre ce s-a cerut. Omul
+care a cerut 99999 de ore crede că se uită la 99999. Toate trei se refuză acum, cu intervalul numit:
+*„Numărul de ore de istoric se cere între 1 și 168 ore. Am primit -5."*
+
+Celelalte două (`POST /admin/anunturi`, `POST /gdpr/sterge-cabinet/{}/executa`) **răspund bine**:
+`422` care numește câmpul lipsă, cu erori per câmp — iar ștergerea refuză înaintea oricărei acțiuni.
+
+*Și o notă despre lotul 9: parametrul probat acolo (`?zile=-5` pe ruta de sănătate) **nu există în
+semnătura ei** — ea primește `ore`. Deci coerciția n-ar fi ieșit la iveală nici dacă rolul ar fi
+fost bun. Aceeași clasă pe care lotul 9 și-o consemnase singur.*
+
+### Partea 2: cele cinci ecrane cu formular real
+
+| ecran | ce s-a găsit |
+|---|---|
+| **`fa-registre321`** | 13 câmpuri umplute, «Înscrie în registru» → **vorbește**, numind câmpul și norma |
+| **`fa-reginventar`** | formularul de 10 câmpuri apare abia după «Adu soldurile din balanță» — al doilea pas |
+| **`fa-bilant`** | două filtre + două acțiuni pe REZULTAT («Validează (ANAF)», «Descarcă XML») |
+| **`fa-marja`** | două filtre, **niciun buton**: ecran de raport |
+| **`fa-regfiscal`** | în DOM apar doar `rf-var` și `rf-an`; câmpurile de sume se randează pe altă variantă |
+
+**De ce `registre321` n-a fost apăsat până azi:** butonul lui de fond se cheamă **«Înscrie în
+registru»**, iar lista sondei căuta `salveaz|adaug|genereaz|emite`. Un submit ca oricare altul, doar
+cu alt verb. Adăugat.
+
+**Ce NU s-a adăugat, și de ce:** `valideaz`. «Validează (ANAF)» de pe bilanț ia conținutul
+formularului și rulează validatorul DUK **local** (`subprocess`, main.py:8303), deci n-ar ieși
+nicăieri — dar **același cuvânt, pe ecranul de jurnal, transformă o ciornă în înregistrare contabilă
+reală** (`/jurnal/{}/valideaza`). *Un cuvânt care înseamnă două lucruri nu poate intra într-o listă
+care decide după nume.*
+
+### Santinela de dată, reparată a doua oară — în sonda principală
+
+Lotul 13 a găsit că `1899-02-30` nu aterizează într-un `input[type=date]` (30 februarie nu există,
+browserul refuză valoarea, câmpul rămâne gol) și a reparat-o în `proba_operatiuni.py`. **Aceeași
+santinelă stătea neatinsă în sonda PRINCIPALĂ** — deci fiecare câmp de dată al campaniei, din lotul
+10 încoace, a fost probat ca LIPSĂ, nu ca dată imposibilă.
+
+Dovada că repararea contează: `registre321` a trecut de la *„Data transportului — cerut de normă"* la
+*„Cantitatea — cerut de normă"*. Prima era despre santinela mea; a doua e despre formular.
+
+### Alte mesaje citite la rulare
+
+`jurnal` → *„linia 1: contul «»@#$% nu exista in planul de conturi al firmei. Se adauga in Plan de
+conturi (Import date › Plan de conturi), sau se corecteaza aici"* — numește câmpul, spune ce e
+greșit **și unde se repară**. `raportz` → *„totalul pe cote trebuie să fie pozitiv"*. `contracte` →
+*„exista deja un sablon cu acest nume"*, fără diacritice — **reparat în aceeași trecere**.
+
+### Cifre
+
+- unități mutate: **6** (5 rute + `#454`). Campania: **340 probate · 24 rămase** din 364.
+- defecte găsite: **3** · reparate: **3** · reprobate: **3**. Plus două reparații de instrument
+  (santinela de dată, verbul lipsă) și un mesaj fără diacritice.
+- `fa-rip` a ieșit din `ECRANE_CAMPANIE`: nu se randează pe firma acelei liste, deci raporta
+  „navigare eșuată" la fiecare rulare. E probat de `rip_pfa`, pe firma de partidă simplă.
+
+### Ce a rămas nereparat
+
+1. **`fa-reginventar`** — formularul e la doi pași; sonda face unul singur. Declarat de la lotul 11.
+2. **`fa-regfiscal`** — sonda alege doar selecturile **goale**; `rf-var` are o valoare implicită,
+   deci variantele care randează câmpurile de sume nu se explorează niciodată. **Limită a sondei**,
+   scrisă acum: nu e „ecran fără formular".
+3. **`fa-bilant` și `fa-marja`** — filtre și acțiuni pe rezultat, fără formular de înregistrat.
