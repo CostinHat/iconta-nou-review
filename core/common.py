@@ -56,8 +56,8 @@ def perioada_tva_tip(prof):
     if not raw:
         raise ValueError(
             "Perioada fiscală TVA nu e completată în Vectorul fiscal — fără ea nu pot ști la ce "
-            "interval se depune decontul de TVA (D300/D394). Alege lunar sau trimestrial la "
-            "Date firmă → Vector fiscal.")
+            "interval se depun decontul de TVA (D300/D394) și fișierul SAF-T (D406). Alege "
+            "lunar sau trimestrial la Date firmă → Vector fiscal.")
     if raw in ("l", "t", "s", "a"):
         return raw.upper()
     if "trim" in raw:
@@ -88,6 +88,35 @@ def tip_decont_lung(tip_decont):
         return DECONT_LUNG.get(perioada_tva_tip({"tip_decont": tip_decont}))
     except ValueError:
         return None
+
+
+def fereastra_d406(prof, an, luna):
+    """(inceput, sfarsit) semi-deschis al RAPORTARII SAF-T, dupa perioada fiscala TVA.
+
+    TEMEI (`anaf_surse/opanaf_1783_2021_saft_d406.txt`, Anexa 4):
+      pct. 2 — D406 se transmite „lunar sau trimestrial, urmand perioada fiscala aplicabila
+               pentru taxa pe valoarea adaugata"; cine are TVA semestrial sau anual depune
+               D406 **trimestrial**;
+      pct. 3 — cine NU e inregistrat in scopuri de TVA depune **trimestrial**.
+
+    [R165, 05.09.2026] STA AICI, NU IN `d406.py`, si nu e o intamplare de asezare. Fereastra e
+    o regula FISCALA, nu un detaliu al generatorului: o folosesc si generatorul, si oglinda de
+    reconciliere (a doua cale), iar aceea **nu are voie sa importe generatorul** — garda
+    `test_d406_reconciliere::test_non_tautologie` o spune, si are dreptate: o a doua cale care
+    isi ia codul din prima nu mai verifica nimic. Dar nici doua definitii ale aceleiasi
+    ferestre nu se pot scrie: divergenta lor tacuta E chiar defectul R165. Singura iesire e un
+    al treilea loc, neutru, de unde o iau amandoua fara sa se atinga.
+
+    Ajutoarele sunt cele ale decontului (`perioada_tva_tip` + `fereastra_tva`), pe care D300 le
+    foloseste din 06.08.2026. Ce e propriu lui D406 e MAPAREA: S si A cad pe T.
+    """
+    if not (prof or {}).get("platitor_tva"):
+        tip = "T"                      # pct. 3
+    else:
+        tip = perioada_tva_tip(prof)
+        if tip in ("S", "A"):
+            tip = "T"                  # pct. 2, teza a doua
+    return fereastra_tva(Perioada(an, luna=luna), tip)
 
 
 def fereastra_tva(perioada, tip):

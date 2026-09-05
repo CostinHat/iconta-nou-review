@@ -90,7 +90,60 @@ UOM_UNECE = {
 UOM_IMPLICIT = "H87"
 
 # HeaderComment: obligatoriu, maximum 2 caractere (dovedit pe validatorul oficial).
-HEADER_COMMENT = "L"   # depunere lunara
+# Nomenclator OFICIAL (`anaf_surse/d406_schema_anaf.xlsx`, foaia de modificari, 27.10.2021):
+#   L - declaratii lunare · T - trimestriale · A - anuale · C - la cerere
+#   NL / NT - nerezidenti, lunar / trimestrial
+# [R166b, 05.09.2026] Codul se DERIVA din intinderea perioadei declarate, nu se alege: pana
+# azi era constanta "L", iar dupa R165 (fereastra = perioada fiscala TVA) o declaratie
+# trimestriala se prezenta ca lunara. Validatorul oficial ANAF o numeste asa: „Tipul
+# declaratiei L nu corespunde cu perioada declarata: 7.2026 - 9.2026".
+# `C`, `NL` si `NT` NU se emit: depunerea la cerere nu e o proprietate a perioadei, iar
+# rezidenta nu e modelata in `firma_profil` (antetul scrie `<Country>RO</Country>` fix).
+HEADER_COMMENT_PER = {1: "L", 3: "T", 12: "A"}
+HEADER_COMMENT = "L"   # depunere lunara — folosit doar ca eticheta a cazului 1 luna
+TEMEI_HEADER_COMMENT = ("OPANAF 1783/2021, structura D406 (`d406_schema_anaf.xlsx`, S.H.11 "
+                        "HeaderComment, modificarea din 27.10.2021): tipurile de depunere sunt "
+                        "L (lunar), T (trimestrial), A (anual), C (la cerere), NL/NT "
+                        "(nerezidenti)")
+
+
+class IntinderNerecunoscuta(ValueError):
+    """Refuzul de a ghici tipul depunerii — ca OBIECT cu atribute, nu ca propozitie.
+
+    Propozitia se compune din campuri (`__str__`); cine vrea sa verifice refuzul citeste
+    `luni`/`di`/`ds`/`coduri`, nu cauta un sir in el. *O afirmatie despre datele firmei e un
+    obiect cu atribute, nu un sir* (DESIGN_SYSTEM cap. 25) — iar o garda care asertaza pe
+    propozitie pazeste motivul strain de langa lucru, nu lucrul (METODA §23).
+    """
+
+    def __init__(self, luni, di, ds, coduri, temei=TEMEI_HEADER_COMMENT):
+        self.luni, self.di, self.ds = luni, di, ds
+        self.coduri, self.temei = tuple(coduri), temei
+        super().__init__(str(self))
+
+    def __str__(self):
+        return ("D406: perioada raportată se întinde pe %d luni (%s – %s), iar nomenclatorul "
+                "ANAF are tipuri de depunere doar pentru %s. Verifică perioada fiscală TVA a "
+                "firmei, la Date firmă → Vector fiscal. Temei: %s."
+                % (self.luni, self.di.isoformat(), self.ds.isoformat(),
+                   ", ".join("%d luni (%s)" % (k, v)
+                             for k, v in sorted(HEADER_COMMENT_PER.items())),
+                   self.temei))
+
+
+def header_comment(di, ds):
+    """Tipul depunerii, derivat din perioada ACOPERITA (`di`..`ds`, inclusiv).
+
+    Aceleasi doua date care produc `SelectionCriteria` — validatorul ANAF compara exact
+    perechea asta, deci cele doua nu pot diverge decat daca vin din surse diferite.
+    O intindere neasteptata OPRESTE generarea; nu cade tacut pe „L".
+    """
+    luni = (ds.year - di.year) * 12 + (ds.month - di.month) + 1
+    cod = HEADER_COMMENT_PER.get(luni)
+    if not cod:
+        raise IntinderNerecunoscuta(luni, di, ds, sorted(HEADER_COMMENT_PER.values()),
+                                    temei=TEMEI_HEADER_COMMENT)
+    return cod
 
 # MovementType / StockMovementType: nomenclatorul OFICIAL ANAF de miscari de produse in stocuri
 # (anaf_surse/d406_schema_anaf.xlsx, foaia "Nomenclator stocuri" - 19 coduri). Completeaza campul
@@ -315,6 +368,12 @@ def _d(x):
     return str(x or "")
 
 
+# [R165] Fereastra STA IN `common`, nu aici: o folosesc si generatorul, si oglinda de
+# reconciliere, iar aceea nu are voie sa importe generatorul. Se re-exporta ca sa ramana
+# `d406.fereastra_d406` pentru cine o cheama pe drumul generatorului.
+from core.common import fereastra_d406        # noqa: E402  (re-export deliberat)
+
+
 def _ultima_zi(an, luna):
     if luna == 12:
         return date(an, 12, 31)
@@ -530,6 +589,10 @@ class Rezultat:
     facturi_cumparare: list = field(default_factory=list) # PurchaseInvoices
     plati: list = field(default_factory=list)             # Payments
     avertismente: list = field(default_factory=list)
+    # [R165] fereastra REALA a raportarii (perioada fiscala TVA). None -> antetul cade pe
+    # luna-ancora, ca inainte: apelantii directi (`d406_active`, `d406_stocuri`) n-o dau.
+    data_inceput: object = None
+    data_sfarsit: object = None
 
 
 # TaxCode SAF-T: cod de 6 CIFRE, nu 3. Seria (primele 3) = categoria operatiunii,
@@ -645,8 +708,9 @@ def valideaza(res):
 def _header(res):
     prof = res.prof
     cui = _NEDIGIT.sub("", prof.get("cui") or "")
-    di = date(res.an, res.luna, 1)
-    ds = _ultima_zi(res.an, res.luna)
+    # [R165] antetul poarta fereastra REALA cand o stie; altfel luna-ancora, ca inainte.
+    di = getattr(res, "data_inceput", None) or date(res.an, res.luna, 1)
+    ds = getattr(res, "data_sfarsit", None) or _ultima_zi(res.an, res.luna)
     H = []
     H.append('  <Header>')
     # HeaderStructure (ordine fixă)
@@ -680,16 +744,24 @@ def _header(res):
     H.append('      </BankAccount>')
     H.append('    </Company>')
     H.append('    <DefaultCurrencyCode>RON</DefaultCurrencyCode>')
+    # [R165c, 05.09.2026] Perioada declarata = perioada ACOPERITA de fisier, nu luna-ancora.
+    # Schema ANAF (`d406_schema_anaf.xlsx`, 5.12 SelectionCriteriaStructure): PeriodStart =
+    # „The first accounting period covered by SAF-T", PeriodEnd = „The last accounting period
+    # covered by the SAF-T". Dupa ce R165 a largit fereastra datelor la perioada fiscala TVA,
+    # un antet lasat pe `res.luna` ar fi spus „luna 9 - luna 9" despre un fisier cu
+    # iulie-septembrie: o LIPSA inlocuita cu o MINCIUNA. `di`/`ds` erau deja calculate aici
+    # (din `res.data_inceput`/`data_sfarsit`) si ramasesera NEFOLOSITE.
+    # Pe o firma LUNARA di.month == ds.month, deci antetul iese neschimbat.
     H.append('    <SelectionCriteria>')
-    H.append('      <PeriodStart>%d</PeriodStart>' % res.luna)
-    H.append('      <PeriodStartYear>%d</PeriodStartYear>' % res.an)
-    H.append('      <PeriodEnd>%d</PeriodEnd>' % res.luna)
-    H.append('      <PeriodEndYear>%d</PeriodEndYear>' % res.an)
+    H.append('      <PeriodStart>%d</PeriodStart>' % di.month)
+    H.append('      <PeriodStartYear>%d</PeriodStartYear>' % di.year)
+    H.append('      <PeriodEnd>%d</PeriodEnd>' % ds.month)
+    H.append('      <PeriodEndYear>%d</PeriodEndYear>' % ds.year)
     H.append('    </SelectionCriteria>')
     # HeaderComment: OBLIGATORIU (min 1 aparitie) dar MAX 2 CARACTERE - dovedit pe
     # validator, in ambele sensuri. Nu e un comentariu liber, ci un cod scurt; in SAF-T
     # RO marcheaza tipul depunerii. Textul "D406 generat de iConta" facea XML-ul invalid.
-    H.append('    <HeaderComment>%s</HeaderComment>' % HEADER_COMMENT)
+    H.append('    <HeaderComment>%s</HeaderComment>' % header_comment(di, ds))
     H.append('    <SegmentIndex>1</SegmentIndex>')
     H.append('    <TotalSegmentsInsequence>1</TotalSegmentsInsequence>')
     # extensie RO: TaxAccountingBasis (după HeaderStructure)
@@ -1177,11 +1249,16 @@ def build_xml(res):
 
 def pull(conn, schema, an, luna):
     import psycopg2.extras as _E
-    di = "%04d-%02d-01" % (an, luna)
-    ds = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, cod_postal, platitor_tva FROM firma_profil WHERE id = 1")
+        cur.execute("SELECT nume, cui, adresa, oras, cod_postal, platitor_tva, tip_decont "
+                    "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
+        # [R165, 05.09.2026] FEREASTRA URMEAZA PERIOADA FISCALA TVA, nu luna-ancora. Pana azi
+        # era `[luna, luna+1)`, deci SAF-T-ul unei firme TRIMESTRIALE continea o singura luna
+        # din trei — in timp ce D300 si D394 pe acelasi trimestru le contineau pe toate.
+        # Temeiul e in `fereastra_d406`, citat verbatim din OPANAF 1783/2021 Anexa 4.
+        _di, _ds = fereastra_d406(prof, an, luna)
+        di, ds = _di.isoformat(), _ds.isoformat()
         conturi, clienti, furnizori, note = [], [], [], []
         strain = []   # conturi din plan care nu apartin normei declarate
         try:
@@ -1511,11 +1588,15 @@ def genereaza(conn, schema, an, luna):
         raise ValueError("Luna invalidă: %r" % luna)
     (prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute,
      cote_necunoscute, surse_necunoscute) = pull(conn, schema, an, luna)
+    # [R165] antetul urmeaza aceeasi fereastra ca datele: un fisier care spune „septembrie"
+    # purtand iulie-septembrie ar inlocui o lipsa cu o minciuna.
+    _fdi, _fds = fereastra_d406(prof, an, luna)
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D406 nu se poate genera: " + " ".join(_er))
     res = construieste(prof, an, luna, conturi, clienti, furnizori, note=note,
                        facturi_vanzare=fv, facturi_cumparare=fc, plati=plati)
+    res.data_inceput, res.data_sfarsit = _fdi, _fds - timedelta(days=1)
     # T2 (CATALOG_INVALIDITATE.md): valideaza(res) are o verificare AccountType (Activ/Pasiv/
     # Bifunctional) pe care genereaza() nu o chema (cod mort). O cablam TINTIT aici (nu tot
     # valideaza(res), care ar bloca fixture-le legitime fara plan de conturi): un AccountType in

@@ -43,7 +43,7 @@ def _seed(conn, tert_cui=CNP_VALID, tert_nume="IONESCU MARIA", directie="primita
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
         cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), SCH))
         cur.execute("SET search_path TO \"%s\", public" % SCH)
-        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare) VALUES (1,%s,%s,true,false)",
+        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont) VALUES (1,%s,%s,true,false,'L')",
                     ("ZTEST SRL", "14399840"))
         cur.execute("INSERT INTO facturi (numar,data_emitere,directie,total,tva,tert_cui,tert_nume,status) "
                     "VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",

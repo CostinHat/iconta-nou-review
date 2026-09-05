@@ -6507,7 +6507,14 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   Pe cazul general (livrare, apoi încasare) cota se verifică acum corect, pe faptul generator — R149.
 - **condiția de deblocare**: se închide când ruta poate deosebi cele două cazuri ale art. 291 alin.
   (5) și verifică cota pe data care se aplică fiecăruia.
-- **reluări**: 0
+- **reluări**: 1
+- **a doua cerere, 05.09.2026**: ridicată din nou în raportul lotului E. Garda
+  `test_reluari_decizie` a semnalat că restanța a trecut de 5 commituri cu contorul pe zero, și
+  are dreptate: decizia n-a fost dată, iar un contor înghețat face o așteptare lungă să arate ca
+  o cerere de-o zi. **Întrebarea, formulată**: când ruta nu poate deosebi cele două ramuri ale
+  art. 291 alin. (5), pe cine se sprijină alegerea — se **întreabă contabilul** la operațiune,
+  sau se **derivă din documentele firmei** (data facturii vs data livrării, când amândouă
+  există)? `PLAN_ARHITECTURA.md` spune că alegerea se cere, **nu de la cine**.
 - **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md`, Partea 0 — **Pasul 4** (ierarhia surselor) și **Verificarea 5** („textul determină rezultatul?", cu modul ei de eșec: *„alegerea n-a fost cerută"*). Verificarea 5 confirmă **de ce** asta e o decizie și nu o reparație: când textul nu determină singur rezultatul, alegerea se CERE, nu se face în cod — iar art. 291 alin. (5) are două ramuri pe care corpul cererii nu le deosebește. Dar planul spune că alegerea se cere, **nu de la cine**: dacă întrebarea merge la contabil sau se derivă din documentele firmei nu e acoperit nicăieri în plan. Aia e partea nedecisă.
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `683faec4`

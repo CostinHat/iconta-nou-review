@@ -4124,7 +4124,17 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
     # _valideaza_saft intoarce GRI intotdeauna - deci validarea D406 din aplicatie
     # nu s-a facut NICIODATA, desi calea merge (dovedit manual pe tenant_002/iunie
     # 2026: "Validare fara erori"). Celelalte declaratii le ignora (optionale).
-    rez = _duk.valideaza(xml, tip, an=body.get("an"), luna=body.get("luna"))  # java blocant
+    #
+    # [R166, 05.09.2026] ...si tot nu se facea: perioada se citea din CORPUL cererii, dar
+    # D406 se cere pe `trim` (cu `luna` generatorul da 422), iar conversia trim->luna-ancora
+    # se petrece INAUNTRUL lui `declaratii_api` si nu ajunge inapoi in `body`. Rezultat: nu
+    # exista niciun corp care sa treaca amandoua portile - forma care genereaza nu valideaza,
+    # forma care ar valida nu genereaza. Se ia perioada de pe REZULTATUL generatorului, adica
+    # cea folosita efectiv, cu corpul ca rezerva; o a doua conversie trim->luna aici ar fi
+    # inceputul aceleiasi divergente tacute pe care a reparat-o R165.
+    _an = getattr(res, "an", None) or body.get("an")
+    _luna = getattr(res, "luna", None) or body.get("luna")
+    rez = _duk.valideaza(xml, tip, an=_an, luna=_luna)  # java blocant
     return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
             "severitate": rez.get("severitate"),  # [A2] E:(eroare) vs A:(atentionare) - frontendul il citeste
             "temei": rez["temei"], "limita": rez["limita"],

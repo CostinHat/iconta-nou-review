@@ -33,7 +33,7 @@ def _seed(conn, um="parseci", cota=Decimal("7"), pret=Decimal("100")):
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
         cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), SCH))
         cur.execute("SET search_path TO \"%s\", public" % SCH)
-        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare) VALUES (1,%s,%s,true,false)",
+        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont) VALUES (1,%s,%s,true,false,'L')",
                     ("ZTEST SRL", "14399840"))
         tva = (pret * cota / 100)
         total = pret + tva
@@ -76,7 +76,7 @@ def test_cota_necunoscuta_avertisment_numeste_factura_si_cota(conn):
 
 def test_payment_method_necunoscut_avertisment_numeste_plata():
     # construieste (fara DB): o plata cu metoda necunoscuta trebuie sa produca avertisment numind-o.
-    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True}
+    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True, "tip_decont": "L"}
     p = d406.Plata(ref="PL-7", data=date(2026, 8, 10), metoda="bitcoin", partener_id="0014399840")
     p.linii.append(d406.LiniePlata(nr=1, cont="5121", descriere="x", suma=Decimal("100.00"), sens="D"))
     p.linii.append(d406.LiniePlata(nr=2, cont="4111", descriere="y", suma=Decimal("100.00"), sens="C"))
@@ -89,7 +89,7 @@ def test_payment_method_necunoscut_avertisment_numeste_plata():
 
 
 def test_payment_method_cunoscut_nu_avertizeaza():
-    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True}
+    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True, "tip_decont": "L"}
     p = d406.Plata(ref="PL-8", data=date(2026, 8, 10), metoda="numerar", partener_id="0014399840")
     p.linii.append(d406.LiniePlata(nr=1, cont="5311", descriere="x", suma=Decimal("50.00"), sens="D"))
     p.linii.append(d406.LiniePlata(nr=2, cont="4111", descriere="y", suma=Decimal("50.00"), sens="C"))

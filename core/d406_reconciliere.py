@@ -41,10 +41,23 @@ def _q2(x):
 
 def _rulaje_independente(conn, schema, an, luna):
     """Balanta de RULAJE per cont din inregistrari_linii — SQL PROPRIU (independent de d406.pull).
-    Fereastra si filtrul = contractul d406 (note VALIDATE, i.data in luna). Fiecare linie
-    (cont_debit, cont_credit, suma): debit pe cont_debit, credit pe cont_credit."""
-    di = "%04d-%02d-01" % (an, luna)
-    ds = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    Fereastra si filtrul = contractul d406 (note VALIDATE, `i.data` in FEREASTRA RAPORTARII).
+    Fiecare linie (cont_debit, cont_credit, suma): debit pe cont_debit, credit pe cont_credit.
+
+    [R165, 05.09.2026] Fereastra nu mai e luna-ancora, ci PERIOADA FISCALA TVA — ca in D406.
+    Se ia din `common`, unde e definita o singura data, si NU din `d406`: garda
+    `test_non_tautologie` interzice celei de-a doua cai sa importe generatorul, si are
+    dreptate — o cale care isi ia codul din cea pe care o verifica nu mai verifica nimic. Dar
+    nici o a doua definitie a ferestrei nu se poate scrie: divergenta lor tacuta E defectul
+    R165. De-aia regula sta intr-un al treilea loc, neutru. SQL-ul ramane al ei — independenta
+    celei de-a doua cai e in CALCUL, nu in perioada."""
+    from core.common import fereastra_d406 as _fd
+    with conn.cursor() as _c:
+        _c.execute("SELECT platitor_tva, tip_decont FROM firma_profil WHERE id = 1")
+        _r = _c.fetchone()
+    _prof = {"platitor_tva": _r[0], "tip_decont": _r[1]} if _r else {}
+    _di, _ds = _fd(_prof, an, luna)
+    di, ds = _di.isoformat(), _ds.isoformat()
     q = ("SELECT l.cont_debit AS cd, l.cont_credit AS cc, l.suma AS suma "
          "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
          "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s")

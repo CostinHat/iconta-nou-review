@@ -1,0 +1,152 @@
+{
+ "perioada": {
+  "an": 2026,
+  "trim": 3
+ },
+ "pasi": [
+  {
+   "nume": "D406 generat",
+   "lungime": 88646,
+   "nr_invoice": 5,
+   "are_sales": true,
+   "are_purchase": true
+  },
+  {
+   "nume": "R165 reprobat: facturile din AUGUST sunt in SAF-T pe trimestrul III"
+  },
+  {
+   "nume": "antetul SAF-T (tuplul Period*)",
+   "perioada": "7/2026 - 9/2026"
+  },
+  {
+   "nume": "INCRUCISAT: facturi emise",
+   "saf_t": 4,
+   "d394": 4
+  },
+  {
+   "nume": "baza D205",
+   "cod": 200,
+   "raspuns": "generata"
+  },
+  {
+   "nume": "BAZA masurata (nu presupusa)",
+   "nr_benef": 1,
+   "sume": {
+    "1700510400076": {
+     "divid_D": "30000",
+     "divid_P": "30000",
+     "baza1": "30000",
+     "imp1": "4800"
+    }
+   }
+  },
+  {
+   "nume": "perechi ale probei deja in evidenta",
+   "perechi": 2,
+   "rulare_curenta": 3
+  },
+  {
+   "nume": "ASTEPTARE (delta): divid_D, divid_P si baza1 cresc cu 10000 · imp1 creste cu 1600 (16%)"
+  },
+  {
+   "nume": "intrare — PROBA-E2-E #3 distribuire dividende (121 = 457)",
+   "cod": 200,
+   "id": 56
+  },
+  {
+   "nume": "   validata",
+   "cod": 200,
+   "raspuns": "{'ok': True}"
+  },
+  {
+   "nume": "intrare — PROBA-E2-E #3 plata dividende (457 = 5121)",
+   "cod": 200,
+   "id": 57
+  },
+  {
+   "nume": "   validata",
+   "cod": 200,
+   "raspuns": "{'ok': True}"
+  },
+  {
+   "nume": "D205 generat",
+   "nr_benef": 1,
+   "primul": {
+    "id_inreg": "1",
+    "den1": "POPESCU ION",
+    "tip_venit1": "08",
+    "Rezid": "1",
+    "cifR": "1700510400076",
+    "tip_plata": "2",
+    "divid_D": "40000",
+    "divid_P": "40000",
+    "baza1": "40000",
+    "imp1": "6400"
+   }
+  },
+  {
+   "nume": "D205: dividendele ajung pe beneficiar, cu impozitul de 16%"
+  }
+ ],
+ "d406": {
+  "lungime": 88646,
+  "antet": "7/2026 - 9/2026"
+ },
+ "incrucisat": {
+  "SAF-T facturi vanzare": 4,
+  "D394 nrFacturi": 4
+ },
+ "duk": {
+  "d406": {
+   "cod": 200,
+   "stare": "valid",
+   "erori": ""
+  },
+  "d205": {
+   "cod": 200,
+   "stare": "valid",
+   "erori": ""
+  }
+ },
+ "d205": {
+  "benef_baza": {
+   "1700510400076": {
+    "id_inreg": "1",
+    "den1": "POPESCU ION",
+    "tip_venit1": "08",
+    "Rezid": "1",
+    "cifR": "1700510400076",
+    "tip_plata": "2",
+    "divid_D": "30000",
+    "divid_P": "30000",
+    "baza1": "30000",
+    "imp1": "4800"
+   }
+  },
+  "benef": {
+   "1700510400076": {
+    "id_inreg": "1",
+    "den1": "POPESCU ION",
+    "tip_venit1": "08",
+    "Rezid": "1",
+    "cifR": "1700510400076",
+    "tip_plata": "2",
+    "divid_D": "40000",
+    "divid_P": "40000",
+    "baza1": "40000",
+    "imp1": "6400"
+   }
+  },
+  "sect_II": {
+   "tip_venit": "08",
+   "nrben": "1",
+   "Tcastig": "0",
+   "Tpierd": "0",
+   "T_VB": "0",
+   "T_GAR": "0",
+   "Tbaza": "40000",
+   "Timp": "6400"
+  }
+ },
+ "nepotriviri": []
+}

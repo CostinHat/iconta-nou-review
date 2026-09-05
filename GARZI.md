@@ -7466,9 +7466,9 @@ nu gărzi. Scrisă aici ca să nu se piardă.
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**518 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**519 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 499
+### `core/` — 500
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7700,6 +7700,7 @@ nu gărzi. Scrisă aici ca să nu se piardă.
 - `core/test_d406_cnp_tert.py` — GARD D406 CNP in tert_cui -> tipul 03 (E3/E4, CATALOG_INVALIDITATE.md; 10.08.2026).
 - `core/test_d406_coercitie_t3.py` — GARD D406 coercitie TACITA enum-necunoscut (T3, CATALOG_INVALIDITATE.md; 10.08.2026).
 - `core/test_d406_cui_checksum.py` — GARD D406 checksum CUI/CNP partener + firma proprie (T1, CATALOG_INVALIDITATE.md; 10.08.2026).
+- `core/test_d406_fereastra.py` — Garda R165/R166 — D406 raporteaza perioada pe care o ACOPERA, si o declara asa cum e.
 - `core/test_d406_jurnal_origine.py` — GARD (R22, prag 1): `JournalID` din D406 poartă jurnalul de ORIGINE, nu o constantă.
 - `core/test_d406_master_pf.py` — GARD D406 partener PF fara cod fiscal in MASTER (10.08.2026): un partener persoana
 - `core/test_d406_partener_id_neconform.py` — Gard: D406 nu emite ID BRUT de nomenclator ca identitate de partener SAF-T.

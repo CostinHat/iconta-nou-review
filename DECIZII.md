@@ -13952,3 +13952,38 @@ generator, care nu e el însuși parte dintr-un generator și care importă gene
 mai multe familii*. Azi întoarce exact `control_incrucisat`; un comparator nou intră singur, iar
 `inchidere_luna` (o singură familie) nu e prins, fiindcă el chiar hrănește. **Cifrele loturilor
 A–C se corectează, nu se rescriu tăcut**: nucleu total 103 → 72, atribuite 190 → 162.
+
+
+**(69) O probă care nu-și poate măsura delta se reduce tăcut la mai puțin decât spune că face**
+*(lotul E, 05.09.2026)*. Proba D205 sărea peste intrări dacă își găsea marcajul în evidență —
+idempotență, aparent curată. La a doua rulare asta a lăsat **delta nemăsurată**, iar proba s-a
+redus singură la invarianții absoluți, raportând tot „0 nepotriviri”. Nu se poate curăța după sine:
+`jurnal_api.sterge` refuză orice notă care nu e ciornă, **și așa trebuie**. Deci adaugă de fiecare
+dată o pereche **numerotată**, iar firma de test acumulează 10.000 lei de dividend per rulare.
+*Costul se scrie în registru; alternativa costa o probă care pare că verifică ceva ce nu mai
+verifică.*
+
+**(70) Un temei se citește din linia care produce valoarea, nu din textul care o rezumă** *(lotul
+E, 05.09.2026)*. Două așteptări greșite în același lot, din aceeași cauză: numele atributelor D205
+(`divid_D1`, din schița pe coloane a docstringului, vs `divid_D`, ce emite `build_xml`) și
+elementele antetului SAF-T (`SelectionStartDate`, din nota de la începutul lui `d406.py`, vs tuplul
+`Period*` efectiv emis). În amândouă cazurile docstringul era **corect ca descriere a normei** și
+greșit ca descriere a codului — norma dă `<xs:choice>`, codul alege o ramură. **Regula de aur,
+precizată: „la sursă” înseamnă la linia care produce valoarea.**
+
+**(71) Când două căi care nu au voie să se atingă au nevoie de aceeași regulă, regula se mută
+într-un al treilea loc, neutru** *(R165, 05.09.2026 — decizia cerută de `test_cale_a_doua`)*.
+Reparația R165 a schimbat fereastra raportării D406. Oglinda de reconciliere („a doua cale”) are
+aceeași fereastră prin contract, deci trebuia schimbată și ea — dar `test_non_tautologie` îi
+interzice, pe bună dreptate, să importe generatorul: *o cale care își ia codul din cea pe care o
+verifică nu mai verifică nimic*. Iar a scrie fereastra a doua oară e chiar defectul pe care R165
+tocmai îl repara: două definiții ale aceleiași perioade, divergând tăcut. **Ieșirea nu e niciuna
+din cele două**: regula urcă în `core/common.py`, lângă `perioada_tva_tip` și `fereastra_tva`, de
+unde o iau amândouă căile fără să se atingă.
+
+*Ce spune arbitrul, explicit*: garda de ne-tautologie rămâne verde — a doua cale **nu** importă
+generatorul; ce împrumută e o regulă fiscală dintr-un modul neutru, nu un calcul din cel verificat.
+Independența celei de-a doua căi e în **SQL și în calcul**, care rămân integral ale ei; perioada nu
+e o alegere de implementare, e o normă (OPANAF 1783/2021 Anexa 4). *Verificatorul n-a fost aliniat
+ca să tacă: el a refuzat să genereze, numind conturile și ambele valori, și a avut dreptate —
+reparasem o singură parte.*
