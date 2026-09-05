@@ -6498,6 +6498,38 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **unde ajunge efectul**: pe ecranele de administrare — activitatea unui cabinet, analytics-ul
   public, istoricul de sănătate al serverului.
 
+### R151 — Excepția din art. 291 alin. (5) nu e modelată: aplicația nu poate ști dacă factura sau avansul au precedat livrarea
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E2 · `main.py::nota_tva_incasare` · `static/js/ecrane/operatiuni_ecran.js`
+- **ce blochează**: corectitudinea cotei pe operațiunile în TVA la încasare **care sunt în excepție**.
+  Pe cazul general (livrare, apoi încasare) cota se verifică acum corect, pe faptul generator — R149.
+- **condiția de deblocare**: se închide când ruta poate deosebi cele două cazuri ale art. 291 alin.
+  (5) și verifică cota pe data care se aplică fiecăruia.
+- **reluări**: 0
+- **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md`, Partea 0 — **Pasul 4** (ierarhia surselor) și **Verificarea 5** („textul determină rezultatul?", cu modul ei de eșec: *„alegerea n-a fost cerută"*). Verificarea 5 confirmă **de ce** asta e o decizie și nu o reparație: când textul nu determină singur rezultatul, alegerea se CERE, nu se face în cod — iar art. 291 alin. (5) are două ramuri pe care corpul cererii nu le deosebește. Dar planul spune că alegerea se cere, **nu de la cine**: dacă întrebarea merge la contabil sau se derivă din documentele firmei nu e acoperit nicăieri în plan. Aia e partea nedecisă.
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `683faec4`
+- **temeiul, citit la sursă** *(`anaf_surse/cod_fiscal_227_2015_consolidat.txt`)*: art. 291 alin. (5)
+  — *„În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare
+  la data la care intervine faptul generator, **cu excepția situațiilor în care este emisă o factură
+  sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în
+  vigoare la data la care a fost emisă factura ori la data la care a fost încasat avansul**."*
+- **ce s-a măsurat** *(05.09.2026, lotul 14)*: ruta cere de acum `data_fapt_generator` și verifică
+  cota pe ea (R149) — ceea ce e corect pentru **prima** ramură. Pentru a doua, data care decide cota
+  e a facturii sau a avansului, iar **corpul cererii nu poartă niciun indiciu despre care caz e**.
+- **de ce NU s-a modelat, decis de Costin (05.09.2026)**: *„Cere un câmp nou și o decizie de UI —
+  dacă se întreabă contabilul sau se derivă din document. Nu e o reparație de rută."*
+- **cele două variante, ca decizia să nu ceară o a doua tură**:
+  · **(a) se întreabă contabilul** — o bifă „factura/avansul au precedat livrarea", plus data lor.
+    Ieftin, dar mută pe om o întrebare juridică pe care aplicația ar putea-o deduce.
+  · **(b) se derivă din documentele firmei** — dacă există o factură emisă sau un avans încasat pe
+    același partener înaintea faptului generator, cazul e al doilea. Mai corect, dar cere o legătură
+    între nota de TVA la încasare și documentul care a produs-o, legătură care azi nu există.
+- **ce NU se schimbă până la răspuns**: ramura generală rămâne verificată corect. *Nu se ghicește
+  care din cele două e cazul — de-aia restanța e deschisă, nu „reparată parțial".*
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
