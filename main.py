@@ -9639,7 +9639,14 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),
         from core import facturi_api as _fa
         try:
             val = Decimal(str(corp["valoare"]))
-            tva = _ic.tva_taxare_inversa(val, _common.cota_ceruta(corp))
+            # [R148] Art. 291 alin. (8): pentru AIC cota e cea in vigoare la data EXIGIBILITATII,
+            # nu la data facturii. Cele doua difera cand factura furnizorului vine tarziu — atunci
+            # exigibilitatea a intervenit deja, in ziua 15 a lunii urmatoare faptului generator
+            # (art. 284 alin. 2). Aplicatia calcula deja exact asta pentru D390 (`d390.py:491`) si
+            # valida cota pe alta data: doua date pentru acelasi fapt.
+            _data_exig = _common.exigibilitate_aic(corp["data"], corp.get("data_faptului_generator"))
+            tva = _ic.tva_taxare_inversa(
+                val, _common.cota_ceruta({**corp, "data": _data_exig.isoformat()}))
             cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
             cod_tva_furnizor = str(corp.get("cod_tva_furnizor") or "").strip().upper().replace(" ", "")
             if not cod_tva_furnizor:
@@ -9947,7 +9954,28 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         if sens not in ("incasare", "plata"):
             raise HTTPException(422, "sens invalid (incasare/plata)")
         try:
-            tva = _ti.tva_din_incasare(corp["suma_incasata"], _common.cota_ceruta(corp))
+            # [R149] Art. 291 alin. (5), citit la sursa: *„In cazul operatiunilor supuse
+            # sistemului TVA la incasare, cota aplicabila este cea in vigoare la data la care
+            # intervine FAPTUL GENERATOR, cu exceptia situatiilor in care este emisa o factura sau
+            # este incasat un avans, inainte de data livrarii/prestarii, pentru care se aplica cota
+            # in vigoare la data la care a fost emisa factura ori la data la care a fost incasat
+            # avansul."*
+            #
+            # Deci **data incasarii nu e, in nicio ramura, data care decide cota** — desi ea e data
+            # la care intervine EXIGIBILITATEA (art. 282 alin. 3). Aici exigibilitatea si cota se
+            # despart, si exact asta numea decizia prin „sau exigibilitatea, unde difera".
+            #
+            # Pana azi ruta valida cota pe `corp["data"]` = data incasarii. Consecinta: o livrare din
+            # era 19%, incasata azi, ar fi avut cota 19 REFUZATA ca „nu e in vigoare" — o cifra
+            # corecta respinsa. Se cere data faptului generator, si pe ea se verifica.
+            _dfg = corp.get("data_fapt_generator")
+            if not _dfg:
+                raise ValueError(
+                    "Data faptului generator (livrarea sau prestarea) e obligatorie: la TVA la "
+                    "încasare cota se ia din legea în vigoare ATUNCI, nu la data încasării "
+                    "(art. 291 alin. 5 Cod fiscal).")
+            tva = _ti.tva_din_incasare(corp["suma_incasata"],
+                                       _common.cota_ceruta({**corp, "data": _dfg}))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, _mesaj_intrare(e))
         debit, credit = ("4428", "4427") if sens == "incasare" else ("4426", "4428")
@@ -10186,7 +10214,23 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
             # cine uita felul operatiunii — sau il scria gresit — afla despre cotă. Felul intai.
             if op not in _OPERATII_AVANS:
                 raise ValueError(nomenclator_cerut("operatie", _OPERATII_AVANS))
-            cota = _common.cota_ceruta(corp)
+            # [R149] Art. 291 alin. (6): *„In cazul schimbarii cotei se va proceda la
+            # REGULARIZARE pentru a se aplica cota in vigoare la data LIVRARII de bunuri sau
+            # prestarii de servicii"*. Deci la o regularizare cota nu se verifica pe data
+            # regularizarii — se verifica pe data livrarii, care e chiar motivul pentru care
+            # regularizarea exista: intre avans si livrare s-a schimbat cota.
+            #
+            # *O regularizare verificata pe data ei ar refuza exact cota pe care legea o cere.*
+            _data_cota = corp.get("data")
+            if op.startswith("regularizare"):
+                _dl = corp.get("data_livrare")
+                if not _dl:
+                    raise ValueError(
+                        "Data livrării/prestării e obligatorie la o regularizare: cota care se "
+                        "regularizează e cea în vigoare ATUNCI, nu la data regularizării "
+                        "(art. 291 alin. 6 Cod fiscal).")
+                _data_cota = _dl
+            cota = _common.cota_ceruta({**corp, "data": _data_cota})
             if op == "avans_platit":
                 r = _av.nota_avans_platit(corp["suma"], cota, dest)
                 d0 = f"Factura avans furnizor ({r['cont_avans']}+4426=401)"

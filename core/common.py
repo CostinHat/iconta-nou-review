@@ -173,6 +173,40 @@ def email_valid(e):
     return bool(e) and bool(_EMAIL_RE.match(str(e).strip()))
 
 
+# ── [R148, 05.09.2026] CE DATA DECIDE COTA, cand documentul are alta ────────────────────────
+# Decizia lui Costin (`DECIZII.md` 33) spune ca legalitatea se citeste pe PERIOADA, si adauga:
+# *„data operatiunii decide ce cote sunt legale — sau EXIGIBILITATEA, unde difera"*. Aici e locul
+# unde difera, cu textul legii citit la sursa (`anaf_surse/cod_fiscal_227_2015_consolidat.txt`):
+#
+#   art. 291 alin. (8): *„Cota aplicabila pentru achizitii intracomunitare de bunuri este cota
+#   aplicata pe teritoriul Romaniei pentru livrarea aceluiasi bun si care este in vigoare la data la
+#   care intervine EXIGIBILITATEA taxei."*
+#
+#   art. 284 alin. (2): exigibilitatea AIC intervine *„la data emiterii facturii ... ori in cea de-a
+#   15-a zi a lunii urmatoare celei in care a intervenit faptul generator, daca nu a fost emisa nicio
+#   factura/autofactura pana la data respectiva."*
+#
+# Deci: exigibilitate = **MIN(data facturii, ziua 15 a lunii urmatoare faptului generator)**.
+#
+# REGULA EXISTA DEJA IN APLICATIE — dar numai in SQL, in `core/d390.py:491`, unde incadreaza
+# operatiunea in perioada de declarare (`LEAST(f.data_emitere, ...)`). Aceeasi operatiune era asezata
+# in declaratie pe exigibilitate si i se valida cota pe data facturii: **doua date pentru acelasi
+# fapt**. Aici regula devine un fapt scris o data, in Python; expresia SQL din `d390` ramane, si e
+# numita acolo, ca sa nu se creada ca sunt doua reguli.
+def exigibilitate_aic(data_factura, data_fapt_generator=None):
+    """Data la care devine exigibila taxa pentru o achizitie intracomunitara (art. 284 alin. 2).
+
+    Fara `data_fapt_generator` nu se poate calcula termenul de 15 zile, deci ramane data facturii —
+    exact ce face si `d390`. *Limita e declarata, nu ascunsa: cand faptul generator lipseste,
+    exigibilitatea se PRESUPUNE a fi data facturii.*"""
+    df = _ca_data(data_factura)
+    if not data_fapt_generator:
+        return df
+    fg = _ca_data(data_fapt_generator)
+    luna_urm = date(fg.year + (1 if fg.month == 12 else 0), 1 if fg.month == 12 else fg.month + 1, 15)
+    return min(df, luna_urm)
+
+
 def azi_ro(acum=None):
     """Data calendaristică în Europe/Bucharest, pentru VERDICTE de zi (la termen vs întârziat,
     fereastra UIT e-Transport, cron alerte) — robustă la fusul procesului, spre deosebire de

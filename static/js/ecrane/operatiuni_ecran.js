@@ -47,6 +47,11 @@ const REGISTRU = [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["avans_platit","Avans platit (409)"],["regularizare_platit","Regularizare 409"],["avans_incasat","Avans incasat (419)"],["regularizare_incasat","Regularizare 419"]] }),
     C("suma", "Suma (fara TVA)"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
+    // [R149] La regularizare, cota e cea de la LIVRARE (art. 291 alin. 6) — de-aia campul apare
+    // numai pe cele doua operatii de regularizare.
+    C("data_livrare", "Data livrarii/prestarii", "data",
+      { cond: { camp: "operatie", val: ["regularizare_platit", "regularizare_incasat"] },
+        ajutor: "Regularizarea aplica cota in vigoare la data livrarii, nu la data regularizarii (art. 291 alin. 6)." }),
     C("destinatie", "Destinatie", "select", { optiuni: [["stocuri","Stocuri"],["servicii","Servicii"],["imobilizari","Imobilizari"],["imobilizari_necorporale","Imobilizari necorporale"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
@@ -116,6 +121,9 @@ const REGISTRU = [
     C("data", "Data", "data"),
     C("sens", "Sens", "select", { optiuni: [["incasare","Incasare de la client (4428=4427)"],["plata","Plata catre furnizor (4426=4428)"]] }),
     C("suma_incasata", "Suma incasata/platita (cu TVA)"),
+    // [R149] Cota se ia din legea de la FAPTUL GENERATOR, nu de la incasare (art. 291 alin. 5).
+    C("data_fapt_generator", "Data livrarii/prestarii (faptul generator)", "data",
+      { ajutor: "Cota de TVA e cea in vigoare la data livrarii, nu la data incasarii (art. 291 alin. 5 Cod fiscal)." }),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "marja", titlu: "Vânzare regim marjă (second-hand)", ruta: "vanzare-marja", campuri: [

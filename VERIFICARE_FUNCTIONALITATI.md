@@ -1282,3 +1282,51 @@ refuz cu mesaj**.
 
 **334 probate · 30 rămase** din 364 — 25 de ecrane + 5 rute de rol. Cele 15 verdicte n-au fost
 probe: sunt citiri, pe criteriul scris.
+
+### Exigibilitatea, măsurată — cerința 1 din raportul precedent
+
+**Cum s-a măsurat.** Întâi: care rute poartă mai mult de o dată în corp? Mecanic, pe cele **223** de
+rute POST/PUT: **două**. Apoi, pentru cele **17** rute care validează o cotă: ce înseamnă `data` în
+fiecare. Iar regula legală s-a citit **la sursă**, din `anaf_surse/cod_fiscal_227_2015_consolidat.txt`
+— nu din memorie:
+
+| articol | ce spune, verbatim |
+|---|---|
+| **291 (4)** | cota e cea de la **faptul generator**, *„cu excepția cazurilor prevăzute la art. 282 alin. (2), pentru care se aplică cota în vigoare la data exigibilității"* |
+| **291 (5)** | la **TVA la încasare**: cota e cea de la **faptul generator**, excepție dacă s-a emis factură sau s-a încasat avans înainte de livrare |
+| **291 (6)** | la schimbarea cotei: **regularizare** pentru a aplica cota de la data **livrării** |
+| **291 (8)** | la **achiziția intracomunitară**: cota de la data **exigibilității** |
+| **284 (2)** | exigibilitatea AIC: la data facturii, *„ori în cea de-a 15-a zi a lunii următoare … dacă nu a fost emisă nicio factură"* |
+| **282 (2)** | exigibilitatea intervine la emiterea facturii (a), la încasarea avansului (b), la extragerea numerarului (c) |
+
+**Rezultatul, rută cu rută:**
+
+| rută | data legală | ce citea | verdict |
+|---|---|---|---|
+| **13 rute de notă** cu un singur `data` | faptul generator (291 alin. 4) | `data` = data operațiunii | **corect** |
+| `nota-avans`, operații de **avans** | data încasării avansului (282 alin. 2 lit. b + 291 alin. 4) | `data` | **corect** |
+| `achizitie-ic` | **exigibilitatea** (291 alin. 8 + 284 alin. 2) | data facturii | **greșit la factură întârziată** → R148 |
+| `nota-tva-incasare` | **faptul generator** (291 alin. 5) | data încasării | **greșit întotdeauna** → R149 |
+| `nota-avans`, operații de **regularizare** | data **livrării** (291 alin. 6) | data regularizării | **greșit** → R149 |
+
+**R148 nu era o regulă lipsă, ci una folosită pe jumătate.** `core/d390.py:491` calcula deja
+exigibilitatea aceleiași facturi ca `LEAST(data_emitere, ziua 15 a lunii următoare)`, citând art.
+284 — iar ajutorul câmpului de pe ecran o spune de dinainte, cuvânt cu cuvânt. **Aplicația își spunea
+singură regula în trei locuri și n-o aplica în al patrulea:** aceeași operațiune era așezată în
+declarație pe exigibilitate și avea cota validată pe data facturii.
+
+**R149 e chiar clasa numită de decizie, în oglindă.** O livrare din era **19%**, încasată azi,
+primea *„Cota de TVA 19% nu există în legea română … la data operațiunii (2026-09-01)"* — **o cifră
+corectă, respinsă**. Reprobat după reparație: cu faptul generator în 2024 → `200`, TVA 190,00; cu
+faptul generator în 2026 → `422`, cu cotele de atunci și temeiul citat.
+
+### Ce nu s-a putut stabili dintr-o rută anume — consemnat, nu ghicit
+
+1. **Excepția din art. 291 alin. (5)**: la TVA la încasare, dacă s-a emis factură sau s-a încasat
+   avans **înainte** de livrare, cota e la data aceea, nu la faptul generator. Ruta cere acum faptul
+   generator; care din cele două cazuri e nu se poate ști din corp. *Nu s-a ales unul.*
+2. **`achizitie-ic` fără `data_faptului_generator`** (câmp opțional): termenul de 15 zile nu se poate
+   calcula, deci exigibilitatea rămâne data facturii — la fel ca în `d390`. Se presupune, și se
+   spune că se presupune.
+3. **`categorie_marime.prag(categorie, criteriu)`** n-are parametru de perioadă, deși pragurile de
+   mărime se schimbă prin lege. E chiar subiectul restanței **R3**, deschisă — nu s-a deschis aici.
