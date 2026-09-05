@@ -6560,9 +6560,11 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   motivul refuzului.*
 - **ce NU face, spus**: nu caută factura sau avansul în evidența firmei; legătura dintre nota de
   TVA la încasare și documentul care a produs-o nu există azi. `C`/`NL`/`NT`-ul altor norme nu e
-  în discuție aici. Iar `PLAN_ARHITECTURA.md` **încă nu poartă principiul** („alegerea se cere, și
-  de la om când nu se poate deriva”) — nu l-am scris acolo, fiindcă tura n-avea voie să deschidă
-  altceva.
+  în discuție aici. Iar principiul general — *o alegere fiscală care nu se poate deriva mecanic se
+  cere de la om, la operațiune, niciodată preselectată; și nu se cere ce aplicația poate stabili
+  singură* — **e scris în `PLAN_ARHITECTURA.md`, la Verificarea 5** (06.09.2026, la cererea lui
+  Costin). Golul pe care restanța asta îl numea — planul spunea *că* alegerea se cere, nu *de la
+  cine* — e închis.
 - **unde ajunge efectul**: `POST /tenants/{}/nota-tva-incasare` — fiecare operațiune de TVA la
   încasare, adică fiecare firmă care aplică sistemul.
 - **temeiul, citit la sursă** *(`anaf_surse/cod_fiscal_227_2015_consolidat.txt`, l. 18154)*: art. 291 alin. (5)

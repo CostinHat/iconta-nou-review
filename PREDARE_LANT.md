@@ -680,10 +680,12 @@ a ce e adevărat **acum**.
    - **cele opt căi rămase din clasa R164** — schema unui tenant are 12 constrângeri UNIQUE, trei nu
      pot ajunge la `500` (și se spune de ce), una e reparată. Restul de opt **n-au fost probate**, și
      asta e scris în `CONFORMITATE.md` la R164, nu ascuns.
-   - **`PLAN_ARHITECTURA.md` nu poartă principiul deciziei 72** — *„alegerea se cere, și de la om
-     când nu se poate deriva"*. Restanța R151 spunea că planul acoperă *că* alegerea se cere, dar nu
-     *de la cine*; răspunsul lui Costin umple golul, iar planul încă nu-l știe. **Nu l-am scris**,
-     fiindcă tura n-avea voie să deschidă altceva. E prima cerință pentru tura următoare.
+   - *(închis 06.09.2026)* Principiul deciziei 72 **e acum în `PLAN_ARHITECTURA.md`**, la
+     Verificarea 5, cerut de Costin în aceeași tură: *o alegere fiscală care nu se poate deriva
+     mecanic din datele existente se cere de la om, la operațiune — niciodată preselectată,
+     niciodată dedusă pe ghicite; și nu se cere ce aplicația poate stabili singură.* Golul pe care
+     îl numea R151 — planul spunea *că* alegerea se cere, nu *de la cine* — e închis. **Nu mai e o
+     cerință pentru tura următoare.**
 
    **CE SE ȘTIE ACUM ȘI NU SE ȘTIA LA ÎNCEPUTUL CAMPANIEI** — trei lucruri, fiecare cu instanța:
    1. *Datele plauzibile ating defecte pe care santinela nu le atinge.* `«»@#$%` cade la prima

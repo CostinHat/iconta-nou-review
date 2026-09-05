@@ -929,6 +929,37 @@ Motivul: o regulă aplicată în cod fără să fie scrisă în plan trăiește 
 
 **Verificarea 5 — determinarea.** Aceeași instanță, cealaltă față: alegerea n-a fost cerută.
 
+**PRINCIPIUL, decis de Costin pe 06.09.2026** *(`DECIZII.md` 72; instanța: R151, art. 291 alin. (5)
+Cod fiscal)*:
+
+> **O alegere fiscală care nu se poate deriva mecanic din datele existente se cere de la om, la
+> operațiune — niciodată preselectată, niciodată dedusă pe ghicite. Se cere doar ce nu se poate
+> stabili; nu se cere ce aplicația poate stabili singură din datele pe care le are deja.**
+
+Are **două jumătăți**, și amândouă sunt norme:
+
+1. **Ce nu se poate deriva se CERE.** Nu se alege în cod, nu se pune un default „rezonabil", nu se
+   deduce din context. Motivul, verbatim din decizie: *„a ghici ar produce o cifră validă și
+   falsă."* Ăsta e cazul cel mai rău dintre toate — nu o eroare care se vede, ci o cifră care trece
+   toate verificările de formă și e greșită pe fond. Instanța: art. 291 alin. (5) are două ramuri
+   (cota faptului generator vs. cota facturii/avansului care l-a precedat), iar datele operațiunii
+   **nu spun care document a fost primul**.
+
+2. **Ce se poate stabili NU se cere.** O întrebare pusă degeaba mută pe om o muncă pe care aplicația
+   o putea face, și îi tocește atenția pentru întrebările care contează. Instanța, din aceeași
+   reparație: când contabilul alege ramura de excepție și dă o dată **ulterioară** livrării,
+   aplicația are amândouă datele — deci nu întreabă a doua oară, ci **arată contradicția**.
+
+**„Cerută" înseamnă NEPRESELECTATĂ, și asta nu e o precizare de stil.** Un `select` obligatoriu se
+randează cu prima opțiune deja aleasă. O alegere juridică pusă pe ecran în forma asta **arată** ca o
+întrebare și **funcționează** ca un default: omul apasă „trimite" fără să fi ales nimic, iar
+aplicația a răspuns în locul lui. *E același default fiscal tăcut pe care casa îl interzice în cod,
+doar că îmbrăcat în interfață — deci invizibil pentru orice gardă scrisă în Python.* De aceea
+câmpul de alegere pornește de la o opțiune goală, selectată, și rămâne obligatoriu.
+
+**Unde se aplică:** oriunde norma lasă două căi și faptele din evidență nu le deosebesc. Nu e o
+regulă despre TVA; art. 291 alin. (5) e doar prima instanță care a ajuns până la capăt.
+
 **Ce arată împreună:** „am citit actul" nu acoperă niciuna dintre celelalte patru. Sunt cinci verificări diferite, iar până acum doar prima jumătate a primei era regulă.
 
 ---
