@@ -6825,6 +6825,47 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **unde ajunge efectul**: ecranul «Casă» — și, prin tipar, orice ecran care scrie un mesaj înainte
   de a se redesena.
 
+### R163 — Nota contabilă cădea cu `500` pe un cont PLAUZIBIL, și numai pe unul plauzibil
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/jurnal_api.py::_linii_valide` · **PRAG 1**
+- **ce blochează**: calea prin care intră **orice** înregistrare contabilă manuală. Un contabil
+  care greșește o cifră la un cont (`7015` în loc de `701`) primea `500`, nu refuzul — iar refuzul
+  exista, scris complet, o funcție mai jos.
+- **condiția de deblocare**: se închide când un cont inexistent primește refuzul lui, oricâți
+  vecini ar avea în planul firmei.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b6ba6443`
+- **rezolvată pe commit**: `cf502c84`
+- **cum s-a găsit**: la **prima intrare** a lotului C din etapa 2, înainte ca lanțul să poată
+  începe. Proba cerea o notă `4111 = 7015` pe o firmă unde contul nu există.
+- **ce s-a măsurat**: `cont_valid.cere_cont` refuză corect și ridică `ContNecunoscut`, al cărei
+  mesaj e compus de `randeaza(detalii)` — *„PURĂ. Propoziția, compusă din structura refuzului.
+  **Singurul loc unde se face**."* `jurnal_api._linii_valide` prinde excepția și **își recompune
+  singur** propoziția, cu `", ".join(d.get("apropiate"))`. Dar `apropiate` e o listă de **perechi**
+  `(cod, denumire)`: `TypeError: sequence item 0: expected str instance, tuple found` → `500`.
+- **DE CE N-A GĂSIT-O ETAPA 1, și de ce asta e chiar argumentul etapei 2**: aceeași rută, apăsată
+  în lotul 14 cu santinela `«»@#$%`, a răspuns cu un mesaj **bun** — consemnat acolo ca dovadă că
+  ecranul vorbește. Pentru un șir fără nicio asemănare cu un cont, `cont_valid.apropiate` întoarce
+  lista **goală**, `if d.get("apropiate")` e fals, iar ramura care crapă **nu se execută
+  niciodată**. *Datele grosolan invalide trec pe lângă defect; cele plauzibile — o cifră greșită la
+  un cont — cad în el.*
+- **clasa, măsurată**: `grep -rn "apropiate" --include=*.py`, tot repo-ul fără teste și `venv` — o
+  **singură** recompunere în afara lui `cont_valid`, aceasta. Toți ceilalți lasă mesajul pe seama
+  lui `ContNecunoscut.__init__`. Aceeași clasă ca **R134** (toate porțile lui `PUT /tenants/{id}`
+  refuzau cu `500`, deci mesajele lor n-au ajuns niciodată la un om) și ca **R131**: un refuz bun,
+  pierdut de stratul de deasupra.
+- **reparația**: propoziția despre cont se ia de la `_cv.randeaza(d)` — locul canonic —, iar
+  `jurnal_api` adaugă doar fraza lui despre evidență.
+- **calibrare, în amândouă direcțiile**: cont `7015` (plauzibil, cu trei vecini în plan) → **400**,
+  cu contul, câmpul, cei trei vecini și locul unde se adaugă · cont `«»@#$%` (fără vecini) → tot
+  refuz, ca înainte · conturi bune (`4111 = 704`) → nota intră ca ciornă. *Calibrarea pe cazul
+  „fără vecini" e cea care lipsea: ea trecea și înainte de reparație.*
+- **unde ajunge efectul**: `POST /tenants/{}/jurnal` și `PUT /tenants/{}/jurnal/{id}` — crearea și
+  editarea oricărei note manuale, adică poarta de intrare a contabilității.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
