@@ -104,15 +104,18 @@ def _linii_valide(conn, schema, linii):
             try:
                 _cv.cere_cont(conn, schema, l[cheie], "%s (linia %d)" % (eticheta, i))
             except _cv.ContNecunoscut as e:
+                # [R163, 05.09.2026] Propozitia despre cont se ia de la `cont_valid.randeaza`,
+                # singurul loc unde se compune (o spune chiar docstringul ei). Aici se
+                # recompunea de mana, iar `apropiate` — lista de PERECHI `(cod, denumire)` —
+                # intra intr-un `", ".join(...)` care astepta siruri: `TypeError`, deci **500**.
+                # Se vedea NUMAI pe un cont plauzibil: pentru o santinela fara vecini in plan
+                # lista iese goala si ramura nici nu se executa. De-aia etapa 1, care apasa cu
+                # `«»@#$%%`, a primit de aici un mesaj bun — iar etapa 2, cu `7015`, un 500.
                 d = e.detalii if hasattr(e, "detalii") else {}
                 return _refuz(
-                    "linia %d: contul %s nu exista in planul de conturi al firmei%s. Se adauga in "
-                    "%s, sau se corecteaza aici — o nota cu un cont inexistent nu e evidenta, e un "
-                    "rand care arata ca evidenta"
-                    % (i, d.get("cont", l[cheie]),
-                       (" (apropiate: %s)" % ", ".join(d.get("apropiate") or [])
-                        if d.get("apropiate") else ""),
-                       _cv.UNDE_SE_CREEAZA),
+                    "linia %d: %s Iar o nota cu un cont inexistent nu e evidenta, e un rand "
+                    "care arata ca evidenta"
+                    % (i, _cv.randeaza(d) if d else str(e)),
                     TEMEI_PARTIDA_DUBLA, camp=cheie, linia=i)
         if Decimal(str(l.get("suma", 0))) <= 0:
             return _refuz("linia %d are suma %s: o inregistrare consemneaza o operatiune efectuata, "

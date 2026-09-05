@@ -13934,3 +13934,12 @@ e decontul SPECIAL, deci pentru NEplătitori de TVA. Amândouă refuzurile sunt 
 motivul — dar dacă aș fi citit „firma campaniei" ca pe o constantă a etapei 2, aș fi raportat două
 declarații ca „neprobabile". *Perimetrul etapei 2 e pe DECLARAȚIE; firma e o consecință a ei, nu o
 premisă.* Vezi și [[punctul-orb-e-firma-nu-ecranul]], pe alt obiect.
+
+**(67) O verificare pe DELTĂ trebuie să aibă o formă care nu poate trece în gol** *(lotul C,
+05.09.2026)*. Probele etapei 2 sunt re-rulabile: la a doua rulare intrările există deja, deci delta
+așteptată e **zero** — iar o comparație `0 == 0` trece orice, inclusiv un parser stricat. S-a
+întâmplat: `<obligatie>` citit cu majusculă întorcea zero obligații, iar verificarea pe deltă a
+trecut. Forma care ține e **generator contra generator**: impozitul din D100 = 16% din rezultatul
+calculat de D101, cu precondiția scrisă și verificată (fără venituri/cheltuieli financiare) și cu
+cerința ca obligația să **existe**. *Anti-vacuul nu e un lux al gărzilor; o probă care se poate
+satisface singură măsoară la fel de puțin ca o gardă care nu poate cădea.*

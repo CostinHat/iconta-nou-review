@@ -632,7 +632,11 @@ a ce e adevărat **acum**.
    **Trecute: lotul A** (D300 + D394) — 16 rânduri confruntate, toate potrivite; TVA colectată
    D394 = `R17_2` din D300 — **și lotul B** (D390 + D301) — reclasificarea mișcă numai tipul,
    linia manuală ajunge cu suma ei, iar desfacerea readuce declarația EXACT la starea de bază.
-   DUK valid pe toate patru. **Rămân cinci declarații**: D100, D101, D112, D205, D406/SAF-T.
+   **și lotul C** (D100 + D101, hrănite de nota contabilă) — ciorna nu mișcă nimic, validarea
+   mișcă exact cu suma notei, iar impozitul din D100 e 16% din rezultatul calculat de D101.
+   DUK valid pe toate șase. **Rămân trei declarații**: D112, D205, D406/SAF-T.
+   *Lotul C a scos **R163**: un `500` pe un cont PLAUZIBIL — pe care etapa 1 nu-l putea vedea,
+   fiindcă santinela ei nu semăna cu niciun cont și ramura care crapă nici nu se executa.*
    *Firma se alege după CUI I SE APLICĂ declarația, nu după firma campaniei — `DECIZII.md` 66.*
    *Regula formei: așteptarea se scrie ÎNAINTE, ca formulă, și poartă semantica intrării —
    `DECIZII.md` 64. De trei ori în lotul A un „defect" era de fapt așteptarea mea.*

@@ -7940,3 +7940,28 @@ etapa 2 posibilă: un refuz care numește câmpul și formatul e, pentru cine pr
 `valid`. Niciuna din verificările lotului B nu trece prin el: că baza nu s-a mișcat la
 reclasificare, că suma manuală e a ei, că desfacerea readuce starea. *Validatorul confirmă forma;
 lanțul se probează pe rând și pe sumă.*
+
+## 05.09.2026 (3) — Etapa 2, lotul C: defectul pe care numai o intrare PLAUZIBILĂ îl scoate
+
+Lotul C a probat impozitul pe profit — singurele două declarații hrănite exclusiv prin nota
+contabilă, deci singurul lanț cu un pas de **validare**. Rezultatul lanțului e curat: ciorna nu
+mișcă nimic, validarea mișcă exact cu suma notei, iar impozitul din D100 e 16% din rezultatul pe
+care îl calculează celălalt generator.
+
+**Dar lanțul n-a putut nici măcar să înceapă.** Prima intrare — o notă cu contul `7015`, care nu
+există în planul firmei — a întors **500**. Refuzul de dedesubt era bun: numea contul, câmpul,
+conturile apropiate și locul unde se adaugă. Stratul de deasupra îl recompunea singur și crăpa pe
+`", ".join(...)` peste o listă de perechi.
+
+**Ce merită dus mai departe e de ce n-a văzut-o etapa 1.** Aceeași rută, apăsată acum două zile cu
+`«»@#$%`, a răspuns cu un mesaj **corect**, scris în lotul 14 ca dovadă că ecranul vorbește. Pentru
+un șir fără nicio asemănare cu un cont, lista de „conturi apropiate" iese goală, iar ramura care
+crapă nu se execută. *Datele grosolan invalide trec pe lângă defect; cele plauzibile — adică o cifră
+greșită la un cont — cad în el.* Etapa 1 a probat cu ce nu poate fi o intrare; etapa 2 probează cu
+ce poate. Asta e diferența, și azi s-a văzut într-un singur `500`.
+
+**Și trei greșeli ale mele, dintre care una era să devină un defect raportat.** Parserul care citea
+`<Obligatie>` cu majusculă găsea zero obligații; verificarea pe deltă, la a doua rulare, compara
+`0 == 0` și trecea — deci greșeala a stat ascunsă o rulare întreagă sub o probă „verde". Înlocuită
+cu o confruntare între cele două generatoare. *A doua oară în două loturi când forma verificării, nu
+conținutul ei, a fost problema.*

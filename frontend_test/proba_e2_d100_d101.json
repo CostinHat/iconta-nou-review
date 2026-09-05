@@ -1,0 +1,195 @@
+{
+ "firma": "Distributie Profit IC SRL",
+ "tenant_id": 4839,
+ "perioada": {
+  "an": 2026,
+  "luna": 8,
+  "trim": 3
+ },
+ "pasi": [
+  {
+   "nume": "baza",
+   "d101_P1": 10000,
+   "d101_P2": 4000,
+   "d101_P3": 6000,
+   "d101_P7": 6000,
+   "d100_103_suma_dat": 960,
+   "d100_cod": 200,
+   "note_ale_probei_deja_prezente": [
+    42,
+    43
+   ]
+  },
+  {
+   "nume": "intrarile sunt deja in evidenta dintr-o rulare anterioara — se VERIFICA starea, nu se mai adauga",
+   "note": [
+    42,
+    43
+   ]
+  },
+  {
+   "nume": "ASTEPTARE 1: nota CIORNA nu misca nimic — nici P1, nici obligatia 103"
+  },
+  {
+   "nume": "ASTEPTARE 2: dupa VALIDARE, P1 += 10000 · P3 += 10000 · P7 += 10000 · suma_dat 103 += 1600"
+  },
+  {
+   "nume": "ASTEPTARE 3: dupa nota de cheltuiala validata, P2 += 4000 · P3 -= 4000 · suma_dat 103 -= 640"
+  },
+  {
+   "nume": "0b — cont 7015 (plauzibil, inexistent): refuz, nu 500",
+   "cod": 400,
+   "raspuns": "{\"detail\": {\"fel\": \"neconformitate\", \"tip\": \"nota_contabila\", \"motiv\": \"linia 1: Contul 7015 nu există în planul firmei (câmpul „contul creditor (linia 1)”). Conturi apropiate în plan: 701 (Venituri din vânzarea produselor finite), 704 (Venituri din servicii p"
+  },
+  {
+   "nume": "R163 reprobat: refuzul numeste contul, campul si vecinii lui"
+  },
+  {
+   "nume": "intrare 1 — nota de venit, creata (ciorna)",
+   "cod": 0,
+   "raspuns": {
+    "id": null,
+    "sarit": "nota exista deja"
+   }
+  },
+  {
+   "nume": "CIORNA nu misca declaratiile — corect",
+   "P1": 10000,
+   "suma_dat": 960
+  },
+  {
+   "nume": "intrare 2 — nota de venit, VALIDATA",
+   "cod": 0,
+   "raspuns": {
+    "sarit": "deja validata"
+   }
+  },
+  {
+   "nume": "D100 dupa venit: impozitul = 16% din rezultatul calculat de D101",
+   "rezultat_d101": 6000,
+   "suma_dat": 960
+  },
+  {
+   "nume": "intrare 3 — nota de cheltuiala, creata",
+   "cod": 0,
+   "raspuns": {
+    "id": null,
+    "sarit": "nota exista deja"
+   }
+  },
+  {
+   "nume": "intrare 3b — nota de cheltuiala, VALIDATA",
+   "cod": 0,
+   "raspuns": {
+    "sarit": "deja validata"
+   }
+  },
+  {
+   "nume": "D100 dupa cheltuiala: impozitul = 16% din rezultatul calculat de D101",
+   "rezultat_d101": 6000,
+   "suma_dat": 960
+  }
+ ],
+ "baza": {
+  "d101": {
+   "P1": "10000",
+   "P2": "4000",
+   "P3": "6000",
+   "P7": "6000",
+   "P10": "6000",
+   "P22": "6000",
+   "P35": "6000",
+   "P38a": "6000",
+   "P40": "6000",
+   "P41": "960",
+   "P48": "960",
+   "P52": "960",
+   "P411": "960",
+   "P481": "960"
+  },
+  "d100": [
+   {
+    "cod_oblig": "103",
+    "scadenta": "25.10.2026",
+    "suma_dat": "960",
+    "suma_plata": "960",
+    "nr_evid": "10103010926251026000039",
+    "cod_bugetar": "5503XXXXXX"
+   }
+  ],
+  "d100_eroare": null
+ },
+ "dupa_venit": {
+  "d101": {
+   "P1": "10000",
+   "P2": "4000",
+   "P3": "6000",
+   "P7": "6000",
+   "P10": "6000",
+   "P22": "6000",
+   "P35": "6000",
+   "P38a": "6000",
+   "P40": "6000",
+   "P41": "960",
+   "P48": "960",
+   "P52": "960",
+   "P411": "960",
+   "P481": "960"
+  },
+  "d100": [
+   {
+    "cod_oblig": "103",
+    "scadenta": "25.10.2026",
+    "suma_dat": "960",
+    "suma_plata": "960",
+    "nr_evid": "10103010926251026000039",
+    "cod_bugetar": "5503XXXXXX"
+   }
+  ]
+ },
+ "dupa_cheltuiala": {
+  "d101": {
+   "P1": "10000",
+   "P2": "4000",
+   "P3": "6000",
+   "P7": "6000",
+   "P10": "6000",
+   "P22": "6000",
+   "P35": "6000",
+   "P38a": "6000",
+   "P40": "6000",
+   "P41": "960",
+   "P48": "960",
+   "P52": "960",
+   "P411": "960",
+   "P481": "960"
+  },
+  "d100": [
+   {
+    "cod_oblig": "103",
+    "scadenta": "25.10.2026",
+    "suma_dat": "960",
+    "suma_plata": "960",
+    "nr_evid": "10103010926251026000039",
+    "cod_bugetar": "5503XXXXXX"
+   }
+  ]
+ },
+ "duk": {
+  "d101": {
+   "cod": 200,
+   "stare": "valid",
+   "erori": ""
+  },
+  "d100": {
+   "cod": 200,
+   "stare": "valid",
+   "erori": ""
+  }
+ },
+ "nepotriviri": [],
+ "note_lasate": {
+  "venit": null,
+  "cheltuiala": null
+ }
+}

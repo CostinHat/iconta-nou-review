@@ -1751,3 +1751,84 @@ Nimic nu rămâne: linia manuală D390, override-ul de reclasificare și operaț
 se desfac în aceeași rulare, iar proba **verifică** revenirea, nu o presupune. O operațiune rămasă
 dintr-o rulare picată (id 748, `tenant_006`) a fost ștearsă prin ruta aplicației, nu prin `DELETE`
 pe tabel, iar starea s-a recitit după.
+
+---
+
+## LOT C — impozitul pe profit: D100 și D101, hrănite de NOTA CONTABILĂ
+
+Singurele două declarații din cele nouă cu **nucleu ZERO**: nicio rută nu scrie într-un tabel care
+să fie numai al lor. Se hrănesc exclusiv prin periferie — `inregistrari` / `inregistrari_linii`.
+Lanțul lor are deci un pas pe care celelalte nu-l au: **validarea notei**.
+
+**Firma:** «Distributie Profit IC SRL» (`tenant_004`), regim **profit**, aleasă fiindcă **nu poartă
+niciun scenariu de supervizor** — spre deosebire de `tenant_005` și `tenant_014`, unde constatările
+roșii sunt puse deliberat și nu se ating.
+
+### Așteptarea, scrisă înainte, cu formula citită din generator
+
+| ce | formula, și de unde |
+|---|---|
+| `P1` | `SUM(suma)` unde `cont_credit LIKE '7%' AND NOT LIKE '76%'` — `d101.pull`, l.442 |
+| `P2` | `SUM(suma)` unde `cont_debit LIKE '6%' AND NOT LIKE '66%'` |
+| `P3` = `P1` − `P2` · `P7` = `P3` + `P6` | `calcul_d101`, l.248–254 |
+| D100 obligația `103` | `16% × (venituri70 − cheltuieli6)` — `d100.deriva_obligatii`, l.322 |
+| **condiția care nu există în celelalte loturi** | amândouă citesc **numai** note cu `i.status = 'validata'` |
+
+### Ce a ieșit
+
+| momentul | așteptat | obținut |
+|---|---|---|
+| nota de venit creată, **ciornă** | declarațiile **nu se mișcă** | exact — `P1` neschimbat, obligația neschimbată |
+| nota **validată** | `P1` += 10.000 · `P3` = `P7` += 10.000 · impozit += 1.600 | exact |
+| nota de cheltuială validată | `P2` += 4.000 · `P3` = `P7` = 6.000 · impozit = 960 | exact |
+| D100 ↔ D101 | `suma_dat`(103) = 16% × (`P1` − `P2`) | **960 = 16% × 6.000** |
+
+**Confruntare lot C: 0 nepotriviri.** DUK: **valid** pe amândouă.
+
+*Pasul care contează cel mai mult e al doilea rând al tabelului: o ciornă numărată ar umfla
+impozitul unei firme fără ca nimeni să fi validat ceva. E singurul pas al lanțului care putea eșua
+tăcut, și nu eșuează.*
+
+### R163 — nota contabilă cădea cu **500** pe un cont PLAUZIBIL, și numai pe unul plauzibil
+
+**Găsit la prima intrare a lotului**, înainte ca lanțul să poată începe: `POST /tenants/{}/jurnal`
+cu contul `7015` (inexistent în planul firmei, dar asemănător cu 701/704/705) → **500 Internal
+Server Error**.
+
+`cont_valid.cere_cont` refuză corect și compune un mesaj complet — numește contul, câmpul,
+conturile apropiate și locul unde se adaugă. `jurnal_api._linii_valide` prinde excepția și **își
+recompune singur** propoziția: `", ".join(d.get("apropiate"))` — dar `apropiate` e o listă de
+**perechi** `(cod, denumire)`, nu de șiruri. `TypeError`, deci 500.
+
+**DE CE N-A GĂSIT-O ETAPA 1, și de ce asta e chiar argumentul etapei 2.** Sonda campaniei a apăsat
+`jurnal` cu santinela `«»@#$%` și a primit un mesaj **bun** — scris în lotul 14. Motivul: pentru un
+șir fără nicio asemănare cu un cont, `apropiate` iese **goală**, iar ramura care crapă nu se execută
+niciodată. *Defectul se vede numai pe o intrare PLAUZIBILĂ — adică exact ce introduce un contabil
+care greșește o cifră.*
+
+**Clasa, măsurată** (`grep -rn "apropiate" --include=*.py`, tot repo-ul fără teste și `venv`): o
+**singură** recompunere în afara lui `cont_valid`, aceasta. Toți ceilalți lasă mesajul pe seama lui
+`ContNecunoscut.__init__`, care cheamă `randeaza(detalii)` — *„PURĂ. Propoziția, compusă din
+structura refuzului. **Singurul loc unde se face**."* Reparația folosește chiar acel loc.
+
+Aceeași clasă ca **R134** (toate porțile lui `PUT /tenants/{id}` refuzau cu 500, deci mesajele lor
+n-au ajuns niciodată la un om) și ca **R131**: un refuz bun, pierdut de stratul de deasupra.
+
+### Trei greșeli ale probei mele, dintre care una era să devină un defect fals
+
+1. **`<obligatie>` se scrie cu literă mică.** Parserul meu îl căuta cu majusculă, găsea zero
+   obligații și raporta `suma_dat = 0` pentru o declarație care scria **960**. Era să raportez
+   „impozitul pe profit nu ajunge în D100" despre o aplicație corectă.
+2. **Verificarea pe deltă trecea ÎN GOL la a doua rulare** (0 == 0), și exact asta a ascuns
+   greșeala de mai sus o rulare întreagă. Înlocuită cu o confruntare **generator contra
+   generator**: `suma_dat`(103) = 16% × (`P1` − `P2`), cu precondiția `P4 = P5 = 0` verificată
+   explicit — altfel bazele celor două generatoare diferă legitim.
+3. **D100 se cere pe TRIMESTRU**, nu pe lună: *„firma depune d100 TRIMESTRIAL: trimite trimestrul
+   (1-4), nu luna"*.
+
+### Scenariul, DECLARAT
+
+Pe `tenant_004`, august 2026, rămân două note **validate**: `PROBA-E2-C venit din exploatare`
+(4111 = 704, 10.000) și `PROBA-E2-C cheltuiala de exploatare` (6021 = 401, 4.000). Conturile sunt
+luate **din planul firmei**, nu inventate. Proba își recunoaște propriile note după descriere și,
+la o a doua rulare, **verifică** starea în loc să mai adauge un set.
