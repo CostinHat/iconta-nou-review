@@ -13943,3 +13943,12 @@ trecut. Forma care ține e **generator contra generator**: impozitul din D100 = 
 calculat de D101, cu precondiția scrisă și verificată (fără venituri/cheltuieli financiare) și cu
 cerința ca obligația să **existe**. *Anti-vacuul nu e un lux al gărzilor; o probă care se poate
 satisface singură măsoară la fel de puțin ca o gardă care nu poate cădea.*
+
+**(68) Un modul care COMPARĂ declarații se scoate din închiderea de hrănire** *(lotul D,
+05.09.2026)*. `control_incrucisat` citește tot portofoliul ca să confrunte declarații între ele;
+importat de un generator, lipea tot portofoliul de acel generator — nucleul lui D112 ieșea **81**,
+cu `/asistenti/*` și `/coada` în el. Regula e derivată, nu o listă: *un modul importat de un
+generator, care nu e el însuși parte dintr-un generator și care importă generatoare din două sau
+mai multe familii*. Azi întoarce exact `control_incrucisat`; un comparator nou intră singur, iar
+`inchidere_luna` (o singură familie) nu e prins, fiindcă el chiar hrănește. **Cifrele loturilor
+A–C se corectează, nu se rescriu tăcut**: nucleu total 103 → 72, atribuite 190 → 162.

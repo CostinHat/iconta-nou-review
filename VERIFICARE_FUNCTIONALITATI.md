@@ -1832,3 +1832,87 @@ Pe `tenant_004`, august 2026, rămân două note **validate**: `PROBA-E2-C venit
 (4111 = 704, 10.000) și `PROBA-E2-C cheltuiala de exploatare` (6021 = 401, 4.000). Conturile sunt
 luate **din planul firmei**, nu inventate. Proba își recunoaște propriile note după descriere și,
 la o a doua rulare, **verifică** starea în loc să mai adauge un set.
+
+---
+
+## LOT D — D112: salariile, de la salariat până la rândul lui
+
+**Firma:** «Panificatie Salarii Speciale SRL» (`tenant_001`), 12 salariați. Luna **08/2026**.
+
+### Instrumentul de perimetru, ASCUȚIT — și cifrele loturilor A–C, corectate
+
+Nucleul lui D112 ieșea **81** de unități, și în el erau `/asistenti/*`, `/coada`,
+`DELETE /tenants/{id}` — lucruri fără nicio legătură cu statul de plată. Cauza, citită la sursă:
+`d112.py` **nu** citește `tenants` sau `accounting_firms`; le trage prin închiderea de un nivel,
+fiindcă importă `control_incrucisat` — modulul care **compară** declarații. *Un comparator citește
+tot portofoliul, deci lipește tot portofoliul de fiecare declarație care-l importă.*
+
+Regula e **derivată**, nu o listă: un modul importat de un generator, care nu e el însuși parte
+dintr-un generator și care importă generatoare din **două sau mai multe familii**, e un CONSUMATOR
+și se scoate din închidere. Azi întoarce exact unul: `control_incrucisat`. Unul care citește o
+singură familie (`inchidere_luna` → `d390`) **nu** e prins, și e corect.
+
+**Cifrele se corectează, nu se rescriu tăcut** — cele din loturile A–C erau măsurate cu închiderea
+veche:
+
+| | înainte | acum |
+|---|---|---|
+| unități NUCLEU (distincte) | 103 | **72** |
+| atribuite cel puțin unei declarații | 190 | **162** |
+| d112 | 81 nucleu, 16 tabele | **24** nucleu, **7** tabele |
+| d406 · d300 · d394 · d390 | 29 · 28 · 18 · 8 | **34 · 33 · 23 · 13** |
+
+Unele au **crescut**, și e coerent: scoțând comparatorul, tabelele lui nu mai sunt „citite de multe
+generatoare”, deci mai multe tabele devin specifice unei singure declarații. Cele **35** de unități
+rămase neatribuite sunt exact administrarea cabinetului, GDPR, ciclul de viață al firmei, actul de
+generare și bilanțul — niciuna nu hrănește un rând al celor nouă.
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| veriga | așteptat | obținut |
+|---|---|---|
+| 0 | fără declarant, D112 **refuză**, numind câmpurile | exact; completat prin «Date firmă», generează |
+| 1 | salariat nou → +1 `<asigurat>`, cu CNP-ul lui | exact (`idAsig 13`, `cnpAsig` corect) |
+| 2 | CAS/CASS/impozit = ce calculează **statul de plată** | **1.250 / 500 / 267**, leu cu leu |
+| 3 | ștergerea unui salariat cu luni declarate → **refuz** | exact: *„completează data încetării”* |
+| 4 | după încetare: luna LUCRATĂ îl păstrează, următoarea nu | exact |
+
+**Confruntare lot D: 0 nepotriviri.**
+
+*Verificarea contribuțiilor e **generator contra generator**, nu contra unei cifre scrise de mine:
+`d112.py` își declară singur sursa — „Sursa unică de adevăr: statul de plată (stat_plata_api)” —
+deci confruntarea corectă e cu cealaltă cale a aplicației. O cifră scrisă de mână acolo ar fi fost
+o copie a codului, nu o verificare.*
+
+### R164 — un CNP valid, deja folosit, întorcea `500` în loc de refuz
+
+`POST /tenants/{}/salariati` cu un CNP care e deja al unui salariat al firmei →
+`psycopg2.errors.UniqueViolation` neprinsă → **500**. Baza apără datele corect
+(`salariati_cnp_uniq` ține), dar refuzul ei nu ajungea la om.
+
+**A doua oară în aceeași zi când defectul e vizibil doar pe o intrare PLAUZIBILĂ**: santinela
+etapei 1 (`«»@#$%`) cade mai devreme, la cifra de control a CNP-ului; numai un CNP **valid** și
+deja folosit ajunge până la constrângere. Prima oară fusese R163, pe nota contabilă.
+
+**Clasa, măsurată:** schema unui tenant are **12** constrângeri UNIQUE, iar în tot codul există
+**un singur** loc care prinde `UniqueViolation` (`core/coada_api.py:151`). Trei dintre cele 12 nu
+pot ajunge la 500 (upsert la `d300_manual` și `d390_reclasificare`, verificare prealabilă la
+`contracte_sabloane` — etapa 1 i-a citit mesajul). Pentru restul **n-am probat fiecare cale, și o
+spun**: s-a reparat instanța găsită apăsând, plus s-a măsurat cât de mare poate fi clasa.
+
+### Ce a semnalat DUK, și de ce NU e defect
+
+`A: asigurat (4) … SP1B4_1: B4_5P(4125) diferit de suma calculata 3750` — o **atenționare** pe
+datele existente ale firmei, nu pe ce am introdus eu. Citit la sursă (`core/d112.py`, comentariul
+`[part-time-floor 20.08.2026]`): divergența e **cunoscută, decisă și documentată** — nivelul de
+referință part-time e salariul minim **diminuat** cu facilitatea (OUG 156/2024 art.LXVI alin.(5) =
+OUG 89/2025 art.III), adică 4.125 în S2 2026, în timp ce regula DUK calculează 3.750 pe minimul
+vechi. *Nu se repară nimic: e chiar cazul în care aplicația are dreptate și arbitrul e în urmă —
+iar asta era deja scris, cu temei, înainte să întreb eu.*
+
+### Scenariul, DECLARAT
+
+Pe `tenant_001` rămâne un salariat: `PROBA E2 D Salariat`, CNP `1900101511112`, brut 5.000,
+angajat 01.08.2026, **cu data încetării 31.08.2026** — deci nu apare în lunile următoare. Codul COR
+e luat din nomenclatorul aplicației, nu inventat; CNP-ul are cifra de control calculată. Proba își
+recunoaște salariatul și, la a doua rulare, **reprobează R164** în loc să mai creeze unul.

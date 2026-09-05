@@ -634,7 +634,11 @@ a ce e adevărat **acum**.
    linia manuală ajunge cu suma ei, iar desfacerea readuce declarația EXACT la starea de bază.
    **și lotul C** (D100 + D101, hrănite de nota contabilă) — ciorna nu mișcă nimic, validarea
    mișcă exact cu suma notei, iar impozitul din D100 e 16% din rezultatul calculat de D101.
-   DUK valid pe toate șase. **Rămân trei declarații**: D112, D205, D406/SAF-T.
+   **și lotul D** (D112) — declarant → salariat → stat de plată → rând; contribuțiile din
+   declarație sunt leu cu leu cele din statul de plată. **Rămân două**: D205 și D406/SAF-T.
+   *Lotul D a scos **R164** (al doilea `500` al zilei pe o intrare PLAUZIBILĂ) și a ascuțit
+   instrumentul de perimetru: un comparator de declarații nu e un hrănitor, deci se scoate
+   din închidere — nucleu total 103 → 72, `DECIZII.md` 68.*
    *Lotul C a scos **R163**: un `500` pe un cont PLAUZIBIL — pe care etapa 1 nu-l putea vedea,
    fiindcă santinela ei nu semăna cu niciun cont și ramura care crapă nici nu se executa.*
    *Firma se alege după CUI I SE APLICĂ declarația, nu după firma campaniei — `DECIZII.md` 66.*

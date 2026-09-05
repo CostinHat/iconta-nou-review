@@ -31,6 +31,9 @@ _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi"
                 "iban")  # [F134] cont beneficiar pt plata pe card
 
 
+import psycopg2 as _pg  # [R164] pentru `UniqueViolation` — refuzul bazei devine refuz citibil
+
+
 def iban_valid(iban):
     """[F134] Verifica un IBAN romanesc: format (RO + 24 caractere) + cifra de control mod-97
     (ISO 13616/ISO 7064). PURA. NU se accepta IBAN neverificat in fisierul de plata catre banca
@@ -185,7 +188,7 @@ def _eroare_campuri(erori):
     return e
 
 
-def creeaza_salariat(conn, **date):
+def creeaza_salariat(conn, **date):  # [R164] traduce refuzul bazei in refuzul casei
     """Inserează un salariat (după validare). Întoarce {ok, salariat_id} sau ridică
     ValueError cu erorile."""
     erori = valideaza_salariat(date, la_creare=True)
@@ -200,9 +203,25 @@ def creeaza_salariat(conn, **date):
     from core import salariu_istoric as _si
     from datetime import date as _dm
     with conn.cursor() as cur:
-        cur.execute(
-            "INSERT INTO salariati (%s) VALUES (%s) RETURNING id"
-            % (", ".join(cols), ph), vals)
+        try:
+            cur.execute(
+                "INSERT INTO salariati (%s) VALUES (%s) RETURNING id"
+                % (", ".join(cols), ph), vals)
+        except _pg.errors.UniqueViolation as e:
+            # [R164, 05.09.2026] Constrangerea `salariati_cnp_uniq` apara datele corect, dar
+            # refuzul ei nu ajungea la om: exceptia iesea neprinsa si ruta raspundea **500**.
+            # Se traduce in refuzul casei — `ValueError` cu eroare PE CAMP —, pe care ruta il
+            # intoarce ca 422. *O poarta al carei mesaj se pierde pe drum apara datele si
+            # lasa omul fara nimic de citit* — clasa R163/R134/R131.
+            _c = getattr(getattr(e, "diag", None), "constraint_name", "") or ""
+            if "cnp" not in _c:
+                raise
+            raise _eroare_campuri([(
+                "cnp",
+                "Există deja un salariat cu CNP-ul %s la firma asta. Dacă e aceeași "
+                "persoană reangajată, deschide-i fișa și completează noua dată de angajare "
+                "— nu se creează un al doilea dosar pentru același om."
+                % (date.get("cnp") or ""))])
         sid = cur.fetchone()[0]
         # [PASUL 2b] salariul de baza trece pe salariu_istoric (SURSA UNICA), nu pe salariati.salariu_brut
         _sb = date.get("salariu_brut")

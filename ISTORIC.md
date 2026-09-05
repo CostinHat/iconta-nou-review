@@ -7965,3 +7965,28 @@ ce poate. Asta e diferența, și azi s-a văzut într-un singur `500`.
 `0 == 0` și trecea — deci greșeala a stat ascunsă o rulare întreagă sub o probă „verde". Înlocuită
 cu o confruntare între cele două generatoare. *A doua oară în două loturi când forma verificării, nu
 conținutul ei, a fost problema.*
+
+## 05.09.2026 (4) — Etapa 2, lotul D: a doua oară într-o zi, un 500 pe o intrare plauzibilă
+
+Lotul D a probat D112 — lanțul cel mai lung: declarant → salariat → stat de plată → rândul din
+declarație. Lanțul e curat, capăt la capăt, iar contribuțiile din declarație sunt **leu cu leu**
+cele calculate de statul de plată, adică de cealaltă cale a aplicației.
+
+**Dar a scos al doilea `500` al zilei, și de aceeași formă ca primul.** Un CNP **valid** care e
+deja al unui salariat al firmei întorcea „Internal Server Error”: constrângerea de unicitate ține
+datele, dar refuzul ei nu ajungea la om. **R164.** Ca și **R163** de acum câteva ore, se vede numai
+pe o intrare *plauzibilă*: santinela etapei 1 cade mai devreme, la cifra de control a CNP-ului.
+*Două defecte în aceeași zi, amândouă în locul unde o poartă bună își pierde mesajul, amândouă
+invizibile pentru probele cu date grosolan greșite.*
+
+**Și o reparație de instrument, cu cifrele vechi corectate.** Nucleul lui D112 ieșea 81 de unități,
+cu `/asistenti/*` și `/coada` în el. Cauza: `d112` importă `control_incrucisat` — comparatorul de
+declarații —, iar închiderea de un nivel îi lipea tot portofoliul. Regula derivată (un modul care
+importă generatoare din două familii e consumator, nu hrănitor) a dus nucleul la **24**, iar totalul
+de la 103 la **72**. Cifrele scrise în loturile A–C poartă acum corectura, în registru, nu tăcut.
+
+**Ce a spus DUK, și de ce n-am reparat nimic.** Atenționarea `SP1B4_1` de pe datele firmei era deja
+explicată, cu temei, în chiar codul care o produce: nivelul part-time e minimul **diminuat** cu
+facilitatea, iar regula validatorului a rămas pe minimul vechi. Aplicația are dreptate, arbitrul e
+în urmă, iar decizia e scrisă din 20.08. *A treia oară în etapa asta când citirea la sursă a oprit
+un „defect” care nu era.*

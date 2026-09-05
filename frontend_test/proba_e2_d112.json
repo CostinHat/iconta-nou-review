@@ -1,0 +1,220 @@
+{
+ "firma": "Panificatie Salarii Speciale SRL",
+ "tenant_id": 4784,
+ "perioada": {
+  "an": 2026,
+  "luna": 8
+ },
+ "pasi": [
+  {
+   "nume": "D112 inainte de a completa declarantul",
+   "cod": 200,
+   "raspuns": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<declaratieUnica xmlns=\"mfp:anaf:dgti:declaratie_unica:declaratie:v7\" luna_r=\"8\" an_r=\"2026\" d_rec=\"0\" nume_declar=\"Dobrescu\" prenume_declar=\"Elena\" functie_decl"
+  },
+  {
+   "nume": "declarantul era deja completat — veriga 0 nu are subiect pe firma asta"
+  },
+  {
+   "nume": "baza D112",
+   "nr_asigurati": 13,
+   "lungime_xml": 12825
+  },
+  {
+   "nume": "ASTEPTARE 1: un salariat nou -> +1 asigurat, cu CNP-ul 1900101511112"
+  },
+  {
+   "nume": "ASTEPTARE 2: contributiile lui = ce calculeaza `core.salarizare` pe brut 5000"
+  },
+  {
+   "nume": "ASTEPTARE 3: stergerea lui -> inapoi la 13 asigurati"
+  },
+  {
+   "nume": "intrare 1 — salariat nou (brut 5000)",
+   "cod": 422,
+   "raspuns": "{'detail': {'mesaj': 'Există deja un salariat cu CNP-ul 1900101511112 la firma asta. Dacă e aceeași persoană reangajată, deschide-i fișa și completează noua dată de angajare — nu se creează un al doilea dosar pentru același om.', "
+  },
+  {
+   "nume": "R164 reprobat: CNP-ul duplicat primeste REFUZ, cu CNP-ul numit",
+   "cod": 422
+  },
+  {
+   "nume": "D112: salariatul apare ca <asigurat>",
+   "campuri": {
+    "idAsig": "13",
+    "cnpAsig": "1900101511112",
+    "numeAsig": "PROBA E2 D",
+    "prenAsig": "Salariat",
+    "dataAng": "01.08.2026",
+    "casaSn": "_B",
+    "asigCI": "1",
+    "asigSO": "1",
+    "asigExc": "0",
+    "Timp_E3": "267"
+   }
+  },
+  {
+   "nume": "D112: CAS/CASS/impozit = statul de plata, leu cu leu",
+   "cas": 1250.0,
+   "cass": 500.0,
+   "impozit": 266.61
+  },
+  {
+   "nume": "iesire 1a — stergerea, REFUZATA (asa trebuie)",
+   "cod": 200,
+   "raspuns": "{'ok': False, 'cod': 'ARE_LUNI_DECLARATE', 'mesaj': 'Salariatul are luni declarate. Nu se șterge - completează data încetării contractului, altfel se pierde istoricul care susține declarațiile deja de"
+  },
+  {
+   "nume": "iesire 1b — data incetarii, completata",
+   "cod": 200,
+   "raspuns": "{'ok': True}"
+  },
+  {
+   "nume": "D112 pe luna LUCRATA il pastreaza — corect: a lucrat-o",
+   "luna": 8
+  },
+  {
+   "nume": "D112 pe luna urmatoare NU-l mai contine",
+   "luna": 9
+  }
+ ],
+ "baza": {
+  "nr_asigurati": 13
+ },
+ "salariat_id": 63,
+ "dupa_salariat": {
+  "nr_asigurati": 13
+ },
+ "stat_plata": {
+  "id": 63,
+  "nume": "PROBA E2 D Salariat",
+  "nume_ed": "PROBA E2 D",
+  "prenume_ed": "Salariat",
+  "cnp": "1900101511112",
+  "tip_norma": "intreaga",
+  "data_angajare": "2026-08-01",
+  "ore_zi": 8,
+  "brut": 5000.0,
+  "cas": 1250.0,
+  "cass": 500.0,
+  "impozit": 266.61,
+  "deducere": 583.88,
+  "deducere_baza": 583.88,
+  "deducere_tineri": 0.0,
+  "deducere_copii": 0.0,
+  "net": 2983.39,
+  "cam": 112.5,
+  "cas_suprataxa": 0.0,
+  "cass_suprataxa": 0.0,
+  "tichete_nominal": 0.0,
+  "tichete_zile": 0,
+  "pontaj_neconfirmat": false,
+  "tichet_masa_valoare": 0.0,
+  "tichete_vacanta": 0.0,
+  "vacanta_peste_plafon": false,
+  "cadou": 0.0,
+  "tichete_cultural": 0.0,
+  "tichete_cresa": 0.0,
+  "cadou_taxabil": false,
+  "iban": "",
+  "cor": "111101",
+  "data_incetare": "2026-08-31",
+  "cass_tichete": 0.0,
+  "impozit_tichete": 0.0,
+  "impozit_salariu": 266.61,
+  "retinut_tichete": 0.0,
+  "valoare_tichete": 0.0,
+  "total_disponibil": 2983.39,
+  "cost": 5112.5,
+  "cm_zile": 0,
+  "cm_brut": 0,
+  "baza_lipsa": false,
+  "salariu_baza": 5000.0,
+  "facilitate": 0.0,
+  "cm_net": 0.0,
+  "compozitie": [
+   {
+    "eticheta": "Salariu brut",
+    "valoare": 5000.0,
+    "fel": "linie"
+   },
+   {
+    "eticheta": "Facilitate salariu minim (netaxabilă)",
+    "valoare": 0.0,
+    "fel": "linie"
+   },
+   {
+    "eticheta": "CAS (25%)",
+    "valoare": -1250.0,
+    "fel": "linie"
+   },
+   {
+    "eticheta": "CASS (10%)",
+    "valoare": -500.0,
+    "fel": "linie"
+   },
+   {
+    "eticheta": "Deducere personala",
+    "valoare": 583.88,
+    "fel": "linie"
+   },
+   {
+    "eticheta": "Impozit pe venit",
+    "valoare": -266.61,
+    "fel": "linie"
+   },
+   {
+    "eticheta": "SALARIU NET",
+    "valoare": 2983.39,
+    "fel": "total"
+   },
+   {
+    "eticheta": "CAM — contribuția asiguratorie pentru muncă (2,25%), plătită de angajator",
+    "valoare": 112.5,
+    "fel": "nota"
+   },
+   {
+    "eticheta": "Cost total angajator",
+    "valoare": 5112.5,
+    "fel": "nota"
+   }
+  ]
+ },
+ "blocuri": {
+  "B4": {
+   "B4_1": "21",
+   "B4_3": "5000",
+   "B4_5": "5000",
+   "B4_6": "500",
+   "B4_7": "5000",
+   "B4_8": "1250",
+   "B4_14": "5000",
+   "B4_5P": "0",
+   "B4_6P": "0",
+   "B4_7P": "0",
+   "B4_8P": "0",
+   "B4_7S": "0",
+   "B4_7C": "0",
+   "B4_8D": "0",
+   "B4_6D": "0"
+  },
+  "E1": {
+   "E1_1": "5000",
+   "E1_2": "5000",
+   "E1_3": "0",
+   "E1_4": "0",
+   "E1_5": "0",
+   "E1_6": "267",
+   "E1_7": "267",
+   "E1_41": "0",
+   "E1_42": "0",
+   "E1_421": "0",
+   "E1_422": "0"
+  }
+ },
+ "duk": {
+  "cod": 200,
+  "stare": "erori",
+  "erori": "A: asigurat (4) [idAsig = 4] sectiune asiguratB4 (1)\n atentionare regula: SP1B4_1: B4_5P(4125) diferit de suma calculata 3750"
+ },
+ "nepotriviri": []
+}

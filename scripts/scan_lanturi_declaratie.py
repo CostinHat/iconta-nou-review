@@ -104,14 +104,45 @@ def in_afara():
     return out
 
 
+def consumatori():
+    """Modulele care CITESC declarații ca să le confrunte — nu le hrănesc.
+
+    Un comparator citește tot portofoliul, deci, prin închiderea de un nivel, lipește tot
+    portofoliul de fiecare declarație care-l importă. Măsurat în lotul D: nucleul lui D112
+    ieșea **81**, cu `/asistenti/*`, `/coada` și `DELETE /tenants/{id}` în el — fiindcă
+    `d112.py` importă `control_incrucisat`, nu fiindcă ar citi el `tenants`.
+
+    REGULA E DERIVATĂ, nu o listă: un modul importat de un generator, care nu e el însuși
+    parte dintr-un generator și care importă generatoare din **două sau mai multe familii**
+    de declarații. Azi întoarce exact unul — `control_incrucisat`. Unul care citește o
+    singură familie (`inchidere_luna` → `d390`) NU e prins, și e corect: acela chiar
+    hrănește lanțul acelei declarații."""
+    gen = generatoare()
+    module_gen = {m for lst in gen.values() for m in lst}
+    familia = {m: d for d, lst in gen.items() for m in lst}
+    out = set()
+    for m in sorted(module_gen):
+        for imp in F._importuri_core(m):
+            if imp in module_gen:
+                continue
+            if len({familia[x] for x in (F._importuri_core(imp) & module_gen)}) >= 2:
+                out.add(imp)
+    return out
+
+
 def tabele_per_generator(cunoscute):
-    """{declarație: {tabele citite de modulele ei sau de cele importate la un nivel}}."""
+    """{declarație: {tabele citite de modulele ei sau de cele importate la un nivel}}.
+
+    Consumatorii (v. `consumatori()`) se SCOT din închidere: ei confruntă declarații, nu le
+    hrănesc. Măsurat: cu ei înăuntru, d112 avea 16 tabele și nucleu 81; fără ei, 7 și 24.
+    Nucleul total (unități distincte) trece de la 103 la 72."""
+    fara = consumatori()
     out = {}
     for d, module in generatoare().items():
         h = set()
         for m in module:
             h |= F._importuri_core(m)
-        out[d] = F.tabele_declaratie(set(module) | h, cunoscute)
+        out[d] = F.tabele_declaratie(set(module) | (h - fara), cunoscute)
     return out
 
 
@@ -207,6 +238,8 @@ def main():
     for g in sorted(viu, key=lambda k: -len(per[k]["nucleu"])):
         print("  %-22s nucleu %3d · periferie %3d · %2d tabele"
               % (g, len(per[g]["nucleu"]), len(per[g]["periferie"]), len(tabg[g])))
+    print("\nCONSUMATORI scoși din închidere (compară declarații, nu le hrănesc): %s"
+          % (", ".join(sorted(consumatori())) or "niciunul"))
     print("\nTABELE COMUNE (citite de %d+ generatoare — nu spun care declarație):"
           % PRAG_SPECIFIC)
     print("  " + ", ".join("%s×%d" % (t, n) for t, n in
