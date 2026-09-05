@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-05
+- **ultima actualizare**: 2026-09-06
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -6516,9 +6516,56 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   sau se **derivă din documentele firmei** (data facturii vs data livrării, când amândouă
   există)? `PLAN_ARHITECTURA.md` spune că alegerea se cere, **nu de la cine**.
 - **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md`, Partea 0 — **Pasul 4** (ierarhia surselor) și **Verificarea 5** („textul determină rezultatul?", cu modul ei de eșec: *„alegerea n-a fost cerută"*). Verificarea 5 confirmă **de ce** asta e o decizie și nu o reparație: când textul nu determină singur rezultatul, alegerea se CERE, nu se face în cod — iar art. 291 alin. (5) are două ramuri pe care corpul cererii nu le deosebește. Dar planul spune că alegerea se cere, **nu de la cine**: dacă întrebarea merge la contabil sau se derivă din documentele firmei nu e acoperit nicăieri în plan. Aia e partea nedecisă.
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `683faec4`
-- **temeiul, citit la sursă** *(`anaf_surse/cod_fiscal_227_2015_consolidat.txt`)*: art. 291 alin. (5)
+- **rezolvată pe commit**: `220967cc`
+- **decizia, primită 05.09.2026**, verbatim: *„alegerea între cele două ramuri ale excepției din
+  art. 291 alin. (5) se cere de la contabil, la operațiune — nu se derivă. Rezidența nu e
+  modelată în firma_profil și data facturii vs. data livrării nu se poate stabili mecanic din
+  datele de azi; a ghici ar produce o cifră validă și falsă.”* Deci **varianta (a)** din cele
+  două scrise mai jos; varianta (b) — derivarea din documentele firmei — a fost respinsă expres.
+- **reparația**: regula stă în modulul ei, `core/cota_tva_incasare.py` (PUR), cu `TEMEI_291_5`
+  structurat. `alegerea(corp)` întoarce data după care se verifică cota, luată din ramura ALEASĂ.
+  Patru feluri de a nu ști, patru refuzuri, fiecare cu **cod** propriu (`RefuzAlegere.cod`) și cu
+  temeiul lipit de propoziție. Ruta doar deleagă: nu mai decide nimic despre normă. Ecranul are
+  `ramura_291_5` (select) + `data_factura_avans` (condiționat), cu explicația celor două ramuri.
+- **`neales`, și de ce a fost nevoie de el**: un `select` obligatoriu se randează cu prima opțiune
+  deja aleasă. Pentru o alegere JURIDICĂ asta ar fi fost exact defaultul tăcut pe care decizia îl
+  interzice — doar că îmbrăcat în interfață, deci invizibil din Python. `neales` pune o opțiune
+  goală, selectată, pe primul loc; câmpul rămâne obligatoriu.
+- **granița, decisă odată cu reparația**: se cere ce **nu se poate deriva**; nu se cere ce se poate
+  verifica. Când contabilul alege excepția și dă o dată **ulterioară** livrării, aplicația are
+  amândouă datele — deci nu întreabă a doua oară, ci arată contradicția.
+- **unde a stat temeiul, și de ce nu în `main.py`**: prima formă punea `TEMEI_291_5` în rută.
+  Clichetul refuzurilor a răspuns **`main.py` 0 → 389** — chiar regula de migrare a interdicției
+  77. Cele 389 amestecă refuzuri de formă cu refuzuri normative, iar norma spune singură că un
+  clichet pe o populație amestecată n-are ce apăra. Regula și-a primit modulul, unde datoria e
+  **zero prin construcție**. `DECIZII.md` 73. *Cele 389 rămân unde erau — în umbra măsurată.*
+- **calibrare, în amândouă direcțiile** (probă vie, construită ca să DISCRIMINEZE): aceleași cifre,
+  aceeași operațiune, singura diferență e ramura. Livrare 2025-09-10 (21% în vigoare), factură
+  2025-07-15 (19% în vigoare), cota declarată 19 → ramura de **excepție** intră (`200`, TVA
+  190.00), ramura **generală** e refuzată (`422`, *„19% nu există la data operațiunii”*). Dacă
+  amândouă ar fi trecut, sau amândouă ar fi căzut, data nu s-ar fi mutat cu ramura. Plus: ramura
+  nealeasă → refuz care numește ambele situații · excepție fără data documentului → refuz ·
+  document DUPĂ livrare → refuz pentru **contradicție** · ramura generală cu cota corectă (21) →
+  intră, ca înainte (R149 neatins).
+- **gardă**: `core/test_tva_incasare_291_5.py`, **25 de teste** pe trei suprafețe — regula pe
+  COMPORTAMENT (modul pur, deci se rulează, nu se citește), ruta pe AST (că deleagă și folosește
+  data dată de regulă), ecranul PARSAT în dicționar de câmpuri, cu calibrarea pozitivă a
+  parserului însuși. **6 mutații / 6 roșii.**
+- **ce a găsit mutația**, și se scrie: a cincea mutație a arătat o gaură REALĂ în gardă — scoțând
+  verificarea ramurii, garda rămânea **verde**, fiindcă o ramură nealeasă cădea prin `else` pe
+  ramura de excepție și era refuzată acolo, pentru lipsa datei documentului. Rezultat corect,
+  motiv greșit. De-aia refuzurile poartă acum **cod**. *Un test care acceptă orice refuz nu apără
+  motivul refuzului.*
+- **ce NU face, spus**: nu caută factura sau avansul în evidența firmei; legătura dintre nota de
+  TVA la încasare și documentul care a produs-o nu există azi. `C`/`NL`/`NT`-ul altor norme nu e
+  în discuție aici. Iar `PLAN_ARHITECTURA.md` **încă nu poartă principiul** („alegerea se cere, și
+  de la om când nu se poate deriva”) — nu l-am scris acolo, fiindcă tura n-avea voie să deschidă
+  altceva.
+- **unde ajunge efectul**: `POST /tenants/{}/nota-tva-incasare` — fiecare operațiune de TVA la
+  încasare, adică fiecare firmă care aplică sistemul.
+- **temeiul, citit la sursă** *(`anaf_surse/cod_fiscal_227_2015_consolidat.txt`, l. 18154)*: art. 291 alin. (5)
   — *„În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare
   la data la care intervine faptul generator, **cu excepția situațiilor în care este emisă o factură
   sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în

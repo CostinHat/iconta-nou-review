@@ -2049,3 +2049,48 @@ fereastra din chiar generatorul pe care a doua cale trebuie să-l verifice indep
 
 A doua rulare: **4075 passed, 11 skipped, 14 xfailed**, verificator 0 roșu, four-way închis pe
 `83c97f6c`.
+
+
+---
+
+## R151 — a doua ramură a art. 291 alin. (5), CERUTĂ de la contabil (06.09.2026)
+
+Nu e un lot de campanie: e **restanța deblocată de decizie** care a rămas deschisă la capătul
+etapei 2. Costin a răspuns varianta (a) — *„se cere de la contabil, la operațiune — nu se derivă"* —
+și a cerut câmpul de alegere pe ecran, cu explicația scurtă a celor două ramuri.
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| veriga | așteptat | obținut |
+|---|---|---|
+| 1 | ramura nealeasă → refuz care numește AMBELE situații | exact; „aplicația nu poate deduce singură… o alegere ghicită ar da o cifră validă și falsă" |
+| 2 | excepție fără data documentului → refuz care spune de ce e obligatorie | exact |
+| 3 | document DUPĂ livrare → refuz pentru **contradicție**, nu pentru lipsă | exact, cu ambele date numite |
+| 4 | **perechea care discriminează**: aceleași cifre, altă ramură → alt verdict | **200** pe excepție (TVA 190.00), **422** pe generală („19% nu există la 2025-09-10") |
+| 5 | ramura generală cu cota corectă → intră, ca înainte | 200, TVA 206.53 (R149 neatins) |
+| 6 | nota poartă motivul cotei | *„…; cota de la factura/avansul din 2025-07-15, anterior livrării din 2025-09-10"* |
+
+**Proba R151: 0 nepotriviri.**
+
+*Perechea de la veriga 4 e miezul. Dacă amândouă ar fi trecut, sau amândouă ar fi căzut, data nu
+s-ar fi mutat cu ramura, iar reparația ar fi fost doar un câmp în plus.*
+
+### Ce a cerut poarta
+
+Trei runde. **Prima**: `main.py 0 → 389` la clichetul refuzurilor — un singur nume `TEMEI*` a făcut
+fișierul „modul care citează legea", iar toate refuzurile lui vechi au intrat în datorie. Nu e fals
+pozitiv, e regula de migrare a interdicției 77; dar cele 389 amestecă două populații, iar norma
+interzice ea însăși un clichet pe o populație amestecată. Regula a urcat în modulul ei
+(`DECIZII.md` 73). Tot atunci, clichetul aserțiunilor pe text m-a prins pe **gardul meu** (1222 →
+1227): erau deja pe containere, dar forma `"literal" in ceva` nu se poate deosebi mecanic de
+căutarea unui șir în sursă — rescrise ca incluziune de mulțimi. **A doua**: blocul generat din
+`TRASEE.md` (modulul nou apare în lista rutei) și scanul vizual, fiindcă UI-ul se schimbase. **A
+treia**: verde.
+
+### Ce a găsit propria mutație
+
+A cincea mutație — scoaterea verificării ramurii — a lăsat garda **verde**. O ramură nealeasă cădea
+prin `else` pe ramura de excepție și era refuzată acolo, pentru lipsa datei documentului: rezultat
+corect, motiv greșit, iar testul cerea doar „un `ValueError`". Refuzurile poartă acum **cod**
+(`RefuzAlegere.cod`, nomenclator închis de patru), iar fiecare caz își cere codul potrivit. *Un test
+care acceptă orice refuz nu apără motivul refuzului.*

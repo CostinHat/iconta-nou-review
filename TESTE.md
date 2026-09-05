@@ -2300,3 +2300,12 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   corpul cererii D406 nu se putea valida niciodată · **aserțiune anti-vacuu**: dacă `<Header>`
   lipsește, garda pică în loc să treacă pe un XML gol. **Calibrare negativă: 3 mutații / 3 roșii**,
   fiecare readucând exact codul de dinaintea reparației, cu restaurare verificată prin `md5sum -c`.
+
+- **`core/test_tva_incasare_291_5.py` (06.09.2026)** — 25 de teste pe cele două ramuri ale art. 291
+  alin. (5), pe **trei** suprafețe, fiindcă un default tăcut poate sta în oricare: **regula**
+  (`core/cota_tva_incasare`) probată pe COMPORTAMENT — e modul pur, deci se rulează, nu se citește ·
+  **ruta** pe AST, că deleagă și folosește data dată de regulă (altfel modulul poate fi impecabil și
+  nefolosit) · **ecranul** PARSAT într-un dicționar de câmpuri cu atribute, cu **calibrarea pozitivă
+  a parserului însuși** — fără ea, un parser orb ar fi arătat ca un ecran gol. Fiecare caz cere
+  **codul** refuzului, nu doar că a fost unul. **Calibrare negativă: 6 mutații / 6 roșii**, cu
+  restaurare verificată prin `md5sum`; a cincea a găsit o gaură reală în gardă și a produs codurile.

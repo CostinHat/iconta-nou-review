@@ -8025,3 +8025,29 @@ la începutul rulării**: 20.000 → 30.000 pe `divid_D`/`divid_P`/`baza1`, 3.20
 **Confruntare lot E: 0 nepotriviri.** DUK `valid` pe amândouă — D406 pentru prima oară din
 aplicație. Gardă nouă: `core/test_d406_fereastra.py`, 15 teste, 3 mutații / 3 roșii, cu antetul
 asertat ca arbore și contractul rutei pe AST.
+
+
+## 06.09.2026 — R151 închisă: alegerea juridică se cere de la om, și nu poate veni bifată dinainte
+
+Ultima restanță deblocată de decizie din etapa 2 a primit răspunsul: *„se cere de la contabil, la
+operațiune — nu se derivă… a ghici ar produce o cifră validă și falsă"*. Art. 291 alin. (5) are două
+ramuri, iar datele operațiunii nu spun care document a fost primul.
+
+**Consecința dusă până la capăt e `neales`.** Un `select` obligatoriu se randează cu prima opțiune
+deja aleasă — pentru o alegere juridică, exact defaultul tăcut pe care decizia îl interzice, doar că
+îmbrăcat în interfață și invizibil din Python. Câmpul are acum o opțiune goală, selectată, pe primul
+loc, și rămâne obligatoriu.
+
+**Și granița**: se cere ce nu se poate deriva; nu se cere ce se poate verifica. Când contabilul alege
+excepția și dă o dată ulterioară livrării, aplicația are amândouă datele — deci nu întreabă a doua
+oară, arată contradicția.
+
+**Poarta a condus designul, de două ori.** Clichetul refuzurilor a răspuns `main.py 0 → 389` la o
+constantă `TEMEI_291_5` pusă în rută: un singur nume face fișierul „modul care citează legea". Cele
+389 amestecă două populații, iar norma interzice ea însăși un clichet pe o populație amestecată —
+deci regula și-a primit modulul propriu, unde datoria e zero prin construcție. Iar clichetul
+aserțiunilor pe text m-a prins pe gardul scris în aceeași zi.
+
+**Propria mutație a găsit o gaură în propria gardă**: scoțând verificarea ramurii, testele rămâneau
+verzi, fiindcă refuzul venea oricum — din alt motiv. De-aia refuzurile poartă cod. *Un test care
+acceptă orice refuz nu apără motivul refuzului.*

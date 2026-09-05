@@ -1,24 +1,55 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **etapa 1 ÎNCHISĂ (364/364); etapa 2 DESCHISĂ, lotul A trecut** (05.09.2026)
+# PREDARE LANȚ — **CAPĂT DE ETAPĂ: etapa 1 închisă, etapa 2 închisă, R151 închisă** (06.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-05**, la capătul turei care a închis **lotul 15** — cele 20 de
-  ecrane rămase. Antetul, secțiunea campaniei și cele două liste de mai jos sunt **rescrise**;
-  restul documentului e cel din 03–04.09 și poartă data lui.
-- **pe commit**: `b0270f9d`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-06**, la **capătul etapei 2** — cerută expres: *„Etapa 2 e
+  închisă. (…) Scrie predarea de capăt de etapă și oprește-te pentru `/clear`."* Antetul,
+  secțiunea campaniei și „DACĂ CONTINUI DE AICI" sunt **rescrise**; restul documentului e cel din
+  03–05.09 și poartă data lui.
+- **pe commit**: `220967cc`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **DE CE ACUM**: capătul lotului A din **etapa 2**. Ce urmează **nu se alege de aici** —
-  v. „DACĂ CONTINUI DE AICI".
-- **CE E REMĂSURAT ÎN TURA ASTA**: cifrele campaniei — **mecanic**, parcurgând coloana «stare
-  probare» · cele patru clichete generate · numărul de ecrane cerute de gardul acoperirii vizuale
-  (16 → 21, R160).
+- **DE CE ACUM**: **capăt de etapă.** Etapa 1 (date invalide) și etapa 2 (date valide, pe cele
+  nouă declarații) sunt amândouă închise, iar ultima restanță deblocată de decizie — R151 — a
+  primit răspuns și e construită. **Nu mai e nimic deschis din campanie.** Ce urmează **nu se
+  alege de aici** — v. „DACĂ CONTINUI DE AICI".
+- **CE E REMĂSURAT ÎN TURA ASTA**: cele patru clichete generate (bloc generat mai jos) · blocul
+  `TRASEE.md` · inventarul gărzilor din `GARZI.md` · scanul vizual (`ui_hash` reîmprospătat după
+  cele două câmpuri noi de pe ecranul operațiunilor).
 - **vechime măsurată, nu estimată**: **0 commituri** de la ultima atingere a fișierului.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **campania e ÎNCHISĂ pe etapa 1, și n-a rămas niciun ecran neatins**
+## PRIMUL LUCRU DE ȘTIUT: **campania e ÎNCHISĂ pe AMÂNDOUĂ etapele**
+
+**Etapa 1** — *vorbește aplicația când primește date greșite?* — 364/364, închisă 05.09.2026.
+**Etapa 2** — *ajunge valoarea în declarație, în rândul corect și cu suma corectă?* — închisă
+06.09.2026, pe **toate cele nouă declarații pe care aplicația le generează**: D100, D101, D112,
+D205, D300, D301, D390, D394, D406/SAF-T. Cinci loturi: **A** (D300+D394) · **B** (D390+D301) ·
+**C** (D100+D101) · **D** (D112) · **E** (D406+D205). **Zero nepotriviri** în toate cinci.
+
+**Defectele etapei 2**, toate reparate pe loc și reprobate: R161 (buton stins, motivul într-un
+`title` invizibil la atingere) · R162 (mesaj de reușită scris și șters în aceeași clipă) · R163
+(`500` pe un cont PLAUZIBIL) · R164 (`500` pe un CNP valid deja folosit) · R165 + R165b + R165c
+(SAF-T-ul unei firme trimestriale raporta o lună din trei; oglinda de reconciliere; antetul rămas
+pe luna-ancoră) · R166 + R166b (validarea D406 era inaccesibilă; `HeaderComment` constant).
+**R151** — singura rămasă deschisă ca DECIZIE — a primit răspunsul lui Costin pe 05.09 și e
+construită pe 06.09.
+
+**Ce a demonstrat etapa 2, dincolo de cifre.** Trei lucruri care nu se vedeau din etapa 1:
+  1. **Datele plauzibile ating defecte pe care santinela nu le atinge.** `«»@#$%` cade devreme,
+     la prima validare de formă; un cont scris `7015` în loc de `701`, sau un CNP valid deja
+     folosit, ajung până la stratul care crapă. R163 și R164, în aceeași zi.
+  2. **Confruntarea între generatoare găsește ce nicio probă pe un singur generator nu poate.**
+     R165 a ieșit comparând aceeași perioadă între D300, D394 și D406 — trei răspunsuri la
+     aceeași întrebare, dintre care unul diferea.
+  3. **Un arbitru la care nu ajungi nu te judecă.** Validarea D406 ieșea `gri` de-o veșnicie,
+     cu validatorul instalat: nu exista niciun corp de cerere care să treacă și generarea, și
+     validarea. Reparând drumul, arbitrul a numit din primul apel un defect vechi.
+
+---
+## (istoric) CE A FOST ETAPA 1
 
 Tema — *vorbește aplicația când primește date greșite?* — deschisă de Costin pe 03.09.2026, s-a
 închis pe **05.09.2026**, la lotul 15. Comanda, în șapte puncte: lista funcționalităților **derivată
@@ -628,8 +659,60 @@ a ce e adevărat **acum**.
 ---
 ## DACĂ CONTINUI DE AICI
 
-1. **NU DESCHIDE NICIO TEMĂ** în afara campaniei. `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118".
-   Cele 51 de restanțe **nu sunt o coadă de sarcini**.
+1. **NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e închisă.
+   Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi rămase din
+   clasa R164."* Cele **50** de restanțe deschise **nu sunt o coadă de sarcini**; `PLAN_LUCRU.md`
+   → „⬛ STAREA, DUPĂ R118".
+
+   **CE E ÎNCHIS, ca să nu se redeschidă din reflex:**
+
+   | | |
+   |---|---|
+   | **etapa 1** — date invalide | 364/364, închisă 05.09.2026 |
+   | **etapa 2** — date valide, până în declarație | **toate cele nouă**, închisă 06.09.2026, 0 nepotriviri pe cele cinci loturi |
+   | **R151** — ultima restanță deblocată de decizie | răspuns primit 05.09, construită 06.09 |
+   | **restanțe deschise** | **50** *(se derivă cu `scripts/raport_b.py`, nu se crede din proza asta)* |
+
+   **CE A RĂMAS EXPRES NEATINS, și de cine s-a decis:**
+   - **backlogul A3** (Playwright/infra: reconciliator #5, matrice de stări #4, baseline determinist
+     #8, keyboard-only #9, linter de consistență #10, global-first CSS, model-audit F2/F7) —
+     `INSTRUMENTE_ROADMAP.md`. §5-calculat le raportează **computat** cât rămân neacoperite.
+   - **cele opt căi rămase din clasa R164** — schema unui tenant are 12 constrângeri UNIQUE, trei nu
+     pot ajunge la `500` (și se spune de ce), una e reparată. Restul de opt **n-au fost probate**, și
+     asta e scris în `CONFORMITATE.md` la R164, nu ascuns.
+   - **`PLAN_ARHITECTURA.md` nu poartă principiul deciziei 72** — *„alegerea se cere, și de la om
+     când nu se poate deriva"*. Restanța R151 spunea că planul acoperă *că* alegerea se cere, dar nu
+     *de la cine*; răspunsul lui Costin umple golul, iar planul încă nu-l știe. **Nu l-am scris**,
+     fiindcă tura n-avea voie să deschidă altceva. E prima cerință pentru tura următoare.
+
+   **CE SE ȘTIE ACUM ȘI NU SE ȘTIA LA ÎNCEPUTUL CAMPANIEI** — trei lucruri, fiecare cu instanța:
+   1. *Datele plauzibile ating defecte pe care santinela nu le atinge.* `«»@#$%` cade la prima
+      validare de formă; `7015` în loc de `701`, sau un CNP valid deja folosit, ajung la stratul
+      care crapă (R163, R164 — în aceeași zi).
+   2. *Confruntarea între generatoare găsește ce nicio probă pe un singur generator nu poate.* R165 a
+      ieșit comparând aceeași perioadă între D300, D394 și D406.
+   3. *Un arbitru la care nu ajungi nu te judecă.* Validarea D406 ieșea `gri` cu validatorul
+      instalat, fiindcă niciun corp de cerere nu trecea și generarea, și validarea. Reparând drumul,
+      arbitrul a numit din primul apel un defect vechi de când există generatorul (R166b).
+
+   **ȘI TREI DESPRE PROPRIILE MELE INSTRUMENTE**, fiindcă toate trei s-au întâmplat în ultimele două
+   ture și niciuna n-a fost prinsă de mine:
+   4. *O aserțiune păzită de `if <s-a găsit>:` nu e o aserțiune, e o observație.* Proba lotului E
+      căuta `<SelectionStartDate>` — ramura pe care fișierul n-o emite — și, negăsind-o, sărea
+      verificarea și tipărea `null`. A ascuns R165c o rulare întreagă.
+   5. *Un test care acceptă orice refuz nu apără motivul refuzului.* Mutația mea a scos verificarea
+      ramurii la R151 și garda a rămas **verde**: refuzul venea oricum, din alt motiv. De-aia
+      refuzurile poartă acum `cod`.
+   6. *„La sursă" înseamnă la linia care produce valoarea, nu la textul care o rezumă.* Două
+      așteptări greșite în același lot, din docstringuri corecte ca descriere a normei și greșite ca
+      descriere a codului (`divid_D1` vs `divid_D`; `SelectionStartDate` vs tuplul `Period*`).
+
+   **ULTIMUL LUCRU, și e o regulă de conduită, nu o observație:** în ultimele două ture **poarta a
+   condus designul de patru ori**, și de fiecare dată a avut dreptate — a respins împrumutul
+   ferestrei din generator (`test_non_tautologie`), a refuzat să emită un SAF-T contradictoriu, m-a
+   prins asertând pe text în chiar gardul cu docstring despre §23, și a arătat `main.py 0 → 389`
+   când am pus o constantă unde nu-i era locul. **Când poarta respinge, prima ipoteză e că are
+   dreptate.**
    **ETAPA 2 E COMPLETĂ PE TOATE CELE NOUĂ** (05.09.2026, lotul E a închis-o): probarea cu date **VALIDE**, pe lanțul până în
    declarație. Perimetrul, tăiat de el de două ori în aceeași zi: numai unitățile care
    alimentează **cele nouă declarații pe care aplicația le GENEREAZĂ** — D100, D101, D112,
