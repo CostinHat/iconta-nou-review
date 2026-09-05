@@ -629,8 +629,11 @@ a ce e adevărat **acum**.
    cele nouă, **103** sunt NUCLEU pentru cel puțin una. Nucleul pe declarație: d112 **81** ·
    d406 **29** · d300 **28** · d394 **18** · d390 **8** · d205 **3** · d301 **3** · d100 **0** ·
    d101 **0**.
-   **Trecut: lotul A** (D300 + D394) — 16 rânduri confruntate, toate potrivite; DUK valid pe
-   amândouă; TVA colectată D394 = `R17_2` din D300. **Rămân opt loturi**, unul per declarație.
+   **Trecute: lotul A** (D300 + D394) — 16 rânduri confruntate, toate potrivite; TVA colectată
+   D394 = `R17_2` din D300 — **și lotul B** (D390 + D301) — reclasificarea mișcă numai tipul,
+   linia manuală ajunge cu suma ei, iar desfacerea readuce declarația EXACT la starea de bază.
+   DUK valid pe toate patru. **Rămân cinci declarații**: D100, D101, D112, D205, D406/SAF-T.
+   *Firma se alege după CUI I SE APLICĂ declarația, nu după firma campaniei — `DECIZII.md` 66.*
    *Regula formei: așteptarea se scrie ÎNAINTE, ca formulă, și poartă semantica intrării —
    `DECIZII.md` 64. De trei ori în lotul A un „defect" era de fapt așteptarea mea.*
 2. **Ce e permis fără să întrebi:** un **prag 1** găsit apăsând.

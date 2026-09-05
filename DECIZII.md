@@ -13927,3 +13927,10 @@ construiesc fapte reale (facturi, note), nu santinele care se pot șterge. Dacă
 adăuga un set, scenariul declarat s-ar dubla tăcut, iar cifrele din registru ar descrie altceva
 decât e în bază. `proba_e2_d300.py` își recunoaște propriile facturi după (direcție, dată, total) și
 nu le mai adaugă. *O probă care nu se poate rula de două ori nu e o probă, e o singură lovitură.*
+
+**(66) FIRMA pe care se probează un lanț se alege după CUI I SE APLICĂ declarația, nu după firma
+campaniei** *(lotul B, 05.09.2026)*. D390 cere operațiuni intracomunitare în Vectorul fiscal; D301
+e decontul SPECIAL, deci pentru NEplătitori de TVA. Amândouă refuzurile sunt corecte și își spun
+motivul — dar dacă aș fi citit „firma campaniei" ca pe o constantă a etapei 2, aș fi raportat două
+declarații ca „neprobabile". *Perimetrul etapei 2 e pe DECLARAȚIE; firma e o consecință a ei, nu o
+premisă.* Vezi și [[punctul-orb-e-firma-nu-ecranul]], pe alt obiect.

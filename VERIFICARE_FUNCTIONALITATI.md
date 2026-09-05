@@ -1695,3 +1695,59 @@ Pe `tenant_003`, trimestrul III/2026, rămân în urmă: factura emisă **CMT150
 rămâne. **Probele sunt re-rulabile**: `proba_e2_d300.py` își recunoaște propriile facturi după
 (direcție, dată, total) și nu le mai adaugă a doua oară — *o probă de lanț care nu se poate rula de
 două ori nu e o probă, e o singură lovitură.*
+
+---
+
+## LOT B — declarațiile hrănite de OPERAȚIUNI: D390 și D301
+
+Amândouă se alimentează din operațiuni introduse de contabil, nu din facturi — de-aia sunt un lot:
+nucleul lor, derivat cu `scan_lanturi_declaratie.py`, e format din aceleași trei feluri de rute
+(adaugă / listează / șterge), pe două registre diferite.
+
+**Două firme, fiindcă declarațiile cer două stări fiscale diferite** — și amândouă alegeri au fost
+corectate de aplicație, nu de mine:
+
+| declarație | firma | de ce acolo |
+|---|---|---|
+| **D390** | «Distributie Profit IC SRL» (`tenant_004`), 08/2026 | pe `tenant_003` ruta refuză: *„Firma nu are operațiuni intracomunitare în Vectorul fiscal"* |
+| **D301** | «Achizitii IC Neplatitor SRL» (`tenant_006`), 08/2026 | pe un plătitor ruta refuză: *„D301 (decontul special) e pentru NEplătitori"* |
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| lanț | intrarea | așteptat | obținut |
+|---|---|---|---|
+| 1 | reclasificare `A` → `S` pe operațiunea AUTO din facturi (BAUHAUS GMBH, DE, 12.000) | `tip="S"`, **baza neschimbată** | exact |
+| 2 | linie manuală `P`, DE, bază 1.500 | `<operatie tip="P" tara="DE" baza="1500"/>` | exact |
+| 3 | revenirea la `A` + ștergerea liniei manuale | D390 revine **exact** la starea de bază | exact |
+| 4 | operațiune D301 tip 1, 1.000 EUR × 5,0000, cotă 21% | `baza1` = 5.000, `tva1` = 1.050 | exact |
+| 5 | ștergerea ei | D301 refuză iar pe zero, cu temei | exact |
+
+**Confruntare lot B: 0 nepotriviri.** DUK: **valid** pe amândouă. *Dar DUK n-ar fi văzut nimic din
+ce s-a probat aici: că reclasificarea mișcă TIPUL și nu baza, că linia manuală ajunge cu suma ei, și
+că desfacerea readuce declarația exact de unde a plecat.*
+
+### Defecte în aplicație: **niciunul**. Patru corecturi, toate ale așteptării mele
+
+*Se scriu pentru că fiecare a fost oprită de ceea ce a SPUS aplicația — nu de o presupunere mai
+bună. Etapa 1 a construit mesajele astea; etapa 2 se sprijină pe ele.*
+
+1. **Tipul `L` nu se introduce manual în D390.** Ruta enumeră ce acceptă: *„Tip linie manuală: A
+   (achiziție bunuri IC fără cod furnizor, NOTA 1) / P / S / T / R"* — livrările de bunuri IC vin
+   din facturi.
+2. **Firma trebuie să aibă IC în Vectorul fiscal** pentru D390.
+3. **D301 e pentru NEplătitori de TVA** — alesesem firma campaniei, nu firma căreia i se aplică
+   declarația.
+4. **`data_doc` se trimite ca `ZZ.LL.AAAA`**, nu ISO: *„Data documentului e obligatorie în format
+   ZZ.LL.AAAA (ex. 15.06.2026)"*. Și **ștergerea cere perioada** (`an`, `luna`), din același motiv
+   ca la D390: nu se șterge dintr-o lună trimițând alta.
+
+*Împreună cu cele trei din lotul A, șapte „defecte" care erau ale așteptării mele, într-o singură
+zi. Nici unul n-a ajuns în raport ca defect — dar niciunul n-ar fi fost prins fără citirea la sursă
+sau fără un mesaj care spune exact ce lipsește.*
+
+### Scenariul, DECLARAT
+
+Nimic nu rămâne: linia manuală D390, override-ul de reclasificare și operațiunea D301 se creează și
+se desfac în aceeași rulare, iar proba **verifică** revenirea, nu o presupune. O operațiune rămasă
+dintr-o rulare picată (id 748, `tenant_006`) a fost ștearsă prin ruta aplicației, nu prin `DELETE`
+pe tabel, iar starea s-a recitit după.

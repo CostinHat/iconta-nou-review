@@ -1,0 +1,215 @@
+{
+ "d390": {
+  "firma": "Distributie Profit IC SRL",
+  "tenant_id": 4839,
+  "baza": [
+   {
+    "tip": "A",
+    "tara": "DE",
+    "codO": "136695976",
+    "denO": "BAUHAUS GMBH",
+    "baza": "12000"
+   }
+  ],
+  "dupa_manual": [
+   {
+    "tip": "P",
+    "tara": "DE",
+    "codO": "DE811907980",
+    "denO": "Partener DE Proba E2",
+    "baza": "1500"
+   },
+   {
+    "tip": "S",
+    "tara": "DE",
+    "codO": "136695976",
+    "denO": "BAUHAUS GMBH",
+    "baza": "12000"
+   }
+  ],
+  "final": [
+   {
+    "tip": "A",
+    "tara": "DE",
+    "codO": "136695976",
+    "denO": "BAUHAUS GMBH",
+    "baza": "12000"
+   }
+  ]
+ },
+ "d301": {
+  "firma": "Achizitii IC Neplatitor SRL",
+  "tenant_id": 4841,
+  "cap": {
+   "xmlns": "mfp:anaf:dgti:d301:declaratie:v1",
+   "luna": "8",
+   "an": "2026",
+   "d_rec": "0",
+   "temei": "0",
+   "mijl_trans": "0",
+   "cif": "95451848",
+   "denumire": "Achizitii IC Neplatitor SRL",
+   "adresa": "Str. Testului nr. 1 Bucuresti București",
+   "banca": "Banca Test",
+   "cont": "RO49AAAA1B31007593840000",
+   "pers_inreg": "2",
+   "nr_evid": "10301010826250926000046",
+   "baza1": "5000",
+   "tva1": "1050",
+   "baza2": "0",
+   "tva2": "0",
+   "baza3": "0",
+   "tva3": "0",
+   "baza4": "0",
+   "tva4": "0",
+   "baza5": "0",
+   "tva5": "0",
+   "totalPlata_A": "6050",
+   "nume_declarant": "Dobrescu",
+   "prenume_declarant": "Elena",
+   "functia_declarant": "ADMINISTRATOR"
+  }
+ },
+ "perioada": {
+  "an": 2026,
+  "luna": 8
+ },
+ "pasi": [
+  {
+   "nume": "baza D390 - operatiunile AUTO din facturi",
+   "operatii": [
+    {
+     "tip": "A",
+     "tara": "DE",
+     "codO": "136695976",
+     "denO": "BAUHAUS GMBH",
+     "baza": "12000"
+    }
+   ]
+  },
+  {
+   "nume": "ASTEPTARE 1: reclasificarea A -> S schimba tipul acestei operatiuni, si NUMAI tipul",
+   "operatie": {
+    "tip": "A",
+    "tara": "DE",
+    "codO": "136695976",
+    "denO": "BAUHAUS GMBH",
+    "baza": "12000"
+   }
+  },
+  {
+   "nume": "intrare 1 - reclasificare A -> S",
+   "cod": 200,
+   "raspuns": {
+    "ok": true
+   }
+  },
+  {
+   "nume": "D390: tipul s-a schimbat in XML",
+   "operatie": {
+    "tip": "S",
+    "tara": "DE",
+    "codO": "136695976",
+    "denO": "BAUHAUS GMBH",
+    "baza": "12000"
+   }
+  },
+  {
+   "nume": "intrare 2 - linie manuala (P DE, baza 1500)",
+   "cod": 200,
+   "raspuns": {
+    "ok": true,
+    "id": 5
+   }
+  },
+  {
+   "nume": "D390: linia manuala apare ca <operatie>",
+   "operatie": {
+    "tip": "P",
+    "tara": "DE",
+    "codO": "DE811907980",
+    "denO": "Partener DE Proba E2",
+    "baza": "1500"
+   }
+  },
+  {
+   "nume": "iesire 2 - linia manuala, stearsa",
+   "cod": 200,
+   "raspuns": {
+    "ok": true
+   }
+  },
+  {
+   "nume": "iesire 1 - reclasificare inapoi la A (scoate override-ul)",
+   "cod": 200,
+   "raspuns": {
+    "ok": true
+   }
+  },
+  {
+   "nume": "D390 a revenit exact la starea de baza",
+   "operatii": [
+    {
+     "tip": "A",
+     "tara": "DE",
+     "codO": "136695976",
+     "denO": "BAUHAUS GMBH",
+     "baza": "12000"
+    }
+   ]
+  },
+  {
+   "nume": "baza D301",
+   "cod": 422,
+   "baza": 0,
+   "tva": 0
+  },
+  {
+   "nume": "ASTEPTARE 2: baza1 = 0 + 5000 . tva1 = 0 + 1050"
+  },
+  {
+   "nume": "intrare 3 - operatiune D301 tip 1 (1000 EUR x 5.0, cota 21%)",
+   "cod": 200,
+   "raspuns": {
+    "ok": true,
+    "id": 750,
+    "baza": 5000,
+    "tva": 1050,
+    "avertisment": null
+   }
+  },
+  {
+   "nume": "D301 generat",
+   "baza": "5000",
+   "tva": "1050",
+   "avertismente": [
+    "D301 8/2026: 1 operațiuni, TVA total 1.050,00 lei."
+   ]
+  },
+  {
+   "nume": "iesire 3 - operatiunea D301, stearsa",
+   "cod": 200,
+   "raspuns": {
+    "ok": true
+   }
+  },
+  {
+   "nume": "D301 dupa stergere: refuz (fara continut)",
+   "cod": 422,
+   "mesaj": "{'detail': 'D301 nu se generează pe zero: nicio operațiune cu exigibilitate în perioada. OPANAF 592/2016 - decontul special se depune NUMAI pentru perioadele în"
+  }
+ ],
+ "duk": {
+  "d390": {
+   "cod": 200,
+   "stare": "valid",
+   "erori": ""
+  },
+  "d301": {
+   "cod": 200,
+   "stare": "valid",
+   "erori": ""
+  }
+ },
+ "nepotriviri": []
+}

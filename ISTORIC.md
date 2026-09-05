@@ -7922,3 +7922,21 @@ singurul filtru e citirea la sursă.*
 Costin), reprobarea cu date BUNE a arătat că pe calea de REUȘITĂ ecranul tăcea: dispoziția intra, și
 mesajul se ștergea în aceeași clipă (R162). *Etapa 1 măsura tăcerea la date greșite; tăcerea de pe
 calea bună a stat nevăzută până acum.*
+
+## 05.09.2026 (2) — Etapa 2, lotul B: D390 și D301, și ce înseamnă „lanțul se închide la ambele capete"
+
+Lotul A probase lanțul într-un sens: valoarea intră, ajunge în rândul ei. Lotul B l-a probat și
+invers, pe patru capete: reclasificarea schimbă **numai tipul** (baza rămâne), linia manuală apare cu
+suma ei, iar când amândouă se desfac, D390 revine **exact** la starea de bază — comparată element cu
+element, nu „arată la fel". La D301, ștergerea readuce declarația în starea în care ruta refuză să o
+genereze, cu temeiul ei (OPANAF 592/2016).
+
+**Zero nepotriviri. Și patru corecturi, toate ale așteptării mele** — tipul `L` nu se introduce
+manual, firma trebuie să aibă IC în vector, D301 e pentru neplătitori, data se trimite ca
+`ZZ.LL.AAAA`. Fiecare oprită de ceea ce a spus aplicația. *Etapa 1 a construit mesajele care fac
+etapa 2 posibilă: un refuz care numește câmpul și formatul e, pentru cine probează, o hartă.*
+
+**Ce nu vede DUK, și de-aia proba nu e el.** Toate cele patru declarații ale zilei au ieșit
+`valid`. Niciuna din verificările lotului B nu trece prin el: că baza nu s-a mișcat la
+reclasificare, că suma manuală e a ei, că desfacerea readuce starea. *Validatorul confirmă forma;
+lanțul se probează pe rând și pe sumă.*
