@@ -6375,6 +6375,89 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   `core/tva_incasare.py` 1 → 0, amândouă ieșite din listă. Clichetul de umbră a **urcat** 867 → 869,
   fiindcă refuzul VIES s-a despărțit în două. Amândouă regenerate din ieșirea instrumentelor.
 
+### R148 — Aceeași achiziție intracomunitară era așezată în declarație pe exigibilitate și i se valida cota pe data facturii
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py::achizitie_ic` · `core/common.exigibilitate_aic` · **PRAG 1**
+- **ce blochează**: corectitudinea cotei pe o achiziție intracomunitară cu factură întârziată.
+- **condiția de deblocare**: se închide când cota se validează pe **aceeași** dată pe care aplicația
+  o folosește deja ca exigibilitate în D390 — adică regula e un fapt, nu două.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `bc15ef61`
+- **rezolvată pe commit**: `83e736d7`
+- **temeiul, citit LA SURSĂ** *(`anaf_surse/cod_fiscal_227_2015_consolidat.txt`, nu din memorie)*:
+  · **art. 291 alin. (8)**: *„Cota aplicabilă pentru achiziții intracomunitare de bunuri este cota
+    aplicată pe teritoriul României pentru livrarea aceluiași bun și care este în vigoare la data la
+    care intervine **exigibilitatea** taxei."*
+  · **art. 284 alin. (2)**: exigibilitatea AIC intervine *„la data emiterii facturii … ori în cea
+    de-a 15-a zi a lunii următoare celei în care a intervenit faptul generator, dacă nu a fost emisă
+    nicio factură/autofactură până la data respectivă."*
+- **ce s-a măsurat** *(05.09.2026)*: `achizitie_ic` chema `cota_ceruta(corp)`, care citește
+  `corp["data"]` = **data facturii furnizorului** (e chiar `data_emitere` pasată mai jos lui
+  `creeaza_factura`). Iar `core/d390.py:491` calculează, pentru aceeași factură, exigibilitatea ca
+  `LEAST(f.data_emitere, ziua 15 a lunii următoare faptului generator)`, citând art. 284.
+- **deci nu era o regulă lipsă, ci o regulă folosită pe jumătate**: aceeași operațiune era **așezată
+  în perioada de declarare pe exigibilitate** și avea **cota validată pe data facturii**. Cele două
+  coincid când factura vine la timp și **diferă exact când contează** — factură întârziată peste o
+  schimbare de cotă.
+- **și era scrisă și pe ecran**: ajutorul câmpului `data_faptului_generator` spune, de dinainte,
+  *„Completat = exigibilitate MIN(dată factură, ziua 15 lună următoare) — art. 284."* **Aplicația își
+  spunea singură regula, în trei locuri, și n-o aplica în al patrulea.**
+- **reparația**: regula devine un fapt scris o dată, în Python — `common.exigibilitate_aic(data_factura,
+  data_fapt_generator)` —, iar ruta validează cota pe ea. Expresia SQL din `d390` rămâne unde e, dar
+  e numită în comentariu, ca să nu se creadă că sunt două reguli.
+- **calibrare**: fără fapt generator → data facturii · factură la timp (10.03, fapt 20.02) → 10.03 ·
+  factură **întârziată** (20.04, fapt 20.02) → **15.03** · peste an (fapt 20.12) → **15.01**.
+- **limita, declarată**: fără `data_faptului_generator` (câmp opțional) termenul de 15 zile nu se
+  poate calcula, deci exigibilitatea rămâne data facturii — **exact ce face și `d390`**. Se
+  presupune, și se spune că se presupune.
+
+### R149 — Două rute validau cota pe o dată pe care legea nu o numește niciodată
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py::nota_tva_incasare` · `main.py::nota_avans` ·
+  `static/js/ecrane/operatiuni_ecran.js` · **PRAG 1**
+- **ce blochează**: o cotă istorică CORECTĂ era refuzată, iar una greșită putea trece — pe exact
+  operațiunile în care exigibilitatea și cota se despart.
+- **condiția de deblocare**: se închide când fiecare din cele două validează cota pe data pe care o
+  numește legea, iar absența acelei date se refuză, nu se înlocuiește tăcut cu alta.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `bc15ef61`
+- **rezolvată pe commit**: `83e736d7`
+- **(1) TVA la încasare — temeiul citit la sursă, art. 291 alin. (5)**: *„În cazul operațiunilor
+  supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine
+  **faptul generator**, cu excepția situațiilor în care este emisă o factură sau este încasat un
+  avans, înainte de data livrării/prestării, pentru care se aplică cota în vigoare la data la care a
+  fost emisă factura ori la data la care a fost încasat avansul."*
+  **Data încasării nu apare în nicio ramură** — deși ea e data la care intervine EXIGIBILITATEA
+  (art. 282 alin. 3). *Aici exigibilitatea și cota se despart, și exact asta numea decizia prin „sau
+  exigibilitatea, unde diferă".* Ruta valida cota pe data încasării.
+- **(2) Regularizarea de avans — art. 291 alin. (6)**: *„În cazul schimbării cotei se va proceda la
+  regularizare pentru a se aplica cota în vigoare la data **livrării** de bunuri sau prestării de
+  servicii."* Ruta valida cota pe data regularizării. *O regularizare verificată pe data ei ar
+  refuza exact cota pe care legea o cere — iar schimbarea de cotă e însuși motivul pentru care
+  regularizarea există.*
+- **ce s-a măsurat, și e chiar clasa numită de decizie**: o livrare din era **19%**, încasată azi,
+  primea *„Cota de TVA 19% nu există în legea română … la data operațiunii (2026-09-01)"* — **o
+  cifră corectă, respinsă**. Oglinda exactă a ce spune decizia: *„o cotă istorică pe o factură din
+  perioada ei e corectă; aceeași cotă pe o factură de azi e o cifră validă și falsă."*
+- **reparația**: fiecare rută primește data pe care o numește legea — `data_fapt_generator` la TVA la
+  încasare, `data_livrare` la regularizare (câmp condiționat, apare doar pe cele două operații de
+  regularizare) — și validează cota pe ea. Absența ei se **refuză**, cu articolul citat: pe R146 s-a
+  stabilit că fără data care decide legalitatea nu există legalitate de verificat.
+- **reprobat, în amândouă direcțiile** *(cereri reale, instanță proaspătă)*: fapt generator 2024 +
+  cotă 19 → **`200`**, TVA 190,00 · fapt generator 2026 + cotă 19 → **`422`**, cu cotele de atunci
+  enumerate și temeiul citat · fără data faptului generator → **`422`**, cu articolul. Idem
+  regularizarea: cu `data_livrare` 2024 → `200`; fără ea → `422`.
+- **ce RĂMÂNE, declarat**: excepția din chiar art. 291 alin. (5) — factură emisă sau avans încasat
+  **înainte** de livrare, caz în care cota e la data facturii/avansului, nu la faptul generator — **nu
+  e modelată**. Ruta cere faptul generator; dacă operațiunea e în excepție, contabilul ar trebui să
+  poată spune asta. *Nu se ghicește care din cele două e cazul: se consemnează.*
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
