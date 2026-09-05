@@ -6866,6 +6866,44 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **unde ajunge efectul**: `POST /tenants/{}/jurnal` și `PUT /tenants/{}/jurnal/{id}` — crearea și
   editarea oricărei note manuale, adică poarta de intrare a contabilității.
 
+### R164 — Un CNP valid, deja folosit, întorcea `500` în loc de refuz
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/salariati_api.py::creeaza_salariat` · **PRAG 1**
+- **ce blochează**: angajarea. Un contabil care reintroduce un salariat existent — sau care
+  tastează CNP-ul altcuiva — primea „Internal Server Error", nu refuzul. Datele erau apărate;
+  omul, nu.
+- **condiția de deblocare**: se închide când constrângerea de unicitate produce un refuz citibil,
+  care numește CNP-ul și spune ce se face în loc.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `df2093bc`
+- **rezolvată pe commit**: `4db8ad85`
+- **cum s-a găsit**: la **a doua rulare** a probei lotului D din etapa 2 — CNP-ul salariatului
+  creat la prima rulare era deja în bază.
+- **ce s-a măsurat**: `INSERT INTO salariati` ridică `psycopg2.errors.UniqueViolation`
+  (`salariati_cnp_uniq`), iar ruta prinde **numai** `ValueError`. Excepția iese neprinsă → `500`.
+- **A DOUA OARĂ ÎN ACEEAȘI ZI pe o intrare PLAUZIBILĂ**, după R163: santinela etapei 1
+  (`«»@#$%`) cade mai devreme, la cifra de control a CNP-ului, deci nu ajunge niciodată la
+  constrângere. *Numai un CNP valid și deja folosit — adică exact ce introduce un om care
+  reangajează pe cineva — atinge defectul.*
+- **clasa, măsurată**: schema unui tenant are **12** constrângeri UNIQUE; în tot codul există **un
+  singur** loc care prinde `UniqueViolation` (`core/coada_api.py:151`). Trei dintre cele 12 nu pot
+  ajunge la `500`, și se spune de ce: `d300_manual` și `d390_reclasificare` scriu prin **upsert**,
+  iar `contracte_sabloane` are verificare prealabilă (etapa 1 i-a citit mesajul: *„există deja un
+  șablon cu acest nume"*). Pentru restul de opt **n-am probat fiecare cale** — se repară instanța
+  găsită apăsând, iar măsurătoarea rămâne scrisă ca să se vadă cât poate fi clasa.
+- **reparația**: `UniqueViolation` se prinde și se traduce în refuzul casei — `ValueError` cu
+  eroare **pe câmp** (`cnp`), pe care ruta o întoarce ca `422`. Se verifică numele constrângerii
+  (`e.diag.constraint_name`): o altă violare de unicitate **se re-ridică**, ca să nu ascundem sub
+  un mesaj despre CNP o problemă care nu e a lui.
+- **calibrare, în amândouă direcțiile**: CNP valid deja folosit → `422`, cu CNP-ul numit și cu ce e
+  de făcut („deschide-i fișa și completează noua dată de angajare") · CNP valid **nefolosit** →
+  salariatul se creează și apare în D112 ca `<asigurat>` · CNP cu cifră de control greșită → refuz
+  mai devreme, ca înainte.
+- **unde ajunge efectul**: `POST /tenants/{}/salariati` — ecranul «Salariați», la fiecare angajare.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
