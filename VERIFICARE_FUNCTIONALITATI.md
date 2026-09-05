@@ -1536,6 +1536,19 @@ atribuit funcția greșită, iar rândul a purtat-o de la generare.
   o schimbare de așezare cere confirmare.*
 - **probat cu un FIȘIER, nu cu un formular**: `fa-bonuri`.
 
+### Partea 5b: a noua reparație, în chiar unealta care ar fi trebuit să vadă
+
+**R160.** Mutând cele trei ecrane atinse în inventarul porții vizuale (`nav_ecrane.ECRANE`), am
+descoperit că `acoperire_hash.ecrane_asteptate()` tăia lista la **prima paranteză dreaptă din
+text** — care nu e capătul listei, ci cea din comentariul `# [LOTUL 12, R142]`. Gardul cerea
+**16 ecrane din 18**, iar cele două lipsă (`emitere`, `operatiuni`) erau exact cele adăugate de
+tura care scrisese comentariul. *Găsit fiindcă am vrut să-i adaug ceva, nu fiindcă l-am
+verificat.* Reparat, cu anti-vacuu; artefactul refăcut pe toate 21, zero violări.
+
+*Al patrulea ecran atins — `admin_raportari` — n-a putut intra: trăiește pe desktopul de
+superadmin, iar cele trei unelte vizuale sunt pe un singur cont, prin construcție. Datorie
+numită în `GARZI.md`, nu tăcere.*
+
 ### Partea 6: starea lăsată de probe, și desfacerea ei
 
 `curata_proba_ecrane.py` a desfăcut INSERT-urile purtătoare de semnătură (centre de cost, raport
@@ -1555,7 +1568,8 @@ din `firma_profil` — un UPDATE nu se desface pe ghicite. Restul, desfăcut pe 
 
 - unități mutate: **20** (toate ECRANE). Campania: **364 probate · 0 rămase** din 364 — numărate
   mecanic, parcurgând coloana «stare probare».
-- defecte găsite: **8** · reparate: **8** · reprobate: **8** (R152…R159).
+- defecte găsite: **9** · reparate: **9** · reprobate: **9** (R152…R160) — din care **opt în
+  aplicație** și **unul într-o gardă** (R160, găsit adăugându-i ceva).
 - reparații de instrument: **6** (cele cinci feluri de orbire + condiția de oprire), plus o cifră a
   sondei corectată înainte de raport.
 - motive scrise în registru care s-au dovedit false: **5**.

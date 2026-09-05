@@ -6530,6 +6530,243 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **ce NU se schimbă până la răspuns**: ramura generală rămâne verificată corect. *Nu se ghicește
   care din cele două e cazul — de-aia restanța e deschisă, nu „reparată parțial".*
 
+### R152 — Magazinul online se declara „conectat" la o adresă cu care nu vorbise nimeni
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py::wc_config` · `static/js/ecrane/woo_ecran.js` · **PRAG 1**
+- **ce blochează**: adevărul a ce citește contabilul pe ecranul «Magazin online», și canalul însuși:
+  o adresă care nu e adresă se salvează, iar jobul zilnic de sincronizare o va folosi.
+- **condiția de deblocare**: se închide când adresa magazinului e refuzată dacă nu e o adresă web,
+  iar ecranul nu mai afirmă o conexiune care nu s-a încercat.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: apăsând. Sonda de ecran a deschis formularul cu «Configurează magazinul» (un
+  singur pas — deci motivul scris în registru, *„configurarea cere întâi o conexiune"*, era fals),
+  l-a umplut cu `«»@#$%` și a apăsat «Salvează». Verdictul sondei: **a scris**.
+- **ce s-a măsurat**: `PUT /tenants/{}/woocommerce/config` scria `url`, `ck`, `cs` fără nicio
+  verificare de formă; ecranul afișa apoi `Stare: conectat la «»@#$%`. `configurat` se calculează ca
+  `url ȘI chei` — adică **prezență**, nu conexiune.
+- **reparația**: ruta verifică schema (`http`/`https`) și existența unui punct în gazdă, cu
+  `urllib.parse`; ecranul spune „configurat pentru", nu „conectat la".
+- **calibrare, în amândouă direcțiile**: `«»@#$%` → `422` cu forma așteptată numită · `ftp://x` →
+  `422` · `https://magazin.ro` → `200`. Golirea explicită a canalului (toate trei goale) rămâne
+  posibilă — reparația nu supra-refuză.
+- **unde ajunge efectul**: ecranul «Magazin online» al oricărei firme, și jobul zilnic de import
+  WooCommerce, care nu mai poate porni pe o adresă imposibilă.
+
+### R153 — Registratura scria un document într-un an pe care tot ea îl refuză la citire
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py::registratura_creeaza` · **PRAG 1**
+- **ce blochează**: registrul unic de intrare-ieșire — un document înregistrat într-un an pe care
+  aplicația nu-l poate afișa e un document pierdut, cu număr alocat.
+- **condiția de deblocare**: se închide când scrierea refuză exact anii pe care citirea îi refuză.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: apăsând, după ce butonul de fond al ecranului a intrat în lista sondei —
+  se cheamă «Înregistrează», verb care lipsea. Formularul umplut cu santinela (dată `1899-01-01`)
+  a fost **acceptat**, iar re-citirea registrului a răspuns pe loc `an invalid: 1899 (aștept
+  1990-2100)`.
+- **ce s-a măsurat**: `registratura_api.inregistreaza` ia `an = int(data[:4])` fără nicio margine și
+  alocă numărul curent pe anul acela; `registratura_lista` cheamă `_cere_perioada(an=an)`.
+  *Aceeași aplicație știa răspunsul la un capăt al rutei și nu-l avea la celălalt* — clasa lotului
+  14, de data asta între `GET` și `POST` ale aceleiași resurse.
+- **reparația**: data se parsează (`date.fromisoformat`) și anul trece prin **același**
+  `_cere_perioada` ca la citire. Criteriul e împrumutat, nu rescris.
+- **calibrare, în amândouă direcțiile**: `1899-01-01` → `422` cu intervalul numit · `nu-e-o-dată` →
+  `422` care spune forma așteptată · dată din anul curent → `200` cu numărul alocat.
+- **unde ajunge efectul**: ecranul «Registratură» al fiecărei firme.
+
+### R154 — „N-am putut trimite" despre un șir care nu era o adresă de email
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py::_trimite_recomandari` (`POST /recomanda` și
+  `POST /portal/recomanda`) · **PRAG 1**
+- **ce blochează**: adevărul răspunsului, și un apel inutil către furnizorul de email pentru fiecare
+  adresă imposibilă.
+- **condiția de deblocare**: se închide când o adresă care nu are forma unei adrese e refuzată
+  înaintea oricărei trimiteri, numită pe nume.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: citind ruta (butonul «Trimite invitația» cădea sub `OPRITE`), apoi **probând-o**
+  cu o santinelă care nu poate fi adresa nimănui: `200 {"stare": "esuat"}`.
+- **ce s-a măsurat**: helperul nu verifica nimic; constanta lui de refuz se cheamă
+  `EMAIL_NICIUNUL_VALID` și se ridică **doar pe listă goală**. *Verificarea era promisă în registrul
+  de mesaje și nu exista în cod.* A cincea și a șasea instanță a clasei **R138** — pe care lotul 12
+  o generalizase căutând `"@" not in email`, tipar pe care helperul ăsta nu-l avea.
+- **reparația**: `core.common.email_valid` (același criteriu ca în celelalte șase locuri) pe toată
+  lista, înaintea oricărei plecări; refuzul numește adresele rele. **Refuzul e pe TOATĂ lista**, nu
+  doar pe cele rele: o trimitere parțială l-ar fi lăsat pe om cu „3 trimise" fără să știe că a patra
+  n-a plecat — aceeași coerciție tăcută ca la R150.
+- **calibrare, în amândouă direcțiile**: `«»@#$%` → `422` care numește adresa · `fara-arond.ro` →
+  `422` · listă goală → `400` (mesajul vechi, corect acolo) · adresă validă → trimitere.
+- **unde ajunge efectul**: cardul «Recomandă» al cabinetului și cel din portalul clientului.
+
+### R155 — „Încearcă o poză mai clară" despre un fișier care nu era o poză
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `main.py::portal_bon` · `core/common.py::tip_imagine` · **PRAG 1**
+- **ce blochează**: singura suprafață de intrare a ecranului «Bonuri și chitanțe» — și un apel
+  plătit către furnizorul de AI pentru fiecare fișier care nu e imagine.
+- **condiția de deblocare**: se închide când un fișier care nu e imagine primește un refuz care o
+  spune, înaintea apelului.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: apăsând, cu un fișier text numit `.png` — singurul fel de dată greșită pe care
+  ecranul îl poate primi.
+- **ce s-a măsurat**: ruta trimitea octeții mai departe cu `f.content_type or "image/jpeg"`, iar
+  browserul deduce `content_type` din **extensie** — deci minte exact în cazul ăsta. Eșecul apărea
+  abia la parsarea răspunsului AI, într-un `except Exception` care spune „nu am putut citi bonul;
+  încearcă o poză mai clară". *Un instrument care întoarce „n-am putut" acolo unde ar trebui să
+  spună „nu recunosc" ascunde chiar felul intrării* — capcana 16 din predare, pe alt obiect.
+- **reparația**: `core.common.tip_imagine(octeti)` — tipul se citește din **primii octeți** (JPEG,
+  PNG, GIF, WEBP), nu din nume și nu din antet. METODA §23: structură, nu text.
+- **calibrare, în amândouă direcțiile**: text numit `.png` → `422` care numește fișierul · o imagine
+  PNG reală → trece mai departe (tipul derivat corect, chiar dacă antetul ar minți).
+- **unde ajunge efectul**: portalul clientului (unde clientul pozează bonul) și ecranul «Bonuri și
+  chitanțe» al firmei.
+
+### R156 — Ecranul pachetelor acoperea refuzul precis al serverului
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/pachete.js` · **PRAG 1**
+- **ce blochează**: contabilul nu află ce e greșit; vede „n-am putut" despre ceva ce aplicația știa.
+- **condiția de deblocare**: se închide când mesajul serverului ajunge pe ecran.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: apăsând «Continuă →» cu anul `-99999999`.
+- **ce s-a măsurat**: `GET /pachete/{}/rezumat` refuză corect prin `_cere_perioada`
+  (`an invalid: -99999999 (aștept 1990-2100)`), dar `catch`-ul ecranului scria „Nu am putut încărca
+  datele." fără să se uite la `e.mesaj`.
+- **reparația**: `catch (e)` și mesajul serverului, escapat.
+- **calibrare, în amândouă direcțiile**: an imposibil → mesajul cu intervalul · an valid → pasul 2
+  se deschide.
+- **unde ajunge efectul**: cardul «Pachete lunare» al cabinetului.
+
+### R157 — Răspunsul gol la o sesizare: ecranul nu făcea nimic și nu spunea nimic
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/admin_raportari.js::trimiteRaspuns` · **PRAG 1**
+- **ce blochează**: firul de suport — singurul verdict care e defect prin definiția campaniei:
+  **TACE**.
+- **condiția de deblocare**: se închide când apăsarea pe gol primește un răspuns.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: apăsând «Trimite» cu casuța goală, pe o sesizare construită prin lanțul
+  aplicației (formularul de răspuns se randează doar pe o sesizare existentă).
+- **ce s-a măsurat**: în client, `if (!text && !fisier) return;` — un `return` gol. Serverul are
+  chiar codul `TEXT_GOL` cu mesajul lui, dar cererea nu pleca niciodată. *Aceeași aplicație știa
+  răspunsul într-un loc și nu-l avea în altul* — a treia instanță a clasei în lotul ăsta.
+- **reparația**: mesaj lângă buton, cu tiparul `.msg-eroare` deja folosit în același fișier.
+- **calibrare, în amândouă direcțiile**: gol → mesajul · text → mesajul intră în fir.
+- **unde ajunge efectul**: ecranul de sesizări al administratorului.
+
+### R158 — Ecranul de recomandare spunea una, bara de sus alta
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/recomanda.js` · **PRAG 1**
+- **ce blochează**: refuzul lui R154 nu ajungea la om în locul unde se uită — lângă câmp.
+- **condiția de deblocare**: se închide când mesajul serverului apare în zona de mesaj a ecranului.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: la reprobarea lui R154, prin ecran: mesajul precis apărea în pastila globală a
+  lui `api.js`, iar ecranul scria alături „Eroare la trimitere."
+- **ce s-a măsurat**: `catch (e)` care ignora `e.mesaj`.
+- **reparația**: `(e && e.mesaj) || "Eroare la trimitere."`
+- **calibrare, în amândouă direcțiile**: adresă imposibilă → mesajul care o numește · listă goală →
+  mesajul client-side, neschimbat.
+- **unde ajunge efectul**: cardul «Recomandă».
+
+### R159 — „Ciornă salvată." după o salvare care fusese refuzată
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/pachete.js::_salveaza` și cei doi apelanți ai lui ·
+  **PRAG 1**
+- **ce blochează**: contabilul crede că povestea lunii e salvată, și nu e. Mesajul de refuz există,
+  dar e acoperit de cel de reușită, o zecime de secundă mai târziu.
+- **condiția de deblocare**: se închide când mesajul de reușită se scrie numai dacă salvarea a
+  reușit.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: apăsând «Salvează ciornă» cu casuța goală, în modalul poveștii — modal care
+  până azi era **în afara domeniului sondei**, fiindcă e pus pe `document.body`, nu în `.fereastra`.
+- **ce s-a măsurat**: `_salveaza` întorcea `undefined` pe toate cele trei căi — refuz, eșec de
+  rețea, reușită —, iar cei doi apelanți scriau „Ciornă salvată." / „Aprobată ✓" necondiționat. Pe
+  deasupra, `r.ok === false` era înghițit fără niciun cuvânt.
+- **generalizarea, măsurată** *(`frontend_test/scan_succes_neconditionat.py`, tot `static/js`)*:
+  **cinci** locuri tipăresc
+  un mesaj de reușită după un `await` către un ajutor. **Trei sunt corecte** și rămân neatinse —
+  `date_firma.js` (×2) are mesajul în `try`, deci o excepție îl sare, iar `raporteaza.js` ramifică pe
+  numărul întors de `urcaPoze`. Cele **două** din `pachete.js` erau clasa.
+- **reparația**: `_salveaza` întoarce `true`/`false`; apelanții se opresc pe `false`, iar refuzul
+  rămâne pe ecran. **Instrumentul rămâne în repo** — rulat după reparație, întoarce **3**, adică
+  exact cele trei corecte. *O cifră care nu se poate recalcula nu e o măsurătoare, e o amintire.*
+- **calibrare, în amândouă direcțiile**: casuță goală → „Scrie povestea întâi." și **atât** · text →
+  „Ciornă salvată."
+- **unde ajunge efectul**: modalul «Povestea lunii», de pe cardul «Pachete lunare».
+
+### R160 — Gardul acoperirii vizuale cerea 16 ecrane din 18, și nimic n-o spunea
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `frontend_test/vizual/acoperire_hash.py::ecrane_asteptate` · **PRAG 1**
+- **ce blochează**: chiar cuplajul dintre unealta vizuală și gardul ei. Un ecran din inventar putea
+  lipsi din artefact fără ca `test_toate_ecranele_scanate` să cadă — adică regula porții verzi
+  vizuale trecea **vid** pe el.
+- **condiția de deblocare**: se închide când lista cerută de gard e cea din inventar, întreagă, iar
+  o listă goală **ridică** în loc să treacă.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `b0270f9d`
+- **rezolvată pe commit**: `d734f9d8`
+- **cum s-a găsit**: **din întâmplare, adăugând ceva la el.** Lotul a mutat trei ecrane în
+  `nav_ecrane.ECRANE` (regula: un ecran al cărui JS se atinge trece acolo), iar la verificare
+  `ecrane_asteptate()` a întors 16 nume dintr-o listă de 21. *N-am verificat gardul; am vrut să-i
+  adaug ceva, și abia atunci s-a văzut.*
+- **ce s-a măsurat**: regexul era `ECRANE\s*=\s*\[(.*?)\]` — **negreedy**, deci se oprea la **prima**
+  paranteză dreaptă din text. Iar prima nu e capătul listei: e cea din comentariul
+  `# [LOTUL 12, R142]`, scris deasupra intrării «emitere». Din **18** nume, gardul cerea **16**;
+  cele două lipsă — `emitere` și `operatiuni` — erau exact cele adăugate de tura care scrisese
+  comentariul. *Un gard care se uită exact unde nu e problema raportează verde despre o lume pe care
+  n-o vede* — a treia instanță a clasei în registru, după garda de simetrie (28.08) și cea a
+  modulelor nelegate (01.09).
+- **reparația**: blocul se ia până la un `]` la **început de rând** (așa se închide un literal de
+  listă), iar comentariile se scot **înainte** de căutarea numelor — altfel un nume citat într-un
+  comentariu ar intra în lista pe care gardul o cere. Plus **anti-vacuu**, care lipsea cu totul:
+  lista negăsită sau goală **ridică**; un `[]` întors tăcut ar face gardul să nu ceară nimic.
+- **calibrare, în amândouă direcțiile**: înainte **16**, după **21** (16 + `emitere` + `operatiuni`
+  + cele trei mutate azi). Artefactul vizual s-a refăcut pe toate 21, cu **zero violări** — deci
+  lărgirea cererii n-a fost plătită cu o poartă roșie ascunsă.
+- **ce NU acoperă, declarat**: `ECRANE` trebuie să rămână un **literal de listă**. Un
+  `ECRANE += [...]` scris după definiții ar trece de Python și ar rupe cuplajul la loc — de-aia
+  ajutoarele de desktop au urcat înaintea listei, în loc să se adauge după ea.
+- **unde ajunge efectul**: poarta verde vizuală (CLAUDE.md §2.3 pct.11) — cele trei unelte rulate pe
+  ecranele atinse.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
