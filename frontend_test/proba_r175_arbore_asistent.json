@@ -1,0 +1,102 @@
+{
+ "cont": "asistent@prisma-cont.test",
+ "ui_hash": "5da725cbf1cac8e9",
+ "perechi": [
+  {
+   "cheie": "firme",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "control",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "termene",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "declaratii",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "validat",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "pachete",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "raport",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "recomanda",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  },
+  {
+   "cheie": "setari",
+   "din_nod": "",
+   "din_card": "",
+   "la_fel": true
+  }
+ ],
+ "axe": {
+  "violari": [],
+  "title_only": {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ },
+ "mobil": {
+  "arbore_vizibil": true,
+  "noduri": 9,
+  "revarsare_x": false,
+  "tinte_sub_24": 0
+ },
+ "noduri": [
+  "firme",
+  "control",
+  "termene",
+  "declaratii",
+  "validat",
+  "pachete",
+  "raport",
+  "recomanda",
+  "setari"
+ ],
+ "carduri": [
+  "firme",
+  "control",
+  "termene",
+  "declaratii",
+  "validat",
+  "pachete",
+  "raport",
+  "recomanda",
+  "setari"
+ ],
+ "grupe": [
+  "Firmele mele",
+  "Lucrarea lunii",
+  "Contul meu"
+ ],
+ "ordine_identica": true
+}

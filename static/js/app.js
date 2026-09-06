@@ -49,7 +49,7 @@ import { ecranBunVenit } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_veni
 import { ecranLogin } from "./ecrane/login.js?v=cad92f35d3";
 import { creeazaNavigator } from "./navigator.js?v=31ee34a3ed";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=86367a025f";
-import { desktopAsistent } from "./ecrane/asistent.js?v=c7f6405f11";
+import { desktopAsistent } from "./ecrane/asistent.js?v=914996f692";
 import { desktopPortal } from "./ecrane/portal.js?v=0c0ffb532b";
 import { desktopAdmin } from "./ecrane/admin.js?v=7c33bbe96d"; // [p37_admin_desktop]
 

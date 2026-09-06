@@ -390,6 +390,26 @@ html, body {
 @media (max-width: 760px) { .cab-grila { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 480px) { .cab-grila { grid-template-columns: 1fr; } }
 
+/* [p90_arbore 06.09.2026] desktopul asistentului: arbore de navigare in stanga, carduri in dreapta.
+   Pe telefon arborele TRECE DEASUPRA cardurilor, nu dispare: e navigare, iar o navigare ascunsa pe
+   ecranul mic ar muta functionalitati in nicaieri. */
+.asi-cadru { display: grid; grid-template-columns: 240px 1fr; gap: 16px; align-items: start; }
+.asi-panou { position: sticky; top: 12px; }
+.asi-arbore { background: #e9edf3; border: 2px solid rgba(0,0,0,0.10); border-radius: 12px; padding: 12px 10px; }
+.asi-grup + .asi-grup { margin-top: 14px; }
+.asi-grup-titlu { font-size: var(--text-mic); font-weight: 700; color: #5c6675; letter-spacing: 0.04em;
+  text-transform: uppercase; margin: 0 0 6px 8px; }
+.asi-lista { list-style: none; margin: 0; padding: 0; }
+.asi-nod { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px;
+  padding: 8px 10px; border: 0; border-radius: 8px; background: transparent; color: #2f6fa6;
+  font-family: inherit; font-size: var(--text); text-align: left; cursor: pointer; }
+.asi-nod:hover { background: rgba(47,111,166,0.10); }
+.asi-nod:focus-visible { outline: 2px solid #2f6fa6; outline-offset: 1px; }
+@media (max-width: 760px) {
+  .asi-cadru { grid-template-columns: 1fr; }
+  .asi-panou { position: static; }
+}
+
 /* ============================================================
    VEDERI SECUNDARE în desktop (meniu Firme, listă) — antet comun
    ============================================================ */
@@ -1028,7 +1048,11 @@ html, body {
 /* [p22_bara_lant] lantul barei 1 (verigi + chevron) */
 .bara-chevron { color: rgba(255,255,255,0.45); font-size: var(--text); margin: 0 2px; }
 .bara-veriga { font-size: var(--text-mic); font-weight: 600; color: var(--alb); }
-.bara-veriga-slab { font-size: var(--text-mic); color: #cdddf0; }
+/* [a11y 06.09.2026] #cdddf0 pe #347ab8 = 3.28:1 (axe, serious). Pe albastrul barii nici macar
+   albul pur nu trece decat la 4.54, deci NU exista un albastru-deschis acceptabil: distinctia
+   tare/slab se muta de pe CULOARE pe GREUTATE. Gasit la prima scanare a desktopului
+   asistentului — ecran care pana azi n-avea cont activ, deci n-avea subiect. */
+.bara-veriga-slab { font-size: var(--text-mic); font-weight: 400; color: var(--alb); }
 
 
 /* [p24_bara3] bara 3 motivationala (asistent) */
@@ -2124,6 +2148,13 @@ html.pagina-publica, body.pagina-publica { overflow-y: auto; }
 .btn-nav { width: 32px; height: 32px; padding: 0; border-radius: 8px; border: none;
   background: #f97316; color: #fff; font-size: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(20,30,45,0.25); }
 .subbara-edu { min-height: 24px; display: inline-flex; align-items: center; padding: 2px 4px; }  /* a11y: tinta atingere >=24px (AA 2.5.8; era 18px) */
+/* [a11y 06.09.2026] Butoanele-link ALE BANNER-ULUI stau pe subbara (#9fb1c7), unde
+   `.btn-link` #2f6fa6 da 2.43:1 — sub AA. Tokenul fusese verificat pe alb (5.32) si pe
+   panoul DESCHIS #e9edf3 (4.53); subbara e mai inchisa decat amandoua. Scoped, ca la
+   v2.43: #1a2535 = 7.05 pe #9fb1c7, acelasi accent pe care subbara il foloseste deja.
+   Gasit abia azi fiindca banner-ul se randeaza NUMAI cand cabinetul are doi validatori,
+   iar instalarea avea unul singur — nu ecranul era punctul orb, ci contul. */
+.subbara-edu .btn-link { color: #1a2535; }
 .btn-link { font-size: var(--text-mic); padding: 0; border: none; background: transparent;
   /* [a11y contrast 18.08.2026] era #3d8fd6 = 3.44 pe alb / 2.93 pe panou #e9edf3 (sub AA); -> #2f6fa6
      = 4.53 pe #e9edf3, 5.32 pe alb. Butoanele-link (sterge/confirma/anuleaza etc.) app-wide. */

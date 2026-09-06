@@ -8219,3 +8219,53 @@ decât ecranul care o anunță, și tocmai tiparul `tenant_006` ar fi devenit un
 *Efect lateral*: docstringul scanului afirma că regimul „nu intră" în selector. A fost adevărat
 dimineața și fals după-amiaza. Corectat în același commit — **un instrument care descrie o lume pe
 care a schimbat-o tocmai reparația de lângă el minte cu cea mai bună credință.**
+
+
+## 06.09.2026 — desktopul asistentului: panou-arbore în stânga, carduri reordonate
+
+Cerut de Costin: panou de navigare tip arbore cu toate funcționalitățile de pe carduri, plus
+reordonarea cardurilor, cu ordinea derivată din **fluxul de lucru** — zilnic înaintea lunarului, de
+bază înaintea administrativului — și cu grupele **derivate din organizarea de azi a cardurilor**, nu
+inventate.
+
+**O SINGURĂ SURSĂ pentru amândouă.** Arborele și cardurile se randează din aceeași listă
+(`SECTIUNI` + `NODURI`), iar destinația fiecărui nod e *aceeași funcție* pe care o cheamă cardul —
+nu o copie a ei. Motivul nu e estetic, e măsurat: chiar azi (R94) s-a reparat clasa „două mecanisme
+răspund diferit la aceeași întrebare", care trăise nouă zile fiindcă ecranul și poarta citeau două
+liste. *Un arbore scris separat de carduri ar fi fost a treia.*
+
+**ORDINEA, și de ce asta.** Criteriul lui Costin numește «facturare, note, casă» ca lucru zilnic —
+dar acelea **nu sunt carduri pe ecranul ăsta**: trăiesc înăuntrul unei firme și se ajunge la ele
+numai prin *Firme*. Deci pe ecranul asistentului „zilnic" înseamnă **Firme**, și de-aia e primul.
+Apoi *Control fiscal* (trierea de dimineață: ce arde azi), apoi *Termene* (orizontul: ce vine).
+Urmează lunarul, în ordinea actului — *Declarații* (pregătesc) → *De validat* (verific ce a
+pregătit altul) → *Pachete lunare* (livrez clientului, ultimul act al lunii). La urmă ocazionalul și
+administrativul: *Raportează* (reactiv, legat de muncă) → *Recomandă* (promoțional) → *Setări cont*.
+
+**GRUPELE sunt cardurile de azi, citite după ce răspund**, nu o taxonomie nouă: *Firmele mele* ·
+*Lucrarea lunii* · *Contul meu*.
+
+**PROBAT ÎN BROWSER, apăsând.** «Fiecare nod duce la același loc unde duce cardul» nu se poate proba
+citind sursa — `"randeazaControl" in text` e adevărat și într-o lume în care nodul nu cheamă nimic.
+`frontend_test/proba_r175_arbore_asistent.py` deschide fereastra din nod, îi citește firul, o
+închide, apasă cardul, citește iar: **9 din 9 perechi, același capăt**; ordinea citită din arborele
+de randare, identică; mobil (Pixel 5) — arborele **nu dispare**, zero revărsare orizontală, zero
+ținte sub 24px. Gard `core/test_asistent_arbore.py`, cuplat la `ui_hash`: un `asistent.js` schimbat
+după probă face proba **invalidă**, nu doar veche. Mutație: cardurile randate dintr-o listă proprie
+→ roșu.
+
+**ECRANUL A AVUT NEVOIE ÎNTÂI DE UN SUBIECT.** `nav_ecrane.py` scria de ce desktopul asistentului
+lipsește din lista scanului: singurul cont `angajat` din bază era **inactiv**, deci ecranul „nu e
+fără defect, e fără subiect". Contul a fost reactivat **pe calea aplicației**
+(`POST /asistenti/{uid}/reactiveaza` + `/permisiuni` + două firme alocate), cum prescrie chiar nota
+— nu printr-un `UPDATE`, fiindcă un `UPDATE` ar fi produs o stare pe care aplicația nu știe s-o
+producă singură, iar proba de deasupra ei n-ar mai fi spus nimic despre aplicație.
+
+**Și prima privire a găsit un defect vechi.** `.bara-veriga-slab` (veriga „slabă" din lanțul barei
+1, din p22) = `#cdddf0` pe albastrul `#347ab8` = **3.28:1**, sub prag — axe, *serious*. Nu se putea
+repara luminând: calculat pe `#347ab8`, **nici albul pur nu trece decât la 4.54**, deci nu există
+albastru-deschis acceptabil. Distincția tare/slab s-a mutat de pe **culoare** pe **greutate** (600
+vs 400), amândouă albe. *Când singura culoare care trece e albul, distincția trebuie să se mute pe
+altceva decât culoarea.* Defectul n-a picat niciodată fiindcă ecranul n-avea cine să-l deschidă —
+**punctul orb e firma, sau aici: contul**.
+

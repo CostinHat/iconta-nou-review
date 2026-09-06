@@ -283,10 +283,24 @@ ECRANE_CAMPANIE = [(fid[3:].replace("-", "_"), _fa_card(fid)) for fid in _FA_CAM
 # si sonda ar raporta „navigare esuata" despre un ecran care functioneaza. De-aia intrarile de
 # aici sunt de TREI campuri, nu doua — iar hamul deschide cate un context per cont.
 #
-# MASURAT AZI, si de-aia lipseste desktopul asistentului (`asistent.js`): din cele 14 conturi ale
-# bazei, singurul cu rol `angajat` e INACTIV, deci `sesiune_pentru_user` il refuza. Ecranul nu e
-# „fara defect": e fara subiect. Se probeaza cand exista un asistent activ, prin calea aplicatiei
+# DESKTOPUL ASISTENTULUI (`asistent.js`) — de ce lipseste de aici, si ce s-a schimbat.
+#
+# CUM ERA (masurat 04.09.2026): din cele 14 conturi ale bazei, singurul cu rol `angajat` era
+# INACTIV, deci `sesiune_pentru_user` il refuza. Ecranul nu era „fara defect": era fara SUBIECT.
+# Scria aici ca se probeaza cand exista un asistent activ, prin calea aplicatiei
 # (`/asistenti/{id}/reactiveaza`), nu printr-un UPDATE.
+#
+# ASA S-A SI FACUT, pe 06.09.2026, cand ecranul a fost reorganizat (panoul-arbore): contul
+# `asistent@prisma-cont.test` a fost reactivat prin rute, cu permisiuni si doua firme. Deci
+# subiectul EXISTA acum — iar prima privire a si gasit un defect vechi (`.bara-veriga-slab`,
+# contrast 3.28 pe bara albastra, reparat).
+#
+# DE CE TOT NU E IN `ECRANE`, si asta e motivul NOU: cele trei unelte de aici plimba UN SINGUR cont
+# peste lista, iar `app.js` alege desktopul din `sesiune.rol()` la pornirea filei — deci un al
+# doilea ROL cere un al doilea CONTEXT de browser, nu un ecran in plus. Hamul stie s-o faca
+# (`w_auth.new_page(pw, email)`); uneltele de lista, nu. Pana cand vor sti, ecranul e acoperit de
+# `frontend_test/proba_r175_arbore_asistent.py` (axe + mobil + perechile nod/card), cuplata la
+# `ui_hash` prin `core/test_asistent_arbore.py` ca sa nu imbatraneasca tacut.
 CONT_CABINET = EMAIL_IMPLICIT              # admin_firma, cabinetul 1968
 CONT_ADMIN = "admin@prisma-cont.test"      # superadmin
 CONT_TEST = "fir-intrare@prisma-cont.test"  # admin_firma al cabinetului de test 4163

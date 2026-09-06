@@ -1,6 +1,15 @@
 // asistent.js — desktopul asistentului: ecran de lucru ca al cabinetului,
 // minus exclusivele cabinetului. Bara 3 = doar motivational (pozitiv).
 // Sursa unica: identitatea/permisiunile din sesiune.user(); cifrele din /eu/calitate.
+//
+// [p90_arbore 06.09.2026] PANOU DE NAVIGARE TIP ARBORE, in stanga, langa carduri.
+//
+// O SINGURA SURSA pentru amandoua. Arborele si cardurile se randeaza din `SECTIUNI` +
+// `NODURI`, iar destinatia fiecarui nod e ACEEASI functie pe care o cheama cardul - nu o
+// copie a ei. Motivul e masurat, nu estetic: chiar azi (R94) s-a reparat clasa „doua
+// mecanisme raspund diferit la aceeasi intrebare", care traise noua zile fiindca ecranul
+// si poarta citeau doua liste. Un arbore scris separat de carduri ar fi fost a treia.
+// `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=1dccbc985b";
 import { semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
@@ -19,89 +28,133 @@ function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
 }
 
-function inLucru(titlu) {
-  return (nav) => nav.deschide(titlu, (corp) => {
-    corp.innerHTML = `<p class="ecran-nota">${titlu} — în lucru.</p>`;
+// ── NODURILE, una per functionalitate. `deschide` e destinatia UNICA: o cheama si cardul,
+// si nodul din arbore. Nimic din ce urmeaza nu duplica o navigare.
+const NODURI = {
+  firme: { titlu: "Firme", icon: "building", ...CULORI_CARD.albastru,
+    sinteza: "Firmele tale alocate",
+    deschide: (nav) => nav.deschide("Firme", (corp) => randeazaListaFirme(corp, nav, () => nav.inapoi())) },
+  control: { titlu: "Control fiscal", icon: "shield", ...CULORI_CARD.teal,
+    sinteza: "Starea fiscală a firmelor tale",
+    deschide: (nav) => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav)) },
+  termene: { titlu: "Termene", icon: "calendar", ...CULORI_CARD.verde,
+    sinteza: "Scadențele firmelor tale",
+    deschide: (nav) => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav)) },
+  declaratii: { titlu: "Declarații", icon: "declaratii", ...CULORI_CARD.albastru,
+    sinteza: "Pregătește și trimite la validare", cere: "poate_pregati",
+    deschide: (nav) => nav.deschide("Declarații", (corp) => randeazaDeclaratii(corp, nav)) },
+  validat: { titlu: "De validat", icon: "clipboard", ...CULORI_CARD.piersica,
+    sinteza: "Declarații de validat de la colegi", cere: "poate_valida",
+    deschide: (nav) => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav)) },
+  pachete: { titlu: "Pachete lunare", icon: "mail", ...CULORI_CARD.violet,
+    sinteza: "Trimite pachetul lunar către clienți",
+    deschide: (nav) => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)) },
+  raport: { titlu: "Raportează", icon: "report", ...CULORI_CARD.ardezie,
+    sinteza: "Raportează o problemă către iConta.eu",
+    deschide: (nav) => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav)) },
+  recomanda: { titlu: "Recomandă", icon: "gift", ...CULORI_CARD.chihlimbar,
+    sinteza: "Invită un cabinet în iConta.eu",
+    deschide: (nav) => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)) },
+  setari: { titlu: "Setări cont", icon: "settings", ...CULORI_CARD.ardezie,
+    sinteza: "Parolă și date de profil",
+    deschide: (nav) => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav)) },
+};
+
+// ── ORDINEA, si de ce e asta. Criteriul e fluxul de lucru al asistentului: ce se face ZILNIC
+// inaintea a ce se face lunar sau trimestrial, si ce e de baza inaintea a ce e administrativ.
+//
+// Grupele NU sunt o taxonomie noua - sunt cardurile de azi, citite dupa ce raspund:
+// starea firmelor · productia lunii · contul meu.
+//
+// „Firme" e primul fiindca lucrul zilnic (facturare, note, casa) traieste INAUNTRUL unei firme
+// si se ajunge la el numai pe aici; pe ecranul asta, „zilnic" inseamna „Firme".
+const SECTIUNI = [
+  // zilnic: ce lucrez, ce arde azi, ce vine
+  { titlu: "Firmele mele", noduri: ["firme", "control", "termene"] },
+  // lunar/trimestrial, in ordinea actului: pregatesc -> verific -> livrez
+  { titlu: "Lucrarea lunii", noduri: ["declaratii", "validat", "pachete"] },
+  // ocazional si administrativ, la urma
+  { titlu: "Contul meu", noduri: ["raport", "recomanda", "setari"] },
+];
+
+// Cheile pe care le are DREPTUL sa vada utilizatorul, in ordinea sectiunilor.
+export function cheiPermise(u) {
+  const are = (n) => !n.cere || !!(u || {})[n.cere];
+  return SECTIUNI.map((s) => ({
+    titlu: s.titlu,
+    noduri: s.noduri.filter((k) => NODURI[k] && are(NODURI[k])),
+  })).filter((s) => s.noduri.length);
+}
+
+function arbore(sectiuni, nav) {
+  const el = document.createElement("nav");
+  el.className = "asi-arbore";
+  el.setAttribute("aria-label", "Navigare între funcționalități");
+  sectiuni.forEach((s, i) => {
+    const grup = document.createElement("div");
+    grup.className = "asi-grup";
+    const cap = document.createElement("h2");
+    cap.className = "asi-grup-titlu";
+    cap.id = `asi-grup-${i}`;
+    cap.textContent = s.titlu;
+    grup.appendChild(cap);
+    const lista = document.createElement("ul");
+    lista.className = "asi-lista";
+    lista.setAttribute("aria-labelledby", cap.id);
+    s.noduri.forEach((k) => {
+      const n = NODURI[k];
+      const li = document.createElement("li");
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "asi-nod";
+      b.dataset.nod = k;
+      b.innerHTML = `${svg(n.icon, "#2f6fa6")}<span>${n.titlu}</span>`;
+      b.addEventListener("click", () => n.deschide(nav));
+      li.appendChild(b);
+      lista.appendChild(li);
+    });
+    grup.appendChild(lista);
+    el.appendChild(grup);
   });
+  return el;
 }
 
 export async function desktopAsistent(continut, nav) {
   const u = sesiune.user() || {};
   const prenume = u.prenume || u.nume || u.email || "";  /* [salut_prenume 27.07.2026] afisa numele de familie */
-  const poateValida = !!u.poate_valida;
 
   // [p25_bara3] bara 3 e in navigator acum, nu aici
 
-  const DEF = [
-    { cheie:"firme",     titlu:"Firme",          icon:"building",  ...CULORI_CARD.albastru,
-      sinteza:"Firmele tale alocate" },
-    { cheie:"control",   titlu:"Control fiscal", icon:"shield",    ...CULORI_CARD.teal,
-      sinteza:"Starea fiscală a firmelor tale" },
-    { cheie:"termene",   titlu:"Termene",        icon:"calendar",  ...CULORI_CARD.verde,
-      sinteza:"Scadențele firmelor tale" },
-    ...(poateValida ? [
-    { cheie:"validat",   titlu:"De validat",     icon:"clipboard", ...CULORI_CARD.piersica,
-      sinteza:"Declarații de validat de la colegi" }] : []),
-    { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      ...CULORI_CARD.violet,
-      sinteza:"Trimite pachetul lunar către clienți" },
-    { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      ...CULORI_CARD.chihlimbar,
-      sinteza:"Invită un cabinet în iConta.eu" },
-    { cheie:"raport",    titlu:"Raportează",     icon:"report",    ...CULORI_CARD.ardezie,
-      sinteza:"Raportează o problemă către iConta.eu" },
-    { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  ...CULORI_CARD.ardezie,
-      sinteza:"Parolă și date de profil" },
-  ];
+  const sectiuni = cheiPermise(u);
 
   continut.innerHTML = `
     <div class="cab-salut">
       <div class="cab-salut-nume">Salut, ${prenume}</div>
     </div>
-    <div class="cab-grila"></div>
+    <div class="asi-cadru">
+      <div class="asi-panou"></div>
+      <div class="cab-grila"></div>
+    </div>
   `;
 
+  continut.querySelector(".asi-panou").appendChild(arbore(sectiuni, nav));
+
   const grila = continut.querySelector(".cab-grila");
-  // [p44_declaratii] card Declaratii doar pentru cine poate pregati
-  const _listaA = DEF.slice();
-  if ((sesiune.user() || {}).poate_pregati) {
-    _listaA.splice(3, 0, {
-      cheie:"declaratii", titlu:"Declarații", icon: "declaratii",
-      ...CULORI_CARD.albastru,
-      sinteza:"Pregătește și trimite la validare"
-    });
-  }
-  _listaA.forEach((c) => {
+  // Cardurile, in EXACT ordinea arborelui - aceeasi lista, plimbata o data.
+  sectiuni.forEach((s) => s.noduri.forEach((k) => {
+    const c = NODURI[k];
     const card = document.createElement("button");
     card.className = "cab-card";
     card.style.background = c.bg;
     card.style.color = c.fg;
     card.innerHTML = `
       <div class="cab-card-cap">${svg(c.icon, c.fg)}<span class="cab-card-titlu">${c.titlu}</span></div>
-      <div class="cab-card-sinteza" data-cheie="${c.cheie}">${c.sinteza}</div>
+      <div class="cab-card-sinteza" data-cheie="${k}">${c.sinteza}</div>
     `;
-    if (c.cheie === "firme") {
-      card.addEventListener("click", () =>
-        nav.deschide("Firme", (corp) => randeazaListaFirme(corp, nav, () => nav.inapoi())));
-    } else if (c.cheie === "control") {
-      card.addEventListener("click", () => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav)));
-    } else if (c.cheie === "termene") {
-      card.addEventListener("click", () => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav)));
-    } else if (c.cheie === "validat") {
-      card.addEventListener("click", () => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav)));
-    } else if (c.cheie === "recomanda") {  // [p31_recomanda]
-      card.addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)));
-    } else if (c.cheie === "pachete") {  // [p63_pachete]
-      card.addEventListener("click", () => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)));
-    } else if (c.cheie === "raport") {  // [p34_raporteaza]
-      card.addEventListener("click", () => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav)));
-    } else if (c.cheie === "declaratii") {  // [p44_declaratii]
-      card.addEventListener("click", () => nav.deschide("Declarații", (corp) => randeazaDeclaratii(corp, nav)));
-    } else if (c.cheie === "setari") {  // [p28_setari] gating in setari.js -> non-admin vede doar Date profil + Schimba parola
-      card.addEventListener("click", () => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav)));
-    } else {
-      card.addEventListener("click", () => inLucru(c.titlu)(nav));
-    }
+    card.addEventListener("click", () => c.deschide(nav));
     grila.appendChild(card);
-  });
+  }));
+
   actualizeazaRaportariAsi(grila);  // [p34_raporteaza]
   actualizeazaControlAsi(grila);  // [p87_asistent]
   document.addEventListener("raportari:schimbat", () => actualizeazaRaportariAsi(grila));

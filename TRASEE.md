@@ -722,18 +722,35 @@ ramură scrisă (`main.py:5743`).
 |---|---|---|
 | `superadmin` | 2 | (trec oricum) |
 | `admin_firma` | 7 | toți: da/da/da |
-| `angajat` | **1** | **nu/nu/nu** |
+| `angajat` | **1** | **da/da/nu** (v. nota de mai jos — schimbat 06.09.2026) |
 | `client` | 2 | — |
 
-**Singurul `angajat` din instalare** — `asistent@prisma-cont.test`, cabinetul 1968 — **n-are
-nicio firmă atribuită** (nu apare în `public.user_tenants`) și **n-are niciun drept fin**.
+**Singurul `angajat` din instalare** — `asistent@prisma-cont.test`, cabinetul 1968. Blocul de
+mai jos descria starea de dinainte de **06.09.2026** și se corectează, fiindcă starea s-a schimbat
+prin mâna mea, nu de la sine.
 
-**Consecința, și e cifra care contează:** *pe nicio firmă din cele 17 nu se poate exercita
-azi un traseu care cere doi oameni.* Patru-ochi are nevoie de **doi validatori activi** în
-același cabinet (`coada_api.patru_ochi_posibil`); cabinetul 1968 are **unul**. Restul
-cabinetelor au **un singur utilizator**. Nu e o lipsă de scenariu de test — e o lipsă de
-actori, și se vede în date: **cele trei elemente din coadă sunt create toate de același
-utilizator (1968), iar cel depus a fost și aprobat, și depus, de el.**
+> **CUM ERA, până în 06.09.2026:** contul era **inactiv**, **n-avea nicio firmă atribuită** (nu
+> apărea în `public.user_tenants`) și **n-avea niciun drept fin** (`nu/nu/nu`). *Consecința, și era
+> cifra care conta:* pe nicio firmă din cele 17 nu se putea exercita un traseu care cere doi oameni
+> — patru-ochi are nevoie de **doi validatori activi** în același cabinet
+> (`coada_api.patru_ochi_posibil`), iar cabinetul 1968 avea **unul**. Se vedea în date: cele trei
+> elemente din coadă sunt create toate de același utilizator (1968), iar cel depus a fost și
+> aprobat, și depus, de el.
+
+**CUM E ACUM, și de ce s-a schimbat.** Reorganizarea desktopului asistentului (arborele de
+navigare) cerea să pot **privi** ecranul, iar `nav_ecrane.py` scria de ce nu se putea: *„ecranul nu
+e «fără defect»: e fără subiect"*. Contul a fost reactivat **pe calea aplicației**
+(`POST /asistenti/{uid}/reactiveaza`, apoi `/permisiuni` și două firme alocate), exact cum prescria
+nota — nu printr-un `UPDATE`. Deci azi: **activ**, `poate_pregati`/`poate_valida` **da**,
+`poate_depune` **nu**, **2 firme** atribuite.
+
+**CE SE SCHIMBĂ PENTRU PATRU-OCHI, și e o consecință reală, nu un detaliu de fixtură.** Cabinetul
+1968 are acum **doi** validatori activi, deci `patru_ochi_posibil` a trecut pe **true** — ruta de
+permisiuni a răspuns-o singură: `{"activ": false, "posibil": true, "efectiv": false}`. **Posibil,
+NU activ**: mecanismul rămâne oprit până îl pornește cineva deliberat, deci nimic din
+comportamentul de azi al aplicației nu se schimbă. Dar afirmația *„nu se poate exercita un traseu
+care cere doi oameni"* **nu mai e adevărată** — și un traseu care nu se putea proba deloc devine
+probabil. Restul cabinetelor au în continuare un singur utilizator.
 
 ---
 

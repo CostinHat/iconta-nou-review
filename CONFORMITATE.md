@@ -7742,6 +7742,49 @@ consumă valoarea» … pragul se stabilește după, pe baza consumatorului. Nu 
   deschisă pentru altceva decât ce numește.*
 
 
+
+### R175 — Desktopul asistentului e văzut de o probă proprie, nu de uneltele de listă
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · faza 1, pasul **1b** · legată de **R70** · **PRAG 3**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `ac57be53`
+- **măsurat la**: 2026-09-06 · **pe commit**: `ac57be53`
+- **ce blochează**: cele trei unelte vizuale (`axe_scan`, `mobil_scan`, `interactiune_scan`) plimbă
+  **un singur cont** peste `nav_ecrane.ECRANE`, iar `app.js` alege desktopul din `sesiune.rol()` la
+  pornirea filei. Deci un al doilea ROL cere un al doilea CONTEXT de browser, nu un ecran în plus —
+  și uneltele nu știu asta. Desktopul asistentului (`asistent.js`) e azi acoperit de o probă proprie
+  (`frontend_test/proba_r175_arbore_asistent.py`, cuplată la `ui_hash` prin
+  `core/test_asistent_arbore.py`), care face axe desktop + mobil + perechile nod/card — dar **nu**
+  face completarea casetelor și apăsarea sistematică a butoanelor, cum face `interactiune_scan` pe
+  celelalte 21. *Motivul vechi al lipsei a dispărut azi* (contul `angajat` era inactiv, deci ecranul
+  „nu era fără defect, era fără subiect"; a fost reactivat pe calea aplicației); motivul rămas e
+  altul, și e de infrastructură.
+- **condiția de deblocare**: uneltele de listă acceptă un **cont per ecran** (nu unul global), iar
+  desktopul asistentului intră în `ECRANE` ca oricare altul. Se închide când artefactul vizual îl
+  conține și `test_toate_ecranele_scanate` îl cere. *Cât rămâne deschisă, proba proprie ține locul,
+  iar limita e scrisă aici — nu se raportează ca acoperit ce nu e.*
+
+#### R175 — ce a scos la iveală, în ziua în care s-a deschis
+
+Reactivarea contului a făcut `patru_ochi_posibil` **true** în cabinetul 1968 (doi validatori
+activi), iar asta a randat pentru **prima oară** banner-ul `#edu-4ochi` — «Poți activa validarea în
+doi». Consecința imediată: **21 de ecrane** au raportat brusc aceeași violare axe *serious*. Nu era
+o regresie; era un element care **nu se randase niciodată**, deci al cărui contrast nu fusese
+măsurat niciodată. `.btn-link` (#2f6fa6) pe subbara `--albastru-gri` (#9fb1c7) = **2.43:1**.
+Reparat scoped la #1a2535 = **7.05**.
+
+*Punctul orb nu era ecranul, era CONTUL.* Un scan vede doar stările pe care le produc datele pe
+care rulează — iar aici starea lipsă era „cabinetul are doi validatori".
+
+**Se mai deschide o ușă, și se consemnează ca oportunitate, nu ca datorie:** `TRASEE.md` declara
+*„pe nicio firmă din cele 17 nu se poate exercita azi un traseu care cere doi oameni"*. Afirmația
+**nu mai e adevărată** — patru-ochi e acum *posibil* (rămâne **neactivat**, deci comportamentul de
+azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
+
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
