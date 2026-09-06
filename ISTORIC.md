@@ -8154,3 +8154,21 @@ necunoscută → 404 · firma A marcată, cu marca · **firma B neatinsă** · p
 
 **R43 rămâne DESCHISĂ** pe partea externă: confirmarea tot nu vine semnată de la un procesator real.
 Aia cere chei, și e a lui Costin.
+
+
+## 06.09.2026 (5) — R96: cele trei registre nu mai pot diverge tăcut
+
+Verificat că mai e de actualitate: **da**, aceleași 8 firme din 20.
+
+**Scoasă o propoziție falsă** din `fisa_cont`: *„aceeași regulă ca la restul motorului"* — balanța și
+registrul-jurnal nu filtrează pe status deloc. **Construit** `scan_populatii_registre` (mulțimile
+celor trei, pe o singură axă — statusul) și gardul care cere **fie egalitate, fie o abatere
+declarată**, cu mutație pe cititorii reali.
+
+**Închiderea nu decide care mulțime e evidența.** R36 a fost decisă în varianta (a) — aplicația
+contabilizează automat —, dar aia răspunde la *cine produce nota*, nu la *ce status e evidență*. A
+deduce al doilea din primul ar fi exact interpretarea interzisă. Întrebarea urcă drept cerință.
+
+**O oră pierdută pe o fantomă, consemnată.** Mutația mea de probă a lăsat un `__pycache__` stale:
+sursa avea filtrul, codul rulat nu. Am „măsurat" de patru ori un defect care era al instrumentului
+meu. Semnalul ratat: același SQL, rulat de mână, dădea alt rezultat decât funcția.

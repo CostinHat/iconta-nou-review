@@ -7632,11 +7632,37 @@ trimițând către o schemă ștearsă. Trei de formă: inventarul gărzilor, fi
 **adnotarea celor două rute din `TRASEE_VERIFICARI.md`**, care descriau un efect care nu mai era
 adevărat. *Verificările scrise sub o adnotare stătută stau pe o descriere falsă.*
 
+## 06.09.2026 (5) — R96: trei registre obligatorii, o singură axă de comparație
+
+### `core/scan_populatii_registre.py` + `core/test_populatii_registre.py`
+
+Fișa de cont (14-6-22, ține locul Cărții mari) cere `status='validata'`; balanța și registrul-jurnal
+nu filtrează. Pe **8 firme din 20**, luna 08/2026, mulțimile diferă — pe patru dintre ele *toate*
+notele lunii sunt ciorne.
+
+**Gardul nu decide care e corectă** — aia e o decizie de fond, urcată ca cerință. Cere *fie
+egalitate, fie o abatere din listă, cu motivul scris*. Anti-vacuu în amândouă direcțiile: abaterea
+declarată trebuie să **existe azi** (altfel declarația e o afirmație netestată), iar motivul trebuie
+să fie scris, nu prezent.
+
+**Comparația e pe O SINGURĂ AXĂ — statusul.** Fereastra cumulativă a balanței e o diferență de
+*perioadă*, intenționată, declarată în afara comparației. *O comparație care amestecă două axe nu
+poate spune pe care din ele diferă.*
+
+**Mutația** cerută de restanță se probează pe **cititorii reali**, nu pe un SQL rescris de gard:
+scoțând filtrul din `fisa_cont`, gardul cade; pus la loc, trece.
+
+### Și propoziția falsă din `fisa_cont`, scoasă
+
+Docstringul spunea *„o ciornă nu e evidență (aceeași regulă ca la restul motorului)"*. A doua
+jumătate era falsă despre restul motorului — clasa **R16**, proză care descrie codul și e falsă de la
+naștere. Înlocuită cu ce se poate confrunta: cifra, cine filtrează, cine nu, și unde e gardat.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**524 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**526 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 504
+### `core/` — 506
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7656,6 +7682,7 @@ adevărat. *Verificările scrise sub o adnotare stătută stau pe o descriere fa
 - `core/scan_module_nelegate.py` — INSTRUMENT — module cu funcții publice și ZERO importatori în afara testelor.
 - `core/scan_norma_implementare.py` — core/scan_norma_implementare.py — INTERDICȚIA 60: elementul care implementează o normă îi poartă
 - `core/scan_pereche_act_articol.py` — DOCUMENTUL PE CARE ÎL CITEAZĂ UN TEMEI CONȚINE ARTICOLUL PE CARE ÎL NUMEȘTE?
+- `core/scan_populatii_registre.py` — core/scan_populatii_registre.py — CE MULȚIME DE NOTE citește fiecare registru obligatoriu, pe aceeași lună.
 - `core/scan_provenienta.py` — core/scan_provenienta.py — de unde vine fiecare fisier din corpus. (23.08.2026)
 - `core/scan_refuz_tacut.py` — core/scan_refuz_tacut.py — cate refuzuri ale serverului nu ajung la om.
 - `core/scan_respingeri.py` — core/scan_respingeri.py — ce coduri de respingere sunt CHIAR FOLOSITE in module?
@@ -8035,6 +8062,7 @@ adevărat. *Verificările scrise sub o adnotare stătută stau pe o descriere fa
 - `core/test_poarta_inainte_de_aprobare.py` — GARD [02.09.2026]: POARTA CONFIRMARII CADE INAINTE DE APROBARE, nu dupa.
 - `core/test_poarta_inchidere.py` — GARDA porții de închidere a perioadei — R58, partea care lipsea.
 - `core/test_poarta_profil.py` — Garda: verificarea de profil nu e decorativa — daca exista, blocheaza generarea.
+- `core/test_populatii_registre.py` — GARD [R96, 06.09.2026]: cele trei registre obligatorii ori citesc aceeași mulțime, ori abaterea e DECLARATĂ.
 - `core/test_portal_acces.py` — GARD [R62, 26.08.2026]: portalul nu mută identitatea fără confirmare, nu trece un cont dintr-un
 - `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
 - `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.

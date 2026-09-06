@@ -75,7 +75,17 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None):
     `luna=None` inseamna tot anul. `sold_initial` e un Decimal cu semn (+ debitor / − creditor);
     daca lipseste, fisa porneste de la 0 si o declara.
 
-    Se citesc DOAR notele validate: o ciorna nu e evidenta (aceeasi regula ca la restul motorului).
+    Se citesc DOAR notele VALIDATE.
+
+    [R96, 06.09.2026] Propozitia de dinainte spunea „aceeasi regula ca la restul motorului" — si era
+    FALSA despre restul motorului: `documente_api.balanta` si ruta `/tenants/{id}/jurnal` NU
+    filtreaza pe status deloc, iar a doua chiar duce `status` mai departe pe fiecare rand. Masurat
+    pe 08/2026: pe 8 firme din 20 multimile difera; pe patru dintre ele TOATE notele lunii sunt
+    ciorne, deci intra in doua registre obligatorii si lipsesc din al treilea.
+
+    Abaterea e acum DECLARATA si gardata: `core/scan_populatii_registre.ABATERI_DECLARATE` +
+    `core/test_populatii_registre.py`. CARE multime e cea corecta ramane **R36** — o decizie nedata;
+    pana atunci abaterea e vizibila, nu justificata.
     """
     cont = str(cont or "").strip()
     if not cont:

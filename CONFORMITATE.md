@@ -2212,11 +2212,59 @@ citirea corectează.*
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · faza 1, pasul **1b** · legată de **R36** (modelul de evidență) și **R47** (excepția NIR-ului) · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `81b89e7`
+- **rezolvată pe commit**: `c3a9122b`
 - **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
 - **ce blochează**: `core/fisa_cont.py` — Fișa de cont 14-6-22, care ține locul Cărții mari — filtrează `i.status = 'validata'`, iar docstringul lui își numește motivul: *„o ciornă nu e evidență (**aceeași regulă ca la restul motorului**)"*. Citit la sursă, propoziția e **falsă despre restul motorului**: `documente_api.balanta` (`WHERE i.data < %s`) și ruta `/tenants/{tenant_id}/jurnal` **nu filtrează pe status deloc** — a doua chiar duce `status` mai departe, pe fiecare rând. Măsurat pe 08/2026, pe toate cele 19 firme: **21 din cele 41 de note ale lunii sunt ciorne**, deci intră în balanță și în registrul-jurnal și **nu** intră în fișa de cont. Pe `tenant_017` **toate cele 5**; la fel, integral, pe `tenant_002`, `tenant_004`, `tenant_005` și `tenant_007`. Trei registre obligatorii, aceeași lună, trei răspunsuri la întrebarea *„ce s-a înregistrat"*.
 - **condiția de deblocare**: se răspunde la **R36** — dacă evidența e „ce a validat un om" sau „ce a înregistrat aplicația" — apoi **toate trei** registrele citesc aceeași mulțime, iar dacă vreunul citește deliberat altceva, motivul se scrie lângă el, ca declarație de perimetru. Se închide când o gardă confruntă populațiile celor trei pe aceeași perioadă și cere **fie** egalitate, **fie** o abatere declarată; probată prin mutație (o ciornă adăugată trebuie să miște exact registrele care o declară). *Se ridică și propoziția din docstringul lui `fisa_cont`, care azi afirmă despre restul motorului ceva ce nu e adevărat.*
+
+
+#### R96 — reparată 06.09.2026: abaterea nu mai poate fi tăcută
+
+Verificat întâi dacă mai e de actualitate: **da**. `scripts/scan_1b_regimuri.py`, rulat azi, dă
+aceleași trei populații — **8 firme din 20** pe luna 08/2026 —, iar `fisa_cont` cerea în continuare
+`status='validata'` acolo unde balanța și `/jurnal` nu filtrează deloc.
+
+**(1) Propoziția falsă, scoasă.** Docstringul lui `fisa_cont` spunea *„o ciornă nu e evidență
+(aceeași regulă ca la restul motorului)"*. A doua jumătate era **falsă despre restul motorului** —
+și e chiar felul de propoziție pe care o numește **R16**: proză care descrie codul și e falsă de la
+naștere. Înlocuită cu ce se poate confrunta: ce filtrează fișa, ce nu filtrează celelalte două, cifra
+măsurată, și unde e gardat.
+
+**(2) Instrumentul**: `core/scan_populatii_registre.py` — pentru o firmă și o lună, dă mulțimea de
+note pe care o citește **fiecare** registru, plus `ABATERI_DECLARATE`, cu motivul. Se compară pe
+**o singură axă — statusul** —, pe fereastra aceleiași luni; fereastra cumulativă a balanței e o
+diferență de *perioadă*, intenționată, și e declarată ca fiind în afara comparației. *O comparație
+care amestecă două axe nu poate spune pe care din ele diferă.*
+
+**(3) Gardul**: `core/test_populatii_registre.py`. Cere, pe tot portofoliul, **fie egalitate, fie o
+abatere din listă**. Plus anti-vacuu în două direcții: abaterea declarată trebuie să **existe
+azi** (altfel declarația ar fi o afirmație netestată despre o lume care nu e), și fiecare motiv
+trebuie să fie scris, nu prezent. Mutația cerută de restanță — *o ciornă adăugată mișcă exact
+registrele care o declară* — se probează pe schemă efemeră, chemând **cititorii reali**
+(`documente_api.balanta`, `fisa_cont.fisa_cont`), nu un SQL rescris de gard.
+
+**(4) Ce NU acoperă, declarat**: registrul-jurnal e o rută cu SQL inline în `main.py`, care cere
+sesiune și tenant real; aici se compară predicatul lui, nu se cheamă ruta. Populația reală a rutei
+rămâne la `core/test_registru_jurnal_14_1_1.py`.
+
+**O oră pierdută pe o fantomă, consemnată fiindcă e o lecție, nu o scuză.** Mutația mea de probă
+(`cp` + `sed -i` + `cp` înapoi) a lăsat un **`__pycache__` stale**: sursa avea filtrul, codul rulat
+nu-l mai avea. Am măsurat de patru ori „Fișa de cont arată o ciornă" și era **instrumentul meu**, nu
+aplicația. Semnalul care ar fi trebuit să mă oprească din prima: *același SQL, rulat de mână pe
+aceeași conexiune, dădea alt rezultat decât funcția*. Clasa e numită de mult
+(`mutatie-curata-pycache`); de acum, orice mutație pe fișier se termină cu ștergerea `__pycache__`,
+nu cu restaurarea fișierului.
+
+**DE CE SE ÎNCHIDE, și ce NU decide închiderea.** Clauza operativă a restanței e *„se închide când o
+gardă confruntă populațiile celor trei pe aceeași perioadă și cere **fie** egalitate, **fie** o
+abatere declarată"* — asta există acum. **Închiderea NU decide care mulțime e evidența.** `R36` a
+fost decisă în varianta *(a)* — aplicația contabilizează documentele automat —, dar aia răspunde la
+**cine produce nota**, nu la **ce status e evidență**. Cele două nu sunt același lucru, iar a deduce
+al doilea din primul ar fi exact interpretarea care a produs jumătate din corecțiile ultimelor două
+săptămâni. Întrebarea urcă la Costin ca cerință; până răspunde, abaterea e **vizibilă și gardată,
+nu justificată**, iar ziua în care răspunsul vine, `ABATERI_DECLARATE` se golește sau se rescrie.
 
 ### R97 — „Ruta livrează, ecranul tace": serverul trimite compoziția unei cifre, iar randarea o pierde
 

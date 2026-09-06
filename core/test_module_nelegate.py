@@ -61,6 +61,14 @@ PIN = {
     # absente sa nu o stinga**. `scripts/scan_1b_regimuri.py` importa modulul ca sa probeze ca
     # producatorul merge pe date reale; daca sonda l-ar fi socotit apelant, absenta livrarii s-ar fi
     # stins prin chiar masurarea ei. Regula aia e despre INSTRUMENT, nu despre fisier — si ramane.
+    # [R96, 06.09.2026] Instrumentul care dă mulțimile celor trei registre obligatorii, ca ele să
+    # poată fi confruntate. Nu are ce căuta pe o cale de producție: un registru nu trebuie să afle
+    # de la el CE citește — el ÎI măsoară pe toți trei, din afară. Singurul consumator legitim e
+    # gardul `core/test_populatii_registre.py`, iar sonda exclude importatorii de test.
+    "core/scan_populatii_registre.py":
+        "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_garzi_pe_text si "
+        "scan_rol_pe_efect): masoara ce citeste fiecare registru obligatoriu, iar consumatorul lui "
+        "legitim e gardul core/test_populatii_registre.py",
     "core/scan_rol_pe_efect.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_garzi_pe_text si "
         "scan_module_nelegate): singurul lui consumator legitim e gardul core/test_rol_pe_efect.py, "
