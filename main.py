@@ -6361,51 +6361,24 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
     with db.get_conn() as conn:
         return {"balanta": documente_api.balanta(conn, schema, an, luna)}
 
-# === LINK PLATA === # plati_link_v1
-@app.post("/tenants/{tenant_id}/facturi/{factura_id}/link-plata")
-# [R42] „iese către un om" — linkul ajunge la client, iar `platita_la` atârnă de el (R43).
-def factura_link_plata(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
-    from core import plati as _pl
-    schema = _schema_sau_404(ctx, tenant_id)
-    baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
-    with db.get_conn() as conn:
-        r = _pl.genereaza_link(conn, schema, factura_id, baza, tenant_id=tenant_id)
-    if r.get("eroare"):
-        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
-    return r
+# === LINK PLATA === scos 06.09.2026, odata cu retragerea caii de plata online (decizia 75).
+# Ruta `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata` a fost STEARSA, nu lasata
+# sa refuze: butonul care o chema nu mai exista, deci ea ramasese fara apelant — clasa R70.
+# *O ruta care doar refuza nu e o poarta, e o ramasita.*
 
-@app.get("/public/plata/{ref}")
-def plata_pagina(ref: str):
-    """Pagina mock: confirma plata (pana la integrarea provider real)."""
-    return Response(content=f"""<!doctype html><html lang="ro"><meta charset="utf-8">
-<title>Plata factura</title><body style="font-family:sans-serif;max-width:420px;margin:10vh auto">
-<h2>Plat\u0103 factur\u0103 (demo)</h2>
-<p>Integrarea cu procesatorul de pl\u0103\u021bi urmeaz\u0103. Ap\u0103sa\u021bi pentru a simula plata.</p>
-<form method="post" action="/public/plata/{ref}/confirma"><button style="padding:10px 22px">Pl\u0103te\u0219te</button></form>
-</body></html>""", media_type="text/html",
-                    headers={"X-Robots-Tag": "noindex, nofollow"})  # [plata_noindex 15.08.2026] ref e secret in URL; daca un link ajunge la crawler, se poate cere - inchis independent de robots.txt
-
-@app.post("/public/plata/{ref}/confirma")
-# [R43, 06.09.2026] PLEACA DE LA FIRMA, nu o cauta.
+# === PLATA ONLINE === retrasa complet 06.09.2026 (decizia 75).
 #
-# Forma dinainte citea `SELECT schema_name FROM public.tenants` si incerca un `UPDATE` in FIECARE
-# schema pana la prima potrivire. Nu era o scurgere — raspunsul e doar `{ok}`, iar `ref` are 128 de
-# biti —, dar o ruta NEAUTENTIFICATA care scrie prin toate firmele n-are nicio bariera structurala
-# intre ele: doua firme cu acelasi `ref` ar fi insemnat scriere in firma gresita, iar improbabilul
-# nu e o izolare, e un pariu. `public.plata_referinte.ref` e PRIMARY KEY, deci perechea e unica pe
-# tot portofoliul, iar aici se atinge O SINGURA schema.
-def plata_confirma(ref: str):
-    from core import plati as _pl
-    with db.get_conn() as conn:
-        gasit = _pl.firma_pentru_ref(conn, ref)
-        if not gasit:
-            raise HTTPException(404, "referință necunoscută")
-        _tid, sch, _fid = gasit
-        r = _pl.confirma_plata(conn, sch, ref)
-    if r.get("ok"):
-        return {"ok": True}
-    raise HTTPException(404, "referință necunoscută")
+# Au fost trei rute: generarea linkului (din ecran) si cele doua publice (pagina + confirmarea).
+# TOATE sunt scoase. Ordinea in care au cazut e a portii, si fiecare pas a fost intemeiat:
+#   1. butonul scos din ecran  -> ruta de generare a ramas fara apelant (R70) -> scoasa;
+#   2. confirmarea, care doar refuza -> «pas fara efect derivabil»: nu se mai poate scrie
+#      nicio verificare pe ea -> scoasa;
+#   3. pagina publica era piatra de mormant pentru un link vechi — dar linkuri vechi NU
+#      EXISTA: masurat, ZERO generate vreodata pe toate cele 20 de firme. *O piatra de
+#      mormant la care nu poate ajunge nimeni nu e o curtoazie, e cod mort.*
+#
+# Decizia, refuzul si motivul traiesc in `core/plati.py` (comutatorul `CALEA_ONLINE_ACTIVA`),
+# pazite de `core/test_plata_izolare.py`. Reactivarea cere o decizie noua, nu un `if` sters.
 
 @app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
 def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cere_api_key)):
@@ -11741,7 +11714,7 @@ def public_robots():
            "Disallow: /static/js/\n"        # bundle-ul app (app.js) expune fragmente de rute API -> Googlebot le culege; nu se scaneaza (05.08: 18x404+1x401)
            "Allow: /sitemap.xml\n"
            "Allow: /robots.txt\n"
-           "Disallow: /\n"                  # restul suprafetei (app, /public/plata, /auth, rute API)
+           "Disallow: /\n"                  # restul suprafetei (app, /auth, rute API)
            "Sitemap: %s/sitemap.xml\n" % _GHID_BAZA)
     return Response(content=txt, media_type="text/plain; charset=utf-8")
 

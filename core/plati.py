@@ -1,30 +1,43 @@
 # -*- coding: utf-8 -*-
-"""Link de plata pe factura emisa. Provider abstract: mock (fara cont) / netopia / stripe.
-Cheia providerului va veni din env la activare; pana atunci mock genereaza link intern.
+"""Calea de plata online — INCHISA. Nu se implementeaza.
 
-[R43, 06.09.2026] DOUA REPARATII, amandoua INTERNE; a treia parte a restantei ramane EXTERNA.
+**DECIZIA, a lui Costin, 06.09.2026**, verbatim: *„Nu se integreaza niciun procesator — fluxul real
+e transfer bancar, confirmat din extras."* Iar despre restanta: *„R43, partea externa: se inchide ca
+«nu se implementeaza», nu ramane deschisa la nesfarsit. Motivul: functionalitatea nu corespunde
+fluxului de lucru real."*
 
-**(1) REFERINTA ISI STIE FIRMA.** Pana azi `POST /public/plata/{ref}/confirma` citea
-`SELECT schema_name FROM public.tenants` si incerca un `UPDATE` in FIECARE schema, pana la prima
-potrivire. Nu era o scurgere — raspunsul e doar `{ok}`, iar `ref` are 128 de biti — dar era o ruta
-neautentificata care SCRIE prin toate firmele, fara nicio bariera structurala intre ele. Acum
-`genereaza_link` inregistreaza perechea in `public.plata_referinte` (`ref` = PRIMARY KEY), iar
-confirmarea PLEACA de la firma, nu o cauta. *Coliziunea intre firme devine imposibila prin
-constructie, nu improbabila* — iar improbabil nu e o izolare, e un pariu.
+**CE INSEMNA INAINTE.** `GET /public/plata/{ref}` randa o pagina cu un buton care spunea, literal,
+*„Integrarea cu procesatorul de plati urmeaza. Apasati pentru a simula plata."* Apasarea marca
+factura incasata. Iar `platita_la` devenea o afirmatie despre bani pe care nimic n-o sprijinea.
 
-**(2) PLATA SIMULATA O SPUNE.** `platita_la` scris pe calea `mock` e un buton apasat, nu bani
-intrati. `plata_confirmata_de` retine CINE a confirmat; pe `mock` valoarea e chiar `'mock'`, si
-ajunge pe ecran, langa eticheta „platita". Conditia lui R43 cere exact asta pentru inchiderea
-partiala.
+**CE S-A INCHIS, si unde.** Aici, intr-un singur loc: `CALEA_ONLINE_ACTIVA = False`. Amandoua
+functiile refuza pe el, iar rutele si ecranul nu mai ofera nimic care sa duca aici. Comutatorul
+exista ca REACTIVAREA sa fie un act deliberat si vizibil, nu o consecinta a stergerii unui `if`.
 
-**CE RAMANE DESCHIS:** confirmarea nu vine de la un procesator real, semnata. Cere chei de la
-Costin (`cine deblochează: EXTERN`), iar `provider_activ()` ridica deja `NotImplementedError`
-pentru orice altceva decat `mock`, deci calea e pregatita si nu poate fi folosita din greseala.
+**CE NU S-A ATINS, si de ce.** `facturi.platita_la` ramane — nu era al caii asteia. Masurat inainte
+de a inchide, pe toate cele 20 de firme: **o singura** factura poarta `platita_la`, pusa de calea
+CHITANTEI (incasare in numerar), cu `plata_confirmata_de` gol si fara nicio referinta de plata.
+**Zero** facturi cu marca de simulare, **zero** linkuri generate vreodata, **zero** randuri in
+`public.plata_referinte`. Inchiderea nu desface nicio evidenta, fiindca n-a produs niciuna.
+
+CE RAMANE, DECLARAT: tabela `public.plata_referinte` si coloana `facturi.plata_confirmata_de` raman
+in schema, goale. Stergerea lor e o operatiune distructiva si o decizie separata; pana atunci sunt
+consemnate ca dormante, nu ca uitate.
 """
 import os
-import secrets
+
+#: Comutatorul. `False` = calea e inchisa; vezi decizia din antet. Nu se ridica fara o decizie
+#: scrisa: functionalitatea a fost inchisa fiindca NU corespunde fluxului real (transfer bancar,
+#: confirmat din extras), nu fiindca ar fi fost incompleta.
+CALEA_ONLINE_ACTIVA = False
+
+#: Ce se spune omului, in loc de un buton. Numeste fluxul REAL, ca refuzul sa fie o indrumare.
+MOTIV_INCHIS = ("Plata online nu e disponibilă în aplicație. Încasarea se face prin transfer "
+                "bancar, iar factura se marchează încasată din extrasul de cont, la reconciliere.")
+
 
 def provider_activ():
+    """Providerul configurat. Ramane, dar nu mai deschide nimic: calea e inchisa mai sus."""
     if os.environ.get("STRIPE_SECRET_KEY"):
         return "stripe"
     if os.environ.get("NETOPIA_API_KEY"):
@@ -35,8 +48,8 @@ def provider_activ():
 def firma_pentru_ref(conn, ref):
     """`(tenant_id, schema_name, factura_id)` pentru o referinta, sau `None`.
 
-    Singura cale prin care confirmarea afla firma. Fara ea, ruta ar trebui sa caute — adica sa
-    atinga toate schemele, ceea ce R43 numeste chiar defectul."""
+    Ramane fiindca perechile vechi (daca ar exista vreodata) trebuie sa poata fi CITITE fara a
+    plimba toate schemele — reparatia de izolare a lui R43. Azi tabela e goala."""
     with conn.cursor() as cur:
         cur.execute("""SELECT tenant_id, schema_name, factura_id
                        FROM public.plata_referinte WHERE ref = %s""", (ref,))
@@ -44,58 +57,23 @@ def firma_pentru_ref(conn, ref):
 
 
 def genereaza_link(conn, schema, factura_id, baza_url, tenant_id=None):
-    """Factura emisa + neplatita -> {link, provider, ref}. Idempotent: link existent se refoloseste.
+    """INCHISA. Nu se mai genereaza niciun link de plata.
 
-    `tenant_id` e obligatoriu pentru o referinta NOUA: fara el, perechea `ref -> firma` n-ar exista,
-    iar confirmarea ar ramane fara drum. Se refuza explicit, in loc sa se scrie un link neconfirmabil.
-    """
-    with conn.cursor() as cur:
-        cur.execute(f"""SELECT directie, status, total, moneda, link_plata, plata_ref, platita_la
-                        FROM {schema}.facturi WHERE id=%s""", (factura_id,))
-        r = cur.fetchone()
-    if not r:
-        return {"eroare": "factură inexistentă"}
-    directie, status, total, moneda, link, ref, platita = r
-    if directie != "emisa":
-        return {"eroare": "doar facturi emise"}
-    if platita:
-        return {"eroare": "factura deja platita"}
-    if link:
-        return {"link": link, "provider": provider_activ(), "ref": ref, "existent": True}
-    if tenant_id is None:
-        # Mesajul nu numește coloana: cine îl citește e omul, nu cine a scris apelul.
-        return {"eroare": "Linkul de plată nu s-a putut crea: nu se știe firma care emite "
-                          "factura, iar fără ea confirmarea plății n-ar avea unde ajunge."}
-    prov = provider_activ()
-    ref = "pl_" + secrets.token_urlsafe(16)
-    if prov == "mock":
-        link = f"{baza_url}/public/plata/{ref}"
-    else:
-        raise NotImplementedError(f"provider {prov}: de implementat la primirea cheilor")
-    # ACEEASI TRANZACTIE: un `ref` scris pe factura fara perechea lui in `public` ar fi un link care
-    # nu se poate confirma niciodata. Se comit impreuna sau deloc.
-    with conn.cursor() as cur:
-        cur.execute(f"""UPDATE {schema}.facturi SET link_plata=%s, plata_provider=%s, plata_ref=%s
-                        WHERE id=%s""", (link, prov, ref, factura_id))
-        cur.execute("""INSERT INTO public.plata_referinte (ref, tenant_id, schema_name, factura_id)
-                       VALUES (%s, %s, %s, %s)""", (ref, tenant_id, schema, factura_id))
-    conn.commit()
-    return {"link": link, "provider": prov, "ref": ref, "existent": False}
+    Refuzul e aici, nu in ruta: exista doua cai catre functia asta (ruta din ecran si orice apel
+    viitor), iar o poarta pusa doar in ruta ar lasa-o pe cealalta deschisa."""
+    if not CALEA_ONLINE_ACTIVA:
+        return {"eroare": MOTIV_INCHIS, "inchis": True}
+    raise NotImplementedError(
+        "calea de plata online e inchisa prin decizie (06.09.2026); reactivarea cere o decizie noua")
+
 
 def confirma_plata(conn, schema, ref, provider=None):
-    """Callback provider: marcheaza platita, si retine CINE a confirmat. Idempotent.
+    """INCHISA. Nicio confirmare nu mai marcheaza o factura incasata.
 
-    `provider` gol -> `provider_activ()`. Pe `mock` ramane `'mock'`, adica *simulare*, si asta se
-    vede in evidenta (`facturi.plata_confirmata_de`, randat langa eticheta „platita")."""
-    prov = provider or provider_activ()
-    with conn.cursor() as cur:
-        cur.execute(f"""UPDATE {schema}.facturi SET platita_la=now(), plata_confirmata_de=%s
-                        WHERE plata_ref=%s AND platita_la IS NULL RETURNING id""", (prov, ref))
-        r = cur.fetchone()
-    conn.commit()
-    if r:
-        return {"ok": True, "factura_id": r[0], "provider": prov}
-    with conn.cursor() as cur:
-        cur.execute(f"SELECT id FROM {schema}.facturi WHERE plata_ref=%s", (ref,))
-        r = cur.fetchone()
-    return {"ok": bool(r), "factura_id": r[0] if r else None, "deja": True} if r else {"eroare": "ref necunoscut"}
+    *Marcarea unei facturi ca incasata ramane la caile care corespund fluxului real*: chitanta
+    (incasare in numerar) si aprobarea bonului (plata catre furnizor). Amandoua sunt neatinse.
+    """
+    if not CALEA_ONLINE_ACTIVA:
+        return {"eroare": MOTIV_INCHIS, "inchis": True}
+    raise NotImplementedError(
+        "calea de plata online e inchisa prin decizie (06.09.2026); reactivarea cere o decizie noua")

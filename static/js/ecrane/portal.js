@@ -2,7 +2,7 @@
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=1dccbc985b";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaFacturi } from "./facturi_ecran.js?v=64886600c2";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=8304ab3abf";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 

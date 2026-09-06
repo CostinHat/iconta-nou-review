@@ -1422,7 +1422,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T18 — Chitanța și încasarea
 
-*clasa MANUAL · 6 rute · 3 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 3 rute · 1 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/public/plata/{ref}`, `/tenants/{tenant_id}/chitante`, `/tenants/{tenant_id}/chitante/{chitanta_id}/pdf`*
 

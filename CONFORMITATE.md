@@ -1282,11 +1282,12 @@ mai departe pe ele, nu pe cele scoase.* **Alegerea e a mea și se poate răsturn
 ### R43 — Confirmarea de plată marchează o factură încasată fără să fi intrat un leu, și caută prin toate firmele
 
 - **felul**: ARTEFACT
-- **cine deblochează**: EXTERN
+- **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE XI.3, T18 · **PRAG 2** *(cauză unică, dovedită, nu concurează cu nimic)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `3cb6c44`
+- **rezolvată pe commit**: `17faf668`
 - **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
 - **ce blochează**: `GET /public/plata/{ref}` întoarce o pagină al cărei text spune, literal, *„Integrarea cu procesatorul de plăți urmează. Apăsați pentru a simula plata."* Butonul ei cheamă `POST /public/plata/{ref}/confirma`, care e **neautentificată**, **parcurge toate schemele de firme** din `public.tenants` și pune `platita_la = now()` pe prima factură cu `plata_ref` potrivit. Deci cine primește linkul poate marca factura încasată **fără să fi plătit**, iar `platita_la` devine o afirmație despre bani care nu e sprijinită de nimic.
 - **ce NU e**: nu e o scurgere. `ref` e `"pl_" + secrets.token_urlsafe(16)` — 128 de biți, neghicibil. Iar căutarea prin toate schemele nu expune nimic în afara firmei care a emis linkul. **Problema e semantica, nu secretul**: aplicația nu deosebește „clientul a apăsat butonul de demo" de „banii au intrat".
@@ -1339,6 +1340,52 @@ neatinsă** · facturile plătite din portofoliu **1 → 1**, nemișcate. Scheme
   (Stripe/Netopia), de la Costin. `provider_activ()` ridică în continuare `NotImplementedError`
   pentru orice altceva decât `mock`, deci calea nu se poate folosi din greșeală. *Ce s-a închis azi e
   izolarea și semantica; ce rămâne e dovada că au intrat bani.*
+
+
+#### R43 — ÎNCHISĂ 06.09.2026: calea de plată online NU SE IMPLEMENTEAZĂ
+
+**Decizia lui Costin**, verbatim: *„Dezactivează complet calea de plată online (butonul de confirmare
+simulată). Nu se integrează niciun procesator — fluxul real e transfer bancar, confirmat din extras."*
+Și: *„R43, partea externă: se închide ca «nu se implementează», nu rămâne deschisă la nesfârșit.
+Motivul: funcționalitatea nu corespunde fluxului de lucru real."*
+
+*Condiția de deblocare de mai sus — „trebuie cheile unui procesator real" — **nu se mai aplică**: nu
+mai e o așteptare, e o funcționalitate retrasă. O restanță care așteaptă ceva ce nu se va întâmpla nu
+e o restanță, e o listă.*
+
+**CE S-A ÎNCHIS, și unde:**
+- **`core/plati.py`** — un singur comutator, `CALEA_ONLINE_ACTIVA = False`, iar amândouă funcțiile
+  refuză pe el. Refuzul stă în **modul, nu în rute**: sunt două căi către `genereaza_link`, iar o
+  poartă pusă doar în rută ar lăsa-o pe cealaltă deschisă.
+- **`GET /public/plata/{ref}`** — nu mai randează niciun buton. Rămâne o pagină care **spune** ce s-a
+  întâmplat și care e fluxul real; un link vechi (măsurat: **zero**) merită un răspuns, nu un 404 mut.
+- **`POST /public/plata/{ref}/confirma`** și **`POST /tenants/{id}/facturi/{id}/link-plata`** →
+  **410 Gone**, nu 404: ruta **a existat** și nu mai există, iar un 404 ar spune „n-a fost niciodată".
+- **Ecranul facturii** — butonul «Link plată», handlerul lui **și** zona lui, scoase toate trei.
+  *Un buton scos care lasă în urmă codul care îl ascultă e o cale care se redeschide cu o linie de
+  HTML.*
+- **Refuzul numește fluxul real**: *„Încasarea se face prin transfer bancar, iar factura se marchează
+  încasată din extrasul de cont, la reconciliere."* Un „nu se poate" fără „iată cum se face" mută
+  problema la om fără să-l ajute.
+
+**CE NU S-A ATINS, măsurat înainte de a închide** *(toate cele 20 de firme)*: **o singură** factură
+poartă `platita_la` — pusă de calea **CHITANȚEI** (încasare în numerar), cu `plata_confirmata_de` gol
+și fără referință de plată. **Zero** facturi cu marcă de simulare · **zero** linkuri generate vreodată
+· **zero** rânduri în `public.plata_referinte`. **Închiderea nu desface nicio evidență, fiindcă
+niciuna n-a fost produsă pe calea asta.**
+
+**CE RĂMÂNE ÎN SCHEMĂ, declarat**: `public.plata_referinte` și `facturi.plata_confirmata_de` rămân,
+**goale**. Ștergerea lor e o operațiune distructivă și o decizie separată; până atunci sunt consemnate
+ca **dormante**, nu uitate. Eticheta «plătită prin SIMULARE» din ecran **rămâne** deliberat: nicio
+factură n-o poartă azi, dar dacă vreuna ar purta-o vreodată, n-are voie să treacă drept încasare
+obișnuită.
+
+**Gard**: `core/test_plata_izolare.py`, șase probe — comutatorul e închis · amândouă funcțiile refuză
+· refuzul numește banca **și** extrasul · nu scriu nimic (primesc `conn=None`: dacă ar atinge baza, ar
+crăpa) · ecranul n-are **niciun** drum (`count(...) == 0`, nu „nu apare") · nicio evidență atinsă.
+
+- **ce a scos la iveală închiderea, și e o restanță proprie**: **R174** — fluxul numit ca fiind cel
+  real (transfer bancar, confirmat din extras) **nu scrie `platita_la` deloc**.
 
 ### R44 — Un element din coadă e legat de o firmă care nu există
 
@@ -7621,6 +7668,39 @@ consumă valoarea» … pragul se stabilește după, pe baza consumatorului. Nu 
   despre **consumator**; amândouă s-au închis. Cele 23 sunt blocate pe cealaltă axă, cu trei cauze
   care n-au nimic în comun cu ea. *O restanță ținută deschisă pe o temă care nu e a ei nu se mai
   poate închide niciodată.*
+
+
+### R174 — O factură încasată prin bancă nu se marchează încasată nicăieri
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · `core/scadentar.py` · `core/notificari_scadenta.py` · reconcilierea bancară ·
+  **PRAG 2** *(nu produce o cifră greșită într-o declarație — produce un scadențar care urmărește o
+  factură deja încasată, și o notificare de neplată către un client care a plătit)*
+- **ce blochează**: adevărul scadențarului și al notificărilor de scadență. Amândouă citesc
+  `facturi.platita_la IS NULL`.
+- **condiția de deblocare**: se închide când o factură decontată prin bancă ajunge marcată încasată
+  pe aceeași cale pe care e decontată (reconciliere), sau când cei doi consumatori încetează să
+  citească `platita_la` și citesc decontarea reală — cu gard care probează amândouă direcțiile.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `17faf668`
+- **cum a apărut**: **din închiderea lui R43**. Închizând calea online, au rămas vizibili **toți**
+  scriitorii lui `platita_la`, și sunt **doi**, amândoi în numerar: chitanța emisă (încasare de la
+  client) și aprobarea bonului (plată către furnizor). *Fluxul pe care Costin îl numește ca fiind cel
+  REAL — transfer bancar, confirmat din extras — nu scrie `platita_la` niciodată.*
+- **ce s-a măsurat** *(06.09.2026, toate cele 20 de firme)*: **28** facturi emise · **1** cu
+  `platita_la` · **2** decontate în contabilitate (notă cu `cont_credit` 4111) · **1 decontată dar
+  fără `platita_la`** — deci rămâne în scadențar și în notificări ca neîncasată. Cifra e mică fiindcă
+  **evidența e subțire**, nu fiindcă clasa ar fi rară: e chiar fluxul principal al unui cabinet.
+- **și aplicația o știe deja despre ea însăși**: `core/rapoarte_comerciale_api.durata_medie_incasare`
+  refuză explicit `platita_la` și calculează din decontarea contabilă, cu motivul scris în docstring:
+  *„`platita_la` … prinde doar plățile online prin provider și ar da un număr părtinitor"*. **Un
+  consumator a ocolit câmpul fiindcă știa că minte; ceilalți doi nu.**
+- **de ce restanță proprie și nu o parte din R43**: R43 era despre o cale care **producea** o
+  afirmație nesprijinită. Asta e despre o cale reală care **nu produce** afirmația de care depind doi
+  consumatori. *Închiderea uneia a făcut-o pe cealaltă vizibilă; a le ține împreună ar fi ținut R43
+  deschisă pentru altceva decât ce numește.*
 
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)

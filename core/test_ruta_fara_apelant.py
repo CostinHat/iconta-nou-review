@@ -62,7 +62,6 @@ _ARTEFACTE = {
     # (c) cale compusă la rulare, pe care detectorul nu o poate vedea (limita din antet)
     ("GET", "/portal/facturi"), ("GET", "/portal/firme"),
     ("GET", "/portal/solicitari/contor"),
-    ("GET", "/public/plata/{ref}"), ("POST", "/public/plata/{ref}/confirma"),
     ("POST", "/migrare/fisier"),
     ("GET", "/tenants/{tenant_id}/perioade-blocate/istoric"),
     ("POST", "/tenants/{tenant_id}/s1003-valideaza"), ("GET", "/tenants/{tenant_id}/s1003-xml"),

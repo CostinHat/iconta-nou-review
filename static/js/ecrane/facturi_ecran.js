@@ -477,7 +477,10 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.platita_la ? '<span class="fd-stare fd-stare-verde">pl\u0103tit\u0103</span>' : ""}
         ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin SIMULARE</span>' : ""}
-        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
+        <!-- [06.09.2026] Butonul «Link plata» a fost SCOS: calea de plata online e inchisa prin
+             decizie — incasarea se face prin transfer bancar, confirmat din extras. Eticheta
+             «platita prin SIMULARE» de mai sus RAMANE: nicio factura n-o poarta azi, dar daca
+             vreuna ar purta-o vreodata, nu are voie sa treaca drept incasare obisnuita. -->
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura") ? '<button class="buton-secundar em-buton-sec" id="fd-saga">Export SAGA</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec" id="fd-spv">Trimite în SPV</button>' : ""}
@@ -485,7 +488,6 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
-      <div id="fd-plata-zona"></div>
       <div id="fd-chitanta-zona"></div>
       <div id="fd-saga-zona"></div>
       <div id="fd-spv-zona"></div>
@@ -564,15 +566,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     });
   }
 
-  const bPlata = corp.querySelector("#fd-plata");  /* plati_fe_v1 */
-  if (bPlata) bPlata.addEventListener("click", async () => {
-    const zona = corp.querySelector("#fd-plata-zona");
-    try {
-      const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/link-plata`, {});
-      zona.innerHTML = `<div class="msg-info">Link de plat\u0103: <a href="${r.link}" target="_blank">${r.link}</a> <button class="buton-secundar em-buton-sec" id="fd-plata-copiaza">Copiaz\u0103</button></div>`;
-      zona.querySelector("#fd-plata-copiaza").addEventListener("click", () => navigator.clipboard.writeText(r.link));
-    } catch (e) { arataMesaj(zona, e.mesaj || e.message, "eroare"); }
-  });
+  // [06.09.2026] Handlerul «Link plata» a fost SCOS odata cu butonul: calea de plata online e
+  // inchisa prin decizie. Un buton scos care lasa in urma codul care il asculta e o urma de
+  // intentie — si o cale care se redeschide cu o singura linie de HTML.
   // [chitante] emitere chitanta (cod 14-4-1) + lista pe factura  // chitante_fe_v1
   const bChit = corp.querySelector("#fd-chitanta");
   const zonaChit = corp.querySelector("#fd-chitanta-zona");

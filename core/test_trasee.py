@@ -32,7 +32,11 @@ _SCAN = os.path.join(_RAD, "scripts", "scan_trasee.py")
 # [R72, 27.08.2026] 30 -> 31: T36, ciclul de viata al firmei. Decizia lui Costin: cele patru
 # rute care schimba EXISTENTA unei firme nu mai stau pe suprafata de administrare, fiindca
 # incadrarea aia era corecta cat timp acolo era doar crearea.
-_CLICHET = {"MECANIC": 31, "PARTIAL": 0, "MANUAL": 5}
+#: [06.09.2026, decizia 75] MANUAL 5 -> 4, MECANIC 31 -> 32: **T18** a trecut din MANUAL in
+#: MECANIC fiindca i s-a SCOS pasul manual — plata online, care depindea de un procesator din
+#: afara. *Nu e un castig de acoperire, e o functionalitate mai putina.* Se scrie asa ca sa nu
+#: para ca s-a construit ceva: T18 are acum 3 rute in loc de 6.
+_CLICHET = {"MECANIC": 32, "PARTIAL": 0, "MANUAL": 4}
 _TRASEE_TOTAL = 36
 
 

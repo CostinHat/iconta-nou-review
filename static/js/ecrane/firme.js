@@ -4,7 +4,7 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=1dccbc985b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=64886600c2";
+import { randeazaFacturi } from "./facturi_ecran.js?v=8304ab3abf";
 import { ecranRip } from "./rip_ecran.js?v=2a75ab957d";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=01442b1818";
 import { ecranEtransport } from "./etransport_ecran.js?v=c57761fc62";

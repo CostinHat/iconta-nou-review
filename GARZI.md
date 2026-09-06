@@ -7658,6 +7658,24 @@ Docstringul spunea *„o ciornă nu e evidență (aceeași regulă ca la restul 
 jumătate era falsă despre restul motorului — clasa **R16**, proză care descrie codul și e falsă de la
 naștere. Înlocuită cu ce se poate confrunta: cifra, cine filtrează, cine nu, și unde e gardat.
 
+## 06.09.2026 (6) — O funcționalitate RETRASĂ, gardată ca să rămână retrasă
+
+### `core/test_plata_izolare.py`, rescris
+
+Gardul păzea, până azi, **izolarea** căii de plată online. Calea s-a închis prin decizie, deci
+izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum starea **închisă**:
+
+- comutatorul e `False`, și **amândouă funcțiile refuză pe el** — refuzul stă în modul, nu în rute;
+- funcțiile primesc `conn=None` la refuz: **dacă ar atinge baza, ar crăpa**. Aia e proba că nu scriu,
+  nu o afirmație despre ele;
+- ecranul n-are **niciun** drum: se cere `count("fd-plata") == 0` și `count("link-plata") == 0` —
+  *numărul zero, nu absența unui șir; „de câte ori" e o afirmație mai tare decât „nu apare"*;
+- refuzul **numește fluxul real** (banca **și** extrasul), cu lungime minimă — un refuz care nu
+  îndrumă e doar o ușă închisă;
+- anti-vacuu pe fișierul de ecran: dacă s-ar muta, testele de mai sus ar trece pe un șir gol.
+
+*O funcționalitate retrasă fără gard se reîntoarce la prima tură care nu știe că a fost retrasă.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **526 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
@@ -8053,7 +8071,7 @@ naștere. Înlocuită cu ce se poate confrunta: cifra, cine filtrează, cine nu,
 - `core/test_perioada_indisponibila.py` — Blocaj MOTIVAT pentru cote de regula cu data_in tarzie (01.08.2026). O cota ceruta de un calcul pentru
 - `core/test_plan_conturi_no_upsert.py` — [Regula 4 + Regula 14.4] GARD: adaugarea MANUALA de cont in plan NU suprascrie tacut un simbol existent.
 - `core/test_plan_form_fieldmark.py` — [Regula 14.4 pct.4] GARD: formularul 'Adauga cont' (plan_conturi) semnaleaza obligativitatea INAINTE de
-- `core/test_plata_izolare.py` — GARD [R43, 06.09.2026]: confirmarea unei plăți atinge O SINGURĂ firmă, iar plata simulată o spune.
+- `core/test_plata_izolare.py` — GARD [06.09.2026, decizia lui Costin]: calea de plată online e ÎNCHISĂ și nu se redeschide tăcut.
 - `core/test_plata_salarii.py` — Teste gardian pentru F134 (plata salariilor pe card, SEPA pain.001).
 - `core/test_plati.py` — —
 - `core/test_plus_mf_registru.py` — #5 (ruptura mijloc-fix post-migrare, plimbare vizuala 14.08.2026): un mijloc fix corporal adaugat prin

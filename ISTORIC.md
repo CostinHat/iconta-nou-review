@@ -8172,3 +8172,21 @@ deduce al doilea din primul ar fi exact interpretarea interzisă. Întrebarea ur
 **O oră pierdută pe o fantomă, consemnată.** Mutația mea de probă a lăsat un `__pycache__` stale:
 sursa avea filtrul, codul rulat nu. Am „măsurat" de patru ori un defect care era al instrumentului
 meu. Semnalul ratat: același SQL, rulat de mână, dădea alt rezultat decât funcția.
+
+
+## 06.09.2026 (6) — Plata online, retrasă; și ce a rămas vizibil sub ea
+
+**Decizia lui Costin**: nu se integrează niciun procesator — fluxul real e transfer bancar, confirmat
+din extras. **R43 se închide ca „nu se implementează"**, nu rămâne deschisă la nesfârșit.
+
+Închis într-un singur loc (`plati.CALEA_ONLINE_ACTIVA`), cu butonul, handlerul și zona lui scoase
+toate trei, rutele pe **410 Gone** și un refuz care numește fluxul real. Măsurat înainte: **zero**
+linkuri generate vreodată, **zero** facturi cu marcă de simulare — închiderea n-a desfăcut nimic.
+
+**Ce a scos la iveală, și e mai important decât retragerea.** Cu calea online închisă, se văd toți
+scriitorii lui `platita_la`: sunt **doi**, amândoi în numerar (chitanța, bonul aprobat). **Fluxul
+real — banca — nu scrie câmpul deloc**, iar scadențarul și notificările de scadență citesc exact
+`platita_la IS NULL`. Măsurat: 28 de facturi emise, 1 marcată încasată, 2 decontate în contabilitate,
+**1 decontată dar rămasă în scadențar**. Iar aplicația știa deja despre ea însăși:
+`durata_medie_incasare` refuză explicit câmpul, cu motivul scris. **Un consumator l-a ocolit fiindcă
+știa că minte; ceilalți doi nu.** → **R174**.

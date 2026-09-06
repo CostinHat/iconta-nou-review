@@ -14044,3 +14044,24 @@ fragmentului fals e „pare mai stabil decât e", deci verificat mai rar exact u
 propoziție. `test_R171_tiparul_LARG_de_puncte_nu_a_fost_adoptat` cere ca două documente anume să
 rămână CIOT; lărgind tiparul, cad cinci teste. *O decizie de a NU face, scrisă doar în proză, se
 erodează la prima tură care n-o citește.*
+
+
+**(75) Calea de plată online NU se implementează — se retrage, nu se amână** *(Costin, 06.09.2026)*.
+Verbatim: *„Nu se integrează niciun procesator — fluxul real e transfer bancar, confirmat din
+extras."* Și, despre restanță: *„se închide ca «nu se implementează», nu rămâne deschisă la
+nesfârșit. Motivul: funcționalitatea nu corespunde fluxului de lucru real."*
+
+**Ce schimbă asta în felul de a ține registrul.** R43 aștepta de la 25.08 cheile unui procesator —
+`cine deblochează: EXTERN`. O restanță care așteaptă ceva ce **nu se va întâmpla** nu e o restanță,
+e o listă de lucruri neterminate. Retragerea unei funcționalități e un **răspuns**, la fel de
+legitim ca implementarea ei, și se consemnează la fel: cu decizia, motivul și data.
+
+**Cum se retrage, ca să rămână retrasă:** refuzul într-un **singur loc** (`plati.CALEA_ONLINE_ACTIVA`),
+nu în rute — sunt două căi către aceeași funcție. Butonul, **handlerul lui și zona lui**, scoase toate
+trei: *un buton scos care lasă în urmă codul care îl ascultă e o cale care se redeschide cu o linie de
+HTML.* Rutele întorc **410 Gone**, nu 404 — ruta a existat. Iar refuzul **numește fluxul real**: un
+„nu se poate" fără „iată cum se face" mută problema la om fără să-l ajute.
+
+**Ce a scos la iveală retragerea, și e mai important decât ea:** cu calea online închisă, cei doi
+scriitori rămași ai lui `platita_la` sunt amândoi **în numerar**. Fluxul numit ca fiind cel real —
+banca — nu scrie câmpul deloc, iar două funcționalități depind de el. **R174.**

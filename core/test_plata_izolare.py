@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
-"""GARD [R43, 06.09.2026]: confirmarea unei plăți atinge O SINGURĂ firmă, iar plata simulată o spune.
+"""GARD [06.09.2026, decizia lui Costin]: calea de plată online e ÎNCHISĂ și nu se redeschide tăcut.
 
-**Ce s-a reparat.** `POST /public/plata/{ref}/confirma` — rută **neautentificată** — citea
-`SELECT schema_name FROM public.tenants` și încerca un `UPDATE` în **fiecare** schemă, până la prima
-potrivire. Nu era o scurgere (răspunsul e doar `{ok}`, iar `ref` are 128 de biți), dar nu exista
-**nicio barieră structurală** între firme: două referințe identice ar fi însemnat scriere în firma
-greșită, iar „improbabil" nu e o izolare, e un pariu.
+**Decizia, verbatim**: *„Nu se integrează niciun procesator — fluxul real e transfer bancar,
+confirmat din extras."* Și: *„R43, partea externă: se închide ca «nu se implementează», nu rămâne
+deschisă la nesfârșit. Motivul: funcționalitatea nu corespunde fluxului de lucru real."*
 
-**Ce apără gardul, în ordinea în care contează:**
-  1. `public.plata_referinte.ref` e **PRIMARY KEY** — coliziunea între firme e imposibilă *prin
-     construcție*. Se cere constrângerea, nu comportamentul: un test care doar încearcă două
-     inserări ar trece și pe un index obișnuit, șters din greșeală;
-  2. o referință **neînregistrată** nu se confirmă — nici măcar dacă valoarea `plata_ref` există pe
-     o factură. Ăsta e testul care deosebește codul nou de cel vechi: vechiul o găsea plimbând
-     schemele, noul cere perechea din `public`;
-  3. confirmarea atinge firma ei, iar cealaltă rămâne **neatinsă**, verificat pe amândouă;
-  4. plata pe calea `mock` poartă `plata_confirmata_de='mock'` — *simulare*, nu bani intrați.
+**Ce păzește gardul, în ordinea în care contează:**
+  1. **funcțiile refuză** — refuzul stă în `core/plati.py`, într-un singur loc, nu în rute;
+  2. **niciun drum din interfață** nu duce acolo: butonul, handlerul lui și zona lui sunt scoase.
+     *Un buton scos care lasă în urmă codul care îl ascultă e o cale care se redeschide cu o linie
+     de HTML;*
+  3. **refuzul numește fluxul REAL** — un „nu se poate" fără „iată cum se face" mută problema la om
+     fără să-l ajute;
+  4. **nu s-a desfăcut nicio evidență**: `platita_la` NU era al căii ăsteia, iar închiderea n-o
+     atinge.
 
-**CE NU APĂRĂ, declarat:** că plata a avut loc. Confirmarea tot nu vine semnată de la un procesator
-real — partea EXTERNĂ a lui R43, care rămâne deschisă.
+**CE NU PĂZEȘTE, declarat:** că o factură plătită prin bancă ajunge marcată încasată. Azi **nu
+ajunge** — v. R174, deschisă chiar de măsurătoarea asta.
 """
+import io
 import os
 import sys
 
@@ -31,10 +30,8 @@ if _RAD not in sys.path:
 
 from core import db as _db  # noqa: E402
 from core import plati as _pl  # noqa: E402
-from core import tenant_provisioning as _tp  # noqa: E402
-from core import migrare_plata_referinte as _mig  # noqa: E402
 
-A, B = "ztest_plata_a", "ztest_plata_b"
+_ECRAN = os.path.join(_RAD, "static", "js", "ecrane", "facturi_ecran.js")
 
 
 def _db_ok():
@@ -46,111 +43,73 @@ def _db_ok():
         return False
 
 
-def _sablon():
-    return open(os.path.join(_RAD, "tenant_template.sql"), encoding="utf-8").read()
+# ── 1. CALEA E ÎNCHISĂ, ÎNTR-UN SINGUR LOC ─────────────────────────────────────────────────────
+
+def test_comutatorul_e_inchis_si_functiile_refuza():
+    """Refuzul stă în modul, nu în rute: sunt două căi către `genereaza_link`, iar o poartă pusă
+    doar în rută ar lăsa-o pe cealaltă deschisă."""
+    assert _pl.CALEA_ONLINE_ACTIVA is False
+    r1 = _pl.genereaza_link(None, "orice", 1, "http://x", tenant_id=1)
+    r2 = _pl.confirma_plata(None, "orice", "pl_orice")
+    assert r1.get("inchis") is True and r2.get("inchis") is True, (r1, r2)
+    assert r1.get("eroare") and r2.get("eroare")
 
 
-def _seed(conn, schema, numar):
-    """Schemă efemeră + o factură EMISĂ, neplătită."""
-    with conn.cursor() as cur:
-        cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % schema)
-        cur.execute(_tp.parametrizeaza_template(_sablon(), schema))
-        cur.execute(f"""INSERT INTO {schema}.facturi
-            (numar, data_emitere, directie, status, total, moneda, tert_nume)
-            VALUES (%s, '2026-09-01', 'emisa', 'emisa', 100, 'RON', 'Client proba')
-            RETURNING id""", (numar,))
-        fid = cur.fetchone()[0]
-    conn.commit()
-    return fid
+def test_refuzul_NUMESTE_fluxul_real():
+    """Un «nu se poate» fără «iată cum se face» mută problema la om fără să-l ajute. Se cere ca
+    motivul să numească amândouă capetele fluxului real: banca și extrasul."""
+    m = _pl.MOTIV_INCHIS.lower()
+    assert m.count("bancar") + m.count("banc") >= 1, _pl.MOTIV_INCHIS
+    assert m.count("extras") >= 1, _pl.MOTIV_INCHIS
+    assert len(_pl.MOTIV_INCHIS) > 80
 
 
-@pytest.fixture(scope="module")
-def doua_firme():
-    if not _db_ok():
-        pytest.skip("DB indisponibil")
-    with _db.get_conn() as conn:
-        fa, fb = _seed(conn, A, "PROBA-A-1"), _seed(conn, B, "PROBA-B-1")
-        _mig.aplica(conn, scheme=[A, B])
-        with conn.cursor() as cur:
-            cur.execute("DELETE FROM public.plata_referinte WHERE schema_name IN (%s, %s)", (A, B))
-        conn.commit()
-    yield {"a": (A, fa), "b": (B, fb)}
-    with _db.get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("DELETE FROM public.plata_referinte WHERE schema_name IN (%s, %s)", (A, B))
-            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % A)
-            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % B)
-        conn.commit()
+def test_functiile_NU_scriu_nimic_cand_refuza():
+    """Refuzul primește `conn=None`. Dacă vreuna ar încerca o interogare, ar crăpa — iar asta e
+    chiar proba că nu atinge baza: nu se poate scrie printr-o conexiune care nu există."""
+    assert _pl.genereaza_link(None, "s", 1, "u", tenant_id=1).get("inchis")
+    assert _pl.confirma_plata(None, "s", "r").get("inchis")
 
 
-def _stare(conn, schema, fid):
-    with conn.cursor() as cur:
-        cur.execute(f"SELECT platita_la, plata_confirmata_de FROM {schema}.facturi WHERE id=%s", (fid,))
-        return cur.fetchone()
+# ── 2. NICIUN DRUM DIN INTERFAȚĂ ───────────────────────────────────────────────────────────────
+
+def test_ecranul_nu_mai_are_niciun_drum_catre_plata_online():
+    """Butonul, handlerul și zona — toate trei. Se cere NUMĂRUL zero, nu absența unui șir: `count`
+    spune «de câte ori», iar zero e o afirmație mai tare decât «nu apare»."""
+    src = io.open(_ECRAN, encoding="utf-8").read()
+    assert src.count("fd-plata") == 0, "ecranul mai poartă butonul/zona de plată online"
+    assert src.count("link-plata") == 0, "ecranul mai cheamă ruta de generare a linkului"
 
 
-# ── 1. STRUCTURA: coliziunea e imposibilă, nu improbabilă ──────────────────────────────────────
-
-@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_referinta_e_CHEIE_PRIMARA_pe_tot_portofoliul():
-    """Se cere CONSTRÂNGEREA, nu comportamentul. Un test care doar încearcă două inserări ar trece
-    și pe un index obișnuit — iar un index nu e o barieră, e o optimizare."""
-    with _db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""SELECT c.contype
-                       FROM pg_constraint c
-                       JOIN pg_class t ON t.oid = c.conrelid
-                       JOIN pg_namespace n ON n.oid = t.relnamespace
-                       WHERE n.nspname='public' AND t.relname='plata_referinte' AND c.contype='p'""")
-        assert cur.fetchone(), "public.plata_referinte n-are cheie primară pe `ref`"
+def test_ANTI_VACUU_ecranul_chiar_a_fost_citit():
+    """Dacă fișierul s-ar muta, testul de mai sus ar trece pe un șir gol."""
+    src = io.open(_ECRAN, encoding="utf-8").read()
+    assert len(src) > 20000, "fișierul ecranului e prea mic — s-a citit altceva"
+    assert src.count("fd-chitanta") > 0, "ancora de control lipsește — nu citesc ecranul facturii"
 
 
-# ── 2. CE DEOSEBEȘTE CODUL NOU DE CEL VECHI ────────────────────────────────────────────────────
+# ── 3. NU S-A DESFĂCUT NICIO EVIDENȚĂ ──────────────────────────────────────────────────────────
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_o_referinta_NEINREGISTRATA_nu_se_confirma(doua_firme):
-    """Miezul. Codul vechi găsea referința plimbând toate schemele; cel nou pleacă de la perechea
-    din `public`. Aici `plata_ref` EXISTĂ pe factură, dar perechea NU — deci confirmarea trebuie să
-    nu aibă drum."""
-    sch, fid = doua_firme["a"]
+def test_inchiderea_nu_a_atins_nicio_factura():
+    """`platita_la` nu era al căii ăsteia. Măsurat la închidere: o singură factură îl poartă, pusă
+    de calea CHITANȚEI, fără marcă de simulare; zero linkuri generate vreodată."""
     with _db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"UPDATE {sch}.facturi SET plata_ref=%s WHERE id=%s", ("pl_orfan_xyz", fid))
-        conn.commit()
-        assert _pl.firma_pentru_ref(conn, "pl_orfan_xyz") is None
-        assert _stare(conn, sch, fid)[0] is None, "factura n-avea voie să fie deja plătită"
-
-
-# ── 3. COMPORTAMENT: o firmă atinsă, cealaltă nu ───────────────────────────────────────────────
-
-@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_confirmarea_atinge_o_singura_firma_si_poarta_marca(doua_firme):
-    scha, fa = doua_firme["a"]
-    schb, fb = doua_firme["b"]
-    with _db.get_conn() as conn:
-        r = _pl.genereaza_link(conn, scha, fa, "http://x", tenant_id=1)
-        assert r.get("ref"), r
-        gasit = _pl.firma_pentru_ref(conn, r["ref"])
-        assert gasit and gasit[1] == scha, gasit
-        _pl.confirma_plata(conn, gasit[1], r["ref"])
-
-        plat_a, cine_a = _stare(conn, scha, fa)
-        plat_b, cine_b = _stare(conn, schb, fb)
-    assert plat_a is not None, "firma emitentă n-a fost marcată"
-    assert cine_a == "mock", "plata simulată nu poartă marca: %r" % cine_a
-    assert plat_b is None and cine_b is None, "cealaltă firmă a fost atinsă — izolarea a căzut"
-
-
-# ── 4. CALIBRARE ÎN CEALALTĂ DIRECȚIE ──────────────────────────────────────────────────────────
-
-@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_un_link_fara_firma_se_REFUZA_nu_se_scrie(doua_firme):
-    """Un `ref` scris pe factură fără perechea lui ar fi un link care nu se poate confirma
-    niciodată. Se refuză, nu se scrie pe jumătate."""
-    schb, fb = doua_firme["b"]
-    with _db.get_conn() as conn:
-        r = _pl.genereaza_link(conn, schb, fb, "http://x")     # fără tenant_id
-        assert r.get("eroare"), r
-        with conn.cursor() as cur:
-            cur.execute(f"SELECT plata_ref, link_plata FROM {schb}.facturi WHERE id=%s", (fb,))
-            ref, link = cur.fetchone()
-    assert ref is None and link is None, "s-a scris un link neconfirmabil: %r / %r" % (ref, link)
+            cur.execute("SELECT schema_name FROM public.tenants ORDER BY id")
+            scheme = [r[0] for r in cur.fetchall()]
+            mock = ref = 0
+            for s in scheme:
+                try:
+                    cur.execute("SELECT count(*) FILTER (WHERE plata_confirmata_de = 'mock'), "
+                                "count(plata_ref) FROM %s.facturi" % s)
+                    m, r = cur.fetchone()
+                    mock += m
+                    ref += r
+                except Exception:  # noqa: BLE001
+                    conn.rollback()
+            cur.execute("SELECT count(*) FROM public.plata_referinte")
+            perechi = cur.fetchone()[0]
+    assert mock == 0, "%d facturi poartă marcă de SIMULARE — închiderea le-ar lăsa nedeclarate" % mock
+    assert ref == 0, "%d facturi poartă un link de plată; calea e închisă, dar linkurile au rămas" % ref
+    assert perechi == 0, "%d perechi în public.plata_referinte" % perechi

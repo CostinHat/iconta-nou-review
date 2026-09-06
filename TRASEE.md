@@ -1055,7 +1055,8 @@ fost parcurs niciodată.
 1. FACTURĂ EMISĂ, NEÎNCASATĂ
       ↓
 2a. CHITANȚĂ pe hârtie     chitante  →  casa_operatiuni + notă contabilă
-2b. LINK DE PLATĂ          plati.genereaza_link  →  ref secret
+2b. (RETRAS 06.09.2026, decizia 75) linkul de plată online — nu se integrează
+    niciun procesator; încasarea se face prin transfer bancar, din extras.
       ↓
 3. CONFIRMARE              POST /public/plata/{ref}/confirma
       ↓
@@ -1600,24 +1601,19 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T18 — Chitanța și încasarea
 
-**Clasa:** MANUAL · **rute:** 6 (din care schimba date: 3) · **refuzuri explicite:** 8
+**Clasa:** MECANIC · **rute:** 3 (din care schimba date: 1) · **refuzuri explicite:** 5
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 3.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 1.**
 
 **Pasii, din cod:**
 
-- `GET /public/plata/{ref}` — garda `FARA GARDA`
-- `POST /public/plata/{ref}/confirma` — garda `FARA GARDA`
 - `GET /tenants/{tenant_id}/chitante` — garda `cere_context`
 - `POST /tenants/{tenant_id}/chitante` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/chitante/{chitanta_id}/pdf` — garda `cere_rol` rol:admin_firma
-- `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata` — garda `cere_rol` rol:admin_firma
 
-**Module:** `casa_api`, `chitante`, `plati`
+**Module:** `casa_api`, `chitante`
 
-**Scrie in:** `casa_operatiuni` (DELETE/INSERT) · `chitante` (INSERT) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT) · `inregistrari_linii` (INSERT) · `plata_referinte` (INSERT)
-
-**Margine:** `plati` (linkul de plată — procesatorul (azi MOCK, vezi /public/plata))
+**Scrie in:** `casa_operatiuni` (DELETE/INSERT) · `chitante` (INSERT) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT) · `inregistrari_linii` (INSERT)
 
 **Firme care il pot exercita azi: 1** — `tenant_013`
 
