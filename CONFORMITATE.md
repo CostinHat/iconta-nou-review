@@ -7415,7 +7415,7 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reluări**: 0
 - **stare**: REZOLVATĂ
 - **deschisă pe commit**: `e06b0e4b`
-- **rezolvată pe commit**: `e06b0e4b`
+- **rezolvată pe commit**: `09589ee6`
 - **cum s-a găsit**: măsurând clasa lui **R167**. Șase mesaje vorbesc despre periodicitatea TVA;
   patru **cer** câmpul. Dintre ele, `migrare.js` avea criteriul art. 322 în `.camp-ajutor`, iar
   `date_firma.js` nu — *aceeași întrebare, pusă în două locuri, cu ajutorul într-unul singur*. S-a
