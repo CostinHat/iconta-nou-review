@@ -30,6 +30,7 @@ from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d1
                   d101g, d169, d398, d399, d403, d407,
                   d212)
 from core.common import Perioada
+from core import perioada_fiscala_tva as _pft
 
 REGULI = "2026.1"
 MODUL = "declaratii_api"
@@ -334,8 +335,15 @@ def periodicitate(tip):
     return rec[0] if rec else None
 
 
-# [selector_periodicitate_v1] setul TVA-decont a carui periodicitate URMEAZA tip_decont-ul firmei
-_TVA_PERIODIC = frozenset({"d300", "d394", "d406"})
+
+# [R167, 06.09.2026] Temeiul periodicitatii TVA sta in `core/perioada_fiscala_tva.py`, NU aici.
+# Decizia 73 (R151): un singur nume `TEMEI*` muta fisierul intreg in datorie la clichetul
+# refuzurilor, iar `declaratii_api` amesteca refuzuri de forma cu refuzuri normative. Modulul isi
+# poarta temeiul ca date; dispecerul doar lipeste fraza la refuzul lui.
+#
+# Setul TVA-decont vine de acolo: apartenenta la el E chiar conditia ca art. 322 sa fie temeiul
+# potrivit, deci lista traieste langa temei, nu in doua locuri.
+_TVA_PERIODIC = _pft.SET_TVA_DECONT
 
 
 def periodicitate_firma(tip, tip_decont=None):
@@ -391,15 +399,15 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(luna, int) or luna < 1 or luna > 12:
             if luna is None and isinstance(trim_trimis, int):
                 erori.append("declarația %s se depune LUNAR pentru firma asta: trimite luna "
-                             "(1-12), nu trimestrul" % tip)
+                             "(1-12), nu trimestrul%s" % (tip, _pft.norma(tip, "lunar") or ""))
             elif luna_trimisa is None:
                 erori.append("luna invalidă: %r (aștept 1-12)" % (luna,))
     elif per == "trimestrial":
         trim = body.get("trim")
         if not isinstance(trim, int) or trim < 1 or trim > 4:
             if trim is None and luna_trimisa is not None:
-                erori.append("firma depune %s TRIMESTRIAL: trimite trimestrul (1-4), nu luna"
-                             % tip)
+                erori.append("firma depune %s TRIMESTRIAL: trimite trimestrul (1-4), nu luna%s"
+                             % (tip, _pft.norma(tip, "trimestrial") or ""))
             elif trim_trimis is None:
                 erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
     # 'anual' nu cere nimic în plus față de an

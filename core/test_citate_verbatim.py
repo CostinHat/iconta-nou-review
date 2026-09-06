@@ -23,7 +23,15 @@ import pytest
 from core import scan_citate
 
 # Instalat 21.08.2026. Se RIDICĂ pe măsură ce citările devin verificabile. Nu se coboară.
-VERBATIM_BASELINE = 11
+#
+# 06.09.2026: **11 -> 26**, și nu fiindcă s-ar fi scris citări noi. `scan_citate` citea DOAR
+# `core/common`, iar politica casei — **decizia 73** — cere ca temeiul să stea în modulul REGULII.
+# Cele două module scrise după ea (`cota_tva_incasare`, `perioada_fiscala_tva`) erau invizibile
+# aici, împreună cu tot ce mai stă prin module: **36 -> 60** citări văzute, **12 -> 26** verbatim.
+# *Cifra veche nu era greșită; măsura o lume mai mică decât credea că măsoară, și se micșora cu
+# fiecare temei mutat corect.* Cele 34 nevăzute nu erau datorie ascunsă — sunt de altă formă
+# (parafrază cu localizator), exact cazul descris în antetul scanerului.
+VERBATIM_BASELINE = 26
 
 
 @pytest.fixture(scope="module")
@@ -54,6 +62,14 @@ def test_fiecare_citare_are_text_si_url(inv):
     fara = ["%s (%s)" % (c, t) for c, t, v in inv if v is None]
     assert not fara, (
         "citări fără `text_citat` sau fără `url` către corpus, ori cu fișier lipsă: %s" % fara)
+
+
+def test_domeniul_nu_are_plafon_tacut():
+    """Niciun modul sarit la culegere. Un `except: continue` care inghite un ImportError face
+    domeniul sa se stranga fara ca nimic sa spuna ceva — chiar forma reparata de R169."""
+    sarite = scan_citate.module_sarite()
+    assert not sarite, ("module `core/*.py` care nu s-au importat la culegerea temeiurilor: %s. "
+                        "Daca unul e legitim nescanabil, spune-o aici cu motivul." % sarite)
 
 
 def test_scanul_chiar_vede_citarile(inv):

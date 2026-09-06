@@ -5,9 +5,9 @@ import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULOR
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=45745f39a0";
-import { ecranRip } from "./rip_ecran.js?v=e1b8bf534a";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=dd8fa75f45";
-import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
+import { ecranRip } from "./rip_ecran.js?v=2a75ab957d";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=01442b1818";
+import { ecranEtransport } from "./etransport_ecran.js?v=c57761fc62";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=05a5b55996";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=bd6aabd15a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=f019079e5a";  // renderer unic verdict control fiscal (DS cap.20)

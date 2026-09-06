@@ -47,6 +47,15 @@
    "a_scris": null
   },
   {
+   "op": "Achiziție necorporală (software/licență/brevet)",
+   "camp": 7,
+   "sel": 0,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Valoarea operațiunii trebuie să fie un număr mai mare decât zero.",
+   "a_scris": null
+  },
+  {
    "op": "Reevaluare imobilizări (105)",
    "camp": 4,
    "sel": 0,
@@ -93,8 +102,8 @@
   },
   {
    "op": "TVA la încasare (art. 282)",
-   "camp": 4,
-   "sel": 0,
+   "camp": 5,
+   "sel": 1,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
    "mesaj": "Suma încasată trebuie să fie mai mare decât zero: din ea se extrage TVA-ul exigibil, prin suta mărită.",
@@ -125,6 +134,15 @@
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
    "mesaj": "Contul «»@#$% nu există în planul firmei (câmpul „cont_destinatie”). Îl adaugi din Plan de conturi (Import date › Plan de conturi), apoi reia operațiunea.",
+   "a_scris": null
+  },
+  {
+   "op": "Achiziție de la neînregistrat (persoană fizică) — D394 op. N",
+   "camp": 6,
+   "sel": 1,
+   "buton": "Generează nota (ciornă)",
+   "verdict": "a vorbit",
+   "mesaj": "Valoarea operațiunii trebuie să fie un număr mai mare decât zero.",
    "a_scris": null
   },
   {

@@ -3,15 +3,15 @@ import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor } from "
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
-  ["aport", "Aport numerar/banca"],
-  ["credit", "Credit / imprumut primit"],
-  ["subventie", "Subventie / fonduri"],
-  ["alte_incasari", "Alte incasari"],
+  ["aport", "Aport numerar/bancă"],
+  ["credit", "Credit / împrumut primit"],
+  ["subventie", "Subvenție / fonduri"],
+  ["alte_incasari", "Alte încasări"],
 ];
 const CATEGORII_PL = [
-  ["cheltuiala_deductibila", "Cheltuiala deductibila"],
-  ["cheltuiala_limitata", "Cheltuiala deductibila limitat"],
-  ["cheltuiala_nedeductibila", "Cheltuiala nedeductibila"],
+  ["cheltuiala_deductibila", "Cheltuială deductibilă"],
+  ["cheltuiala_limitata", "Cheltuială deductibilă limitat"],
+  ["cheltuiala_nedeductibila", "Cheltuială nedeductibilă"],
   ["aport_retragere", "Retragere aport"],
   ["rambursare_credit", "Rambursare credit"],
 ];

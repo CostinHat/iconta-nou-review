@@ -36,8 +36,51 @@ def _norm(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
+def _module():
+    """Modulele în care se caută temeiuri: `core/common` (registrul de cote) **plus** orice modul
+    `core/*.py` care declară obiecte `Temei` la nivel de modul.
+
+    DE CE NU DOAR `common` (06.09.2026, R169). Prima formă citea numai `common`, iar asta a devenit
+    fals pe măsură ce repo-ul a urmat propria politică: **decizia 73** cere ca temeiul să stea în
+    modulul REGULII, nu în rută — `core/cota_tva_incasare.py` (art. 291 alin. 5),
+    `core/perioada_fiscala_tva.py` (art. 322). Amândouă erau **invizibile** aici, deci citarea lor
+    verbatim nu era verificată de nimeni, iar clichetul raporta despre o lume din ce în ce mai mică.
+    *Un gard cu domeniul greșit dă verde despre ce nu vede.*
+
+    Domeniul se ia din STRUCTURĂ, nu dintr-o listă scrisă de mână: se importă modulele `core/*.py`
+    (fără `test_*`/`scan_*`) și se păstrează cele care chiar au un `Temei` la nivel de modul. O
+    listă de nume ar fi îmbătrânit exact ca `common`-ul singur.
+    """
+    import glob
+    import importlib
+    from core import common as c
+
+    mod, sarite = [c], []
+    for cale in sorted(glob.glob(os.path.join(RAD, "core", "*.py"))):
+        nume = os.path.basename(cale)[:-3]
+        if nume.startswith(("test_", "scan_", "__")) or nume == "common":
+            continue
+        try:
+            m = importlib.import_module("core." + nume)
+        except Exception as e:  # noqa: BLE001
+            # NU se sare in tacere. Un modul cu temeiuri care ar inceta sa se importe ar disparea
+            # din inventar fara ca nimic sa spuna ceva — chiar forma de orbire pe care o repara
+            # R169. Cine nu s-a importat se NUMESTE, iar `test_citate_verbatim` o cere goala.
+            sarite.append("%s (%s)" % (nume, type(e).__name__))
+            continue
+        if any(isinstance(getattr(m, a, None), c.Temei) for a in dir(m) if not a.startswith("__")):
+            mod.append(m)
+    return mod, sarite
+
+
+def module_sarite():
+    """Modulele `core/*.py` care NU s-au putut importa la culegerea temeiurilor. Gol = domeniul
+    scanului e intreg. Se raporteaza, nu se ascunde: *un plafon tacut se citeste ca acoperire.*"""
+    return _module()[1]
+
+
 def _temeiuri():
-    """Toate obiectele `Temei` unice din registrul de cote, oricât de adânc în structuri."""
+    """Toate obiectele `Temei` unice din modulele cu temeiuri, oricât de adânc în structuri."""
     from core import common as c
     gasite, vaz, unice = [], set(), []
 
@@ -51,9 +94,11 @@ def _temeiuri():
             for i, v in enumerate(o):
                 culege(v, "%s[%d]" % (cale, i))
 
-    for nume in dir(c):
-        if not nume.startswith("_"):
-            culege(getattr(c, nume), nume)
+    for m in _module()[0]:
+        prefix = "" if m.__name__ == "core.common" else m.__name__.split(".")[-1] + "."
+        for nume in dir(m):
+            if not nume.startswith("_"):
+                culege(getattr(m, nume), prefix + nume)
     for cale, t in gasite:
         k = (str(t), t.text_citat)
         if k not in vaz:

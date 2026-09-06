@@ -50,10 +50,23 @@ from core import reverificare as R  # noqa: E402
 #:   `NECUNOSCUT`     11 → 12  (+1: `Legea 201/2025 art. I`, dintr-un document care nu consemneaza
 #:                              NICIO modificare — deci „zero marcaje" nu spunea „nemodificat")
 #: *Nicio valoare fiscala nu s-a schimbat. S-a schimbat ce poate afirma instrumentul despre ele.*
+#:
+#: MUTATA DIN NOU 06.09.2026, prin **R169**, si tot fara ca vreo valoare fiscala sa se schimbe:
+#: `scan_citate` citea numai `core/common`, iar decizia 73 muta temeiurile in modulul REGULII —
+#: deci domeniul se micsora cu fiecare temei pus corect. Largit, inventarul creste de la 36 la 60.
+#: Socoteala, ca sa se poata confrunta:
+#:   `NECUNOSCUT/NECUNOSCUT`  13 → 30  (+17)
+#:   `STABIL/NECUNOSCUT`       0 →  6  (clasa NOUA in distributie)
+#:   `VOLATIL/NECUNOSCUT`      0 →  1  (clasa NOUA)
+#: Cele 24 nou-vazute sunt aproape toate NECUNOSCUT pe consumator: nimeni nu le dăduse un prag de
+#: reverificare, fiindca nimeni nu le vedea. *Nu e o inrautatire, e o masuratoare care lipsea* —
+#: si e chiar continutul restantei **R171**.
 DISTRIBUTIE = {
     ("VOLATIL", "DEPUS"): 13,
     ("STABIL", "DEPUS"): 7,
     ("MISCATOR", "CALCULAT"): 3,
+    ("STABIL", "NECUNOSCUT"): 6,
+    ("VOLATIL", "NECUNOSCUT"): 1,
     # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
     # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma
@@ -64,7 +77,11 @@ DISTRIBUTIE = {
     # poate citi marcajele si frecventa nu se poate stabili. *NECUNOSCUT declarat, cu motivul —
     # nicio valoare fiscala nu s-a schimbat, s-a adaugat una despre care instrumentul nu poate
     # afirma cat de des se schimba.*
-    ("NECUNOSCUT", "NECUNOSCUT"): 13,
+    # 13 -> 30 la 06.09.2026, prin R169: nu s-au adaugat 17 valori fiscale, s-a largit domeniul
+    # scanului. Cele nou-vazute traiesc in module de norma (decizia 73) si n-au avut niciodata un
+    # prag de reverificare, fiindca nu le vedea nimeni. *O necunoastere numita e mai buna decat o
+    # cifra mica.* Se inchid prin R171.
+    ("NECUNOSCUT", "NECUNOSCUT"): 30,
 }
 
 _AZI = datetime.date(2026, 8, 31)

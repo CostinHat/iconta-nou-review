@@ -40,16 +40,27 @@ from core import db  # noqa: E402
 # (deci aterizeaza) si e la fel de imposibila ca data contabila a firmei.
 INVALID = {"text": "«»@#$%", "numar": "-99999999", "data": "1899-01-01"}
 
+# [R170, 06.09.2026] Enumerarea se face pe STRUCTURA, nu pe euristici de text.
+#
+# Prima forma culegea toate butoanele vizibile si arunca ce nu parea o operatiune: fara sageti, si
+# `t.length > 46 -> sari`. Efectul, masurat azi: registrul are **34** de intrari, proba a raportat
+# **32**, iar cele doua aruncate erau chiar cele cu titlul lung —
+#   47  «Achizitie necorporala (software/licenta/brevet)»
+#   60  «Achizitie de la neinregistrat (persoana fizica) - D394 op. N»
+# Nu erau „fara defect": erau NEDESCHISE, purtand numele unora probate. *Un plafon tacut intr-un
+# instrument de masura se citeste ca acoperire.*
+#
+# Butoanele de operatiune poarta `data-op` — asta le deosebeste de orice alt buton al ecranului,
+# fara sa ghiceasca din text. Filtrul de sageti si de lungime dispare cu totul.
 JS_OPERATIUNI = """
 () => {
   const R = document.querySelector(".fereastra-corp") || document.body;
   const out = [];
-  R.querySelectorAll("button").forEach((e) => {
+  R.querySelectorAll("button[data-op]").forEach((e) => {
     const r = e.getBoundingClientRect();
     if (!(r.width > 0 && r.height > 0) || e.disabled) return;
     const t = (e.textContent || "").trim().replace(/\\s+/g, " ");
-    if (!t || t.length > 46) return;
-    if (["←", "✕", "×", "?"].includes(t)) return;
+    if (!t) return;
     out.push(t);
   });
   return out;

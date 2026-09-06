@@ -2094,3 +2094,66 @@ prin `else` pe ramura de excepție și era refuzată acolo, pentru lipsa datei d
 corect, motiv greșit, iar testul cerea doar „un `ValueError`". Refuzurile poartă acum **cod**
 (`RefuzAlegere.cod`, nomenclator închis de patru), iar fiecare caz își cere codul potrivit. *Un test
 care acceptă orice refuz nu apără motivul refuzului.*
+
+
+## Trei reparații de claritate, cerute după audit (06.09.2026)
+
+Nu e un lot de campanie: sunt trei puncte cerute punctual, plus ce s-a deschis din ele. Comanda:
+temei legal la mesajul de periodicitate TVA · rescrierea celor opt refuzuri ale registrului de
+partidă simplă · diacriticele celor 32 de etichete din lotul 13.
+
+### Ce a cerut comanda, și ce a ieșit
+
+| punct | cerut | ce a ieșit |
+|---|---|---|
+| 1 | temei la „firma depune d300 TRIMESTRIAL…" | **R167** — art. 322 alin. (1) și (2), citit la sursă, într-un **modul propriu** (decizia 73), lipit **numai** pe setul TVA-decont |
+| 2 | rescrierea celor opt refuzuri ale RIP | **era deja făcut** (R140, lotul 12) — s-a verificat la sursă și s-a **reprobat toate opt**, ceea ce lipsea |
+| 3 | diacritice la etichetele celor 32 de formulare | **R168** — 125 de șiruri afișate, în **patru** ecrane, plus gardul care nu vedea pozițiile |
+
+### Punctul 2 era deja făcut — și asta se spune, nu se reface
+
+`core/rip_api._valideaza`, citit la sursă: toate cele opt refuzuri sunt deja în română întreagă, cu
+diacritice, numind câmpul și ce se așteaptă — rescrise pe **`bddfb287`**, lotul 12, ca **R140**.
+*Ce s-a cerut de două ori se face o dată.*
+
+Ce **lipsea** era reprobarea: R140 fusese reprobată atunci pe **unul** din opt. S-a făcut acum pe
+toate opt, în două straturi, fiindcă cele opt nu se pot declanșa toate din formular — `tip`,
+`metoda` și `categorie` sunt `<select>`-uri, iar `valuta` n-are câmp în ecran. **Trei pe ecran**,
+apăsând «Adaugă (ciornă)»; **toate opt pe rută**, din pagina autentificată. Plus o operațiune
+**validă**, care trebuie să treacă — altfel proba ar spune „opt refuzuri" despre un registru care
+refuză tot — ștearsă apoi prin ruta aplicației, cu numărătoarea de rânduri citită înainte și după.
+
+### Ce s-a deschis din cele trei, și nu era în comandă
+
+**R169 — o contradicție între două reguli ale casei.** Scriind modulul lui R167, cele două citări
+noi, verbatim din corpus, **nu apăreau în inventarul** lui `scan_citate`: el culege `Temei` numai
+din `core/common`. Dar **decizia 73** cere ca temeiul să stea în modulul REGULII. *Cu cât repo-ul
+urmează mai bine decizia 73, cu atât gardul vede mai puțin.* Lărgit pe structură (module care chiar
+au un `Temei`): citări văzute **36 → 60**, verbatim **12 → 26**, clichet ridicat cu motivul scris.
+
+**R170 — „32 de formulare probate" era spus despre un registru de 34.** Proba de etichete a lui R168
+a numărat **34** de formulare; proba lotului 13, în aceeași zi, pe aceeași instanță, **32**. Cauza:
+enumerarea filtra butoanele pe TEXT, cu `t.length > 46 → sari`, iar exact două titluri trec de 46 de
+caractere. *Nu erau „fără defect": erau nedeschise, purtând numele unora probate.* Enumerarea trece
+pe `data-op` — structural —, iar cele două s-au deschis: amândouă răspund corect.
+
+### Patru greșeli ale mele, consemnate
+
+1. **Prima formă a temeiului a fost în locul greșit.** Constantele `_TEMEI_TVA_*` puse în
+   `declaratii_api.py`. Decizia 73 o interzice — și, mai rău, underscore-ul le-ar fi ascuns de
+   `scan_refuzuri`, adică exact **eludarea prin numire** pe care decizia o numește. Refăcut ca modul.
+2. **Ancora testului anti-vacuu ateriza în cuprins.** `find("Articolul 322")` nimerea tabla de
+   materii, unde 322 e urmat de 323. *Un act se identifică după conținut, nu după număr.*
+3. **Forma a doua a fost prinsă de clichetul `apare_oricum`** (1222 → 1225): căutam trei fraze
+   într-un fișier, adică forma care nu deosebește „e acolo" de „e acolo din alt motiv". Rescris ca
+   apel la `scan_citate._verbatim`, cu o calibrare pe un citat inventat, care trebuie să pice.
+4. **Am republicat staticul de PRODUCȚIE din arborele de lucru, din greșeală.** Voiam o instanță
+   izolată care să servească JS-ul nou și am rulat `publica_static.py --din-arbore` dintr-un director
+   pe care îl credeam separat — dar Python rezolvă legătura simbolică, deci `RAD` a ieșit tot
+   `~/iconta_nou`, iar ținta tot `~/iconta_publicat/static`. **Restaurat imediat** din HEAD
+   (`d788a9e8`), verificat cu `--stare`. Ce a fost servit între cele două comenzi difereau de HEAD
+   **numai prin textul afișat** al celor patru ecrane (fiecare `.js` trecuse prin `node --check`, îl
+   cere publicarea) — dar asta e o circumstanță, nu o scuză: *o comandă care schimbă ce vede
+   utilizatorul se rulează după ce i-ai dovedit ținta, nu după ce ai presupus-o.* Reprobarea s-a
+   făcut apoi într-o copie reală (`cp -al`), fără `iconta_publicat` alături, unde aplicația servește
+   declarat „arbore de lucru (nepublicat)".

@@ -8,6 +8,8 @@ Fix (dispecerul genereaza + valideaza_cerere): periodicitate efectiva la validar
 ancora (T1->3, T2->6, T3->9, T4->12; generatoarele sunt ancorate pe luna, agrega trimestrul; DUK R18)."""
 import pytest
 from core import declaratii_api as da
+from core import perioada_fiscala_tva as pft
+from core import common as _c
 from core import db as _db, tenant_provisioning as _tp
 
 SCH = "ztest_c7_trim"
@@ -31,6 +33,50 @@ def test_valideaza_static_backward_compat():
     # fara per_efectiv -> periodicitatea statica (d300=lunar) -> cere luna
     er = da.valideaza_cerere("d300", {"an": 2026, "trim": 3})
     assert any("luna" in e for e in er), er
+
+
+# ---------- R167: TEMEIUL periodicitatii TVA sta pe refuz ----------
+# Aserteaza pe STRUCTURA, nu pe text (METODA §23): refuzul se compara cu CONSTANTA pe care o
+# foloseste codul (`endswith`), iar pe declaratiile din afara setului TVA se cere EGALITATE cu
+# mesajul de baza — nu absenta unui subsir.
+def test_refuz_trimestrial_poarta_temeiul_pe_setul_tva():
+    er = da.valideaza_cerere("d300", {"an": 2026, "luna": 9}, per_efectiv="trimestrial")
+    assert len(er) == 1 and er[0].endswith(pft.norma("d300", "trimestrial")), er
+
+
+def test_refuz_lunar_poarta_temeiul_pe_setul_tva():
+    er = da.valideaza_cerere("d300", {"an": 2026, "trim": 3}, per_efectiv="lunar")
+    assert len(er) == 1 and er[0].endswith(pft.norma("d300", "lunar")), er
+
+
+def test_temeiul_tva_nu_se_lipeste_pe_alte_declaratii():
+    """Calibrare in cealalta directie (METODA §22): d100 e trimestrial din temeiul impozitului pe
+    profit, d112 lunar din altul. Art. 322 lipit pe ele ar fi un temei FALS - mai rau decat niciunul.
+    Se cere EGALITATE cu mesajul de baza, nu absenta unui subsir."""
+    assert da.valideaza_cerere("d100", {"an": 2026, "luna": 9}, per_efectiv="trimestrial") == [
+        "firma depune d100 TRIMESTRIAL: trimite trimestrul (1-4), nu luna"]
+    assert da.valideaza_cerere("d112", {"an": 2026, "trim": 3}, per_efectiv="lunar") == [
+        "declarația d112 se depune LUNAR pentru firma asta: trimite luna (1-12), nu trimestrul"]
+
+
+def test_temeiul_citat_se_rezolva_in_corpus():
+    """ANTI-VACUU. Cele trei de mai sus ar trece si cu un temei GOL si cu un articol inventat: ele
+    compara refuzul cu constanta, nu constanta cu legea.
+
+    Se intreaba INSTRUMENTUL casei, nu textul: `scan_citate._verbatim` cauta `text_citat` in chiar
+    documentul pe care temeiul il numeste (`temei.url`), normalizat. Prima forma a testului cauta
+    de mana trei fraze in fisier — si clichetul `apare_oricum` din `test_garzi_pe_text` a prins-o
+    (1222 -> 1225): un `"sir" in fisier` nu deosebeste „e acolo" de „e acolo din alt motiv".
+
+    Prima forma avea si o greseala pe care si-a gasit-o singura: ancora `Articolul 322` ateriza in
+    CUPRINSUL corpusului, unde 322 e urmat de 323, nu de „Perioada fiscala"."""
+    from core import scan_citate
+    assert scan_citate._verbatim(pft.TEMEI_322_1) is True, "art. 322 alin. (1) nu se gaseste verbatim"
+    assert scan_citate._verbatim(pft.TEMEI_322_2) is True, "art. 322 alin. (2) nu se gaseste verbatim"
+    # calibrare in cealalta directie: potrivirea nu spune „da" la orice
+    fals = _c.Temei("CF", art="322", alin="1", url=pft.TEMEI_322_1.url,
+                    text_citat="Perioada fiscala este saptamana calendaristica si nimic altceva.")
+    assert scan_citate._verbatim(fals) is False, "potrivirea accepta un citat inventat"
 
 
 # ---------- DB: genereaza pe firma trimestriala/lunara ----------

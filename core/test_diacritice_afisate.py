@@ -436,6 +436,24 @@ _JS_NAV_RE = re.compile(r"nav\.(?:deschide|mergi|inlocuieste)\s*\(\s*" + _JS_STR
 _JS_INTERP_RE = re.compile(r"\$\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}")
 _JS_TEXTNODE_RE = re.compile(r">([^<>]+)<")
 
+# POZITIILE 5 si 6 (06.09.2026). Gardul vedea `eticheta: "..."` dar NU si cele doua forme in care
+# ecranele scriu de fapt etichetele:
+#   5. eticheta POZITIONALA a unui camp de formular — `C("data_livrare", "Data livrarii")`. Prima
+#      parametru e NUMELE campului (snake_case, minuscule), al doilea e ce citeste omul. Selectia e
+#      structurala: se cere ca primul argument sa arate a nume de camp, nu ca functia sa se cheme `C`.
+#   6. eticheta unei OPTIUNI de select — `["comodat", "Comodat"]`. Primul element e valoarea trimisa
+#      la ruta, al doilea e textul din `<option>`.
+# Ambele ies din `esc(...)` intr-un `<label>`/`<option>`/`aria-label` — text afisat, nu cod.
+#
+# EXCLUS anume: `cond: { camp: "tip", val: ["a", "b"] }`. Perechea de acolo e o lista de VALORI,
+# nu o pereche valoare-eticheta. Prins la calibrare, nu ghicit: instrumentul de masura raporta
+# `regularizare_incasat` drept text afisat. Fara excludere, gardul ar fi cerut diacritice pe o
+# valoare trimisa la server — a gresi in cealalta directie (METODA §22).
+_JS_CAMP_RE = re.compile(
+    r"\b[A-Za-z_$][\w$]*\(\s*(?:\"[a-z][a-z0-9_]*\"|'[a-z][a-z0-9_]*')\s*,\s*" + _JS_STR)
+_JS_PERECHE_RE = re.compile(r"\[\s*" + _JS_STR + r"\s*,\s*" + _JS_STR + r"\s*\]")
+_JS_VAL_INAINTE_RE = re.compile(r"val\s*:\s*$")
+
 
 def _decode_js(s):
     """Decodeaza escape-urile JS (\\uXXXX, \\xXX, \\n...) ca diacriticele scrise
@@ -482,6 +500,13 @@ def scan_js_text(text):
         emit(m.start(2), "atribuire:" + m.group(1), m.group(2))
     for m in _JS_NAV_RE.finditer(text):
         emit(m.start(1), "nav", m.group(1))
+    for m in _JS_CAMP_RE.finditer(text):
+        emit(m.start(1), "camp-eticheta", m.group(1))
+    for m in _JS_PERECHE_RE.finditer(text):
+        # `val: [...]` = lista de valori de comparatie, nu pereche valoare-eticheta
+        if _JS_VAL_INAINTE_RE.search(text[max(0, m.start() - 10):m.start()]):
+            continue
+        emit(m.start(2), "optiune", m.group(2))
     for m in _JS_TMPL_RE.finditer(text):
         base = m.start() + 1
         # sterge ${...} (1 nivel de acolade), pastrand lungimea -> offset->linie valid
@@ -527,6 +552,17 @@ def test_autotest_js_criteriu_are_dinti():
     assert _flag_js("Adaugă firmă") is None, "are diacritice -> corect"
     assert _flag_js(_decode_js("Declara\\u021bii lucrate")) is None, "escape diacritic -> corect"
     assert _flag_js("firme-optiune-titlu") is None, "un-cuvant (fara spatiu) -> nu e proza"
+    # POZITIILE 5 si 6, ambele directii (adaugate 06.09.2026):
+    assert scan_js_text('C("data_livrare", "Data livrarii si a platii")'), \
+        "eticheta pozitionala de camp ASCII"
+    assert scan_js_text('optiuni: [["chirie", "Chirie platita si incasata"]]'), \
+        "eticheta de optiune ASCII"
+    assert not scan_js_text('C("data_livrare", "Data livrării și a plății")'), \
+        "eticheta pozitionala CU diacritice -> corect"
+    assert not scan_js_text('cond: { camp: "fel", val: ["chirie platita", "chirie incasata"] }'), \
+        "`val: [...]` sunt VALORI trimise la ruta, nu etichete afisate"
+    assert not scan_js_text('C("DATA_LIVRARE", "Data livrarii si a platii")'), \
+        "primul argument nu arata a nume de camp -> nu e o eticheta de formular"
 
 
 def test_niciun_text_afisat_js_fara_diacritice():

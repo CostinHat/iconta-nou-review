@@ -88,20 +88,20 @@ function actiuneRo(a) {  // [aa_ro] jurnalul pe romaneste; necunoscutele raman b
   a = a || "";
   if (a === "login") return "Autentificare";
   const REGULI = [
-    ["control-fiscal", "A deschis Control fiscal"], ["eu/competente", "A deschis competentele"],
-    ["eu/cabinet", "A deschis cabinetul"], ["recomanda", "A deschis Recomanda"],
-    ["asistenti/echipa", "A deschis echipa"], ["facturi", "A lucrat in Facturi"],
-    ["declaratii", "A lucrat in Declaratii"], ["salariati", "A lucrat in Salariati"],
-    ["migrare", "A lucrat in Migrare"], ["stocuri", "A lucrat in Stocuri"],
-    ["banca", "A lucrat in Banca"], ["portal", "A folosit portalul"],
-    ["raportari", "A folosit Raporteaza"], ["termene", "A deschis Termene"],
-    ["anunturi", "A citit anunturile"], ["notificari", "A citit notificarile"],
-    ["educatie", "A deschis Educatie pe tipare"], ["patru-ochi", "A deschis patru-ochi"],
-    ["asistenti", "A deschis echipa"], ["coada", "A lucrat in coada de validare"],
+    ["control-fiscal", "A deschis Control fiscal"], ["eu/competente", "A deschis competențele"],
+    ["eu/cabinet", "A deschis cabinetul"], ["recomanda", "A deschis Recomandă"],
+    ["asistenti/echipa", "A deschis echipa"], ["facturi", "A lucrat în Facturi"],
+    ["declaratii", "A lucrat în Declarații"], ["salariati", "A lucrat în Salariați"],
+    ["migrare", "A lucrat în Migrare"], ["stocuri", "A lucrat în Stocuri"],
+    ["banca", "A lucrat în Bancă"], ["portal", "A folosit portalul"],
+    ["raportari", "A folosit Raportează"], ["termene", "A deschis Termene"],
+    ["anunturi", "A citit anunțurile"], ["notificari", "A citit notificările"],
+    ["educatie", "A deschis Educație pe tipare"], ["patru-ochi", "A deschis patru-ochi"],
+    ["asistenti", "A deschis echipa"], ["coada", "A lucrat în coada de validare"],
     ["plan-conturi", "A deschis planul de conturi"], ["firma-profil", "A deschis profilul firmei"],
     ["capacitate", "A deschis Capacitate"], ["permisiuni", "A deschis permisiunile"],
     ["consolidare", "A deschis Consolidare"],
-    ["tenants", "A deschis o firma"], ["recomanda", "A deschis Recomanda"],
+    ["tenants", "A deschis o firmă"], ["recomanda", "A deschis Recomandă"],
   ];
   for (const [k, t] of REGULI) if (a.includes(k)) return t;
   return a;

@@ -47,7 +47,20 @@ from core import scan_pereche_act_articol as S  # noqa: E402
 #: literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic"*. Exact asta am făcut.
 #: **R106 s-a RETRAS**, temeiurile s-au pus la loc, iar instrumentul a învățat convenția
 #: (`scan_pereche_act_articol.document_tinta`). Zero, deci orice apariție e o regresie.
-CLICHET_NEGASIT = 0
+
+#: **0 → 11 la 06.09.2026, și niciunul nu e un temei nou.** `scan_citate` culegea temeiuri numai din
+#: `core/common`; decizia 73 le mută în modulul REGULII, deci domeniul se micșora cu fiecare temei
+#: pus corect (**R169**). Lărgit, inventarul trece de la 36 la 60 de citări — iar cele 24 nou-văzute
+#: aduc **11 perechi care n-au fost confruntate niciodată**. *Cifra veche nu era o reușită, era o
+#: necunoaștere.*
+#:
+#: **Cauza lor e una singură, și e cea deja numită la R111**: forma LOCALIZATORULUI, nu actul greșit.
+#: `pct.9` (OMFP 1802/2014 numerotează puncte, nu articole) · `norme art.321` / `norme art.19`
+#: (HG 1/2016 sunt normele, care trimit la articolul din CF) · `1-6` (un interval, nu un articol).
+#: `articol_in_act._TITLURI_NUMARATE` caută titluri de articol, deci nu găsește nimic. **Verdictul e
+#: în direcția sigură** — refuză, nu inventează un STABIL —, dar motivul e fals: actul le conține.
+#: Rezolvarea cere citire la sursă pe fiecare, adică muncă fiscală: **restanța R171**.
+CLICHET_NEGASIT = 11
 #: Ce a rămas după convenție: **2**, amândouă `OUG 156/2024 art. LXVI` — articol care CHIAR e al
 #: ordonanței, într-un document adus ca ciot. Problemă de **corpus**, nu de temei: **R107**.
 #:
@@ -73,13 +86,26 @@ CLICHET_NEGASIT = 0
 #: gaseste nimic si declara CIOT. *Aceeasi clasa ca `Ordin 1604/2025` — o forma pe care
 #: instrumentul n-o citeste (R111) —, nu corpus adus partial (R107).* Verdictul ramane in directia
 #: sigura: refuza, nu inventeaza un STABIL.
-CLICHET_CIOT = 4
+#: **4 → 7 la 06.09.2026, din aceeași lărgire de domeniu (R169), și toate trei din cauza deja
+#: numită mai sus**: `OMFP 2634/2015` numerotează PUNCTE în anexe, nu articole — `Anexa 1 pct. 52`
+#: (jurnalele D406) și `anexa 2` de două ori (registrul-inventar). Nicio formă nouă de eșec; aceleași
+#: trei temeiuri erau acolo și înainte, doar că nu le vedea nimeni.
+CLICHET_CIOT = 7
 #: Pragul de JOS pe confirmate: dacă scade, ceva a dispărut din registru sau instrumentul s-a rupt.
 #: 15 → **24** după ce instrumentul a învățat convenția — fără ca vreun temei să se schimbe.
-PRAG_CONFIRMATE = 24
+#: 24 → **34** la 06.09.2026: lărgirea domeniului a adus și confirmări, nu doar necunoscute.
+#: Pragul de jos se ridică la ce s-a câștigat, altfel câștigul se poate pierde tăcut.
+PRAG_CONFIRMATE = 34
 
-#: Perechile negăsite **cunoscute**. Goală — iar goliciunea ei e chiar aserțiunea.
-NEGASITE_CUNOSCUTE = set()
+#: Perechile negăsite **cunoscute** — IDENTITĂȚILE, nu numărul. Clichetul pe număr n-ar vedea o
+#: pereche reparată și alta stricată în aceeași tură. Cele patru de aici sunt cele scoase la iveală
+#: de lărgirea domeniului (R169), toate din forma localizatorului; se închid prin **R171**.
+NEGASITE_CUNOSCUTE = {
+    ("OMFP 1802/2014", "pct.9"),        # praguri de mărime — actul numerotează puncte
+    ("HG 1/2016", "norme art.321"),     # normele trimit la articolul din CF
+    ("HG 1/2016", "norme art.19"),      # idem
+    ("OMFP 3254/2017", "1-6"),          # un interval de articole, nu un articol
+}
 
 
 def _inv():

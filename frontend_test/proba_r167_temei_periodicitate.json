@@ -1,0 +1,31 @@
+{
+ "baza": "http://127.0.0.1:8011",
+ "cazuri": [
+  {
+   "caz": "d300 pe firma TRIMESTRIALA, cerere pe LUNA",
+   "status": 422,
+   "mesaj": "firma depune d300 TRIMESTRIAL: trimite trimestrul (1-4), nu luna — perioada fiscală a TVA e trimestrul calendaristic la firma care în anul precedent nu a depășit plafonul de cifră de afaceri și nu a făcut achiziții intracomunitare de bunuri (CF art.322 alin.(2))",
+   "temei_asteptat": "CF art.322 alin.(2)"
+  },
+  {
+   "caz": "d300 pe firma LUNARA, cerere pe TRIMESTRU",
+   "status": 422,
+   "mesaj": "declarația d300 se depune LUNAR pentru firma asta: trimite luna (1-12), nu trimestrul — perioada fiscală a TVA e luna calendaristică (CF art.322 alin.(1))",
+   "temei_asteptat": "CF art.322 alin.(1)"
+  },
+  {
+   "caz": "d100 (alt temei) pe firma TRIMESTRIALA, cerere pe LUNA",
+   "status": 422,
+   "mesaj": "firma depune d100 TRIMESTRIAL: trimite trimestrul (1-4), nu luna",
+   "temei_asteptat": null
+  }
+ ],
+ "randuri_inainte": {
+  "tenant_003": 305,
+  "tenant_001": 264
+ },
+ "randuri_dupa": {
+  "tenant_003": 305,
+  "tenant_001": 264
+ }
+}

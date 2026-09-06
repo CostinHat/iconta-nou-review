@@ -7464,6 +7464,68 @@ ANAF cu ce a declarat generatorul. Asta ar fi a doua față a ei — **generator
 lanțul de intrare. **Nu s-a construit**: lista internă e închisă, iar comanda etapei 2 cere probe,
 nu gărzi. Scrisă aici ca să nu se piardă.
 
+## 06.09.2026 — Trei gărzi lărgite, toate pentru același motiv: domeniul, nu criteriul
+
+**GĂRZI NOI: una singură**, și ea trăiește într-un fișier existent — cele patru teste ale lui R167
+din `core/test_c7_periodicitate_trimestriala.py`. Restul turei a **lărgit** gărzi care erau deja
+acolo și dădeau verde despre o lume pe care n-o vedeau.
+
+### 1. `core/test_diacritice_afisate.py` — două poziții de afișare în plus (R168)
+
+Gardul scana patru poziții: cheia de obiect (`eticheta:`, `titlu:` …), atribuirea la `.innerHTML`,
+primul argument al lui `nav.*`, și nodurile de text din template-literale. Etichetele formularelor
+de operațiuni nu trăiesc în niciuna — sunt **al doilea argument, pozițional**, al unui constructor
+de câmp, și **al doilea element al perechii de opțiune**.
+
+**Clichetul era 0 peste 125 de șiruri ASCII.** Și defectul fusese **numit în scris** de lotul 13.
+*O descriere nu e o gardă; un gard cu domeniul greșit dă verde despre ce nu vede.*
+
+Selecția pozițiilor noi e **structurală**: la poziția 5 se cere ca primul argument să arate a nume
+de câmp (snake_case, minuscule), nu ca funcția să se cheme `C` — altfel gardul ar fi legat de un
+singur fișier. Iar `cond: { val: [...] }` e **exclus anume**: perechea de acolo e o listă de
+VALORI, nu o pereche valoare-etichetă. Excluderea n-a fost ghicită — instrumentul de măsură a
+raportat `regularizare_incasat` drept text afișat, adică o valoare trimisă la server. *Fără ea,
+gardul ar fi cerut diacritice pe logică: a greși în cealaltă direcție.*
+
+**Calibrare**: cinci aserțiuni de dinți pe pozițiile noi (două care trebuie să prindă, trei care
+trebuie să tacă), plus o **mutație pe fișierul real** — o etichetă întoarsă la ASCII face gardul
+roșu, restaurată îl face verde. Clichetul rămâne **0**.
+
+### 2. `core/scan_citate.py` — domeniul, luat din structură (R169)
+
+Culegea obiecte `Temei` numai din `core/common`. Dar **decizia 73** cere ca temeiul să stea în
+**modulul regulii** — deci *cu cât repo-ul urmează mai bine propria politică, cu atât gardul vede
+mai puțin*. `TEMEI_291_5` (R151, scris cu o zi înainte, exact după regulă) nu era verificat de
+nimeni.
+
+Domeniul se ia acum din **structură**: se importă `core/*.py` (fără `test_*`/`scan_*`) și se
+păstrează modulele care chiar au un `Temei` la nivel de modul. *O listă de nume ar fi îmbătrânit
+exact ca `common`-ul singur — adică ar fi reintrodus același defect, cu un pas întârziere.*
+
+Măsurat la lărgire: citări văzute **36 → 60**, verbatim **12 → 26**.
+`VERBATIM_BASELINE` urcă **11 → 26**, cu motivul scris lângă cifră: *nu s-a scris nicio citare nouă,
+s-a lărgit domeniul.* `test_fiecare_citare_are_text_si_url` a rămas verde la lărgire — deci în cele
+24 nou-văzute nu era neglijență, ci orbire în scan.
+
+### 3. `core/test_c7_periodicitate_trimestriala.py` — patru teste pentru R167
+
+Trei pe refuz — cele două care poartă temeiul se compară cu **constanta pe care o folosește codul**
+(`endswith`), iar cele din afara setului TVA se cer prin **egalitate** cu mesajul de bază, nu prin
+absența unui subșir. Al patrulea e **anti-vacuu**: leagă citarea de corpus prin
+`scan_citate._verbatim`, plus o calibrare pe un citat inventat, care trebuie să pice.
+
+**A treia formă a lui.** Prima căuta `Articolul 322` în corpus și **ateriza în cuprins**, unde 322 e
+urmat de 323. A doua, cu ancora pe titlul propriu, a fost prinsă de **clichetul `apare_oricum`**
+(1222 → 1225): un `"șir" in fișier` nu deosebește „e acolo" de „e acolo din alt motiv". *Gardul care
+păzește gărzile și-a făcut treaba pe gardul scris în aceeași oră.*
+
+### 4. Un instrument de probă, reparat pe structură (R170)
+
+`frontend_test/vizual/proba_operatiuni.py` nu e o gardă din suită, dar produce cifre care ajung în
+registre. Enumerarea culegea butoanele vizibile și le filtra pe TEXT — `t.length > 46 → sari` —,
+deci raporta **32** peste un registru de **34**. Trece pe `data-op`. *Un prag mai mare ar fi fost
+același defect, amânat.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **520 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

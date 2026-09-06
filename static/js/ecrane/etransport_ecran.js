@@ -27,7 +27,7 @@ function _fereastraUit(dataTransport, intracom) {
 
 export async function ecranEtransport(corp, nav, t) {
   const ziAzi = new Date().toISOString().slice(0, 10);
-  const COD_SCOP = [["101","Comercializare"],["201","Productie"],["301","Gratuitati"],["401","Echipament comercial"],["501","Mijloace fixe"],["601","Uz propriu"],["703","Livrare cu instalare"],["704","Transfer intre gestiuni"],["705","Bunuri puse la dispozitie"],["9901","Altele"]];
+  const COD_SCOP = [["101","Comercializare"],["201","Producție"],["301","Gratuități"],["401","Echipament comercial"],["501","Mijloace fixe"],["601","Uz propriu"],["703","Livrare cu instalare"],["704","Transfer între gestiuni"],["705","Bunuri puse la dispoziție"],["9901","Altele"]];
   const CAMPURI_BUN = ["cod_scop", "cod_tarifar", "denumire", "cantitate", "um", "greutate_neta", "greutate_bruta", "valoare_fara_tva"];
 
   // MODEL: array de obiecte simple, POZITIONALE, fara identitati persistente (cap.24 / constrangere batch 3a).
@@ -134,7 +134,7 @@ export async function ecranEtransport(corp, nav, t) {
       <p class="pf-intro">Generează XML-ul notificării (v2) pentru încărcare manuală în SPV. UIT-ul vine de la ANAF după upload.</p>
       <div class="pf-frand" style="display:block">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
-          ${sel("et-tip", "Tip operațiune *", [["10","AIC - achiziție intracomunitară"],["20","LIC - livrare intracomunitara"],["30","Transport national"],["40","Import"],["50","Export"],["60","Tranzactie intracom. - intrare"],["70","Tranzactie intracom. - iesire"]])}
+          ${sel("et-tip", "Tip operațiune *", [["10","AIC - achiziție intracomunitară"],["20","LIC — livrare intracomunitară"],["30","Transport național"],["40","Import"],["50","Export"],["60","Tranzacție intracom. — intrare"],["70","Tranzacție intracom. — ieșire"]])}
           ${inp("et-ref", "Referința internă")}
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Bunuri transportate</div>

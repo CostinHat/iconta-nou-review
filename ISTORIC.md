@@ -8051,3 +8051,36 @@ aserțiunilor pe text m-a prins pe gardul scris în aceeași zi.
 **Propria mutație a găsit o gaură în propria gardă**: scoțând verificarea ramurii, testele rămâneau
 verzi, fiindcă refuzul venea oricum — din alt motiv. De-aia refuzurile poartă cod. *Un test care
 acceptă orice refuz nu apără motivul refuzului.*
+
+
+## 06.09.2026 — Trei reparații de claritate, și trei gărzi care nu se vedeau pe ele însele
+
+**Comanda a cerut trei lucruri**: temei legal la mesajul de periodicitate TVA · rescrierea celor opt
+refuzuri ale registrului de partidă simplă · diacritice la etichetele celor 32 de formulare din
+lotul 13. Al doilea **era deja făcut** (R140, lotul 12) — verificat la sursă, spus, și nu refăcut;
+ce lipsea era reprobarea, care s-a făcut acum pe **toate opt**.
+
+**R167 — temeiul.** Art. 322 alin. (1) și (2), citit la sursă în corpus, într-un **modul propriu**
+(`core/perioada_fiscala_tva.py`), fiindcă decizia 73 spune unde stă un temei. Lipit **numai** pe
+setul TVA-decont: d100 e trimestrial din temeiul impozitului pe profit, iar art. 322 pe el ar fi fost
+un temei fals. Cifra plafonului **nu intră în mesaj** — n-are cheie în registru și n-are verificare
+de vigoare, iar o regulă citată fără cifră nu îmbătrânește.
+
+**R168 — 125 de etichete, și gardul care nu vedea unde sunt scrise.** Gardul de diacritice pe JS
+scana patru poziții de afișare; etichetele formularelor stau în alte două. Clichetul era **0** peste
+un defect pe care lotul 13 îl **scrisese cu cuvinte**. Pozițiile s-au adăugat, clichetul rămâne 0, și
+reprobarea s-a făcut **pe ecran** — 34 de formulare deschise, 293 de texte randate citite, zero
+ASCII.
+
+**R169 — gardul care vedea tot mai puțin pe măsură ce respectam regula.** `scan_citate` culege temeiuri
+numai din `core/common`, dar decizia 73 le mută în modulul regulii. Lărgit pe structură: **36 → 60**
+citări văzute, **12 → 26** verbatim.
+
+**R170 — „32 din 32" despre un registru de 34.** Enumerarea probei arunca titlurile mai lungi de 46
+de caractere. Două formulare n-au fost niciodată deschise, purtând numele unora probate. Reparat pe
+`data-op`, reprobat 34/34.
+
+**O greșeală a mea, cu consecință în afară**: am rulat `publica_static.py --din-arbore` crezând că
+țintește un director izolat — Python rezolvă legătura simbolică, deci a țintit producția. Restaurat
+imediat din HEAD și verificat cu `--stare`. *O comandă care schimbă ce vede utilizatorul se rulează
+după ce i-ai dovedit ținta.*

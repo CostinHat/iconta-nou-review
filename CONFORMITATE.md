@@ -6088,6 +6088,15 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reprobat** *(browser real, `:8011`, ecranul «Încasări/plăți» al firmei de partidă simplă)*:
   «Adaugă (ciornă)» pe formular invalid → *„Suma trebuie să fie mai mare decât zero. O corecție se
   face printr-o operațiune de sens contrar, nu printr-o sumă negativă."* Nimic scris în bază.
+- **reprobat DIN NOU, toate opt** *(06.09.2026, `frontend_test/proba_r140_reprobare.py`, instanță
+  proaspătă)*: cele opt refuzuri nu se pot declanșa toate din formular — `tip`, `metoda` și
+  `categorie` sunt `<select>`-uri, iar `valuta` **n-are câmp în ecran** —, deci proba are două
+  straturi și spune care e care: **trei pe ECRAN** (suma, data, explicația), apăsând «Adaugă
+  (ciornă)», și **toate opt pe RUTĂ**, prin `POST /tenants/{id}/rip/operatiuni` chemat din pagina
+  autentificată. `_valideaza` e singura poartă a rutei, iar ruta e singura cale de scriere.
+  Calibrare în cealaltă direcție: o operațiune **validă** trece (200) și se șterge prin ruta
+  aplicației; numărul de rânduri din registru se citește înainte și după, și e neschimbat — *o
+  sondă „de citire" scrie până n-o dovedești.*
 - **ce RĂMÂNE, declarat**: același șir `"suma trebuie să fie > 0"` mai trăiește în `core/casa_api.py`
   și în `main.py` (chitanța). **Nu s-au atins**: sunt pe calea partidei duble, deja probată în alte
   loturi, iar rescrierea lor fără a le reproba ar fi o schimbare nemăsurată. *Se consemnează ca să nu
@@ -7118,6 +7127,233 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   tipurile existente. Plus **mutație**: constanta reintrodusă → gard roșu.
 - **unde ajunge efectul**: fiecare fișier SAF-T al unei firme care nu e pe TVA lunar era **respins
   de ANAF**, iar aplicația n-avea cum să afle.
+
+
+### R167 — Refuzul spunea că firma depune TRIMESTRIAL și nu spunea pe ce se sprijină
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/perioada_fiscala_tva.py` (nou) · `core/declaratii_api.valideaza_cerere`
+- **ce blochează**: interdicția **77** — un blocaj fără temei. Refuzul **afirmă o regulă fiscală**
+  („firma asta depune trimestrial"), iar contabilul care nu e de acord n-are pe ce să se uite.
+- **condiția de deblocare**: se închide când cele două refuzuri care AFIRMĂ periodicitatea TVA
+  citează articolul, temeiul e citit **la sursă**, iar pe declarațiile din afara setului TVA nu se
+  lipește.
+- **reluări**: 1
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `d788a9e8`
+- **ce s-a măsurat, înainte de a repara ceva** *(06.09.2026)*: șase mesaje user-facing vorbesc
+  despre periodicitatea TVA, și **nu sunt aceeași clasă**. **Două AFIRMĂ** periodicitatea firmei
+  (`declaratii_api.py`, ramurile `lunar` și `trimestrial`); **patru CER câmpul** —
+  `mesaje.DECONT_INVALID`, `firma_profil_api.py:264`, `control_fiscal_api.py:358`,
+  `date_firma.js:286`. Numai ce afirmă o regulă datorează un temei; restul cer o alegere.
+- **temeiul, citit LA SURSĂ** *(`anaf_surse/cod_fiscal_227_2015_consolidat.txt`, art. 322 — nu din
+  memorie)*: **alin. (1)** *„Perioada fiscală este luna calendaristică."* · **alin. (2)** *„Prin
+  excepție de la prevederile alin. (1), perioada fiscală este trimestrul calendaristic pentru
+  persoana impozabilă care în cursul anului calendaristic precedent a realizat o cifră de afaceri …
+  care nu a depășit plafonul de 100.000 euro …, cu excepția situației în care persoana impozabilă a
+  efectuat în cursul anului calendaristic precedent una sau mai multe achiziții intracomunitare de
+  bunuri."*
+- **PRIMA FORMĂ A FOST REFĂCUTĂ, și de-aia scrie „reluări: 1".** Punea `_TEMEI_TVA_LUNAR` și
+  `_TEMEI_TVA_TRIM` direct în `declaratii_api.py`. **Decizia 73** o interzice: un nume `TEMEI*` mută
+  fișierul întreg în datorie la clichetul refuzurilor, iar `declaratii_api` amestecă refuzuri de
+  formă cu refuzuri normative. Și mai grav: underscore-ul din față **ar fi ascuns** constanta de
+  `scan_refuzuri` (care caută `TEMEI*` pe AST) — adică exact **eludarea prin numire** pe care
+  decizia o numește și o refuză. Regula și-a primit modulul: `core/perioada_fiscala_tva.py`, unde
+  fiecare temei e `common.Temei` structurat, cu `text_citat` verbatim și `url` către corpus.
+- **CIFRA NU INTRĂ ÎN MESAJ, și motivul se scrie lângă ea.** Plafonul din alin. (2) **n-are cheie
+  în registrul de cote** — e chiar instanța de la **interdicția 1** consemnată pe `migrare.js` —,
+  iar vigoarea lui nu se poate verifica mecanic: `scripts/vigoare_articol.py` cere identificatorul
+  de portal al actului, și Codul fiscal n-are unul în corpus. *O regulă citată fără cifră nu
+  îmbătrânește; una cu cifră ar îmbătrâni tăcut.* Mesajul spune „plafonul de cifră de afaceri".
+- **temeiul se pune numai pe setul TVA-decont**, și asta e jumătate din reparație: `valideaza_cerere`
+  validează **toate cele 50** de tipuri, iar d100 e trimestrial din temeiul impozitului pe profit,
+  d112 lunar din altul. *Art. 322 lipit pe ele ar fi fost un temei FALS — mai rău decât niciunul,
+  fiindcă un temei greșit se citește ca verificat.*
+- **calibrare, în ambele direcții** (METODA §22): d300 trimestrial și lunar primesc temeiul; d100 și
+  d112 întorc mesajul de bază, cerut prin **egalitate**, nu prin absența unui subșir.
+- **anti-vacuu, și s-a corectat de două ori.** Prima formă căuta trei fraze în corpus și **ateriza
+  în CUPRINS** (`Articolul 322` e urmat acolo de `Articolul 323`). A doua, cu ancora pe titlul
+  propriu, a fost prinsă de **clichetul `apare_oricum`** din `test_garzi_pe_text` (1222 → 1225): un
+  `"șir" in fișier` nu deosebește „e acolo" de „e acolo din alt motiv". Forma finală întreabă
+  **instrumentul casei** — `scan_citate._verbatim(temei)` —, plus o calibrare pe un citat inventat,
+  care trebuie să pice.
+- **reprobat** *(06.09.2026, `frontend_test/proba_r167_temei_periodicitate.py`, instanță proaspătă,
+  ruta reală `POST /declaratii/{tip}` din pagina autentificată)*: firmă trimestrială cerută pe lună
+  → 422 + `CF art.322 alin.(2)` · firmă lunară cerută pe trimestru → 422 + `CF art.322 alin.(1)` ·
+  **d100** pe aceeași firmă → 422 **fără** art. 322. Amprenta celor două scheme, neschimbată.
+- **ce RĂMÂNE, declarat**: cele **patru** mesaje care CER periodicitatea rămân fără criteriu pe
+  ecran. `migrare.js` îl are (art. 322 în `.camp-ajutor`), `date_firma.js` **nu** — aceeași
+  întrebare, pusă în două locuri, cu ajutor într-unul singur. Nu s-a atins: e o schimbare de ecran,
+  cu reprobare proprie, iar comanda cerea temeiul pe refuzul de periodicitate.
+
+### R168 — Gardul de diacritice era verde, la clichet 0, peste un defect pe care lotul 13 îl scrisese
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/operatiuni_ecran.js` · `rip_ecran.js` ·
+  `etransport_ecran.js` · `admin_activitate.js` · **gardul** `core/test_diacritice_afisate.py`
+- **ce blochează**: criteriul de diacritice — *text care ajunge pe ECRAN → cu diacritice; log și
+  assert → ASCII*. Și, dincolo de el: **încrederea în clichetul 0 al gardului**.
+- **condiția de deblocare**: se închide când etichetele afișate poartă diacritice **și** gardul vede
+  pozițiile în care ele sunt scrise — altfel reparația se erodează fără să spună nimic.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `d788a9e8`
+- **cum se putea întâmpla.** Gardul JS scanează **patru** poziții de afișare: cheia de obiect
+  (`eticheta:`, `titlu:` …), atribuirea la `.innerHTML`, primul argument al lui `nav.*`, și nodurile
+  de text din template-literale. Etichetele formularelor de operațiuni nu trăiesc în niciuna: sunt
+  **al doilea argument, pozițional**, al unui constructor de câmp — `C("data_livrare", "Data
+  livrarii")` — și **al doilea element al perechii de opțiune** — `["comodat", "Comodat"]`. *Gardul
+  n-avea cum să le vadă: nu greșea criteriul, îi lipsea locul.*
+- **și tocmai de-aia clichetul 0 nu însemna ce părea.** Lotul 13 **numise defectul în scris**
+  (*„cele 32 de formulare au etichete fără diacritice — aceeași clasă pe care garda de diacritice
+  n-o vede"*), iar garda a rămas verde peste el din 15.08 până azi. *Un gard cu domeniul de căutare
+  greșit raportează verde despre o lume pe care n-o vede.*
+- **ce s-a măsurat** *(06.09.2026, instrument scris înainte de orice reparație)*: în cele două
+  poziții, pe tot `static/js`, **445** de șiruri ASCII candidate — dintre care, sub criteriul
+  **propriu** al gardului (lista high-precision de triggere + poarta de proză), **17**: 13 în ecranul
+  operațiunilor, 2 în `admin_activitate`, 1 în `etransport`, 1 în `rip_ecran`. Lista de triggere e
+  high-precision prin construcție, deci 17 e un **plafon inferior**, nu un inventar.
+- **reparat**: **125** de șiruri afișate — 95 în `operatiuni_ecran.js` (etichete de câmp, etichete de
+  opțiune, și textul static al ecranului: «Câmp obligatoriu», «Completează cel puțin un rând»,
+  «+ Rând», mesajul de eșec), 7 în `rip_ecran.js`, 8 în `etransport_ecran.js`, 15 în
+  `admin_activitate.js`. **Numai ce se afișează**: fiecare tipar poartă ghilimelele, numărul de
+  apariții a fost NUMĂRAT înainte (`--dry`) și ASERTAT la scriere — *un `replace` fără aserțiune nu e
+  o modificare, e o speranță* (R147).
+- **gardul, extins**: pozițiile **5** (eticheta pozițională, selectată structural — primul argument
+  trebuie să arate a nume de câmp, nu funcția să se cheme `C`) și **6** (eticheta de opțiune).
+  Clichetul rămâne **0**, fiindcă cele 17 s-au reparat toate.
+- **calibrare, în ambele direcții** (METODA §22): cinci aserțiuni de dinți pe pozițiile noi, plus o
+  **mutație pe fișierul real** — o etichetă întoarsă la ASCII face gardul roșu, restaurată îl face
+  verde. Iar excluderea lui `cond: { val: [...] }` **n-a fost ghicită**: instrumentul de măsură a
+  raportat `regularizare_incasat` drept text afișat, adică o **valoare trimisă la server**. *Fără
+  excludere, gardul ar fi cerut diacritice pe logică — a greși în cealaltă direcție.*
+- **două lucruri au ieșit din reparație, și niciunul nu era în comandă**:
+  · **ecranul RIP contrazicea serverul**: `<option>` spunea *„Cheltuiala deductibila"*, iar refuzul
+    lui `rip_api`, rescris la **R140**, spune *„cheltuială deductibilă"*. Aceeași categorie, două
+    scrieri, în același ecran.
+  · **„Plancheta" nu e un cuvânt românesc.** Art. 313 alin. (1), citit la sursă: *„aurul, sub formă
+    de lingouri sau **plachete** … având puritatea minimă de 995 la mie"*; `core/tva_aur.py` scrie
+    deja „lingouri/plachete". Eticheta devine «Plachetă»; **valoarea trimisă la rută rămâne
+    `plancheta`** — se schimbă ce se citește, nu ce se trimite.
+- **reprobat PE ECRAN, nu în sursă** *(`frontend_test/vizual/proba_r168_etichete.py`)*: se deschid
+  toate cele **34** de formulare și se citesc etichetele, opțiunile, ajutoarele și textele randate —
+  **293** de texte distincte —, iar fiecare trece prin **criteriul gardului**. Zero fără diacritice,
+  zero erori JS. *Un `?v=` nepotrivit sau un fișier nepublicat nu se văd în sursă.*
+- **ce RĂMÂNE, declarat**: lista de triggere rămâne high-precision, deci un text afișat ASCII care
+  nu conține niciun cuvânt din ea **trece în continuare**. Cele 445 de candidate minus cele reparate
+  nu sunt datorie — cele mai multe („Data", „Descriere", „Capital social") nu cer diacritice —, dar
+  nici nu s-au trecut una câte una prin judecată: s-a judecat **populația celor patru fișiere
+  atinse**. Un instrument care deosebește mecanic „ASCII corect" de „ASCII greșit" nu există și nu
+  s-a construit azi.
+
+### R169 — Scannerul de citări măsura o lume care se micșora cu fiecare temei pus unde trebuie
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · `core/scan_citate.py` · `core/test_citate_verbatim.py`
+- **ce blochează**: singura verificare care spune că **actul chiar zice ce pretindem** —
+  `text_citat` găsit verbatim în documentul din corpus. Restul gărzilor verifică doar că citarea
+  **aterizează** pe un document.
+- **condiția de deblocare**: se închide când domeniul scanului acoperă locul în care politica casei
+  **cere** să stea temeiurile, iar clichetul se ridică la ce s-a câștigat.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `d788a9e8`
+- **cum s-a găsit**: scriind modulul lui R167. Cele două temeiuri noi erau citate verbatim din
+  corpus — și **nu apăreau în inventar**. `_temeiuri()` culege obiectele `Temei` din `core/common`,
+  atât.
+- **și e mai mult decât o scăpare: e o contradicție între două reguli ale casei.** **Decizia 73**
+  cere ca temeiul să stea în **modulul regulii**, nu în rută — de-aia există
+  `core/cota_tva_incasare.py`. Dar scanul citește numai `common`. *Cu cât repo-ul urmează mai bine
+  decizia 73, cu atât gardul vede mai puțin.* `TEMEI_291_5`, scris ieri exact după regulă, n-a fost
+  verificat de nimeni.
+- **ce s-a măsurat, după lărgire** *(06.09.2026)*: citări văzute **36 → 60**, verbatim **12 → 26**.
+  Deci **24 de citări** trăiau în afara domeniului, dintre care 14 verificabile mecanic și
+  neverificate. Toate au `text_citat` și `url` — `test_fiecare_citare_are_text_si_url` a rămas verde
+  la lărgire, ceea ce spune că nu era neglijență în ele, ci orbire în scan.
+- **domeniul se ia din STRUCTURĂ, nu dintr-o listă**: se importă `core/*.py` (fără `test_*`/`scan_*`)
+  și se păstrează modulele care chiar au un `Temei` la nivel de modul. *O listă de nume ar fi
+  îmbătrânit exact ca `common`-ul singur* — adică ar fi reintrodus același defect, cu un pas
+  întârziere.
+- **clichetul urcă 11 → 26, cu motivul scris**: nu s-a scris nicio citare nouă verbatim, s-a lărgit
+  domeniul. *Cifra veche nu era greșită — măsura o lume mai mică decât credea.*
+- **ce RĂMÂNE, declarat**: cele **34** de citări negăsite verbatim **nu sunt datorie**; sunt de altă
+  formă (parafrază cu localizator), cazul descris chiar în antetul scanerului. Scanul nu deosebește
+  „parafrază" de „citat greșit" — și n-a început s-o facă azi.
+
+### R170 — „32 de formulare probate" era spus despre un registru de 34
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `frontend_test/vizual/proba_operatiuni.py` · lotul 13
+- **ce blochează**: adevărul acoperirii lotului 13 — cifra „32 probate" a intrat în
+  `VERIFICARE_FUNCTIONALITATI.md`, în `LISTA_FUNCTIONALITATI.md` și în raportul lotului.
+- **condiția de deblocare**: se închide când enumerarea celor probate se face pe un criteriu care nu
+  poate arunca în tăcere, iar cele nedeschise se deschid.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `d788a9e8`
+- **cum s-a găsit**: proba de etichete a lui R168 a raportat **34** de formulare, iar proba lotului
+  13, rulată în aceeași zi pe aceeași instanță, **32**. Două instrumente, două cifre, aceeași lume.
+- **ce s-a măsurat**: `REGISTRU` din `operatiuni_ecran.js` are **34** de intrări. Enumerarea probei
+  culegea toate butoanele vizibile și le filtra pe TEXT: fără săgeți, și `t.length > 46 → sari`.
+  Exact două titluri trec de 46 de caractere — **47** «Achiziție necorporală (software/licență/
+  brevet)» și **60** «Achiziție de la neînregistrat (persoană fizică) — D394 op. N». *Nu erau „fără
+  defect": erau NEDESCHISE, purtând numele unora probate.*
+- **reparat pe STRUCTURĂ**: butoanele de operațiune poartă `data-op`, ceea ce le deosebește de orice
+  alt buton fără să ghicească din text. Filtrul de lungime și lista de săgeți dispar cu totul.
+- **reprobat**: **34/34 «a vorbit», 0 erori JS**. Cele două nou-deschise răspund amândouă
+  *„Valoarea operațiunii trebuie să fie un număr mai mare decât zero"* — deci nu ascundeau un defect;
+  ascundeau doar faptul că nu fuseseră întrebate.
+- **ce RĂMÂNE, declarat**: cifrele „32" din lotul 13 rămân scrise ca **istorie** acolo unde descriu
+  ce s-a făcut atunci; unde descriau **acoperirea**, s-au corectat la 34, cu motivul alături.
+
+
+### R171 — Cele 24 de citări scoase la iveală de R169 n-au nici articol localizabil, nici prag de reverificare
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · `core/articol_in_act.py` ·
+  `core/scan_pereche_act_articol.py` · `core/reverificare.py`
+- **ce blochează**: pe **11** perechi (act, articol) verificarea vigorii **întreabă documentul
+  greșit sau nu întreabă deloc**; pe **17** temeiuri nou-văzute nu există prag de reverificare, deci
+  nimeni nu știe cât de des trebuie recitite la sursă.
+- **condiția de deblocare**: se închide când fiecare din cele 11 perechi are ori un localizator pe
+  care `articol_in_act` îl citește, ori motivul scris de ce nu poate avea unul; și când cele
+  nou-văzute primesc o clasă de reverificare, nu `NECUNOSCUT`.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `d788a9e8`
+- **cum a apărut**: nu prin temeiuri noi. `scan_citate` culegea numai din `core/common`, iar decizia
+  73 mută temeiurile în modulul REGULII — deci domeniul se micșora cu fiecare temei pus **corect**.
+  Lărgit (**R169**): **36 → 60** de citări. Cele 24 nou-văzute erau acolo dinainte; nimeni nu le
+  întrebase nimic.
+- **ce s-a măsurat, pe cele 11 negăsite** — și cauza e **una singură**, cea numită deja la R111:
+  forma **localizatorului**, nu actul greșit.
+  · `OMFP 1802/2014 pct.9` × 6 (pragurile de mărime) — actul numerotează **puncte**, nu articole;
+  · `HG 1/2016 norme art.321` × 3 și `norme art.19` × 1 — normele metodologice trimit la articolul
+    din Codul fiscal, iar citarea poartă amândouă;
+  · `OMFP 3254/2017 1-6` × 1 — un **interval**, nu un articol.
+  `articol_in_act._TITLURI_NUMARATE` caută titluri de articol. **Verdictul e în direcția sigură** —
+  refuză, nu inventează un STABIL — dar motivul e fals: actele le conțin.
+- **și trei CIOT în plus**, din aceeași cauză: `OMFP 2634/2015` numerotează puncte în anexe —
+  `Anexa 1 pct. 52` (jurnalele D406) și `anexa 2` de două ori (registrul-inventar). Clichetul de
+  ciot urcă 4 → 7, cu identitățile scrise.
+- **de ce nu s-a reparat azi, și nu e o amânare fără condiție**: fiecare din cele 11 cere o citire
+  **la sursă** a actului care poartă azi valoarea — muncă fiscală, nu mecanică; e chiar limita pe
+  care gardul și-o declară singur (*„nu repară"*). Iar tiparul comun — a învăța `articol_in_act` să
+  citească puncte și norme — are o direcție periculoasă proprie, scrisă tot acolo: numărând prea
+  larg, o trimitere în proză ar deveni titlu, iar un document ar trece din refuz în **răspuns fals**.
+  Se face cu volumul de alerte măsurat înainte și după, ca la R109.
+- **ce s-a făcut, ca să nu se piardă**: clichetele urcă la adevărul de azi, **cu identitățile**, nu
+  doar cu numărul (`NEGASITE_CUNOSCUTE`), iar distribuția de reverificare e pinată cu socoteala
+  scrisă. *O necunoaștere numită e mai bună decât o cifră mică.*
 
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)

@@ -1,0 +1,70 @@
+{
+ "baza": "http://127.0.0.1:8011",
+ "tenant": 43999,
+ "randuri_inainte": 0,
+ "ecran": [
+  {
+   "caz": "3. suma",
+   "mesaj": "Suma trebuie să fie mai mare decât zero. O corecție se face printr-o operațiune de sens contrar, nu printr-o sumă negativă."
+  },
+  {
+   "caz": "4. data",
+   "mesaj": "Data operațiunii e obligatorie: registrul se ține în ordinea zilelor."
+  },
+  {
+   "caz": "5. explicatie",
+   "mesaj": "Explicația e obligatorie: fără ea operațiunea nu se poate justifica în registru (OMFP 170/2015)."
+  }
+ ],
+ "ruta": [
+  {
+   "caz": "1. tip",
+   "status": 400,
+   "mesaj": "Spune dacă operațiunea e o încasare sau o plată."
+  },
+  {
+   "caz": "2. metoda",
+   "status": 400,
+   "mesaj": "Spune cum s-a făcut operațiunea: în numerar sau prin bancă."
+  },
+  {
+   "caz": "3. suma",
+   "status": 400,
+   "mesaj": "Suma trebuie să fie mai mare decât zero. O corecție se face printr-o operațiune de sens contrar, nu printr-o sumă negativă."
+  },
+  {
+   "caz": "4. data",
+   "status": 400,
+   "mesaj": "Data operațiunii e obligatorie: registrul se ține în ordinea zilelor."
+  },
+  {
+   "caz": "5. explicatie",
+   "status": 400,
+   "mesaj": "Explicația e obligatorie: fără ea operațiunea nu se poate justifica în registru (OMFP 170/2015)."
+  },
+  {
+   "caz": "6. categorie",
+   "status": 400,
+   "mesaj": "Categoria aleasă nu e una dintre cele pe care le are o încasare. Alege dintre: alte încasări, aport numerar/bancă, credit sau împrumut primit, subvenție sau fonduri, încasare din activitate."
+  },
+  {
+   "caz": "7. deductibilitate",
+   "status": 400,
+   "mesaj": "La o cheltuială trebuie spus cât se deduce. Fără asta, cheltuiala nu poate intra în calculul venitului net."
+  },
+  {
+   "caz": "8. valuta",
+   "status": 400,
+   "mesaj": "La o operațiune în altă monedă decât leul sunt obligatorii și suma în valută, și cursul la care s-a transformat în lei."
+  }
+ ],
+ "valid": {
+  "status": 200,
+  "corp": {
+   "id": 1,
+   "status": "ciorna"
+  },
+  "sters_status": 200
+ },
+ "randuri_dupa": 0
+}

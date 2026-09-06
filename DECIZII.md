@@ -14018,3 +14018,11 @@ fiecare refuz poartă temeiul ca date, deci datoria fișierului e **zero prin co
 îl cheamă. *E și designul mai bun: care dată decide cota e o normă fiscală, nu o operațiune de
 rutare.* Cele 389 rămân unde erau — în umbra măsurată și declarată —, iar cifra se scrie aici ca să
 nu se piardă.
+
+*Confirmată pe 06.09.2026, la R167.* Prima formă a temeiului periodicității TVA punea
+`_TEMEI_TVA_LUNAR` / `_TEMEI_TVA_TRIM` în `core/declaratii_api.py`. Underscore-ul din față **chiar
+ar fi funcționat** ca ocolire: `scripts/scan_refuzuri.py` caută pe AST nume care `startswith("TEMEI")`,
+iar `_TEMEI_…` nu începe cu `TEMEI`. Poarta ar fi rămas verde. **Un prefix nu e o justificare** —
+regula spune „temeiul se pune unde e regula", nu „unde nu se vede". Refăcut ca modul propriu,
+`core/perioada_fiscala_tva.py`. *Când o formă corectă și una ocolitoare arată la fel în diff,
+diferența e intenția, iar intenția se scrie.*

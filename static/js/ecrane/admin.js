@@ -5,7 +5,7 @@
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js?v=1dccbc985b";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=03ca483a18";
-import { randeazaAdminActivitate } from "./admin_activitate.js?v=0b7fa80bea";
+import { randeazaAdminActivitate } from "./admin_activitate.js?v=db921cefb0";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=aa317fad50";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=eb0ee9388f";
 

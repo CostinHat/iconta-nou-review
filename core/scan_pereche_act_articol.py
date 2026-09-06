@@ -52,7 +52,9 @@ NECONFIRMATE = ("NEGASIT", "CIOT", "FISIER_LIPSA", "FARA_ART")
 #: Scrise ca date fiindcă sunt o convenție, nu o deducție — v. interdicția 50. Aceeași mulțime e
 #: folosită de `core/test_vigoare_articole_registru.py`, care o importă de aici: o convenție ținută
 #: în două locuri se desparte în tăcere.
-ART_DE_COD_FISCAL = {"97", "28", "282", "291"}
+#: 322 adaugat 06.09.2026 (R167): perioada fiscala a TVA. Citit la sursa in
+#: `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, „Articolul 322 / Perioada fiscală".
+ART_DE_COD_FISCAL = {"97", "28", "282", "291", "322"}
 
 #: Forma consolidată a Codului fiscal din corpus — documentul în care se caută articolele de mai sus.
 CF_CORPUS = "anaf_surse/cod_fiscal_227_2015_consolidat.html"
