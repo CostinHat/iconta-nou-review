@@ -387,7 +387,7 @@ def detalii_factura(conn, factura_id):
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "tert_tara, tip_operatiune, furnizor_tva_incasare, "
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
-            "link_plata, platita_la, "
+            "link_plata, platita_la, plata_confirmata_de, "  # [R43] marca de simulare
             "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
             "EXISTS(SELECT 1 FROM inregistrari i WHERE i.factura_id = facturi.id) AS contabilizata "
             "FROM facturi WHERE id = %s",

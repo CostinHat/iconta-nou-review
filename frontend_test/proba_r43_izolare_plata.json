@@ -1,0 +1,23 @@
+{
+ "baza": "http://127.0.0.1:8015",
+ "portofoliu_platite_inainte": 1,
+ "necunoscuta": {
+  "status": 404
+ },
+ "ref": "pl_6CpzV9WTvMCvtoTQd-tW0A",
+ "confirmare": {
+  "status": 200,
+  "corp": {
+   "ok": true
+  }
+ },
+ "firma_a": {
+  "platita_la": "2026-09-06 13:23:15.740977+03:00",
+  "confirmata_de": "mock"
+ },
+ "firma_b": {
+  "platita_la": "None",
+  "confirmata_de": null
+ },
+ "portofoliu_platite_dupa": 1
+}

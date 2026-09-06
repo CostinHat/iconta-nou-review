@@ -1600,7 +1600,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T18 — Chitanța și încasarea
 
-**Clasa:** MANUAL · **rute:** 6 (din care schimba date: 3) · **refuzuri explicite:** 7
+**Clasa:** MANUAL · **rute:** 6 (din care schimba date: 3) · **refuzuri explicite:** 8
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 3.**
 
@@ -1615,7 +1615,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `casa_api`, `chitante`, `plati`
 
-**Scrie in:** `casa_operatiuni` (DELETE/INSERT) · `chitante` (INSERT) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT) · `inregistrari_linii` (INSERT)
+**Scrie in:** `casa_operatiuni` (DELETE/INSERT) · `chitante` (INSERT) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT) · `inregistrari_linii` (INSERT) · `plata_referinte` (INSERT)
 
 **Margine:** `plati` (linkul de plată — procesatorul (azi MOCK, vezi /public/plata))
 

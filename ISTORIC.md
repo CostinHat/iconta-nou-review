@@ -8135,3 +8135,22 @@ scrie acum premisa, în loc să-și coboare pragul.
 
 **R171 se închide. R173 se deschide** pe cele 23 rămase, blocate pe frecvență, cu cele trei cauze ale
 lor — 10 documente fără niciun marcaj de consolidare, 8 temeiuri fără articol, 5 cioturi.
+
+
+## 06.09.2026 (4) — R43: butonul de plată nu mai umblă prin toate firmele
+
+**Întrebarea lui Costin — *caută și modifică în afara firmei curente?* — avea răspunsul „da" la
+amândouă.** Ruta publică, neautentificată, parcurgea toate schemele din `public.tenants` și încerca
+un `UPDATE` în fiecare. Nu e o scurgere (răspunsul e doar `{ok}`, `ref` are 128 de biți), dar nu e
+nici „doar o validare lipsă": e o rută fără nicio barieră structurală între firme.
+
+**Reparat structural:** `public.plata_referinte`, cu `ref` **cheie primară** — coliziunea între firme
+devine **imposibilă**, nu improbabilă —, iar ruta pleacă de la firmă. Și **plata simulată o spune**:
+`plata_confirmata_de='mock'` ajunge pe ecran ca «plătită prin SIMULARE», ca `platita_la` să nu treacă
+drept bani intrați.
+
+**Reprobat pe ruta publică reală, prin HTTP**, pe două scheme efemere construite de mine: referință
+necunoscută → 404 · firma A marcată, cu marca · **firma B neatinsă** · portofoliul, nemișcat.
+
+**R43 rămâne DESCHISĂ** pe partea externă: confirmarea tot nu vine semnată de la un procesator real.
+Aia cere chei, și e a lui Costin.

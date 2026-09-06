@@ -7601,11 +7601,42 @@ verifice întâi că podeaua acoperea populația.*
 `d406.TEMEI_JURNALE` — definit, citat de un test, **necitit de nicio funcție de producție**. Nu se
 repară aici (unde ar trebui citat e o decizie a lui `d406`); clasa e deschisă la **R23**.
 
+## 06.09.2026 (4) — R43: izolarea între firme, făcută STRUCTURALĂ
+
+### `core/test_plata_izolare.py`
+
+Ruta **neautentificată** `POST /public/plata/{ref}/confirma` citea `SELECT schema_name FROM
+public.tenants` și încerca un `UPDATE` în **fiecare** schemă până la prima potrivire. Nu era o
+scurgere — răspunsul e doar `{ok}`, iar `ref` are 128 de biți — dar nu exista **nicio barieră
+structurală** între firme. *„Improbabil" nu e o izolare, e un pariu.*
+
+Acum `public.plata_referinte.ref` e **PRIMARY KEY**, iar ruta **pleacă de la firmă**. Coliziunea
+între firme e imposibilă prin construcție.
+
+**Proba care deosebește codul nou de cel vechi**, și e miezul gardului: o referință **scrisă pe
+factură dar neînregistrată** în `public` **nu se confirmă**. Vechiul o găsea plimbând schemele; noul
+n-are cum. Fără proba asta, un gard care doar verifică „firma A e marcată, B nu" ar trece și pe codul
+vechi, unde B era neatinsă din întâmplare (A venea prima).
+
+Constrângerea se cere ca **structură** (`pg_constraint.contype='p'`), nu ca purtare: un test care
+încearcă două inserări ar trece și pe un index obișnuit, iar un index nu e o barieră, e o optimizare.
+
+**Mutație pe cod real**: scoțând scrierea perechii din `genereaza_link`, cade proba de izolare.
+
+### Ce a cerut poarta, și fiecare obiecție era întemeiată
+
+Cinci gărzi au respins prima formă. Două de fond: mesajul de refuz **numea o coloană**
+(`tenant_id`) într-un text citit de un om, și `public.plata_referinte` era o **tabelă cu `tenant_id`
+neclasificată** la ștergerea unei firme — adică o cheie de acces care ar fi supraviețuit firmei,
+trimițând către o schemă ștearsă. Trei de formă: inventarul gărzilor, fișierul de tabele cunoscute și
+**adnotarea celor două rute din `TRASEE_VERIFICARI.md`**, care descriau un efect care nu mai era
+adevărat. *Verificările scrise sub o adnotare stătută stau pe o descriere falsă.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**523 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**524 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 503
+### `core/` — 504
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7995,6 +8026,7 @@ repară aici (unde ar trebui citat e o decizie a lui `d406`); clasa e deschisă 
 - `core/test_perioada_indisponibila.py` — Blocaj MOTIVAT pentru cote de regula cu data_in tarzie (01.08.2026). O cota ceruta de un calcul pentru
 - `core/test_plan_conturi_no_upsert.py` — [Regula 4 + Regula 14.4] GARD: adaugarea MANUALA de cont in plan NU suprascrie tacut un simbol existent.
 - `core/test_plan_form_fieldmark.py` — [Regula 14.4 pct.4] GARD: formularul 'Adauga cont' (plan_conturi) semnaleaza obligativitatea INAINTE de
+- `core/test_plata_izolare.py` — GARD [R43, 06.09.2026]: confirmarea unei plăți atinge O SINGURĂ firmă, iar plata simulată o spune.
 - `core/test_plata_salarii.py` — Teste gardian pentru F134 (plata salariilor pe card, SEPA pain.001).
 - `core/test_plati.py` — —
 - `core/test_plus_mf_registru.py` — #5 (ruptura mijloc-fix post-migrare, plimbare vizuala 14.08.2026): un mijloc fix corporal adaugat prin

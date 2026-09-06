@@ -410,7 +410,8 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi (
     link_plata text,
     plata_provider character varying(20),
     plata_ref character varying(100),
-    platita_la timestamp with time zone
+    platita_la timestamp with time zone,
+    plata_confirmata_de character varying(20)
 );
 
 

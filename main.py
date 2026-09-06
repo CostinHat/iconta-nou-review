@@ -6369,7 +6369,7 @@ def factura_link_plata(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("ad
     schema = _schema_sau_404(ctx, tenant_id)
     baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
     with db.get_conn() as conn:
-        r = _pl.genereaza_link(conn, schema, factura_id, baza)
+        r = _pl.genereaza_link(conn, schema, factura_id, baza, tenant_id=tenant_id)
     if r.get("eroare"):
         _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
         raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
@@ -6387,16 +6387,24 @@ def plata_pagina(ref: str):
                     headers={"X-Robots-Tag": "noindex, nofollow"})  # [plata_noindex 15.08.2026] ref e secret in URL; daca un link ajunge la crawler, se poate cere - inchis independent de robots.txt
 
 @app.post("/public/plata/{ref}/confirma")
+# [R43, 06.09.2026] PLEACA DE LA FIRMA, nu o cauta.
+#
+# Forma dinainte citea `SELECT schema_name FROM public.tenants` si incerca un `UPDATE` in FIECARE
+# schema pana la prima potrivire. Nu era o scurgere — raspunsul e doar `{ok}`, iar `ref` are 128 de
+# biti —, dar o ruta NEAUTENTIFICATA care scrie prin toate firmele n-are nicio bariera structurala
+# intre ele: doua firme cu acelasi `ref` ar fi insemnat scriere in firma gresita, iar improbabilul
+# nu e o izolare, e un pariu. `public.plata_referinte.ref` e PRIMARY KEY, deci perechea e unica pe
+# tot portofoliul, iar aici se atinge O SINGURA schema.
 def plata_confirma(ref: str):
     from core import plati as _pl
-    with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("SELECT schema_name FROM public.tenants ORDER BY id")
-        scheme = [r[0] for r in cur.fetchall()]
-    for sch in scheme:
-        with db.get_conn() as conn:
-            r = _pl.confirma_plata(conn, sch, ref)
-        if r.get("ok"):
-            return {"ok": True}
+    with db.get_conn() as conn:
+        gasit = _pl.firma_pentru_ref(conn, ref)
+        if not gasit:
+            raise HTTPException(404, "referință necunoscută")
+        _tid, sch, _fid = gasit
+        r = _pl.confirma_plata(conn, sch, ref)
+    if r.get("ok"):
+        return {"ok": True}
     raise HTTPException(404, "referință necunoscută")
 
 @app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1

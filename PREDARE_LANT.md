@@ -235,7 +235,7 @@ predare**. *O regulă scrisă nu ține fără control mecanic.*
 | cifra | ce e |
 |---|---|
 | **69** | rânduri care trimit la o firmă inexistentă |
-| **14** | tabele din `public` cu `tenant_id`, numărate |
+| **15** | tabele din `public` cu `tenant_id`, numărate |
 
 <!-- CIFRE-DATE:STOP -->
 

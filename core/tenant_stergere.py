@@ -70,6 +70,10 @@ TABELE_TENANT = (
     "declaratii_coada",
     "declaratii_depuse",
     "pachet_povestea",
+    # [R43, 06.09.2026] Perechea `ref -> firmă` a linkurilor de plată. SE ȘTERGE: e o cheie de
+    # acces către facturile firmei, iar firma nu mai există. Lăsată în urmă, ar fi o referință
+    # care trimite către o schemă ștearsă — adică un 500 la prima apăsare, în loc de un 404.
+    "plata_referinte",
     "reges_chei",
     "reges_mesaje",
     "schimbari_email",

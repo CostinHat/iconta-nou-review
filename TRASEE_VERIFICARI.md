@@ -1430,7 +1430,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `FARA GARDA` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) — prin `plati`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) · plata_referinte (INSERT) — prin `plati`*
 
 - [x] confirmarea se acceptă **numai** dacă e semnată de procesator, cu semnătura verificată. Altfel oricine cu referința poate marca o factură ca plătită
 - referința e imposibil de ghicit — nu incrementală, nu derivată din numărul facturii
@@ -1458,7 +1458,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) — prin `plati`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) · plata_referinte (INSERT) — prin `plati`*
 
 - [x] link-ul poartă suma exactă a facturii, nu una editabilă de plătitor
 - link-ul expiră; expirarea e o stare, nu o eroare

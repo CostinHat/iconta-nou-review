@@ -1293,6 +1293,53 @@ mai departe pe ele, nu pe cele scoase.* **Alegerea e a mea și se poate răsturn
 - **de ce e prag 2 și nu 1**: nicio firmă din cele 17 n-a generat vreun link (`plata_ref` gol peste tot), deci efectul n-a fost produs; dar e o **cauză unică**, dovedită, care nu concurează cu nimic.
 - **condiția de deblocare**: **trebuie cheile unui procesator de plăți real** (Stripe, Netopia sau echivalent), **de la Costin**, **pentru ca** `platita_la` să însemne bani intrați, nu un buton apăsat — `provider_activ()` ridică deja `NotImplementedError` pentru orice provider în afară de `mock`, deci calea e pregătită. Până atunci, se închide parțial dacă `platita_la` scris pe calea `mock` poartă o **marcă de simulare** care se vede în evidență. Se închide complet când confirmarea vine de la provider, semnată, și când ruta nu mai parcurge toate schemele, ci pleacă de la firma din `ref`.
 
+- **reluări**: 1 *(reparație parțială, 06.09.2026 — restanța rămâne deschisă pe partea externă)*
+
+#### R43 — cele două jumătăți INTERNE, reparate 06.09.2026
+
+Verificat întâi dacă mai e de actualitate: **da**, ruta era neschimbată, iar măsurătoarea de atunci
+se confirmă azi — **0 facturi cu `plata_ref`** pe toate cele 20 de firme, deci efectul tot nu s-a
+produs. Iar întrebarea pusă de Costin — *caută și modifică în afara firmei curente?* — are răspunsul
+**da, la amândouă**: ruta citea `SELECT schema_name FROM public.tenants` și încerca un `UPDATE` în
+**fiecare** schemă, până la prima potrivire.
+
+**Ce e și ce nu e.** Nu e o scurgere: răspunsul e doar `{ok}`, iar `ref` are 128 de biți. Dar nu e
+„doar o lipsă de validare": e o rută **neautentificată care scrie prin toate firmele**, fără nicio
+barieră structurală între ele. *Două referințe identice ar fi însemnat scriere în firma greșită, iar
+„improbabil" nu e o izolare, e un pariu.*
+
+**(1) Referința își știe firma.** `public.plata_referinte` — `ref` **PRIMARY KEY**, `tenant_id`,
+`schema_name`, `factura_id`. `genereaza_link` scrie perechea **în aceeași tranzacție** cu `plata_ref`
+de pe factură (altfel un link ar rămâne neconfirmabil), iar ruta **pleacă de la firmă**: o singură
+schemă atinsă. Coliziunea între firme devine **imposibilă prin construcție**. Un `genereaza_link`
+fără `tenant_id` se **refuză**, în loc să scrie pe jumătate.
+
+**(2) Plata simulată o spune.** `facturi.plata_confirmata_de` reține CINE a confirmat; pe calea
+`mock` valoarea e `'mock'`, iar ecranul de factură randează, lângă «plătită», eticheta **«plătită
+prin SIMULARE»** cu explicația în `title`. Fără ea, `platita_la` rămânea o afirmație despre bani pe
+care nimic n-o distingea de un buton apăsat — chiar formularea restanței.
+
+**Migrare**: `core/migrare_plata_referinte.py`, idempotentă, aplicată pe **20 de scheme**; coloana
+intră și în `tenant_template.sql`, deci firmele noi o au din naștere. **Backfill: niciunul necesar**,
+și se scrie ca să nu pară uitat — 0 referințe existente.
+
+**Gard**: `core/test_plata_izolare.py`, patru probe. Cea care deosebește codul nou de cel vechi:
+o referință **scrisă pe factură dar neînregistrată** în `public` **nu se confirmă** — vechiul o găsea
+plimbând schemele. Plus constrângerea cerută ca **structură** (`contype='p'`), nu ca purtare: un test
+care doar încearcă două inserări ar trece și pe un index, iar un index nu e o barieră. Mutație pe cod
+real: scoțând scrierea perechii, cade proba de izolare.
+
+**Reprobat pe ruta PUBLICĂ reală, prin HTTP** *(`frontend_test/proba_r43_izolare_plata.py`, instanță
+proaspătă, două scheme efemere construite de mine — regula 3)*: referință necunoscută → **404** ·
+confirmarea firmei A → **200**, `platita_la` scris, `plata_confirmata_de='mock'` · **firma B
+neatinsă** · facturile plătite din portofoliu **1 → 1**, nemișcate. Schemele efemere, șterse.
+
+- **CE RĂMÂNE DESCHIS, și de ce restanța nu se închide**: confirmarea tot **nu vine de la un
+  procesator real, semnată**. `cine deblochează` rămâne **EXTERN** — cere cheile unui procesator
+  (Stripe/Netopia), de la Costin. `provider_activ()` ridică în continuare `NotImplementedError`
+  pentru orice altceva decât `mock`, deci calea nu se poate folosi din greșeală. *Ce s-a închis azi e
+  izolarea și semantica; ce rămâne e dovada că au intrat bani.*
+
 ### R44 — Un element din coadă e legat de o firmă care nu există
 
 > **27.08.2026** — necunoscuta pe care sta si R44, si R50 (*ce anume depinde de un `tenant_id` in `public`*) e **masurata**: 13 tabele, din care 10 fara cheie straina, 67 de randuri orfane pe doi tenanti disparuti. Lista, in **R72**; ce inseamna pentru calea de stergere, in **R50**.
