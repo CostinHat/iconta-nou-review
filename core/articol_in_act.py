@@ -56,6 +56,30 @@ _TITLU_ORICARE = re.compile(
     r"(?:\+\s*|(?:^|\n)\s*)Articol(?:ul)?\s*[\dIVXLC]+(?:\^\d+)?\b(?!\s+din\b)")
 _TITLURI_NUMARATE = re.compile(r"(?im)^\s*\+?\s*Articol(?:ul)?\s+[\dIVXLC]")
 
+# ── PUNCTE ȘI NORME (R171, 06.09.2026) ────────────────────────────────────────────────────────
+#
+# **De ce.** Unele acte nu numerotează ARTICOLE, ci PUNCTE: reglementările contabile
+# (OMFP 1802/2014), normele de documente financiar-contabile (OMFP 2634/2015), normele metodologice
+# ale Codului fiscal (HG 1/2016). Instrumentul căuta doar „Articolul N", deci le declara CIOT sau
+# NEGĂSIT — verdict în direcția sigură, dar cu motivul fals: actul le conține.
+#
+# **TIPARUL E ÎNGUST, ȘI ASTA E MĂSURAT, nu presupus.** Riscul e scris în gardul care se sprijină
+# pe funcția asta: *o numărare prea largă transformă o trimitere în proză într-un titlu, iar un
+# document trece din refuz în RĂSPUNS FALS.* Măsurat pe tot corpusul (362 de documente), două forme
+# candidate:
+#   · `9. - (1) …`  (punct urmat de liniuță)  → 1.834 potriviri · **11 documente** ies din CIOT
+#   · `52. Text`    (punct urmat de majusculă) → 9.983 potriviri · **80 documente** ies din CIOT
+# A doua scoate din refuz `d101_struct_anaf.txt` (64 „puncte"), `d112_struct_anaf.txt` (44),
+# `legea_207_2015_consolidat.txt` (373) — descrieri de structură XML și enumerări din proză, nu
+# puncte normative. **80 față de 24 de citări cunoscute e disproporționat**, deci forma a doua NU
+# se implementează. Rămâne consemnată în `CONFORMITATE.md`, R171.
+_PUNCTE_NUMARATE = re.compile(r"(?:^|[\s(])\d{1,3}(?:\^\d+)?\.\s*[-–]\s")
+
+#: Formele de citare pe care le înțelege `fragment`, dincolo de numărul simplu de articol.
+_CITARE_PUNCT = re.compile(r"^\s*(?:pct\.?|punctul)\s*(\d{1,3}(?:\^\d+)?)\s*$", re.I)
+_CITARE_ANEXA = re.compile(r"^\s*anexa\s*(?:nr\.?\s*)?(\d{1,2})\s*$", re.I)
+_CITARE_NORMA = re.compile(r"^\s*norme\s+art\.?\s*(\d{1,3}(?:\^\d+)?)\s*$", re.I)
+
 
 def text(h):
     """HTML sau text brut → text normalizat, cu liniile păstrate (titlurile se ancorează pe ele)."""
@@ -83,20 +107,89 @@ def corp_util(t):
 
 
 def titluri(t):
-    """Câte titluri de articol se văd. Sub `PRAG_TITLURI`, documentul e un ciot."""
-    return len(_TITLURI_NUMARATE.findall(t))
+    """Câte UNITĂȚI NUMEROTATE se văd — articole **sau** puncte. Sub `PRAG_TITLURI`, ciot.
+
+    Punctele s-au adăugat la R171: un act care numerotează puncte nu e un ciot, e un act cu altă
+    numerotare. Se numără numai forma îngustă `9. - `; motivul e în blocul de sus, cu cifrele.
+    """
+    return len(_TITLURI_NUMARATE.findall(t)) + len(_PUNCTE_NUMARATE.findall(t))
 
 
 def e_ciot(t):
     return titluri(t) < PRAG_TITLURI
 
 
+def fragment_punct(corp, n):
+    """Textul punctului `n`, tăiat la punctul următor. `None` dacă nu e acolo.
+
+    Măsurat pe OMFP 1802/2014 pct. 9: **o singură** potrivire, 6.144 de caractere, 9 marcaje de
+    consolidare. Cuprinsul actului nu intră în socoteală, fiindcă `corp_util` taie tot ce e înainte
+    de «Forma printabilă» — aceeași apărare care ține și pentru articole.
+    """
+    tip = re.compile(r"(?:^|[\s(])%s\.\s*[-–]\s" % re.escape(str(n)))
+    m = tip.search(corp)
+    if m is None:
+        return None
+    urm = _PUNCTE_NUMARATE.search(corp, m.end())
+    return re.sub(r"\s+", " ", corp[m.end():urm.start() if urm else len(corp)]).strip()
+
+
+def fragment_anexa(corp, n):
+    """Corpul unei ANEXE care se identifică SINGURĂ ca fiind anexa `n`.
+
+    *Un act se identifică după CONȚINUT, nu după numele fișierului* — deci nu se citește
+    `..._anexa2_...` din cale, ci se cere ca antetul actului să spună „(Anexa nr. 2)". Anexa 1 a lui
+    OMFP 2634/2015 **nu** se auto-identifică (antetul ei spune doar «NORME GENERALE din 5 noiembrie
+    2015…»), deci rămâne nerezolvabilă, și asta e consemnat la R171 — nu ghicită din nume.
+    """
+    if not re.search(r"\(\s*Anexa\s*nr\.?\s*%s\s*\)" % re.escape(str(n)), corp[:1200], re.I):
+        return None
+    return re.sub(r"\s+", " ", corp).strip()
+
+
+def fragment_norma(corp, art):
+    """REUNIUNEA punctelor de normă care aplică articolul `art` din Codul fiscal.
+
+    Norma unui articol nu e un punct, ci toate punctele care îl aplică: HG 1/2016 are **2** puncte
+    pentru art. 321 și **4** pentru art. 19 (măsurat). Reuniunea e și direcția sigură: un marcaj
+    într-oricare din ele înseamnă că norma articolului s-a schimbat, deci prag mai SCURT, nu mai lung.
+
+    Ancora e chiar trimiterea — „…prevederile art. N … din Codul fiscal" —, nu poziția punctului.
+    """
+    tip = re.compile(r"(?:^|[\s(])(\d{1,3})\.\s+(?=\(\d|\w)")
+    trimitere = re.compile(r"\bart\.\s*%s\b" % re.escape(str(art)))
+    puncte = [(m.start(), m.end()) for m in tip.finditer(corp)]
+    bucati = []
+    for k, (poz, sfarsit) in enumerate(puncte):
+        pana = puncte[k + 1][0] if k + 1 < len(puncte) else len(corp)
+        f = corp[sfarsit:pana]
+        cap = f[:400]
+        if trimitere.search(cap) and "Codul fiscal" in cap:
+            bucati.append(f)
+    if not bucati:
+        return None
+    return re.sub(r"\s+", " ", " ".join(bucati)).strip()
+
+
 def fragment(t, art):
     """Textul articolului `art`, sau `None` dacă nu e în documentul ăsta.
 
     Se caută titlul, apoi URMĂTORUL titlu (oricum ar fi numerotat), și se taie între ele.
+
+    [R171] Înainte de asta, se citește FORMA citării: `pct. N`, `anexa N` și `norme art. N` sunt
+    trei feluri de a numi altceva decât un articol, iar fiecare are localizatorul lui. Dispecerul e
+    pe forma citării, nu pe conținut — o citare de articol simplu ia exact calea de dinainte.
     """
     corp = corp_util(t)
+    _p = _CITARE_PUNCT.match(str(art))
+    if _p:
+        return fragment_punct(corp, _p.group(1))
+    _a = _CITARE_ANEXA.match(str(art))
+    if _a:
+        return fragment_anexa(corp, _a.group(1))
+    _n = _CITARE_NORMA.match(str(art))
+    if _n:
+        return fragment_norma(corp, _n.group(1))
     esc = re.escape(str(art))
     tit = re.compile(r"(?:\+\s*|(?:^|\n)\s*)Articol(?:ul)?\s*%s\b(?!\^)(?!\s*\^)(?!\s+din\b)" % esc)
     m0 = tit.search(corp)

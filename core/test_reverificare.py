@@ -65,8 +65,9 @@ DISTRIBUTIE = {
     ("VOLATIL", "DEPUS"): 13,
     ("STABIL", "DEPUS"): 7,
     ("MISCATOR", "CALCULAT"): 3,
-    ("STABIL", "NECUNOSCUT"): 6,
-    ("VOLATIL", "NECUNOSCUT"): 1,
+    ("STABIL", "NECUNOSCUT"): 10,
+    ("VOLATIL", "NECUNOSCUT"): 7,
+    ("MISCATOR", "NECUNOSCUT"): 2,
     # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
     # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma
@@ -81,7 +82,13 @@ DISTRIBUTIE = {
     # scanului. Cele nou-vazute traiesc in module de norma (decizia 73) si n-au avut niciodata un
     # prag de reverificare, fiindca nu le vedea nimeni. *O necunoastere numita e mai buna decat o
     # cifra mica.* Se inchid prin R171.
-    ("NECUNOSCUT", "NECUNOSCUT"): 30,
+    # 30 -> 18 la 06.09.2026, prin R171: `articol_in_act` a invatat puncte si norme, deci 12
+    # temeiuri au primit o FRECVENTA masurata in loc de „nu se poate sti". Pragul lor ramane
+    # totusi None — `fara_prag` sta la 37, neschimbat —, fiindca CONSECINTA lor e in continuare
+    # NECUNOSCUT: valorile astea nu ajung intr-un modul de declaratie, deci nimeni nu le consuma.
+    # *Localizatorul de articol a rezolvat jumatatea lui; cealalta jumatate cere graful de
+    # consumatori, nu instrumentul de articol.* Consemnat in R171.
+    ("NECUNOSCUT", "NECUNOSCUT"): 18,
 }
 
 _AZI = datetime.date(2026, 8, 31)

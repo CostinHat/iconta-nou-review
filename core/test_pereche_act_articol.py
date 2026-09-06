@@ -60,7 +60,12 @@ from core import scan_pereche_act_articol as S  # noqa: E402
 #: `articol_in_act._TITLURI_NUMARATE` caută titluri de articol, deci nu găsește nimic. **Verdictul e
 #: în direcția sigură** — refuză, nu inventează un STABIL —, dar motivul e fals: actul le conține.
 #: Rezolvarea cere citire la sursă pe fiecare, adică muncă fiscală: **restanța R171**.
-CLICHET_NEGASIT = 11
+#: **11 → 1 la 06.09.2026 (R171).** `articol_in_act` a învățat PUNCTE și NORME, iar zece din cele
+#: unsprezece s-au reparat: `OMFP 1802/2014 pct.9` (×6), `HG 1/2016 norme art.321` (×3) și
+#: `norme art.19` (×1). A rămas **una singură**, și e de alt fel: `OMFP 3254/2017 1-6` nu e nici
+#: punct, nici normă — e un **interval** de articole. Actul are „Articolul 1"…„Articolul 10";
+#: citarea numește șase deodată. Se repară în temei, nu în instrument — v. R171.
+CLICHET_NEGASIT = 1
 #: Ce a rămas după convenție: **2**, amândouă `OUG 156/2024 art. LXVI` — articol care CHIAR e al
 #: ordonanței, într-un document adus ca ciot. Problemă de **corpus**, nu de temei: **R107**.
 #:
@@ -90,21 +95,23 @@ CLICHET_NEGASIT = 11
 #: numită mai sus**: `OMFP 2634/2015` numerotează PUNCTE în anexe, nu articole — `Anexa 1 pct. 52`
 #: (jurnalele D406) și `anexa 2` de două ori (registrul-inventar). Nicio formă nouă de eșec; aceleași
 #: trei temeiuri erau acolo și înainte, doar că nu le vedea nimeni.
-CLICHET_CIOT = 7
+#: **7 → 5 la 06.09.2026 (R171).** `OMFP 2634/2015 anexa 2` (×2) a ieșit din ciot: actul își spune
+#: singur, în antet, «(Anexa nr. 2)», iar acum i se numără punctele. `anexa 1` (×2) **rămâne**, și
+#: motivul e o regulă, nu o scăpare: antetul ei nu se auto-identifică — spune doar «NORME GENERALE
+#: din 5 noiembrie 2015…» —, iar *un act se identifică după conținut, nu după numele fișierului*.
+CLICHET_CIOT = 5
 #: Pragul de JOS pe confirmate: dacă scade, ceva a dispărut din registru sau instrumentul s-a rupt.
 #: 15 → **24** după ce instrumentul a învățat convenția — fără ca vreun temei să se schimbe.
 #: 24 → **34** la 06.09.2026: lărgirea domeniului a adus și confirmări, nu doar necunoscute.
 #: Pragul de jos se ridică la ce s-a câștigat, altfel câștigul se poate pierde tăcut.
-PRAG_CONFIRMATE = 34
+#: 34 → **46** la 06.09.2026 (R171): douăsprezece perechi au trecut din „nu pot spune" în GĂSIT.
+PRAG_CONFIRMATE = 46
 
 #: Perechile negăsite **cunoscute** — IDENTITĂȚILE, nu numărul. Clichetul pe număr n-ar vedea o
 #: pereche reparată și alta stricată în aceeași tură. Cele patru de aici sunt cele scoase la iveală
 #: de lărgirea domeniului (R169), toate din forma localizatorului; se închid prin **R171**.
 NEGASITE_CUNOSCUTE = {
-    ("OMFP 1802/2014", "pct.9"),        # praguri de mărime — actul numerotează puncte
-    ("HG 1/2016", "norme art.321"),     # normele trimit la articolul din CF
-    ("HG 1/2016", "norme art.19"),      # idem
-    ("OMFP 3254/2017", "1-6"),          # un interval de articole, nu un articol
+    ("OMFP 3254/2017", "1-6"),          # un INTERVAL de articole, nu un articol — R171
 }
 
 
@@ -122,6 +129,73 @@ def test_ANTI_VACUU_registrul_chiar_are_temeiuri_si_se_pot_intreba():
     stari = S.pe_stare(inv)
     assert stari.get("GASIT", 0) > 0, (
         "[anti-vacuu] niciun temei confirmat: %s — instrumentul nu mai citește documentele" % stari)
+
+
+# ── FORMELE NOI DE LOCALIZARE (R171) ───────────────────────────────────────────────────────────
+#
+# `articol_in_act` a învățat trei feluri de a numi altceva decât un articol: **punctul**, **anexa**
+# și **norma** unui articol din Codul fiscal. Aici se cere ca fiecare să aterizeze pe documentul
+# real — și, în cealaltă direcție, ca extinderea să NU fi lărgit ce nu trebuia.
+
+_ANAF = os.path.join(_RAD, "anaf_surse")
+
+
+def _cauta(fisier, art):
+    return A.cauta(os.path.join(_ANAF, fisier), art)
+
+
+def test_R171_punctul_anexa_si_norma_se_localizeaza():
+    """Cele trei forme, pe documentele lor reale. `ani` nevid = fragmentul poartă marcaje de
+    consolidare, adică s-a nimerit CORPUL actului, nu cuprinsul (care n-are marcaje)."""
+    p = _cauta("omfp_1802_2014_reglementari_consolidat.txt", "pct.9")
+    assert p["stare"] == "GASIT" and p["ani"] == ["2015", "2024"], p
+
+    a = _cauta("omfp_2634_2015_anexa2_norme_specifice.txt", "anexa 2")
+    assert a["stare"] == "GASIT" and a["ani"] == ["2024"], a
+
+    n1 = _cauta("hg_1_2016_norme_cod_fiscal.txt", "norme art.321")
+    assert n1["stare"] == "GASIT" and n1["ani"] == ["2016", "2021"], n1
+    n2 = _cauta("hg_1_2016_norme_cod_fiscal.txt", "norme art.19")
+    assert n2["stare"] == "GASIT" and n2["ani"] == ["2018"], n2
+
+
+def test_R171_CALIBRARE_articolul_simplu_merge_pe_calea_veche():
+    """Dispecerul e pe FORMA citării. O citare de articol simplu nu are voie să se schimbe."""
+    assert _cauta("cod_fiscal_227_2015_consolidat.txt", "322")["stare"] == "GASIT"
+    assert _cauta("cod_fiscal_227_2015_consolidat.txt", "99999")["stare"] == "NEGASIT"
+
+
+def test_R171_CALIBRARE_anexa_nu_se_ghiceste_din_numele_fisierului():
+    """`omfp_2634_2015_anexa1_norme_generale.txt` SE NUMEȘTE anexa 1 și **rămâne CIOT**: antetul
+    lui nu se auto-identifică. *Un act se identifică după conținut, nu după numele fișierului* —
+    dacă proba asta cade, localizatorul a început să creadă calea."""
+    assert _cauta("omfp_2634_2015_anexa1_norme_generale.txt", "anexa 1")["stare"] == "CIOT"
+    # și direcția inversă: anexa 2 NU se dă drept anexa 3
+    assert _cauta("omfp_2634_2015_anexa2_norme_specifice.txt", "anexa 3")["stare"] == "NEGASIT"
+
+
+def test_R171_tiparul_LARG_de_puncte_nu_a_fost_adoptat():
+    """**Decizia de a NU extinde, făcută verificabilă.**
+
+    S-au măsurat două forme de punct pe tot corpusul: `9. - ` (1.834 potriviri, 11 documente ies
+    din ciot) și `52. Text` (9.983 potriviri, **80** de documente ies din ciot). A doua scoate din
+    refuz descrieri de structură XML și enumerări din proză — *o numărare prea largă transformă o
+    trimitere în proză într-un titlu, iar un document trece din refuz în răspuns fals*. Față de 24
+    de citări cunoscute, 84 e disproporționat, deci nu s-a implementat.
+
+    Proba ține decizia: `d101_struct_anaf.txt` are 64 de „puncte" în forma largă și **zero** în cea
+    îngustă, deci trebuie să rămână CIOT. Dacă cineva lărgește tiparul, cade aici, nu peste șase
+    luni într-o cifră fiscală."""
+    assert A.e_ciot(A.din_fisier(os.path.join(_ANAF, "d101_struct_anaf.txt"))[0]) is True
+    assert A.e_ciot(A.din_fisier(os.path.join(_ANAF, "d112_struct_anaf.txt"))[0]) is True
+
+
+def test_R171_ANTI_VACUU_numararea_punctelor_chiar_face_ceva():
+    """Cele de mai sus ar trece și cu numărarea punctelor scoasă cu totul. Aici se cere efectul ei:
+    un act care numerotează PUNCTE, nu articole, nu mai e ciot."""
+    t = A.din_fisier(os.path.join(_ANAF, "omfp_2634_2015_anexa2_norme_specifice.txt"))[0]
+    assert A.e_ciot(t) is False
+    assert A.titluri(t) >= A.PRAG_TITLURI
 
 
 # ── CLICHETUL ──────────────────────────────────────────────────────────────────────────────────

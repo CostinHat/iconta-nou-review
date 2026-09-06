@@ -14026,3 +14026,21 @@ iar `_TEMEI_…` nu începe cu `TEMEI`. Poarta ar fi rămas verde. **Un prefix n
 regula spune „temeiul se pune unde e regula", nu „unde nu se vede". Refăcut ca modul propriu,
 `core/perioada_fiscala_tva.py`. *Când o formă corectă și una ocolitoare arată la fel în diff,
 diferența e intenția, iar intenția se scrie.*
+
+**(74) O extindere de instrument se oprește la forma îngustă când cea largă scoate din refuz
+disproporționat mai mult decât se cere** *(R171, 06.09.2026, regula dată de Costin înainte de
+lucru)*. `articol_in_act` trebuia să învețe puncte. Existau două forme reale, citite din acte:
+`9. - (1)` și `52. Text`. Pe cele patru documente-țintă, amândouă funcționează. Pe **tot** corpusul
+(362 de documente): prima scoate din refuz **11** documente, a doua **80** — printre care
+`d101_struct_anaf.txt` (64 de „puncte") și `legea_207_2015_consolidat.txt` (373), adică descrieri de
+structură XML și enumerări din proză.
+
+**24 de citări cunoscute, 84 de documente scoase din refuz: raportul decide.** Forma largă n-a fost
+implementată. Direcția greșelii e cea care contează: un document care trece din **refuz** în
+**răspuns** capătă un prag de reverificare calculat dintr-un fragment fals — iar direcția
+fragmentului fals e „pare mai stabil decât e", deci verificat mai rar exact unde trebuie mai des.
+
+**Consecința de metodă, generalizată:** refuzul de a extinde **se ține cu o gardă**, nu cu o
+propoziție. `test_R171_tiparul_LARG_de_puncte_nu_a_fost_adoptat` cere ca două documente anume să
+rămână CIOT; lărgind tiparul, cad cinci teste. *O decizie de a NU face, scrisă doar în proză, se
+erodează la prima tură care n-o citește.*

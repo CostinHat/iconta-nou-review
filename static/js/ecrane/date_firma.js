@@ -78,9 +78,13 @@ const VECTOR = [
   { k: "platitor_tva", e: "\u00cenregistrat\u0103 \u00een scopuri de TVA", ob: true, alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Din vectorul fiscal ANAF. Decide D300 si D394." },
+  // [cerinta Costin, 06.09.2026] Acelasi text de ajutor ca in `migrare.js`, VERBATIM de acolo —
+  // aceeasi alegere pusa in doua ecrane nu are voie sa aiba criteriul intr-unul singur. Nu se
+  // rescrie si nu se rezuma: un temei citat din memorie intra in corpus ca fapt.
+  // `core/test_ajutor_periodicitate_tva.py` compara cele doua texte RANDATE si pica daca diverg.
   { k: "tip_decont", e: "Periodicitate TVA", tip: "select",
     opt: [["", "\u2014"], ["lunar", "Lunar"], ["trimestrial", "Trimestrial"]],
-    aj: "Obligatorie doar la pl\u0103titorii de TVA. Decide dac\u0103 D300/D394 se depun lunar sau trimestrial." },
+    aj: "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții intracomunitare de bunuri — art. 322 alin. 2." },
   { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Achizi\u021bii/livr\u0103ri din UE. Decide D390 (VIES)." },

@@ -7355,6 +7355,97 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   doar cu numărul (`NEGASITE_CUNOSCUTE`), iar distribuția de reverificare e pinată cu socoteala
   scrisă. *O necunoaștere numită e mai bună decât o cifră mică.*
 
+#### R171 — ce s-a rezolvat pe 06.09.2026, la cererea lui Costin, și ce rămâne
+
+`core/articol_in_act.py` a învățat **puncte** și **norme**. Măsurat înainte și după, ca la R109.
+
+- **măsurarea DINAINTE de a atinge instrumentul** — două forme candidate de punct, pe tot corpusul
+  (362 de documente):
+  · **îngustă**, `9. - ` → **1.834** potriviri · **11** documente ies din CIOT;
+  · **largă**, `52. Text` → **9.983** potriviri · **80** de documente ies din CIOT.
+  *(Cele două forme luate ÎMPREUNĂ scot 84; instrumentul din repo, `scripts/scan_forme_punct.py`,
+  măsoară fiecare formă independent — 11 și 80. Prima cifră pe care am scris-o, 84, era a formei
+  combinate, măsurată cu un script ad-hoc. **O cifră care nu se poate recalcula nu e o măsurătoare,
+  e o amintire** — de-aia instrumentul a intrat în repo, iar cifra s-a corectat înainte de commit.)*
+  A doua scoate din refuz `d101_struct_anaf.txt` (64 de „puncte"), `d112_struct_anaf.txt` (44),
+  `legea_207_2015_consolidat.txt` (373) — **descrieri de structură XML și enumerări din proză**, nu
+  puncte normative. *Exact riscul scris în gardul propriu: o numărare prea largă transformă o
+  trimitere în proză într-un titlu, iar un document trece din refuz în răspuns fals.* **84 față de
+  24 de citări cunoscute e disproporționat**, deci forma largă **NU s-a implementat** — și decizia
+  nu e o propoziție, e o gardă: `test_R171_tiparul_LARG_de_puncte_nu_a_fost_adoptat` cere ca
+  `d101_struct_anaf.txt` și `d112_struct_anaf.txt` să rămână CIOT. Mutație probată: lărgind tiparul,
+  cad **cinci** teste.
+- **cele trei forme învățate**, fiecare cu localizatorul ei: **punctul** (`pct. N`) · **anexa**
+  (`anexa N`) · **norma** unui articol din Codul fiscal (`norme art. N`). Norma unui articol e
+  **reuniunea** punctelor care îl aplică — HG 1/2016 are 2 puncte pentru art. 321 și 4 pentru
+  art. 19 —, iar reuniunea e și direcția sigură: un marcaj în oricare înseamnă prag mai **scurt**.
+- **anexa nu se ghicește din numele fișierului**: `fragment_anexa` cere ca antetul actului să spună
+  el însuși „(Anexa nr. 2)". De-aia `omfp_2634_2015_anexa1_norme_generale.txt` **rămâne CIOT** deși
+  se numește așa: antetul lui spune doar «NORME GENERALE din 5 noiembrie 2015…». *Un act se
+  identifică după conținut, nu după numele fișierului.*
+- **ce s-a mutat, măsurat după**: perechi **NEGĂSIT 11 → 1** · **CIOT 7 → 5** · **GĂSIT 34 → 46**.
+  Documente de corpus în ciot: **209 → 198**. Citări verbatim: **26**, neschimbat.
+- **VOLUMUL DE ALERTE: 0 → 0**, și se spune de ce, nu se prezintă ca o reușită: canalul de alerte
+  (`cote_neconfirmate`) măsoară **numai** valorile din `COTE`, iar cele douăsprezece perechi
+  reparate trăiesc în module de normă, în afara lui. Alertele nu **aveau cum** să crească. Ce s-a
+  mutat e clasificarea: `NECUNOSCUT/NECUNOSCUT` **30 → 18**.
+- **CE RĂMÂNE DESCHIS, și de ce restanța nu se închide**:
+  1. **Pragurile.** `fara_prag` stă la **37**, neschimbat. Cele 12 au acum o **frecvență** măsurată,
+     dar `consecința` lor rămâne NECUNOSCUT — valorile nu ajung într-un modul de declarație, deci
+     nimeni nu le consumă. *Localizatorul de articol a rezolvat jumătatea lui; cealaltă jumătate
+     cere graful de consumatori, nu instrumentul de articol.* Asta e condiția care ține R171 deschisă.
+  2. **`OMFP 3254/2017 art. 1-6`** — un **interval** de articole, nu un punct și nu o normă. Actul
+     are „Articolul 1"…„Articolul 10"; citarea numește șase deodată. Se repară în **temei** (șase
+     citări, sau una pe articolul care poartă regula), nu în instrument.
+  3. **`OMFP 2634/2015 anexa 1`** (×2) — actul nu se auto-identifică. Se închide când anexa se aduce
+     într-o formă care își spune numărul, ori când citarea numește altceva verificabil.
+  4. **Cele trei CIOT vechi** rămân pe cauzele lor: `Ordin 1604/2025` (formă de Monitor Oficial,
+     R111) și `OUG 156/2024 art. LXVI` ×2 (corpus adus parțial, R107).
+
+
+### R172 — «Date firmă» cerea periodicitatea TVA fără să spună după ce se alege
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `static/js/ecrane/date_firma.js` · `core/test_ajutor_periodicitate_tva.py`
+- **ce blochează**: alegerea vectorului fiscal. Periodicitatea decontului decide dacă D300/D394 se
+  depun lunar sau trimestrial; omul o alegea, din ecranul ăsta, fără criteriul legal în față.
+- **condiția de deblocare**: se închide când amândouă ecranele care cer alegerea poartă **același**
+  criteriu, iar identitatea lor nu se poate pierde tăcut.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `e06b0e4b`
+- **rezolvată pe commit**: `e06b0e4b`
+- **cum s-a găsit**: măsurând clasa lui **R167**. Șase mesaje vorbesc despre periodicitatea TVA;
+  patru **cer** câmpul. Dintre ele, `migrare.js` avea criteriul art. 322 în `.camp-ajutor`, iar
+  `date_firma.js` nu — *aceeași întrebare, pusă în două locuri, cu ajutorul într-unul singur*. S-a
+  consemnat atunci ca cerință, nu s-a reparat tăcut; decizia a venit de la Costin.
+- **reparația**: textul se ia **verbatim din `migrare.js`**, nu se rescrie. Un temei rescris din
+  memorie intră în corpus ca fapt; iar o a doua formulare a aceleiași norme e a doua sursă de adevăr.
+  Diferența de așezare (template literal pe trei rânduri vs. șir de o linie) nu schimbă randarea —
+  HTML colapsează spațiile, și exact textul **randat** e ce compară garda.
+- **gardul**: `core/test_ajutor_periodicitate_tva.py` extrage textul din amândouă ecranele prin
+  **ancore de câmp** — eticheta în `migrare.js`, intrarea `tip_decont` din tabelul `VECTOR` în
+  `date_firma.js` — și cere **egalitate** pe forma randată. Nu caută conținutul pe care îl păzește:
+  un gard care își caută propriul text trece dintr-un motiv străin. Anti-vacuu: lungime peste 120 de
+  caractere și **exact două** citări ale art. 322 (alin. 1 = luna, alin. 2 = trimestrul), cerute cu
+  `count()`, nu cu apartenență. Plus o probă că extragerea **crapă** dacă ancora dispare.
+- **calibrare, pe fișierul real**: scoaterea a cinci cuvinte din textul lui `date_firma.js` face
+  gardul roșu; punerea lor la loc, verde.
+- **ce s-a pierdut, și se spune**: ajutorul de dinainte al câmpului — *„Obligatorie doar la
+  plătitorii de TVA. Decide dacă D300/D394 se depun lunar sau trimestrial."* — a fost **înlocuit**,
+  fiindcă cererea era „același text ca `migrare.js`, verbatim". Informația despre CE decide câmpul
+  nu mai e pe ecran; dacă trebuie păstrată, se adaugă ca a doua propoziție în amândouă ecranele, ca
+  să rămână identice.
+- **reprobat vizual** *(`frontend_test/vizual/proba_ajutor_periodicitate.py`, instanță proaspătă)*:
+  ecranul «Date firmă» randează criteriul, **632×49 px**, vizibil, zero erori JS; iar textul citit
+  de pe ecran e **identic** cu cel randat de «Migrare» pe aceeași instanță. Amprenta schemei,
+  neschimbată.
+- **ce RĂMÂNE, declarat**: textul poartă cifra `100.000 euro`, care **n-are cheie în registrul de
+  cote** — interdicția 1, instanța consemnată pe `migrare.js`. Acum trăiește în două locuri care nu
+  pot diverge **între ele**, dar tot nu se poate confrunta cu nimic. Rămâne ce scria acolo: ori
+  cheia intră în registru, ori textul pierde cifra.
+
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

@@ -8084,3 +8084,25 @@ de caractere. Două formulare n-au fost niciodată deschise, purtând numele uno
 țintește un director izolat — Python rezolvă legătura simbolică, deci a țintit producția. Restaurat
 imediat din HEAD și verificat cu `--stare`. *O comandă care schimbă ce vede utilizatorul se rulează
 după ce i-ai dovedit ținta.*
+
+
+## 06.09.2026 (2) — Criteriul care lipsea dintr-un ecran, și instrumentul care a învățat puncte și norme
+
+**R172 — «Date firmă» cerea periodicitatea TVA fără criteriul după care se alege.** Ridicată ca
+cerință în raportul precedent, nu reparată tăcut; decizia a venit de la Costin. Textul se ia
+**verbatim din `migrare.js`**, iar „verbatim" devine o proprietate a codului: un gard extrage textul
+din amândouă ecranele prin ancore de câmp și cere egalitate pe forma randată. Reprobat vizual —
+criteriul se vede pe ecran, 632×49 px, identic cu cel din «Migrare».
+
+**R171, prima jumătate — `articol_in_act` a învățat puncte, anexe și norme.** Măsurat înainte și
+după, ca la R109, și tocmai măsurătoarea a decis forma: din două tipare candidate de punct, cel
+îngust scoate din refuz 11 documente, cel larg **80** — printre ele descrieri de structură XML.
+**Forma largă nu s-a implementat**, iar refuzul e ținut de o gardă, nu de o propoziție.
+
+Efect: perechi (act, articol) **NEGĂSIT 11 → 1**, **CIOT 7 → 5**, **GĂSIT 34 → 46**. Volumul de
+alerte **0 → 0** — și motivul se scrie, fiindcă altfel cifra minte liniștitor: canalul de alerte
+măsoară numai valorile din registrul de cote, iar ce s-a reparat trăiește în afara lui.
+
+**R171 rămâne deschisă pe cealaltă jumătate**: cele 12 perechi au acum o **frecvență**, dar nu un
+**prag** — `fara_prag` stă la 37, fiindcă valorile nu ajung într-un modul de declarație, deci n-au
+consecință. *Localizatorul de articol și-a rezolvat jumătatea; cealaltă cere graful de consumatori.*

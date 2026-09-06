@@ -163,6 +163,33 @@ verificările**: patru rute de `/incarca` cu docstring *„nu salvează"* apăre
 de date. **Regula: o supra-aproximare are voie să existe, dar trebuie să se NUMEASCĂ** — altfel cine
 o citește scrie o aserțiune pe ea. Forma: `poate atinge, prin modul (PLAFON, nemăsurat pe rută)`.
 
+### Extinderea unui instrument se măsoară pe TOT domeniul înainte, iar refuzul se ține cu o gardă (06.09.2026)
+
+**Cerut de Costin**, la R171, în forma în care s-a și aplicat: *„extinde, dar măsoară volumul de
+alerte înainte și după; dacă volumul crește disproporționat față de citările cunoscute, oprește-te
+și consemnează, nu forța extinderea."*
+
+**Cele trei părți, în ordine:**
+
+1. **Formele candidate se citesc din documente, nu se inventează.** Pentru „punct" existau două
+   forme reale, găsite deschizând actele: `9. - (1)` și `52. Text`. A treia, imaginată, n-ar fi
+   fost măsurabilă.
+2. **Măsurătoarea e pe TOT domeniul, nu pe cazul care a cerut extinderea.** Pe cele patru documente
+   țintă, amândouă formele funcționează. Pe cele **362** ale corpusului, prima scoate din refuz 11
+   documente, a doua **80** — și printre ele descrieri de structură XML, unde „64 de puncte" sunt
+   rânduri de tabel. *Un tipar se judecă după ce prinde în afara cazului pentru care a fost scris.*
+3. **Refuzul de a extinde se scrie ca aserțiune.** O decizie de a NU face, lăsată în proză, se
+   erodează la prima tură care n-o citește: cineva vede un NEGĂSIT, lărgește tiparul, și verdele
+   revine — dintr-un motiv fals. Garda cere ca două documente anume să rămână CIOT; mutația care
+   lărgește tiparul doboară cinci teste.
+
+**Și o precizie despre metrică, fiindcă altfel cifra minte în direcția liniștitoare:** volumul de
+alerte a fost **0 înainte și 0 după** — dar nu fiindcă extinderea ar fi fost inofensivă, ci fiindcă
+**canalul de alerte măsoară numai valorile din registrul de cote**, iar ce s-a reparat trăiește în
+afara lui. *O metrică nemișcată se raportează împreună cu motivul pentru care nu se putea mișca* —
+altfel „zero alerte noi" se citește ca o dovadă de siguranță pe care măsurătoarea n-a dat-o. Ce s-a
+mișcat, și s-a raportat ca atare: clasificarea, `NECUNOSCUT/NECUNOSCUT` 30 → 18.
+
 ### O mutație care probează o CALIBRARE trebuie să lovească exact linia care face distincția (26.08.2026)
 
 **Cerut de Costin**, după instanța din aceeași zi. O mutație e proba că un test poate deveni roșu.

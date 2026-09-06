@@ -7526,11 +7526,48 @@ registre. Enumerarea culegea butoanele vizibile și le filtra pe TEXT — `t.len
 deci raporta **32** peste un registru de **34**. Trece pe `data-op`. *Un prag mai mare ar fi fost
 același defect, amânat.*
 
+## 06.09.2026 (2) — Două gărzi care păzesc câte o DECIZIE, nu doar un comportament
+
+### `core/test_ajutor_periodicitate_tva.py` — aceeași alegere, același criteriu (R172)
+
+Periodicitatea decontului de TVA se cere în două ecrane; criteriul art. 322 era scris într-unul
+singur. Textul s-a copiat **verbatim**, iar gardul face din „verbatim" o proprietate a codului, nu a
+copierii mele: extrage textul din amândouă prin **ancore de câmp** și cere **egalitate** pe forma
+randată.
+
+Nu caută conținutul pe care îl păzește — un gard care își caută propriul text trece dintr-un motiv
+străin. Anti-vacuu: lungime peste 120 de caractere și **exact două** citări ale articolului, cerute
+cu `count()`, nu cu apartenență; plus o probă că extragerea **crapă** dacă ancora dispare, în loc să
+întoarcă șirul gol și să treacă verde. Mutație pe fișierul real: cinci cuvinte scoase → roșu.
+
+### `test_R171_tiparul_LARG_de_puncte_nu_a_fost_adoptat` — o decizie de a NU face, ținută de o gardă
+
+Extinderea lui `articol_in_act` a avut două forme candidate de punct, măsurate pe tot corpusul
+**înainte** de a atinge instrumentul: cea îngustă (`9. - `) scoate din refuz **11** documente, cea
+largă (`52. Text`) scoate **80** — printre ele descrieri de structură XML și enumerări din proză.
+Față de 24 de citări cunoscute, a doua e disproporționată, deci nu s-a implementat.
+
+**Partea care contează pentru registrul ăsta:** decizia nu e o propoziție într-un fișier, e o
+aserțiune. Garda cere ca `d101_struct_anaf.txt` și `d112_struct_anaf.txt` să rămână CIOT. Probat
+prin mutație: lărgind tiparul, cad **cinci** teste — trei dintre ele fiind chiar clichetele care
+măsoară perechile. *O decizie de a nu extinde, scrisă doar în proză, se erodează la prima tură care
+n-o citește.*
+
+### Ce a mai învățat `articol_in_act`
+
+**Puncte** (`pct. N`), **anexe** (`anexa N`) și **norme** (`norme art. N` — reuniunea punctelor care
+aplică un articol din Codul fiscal). Dispecerul e pe **forma citării**, deci o citare de articol
+simplu merge pe calea dinainte, neatinsă — și asta are proba ei. Anexa **nu** se ghicește din numele
+fișierului: se cere ca antetul actului să spună el însuși „(Anexa nr. 2)". De-aia anexa 1 a lui
+OMFP 2634/2015 rămâne CIOT deși fișierul se numește așa.
+
+Efect măsurat: perechi NEGĂSIT **11 → 1**, CIOT **7 → 5**, GĂSIT **34 → 46**; alerte **0 → 0**.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**520 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**522 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 501
+### `core/` — 502
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7570,6 +7607,7 @@ același defect, amânat.*
 - `core/test_afirmatii_tipate.py` — CLICHET: afirmațiile despre datele firmei nu mai pot fi proză. (P8, 21.08.2026)
 - `core/test_agenda.py` — Garda anti-stale a agendei: pica daca TESTE.md a ramas in urma codului. Diferenta fata de DE_FACUT.md
 - `core/test_ai_incredere.py` — —
+- `core/test_ajutor_periodicitate_tva.py` — GARD [06.09.2026, cerut de Costin]: aceeași alegere, pusă în două ecrane, poartă ACELAȘI criteriu.
 - `core/test_ajutor_prelogin_fallback.py` — GARD ajutor_prelogin: handlerul global al semnului "?" nu depinde DOAR de _navGlobal (shell
 - `core/test_alerte_control_fiscal.py` — Teste gardian pentru alerte_control_fiscal — stratul pull->push al controlului fiscal.
 - `core/test_amortizare_ecran_metoda.py` — GARD amortizare pe METODA (Q6+Q15, tura import 16.08.2026).
@@ -8034,7 +8072,7 @@ același defect, amânat.*
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 19
+### `scripts/` — 20
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -8042,6 +8080,7 @@ același defect, amânat.*
 - `scripts/scan_axa_garzi.py` — FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua.
 - `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
 - `scripts/scan_ds_verificator.py` — RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026.
+- `scripts/scan_forme_punct.py` — scripts/scan_forme_punct.py — CÂT DE LARG prinde un tipar de punct, pe TOT corpusul.
 - `scripts/scan_functionalitati.py` — scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
 - `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
