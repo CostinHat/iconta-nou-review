@@ -519,14 +519,31 @@ def genereaza(conn, schema, tip, body):
     erori = valideaza_cerere(tip, body, per_ef)
     if erori:
         raise ValueError("; ".join(erori))
-    # [G1] POARTA PRIN FORMA: tipul neaplicabil pt tip_firma-ul firmei (ex. D101/D406 la un PFA) -> refuz cu
-    # TEMEI, nu XML gol. UI-ul dezactiveaza optiunea; backendul decide (o firma nu poate depune ce n-o priveste).
-    # Sursa unica de excludere = control_fiscal_api.neaplicabile_forma (aceeasi ca semaforul/termene). DECIZII 23.07.
+    # [G1] POARTA DE APLICABILITATE: tipul pe care firma NU-l datoreaza -> refuz cu TEMEI, nu XML gol.
+    # UI-ul dezactiveaza optiunea; backendul DECIDE (o firma nu poate depune ce n-o priveste).
+    #
+    # [R94 06.09.2026] Poarta consulta acum `neaplicabile_selector`, nu `neaplicabile_forma`. Pana azi
+    # ecranul si generatorul raspundeau DIFERIT la aceeasi intrebare: ecranul stia forma + vectorul TVA,
+    # poarta stia doar forma. Masurat pe cele 19 firme: 8 divergente - D300 si D394 ieseau `valid` pe cele
+    # patru firme NEPLATITOARE de TVA, desi ecranul le declara neaplicabile CU TEMEI (art. 316). D300-ul
+    # nul purta nota «Un platitor depune nul pe luna fara activitate», afirmatie falsa despre firma pe
+    # care o descrie. O aplicabilitate care se decide in doua locuri se decide, de fapt, in niciunul.
+    #
+    # `ic_fapt` se trece MAI DEPARTE, nu se lasa pe implicit: fara el D390/D301 s-ar bloca pe bifa, iar
+    # tiparul tenant_006 (vectorul zice fara IC, firma are achizitii intracomunitare reale) ar deveni un
+    # refuz de generare - exact obligatia pe care contabilul trebuie sa o poata depune. Faptul bate vectorul
+    # si in poarta, nu doar in ecran; altfel poarta ar fi mai stricta decat ecranul care o anunta.
+    # Sursa unica de excludere = control_fiscal_api (aceeasi ca semaforul/termene). DECIZII 23.07.
     from core import control_fiscal_api as _cf
+    from core.common import azi_ro as _azi
     with conn.cursor() as cur:
-        cur.execute("SELECT tip_firma FROM firma_profil WHERE id = 1")
+        cur.execute("SELECT tip_firma, platitor_tva, operatiuni_ic, regim_fiscal "
+                    "FROM firma_profil WHERE id = 1")
         _row = cur.fetchone()
-    _neap = _cf.neaplicabile_forma(_row[0] if _row else None)
+    _vec = ({"tip_firma": _row[0], "platitor_tva": _row[1], "operatiuni_ic": _row[2],
+             "regim_fiscal": _row[3]} if _row else {})
+    _neap = _cf.neaplicabile_selector(
+        _vec, ic_fapt=(lambda: _cf.ic_fapt_din_db(conn, schema, _azi().year)))
     if tip in _neap:
         raise ValueError(_neap[tip])
     # [C7] setul TVA trimestrial: wizardul trimite `trim`; generatoarele d300/d394/d406 sunt ancorate

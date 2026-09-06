@@ -4085,9 +4085,10 @@ def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT tip_firma, tip_decont, platitor_tva, operatiuni_ic FROM firma_profil WHERE id = 1")
+            cur.execute("SELECT tip_firma, tip_decont, platitor_tva, operatiuni_ic, regim_fiscal FROM firma_profil WHERE id = 1")
             row = cur.fetchone()
-        _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2], "operatiuni_ic": row[3]}
+        _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2],
+                 "operatiuni_ic": row[3], "regim_fiscal": row[4]}   # [R94] regimul intra in vector
                 if row else {})
         # [21.08.2026] FAPTUL BATE VECTORUL: selectorul nu mai blocheaza D390/D301 pe bifa cand exista
         # operatiuni IC reale (sau cand evidenta e incompleta). Tiparul tenant_006. Sonda se cheama

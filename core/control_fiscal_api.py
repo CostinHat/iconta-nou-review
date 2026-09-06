@@ -89,6 +89,28 @@ def neaplicabile_selector(vector, *, ic_fapt=None):
     neap = neaplicabile_forma(vector.get("tip_firma"))
     platitor = vector.get("platitor_tva")
     ic = vector.get("operatiuni_ic")
+    # [R94 06.09.2026] REGIMUL, a treia sursa de neaplicabilitate. Pana azi selectorul stia doar forma
+    # (partida simpla) si vectorul TVA, iar semaforul stia regimul - doua mecanisme care raspundeau
+    # DIFERIT la aceeasi intrebare. Aceeasi ramura ca in obligatii_datorate: micro -> D100, profit -> D101.
+    #
+    # DE CE DOAR O DIRECTIE. Oglinda («profit -> D100 neaplicabil») ar fi GRESITA, si e masurat de ce:
+    # D100 nu e declaratia impozitului micro, e «obligatiile de plata la bugetul de stat» si poarta si
+    # codul 103 = impozit pe PROFIT (avansul trimestrial) - vezi `core/d100.py` nomenclator si gardul
+    # `core/test_d100_profit_baza.py`, care calculeaza baza de profit tocmai pentru D100. O firma pe
+    # profit isi DATOREAZA D100-ul. Ca semaforul nu i-l cere azi e alta restanta, deschisa: R95.
+    # D101 insa e exclusiv al regimului de profit, deci blocarea lui pe micro e exacta.
+    #
+    # BLOCAJ PE O AFIRMATIE DE OM, cu remediul in mesaj - acelasi tipar ca la D390/D301 (21.08.2026):
+    # `regim_fiscal` l-a completat cineva, nu tace un tabel. Aplicatia NU cunoaste plafonul de iesire
+    # din micro (masurat: nicio constanta de plafon micro in `core/`), deci nu exista fapt care sa
+    # contrazica bifa; atunci blocajul ramane, dar spune UNDE se corecteaza. Regim necompletat (None)
+    # -> NIMIC blocat: semaforul il arata deja gri, iar un gol nu e un raspuns.
+    regim = (vector.get("regim_fiscal") or "").strip().lower()
+    if regim == "micro":
+        neap.setdefault("d101", "D101 nu se datorează — Regimul fiscal declară firma pe impozitul pe "
+                                "veniturile microîntreprinderilor, iar D101 e declarația impozitului pe "
+                                "profit. Dacă firma a ieșit din regimul micro, corectează Regimul fiscal "
+                                "la Date firmă.")
     if platitor is False:
         neap.setdefault("d300", "D300 nu se datorează — firma nu e înregistrată în scopuri de TVA (art. 316).")
         neap.setdefault("d394", "D394 nu se datorează — firma nu e plătitoare de TVA.")

@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**526 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**527 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 506
+### `core/` — 507
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7730,6 +7730,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_ancore_in_cod.py` — GARD PESTE GĂRZI (21.08.2026): ancora unui gard trăiește în COD, nu în PROZĂ.
 - `core/test_ancore_rute.py` — GARD [R80, 27.08.2026]: clasa de rute despre care detectorul din R70 nu poate afirma nimic
 - `core/test_api_public.py` — —
+- `core/test_aplicabilitate_o_singura_sursa.py` — GARD R94 (06.09.2026) — aplicabilitatea se decide INTR-UN SINGUR LOC, iar poarta o consulta.
 - `core/test_aritmetica_in_prezentare.py` — GARD (interdicția 4): aritmetica fiscală din ecran nu diverge de cea din server.
 - `core/test_artefacte_pastrate.py` — GARD [R45]: un artefact produs se păstrează, cu cele cinci câmpuri — și producerea lui e
 - `core/test_audit_campuri_oficiale.py` — GARD AUDIT SEMANTIC — numele campurilor emise = campuri OFICIALE (01.08.2026, Conditia 2 Costin).

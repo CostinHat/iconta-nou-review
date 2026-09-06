@@ -14,10 +14,12 @@ CE MĂSOARĂ, pe fiecare firmă activă:
     (1) **ce BLOCHEAZĂ selectorul** — lista `neaplicabile` de la `/declaratii/tipuri`. ATENȚIE la
         vocabular, fiindcă prima formă a scanului l-a greșit: „neblocat" **nu** înseamnă „aplicația
         spune că se datorează". `control_fiscal_api.neaplicabile_selector` acoperă **forma**
-        (partidă simplă) și **vectorul TVA** (d300/d394/d390/d301) — atât. Regimul fiscal
-        (micro↔profit, deci D100↔D101) **nu intră** în el; obligația pe regim o știe alt mecanism,
-        `obligatii_datorate` (semaforul). Deci coloana asta măsoară ce lasă selectorul să treacă,
-        nu ce datorează firma;
+        (partidă simplă), **vectorul TVA** (d300/d394/d390/d301) și — de la **R94, 06.09.2026** —
+        **regimul fiscal** (micro → D101 nu se datorează). *Propoziția de aici spunea, până în ziua
+        în care s-a reparat R94, că regimul „nu intră" în selector; a rămas adevărată exact cât a
+        fost adevărată reparația, și de-asta se corectează odată cu ea.* Oglinda (profit → D100)
+        **nu** e în selector, deliberat: D100 poartă și codul 103, impozitul pe profit. Deci coloana
+        asta măsoară ce lasă selectorul să treacă, nu tot ce datorează firma;
     (2) **ce iese efectiv** — `POST /declaratii/{tip}/valideaza`, care GENEREAZĂ și trece XML-ul
         prin **DUKIntegrator** (arbitrul oficial). Stările: valid · atenționare · erori · gri ·
         REFUZ (422, generatorul refuză înainte de XML) · EROARE.

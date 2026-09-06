@@ -8180,7 +8180,9 @@ meu. Semnalul ratat: același SQL, rulat de mână, dădea alt rezultat decât f
 din extras. **R43 se închide ca „nu se implementează"**, nu rămâne deschisă la nesfârșit.
 
 Închis într-un singur loc (`plati.CALEA_ONLINE_ACTIVA`), cu butonul, handlerul și zona lui scoase
-toate trei, rutele pe **410 Gone** și un refuz care numește fluxul real. Măsurat înainte: **zero**
+toate trei, **rutele scoase cu totul** și un refuz care numește fluxul real. *(Prima formă le
+lăsa pe 410 Gone; poarta a arătat că o rută care doar refuză rămâne fără apelant, iar o pagină de
+mormânt la care nu poate ajunge nimeni — zero linkuri generate vreodată — e cod mort.)* Măsurat înainte: **zero**
 linkuri generate vreodată, **zero** facturi cu marcă de simulare — închiderea n-a desfăcut nimic.
 
 **Ce a scos la iveală, și e mai important decât retragerea.** Cu calea online închisă, se văd toți
@@ -8190,3 +8192,30 @@ real — banca — nu scrie câmpul deloc**, iar scadențarul și notificările 
 **1 decontată dar rămasă în scadențar**. Iar aplicația știa deja despre ea însăși:
 `durata_medie_incasare` refuză explicit câmpul, cu motivul scris. **Un consumator l-a ocolit fiindcă
 știa că minte; ceilalți doi nu.** → **R174**.
+
+
+## 06.09.2026 — R94: aplicabilitatea nu se mai decide în două locuri
+
+Aplicația avea **două** mecanisme care răspundeau la aceeași întrebare — *ce datorează firma asta* —
+și nu-și vorbeau. Ecranul întreba `neaplicabile_selector` (forma + vectorul TVA); poarta
+generatorului întreba `neaplicabile_forma` (doar forma); semaforul știa în plus **regimul**. Măsurat
+cu `scripts/scan_1b_regimuri.py`: **8 divergențe** — D300 și D394 ieșeau `valid` pe cele patru firme
+neplătitoare de TVA, deși ecranul le declara neaplicabile cu temei. D300-ul nul purta nota *„Un
+plătitor depune nul pe luna fără activitate"*, afirmație falsă despre firma pe care o descria.
+
+Reparat în amândouă locurile, fiindcă boala era că erau două: selectorul a învățat regimul, poarta a
+trecut pe selector. **8 → 0**, măsurat cu același instrument.
+
+**Ce n-am făcut, și de ce contează mai mult decât ce am făcut.** Simetria cerea și *profit → D100
+neaplicabil*. Am măsurat înainte de a scrie: D100 nu e declarația impozitului micro, e „obligațiile
+de plată la bugetul de stat" și poartă **codul 103 = impozit pe profit**. Oglinda ar fi refuzat o
+declarație reală. *O simetrie care arată bine nu e un argument; nomenclatorul e.*
+
+Și încă una: aplicația **nu** cunoaște plafonul de ieșire din micro, deci blocajul stă pe o afirmație
+de om, fără fapt care s-o contrazică. Atunci blocajul rămâne — dar mesajul spune **unde se
+corectează**. Iar `ic_fapt` se trece mai departe în poartă: altfel poarta ar fi fost mai strictă
+decât ecranul care o anunță, și tocmai tiparul `tenant_006` ar fi devenit un refuz de generare.
+
+*Efect lateral*: docstringul scanului afirma că regimul „nu intră" în selector. A fost adevărat
+dimineața și fals după-amiaza. Corectat în același commit — **un instrument care descrie o lume pe
+care a schimbat-o tocmai reparația de lângă el minte cu cea mai bună credință.**

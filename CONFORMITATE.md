@@ -2235,11 +2235,50 @@ citirea corectează.*
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, pasul **1b** · legată de **R70** și **R80** · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `81b89e7`
+- **rezolvată pe commit**: `47f36aa8`
 - **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
 - **ce blochează**: aplicația are **două** mecanisme care răspund la aceeași întrebare, și nu-și vorbesc. `control_fiscal_api.obligatii_datorate` (semaforul) știe regimul fiscal: *micro → D100, profit → D101*. `control_fiscal_api.neaplicabile_selector` (selectorul de declarații) știe **doar** forma (partidă simplă) și vectorul TVA. Consecința, măsurată pe cele 19 firme: pe **cele 10 firme micro**, D101 rămâne selectabil pe ecran și **iese `valid`** din generator. Iar a treia divergență e a generatorului însuși: pe cele **4 firme neplătitoare de TVA** (`tenant_002`, `tenant_006`, `tenant_009`, `tenant_011`), selectorul declară D300 și D394 neaplicabile **cu temei** — *„firma nu e înregistrată în scopuri de TVA (art. 316)"* — iar `POST /declaratii/{tip}/valideaza` le produce oricum, `valid`, **8 divergențe**. D300-ul nul poartă nota **„Un plătitor depune nul pe luna fără activitate"**, afirmație falsă despre firma pe care o descrie.
 - **condiția de deblocare**: aplicabilitatea se decide **într-un singur loc**, iar generatorul o consultă la intrare — nu doar ecranul. Se închide când `scripts/scan_1b_regimuri.py` întoarce **0 divergențe** «selectorul o declară neaplicabilă, generatorul o produce», **și** când selectorul răspunde pe regim (D101 nu mai apare selectabil pe o firmă micro), probat prin mutație în amândouă direcțiile. *Nu e prag 1: ecranul randează tipurile neaplicabile ca `<option disabled>` cu temeiul în text (`static/js/ecrane/declaratii.js:101-105`), deci divergența trăiește azi doar pe calea de API — clasa R70, cu orbirea detectorului la R80.*
+
+#### R94 — reparată 06.09.2026: aplicabilitatea se decide într-un singur loc
+
+Verificat întâi dacă mai e de actualitate: **da**. `scripts/scan_1b_regimuri.py`, rulat azi înainte
+de orice atingere, dă aceleași **8 divergențe** «selectorul o declară neaplicabilă, generatorul o
+produce» — D300 și D394 pe `tenant_002`, `tenant_006`, `tenant_009`, `tenant_011`.
+
+**Reparat în două locuri, fiindcă boala era că erau două.** Selectorul a învățat **regimul** (micro
+→ D101 nu se datorează), iar poarta `[G1]` din `declaratii_api.genereaza` a trecut de la
+`neaplicabile_forma` la `neaplicabile_selector` — aceeași sursă pe care o citește ecranul. Măsurat
+după, cu același instrument, contra unei instanțe care poartă schimbarea: **8 → 0**.
+
+**O oglindă REFUZATĂ, cu motivul măsurat.** Simetria aparentă ar fi cerut și *profit → D100
+neaplicabil*. E **greșită**: D100 nu e declarația impozitului micro, e „obligațiile de plată la
+bugetul de stat" și poartă **codul 103 = impozit pe profit** (avansul trimestrial) — nomenclatorul
+din `core/d100.py` și gardul `core/test_d100_profit_baza.py`, care calculează baza de profit tocmai
+pentru D100. O firmă pe profit **își datorează** D100-ul; blocarea lui ar fi refuzat o declarație
+reală. Că semaforul nu i-o cere azi rămâne **R95**, deschisă.
+
+**Blocajul stă pe o afirmație de om, și o spune.** Aplicația **nu** cunoaște plafonul de ieșire din
+micro (măsurat: nicio constantă de plafon micro în `core/`), deci nu există fapt care să contrazică
+bifa. Atunci se aplică tiparul deja decis la D390/D301: blocajul rămâne, dar mesajul poartă remediul
+— *„Dacă firma a ieșit din regimul micro, corectează Regimul fiscal la Date firmă."* Regim
+necompletat (`None`) → **nimic** blocat: un gol nu e un răspuns.
+
+**Faptul bate vectorul și în poartă.** `ic_fapt` se trece mai departe, nu se lasă pe implicit: fără
+el, poarta ar fi fost **mai strictă decât ecranul care o anunță**, iar tiparul `tenant_006` (vectorul
+zice fără IC, firma are achiziții intracomunitare reale) ar fi devenit un refuz de generare — exact
+obligația pe care contabilul trebuie să o poată depune.
+
+**Gard**: `core/test_aplicabilitate_o_singura_sursa.py`, 7 probe, aserțiuni pe **egalitate de
+mesaj** cu selectorul (nu `in`): dacă cele două surse se despică din nou, egalitatea cade. Calibrat
+prin **trei** mutații, în ambele direcții de eșec: poarta întoarsă la `neaplicabile_forma` → 2 roșii
+· selectorul care uită regimul → 2 roșii · selectorul care blochează **prea mult** (oglinda greșită)
+→ 1 roșu.
+
+*Efect lateral consemnat*: docstringul lui `scripts/scan_1b_regimuri.py` afirma că regimul „nu
+intră" în selector. Era adevărat dimineața și fals după-amiaza — corectat în același commit.
 
 ### R95 — Semaforul nu are nicio cale prin care să ceară D100 unei firme pe regim de profit
 
