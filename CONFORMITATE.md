@@ -7142,7 +7142,7 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reluări**: 1
 - **stare**: REZOLVATĂ
 - **deschisă pe commit**: `d788a9e8`
-- **rezolvată pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `c02641cb`
 - **ce s-a măsurat, înainte de a repara ceva** *(06.09.2026)*: șase mesaje user-facing vorbesc
   despre periodicitatea TVA, și **nu sunt aceeași clasă**. **Două AFIRMĂ** periodicitatea firmei
   (`declaratii_api.py`, ramurile `lunar` și `trimestrial`); **patru CER câmpul** —
@@ -7201,7 +7201,7 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reluări**: 0
 - **stare**: REZOLVATĂ
 - **deschisă pe commit**: `d788a9e8`
-- **rezolvată pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `c02641cb`
 - **cum se putea întâmpla.** Gardul JS scanează **patru** poziții de afișare: cheia de obiect
   (`eticheta:`, `titlu:` …), atribuirea la `.innerHTML`, primul argument al lui `nav.*`, și nodurile
   de text din template-literale. Etichetele formularelor de operațiuni nu trăiesc în niciuna: sunt
@@ -7263,7 +7263,7 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reluări**: 0
 - **stare**: REZOLVATĂ
 - **deschisă pe commit**: `d788a9e8`
-- **rezolvată pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `c02641cb`
 - **cum s-a găsit**: scriind modulul lui R167. Cele două temeiuri noi erau citate verbatim din
   corpus — și **nu apăreau în inventar**. `_temeiuri()` culege obiectele `Temei` din `core/common`,
   atât.
@@ -7298,7 +7298,7 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reluări**: 0
 - **stare**: REZOLVATĂ
 - **deschisă pe commit**: `d788a9e8`
-- **rezolvată pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `c02641cb`
 - **cum s-a găsit**: proba de etichete a lui R168 a raportat **34** de formulare, iar proba lotului
   13, rulată în aceeași zi pe aceeași instanță, **32**. Două instrumente, două cifre, aceeași lume.
 - **ce s-a măsurat**: `REGISTRU` din `operatiuni_ecran.js` are **34** de intrări. Enumerarea probei
