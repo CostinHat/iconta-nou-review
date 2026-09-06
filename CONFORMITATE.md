@@ -7330,7 +7330,7 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reluări**: 0
 - **stare**: REZOLVATĂ
 - **deschisă pe commit**: `d788a9e8`
-- **rezolvată pe commit**: `d2874400`
+- **rezolvată pe commit**: `bde251dc`
 - **cum a apărut**: nu prin temeiuri noi. `scan_citate` culegea numai din `core/common`, iar decizia
   73 mută temeiurile în modulul REGULII — deci domeniul se micșora cu fiecare temei pus **corect**.
   Lărgit (**R169**): **36 → 60** de citări. Cele 24 nou-văzute erau acolo dinainte; nimeni nu le
