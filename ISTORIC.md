@@ -8106,3 +8106,32 @@ măsoară numai valorile din registrul de cote, iar ce s-a reparat trăiește î
 **R171 rămâne deschisă pe cealaltă jumătate**: cele 12 perechi au acum o **frecvență**, dar nu un
 **prag** — `fara_prag` stă la 37, fiindcă valorile nu ajung într-un modul de declarație, deci n-au
 consecință. *Localizatorul de articol și-a rezolvat jumătatea; cealaltă cere graful de consumatori.*
+
+
+## 06.09.2026 (3) — Pragul de reverificare se stabilește pe CONSUMATOR, și R171 se închide
+
+**Trei cereri, toate decizii ale lui Costin la cerințele raportului precedent.**
+
+**(1) Propoziția veche s-a pus înapoi**, ca a doua, după criteriul art. 322, în **amândouă**
+ecranele. Gardul de egalitate rămâne, deci nu se putea pune într-unul singur.
+
+**(2) `OMFP 3254/2017 art. 1-6` s-a despicat în ȘASE citări**, una per articol. Nu s-a ales „articolul
+care poartă regula" — *ar fi o interpretare, iar interpretările au produs jumătate din corecțiile
+ultimelor două săptămâni*. Textele s-au extras din corpus și s-au verificat verbatim **înainte** de a
+fi scrise; scriptul refuza să scrie altfel. Cu asta, perechile NEGĂSIT au ajuns la **zero**.
+
+**(3) Graful „cine consumă valoarea"**, ca temă proprie. Măsurat întâi, fiindcă „37 fără prag"
+ascundea două teme: **19** blocate pe consecință, **23** pe frecvență. Cauza celor 19 — a treia oară
+în aceeași zi: consecința se calcula numai prin lanțul registrului de cote, iar temeiurile puse după
+decizia 73 trăiesc în afara lui. `core/consumatori_temei.py` merge pe celălalt drum: *temei → numele
+lui în modul → funcțiile care îl citesc → cine le cheamă*.
+
+**Pragul nu s-a ghicit**: rămâne tabelul lui Costin. S-a schimbat de unde vine consecința.
+`fara_prag` **42 → 23**, toate clasele `*/NECUNOSCUT` au dispărut, citări verbatim 26 → **32**.
+
+**Un gard a cerut o decizie și avea dreptate.** „10 valori ar fi verificate MAI RAR" — măsurat pe
+populații: în registru, zero. Cele 10 sunt în afara lui, unde podeaua n-a ajuns niciodată. Gardul își
+scrie acum premisa, în loc să-și coboare pragul.
+
+**R171 se închide. R173 se deschide** pe cele 23 rămase, blocate pe frecvență, cu cele trei cauze ale
+lor — 10 documente fără niciun marcaj de consolidare, 8 temeiuri fără articol, 5 cioturi.

@@ -84,7 +84,7 @@ const VECTOR = [
   // `core/test_ajutor_periodicitate_tva.py` compara cele doua texte RANDATE si pica daca diverg.
   { k: "tip_decont", e: "Periodicitate TVA", tip: "select",
     opt: [["", "\u2014"], ["lunar", "Lunar"], ["trimestrial", "Trimestrial"]],
-    aj: "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții intracomunitare de bunuri — art. 322 alin. 2." },
+    aj: "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții intracomunitare de bunuri — art. 322 alin. 2. Obligatorie doar la plătitorii de TVA. Decide dacă D300/D394 se depun lunar sau trimestrial." },
   { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Achizi\u021bii/livr\u0103ri din UE. Decide D390 (VIES)." },

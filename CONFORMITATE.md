@@ -7328,8 +7328,9 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   care `articol_in_act` îl citește, ori motivul scris de ce nu poate avea unul; și când cele
   nou-văzute primesc o clasă de reverificare, nu `NECUNOSCUT`.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `d788a9e8`
+- **rezolvată pe commit**: `d2874400`
 - **cum a apărut**: nu prin temeiuri noi. `scan_citate` culegea numai din `core/common`, iar decizia
   73 mută temeiurile în modulul REGULII — deci domeniul se micșora cu fiecare temei pus **corect**.
   Lărgit (**R169**): **36 → 60** de citări. Cele 24 nou-văzute erau acolo dinainte; nimeni nu le
@@ -7402,6 +7403,58 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   4. **Cele trei CIOT vechi** rămân pe cauzele lor: `Ordin 1604/2025` (formă de Monitor Oficial,
      R111) și `OUG 156/2024 art. LXVI` ×2 (corpus adus parțial, R107).
 
+#### R171 — a doua jumătate, 06.09.2026: pragul se stabilește pe CONSUMATOR
+
+Cerută de Costin ca temă proprie, nu ca extensie a lui `articol_in_act`: *„construiește graful «cine
+consumă valoarea» … pragul se stabilește după, pe baza consumatorului. Nu ghici pragul înainte de a
+ști consumatorul."*
+
+- **ce s-a măsurat întâi**, fiindcă „37 fără prag" ascundea două teme: din 42 de temeiuri fără prag,
+  **19** erau blocate pe **consecință** (nimic din cod nu atinge valoarea) și **23** pe **frecvență**
+  (articolul nu se poate confrunta). Numai primele sunt treaba unui graf de consumatori.
+- **cauza celor 19, și e a treia oară azi**: consecința se calcula NUMAI prin lanțul
+  `articol → cheie din COTE → funcții care cheamă cota()`. Un temei care nu e în registrul de cote
+  n-are cheie, deci lanțul se rupe **la primul pas**. Toate cele 19 trăiesc în modulul regulii —
+  adică exact acolo unde le pune **decizia 73**. *Aceeași formă de orbire ca la R169, în al treilea
+  instrument: cu cât repo-ul urmează mai bine regula, cu atât graful vede mai puțin.*
+- **construit**: `core/consumatori_temei.py` — `temei → numele lui în modul → funcțiile care îl
+  citesc → cine le cheamă`, pe graful de apeluri din `graf_temei` (același pe care stă `depinde_de`).
+  Verdict `DEPUS` / `CALCULAT` / `NECUNOSCUT`, cu aceleași înțelesuri.
+- **și graful s-a corectat singur, la prima rulare**: potrivea UN nume — cel din calea inventarului
+  — iar `registru_evidenta_fiscala` ține același obiect și în `TEMEI` (dicționarul) și în
+  `TEMEI_PROFIT` (constanta, cea pe care o citește codul). Rezultatul: `NECUNOSCUT` pe o valoare cu
+  doi cititori. *O sub-aproximare arată exact ca o absență.* Acum se urmăresc toate numele legate de
+  același obiect, prin identitate.
+- **pragul NU s-a ghicit**: rămâne tabelul lui Costin, pe perechea (frecvență, consecință). S-a
+  schimbat doar de unde vine consecința.
+- **ce s-a mutat**: `fara_prag` **42 → 23** · toate clasele `*/NECUNOSCUT` au **dispărut**
+  (`STABIL/NECUNOSCUT` 10→0, `VOLATIL/NECUNOSCUT` 7→0, `MISCATOR/NECUNOSCUT` 2→0) · perechi
+  (act, articol) **NEGĂSIT 0**, GĂSIT 46 → **52** · citări verbatim 26 → **32**.
+- **volumul de alerte: 0 → 0**, și motivul, iar: canalul (`cote_neconfirmate`) citește cheile din
+  `COTE`, iar cele 19 trăiesc în afara lui. **Măsurat ce ar însemna dacă s-ar lega**: dintre cele 42
+  cu prag și cu dată de confirmare, **13 sunt depășite azi — toate 13 din registrul de cote**, adică
+  chiar cadența lunară VOLATIL/DEPUS, confirmată ca decizie pe 01.09. Din cele 19 noi: **zero**.
+  *Legarea canalului ar costa azi 0 alerte* — dar e o schimbare de ce pleacă pe email, deci se cere,
+  nu se face.
+- **un gard a cerut o decizie, și avea dreptate să o ceară**:
+  `test_nicio_valoare_nu_devine_verificata_MAI_RAR` a picat cu *„10 valori ar fi verificate MAI RAR"*.
+  Măsurat pe populații: **în registrul de cote, `mai_larg` = 0** — premisa gardului ține și dinții
+  lui rămân întregi. Cele 10 sunt **în afara** registrului, toate `STABIL/CALCULAT` → 12 luni, iar
+  podeaua globală nu le-a acoperit niciodată: pentru ele „12 luni" înseamnă *primesc un prag pentru
+  prima oară*, nu *verificate mai rar decât azi*. Gardul își numește acum premisa și compară pe
+  populația căreia i se aplică; numărul din afară e pinat separat, ca o creștere să ceară o decizie.
+- **o urmă de intenție, găsită de graf și predată clasei ei**: `d406.TEMEI_JURNALE` e definit și
+  **nu-l citește nicio funcție de producție** — doar un test. Nu se repară aici: unde ar trebui citat
+  e o decizie a lui `d406`, iar clasa e deja deschisă la **R23**.
+- **gard**: `core/test_consumatori_temei.py` — șapte probe, calibrare în ambele direcții (un temei
+  care ajunge în declarație → DEPUS cu `d100.py` în lanț · unul citit fără declarație → CALCULAT ·
+  unul inexistent → NECUNOSCUT · căile din registrul de cote **nu** trec pe aici, ca să nu existe
+  două surse pentru aceeași întrebare) și **proprietatea**: *orice temei cu frecvență citibilă are un
+  consumator numit*. Mutație pe cod real: scoțând urmărirea aliasurilor, cad două teste.
+- **ce a rămas, și de ce e altă restanță**: cele **23** blocate pe frecvență — 10 documente care nu
+  consemnează nicio modificare, 8 temeiuri fără articol, 5 cioturi. Nu se rezolvă cu un graf de
+  consumatori, iar amestecarea lor aici ar fi ținut restanța deschisă pe o temă care nu e a ei.
+  **R173.**
 
 ### R172 — «Date firmă» cerea periodicitatea TVA fără să spună după ce se alege
 
@@ -7445,6 +7498,34 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   cote** — interdicția 1, instanța consemnată pe `migrare.js`. Acum trăiește în două locuri care nu
   pot diverge **între ele**, dar tot nu se poate confrunta cu nimic. Rămâne ce scria acolo: ori
   cheia intră în registru, ori textul pierde cifra.
+
+
+### R173 — Douăzeci și trei de temeiuri n-au prag fiindcă nu li se poate citi FRECVENȚA
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · `core/reverificare.py` · corpusul din `anaf_surse/`
+- **ce blochează**: pragul de reverificare pe 23 de temeiuri. Pragul cere **două** axe; consecința
+  se știe acum pentru toate (R171), frecvența nu.
+- **condiția de deblocare**: se închide când fiecare din cele 23 ori primește o frecvență citibilă,
+  ori are scris de ce nu poate avea una — pe cauza ei, nu pe un total.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `d2874400`
+- **cele trei cauze, măsurate** *(06.09.2026)*:
+  1. **10 — documentul nu consemnează NICIO modificare**, nicăieri în corpul lui. Atunci „zero
+     marcaje în articol" nu deosebește *nemodificat* de *nu se consemnează aici*, iar a-l citi ca
+     STABIL ar însemna verificat mai rar dintr-o sursă care nu poate răspunde. Refuzul e corect;
+     ce lipsește e o **a doua sursă** pentru acele acte.
+  2. **8 — temeiul n-are articol.** Aceeași formă ca `OMFP 3254/2017 art. 1-6`, despicat azi: o
+     citare fără localizator nu se poate confrunta. Se repară **în temei**, nu în instrument.
+  3. **5 — ciot**: `Ordin 1604/2025` (formă de Monitor Oficial, **R111**) și `OUG 156/2024 art. LXVI`
+     ×2 (corpus adus parțial, **R107**), plus `OMFP 2634/2015 anexa 1` ×2 (actul nu se
+     auto-identifică). Fiecare are deja restanța ei; aici se numără, nu se dublează.
+- **de ce se deschide separat, în loc să țină R171 deschisă**: R171 era despre **domeniul văzut** și
+  despre **consumator**; amândouă s-au închis. Cele 23 sunt blocate pe cealaltă axă, cu trei cauze
+  care n-au nimic în comun cu ea. *O restanță ținută deschisă pe o temă care nu e a ei nu se mai
+  poate închide niciodată.*
 
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)

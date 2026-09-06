@@ -7,7 +7,7 @@
 //   - ansamblul = grupele din registru (/ansamblu, SURSA UNICA genereaza_grupe_functii.repartizeaza)
 //     + coloana `ajutor` (semn "?" contextual pe functionalitatile care au ajutor scris).
 import { api, esc, semnAjutor } from "../api.js?v=1dccbc985b";
-import { STRATURI } from "./migrare.js?v=05a5b55996";
+import { STRATURI } from "./migrare.js?v=79b855e2d6";
 
 function _firHTML() {
   return STRATURI.map((st) =>

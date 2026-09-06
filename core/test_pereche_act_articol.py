@@ -65,7 +65,10 @@ from core import scan_pereche_act_articol as S  # noqa: E402
 #: `norme art.19` (×1). A rămas **una singură**, și e de alt fel: `OMFP 3254/2017 1-6` nu e nici
 #: punct, nici normă — e un **interval** de articole. Actul are „Articolul 1"…„Articolul 10";
 #: citarea numește șase deodată. Se repară în temei, nu în instrument — v. R171.
-CLICHET_NEGASIT = 1
+#: **1 → 0 la 06.09.2026.** Ultima pereche negăsită, `OMFP 3254/2017 art. 1-6`, s-a despicat în
+#: ȘASE citări, una per articol (decizia lui Costin: *„nu se alege un singur articol «care poartă
+#: regula» — ar fi o interpretare"*). **Zero, deci orice apariție e o regresie.**
+CLICHET_NEGASIT = 0
 #: Ce a rămas după convenție: **2**, amândouă `OUG 156/2024 art. LXVI` — articol care CHIAR e al
 #: ordonanței, într-un document adus ca ciot. Problemă de **corpus**, nu de temei: **R107**.
 #:
@@ -105,14 +108,14 @@ CLICHET_CIOT = 5
 #: 24 → **34** la 06.09.2026: lărgirea domeniului a adus și confirmări, nu doar necunoscute.
 #: Pragul de jos se ridică la ce s-a câștigat, altfel câștigul se poate pierde tăcut.
 #: 34 → **46** la 06.09.2026 (R171): douăsprezece perechi au trecut din „nu pot spune" în GĂSIT.
-PRAG_CONFIRMATE = 46
+#: 46 → **52** la 06.09.2026: cele șase citări ale lui OMFP 3254/2017, fiecare confruntabilă.
+PRAG_CONFIRMATE = 52
 
 #: Perechile negăsite **cunoscute** — IDENTITĂȚILE, nu numărul. Clichetul pe număr n-ar vedea o
 #: pereche reparată și alta stricată în aceeași tură. Cele patru de aici sunt cele scoase la iveală
 #: de lărgirea domeniului (R169), toate din forma localizatorului; se închid prin **R171**.
-NEGASITE_CUNOSCUTE = {
-    ("OMFP 3254/2017", "1-6"),          # un INTERVAL de articole, nu un articol — R171
-}
+#: Goală — iar goliciunea ei e chiar aserțiunea.
+NEGASITE_CUNOSCUTE = set()
 
 
 def _inv():

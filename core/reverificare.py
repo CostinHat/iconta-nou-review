@@ -133,7 +133,7 @@ def frecventa(date_mod, azi=None):
     return "MISCATOR" if len(in_fereastra) <= 2 else "VOLATIL"
 
 
-def consecinta(tip, nr, an, art):
+def consecinta(tip, nr, an, art, cale=None, temei=None):
     """Clasa B, din unde ajunge valoarea.
 
     `DEPUS` dacă atinge un modul de declarație · `CALCULAT` dacă atinge cod, dar nicio declarație ·
@@ -141,19 +141,39 @@ def consecinta(tip, nr, an, art):
     expirată, iar tăcerea nu e „inofensiv".
 
     *`INFORMATIV` nu se atribuie niciodată de aici; vezi antetul modulului.*
+
+    **DOUĂ DRUMURI, în ordine** *(06.09.2026, R171)*:
+      1. `dependenti_act` — lanțul `articol → cheie din COTE → funcții care cheamă cota()`. Merge
+         numai pentru valorile din registrul de cote.
+      2. `consumatori_temei` — `temei → numele lui în modul → funcții care îl citesc → cine le
+         cheamă`. Pentru temeiurile care trăiesc în **modulul regulii**, unde le pune decizia 73.
+
+    Al doilea drum n-a fost o îmbunătățire, a fost o gaură: **19 din 42** de temeiuri fără prag
+    ieșeau NECUNOSCUT *prin construcție*, fiindcă primul lanț se rupe la primul pas pentru orice
+    temei din afara lui `COTE`. Aceeași formă de orbire ca la R169, în alt instrument.
+
+    **Pragul nu se ghicește de aici.** Funcția asta răspunde doar la „unde ajunge valoarea"; pragul
+    rămâne tabelul din `PRAGURI`, pe perechea (frecvență, consecință). Fără consumator cunoscut,
+    consecința rămâne `NECUNOSCUT` **declarat**, iar valoarea rămâne fără prag.
     """
     from core import dependenti_act as da
     try:
         d = da.dependenti(tip=tip, nr=nr, an=an, art=art) or {}
     except Exception:
-        return "NECUNOSCUT"
+        d = {}
     fn = d.get("functii") or []
-    if not fn:
-        return "NECUNOSCUT"
-    return "DEPUS" if any(_RE_MODUL_DECLARATIE.match(f) for f in fn) else "CALCULAT"
+    if fn:
+        return "DEPUS" if any(_RE_MODUL_DECLARATIE.match(f) for f in fn) else "CALCULAT"
+    if cale:
+        from core import consumatori_temei as ct
+        try:
+            return ct.consumatori(cale, temei)["verdict"]
+        except Exception:  # noqa: BLE001
+            return "NECUNOSCUT"
+    return "NECUNOSCUT"
 
 
-def categorie(t, azi=None):
+def categorie(t, azi=None, cale=None):
     """{frecventa, consecinta, prag_luni, motiv, articol, document} pentru un `Temei`.
 
     `prag_luni` e `None` când oricare axă e `NECUNOSCUT`. **Nu se cade pe pragul global** — asta ar
@@ -184,7 +204,7 @@ def categorie(t, azi=None):
             "răspunde")
         return r
     r["frecventa"] = frecventa(marcaje_art, azi)
-    r["consecinta"] = consecinta(tip, nr, an, art)
+    r["consecinta"] = consecinta(tip, nr, an, art, cale=cale, temei=t)
     if r["consecinta"] == "NECUNOSCUT":
         r["motiv"] = "nimic din cod nu atinge valoarea — consecința unei expirări nu se poate numi"
         return r
@@ -198,7 +218,7 @@ def inventar(azi=None):
     out = []
     for cale, t, _v in scan_citate.inventar():
         r = {"cale": cale, "temei": str(t)}
-        r.update(categorie(t, azi))
+        r.update(categorie(t, azi, cale=cale))
         out.append(r)
     return out
 

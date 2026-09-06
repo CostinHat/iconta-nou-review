@@ -67,23 +67,91 @@ TEMEI_PROFIT = Temei(
                 "aferente se efectueaza pe natura economica, prin totalizarea acestora pe trimestru "
                 "si/sau an fiscal, dupa caz"))
 
-TEMEI_PF = Temei(
-    "OMFP", 3254, 2017, art="1-6",
-    data_in="2018-01-05", verificat_la="2026-08-30", de_cine="Code/Costin", nivel_sursa="MO",
-    url="anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt",
-    text_citat=("Registrul de evidenta fiscala are ca scop inscrierea informatiilor care stau la "
-                "baza determinarii venitului net anual/pierderii nete anuale cuprins/cuprinse in "
-                "Declaratia privind venitul realizat din Romania. Registrul de evidenta fiscala se "
-                "completeaza anual cu totalul veniturilor si totalul cheltuielilor efectuate in "
-                "scopul realizarii acestora. Registrul se tine pe fiecare sursa de venit din cadrul "
-                "fiecarei categorii de venit. TVA colectata nu reprezinta venit si nu se "
-                "inregistreaza in Registrul de evidenta fiscala. TVA dedusa nu reprezinta "
-                "cheltuiala si nu se inregistreaza in Registrul de evidenta fiscala. Nu se "
-                "inregistreaza cheltuielile care depasesc limitele prevazute la art. 68 alin. (5), "
-                "cele efectuate in conditiile art. 68 alin. (7), si nici contributiile sociale "
-                "obligatorii"))
+#: [R171, 06.09.2026] ȘASE citări, una per articol — nu una singură pe intervalul „1-6".
+#:
+#: **De ce s-a despicat.** `art="1-6"` nu e un articol: e un interval. `articol_in_act` caută
+#: „Articolul 1-6", care nu există, deci perechea (act, articol) ieșea NEGĂSIT — singura rămasă
+#: după ce instrumentul a învățat puncte și norme. *Verdictul era în direcția sigură, motivul era
+#: fals: actul le conține pe toate șase.*
+#:
+#: **De ce nu s-a ales unul singur.** Varianta „articolul care poartă regula" ar fi fost o
+#: INTERPRETARE — iar interpretările au produs jumătate din corecțiile ultimelor două săptămâni
+#: (Costin, 06.09.2026). Fiecare articol își poartă propriul text, extras din corpus și verificat
+#: verbatim, nu rescris din memorie.
+TEMEIURI_PF = (
+    Temei(
+        "OMFP", 3254, 2017, art="1",
+        data_in="2018-01-05", verificat_la="2026-08-30", de_cine="Code/Costin",
+        nivel_sursa="MO", url="anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt",
+        text_citat=("(1) Contribuabilii prevăzuți la titlul IV din Legea nr. 227/2015 privind Codul fiscal , cu "
+                "modificările și completările ulterioare, denumită în continuare Codul fiscal, pentru care "
+                "venitul net anual se stabilește în sistem real, în baza datelor din contabilitate, au "
+                "obligația să completeze Registrul de evidență fiscală în conformitate cu prevederile "
+                "prezentului ordin. Registrul de evidență fiscală se completează și de către contribuabilii "
+                "prevăzuți la art. 60 pct. 1 lit. a) și d) din Codul fiscal .")),
+    Temei(
+        "OMFP", 3254, 2017, art="2",
+        data_in="2018-01-05", verificat_la="2026-08-30", de_cine="Code/Costin",
+        nivel_sursa="MO", url="anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt",
+        text_citat=("(1) Registrul de evidență fiscală are ca scop înscrierea informațiilor care stau la baza "
+                "determinării venitului net anual/pierderii nete anuale cuprins/cuprinse în Declarația "
+                "privind venitul realizat din România.")),
+    Temei(
+        "OMFP", 3254, 2017, art="3",
+        data_in="2018-01-05", verificat_la="2026-08-30", de_cine="Code/Costin",
+        nivel_sursa="MO", url="anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt",
+        text_citat=("(1) Registrul de evidență fiscală se completează anual cu totalul veniturilor și totalul "
+                "cheltuielilor efectuate în scopul realizării acestora, în anul curent, pentru întreaga "
+                "perioadă de activitate desfășurată în anul fiscal precedent, până la data depunerii "
+                "Declarației privind venitul realizat din România, dar nu mai târziu de termenul de depunere "
+                "stabilit de lege.")),
+    Temei(
+        "OMFP", 3254, 2017, art="4",
+        data_in="2018-01-05", verificat_la="2026-08-30", de_cine="Code/Costin",
+        nivel_sursa="MO", url="anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt",
+        text_citat=("(1) Înregistrarea venitului brut anual în Registrul de evidență fiscală se efectuează în "
+                "funcție de natura activității, pe fiecare sursă din cadrul fiecărei categorii de venit. (2) "
+                "Constituie venit brut anual totalul veniturilor în bani și în natură realizate în cadrul "
+                "unui an fiscal, altele decât cele prevăzute la art. 62 și, respectiv, la art. 68 alin. (3) "
+                "din Codul fiscal .")),
+    Temei(
+        "OMFP", 3254, 2017, art="5",
+        data_in="2018-01-05", verificat_la="2026-08-30", de_cine="Code/Costin",
+        nivel_sursa="MO", url="anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt",
+        text_citat=("(1) Cheltuielile deductibile anual se evidențiază în Registrul de evidență fiscală, după "
+                "caz, în funcție de natura acestora, pe fiecare sursă din fiecare categorie de venit, astfel "
+                "încât să corespundă cu cele înscrise în Declarația privind venitul realizat din România sau "
+                "în Declarația anuală de venit pentru asocierile fără personalitate juridică și entități "
+                "supuse regimului transparenței fiscale, după caz.")),
+    Temei(
+        "OMFP", 3254, 2017, art="6",
+        data_in="2018-01-05", verificat_la="2026-08-30", de_cine="Code/Costin",
+        nivel_sursa="MO", url="anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt",
+        text_citat=("Registrul de evidență fiscală se modifică ori de câte ori se constată diferențe cu privire "
+                "la veniturile și/sau cheltuielile înregistrate inițial, până la data depunerii declarației "
+                "rectificative.")),
+)
 
-TEMEI = {"profit": TEMEI_PROFIT, "venituri_pf": TEMEI_PF}
+def _citare_pf():
+    """Citarea din PROZA refuzurilor, DERIVATĂ din cele șase — nu scrisă a doua oară.
+
+    NU e un `Temei`: intervalul „art. 1-6" e adevărat ca trimitere (registrul e reglementat de toate
+    șase), dar nu e un localizator — un `Temei` cu `art="1-6"` ar fi o afirmație structurată falsă.
+
+    **De ce derivată, și nu un literal.** Prima formă era un șir scris de mână. Graful de consumatori
+    (`core/consumatori_temei.py`) a arătat imediat ce înseamnă asta: cele șase citări structurate
+    aveau **zero cititori**, deci consecința lor ieșea NECUNOSCUT — iar proza putea începe să spună
+    altceva decât ele, fără ca nimic să cadă. *Două adevăruri despre același lucru, iar al doilea
+    îmbătrânește singur.* Acum textul nu poate spune decât ce spun obiectele.
+    """
+    p, u = TEMEIURI_PF[0], TEMEIURI_PF[-1]
+    return "%s %s/%s art.%s-%s" % (p.tip, p.nr, p.an, p.art, u.art)
+
+
+#: Același șir ca înainte, caracter cu caracter — dar acum se citește din cele șase.
+TEMEI_PF_CITARE = _citare_pf()
+
+TEMEI = {"profit": TEMEI_PROFIT, "venituri_pf": TEMEIURI_PF}
 
 #: Cele SAPTE categorii pe care norma le enumera pentru varianta pe profit, plus a opta („orice
 #: informatie cuprinsa in declaratia fiscala"). Ordinea e cea din norma, nu una aleasa de mine.
@@ -212,27 +280,27 @@ def valideaza_pf(date):
         raise InregistrareIncompletaPF(
             "categorie de venit necunoscuta %r; nomenclatorul (D220, categ_venit) e inchis: %s"
             % (date.get("categorie"), ", ".join(str(k) for k in sorted(CATEGORII_VENIT_PF))),
-            camp="categorie", temei=str(TEMEI_PF))
+            camp="categorie", temei=TEMEI_PF_CITARE)
     if date.get("mod_venit_net") not in MOD_VENIT_NET:
         raise InregistrareIncompletaPF(
             "mod de stabilire a venitului net necunoscut %r" % date.get("mod_venit_net"),
-            camp="mod_venit_net", temei=str(TEMEI_PF))
+            camp="mod_venit_net", temei=TEMEI_PF_CITARE)
     for c in ("sursa_venit", "venit_brut"):
         if date.get(c) is None or (isinstance(date.get(c), str) and not date[c].strip()):
             raise InregistrareIncompletaPF(
-                "Registrul cere «%s», iar campul e gol. Norma: %s" % (c, TEMEI_PF),
-                camp=c, temei=str(TEMEI_PF))
+                "Registrul cere «%s», iar campul e gol. Norma: %s" % (c, TEMEI_PF_CITARE),
+                camp=c, temei=TEMEI_PF_CITARE)
     cer = cheltuielile_se_inscriu(date["mod_venit_net"], date["categorie"])
     ch = date.get("cheltuieli_deductibile")
     if cer == "da" and (ch is None or (isinstance(ch, str) and not ch.strip())):
         raise InregistrareIncompletaPF(
             "venitul net se stabileste in sistem real, deci cheltuielile deductibile se inscriu. "
-            "Zero e un raspuns valid («nu s-au avut cheltuieli»); gol nu e. Norma: %s" % TEMEI_PF,
-            camp="cheltuieli_deductibile", temei=str(TEMEI_PF))
+            "Zero e un raspuns valid («nu s-au avut cheltuieli»); gol nu e. Norma: %s" % TEMEI_PF_CITARE,
+            camp="cheltuieli_deductibile", temei=TEMEI_PF_CITARE)
     if cer == "nu" and ch not in (None, "", 0, "0"):
         raise InregistrareIncompletaPF(
             "la norma de venit nu se inscriu cheltuieli in registru (art. 1 alin. (2)); a fost data "
-            "valoarea %r" % ch, camp="cheltuieli_deductibile", temei=str(TEMEI_PF))
+            "valoarea %r" % ch, camp="cheltuieli_deductibile", temei=TEMEI_PF_CITARE)
     return cer
 
 
@@ -326,7 +394,7 @@ def registru_pf(conn, schema, an):
         an=an, luna=None, unde=Unde("registru", "evidenta_fiscala_pf"),
         **{
         "varianta": "venituri_pf",
-        "temei": str(TEMEI_PF),
+        "temei": TEMEI_PF_CITARE,
         "model_elidat": dict(MODEL_ANEXA1_ELIDAT),
         "categorii": {str(k): v for k, v in CATEGORII_VENIT_PF.items()},
         "moduri_venit_net": {str(k): v for k, v in MOD_VENIT_NET.items()},

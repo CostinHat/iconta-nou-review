@@ -453,7 +453,8 @@ async function formularVectorFirma(corp, nav, f) {
         <div class="vf-eticheta">Periodicitate decont TVA <span class="oblig">*</span></div>
         <span class="camp-ajutor">Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul
           precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții
-          intracomunitare de bunuri — art. 322 alin. 2.</span>
+          intracomunitare de bunuri — art. 322 alin. 2.
+          Obligatorie doar la plătitorii de TVA. Decide dacă D300/D394 se depun lunar sau trimestrial.</span>
         <div class="vf-optiuni" id="vf-decont">
           <button class="vf-opt ${decont==="lunar"?"vf-on":""}" data-v="lunar">Lunar</button>
           <button class="vf-opt ${decont==="trimestrial"?"vf-on":""}" data-v="trimestrial">Trimestrial</button>

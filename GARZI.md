@@ -7563,11 +7563,49 @@ OMFP 2634/2015 rămâne CIOT deși fișierul se numește așa.
 
 Efect măsurat: perechi NEGĂSIT **11 → 1**, CIOT **7 → 5**, GĂSIT **34 → 46**; alerte **0 → 0**.
 
+## 06.09.2026 (3) — Al treilea instrument cu domeniul rămas în urma propriei politici
+
+### `core/consumatori_temei.py` + `core/test_consumatori_temei.py` (R171, a doua jumătate)
+
+Consecința unei valori — *unde ajunge* — se calcula numai prin lanțul `articol → cheie din COTE →
+funcții care cheamă cota()`. Un temei care nu e în registrul de cote n-are cheie, deci lanțul se rupe
+**la primul pas**, iar consecința iese `NECUNOSCUT` **prin construcție**. Măsurat: **19 din 42** de
+temeiuri fără prag. Toate scrise după **decizia 73**, care cere ca temeiul să stea în modulul regulii.
+
+*A treia oară azi, în al treilea instrument: cu cât repo-ul urmează mai bine propria regulă, cu atât
+graful vede mai puțin.* Prima dată la `scan_citate` (R169), a doua la `scan_pereche_act_articol` care
+se hrănește din el, acum la consecință.
+
+**Proprietatea apărată e una singură**, și e mai tare decât un clichet: *orice temei cu frecvență
+citibilă are un consumator numit.* Un temei care n-are ori nu e folosit de nimeni (urmă de intenție,
+R23), ori graful nu-l vede — și amândouă trebuie să cadă în suită, nu peste șase luni într-o cifră.
+
+**Calibrare, în ambele direcții**: un temei care ajunge în declarație → `DEPUS`, cu `d100.py` în lanț ·
+unul citit fără declarație → `CALCULAT` · unul inexistent → `NECUNOSCUT` · căile din registrul de cote
+**nu** trec pe aici (altfel ar exista două surse pentru aceeași întrebare). **Mutație pe cod real**:
+scoțând urmărirea aliasurilor, cad două teste.
+
+### Gardul care a cerut o decizie, și avea dreptate
+
+`test_nicio_valoare_nu_devine_verificata_MAI_RAR` a picat cu *„10 valori ar fi verificate MAI RAR"*.
+N-am coborât nimic: am măsurat pe populații. **În registrul de cote, `mai_larg` = 0** — premisa
+gardului ține, dinții rămân. Cele 10 sunt în **afara** registrului, iar podeaua globală nu le-a
+acoperit niciodată: pentru ele „12 luni" înseamnă *primesc un prag pentru prima oară*.
+
+Gardul își scrie acum premisa și compară pe populația căreia i se aplică; numărul din afară e pinat
+separat, ca o creștere să ceară o decizie de cadență. *Un gard care compară cu o podea trebuie să
+verifice întâi că podeaua acoperea populația.*
+
+### Ce a mai prins graful
+
+`d406.TEMEI_JURNALE` — definit, citat de un test, **necitit de nicio funcție de producție**. Nu se
+repară aici (unde ar trebui citat e o decizie a lui `d406`); clasa e deschisă la **R23**.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**522 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**523 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 502
+### `core/` — 503
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7663,6 +7701,7 @@ Efect măsurat: perechi NEGĂSIT **11 → 1**, CIOT **7 → 5**, GĂSIT **34 →
 - `core/test_conflicte_sursa.py` — GARDĂ pentru partea deschisă a interdicției 58 — conflictele NEÎNREGISTRATE între surse.
 - `core/test_conformitate.py` — GARDĂ: fiecare interdicție din plan are secțiune în CONFORMITATE.md, completă. (22.08.2026)
 - `core/test_constante_nesursate.py` — CLICHET (20.08.2026): clasa constantelor fiscale nesursate din PRODUCȚIE nu mai crește.
+- `core/test_consumatori_temei.py` — GARD [06.09.2026, R171]: graful „cine consumă valoarea" pentru temeiurile din afara registrului.
 - `core/test_cont_din_corp_normalizat.py` — core/test_cont_din_corp_normalizat.py — un cont luat din CORPUL CERERII trece prin strip().
 - `core/test_cont_venit_linie.py` — core/test_cont_venit_linie.py — #11: contul de venit stabilit PE LINIE de factura.
 - `core/test_contare_automata.py` — GARDA contării automate a facturii — blocurile DDD (cheia), EEE (emisă), FFF (primită).

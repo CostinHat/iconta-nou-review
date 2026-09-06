@@ -31,7 +31,9 @@ from core import scan_citate
 # *Cifra veche nu era greșită; măsura o lume mai mică decât credea că măsoară, și se micșora cu
 # fiecare temei mutat corect.* Cele 34 nevăzute nu erau datorie ascunsă — sunt de altă formă
 # (parafrază cu localizator), exact cazul descris în antetul scanerului.
-VERBATIM_BASELINE = 26
+#: 26 → **32** la 06.09.2026: cele șase citări ale lui OMFP 3254/2017, extrase din corpus și
+#: verificate verbatim ÎNAINTE de a fi scrise în modul (scriptul refuza să scrie altfel).
+VERBATIM_BASELINE = 32
 
 
 @pytest.fixture(scope="module")

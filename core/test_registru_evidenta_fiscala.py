@@ -51,7 +51,13 @@ def test_cele_doua_variante_au_temeiuri_DIFERITE():
     assert set(_ref.VARIANTE) == {"profit", "venituri_pf"}
     assert set(_ref.TEMEI) == set(_ref.VARIANTE)
     assert _ref.TEMEI["profit"].tip == "HG" and _ref.TEMEI["profit"].nr == 1
-    assert _ref.TEMEI["venituri_pf"].tip == "OMFP" and _ref.TEMEI["venituri_pf"].nr == 3254
+    # [R171] Varianta B are ȘASE citări, una per articol — nu una pe intervalul „1-6". Se cere
+    # și numărul, și că articolele sunt exact 1..6: o listă scurtată ar trece pe „toate sunt OMFP".
+    pf = _ref.TEMEI["venituri_pf"]
+    assert [t.art for t in pf] == ["1", "2", "3", "4", "5", "6"], [t.art for t in pf]
+    assert all(t.tip == "OMFP" and t.nr == 3254 for t in pf)
+    # citarea din proza refuzurilor se DERIVA din ele, nu se scrie a doua oara
+    assert _ref.TEMEI_PF_CITARE == "OMFP 3254/2017 art.1-6"
 
 
 def test_elidarea_modelului_din_anexa1_e_CONSEMNATA_nu_ascunsa():

@@ -1,17 +1,17 @@
 {
- "baza": "http://127.0.0.1:8013",
+ "baza": "http://127.0.0.1:8014",
  "randuri_inainte": 305,
  "date_firma": {
   "gasit": true,
-  "text": "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții intracomunitare de bunuri — art. 322 alin. 2.",
+  "text": "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții intracomunitare de bunuri — art. 322 alin. 2. Obligatorie doar la plătitorii de TVA. Decide dacă D300/D394 se depun lunar sau trimestrial.",
   "latime": 632,
   "inaltime": 48.5625
  },
  "migrare": {
   "gasit": true,
-  "text": "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul\n          precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții\n          intracomunitare de bunuri — art. 322 alin. 2.",
+  "text": "Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul\n          precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții\n          intracomunitare de bunuri — art. 322 alin. 2.\n          Obligatorie doar la plătitorii de TVA. Decide dacă D300/D394 se depun lunar sau trimestrial.",
   "latime": 520,
-  "inaltime": 48.5625
+  "inaltime": 64.75
  },
  "erori_js": [],
  "randuri_dupa": 305,

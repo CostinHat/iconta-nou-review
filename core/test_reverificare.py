@@ -61,13 +61,22 @@ from core import reverificare as R  # noqa: E402
 #: Cele 24 nou-vazute sunt aproape toate NECUNOSCUT pe consumator: nimeni nu le dăduse un prag de
 #: reverificare, fiindca nimeni nu le vedea. *Nu e o inrautatire, e o masuratoare care lipsea* —
 #: si e chiar continutul restantei **R171**.
+#:
+#: MUTATA DIN NOU 06.09.2026, prin **R171, a doua jumatate**: consecinta se citeste acum si din
+#: `core/consumatori_temei.py`, nu doar prin lantul registrului de cote. Toate clasele
+#: `*/NECUNOSCUT` au DISPARUT: fiecare temei care are o frecventa citibila are si un consumator.
+#: Socoteala:
+#:   `STABIL/NECUNOSCUT`   10 -> 0  (au devenit STABIL/CALCULAT)
+#:   `VOLATIL/NECUNOSCUT`   7 -> 0  (VOLATIL/CALCULAT)
+#:   `MISCATOR/NECUNOSCUT`  2 -> 0  (MISCATOR/CALCULAT)
+#: Cele 23 ramase in `NECUNOSCUT/NECUNOSCUT` sunt blocate pe CEALALTA axa — frecventa: 10 documente
+#: care nu consemneaza nicio modificare, 8 temeiuri fara articol, 5 cioturi. Alta tema, alta restanta.
 DISTRIBUTIE = {
     ("VOLATIL", "DEPUS"): 13,
+    ("VOLATIL", "CALCULAT"): 7,
     ("STABIL", "DEPUS"): 7,
-    ("MISCATOR", "CALCULAT"): 3,
-    ("STABIL", "NECUNOSCUT"): 10,
-    ("VOLATIL", "NECUNOSCUT"): 7,
-    ("MISCATOR", "NECUNOSCUT"): 2,
+    ("STABIL", "CALCULAT"): 10,
+    ("MISCATOR", "CALCULAT"): 5,
     # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
     # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma
@@ -88,7 +97,7 @@ DISTRIBUTIE = {
     # NECUNOSCUT: valorile astea nu ajung intr-un modul de declaratie, deci nimeni nu le consuma.
     # *Localizatorul de articol a rezolvat jumatatea lui; cealalta jumatate cere graful de
     # consumatori, nu instrumentul de articol.* Consemnat in R171.
-    ("NECUNOSCUT", "NECUNOSCUT"): 18,
+    ("NECUNOSCUT", "NECUNOSCUT"): 23,
 }
 
 _AZI = datetime.date(2026, 8, 31)
@@ -202,14 +211,41 @@ def test_ANTI_VACUU_si_distributia_pinata():
         % (chr(10), dict(sorted(acum.items())), chr(10), dict(sorted(DISTRIBUTIE.items())), chr(10)))
 
 
+#: Câte valori din AFARA registrului de cote primesc un prag mai larg decât podeaua globală.
+#: **Nu e o slăbire**: podeaua n-a fost niciodată peste ele — `cote_neconfirmate` citește cheile din
+#: `COTE`, iar astea trăiesc în modulul regulii (decizia 73). Pentru ele, „12 luni" înseamnă
+#: *primesc un prag pentru prima oară*, nu *verificate mai rar decât azi*.
+#: Cele 10 de azi sunt toate `STABIL/CALCULAT`, iar 12 e chiar căsuța din tabelul lui Costin.
+#: Dacă numărul crește, cade testul — și atunci e o decizie de cadență, care se scrie.
+PRIMESC_PRAG_PESTE_PODEA = 10
+
+
 def test_nicio_valoare_nu_devine_verificata_MAI_RAR():
     """Pragul global de azi e 6 luni. Trecerea la praguri per-articol are voie să strângă, nu să
-    slăbească — iar dacă vreodată slăbește, e o decizie, nu un efect colateral. *Azi: 9 mai strict,
-    0 mai larg.*"""
-    d = R.fata_de_pragul_global(azi=_AZI)
+    slăbească — iar dacă vreodată slăbește, e o decizie, nu un efect colateral.
+
+    **PREMISA, făcută explicită la 06.09.2026 (R171).** „Mai rar decât azi" are sens numai pentru
+    valorile pe care podeaua globală chiar le acoperea: cele din **registrul de cote**, singurele pe
+    care le citește `cote_neconfirmate`. Un temei din modulul regulii n-a fost niciodată sub podea —
+    nimeni nu se uita la el —, deci un prag de 12 luni nu-l verifică *mai rar*, ci **pentru prima
+    oară**. Prima formă a testului le amesteca și ar fi cerut o decizie de slăbire care nu există.
+
+    Populația din afara registrului nu se ascunde: se numără separat și se pinează."""
+    inv = R.inventar(_AZI)
+    din_registru = [x for x in inv if x["cale"].startswith("COTE.")]
+    afara = [x for x in inv if not x["cale"].startswith("COTE.")]
+    assert din_registru and afara, "[anti-vacuu] una din populații e goală — s-a rupt împărțirea"
+
+    d = R.fata_de_pragul_global(inv=din_registru, azi=_AZI)
     assert d["mai_larg"] == 0, (
-        "%d valori ar fi verificate MAI RAR decât azi: asta cere o decizie scrisă, nu un tabel. %s"
-        % (d["mai_larg"], d))
+        "%d valori DIN REGISTRU ar fi verificate MAI RAR decât azi: asta cere o decizie scrisă, "
+        "nu un tabel. %s" % (d["mai_larg"], d))
     assert d["mai_strict"] > 0, (
         "[anti-vacuu] nicio valoare nu se strânge — tabelul n-ar schimba nimic, deci n-ar fi "
         "reparat interdicția 55: %s" % d)
+
+    a = R.fata_de_pragul_global(inv=afara, azi=_AZI)
+    assert a["mai_larg"] == PRIMESC_PRAG_PESTE_PODEA, (
+        "%d temeiuri din afara registrului primesc un prag peste podeaua globală, pinat %d. "
+        "Nu e o regresie, dar e o cadență: dacă s-a schimbat, scrie de ce. %s"
+        % (a["mai_larg"], PRIMESC_PRAG_PESTE_PODEA, a))
