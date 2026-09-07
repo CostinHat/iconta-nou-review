@@ -1,175 +1,76 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **CAPĂT DE ETAPĂ: etapa 1 închisă, etapa 2 închisă, R151 închisă** (06.09.2026)
+# PREDARE LANȚ — **campania rămâne închisă; două zile de reparații din registru** (07.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-06**, la **capătul etapei 2** — cerută expres: *„Etapa 2 e
-  închisă. (…) Scrie predarea de capăt de etapă și oprește-te pentru `/clear`."* Antetul,
-  secțiunea campaniei și „DACĂ CONTINUI DE AICI" sunt **rescrise**; restul documentului e cel din
-  03–05.09 și poartă data lui.
-- **pe commit**: `220967cc`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-07**, cerută expres, înainte de `/clear`.
+- **pe commit**: `2b05f886`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție, nu din uitare.*
-- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **DE CE ACUM**: **capăt de etapă.** Etapa 1 (date invalide) și etapa 2 (date valide, pe cele
-  nouă declarații) sunt amândouă închise, iar ultima restanță deblocată de decizie — R151 — a
-  primit răspuns și e construită. **Nu mai e nimic deschis din campanie.** Ce urmează **nu se
-  alege de aici** — v. „DACĂ CONTINUI DE AICI".
-- **CE E REMĂSURAT ÎN TURA ASTA**: cele patru clichete generate (bloc generat mai jos) · blocul
-  `TRASEE.md` · inventarul gărzilor din `GARZI.md` · scanul vizual (`ui_hash` reîmprospătat după
-  cele două câmpuri noi de pe ecranul operațiunilor).
-- **vechime măsurată, nu estimată**: **0 commituri** de la ultima atingere a fișierului.
+- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.** *(Linia asta a fost
+  scoasă din greșeală la rescrierea de azi, când am scurtat antetul; `test_predare_proaspata`
+  a prins-o la poartă. O rescriere care scurtează poate scoate tocmai propoziția care ținea
+  documentul viu.)*
+- **vechime măsurată**: **4 commituri** de la ultima atingere a fișierului (pragul din `pre-commit`
+  e 10; avertismentul n-a apărut). *Cifra asta a fost scrisă din memorie de cinci ori în august, de
+  fiecare dată greșit — v. tabelul cifrelor invalidate. Se măsoară.*
+- **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „ce s-a întâmplat", starea, restanțele și „dacă
+  continui de aici" sunt **rescrise azi**. Tabelul cifrelor invalidate, capcanele, operaționalul,
+  „ce cere poarta" și lecțiile sunt **păstrate** — documentul își interzice singur să le șteargă, iar
+  fiecare rând de acolo a costat o greșeală.
+- **CE E REMĂSURAT**: cele patru clichete generate · blocul cifrelor despre date · inventarul
+  gărzilor · numărul restanțelor deschise (`scripts/scan_ramas.py`) · scanul vizual.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **campania e ÎNCHISĂ pe AMÂNDOUĂ etapele**
+## PRIMUL LUCRU DE ȘTIUT: **campania rămâne ÎNCHISĂ; ce s-a lucrat de-atunci vine din registru**
 
-**Etapa 1** — *vorbește aplicația când primește date greșite?* — 364/364, închisă 05.09.2026.
-**Etapa 2** — *ajunge valoarea în declarație, în rândul corect și cu suma corectă?* — închisă
-06.09.2026, pe **toate cele nouă declarații pe care aplicația le generează**: D100, D101, D112,
-D205, D300, D301, D390, D394, D406/SAF-T. Cinci loturi: **A** (D300+D394) · **B** (D390+D301) ·
-**C** (D100+D101) · **D** (D112) · **E** (D406+D205). **Zero nepotriviri** în toate cinci.
+Etapa 1 (date invalide, 364/364, închisă 05.09) și etapa 2 (date valide, cele nouă declarații pe
+care aplicația le generează, închisă 06.09) sunt **neatinse**. Nu s-a redeschis nimic din campanie.
 
-**Defectele etapei 2**, toate reparate pe loc și reprobate: R161 (buton stins, motivul într-un
-`title` invizibil la atingere) · R162 (mesaj de reușită scris și șters în aceeași clipă) · R163
-(`500` pe un cont PLAUZIBIL) · R164 (`500` pe un CNP valid deja folosit) · R165 + R165b + R165c
-(SAF-T-ul unei firme trimestriale raporta o lună din trei; oglinda de reconciliere; antetul rămas
-pe luna-ancoră) · R166 + R166b (validarea D406 era inaccesibilă; `HeaderComment` constant).
-**R151** — singura rămasă deschisă ca DECIZIE — a primit răspunsul lui Costin pe 05.09 și e
-construită pe 06.09.
+Cele două zile de după au fost **reparații de restanțe și curățenie**, cerute punctual. Rezumatul,
+în ordinea în care s-au întâmplat:
 
-**Ce a demonstrat etapa 2, dincolo de cifre.** Trei lucruri care nu se vedeau din etapa 1:
-  1. **Datele plauzibile ating defecte pe care santinela nu le atinge.** `«»@#$%` cade devreme,
-     la prima validare de formă; un cont scris `7015` în loc de `701`, sau un CNP valid deja
-     folosit, ajung până la stratul care crapă. R163 și R164, în aceeași zi.
-  2. **Confruntarea între generatoare găsește ce nicio probă pe un singur generator nu poate.**
-     R165 a ieșit comparând aceeași perioadă între D300, D394 și D406 — trei răspunsuri la
-     aceeași întrebare, dintre care unul diferea.
-  3. **Un arbitru la care nu ajungi nu te judecă.** Validarea D406 ieșea `gri` de-o veșnicie,
-     cu validatorul instalat: nu exista niciun corp de cerere care să treacă și generarea, și
-     validarea. Reparând drumul, arbitrul a numit din primul apel un defect vechi.
+| ziua | ce s-a făcut | ce a rămas deschis din ea |
+|---|---|---|
+| **06.09** | **R167** temei la periodicitatea TVA · **R140** cele opt refuzuri ale registrului de partidă simplă, rescrise · **R171** (puncte și norme în `articol_in_act`; graful „cine consumă valoarea") · **OMFP 3254/2017** despicat în șase citări | — |
+| **06.09** | **R43** — calea de plată online **RETRASĂ**, nu doar dezactivată: cele trei rute scoase, butonul și handlerul lui | **R174** |
+| **06.09** | **R96** — cele trei registre obligatorii nu mai pot diverge tăcut | — |
+| **06.09** | **R94** — aplicabilitatea nu se mai decide în două locuri; poarta generatorului consultă selectorul | — |
+| **06.09** | desktopul asistentului: panou-arbore + carduri reordonate | **R175** |
+| **07.09** | audit de suită (categorii · dubluri · referințe moarte · mutație pe 200) — **doar raport, fără ștergeri** | — |
+| **07.09** | poarta scurtă capătă lansator (`scripts/poarta_scurta.py`) · trei teste umbrite din `test_cashflow.py`, scoase | — |
+| **07.09** | cele 50 de declarații pe ecranul public + `DENUMIRE_OFICIALA` în fiecare modul | — |
 
----
-## (istoric) CE A FOST ETAPA 1
+**DOUĂ SCHIMBĂRI DE MEDIU care nu se văd din cod și trebuie știute:**
 
-Tema — *vorbește aplicația când primește date greșite?* — deschisă de Costin pe 03.09.2026, s-a
-închis pe **05.09.2026**, la lotul 15. Comanda, în șapte puncte: lista funcționalităților **derivată
-din cod** · pentru fiecare, date invalide și valide · probare **întâi cu invalide**, cu **mesajul
-verbatim** notat · orice defect **se repară pe loc** · se reprobează după reparație · rezultatele
-într-un fișier · fără gărzi noi, fără restanțe deschise, o singură publicare per lot.
-
-### Unde e campania
-
-| | |
-|---|---|
-| **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
-| **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date** |
-| **probate** | **364** |
-| **RĂMASE** | **0** |
-| **defecte** | găsite **154**, reparate **153**, reprobate **153** · una **deschisă ca decizie** (R151) |
-| **cum se numără** | **mecanic**, parcurgând coloana «stare probare». Cifrele scrise de mână au fost greșite de trei ori |
-
-### Ce a fost lotul 15, și de ce merită citit înainte de orice altă probă de ecran
-
-Cele 20 rămase **nu erau ecrane grele**. Erau **cinci feluri în care sonda era oarbă**, plus patru
-motive scrise în registru care s-au dovedit false la citirea codului. Reparațiile de instrument sunt
-în antetul lui `frontend_test/vizual/proba_ecrane_formular.py`, fiecare numită de ecranul care a
-produs-o:
-
-1. **„A vorbit" se măsura numai în jurul apăsării.** Un ecran care validează LA TASTARE răspunde
-   înainte de orice buton. `fa-etransport` scrie *„Fereastră expirată: UIT ar fi fost valabil până la
-   15.01.1899."* în timp ce completezi — și stinge butonul. Arăta ca un ecran fără nimic de apăsat.
-2. **Un buton DEZACTIVAT era invizibil, nu raportat.** Cădea în același `return` cu „nu e vizibil".
-3. **Domeniul nu cuprindea ferestrele PESTE fereastră.** `pachete` și `recomanda` își pun modalul pe
-   `document.body` — formularul REAL stătea în afara domeniului sondei.
-4. **`campuri=0` nu deosebea „n-are formular" de „nu l-am găsit".** Acum se numără `intrari_dom`.
-5. **Două verbe de submit lipseau**: «Înregistrează», «Reevaluează». Adăugate **după** măsurarea lor
-   pe tot `static/js` (`frontend_test/butoane_cu.py`), nu pe intuiție.
-
-**Și a șasea, de altă natură: condiția de oprire.** Sonda se oprea la primul ecran cu CÂMPURI — dar
-`pachete` are două câmpuri în pasul de ALEGERE și niciun buton de submit. *Un formular găsit nu e un
-formular probat: proba are nevoie de buton.*
-
-### Cele nouă defecte ale lotului, pe clasă
-
-| clasă | instanțe |
-|---|---|
-| **„n-am putut" în loc de „nu recunosc"** | **R154** (`/recomanda` trimitea către `«»@#$%` și răspundea `stare: esuat`) · **R155** (un text numit `.png` primea *„încearcă o poză mai clară"*) · **R156** (ecranul acoperea refuzul precis al serverului) |
-| **afirmație falsă pe ecran** | **R152** („conectat la" un magazin cu care nu vorbise nimeni) · **R159** („Ciornă salvată." după o salvare refuzată) |
-| **TACE** — singurul verdict care e defect prin definiția campaniei | **R157** (răspunsul gol la o sesizare: nimic nu se întâmplă, nimic nu se spune) |
-| **aplicația știe la un capăt și nu știe la celălalt** | **R153** (registratura scria anul 1899, pe care tot ea îl refuză la citire) |
-| **mesajul serverului acoperit de unul generic** | **R158** |
-| **gardul care nu se verifică pe sine** | **R160** — v. mai jos |
-
-**R160 merită citit separat.** `acoperire_hash.ecrane_asteptate()` tăia lista `ECRANE` la **prima
-paranteză dreaptă din text** — care nu e capătul listei, ci cea din comentariul `# [LOTUL 12, R142]`.
-Gardul acoperirii vizuale cerea **16 ecrane din 18**, iar cele două lipsă erau exact cele adăugate de
-tura care scrisese comentariul. Găsit **fiindcă am vrut să adaug ceva la el**, nu fiindcă l-am
-verificat. *A treia instanță a clasei.*
+1. **Repo-ul e PUBLIC pe GitHub** — `https://github.com/CostinHat/iconta-nou-review`, cerut de
+   Costin pe 06.09, cu tot istoricul (2077 de commituri). `origin` rămâne cel privat
+   (`CostinHat/iconta-v2`); publicul e un al doilea remote, numit `public`, **deliberat separat**:
+   `post-commit` face push automat pe `origin`, deci dacă publicul ar fi fost `origin`, fiecare
+   commit s-ar fi publicat singur, tăcut. Actualizare: `git push public main`.
+   *Consecință: `CONFORMITATE.md` — cele 50 de restanțe cu descrierea exactă a ce e rupt — e citibil
+   de oricine. E o expunere de business, nu una de securitate; a fost semnalată înainte de push.*
+2. **Contul de asistent e ACTIV** — `asistent@prisma-cont.test`, reactivat pe calea aplicației ca să
+   se poată proba desktopul asistentului. Are `poate_pregati`/`poate_valida` **da**, `poate_depune`
+   **nu**, două firme. **Consecință măsurată: `patru_ochi_posibil` a trecut pe `true` în cabinetul
+   1968** — mecanismul rămâne **neactivat**, deci comportamentul nu se schimbă, dar afirmația din
+   `TRASEE.md` că *„pe nicio firmă nu se poate exercita un traseu care cere doi oameni"* **nu mai e
+   adevărată**. Un traseu care nu se putea proba deloc devine probabil.
 
 ---
-## CE A ÎNVĂȚAT TURA ASTA DESPRE PROPRIILE EI MĂSURĂTORI
+## POARTA SCURTĂ EXISTĂ ACUM, DAR NU SE APLICĂ LA COMMIT
 
-1. **Un motiv scris în registru îmbătrânește ca orice cifră.** Patru din cele opt motive pentru care
-   ecranele erau „neprobate" s-au dovedit **false** la citirea codului: „configurarea WooCommerce
-   cere întâi o conexiune" (formularul se deschide la o apăsare), „verificările se randează pe
-   alegerea unei luni" (ecranul n-are niciun câmp, pe nicio lună), „formularul cere un pas înainte"
-   (nu există formular pe niciun drum), „singurul buton care ia formularul e «Generează cu AI»"
-   («Salvează ciornă» ia formularul și nu iese nicăieri). *Un motiv e o măsurătoare, și se
-   reverifică.*
-2. **O cifră a sondei care crește cu numărul de încercări descrie sonda, nu ecranul.** Prima formă a
-   buclei de deschidere aduna umplerile fiecărei trepte: `fa-casa` a ieșit cu `campuri=10` pe un
-   formular de **cinci**. Prinsă înainte de raport.
-3. **O probă „pe gol" care nu golește măsoară altceva.** Modalul poveștii se deschide cu ciorna
-   salvată anterior — deci prima probă a lui R159 a măsurat o salvare obișnuită și era gata s-o
-   citească drept „refuz trecut".
-4. **Verbul unui buton nu se adaugă pe intuiție.** „înregistr" și „reevalu" au intrat în lista
-   sondei abia după ce s-a numărat ce mai deblochează, pe tot `static/js`. *Un cuvânt adăugat pe
-   încredere deblochează butoane nevăzute — iar unele scriu.*
+`scripts/poarta_scurta.py` rulează perimetrul derivat din `git diff` (regula 4 din `PLAN_LUCRU.md`).
+Nu primește fișiere pe linia de comandă, iese cu 2 la orice nesiguranță, și își declară marginile
+când e verde.
 
-*Și una despre starea portofoliului:* dialogul de motiv al ecranului «De depus» n-are cum fi probat
-fără un element în coadă, iar proba a **respins un element real** (`declaratii_coada` 8149). Pus la
-loc, verificat prin recitire. **A doua instanță a capcanei 9.**
+**Măsurat pe cazuri reale:** `core/plati.py` → 2 fișiere, 9 teste, **0 s** · felia doar-cod a lui R94
+→ 46 fișiere, 560 teste, **168 s** · `core/d112.py` → 203 fișiere, 1.813 teste, **366 s**. Poarta
+completă: **1.500–1.595 s**, măsurat de nouă ori pe 06–07.09.
 
----
-## CE CERE POARTA, ÎN PLUS FAȚĂ DE PREDAREA DE IERI
-
-- **PATRU blocuri generate**, nu trei — al patrulea e tabelul listei 3 din `CONFORMITATE.md`
-  (`scan_lista3.proba_md()`), și a picat poarta când am creat firma de partidă simplă.
-- **Clichetul de umbră (77u) urcă la fiecare reparație de mesaj** — a crescut de **trei ori** în
-  tura de 04.09 și **încă o dată** în lotul 15, de fiecare dată fiindcă aplicația refuză mai
-  bine, și a picat poarta de fiecare dată. **Și blocul din `TRASEE.md` la fel**: un refuz
-  explicit în plus pe un traseu (20 → 21). *Cele două se REDAU, nu se scriu singure —
-  `scan_ramas.py --clichete-md` și `scan_trasee.py --md` tipăresc; scrierea între marcaje o
-  face `intre_marcaje`. Am crezut că se scriu singure și poarta m-a corectat.*
-  *Cifra nu se scrie aici: trăiește numai în blocul generat, unde se recalculează. Am scris-o o dată
-  în proza asta și garda a prins-o pe loc — exact clasa pentru care există.*
-- **O restanță trebuie să fie ÎN blocul `## RESTANȚE`** — garda de LOC, construită azi ca excepție
-  declarată de la „fără gărzi noi". Zece restanțe stăteau afară și **nu le verifica nimic**.
-- **O restanță de DECIZIE cere câmpul `planul`**: locul care răspunde, sau `NEACOPERIT` cu ce s-a
-  citit.
-
----
-## DAR RESTUL LISTEI INTERNE NU SE DESCHIDE
-
-Înainte de a-ți alege orice, citește `PLAN_LUCRU.md`, secțiunea **„⬛ STAREA, DUPĂ R118"**. E scrisă
-de Costin, ca stare, exact ca să nu se reia lucrul din vecinătate după un `/clear`.
-
-> *„După R118 nu se mai deschide nicio temă internă. Restul familiei R82 rămâne parcată. Backlogul A3
-> rămâne neînceput. R116 și R117 rămân consemnate. Ce urmează nu e construcție, e **ieșirea la un
-> cabinet-pilot**."*
->
-> Și confirmarea: *„Lista internă e închisă, iar cele 50 de restanțe rămase **nu sunt sarcini** —
-> sunt starea scrisă în plan. Rămâi pe prag 1 găsit apăsând, atât. **Următoarea temă vine de la mine,
-> după pilot**."*
-
-| ce | ce faci |
-|---|---|
-| un defect de **PRAG 1**, găsit apăsând — cifră greșită, blocaj, afirmație falsă pe ecran | **se repară**, fără să întrebi. E datorie, nu temă |
-| orice altceva din cele **50** de restanțe deschise | **nu se deschide.** Nu e o coadă de sarcini; e starea măsurată |
-| ceva ce „ar ajuta la pilot" | **întreabă întâi.** Cine e cabinetul, ce date intră, ce se promite — sunt decizii ale lui Costin |
-
-*Cele 50 sunt tentația principală a unei sesiuni noi: fiecare e argumentabilă, iar alegerea din
-vecinătate seamănă cu progres fără să fie.*
+**DAR:** pe **amândouă** commiturile reale de pe 06.09 derivarea **refuză** — amândouă au atins
+registre (`.md`) și `main.py`, pe care graful de import nu le vede. *Poarta scurtă e pentru bucla din
+timpul turei, nu pentru commit.* Ținut de `test_commiturile_reale_de_azi_ar_fi_cerut_poarta_completa`.
 
 ---
 ## AL DOILEA: CIFRELE DESPRE DATE SUNT INTEROGATE, NU SCRISE
@@ -239,7 +140,6 @@ predare**. *O regulă scrisă nu ține fără control mecanic.*
 
 <!-- CIFRE-DATE:STOP -->
 
----
 ## AL TREILEA: SUPERVIZORUL. **A fost apăsat de un om, prin ecran.**
 
 ### S-A TRECUT CAP-COADĂ *(03.09.2026, 07:43)*
@@ -329,10 +229,9 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 51** (din care ale etapei E1: **22**), derivat cu `scripts/raport_b.py`.
-  *Scria 50 — cifra dinaintea lui R151. Cele noua restante ale lotului 15 sunt toate REZOLVATE,
-  deci nu misca numarul; ce l-a miscat a fost decizia deschisa de ieri.*
-  **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
+- **restanțe deschise: 50**, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**, rândul
+  ăsta a fost invalidat o dată. *(51 înainte; s-au închis R43, R94, R96 și s-au deschis R174, R175.
+  Aritmetica se închide, dar cifra vine din instrument, nu din scădere.)*
 - **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
 - **decizii care blochează: niciuna.**
@@ -342,10 +241,15 @@ completă, fără excepție.**
 ---
 ## STAREA LA PREDARE
 
-**4039 teste trec** *(ieșirea porții lotului 10, `ba7305b4`)* · 11 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
-rute **424 = ACCEPTAT 383 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
-`post-commit`, care publică pe `origin/main` și pe `backup/lant-<ziua curentă>`, **publică statica din
-HEAD**, și **restartează necondiționat** procesul viu.
+**4161 teste trec** *(ieșirea porții care a produs `2b05f886`)* · 11 skip · 14 xfail · ruff OK ·
+verificator **TOTAL 0** · module scanate **188 = ACCEPTAT 187 + GRI 0 + ROSU 0 + EXCLUS 1** ·
+rute **421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32** · four-way se închide la `post-commit`,
+care publică pe `origin/main` și pe `backup/lant-<ziua curentă>`, **publică statica din HEAD**, și
+**restartează necondiționat** procesul viu.
+
+**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** *(Rândul ăsta există
+fiindcă exact asta s-a întâmplat o dată: o rescriere al cărei scop era să scoată afirmațiile purtate
+din memorie a copiat „rute 411 … EXCLUS 32" din documentul precedent.)*
 
 **AL CINCILEA BRAȚ:** `https://iconta.eu/static/.publicat.json` spune, **din afară**, din ce commit e
 ce se servește. Four-way-ul dovedea că *procesul* poartă HEAD; nimic nu dovedea că *JS-ul* îl poartă.
@@ -372,33 +276,30 @@ ora commitului*.
 
 <!-- CLICHETE-VII:STOP -->
 
-**POARTA DUREAZĂ ~23 DE MINUTE** — măsurat pe rulările din 02–04.09: **1.300 s … 1.410 s**. *(Scrise
-cu separator de mii nu din stil: `test_cifra_131_e_marcata_invalidata` se uită la prima apariție a
-șirului „131", iar „1316s" o furniza înaintea tabelului.)*
+**POARTA DUREAZĂ ~25 DE MINUTE** — măsurat pe nouă rulări din 06–07.09: **1.500 s … 1.595 s**.
+*(Scrise cu separator de mii nu din stil: `test_cifra_131_e_marcata_invalidata` se uită la prima
+apariție a șirului „131".)*
 
-**AZI POARTA A RESPINS DE TREI ORI**, și niciuna pentru o cifră stricată: **(1)** dimineață, în
-**altă tură**, patru teste de înregistrare (blocuri generate învechite) · **(2)** pe lotul 2,
-clichetul refuzurilor — `facturi_api` începuse să citeze legea, iar norma 77 cere zero refuzuri fără
-temei de la un modul care intră în clasă · **(3)** tot pe lotul 2, două clichete despre temeiuri,
-amândouă mișcate de UN SINGUR temei nou (`CLICHET_CIOT` 3→4, distribuția de reverificare NECUNOSCUT
-12→13). *Amândouă respingerile lotului 2 mi-au arătat ceva ce nu știam — a doua, că un act a cărui
-anexă numerotează PUNCTE, nu articole, e „ciot" pentru instrumentele de articol: a patra instanță a
-lui R111.* Alte opt teste le-am prins **eu**, rulând suita înainte de commit — exact ce face ieftin
-regula 5, dar pe suita întreagă, fiindcă lotul atinsese cod.
-
-**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.**
+**ÎN ULTIMELE DOUĂ ZILE POARTA A RESPINS DE ȘASE ORI**, și niciuna pentru o cifră stricată:
+blocuri generate învechite (de trei ori) · clichetul aserțiunilor pe text (de două ori — gărzi noi
+scrise de mine cu `"x" in y`) · și o dată **verificatorul**, pentru o **clasă nouă de buton**
+(`.decl-ce`), când aplicația avea deja dialectul „?" (`.ajutor-btn`). *De fiecare dată poarta a avut
+dreptate; a treia oară m-a și dus la un defect vechi, fiindcă dialectul pe care m-a obligat să-l
+refolosesc avea el însuși contrastul sub prag.*
 
 ---
 ## CE E ADEVĂRAT ACUM DESPRE RESTANȚE
 
 | | |
 |---|---|
-| **prag 1** | **niciuna deschisă.** *R130 s-a închis pe 04.09, după ce Costin a dat adresa (`curs.bnr.ro`) și pragul de vechime (5 zile): fluxul e cablat — cu namespace-ul citit din rădăcină, fiindcă se schimbase și el —, iar cursul vechi nu se mai folosește tăcut. Șapte prag-1 reparate în trei zile: R124…R130.* |
-| **decizii** | **niciuna deschisă.** Toate cele cinci cerute în ultimele două zile au primit răspuns în aceeași zi |
+| **prag 1** | **niciuna deschisă** |
+| **decizii** | **niciuna deschisă** |
+| **R174** | *(nou, 06.09)* o factură încasată prin BANCĂ nu se marchează încasată nicăieri. Ieșit la iveală închizând R43: singurii scriitori ai lui `platita_la` sunt cele două căi de NUMERAR, iar scadențarul și notificările citesc exact `platita_la IS NULL`. Măsurat: 28 emise · 1 marcată · 2 decontate contabil · **1 decontată dar rămasă în scadențar** |
+| **R175** | *(nou, 06.09)* desktopul asistentului e acoperit de o probă proprie, nu de uneltele de listă: cele trei unelte plimbă **un singur cont**, iar `app.js` alege desktopul din `sesiune.rol()` la pornirea filei |
+| **R69** | **următoarea temă**, cerută explicit: declarațiile deja depuse să apară **contrazise** când se schimbă vectorul sau regimul |
 | **R121** | singura pereche respinsă rămasă: P300 / RO e-TVA n-are acces programatic. **EXTERNĂ** |
-| **R130** | **închisă 04.09.2026** — fluxul BNR cablat pe `curs.bnr.ro` (verificat la sursă), namespace citit din rădăcină, prag de vechime 5 zile, curs manual cu data și autorul lui |
 | **R116 · R117** | deschise, **consemnate și nelucrate**, prin decizia din 03.09 |
-| **familia R82** | **PARCATĂ.** Instanța depunerii s-a închis (R127); restul **nu se deschide** |
+| **familia R82** | **PARCATĂ** |
 | **familia „încrederea în corpus"** | R1, R3–R7, R107 — cele mai vechi, **în afara axei** |
 | **restul** | `CONFORMITATE.md`, sau `scripts/scan_ramas.py`. Numărul e derivat, nu scris |
 
@@ -476,6 +377,15 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **16** (scrieri care refuză fără motiv) și **2** (aritmetică pe nume neutre) | clichetele din `test_refuz_tacut` (27.08) și `test_aritmetica_in_prezentare` (24.08) | **18** și **1**, remăsurate pe ACELAȘI commit cu cititorul de JS reparat — **R133**. Amândouă stăteau pe un cititor care albea sute de rânduri la o linie cu trei ghilimele; unul ieșea prea MIC, celălalt prea MARE. *A doua instanță în care aceeași greșeală mișcă două cifre în direcții OPUSE — semnul că instrumentul n-are **niciun** plafon (METODA §22). Prima a fost cititorul defazat din 27.08, în chiar unul din cele două fișiere.* |
 | **„312 probate · 52 rămase · 34 la nivel de fișier"** | predarea din 04.09, la capătul lotului 11 | **310 · 54 · 33**, numărate mecanic parcurgând coloana «stare probare» din `LISTA_FUNCTIONALITATI.md`. Toate trei erau scrise de mână, iar toate trei erau greșite **cu două**, respectiv **cu una** — în direcții care se anulau reciproc în total, deci suma `probate + rămase = 364` ieșea corectă și nimic nu părea stricat. *O cifră care se verifică doar prin totalul ei nu e verificată: două greșeli de sens contrar arată exact ca zero greșeli.* Rândul „cum se numără" din tabelul campaniei spune acum de unde se ia |
 | **„proba de ecran n-a schimbat nimic"** | raportul sondei din lotul 10, și prima rulare a lotului 11 | **falsă ca metodă, adevărată din noroc.** Sonda declara starea schemei ca `count(*)` pe cele 52 de tabele — deci vedea inserările și era **oarbă la modificări**. La prima rulare pe ecranele de firmă a redenumit firma în două tabele și a raportat SCHIMBARI-DE-STARE-niciuna. Pentru lotul 10 propoziția rămâne adevărată (verificată acum cu amprentă), dar era adevărată fiindcă acele ecrane **inserau**. **R137**; starea e acum `count/amprentă`. |
+
+| **„49 de cioturi din 50"** (generatoare neimplementate) | prima sondă a verificării celor 50, 07.09 | **0.** Sonda socotea „ciot" orice adaptor de cel mult două rânduri — dar adaptoarele din `DECLARATII` **sunt** învelișuri de un rând, prin arhitectură. Așa a ieșit că `d406`, cu 1639 de linii și 422 de teste, n-ar fi implementat. *O sondă care judecă după lungime măsoară lungimea, nu funcția* |
+| **„37 de generatoare crapă"** | a doua sondă a aceleiași verificări, 07.09 | **0.** Refoloseam o singură conexiune și făceam `rollback()` după fiecare apel, ceea ce reseta `search_path`; de la a doua declarație încolo toate „crăpau" cu `firma_profil does not exist`. **Era harnașamentul, nu aplicația.** Cu conexiune proaspătă per declarație: 0 crăpături, 8 produc, 42 refuză cu motiv |
+| **„22 din 50 validate de DUKIntegrator"** | a treia formă a aceleiași verificări, 07.09 | **50 din 50.** Expresia cerea tipul ca **literal în apelul** de validare; cele cinci fișiere-lot sunt **parametrizate** și îl iau dintr-o listă `CAZURI`. *Era să raportez „28 fără validare oficială" despre declarații validate zilnic de poartă* |
+| **„175 de supraviețuitori din 175"** (mutation testing) | auditul de suită, 07.09 | **75 uciși din 175.** Rulasem pytest cu `-rN`, care suprimă exact liniile `FAILED` pe care le parsam, deci **tot** apărea trecut. *Un instrument care nu poate raporta un eșec raportează numai succese.* De atunci harnașamentul se calibrează întâi pe un test care trece **și** unul care cade |
+| **„96 de gărzi care nu pot cădea"** | auditul de suită, 07.09, a doua trecere | **0 confirmate.** 77 din 96 asertează pe **structură** (chei, mulțimi, vocabulare), pe care operatorii mei — întoarcerea comparațiilor și `n+1` — nu le ating **prin construcție**; restul de 19, citite cu ochiul, sunt teste bune. `test_partime_minim_rotunjeste_aritmetic_nu_bancar` supraviețuiește la **226** de mutații în `core/d112.py` fiindcă ținta lui, `_d112int`, n-are nici comparație, nici literal numeric. *Rata de 43% e o proprietate a operatorilor mei, nu o notă a suitei* |
+| **„12 fișiere cu referințe moarte"** (căi și rute) | auditul de suită, 07.09 | **0.** Căile erau **date de test** date unui clasificator, nu căi folosite; rutele erau **sufixe** ale unor rute reale (`/facturi/emite` există ca `/tenants/{id}/facturi/emite`), iar potrivirea mea era întoarsă pe dos. Plus: citeam doar `main.py`, deși rutele stau și în `core/spv_rute.py` |
+| **„toate cele 12 funcții din `test_cashflow.py` să se colecteze"** | comanda din 07.09, luată din **raportul meu de audit** | **9.** Cele trei umbrite erau **identice caracter cu caracter** cu cele vii; a le redenumi ar fi fabricat trei teste care verifică aceeași condiție pe aceeași cale de cod — chiar clasa pe care auditul o numise dublură. *„12" era numărătoarea mea de DEFINIȚII, nu o țintă de acoperire — și a intrat în comandă prin raportul meu* |
+| **„perimetrul de registre e singura scurtare"** | regula 5, așa cum era scrisă | **incomplet.** Regula 4 (perimetrul derivat din graful de import) exista în `perimetru.py` din 02.09, dar **fără lansator**, deci nu se folosea. Măsurat abia pe 07.09: 168 s pe felia doar-cod a lui R94, față de ~1.550 s |
 
 ---
 ## CE NU E ADEVĂRAT DESPRE STAREA ASTA, ȘI SE SPUNE

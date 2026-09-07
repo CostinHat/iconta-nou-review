@@ -8360,3 +8360,35 @@ păzește. Butonul a trecut pe dialectul existent. Numai că `.ajutor-btn` avea 
 un ecran nou*, așa că l-am dus la `#2f6fa6` = **4.70**: reparat acolo unde stă, deci peste tot unde
 e folosit ajutorul contextual, nu doar pe ecranul care l-a scos la iveală.
 
+
+## 07.09.2026 — ÎNCHIDEREA ZILEI: **pentru un contabil, ziua asta n-a schimbat aproape nimic**
+
+Costin a cerut ziua scrisă așa: *„dacă ziua n-a schimbat nimic pentru un contabil, scrie-o ca
+atare."* Măsurat, nu apreciat — `git diff` pe fișierele de producție, între cele două commituri ale
+zilei:
+
+- **niciun calcul nu s-a schimbat.** Cele **50** de module de declarație au primit **exact +5 linii
+  fiecare**: constanta `DENUMIRE_OFICIALA` și comentariul ei. Zero logică, zero cotă, zero rând de
+  declarație.
+- **nicio declarație nouă, niciun raport nou, nicio capabilitate nouă.**
+- **singurele fișiere de producție cu schimbare de comportament**: `static/js/ecrane/login.js`
+  (+37 de linii, pagina publică a celor 50) și `static/stil.css` (+46, contrastul).
+
+**Ce ar observa totuși un contabil, dacă s-ar uita:**
+1. **butoanele „?" de ajutor contextual sunt lizibile** — erau la 3.3:1, sub pragul AA; sunt la 4.70.
+   Le vede pe toate ecranele, de câte ori cere ajutor;
+2. **ecranul de logare** — butoanele „Acces" și „Vezi tot" erau la 3.44:1, legăturile din subsol se
+   deosebeau doar prin culoare, subtitlul era la 4.4. Toate reparate. Îl vede la fiecare sesiune;
+3. **o pagină nouă, înainte de logare**, cu toate cele 50 de declarații și un „?" pentru fiecare.
+   Nu-i schimbă munca — e pentru cine se uită la aplicație înainte s-o cumpere.
+
+**Restul zilei a fost pentru mine, nu pentru el:** auditul suitei (4168 de teste clasificate, mutație
+pe 200), lansatorul porții scurte, și trei teste care nu rulau niciodată. Utile — poarta scurtă taie
+bucla de la ~25 de minute la 2m48 pe o felie de cod —, dar **un contabil n-are de unde ști că
+există.**
+
+*Se scrie așa fiindcă altfel ziua ar arăta plină: două commituri, 58 de fișiere, 570 de linii. Dintre
+ele, **83** de linii ating ce vede omul care folosește aplicația, și niciuna nu schimbă o cifră pe
+care o depune la ANAF.* Ziua de **06.09** a fost altfel — acolo D300 și D394 au încetat să iasă
+`valid` pe firme neplătitoare de TVA, iar asta chiar schimbă ce poate depune cineva.
+
