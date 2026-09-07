@@ -22,6 +22,11 @@ baza = round(val_valuta × curs_valutar, 0). totalPlata_A = INT(Σbaze + Σtva).
 Separare strictă: calcul pur / validare / XML / DB / orchestrare.
 """
 
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Decont special de TVA'
+
 from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 import re
 from core import common as c

@@ -42,6 +42,11 @@ citita: o rectificare cu deducere producea o declaratie DUK-valida dar ARITMETIC
 """
 from __future__ import annotations
 
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație rectificativă'
+
 from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from core.common import cheie_manual, alege_varianta as _av, Temei as _Tm
 from datetime import date as _date_v

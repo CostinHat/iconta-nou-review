@@ -45,6 +45,11 @@ NEPOPULAT deliberat:
 
 Contract dXXX: pull/erori_generare/calcul_d600/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind venitul asupra căruia se datorează contribuția de asigurări sociale de sănătate'
 from dataclasses import dataclass, field
 import re
 

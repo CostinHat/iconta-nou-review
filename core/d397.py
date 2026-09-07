@@ -29,6 +29,11 @@ email_L, denR/cifR/adresaR/telefonR/faxR/emailR (reprezentant fiscal), data_elim
 
 Contract dXXX: pull/erori_generare/calcul_d397/build_xml/genereaza(conn, schema, perioada, manual=None).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație informativă privind activitățile de transport alternativ cu autoturism și conducător auto'
 from dataclasses import dataclass, field
 import re
 from datetime import date, datetime

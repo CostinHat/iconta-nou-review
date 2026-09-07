@@ -57,6 +57,11 @@ se pot pre-completa automat; `pull` nu atinge baza -> `genereaza` merge si cu co
 
 Contract dXXX: pull/erori_generare/calcul_d169/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație de înregistrare a contractelor de fiducie sau a construcțiilor juridice similare fiduciei'
 from dataclasses import dataclass, field
 import re
 

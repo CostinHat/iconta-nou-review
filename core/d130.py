@@ -22,6 +22,11 @@ Contract dXXX: pull/erori_generare/calcul_d130/build_xml/genereaza(conn, schema,
 NEPOPULAT deliberat: identitatea platitorului (cui/denumire/adresa/contact) NU se trage din registru
 (pull()=={}) — vine integral din `manual`; nivelul cotei de impozit (se calculeaza in afara modulului).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Decont privind impozitul la țițeiul din producția internă'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 import re

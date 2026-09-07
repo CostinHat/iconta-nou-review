@@ -23,6 +23,11 @@ SEMANTICA/REGULI din ACT (anaf_surse/structura_D223_2016_050116_13012016 + d223_
 
 Contract dXXX: pull/erori_generare/calcul_d223/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind veniturile estimate pentru asocierile fără personalitate juridică'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

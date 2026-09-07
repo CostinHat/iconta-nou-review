@@ -46,6 +46,11 @@ Contract dXXX: pull/erori_generare/calcul_d401/build_xml/genereaza(conn, schema,
 NEPOPULAT deliberat (nu se ghiceste): campuri de adresa optionale (Sector_*, Bloc/Scara/Etaj/Apart),
 Act_nr_*/Act_emitent_*/Mod_I, Alta_val, Val2..Val10 (in afara valorii principale) — se dau prin `manual`.
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație informativă privind proprietățile imobiliare deținute de rezidenți ai altor state membre UE'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

@@ -2031,7 +2031,7 @@ html, body {
 .pagina-bara-stanga { display: flex; align-items: center; gap: 8px; }
 .pagina-bara-logo { height: 28px; }
 .pagina-bara-marca { font-size: var(--text); font-weight: 700; color: var(--ardezie); }
-.pagina-bara-acces { background: #3d8fd6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: var(--text-mic); font-weight: 600; cursor: pointer; font-family: var(--font); }
+.pagina-bara-acces { background: #2f6fa6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: var(--text-mic); font-weight: 600; cursor: pointer; font-family: var(--font); }
 .pagina-bara-acces:hover { background: #115ea3; }
 
 /* ICRD_ACCES_OVERLAY_V1 */
@@ -2074,14 +2074,14 @@ html, body {
 .pagina-hero { text-align: center; max-width: 560px; margin: 20px auto 16px; padding: 0 24px; }
 .pagina-hero-eyebrow { font-size: var(--text-mic); color: #0f6cbd; font-weight: 600; margin: 0 0 10px; }
 .pagina-hero-titlu { font-family: "Segoe UI Variable Display", var(--font); font-weight: 700; font-size: 56px; line-height: 60px; letter-spacing: -0.02em; color: #1F2937; margin: 0 0 8px; }
-.pagina-hero-sub { font-family: "Segoe UI Variable Text", "Segoe UI", var(--font); font-weight: 400; font-size: var(--text-titlu); line-height: 32px; letter-spacing: 0; color: #6B7280; margin: 0; }
+.pagina-hero-sub { font-family: "Segoe UI Variable Text", "Segoe UI", var(--font); font-weight: 400; font-size: var(--text-titlu); line-height: 32px; letter-spacing: 0; color: #5c6675; margin: 0; }
 .pagina-carduri-sectiune { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 24px; }
 .pagina-carduri-wrap { display: flex; align-items: stretch; gap: 28px; max-width: 1300px; width: 100%; }
 .pagina-card-mare { flex: 0 0 320px; border-radius: 20px; padding: 40px 32px; display: flex; flex-direction: column; justify-content: center; }
 .pagina-card-mare-icon { width: 68px; height: 68px; border-radius: 17px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
 .pagina-card-mare-titlu { font-size: var(--text-titlu); font-weight: 800; color: var(--ardezie); margin-bottom: 10px; }
 .pagina-card-mare-sub { font-size: var(--text); color: var(--gri); line-height: 1.5; }
-.pagina-card-buton { margin-top: 20px; background: #3d8fd6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: var(--text-mic); font-weight: 600; cursor: pointer; font-family: var(--font); align-self: flex-start; }
+.pagina-card-buton { margin-top: 20px; background: #2f6fa6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: var(--text-mic); font-weight: 600; cursor: pointer; font-family: var(--font); align-self: flex-start; }
 .pagina-carduri { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .pagina-card { border-radius: 18px; padding: 28px 24px; }
 .pagina-card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
@@ -2100,7 +2100,7 @@ html, body { overflow-y: hidden; }
 html.pagina-publica, body.pagina-publica { overflow-y: auto; }
 
 /* ICRD_LANDING_V3 — layout refacut dupa referinta */
-.pagina-card-mare .pagina-card-buton { background: #3d8fd6; }
+.pagina-card-mare .pagina-card-buton { background: #2f6fa6; }
 .pagina-card-mare .pagina-card-buton:hover { background: #115ea3; }
 
 .pagina-carduri-randuri { flex: 1; display: flex; flex-direction: column; gap: 12px; }
@@ -2479,9 +2479,12 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 
 /* [ajutor_contextual] semnul "?" pe ecrane + panoul de ajutor (11.08.2026) */
 .ajutor-btn { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;  /* a11y: tinta atingere >=24px (AA 2.5.8; era 20px) */
-  border-radius:50%; border:1.5px solid #b9c2cf; background:#eef4fd; color:#3d8fd6; font-weight:700;
+  border-radius:50%; border:1.5px solid #b9c2cf; background:#eef4fd; color:#2f6fa6; font-weight:700;
+  /* [a11y 07.09.2026] era #3d8fd6 = 3.3:1 pe #eef4fd, sub AA — acelasi token vechi scos azi
+     de pe butoanele paginii publice. #2f6fa6 = 4.70. Reparat AICI, deci peste tot unde e
+     folosit ajutorul contextual, nu doar pe ecranul nou care l-a scos la iveala. */
   font-size:12px; line-height:1; cursor:pointer; padding:0; margin-left:6px; vertical-align:middle; }
-.ajutor-btn:hover { background:#3d8fd6; color:#fff; border-color:#3d8fd6; }
+.ajutor-btn:hover { background:#2f6fa6; color:#fff; border-color:#2f6fa6; }
 .aj-continut { max-width:640px; }
 .aj-sec { margin:14px 0 4px; color:#1a3a6b; font-size:var(--text-mic); font-weight:700; }
 .aj-sec:first-child { margin-top:0; }
@@ -2783,3 +2786,34 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 @media (prefers-reduced-motion:reduce){
   body.pagina-publica *{transition:none !important;animation:none !important}
 }
+
+/* [decl50_v1 07.09.2026] cele 50 de declaratii, pe ecranul public — FARA bara de derulare.
+   Grila se auto-potriveste pe latime; la 50 de celule de 88px incap 5–10 pe rand, deci 5–10
+   randuri. `overflow: hidden` e DELIBERAT: daca vreodata nu mai incap, se vede ca defect, nu se
+   ascunde intr-o bara de derulare. */
+.decl-grila { list-style: none; margin: 0 0 12px 0; padding: 0; display: grid; overflow: hidden;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 6px; }
+.decl-chip { display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  min-height: 34px; padding: 4px 6px 4px 10px; border: 1px solid rgba(0,0,0,0.16);
+  border-radius: 8px; background: #f4f7fb; }
+.decl-chip-activ { background: #e9edf3; border-color: #2f6fa6; }
+.decl-cod { font-size: var(--text-mic); font-weight: 700; color: #1a2535; letter-spacing: 0.02em; }
+/* `.decl-ce` NU redefineste butonul — infatisarea vine din `.ajutor-btn`, dialectul „?" al casei.
+   Ramane doar ca ancora pentru comportament si ca sa nu se stranga in grila. */
+.decl-ce { flex-shrink: 0; margin-left: 0; }
+.decl-explicatie { min-height: 44px; padding: 10px 12px; border-radius: 8px; background: #e9edf3;
+  font-size: var(--text); line-height: 1.5; color: #1a2535; }
+.decl-per { color: #5c6675; }
+@media (max-width: 480px) {
+  .decl-grila { grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: 4px; }
+}
+
+/* [a11y 07.09.2026] `link-in-text-block` (axe, serious): legăturile din textul paginii publice se
+   deosebeau de text DOAR prin culoare — cine nu distinge culorile nu le vede ca legături. Primesc
+   subliniere, adică al doilea semn, independent de culoare. Găsit la prima rulare de axe pe ecranul
+   de logare: uneltele vizuale se autentifică întâi, deci ecranul ăsta n-a fost niciodată scanat. */
+/* Selectorul corect e `.pagina-subsol` — prima formă a scris `.pagina-jos`, care nu există în
+   pagină; axe a rămas roșu și mi-a spus-o. Măsurat în browser, nu ghicit: legăturile erau #347ab8
+   (3.86 pe alb) fără subliniere, iar textul din jur #5b6573. */
+.pagina-subsol { color: #3a4250; }
+.pagina-subsol a { color: #2f6fa6; text-decoration: underline; }

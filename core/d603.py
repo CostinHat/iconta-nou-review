@@ -37,6 +37,11 @@ se ia din act / de la apelant, nu se presupune.
 Contract dXXX: NS, _cif/_cnp_valid/_esc, calcul_d603, pull, erori_generare, build_xml,
 genereaza(conn, schema, perioada, manual=None).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație pe propria răspundere pentru exceptarea de la plata contribuției de asigurări sociale de sănătate'
 from dataclasses import dataclass, field
 import re
 

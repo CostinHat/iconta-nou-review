@@ -8295,3 +8295,68 @@ ca să se colecteze toate ar fi fabricat trei teste care verifică exact aceeaș
 cale de cod — adică fix clasa pe care auditul tocmai o numise. Numărul 12 era numărătoarea mea de
 definiții, nu o țintă de acoperire.
 
+
+## 07.09.2026 — cele 50 de declarații pe ecranul public, și verificarea generatoarelor
+
+**Întâi verificarea, fiindcă ea decidea mărimea temei.** Comanda cerea: *„verifică că cele 50 au
+generator funcțional complet, dacă NU implementează"*. Măsurat, nu presupus, în trei trepte — și
+primele două au mințit:
+
+1. O sondă care judeca adaptorul după lungime a raportat **49 de cioturi din 50**. Fals: adaptoarele
+   din `DECLARATII` *sunt* învelișuri de un rând, prin arhitectură. *O sondă care judecă după
+   lungime măsoară lungimea, nu funcția.*
+2. Chemarea efectivă a fiecărui generator pe o firmă reală a dat **37 de „crăpături"** cu
+   `firma_profil does not exist`. Tot fals: refoloseam o conexiune și făceam `rollback()` după
+   fiecare apel, ceea ce reseta `search_path`. Era harnașamentul, nu aplicația.
+3. Cu conexiune proaspătă per declarație: **0 crăpături, 8 produc XML, 42 refuză cu motiv scris** —
+   iar motivele sunt *„cere `manual.cif` (CNP)"*, *„adaugă cel puțin un beneficiar nerezident"*,
+   adică **lipsă de date pe firma aceea**, nu lipsă de cod.
+
+Confirmarea tare: **toate cele 50** apar ca literal în fișiere de test care cheamă **DUKIntegrator**,
+validatorul oficial ANAF — 22 în teste dedicate, restul în cele cinci fișiere-lot parametrizate.
+`test_d220_valid_pe_validatorul_oficial` generează XML și cere `stare == "valid"`. **Deci n-am avut
+ce implementa: verificarea trece.**
+
+*(Aici prima numărătoare strictă a dat 22 din 50 și era să raportez „28 fără validare" — expresia
+regulată cerea tipul ca literal în apel, iar testele-lot îl iau dintr-o listă `CAZURI`. Am strâns
+criteriul, apoi l-am corectat: 50.)*
+
+**Ecranul.** În „Funcționalități și prețuri" intră un card nou, „Toate declarațiile", care deschide o
+pagină cu toate cele 50. Grila arată **codul** (D100) — numele sub care contabilul o cere — iar `?`
+deschide denumirea oficială întreagă. Motivul e aritmetic: denumirile au 60–130 de caractere;
+cincizeci afișate întregi nu încap pe niciun ecran fără derulare. Cerința „toate încăpând vizibil" e
+despre listă; explicația e la cerere, exact cum a fost cerută — ca `?`.
+
+`?` e un **buton**, nu un `title=`: un `title` nu se vede pe telefon și nu se aude la cititorul de
+ecran. Explicația se scrie într-o zonă `aria-live`.
+
+**Sursa textului: `DENUMIRE_OFICIALA`**, o constantă nouă în fiecare `core/dNNN.py`, lângă
+generatorul ei. Nu un registru nou — *a doua descriere a aceluiași lucru e prima care îmbătrânește*.
+Diacriticele sunt o corectură **ortografică** peste denumirile deja consemnate în module; **nu** o
+re-verificare la ANAF, și asta e scris și în cod.
+
+**Probat în browser, pe randare**: 50 de celule, 50 de butoane `?`, zero coduri lipsă, **grila și
+fereastra fără bară de derulare**, nicio celulă tăiată sau în afara ecranului, `?` explică diferit
+pentru declarații diferite, axe **0**, mobil (Pixel 5) — 50 de celule, zero revărsare, zero ținte
+sub 24px.
+
+**Și ecranul public a ieșit din punctul orb.** Uneltele vizuale se autentifică înainte de a scana,
+deci ecranul de logare **nu fusese scanat niciodată** cu axe. Prima rulare a găsit **2 violări
+serioase, pre-existente** — probate ca atare pe producție, care rulează HEAD, cu aceleași elemente:
+- butoanele „Acces" și „Vezi tot" — `#3d8fd6` cu alb = **3.44:1**, chiar tokenul pe care
+  DESIGN_SYSTEM v2.50 îl înlocuise peste tot cu `#2f6fa6`; pagina de logare rămăsese în urmă;
+- legăturile din subsol se deosebeau de text **doar prin culoare** (`link-in-text-block`), plus
+  subtitlul `.pagina-hero-sub` la **4.4**, sub prag (22px nu se califică drept „text mare": WCAG
+  cere 24px).
+
+Reparate toate; axe pe ecranul public: **0**. *Chemarea la acțiune a paginii de vânzare avea
+contrastul sub prag, și n-o văzuse nimeni fiindcă nimeni nu se uitase acolo neautentificat.*
+
+**Și poarta m-a respins o dată, pe bună dreptate.** Scrisesem o clasă nouă de buton, `.decl-ce` —
+dar aplicația are deja tiparul „?" rotund, `.ajutor-btn`, folosit de ajutorul contextual. O a doua
+clasă care face același lucru e exact ce interzice regula *„ZERO clase noi"*, iar verificatorul o
+păzește. Butonul a trecut pe dialectul existent. Numai că `.ajutor-btn` avea `#3d8fd6` pe `#eef4fd`
+= **3.3:1**, sub AA — același token vechi. *Refolosind dialectul ca atare aș fi importat defectul pe
+un ecran nou*, așa că l-am dus la `#2f6fa6` = **4.70**: reparat acolo unde stă, deci peste tot unde
+e folosit ajutorul contextual, nu doar pe ecranul care l-a scos la iveală.
+

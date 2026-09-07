@@ -37,6 +37,11 @@ Valoarea impozitului NU se fabrica: e suma legala fixa (18.000 lei), impusa si d
 `impozit_anual` permite override doar daca legea/validatorul se schimba. `sumaimp` explicit in manual
 e respectat ca atare (raspunderea platitorului), altfel se calculeaza din suma legala.
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind impozitul pe reprezentanță'
 from core.identitate import valideaza_cui as _valideaza_cui  # checksum CUI (sursa canonica, read-only)
 from datetime import date as _date, timedelta as _timedelta
 from dataclasses import dataclass, field

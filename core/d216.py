@@ -34,6 +34,11 @@ d_rec="0" implicit (declaratie initiala).
 
 Contract dXXX: pull/erori_generare/calcul_d216/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind impozitul special pe bunurile imobile și mobile de valoare mare'
 from dataclasses import dataclass, field
 import re
 from decimal import Decimal, ROUND_HALF_UP

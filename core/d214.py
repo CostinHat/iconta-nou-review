@@ -38,6 +38,11 @@ reprezentant/imputernicit (denR/cifR/adresaR/telR/faxR/emailR) si datele de cont
 
 Contract dXXX: pull/erori_generare/calcul_d214/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Cerere pentru stabilirea impozitului pe venitul din înstrăinarea de terenuri agricole'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

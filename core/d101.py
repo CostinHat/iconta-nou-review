@@ -28,6 +28,11 @@ Structura reala <declaratie101>:
 """
 from __future__ import annotations
 
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind impozitul pe profit'
+
 from core.common import text_anaf as _t, alege_varianta as _av, Temei as _Tm, LIMITE_TEXT_ANAF as _LIM  # +versionare +limite text
 from core.identitate import valideaza_cui as _valideaza_cui  # T1 (10.08.2026): checksum CUI firma, sursa canonica (read-only)
 from datetime import date as _date_v

@@ -19,6 +19,11 @@ Reguli: sumaMax >= sumaAnt+sumaRest; sumaRest>0; Σ sumaB <= sumaRest; IBAN cu c
 
 Contract dXXX: pull/erori_generare/calcul_d177/build_xml/genereaza(conn, schema, perioada).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Cerere privind redirecționarea impozitului pe profit către entități nonprofit'
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from decimal import Decimal, ROUND_HALF_UP

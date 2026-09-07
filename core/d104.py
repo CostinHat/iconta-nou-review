@@ -25,6 +25,11 @@ personalitate juridica, CF L227/2015 - regimul asocierilor):
 
 Contract dXXX: pull/erori_generare/calcul_d104/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind distribuirea între asociați a veniturilor și cheltuielilor'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

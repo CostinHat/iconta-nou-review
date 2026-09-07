@@ -1,0 +1,82 @@
+{
+ "asteptat": 50,
+ "ui_hash": "430a4ff40d2bb169",
+ "celule": 50,
+ "coduri": [
+  "D100",
+  "D101",
+  "D101G",
+  "D104",
+  "D106",
+  "D107",
+  "D108",
+  "D110",
+  "D112",
+  "D114",
+  "D119",
+  "D120",
+  "D130",
+  "D169",
+  "D169N",
+  "D177",
+  "D200",
+  "D201",
+  "D204",
+  "D205",
+  "D207",
+  "D208",
+  "D212",
+  "D213",
+  "D214",
+  "D216",
+  "D220",
+  "D221",
+  "D223",
+  "D230",
+  "D300",
+  "D301",
+  "D307",
+  "D311",
+  "D318",
+  "D390",
+  "D393",
+  "D394",
+  "D395",
+  "D397",
+  "D398",
+  "D399",
+  "D401",
+  "D402",
+  "D403",
+  "D406",
+  "D407",
+  "D600",
+  "D603",
+  "D710"
+ ],
+ "butoane_ce": 50,
+ "derulare": {
+  "grila": false,
+  "corp": false,
+  "pagina": true
+ },
+ "invizibile": [],
+ "explicatii": [
+  "D100 — Declarație privind obligațiile de plată la bugetul de stat (trimestrial)",
+  "D406 — Fișierul Standard de Control Fiscal (SAF-T) pentru România (lunar)"
+ ],
+ "explicatii_diferite": true,
+ "axe": {
+  "violari": [],
+  "title_only": {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ },
+ "mobil": {
+  "celule": 50,
+  "revarsare_x": false,
+  "tinte_sub_24": 0
+ }
+}

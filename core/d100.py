@@ -29,6 +29,11 @@ REGULI EXTRASE DIN VALIDATOR (constant pool, D100Validator.jar v9):
 """
 from __future__ import annotations
 
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind obligațiile de plată la bugetul de stat'
+
 from datetime import date
 from core import common as _common
 from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp din structura (03.08.2026)

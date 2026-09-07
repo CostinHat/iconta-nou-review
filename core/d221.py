@@ -24,6 +24,11 @@ CF art.103-106 venituri agricole pe norme de venit):
 
 Contract dXXX: pull/erori_generare/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind veniturile din activități agricole impuse pe bază de norme de venit'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

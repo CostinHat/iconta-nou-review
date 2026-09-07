@@ -16,6 +16,11 @@ Calcule (structura, rd.03/05/19): OB_31=OB_11+OB_21, OB_32=OB_12+OB_22, OB_51=OB
 
 Contract dXXX (verificator): pull / erori_generare / calcul_d311 / build_xml / genereaza(conn, schema, perioada).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'TVA datorată de persoane impozabile al căror cod de TVA a fost anulat'
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from decimal import Decimal, ROUND_HALF_UP

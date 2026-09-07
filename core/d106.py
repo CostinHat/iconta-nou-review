@@ -32,6 +32,11 @@ determinata din act pentru cazul principal): telefon, fax, email.
 
 Contract dXXX: pull/erori_generare/calcul_d106/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație informativă privind dividendele cuvenite acționarilor'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

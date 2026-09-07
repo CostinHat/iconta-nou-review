@@ -33,6 +33,11 @@ adauga prin manual['accize'] = {camp: suma}, doar campuri din whitelist-ul citit
 
 Contract dXXX: NS, _cif/_esc, calcul_d120(manual), pull/erori_generare/build_xml/genereaza(conn,schema,perioada).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Decont privind accizele'
 from dataclasses import dataclass, field
 import re
 

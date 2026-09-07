@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**529 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**530 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 509
+### `core/` — 510
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7940,6 +7940,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_datorie.py` — REGISTRUL DE DATORIE — ce e amanat, ca test care ruleaza.
 - `core/test_declarant_oblig.py` — core/test_declarant_oblig.py — GARD: declarantul (nume + functie) e OBLIGATORIU in profil - se cere
 - `core/test_declarant_warn.py` — core/test_declarant_warn.py — GARD: cand declarantul lipseste din profil, generatoarele AVERTIZEAZA
+- `core/test_declaratii_50.py` — GARD (07.09.2026) — cele 50 de declarații de pe ecranul public nu pot rămâne în urmă.
 - `core/test_declaratii_componente.py` — GARD — fiecare dintre cele nouă declarații ori își arată componentele, ori spune de ce nu poate.
 - `core/test_declaratii_depuse_randuri.py` — Teste F163v2 — persistarea declaratiei depuse (xml + randuri) in public.declaratii_depuse.
 - `core/test_declaratii_lot2_duk.py` — Lot 2 de declaratii noi (10): proba DUK pe fiecare, cu validatorul OFICIAL ANAF.

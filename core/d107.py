@@ -33,6 +33,11 @@ SEMANTICA/REGULI din ACT (anaf_surse/structura_D107_2024_010726 + D107_XML_2024_
 
 Contract dXXX: pull/erori_generare/calcul_d107/build_xml/genereaza(conn, schema, perioada, manual).
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație informativă privind beneficiarii sponsorizărilor / mecenatului / burselor private'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

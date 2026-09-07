@@ -45,6 +45,11 @@ D213 e MANUALA: `pull` intoarce {} si `genereaza` merge cu conn=None (nu se trag
 NEPOPULAT deliberat (optionale, se emit doar daca sunt in `manual`, nu se ghicesc): telC/faxC/emailC
 (contact contribuabil) si blocul imputernicit denR/cifR/adresaR/telR/faxR/emailR.
 """
+
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație privind veniturile realizate de persoana fizică și/sau asocierea fără personalitate juridică'
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re

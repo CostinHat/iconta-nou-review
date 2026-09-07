@@ -51,6 +51,11 @@ cere Stat_R (DUK regula R33), camp inexistent în tabelul `asociati` (vezi build
 """
 from __future__ import annotations
 
+#: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
+#: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste
+#: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
+DENUMIRE_OFICIALA = 'Declarație informativă privind impozitul reținut la sursă și câștigurile/pierderile din investiții, pe beneficiari de venit'
+
 from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from core.identitate import valideaza_cui, valideaza_cnp  # T1: checksum CUI/CNP pre-DUK, read-only (LEAF, fara import circular)
 from dataclasses import dataclass, field
