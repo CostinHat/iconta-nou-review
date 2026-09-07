@@ -603,6 +603,49 @@ nesiguranță e **tot**, nu **mai puțin**.* Afirmația e ținută de un test
 *Efect lateral, măsurat:* `graf_invers()` promitea în docstring că se construiește „o singură dată",
 dar se refăcea la fiecare apel. Memoizat — garda portii scurte a scăzut de la **107 s la 9,5 s**.
 
+**P0 — ARHITECTURA DE FEEDBACK PE NIVELURI (07.09.2026).** Regula 4 avea o singură treaptă:
+perimetrul derivat, sau tot. Măsurat, treapta aia costă între 0 s și 6 minute, în funcție de ce
+atingi — util față de 25 de minute, dar nu față de *„am schimbat un rând și vreau să știu în zece
+secunde"*. Modelul are acum **patru** trepte, toate DERIVATE din același graf de import, niciuna
+aleasă:
+
+| nivel | ce derivă | pe ce se bazează | ce NU vede |
+|---|---|---|---|
+| **N1 direct** | testele care importă **direct** modulul atins (un salt), plus testele atinse ele însele | `graf_invers()`, oprit la primul nivel | orice test care ajunge la modul prin alt modul — adică N2 |
+| **N2 subsistem** | închiderea tranzitivă pe „cine importă", **oprită la rădăcina de compunere** (`main`) | același graf, expandat | testele care ajung la modul prin rute; **N2 singur nu e o poartă** |
+| **N3 integrare** | închiderea COMPLETĂ (prin `main`) **plus** testele care numesc rutele servite de modul | `scan_trasee.citeste_rute()`, care dă per rută modulele din `core/` atinse | rute construite prin concatenare la rulare |
+| **N4 complet** | **nu derivă nimic** — e suita întreagă | — | — |
+
+**DE CE FRONTIERA LA `main`, și e singura decizie de design din P0.** Măsurat: `main.py` **nu**
+importă `core.d112`, și totuși închiderea de la `d112` ajungea la `main` prin lanț și aducea **toate
+cele 22 de teste care importă `main`** — pentru orice modul. *N2 nu era mare fiindcă subsistemul e
+mare, ci fiindcă închiderea trece prin locul unde se întâlnesc toate subsistemele.* Oprind-o acolo,
+N2 descrie subsistemul; trecând-o, N3 descrie integrarea. Fără frontieră, N2 și N3 ar fi fost
+aceeași mulțime cu două nume.
+
+**CE SE ÎNTÂMPLĂ CÂND PERIMETRUL NU SE POATE STABILI: exact ce se întâmpla și înainte.** Refuzul se
+**moștenește**: `_seminte()` e comună tuturor nivelurilor, deci un `.md`, un `.js` sau `main.py`
+atins face **fiecare** nivel să refuze și să ceară poarta completă. *Un nivel nu poate fi mai
+îndrăzneț decât derivarea care îl hrănește.* Ținut de `core/test_niveluri_feedback.py`, parametrizat
+pe toate trei nivelurile și pe toate trei clasele de fișier.
+
+**MĂSURAT (07.09.2026), pe trei module reale:**
+
+| atins | N1 | N2 | N3 | N4 |
+|---|---|---|---|---|
+| `core/facturi_api.py` | 7 fiș · 112 teste · **99 s** | 8 · 114 · **89 s** | 29 · 298 · **140 s** | 4.161 · ~1.500 s |
+| `core/control_fiscal_api.py` | 14 · 211 · **27 s** | 25 · 313 · **129 s** | 47 · 550 · **170 s** | ~1.500 s |
+| `core/d112.py` | 28 · 331 · **103 s** | 189 · 1.657 · **338 s** | 204 · 1.803 · **349 s** | ~1.500 s |
+
+**Și o cifră care contrazice intuiția, de-aia e scrisă:** pe `facturi_api`, **N1 (7 fișiere) a durat
+mai mult decât N2 (8 fișiere)** — 99 s față de 89 s. Costul nu e dat de numărul de fișiere, ci de
+câteva fișiere lente; două rulări ale aceleiași mulțimi diferă și ele. *Deci „nivel mai mic" nu
+înseamnă „mai rapid" — înseamnă „mai puțin acoperit".*
+
+`scripts/poarta_scurta.py --nivel=direct|subsistem|integrare`. `--nivel=complet` e **refuzat**
+deliberat: N4 se rulează cu `pytest` fără listă, altfel cineva ar rula 200 de fișiere crezând că a
+rulat 4.161.
+
 **5. O TURĂ FĂRĂ FIȘIERE EXECUTABILE RULEAZĂ DOAR GĂRZILE DE REGISTRE ȘI DOCUMENTE**
 *(Costin, 03.09.2026, verbatim)*:
 

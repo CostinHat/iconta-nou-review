@@ -134,7 +134,7 @@ def importurile(cale):
 def graf_invers():
     """{modul: {fisiere care il importa}} — construit peste tot repo-ul, o singura data.
 
-    [07.09.2026]  face propozitia de mai sus ADEVARATA. Pana azi graful se reconstruia la
+    [07.09.2026] `functools.lru_cache` face propozitia de mai sus ADEVARATA. Pana azi graful se reconstruia la
     fiecare apel: docstringul promitea „o singura data", codul facea de fiecare data. Garda portii
     scurte, care il cheama de opt ori, dura 107 s din asta."""
     inv = {}
@@ -342,6 +342,195 @@ def perimetru(atinse):
             fisiere.add(a)
     teste = sorted(f for f in fisiere if os.path.basename(f).startswith("test_"))
     return teste, incerte
+
+
+# ============================================================================
+#  P0 — NIVELURILE DE FEEDBACK (07.09.2026)
+# ============================================================================
+#: Modelul cerut: *modificare -> teste direct afectate -> regresie subsistem -> integrare
+#: relevanta -> regresie completa*. Fiecare nivel e o MULTIME DERIVATA, nu una aleasa, si fiecare
+#: are propriul refuz: cand derivarea nu poate inchide perimetrul, raspunsul e **tot**.
+#:
+#: DE CE PATRU SI NU DOUA. `perimetru()` da o singura multime — inchiderea tranzitiva — care pe
+#: `core/d112.py` inseamna 203 fisiere si 6 minute. Util fata de 25 de minute, dar nu fata de
+#: „am schimbat un rand si vreau sa stiu in 10 secunde daca l-am stricat". Nivelurile taie aceeasi
+#: derivare la adancimi diferite; nu inventeaza informatie noua, doar o opresc mai devreme.
+#:
+#: CE E COMUN, si e chiar temeiul: TOATE nivelurile pornesc din acelasi graf de import citit cu
+#: `ast`, si TOATE mostenesc aceleasi `incerte`. Un nivel nu poate fi „mai indraznet" decat
+#: derivarea care il hraneste — daca `perimetru()` refuza, refuza toate.
+
+NIVELURI = ("direct", "subsistem", "integrare", "complet")
+
+
+def nivel_direct(atinse):
+    """N1 — testele care importa DIRECT modulul atins (un singur salt), plus testele atinse ele
+    insele.
+
+    PE CE SE BAZEAZA: aceeasi harta `graf_invers()`, oprita la primul nivel. *Ce derivă:* multimea
+    minima despre care se poate spune „testeaza chiar lucrul pe care l-ai schimbat".
+    *Ce NU vede:* orice test care ajunge la modul prin alt modul — adica exact ce prinde N2. De-aia
+    N1 nu inlocuieste N2; e treapta de secunde dinaintea lui."""
+    teste, incerte = _seminte(atinse)
+    if incerte:
+        return [], incerte
+    inv = graf_invers()
+    fisiere = set(teste)
+    for m in _module_seminte(atinse):
+        for cale in inv.get(m, ()):
+            fisiere.add(cale)
+    return sorted(f for f in fisiere if os.path.basename(f).startswith("test_")), []
+
+
+#: RADACINA DE COMPUNERE — locul unde se intalnesc toate subsistemele. Inchiderea care trece prin
+#: ea inceteaza sa descrie un subsistem si incepe sa descrie aplicatia.
+#: MASURAT (07.09.2026): `main.py` NU importa `core.d112`, si totusi inchiderea de la `d112` ajungea
+#: la `main` prin lant si aducea toate cele 22 de teste care importa `main` — pentru ORICE modul.
+FRONTIERA = ("main",)
+
+
+def _inchidere(seminte, opreste_la=()):
+    """Inchiderea tranzitiva pe „cine importa", cu oprire optionala la niste module-frontiera.
+
+    `opreste_la` nu EXCLUDE modulul — fisierele care il importa intra —, doar nu se mai EXPANDEAZA
+    prin el. Diferenta conteaza: testele care importa direct modulul atins raman, cele care ajung
+    la el numai prin radacina de compunere trec la N3."""
+    inv = graf_invers()
+    vazute = set(seminte)
+    fisiere = set()
+    coada = list(seminte)
+    while coada:
+        m = coada.pop()
+        for cale in inv.get(m, ()):
+            fisiere.add(cale)
+            m2 = _module_din_cale(cale)
+            if m2 and m2 not in vazute and m2 not in opreste_la:
+                vazute.add(m2)
+                coada.append(m2)
+    return fisiere
+
+
+def nivel_subsistem(atinse):
+    """N2 — regresia de SUBSISTEM: inchiderea tranzitiva, **oprita la radacina de compunere**.
+
+    *Ce derivă:* tot ce depinde de modulul schimbat fara sa treaca prin `main`. Subsistemul nu e un
+    director si nu e o eticheta — e multimea a ce depinde, taiata acolo unde inceteaza sa mai fie
+    un subsistem.
+    *Ce NU vede:* testele care ajung la modul prin rute (`main`). Alea sunt N3, si N3 le adauga
+    inapoi. **N2 singur nu e o poarta** — e treapta de minute dinaintea integrarii."""
+    teste, incerte = _seminte(atinse)
+    if incerte:
+        return [], incerte
+    fisiere = set(teste) | _inchidere(_module_seminte(atinse), opreste_la=set(FRONTIERA))
+    return sorted(f for f in fisiere if os.path.basename(f).startswith("test_")), []
+
+
+def _rute_ale_modulelor(module):
+    """Rutele HTTP ale caror handlere ating vreunul din modulele date.
+
+    Nu se ghiceste din numele rutei: se ia din `scan_trasee.citeste_rute()`, care rezolva aliasurile
+    de import din `main.py` si spune, per ruta, ce module din `core/` atinge. Instrument existent,
+    deja gardat de `core/test_trasee.py` — nu o a doua harta."""
+    sys.path.insert(0, os.path.join(RAD, "scripts"))
+    try:
+        import scan_trasee as _st
+    except Exception:
+        return None                      # nu se poate deriva -> apelantul refuza
+    scurte = {m.split(".")[-1] for m in module}
+    out = set()
+    for r in _st.citeste_rute():
+        if scurte & set(r.get("module") or ()):
+            out.add(r.get("norm") or r.get("cale"))
+    return out
+
+
+def nivel_integrare(atinse):
+    """N3 — N2, plus testele care exercita RUTELE servite de modulele atinse.
+
+    PE CE SE BAZEAZA: `scan_trasee.citeste_rute()` da, per ruta, modulele din `core/` pe care le
+    atinge. Deci: modul schimbat -> rutele lui -> testele care numesc acele rute ca sir.
+
+    *Ce derivă:* stratul pe care graful de import NU-l vede — un test care cheama `POST
+    /tenants/{id}/facturi/emite` prin client HTTP nu importa `facturi_api`, deci nu apare in N2.
+    *Ce NU vede, declarat:* rutele construite prin concatenare la rulare, si testele care ajung la
+    ruta prin ajutoare care compun calea. Amandoua raman in sarcina lui N4."""
+    teste, incerte = perimetru(atinse)          # inchiderea COMPLETA, prin `main` cu tot
+    if incerte:
+        return [], incerte
+    rute = _rute_ale_modulelor(_module_seminte(atinse))
+    if rute is None:
+        return [], ["nu s-a putut citi harta rutelor (scan_trasee) — nu se poate inchide N3"]
+    fisiere = set(teste)
+    for cale in _fisiere_py():
+        baza = os.path.basename(cale)
+        if not (baza.startswith("test_") and cale.endswith(".py")):
+            continue
+        if cale in fisiere:
+            continue
+        for s_ in _siruri_din(cale):
+            if s_ in rute:
+                fisiere.add(cale)
+                break
+    return sorted(fisiere), []
+
+
+def _siruri_din(cale):
+    """Sirurile literale dintr-un fisier, citite cu `ast` — nu cu o expresie regulata, ca un nume
+    de ruta dintr-un comentariu sa nu treaca drept exercitare."""
+    import warnings
+    try:
+        with warnings.catch_warnings():
+            # aceeasi suprimare ca in `importurile`, si din acelasi motiv: `ruff` raporteaza
+            # literalele de regex, in poarta. Doua parsari ale acelorasi fisiere trebuie sa se
+            # poarte la fel, altfel a doua umple iesirea cu zgomot care nu e al ei.
+            warnings.simplefilter("ignore", SyntaxWarning)
+            arb = ast.parse(io.open(os.path.join(RAD, cale), encoding="utf-8").read())
+    except (SyntaxError, UnicodeDecodeError, OSError):
+        return ()
+    return {n.value for n in ast.walk(arb)
+            if isinstance(n, ast.Constant) and isinstance(n.value, str)}
+
+
+def _module_seminte(atinse):
+    """Modulele-samanta: fisierele .py atinse, ca nume de modul."""
+    out = set()
+    for a in atinse:
+        m = _module_din_cale(a)
+        if m:
+            out.add(m)
+    return out
+
+
+def _seminte(atinse):
+    """`(teste_atinse, incerte)` — partea comuna a tuturor nivelurilor: ce refuza, refuza pentru
+    toate. Un nivel nu poate fi mai indraznet decat derivarea care il hraneste."""
+    incerte = []
+    for a in atinse:
+        baza = os.path.basename(a)
+        if baza in NEDERIVABILE:
+            incerte.append("%s — %s" % (a, NEDERIVABILE[baza]))
+        elif a.endswith(EXT_NEDERIVABILE):
+            incerte.append("%s — fisier ne-Python: garzile care il citesc nu-l importa, "
+                           "deci graful de import nu le vede" % a)
+        elif _module_din_cale(a) is None:
+            incerte.append("%s — nu e modul Python si nu e in clasele cunoscute" % a)
+    atins_test = [a for a in atinse
+                  if os.path.basename(a).startswith("test_") and a.endswith(".py")]
+    return atins_test, incerte
+
+
+def nivel(nume, atinse):
+    """Dispecerul. `complet` nu deriva nimic: intoarce lista goala si motivul, fiindca N4 E suita
+    intreaga — se ruleaza cu `pytest` fara argumente, nu cu o lista de fisiere."""
+    if nume == "direct":
+        return nivel_direct(atinse)
+    if nume == "subsistem":
+        return nivel_subsistem(atinse)
+    if nume == "integrare":
+        return nivel_integrare(atinse)
+    if nume == "complet":
+        return [], ["N4 e suita intreaga, prin definitie — se ruleaza fara lista de fisiere"]
+    raise ValueError("nivel necunoscut: %r (cunoscute: %s)" % (nume, ", ".join(NIVELURI)))
 
 
 def main(argv):

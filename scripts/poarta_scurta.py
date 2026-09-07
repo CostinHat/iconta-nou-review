@@ -43,6 +43,21 @@ def main(argv):
         print("  Ca sa PROBEZI derivarea pe un fisier anume: scripts/perimetru.py <cale>")
         return 3
 
+    # [P0 07.09.2026] NIVELUL cerut. Implicit: `subsistem` — treapta de minute, cea mai des
+    # folosita in bucla de lucru. `--nivel complet` nu e acceptat aici: N4 e suita intreaga, si se
+    # ruleaza cu `pytest` fara lista, nu prin instrumentul de perimetru.
+    nivel = "subsistem"
+    for a in argv:
+        if a.startswith("--nivel="):
+            nivel = a.split("=", 1)[1]
+    if nivel not in P.NIVELURI:
+        print("REFUZ: nivel necunoscut %r. Cunoscute: %s" % (nivel, ", ".join(P.NIVELURI)))
+        return 3
+    if nivel == "complet":
+        print("N4 (complet) NU se ruleaza de aici — e suita intreaga:")
+        print("  ./venv/bin/python -m pytest -q")
+        return 3
+
     atinse = P.atinse_din_git()
     nt = P.netracked()
     if not atinse:
@@ -57,7 +72,7 @@ def main(argv):
     if nt:
         print("(plus %d fisiere neurmarite si nestagiate, care NU intra in perimetru)" % len(nt))
 
-    teste, incerte = P.perimetru(atinse)
+    teste, incerte = P.nivel(nivel, atinse)
 
     # [3] nesiguranta -> poarta completa, cu motivul scris
     if incerte:
@@ -77,15 +92,18 @@ def main(argv):
         return 2
 
     print()
-    print("PERIMETRU DERIVAT — %d fisiere de test." % len(teste))
+    print("NIVEL %s — %d fisiere de test." % (nivel.upper(), len(teste)))
     t0 = time.time()
     r = subprocess.run(["./venv/bin/python", "-m", "pytest", "-q", "--no-header"] + teste,
                        cwd=RAD)
     dt = time.time() - t0
 
     print()
-    print("poarta scurta: %.0f s pe %d fisiere de test" % (dt, len(teste)))
-    print("CE N-A RULAT: verificatorul de conformitate, si testele din afara perimetrului.")
+    print("nivel %s: %.0f s pe %d fisiere de test" % (nivel, dt, len(teste)))
+    urm = {"direct": "subsistem", "subsistem": "integrare", "integrare": "complet"}.get(nivel)
+    if urm:
+        print("CE N-A RULAT: tot ce e peste nivelul asta. Urmatoarea treapta: --nivel=%s" % urm)
+    print("CE N-A RULAT, oricum: verificatorul de conformitate.")
     print("Poarta COMPLETA ramane obligatorie inainte de publicare si inainte de /clear.")
     return r.returncode
 

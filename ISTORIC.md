@@ -8392,3 +8392,36 @@ ele, **83** de linii ating ce vede omul care folosește aplicația, și niciuna 
 care o depune la ANAF.* Ziua de **06.09** a fost altfel — acolo D300 și D394 au încetat să iasă
 `valid` pe firme neplătitoare de TVA, iar asta chiar schimbă ce poate depune cineva.
 
+
+## 07.09.2026 (seara) — P0: feedback pe patru niveluri, și four-way-ul se verifică singur
+
+**Nu de la zero, cum s-a cerut:** `perimetru.py` și `poarta_scurta.py`, construite și probate în
+aceeași zi (R43, R94, `d112.py`), au fost **auditate și extinse**. `perimetru()` a rămas
+**neatinsă** — e gardată, iar lansatorul stă pe comportamentul ei; nivelurile s-au adăugat lângă ea.
+
+**Descoperirea care a dat forma modelului** a venit din măsurătoare, nu din design: `main.py` nu
+importă `core.d112`, și totuși închiderea de la `d112` aducea toate cele 22 de teste care importă
+`main`. Închiderea trecea prin rădăcina de compunere și înceta să mai descrie un subsistem. Cu
+frontieră la `main`, N2 = subsistem (189 fișiere) și N3 = integrare (204). Fără ea, ar fi fost
+aceeași mulțime cu două nume.
+
+**Timpii, măsurați:** N1 pe `control_fiscal_api` — **27 s** față de ~1.500 s poarta completă, de
+**55 de ori** mai repede. N2 pe `d112` — 338 s. N3 pe `d112` — 349 s, adică integrarea costă **+11 s**
+peste subsistem, pentru încă 146 de teste. *Cea mai ieftină treaptă e cea mai de sus.*
+
+**Și o cifră care contrazice intuiția:** pe `facturi_api`, N1 (7 fișiere) a durat **mai mult** decât
+N2 (8 fișiere) — 99 s față de 89 s. Costul e dat de câteva fișiere lente, nu de numărul lor. *„Nivel
+mai mic" nu înseamnă „mai rapid", înseamnă „mai puțin acoperit".*
+
+**Four-way-ul se verifică acum singur, la capătul publicării.** Cerința era *„push automat imediat
+după fiecare publicare confirmată prin four-way"*. Push-ul pe `origin/main` **exista deja** de la
+începutul hook-ului; ce lipsea era confirmarea. Iar formularea, luată literal, e circulară:
+`origin/main == HEAD` **este** unul dintre cele patru brațe — nu poți confirma un braț înainte
+să-l construiești. Deci push-ul a rămas unde e, iar la capăt s-a adăugat un pas care **verifică**
+cele patru brațe și **reîncearcă** push-ul dacă brațul remote lipsește. Nu blochează nimic: hook-ul
+iese 0 orice ar fi, cu sentinelă și banner la eșec. *Un `post-commit` care s-ar opri n-ar putea
+desface commitul — singurul lucru pe care l-ar obține e să ascundă restul pașilor.*
+
+*Reparat în trecere:* docstringul memoizării scris ieri era ciunt — backtick-urile fuseseră executate
+de shell. A doua oară în două zile; de-aia patch-urile se trimit prin fișier, nu prin heredoc.
+
