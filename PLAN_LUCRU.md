@@ -569,6 +569,40 @@ ori în registru: garda care se uită exact unde codul e corect
 perimetru derivat poate fi greșit; unul ales e greșit exact acolo unde autorul e orb.* De-aia
 alternativa la nesiguranță e **tot**, nu **mai puțin**.
 
+**CONSTRUIT 07.09.2026 — ce lipsea, și ce s-a măsurat.** Derivarea exista deja întreagă în
+`scripts/perimetru.py` (închiderea tranzitivă pe *cine importă*, plus lista `incerte`). Lipsea
+**lansatorul**: ceva care s-o ia și s-o RULEZE, cu refuzul respectat. E `scripts/poarta_scurta.py`,
+și **importă** derivarea, n-o rescrie.
+
+Lansatorul e făcut ca să nu poată deveni o formalitate: **nu primește fișiere pe linia de comandă**
+(perimetrul vine numai din `git diff`; altfel l-ar alege cel care tocmai a scris modificarea),
+**iese cu 2 la orice nesiguranță**, și, când e verde, **spune ce N-A rulat** — verificatorul de
+conformitate și restul suitei.
+
+*Cele două cazuri de acceptanță, cerute de Costin, sunt pinate ca teste* în
+`core/test_poarta_scurta.py`, ca proba să se refacă la fiecare poartă, nu să rămână o amintire:
+
+| atins | perimetru derivat | teste | timp | poarta completă |
+|---|---:|---:|---:|---:|
+| `core/plati.py` (R43) | 2 fișiere, **niciun test D406** | 9 | **0 s** | ~1.550 s |
+| felia doar-cod a lui R94 | 46 fișiere | 560 | **168 s** (2m48) | ~1.550 s |
+| `core/d112.py` | 203 fișiere, **conține `test_d112.py`** | 1.813 | **366 s** (6m04) | ~1.550 s |
+
+Poarta completă, măsurată de **șapte** ori pe 06–07.09: **1.531–1.593 s**. Deci scurtarea e de
+**9,2×** pe felia lui R94 și **4,2×** pe cazul cel mai larg. Se scrie ca interval, nu ca cifră unică
+— mașina e partajată.
+
+**ȘI CIFRA CARE CONTEAZĂ CEL MAI MULT, fiindcă temperează entuziasmul:** pe **amândouă**
+reparațiile reale de 06.09 (R43 și R94), derivarea **NU poate închide** perimetrul — amândouă au
+atins registre (`.md`) și `main.py`. Poarta scurtă e pentru bucla **din timpul turei**, între
+reparații, cât se umblă doar prin cod; la commit, unde se scriu și registrele, poarta rămâne cea
+completă. *Asta nu e o slăbiciune a instrumentului, e chiar regula 4 funcționând: alternativa la
+nesiguranță e **tot**, nu **mai puțin**.* Afirmația e ținută de un test
+(`test_commiturile_reale_de_azi_ar_fi_cerut_poarta_completa`), ca să nu îmbătrânească tăcut.
+
+*Efect lateral, măsurat:* `graf_invers()` promitea în docstring că se construiește „o singură dată",
+dar se refăcea la fiecare apel. Memoizat — garda portii scurte a scăzut de la **107 s la 9,5 s**.
+
 **5. O TURĂ FĂRĂ FIȘIERE EXECUTABILE RULEAZĂ DOAR GĂRZILE DE REGISTRE ȘI DOCUMENTE**
 *(Costin, 03.09.2026, verbatim)*:
 

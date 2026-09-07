@@ -39,6 +39,7 @@ Folosire:
     ./venv/bin/python scripts/perimetru.py --pytest         # doar argumentele pentru pytest
 """
 import ast
+import functools
 import io
 import os
 import subprocess
@@ -129,8 +130,13 @@ def importurile(cale):
     return out
 
 
+@functools.lru_cache(maxsize=1)
 def graf_invers():
-    """{modul: {fisiere care il importa}} — construit peste tot repo-ul, o singura data."""
+    """{modul: {fisiere care il importa}} — construit peste tot repo-ul, o singura data.
+
+    [07.09.2026]  face propozitia de mai sus ADEVARATA. Pana azi graful se reconstruia la
+    fiecare apel: docstringul promitea „o singura data", codul facea de fiecare data. Garda portii
+    scurte, care il cheama de opt ori, dura 107 s din asta."""
     inv = {}
     for cale in _fisiere_py():
         for m in importurile(cale):

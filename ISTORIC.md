@@ -8269,3 +8269,29 @@ vs 400), amândouă albe. *Când singura culoare care trece e albul, distincția
 altceva decât culoarea.* Defectul n-a picat niciodată fiindcă ecranul n-avea cine să-l deschidă —
 **punctul orb e firma, sau aici: contul**.
 
+
+## 07.09.2026 — poarta scurtă capătă lansator, și trei teste umbrite ies la lumină
+
+**Poarta scurtă (PLAN_LUCRU regula 4).** Derivarea exista deja; lipsea lansatorul. Construit ca
+`scripts/poarta_scurta.py`, care **importă** `perimetru.py` în loc s-o rescrie — *a doua definiție a
+aceluiași lucru e începutul unei divergențe tăcute*. Refuză fișiere pe linia de comandă, refuză pe
+nesiguranță, și își declară marginile când e verde.
+
+Probat pe cele două cazuri cerute: `core/plati.py` → 2 fișiere, **zero teste D406**; `core/d112.py`
+→ 203 fișiere, **conține** testele D112. Ambele pinate ca teste. Măsurat: **168 s** pe felia
+doar-cod a lui R94 față de **~1.550 s** poarta completă — de **9,2 ori** mai repede.
+
+**Dar pe amândouă commiturile reale de ieri derivarea REFUZĂ**, fiindcă amândouă au atins registre și
+`main.py`. Poarta scurtă e pentru bucla din timpul turei, nu pentru commit. Am scris-o ca test, nu
+ca observație, ca să nu devină peste o lună o promisiune pe care nimeni n-o mai verifică.
+
+**Cele trei teste umbrite din `core/test_cashflow.py`**, găsite la auditul de suită: un bloc de
+patru definiții (ajutorul `_rb` plus trei teste) era copiat de două ori, iar a doua copie o umbrea
+pe prima — 12 funcții definite, 9 colectate. **Am probat identitatea caracter cu caracter înainte
+de a șterge ceva**, apoi am scos copia. Acum 9 definite, 9 colectate.
+
+*De ce 9 și nu 12*: cele trei umbrite erau identice cu cele vii, nu variante ale lor. A le redenumi
+ca să se colecteze toate ar fi fabricat trei teste care verifică exact aceeași condiție pe aceeași
+cale de cod — adică fix clasa pe care auditul tocmai o numise. Numărul 12 era numărătoarea mea de
+definiții, nu o țintă de acoperire.
+
