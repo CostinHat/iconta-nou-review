@@ -14153,3 +14153,15 @@ tenanții, idempotent, iar `provision_tenant` o rulează pentru firma nouă, în
 nouă și era necesară: un calcul care ridica scria un dicționar `{"eroare": ...}` cu versiunea curentă,
 deci starea ieșea `curent`, iar apelantul trebuia **să-și amintească** să se uite după cheie.
 `/control-fiscal` își amintea; `de_recalculat` nu — deci firma nu mai era reîncercată niciodată.
+
+**CONFIRMATĂ DE COSTIN, 08.09.2026**, la raportul remedierii, pe două puncte pe care le luasem singur
+și le ceruse ca decizii: **(1)** `tip_firma` rămâne PROIECȚIE sincronă, nu aspect al modelului;
+**(2)** lotul lucrătorului rămâne **200 de perechi** la 5 minute — deci backlogul mare se golește lent
+și **declarat** (varianta (a) din cele trei propuse), nu prin lot mai mare sau lucrători paraleli.
+*Se scrie aici fiindcă o alegere confirmată de Costin nu e același lucru cu una luată de mine: a doua
+se poate răsturna cu o măsurătoare, prima cere să i se ceară din nou.*
+
+**Al treilea punct nu s-a închis, ci s-a DESCHIS ca restanță:** clasa „model de citire cu dependențe
+scrise din memorie" e acum **R177** în `CONFORMITATE.md`, cu descrierea și cifra de azi — dar
+**regula finală nu se scrie până nu se măsoară clasa pe tot repo-ul**, exact cum a cerut Costin.
+*O interdicție scrisă pe o singură instanță plafonează ce am văzut, nu ce există.*
