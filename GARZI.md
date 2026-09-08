@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**532 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**533 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 512
+### `core/` — 513
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7982,6 +7982,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
 - `core/test_fieldmark.py` — [Regula 13 + Regula 6] GARDA: marcajul vizual al campului cu eroare de validare (Regula 14 pct.4).
 - `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.
+- `core/test_firma_rezumat.py` — GARD P2 (08.09.2026) — cererile de portofoliu nu mai cresc cu numărul de firme.
 - `core/test_fisa_cont.py` — GARD: Fișa de cont pentru operațiuni diverse produce ce cere norma, nu o balanță deghizată.
 - `core/test_fixturi_shared_period.py` — [Verificare funcțională reală] GARD: o fixtură de test care scrie într-un tabel PARTAJAT period-keyed
 - `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.

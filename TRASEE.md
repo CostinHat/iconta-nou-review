@@ -1163,7 +1163,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 44
+**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 37
 
 **Cine:** rol cerut: `admin_firma`, `angajat` · drept fin: `poate_depune`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 1 din 8.**
 
@@ -1186,9 +1186,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca` — garda `cere_cabinet`
 - `GET /termene` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `d390`, `declaratii_api`, `declaratii_componente`, `duk`, `istoric_declaratii_import_api`, `migrare_api`, `supervizor`, `supervizor_cache`, `termene_api`
+**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `declaratii_api`, `declaratii_componente`, `duk`, `firma_rezumat`, `istoric_declaratii_import_api`, `migrare_api`, `supervizor`, `supervizor_cache`, `termene_api`
 
-**Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `migrare_status` (INSERT) · `supervizor_confirmari` (INSERT) · `supervizor_rezultat` (INSERT) · `supervizor_sursa` (INSERT)
+**Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `firma_rezumat` (INSERT) · `migrare_status` (INSERT) · `supervizor_confirmari` (INSERT) · `supervizor_rezultat` (INSERT) · `supervizor_sursa` (INSERT)
 
 **Stari puse:** `aprobata`, `depusa`, `descarcata`, `ok`, `respinsa`
 

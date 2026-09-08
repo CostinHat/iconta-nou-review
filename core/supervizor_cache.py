@@ -51,7 +51,14 @@ import json
 #: perechi din `control_incrucisat`), nu scrise din memorie. O atingere a oricăreia invalidează
 #: rezultatul firmei.
 TABELE_TENANT = ("clienti", "efactura_trimiteri", "facturi", "firma_profil",
-                 "inregistrari", "inregistrari_linii")
+                 "inregistrari", "inregistrari_linii",
+                 # [P2, 08.09.2026] Sursele MODELULUI DE CITIRE al portofoliului
+                 # (`core/firma_rezumat.py`). Contorul ramane UNUL SINGUR per firma: unul per
+                 # aspect ar cere N triggere per tabel si N join-uri la citire. Pretul e
+                 # SUPRA-invalidarea — o scriere in `plan_conturi` invalideaza si rezultatul
+                 # supervizorului, care nu depinde de el. *Supra-invalidarea inseamna munca in
+                 # plus, niciodata o valoare veche aratata drept curenta.*
+                 "plan_conturi", "solduri_initiale")
 
 #: Sursa din `public`, per firmă.
 TABELE_PUBLIC = ("declaratii_depuse_curente",)

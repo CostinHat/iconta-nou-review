@@ -5,7 +5,7 @@ la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar ti
 făcut concret și cum se verifică."*
 
 - **ultima actualizare**: 2026-09-08
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎN LUCRU** · P3–P7 nedeschise
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 URMĂTORUL** · P4–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -156,7 +156,7 @@ adică **~110×**. Recalcularea rămâne 9 ms/firmă, dar se plătește o dată 
 
 ---
 
-# P2 — PORTOFOLIU / N+1 · **ÎN LUCRU**
+# P2 — PORTOFOLIU / N+1 · **ÎNCHIS** (08.09.2026)
 
 **Ce trebuie făcut.** Eliminarea **pipeline-urilor fiscale seriale per firmă** din cererile
 interactive. Rutele numite: `migrare/solduri`, `migrare/plan-conturi`, `migrare/vector`,
@@ -190,6 +190,62 @@ fiecare iterație.
 
 **Reper cunoscut, de comparat:** P1 a scos 5 s → 45 ms pe supervizor, cu read-model persistat. Dacă o
 rută din P2 iese cu un raport mult mai slab, **se spune de ce** — nu se raportează ca succes.
+
+
+## P2 — CE S-A LIVRAT ȘI CE S-A MĂSURAT
+
+**Instrumentul întâi, calibrat în ambele direcții** (`scripts/masoara_interogari.py`): numără
+interogări, **conexiuni** și dus-întorsuri, împachetând `db.get_conn` la rulare. Calibrarea e
+obligatorie înainte de folosire — i se dă un caz N+1 (trebuie să raporteze problemă) și unul
+set-based (trebuie să raporteze corect). *Cifrele de mai jos n-ar fi valorat nimic fără ea.*
+
+**Ce a găsit instrumentul și citirea codului n-ar fi arătat:** `auth_api.tenantii_userului` — chemată
+din 13 locuri — făcea **3 interogări per firmă** (`SAVEPOINT` + `SELECT tip_firma` + `RELEASE`) doar
+ca să LISTEZE portofoliul. La 1000 de firme: 3.000 de interogări înaintea oricărei munci utile.
+
+**Soluția:** model de citire în `public` (`core/firma_rezumat.py`), un rând per (firmă, aspect), cu
+**aceeași disciplină de prospețime ca P1** — versiune, moment, stare derivată, niciodată stocată.
+Șase aspecte: `tip_firma`, `solduri`, `plan_conturi`, `vector`, `termene`, `control_fiscal`.
+Invalidarea vine de la aceleași **triggere**, cu contorul extins la 8 tabele-sursă.
+Calculul **nu s-a rescris**: blocul per-firmă din `/termene` a fost **extras** cuvânt cu cuvânt, iar
+`control_fiscal` cheamă exact `evalueaza_firma` + `_construieste_contabil`.
+
+**MĂSURAT, curba 100 / 250 / 500 / 1000** (scenariu declarat: domeniu sintetic peste cele 14 scheme
+reale, ciclate; model populat cu rezumate reale, 10% invalidate; `tenantii_userului` e înlocuit de
+ham, deci interogarea lui de listare **nu intră în cifră, nici înainte, nici după**):
+
+| ruta | ÎNAINTE la 1000 | DUPĂ la 1000 |
+|---|---|---|
+| `migrare/solduri` | 4.000 interog. · 2.001 conex. · **1,24 s** | **1 · 1 · 0,012 s** |
+| `migrare/plan-conturi` | 3.000 · 2.001 · **0,98 s** | **1 · 1 · 0,009 s** |
+| `migrare/vector` | 3.000 · 2.001 · **1,01 s** | **1 · 1 · 0,010 s** |
+| `termene` | 8.000 · 3.001 · **12,88 s** | **1 · 1 · 0,022 s** |
+| **`control-fiscal`** | **278.882 · 12.001 · 70,81 s** | **1 · 1 · 0,017 s** |
+
+Creșterea era **liniară** înainte (~2,0× la fiecare dublare, măsurat pe toate patru punctele).
+După: **numărul de interogări e constant**, iar latența crește de la o bază de milisecunde — exact
+„O(N) ieftin pe read-model", care e acceptabil.
+
+**Costul mutat, nu desființat:** recalcularea grea costă **~120 ms/firmă** (măsurat pe portofoliul
+real), plătită o dată per firmă per schimbare, în afara cererii interactive.
+
+**TREI DEFECTE ALE MELE, prinse de gărzi în timpul pasului** — scrise fiindcă două erau serioase:
+1. **SECURITATE.** Extrăgând blocul din `/termene`, am inserat funcția nouă **între decorator și
+   `def`** — deci `@app.get("/termene")` a ajuns pe ajutorul extras, **fără `Depends(cere_cabinet)`**.
+   `ruff` n-a văzut nimic (cod valid), `compile()` la fel. A prins-o `test_rute_autentificate`.
+   *O mutare de cod care trece pe lângă un decorator nu e o mutare de cod, e o schimbare de contract.*
+2. **CORECTITUDINE.** Recalcularea rula cu `ctx`-ul unui singur cabinet, iar două sub-verificări
+   (stocuri, praguri Intrastat) cad pe „gri" fără acces la firmă — deci verdictul ar fi depins de
+   cine întreabă. Reparat: se alege, per firmă, administratorul cabinetului ei.
+3. **MĂSURĂTOARE FLATANTĂ.** Prima curbă „după" arăta 1 interogare / 4 ms — dar modelul era **gol**
+   pentru id-urile sintetice, deci rutele întorceau „necalculat" pentru toate. Am populat modelul și
+   am măsurat din nou. *O cifră adevărată despre un răspuns fără conținut e tot o cifră falsă.*
+
+*Și două lecții de unealtă:* `ast.parse` **nu** prinde `continue` în afara buclei — aia e o
+verificare de compilare, deci validarea corectă e `compile()`; iar contorul de interogări numără doar
+ce se deschide **înăuntrul** blocului măsurat — a raportat 0, cinstit, când testul lua conexiunea
+înainte.
+
 
 ---
 

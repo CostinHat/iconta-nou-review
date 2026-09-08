@@ -429,10 +429,34 @@ def tenantii_userului(conn, user_id, doar_active=True):
                 "WHERE ut.user_id = %s AND (%s OR t.activ = true) ORDER BY t.nume",
                 (user_id, toate))
         lista = [dict(r) for r in cur.fetchall()]
-    # [tip_firma_v1] tip_firma traieste in {schema}.firma_profil (schema-per-tenant),
-    # nu in public.tenants -> il aducem per firma. Default 'srl' daca profilul lipseste.
-    with conn.cursor() as cur:
+    # [P2, 08.09.2026] `tip_firma` VINE DIN MODELUL DE CITIRE — o interogare pentru tot
+    # portofoliul, in loc de trei per firma (`SAVEPOINT` + `SELECT` + `RELEASE`). Masurat: la 1000
+    # de firme, bucla de mai jos costa 3.000 de interogari DOAR ca sa listezi portofoliul, inaintea
+    # oricarei munci utile — si functia e chemata din 13 locuri.
+    #
+    # REZERVA E DECLARATA: firmele care NU sunt inca in model raman pe calea veche, per schema.
+    # Pe un model rece N+1-ul revine, mai putin, dar revine. Nu se scrie „rezolvat" despre o cale
+    # care are o ramura nemasurata.
+    from core.migrare_api import regim_contabil as _rc
+    _lipsa = list(lista)
+    try:
+        from core import firma_rezumat as _fr
+        _ids = [t["id"] for t in lista]
+        _model = _fr.citeste(conn, _ids, ["tip_firma"]) if _ids else {}
+        _lipsa = []
         for t in lista:
+            _a = (_model.get(t["id"]) or {}).get("tip_firma") or {}
+            _d = _a.get("date") or {}
+            if _a.get("stare") == _fr.CURENT and _d.get("tip_firma"):
+                t["tip_firma"] = _d["tip_firma"]
+                t["regim_contabil"] = _d.get("regim_contabil") or _rc(_d["tip_firma"])
+            else:
+                _lipsa.append(t)          # necalculat sau invalidat -> calea veche, pentru ea
+    except Exception:
+        _lipsa = list(lista)              # modelul lipseste (baza veche) -> totul pe calea veche
+
+    with conn.cursor() as cur:
+        for t in _lipsa:
             # savepoint per firma: o interogare esuata (schema fara firma_profil)
             # abortul tranzactiei psycopg2 -> altfel toate firmele urmatoare ar cadea pe 'srl'
             try:

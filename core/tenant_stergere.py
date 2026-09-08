@@ -88,6 +88,10 @@ TABELE_TENANT = (
     # nicio informatie proprie. Lasate in urma, o firma noua cu acelasi `tenant_id` ar mosteni
     # constatarile alteia — si le-ar arata ca fiind ale ei, cu `calculat_la` din alta viata.
     "supervizor_rezultat",
+    # [P2, 08.09.2026] Modelul de citire al portofoliului. SE STERGE odata cu firma: e o
+    # valoare DERIVATA despre ea, recalculabila din sursa. Lasat in urma, o firma noua cu
+    # acelasi id ar mosteni rezumatele alteia — si le-ar arata ca fiind ale ei.
+    "firma_rezumat",
     "supervizor_sursa",
     "urme_portal",
     "user_tenants",

@@ -8508,3 +8508,31 @@ lecției „ambele direcții", de data asta pe un instrument de proces.
 *Se scrie în plan, la P0, nu doar aici:* un pas declarat închis care s-a dovedit incomplet trebuie să
 poarte asta chiar în locul unde scrie „ÎNCHIS".
 
+
+## 08.09.2026 — P2: o cerere de portofoliu nu mai crește cu numărul de firme
+
+**Instrumentul întâi, calibrat în ambele direcții**, fiindcă asta a cerut Costin explicit — și
+fiindcă defectul lui P0, găsit cu câteva ore înainte, venea exact dintr-o calibrare pe o singură
+direcție.
+
+**Ce a găsit, și citirea codului n-ar fi arătat:** `tenantii_userului`, chemată din 13 locuri, făcea
+**3 interogări per firmă** doar ca să listeze portofoliul.
+
+**Cifrele, la 1000 de firme, într-o singură cerere:** `control-fiscal` — **278.882 de interogări,
+12.001 de conexiuni, 70,8 s** → **1 · 1 · 17 ms**. `termene` — 12,9 s → 22 ms. Celelalte trei, de la
+~1 s la ~10 ms. Numărul de interogări e acum **constant**.
+
+**Costul n-a dispărut, s-a mutat:** ~120 ms/firmă la recalculare, o dată per schimbare.
+
+**Trei defecte ale mele, prinse de gărzi**, și primul e cel mai grav: extrăgând blocul din `/termene`
+am inserat funcția nouă **între decorator și `def`**, deci ruta a rămas **fără autentificare**. Nici
+`ruff`, nici `compile()` n-au văzut ceva — codul era valid. A prins-o garda de rute autentificate.
+*O mutare de cod care trece pe lângă un decorator nu e o mutare de cod, e o schimbare de contract.*
+
+Al doilea: recalcularea în fundal a scos la iveală o presupunere ascunsă — două sub-verificări cereau
+un utilizator cu acces la firmă, iar pe calea veche exista mereu, fiindcă întreba chiar el. *Un
+verdict despre o firmă n-are voie să depindă de cine îl cere.*
+
+Al treilea: prima curbă „după" m-a flatat — model gol, răspunsuri fără conținut, 4 ms. *O cifră
+adevărată despre un răspuns gol e tot o cifră falsă.*
+
