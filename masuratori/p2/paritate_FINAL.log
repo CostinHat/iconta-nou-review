@@ -1,0 +1,32 @@
+════════════════════════════════════════════════════════════════════════
+COMANDA   : ./venv/bin/python -m pytest core/test_paritate_p2.py -v
+TIMESTAMP : 2026-09-08T21:27:45+03:00
+COMMIT    : 2514337d997c21881b1f79dd7135e6c76b50e72f
+GIT STATUS (--short, gol = arbore curat):
+     M masuratori/p2/dependente_masurate.json
+    ?? curba_rute_p2.json
+    ?? masuratori/p2/benchmark_FINAL.log
+    ?? masuratori/p2/paritate_FINAL.log
+    ?? masuratori/p2/scan_dependente_FINAL.iesire.txt
+════════════════════════════════════════════════════════════════════════
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/costin/iconta_nou/venv/bin/python
+cachedir: .pytest_cache
+db.env: incarcat din ~/.iconta/db.env (0 variabile)
+rootdir: /home/costin/iconta_nou
+plugins: anyio-4.13.0
+collecting ... collected 6 items
+
+core/test_paritate_p2.py::test_paritate_migrare_solduri PASSED           [ 16%]
+core/test_paritate_p2.py::test_paritate_migrare_plan_conturi PASSED      [ 33%]
+core/test_paritate_p2.py::test_paritate_migrare_vector PASSED            [ 50%]
+core/test_paritate_p2.py::test_paritate_control_fiscal PASSED            [ 66%]
+core/test_paritate_p2.py::test_paritate_termene PASSED                   [ 83%]
+core/test_paritate_p2.py::test_comparatia_ar_vedea_o_diferenta PASSED    [100%]
+
+============================== 6 passed in 2.02s ===============================
+
+════════════════════════════════════════════════════════════════════════
+EXIT CODE : 0
+SFARSIT   : 2026-09-08T21:27:47+03:00

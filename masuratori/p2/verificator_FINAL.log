@@ -1,0 +1,164 @@
+════════════════════════════════════════════════════════════════════════
+COMANDA   : ./venv/bin/python verificator_conformitate.py
+TIMESTAMP : 2026-09-08T21:54:13+03:00
+COMMIT    : 2514337d997c21881b1f79dd7135e6c76b50e72f
+GIT STATUS (--short, gol = arbore curat):
+     M masuratori/p2/dependente_masurate.json
+    ?? curba_rute_p2.json
+    ?? masuratori/p2/benchmark_FINAL.log
+    ?? masuratori/p2/paritate_FINAL.log
+    ?? masuratori/p2/probe_focalizate_FINAL.log
+    ?? masuratori/p2/scan_dependente_FINAL.iesire.txt
+    ?? masuratori/p2/suita_completa_FINALA.iesire.txt
+    ?? masuratori/p2/verificator_FINAL.log
+════════════════════════════════════════════════════════════════════════
+
+
+### REGISTRU GRI COTA (verde/acceptat/gri/rosu):
+  TOTAL scanat 188 = ACCEPTAT 187 + GRI 0 + ROSU 0 + EXCLUS 1
+  ACCEPTAT = etalon golden/fixture + parametri generator (temei cunoscut, NU datorie) | GRI baseline 0 | EXCLUS = referinta legala alin. in docstring (nu e cota)
+  EXCLUS core/tva_marja_turism.py:74  11    referinta legala (alin.), nu cota
+
+### GARD TEMEI STRUCTURAT (common.COTE):
+  intrari COTE cu temei string (nestructurat): 0 (baseline 0)
+
+### GARD NIVEL_SURSA (COTE, PRAG 0):
+  temeiuri fara nivel_sursa: 0 | MO fara text_citat: 0
+
+### GARD MARKERI TEMEI PE FUNCTII (lista explicita, PRAG 0):
+  functii sub gard: 6 | fara marker: 0 | negasite: 0
+
+### GARD VERSIONARE FORMULE (dispecer pe la_data, PRAG 0):
+  functii de regula: 13 | fara dispecer: 0 | negasite: 0
+
+### GARD BLOCAJ MOTIVAT PE COTE DE REGULA (PRAG 0):
+  cote de regula late-start (data_in > 2025-01-01): 0 | fara blocaj motivat: 0
+
+### GARD PERIOADA CONFIRMATA (lista explicita, PRAG 0):
+  calcule dependente de perioada: 2 | fara verificarea confirmarii: 0 | negasite: 0
+
+### GARD IZOLARE TENANTI (codebase-wide: 2 fisiere-rute, 213 resolveri, 0 routere):
+  rute {tenant_id} care ating DB fara acces: 0 (baseline 0)
+
+### GARD CONTRACT GENERATOARE dXXX (uniform):
+  module neconforme: 3 (baseline 3)
+  NECONFORM d112   lipsesc: calcul_d112, build_xml, genereaza(perioada)
+  NECONFORM d390   lipsesc: genereaza(perioada)
+  NECONFORM d406   lipsesc: calcul_d406, genereaza(perioada)
+
+### GARD POARTA BAZEI NULE (generatoare de declaratii):
+  generatoare fara erori_generare: 0 din 51 (baseline 0)
+
+### GARD E1 (DS cap.26 — doua nume distincte, si care produce efectul):
+  noduri care declara o pereche: 2 · neconforme: 0 (prag 0)
+  perechi din registru nerandate: 0 
+### GARD E2 (DS cap.27 — actul se incheie cu o confirmare vizibila):
+  acte de nivel firma fara confirmare: 0 din 7 (clichet 0 din 7)
+  toate actele de nivel firma confirma vizibil (R82 inchisa 28.08.2026)
+
+### GARD VERDICT RUTE (R70/R80 — gri nu se falsifica in verde):
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+  GRI = detectorul nu poate afirma nimic despre ele. NU sunt verzi.
+============================================================================================
+RAPORT DE CONFORMITATE v2 — Design System
+============================================================================================
+
+### HEX_SEMAFOR: 0
+
+### CULOARE_CARD_HEX: 0
+
+### DIACRITICE: 0
+
+### PRECOMPLETARI: 0
+
+### BUTOANE: 0
+
+### ENTITATE_IN_TITLU: 0
+
+### DIALOG_BROWSER: 0
+
+### BANI_NEFORMATATI: 0
+
+### SPATIERE: 0
+
+### CULORI_HARDCODATE: 0
+
+### ETICHETE_LIPSA: 0
+
+### INPUT_CONTRAST: 0
+
+### ANTET: 0
+
+### CAMP_DIALECT: 0
+
+### MIG_TEXT: 0
+
+### INPUT_NECONFORM: 0
+
+### FMT_LOCAL: 0
+
+### DATA_DIALECT: 0
+
+### DATA_BRUTA: 0
+
+### ICOANE_LOCAL: 0
+
+### FONT_INLINE: 0
+
+### RADIUS_INLINE: 0
+
+### CARD_INLINE: 0
+
+### CHECKBOX_DIALECT: 0
+
+### CASETA_INFO: 0
+
+### STARE_GOALA: 0
+
+### POARTA_INLINE: 0
+
+### ESC_LOCAL: 0
+
+### CASETA_ATENTIE: 0
+
+### BACKEND_UI_BRUT: 0
+
+### VERDICT_COLAPSAT: 0
+
+### DEFAULT_FISCAL_TACIT: 0
+
+### CARD_REGIM: 0
+
+### IMPORT_VERSIUNE: 0
+
+### VERDICT_PARITATE: 0
+
+### MIRROR_CAMPURI_LIPSA: 0
+
+### FILTRARE_INAINTE_VALIDARE: 0
+
+### STARE_GOALA_EROARE: 0
+
+### GRUPE_FUNC_STALE: 0
+
+### BRAND_EU: 0
+
+### GHID_ZONA: 0
+
+### E1_PERECHE_INCOMPLETA: 0
+
+### E2_ACT_FARA_CONFIRMARE: 0
+
+### RUTE_VERDICT: 0
+
+### SCROLL_PUBLIC: 0
+
+### MENIURI (dialecte de optiuni):
+  firme-optiune    52 aparitii (admin.js, cabinet.js, facturi_ecran.js, firme.js)
+
+============================================================================================
+TOTAL: 0 candidate
+
+════════════════════════════════════════════════════════════════════════
+EXIT CODE : 0
+SFARSIT   : 2026-09-08T21:54:25+03:00

@@ -1,0 +1,94 @@
+════════════════════════════════════════════════════════════════════════
+COMANDA   : ./venv/bin/python -m pytest core/test_p2_infrastructura.py core/test_dependente_ramuri.py core/test_firma_rezumat.py core/test_dependente_masurate.py -v
+TIMESTAMP : 2026-09-08T21:27:47+03:00
+COMMIT    : 2514337d997c21881b1f79dd7135e6c76b50e72f
+GIT STATUS (--short, gol = arbore curat):
+     M masuratori/p2/dependente_masurate.json
+    ?? curba_rute_p2.json
+    ?? masuratori/p2/benchmark_FINAL.log
+    ?? masuratori/p2/paritate_FINAL.log
+    ?? masuratori/p2/probe_focalizate_FINAL.log
+    ?? masuratori/p2/scan_dependente_FINAL.iesire.txt
+════════════════════════════════════════════════════════════════════════
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.6.0 -- /home/costin/iconta_nou/venv/bin/python
+cachedir: .pytest_cache
+db.env: incarcat din ~/.iconta/db.env (0 variabile)
+rootdir: /home/costin/iconta_nou
+plugins: anyio-4.13.0
+collecting ... collected 65 items
+
+core/test_p2_infrastructura.py::test_p2_startup_fails_if_ddl_fails PASSED [  1%]
+core/test_p2_infrastructura.py::test_p2_startup_fails_if_trigger_migration_incomplete PASSED [  3%]
+core/test_p2_infrastructura.py::test_p2_startup_detects_missing_trigger PASSED [  4%]
+core/test_p2_infrastructura.py::test_p2_verificarea_prinde_registrul_desincronizat PASSED [  6%]
+core/test_p2_infrastructura.py::test_p2_verificarea_prinde_o_functie_lipsa PASSED [  7%]
+core/test_p2_infrastructura.py::test_p2_trigger_migration_is_idempotent PASSED [  9%]
+core/test_p2_infrastructura.py::test_p2_startup_happy_path [esec secundar: metrici sanatate: citire] PoolError: connection pool is closed
+[esec secundar: metrici sanatate: scriere] RuntimeError: pool neinițializat — cheamă init_pool() la startup
+PASSED        [ 10%]
+core/test_p2_infrastructura.py::test_p2_pool_chiar_da_sesiuni_diferite PASSED [ 12%]
+core/test_p2_infrastructura.py::test_p2_worker_same_session_advisory_lock PASSED [ 13%]
+core/test_p2_infrastructura.py::test_p2_worker_second_worker_skips_locked_tenant PASSED [ 15%]
+core/test_p2_infrastructura.py::test_p2_worker_unlocks_after_success PASSED [ 16%]
+core/test_p2_infrastructura.py::test_p2_worker_unlocks_after_exception PASSED [ 18%]
+core/test_p2_infrastructura.py::test_p2_worker_unlock_false_observable PASSED [ 20%]
+core/test_p2_infrastructura.py::test_p2_worker_semnaleaza_sesiuni_diferite PASSED [ 21%]
+core/test_p2_infrastructura.py::test_p2_worker_no_lock_leak_in_pool PASSED [ 23%]
+core/test_p2_infrastructura.py::test_p2_worker_nu_epuizeaza_poolul PASSED [ 24%]
+core/test_dependente_ramuri.py::test_registrul_de_ramuri_e_acelasi_in_proba_si_in_document PASSED [ 26%]
+core/test_dependente_ramuri.py::test_ramura_deschide_sursele_ei[salarii] PASSED [ 27%]
+core/test_dependente_ramuri.py::test_ramura_deschide_sursele_ei[stoc] PASSED [ 29%]
+core/test_dependente_ramuri.py::test_ramurile_acopera_tot_ce_declara_registrul PASSED [ 30%]
+core/test_dependente_ramuri.py::test_nicio_sursa_observata_nu_lipseste_din_registru PASSED [ 32%]
+core/test_dependente_ramuri.py::test_sursele_publice_observate_sunt_clasificate PASSED [ 33%]
+core/test_dependente_ramuri.py::test_3ABC_sursa_ceruta_de_audit_e_exercitata[salariati] PASSED [ 35%]
+core/test_dependente_ramuri.py::test_3ABC_sursa_ceruta_de_audit_e_exercitata[articole] PASSED [ 36%]
+core/test_dependente_ramuri.py::test_3ABC_sursa_ceruta_de_audit_e_exercitata[miscari_stoc] PASSED [ 38%]
+core/test_dependente_ramuri.py::test_3D_sursa_publica_e_exercitata[declaratii_depuse] PASSED [ 40%]
+core/test_dependente_ramuri.py::test_3F_garda_pica_daca_o_sursa_iese_din_registru PASSED [ 41%]
+core/test_dependente_ramuri.py::test_3E_o_ramura_noua_ar_aduce_sursa_ei PASSED [ 43%]
+core/test_firma_rezumat.py::test_instrumentul_e_calibrat_inainte_de_orice_cifra PASSED [ 44%]
+core/test_firma_rezumat.py::test_citirea_face_o_singura_interogare_indiferent_de_cate_firme PASSED [ 46%]
+core/test_firma_rezumat.py::test_toate_aspectele_intr_o_singura_interogare PASSED [ 47%]
+core/test_firma_rezumat.py::test_un_rezumat_invalidat_NU_se_da_drept_curent PASSED [ 49%]
+core/test_firma_rezumat.py::test_absenta_se_declara PASSED               [ 50%]
+core/test_firma_rezumat.py::test_o_sursa_invalideaza_exact_aspectele_care_o_citesc[solduri_initiale] PASSED [ 52%]
+core/test_firma_rezumat.py::test_o_sursa_invalideaza_exact_aspectele_care_o_citesc[plan_conturi] PASSED [ 53%]
+core/test_firma_rezumat.py::test_o_sursa_invalideaza_exact_aspectele_care_o_citesc[facturi] PASSED [ 55%]
+core/test_firma_rezumat.py::test_o_sursa_invalideaza_exact_aspectele_care_o_citesc[salariati] PASSED [ 56%]
+core/test_firma_rezumat.py::test_o_sursa_invalideaza_exact_aspectele_care_o_citesc[articole] PASSED [ 58%]
+core/test_firma_rezumat.py::test_o_scriere_intr_o_sursa_a_altui_aspect_nu_atinge_solduri PASSED [ 60%]
+core/test_firma_rezumat.py::test_contorul_creste_o_data_per_INSTRUCTIUNE_nu_per_rand PASSED [ 61%]
+core/test_firma_rezumat.py::test_un_verdict_de_zi_calculat_ieri_nu_e_curent_azi PASSED [ 63%]
+core/test_firma_rezumat.py::test_aspectele_fara_dependenta_de_timp_NU_se_invalideaza_la_schimbarea_zilei PASSED [ 64%]
+core/test_firma_rezumat.py::test_epoca_e_declarata_per_aspect_nu_ghicita PASSED [ 66%]
+core/test_firma_rezumat.py::test_o_eroare_de_calcul_nu_devine_stare_curenta PASSED [ 67%]
+core/test_firma_rezumat.py::test_o_eroare_e_reincercata_dar_nu_imediat PASSED [ 69%]
+core/test_firma_rezumat.py::test_pasul_de_reincercare_creste PASSED      [ 70%]
+core/test_firma_rezumat.py::test_de_recalculat_vede_un_aspect_lipsa_nu_doar_o_firma_lipsa PASSED [ 72%]
+core/test_firma_rezumat.py::test_de_recalculat_pleaca_de_la_firme_nu_de_la_contoare PASSED [ 73%]
+core/test_firma_rezumat.py::test_doua_ture_nu_recalculeaza_aceeasi_firma PASSED [ 75%]
+core/test_firma_rezumat.py::test_oprirea_e_curata_si_se_raporteaza PASSED [ 76%]
+core/test_firma_rezumat.py::test_lotul_margineste_tura_iar_restul_se_raporteaza PASSED [ 78%]
+core/test_firma_rezumat.py::test_fiecare_tabela_sursa_are_trigger_pe_o_firma_reala PASSED [ 80%]
+core/test_firma_rezumat.py::test_aspectele_grele_isi_declara_sursele PASSED [ 81%]
+core/test_firma_rezumat.py::test_sursele_publice_sunt_urmarite PASSED    [ 83%]
+core/test_firma_rezumat.py::test_ce_nu_se_urmareste_e_o_alegere_scrisa PASSED [ 84%]
+core/test_firma_rezumat.py::test_aspectele_cheama_functiile_rutei_nu_reimplementari PASSED [ 86%]
+core/test_firma_rezumat.py::test_p2_endpoint_query_count PASSED          [ 87%]
+core/test_firma_rezumat.py::test_tip_firma_nu_mai_e_aspect_ci_proiectie PASSED [ 89%]
+core/test_dependente_masurate.py::test_blocul_din_document_e_cel_generat_acum PASSED [ 90%]
+core/test_dependente_masurate.py::test_documentul_numeste_fiecare_aspect PASSED [ 92%]
+core/test_dependente_masurate.py::test_registrul_cuprinde_tot_ce_s_a_masurat PASSED [ 93%]
+core/test_dependente_masurate.py::test_publicul_masurat_e_urmarit_sau_declarat_neurmarit PASSED [ 95%]
+core/test_dependente_masurate.py::test_artefactul_spune_pe_cate_firme_a_fost_masurat PASSED [ 96%]
+core/test_dependente_masurate.py::test_cele_doua_instrumente_nu_s_au_contrazis PASSED [ 98%]
+core/test_dependente_masurate.py::test_fiecare_sursa_din_registru_are_trigger_pe_fiecare_firma PASSED [100%]
+
+============================== 65 passed in 6.70s ==============================
+
+════════════════════════════════════════════════════════════════════════
+EXIT CODE : 0
+SFARSIT   : 2026-09-08T21:27:54+03:00
