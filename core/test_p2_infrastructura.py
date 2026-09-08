@@ -407,6 +407,254 @@ def test_p2_worker_no_lock_leak_in_pool(firma_proba):
     assert scurse == [], "blocaje rămase ținute după tură, pentru firmele: %s" % scurse
 
 
+# ============================================================================
+#  POST-P2 HARDENING (09.09.2026) — A: ordinea taskurilor de fundal
+# ============================================================================
+def test_taskurile_de_fundal_nu_pornesc_daca_infrastructura_pica(monkeypatch):
+    """A. La eșec de infrastructură, bucla de sănătate NU se pornește.
+
+    Nu era un defect de corectitudine — startup-ul e fail-closed —, dar era o ordine care nu se
+    poate apăra: un task de fundal legat de o bază despre care încă nu se știe dacă poartă
+    infrastructura P2. *Ordinea corectă e: deschizi, instalezi, VERIFICI, apoi pornești ce rulează
+    singur.*"""
+    if not _db_ok():
+        pytest.skip("fara baza de date")
+    import main as _main
+    inainte = _main._TASKURI_FUNDAL_PORNITE
+
+    def _explodeaza(conn):
+        raise RuntimeError("proba: DDL P2 indisponibil")
+
+    monkeypatch.setattr(FR, "aplica_ddl", _explodeaza)
+    with pytest.raises(RuntimeError, match="proba: DDL P2 indisponibil"):
+        _porneste_aplicatia()
+    assert _main._TASKURI_FUNDAL_PORNITE == inainte, (
+        "un task de fundal a pornit peste o infrastructură care a picat")
+
+
+def test_taskurile_de_fundal_pornesc_o_data_la_pornire_reusita():
+    """A, direcția a doua: pe happy path taskul pornește, și pornește EXACT o dată.
+
+    Fără ea, „nu pornește la eșec" ar trece și dacă n-ar porni niciodată."""
+    if not _db_ok():
+        pytest.skip("fara baza de date")
+    import main as _main
+    inainte = _main._TASKURI_FUNDAL_PORNITE
+    assert _porneste_aplicatia() == 200
+    assert _main._TASKURI_FUNDAL_PORNITE == inainte + 1, (
+        "taskul de fundal a pornit de %d ori la o singură pornire"
+        % (_main._TASKURI_FUNDAL_PORNITE - inainte))
+
+
+# ============================================================================
+#  B — izolarea migrării per tenant (SAVEPOINT)
+# ============================================================================
+def test_o_firma_rupta_nu_contamineaza_diagnosticul_celorlalte(firma_proba, monkeypatch):
+    """B. O EROARE SQL REALĂ pe o firmă nu mai face restul să pice secundar.
+
+    Fără `SAVEPOINT`, prima eroare lasă tranzacția în `current transaction is aborted`, iar toate
+    firmele următoare eșuează **din cauza ei**. Raportul ar fi spus „N firme rupte" despre una
+    singură, iar diagnosticul ar fi trimis omul să caute în locul greșit.
+
+    Proba folosește o eroare SQL adevărată, nu un `raise` din Python: numai aia abortează
+    tranzacția, deci numai aia probează chiar mecanismul reparat."""
+    tid, schema = firma_proba
+    real = FR.leaga_triggerele_firma
+
+    def _pica_pe_proba(conn, sch, tenant_id):
+        if tenant_id == tid:
+            with conn.cursor() as cur:
+                cur.execute("SELECT * FROM tabela_care_nu_exista_niciodata_p2")
+        return real(conn, sch, tenant_id)
+
+    monkeypatch.setattr(FR, "leaga_triggerele_firma", _pica_pe_proba)
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute("SELECT count(*) FROM public.tenants WHERE activ")
+            total = cur.fetchone()[0]
+        rap = FR.migreaza_triggerele(c)
+        c.rollback()        # proba nu comite nimic
+
+    assert len(rap["esecuri"]) == 1, (
+        "%d firme raportate ca rupte, deși una singură e stricată — tranzacția s-a contaminat: %s"
+        % (len(rap["esecuri"]), [e["tenant_id"] for e in rap["esecuri"]]))
+    assert rap["esecuri"][0]["tenant_id"] == tid
+    assert rap["firme"] == total - 1, (
+        "celelalte %d firme n-au fost evaluate independent" % (total - 1 - rap["firme"]))
+
+
+# ============================================================================
+#  C — driftul de după pornire
+# ============================================================================
+def test_driftul_unui_trigger_sters_e_detectat_si_reparabil(firma_proba):
+    """C. Sănătos → PASS · trigger șters → FAIL · repus → PASS.
+
+    Verificarea e **read-only**: nu recreează nimic. O buclă care ar repara singură ar șterge chiar
+    semnalul — driftul ar dispărea din log, iar cauza n-ar mai fi căutată de nimeni."""
+    tid, schema = firma_proba
+    with _db.get_conn() as c:
+        assert FR.verifica_drift(c)["ok"] is True, "punct de plecare nesănătos"
+
+        with c.cursor() as cur:
+            cur.execute('DROP TRIGGER trg_sursa_facturi ON "%s".facturi' % schema)
+        c.commit()
+    with _db.get_conn() as c:
+        st = FR.verifica_drift(c)
+        assert st["ok"] is False, "un trigger șters n-a fost detectat"
+        assert FR.COD_TRIGGERE_LIPSA in {p["cod"] for p in st["probleme"]}
+        assert st["verificat_la"] is not None
+        # READ-ONLY: verificarea NU l-a pus la loc
+        with c.cursor() as cur:
+            cur.execute("SELECT count(*) FROM pg_trigger tg JOIN pg_class cl "
+                        "    ON cl.oid = tg.tgrelid JOIN pg_namespace n ON n.oid = cl.relnamespace "
+                        " WHERE n.nspname = %s AND tg.tgname = 'trg_sursa_facturi'", (schema,))
+            assert cur.fetchone()[0] == 0, "verificarea a REPARAT singură — nu asta e rolul ei"
+
+    with _db.get_conn() as c:            # repunerea e un act deliberat, prin migrare
+        FR.leaga_triggerele_firma(c, schema, tid)
+        c.commit()
+    with _db.get_conn() as c:
+        assert FR.verifica_drift(c)["ok"] is True, "după repunere, starea n-a revenit"
+
+
+def test_verificarea_de_drift_nu_intra_in_calea_de_cerere(firma_proba):
+    """C. Verificarea stă în bucla de sănătate, NU în cereri. Altfel ar întreba catalogul de zeci
+    de ori pe secundă — exact munca pe care P2 a scos-o din cererea interactivă."""
+    import main as _main
+    apeluri = {"n": 0}
+    real = FR.verifica_drift
+
+    def _numarat(conn, acum=None):
+        apeluri["n"] += 1
+        return real(conn, acum)
+
+    FR.verifica_drift = _numarat
+    try:
+        from fastapi.testclient import TestClient
+        cl = TestClient(_main.app)          # fără lifespan: se măsoară CEREREA, nu pornirea
+        try:
+            for _ in range(3):
+                cl.get("/")
+                cl.get("/control-fiscal")   # 401 fără token, dar trece prin dependențe
+        finally:
+            cl.close()
+    finally:
+        FR.verifica_drift = real
+    assert apeluri["n"] == 0, "verificarea de drift a rulat de %d ori în calea de cerere" % apeluri["n"]
+
+
+# ============================================================================
+#  D — observabilitatea backlogului
+# ============================================================================
+def test_masura_backlogului_numara_ce_asteapta_si_de_cand(firma_proba):
+    """D. Backlog construit deliberat: perechi, firme, `fara_calcul`, vechime.
+
+    *„1000 în așteptare" nu spune dacă ecranele mint de zece secunde sau de patru ore.* Cifra care
+    contează e vechimea celei mai vechi invalidări — și e un PLAFON SUPERIOR, fiindcă nu ținem
+    istoricul schimbărilor de sursă (vezi `masura_backlog`)."""
+    import datetime
+    tid, schema = firma_proba
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute("DELETE FROM public.firma_rezumat WHERE tenant_id = %s", (tid,))
+        c.commit()
+        b = FR.masura_backlog(c)
+    ale_mele = len(FR.TOATE)
+    assert b["perechi_restante"] >= ale_mele
+    assert b["firme_restante"] >= 1
+    assert b["fara_calcul"] >= ale_mele, "perechile necalculate niciodată nu sunt numărate separat"
+
+    # acum una calculată, dar invalidată: capătă vechime
+    ieri = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=3)
+    with _db.get_conn() as c:
+        v = FR.versiuni_aspecte(c, tid, ["solduri"])
+        FR.scrie(c, tid, "solduri", {"x": 1}, v["solduri"] - 1,
+                 epoca=FR.epoca_pentru("solduri", datetime.date.today()))
+        with c.cursor() as cur:
+            cur.execute("UPDATE public.firma_rezumat SET calculat_la = %s "
+                        " WHERE tenant_id = %s AND aspect = 'solduri'", (ieri, tid))
+        c.commit()
+        b2 = FR.masura_backlog(c)
+    assert b2["vechime_maxima_sec"] is not None
+    assert b2["vechime_maxima_sec"] >= 3 * 3600 - 60, (
+        "vechimea măsurată (%s s) nu reflectă cele trei ore" % b2["vechime_maxima_sec"])
+
+
+def test_tura_raporteaza_metricile_cerute(firma_proba):
+    """D. Raportul turei poartă fiecare cifră din care se derivă metricile `p2_worker_*`."""
+    tid, _schema = firma_proba
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute("DELETE FROM public.firma_rezumat WHERE tenant_id = %s", (tid,))
+        c.commit()
+    r = FR.recalculeaza_lot(limita=5000)
+    for cheie in ("perechi", "recalculate", "ramase", "erori", "sarite_blocate",
+                  "blocaje_neeliberate", "secunde", "vechime_maxima_sec", "firme",
+                  "fara_calcul", "in_eroare", "oprit", "fara_firma"):
+        assert cheie in r, "raportul turei n-are `%s`" % cheie
+    assert r["secunde"] >= 0
+    # `recalculate` + `erori` = perechile ÎNCERCATE. Pe schema de probă (care n-are toate cele 52
+    # de tabele) aspectele grele cad în `erori`, cu starea `eroare` scrisă — nu dispar. Proba cere
+    # ca fiecare pereche în așteptare să fi fost ATINSĂ, nu ca toate să reușească.
+    assert r["recalculate"] + r["erori"] >= len(FR.TOATE), (
+        "firma de probă n-a fost încercată pe toate aspectele: %d reușite + %d erori"
+        % (r["recalculate"], r["erori"]))
+    assert r["ramase"] >= 0
+
+
+# ============================================================================
+#  E — monotonicitatea versiunilor
+# ============================================================================
+def test_versiunea_sursei_doar_creste(firma_proba):
+    """E. Două scrieri în sursă → două versiuni strict crescătoare.
+
+    Pe invarianta asta stă tot modelul de prospețime: prospețimea se decide comparând suma
+    contoarelor de acum cu suma de la calcul. Dacă un contor ar putea SCĂDEA, o sumă veche ar putea
+    redeveni egală cu cea curentă — iar un rezumat învechit ar reapărea ca `curent`, tăcut."""
+    tid, schema = firma_proba
+
+    def _versiune():
+        with _db.get_conn() as c:
+            with c.cursor() as cur:
+                cur.execute("SELECT versiune FROM public.firma_sursa_versiune "
+                            " WHERE tenant_id = %s AND tabela = 'facturi'", (tid,))
+                r = cur.fetchone()
+        return r[0] if r else 0
+
+    v0 = _versiune()
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute('INSERT INTO "%s".facturi (x) VALUES (1)' % schema)
+        c.commit()
+    v1 = _versiune()
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute('INSERT INTO "%s".facturi (x) VALUES (2)' % schema)
+        c.commit()
+    v2 = _versiune()
+    assert v1 > v0 and v2 > v1, "contorul nu crește strict: %s -> %s -> %s" % (v0, v1, v2)
+
+
+def test_o_scadere_de_versiune_e_REFUZATA_de_baza(firma_proba):
+    """E. Invarianta nu depinde de disciplina apelanților: baza o impune.
+
+    Se încearcă deliberat o scădere — pe calea pe care ar face-o o migrare externă sau o mână pe
+    `psql`, nu prin API-ul aplicației. Trebuie respinsă."""
+    import psycopg2
+    tid, schema = firma_proba
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute('INSERT INTO "%s".facturi (x) VALUES (3)' % schema)
+        c.commit()
+    with pytest.raises(psycopg2.Error) as ex:
+        with _db.get_conn() as c:
+            with c.cursor() as cur:
+                cur.execute("UPDATE public.firma_sursa_versiune SET versiune = 0 "
+                            " WHERE tenant_id = %s AND tabela = 'facturi'", (tid,))
+    assert getattr(ex.value, "pgcode", None) == "23514", (
+        "scăderea n-a fost respinsă cu `check_violation`, ci cu %r" % getattr(ex.value, "pgcode", None))
+
+
 def test_p2_worker_nu_epuizeaza_poolul(firma_proba):
     """REGRESIA PE CARE O INTRODUCE REPARAȚIA, măsurată — nu presupusă.
 

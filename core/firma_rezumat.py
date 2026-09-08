@@ -224,6 +224,12 @@ def epoca_pentru(aspect, azi):
 DDL = """
 -- CONTORUL, per (firmă, TABEL). Prima formă avea un contor per firmă, deci orice scriere
 -- invalida orice aspect. Aici, versiunea unui aspect e suma peste tabelele LUI.
+-- INVARIANTA, si e cea pe care sta tot modelul de prospetime:
+--   `versiune` e MONOTON CRESCATOARE pentru fiecare pereche (tenant_id, tabela).
+-- Prospetimea se decide comparand suma contoarelor de acum cu suma de la calcul. Daca un
+-- contor ar putea SCADEA, o suma veche ar putea redeveni egala cu cea curenta — iar un rezumat
+-- invechit ar reaparea ca `curent`, tacut. *Nu e o preferinta de proiectare: e chiar conditia
+-- in care comparatia de versiuni inseamna ceva.* Impusa mai jos de `versiune_doar_creste`.
 CREATE TABLE IF NOT EXISTS public.firma_sursa_versiune (
     tenant_id    integer     NOT NULL,
     tabela       text        NOT NULL,
@@ -318,6 +324,24 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- PAZNICUL INVARIANTEI. Respinge orice scadere a contorului, indiferent cine scrie — calea
+-- aplicatiei, o migrare externa sau o mana pe `psql`. Costa un apel de functie per actualizare de
+-- contor; contorul se actualizeaza oricum la fiecare scriere in sursa, deci pretul e marginal, iar
+-- ce cumpara e ca invarianta nu mai depinde de disciplina apelantilor.
+CREATE OR REPLACE FUNCTION public.versiune_doar_creste() RETURNS trigger AS $$
+BEGIN
+    IF NEW.versiune < OLD.versiune THEN
+        RAISE EXCEPTION
+            'firma_sursa_versiune.versiune nu poate scadea (firma %, tabela %): % -> %. '
+            'Prospetimea modelului de citire se decide pe comparatia de versiuni; un contor care '
+            'scade ar face un rezumat invechit sa reapara drept curent.',
+            OLD.tenant_id, OLD.tabela, OLD.versiune, NEW.versiune
+            USING ERRCODE = 'check_violation';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Sursele din `public` sunt ale MAI MULTOR firme, deci `tenant_id` nu se poate fixa la creare:
 -- se citește din rând. ROW-level, fiindcă exact rândul spune despre ce firmă e vorba.
 CREATE OR REPLACE FUNCTION public.marcheaza_sursa_publica() RETURNS trigger AS $$
@@ -349,6 +373,12 @@ def aplica_ddl(conn):
     with conn.cursor() as cur:
         cur.execute(DDL)
         cur.execute(DDL_FUNCTII)
+        # paznicul monotoniei, legat de tabela contoarelor (idempotent)
+        cur.execute("DROP TRIGGER IF EXISTS trg_versiune_doar_creste "
+                    "  ON public.firma_sursa_versiune")
+        cur.execute("CREATE TRIGGER trg_versiune_doar_creste "
+                    "BEFORE UPDATE ON public.firma_sursa_versiune "
+                    "FOR EACH ROW EXECUTE FUNCTION public.versiune_doar_creste()")
         # Registrul, PROIECTAT din cod. Se șterge și se rescrie: dacă un aspect pierde o sursă,
         # rândul vechi ar continua să-l invalideze, iar aspectul s-ar recalcula la nesfârșit.
         cur.execute("DELETE FROM public.firma_aspect_sursa")
@@ -451,14 +481,27 @@ def migreaza_triggerele(conn, doar_active=True):
     raport = {"firme": 0, "triggere": 0, "esecuri": []}
     raport["triggere_publice"] = leaga_triggerele_publice(conn)
     for tid, schema in firme:
+        # ── FIECARE FIRMĂ, ÎNTR-UN SAVEPOINT AL EI ────────────────────────────────
+        # Fără el, prima eroare SQL lasă tranzacția în `current transaction is aborted`, iar
+        # TOATE firmele următoare pică din cauza asta — nu din cauza lor. Raportul ar fi spus
+        # „19 firme rupte" despre o singură firmă ruptă, iar diagnosticul ar fi trimis omul să
+        # caute în locul greșit. *Siguranța nu se schimbă: orice eșec tot oprește pornirea.
+        # Ce se schimbă e că raportul numește CAUZA REALĂ, per firmă.*
+        with conn.cursor() as cur:
+            cur.execute("SAVEPOINT p2_tenant")
         try:
             raport["triggere"] += leaga_triggerele_firma(conn, schema, tid)
+            with conn.cursor() as cur:
+                cur.execute("RELEASE SAVEPOINT p2_tenant")
             raport["firme"] += 1
         except Exception as e:      # noqa: BLE001 — o firmă care nu se poate lega nu oprește
             # BUCLA (celelalte firme se încearcă și ele, ca raportul să spună CÂTE sunt rupte, nu
-            # doar prima). Ce se schimbă la remediere e ce face APELANTUL cu raportul: `lifespan()`
-            # nu mai are voie să continue peste el.
+            # doar prima). Ce face APELANTUL cu raportul e altceva: `lifespan()` nu are voie să
+            # continue peste el — vezi `main.py`, blocul de infrastructură critică.
             import traceback as _tb
+            with conn.cursor() as cur:
+                cur.execute("ROLLBACK TO SAVEPOINT p2_tenant")
+                cur.execute("RELEASE SAVEPOINT p2_tenant")
             raport["esecuri"].append({
                 "tenant_id": tid, "schema": schema,
                 "exceptie": "%s: %s" % (type(e).__name__, e),
@@ -474,7 +517,8 @@ TABELE_CENTRALE = ("firma_rezumat", "firma_sursa_versiune", "firma_aspect_sursa"
 #: nu mai stie de epoca sau de starea de calcul, adica exact clasa reparata.
 COLOANE_REZUMAT = ("epoca", "stare_calcul", "incercari", "urmatoarea_incercare")
 #: Functiile PostgreSQL fara de care triggerele exista dar nu fac nimic.
-FUNCTII_PG = ("marcheaza_sursa", "proiecteaza_tip_firma", "marcheaza_sursa_publica")
+FUNCTII_PG = ("marcheaza_sursa", "proiecteaza_tip_firma", "marcheaza_sursa_publica",
+              "versiune_doar_creste")
 
 #: NOMENCLATORUL INCHIS al problemelor de infrastructura. Codurile sunt pentru apelanti (gardă,
 #: healthcheck, log structurat), mesajele pentru oameni. Stau aici, intr-un singur loc, ca o probă
@@ -636,6 +680,45 @@ def verifica_triggerele(conn):
                 lipsa.append((schema, t))
     return {"firme_vazute": len(firme), "lipsa": lipsa, "proiectii_tip_firma": proiectii,
             "domeniu_gol": len(firme) == 0}
+
+
+#: INSTANTANEUL de sănătate al infrastructurii, actualizat de bucla de sănătate a aplicației
+#: (`main._verifica_si_alerta`, la 5 minute) și citit de `/admin/sanatate`. NU se calculează în
+#: calea de cerere: o verificare per cerere ar întreba catalogul de zeci de ori pe secundă, adică
+#: exact felul de muncă pe care P2 a scos-o din cererea interactivă.
+_SANATATE = {"ok": None, "verificat_la": None, "probleme": [], "detaliu": {}}
+
+
+def stare_infrastructura():
+    """Ultimul rezultat cunoscut al verificării de drift. `ok=None` = încă neverificat.
+
+    *`None` nu e `False` și nu e `True`:* un serviciu abia pornit n-a apucat să verifice, iar a
+    spune „ok" despre ceva ce n-ai măsurat e chiar clasa de defect pe care P2 o repară."""
+    return dict(_SANATATE)
+
+
+def verifica_drift(conn, acum=None):
+    """VERIFICARE PERIODICĂ, **strict read-only**: nu creează și nu repară nimic.
+
+    **De ce există, deși pornirea e fail-closed.** `verifica_infrastructura` apără momentul
+    pornirii. Dacă după aceea cineva rulează `DROP TRIGGER` — o migrare externă, o mână pe `psql`
+    —, aplicația ar afla abia la următoarea repornire, iar între timp rezumatele firmei aceleia ar
+    rămâne `curent` fără ca nimic să le mai invalideze.
+
+    **Detectează și alertează; NU repară.** O buclă de sănătate care ar recrea singură triggerele
+    ar ascunde chiar semnalul: driftul ar dispărea din log, iar cauza (cine le-a șters, și de ce)
+    n-ar mai fi căutată de nimeni. Repararea rămâne un act deliberat — o repornire, care trece
+    oricum prin migrare."""
+    import datetime
+    acum = acum or datetime.datetime.now(datetime.timezone.utc)
+    r = verifica_infrastructura(conn)
+    _SANATATE.update({"ok": bool(r["ok"]), "verificat_la": acum,
+                      "probleme": r["probleme"], "detaliu": r["detaliu"]})
+    if not r["ok"]:
+        for p in r["probleme"]:
+            _log().critical("[P2] DRIFT DE INFRASTRUCTURĂ [%s] la %s: %s | %s",
+                            p["cod"], acum.isoformat(), p["diagnostic"], p["ce"])
+    return dict(_SANATATE)
 
 
 # ============================================================================
@@ -989,6 +1072,64 @@ def de_recalculat(conn, limita=LOT_RECALCULARE, azi=None, acum=None):
         return [(tid, aspect) for tid, aspect, _e in cur.fetchall()]
 
 
+def masura_backlog(conn, azi=None, acum=None):
+    """CÂT de în urmă e modelul, într-o singură interogare. Pentru SLA, nu pentru decizii.
+
+    **De ce nu ajunge numărul de perechi.** „1000 în așteptare" nu spune dacă ecranele mint de
+    zece secunde sau de patru ore. Cifra care contează e **de cât timp așteaptă cea mai veche
+    invalidare**.
+
+    **Cum se măsoară, și de ce e un PLAFON SUPERIOR.** Nu ținem istoricul schimbărilor de sursă,
+    deci nu știm clipa exactă în care o pereche a devenit învechită; știm doar `calculat_la` —
+    când a fost ultima dată bună. Perechea a devenit învechită *după* acel moment, deci
+    `acum - calculat_la` e **cel mult** cât așteaptă. Eroarea merge în direcția „pare mai vechi
+    decât e", adică o alarmă mai devreme, niciodată una mai târzie. *Se scrie aici ca să nu se
+    citească drept măsurătoare exactă.*
+
+    Perechile care n-au fost calculate NICIODATĂ n-au `calculat_la`, deci n-au vârstă — se numără
+    separat (`fara_calcul`), nu se topesc într-o medie."""
+    from core.common import azi_ro as _azi_ro
+    import datetime
+    azi = azi or _azi_ro()
+    acum = acum or datetime.datetime.now(datetime.timezone.utc)
+    aspecte = list(TOATE)
+    epoci = [epoca_pentru(a, azi) for a in aspecte]
+    with conn.cursor() as cur:
+        cur.execute(
+            "WITH v AS ("
+            "  SELECT s.tenant_id, m.aspect, sum(s.versiune)::bigint AS versiune "
+            "    FROM public.firma_sursa_versiune s "
+            "    JOIN public.firma_aspect_sursa m ON m.tabela = s.tabela "
+            "   GROUP BY 1, 2), "
+            "restante AS ("
+            "  SELECT t.id AS tenant_id, a.aspect, r.tenant_id IS NULL AS fara_calcul, "
+            "         r.calculat_la, r.stare_calcul "
+            "    FROM public.tenants t "
+            "   CROSS JOIN unnest(%s::text[], %s::text[]) AS a(aspect, epoca_acum) "
+            "    LEFT JOIN public.firma_rezumat r "
+            "           ON r.tenant_id = t.id AND r.aspect = a.aspect "
+            "    LEFT JOIN v ON v.tenant_id = t.id AND v.aspect = a.aspect "
+            "   WHERE t.activ "
+            "     AND (r.tenant_id IS NULL "
+            "          OR r.versiune_sursa <> COALESCE(v.versiune, 0) "
+            "          OR COALESCE(r.epoca, '') <> a.epoca_acum "
+            "          OR r.stare_calcul = %s)) "
+            "SELECT count(*), count(DISTINCT tenant_id), "
+            "       count(*) FILTER (WHERE fara_calcul), "
+            "       count(*) FILTER (WHERE stare_calcul = %s), "
+            "       min(calculat_la) "
+            "  FROM restante",
+            (aspecte, epoci, CALCUL_EROARE, CALCUL_EROARE))
+        perechi, firme, fara_calcul, in_eroare, cea_mai_veche = cur.fetchone()
+    varsta = None
+    if cea_mai_veche is not None:
+        varsta = max(0, int((acum - cea_mai_veche).total_seconds()))
+    return {"perechi_restante": perechi, "firme_restante": firme,
+            "fara_calcul": fara_calcul, "in_eroare": in_eroare,
+            "cea_mai_veche_calculat_la": cea_mai_veche,
+            "vechime_maxima_sec": varsta}
+
+
 def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
     """Lucrătorul: ia perechile (firmă, aspect) învechite și le recalculează.
 
@@ -1006,9 +1147,11 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
     **BACKLOG MARE.** Lotul mărginește o tură, nu munca totală: la 1000 de firme × 5 aspecte, o
     tură ia primele 200 de perechi și restul rămân pentru turele următoare, în ordinea din
     `de_recalculat`. Raportul spune `ramase`, ca un backlog care nu scade să fie vizibil."""
+    import time as _time
     from core import db as _db
     from core.common import azi_ro as _azi_ro
     azi = azi or _azi_ro()
+    _t0 = _time.time()
 
     with _db.get_conn() as c:
         perechi = de_recalculat(c, limita, azi=azi)
@@ -1034,6 +1177,20 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
             r["fara_firma"].append(tid)     # contor fără firmă (probă, firmă ștearsă) — se raportează
             continue
         schema, nume, cui = d
+        # ┌────────────────────────────────────────────────────────────────────────┐
+        # │ IMPORTANT — NU „OPTIMIZA" BLOCUL ĂSTA.                                 │
+        # │ `pg_advisory_lock` e la nivel de SESIUNE, nu de tranzacție. `lock_conn` │
+        # │ TREBUIE ținută împrumutată din pool până DUPĂ `pg_advisory_unlock`.     │
+        # │                                                                        │
+        # │ Forma tentantă și GREȘITĂ, care a existat aici și a fost reparată la    │
+        # │ auditul din 08.09.2026:                                                │
+        # │     iei lock -> întorci conexiunea în pool -> calculezi ->              │
+        # │     iei ALTĂ conexiune -> unlock                                        │
+        # │ Atunci `pg_advisory_unlock` întoarce `false` pe o sesiune care nu ține  │
+        # │ nimic, iar blocajul rămâne agățat de prima conexiune până la reciclare. │
+        # │ Nu se vede ca eroare: se vede ca o firmă care nu se mai recalculează.   │
+        # │ Gardat de `core/test_p2_infrastructura.py` — a se păstra permanent.     │
+        # └────────────────────────────────────────────────────────────────────────┘
         # ── BLOCAJUL SE IA ȘI SE ELIBEREAZĂ PE ACEEAȘI CONEXIUNE ──────────────────
         # `lock_conn` rămâne împrumutată din pool pe TOATĂ durata recalculării firmei. Costă un loc
         # în pool (recalcularea grea mai deschide două), dar e singura formă în care un blocaj de
@@ -1062,7 +1219,13 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
                     r["blocaje_neeliberate"] += 1
 
     with _db.get_conn() as c:
-        r["ramase"] = len(de_recalculat(c, limita * 50, azi=azi))
+        b = masura_backlog(c, azi=azi)
+    r["ramase"] = b["perechi_restante"]
+    r["firme_ramase"] = b["firme_restante"]
+    r["fara_calcul"] = b["fara_calcul"]
+    r["in_eroare"] = b["in_eroare"]
+    r["vechime_maxima_sec"] = b["vechime_maxima_sec"]
+    r["secunde"] = round(_time.time() - _t0, 3)
     return r
 
 
@@ -1099,9 +1262,18 @@ def main():
         _cron.bate("firma_rezumat")
     except Exception as e:      # noqa: BLE001 — bătaia lipsă nu are voie să pice recalcularea
         print("avertisment: bataia deadman a esuat: %s" % e)
-    print("firma_rezumat: perechi=%(perechi)d firme=%(firme)d recalculate=%(recalculate)d "
-          "erori=%(erori)d blocate=%(sarite_blocate)d neeliberate=%(blocaje_neeliberate)d "
-          "ramase=%(ramase)d oprit=%(oprit)s fara_firma=%(fara_firma)s" % r)
+    # Linia de METRICI, cu numele cerute de audit. E o REDARE a raportului de mai sus, nu o a
+    # doua sursă: fiecare cifră vine din aceeași cheie a dicționarului. `p2_oldest_pending_age_
+    # seconds` e un PLAFON SUPERIOR — vezi `masura_backlog`.
+    print("p2_worker_selected=%(perechi)d p2_worker_processed=%(recalculate)d "
+          "p2_worker_remaining=%(ramase)d p2_worker_errors=%(erori)d "
+          "p2_worker_locked_skips=%(sarite_blocate)d "
+          "p2_worker_unlock_failures=%(blocaje_neeliberate)d "
+          "p2_worker_duration_seconds=%(secunde)s "
+          "p2_oldest_pending_age_seconds=%(vechime_maxima_sec)s "
+          "p2_worker_firms=%(firme)d p2_pending_never_computed=%(fara_calcul)d "
+          "p2_pending_in_error=%(in_eroare)d p2_worker_stopped=%(oprit)s "
+          "p2_worker_orphan_counters=%(fara_firma)s" % r)
     return 0
 
 

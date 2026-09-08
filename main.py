@@ -122,6 +122,12 @@ def verifica_fus_orar(offset_local=None, pg_tz=None):
 # ============================================================
 #  LIFECYCLE — pool deschis la pornire, închis la oprire
 # ============================================================
+#: Câte taskuri de fundal a pornit `lifespan()`. Există ca să se poată PROBA că ele nu pornesc
+#: când infrastructura critică pică — o afirmație despre ordine nu se poate verifica altfel decât
+#: numărând, iar `asyncio` nu ține o evidență la care să ajungă un test.
+_TASKURI_FUNDAL_PORNITE = 0
+
+
 @asynccontextmanager
 async def lifespan(app):
     global _TENANT_TEMPLATE
@@ -129,8 +135,6 @@ async def lifespan(app):
     from core import versiune as _versiune_boot; _versiune_boot.stampileaza()  # running==HEAD: commitul de pornire (in memorie)
     db.init_pool()
     verifica_fus_orar()   # fail-fast: OS TZ + PG timezone = Europe/Bucharest (invarianta de provisionare)
-    import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
-    _asyncio_lifespan.create_task(_bucla_alerte_sanatate())
     # ════════════════════════════════════════════════════════════════════════
     #  INFRASTRUCTURA CRITICĂ — FAIL-CLOSED (09.09.2026, la auditul remedierii P2)
     # ════════════════════════════════════════════════════════════════════════
@@ -145,6 +149,16 @@ async def lifespan(app):
     # `epoca`, dependența de timp dispare. **Niciuna nu produce o eroare la citire** — produc
     # exact defectul pe care P2 îl repară. O aplicație care nu poate garanta prospețimea nu are
     # voie să pretindă că o garantează; are voie doar să nu pornească.
+    #
+    # ┌────────────────────────────────────────────────────────────────────────────┐
+    # │ INVARIANTĂ — NU RELAXA BLOCUL ĂSTA.                                        │
+    # │ Infrastructura P2 decide dacă un rezumat poate fi considerat CURENT.        │
+    # │ Eșecul DDL-ului, al migrării triggerelor sau al verificării e FATAL pentru  │
+    # │ pornire. Nu reveni la `except Exception: pass` sub pretextul „baza poate fi │
+    # │ temporar indisponibilă": dacă baza e jos și P2 nu se poate verifica,        │
+    # │ serviciul NU e `ready`. Asta e purtarea corectă, nu o strictețe inutilă.    │
+    # │ Gardat de `core/test_p2_infrastructura.py` — a se păstra permanent.         │
+    # └────────────────────────────────────────────────────────────────────────────┘
     _log_boot = logging.getLogger("iconta")
     try:
         with db.get_conn() as conn:
@@ -189,6 +203,18 @@ async def lifespan(app):
             "pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie "
             "să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.")
         raise
+
+    # ── TASKURILE DE FUNDAL, ABIA ACUM ──────────────────────────────────────
+    # [POST-P2 HARDENING, 09.09.2026] Bucla de sănătate pornea ÎNAINTE de blocul critic de mai
+    # sus. Nu era un defect de corectitudine — startup-ul e fail-closed, deci un eșec tot oprea
+    # pornirea —, dar era o ordine care nu se poate apăra: un task de fundal se lega de o bază
+    # despre care încă nu se știa dacă poartă infrastructura P2, iar la eșec rămânea pornit câteva
+    # sute de milisecunde peste un proces care murea. *Ordinea corectă e: deschizi resursele,
+    # instalezi, VERIFICI, și abia dacă totul a trecut pornești ce rulează singur.*
+    import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
+    _asyncio_lifespan.create_task(_bucla_alerte_sanatate())
+    global _TASKURI_FUNDAL_PORNITE
+    _TASKURI_FUNDAL_PORNITE += 1
     try:
         with open(TENANT_TEMPLATE_PATH, encoding="utf-8") as f:
             _TENANT_TEMPLATE = f.read()
@@ -562,9 +588,39 @@ def _poate_alerta(categorie):
     _alerte_ultima_trimitere[categorie] = _time.time()
     return True
 
+def _verifica_drift_p2():
+    """[POST-P2 HARDENING] Driftul infrastructurii P2, verificat periodic și **read-only**.
+
+    `verifica_infrastructura` apără momentul pornirii. Dacă după aceea cineva rulează
+    `DROP TRIGGER` — o migrare externă, o mână pe `psql` —, aplicația ar afla abia la următoarea
+    repornire, iar între timp rezumatele acelei firme ar rămâne `curent` fără ca nimic să le mai
+    invalideze.
+
+    **Detectează și alertează; NU repară.** O buclă care ar recrea singură triggerele ar șterge
+    chiar semnalul: driftul ar dispărea din log, iar cauza n-ar mai fi căutată de nimeni.
+
+    Rulează în bucla de sănătate care există deja (la 5 minute), **niciodată în calea de cerere**:
+    o verificare per cerere ar întreba catalogul de zeci de ori pe secundă — exact felul de muncă
+    pe care P2 a scos-o din cererea interactivă."""
+    from core import firma_rezumat as _fr_h
+    try:
+        with db.get_conn() as conn:
+            st = _fr_h.verifica_drift(conn)
+    except Exception as _e:
+        _obs.esec_secundar("verificare drift P2", _e)   # înghițit, dar nu tăcut
+        return None
+    if st["ok"] is False and _poate_alerta("p2_infrastructura"):
+        return ("Infrastructura P2 a derivat: %s"
+                % " · ".join("%s %s" % (p["cod"], p["ce"]) for p in st["probleme"]))
+    return None
+
+
 def _verifica_si_alerta():
     m = _citeste_metrici_pentru_alerte()
     alerte = []
+    _drift = _verifica_drift_p2()
+    if _drift:
+        alerte.append(_drift)
     if m["ram_procent"] is not None and m["ram_procent"] >= _PRAG_RAM_PROCENT and _poate_alerta("ram"):
         alerte.append(f"RAM folosita: {m['ram_procent']}% (prag {_PRAG_RAM_PROCENT}%)")
     if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
@@ -710,12 +766,21 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
     except Exception as _e:
         _obs.esec_secundar("admin sanatate: erori 24h", _e)  # inghitit, dar nu tacut (27.07.2026)
 
+    # [POST-P2 HARDENING] Starea infrastructurii P2, din INSTANTANEUL buclei de sănătate — nu
+    # recalculată aici. Ruta e de administrare, dar tot o cerere: verificarea stă în afara ei.
+    # `ok = None` înseamnă „încă neverificat", și NU se rotunjește la `true`.
+    from core import firma_rezumat as _fr_s
+    _p2 = _fr_s.stare_infrastructura()
     return {
         "server": {"load1": load1, "load5": load5, "load15": load15, "ram": ram, "disc": disc},
         "aplicatie": {"uptime_secunde": uptime_sec},
         "baza_date": db_info,
         "erori_24h": erori_24h,
         "erori_lista": lista_erori,
+        "p2_infrastructure_ok": _p2["ok"],
+        "p2_infrastructure_last_checked_at": (_p2["verificat_la"].isoformat()
+                                              if _p2["verificat_la"] else None),
+        "p2_infrastructure_probleme": [p["cod"] for p in _p2["probleme"]],
     }
 
 # === ANUNTURI CABINET === # anunturi_v1

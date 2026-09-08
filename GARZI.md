@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**538 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**539 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 517
+### `core/` — 518
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8066,6 +8066,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_octeti_invizibili.py` — GARD (21.08.2026): niciun octet de CONTROL invizibil în codul sursă.
 - `core/test_onboarding_ux.py` — GARD onboarding_ux: fereastra de bun venit (salut inaintea Suportului, firul spune unde se face
 - `core/test_operatiuni_speciale.py` — Teste gardian pentru operatiuni speciale P2.7 (leasing, avansuri,
+- `core/test_p2_contract.py` — GARD P2 — CONTRACTUL ARHITECTURAL, în șapte propoziții și sub zece secunde.
 - `core/test_p2_infrastructura.py` — GARD P2 — infrastructura nu poate eșua tăcut, iar blocajul lucrătorului e al unei SESIUNI.
 - `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).
@@ -8225,3 +8226,64 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
 
 <!-- INVENTAR-GARZI:STOP -->
+
+
+---
+
+# REGULĂ DE DEZVOLTARE — o RAMURĂ FISCALĂ NOUĂ vine cu acoperirea ei
+
+*Scrisă 09.09.2026, la hardeningul de după închiderea P2. Nu e o recomandare: e condiția în care
+matricea de dependențe rămâne adevărată.*
+
+## Ce declanșează regula
+
+Orice modificare care adaugă, în lanțul lui **`termene`** sau **`control_fiscal`**, o ramură care
+citește o **sursă nouă**:
+
+```python
+if conditie_X:
+    ... SELECT ... FROM tabela_Y ...
+```
+
+## Ce trebuie să conțină ACELAȘI commit — toate patru
+
+| # | ce | unde |
+|---|---|---|
+| 1 | **sursa în registrul de dependențe** | `firma_rezumat.ASPECTE[<aspect>]["tabele"]` (sau `["tabele_public"]`) |
+| 2 | **fixtura care activează ramura** | `core/test_dependente_ramuri.py`, plus rândul ei în `scan_dependente.RAMURI_ACOPERIRE` |
+| 3 | **testul că sursa e OBSERVATĂ pe ramura aceea** | intră singur, prin `test_ramura_deschide_sursele_ei` |
+| 4 | **testul de invalidare** — scriere în `tabela_Y` → aspectul devine `invalidat` | `core/test_firma_rezumat.py`, `test_o_sursa_invalideaza_exact_aspectele_care_o_citesc` (parametrizat) |
+
+După aceea: `python3 -m scripts.scan_dependente --doc`, ca blocul din `DEPENDENTE_P2.md` să
+rămână cel generat.
+
+## De ce toate patru, și de ce în același commit
+
+**Fără (1)**, o scriere în `tabela_Y` nu invalidează nimic. Nu apare nicio eroare, nici în teste,
+nici în log: apare o valoare veche etichetată `curent`, la nesfârșit. *Cea mai tăcută formă de
+defect pe care o poate avea un model de citire.*
+
+**Fără (2)**, instrumentarea dinamică nu vede ramura — niciun scan nu poate descoperi un drum pe
+care datele nu-l parcurg. Registrul și măsurătoarea ar fi **egale și amândouă incomplete**, iar
+verdictul „acoperit" ar fi despre datele de azi, nu despre cod.
+
+**Fără (4)**, (1) rămâne o declarație. Un tabel scris în registru fără trigger sau cu triggerul pus
+greșit trece toate probele de listă și nu invalidează nimic.
+
+**În același commit**, fiindcă separate se pierd: o dependență adăugată „acum" și o fixtură promisă
+„la următorul PR" înseamnă o fereastră în care matricea minte, iar fereastra aia n-are nimic care
+s-o închidă.
+
+## Instanța care a produs regula
+
+`pontaj` cere **două** condiții deodată: salariat cu tichete de masă **și** luna confirmată pe
+domeniul `pontaj` (`d112` ridică `PerioadaNeconfirmata` înainte de citire — HG 1045/2018
+art.10(3)). Fixtura a fost respinsă de gardă de două ori înainte să activeze cu adevărat ramura.
+*O fixtură care „activează salarii" în general nu activează ramura care citește pontajul* — și o
+gardă care s-ar fi mulțumit cu prima formă ar fi declarat o acoperire inexistentă.
+
+## Ce NU cere regula
+
+**Nu** cere un parser SQL. S-a discutat și s-a respins: un analizor static peste tot codul fiscal ar
+fi mai fragil decât ce apără. Prioritatea rămâne **fixtura + instrumentarea la rulare**; scanul
+static ar fi o plasă suplimentară, nu una de bază.
