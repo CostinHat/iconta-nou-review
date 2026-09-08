@@ -1,0 +1,309 @@
+........................................................................ [  1%]
+........................................................................ [  3%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  8%]
+.......................................F.F.............................. [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 13%]
+........F............................................................... [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 18%]
+........................................................................ [ 20%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 25%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 30%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 35%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+....................................................................xxxx [ 40%]
+xxx.x...xxx.....x..x.................................................... [ 42%]
+..............................x......................................... [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 47%]
+........................................................................ [ 49%]
+........................................................................ [ 50%]
+.....F..................F............................................... [ 52%]
+....s.s..s..s........................................................... [ 54%]
+.......F................................................................ [ 55%]
+............................................s..s.sss.................... [ 57%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+..........................ss............................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+.......................................................F................ [ 69%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 81%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 86%]
+............................................................F..F........ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 91%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 96%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+..                                                                       [100%]
+=================================== FAILURES ===================================
+__________________ test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM ___________________
+
+    def test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM():
+        """Comparația care contează, pe structură: cod cu cod, cifră cu cifră."""
+        scris = {r["cod"]: r for r in _randuri_tabel(_bloc_din_document())}
+        acum = {r["cod"]: r for r in _din_instrument()}
+        gresite = [(c, scris[c]["acum"], acum[c]["acum"])
+                   for c in sorted(set(scris) & set(acum))
+                   if scris[c]["acum"] != acum[c]["acum"]]
+>       assert not gresite, (
+            "cifre de clichet învechite în PREDARE_LANT.md (cod, scris, acum): %s%s"
+            "Nu le corecta cu mâna — regenerează: "
+            "./venv/bin/python scripts/scan_ramas.py --clichete-md" % (gresite, chr(10)))
+E       AssertionError: cifre de clichet învechite în PREDARE_LANT.md (cod, scris, acum): [('50', '1222', '1223'), ('77u', '875', '876')]
+E         Nu le corecta cu mâna — regenerează: ./venv/bin/python scripts/scan_ramas.py --clichete-md
+E       assert not [('50', '1222', '1223'), ('77u', '875', '876')]
+
+core/test_clichete_generate.py:125: AssertionError
+__________________ test_blocul_e_IDENTIC_caracter_cu_caracter __________________
+
+    def test_blocul_e_IDENTIC_caracter_cu_caracter():
+        """Peste comparația structurală: și punctuația e generată. Prinde ce structura tolerează —
+        o etichetă rescrisă cu mâna, un instrument redenumit în document și nu în cod."""
+        din_doc, generat = _bloc_din_document(), sr.redare_clichete_md()
+        if din_doc != generat:
+            ld, lg = din_doc.split("\n"), generat.split("\n")
+            i = next((k for k in range(max(len(ld), len(lg)))
+                      if (ld[k] if k < len(ld) else None) != (lg[k] if k < len(lg) else None)), 0)
+>           raise AssertionError(
+                "blocul de clichete nu mai e cel generat, prima diferență la linia %d:%s"
+                "  doc:   %r%s  acum:  %r%s"
+                "Regenerează: ./venv/bin/python scripts/scan_ramas.py --clichete-md"
+                % (i + 1, chr(10), ld[i] if i < len(ld) else "(lipsește)", chr(10),
+                   lg[i] if i < len(lg) else "(lipsește)", chr(10)))
+E           AssertionError: blocul de clichete nu mai e cel generat, prima diferență la linia 8:
+E             doc:   '| **77u** | **875** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |'
+E             acum:  '| **77u** | **876** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |'
+E           Regenerează: ./venv/bin/python scripts/scan_ramas.py --clichete-md
+
+core/test_clichete_generate.py:152: AssertionError
+___________________________ test_clichetul_nu_creste ___________________________
+
+inv = [{'f': 'asistenti_api.py', 'l': 140, 'v': '200', 'casa': 'H3', ...}, {'f': 'asistenti_api.py', 'l': 460, 'v': '30', 'c...py', 'l': 13, 'v': '9', 'casa': 'H1', ...}, {'f': 'asociati_import_api.py', 'l': 13, 'v': '4', 'casa': 'H1', ...}, ...]
+
+    def test_clichetul_nu_creste(inv):
+        """Miezul. Un fișier nou fiscal pornește de la 0 — orice constantă nesursată în el pică."""
+        acum = _pe_fisier(inv)
+        crescut = []
+        for f, n in sorted(acum.items()):
+            lim = BASELINE.get(f, 0)
+            if n > lim:
+                noi = [h for h in inv if h["cls"] == "C" and h["f"] == f][lim:]
+                crescut.append("  %s: %d > %d  (ex: l.%s `%s` — %s)"
+                               % (f, n, lim, noi[0]["l"], noi[0]["v"], noi[0]["txt"][:60]) if noi
+                               else "  %s: %d > %d" % (f, n, lim))
+>       assert not crescut, (
+            "constante fiscale NESURSATE în plus față de clichet:\n" + "\n".join(crescut)
+            + "\n\nRemediu: atașează un `Temei(...)` (vezi common.COTE) sau mută valoarea în registru."
+            + "\nDacă e nomenclator (cod din XSD, pondere de checksum), botează-l ca atare — vezi"
+            + " scan_constante.NOM — și scrie de unde vine.")
+E       AssertionError: constante fiscale NESURSATE în plus față de clichet:
+E           firma_rezumat.py: 5 > 0  (ex: l.608 `5` — BACKOFF_MIN = (1, 5, 15, 60, 240))
+E         
+E         Remediu: atașează un `Temei(...)` (vezi common.COTE) sau mută valoarea în registru.
+E         Dacă e nomenclator (cod din XSD, pondere de checksum), botează-l ca atare — vezi scan_constante.NOM — și scrie de unde vine.
+E       assert not ['  firma_rezumat.py: 5 > 0  (ex: l.608 `5` — BACKOFF_MIN = (1, 5, 15, 60, 240))']
+
+core/test_constante_nesursate.py:89: AssertionError
+_________ test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul _________
+
+    def test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul():
+        """doc↔cod, caracter cu caracter. Regenerare:
+        `./venv/bin/python scripts/scan_garzi_inventar.py --md`, rescris între marcaje."""
+        doc = _text()
+        assert sg.MARCA_START in doc and sg.MARCA_STOP in doc, (
+            "GARZI.md n-are marcajele inventarului generat — a fost șters?")
+        a = doc.index(sg.MARCA_START)
+        b = doc.index(sg.MARCA_STOP) + len(sg.MARCA_STOP)
+        din_doc, generat = doc[a:b], sg.redare_md()
+        if din_doc != generat:
+            ld, lg = din_doc.split(chr(10)), generat.split(chr(10))
+            prima = next((i for i in range(max(len(ld), len(lg)))
+                          if (ld[i] if i < len(ld) else None) != (lg[i] if i < len(lg) else None)), 0)
+>           raise AssertionError(
+                "inventarul din GARZI.md diferă de ce generează scan_garzi_inventar.py --md, "
+                "prima diferență la linia %d:%s  doc:     %r%s  generat: %r%s"
+                "Regenerează: ./venv/bin/python scripts/scan_garzi_inventar.py --md"
+                % (prima + 1, chr(10), ld[prima] if prima < len(ld) else "(lipsește)", chr(10),
+                   lg[prima] if prima < len(lg) else "(lipsește)", chr(10)))
+E           AssertionError: inventarul din GARZI.md diferă de ce generează scan_garzi_inventar.py --md, prima diferență la linia 3:
+E             doc:     '**533 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.'
+E             generat: '**536 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.'
+E           Regenerează: ./venv/bin/python scripts/scan_garzi_inventar.py --md
+
+core/test_garzi_inventar.py:46: AssertionError
+________________ test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc ________________
+
+pin = {'_de_ce': 'Clichet PE FISIER, nu global: un fisier nou cu 40 de aserțiuni pe text ar urca un plafon global cu unu. Ai...l mai lung de 3 caractere', '_categorii': {'sursa': 113, 'randare': 6, 'reprezentare': 251, 'container': 71, ...}, ...}
+
+    def test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc(pin):
+        """Clichet pe clasa MARE. O ancoră care caută ceva prezent și în starea «nu s-a întâmplat
+        nimic» nu discriminează între cele două lumi pe care testul ar trebui să le separe."""
+        n = _s.pe_fel()["apare_oricum"]
+>       assert n <= pin["_pe_fel"]["apare_oricum"], (
+            "aserțiuni ancorate pe ceva ce apare oricum: %d > %d — caută un semn care apare DOAR când "
+            "comportamentul testat s-a produs, sau asertează pe structură"
+            % (n, pin["_pe_fel"]["apare_oricum"]))
+E       AssertionError: aserțiuni ancorate pe ceva ce apare oricum: 1223 > 1222 — caută un semn care apare DOAR când comportamentul testat s-a produs, sau asertează pe structură
+E       assert 1223 <= 1222
+
+core/test_garzi_pe_text.py:209: AssertionError
+___________________________ test_clichetul_nu_creste ___________________________
+
+    def test_clichetul_nu_creste():
+        """Miezul. Un fișier nou pornește de la 0: orice import mort în el pică."""
+        c = _f401()
+        crescut = ["  %s: %d > %d" % (f, n, BASELINE.get(f, 0))
+                   for f, n in sorted(c.items()) if n > BASELINE.get(f, 0)]
+>       assert not crescut, (
+            "importuri nefolosite în plus față de clichet:\n" + "\n".join(crescut)
+            + "\n\nRemediu: scoate importul. Dacă e intenționat (re-export), pune-i `# noqa: F401` cu "
+              "motivul — un import păstrat fără motiv scris e o urmă de intenție, nu o decizie (R23).")
+E       AssertionError: importuri nefolosite în plus față de clichet:
+E           core/test_paritate_p2.py: 1 > 0
+E         
+E         Remediu: scoate importul. Dacă e intenționat (re-export), pune-i `# noqa: F401` cu motivul — un import păstrat fără motiv scris e o urmă de intenție, nu o decizie (R23).
+E       assert not ['  core/test_paritate_p2.py: 1 > 0']
+
+core/test_importuri_nefolosite.py:86: AssertionError
+____________ test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM _____________
+
+    def test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM():
+        """doc↔cod, caracter cu caracter. Regenerare:
+        `./venv/bin/python scripts/scan_predare_cifre.py --md`, rescris între marcaje."""
+        doc = io.open(_DOC, encoding="utf-8").read()
+        assert sc.MARCA_START in doc and sc.MARCA_STOP in doc, (
+            "PREDARE_LANT.md n-are blocul de cifre generate — a fost șters? Fără el, cifrele despre "
+            "date se scriu iar din memorie, iar asta a greșit de două ori în două zile.")
+        a = doc.index(sc.MARCA_START)
+        b = doc.index(sc.MARCA_STOP) + len(sc.MARCA_STOP)
+        din_doc, generat = doc[a:b], sc.redare_md(_cifre())
+        if din_doc != generat:
+            ld, lg = din_doc.split(chr(10)), generat.split(chr(10))
+            prima = next((i for i in range(max(len(ld), len(lg)))
+                          if (ld[i] if i < len(ld) else None) != (lg[i] if i < len(lg) else None)), 0)
+>           raise AssertionError(
+                "blocul de cifre din PREDARE_LANT.md nu mai descrie baza, prima diferență la linia "
+                "%d:%s  doc:     %r%s  acum:    %r%s"
+                "Regenerează: ./venv/bin/python scripts/scan_predare_cifre.py --md"
+                % (prima + 1, chr(10), ld[prima] if prima < len(ld) else "(lipsește)", chr(10),
+                   lg[prima] if prima < len(lg) else "(lipsește)", chr(10)))
+E           AssertionError: blocul de cifre din PREDARE_LANT.md nu mai descrie baza, prima diferență la linia 54:
+E             doc:     '| **18** | tabele din `public` cu `tenant_id`, numărate |'
+E             acum:    '| **20** | tabele din `public` cu `tenant_id`, numărate |'
+E           Regenerează: ./venv/bin/python scripts/scan_predare_cifre.py --md
+
+core/test_predare_cifre.py:66: AssertionError
+______________ test_fisierul_de_tabele_cunoscute_nu_imbatraneste _______________
+
+st = <module 'scan_trasee' from '/home/costin/iconta_nou/scripts/scan_trasee.py'>
+
+    @pytest.mark.skipif(not _db_pentru_tabele(), reason="DB indisponibil")
+    def test_fisierul_de_tabele_cunoscute_nu_imbatraneste(st):
+        """Instanta (25.08.2026): `artefacte_produse` exista in baza din 25.08, dar
+        `scripts/trasee_tabele.json` fusese generat inainte. Filtrul care taie numele inventate de
+        regexul de SQL taia si o tabela REALA - iar doua rute de bilant apareau ca si cum n-ar scrie
+        nimic. Un filtru invechit nu produce zgomot, produce TACERE, si aia nu se vede.
+    
+        Gardul compara fisierul cu baza: orice tabela in care codul chiar scrie si care exista in DB
+        trebuie sa fie in fisier. Regenerare: `scan_trasee.py --tabele`."""
+        import json
+        cunoscute = set(json.load(io.open(st.CALE_TABELE, encoding="utf-8"))["tabele"])
+        scrise = set()
+        for r in st.citeste_rute():
+            scrise.update(r["scrie_inline"])
+        for info in st.citeste_module().values():
+            scrise.update(info["scrie"])
+        from core import db as _db
+        _db.init_pool()
+        with _db.get_conn() as c, c.cursor() as cur:
+            cur.execute("SELECT table_name FROM information_schema.tables "
+                        "WHERE table_schema IN ('public', 'tenant_001')")
+            in_db = {r[0] for r in cur.fetchall()}
+        lipsa = sorted((scrise & in_db) - cunoscute)
+>       assert not lipsa, (
+            "tabele REALE, in care codul scrie, taiate de filtrul invechit: %s%s  "
+            "regenereaza: ./venv/bin/python scripts/scan_trasee.py --tabele" % (lipsa, chr(10)))
+E       AssertionError: tabele REALE, in care codul scrie, taiate de filtrul invechit: ['firma_aspect_sursa', 'firma_sursa_versiune', 'firma_tip', 'sursa_supervizor']
+E           regenereaza: ./venv/bin/python scripts/scan_trasee.py --tabele
+E       assert not ['firma_aspect_sursa', 'firma_sursa_versiune', 'firma_tip', 'sursa_supervizor']
+
+core/test_trasee.py:467: AssertionError
+________ test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul _________
+
+st = <module 'scan_trasee' from '/home/costin/iconta_nou/scripts/scan_trasee.py'>
+
+    def test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul(st):
+        """doc↔cod. Partea XII din `TRASEE.md` e GENERATĂ (`--md`). Dacă cineva o editează cu
+        mâna, sau dacă inventarul se schimbă și documentul rămâne, cele două diverg — și
+        atunci documentul descrie o aplicație care nu mai există. Regenerarea:
+        `./venv/bin/python scripts/scan_trasee.py --md` + rescrierea blocului dintre marcaje."""
+        doc = io.open(os.path.join(_RAD, "TRASEE.md"), encoding="utf-8").read()
+        assert st.MARCA_START in doc and st.MARCA_STOP in doc, (
+            "TRASEE.md n-are marcajele blocului generat — Partea XII a fost ștearsă?")
+        a = doc.index(st.MARCA_START)
+        b = doc.index(st.MARCA_STOP) + len(st.MARCA_STOP)
+        din_doc = doc[a:b]
+        generat = st.redare_md()
+        if din_doc != generat:
+            ld, lg = din_doc.split(chr(10)), generat.split(chr(10))
+            prima = next((i for i in range(max(len(ld), len(lg)))
+                          if (ld[i] if i < len(ld) else None) != (lg[i] if i < len(lg) else None)),
+                         0)
+>           raise AssertionError(
+                "blocul din TRASEE.md diferă de ce generează scan_trasee.py --md, "
+                "prima diferență la linia %d a blocului:%s  doc:     %r%s  generat: %r%s"
+                "Regenerează: ./venv/bin/python scripts/scan_trasee.py --md"
+                % (prima + 1, chr(10), ld[prima] if prima < len(ld) else "(lipsește)", chr(10),
+                   lg[prima] if prima < len(lg) else "(lipsește)", chr(10)))
+E           AssertionError: blocul din TRASEE.md diferă de ce generează scan_trasee.py --md, prima diferență la linia 9 a blocului:
+E             doc:     '**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 37'
+E             generat: '**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 38'
+E           Regenerează: ./venv/bin/python scripts/scan_trasee.py --md
+
+core/test_trasee.py:561: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+FAILED core/test_trasee.py::test_fisierul_de_tabele_cunoscute_nu_imbatraneste
+FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+SKIPPED [1] core/test_harta_casete.py:170: firma nu e pe verde în starea scanată
+SKIPPED [1] core/test_harta_casete.py:189: una din cele două secțiuni nu s-a randat în starea asta
+SKIPPED [1] core/test_harta_casete.py:241: firma scanată n-are nicio obligație stinsă — constrângerea n-ar discrimina nimic
+SKIPPED [1] core/test_harta_casete.py:292: firma scanată n-are nicio obligație stinsă și nicio depunere — constrângerea ar trece 0==0 fără să discrimineze (vezi harta_casete.LIMITE)
+SKIPPED [1] core/test_limita_text_anaf.py:113: d100 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d205 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d301 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d390 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d394 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [2] core/test_nomenclator_pe_norma.py:70: norma nu închide lista (deschis=True) - se verifică prin dezacord, nu prin egalitate
+9 failed, 4216 passed, 11 skipped, 14 xfailed in 1629.11s (0:27:09)
+Command exited with non-zero status 1
+PYTEST_DURATA_SEC=1631.04

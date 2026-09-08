@@ -14096,3 +14096,60 @@ implementare — cronul de 08:00 și recalcularea cheamă aceeași culegere.
 `stare ∈ {curent, invalidat, lipseste}` plus `calculat_la` și ambele versiuni. Al treilea fel de
 neverificare — `NECALCULAT` — a fost adăugat tocmai fiindcă înainte nu putea exista.
 
+## 77 — Modelul de citire își cunoaște dependențele, iar prospețimea cuprinde și timpul (08.09.2026)
+
+**Remediază decizia 76 la două ture distanță, și nu o contrazice: o completează acolo unde ea a fost
+aplicată prea repede.** Decizia 76 a stabilit mecanismul (contor ridicat de trigger, prospețime
+derivată, triggere nu cârlige). P2 l-a folosit — dar cu o listă de surse **scrisă din memorie**, un
+contor **per firmă** și **fără nicio dependență de ceas**.
+
+**Ce s-a măsurat înainte de a schimba ceva** (`scripts/scan_dependente.py`, două instrumente
+independente confruntate, calibrate în trei direcții): `control_fiscal` citește **27** de tabele din
+schema firmei; `termene`, cinci. Triggerele acopereau **opt**. **Douăzeci de tabele puteau fi scrise
+fără ca nimic să invalideze ceva.**
+
+*Asta nu e supra-invalidare, care doar costă muncă. E **sub-invalidare**: o valoare veche rămâne
+etichetată `curent`, la nesfârșit, fără niciun semnal — adică exact interdicția pe care modulul o
+poartă în antet.*
+
+**Patru alegeri, fiecare cu motivul ei:**
+
+1. **Contorul e per (firmă, TABEL), nu per firmă.** Versiunea unui aspect e suma contoarelor
+   tabelelor lui, agregată în SQL. Decizia 76 alesese un singur contor scriind că prețul e
+   supra-invalidarea și că „supra-invalidarea înseamnă muncă în plus, niciodată o valoare veche
+   arătată drept curentă". Propoziția e adevărată, dar concluzia era greșită la un lucrător care
+   rulează la 5 minute: o firmă activă rămâne permanent invalidată pe **toate** aspectele, deci
+   permanent gri pe ecran. **Costul supra-invalidării nu e munca, e că ecranul nu mai spune nimic.**
+   Citirea rămâne o singură interogare — agregarea e un `GROUP BY` într-un CTE, nu o interogare per
+   firmă. Măsurat prin cererea HTTP întreagă: **5 interogări, constant, de la 5 la 1000 de firme**.
+
+2. **Lista de surse se MĂSOARĂ, nu se scrie.** `DEPENDENTE_P2.md` poartă matricea, generată din
+   registru și păzită caracter cu caracter. *Auditul din 08.09 dimineața spunea deja, în
+   `supervizor_cache.py`, „de câte ori am ratat o cale de scriere căutând-o cu ochii" — și tot cu
+   ochii a fost scrisă lista lui P2 câteva ore mai târziu.*
+
+3. **Timpul e o dependență de sine stătătoare.** `termene` și `control_fiscal` primesc `azi` și
+   răspund „la termen / întârziat" **relativ la el**. Fără nicio scriere în bază, la miezul nopții
+   rezultatul devine fals — iar cum nicio versiune nu se schimbase, se arăta `curent`. Fiecare aspect
+   declară acum `timp` (`"zi"`, `"luna"`, `None`), rândul poartă `epoca`, iar prospețimea cere **și**
+   potrivirea ei. *O valoare care a încetat să fie adevărată fiindcă s-a schimbat ziua e la fel de
+   veche ca una căreia i s-a schimbat sursa.*
+
+4. **`tip_firma` iese din model și devine PROIECȚIE** (`public.firma_tip`), întreținută sincron de
+   trigger pe `firma_profil`. Ca aspect avea o fereastră în care lipsea sau era invalidat, iar
+   `tenantii_userului` cădea în ea pe bucla per firmă — adică O(N)-ul pe care P2 tocmai îl scosese se
+   întorcea de fiecare dată când modelul era rece: după o repornire cu baza refăcută, după adăugarea
+   unui lot de firme, sau după orice scriere care invalida rezumatul. **O cale de rezervă pe calea de
+   cerere e tot o cale de cerere.** O proiecție sincronă n-are fereastră, deci nu are nevoie de
+   rezervă. Măsurat: **2 interogări pentru 14 firme**, constant.
+
+**Al cincilea lucru, care nu e o alegere de proiectare, ci o migrare care lipsea:** `leaga_triggerele`
+nu era chemată **din niciun loc din cod**. Triggerele existau pe server fiindcă le rulasem de mână în
+timpul măsurătorilor. O bază refăcută din dump, sau o firmă nouă, n-ar fi avut niciunul. *O migrare
+care trăiește doar în istoricul unei sesiuni nu e o migrare.* Acum: `lifespan()` o rulează pentru toți
+tenanții, idempotent, iar `provision_tenant` o rulează pentru firma nouă, în aceeași tranzacție.
+
+**Interdicția, lărgită:** citirea întoarce `stare ∈ {curent, invalidat, eroare, lipseste}`. `eroare` e
+nouă și era necesară: un calcul care ridica scria un dicționar `{"eroare": ...}` cu versiunea curentă,
+deci starea ieșea `curent`, iar apelantul trebuia **să-și amintească** să se uite după cheie.
+`/control-fiscal` își amintea; `de_recalculat` nu — deci firma nu mai era reîncercată niciodată.

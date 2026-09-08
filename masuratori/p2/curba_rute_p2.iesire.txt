@@ -1,0 +1,218 @@
+2026-09-08 13:13:44,199 INFO iconta [R118] /static servit din /home/costin/iconta_publicat/static — publicat (commit b1fa9f45)
+2026-09-08 13:13:44,703 INFO httpx HTTP Request: GET http://testserver/_proba_curba_n_plus_1?n=5 "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,718 INFO httpx HTTP Request: GET http://testserver/_proba_curba_n_plus_1?n=50 "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,722 INFO httpx HTTP Request: GET http://testserver/_proba_curba_set_based?n=5 "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,725 INFO httpx HTTP Request: GET http://testserver/_proba_curba_set_based?n=50 "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,769 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,775 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,782 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,788 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,795 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:44,802 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+CALIBRARE ham HTTP (ambele direcții, prin TestClient):
+   n_plus_1_5       -> {'interogari': 5, 'conexiuni': 5, 'dus_intors': 10, 'secunde': 0.009, 'status': 200}
+   n_plus_1_50      -> {'interogari': 50, 'conexiuni': 50, 'dus_intors': 100, 'secunde': 0.015, 'status': 200}
+   set_based_5      -> {'interogari': 1, 'conexiuni': 1, 'dus_intors': 2, 'secunde': 0.004, 'status': 200}
+   set_based_50     -> {'interogari': 1, 'conexiuni': 1, 'dus_intors': 2, 'secunde': 0.003, 'status': 200}
+   vede interogările prin HTTP      : True
+   vede CREȘTEREA cu N              : True
+   vede și cazul CORECT (constant)  : True
+   VERDICT: OK
+
+   invalidat_0% N=5     {'/migrare/solduri': '5q/3c/0.006s', '/migrare/plan-conturi': '5q/3c/0.007s', '/migrare/vector': '5q/3c/0.007s', '/termene': '5q/3c/0.007s', '/control-fiscal': '5q/3c/0.007s'}
+2026-09-08 13:13:45,071 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,092 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,100 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,107 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,115 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,123 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_0% N=50    {'/migrare/solduri': '5q/3c/0.021s', '/migrare/plan-conturi': '5q/3c/0.008s', '/migrare/vector': '5q/3c/0.008s', '/termene': '5q/3c/0.008s', '/control-fiscal': '5q/3c/0.008s'}
+2026-09-08 13:13:45,635 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,645 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,654 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,666 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,676 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:45,688 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_0% N=100   {'/migrare/solduri': '5q/3c/0.010s', '/migrare/plan-conturi': '5q/3c/0.009s', '/migrare/vector': '5q/3c/0.012s', '/termene': '5q/3c/0.010s', '/control-fiscal': '5q/3c/0.011s'}
+2026-09-08 13:13:46,934 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:46,950 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:46,966 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:46,983 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:47,000 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:47,019 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_0% N=250   {'/migrare/solduri': '5q/3c/0.016s', '/migrare/plan-conturi': '5q/3c/0.016s', '/migrare/vector': '5q/3c/0.018s', '/termene': '5q/3c/0.017s', '/control-fiscal': '5q/3c/0.019s'}
+2026-09-08 13:13:49,536 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:49,564 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:49,593 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:49,647 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:49,675 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:49,708 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_0% N=500   {'/migrare/solduri': '5q/3c/0.028s', '/migrare/plan-conturi': '5q/3c/0.029s', '/migrare/vector': '5q/3c/0.054s', '/termene': '5q/3c/0.028s', '/control-fiscal': '5q/3c/0.033s'}
+2026-09-08 13:13:54,695 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:54,746 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:54,795 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:54,851 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:54,904 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,049 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_0% N=1000  {'/migrare/solduri': '5q/3c/0.051s', '/migrare/plan-conturi': '5q/3c/0.050s', '/migrare/vector': '5q/3c/0.055s', '/termene': '5q/3c/0.053s', '/control-fiscal': '5q/3c/0.145s'}
+2026-09-08 13:13:55,148 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,154 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,161 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,167 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,173 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,180 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_10% N=5     {'/migrare/solduri': '5q/3c/0.006s', '/migrare/plan-conturi': '5q/3c/0.006s', '/migrare/vector': '5q/3c/0.006s', '/termene': '5q/3c/0.006s', '/control-fiscal': '5q/3c/0.007s'}
+2026-09-08 13:13:55,441 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,450 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,458 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,466 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,475 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:55,484 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_10% N=50    {'/migrare/solduri': '5q/3c/0.008s', '/migrare/plan-conturi': '5q/3c/0.008s', '/migrare/vector': '5q/3c/0.008s', '/termene': '5q/3c/0.008s', '/control-fiscal': '5q/3c/0.009s'}
+2026-09-08 13:13:56,002 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:56,013 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:56,024 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:56,036 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:56,048 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:56,061 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_10% N=100   {'/migrare/solduri': '5q/3c/0.011s', '/migrare/plan-conturi': '5q/3c/0.011s', '/migrare/vector': '5q/3c/0.012s', '/termene': '5q/3c/0.012s', '/control-fiscal': '5q/3c/0.013s'}
+2026-09-08 13:13:57,319 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:57,336 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:57,353 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:57,371 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:13:57,390 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:13:57,411 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_10% N=250   {'/migrare/solduri': '5q/3c/0.017s', '/migrare/plan-conturi': '5q/3c/0.017s', '/migrare/vector': '5q/3c/0.018s', '/termene': '5q/3c/0.018s', '/control-fiscal': '5q/3c/0.021s'}
+2026-09-08 13:13:59,908 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:59,941 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:13:59,968 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:13:59,999 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:00,028 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:00,062 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_10% N=500   {'/migrare/solduri': '5q/3c/0.033s', '/migrare/plan-conturi': '5q/3c/0.027s', '/migrare/vector': '5q/3c/0.031s', '/termene': '5q/3c/0.029s', '/control-fiscal': '5q/3c/0.034s'}
+2026-09-08 13:14:05,066 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,118 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,164 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,218 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,269 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,337 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_10% N=1000  {'/migrare/solduri': '5q/3c/0.052s', '/migrare/plan-conturi': '5q/3c/0.046s', '/migrare/vector': '5q/3c/0.054s', '/termene': '5q/3c/0.051s', '/control-fiscal': '5q/3c/0.068s'}
+2026-09-08 13:14:05,442 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,449 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,454 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,461 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,467 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,472 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_100% N=5     {'/migrare/solduri': '5q/3c/0.006s', '/migrare/plan-conturi': '5q/3c/0.006s', '/migrare/vector': '5q/3c/0.006s', '/termene': '5q/3c/0.006s', '/control-fiscal': '5q/3c/0.006s'}
+2026-09-08 13:14:05,735 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,743 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,751 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,760 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,769 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:05,778 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_100% N=50    {'/migrare/solduri': '5q/3c/0.008s', '/migrare/plan-conturi': '5q/3c/0.008s', '/migrare/vector': '5q/3c/0.009s', '/termene': '5q/3c/0.009s', '/control-fiscal': '5q/3c/0.009s'}
+2026-09-08 13:14:06,324 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:06,335 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:06,346 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:06,357 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:06,368 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:06,379 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_100% N=100   {'/migrare/solduri': '5q/3c/0.010s', '/migrare/plan-conturi': '5q/3c/0.011s', '/migrare/vector': '5q/3c/0.011s', '/termene': '5q/3c/0.011s', '/control-fiscal': '5q/3c/0.011s'}
+2026-09-08 13:14:07,643 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:07,661 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:07,678 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:07,697 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:07,715 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:07,736 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_100% N=250   {'/migrare/solduri': '5q/3c/0.018s', '/migrare/plan-conturi': '5q/3c/0.017s', '/migrare/vector': '5q/3c/0.018s', '/termene': '5q/3c/0.018s', '/control-fiscal': '5q/3c/0.021s'}
+2026-09-08 13:14:10,319 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:10,348 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:10,383 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:10,415 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:10,445 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:10,484 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_100% N=500   {'/migrare/solduri': '5q/3c/0.029s', '/migrare/plan-conturi': '5q/3c/0.035s', '/migrare/vector': '5q/3c/0.032s', '/termene': '5q/3c/0.030s', '/control-fiscal': '5q/3c/0.039s'}
+2026-09-08 13:14:15,542 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,597 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,653 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,712 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,766 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,834 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   invalidat_100% N=1000  {'/migrare/solduri': '5q/3c/0.056s', '/migrare/plan-conturi': '5q/3c/0.056s', '/migrare/vector': '5q/3c/0.059s', '/termene': '5q/3c/0.054s', '/control-fiscal': '5q/3c/0.068s'}
+2026-09-08 13:14:15,888 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,894 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,900 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,906 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,913 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,919 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   model_rece N=5     {'/migrare/solduri': '5q/3c/0.006s', '/migrare/plan-conturi': '5q/3c/0.006s', '/migrare/vector': '5q/3c/0.006s', '/termene': '5q/3c/0.006s', '/control-fiscal': '5q/3c/0.006s'}
+2026-09-08 13:14:15,950 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,959 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,968 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,977 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,986 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:15,995 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   model_rece N=50    {'/migrare/solduri': '5q/3c/0.009s', '/migrare/plan-conturi': '5q/3c/0.009s', '/migrare/vector': '5q/3c/0.009s', '/termene': '5q/3c/0.009s', '/control-fiscal': '5q/3c/0.009s'}
+2026-09-08 13:14:16,044 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,053 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,063 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,073 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,083 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,097 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   model_rece N=100   {'/migrare/solduri': '5q/3c/0.010s', '/migrare/plan-conturi': '5q/3c/0.010s', '/migrare/vector': '5q/3c/0.010s', '/termene': '5q/3c/0.010s', '/control-fiscal': '5q/3c/0.014s'}
+2026-09-08 13:14:16,202 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,215 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,229 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,243 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,257 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,272 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   model_rece N=250   {'/migrare/solduri': '5q/3c/0.013s', '/migrare/plan-conturi': '5q/3c/0.013s', '/migrare/vector': '5q/3c/0.014s', '/termene': '5q/3c/0.014s', '/control-fiscal': '5q/3c/0.015s'}
+2026-09-08 13:14:16,457 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,477 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,495 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,516 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,536 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:16,557 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   model_rece N=500   {'/migrare/solduri': '5q/3c/0.019s', '/migrare/plan-conturi': '5q/3c/0.018s', '/migrare/vector': '5q/3c/0.021s', '/termene': '5q/3c/0.020s', '/control-fiscal': '5q/3c/0.021s'}
+2026-09-08 13:14:16,915 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:17,011 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-08 13:14:17,050 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-08 13:14:17,091 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-08 13:14:17,127 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-08 13:14:17,162 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+   model_rece N=1000  {'/migrare/solduri': '5q/3c/0.096s', '/migrare/plan-conturi': '5q/3c/0.039s', '/migrare/vector': '5q/3c/0.041s', '/termene': '5q/3c/0.036s', '/control-fiscal': '5q/3c/0.035s'}
+
+═══ scenariu: invalidat_0% ═══
+ruta                   N=5  N=50  N=100  N=250  N=500  N=1000
+/migrare/solduri       5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/plan-conturi  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/vector        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/termene               5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/control-fiscal        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+
+═══ scenariu: invalidat_10% ═══
+ruta                   N=5  N=50  N=100  N=250  N=500  N=1000
+/migrare/solduri       5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/plan-conturi  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/vector        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/termene               5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/control-fiscal        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+
+═══ scenariu: invalidat_100% ═══
+ruta                   N=5  N=50  N=100  N=250  N=500  N=1000
+/migrare/solduri       5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/plan-conturi  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/vector        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/termene               5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/control-fiscal        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+
+═══ scenariu: model_rece ═══
+ruta                   N=5  N=50  N=100  N=250  N=500  N=1000
+/migrare/solduri       5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/plan-conturi  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/migrare/vector        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/termene               5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+/control-fiscal        5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c  |  5 q / 3 c
+
+scris: /home/costin/iconta_nou/curba_rute_p2.json   (total 33.4s)
+DURATA_TOTALA_SEC=33.66

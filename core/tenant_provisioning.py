@@ -224,6 +224,12 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
             f"INSERT INTO {schema_noua}.firma_profil (id, nume, cui, serie_factura, urmator_numar_factura, tip_firma) "
             "VALUES (1, %s, %s, '', 1, %s) ON CONFLICT (id) DO NOTHING",
             (nume, str(cui), _tip))
+    # [P2-remediere 08.09.2026] Triggerele de invalidare + samanta proiectiei `tip_firma`. Fara
+    # ele, firma noua ar intra in model o singura data si ar ramane `curent` la nesfarsit: nimic
+    # nu i-ar mai ridica vreun contor. Se face in ACEEASI tranzactie ca restul crearii — o firma
+    # care exista fara triggere ar fi o firma care minte de la primul ecran.
+    from core import firma_rezumat as _fr
+    _fr.leaga_triggerele_firma(conn, schema_noua, tenant_id)
     return {"ok": True, "tenant_id": tenant_id, "schema_name": schema_noua}
 
 

@@ -76,6 +76,22 @@ def ruleaza(nume, fn):
 # fiecare declansare timp de ~31 de zile, in tacere. Deadman-ul nu se uita la ele fiindca
 # lista lui era o COPIE a crontab-ului, nu o citire a sistemului.
 # `core/test_joburi_supravegheate.py` citeste acum ambele surse si compara cu lista asta.
+# ── CADENȚA LUCRĂTORILOR DE FUNDAL (nu ritmul lor: cât ia o tură și cât așteaptă după un eșec) ──
+# [P2-remediere 08.09.2026] Stau aici, lângă `RITMURI`, fiindcă sunt aceeași clasă de valoare —
+# acordajul unui job de fundal — și fiindcă `core/firma_rezumat.py` e, prin vocabularul lui, un
+# modul fiscal pentru `scan_constante`: două numere operaționale acolo ar intra în clichetul
+# constantelor nesursate, unde n-au ce căuta și unde ar ascunde datoria reală.
+
+#: Câte PERECHI (firmă, aspect) ia lucrătorul `firma_rezumat` într-o tură. Se numără în perechi, nu
+#: în firme: o firmă cu un singur aspect învechit nu costă cât una cu toate cinci. Mărginește TURA,
+#: nu munca totală — ce nu încape rămâne invalidat și intră în tura următoare.
+LOT_FIRMA_REZUMAT = 200
+
+#: Pasul de reîncercare, în minute, după al n-lea eșec de calcul al unui aspect. Ultima valoare se
+#: repetă. Nu se abandonează niciodată complet: o eroare permanentă trebuie să rămână VIZIBILĂ, nu
+#: să dispară din coadă.
+BACKOFF_FIRMA_REZUMAT_MIN = (1, 5, 15, 60, 240)
+
 RITMURI = {
     "alerta_acces":        2,     # la 15 minute
     # [P2, 08.09.2026] modelul de citire al portofoliului. La 5 minute: rezumatul e ce vede

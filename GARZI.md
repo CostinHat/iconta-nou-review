@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**533 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**536 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 513
+### `core/` — 515
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7950,6 +7950,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_declaratii_lot6_duk.py` — Lot 6 (final): Declaratia Unica D212, proba DUK cu validatorul OFICIAL ANAF.
 - `core/test_deconturi.py` — Gard pe plafonul neimpozabil al diurnei (motor pur core/deconturi.py).
 - `core/test_deducere_generalizare.py` — GARD Fix 3 (Task 2 D112): GENERALIZAREA clasei fix 1 (deducere necablata) la CEILALTI apelanti de productie
+- `core/test_dependente_masurate.py` — GARD — registrul de dependențe nu se poate depărta nici de măsurătoare, nici de document.
 - `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
 - `core/test_depunere_contrazice.py` — GARD R6 (21.08.2026): o depunere care contrazice un „nu se datorează" nu mai e invizibilă.
 - `core/test_descarcare_muta.py` — [R131, 04.09.2026] GARD: o descarcare care esueaza spune DE CE.
@@ -7982,7 +7983,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
 - `core/test_fieldmark.py` — [Regula 13 + Regula 6] GARDA: marcajul vizual al campului cu eroare de validare (Regula 14 pct.4).
 - `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.
-- `core/test_firma_rezumat.py` — GARD P2 (08.09.2026) — cererile de portofoliu nu mai cresc cu numărul de firme.
+- `core/test_firma_rezumat.py` — GARD P2 (08.09.2026, remediat) — modelul de citire al portofoliului.
 - `core/test_fisa_cont.py` — GARD: Fișa de cont pentru operațiuni diverse produce ce cere norma, nu o balanță deghizată.
 - `core/test_fixturi_shared_period.py` — [Verificare funcțională reală] GARD: o fixtură de test care scrie într-un tabel PARTAJAT period-keyed
 - `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.
@@ -8064,6 +8065,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_octeti_invizibili.py` — GARD (21.08.2026): niciun octet de CONTROL invizibil în codul sursă.
 - `core/test_onboarding_ux.py` — GARD onboarding_ux: fereastra de bun venit (salut inaintea Suportului, firul spune unde se face
 - `core/test_operatiuni_speciale.py` — Teste gardian pentru operatiuni speciale P2.7 (leasing, avansuri,
+- `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).
 - `core/test_pastila_gri.py` — GARD (20.08.2026): griul nu se falsifică niciodată în verde.
 - `core/test_patru_ochi_efectiv.py` — core/test_patru_ochi_efectiv.py — GARD: patru-ochi = politica x aplicabilitate, aceeasi in UI si in enforcement.
@@ -8196,13 +8198,14 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 20
+### `scripts/` — 21
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
 - `scripts/scan_ancore_rute.py` — Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70.
 - `scripts/scan_axa_garzi.py` — FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua.
 - `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
+- `scripts/scan_dependente.py` — scripts/scan_dependente.py — CE CITEȘTE, de fapt, fiecare aspect al modelului de citire.
 - `scripts/scan_ds_verificator.py` — RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026.
 - `scripts/scan_forme_punct.py` — scripts/scan_forme_punct.py — CÂT DE LARG prinde un tipar de punct, pe TOT corpusul.
 - `scripts/scan_functionalitati.py` — scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.

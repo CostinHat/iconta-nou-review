@@ -412,66 +412,45 @@ def tenantii_userului(conn, user_id, doar_active=True):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         if rol == "superadmin":
             # GDPR: superadmin vede in lista DOAR conturi gratuite (fara cabinet).
-            cur.execute("SELECT id, nume, schema_name, cui, activ, nume_anaf, nume_anaf_la, nume_ales_la "
-                        "FROM public.tenants "
-                        "WHERE accounting_firm_id IS NULL AND (%s OR activ = true) ORDER BY nume",
+            cur.execute("SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, "
+                        "       t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut "
+                        "FROM public.tenants t "
+                        "LEFT JOIN public.firma_tip ft ON ft.tenant_id = t.id "
+                        "WHERE t.accounting_firm_id IS NULL AND (%s OR t.activ = true) ORDER BY t.nume",
                         (toate,))
         elif rol == "admin_firma":
-            cur.execute("SELECT id, nume, schema_name, cui, activ, nume_anaf, nume_anaf_la, nume_ales_la "
-                        "FROM public.tenants "
-                        "WHERE accounting_firm_id = %s AND (%s OR activ = true) ORDER BY nume",
+            cur.execute("SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, "
+                        "       t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut "
+                        "FROM public.tenants t "
+                        "LEFT JOIN public.firma_tip ft ON ft.tenant_id = t.id "
+                        "WHERE t.accounting_firm_id = %s AND (%s OR t.activ = true) ORDER BY t.nume",
                         (firm, toate))
         else:
             cur.execute(
-                "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la "
+                "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, "
+                "       t.nume_ales_la, ft.tip_firma AS tip_firma_brut "
                 "FROM public.tenants t "
                 "JOIN public.user_tenants ut ON ut.tenant_id = t.id "
+                "LEFT JOIN public.firma_tip ft ON ft.tenant_id = t.id "
                 "WHERE ut.user_id = %s AND (%s OR t.activ = true) ORDER BY t.nume",
                 (user_id, toate))
         lista = [dict(r) for r in cur.fetchall()]
-    # [P2, 08.09.2026] `tip_firma` VINE DIN MODELUL DE CITIRE — o interogare pentru tot
-    # portofoliul, in loc de trei per firma (`SAVEPOINT` + `SELECT` + `RELEASE`). Masurat: la 1000
-    # de firme, bucla de mai jos costa 3.000 de interogari DOAR ca sa listezi portofoliul, inaintea
-    # oricarei munci utile — si functia e chemata din 13 locuri.
+    # [P2-remediere 08.09.2026] `tip_firma` VINE DINTR-O PROIECTIE, nu dintr-un model cu prospetime.
     #
-    # REZERVA E DECLARATA: firmele care NU sunt inca in model raman pe calea veche, per schema.
-    # Pe un model rece N+1-ul revine, mai putin, dar revine. Nu se scrie „rezolvat" despre o cale
-    # care are o ramura nemasurata.
-    from core.migrare_api import regim_contabil as _rc
-    _lipsa = list(lista)
-    try:
-        from core import firma_rezumat as _fr
-        _ids = [t["id"] for t in lista]
-        _model = _fr.citeste(conn, _ids, ["tip_firma"]) if _ids else {}
-        _lipsa = []
-        for t in lista:
-            _a = (_model.get(t["id"]) or {}).get("tip_firma") or {}
-            _d = _a.get("date") or {}
-            if _a.get("stare") == _fr.CURENT and _d.get("tip_firma"):
-                t["tip_firma"] = _d["tip_firma"]
-                t["regim_contabil"] = _d.get("regim_contabil") or _rc(_d["tip_firma"])
-            else:
-                _lipsa.append(t)          # necalculat sau invalidat -> calea veche, pentru ea
-    except Exception:
-        _lipsa = list(lista)              # modelul lipseste (baza veche) -> totul pe calea veche
-
-    with conn.cursor() as cur:
-        for t in _lipsa:
-            # savepoint per firma: o interogare esuata (schema fara firma_profil)
-            # abortul tranzactiei psycopg2 -> altfel toate firmele urmatoare ar cadea pe 'srl'
-            try:
-                cur.execute("SAVEPOINT sp_tip")
-                cur.execute(f'SELECT tip_firma FROM "{t["schema_name"]}".firma_profil WHERE id=1')
-                row = cur.fetchone()
-                from core.migrare_api import tip_firma_nrm  # default 'srl' -> UNICA primitiva, nu literal inline
-                t["tip_firma"] = tip_firma_nrm(row[0] if row else None)
-                cur.execute("RELEASE SAVEPOINT sp_tip")
-            except Exception:
-                from core.migrare_api import tip_firma_nrm
-                cur.execute("ROLLBACK TO SAVEPOINT sp_tip")
-                t["tip_firma"] = tip_firma_nrm(None)  # firma fara profil -> srl (partida dubla), prin primitiva
-            # [regim] expune FAPTUL existent (partida simpla/dubla) derivat din tip_firma - frontendul nu-l
-            # recalculeaza si nu defaulteaza regim inline. Nicio regula noua, doar expunere. Vezi DECIZII 23.07.
-            from core.migrare_api import regim_contabil
-            t["regim_contabil"] = regim_contabil(t["tip_firma"])
+    # Prima forma a lui P2 il lua din `firma_rezumat` si, cand rezumatul lipsea sau era invalidat,
+    # cadea inapoi pe bucla de mai jos — `SAVEPOINT` + `SELECT` + `RELEASE` PER FIRMA. Adica exact
+    # O(N)-ul pe care P2 il scosese se intorcea de fiecare data cand modelul era rece: dupa o
+    # repornire cu baza refacuta, dupa adaugarea unui lot de firme, sau pur si simplu dupa orice
+    # scriere care invalida rezumatul. *O cale de rezerva pe calea de cerere e tot o cale de cerere.*
+    #
+    # `public.firma_tip` e intretinuta SINCRON de trigger pe `firma_profil` (vezi
+    # `firma_rezumat.leaga_triggerele_firma`), deci nu are fereastra de invechire si nu are nevoie
+    # de rezerva. Costul: ZERO interogari in plus — proiectia intra in `SELECT`-ul de mai sus.
+    # Normalizarea ramane in `tip_firma_nrm`, primitiva UNICA; proiectia stocheaza valoarea bruta.
+    from core.migrare_api import regim_contabil, tip_firma_nrm
+    for t in lista:
+        t["tip_firma"] = tip_firma_nrm(t.pop("tip_firma_brut", None))
+        # [regim] expune FAPTUL existent (partida simpla/dubla) derivat din tip_firma - frontendul nu-l
+        # recalculeaza si nu defaulteaza regim inline. Nicio regula noua, doar expunere. Vezi DECIZII 23.07.
+        t["regim_contabil"] = regim_contabil(t["tip_firma"])
     return lista

@@ -92,6 +92,13 @@ TABELE_TENANT = (
     # valoare DERIVATA despre ea, recalculabila din sursa. Lasat in urma, o firma noua cu
     # acelasi id ar mosteni rezumatele alteia — si le-ar arata ca fiind ale ei.
     "firma_rezumat",
+    # [P2-remediere 08.09.2026] Contorul per (firma, tabela) si proiectia `tip_firma`. SE STERG
+    # odata cu firma, din acelasi motiv ca `firma_rezumat`: sunt valori DERIVATE despre ea. Lasate
+    # in urma, o firma noua cu acelasi `tenant_id` ar mosteni contoare care nu descriu nimic din
+    # datele ei — iar rezumatul ei nou ar aparea invalidat din prima clipa, sau, mai rau, curent
+    # fata de contoarele altcuiva. `firma_tip` lasat in urma ar arata tipul firmei disparute.
+    "firma_sursa_versiune",
+    "firma_tip",
     "supervizor_sursa",
     "urme_portal",
     "user_tenants",

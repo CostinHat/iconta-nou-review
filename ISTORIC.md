@@ -8562,3 +8562,53 @@ acum instantaneu. **Pentru contabilul de azi, asta e confort, nu funcție nouă.
 Ce s-a cumpărat de fapt e altceva: cabinetul poate crește de la 14 firme la 1000 fără ca ecranele să
 devină inutilizabile. *Ziua a mutat un plafon, nu a livrat o capabilitate.*
 
+---
+
+## 08.09.2026, după-amiaza — P2 se redeschide, și nu pentru stil
+
+**Trei verificări independente** (a mea pe cod, a lui GPT pe audit, confirmarea comună) au găsit
+blocante reale în P2. Nu era o listă de observații: erau patru feluri în care modelul de citire putea
+**minți tăcut**, plus o migrare care nu exista în cod.
+
+**CE S-A GĂSIT, în ordinea în care doare:**
+
+1. **Sub-invalidare, 20 de tabele din 27.** Aspectele grele nu declarau **nicio** sursă. Măsurat cu
+   un instrument nou (`scripts/scan_dependente.py`): `control_fiscal` citește 27 de tabele. O
+   scriere în oricare dintre cele 20 neurmărite lăsa rezumatul etichetat `curent` la nesfârșit.
+2. **Timpul nu era o dependență.** Un verdict de zi calculat ieri se arăta `curent` azi.
+3. **`de_recalculat` nu vedea un aspect lipsă**, doar o firmă fără niciun rând. O firmă cu 3 aspecte
+   din 6 rămânea cu celelalte 3 `lipseste` **pe veci**.
+4. **O eroare de calcul se dădea drept rezultat curent** — și, fiindcă versiunea se potrivea, firma
+   nu mai era niciodată reîncercată.
+5. **`leaga_triggerele` nu era chemată de nicăieri.** Zero apeluri în tot repo-ul. Triggerele
+   existau doar fiindcă le pusesem de mână.
+6. **O(N) se întorcea pe calea de rezervă** din `tenantii_userului`, exact când modelul era rece.
+
+**CE A ARĂTAT INSTRUMENTUL DESPRE INSTRUMENTE.** Calibrarea lui `scan_dependente` a **picat de trei
+ori** înainte să treacă, și de fiecare dată defectul era al instrumentului: `EXPLAIN` fără `VERBOSE`
+nu poartă schema, deci `tenant_004.facturi` și `public.facturi` deveneau aceeași dependență ·
+contoarele `pg_stat` nu se varsă la capătul tranzacției, ci când **backendul** devine inactiv, deci o
+așteptare fixă atribuia citirile blocului **următor** — adică **inventa** dependențe · iar
+`pg_stat_force_next_flush()` golește doar backendul care îl cheamă, nu conexiunile din pool. *Fără
+calibrarea în trei direcții, matricea ar fi ieșit plauzibilă și greșită.*
+
+Iar prima rulare, pe **o singură firmă**, n-a atins `miscari_stoc` — nu fiindcă modelul n-ar depinde
+de ea, ci fiindcă datele acelei firme nu intrau pe ramura de stocuri. Apare la 2 firme din 20.
+**Punctul orb e firma, nu ecranul.**
+
+**CE S-A MĂSURAT DUPĂ.** Cererea HTTP **întreagă** (nu funcția izolată), pe cele cinci rute, la
+N = 5/50/100/250/500/1000, în patru scenarii (0% / 10% / 100% invalidat + model rece): **5 interogări
+și 3 conexiuni, constant, peste tot**, toate 200.
+
+Hamul de dimineață înlocuia `tenantii_userului` cu totul — adică exact partea în care stătea
+O(N)-ul care a supraviețuit. Și n-a rămas nicăieri: **cifrele lui nu se mai pot recalcula.** Cel de
+acum e în repo (`scripts/masoara_rute_portofoliu.py`), cu scenariul scris și calibrare prin stratul
+HTTP. *O cifră care nu se poate recalcula nu e o măsurătoare, e o amintire.*
+
+**PARITATE.** Cele cinci rute, pe firme reale, comparate **întregi** cu ce ar fi răspuns calea de
+dinainte de P2 — fără normalizare de verdicte sau de sume. 6 probe, verzi.
+
+**CE A SCHIMBAT ASTA PENTRU UN CONTABIL.** Dimineața scriam că ziua a mutat un plafon, nu a livrat o
+capabilitate. După-amiaza e altfel: **ecranele nu mai puteau rămâne gri la nesfârșit** după o
+editare într-unul din cele 20 de tabele neurmărite, și nu mai puteau arăta verdictul de ieri ca fiind
+al zilei de azi. Prima e o regresie reparată; a doua era acolo de la început.

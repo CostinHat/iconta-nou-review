@@ -138,6 +138,20 @@ async def lifespan(app):
             # EXISTS), langa migrarea existenta, cu aceeasi purtare la esec.
             from core import supervizor_cache as _sc_boot
             _sc_boot.aplica_ddl(conn)
+            # [P2-remediere 08.09.2026] Modelul de citire al portofoliului: tabelele, functiile de
+            # trigger si registrul aspect->sursa. LIPSEA din lifespan: tabela exista pe server doar
+            # fiindca o rulasem de mana in timpul masuratorilor, iar pe o baza proaspata P2 ar fi
+            # cazut tacut pe ramura „modelul lipseste".
+            from core import firma_rezumat as _fr_boot
+            _fr_boot.aplica_ddl(conn)
+            # Triggerele, pentru TOTI tenantii existenti — nu doar pentru cei noi. Idempotent
+            # (DROP IF EXISTS + CREATE), deci o pornire care le gaseste puse nu schimba nimic.
+            # `leaga_triggerele` din prima forma nu era chemata din niciun loc din cod.
+            _mig = _fr_boot.migreaza_triggerele(conn)
+            if _mig["esecuri"]:
+                logging.getLogger("iconta").warning(
+                    "[P2] triggere nelegate pentru %d firme: %s",
+                    len(_mig["esecuri"]), _mig["esecuri"][:5])
     except Exception:
         pass  # nu blocăm pornirea dacă DB e temporar indisponibil
     try:

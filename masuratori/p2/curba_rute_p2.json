@@ -1,0 +1,1018 @@
+{
+  "invalidat_0%": {
+    "5": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 861
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.007,
+        "status": 200,
+        "octeti": 781
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.007,
+        "status": 200,
+        "octeti": 1316
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.007,
+        "status": 200,
+        "octeti": 1842
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.007,
+        "status": 200,
+        "octeti": 1069
+      }
+    },
+    "50": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.021,
+        "status": 200,
+        "octeti": 8511
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 7711
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 13061
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 17997
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 10160
+      }
+    },
+    "100": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.01,
+        "status": 200,
+        "octeti": 17011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 15411
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.012,
+        "status": 200,
+        "octeti": 26111
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.01,
+        "status": 200,
+        "octeti": 35947
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.011,
+        "status": 200,
+        "octeti": 20261
+      }
+    },
+    "250": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.016,
+        "status": 200,
+        "octeti": 42511
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.016,
+        "status": 200,
+        "octeti": 38511
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.018,
+        "status": 200,
+        "octeti": 65261
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.017,
+        "status": 200,
+        "octeti": 89797
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.019,
+        "status": 200,
+        "octeti": 50561
+      }
+    },
+    "500": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.028,
+        "status": 200,
+        "octeti": 85011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.029,
+        "status": 200,
+        "octeti": 77011
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.054,
+        "status": 200,
+        "octeti": 130511
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.028,
+        "status": 200,
+        "octeti": 179547
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.033,
+        "status": 200,
+        "octeti": 101061
+      }
+    },
+    "1000": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.051,
+        "status": 200,
+        "octeti": 170011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.05,
+        "status": 200,
+        "octeti": 154011
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.055,
+        "status": 200,
+        "octeti": 261011
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.053,
+        "status": 200,
+        "octeti": 359047
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.145,
+        "status": 200,
+        "octeti": 202062
+      }
+    }
+  },
+  "invalidat_10%": {
+    "5": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 861
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 781
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 1316
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 1842
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.007,
+        "status": 200,
+        "octeti": 1069
+      }
+    },
+    "50": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 8526
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 7726
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 13076
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 18012
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 10165
+      }
+    },
+    "100": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.011,
+        "status": 200,
+        "octeti": 17041
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.011,
+        "status": 200,
+        "octeti": 15441
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.012,
+        "status": 200,
+        "octeti": 26141
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.012,
+        "status": 200,
+        "octeti": 35977
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.013,
+        "status": 200,
+        "octeti": 20271
+      }
+    },
+    "250": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.017,
+        "status": 200,
+        "octeti": 42586
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.017,
+        "status": 200,
+        "octeti": 38586
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.018,
+        "status": 200,
+        "octeti": 65336
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.018,
+        "status": 200,
+        "octeti": 89872
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.021,
+        "status": 200,
+        "octeti": 50587
+      }
+    },
+    "500": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.033,
+        "status": 200,
+        "octeti": 85161
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.027,
+        "status": 200,
+        "octeti": 77161
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.031,
+        "status": 200,
+        "octeti": 130661
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.029,
+        "status": 200,
+        "octeti": 179697
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.034,
+        "status": 200,
+        "octeti": 101112
+      }
+    },
+    "1000": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.052,
+        "status": 200,
+        "octeti": 170311
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.046,
+        "status": 200,
+        "octeti": 154311
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.054,
+        "status": 200,
+        "octeti": 261311
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.051,
+        "status": 200,
+        "octeti": 359347
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.068,
+        "status": 200,
+        "octeti": 202163
+      }
+    }
+  },
+  "invalidat_100%": {
+    "5": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 876
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 796
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 1331
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 1857
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 1074
+      }
+    },
+    "50": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 8661
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.008,
+        "status": 200,
+        "octeti": 7861
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 13211
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 18147
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 10210
+      }
+    },
+    "100": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.01,
+        "status": 200,
+        "octeti": 17311
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.011,
+        "status": 200,
+        "octeti": 15711
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.011,
+        "status": 200,
+        "octeti": 26411
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.011,
+        "status": 200,
+        "octeti": 36247
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.011,
+        "status": 200,
+        "octeti": 20361
+      }
+    },
+    "250": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.018,
+        "status": 200,
+        "octeti": 43261
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.017,
+        "status": 200,
+        "octeti": 39261
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.018,
+        "status": 200,
+        "octeti": 66011
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.018,
+        "status": 200,
+        "octeti": 90547
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.021,
+        "status": 200,
+        "octeti": 50811
+      }
+    },
+    "500": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.029,
+        "status": 200,
+        "octeti": 86511
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.035,
+        "status": 200,
+        "octeti": 78511
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.032,
+        "status": 200,
+        "octeti": 132011
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.03,
+        "status": 200,
+        "octeti": 181047
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.039,
+        "status": 200,
+        "octeti": 101561
+      }
+    },
+    "1000": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.056,
+        "status": 200,
+        "octeti": 173011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.056,
+        "status": 200,
+        "octeti": 157011
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.059,
+        "status": 200,
+        "octeti": 264011
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.054,
+        "status": 200,
+        "octeti": 362047
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.068,
+        "status": 200,
+        "octeti": 203062
+      }
+    }
+  },
+  "model_rece": {
+    "5": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 726
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 641
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 1181
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 1852
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.006,
+        "status": 200,
+        "octeti": 919
+      }
+    },
+    "50": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 7161
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 6311
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 11711
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 18097
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.009,
+        "status": 200,
+        "octeti": 8660
+      }
+    },
+    "100": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.01,
+        "status": 200,
+        "octeti": 14311
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.01,
+        "status": 200,
+        "octeti": 12611
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.01,
+        "status": 200,
+        "octeti": 23411
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.01,
+        "status": 200,
+        "octeti": 36147
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.014,
+        "status": 200,
+        "octeti": 17261
+      }
+    },
+    "250": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.013,
+        "status": 200,
+        "octeti": 35761
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.013,
+        "status": 200,
+        "octeti": 31511
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.014,
+        "status": 200,
+        "octeti": 58511
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.014,
+        "status": 200,
+        "octeti": 90297
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.015,
+        "status": 200,
+        "octeti": 43061
+      }
+    },
+    "500": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.019,
+        "status": 200,
+        "octeti": 71511
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.018,
+        "status": 200,
+        "octeti": 63011
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.021,
+        "status": 200,
+        "octeti": 117011
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.02,
+        "status": 200,
+        "octeti": 180547
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.021,
+        "status": 200,
+        "octeti": 86061
+      }
+    },
+    "1000": {
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.096,
+        "status": 200,
+        "octeti": 143011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.039,
+        "status": 200,
+        "octeti": 126011
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.041,
+        "status": 200,
+        "octeti": 234011
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.036,
+        "status": 200,
+        "octeti": 361047
+      },
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "secunde": 0.035,
+        "status": 200,
+        "octeti": 172062
+      }
+    }
+  }
+}
