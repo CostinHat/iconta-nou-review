@@ -1,0 +1,39 @@
+2026-09-08 08:10:44,493 INFO iconta [R118] /static servit din /home/costin/iconta_publicat/static — publicat (commit d805a84a)
+scheme reale disponibile: 14
+
+########## migrare/solduri ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100           1         1            2      0.001         —
+   250           1         1            2      0.001     1.25x
+   500           1         1            2      0.003     1.81x
+  1000           1         1            2      0.004     1.50x
+
+########## migrare/plan-conturi ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100           1         1            2      0.001         —
+   250           1         1            2      0.001     1.52x
+   500           1         1            2      0.002     1.53x
+  1000           1         1            2      0.003     1.82x
+
+########## migrare/vector ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100           1         1            2      0.001         —
+   250           1         1            2      0.001     1.52x
+   500           1         1            2      0.002     1.61x
+  1000           1         1            2      0.004     1.73x
+
+########## termene ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100           1         1            2      0.001         —
+   250           1         1            2      0.002     1.36x
+   500           1         1            2      0.002     1.62x
+  1000           1         1            2      0.004     1.77x
+
+########## control-fiscal ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100           1         1            2      0.001         —
+   250           1         1            2      0.001     1.53x
+   500           1         1            2      0.002     1.60x
+  1000           1         1            2      0.004     1.79x
+
+scris /tmp/curba_p2.json

@@ -86,9 +86,15 @@
 
 - **Punctul 13 („loguri brute păstrate ca artefact") l-am făcut pentru măsurătorile pe care le-am
   produs eu** (`masuratori/p2/`: scanul de dependențe + curba, fiecare cu `.json` și `.log`).
-  **N-am reconstituit logurile brute ale măsurătorii de dimineață** — hamul care le-a produs nu a
-  fost păstrat, deci nu se pot recalcula. Am scris asta explicit în `ISTORIC.md`, ca cifrele acelea
-  să nu mai fie citate ca măsurători.
+  **CORECTAT 08.09.2026, după o întrebare a lui Costin.** Prima formă a acestui raport scria că
+  logurile brute ale măsurătorii de dimineață n-au fost reconstituite. **Greșeala e a mea și e de
+  metodă:** am declarat o absență fără s-o caut. Logurile EXISTAU tot timpul —
+  `curba_full.log` și `curba_dupa.log`, în pachetul de livrare `~/iconta_P2_2026-09-08.zip`, care e
+  chiar artefactul turei de dimineață. *Regula de aur cere să cauți peste tot înainte să spui
+  „absent"; pachetul precedent era primul loc unde trebuia să mă uit.* Cele trei fișiere sunt acum
+  în `masuratori/p2/`, sub `dimineata_*`. Ce rămâne adevărat, și e altceva: **hamul** care le-a
+  produs nu a fost păstrat, deci cifrele acelea sunt un ÎNREGISTRAT, nu o măsurătoare
+  reproductibilă — se pot citi, nu se pot recalcula.
 - **`CONFORMITATE.md` — nimic de actualizat**, cu motivul la cerința 3 de mai sus.
 
 ---
@@ -359,8 +365,16 @@ FĂCUT pentru măsurătorile produse azi — `masuratori/p2/`:
 rulare. Astea sunt artefacte de măsurătoare, deci au primit numele potrivit, nu un `git add -f`
 peste regulă.)
 
-**NEFĂCUT pentru măsurătoarea de dimineață**, fiindcă hamul care a produs-o nu a fost păstrat: cifrele
-ei (278.882 interogări etc.) **nu se mai pot recalcula**. Scris ca atare în `ISTORIC.md`.
+**FĂCUT ȘI pentru măsurătoarea de dimineață — corectat 08.09.2026.** Prima formă scria „NEFĂCUT,
+fiindcă hamul nu a fost păstrat". Confuzia era între **log** și **ham**: logurile existau, în
+pachetul de livrare al turei de dimineață (`~/iconta_P2_2026-09-08.zip`), iar eu am declarat o
+absență fără s-o caut acolo. Sunt acum în repo: `masuratori/p2/dimineata_curba_inainte.txt` ·
+`dimineata_curba_dupa.txt` · `dimineata_masuratori.txt`.
+
+Ce rămâne nefăcut, și se scrie ca atare: **hamul** care le-a produs n-a fost păstrat, deci cifrele
+acelea (278.882 de interogări la 1000 de firme etc.) **se pot citi, dar nu se pot recalcula**.
+*Un log e o mărturie; o măsurătoare e ceva ce poți face din nou.* Cel de azi
+(`scripts/masoara_rute_portofoliu.py`) e în repo tocmai ca să nu se repete.
 
 ### Cele două interdicții din finalul comenzii
 

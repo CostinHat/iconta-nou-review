@@ -1,0 +1,49 @@
+2026-09-08 07:52:09,284 INFO iconta [R118] /static servit din /home/costin/iconta_publicat/static — publicat (commit d805a84a)
+scheme reale disponibile: 14
+
+########## migrare/solduri ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100         400       201          700      0.147         —
+   250        1000       501         1750      0.310     2.11x
+   500        2000      1001         3500      0.618     1.99x
+  1000        4000      2001         7000      1.237     2.00x
+       ^ peste o secundă: 4000 interogări, 2001 conexiuni, 7000 dus-întorsuri
+
+########## migrare/plan-conturi ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100         300       201          600      0.099         —
+   250         750       501         1500      0.246     2.47x
+   500        1500      1001         3000      0.492     2.00x
+  1000        3000      2001         6000      0.982     2.00x
+
+########## migrare/vector ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100         300       201          600      0.100         —
+   250         750       501         1500      0.252     2.51x
+   500        1500      1001         3000      0.513     2.04x
+  1000        3000      2001         6000      1.007     1.96x
+       ^ peste o secundă: 3000 interogări, 2001 conexiuni, 6000 dus-întorsuri
+
+########## termene ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100         799       301         1598      1.315         —
+       ^ peste o secundă: 799 interogări, 301 conexiuni, 1598 dus-întorsuri
+   250        2001       751         4002      3.284     2.50x
+       ^ peste o secundă: 2001 interogări, 751 conexiuni, 4002 dus-întorsuri
+   500        3999      1501         7998      6.458     1.97x
+       ^ peste o secundă: 3999 interogări, 1501 conexiuni, 7998 dus-întorsuri
+  1000        8000      3001        16000     12.875     1.99x
+       ^ peste o secundă: 8000 interogări, 3001 conexiuni, 16000 dus-întorsuri
+
+########## control-fiscal ##########
+ firme    interog.    conex.   dus-intors    secunde x fata de
+   100       27735      1201        55470      6.991         —
+       ^ peste o secundă: 27735 interogări, 1201 conexiuni, 55470 dus-întorsuri
+   250       70008      3001       140016     17.822     2.55x
+       ^ peste o secundă: 70008 interogări, 3001 conexiuni, 140016 dus-întorsuri
+   500      139100      6001       278200     35.457     1.99x
+       ^ peste o secundă: 139100 interogări, 6001 conexiuni, 278200 dus-întorsuri
+  1000      278882     12001       557764     70.814     2.00x
+       ^ peste o secundă: 278882 interogări, 12001 conexiuni, 557764 dus-întorsuri
+
+scris /tmp/curba_p2.json

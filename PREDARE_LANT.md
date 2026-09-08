@@ -636,3 +636,28 @@ a ce e adevărat **acum**.
 6. **Cifrele nu se scriu în predare.** Blocurile sunt generate; „unde suntem" se derivă cu
    `scripts/raport_b.py`.
 7. **Cele CINCI reguli de conducere a lucrului** sunt în `PLAN_LUCRU.md`.
+
+
+## PACHETUL DE LIVRARE — se face la CAPĂTUL fiecărei teme, și n-a fost scris nicăieri
+
+**De ce e aici, din 08.09.2026.** P0, P1 și P2 au produs fiecare câte un pachet
+(`~/iconta_P0_2026-09-07.zip`, `~/iconta_P1_2026-09-08.zip`, `~/iconta_P2_2026-09-08.zip`).
+Remedierea P2 **nu a produs unul**, iar Costin a trebuit să întrebe. Cauza nu e neglijență: convenția
+exista doar în firul conversației, iar firul fusese golit (`/clear`) înainte de remediere. *O regulă
+care trăiește numai într-o sesiune se pierde exact la prima sesiune nouă* — și de-aia se scrie aici,
+în documentul care supraviețuiește golirii.
+
+**Ce conține, după tiparul celor trei:**
+
+- `iconta_<TEMA>/` ca director rădăcină, iar arhiva `~/iconta_<TEMA>_<AAAA-LL-ZZ>.zip`;
+- `COMMIT_<TEMA>.txt` — hash, subiect, dată, `--stat`-ul commitului;
+- `MASURATORI_<TEMA>.txt` — cifrele brute, cu instrumentul și calibrarea lui numite;
+- `RAPORT_<TEMA>.md` — raportul, în forma din `SABLON_RAPORT.md`;
+- **fișierele atinse, la căile lor din repo** (`core/…`, `scripts/…`, `main.py`) — nu o listă de
+  fragmente: auditorul trebuie să poată pune arhiva peste o clonă și să vadă exact ce s-a schimbat;
+- **registrele atinse**, întregi;
+- **logurile brute**, dacă tema a produs măsurători.
+
+**Ce NU se face:** nu se împachetează `venv/`, `.git/` sau `efactura_zip/`. Și nu se împachetează o
+stare necomisă — pachetul se face **după** ce poarta a trecut și four-way-ul e închis, altfel
+descrie o lume care nu există pe niciun server.

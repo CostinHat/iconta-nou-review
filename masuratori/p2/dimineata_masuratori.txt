@@ -1,0 +1,34 @@
+P2 — MASURATORI BRUTE (08.09.2026)
+
+INSTRUMENT: scripts/masoara_interogari.py, calibrat in ambele directii inainte de folosire
+  (a) N+1, 12 elemente -> 12 interogari, 12 conexiuni
+  (b) set-based        ->  1 interogare,  1 conexiune
+
+REPER pe portofoliul REAL (14 firme, cabinet 1968):
+  ruta                  interog  conex  dus-intors  secunde  int/firma  cnx/firma
+  migrare/solduri           100     29        158    0.024       7.14      2.07
+  migrare/plan-conturi       86     29        144    0.020       6.14      2.07
+  migrare/vector             86     29        144    0.019       6.14      2.07
+  control-fiscal           3957    169       7886    1.007     282.64     12.07
+  termene                   156     43        284    0.193      11.14      3.07
+
+CURBA INAINTE (100/250/500/1000), crestere ~2.0x la fiecare dublare:
+  migrare/solduri        400/1000/2000/4000 interog · 0.147/0.310/0.618/1.237 s
+  migrare/plan-conturi   300/750/1500/3000  · 0.099/0.246/0.492/0.982 s
+  migrare/vector         300/750/1500/3000  · 0.100/0.252/0.513/1.007 s
+  termene                799/2001/3999/8000 · 1.315/3.284/6.458/12.875 s
+  control-fiscal         27735/70008/139100/278882 · 6.991/17.822/35.457/70.814 s
+                         conexiuni: 1201/3001/6001/12001
+
+CURBA DUPA (model POPULAT, 10% invalidate):
+  toate cele cinci: 1 interogare, 1 conexiune, la fiecare punct
+  latenta la 1000: solduri 0.012 · plan-conturi 0.009 · vector 0.010 · termene 0.022 · control-fiscal 0.017
+
+COSTUL MUTAT: recalculare grea ~120 ms/firma (20 firme reale in 2.40 s)
+
+OPERATIUNI PESTE O SECUNDA in tura asta:
+  suita completa x3 ... 1553 s, 1574 s, 1566 s (4180-4190 teste + ruff + verificator)
+  poarta la commit .... ~1560 s
+  reper cunoscut ...... 1474-1595 s pe 06-08.09 — in acelasi interval
+  curba INAINTE control-fiscal la 1000 ... 70.8 s (278.882 interogari, 12.001 conexiuni)
+  curba INAINTE termene la 1000 .......... 12.9 s (8.000 interogari, 3.001 conexiuni)

@@ -8600,6 +8600,12 @@ de ea, ci fiindcă datele acelei firme nu intrau pe ramura de stocuri. Apare la 
 N = 5/50/100/250/500/1000, în patru scenarii (0% / 10% / 100% invalidat + model rece): **5 interogări
 și 3 conexiuni, constant, peste tot**, toate 200.
 
+**CORECTARE, 08.09.2026 seara:** mai jos scriam că hamul de dimineață „n-a rămas nicăieri". Despre
+**ham** e adevărat. Despre **loguri** nu era: `curba_full.log` și `curba_dupa.log` erau în pachetul
+de livrare al turei de dimineață, iar eu am declarat absența fără s-o caut acolo — regula de aur
+cere invers. Sunt acum în `masuratori/p2/`, sub `dimineata_*`. *Deosebirea rămâne, și e chiar
+lecția: un log e o mărturie, o măsurătoare e ceva ce poți face din nou.*
+
 Hamul de dimineață înlocuia `tenantii_userului` cu totul — adică exact partea în care stătea
 O(N)-ul care a supraviețuit. Și n-a rămas nicăieri: **cifrele lui nu se mai pot recalcula.** Cel de
 acum e în repo (`scripts/masoara_rute_portofoliu.py`), cu scenariul scris și calibrare prin stratul
