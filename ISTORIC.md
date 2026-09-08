@@ -8487,3 +8487,24 @@ ridică nu dispare — pe calea rutei, care culegea pe loc. Calculul s-a mutat, 
 mutat cu el: ruta apără acum contractul nou (firma spune `NECALCULAT`, nu tace), iar `EXCEPTIE` e
 probată la noul ei loc, în `test_recalcularea_unei_scheme_rupte_produce_EXCEPTIE`.
 
+
+## 08.09.2026 — planul P0–P7, scris; și un defect al lui P0, găsit folosindu-l
+
+`PLAN_HARDENING.md`: cei opt pași, fiecare cu **ce trebuie făcut concret** și **cum se verifică**, la
+nivelul de detaliu al comenzilor de P0 și P1. Plus ținta generală, principiul de lucru în cinci faze,
+regula de excepție (un defect de corectitudine / izolare / concurență urcă imediat), ce nu se face, și
+starea curentă.
+
+**Iar scriindu-l, instrumentul construit la P0 a găsit un defect al lui P0.** Am rulat poarta scurtă
+pe tura asta — o tură de registru — și a **refuzat**, deși regula 5 spune că o tură doar cu documente
+are perimetru închis. Cauza: N1 și N2 ocoleau ramura regulii 5, iar `subsistem` e nivelul implicit al
+lansatorului. **Regula 5 era desființată în practică din 07.09.**
+
+*De ce n-a prins-o garda:* probasem refuzul pe atingeri **mixte**, unde refuzul e corect. Cazul
+doar-documente nu fusese probat. **O calibrare care verifică doar direcția în care instrumentul
+trebuie să refuze nu spune nimic despre cazurile în care trebuie să accepte.** A doua instanță a
+lecției „ambele direcții", de data asta pe un instrument de proces.
+
+*Se scrie în plan, la P0, nu doar aici:* un pas declarat închis care s-a dovedit incomplet trebuie să
+poarte asta chiar în locul unde scrie „ÎNCHIS".
+

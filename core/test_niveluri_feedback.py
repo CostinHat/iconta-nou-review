@@ -78,6 +78,28 @@ def test_refuzul_se_mosteneste_la_toate_nivelurile(nume):
         assert incerte, "nivelul %s a închis perimetrul deși s-a atins %s" % (nume, atins)
 
 
+@pytest.mark.parametrize("nume", ["direct", "subsistem", "integrare"])
+def test_o_tura_DOAR_cu_documente_se_inchide_la_toate_nivelurile(nume):
+    """REGULA 5, la toate nivelurile — proba care LIPSEA și care a lăsat un defect să treacă.
+
+    Când se ating NUMAI documente, perimetrul CHIAR se poate închide: sunt gărzile care citesc
+    fișiere. Prima formă a nivelurilor ocolea ramura asta (chemau `_seminte()` direct), deci N1 și
+    N2 refuzau — iar `subsistem` fiind nivelul implicit al lansatorului, **regula 5 era desființată
+    în practică** de la P0 până azi.
+
+    *De ce n-a prins-o garda: `test_refuzul_se_mosteneste...` proba refuzul pe atingeri MIXTE, unde
+    refuzul e corect. Cazul doar-documente n-a fost probat niciodată. O calibrare care verifică doar
+    direcția în care instrumentul trebuie să REFUZE nu spune nimic despre cazurile în care trebuie
+    să ACCEPTE.*"""
+    teste, incerte = P.nivel(nume, ["CONFORMITATE.md", "ISTORIC.md"])
+    assert incerte == [], "o tură doar cu registre a fost refuzată la nivelul %s" % nume
+    assert teste, "[anti-vacuu] perimetrul de documente e gol"
+    # și rămâne mult mai mic decât suita: altfel n-ar fi o scurtare
+    toate = [f for f in os.listdir(os.path.join(_RAD, "core"))
+             if f.startswith("test_") and f.endswith(".py")]
+    assert len(teste) < len(toate) / 2
+
+
 def test_n4_nu_se_deriva():
     """N4 e suita întreagă. Dacă ar întoarce o listă, cineva ar rula „regresia completă" pe 200 de
     fișiere și ar crede că a rulat 4.161 de teste."""

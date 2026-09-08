@@ -520,8 +520,16 @@ def _seminte(atinse):
 
 
 def nivel(nume, atinse):
-    """Dispecerul. `complet` nu deriva nimic: intoarce lista goala si motivul, fiindca N4 E suita
+    """Dispecerul.
+
+    **REGULA 5 SE APLICĂ LA TOATE NIVELURILE.** Când se ating NUMAI documente, perimetrul chiar se
+    poate închide — sunt gărzile care citesc fișiere, derivate de `perimetru_documente()`. Fără
+    ramura asta aici, N1 și N2 refuzau (chemau `_seminte()` direct), iar `subsistem` fiind nivelul
+    implicit al lansatorului, **regula 5 era desființată în practică**. Defect introdus la P0,
+    găsit folosind instrumentul pe o tură de registre. `complet` nu deriva nimic: intoarce lista goala si motivul, fiindca N4 E suita
     intreaga — se ruleaza cu `pytest` fara argumente, nu cu o lista de fisiere."""
+    if atinse and not executabile_atinse(atinse) and nume != "complet":
+        return perimetru(atinse)          # ramura regulii 5, comună tuturor nivelurilor
     if nume == "direct":
         return nivel_direct(atinse)
     if nume == "subsistem":
