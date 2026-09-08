@@ -306,3 +306,29 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, cu_greu=True, ctx=None):
             recalculeaza_greu(tid, schema, azi=azi, ctx=ctx, nume=nume, cui=cui)
         facute += 1
     return {"invalidate": len(ids), "recalculate": facute, "fara_firma": sarite}
+
+
+# ============================================================================
+#  PUNCT DE INTRARE — `python3 -m core.firma_rezumat`, din cron, la 5 minute
+# ============================================================================
+def main():
+    """Recalculează firmele invalidate. Bate deadman-ul, ca orice job de fundal.
+
+    **De ce la 5 minute și nu o dată pe zi:** rezumatul e ce vede contabilul pe ecranul de portofoliu.
+    O firmă atinsă la 9:05 n-are de ce să apară gri până a doua zi. Lotul e mărginit
+    (`LOT_RECALCULARE`), deci o rulare nu poate ține baza ocupată.
+    """
+    from core import cron as _cron, db as _db
+    _db.init_pool()
+    r = recalculeaza_lot()
+    try:
+        _cron.bate("firma_rezumat")
+    except Exception as e:      # noqa: BLE001 — bătaia lipsă nu are voie să pice recalcularea
+        print("avertisment: bataia deadman a esuat: %s" % e)
+    print("firma_rezumat: invalidate=%(invalidate)d recalculate=%(recalculate)d "
+          "fara_firma=%(fara_firma)s" % r)
+    return 0 if not r["fara_firma"] else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

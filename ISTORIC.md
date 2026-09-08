@@ -8536,3 +8536,29 @@ verdict despre o firmă n-are voie să depindă de cine îl cere.*
 Al treilea: prima curbă „după" m-a flatat — model gol, răspunsuri fără conținut, 4 ms. *O cifră
 adevărată despre un răspuns gol e tot o cifră falsă.*
 
+**Și, la sfârșit, defectul cel mai instructiv al zilei — găsit abia pregătind predarea.** P2 mutase
+calculul din cerere în recalculare și măsurase corect câștigul. Dar **nimic nu chema recalcularea.**
+Modelul era populat doar fiindcă îl rulasem eu de mână în timpul măsurătorilor. La prima factură
+editată, firma ar fi trecut pe `invalidat` și ar fi **rămas așa la nesfârșit** — ecranul Control
+fiscal ar fi arătat gri, permanent, pentru orice firmă atinsă.
+
+Nu era o minciună: starea se declara, exact cum cerea interdicția. Era mai rău — era o **regresie
+funcțională** ambalată într-un pas cu criteriul de acceptare îndeplinit. *Un criteriu de acceptare
+măsoară ce ai cerut, nu ce ai livrat.* Reparat: `*/5 * * * * python3 -m core.firma_rezumat`, cu prag
+în `cron.RITMURI` ca lipsa lui să se vadă la deadman, și **probat cap-coadă pe o editare reală**:
+`curent` → editare → `invalidat` → lucrător → `curent`.
+
+### CE A SCHIMBAT ZIUA ASTA PENTRU UN CONTABIL: **aproape nimic, și merită spus limpede**
+
+Nicio regulă fiscală nu s-a schimbat, niciun rezultat nu se calculează altfel, niciun ecran nu arată
+altceva. Cifrele mari de mai sus — 278.882 de interogări, 70,8 s — sunt de pe **scenariul sintetic de
+1000 de firme**, care nu există la niciun client.
+
+Pe portofoliul **real** măsurat azi — 14 firme — ecranul Control fiscal răspunde acum în **4
+interogări / 2 ms**. Înainte, derivat din curba măsurată (nu măsurat la 14), erau ordinul a câteva mii
+de interogări și în jur de o secundă. Deci: un ecran care se deschidea într-o secundă se deschide
+acum instantaneu. **Pentru contabilul de azi, asta e confort, nu funcție nouă.**
+
+Ce s-a cumpărat de fapt e altceva: cabinetul poate crește de la 14 firme la 1000 fără ca ecranele să
+devină inutilizabile. *Ziua a mutat un plafon, nu a livrat o capabilitate.*
+

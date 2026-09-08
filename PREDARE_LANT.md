@@ -1,86 +1,69 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **campania rămâne închisă; două zile de reparații din registru** (07.09.2026)
+# PREDARE LANȚ — **planul de întărire P0–P7: trei pași închiși** (08.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-07**, cerută expres, înainte de `/clear`.
-- **pe commit**: `2b05f886`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
-  al celui precedent, prin construcție, nu din uitare.*
-- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.** *(Linia asta a fost
-  scoasă din greșeală la rescrierea de azi, când am scurtat antetul; `test_predare_proaspata`
-  a prins-o la poartă. O rescriere care scurtează poate scoate tocmai propoziția care ținea
-  documentul viu.)*
-- **vechime măsurată**: **4 commituri** de la ultima atingere a fișierului (pragul din `pre-commit`
-  e 10; avertismentul n-a apărut). *Cifra asta a fost scrisă din memorie de cinci ori în august, de
-  fiecare dată greșit — v. tabelul cifrelor invalidate. Se măsoară.*
-- **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „ce s-a întâmplat", starea, restanțele și „dacă
-  continui de aici" sunt **rescrise azi**. Tabelul cifrelor invalidate, capcanele, operaționalul,
-  „ce cere poarta" și lecțiile sunt **păstrate** — documentul își interzice singur să le șteargă, iar
-  fiecare rând de acolo a costat o greșeală.
+- **ultima rescriere**: **2026-09-08**, cerută expres, înainte de `/clear`.
+- **pe commit**: `f3567121`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+  al celui precedent, prin construcție.*
+- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
+- **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde suntem", starea și restanțele sunt **rescrise**.
+  Tabelul cifrelor invalidate, capcanele, operaționalul, „ce cere poarta" și lecțiile sunt
+  **păstrate** — documentul își interzice singur să le șteargă.
 - **CE E REMĂSURAT**: cele patru clichete generate · blocul cifrelor despre date · inventarul
-  gărzilor · numărul restanțelor deschise (`scripts/scan_ramas.py`) · scanul vizual.
+  gărzilor · numărul restanțelor deschise (`scripts/scan_ramas.py`).
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **campania rămâne ÎNCHISĂ; ce s-a lucrat de-atunci vine din registru**
+## PRIMUL LUCRU DE ȘTIUT: **campania rămâne închisă; se lucrează la ÎNTĂRIRE, după un plan scris**
 
-Etapa 1 (date invalide, 364/364, închisă 05.09) și etapa 2 (date valide, cele nouă declarații pe
-care aplicația le generează, închisă 06.09) sunt **neatinse**. Nu s-a redeschis nimic din campanie.
+Etapele 1 și 2 ale campaniei sunt **neatinse**. Din 07.09 se lucrează la `PLAN_HARDENING.md` — opt
+pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelul de detaliu al comenzilor.
 
-Cele două zile de după au fost **reparații de restanțe și curățenie**, cerute punctual. Rezumatul,
-în ordinea în care s-au întâmplat:
-
-| ziua | ce s-a făcut | ce a rămas deschis din ea |
+| pas | stare | ce a livrat, pe scurt |
 |---|---|---|
-| **06.09** | **R167** temei la periodicitatea TVA · **R140** cele opt refuzuri ale registrului de partidă simplă, rescrise · **R171** (puncte și norme în `articol_in_act`; graful „cine consumă valoarea") · **OMFP 3254/2017** despicat în șase citări | — |
-| **06.09** | **R43** — calea de plată online **RETRASĂ**, nu doar dezactivată: cele trei rute scoase, butonul și handlerul lui | **R174** |
-| **06.09** | **R96** — cele trei registre obligatorii nu mai pot diverge tăcut | — |
-| **06.09** | **R94** — aplicabilitatea nu se mai decide în două locuri; poarta generatorului consultă selectorul | — |
-| **06.09** | desktopul asistentului: panou-arbore + carduri reordonate | **R175** |
-| **07.09** | audit de suită (categorii · dubluri · referințe moarte · mutație pe 200) — **doar raport, fără ștergeri** | — |
-| **07.09** | poarta scurtă capătă lansator (`scripts/poarta_scurta.py`) · trei teste umbrite din `test_cashflow.py`, scoase | — |
-| **07.09** | cele 50 de declarații pe ecranul public + `DENUMIRE_OFICIALA` în fiecare modul | — |
+| **P0** — feedback pe niveluri | **ÎNCHIS** (`8996f486`) | N1/N2/N3/N4 derivate din graful de import; N1 pe `control_fiscal_api` = **27 s** față de ~1.500 s poarta completă |
+| **P1** — supervizor | **ÎNCHIS** (`ced26440`) | rezultat persistat, versionat; citire **p95 45 ms** pe 1000 de firme (era ~5 s) |
+| **P2** — portofoliu / N+1 | **ÎNCHIS** (`f3567121`) | `control-fiscal` la 1000 de firme: **278.882 interogări · 70,8 s → 1 · 17 ms** |
+| **P3** — SQL + index | **URMĂTORUL** | nedeschis |
+| P4…P7 | nedeschise | v. `PLAN_HARDENING.md` |
 
-**DOUĂ SCHIMBĂRI DE MEDIU care nu se văd din cod și trebuie știute:**
-
-1. **Repo-ul e PUBLIC pe GitHub** — `https://github.com/CostinHat/iconta-nou-review`, cerut de
-   Costin pe 06.09, cu tot istoricul. `origin` e cel **privat** (`CostinHat/iconta-v2`); `public` e
-   al doilea remote.
-   **De la 08.09.2026, `post-commit` împinge AUTOMAT pe amândouă** — pasul 1b, contract identic cu
-   cel de pe `origin`: fast-forward, niciodată `--force`, sentinelă `.git/PUSH_PUBLIC_ESUAT` la eșec,
-   **nu blochează** publicarea locală.
-   **`public` NU intră în four-way**, deliberat: four-way-ul rămâne verificarea pe `origin`, fiindcă
-   o rețea căzută spre GitHub n-are voie să facă să pară că publicarea locală n-a reușit.
-   **DE CE A FOST NEVOIE, și e o lecție despre raport, nu despre cod:** între 06 și 08.09 `public` a
-   fost separat *tocmai ca să nu publice singur*, iar patru commituri au rămas în urmă. Rapoartele
-   mele spuneau „publicat, four-way verificat" fără să zică de fiecare dată că *publicat* însemna
-   repo-ul PRIVAT. Costin a găsit divergența dintr-o verificare externă pe GitHub. **Regula, de
-   acum: în raport, „publicat" înseamnă AMÂNDOUĂ remote-urile — sau se spune explicit care a rămas
-   în urmă și de ce.**
-   *Consecință, confirmată de Costin după ce a fost semnalată: fiecare commit ajunge public în
-   aceeași secundă, inclusiv `CONFORMITATE.md` cu restanțele deschise. Expunere de business
-   deliberată, nu una de securitate.*
-2. **Contul de asistent e ACTIV** — `asistent@prisma-cont.test`, reactivat pe calea aplicației ca să
-   se poată proba desktopul asistentului. Are `poate_pregati`/`poate_valida` **da**, `poate_depune`
-   **nu**, două firme. **Consecință măsurată: `patru_ochi_posibil` a trecut pe `true` în cabinetul
-   1968** — mecanismul rămâne **neactivat**, deci comportamentul nu se schimbă, dar afirmația din
-   `TRASEE.md` că *„pe nicio firmă nu se poate exercita un traseu care cere doi oameni"* **nu mai e
-   adevărată**. Un traseu care nu se putea proba deloc devine probabil.
+**Tiparul comun al lui P1 și P2, și e de reținut înainte de P3:** ce era calculat în cerere se
+persistă ca **model de citire** în `public`, invalidat de **triggere** pe tabelele-sursă, cu
+prospețimea **derivată** din compararea a două versiuni — niciodată stocată. Interdicția, la
+amândouă: *o valoare veche nu se arată ca fiind curentă; „în recalculare" declarat e acceptabil.*
 
 ---
-## POARTA SCURTĂ EXISTĂ ACUM, DAR NU SE APLICĂ LA COMMIT
+## DOUĂ LUCRURI DE MEDIU care nu se văd din cod
 
-`scripts/poarta_scurta.py` rulează perimetrul derivat din `git diff` (regula 4 din `PLAN_LUCRU.md`).
-Nu primește fișiere pe linia de comandă, iese cu 2 la orice nesiguranță, și își declară marginile
-când e verde.
+1. **Repo-ul e PUBLIC pe GitHub** — `CostinHat/iconta-nou-review`. `origin` e cel **privat**
+   (`CostinHat/iconta-v2`). **Din 08.09, `post-commit` împinge AUTOMAT pe amândouă** (pasul 1b),
+   contract identic: fast-forward, niciodată `--force`, sentinelă la eșec, nu blochează publicarea
+   locală. `public` **nu** intră în four-way, deliberat.
+   **REGULA DE RAPORT, născută dintr-o divergență reală (R176):** „publicat" înseamnă **amândouă**
+   remote-urile — sau se spune explicit care a rămas în urmă și de ce. *Patru commituri au stat în
+   urmă pe public fiindcă rapoartele mele spuneau „publicat" fără să zică pe care.*
+2. **Contul de asistent e ACTIV** (`asistent@prisma-cont.test`), cu `poate_pregati`/`poate_valida`.
+   Consecință: `patru_ochi_posibil` e **true** în cabinetul 1968 — mecanismul rămâne **neactivat**,
+   deci comportamentul nu se schimbă, dar afirmația din `TRASEE.md` că „nu se poate exercita un
+   traseu care cere doi oameni" **nu mai e adevărată**.
 
-**Măsurat pe cazuri reale:** `core/plati.py` → 2 fișiere, 9 teste, **0 s** · felia doar-cod a lui R94
-→ 46 fișiere, 560 teste, **168 s** · `core/d112.py` → 203 fișiere, 1.813 teste, **366 s**. Poarta
-completă: **1.500–1.595 s**, măsurat de nouă ori pe 06–07.09.
+---
+## AL TREILEA LUCRU: **LUCRĂTORUL modelului de citire, și de ce e o lecție, nu un detaliu**
 
-**DAR:** pe **amândouă** commiturile reale de pe 06.09 derivarea **refuză** — amândouă au atins
-registre (`.md`) și `main.py`, pe care graful de import nu le vede. *Poarta scurtă e pentru bucla din
-timpul turei, nu pentru commit.* Ținut de `test_commiturile_reale_de_azi_ar_fi_cerut_poarta_completa`.
+`*/5 * * * * python3 -m core.firma_rezumat` — recalculează firmele invalidate. **A fost adăugat abia
+la sfârșit, pregătind predarea asta**, și lipsa lui e cea mai instructivă greșeală a zilei:
+
+P2 mutase calculul din cerere în recalculare și **măsurase corect câștigul** — dar **nimic nu chema
+recalcularea**. Modelul era populat fiindcă îl rulasem eu de mână în timpul măsurătorilor. La prima
+factură editată, firma trecea pe `invalidat` și **rămânea așa la nesfârșit**: ecranul Control fiscal
+ar fi arătat gri, permanent, pentru orice firmă atinsă.
+
+*Criteriul de acceptare al lui P2 — interogări și latență — era îndeplinit, și totuși ce livrasem nu
+funcționa.* **Un criteriu de acceptare măsoară ce ai cerut, nu ce ai livrat.**
+
+Probat cap-coadă înainte de predare, pe o editare reală: `curent` → editare → `invalidat` → lucrător
+→ `curent`. Pragul lui e în `cron.RITMURI` (1 h), deci lipsa bătăii lui se vede la deadman.
 
 ---
 ## AL DOILEA: CIFRELE DESPRE DATE SUNT INTEROGATE, NU SCRISE
@@ -239,39 +222,22 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 50**, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**, rândul
-  ăsta a fost invalidat o dată. *(51 înainte; s-au închis R43, R94, R96 și s-au deschis R174, R175.
-  Aritmetica se închide, dar cifra vine din instrument, nu din scădere.)*
+- **restanțe deschise: 51**, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**.
 - **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
 - **decizii care blochează: niciuna.**
-- **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**; secvența e epuizată
-  din 04.08.2026 — **nu există „următorul programat"**.
 
 ---
 ## STAREA LA PREDARE
 
-**4161 teste trec** *(ieșirea porții care a produs `2b05f886`)* · 11 skip · 14 xfail · ruff OK ·
-verificator **TOTAL 0** · module scanate **188 = ACCEPTAT 187 + GRI 0 + ROSU 0 + EXCLUS 1** ·
-rute **421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32** · four-way se închide la `post-commit`,
-care publică pe `origin/main` și pe `backup/lant-<ziua curentă>`, **publică statica din HEAD**, și
-**restartează necondiționat** procesul viu.
+**4190 teste trec** *(ieșirea porții care a produs `f3567121`)* · 11 skip · 14 xfail · ruff OK ·
+verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
+**pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
+**verifică singur cele patru brațe** la capăt (pasul 4, P0).
 
-**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** *(Rândul ăsta există
-fiindcă exact asta s-a întâmplat o dată: o rescriere al cărei scop era să scoată afirmațiile purtate
-din memorie a copiat „rute 411 … EXCLUS 32" din documentul precedent.)*
+**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.**
 
-**AL CINCILEA BRAȚ:** `https://iconta.eu/static/.publicat.json` spune, **din afară**, din ce commit e
-ce se servește. Four-way-ul dovedea că *procesul* poartă HEAD; nimic nu dovedea că *JS-ul* îl poartă.
-
-**AL PATRULEA BRAȚ AL FOUR-WAY-ULUI.** Ștampila de RUNNING trăiește numai în memoria procesului, iar
-endpointul care o citește cere superadmin. Proba gardată, fără token: *ora de pornire a procesului >
-ora commitului*.
-
-**VERIFICATORUL ARE TREI REZULTATE**: `PASS` · `FAIL` · **`NEVERIF [cod]`**. Cod de ieșire **2** =
-„nu s-a putut verifica tot".
-
-**CLICHETELE VII — blocul de mai jos e GENERAT.** Gardat de `core/test_clichete_generate.py`.
+**CLICHETELE VII — blocul de mai jos e GENERAT.**
 
 <!-- CLICHETE-VII:START (generat de scripts/scan_ramas.py --clichete-md) -->
 
@@ -286,16 +252,12 @@ ora commitului*.
 
 <!-- CLICHETE-VII:STOP -->
 
-**POARTA DUREAZĂ ~25 DE MINUTE** — măsurat pe nouă rulări din 06–07.09: **1.500 s … 1.595 s**.
-*(Scrise cu separator de mii nu din stil: `test_cifra_131_e_marcata_invalidata` se uită la prima
-apariție a șirului „131".)*
+**POARTA DUREAZĂ ~26 DE MINUTE** — măsurat pe 06–08.09: **1.474–1.595 s**, pe 14 rulări.
 
-**ÎN ULTIMELE DOUĂ ZILE POARTA A RESPINS DE ȘASE ORI**, și niciuna pentru o cifră stricată:
-blocuri generate învechite (de trei ori) · clichetul aserțiunilor pe text (de două ori — gărzi noi
-scrise de mine cu `"x" in y`) · și o dată **verificatorul**, pentru o **clasă nouă de buton**
-(`.decl-ce`), când aplicația avea deja dialectul „?" (`.ajutor-btn`). *De fiecare dată poarta a avut
-dreptate; a treia oară m-a și dus la un defect vechi, fiindcă dialectul pe care m-a obligat să-l
-refolosesc avea el însuși contrastul sub prag.*
+**POARTA SCURTĂ EXISTĂ, și are patru trepte** (`scripts/poarta_scurta.py --nivel=`). Măsurat: N1 pe
+`control_fiscal_api` = **27 s**; N2 pe `d112` = 338 s; N3 = 349 s. **Refuză** — corect — când se
+atinge un `.md`, un `.js` sau `main.py` **alături de cod**; când se ating **numai** registre,
+închide perimetrul (28 de fișiere).
 
 ---
 ## CE E ADEVĂRAT ACUM DESPRE RESTANȚE
@@ -304,13 +266,11 @@ refolosesc avea el însuși contrastul sub prag.*
 |---|---|
 | **prag 1** | **niciuna deschisă** |
 | **decizii** | **niciuna deschisă** |
-| **R174** | *(nou, 06.09)* o factură încasată prin BANCĂ nu se marchează încasată nicăieri. Ieșit la iveală închizând R43: singurii scriitori ai lui `platita_la` sunt cele două căi de NUMERAR, iar scadențarul și notificările citesc exact `platita_la IS NULL`. Măsurat: 28 emise · 1 marcată · 2 decontate contabil · **1 decontată dar rămasă în scadențar** |
-| **R175** | *(nou, 06.09)* desktopul asistentului e acoperit de o probă proprie, nu de uneltele de listă: cele trei unelte plimbă **un singur cont**, iar `app.js` alege desktopul din `sesiune.rol()` la pornirea filei |
-| **R69** | **următoarea temă**, cerută explicit: declarațiile deja depuse să apară **contrazise** când se schimbă vectorul sau regimul |
-| **R121** | singura pereche respinsă rămasă: P300 / RO e-TVA n-are acces programatic. **EXTERNĂ** |
-| **R116 · R117** | deschise, **consemnate și nelucrate**, prin decizia din 03.09 |
-| **familia R82** | **PARCATĂ** |
-| **familia „încrederea în corpus"** | R1, R3–R7, R107 — cele mai vechi, **în afara axei** |
+| **R176** | *(nou, 08.09)* divergența `public` ↔ `origin`. Push-ul automat e **făcut**; ce rămâne deschis e că **nicio gardă nu prinde divergența** — azi a prins-o un om uitându-se pe GitHub |
+| **R174** | o factură încasată prin BANCĂ nu se marchează încasată nicăieri |
+| **R175** | desktopul asistentului e acoperit de o probă proprie, nu de uneltele de listă |
+| **R69** | declarațiile deja depuse să apară **contrazise** când se schimbă vectorul — **rămâne netratată**, amânată de trei ori de comenzi noi |
+| **R121** | P300 / RO e-TVA n-are acces programatic. **EXTERNĂ** |
 | **restul** | `CONFORMITATE.md`, sau `scripts/scan_ramas.py`. Numărul e derivat, nu scris |
 
 ---

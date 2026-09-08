@@ -78,6 +78,9 @@ def ruleaza(nume, fn):
 # `core/test_joburi_supravegheate.py` citeste acum ambele surse si compara cu lista asta.
 RITMURI = {
     "alerta_acces":        2,     # la 15 minute
+    # [P2, 08.09.2026] modelul de citire al portofoliului. La 5 minute: rezumatul e ce vede
+    # contabilul pe ecran, iar o firma atinsa la 9:05 n-are de ce sa apara gri pana maine.
+    "firma_rezumat":       1,     # la 5 minute
     "audit_retentie":      50,    # zilnic 04:00
     "facturi_recurente":   50,    # zilnic 07:00
     "woocommerce":         50,    # zilnic 07:30
