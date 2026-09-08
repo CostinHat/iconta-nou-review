@@ -558,6 +558,55 @@ def test_aspectele_cheama_functiile_rutei_nu_reimplementari():
     assert chei == {"completat", "regim_fiscal", "platitor_tva", "tip_decont", "operatiuni_ic"}
 
 
+def test_p2_endpoint_query_count():
+    """CERINȚA P2, măsurată prin CEREREA HTTP ÎNTREAGĂ — nu prin `citeste()` izolat.
+
+    Proba de mai sus (`test_citirea_face_o_singura_interogare...`) măsoară funcția. Asta măsoară
+    ruta: `cere_context`, `cere_cabinet`, `tenantii_userului`, citirea modelului, serializarea.
+    *Diferența nu e academică: O(N)-ul care a supraviețuit primei forme a lui P2 stătea exact în
+    `tenantii_userului`, adică în partea pe care o măsurătoare pe funcție n-o vede.*
+
+    Se folosește chiar hamul din `scripts/masoara_rute_portofoliu.py`, ca proba și curba din
+    artefacte să nu fie două lucruri diferite. Aici se compară doar două puncte (5 și 50 de firme);
+    curba pe șase puncte și patru scenarii e în `masuratori/p2/benchmark_FINAL.log`."""
+    if not _db_ok():
+        pytest.skip("fara baza de date")
+    sys.path.insert(0, os.path.join(_RAD, "scripts"))
+    import masoara_rute_portofoliu as MR
+
+    ok, _det = MR.calibreaza(verbose=False)
+    assert ok, "hamul HTTP nu e calibrat — nicio cifră de mai jos n-ar valora nimic"
+
+    masurat = {}
+    try:
+        for n in (5, 50):
+            with _db.get_conn() as conn:
+                MR.curata(conn)
+                conn.commit()
+            with _db.get_conn() as conn:
+                uid, _ids = MR.construieste(conn, n, procent_invalidat=10, rece=False)
+                tok = MR._token(conn, uid)
+            with MR.client_test() as cl:
+                cl.get(MR.RUTE[0], headers={"Authorization": "Bearer " + tok})   # încălzire
+                masurat[n] = {r: MR.masoara_ruta(cl, tok, r) for r in MR.RUTE}
+    finally:
+        with _db.get_conn() as conn:
+            MR.curata(conn)
+            conn.commit()
+
+    crescute = []
+    for r in MR.RUTE:
+        mic, mare = masurat[5][r], masurat[50][r]
+        assert mic["status"] == mare["status"] == 200, (r, mic.get("corp"), mare.get("corp"))
+        assert mic["interogari"] > 0, "contorul n-a văzut nimic pe %s — proba n-ar putea eșua" % r
+        if mic["interogari"] != mare["interogari"] or mic["conexiuni"] != mare["conexiuni"]:
+            crescute.append("  %-24s 5 firme: %dq/%dc   50 firme: %dq/%dc"
+                            % (r, mic["interogari"], mic["conexiuni"],
+                               mare["interogari"], mare["conexiuni"]))
+    assert not crescute, ("numărul de interogări/conexiuni CREȘTE cu numărul de firme:\n"
+                          + "\n".join(crescute))
+
+
 def test_tip_firma_nu_mai_e_aspect_ci_proiectie():
     """Retras deliberat: ca aspect avea o fereastră de învechire, iar `tenantii_userului` cădea în
     ea pe bucla O(N). Ca proiecție întreținută de trigger, fereastra nu există."""

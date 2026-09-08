@@ -16,6 +16,10 @@ __pycache__/
 
 # loguri
 *.log
+# EXCEPTIE: `masuratori/` NU e zgomot de rulare, e dovada masuratorilor — artefactele
+# brute pe care se sprijina rapoartele de audit. Regula `*.log` de mai sus e despre
+# logurile proceselor din radacina; astea sunt intrari de arhiva, cerute pe nume.
+!masuratori/**
 uvicorn.log
 
 # arhive / build artefacte
