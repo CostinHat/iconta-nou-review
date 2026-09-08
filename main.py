@@ -131,6 +131,21 @@ async def lifespan(app):
     verifica_fus_orar()   # fail-fast: OS TZ + PG timezone = Europe/Bucharest (invarianta de provisionare)
     import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
     _asyncio_lifespan.create_task(_bucla_alerte_sanatate())
+    # ════════════════════════════════════════════════════════════════════════
+    #  INFRASTRUCTURA CRITICĂ — FAIL-CLOSED (09.09.2026, la auditul remedierii P2)
+    # ════════════════════════════════════════════════════════════════════════
+    # Aici era `except Exception: pass`, cu motivul scris „nu blocam pornirea daca DB e temporar
+    # indisponibil". Motivul era FALS de la naștere: `verifica_fus_orar()`, două linii mai sus,
+    # deschide deja o conexiune și ridică — deci o bază căzută oprea pornirea și înainte. Ce
+    # apuca `except`-ul nu era indisponibilitatea bazei, ci **eșecul instalării infrastructurii**.
+    #
+    # Iar asta e incompatibil cu chiar garanția pe care o poartă P2: *nicio valoare veche nu se
+    # arată drept curentă*. Fără registrul aspect->sursă, versiunea oricărui aspect e 0, deci
+    # ORICE rezumat pare curent, pe veci. Fără triggere, nimic nu mai invalidează. Fără coloana
+    # `epoca`, dependența de timp dispare. **Niciuna nu produce o eroare la citire** — produc
+    # exact defectul pe care P2 îl repară. O aplicație care nu poate garanta prospețimea nu are
+    # voie să pretindă că o garantează; are voie doar să nu pornească.
+    _log_boot = logging.getLogger("iconta")
     try:
         with db.get_conn() as conn:
             migrare_api.asigura_tabel(conn)
@@ -139,21 +154,41 @@ async def lifespan(app):
             from core import supervizor_cache as _sc_boot
             _sc_boot.aplica_ddl(conn)
             # [P2-remediere 08.09.2026] Modelul de citire al portofoliului: tabelele, functiile de
-            # trigger si registrul aspect->sursa. LIPSEA din lifespan: tabela exista pe server doar
-            # fiindca o rulasem de mana in timpul masuratorilor, iar pe o baza proaspata P2 ar fi
-            # cazut tacut pe ramura „modelul lipseste".
+            # trigger si registrul aspect->sursa.
             from core import firma_rezumat as _fr_boot
             _fr_boot.aplica_ddl(conn)
             # Triggerele, pentru TOTI tenantii existenti — nu doar pentru cei noi. Idempotent
             # (DROP IF EXISTS + CREATE), deci o pornire care le gaseste puse nu schimba nimic.
-            # `leaga_triggerele` din prima forma nu era chemata din niciun loc din cod.
             _mig = _fr_boot.migreaza_triggerele(conn)
             if _mig["esecuri"]:
-                logging.getLogger("iconta").warning(
-                    "[P2] triggere nelegate pentru %d firme: %s",
-                    len(_mig["esecuri"]), _mig["esecuri"][:5])
+                for _e in _mig["esecuri"]:
+                    _log_boot.error(
+                        "[P2] triggere nelegate — tenant_id=%s schema=%s: %s%s%s",
+                        _e.get("tenant_id"), _e.get("schema"), _e.get("exceptie"),
+                        chr(10), _e.get("traceback", ""))
+                raise RuntimeError(
+                    "[P2] infrastructura de invalidare INCOMPLETĂ pentru %d firme din %d — "
+                    "aplicația nu pornește. Fără triggere, rezumatele acelor firme n-ar mai fi "
+                    "invalidate niciodată, iar ecranele le-ar arăta drept curente."
+                    % (len(_mig["esecuri"]), _mig["firme"] + len(_mig["esecuri"])))
+            # VERIFICAREA de după migrare: că `CREATE TRIGGER` n-a ridicat excepție NU e destul.
+            _ver = _fr_boot.verifica_infrastructura(conn)
+            if not _ver["ok"]:
+                for _p in _ver["probleme"]:
+                    _log_boot.error("[P2] infrastructură incompletă [%s]: %s | %s",
+                                    _p["cod"], _p["diagnostic"], _p["ce"])
+                raise RuntimeError(
+                    "[P2] verificarea infrastructurii a picat (%d probleme): %s | detaliu: %s"
+                    % (len(_ver["probleme"]),
+                       " · ".join("%s: %s" % (p["cod"], p["diagnostic"]) for p in _ver["probleme"]),
+                       _ver["detaliu"]))
+            _log_boot.info("[P2] infrastructură verificată: %s", _ver["detaliu"])
     except Exception:
-        pass  # nu blocăm pornirea dacă DB e temporar indisponibil
+        _log_boot.exception(
+            "[P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să "
+            "pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie "
+            "să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.")
+        raise
     try:
         with open(TENANT_TEMPLATE_PATH, encoding="utf-8") as f:
             _TENANT_TEMPLATE = f.read()

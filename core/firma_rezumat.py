@@ -454,9 +454,156 @@ def migreaza_triggerele(conn, doar_active=True):
         try:
             raport["triggere"] += leaga_triggerele_firma(conn, schema, tid)
             raport["firme"] += 1
-        except Exception as e:      # noqa: BLE001 — o firmă care nu se poate lega NU oprește restul,
-            raport["esecuri"].append((tid, schema, "%s: %s" % (type(e).__name__, e)))  # dar se spune
+        except Exception as e:      # noqa: BLE001 — o firmă care nu se poate lega nu oprește
+            # BUCLA (celelalte firme se încearcă și ele, ca raportul să spună CÂTE sunt rupte, nu
+            # doar prima). Ce se schimbă la remediere e ce face APELANTUL cu raportul: `lifespan()`
+            # nu mai are voie să continue peste el.
+            import traceback as _tb
+            raport["esecuri"].append({
+                "tenant_id": tid, "schema": schema,
+                "exceptie": "%s: %s" % (type(e).__name__, e),
+                "traceback": _tb.format_exc()})
     return raport
+
+
+#: Ce trebuie să existe ca `citeste()` să poată decide corect prospețimea. Lista NU e o
+#: convenienta: fiecare intrare e o piesa fara de care o valoare veche s-ar putea arata `curent`.
+TABELE_CENTRALE = ("firma_rezumat", "firma_sursa_versiune", "firma_aspect_sursa",
+                   "sursa_supervizor", "firma_tip", "supervizor_sursa")
+#: Coloanele adaugate la remediere. Lipsa lor nu da eroare de sintaxa la citire — da o citire care
+#: nu mai stie de epoca sau de starea de calcul, adica exact clasa reparata.
+COLOANE_REZUMAT = ("epoca", "stare_calcul", "incercari", "urmatoarea_incercare")
+#: Functiile PostgreSQL fara de care triggerele exista dar nu fac nimic.
+FUNCTII_PG = ("marcheaza_sursa", "proiecteaza_tip_firma", "marcheaza_sursa_publica")
+
+#: NOMENCLATORUL INCHIS al problemelor de infrastructura. Codurile sunt pentru apelanti (gardă,
+#: healthcheck, log structurat), mesajele pentru oameni. Stau aici, intr-un singur loc, ca o probă
+#: care asertează pe un cod să nu-l poarte ca literal — un literal repetat e a doua definiție a
+#: aceleiași propoziții, și prima care rămâne în urmă.
+COD_TABELE_LIPSA = "TABELE_LIPSA"
+COD_COLOANE_LIPSA = "COLOANE_LIPSA"
+COD_FUNCTII_LIPSA = "FUNCTII_LIPSA"
+COD_REGISTRU_DESINCRONIZAT = "REGISTRU_DESINCRONIZAT"
+COD_TRIGGERE_LIPSA = "TRIGGERE_LIPSA"
+COD_PROIECTII_LIPSA = "PROIECTII_LIPSA"
+COD_TRIGGERE_PUBLICE_LIPSA = "TRIGGERE_PUBLICE_LIPSA"
+CODURI_INFRASTRUCTURA = (COD_TABELE_LIPSA, COD_COLOANE_LIPSA, COD_FUNCTII_LIPSA,
+                         COD_REGISTRU_DESINCRONIZAT, COD_TRIGGERE_LIPSA, COD_PROIECTII_LIPSA,
+                         COD_TRIGGERE_PUBLICE_LIPSA)
+
+
+def verifica_infrastructura(conn):
+    """`{ok, probleme, detaliu}` — TOATĂ infrastructura P2, nu doar triggerele.
+
+    Fiecare problemă e un dicționar cu `cod` (nomenclator închis), `ce` (datele) și `diagnostic`
+    (proza). **Codul e pentru apelanți, proza pentru omul care ridică serverul** — un apelant care
+    ar căuta un subșir în proză s-ar rupe tăcut la prima rescriere a ei.
+
+    Cheia se numește `diagnostic`, nu `mesaj`, și nu e o preferință de stil: în casă `mesaj` e
+    cheia unui text ARĂTAT CONTABILULUI, iar gărzile o tratează ca atare — nume interne de câmp
+    interzise (`test_mesaje_fara_camp_intern`), afirmații tipate obligatorii
+    (`test_afirmatii_tipate`). Problemele de aici nu ajung pe niciun ecran: numesc tabele, coloane
+    și funcții PostgreSQL, pentru cine pornește procesul. *Un diagnostic de infrastructură scris în
+    vocabularul mesajelor de utilizator ar fi fost obligat să nu-și numească propriul subiect.*
+
+    **DE CE E MAI MULT DECÂT `verifica_triggerele`.** Un `CREATE TRIGGER` care n-a ridicat excepție
+    nu spune că mecanismul funcționează: triggerul poate exista peste o funcție care lipsește,
+    registrul `firma_aspect_sursa` poate fi gol (și atunci versiunea oricărui aspect e 0, deci
+    orice rezumat pare curent la infinit), iar coloana `epoca` poate lipsi (și atunci dependența de
+    timp dispare tăcut). *Fiecare dintre astea produce exact defectul pe care P2 îl repară — o
+    valoare veche arătată drept curentă — și niciuna nu produce o eroare.*
+
+    Se cheamă din `lifespan()`, iar rezultatul DECIDE dacă aplicația intră în `ready`."""
+    probleme, detaliu = [], {}
+
+    with conn.cursor() as cur:
+        # (1) tabelele centrale
+        lipsa_tab = []
+        for t in TABELE_CENTRALE:
+            cur.execute("SELECT to_regclass(%s)", ("public.%s" % t,))
+            if cur.fetchone()[0] is None:
+                lipsa_tab.append(t)
+        detaliu["tabele_lipsa"] = lipsa_tab
+        if lipsa_tab:
+            probleme.append({"cod": COD_TABELE_LIPSA, "ce": lipsa_tab,
+                             "diagnostic": "tabele centrale lipsă: %s" % ", ".join(lipsa_tab)})
+
+        # (2) coloanele adăugate la remediere
+        if "firma_rezumat" not in lipsa_tab:
+            cur.execute("SELECT column_name FROM information_schema.columns "
+                        " WHERE table_schema = 'public' AND table_name = 'firma_rezumat'")
+            au = {r[0] for r in cur.fetchall()}
+            lipsa_col = [c for c in COLOANE_REZUMAT if c not in au]
+            detaliu["coloane_lipsa"] = lipsa_col
+            if lipsa_col:
+                probleme.append({"cod": COD_COLOANE_LIPSA, "ce": lipsa_col,
+                                 "diagnostic": "coloane lipsă în `firma_rezumat`: %s"
+                                          % ", ".join(lipsa_col)})
+
+        # (3) funcțiile PostgreSQL
+        cur.execute("SELECT p.proname FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace "
+                    " WHERE n.nspname = 'public' AND p.proname = ANY(%s)", (list(FUNCTII_PG),))
+        au_fn = {r[0] for r in cur.fetchall()}
+        lipsa_fn = [f for f in FUNCTII_PG if f not in au_fn]
+        detaliu["functii_lipsa"] = lipsa_fn
+        if lipsa_fn:
+            probleme.append({"cod": COD_FUNCTII_LIPSA, "ce": lipsa_fn,
+                             "diagnostic": "funcții PostgreSQL lipsă: %s" % ", ".join(lipsa_fn)})
+
+        # (4) registrul aspect->sursă, COMPARAT cu ce declară codul. Un registru care a rămas în
+        #     urmă nu se vede: agregarea pur și simplu nu numără sursa lipsă.
+        if "firma_aspect_sursa" not in lipsa_tab:
+            cur.execute("SELECT aspect, tabela FROM public.firma_aspect_sursa")
+            in_baza = {(a, t) for a, t in cur.fetchall()}
+            in_cod = {(a, t) for a, d in ASPECTE.items()
+                      for t in tuple(d["tabele"]) + tuple(d["tabele_public"])}
+            detaliu["registru_in_baza"] = len(in_baza)
+            detaliu["registru_in_cod"] = len(in_cod)
+            if in_baza != in_cod:
+                probleme.append({
+                    "cod": COD_REGISTRU_DESINCRONIZAT,
+                    "ce": {"doar_in_cod": sorted(in_cod - in_baza),
+                           "doar_in_baza": sorted(in_baza - in_cod)},
+                    "diagnostic": "registrul `firma_aspect_sursa` diferă de `ASPECTE`: %d perechi doar "
+                             "în cod, %d doar în bază"
+                             % (len(in_cod - in_baza), len(in_baza - in_cod))})
+
+    # (5) triggerele, pe fiecare firmă activă
+    trg = verifica_triggerele(conn)
+    detaliu["firme_active"] = trg["firme_vazute"]
+    detaliu["triggere_lipsa"] = trg["lipsa"]
+    if trg["lipsa"]:
+        probleme.append({"cod": COD_TRIGGERE_LIPSA, "ce": trg["lipsa"],
+                         "diagnostic": "triggere lipsă pe %d perechi (firmă, tabel), primele: %s"
+                                  % (len(trg["lipsa"]), trg["lipsa"][:5])})
+    # ZERO firme NU e o problemă (bază proaspătă, fără tenanți), dar se SPUNE — altfel un „ok" pe
+    # zero firme s-ar citi ca „toate firmele sunt în regulă".
+    detaliu["domeniu_gol"] = trg["domeniu_gol"]
+    if not trg["domeniu_gol"] and trg["proiectii_tip_firma"] < trg["firme_vazute"]:
+        probleme.append({"cod": COD_PROIECTII_LIPSA,
+                         "ce": {"proiectii": trg["proiectii_tip_firma"],
+                                "firme": trg["firme_vazute"]},
+                         "diagnostic": "proiecții `tip_firma`: %d pentru %d firme active — lista "
+                                  "portofoliului ar arăta gol pentru unele"
+                                  % (trg["proiectii_tip_firma"], trg["firme_vazute"])})
+
+    # (6) triggerele pe sursele din `public`
+    with conn.cursor() as cur:
+        lipsa_pub = []
+        for t in tabele_publice_urmarite():
+            cur.execute("SELECT count(*) FROM pg_trigger tg JOIN pg_class cl ON cl.oid = tg.tgrelid "
+                        "  JOIN pg_namespace n ON n.oid = cl.relnamespace "
+                        " WHERE n.nspname = 'public' AND cl.relname = %s AND tg.tgname = %s "
+                        "   AND NOT tg.tgisinternal", (t, "trg_sursa_pub_%s" % t))
+            if cur.fetchone()[0] != 1:
+                lipsa_pub.append(t)
+        detaliu["surse_publice_fara_trigger"] = lipsa_pub
+        if lipsa_pub:
+            probleme.append({"cod": COD_TRIGGERE_PUBLICE_LIPSA, "ce": lipsa_pub,
+                             "diagnostic": "surse din `public` fără trigger: %s"
+                                      % ", ".join(lipsa_pub)})
+
+    return {"ok": not probleme, "probleme": probleme, "detaliu": detaliu}
 
 
 def verifica_triggerele(conn):
@@ -744,6 +891,55 @@ LOT_RECALCULARE = _cron.LOT_FIRMA_REZUMAT
 #: fix ales o dată; orice altă valoare ar merge, atâta timp cât e a NOASTRĂ și numai a noastră.
 CHEIE_BLOCAJ = 0x1C0A7A
 
+_LOG = None
+
+
+def _log():
+    global _LOG
+    if _LOG is None:
+        import logging
+        _LOG = logging.getLogger("iconta.firma_rezumat")
+    return _LOG
+
+
+def ia_blocajul(conn, tenant_id):
+    """`(luat, backend_pid)`. Blocaj de SESIUNE, luat pe conexiunea primită.
+
+    **DE CE SE ÎNTOARCE ȘI PID-UL BACKENDULUI.** `pg_try_advisory_lock` e un blocaj de **sesiune**:
+    îl ține conexiunea, nu tranzacția. Prima formă îl lua într-un `with get_conn()` și îl elibera
+    în **alt** `with get_conn()` — două împrumuturi din pool, deci fără nicio garanție că e aceeași
+    sesiune PostgreSQL. Când nu e, `pg_advisory_unlock` întoarce `false` pe o sesiune care nu ține
+    nimic, iar blocajul rămâne agățat de prima conexiune, **la nesfârșit**, până când pool-ul o
+    reciclează. *Un blocaj scurs nu se vede ca eroare: se vede ca o firmă care nu se mai
+    recalculează niciodată.*
+
+    PID-ul se citește ODATĂ CU luarea blocajului, în aceeași instrucțiune, și se compară la
+    eliberare. Așa proba nu e „am folosit aceeași variabilă", ci „a fost același backend"."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT pg_try_advisory_lock(%s, %s), pg_backend_pid()", (CHEIE_BLOCAJ, tenant_id))
+        luat, pid = cur.fetchone()
+    return bool(luat), pid
+
+
+def lasa_blocajul(conn, tenant_id, pid_asteptat=None):
+    """`True` dacă blocajul chiar a fost eliberat. **Rezultatul NU se înghite.**
+
+    `pg_advisory_unlock` întoarce `false` când sesiunea curentă nu ține blocajul — adică exact
+    simptomul defectului de mai sus. Se logează ca EROARE, cu tot ce trebuie ca să se poată
+    diagnostica: firma, backendul care a luat, backendul care eliberează."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT pg_advisory_unlock(%s, %s), pg_backend_pid()", (CHEIE_BLOCAJ, tenant_id))
+        eliberat, pid = cur.fetchone()
+    if pid_asteptat is not None and pid != pid_asteptat:
+        _log().error("[P2] blocajul firmei %s a fost luat pe backendul %s și eliberat pe %s — "
+                     "sesiuni DIFERITE, blocajul rămâne agățat de prima",
+                     tenant_id, pid_asteptat, pid)
+    if not eliberat:
+        _log().error("[P2] pg_advisory_unlock(%s, %s) a întors FALSE pe backendul %s: sesiunea nu "
+                     "ținea blocajul. Firma poate rămâne blocată pentru turele următoare.",
+                     CHEIE_BLOCAJ, tenant_id, pid)
+    return bool(eliberat)
+
 
 def de_recalculat(conn, limita=LOT_RECALCULARE, azi=None, acum=None):
     """PERECHILE (firmă, aspect) care nu mai sunt curente. **Per aspect, nu per firmă.**
@@ -827,7 +1023,7 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
         pe_firma.setdefault(tid, []).append(aspect)
 
     r = {"perechi": len(perechi), "firme": len(pe_firma), "recalculate": 0, "erori": 0,
-         "sarite_blocate": 0, "fara_firma": [], "oprit": False}
+         "sarite_blocate": 0, "blocaje_neeliberate": 0, "fara_firma": [], "oprit": False}
 
     for tid, aspecte in pe_firma.items():
         if opreste and opreste():
@@ -838,31 +1034,32 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
             r["fara_firma"].append(tid)     # contor fără firmă (probă, firmă ștearsă) — se raportează
             continue
         schema, nume, cui = d
-        with _db.get_conn() as c:
-            with c.cursor() as cur:
-                cur.execute("SELECT pg_try_advisory_lock(%s, %s)", (CHEIE_BLOCAJ, tid))
-                luat = cur.fetchone()[0]
-            c.commit()
-        if not luat:
-            r["sarite_blocate"] += 1
-            continue
-        try:
-            usoare = [a for a in aspecte if a in ASPECTE_USOARE]
-            if usoare:
-                x = recalculeaza_firma(tid, schema, aspecte=usoare, azi=azi)
-                r["erori"] += len(x["erori"])
-                r["recalculate"] += len(x["valori"])
-            if [a for a in aspecte if a in ASPECTE_GRELE]:
-                # cele două grele se produc printr-o singură trecere; se cer amândouă chiar dacă
-                # doar unul e învechit — a doua oară ar costa la fel de mult
-                x = recalculeaza_greu(tid, schema, azi=azi, ctx=ctx, nume=nume, cui=cui)
-                r["erori"] += len(x["erori"])
-                r["recalculate"] += len(x["valori"])
-        finally:
-            with _db.get_conn() as c:
-                with c.cursor() as cur:
-                    cur.execute("SELECT pg_advisory_unlock(%s, %s)", (CHEIE_BLOCAJ, tid))
-                c.commit()
+        # ── BLOCAJUL SE IA ȘI SE ELIBEREAZĂ PE ACEEAȘI CONEXIUNE ──────────────────
+        # `lock_conn` rămâne împrumutată din pool pe TOATĂ durata recalculării firmei. Costă un loc
+        # în pool (recalcularea grea mai deschide două), dar e singura formă în care un blocaj de
+        # sesiune înseamnă ceva. Vezi `ia_blocajul` pentru ce se întâmpla înainte.
+        with _db.get_conn() as lock_conn:
+            luat, pid_lock = ia_blocajul(lock_conn, tid)
+            if not luat:
+                r["sarite_blocate"] += 1
+                continue
+            try:
+                usoare = [a for a in aspecte if a in ASPECTE_USOARE]
+                if usoare:
+                    x = recalculeaza_firma(tid, schema, aspecte=usoare, azi=azi)
+                    r["erori"] += len(x["erori"])
+                    r["recalculate"] += len(x["valori"])
+                if [a for a in aspecte if a in ASPECTE_GRELE]:
+                    # cele două grele se produc printr-o singură trecere; se cer amândouă chiar dacă
+                    # doar unul e învechit — a doua oară ar costa la fel de mult
+                    x = recalculeaza_greu(tid, schema, azi=azi, ctx=ctx, nume=nume, cui=cui)
+                    r["erori"] += len(x["erori"])
+                    r["recalculate"] += len(x["valori"])
+            finally:
+                # `finally`, deci și când recalcularea ridică, și când tura e abandonată. Un blocaj
+                # nelăsat ar face firma să pară „în lucru" pentru totdeauna.
+                if not lasa_blocajul(lock_conn, tid, pid_lock):
+                    r["blocaje_neeliberate"] += 1
 
     with _db.get_conn() as c:
         r["ramase"] = len(de_recalculat(c, limita * 50, azi=azi))
@@ -903,8 +1100,8 @@ def main():
     except Exception as e:      # noqa: BLE001 — bătaia lipsă nu are voie să pice recalcularea
         print("avertisment: bataia deadman a esuat: %s" % e)
     print("firma_rezumat: perechi=%(perechi)d firme=%(firme)d recalculate=%(recalculate)d "
-          "erori=%(erori)d blocate=%(sarite_blocate)d ramase=%(ramase)d oprit=%(oprit)s "
-          "fara_firma=%(fara_firma)s" % r)
+          "erori=%(erori)d blocate=%(sarite_blocate)d neeliberate=%(blocaje_neeliberate)d "
+          "ramase=%(ramase)d oprit=%(oprit)s fara_firma=%(fara_firma)s" % r)
     return 0
 
 

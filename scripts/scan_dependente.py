@@ -417,6 +417,41 @@ def calibreaza(verbose=True):
 # ============================================================================
 #  INVENTARUL — per aspect, pe o firmă reală
 # ============================================================================
+#: RAMURILE — drumurile pe care calculul le ia numai in anumite conditii.
+#:
+#: **Cum a fost derivata lista, si de ce nu din citirea codului.** S-a masurat ce atinge o firma
+#: GOALA construita din `tenant_template.sql`, cu vector fiscal complet, si s-a scazut din ce
+#: declara registrul. Diferenta E lista ramurilor. Masurat 09.09.2026: din cele 27 de surse ale lui
+#: `control_fiscal`, **24 se citesc neconditionat**; `termene` n-are nicio ramura.
+#:
+#: Fiecare rand poarta CONDITIA, nu doar numele — fiindca doua din cele trei ramuri cer mai mult
+#: decat pare, iar fixtura care le rateaza declara o acoperire pe care n-o are:
+#:   * `pontaj` cere tichete de masa **SI** luna confirmata pe domeniul `pontaj` (HG 1045/2018
+#:     art.10(3): fara confirmare, `d112` ridica `PerioadaNeconfirmata` INAINTE de citire);
+#:   * `miscari_stoc` cere un articol cu miscare — 18 din cele 20 de firme reale n-o ating.
+#:
+#: Setup-urile care le activeaza stau in `core/test_dependente_ramuri.py`; aici sta doar CE trebuie
+#: sa se deschida, ca documentul si proba sa citeasca aceeasi lista.
+RAMURI_ACOPERIRE = (
+    {"nume": "baza_vector_complet", "aspecte": ("termene", "control_fiscal"),
+     "conditie": "firma goala, vector fiscal complet (srl · micro · platitor TVA lunar · IC)",
+     "deschide": ()},
+    {"nume": "salarii", "aspecte": ("control_fiscal",),
+     "conditie": "salariat activ **cu tichete de masa** SI luna confirmata pe domeniul `pontaj`",
+     "deschide": ("pontaj", "salariu_istoric")},
+    {"nume": "stoc", "aspecte": ("control_fiscal",),
+     "conditie": "articol cu miscare de stoc",
+     "deschide": ("miscari_stoc",)},
+    {"nume": "facturi_emise", "aspecte": ("termene", "control_fiscal"),
+     "conditie": "o factura emisa in luna", "deschide": ()},
+    {"nume": "vector_pfa_profit_neplatitor", "aspecte": ("termene", "control_fiscal"),
+     "conditie": "PFA · partida simpla · regim de profit · neplatitor TVA · fara IC",
+     "deschide": ()},
+    {"nume": "vector_trimestrial_art317_tva_incasare", "aspecte": ("termene", "control_fiscal"),
+     "conditie": "SRL · profit · TVA trimestrial · IC · art. 317 · TVA la incasare",
+     "deschide": ()},
+)
+
 #: CONTABILITATEA PROPRIE a modelului — scrisă de recalculare, nu citită ca sursă. Dacă ar rămâne
 #: în matrice, modelul s-ar declara dependent de el însuși, iar orice recalculare ar produce o nouă
 #: invalidare: o buclă. Se EXCLUDE explicit, ca să fie o alegere, nu o omisiune.
@@ -610,6 +645,20 @@ def bloc_matrice():
              "are contorul lui agregat. Un singur trigger servește amândoi consumatorii."
              % ", ".join("`%s`" % t for t in sorted(set(FR.tabele_cu_trigger())
                                                     - set(FR.tabele_urmarite()))))
+    r.append("")
+    r.append("### ACOPERIRE RAMURI")
+    r.append("")
+    r.append("*Ramurile sunt derivate prin MĂSURARE: ce declară registrul, minus ce atinge o firmă "
+             "goală din `tenant_template.sql`. Fixturile stau în `core/test_dependente_ramuri.py`, "
+             "iar garda cere ca fiecare ramură să-și deschidă chiar sursele declarate aici — o "
+             "fixtură care n-o exercită pică, în loc să treacă tăcut.*")
+    r.append("")
+    r.append("| aspect(e) | ramură | condiția care o activează | surse pe care le deschide |")
+    r.append("|---|---|---|---|")
+    for x in RAMURI_ACOPERIRE:
+        r.append("| %s | `%s` | %s | %s |"
+                 % (", ".join("`%s`" % a for a in x["aspecte"]), x["nume"], x["conditie"],
+                    ", ".join("`%s`" % t for t in x["deschide"]) or "— (nicio sursă nouă)"))
     r.append("")
     r.append(MARCAJ_STOP)
     return "\n".join(r)

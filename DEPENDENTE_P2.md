@@ -109,6 +109,19 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 
 **Trigger, dar nu sursă a niciunui aspect:** `efactura_trimiteri` — sursă a supervizorului (P1), care are contorul lui agregat. Un singur trigger servește amândoi consumatorii.
 
+### ACOPERIRE RAMURI
+
+*Ramurile sunt derivate prin MĂSURARE: ce declară registrul, minus ce atinge o firmă goală din `tenant_template.sql`. Fixturile stau în `core/test_dependente_ramuri.py`, iar garda cere ca fiecare ramură să-și deschidă chiar sursele declarate aici — o fixtură care n-o exercită pică, în loc să treacă tăcut.*
+
+| aspect(e) | ramură | condiția care o activează | surse pe care le deschide |
+|---|---|---|---|
+| `termene`, `control_fiscal` | `baza_vector_complet` | firma goala, vector fiscal complet (srl · micro · platitor TVA lunar · IC) | — (nicio sursă nouă) |
+| `control_fiscal` | `salarii` | salariat activ **cu tichete de masa** SI luna confirmata pe domeniul `pontaj` | `pontaj`, `salariu_istoric` |
+| `control_fiscal` | `stoc` | articol cu miscare de stoc | `miscari_stoc` |
+| `termene`, `control_fiscal` | `facturi_emise` | o factura emisa in luna | — (nicio sursă nouă) |
+| `termene`, `control_fiscal` | `vector_pfa_profit_neplatitor` | PFA · partida simpla · regim de profit · neplatitor TVA · fara IC | — (nicio sursă nouă) |
+| `termene`, `control_fiscal` | `vector_trimestrial_art317_tva_incasare` | SRL · profit · TVA trimestrial · IC · art. 317 · TVA la incasare | — (nicio sursă nouă) |
+
 <!-- MATRICE:SFARSIT -->
 
 ---

@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**536 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**538 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 515
+### `core/` — 517
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7951,6 +7951,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_deconturi.py` — Gard pe plafonul neimpozabil al diurnei (motor pur core/deconturi.py).
 - `core/test_deducere_generalizare.py` — GARD Fix 3 (Task 2 D112): GENERALIZAREA clasei fix 1 (deducere necablata) la CEILALTI apelanti de productie
 - `core/test_dependente_masurate.py` — GARD — registrul de dependențe nu se poate depărta nici de măsurătoare, nici de document.
+- `core/test_dependente_ramuri.py` — GARD P2 — matricea de dependențe acoperă și RAMURILE pe care portofoliul de azi nu le atinge.
 - `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
 - `core/test_depunere_contrazice.py` — GARD R6 (21.08.2026): o depunere care contrazice un „nu se datorează" nu mai e invizibilă.
 - `core/test_descarcare_muta.py` — [R131, 04.09.2026] GARD: o descarcare care esueaza spune DE CE.
@@ -8065,6 +8066,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_octeti_invizibili.py` — GARD (21.08.2026): niciun octet de CONTROL invizibil în codul sursă.
 - `core/test_onboarding_ux.py` — GARD onboarding_ux: fereastra de bun venit (salut inaintea Suportului, firul spune unde se face
 - `core/test_operatiuni_speciale.py` — Teste gardian pentru operatiuni speciale P2.7 (leasing, avansuri,
+- `core/test_p2_infrastructura.py` — GARD P2 — infrastructura nu poate eșua tăcut, iar blocajul lucrătorului e al unei SESIUNI.
 - `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).
 - `core/test_pastila_gri.py` — GARD (20.08.2026): griul nu se falsifică niciodată în verde.
