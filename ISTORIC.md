@@ -8425,3 +8425,65 @@ desface commitul — singurul lucru pe care l-ar obține e să ascundă restul p
 *Reparat în trecere:* docstringul memoizării scris ieri era ciunt — backtick-urile fuseseră executate
 de shell. A doua oară în două zile; de-aia patch-urile se trimit prin fișier, nu prin heredoc.
 
+
+## 08.09.2026 — „publicat" însemna un singur repo, și raportul n-o spunea
+
+**Găsit de Costin, dintr-o verificare externă**, nu de vreo gardă de-a mea: commitul `8996f486` nu
+exista pe `https://github.com/CostinHat/iconta-nou-review`, deși raportul meu de P0 scria
+*„FOUR-WAY ÎNCHIS: HEAD = origin/main = backup = procesul viu"*.
+
+**Datele brute au arătat că raportul four-way era ADEVĂRAT, și totuși inducea în eroare.** `origin`
+e `CostinHat/iconta-v2` — repo-ul **privat**. Întrebat direct (`git ls-remote`, nu referința locală
+care poate fi veche), serverul confirmă `8996f486` pe `origin`; pe `public` era `73f8c9a4`, adică
+commitul de pe 06.09. **Patru commituri rămăseseră în urmă:** `a77722a4`, `2b05f886`, `d554f25b`,
+`8996f486`.
+
+Nu era un push eșuat mascat ca succes, nu era o referință locală stale, nu era un four-way fals.
+**Era că four-way-ul n-a fost niciodată despre repo-ul public** — iar rapoartele mele au spus
+„publicat" de patru ori fără să adauge „pe cel privat".
+
+**Am construit separarea deliberat pe 06.09** și am scris atunci motivul: dacă publicul ar fi fost
+`origin`, fiecare commit s-ar fi publicat singur, tăcut. Motivul era bun. *Ce n-am făcut, și era
+partea mea: să repet în FIECARE raport de publicare ce înseamnă „publicat".* Un motiv scris o dată,
+într-un raport dintre douăzeci, nu ține o afirmație adevărată.
+
+**Decizia lui Costin, 08.09:** `public` se împinge automat, lângă `origin` — pasul 1b din
+`post-commit`, contract identic (fast-forward, niciodată `--force`, sentinelă la eșec, nu blochează).
+`public` **nu** intră în four-way: o rețea căzută spre GitHub n-are voie să facă să pară că
+publicarea locală n-a reușit. Cele patru commituri au fost recuperate cu `git push public main`
+(`73f8c9a4..8996f486`, fast-forward verificat înainte).
+
+**Și o regulă de raport, care e adevărata reparație:** de acum, „publicat" înseamnă **amândouă**
+remote-urile, sau se spune explicit care a rămas în urmă și de ce.
+
+
+## 08.09.2026 — P1: supervizorul nu mai recalculează portofoliul la fiecare GET
+
+**Măsurat întâi, ca să știu dacă e o problemă reală:** 9 ms/firmă pe portofoliul viu → **~5 s la
+1000 de firme**. Ținta cerută: p95 sub 1 s. Deci da.
+
+**Rezultatul se calculează o dată, se persistă, se citește ieftin.** Fiecare rezultat poartă
+versiunea sursei din care a ieșit, momentul calculului, și — derivat, nu stocat — dacă e curent.
+**Măsurat după, pe 1000 de firme cu sarcină realistă** (4,9 KB JSON/firmă, amestec 800 curent / 150
+invalidat / 50 lipsă): citirea e **45 ms p95**, într-o singură interogare. De la ~5 s la 45 ms.
+
+**Invalidarea vine de la TRIGGERE**, pe cele șase tabele-sursă ale fiecărei firme plus sursa din
+`public` — derivate mecanic din ce citește culegerea, nu scrise din memorie. *Un cârlig pus în
+modulele care scriu se poate uita la următoarea cale; un trigger nu poate fi ocolit — iar auditul de
+ieri a arătat de câte ori am ratat o cale de scriere căutând-o cu ochii.*
+
+**Trei defecte găsite de propriile gărzi, în timpul construcției:**
+1. O firmă în care nu s-a scris niciodată n-avea rând în tabelul contoarelor, deci lucrătorul n-o
+   vedea **niciodată** — ar fi raportat „0 invalidate" despre un portofoliu necalculat. *Un zero care
+   înseamnă „n-am ce face" arată exact ca unul care înseamnă „totul e la zi".*
+2. Recalcularea își fabrica propriul dicționar de eroare în loc să cheme afirmația TIPATĂ a casei —
+   a doua formă a aceleiași propoziții, exact clasa păzită de `test_afirmatii_tipate`.
+3. Starea „încă nu s-a calculat" **n-avea nume**. Până la P1 nu putea exista: rularea era sincronă.
+   Adăugat ca al treilea fel de neverificare, `NECALCULAT` — altfel ecranul ar fi arătat
+   `NEVERIFICAT` fără să spună de ce, adică tăcerea interzisă de cerință.
+
+**Un test a trebuit să se MUTE, nu să fie șters.** `test_ruta_la_cerere...` proba că o firmă care
+ridică nu dispare — pe calea rutei, care culegea pe loc. Calculul s-a mutat, deci proprietatea s-a
+mutat cu el: ruta apără acum contractul nou (firma spune `NECALCULAT`, nu tace), iar `EXCEPTIE` e
+probată la noul ei loc, în `test_recalcularea_unei_scheme_rupte_produce_EXCEPTIE`.
+

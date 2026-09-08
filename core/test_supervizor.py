@@ -581,8 +581,47 @@ def test_ruta_la_cerere_NU_scapa_schema_si_isi_NUMESTE_domeniul(monkeypatch):
     f = r["firme"][0]
     assert f["nume"] == "FIRMĂ DE PROBĂ SRL"
     assert f["rezultat"] == S.NEVERIFICAT
-    assert f["neverificat"]["felul_neverificarii"] == S.EXCEPTIE
+    # [P1, 08.09.2026] CONTRACTUL S-A SCHIMBAT, și odată cu el proba.
+    #
+    # Până azi ruta CULEGEA pe loc, deci o schemă inexistentă producea `EXCEPTIE` chiar în răspuns.
+    # De la P1 ruta CITEȘTE rezultate persistate: firma asta n-are niciunul, deci starea ei corectă
+    # e `NECALCULAT` — al treilea fel de neverificare, adăugat tocmai fiindcă înainte nu putea
+    # exista. Proprietatea apărată rămâne ACEEAȘI și e verificată mai jos: **firma nu dispare și nu
+    # tace**. Ce s-a mutat e locul unde se naște `EXCEPTIE` — la `recalculeaza_firma` —, iar acolo e
+    # probată de `test_recalcularea_unei_scheme_rupte_produce_EXCEPTIE`.
+    assert f["neverificat"], "firma fără rezultat a tăcut — exact ce interzice cerința"
+    assert f["neverificat"]["felul_neverificarii"] == S.NECALCULAT
     assert f["neverificat"]["eroare"]
+    assert f["prospetime"]["stare"] == "lipseste"
+    assert r["nerecalculate"] >= 1
+
+
+def test_recalcularea_unei_scheme_rupte_produce_EXCEPTIE():
+    """Proprietatea mutată, la noul ei loc: o firmă care RIDICĂ nu dispare și nu lasă în urmă un
+    rezultat vechi arătat drept curent — se persistă un rezultat care poartă chiar eroarea."""
+    from core import supervizor_cache as SC
+    _db.init_pool()
+    TID = 999002
+    try:
+        with _db.get_conn() as c:
+            SC.marcheaza_schimbat(c, TID)
+            c.commit()
+        stare, detaliu = SC.recalculeaza_firma(TID, "ztest_schema_inexistenta_9999", 2026, 8)
+        assert stare == "neverificat"
+        assert detaliu
+        with _db.get_conn() as c:
+            d = SC.citeste(c, [TID], 2026, 8)
+        rez = d[TID]["rezultat"]
+        assert d[TID]["stare"] == SC.CURENT, "rezultatul care poartă eroarea trebuie să fie CURENT"
+        assert rez["rezultat"] == S.NEVERIFICAT
+        assert rez["neverificat"]["felul_neverificarii"] == S.EXCEPTIE
+        assert rez["neverificat"]["eroare"]
+    finally:
+        with _db.get_conn() as c:
+            with c.cursor() as cur:
+                cur.execute("DELETE FROM public.supervizor_rezultat WHERE tenant_id = %s", (TID,))
+                cur.execute("DELETE FROM public.supervizor_sursa WHERE tenant_id = %s", (TID,))
+            c.commit()
 
 
 # ── 9. PERECHILE ANUALE ALE D101 — pe surse INDEPENDENTE (02.09.2026) ──────────────────────────

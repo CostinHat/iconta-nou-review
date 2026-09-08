@@ -1,5 +1,6 @@
 #!/bin/sh
-# post-commit — CABLEAZA regula CLAUDE.md §2.3 pct.8: publicarea in TREI locuri dupa fiecare commit pe main.
+# post-commit — CABLEAZA regula CLAUDE.md §2.3 pct.8: publicarea dupa fiecare commit pe main.
+# [08.09.2026] PATRU destinatii, nu trei: origin/main, public/main, backup/lant-<zi>, statica publicata.
 #
 # pre-commit impune DEJA poarta verde (pytest + verificator). Daca acest hook ruleaza, poarta a trecut si
 # commit-ul exista. Ce lipsea era GARDUL care publica - o regula a carei absenta e definita ca defectiune
@@ -41,6 +42,29 @@ elif git push origin main > /tmp/push_main.log 2>&1; then
 else
     banner "origin/main" "$S_MAIN" "git push a esuat: $(tail -1 /tmp/push_main.log)" \
            "citeste /tmp/push_main.log, rezolva cauza, apoi: git push origin main"
+fi
+
+# ---------- 1b. public/main (fast-forward, FARA --force) ----------
+# [08.09.2026] Repo-ul PUBLIC (`CostinHat/iconta-nou-review`) se publica automat, langa `origin`.
+# Contract IDENTIC cu pasul 1. NU intra in four-way: four-way-ul ramane verificarea pe `origin`,
+# fiindca `public` e o a doua destinatie, nu un al cincilea brat — o retea cazuta spre GitHub n-are
+# voie sa faca sa para ca publicarea locala n-a reusit.
+S_PUB=".git/PUSH_PUBLIC_ESUAT"; rm -f "$S_PUB"
+if ! git remote get-url public >/dev/null 2>&1; then
+    :   # remote-ul `public` nu exista pe instalarea asta — nu e o eroare, e o instalare fara el
+elif ! git fetch -q public main 2>/dev/null; then
+    banner "public/main" "$S_PUB" "fetch a esuat (retea/auth)" \
+           "verifica reteaua/cheia SSH, apoi: git push public main"
+elif [ "$HEAD_SHA" = "$(git rev-parse public/main 2>/dev/null)" ]; then
+    :   # la zi
+elif ! git merge-base --is-ancestor public/main HEAD 2>/dev/null; then
+    banner "public/main" "$S_PUB" "public/main a avansat sub tine - NU e fast-forward" \
+           "git fetch public && verifica; NU se forteaza din hook"
+elif git push public main > /tmp/push_public.log 2>&1; then
+    echo "[post-commit] publicat pe public/main: $(git rev-parse --short HEAD)"
+else
+    banner "public/main" "$S_PUB" "git push a esuat: $(tail -1 /tmp/push_public.log)" \
+           "citeste /tmp/push_public.log, rezolva cauza, apoi: git push public main"
 fi
 
 # ---------- 2. backup/lant-<data> (fast-forward, FARA --force) ----------

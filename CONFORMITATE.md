@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-06
+- **ultima actualizare**: 2026-09-08
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -7783,6 +7783,19 @@ care rulează — iar aici starea lipsă era „cabinetul are doi validatori".
 *„pe nicio firmă din cele 17 nu se poate exercita azi un traseu care cere doi oameni"*. Afirmația
 **nu mai e adevărată** — patru-ochi e acum *posibil* (rămâne **neactivat**, deci comportamentul de
 azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
+
+
+### R176 — „Publicat" a însemnat un singur repo, iar raportul n-a spus care
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — ține de **lanțul de publicare**, nu de conformitatea fiscală · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `8996f486`
+- **măsurat la**: 2026-09-08 · **pe commit**: `8996f486`
+- **ce blochează**: pe 06.09 s-a creat repo-ul **public** (`CostinHat/iconta-nou-review`) ca al doilea remote, numit `public`, **deliberat separat** de `origin` (`CostinHat/iconta-v2`, privat) — motivul, scris atunci: `post-commit` face push automat pe `origin`, deci dacă publicul ar fi fost `origin`, fiecare commit s-ar fi publicat singur, tăcut. Motivul era bun; consecința n-a fost urmărită. **Între 06 și 08.09, patru commituri au rămas în urmă pe public** — `a77722a4`, `2b05f886`, `d554f25b`, `8996f486` —, iar rapoartele mele au scris de patru ori *„publicat, four-way verificat"* **fără să spună că *publicat* însemna repo-ul PRIVAT**. Divergența a fost găsită de **Costin, printr-o verificare externă pe GitHub**, nu de vreo gardă. Măsurat atunci, întrebând serverele direct (`git ls-remote`, nu referințele locale care pot fi vechi): `origin/main` = `8996f486`, `public/main` = `73f8c9a4`. *Raportul four-way era ADEVĂRAT și totuși inducea în eroare: cele patru brațe există, dar niciunul nu e repo-ul public.*
+- **condiția de deblocare**: (1) `post-commit` împinge automat pe **amândouă**, cu contract identic — **FĂCUT 08.09**, pasul 1b: fast-forward, niciodată `--force`, sentinelă `.git/PUSH_PUBLIC_ESUAT`, nu blochează publicarea locală; (2) cele patru commituri recuperate — **FĂCUT**, `73f8c9a4..8996f486`, confirmat pe server; (3) **RĂMÂNE DE FĂCUT, și de-aia restanța e deschisă:** nu există nicio **gardă** care să prindă divergența dintre `origin` și `public`. Azi ea a fost prinsă de un om care s-a uitat pe GitHub. Se închide când o gardă compară mecanic cele două remote-uri și cade dacă `public/main` rămâne în urmă fără motiv scris — *altfel singurul lucru care ține sincronizarea e un pas de hook care poate eșua în tăcere exact ca înainte, doar cu o sentinelă în plus.* Plus: regula de raport („publicat" = amândouă, sau se spune care a rămas în urmă și de ce) e azi doar în `PREDARE_LANT.md` și în `ISTORIC.md` — o regulă scrisă și necitită nu e o regulă păzită.
 
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)

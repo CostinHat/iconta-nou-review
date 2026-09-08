@@ -14065,3 +14065,34 @@ HTML.* Rutele întorc **410 Gone**, nu 404 — ruta a existat. Iar refuzul **num
 **Ce a scos la iveală retragerea, și e mai important decât ea:** cu calea online închisă, cei doi
 scriitori rămași ai lui `platita_la` sunt amândoi **în numerar**. Fluxul numit ca fiind cel real —
 banca — nu scrie câmpul deloc, iar două funcționalități depind de el. **R174.**
+
+
+## 76 — Supervizorul persistă rezultatul per firmă (08.09.2026)
+
+**Înlocuiește decizia din 01.09.2026**, care spunea, verbatim în docstringul lui
+`ruleaza_portofoliu`: *„constatări deschise = ce produce rularea curentă, recalculat la cerere, ca la
+`/control-fiscal`. Fără tabel nou, fără ciclu de viață"*.
+
+**Nu se contrazice tăcut, fiindcă decizia își numea singură condiția de expirare:** *„un ciclu de
+viață devine necesar abia când există consumatorul lui: stratul asistentului și **urmărirea
+performanței**"*. Consumatorul a apărut — P1 cere p95 sub 1 s pe 1000 de firme.
+
+**Măsurat înainte de a schimba ceva**, pe portofoliul real: **9 ms/firmă**, p95 12 ms → **~5 s la
+1000 de firme, secvențial**. Ținta nu încape pe calea veche; nu e o optimizare speculativă.
+
+**Ce se păstrează din decizia veche:** `ruleaza_portofoliu` rămâne **neatinsă** și rămâne singura
+definiție a calculului. Persistarea e un STRAT peste ea (`core/supervizor_cache.py`), nu o a doua
+implementare — cronul de 08:00 și recalcularea cheamă aceeași culegere.
+
+**Trei alegeri, fiecare cu motivul:**
+1. **Versiunea sursei e un CONTOR ridicat de trigger la scriere**, nu o amprentă recalculată la
+   citire. Altfel aș face 1000 de interogări ca să aflu dacă trebuie să fac 1000 de calcule.
+2. **Prospețimea se DERIVĂ** (`versiune_sursa == sursa.versiune`), nu se stochează. O coloană
+   `stare` ar fi a doua sursă de adevăr pentru aceeași propoziție — și prima care rămâne în urmă.
+3. **Triggere, nu cârlige în aplicație.** Un cârlig se poate uita la următoarea cale de scriere; un
+   trigger nu poate fi ocolit.
+
+**Interdicția, cablată:** o valoare veche NU se arată ca fiind curentă. Citirea întoarce
+`stare ∈ {curent, invalidat, lipseste}` plus `calculat_la` și ambele versiuni. Al treilea fel de
+neverificare — `NECALCULAT` — a fost adăugat tocmai fiindcă înainte nu putea exista.
+

@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**531 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**532 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 511
+### `core/` — 512
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8160,6 +8160,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_stocuri.py` — —
 - `core/test_stocuri_cv.py` — —
 - `core/test_supervizor.py` — GARD [01.09.2026]: supervizorul — cele două tării, și confirmarea care rămâne scrisă.
+- `core/test_supervizor_cache.py` — GARD P1 (08.09.2026) — rezultatul persistat al supervizorului nu poate minți.
 - `core/test_temei_structurat.py` — Temei fiscal STRUCTURAT (act/nr/an/art/alin/lit/data_in/data_out/url) + garda de EXPIRARE.
 - `core/test_temei_termene.py` — GARD (R4, 20.08.2026 — refăcut 21.08): fiecare termen de depunere își poartă actul, ca DATE.
 - `core/test_temeiuri.py` — Gardul temeiurilor (PASUL 4): impune forma canonica de citare a REGULILOR de validator din

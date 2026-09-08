@@ -349,10 +349,16 @@ def firme_portofoliu(conn):
         return [{"tenant_id": r[0], "schema": r[1], "nume": r[2]} for r in cur.fetchall()]
 
 
-#: Cele două feluri de neverificare. Se ține ca DATE, nu se citește din textul erorii: unul se
-#: repară completând profilul firmei, celălalt e un defect al aplicației.
+#: Cele TREI feluri de neverificare. Se țin ca DATE, nu se citesc din textul erorii: primul se
+#: repară completând profilul firmei, al doilea e un defect al aplicației, al treilea e o stare de
+#: tranzit care nu cere nicio reparație.
 AXA_NU_A_RULAT = "axa_nu_a_rulat"   #: precondiția a căzut (D390 nu se poate calcula) — axa nu s-a atins
 EXCEPTIE = "exceptie"               #: ceva a ridicat pe drum — verificarea s-a rupt
+#: [P1, 08.09.2026] AL TREILEA. Până la P1 nu putea exista: rularea era sincronă, deci orice firmă
+#: era ori verificată, ori ridicase. Cu rezultatul persistat și recalcularea asincronă apare starea
+#: „încă nu s-a calculat" — și trebuie NUMITĂ, altfel ecranul ar arăta `NEVERIFICAT` fără să spună
+#: de ce, adică exact tăcerea interzisă de cerință.
+NECALCULAT = "necalculat"           #: rezultatul nu există încă; nu e un defect, e o așteptare
 
 
 def _neverificat(firma, eroare, felul):

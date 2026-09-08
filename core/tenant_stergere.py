@@ -83,6 +83,12 @@ TABELE_TENANT = (
     # contabilului DESPRE datele firmei, iar fara firma n-au obiect. Nu intra in `NU_SE_STERG` ca
     # `firme_scoase` — acela e chiar urma stergerii; astea sunt evidenta curenta a firmei.
     "supervizor_confirmari",
+    # [P1, 08.09.2026] Rezultatul persistat al supervizorului si contorul lui de versiune.
+    # SE STERG odata cu firma: sunt valori DERIVATE despre ea, recalculabile din sursa, fara
+    # nicio informatie proprie. Lasate in urma, o firma noua cu acelasi `tenant_id` ar mosteni
+    # constatarile alteia — si le-ar arata ca fiind ale ei, cu `calculat_la` din alta viata.
+    "supervizor_rezultat",
+    "supervizor_sursa",
     "urme_portal",
     "user_tenants",
 )

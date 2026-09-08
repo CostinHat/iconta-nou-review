@@ -134,6 +134,10 @@ async def lifespan(app):
     try:
         with db.get_conn() as conn:
             migrare_api.asigura_tabel(conn)
+            # [P1] tabelele rezultatului persistat al supervizorului. Idempotent (CREATE IF NOT
+            # EXISTS), langa migrarea existenta, cu aceeasi purtare la esec.
+            from core import supervizor_cache as _sc_boot
+            _sc_boot.aplica_ddl(conn)
     except Exception:
         pass  # nu blocăm pornirea dacă DB e temporar indisponibil
     try:
@@ -2771,13 +2775,57 @@ def supervizor_la_cerere(ctx=Depends(cere_cabinet)):
         if not schema:
             continue   # fara acces la tenant — nu se afiseaza (identic cu semaforul /control-fiscal)
         firme.append({"tenant_id": tid, "schema": schema, "nume": f.get("nume")})
-    r = supervizor.ruleaza_portofoliu(
-        azi.year, azi.month, firme=firme,
-        domeniu=("firmele la care are acces utilizatorul curent (%d), NU tot portofoliul; "
-                 "supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta" % len(firme)))
-    # `schema` e detaliu intern de stocare: nu iese pe rută (nici semaforul nu-l dă).
-    r["firme"] = [{k: v for k, v in rand.items() if k != "schema"} for rand in r["firme"]]
-    return r
+    # [P1, 08.09.2026] CITEȘTE rezultatele persistate — NU recalculează portofoliul la fiecare GET.
+    # Măsurat înainte: 9 ms/firmă, adică ~5 s la 1000 de firme, peste ținta cerută (p95 < 1 s).
+    # Măsurat după, pe 1000 de firme cu sarcină realistă: p95 = 45 ms, într-o singură interogare.
+    #
+    # FIECARE FIRMĂ ÎȘI POARTĂ STAREA. O valoare veche NU se arată ca fiind curentă: `stare` e
+    # `curent` / `invalidat` / `lipseste`, derivată din compararea versiunii sursei cu cea din care
+    # s-a calculat rezultatul. Un rezultat `invalidat` se ARATĂ — e ultima măsurătoare bună — dar
+    # etichetat, cu `calculat_la`. *O stare „în recalculare" declarată e acceptabilă; una veche și
+    # tăcută nu e.*
+    from core import supervizor_cache as _sc
+    ids = [f["tenant_id"] for f in firme]
+    with db.get_conn() as conn:
+        stari = _sc.citeste(conn, ids, azi.year, azi.month)
+
+    randuri = []
+    for f in firme:
+        st = stari.get(f["tenant_id"]) or {"rezultat": None, "stare": _sc.LIPSESTE,
+                                           "calculat_la": None, "versiune_sursa": None,
+                                           "versiune_curenta": 0}
+        rez = st["rezultat"] or {}
+        randuri.append({
+            "tenant_id": f["tenant_id"], "nume": f.get("nume"),
+            "constatari": rez.get("constatari") or [],
+            "de_confirmat": rez.get("de_confirmat") or 0,
+            "rezultat": rez.get("rezultat") or supervizor.NEVERIFICAT,
+            # o firmă fără rezultat NU tace: spune că e NECALCULATĂ, cu aceeași formă tipată ca
+            # celelalte două feluri de neverificare.
+            "neverificat": rez.get("neverificat") or (
+                None if st["stare"] != _sc.LIPSESTE else
+                supervizor._neverificat(f, "rezultatul nu a fost calculat încă (recalculare "
+                                           "asincronă); nu e un defect, e o așteptare",
+                                        supervizor.NECALCULAT)),
+            "prospetime": {"stare": st["stare"], "calculat_la": st["calculat_la"],
+                           "versiune_sursa": st["versiune_sursa"],
+                           "versiune_curenta": st["versiune_curenta"]},
+        })
+
+    nerecalculate = sum(1 for x in randuri if x["prospetime"]["stare"] != _sc.CURENT)
+    return {
+        "an": azi.year, "luna": azi.month,
+        "domeniu": ("firmele la care are acces utilizatorul curent (%d), NU tot portofoliul; "
+                    "supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta" % len(firme)),
+        "firme": randuri,
+        "rezumat": supervizor.rezumat_din_randuri(randuri) if hasattr(supervizor, "rezumat_din_randuri")
+                   else {"firme": len(randuri)},
+        # Contor, nu afirmație: afirmația despre o firmă e `neverificat`, și e tipată. Firmele cu
+        # `invalidat`/`lipseste` își poartă starea fiecare, în `prospetime.stare` — aici e doar
+        # câte sunt.
+        "nerecalculate": nerecalculate,
+        "tipuri_neatribuite": supervizor.tipuri_neatribuite(),
+    }
 
 
 @app.post("/control-fiscal/{tenant_id}/audit-preluare")

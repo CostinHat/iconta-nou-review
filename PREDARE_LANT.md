@@ -44,12 +44,22 @@ Cele două zile de după au fost **reparații de restanțe și curățenie**, ce
 **DOUĂ SCHIMBĂRI DE MEDIU care nu se văd din cod și trebuie știute:**
 
 1. **Repo-ul e PUBLIC pe GitHub** — `https://github.com/CostinHat/iconta-nou-review`, cerut de
-   Costin pe 06.09, cu tot istoricul (2077 de commituri). `origin` rămâne cel privat
-   (`CostinHat/iconta-v2`); publicul e un al doilea remote, numit `public`, **deliberat separat**:
-   `post-commit` face push automat pe `origin`, deci dacă publicul ar fi fost `origin`, fiecare
-   commit s-ar fi publicat singur, tăcut. Actualizare: `git push public main`.
-   *Consecință: `CONFORMITATE.md` — cele 50 de restanțe cu descrierea exactă a ce e rupt — e citibil
-   de oricine. E o expunere de business, nu una de securitate; a fost semnalată înainte de push.*
+   Costin pe 06.09, cu tot istoricul. `origin` e cel **privat** (`CostinHat/iconta-v2`); `public` e
+   al doilea remote.
+   **De la 08.09.2026, `post-commit` împinge AUTOMAT pe amândouă** — pasul 1b, contract identic cu
+   cel de pe `origin`: fast-forward, niciodată `--force`, sentinelă `.git/PUSH_PUBLIC_ESUAT` la eșec,
+   **nu blochează** publicarea locală.
+   **`public` NU intră în four-way**, deliberat: four-way-ul rămâne verificarea pe `origin`, fiindcă
+   o rețea căzută spre GitHub n-are voie să facă să pară că publicarea locală n-a reușit.
+   **DE CE A FOST NEVOIE, și e o lecție despre raport, nu despre cod:** între 06 și 08.09 `public` a
+   fost separat *tocmai ca să nu publice singur*, iar patru commituri au rămas în urmă. Rapoartele
+   mele spuneau „publicat, four-way verificat" fără să zică de fiecare dată că *publicat* însemna
+   repo-ul PRIVAT. Costin a găsit divergența dintr-o verificare externă pe GitHub. **Regula, de
+   acum: în raport, „publicat" înseamnă AMÂNDOUĂ remote-urile — sau se spune explicit care a rămas
+   în urmă și de ce.**
+   *Consecință, confirmată de Costin după ce a fost semnalată: fiecare commit ajunge public în
+   aceeași secundă, inclusiv `CONFORMITATE.md` cu restanțele deschise. Expunere de business
+   deliberată, nu una de securitate.*
 2. **Contul de asistent e ACTIV** — `asistent@prisma-cont.test`, reactivat pe calea aplicației ca să
    se poată proba desktopul asistentului. Are `poate_pregati`/`poate_valida` **da**, `poate_depune`
    **nu**, două firme. **Consecință măsurată: `patru_ochi_posibil` a trecut pe `true` în cabinetul
@@ -136,7 +146,7 @@ predare**. *O regulă scrisă nu ține fără control mecanic.*
 | cifra | ce e |
 |---|---|
 | **69** | rânduri care trimit la o firmă inexistentă |
-| **15** | tabele din `public` cu `tenant_id`, numărate |
+| **17** | tabele din `public` cu `tenant_id`, numărate |
 
 <!-- CIFRE-DATE:STOP -->
 
