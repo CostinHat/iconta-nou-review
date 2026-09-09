@@ -145,6 +145,28 @@ def rezumat(conn, tenant_id):
     return {"are_istoric": n > 0, "randuri": n}
 
 
+def rezumat_lot(conn, tenant_ids):
+    """`{tenant_id: {are_istoric, randuri}}` pentru TOT portofoliul, într-o SINGURĂ interogare.
+
+    **DE CE EXISTĂ [P3, 09.09.2026].** `rezumat()` de mai sus e corectă și rămâne — o cheamă
+    ecranele unei singure firme. Dar `/migrare/istoric-declaratii` o chema **într-o buclă peste
+    portofoliu**, cu o conexiune proprie per firmă: măsurat, `1.004` interogări și `1.003`
+    conexiuni la 1000 de firme, adică `q = 4 + 1*N`, `c = 3 + 1*N`.
+
+    Aceeași sursă, același predicat, aceeași formă a răspunsului — se schimbă doar **de câte ori**
+    se întreabă. O firmă fără niciun rând primește `0`, exact ce întorcea `count(*)` pentru ea.
+    *Nu e un cache și nu e un model de citire: e aceeași citire, făcută o dată.*"""
+    ids = [t for t in (tenant_ids or []) if t is not None]
+    if not ids:
+        return {}
+    with conn.cursor() as cur:
+        cur.execute("SELECT tenant_id, count(*) FROM public.declaratii_depuse "
+                    " WHERE tenant_id = ANY(%s) AND sursa = 'migrare' "
+                    " GROUP BY tenant_id", (ids,))
+        gasite = dict(cur.fetchall())
+    return {t: {"are_istoric": gasite.get(t, 0) > 0, "randuri": gasite.get(t, 0)} for t in ids}
+
+
 TIPURI_CUNOSCUTE = ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394",
                     "D406", "D212", "S1003", "S1005", "D394A", "D311", "D207")
 

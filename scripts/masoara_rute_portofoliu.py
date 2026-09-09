@@ -75,6 +75,50 @@ UTILIZATOR_PROBA = "proba-curba-p2@iconta.local"
 # ============================================================================
 #  DOMENIUL SINTETIC
 # ============================================================================
+#: Tabelele din `public` pe care modelul de citire și supervizorul le scriu PER FIRMĂ.
+#: Aceleași pe care le șterge `curata` — ținute într-un singur loc ca măturatul de după să nu
+#: poată rămâne în urma ștergerii.
+_TABELE_PER_FIRMA = ("firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa",
+                     "supervizor_rezultat", "user_tenants")
+
+
+def _matura_ce_a_scris_lucratorul_intre_timp(conn, ids, ture=5):
+    """A DOUA trecere, după ce ștergerea firmelor s-a comis. Întoarce câte rânduri a măturat.
+
+    **DE CE EXISTĂ [09.09.2026].** `curata` șterge rândurile per firmă și firmele în ACEEAȘI
+    tranzacție — corect, dar insuficient: baza asta e cea de producție, iar lucrătorul P2 viu
+    rulează în paralel. Un lot luat înainte de ștergere se termină DUPĂ ea și își scrie rezultatele
+    înapoi, pentru firme care nu mai există. Măsurat: 5 rânduri în `firma_rezumat` pentru firma
+    sintetică `83615`, scrise la 12:55:02, cu `versiune_sursa = 0` (schema îi fusese deja aruncată)
+    — prinse de clichetul de orfani din `test_tenant_stergere`, care a respins poarta.
+
+    *Un ham de măsurat care lasă baza mai murdară decât a găsit-o nu e un instrument, e o scurgere.*
+
+    **Se șterg NUMAI id-urile pe care hamul le-a creat el însuși.** Restul orfanilor din bază sunt
+    o clasă preexistentă, numărată de clichet; a-i mătura de aici ar ascunde exact ce păzește el.
+
+    Se reia cât timp mai apar rânduri — fereastra e mică, dar nu e nulă —, cel mult `ture` ori. Dacă
+    după toate turele tot mai apar, se RIDICĂ: o scurgere care nu se închide trebuie văzută, nu
+    înghițită."""
+    if not ids:
+        return 0
+    total = 0
+    for tura in range(ture):
+        n = 0
+        with conn.cursor() as cur:
+            for t in _TABELE_PER_FIRMA:
+                cur.execute("DELETE FROM public.%s WHERE tenant_id = ANY(%%s)" % t, (ids,))
+                n += cur.rowcount
+        conn.commit()
+        total += n
+        if n == 0:
+            return total
+        time.sleep(0.5 * (tura + 1))
+    raise RuntimeError(
+        "lucratorul inca scrie randuri pentru firme sintetice sterse dupa %d ture (%d randuri "
+        "maturate) — fereastra nu se inchide, iar hamul ar lasa orfani in urma" % (ture, total))
+
+
 def curata(conn):
     """Șterge tot domeniul sintetic. Idempotentă; se cheamă și înainte, și după."""
     with conn.cursor() as cur:
@@ -106,6 +150,8 @@ def curata(conn):
         cur.execute("DELETE FROM public.users WHERE accounting_firm_id = %s OR email = %s",
                     (fid, UTILIZATOR_PROBA))
         cur.execute("DELETE FROM public.accounting_firms WHERE id = %s", (fid,))
+        conn.commit()
+        _matura_ce_a_scris_lucratorul_intre_timp(conn, ids)
         return len(ids)
 
 

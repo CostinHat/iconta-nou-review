@@ -1,0 +1,593 @@
+{
+  "commit": "7d921282285a30c26657c285e9db0e53c447491b",
+  "eticheta": "dupa",
+  "val": "a",
+  "rute": [
+    "/migrare/istoric-declaratii",
+    "/supervizor"
+  ],
+  "curba": {
+    "5": {
+      "/migrare/istoric-declaratii": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0013,
+        "cpu_sec": 0.0036,
+        "total_sec": 0.0049,
+        "db_procent": 27.0,
+        "status": 200,
+        "octeti": 461
+      },
+      "/supervizor": {
+        "interogari": 5,
+        "conexiuni": 4,
+        "dus_intors": 9,
+        "db_sec": 0.0015,
+        "cpu_sec": 0.0036,
+        "total_sec": 0.0051,
+        "db_procent": 29.6,
+        "status": 200,
+        "octeti": 3206
+      }
+    },
+    "50": {
+      "/migrare/istoric-declaratii": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0038,
+        "total_sec": 0.0056,
+        "db_procent": 31.2,
+        "status": 200,
+        "octeti": 4511
+      },
+      "/supervizor": {
+        "interogari": 5,
+        "conexiuni": 4,
+        "dus_intors": 9,
+        "db_sec": 0.0018,
+        "cpu_sec": 0.0051,
+        "total_sec": 0.0069,
+        "db_procent": 26.1,
+        "status": 200,
+        "octeti": 29849
+      }
+    },
+    "100": {
+      "/migrare/istoric-declaratii": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0018,
+        "cpu_sec": 0.0046,
+        "total_sec": 0.0065,
+        "db_procent": 28.3,
+        "status": 200,
+        "octeti": 9011
+      },
+      "/supervizor": {
+        "interogari": 5,
+        "conexiuni": 4,
+        "dus_intors": 9,
+        "db_sec": 0.0021,
+        "cpu_sec": 0.0066,
+        "total_sec": 0.0087,
+        "db_procent": 24.3,
+        "status": 200,
+        "octeti": 59452
+      }
+    },
+    "250": {
+      "/migrare/istoric-declaratii": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0028,
+        "cpu_sec": 0.0054,
+        "total_sec": 0.0082,
+        "db_procent": 33.7,
+        "status": 200,
+        "octeti": 22511
+      },
+      "/supervizor": {
+        "interogari": 5,
+        "conexiuni": 4,
+        "dus_intors": 9,
+        "db_sec": 0.003,
+        "cpu_sec": 0.0105,
+        "total_sec": 0.0135,
+        "db_procent": 22.3,
+        "status": 200,
+        "octeti": 148252
+      }
+    },
+    "500": {
+      "/migrare/istoric-declaratii": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0042,
+        "cpu_sec": 0.0075,
+        "total_sec": 0.0117,
+        "db_procent": 35.9,
+        "status": 200,
+        "octeti": 45011
+      },
+      "/supervizor": {
+        "interogari": 5,
+        "conexiuni": 4,
+        "dus_intors": 9,
+        "db_sec": 0.0044,
+        "cpu_sec": 0.0175,
+        "total_sec": 0.022,
+        "db_procent": 20.1,
+        "status": 200,
+        "octeti": 296252
+      }
+    },
+    "1000": {
+      "/migrare/istoric-declaratii": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0076,
+        "cpu_sec": 0.0119,
+        "total_sec": 0.0195,
+        "db_procent": 39.1,
+        "status": 200,
+        "octeti": 90011
+      },
+      "/supervizor": {
+        "interogari": 5,
+        "conexiuni": 4,
+        "dus_intors": 9,
+        "db_sec": 0.0079,
+        "cpu_sec": 0.0311,
+        "total_sec": 0.0389,
+        "db_procent": 20.2,
+        "status": 200,
+        "octeti": 592255
+      }
+    }
+  },
+  "pante": {
+    "/migrare/istoric-declaratii": {
+      "BASE_QUERIES": 5.0,
+      "QUERY_SLOPE": 0.0,
+      "liniar_q": true,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTION_SLOPE": 0.0,
+      "liniar_c": true
+    },
+    "/supervizor": {
+      "BASE_QUERIES": 5.0,
+      "QUERY_SLOPE": 0.0,
+      "liniar_q": true,
+      "BASE_CONNECTIONS": 4.0,
+      "CONNECTION_SLOPE": 0.0,
+      "liniar_c": true
+    }
+  },
+  "real": {
+    "uid": 1968,
+    "firme": 14,
+    "rute": {
+      "/migrare/istoric-declaratii": {
+        "status": 200,
+        "corp": {
+          "firme": [
+            {
+              "tenant_id": 4841,
+              "nume": "Achizitii IC Neplatitor SRL",
+              "cui": "95451848",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4842,
+              "nume": "Agentie Turism Marja SRL",
+              "cui": "95687300",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 33394,
+              "nume": "Antibiotice Iasi",
+              "cui": "1973096",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4837,
+              "nume": "Coafor Micro Neplatitor SRL",
+              "cui": "95138914",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4838,
+              "nume": "Comert Micro TVA SRL",
+              "cui": "95141537",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4840,
+              "nume": "Constructii Profit Trim SRL",
+              "cui": "95363126",
+              "are_istoric": true,
+              "randuri": 1
+            },
+            {
+              "tenant_id": 4839,
+              "nume": "Distributie Profit IC SRL",
+              "cui": "95275466",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4844,
+              "nume": "Ferma Agricultor Forfetar SRL",
+              "cui": "95873249",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 14769,
+              "nume": "Firma Grea Audit SRL",
+              "cui": "98765438",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4845,
+              "nume": "IT Servicii Nerezidenti SRL",
+              "cui": "95904434",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4784,
+              "nume": "Panificatie Salarii Speciale SRL",
+              "cui": "96653616",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4843,
+              "nume": "Second Hand Marja SRL",
+              "cui": "95775518",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4846,
+              "nume": "Startup Partial 2026 SRL",
+              "cui": "96385785",
+              "are_istoric": false,
+              "randuri": 0
+            },
+            {
+              "tenant_id": 4847,
+              "nume": "Trecere Micro Profit SRL",
+              "cui": "96516171",
+              "are_istoric": false,
+              "randuri": 0
+            }
+          ]
+        }
+      },
+      "/supervizor": {
+        "status": 200,
+        "corp": {
+          "an": 2026,
+          "luna": 9,
+          "domeniu": "firmele la care are acces utilizatorul curent (14), NU tot portofoliul; supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta",
+          "firme": [
+            {
+              "tenant_id": 4841,
+              "nume": "Achizitii IC Neplatitor SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Achizitii IC Neplatitor SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_006"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4842,
+              "nume": "Agentie Turism Marja SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Agentie Turism Marja SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_007"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 33394,
+              "nume": "Antibiotice Iasi",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Antibiotice Iasi»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_018"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4837,
+              "nume": "Coafor Micro Neplatitor SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Coafor Micro Neplatitor SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_002"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4838,
+              "nume": "Comert Micro TVA SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Comert Micro TVA SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_003"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4840,
+              "nume": "Constructii Profit Trim SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Constructii Profit Trim SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_005"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4839,
+              "nume": "Distributie Profit IC SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Distributie Profit IC SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_004"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4844,
+              "nume": "Ferma Agricultor Forfetar SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Ferma Agricultor Forfetar SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_009"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 14769,
+              "nume": "Firma Grea Audit SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Firma Grea Audit SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_017"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4845,
+              "nume": "IT Servicii Nerezidenti SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «IT Servicii Nerezidenti SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_010"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4784,
+              "nume": "Panificatie Salarii Speciale SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Panificatie Salarii Speciale SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_001"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 8
+              }
+            },
+            {
+              "tenant_id": 4843,
+              "nume": "Second Hand Marja SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Second Hand Marja SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_008"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4846,
+              "nume": "Startup Partial 2026 SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Startup Partial 2026 SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_011"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            },
+            {
+              "tenant_id": 4847,
+              "nume": "Trecere Micro Profit SRL",
+              "constatari": [],
+              "de_confirmat": 0,
+              "rezultat": "NEVERIFICAT",
+              "neverificat": {
+                "fel": "verificare_rupta",
+                "tip": "supervizor",
+                "motiv": "Supervizorul NU a verificat firma «Trecere Micro Profit SRL»: rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "eroare": "rezultatul nu a fost calculat încă (recalculare asincronă); nu e un defect, e o așteptare",
+                "felul_neverificarii": "necalculat",
+                "schema": "tenant_012"
+              },
+              "prospetime": {
+                "stare": "lipseste",
+                "calculat_la": null,
+                "versiune_sursa": null,
+                "versiune_curenta": 1
+              }
+            }
+          ],
+          "rezumat": {
+            "firme": 14
+          },
+          "nerecalculate": 14,
+          "tipuri_neatribuite": []
+        }
+      }
+    }
+  }
+}

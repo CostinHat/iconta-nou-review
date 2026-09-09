@@ -2586,18 +2586,33 @@ def mijloace_import_salveaza(tenant_id: int, date: MijloaceFixeImportIn, ctx=Dep
 # ============================================================
 @app.get("/migrare/istoric-declaratii")
 def migrare_istoric_status(ctx=Depends(cere_cabinet)):
+    """[P3, 09.09.2026] O SINGURĂ interogare pentru tot portofoliul, pe ACEEAȘI conexiune.
+
+    Măsurat înainte: `q = 4 + 1*N`, `c = 3 + 1*N` — la 1000 de firme, 1.004 interogări și 1.003
+    conexiuni, pentru o listă de stări. Bucla chema `rezumat()` per firmă, fiecare cu conexiunea
+    ei din pool.
+
+    **Nu e un cache și nu schimbă prospețimea:** se citește exact aceeași sursă
+    (`public.declaratii_depuse`, `sursa = 'migrare'`), la fel de proaspăt, doar o dată.
+
+    **Purtarea la eroare, păstrată.** Bucla veche prindea excepția *per firmă* și punea
+    `{False, 0}`. O interogare unică nu poate eșua pentru o singură firmă — dacă eșuează,
+    eșuează pentru toate —, iar atunci fiecare firmă primește exact valoarea pe care i-ar fi
+    dat-o bucla veche în aceeași situație. *Se scrie aici fiindcă e singurul loc în care forma
+    nouă nu e identică cu cea veche, ci echivalentă.*"""
     out = []
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
-    for f in firme:
-        tid = f.get("id")
         try:
-            with db.get_conn() as c:
-                rez = istoric_declaratii_import_api.rezumat(c, tid)
+            rez = istoric_declaratii_import_api.rezumat_lot(conn, [f.get("id") for f in firme])
         except Exception:
-            rez = {"are_istoric": False, "randuri": 0}
-        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                    "are_istoric": rez["are_istoric"], "randuri": rez["randuri"]})
+            _LOG_VERDICT.warning("istoric-declaratii: rezumatul de lot a esuat -> zero pentru tot "
+                                 "portofoliul (ca bucla veche, per firma)", exc_info=True)
+            rez = {}
+    for f in firme:
+        r = rez.get(f.get("id")) or {"are_istoric": False, "randuri": 0}
+        out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_istoric": r["are_istoric"], "randuri": r["randuri"]})
     return {"firme": out}
 
 
@@ -2876,14 +2891,27 @@ def supervizor_la_cerere(ctx=Depends(cere_cabinet)):
     azi = azi_ro()   # [fus] perioada evaluată = zi RO, ca la /control-fiscal și ca în cronul de 08:00
     with db.get_conn() as conn:
         ale_mele = auth_api.tenantii_userului(conn, ctx["uid"])
+    # [P3, 09.09.2026] SCHEMA VINE DIN LISTA DEJA CITITĂ, nu se recere firmă cu firmă.
+    #
+    # Bucla de aici chema `auth_api.schema_tenant(c, uid, tid)` pentru fiecare firmă, fiecare cu
+    # conexiunea ei din pool: măsurat, `q = 5 + 2*N`, `c = 4 + 1*N` — 2.005 interogări și 1.004
+    # conexiuni la 1000 de firme, DOAR ca să afle numele schemei și să reverifice accesul.
+    #
+    # **Reverificarea era redundantă, și se poate arăta:** `tenantii_userului` filtrează pe exact
+    # aceleași reguli ca `schema_tenant` — superadmin → firme fără cabinet; admin_firma → firmele
+    # cabinetului lui; restul → prin `user_tenants` —, toate cu `activ = true`, și întoarce deja
+    # `schema_name`. Pentru o firmă venită din acea listă, `schema_tenant` nu poate întoarce
+    # altceva. Gardat de `core/test_p3_wave_a.py`, care compară cele două căi firmă cu firmă pe
+    # portofoliul real, în loc să creadă echivalența pe cuvânt.
+    #
+    # Garda `if not schema` RĂMÂNE: e ieftină, iar o firmă fără `schema_name` n-are ce căuta în
+    # rezultat. Ce dispare e conexiunea per firmă, nu verificarea.
     firme = []
     for f in ale_mele:
-        tid = f.get("id")
-        with db.get_conn() as c:
-            schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+        schema = f.get("schema_name")
         if not schema:
             continue   # fara acces la tenant — nu se afiseaza (identic cu semaforul /control-fiscal)
-        firme.append({"tenant_id": tid, "schema": schema, "nume": f.get("nume")})
+        firme.append({"tenant_id": f.get("id"), "schema": schema, "nume": f.get("nume")})
     # [P1, 08.09.2026] CITEȘTE rezultatele persistate — NU recalculează portofoliul la fiecare GET.
     # Măsurat înainte: 9 ms/firmă, adică ~5 s la 1000 de firme, peste ținta cerută (p95 < 1 s).
     # Măsurat după, pe 1000 de firme cu sarcină realistă: p95 = 45 ms, într-o singură interogare.

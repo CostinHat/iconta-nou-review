@@ -566,10 +566,22 @@ def test_ruta_la_cerere_NU_scapa_schema_si_isi_NUMESTE_domeniul(monkeypatch):
     import main
     from core import auth_api
     _db.init_pool()
+    # [P3 val A, 09.09.2026] CIOTUL POARTĂ ACUM `schema_name`, fiindcă funcția reală îl întoarce.
+    #
+    # Ruta lua schema chemând `schema_tenant` PER FIRMĂ — o conexiune și două interogări pentru
+    # fiecare —, deși `tenantii_userului` filtrează pe exact aceleași reguli și o are deja în
+    # rând. Ciotul de aici modela o formă pe care funcția reală n-o produce în NICIUNA din cele
+    # trei ramuri de rol: toate selectează `t.schema_name`.
+    #
+    # *Un ciot care întoarce o formă imposibilă probează o ficțiune.* Ce apără testul ăsta —
+    # numele schemei nu iese pe rută, firma nu dispare și nu tace — e neatins.
+    #
+    # Că funcția reală chiar întoarce `schema_name` pe TOATE cele trei ramuri nu se mai crede pe
+    # cuvânt: `core/test_p3_wave_a.py::test_toate_cele_trei_roluri_primesc_schema_name` o execută
+    # pe rând pentru superadmin, admin_firma și utilizator legat prin `user_tenants`.
     monkeypatch.setattr(auth_api, "tenantii_userului",
-                        lambda conn, uid: [{"id": 999001, "nume": "FIRMĂ DE PROBĂ SRL"}])
-    monkeypatch.setattr(auth_api, "schema_tenant",
-                        lambda conn, uid, tid: "ztest_schema_inexistenta_9999")
+                        lambda conn, uid: [{"id": 999001, "nume": "FIRMĂ DE PROBĂ SRL",
+                                            "schema_name": "ztest_schema_inexistenta_9999"}])
     r = main.supervizor_la_cerere(ctx={"uid": 1, "firm": 1})
 
     assert r["firme"], "[anti-vacuu] ruta n-a întors nicio firmă — proba n-ar măsura nimic"
