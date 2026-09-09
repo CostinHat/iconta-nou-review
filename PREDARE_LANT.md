@@ -25,7 +25,7 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P0** — feedback pe niveluri | **ÎNCHIS** (`8996f486`) | N1/N2/N3/N4 derivate din graful de import; N1 pe `control_fiscal_api` = **27 s** față de ~1.500 s poarta completă |
 | **P1** — supervizor | **ÎNCHIS** (`ced26440`) | rezultat persistat, versionat; citire **p95 45 ms** pe 1000 de firme (era ~5 s) |
 | **P2** — portofoliu / N+1 | **ÎNCHIS** (`f3567121`) | `control-fiscal` la 1000 de firme: **278.882 interogări · 70,8 s → 1 · 17 ms** |
-| **P3** — rutele care cresc cu portofoliul | **ÎNCHIS** (`0f0a135a`) | șase rute N-dependente eliminate în trei valuri; **toate cele 12 rute de portofoliu derivate din cod sunt acum 5q/3c constant de la N=5 la N=1000** |
+| **P3** — rutele care cresc cu portofoliul | **ÎNCHIS** (`3cd7aebe`) | șase rute N-dependente eliminate în trei valuri; **toate cele 12 rute de portofoliu derivate din cod sunt acum 5q/3c constant de la N=5 la N=1000** |
 | P4…P7 | nedeschise | v. `PLAN_HARDENING.md` |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
@@ -45,6 +45,23 @@ probe). *Când adaugi un model de citire, întreabă imediat ce arată ecranul c
 persistă ca **model de citire** în `public`, invalidat de **triggere** pe tabelele-sursă, cu
 prospețimea **derivată** din compararea a două versiuni — niciodată stocată. Interdicția, la
 amândouă: *o valoare veche nu se arată ca fiind curentă; „în recalculare" declarat e acceptabil.*
+
+### LANȚUL ÎNTREG, cu commitul de închidere al fiecărei etape
+
+*Se scrie ca tabel fiindcă întrebarea „unde s-a oprit ce" a fost pusă de trei ori, iar răspunsul era
+împrăștiat prin patru rapoarte.*
+
+| etapă | închisă pe | ce a livrat |
+|---|---|---|
+| **P2** — portofoliu / N+1 | `f3567121` | `control-fiscal` la 1000 de firme: 278.882 interogări · 70,8 s → 1 · 17 ms |
+| **P2, redeschis** — modelul își cunoaște dependențele | `224cfc40` | 27 de surse **măsurate** (erau 8 scrise din memorie), triggere pe toate, epocă temporală, `DEPENDENTE_P2.md` generat și păzit |
+| **P2, remedierea auditului** | `b393b19c` | fail-closed la pornire · blocaj de sesiune pe aceeași conexiune · ramuri acoperite deliberat · artefactele produse DUPĂ ultimul patch |
+| **hardening post-P2** | `6b59c19f` | ordinea taskurilor de fundal · `SAVEPOINT` per tenant la migrare · verificare periodică de drift · backlog observabil (`p2_worker_*`) · monotonie impusă prin trigger |
+| **P3, diagnostic** | `7d921282` | 12 rute care cresc cu N, 6 cu N+1; pante măsurate, nu medii; cauze demonstrate; **nicio implementare** |
+| **P3, implementare** | `3cd7aebe` | valul A (`e7ce0c2e`) · valul B (`0f0a135a`) · valul C + concurență (`3cd7aebe`) |
+
+**Toate închise.** Ce rămâne deschis e la „restanțe", mai jos: **R177** (clasa, nu instanța) și
+**R178** (capacitatea pool-ului, neblocantă).
 
 ---
 ## DOUĂ LUCRURI DE MEDIU care nu se văd din cod
@@ -235,7 +252,7 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 51**, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**.
+- **restanțe deschise: 53**  *(remasurat 09.09; valoarea de dinainte, 51, ramasese in urma cu doua)*, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**.
 - **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
 - **decizii care blochează: niciuna.**
@@ -279,7 +296,8 @@ atinge un `.md`, un `.js` sau `main.py` **alături de cod**; când se ating **nu
 |---|---|
 | **prag 1** | **niciuna deschisă** |
 | **decizii** | **niciuna deschisă** |
-| **pool-ul** | *(nou, 09.09, măsurat nu presupus)* la **10 cereri de portofoliu simultane**, conexiunile simultane ating exact `ICONTA_POOL_MAX = 10` — rezervă zero —, iar latența crește ~liniar cu concurența (p50 56 → 755 ms), deci debitul e practic plat. **Nu e o regresie P3** (înainte o singură cerere lua 1.003–2.003 conexiuni pe rând); e o proprietate a configurației, măsurată acum fiindcă înainte n-a fost. Mărirea pool-ului ar ascunde-o, nu ar rezolva-o |
+| **R178** | *(nou, 09.09, măsurat nu presupus)* la **10 cereri de portofoliu simultane**, conexiunile simultane ating exact `ICONTA_POOL_MAX = 10` — rezervă zero —, iar latența crește ~liniar cu concurența (p50 56 → 755 ms), deci debitul e practic plat. **Nu e o regresie P3** (înainte o singură cerere lua 1.003–2.003 conexiuni pe rând); e o proprietate a configurației, măsurată acum fiindcă înainte n-a fost. Mărirea pool-ului ar ascunde-o, nu ar rezolva-o |
+| **R177** | clasa „model de citire cu dependențe scrise din memorie". **Instanța e reparată** (`224cfc40`); ce rămâne deschis e că **nimic nu spune câți alți purtători ai clasei are aplicația**. P3 a mai găsit unul, fără să-l caute — v. mai jos |
 | **R176** | *(nou, 08.09)* divergența `public` ↔ `origin`. Push-ul automat e **făcut**; ce rămâne deschis e că **nicio gardă nu prinde divergența** — azi a prins-o un om uitându-se pe GitHub |
 | **R174** | o factură încasată prin BANCĂ nu se marchează încasată nicăieri |
 | **R175** | desktopul asistentului e acoperit de o probă proprie, nu de uneltele de listă |

@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-08
+- **ultima actualizare**: 2026-09-09
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -7809,6 +7809,52 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
 - **măsurat la**: 2026-09-08 · **pe commit**: `224cfc40`
 - **ce blochează**: **INSTANȚA, măsurată azi pe `core/firma_rezumat.py`.** P2 a mutat calculul portofoliului într-un model de citire cu prospețime derivată din contoare ridicate de trigger. Lista tabelelor-sursă pe care se puneau triggerele a fost **scrisă din memorie**, nu măsurată — iar cele două aspecte scumpe (`termene`, `control_fiscal`) nu declarau **nicio** sursă. Măsurat cu `scripts/scan_dependente.py` pe toate cele 20 de firme active: `control_fiscal` citește **27** de tabele din schema firmei, `termene` **5**; `supervizor_cache.TABELE_TENANT` avea **8**. **Lipseau 20.** *(Cifra din comanda care a cerut restanța spunea „27 vs 11"; măsurătoarea dă **27 vs 8** pe tabele de tenant, sau **28 vs 9** dacă se numără și sursa din `public`. Se scrie cea măsurată — o restanță despre cifre care nu se pot recalcula n-are voie să pornească de la una care nu se poate.)* **DE CE E O CLASĂ, nu un defect:** o dependență lipsă dintr-un model de citire nu produce o eroare, un log sau un test roșu. Produce o valoare veche **etichetată `curent`**, la nesfârșit — adică exact opusul semnalului. Un model de citire rapid care nu știe când e vechi e mai rău decât calculul direct: primul minte repede. Aceeași formă a mai apărut de două ori în corpus, sub alte nume: **interdicția 76** (instrument fără calibrare pe propriul mod de eșec — *orbirea nu aprinde nimic*) și **R98** (o interdicție care citează un inventar îmbătrânește singură). Ce e nou aici e purtătorul: **nu instrumentul de măsură, ci un artefact de PRODUCȚIE** care își declară singur prospețimea.
 - **condiția de deblocare**: **REGULA FINALĂ NU SE SCRIE ÎNCĂ, și asta e chiar decizia lui Costin din 08.09.2026** — *«deschide restanță acum, cu descrierea găsită azi, dar nu scrie regula finală până nu se măsoară pe tot repo-ul»*. Se închide în trei pași, în ordinea asta: **(1)** un instrument care **numără clasa pe tot repo-ul** — câte artefacte de producție își declară singure prospețimea pe baza unei liste de surse (modelele de citire, cache-urile, tabelele derivate cu `versiune_sursa`, proiecțiile întreținute de trigger), și pentru câte dintre ele lista e **măsurată** contra a ce citesc efectiv. Instrumentul se calibrează în **ambele** direcții înainte de orice cifră, iar clasa se numără **înainte** de a se scrie regula: *o interdicție scrisă pe o singură instanță plafonează ce am văzut, nu ce există.* **(2)** cifra intră ca secțiune în registru, cu `măsurat la` și `pe commit`, plus `ce nu vede` instrumentul — fiindcă un scan care caută „liste de surse" prin nume va rata orice listă construită la rulare. **(3)** abia atunci se scrie interdicția, cu clichet per fișier, ca la constantele nesursate. **Ce NU e condiție de deblocare, declarat:** repararea lui `firma_rezumat` — ea e **făcută** (`224cfc40`: 27 de surse măsurate, triggere pe toate, `DEPENDENTE_P2.md` generat și păzit, 42 de probe). Restanța nu ține de instanță, ci de faptul că **nimic nu spune azi câți alți purtători ai aceleiași clase mai are aplicația.**
+
+- **al doilea purtător, găsit fără să fie căutat · 2026-09-09 · pe commit `0f0a135a`**: P3 a
+  adăugat patru aspecte noi în același model de citire. Dependențele lor **au fost măsurate**, nu
+  scrise — disciplina a ținut. Dar garda de acoperire a ramurilor a respins commitul, fiindcă
+  `solduri_parteneri` era declarată în registru și neatinsă de nicio ramură măsurată. Cauza:
+  `core/test_dependente_ramuri.ASPECTE_MASURATE` era **o listă scrisă de mână lângă registru**, care
+  rămăsese în urma lui. *Aceeași formă, alt purtător: nu lista surselor unui aspect, ci lista
+  aspectelor măsurate.* Reparat prin **derivare** (`tuple(FR.ASPECTE)`), deci un aspect nou intră
+  automat sub gardă. **Nu închide restanța — o confirmă:** clasa nu e „lista de tabele a lui
+  `firma_rezumat`", e *orice listă ținută lângă lucrul pe care îl descrie, în loc să fie derivată din
+  el.* Instrumentul cerut la pasul (1) trebuie să caute forma asta, nu numai modelele de citire.
+
+### R178 — Pool-ul de conexiuni se saturează exact la 10 cereri de portofoliu simultane
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — e o proprietate de rulare, nu de conformitate fiscală · **PRAG 3**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `3cd7aebe`
+- **măsurat la**: 2026-09-09 · **pe commit**: `0f0a135a`
+- **ce blochează**: **NIMIC azi — restanța e neblocantă, și se scrie aici fiindcă `stare` are exact
+  două valori (DESCHISĂ / REZOLVATĂ) și „neblocantă" nu e una dintre ele; e un fapt despre ce
+  blochează, nu despre stadiul lucrului.** Se deschide fiindcă **a fost măsurată**, nu fiindcă s-a
+  stricat ceva.
+  `scripts/masoara_concurenta.py`, N=1000 de firme, server propriu, 20 de cereri per nivel: la **10
+  cereri simultane** conexiunile simultane ating **exact 10 = `ICONTA_POOL_MAX`** — rezervă zero, deci
+  a unsprezecea cerere de portofoliu ar aștepta o conexiune liberă. Iar latența crește aproape liniar
+  cu concurența (p50 **55,8 → 754,6 ms** de la k=1 la k=10, adică 13,5× pentru de 10 ori mai multe
+  cereri), deci **debitul e practic plat**: cererile se servesc aproape secvențial. Zero erori, zero
+  expirări, zero blocaje pe toate nivelele. **NU e o regresie a lui P3** — dimpotrivă: înainte, o
+  *singură* cerere de portofoliu lua 1.003–2.003 conexiuni pe rând și ținea pool-ul mult mai mult. E o
+  proprietate a configurației de azi, vizibilă abia acum, fiindcă înainte n-a fost măsurată.
+  *Instrumentul își probează afirmația:* calibrare în ambele direcții cu mutație pe propriul mod de
+  eșec — 6 conexiuni ținute deodată trebuie văzute ca 6 (văzute 6), aceleași 6 una după alta trebuie
+  văzute ca mai puțin de 6 (văzute 1). Fără a doua direcție, un contor **cumulat** ar fi trecut prima
+  fără să clipească, iar „pool-ul n-a fost atins" ar fi fost o minciună liniștitoare.
+- **condiția de deblocare**: **NU se mărește pool-ul ca prim gest** — asta ar muta plafonul fără să
+  spună nimic despre cauză, și e chiar forma interzisă la P3 („nu ascunde N+1 mărind poolul"). Se
+  închide după ce se răspunde, cu măsurători, la trei întrebări în ordinea asta: **(1)** câți
+  utilizatori de cabinet apasă simultan **în realitate** — se derivă din `audit_log`, nu se
+  presupune; **(2)** cât din latența la k=10 e pool și cât e serializare în Python (un singur proces,
+  GIL pe sute de KB de JSON) — instrumentul separă deja DB de CPU, deci întrebarea e măsurabilă azi;
+  **(3)** abia atunci se decide între mai multe procese `uvicorn`, pool mai mare, sau nimic. *O
+  restanță de capacitate deschisă fără trafic real măsurat e o presimțire, nu o măsurătoare — de-aia
+  pasul (1) e primul.*
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

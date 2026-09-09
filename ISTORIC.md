@@ -8618,3 +8618,62 @@ dinainte de P2 — fără normalizare de verdicte sau de sume. 6 probe, verzi.
 capabilitate. După-amiaza e altfel: **ecranele nu mai puteau rămâne gri la nesfârșit** după o
 editare într-unul din cele 20 de tabele neurmărite, și nu mai puteau arăta verdictul de ieri ca fiind
 al zilei de azi. Prima e o regresie reparată; a doua era acolo de la început.
+
+---
+
+## 09.09.2026 — P3: ecranele de portofoliu nu mai cresc cu numărul de firme, și două care mințeau
+
+Commituri: `e7ce0c2e` (valul A) · `0f0a135a` (valul B) · `3cd7aebe` (valul C + concurență).
+Poarta: **4.326 de teste trec**, verificator TOTAL 0, four-way închis. Raport:
+`RAPORT_P3_IMPLEMENTARE.md`. Pachet: `~/iconta_P3_2026-09-09.zip`.
+
+**CE S-A SCHIMBAT PENTRU UN CONTABIL, și e prima dată în lanțul ăsta când răspunsul nu e „nimic".**
+
+**1. Ecranele de portofoliu se deschid la fel de repede indiferent câte firme are cabinetul.**
+Douăsprezece rute — cele nouă de migrare, `/supervizor`, `/termene`, `/control-fiscal`, `/tenants` —
+făceau **o interogare separată pentru fiecare firmă**, uneori trei sau patru. La un cabinet cu 1000
+de firme asta însemna, măsurat: `/migrare/parteneri` **4.004 interogări și 2.003 conexiuni**, două
+secunde; `/supervizor` **2.005 interogări**, jumătate de secundă. Acum toate fac **5 interogări și 3
+conexiuni**, la fel la 5 firme ca la 1000. Pentru un cabinet mic nu se simte nimic — sub 12 ms era și
+înainte. Pentru unul care crește, se simte diferența dintre un ecran care se deschide și unul care se
+încarcă.
+
+**2. Două ecrane spuneau „firma asta n-are" când de fapt nu știau.** Ăsta nu e despre viteză și e
+mai important. De la P2, valorile de pe ecranele de migrare vin dintr-un model recalculat în fundal,
+iar modelul spune pentru fiecare firmă dacă valoarea lui e curentă, în recalculare, lipsă sau
+eroare. **Stratul de ecran ignora complet informația asta.** O firmă al cărei rezumat încă nu fusese
+calculat arăta identic cu una verificată și găsită goală: *„fără parteneri încă"*, *„de încărcat"*.
+Un contabil care se uita la ecranul ăla vedea o afirmație — *firma asta n-are parteneri* — acolo
+unde adevărul era *încă nu am aflat*. Pe șapte ecrane, de la P2 încoace.
+
+Acum fiecare stare își spune numele: `se recalculează` · `încă necunoscut` · `temporar
+indisponibil`. Iar *„fără parteneri"* a rămas doar acolo unde chiar s-a măsurat și chiar nu sunt.
+
+**3. Și contorul de sus mințea, separat.** *„7 din 14 firme au parteneri"* număra printre cele „cu"
+și firmele a căror valoare **nu mai era curentă** — pentru că ele păstrează în răspuns ultima cifră
+cunoscută. Rândul firmei o arăta corect ca „se recalculează"; **agregatul o dădea drept curentă.**
+Contoarele numără acum doar firmele curente, iar sumarul spune explicit câte sunt necunoscute.
+
+*Defectele 2 și 3 au fost găsite de garda scrisă anume ca să le închidă — după ce le introdusesem eu
+însumi în prima formă a reparației. `starePros` cădea implicit pe „curent" când câmpul lipsea, adică
+reintroducea exact defectul, prin valoarea implicită.*
+
+**CE NU S-A SCHIMBAT, și se scrie.** Costul nu a dispărut, s-a **mutat** la scriere: o firmă care se
+modifică des se recalculează des. Ce s-a câștigat e că cererea interactivă nu mai plătește pentru
+tot portofoliul. Și: la **10 cereri de portofoliu simultane** pool-ul de conexiuni e fix plin
+(`R178`) — nu s-a stricat nimic, dar nici nu mai e rezervă, iar asta se știe abia de azi fiindcă
+abia azi s-a măsurat.
+
+**REFUZAT DELIBERAT.** Cele patru rute din valul B citesc date aflate în schema fiecărei firme, deci
+nu puteau fi adunate cu un singur `GROUP BY`, ca la valul A. Un `UNION ALL` construit peste cele N
+scheme ar fi dat *o singură* interogare pe *o singură* conexiune — adică ar fi trecut criteriul
+literă cu literă. Dar textul și planul SQL cresc cu N, deci latența ar fi crescut mai departe.
+*Un criteriu trecut fără ca problema să fie rezolvată e cosmetică.* S-a folosit modelul de citire
+existent, nu s-a inventat un al doilea mecanism.
+
+**POARTA A RESPINS DE ȘASE ORI, și de fiecare dată a avut dreptate.** Punctul orb al primei mele
+gărzi era **rolul**, nu firma: comparasem cele două căi de acces „pe portofoliul real", dar
+portofoliul ăla e al unui `admin_firma`, iar funcția are trei ramuri de SQL, una per rol. Hamul meu
+de măsurat lăsa rânduri orfane în baza de producție, fiindcă lucrătorul viu scria rezultate pentru
+firme sintetice pe care curățenia tocmai le ștersese. *Un instrument care lasă baza mai murdară
+decât a găsit-o nu e un instrument, e o scurgere.*
