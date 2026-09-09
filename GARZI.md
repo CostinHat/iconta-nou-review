@@ -8068,7 +8068,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_operatiuni_speciale.py` — Teste gardian pentru operatiuni speciale P2.7 (leasing, avansuri,
 - `core/test_p2_contract.py` — GARD P2 — CONTRACTUL ARHITECTURAL, în șapte propoziții și sub zece secunde.
 - `core/test_p2_infrastructura.py` — GARD P2 — infrastructura nu poate eșua tăcut, iar blocajul lucrătorului e al unei SESIUNI.
-- `core/test_p3_val_b.py` — GARD P3 · VALUL B — un necunoscut nu se randează ca un „nu".
+- `core/test_p3_val_b.py` — GARD P3 · VALUL B — un necunoscut nu se randează ca un „nu". **Pe toate cele șapte ecrane.**
 - `core/test_p3_wave_a.py` — GARD P3 · VALUL A — cele două rute set-based nu mai cresc cu numărul de firme.
 - `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).

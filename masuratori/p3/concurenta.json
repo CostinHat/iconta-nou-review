@@ -1,0 +1,227 @@
+{
+  "commit": "0f0a135a0249e3b6e053641992be5025f2324c10",
+  "N_FIRME": 1000,
+  "POOL_MAX": 10,
+  "cfg": "{'url': 'postgresql://iconta_user:SapIEw4X3Hi8DXKobFGkMyDaT9d6RO66v7vScatD@local",
+  "rute": {
+    "/supervizor": {
+      "val": "val A",
+      "nivele": [
+        {
+          "simultane_cerute": 1,
+          "cereri": 20,
+          "p50_ms": 55.8,
+          "p95_ms": 82.8,
+          "p99_ms": 96.2,
+          "min_ms": 53.9,
+          "max_ms": 96.2,
+          "medie_ms": 59.7,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 1,
+          "probe_esantionator": 236
+        },
+        {
+          "simultane_cerute": 2,
+          "cereri": 20,
+          "p50_ms": 124.8,
+          "p95_ms": 182.0,
+          "p99_ms": 223.5,
+          "min_ms": 92.0,
+          "max_ms": 223.5,
+          "medie_ms": 131.8,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 2,
+          "probe_esantionator": 250
+        },
+        {
+          "simultane_cerute": 5,
+          "cereri": 20,
+          "p50_ms": 358.9,
+          "p95_ms": 417.5,
+          "p99_ms": 417.7,
+          "min_ms": 236.1,
+          "max_ms": 417.7,
+          "medie_ms": 354.6,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 5,
+          "probe_esantionator": 260
+        },
+        {
+          "simultane_cerute": 10,
+          "cereri": 20,
+          "p50_ms": 754.6,
+          "p95_ms": 783.1,
+          "p99_ms": 786.3,
+          "min_ms": 195.1,
+          "max_ms": 786.3,
+          "medie_ms": 701.6,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 10,
+          "probe_esantionator": 256
+        }
+      ]
+    },
+    "/migrare/parteneri": {
+      "val": "val B",
+      "nivele": [
+        {
+          "simultane_cerute": 1,
+          "cereri": 20,
+          "p50_ms": 60.5,
+          "p95_ms": 98.4,
+          "p99_ms": 101.3,
+          "min_ms": 59.0,
+          "max_ms": 101.3,
+          "medie_ms": 65.5,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 1,
+          "probe_esantionator": 254
+        },
+        {
+          "simultane_cerute": 2,
+          "cereri": 20,
+          "p50_ms": 115.6,
+          "p95_ms": 155.8,
+          "p99_ms": 157.1,
+          "min_ms": 97.4,
+          "max_ms": 157.1,
+          "medie_ms": 124.8,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 2,
+          "probe_esantionator": 220
+        },
+        {
+          "simultane_cerute": 5,
+          "cereri": 20,
+          "p50_ms": 341.8,
+          "p95_ms": 390.2,
+          "p99_ms": 392.2,
+          "min_ms": 192.7,
+          "max_ms": 392.2,
+          "medie_ms": 334.1,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 5,
+          "probe_esantionator": 237
+        },
+        {
+          "simultane_cerute": 10,
+          "cereri": 20,
+          "p50_ms": 787.7,
+          "p95_ms": 802.3,
+          "p99_ms": 804.1,
+          "min_ms": 528.2,
+          "max_ms": 804.1,
+          "medie_ms": 762.0,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 10,
+          "probe_esantionator": 244
+        }
+      ]
+    },
+    "/control-fiscal": {
+      "val": "P2 (martor)",
+      "nivele": [
+        {
+          "simultane_cerute": 1,
+          "cereri": 20,
+          "p50_ms": 70.4,
+          "p95_ms": 114.3,
+          "p99_ms": 127.7,
+          "min_ms": 67.7,
+          "max_ms": 127.7,
+          "medie_ms": 77.7,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 1,
+          "probe_esantionator": 305
+        },
+        {
+          "simultane_cerute": 2,
+          "cereri": 20,
+          "p50_ms": 133.0,
+          "p95_ms": 178.3,
+          "p99_ms": 180.2,
+          "min_ms": 128.8,
+          "max_ms": 180.2,
+          "medie_ms": 144.0,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 2,
+          "probe_esantionator": 253
+        },
+        {
+          "simultane_cerute": 5,
+          "cereri": 20,
+          "p50_ms": 411.2,
+          "p95_ms": 440.3,
+          "p99_ms": 440.5,
+          "min_ms": 362.3,
+          "max_ms": 440.5,
+          "medie_ms": 409.9,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 5,
+          "probe_esantionator": 270
+        },
+        {
+          "simultane_cerute": 10,
+          "cereri": 20,
+          "p50_ms": 832.6,
+          "p95_ms": 925.5,
+          "p99_ms": 932.4,
+          "min_ms": 741.4,
+          "max_ms": 932.4,
+          "medie_ms": 848.6,
+          "statusuri": {
+            "200": 20
+          },
+          "erori": [],
+          "nr_erori": 0,
+          "conexiuni_simultane_maxim": 9,
+          "probe_esantionator": 274
+        }
+      ]
+    }
+  }
+}

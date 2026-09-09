@@ -1,0 +1,33 @@
+COMMIT=0f0a135a0249e3b6e053641992be5025f2324c10
+COMMAND=./venv/bin/python scripts/masoara_concurenta.py
+CONTEXT=2/5/10 cereri simultane pe ruta cea mai grea a fiecarui val, N=1000 firme
+----
+CALIBRARE masoara_concurenta — simultan vs cumulat:
+  (a) 6 conexiuni TINUTE deodata -> maxim vazut 6  (trebuie >= 6): True
+  (b) 6 conexiuni UNA DUPA ALTA  -> maxim vazut 1  (trebuie <  6): True
+      (b) e mutatia: un contor cumulat ar trece (a) si ar pica (b)
+  probe: 62 / 72
+  VERDICT: OK
+
+── uvicorn pe http://127.0.0.1:52247 ──
+   pornit.
+── se construiește portofoliul sintetic (N=1000) ──
+   1000 firme.
+── val A · /supervizor ──
+   k=1   p50=55.8    p95=82.8    p99=96.2    max_simultane=1   erori=0 {'200': 20}
+   k=2   p50=124.8   p95=182.0   p99=223.5   max_simultane=2   erori=0 {'200': 20}
+   k=5   p50=358.9   p95=417.5   p99=417.7   max_simultane=5   erori=0 {'200': 20}
+   k=10  p50=754.6   p95=783.1   p99=786.3   max_simultane=10  erori=0 {'200': 20}
+── val B · /migrare/parteneri ──
+   k=1   p50=60.5    p95=98.4    p99=101.3   max_simultane=1   erori=0 {'200': 20}
+   k=2   p50=115.6   p95=155.8   p99=157.1   max_simultane=2   erori=0 {'200': 20}
+   k=5   p50=341.8   p95=390.2   p99=392.2   max_simultane=5   erori=0 {'200': 20}
+   k=10  p50=787.7   p95=802.3   p99=804.1   max_simultane=10  erori=0 {'200': 20}
+── P2 (martor) · /control-fiscal ──
+   k=1   p50=70.4    p95=114.3   p99=127.7   max_simultane=1   erori=0 {'200': 20}
+   k=2   p50=133.0   p95=178.3   p99=180.2   max_simultane=2   erori=0 {'200': 20}
+   k=5   p50=411.2   p95=440.3   p99=440.5   max_simultane=5   erori=0 {'200': 20}
+   k=10  p50=832.6   p95=925.5   p99=932.4   max_simultane=9   erori=0 {'200': 20}
+
+scris: /home/costin/iconta_nou/masuratori/p3/concurenta.json
+EXIT_CODE=0

@@ -1,0 +1,188 @@
+COMMIT=0f0a135a0249e3b6e053641992be5025f2324c10
+COMMAND=./venv/bin/python scripts/masoara_p3.py
+CONTEXT=val C — maturare peste TOATE rutele derivate din cod (GET · cabinet · ating portofoliul)
+----
+2026-09-09 17:03:36,836 INFO iconta [R118] /static servit din /home/costin/iconta_publicat/static — publicat (commit 0f0a135a)
+2026-09-09 17:03:37,532 INFO httpx HTTP Request: GET http://testserver/_p3_doar_baza "HTTP/1.1 200 OK"
+2026-09-09 17:03:37,738 INFO httpx HTTP Request: GET http://testserver/_p3_doar_cpu "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,898 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,904 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,909 INFO httpx HTTP Request: GET http://testserver/migrare/asociati "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,915 INFO httpx HTTP Request: GET http://testserver/migrare/istoric-declaratii "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,921 INFO httpx HTTP Request: GET http://testserver/migrare/mijloace-fixe "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,928 INFO httpx HTTP Request: GET http://testserver/migrare/parteneri "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,940 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,950 INFO httpx HTTP Request: GET http://testserver/migrare/salariati "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,958 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,964 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,971 INFO httpx HTTP Request: GET http://testserver/supervizor "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,976 INFO httpx HTTP Request: GET http://testserver/tenants "HTTP/1.1 200 OK"
+2026-09-09 17:03:38,983 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,024 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,029 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,035 INFO httpx HTTP Request: GET http://testserver/migrare/asociati "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,039 INFO httpx HTTP Request: GET http://testserver/migrare/istoric-declaratii "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,045 INFO httpx HTTP Request: GET http://testserver/migrare/mijloace-fixe "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,050 INFO httpx HTTP Request: GET http://testserver/migrare/parteneri "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,055 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,060 INFO httpx HTTP Request: GET http://testserver/migrare/salariati "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,065 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,070 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,076 INFO httpx HTTP Request: GET http://testserver/supervizor "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,082 INFO httpx HTTP Request: GET http://testserver/tenants "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,087 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+CALIBRARE masoara_p3 — separarea DB / CPU, ambele direcții:
+  (a) rută care doar AȘTEAPTĂ baza -> {'interogari': 1, 'conexiuni': 1, 'dus_intors': 2, 'db_sec': 0.2036, 'cpu_sec': 0.0077, 'total_sec': 0.2113, 'db_procent': 96.4, 'status': 200}
+  (b) rută care doar ARDE CPU      -> {'interogari': 0, 'conexiuni': 0, 'dus_intors': 0, 'db_sec': 0.0, 'cpu_sec': 0.2057, 'total_sec': 0.2057, 'db_procent': 0.0, 'status': 200}
+  pune timpul de bază în `db_sec`   : True
+  pune timpul de Python în `cpu_sec`: True
+  le DEOSEBEȘTE                     : True
+  VERDICT: OK
+
+RUTE derivate din cod (GET, de cabinet, ating portofoliul): 12
+   /control-fiscal
+   /migrare/asociati
+   /migrare/istoric-declaratii
+   /migrare/mijloace-fixe
+   /migrare/parteneri
+   /migrare/plan-conturi
+   /migrare/salariati
+   /migrare/solduri
+   /migrare/vector
+   /supervizor
+   /tenants
+   /termene
+
+   N=5     {'/control-fiscal': '5q/3c 0.005s (db 32.7%)', '/migrare/asociati': '5q/3c 0.005s (db 31.9%)', '/migrare/istoric-declaratii': '5q/3c 0.005s (db 28.9%)', '/migrare/mijloace-fixe': '5q/3c 0.005s (db 33.0%)', '/migrare/parteneri': '5q/3c 0.005s (db 33.5%)', '/migrare/plan-conturi': '5q/3c 0.005s (db 32.0%)', '/migrare/salariati': '5q/3c 0.005s (db 32.7%)', '/migrare/solduri': '5q/3c 0.005s (db 34.1%)', '/migrare/vector': '5q/3c 0.005s (db 32.5%)', '/supervizor': '5q/4c 0.005s (db 27.6%)', '/tenants': '4q/3c 0.006s (db 18.4%)', '/termene': '5q/3c 0.005s (db 33.5%)'}
+2026-09-09 17:03:39,405 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,413 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,420 INFO httpx HTTP Request: GET http://testserver/migrare/asociati "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,425 INFO httpx HTTP Request: GET http://testserver/migrare/istoric-declaratii "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,432 INFO httpx HTTP Request: GET http://testserver/migrare/mijloace-fixe "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,439 INFO httpx HTTP Request: GET http://testserver/migrare/parteneri "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,446 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,453 INFO httpx HTTP Request: GET http://testserver/migrare/salariati "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,459 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,466 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,473 INFO httpx HTTP Request: GET http://testserver/supervizor "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,478 INFO httpx HTTP Request: GET http://testserver/tenants "HTTP/1.1 200 OK"
+2026-09-09 17:03:39,485 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+   N=50    {'/control-fiscal': '5q/3c 0.007s (db 38.2%)', '/migrare/asociati': '5q/3c 0.007s (db 36.4%)', '/migrare/istoric-declaratii': '5q/3c 0.005s (db 28.8%)', '/migrare/mijloace-fixe': '5q/3c 0.007s (db 35.9%)', '/migrare/parteneri': '5q/3c 0.007s (db 35.6%)', '/migrare/plan-conturi': '5q/3c 0.007s (db 35.5%)', '/migrare/salariati': '5q/3c 0.007s (db 34.8%)', '/migrare/solduri': '5q/3c 0.007s (db 36.1%)', '/migrare/vector': '5q/3c 0.007s (db 35.2%)', '/supervizor': '5q/4c 0.007s (db 25.8%)', '/tenants': '4q/3c 0.005s (db 24.7%)', '/termene': '5q/3c 0.007s (db 36.4%)'}
+2026-09-09 17:03:40,106 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,115 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,124 INFO httpx HTTP Request: GET http://testserver/migrare/asociati "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,130 INFO httpx HTTP Request: GET http://testserver/migrare/istoric-declaratii "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,139 INFO httpx HTTP Request: GET http://testserver/migrare/mijloace-fixe "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,147 INFO httpx HTTP Request: GET http://testserver/migrare/parteneri "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,156 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,164 INFO httpx HTTP Request: GET http://testserver/migrare/salariati "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,173 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,181 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,190 INFO httpx HTTP Request: GET http://testserver/supervizor "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,196 INFO httpx HTTP Request: GET http://testserver/tenants "HTTP/1.1 200 OK"
+2026-09-09 17:03:40,204 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+   N=100   {'/control-fiscal': '5q/3c 0.009s (db 44.1%)', '/migrare/asociati': '5q/3c 0.009s (db 41.5%)', '/migrare/istoric-declaratii': '5q/3c 0.006s (db 30.7%)', '/migrare/mijloace-fixe': '5q/3c 0.009s (db 41.8%)', '/migrare/parteneri': '5q/3c 0.009s (db 42.2%)', '/migrare/plan-conturi': '5q/3c 0.008s (db 42.6%)', '/migrare/salariati': '5q/3c 0.009s (db 41.0%)', '/migrare/solduri': '5q/3c 0.008s (db 42.3%)', '/migrare/vector': '5q/3c 0.009s (db 39.2%)', '/supervizor': '5q/4c 0.008s (db 25.1%)', '/tenants': '4q/3c 0.006s (db 24.8%)', '/termene': '5q/3c 0.009s (db 41.2%)'}
+2026-09-09 17:03:41,745 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,761 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,776 INFO httpx HTTP Request: GET http://testserver/migrare/asociati "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,784 INFO httpx HTTP Request: GET http://testserver/migrare/istoric-declaratii "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,799 INFO httpx HTTP Request: GET http://testserver/migrare/mijloace-fixe "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,814 INFO httpx HTTP Request: GET http://testserver/migrare/parteneri "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,831 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,845 INFO httpx HTTP Request: GET http://testserver/migrare/salariati "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,860 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,875 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,892 INFO httpx HTTP Request: GET http://testserver/supervizor "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,901 INFO httpx HTTP Request: GET http://testserver/tenants "HTTP/1.1 200 OK"
+2026-09-09 17:03:41,916 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+   N=250   {'/control-fiscal': '5q/3c 0.017s (db 48.7%)', '/migrare/asociati': '5q/3c 0.015s (db 46.9%)', '/migrare/istoric-declaratii': '5q/3c 0.008s (db 34.1%)', '/migrare/mijloace-fixe': '5q/3c 0.015s (db 50.5%)', '/migrare/parteneri': '5q/3c 0.015s (db 44.2%)', '/migrare/plan-conturi': '5q/3c 0.017s (db 45.9%)', '/migrare/salariati': '5q/3c 0.015s (db 48.8%)', '/migrare/solduri': '5q/3c 0.014s (db 47.4%)', '/migrare/vector': '5q/3c 0.016s (db 43.4%)', '/supervizor': '5q/4c 0.016s (db 25.7%)', '/tenants': '4q/3c 0.009s (db 25.2%)', '/termene': '5q/3c 0.015s (db 48.9%)'}
+2026-09-09 17:03:44,972 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,000 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,023 INFO httpx HTTP Request: GET http://testserver/migrare/asociati "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,035 INFO httpx HTTP Request: GET http://testserver/migrare/istoric-declaratii "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,058 INFO httpx HTTP Request: GET http://testserver/migrare/mijloace-fixe "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,082 INFO httpx HTTP Request: GET http://testserver/migrare/parteneri "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,105 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,129 INFO httpx HTTP Request: GET http://testserver/migrare/salariati "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,153 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,179 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,201 INFO httpx HTTP Request: GET http://testserver/supervizor "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,215 INFO httpx HTTP Request: GET http://testserver/tenants "HTTP/1.1 200 OK"
+2026-09-09 17:03:45,239 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+   N=500   {'/control-fiscal': '5q/3c 0.028s (db 52.3%)', '/migrare/asociati': '5q/3c 0.023s (db 51.4%)', '/migrare/istoric-declaratii': '5q/3c 0.012s (db 34.9%)', '/migrare/mijloace-fixe': '5q/3c 0.023s (db 52.0%)', '/migrare/parteneri': '5q/3c 0.024s (db 49.4%)', '/migrare/plan-conturi': '5q/3c 0.022s (db 53.1%)', '/migrare/salariati': '5q/3c 0.024s (db 52.2%)', '/migrare/solduri': '5q/3c 0.024s (db 51.3%)', '/migrare/vector': '5q/3c 0.026s (db 45.5%)', '/supervizor': '5q/4c 0.022s (db 21.1%)', '/tenants': '4q/3c 0.014s (db 24.8%)', '/termene': '5q/3c 0.025s (db 52.7%)'}
+2026-09-09 17:03:51,333 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,431 INFO httpx HTTP Request: GET http://testserver/control-fiscal "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,475 INFO httpx HTTP Request: GET http://testserver/migrare/asociati "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,496 INFO httpx HTTP Request: GET http://testserver/migrare/istoric-declaratii "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,544 INFO httpx HTTP Request: GET http://testserver/migrare/mijloace-fixe "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,600 INFO httpx HTTP Request: GET http://testserver/migrare/parteneri "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,644 INFO httpx HTTP Request: GET http://testserver/migrare/plan-conturi "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,694 INFO httpx HTTP Request: GET http://testserver/migrare/salariati "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,741 INFO httpx HTTP Request: GET http://testserver/migrare/solduri "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,803 INFO httpx HTTP Request: GET http://testserver/migrare/vector "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,843 INFO httpx HTTP Request: GET http://testserver/supervizor "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,866 INFO httpx HTTP Request: GET http://testserver/tenants "HTTP/1.1 200 OK"
+2026-09-09 17:03:51,924 INFO httpx HTTP Request: GET http://testserver/termene "HTTP/1.1 200 OK"
+   N=1000  {'/control-fiscal': '5q/3c 0.098s (db 33.7%)', '/migrare/asociati': '5q/3c 0.045s (db 55.8%)', '/migrare/istoric-declaratii': '5q/3c 0.021s (db 38.9%)', '/migrare/mijloace-fixe': '5q/3c 0.048s (db 48.9%)', '/migrare/parteneri': '5q/3c 0.056s (db 55.2%)', '/migrare/plan-conturi': '5q/3c 0.044s (db 56.0%)', '/migrare/salariati': '5q/3c 0.050s (db 49.1%)', '/migrare/solduri': '5q/3c 0.047s (db 51.1%)', '/migrare/vector': '5q/3c 0.062s (db 51.6%)', '/supervizor': '5q/4c 0.040s (db 19.7%)', '/tenants': '4q/3c 0.024s (db 24.4%)', '/termene': '5q/3c 0.058s (db 49.0%)'}
+
+═══ CURBA SINTETICĂ — interogări / conexiuni ═══
+ruta                           N=5     N=50    N=100   N=250   N=500   N=1000
+/control-fiscal                   5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/asociati                 5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/istoric-declaratii       5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/mijloace-fixe            5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/parteneri                5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/plan-conturi             5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/salariati                5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/solduri                  5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/vector                   5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/supervizor                       5q/4  c     5q/4  c     5q/4  c     5q/4  c     5q/4  c     5q/4  c
+/tenants                          4q/3  c     4q/3  c     4q/3  c     4q/3  c     4q/3  c     4q/3  c
+/termene                          5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+
+═══ CURBA SINTETICĂ — total_sec (db% din el) ═══
+ruta                           N=5     N=50    N=100   N=250   N=500   N=1000
+/control-fiscal                0.005(32.7%)  0.007(38.2%)  0.009(44.1%)  0.017(48.7%)  0.028(52.3%)  0.098(33.7%)
+/migrare/asociati              0.005(31.9%)  0.007(36.4%)  0.009(41.5%)  0.015(46.9%)  0.023(51.4%)  0.045(55.8%)
+/migrare/istoric-declaratii    0.005(28.9%)  0.005(28.8%)  0.006(30.7%)  0.008(34.1%)  0.012(34.9%)  0.021(38.9%)
+/migrare/mijloace-fixe         0.005(33.0%)  0.007(35.9%)  0.009(41.8%)  0.015(50.5%)  0.023(52.0%)  0.048(48.9%)
+/migrare/parteneri             0.005(33.5%)  0.007(35.6%)  0.009(42.2%)  0.015(44.2%)  0.024(49.4%)  0.056(55.2%)
+/migrare/plan-conturi          0.005(32.0%)  0.007(35.5%)  0.008(42.6%)  0.017(45.9%)  0.022(53.1%)  0.044(56.0%)
+/migrare/salariati             0.005(32.7%)  0.007(34.8%)  0.009(41.0%)  0.015(48.8%)  0.024(52.2%)  0.050(49.1%)
+/migrare/solduri               0.005(34.1%)  0.007(36.1%)  0.008(42.3%)  0.014(47.4%)  0.024(51.3%)  0.047(51.1%)
+/migrare/vector                0.005(32.5%)  0.007(35.2%)  0.009(39.2%)  0.016(43.4%)  0.026(45.5%)  0.062(51.6%)
+/supervizor                    0.005(27.6%)  0.007(25.8%)  0.008(25.1%)  0.016(25.7%)  0.022(21.1%)  0.040(19.7%)
+/tenants                       0.006(18.4%)  0.005(24.7%)  0.006(24.8%)  0.009(25.2%)  0.014(24.8%)  0.024(24.4%)
+/termene                       0.005(33.5%)  0.007(36.4%)  0.009(41.2%)  0.015(48.9%)  0.025(52.7%)  0.058(49.0%)
+
+═══ CURBA SINTETICĂ — octeți răspuns ═══
+/control-fiscal                   1069    10165    20271    50587   101112   202163
+/migrare/asociati                  871     8626    17241    43086    86161   172311
+/migrare/istoric-declaratii        461     4511     9011    22511    45011    90011
+/migrare/mijloace-fixe             871     8626    17241    43086    86161   172311
+/migrare/parteneri                 876     8676    17341    43336    86661   173311
+/migrare/plan-conturi              781     7726    15441    38586    77161   154311
+/migrare/salariati                 876     8676    17341    43336    86661   173311
+/migrare/solduri                   861     8526    17041    42586    85161   170311
+/migrare/vector                   1316    13076    26141    65336   130661   261311
+/supervizor                       3206    29849    59452   148252   296252   592255
+/tenants                          1008     9963    19913    49763    99513   199013
+/termene                          1842    18012    35977    89872   179697   359347
+
+═══ PE PORTOFOLIUL REAL (14 firme, scheme adevărate) ═══
+ruta                            interog  conex    total_s       db_s      cpu_s    octeti
+/control-fiscal                       5      3     0.0061     0.0021      0.004      9479
+/migrare/asociati                     5      3     0.0057     0.0018     0.0039      2594
+/migrare/istoric-declaratii           5      3     0.0056     0.0017      0.004      1446
+/migrare/mijloace-fixe                5      3     0.0057     0.0018     0.0039      2594
+/migrare/parteneri                    5      3     0.0074     0.0021     0.0053      2608
+/migrare/plan-conturi                 5      3     0.0114     0.0039     0.0075      2371
+/migrare/salariati                    5      3     0.0108     0.0035     0.0073      2606
+/migrare/solduri                      5      3     0.0076     0.0022     0.0054      2580
+/migrare/vector                       5      3     0.0062      0.002     0.0042      3982
+/supervizor                           5      4     0.0069     0.0019      0.005      8623
+/tenants                              4      3     0.0051     0.0012     0.0039      2935
+/termene                              5      3     0.0069      0.002     0.0049      9633
+
+scris: /home/costin/iconta_nou/masuratori/post_p2/curba_p3.json
+EXIT_CODE=0

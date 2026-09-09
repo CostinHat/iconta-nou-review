@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **planul de întărire P0–P7: trei pași închiși** (08.09.2026)
+# PREDARE LANȚ — **planul de întărire P0–P7: patru pași închiși** (09.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-08**, cerută expres, înainte de `/clear`.
-- **pe commit**: `f3567121`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-09**, la închiderea lui P3.
+- **pe commit**: `0f0a135a`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde suntem", starea și restanțele sunt **rescrise**.
@@ -25,10 +25,23 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P0** — feedback pe niveluri | **ÎNCHIS** (`8996f486`) | N1/N2/N3/N4 derivate din graful de import; N1 pe `control_fiscal_api` = **27 s** față de ~1.500 s poarta completă |
 | **P1** — supervizor | **ÎNCHIS** (`ced26440`) | rezultat persistat, versionat; citire **p95 45 ms** pe 1000 de firme (era ~5 s) |
 | **P2** — portofoliu / N+1 | **ÎNCHIS** (`f3567121`) | `control-fiscal` la 1000 de firme: **278.882 interogări · 70,8 s → 1 · 17 ms** |
-| **P3** — SQL + index | **URMĂTORUL** | nedeschis |
+| **P3** — rutele care cresc cu portofoliul | **ÎNCHIS** (`0f0a135a`) | șase rute N-dependente eliminate în trei valuri; **toate cele 12 rute de portofoliu derivate din cod sunt acum 5q/3c constant de la N=5 la N=1000** |
 | P4…P7 | nedeschise | v. `PLAN_HARDENING.md` |
 
-**Tiparul comun al lui P1 și P2, și e de reținut înainte de P3:** ce era calculat în cerere se
+**P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
+set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de
+citire, fiindcă datele lor stau în schema fiecărei firme și n-aveau cum fi adunate cu un `GROUP BY`;
+valul C a măturat toate rutele derivate din cod. **Un `UNION ALL` peste cele N scheme a fost refuzat
+explicit**: ar fi dat panta 0 la litera criteriului, dar textul și planul SQL cresc cu N — criteriul
+trecut fără ca problema să fie rezolvată.
+
+**Și o lecție care nu e despre viteză.** Modelul de citire întorcea de la P2 o `prospetime.stare`
+pe care **stratul de ecran o ignora** — deci o firmă necalculată încă arăta identic cu una măsurată
+și găsită goală („fără parteneri încă"). Un necunoscut arătat ca un nu hotărât, pe șapte ecrane.
+Corectat pe toate șapte, probat pe arborele de randare în chromium (`core/test_p3_val_b.py`, 48 de
+probe). *Când adaugi un model de citire, întreabă imediat ce arată ecranul cât timp modelul e rece.*
+
+**Tiparul comun al lui P1 și P2, și confirmat de P3:** ce era calculat în cerere se
 persistă ca **model de citire** în `public`, invalidat de **triggere** pe tabelele-sursă, cu
 prospețimea **derivată** din compararea a două versiuni — niciodată stocată. Interdicția, la
 amândouă: *o valoare veche nu se arată ca fiind curentă; „în recalculare" declarat e acceptabil.*
@@ -230,7 +243,7 @@ completă, fără excepție.**
 ---
 ## STAREA LA PREDARE
 
-**4190 teste trec** *(ieșirea porții care a produs `f3567121`)* · 11 skip · 14 xfail · ruff OK ·
+**4285 teste trec** *(ieșirea porții care a produs `0f0a135a`)* · 11 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
@@ -266,6 +279,7 @@ atinge un `.md`, un `.js` sau `main.py` **alături de cod**; când se ating **nu
 |---|---|
 | **prag 1** | **niciuna deschisă** |
 | **decizii** | **niciuna deschisă** |
+| **pool-ul** | *(nou, 09.09, măsurat nu presupus)* la **10 cereri de portofoliu simultane**, conexiunile simultane ating exact `ICONTA_POOL_MAX = 10` — rezervă zero —, iar latența crește ~liniar cu concurența (p50 56 → 755 ms), deci debitul e practic plat. **Nu e o regresie P3** (înainte o singură cerere lua 1.003–2.003 conexiuni pe rând); e o proprietate a configurației, măsurată acum fiindcă înainte n-a fost. Mărirea pool-ului ar ascunde-o, nu ar rezolva-o |
 | **R176** | *(nou, 08.09)* divergența `public` ↔ `origin`. Push-ul automat e **făcut**; ce rămâne deschis e că **nicio gardă nu prinde divergența** — azi a prins-o un om uitându-se pe GitHub |
 | **R174** | o factură încasată prin BANCĂ nu se marchează încasată nicăieri |
 | **R175** | desktopul asistentului e acoperit de o probă proprie, nu de uneltele de listă |

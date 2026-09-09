@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
-"""GARD P3 · VALUL B — un necunoscut nu se randează ca un „nu".
+"""GARD P3 · VALUL B — un necunoscut nu se randează ca un „nu". **Pe toate cele șapte ecrane.**
 
-**CE PAZEȘTE.** Ecranele de migrare citesc modelul de citire P2, care spune pentru fiecare firmă
-în ce stare e rezumatul ei. Până la valul B, JS-ul ignora starea — deci o firmă al cărei rezumat
-**încă nu fusese calculat** arăta identic cu una măsurată și găsită goală: *„fără parteneri încă",
-„de încărcat"*. Un NECUNOSCUT prezentat ca un NU hotărât (interdicția 32 / R39).
+**CE PAZEȘTE.** Ecranele de migrare citesc modelul de citire P2, care spune pentru fiecare firmă în
+ce stare e rezumatul ei. Până la valul B, JS-ul o ignora — deci o firmă al cărei rezumat **încă nu
+fusese calculat** arăta identic cu una măsurată și găsită goală: *„fără parteneri încă", „de
+încărcat"*. Un NECUNOSCUT prezentat ca un NU hotărât (interdicția 32 / R39).
 
 **CUM O PAZEȘTE, și de ce așa.** Nu căutând formulări. Proprietatea apărată nu e *„scrie «încă
 necunoscut»"* — aia e o alegere de cuvinte, care se poate schimba mâine fără ca nimic să se strice.
-Proprietatea e **DISTINCȚIA**: cele cinci stări trebuie să producă cinci randări diferite între
-ele, iar niciuna dintre cele trei stări de neștiut n-are voie să coincidă cu «măsurat și gol».
-*Se compară randări între ele, nu randări cu șiruri* — deci garda supraviețuiește oricărei
-reformulări și cade exact când semantica se pierde. (METODA §23: structură, nu text.)
+Proprietatea e **DISTINCȚIA**: stările trebuie să producă randări diferite între ele, iar niciuna
+dintre cele de neștiut n-are voie să coincidă cu «măsurat și gol». *Se compară randări între ele,
+nu randări cu șiruri* — deci garda supraviețuiește oricărei reformulări și cade exact când semantica
+se pierde. (METODA §23: structură, nu text.)
 
-Rulează modulul REAL, în chromium, prin cererea reală a ecranului — nu o reimplementare a lui.
+**TOATE CELE ȘAPTE, nu una.** Prima formă proba un singur ecran și lăsa restul „prin implementare
+comună" — adică pe cuvânt. Ecranele NU sunt identice: `plan-conturi` n-are `are_*`, are o cifră;
+`vector` își compune subtitlul din alte câmpuri. O singură probă n-ar fi acoperit nici măcar
+formele, darămite comportamentul. *„Aceleași funcții ajutătoare" e o ipoteză despre cod, nu o
+proprietate a ecranului.*
+
+Rulează modulele REALE, în chromium, prin cererea reală a fiecărui ecran.
 """
 import functools
 import http.server
 import json
 import os
+import re
 import socketserver
 import subprocess
 import sys
@@ -30,32 +37,58 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _RAD not in sys.path:
     sys.path.insert(0, _RAD)
 
-#: Al patrulea strat din meniu („Solduri parteneri"). Indicele vine din `STRATURI`, citit de
-#: gardă din modul — nu scris aici, ca o reordonare a straturilor să nu ducă proba pe alt ecran.
-STRAT_CHEIE = "solduri_parteneri"
-
-#: CELE CINCI STĂRI, fiecare cu firma ei. `randuri` e ACELAȘI (7) la nonempty și la toate cele
-#: neștiute: dacă randarea ar folosi cifra fără să se uite la stare, rândurile ar ieși identice
-#: — și proba ar cădea. *Fixtura e construită ca să nu poată trece din întâmplare.*
-FIRME = [
-    {"tenant_id": 1, "nume": "CURENT CU DATE SRL", "cui": "1", "are_parteneri": True,
-     "randuri": 7, "prospetime": {"stare": "curent", "calculat_la": "2026-09-09T10:00:00+03:00"}},
-    {"tenant_id": 2, "nume": "CURENT SI GOALA SRL", "cui": "2", "are_parteneri": False,
-     "randuri": 0, "prospetime": {"stare": "curent", "calculat_la": "2026-09-09T10:00:00+03:00"}},
-    {"tenant_id": 3, "nume": "LIPSESTE SRL", "cui": "3", "are_parteneri": False,
-     "randuri": 0, "prospetime": {"stare": "lipseste", "calculat_la": None}},
-    {"tenant_id": 4, "nume": "INVALIDAT SRL", "cui": "4", "are_parteneri": True,
-     "randuri": 7, "prospetime": {"stare": "invalidat", "calculat_la": "2026-09-08T10:00:00+03:00"}},
-    {"tenant_id": 5, "nume": "EROARE SRL", "cui": "5", "are_parteneri": False,
-     "randuri": 0, "prospetime": {"stare": "eroare", "calculat_la": "2026-09-09T09:00:00+03:00"}},
-    # NEVER_COMPUTED, în forma în care chiar ajunge la ecran: ruta n-a găsit rând, deci n-a pus
-    # deloc câmpul. Dacă JS-ul ar citi `prospetime.stare` fără apărare, aici ar arunca sau ar
-    # cădea pe „curent" — și firma ar apărea ca «măsurată și goală».
-    {"tenant_id": 6, "nume": "NECALCULAT NICIODATA SRL", "cui": "6", "are_parteneri": False,
-     "randuri": 0},
+#: Cele ȘAPTE ecrane care citesc modelul de citire. `strat` e cheia din `STRATURI` (indicele se
+#: caută în modul, ca o reordonare să nu ducă proba pe alt ecran); `camp` e steagul „are", sau
+#: `None` la ecranul care arată o cifră.
+ECRANE = [
+    {"nume": "parteneri", "strat": "solduri_parteneri", "ruta": "/migrare/parteneri",
+     "camp": "are_parteneri"},
+    {"nume": "salariati", "strat": "salariati", "ruta": "/migrare/salariati",
+     "camp": "are_salariati"},
+    {"nume": "asociati", "strat": "asociati", "ruta": "/migrare/asociati",
+     "camp": "are_asociati"},
+    {"nume": "mijloace_fixe", "strat": "mijloace_fixe", "ruta": "/migrare/mijloace-fixe",
+     "camp": "are_mijloace"},
+    {"nume": "solduri", "strat": "solduri", "ruta": "/migrare/solduri", "camp": "are_solduri"},
+    {"nume": "vector", "strat": "vector_fiscal", "ruta": "/migrare/vector", "camp": "are_vector"},
+    {"nume": "plan_conturi", "strat": "plan_conturi", "ruta": "/migrare/plan-conturi",
+     "camp": None, "cifra": "nr_conturi"},
 ]
-IDX = {"curent_cu_date": 0, "curent_goala": 1, "lipseste": 2, "invalidat": 3, "eroare": 4,
-       "necalculat": 5}
+NUME = [e["nume"] for e in ECRANE]
+
+#: CELE ȘASE FIRME, una per stare. Cifra e ACEEAȘI (7) la «are date» și la toate cele de neștiut:
+#: dacă randarea ar folosi cifra fără să se uite la stare, rândurile ar ieși identice — și proba ar
+#: cădea. *Fixtura e construită ca să nu poată trece din întâmplare.*
+STARI = [
+    ("curent_cu_date", True, 7, {"stare": "curent", "calculat_la": "2026-09-09T10:00:00+03:00"}),
+    ("curent_goala", False, 0, {"stare": "curent", "calculat_la": "2026-09-09T10:00:00+03:00"}),
+    ("lipseste", False, 0, {"stare": "lipseste", "calculat_la": None}),
+    ("invalidat", True, 7, {"stare": "invalidat", "calculat_la": "2026-09-08T10:00:00+03:00"}),
+    ("eroare", False, 0, {"stare": "eroare", "calculat_la": "2026-09-09T09:00:00+03:00"}),
+    # NEVER_COMPUTED în forma în care chiar ajunge la ecran: câmpul lipsește cu totul.
+    ("necalculat", False, 0, None),
+]
+IDX = {n: i for i, (n, _a, _c, _p) in enumerate(STARI)}
+
+
+def _firme(ecran):
+    """Fixtura ecranului: aceleași șase stări, în câmpurile pe care le citește chiar el."""
+    out = []
+    for i, (nume, are, cifra, pros) in enumerate(STARI):
+        f = {"tenant_id": i + 1, "nume": "%s %s SRL" % (ecran["nume"].upper(), nume.upper()),
+             "cui": str(i + 1), "randuri": cifra}
+        if ecran["camp"]:
+            f[ecran["camp"]] = are
+        if ecran.get("cifra"):
+            f[ecran["cifra"]] = cifra
+        if ecran["nume"] == "vector":     # subtitlul lui se compune din câmpurile astea
+            f.update({"regim_fiscal": "micro" if are else None, "platitor_tva": are,
+                      "tip_decont": "lunar" if are else None, "operatiuni_ic": False})
+        if pros is not None:
+            f["prospetime"] = pros
+        out.append(f)
+    return out
+
 
 MONTEAZA = """async ([modUrl, cheie]) => {
   const m = await import(modUrl);
@@ -88,40 +121,18 @@ MONTEAZA = """async ([modUrl, cheie]) => {
     nume: (el.querySelector('.mig-frand-nume') || {}).textContent || '',
     sub: (el.querySelector('.mig-frand-sub') || {}).textContent || '',
     insigna: (el.querySelector('.mig-stare') || {}).textContent || '',
-    clasa: (el.querySelector('.mig-stare') || {}).className || '',
   }));
   const sumar = corp.querySelector('.mig-progres');
   return { randuri, sumar: sumar ? sumar.textContent : null };
 }"""
 
 
-#: Răspunsurile ciotului, pe CALEA cererii. Un dicționar pe cale exactă, nu o scară de `in url`:
-#: `"/migrare/status" in url` ar prinde și `/migrare/status-vechi`, iar dispecerul ar servi tăcut
-#: altceva decât crede proba. *Calea se ia din URL-ul PARSAT, nu dintr-o potrivire de șir.*
-_RASPUNSURI = {
-    "/migrare/parteneri": lambda: {"firme": FIRME},
-    "/migrare/status": lambda: {"status": {}},
-    "/tenants": lambda: {"tenants": []},
-}
-
-
-def _ruteaza(route, request):
-    from urllib.parse import urlparse
-    cale = urlparse(request.url).path.rstrip("/") or "/"
-    fac = _RASPUNSURI.get(cale)
-    corp = fac() if fac else {}
-    route.fulfill(status=200, content_type="application/json",
-                  body=json.dumps(corp, ensure_ascii=False))
-
-
 def _lanseaza_chromium(pw):
     """Lansează; dacă nu merge, INSTALEAZĂ și mai încearcă o dată.
 
-    Fără nicio potrivire pe textul excepției: formularea playwright-ului („executable doesn't
-    exist", „please run install"…) se schimbă între versiuni, iar o gardă care depinde de ea ar
-    ceda tăcut la un upgrade — și ar ceda către *skip verde-fals*, cel mai prost fel de a ceda.
-    Instalarea e idempotentă și ieftină când binarul e deja acolo, deci încercarea a doua nu costă
-    nimic în cazul normal."""
+    Fără nicio potrivire pe textul excepției: formularea playwright-ului se schimbă între versiuni,
+    iar o gardă care depinde de ea ar ceda tăcut la un upgrade — și ar ceda către *skip verde-fals*,
+    cel mai prost fel de a ceda."""
     try:
         return pw.chromium.launch()
     except Exception:
@@ -134,7 +145,7 @@ def _lanseaza_chromium(pw):
 
 @pytest.fixture(scope="module")
 def randat():
-    """Randările celor șase firme, o dată — proba e despre ele, nu despre browser."""
+    """Randările celor șase stări, pentru FIECARE dintre cele șapte ecrane. Un singur browser."""
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -153,115 +164,125 @@ def randat():
     if br is None:
         pw.stop(); srv.shutdown()
         pytest.fail("GARD headless nu poate rula: chromium indisponibil. NU e skip verde-fals.")
+
+    tot = {}
     try:
-        pg = br.new_page()
-        # NUMAI rutele de date. Un `**/*` ar prinde și modulul JS și l-ar servi ca `{}` —
-        # ecranul n-ar mai exista, iar proba ar muri fără să spună de ce.
-        for tipar in ("**/migrare/**", "**/tenants", "**/tenants?*"):
-            pg.route(tipar, _ruteaza)
-        pg.goto("http://127.0.0.1:%d/static/" % port)
-        rez = pg.evaluate(MONTEAZA, ["/static/js/ecrane/migrare.js", STRAT_CHEIE])
-        assert not rez.get("eroare"), rez.get("eroare")
-        assert len(rez["randuri"]) == len(FIRME), (
-            "[anti-vacuu] s-au randat %d rânduri din %d — proba n-ar măsura ce cred"
-            % (len(rez["randuri"]), len(FIRME)))
-        for i, f in enumerate(FIRME):
-            assert f["nume"] in rez["randuri"][i]["nume"], (
-                "rândul %d nu e firma așteptată — indicii de mai jos ar arăta altceva" % i)
-        yield rez
+        for ecran in ECRANE:
+            #: Răspunsurile ciotului, pe CALEA cererii. Un dicționar pe cale exactă, nu o scară de
+            #: `in url`: `"/migrare/status" in url` ar prinde și `/migrare/status-vechi`, iar
+            #: dispecerul ar servi tăcut altceva decât crede proba.
+            raspunsuri = {ecran["ruta"]: {"firme": _firme(ecran)},
+                          "/migrare/status": {"status": {}},
+                          "/tenants": {"tenants": []}}
+
+            def ruteaza(route, request, _r=raspunsuri):
+                from urllib.parse import urlparse
+                cale = urlparse(request.url).path.rstrip("/") or "/"
+                route.fulfill(status=200, content_type="application/json",
+                              body=json.dumps(_r.get(cale, {}), ensure_ascii=False))
+
+            pg = br.new_page()
+            for tipar in ("**/migrare/**", "**/tenants", "**/tenants?*"):
+                pg.route(tipar, ruteaza)
+            pg.goto("http://127.0.0.1:%d/static/" % port)
+            rez = pg.evaluate(MONTEAZA, ["/static/js/ecrane/migrare.js", ecran["strat"]])
+            pg.close()
+            assert not rez.get("eroare"), "%s: %s" % (ecran["nume"], rez.get("eroare"))
+            assert len(rez["randuri"]) == len(STARI), (
+                "[anti-vacuu] %s a randat %d rânduri din %d — proba n-ar măsura ce cred"
+                % (ecran["nume"], len(rez["randuri"]), len(STARI)))
+            tot[ecran["nume"]] = rez
+        assert set(tot) == set(NUME), "n-au fost randate toate ecranele: %s" % sorted(tot)
+        yield tot
     finally:
         br.close(); pw.stop(); srv.shutdown()
 
 
-def _randare(rez, cheie):
-    """Randarea unei firme, ca pereche (subtitlu, insignă) — asta VEDE omul."""
-    r = rez["randuri"][IDX[cheie]]
-    return (r["sub"].strip(), r["insigna"].strip())
+def _r(randat, ecran, stare):
+    """Randarea unei stări, ca pereche (subtitlu, insignă) — asta VEDE omul."""
+    x = randat[ecran]["randuri"][IDX[stare]]
+    return (x["sub"].strip(), x["insigna"].strip())
 
 
 # ============================================================================
-#  CELE CINCI ASERȚIUNI CERUTE, fiecare ca DISTINCȚIE
+#  CELE CINCI ASERȚIUNI CERUTE, fiecare ca DISTINCȚIE, pe fiecare ecran
 # ============================================================================
-def test_MISSING_nu_se_randeaza_ca_gol(randat):
-    """`MISSING_IS_NOT_RENDERED_AS_EMPTY`. O firmă al cărei rezumat lipsește n-are voie să arate
-    ca una măsurată și găsită goală."""
-    assert _randare(randat, "lipseste") != _randare(randat, "curent_goala"), (
-        "«lipsește» și «măsurat și gol» se randează identic: %r — un necunoscut arătat ca un nu"
-        % (_randare(randat, "lipseste"),))
+@pytest.mark.parametrize("ecran", NUME)
+def test_MISSING_nu_se_randeaza_ca_gol(randat, ecran):
+    """`MISSING_IS_NOT_RENDERED_AS_EMPTY`, pe fiecare ecran."""
+    assert _r(randat, ecran, "lipseste") != _r(randat, ecran, "curent_goala"), (
+        "%s: «lipsește» și «măsurat și gol» se randează identic: %r — un necunoscut arătat ca un nu"
+        % (ecran, _r(randat, ecran, "lipseste")))
 
 
-def test_NEVER_COMPUTED_nu_se_randeaza_ca_gol(randat):
-    """`NEVER_COMPUTED_IS_NOT_RENDERED_AS_EMPTY`. Firma fără niciun câmp de prospețime — forma în
-    care chiar ajunge la ecran când modelul n-a calculat-o niciodată."""
-    assert _randare(randat, "necalculat") != _randare(randat, "curent_goala"), (
-        "«niciodată calculat» și «măsurat și gol» se randează identic: %r"
-        % (_randare(randat, "necalculat"),))
+@pytest.mark.parametrize("ecran", NUME)
+def test_NEVER_COMPUTED_nu_se_randeaza_ca_gol(randat, ecran):
+    """`NEVER_COMPUTED_IS_NOT_RENDERED_AS_EMPTY` — firma fără niciun câmp de prospețime."""
+    assert _r(randat, ecran, "necalculat") != _r(randat, ecran, "curent_goala"), (
+        "%s: «niciodată calculat» și «măsurat și gol» se randează identic: %r"
+        % (ecran, _r(randat, ecran, "necalculat")))
 
 
-def test_INVALIDATED_nu_se_randeaza_ca_CURENT(randat):
-    """`INVALIDATED_IS_NOT_RENDERED_AS_CURRENT`. Firma are o valoare veche (7 parteneri) și sursa
-    s-a schimbat de atunci. Valoarea veche NU se arată drept curentă — nici ca «are», nici ca
-    «n-are»."""
-    inv = _randare(randat, "invalidat")
-    assert inv != _randare(randat, "curent_cu_date"), (
-        "«invalidat» se randează exact ca «curent cu date»: %r — stale arătat drept current" % (inv,))
-    assert inv != _randare(randat, "curent_goala"), (
-        "«invalidat» se randează exact ca «curent și gol»: %r" % (inv,))
+@pytest.mark.parametrize("ecran", NUME)
+def test_INVALIDATED_nu_se_randeaza_ca_CURENT(randat, ecran):
+    """`INVALIDATED_IS_NOT_RENDERED_AS_CURRENT`. Firma are o valoare veche și sursa s-a schimbat de
+    atunci: valoarea veche nu se arată drept curentă — nici ca «are», nici ca «n-are»."""
+    inv = _r(randat, ecran, "invalidat")
+    assert inv != _r(randat, ecran, "curent_cu_date"), (
+        "%s: «invalidat» se randează exact ca «curent cu date»: %r — stale arătat drept current"
+        % (ecran, inv))
+    assert inv != _r(randat, ecran, "curent_goala"), (
+        "%s: «invalidat» se randează exact ca «curent și gol»: %r" % (ecran, inv))
 
 
-def test_ERROR_nu_se_randeaza_ca_gol(randat):
-    """`ERROR_IS_NOT_RENDERED_AS_EMPTY`. Ultima încercare a eșuat: nu se știe, și nu se pretinde
-    altceva."""
-    assert _randare(randat, "eroare") != _randare(randat, "curent_goala"), (
-        "«eroare» și «măsurat și gol» se randează identic: %r" % (_randare(randat, "eroare"),))
+@pytest.mark.parametrize("ecran", NUME)
+def test_ERROR_nu_se_randeaza_ca_gol(randat, ecran):
+    """`ERROR_IS_NOT_RENDERED_AS_EMPTY`."""
+    assert _r(randat, ecran, "eroare") != _r(randat, ecran, "curent_goala"), (
+        "%s: «eroare» și «măsurat și gol» se randează identic: %r"
+        % (ecran, _r(randat, ecran, "eroare")))
 
 
-def test_CURENT_gol_ramane_gol(randat):
-    """`CURRENT_EMPTY_REMAINS_EMPTY`. **Direcția a doua**, fără de care toate cele de sus s-ar
-    putea trece arătând „necunoscut" la TOATĂ lumea. O firmă chiar măsurată și chiar goală trebuie
-    să rămână distinctă și de «are date», și de fiecare stare de neștiut."""
-    gol = _randare(randat, "curent_goala")
-    assert gol != _randare(randat, "curent_cu_date"), (
-        "«gol» și «are 7 parteneri» se randează identic: %r" % (gol,))
-    for cheie in ("lipseste", "invalidat", "eroare", "necalculat"):
-        assert gol != _randare(randat, cheie), (
-            "«măsurat și gol» a fost înghițit de starea %r: %r" % (cheie, gol))
+@pytest.mark.parametrize("ecran", NUME)
+def test_CURENT_gol_ramane_gol(randat, ecran):
+    """`CURRENT_EMPTY_REMAINS_EMPTY`. **Direcția a doua**, fără de care toate cele de sus s-ar putea
+    trece arătând „necunoscut" la TOATĂ lumea."""
+    gol = _r(randat, ecran, "curent_goala")
+    assert gol != _r(randat, ecran, "curent_cu_date"), (
+        "%s: «gol» și «are date» se randează identic: %r" % (ecran, gol))
+    for stare in ("lipseste", "invalidat", "eroare", "necalculat"):
+        assert gol != _r(randat, ecran, stare), (
+            "%s: «măsurat și gol» a fost înghițit de starea %r: %r" % (ecran, stare, gol))
 
 
-def test_cele_cinci_stari_sunt_DISTINCTE_intre_ele(randat):
-    """Proprietatea întreagă, dintr-o bucată: fiecare stare își are randarea ei.
+@pytest.mark.parametrize("ecran", NUME)
+def test_starile_sunt_DISTINCTE_intre_ele(randat, ecran):
+    """Matricea întreagă: fiecare stare își are randarea ei.
 
-    Cele patru probe de mai sus sunt perechile pe care le-a cerut comanda; asta e matricea. Dacă
-    două stări oarecare ajung să arate la fel, omul nu le mai poate deosebi — indiferent care
-    două."""
-    toate = {c: _randare(randat, c) for c in IDX}
-    # `lipseste` și `necalculat` SUNT aceeași stare în model (`lipseste`) — se așteaptă să arate
-    # la fel, și se scrie aici ca să fie o alegere, nu o scăpare.
-    toate.pop("necalculat")
+    `lipseste` și `necalculat` SUNT aceeași stare în model — se așteaptă să arate la fel, și se
+    scrie aici ca să fie o alegere, nu o scăpare."""
+    toate = {s: _r(randat, ecran, s) for s in IDX if s != "necalculat"}
     perechi = [(a, b) for a in toate for b in toate if a < b and toate[a] == toate[b]]
-    assert not perechi, "stări care se randează identic: %s" % [
-        (a, b, toate[a]) for a, b in perechi]
+    assert not perechi, "%s: stări care se randează identic: %s" % (
+        ecran, [(a, b, toate[a]) for a, b in perechi])
 
 
-def test_sumarul_nu_topeste_necunoscutul_in_numitor(randat):
-    """*„7 din 14"* spune că toate 14 au fost evaluate. Când patru n-au fost, minte.
+# ============================================================================
+#  SUMARUL — numai ecranele care au unul
+# ============================================================================
+@pytest.mark.parametrize("ecran", [e["nume"] for e in ECRANE if e["camp"]])
+def test_sumarul_nu_topeste_necunoscutul_in_numitor(randat, ecran):
+    """*„1 din 6"* ar spune că toate șase au fost evaluate. Când patru n-au fost, minte.
 
-    Se verifică prin CIFRE, nu prin formulare: numărul firmelor cu parteneri (1) și numărul celor
-    necunoscute (4) trebuie amândouă să apară în sumar, iar numărul total (6) NU are voie să apară
-    ca numitor al celor cu parteneri."""
-    import re
-    sumar = (randat["sumar"] or "").strip()
-    assert sumar, "[anti-vacuu] ecranul n-a randat niciun sumar"
+    Se verifică prin CIFRE, nu prin formulare: fixtura are 1 firmă CURENT cu date · 1 CURENT și
+    goală · 4 de neștiut. Un `2` ar însemna că firma `invalidat` — care poartă o valoare veche — a
+    fost numărată printre cele curente."""
+    sumar = (randat[ecran]["sumar"] or "").strip()
+    assert sumar, "%s: [anti-vacuu] ecranul n-a randat niciun sumar" % ecran
     cifre = [int(x) for x in re.findall(r"\d+", sumar)]
-    # Fixtura: 1 firmă CURENT cu parteneri · 1 CURENT și goală · 4 de neștiut
-    # (lipseste, invalidat, eroare, necalculat). Se cer CIFRELE, nu formularea.
     assert sorted(cifre) == [1, 1, 4], (
-        "sumarul nu conține exact numărătorile așteptate [1 cu · 1 fără · 4 necunoscute]: "
-        "%r -> %s" % (sumar, cifre))
-    # Firma `invalidat` are `are_parteneri = true` cu o valoare veche. Dacă agregatul ar număra-o,
-    # ar apărea un 2 — o valoare care nu mai e curentă, afirmată drept curentă.
-    assert 2 not in cifre, (
-        "sumarul numără o firmă `invalidat` printre cele cu parteneri: %r" % sumar)
+        "%s: sumarul nu conține numărătorile [1 cu · 1 fără · 4 necunoscute]: %r -> %s"
+        % (ecran, sumar, cifre))
     assert 6 not in cifre, (
-        "sumarul folosește totalul (6) ca numitor, deci pretinde că toate au fost evaluate: %r"
-        % sumar)
+        "%s: sumarul folosește totalul (6) ca numitor, deci pretinde că toate au fost evaluate: %r"
+        % (ecran, sumar))
