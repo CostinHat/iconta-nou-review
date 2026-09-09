@@ -4,8 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-09**, la închiderea lui P3.
-- **pe commit**: `0f0a135a`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-10**, la închiderea lui **P4** (lucrul a intrat pe 09.09 seara, registrele pe 10.09 — ziua s-a schimbat sub tură).
+- **pe commit**: `0742e177`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde suntem", starea și restanțele sunt **rescrise**.
@@ -26,7 +26,8 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P1** — supervizor | **ÎNCHIS** (`ced26440`) | rezultat persistat, versionat; citire **p95 45 ms** pe 1000 de firme (era ~5 s) |
 | **P2** — portofoliu / N+1 | **ÎNCHIS** (`f3567121`) | `control-fiscal` la 1000 de firme: **278.882 interogări · 70,8 s → 1 · 17 ms** |
 | **P3** — rutele care cresc cu portofoliul | **ÎNCHIS** (`3cd7aebe`) | șase rute N-dependente eliminate în trei valuri; **toate cele 12 rute de portofoliu derivate din cod sunt acum 5q/3c constant de la N=5 la N=1000** |
-| P4…P7 | nedeschise | v. `PLAN_HARDENING.md` |
+| **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
+| P5…P7 | nedeschise | v. `PLAN_HARDENING.md` |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de
@@ -34,6 +35,20 @@ citire, fiindcă datele lor stau în schema fiecărei firme și n-aveau cum fi a
 valul C a măturat toate rutele derivate din cod. **Un `UNION ALL` peste cele N scheme a fost refuzat
 explicit**: ar fi dat panta 0 la litera criteriului, dar textul și planul SQL cresc cu N — criteriul
 trecut fără ca problema să fie rezolvată.
+
+**P4, pe scurt** (detaliile în `RAPORT_P4.md`): întrebarea „câte `commit()` sunt" (171 în
+producție) nu se poate răspunde. Cea care se poate, și care a scos defectele, e **peste câte
+tranzacții sunt împrăștiate scrierile unei operații**. Din 32 de căi peste prag, **7 sunt critice**;
+șase aveau ce repara, iar **șase din șapte probe de injecție au fost roșii pe codul de dinainte**.
+
+**Și o lecție despre propriul instrument, a patra oară în trei zile.** Prima formă a metricii de
+efecte ireversibile raporta **ordinea CORECTĂ ca defect**: `gdpr_sterge.executa` comite întâi și
+abia apoi șterge fișierele de pe disc — cu motivul scris lângă cod —, iar metrica mea era oarbă la
+commitul explicit. *Când instrumentul acuză un cod care își explică singur ordinea, prima ipoteză e
+că instrumentul n-a citit explicația.* Alte trei greșeli au ieșit la fel, măsurând: aliasurile de
+import citite pe fișier în loc de domeniu de vizibilitate (**unsprezece** aliasuri sunt refolosite în
+`main.py`, iar `_cc` înseamnă trei module diferite), bucla pierdută la trecerea printr-un apel, și
+două bucle diferite împletite fiindcă n-aveau identitate.
 
 **Și o lecție care nu e despre viteză.** Modelul de citire întorcea de la P2 o `prospetime.stare`
 pe care **stratul de ecran o ignora** — deci o firmă necalculată încă arăta identic cu una măsurată
@@ -252,7 +267,7 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 53**  *(remasurat 09.09; valoarea de dinainte, 51, ramasese in urma cu doua)*, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**.
+- **restanțe deschise: 54**  *(remăsurat 09.09 la închiderea lui P4: patru deschise și rezolvate în aceeași tură — R179–R182 —, una deschisă și rămasă — R183)*, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**.
 - **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
 - **decizii care blochează: niciuna.**
@@ -260,7 +275,7 @@ completă, fără excepție.**
 ---
 ## STAREA LA PREDARE
 
-**4285 teste trec** *(ieșirea porții care a produs `0f0a135a`)* · 11 skip · 14 xfail · ruff OK ·
+**4347 teste trec** *(ieșirea porții care a produs `0742e177`)* · 11 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
@@ -276,7 +291,7 @@ verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **876** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **877** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -296,6 +311,7 @@ atinge un `.md`, un `.js` sau `main.py` **alături de cod**; când se ating **nu
 |---|---|
 | **prag 1** | **niciuna deschisă** |
 | **decizii** | **niciuna deschisă** |
+| **R183** | *(nou, 09.09, P4)* `spv_conector.apel_anaf` ține o conexiune din pool și tranzacția ei **deschise** peste apelul către ANAF (timeout până la 60 s la upload), peste retry-ul de `401` și peste backoff-ul de `429`. **Proprietatea e reparată** (R180: scrierea de token nu mai depinde de tranzacția aia); ce rămâne e **durata**, aceeași clasă ca R178, și se închide împreună cu ea. *Nu e o cifră, e o formă a codului — cifra ar cere trafic real* |
 | **R178** | *(nou, 09.09, măsurat nu presupus)* la **10 cereri de portofoliu simultane**, conexiunile simultane ating exact `ICONTA_POOL_MAX = 10` — rezervă zero —, iar latența crește ~liniar cu concurența (p50 56 → 755 ms), deci debitul e practic plat. **Nu e o regresie P3** (înainte o singură cerere lua 1.003–2.003 conexiuni pe rând); e o proprietate a configurației, măsurată acum fiindcă înainte n-a fost. Mărirea pool-ului ar ascunde-o, nu ar rezolva-o |
 | **R177** | clasa „model de citire cu dependențe scrise din memorie". **Instanța e reparată** (`224cfc40`); ce rămâne deschis e că **nimic nu spune câți alți purtători ai clasei are aplicația**. P3 a mai găsit unul, fără să-l caute — v. mai jos |
 | **R176** | *(nou, 08.09)* divergența `public` ↔ `origin`. Push-ul automat e **făcut**; ce rămâne deschis e că **nicio gardă nu prinde divergența** — azi a prins-o un om uitându-se pe GitHub |

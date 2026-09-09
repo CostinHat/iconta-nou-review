@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-09
+- **ultima actualizare**: 2026-09-10
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -7855,6 +7855,148 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   **(3)** abia atunci se decide între mai multe procese `uvicorn`, pool mai mare, sau nimic. *O
   restanță de capacitate deschisă fără trafic real măsurat e o presimțire, nu o măsurătoare — de-aia
   pasul (1) e primul.*
+
+### R179 — Confirmarea supervizorului putea rămâne scrisă peste o depunere care nu s-a făcut
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 — evidența · **PRAG 1**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `a05618ce`
+- **rezolvată pe commit**: `0742e177`
+- **măsurat la**: 2026-09-09 · **pe commit**: `a05618ce`
+- **ce blochează**: **nimic acum — reparată în aceeași tură în care a fost găsită.** Găsită mecanic,
+  nu prin citire: `scripts/scan_tranzactii.py` a arătat că `POST /coada/{id}/depune` are **două
+  domenii tranzacționale care scriu** — confirmarea supervizorului (`public.supervizor_confirmari`)
+  într-unul, aprobarea și marcarea depunerii (`public.declaratii_coada`, `public.declaratii_depuse`)
+  în altul. Între ele stăteau trei refuzuri: dreptul `poate_depune` (403), starea elementului
+  (409/404) și orice eroare de bază. Un refuz după confirmare lăsa în bază o **confirmare scrisă, cu
+  numele omului și motivul lui, peste o depunere care nu s-a făcut niciodată** — iar nimic n-o
+  anunța. *`PREDARE_LANT.md` scria, despre proba din 03.09, că „`depus_la` și `confirmat_la` sunt
+  aceeași secundă — confirmarea și depunerea sunt un singur act, nu două care se pot despărți".
+  Erau două, și se despărțeau: afirmația era adevărată despre ce s-a măsurat atunci, nu despre ce
+  apăra codul.*
+- **condiția de deblocare**: închisă. O singură tranzacție ține acum confirmarea, aprobarea și
+  marcarea; dreptul se cere înaintea oricărei scrieri; poarta supervizorului stă sub `SAVEPOINT`, ca
+  să-și păstreze contractul (*nu blochează niciodată*) fără să otrăvească tranzacția depunerii.
+  **Probat prin injecție de defect** — `core/test_p4_fault_injection.py::test_depunere_confirmarea_nu_ramane_fara_depunere`
+  —, iar proba a fost **roșie pe codul de dinainte**, verificat rulând-o pe arborele restaurat cu
+  `git stash`.
+- **a doua frontieră, găsită reparând-o pe prima** *(09.09.2026)*: pe aceeași rută, `if not r["ok"]:
+  raise` stătea **după** `with`, deci tranzacția se închidea NORMAL și comitea aprobarea scrisă cu o
+  linie mai sus. Un refuz al marcării (`FARA_VERDICT`, `STARE_GRESITA`) lăsa elementul `aprobata`
+  fără să fie depus — chiar forma pe care **R128** o reparase venind din client, fiindcă din
+  `aprobata` nu se mai poate **respinge**. Refuzul se ridică acum dinăuntrul tranzacției. *Ordinea
+  celor două scrieri era corectă; ce lipsea era ca refuzul să fie înăuntrul limitei lor.* Mutație
+  scrisă, ca dovadă că proba o vede: cu refuzul scos afară, elementul trece `la_senior → aprobata`
+  și rămâne acolo.
+
+### R180 — Rotația tokenului SPV se pierdea la orice eșec de după ea
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E5 — interfața cu autoritatea · **PRAG 1**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `a05618ce`
+- **rezolvată pe commit**: `0742e177`
+- **măsurat la**: 2026-09-09 · **pe commit**: `a05618ce`
+- **ce blochează**: **nimic acum — reparată în aceeași tură.** Cel mai ireversibil efect din casă:
+  ANAF **rotește** perechea la refresh, deci în secunda răspunsului vechiul `refresh_token` e mort
+  acolo. Perechea nouă se scria pe conexiunea **apelantului** — adică pe tranzacția deschisă de
+  `spv_conector.apel_anaf`, care trăiește până la capătul apelului real către ANAF. Orice eroare de
+  după (403 fără drept, cădere de rețea, backoff de 429 epuizat) întorcea tranzacția și **ștergea din
+  bază exact perechea pe care ANAF o consideră singura validă**. Principalul rămânea deconectat de la
+  SPV, iar nimic nu pica: apelul eșua din alt motiv, tokenul dispărea tăcut. Aceeași formă avea și
+  `dezactiveaza_token` pe eșecul de refresh — se întorcea, deci un token mort rămânea `activ = true`.
+- **condiția de deblocare**: închisă. `spv_conector._roteste_si_comite()` **comite imediat**
+  perechea rotită — și, pe calea de eșec, dezactivarea tokenului mort — pe conexiunea pe care o
+  deține use-case-ul (`apel_anaf`), înainte ca apelul care a cerut rotația să poată eșua. E cealaltă
+  față a regulii *efectul ireversibil vine ultimul*: când efectul ireversibil e chiar **sursa**
+  valorii de scris, scrierea lui se comite **prima**. Probat cu
+  `core/test_p4_fault_injection.py::test_token_rotit_supravietuieste_esecului_de_dupa`, care merge pe
+  calea REALĂ (`apel_anaf`, cu defectul injectat în `requests.request`) și e roșu pe codul de dinainte.
+- **prima formă a reparației a fost GREȘITĂ, și se păstrează scrisă** *(09.09.2026)*: deschidea o **a
+  doua conexiune** și scria pe același rând. Se **blochează** — tranzacția apelantului poate ține
+  rândul, iar a doua așteaptă la infinit un commit care nu vine. **Poarta a prins-o:** suita a atârnat
+  la 80% și a rămas acolo până am oprit-o. Regula era deja scrisă în casă, la operațional: *o probă
+  care ține o tranzacție deschisă nu poate deschide o a doua conexiune pe același rând* — iar fixul
+  meu intra exact în ea. *O reparație care rezolvă proprietatea și strică disponibilitatea nu e o
+  reparație; iar deosebirea dintre ele nu se vede citind codul, ci rulându-l.*
+
+### R181 — Un e-mail deja plecat putea rămâne fără rândul care îl oprea să plece din nou
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 — evidența · **PRAG 2**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `a05618ce`
+- **rezolvată pe commit**: `0742e177`
+- **măsurat la**: 2026-09-09 · **pe commit**: `a05618ce`
+- **ce blochează**: **nimic acum.** Două locuri, aceeași formă. **(1)**
+  `notificari_scadenta.emite_pentru_firma`: e-mailul pleca la **clientul firmei**, iar rândul care
+  împiedică retrimiterea se scria după el — amândouă în tranzacția deschisă pentru toată firma,
+  pentru toate facturile ei. O eroare la orice factură de după, sau la commit, întorcea tranzacția:
+  e-mailurile plecate rămâneau plecate, rândurile care le consemnau nu, iar a doua zi cronul le
+  trimitea din nou. **(2)** `alerta_acces.ruleaza`: rezervarea ferestrei de dedup se scria pe
+  conexiunea apelantului și se comitea abia la capătul buclei, după ce alertele plecaseră; la
+  următoarea rulare (cron la 15 minute) plecau identice.
+- **condiția de deblocare**: închisă. Amândouă rezervă **întâi**, în tranzacția rezervării, și abia
+  apoi trimit — tiparul care exista deja în casă, la `efactura_send.trimite` și
+  `etransport_send.trimite`. Alegerea e **cel mult o dată**, nu cel puțin o dată, și e deliberată: o
+  notificare pierdută rămâne vizibilă ca prag `in_curs`; una trimisă de două ori ajunge la clientul
+  firmei și nu se mai ia înapoi. Probat cu `test_notificare_scadenta_nu_pleaca_de_doua_ori` și
+  `test_alerta_acces_dedup_se_comite_inainte_de_alerta`, amândouă roșii sub mutația care le ia
+  tranzacția proprie.
+
+### R182 — Contul se putea crea fără dovada acordului, iar clientul fără cheia lui de intrare
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 — evidența · **PRAG 2**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `a05618ce`
+- **rezolvată pe commit**: `0742e177`
+- **măsurat la**: 2026-09-09 · **pe commit**: `a05618ce`
+- **ce blochează**: **nimic acum.** Două căi, amândouă cu partea a doua într-o tranzacție proprie.
+  **(1)** `POST /auth/register`: ruta refuză din prima linie o înregistrare fără bifa termenilor, dar
+  **dovada** bifei (`public.acord_termeni`) se scria într-a doua tranzacție, ambalată într-un `try`
+  care doar **tipărea** la eșec — contul rămânea, dovada consimțământului putea lipsi, și nimeni nu
+  afla. **(2)** `POST /tenants/{id}/client-acces`: contul de client se crea cu o parolă temporară pe
+  care n-o știe nimeni, iar tokenul de activare — singura lui cale de intrare — se scria separat. O
+  eroare între ele lăsa un utilizator care **nu poate intra niciodată**, în timp ce urma din portal
+  spunea „cabinetul a dat acces".
+- **condiția de deblocare**: închisă. La `register`, versiunea termenilor se citește **înaintea**
+  tranzacției (un fișier lipsă oprește înregistrarea cu `503`, înainte de orice scriere), iar dovada
+  intră în aceeași tranzacție cu contul. La `client-acces`, tokenul se pregătește înainte și intră
+  lângă cont; e-mailul rămâne ultimul. Probate cu
+  `test_register_contul_nu_ramane_fara_dovada_acordului` și
+  `test_client_acces_contul_nu_ramane_fara_token`, amândouă roșii pe codul de dinainte.
+
+### R183 — `apel_anaf` ține o tranzacție deschisă peste apelul la ANAF și peste backoff
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — e o proprietate de rulare, ca R178 · **PRAG 3**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `a05618ce`
+- **măsurat la**: 2026-09-09 · **pe commit**: `a05618ce`
+- **ce blochează**: **NIMIC azi — neblocantă**, și se scrie fiindcă `stare` are exact două valori.
+  Derivat mecanic: `spv_conector.apel_anaf` deschide o conexiune din pool și o **ține** peste
+  `requests.request` către ANAF (timeout până la 60 s la upload), peste retry-ul de `401` și peste
+  backoff-ul exponențial de `429`. **Proprietatea tranzacțională e reparată** (R180: scrierea de
+  token nu mai depinde de ea), deci ce rămâne e **durata**, nu corectitudinea — aceeași clasă ca
+  R178, care a măsurat că pool-ul se saturează exact la 10 cereri simultane. *Nu e o cifră: e o
+  formă a codului, văzută de scaner. Cifra ar cere o măsurătoare pe trafic, și aia se face la R178.*
+- **condiția de deblocare**: se închide împreună cu R178, nu înaintea ei: întâi se măsoară câte
+  cereri simultane există **în realitate**, apoi se decide dacă apelul extern se scoate din
+  tranzacție (conexiunea se cere abia la scriere) sau nu se atinge nimic. *Scoaterea apelului din
+  tranzacție e ieftină ca schimbare și scumpă ca risc — atinge singura funcție prin care trec toate
+  apelurile ANAF —, deci nu se face pe o presimțire.*
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

@@ -14165,3 +14165,29 @@ se poate răsturna cu o măsurătoare, prima cere să i se ceară din nou.*
 scrise din memorie" e acum **R177** în `CONFORMITATE.md`, cu descrierea și cifra de azi — dar
 **regula finală nu se scrie până nu se măsoară clasa pe tot repo-ul**, exact cum a cerut Costin.
 *O interdicție scrisă pe o singură instanță plafonează ce am văzut, nu ce există.*
+
+
+---
+
+## P4 — două alegeri de contract, luate de mine, care cer confirmare (09.09.2026)
+
+Amândouă decurg din reparațiile de proprietate a tranzacției, amândouă schimbă un **comportament
+observabil**, și de-aia se scriu aici, nu doar în cod.
+
+**(1) La `409 CONSTATARI_NECONFIRMATE`, confirmările trimise în chiar cererea aia nu mai rămân
+scrise.** Până azi, `poarta_confirmarii` scria confirmările primite pe măsură ce le potrivea, într-o
+tranzacție proprie, apoi ruta întorcea `409` cu ce a rămas. Consecința e chiar defectul R179 în
+miniatură: confirmări persistate peste o depunere care n-a avut loc. Cu confirmarea și depunerea în
+aceeași tranzacție, un `409` întoarce tot. **Ce se schimbă pentru om:** trebuie retrimise toate
+confirmările odată — exact ce cere deja mesajul rutei (*„Retrimite cererea cu `confirmari`:
+[{amprenta, motiv}] pentru fiecare"*), deci contractul scris nu se schimbă, ci se respectă.
+*Varianta respinsă:* să se comită confirmările înainte de a refuza — adică să se păstreze exact
+forma care a produs restanța.
+
+**(2) Notificările de scadență trec de la „cel puțin o dată" la „cel mult o dată".** Rezervarea
+pragului se comite **înaintea** e-mailului; dacă scrierea rezultatului nu mai reușește, pragul rămâne
+`in_curs` și nu se mai încearcă. *Motivul:* o notificare pierdută se vede în evidență ca prag
+consumat fără „trimis"; una trimisă de două ori ajunge la **clientul firmei** și nu se mai ia înapoi.
+Între o lipsă vizibilă și un dublu ireversibil, la un mesaj care pleacă în numele cabinetului,
+lipsa vizibilă e mai ieftină. *Varianta respinsă:* păstrarea ordinii de dinainte, cu argumentul că
+„un e-mail în plus nu strică" — strică, fiindcă nu e al nostru.

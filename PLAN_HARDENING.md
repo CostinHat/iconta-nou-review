@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-08
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 URMĂTORUL** · P4–P7 nedeschise
+- **ultima actualizare**: 2026-09-09
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 URMĂTORUL** · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -293,6 +293,24 @@ tranzacție, deținută de use-case.
   apelantului — adică pe tranzacția facturii —, iar un refuz de curs lăsa în bază o factură
   numerotată și contată, fără curs. *Înainte de a repara o cale moartă, întreabă ce se schimbă pe ea
   când învie.*
+
+**ÎNCHIS 09.09.2026.** Ce a livrat, pe scurt — detaliile în `RAPORT_P4.md`:
+
+- **inventarul e DERIVAT, nu scris**: `scripts/scan_tranzactii.py` construiește, pentru fiecare din
+  cele **510** puncte de intrare (rute + lucrători de fundal), **arborele de domenii tranzacționale**
+  al căii, și marchează cele șase semne cerute de comandă. **332** de candidați; **32** peste pragul
+  care cere clasificare;
+- **clasificarea e PĂZITĂ**: `core/p4_clasificare.py` (7 CRITICAL, 27 NON_CRITICAL, 1 FALSE_POSITIVE — 35 de intrări: cele 32 de căi peste prag, plus două ieșite din inventar după reparație și o cale internă)
+  + `core/test_tranzactii_clasificate.py` — o cale compusă nouă, neclasificată, **cade poarta**;
+- **fiecare cale critică are injecție de defect**: `core/test_p4_fault_injection.py`, cu starea
+  comparată pe **amprentă**, nu pe numărătoare (R137). **Șase din șapte au fost roșii pe codul de
+  dinainte** — a șaptea, emiterea de factură, probează o proprietate care exista deja;
+- **șase reparații**: R179 (confirmare ↔ depunere), R180 (rotația tokenului SPV), R181 (e-mail ↔
+  rândul care-l oprește, în două locuri), R182 (cont ↔ dovada acordului; client ↔ cheia lui);
+- **efectele pe care `rollback` nu le desface** au analiză separată: **8** locuri, toate judecate
+  (`INTEROGARE` sau `EFECT`), în `EFECTE_EXTERNE`, păzite la fel;
+- **rămas deschis, declarat**: R183 — `apel_anaf` ține o tranzacție peste apelul la ANAF. E durată,
+  nu proprietate; se închide cu R178.
 
 ---
 

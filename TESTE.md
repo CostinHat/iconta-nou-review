@@ -2309,3 +2309,20 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   a parserului însuși** — fără ea, un parser orb ar fi arătat ca un ecran gol. Fiecare caz cere
   **codul** refuzului, nu doar că a fost unul. **Calibrare negativă: 6 mutații / 6 roșii**, cu
   restaurare verificată prin `md5sum`; a cincea a găsit o gaură reală în gardă și a produs codurile.
+
+
+- **`scripts/scan_tranzactii.py` + `core/test_tranzactii_clasificate.py` + `core/test_p4_fault_injection.py`
+  (09.09.2026, P4)** — trei straturi pentru o singură întrebare: **cine deține limita tranzacției**.
+  Scanerul derivă din cod, pentru fiecare punct de intrare, **arborele de domenii tranzacționale**
+  (`with db.get_conn(...)` = un domeniu) și marchează cele șase semne cerute de comandă; are **22 de
+  probe de calibrare, în ambele direcții**, iar patru dintre ele s-au născut din greșeli ale
+  instrumentului însuși, prinse măsurând: aliasurile de import citite pe fișier în loc de domeniu de
+  vizibilitate (unsprezece aliasuri sunt refolosite în `main.py`), buclele care pierdeau ordinea
+  efectelor, buclele care se împleteau fiindcă n-aveau identitate, și `ZipFile` luat drept scriere pe
+  disc când e peste un `BytesIO`. Gardul de clasificare cere ca **fiecare** cale peste prag să aibă
+  clasă și motiv scris, și ca **fiecare** cale critică să numească o probă de injecție care
+  **există** — verificat cu `ast`, nu prin căutare de text. Probele de injecție compară starea
+  persistentă pe **amprentă**, nu pe `count(*)` (R137), și fiecare are **două direcții**: fără
+  defect actul chiar se scrie, cu defect nu rămâne jumătate. **Calibrare negativă: 6 din 7 probe au
+  fost roșii pe codul de dinaintea reparațiilor**, verificat rulându-le pe arborele restaurat cu
+  `git stash`; a șaptea probează o proprietate care exista deja, și scrie asta.
