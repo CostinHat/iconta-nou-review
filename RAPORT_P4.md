@@ -108,11 +108,20 @@ care nu se putea alege nimic.
 există multe apeluri `commit()`."**
 
 Respectat, și verificabil. Apelurile `.commit()` din producție (`main.py` + `core/*.py`, fără teste),
-numărate cu `ast` — deci **apeluri**, nu potriviri de text: **170 înainte, 168 acum**. Reparațiile au
-scos **două** (`main.py` 68 → 67, `alerta_acces` 1 → 0) și n-au adăugat niciunul: `_persista`,
-`_rezerva_pragul`, `_scrie_rezultatul` și `_consemneaza` folosesc `with db.get_conn(...)`, care comite
-singur. **Restul de 168 sunt neatinse.** Reparațiile sunt de **proprietate**, nu de formă: în fiecare
-caz limita a trecut la actul care o deține.
+numărate cu `ast` — deci **apeluri**, nu potriviri de text: **170 înainte, 170 acum**. Reparațiile au
+scos două și au adăugat două, iar asta e chiar forma lor:
+
+| fișier | înainte | acum | de ce |
+|---|---|---|---|
+| `main.py` | 68 | 67 | unificarea rutei de depunere |
+| `core/alerta_acces.py` | 1 | 0 | rezervarea de dedup și-a luat tranzacția ei |
+| `core/notificari_scadenta.py` | 0 | 0 | cele trei scrieri noi folosesc `with db.get_conn(...)`, care comite singur |
+| `core/spv_conector.py` | 0 | **2** | `_roteste_si_comite` — commitul e chiar reparația |
+
+**Restul de 168 sunt neatinse.** Reparațiile sunt de **proprietate**, nu de formă: în fiecare caz
+limita a trecut la actul care o deține. *Numărul total neschimbat e cel mai bun rezumat al regulii
+din comandă: nu s-a atins arhitectura fiindcă existau multe `commit()`; s-au mutat patru, acolo unde
+proprietatea o cerea.*
 
 *Cifra e numărată cu `ast` fiindcă `grep '\.commit()'` dă **171** — cu unu mai mult, iar diferența e
 text: `.commit()` apare și în proza unui docstring. Aceeași clasă ca „un scan pe forma BRUTĂ a datelor
@@ -307,6 +316,14 @@ care casa o urmărește:** prima formă a mesajului de commit și a lui `PLAN_HA
 aceeași tură (căile cu scrieri în mai multe domenii), fără s-o recitesc din generator. Prinsă
 confruntând raportul cu ieșirea lui `scripts/p4_artefacte.py`, cu poarta deja pornită; am oprit
 rularea și am corectat-o, fiindcă o cifră greșită într-un mesaj de commit rămâne acolo.
+
+**A doua cifră corectată, și tot înainte de a ajunge la tine.** O formă mai veche a paragrafului de
+mai sus scria **«170 înainte, 168 acum»** și *«n-au adăugat niciunul»*. Era adevărat când l-am scris
+— și a devenit fals patru ore mai târziu, când prima formă a reparației lui R180 s-a dovedit greșită
+și a fost rescrisă: forma bună **adaugă două** `commit()` în `spv_conector`, fiindcă acolo commitul
+**este** reparația. Prinsă confruntând raportul cu ieșirea instrumentului la împachetare. *O cifră
+scrisă înaintea ultimei schimbări de cod nu e greșită din neatenție: e greșită fiindcă a fost scrisă
+prea devreme, iar singurul remediu e s-o reciteşti din instrument la capăt.*
 
 **Operațiuni peste 1 minut, cu durata exactă:**
 
