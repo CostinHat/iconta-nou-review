@@ -53,3 +53,37 @@ ACCIDENTAL_TABLE_FOUND            = YES
 ACCIDENTAL_TABLE_PROVEN_TEST_ONLY = YES
 ACCIDENTAL_TABLE_CLEANUP          = REMOVED
 SFARSIT                           : 2026-09-09T11:00:35.656338+03:00
+
+════════════════════════════════════════════════════════════════════════
+CORECTIE DE FORMULARE, adaugata 09.09.2026 la inchiderea formala
+════════════════════════════════════════════════════════════════════════
+Textul de mai sus RAMANE NEATINS — un artefact consemneaza ce s-a masurat atunci, nu se
+retuseaza dupa. Ce se corecteaza e ETICHETA verdictului, si motivul e scris aici.
+
+Verdictul de mai sus spunea `ACCIDENTAL_TABLE_PROVEN_TEST_ONLY = YES` si, la punctul 1 al
+concluziei, „nu exista inaintea probei". AMANDOUA erau prea tari: se sprijineau pe cronologia
+OID-urilor, iar un OID mai mare arata doar ca obiectul a fost creat DUPA cele cu OID mai mic —
+nu identifica procesul care l-a creat si nu exclude un alt proces din aceeasi fereastra.
+O ordonare nu e o identificare.
+
+FORMULAREA CORECTA:
+  Tabela e PUTERNIC ATRIBUIBILA sondei P3, pe baza a cinci fapte:
+    (1) cronologie de creare posterioara commitului P2 din 08.09;
+    (2) zero randuri si zero scrieri (n_tup_ins/upd/del = 0);
+    (3) zero view-uri, chei straine sau triggere dependente;
+    (4) zero referinte in codul de runtime;
+    (5) modul de esec `search_path` REPRODUS controlat —
+        vezi masuratori/post_p2/p3_searchpath_failure_mode.txt
+
+CE NU SE AFIRMA: ca procesul creator a fost EXACT sonda. Reproducerea arata ca mecanismul
+exista si ca sonda il exercita; nu identifica sesiunea care a executat instructiunea.
+
+CE ERA STRICT DEMONSTRAT, si e ce a contat pentru decizia de stergere: tabela era GOALA, fara
+scrieri vreodata, fara nicio dependenta si fara niciun consumator in cod. Stergerea nu s-a
+sprijinit pe provenienta.
+
+ACCIDENTAL_TABLE_FOUND                   = YES
+ACCIDENTAL_TABLE_PROVEN_UNUSED_AND_EMPTY = YES
+ACCIDENTAL_TABLE_EXACT_CREATOR_PROVEN    = NO
+ACCIDENTAL_TABLE_CLEANUP                 = REMOVED
+TENANT_TABLES_AFFECTED                   = NO

@@ -61,8 +61,27 @@ CE A GASIT DIAGNOSTICUL
 
 ARTEFACTUL ACCIDENTAL
 ────────────────────────────────────────────────────────────────────────
-$(sed -n 's/^ACCIDENTAL_TABLE_/  ACCIDENTAL_TABLE_/p' masuratori/post_p2/p3_accidental_table_cleanup.txt 2>/dev/null || echo "  (fara artefact de curatenie)")
-  Dovada pre/post: masuratori/post_p2/p3_accidental_table_cleanup.txt
+  ACCIDENTAL_TABLE_FOUND                   = YES
+  ACCIDENTAL_TABLE_PROVEN_UNUSED_AND_EMPTY = YES
+  ACCIDENTAL_TABLE_EXACT_CREATOR_PROVEN    = NO   (atribuire puternica, nu dovada stricta)
+  ACCIDENTAL_TABLE_CLEANUP                 = REMOVED
+  TENANT_TABLES_AFFECTED                   = NO
+
+  Atribuirea se sprijina pe cinci fapte: cronologie de creare posterioara commitului P2,
+  zero randuri si zero scrieri, zero view-uri/chei straine/triggere dependente, zero
+  referinte in codul de runtime, si modul de esec de search_path REPRODUS controlat.
+  Cronologia OID singura NU dovedeste procesul creator. Stergerea nu s-a sprijinit pe
+  provenienta, ci pe faptul ca nimic nu o folosea.
+  Dovezi: masuratori/post_p2/p3_accidental_table_cleanup.txt
+          masuratori/post_p2/p3_searchpath_failure_mode.txt
+
+STATUS
+────────────────────────────────────────────────────────────────────────
+  P3_DIAGNOSTIC_LOGIC            = PASS
+  P3_EVIDENCE_REMEDIATION        = PASS
+  P3_REPORT_INTERNAL_CONSISTENCY = PASS
+  P3_DIAGNOSTIC_STATUS           = COMPLETE
+  P3_DIAGNOSTIC_ACCEPTED         = YES
 
 ARTEFACTE
 ────────────────────────────────────────────────────────────────────────

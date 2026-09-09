@@ -1,0 +1,33 @@
+========================================================================
+REPRODUCEREA modului de esec care a creat artefactul accidental
+TIMESTAMP : 2026-09-09T11:47:59.159004+03:00
+COMMIT    : 150b8ab7abcfdd90ee4ecc4fe96af8ae0a96b290
+========================================================================
+
+IPOTEZA de verificat: cu `search_path` care numeste o schema INEXISTENTA, un
+`CREATE TABLE IF NOT EXISTS` NECALIFICAT ateriza in `public`.
+
+Proba ruleaza intr-o tranzactie care se face ROLLBACK — DDL-ul e tranzactional in
+PostgreSQL, deci nu ramane nimic. Se verifica si asta, la final.
+
+[0] inainte: to_regclass('public.proba_reproducere_searchpath') = None
+[1] schema 'schema_care_nu_exista' in pg_namespace: ABSENTA — bine, asta e premisa
+[2] `SET search_path TO "schema_care_nu_exista", public` -> ACCEPTAT, fara eroare
+    search_path efectiv: schema_care_nu_exista, public
+    current_schemas(false) — schemele care EXISTA din cale: ['public']
+    ^ schema inexistenta e ignorata TACUT; prima existenta din cale e `public`
+[3] `to_regclass('proba_reproducere_searchpath')` (necalificat) = None   -> de-aia `rezumat()` iese devreme
+[4] `CREATE TABLE IF NOT EXISTS proba_reproducere_searchpath (...)` NECALIFICAT -> executat
+[5] UNDE A ATERIZAT: ['public']
+    ^ IPOTEZA CONFIRMATA: in `public`, nu in schema numita in `search_path`.
+
+[6] ROLLBACK executat.
+[7] dupa rollback: to_regclass('public.proba_reproducere_searchpath') = None   (proba n-a lasat nimic)
+    to_regclass('public.solduri_parteneri') = None   (artefactul ramane sters)
+
+========================================================================
+CONCLUZIE: modul de esec e REPRODUCTIBIL si demonstrat.
+Asta NU dovedeste ca procesul care a creat `public.solduri_parteneri` a fost exact sonda —
+dovedeste ca mecanismul exista si ca sonda il exercita. Atribuirea ramane PUTERNICA, nu
+stricta: v. RAPORT_P3_DIAGNOSTIC.md §11.
+SFARSIT : 2026-09-09T11:47:59.167093+03:00

@@ -495,14 +495,41 @@ regenerează și se compară oricând.
 `public.solduri_parteneri`, creată **de sonda mea** (§3). Dovada pre/post:
 `masuratori/post_p2/p3_accidental_table_cleanup.txt`.
 
-**Cele patru condiții cerute înainte de orice `DROP`, fiecare demonstrată:**
+### Ce e demonstrat, și ce e doar puternic atribuit
 
-| condiția | dovada |
-|---|---|
-| nu exista înaintea probei | `OID = 307.840.147`, **mai mare** decât al tabelelor create la remedierea P2 pe 08.09 (`firma_tip` = 302.504.031), și imediat înaintea unei scheme efemere de test |
-| nu conține date legitime | `ROW_COUNT = 0`; `pg_stat`: `n_tup_ins = 0`, `n_tup_upd = 0`, `n_tup_del = 0`, `n_live_tup = 0` — **n-a primit niciodată un rând** |
-| nimic nu depinde de ea | zero view-uri/reguli, zero chei străine către ea, zero triggere; singurul index e propria cheie primară |
-| fără cod / job care s-o folosească | zero referințe în `*.py`, `*.sql`, `*.js` — în afara a două **comentarii** din chiar sonda care a creat-o, care descriu incidentul. Joburile de fundal sunt module Python din același corpus, deci acoperite de aceeași căutare |
+**Corecție de formulare, 09.09.2026.** Forma anterioară scria că tabela *„nu exista înaintea
+probei"*, sprijinindu-se pe cronologia OID-urilor. **Cronologia OID nu dovedește asta.** Un OID mai
+mare arată doar că obiectul a fost creat **după** cele cu OID mai mic; nu identifică procesul care
+l-a creat și nu exclude un alt proces din aceeași fereastră de timp. *O ordonare nu e o
+identificare.*
+
+Formularea corectă:
+
+> `public.solduri_parteneri` e **puternic atribuibilă sondei P3**, pe baza a cinci fapte:
+> **(1)** cronologie de creare **posterioară** commitului P2 din 08.09 (`OID = 307.840.147` >
+> `firma_tip` = 302.504.031), imediat înaintea unei scheme efemere de test;
+> **(2)** **zero rânduri și zero scrieri** — `pg_stat`: `n_tup_ins = 0`, `n_tup_upd = 0`,
+> `n_tup_del = 0`, `n_live_tup = 0`;
+> **(3)** **zero view-uri, chei străine sau triggere** dependente;
+> **(4)** **zero referințe în cod de runtime** (`*.py`, `*.sql`, `*.js`) — singurele două apariții
+> sunt comentarii din chiar sonda care descriu incidentul;
+> **(5)** modul de eșec `search_path` **reprodus controlat** — dovadă:
+> `masuratori/post_p2/p3_searchpath_failure_mode.txt`.
+
+**Ce NU se afirmă:** că procesul creator a fost *exact* sonda mea. Reproducerea arată că mecanismul
+există și că sonda îl exercită; nu identifică sesiunea care a executat instrucțiunea. *Atribuirea e
+puternică, nu strictă, și se scrie ca atare.*
+
+**Ce E strict demonstrat, și e ce a contat pentru decizia de ștergere:** tabela era **goală, fără
+scrieri vreodată, fără nicio dependență și fără niciun consumator în cod**. Ștergerea nu s-a
+sprijinit pe proveniență, ci pe faptul că nimic nu o folosea.
+
+### Modul de eșec, reprodus
+
+`SET search_path TO "schema_care_nu_exista", public` e **acceptat** de PostgreSQL; schema lipsă e
+ignorată tăcut (`current_schemas(false)` → `['public']`). Un `CREATE TABLE IF NOT EXISTS`
+**necalificat** aterizează atunci în `public`. Probat într-o tranzacție cu `ROLLBACK`, deci fără să
+lase nimic în urmă — verificat și după.
 
 **Executat:** `DROP TABLE public.solduri_parteneri;`
 
@@ -511,13 +538,30 @@ cu acest nume în `public`, iar **cele 20 de tabele `solduri_parteneri` din sche
 neatinse** — acelea sunt cele legitime.
 
 ```
-ACCIDENTAL_TABLE_FOUND            = YES
-ACCIDENTAL_TABLE_PROVEN_TEST_ONLY = YES
-ACCIDENTAL_TABLE_CLEANUP          = REMOVED
+ACCIDENTAL_TABLE_FOUND                   = YES
+ACCIDENTAL_TABLE_PROVEN_UNUSED_AND_EMPTY = YES
+ACCIDENTAL_TABLE_EXACT_CREATOR_PROVEN    = NO   (atribuire puternică, nu dovadă strictă)
+ACCIDENTAL_TABLE_CLEANUP                 = REMOVED
+TENANT_TABLES_AFFECTED                   = NO
 ```
 
 Cauza e reparată în instrument (schemele sintetice sunt reale-dar-goale), deci nu se mai poate
 repeta.
+
+---
+
+## 11bis. STATUSUL DIAGNOSTICULUI
+
+```
+P3_DIAGNOSTIC_LOGIC            = PASS
+P3_EVIDENCE_REMEDIATION        = PASS
+P3_REPORT_INTERNAL_CONSISTENCY = PASS
+P3_DIAGNOSTIC_STATUS           = COMPLETE
+P3_DIAGNOSTIC_ACCEPTED         = YES
+```
+
+**Nicio optimizare P3 nu e implementată.** Propunerile din §6 sunt scrise, nu făcute; prima
+remediere e o etapă separată.
 
 ---
 
