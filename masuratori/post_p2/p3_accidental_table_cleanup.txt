@@ -1,0 +1,55 @@
+========================================================================
+ELIMINAREA CONTROLATA a artefactului accidental `public.solduri_parteneri`
+TIMESTAMP : 2026-09-09T11:00:35.489323+03:00
+COMMIT    : b0a92872e041f746d93e0402c4f436b05b2d7939
+========================================================================
+
+CONTEXT. Tabela a fost creata de propria mea sonda de masurare, la diagnosticul P3 din
+09.09.2026. Cauza: schemele sintetice erau INEXISTENTE, iar `SET search_path TO "inexistenta",
+public` e acceptat de PostgreSQL, care ignora tacut schemele lipsa. Ruta `/migrare/parteneri`
+executa apoi `CREATE TABLE IF NOT EXISTS solduri_parteneri` NECALIFICAT — care a nimerit prima
+schema existenta din cale, adica `public`. Cauza e reparata in instrument (schemele sintetice
+sunt acum reale dar goale), deci nu se mai poate repeta.
+
+── DOVADA PRE-STERGERE ──
+  (a) exista                     : DA
+  (b) ROW_COUNT                  : 0
+  (c) pg_stat ins/upd/del/live   : 0 / 0 / 0 / 0   (n-a primit NICIODATA date)
+      seq_scan                   : 1909   (citita doar de sonda)
+  (d) view-uri/reguli dependente : NICIUNA
+      chei straine CATRE ea      : NICIUNA
+      triggere                   : NICIUNUL
+  (e) OID                        : 307840147
+      reper firma_sursa_versiune   : 302504007  (creata 08.09.2026 la remedierea P2)
+      reper firma_tip              : 302504031  (creata 08.09.2026 la remedierea P2)
+      => OID-ul e MAI MARE decat al tabelelor din 08.09, deci creata DUPA ele.
+      urmatorul obiect creat     : pg_toast.pg_toast_307840147 (oid=307840155) — schema efemera de TEST
+  (f) referinte in cod (py/sql/js): DOUA, si AMANDOUA sunt COMENTARII din propria mea sonda,
+      care descriu chiar incidentul de fata:
+        scripts/masoara_rute_portofoliu.py:29  (antetul, unde e scrisa cauza)
+        scripts/masoara_rute_portofoliu.py:140 (langa reparatie)
+      NICIUN cod de runtime, nicio interogare, niciun job nu o numeste. Verificat si
+      inainte de sterge: cele doua aparitii sunt proza, nu SQL.
+
+VERDICT: toate cele patru conditii cerute sunt DEMONSTRATE —
+  1. nu exista inaintea probei (OID posterior tabelelor din 08.09, imediat inaintea unei
+     scheme efemere de test);
+  2. nu contine date legitime (0 randuri, 0 inserturi vreodata);
+  3. nimic nu depinde de ea (fara view/regula/FK/trigger; zero referinte in cod, deci nici
+     vreun job — joburile sunt module Python din acelasi corpus);
+  4. row count si dependinte raportate mai sus.
+
+── EXECUTAT ──
+  DROP TABLE public.solduri_parteneri;
+
+── DOVADA POST-STERGERE ──
+  to_regclass('public.solduri_parteneri') = None
+  obiecte ramase cu acest nume in `public`: 0
+  tenant_001.solduri_parteneri (NEATINSA)  : 1  <- tabela LEGITIMA a firmei, intacta
+  scheme de tenant care o au           : 20
+
+========================================================================
+ACCIDENTAL_TABLE_FOUND            = YES
+ACCIDENTAL_TABLE_PROVEN_TEST_ONLY = YES
+ACCIDENTAL_TABLE_CLEANUP          = REMOVED
+SFARSIT                           : 2026-09-09T11:00:35.656338+03:00

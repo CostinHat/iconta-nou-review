@@ -91,7 +91,8 @@ reconciliază explicit, cu instrucțiunile capturate, în §4.6.
 
 ### O a doua corecție, și e mai gravă: sonda a SCRIS în producție
 
-Schemele sintetice erau, la prima formă, **inexistente**. `SET search_path TO "inexistenta",
+Schemele sintetice erau, la a doua formă a hamului, **inexistente** — azi sunt **reale, dar goale**
+(v. mai jos). `SET search_path TO "inexistenta",
 public` e **acceptat** de PostgreSQL, care ignoră tăcut schemele care lipsesc — iar o rută care
 apoi execută un `CREATE TABLE IF NOT EXISTS` **necalificat** nimerește prima schemă existentă din
 cale, adică `public`.
@@ -154,8 +155,9 @@ Artefact: `masuratori/post_p2/curba_p3.json` · rulare: `masuratori/post_p2/curb
 | `/migrare/asociati` | 0,010 | 0,104 | **0,995 s** | 59,8% |
 | `/migrare/parteneri` | 0,016 | 0,135 | **1,317 s** | 62,1% |
 
-*Latențele de mai sus sunt un PLAFON INFERIOR pentru rutele cu N+1 — schemele sintetice nu există,
-deci munca reală per firmă lipsește din ele.*
+*Latențele de mai sus sunt un PLAFON INFERIOR pentru rutele cu N+1: la momentul rulării, schemele
+sintetice erau goale, deci munca reală per firmă lipsea din ele. Coeficienții demonstrați ai căii de
+succes sunt în §4.5; reconcilierea, în §4.6.*
 
 ### 4.3 Octeți de răspuns (N=1000) — costul care NU vine din interogări
 
@@ -187,10 +189,32 @@ deci munca reală per firmă lipsește din ele.*
 | `/migrare/salariati` | 60 | 31 | 0,0236 | 0,0140 | 0,0097 | 1.472 |
 | `/migrare/parteneri` | 60 | 31 | 0,0252 | 0,0143 | 0,0109 | 1.474 |
 
-**Costul real per firmă**, derivat: cele patru rute de import fac **~4,3 interogări și ~2,2
-conexiuni per firmă**, cu ~1 ms de bază per firmă. La 1000 de firme: ~4.300 de interogări, ~2.200 de
-conexiuni, **~1 s doar timp de bază** — și asta e cifra *măsurată pe scheme reale*, nu extrapolată
-din curba sintetică.
+**Costul real per firmă — MODELUL DEMONSTRAT, nu o medie.** Prima formă a raportului împărțea
+totalul la N (`60/14 ≈ 4,3` interogări, `31/14 ≈ 2,2` conexiuni) și numea rezultatul „cost per
+firmă". **Greșit:** `total/N` amestecă overheadul FIX cu costul MARGINAL, deci nu e o pantă — și
+scade artificial pe măsură ce N crește. Panta se obține din două puncte, nu dintr-o împărțire.
+
+Măsurat la N = 5 / 10 / 14 pe scheme reale (§4.5), pentru **toate cele patru rute**:
+
+```
+queries(N)     = 4 + 4*N
+connections(N) = 3 + 2*N
+```
+
+Verificat: N=14 → 4 + 56 = **60 interogări**, 3 + 28 = **31 conexiuni**. Coincide exact cu
+măsurătoarea independentă de pe cabinetul real din tabelul de mai sus.
+
+**Extrapolarea la N=1000, din formula demonstrată** (nu din medii):
+
+| rută | `queries(1000)` | `connections(1000)` |
+|---|---|---|
+| `/migrare/asociati` | 4 + 4×1000 = **4.004** | 3 + 2×1000 = **2.003** |
+| `/migrare/mijloace-fixe` | **4.004** | **2.003** |
+| `/migrare/salariati` | **4.004** | **2.003** |
+| `/migrare/parteneri` | **4.004** | **2.003** |
+
+Timpul de bază măsurat la N=14 e ~14 ms, adică ~1 ms per firmă; la 1000 de firme, **~1 s doar
+timp petrecut în bază** — și e o extrapolare a unei pante măsurate, nu a unei medii.
 
 ### 4.5 CALEA DE SUCCES, pe scheme REALE — overhead fix vs cost marginal
 
@@ -381,10 +405,16 @@ doar de performanță. Ecranul trebuie să știe să arate starea, cum o fac dej
 
 **§6.1 și §6.3 nu ating prospețimea deloc** — de aceea le pun primele.
 
-**Concurență.** Riscul real e **pool-ul**, nu blocajele: `maxconn = 10`, iar rutele din clasa 1 cer
-peste 2.000 de conexiuni per cerere. Doi utilizatori care deschid simultan ecranul de parteneri pe
-un cabinet mare se serializează pe pool. Reparațiile din §6 îl scad la 3 conexiuni per cerere, deci
-riscul dispare odată cu cauza.
+**Concurență.** `POOL_CONTENTION_RISK = UNMEASURED_BUT_PLAUSIBLE`.
+
+Rutele din clasa 1 cer și dau înapoi ~2.003 conexiuni per cerere, la un pool cu `maxconn = 10`.
+E **plauzibil** ca doi utilizatori simultani să se influențeze pe pool — dar **n-am măsurat-o**, și
+nu afirm nici serializare, nici starvation, nici saturare. Concurența n-a făcut parte din domeniul
+P3; ar cere un test cu cereri simultane, care nu s-a scris.
+
+Ce se poate spune fără măsurătoare: reparațiile din §6 scad numărul de împrumuturi din pool de la
+~2.003 la ~3 per cerere. Dacă riscul e real, dispare odată cu cauza; dacă nu e, reparațiile nu
+strică nimic. *În ambele cazuri, decizia nu atârnă de o cifră pe care n-o am.*
 
 **Lucrătorul.** Patru aspecte în plus cresc lotul: la 1000 de firme, backlogul complet trece de la 5
 la 9 perechi per firmă. Metricile există deja (`p2_worker_remaining`,
@@ -392,7 +422,7 @@ la 9 perechi per firmă. Metricile există deja (`p2_worker_remaining`,
 
 ---
 
-## 8. R177 NU SE DESCHIDE ÎN P3
+## 8. R177 — STATUS NESCHIMBAT DE P3
 
 Comanda cere să nu fie deschisă decât dacă măsurătoarea demonstrează **aceeași cauză**. Nu o
 demonstrează, și se poate spune precis de ce:
@@ -404,7 +434,18 @@ direct din schema firmei, la fiecare cerere. Sunt proaspete prin construcție; d
 
 Legătura ar apărea abia dacă se implementează §6.2 — atunci cele patru aspecte noi *ar deveni*
 purtători ai clasei R177, și **de-aia regula din `GARZI.md` le cere fixtura și testul de invalidare
-în același commit**. Până atunci R177 rămâne separată, deschisă, netratată.
+în același commit**.
+
+```
+R177_OPENED_BY_P3 = NO
+R177_STATUS       = UNCHANGED
+```
+
+*Precizare de formulare.* Prima formă spunea, în aceeași frază, și „R177 nu se deschide în P3", și
+„R177 rămâne deschisă" — două lucruri diferite scrise ca și cum ar fi unul. Corect: **R177 a fost
+deschisă la 08.09.2026, ca restanță în `CONFORMITATE.md`, printr-o decizie anterioară și
+independentă de P3.** P3 nu a atins-o: n-a deschis-o, n-a închis-o, n-a măsurat-o. Statusul ei
+rămâne cel de dinainte, iar el se citește din registru, nu din raportul ăsta.
 
 ---
 
@@ -449,19 +490,34 @@ regenerează și se compară oricând.
 
 ---
 
-## 11. CEREREA CARE RĂMÂNE DESCHISĂ
+## 11. ARTEFACTUL ACCIDENTAL DIN PRODUCȚIE — eliminat, cu dovadă
 
-`public.solduri_parteneri` — tabelă goală, creată **de sonda mea** în producție (§3). Zero
-referințe în cod, fără `tenant_id`, coloane identice cu tabela omonimă din schemele de tenant.
+`public.solduri_parteneri`, creată **de sonda mea** (§3). Dovada pre/post:
+`masuratori/post_p2/p3_accidental_table_cleanup.txt`.
 
-**Nu am șters-o.** Un `DROP TABLE` în `public` pe producție e ireversibil, iar curățarea propriei
-mizerii nu justifică o decizie luată singur. Comanda propusă:
+**Cele patru condiții cerute înainte de orice `DROP`, fiecare demonstrată:**
 
-```sql
-DROP TABLE public.solduri_parteneri;   -- 0 rânduri, 0 referințe în cod
+| condiția | dovada |
+|---|---|
+| nu exista înaintea probei | `OID = 307.840.147`, **mai mare** decât al tabelelor create la remedierea P2 pe 08.09 (`firma_tip` = 302.504.031), și imediat înaintea unei scheme efemere de test |
+| nu conține date legitime | `ROW_COUNT = 0`; `pg_stat`: `n_tup_ins = 0`, `n_tup_upd = 0`, `n_tup_del = 0`, `n_live_tup = 0` — **n-a primit niciodată un rând** |
+| nimic nu depinde de ea | zero view-uri/reguli, zero chei străine către ea, zero triggere; singurul index e propria cheie primară |
+| fără cod / job care s-o folosească | zero referințe în `*.py`, `*.sql`, `*.js` — în afara a două **comentarii** din chiar sonda care a creat-o, care descriu incidentul. Joburile de fundal sunt module Python din același corpus, deci acoperite de aceeași căutare |
+
+**Executat:** `DROP TABLE public.solduri_parteneri;`
+
+**Post-ștergere, verificat:** `to_regclass('public.solduri_parteneri') = None`, zero obiecte rămase
+cu acest nume în `public`, iar **cele 20 de tabele `solduri_parteneri` din schemele de tenant sunt
+neatinse** — acelea sunt cele legitime.
+
+```
+ACCIDENTAL_TABLE_FOUND            = YES
+ACCIDENTAL_TABLE_PROVEN_TEST_ONLY = YES
+ACCIDENTAL_TABLE_CLEANUP          = REMOVED
 ```
 
-Cauza e reparată în instrument, deci nu se mai poate repeta.
+Cauza e reparată în instrument (schemele sintetice sunt reale-dar-goale), deci nu se mai poate
+repeta.
 
 ---
 
@@ -472,8 +528,9 @@ Cauza e reparată în instrument, deci nu se mai poate repeta.
 - **O singură cerere pe rând, fără concurență.** `POOL_CONTENTION_RISK = UNMEASURED_BUT_PLAUSIBLE`
   — argumentat din numărul de împrumuturi din pool, **nemăsurat**. N-a făcut parte din domeniul P3
   și nu condiționează închiderea diagnosticului.
-- **Latențele sintetice ale rutelor cu N+1 sunt plafoane inferioare** (schemele nu există). Costul
-  real per firmă vine din §4.4.
+- **Latențele sintetice ale rutelor cu N+1 sunt plafoane inferioare** — schemele sintetice sunt
+  **reale, dar goale**, deci munca per firmă e mai mică decât în producție. Coeficienții căii de
+  succes vin din §4.5 (scheme reale din `tenant_template.sql`), iar costul real per firmă din §4.4.
 - **Cele 25 de rute de portal** n-au fost măsurate: poarta lor e `cere_client`, deci văd o firmă.
 - **Nu s-a măsurat frontendul** — câte cereri face un ecran la deschidere. Instrumentul are deja
   `--ecrane` pentru asta; n-a intrat în domeniul cerut.
