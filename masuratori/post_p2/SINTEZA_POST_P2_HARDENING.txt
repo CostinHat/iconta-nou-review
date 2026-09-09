@@ -1,0 +1,32 @@
+SINTEZA — POST-P2 HARDENING
+════════════════════════════════════════════════════════════════════════
+
+Cifrele de mai jos sunt CITITE din artefactele din `masuratori/post_p2/`, nu scrise de
+mana. Prima forma a acestui fisier repeta sumarul suitei de la P2 — corect pentru P2,
+gresit pentru hardening: descria alta rulare decat cea pe care o insotea.
+
+COMMIT    : 6e4dd53c6f6f6d7aa0d8aa4fb0d4d0634ad1eb0d
+COMANDA   : ./venv/bin/python -m pytest -q
+TIMESTAMP : 2026-09-09T04:31:31+03:00
+SUMAR     : 4270 passed, 11 skipped, 14 xfailed in 1568.35s (0:26:08)
+EXIT CODE : 0
+
+ARTEFACTE POST-HARDENING (masuratori/post_p2/)
+────────────────────────────────────────────────────────────────────────
+  SINTEZA_POST_P2_HARDENING.txt                     981 octeti
+  suita_completa_POST_P2.iesire.txt                7081 octeti
+
+ARTEFACTELE P2 NU AU FOST ATINSE (masuratori/p2/)
+────────────────────────────────────────────────────────────────────────
+  suita_completa_FINALA.iesire.txt : 4254 passed, 11 skipped, 14 xfailed in 1576.85s (0:26:16)
+  suita_completa.iesire.txt (rosu) : 9 failed, 4216 passed, 11 skipped, 14 xfailed in 1629.11s (0:27:09)
+  benchmark_FINAL.log              : EXIT CODE : 0
+  paritate_FINAL.log               : EXIT CODE : 0
+
+BENCHMARKUL NU S-A REEXECUTAT, si e o decizie:
+  niciuna dintre cele sase ajustari de hardening nu atinge calea de cerere.
+  Ce ruleaza in suita si acopera cerinta: `test_p2_endpoint_query_count` si
+  `test_contract_6_...` — 5 firme vs 50, pe toate cele cinci endpointuri — plus
+  `test_verificarea_de_drift_nu_intra_in_calea_de_cerere`.
+
+GENERAT   : 2026-09-09T04:58:54+03:00  (scripts/sinteza_post_p2.sh)
