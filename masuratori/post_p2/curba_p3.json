@@ -1,0 +1,960 @@
+{
+  "sintetic": {
+    "5": {
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0034,
+        "total_sec": 0.0051,
+        "db_procent": 33.1,
+        "status": 200,
+        "octeti": 1069
+      },
+      "/migrare/asociati": {
+        "interogari": 19,
+        "conexiuni": 13,
+        "dus_intors": 37,
+        "db_sec": 0.0041,
+        "cpu_sec": 0.0055,
+        "total_sec": 0.0096,
+        "db_procent": 42.6,
+        "status": 200,
+        "octeti": 466
+      },
+      "/migrare/istoric-declaratii": {
+        "interogari": 9,
+        "conexiuni": 8,
+        "dus_intors": 17,
+        "db_sec": 0.0022,
+        "cpu_sec": 0.0039,
+        "total_sec": 0.0061,
+        "db_procent": 36.1,
+        "status": 200,
+        "octeti": 461
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 19,
+        "conexiuni": 13,
+        "dus_intors": 37,
+        "db_sec": 0.0041,
+        "cpu_sec": 0.0055,
+        "total_sec": 0.0096,
+        "db_procent": 42.9,
+        "status": 200,
+        "octeti": 466
+      },
+      "/migrare/parteneri": {
+        "interogari": 24,
+        "conexiuni": 13,
+        "dus_intors": 42,
+        "db_sec": 0.0097,
+        "cpu_sec": 0.0063,
+        "total_sec": 0.016,
+        "db_procent": 60.8,
+        "status": 200,
+        "octeti": 471
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0035,
+        "total_sec": 0.0052,
+        "db_procent": 32.6,
+        "status": 200,
+        "octeti": 781
+      },
+      "/migrare/salariati": {
+        "interogari": 19,
+        "conexiuni": 13,
+        "dus_intors": 37,
+        "db_sec": 0.0041,
+        "cpu_sec": 0.0054,
+        "total_sec": 0.0095,
+        "db_procent": 43.2,
+        "status": 200,
+        "octeti": 471
+      },
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0034,
+        "total_sec": 0.0051,
+        "db_procent": 32.5,
+        "status": 200,
+        "octeti": 861
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0034,
+        "total_sec": 0.0051,
+        "db_procent": 34.1,
+        "status": 200,
+        "octeti": 1316
+      },
+      "/supervizor": {
+        "interogari": 15,
+        "conexiuni": 9,
+        "dus_intors": 29,
+        "db_sec": 0.0032,
+        "cpu_sec": 0.0041,
+        "total_sec": 0.0073,
+        "db_procent": 43.3,
+        "status": 200,
+        "octeti": 3206
+      },
+      "/tenants": {
+        "interogari": 4,
+        "conexiuni": 3,
+        "dus_intors": 7,
+        "db_sec": 0.0011,
+        "cpu_sec": 0.0034,
+        "total_sec": 0.0045,
+        "db_procent": 24.6,
+        "status": 200,
+        "octeti": 1008
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0035,
+        "total_sec": 0.0052,
+        "db_procent": 32.2,
+        "status": 200,
+        "octeti": 1842
+      }
+    },
+    "50": {
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0029,
+        "cpu_sec": 0.0063,
+        "total_sec": 0.0092,
+        "db_procent": 31.6,
+        "status": 200,
+        "octeti": 10165
+      },
+      "/migrare/asociati": {
+        "interogari": 154,
+        "conexiuni": 103,
+        "dus_intors": 307,
+        "db_sec": 0.0313,
+        "cpu_sec": 0.0234,
+        "total_sec": 0.0547,
+        "db_procent": 57.3,
+        "status": 200,
+        "octeti": 4561
+      },
+      "/migrare/istoric-declaratii": {
+        "interogari": 54,
+        "conexiuni": 53,
+        "dus_intors": 107,
+        "db_sec": 0.0119,
+        "cpu_sec": 0.0087,
+        "total_sec": 0.0206,
+        "db_procent": 57.7,
+        "status": 200,
+        "octeti": 4511
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 154,
+        "conexiuni": 103,
+        "dus_intors": 307,
+        "db_sec": 0.0306,
+        "cpu_sec": 0.0236,
+        "total_sec": 0.0542,
+        "db_procent": 56.5,
+        "status": 200,
+        "octeti": 4561
+      },
+      "/migrare/parteneri": {
+        "interogari": 204,
+        "conexiuni": 103,
+        "dus_intors": 357,
+        "db_sec": 0.0411,
+        "cpu_sec": 0.0285,
+        "total_sec": 0.0696,
+        "db_procent": 59.1,
+        "status": 200,
+        "octeti": 4611
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0028,
+        "cpu_sec": 0.0045,
+        "total_sec": 0.0073,
+        "db_procent": 38.5,
+        "status": 200,
+        "octeti": 7726
+      },
+      "/migrare/salariati": {
+        "interogari": 154,
+        "conexiuni": 103,
+        "dus_intors": 307,
+        "db_sec": 0.0306,
+        "cpu_sec": 0.0235,
+        "total_sec": 0.054,
+        "db_procent": 56.6,
+        "status": 200,
+        "octeti": 4611
+      },
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0027,
+        "cpu_sec": 0.0044,
+        "total_sec": 0.007,
+        "db_procent": 38.0,
+        "status": 200,
+        "octeti": 8526
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0025,
+        "cpu_sec": 0.0045,
+        "total_sec": 0.007,
+        "db_procent": 35.5,
+        "status": 200,
+        "octeti": 13076
+      },
+      "/supervizor": {
+        "interogari": 105,
+        "conexiuni": 54,
+        "dus_intors": 209,
+        "db_sec": 0.0186,
+        "cpu_sec": 0.0107,
+        "total_sec": 0.0293,
+        "db_procent": 63.5,
+        "status": 200,
+        "octeti": 29849
+      },
+      "/tenants": {
+        "interogari": 4,
+        "conexiuni": 3,
+        "dus_intors": 7,
+        "db_sec": 0.0013,
+        "cpu_sec": 0.0041,
+        "total_sec": 0.0054,
+        "db_procent": 24.5,
+        "status": 200,
+        "octeti": 9963
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0026,
+        "cpu_sec": 0.0043,
+        "total_sec": 0.007,
+        "db_procent": 37.9,
+        "status": 200,
+        "octeti": 18012
+      }
+    },
+    "100": {
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0042,
+        "cpu_sec": 0.0055,
+        "total_sec": 0.0097,
+        "db_procent": 42.9,
+        "status": 200,
+        "octeti": 20271
+      },
+      "/migrare/asociati": {
+        "interogari": 304,
+        "conexiuni": 203,
+        "dus_intors": 607,
+        "db_sec": 0.0609,
+        "cpu_sec": 0.0433,
+        "total_sec": 0.1041,
+        "db_procent": 58.4,
+        "status": 200,
+        "octeti": 9111
+      },
+      "/migrare/istoric-declaratii": {
+        "interogari": 104,
+        "conexiuni": 103,
+        "dus_intors": 207,
+        "db_sec": 0.0226,
+        "cpu_sec": 0.0146,
+        "total_sec": 0.0372,
+        "db_procent": 60.8,
+        "status": 200,
+        "octeti": 9011
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 304,
+        "conexiuni": 203,
+        "dus_intors": 607,
+        "db_sec": 0.0606,
+        "cpu_sec": 0.044,
+        "total_sec": 0.1047,
+        "db_procent": 57.9,
+        "status": 200,
+        "octeti": 9111
+      },
+      "/migrare/parteneri": {
+        "interogari": 404,
+        "conexiuni": 203,
+        "dus_intors": 707,
+        "db_sec": 0.0818,
+        "cpu_sec": 0.053,
+        "total_sec": 0.1349,
+        "db_procent": 60.7,
+        "status": 200,
+        "octeti": 9211
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0394,
+        "cpu_sec": 0.0056,
+        "total_sec": 0.045,
+        "db_procent": 87.6,
+        "status": 200,
+        "octeti": 15441
+      },
+      "/migrare/salariati": {
+        "interogari": 304,
+        "conexiuni": 203,
+        "dus_intors": 607,
+        "db_sec": 0.0606,
+        "cpu_sec": 0.0439,
+        "total_sec": 0.1045,
+        "db_procent": 58.0,
+        "status": 200,
+        "octeti": 9211
+      },
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0037,
+        "cpu_sec": 0.0056,
+        "total_sec": 0.0093,
+        "db_procent": 39.6,
+        "status": 200,
+        "octeti": 17041
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0034,
+        "cpu_sec": 0.0057,
+        "total_sec": 0.0091,
+        "db_procent": 37.8,
+        "status": 200,
+        "octeti": 26141
+      },
+      "/supervizor": {
+        "interogari": 205,
+        "conexiuni": 104,
+        "dus_intors": 409,
+        "db_sec": 0.0361,
+        "cpu_sec": 0.0173,
+        "total_sec": 0.0534,
+        "db_procent": 67.6,
+        "status": 200,
+        "octeti": 59452
+      },
+      "/tenants": {
+        "interogari": 4,
+        "conexiuni": 3,
+        "dus_intors": 7,
+        "db_sec": 0.0015,
+        "cpu_sec": 0.0048,
+        "total_sec": 0.0064,
+        "db_procent": 24.3,
+        "status": 200,
+        "octeti": 19913
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0036,
+        "cpu_sec": 0.0051,
+        "total_sec": 0.0087,
+        "db_procent": 41.1,
+        "status": 200,
+        "octeti": 35977
+      }
+    },
+    "250": {
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0076,
+        "cpu_sec": 0.0083,
+        "total_sec": 0.016,
+        "db_procent": 47.8,
+        "status": 200,
+        "octeti": 50587
+      },
+      "/migrare/asociati": {
+        "interogari": 754,
+        "conexiuni": 503,
+        "dus_intors": 1507,
+        "db_sec": 0.1533,
+        "cpu_sec": 0.103,
+        "total_sec": 0.2563,
+        "db_procent": 59.8,
+        "status": 200,
+        "octeti": 22761
+      },
+      "/migrare/istoric-declaratii": {
+        "interogari": 254,
+        "conexiuni": 253,
+        "dus_intors": 507,
+        "db_sec": 0.0551,
+        "cpu_sec": 0.0304,
+        "total_sec": 0.0856,
+        "db_procent": 64.4,
+        "status": 200,
+        "octeti": 22511
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 754,
+        "conexiuni": 503,
+        "dus_intors": 1507,
+        "db_sec": 0.1504,
+        "cpu_sec": 0.102,
+        "total_sec": 0.2524,
+        "db_procent": 59.6,
+        "status": 200,
+        "octeti": 22761
+      },
+      "/migrare/parteneri": {
+        "interogari": 1004,
+        "conexiuni": 503,
+        "dus_intors": 1757,
+        "db_sec": 0.2031,
+        "cpu_sec": 0.125,
+        "total_sec": 0.3281,
+        "db_procent": 61.9,
+        "status": 200,
+        "octeti": 23011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.007,
+        "cpu_sec": 0.0084,
+        "total_sec": 0.0154,
+        "db_procent": 45.2,
+        "status": 200,
+        "octeti": 38586
+      },
+      "/migrare/salariati": {
+        "interogari": 754,
+        "conexiuni": 503,
+        "dus_intors": 1507,
+        "db_sec": 0.1525,
+        "cpu_sec": 0.1041,
+        "total_sec": 0.2566,
+        "db_procent": 59.4,
+        "status": 200,
+        "octeti": 23011
+      },
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0068,
+        "cpu_sec": 0.0075,
+        "total_sec": 0.0143,
+        "db_procent": 47.7,
+        "status": 200,
+        "octeti": 42586
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0063,
+        "cpu_sec": 0.0085,
+        "total_sec": 0.0148,
+        "db_procent": 42.8,
+        "status": 200,
+        "octeti": 65336
+      },
+      "/supervizor": {
+        "interogari": 505,
+        "conexiuni": 254,
+        "dus_intors": 1009,
+        "db_sec": 0.0909,
+        "cpu_sec": 0.0378,
+        "total_sec": 0.1286,
+        "db_procent": 70.6,
+        "status": 200,
+        "octeti": 148252
+      },
+      "/tenants": {
+        "interogari": 4,
+        "conexiuni": 3,
+        "dus_intors": 7,
+        "db_sec": 0.0023,
+        "cpu_sec": 0.0071,
+        "total_sec": 0.0094,
+        "db_procent": 24.7,
+        "status": 200,
+        "octeti": 49763
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0069,
+        "cpu_sec": 0.0076,
+        "total_sec": 0.0145,
+        "db_procent": 47.6,
+        "status": 200,
+        "octeti": 89872
+      }
+    },
+    "500": {
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0136,
+        "cpu_sec": 0.0137,
+        "total_sec": 0.0273,
+        "db_procent": 49.9,
+        "status": 200,
+        "octeti": 101112
+      },
+      "/migrare/asociati": {
+        "interogari": 1504,
+        "conexiuni": 1003,
+        "dus_intors": 3007,
+        "db_sec": 0.2973,
+        "cpu_sec": 0.201,
+        "total_sec": 0.4983,
+        "db_procent": 59.7,
+        "status": 200,
+        "octeti": 45511
+      },
+      "/migrare/istoric-declaratii": {
+        "interogari": 504,
+        "conexiuni": 503,
+        "dus_intors": 1007,
+        "db_sec": 0.1099,
+        "cpu_sec": 0.0579,
+        "total_sec": 0.1678,
+        "db_procent": 65.5,
+        "status": 200,
+        "octeti": 45011
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 1504,
+        "conexiuni": 1003,
+        "dus_intors": 3007,
+        "db_sec": 0.295,
+        "cpu_sec": 0.2006,
+        "total_sec": 0.4956,
+        "db_procent": 59.5,
+        "status": 200,
+        "octeti": 45511
+      },
+      "/migrare/parteneri": {
+        "interogari": 2004,
+        "conexiuni": 1003,
+        "dus_intors": 3507,
+        "db_sec": 0.4022,
+        "cpu_sec": 0.2474,
+        "total_sec": 0.6496,
+        "db_procent": 61.9,
+        "status": 200,
+        "octeti": 46011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0118,
+        "cpu_sec": 0.0112,
+        "total_sec": 0.0231,
+        "db_procent": 51.2,
+        "status": 200,
+        "octeti": 77161
+      },
+      "/migrare/salariati": {
+        "interogari": 1504,
+        "conexiuni": 1003,
+        "dus_intors": 3007,
+        "db_sec": 0.2937,
+        "cpu_sec": 0.1996,
+        "total_sec": 0.4933,
+        "db_procent": 59.5,
+        "status": 200,
+        "octeti": 46011
+      },
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0116,
+        "cpu_sec": 0.0117,
+        "total_sec": 0.0233,
+        "db_procent": 49.8,
+        "status": 200,
+        "octeti": 85161
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.011,
+        "cpu_sec": 0.0137,
+        "total_sec": 0.0247,
+        "db_procent": 44.5,
+        "status": 200,
+        "octeti": 130661
+      },
+      "/supervizor": {
+        "interogari": 1005,
+        "conexiuni": 504,
+        "dus_intors": 2009,
+        "db_sec": 0.1752,
+        "cpu_sec": 0.0718,
+        "total_sec": 0.247,
+        "db_procent": 70.9,
+        "status": 200,
+        "octeti": 296252
+      },
+      "/tenants": {
+        "interogari": 4,
+        "conexiuni": 3,
+        "dus_intors": 7,
+        "db_sec": 0.0035,
+        "cpu_sec": 0.0108,
+        "total_sec": 0.0143,
+        "db_procent": 24.4,
+        "status": 200,
+        "octeti": 99513
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0122,
+        "cpu_sec": 0.0118,
+        "total_sec": 0.0239,
+        "db_procent": 50.8,
+        "status": 200,
+        "octeti": 179697
+      }
+    },
+    "1000": {
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0256,
+        "cpu_sec": 0.0247,
+        "total_sec": 0.0503,
+        "db_procent": 50.9,
+        "status": 200,
+        "octeti": 202163
+      },
+      "/migrare/asociati": {
+        "interogari": 3004,
+        "conexiuni": 2003,
+        "dus_intors": 6007,
+        "db_sec": 0.5954,
+        "cpu_sec": 0.3996,
+        "total_sec": 0.995,
+        "db_procent": 59.8,
+        "status": 200,
+        "octeti": 91011
+      },
+      "/migrare/istoric-declaratii": {
+        "interogari": 1004,
+        "conexiuni": 1003,
+        "dus_intors": 2007,
+        "db_sec": 0.2147,
+        "cpu_sec": 0.1094,
+        "total_sec": 0.3242,
+        "db_procent": 66.2,
+        "status": 200,
+        "octeti": 90011
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 3004,
+        "conexiuni": 2003,
+        "dus_intors": 6007,
+        "db_sec": 0.5933,
+        "cpu_sec": 0.3997,
+        "total_sec": 0.993,
+        "db_procent": 59.7,
+        "status": 200,
+        "octeti": 91011
+      },
+      "/migrare/parteneri": {
+        "interogari": 4004,
+        "conexiuni": 2003,
+        "dus_intors": 7007,
+        "db_sec": 0.8173,
+        "cpu_sec": 0.4998,
+        "total_sec": 1.3171,
+        "db_procent": 62.1,
+        "status": 200,
+        "octeti": 92011
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0216,
+        "cpu_sec": 0.0181,
+        "total_sec": 0.0397,
+        "db_procent": 54.3,
+        "status": 200,
+        "octeti": 154311
+      },
+      "/migrare/salariati": {
+        "interogari": 3004,
+        "conexiuni": 2003,
+        "dus_intors": 6007,
+        "db_sec": 0.5873,
+        "cpu_sec": 0.3954,
+        "total_sec": 0.9827,
+        "db_procent": 59.8,
+        "status": 200,
+        "octeti": 92011
+      },
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.022,
+        "cpu_sec": 0.0203,
+        "total_sec": 0.0422,
+        "db_procent": 52.0,
+        "status": 200,
+        "octeti": 170311
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0213,
+        "cpu_sec": 0.0752,
+        "total_sec": 0.0965,
+        "db_procent": 22.1,
+        "status": 200,
+        "octeti": 261311
+      },
+      "/supervizor": {
+        "interogari": 2005,
+        "conexiuni": 1004,
+        "dus_intors": 4009,
+        "db_sec": 0.3538,
+        "cpu_sec": 0.1419,
+        "total_sec": 0.4958,
+        "db_procent": 71.4,
+        "status": 200,
+        "octeti": 592255
+      },
+      "/tenants": {
+        "interogari": 4,
+        "conexiuni": 3,
+        "dus_intors": 7,
+        "db_sec": 0.0065,
+        "cpu_sec": 0.0189,
+        "total_sec": 0.0255,
+        "db_procent": 25.7,
+        "status": 200,
+        "octeti": 199013
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0272,
+        "cpu_sec": 0.026,
+        "total_sec": 0.0532,
+        "db_procent": 51.2,
+        "status": 200,
+        "octeti": 359347
+      }
+    }
+  },
+  "real": {
+    "uid": 1968,
+    "firme": 14,
+    "rute": {
+      "/control-fiscal": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.002,
+        "cpu_sec": 0.0041,
+        "total_sec": 0.006,
+        "db_procent": 32.7,
+        "status": 200,
+        "octeti": 9479
+      },
+      "/migrare/asociati": {
+        "interogari": 60,
+        "conexiuni": 31,
+        "dus_intors": 119,
+        "db_sec": 0.014,
+        "cpu_sec": 0.0098,
+        "total_sec": 0.0238,
+        "db_procent": 58.8,
+        "status": 200,
+        "octeti": 1460
+      },
+      "/migrare/istoric-declaratii": {
+        "interogari": 18,
+        "conexiuni": 17,
+        "dus_intors": 35,
+        "db_sec": 0.0044,
+        "cpu_sec": 0.0054,
+        "total_sec": 0.0098,
+        "db_procent": 45.3,
+        "status": 200,
+        "octeti": 1446
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 60,
+        "conexiuni": 31,
+        "dus_intors": 119,
+        "db_sec": 0.0135,
+        "cpu_sec": 0.0096,
+        "total_sec": 0.0232,
+        "db_procent": 58.4,
+        "status": 200,
+        "octeti": 1460
+      },
+      "/migrare/parteneri": {
+        "interogari": 60,
+        "conexiuni": 31,
+        "dus_intors": 105,
+        "db_sec": 0.0143,
+        "cpu_sec": 0.0109,
+        "total_sec": 0.0252,
+        "db_procent": 56.6,
+        "status": 200,
+        "octeti": 1474
+      },
+      "/migrare/plan-conturi": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0019,
+        "cpu_sec": 0.004,
+        "total_sec": 0.0059,
+        "db_procent": 32.3,
+        "status": 200,
+        "octeti": 2371
+      },
+      "/migrare/salariati": {
+        "interogari": 60,
+        "conexiuni": 31,
+        "dus_intors": 119,
+        "db_sec": 0.014,
+        "cpu_sec": 0.0097,
+        "total_sec": 0.0236,
+        "db_procent": 59.1,
+        "status": 200,
+        "octeti": 1472
+      },
+      "/migrare/solduri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0018,
+        "cpu_sec": 0.004,
+        "total_sec": 0.0059,
+        "db_procent": 31.3,
+        "status": 200,
+        "octeti": 2580
+      },
+      "/migrare/vector": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0018,
+        "cpu_sec": 0.0041,
+        "total_sec": 0.0059,
+        "db_procent": 30.7,
+        "status": 200,
+        "octeti": 3982
+      },
+      "/supervizor": {
+        "interogari": 33,
+        "conexiuni": 18,
+        "dus_intors": 65,
+        "db_sec": 0.0066,
+        "cpu_sec": 0.0065,
+        "total_sec": 0.0132,
+        "db_procent": 50.4,
+        "status": 200,
+        "octeti": 8623
+      },
+      "/tenants": {
+        "interogari": 4,
+        "conexiuni": 3,
+        "dus_intors": 7,
+        "db_sec": 0.0012,
+        "cpu_sec": 0.0039,
+        "total_sec": 0.005,
+        "db_procent": 23.1,
+        "status": 200,
+        "octeti": 2935
+      },
+      "/termene": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0019,
+        "cpu_sec": 0.0046,
+        "total_sec": 0.0066,
+        "db_procent": 29.6,
+        "status": 200,
+        "octeti": 9633
+      }
+    }
+  },
+  "rute": [
+    "/control-fiscal",
+    "/migrare/asociati",
+    "/migrare/istoric-declaratii",
+    "/migrare/mijloace-fixe",
+    "/migrare/parteneri",
+    "/migrare/plan-conturi",
+    "/migrare/salariati",
+    "/migrare/solduri",
+    "/migrare/vector",
+    "/supervizor",
+    "/tenants",
+    "/termene"
+  ]
+}

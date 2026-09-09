@@ -1,0 +1,96 @@
+════════════════════════════════════════════════════════════════════════
+COMANDA   : ./venv/bin/python -m scripts.masoara_p3
+TIMESTAMP : 2026-09-09T05:28 (start) .. 05:29:19 (sfarsit)
+COMMIT    : 6b59c19f0fcfe0565ea7b349539f6740196ce28e
+NOTA      : diagnostic P3 — masuratoare, fara nicio modificare in calea de cerere
+════════════════════════════════════════════════════════════════════════
+
+CALIBRARE masoara_p3 — separarea DB / CPU, ambele direcții:
+  (a) rută care doar AȘTEAPTĂ baza -> {'interogari': 1, 'conexiuni': 1, 'dus_intors': 2, 'db_sec': 0.2021, 'cpu_sec': 0.0102, 'total_sec': 0.2124, 'db_procent': 95.2, 'status': 200}
+  (b) rută care doar ARDE CPU      -> {'interogari': 0, 'conexiuni': 0, 'dus_intors': 0, 'db_sec': 0.0, 'cpu_sec': 0.2033, 'total_sec': 0.2033, 'db_procent': 0.0, 'status': 200}
+  pune timpul de bază în `db_sec`   : True
+  pune timpul de Python în `cpu_sec`: True
+  le DEOSEBEȘTE                     : True
+  VERDICT: OK
+
+RUTE derivate din cod (GET, de cabinet, ating portofoliul): 12
+   /control-fiscal
+   /migrare/asociati
+   /migrare/istoric-declaratii
+   /migrare/mijloace-fixe
+   /migrare/parteneri
+   /migrare/plan-conturi
+   /migrare/salariati
+   /migrare/solduri
+   /migrare/vector
+   /supervizor
+   /tenants
+   /termene
+
+   N=5     {'/control-fiscal': '5q/3c 0.005s (db 33.1%)', '/migrare/asociati': '19q/13c 0.010s (db 42.6%)', '/migrare/istoric-declaratii': '9q/8c 0.006s (db 36.1%)', '/migrare/mijloace-fixe': '19q/13c 0.010s (db 42.9%)', '/migrare/parteneri': '24q/13c 0.016s (db 60.8%)', '/migrare/plan-conturi': '5q/3c 0.005s (db 32.6%)', '/migrare/salariati': '19q/13c 0.009s (db 43.2%)', '/migrare/solduri': '5q/3c 0.005s (db 32.5%)', '/migrare/vector': '5q/3c 0.005s (db 34.1%)', '/supervizor': '15q/9c 0.007s (db 43.3%)', '/tenants': '4q/3c 0.004s (db 24.6%)', '/termene': '5q/3c 0.005s (db 32.2%)'}
+   N=50    {'/control-fiscal': '5q/3c 0.009s (db 31.6%)', '/migrare/asociati': '154q/103c 0.055s (db 57.3%)', '/migrare/istoric-declaratii': '54q/53c 0.021s (db 57.7%)', '/migrare/mijloace-fixe': '154q/103c 0.054s (db 56.5%)', '/migrare/parteneri': '204q/103c 0.070s (db 59.1%)', '/migrare/plan-conturi': '5q/3c 0.007s (db 38.5%)', '/migrare/salariati': '154q/103c 0.054s (db 56.6%)', '/migrare/solduri': '5q/3c 0.007s (db 38.0%)', '/migrare/vector': '5q/3c 0.007s (db 35.5%)', '/supervizor': '105q/54c 0.029s (db 63.5%)', '/tenants': '4q/3c 0.005s (db 24.5%)', '/termene': '5q/3c 0.007s (db 37.9%)'}
+   N=100   {'/control-fiscal': '5q/3c 0.010s (db 42.9%)', '/migrare/asociati': '304q/203c 0.104s (db 58.4%)', '/migrare/istoric-declaratii': '104q/103c 0.037s (db 60.8%)', '/migrare/mijloace-fixe': '304q/203c 0.105s (db 57.9%)', '/migrare/parteneri': '404q/203c 0.135s (db 60.7%)', '/migrare/plan-conturi': '5q/3c 0.045s (db 87.6%)', '/migrare/salariati': '304q/203c 0.104s (db 58.0%)', '/migrare/solduri': '5q/3c 0.009s (db 39.6%)', '/migrare/vector': '5q/3c 0.009s (db 37.8%)', '/supervizor': '205q/104c 0.053s (db 67.6%)', '/tenants': '4q/3c 0.006s (db 24.3%)', '/termene': '5q/3c 0.009s (db 41.1%)'}
+   N=250   {'/control-fiscal': '5q/3c 0.016s (db 47.8%)', '/migrare/asociati': '754q/503c 0.256s (db 59.8%)', '/migrare/istoric-declaratii': '254q/253c 0.086s (db 64.4%)', '/migrare/mijloace-fixe': '754q/503c 0.252s (db 59.6%)', '/migrare/parteneri': '1004q/503c 0.328s (db 61.9%)', '/migrare/plan-conturi': '5q/3c 0.015s (db 45.2%)', '/migrare/salariati': '754q/503c 0.257s (db 59.4%)', '/migrare/solduri': '5q/3c 0.014s (db 47.7%)', '/migrare/vector': '5q/3c 0.015s (db 42.8%)', '/supervizor': '505q/254c 0.129s (db 70.6%)', '/tenants': '4q/3c 0.009s (db 24.7%)', '/termene': '5q/3c 0.015s (db 47.6%)'}
+   N=500   {'/control-fiscal': '5q/3c 0.027s (db 49.9%)', '/migrare/asociati': '1504q/1003c 0.498s (db 59.7%)', '/migrare/istoric-declaratii': '504q/503c 0.168s (db 65.5%)', '/migrare/mijloace-fixe': '1504q/1003c 0.496s (db 59.5%)', '/migrare/parteneri': '2004q/1003c 0.650s (db 61.9%)', '/migrare/plan-conturi': '5q/3c 0.023s (db 51.2%)', '/migrare/salariati': '1504q/1003c 0.493s (db 59.5%)', '/migrare/solduri': '5q/3c 0.023s (db 49.8%)', '/migrare/vector': '5q/3c 0.025s (db 44.5%)', '/supervizor': '1005q/504c 0.247s (db 70.9%)', '/tenants': '4q/3c 0.014s (db 24.4%)', '/termene': '5q/3c 0.024s (db 50.8%)'}
+   N=1000  {'/control-fiscal': '5q/3c 0.050s (db 50.9%)', '/migrare/asociati': '3004q/2003c 0.995s (db 59.8%)', '/migrare/istoric-declaratii': '1004q/1003c 0.324s (db 66.2%)', '/migrare/mijloace-fixe': '3004q/2003c 0.993s (db 59.7%)', '/migrare/parteneri': '4004q/2003c 1.317s (db 62.1%)', '/migrare/plan-conturi': '5q/3c 0.040s (db 54.3%)', '/migrare/salariati': '3004q/2003c 0.983s (db 59.8%)', '/migrare/solduri': '5q/3c 0.042s (db 52.0%)', '/migrare/vector': '5q/3c 0.097s (db 22.1%)', '/supervizor': '2005q/1004c 0.496s (db 71.4%)', '/tenants': '4q/3c 0.025s (db 25.7%)', '/termene': '5q/3c 0.053s (db 51.2%)'}
+
+═══ CURBA SINTETICĂ — interogări / conexiuni ═══
+ruta                           N=5     N=50    N=100   N=250   N=500   N=1000
+/control-fiscal                   5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/asociati                19q/13 c   154q/103c   304q/203c   754q/503c  1504q/1003c  3004q/2003c
+/migrare/istoric-declaratii       9q/8  c    54q/53 c   104q/103c   254q/253c   504q/503c  1004q/1003c
+/migrare/mijloace-fixe           19q/13 c   154q/103c   304q/203c   754q/503c  1504q/1003c  3004q/2003c
+/migrare/parteneri               24q/13 c   204q/103c   404q/203c  1004q/503c  2004q/1003c  4004q/2003c
+/migrare/plan-conturi             5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/salariati               19q/13 c   154q/103c   304q/203c   754q/503c  1504q/1003c  3004q/2003c
+/migrare/solduri                  5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/migrare/vector                   5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+/supervizor                      15q/9  c   105q/54 c   205q/104c   505q/254c  1005q/504c  2005q/1004c
+/tenants                          4q/3  c     4q/3  c     4q/3  c     4q/3  c     4q/3  c     4q/3  c
+/termene                          5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c     5q/3  c
+
+═══ CURBA SINTETICĂ — total_sec (db% din el) ═══
+ruta                           N=5     N=50    N=100   N=250   N=500   N=1000
+/control-fiscal                0.005(33.1%)  0.009(31.6%)  0.010(42.9%)  0.016(47.8%)  0.027(49.9%)  0.050(50.9%)
+/migrare/asociati              0.010(42.6%)  0.055(57.3%)  0.104(58.4%)  0.256(59.8%)  0.498(59.7%)  0.995(59.8%)
+/migrare/istoric-declaratii    0.006(36.1%)  0.021(57.7%)  0.037(60.8%)  0.086(64.4%)  0.168(65.5%)  0.324(66.2%)
+/migrare/mijloace-fixe         0.010(42.9%)  0.054(56.5%)  0.105(57.9%)  0.252(59.6%)  0.496(59.5%)  0.993(59.7%)
+/migrare/parteneri             0.016(60.8%)  0.070(59.1%)  0.135(60.7%)  0.328(61.9%)  0.650(61.9%)  1.317(62.1%)
+/migrare/plan-conturi          0.005(32.6%)  0.007(38.5%)  0.045(87.6%)  0.015(45.2%)  0.023(51.2%)  0.040(54.3%)
+/migrare/salariati             0.009(43.2%)  0.054(56.6%)  0.104(58.0%)  0.257(59.4%)  0.493(59.5%)  0.983(59.8%)
+/migrare/solduri               0.005(32.5%)  0.007(38.0%)  0.009(39.6%)  0.014(47.7%)  0.023(49.8%)  0.042(52.0%)
+/migrare/vector                0.005(34.1%)  0.007(35.5%)  0.009(37.8%)  0.015(42.8%)  0.025(44.5%)  0.097(22.1%)
+/supervizor                    0.007(43.3%)  0.029(63.5%)  0.053(67.6%)  0.129(70.6%)  0.247(70.9%)  0.496(71.4%)
+/tenants                       0.004(24.6%)  0.005(24.5%)  0.006(24.3%)  0.009(24.7%)  0.014(24.4%)  0.025(25.7%)
+/termene                       0.005(32.2%)  0.007(37.9%)  0.009(41.1%)  0.015(47.6%)  0.024(50.8%)  0.053(51.2%)
+
+═══ CURBA SINTETICĂ — octeți răspuns ═══
+/control-fiscal                   1069    10165    20271    50587   101112   202163
+/migrare/asociati                  466     4561     9111    22761    45511    91011
+/migrare/istoric-declaratii        461     4511     9011    22511    45011    90011
+/migrare/mijloace-fixe             466     4561     9111    22761    45511    91011
+/migrare/parteneri                 471     4611     9211    23011    46011    92011
+/migrare/plan-conturi              781     7726    15441    38586    77161   154311
+/migrare/salariati                 471     4611     9211    23011    46011    92011
+/migrare/solduri                   861     8526    17041    42586    85161   170311
+/migrare/vector                   1316    13076    26141    65336   130661   261311
+/supervizor                       3206    29849    59452   148252   296252   592255
+/tenants                          1008     9963    19913    49763    99513   199013
+/termene                          1842    18012    35977    89872   179697   359347
+
+═══ PE PORTOFOLIUL REAL (14 firme, scheme adevărate) ═══
+ruta                            interog  conex    total_s       db_s      cpu_s    octeti
+/control-fiscal                       5      3      0.006      0.002     0.0041      9479
+/migrare/asociati                    60     31     0.0238      0.014     0.0098      1460
+/migrare/istoric-declaratii          18     17     0.0098     0.0044     0.0054      1446
+/migrare/mijloace-fixe               60     31     0.0232     0.0135     0.0096      1460
+/migrare/parteneri                   60     31     0.0252     0.0143     0.0109      1474
+/migrare/plan-conturi                 5      3     0.0059     0.0019      0.004      2371
+/migrare/salariati                   60     31     0.0236      0.014     0.0097      1472
+/migrare/solduri                      5      3     0.0059     0.0018      0.004      2580
+/migrare/vector                       5      3     0.0059     0.0018     0.0041      3982
+/supervizor                          33     18     0.0132     0.0066     0.0065      8623
+/tenants                              4      3      0.005     0.0012     0.0039      2935
+/termene                              5      3     0.0066     0.0019     0.0046      9633
+
+scris: /home/costin/iconta_nou/masuratori/post_p2/curba_p3.json
