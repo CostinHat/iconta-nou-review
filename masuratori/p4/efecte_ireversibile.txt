@@ -1,0 +1,80 @@
+EFECTELE PE CARE `ROLLBACK` NU LE DESFACE — analiza separata ceruta de P4
+Generat cu: ./venv/bin/python -m scripts.p4_artefacte
+Lista locurilor e DERIVATA (scan_tranzactii.analiza -> extern_in_tranzactie);
+verdictul fiecaruia e scris in core/p4_clasificare.EFECTE_EXTERNE si pazit de
+core/test_tranzactii_clasificate.py — un loc nou, nejudecat, cade poarta.
+==============================================================================
+locuri gasite la rularea asta: 8 · judecate: 8 (4 interogari, 4 efecte)
+
+core/anaf_api.py:valideaza_cui
+    cai atinse : 3
+        POST /auth/register
+        POST /migrare/importa
+        POST /tenants
+    fel        : INTEROGARE
+    ce e       : validarea unui CUI la serviciul public al ANAF
+    verdict    : nu lasa nimic la ANAF: e o intrebare, nu un act. Un rollback la noi nu are ce desface acolo. Ce ramane e ca tranzactia sta deschisa peste un apel de retea — durata, nu proprietate; e numita la restante, ca intrebare de concurenta.
+
+core/curs_bnr.py:_descarca
+    cai atinse : 6
+        POST /api/v1/firme/{tenant_id}/facturi
+        POST /tenants/{tenant_id}/facturi/emite
+        POST /tenants/{tenant_id}/facturi/{factura_id}/transforma
+        POST /tenants/{tenant_id}/woocommerce/sincronizeaza
+        core/facturi_recurente.py::__main__ -> _main()
+        core/woocommerce.py::__main__ -> _main()
+    fel        : INTEROGARE
+    ce e       : descarcarea XML-ului de cursuri de la BNR
+    verdict    : interogare. Efectul persistent care decurge din ea — cache-ul de cursuri — nu mai traieste in tranzactia apelantului din 04.09.2026: `_salveaza_cache` isi deschide conexiunea lui, cu motivul scris langa cod. Cache-ul TREBUIE sa supravietuiasca esecului actului care l-a declansat, altfel fiecare incercare re-descarca de la BNR.
+
+core/monitor_fiscal.py:ruleaza
+    cai atinse : 2
+        core/monitor_fiscal.py::__main__ -> _main()
+        core/monitor_fiscal.py::__main__ -> ruleaza()
+    fel        : INTEROGARE
+    ce e       : citirea paginii de noutati legislative a ANAF
+    verdict    : interogare pe o pagina publica. Alertele derivate din ea se scriu idempotent, pe `ON CONFLICT (sursa, titlu) DO NOTHING`, deci o rulare intrerupta se reia fara sa dubleze nimic.
+
+core/observare.py:_trimite_brevo
+    cai atinse : 1
+        POST /gdpr/cerere-stergere
+    fel        : EFECT
+    ce e       : alerta interna prin Brevo (`_trimite_brevo`)
+    verdict    : e un efect, dar unul care VORBESTE DESPRE un esec, nu unul care consemneaza un act. Daca tranzactia se intoarce dupa alerta, ce ramane e o alerta despre ceva ce nu s-a scris — adica exact ce trebuie sa afle cineva. Ordinea inversa ar fi gresita: o alerta amanata pana dupa commit s-ar pierde chiar cand actul cade.
+
+core/observare.py:trimite_email_html
+    cai atinse : 1
+        POST /pachete/{tenant_id}/poveste
+    fel        : EFECT
+    ce e       : e-mail catre un om (`trimite_email_html`)
+    verdict    : efect ireversibil, si a fost sursa a doua reparatii de azi (notificarea de scadenta si alerta de acces). Locurile ramase — povestea unui pachet, invitatia in portal, linkul de resetare — trimit fie un artefact REGENERABIL, fie un link a carui cheie e deja comisa inaintea plecarii mesajului. Regula scrisa pentru orice apelant nou: randul care face mesajul inutil de retrimis se comite INAINTEA lui.
+
+core/spv_conector.py:_post_token
+    cai atinse : 6
+        POST /tenants/{tenant_id}/etransport/trimite
+        POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv
+        core/alerta_acces.py::__main__ -> ruleaza()
+        core/spv_poll.py::__main__ -> ruleaza()
+        core/spv_receive.py::__main__ -> ruleaza()
+        core/spv_refresh.py::__main__ -> ruleaza()
+    fel        : EFECT
+    ce e       : POST /token la ANAF — ROTATIA perechii de tokene
+    verdict    : cel mai ireversibil efect din casa: in secunda raspunsului, vechiul `refresh_token` e mort la ANAF. REPARAT azi — `_roteste_si_comite()` COMITE perechea noua imediat, pe conexiunea pe care use-case-ul (`apel_anaf`) o detine, inainte ca apelul care a cerut-o sa poata esua. Prima forma a reparatiei deschidea o A DOUA conexiune si se BLOCA pe randul tinut de tranzactia apelantului; poarta a prins-o. V. randul critic `core/spv_conector.reimprospateaza_token`.
+
+core/spv_conector.py:apel_anaf
+    cai atinse : 5
+        POST /tenants/{tenant_id}/etransport/trimite
+        POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv
+        core/alerta_acces.py::__main__ -> ruleaza()
+        core/spv_poll.py::__main__ -> ruleaza()
+        core/spv_receive.py::__main__ -> ruleaza()
+    fel        : EFECT
+    ce e       : apelul autentificat catre ANAF din `apel_anaf` — acelasi loc, doua feluri
+    verdict    : AMESTECAT, si se spune: `stareMesaj`, `descarcare` si `listaMesaje` sunt INTEROGARI; `upload` (e-Factura, e-Transport) e un EFECT — documentul pleaca la autoritate si nu se mai poate lua inapoi. Pentru upload, ordinea e deja corecta si e modelul casei: `efactura_send.trimite` si `etransport_send.trimite` scriu si COMIT randul `pregatit` inaintea incarcarii, cu poarta de idempotenta inaintea lui, si abia apoi incarca. Ce ramane deschis: tranzactia lui `apel_anaf` sta deschisa peste apel si peste backoff-ul de 429 — durata, nu proprietate; numita la restante.
+
+core/woocommerce.py:comenzi
+    cai atinse : 1
+        core/woocommerce.py::__main__ -> _main()
+    fel        : INTEROGARE
+    ce e       : citirea comenzilor din magazinul WooCommerce al firmei
+    verdict    : interogare. Facturile emise din comenzi sunt fiecare o tranzactie atomica, iar duplicarea e aparata de cheia comenzii, nu de soarta tranzactiei.

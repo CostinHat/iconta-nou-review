@@ -84,6 +84,16 @@ PIN = {
         "ca celelalte doua: calibrarea lui are nevoie de MOSTRE DE SQL, iar mostrele intr-un fisier "
         "`test_*` se aprind in test_schema_coloane (o coloana inventata) si in test_garzi_pe_text "
         "(cautare de siruri) — masurat, nu presupus: prima forma le-a aprins pe amandoua",
+    # [P4, 09.09.2026] Registrul JUDECATILOR lui P4 — care operatie compusa e critica si de ce.
+    # Nu e un instrument de masura (aia e `scripts/scan_tranzactii.py`, care deriva LISTA); e
+    # partea care nu se poate deriva: judecata. Un apel din productie ar fi gresit prin
+    # constructie — nicio ruta n-are ce face cu clasificarea propriilor ei tranzactii.
+    "core/p4_clasificare.py":
+        "REGISTRU DE JUDECATI, nu cale de productie: perechea lui e gardul "
+        "core/test_tranzactii_clasificate.py, care confrunta clasificarea cu inventarul derivat de "
+        "scripts/scan_tranzactii.py la fiecare rulare. Traieste in core/ si nu in scripts/ fiindca "
+        "e citit de un gard, iar sonda exclude importatorii de test — adica exact cum sta si "
+        "core/scan_populatii_registre.py",
     "core/scan_garzi_pe_text.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_ancore): singurul lui "
         "consumator legitim e gardul core/test_garzi_pe_text.py, iar sonda exclude importatorii de "

@@ -26,8 +26,17 @@ def detecteaza(conn, fereastra_min, prag_tenanti, prag_actiuni):
                        ORDER BY t DESC, a DESC""", (fereastra_min, prag_tenanti, prag_actiuni))
         return [{"user_id": r[0], "tenanti": r[1], "actiuni": r[2]} for r in cur.fetchall()]
 
-def _poate_trimite(conn, cheie, dedup_min):
-    with conn.cursor() as cur:
+def _poate_trimite(cheie, dedup_min):
+    """Rezerva fereastra de dedup pentru `cheie`, IN TRANZACTIA EI, comisa. [P4, 09.09.2026]
+
+    Ce era pana azi: rezervarea se scria pe conexiunea apelantului, iar `ruleaza` comitea abia la
+    capatul buclei — dupa ce alertele plecasera deja prin Brevo. O eroare la orice pas de dupa
+    intorcea tranzactia: alertele trimise ramaneau trimise, randurile care le opreau nu. La
+    urmatoarea rulare (cron la 15 minute) plecau din nou, la fel.
+
+    `rollback`-ul nu desface un e-mail. Deci randul care il opreste se comite INAINTEA lui —
+    acelasi tipar ca `efactura_send.trimite`, care scrie randul `pregatit` si abia apoi incarca."""
+    with db.get_conn() as conn, conn.cursor() as cur:
         # upsert-ok: dedup alerta pe cheie cu fereastra (WHERE trimis_la<...) - reset intentionat
         cur.execute("""INSERT INTO public.alerte_acces_dedup (cheie, trimis_la) VALUES (%s, now())
                        ON CONFLICT (cheie) DO UPDATE SET trimis_la = now()
@@ -47,14 +56,14 @@ def ruleaza(trimite=None, **override):
         flagged = detecteaza(c, p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"])
         for u in flagged:
             cheie = "acces_anormal_user_%s" % u["user_id"]
-            if _poate_trimite(c, cheie, p["dedup_min"]):
+            if _poate_trimite(cheie, p["dedup_min"]):
                 subiect = "Acces anormal: user %s (%s tenanti, %s actiuni / %s min)" % (
                     u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"])
                 mesaj = ("Semnal automat (art.33): userul %s a atins %s tenanti distincti si %s actiuni "
                          "in ultimele %s min (praguri %s tenanti / %s actiuni). NU s-a blocat nimic. Verifica manual."
                          % (u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"]))
                 trimite(subiect, mesaj); alerte += 1
-        c.commit()
+        # [P4] `c` nu mai scrie nimic: detectia e o citire, iar rezervarea si-a luat tranzactia ei.
     return {"verificati": len(flagged), "alerte_trimise": alerte, "praguri": p}
 
 if __name__ == "__main__":

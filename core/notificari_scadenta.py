@@ -66,6 +66,45 @@ def _email_corp(firma_nume, f, prag):
     )
 
 
+def _rezerva_pragul(schema, factura_id, prag):
+    """Rezervă pragul într-o tranzacție PROPRIE, comisă. `True` dacă rezervarea e a noastră.
+
+    [P4, 09.09.2026] Limita tranzacției e a ACTULUI — o notificare —, nu a buclei care le
+    parcurge pe toate. Rândul ăsta e singurul lucru care oprește a doua trimitere, deci trebuie
+    să fie durabil **înainte** ca e-mailul să plece. `ON CONFLICT DO NOTHING ... RETURNING` face
+    rezervarea și verificarea dintr-o singură mișcare: dacă nu întoarce nimic, altcineva a luat-o.
+    """
+    with db.get_conn(schema) as c:
+        with c.cursor() as cur:
+            cur.execute("INSERT INTO notificari_scadenta (factura_id, prag, stare) "
+                        "VALUES (%s, %s, 'in_curs') ON CONFLICT (factura_id, prag) "
+                        "DO NOTHING RETURNING factura_id", (factura_id, prag))
+            return cur.fetchone() is not None
+
+
+def _consemneaza(schema, factura_id, prag, stare):
+    """Prag consumat FARA e-mail (fara reply-to, fara e-mail de client), in tranzactia lui.
+
+    [P4] Sta aici, si nu pe conexiunea apelantului, ca sa ramana adevarat un singur lucru despre
+    modulul asta: **nimic din el nu scrie in tranzactia altcuiva**. Cat timp o singura ramura mai
+    scria acolo, cititorul trebuia sa stie CARE — iar asta e chiar felul de cunoastere pe care
+    P4 il scoate din cap si il pune in cod."""
+    with db.get_conn(schema) as c:
+        with c.cursor() as cur:
+            cur.execute("INSERT INTO notificari_scadenta (factura_id, prag, stare) "
+                        "VALUES (%s, %s, %s) ON CONFLICT (factura_id, prag) DO NOTHING",
+                        (factura_id, prag, stare))
+
+
+def _scrie_rezultatul(schema, factura_id, prag, stare):
+    """Rezultatul trimiterii, în tranzacția LUI. Un prag rămas `in_curs` = e-mail plecat, rezultat
+    nescris: se vede, și e mai bun decât un e-mail trimis de două ori."""
+    with db.get_conn(schema) as c:
+        with c.cursor() as cur:
+            cur.execute("UPDATE notificari_scadenta SET stare = %s "
+                        " WHERE factura_id = %s AND prag = %s", (stare, factura_id, prag))
+
+
 def emite_pentru_firma(conn, schema, azi=None):
     """Trimite notificarile scadente pentru o firma (daca opt-in). Intoarce
     {trimise, fara_reply_to, fara_email_client, inactiv}. Conexiunea pozitionata pe schema."""
@@ -104,15 +143,32 @@ def emite_pentru_firma(conn, schema, azi=None):
             elif not email_valid(f["client_email"]):
                 stare = "fara_email_client"
             else:
+                # [P4, 09.09.2026] REZERVAREA PRAGULUI SE COMITE ÎNAINTE DE E-MAIL.
+                #
+                # Ce era până azi: e-mailul pleca la CLIENTUL firmei, iar rândul care împiedică
+                # retrimiterea se scria după el — amândouă în tranzacția deschisă pentru toată
+                # firma, pentru toate facturile ei. O eroare la orice factură de după, sau la
+                # commit, întorcea tranzacția: e-mailurile plecate rămâneau plecate, rândurile
+                # care le consemnau nu. A doua zi, cronul le trimitea din nou. *Un `rollback` nu
+                # desface un e-mail — iar aici desfăcea exact evidența care l-ar fi oprit.*
+                #
+                # Acum: se rezervă pragul într-o tranzacție PROPRIE, comisă; abia apoi pleacă
+                # e-mailul; apoi se scrie rezultatul, tot separat. Alegerea e deliberată — **cel
+                # mult o dată**, nu cel puțin o dată: o notificare pierdută se vede în evidență ca
+                # prag rămas `in_curs`; una trimisă de două ori ajunge la clientul firmei și nu se
+                # mai poate lua înapoi.
+                if not _rezerva_pragul(schema, f["id"], prag):
+                    continue          # rezervat de altcineva între citire și acum
                 ok = observare.trimite_email_html(
                     f["client_email"],
                     "Factura %s - %s" % (f["numar"] or "", _eticheta(prag)),
                     _email_corp(firma_nume, f, prag),
                     reply_to=firma_email, expeditor_nume="%s prin iConta.eu" % firma_nume)
                 stare = "trimis" if ok else "fara_reply_to"  # esec Brevo -> nu bloca pragul
-            cur.execute("INSERT INTO notificari_scadenta (factura_id, prag, stare) "
-                        "VALUES (%s, %s, %s) ON CONFLICT (factura_id, prag) DO NOTHING",
-                        (f["id"], prag, stare))
+                _scrie_rezultatul(schema, f["id"], prag, stare)
+                rez["trimise" if stare == "trimis" else stare] += 1
+                continue
+            _consemneaza(schema, f["id"], prag, stare)
             rez["trimise" if stare == "trimis" else stare] += 1
     return rez
 

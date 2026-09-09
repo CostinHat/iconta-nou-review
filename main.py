@@ -1368,21 +1368,35 @@ def register(date: RegisterIn):
         raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     if not _email_valid(date.email):  # [email_valid_v1] email obligatoriu + format valid
         raise HTTPException(400, EMAIL_INVALID)
+    # [P4, 09.09.2026] Versiunea termenilor se citește ÎNAINTE de tranzacție. Un fișier care
+    # lipsește trebuie să oprească înregistrarea înainte de orice scriere — nu să lase în urmă un
+    # cont fără dovada acordului.
+    try:
+        _versiune_termeni = _termeni_versiune(open(_TERMENI_PATH, encoding="utf-8").read())
+    except OSError as _e:
+        raise HTTPException(503, "Termenii și condițiile nu se pot citi acum, deci acordul tău "
+                                 "nu s-ar putea consemna. Contul NU a fost creat. Încearcă din "
+                                 "nou peste câteva minute.")
+    # [P4] CONTUL ȘI DOVADA ACORDULUI, ÎN ACEEAȘI TRANZACȚIE.
+    #
+    # Ce era până azi: contul se crea într-o tranzacție, iar `acord_termeni` — dovada
+    # consimțământului, cu versiunea textului — într-a doua, ambalată într-un `try` care doar
+    # TIPĂREA la eșec. Ruta refuză din prima linie o înregistrare fără bifă; dar dovada bifei
+    # putea lipsi în tăcere, iar contul rămânea. *Fără bifă contul nu se creează — deci nici
+    # fără dovada ei.*
     with db.get_conn() as conn:
         r = auth_api.inregistreaza_cabinet(
             conn, date.email, date.parola, date.nume_cabinet,
             nume=date.nume, prenume=date.prenume)
+        if r["ok"]:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune
+            with conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO public.acord_termeni (user_id, cabinet_id, email, versiune) "
+                    "VALUES (%s,%s,%s,%s)",
+                    (r.get("user_id"), r.get("firm_id"), date.email.strip().lower(),
+                     _versiune_termeni))
     if not r["ok"]:
         raise HTTPException(400, r["mesaj"])
-    try:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune (linia 3 din fisier)
-        with db.get_conn() as conn, conn.cursor() as cur:
-            cur.execute("INSERT INTO public.acord_termeni (user_id, cabinet_id, email, versiune) "
-                        "VALUES (%s,%s,%s,%s)",
-                        (r.get("user_id"), r.get("firm_id"), date.email.strip().lower(),
-                         _termeni_versiune(open(_TERMENI_PATH, encoding="utf-8").read())))
-            conn.commit()
-    except Exception as _e:
-        print("[termeni] acord neinregistrat pentru %s: %s" % (date.email, _e))
     try:  # register_email_v1: email de bun venit
         html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
                 "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
@@ -1662,6 +1676,7 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
         raise HTTPException(400, EMAIL_INVALID)
     import secrets
     parola_temp = secrets.token_urlsafe(9)
+    tok = "ml_" + secrets.token_urlsafe(32)   # [P4] se pregătește înainte: intră cu contul
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
@@ -1690,11 +1705,12 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
             _urma_portal(cur, tenant_id, "acces_dat",
                          "cabinetul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
                          ctx["uid"])
-    # client_activare_v2: link magic (fara parola)
-    import secrets as _sec
-    tok = "ml_" + _sec.token_urlsafe(32)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
+            # [P4, 09.09.2026] TOKENUL INTRĂ CU CONTUL, ÎN ACEEAȘI TRANZACȚIE.
+            #
+            # Ce era până azi: contul de client (cu o parolă temporară pe care n-o știe nimeni) se
+            # scria într-o tranzacție, iar tokenul de activare — singura lui cale de intrare — în
+            # a doua. O eroare între ele lăsa un utilizator care NU poate intra niciodată, iar
+            # urma din portal spunea „cabinetul a dat acces". Fundătură, și scrisă ca reușită.
             _pune_token(cur, tok, uid, "48 hours")
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
@@ -4108,7 +4124,31 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
     # incomplet, orice), depunerea TREBUIE să treacă. Altfel motorul care „nu blochează niciodată" ar
     # deveni exact poarta pe care contractul lui o interzice — și ar bloca prin AVARIE, felul cel mai
     # prost, fiindcă n-ar fi nici măcar o decizie. Eșecul se loghează, nu se ascunde.
-    _ramase = []
+    # [P4, 09.09.2026 — PROPRIETATEA TRANZACȚIEI E A USE-CASE-ULUI]
+    #
+    # Ce era până azi: confirmarea supervizorului se scria în tranzacția EI, iar depunerea în
+    # alta. Între ele stăteau trei refuzuri posibile — dreptul `poate_depune` (403), starea
+    # elementului (409/404) și orice eroare de bază. Măsurat mecanic cu
+    # `scripts/scan_tranzactii.py`: **două domenii tranzacționale care scriu**, pe aceeași
+    # operație logică. Consecința: o confirmare scrisă, cu numele și motivul omului, peste o
+    # depunere care NU s-a făcut niciodată.
+    #
+    # Iar `PREDARE_LANT.md` scria despre proba din 03.09 că *„`depus_la` și `confirmat_la` sunt
+    # aceeași secundă — confirmarea și depunerea sunt un singur act, nu două care se pot
+    # despărți."* Erau două. Se despărțeau. Afirmația era adevărată despre ce s-a măsurat
+    # atunci, nu despre ce apăra codul.
+    #
+    # Acum: **o singură tranzacție** ține confirmarea, aprobarea și marcarea. Dreptul se cere
+    # ÎNAINTEA oricărei scrieri. Poarta supervizorului stă sub `SAVEPOINT`, ca să-și păstreze
+    # contractul — *nu blochează niciodată* — fără să otrăvească tranzacția depunerii când crapă.
+    #
+    # CE SE SCHIMBĂ, declarat: la `409 CONSTATARI_NECONFIRMATE`, confirmările trimise în chiar
+    # cererea aia **nu mai rămân scrise**. Sunt aceeași clasă cu defectul de mai sus — o
+    # confirmare fără depunerea ei —, iar calea de trecere e cea din mesaj: se retrimit toate
+    # odată, cum cere deja `actiune`.
+    if not _are_permisiune(ctx, "poate_depune"):
+        raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)
+    _tid = _an_d = _luna_d = _schema_d = None
     try:
         with db.get_conn() as _cp:
             _fp = coada_api.firma_si_perioada(_cp, coada_id)
@@ -4116,36 +4156,50 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
             _tid, _an_d, _luna_d = _fp
             with db.get_conn() as _cp:
                 _schema_d = auth_api.schema_tenant(_cp, ctx["uid"], _tid)
-            if _schema_d:
-                with db.get_conn(_schema_d) as _cs:
-                    _ramase = supervizor.poarta_confirmarii(
-                        _cs, _schema_d, _tid, _an_d, _luna_d,
-                        confirmari=date.confirmari, confirmat_de=str(ctx["uid"]),
-                        confirmat_de_id=int(ctx["uid"]))
     except Exception as _e:
         import logging
         logging.getLogger("iconta").warning(
-            "poarta confirmarii supervizorului a esuat pe coada %s: %s — depunerea CONTINUA "
+            "contextul supervizorului n-a putut fi citit pe coada %s: %s — depunerea CONTINUA "
             "(supervizorul nu blocheaza niciodata)", coada_id, _e)
+        _schema_d = None
+    with db.get_conn(_schema_d) as conn:
         _ramase = []
-    if _ramase:
-        # NU e un blocaj: e o cerere de confirmare, cu calea de trecere numită în chiar răspunsul
-        # ăsta (trimite `confirmari` cu amprenta și motivul). Interdicția 47 — un refuz fără cale
-        # de ieșire pentru om.
-        raise HTTPException(409, {
-            "cod": "CONSTATARI_NECONFIRMATE",
-            "mesaj": ("%d constatare/constatări certe pe firma și perioada asta cer o confirmare "
-                      "scrisă înainte de depunere. Depunerea NU e blocată: confirmă-le, cu motiv, "
-                      "și continuă." % len(_ramase)),
-            # constatarile se trimit AȘA CUM SUNT: sunt deja afirmații tipate, produse de
-            # `control_incrucisat`. Reîmpachetarea lor aici ar fi fost o a doua afirmație, netipată
-            # — și cine o citea n-ar fi știut care e cea adevărată.
-            "constatari": _ramase,
-            "actiune": "Retrimite cererea cu `confirmari`: [{amprenta, motiv}] pentru fiecare.",
-        })
-    with db.get_conn() as conn:
-        if not _are_permisiune(ctx, "poate_depune"):
-            raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)
+        if _schema_d:
+            # DE CE `SAVEPOINT` și nu un `try` care înghite: dacă supervizorul crapă cu o eroare
+            # de bază, tranzacția e deja abortată, iar depunerea de după ar pica din alt motiv
+            # decât cel real. Savepointul întoarce exact partea lui.
+            with conn.cursor() as _cur:
+                _cur.execute("SAVEPOINT supervizor")
+            try:
+                _ramase = supervizor.poarta_confirmarii(
+                    conn, _schema_d, _tid, _an_d, _luna_d,
+                    confirmari=date.confirmari, confirmat_de=str(ctx["uid"]),
+                    confirmat_de_id=int(ctx["uid"]))
+                with conn.cursor() as _cur:
+                    _cur.execute("RELEASE SAVEPOINT supervizor")
+            except Exception as _e:
+                with conn.cursor() as _cur:
+                    _cur.execute("ROLLBACK TO SAVEPOINT supervizor")
+                import logging
+                logging.getLogger("iconta").warning(
+                    "poarta confirmarii supervizorului a esuat pe coada %s: %s — depunerea "
+                    "CONTINUA (supervizorul nu blocheaza niciodata)", coada_id, _e)
+                _ramase = []
+        if _ramase:
+            # NU e un blocaj: e o cerere de confirmare, cu calea de trecere numită în chiar
+            # răspunsul ăsta (trimite `confirmari` cu amprenta și motivul). Interdicția 47 — un
+            # refuz fără cale de ieșire pentru om.
+            raise HTTPException(409, {
+                "cod": "CONSTATARI_NECONFIRMATE",
+                "mesaj": ("%d constatare/constatări certe pe firma și perioada asta cer o "
+                          "confirmare scrisă înainte de depunere. Depunerea NU e blocată: "
+                          "confirmă-le, cu motiv, și continuă." % len(_ramase)),
+                # constatarile se trimit AȘA CUM SUNT: sunt deja afirmații tipate, produse de
+                # `control_incrucisat`. Reîmpachetarea lor aici ar fi fost o a doua afirmație,
+                # netipată — și cine o citea n-ar fi știut care e cea adevărată.
+                "constatari": _ramase,
+                "actiune": "Retrimite cererea cu `confirmari`: [{amprenta, motiv}] pentru fiecare.",
+            })
         # [02.09.2026, defect gasit apasand] APROBAREA VINE DUPA POARTA, si e a serverului.
         # Inlantuirea traia in client (`POST /aproba` apoi `POST /depune`), deci aprobarea trecea si
         # poarta cadea dupa ea — iar elementul ramanea `aprobata`, stare din care nu se mai poate
@@ -4165,10 +4219,18 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
         r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]),
                                        depus_de_id=int(ctx["uid"]),
                                        motiv_trecere=getattr(date, "motiv_trecere", None))
-    if not r["ok"]:
-        cod = r.get("cod")
-        raise HTTPException(409 if cod == "STARE_GRESITA" else (403 if cod == "FARA_VERDICT" else 404),
-                            r.get("mesaj", cod))
+        # [P4] REFUZUL SE RIDICA DINAUNTRUL TRANZACTIEI, ca sa se intoarca si aprobarea de dinainte.
+        #
+        # Pana azi, `raise` statea DUPA `with`, deci tranzactia se inchidea NORMAL si comitea ce
+        # scrisese `auto_aproba_daca_e_cazul`. Un refuz al marcarii lasa elementul `aprobata` fara
+        # sa fie depus — chiar forma pe care R128 o reparase venind din client: *un refuz care
+        # ingusta optiunile omului* (din `aprobata` nu se mai poate RESPINGE). Ordinea celor doua
+        # scrieri era corecta; ce lipsea era ca refuzul sa fie inauntrul limitei lor.
+        if not r["ok"]:
+            cod = r.get("cod")
+            raise HTTPException(409 if cod == "STARE_GRESITA"
+                                else (403 if cod == "FARA_VERDICT" else 404),
+                                r.get("mesaj", cod))
     return r
 
 # [p57_notif] RUTE NOTIFICARI
