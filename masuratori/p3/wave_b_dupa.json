@@ -1,0 +1,973 @@
+{
+  "commit": "e7ce0c2eeaf82d719fb70765a4ca39e301078210",
+  "eticheta": "dupa",
+  "val": "b",
+  "rute": [
+    "/migrare/parteneri",
+    "/migrare/asociati",
+    "/migrare/mijloace-fixe",
+    "/migrare/salariati"
+  ],
+  "curba": {
+    "5": {
+      "/migrare/parteneri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0037,
+        "total_sec": 0.0054,
+        "db_procent": 31.8,
+        "status": 200,
+        "octeti": 876
+      },
+      "/migrare/asociati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0037,
+        "total_sec": 0.0055,
+        "db_procent": 31.5,
+        "status": 200,
+        "octeti": 871
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0037,
+        "total_sec": 0.0054,
+        "db_procent": 31.1,
+        "status": 200,
+        "octeti": 871
+      },
+      "/migrare/salariati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0017,
+        "cpu_sec": 0.0035,
+        "total_sec": 0.0051,
+        "db_procent": 32.3,
+        "status": 200,
+        "octeti": 876
+      }
+    },
+    "50": {
+      "/migrare/parteneri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0026,
+        "cpu_sec": 0.0042,
+        "total_sec": 0.0068,
+        "db_procent": 38.4,
+        "status": 200,
+        "octeti": 8676
+      },
+      "/migrare/asociati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0026,
+        "cpu_sec": 0.0042,
+        "total_sec": 0.0069,
+        "db_procent": 38.0,
+        "status": 200,
+        "octeti": 8626
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0026,
+        "cpu_sec": 0.0042,
+        "total_sec": 0.0068,
+        "db_procent": 38.2,
+        "status": 200,
+        "octeti": 8626
+      },
+      "/migrare/salariati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0026,
+        "cpu_sec": 0.0041,
+        "total_sec": 0.0067,
+        "db_procent": 38.2,
+        "status": 200,
+        "octeti": 8676
+      }
+    },
+    "100": {
+      "/migrare/parteneri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0034,
+        "cpu_sec": 0.0052,
+        "total_sec": 0.0086,
+        "db_procent": 39.2,
+        "status": 200,
+        "octeti": 17341
+      },
+      "/migrare/asociati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0035,
+        "cpu_sec": 0.005,
+        "total_sec": 0.0084,
+        "db_procent": 41.0,
+        "status": 200,
+        "octeti": 17241
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0035,
+        "cpu_sec": 0.0051,
+        "total_sec": 0.0086,
+        "db_procent": 40.9,
+        "status": 200,
+        "octeti": 17241
+      },
+      "/migrare/salariati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0035,
+        "cpu_sec": 0.005,
+        "total_sec": 0.0085,
+        "db_procent": 41.2,
+        "status": 200,
+        "octeti": 17341
+      }
+    },
+    "250": {
+      "/migrare/parteneri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0062,
+        "cpu_sec": 0.0072,
+        "total_sec": 0.0134,
+        "db_procent": 46.3,
+        "status": 200,
+        "octeti": 43336
+      },
+      "/migrare/asociati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0063,
+        "cpu_sec": 0.0073,
+        "total_sec": 0.0135,
+        "db_procent": 46.2,
+        "status": 200,
+        "octeti": 43086
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0063,
+        "cpu_sec": 0.0072,
+        "total_sec": 0.0134,
+        "db_procent": 46.6,
+        "status": 200,
+        "octeti": 43086
+      },
+      "/migrare/salariati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0062,
+        "cpu_sec": 0.0074,
+        "total_sec": 0.0137,
+        "db_procent": 45.5,
+        "status": 200,
+        "octeti": 43336
+      }
+    },
+    "500": {
+      "/migrare/parteneri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0115,
+        "cpu_sec": 0.0111,
+        "total_sec": 0.0225,
+        "db_procent": 50.9,
+        "status": 200,
+        "octeti": 86661
+      },
+      "/migrare/asociati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0113,
+        "cpu_sec": 0.0109,
+        "total_sec": 0.0222,
+        "db_procent": 50.9,
+        "status": 200,
+        "octeti": 86161
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0113,
+        "cpu_sec": 0.011,
+        "total_sec": 0.0223,
+        "db_procent": 50.7,
+        "status": 200,
+        "octeti": 86161
+      },
+      "/migrare/salariati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0115,
+        "cpu_sec": 0.0115,
+        "total_sec": 0.0229,
+        "db_procent": 50.0,
+        "status": 200,
+        "octeti": 86661
+      }
+    },
+    "1000": {
+      "/migrare/parteneri": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0232,
+        "cpu_sec": 0.0249,
+        "total_sec": 0.048,
+        "db_procent": 48.2,
+        "status": 200,
+        "octeti": 173311
+      },
+      "/migrare/asociati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0249,
+        "cpu_sec": 0.055,
+        "total_sec": 0.0798,
+        "db_procent": 31.1,
+        "status": 200,
+        "octeti": 172311
+      },
+      "/migrare/mijloace-fixe": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0268,
+        "cpu_sec": 0.0191,
+        "total_sec": 0.046,
+        "db_procent": 58.4,
+        "status": 200,
+        "octeti": 172311
+      },
+      "/migrare/salariati": {
+        "interogari": 5,
+        "conexiuni": 3,
+        "dus_intors": 9,
+        "db_sec": 0.0232,
+        "cpu_sec": 0.0188,
+        "total_sec": 0.042,
+        "db_procent": 55.2,
+        "status": 200,
+        "octeti": 173311
+      }
+    }
+  },
+  "pante": {
+    "/migrare/parteneri": {
+      "BASE_QUERIES": 5.0,
+      "QUERY_SLOPE": 0.0,
+      "liniar_q": true,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTION_SLOPE": 0.0,
+      "liniar_c": true
+    },
+    "/migrare/asociati": {
+      "BASE_QUERIES": 5.0,
+      "QUERY_SLOPE": 0.0,
+      "liniar_q": true,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTION_SLOPE": 0.0,
+      "liniar_c": true
+    },
+    "/migrare/mijloace-fixe": {
+      "BASE_QUERIES": 5.0,
+      "QUERY_SLOPE": 0.0,
+      "liniar_q": true,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTION_SLOPE": 0.0,
+      "liniar_c": true
+    },
+    "/migrare/salariati": {
+      "BASE_QUERIES": 5.0,
+      "QUERY_SLOPE": 0.0,
+      "liniar_q": true,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTION_SLOPE": 0.0,
+      "liniar_c": true
+    }
+  },
+  "real": {
+    "uid": 1968,
+    "firme": 14,
+    "rute": {
+      "/migrare/parteneri": {
+        "status": 200,
+        "corp": {
+          "firme": [
+            {
+              "tenant_id": 4841,
+              "nume": "Achizitii IC Neplatitor SRL",
+              "cui": "95451848",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.464670+03:00"
+              }
+            },
+            {
+              "tenant_id": 4842,
+              "nume": "Agentie Turism Marja SRL",
+              "cui": "95687300",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.479395+03:00"
+              }
+            },
+            {
+              "tenant_id": 33394,
+              "nume": "Antibiotice Iasi",
+              "cui": "1973096",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.649890+03:00"
+              }
+            },
+            {
+              "tenant_id": 4837,
+              "nume": "Coafor Micro Neplatitor SRL",
+              "cui": "95138914",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.402027+03:00"
+              }
+            },
+            {
+              "tenant_id": 4838,
+              "nume": "Comert Micro TVA SRL",
+              "cui": "95141537",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.416769+03:00"
+              }
+            },
+            {
+              "tenant_id": 4840,
+              "nume": "Constructii Profit Trim SRL",
+              "cui": "95363126",
+              "are_parteneri": true,
+              "randuri": 2,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.448888+03:00"
+              }
+            },
+            {
+              "tenant_id": 4839,
+              "nume": "Distributie Profit IC SRL",
+              "cui": "95275466",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.432424+03:00"
+              }
+            },
+            {
+              "tenant_id": 4844,
+              "nume": "Ferma Agricultor Forfetar SRL",
+              "cui": "95873249",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.510185+03:00"
+              }
+            },
+            {
+              "tenant_id": 14769,
+              "nume": "Firma Grea Audit SRL",
+              "cui": "98765438",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.634940+03:00"
+              }
+            },
+            {
+              "tenant_id": 4845,
+              "nume": "IT Servicii Nerezidenti SRL",
+              "cui": "95904434",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.525737+03:00"
+              }
+            },
+            {
+              "tenant_id": 4784,
+              "nume": "Panificatie Salarii Speciale SRL",
+              "cui": "96653616",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.385955+03:00"
+              }
+            },
+            {
+              "tenant_id": 4843,
+              "nume": "Second Hand Marja SRL",
+              "cui": "95775518",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.494742+03:00"
+              }
+            },
+            {
+              "tenant_id": 4846,
+              "nume": "Startup Partial 2026 SRL",
+              "cui": "96385785",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.541688+03:00"
+              }
+            },
+            {
+              "tenant_id": 4847,
+              "nume": "Trecere Micro Profit SRL",
+              "cui": "96516171",
+              "are_parteneri": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.557113+03:00"
+              }
+            }
+          ]
+        }
+      },
+      "/migrare/asociati": {
+        "status": 200,
+        "corp": {
+          "firme": [
+            {
+              "tenant_id": 4841,
+              "nume": "Achizitii IC Neplatitor SRL",
+              "cui": "95451848",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.464670+03:00"
+              }
+            },
+            {
+              "tenant_id": 4842,
+              "nume": "Agentie Turism Marja SRL",
+              "cui": "95687300",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.479395+03:00"
+              }
+            },
+            {
+              "tenant_id": 33394,
+              "nume": "Antibiotice Iasi",
+              "cui": "1973096",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.649890+03:00"
+              }
+            },
+            {
+              "tenant_id": 4837,
+              "nume": "Coafor Micro Neplatitor SRL",
+              "cui": "95138914",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.402027+03:00"
+              }
+            },
+            {
+              "tenant_id": 4838,
+              "nume": "Comert Micro TVA SRL",
+              "cui": "95141537",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.416769+03:00"
+              }
+            },
+            {
+              "tenant_id": 4840,
+              "nume": "Constructii Profit Trim SRL",
+              "cui": "95363126",
+              "are_asociati": true,
+              "randuri": 2,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.448888+03:00"
+              }
+            },
+            {
+              "tenant_id": 4839,
+              "nume": "Distributie Profit IC SRL",
+              "cui": "95275466",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.432424+03:00"
+              }
+            },
+            {
+              "tenant_id": 4844,
+              "nume": "Ferma Agricultor Forfetar SRL",
+              "cui": "95873249",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.510185+03:00"
+              }
+            },
+            {
+              "tenant_id": 14769,
+              "nume": "Firma Grea Audit SRL",
+              "cui": "98765438",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.634940+03:00"
+              }
+            },
+            {
+              "tenant_id": 4845,
+              "nume": "IT Servicii Nerezidenti SRL",
+              "cui": "95904434",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.525737+03:00"
+              }
+            },
+            {
+              "tenant_id": 4784,
+              "nume": "Panificatie Salarii Speciale SRL",
+              "cui": "96653616",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.385955+03:00"
+              }
+            },
+            {
+              "tenant_id": 4843,
+              "nume": "Second Hand Marja SRL",
+              "cui": "95775518",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.494742+03:00"
+              }
+            },
+            {
+              "tenant_id": 4846,
+              "nume": "Startup Partial 2026 SRL",
+              "cui": "96385785",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.541688+03:00"
+              }
+            },
+            {
+              "tenant_id": 4847,
+              "nume": "Trecere Micro Profit SRL",
+              "cui": "96516171",
+              "are_asociati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.557113+03:00"
+              }
+            }
+          ]
+        }
+      },
+      "/migrare/mijloace-fixe": {
+        "status": 200,
+        "corp": {
+          "firme": [
+            {
+              "tenant_id": 4841,
+              "nume": "Achizitii IC Neplatitor SRL",
+              "cui": "95451848",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.464670+03:00"
+              }
+            },
+            {
+              "tenant_id": 4842,
+              "nume": "Agentie Turism Marja SRL",
+              "cui": "95687300",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.479395+03:00"
+              }
+            },
+            {
+              "tenant_id": 33394,
+              "nume": "Antibiotice Iasi",
+              "cui": "1973096",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.649890+03:00"
+              }
+            },
+            {
+              "tenant_id": 4837,
+              "nume": "Coafor Micro Neplatitor SRL",
+              "cui": "95138914",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.402027+03:00"
+              }
+            },
+            {
+              "tenant_id": 4838,
+              "nume": "Comert Micro TVA SRL",
+              "cui": "95141537",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.416769+03:00"
+              }
+            },
+            {
+              "tenant_id": 4840,
+              "nume": "Constructii Profit Trim SRL",
+              "cui": "95363126",
+              "are_mijloace": true,
+              "randuri": 1,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.448888+03:00"
+              }
+            },
+            {
+              "tenant_id": 4839,
+              "nume": "Distributie Profit IC SRL",
+              "cui": "95275466",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.432424+03:00"
+              }
+            },
+            {
+              "tenant_id": 4844,
+              "nume": "Ferma Agricultor Forfetar SRL",
+              "cui": "95873249",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.510185+03:00"
+              }
+            },
+            {
+              "tenant_id": 14769,
+              "nume": "Firma Grea Audit SRL",
+              "cui": "98765438",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.634940+03:00"
+              }
+            },
+            {
+              "tenant_id": 4845,
+              "nume": "IT Servicii Nerezidenti SRL",
+              "cui": "95904434",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.525737+03:00"
+              }
+            },
+            {
+              "tenant_id": 4784,
+              "nume": "Panificatie Salarii Speciale SRL",
+              "cui": "96653616",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.385955+03:00"
+              }
+            },
+            {
+              "tenant_id": 4843,
+              "nume": "Second Hand Marja SRL",
+              "cui": "95775518",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.494742+03:00"
+              }
+            },
+            {
+              "tenant_id": 4846,
+              "nume": "Startup Partial 2026 SRL",
+              "cui": "96385785",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.541688+03:00"
+              }
+            },
+            {
+              "tenant_id": 4847,
+              "nume": "Trecere Micro Profit SRL",
+              "cui": "96516171",
+              "are_mijloace": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.557113+03:00"
+              }
+            }
+          ]
+        }
+      },
+      "/migrare/salariati": {
+        "status": 200,
+        "corp": {
+          "firme": [
+            {
+              "tenant_id": 4841,
+              "nume": "Achizitii IC Neplatitor SRL",
+              "cui": "95451848",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.464670+03:00"
+              }
+            },
+            {
+              "tenant_id": 4842,
+              "nume": "Agentie Turism Marja SRL",
+              "cui": "95687300",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.479395+03:00"
+              }
+            },
+            {
+              "tenant_id": 33394,
+              "nume": "Antibiotice Iasi",
+              "cui": "1973096",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.649890+03:00"
+              }
+            },
+            {
+              "tenant_id": 4837,
+              "nume": "Coafor Micro Neplatitor SRL",
+              "cui": "95138914",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.402027+03:00"
+              }
+            },
+            {
+              "tenant_id": 4838,
+              "nume": "Comert Micro TVA SRL",
+              "cui": "95141537",
+              "are_salariati": true,
+              "randuri": 2,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.416769+03:00"
+              }
+            },
+            {
+              "tenant_id": 4840,
+              "nume": "Constructii Profit Trim SRL",
+              "cui": "95363126",
+              "are_salariati": true,
+              "randuri": 1,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.448888+03:00"
+              }
+            },
+            {
+              "tenant_id": 4839,
+              "nume": "Distributie Profit IC SRL",
+              "cui": "95275466",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.432424+03:00"
+              }
+            },
+            {
+              "tenant_id": 4844,
+              "nume": "Ferma Agricultor Forfetar SRL",
+              "cui": "95873249",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.510185+03:00"
+              }
+            },
+            {
+              "tenant_id": 14769,
+              "nume": "Firma Grea Audit SRL",
+              "cui": "98765438",
+              "are_salariati": true,
+              "randuri": 5,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.634940+03:00"
+              }
+            },
+            {
+              "tenant_id": 4845,
+              "nume": "IT Servicii Nerezidenti SRL",
+              "cui": "95904434",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.525737+03:00"
+              }
+            },
+            {
+              "tenant_id": 4784,
+              "nume": "Panificatie Salarii Speciale SRL",
+              "cui": "96653616",
+              "are_salariati": true,
+              "randuri": 13,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.385955+03:00"
+              }
+            },
+            {
+              "tenant_id": 4843,
+              "nume": "Second Hand Marja SRL",
+              "cui": "95775518",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.494742+03:00"
+              }
+            },
+            {
+              "tenant_id": 4846,
+              "nume": "Startup Partial 2026 SRL",
+              "cui": "96385785",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.541688+03:00"
+              }
+            },
+            {
+              "tenant_id": 4847,
+              "nume": "Trecere Micro Profit SRL",
+              "cui": "96516171",
+              "are_salariati": false,
+              "randuri": 0,
+              "prospetime": {
+                "stare": "curent",
+                "calculat_la": "2026-09-09T15:40:01.557113+03:00"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

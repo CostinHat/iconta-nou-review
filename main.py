@@ -2303,23 +2303,21 @@ def solduri_salveaza(tenant_id: int, date: SolduriIn, ctx=Depends(cere_rol("admi
 # ============================================================
 @app.get("/migrare/parteneri")
 def migrare_parteneri_status(ctx=Depends(cere_cabinet)):
-    """Lista firmelor cabinetului cu status parteneri (are/n-are, cati parteneri)."""
+    """[P3 val B, 09.09.2026] CITEȘTE MODELUL, nu portofoliul firmă cu firmă.
+
+    Măsurat înainte: `q = 4 + 4N`, `c = 3 + 2N` — la 1000 de firme, 4.004 interogări și
+    2.003 conexiuni. Bucla cerea schema per firmă (o conexiune) și o deschidea (încă una).
+
+    **Nu e un cache.** Valoarea se calculează cu `firma_rezumat._parteneri`, care cheamă exact
+    `solduri_parteneri_api.rezumat` — funcția pe care o chema ruta —, iar invalidarea vine din triggerul de pe
+    `solduri_parteneri`. Prospețimea NU se stochează: se derivă comparând versiunea cu care s-a calculat
+    cu versiunea de acum. O firmă fără rezumat primește `stare='lipseste'` și ecranul o arată ca
+    **necunoscută**, nu ca „nu are" — un necunoscut nu se rotunjește la «știu că nu»."""
     out = []
-    with db.get_conn() as conn:
-        firme = auth_api.tenantii_userului(conn, ctx["uid"])
-    for f in firme:
-        tid = f.get("id")
-        try:
-            with db.get_conn() as c:
-                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
-            if not schema:
-                continue
-            with db.get_conn(schema) as c:
-                rez = solduri_parteneri_api.rezumat(c)
-        except Exception:
-            rez = {"are_parteneri": False, "randuri": 0, "total_debit": 0, "total_credit": 0}
-        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                    "are_parteneri": rez["are_parteneri"], "randuri": rez["randuri"]})
+    for f, d, prosp in _portofoliu_din_model(ctx, "parteneri", {"are_parteneri": False, "randuri": 0}):
+        out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_parteneri": bool(d.get("are_parteneri")), "randuri": d.get("randuri") or 0,
+                    "prospetime": prosp})
     return {"firme": out}
 
 
@@ -2373,23 +2371,21 @@ def parteneri_salveaza(tenant_id: int, date: ParteneriIn, ctx=Depends(cere_rol("
 # ============================================================
 @app.get("/migrare/salariati")
 def migrare_salariati_status(ctx=Depends(cere_cabinet)):
-    """Lista firmelor cabinetului cu status salariati (are/n-are, cati)."""
+    """[P3 val B, 09.09.2026] CITEȘTE MODELUL, nu portofoliul firmă cu firmă.
+
+    Măsurat înainte: `q = 4 + 3N`, `c = 3 + 2N` — la 1000 de firme, 3.004 interogări și
+    2.003 conexiuni. Bucla cerea schema per firmă (o conexiune) și o deschidea (încă una).
+
+    **Nu e un cache.** Valoarea se calculează cu `firma_rezumat._salariati`, care cheamă exact
+    `salariati_import_api.rezumat` — funcția pe care o chema ruta —, iar invalidarea vine din triggerul de pe
+    `salariati`. Prospețimea NU se stochează: se derivă comparând versiunea cu care s-a calculat
+    cu versiunea de acum. O firmă fără rezumat primește `stare='lipseste'` și ecranul o arată ca
+    **necunoscută**, nu ca „nu are" — un necunoscut nu se rotunjește la «știu că nu»."""
     out = []
-    with db.get_conn() as conn:
-        firme = auth_api.tenantii_userului(conn, ctx["uid"])
-    for f in firme:
-        tid = f.get("id")
-        try:
-            with db.get_conn() as c:
-                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
-            if not schema:
-                continue
-            with db.get_conn(schema) as c:
-                rez = salariati_import_api.rezumat(c)
-        except Exception:
-            rez = {"are_salariati": False, "randuri": 0}
-        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                    "are_salariati": rez["are_salariati"], "randuri": rez["randuri"]})
+    for f, d, prosp in _portofoliu_din_model(ctx, "salariati", {"are_salariati": False, "randuri": 0}):
+        out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_salariati": bool(d.get("are_salariati")), "randuri": d.get("randuri") or 0,
+                    "prospetime": prosp})
     return {"firme": out}
 
 
@@ -2435,22 +2431,21 @@ def salariati_import_salveaza(tenant_id: int, date: SalariatiImportIn, ctx=Depen
 # ============================================================
 @app.get("/migrare/asociati")
 def migrare_asociati_status(ctx=Depends(cere_cabinet)):
+    """[P3 val B, 09.09.2026] CITEȘTE MODELUL, nu portofoliul firmă cu firmă.
+
+    Măsurat înainte: `q = 4 + 3N`, `c = 3 + 2N` — la 1000 de firme, 3.004 interogări și
+    2.003 conexiuni. Bucla cerea schema per firmă (o conexiune) și o deschidea (încă una).
+
+    **Nu e un cache.** Valoarea se calculează cu `firma_rezumat._asociati`, care cheamă exact
+    `asociati_import_api.rezumat` — funcția pe care o chema ruta —, iar invalidarea vine din triggerul de pe
+    `asociati`. Prospețimea NU se stochează: se derivă comparând versiunea cu care s-a calculat
+    cu versiunea de acum. O firmă fără rezumat primește `stare='lipseste'` și ecranul o arată ca
+    **necunoscută**, nu ca „nu are" — un necunoscut nu se rotunjește la «știu că nu»."""
     out = []
-    with db.get_conn() as conn:
-        firme = auth_api.tenantii_userului(conn, ctx["uid"])
-    for f in firme:
-        tid = f.get("id")
-        try:
-            with db.get_conn() as c:
-                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
-            if not schema:
-                continue
-            with db.get_conn(schema) as c:
-                rez = asociati_import_api.rezumat(c)
-        except Exception:
-            rez = {"are_asociati": False, "randuri": 0, "total_cota": 0}
-        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                    "are_asociati": rez["are_asociati"], "randuri": rez["randuri"]})
+    for f, d, prosp in _portofoliu_din_model(ctx, "asociati", {"are_asociati": False, "randuri": 0}):
+        out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_asociati": bool(d.get("are_asociati")), "randuri": d.get("randuri") or 0,
+                    "prospetime": prosp})
     return {"firme": out}
 
 
@@ -2534,22 +2529,21 @@ def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends
 # ============================================================
 @app.get("/migrare/mijloace-fixe")
 def migrare_mijloace_status(ctx=Depends(cere_cabinet)):
+    """[P3 val B, 09.09.2026] CITEȘTE MODELUL, nu portofoliul firmă cu firmă.
+
+    Măsurat înainte: `q = 4 + 3N`, `c = 3 + 2N` — la 1000 de firme, 3.004 interogări și
+    2.003 conexiuni. Bucla cerea schema per firmă (o conexiune) și o deschidea (încă una).
+
+    **Nu e un cache.** Valoarea se calculează cu `firma_rezumat._mijloace_fixe`, care cheamă exact
+    `mijloace_fixe_import_api.rezumat` — funcția pe care o chema ruta —, iar invalidarea vine din triggerul de pe
+    `mijloace_fixe`. Prospețimea NU se stochează: se derivă comparând versiunea cu care s-a calculat
+    cu versiunea de acum. O firmă fără rezumat primește `stare='lipseste'` și ecranul o arată ca
+    **necunoscută**, nu ca „nu are" — un necunoscut nu se rotunjește la «știu că nu»."""
     out = []
-    with db.get_conn() as conn:
-        firme = auth_api.tenantii_userului(conn, ctx["uid"])
-    for f in firme:
-        tid = f.get("id")
-        try:
-            with db.get_conn() as c:
-                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
-            if not schema:
-                continue
-            with db.get_conn(schema) as c:
-                rez = mijloace_fixe_import_api.rezumat(c)
-        except Exception:
-            rez = {"are_mijloace": False, "randuri": 0}
-        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                    "are_mijloace": rez["are_mijloace"], "randuri": rez["randuri"]})
+    for f, d, prosp in _portofoliu_din_model(ctx, "mijloace_fixe", {"are_mijloace": False, "randuri": 0}):
+        out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_mijloace": bool(d.get("are_mijloace")), "randuri": d.get("randuri") or 0,
+                    "prospetime": prosp})
     return {"firme": out}
 
 

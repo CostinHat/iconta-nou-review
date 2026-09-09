@@ -134,6 +134,66 @@ def _cale(val, eticheta):
     return os.path.join(d, "wave_%s_%s.json" % (val, eticheta))
 
 
+#: Câmpul de prospețime nu e un DATUM, e o declarație despre datum. Se scoate înainte de a
+#: compara valorile funcționale, și se raportează separat.
+_CAMP_PROSPETIME = "prospetime"
+
+
+def _fara_prospetime(corp):
+    """Corpul, cu câmpul de prospețime scos din fiecare firmă. Restul, neatins."""
+    if not isinstance(corp, dict) or not isinstance(corp.get("firme"), list):
+        return corp, []
+    curate, stari = [], []
+    for f in corp["firme"]:
+        if isinstance(f, dict):
+            g = {k: v for k, v in f.items() if k != _CAMP_PROSPETIME}
+            stari.append(((f.get(_CAMP_PROSPETIME) or {}).get("stare")) or "curent")
+            curate.append(g)
+        else:
+            curate.append(f)
+            stari.append("curent")
+    return dict(corp, firme=curate), stari
+
+
+def paritate_pe_stari(a, b):
+    """**Paritatea P3, aşa cum e definită în comandă**, nu ca egalitate de octeţi.
+
+    Regula, scrisă ca s-o poată contrazice cineva:
+
+      * pentru firmele în stare **CURENT**, valoarea funcţională de dinainte şi cea de după
+        TREBUIE să fie identice. Acolo se compară, câmp cu câmp, fără normalizare;
+      * pentru **MISSING / INVALIDATED / ERROR**, reprezentarea nouă are voie să difere
+        intenţionat de cea veche — fiindcă cea veche era semantic greşită: arăta un necunoscut ca
+        pe un „nu" hotărât. *A numi asta „paritate picată" ar însemna să aperi tocmai defectul.*
+
+    Întoarce câmpurile cerute de raport, plus numărătorile pe stări."""
+    ca, _ = _fara_prospetime(a.get("corp"))
+    cb, stari = _fara_prospetime(b.get("corp"))
+    fa = {f.get("tenant_id"): f for f in (ca.get("firme") or []) if isinstance(f, dict)}
+    fb = {f.get("tenant_id"): f for f in (cb.get("firme") or []) if isinstance(f, dict)}
+    nr = {}
+    for st in stari:
+        nr[st] = nr.get(st, 0) + 1
+    curente = [t for t, st in zip((f.get("tenant_id") for f in (cb.get("firme") or [])), stari)
+               if st == "curent"]
+    diferite = [t for t in curente if fa.get(t) != fb.get(t)]
+    return {
+        "STATUS_INAINTE": a.get("status"), "STATUS_DUPA": b.get("status"),
+        "FIRME": len(fb), "STARI": nr,
+        "FIRME_CURENT_COMPARATE": len(curente),
+        "DATA_PARITY": ("PASS" if (a.get("status") == b.get("status") and not diferite
+                                   and set(fa) == set(fb)) else "FAIL"),
+        "FIRME_CU_VALORI_DIFERITE": diferite,
+        "INTENTIONAL_PRESENTATION_CORRECTION": ("YES" if any(
+            _CAMP_PROSPETIME in f for f in (b.get("corp") or {}).get("firme", [])
+            if isinstance(f, dict)) else "NO"),
+    }
+    # `UNKNOWN_AS_EMPTY` și `STALE_AS_CURRENT` NU se raportează de aici. Instrumentul ăsta vede
+    # doar răspunsul rutei, iar întrebarea „necunoscutul e randat ca gol?" e despre ECRAN. O cifră
+    # pe care instrumentul n-o poate recalcula, ci doar afirma, e o amintire, nu o măsurătoare —
+    # se probează în `core/test_p3_val_b.py`, pe arborele de randare.
+
+
 def compara(val):
     """Confruntă instantaneul de dinainte cu cel de acum. Întoarce raportul, nu-l tipărește."""
     inainte = json.load(io.open(_cale(val, "inainte"), encoding="utf-8"))
@@ -157,9 +217,13 @@ def compara(val):
             "BEFORE_CONNECTION_SLOPE": pa["CONNECTION_SLOPE"],
             "AFTER_CONNECTION_SLOPE": pb["CONNECTION_SLOPE"],
             "status_inainte": a["status"], "status_dupa": b["status"],
-            "PARITY": "PASS" if (a["status"] == b["status"] and a["corp"] == b["corp"])
-                      else "FAIL",
+            # Egalitatea de octeți rămâne raportată — e informație —, dar NU mai e criteriul:
+            # o corecție de reprezentare intenționată ar pica-o pe drept, iar asta ar apăra
+            # defectul în loc de datum.
+            "PARITY_OCTETI": "PASS" if (a["status"] == b["status"] and a["corp"] == b["corp"])
+                             else "FAIL",
         }
+        rap["rute"][r].update(paritate_pe_stari(a, b))
     return rap
 
 

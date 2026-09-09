@@ -99,6 +99,40 @@ def _vector(conn, schema):
             "operatiuni_ic": v.get("operatiuni_ic")}
 
 
+def _parteneri(conn, schema):
+    """[P3 val B] `solduri_parteneri_api.rezumat` — ACEEAȘI funcție pe care o chema ruta.
+
+    Ea cheamă `asigura_tabel(conn)`, adică DDL. Se păstrează: ruta face exact asta azi, iar
+    aspectul n-are voie să răspundă altceva decât răspundea ecranul. *DDL-ul e nevinovat câtă
+    vreme conexiunea are `search_path` pe schema firmei* — când n-a avut, tabela a aterizat în
+    `public` (incidentul din diagnosticul P3, `masuratori/post_p2/p3_searchpath_failure_mode.txt`).
+    Lucrătorul deschide `db.get_conn(schema)`, deci o are."""
+    from core import solduri_parteneri_api
+    r = solduri_parteneri_api.rezumat(conn)
+    return {"are_parteneri": r["are_parteneri"], "randuri": r["randuri"]}
+
+
+def _salariati(conn, schema):
+    """[P3 val B] Cheamă `salariati_import_api.rezumat`, ca ruta."""
+    from core import salariati_import_api
+    r = salariati_import_api.rezumat(conn)
+    return {"are_salariati": r["are_salariati"], "randuri": r["randuri"]}
+
+
+def _asociati(conn, schema):
+    """[P3 val B] Cheamă `asociati_import_api.rezumat`, ca ruta."""
+    from core import asociati_import_api
+    r = asociati_import_api.rezumat(conn)
+    return {"are_asociati": r["are_asociati"], "randuri": r["randuri"]}
+
+
+def _mijloace_fixe(conn, schema):
+    """[P3 val B] Cheamă `mijloace_fixe_import_api.rezumat`, ca ruta."""
+    from core import mijloace_fixe_import_api
+    r = mijloace_fixe_import_api.rezumat(conn)
+    return {"are_mijloace": r["are_mijloace"], "randuri": r["randuri"]}
+
+
 # ============================================================================
 #  REGISTRUL ASPECTELOR — `tabele` sunt MĂSURATE, nu scrise
 # ============================================================================
@@ -142,6 +176,34 @@ ASPECTE = {
     "vector": {
         "tabele": ("firma_profil",), "tabele_public": (), "timp": None,
         "calcul": _vector},
+    # ── [P3 val B, 09.09.2026] cele patru straturi de migrare ──
+    #
+    # Rutele lor citeau firmă cu firmă, cu DOUĂ conexiuni fiecare (una ca să afle schema, una ca
+    # s-o deschidă). Măsurat pe cererea HTTP întreagă, la 1000 de firme:
+    #     /migrare/parteneri       4.004 interogări / 2.003 conexiuni  (q = 4 + 4N)
+    #     /migrare/asociati        3.004 / 2.003                        (q = 4 + 3N)
+    #     /migrare/mijloace-fixe   3.004 / 2.003                        (q = 4 + 3N)
+    #     /migrare/salariati       3.004 / 2.003                        (q = 4 + 3N)
+    #
+    # Datele stau în schema FIECĂREI firme, nu în `public` cu `tenant_id` — deci nu există un
+    # `GROUP BY` care să le adune, cum a fost la valul A. Un `UNION ALL` construit peste cele N
+    # scheme ar fi dat o singură interogare pe o singură conexiune, adică panta 0 la litera
+    # criteriului, dar textul și planul cresc cu N: latența ar fi crescut mai departe. *Un criteriu
+    # trecut fără ca problema să fie rezolvată e cosmetică, nu remediere.*
+    #
+    # `timp: None` — niciuna nu depinde de ceas: sunt numărători de rânduri, nu scadențe.
+    "parteneri": {
+        "tabele": ("solduri_parteneri",), "tabele_public": (), "timp": None,
+        "calcul": _parteneri},
+    "salariati": {
+        "tabele": ("salariati",), "tabele_public": (), "timp": None,
+        "calcul": _salariati},
+    "asociati": {
+        "tabele": ("asociati",), "tabele_public": (), "timp": None,
+        "calcul": _asociati},
+    "mijloace_fixe": {
+        "tabele": ("mijloace_fixe",), "tabele_public": (), "timp": None,
+        "calcul": _mijloace_fixe},
     # ── grele: se calculează împreună, în `recalculeaza_greu` ──
     "termene": {
         "tabele": _T_TERMENE, "tabele_public": ("declaratii_depuse",),

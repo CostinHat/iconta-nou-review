@@ -1,5 +1,5 @@
 {
-  "azi": "2026-09-08",
+  "azi": "2026-09-09",
   "firme_masurate": 20,
   "firme_cu_confruntare": 3,
   "aspecte": {
@@ -103,7 +103,7 @@
       "doar_stat": [],
       "doar_plan": [],
       "instructiuni": 40,
-      "secunde": 0.165,
+      "secunde": 0.191,
       "neexplicabile": 20,
       "esecuri_explicare": [],
       "erori_firma": [],
@@ -212,7 +212,7 @@
       "doar_stat": [],
       "doar_plan": [],
       "instructiuni": 20,
-      "secunde": 0.159,
+      "secunde": 0.163,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
@@ -321,13 +321,449 @@
       "doar_stat": [],
       "doar_plan": [],
       "instructiuni": 20,
-      "secunde": 0.161,
+      "secunde": 0.165,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
       "stat_instabil": 0,
       "declarat_in_cod": [
         "firma_profil"
+      ]
+    },
+    "parteneri": {
+      "plan": [
+        [
+          "tenant_001",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_002",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_003",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_004",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_005",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_006",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_007",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_008",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_009",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_010",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_011",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_012",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_013",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_014",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_015",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_016",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_017",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_018",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_045",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_048",
+          "solduri_parteneri"
+        ]
+      ],
+      "stat": [
+        [
+          "tenant_001",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_002",
+          "solduri_parteneri"
+        ],
+        [
+          "tenant_003",
+          "solduri_parteneri"
+        ]
+      ],
+      "doar_stat": [],
+      "doar_plan": [],
+      "instructiuni": 40,
+      "secunde": 0.174,
+      "neexplicabile": 20,
+      "esecuri_explicare": [],
+      "erori_firma": [],
+      "stat_instabil": 0,
+      "declarat_in_cod": [
+        "solduri_parteneri"
+      ]
+    },
+    "salariati": {
+      "plan": [
+        [
+          "tenant_001",
+          "salariati"
+        ],
+        [
+          "tenant_002",
+          "salariati"
+        ],
+        [
+          "tenant_003",
+          "salariati"
+        ],
+        [
+          "tenant_004",
+          "salariati"
+        ],
+        [
+          "tenant_005",
+          "salariati"
+        ],
+        [
+          "tenant_006",
+          "salariati"
+        ],
+        [
+          "tenant_007",
+          "salariati"
+        ],
+        [
+          "tenant_008",
+          "salariati"
+        ],
+        [
+          "tenant_009",
+          "salariati"
+        ],
+        [
+          "tenant_010",
+          "salariati"
+        ],
+        [
+          "tenant_011",
+          "salariati"
+        ],
+        [
+          "tenant_012",
+          "salariati"
+        ],
+        [
+          "tenant_013",
+          "salariati"
+        ],
+        [
+          "tenant_014",
+          "salariati"
+        ],
+        [
+          "tenant_015",
+          "salariati"
+        ],
+        [
+          "tenant_016",
+          "salariati"
+        ],
+        [
+          "tenant_017",
+          "salariati"
+        ],
+        [
+          "tenant_018",
+          "salariati"
+        ],
+        [
+          "tenant_045",
+          "salariati"
+        ],
+        [
+          "tenant_048",
+          "salariati"
+        ]
+      ],
+      "stat": [
+        [
+          "tenant_001",
+          "salariati"
+        ],
+        [
+          "tenant_002",
+          "salariati"
+        ],
+        [
+          "tenant_003",
+          "salariati"
+        ]
+      ],
+      "doar_stat": [],
+      "doar_plan": [],
+      "instructiuni": 40,
+      "secunde": 0.182,
+      "neexplicabile": 0,
+      "esecuri_explicare": [],
+      "erori_firma": [],
+      "stat_instabil": 0,
+      "declarat_in_cod": [
+        "salariati"
+      ]
+    },
+    "asociati": {
+      "plan": [
+        [
+          "tenant_001",
+          "asociati"
+        ],
+        [
+          "tenant_002",
+          "asociati"
+        ],
+        [
+          "tenant_003",
+          "asociati"
+        ],
+        [
+          "tenant_004",
+          "asociati"
+        ],
+        [
+          "tenant_005",
+          "asociati"
+        ],
+        [
+          "tenant_006",
+          "asociati"
+        ],
+        [
+          "tenant_007",
+          "asociati"
+        ],
+        [
+          "tenant_008",
+          "asociati"
+        ],
+        [
+          "tenant_009",
+          "asociati"
+        ],
+        [
+          "tenant_010",
+          "asociati"
+        ],
+        [
+          "tenant_011",
+          "asociati"
+        ],
+        [
+          "tenant_012",
+          "asociati"
+        ],
+        [
+          "tenant_013",
+          "asociati"
+        ],
+        [
+          "tenant_014",
+          "asociati"
+        ],
+        [
+          "tenant_015",
+          "asociati"
+        ],
+        [
+          "tenant_016",
+          "asociati"
+        ],
+        [
+          "tenant_017",
+          "asociati"
+        ],
+        [
+          "tenant_018",
+          "asociati"
+        ],
+        [
+          "tenant_045",
+          "asociati"
+        ],
+        [
+          "tenant_048",
+          "asociati"
+        ]
+      ],
+      "stat": [
+        [
+          "tenant_001",
+          "asociati"
+        ],
+        [
+          "tenant_002",
+          "asociati"
+        ],
+        [
+          "tenant_003",
+          "asociati"
+        ]
+      ],
+      "doar_stat": [],
+      "doar_plan": [],
+      "instructiuni": 40,
+      "secunde": 0.174,
+      "neexplicabile": 0,
+      "esecuri_explicare": [],
+      "erori_firma": [],
+      "stat_instabil": 0,
+      "declarat_in_cod": [
+        "asociati"
+      ]
+    },
+    "mijloace_fixe": {
+      "plan": [
+        [
+          "tenant_001",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_002",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_003",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_004",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_005",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_006",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_007",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_008",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_009",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_010",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_011",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_012",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_013",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_014",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_015",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_016",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_017",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_018",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_045",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_048",
+          "mijloace_fixe"
+        ]
+      ],
+      "stat": [
+        [
+          "tenant_001",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_002",
+          "mijloace_fixe"
+        ],
+        [
+          "tenant_003",
+          "mijloace_fixe"
+        ]
+      ],
+      "doar_stat": [],
+      "doar_plan": [],
+      "instructiuni": 40,
+      "secunde": 0.171,
+      "neexplicabile": 0,
+      "esecuri_explicare": [],
+      "erori_firma": [],
+      "stat_instabil": 0,
+      "declarat_in_cod": [
+        "mijloace_fixe"
       ]
     },
     "termene": {
@@ -723,7 +1159,7 @@
         ]
       ],
       "instructiuni": 396,
-      "secunde": 1.765,
+      "secunde": 1.863,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],
@@ -2848,7 +3284,7 @@
       "doar_stat": [],
       "doar_plan": [],
       "instructiuni": 9960,
-      "secunde": 4.421,
+      "secunde": 4.442,
       "neexplicabile": 0,
       "esecuri_explicare": [],
       "erori_firma": [],

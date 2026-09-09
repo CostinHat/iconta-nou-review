@@ -143,7 +143,14 @@ RAMURI = (
      "asteapta": ()},
 )
 
-ASPECTE_MASURATE = ("termene", "control_fiscal")
+#: TOATE aspectele registrului, DERIVATE — nu o listă scrisă alături de el.
+#:
+#: [09.09.2026] A fost `("termene", "control_fiscal")`, scrisă de mână. Valul B a adăugat patru
+#: aspecte, iar `solduri_parteneri` — sursa unuia dintre ele — a rămas declarată în registru și
+#: neatinsă de nicio ramură: exact ce prinde `test_ramurile_acopera_tot_ce_declara_registrul`, și
+#: a prins-o. *O listă ținută lângă registru se desincronizează de registru; una derivată din el
+#: nu poate.* Aspectele ușoare costă ~0,2 s fiecare, deci acoperirea întreagă rămâne ieftină.
+ASPECTE_MASURATE = tuple(FR.ASPECTE)
 
 
 def test_registrul_de_ramuri_e_acelasi_in_proba_si_in_document():

@@ -1,0 +1,115 @@
+COMMIT=e7ce0c2eeaf82d719fb70765a4ca39e301078210
+COMMAND=./venv/bin/python scripts/masoara_val.py b compara
+----
+{
+  "val": "b",
+  "commit_inainte": "e7ce0c2eeaf82d719fb70765a4ca39e301078210",
+  "commit_dupa": "e7ce0c2eeaf82d719fb70765a4ca39e301078210",
+  "rute": {
+    "/migrare/parteneri": {
+      "BEFORE_QUERIES_N1000": 4004,
+      "AFTER_QUERIES_N1000": 5,
+      "BEFORE_CONNECTIONS_N1000": 2003,
+      "AFTER_CONNECTIONS_N1000": 3,
+      "BEFORE_LATENCY_MS_N1000": 2005.9,
+      "AFTER_LATENCY_MS_N1000": 48.0,
+      "PAYLOAD_BYTES_N1000": 173311,
+      "BEFORE_QUERY_SLOPE": 4.0,
+      "AFTER_QUERY_SLOPE": 0.0,
+      "BEFORE_CONNECTION_SLOPE": 2.0,
+      "AFTER_CONNECTION_SLOPE": 0.0,
+      "status_inainte": 200,
+      "status_dupa": 200,
+      "PARITY_OCTETI": "FAIL",
+      "STATUS_INAINTE": 200,
+      "STATUS_DUPA": 200,
+      "FIRME": 14,
+      "STARI": {
+        "curent": 14
+      },
+      "FIRME_CURENT_COMPARATE": 14,
+      "DATA_PARITY": "PASS",
+      "FIRME_CU_VALORI_DIFERITE": [],
+      "INTENTIONAL_PRESENTATION_CORRECTION": "YES"
+    },
+    "/migrare/asociati": {
+      "BEFORE_QUERIES_N1000": 3004,
+      "AFTER_QUERIES_N1000": 5,
+      "BEFORE_CONNECTIONS_N1000": 2003,
+      "AFTER_CONNECTIONS_N1000": 3,
+      "BEFORE_LATENCY_MS_N1000": 1010.3,
+      "AFTER_LATENCY_MS_N1000": 79.8,
+      "PAYLOAD_BYTES_N1000": 172311,
+      "BEFORE_QUERY_SLOPE": 3.0,
+      "AFTER_QUERY_SLOPE": 0.0,
+      "BEFORE_CONNECTION_SLOPE": 2.0,
+      "AFTER_CONNECTION_SLOPE": 0.0,
+      "status_inainte": 200,
+      "status_dupa": 200,
+      "PARITY_OCTETI": "FAIL",
+      "STATUS_INAINTE": 200,
+      "STATUS_DUPA": 200,
+      "FIRME": 14,
+      "STARI": {
+        "curent": 14
+      },
+      "FIRME_CURENT_COMPARATE": 14,
+      "DATA_PARITY": "PASS",
+      "FIRME_CU_VALORI_DIFERITE": [],
+      "INTENTIONAL_PRESENTATION_CORRECTION": "YES"
+    },
+    "/migrare/mijloace-fixe": {
+      "BEFORE_QUERIES_N1000": 3004,
+      "AFTER_QUERIES_N1000": 5,
+      "BEFORE_CONNECTIONS_N1000": 2003,
+      "AFTER_CONNECTIONS_N1000": 3,
+      "BEFORE_LATENCY_MS_N1000": 1008.5,
+      "AFTER_LATENCY_MS_N1000": 46.0,
+      "PAYLOAD_BYTES_N1000": 172311,
+      "BEFORE_QUERY_SLOPE": 3.0,
+      "AFTER_QUERY_SLOPE": 0.0,
+      "BEFORE_CONNECTION_SLOPE": 2.0,
+      "AFTER_CONNECTION_SLOPE": 0.0,
+      "status_inainte": 200,
+      "status_dupa": 200,
+      "PARITY_OCTETI": "FAIL",
+      "STATUS_INAINTE": 200,
+      "STATUS_DUPA": 200,
+      "FIRME": 14,
+      "STARI": {
+        "curent": 14
+      },
+      "FIRME_CURENT_COMPARATE": 14,
+      "DATA_PARITY": "PASS",
+      "FIRME_CU_VALORI_DIFERITE": [],
+      "INTENTIONAL_PRESENTATION_CORRECTION": "YES"
+    },
+    "/migrare/salariati": {
+      "BEFORE_QUERIES_N1000": 3004,
+      "AFTER_QUERIES_N1000": 5,
+      "BEFORE_CONNECTIONS_N1000": 2003,
+      "AFTER_CONNECTIONS_N1000": 3,
+      "BEFORE_LATENCY_MS_N1000": 1010.5,
+      "AFTER_LATENCY_MS_N1000": 42.0,
+      "PAYLOAD_BYTES_N1000": 173311,
+      "BEFORE_QUERY_SLOPE": 3.0,
+      "AFTER_QUERY_SLOPE": 0.0,
+      "BEFORE_CONNECTION_SLOPE": 2.0,
+      "AFTER_CONNECTION_SLOPE": 0.0,
+      "status_inainte": 200,
+      "status_dupa": 200,
+      "PARITY_OCTETI": "FAIL",
+      "STATUS_INAINTE": 200,
+      "STATUS_DUPA": 200,
+      "FIRME": 14,
+      "STARI": {
+        "curent": 14
+      },
+      "FIRME_CURENT_COMPARATE": 14,
+      "DATA_PARITY": "PASS",
+      "FIRME_CU_VALORI_DIFERITE": [],
+      "INTENTIONAL_PRESENTATION_CORRECTION": "YES"
+    }
+  }
+}
+EXIT_CODE=0

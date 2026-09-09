@@ -69,6 +69,10 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `solduri` | `solduri_initiale` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `plan_conturi` | `plan_conturi` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `vector` | `firma_profil` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
+| `parteneri` | `solduri_parteneri` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
+| `salariati` | `salariati` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
+| `asociati` | `asociati` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
+| `mijloace_fixe` | `mijloace_fixe` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `termene` | `clienti`, `d390_manual`, `facturi`, `firma_profil`, `salariati` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 6 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
 | `control_fiscal` | `articole`, `asociati`, `beneficii_lunare`, `bonuri`, `casa_operatiuni`, `chitante`, `clienti`, `concedii_medicale`, `d300_manual`, `d301_operatiuni`, `d390_manual`, `d390_reclasificare`, `extras_linii`, `factura_linii`, `facturi`, `firma_profil`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `perioada_confirmata`, `plan_conturi`, `pontaj`, `salariati`, `salariu_istoric`, `solduri_initiale` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 28 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
 
@@ -77,7 +81,7 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | tabel-sursă | invalidează |
 |---|---|
 | `articole` | `control_fiscal` |
-| `asociati` | `control_fiscal` |
+| `asociati` | `asociati`, `control_fiscal` |
 | `beneficii_lunare` | `control_fiscal` |
 | `bonuri` | `control_fiscal` |
 | `casa_operatiuni` | `control_fiscal` |
@@ -95,14 +99,15 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `furnizori` | `control_fiscal` |
 | `inregistrari` | `control_fiscal` |
 | `inregistrari_linii` | `control_fiscal` |
-| `mijloace_fixe` | `control_fiscal` |
+| `mijloace_fixe` | `control_fiscal`, `mijloace_fixe` |
 | `miscari_stoc` | `control_fiscal` |
 | `perioada_confirmata` | `control_fiscal` |
 | `plan_conturi` | `control_fiscal`, `plan_conturi` |
 | `pontaj` | `control_fiscal` |
-| `salariati` | `control_fiscal`, `termene` |
+| `salariati` | `control_fiscal`, `salariati`, `termene` |
 | `salariu_istoric` | `control_fiscal` |
 | `solduri_initiale` | `control_fiscal`, `solduri` |
+| `solduri_parteneri` | `parteneri` |
 | `public.declaratii_depuse` | `control_fiscal`, `termene` |
 
 **Citite, dar DELIBERAT neurmărite:** `public.tenants`, `public.users`, `public.accounting_firms` — poartă denumirea și cabinetul, nu faptele din care iese verdictul. O redenumire de firmă n-are voie să invalideze 1000 de rezumate.

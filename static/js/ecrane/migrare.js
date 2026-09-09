@@ -341,6 +341,66 @@ function randeazaDecizie(corp, nav, strat, sumarHTML, intrebare) {
 
 // ---------- STRAT 2: SOLDURI INIȚIALE (per firmă) ----------
 // [p84_vector_front] ----- STRAT VECTOR FISCAL -----
+// ═══════════════════════════════════════════════════════════════════════════
+//  PROSPEȚIMEA REZUMATULUI — un necunoscut nu se rotunjește la „știu că nu"
+// ═══════════════════════════════════════════════════════════════════════════
+// [P3 val B, 09.09.2026] Ecranele de mai jos citesc modelul de citire P2, care întoarce pentru
+// fiecare firmă o `prospetime.stare`. Până azi JS-ul o IGNORA — și atunci o firmă al cărei rezumat
+// încă nu fusese calculat arăta identic cu una măsurată și găsită goală: „fără parteneri încă",
+// „de încărcat". Adică un NECUNOSCUT prezentat ca un NU hotărât, exact interdicția 32/R39
+// („niciun X înregistrat" nu poate deveni „nu se datorează").
+//
+//   curent    → se afișează valoarea. „fără parteneri" e legitim AICI, fiindcă acolo chiar s-a
+//               măsurat și chiar nu sunt.
+//   invalidat → sursa s-a schimbat după ultimul calcul. Valoarea veche NU se arată drept curentă.
+//   lipseste  → niciodată calculat, sau rândul lipsește. Nu se știe.
+//   eroare    → ultima încercare a eșuat. Nu se știe — și nu se pretinde altceva.
+//
+// Cele patru stări vin de la server derivate, nu stocate (`firma_rezumat.citeste`); ecranul doar
+// le spune pe nume.
+const PROSPETIME = {
+  invalidat: { text: "se recalculează", scurt: "se recalculează", clasa: "mig-gri" },
+  lipseste: { text: "încă necunoscut", scurt: "de calculat", clasa: "mig-gri" },
+  eroare: { text: "temporar indisponibil", scurt: "indisponibil", clasa: "mig-nok" },
+};
+function starePros(f) {
+  // LIPSA CÂMPULUI SE CITEȘTE CA „NU SE ȘTIE", nu ca „e curent".
+  //
+  // [prins de `test_NEVER_COMPUTED_nu_se_randeaza_ca_gol`, 09.09.2026] Prima formă cădea pe
+  // „curent" când `prospetime` lipsea — iar atunci o firmă pe care modelul n-a calculat-o
+  // NICIODATĂ apărea ca măsurată și găsită goală. Adică exact defectul pe care garda asta a venit
+  // să-l închidă, reintrodus prin valoarea implicită.
+  //
+  // Toate ecranele care cheamă funcția asta citesc modelul de citire, iar rutele lor pun MEREU
+  // câmpul. Dacă totuși lipsește, presupunerea sigură e că nu se știe — nu că se știe.
+  return (f && f.prospetime && f.prospetime.stare) || "lipseste";
+}
+function seStie(f) {
+  return starePros(f) === "curent";
+}
+function prosText(f) {
+  return (PROSPETIME[starePros(f)] || PROSPETIME.lipseste).text;
+}
+function prosScurt(f) {
+  return (PROSPETIME[starePros(f)] || PROSPETIME.lipseste).scurt;
+}
+function prosClasa(f) {
+  return (PROSPETIME[starePros(f)] || PROSPETIME.lipseste).clasa;
+}
+// SUMARUL NU TOPEȘTE NECUNOSCUTUL ÎN NUMITOR. „7 din 14" spune că toate 14 au fost evaluate; dacă
+// două n-au fost, minte. Când nu există necunoscute, formularea rămâne cea dinainte — n-are ce
+// corecta acolo.
+// [prins de `test_sumarul_nu_topeste_necunoscutul_in_numitor`, 09.09.2026] Contoarele de mai jos
+// filtrează pe `seStie(f) && f.are_X`, NU doar pe `f.are_X`. O firmă `invalidat` păstrează în
+// răspuns ultima valoare cunoscută; numărată fără filtru, ea intra în „2 firme au parteneri" —
+// adică o valoare care nu mai e curentă, afirmată ca fiind curentă, în chiar cifra pe care omul o
+// citește prima. *Rândul o arăta corect ca «se recalculează»; agregatul o mințea.*
+function sumarStrat(firme, cu, eticheta) {
+  const nec = firme.filter((f) => !seStie(f)).length;
+  if (nec === 0) return `${cu} din ${firme.length} firme ${eticheta}`;
+  return `${cu} firme ${eticheta} · ${firme.length - cu - nec} fără · ${nec} încă necunoscute`;
+}
+
 async function wizardVector(corp, nav) {
   nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
@@ -350,11 +410,11 @@ async function wizardVector(corp, nav) {
     const r = await api.get("/migrare/vector");
     firme = (r && r.firme) || [];
   } catch {}
-  const cu = firme.filter((f) => f.are_vector).length;
+  const cu = firme.filter((f) => seStie(f) && f.are_vector).length;
   corp.innerHTML = `
     
     <p class="mig-intro">Spune sistemului ce declara\u021bii datoreaz\u0103 fiecare firm\u0103: dac\u0103 e pl\u0103titoare de TVA, ce regim are (micro/profit) \u0219i dac\u0103 face opera\u021biuni intracomunitare. F\u0103r\u0103 vectorul fiscal firma nu poate fi procesat\u0103.</p>
-    <div class="mig-progres">${cu} din ${firme.length} firme au vectorul completat</div>
+    <div class="mig-progres">${sumarStrat(firme, cu, "au vectorul completat")}</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizeaz\u0103 stratul Vector fiscal</button>
   `;
@@ -377,9 +437,9 @@ async function wizardVector(corp, nav) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${sub}</div>
+        <div class="mig-frand-sub">${seStie(f) ? sub : prosText(f)}</div>
       </div>
-      <span class="mig-stare ${f.are_vector ? "mig-ok" : "mig-gri"}">${f.are_vector ? "\u2713 gata" : "de completat"}</span>
+      <span class="mig-stare ${seStie(f) ? (f.are_vector ? "mig-ok" : "mig-gri") : prosClasa(f)}">${seStie(f) ? (f.are_vector ? "\u2713 gata" : "de completat") : prosScurt(f)}</span>
     `;
     rand.addEventListener("click", () => nav.deschide("Vector firm\u0103", (cc, nn) => formularVectorFirma(cc, nn, f)));  // [p128_vector_cascada]
     lista.appendChild(rand);
@@ -539,10 +599,10 @@ async function wizardSolduri(corp, nav) {
     firme = (r && r.firme) || [];
   } catch {}
 
-  const cuSolduri = firme.filter((f) => f.are_solduri).length;
+  const cuSolduri = firme.filter((f) => seStie(f) && f.are_solduri).length;
   corp.innerHTML = `
     <p class="mig-intro">Încarcă balanța de deschidere pentru fiecare firmă. Soldurile devin poziția de pornire, iar conturile analitice (clienți, furnizori) intră automat în plan.</p>
-    <div class="mig-progres">${cuSolduri} din ${firme.length} firme au solduri</div>
+    <div class="mig-progres">${sumarStrat(firme, cuSolduri, "au solduri")}</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Solduri</button>
   `;
@@ -557,9 +617,9 @@ async function wizardSolduri(corp, nav) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${f.are_solduri ? `${f.randuri} conturi importate` : "fără solduri încă"}</div>
+        <div class="mig-frand-sub">${seStie(f) ? (f.are_solduri ? `${f.randuri} conturi importate` : "fără solduri încă") : prosText(f)}</div>
       </div>
-      <span class="mig-stare ${f.are_solduri ? "mig-ok" : "mig-gri"}">${f.are_solduri ? "✓ gata" : "de încărcat"}</span>
+      <span class="mig-stare ${seStie(f) ? (f.are_solduri ? "mig-ok" : "mig-gri") : prosClasa(f)}">${seStie(f) ? (f.are_solduri ? "✓ gata" : "de încărcat") : prosScurt(f)}</span>
     `;
     rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importSolduriFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
@@ -735,10 +795,10 @@ async function wizardParteneri(corp, nav) {
     firme = (r && r.firme) || [];
   } catch {}
 
-  const cuParteneri = firme.filter((f) => f.are_parteneri).length;
+  const cuParteneri = firme.filter((f) => seStie(f) && f.are_parteneri).length;
   corp.innerHTML = `
     <p class="mig-intro">Defalcă soldurile de clienți (4111) și furnizori (401) pe fiecare partener. Sumele se verifică automat cu balanța de deschidere.</p>
-    <div class="mig-progres">${cuParteneri} din ${firme.length} firme au parteneri</div>
+    <div class="mig-progres">${sumarStrat(firme, cuParteneri, "au parteneri")}</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Parteneri</button>
   `;
@@ -753,9 +813,9 @@ async function wizardParteneri(corp, nav) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${f.are_parteneri ? `${f.randuri} parteneri importați` : "fără parteneri încă"}</div>
+        <div class="mig-frand-sub">${seStie(f) ? (f.are_parteneri ? `${f.randuri} parteneri importați` : "fără parteneri încă") : prosText(f)}</div>
       </div>
-      <span class="mig-stare ${f.are_parteneri ? "mig-ok" : "mig-gri"}">${f.are_parteneri ? "✓ gata" : "de încărcat"}</span>
+      <span class="mig-stare ${seStie(f) ? (f.are_parteneri ? "mig-ok" : "mig-gri") : prosClasa(f)}">${seStie(f) ? (f.are_parteneri ? "✓ gata" : "de încărcat") : prosScurt(f)}</span>
     `;
     rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importParteneriFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
@@ -893,10 +953,10 @@ async function wizardSalariati(corp, nav) {
     firme = (r && r.firme) || [];
   } catch {}
 
-  const cuSal = firme.filter((f) => f.are_salariati).length;
+  const cuSal = firme.filter((f) => seStie(f) && f.are_salariati).length;
   corp.innerHTML = `
     <p class="mig-intro">Importă salariații din vechea aplicație (nume, CNP, salariu, contract). CNP-urile se verifică automat — cele greșite sunt semnalate, iar importul se face doar după ce toate sunt corectate.</p>
-    <div class="mig-progres">${cuSal} din ${firme.length} firme au salariați</div>
+    <div class="mig-progres">${sumarStrat(firme, cuSal, "au salariați")}</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Salariați</button>
   `;
@@ -911,9 +971,9 @@ async function wizardSalariati(corp, nav) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${f.are_salariati ? `${f.randuri} salariați importați` : "fără salariați încă"}</div>
+        <div class="mig-frand-sub">${seStie(f) ? (f.are_salariati ? `${f.randuri} salariați importați` : "fără salariați încă") : prosText(f)}</div>
       </div>
-      <span class="mig-stare ${f.are_salariati ? "mig-ok" : "mig-gri"}">${f.are_salariati ? "✓ gata" : "de încărcat"}</span>
+      <span class="mig-stare ${seStie(f) ? (f.are_salariati ? "mig-ok" : "mig-gri") : prosClasa(f)}">${seStie(f) ? (f.are_salariati ? "✓ gata" : "de încărcat") : prosScurt(f)}</span>
     `;
     rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importSalariatiFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
@@ -1033,10 +1093,10 @@ async function wizardAsociati(corp, nav) {
     firme = (r && r.firme) || [];
   } catch {}
 
-  const cuAsoc = firme.filter((f) => f.are_asociati).length;
+  const cuAsoc = firme.filter((f) => seStie(f) && f.are_asociati).length;
   corp.innerHTML = `
     <p class="mig-intro">Importă asociații firmei (nume, CNP/CUI, cotă %). Cotele se verifică automat — ar trebui să dea 100%.</p>
-    <div class="mig-progres">${cuAsoc} din ${firme.length} firme au asociați</div>
+    <div class="mig-progres">${sumarStrat(firme, cuAsoc, "au asociați")}</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Asociați</button>
   `;
@@ -1051,9 +1111,9 @@ async function wizardAsociati(corp, nav) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${f.are_asociati ? `${f.randuri} asociați importați` : "fără asociați încă"}</div>
+        <div class="mig-frand-sub">${seStie(f) ? (f.are_asociati ? `${f.randuri} asociați importați` : "fără asociați încă") : prosText(f)}</div>
       </div>
-      <span class="mig-stare ${f.are_asociati ? "mig-ok" : "mig-gri"}">${f.are_asociati ? "✓ gata" : "de încărcat"}</span>
+      <span class="mig-stare ${seStie(f) ? (f.are_asociati ? "mig-ok" : "mig-gri") : prosClasa(f)}">${seStie(f) ? (f.are_asociati ? "✓ gata" : "de încărcat") : prosScurt(f)}</span>
     `;
     rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importAsociatiFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
@@ -1170,10 +1230,10 @@ async function wizardMijloace(corp, nav) {
     firme = (r && r.firme) || [];
   } catch {}
 
-  const cuMF = firme.filter((f) => f.are_mijloace).length;
+  const cuMF = firme.filter((f) => seStie(f) && f.are_mijloace).length;
   corp.innerHTML = `
     <p class="mig-intro">Importă registrul de mijloace fixe (valoare, durată, valoare rămasă). Amortizarea cumulată se păstrează ca să nu reluăm de la zero.</p>
-    <div class="mig-progres">${cuMF} din ${firme.length} firme au mijloace fixe</div>
+    <div class="mig-progres">${sumarStrat(firme, cuMF, "au mijloace fixe")}</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Mijloace fixe</button>
   `;
@@ -1188,9 +1248,9 @@ async function wizardMijloace(corp, nav) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${f.are_mijloace ? `${f.randuri} mijloace fixe importate` : "fără mijloace fixe încă"}</div>
+        <div class="mig-frand-sub">${seStie(f) ? (f.are_mijloace ? `${f.randuri} mijloace fixe importate` : "fără mijloace fixe încă") : prosText(f)}</div>
       </div>
-      <span class="mig-stare ${f.are_mijloace ? "mig-ok" : "mig-gri"}">${f.are_mijloace ? "✓ gata" : "de încărcat"}</span>
+      <span class="mig-stare ${seStie(f) ? (f.are_mijloace ? "mig-ok" : "mig-gri") : prosClasa(f)}">${seStie(f) ? (f.are_mijloace ? "✓ gata" : "de încărcat") : prosScurt(f)}</span>
     `;
     rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importMijloaceFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
@@ -1463,9 +1523,9 @@ async function wizardPlanConturi(corp, nav) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${f.nr_conturi} conturi \u00een plan</div>
+        <div class="mig-frand-sub">${seStie(f) ? `${f.nr_conturi} conturi \u00een plan` : prosText(f)}</div>
       </div>
-      <span class="mig-stare ${f.nr_conturi > 0 ? "mig-ok" : "mig-gri"}">${f.nr_conturi > 0 ? "\u2713 populat" : "gol"}</span>
+      <span class="mig-stare ${seStie(f) ? (f.nr_conturi > 0 ? "mig-ok" : "mig-gri") : prosClasa(f)}">${seStie(f) ? (f.nr_conturi > 0 ? "\u2713 populat" : "gol") : prosScurt(f)}</span>
     `;
     rand.addEventListener("click", () => nav.mergi("Plan de conturi \u00b7 " + (f.nume || ""), (c) => importPlanConturiFirma(c, nav, f)));
     lista.appendChild(rand);
