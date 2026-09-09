@@ -1,0 +1,259 @@
+LANȚURILE DE APEL — cele 37 rute care ating portofoliul
+Generat cu: python3 -m scripts.scan_cale_cerere --lanturi
+Fiecare pas poartă fișierul și linia, ca afirmațiile de root-cause din
+RAPORT_P3_DIAGNOSTIC.md să poată fi verificate fără a fi luate pe încredere.
+========================================================================
+
+GET /control-fiscal
+    handler   : control_fiscal_portofoliu()  la main.py:2792
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : control_fiscal_portofoliu -> tenantii_userului
+        control_fiscal_portofoliu -> tenantii_userului   apelat la main.py:2809   ·   definit la core/auth_api.py:395
+
+GET /migrare/asociati
+    handler   : migrare_asociati_status()  la main.py:2437
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_asociati_status -> tenantii_userului
+        migrare_asociati_status -> tenantii_userului   apelat la main.py:2440   ·   definit la core/auth_api.py:395
+
+GET /migrare/istoric-declaratii
+    handler   : migrare_istoric_status()  la main.py:2588
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_istoric_status -> tenantii_userului
+        migrare_istoric_status -> tenantii_userului   apelat la main.py:2591   ·   definit la core/auth_api.py:395
+
+GET /migrare/mijloace-fixe
+    handler   : migrare_mijloace_status()  la main.py:2536
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_mijloace_status -> tenantii_userului
+        migrare_mijloace_status -> tenantii_userului   apelat la main.py:2539   ·   definit la core/auth_api.py:395
+
+GET /migrare/parteneri
+    handler   : migrare_parteneri_status()  la main.py:2305
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_parteneri_status -> tenantii_userului
+        migrare_parteneri_status -> tenantii_userului   apelat la main.py:2309   ·   definit la core/auth_api.py:395
+
+GET /migrare/plan-conturi
+    handler   : migrare_plan_conturi_status()  la main.py:2174
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_plan_conturi_status -> _portofoliu_din_model -> tenantii_userului
+        migrare_plan_conturi_status -> _portofoliu_din_model   apelat la main.py:2176   ·   definit la main.py:2143
+        _portofoliu_din_model -> tenantii_userului   apelat la main.py:2150   ·   definit la core/auth_api.py:395
+
+GET /migrare/salariati
+    handler   : migrare_salariati_status()  la main.py:2375
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_salariati_status -> tenantii_userului
+        migrare_salariati_status -> tenantii_userului   apelat la main.py:2379   ·   definit la core/auth_api.py:395
+
+GET /migrare/solduri
+    handler   : migrare_solduri_status()  la main.py:2163
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_solduri_status -> _portofoliu_din_model -> tenantii_userului
+        migrare_solduri_status -> _portofoliu_din_model   apelat la main.py:2166   ·   definit la main.py:2143
+        _portofoliu_din_model -> tenantii_userului   apelat la main.py:2150   ·   definit la core/auth_api.py:395
+
+GET /migrare/vector
+    handler   : migrare_vector_status()  la main.py:2243
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_vector_status -> _portofoliu_din_model -> tenantii_userului
+        migrare_vector_status -> _portofoliu_din_model   apelat la main.py:2246   ·   definit la main.py:2143
+        _portofoliu_din_model -> tenantii_userului   apelat la main.py:2150   ·   definit la core/auth_api.py:395
+
+GET /supervizor
+    handler   : supervizor_la_cerere()  la main.py:2858
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : supervizor_la_cerere -> tenantii_userului
+        supervizor_la_cerere -> tenantii_userului   apelat la main.py:2878   ·   definit la core/auth_api.py:395
+
+GET /tenants
+    handler   : tenants()  la main.py:1475
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : tenants -> tenantii_userului
+        tenants -> tenantii_userului   apelat la main.py:1479   ·   definit la core/auth_api.py:395
+
+GET /termene
+    handler   : termene_portofoliu()  la main.py:3066
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : termene_portofoliu -> tenantii_userului
+        termene_portofoliu -> tenantii_userului   apelat la main.py:3076   ·   definit la core/auth_api.py:395
+
+POST /auth/login
+    handler   : login()  la main.py:1341
+    poarta    : None   -> o firmă (portal)
+    lant      : login -> _tenant_client -> tenantii_userului
+        login -> _tenant_client   apelat la core/auth_api.py:184   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/acasa
+    handler   : portal_acasa()  la main.py:6979
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_acasa -> _tenant_client -> tenantii_userului
+        portal_acasa -> _tenant_client   apelat la main.py:6980   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/acces-cont
+    handler   : portal_acces_cont()  la main.py:4440
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_acces_cont -> _tenant_client -> tenantii_userului
+        portal_acces_cont -> _tenant_client   apelat la main.py:4441   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+POST /portal/acces-cont/acces
+    handler   : portal_adauga_acces()  la main.py:4607
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_adauga_acces -> _tenant_client -> tenantii_userului
+        portal_adauga_acces -> _tenant_client   apelat la main.py:4608   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+DELETE /portal/acces-cont/acces/{user_id}
+    handler   : portal_revoca_acces()  la main.py:4649
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_revoca_acces -> _tenant_client -> tenantii_userului
+        portal_revoca_acces -> _tenant_client   apelat la main.py:4650   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+PUT /portal/acces-cont/email
+    handler   : portal_schimba_email()  la main.py:4562
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_schimba_email -> _tenant_client -> tenantii_userului
+        portal_schimba_email -> _tenant_client   apelat la main.py:4563   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+POST /portal/bon
+    handler   : portal_bon()  la main.py:5927
+    poarta    : cere_context   -> o firmă (portal)
+    lant      : portal_bon -> _tenant_pentru_documente -> _tenant_client -> tenantii_userului
+        portal_bon -> _tenant_pentru_documente   apelat la main.py:5932   ·   definit la main.py:5917
+        _tenant_pentru_documente -> _tenant_client   apelat la main.py:5921   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+DELETE /portal/bon/{bon_id}
+    handler   : portal_bon_sterge()  la main.py:6032
+    poarta    : cere_context   -> o firmă (portal)
+    lant      : portal_bon_sterge -> _tenant_pentru_documente -> _tenant_client -> tenantii_userului
+        portal_bon_sterge -> _tenant_pentru_documente   apelat la main.py:6035   ·   definit la main.py:5917
+        _tenant_pentru_documente -> _tenant_client   apelat la main.py:5921   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+POST /portal/bon/{bon_id}/confirma
+    handler   : portal_bon_confirma()  la main.py:6022
+    poarta    : cere_context   -> o firmă (portal)
+    lant      : portal_bon_confirma -> _tenant_pentru_documente -> _tenant_client -> tenantii_userului
+        portal_bon_confirma -> _tenant_pentru_documente   apelat la main.py:6024   ·   definit la main.py:5917
+        _tenant_pentru_documente -> _tenant_client   apelat la main.py:5921   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/bon/{bon_id}/imagine/{n}
+    handler   : portal_bon_imagine()  la main.py:6046
+    poarta    : cere_context   -> o firmă (portal)
+    lant      : portal_bon_imagine -> _tenant_pentru_documente -> _tenant_client -> tenantii_userului
+        portal_bon_imagine -> _tenant_pentru_documente   apelat la main.py:6048   ·   definit la main.py:5917
+        _tenant_pentru_documente -> _tenant_client   apelat la main.py:5921   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/cashflow
+    handler   : portal_cashflow()  la main.py:6774
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_cashflow -> _tenant_client -> tenantii_userului
+        portal_cashflow -> _tenant_client   apelat la main.py:6778   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/declaratii
+    handler   : portal_declaratii()  la main.py:6808
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_declaratii -> _tenant_client -> tenantii_userului
+        portal_declaratii -> _tenant_client   apelat la main.py:6809   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/documente/balanta
+    handler   : portal_documente_balanta()  la main.py:6454
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_documente_balanta -> _tenant_client -> tenantii_userului
+        portal_documente_balanta -> _tenant_client   apelat la main.py:6459   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/documente/luni
+    handler   : portal_documente_luni()  la main.py:6231
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_documente_luni -> _tenant_client -> tenantii_userului
+        portal_documente_luni -> _tenant_client   apelat la main.py:6232   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/facturi
+    handler   : portal_facturi()  la main.py:6800
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_facturi -> _tenant_client -> tenantii_userului
+        portal_facturi -> _tenant_client   apelat la main.py:6802   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/firma
+    handler   : portal_firma()  la main.py:4668
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_firma -> _tenant_client -> tenantii_userului
+        portal_firma -> _tenant_client   apelat la main.py:4669   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/firme
+    handler   : portal_firme()  la main.py:4398
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_firme -> tenantii_userului
+        portal_firme -> tenantii_userului   apelat la main.py:4400   ·   definit la core/auth_api.py:395
+
+GET /portal/kpi
+    handler   : portal_kpi()  la main.py:6760
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_kpi -> _tenant_client -> tenantii_userului
+        portal_kpi -> _tenant_client   apelat la main.py:6764   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/povesti
+    handler   : portal_povesti()  la main.py:6875
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_povesti -> _tenant_client -> tenantii_userului
+        portal_povesti -> _tenant_client   apelat la main.py:6876   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+POST /portal/recomanda
+    handler   : portal_recomanda()  la main.py:6863
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_recomanda -> _tenant_client -> tenantii_userului
+        portal_recomanda -> _tenant_client   apelat la main.py:6865   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/recomanda/preview
+    handler   : portal_recomanda_preview()  la main.py:6854
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_recomanda_preview -> _tenant_client -> tenantii_userului
+        portal_recomanda_preview -> _tenant_client   apelat la main.py:6855   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/solicitari
+    handler   : portal_solicitari_lista()  la main.py:6909
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_solicitari_lista -> _tenant_client -> tenantii_userului
+        portal_solicitari_lista -> _tenant_client   apelat la main.py:6910   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+POST /portal/solicitari
+    handler   : portal_solicitari_trimite()  la main.py:6920
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_solicitari_trimite -> _tenant_client -> tenantii_userului
+        portal_solicitari_trimite -> _tenant_client   apelat la main.py:6921   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+GET /portal/solicitari/contor
+    handler   : portal_solicitari_contor()  la main.py:6898
+    poarta    : cere_client   -> o firmă (portal)
+    lant      : portal_solicitari_contor -> _tenant_client -> tenantii_userului
+        portal_solicitari_contor -> _tenant_client   apelat la main.py:6899   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395
+
+POST /public/magic-login
+    handler   : magic_login()  la main.py:1899
+    poarta    : None   -> o firmă (portal)
+    lant      : magic_login -> sesiune_pentru_user -> _tenant_client -> tenantii_userului
+        magic_login -> sesiune_pentru_user   apelat la main.py:1912   ·   definit la core/auth_api.py:125
+        sesiune_pentru_user -> _tenant_client   apelat la core/auth_api.py:142   ·   definit la main.py:4381
+        _tenant_client -> tenantii_userului   apelat la main.py:4384   ·   definit la core/auth_api.py:395

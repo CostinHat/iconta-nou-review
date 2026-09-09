@@ -1,0 +1,288 @@
+{
+  "commit": "54a913905c1d802d80ea3c2187f12946bfddc479",
+  "succes": {
+    "/migrare/asociati": {
+      "puncte": {
+        "5": {
+          "interogari": 24,
+          "conexiuni": 13,
+          "dus_intors": 47,
+          "db_sec": 0.0095,
+          "cpu_sec": 0.0111,
+          "total_sec": 0.0206,
+          "db_procent": 46.2,
+          "status": 200,
+          "octeti": 476
+        },
+        "10": {
+          "interogari": 44,
+          "conexiuni": 23,
+          "dus_intors": 87,
+          "db_sec": 0.0085,
+          "cpu_sec": 0.0082,
+          "total_sec": 0.0167,
+          "db_procent": 50.8,
+          "status": 200,
+          "octeti": 941
+        },
+        "14": {
+          "interogari": 60,
+          "conexiuni": 31,
+          "dus_intors": 119,
+          "db_sec": 0.0116,
+          "cpu_sec": 0.0101,
+          "total_sec": 0.0217,
+          "db_procent": 53.6,
+          "status": 200,
+          "octeti": 1313
+        }
+      },
+      "BASE_QUERIES": 4.0,
+      "QUERIES_PER_FIRM": 4.0,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTIONS_PER_FIRM": 2.0,
+      "liniar_interogari": true,
+      "liniar_conexiuni": true,
+      "statusuri": [
+        200
+      ]
+    },
+    "/migrare/mijloace-fixe": {
+      "puncte": {
+        "5": {
+          "interogari": 24,
+          "conexiuni": 13,
+          "dus_intors": 47,
+          "db_sec": 0.0111,
+          "cpu_sec": 0.0116,
+          "total_sec": 0.0227,
+          "db_procent": 49.0,
+          "status": 200,
+          "octeti": 476
+        },
+        "10": {
+          "interogari": 44,
+          "conexiuni": 23,
+          "dus_intors": 87,
+          "db_sec": 0.0099,
+          "cpu_sec": 0.0081,
+          "total_sec": 0.0181,
+          "db_procent": 54.9,
+          "status": 200,
+          "octeti": 941
+        },
+        "14": {
+          "interogari": 60,
+          "conexiuni": 31,
+          "dus_intors": 119,
+          "db_sec": 0.0134,
+          "cpu_sec": 0.0103,
+          "total_sec": 0.0238,
+          "db_procent": 56.5,
+          "status": 200,
+          "octeti": 1313
+        }
+      },
+      "BASE_QUERIES": 4.0,
+      "QUERIES_PER_FIRM": 4.0,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTIONS_PER_FIRM": 2.0,
+      "liniar_interogari": true,
+      "liniar_conexiuni": true,
+      "statusuri": [
+        200
+      ]
+    },
+    "/migrare/salariati": {
+      "puncte": {
+        "5": {
+          "interogari": 24,
+          "conexiuni": 13,
+          "dus_intors": 47,
+          "db_sec": 0.0061,
+          "cpu_sec": 0.0077,
+          "total_sec": 0.0137,
+          "db_procent": 44.1,
+          "status": 200,
+          "octeti": 481
+        },
+        "10": {
+          "interogari": 44,
+          "conexiuni": 23,
+          "dus_intors": 87,
+          "db_sec": 0.0101,
+          "cpu_sec": 0.0081,
+          "total_sec": 0.0182,
+          "db_procent": 55.6,
+          "status": 200,
+          "octeti": 951
+        },
+        "14": {
+          "interogari": 60,
+          "conexiuni": 31,
+          "dus_intors": 119,
+          "db_sec": 0.0136,
+          "cpu_sec": 0.0099,
+          "total_sec": 0.0235,
+          "db_procent": 58.0,
+          "status": 200,
+          "octeti": 1327
+        }
+      },
+      "BASE_QUERIES": 4.0,
+      "QUERIES_PER_FIRM": 4.0,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTIONS_PER_FIRM": 2.0,
+      "liniar_interogari": true,
+      "liniar_conexiuni": true,
+      "statusuri": [
+        200
+      ]
+    },
+    "/migrare/parteneri": {
+      "puncte": {
+        "5": {
+          "interogari": 24,
+          "conexiuni": 13,
+          "dus_intors": 42,
+          "db_sec": 0.0058,
+          "cpu_sec": 0.0064,
+          "total_sec": 0.0123,
+          "db_procent": 47.5,
+          "status": 200,
+          "octeti": 481
+        },
+        "10": {
+          "interogari": 44,
+          "conexiuni": 23,
+          "dus_intors": 77,
+          "db_sec": 0.0102,
+          "cpu_sec": 0.0087,
+          "total_sec": 0.019,
+          "db_procent": 54.0,
+          "status": 200,
+          "octeti": 951
+        },
+        "14": {
+          "interogari": 60,
+          "conexiuni": 31,
+          "dus_intors": 105,
+          "db_sec": 0.0136,
+          "cpu_sec": 0.0111,
+          "total_sec": 0.0247,
+          "db_procent": 55.1,
+          "status": 200,
+          "octeti": 1327
+        }
+      },
+      "BASE_QUERIES": 4.0,
+      "QUERIES_PER_FIRM": 4.0,
+      "BASE_CONNECTIONS": 3.0,
+      "CONNECTIONS_PER_FIRM": 2.0,
+      "liniar_interogari": true,
+      "liniar_conexiuni": true,
+      "statusuri": [
+        200
+      ]
+    }
+  },
+  "reconciliere": {
+    "/migrare/asociati": {
+      "SYNTHETIC_QUERY_SLOPE": 3.0,
+      "REAL_SUCCESS_QUERY_SLOPE": 4.0,
+      "SYNTHETIC_CONNECTION_SLOPE": 2.0,
+      "REAL_SUCCESS_CONNECTION_SLOPE": 2.0,
+      "diferenta_q": 1.0,
+      "diferenta_c": 0.0
+    },
+    "/migrare/mijloace-fixe": {
+      "SYNTHETIC_QUERY_SLOPE": 3.0,
+      "REAL_SUCCESS_QUERY_SLOPE": 4.0,
+      "SYNTHETIC_CONNECTION_SLOPE": 2.0,
+      "REAL_SUCCESS_CONNECTION_SLOPE": 2.0,
+      "diferenta_q": 1.0,
+      "diferenta_c": 0.0
+    },
+    "/migrare/salariati": {
+      "SYNTHETIC_QUERY_SLOPE": 3.0,
+      "REAL_SUCCESS_QUERY_SLOPE": 4.0,
+      "SYNTHETIC_CONNECTION_SLOPE": 2.0,
+      "REAL_SUCCESS_CONNECTION_SLOPE": 2.0,
+      "diferenta_q": 1.0,
+      "diferenta_c": 0.0
+    },
+    "/migrare/parteneri": {
+      "SYNTHETIC_QUERY_SLOPE": 4.0,
+      "REAL_SUCCESS_QUERY_SLOPE": 4.0,
+      "SYNTHETIC_CONNECTION_SLOPE": 2.0,
+      "REAL_SUCCESS_CONNECTION_SLOPE": 2.0,
+      "diferenta_q": 0.0,
+      "diferenta_c": 0.0
+    }
+  },
+  "instructiuni": {
+    "/migrare/asociati": {
+      "real": [
+        "-- get_conn(schema=None)",
+        "SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHERE u.id = 67710",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67710",
+        "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t LEFT JOIN public.firma_tip ft ON ft.tenant_id = t.",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67710",
+        "SELECT schema_name FROM public.tenants WHERE id = 78909 AND accounting_firm_id = 45854 AND activ = true",
+        "-- get_conn(schema='proba_p3s_000')",
+        "SELECT to_regclass('asociati')",
+        "SELECT count(*), COALESCE(sum(cota),0) FROM asociati",
+        "-- get_conn(schema=None)",
+        "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67710, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/asociati', '{\"status\": 200}')"
+      ],
+      "sintetic": [
+        "-- get_conn(schema=None)",
+        "SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHERE u.id = 67711",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67711",
+        "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t LEFT JOIN public.firma_tip ft ON ft.tenant_id = t.",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67711",
+        "SELECT schema_name FROM public.tenants WHERE id = 78910 AND accounting_firm_id = 45855 AND activ = true",
+        "-- get_conn(schema='proba_curba_000000')",
+        "SELECT to_regclass('asociati')",
+        "-- get_conn(schema=None)",
+        "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67711, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/asociati', '{\"status\": 200}')"
+      ]
+    },
+    "/migrare/parteneri": {
+      "real": [
+        "-- get_conn(schema=None)",
+        "SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHERE u.id = 67712",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67712",
+        "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t LEFT JOIN public.firma_tip ft ON ft.tenant_id = t.",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67712",
+        "SELECT schema_name FROM public.tenants WHERE id = 78911 AND accounting_firm_id = 45856 AND activ = true",
+        "-- get_conn(schema='proba_p3s_000')",
+        "CREATE TABLE IF NOT EXISTS solduri_parteneri ( id SERIAL PRIMARY KEY, cont TEXT NOT NULL, cui TEXT NOT NULL DEFAULT '', denumire TEXT NOT NULL DEFAULT '', sold_debitor NUMERIC(15,2) NOT NULL DEFAULT 0",
+        "SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0) FROM solduri_parteneri",
+        "-- get_conn(schema=None)",
+        "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67712, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/parteneri', '{\"status\": 200}')"
+      ],
+      "sintetic": [
+        "-- get_conn(schema=None)",
+        "SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHERE u.id = 67713",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67713",
+        "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t LEFT JOIN public.firma_tip ft ON ft.tenant_id = t.",
+        "-- get_conn(schema=None)",
+        "SELECT rol, accounting_firm_id FROM public.users WHERE id = 67713",
+        "SELECT schema_name FROM public.tenants WHERE id = 78912 AND accounting_firm_id = 45857 AND activ = true",
+        "-- get_conn(schema='proba_curba_000000')",
+        "CREATE TABLE IF NOT EXISTS solduri_parteneri ( id SERIAL PRIMARY KEY, cont TEXT NOT NULL, cui TEXT NOT NULL DEFAULT '', denumire TEXT NOT NULL DEFAULT '', sold_debitor NUMERIC(15,2) NOT NULL DEFAULT 0",
+        "SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0) FROM solduri_parteneri",
+        "-- get_conn(schema=None)",
+        "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67713, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/parteneri', '{\"status\": 200}')"
+      ]
+    }
+  }
+}

@@ -16,19 +16,28 @@ fost produsă de un ham care n-a rămas nicăieri; ea nu mai e o măsurătoare, 
 fișier din repo, cu scenariul lui scris, și se rulează din nou oricând.
 
 **SCENARIUL, declarat.** Domeniu sintetic: `N` firme în `public.tenants`, legate de un cabinet de
-probă, fiecare cu **schema ei, cu nume propriu și INEXISTENTĂ pe disc**.
+probă, fiecare cu **schema ei — reală, dar GOALĂ**.
 
 Prima formă a hamului voia să cicleze schemele REALE peste firmele sintetice, ca munca per firmă să
-fie reală. Nu se poate: `tenants.schema_name` are constrângere de unicitate. Iar când am căutat
-ocolul, s-a văzut că întrebarea era greșită — **calea de citire a lui P2 nu deschide nicio schemă**.
-Ea citește modelul din `public`, o interogare pentru tot portofoliul; numele schemei nici măcar nu
-mai e folosit de `tenantii_userului` de când `tip_firma` vine din proiecție.
+fie reală. Nu se poate: `tenants.schema_name` are constrângere de unicitate. Calea de citire a lui
+P2 oricum **nu deschide nicio schemă** — citește modelul din `public`, o interogare pentru tot
+portofoliul —, deci pentru ea numele schemei nici nu contează.
 
-Și asta face schemele inexistente mai bune decât cele reale, nu mai slabe: **dacă vreo ramură ar
-cădea totuși pe muncă per firmă, ea ar da peste o schemă care nu există** — și ar ieși ori ca
-interogări care cresc cu N (contorul le vede), ori ca un răspuns care nu mai e 200 (se verifică).
-*O cale de rezervă ascunsă n-are unde să se ascundă aici.* Exact ramura aceea a supraviețuit primei
-forme a lui P2 și n-a fost prinsă, fiindcă hamul de atunci înlocuia `tenantii_userului` cu totul.
+**A doua formă lăsa schemele INEXISTENTE, și era greșită.** `SET search_path TO "inexistenta",
+public` e acceptat de PostgreSQL, care ignoră tăcut schemele care lipsesc; o rută care execută apoi
+un `CREATE TABLE IF NOT EXISTS` necalificat nimerește prima schemă existentă din cale — `public`.
+Măsurând `/migrare/parteneri` la diagnosticul P3, sonda a creat `public.solduri_parteneri` în
+producție. *„N-are ce scrie" era o presupunere, nu o garanție* — și e chiar clasa „sonda de audit nu
+e read-only".
+
+Acum schema există și e goală. `to_regclass('tabela')` întoarce tot `NULL`, deci **ramura măsurată
+nu se schimbă**, dar orice scriere necalificată aterizează în schema de probă, care se șterge la
+curățenie.
+
+**Ce rămâne adevărat despre domeniul sintetic:** dacă vreo ramură ar cădea pe muncă per firmă, ea ar
+da peste o schemă goală — și ar ieși ori ca interogări care cresc cu N (contorul le vede), ori ca un
+răspuns care nu mai e 200. Ce **nu** mai afirmăm e că numărul de interogări per firmă ar fi identic
+cu cel de pe o schemă reală: nu e, iar `curba_succes()` din `masoara_p3.py` îl măsoară separat.
 
 **CE NU ACOPERĂ, scris ca să nu se citească mai mult decât spune:**
   * nu măsoară costul RECALCULĂRII (cel mutat din cerere), ci al cererii. Recalcularea se măsoară
@@ -75,8 +84,20 @@ def curata(conn):
             cur.execute("DELETE FROM public.users WHERE email = %s", (UTILIZATOR_PROBA,))
             return 0
         fid = r[0]
-        cur.execute("SELECT id FROM public.tenants WHERE accounting_firm_id = %s", (fid,))
-        ids = [x[0] for x in cur.fetchall()]
+        cur.execute("SELECT id, schema_name FROM public.tenants WHERE accounting_firm_id = %s",
+                    (fid,))
+        randuri = cur.fetchall()
+        ids = [x[0] for x in randuri]
+        # ȘTERGEREA SCHEMELOR SE FACE ÎN LOTURI, cu `commit` după fiecare.
+        # `DROP SCHEMA ... CASCADE` ține blocaje până la capătul tranzacției; la 1000 de scheme
+        # într-una singură, PostgreSQL cade cu `out of shared memory / max_locks_per_transaction`
+        # — iar curățenia PICĂ tocmai când e cel mai mult de curățat, lăsând în urmă exact
+        # mizeria pe care venise s-o strângă. *S-a întâmplat la N=1000, pe 09.09.2026.*
+        LOT_DROP = 50
+        for i in range(0, len(randuri), LOT_DROP):
+            for _t, sch in randuri[i:i + LOT_DROP]:
+                cur.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % sch)
+            conn.commit()
         if ids:
             for t in ("firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa",
                       "supervizor_rezultat", "user_tenants"):
@@ -110,12 +131,24 @@ def construieste(conn, n, procent_invalidat=0, rece=False, azi=None):
 
         ids = []
         for i in range(n):
-            # schemă cu nume propriu, INEXISTENTĂ pe disc — v. antetul: calea de citire nu deschide
-            # nicio schemă, iar dacă ar deschide, aici s-ar vedea imediat
+            # ── SCHEMĂ REALĂ, DAR GOALĂ ─────────────────────────────────────────────
+            # Prima formă lăsa schemele INEXISTENTE. Părea inofensiv — calea de citire nu
+            # deschide nicio schemă —, dar nu era: `SET search_path TO "inexistenta", public`
+            # e ACCEPTAT de PostgreSQL, care ignoră tăcut schemele care lipsesc. O rută care
+            # apoi execută un `CREATE TABLE IF NOT EXISTS` NECALIFICAT nimerește prima schemă
+            # existentă din cale — adică `public`. *Măsurând `/migrare/parteneri`, sonda a
+            # creat `public.solduri_parteneri` în producție.*
+            #
+            # Cu schema creată (și goală), `to_regclass('tabela')` întoarce tot `NULL` — deci
+            # ramura măsurată rămâne aceeași —, dar orice scriere necalificată aterizează în
+            # schema de probă, care se șterge la curățenie. *O sondă de măsurare n-are voie să
+            # lase nimic în urmă, iar „n-are ce scrie" e o presupunere, nu o garanție.*
+            sch = "proba_curba_%06d" % i
+            cur.execute('CREATE SCHEMA IF NOT EXISTS "%s"' % sch)
             cur.execute(
                 "INSERT INTO public.tenants (schema_name, nume, cui, accounting_firm_id, activ) "
                 "VALUES (%s, %s, %s, %s, true) RETURNING id",
-                ("proba_curba_%06d" % i, "PROBA CURBA %05d" % i, None, fid))
+                (sch, "PROBA CURBA %05d" % i, None, fid))
             ids.append(cur.fetchone()[0])
 
         # proiecția `tip_firma` — pe calea reală o pune triggerul de pe `firma_profil`. Firmele

@@ -56,6 +56,10 @@ def _nume_apel(nod):
     return None
 
 
+#: `{(apelant, chemat): [(fisier, linie), ...]}` — unde anume se face fiecare apel.
+LINII_APEL = {}
+
+
 def graf():
     """`(apeluri, rute, definitii)` — cine pe cine cheamă, și ce funcție servește ce rută."""
     apeluri, rute, definitii = {}, {}, {}
@@ -68,13 +72,16 @@ def graf():
         for nod in ast.walk(arbore):
             if not isinstance(nod, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
-            definitii.setdefault(nod.name, []).append(rel)
+            definitii.setdefault(nod.name, []).append((rel, nod.lineno))
             chemate = apeluri.setdefault(nod.name, set())
             for sub in ast.walk(nod):
                 if isinstance(sub, ast.Call):
                     n = _nume_apel(sub)
                     if n:
                         chemate.add(n)
+                        # LINIA apelului — fără ea, „X cheamă Y" nu se poate verifica fără
+                        # să cauți prin fișier; artefactul de audit trebuie să ducă direct acolo.
+                        LINII_APEL.setdefault((nod.name, n), []).append((rel, sub.lineno))
             # POARTA DE AUTORIZARE, din argumentele implicite ale handlerului: `ctx=Depends(X)`.
             # Deosebirea NU e cosmetică — o rută de CABINET vede un portofoliu care crește cu
             # numărul de firme; una de PORTAL vede firmele unui client, adică una. A le măsura
@@ -125,6 +132,64 @@ def rute_care_cresc():
                             "adancime": ating[fn], "poarta": poarta,
                             "creste_cu_N": poarta in POARTA_PORTOFOLIU})
     return sorted(out, key=lambda x: (not x["creste_cu_N"], x["cale"], x["metoda"]))
+
+
+def lant_de_apel(apeluri, de_la, seminte=SEMINTE, adancime_max=12):
+    """Cel mai SCURT lanț de la handler la sămânță, ca listă de nume. `[]` dacă nu există.
+
+    Se caută în lățime, deci lanțul întors e cel mai scurt — nu primul găsit. Un lanț mai lung ar
+    fi tot adevărat, dar ar face auditul mai greu fără să adauge nimic."""
+    if de_la in seminte:
+        return [de_la]
+    vazut = {de_la}
+    coada = [[de_la]]
+    for _pas in range(adancime_max):
+        urmatoare = []
+        for drum in coada:
+            for chemat in sorted(apeluri.get(drum[-1], ())):
+                if chemat in seminte:
+                    return drum + [chemat]
+                if chemat in vazut or chemat not in apeluri:
+                    continue
+                vazut.add(chemat)
+                urmatoare.append(drum + [chemat])
+        if not urmatoare:
+            break
+        coada = urmatoare
+    return []
+
+
+def callchains():
+    """Artefactul de AUDITABILITATE: pentru fiecare rută care crește cu N — ruta, funcția,
+    fișierul, linia și lanțul de apel până la `tenantii_userului`, cu linia fiecărui pas.
+
+    **De ce e nevoie de el.** Raportul afirmă „ruta X are N+1 din cauza buclei de la `main.py:NNNN`".
+    Fără artefactul ăsta, afirmația trebuie crezută pe cuvânt. Cu el, fiecare pas al lanțului are
+    fișier și linie, deci se poate verifica fără să iei raportul pe încredere."""
+    apeluri, rute, definitii = graf()
+    ating = atinge_portofoliul(apeluri)
+    linii = []
+    for x in rute_care_cresc():
+        fn = x["functie"]
+        loc = definitii.get(fn, [("?", 0)])[0]
+        linii.append("%s %s" % (x["metoda"], x["cale"]))
+        linii.append("    handler   : %s()  la %s:%d" % (fn, loc[0], loc[1]))
+        linii.append("    poarta    : %s   -> %s"
+                     % (x["poarta"], "CREȘTE CU N" if x["creste_cu_N"] else "o firmă (portal)"))
+        lant = lant_de_apel(apeluri, fn)
+        if not lant:
+            linii.append("    lant      : (negăsit în adâncimea căutată)")
+        else:
+            linii.append("    lant      : %s" % " -> ".join(lant))
+            for a, b in zip(lant, lant[1:]):
+                unde = LINII_APEL.get((a, b), [])
+                loc_b = definitii.get(b, [("?", 0)])[0]
+                linii.append("        %s -> %s   apelat la %s   ·   definit la %s:%d"
+                             % (a, b,
+                                ", ".join("%s:%d" % u for u in sorted(set(unde))[:3]) or "?",
+                                loc_b[0], loc_b[1]))
+        linii.append("")
+    return "\n".join(linii)
 
 
 # ============================================================================
@@ -205,6 +270,18 @@ if __name__ == "__main__":
             print("  %s" % fis)
             for c in cai:
                 print("      %s" % c)
+    if "--lanturi" in sys.argv:
+        text = callchains()
+        cale = os.path.join(RAD, "masuratori", "post_p2", "p3_route_callchains.txt")
+        os.makedirs(os.path.dirname(cale), exist_ok=True)
+        with io.open(cale, "w", encoding="utf-8", newline="") as f:
+            f.write("LANȚURILE DE APEL — cele %d rute care ating portofoliul\n"
+                    "Generat cu: python3 -m scripts.scan_cale_cerere --lanturi\n"
+                    "Fiecare pas poartă fișierul și linia, ca afirmațiile de root-cause din\n"
+                    "RAPORT_P3_DIAGNOSTIC.md să poată fi verificate fără a fi luate pe încredere.\n"
+                    "%s\n\n" % (len(rute_care_cresc()), "=" * 72))
+            f.write(text)
+        print("scris: %s" % cale)
     if "--json" in sys.argv:
         cale = os.path.join(RAD, "masuratori", "post_p2", "cale_cerere.json")
         os.makedirs(os.path.dirname(cale), exist_ok=True)

@@ -1,0 +1,118 @@
+========================================================================
+COMANDA   : python3 -m scripts.masoara_p3  (curba_succes + de_ce_difera)
+TIMESTAMP : 2026-09-09T06:30:13.121213+03:00
+COMMIT    : 54a913905c1d802d80ea3c2187f12946bfddc479
+GIT STATUS (--short):
+     M scripts/masoara_p3.py
+     M scripts/masoara_rute_portofoliu.py
+     M scripts/scan_cale_cerere.py
+    ?? masuratori/post_p2/p3_route_callchains.txt
+SCOP      : calea de SUCCES pe scheme REALE — separarea overheadului fix de costul
+            marginal per firmă, si reconcilierea cu domeniul sintetic.
+========================================================================
+
+CALIBRARE masuratoare (separarea DB/CPU, ambele directii): PASS
+CALIBRARE scanner de rute (trei directii)               : PASS
+
+── 1. CALEA DE SUCCES, pe scheme REALE (N = 5 / 10 / 14) ──
+
+ruta                       N=5    N=10   N=14           interogari
+/migrare/asociati          24     44     60    
+/migrare/mijloace-fixe     24     44     60    
+/migrare/parteneri         24     44     60    
+/migrare/salariati         24     44     60    
+
+ruta                       N=5    N=10   N=14    conexiuni
+/migrare/asociati          13     23     31    
+/migrare/mijloace-fixe     13     23     31    
+/migrare/parteneri         13     23     31    
+/migrare/salariati         13     23     31    
+
+/migrare/asociati
+    BASE_QUERIES         = 4.0
+    QUERIES_PER_FIRM     = 4.0
+    BASE_CONNECTIONS     = 3.0
+    CONNECTIONS_PER_FIRM = 2.0
+    liniar (q / c)       = True / True   (verificat pe TOATE cele trei puncte)
+    statusuri            = [200]
+/migrare/mijloace-fixe
+    BASE_QUERIES         = 4.0
+    QUERIES_PER_FIRM     = 4.0
+    BASE_CONNECTIONS     = 3.0
+    CONNECTIONS_PER_FIRM = 2.0
+    liniar (q / c)       = True / True   (verificat pe TOATE cele trei puncte)
+    statusuri            = [200]
+/migrare/parteneri
+    BASE_QUERIES         = 4.0
+    QUERIES_PER_FIRM     = 4.0
+    BASE_CONNECTIONS     = 3.0
+    CONNECTIONS_PER_FIRM = 2.0
+    liniar (q / c)       = True / True   (verificat pe TOATE cele trei puncte)
+    statusuri            = [200]
+/migrare/salariati
+    BASE_QUERIES         = 4.0
+    QUERIES_PER_FIRM     = 4.0
+    BASE_CONNECTIONS     = 3.0
+    CONNECTIONS_PER_FIRM = 2.0
+    liniar (q / c)       = True / True   (verificat pe TOATE cele trei puncte)
+    statusuri            = [200]
+
+── 2. RECONCILIERE sintetic vs real ──
+ruta                       SYN_Q_SLOPE    REAL_Q_SLOPE   SYN_C_SLOPE    REAL_C_SLOPE  
+/migrare/asociati          3.0            4.0            2.0            2.0              <-- DIFERĂ
+/migrare/mijloace-fixe     3.0            4.0            2.0            2.0              <-- DIFERĂ
+/migrare/salariati         3.0            4.0            2.0            2.0              <-- DIFERĂ
+/migrare/parteneri         4.0            4.0            2.0            2.0           
+
+── 3. DE CE DIFERĂ — instrucțiunile executate pentru O firmă ──
+
+### /migrare/asociati
+  real      — 8 interogări:
+      SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHER
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67710
+      SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t 
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67710
+      SELECT schema_name FROM public.tenants WHERE id = 78909 AND accounting_firm_id = 45854 AND activ = true
+      SELECT to_regclass('asociati')
+      SELECT count(*), COALESCE(sum(cota),0) FROM asociati
+      INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67710, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/asoc
+  sintetic  — 7 interogări:
+      SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHER
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67711
+      SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t 
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67711
+      SELECT schema_name FROM public.tenants WHERE id = 78910 AND accounting_firm_id = 45855 AND activ = true
+      SELECT to_regclass('asociati')
+      INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67711, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/asoc
+
+### /migrare/parteneri
+  real      — 8 interogări:
+      SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHER
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67712
+      SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t 
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67712
+      SELECT schema_name FROM public.tenants WHERE id = 78911 AND accounting_firm_id = 45856 AND activ = true
+      CREATE TABLE IF NOT EXISTS solduri_parteneri ( id SERIAL PRIMARY KEY, cont TEXT NOT NULL, cui TEXT NOT NULL DEFAULT '', denumire TEXT NOT NULL DEFAULT
+      SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0) FROM solduri_parteneri
+      INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67712, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/part
+  sintetic  — 8 interogări:
+      SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id WHER
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67713
+      SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la, t.nume_ales_la, ft.tip_firma AS tip_firma_brut FROM public.tenants t 
+      SELECT rol, accounting_firm_id FROM public.users WHERE id = 67713
+      SELECT schema_name FROM public.tenants WHERE id = 78912 AND accounting_firm_id = 45857 AND activ = true
+      CREATE TABLE IF NOT EXISTS solduri_parteneri ( id SERIAL PRIMARY KEY, cont TEXT NOT NULL, cui TEXT NOT NULL DEFAULT '', denumire TEXT NOT NULL DEFAULT
+      SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0) FROM solduri_parteneri
+      INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) VALUES (67713, (SELECT id FROM public.tenants WHERE id = NULL), 'GET /migrare/part
+
+CONCLUZIA, citită din capturile de mai sus, nu din citirea codului:
+  `/migrare/asociati` (și `mijloace-fixe`, `salariati`): pe schema goală lipsește
+  `SELECT count(*) ... FROM <tabela>`, fiindcă `rezumat()` face întâi
+  `SELECT to_regclass('<tabela>')` și IESE DEVREME când întoarce NULL.
+  `/migrare/parteneri`: `rezumat()` NU are gardă `to_regclass` — cheamă `asigura_tabel()`,
+  care execută `CREATE TABLE IF NOT EXISTS`, deci ambele căi fac același număr de
+  instrucțiuni. De-aia panta lui sintetică era deja egală cu cea reală.
+
+========================================================================
+EXIT CODE : 0
+SFARSIT   : 2026-09-09T06:30:22.879354+03:00

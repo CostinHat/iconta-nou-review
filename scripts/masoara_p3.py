@@ -271,6 +271,243 @@ def masoara_pe_real(rute=None):
     return {"uid": uid, "firme": cate, "rute": rez}
 
 
+# ============================================================================
+#  CALEA DE SUCCES — pe scheme REALE, nu inexistente
+# ============================================================================
+#: **DE CE EXISTĂ, și ce corectează.** Curba sintetică folosește firme cu scheme INEXISTENTE.
+#: Prima formă a diagnosticului a spus că asta redă „forma creșterii" și subestimează doar munca.
+#: **Afirmația era prea largă:** pe o schemă inexistentă, `rezumat()` iese devreme
+#: (`SELECT to_regclass(...)` întoarce `NULL`), deci **coeficientul de interogări per firmă e el
+#: însuși mai mic** — nu doar timpul. Numărul de conexiuni rămâne același, dar cel de interogări nu.
+#:
+#: Aici se construiesc firme cu schemă ADEVĂRATĂ din `tenant_template.sql`, la N = 5/10/14, și se
+#: separă mecanic **overhead-ul fix** de **costul marginal per firmă**. Nimic nu se mai deduce din
+#: forma sintetică.
+CABINET_REAL = "PROBA P3 SUCCESS PATH"
+UTILIZATOR_REAL = "proba-p3-succes@iconta.local"
+PREFIX_SCHEMA_REAL = "proba_p3s_"
+
+#: Rutele cu N+1 care deschid schema fiecărei firme — singurele la care calea de succes diferă.
+RUTE_SUCCES = ("/migrare/asociati", "/migrare/mijloace-fixe", "/migrare/salariati",
+               "/migrare/parteneri")
+
+
+def curata_reale(conn):
+    """Șterge cabinetul de probă, utilizatorul, firmele ȘI schemele lor. Idempotentă."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.accounting_firms WHERE nume = %s", (CABINET_REAL,))
+        r = cur.fetchone()
+        if r:
+            fid = r[0]
+            cur.execute("SELECT id, schema_name FROM public.tenants WHERE accounting_firm_id = %s",
+                        (fid,))
+            firme = cur.fetchall()
+            ids = [x[0] for x in firme]
+            if ids:
+                for t in ("firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa",
+                          "supervizor_rezultat", "user_tenants", "declaratii_depuse"):
+                    cur.execute("DELETE FROM public.%s WHERE tenant_id = ANY(%%s)" % t, (ids,))
+                cur.execute("DELETE FROM public.tenants WHERE id = ANY(%s)", (ids,))
+            for _tid, sch in firme:
+                cur.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % sch)
+            cur.execute("DELETE FROM public.users WHERE accounting_firm_id = %s OR email = %s",
+                        (fid, UTILIZATOR_REAL))
+            cur.execute("DELETE FROM public.accounting_firms WHERE id = %s", (fid,))
+        else:
+            cur.execute("DELETE FROM public.users WHERE email = %s", (UTILIZATOR_REAL,))
+        # scheme ramase din rulari intrerupte
+        cur.execute("SELECT nspname FROM pg_namespace WHERE nspname LIKE %s",
+                    (PREFIX_SCHEMA_REAL + "%",))
+        for (sch,) in cur.fetchall():
+            cur.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % sch)
+
+
+def construieste_reale(conn, n):
+    """`n` firme cu SCHEMĂ ADEVĂRATĂ din `tenant_template.sql`. Întoarce `(uid, ids)`.
+
+    Fiecare firmă primește și un `firma_profil` completat: fără el, rutele ar putea ieși pe altă
+    ramură decât cea măsurată, iar „calea de succes" ar fi din nou altceva decât spune numele."""
+    from core import tenant_provisioning as TP
+    cale_tpl = os.path.join(RAD, "tenant_template.sql")
+    with open(cale_tpl, encoding="utf-8") as f:
+        tpl = f.read()
+
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO public.accounting_firms (nume, activ) VALUES (%s, true) "
+                    "RETURNING id", (CABINET_REAL,))
+        fid = cur.fetchone()[0]
+        cur.execute(
+            "INSERT INTO public.users (email, password_hash, rol, accounting_firm_id, activ) "
+            "VALUES (%s, %s, 'admin_firma', %s, true) RETURNING id",
+            (UTILIZATOR_REAL, "scrypt$fara-parola", fid))
+        uid = cur.fetchone()[0]
+
+    ids = []
+    for i in range(n):
+        sch = "%s%03d" % (PREFIX_SCHEMA_REAL, i)
+        TP.creeaza_schema(conn, sch, tpl)
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO public.tenants (schema_name, nume, cui, accounting_firm_id, activ) "
+                "VALUES (%s, %s, NULL, %s, true) RETURNING id",
+                (sch, "PROBA P3 SUCCES %03d" % i, fid))
+            tid = cur.fetchone()[0]
+            cur.execute('INSERT INTO "%s".firma_profil (id, nume, cui, serie_factura, '
+                        '  urmator_numar_factura, tip_firma, regim_fiscal, platitor_tva, '
+                        "  tip_decont, operatiuni_ic) "
+                        "VALUES (1,'PROBA P3 SUCCES','12345678','PS',1,'srl','micro',true,'L',"
+                        "        false) ON CONFLICT (id) DO NOTHING" % sch)
+        ids.append(tid)
+    conn.commit()
+    return uid, ids
+
+
+def _panta(puncte):
+    """`(baza, panta, liniar)` dintr-un set de `(n, y)`. Cu trei puncte se poate VERIFICA
+    liniaritatea, nu doar presupune — de-aia se măsoară la trei valori ale lui N, nu la două."""
+    puncte = sorted(puncte)
+    (n0, y0), (nk, yk) = puncte[0], puncte[-1]
+    panta = (yk - y0) / float(nk - n0) if nk != n0 else 0.0
+    baza = y0 - panta * n0
+    liniar = all(abs((baza + panta * n) - y) < 1e-6 for n, y in puncte)
+    return baza, panta, liniar
+
+
+def curba_succes(nn=(5, 10, 14), rute=None):
+    """Calea de SUCCES, pe scheme reale. `{ruta: {puncte, BASE_*, *_PER_FIRM, liniar}}`."""
+    from core import db as _db
+    _db.init_pool()
+    rute = list(rute or RUTE_SUCCES)
+    brut = {}
+    for n in nn:
+        with _db.get_conn() as conn:
+            curata_reale(conn)
+            conn.commit()
+        with _db.get_conn() as conn:
+            uid, _ids = construieste_reale(conn, n)
+            tok = MR._token(conn, uid)
+        with MR.client_test() as cl:
+            cl.get(rute[0], headers={"Authorization": "Bearer " + tok})     # încălzire
+            brut[n] = {r: masoara_ruta(cl, tok, r) for r in rute}
+        print("   REAL N=%-3d %s" % (n, {r: "%dq/%dc %.3fs" % (v["interogari"], v["conexiuni"],
+                                                               v["total_sec"])
+                                         for r, v in brut[n].items()}), flush=True)
+    with _db.get_conn() as conn:
+        curata_reale(conn)
+        conn.commit()
+
+    out = {}
+    for r in rute:
+        pq = [(n, brut[n][r]["interogari"]) for n in nn]
+        pc = [(n, brut[n][r]["conexiuni"]) for n in nn]
+        bq, sq, lq = _panta(pq)
+        bc, sc, lc = _panta(pc)
+        out[r] = {"puncte": {str(n): brut[n][r] for n in nn},
+                  "BASE_QUERIES": round(bq, 3), "QUERIES_PER_FIRM": round(sq, 3),
+                  "BASE_CONNECTIONS": round(bc, 3), "CONNECTIONS_PER_FIRM": round(sc, 3),
+                  "liniar_interogari": lq, "liniar_conexiuni": lc,
+                  "statusuri": sorted({brut[n][r]["status"] for n in nn})}
+    return out, brut
+
+
+# ============================================================================
+#  DE CE DIFERĂ — instrucțiunile, capturate pe amândouă căile
+# ============================================================================
+class _CursorSpion:
+    def __init__(self, real, jurnal):
+        self._real, self._j = real, jurnal
+
+    def execute(self, sql, params=None):
+        try:
+            m = self._real.mogrify(sql, params)
+            m = m.decode("utf-8", "replace") if isinstance(m, bytes) else m
+        except Exception:
+            m = sql if isinstance(sql, str) else str(sql)
+        self._j.append(" ".join(m.split())[:200])
+        return self._real.execute(sql, params) if params is not None else self._real.execute(sql)
+
+    def __getattr__(self, n):
+        return getattr(self._real, n)
+
+    def __enter__(self):
+        self._real.__enter__()
+        return self
+
+    def __exit__(self, *a):
+        return self._real.__exit__(*a)
+
+    def __iter__(self):
+        return iter(self._real)
+
+
+class _ConnSpion:
+    def __init__(self, real, jurnal):
+        self._real, self._j = real, jurnal
+
+    def cursor(self, *a, **k):
+        return _CursorSpion(self._real.cursor(*a, **k), self._j)
+
+    def __getattr__(self, n):
+        return getattr(self._real, n)
+
+
+@contextlib.contextmanager
+def spioneaza():
+    from core import db as _db
+    jurnal = []
+    original = _db.get_conn
+
+    @contextlib.contextmanager
+    def get_conn_spionat(schema=None):
+        jurnal.append("-- get_conn(schema=%r)" % schema)
+        with original(schema) as c:
+            yield _ConnSpion(c, jurnal)
+
+    _db.get_conn = get_conn_spionat
+    try:
+        yield jurnal
+    finally:
+        _db.get_conn = original
+
+
+def de_ce_difera(ruta="/migrare/asociati"):
+    """Instrucțiunile executate pentru O firmă, pe schemă REALĂ vs pe schemă INEXISTENTĂ.
+
+    Nu se explică din citirea codului: se **captează** amândouă și se arată diferența."""
+    from core import db as _db
+    _db.init_pool()
+    out = {}
+
+    with _db.get_conn() as conn:
+        curata_reale(conn)
+        conn.commit()
+    with _db.get_conn() as conn:
+        uid, _ids = construieste_reale(conn, 1)
+        tok = MR._token(conn, uid)
+    with MR.client_test() as cl:
+        with spioneaza() as j:
+            cl.get(ruta, headers={"Authorization": "Bearer " + tok})
+    out["real"] = list(j)
+    with _db.get_conn() as conn:
+        curata_reale(conn)
+        conn.commit()
+
+    with _db.get_conn() as conn:
+        MR.curata(conn)
+        conn.commit()
+    with _db.get_conn() as conn:
+        uid, _ids = MR.construieste(conn, 1, 10, rece=False)
+        tok = MR._token(conn, uid)
+    with MR.client_test() as cl:
+        with spioneaza() as j:
+            cl.get(ruta, headers={"Authorization": "Bearer " + tok})
+    out["sintetic"] = list(j)
+    with _db.get_conn() as conn:
+        MR.curata(conn)
+        conn.commit()
+    return out
+
+
 def _tipar(rez, real):
     nn = sorted(rez)
     rute = sorted(rez[nn[0]])

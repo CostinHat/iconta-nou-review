@@ -1,5 +1,22 @@
 # RAPORT P3 — DIAGNOSTIC | 09.09.2026 | pe commitul `6b59c19f`
 
+## TRASABILITATE
+
+```
+POST_P2_FULL_SUITE_COMMIT = 6e4dd53c6f6f6d7aa0d8aa4fb0d4d0634ad1eb0d
+P3_MEASUREMENT_COMMIT     = 6b59c19f   (starea pe care s-au făcut măsurătorile P3)
+P3_FINAL_COMMIT           = 54a91390   (diagnosticul, comis)
+P3_EVIDENCE_COMMIT        = commitul care poartă corecțiile de precizie de față
+```
+
+**P3 final changes diagnostic/reporting artifacts only; no request-path runtime change after the
+green POST-P2 suite.** Suita completă verde (4270 passed, exit 0) s-a rulat pe `6e4dd53c`; tot ce
+a urmat — diagnosticul, măsurătorile, corecțiile de precizie — atinge **numai** instrumente de
+măsură, artefacte și documente. Diff-ul o confirmă mecanic: niciun fișier din `main.py` sau
+`core/` (în afara testelor) nu apare în commiturile de după.
+
+---
+
 **Diagnostic, fără implementare.** Nu s-a schimbat nicio linie din calea de cerere. Nu s-a mutat
 nimic în cache, nu s-a atins fail-closed-ul, advisory lockul, `citeste()` set-based sau vreo gardă
 P2. Ce urmează sunt măsurători și cauze demonstrate; propunerile din §6 sunt **scrise, nu făcute**.
@@ -54,16 +71,48 @@ reală; numai o rută sigur de celălalt fel îl demască.*
 
 ---
 
-## 3. DOMENIUL MĂSURĂTORII, cu limita lui scrisă
+## 3. DOMENIUL MĂSURĂTORII — și o afirmație a mea care era prea largă
 
-**Curba sintetică**, N = 5/50/100/250/500/1000: firme în `public.tenants`, fiecare cu schema ei, cu
-nume propriu și **inexistentă pe disc** (`tenants.schema_name` e unic — schemele reale nu se pot
-cicla). Pentru rutele care citesc doar modelul, e fidel: ele nu deschid nicio schemă. Pentru rutele
-care deschid schema fiecărei firme, curba redă corect **FORMA creșterii** (câte interogări și
-conexiuni per firmă), dar **subestimează munca** per firmă.
+**Curba sintetică**, N = 5/50/100/250/500/1000: firme în `public.tenants`, fiecare cu schema ei
+(`tenants.schema_name` e unic, deci schemele reale nu se pot cicla).
 
-**De aceea costul real per firmă se măsoară separat**, pe portofoliul REAL — 14 firme, scheme
-adevărate. Raportul le pune cap la cap: *forma × costul real*. Amândouă componentele sunt măsurate.
+### Ce am afirmat greșit, și corecția
+
+Prima formă a raportului spunea că domeniul sintetic *„redă corect FORMA creșterii (câte interogări
+și conexiuni per firmă), dar subestimează munca per firmă"*.
+
+**Afirmația era prea largă.** Pe o schemă fără tabelele firmei, `rezumat()` **iese devreme** —
+`SELECT to_regclass('<tabela>')` întoarce `NULL` — deci **și coeficientul de interogări per firmă e
+mai mic**, nu doar timpul. Nu era o subestimare de latență; era o pantă diferită.
+
+**Nu mai afirm nimic despre coeficientul real pe baza celui sintetic.** Calea de succes se măsoară
+direct, pe scheme REALE construite din `tenant_template.sql` — §4.5 — iar cele două pante se
+reconciliază explicit, cu instrucțiunile capturate, în §4.6.
+
+### O a doua corecție, și e mai gravă: sonda a SCRIS în producție
+
+Schemele sintetice erau, la prima formă, **inexistente**. `SET search_path TO "inexistenta",
+public` e **acceptat** de PostgreSQL, care ignoră tăcut schemele care lipsesc — iar o rută care
+apoi execută un `CREATE TABLE IF NOT EXISTS` **necalificat** nimerește prima schemă existentă din
+cale, adică `public`.
+
+Măsurând `/migrare/parteneri`, sonda a creat **`public.solduri_parteneri`** în producție: tabelă
+goală, fără `tenant_id`, cu coloane identice cu cele din `tenant_template.sql`, **zero referințe în
+tot codul**. E chiar clasa *„sonda de audit nu e read-only"*: am presupus că măsurătoarea nu poate
+scrie, în loc s-o dovedesc.
+
+**Reparat în instrument:** schemele sintetice sunt acum **reale, dar goale**. `to_regclass`
+întoarce tot `NULL` — deci ramura măsurată nu se schimbă —, dar orice scriere necalificată
+aterizează în schema de probă, care se șterge la curățenie.
+
+*Tabela rămasă în `public` nu a fost ștearsă: e o operațiune ireversibilă pe producție și se cere
+separat.* Vezi §11.
+
+**A treia corecție, tot a instrumentului:** curățenia făcea `DROP SCHEMA ... CASCADE` pentru toate
+schemele într-o singură tranzacție și cădea la N=1000 cu `out of shared memory /
+max_locks_per_transaction` — adică pica exact când era cel mai mult de curățat, lăsând în urmă
+1.000 de scheme. Curățate manual, în loturi; instrumentul șterge acum în loturi de 50, cu `commit`
+după fiecare, și s-a probat pe 120 de scheme.
 
 ---
 
@@ -143,6 +192,63 @@ conexiuni per firmă**, cu ~1 ms de bază per firmă. La 1000 de firme: ~4.300 d
 conexiuni, **~1 s doar timp de bază** — și asta e cifra *măsurată pe scheme reale*, nu extrapolată
 din curba sintetică.
 
+### 4.5 CALEA DE SUCCES, pe scheme REALE — overhead fix vs cost marginal
+
+Artefacte: `masuratori/post_p2/p3_success_path_curve.json` · `.iesire.txt`
+
+Firme construite din `tenant_template.sql`, cu `firma_profil` completat, la **N = 5 / 10 / 14**.
+Toate răspunsurile **200** — e chiar calea de succes, nu una care cade pe `except`.
+
+| rută | N=5 | N=10 | N=14 | `BASE_QUERIES` | `QUERIES_PER_FIRM` | `BASE_CONNECTIONS` | `CONNECTIONS_PER_FIRM` |
+|---|---|---|---|---|---|---|---|
+| `/migrare/asociati` | 24q/13c | 44q/23c | 60q/31c | **4** | **4** | **3** | **2** |
+| `/migrare/mijloace-fixe` | 24q/13c | 44q/23c | 60q/31c | **4** | **4** | **3** | **2** |
+| `/migrare/salariati` | 24q/13c | 44q/23c | 60q/31c | **4** | **4** | **3** | **2** |
+| `/migrare/parteneri` | 24q/13c | 44q/23c | 60q/31c | **4** | **4** | **3** | **2** |
+
+**Liniaritatea e verificată, nu presupusă:** cu trei puncte, `BASE + PANTĂ × N` reproduce **exact**
+toate trei, pentru interogări și pentru conexiuni, la toate patru rutele. De-aia s-a măsurat la
+trei valori ale lui N, nu la două.
+
+*Cifrele coincid cu măsurătoarea independentă pe cabinetul real de 14 firme din §4.4 (60q/31c).*
+
+**Ce NU intră în aceste cifre, declarat:** `db.get_conn(schema)` execută `SET search_path` la
+intrare și `RESET search_path` la ieșire, pe conexiunea brută — **înaintea** învelișului care
+numără. Deci la nivelul bazei sunt **încă două instrucțiuni per conexiune de schemă**, adică ~2 în
+plus per firmă. Contorul măsoară interogările **aplicației**; cifra de la nivelul bazei e mai mare.
+
+### 4.6 RECONCILIERE sintetic vs real
+
+| rută | `SYNTHETIC_QUERY_SLOPE` | `REAL_SUCCESS_QUERY_SLOPE` | `SYNTHETIC_CONNECTION_SLOPE` | `REAL_SUCCESS_CONNECTION_SLOPE` |
+|---|---|---|---|---|
+| `/migrare/asociati` | 3,0 | **4,0** | 2,0 | 2,0 |
+| `/migrare/mijloace-fixe` | 3,0 | **4,0** | 2,0 | 2,0 |
+| `/migrare/salariati` | 3,0 | **4,0** | 2,0 | 2,0 |
+| `/migrare/parteneri` | 4,0 | 4,0 | 2,0 | 2,0 |
+
+**Diferența nu se ascunde într-o medie: e de exact o interogare per firmă, la trei rute din patru.**
+
+**Ce branch nu se execută**, citit din instrucțiunile capturate (`p3_success_path_curve.iesire.txt`,
+secțiunea 3 — nu din citirea codului):
+
+- pe schemă reală, `/migrare/asociati` execută, per firmă:
+  `SELECT to_regclass('asociati')` **apoi** `SELECT count(*), COALESCE(sum(cota),0) FROM asociati`;
+- pe schemă goală execută **doar prima**. `rezumat()` (`core/asociati_import_api.py:119–121`)
+  întoarce devreme când `to_regclass` dă `NULL`. Identic la `mijloace_fixe_import_api.py:172–174`
+  și `salariati_import_api.py:173–175`.
+- `/migrare/parteneri` **nu are gardă `to_regclass`**: `rezumat()`
+  (`core/solduri_parteneri_api.py:261`) cheamă `asigura_tabel()`, care execută
+  `CREATE TABLE IF NOT EXISTS solduri_parteneri`, apoi numără. Ambele căi fac același număr de
+  instrucțiuni — de-aia panta lui sintetică era deja egală cu cea reală, **și tot din cauza asta
+  sonda a scris în `public`** (§3).
+
+**Conexiunile per firmă coincid pe ambele domenii (2,0)** — acolo forma sintetică era fidelă.
+
+**Latența sintetică a lui `/migrare/parteneri` nu se mai citează.** După ce schemele de probă au
+devenit reale-dar-goale, `CREATE TABLE IF NOT EXISTS` chiar creează câte o tabelă per firmă, iar
+latența sintetică urcă la 5,57 s la N=1000 — artefact al sondei, nu purtare de producție (unde
+tabela există și instrucțiunea e o verificare ieftină). Pentru latență valorează §4.5 și §4.4.
+
 ---
 
 ## 5. TOPUL COSTURILOR CARE CRESC CU N, cu cauza demonstrată
@@ -160,6 +266,12 @@ Ordonate după costul măsurat la N=1000:
 | 5 | `/supervizor` | 2005q / 1004c / 0,50 s | 2q + 1c | `main.py:2880` `for f in ale_mele:` → `with db.get_conn() as c: schema_tenant(...)`, **o conexiune per firmă doar ca să rezolve schema și accesul** |
 | 6 | `/migrare/istoric-declaratii` | 1004q / 1003c / 0,32 s | 1q + 1c | `main.py:2592` → `istoric_declaratii_import_api.rezumat(c, tid)`, o conexiune per firmă (citește din `public`, **nu deschide schema**) |
 
+**Coeficienții din tabel sunt cei SINTETICI.** Pentru cele patru rute de import, coeficientul real
+al căii de succes e **4 interogări + 2 conexiuni per firmă** (§4.5) — la trei dintre ele, cu o
+interogare mai mult decât arată coloana. Proiecția corectă la N=1000 e deci
+**~4.004 interogări / ~2.003 conexiuni**, nu 3.004, pentru `asociati`, `mijloace-fixe` și
+`salariati`.
+
 **Cauza e aceeași pentru primele patru, și e chiar tiparul pe care P2 l-a scos din celelalte trei
 rute surori:** o buclă per firmă care deschide **două** conexiuni — una ca să afle schema, alta ca
 să citească din ea. Cele trei rute vecine (`/migrare/solduri`, `/migrare/plan-conturi`,
@@ -171,9 +283,17 @@ a rămas e o buclă **înaintea** ei, care rezolvă schema și accesul firmă cu
 regresie a lui P1; e o bucată pe care P1 n-a atins-o fiindcă nu era în domeniul lui.
 
 **Cifra care doare nu e numărul de interogări, ci de CONEXIUNI.** Pool-ul are `maxconn = 10`
-(implicit, `ICONTA_POOL_MAX` nesetat). O cerere care cere 2.003 conexiuni le ia și le dă înapoi
-secvențial — nu se blochează singură, dar **ține pool-ul ocupat 2.003 de ori**, iar utilizatorii
-concurenți se serializează pe el.
+(implicit, `ICONTA_POOL_MAX` nesetat). O cerere cere și dă înapoi ~2.003 conexiuni, **secvențial** —
+deci nu se blochează pe sine.
+
+```
+POOL_CONTENTION_RISK = UNMEASURED_BUT_PLAUSIBLE
+```
+
+Prima formă a raportului scria *„utilizatorii concurenți se serializează pe el"*. **N-am măsurat
+asta.** E o consecință plauzibilă a numărului de împrumuturi din pool, dar concurența n-a făcut
+parte din domeniul P3 și nu s-a executat niciun test cu cereri simultane. Rămâne o ipoteză numită,
+nu un rezultat — și **nu condiționează închiderea diagnosticului**.
 
 ### Clasa 2 — payload și serializare (toate cele 12, inclusiv cele „constante")
 
@@ -295,7 +415,8 @@ Scrise acum, ca să nu fie inventate după implementare.
 | # | test | criteriu |
 |---|---|---|
 | 1 | `test_p3_endpoint_query_count_toate_cele_12` | pe **toate** cele 12 rute derivate: 5 firme vs 50 → același număr de interogări **și** de conexiuni |
-| 2 | `test_p3_conexiuni_sub_plafonul_poolului` | nicio rută nu cere mai multe conexiuni decât `maxconn` într-o singură cerere |
+| 2 | `test_p3_cost_pe_cerere_nu_creste_cu_N` | numărul de interogări **și** de conexiuni per cerere **nu crește cu N** (criteriul corect: un total de împrumuturi mai mare decât `maxconn` nu e în sine un defect — pool-ul le servește secvențial) |
+| 2b | `test_p3_conexiuni_simultane_sub_capacitate` — **numai dacă se scrie un test de concurență** | maximul de conexiuni ținute SIMULTAN ≤ capacitatea pool-ului, fără starvation și fără deadlock |
 | 3 | `test_p3_paritate_status_import` | pentru fiecare din cele 4 rute de status: răspunsul de dinainte și de după, **întreg**, fără normalizare |
 | 4 | `test_p3_supervizor_acces_neschimbat` | o firmă la care userul n-are acces **rămâne** absentă din răspuns după batching |
 | 5 | `test_p3_aspect_nou_invalideaza` | pentru fiecare aspect nou: scriere în sursă → `invalidat`; scriere în sursă străină → **rămâne** `curent` |
@@ -307,13 +428,50 @@ testele 1, 2 și 7; nu trebuie construit nimic nou ca să se poată verifica.
 
 ---
 
-## 10. CE NU ACOPERĂ ACEST DIAGNOSTIC
+## 10. AUDITABILITATEA AFIRMAȚIILOR DE ROOT-CAUSE
+
+`masuratori/post_p2/p3_route_callchains.txt`, generat cu
+`python3 -m scripts.scan_cale_cerere --lanturi`. Pentru **fiecare** dintre cele 37 de rute care
+ating portofoliul (cele 12 care cresc cu N sunt marcate `CREȘTE CU N`):
+
+```
+GET /migrare/asociati
+    handler   : migrare_asociati_status()  la main.py:2437
+    poarta    : cere_cabinet   -> CREȘTE CU N
+    lant      : migrare_asociati_status -> tenantii_userului
+        migrare_asociati_status -> tenantii_userului   apelat la main.py:2440
+                                                       ·  definit la core/auth_api.py:395
+```
+
+*Rostul lui:* afirmațiile de root-cause din §5 nu mai trebuie luate pe încredere. Fiecare pas al
+lanțului poartă fișierul și linia, iar artefactul e **generat**, nu scris de mână — deci se
+regenerează și se compară oricând.
+
+---
+
+## 11. CEREREA CARE RĂMÂNE DESCHISĂ
+
+`public.solduri_parteneri` — tabelă goală, creată **de sonda mea** în producție (§3). Zero
+referințe în cod, fără `tenant_id`, coloane identice cu tabela omonimă din schemele de tenant.
+
+**Nu am șters-o.** Un `DROP TABLE` în `public` pe producție e ireversibil, iar curățarea propriei
+mizerii nu justifică o decizie luată singur. Comanda propusă:
+
+```sql
+DROP TABLE public.solduri_parteneri;   -- 0 rânduri, 0 referințe în cod
+```
+
+Cauza e reparată în instrument, deci nu se mai poate repeta.
+
+---
+
+## 12. CE NU ACOPERĂ ACEST DIAGNOSTIC
 
 - **Doar `GET`-uri de cabinet, fără parametru de cale.** Un `POST` de portofoliu ar schimba date, iar
   o măsurătoare care scrie nu se poate repeta identic.
-- **O singură cerere pe rând, fără concurență.** Efectul pool-ului sub sarcină simultană e
-  **argumentat** din numărul de conexiuni, **nu măsurat**. O măsurătoare de concurență e o temă
-  separată.
+- **O singură cerere pe rând, fără concurență.** `POOL_CONTENTION_RISK = UNMEASURED_BUT_PLAUSIBLE`
+  — argumentat din numărul de împrumuturi din pool, **nemăsurat**. N-a făcut parte din domeniul P3
+  și nu condiționează închiderea diagnosticului.
 - **Latențele sintetice ale rutelor cu N+1 sunt plafoane inferioare** (schemele nu există). Costul
   real per firmă vine din §4.4.
 - **Cele 25 de rute de portal** n-au fost măsurate: poarta lor e `cere_client`, deci văd o firmă.
