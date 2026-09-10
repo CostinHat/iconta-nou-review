@@ -792,7 +792,16 @@ def puncte_de_intrare(rute, module_main, arbori, definitii):
 
 def inventar(adancime=ADANCIME):
     """`(candidati, statistici)` — inventarul BRUT cerut de pasul A al comenzii."""
-    arbori, rute, definitii, module_main = graf()
+    return inventar_din(None, None, adancime)
+
+
+def inventar_din(fisiere=None, rad=None, adancime=ADANCIME):
+    """Acelasi inventar, pe un corpus DAT. Cu `fisiere=None` e chiar repo-ul.
+
+    Exista pentru calibrarea negativa a completitudinii: se injecteaza cai sintetice care aprind
+    cate un singur criteriu, si se arata pe ele ca mecanismul refuza inventarul daca raman
+    neclasificate."""
+    arbori, rute, definitii, module_main = graf(fisiere, rad)
     memo = {}
     intrari = puncte_de_intrare(rute, module_main, arbori, definitii)
     out, trunchiate = [], 0
@@ -806,9 +815,26 @@ def inventar(adancime=ADANCIME):
             continue
         an = analiza(dom, plat)
         toate = [x for d in dom for x in d["scrieri"] + d["externe"] + d["frontiere"]]
+        scrieri = [s2 for d in dom for s2 in d["scrieri"]]
+        externe = [e for d in dom for e in d["externe"]]
+        frontiere = [f for d in dom for f in d["frontiere"]]
         out.append({
             "fel": fel, "intrare": eticheta, "functie": cheie[1], "fisier": cheie[0],
             "poarta": poarta, "semne": sn, "analiza": an,
+            # FAPTELE pe care se sprijina clasificarea pe clase structurale. `domenii_total`
+            # numara TOATE domeniile caii, inclusiv pe cele care doar citesc — pe care lista
+            # `domenii` de mai jos nu le poarta, fiindca ea tine numai domeniile cu evenimente.
+            "fapte": {
+                "domenii_total": len([d for d in dom if d["id"] != 0]),
+                "domenii_care_scriu": an["domenii_care_scriu"],
+                "scrieri_total": len(scrieri),
+                "tabele": sorted({s2["detaliu"].split("|", 1)[1] for s2 in scrieri}),
+                "externe_total": len(externe),
+                "feluri_externe": sorted({e["detaliu"].split(":")[0] for e in externe}),
+                "frontiere_explicite": sorted({f["detaliu"] for f in frontiere}),
+                "scrieri_in_domeniul_apelantului":
+                    len([s2 for d in dom if d["id"] == 0 for s2 in d["scrieri"]]),
+            },
             "domenii_care_scriu": an["domenii_care_scriu"],
             "numai_omonim": bool(toate) and all(x["omonim"] for x in toate),
             "domenii": [{"id": d["id"], "loc": d["loc"], "via": d.get("via", ""),

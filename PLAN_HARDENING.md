@@ -298,10 +298,15 @@ tranzacție, deținută de use-case.
 
 - **inventarul e DERIVAT, nu scris**: `scripts/scan_tranzactii.py` construiește, pentru fiecare din
   cele **510** puncte de intrare (rute + lucrători de fundal), **arborele de domenii tranzacționale**
-  al căii, și marchează cele șase semne cerute de comandă. **332** de candidați; **32** peste pragul
-  care cere clasificare;
-- **clasificarea e PĂZITĂ**: `core/p4_clasificare.py` (7 CRITICAL, 27 NON_CRITICAL, 1 FALSE_POSITIVE — 35 de intrări: cele 32 de căi peste prag, plus două ieșite din inventar după reparație și o cale internă)
-  + `core/test_tranzactii_clasificate.py` — o cale compusă nouă, neclasificată, **cade poarta**;
+  al căii, și marchează cele șase semne cerute de comandă. **332** de candidați — **toți** primesc
+  verdict, fără prag *(prima formă clasifica 32; pragul era al meu, nu al comenzii, iar runda de
+  acceptare din 10.09 l-a scos)*;
+- **clasificarea e COMPLETĂ și PĂZITĂ**: `core/p4_clasificare.py` — 34 de rânduri individuale plus un
+  motor de **reguli pe clase structurale** care acoperă restul de 298. Rezultat: `RAW_CANDIDATES =
+  CLASSIFIED_CANDIDATES = 332`, `UNCLASSIFIED_RAW_CANDIDATES = 0`; 7 CRITICAL (6 puncte de intrare +
+  1 cale internă), 325 NON_CRITICAL, 1 FALSE_POSITIVE. `core/test_tranzactii_clasificate.py` —
+  o cale compusă nouă, neclasificată, **cade poarta**, iar refuzul e probat prin **calibrare
+  negativă pe fiecare din C1…C6** și prin două mutații;
 - **fiecare cale critică are injecție de defect**: `core/test_p4_fault_injection.py`, cu starea
   comparată pe **amprentă**, nu pe numărătoare (R137). **Șase din șapte au fost roșii pe codul de
   dinainte** — a șaptea, emiterea de factură, probează o proprietate care exista deja;

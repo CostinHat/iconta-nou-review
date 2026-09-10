@@ -14169,10 +14169,19 @@ scrise din memorie" e acum **R177** în `CONFORMITATE.md`, cu descrierea și cif
 
 ---
 
-## P4 — două alegeri de contract, luate de mine, care cer confirmare (09.09.2026)
+## P4 — două alegeri de contract, **APROBATE de arhitect** (cerute 09.09, aprobate 10.09.2026)
 
 Amândouă decurg din reparațiile de proprietate a tranzacției, amândouă schimbă un **comportament
 observabil**, și de-aia se scriu aici, nu doar în cod.
+
+**STAREA: CONFIRMATE.** Le-am propus pe 09.09.2026 ca alegeri luate de mine; **Costin le-a aprobat
+ca arhitect în runda de confirmare din 10.09.2026**, explicit și pe fiecare în parte:
+`P4_CONTRACT_DECISION_A=APPROVED`, `P4_CONTRACT_DECISION_B=APPROVED` — la B, cu riscul numit:
+*se acceptă că un defect de după efectul extern poate produce o notificare PIERDUTĂ, nu una
+duplicată*.
+
+*Deosebirea dintre «luată de mine» și «confirmată» nu e ceremonială: a doua cere să i se ceară
+din nou ca să se răstoarne; prima se poate răsturna cu o măsurătoare.*
 
 **(1) La `409 CONSTATARI_NECONFIRMATE`, confirmările trimise în chiar cererea aia nu mai rămân
 scrise.** Până azi, `poarta_confirmarii` scria confirmările primite pe măsură ce le potrivea, într-o

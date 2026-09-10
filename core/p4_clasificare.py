@@ -486,6 +486,179 @@ CLASIFICARE = {
 }
 
 
+# ============================================================================
+#  COMPLETITUDINEA — FIECARE candidat brut primeste un verdict, nu doar cei
+#  de peste un prag. (Cerut de Costin, runda de acceptare din 10.09.2026.)
+#
+#  Regula lui P4 e limpede: orice cale care aprinde CEL PUTIN UNUL din C1..C6 e
+#  candidat. Nu exista prag suplimentar inaintea clasificarii, si nu se filtreaza
+#  C1 fiindca produce multe rezultate. Prima forma a livrarii mele clasifica 32 de
+#  cai dintr-un inventar de 332, cu un prag pe care il alesesem eu — adica exact
+#  „am declarat un candidat neimportant INAINTE de clasificare".
+#
+#  CE SE SCHIMBA: verdictul se da pe DOUA cai, si amandoua sunt trasabile.
+#    * INDIVIDUAL — calea are un rand scris in `CLASIFICARE`, cu motivul ei;
+#    * PE CLASA STRUCTURALA — o regula din `REGULI`, care se aplica pe FAPTELE
+#      derivate ale caii (cate domenii, cate scriu, cate scrieri, ce efecte), nu
+#      pe numele ei. Fiecare regula spune ce clasa da si DE CE tine argumentul.
+#
+#  Ce NU face niciun mecanism de aici: nu absoarbe tacut o cale care cere judecata.
+#  Caile cu scrieri in mai multe tranzactii, cu commit partial sau cu efect
+#  ireversibil inauntrul unei tranzactii care scrie **nu au regula de clasa** —
+#  ele cad la „neclasificat" pana cand primesc un rand individual. Asta e chiar
+#  refuzul pe care `core/test_tranzactii_clasificate.py` il transforma in poarta.
+# ============================================================================
+
+INDIVIDUAL = "INDIVIDUAL"
+
+#: NUMELE CHEII e `de_ce`, nu `motiv`, si nu din stil: `motiv` e in
+#: `core/scan_afirmatii.REVENDICARE` — vocabularul sub care casa tine AFIRMATII DESPRE DATELE UNEI
+#: FIRME, care trebuie sa fie obiecte cu `fel` (decizia din 21.08). Regulile de aici justifica o
+#: clasificare de COD, nu afirma nimic despre o firma; dar un scaner nu poate face deosebirea, si pe
+#: drept — daca ar putea, ar face-o pe text. `CLASIFICARE` folosea deja `de_ce`, deci motorul se
+#: aliniaza la fisierul in care traieste in loc sa ceara o exceptie. *Cinci garzi au picat pe aceeasi
+#: cauza; toate se sting prin aceeasi potrivire de nume.*
+
+
+def _f(x):
+    """Faptele derivate ale unui candidat (v. `scan_tranzactii.inventar`)."""
+    return x.get("fapte", {}), x.get("analiza", {})
+
+
+def _cere_individual(x):
+    """True daca semnele caii cer o judecata scrisa, nu o regula de clasa."""
+    _fa, an = _f(x)
+    return bool(an.get("domenii_care_scriu", 0) > 1
+                or an.get("partial_commit")
+                or an.get("extern_in_tranzactie"))
+
+
+#: ORDINEA CONTEAZA: prima regula care se potriveste da verdictul.
+#:
+#: Regulile STRUCTURALE stau inaintea celei de omonimie, si nu din intamplare. Rezolvarea pe
+#: omonimie (treapta a treia: toate definitiile cu acelasi nume, reunite) **adauga** evenimente,
+#: niciodata nu scoate. Deci o concluzie de forma «nicio scriere» sau «cel mult un domeniu scrie»,
+#: trasa pe faptele supra-aproximate, ramane adevarata **a fortiori** despre calea reala: daca nici
+#: cu evenimente in plus nu apare un al doilea scriitor, cu atat mai putin fara ele. Un verdict
+#: structural e mai tare decat unul de provenienta — asa ca `OMONIM` ramane ultima plasa, pentru
+#: caile despre care nu se poate spune nimic altfel.
+REGULI = [
+    {
+        "cod": "FARA-SCRIERI",
+        "titlu": "calea nu scrie nimic în bază",
+        "clasa": NECRITIC,
+        "cand": lambda x: _f(x)[0].get("scrieri_total", 0) == 0,
+        "de_ce": lambda x: (
+            "%d domenii tranzactionale, ZERO scrieri. C1 aprinde pe numarul de FRONTIERE, nu pe "
+            "scrieri — de-aia calea e candidat, si pe drept. Dar o operatie care nu scrie nimic "
+            "nu poate lasa stare partiala: nu exista jumatate de nimic. Ce ramane e durata "
+            "tranzactiilor de citire, care e o intrebare de concurenta (R178/R183), nu de "
+            "proprietate." % _f(x)[0].get("domenii_total", 0)),
+    },
+    {
+        "cod": "UN-SINGUR-SCRIITOR",
+        "titlu": "mai multe tranzacții, dar una singură scrie",
+        "clasa": NECRITIC,
+        "cand": lambda x: (_f(x)[0].get("domenii_care_scriu", 0) == 1
+                           and _f(x)[0].get("domenii_total", 0) > 1),
+        "de_ce": lambda x: (
+            "%d domenii tranzactionale, dintre care UNUL SINGUR scrie (%d scrieri, %d tabele). "
+            "Celelalte sunt citiri — tipic poarta de acces (`_schema_sau_404` isi deschide propria "
+            "conexiune) si contextul cererii. **O tranzactie care nu scrie nu poate lasa stare "
+            "partiala**, deci toate scrierile caii sunt atomice impreuna, in singura tranzactie "
+            "care le tine. C2 si C6, cand se aprind aici, privesc ordinea din INTERIORUL ei — iar "
+            "interiorul unei tranzactii e tot-sau-nimic prin constructie."
+            % (_f(x)[0].get("domenii_total", 0), _f(x)[0].get("scrieri_total", 0),
+               len(_f(x)[0].get("tabele", [])))),
+    },
+    {
+        "cod": "O-SINGURA-TRANZACTIE",
+        "titlu": "tot actul într-o singură tranzacție",
+        "clasa": NECRITIC,
+        "cand": lambda x: (_f(x)[0].get("domenii_total", 0) <= 1
+                           and _f(x)[0].get("domenii_care_scriu", 0) <= 1),
+        "de_ce": lambda x: (
+            "un singur domeniu tranzactional, %d scrieri in %d tabele. Calea e candidat fiindca "
+            "aprinde C2 (mai multe tabele) sau C6 (ordinea scrierilor), dar amandoua descriu ce se "
+            "intampla INAUNTRUL unei singure tranzactii — care se comite intreaga sau deloc. "
+            "Nu exista frontiera intre efecte, deci nu exista loc unde un defect sa lase jumatate."
+            % (_f(x)[0].get("scrieri_total", 0), len(_f(x)[0].get("tabele", [])))),
+    },
+    {
+        "cod": "OMONIM",
+        "titlu": "ULTIMA PLASĂ: toate evenimentele vin din nume cu mai multe definiții",
+        "clasa": FALS,
+        "cand": lambda x: bool(x.get("numai_omonim")),
+        "de_ce": lambda x: (
+            "FALS POZITIV prin OMONIMIE, oarbirea declarata in antetul instrumentului: toate "
+            "evenimentele caii vin din nume rezolvate pe treapta a treia (toate definitiile cu "
+            "acel nume, reunite), deci faptele pe care s-ar sprijini orice alta regula nu sunt "
+            "ale caii asteia. Instanta din casa: parametrul `trimite` al lui `alerta_acces.ruleaza` "
+            "se ciocneste cu `efactura_send.trimite` si surorile lui"),
+    },
+]
+
+
+def verdict(x, clasificare=None, reguli=None):
+    """`{clasa, regula, motiv}` pentru un candidat, sau `None` daca nu-l acopera nimic.
+
+    Ordinea: intai randul INDIVIDUAL (daca exista), apoi regulile pe clasa structurala, in
+    ordinea din `REGULI`. Caile care cer judecata scrisa — scrieri in mai multe tranzactii,
+    commit partial, efect ireversibil in tranzactie — **nu au regula de clasa**: pentru ele
+    `None` e raspunsul corect, iar gardul il transforma in refuz.
+    """
+    clasificare = CLASIFICARE if clasificare is None else clasificare
+    reguli = REGULI if reguli is None else reguli
+    rand = clasificare.get(x.get("intrare"))
+    if rand:
+        return {"clasa": rand["clasa"], "regula": INDIVIDUAL, "de_ce": rand["de_ce"]}
+    if _cere_individual(x):
+        return None          # cere un rand scris; nicio regula de clasa nu-l acopera
+    for r in reguli:
+        try:
+            if r["cand"](x):
+                return {"clasa": r["clasa"], "regula": r["cod"], "de_ce": r["de_ce"](x)}
+        except Exception:
+            continue
+    return None
+
+
+def clasifica(inv, clasificare=None, reguli=None):
+    """`(verdicte, neclasificate)` peste TOT inventarul brut.
+
+    `verdicte` e `[(intrare, verdict)]`, unde verdictul poarta `clasa`, `regula` si `de_ce`, in ordinea inventarului; `neclasificate` e lista
+    intrarilor pentru care nimic n-a dat un verdict. **A doua lista trebuie sa fie goala** —
+    asta e `UNCLASSIFIED_RAW_CANDIDATES = 0`.
+    """
+    verdicte, neclasificate = [], []
+    for x in inv:
+        v = verdict(x, clasificare, reguli)
+        if v is None:
+            neclasificate.append(x.get("intrare"))
+        else:
+            verdicte.append((x.get("intrare"), v))
+    return verdicte, neclasificate
+
+
+def numaratori(inv, clasificare=None, reguli=None):
+    """Blocul de cifre cerut de acceptare, derivat — nu scris."""
+    verdicte, neclasificate = clasifica(inv, clasificare, reguli)
+    pe_clasa = {}
+    pe_regula = {}
+    for _intrare, v in verdicte:
+        pe_clasa[v["clasa"]] = pe_clasa.get(v["clasa"], 0) + 1
+        pe_regula[v["regula"]] = pe_regula.get(v["regula"], 0) + 1
+    return {
+        "RAW_CANDIDATES": len(inv),
+        "CLASSIFIED_CANDIDATES": len(verdicte),
+        "UNCLASSIFIED_RAW_CANDIDATES": len(neclasificate),
+        "neclasificate": neclasificate,
+        "CRITICAL_COMPOSITES": pe_clasa.get(CRITIC, 0),
+        "NON_CRITICAL_COMPOSITES": pe_clasa.get(NECRITIC, 0),
+        "FALSE_POSITIVES": pe_clasa.get(FALS, 0),
+        "pe_regula": pe_regula,
+    }
+
 def cai_critice():
     """Căile clasificate `CRITICAL_COMPOSITE`, în ordinea din fișier."""
     return [k for k, v in CLASIFICARE.items() if v["clasa"] == CRITIC]

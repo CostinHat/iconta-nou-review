@@ -1,0 +1,23 @@
+BLOCUL DE ACCEPTARE P4 — derivat, nu scris
+Generat cu: ./venv/bin/python -m scripts.p4_artefacte
+==============================================================================
+RAW_CANDIDATES=332
+CLASSIFIED_CANDIDATES=332
+
+CRITICAL_COMPOSITES=7
+  (din care puncte de intrare in inventarul brut: 6; cai interne: 1)
+NON_CRITICAL_COMPOSITES=325
+FALSE_POSITIVES=1
+
+UNCLASSIFIED_RAW_CANDIDATES=0
+UNTESTED_CRITICAL_COMPOSITES=0
+UNEXPLAINED_EXCLUSIONS=0
+
+TRANSACTION_OWNERSHIP_GAPS=0   (cai cu scrieri in >1 tranzactie, ramase fara verdict scris)
+PARTIAL_COMMIT_PATHS=0   (cai cu commit partial, ramase fara verdict scris)
+
+P4_CRITICAL_OPERATION_INVENTORY=MECHANICALLY_DERIVED · COMPLETE
+P4_FAULT_INJECTION_COVERAGE=COMPLETE
+
+puncte de intrare parcurse=510
+cai trunchiate de adancime=0

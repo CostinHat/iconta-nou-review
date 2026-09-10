@@ -8181,7 +8181,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_tichet_cultural.py` — Tichete culturale (Legea 165/2018 cap.V). Temeiuri VERDE: anaf_surse/RAPORT_verificare_temeiuri.md.
 - `core/test_tichete_pontaj.py` — D2 (02.08.2026): tichetele de masa pe zile EFECTIV lucrate (HG 1045/2018 art.10 alin.3). Zilele de
 - `core/test_tip_decont_lung.py` — core/test_tip_decont_lung.py — GARD: periodicitatea decont TVA ajunge la UI in forma LUNGA.
-- `core/test_tranzactii_clasificate.py` — GARD P4 — nicio operație compusă nu rămâne neclasificată, și nicio clasificare nu îmbătrânește.
+- `core/test_tranzactii_clasificate.py` — GARD P4 — FIECARE candidat brut are un verdict, iar niciun verdict nu îmbătrânește.
 - `core/test_trasee.py` — GARD: inventarul traseelor nu îmbătrânește tăcut, iar instrumentul lui nu minte.
 - `core/test_tva_incasare.py` — Teste gardian pentru core/tva_incasare.py (art. 282 CF, OUG 8/2026).
 - `core/test_tva_incasare_291_5.py` — Garda R151 — cele două ramuri ale art. 291 alin. (5) se CER, nu se ghicesc.

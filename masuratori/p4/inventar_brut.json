@@ -96,6 +96,23 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 11,
+        "domenii_care_scriu": 4,
+        "scrieri_total": 25,
+        "tabele": [
+          "public|alerte_acces_dedup",
+          "public|spv_token"
+        ],
+        "externe_total": 9,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 4,
       "numai_omonim": false,
       "domenii": [
@@ -543,6 +560,22 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 9,
+        "domenii_care_scriu": 4,
+        "scrieri_total": 6,
+        "tabele": [
+          "firma|notificari_scadenta",
+          "public|alerte_control_emise",
+          "public|notificari"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 4,
       "numai_omonim": false,
       "domenii": [
@@ -671,6 +704,24 @@
         "domenii_care_scriu": 3,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 5,
+        "domenii_care_scriu": 3,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|declaratii_coada",
+          "public|notificari"
+        ],
+        "externe_total": 9,
+        "feluri_externe": [
+          "FS",
+          "SUBPROC"
+        ],
+        "frontiere_explicite": [
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 3,
       "numai_omonim": false,
@@ -846,6 +897,22 @@
         ],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 3,
+        "scrieri_total": 7,
+        "tabele": [
+          "public|declaratii_coada",
+          "public|migrare_status"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 4
+      },
       "domenii_care_scriu": 3,
       "numai_omonim": false,
       "domenii": [
@@ -987,6 +1054,21 @@
         "domenii_care_scriu": 3,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 21,
+        "domenii_care_scriu": 3,
+        "scrieri_total": 5,
+        "tabele": [
+          "public|cron_batai",
+          "public|firma_rezumat"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 3,
       "numai_omonim": false,
@@ -1161,6 +1243,23 @@
             "unde": "core/spv_conector.py:apel_anaf"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 10,
+        "domenii_care_scriu": 3,
+        "scrieri_total": 24,
+        "tabele": [
+          "public|spv_token"
+        ],
+        "externe_total": 9,
+        "feluri_externe": [
+          "FS",
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 3,
       "numai_omonim": false,
@@ -1599,6 +1698,27 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 9,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi",
+          "firma|firma_profil",
+          "firma|produse",
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -1772,6 +1892,32 @@
             "unde": "core/anaf_api.py:valideaza_cui"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 15,
+        "tabele": [
+          "firma|if",
+          "firma|on",
+          "firma|trg_supervizor_",
+          "firma|trg_tip_firma",
+          "public|accounting_firms",
+          "public|acord_termeni",
+          "public|firma_sursa_versiune",
+          "public|firma_tip",
+          "public|tenants",
+          "public|user_tenants",
+          "public|users"
+        ],
+        "externe_total": 6,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
@@ -2004,6 +2150,23 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|audit_log",
+          "public|reset_parola_token"
+        ],
+        "externe_total": 3,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -2123,6 +2286,24 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|audit_log",
+          "public|reset_parola_token",
+          "public|users"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -2233,6 +2414,27 @@
             "unde": "core/curs_bnr.py:_descarca"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 9,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi",
+          "firma|firma_profil",
+          "firma|produse",
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
@@ -2408,6 +2610,27 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 10,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi",
+          "firma|firma_profil",
+          "firma|produse",
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -2582,6 +2805,23 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 4,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 5,
+        "tabele": [
+          "firma|firma_profil",
+          "public|migrare_status"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -2699,6 +2939,27 @@
             "unde": "core/curs_bnr.py:_descarca"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 9,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi",
+          "firma|firma_profil",
+          "firma|produse",
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
@@ -2889,6 +3150,27 @@
             "unde": "core/curs_bnr.py:_descarca"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 9,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi",
+          "firma|firma_profil",
+          "firma|produse",
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
@@ -3093,6 +3375,24 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 6,
+        "tabele": [
+          "public|alerte_emise",
+          "public|alerte_fiscale",
+          "public|anunturi_cabinet"
+        ],
+        "externe_total": 3,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -3267,6 +3567,27 @@
             "unde": "core/curs_bnr.py:_descarca"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 9,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi",
+          "firma|firma_profil",
+          "firma|produse",
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
@@ -3449,6 +3770,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|declaratii_coada",
+          "public|notificari"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -3514,6 +3848,19 @@
         "domenii_care_scriu": 2,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|declaratii_coada",
+          "public|notificari"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
@@ -3607,6 +3954,22 @@
             "unde": "core/spv_conector.py:_post_token"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 6,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 16,
+        "tabele": [
+          "public|spv_token"
+        ],
+        "externe_total": 4,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
@@ -3934,6 +4297,22 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 6,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 16,
+        "tabele": [
+          "public|spv_token"
+        ],
+        "externe_total": 6,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -4219,6 +4598,22 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 2,
+        "scrieri_total": 5,
+        "tabele": [
+          "firma|add",
+          "firma|if",
+          "schema|seq"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 1
+      },
       "domenii_care_scriu": 2,
       "numai_omonim": false,
       "domenii": [
@@ -4308,6 +4703,24 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 4,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 6,
+        "tabele": [
+          "public|declaratii_coada",
+          "public|declaratii_depuse",
+          "public|supervizor_confirmari"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "release",
+          "rollback_to",
+          "savepoint"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -4428,6 +4841,30 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 12,
+        "tabele": [
+          "firma|if",
+          "public|",
+          "public|accounting_firms",
+          "public|audit_log",
+          "public|firme_scoase",
+          "public|gdpr_stergeri",
+          "public|tenants",
+          "public|user_tenants",
+          "public|users"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "FS"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -4615,6 +5052,27 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 11,
+        "tabele": [
+          "firma|if",
+          "firma|on",
+          "firma|trg_supervizor_",
+          "firma|trg_tip_firma",
+          "public|firma_sursa_versiune",
+          "public|firma_tip",
+          "public|tenants",
+          "public|user_tenants"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -4751,6 +5209,23 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 7,
+        "tabele": [
+          "public|tokene_activare",
+          "public|urme_portal",
+          "public|user_tenants",
+          "public|users"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -4863,6 +5338,27 @@
             "unde": "core/anaf_api.py:valideaza_cui"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 11,
+        "tabele": [
+          "firma|if",
+          "firma|on",
+          "firma|trg_supervizor_",
+          "firma|trg_tip_firma",
+          "public|firma_sursa_versiune",
+          "public|firma_tip",
+          "public|tenants",
+          "public|user_tenants"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -5000,6 +5496,23 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -5064,6 +5577,23 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -5151,6 +5681,22 @@
             "unde": "core/spv_conector.py:_post_token"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 5,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 8,
+        "tabele": [
+          "public|spv_token"
+        ],
+        "externe_total": 4,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -5330,6 +5876,22 @@
         ],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "firma|firma_profil",
+          "public|tenants"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -5416,6 +5978,21 @@
           }
         ],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 5,
+        "tabele": [
+          "firma|solduri_parteneri",
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -5512,6 +6089,21 @@
         ],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 4,
+        "tabele": [
+          "firma|plan_conturi",
+          "firma|solduri_initiale"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -5591,6 +6183,21 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|schimbari_email",
+          "public|urme_portal"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -5688,6 +6295,22 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 0,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|alerte_fiscale"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 2
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -5768,6 +6391,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|urme_portal",
+          "public|user_tenants",
+          "public|users"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -5821,6 +6458,24 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 6,
+        "tabele": [
+          "firma|if",
+          "public|",
+          "public|firme_scoase",
+          "public|tenants",
+          "public|users"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "FS"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -5943,6 +6598,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "firma|pontaj",
+          "firma|salariati",
+          "firma|salariu_istoric"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -5996,6 +6665,21 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|declaratii_coada"
+        ],
+        "externe_total": 9,
+        "feluri_externe": [
+          "FS",
+          "SUBPROC"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -6117,6 +6801,22 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|audit_log"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6172,6 +6872,21 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|tokene_activare",
+          "public|users"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -6253,6 +6968,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|audit_log"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6316,6 +7045,22 @@
             "unde": "core/observare.py:_trimite_brevo"
           }
         ]
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|gdpr_cereri_stergere"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -6381,6 +7126,20 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|pachet_povestea"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6428,6 +7187,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|notificari",
+          "public|solicitari_client"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6473,6 +7245,22 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|tokene_activare"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -6546,6 +7334,21 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|raportari",
+          "public|raportari_mesaje"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "JOB"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6610,6 +7413,21 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6665,6 +7483,21 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6719,6 +7552,21 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 4,
+        "tabele": [
+          "firma|asociati",
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -6790,6 +7638,23 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 7,
+        "tabele": [
+          "public|tokene_activare",
+          "public|urme_portal",
+          "public|user_tenants",
+          "public|users"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -6895,6 +7760,22 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -6969,6 +7850,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -7014,6 +7908,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 4,
+        "tabele": [
+          "firma|factura_linii",
+          "firma|facturi",
+          "firma|firma_profil"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -7076,6 +7984,22 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "firma|firma_profil"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -7157,6 +8081,21 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 8,
+        "tabele": [
+          "public|declaratii_coada",
+          "public|declaratii_depuse"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -7261,6 +8200,21 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 7,
+        "tabele": [
+          "firma|mijloace_fixe",
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -7356,6 +8310,22 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|curs_bnr_zilnic"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -7430,6 +8400,22 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|reges_mesaje"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -7493,6 +8479,22 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|reges_mesaje"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -7558,6 +8560,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|salariati",
+          "firma|salariu_istoric"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -7603,6 +8618,22 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 11,
+        "tabele": [
+          "firma|salariati",
+          "firma|salariu_istoric",
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -7731,6 +8762,21 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|inregistrari",
+          "firma|inregistrari_linii"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -7785,6 +8831,22 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|solicitari_client"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -7842,6 +8904,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|salariati",
+          "firma|salariu_istoric"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -7887,6 +8962,19 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|alerte_control_emise",
+          "public|notificari"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -7941,6 +9029,22 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|firma_profil"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -8015,6 +9119,22 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|audit_log",
+          "public|tenants"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8085,6 +9205,23 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|cron_batai"
+        ],
+        "externe_total": 4,
+        "feluri_externe": [
+          "RETEA",
+          "SUBPROC"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -8226,6 +9363,20 @@
           }
         ]
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 4,
+        "tabele": [
+          "public|spv_token"
+        ],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8314,6 +9465,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|api_chei"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8360,6 +9525,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|urme_portal",
+          "public|users"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8405,6 +9583,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|clienti"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8441,6 +9631,18 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|facturi"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -8479,6 +9681,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|produse"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8516,6 +9730,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|concedii_medicale"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8552,6 +9778,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|spv_token"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -8615,6 +9855,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|solduri_parteneri"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8660,6 +9914,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|solduri_initiale"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -8707,6 +9975,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|alerte_fiscale"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8752,6 +10034,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|anunturi_cabinet"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -8815,6 +10111,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|api_chei"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8860,6 +10170,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|anunturi_cabinet"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -8907,6 +10231,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|migrare_status"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8953,6 +10291,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|tokene_activare",
+          "public|users"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -8997,6 +10348,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|schimbari_email",
+          "public|urme_portal",
+          "public|users"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9051,6 +10416,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|tokene_activare"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9097,6 +10476,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|raportari_atasamente"
+        ],
+        "externe_total": 1,
+        "feluri_externe": [
+          "FS"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9142,6 +10535,19 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 5,
+        "tabele": [
+          "public|raportari",
+          "public|raportari_mesaje"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9212,6 +10618,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|raportari"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9257,6 +10677,19 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|audit_log",
+          "public|tenants"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9312,6 +10745,20 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9358,6 +10805,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|clienti"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9394,6 +10853,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|firma_profil"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9440,6 +10913,21 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|audit_log"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9495,6 +10983,19 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|audit_log",
+          "public|tenants"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9548,6 +11049,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 2
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": true,
       "domenii": [
@@ -9592,6 +11105,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|plan_conturi"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9639,6 +11166,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|produse"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9675,6 +11214,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|reges_chei"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9721,6 +11274,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 3,
+        "tabele": [
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9783,6 +11350,18 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 8,
+        "tabele": [
+          "public|declaratii_coada"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 8
       },
       "domenii_care_scriu": 1,
       "numai_omonim": true,
@@ -9877,6 +11456,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|concedii_medicale"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -9921,6 +11512,19 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 4,
+        "tabele": [
+          "public|audit_log",
+          "public|tenants"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -9983,6 +11587,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|clienti"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -10019,6 +11635,18 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|firma_profil"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -10057,6 +11685,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|facturi"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -10094,6 +11734,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|produse"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -10130,6 +11782,18 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 2,
+        "tabele": [
+          "firma|pontaj"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -10176,6 +11840,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|firma_profil"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -10212,6 +11888,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|audit_log"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -10259,6 +11949,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "public|users"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -10296,6 +11998,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|plan_conturi"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
       "domenii": [
@@ -10332,6 +12046,20 @@
         "domenii_care_scriu": 1,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 1,
+        "scrieri_total": 1,
+        "tabele": [
+          "firma|if"
+        ],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 1,
       "numai_omonim": false,
@@ -10379,6 +12107,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 1,
+        "feluri_externe": [
+          "FS"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -10415,6 +12155,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10453,6 +12205,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -10489,6 +12253,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10527,6 +12303,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -10563,6 +12351,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10601,6 +12401,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -10637,6 +12449,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10675,6 +12499,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -10712,6 +12548,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -10748,6 +12596,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 2,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10794,6 +12654,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -10811,6 +12681,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10830,6 +12710,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -10847,6 +12737,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10866,6 +12766,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 11,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -10883,6 +12793,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10902,6 +12822,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 8,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -10919,6 +12849,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10938,6 +12878,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -10955,6 +12905,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -10974,6 +12934,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -10991,6 +12961,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11010,6 +12990,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11027,6 +13017,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11046,6 +13046,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11063,6 +13073,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11082,6 +13102,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11099,6 +13129,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11118,6 +13158,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11135,6 +13185,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11154,6 +13214,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11171,6 +13241,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11190,6 +13270,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11207,6 +13297,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11226,6 +13326,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11243,6 +13353,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11262,6 +13382,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11279,6 +13409,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11298,6 +13438,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11315,6 +13465,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11334,6 +13494,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11351,6 +13521,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11370,6 +13550,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11387,6 +13577,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11406,6 +13606,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11423,6 +13633,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11442,6 +13662,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11459,6 +13689,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11478,6 +13718,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11495,6 +13745,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11514,6 +13774,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11531,6 +13801,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11550,6 +13830,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11567,6 +13857,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11586,6 +13886,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11603,6 +13913,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11622,6 +13942,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11639,6 +13969,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11658,6 +13998,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11675,6 +14025,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11694,6 +14054,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11711,6 +14081,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11730,6 +14110,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11747,6 +14137,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11766,6 +14166,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11783,6 +14193,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11802,6 +14222,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11819,6 +14249,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11838,6 +14278,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11855,6 +14305,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11874,6 +14334,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11891,6 +14361,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -11929,6 +14411,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -11946,6 +14438,19 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 9,
+        "feluri_externe": [
+          "FS",
+          "SUBPROC"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12048,6 +14553,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -12065,6 +14580,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12102,6 +14629,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 4,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 2,
+        "feluri_externe": [
+          "FS"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12158,6 +14697,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -12175,6 +14724,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12213,6 +14774,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12250,6 +14823,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12286,6 +14871,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12332,6 +14929,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12368,6 +14977,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12406,6 +15027,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12443,6 +15076,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -12460,6 +15103,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12498,6 +15153,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12534,6 +15201,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12572,6 +15251,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12608,6 +15299,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12646,6 +15349,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12683,6 +15398,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12719,6 +15446,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12773,6 +15512,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12846,6 +15597,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12882,6 +15645,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -12920,6 +15695,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -12957,6 +15744,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -12975,6 +15772,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -12992,6 +15799,19 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13038,6 +15858,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13074,6 +15906,19 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit",
+          "rollback"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13136,6 +15981,20 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 2,
+        "feluri_externe": [
+          "SUBPROC"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13200,6 +16059,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13236,6 +16107,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13274,6 +16157,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13310,6 +16205,20 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13357,6 +16266,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13393,6 +16314,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13431,6 +16364,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13467,6 +16412,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13505,6 +16462,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13541,6 +16510,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13579,6 +16560,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13615,6 +16608,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13653,6 +16658,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13689,6 +16706,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13727,6 +16756,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13763,6 +16804,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13801,6 +16854,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13837,6 +16902,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13875,6 +16952,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13911,6 +17000,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -13949,6 +17050,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -13985,6 +17098,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14023,6 +17148,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14059,6 +17196,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14097,6 +17246,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14134,6 +17295,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -14151,6 +17322,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14189,6 +17372,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14225,6 +17420,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14263,6 +17470,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14299,6 +17518,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14337,6 +17568,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -14354,6 +17595,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14392,6 +17645,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14428,6 +17693,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14466,6 +17743,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14502,6 +17791,21 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 2,
+        "feluri_externe": [
+          "FS",
+          "SUBPROC"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14566,6 +17870,21 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 2,
+        "feluri_externe": [
+          "FS",
+          "SUBPROC"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14629,6 +17948,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -14646,6 +17975,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14665,6 +18004,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -14682,6 +18031,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14701,6 +18060,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -14718,6 +18087,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14756,6 +18137,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14792,6 +18185,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14830,6 +18235,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14866,6 +18283,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14904,6 +18333,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -14940,6 +18381,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -14978,6 +18431,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15014,6 +18479,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15052,6 +18529,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15089,6 +18578,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15125,6 +18626,20 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15172,6 +18687,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15208,6 +18735,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15246,6 +18785,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15282,6 +18833,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15320,6 +18883,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15357,6 +18932,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15393,6 +18980,20 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 1,
+        "feluri_externe": [
+          "RETEA"
+        ],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15440,6 +19041,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15476,6 +19089,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15514,6 +19139,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15550,6 +19187,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 0,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": true,
@@ -15588,6 +19237,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -15605,6 +19264,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15624,6 +19293,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -15641,6 +19320,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15679,6 +19370,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -15696,6 +19397,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15715,6 +19426,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -15732,6 +19453,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15751,6 +19482,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -15768,6 +19509,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15806,6 +19559,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15842,6 +19607,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15880,6 +19657,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -15917,6 +19706,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -15935,6 +19734,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -15952,6 +19761,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -15990,6 +19811,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16007,6 +19838,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16026,6 +19867,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16043,6 +19894,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16062,6 +19923,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16079,6 +19950,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16098,6 +19979,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16116,6 +20007,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16133,6 +20034,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16171,6 +20084,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16189,6 +20112,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16206,6 +20139,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16244,6 +20189,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -16281,6 +20238,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16299,6 +20266,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16316,6 +20293,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16354,6 +20343,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16371,6 +20370,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16390,6 +20399,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16408,6 +20427,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16425,6 +20454,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16463,6 +20504,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -16499,6 +20552,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16537,6 +20602,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -16574,6 +20651,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16591,6 +20678,16 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16610,6 +20707,16 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 3,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": []
@@ -16627,6 +20734,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
@@ -16665,6 +20784,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -16702,6 +20833,18 @@
         "partial_commit": [],
         "extern_in_tranzactie": []
       },
+      "fapte": {
+        "domenii_total": 2,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
+      },
       "domenii_care_scriu": 0,
       "numai_omonim": false,
       "domenii": [
@@ -16738,6 +20881,18 @@
         "domenii_care_scriu": 0,
         "partial_commit": [],
         "extern_in_tranzactie": []
+      },
+      "fapte": {
+        "domenii_total": 1,
+        "domenii_care_scriu": 0,
+        "scrieri_total": 0,
+        "tabele": [],
+        "externe_total": 0,
+        "feluri_externe": [],
+        "frontiere_explicite": [
+          "commit"
+        ],
+        "scrieri_in_domeniul_apelantului": 0
       },
       "domenii_care_scriu": 0,
       "numai_omonim": false,

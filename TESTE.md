@@ -2326,3 +2326,19 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   defect actul chiar se scrie, cu defect nu rămâne jumătate. **Calibrare negativă: 6 din 7 probe au
   fost roșii pe codul de dinaintea reparațiilor**, verificat rulându-le pe arborele restaurat cu
   `git stash`; a șaptea probează o proprietate care exista deja, și scrie asta.
+
+
+- **`core/test_tranzactii_clasificate.py`, rescris (10.09.2026, runda de acceptare P4)** —
+  completitudinea inventarului, nu un eșantion din el. Prima formă clasifica **32** de căi dintr-un
+  inventar de **332**, cu un prag pe care îl alesesem eu; regula lui P4 n-are prag, are șase semne și
+  trei verdicte. Acum verdictul vine fie dintr-un rând **individual**, fie dintr-o **regulă pe clasă
+  structurală** aplicată pe faptele derivate ale căii (câte tranzacții, câte scriu, câte scrieri, ce
+  efecte) — iar căile care cer judecată scrisă **nu au regulă de clasă**, deci pentru ele `None` e
+  răspunsul corect și gardul îl transformă în refuz. **Calibrare negativă pe fiecare din C1…C6**:
+  șase căi sintetice, într-un corpus propriu, pentru care se probează că criteriul se aprinde, că
+  intră în inventarul brut, și că **mecanismul refuză** inventarul cât timp rămân neclasificate —
+  fiindcă *nu e destul ca detectorul să le vadă*. Mulțimile de semne sunt **pinate**, ca implicațiile
+  dintre criterii (C4 ⟹ C2, C5 ⟹ C1 ∧ C6, C6 ⟹ C1 ∨ C3) să pice dacă o definiție se schimbă.
+  **Calibrare negativă cu mutație, de două ori:** cu `verdict()` întorcând o clasă implicită, 3 din
+  6 probe de refuz devin roșii; cu `_cere_individual()` întorcând mereu `False`, **toate șase**, plus
+  trei probe de rutare. *Fără a doua mutație aș fi crezut că prima acoperă tot.*
