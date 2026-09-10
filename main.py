@@ -15,8 +15,11 @@ from fastapi import FastAPI, HTTPException, Depends, Header, Body, UploadFile, F
 import re as _re_audit
 import json as _json_audit
 from starlette.concurrency import run_in_threadpool as _run_in_threadpool_audit
+import psycopg2 as _psycopg2
 import psycopg2.extras as _E_audit
 from fastapi.responses import Response
+from fastapi.responses import JSONResponse as _JSONResponse
+from fastapi.encoders import jsonable_encoder as _jsonable_encoder
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -29,6 +32,7 @@ from core import tenant_stergere  # [R72] calea UNICA de scoatere a unei firme
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api, declaratii_componente, supervizor
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
+from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
                          EMAIL_NICIUNUL_VALID, EMAIL_INVALID_LISTA, CUI_FIRMA_LIPSA,
@@ -197,6 +201,23 @@ async def lifespan(app):
                        " · ".join("%s: %s" % (p["cod"], p["diagnostic"]) for p in _ver["probleme"]),
                        _ver["detaliu"]))
             _log_boot.info("[P2] infrastructură verificată: %s", _ver["detaliu"])
+            # [R61 / P5 val 1b] Unicitatea raportului Z, impusă în BAZĂ pe toate firmele
+            # existente — nu doar pe cele create de acum înainte din template. Aceeași
+            # purtare ca migrarea de mai sus: fiecare firmă în savepointul ei, iar un eșec
+            # oprește pornirea. NIMIC nu se șterge: dacă o firmă are deja duplicate,
+            # `CREATE UNIQUE INDEX` pică pe ea, iar mesajul le NUMEȘTE.
+            _mz = _raport_z.migreaza(conn)
+            if _mz["esecuri"]:
+                for _e in _mz["esecuri"]:
+                    _log_boot.error("[R61] index Z nelegat — tenant_id=%s schema=%s: %s%s%s",
+                                    _e.get("tenant_id"), _e.get("schema"),
+                                    _e.get("exceptie"), chr(10), _e.get("traceback", ""))
+                raise RuntimeError(_raport_z.mesaj_esec(_mz))
+            _vz = _raport_z.verifica(conn)
+            if not _vz["ok"]:
+                raise RuntimeError("[R61] verificarea indexului Z a picat: %s | lipsă pe: %s"
+                                   % (_vz["detaliu"], _vz["lipsa"]))
+            _log_boot.info("[R61] unicitate raport Z: %s", _vz["detaliu"])
     except Exception:
         _log_boot.exception(
             "[P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să "
@@ -2287,10 +2308,10 @@ def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(
     # un text. Domeniul e FISIERUL incarcat (fel de referent adaugat 22.08).
     _baza = {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida}
     if valida:
-        return dict(_baza, motiv=motiv)
-    return dict(_baza, **migrare_api.respinge(
+        return _raspuns(dict(_baza, motiv=motiv))
+    return _raspuns(dict(_baza, **migrare_api.respinge(
         "balanță de deschidere", _Unde("fisier", fisier.filename or "(fără nume)"),
-        "balanta_nu_se_echilibreaza", motiv))
+        "balanta_nu_se_echilibreaza", motiv)))
 
 
 @app.get("/tenants/{tenant_id}/solduri")
@@ -2357,7 +2378,7 @@ def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depend
     with db.get_conn(schema) as conn:
         coer = solduri_parteneri_api.coerenta(conn, randuri)
     erori = migrare_api.erori_verifica(solduri_parteneri_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return {"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer, "erori": erori}
+    return _raspuns({"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer, "erori": erori})
 
 
 @app.get("/tenants/{tenant_id}/parteneri")
@@ -2425,8 +2446,8 @@ def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx
                 _cache[c] = _cor.denumire(conn, c)
     for r in randuri:
         r["cor_denumire"] = _cache.get((r.get("cor") or "").strip())
-    return {"randuri": randuri, "total": len(randuri), "valizi": valizi,
-            "invalizi": len(randuri) - valizi, "erori": erori}
+    return _raspuns({"randuri": randuri, "total": len(randuri), "valizi": valizi,
+            "invalizi": len(randuri) - valizi, "erori": erori})
 
 
 @app.post("/tenants/{tenant_id}/salariati-import")
@@ -2475,7 +2496,7 @@ def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
         raise HTTPException(400, str(e))
     coer = asociati_import_api.coerenta_cote(randuri)
     erori = migrare_api.erori_verifica(asociati_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return {"randuri": randuri, "total": len(randuri), "coerenta": coer, "erori": erori}
+    return _raspuns({"randuri": randuri, "total": len(randuri), "coerenta": coer, "erori": erori})
 
 
 @app.post("/tenants/{tenant_id}/asociati-import")
@@ -2503,7 +2524,7 @@ def retete_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=De
         raise HTTPException(400, str(e))
     with db.get_conn(schema) as conn:
         retete = retete_import_api.potriveste(conn, schema, retete)
-    return {"retete": retete, "rezumat": retete_import_api.rezumat(retete)}
+    return _raspuns({"retete": retete, "rezumat": retete_import_api.rezumat(retete)})
 @app.post("/tenants/{tenant_id}/retete-import")
 def retete_import_salveaza(tenant_id: int, date: ReteteImportIn, ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
@@ -2530,7 +2551,7 @@ def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
         randuri = articole_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
         raise HTTPException(400, str(e))
-    return {"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri)}
+    return _raspuns({"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri)})
 @app.post("/tenants/{tenant_id}/articole-import")
 def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
@@ -2575,8 +2596,8 @@ def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
     tr = round(sum(r["rezidual"] for r in randuri), 2)
     cu_avert = sum(1 for r in randuri if not r["ok"])
     erori = migrare_api.erori_verifica(mijloace_fixe_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return {"randuri": randuri, "total": len(randuri), "total_valoare": tv,
-            "total_rezidual": tr, "cu_avertismente": cu_avert, "erori": erori}
+    return _raspuns({"randuri": randuri, "total": len(randuri), "total_valoare": tv,
+            "total_rezidual": tr, "cu_avertismente": cu_avert, "erori": erori})
 
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import")
@@ -2636,7 +2657,7 @@ def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=D
         raise HTTPException(400, str(e))
     cu_avert = sum(1 for r in randuri if not r["ok"])
     erori = migrare_api.erori_verifica(istoric_declaratii_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return {"randuri": randuri, "total": len(randuri), "cu_avertismente": cu_avert, "erori": erori}
+    return _raspuns({"randuri": randuri, "total": len(randuri), "cu_avertismente": cu_avert, "erori": erori})
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import")
@@ -2685,7 +2706,7 @@ def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
                                        f"{len(respinse)} rânduri respinse la import — de completat")
         else:
             migrare_api.seteaza_status(conn, ctx["firm"], "rip", "gata", "")
-    return {"importate": rez["importate"], "sarite_duplicat": rez.get("sarite_duplicat", 0), "raport": raport}
+    return _raspuns({"importate": rez["importate"], "sarite_duplicat": rez.get("sarite_duplicat", 0), "raport": raport})
 
 
 
@@ -3140,6 +3161,27 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
 # ============================================================
 #  FACTURI (în schema tenantului)
 # ============================================================
+def _raspuns(continut):
+    """Răspunsul JSON, serializat AICI — adică pe firul handler-ului, nu pe buclă.
+
+    **De ce nu `return {...}`.** FastAPI nu serializează în handler: trece rezultatul prin
+    `jsonable_encoder` și `json.dumps` în învelișul `async` de după, deci **pe buclă**, oricât de
+    sincron ar fi handler-ul. Pentru un răspuns mare asta e muncă de zeci de milisecunde pe care o
+    așteaptă toate celelalte cereri. Măsurat la P5: 67,6 ms de `jsonable_encoder` + 7,2 ms de
+    `json.dumps` pentru 5000 de tranzacții (998 KB), din care ieșeau 93,7 ms de coadă la o cerere
+    fără nicio legătură. *Valul 1 mutase handler-ul; răspunsul rămăsese unde era.*
+
+    **Octeții sunt aceiași.** Fără `response_model` — și `main.py` n-are niciunul —
+    `serialize_response` face exact `jsonable_encoder` (`fastapi/routing.py:317`), iar
+    `JSONResponse.render` exact `json.dumps` cu aceiași parametri (`starlette/responses.py:194`).
+    Se schimbă firul pe care se produc, nu conținutul.
+
+    **Se folosește numai unde răspunsul crește cu intrarea.** Pe un răspuns mic, hopul în plus
+    n-ar cumpăra nimic, iar `return {...}` se citește mai bine.
+    """
+    return _JSONResponse(_jsonable_encoder(continut))
+
+
 def _octetii(fisier):
     """Conținutul unui fișier încărcat, citit SINCRON — pentru rutele `def`.
 
@@ -5302,7 +5344,10 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
             "note_fara_document": fara_document}
 # Sursele in care traieste un raport Z. Constanta, nu literal in SQL: gardul o citeste din AST
 # si compara MULTIMEA, in loc sa caute un sir intr-un text (METODA §23).
-_SURSE_Z = ("horeca_z", "amef")
+# [P5 val 1b] Se IMPORTA din `core/raport_z.py`, unde sta si indexul care o impune in baza:
+# doua liste scrise separat ar fi putut descrie doua multimi diferite, iar poarta din cod si
+# indexul din baza ar fi aparat lucruri diferite fara ca nimic sa spuna.
+_SURSE_Z = _raport_z.SURSE
 
 
 def _cere_z_unic(cur, schema, numar):
@@ -5329,21 +5374,17 @@ def _cere_z_unic(cur, schema, numar):
 
 
 @app.post("/tenants/{tenant_id}/horeca/import-amef")
-# [P5 val 1, 10.09.2026] RĂMÂNE `async def`, DELIBERAT — singura din cele 17 care nu s-a
-# mutat pe fir. Azi, după citirea fișierului, handler-ul rulează până la capăt fără să mai
-# cedeze bucla, deci două cereri simultane sunt SERIALIZATE. Pe serializarea asta se
-# sprijină, fără s-o fi declarat nimeni, poarta R61 din `_cere_z_unic`: un raport Z duplicat
-# se REFUZĂ. `inregistrari` NU are index unic pe `(sursa, numar)` — verificat în
-# `tenant_template.sql` —, deci mutarea pe fir ar face ca două încărcări simultane ale
-# aceluiași Z să treacă amândouă de verificare. *O regresie de contabilitate cumpărată cu o
-# îmbunătățire de latență nu e o îmbunătățire.* Se deblochează când `(sursa, numar)` primește
-# index unic, sau când verificarea primește `pg_advisory_xact_lock` pe cheia raportului.
-async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+# [P5 val 1b, 10.09.2026] MUTATĂ PE FIR, după ce garanția pe care se sprijinea a devenit una
+# a DATELOR. Până azi rămăsese `async def` deliberat: bucla îi serializa verificarea de
+# unicitate a raportului Z, iar baza n-avea index care s-o înlocuiască. Acum îl are
+# (`core/raport_z.py`), pus pe firmele noi din template și pe cele existente la pornire, deci
+# serializarea buclei nu mai e nimănui necesară.
+def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA.
     Nota se genereaza pe cote reale din XML: 5311/5125=707 + 707=4427 per cota."""
     from decimal import Decimal as D
     from core import amef_import as _am
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         xml = _am.extrage_xml(continut)
         rz = _am.parseaza_raport_z(xml)
@@ -5361,12 +5402,26 @@ async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx
         numerar = sum((p["suma"] for p in rz["plati"] if p["tip"] == "numerar"), D("0"))
         rest = sum((p["suma"] for p in rz["plati"] if p["tip"] != "numerar"), D("0"))
         with conn.cursor() as cur:
-            _cere_z_unic(cur, schema, f"Z-{rz['nui']}-{rz['nr_raport']}")
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                            VALUES (%s,%s,%s,'amef','ciorna') RETURNING id""",
-                        (rz["data"], f"Z-{rz['nui']}-{rz['nr_raport']}",
-                         f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit"))
-            iid = cur.fetchone()[0]
+            _numar_z = f"Z-{rz['nui']}-{rz['nr_raport']}"
+            _cere_z_unic(cur, schema, _numar_z)
+            # [P5 val 1b] Verificarea de mai sus e calea RAPIDĂ, cea care dă omului un mesaj
+            # care se poate citi. Indexul unic e plasa de dedesubt, pentru cursa dintre două
+            # cereri simultane — acum posibilă, fiindcă ruta rulează pe un fir. Violarea lui
+            # produce ACELAȘI refuz, nu un `500`: *o cursă pierdută și o a doua încercare
+            # conștientă trebuie să arate la fel pentru cel care operează casa de marcat.*
+            try:
+                cur.execute("SAVEPOINT z_insert")
+                cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                                VALUES (%s,%s,%s,'amef','ciorna') RETURNING id""",
+                            (rz["data"], _numar_z,
+                             f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit"))
+                # id-ul se citește ÎNAINTE de `RELEASE`: orice `execute` următor golește cursorul
+                iid = cur.fetchone()[0]
+                cur.execute("RELEASE SAVEPOINT z_insert")
+            except _psycopg2.errors.UniqueViolation:
+                cur.execute("ROLLBACK TO SAVEPOINT z_insert")
+                _cere_z_unic(cur, schema, _numar_z)   # ridică 409, cu documentul existent numit
+                raise                                  # dacă totuși nu l-a găsit, nu înghițim
             linii = []
             if numerar: linii.append(("5311", "707", numerar))
             if rest: linii.append(("5125", "707", rest))
@@ -5452,7 +5507,7 @@ def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
         t["cui"] = r.get("cui")
         t["tip"] = r.get("tip")
         t["nota"] = r.get("nota")
-    return {"tranzactii": tranzactii, "nr": len(tranzactii)}
+    return _raspuns({"tranzactii": tranzactii, "nr": len(tranzactii)})
 @app.get("/tenants/{tenant_id}/stat-plata")
 def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     _cere_perioada(an, luna)
@@ -7708,7 +7763,7 @@ def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"linii": _rec.importa_extras(conn, schema, tranzactii, fisier.filename or "")}
+        return _raspuns({"linii": _rec.importa_extras(conn, schema, tranzactii, fisier.filename or "")})
 
 @app.get("/tenants/{tenant_id}/banca/reconciliere")
 def banca_rec_lista(tenant_id: int, status: str = None, ctx=Depends(cere_cabinet)):
@@ -9641,7 +9696,7 @@ def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                     _fid, _nou = _factura_din_parsat(cur, schema, f)
                     rezultate["importate" if _nou else "duplicate"] += 1
         conn.commit()
-    return rezultate
+    return _raspuns(rezultate)
 
 
 @app.get("/tenants/{tenant_id}/facturi-primite")

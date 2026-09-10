@@ -1,0 +1,451 @@
+{
+  "commit": "a3bf4c71995e682c7cadf595c39f5319457bf8ee",
+  "pornit_la": "2026-09-10T17:56:43+0300",
+  "capacitati": {
+    "ICONTA_POOL_MAX": 10,
+    "threadpool_anyio": 40,
+    "procese_uvicorn": 1
+  },
+  "calibrare_canar": {
+    "liber": {
+      "n": 212,
+      "p50_ms": 2.7,
+      "p95_ms": 3.0,
+      "p99_ms": 3.7,
+      "max_ms": 4.7,
+      "min_ms": 1.1,
+      "medie_ms": 2.5,
+      "erori": 0,
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    }
+  },
+  "subiect": {
+    "uid": 70768,
+    "tenant": 102757
+  },
+  "curba_async": [
+    {
+      "N": 5,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 24.5,
+      "durata_ruta_p95_ms": 34.9,
+      "durata_ruta_max_ms": 34.9,
+      "fereastra_ms": 203.2,
+      "canar": {
+        "n": 50,
+        "p50_ms": 1.6,
+        "p95_ms": 4.7,
+        "p99_ms": 4.8,
+        "max_ms": 4.8,
+        "min_ms": 1.2,
+        "medie_ms": 2.0,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 50,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 26.6,
+      "durata_ruta_p95_ms": 42.9,
+      "durata_ruta_max_ms": 42.9,
+      "fereastra_ms": 230.1,
+      "canar": {
+        "n": 55,
+        "p50_ms": 1.6,
+        "p95_ms": 4.2,
+        "p99_ms": 4.7,
+        "max_ms": 5.9,
+        "min_ms": 1.3,
+        "medie_ms": 2.1,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 100,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 27.7,
+      "durata_ruta_p95_ms": 45.6,
+      "durata_ruta_max_ms": 45.6,
+      "fereastra_ms": 241.5,
+      "canar": {
+        "n": 54,
+        "p50_ms": 1.7,
+        "p95_ms": 3.9,
+        "p99_ms": 4.9,
+        "max_ms": 5.5,
+        "min_ms": 1.5,
+        "medie_ms": 2.4,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 250,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 31.0,
+      "durata_ruta_p95_ms": 46.5,
+      "durata_ruta_max_ms": 46.5,
+      "fereastra_ms": 265.2,
+      "canar": {
+        "n": 54,
+        "p50_ms": 1.9,
+        "p95_ms": 6.7,
+        "p99_ms": 6.9,
+        "max_ms": 7.2,
+        "min_ms": 1.5,
+        "medie_ms": 2.8,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 500,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 38.4,
+      "durata_ruta_p95_ms": 55.5,
+      "durata_ruta_max_ms": 55.5,
+      "fereastra_ms": 325.5,
+      "canar": {
+        "n": 56,
+        "p50_ms": 1.8,
+        "p95_ms": 12.1,
+        "p99_ms": 13.6,
+        "max_ms": 18.9,
+        "min_ms": 1.3,
+        "medie_ms": 3.7,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 1000,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 50.7,
+      "durata_ruta_p95_ms": 65.2,
+      "durata_ruta_max_ms": 65.2,
+      "fereastra_ms": 419.2,
+      "canar": {
+        "n": 58,
+        "p50_ms": 1.6,
+        "p95_ms": 23.3,
+        "p99_ms": 28.0,
+        "max_ms": 28.3,
+        "min_ms": 1.3,
+        "medie_ms": 5.2,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 2500,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 94.1,
+      "durata_ruta_p95_ms": 131.3,
+      "durata_ruta_max_ms": 131.3,
+      "fereastra_ms": 796.7,
+      "canar": {
+        "n": 73,
+        "p50_ms": 2.2,
+        "p95_ms": 30.2,
+        "p99_ms": 34.9,
+        "max_ms": 69.1,
+        "min_ms": 1.3,
+        "medie_ms": 8.8,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 5000,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "durata_ruta_p50_ms": 163.6,
+      "durata_ruta_p95_ms": 219.0,
+      "durata_ruta_max_ms": 219.0,
+      "fereastra_ms": 1379.2,
+      "canar": {
+        "n": 89,
+        "p50_ms": 4.6,
+        "p95_ms": 33.2,
+        "p99_ms": 53.6,
+        "max_ms": 66.2,
+        "min_ms": 1.4,
+        "medie_ms": 13.4,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    }
+  ],
+  "martor_sync": {
+    "ruta": "/tenants/%d/facturi",
+    "repetari": 40,
+    "statusuri": {
+      "200": 40
+    },
+    "durata_p50_ms": 22.7,
+    "durata_max_ms": 42.3,
+    "durata_p95_ms": 25.4,
+    "canar": {
+      "n": 232,
+      "p50_ms": 1.5,
+      "p95_ms": 3.7,
+      "p99_ms": 5.3,
+      "max_ms": 17.4,
+      "min_ms": 1.3,
+      "medie_ms": 2.0,
+      "erori": 0,
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    }
+  },
+  "statusuri_neasteptate": {},
+  "concurenta": [
+    {
+      "k": 1,
+      "N": 250,
+      "total_ms": 36.3,
+      "debit_cereri_pe_sec": 27.52,
+      "p50_ms": 35.7,
+      "p95_ms": 35.7,
+      "p99_ms": 35.7,
+      "max_ms": 35.7,
+      "statusuri": {
+        "200": 1
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "cpu_client_ms": 21.7,
+      "saturare_client": 0.299,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 1,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 60,
+      "canar": {
+        "n": 10,
+        "p50_ms": 4.0,
+        "p95_ms": 8.7,
+        "p99_ms": 8.7,
+        "max_ms": 8.7,
+        "min_ms": 1.8,
+        "medie_ms": 4.5,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    },
+    {
+      "k": 2,
+      "N": 250,
+      "total_ms": 70.3,
+      "debit_cereri_pe_sec": 28.45,
+      "p50_ms": 57.4,
+      "p95_ms": 68.4,
+      "p99_ms": 68.4,
+      "max_ms": 68.4,
+      "statusuri": {
+        "200": 2
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "cpu_client_ms": 54.0,
+      "saturare_client": 0.384,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 2,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 66,
+      "canar": {
+        "n": 14,
+        "p50_ms": 3.3,
+        "p95_ms": 8.3,
+        "p99_ms": 9.2,
+        "max_ms": 9.2,
+        "min_ms": 1.5,
+        "medie_ms": 4.1,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    },
+    {
+      "k": 5,
+      "N": 250,
+      "total_ms": 209.4,
+      "debit_cereri_pe_sec": 23.87,
+      "p50_ms": 197.7,
+      "p95_ms": 199.2,
+      "p99_ms": 199.2,
+      "max_ms": 199.2,
+      "statusuri": {
+        "200": 5
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "cpu_client_ms": 135.6,
+      "saturare_client": 0.324,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 5,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 89,
+      "canar": {
+        "n": 30,
+        "p50_ms": 4.5,
+        "p95_ms": 11.9,
+        "p99_ms": 23.2,
+        "max_ms": 23.2,
+        "min_ms": 1.5,
+        "medie_ms": 5.5,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    },
+    {
+      "k": 10,
+      "N": 250,
+      "total_ms": 422.4,
+      "debit_cereri_pe_sec": 23.68,
+      "p50_ms": 402.0,
+      "p95_ms": 409.1,
+      "p99_ms": 409.1,
+      "max_ms": 409.1,
+      "statusuri": {
+        "200": 10
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "cpu_client_ms": 271.5,
+      "saturare_client": 0.321,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 8,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 130,
+      "canar": {
+        "n": 50,
+        "p50_ms": 2.7,
+        "p95_ms": 20.4,
+        "p99_ms": 38.1,
+        "max_ms": 38.1,
+        "min_ms": 1.3,
+        "medie_ms": 6.7,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    }
+  ],
+  "curatenie": {
+    "randuri_audit_sterse": 122,
+    "scheme_reale_sterse": true
+  },
+  "amprenta": {
+    "tabele": [
+      "tenants",
+      "accounting_firms",
+      "users",
+      "user_tenants",
+      "audit_log",
+      "declaratii_coada",
+      "declaratii_depuse",
+      "firma_rezumat",
+      "spv_token",
+      "notificari"
+    ],
+    "difera": {},
+    "PRODUCTION_DATA_AFFECTED": "NO"
+  },
+  "jurnal_server": {
+    "DEADLOCKS": 0,
+    "TIMEOUTS_DB": 0,
+    "POOL_EPUIZAT": 0,
+    "URME_EXCEPTIE": 0,
+    "linii": 1912,
+    "fisier": "P5_RAW_EVIDENCE/P5_uvicorn.log"
+  },
+  "esantioane_brute": {
+    "fisier": "P5_RAW_EVIDENCE/esantioane.json",
+    "serii": 27,
+    "valori": 1159
+  }
+}

@@ -53,6 +53,9 @@ import masoara_rute_portofoliu as MR  # noqa: E402
 #: cele sase cerute, plus doua peste, ca panta sa se vada dincolo de zgomot
 NN = (5, 50, 100, 250, 500, 1000, 2500, 5000)
 NIVELE = (1, 2, 5, 10)
+#: nucleele masinii pe care ruleaza SI serverul SI sonda. Un debit masurat aici e un PLAFON
+#: INFERIOR al aplicatiei: cele doua procese isi impart aceleasi nuclee.
+_NUCLEE = os.cpu_count() or 1
 CANAR = "/public/config"
 #: ruta SUBIECT. Se cheama asa, si nu `RUTA_SUBIECT`, fiindca dupa valul 1 (10.09.2026) nu mai
 #: e `async def` — iar numele vechi ar fi fost o eticheta falsa lipita pe cifra corecta.
@@ -322,6 +325,27 @@ def curba_sync(baza, tid, tok, repetari=40):
             "canar": _rezumat(c.latente, c.erori, "canar_in_timpul_sync")}
 
 
+def _incalzeste(_i):
+    """Nu face nimic — există ca procesul lucrător să fie pornit și importat înainte de ceas."""
+    return True
+
+
+def _lucrator_cerere(args):
+    """O cerere, dintr-un PROCES propriu. Întoarce și cât procesor a consumat el.
+
+    **De ce proces și nu fir.** Cu `k` fire într-un proces, sonda își îneacă propria măsurătoare:
+    la k=2 consuma 0,98 din timpul de perete în procesor, adică era ea însăși strangularea. Un
+    debit măsurat așa descrie bancul, nu aplicația. *Măsurat, nu presupus — v. `CPU_RAFALA.json`.*
+    """
+    import time as _t
+    baza, ruta, tok, continut, nume = args
+    c0 = _t.process_time()
+    rez = [None]
+    _post_fisier(baza, ruta, tok, continut, nume, rez, 0)
+    st, dt, corp = rez[0]
+    return st, dt, corp, _t.process_time() - c0
+
+
 def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
     """k cereri deodată pe ruta grea, cu canarul pornit și cu eșantionarea conexiunilor."""
     continut = extras_csv(n_tranzactii)
@@ -333,16 +357,18 @@ def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
         c.start()
         time.sleep(0.25)
         c.latente.clear(); c.erori.clear()
-        rez = [None] * k
-        fire = [threading.Thread(target=_post_fisier,
-                                 args=(baza, RUTA_SUBIECT % tid, tok, continut, "extras.csv", rez, i))
-                for i in range(k)]
-        t0 = time.perf_counter()
-        for f in fire:
-            f.start()
-        for f in fire:
-            f.join()
-        total = time.perf_counter() - t0
+        import concurrent.futures as _cf
+        sarcina = (baza, RUTA_SUBIECT % tid, tok, continut, "extras.csv")
+        with _cf.ProcessPoolExecutor(max_workers=k) as _ex:
+            # ÎNCĂLZIRE: procesele se creează și importă ÎNAINTE de ceas. Fără ea, la k=1 ceasul
+            # arăta 65,5 ms pentru o cerere de 37 — restul era pornirea bazinului. Aceeași lecție
+            # ca la canar, care își plătea instalarea TCP la fiecare cerere.
+            list(_ex.map(_incalzeste, range(k)))
+            t0 = time.perf_counter()
+            brut_k = list(_ex.map(_lucrator_cerere, [sarcina] * k))
+            total = time.perf_counter() - t0
+        rez = [(x[0], x[1], x[2]) for x in brut_k]
+        cpu_client = sum(x[3] for x in brut_k)
         c.opreste.set(); c.join(timeout=5)
         es.opreste.set(); es.join(timeout=2)
         latente = [x[1] for x in rez if x]
@@ -357,6 +383,13 @@ def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
             "max_ms": round(max(latente) * 1000, 1) if latente else None,
             "statusuri": statusuri, "erori": erori[:3], "nr_erori": len(erori),
             # numele cerute de comanda fazei, ca raportul sa le poata cita ca atare
+            # SATURAREA SONDEI, raportată lângă cifră. Peste 0,7 pe nucleu, debitul descrie
+            # bancul, nu aplicația — și atunci se spune, nu se publică o cifră tăcută.
+            "cpu_client_ms": round(cpu_client * 1000, 1),
+            "saturare_client": round(cpu_client / total / max(1, _NUCLEE), 3) if total else None,
+            "nuclee_masina": _NUCLEE,
+            "DEBIT_DEMN_DE_INCREDERE": bool(
+                total and (cpu_client / total / max(1, _NUCLEE)) < 0.7),
             "MAX_SIMULTANEOUS_RESOURCE_USE": es.maxim,
             "RESOURCE_CAPACITY": int(os.environ.get("ICONTA_POOL_MAX", "10")),
             "probe_esantionator": es.probe,
@@ -365,9 +398,12 @@ def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
         out[-1].update(_numara_erori(erori))
         BRUT["ruta_async_k%d" % k] = {"latente_ms": [round(x * 1000, 2) for x in latente],
                                       "erori": [str(e) for e in erori]}
-        print("  k=%-3d total %8.1f ms · p50 %s · p95 %s · conex. simultane max %d · "
-              "canar p95 %s ms" % (k, total * 1000, out[-1]["p50_ms"], out[-1]["p95_ms"],
-                                   es.maxim, out[-1]["canar"].get("p95_ms")), flush=True)
+        print("  k=%-3d total %8.1f ms · p50 %s · p95 %s · conex max %d · canar p95 %s ms · "
+              "saturare sondă %s %s"
+              % (k, total * 1000, out[-1]["p50_ms"], out[-1]["p95_ms"], es.maxim,
+                 out[-1]["canar"].get("p95_ms"), out[-1]["saturare_client"],
+                 "" if out[-1]["DEBIT_DEMN_DE_INCREDERE"] else "<-- DEBIT NEDEMN DE INCREDERE"),
+              flush=True)
     return out
 
 

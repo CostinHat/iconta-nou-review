@@ -14258,3 +14258,36 @@ unic care s-o înlocuiască — v. rândul ei din `core/p5_clasificare.py`.
 suficientă pentru rutele cu răspuns mare, fiindcă FastAPI serializează răspunsul **în afara**
 handler-ului, pe buclă — 67,6 ms din 93,7. Detaliile, cu așteptarea scrisă înainte, în
 `masuratori/p5_val1/`.
+
+
+---
+
+## Unicitatea raportului Z trece din COD în BAZĂ (10.09.2026, valul 1b)
+
+**Decizia, a arhitectului:** varianta (a) — index unic pe `(sursa, numar)`, cu migrare pe schemele
+existente și cu o hotărâre explicită despre duplicatele deja intrate.
+
+**Ce s-a măsurat înainte de a scrie o linie:** pe toate cele **20** de scheme active, **0 rânduri**
+de raport Z, deci **0 duplicate**. Indexul intră pe teren gol. Dovada:
+`masuratori/p5_val1b/DUPLICATE_Z.json`. *Decizia despre duplicate nu se putea lua fără cifră, iar
+cifra s-a luat înainte, nu după.*
+
+**Ce se face cu duplicatele, dacă apar vreodată: NIMIC, automat.** `CREATE UNIQUE INDEX` pică pe
+firma care le are, migrarea o numește împreună cu cheile, iar pornirea se oprește. Motivul: un
+duplicat e un document contabil deja intrat în evidență, iar care din cele două e cel bun nu poate
+ști decât omul care a operat casa de marcat. *O migrare care ar alege singură ar șterge istoria
+cuiva ca să-și facă loc.* Gardat: o probă cere ca modulul de migrare să nu conțină niciun SQL
+distructiv.
+
+**Indexul e PARȚIAL**, pe sursele raportului Z. Un index total ar fi refuzat evidențe corecte: o
+notă manuală și una de bancă pot purta același `numar` fără să fie duplicate.
+
+**Verificarea din cod NU s-a scos.** Ea rămâne calea rapidă, cea care dă omului un refuz pe care îl
+poate citi (`409`, cu documentul existent numit). Indexul e plasa de dedesubt, pentru cursa dintre
+două cereri simultane — acum posibilă, fiindcă ruta rulează pe un fir. Violarea lui produce
+**același** refuz, nu un `500`: *o cursă pierdută și o a doua încercare conștientă trebuie să arate
+la fel pentru cel care operează casa de marcat.*
+
+**Varianta respinsă:** `pg_advisory_xact_lock` pe cheia raportului. Ar fi rezolvat cursa fără să
+atingă schema, dar rămâne o convenție pe care următorul apelant o poate ocoli — pe când indexul e o
+proprietate a datelor, adevărată indiferent cine scrie.

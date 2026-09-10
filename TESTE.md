@@ -2385,3 +2385,15 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   `core/test_sonde_stare.py` e clichetul interdicției 78, cu cifra **0** apărată de o probă
   anti-vacuu (instrumentul trebuie să vadă cel puțin 5 perechi) și de calibrarea care rulează în
   suită; RED-proof cu 2 probe roșii.
+
+
+- **Valul 1b al lui P5 (10.09.2026)** — `core/test_raport_z_unic.py` (10 probe) și trei probe noi în
+  `core/test_blocante_clasificate.py` (38 în total). Cea care apără cel mai mult nu e cea care
+  verifică indexul, ci **calibrarea ei negativă**: pe o schemă fără index, al doilea `INSERT` cu
+  aceeași cheie TRECE — fără ea, proba principală ar fi putut fi verde despre o cheie primară sau un
+  trigger. La blocante s-a adăugat proba că cele 12 rute întorc prin `_raspuns(...)` în **toate**
+  ramurile lor (o singură returnare lăsată goală ar readuce serializarea pe buclă exact pe ramura
+  pe care n-o măsoară nimeni) și proba de **octet cu octet**: `_raspuns(x)` produce exact ce ar
+  produce FastAPI, chemat pe aceeași sarcină — *un banc care măsoară mai repede un răspuns SCHIMBAT
+  n-ar măsura nimic*. Premisa echivalenței (niciun `response_model`) e asertată pe AST; prima formă
+  o căuta ca text și a picat pe propriul docstring care o explica.

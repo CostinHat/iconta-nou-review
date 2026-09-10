@@ -1,0 +1,43 @@
+{
+ "N": 250,
+ "pool": "40",
+ "rafale": [
+  {
+   "k": 1,
+   "perete_ms": 25.3,
+   "cpu_ms": 0.0,
+   "cpu_pe_perete": 0.0,
+   "statusuri": [
+    200
+   ]
+  },
+  {
+   "k": 2,
+   "perete_ms": 54.9,
+   "cpu_ms": 20.0,
+   "cpu_pe_perete": 0.365,
+   "statusuri": [
+    200
+   ]
+  },
+  {
+   "k": 5,
+   "perete_ms": 163.7,
+   "cpu_ms": 80.0,
+   "cpu_pe_perete": 0.489,
+   "statusuri": [
+    200
+   ]
+  },
+  {
+   "k": 10,
+   "perete_ms": 378.8,
+   "cpu_ms": 180.0,
+   "cpu_pe_perete": 0.475,
+   "statusuri": [
+    200
+   ]
+  }
+ ],
+ "nuclee": 2
+}

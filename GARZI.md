@@ -8402,3 +8402,25 @@ domeniul greșit nu dă niciodată roșu; asta e chiar problema lui.*
 cele 4 rute rămase asincrone intră în rază. Cele 10 mesaje au fost **rescrise**, nu absorbite în
 baseline. Șapte dintre ele erau același text copiat în șapte module — deci reparația a scos și
 șapte dialecte ale aceluiași refuz, nu doar diacriticele.
+
+
+---
+
+# `core/test_raport_z_unic.py` — R61 nu mai atârnă de felul în care rulează handler-ul
+
+*(10.09.2026, valul 1b)* Poarta „un raport Z duplicat se REFUZĂ" trăia numai în cod: un `SELECT`,
+apoi un `INSERT`, fără nimic între ele. Ținea fiindcă ruta era `async def` **fără niciun `await`
+după citirea fișierului**, deci bucla o rula până la capăt fără s-o întrerupă. *O garanție care ține
+fiindcă handler-ul se întâmplă să nu cedeze bucla nu e o garanție — e un noroc care ține până la
+prima refactorizare.*
+
+**Zece probe, dintre care două contează cel mai mult, și stau una lângă alta:** pe o schemă
+adevărată, al doilea `INSERT` cu aceeași cheie **pică**; iar pe o schemă FĂRĂ index, același al
+doilea `INSERT` **trece**. Fără a doua, prima ar fi putut fi verde despre o cheie primară, un
+trigger, orice altceva.
+
+Restul păzesc: indexul e în `tenant_template.sql` (firmele noi nu depind de migrare); e **parțial**,
+pe sursele declarate (o notă manuală și una de bancă au voie să repete un `numar`); mulțimea
+surselor e **un singur obiect**, importat, nu două liste care ar fi putut diverge; `lifespan`
+migrează, **verifică**, și ridică la eșec; și migrarea **nu conține niciun SQL distructiv** — dacă o
+firmă are duplicate, se oprește și le numește, fiindcă alegerea documentului bun e a omului.

@@ -17,6 +17,21 @@ def _fake_conn(*a, **k):
     yield None
 
 
+def _continut(raspuns):
+    """Conținutul unui răspuns de rută, indiferent dacă e dicționar sau `Response`.
+
+    [P5 val 1b] Rutele care întorc liste mari își construiesc singure răspunsul, ca serializarea
+    să se execute pe firul handler-ului, nu pe buclă. Ce iese e același conținut, dar împachetat.
+    Ajutorul ăsta îl deschide, și merge și pe rutele neatinse — deci proba se leagă de conținut,
+    nu de forma învelișului.
+    """
+    corp = getattr(raspuns, "body", None)
+    if corp is None:
+        return raspuns
+    import json as _j
+    return _j.loads(corp)
+
+
 def _uf():
     return UploadFile(io.BytesIO(b"x"), filename="x.csv")
 
@@ -29,7 +44,7 @@ def test_preview_salariati_ataseaza_denumirea_cor(monkeypatch):
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: "Programator" if cod == "251401" else None)
 
-    res = main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1})
+    res = _continut(main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
     r0 = res["randuri"][0]
     assert "cor_denumire" in r0, "preview NU ataseaza denumirea COR (Q16)"
     assert r0["cor_denumire"] == "Programator"
@@ -43,5 +58,5 @@ def test_preview_salariati_cor_necunoscut_ramane_none(monkeypatch):
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: None)
-    res = main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1})
+    res = _continut(main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
     assert res["randuri"][0]["cor_denumire"] is None   # necunoscut ramane necunoscut (fallback la cod in UI)

@@ -28,6 +28,21 @@ from core import mijloace_fixe_import_api as _mf
 from core import istoric_declaratii_import_api as _ist
 
 
+def _continut(raspuns):
+    """Conținutul unui răspuns de rută, indiferent dacă e dicționar sau `Response`.
+
+    [P5 val 1b] Rutele care întorc liste mari își construiesc singure răspunsul, ca serializarea
+    să se execute pe firul handler-ului, nu pe buclă. Ce iese e același conținut, dar împachetat.
+    Ajutorul ăsta îl deschide, și merge și pe rutele neatinse — deci proba se leagă de conținut,
+    nu de forma învelișului.
+    """
+    corp = getattr(raspuns, "body", None)
+    if corp is None:
+        return raspuns
+    import json as _j
+    return _j.loads(corp)
+
+
 @contextlib.contextmanager
 def _fake_conn(*a, **k):
     yield None
@@ -66,7 +81,7 @@ def test_preview_intoarce_verdictul_salvarii(monkeypatch, nume, endpoint, modul,
         monkeypatch.setattr(main.db, "get_conn", _fake_conn)
         monkeypatch.setattr(_part, "coerenta", lambda conn, r: [])
 
-    res = endpoint(1, fisier=_uf(), ctx={"uid": 1})
+    res = _continut(endpoint(1, fisier=_uf(), ctx={"uid": 1}))
 
     assert "erori" in res, "preview NU intoarce cheia `erori` (poarta lipseste) - %s" % nume
     asteptat = migrare_api.erori_verifica(modul.verifica_randuri(randuri))
@@ -84,7 +99,7 @@ def test_preview_curat_nu_blocheaza():
     try:
         mp.setattr(main, "_schema_sau_404", lambda ctx, tid: "public")
         mp.setattr(_mf, "extrage", lambda *a, **k: randuri)
-        res = main.mijloace_import_incarca(1, fisier=_uf(), ctx={"uid": 1})
+        res = _continut(main.mijloace_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
     finally:
         mp.undo()
     assert res["erori"] == [], res["erori"]

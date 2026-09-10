@@ -307,7 +307,7 @@ def test_caile_reparate_nu_mai_tin_bucla(inventar):
     """
     pe_intrare = {x["intrare"]: x for x in inventar["candidati"]}
     recazute = []
-    for ruta in P.REPARATE_VAL1:
+    for ruta in tuple(P.REPARATE_VAL1) + tuple(P.REPARATE_VAL1B):
         x = pe_intrare.get(ruta)
         if x is not None and "C1" in x["detectori"]:
             recazute.append(ruta)
@@ -362,6 +362,79 @@ def test_reparatele_nu_mai_asteapta_citirea_fisierului():
         if any(isinstance(a, ast.Await) for a in ast.walk(n)):
             rele.append(r)
     assert not rele, "căi sincrone care au rămas cu un `await` în corp: %s" % rele
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  VALUL 1b — serializarea răspunsului pe firul handler-ului
+# ═══════════════════════════════════════════════════════════════════════════
+
+def test_cele_12_isi_serializeaza_singure_raspunsul():
+    """Fiecare din cele 12 rute întoarce prin `_raspuns(...)`, în TOATE ramurile ei.
+
+    *O singură returnare rămasă goală ar readuce serializarea pe buclă chiar pe ramura pe care
+    nimeni n-o măsoară* — de-aia se cere pe fiecare `Return`, nu pe „cel puțin unul".
+    """
+    rute = _rute_din_main()
+    rele = []
+    for r in P.REPARATE_VAL1B:
+        fn = rute.get(r)
+        assert fn is not None, "ruta %s a dispărut din main.py" % r
+        ret = [a for a in ast.walk(fn) if isinstance(a, ast.Return) and a.value is not None]
+        assert ret, "%s n-are nicio returnare cu valoare" % r
+        for a in ret:
+            v = a.value
+            ok = (isinstance(v, ast.Call) and isinstance(v.func, ast.Name)
+                  and v.func.id == P.AJUTOR_RASPUNS)
+            if not ok:
+                rele.append("%s:%d" % (r, a.lineno))
+    assert not rele, ("returnări care lasă serializarea pe buclă: %s" % rele)
+
+
+def test_raspunsul_e_octet_cu_octet_ce_ar_fi_produs_framework_ul():
+    """Proba care contează: `_raspuns(x)` produce EXACT ce ar fi produs FastAPI singur.
+
+    Un banc care măsoară mai repede un răspuns SCHIMBAT n-ar măsura nimic. Aici nu se compară cu
+    ce cred eu că face framework-ul, ci cu ce face el chiar acum, chemat pe aceeași sarcină.
+    """
+    import asyncio
+    from fastapi.responses import JSONResponse
+    from fastapi.routing import serialize_response
+
+    import main as _main
+    sarcini = [
+        {"randuri": [{"a": 1, "b": None, "c": "ăâîșț"}], "total": 1},
+        {"tranzactii": [{"suma": 1.5, "d": "2026-01-31"} for _ in range(50)], "nr": 50},
+        {"importate": 0, "duplicate": 0, "erori": []},
+    ]
+    for x in sarcini:
+        astept = JSONResponse(asyncio.run(serialize_response(response_content=x))).body
+        primit = _main._raspuns(x).body
+        assert primit == astept, (
+            "octeții diferă de calea framework-ului pe %r:\n  framework: %r\n  _raspuns:  %r"
+            % (x, astept[:200], primit[:200]))
+
+
+def test_niciun_response_model_pe_rute():
+    """Premisa echivalenței de mai sus, asertată.
+
+    `serialize_response` face exact `jsonable_encoder` **numai** când nu are `response_model`. Dacă
+    cineva adaugă unul pe vreo rută, echivalența cade — și trebuie să cadă zgomotos, aici, nu tăcut
+    într-un răspuns care începe să difere.
+    """
+    m = ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
+    cu_model = []
+    for n in ast.walk(m):
+        if not isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        for d in n.decorator_list:
+            if not (isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute)):
+                continue
+            for kw in d.keywords:
+                if kw.arg == "response_model":
+                    cu_model.append("%s:%d" % (n.name, n.lineno))
+    assert not cu_model, (
+        "rute cu `response_model`: %s — recitește "
+        "`test_raspunsul_e_octet_cu_octet_ce_ar_fi_produs_framework_ul`" % cu_model)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

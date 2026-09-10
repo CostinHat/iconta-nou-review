@@ -979,6 +979,20 @@ def _efect_declarat(fn):
     citesc din AST-ul rutei. Unde nu dă nimic, se scrie că nu se poate deriva — «se verifică prin
     efect» spune că EXISTĂ un efect, nu CARE e, deci nu e o descriere din care se poate scrie o
     verificare (Costin, 25.08.2026)."""
+    def _prin_inveli(v):
+        """Trece prin `_raspuns(...)` — învelișul de serializare nu schimbă CE iese.
+
+        [P5 val 1b] Cele 12 rute care întorc liste mari își construiesc singure răspunsul, ca
+        `jsonable_encoder` să se execute pe firul handler-ului, nu pe buclă. Învelișul e
+        transparent pentru întrebarea „ce iese": conținutul e chiar argumentul lui. Fără pasul
+        ăsta, adnotările lor ar fi devenit «întoarce `_raspuns`» — mai sărace decât înainte, și
+        nu fiindcă ruta ar face mai puțin.
+        """
+        while (isinstance(v, ast.Call) and isinstance(v.func, ast.Name)
+               and v.func.id == "_raspuns" and v.args):
+            v = v.args[0]
+        return v
+
     chei, apeluri, fisier = [], [], False
     corp = ast.unparse(fn).lower()
     if any(m in corp for m in ("content-disposition", "fileresponse", "application/pdf",
@@ -987,7 +1001,7 @@ def _efect_declarat(fn):
     for n in ast.walk(fn):
         if not isinstance(n, ast.Return) or n.value is None:
             continue
-        v = n.value
+        v = _prin_inveli(n.value)
         if isinstance(v, ast.Dict):
             for k in v.keys:
                 if isinstance(k, ast.Constant) and isinstance(k.value, str):

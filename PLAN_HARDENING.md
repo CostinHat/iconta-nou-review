@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-10 (valul 1)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALUL 1 EXECUTAT ȘI MĂSURAT** (16 din 17 căi mutate de pe buclă; valul 3 NEÎNCEPUT, prin decizia arhitectului) · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-10 (valul 1b)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; valul 3 NEÎNCEPUT, prin decizia arhitectului) · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -402,15 +402,22 @@ fișier)"*. Gardul are instanța lui scrisă: pe **11.08.2026**, publicarea cond
 commitului a lăsat procesul viu pe commitul anterior — `RUNNING b0ccc40` vs `HEAD f504f00`. Iar
 four-way-ul cere `pornire > commit`, deci un commit nepublicat l-ar lăsa deschis prin construcție.
 
-**Cele două căi, ca decizia să nu ceară o a doua tură:**
-  * **(a) se redefinește four-way-ul** — un commit fără fișiere de runtime are voie să lase
-    `RUNNING` în urmă, iar verificarea învață același criteriu mecanic. Coerent, dar slăbește cea
-    mai tare invariantă a casei, și cere schimbat și gardul din 11.08;
-  * **(b) nu se comite separat** — artefactele unei faze pur diagnostice călătoresc cu următorul
-    commit care chiar schimbă runtime-ul. Nu atinge nici hook-ul, nici gardul, nici four-way-ul;
-    costul e că evidența fazei intră mai târziu în lanț.
+**CUM SE APLICĂ: varianta (b), confirmată de arhitect pe 10.09.2026.** *„O fază pur diagnostică
+nu se comite separat — artefactele ei călătoresc cu următorul commit de runtime."*
 
-*Regula e scrisă aici fiindcă asta s-a cerut. Partea mecanică așteaptă alegerea dintre (a) și (b).*
+Deci **hook-ul nu se atinge**, iar `core/test_publicare_restart_neconditionat.py` rămâne exact cum e:
+publicarea și restartul continuă să fie NECONDIȚIONATE de conținut, iar four-way-ul își păstrează
+invarianta `pornire > commit`. *Varianta (a) — un four-way care are voie să lase `RUNNING` în urmă —
+a fost respinsă: ar fi slăbit cea mai tare garanție a casei ca să scutească o repornire.*
+
+**Ce se schimbă în practică:** măsurătorile și artefactele unei runde de diagnostic se produc pe
+arborele de lucru, ÎNAINTE de commit, și intră în același commit cu schimbarea de runtime pe care o
+verifică. Asta e și forma corectă a perechii cerute la `:334`: jumătatea «înainte» și cea «după» ale
+aceleiași intervenții ajung împreună în lanț, nu la două zile distanță.
+
+**Limita, scrisă ca să nu fie citită mai larg:** o rundă care chiar NU produce nicio schimbare de
+runtime — un diagnostic care se închide cu «nu e nimic de reparat» — n-are cu ce să călătorească.
+Atunci artefactele ei intră în ZIP-ul de livrare și rămân necomise, iar raportul spune asta.
 
 
 ## VALUL 1 (10.09.2026) — executat, măsurat, și NEÎNCHIS
@@ -458,6 +465,45 @@ aplicația 4,4 secunde.
 
 **Ce NU e închis:** cele **12** căi care întorc liste mari. Pentru ele valul 1 era necesar, dar nu
 suficient.
+
+
+## VALUL 1b (10.09.2026) — serializarea răspunsului, și un defect al propriului banc
+
+**Ce s-a făcut.** Cele 12 rute care întorc liste mari își construiesc singure răspunsul
+(`JSONResponse(jsonable_encoder(x))`), deci codificarea se execută pe firul handler-ului. FastAPI o
+făcea în învelișul `async` de după — adică **pe buclă**, oricât de sincron ar fi fost handler-ul.
+Octeții sunt aceiași, verificat la sursă și pinat de o probă care compară cu chiar calea
+framework-ului.
+
+**`horeca/import-amef`, ultima din cele 17, a trecut și ea pe fir** — după ce garanția pe care se
+sprijinea a devenit una a DATELOR: index unic parțial pe `(sursa, numar)`, în template pentru
+firmele noi și prin `core/raport_z.py` la pornire pentru cele existente. **Măsurat înainte: 0
+rânduri de raport Z pe toate cele 20 de scheme, deci 0 duplicate** — indexul a intrat pe teren gol.
+Migrarea **nu șterge niciodată nimic**: dacă o firmă ar avea duplicate, `CREATE UNIQUE INDEX` pică
+pe ea, mesajul le numește, iar pornirea se oprește.
+
+**Rezultatul, cu așteptarea scrisă înainte** (`masuratori/p5_val1b/`):
+
+| | început P5 | val 1 | val 1b |
+|---|---|---|---|
+| canar p95 @N=5000 | 117,9 ms | 93,7 ms | **33,2 ms** |
+| canar vârf @N=5000 | 158,7 ms | 107,2 ms | **66,2 ms** |
+| canar în gol (martor) | 3,4 ms | 3,0 ms | 3,0 ms |
+| **C1 pe căi de cerere** | 17 | 1 | **0** |
+
+**Ce cere planul la `:328` — „rutele în care un I/O blocant ține bucla ocupată" — e ÎNCHIS.**
+
+**Ce NU e închis: debitul.** La k=10, 23,7 cereri/s față de 27,5 la k=1 — plat. Și aici e a treia
+descoperire a rundei: **cifra veche, 19,4, nu era o măsurătoare a aplicației**. Bancul trimitea cele
+k cereri din k FIRE ale unui singur proces Python; la k=2 consuma **0,98** din timpul de perete în
+procesor, adică era el însuși strangularea. S-a mutat pe **procese**, cu bazinul încălzit înainte de
+ceas, și — mai important — **își raportează acum propria saturare** (`saturare_client`,
+`DEBIT_DEMN_DE_INCREDERE` în fiecare rând). Excluse prin măsurătoare: clientul (0,32), pool-ul
+(10 vs 40 pe serverul de probă: 381 → 379 ms), saturarea de procesor a serverului (0,47).
+
+**Rămâne DESCHIS de ce nu crește debitul**, și nu se inventează o explicație: în campania asta am
+ghicit cauza de două ori înainte s-o măsor și am greșit de fiecare dată. Următoarea măsurătoare care
+ar închide întrebarea cere cronometrare pe segmente în codul de producție — deci se cere întâi.
 
 
 ---

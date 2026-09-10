@@ -1,0 +1,51 @@
+{
+ "N": 250,
+ "pool": "10",
+ "rafale": [
+  {
+   "k": 1,
+   "perete_ms": 52.7,
+   "cpu_ms": 20.0,
+   "cpu_client_ms": 25.1,
+   "cpu_pe_perete": 0.379,
+   "client_pe_perete": 0.476,
+   "statusuri": [
+    200
+   ]
+  },
+  {
+   "k": 2,
+   "perete_ms": 56.6,
+   "cpu_ms": 30.0,
+   "cpu_client_ms": 55.3,
+   "cpu_pe_perete": 0.53,
+   "client_pe_perete": 0.978,
+   "statusuri": [
+    200
+   ]
+  },
+  {
+   "k": 5,
+   "perete_ms": 178.8,
+   "cpu_ms": 80.0,
+   "cpu_client_ms": 127.6,
+   "cpu_pe_perete": 0.447,
+   "client_pe_perete": 0.713,
+   "statusuri": [
+    200
+   ]
+  },
+  {
+   "k": 10,
+   "perete_ms": 340.0,
+   "cpu_ms": 160.0,
+   "cpu_client_ms": 260.0,
+   "cpu_pe_perete": 0.471,
+   "client_pe_perete": 0.765,
+   "statusuri": [
+    200
+   ]
+  }
+ ],
+ "nuclee": 2
+}

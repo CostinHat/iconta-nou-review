@@ -304,12 +304,23 @@ def curata_reale(conn):
             firme = cur.fetchall()
             ids = [x[0] for x in firme]
             if ids:
+                # `audit_log` E în listă, și nu e un detaliu: middleware-ul de audit scrie acolo la
+                # FIECARE cerere, deci o sondă care folosește firmele astea lasă în urmă rânduri
+                # care trimit la firme inexistente. S-a întâmplat — 60 de orfani în producție, de
+                # la o sondă ad-hoc care nu știa. *Curățenia comună e locul unde disciplina nu se
+                # poate uita; în fiecare sondă în parte, se uită.*
                 for t in ("firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa",
-                          "supervizor_rezultat", "user_tenants", "declaratii_depuse"):
+                          "supervizor_rezultat", "user_tenants", "declaratii_depuse", "audit_log"):
                     cur.execute("DELETE FROM public.%s WHERE tenant_id = ANY(%%s)" % t, (ids,))
                 cur.execute("DELETE FROM public.tenants WHERE id = ANY(%s)", (ids,))
             for _tid, sch in firme:
                 cur.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % sch)
+            # și rândurile de audit ale utilizatorului sintetic, nu doar ale firmelor lui:
+            # `audit_log` poartă și `user_id`, iar un rând cu utilizator inexistent e tot orfan
+            cur.execute(
+                "DELETE FROM public.audit_log WHERE user_id IN "
+                " (SELECT id FROM public.users WHERE accounting_firm_id = %s OR email = %s)",
+                (fid, UTILIZATOR_REAL))
             cur.execute("DELETE FROM public.users WHERE accounting_firm_id = %s OR email = %s",
                         (fid, UTILIZATOR_REAL))
             cur.execute("DELETE FROM public.accounting_firms WHERE id = %s", (fid,))

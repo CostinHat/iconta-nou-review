@@ -155,23 +155,24 @@ CLASIFICARE = {
             "procesul — deci costul ăsta se plătește la fiecare livrare, nu o dată.",
     },
     "POST /tenants/{tenant_id}/horeca/import-amef": {
-        "clasa": ACTIUNE,
-        "dovada": "SERIALIZARE_ACCIDENTALA",
-        "val": 1,
+        "clasa": ACCEPTABIL,
+        "dovada": "REPARAT",
+        "val": None,
         "de_ce":
-            "SINGURA DIN CELE 17 CARE N-A FOST MUTATĂ, și nu din scăpare. Azi, după citirea "
-            "fișierului, handler-ul rulează până la capăt FĂRĂ să mai cedeze bucla — deci două "
-            "cereri simultane sunt SERIALIZATE. Pe serializarea asta se sprijină, fără s-o fi "
-            "declarat nimeni, poarta R61 din `_cere_z_unic`: un raport Z duplicat se REFUZĂ. Iar "
-            "`inregistrari` NU are index unic pe `(sursa, numar)` — verificat în "
-            "`tenant_template.sql`, unde tabela are doar cheia primară pe `id`. Mutarea pe fir ar "
-            "face ca două încărcări simultane ale aceluiași Z să treacă amândouă de verificare. "
-            "*O regresie de contabilitate cumpărată cu o îmbunătățire de latență nu e o "
-            "îmbunătățire* — iar planul cere explicit ca semantica să nu se schimbe "
-            "(PLAN_HARDENING.md:337). Costul ținerii pe loc e mic: calea parsează un XML și scrie "
-            "câteva rânduri, deci e cel mai ieftin dintre cei 17 blocanți. Se deblochează în două "
-            "feluri, amândouă declarate: index unic pe `(sursa, numar)`, sau "
-            "`pg_advisory_xact_lock` pe cheia raportului înainte de verificare.",
+            "ULTIMA DIN CELE 17, mutată pe fir abia după ce garanția pe care se sprijinea a "
+            "devenit una a DATELOR. Fusese ținută pe loc deliberat: bucla îi serializa "
+            "verificarea de unicitate a raportului Z (poarta R61 din `_cere_z_unic`), iar "
+            "`inregistrari` n-avea index unic pe `(sursa, numar)` — deci mutarea ar fi lăsat două "
+            "încărcări simultane ale aceluiași Z să treacă amândouă. *O garanție care ține fiindcă "
+            "handler-ul se întâmplă să nu cedeze bucla nu e o garanție, e un noroc care ține până "
+            "la prima refactorizare.* Valul 1b (10.09.2026) a pus indexul: în `tenant_template.sql` "
+            "pentru firmele noi, și prin `core/raport_z.py` la pornire pentru cele 20 existente — "
+            "măsurat înainte, 0 rânduri de raport Z și 0 duplicate, deci a intrat pe teren gol. "
+            "Verificarea din cod a rămas ca refuz care se poate CITI; indexul e plasa de dedesubt, "
+            "iar violarea lui produce ACELAȘI 409, nu un 500. Azi calea NU mai aprinde C1 — dar "
+            "rămâne în inventar pe C3, fiindcă ajunge la un subproces. *Ce s-a reparat e ținerea "
+            "buclei, nu tot ce are calea asta; a o scoate din inventar ar fi o afirmație mai largă "
+            "decât reparația.*",
     },
     "middleware main.py::_audit_middleware()": {
         "clasa": ACCEPTABIL,
@@ -344,15 +345,34 @@ REPARATE_VAL1 = (
     "POST /tenants/{tenant_id}/solduri/incarca",
 )
 
+#: VALUL 1b (10.09.2026) — rutele care își construiesc singure răspunsul, ca serializarea lui să
+#: se execute pe firul handler-ului, nu pe buclă. `jsonable_encoder` rula în învelișul `async` de
+#: după handler, deci PE BUCLĂ: 67,6 ms din 93,7 ms de coadă la N=5000.
+REPARATE_VAL1B = (
+    "POST /tenants/{tenant_id}/articole-import/incarca",
+    "POST /tenants/{tenant_id}/asociati-import/incarca",
+    "POST /tenants/{tenant_id}/banca/parse-extras",
+    "POST /tenants/{tenant_id}/banca/reconciliere/import",
+    "POST /tenants/{tenant_id}/import-efactura",
+    "POST /tenants/{tenant_id}/istoric-declaratii-import/incarca",
+    "POST /tenants/{tenant_id}/mijloace-fixe-import/incarca",
+    "POST /tenants/{tenant_id}/parteneri/incarca",
+    "POST /tenants/{tenant_id}/retete-import/incarca",
+    "POST /tenants/{tenant_id}/rip-import/incarca",
+    "POST /tenants/{tenant_id}/salariati-import/incarca",
+    "POST /tenants/{tenant_id}/solduri/incarca",
+)
+
+#: numele ajutorului prin care se face asta — pinat, ca garda să nu-l caute după formă
+AJUTOR_RASPUNS = "_raspuns"
+
 #: ce a RĂMAS să aprindă C1, cu motivul fiecăreia. Mulțimea e pinată: și o intrare
 #: în plus, și una în minus, pică. O listă goală ar fi o minciună; una nescrisă, la fel.
 RAMASE_PE_BUCLA = {
-    "POST /tenants/{tenant_id}/horeca/import-amef":
-        "ținută pe loc DELIBERAT: bucla îi serializează azi verificarea de unicitate a raportului "
-        "Z, iar baza n-are index unic care s-o înlocuiască — v. rândul ei individual",
     "main.py::lifespan()":
         "pornirea aplicației, nu o cerere: blochează bucla ÎNAINTE ca serverul să accepte cereri, "
-        "deci n-are cui să facă rău, și e fail-closed prin decizie scrisă la P2",
+        "deci n-are cui să facă rău, și e fail-closed prin decizie scrisă la P2. După valul 1b e "
+        "SINGURA care mai aprinde C1: nicio cale care servește cereri nu mai ține bucla",
 }
 
 

@@ -578,6 +578,18 @@ CREATE TABLE TENANT_PLACEHOLDER.inregistrari (
 ALTER TABLE TENANT_PLACEHOLDER.inregistrari OWNER TO iconta_user;
 
 --
+-- [R61 / P5 val 1b, 10.09.2026] UNICITATEA RAPORTULUI Z, in BAZA, nu doar in cod.
+-- Poarta traia numai in `main.py::_cere_z_unic`: un SELECT, apoi un INSERT, fara nimic
+-- intre ele. Nu s-a vazut pana la P5 fiindca ruta era `async def` fara niciun `await`
+-- dupa citirea fisierului, deci bucla o rula pana la capat fara s-o intrerupa — o
+-- garantie accidentala, nu una a datelor. Indexul e PARTIAL: alte surse au voie sa
+-- repete un numar (o nota manuala si una de banca pot purta acelasi `numar`).
+--
+CREATE UNIQUE INDEX IF NOT EXISTS inregistrari_raport_z_unic
+    ON TENANT_PLACEHOLDER.inregistrari (sursa, numar)
+    WHERE sursa IN ('horeca_z', 'amef') AND numar IS NOT NULL;
+
+--
 -- Name: inregistrari_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
 --
 
