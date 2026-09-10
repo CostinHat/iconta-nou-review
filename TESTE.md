@@ -2397,3 +2397,11 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   produce FastAPI, chemat pe aceeași sarcină — *un banc care măsoară mai repede un răspuns SCHIMBAT
   n-ar măsura nimic*. Premisa echivalenței (niciun `response_model`) e asertată pe AST; prima formă
   o căuta ca text și a picat pe propriul docstring care o explica.
+
+
+- **Instrumentarea segmentelor (10.09.2026)** — `core/test_cronometru_inert.py`, 8 probe. Cifra pe
+  care o apără nu e o cifră, e o **absență**: în producție, instrumentarea nu trebuie să se vadă
+  deloc. Proba centrală compară răspunsul cu ce ar fi produs framework-ul singur, pe **corp ȘI pe
+  antete** — un antet în plus e tot o schimbare a răspunsului livrat. Direcția opusă e la fel de
+  necesară: cu instrumentarea pornită, reperele chiar apar, altfel garda ar fi verde pe un modul
+  mort și prima măsurătoare de mâine ar raporta segmente goale. RED-proof cu 4 probe roșii.

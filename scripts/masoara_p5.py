@@ -223,12 +223,35 @@ def _rezumat(latente, erori, eticheta=None):
 def _post_fisier(baza, ruta, tok, continut, nume, rezultat, idx):
     import httpx
     t0 = time.perf_counter()
+    trimis = time.time()          # ceas de PERETE: comparabil cu reperele serverului, pe aceeasi masina
     try:
         r = httpx.post(baza + ruta, headers={"Authorization": "Bearer " + tok},
                        files={"fisier": (nume, continut, "text/csv")}, timeout=300.0)
-        rezultat[idx] = (r.status_code, time.perf_counter() - t0, (r.text or "")[:200])
+        primit = time.time()
+        rezultat[idx] = (r.status_code, time.perf_counter() - t0, (r.text or "")[:200],
+                         _segmente_cerere(r.headers, trimis, primit))
     except Exception as e:  # noqa: BLE001
-        rezultat[idx] = (None, time.perf_counter() - t0, type(e).__name__ + ": " + str(e)[:160])
+        rezultat[idx] = (None, time.perf_counter() - t0,
+                         type(e).__name__ + ": " + str(e)[:160], {})
+
+
+def _segmente_cerere(headers, trimis, primit):
+    """`{segment: ms}` — cele din handler, plus cele DINAINTE și DE DUPĂ el.
+
+    `intrare` = de la trimiterea cererii până la prima linie a handler-ului: coadă de fire, lanț de
+    middleware, parsarea multipart. `iesire` = de la ultima linie a handler-ului până la primirea
+    răspunsului. **Astea două nu se pot afla dinăuntru**, iar fără ele suma segmentelor n-ar da
+    niciodată totalul — și tocmai diferența e ce căutăm.
+    """
+    from core import cronometru as _cr
+    d = _cr.citeste_antete(headers)
+    if "start" not in d or "end" not in d:
+        return {}
+    out = {k: v for k, v in d.items() if k not in ("start", "end")}
+    out["intrare"] = round((d["start"] - trimis) * 1000, 2)
+    out["iesire"] = round((primit - d["end"]) * 1000, 2)
+    out["total_client"] = round((primit - trimis) * 1000, 2)
+    return out
 
 
 def _get(baza, ruta, tok, rezultat, idx):
@@ -278,18 +301,21 @@ def curba_async(baza, tid, tok, nn=NN, repetari=8):
         c.start()
         time.sleep(0.25)                       # încălzire: conexiunea TCP nu intră în măsurătoare
         c.latente.clear(); c.erori.clear()
-        durate, statusuri = [], {}
+        durate, statusuri, segs_n = [], {}, []
         t0 = time.perf_counter()
         for _ in range(repetari):
             rez = [None]
             _post_fisier(baza, RUTA_SUBIECT % tid, tok, continut, "extras.csv", rez, 0)
-            st, dt, corp = rez[0]
+            st, dt, corp, segs = rez[0]
             durate.append(dt)
             statusuri[str(st)] = statusuri.get(str(st), 0) + 1
+            if segs:
+                segs_n.append(segs)
         fereastra = time.perf_counter() - t0
         c.opreste.set()
         c.join(timeout=5)
         out.append({"N": n, "repetari": repetari, "statusuri": statusuri,
+                    "segmente_ms": _mediana_segmente(segs_n),
                     "durata_ruta_p50_ms": _pct(durate, 50),
                     "durata_ruta_p95_ms": _pct(durate, 95),
                     "durata_ruta_max_ms": round(max(durate) * 1000, 1),
@@ -297,6 +323,10 @@ def curba_async(baza, tid, tok, nn=NN, repetari=8):
                     "canar": _rezumat(c.latente, c.erori, "canar_in_timpul_async_N%d" % n)})
         BRUT["ruta_async_N%d" % n] = {"latente_ms": [round(x * 1000, 2) for x in durate],
                                       "erori": []}
+        if out[-1].get("segmente_ms"):
+            print("        segmente (mediana, ms): %s"
+                  % " · ".join("%s=%s" % kv for kv in sorted(out[-1]["segmente_ms"].items())),
+                  flush=True)
         print("  N=%-5d ruta p50 %8.1f ms · canar p50 %6s / p95 %6s / max %6s ms (%d probe)"
               % (n, out[-1]["durata_ruta_p50_ms"], out[-1]["canar"].get("p50_ms"),
                  out[-1]["canar"].get("p95_ms"), out[-1]["canar"].get("max_ms"),
@@ -325,6 +355,30 @@ def curba_sync(baza, tid, tok, repetari=40):
             "canar": _rezumat(c.latente, c.erori, "canar_in_timpul_sync")}
 
 
+def _mediana_segmente(lista):
+    """Mediana pe fiecare segment, plus `nemasurat` = totalul minus suma segmentelor.
+
+    `nemasurat` e rândul care contează cel mai mult: dacă rămâne mare, timpul se duce undeva unde
+    n-am pus reper, iar cifra o spune în loc s-o ascundă. *Un profil care se închide singur prin
+    construcție nu e un profil, e o împărțire a totalului.*
+    """
+    if not lista:
+        return {}
+    # restul se calculeaza PE FIECARE CERERE, apoi se ia mediana lui. Scazut din mediane, iesea
+    # negativ (-14 ms la k=2): medianele unor segmente diferite nu apartin aceleiasi cereri.
+    for d in lista:
+        acoperit = sum(x for k, x in d.items() if k != "total_client")
+        d["nemasurat"] = round(d.get("total_client", 0) - acoperit, 2)
+    chei = set()
+    for d in lista:
+        chei |= set(d)
+    out = {}
+    for k in sorted(chei):
+        v = sorted(d[k] for d in lista if k in d)
+        out[k] = round(v[len(v) // 2], 2)
+    return out
+
+
 def _incalzeste(_i):
     """Nu face nimic — există ca procesul lucrător să fie pornit și importat înainte de ceas."""
     return True
@@ -342,8 +396,8 @@ def _lucrator_cerere(args):
     c0 = _t.process_time()
     rez = [None]
     _post_fisier(baza, ruta, tok, continut, nume, rez, 0)
-    st, dt, corp = rez[0]
-    return st, dt, corp, _t.process_time() - c0
+    st, dt, corp, segs = rez[0]
+    return st, dt, corp, _t.process_time() - c0, segs
 
 
 def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
@@ -369,6 +423,7 @@ def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
             total = time.perf_counter() - t0
         rez = [(x[0], x[1], x[2]) for x in brut_k]
         cpu_client = sum(x[3] for x in brut_k)
+        segs_k = [x[4] for x in brut_k if x[4]]
         c.opreste.set(); c.join(timeout=5)
         es.opreste.set(); es.join(timeout=2)
         latente = [x[1] for x in rez if x]
@@ -385,6 +440,7 @@ def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
             # numele cerute de comanda fazei, ca raportul sa le poata cita ca atare
             # SATURAREA SONDEI, raportată lângă cifră. Peste 0,7 pe nucleu, debitul descrie
             # bancul, nu aplicația — și atunci se spune, nu se publică o cifră tăcută.
+            "segmente_ms": _mediana_segmente(segs_k),
             "cpu_client_ms": round(cpu_client * 1000, 1),
             "saturare_client": round(cpu_client / total / max(1, _NUCLEE), 3) if total else None,
             "nuclee_masina": _NUCLEE,
@@ -404,6 +460,10 @@ def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
                  out[-1]["canar"].get("p95_ms"), out[-1]["saturare_client"],
                  "" if out[-1]["DEBIT_DEMN_DE_INCREDERE"] else "<-- DEBIT NEDEMN DE INCREDERE"),
               flush=True)
+        if out[-1].get("segmente_ms"):
+            print("        segmente (mediana, ms): %s"
+                  % " · ".join("%s=%s" % kv for kv in sorted(out[-1]["segmente_ms"].items())),
+                  flush=True)
     return out
 
 
@@ -468,10 +528,13 @@ def main():
     os.makedirs(os.path.join(DIR, "P5_RAW_EVIDENCE"), exist_ok=True)
     cale_log = os.path.join(DIR, "P5_RAW_EVIDENCE", "P5_uvicorn.log")
     jurnal = io.open(cale_log, "w", encoding="utf-8")
+    # INSTRUMENTAREA se pornește DOAR pentru serverul de probă, prin mediu. Procesul de
+    # producție n-o are, deci nu plătește nimic — iar cifrele de mai jos poartă costul ei.
+    mediu = dict(os.environ, ICONTA_CRONOMETRU="1")
     proc = subprocess.Popen(
         [os.path.join(RAD, "venv/bin/python"), "-m", "uvicorn", "main:app",
          "--host", "127.0.0.1", "--port", str(port), "--log-level", "info"],
-        cwd=RAD, stdout=jurnal, stderr=subprocess.STDOUT)
+        cwd=RAD, stdout=jurnal, stderr=subprocess.STDOUT, env=mediu)
     try:
         import httpx
         gata = False

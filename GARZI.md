@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**549 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**550 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 524
+### `core/` — 525
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7797,6 +7797,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_cota_fara_default.py` — GARD (R26): nicio funcție fiscală nu are cotă implicită, iar REFUZUL chiar se produce.
 - `core/test_cota_fara_default_fallback.py` — GARD (R29): o cotă de TVA absentă nu se completează singură, în niciun limbaj și în nicio formă.
 - `core/test_cron.py` — Teste core/cron.py — ambalajul joburilor de fundal.
+- `core/test_cronometru_inert.py` — core/test_cronometru_inert.py — instrumentarea nu se vede în producție.
 - `core/test_cui_cnp_test_valid.py` — [Date de test — CUI/CNP verificate] GARD: un CUI/CNP folosit ca date de test VALIDE (`cui=`/`cnp="..."`)
 - `core/test_curatenie.py` — GARD [03.09.2026]: ocolirea de curatenie se deschide din INDEX, si numai pentru curatenie.
 - `core/test_d100.py` — Teste gardian pentru D100 - modulul a fost REFACUT complet 16.07.2026.
@@ -8424,3 +8425,27 @@ pe sursele declarate (o notă manuală și una de bancă au voie să repete un `
 surselor e **un singur obiect**, importat, nu două liste care ar fi putut diverge; `lifespan`
 migrează, **verifică**, și ridică la eșec; și migrarea **nu conține niciun SQL distructiv** — dacă o
 firmă are duplicate, se oprește și le numește, fiindcă alegerea documentului bun e a omului.
+
+
+---
+
+# `core/test_cronometru_inert.py` — instrumentarea nu se vede în producție
+
+*(10.09.2026)* `core/cronometru.py` e cod de măsurare așezat pe calea de cerere, aprobat separat de
+arhitect fiindcă din afară nu se putea afla unde stau cele ~460 ms ale unei cereri la k=10. Un
+asemenea cod are o singură obligație absolută: **să nu existe când nu e pornit**.
+
+**Opt probe, iar cea care contează e a treia:** răspunsul unei rute instrumentate e **octet cu octet
+ȘI antet cu antet** cel pe care l-ar fi produs FastAPI singur, chemat pe aceeași sarcină. *O
+măsurătoare care schimbă lucrul măsurat nu măsoară nimic; una care schimbă răspunsul livrat
+clientului e mai rea decât nicio măsurătoare.*
+
+**Cealaltă direcție**, fără de care garda ar fi verde pe un modul mort: cu instrumentarea PORNITĂ,
+reperele chiar apar, inclusiv cele două de ceas de perete — fără ele sonda n-ar putea afla ce s-a
+întâmplat ÎNAINTE de handler, adică exact partea care s-a dovedit cea mai mare.
+
+**Și legătura**, citită din AST: cronometrul pornește din cel mai din AFARĂ middleware (dacă ar
+porni mai înăuntru, segmentul `intrare` ar ascunde tocmai ce e mai mare), iar ruta subiect își
+păstrează toate reperele.
+
+RED-proof: cu `ACTIV = True` scris în modul, **4 probe roșii**.

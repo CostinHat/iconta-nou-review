@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-10 (valul 1b)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; valul 3 NEÎNCEPUT, prin decizia arhitectului) · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-10 (profilarea segmentelor)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; valul 3 NEÎNCEPUT — iar profilarea arată că **nu el e remediul**) · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -504,6 +504,53 @@ ceas, și — mai important — **își raportează acum propria saturare** (`sa
 **Rămâne DESCHIS de ce nu crește debitul**, și nu se inventează o explicație: în campania asta am
 ghicit cauza de două ori înainte s-o măsor și am greșit de fiecare dată. Următoarea măsurătoare care
 ar închide întrebarea cere cronometrare pe segmente în codul de producție — deci se cere întâi.
+
+
+## PROFILAREA SEGMENTELOR (10.09.2026) — și verdictul despre valul 3
+
+*Instrumentare în codul de producție, cerută și aprobată separat. Inertă fără `ICONTA_CRONOMETRU=1`,
+cu gardă care probează inerția pe corp ȘI pe antete.*
+
+**Întrebarea:** unde stau cele ~460 ms ale unei cereri la k=10, din care serverul consumă doar ~18 ms
+de procesor. Trei cauze fuseseră deja excluse prin măsurătoare — clientul, pool-ul, saturarea
+procesului-server.
+
+**Profilul, la k=10, N=250** (mediană pe cerere; restul neacoperit rămâne **5,8 ms**, deci
+contabilitatea se închide):
+
+| segment | k=1 | k=10 | ce e |
+|---|---|---|---|
+| `intrare` | 21,6 | **138,7** | citirea corpului de uvicorn + dispecerizarea ASGI, înainte de primul middleware |
+| `intrare-handler` | 3,0 | **105,7** | parsarea multipart, rezolvarea dependențelor, trecerea pe fir |
+| `conexiune` + `acces` | 0,5 | **112,5** | o conexiune din pool + interogarea `schema_tenant` |
+| `parsare` + `reguli` | 2,6 | **2,7** | **munca proprie a rutei** |
+| `iesire` | 2,5 | **94,8** | scrierea de audit + transmiterea răspunsului |
+| **total** | 35,0 | **457,2** | |
+
+**Munca proprie a rutei e 2,7 ms din 457.** **74% se petrece în afara handler-ului.** Verificarea de
+acces se scumpește de la 0,5 la 112,5 ms.
+
+**Două experimente care exclud explicațiile evidente:**
+* **nu e capacitatea unui singur proces**: aceeași rafală cu `--workers 2` a ieșit **mai rea**,
+  348 → 500 ms;
+* **mașina e aproape plină**: procesorul ocupat pe toată mașina, în timpul rafalei, e **1,57 din 2
+  nuclee (79%)**. *Măsurătoarea directă a lui PostgreSQL a EȘUAT — însumarea pe procese a ieșit
+  negativă, fiindcă backend-urile apar și dispar între eșantioane — deci partea lui se deduce prin
+  scădere și se scrie ca deducție, nu ca cifră.*
+
+**VERDICT: valul 3 nu e remediul pentru ce s-a măsurat.** El vizează apeluri externe executate cât
+timp e ținută o conexiune; **ruta măsurată nu face niciun apel extern**, iar cele două segmente mari
+se petrec înainte ca ea să atingă vreo conexiune. Ce s-a găsit e altceva, în trei straturi:
+
+1. **costul per cerere al cadrului și al transportului** — 339 din 457 ms, și nu e cod de-al nostru;
+2. **verificarea de acces**, 112 ms — singurul punct din listă care e al nostru și se poate atinge;
+3. **capacitatea mașinii** — 2 nuclee, 79% ocupate, cu sonda pe aceleași nuclee. *Orice debit măsurat
+   aici e un plafon inferior.*
+
+**Ce rămâne NEMĂSURAT, declarat:** cât din `intrare` e citirea corpului și cât dispecerizarea (reperul
+e la primul middleware, deci înainte de el e o singură cutie); și **de ce** `acces` se scumpește de
+130 de ori. *În campania asta am ghicit cauza de trei ori și am greșit de fiecare dată — a patra oară
+nu ghicesc.*
 
 
 ---

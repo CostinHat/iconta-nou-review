@@ -33,6 +33,7 @@ from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api,
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
+from core import cronometru as _crono   # [P5] segmentele unei cereri; INERT fara ICONTA_CRONOMETRU
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
                          EMAIL_NICIUNUL_VALID, EMAIL_INVALID_LISTA, CUI_FIRMA_LIPSA,
@@ -492,6 +493,7 @@ async def _preview_readonly_guard(request: Request, call_next):
     """[F-preview] Read-only enforcement pe BACKEND: un token de PREVIZUALIZARE portal blocheaza
     orice mutatie (POST/PUT/DELETE/PATCH -> 403); GET permis. La nivel de request (nu ascuns butoane
     in UI - UI-ul se ocoleste). Tokenul preview e emis de /tenants/{id}/acces-portal, marcat preview=True."""
+    _crono.marca("mw_audit_intrare")
     if request.method in _METODE_MUTATIE:
         auth = request.headers.get("authorization")
         if auth and auth.startswith("Bearer "):
@@ -508,7 +510,9 @@ async def _preview_readonly_guard(request: Request, call_next):
 
 @app.middleware("http")
 async def _audit_middleware(request: Request, call_next):
+    _crono.marca("mw_edge")
     response = await call_next(request)
+    _crono.marca("intors_din_ruta")
     try:
         path = request.url.path
         if not any(path.startswith(p) for p in _AUDIT_SKIP_PATHS):
@@ -521,6 +525,10 @@ async def _audit_middleware(request: Request, call_next):
 
 @app.middleware("http")
 async def _edge_canonic_head(request: Request, call_next):
+    # [P5, 10.09.2026] CEL MAI DIN AFARĂ middleware, deci aici pornește cronometrul. Inert fără
+    # `ICONTA_CRONOMETRU=1`. Ordinea lanțului e citită din urma unei excepții, nu presupusă:
+    # `_edge_canonic_head` -> `_audit_middleware` -> `_preview_readonly_guard` -> rută.
+    _crono.porneste()
     # [www_canonic 15.08.2026] www.iconta.eu servea acelasi continut ca iconta.eu (200 pe ambele) -> duplicat SEO,
     # semnalul se imparte. Forma canonica = fara www (_GHID_BAZA, pe care se genereaza sitemap+canonical).
     # Redirect 301 PERMANENT, PASTREAZA calea+query (www.../ghid/x -> iconta.eu/ghid/x, nu radacina). In app,
@@ -3179,7 +3187,14 @@ def _raspuns(continut):
     **Se folosește numai unde răspunsul crește cu intrarea.** Pe un răspuns mic, hopul în plus
     n-ar cumpăra nimic, iar `return {...}` se citește mai bine.
     """
-    return _JSONResponse(_jsonable_encoder(continut))
+    _crono.marca("inainte_serializare")
+    r = _JSONResponse(_jsonable_encoder(continut))
+    # [P5, 10.09.2026] Antetele de cronometrare, DOAR când instrumentarea e pornită. În producție
+    # `_crono.antete()` întoarce `{}`, deci răspunsul e octet cu octet cel dinainte — inclusiv
+    # antetele. *O măsurătoare care schimbă lucrul măsurat nu măsoară nimic.*
+    for _k, _v in _crono.antete().items():
+        r.headers[_k] = _v
+    return r
 
 
 def _octetii(fisier):
@@ -5490,16 +5505,25 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ,
             "baza_11": float(baza11), "baza_21": float(baza21)}
 @app.post("/tenants/{tenant_id}/banca/parse-extras")  # [api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat
 def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    # [P5, 10.09.2026] RUTA SUBIECT a bancului de măsură: reperele de mai jos despart cererea în
+    # segmente, ca să se poată afla UNDE stau cele ~460 ms de la k=10 din care doar ~18 sunt
+    # procesor. Instrumentarea e inertă fără `ICONTA_CRONOMETRU=1` — v. `core/cronometru.py`.
+    _crono.marca("intrare_handler")
     from core import banca_parser, banca as _bk
+    _crono.marca("importuri")
     with db.get_conn() as conn:
+        _crono.marca("conexiune")
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+    _crono.marca("acces")
     continut = _octetii(fisier)
+    _crono.marca("citire_fisier")
     try:
         tranzactii = banca_parser.parse_extras(continut, fisier.filename or "")
     except Exception as e:
         raise HTTPException(400, f"nu am putut citi extrasul: {e}")
+    _crono.marca("parsare")
     for t in tranzactii:
         linie = {"sens": "debit" if t["suma"] < 0 else "credit",
                  "suma": abs(t["suma"]), "descriere": t.get("detalii", "")}
@@ -5507,6 +5531,7 @@ def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
         t["cui"] = r.get("cui")
         t["tip"] = r.get("tip")
         t["nota"] = r.get("nota")
+    _crono.marca("reguli")
     return _raspuns({"tranzactii": tranzactii, "nr": len(tranzactii)})
 @app.get("/tenants/{tenant_id}/stat-plata")
 def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):

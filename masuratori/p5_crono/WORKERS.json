@@ -1,0 +1,57 @@
+{
+ "N": 250,
+ "k": 10,
+ "nuclee": 2,
+ "rulari": [
+  {
+   "k": 10,
+   "total_ms": 348.4,
+   "debit": 28.71,
+   "statusuri": [
+    200
+   ],
+   "segmente_ms": {
+    "acces": 32.63,
+    "citire-fisier": 0.02,
+    "conexiune": 25.26,
+    "iesire": 45.75,
+    "importuri": 0.0,
+    "inainte-serializare": 0.0,
+    "intrare": 142.95,
+    "intrare-handler": 58.31,
+    "mw-audit-intrare": 0.12,
+    "mw-edge": 0.33,
+    "nemasurat": 5.04,
+    "parsare": 1.02,
+    "reguli": 1.83,
+    "total_client": 317.12
+   },
+   "lucratori": 1
+  },
+  {
+   "k": 10,
+   "total_ms": 500.1,
+   "debit": 20.0,
+   "statusuri": [
+    200
+   ],
+   "segmente_ms": {
+    "acces": 62.78,
+    "citire-fisier": 0.02,
+    "conexiune": 38.13,
+    "iesire": 99.99,
+    "importuri": 0.01,
+    "inainte-serializare": 0.0,
+    "intrare": 146.4,
+    "intrare-handler": 132.61,
+    "mw-audit-intrare": 0.23,
+    "mw-edge": 0.2,
+    "nemasurat": 18.18,
+    "parsare": 1.97,
+    "reguli": 3.34,
+    "total_client": 473.55
+   },
+   "lucratori": 2
+  }
+ ]
+}

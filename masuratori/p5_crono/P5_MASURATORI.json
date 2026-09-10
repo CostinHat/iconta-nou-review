@@ -1,0 +1,643 @@
+{
+  "commit": "b9c6cdfd246f149ac967b2d003ff7c3c6d309bae",
+  "pornit_la": "2026-09-10T19:42:42+0300",
+  "capacitati": {
+    "ICONTA_POOL_MAX": 10,
+    "threadpool_anyio": 40,
+    "procese_uvicorn": 1
+  },
+  "calibrare_canar": {
+    "liber": {
+      "n": 202,
+      "p50_ms": 2.8,
+      "p95_ms": 3.4,
+      "p99_ms": 7.8,
+      "max_ms": 8.1,
+      "min_ms": 1.1,
+      "medie_ms": 2.8,
+      "erori": 0,
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    }
+  },
+  "subiect": {
+    "uid": 70980,
+    "tenant": 103956
+  },
+  "curba_async": [
+    {
+      "N": 5,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 0.61,
+        "citire-fisier": 0.0,
+        "conexiune": 0.01,
+        "iesire": 2.85,
+        "importuri": 0.0,
+        "inainte-serializare": 0.0,
+        "intrare": 17.0,
+        "intrare-handler": 2.01,
+        "mw-audit-intrare": 0.06,
+        "mw-edge": 0.05,
+        "nemasurat": 0.15,
+        "parsare": 0.06,
+        "reguli": 0.05,
+        "total_client": 22.37
+      },
+      "durata_ruta_p50_ms": 22.4,
+      "durata_ruta_p95_ms": 42.3,
+      "durata_ruta_max_ms": 42.3,
+      "fereastra_ms": 200.5,
+      "canar": {
+        "n": 48,
+        "p50_ms": 1.6,
+        "p95_ms": 4.2,
+        "p99_ms": 5.3,
+        "max_ms": 5.3,
+        "min_ms": 1.2,
+        "medie_ms": 2.1,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 50,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 0.5,
+        "citire-fisier": 0.0,
+        "conexiune": 0.0,
+        "iesire": 2.54,
+        "importuri": 0.0,
+        "inainte-serializare": 0.0,
+        "intrare": 17.23,
+        "intrare-handler": 2.25,
+        "mw-audit-intrare": 0.06,
+        "mw-edge": 0.07,
+        "nemasurat": 0.85,
+        "parsare": 0.17,
+        "reguli": 0.31,
+        "total_client": 24.11
+      },
+      "durata_ruta_p50_ms": 24.1,
+      "durata_ruta_p95_ms": 39.0,
+      "durata_ruta_max_ms": 39.0,
+      "fereastra_ms": 208.2,
+      "canar": {
+        "n": 52,
+        "p50_ms": 1.6,
+        "p95_ms": 3.5,
+        "p99_ms": 4.1,
+        "max_ms": 4.1,
+        "min_ms": 1.3,
+        "medie_ms": 2.0,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 100,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 0.49,
+        "citire-fisier": 0.0,
+        "conexiune": 0.0,
+        "iesire": 2.75,
+        "importuri": 0.0,
+        "inainte-serializare": 0.0,
+        "intrare": 17.14,
+        "intrare-handler": 2.11,
+        "mw-audit-intrare": 0.07,
+        "mw-edge": 0.06,
+        "nemasurat": 1.76,
+        "parsare": 0.32,
+        "reguli": 0.68,
+        "total_client": 25.09
+      },
+      "durata_ruta_p50_ms": 25.1,
+      "durata_ruta_p95_ms": 40.2,
+      "durata_ruta_max_ms": 40.2,
+      "fereastra_ms": 218.8,
+      "canar": {
+        "n": 48,
+        "p50_ms": 2.5,
+        "p95_ms": 4.7,
+        "p99_ms": 5.3,
+        "max_ms": 5.3,
+        "min_ms": 1.4,
+        "medie_ms": 2.5,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 250,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 0.48,
+        "citire-fisier": 0.0,
+        "conexiune": 0.0,
+        "iesire": 2.65,
+        "importuri": 0.0,
+        "inainte-serializare": 0.0,
+        "intrare": 17.61,
+        "intrare-handler": 2.15,
+        "mw-audit-intrare": 0.06,
+        "mw-edge": 0.06,
+        "nemasurat": 4.07,
+        "parsare": 0.71,
+        "reguli": 1.59,
+        "total_client": 29.9
+      },
+      "durata_ruta_p50_ms": 29.9,
+      "durata_ruta_p95_ms": 45.3,
+      "durata_ruta_max_ms": 45.3,
+      "fereastra_ms": 251.9,
+      "canar": {
+        "n": 52,
+        "p50_ms": 1.6,
+        "p95_ms": 6.8,
+        "p99_ms": 7.1,
+        "max_ms": 8.4,
+        "min_ms": 1.3,
+        "medie_ms": 2.8,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 500,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 1.06,
+        "citire-fisier": 0.0,
+        "conexiune": 0.0,
+        "iesire": 2.51,
+        "importuri": 0.01,
+        "inainte-serializare": 0.0,
+        "intrare": 17.5,
+        "intrare-handler": 2.26,
+        "mw-audit-intrare": 0.06,
+        "mw-edge": 0.07,
+        "nemasurat": 8.4,
+        "parsare": 1.51,
+        "reguli": 2.88,
+        "total_client": 35.86
+      },
+      "durata_ruta_p50_ms": 35.9,
+      "durata_ruta_p95_ms": 53.9,
+      "durata_ruta_max_ms": 53.9,
+      "fereastra_ms": 309.0,
+      "canar": {
+        "n": 54,
+        "p50_ms": 1.6,
+        "p95_ms": 12.2,
+        "p99_ms": 12.6,
+        "max_ms": 13.0,
+        "min_ms": 1.3,
+        "medie_ms": 3.6,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 1000,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 0.47,
+        "citire-fisier": 0.01,
+        "conexiune": 0.0,
+        "iesire": 2.59,
+        "importuri": 0.01,
+        "inainte-serializare": 0.0,
+        "intrare": 17.61,
+        "intrare-handler": 2.6,
+        "mw-audit-intrare": 0.07,
+        "mw-edge": 0.07,
+        "nemasurat": 16.56,
+        "parsare": 2.87,
+        "reguli": 5.51,
+        "total_client": 48.36
+      },
+      "durata_ruta_p50_ms": 48.4,
+      "durata_ruta_p95_ms": 73.7,
+      "durata_ruta_max_ms": 73.7,
+      "fereastra_ms": 413.1,
+      "canar": {
+        "n": 57,
+        "p50_ms": 1.6,
+        "p95_ms": 24.5,
+        "p99_ms": 24.6,
+        "max_ms": 25.1,
+        "min_ms": 1.4,
+        "medie_ms": 5.1,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 2500,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 0.48,
+        "citire-fisier": 0.01,
+        "conexiune": 0.0,
+        "iesire": 4.1,
+        "importuri": 0.01,
+        "inainte-serializare": 0.0,
+        "intrare": 21.19,
+        "intrare-handler": 2.98,
+        "mw-audit-intrare": 0.06,
+        "mw-edge": 0.07,
+        "nemasurat": 44.23,
+        "parsare": 6.79,
+        "reguli": 15.08,
+        "total_client": 96.05
+      },
+      "durata_ruta_p50_ms": 96.0,
+      "durata_ruta_p95_ms": 145.2,
+      "durata_ruta_max_ms": 145.2,
+      "fereastra_ms": 816.1,
+      "canar": {
+        "n": 75,
+        "p50_ms": 2.8,
+        "p95_ms": 33.4,
+        "p99_ms": 37.3,
+        "max_ms": 37.4,
+        "min_ms": 1.4,
+        "medie_ms": 8.8,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    },
+    {
+      "N": 5000,
+      "repetari": 8,
+      "statusuri": {
+        "200": 8
+      },
+      "segmente_ms": {
+        "acces": 0.47,
+        "citire-fisier": 0.01,
+        "conexiune": 0.0,
+        "iesire": 4.43,
+        "importuri": 0.01,
+        "inainte-serializare": 0.0,
+        "intrare": 17.55,
+        "intrare-handler": 3.05,
+        "mw-audit-intrare": 0.11,
+        "mw-edge": 0.07,
+        "nemasurat": 90.11,
+        "parsare": 13.86,
+        "reguli": 30.46,
+        "total_client": 160.96
+      },
+      "durata_ruta_p50_ms": 161.0,
+      "durata_ruta_p95_ms": 196.0,
+      "durata_ruta_max_ms": 196.0,
+      "fereastra_ms": 1362.5,
+      "canar": {
+        "n": 88,
+        "p50_ms": 3.4,
+        "p95_ms": 36.6,
+        "p99_ms": 59.7,
+        "max_ms": 62.4,
+        "min_ms": 1.4,
+        "medie_ms": 13.3,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      }
+    }
+  ],
+  "martor_sync": {
+    "ruta": "/tenants/%d/facturi",
+    "repetari": 40,
+    "statusuri": {
+      "200": 40
+    },
+    "durata_p50_ms": 21.7,
+    "durata_max_ms": 41.7,
+    "durata_p95_ms": 25.4,
+    "canar": {
+      "n": 217,
+      "p50_ms": 1.6,
+      "p95_ms": 4.6,
+      "p99_ms": 5.7,
+      "max_ms": 17.2,
+      "min_ms": 1.1,
+      "medie_ms": 2.1,
+      "erori": 0,
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    }
+  },
+  "statusuri_neasteptate": {},
+  "concurenta": [
+    {
+      "k": 1,
+      "N": 250,
+      "total_ms": 35.8,
+      "debit_cereri_pe_sec": 27.91,
+      "p50_ms": 35.0,
+      "p95_ms": 35.0,
+      "p99_ms": 35.0,
+      "max_ms": 35.0,
+      "statusuri": {
+        "200": 1
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "segmente_ms": {
+        "acces": 0.46,
+        "citire-fisier": 0.0,
+        "conexiune": 0.0,
+        "iesire": 2.5,
+        "importuri": 0.01,
+        "inainte-serializare": 0.0,
+        "intrare": 21.57,
+        "intrare-handler": 2.96,
+        "mw-audit-intrare": 0.06,
+        "mw-edge": 0.08,
+        "nemasurat": 4.74,
+        "parsare": 0.99,
+        "reguli": 1.59,
+        "total_client": 34.96
+      },
+      "cpu_client_ms": 21.5,
+      "saturare_client": 0.301,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 1,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 59,
+      "canar": {
+        "n": 10,
+        "p50_ms": 3.6,
+        "p95_ms": 7.3,
+        "p99_ms": 7.3,
+        "max_ms": 7.3,
+        "min_ms": 1.5,
+        "medie_ms": 3.8,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    },
+    {
+      "k": 2,
+      "N": 250,
+      "total_ms": 70.1,
+      "debit_cereri_pe_sec": 28.52,
+      "p50_ms": 54.9,
+      "p95_ms": 68.1,
+      "p99_ms": 68.1,
+      "max_ms": 68.1,
+      "statusuri": {
+        "200": 2
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "segmente_ms": {
+        "acces": 2.19,
+        "citire-fisier": 0.01,
+        "conexiune": 0.01,
+        "iesire": 13.02,
+        "importuri": 0.01,
+        "inainte-serializare": 0.0,
+        "intrare": 42.07,
+        "intrare-handler": 13.8,
+        "mw-audit-intrare": 0.06,
+        "mw-edge": 0.06,
+        "nemasurat": 4.79,
+        "parsare": 1.15,
+        "reguli": 2.4,
+        "total_client": 68.06
+      },
+      "cpu_client_ms": 54.5,
+      "saturare_client": 0.389,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 1,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 64,
+      "canar": {
+        "n": 12,
+        "p50_ms": 4.1,
+        "p95_ms": 10.3,
+        "p99_ms": 11.9,
+        "max_ms": 11.9,
+        "min_ms": 1.8,
+        "medie_ms": 5.3,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    },
+    {
+      "k": 5,
+      "N": 250,
+      "total_ms": 245.9,
+      "debit_cereri_pe_sec": 20.34,
+      "p50_ms": 236.3,
+      "p95_ms": 242.9,
+      "p99_ms": 242.9,
+      "max_ms": 242.9,
+      "statusuri": {
+        "200": 5
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "segmente_ms": {
+        "acces": 30.26,
+        "citire-fisier": 0.01,
+        "conexiune": 21.81,
+        "iesire": 44.11,
+        "importuri": 0.01,
+        "inainte-serializare": 0.0,
+        "intrare": 78.8,
+        "intrare-handler": 55.5,
+        "mw-audit-intrare": 0.09,
+        "mw-edge": 0.08,
+        "nemasurat": 5.25,
+        "parsare": 1.04,
+        "reguli": 2.04,
+        "total_client": 236.31
+      },
+      "cpu_client_ms": 139.2,
+      "saturare_client": 0.283,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 5,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 96,
+      "canar": {
+        "n": 39,
+        "p50_ms": 3.4,
+        "p95_ms": 11.1,
+        "p99_ms": 18.8,
+        "max_ms": 18.8,
+        "min_ms": 1.4,
+        "medie_ms": 4.6,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    },
+    {
+      "k": 10,
+      "N": 250,
+      "total_ms": 473.2,
+      "debit_cereri_pe_sec": 21.13,
+      "p50_ms": 456.9,
+      "p95_ms": 471.1,
+      "p99_ms": 471.1,
+      "max_ms": 471.1,
+      "statusuri": {
+        "200": 10
+      },
+      "erori": [],
+      "nr_erori": 0,
+      "segmente_ms": {
+        "acces": 67.11,
+        "citire-fisier": 0.02,
+        "conexiune": 45.35,
+        "iesire": 94.75,
+        "importuri": 0.0,
+        "inainte-serializare": 0.0,
+        "intrare": 138.69,
+        "intrare-handler": 105.71,
+        "mw-audit-intrare": 0.61,
+        "mw-edge": 0.73,
+        "nemasurat": 5.84,
+        "parsare": 0.99,
+        "reguli": 1.7,
+        "total_client": 457.21
+      },
+      "cpu_client_ms": 269.3,
+      "saturare_client": 0.285,
+      "nuclee_masina": 2,
+      "DEBIT_DEMN_DE_INCREDERE": true,
+      "MAX_SIMULTANEOUS_RESOURCE_USE": 9,
+      "RESOURCE_CAPACITY": 10,
+      "probe_esantionator": 134,
+      "canar": {
+        "n": 74,
+        "p50_ms": 2.1,
+        "p95_ms": 13.1,
+        "p99_ms": 22.7,
+        "max_ms": 27.7,
+        "min_ms": 1.4,
+        "medie_ms": 4.4,
+        "erori": 0,
+        "ERRORS": 0,
+        "TIMEOUTS": 0,
+        "DEADLOCKS": 0,
+        "clase": {}
+      },
+      "ERRORS": 0,
+      "TIMEOUTS": 0,
+      "DEADLOCKS": 0,
+      "clase": {}
+    }
+  ],
+  "curatenie": {
+    "randuri_audit_sterse": 122,
+    "scheme_reale_sterse": true
+  },
+  "amprenta": {
+    "tabele": [
+      "tenants",
+      "accounting_firms",
+      "users",
+      "user_tenants",
+      "audit_log",
+      "declaratii_coada",
+      "declaratii_depuse",
+      "firma_rezumat",
+      "spv_token",
+      "notificari"
+    ],
+    "difera": {},
+    "PRODUCTION_DATA_AFFECTED": "NO"
+  },
+  "jurnal_server": {
+    "DEADLOCKS": 0,
+    "TIMEOUTS_DB": 0,
+    "POOL_EPUIZAT": 0,
+    "URME_EXCEPTIE": 0,
+    "linii": 1928,
+    "fisier": "P5_RAW_EVIDENCE/P5_uvicorn.log"
+  },
+  "esantioane_brute": {
+    "fisier": "P5_RAW_EVIDENCE/esantioane.json",
+    "serii": 27,
+    "valori": 1150
+  }
+}

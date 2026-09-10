@@ -1363,7 +1363,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza` — garda `cere_cabinet`
 
-**Module:** `banca`, `banca_parser`, `reconciliere_api`
+**Module:** `banca`, `banca_parser`, `cronometru`, `reconciliere_api`
 
 **Scrie in:** `extras_linii` (INSERT/UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT)
 

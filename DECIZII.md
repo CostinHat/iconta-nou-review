@@ -14291,3 +14291,30 @@ la fel pentru cel care operează casa de marcat.*
 **Varianta respinsă:** `pg_advisory_xact_lock` pe cheia raportului. Ar fi rezolvat cursa fără să
 atingă schema, dar rămâne o convenție pe care următorul apelant o poate ocoli — pe când indexul e o
 proprietate a datelor, adevărată indiferent cine scrie.
+
+
+---
+
+## Instrumentare în codul de producție, cerută și aprobată separat (10.09.2026)
+
+**Decizia, a arhitectului:** *„Instrumentează segmentele de cronometrare în codul de producție
+pentru rutele afectate la k=10."*
+
+**De ce a trebuit cerută.** Regula fazei de diagnostic spunea: *dacă e absolut necesară instrumentare
+în production code, STOP și cere aprobare înainte.* Până atunci am ocolit-o prin construcție — canar
+din afară, eșantionarea conexiunilor din proces, consumul de procesor citit din `/proc`. Toate au dat
+răspunsuri, dar niciunul n-a putut spune **unde** stă timpul într-o cerere: din afară se vede numai
+totalul.
+
+**Forma aleasă, și de ce e cea mai mică:** `ACTIV` se citește **o dată, la import**, dintr-o variabilă
+de mediu. Nesetată — cum e în producție — fiecare funcție iese pe prima linie. **Nu s-a adăugat niciun
+middleware**, deci lanțul de cerere n-a căpătat niciun hop; ce s-a adăugat sunt apeluri care, inactive,
+costă o comparație. Antetele apar doar când e pornită, iar o gardă probează că răspunsul stins e
+identic pe corp și pe antete.
+
+**Varianta respinsă:** un middleware dedicat de cronometrare. Ar fi fost mai curat de citit, dar ar fi
+adăugat un strat `async` pe calea fiecărei cereri — adică ar fi îngroșat exact lucrul măsurat.
+
+**Ce a schimbat în concluzii, și e motivul pentru care a meritat:** valul 3 **nu** e remediul pentru
+ce se măsurase. Munca proprie a rutei e 2,7 ms din 457; 74% e în afara handler-ului. Fără reperele
+astea, valul 3 ar fi pornit pe o presupunere — v. `masuratori/p5_crono/REZULTATUL.md`.
