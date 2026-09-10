@@ -2359,3 +2359,18 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   Tot atunci, `UNEXPLAINED_EXCLUSIONS` s-a redefinit peste **toți** candidații excluși (326), nu
   peste cele 35 de rânduri individuale: *un zero pe o populație mai mică decât cea despre care pare
   că vorbește e adevărat și înșelător.*
+
+
+- **Diagnosticul I/O blocant (10.09.2026, P5)** — `core/test_blocante_clasificate.py`, **30 de
+  probe** în trei straturi: calibrarea detectorilor (rulează **în suită**, nu doar la linia de
+  comandă), acoperirea clasificării, și **refuzul**. Inventarul brut se **regenerează în test**, nu
+  se citește dintr-un artefact comis — deci o rută nouă cu I/O blocant apare la prima rulare a
+  suitei. Probele care contează cel mai mult sunt cele **negative**: pentru fiecare din cele șase
+  reguli, un candidat sintetic o aprinde, iar cu lista de reguli **goală** același candidat rămâne
+  neclasificat și contabilitatea trece pe `FAIL`. *Proba de refuz se face cu lista goală, nu
+  ciuntită: cu lista ciuntită, regula-coadă înghite candidatul și îi dă tăcut verdictul greșit —
+  purtare pinată de un test separat, ca să nu fie confundată cu o plasă de siguranță.* Trei probe
+  păzesc premisele bancului de măsură, nu codul: artefactul de măsurători trebuie să existe cu
+  cifrele citate în motive, martorul sincron trebuie să fi ieșit **200** (a măsurat o vreme o cale
+  de eroare 500), iar jurnalul serverului trebuie să aibă **0** urme de excepție. Și una păzește
+  contractul fazei: `main.py` **nu importă** niciunul din instrumentele de diagnostic.

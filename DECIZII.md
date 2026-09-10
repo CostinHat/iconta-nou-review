@@ -14200,3 +14200,33 @@ consumat fără „trimis"; una trimisă de două ori ajunge la **clientul firme
 Între o lipsă vizibilă și un dublu ireversibil, la un mesaj care pleacă în numele cabinetului,
 lipsa vizibilă e mai ieftină. *Varianta respinsă:* păstrarea ordinii de dinainte, cu argumentul că
 „un e-mail în plus nu strică" — strică, fiindcă nu e al nostru.
+
+
+---
+
+## „Interogare lungă" NU primește detector static (10.09.2026, P5-DIAGNOSTIC)
+
+**Decizia, luată de mine.** Pasul 2 al lui P5 (`PLAN_HARDENING.md:330`) enumeră patru feluri de
+blocaj: apel de rețea sincron, citire de fișier mare, `subprocess`, și **interogare lungă**. Primele
+trei au detector în `scripts/scan_blocante.py`. Al patrulea **nu**, deliberat.
+
+**Motivul.** „Lungă" nu e o proprietate a codului, e una a **datelor**. Aceeași interogare e de 2 ms
+pe o firmă cu 40 de facturi și de 2 s pe una cu 200.000. Un detector static ar trebui să aleagă un
+criteriu de formă — număr de `JOIN`-uri, prezența unui `ORDER BY` fără index, lipsa unui `LIMIT` —
+și fiecare din astea greșește în **ambele** direcții: ratează interogarea simplă pe tabel mare, și
+aprinde pe cea complicată pe tabel mic. *Un instrument care greșește în ambele direcții n-are
+niciun plafon* (`METODA_VERIFICARE.md` §22), deci n-ar putea nici măcar să primească un clichet.
+
+**Ce se folosește în loc, și e o măsurătoare, nu un ocol:** timpul măsurat al rutei, pe date reale,
+cu N variabil. Curba din `masuratori/p5/P5_MASURATORI.json` arată exact ce ar fi trebuit să arate un
+detector de „interogare lungă", și o arată **pe firma reală**, nu pe forma SQL-ului.
+
+**Varianta respinsă:** `pg_stat_statements`. Ar da cifra adevărată, per interogare, dar cere
+extensie activată în producție și un ciclu de colectare — adică **instrumentare**, exact ce runda de
+diagnostic cere să nu se facă fără aprobare. Rămâne varianta pentru ziua în care întrebarea devine
+„care interogare", nu „ce rută".
+
+**Limita deciziei, scrisă ca să nu fie citită mai larg:** asta înseamnă că o rută a cărei singură
+problemă e o interogare lentă **nu apare** în cei 94 de candidați. Inventarul e despre I/O blocant
+ca **formă**, iar interogarea lentă intră doar dacă ruta e și pe buclă (și atunci C1 o prinde
+oricum, din alt motiv).

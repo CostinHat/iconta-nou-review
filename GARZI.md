@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**545 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**547 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 522
+### `core/` — 523
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7744,6 +7744,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_base_nula_generatoare.py` — Poarta bazei nule (A, 31.07.2026): FIECARE generator de declaratie are erori_generare() si un
 - `core/test_baza_cm.py` — GARDĂ: baza de calcul a indemnizației CM vine din statele EMISE, nu din recalcul. (22.08.2026)
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
+- `core/test_blocante_clasificate.py` — core/test_blocante_clasificate.py — garda diagnosticului P5.
 - `core/test_c1_pontaj_neconfirmat_gri.py` — C1 (audit tenant_003): starea 'pontaj neconfirmat' pe Stat de plata e o stare de PERIOADA
 - `core/test_c2_migrare_revenire_firma.py` — C2 (audit tenant_003): dupa salvarea unui strat de import (salariati, solduri, parteneri, asociati,
 - `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
@@ -8205,12 +8206,13 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 23
+### `scripts/` — 24
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
 - `scripts/scan_ancore_rute.py` — Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70.
 - `scripts/scan_axa_garzi.py` — FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua.
+- `scripts/scan_blocante.py` — scripts/scan_blocante.py — CE ȚINE BUCLA DE EVENIMENTE OCUPATĂ, derivat din cod. (P5)
 - `scripts/scan_cale_cerere.py` — scripts/scan_cale_cerere.py — CARE RUTE pot crește cu numărul de firme, derivat din cod.
 - `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
 - `scripts/scan_dependente.py` — scripts/scan_dependente.py — CE CITEȘTE, de fapt, fiecare aspect al modelului de citire.
@@ -8293,3 +8295,48 @@ gardă care s-ar fi mulțumit cu prima formă ar fi declarat o acoperire inexist
 **Nu** cere un parser SQL. S-a discutat și s-a respins: un analizor static peste tot codul fiscal ar
 fi mai fragil decât ce apără. Prioritatea rămâne **fixtura + instrumentarea la rulare**; scanul
 static ar fi o plasă suplimentară, nu una de bază.
+
+
+---
+
+# `core/test_blocante_clasificate.py` — garda diagnosticului P5
+
+**Ce păzește, în trei straturi.** *(10.09.2026)*
+
+1. **Detectorul vede ce zice că vede.** Corpus sintetic în `scripts/scan_blocante.py`, cu probă
+   pozitivă per detector și **mulțimea aprinsă pinată**, nu doar prezența. 21 de probe,
+   `DETECTOR_CALIBRATION_GAPS = 0`, 5 controale negative — între care unul **blocant, dar prin
+   `run_in_threadpool`**, proba că ieșirea din buclă e recunoscută.
+2. **Clasificarea acoperă tot.** Inventarul se **REGENEREAZĂ în test** (1,4 s), nu se citește dintr-un
+   artefact comis. Deci nu poate îmbătrâni tăcut: o rută nouă cu I/O blocant apare la prima rulare a
+   suitei, nu la următoarea regenerare manuală. `RAW == CLASSIFIED`, `UNCLASSIFIED = 0`,
+   `UNEXPLAINED_EXCLUSIONS = 0` peste **toți** candidații excluși.
+3. **Mecanismul REFUZĂ.** Pentru fiecare regulă există un candidat sintetic care o aprinde **și**
+   dovada că, fără ea, același candidat rămâne neclasificat iar contabilitatea trece pe `FAIL`.
+
+## Trei lucruri pe care garda le pinează și care nu se văd din cifre
+
+**Ordinea regulilor e o afirmație, nu stil.** `OMONIM` stă **prima**; la P4, aceeași regulă stătea
+**ultima**. Rezolvarea pe omonimie **adaugă** evenimente: la P4 verdictul sigur era „non-critic",
+deci supra-aproximarea era inofensivă; aici verdictul sigur e „acceptabil", deci aceleași evenimente
+în plus ar produce o **acțiune falsă**. *Aceeași proprietate a instrumentului cere ordini opuse,
+fiindcă direcția prudenței e opusă.* Un test pinează ordinea și cere ca un candidat sprijinit numai
+pe omonimie să primească `FALSE_POSITIVE` **chiar dacă aprinde C1**.
+
+**Regula-coadă nu e o plasă de siguranță — și testul o spune.** Dacă scot doar `C1-CERERE`,
+candidatul cade în coadă și primește tăcut verdictul **greșit**, nu niciun verdict. Purtarea asta e
+pinată ca fiind cunoscută, și de-aia proba de refuz se face cu lista **goală**, nu ciuntită. *O
+probă de refuz făcută cu lista ciuntită ar fi trecut verde fără să demonstreze nimic.*
+
+**Cifrele citate în motive se citesc din banc, nu se scriu de mână.** Prima formă le avea bătute în
+text; o re-rulare le-a schimbat pe toate, iar textul ar fi rămas în urmă fără ca ceva să pice. Acum
+motivele citesc din `masuratori/p5/P5_MASURATORI.json`, un test cere ca artefactul să existe cu
+cifrele lui, iar semnul de lipsă (`«fără măsurătoare»`) e vizibil și interzis. *O cifră care nu se
+poate recalcula nu e o măsurătoare, e o amintire.*
+
+## Ce NU păzește
+
+**Nu** păzește că inventarul e **complet**: apelurile indirecte (prin variabilă, `getattr`, tabelă
+de dispecerizare) nu se văd, deci `RAW_CANDIDATES` e un **minim**. Și **nu** păzește că o cale
+clasificată `ACCEPTABLE_BY_DESIGN` chiar e inofensivă **la orice încărcare** — păzește că motivul
+pentru care a fost exclusă e scris și verificabil.

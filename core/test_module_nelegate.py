@@ -94,6 +94,17 @@ PIN = {
         "scripts/scan_tranzactii.py la fiecare rulare. Traieste in core/ si nu in scripts/ fiindca "
         "e citit de un gard, iar sonda exclude importatorii de test — adica exact cum sta si "
         "core/scan_populatii_registre.py",
+    # [P5, 10.09.2026] Acelasi tipar ca `p4_clasificare`: registrul JUDECATILOR, nu al
+    # masuratorii. Lista o deriva `scripts/scan_blocante.py`; ce nu se poate deriva e
+    # verdictul — daca un I/O blocant chiar face rau cuiva. Un apel din productie ar fi
+    # gresit prin constructie: nicio ruta n-are ce face cu clasificarea propriei ei
+    # blocari, iar un gard separat cere explicit ca `main.py` sa NU-l importe.
+    "core/p5_clasificare.py":
+        "REGISTRU DE JUDECATI, nu cale de productie: perechea lui e gardul "
+        "core/test_blocante_clasificate.py, care REGENEREAZA inventarul la fiecare rulare "
+        "si confrunta clasificarea cu el — deci nu poate imbatrani tacut. Traieste in "
+        "core/ si nu in scripts/ fiindca e citit de un gard, iar sonda exclude "
+        "importatorii de test — exact cum sta si core/p4_clasificare.py",
     "core/scan_garzi_pe_text.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_ancore): singurul lui "
         "consumator legitim e gardul core/test_garzi_pe_text.py, iar sonda exclude importatorii de "

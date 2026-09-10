@@ -1,0 +1,1507 @@
+{
+ "numaratori": {
+  "ACCEPTABLE_BY_DESIGN": 48,
+  "ACTION_REQUIRED": 46,
+  "CLASSIFIED_CANDIDATES": 94,
+  "EXCLUSIONS_TOTAL": 48,
+  "FALSE_POSITIVES": 0,
+  "RAW_CANDIDATES": 94,
+  "RAW_CLASS_ACCOUNTING": "PASS",
+  "RAW_CLASS_SUM": 94,
+  "UNCLASSIFIED_RAW_CANDIDATES": 0,
+  "UNEXPLAINED_EXCLUSIONS": 0,
+  "neclasificate": [],
+  "nemotivate": [],
+  "pe_dovada": {
+   "FARA_BUCLA": 13,
+   "MASURAT": 17,
+   "PORNIRE": 1,
+   "STRUCTURAL_MARGINIT_DAR_RAR": 29,
+   "THREADPOOL": 34
+  },
+  "pe_regula": {
+   "C1-CERERE": 16,
+   "C5-EXTERN-CU-CONEXIUNE": 29,
+   "FUNDAL": 13,
+   "INDIVIDUAL": 2,
+   "SINCRON-MARGINIT": 34
+  },
+  "valuri": {
+   "1": 17,
+   "3": 29
+  }
+ },
+ "randuri": [
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 2 primitive blocante (RETEA, SLEEP) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: core/anaf_api.py:138",
+   "detectori": [
+    "C1",
+    "C4"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-039",
+   "intrare": "POST /migrare/fisier",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 2 primitive blocante (RETEA, SLEEP) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: core/anaf_api.py:138",
+   "detectori": [
+    "C1",
+    "C4"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-041",
+   "intrare": "POST /migrare/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 23 primitive blocante (DB, FS) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:4467",
+   "detectori": [
+    "C1",
+    "C5",
+    "C7"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-048",
+   "intrare": "POST /portal/bon",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 8 primitive blocante (DB, FS) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:7608",
+   "detectori": [
+    "C1",
+    "C5",
+    "C7"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-058",
+   "intrare": "POST /raportari/mesaj/{mid}/imagine",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 13 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-010",
+   "intrare": "POST /tenants/{tenant_id}/articole-import/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 13 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-012",
+   "intrare": "POST /tenants/{tenant_id}/asociati-import/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "SUBIECTUL MĂSURĂTORII, și de-aia are rând propriu. Handler `async def`, deci tot ce face — verificarea accesului în bază și parsarea extrasului — se întâmplă PE BUCLĂ. Măsurat pe calea reală, cu un canar care bate o rută ieftină în paralel: la N=5000 tranzacții ruta ia 143,0 ms, iar canarul — care n-are nicio legătură cu importul — așteaptă p95 117,9 ms, vârf 158,7 ms. Linia lui de bază, în gol: p95 3,4 ms. Martorul sincron, aceeași măsurătoare pe o rută din threadpool care CHIAR reușește: canar p95 3,8 ms, adică plat. Deci nu încărcarea în sine mută cifra, ci faptul că munca stă pe buclă.",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-013",
+   "intrare": "POST /tenants/{tenant_id}/banca/parse-extras",
+   "regula": "INDIVIDUAL",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 13 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:7680",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-014",
+   "intrare": "POST /tenants/{tenant_id}/banca/reconciliere/import",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 16 primitive blocante (DB, SUBPROC) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: core/amef_import.py:27",
+   "detectori": [
+    "C1",
+    "C3"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-032",
+   "intrare": "POST /tenants/{tenant_id}/horeca/import-amef",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 14 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:9591",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-033",
+   "intrare": "POST /tenants/{tenant_id}/import-efactura",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 25 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-034",
+   "intrare": "POST /tenants/{tenant_id}/istoric-declaratii-import/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 22 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-043",
+   "intrare": "POST /tenants/{tenant_id}/mijloace-fixe-import/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 18 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-046",
+   "intrare": "POST /tenants/{tenant_id}/parteneri/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 10 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-065",
+   "intrare": "POST /tenants/{tenant_id}/retete-import/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 29 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-066",
+   "intrare": "POST /tenants/{tenant_id}/rip-import/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 34 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-069",
+   "intrare": "POST /tenants/{tenant_id}/salariati-import/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": true,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "CHIAR DEFINIȚIA CANONICĂ (PLAN_HARDENING.md:328): handler `async def`, deci 7 primitive blocante (DB) se execută PE BUCLĂ. Cât ține oricare din ele, TOATE celelalte cereri stau — oricâte fire ar fi libere, fiindcă nu firele lipsesc, ci bucla e ocupată. Măsurat pe o cale din aceeași familie: la N=5000, o cerere fără nicio legătură a așteptat până la 158,7 ms, față de 3,4 ms linia de bază. Prima primitivă chiar de pe buclă: main.py:3145",
+   "detectori": [
+    "C1"
+   ],
+   "dovada": "MASURAT",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-072",
+   "intrare": "POST /tenants/{tenant_id}/solduri/incarca",
+   "regula": "C1-CERERE",
+   "val": 1
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/spv_conector.py:324",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "core/spv_rute.py",
+   "id": "P5-001",
+   "intrare": "GET /anaf/oauth/callback",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/duk.py:205 (fără steagul cerut)",
+   "detectori": [
+    "C3",
+    "C5",
+    "C7"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-018",
+   "intrare": "GET /coada/{coada_id}/continut",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută (DB, FS, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:106",
+   "detectori": [
+    "C2",
+    "C5",
+    "C7"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-030",
+   "intrare": "GET /gdpr/export-cabinet",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/curs_bnr.py:173",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-009",
+   "intrare": "POST /api/v1/firme/{tenant_id}/facturi",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută (DB, FS, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune: core/anaf_api.py:141",
+   "detectori": [
+    "C2",
+    "C4",
+    "C5",
+    "C7"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-062",
+   "intrare": "POST /auth/register",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/duk.py:205 (fără steagul cerut)",
+   "detectori": [
+    "C3",
+    "C5",
+    "C7"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-017",
+   "intrare": "POST /coada",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:106",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-029",
+   "intrare": "POST /gdpr/cerere-stergere",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune: core/anaf_api.py:141",
+   "detectori": [
+    "C2",
+    "C4",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-040",
+   "intrare": "POST /migrare/importa",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:147",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-044",
+   "intrare": "POST /pachete/{tenant_id}/poveste",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:147",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-045",
+   "intrare": "POST /pachete/{tenant_id}/trimite",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:147",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-038",
+   "intrare": "POST /public/magic-link",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune: core/anaf_api.py:141",
+   "detectori": [
+    "C2",
+    "C4",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-073",
+   "intrare": "POST /tenants",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune: core/anaf_api.py:141",
+   "detectori": [
+    "C2",
+    "C4",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-002",
+   "intrare": "POST /tenants/{tenant_id}/achizitie-necorporala",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune: core/anaf_api.py:141",
+   "detectori": [
+    "C2",
+    "C4",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-003",
+   "intrare": "POST /tenants/{tenant_id}/achizitie-taxare-inversa",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/curs_bnr.py:173",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-021",
+   "intrare": "POST /tenants/{tenant_id}/decontare-valuta",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 4 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. TERMENUL NU SE POATE DECIDE AICI: 2 apeluri primesc `timeout` prin despachetare, deci mărginirea depinde de fiecare apelant în parte, iar funcția apelată n-are termen implicit. Azi toți apelanții îl trimit — verificat rând cu rând —, dar nimic nu oprește unul viitor să nu-l trimită. Prima primitivă externă ținută peste conexiune: core/spv_conector.py:455",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-022",
+   "intrare": "POST /tenants/{tenant_id}/etransport/trimite",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/curs_bnr.py:173",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-025",
+   "intrare": "POST /tenants/{tenant_id}/facturi/emite",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/curs_bnr.py:173",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-052",
+   "intrare": "POST /tenants/{tenant_id}/facturi/{factura_id}/transforma",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. TERMENUL NU SE POATE DECIDE AICI: 1 apeluri primesc `timeout` prin despachetare, deci mărginirea depinde de fiecare apelant în parte, iar funcția apelată n-are termen implicit. Azi toți apelanții îl trimit — verificat rând cu rând —, dar nimic nu oprește unul viitor să nu-l trimită. Prima primitivă externă ținută peste conexiune: core/spv_conector.py:324",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-024",
+   "intrare": "POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:106",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-036",
+   "intrare": "POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/curs_bnr.py:173",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-059",
+   "intrare": "POST /tenants/{tenant_id}/reevaluare-valuta",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/reges_client.py:137",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-060",
+   "intrare": "POST /tenants/{tenant_id}/reges-poll",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/reges_client.py:137",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-061",
+   "intrare": "POST /tenants/{tenant_id}/reges-trimite-salariat",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: main.py:8708 (fără steagul cerut)",
+   "detectori": [
+    "C3",
+    "C5",
+    "C7"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-067",
+   "intrare": "POST /tenants/{tenant_id}/s1003-valideaza",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: main.py:8644 (fără steagul cerut)",
+   "detectori": [
+    "C3",
+    "C5",
+    "C7"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-068",
+   "intrare": "POST /tenants/{tenant_id}/s1005-valideaza",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:147",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-015",
+   "intrare": "POST /tenants/{tenant_id}/solicitari",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/intracomunitar.py:44",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-076",
+   "intrare": "POST /tenants/{tenant_id}/vanzare-ic",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/woocommerce.py:15",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-080",
+   "intrare": "POST /tenants/{tenant_id}/woocommerce/sincronizeaza",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACTION_REQUIRED",
+   "de_ce": "MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută peste conexiune: core/observare.py:106",
+   "detectori": [
+    "C2",
+    "C5"
+   ],
+   "dovada": "STRUCTURAL_MARGINIT_DAR_RAR",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-035",
+   "intrare": "PUT /tenants/{tenant_id}/jurnal/{nota_id}",
+   "regula": "C5-EXTERN-CU-CONEXIUNE",
+   "val": 3
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 18 primitive (DB, FS), prima la main.py:4467; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-049",
+   "intrare": "DELETE /portal/bon/{bon_id}",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 31 primitive (DB, FS), prima la main.py:1608; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-074",
+   "intrare": "DELETE /tenants/{tenant_id}",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 11 primitive (DB, FS, RETEA), prima la main.py:710; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-004",
+   "intrare": "GET /admin/sanatate",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (SUBPROC), prima la core/versiune.py:18; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C3"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-006",
+   "intrare": "GET /admin/versiune",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (FS), prima la core/ajutor.py:17; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-007",
+   "intrare": "GET /ajutor/{fid}",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 3 primitive (FS), prima la main.py:11588; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-008",
+   "intrare": "GET /ansamblu",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:11808; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-054",
+   "intrare": "GET /ghid",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:11888; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-053",
+   "intrare": "GET /ghid/{slug}",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:1794; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-056",
+   "intrare": "GET /public/termeni",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (RETEA, SLEEP), prima la core/anaf_api.py:138; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2",
+    "C4"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-057",
+   "intrare": "GET /public/verifica-cui/{cui}",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:11808; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-055",
+   "intrare": "GET /sitemap.xml",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 143 primitive (DB, FS), prima la main.py:5613; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C5",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-019",
+   "intrare": "GET /tenants/{tenant_id}/d390-clasificare",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 13 primitive (DB, FS), prima la main.py:3145; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C5",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-026",
+   "intrare": "GET /tenants/{tenant_id}/firma-profil/date",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 9 primitive (DB, RETEA, SLEEP), prima la main.py:3145; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2",
+    "C4"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-078",
+   "intrare": "GET /tenants/{tenant_id}/verifica-cui/{cui}",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 8 primitive (DB, RETEA), prima la main.py:9973; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-079",
+   "intrare": "GET /tenants/{tenant_id}/verifica-vies",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 5 primitive (DB, RETEA), prima la main.py:574; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-005",
+   "intrare": "POST /admin/sanatate/test-alerta",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 9 primitive (DB, RETEA), prima la main.py:7129; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-011",
+   "intrare": "POST /asistenti",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 8 primitive (DB, RETEA), prima la main.py:1345; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-037",
+   "intrare": "POST /auth/login",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 35 primitive (DB, FS, SUBPROC), prima la main.py:4396; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C3",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-020",
+   "intrare": "POST /declaratii/{tip}/valideaza",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 38 primitive (DB, FS), prima la main.py:958; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C5",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-031",
+   "intrare": "POST /gdpr/sterge-cabinet/{cabinet_id}/executa",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (RETEA, SLEEP), prima la core/anaf_api.py:138; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2",
+    "C4"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-042",
+   "intrare": "POST /migrare/valideaza",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 23 primitive (DB, RETEA), prima la main.py:4467; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-047",
+   "intrare": "POST /portal/acces-cont/acces",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 11 primitive (DB, RETEA), prima la main.py:4467; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-050",
+   "intrare": "POST /portal/recomanda",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 10 primitive (DB, RETEA), prima la main.py:1840; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-063",
+   "intrare": "POST /public/reset-parola/cere",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 7 primitive (DB, RETEA), prima la main.py:1872; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-064",
+   "intrare": "POST /public/reset-parola/seteaza",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 4 primitive (DB, RETEA), prima la main.py:7479; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-075",
+   "intrare": "POST /recomanda",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 20 primitive (DB, RETEA), prima la main.py:1680; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-016",
+   "intrare": "POST /tenants/{tenant_id}/client-acces",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 15 primitive (DB, RETEA), prima la main.py:3145; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-023",
+   "intrare": "POST /tenants/{tenant_id}/facturi/{factura_id}/email",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 31 primitive (DB, FS), prima la main.py:3145; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C5",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-027",
+   "intrare": "POST /tenants/{tenant_id}/firma-profil/date",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 18 primitive (DB, RETEA, SLEEP), prima la main.py:3145; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2",
+    "C4"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-028",
+   "intrare": "POST /tenants/{tenant_id}/firma-profil/regim-tva",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 270 primitive (DB, FS), prima la main.py:5613; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C5",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-071",
+   "intrare": "POST /tenants/{tenant_id}/salarii-contare",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 266 primitive (DB, FS), prima la main.py:5613; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C5",
+    "C7"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-070",
+   "intrare": "POST /tenants/{tenant_id}/salarii-contare/propunere",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 23 primitive (DB, RETEA, SLEEP), prima la main.py:3145; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2",
+    "C4"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-077",
+   "intrare": "POST /tenants/{tenant_id}/vector",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri — și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar p95 3,8 ms, față de 3,4 ms în gol, adică plat. 19 primitive (DB, RETEA), prima la main.py:4467; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8 din 10.",
+   "detectori": [
+    "C2"
+   ],
+   "dovada": "THREADPOOL",
+   "fel": "ruta",
+   "fisier": "main.py",
+   "id": "P5-051",
+   "intrare": "PUT /portal/acces-cont/email",
+   "regula": "SINCRON-MARGINIT",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 12 primitive (FS, SUBPROC), prima la core/agenda.py:32. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C3"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/agenda.py",
+   "id": "P5-081",
+   "intrare": "core/agenda.py::__main__ -> raport()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 9 primitive (FS, SUBPROC), prima la core/agenda.py:32. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C3"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/agenda_drift.py",
+   "id": "P5-082",
+   "intrare": "core/agenda_drift.py::__main__ -> main()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 106 primitive (DB, RETEA), prima la core/alerta_acces.py:55. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/alerta_acces.py",
+   "id": "P5-083",
+   "intrare": "core/alerta_acces.py::__main__ -> ruleaza()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 4 primitive (SUBPROC), prima la core/amef_import.py:27. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C3"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/amef_import.py",
+   "id": "P5-084",
+   "intrare": "core/amef_import.py::__main__ -> _test()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 60 primitive (DB, RETEA), prima la core/facturi_recurente.py:138. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/facturi_recurente.py",
+   "id": "P5-085",
+   "intrare": "core/facturi_recurente.py::__main__ -> _main()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 11 primitive (DB, RETEA, SLEEP), prima la core/migrare_backfill_tva_inceput.py:17. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C4"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/migrare_backfill_tva_inceput.py",
+   "id": "P5-086",
+   "intrare": "core/migrare_backfill_tva_inceput.py::__main__ -> _main()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 31 primitive (DB, RETEA), prima la core/monitor_fiscal.py:150. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/monitor_fiscal.py",
+   "id": "P5-087",
+   "intrare": "core/monitor_fiscal.py::__main__ -> _main()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 106 primitive (DB, RETEA), prima la core/notificari_scadenta.py:178. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/notificari_scadenta.py",
+   "id": "P5-088",
+   "intrare": "core/notificari_scadenta.py::__main__ -> _main()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 9 primitive (DB, RETEA, SUBPROC), prima la core/sonda_web.py:70. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C3"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/sonda_web.py",
+   "id": "P5-089",
+   "intrare": "core/sonda_web.py::__main__ -> _main()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 83 primitive (DB, FS, RETEA), prima la core/spv_poll.py:155. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/spv_poll.py",
+   "id": "P5-090",
+   "intrare": "core/spv_poll.py::__main__ -> ruleaza()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 57 primitive (DB, RETEA), prima la core/spv_receive.py:101. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/spv_receive.py",
+   "id": "P5-091",
+   "intrare": "core/spv_receive.py::__main__ -> ruleaza()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 14 primitive (DB, RETEA), prima la core/spv_refresh.py:51. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/spv_refresh.py",
+   "id": "P5-092",
+   "intrare": "core/spv_refresh.py::__main__ -> ruleaza()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": false,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l muta pe threadpool n-ar avea pe cine să elibereze. 64 primitive (DB, RETEA), prima la core/woocommerce.py:100. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.",
+   "detectori": [
+    "C5"
+   ],
+   "dovada": "FARA_BUCLA",
+   "fel": "fundal",
+   "fisier": "core/woocommerce.py",
+   "id": "P5-093",
+   "intrare": "core/woocommerce.py::__main__ -> _main()",
+   "regula": "FUNDAL",
+   "val": null
+  },
+  {
+   "async": true,
+   "clasa": "ACCEPTABLE_BY_DESIGN",
+   "de_ce": "PORNIREA aplicației, nu o cerere. Blochează bucla ÎNAINTE ca serverul să accepte cereri — deci nu există nimeni căruia să-i facă rău. E și fail-closed prin decizie scrisă (P2): dacă pregătirea schemelor eșuează, procesul NU intră în starea gata. A-l muta pe threadpool ar strica exact garanția aia. Ce rămâne adevărat, și se scrie: durata pornirii crește cu numărul de firme, iar publicarea repornește procesul — deci costul ăsta se plătește la fiecare livrare, nu o dată.",
+   "detectori": [
+    "C1",
+    "C3"
+   ],
+   "dovada": "PORNIRE",
+   "fel": "pornire",
+   "fisier": "main.py",
+   "id": "P5-094",
+   "intrare": "main.py::lifespan()",
+   "regula": "INDIVIDUAL",
+   "val": null
+  }
+ ]
+}

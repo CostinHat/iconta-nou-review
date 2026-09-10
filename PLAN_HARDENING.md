@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-09
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 URMĂTORUL** · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-10
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 DIAGNOSTIC ÎNCHIS, implementare NEÎNCEPUTĂ** · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -340,6 +340,47 @@ tranzacție, deținută de use-case.
   efectelor, aceleași erori.
 - Nicio rută nu se convertește „fiindcă e la modă": fiecare intră cu măsurătoarea care a arătat
   blocajul.
+
+## Rezultatul DIAGNOSTICULUI (10.09.2026) — pasul 3 NEEXECUTAT
+
+*Runda de diagnostic a produs **jumătatea „înainte"** a fiecărei perechi de măsurători cerute mai
+sus. Pasul 3 (intervenția) și verificarea „din nou, după" rămân neîncepute, prin regula rundei.*
+
+- **inventar mecanic**, `scripts/scan_blocante.py`: **514** puncte de intrare (407 rute sincrone,
+  20 `async`, **3 middleware**, restul lucrători și `lifespan`), **7 detectori**, **0 trunchieri**
+  de expandare. Fără prag: **94** candidați bruți. Artefacte în `masuratori/p5/`;
+- **calibrare**: 24 de probe, **0 goluri**, 5 controale negative. Unde „numai Cx" e imposibil,
+  implicația e scrisă și pinată: **C5 ⟹ C2**, **C6 ⟹ C2**;
+- **C6 („rețea fără termen") are ZERO instanțe reale**, și e o măsurătoare, nu o scăpare. Toate
+  cele 5 aprinderi din prima formă erau **același loc**, numărat de cinci ori:
+  `core/spv_conector.py:455`, `requests.request(metoda, url, ..., **kw)` din `apel_anaf`. Termenul
+  vine prin **despachetare**, iar toți cei 7 apelanți reali îl trimit (`timeout=30/60/120`,
+  verificat rând cu rând). Detectorul are acum trei stări și se aprinde numai pe absența **certă**.
+  *Rămâne adevărat, și se scrie: `apel_anaf` n-are termen **implicit**, deci un apelant viitor care
+  uită `timeout=` produce chiar defectul, și nimic nu l-ar opri;*
+- **clasificare**, `core/p5_clasificare.py`, păzită de `core/test_blocante_clasificate.py`:
+  **46 ACTION_REQUIRED + 48 ACCEPTABLE_BY_DESIGN + 0 FALSE_POSITIVE = 94**, `UNCLASSIFIED=0`,
+  `UNEXPLAINED_EXCLUSIONS=0` peste toți cei 48 excluși;
+- **măsurat, pe calea reală**: canar în gol p95 **3,4 ms**; în timpul rutei `async def` la N=5000,
+  p95 **117,9 ms**, vârf **158,7 ms**. Martorul sincron, cost comparabil (21,8 vs 22,5 ms), în
+  threadpool: canar p95 **3,8 ms** — **plat**. *Aceeași muncă, efect opus asupra vecinilor;*
+- **concurență** k=1/2/5/10 pe ruta `async def`: debit **23,05 · 22,59 · 24,19 · 22,15** cereri/s.
+  **Plat** — concurența nu cumpără nimic, iar timpul total crește liniar cu k. `ERRORS`,
+  `TIMEOUTS`, `DEADLOCKS` = 0 peste tot;
+- **descoperirea care schimbă ordinea reparațiilor**: pool-ul (10) **nu s-a atins niciodată** —
+  maxim **8** simultane la k=10. Nu fiindcă e generos, ci fiindcă **bucla blocată serializează
+  cererile înainte să ajungă la pool**. *Defectul de pe buclă ASCUNDE presiunea pe pool; reparând
+  bucla, cererile chiar devin simultane, și abia atunci pool-ul se lovește de plafon.* Deci valul
+  care scoate apelurile externe de sub conexiune nu e opțional: e **consecința** celui de pe buclă;
+- **efect asupra producției**: niciunul. `PRODUCTION_CODE_CHANGED=NO`, derivat din `git diff` față
+  de `8ce4cd84`, nu declarat; `PRODUCTION_DATA_AFFECTED=NO`, prin amprentă pe 10 tabele;
+- **valurile propuse, NEEXECUTATE**: **1** (17 căi mutate de pe buclă — dovada MĂSURATĂ) → **3**
+  (29 de căi scoase de sub conexiunea ținută — dovadă de capacitate; atinge tranzacții, deci
+  teritoriul lui P4). *Al doilea val, cel al termenelor, a dispărut la reparația detectorului: n-a
+  rămas niciun apel fără termen cert. Cifra n-a scăzut fiindcă am relaxat criteriul, ci fiindcă
+  criteriul greșea — iar cele două căi n-au ieșit din `ACTION_REQUIRED`, s-au mutat în valul 3 pe
+  altă dovadă.*
+
 
 ---
 
