@@ -303,8 +303,11 @@ tranzacție, deținută de use-case.
   acceptare din 10.09 l-a scos)*;
 - **clasificarea e COMPLETĂ și PĂZITĂ**: `core/p4_clasificare.py` — 34 de rânduri individuale plus un
   motor de **reguli pe clase structurale** care acoperă restul de 298. Rezultat: `RAW_CANDIDATES =
-  CLASSIFIED_CANDIDATES = 332`, `UNCLASSIFIED_RAW_CANDIDATES = 0`; 7 CRITICAL (6 puncte de intrare +
-  1 cale internă), 325 NON_CRITICAL, 1 FALSE_POSITIVE. `core/test_tranzactii_clasificate.py` —
+  CLASSIFIED_CANDIDATES = 332`, `UNCLASSIFIED_RAW_CANDIDATES = 0`, iar contabilitatea inventarului
+  se închide: **6 RAW_CRITICAL + 325 RAW_NON_CRITICAL + 1 RAW_FALSE_POSITIVE = 332**. Separat, pe
+  universul operațiilor critice: **1 cale internă**, deci `TOTAL_CRITICAL_OPERATIONS = 7`, toate
+  şapte cu probă de injecție. *Cele două nu se adună între ele — prima formă a blocului le punea sub
+  acelaşi nume şi dădea 333 pe o populaţie de 332.* `core/test_tranzactii_clasificate.py` —
   o cale compusă nouă, neclasificată, **cade poarta**, iar refuzul e probat prin **calibrare
   negativă pe fiecare din C1…C6** și prin două mutații;
 - **fiecare cale critică are injecție de defect**: `core/test_p4_fault_injection.py`, cu starea

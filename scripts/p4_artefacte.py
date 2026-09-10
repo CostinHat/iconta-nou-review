@@ -51,12 +51,18 @@ def clasificare_text(inv):
     L.append("NU exista prag suplimentar inaintea clasificarii. Toti candidatii de mai jos au")
     L.append("verdict; niciunul n-a fost declarat neimportant inainte de a fi clasificat.")
     L.append("")
-    L.append("RAW_CANDIDATES            = %d" % n["RAW_CANDIDATES"])
-    L.append("CLASSIFIED_CANDIDATES     = %d" % n["CLASSIFIED_CANDIDATES"])
+    L.append("RAW_CANDIDATES              = %d" % n["RAW_CANDIDATES"])
+    L.append("CLASSIFIED_CANDIDATES       = %d" % n["CLASSIFIED_CANDIDATES"])
     L.append("UNCLASSIFIED_RAW_CANDIDATES = %d" % n["UNCLASSIFIED_RAW_CANDIDATES"])
-    L.append("  CRITICAL_COMPOSITE      = %d" % n["CRITICAL_COMPOSITES"])
-    L.append("  NON_CRITICAL_COMPOSITE  = %d" % n["NON_CRITICAL_COMPOSITES"])
-    L.append("  FALSE_POSITIVE          = %d" % n["FALSE_POSITIVES"])
+    L.append("  RAW_CRITICAL_COMPOSITES     = %d" % n["RAW_CRITICAL_COMPOSITES"])
+    L.append("  RAW_NON_CRITICAL_COMPOSITES = %d" % n["RAW_NON_CRITICAL_COMPOSITES"])
+    L.append("  RAW_FALSE_POSITIVES         = %d" % n["RAW_FALSE_POSITIVES"])
+    L.append("  RAW_CLASS_SUM               = %d   (%s)"
+             % (n["RAW_CLASS_SUM"], n["RAW_CLASS_ACCOUNTING"]))
+    L.append("")
+    L.append("Caile INTERNE (nu sunt puncte de intrare, deci NU sunt in cei de mai sus):")
+    L.append("  INTERNAL_CRITICAL_COMPOSITES = %d" % n["INTERNAL_CRITICAL_COMPOSITES"])
+    L.append("  TOTAL_CRITICAL_OPERATIONS    = %d" % n["TOTAL_CRITICAL_OPERATIONS"])
     L.append("")
     L.append("PE REGULA:")
     for cod in sorted(n["pe_regula"]):
@@ -163,17 +169,13 @@ def efecte_text(inv):
 
 
 def acceptare(inv, stat):
-    """Blocul de cifre al acceptarii, DERIVAT. Fara valorile care cer git (le pune raportul)."""
+    """Blocul de cifre al acceptarii, DERIVAT — pe DOUA universuri, numite separat.
+
+    `RAW_*` inchide inventarul brut; `INTERNAL_*` / `TOTAL_*` privesc operatiile critice, unde
+    intra si caile interne, care nu sunt puncte de intrare. Cele doua nu se aduna intre ele —
+    prima forma a blocului le punea sub acelasi nume si dadea 333 pe o populatie de 332.
+    """
     n = CL.numaratori(inv)
-    critice = CL.cai_critice()
-    probe = CL.probe_cerute()
-    import ast as _ast
-    fis = os.path.join(RAD, "core", "test_p4_fault_injection.py")
-    functii = set()
-    if os.path.exists(fis):
-        functii = {x.name for x in _ast.walk(_ast.parse(io.open(fis, encoding="utf-8").read()))
-                   if isinstance(x, (_ast.FunctionDef, _ast.AsyncFunctionDef))}
-    netestate = [c for c, p in probe.items() if p not in functii]
     gaps = [x["intrare"] for x in inv
             if x["analiza"]["domenii_care_scriu"] > 1 and CL.verdict(x) is None]
     partiale = [x["intrare"] for x in inv
@@ -182,20 +184,46 @@ def acceptare(inv, stat):
     L.append("BLOCUL DE ACCEPTARE P4 — derivat, nu scris")
     L.append("Generat cu: ./venv/bin/python -m scripts.p4_artefacte")
     L.append("=" * 78)
+    L.append("")
+    L.append("--- UNIVERSUL 1: INVENTARUL BRUT (puncte de intrare) ------------------------")
     L.append("RAW_CANDIDATES=%d" % n["RAW_CANDIDATES"])
     L.append("CLASSIFIED_CANDIDATES=%d" % n["CLASSIFIED_CANDIDATES"])
     L.append("")
-    L.append("CRITICAL_COMPOSITES=%d" % len(critice))
-    L.append("  (din care puncte de intrare in inventarul brut: %d; cai interne: %d)"
-             % (n["CRITICAL_COMPOSITES"], len(critice) - n["CRITICAL_COMPOSITES"]))
-    L.append("NON_CRITICAL_COMPOSITES=%d" % n["NON_CRITICAL_COMPOSITES"])
-    L.append("FALSE_POSITIVES=%d" % n["FALSE_POSITIVES"])
+    L.append("RAW_CRITICAL_COMPOSITES=%d" % n["RAW_CRITICAL_COMPOSITES"])
+    L.append("RAW_NON_CRITICAL_COMPOSITES=%d" % n["RAW_NON_CRITICAL_COMPOSITES"])
+    L.append("RAW_FALSE_POSITIVES=%d" % n["RAW_FALSE_POSITIVES"])
     L.append("")
+    L.append("RAW_CLASS_SUM=%d   (= %d + %d + %d)"
+             % (n["RAW_CLASS_SUM"], n["RAW_CRITICAL_COMPOSITES"],
+                n["RAW_NON_CRITICAL_COMPOSITES"], n["RAW_FALSE_POSITIVES"]))
+    L.append("RAW_CLASS_ACCOUNTING=%s   (RAW_CLASS_SUM == CLASSIFIED_CANDIDATES == "
+             "RAW_CANDIDATES)" % n["RAW_CLASS_ACCOUNTING"])
     L.append("UNCLASSIFIED_RAW_CANDIDATES=%d" % n["UNCLASSIFIED_RAW_CANDIDATES"])
-    L.append("UNTESTED_CRITICAL_COMPOSITES=%d" % len(netestate))
-    L.append("UNEXPLAINED_EXCLUSIONS=%d"
-             % len([1 for _c, m in CL.excluderi().items() if len((m or "").strip()) < 80]))
     L.append("")
+    L.append("--- UNIVERSUL 2: OPERATIILE CRITICE (inclusiv caile interne) ----------------")
+    L.append("INTERNAL_CRITICAL_COMPOSITES=%d   (%s)"
+             % (n["INTERNAL_CRITICAL_COMPOSITES"], ", ".join(CL.cai_interne()) or "-"))
+    L.append("TOTAL_CRITICAL_OPERATIONS=%d   (= RAW_CRITICAL_COMPOSITES %d + "
+             "INTERNAL_CRITICAL_COMPOSITES %d)"
+             % (n["TOTAL_CRITICAL_OPERATIONS"], n["RAW_CRITICAL_COMPOSITES"],
+                n["INTERNAL_CRITICAL_COMPOSITES"]))
+    L.append("")
+    L.append("CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS=%d"
+             % n["CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS"])
+    L.append("CRITICAL_OPERATIONS_WITH_FAULT_TESTS=%d"
+             % n["CRITICAL_OPERATIONS_WITH_FAULT_TESTS"])
+    L.append("UNTESTED_CRITICAL_OPERATIONS=%d%s"
+             % (n["UNTESTED_CRITICAL_OPERATIONS"],
+                ("   " + ", ".join(n["netestate"])) if n["netestate"] else ""))
+    L.append("")
+    L.append("--- EXCLUDERI, peste TOTI candidatii exclusi din critic ---------------------")
+    L.append("EXCLUSIONS_TOTAL=%d   (= RAW_NON_CRITICAL_COMPOSITES + RAW_FALSE_POSITIVES)"
+             % n["EXCLUSIONS_TOTAL"])
+    L.append("UNEXPLAINED_EXCLUSIONS=%d" % n["UNEXPLAINED_EXCLUSIONS"])
+    L.append("  (derivat peste TOATE cele %d, nu doar peste cele %d randuri individuale)"
+             % (n["EXCLUSIONS_TOTAL"], len(CL.CLASIFICARE)))
+    L.append("")
+    L.append("--- PROPRIETATEA TRANZACTIEI -----------------------------------------------")
     L.append("TRANSACTION_OWNERSHIP_GAPS=%d   (cai cu scrieri in >1 tranzactie, ramase fara "
              "verdict scris)" % len(gaps))
     L.append("PARTIAL_COMMIT_PATHS=%d   (cai cu commit partial, ramase fara verdict scris)"
@@ -203,13 +231,14 @@ def acceptare(inv, stat):
     L.append("")
     L.append("P4_CRITICAL_OPERATION_INVENTORY=%s"
              % ("MECHANICALLY_DERIVED · COMPLETE"
-                if n["UNCLASSIFIED_RAW_CANDIDATES"] == 0 else "INCOMPLETE"))
-    L.append("P4_FAULT_INJECTION_COVERAGE=%s" % ("COMPLETE" if not netestate else "INCOMPLETE"))
+                if n["UNCLASSIFIED_RAW_CANDIDATES"] == 0
+                and n["RAW_CLASS_ACCOUNTING"] == "PASS" else "INCOMPLETE"))
+    L.append("P4_FAULT_INJECTION_COVERAGE=%s"
+             % ("COMPLETE" if n["UNTESTED_CRITICAL_OPERATIONS"] == 0 else "INCOMPLETE"))
     L.append("")
     L.append("puncte de intrare parcurse=%d" % stat["intrari"])
     L.append("cai trunchiate de adancime=%d" % stat["trunchiate"])
     return "\n".join(L)
-
 
 if __name__ == "__main__":
     if not ST.calibreaza(verbose=True):

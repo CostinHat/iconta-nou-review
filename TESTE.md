@@ -2342,3 +2342,20 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   **Calibrare negativă cu mutație, de două ori:** cu `verdict()` întorcând o clasă implicită, 3 din
   6 probe de refuz devin roșii; cu `_cere_individual()` întorcând mereu `False`, **toate șase**, plus
   trei probe de rutare. *Fără a doua mutație aș fi crezut că prima acoperă tot.*
+
+
+- **Contabilitatea celor două universuri (10.09.2026, a doua revizie P4)** — patru probe noi în
+  `core/test_tranzactii_clasificate.py`, născute dintr-un defect de acceptare: blocul punea sub
+  același nume (`CRITICAL_COMPOSITES`) șase căi din inventarul brut ȘI o cale internă care nu e în
+  el, iar suma ieșea **333 pe o populație de 332**. *Un câmp nu poate purta două universuri; de
+  acum, nici numele nu poate.* Probele: contabilitatea inventarului brut se închide
+  (`RAW_CRITICAL + RAW_NON_CRITICAL + RAW_FALSE_POSITIVES = CLASSIFIED = RAW`) · contabilitatea
+  operațiilor critice se închide **separat** (`TOTAL = RAW_CRITICAL + INTERNAL`) · nicio cale
+  internă nu apare printre candidații bruți · acoperirea prin injecție se exprimă pe universul
+  operațiilor critice, **cu calea internă înăuntru**. **Calibrare negativă cu mutație, două
+  direcții:** «amestec» (calea internă adăugată în `RAW_CRITICAL`, adică defectul original) →
+  cad două probe; «pierde» (calea internă scoasă din universul critic) → cad două, dintre care una
+  e chiar **acoperirea** — deci contabilitatea nu se poate face să iasă sacrificând proba.
+  Tot atunci, `UNEXPLAINED_EXCLUSIONS` s-a redefinit peste **toți** candidații excluși (326), nu
+  peste cele 35 de rânduri individuale: *un zero pe o populație mai mică decât cea despre care pare
+  că vorbește e adevărat și înșelător.*

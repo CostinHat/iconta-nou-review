@@ -12,8 +12,12 @@ nu pe arborele de dinaintea lui. Cele două se pot împăca doar cu o măsurăto
     ștampila pusă în memorie la pornire — nu se deduce din ora de start, cum face `post-commit`;
   * suita completă, rulată ACUM, pe HEAD-ul curent, cu exit code-ul ei.
 
-**Regula, respectată:** dacă oricare braț nu se poate citi sau diferă, `FOUR_WAY_STATUS=FAIL` și
+**Regula, respectată:** dacă oricare braț nu se poate citi sau diferă, `FIVE_WAY_STATUS=FAIL` și
 `P4_STATUS=NOT_ACCEPTED`. Un braț necitit nu e un braț închis.
+
+**CINCI brațe, nu patru.** `post-commit` verifică patru (HEAD, `origin/main`, backup, procesul viu
+prin ora de pornire). Aici sunt cinci: se adaugă `public/main` — al doilea remote, care a produs
+R176 — și commitul procesului viu se citește DIN PROCES, nu din ora lui de start.
 
 Rulare: `./venv/bin/python -m scripts.p4_trasabilitate`
 """
@@ -120,14 +124,15 @@ def main():
              "BACKUP": backup, "LIVE_PROCESS_COMMIT": viu}
     necitite = [k for k, v in brate.items() if not v]
     diferite = [k for k, v in brate.items() if v and v != head]
-    four_way = "PASS" if (not necitite and not diferite) else "FAIL"
+    five_way = "PASS" if (not necitite and not diferite) else "FAIL"
 
     acceptare = io.open(os.path.join(RAD, "masuratori", "p4", "acceptare.txt"),
                         encoding="utf-8").read()
 
-    ok = (four_way == "PASS" and s["failed"] == 0 and s["exit"] == 0
+    ok = (five_way == "PASS" and s["failed"] == 0 and s["exit"] == 0
           and "UNCLASSIFIED_RAW_CANDIDATES=0" in acceptare
-          and "UNTESTED_CRITICAL_COMPOSITES=0" in acceptare
+          and "RAW_CLASS_ACCOUNTING=PASS" in acceptare
+          and "UNTESTED_CRITICAL_OPERATIONS=0" in acceptare
           and "UNEXPLAINED_EXCLUSIONS=0" in acceptare)
 
     L = []
@@ -163,10 +168,11 @@ def main():
         L.append("BRATE NECITITE: %s" % ", ".join(necitite))
     if diferite:
         L.append("BRATE DIFERITE DE HEAD: %s" % ", ".join(diferite))
-    L.append("FOUR_WAY_STATUS=%s" % four_way)
+    L.append("FIVE_WAY_STATUS=%s   (HEAD · origin/main · public/main · backup · proces viu)"
+             % five_way)
     L.append("P4_STATUS=%s" % ("CLOSED_ACCEPTED" if ok else "NOT_ACCEPTED"))
     if not ok:
-        L.append("  (motivul: %s)" % ("four-way" if four_way != "PASS"
+        L.append("  (motivul: %s)" % ("five-way" if five_way != "PASS"
                                       else "suita rosie" if s["failed"] else "cifre de acceptare"))
     text = "\n".join(L)
     cale = os.path.join(RAD, "masuratori", "p4", "TRASABILITATE_P4.txt")

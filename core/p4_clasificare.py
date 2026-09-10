@@ -68,6 +68,12 @@ Un `„...”` scris cu ghilimea de închidere ASCII termină șirul Python — 
 și a picat chiar la prima scriere a fișierului ăstuia.
 """
 
+import io
+import os
+
+#: Rădăcina repo-ului, ca `acoperire_injectie()` să poată citi fișierul de probe cu `ast`.
+_RAD_MODUL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 CRITIC = "CRITICAL_COMPOSITE"
 NECRITIC = "NON_CRITICAL_COMPOSITE"
 FALS = "FALSE_POSITIVE"
@@ -640,22 +646,92 @@ def clasifica(inv, clasificare=None, reguli=None):
     return verdicte, neclasificate
 
 
+def cai_interne():
+    """Caile critice care NU sunt puncte de intrare — deci nu apar in inventarul brut."""
+    return [k for k, v in CLASIFICARE.items()
+            if v["clasa"] == CRITIC and v.get("cale_interna")]
+
+
+def excluderi_toate(inv, clasificare=None, reguli=None):
+    """`{intrare: de_ce}` pentru FIECARE candidat exclus din critic — nu doar cele individuale.
+
+    Prima forma a lui `UNEXPLAINED_EXCLUSIONS` masura numai randurile scrise de mana, adica **35**
+    din **331** de excluderi. Un zero pe o populatie mai mica decat cea despre care pare ca
+    vorbeste e chiar clasa de cifra pe care casa o urmareste: adevarata, si inselatoare.
+    Acum se deriva peste toti candidatii clasificati NON_CRITICAL sau FALSE_POSITIVE, oricum ar fi
+    primit verdictul — individual sau prin regula."""
+    out = {}
+    for x in inv:
+        v = verdict(x, clasificare, reguli)
+        if v is not None and v["clasa"] != CRITIC:
+            out[x.get("intrare")] = v.get("de_ce")
+    return out
+
+
+def acoperire_injectie():
+    """`(cerute, acoperite, netestate)` pe universul CORECT: TOATE operatiile critice.
+
+    Include calea interna. *Nu se pierde din acoperire ca sa iasa contabilitatea inventarului.*"""
+    import ast as _ast
+    fis = os.path.join(_RAD_MODUL, "core", "test_p4_fault_injection.py")
+    functii = set()
+    if os.path.exists(fis):
+        functii = {n.name for n in _ast.walk(_ast.parse(io.open(fis, encoding="utf-8").read()))
+                   if isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef))}
+    cerute = probe_cerute()
+    netestate = sorted(c for c, proba in cerute.items() if proba not in functii)
+    return len(cerute), len(cerute) - len(netestate), netestate
+
+
 def numaratori(inv, clasificare=None, reguli=None):
-    """Blocul de cifre cerut de acceptare, derivat — nu scris."""
+    """Blocul de cifre al acceptarii, derivat — pe DOUA universuri, numite separat.
+
+    * `RAW_*` — peste inventarul brut. `RAW_CRITICAL + RAW_NON_CRITICAL + RAW_FALSE_POSITIVES`
+      **trebuie** sa dea `CLASSIFIED_CANDIDATES`, care trebuie sa dea `RAW_CANDIDATES`;
+    * `INTERNAL_CRITICAL_COMPOSITES` / `TOTAL_CRITICAL_OPERATIONS` — peste operatiile critice,
+      unde intra si caile interne, care nu sunt puncte de intrare.
+
+    Cele doua nu se aduna intre ele, si de-aia nu mai poarta acelasi nume.
+    """
     verdicte, neclasificate = clasifica(inv, clasificare, reguli)
-    pe_clasa = {}
-    pe_regula = {}
+    pe_clasa, pe_regula = {}, {}
     for _intrare, v in verdicte:
         pe_clasa[v["clasa"]] = pe_clasa.get(v["clasa"], 0) + 1
         pe_regula[v["regula"]] = pe_regula.get(v["regula"], 0) + 1
+
+    raw_critic = pe_clasa.get(CRITIC, 0)
+    raw_necritic = pe_clasa.get(NECRITIC, 0)
+    raw_fals = pe_clasa.get(FALS, 0)
+    suma = raw_critic + raw_necritic + raw_fals
+    interne = len(cai_interne())
+    cerute, acoperite, netestate = acoperire_injectie()
+    excl = excluderi_toate(inv, clasificare, reguli)
+    nemotivate = sorted(k for k, m in excl.items()
+                        if not isinstance(m, str) or len(m.strip()) < 80)
+
     return {
+        # ── universul 1: INVENTARUL BRUT ──────────────────────────────────────
         "RAW_CANDIDATES": len(inv),
         "CLASSIFIED_CANDIDATES": len(verdicte),
         "UNCLASSIFIED_RAW_CANDIDATES": len(neclasificate),
         "neclasificate": neclasificate,
-        "CRITICAL_COMPOSITES": pe_clasa.get(CRITIC, 0),
-        "NON_CRITICAL_COMPOSITES": pe_clasa.get(NECRITIC, 0),
-        "FALSE_POSITIVES": pe_clasa.get(FALS, 0),
+        "RAW_CRITICAL_COMPOSITES": raw_critic,
+        "RAW_NON_CRITICAL_COMPOSITES": raw_necritic,
+        "RAW_FALSE_POSITIVES": raw_fals,
+        "RAW_CLASS_SUM": suma,
+        "RAW_CLASS_ACCOUNTING": ("PASS" if (suma == len(verdicte) == len(inv)
+                                            and not neclasificate) else "FAIL"),
+        # ── universul 2: OPERATIILE CRITICE ───────────────────────────────────
+        "INTERNAL_CRITICAL_COMPOSITES": interne,
+        "TOTAL_CRITICAL_OPERATIONS": raw_critic + interne,
+        "CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS": cerute,
+        "CRITICAL_OPERATIONS_WITH_FAULT_TESTS": acoperite,
+        "UNTESTED_CRITICAL_OPERATIONS": len(netestate),
+        "netestate": netestate,
+        # ── excluderile, peste TOTI candidatii exclusi ────────────────────────
+        "EXCLUSIONS_TOTAL": len(excl),
+        "UNEXPLAINED_EXCLUSIONS": len(nemotivate),
+        "nemotivate": nemotivate,
         "pe_regula": pe_regula,
     }
 

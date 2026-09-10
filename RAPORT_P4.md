@@ -1,4 +1,5 @@
 RAPORT — P4, TRANSACTION OWNERSHIP | runda de acceptare, 10.09.2026 | `d4127159` → HEAD final
+*(a doua revizie: contabilitatea celor două universuri, separată — v. §1.1)*
 
 *Prima livrare a fost respinsă cu patru puncte. Raportul ăsta le răspunde punct cu punct și
 înlocuiește versiunea de dinainte; contradicțiile din ea sunt numite, nu șterse.*
@@ -15,16 +16,56 @@ mai departe.
 
 ## 1. CE AM PRESUPUS
 
-1. **`CRITICAL_COMPOSITES` numără OPERAȚIILE critice, nu doar punctele de intrare.** Sunt **7**:
-   șase apar ca puncte de intrare în inventarul brut, iar a șaptea —
-   `spv_conector.reimprospateaza_token` — e o **cale internă**, cauza a șase dintre ele. Blocul de
-   acceptare arată amândouă cifrele, ca să nu fie nevoie să se ghicească pe care o citesc.
-   *Contabilitatea inventarului se închide oricum: 6 + 325 + 1 = 332.*
+1. **nimic presupus aici — ce era o presupunere a devenit o reparație.** V. §1.1.
 2. **Un raport nu-și poate conține propriul hash.** `FINAL_HEAD` e hash-ul commitului care poartă
    fișierul ăsta, deci nu poate fi scris în el înainte să existe. Am rezolvat-o cu un artefact
    produs **după** commit — `TRASABILITATE_P4.txt`, în pachetul de livrare — care poartă toate
    valorile, plus rularea suitei complete **pe HEAD-ul final**. Blocul din raport le numește și
    trimite acolo. Dacă preferi altă formă, spune-mi și o schimb.
+
+### 1.1 DEFECTUL DE CONTABILITATE, ȘI CUM S-A REPARAT
+
+Prima revizie a raportului scria, în același bloc, `CRITICAL_COMPOSITES=7`,
+`NON_CRITICAL_COMPOSITES=325`, `FALSE_POSITIVES=1` — iar suma dă **333** pe o populație de **332**.
+
+**Cauza nu e o cifră greșită, e un câmp care poartă două universuri.** Șase dintre operațiile
+critice sunt **puncte de intrare** și fac parte din inventarul brut; a șaptea —
+`core/spv_conector.reimprospateaza_token` — e o **cale internă**, cauza a șase dintre ele, și **nu
+e** printre cei 332. Le pusesem sub același nume, în același bloc unde suma trebuia să închidă
+inventarul.
+
+**Reparația e de nume, nu de cifră.** Fiecare familie își spune universul:
+
+| familie | universul | proprietatea care trebuie să țină |
+|---|---|---|
+| `RAW_*` | inventarul brut (puncte de intrare) | `RAW_CRITICAL + RAW_NON_CRITICAL + RAW_FALSE_POSITIVES = CLASSIFIED_CANDIDATES = RAW_CANDIDATES = 332` |
+| `INTERNAL_*` / `TOTAL_*` | operațiile critice, cu căile interne | `TOTAL_CRITICAL_OPERATIONS = RAW_CRITICAL_COMPOSITES + INTERNAL_CRITICAL_COMPOSITES = 7` |
+
+**Acoperirea prin injecție se exprimă pe universul CORECT** — cele **7** operații critice, cu calea
+internă înăuntru: `CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS = WITH = 7`,
+`UNTESTED_CRITICAL_OPERATIONS = 0`. *Calea internă nu iese din acoperire ca să iasă contabilitatea;
+o probă separată o păzește.*
+
+**Amândouă reconcilierile sunt probate mecanic**, plus două mutații care arată că probele cad:
+
+- `test_contabilitatea_inventarului_brut_se_inchide` · `test_contabilitatea_operatiilor_critice_se_inchide_separat`
+  · `test_caile_interne_nu_intra_in_contabilitatea_bruta` · `test_acoperirea_injectiei_e_pe_universul_operatiilor_critice`;
+- **mutația „amestec"** — se adaugă calea internă în `RAW_CRITICAL_COMPOSITES`, adică defectul
+  original: cad **două** probe (contabilitatea brută și cea a operațiilor critice);
+- **mutația „pierde"** — calea internă dispare din universul critic: cad **două** probe, dintre care
+  una e chiar **acoperirea** — deci nu se poate face contabilitatea să iasă sacrificând proba.
+
+**Și `UNEXPLAINED_EXCLUSIONS` s-a redefinit.** Măsura numai cele **35** de rânduri individuale, dar
+purta un nume care sună ca despre toate excluderile. Acum se derivă peste **toți** candidații
+clasificați `NON_CRITICAL` sau `FALSE_POSITIVE` — **326** — și rămâne **0**. Garda care cere motiv
+scris pentru toți cei 332 a rămas neatinsă; s-a adăugat una care verifică chiar populația
+excluderilor. *Un zero pe o populație mai mică decât cea despre care pare că vorbește e adevărat și
+înșelător — clasa de cifră pe care casa o urmărește.*
+
+**Ce NU s-a atins:** nicio linie de producție. Modificarea e numai de raportare și instrumentare —
+`core/p4_clasificare.py` (registru de judecăți), `core/test_tranzactii_clasificate.py` (gardă),
+`scripts/p4_artefacte.py` și `scripts/p4_trasabilitate.py` (unelte). Logica funcțională reparată la
+P4 e neschimbată.
 
 ## 2. CE AM FĂCUT ÎN PLUS / MAI PUȚIN
 
@@ -58,7 +99,7 @@ mai departe.
 | `DECIZII.md` | **A și B: APROBATE de arhitect, 10.09.2026** — starea se schimbă din „luată de mine, cere confirmare" în „confirmată", cu data și cu cine a decis |
 | `PLAN_HARDENING.md` | cifrele lui P4, refăcute pe inventarul complet (332 clasificați, nu 32) |
 | `TESTE.md` | motorul de reguli, completitudinea și calibrarea negativă pe C1…C6, cu cele două mutații |
-| `RAPORT_P4.md` | rescris — fișierul ăsta |
+| `RAPORT_P4.md` | rescris — fișierul ăsta; revizia a doua separă cele două universuri de contabilitate (§1.1) |
 | `GARZI.md`, `PREDARE_LANT.md` | blocurile generate, regenerate ULTIMELE |
 | `ISTORIC.md` | **nimic de actualizat, fiindcă** lecția turei e despre instrument și despre prag, iar ea stă în `TESTE.md` și în raport |
 | `PLAN_LUCRU.md`, `PLAN_INVESTIGATII.md`, `PLAN_ARHITECTURA.md` | **nimic de actualizat, fiindcă** niciun principiu și nicio regulă de conducere nu s-a schimbat |
@@ -137,9 +178,11 @@ construcție, și mulțimile sunt **pinate în probă**, ca o schimbare de defin
 - **mutația 2** — și `_cere_individual()` întoarce mereu `False`: **toate 6** devin roșii, plus 3
   probe de rutare. *Fără a doua mutație, aș fi crezut că prima acoperă tot.*
 
-**Cifrele:** `RAW_CANDIDATES = CLASSIFIED_CANDIDATES = 332` · `UNCLASSIFIED_RAW_CANDIDATES = 0` ·
-`UNEXPLAINED_EXCLUSIONS = 0`. Artefactul cu **toate** cele 332 de rânduri, fiecare cu verdict,
-regulă și motiv, e `masuratori/p4/clasificare.txt`.
+**Cifrele:** `RAW_CANDIDATES = CLASSIFIED_CANDIDATES = 332` · `UNCLASSIFIED_RAW_CANDIDATES = 0`
+· `RAW_CLASS_SUM = 6 + 325 + 1 = 332`, `RAW_CLASS_ACCOUNTING = PASS` · `UNEXPLAINED_EXCLUSIONS = 0`
+peste toate cele **326** de excluderi. Artefactul cu **toate** cele 332 de rânduri, fiecare cu
+verdict, regulă și motiv, e `masuratori/p4/clasificare.txt`; blocul de cifre e
+`masuratori/p4/acceptare.txt`.
 
 **Semnele, pe inventarul final:** C1 **316** · C2 **57** · C3 **47** · C4 **0** · C5 **22** ·
 C6 **30**. *(C4 = 0 e un rezultat: invalidarea modelului de citire se face prin triggere pe
@@ -165,8 +208,15 @@ care e în repo, deci măsurătoarea se poate reface, chiar dacă artefactul ei 
 de commitul pe care îl descrie. Valorile sunt în
 blocul de la §5.5 și în artefact. `LIVE_PROCESS_COMMIT` se citește din procesul viu, nu se presupune.
 
+Sunt **CINCI** brațe, nu patru: `post-commit` verifică patru (HEAD, `origin/main`, backup,
+procesul viu prin ora de pornire), iar aici se adaugă `public/main` — al doilea remote, cel care a
+produs R176 — și commitul procesului viu se citește **din proces**, prin `GET /admin/versiune`, nu
+din ora lui de start. De-aici `FIVE_WAY_STATUS`.
+
 Regula pe care o respect: dacă oricare braț nu se poate verifica sau diferă,
-`FOUR_WAY_STATUS = FAIL` și `P4_STATUS = NOT_ACCEPTED`. Nu declar „închis" pe un braț necitit.
+`FIVE_WAY_STATUS = FAIL` și `P4_STATUS = NOT_ACCEPTED`. Nu declar „închis" pe un braț necitit —
+și s-a și întâmplat: prima rulare a dat `FAIL` fiindcă citeam ramura de backup cu `git rev-parse`
+pe un nume care nu există local. Am reparat citirea, nu regula.
 
 ### 5.4 „RAPORT FINAL — corectează toate contradicțiile"
 
@@ -178,6 +228,8 @@ Regula pe care o respect: dacă oricare braț nu se poate verifica sau diferă,
 | **suita atribuită altui commit** | „4347 passed … rularea care a produs `0742e177`" — adevărat, dar era rularea de **dinaintea** commitului | acum: o rulare completă **pe HEAD-ul final**, cu `FULL_SUITE_COMMIT == FINAL_HEAD` |
 | **cifre de inventar vs artefacte** | blocul de semne era dinaintea ultimei reparații | toate cifrele din raportul ăsta sunt cele din `masuratori/p4/acceptare.txt`, generat la ultima rulare |
 | **`.commit()` 170 → 168** | corectat deja în tura precedentă | rămâne **170 → 170**: `main.py` 68→67, `alerta_acces` 1→0, `spv_conector` 0→**2** (acolo commitul **este** reparația) |
+| **suma claselor = 333 pe 332** | prima revizie punea sub `CRITICAL_COMPOSITES` și cele 6 din inventar, și calea internă | două familii de nume, două reconcilieri probate mecanic — v. **§1.1** |
+| **`UNEXPLAINED_EXCLUSIONS` peste 35, nu peste 326** | numele spunea „excluderi", cifra măsura doar rândurile individuale | derivat peste **toți** candidații excluși; rămâne 0, iar populația e scrisă lângă el |
 
 ### 5.5 BLOCUL DE ACCEPTARE
 
@@ -187,17 +239,31 @@ se scriu în `TRASABILITATE_P4.txt`, în pachetul de livrare — un raport nu-ș
 hash.*
 
 ```
+--- UNIVERSUL 1: INVENTARUL BRUT (puncte de intrare) ---
 RAW_CANDIDATES=332
 CLASSIFIED_CANDIDATES=332
 
-CRITICAL_COMPOSITES=7            (6 puncte de intrare + 1 cale internă)
-NON_CRITICAL_COMPOSITES=325
-FALSE_POSITIVES=1
+RAW_CRITICAL_COMPOSITES=6
+RAW_NON_CRITICAL_COMPOSITES=325
+RAW_FALSE_POSITIVES=1
 
+RAW_CLASS_SUM=332                 (= 6 + 325 + 1)
+RAW_CLASS_ACCOUNTING=PASS         (RAW_CLASS_SUM == CLASSIFIED_CANDIDATES == RAW_CANDIDATES)
 UNCLASSIFIED_RAW_CANDIDATES=0
-UNTESTED_CRITICAL_COMPOSITES=0
-UNEXPLAINED_EXCLUSIONS=0
 
+--- UNIVERSUL 2: OPERATIILE CRITICE (inclusiv caile interne) ---
+INTERNAL_CRITICAL_COMPOSITES=1    (core/spv_conector.reimprospateaza_token)
+TOTAL_CRITICAL_OPERATIONS=7       (= RAW_CRITICAL_COMPOSITES 6 + INTERNAL_CRITICAL_COMPOSITES 1)
+
+CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS=7
+CRITICAL_OPERATIONS_WITH_FAULT_TESTS=7
+UNTESTED_CRITICAL_OPERATIONS=0
+
+--- EXCLUDERI, peste TOTI candidatii exclusi din critic ---
+EXCLUSIONS_TOTAL=326              (= RAW_NON_CRITICAL_COMPOSITES + RAW_FALSE_POSITIVES)
+UNEXPLAINED_EXCLUSIONS=0          (derivat peste toate cele 326, nu peste cele 35 individuale)
+
+--- PROPRIETATEA TRANZACTIEI ---
 TRANSACTION_OWNERSHIP_GAPS=0
 PARTIAL_COMMIT_PATHS=0
 PARTIAL_STATE_AFTER_FAULT=0
@@ -208,6 +274,7 @@ P4_CONTRACT_DECISION_B=APPROVED
 P4_CRITICAL_OPERATION_INVENTORY=MECHANICALLY_DERIVED · COMPLETE
 P4_FAULT_INJECTION_COVERAGE=COMPLETE
 
+--- TRASABILITATE (masurata DUPA commit; v. TRASABILITATE_P4.txt) ---
 FINAL_HEAD=            v. TRASABILITATE_P4.txt
 FULL_SUITE_COMMIT=     v. TRASABILITATE_P4.txt
 FULL_SUITE_PASSED=     v. TRASABILITATE_P4.txt
@@ -220,15 +287,20 @@ PUBLIC_MAIN=           v. TRASABILITATE_P4.txt
 BACKUP=                v. TRASABILITATE_P4.txt
 LIVE_PROCESS_COMMIT=   v. TRASABILITATE_P4.txt
 
-FOUR_WAY_STATUS=       v. TRASABILITATE_P4.txt
+FIVE_WAY_STATUS=       v. TRASABILITATE_P4.txt
 P4_STATUS=             v. TRASABILITATE_P4.txt
 ```
 
-**Ce înseamnă cele trei zerouri de mijloc, ca să nu fie citite mai larg decât sunt:**
-`TRANSACTION_OWNERSHIP_GAPS = 0` și `PARTIAL_COMMIT_PATHS = 0` numără **căile rămase fără verdict
-scris** — nu spun că aplicația n-are nicio cale cu scrieri în mai multe tranzacții. Are **22**, și
-fiecare are un rând care spune de ce e așa. `PARTIAL_STATE_AFTER_FAULT = 0` e măsurat prin cele
-**șapte** probe de injecție, pe stare comparată prin **amprentă**.
+**Ce înseamnă cele trei zerouri de la „proprietatea tranzacției", ca să nu fie citite mai larg
+decât sunt:** `TRANSACTION_OWNERSHIP_GAPS = 0` și `PARTIAL_COMMIT_PATHS = 0` numără **căile rămase
+fără verdict scris** — nu spun că aplicația n-are nicio cale cu scrieri în mai multe tranzacții. Are
+**22**, și fiecare are un rând care spune de ce e așa. `PARTIAL_STATE_AFTER_FAULT = 0` e măsurat prin
+cele **șapte** probe de injecție, pe stare comparată prin **amprentă**.
+
+**Și de ce cele două universuri nu se adună:** `RAW_CRITICAL_COMPOSITES` (6) numără puncte de
+intrare; `TOTAL_CRITICAL_OPERATIONS` (7) numără operații critice, dintre care una nu e punct de
+intrare. Suma care trebuie să dea 332 e prima; suma care trebuie să dea 7 e a doua. Fiecare are
+proba ei, iar amestecul lor e chiar mutația care le face să cadă.
 
 ### 5.6 „Nu porni P5"
 

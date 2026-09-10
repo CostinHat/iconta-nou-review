@@ -9,12 +9,17 @@ REGULA LUI P4: orice cale care aprinde CEL PUTIN UNUL din C1..C6 e candidat.
 NU exista prag suplimentar inaintea clasificarii. Toti candidatii de mai jos au
 verdict; niciunul n-a fost declarat neimportant inainte de a fi clasificat.
 
-RAW_CANDIDATES            = 332
-CLASSIFIED_CANDIDATES     = 332
+RAW_CANDIDATES              = 332
+CLASSIFIED_CANDIDATES       = 332
 UNCLASSIFIED_RAW_CANDIDATES = 0
-  CRITICAL_COMPOSITE      = 6
-  NON_CRITICAL_COMPOSITE  = 325
-  FALSE_POSITIVE          = 1
+  RAW_CRITICAL_COMPOSITES     = 6
+  RAW_NON_CRITICAL_COMPOSITES = 325
+  RAW_FALSE_POSITIVES         = 1
+  RAW_CLASS_SUM               = 332   (PASS)
+
+Caile INTERNE (nu sunt puncte de intrare, deci NU sunt in cei de mai sus):
+  INTERNAL_CRITICAL_COMPOSITES = 1
+  TOTAL_CRITICAL_OPERATIONS    = 7
 
 PE REGULA:
   FARA-SCRIERI            218   calea nu scrie nimic în bază

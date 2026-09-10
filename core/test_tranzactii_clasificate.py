@@ -86,8 +86,91 @@ def test_fiecare_candidat_brut_are_verdict(inventar):
     assert n["UNCLASSIFIED_RAW_CANDIDATES"] == 0, (
         "candidați bruți fără verdict: %s" % n["neclasificate"][:10])
     assert n["RAW_CANDIDATES"] == n["CLASSIFIED_CANDIDATES"] == len(inv)
-    assert (n["CRITICAL_COMPOSITES"] + n["NON_CRITICAL_COMPOSITES"] + n["FALSE_POSITIVES"]
-            == n["RAW_CANDIDATES"]), "suma claselor nu închide inventarul: %s" % n
+
+
+# ============================================================================
+#  CONTABILITATEA — DOUĂ UNIVERSURI, care nu se adună între ele
+#
+#  Defectul care a produs probele astea: blocul de acceptare punea sub același
+#  nume (`CRITICAL_COMPOSITES`) șase căi din inventarul brut ȘI a șaptea, care
+#  e o cale internă și nu e în inventar. Suma ieșea 333 pe o populație de 332.
+#  Un câmp nu poate purta două universuri; de-aici încolo, nici numele nu poate.
+# ============================================================================
+
+def test_contabilitatea_inventarului_brut_se_inchide(inventar):
+    """`RAW_CRITICAL + RAW_NON_CRITICAL + RAW_FALSE_POSITIVES = CLASSIFIED = RAW = len(inventar)`."""
+    inv, _stat = inventar
+    n = CL.numaratori(inv)
+    suma = (n["RAW_CRITICAL_COMPOSITES"] + n["RAW_NON_CRITICAL_COMPOSITES"]
+            + n["RAW_FALSE_POSITIVES"])
+    assert suma == n["RAW_CLASS_SUM"], "RAW_CLASS_SUM nu e suma claselor: %s" % n
+    assert suma == n["CLASSIFIED_CANDIDATES"] == n["RAW_CANDIDATES"] == len(inv), (
+        "contabilitatea inventarului brut NU se închide: %d + %d + %d = %d, dar "
+        "CLASSIFIED=%d și RAW=%d"
+        % (n["RAW_CRITICAL_COMPOSITES"], n["RAW_NON_CRITICAL_COMPOSITES"],
+           n["RAW_FALSE_POSITIVES"], suma, n["CLASSIFIED_CANDIDATES"], n["RAW_CANDIDATES"]))
+    assert n["RAW_CLASS_ACCOUNTING"] == "PASS", n
+
+
+def test_contabilitatea_operatiilor_critice_se_inchide_separat(inventar):
+    """`TOTAL_CRITICAL_OPERATIONS = RAW_CRITICAL_COMPOSITES + INTERNAL_CRITICAL_COMPOSITES`.
+
+    Al doilea univers. Nu se adună cu primul, și nicio probă nu-l amestecă în el."""
+    inv, _stat = inventar
+    n = CL.numaratori(inv)
+    assert (n["TOTAL_CRITICAL_OPERATIONS"]
+            == n["RAW_CRITICAL_COMPOSITES"] + n["INTERNAL_CRITICAL_COMPOSITES"]), n
+    assert n["TOTAL_CRITICAL_OPERATIONS"] == len(CL.cai_critice()), (
+        "universul operațiilor critice nu se potrivește cu registrul: %d vs %d"
+        % (n["TOTAL_CRITICAL_OPERATIONS"], len(CL.cai_critice())))
+    interne = set(CL.cai_interne())
+    intrari = {x["intrare"] for x in inv}
+    assert interne and not (interne & intrari), (
+        "o cale declarată INTERNĂ apare totuși ca punct de intrare: %s"
+        % sorted(interne & intrari))
+
+
+def test_caile_interne_nu_intra_in_contabilitatea_bruta(inventar):
+    """Oglinda: nicio cale internă nu e numărată printre cei 332, și niciun candidat brut nu e
+    marcat `cale_interna`. Fără proba asta, cele două universuri s-ar putea reamesteca tăcut."""
+    inv, _stat = inventar
+    intrari = {x["intrare"] for x in inv}
+    gresite = {k for k, v in CL.CLASIFICARE.items()
+               if v.get("cale_interna") and k in intrari}
+    assert gresite == set(), "căi interne care sunt totuși în inventarul brut: %s" % sorted(gresite)
+
+
+def test_acoperirea_injectiei_e_pe_universul_operatiilor_critice(inventar):
+    """`CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS = WITH = TOTAL_CRITICAL_OPERATIONS`, cu calea
+    internă ÎNĂUNTRU. *Nu se pierde din acoperire ca să iasă contabilitatea inventarului.*"""
+    inv, _stat = inventar
+    n = CL.numaratori(inv)
+    assert n["CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS"] == n["TOTAL_CRITICAL_OPERATIONS"], n
+    assert (n["CRITICAL_OPERATIONS_WITH_FAULT_TESTS"]
+            == n["CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS"]), n
+    assert n["UNTESTED_CRITICAL_OPERATIONS"] == 0, (
+        "operații critice fără probă de injecție: %s" % n["netestate"])
+    # calea internă e chiar înăuntru, nu doar numărată
+    cerute = CL.probe_cerute()
+    for k in CL.cai_interne():
+        assert k in cerute, "calea internă %s a ieșit din acoperire" % k
+
+
+def test_excluderile_se_numara_peste_TOTI_candidatii_exclusi(inventar):
+    """`UNEXPLAINED_EXCLUSIONS` se derivă peste **toți** candidații clasificați NON_CRITICAL sau
+    FALSE_POSITIVE — nu doar peste rândurile scrise de mână.
+
+    Prima formă măsura 35 de excluderi individuale și raporta zero; zero pe o populație mai mică
+    decât cea despre care pare că vorbește e adevărat și înșelător."""
+    inv, _stat = inventar
+    n = CL.numaratori(inv)
+    assert n["EXCLUSIONS_TOTAL"] == (n["RAW_NON_CRITICAL_COMPOSITES"]
+                                     + n["RAW_FALSE_POSITIVES"]), n
+    assert n["EXCLUSIONS_TOTAL"] > len(CL.CLASIFICARE), (
+        "populația excluderilor e mai mică decât registrul individual — semn că se numără "
+        "iar doar rândurile scrise: %d" % n["EXCLUSIONS_TOTAL"])
+    assert n["UNEXPLAINED_EXCLUSIONS"] == 0, (
+        "excluderi fără justificare scrisă: %s" % n["nemotivate"][:10])
 
 
 def test_fiecare_verdict_poarta_regula_si_motiv(inventar):
@@ -299,8 +382,9 @@ def test_nicio_clasificare_individuala_nu_ramane_fara_cale(inventar):
     assert orfane == set(), "clasificări fără cale în inventar (stătute): %s" % sorted(orfane)
 
 
-def test_fiecare_excludere_are_motiv_scris():
-    """`UNEXPLAINED_EXCLUSIONS = 0`, verificat pe conținut, nu pe prezența câmpului."""
+def test_fiecare_excludere_INDIVIDUALA_are_motiv_scris():
+    """Rândurile scrise de mână, verificate pe conținut. Populația mare — toți candidații
+    excluși — e verificată de `test_excluderile_se_numara_peste_TOTI_candidatii_exclusi`."""
     fara_motiv = {k for k, motiv in CL.excluderi().items()
                   if not isinstance(motiv, str) or len(motiv.strip()) < 80}
     assert fara_motiv == set(), (

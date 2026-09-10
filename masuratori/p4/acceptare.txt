@@ -1,18 +1,33 @@
 BLOCUL DE ACCEPTARE P4 — derivat, nu scris
 Generat cu: ./venv/bin/python -m scripts.p4_artefacte
 ==============================================================================
+
+--- UNIVERSUL 1: INVENTARUL BRUT (puncte de intrare) ------------------------
 RAW_CANDIDATES=332
 CLASSIFIED_CANDIDATES=332
 
-CRITICAL_COMPOSITES=7
-  (din care puncte de intrare in inventarul brut: 6; cai interne: 1)
-NON_CRITICAL_COMPOSITES=325
-FALSE_POSITIVES=1
+RAW_CRITICAL_COMPOSITES=6
+RAW_NON_CRITICAL_COMPOSITES=325
+RAW_FALSE_POSITIVES=1
 
+RAW_CLASS_SUM=332   (= 6 + 325 + 1)
+RAW_CLASS_ACCOUNTING=PASS   (RAW_CLASS_SUM == CLASSIFIED_CANDIDATES == RAW_CANDIDATES)
 UNCLASSIFIED_RAW_CANDIDATES=0
-UNTESTED_CRITICAL_COMPOSITES=0
-UNEXPLAINED_EXCLUSIONS=0
 
+--- UNIVERSUL 2: OPERATIILE CRITICE (inclusiv caile interne) ----------------
+INTERNAL_CRITICAL_COMPOSITES=1   (core/spv_conector.reimprospateaza_token)
+TOTAL_CRITICAL_OPERATIONS=7   (= RAW_CRITICAL_COMPOSITES 6 + INTERNAL_CRITICAL_COMPOSITES 1)
+
+CRITICAL_OPERATIONS_REQUIRING_FAULT_TESTS=7
+CRITICAL_OPERATIONS_WITH_FAULT_TESTS=7
+UNTESTED_CRITICAL_OPERATIONS=0
+
+--- EXCLUDERI, peste TOTI candidatii exclusi din critic ---------------------
+EXCLUSIONS_TOTAL=326   (= RAW_NON_CRITICAL_COMPOSITES + RAW_FALSE_POSITIVES)
+UNEXPLAINED_EXCLUSIONS=0
+  (derivat peste TOATE cele 326, nu doar peste cele 35 randuri individuale)
+
+--- PROPRIETATEA TRANZACTIEI -----------------------------------------------
 TRANSACTION_OWNERSHIP_GAPS=0   (cai cu scrieri in >1 tranzactie, ramase fara verdict scris)
 PARTIAL_COMMIT_PATHS=0   (cai cu commit partial, ramase fara verdict scris)
 
