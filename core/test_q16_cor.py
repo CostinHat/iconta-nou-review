@@ -3,7 +3,7 @@
 migrare.js:885 arata r.cor (codul) etichetat 'Functie'. Fix: endpointul de preview ataseaza
 `cor_denumire` (cor_api.denumire); frontendul arata denumirea, fallback la cod. RED pe cod vechi:
 raspunsul de preview nu avea cheia `cor_denumire`."""
-import io, asyncio, contextlib
+import io, contextlib
 import pytest
 from starlette.datastructures import UploadFile
 
@@ -29,7 +29,7 @@ def test_preview_salariati_ataseaza_denumirea_cor(monkeypatch):
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: "Programator" if cod == "251401" else None)
 
-    res = asyncio.run(main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
+    res = main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1})
     r0 = res["randuri"][0]
     assert "cor_denumire" in r0, "preview NU ataseaza denumirea COR (Q16)"
     assert r0["cor_denumire"] == "Programator"
@@ -43,5 +43,5 @@ def test_preview_salariati_cor_necunoscut_ramane_none(monkeypatch):
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: None)
-    res = asyncio.run(main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
+    res = main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1})
     assert res["randuri"][0]["cor_denumire"] is None   # necunoscut ramane necunoscut (fallback la cod in UI)

@@ -79,7 +79,12 @@ def _tinte():
                 glob[a.asname or a.name] = a.name
     out, rute = set(), 0
     for fn in ast.walk(arb):
-        if not isinstance(fn, ast.FunctionDef):
+        # RUTELE `async def` INTRĂ ȘI ELE. Prima formă cerea `ast.FunctionDef`, deci cele 20
+        # de rute asincrone erau în afara razei de la scrierea gardului (20.08.2026) — un
+        # fals-negativ tăcut, descoperit abia când valul 1 al lui P5 le-a făcut sincrone și
+        # una din ele a adus un mesaj fără diacritice. *Un gard care nu vede jumătate din
+        # canal raportează verde despre o lume pe care n-o vede.*
+        if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
             continue
         ali = dict(glob)
         for n in ast.walk(fn):
@@ -130,7 +135,8 @@ def _scan():
         except SyntaxError:
             continue
         for f in ast.walk(arb):
-            if not (isinstance(f, ast.FunctionDef) and f.name == functie):
+            if not (isinstance(f, (ast.FunctionDef, ast.AsyncFunctionDef))
+                    and f.name == functie):
                 continue
             for r in ast.walk(f):
                 if not (isinstance(r, ast.Raise) and r.exc is not None):

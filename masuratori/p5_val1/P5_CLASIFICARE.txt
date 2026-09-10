@@ -1,0 +1,1136 @@
+P5 — CLASIFICAREA CANDIDAȚILOR BRUȚI
+====================================================================================================
+
+RAW_CANDIDATES ........... 82
+CLASSIFIED_CANDIDATES .... 82
+UNCLASSIFIED_RAW ......... 0
+ACTION_REQUIRED .......... 30
+ACCEPTABLE_BY_DESIGN ..... 52
+FALSE_POSITIVE ........... 0
+RAW_CLASS_ACCOUNTING ..... PASS (30+52+0 = 82 = 82)
+EXCLUSIONS_TOTAL ......... 52
+UNEXPLAINED_EXCLUSIONS ... 0
+
+pe regulă:  C5-EXTERN-CU-CONEXIUNE=29 · FUNDAL=13 · INDIVIDUAL=2 · SINCRON-MARGINIT=38
+pe dovadă:  FARA_BUCLA=13 · PORNIRE=1 · SERIALIZARE_ACCIDENTALA=1 · STRUCTURAL_MARGINIT_DAR_RAR=29 · THREADPOOL=38
+pe val:     val 1=1 · val 3=29
+
+
+====================================================================================================
+ACTION_REQUIRED
+====================================================================================================
+
+P5-028  POST /tenants/{tenant_id}/horeca/import-amef
+    fișier ..... main.py   (ruta, async)
+    detectori .. C1, C3
+    regula ..... INDIVIDUAL
+    dovada ..... SERIALIZARE_ACCIDENTALA   val 1
+    de ce ...... SINGURA DIN CELE 17 CARE N-A FOST MUTATĂ, și nu din scăpare. Azi, după citirea fișierului,
+                 handler-ul rulează până la capăt FĂRĂ să mai cedeze bucla — deci două cereri simultane sunt
+                 SERIALIZATE. Pe serializarea asta se sprijină, fără s-o fi declarat nimeni, poarta R61 din
+                 `_cere_z_unic`: un raport Z duplicat se REFUZĂ. Iar `inregistrari` NU are index unic pe
+                 `(sursa, numar)` — verificat în `tenant_template.sql`, unde tabela are doar cheia primară pe
+                 `id`. Mutarea pe fir ar face ca două încărcări simultane ale aceluiași Z să treacă amândouă
+                 de verificare. *O regresie de contabilitate cumpărată cu o îmbunătățire de latență nu e o
+                 îmbunătățire* — iar planul cere explicit ca semantica să nu se schimbe
+                 (PLAN_HARDENING.md:337). Costul ținerii pe loc e mic: calea parsează un XML și scrie câteva
+                 rânduri, deci e cel mai ieftin dintre cei 17 blocanți. Se deblochează în două feluri,
+                 amândouă declarate: index unic pe `(sursa, numar)`, sau `pg_advisory_xact_lock` pe cheia
+                 raportului înainte de verificare.
+
+P5-001  GET /anaf/oauth/callback
+    fișier ..... core/spv_rute.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/spv_conector.py:324
+
+P5-014  GET /coada/{coada_id}/continut
+    fișier ..... main.py   (ruta)
+    detectori .. C3, C5, C7
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/duk.py:205 (fără steagul cerut)
+
+P5-026  GET /gdpr/export-cabinet
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5, C7
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, FS, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s
+                 — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:106
+
+P5-009  POST /api/v1/firme/{tenant_id}/facturi
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/curs_bnr.py:173
+
+P5-054  POST /auth/register
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4, C5, C7
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, FS, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până
+                 la 60 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea
+                 ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar
+                 dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune:
+                 core/anaf_api.py:141
+
+P5-013  POST /coada
+    fișier ..... main.py   (ruta)
+    detectori .. C3, C5, C7
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/duk.py:205 (fără steagul cerut)
+
+P5-025  POST /gdpr/cerere-stergere
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:106
+
+P5-034  POST /migrare/importa
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea
+                 ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar
+                 dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune:
+                 core/anaf_api.py:141
+
+P5-037  POST /pachete/{tenant_id}/poveste
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:147
+
+P5-038  POST /pachete/{tenant_id}/trimite
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:147
+
+P5-032  POST /public/magic-link
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:147
+
+P5-061  POST /tenants
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea
+                 ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar
+                 dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune:
+                 core/anaf_api.py:141
+
+P5-002  POST /tenants/{tenant_id}/achizitie-necorporala
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea
+                 ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar
+                 dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune:
+                 core/anaf_api.py:141
+
+P5-003  POST /tenants/{tenant_id}/achizitie-taxare-inversa
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA, SLEEP). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. AICI E MAI RĂU DECÂT ATÂT: calea
+                 ține conexiunea și peste un `sleep`, adică peste o așteptare care se produce SIGUR, nu doar
+                 dacă serviciul extern e lent. Prima primitivă externă ținută peste conexiune:
+                 core/anaf_api.py:141
+
+P5-017  POST /tenants/{tenant_id}/decontare-valuta
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/curs_bnr.py:173
+
+P5-018  POST /tenants/{tenant_id}/etransport/trimite
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 4 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. TERMENUL NU SE POATE DECIDE AICI: 2
+                 apeluri primesc `timeout` prin despachetare, deci mărginirea depinde de fiecare apelant în
+                 parte, iar funcția apelată n-are termen implicit. Azi toți apelanții îl trimit — verificat
+                 rând cu rând —, dar nimic nu oprește unul viitor să nu-l trimită. Prima primitivă externă
+                 ținută peste conexiune: core/spv_conector.py:455
+
+P5-021  POST /tenants/{tenant_id}/facturi/emite
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/curs_bnr.py:173
+
+P5-044  POST /tenants/{tenant_id}/facturi/{factura_id}/transforma
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/curs_bnr.py:173
+
+P5-020  POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 3 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. TERMENUL NU SE POATE DECIDE AICI: 1
+                 apeluri primesc `timeout` prin despachetare, deci mărginirea depinde de fiecare apelant în
+                 parte, iar funcția apelată n-are termen implicit. Azi toți apelanții îl trimit — verificat
+                 rând cu rând —, dar nimic nu oprește unul viitor să nu-l trimită. Prima primitivă externă
+                 ținută peste conexiune: core/spv_conector.py:324
+
+P5-030  POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:106
+
+P5-051  POST /tenants/{tenant_id}/reevaluare-valuta
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/curs_bnr.py:173
+
+P5-052  POST /tenants/{tenant_id}/reges-poll
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/reges_client.py:137
+
+P5-053  POST /tenants/{tenant_id}/reges-trimite-salariat
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/reges_client.py:137
+
+P5-057  POST /tenants/{tenant_id}/s1003-valideaza
+    fișier ..... main.py   (ruta)
+    detectori .. C3, C5, C7
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: main.py:8735 (fără steagul cerut)
+
+P5-058  POST /tenants/{tenant_id}/s1005-valideaza
+    fișier ..... main.py   (ruta)
+    detectori .. C3, C5, C7
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, FS, SUBPROC). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60
+                 s — deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: main.py:8671 (fără steagul cerut)
+
+P5-011  POST /tenants/{tenant_id}/solicitari
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:147
+
+P5-064  POST /tenants/{tenant_id}/vanzare-ic
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/intracomunitar.py:44
+
+P5-068  POST /tenants/{tenant_id}/woocommerce/sincronizeaza
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 2 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/woocommerce.py:15
+
+P5-029  PUT /tenants/{tenant_id}/jurnal/{nota_id}
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C5
+    regula ..... C5-EXTERN-CU-CONEXIUNE
+    dovada ..... STRUCTURAL_MARGINIT_DAR_RAR   val 3
+    de ce ...... MĂRGINIT, DAR PE RESURSA RARĂ: 1 primitive ne-DB se execută cu o conexiune din pool ținută
+                 (DB, RETEA). Pool-ul are 10 conexiuni, iar apelurile externe au termene de până la 60 s —
+                 deci tot atâtea cereri simultane pe o astfel de cale pot goli pool-ul pentru TOATĂ
+                 aplicația, inclusiv pentru rute care n-au nicio treabă cu serviciul extern. Dovada e
+                 aritmetică de capacitate, NU o măsurătoare: n-am chemat serviciile reale, fiindcă ar fi fost
+                 efect în afara noastră — și regula fazei interzice asta. Prima primitivă externă ținută
+                 peste conexiune: core/observare.py:106
+
+====================================================================================================
+ACCEPTABLE_BY_DESIGN
+====================================================================================================
+
+P5-041  DELETE /portal/bon/{bon_id}
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 18 primitive (DB, FS), prima la main.py:4485;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-062  DELETE /tenants/{tenant_id}
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 31 primitive (DB, FS), prima la main.py:1608;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-004  GET /admin/sanatate
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 11 primitive (DB, FS, RETEA), prima la
+                 main.py:710; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-006  GET /admin/versiune
+    fișier ..... main.py   (ruta)
+    detectori .. C3
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (SUBPROC), prima la
+                 core/versiune.py:18; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără
+                 termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor
+                 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-007  GET /ajutor/{fid}
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (FS), prima la core/ajutor.py:17;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-008  GET /ansamblu
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 3 primitive (FS), prima la main.py:11615;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-046  GET /ghid
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:11835;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-045  GET /ghid/{slug}
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:11915;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-048  GET /public/termeni
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:1794;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-049  GET /public/verifica-cui/{cui}
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (RETEA, SLEEP), prima la
+                 core/anaf_api.py:138; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără
+                 termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor
+                 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-047  GET /sitemap.xml
+    fișier ..... main.py   (ruta)
+    detectori .. C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 1 primitive (FS), prima la main.py:11835;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-015  GET /tenants/{tenant_id}/d390-clasificare
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 143 primitive (DB, FS), prima la
+                 main.py:5640; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-022  GET /tenants/{tenant_id}/firma-profil/date
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 13 primitive (DB, FS), prima la main.py:3163;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-066  GET /tenants/{tenant_id}/verifica-cui/{cui}
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 9 primitive (DB, RETEA, SLEEP), prima la
+                 main.py:3163; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-067  GET /tenants/{tenant_id}/verifica-vies
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 8 primitive (DB, RETEA), prima la
+                 main.py:10000; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen
+                 — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-005  POST /admin/sanatate/test-alerta
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 5 primitive (DB, RETEA), prima la
+                 main.py:574; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-010  POST /asistenti
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 9 primitive (DB, RETEA), prima la
+                 main.py:7156; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-031  POST /auth/login
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 8 primitive (DB, RETEA), prima la
+                 main.py:1345; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-016  POST /declaratii/{tip}/valideaza
+    fișier ..... main.py   (ruta)
+    detectori .. C3, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 35 primitive (DB, FS, SUBPROC), prima la
+                 main.py:4414; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-027  POST /gdpr/sterge-cabinet/{cabinet_id}/executa
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 38 primitive (DB, FS), prima la main.py:958;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-033  POST /migrare/fisier
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (RETEA, SLEEP), prima la
+                 core/anaf_api.py:138; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără
+                 termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor
+                 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-035  POST /migrare/incarca
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (RETEA, SLEEP), prima la
+                 core/anaf_api.py:138; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără
+                 termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor
+                 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-036  POST /migrare/valideaza
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 2 primitive (RETEA, SLEEP), prima la
+                 core/anaf_api.py:138; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără
+                 termen — dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor
+                 40 de fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-039  POST /portal/acces-cont/acces
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 23 primitive (DB, RETEA), prima la
+                 main.py:4485; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-040  POST /portal/bon
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 23 primitive (DB, FS), prima la main.py:4485;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-042  POST /portal/recomanda
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 11 primitive (DB, RETEA), prima la
+                 main.py:4485; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-055  POST /public/reset-parola/cere
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 10 primitive (DB, RETEA), prima la
+                 main.py:1840; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-056  POST /public/reset-parola/seteaza
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 7 primitive (DB, RETEA), prima la
+                 main.py:1872; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-050  POST /raportari/mesaj/{mid}/imagine
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 8 primitive (DB, FS), prima la main.py:7635;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-063  POST /recomanda
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 4 primitive (DB, RETEA), prima la
+                 main.py:7506; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-012  POST /tenants/{tenant_id}/client-acces
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 20 primitive (DB, RETEA), prima la
+                 main.py:1680; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-019  POST /tenants/{tenant_id}/facturi/{factura_id}/email
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 15 primitive (DB, RETEA), prima la
+                 main.py:3163; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-023  POST /tenants/{tenant_id}/firma-profil/date
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 31 primitive (DB, FS), prima la main.py:3163;
+                 niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen — dacă ar fi,
+                 ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de fire, care nu
+                 s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane observat a fost 8
+                 din 10.
+
+P5-024  POST /tenants/{tenant_id}/firma-profil/regim-tva
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 18 primitive (DB, RETEA, SLEEP), prima la
+                 main.py:3163; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-060  POST /tenants/{tenant_id}/salarii-contare
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 270 primitive (DB, FS), prima la
+                 main.py:5640; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-059  POST /tenants/{tenant_id}/salarii-contare/propunere
+    fișier ..... main.py   (ruta)
+    detectori .. C5, C7
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 266 primitive (DB, FS), prima la
+                 main.py:5640; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-065  POST /tenants/{tenant_id}/vector
+    fișier ..... main.py   (ruta)
+    detectori .. C2, C4
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 23 primitive (DB, RETEA, SLEEP), prima la
+                 main.py:3163; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-043  PUT /portal/acces-cont/email
+    fișier ..... main.py   (ruta)
+    detectori .. C2
+    regula ..... SINCRON-MARGINIT
+    dovada ..... THREADPOOL
+    de ce ...... RULEAZĂ ÎN THREADPOOL, nu pe buclă: handler sincron, deci Starlette îl mută pe un fir din
+                 cele 40 ale limitatorului. Blocajul lui nu atinge bucla, deci nu atinge celelalte cereri —
+                 și asta nu e o presupunere, e martorul măsurat pe o rută sincronă care CHIAR reușește: canar
+                 p95 3,8 ms, față de 3,4 ms în gol, adică plat. 19 primitive (DB, RETEA), prima la
+                 main.py:4485; niciuna nu ține o conexiune peste un apel extern și niciuna nu e fără termen —
+                 dacă ar fi, ar fi fost prinsă de o regulă de mai sus. Ce rămâne e capacitatea celor 40 de
+                 fire, care nu s-a atins în nicio măsurătoare: la k=10, maximul de conexiuni simultane
+                 observat a fost 8 din 10.
+
+P5-069  core/agenda.py::__main__ -> raport()
+    fișier ..... core/agenda.py   (fundal)
+    detectori .. C3
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 12 primitive (FS, SUBPROC), prima la
+                 core/agenda.py:32. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI
+                 pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-070  core/agenda_drift.py::__main__ -> main()
+    fișier ..... core/agenda_drift.py   (fundal)
+    detectori .. C3
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 9 primitive (FS, SUBPROC), prima la
+                 core/agenda.py:32. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din ACELAȘI
+                 pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-071  core/alerta_acces.py::__main__ -> ruleaza()
+    fișier ..... core/alerta_acces.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 106 primitive (DB, RETEA), prima la
+                 core/alerta_acces.py:55. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-072  core/amef_import.py::__main__ -> _test()
+    fișier ..... core/amef_import.py   (fundal)
+    detectori .. C3
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 4 primitive (SUBPROC), prima la
+                 core/amef_import.py:27. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-073  core/facturi_recurente.py::__main__ -> _main()
+    fișier ..... core/facturi_recurente.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 60 primitive (DB, RETEA), prima la
+                 core/facturi_recurente.py:138. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies
+                 din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar
+                 aia e capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-074  core/migrare_backfill_tva_inceput.py::__main__ -> _main()
+    fișier ..... core/migrare_backfill_tva_inceput.py   (fundal)
+    detectori .. C4
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 11 primitive (DB, RETEA, SLEEP), prima la
+                 core/migrare_backfill_tva_inceput.py:17. Ce rămâne totuși adevărat, și se scrie: conexiunile
+                 lui ies din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează
+                 cererile. Dar aia e capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-075  core/monitor_fiscal.py::__main__ -> _main()
+    fișier ..... core/monitor_fiscal.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 31 primitive (DB, RETEA), prima la
+                 core/monitor_fiscal.py:150. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-076  core/notificari_scadenta.py::__main__ -> _main()
+    fișier ..... core/notificari_scadenta.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 106 primitive (DB, RETEA), prima la
+                 core/notificari_scadenta.py:178. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies
+                 din ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar
+                 aia e capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-077  core/sonda_web.py::__main__ -> _main()
+    fișier ..... core/sonda_web.py   (fundal)
+    detectori .. C3
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 9 primitive (DB, RETEA, SUBPROC), prima
+                 la core/sonda_web.py:70. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-078  core/spv_poll.py::__main__ -> ruleaza()
+    fișier ..... core/spv_poll.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 83 primitive (DB, FS, RETEA), prima la
+                 core/spv_poll.py:155. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-079  core/spv_receive.py::__main__ -> ruleaza()
+    fișier ..... core/spv_receive.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 57 primitive (DB, RETEA), prima la
+                 core/spv_receive.py:101. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-080  core/spv_refresh.py::__main__ -> ruleaza()
+    fișier ..... core/spv_refresh.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 14 primitive (DB, RETEA), prima la
+                 core/spv_refresh.py:51. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-081  core/woocommerce.py::__main__ -> _main()
+    fișier ..... core/woocommerce.py   (fundal)
+    detectori .. C5
+    regula ..... FUNDAL
+    dovada ..... FARA_BUCLA
+    de ce ...... LUCRĂTOR DE FUNDAL, nu cerere. Rulează într-un proces propriu, fără buclă de evenimente și
+                 fără nimeni care așteaptă un răspuns; I/O blocant e acolo forma NORMALĂ, nu un defect — a-l
+                 muta pe threadpool n-ar avea pe cine să elibereze. 64 primitive (DB, RETEA), prima la
+                 core/woocommerce.py:100. Ce rămâne totuși adevărat, și se scrie: conexiunile lui ies din
+                 ACELAȘI pool de 10 ca ale cererilor, deci un lucrător lung strâmtorează cererile. Dar aia e
+                 capacitate, nu blocaj de buclă, și se măsoară altfel.
+
+P5-082  main.py::lifespan()
+    fișier ..... main.py   (pornire, async)
+    detectori .. C1, C3
+    regula ..... INDIVIDUAL
+    dovada ..... PORNIRE
+    de ce ...... PORNIREA aplicației, nu o cerere. Blochează bucla ÎNAINTE ca serverul să accepte cereri —
+                 deci nu există nimeni căruia să-i facă rău. E și fail-closed prin decizie scrisă (P2): dacă
+                 pregătirea schemelor eșuează, procesul NU intră în starea gata. A-l muta pe threadpool ar
+                 strica exact garanția aia. Ce rămâne adevărat, și se scrie: durata pornirii crește cu
+                 numărul de firme, iar publicarea repornește procesul — deci costul ăsta se plătește la
+                 fiecare livrare, nu o dată.

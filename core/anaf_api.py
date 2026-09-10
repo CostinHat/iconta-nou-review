@@ -44,7 +44,11 @@ def extrage_cui_din_fisier(continut, nume_fisier=""):
             randuri.append(["" if c is None else str(c) for c in r])
         wb.close()
     else:
-        raise ValueError("format neacceptat (doar .csv sau .xlsx)")
+        # [P5 val 1, 10.09.2026] Mesajul ăsta n-a fost păzit niciodată de gardul de
+        # diacritice: el se uita doar la `ast.FunctionDef`, iar ruta care îl publică
+        # (`/migrare/incarca`) era `async def`. Conversia l-a scos la iveală.
+        raise ValueError("Fișierul «%s» nu se poate citi: se așteaptă un CSV sau un XLSX."
+                         % (nume or "trimis"))
 
     if not randuri:
         return []

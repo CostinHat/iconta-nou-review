@@ -2029,9 +2029,9 @@ def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/migrare/fisier")
-async def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF."""
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         cui_uri = anaf_api.extrage_cui_din_fisier(continut, fisier.filename or "")
     except Exception as e:
@@ -2050,9 +2050,9 @@ async def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_cabine
 
 
 @app.post("/migrare/incarca")
-async def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF."""
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         cui_uri = anaf_api.extrage_cui_din_fisier(continut, fisier.filename or "")
     except ValueError as e:
@@ -2272,10 +2272,10 @@ def migrare_vector_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/solduri/incarca")
-async def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Parsează o balanță și întoarce preview (nu salvează)."""
     _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         randuri = solduri_api.extrage_balanta(continut, fisier.filename or "")
     except ValueError as e:
@@ -2338,10 +2338,10 @@ def migrare_parteneri_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/parteneri/incarca")
-async def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta."""
     schema = _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         randuri = solduri_parteneri_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
@@ -2406,10 +2406,10 @@ def migrare_salariati_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/salariati-import/incarca")
-async def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza)."""
     _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         randuri = salariati_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
@@ -2466,9 +2466,9 @@ def migrare_asociati_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/asociati-import/incarca")
-async def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         randuri = asociati_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
@@ -2494,9 +2494,9 @@ def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends
 class ReteteImportIn(BaseModel):
     retete: list[dict]
 @app.post("/tenants/{tenant_id}/retete-import/incarca")
-async def retete_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def retete_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     schema = _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         retete = retete_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
@@ -2523,9 +2523,9 @@ class ArticoleImportIn(BaseModel):
     randuri: list[ArticolImportIn]
     data_sold: Optional[str] = None
 @app.post("/tenants/{tenant_id}/articole-import/incarca")
-async def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         randuri = articole_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
@@ -2564,9 +2564,9 @@ def migrare_mijloace_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import/incarca")
-async def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         randuri = mijloace_fixe_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
@@ -2627,9 +2627,9 @@ def migrare_istoric_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import/incarca")
-async def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         randuri = istoric_declaratii_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
@@ -2656,7 +2656,7 @@ def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depen
 #  NU balanta de deschidere (partida simpla nu are sold-rand separat).
 # ============================================================
 @app.post("/tenants/{tenant_id}/rip-import/incarca")
-async def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_rol("admin_firma"))):
+def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_rol("admin_firma"))):
     """
     Import registru incasari-plati la preluarea unui PFA. Parseaza fisierul, RAPORTEAZA
     randurile respinse (ambigue/incomplete) INAINTE de commit, apoi importa operatiunile
@@ -2664,7 +2664,7 @@ async def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx
     pentru reminder(): 'gata' daca nimic respins, 'in_lucru' cu nota daca au ramas randuri.
     """
     schema = _schema_sau_404(ctx, tenant_id)
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         date, raport = rip_migrare_api.extrage_operatiuni(continut, fisier.filename or "")
     except ValueError as e:
@@ -3140,6 +3140,24 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
 # ============================================================
 #  FACTURI (în schema tenantului)
 # ============================================================
+def _octetii(fisier):
+    """Conținutul unui fișier încărcat, citit SINCRON — pentru rutele `def`.
+
+    **De ce nu `await fisier.read()`.** `UploadFile.read()` e `async`, dar pe un fișier ținut în
+    memorie face chiar `self.file.read()`, iar pe unul ajuns pe disc îl trece prin
+    `run_in_threadpool` (`starlette/datastructures.py:462`). Într-un handler **sincron** suntem
+    deja pe un fir din threadpool, deci hopul n-ar avea ce să elibereze — și `await` n-ar avea
+    cine să-l aștepte. Parserul de multipart lasă fișierul poziționat la 0
+    (`starlette/formparsers.py:266`), deci octeții sunt acaeiași.
+
+    **Nu se «repară» înapoi în `await fisier.read()`.** Asta ar cere ca ruta să redevină
+    `async def`, adică exact defectul măsurat la P5: 17 rute care țineau bucla de evenimente
+    ocupată cât dura importul cuiva. Măsurat: la N=5000 de tranzacții, o cerere fără nicio
+    legătură aștepta 158,7 ms, față de 3,4 ms linia de bază.
+    """
+    return fisier.file.read()
+
+
 def _schema_sau_404(ctx, tenant_id):
     """Verifică accesul userului la tenant; întoarce schema sau ridică 404."""
     with db.get_conn() as conn:
@@ -5311,6 +5329,15 @@ def _cere_z_unic(cur, schema, numar):
 
 
 @app.post("/tenants/{tenant_id}/horeca/import-amef")
+# [P5 val 1, 10.09.2026] RĂMÂNE `async def`, DELIBERAT — singura din cele 17 care nu s-a
+# mutat pe fir. Azi, după citirea fișierului, handler-ul rulează până la capăt fără să mai
+# cedeze bucla, deci două cereri simultane sunt SERIALIZATE. Pe serializarea asta se
+# sprijină, fără s-o fi declarat nimeni, poarta R61 din `_cere_z_unic`: un raport Z duplicat
+# se REFUZĂ. `inregistrari` NU are index unic pe `(sursa, numar)` — verificat în
+# `tenant_template.sql` —, deci mutarea pe fir ar face ca două încărcări simultane ale
+# aceluiași Z să treacă amândouă de verificare. *O regresie de contabilitate cumpărată cu o
+# îmbunătățire de latență nu e o îmbunătățire.* Se deblochează când `(sursa, numar)` primește
+# index unic, sau când verificarea primește `pg_advisory_xact_lock` pe cheia raportului.
 async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA.
     Nota se genereaza pe cote reale din XML: 5311/5125=707 + 707=4427 per cota."""
@@ -5407,13 +5434,13 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}
 @app.post("/tenants/{tenant_id}/banca/parse-extras")  # [api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat
-async def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     from core import banca_parser, banca as _bk
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         tranzactii = banca_parser.parse_extras(continut, fisier.filename or "")
     except Exception as e:
@@ -6008,7 +6035,7 @@ def _tenant_pentru_documente(ctx, tenant_id):  # bon_cabinet_v1
     return {"schema_name": _schema_sau_404(ctx, tenant_id), "id": tenant_id}
 
 @app.post("/portal/bon")
-async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
+def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     """Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc.
     Intra la contabil doar dupa confirmarea clientului (POST /portal/bon/{id}/confirma)."""
     from core import ai_client
@@ -6018,7 +6045,7 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
         raise HTTPException(503, "serviciul AI indisponibil")
     imagini = []
     for f in fisiere[:4]:
-        b = await f.read()
+        b = _octetii(f)
         if len(b) > 8_000_000:
             raise HTTPException(400, "imagine prea mare (max 8MB)")
         # [R155, 05.09.2026] Tipul se citeste din octeti, nu din ce spune browserul: un fisier
@@ -7597,12 +7624,12 @@ def raportari_pentru_admin(rid: int, date: PentruAdminIn, ctx=Depends(cere_cabin
 
 # [p35_raportari_imagine]
 @app.post("/raportari/mesaj/{mid}/imagine")
-async def raportari_imagine(mid: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def raportari_imagine(mid: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     import os as _os, uuid as _uuid
     tip = (fisier.content_type or "").lower()
     if tip not in ("image/png", "image/jpeg", "image/jpg", "image/webp"):
         raise HTTPException(415, "Doar capturi de ecran (PNG, JPG, WEBP).")
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     if len(continut) > 8 * 1024 * 1024:
         raise HTTPException(413, "Imaginea e prea mare (max 8MB).")
     with db.get_conn() as conn:
@@ -7666,9 +7693,9 @@ def eu_permisiuni(ctx=Depends(cere_cabinet)):
 
 # --- reconciliere bancara ---
 @app.post("/tenants/{tenant_id}/banca/reconciliere/import")
-async def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     from core import banca_parser, banca as _bk, reconciliere_api as _rec
-    continut = await fisier.read()
+    continut = _octetii(fisier)
     try:
         tranzactii = banca_parser.parse_extras(continut, fisier.filename or "")
     except Exception as e:
@@ -9582,7 +9609,7 @@ def _factura_din_parsat(cur, schema, f):
 
 
 @app.post("/tenants/{tenant_id}/import-efactura")  # [api_intern_v1] upload manual XML/ZIP - fara buton in UI, pastrat deliberat. Verificat 27.08.2026 - niciun apelant in static/, in crontab sau in timerele systemd. (R70). CORECTAT 29.08.2026: forma veche scria ca `core/spv_receive` cheama direct `_factura_din_parsat` - E FALS. `spv_receive.importa_mesaj` scrie DOAR in `efactura_primite`, si numai mesaje al caror `cif_beneficiar` e chiar tenantul (gard anti-scurgere), deci numai PRIMITE. Consecinta, si e chiar perimetrul lui R91: singura cale prin care o factura EMISA intra prin import e ruta asta, incarcarea manuala de XML.
-async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
+def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                           ctx=Depends(cere_cabinet)):
     """Upload XML/ZIP e-Factura. Parseaza UBL, directie auto (CUI firma vs furnizor),
     idempotent pe (numar, tert_cui, data_emitere)."""
@@ -9599,7 +9626,7 @@ async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                 raise HTTPException(422, CUI_FIRMA_LIPSA)
             cui_firma = rand[0]
             for up in fisiere:
-                continut = await up.read()
+                continut = _octetii(up)
                 try:
                     perechi = _ef.extrage_fisiere(up.filename or "f.xml", continut)
                 except Exception as e:

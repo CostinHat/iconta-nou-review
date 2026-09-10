@@ -1,0 +1,53 @@
+P5 — CALIBRAREA DETECTORILOR
+====================================================================================================
+
+DETECTOR_CALIBRATION_GAPS = 0
+probe totale ............. 24
+detectori ................ 7
+controale negative ....... 5
+
+Fiecare detector are un caz sintetic care aprinde NUMAI pe el (sau, unde asta e
+matematic imposibil, mulțimea minimă — pinată, cu implicația scrisă). Controalele
+negative sunt căi curate: dacă vreunul se aprinde, detectorul minte.
+
+DETECTORI:
+  C1   async def cu primitivă blocantă atinsă FĂRĂ trecere prin threadpool (ține bucla de evenimente ocupată)
+       caz: POST /numai_c1             aștept ['C1']
+  C2   rută SINCRONĂ care ajunge la un apel de rețea extern (ocupă un fir din cele 40)
+       caz: POST /numai_c2             aștept ['C2']
+  C3   cale care ajunge la un SUBPROCES
+       caz: POST /numai_c3             aștept ['C3']
+  C4   cale care ajunge la `time.sleep`
+       caz: POST /numai_c4             aștept ['C4']
+  C5   primitivă blocantă NE-DB executată cât timp e ținută o conexiune din pool
+       caz: POST /minim_c5             aștept ['C2', 'C5']   (mulțime minimă: C5 aprinde și C2)
+  C6   apel de rețea FĂRĂ `timeout`
+       caz: POST /minim_c6             aștept ['C2', 'C6']   (mulțime minimă: C6 aprinde și C2)
+  C7   I/O de fișier pe calea unei cereri
+       caz: POST /numai_c7             aștept ['C7']
+
+PROBE:
+  C1 se aprinde pe cazul lui                                             OK
+  C1: mulțimea e cea pinată ['C1']                                       OK
+  C2 se aprinde pe cazul lui                                             OK
+  C2: mulțimea e cea pinată ['C2']                                       OK
+  C3 se aprinde pe cazul lui                                             OK
+  C3: mulțimea e cea pinată ['C3']                                       OK
+  C4 se aprinde pe cazul lui                                             OK
+  C4: mulțimea e cea pinată ['C4']                                       OK
+  C5 se aprinde pe cazul lui                                             OK
+  C5: mulțimea e cea pinată ['C2', 'C5']                                 OK
+  C6 se aprinde pe cazul lui                                             OK
+  C6: mulțimea e cea pinată ['C2', 'C6']                                 OK
+  C7 se aprinde pe cazul lui                                             OK
+  C7: mulțimea e cea pinată ['C7']                                       OK
+  termen prin `**kw`: NU aprinde C6                                      OK
+  termen prin `**kw`: mulțimea e cea pinată ['C2']                       OK
+  termen prin `**kw`: se NUMĂRĂ separat, nu se uită                      OK
+  middleware blocant e VAZUT ca punct de intrare                         OK
+  middleware blocant: mulțimea e cea pinată ['C1']                       OK
+  control NEGATIV GET /control_curat nu se aprinde                       OK
+  control NEGATIV GET /control_pur nu se aprinde                         OK
+  control NEGATIV POST /control_threadpool nu se aprinde                 OK
+  control NEGATIV middleware main.py::mw_curat() nu se aprinde           OK
+  control NEGATIV middleware main.py::mw_prin_threadpool() nu se aprinde OK

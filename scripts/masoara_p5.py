@@ -54,9 +54,14 @@ import masoara_rute_portofoliu as MR  # noqa: E402
 NN = (5, 50, 100, 250, 500, 1000, 2500, 5000)
 NIVELE = (1, 2, 5, 10)
 CANAR = "/public/config"
-RUTA_ASYNC = "/tenants/%d/banca/parse-extras"
+#: ruta SUBIECT. Se cheama asa, si nu `RUTA_SUBIECT`, fiindca dupa valul 1 (10.09.2026) nu mai
+#: e `async def` — iar numele vechi ar fi fost o eticheta falsa lipita pe cifra corecta.
+#: Ramane ACEEASI ruta ca la masuratoarea «inainte»: altfel perechea n-ar compara nimic.
+RUTA_SUBIECT = "/tenants/%d/banca/parse-extras"
 RUTA_SYNC = "/tenants/%d/facturi"
-DIR = os.path.join(RAD, "masuratori", "p5")
+#: unde se scriu rezultatele. Se da din linia de comanda ca a doua rulare sa NU calce peste
+#: prima: `masuratori/p5/` e jumatatea «inainte», si ramane inghetata.
+DIR = os.path.join(RAD, os.environ.get("P5_IESIRE", "masuratori/p5"))
 
 #: tabelele din `public` pe care se ia amprenta, ca „n-a atins productia" sa fie masurat
 TABELE_AMPRENTA = ("tenants", "accounting_firms", "users", "user_tenants", "audit_log",
@@ -274,7 +279,7 @@ def curba_async(baza, tid, tok, nn=NN, repetari=8):
         t0 = time.perf_counter()
         for _ in range(repetari):
             rez = [None]
-            _post_fisier(baza, RUTA_ASYNC % tid, tok, continut, "extras.csv", rez, 0)
+            _post_fisier(baza, RUTA_SUBIECT % tid, tok, continut, "extras.csv", rez, 0)
             st, dt, corp = rez[0]
             durate.append(dt)
             statusuri[str(st)] = statusuri.get(str(st), 0) + 1
@@ -330,7 +335,7 @@ def concurenta(baza, tid, tok, dinainte, obs, nivele=NIVELE, n_tranzactii=250):
         c.latente.clear(); c.erori.clear()
         rez = [None] * k
         fire = [threading.Thread(target=_post_fisier,
-                                 args=(baza, RUTA_ASYNC % tid, tok, continut, "extras.csv", rez, i))
+                                 args=(baza, RUTA_SUBIECT % tid, tok, continut, "extras.csv", rez, i))
                 for i in range(k)]
         t0 = time.perf_counter()
         for f in fire:

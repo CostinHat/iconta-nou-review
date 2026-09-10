@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**547 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**549 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 523
+### `core/` — 524
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8161,6 +8161,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_solduri_api.py` — Teste gardian pentru solduri_api (partea PURA).
 - `core/test_solduri_parteneri_api.py` — Teste gardian pentru solduri_parteneri_api (partea PURA).
 - `core/test_sonda_web.py` — GARD [R75 (b), 27.08.2026]: procesul care servește ecranele e supravegheat, și se știe cum.
+- `core/test_sonde_stare.py` — core/test_sonde_stare.py — clichetul interdicției 78: o sondă care nu poate spune dacă a reușit.
 - `core/test_spv_conector.py` — Teste core/spv_conector.py — pe MOCK, niciodata pe ANAF real (brief BRIEF_CODE_CONECTOR_SPV.md).
 - `core/test_spv_poll.py` — Teste core/spv_poll.py (F178) — pe MOCK, niciodata pe ANAF real.
 - `core/test_spv_receive.py` — Teste core/spv_receive.py (F179) — pe MOCK (retea + parser), niciodata pe ANAF real.
@@ -8206,7 +8207,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 24
+### `scripts/` — 25
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -8230,6 +8231,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `scripts/scan_refuzuri.py` — scripts/scan_refuzuri.py — CE POARTA un refuz al aplicatiei, si ce nu poarta.
 - `scripts/scan_regimuri.py` — CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
 - `scripts/scan_rute_clasificate.py` — CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
+- `scripts/scan_sonde_stare.py` — scripts/scan_sonde_stare.py — SONDELE CARE MĂSOARĂ FĂRĂ SĂ ȘTIE DACĂ CEREREA A REUȘIT.
 - `scripts/scan_tranzactii.py` — scripts/scan_tranzactii.py — CINE DEȚINE LIMITA TRANZACȚIEI, derivat din cod.
 - `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
 
@@ -8340,3 +8342,63 @@ poate recalcula nu e o măsurătoare, e o amintire.*
 de dispecerizare) nu se văd, deci `RAW_CANDIDATES` e un **minim**. Și **nu** păzește că o cale
 clasificată `ACCEPTABLE_BY_DESIGN` chiar e inofensivă **la orice încărcare** — păzește că motivul
 pentru care a fost exclusă e scris și verificabil.
+
+
+---
+
+# `core/test_sonde_stare.py` — clichetul interdicției 78
+
+**Ce păzește** *(10.09.2026)*: `scripts/scan_sonde_stare.py` numără locurile în care o sondă de
+măsurare oferă starea răspunsului, iar apelantul o aruncă. Clichet: **0**.
+
+**De ce nu e un test vacuu, deși cifra e 0** — trei probe, fiecare cu treaba ei:
+1. **calibrarea rulează în suită**, 13 probe în ambele direcții, pe corpus sintetic;
+2. **anti-vacuu**: instrumentul trebuie să găsească cel puțin 5 perechi sondă↔apelant. O cifră 0 pe
+   o populație goală ar fi o afirmație despre nimic;
+3. **clasa vecină e pinată** — `NEJUDECATA`, cele 3 care poartă starea fără s-o judece. Nu e
+   plafonată (a plafona-o ar cere o judecată pe care instrumentul n-o poate face), dar dacă apare
+   una nouă, se vede. *Altfel un defect adevărat s-ar putea ascunde exact acolo.*
+
+**Instanța de origine e pinată pe nume:** cele două curbe ale bancului P5 trebuie să DUCĂ starea.
+*O interdicție al cărei caz de origine nu e pinat poate reveni fix de unde a plecat.* RED-proof:
+mutație care scoate înregistrarea statusurilor din `curba_sync` → 2 probe roșii.
+
+---
+
+# `core/test_blocante_clasificate.py` — patru probe noi, clichetul valului 1
+
+*(10.09.2026, după ce 16 din cele 17 căi au fost mutate de pe buclă)*
+
+Clichetul are **două direcții**, și a doua e cea care apără:
+* **direcția 1** — niciuna din cele 16 reparate nu mai aprinde C1. Inventarul se regenerează în
+  test, deci o rută pusă înapoi pe `async def` cade la prima rulare a suitei;
+* **direcția 2** — mulțimea căilor care APRIND C1 azi e exact cea scrisă în `RAMASE_PE_BUCLA`, cu
+  motiv per intrare. *Fără ea, o rută NOUĂ scrisă `async def` cu I/O blocant ar intra tăcut, iar
+  prima direcție n-ar spune nimic — ea se uită doar la lista celor deja reparate. Un clichet care
+  păzește numai ce știe deja e un clichet care nu păzește.*
+
+Plus două probe pe **structură**, nu pe inventar (METODA §23): handler-ul e chiar `def` în arborele
+lui `main.py`, și nu i-a rămas niciun `await` în corp — un handler făcut sincron care ar fi păstrat
+`await fisier.read()` n-ar mai primi octeți, ci o corutină, și ar cădea abia la rulare, pe o cale
+de import pe care testele n-o ating.
+
+RED-proof: mutație care pune `banca_parse_extras` înapoi pe `async def` → **5 probe roșii**.
+
+
+---
+
+# `core/test_mesaje_valueerror_publicat.py` — domeniul lărgit la rutele `async def`
+
+*(10.09.2026)* Gardul colecta rutele-canal cu `isinstance(fn, ast.FunctionDef)`. Rutele
+`async def` — **20** la momentul scrierii lui — n-au intrat niciodată în domeniu. Clichetul lui de
+diacritice arăta `0` pe nouă fișiere care aveau, tot timpul, mesaje fără diacritice publicate
+contabilului.
+
+**Cum s-a descoperit:** nu printr-o revizie a gardului, ci accidental — valul 1 al lui P5 a făcut
+16 din rutele alea sincrone, și gardul a început să vadă 10 mesaje în 9 fișiere. *Un gard cu
+domeniul greșit nu dă niciodată roșu; asta e chiar problema lui.*
+
+**Ce s-a schimbat:** ambele filtre acceptă acum `(ast.FunctionDef, ast.AsyncFunctionDef)`, deci și
+cele 4 rute rămase asincrone intră în rază. Cele 10 mesaje au fost **rescrise**, nu absorbite în
+baseline. Șapte dintre ele erau același text copiat în șapte module — deci reparația a scos și
+șapte dialecte ale aceluiași refuz, nu doar diacriticele.

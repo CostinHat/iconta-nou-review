@@ -126,19 +126,22 @@ def _loc(x, feluri=None, steag=None):
 
 CLASIFICARE = {
     "POST /tenants/{tenant_id}/banca/parse-extras": {
-        "clasa": ACTIUNE,
-        "dovada": MASURAT,
-        "val": 1,
+        "clasa": ACCEPTABIL,
+        "dovada": "REPARAT",
+        "val": None,
+        "cale_absenta": True,
         "de_ce": lambda: (
-            "SUBIECTUL MĂSURĂTORII, și de-aia are rând propriu. Handler `async def`, deci tot ce "
-            "face — verificarea accesului în bază și parsarea extrasului — se întâmplă PE BUCLĂ. "
-            "Măsurat pe calea reală, cu un canar care bate o rută ieftină în paralel: la N=%s "
-            "tranzacții ruta ia %s, iar canarul — care n-are nicio legătură cu importul — așteaptă "
-            "p95 %s, vârf %s. Linia lui de bază, în gol: p95 %s. Martorul sincron, aceeași "
-            "măsurătoare pe o rută din threadpool care CHIAR reușește: canar p95 %s, adică plat. "
-            "Deci nu încărcarea în sine mută cifra, ci faptul că munca stă pe buclă."
+            "SUBIECTUL MĂSURĂTORII, ȘI PRIMA CALE REPARATĂ — de-aia are rând propriu, și de-aia "
+            "rândul rămâne după ce calea a IEȘIT din inventar. Era `async def`, deci tot ce făcea "
+            "— verificarea accesului în bază și parsarea extrasului — se întâmpla PE BUCLĂ. "
+            "Măsurat ÎNAINTE, cu un canar care bătea o rută ieftină în paralel: la N=%s tranzacții "
+            "ruta lua %s, iar canarul — care n-avea nicio legătură cu importul — aștepta p95 %s, "
+            "vârf %s, față de %s în gol. **Valul 1 (10.09.2026)** a făcut handler-ul sincron, deci "
+            "Starlette îl mută pe un fir. Azi calea nu mai aprinde NICIUN detector: nu e «mai "
+            "puțin gravă», a ieșit cu totul din inventarul brut. *Rândul se păstrează fiindcă o "
+            "reparație ștearsă din registru arată identic cu un defect care n-a existat niciodată.*"
             % (masuratori().get("N_varf"), _c("ruta_varf_p50"), _c("canar_varf_p95"),
-               _c("canar_varf_max"), _c("canar_baza_p95"), _c("canar_sync_p95"))),
+               _c("canar_varf_max"), _c("canar_baza_p95"))),
     },
     "main.py::lifespan()": {
         "clasa": ACCEPTABIL,
@@ -150,6 +153,25 @@ CLASIFICARE = {
             "A-l muta pe threadpool ar strica exact garanția aia. Ce rămâne adevărat, și se "
             "scrie: durata pornirii crește cu numărul de firme, iar publicarea repornește "
             "procesul — deci costul ăsta se plătește la fiecare livrare, nu o dată.",
+    },
+    "POST /tenants/{tenant_id}/horeca/import-amef": {
+        "clasa": ACTIUNE,
+        "dovada": "SERIALIZARE_ACCIDENTALA",
+        "val": 1,
+        "de_ce":
+            "SINGURA DIN CELE 17 CARE N-A FOST MUTATĂ, și nu din scăpare. Azi, după citirea "
+            "fișierului, handler-ul rulează până la capăt FĂRĂ să mai cedeze bucla — deci două "
+            "cereri simultane sunt SERIALIZATE. Pe serializarea asta se sprijină, fără s-o fi "
+            "declarat nimeni, poarta R61 din `_cere_z_unic`: un raport Z duplicat se REFUZĂ. Iar "
+            "`inregistrari` NU are index unic pe `(sursa, numar)` — verificat în "
+            "`tenant_template.sql`, unde tabela are doar cheia primară pe `id`. Mutarea pe fir ar "
+            "face ca două încărcări simultane ale aceluiași Z să treacă amândouă de verificare. "
+            "*O regresie de contabilitate cumpărată cu o îmbunătățire de latență nu e o "
+            "îmbunătățire* — iar planul cere explicit ca semantica să nu se schimbe "
+            "(PLAN_HARDENING.md:337). Costul ținerii pe loc e mic: calea parsează un XML și scrie "
+            "câteva rânduri, deci e cel mai ieftin dintre cei 17 blocanți. Se deblochează în două "
+            "feluri, amândouă declarate: index unic pe `(sursa, numar)`, sau "
+            "`pg_advisory_xact_lock` pe cheia raportului înainte de verificare.",
     },
     "middleware main.py::_audit_middleware()": {
         "clasa": ACCEPTABIL,
@@ -291,6 +313,47 @@ REGULI = [
                masuratori().get("capacitate_pool"))),
     },
 ]
+
+
+# ============================================================================
+#  VALUL 1 — clichet în AMBELE direcții
+#
+#  O listă de „reparate" fără gardă e o promisiune. Lista de mai jos e citită de
+#  `core/test_blocante_clasificate.py`, care cere ca NICIUNA să nu mai aprindă
+#  C1 — și, separat, ca mulțimea celor rămase pe buclă să fie exact cea scrisă.
+#  *Fără a doua parte, o rută nouă `async def` cu I/O blocant ar intra tăcut.*
+# ============================================================================
+
+#: cele 16 căi mutate de pe buclă pe 10.09.2026 (valul 1)
+REPARATE_VAL1 = (
+    "POST /migrare/fisier",
+    "POST /migrare/incarca",
+    "POST /portal/bon",
+    "POST /raportari/mesaj/{mid}/imagine",
+    "POST /tenants/{tenant_id}/articole-import/incarca",
+    "POST /tenants/{tenant_id}/asociati-import/incarca",
+    "POST /tenants/{tenant_id}/banca/parse-extras",
+    "POST /tenants/{tenant_id}/banca/reconciliere/import",
+    "POST /tenants/{tenant_id}/import-efactura",
+    "POST /tenants/{tenant_id}/istoric-declaratii-import/incarca",
+    "POST /tenants/{tenant_id}/mijloace-fixe-import/incarca",
+    "POST /tenants/{tenant_id}/parteneri/incarca",
+    "POST /tenants/{tenant_id}/retete-import/incarca",
+    "POST /tenants/{tenant_id}/rip-import/incarca",
+    "POST /tenants/{tenant_id}/salariati-import/incarca",
+    "POST /tenants/{tenant_id}/solduri/incarca",
+)
+
+#: ce a RĂMAS să aprindă C1, cu motivul fiecăreia. Mulțimea e pinată: și o intrare
+#: în plus, și una în minus, pică. O listă goală ar fi o minciună; una nescrisă, la fel.
+RAMASE_PE_BUCLA = {
+    "POST /tenants/{tenant_id}/horeca/import-amef":
+        "ținută pe loc DELIBERAT: bucla îi serializează azi verificarea de unicitate a raportului "
+        "Z, iar baza n-are index unic care s-o înlocuiască — v. rândul ei individual",
+    "main.py::lifespan()":
+        "pornirea aplicației, nu o cerere: blochează bucla ÎNAINTE ca serverul să accepte cereri, "
+        "deci n-are cui să facă rău, și e fail-closed prin decizie scrisă la P2",
+}
 
 
 def verdict(x, clasificare=None, reguli=None):

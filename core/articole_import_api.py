@@ -45,7 +45,9 @@ def extrage(continut, nume_fisier=""):
             randuri.append(["" if c is None else c for c in r])
         wb.close()
     else:
-        raise ValueError("format neacceptat (doar .csv sau .xlsx)")
+        raise ValueError("Fișierul trimis nu se poate citi: se așteaptă un CSV sau un "
+                         "XLSX. Salvează exportul în unul din formatele astea și "
+                         "încarcă-l din nou.")
     if not randuri:
         return []
     antet = [str(x) for x in randuri[0]]

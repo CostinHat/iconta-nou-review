@@ -857,6 +857,9 @@ RECONCILIERE     document emis ↔ evidență ↔ recalcul ↔ ce confirmă auto
 | 75 | **Date care se pot lua doar cu intervenția noastră, sau într-un format închis** | P26 |
 | 76 | **Un instrument de măsurare fără calibrare pe propriul mod de eșec** | P24 |
 | 77 | **Un blocaj fără temei: aplicația oprește un act și nu spune pe ce se sprijină** | P24·P14 |
+| 78 | **O sondă de măsurare care nu poate spune dacă cererea măsurată a REUȘIT** | P5 |
+
+**Interdicția 78, adăugată 10.09.2026, cu motivul ei.** O sondă înregistra durata unei cereri și nu și starea ei. *O durată există și pe 500* — deci 40 de măsurători ale unei căi care cădea cu `UndefinedTable` au fost raportate ca măsurători ale căii de succes. Nu greșește cifra, greșește **subiectul**: spune despre altă ramură decât cea numită. E sora interdicției 76 — acolo instrumentul nu-și cunoaște modul de eșec, aici sonda nu-și cunoaște ramura —, dar se măsoară altfel, iar clichetul ei e pe altă populație. Cifra e **0** azi, cu cenzus complet; clasa vecină, cea în care starea supraviețuiește dar nimeni n-o judecă, se numără și se pinează, dar NU se plafonează.
 
 **Interdicția 76, adăugată 23.08.2026 (Costin), cu motivul ei.** Calibrarea **pozitivă** dovedește că
 instrumentul **găsește ce caută**. Nu dovedește că **nu ratează**. Patru instanțe într-o singură zi,

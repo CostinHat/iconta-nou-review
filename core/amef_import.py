@@ -43,7 +43,8 @@ def extrage_xml(continut: bytes) -> str:
     m = re.search(rb"<\?xml.*?</msj>|<msj.*?</msj>", continut, re.S)
     if m:
         return m.group(0).decode("utf-8", errors="ignore")
-    raise ValueError("nu am gasit XML de raport Z in fisier (nici p7b valid, nici XML)")
+    raise ValueError("Nu am găsit niciun raport Z în fișier — nici într-un p7b semnat, nici "
+                     "ca XML simplu. Încarcă fișierul exportat de casa de marcat.")
 
 
 def parseaza_raport_z(xml_text: str) -> dict:
@@ -51,7 +52,8 @@ def parseaza_raport_z(xml_text: str) -> dict:
     root = ET.fromstring(xml_text)
     rb = root.find("rB") if root.tag != "rB" else root
     if rb is None:
-        raise ValueError("fisierul nu contine raport Z de uz general (tag rB, sectiunea II.7)")
+        raise ValueError("Fișierul conține un XML, dar nu un raport Z de uz general: lipsește "
+                         "eticheta «rB» cerută de OPANAF 146/2018 secțiunea II.7.")
     a = rb.attrib
     idr = a.get("idR", "")
     # idR: 10 NUI + AAAALLZZHHMMSS + 4 nr raport
@@ -93,13 +95,18 @@ def _test():
            '<coteZ cota="11" valOp="350.00" tva="34.68"/>'
            '</rB></msj>')
     r = parseaza_raport_z(xml)
+    # Totalul asteptat se DERIVA din XML-ul de mai sus, nu se copiaza ca literal: un auto-test care
+    # compara parserul cu un numar scris de mana verifica mai putin decat unul care il compara cu
+    # propria intrare — iar la o schimbare a datelor de proba, literalul ar minti in tacere.
+    _total_xml = sum(Decimal(v) for v in re.findall(r'valOp="([0-9.]+)"', xml))
+    _plati_xml = sum(Decimal(v) for v in re.findall(r'valPl="([0-9.]+)"', xml))
     assert r["nui"] == "8000000001"
     assert r["data"] == "2026-07-04"
     assert r["nr_raport"] == "0042"
-    assert r["total"] == Decimal("2450.00")
+    assert r["total"] == _total_xml
     assert len(r["cote"]) == 2 and r["cote"][0]["cota"] == "21"
     assert {p["tip"] for p in r["plati"]} == {"card", "numerar"}
-    assert sum(p["suma"] for p in r["plati"]) == Decimal("2450.00")
+    assert sum(p["suma"] for p in r["plati"]) == _plati_xml
     # extrage_xml pe XML curat
     assert "<msj" in extrage_xml(xml.encode())
     # fallback regex pe p7b simulat (XML atasat in binar)

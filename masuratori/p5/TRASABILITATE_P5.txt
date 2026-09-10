@@ -1,0 +1,106 @@
+TRASABILITATEA FINALA P5 — DIAGNOSTIC, masurata DUPA ultimul commit
+Generat cu: ./venv/bin/python -m scripts.p5_trasabilitate
+produs la: 2026-09-10T11:07:11+03:00
+==============================================================================
+
+--- INVENTAR ---
+ENTRY_POINTS_SCANNED=514
+  (rute async 20 · rute sync 407 · middleware 3 · restul: lucrători și pornire)
+DETECTORS=7
+RAW_CANDIDATES=94
+TRUNCATED_EXPANSIONS=0   (adâncime 8)
+
+--- CALIBRARE ---
+DETECTOR_CALIBRATION_PROBES=24
+DETECTOR_CALIBRATION_GAPS=0
+NEGATIVE_CONTROLS=5
+
+--- CLASIFICARE ---
+CLASSIFIED_CANDIDATES=94
+UNCLASSIFIED_RAW_CANDIDATES=0
+ACTION_REQUIRED=46
+ACCEPTABLE_BY_DESIGN=48
+FALSE_POSITIVES=0
+RAW_CLASS_SUM=94
+RAW_CLASS_ACCOUNTING=PASS
+EXCLUSIONS_TOTAL=48   (populația: toți candidații care NU cer acțiune)
+UNEXPLAINED_EXCLUSIONS=0
+
+  valuri de remediere (propuse, NEEXECUTATE): val 1 = 17 căi · val 3 = 29 căi
+
+--- MASURATORI ---
+MEASUREMENT_COMMIT=8ce4cd84b07f411f458a35cc9b9ff9e9990fbcd1
+BASELINE_CANARY_P95_MS=3.4
+N_SERIES=5,50,100,250,500,1000,2500,5000
+PEAK_N=5000
+PEAK_ROUTE_P50_MS=143.0
+PEAK_CANARY_P95_MS=117.9
+PEAK_CANARY_MAX_MS=158.7
+SYNC_CONTROL_CANARY_P95_MS=3.8   (rută sincronă de cost comparabil, toate 200)
+UNEXPECTED_STATUSES=0
+SERVER_LOG_TRACEBACKS=0
+RAW_EVIDENCE_SERIES=27   (1030 valori)
+
+--- CONCURENTA ---
+k=1   THROUGHPUT=23.05 req/s · P50=43.0 ms · P95=43.0 ms · P99=43.0 ms · MAX_SIMULTANEOUS_RESOURCE_USE=1 · RESOURCE_CAPACITY=10 · ERRORS=0 · TIMEOUTS=0 · DEADLOCKS=0
+k=2   THROUGHPUT=22.59 req/s · P50=84.1 ms · P95=87.2 ms · P99=87.2 ms · MAX_SIMULTANEOUS_RESOURCE_USE=2 · RESOURCE_CAPACITY=10 · ERRORS=0 · TIMEOUTS=0 · DEADLOCKS=0
+k=5   THROUGHPUT=24.19 req/s · P50=201.4 ms · P95=204.1 ms · P99=204.1 ms · MAX_SIMULTANEOUS_RESOURCE_USE=4 · RESOURCE_CAPACITY=10 · ERRORS=0 · TIMEOUTS=0 · DEADLOCKS=0
+k=10  THROUGHPUT=22.15 req/s · P50=435.6 ms · P95=444.5 ms · P99=444.5 ms · MAX_SIMULTANEOUS_RESOURCE_USE=8 · RESOURCE_CAPACITY=10 · ERRORS=0 · TIMEOUTS=0 · DEADLOCKS=0
+
+--- SIGURANTA SONDEI ---
+PRODUCTION_DATA_AFFECTED=NO
+FINGERPRINTED_TABLES=10
+FINGERPRINT_DIFFS=0
+AUDIT_ROWS_CLEANED=122
+
+--- CONTRACTUL FAZEI ---
+BASELINE_COMMIT=8ce4cd84b07f411f458a35cc9b9ff9e9990fbcd1
+PRODUCTION_CODE_CHANGED=NO
+REQUEST_PATH_CHANGED=NO
+RUNTIME_BEHAVIOR_CHANGED=NO
+P5_IMPLEMENTATION_STARTED=NO
+  fișiere de producție atinse față de baseline: niciunul
+  fișiere noi, netracked: core/p5_clasificare.py, core/test_blocante_clasificate.py, masuratori/p5/, scripts/artefacte_p5.py, scripts/masoara_p5.py, scripts/p5_trasabilitate.py, scripts/scan_blocante.py
+
+--- CELE TREI COMMITURI, tinute separat --------------------------------------
+BASELINE_COMMIT=8ce4cd84b07f411f458a35cc9b9ff9e9990fbcd1
+DIAGNOSTIC_CODE_COMMIT=20a10bc6313877a6bc2097dbb0e7f8f6e7d51dd4
+P5_FINAL_DIAGNOSTIC_COMMIT=8dfadd40cae23ad24f69dcec54294ba704c7ca2a
+  commituri intre baseline si final: 2
+  ATENTIE: codul de diagnostic si commitul final NU sunt acelasi commit.
+  Suita de mai jos a rulat pe 8dfadd40 (finalul), nu pe 20a10bc6.
+
+--- SUITA COMPLETA, rulata acum ----------------------------------------------
+FULL_SUITE_COMMIT=8dfadd40cae23ad24f69dcec54294ba704c7ca2a
+FULL_SUITE_PASSED=4405
+FULL_SUITE_FAILED=0
+FULL_SUITE_SKIPPED=11
+FULL_SUITE_XFAILED=14
+FULL_SUITE_EXIT_CODE=0
+  (durata: 1596.31 s · linia de rezumat: 4405 passed, 11 skipped, 14 xfailed in 1594.44s (0:26:34))
+  COMANDA: ./venv/bin/python -m pytest -q
+  Suita a rulat pe arborele lui 8dfadd40, DUPA commit — deci FULL_SUITE_COMMIT == P5_FINAL_DIAGNOSTIC_COMMIT
+
+--- CELE CINCI BRATE ---------------------------------------------------------
+HEAD=8dfadd40cae23ad24f69dcec54294ba704c7ca2a
+ORIGIN_MAIN=8dfadd40cae23ad24f69dcec54294ba704c7ca2a
+PUBLIC_MAIN=8dfadd40cae23ad24f69dcec54294ba704c7ca2a
+BACKUP=8dfadd40cae23ad24f69dcec54294ba704c7ca2a   (backup/lant-2026-09-10, citit din git ls-remote origin backup/lant-2026-09-10)
+LIVE_PROCESS_COMMIT=8dfadd40cae23ad24f69dcec54294ba704c7ca2a
+  sursa procesului viu: GET /admin/versiune -> {"running": "8dfadd40cae23ad24f69dcec54294ba704c7ca2a", "head": "8dfadd40cae23ad24f69dcec54294ba704c7ca2a", "divergent": false, "necunoscut": false}
+FIVE_WAY_STATUS=PASS   (HEAD · origin/main · public/main · backup · proces viu)
+
+--- VERDICT ------------------------------------------------------------------
+  [OK] suita verde
+  [OK] cinci brate
+  [OK] fara candidat neclasificat
+  [OK] contabilitatea claselor
+  [OK] fara excludere nemotivata
+  [OK] fara gol de calibrare
+  [OK] codul de productie neatins
+  [OK] datele de productie neatinse
+  [OK] nicio masuratoare pe alta ramura
+P5_DIAGNOSTIC_STATUS=COMPLETE
+P5_IMPLEMENTATION=NOT_STARTED
+  `P5_DIAGNOSTIC_STATUS=COMPLETE` NU inseamna `P5_IMPLEMENTATION=CLOSED`:
+  diagnosticul e inchis, remedierea nu e nici macar inceputa — v. valurile din raport.

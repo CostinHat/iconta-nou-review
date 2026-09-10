@@ -25,7 +25,10 @@ sys.path.insert(0, os.path.join(RAD, "scripts"))
 import scan_blocante as SB  # noqa: E402
 from core import p5_clasificare as P  # noqa: E402
 
-IES = os.path.join(RAD, "masuratori", "p5")
+#: unde se scriu artefactele. `masuratori/p5/` e DIAGNOSTICUL, si ramane inghetat: e
+#: jumatatea «inainte» a perechii cerute de plan. O regenerare peste el ar sterge chiar
+#: termenul de comparatie.
+IES = os.path.join(RAD, os.environ.get("P5_IESIRE", "masuratori/p5"))
 _RAD_G = RAD
 
 

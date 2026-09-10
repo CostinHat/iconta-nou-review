@@ -1,0 +1,165 @@
+{
+ "DETECTOR_CALIBRATION_GAPS": 0,
+ "calibrare": {
+  "C1": {
+   "astept": [
+    "C1"
+   ],
+   "caz": "POST /numai_c1"
+  },
+  "C2": {
+   "astept": [
+    "C2"
+   ],
+   "caz": "POST /numai_c2"
+  },
+  "C3": {
+   "astept": [
+    "C3"
+   ],
+   "caz": "POST /numai_c3"
+  },
+  "C4": {
+   "astept": [
+    "C4"
+   ],
+   "caz": "POST /numai_c4"
+  },
+  "C5": {
+   "astept": [
+    "C2",
+    "C5"
+   ],
+   "caz": "POST /minim_c5"
+  },
+  "C6": {
+   "astept": [
+    "C2",
+    "C6"
+   ],
+   "caz": "POST /minim_c6"
+  },
+  "C7": {
+   "astept": [
+    "C7"
+   ],
+   "caz": "POST /numai_c7"
+  }
+ },
+ "controale_negative": [
+  "GET /control_curat",
+  "GET /control_pur",
+  "POST /control_threadpool",
+  "middleware main.py::mw_curat()",
+  "middleware main.py::mw_prin_threadpool()"
+ ],
+ "detectori": {
+  "C1": "async def cu primitivă blocantă atinsă FĂRĂ trecere prin threadpool (ține bucla de evenimente ocupată)",
+  "C2": "rută SINCRONĂ care ajunge la un apel de rețea extern (ocupă un fir din cele 40)",
+  "C3": "cale care ajunge la un SUBPROCES",
+  "C4": "cale care ajunge la `time.sleep`",
+  "C5": "primitivă blocantă NE-DB executată cât timp e ținută o conexiune din pool",
+  "C6": "apel de rețea FĂRĂ `timeout`",
+  "C7": "I/O de fișier pe calea unei cereri"
+ },
+ "picate": [],
+ "probe": [
+  {
+   "nume": "C1 se aprinde pe cazul lui",
+   "ok": true
+  },
+  {
+   "nume": "C1: mulțimea e cea pinată ['C1']",
+   "ok": true
+  },
+  {
+   "nume": "C2 se aprinde pe cazul lui",
+   "ok": true
+  },
+  {
+   "nume": "C2: mulțimea e cea pinată ['C2']",
+   "ok": true
+  },
+  {
+   "nume": "C3 se aprinde pe cazul lui",
+   "ok": true
+  },
+  {
+   "nume": "C3: mulțimea e cea pinată ['C3']",
+   "ok": true
+  },
+  {
+   "nume": "C4 se aprinde pe cazul lui",
+   "ok": true
+  },
+  {
+   "nume": "C4: mulțimea e cea pinată ['C4']",
+   "ok": true
+  },
+  {
+   "nume": "C5 se aprinde pe cazul lui",
+   "ok": true
+  },
+  {
+   "nume": "C5: mulțimea e cea pinată ['C2', 'C5']",
+   "ok": true
+  },
+  {
+   "nume": "C6 se aprinde pe cazul lui",
+   "ok": true
+  },
+  {
+   "nume": "C6: mulțimea e cea pinată ['C2', 'C6']",
+   "ok": true
+  },
+  {
+   "nume": "C7 se aprinde pe cazul lui",
+   "ok": true
+  },
+  {
+   "nume": "C7: mulțimea e cea pinată ['C7']",
+   "ok": true
+  },
+  {
+   "nume": "termen prin `**kw`: NU aprinde C6",
+   "ok": true
+  },
+  {
+   "nume": "termen prin `**kw`: mulțimea e cea pinată ['C2']",
+   "ok": true
+  },
+  {
+   "nume": "termen prin `**kw`: se NUMĂRĂ separat, nu se uită",
+   "ok": true
+  },
+  {
+   "nume": "middleware blocant e VAZUT ca punct de intrare",
+   "ok": true
+  },
+  {
+   "nume": "middleware blocant: mulțimea e cea pinată ['C1']",
+   "ok": true
+  },
+  {
+   "nume": "control NEGATIV GET /control_curat nu se aprinde",
+   "ok": true
+  },
+  {
+   "nume": "control NEGATIV GET /control_pur nu se aprinde",
+   "ok": true
+  },
+  {
+   "nume": "control NEGATIV POST /control_threadpool nu se aprinde",
+   "ok": true
+  },
+  {
+   "nume": "control NEGATIV middleware main.py::mw_curat() nu se aprinde",
+   "ok": true
+  },
+  {
+   "nume": "control NEGATIV middleware main.py::mw_prin_threadpool() nu se aprinde",
+   "ok": true
+  }
+ ],
+ "probe_total": 24
+}

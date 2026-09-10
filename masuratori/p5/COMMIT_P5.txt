@@ -1,0 +1,17 @@
+COMMITURILE FAZEI P5-DIAGNOSTIC
+==============================================================================
+
+BASELINE_COMMIT=8ce4cd84b07f411f458a35cc9b9ff9e9990fbcd1
+  Contabilitatea P4: doua universuri, doua familii de nume — 6+325+1=332, si separat 6+1=7
+
+DIAGNOSTIC_CODE_COMMIT=20a10bc6313877a6bc2097dbb0e7f8f6e7d51dd4
+  P5-DIAGNOSTIC: 94 de candidați, 46 cer acțiune — și două defecte ale propriilor mele instrumente
+
+P5_FINAL_DIAGNOSTIC_COMMIT=8dfadd40cae23ad24f69dcec54294ba704c7ca2a
+  Raportul P5-DIAGNOSTIC + generatorul care scrie FISIERE_ATINSE și COMMIT_P5
+
+FULL_SUITE_COMMIT=8dfadd40cae23ad24f69dcec54294ba704c7ca2a   (rulata DUPA acest commit)
+
+--- LANTUL INTREG (2 commituri) ---
+  8dfadd40 Raportul P5-DIAGNOSTIC + generatorul care scrie FISIERE_ATINSE și COMMIT_P5
+  20a10bc6 P5-DIAGNOSTIC: 94 de candidați, 46 cer acțiune — și două defecte ale propriilor mele instrumente

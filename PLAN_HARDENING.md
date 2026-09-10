@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-10
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 DIAGNOSTIC ÎNCHIS, implementare NEÎNCEPUTĂ** · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-10 (valul 1)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALUL 1 EXECUTAT ȘI MĂSURAT** (16 din 17 căi mutate de pe buclă; valul 3 NEÎNCEPUT, prin decizia arhitectului) · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -380,6 +380,84 @@ sus. Pasul 3 (intervenția) și verificarea „din nou, după" rămân neîncepu
   rămas niciun apel fără termen cert. Cifra n-a scăzut fiindcă am relaxat criteriul, ci fiindcă
   criteriul greșea — iar cele două căi n-au ieșit din `ACTION_REQUIRED`, s-au mutat în valul 3 pe
   altă dovadă.*
+
+
+---
+
+### Excepția de publicare pentru fazele PUR DIAGNOSTICE (10.09.2026, cerută de arhitect)
+
+**Regula.** *„Nu publica fazele pur-diagnostice pe cele două remote-uri — publicarea repornește
+procesul degeaba dacă runtime-ul nu s-a schimbat."* O fază care nu atinge niciun fișier care ajunge
+în procesul care servește cereri **nu se publică**: nu se împinge pe `origin/main` și `public/main`,
+nu se republică statica, nu se repornește serviciul.
+
+**Criteriul e MECANIC, nu o etichetă din mesaj:** `git diff --name-status <baza>..HEAD`, filtrat pe
+ce ajunge în proces. `scripts/artefacte_p5.py:_e_productie` e definiția, deja folosită ca să derive
+`PRODUCTION_CODE_CHANGED`. *La fel ca la curățenie: decide indexul, nu eticheta.*
+
+**NEIMPLEMENTATĂ ÎN HOOK, și motivul e o ciocnire, nu o uitare.** `post-commit` nu poate primi
+criteriul ăsta fără să cadă `core/test_publicare_restart_neconditionat.py`, care interzice explicit
+*„orice inspecție a CONȚINUTULUI commitului în hook (`git diff` / `--name-only` / extensii de
+fișier)"*. Gardul are instanța lui scrisă: pe **11.08.2026**, publicarea condiționată pe tipul
+commitului a lăsat procesul viu pe commitul anterior — `RUNNING b0ccc40` vs `HEAD f504f00`. Iar
+four-way-ul cere `pornire > commit`, deci un commit nepublicat l-ar lăsa deschis prin construcție.
+
+**Cele două căi, ca decizia să nu ceară o a doua tură:**
+  * **(a) se redefinește four-way-ul** — un commit fără fișiere de runtime are voie să lase
+    `RUNNING` în urmă, iar verificarea învață același criteriu mecanic. Coerent, dar slăbește cea
+    mai tare invariantă a casei, și cere schimbat și gardul din 11.08;
+  * **(b) nu se comite separat** — artefactele unei faze pur diagnostice călătoresc cu următorul
+    commit care chiar schimbă runtime-ul. Nu atinge nici hook-ul, nici gardul, nici four-way-ul;
+    costul e că evidența fazei intră mai târziu în lanț.
+
+*Regula e scrisă aici fiindcă asta s-a cerut. Partea mecanică așteaptă alegerea dintre (a) și (b).*
+
+
+## VALUL 1 (10.09.2026) — executat, măsurat, și NEÎNCHIS
+
+*Aprobat de arhitect: „valul 1, apoi valul 3 (obligatoriu, nu opțional)". Valul 3 NU s-a pornit.*
+
+**Ce s-a făcut.** 16 din cele 17 căi au trecut din `async def` în `def`, deci Starlette le mută pe
+un fir din cele 40. Citirea fișierului a trecut de la `await X.read()` la `_octetii(X)` —
+echivalent verificat în sursa Starlette (`datastructures.py:462`, `formparsers.py:266`). Diff-ul e
+de două linii pe rută. Clichet în ambele direcții în `core/test_blocante_clasificate.py`: niciuna
+din cele 16 nu mai poate aprinde C1, **și** mulțimea celor rămase pe buclă e pinată.
+
+**Ce NU s-a făcut, și de ce.** `POST /tenants/{id}/horeca/import-amef` rămâne `async def`. Azi,
+după citirea fișierului, handler-ul rulează până la capăt fără să cedeze bucla, deci două cereri
+simultane sunt SERIALIZATE — iar pe serializarea asta se sprijină, fără s-o fi declarat nimeni,
+poarta R61 din `_cere_z_unic` (un raport Z duplicat se REFUZĂ). `inregistrari` **nu are index unic
+pe `(sursa, numar)`**. Mutarea pe fir ar fi cumpărat latență cu o regresie de contabilitate.
+
+**Măsurat din nou, aceeași sarcină, aceiași N** (`masuratori/p5_val1/`, cu așteptarea scrisă
+ÎNAINTE în `ASTEPTAREA.md` și confruntarea în `REZULTATUL.md`):
+
+| | înainte | după | predicția |
+|---|---|---|---|
+| canar p95 la N=5000 | 117,9 ms | **93,7 ms** | „sub 10 ms" — **GREȘIT** |
+| ruta p50 la N=5000 | 143,0 ms | 149,7 ms | „± 25%" — corect |
+| debit la k=10 | 22,15 req/s | **19,4 req/s** | „peste 40" — **GREȘIT, și invers** |
+| conexiuni simultane la k=10 | 8 din 10 | **10 din 10** | „10 din 10" — corect |
+
+**De ce n-a fost destul, măsurat și nu dedus.** Prima explicație — GIL-ul — a căzut la măsurătoare:
+munca de procesor a rutei e 38,5 ms din 149,7. Cauza adevărată e că FastAPI serializează răspunsul
+**în afara handler-ului, pe buclă**: `jsonable_encoder` **67,6 ms** + `json.dumps` 7,2 ms pentru
+cele 5000 de tranzacții (998 KB de JSON). *Handler-ul s-a mutat; răspunsul nu.* Comparația care
+închide argumentul: martorul sincron, tot `def`, tot cu bază, dar cu răspuns mic — canar p95
+**4,3 ms, plat**. O singură variabilă diferă.
+
+**Consecința pentru inventarul P5:** cei 7 detectori au căutat I/O blocant **în codul nostru**.
+Serializarea răspunsului e în framework, deci n-a fost văzută de niciun detector și nu figurează
+între cei 94 de candidați. **Oarbire prin construcție, descoperită abia măsurând reparația.**
+
+**Ce e închis:** cele **4** căi care ajung la rețea, `sleep` sau disc — `/migrare/fisier`,
+`/migrare/incarca`, `/portal/bon`, `/raportari/mesaj/{mid}/imagine`. Acolo câștigul e întreg,
+fiindcă acele primitive eliberează GIL-ul. `/migrare/fisier` era cazul cel mai grav din tot P5:
+`time.sleep(1.1)` la fiecare 100 de CUI-uri, pe buclă — un fișier cu 500 de CUI-uri îngheța
+aplicația 4,4 secunde.
+
+**Ce NU e închis:** cele **12** căi care întorc liste mari. Pentru ele valul 1 era necesar, dar nu
+suficient.
 
 
 ---

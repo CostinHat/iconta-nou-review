@@ -1,0 +1,36 @@
+FISIERE ATINSE IN FAZA P5-DIAGNOSTIC
+de la 8ce4cd84 (baseline) pana la 8dfadd40 (final)
+==============================================================================
+
+Derivat cu: git diff --name-status 8ce4cd84..HEAD
+Legenda: A = adaugat · M = modificat · D = sters
+
+--- TOATE (25) ---
+  M	CONFORMITATE.md
+  M	DECIZII.md
+  M	GARZI.md
+  M	PLAN_HARDENING.md
+  A	RAPORT_P5_DIAGNOSTIC.md
+  M	TESTE.md
+  A	core/p5_clasificare.py
+  A	core/test_blocante_clasificate.py
+  M	core/test_module_nelegate.py
+  A	masuratori/p5/P5_CALLCHAINS.json
+  A	masuratori/p5/P5_CALLCHAINS.txt
+  A	masuratori/p5/P5_CLASIFICARE.json
+  A	masuratori/p5/P5_CLASIFICARE.txt
+  A	masuratori/p5/P5_DETECTOR_CALIBRATION.json
+  A	masuratori/p5/P5_DETECTOR_CALIBRATION.txt
+  A	masuratori/p5/P5_INVENTAR_BRUT.json
+  A	masuratori/p5/P5_INVENTAR_BRUT.txt
+  A	masuratori/p5/P5_MASURATORI.json
+  A	masuratori/p5/P5_RAW_EVIDENCE/P5_uvicorn.log
+  A	masuratori/p5/P5_RAW_EVIDENCE/esantioane.json
+  A	masuratori/p5/acceptare.txt
+  A	scripts/artefacte_p5.py
+  A	scripts/masoara_p5.py
+  A	scripts/p5_trasabilitate.py
+  A	scripts/scan_blocante.py
+
+--- DIN CARE, COD DE PRODUCTIE (0) ---
+  niciunul. PRODUCTION_CODE_CHANGED=NO nu e o declaratie, e randul asta.

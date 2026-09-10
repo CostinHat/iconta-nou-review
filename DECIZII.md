@@ -14230,3 +14230,31 @@ diagnostic cere să nu se facă fără aprobare. Rămâne varianta pentru ziua �
 problemă e o interogare lentă **nu apare** în cei 94 de candidați. Inventarul e despre I/O blocant
 ca **formă**, iar interogarea lentă intră doar dacă ruta e și pe buclă (și atunci C1 o prinde
 oricum, din alt motiv).
+
+
+---
+
+## Valul 1 se face prin handler SINCRON, nu prin `run_in_threadpool` scris de mână (10.09.2026)
+
+**Decizia, luată de mine.** Planul cere „mutare pe `run_in_threadpool`" (`PLAN_HARDENING.md:331`).
+Forma aleasă e să faci handler-ul `def`: Starlette îl mută singur pe un fir din cele 40 — **același**
+`run_in_threadpool`, chemat de framework în loc de mine.
+
+**De ce.** Fiecare din cele 17 rute avea un singur `await`: citirea fișierului. A învălui corpul în
+`run_in_threadpool` ar fi cerut extragerea lui într-o funcție separată, cu toate argumentele
+trecute prin ea — zeci de linii pe rută. Conversia la `def` e două linii, iar forma rezultată e
+cea pe care o au deja 407 din rutele casei. *Diff-ul mic nu e o comoditate: e ce face reparația
+verificabilă la citire.*
+
+**Ce s-a verificat înainte, nu după:** că singurul `await` din fiecare corp e citirea fișierului —
+mecanic, pe AST, cu refuz dacă apare altul. Un `await` rămas într-un handler sincron n-ar mai citi
+octeți, ar primi o corutină.
+
+**Varianta respinsă:** conversia oarbă a tuturor celor 17. `horeca_import_amef` s-a ținut pe loc,
+fiindcă bucla îi serializează azi verificarea de unicitate a raportului Z, iar baza n-are index
+unic care s-o înlocuiască — v. rândul ei din `core/p5_clasificare.py`.
+
+**Ce a arătat măsurătoarea de după, și n-a fost ce am prezis:** intervenția e necesară dar nu
+suficientă pentru rutele cu răspuns mare, fiindcă FastAPI serializează răspunsul **în afara**
+handler-ului, pe buclă — 67,6 ms din 93,7. Detaliile, cu așteptarea scrisă înainte, în
+`masuratori/p5_val1/`.

@@ -18,6 +18,8 @@
 ar fi gol, sau dacă o regulă n-ar fi atinsă niciodată, testele de mai jos pică — nu trec verde
 despre o lume pe care n-o văd.
 """
+import ast
+import io
 import os
 import sys
 
@@ -162,7 +164,7 @@ def test_fiecare_actiune_are_val_si_fel_de_dovada(inventar):
 def test_felurile_de_dovada_nu_se_amesteca(inventar):
     """Cele trei feluri sunt DECLARATE, nu inventate rând cu rând."""
     permise = {P.MASURAT, P.NEMARGINIT, P.MARGINIT_RAR, "THREADPOOL", "FARA_BUCLA", "PORNIRE",
-               "OARBIRE", "TIPAR_BUN"}
+               "OARBIRE", "TIPAR_BUN", "REPARAT", "SERIALIZARE_ACCIDENTALA"}
     vazute = {P.verdict(x)["dovada"] for x in inventar["candidati"]}
     assert vazute <= permise, "feluri de dovadă nedeclarate: %s" % sorted(vazute - permise)
 
@@ -276,6 +278,93 @@ def test_ordinea_regulilor_pune_omonimia_prima():
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  VALUL 1 — clichetul reparației, în ambele direcții
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _rute_din_main():
+    """`{"POST /x": nodul funcției}` — citit din arborele lui `main.py`, nu din inventar.
+
+    Inventarul spune ce APRINDE un detector; asta e o afirmație despre instrument. Aici se citește
+    chiar structura codului, ca proba să nu depindă de scaner (METODA §23).
+    """
+    m = ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
+    out = {}
+    for n in ast.walk(m):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            for d in n.decorator_list:
+                if (isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute)
+                        and d.args and isinstance(d.args[0], ast.Constant)):
+                    out["%s %s" % (d.func.attr.upper(), d.args[0].value)] = n
+    return out
+
+
+def test_caile_reparate_nu_mai_tin_bucla(inventar):
+    """DIRECȚIA 1: niciuna din cele 16 mutate pe fir nu mai aprinde C1.
+
+    *O listă de «reparate» fără gardă e o promisiune.* Inventarul se regenerează în test, deci
+    dacă cineva pune la loc `async def` pe oricare din ele, proba asta cade la prima rulare a
+    suitei — nu la următoarea măsurătoare manuală.
+    """
+    pe_intrare = {x["intrare"]: x for x in inventar["candidati"]}
+    recazute = []
+    for ruta in P.REPARATE_VAL1:
+        x = pe_intrare.get(ruta)
+        if x is not None and "C1" in x["detectori"]:
+            recazute.append(ruta)
+    assert not recazute, (
+        "căi reparate în valul 1 care aprind DIN NOU C1: %s — au redevenit `async def`?" % recazute)
+
+
+def test_multimea_ramasa_pe_bucla_e_cea_scrisa(inventar):
+    """DIRECȚIA 2, cea care chiar apără: ce APRINDE C1 azi e exact ce e scris că aprinde.
+
+    Fără proba asta, o rută NOUĂ scrisă `async def` cu I/O blocant ar intra tăcut — iar prima
+    direcție n-ar spune nimic, fiindcă ea se uită doar la lista celor reparate. *Un clichet care
+    păzește numai ce știe deja e un clichet care nu păzește.*
+    """
+    aprind = {x["intrare"] for x in inventar["candidati"] if "C1" in x["detectori"]}
+    scrise = set(P.RAMASE_PE_BUCLA)
+    assert aprind == scrise, (
+        "mulțimea căilor care țin bucla s-a mutat:\n  apărut: %s\n  dispărut: %s\n"
+        "Fiecare intrare cere un motiv scris în `RAMASE_PE_BUCLA`."
+        % (sorted(aprind - scrise), sorted(scrise - aprind)))
+    fara_motiv = sorted(k for k, v in P.RAMASE_PE_BUCLA.items()
+                        if not isinstance(v, str) or len(v.strip()) < 60)
+    assert not fara_motiv, "rămase pe buclă fără motiv scris: %s" % fara_motiv
+
+
+def test_reparatele_sunt_chiar_sincrone_in_cod():
+    """Proba pe STRUCTURĂ, nu pe inventar: handler-ul e `def`, nu `async def`.
+
+    Inventarul spune «nu mai aprinde C1»; asta ar putea fi adevărat și dacă ruta a dispărut, sau
+    dacă detectorul a orbit. Aici se citește chiar arborele lui `main.py` — METODA §23.
+    """
+    rute = _rute_din_main()
+    asincrone = [r for r in P.REPARATE_VAL1
+                 if isinstance(rute.get(r), ast.AsyncFunctionDef)]
+    assert not asincrone, "căi din valul 1 care sunt din nou `async def`: %s" % asincrone
+    lipsa = [r for r in P.REPARATE_VAL1 if r not in rute]
+    assert not lipsa, "căi din valul 1 care nu mai există ca rute: %s" % lipsa
+
+
+def test_reparatele_nu_mai_asteapta_citirea_fisierului():
+    """Cealaltă jumătate a conversiei: `await X.read()` a dispărut din ele.
+
+    Un handler făcut `def` care ar fi păstrat `await fisier.read()` n-ar mai citi octeți, ar
+    primi o corutină — și ar cădea abia la rulare, pe o cale de import pe care testele n-o ating.
+    """
+    rute = _rute_din_main()
+    rele = []
+    for r in P.REPARATE_VAL1:
+        n = rute.get(r)
+        if n is None:
+            continue
+        if any(isinstance(a, ast.Await) for a in ast.walk(n)):
+            rele.append(r)
+    assert not rele, "căi sincrone care au rămas cu un `await` în corp: %s" % rele
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  Cifrele citate — recalculabile, nu ținute minte
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -308,11 +397,10 @@ def test_martorul_sincron_chiar_a_reusit():
     avea schemă goală, iar `curba_sync` nu înregistra statusurile. *O durată există și pe 500.*
     Testul cere ca artefactul să arate numai 200 și niciun status neașteptat.
     """
-    import io as _io
     import json as _json
     cale = os.path.join(RAD, "masuratori", "p5", "P5_MASURATORI.json")
     assert os.path.exists(cale), "lipsește artefactul de măsurători"
-    d = _json.load(_io.open(cale, encoding="utf-8"))
+    d = _json.load(io.open(cale, encoding="utf-8"))
     assert d.get("statusuri_neasteptate") == {}, (
         "măsurători pe altă ramură decât cea numită: %s" % d.get("statusuri_neasteptate"))
     assert set(d["martor_sync"]["statusuri"]) == {"200"}, (
@@ -333,7 +421,6 @@ def test_diagnosticul_nu_atinge_codul_de_productie():
     Nu e o promisiune, e o verificare: fișierele scrise pentru faza asta trăiesc în `scripts/` și
     `core/p5_*`, iar niciunul nu e importat de `main.py`.
     """
-    import io
     m = io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
     for nume in ("scan_blocante", "masoara_p5", "p5_clasificare"):
         assert nume not in m, "%s e importat în calea de cerere — diagnosticul a devenit cod viu" % (

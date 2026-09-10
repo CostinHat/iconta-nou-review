@@ -2374,3 +2374,14 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   cifrele citate în motive, martorul sincron trebuie să fi ieșit **200** (a măsurat o vreme o cale
   de eroare 500), iar jurnalul serverului trebuie să aibă **0** urme de excepție. Și una păzește
   contractul fazei: `main.py` **nu importă** niciunul din instrumentele de diagnostic.
+
+
+- **Valul 1 al lui P5 (10.09.2026)** — patru probe noi în `core/test_blocante_clasificate.py` (35 în
+  total) și un fișier nou, `core/test_sonde_stare.py` (5 probe). Primele pinează reparația în ambele
+  direcții: cele 16 căi mutate de pe buclă nu mai aprind C1, **și** mulțimea celor rămase e exact
+  cea scrisă, cu motiv per intrare. Ultimele două probe citesc chiar arborele lui `main.py`, nu
+  inventarul — un handler poate să nu mai aprindă un detector și fiindcă a dispărut, sau fiindcă
+  detectorul a orbit. RED-proof, 5 probe roșii pe mutația care pune o rută înapoi pe `async def`.
+  `core/test_sonde_stare.py` e clichetul interdicției 78, cu cifra **0** apărată de o probă
+  anti-vacuu (instrumentul trebuie să vadă cel puțin 5 perechi) și de calibrarea care rulează în
+  suită; RED-proof cu 2 probe roșii.
