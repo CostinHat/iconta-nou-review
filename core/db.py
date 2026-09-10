@@ -119,11 +119,16 @@ def get_conn(schema=None):
     if schema is not None and not schema_valida(schema):
         raise ValueError("schema invalidă: %r" % schema)
     p = pool()
+    # [P5, 10.09.2026] Reperele despart AȘTEPTAREA de EXECUȚIE. Inerte fără `ICONTA_CRONOMETRU=1`
+    # — v. `core/cronometru.py`. Importul e local ca `db` să rămână fără dependențe la import.
+    from core import cronometru as _crono
     conn = p.getconn()
+    _crono.marca("pool_asteptare")
     try:
         if schema is not None:
             with conn.cursor() as cur:
                 cur.execute('SET search_path TO "%s", public' % schema)
+            _crono.marca("pool_search_path")
         yield conn
         conn.commit()
     except Exception:

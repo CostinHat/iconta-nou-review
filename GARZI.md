@@ -8449,3 +8449,20 @@ porni mai înăuntru, segmentul `intrare` ar ascunde tocmai ce e mai mare), iar 
 păstrează toate reperele.
 
 RED-proof: cu `ACTIV = True` scris în modul, **4 probe roșii**.
+
+
+---
+
+# `core/test_tranzactii_clasificate.py` — un verdict P4 REPARAT se marchează, nu se șterge
+
+*(10.09.2026, valul 3)* Reparația lui `apel_anaf` a scos apelul extern din tranzacție, deci locul a
+ieșit din inventarul derivat, iar garda a semnalat corect un verdict rămas fără loc.
+
+**Verdictul nu se șterge.** Un verdict dispărut arată identic cu un defect care n-a existat
+niciodată — același motiv pentru care rândul lui `parse-extras` a rămas în registrul P5 după ce calea
+a ieșit din inventar. Se adaugă un câmp `reparat`, cu ce anume s-a schimbat.
+
+**Excepția e ea însăși o gardă, în două direcții:** un `reparat` cere motiv scris de cel puțin 120 de
+caractere, **ȘI** cere ca locul să fie chiar dispărut. A doua probă e cea care contează: fără ea,
+eticheta ar putea scuti un verdict viu — adică exact felul de scutire pe care registrul există ca s-o
+facă imposibilă.

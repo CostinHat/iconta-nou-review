@@ -66,8 +66,20 @@ def segmente():
         return []
     marci = st["marci"]
     st["marci"] = []
-    return [(marci[i + 1][0], round((marci[i + 1][1] - marci[i][1]) * 1000, 2))
-            for i in range(len(marci) - 1)]
+    # Duratele cu ACELAȘI nume se ADUNĂ. `db.get_conn` se cheamă de mai multe ori pe unele căi;
+    # fără însumare, a doua conexiune ar șterge măsurătoarea primei, iar profilul ar arăta mai
+    # ieftin decât e. *Un reper care se suprascrie e mai rău decât unul care lipsește: lipsa se
+    # vede în restul neacoperit, suprascrierea nu.*
+    out = {}
+    ordine = []
+    for i in range(len(marci) - 1):
+        nume = marci[i + 1][0]
+        ms = (marci[i + 1][1] - marci[i][1]) * 1000
+        if nume not in out:
+            ordine.append(nume)
+            out[nume] = 0.0
+        out[nume] += ms
+    return [(n, round(out[n], 2)) for n in ordine]
 
 
 def antete():

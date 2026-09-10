@@ -2405,3 +2405,10 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   antete** — un antet în plus e tot o schimbare a răspunsului livrat. Direcția opusă e la fel de
   necesară: cu instrumentarea pornită, reperele chiar apar, altfel garda ar fi verde pe un modul
   mort și prima măsurătoare de mâine ar raporta segmente goale. RED-proof cu 4 probe roșii.
+
+
+- **Valul 3, familia SPV (10.09.2026)** — două probe noi în `core/test_tranzactii_clasificate.py`
+  (50 în total), pentru mecanismul `reparat`: un verdict P4 al cărui loc a fost remediat se
+  marchează în loc să dispară. Proba care apără nu e cea care cere motivul scris, ci **cealaltă
+  direcție**: niciun `reparat` nu poate acoperi un loc care face ÎNCĂ efectul extern în tranzacție.
+  Fără ea, eticheta ar deveni o portiță prin care orice verdict viu ar putea fi scutit.

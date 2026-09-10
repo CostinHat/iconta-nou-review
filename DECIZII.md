@@ -14318,3 +14318,51 @@ adăugat un strat `async` pe calea fiecărei cereri — adică ar fi îngroșat 
 **Ce a schimbat în concluzii, și e motivul pentru care a meritat:** valul 3 **nu** e remediul pentru
 ce se măsurase. Munca proprie a rutei e 2,7 ms din 457; 74% e în afara handler-ului. Fără reperele
 astea, valul 3 ar fi pornit pe o presupunere — v. `masuratori/p5_crono/REZULTATUL.md`.
+
+
+---
+
+## `apel_anaf` nu mai ține o conexiune peste apelul extern (10.09.2026, valul 3)
+
+**Decizia, a arhitectului:** valul 3 pornește. **Alegerea mea:** familia SPV prima — are expunerea
+cea mai lungă (60 s de încărcare plus backoff exponențial) și închide o restanță scrisă, R183.
+
+**Ce s-a verificat ÎNAINTE de a schimba ceva.** Nota lui `_roteste_si_comite` avertizează că prima
+formă a reparației R180 *„deschidea o a doua conexiune și scria pe același rând, ceea ce se
+BLOCHEAZĂ"*. Forma nouă nu face asta: blocul care citește tokenul **se închide** — commit, conexiune
+înapoi în pool — înainte ca vreo altă conexiune să se deschidă. Nu există suprapunere, deci nu există
+rândul ținut de prima tranzacție.
+
+**Ce NU s-a atins:** `_roteste_si_comite` comite în continuare rotația imediat. Rămâne necesar din
+același motiv ca la P4 — ANAF omoară vechiul `refresh_token` în secunda răspunsului —, doar că acum
+se comite într-o conexiune scurtă, luată anume pentru asta.
+
+**O schimbare de semantică, declarată.** Forma veche avea `kw.pop("headers", {})` **în buclă**: la a
+doua încercare, după un 401 sau un 429, antetele apelantului (`Content-Type: application/xml`, la
+încărcările UBL/UIT) **se pierdeau tăcut**, iar retry-ul pleca altfel decât prima încercare. Acum se
+citesc o dată, înainte de buclă. *Nu păstrez un defect ca să pot spune că n-am schimbat nimic.*
+
+**Ce s-a oprit, și de ce.** Familia următoare — `_post_token`, rotația OAuth — cere ca
+`reimprospateaza_token` să facă apelul extern în afara conexiunii, iar funcția aia are trei feluri de
+apelanți: `apel_anaf`, lucrătorul de fundal `spv_refresh`, și două teste care îi dau propria lor
+tranzacție. E o bucată separată, și e chiar locul unde P4 a documentat un blocaj. *Făcută în grabă,
+ar fi exact greșeala pe care registrul o are scrisă.*
+
+---
+
+## Remediul pentru așteptarea pe pool NU e cache-ul de mapare (10.09.2026)
+
+**Cerința era condiționată:** *„dacă măsurătoarea arată clar cauza, propune cache-ul `(uid,
+tenant_id) → schema` ca remediu"*. Cauza a ieșit clar — și **nu e cea pe care cache-ul ar repara-o**.
+
+Din 112 ms de „verificare de acces" la k=10, interogările SQL sunt **3,5 ms**. Restul e luarea și
+darea înapoi a conexiunii: `ICONTA_POOL_MIN` e implicit **1**, deci `psycopg2` **creează** o
+conexiune nouă pe calea cererii, sub lacătul pool-ului. Zece cereri simultane plătesc zece deschideri
+serializate.
+
+**Propun pre-încălzirea pool-ului**, măsurată cu o singură variabilă schimbată: debitul la k=10 trece
+de la 26,7 la **40,1 cereri/s** (+50%), iar `pool_asteptare` de la 69,8 la 23,5 ms. Cache-ul ar fi
+scos 2,9 ms din 375 — sub 1%.
+
+*Se propune, nu se aplică: e o schimbare de mediu în producție.* Iar cache-ul rămâne o idee bună
+pentru altceva — reduce numărul de interogări —, dar nu pentru problema măsurată.

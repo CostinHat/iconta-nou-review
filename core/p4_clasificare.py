@@ -851,6 +851,17 @@ EFECTE_EXTERNE = {
             "inaintea incarcarii, cu poarta de idempotenta inaintea lui, si abia apoi incarca. "
             "Ce ramane deschis: tranzactia lui `apel_anaf` sta deschisa peste apel si peste "
             "backoff-ul de 429 — durata, nu proprietate; numita la restante.",
+        "reparat":
+            "[P5 val 3, 10.09.2026] INCHIS — chiar randul de mai sus, «ce ramane deschis», adica "
+            "restanta R183. `apel_anaf` nu mai tine conexiunea peste apel: tokenul se citeste si se "
+            "roteste intr-un bloc care SE INCHIDE, iar apelul HTTP, retry-ul de 401 si backoff-ul "
+            "de la 429 se petrec fara nicio conexiune in mana. Deci nu mai exista scrieri necomise "
+            "in timpul efectului extern, si locul a iesit din inventarul derivat. Verdictul de mai "
+            "sus RAMANE scris: judecata despre ce e interogare si ce e efect nu s-a schimbat, si "
+            "ordinea corecta a incarcarilor (randul `pregatit` comis inainte) e in continuare "
+            "modelul casei. *Un verdict sters ar arata identic cu un defect care n-a existat "
+            "niciodata.* Reparatia P4 (`_roteste_si_comite`) ramane si ramane necesara — rotatia "
+            "tot se comite imediat, acum intr-o conexiune scurta luata anume pentru ea.",
     },
 }
 

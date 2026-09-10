@@ -442,6 +442,17 @@ def apel_anaf(principal, metoda, url, acum_dt=None, _dormi=time.sleep, **kw):
     401 -> refresh o data + retry o data; 429 -> backoff exponential; 403 -> EroareSpvFaraDrept.
     APEL REAL ANAF.
     """
+    # ── [P5 val 3, 10.09.2026] CONEXIUNEA NU MAI STĂ PESTE APELUL EXTERN ────────────────
+    # Forma dinainte ținea conexiunea deschisă peste TOT ce urmează: apelul HTTP (termen până la
+    # 60 s la încărcările de facturi), retry-ul de 401, și backoff-ul exponențial de la 429 — care
+    # poate însemna zeci de secunde. Pool-ul are 10 conexiuni; zece încărcări simultane îl goleau
+    # pentru toată aplicația, inclusiv pentru rute care n-au nicio treabă cu ANAF. Asta e restanța
+    # R183, și tiparul pe care valul 3 îl repară.
+    #
+    # NU e lucrul pe care P4 l-a interzis. Nota lui `_roteste_si_comite` spune că prima formă a
+    # reparației R180 deschidea *o a doua conexiune și scria pe același rând*, și se bloca fiindcă
+    # tranzacția apelantului ținea rândul. Aici nu există suprapunere: blocul de mai jos SE ÎNCHIDE
+    # — commit, conexiune înapoi în pool — înainte ca vreo altă conexiune să se deschidă.
     with db.get_conn() as conn:
         tok = ia_token_activ(conn, principal)
         if not tok:
@@ -449,21 +460,29 @@ def apel_anaf(principal, metoda, url, acum_dt=None, _dormi=time.sleep, **kw):
         if _expirat(tok["access_expira"], acum_dt):
             tok = _roteste_si_comite(conn, tok, acum=None)
 
-        incercat_refresh = False
-        backoff = 0
-        while True:
-            r = requests.request(metoda, url,
-                                 headers={**kw.pop("headers", {}),
-                                          "Authorization": "Bearer %s" % tok["access_token"]},
-                                 **kw)
-            if r.status_code == 401 and not incercat_refresh:
-                incercat_refresh = True
+    # ANTETELE, citite O SINGURĂ DATĂ. Forma veche avea `kw.pop("headers", {})` ÎN BUCLĂ: la a doua
+    # încercare `kw` nu mai avea `headers`, deci antetele apelantului — `Content-Type:
+    # application/xml`, la încărcările UBL/UIT — se pierdeau tăcut, iar retry-ul pleca altfel decât
+    # prima încercare. *E o schimbare de semantică, și se scrie; nu păstrez un defect ca să pot
+    # spune că n-am schimbat nimic.*
+    antete_apelant = kw.pop("headers", {})
+    incercat_refresh = False
+    backoff = 0
+    while True:
+        # ── FĂRĂ NICIO CONEXIUNE ÎN MÂNĂ ────────────────────────────────────────────────
+        r = requests.request(metoda, url,
+                             headers={**antete_apelant,
+                                      "Authorization": "Bearer %s" % tok["access_token"]},
+                             **kw)
+        if r.status_code == 401 and not incercat_refresh:
+            incercat_refresh = True
+            with db.get_conn() as conn:      # conexiune NOUĂ și SCURTĂ, doar pentru rotație
                 tok = _roteste_si_comite(conn, tok, acum=None)
-                continue
-            if r.status_code == 429 and backoff < MAX_BACKOFF_429:
-                _dormi(2 ** backoff)
-                backoff += 1
-                continue
-            if r.status_code == 403:
-                raise EroareSpvFaraDrept("403 ANAF: certificatul nu are drept (CIF/serviciu)")
-            return r
+            continue
+        if r.status_code == 429 and backoff < MAX_BACKOFF_429:
+            _dormi(2 ** backoff)
+            backoff += 1
+            continue
+        if r.status_code == 403:
+            raise EroareSpvFaraDrept("403 ANAF: certificatul nu are drept (CIF/serviciu)")
+        return r

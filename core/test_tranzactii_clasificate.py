@@ -470,10 +470,38 @@ def test_fiecare_efect_din_tranzactie_e_judecat(inventar):
 
 
 def test_niciun_verdict_de_efect_nu_ramane_fara_loc(inventar):
-    """Oglinda: un verdict rămas despre un loc care nu mai există descrie o lume dispărută."""
+    """Oglinda: un verdict rămas despre un loc care nu mai există descrie o lume dispărută.
+
+    **Excepția, și de ce nu e o portiță:** un loc poate să dispară fiindcă a fost REPARAT. Atunci
+    verdictul nu se șterge — un verdict dispărut arată identic cu un defect care n-a existat
+    niciodată — ci primește câmpul `reparat`, cu ce anume s-a schimbat. Cele două probe de mai jos
+    închid ambele direcții: un `reparat` cere motiv scris, ȘI cere ca locul să fie chiar dispărut.
+    """
     inv, _stat = inventar
-    orfane = set(CL.EFECTE_EXTERNE) - _situri_externe(inv)
+    reparate = {k for k, v in CL.EFECTE_EXTERNE.items() if v.get("reparat")}
+    orfane = set(CL.EFECTE_EXTERNE) - _situri_externe(inv) - reparate
     assert orfane == set(), "verdicte fără loc în cod (stătute): %s" % sorted(orfane)
+
+
+def test_fiecare_REPARAT_isi_scrie_motivul():
+    """O etichetă fără motiv ar fi o scutire, nu o consemnare."""
+    slabe = {k for k, v in CL.EFECTE_EXTERNE.items()
+             if v.get("reparat") and len(str(v["reparat"]).strip()) < 120}
+    assert slabe == set(), "verdicte marcate `reparat` fără motiv scris: %s" % sorted(slabe)
+
+
+def test_niciun_REPARAT_nu_acopera_un_loc_INCA_VIU(inventar):
+    """Cealaltă direcție, cea care face din excepție o gardă.
+
+    Dacă locul încă face efectul extern în tranzacție, eticheta `reparat` ar scuti un verdict viu —
+    adică exact felul de scutire pe care registrul ăsta există ca s-o facă imposibilă.
+    """
+    inv, _stat = inventar
+    vii = _situri_externe(inv)
+    mincinoase = {k for k, v in CL.EFECTE_EXTERNE.items() if v.get("reparat") and k in vii}
+    assert mincinoase == set(), (
+        "marcate `reparat`, dar locul face ÎNCĂ efectul extern în tranzacție: %s"
+        % sorted(mincinoase))
 
 
 def test_fiecare_verdict_de_efect_e_scris_si_din_vocabular():

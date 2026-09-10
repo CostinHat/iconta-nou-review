@@ -328,7 +328,9 @@ def schema_tenant(conn, user_id, tenant_id):
       - admin_firma: firmele cabinetului lui (accounting_firm_id)
       - restul (angajat/client): doar prin user_tenants
     """
+    from core import cronometru as _crono
     rol, firm = _rol_si_firma(conn, user_id)
+    _crono.marca("acces_rol")          # prima interogare: rolul si cabinetul
     with conn.cursor() as cur:
         if rol == "superadmin":
             # GDPR: superadmin acceseaza continut DOAR pentru conturi gratuite (fara cabinet).
@@ -343,6 +345,7 @@ def schema_tenant(conn, user_id, tenant_id):
                 "WHERE ut.user_id = %s AND t.id = %s AND t.activ = true",
                 (user_id, tenant_id))
         row = cur.fetchone()
+    _crono.marca("acces_tenant")       # a doua interogare: firma si dreptul pe ea
     return row[0] if row else None
 
 

@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-10 (profilarea segmentelor)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; valul 3 NEÎNCEPUT — iar profilarea arată că **nu el e remediul**) · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-10 (cauza așteptării pe pool + valul 3 pornit)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; **valul 3 PORNIT**, o familie din șapte închisă) · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -551,6 +551,78 @@ se petrec înainte ca ea să atingă vreo conexiune. Ce s-a găsit e altceva, î
 e la primul middleware, deci înainte de el e o singură cutie); și **de ce** `acces` se scumpește de
 130 de ori. *În campania asta am ghicit cauza de trei ori și am greșit de fiecare dată — a patra oară
 nu ghicesc.*
+
+
+## CAUZA AȘTEPTĂRII PE POOL (10.09.2026) — găsită, și nu e ce se propusese
+
+*Instrumentare sub `db.get_conn` și în `schema_tenant`: așteptarea, separată de execuție.*
+
+La k=10, cutia `conexiune + acces` de 112 ms se desface așa:
+
+```
+pool_asteptare  73,0 ms     <-- așteptarea unei conexiuni din pool
+acces_rol        2,8 ms     <-- prima interogare SQL
+acces_tenant     0,7 ms     <-- a doua interogare SQL
+acces           51,4 ms     <-- ieșirea din blocul `with`: commit + putconn
+```
+
+**Interogările SQL sunt 3,5 ms din 457.** Timpul stă în luarea și darea înapoi a conexiunii.
+
+**De ce.** `ICONTA_POOL_MIN` are implicit **1**, iar `db.env` nu-l setează. `psycopg2._getconn`
+**creează o conexiune nouă** când lista liberă e goală, iar `ThreadedConnectionPool.getconn` ține un
+**lacăt** pe toată durata. Zece cereri simultane plătesc, una după alta, zece deschideri de conexiune
+la PostgreSQL. *Asta explică și de ce mărirea `maxconn` de la 10 la 40 n-a schimbat nimic: costul nu
+era epuizarea, era crearea — și creare se face oricum.* Se leagă direct de restanța **R178**.
+
+**Dovada, cu o singură variabilă schimbată** (`ICONTA_POOL_MIN`, pe serverul de probă):
+
+| | `minconn=1` | `minconn=10` |
+|---|---|---|
+| total la k=10 | 375,1 ms | **249,5 ms** (−33%) |
+| debit | 26,7 req/s | **40,1 req/s** (+50%) |
+| `pool_asteptare` | 69,8 ms | **23,5 ms** |
+| `acces` (commit + putconn) | 37,9 ms | **3,3 ms** |
+
+**REMEDIUL PROPUS NU E CACHE-UL.** Un cache `(uid, tenant_id) → schema` ar fi scos `acces_rol +
+acces_tenant` = **2,9 ms din 375**, adică sub 1%. **Pre-încălzirea pool-ului** — `ICONTA_POOL_MIN`
+egal cu `ICONTA_POOL_MAX` — scoate 126 ms. *Se propune, nu se aplică: e o schimbare de mediu în
+producție, deci e a arhitectului.*
+
+## VALUL 3 — PORNIT (10.09.2026), o familie din șapte închisă
+
+Cele 29 de căi se grupează în șapte familii după apelul extern ținut sub conexiune. **Închisă:
+familia SPV**, cazul canonic și cel mai grav.
+
+**Ce s-a schimbat în `apel_anaf`:** conexiunea se lua ca să citească tokenul și **rămânea deschisă
+peste tot restul** — apelul HTTP către ANAF (termen până la **60 s** la încărcările de facturi),
+retry-ul de 401, și backoff-ul exponențial de la 429. Acum blocul se închide după citirea și
+eventuala rotire a tokenului; apelul, retry-ul și backoff-ul se petrec **fără nicio conexiune în
+mână**. Asta închide rândul *„ce rămâne deschis"* din verdictul P4 al lui `apel_anaf`, adică
+**R183**.
+
+**Măsurat pe structură, nu presupus:** pe `facturi/{id}/trimite-spv` și `etransport/trimite`, apelul
+de la `spv_conector.py:455` — încărcarea propriu-zisă — **nu mai e sub conexiune**. Rămâne numai
+`_post_token` (linia 324), reîmprospătarea OAuth, care e scurtă și se face doar la expirare.
+
+**Detectorul arată în continuare 29, și asta e corect:** tiparul e tot acolo, doar că expunerea e
+mult mai mică. *O cifră care ar fi scăzut ar fi ascuns că familia nu e complet închisă.*
+
+**Ce rămâne, pe familii, cu forma intervenției:**
+
+| familie | căi | ce ține conexiunea | intervenția |
+|---|---|---|---|
+| `_post_token` (rotația OAuth) | 3 | apelul care produce chiar valoarea de scris | `reimprospateaza_token` să facă apelul în afara conexiunii — **atinge un lucrător de fundal și două teste**, deci e o bucată separată |
+| `_trimite_brevo` (alertă la eșec secundar) | 4 | email trimis din interiorul tranzacției | efectul ireversibil mutat DUPĂ commit — chiar regula P4 |
+| `trimite_email_html` | 4 | email sub conexiune | idem, sau scos pe o coadă |
+| `valideaza_cui` (ANAF public) | 5 | interogare, nu efect | apelul ridicat înaintea blocului `with` |
+| `_descarca` (curs BNR) | 5 | descărcare doar când cache-ul e vechi | idem; e deja cache-first, deci calea e rară |
+| `_obtine_token` (REGES) | 2 | apel de autentificare | ca la SPV |
+| diverse (VIES, WooCommerce, coadă, s1003/s1005) | 6 | apeluri de serviciu | de citit una câte una |
+
+*Nu le-am făcut pe toate într-o tură. Familia SPV a fost aleasă prima fiindcă e cea cu expunerea cea
+mai lungă (60 s + backoff) și fiindcă închide o restanță scrisă. Restul se face cu aceeași metodă,
+familie cu familie — iar familia `_post_token` cere grijă: e chiar locul unde P4 a documentat un
+blocaj produs de o a doua conexiune deschisă peste prima.*
 
 
 ---
