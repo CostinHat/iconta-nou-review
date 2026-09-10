@@ -30,6 +30,10 @@ import subprocess
 import sys
 import time
 
+sys.path.insert(0, os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
+import artefacte_p5  # noqa: E402
+
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if RAD not in sys.path:
     sys.path.insert(0, RAD)
@@ -207,6 +211,44 @@ def main():
     L.append("P5_IMPLEMENTATION=NOT_STARTED")
     L.append("  `P5_DIAGNOSTIC_STATUS=COMPLETE` NU inseamna `P5_IMPLEMENTATION=CLOSED`:")
     L.append("  diagnosticul e inchis, remedierea nu e nici macar inceputa — v. valurile din raport.")
+    # ── FISIERE_ATINSE.txt — derivat, nu tinut minte ────────────────────────────
+    stare = _git("diff", "--name-status", "%s..HEAD" % BASELINE_COMMIT)
+    atinse = [l for l in stare.splitlines() if l.strip()]
+    F = ["FISIERE ATINSE IN FAZA P5-DIAGNOSTIC",
+         "de la %s (baseline) pana la %s (final)" % (BASELINE_COMMIT[:8], head[:8]),
+         "=" * 78, "",
+         "Derivat cu: git diff --name-status %s..HEAD" % BASELINE_COMMIT[:8],
+         "Legenda: A = adaugat · M = modificat · D = sters", "",
+         "--- TOATE (%d) ---" % len(atinse)]
+    F += ["  " + l for l in atinse]
+    prod = [l for l in atinse if artefacte_p5._e_productie(l.split("\t")[-1])]
+    F += ["", "--- DIN CARE, COD DE PRODUCTIE (%d) ---" % len(prod)]
+    F += (["  " + l for l in prod] if prod
+          else ["  niciunul. PRODUCTION_CODE_CHANGED=NO nu e o declaratie, e randul asta."])
+    cale_f = os.path.join(RAD, "masuratori", "p5", "FISIERE_ATINSE.txt")
+    with io.open(cale_f, "w", encoding="utf-8", newline="") as f:
+        f.write("\n".join(F) + "\n")
+
+    # ── COMMIT_P5.txt — cele trei commituri, cu subiectul fiecaruia ─────────────
+    C = ["COMMITURILE FAZEI P5-DIAGNOSTIC", "=" * 78, "",
+         "BASELINE_COMMIT=%s" % BASELINE_COMMIT,
+         "  %s" % _git("log", "-1", "--format=%s", BASELINE_COMMIT),
+         "",
+         "DIAGNOSTIC_CODE_COMMIT=%s" % (cod or "(NICIUNUL)"),
+         "  %s" % (_git("log", "-1", "--format=%s", cod) if cod else "-"),
+         "",
+         "P5_FINAL_DIAGNOSTIC_COMMIT=%s" % head,
+         "  %s" % _git("log", "-1", "--format=%s", head),
+         "",
+         "FULL_SUITE_COMMIT=%s   (rulata DUPA acest commit)" % head,
+         "",
+         "--- LANTUL INTREG (%d commituri) ---" % len(lant)]
+    C += ["  " + l for l in _git("log", "--oneline",
+                                 "%s..HEAD" % BASELINE_COMMIT).splitlines()]
+    cale_c = os.path.join(RAD, "masuratori", "p5", "COMMIT_P5.txt")
+    with io.open(cale_c, "w", encoding="utf-8", newline="") as f:
+        f.write("\n".join(C) + "\n")
+
     text = "\n".join(L)
     cale = os.path.join(RAD, "masuratori", "p5", "TRASABILITATE_P5.txt")
     with io.open(cale, "w", encoding="utf-8", newline="") as f:
@@ -214,6 +256,8 @@ def main():
     print(text)
     print()
     print("scris: %s" % cale)
+    print("scris: %s" % cale_f)
+    print("scris: %s" % cale_c)
     return 0
 
 
