@@ -40,6 +40,24 @@ def _git(*args):
     return r.stdout.strip() if r.returncode == 0 else ""
 
 
+def _backup(zi):
+    """`(hash, sursa)` pentru bratul BACKUP. E o ramura REMOTE: `rev-parse` pe numele scurt nu o
+    gaseste, fiindca local nu exista. Se citeste din remote (ca `post-commit`) si din referinta de
+    urmarire; daca amandoua raspund si difera, se spune."""
+    nume = "backup/lant-%s" % zi
+    r = subprocess.run(["git", "-C", RAD, "ls-remote", "origin", nume],
+                       capture_output=True, text=True)
+    la_remote = r.stdout.split("\t")[0].strip() if r.returncode == 0 and r.stdout.strip() else ""
+    urmarire = _git("rev-parse", "origin/%s" % nume)
+    if la_remote and urmarire and la_remote != urmarire:
+        return "", "DIVERGENTA: ls-remote=%s vs origin/%s=%s" % (la_remote[:8], nume, urmarire[:8])
+    if la_remote:
+        return la_remote, "git ls-remote origin %s" % nume
+    if urmarire:
+        return urmarire, "git rev-parse origin/%s" % nume
+    return "", "NECITIT (nici ls-remote, nici referinta de urmarire)"
+
+
 def commit_proces_viu():
     """Commitul cu care RULEAZĂ procesul viu, citit din el. `None` dacă nu se poate citi.
 
@@ -93,7 +111,7 @@ def main():
     origin = _git("rev-parse", "origin/main")
     public = _git("rev-parse", "public/main")
     zi = subprocess.run(["date", "+%Y-%m-%d"], capture_output=True, text=True).stdout.strip()
-    backup = _git("rev-parse", "backup/lant-%s" % zi)
+    backup, sursa_backup = _backup(zi)
     viu, detaliu = commit_proces_viu()
 
     s = suita_completa()
@@ -136,7 +154,8 @@ def main():
     L.append("HEAD=%s" % head)
     L.append("ORIGIN_MAIN=%s" % (origin or "(NECITIT)"))
     L.append("PUBLIC_MAIN=%s" % (public or "(NECITIT)"))
-    L.append("BACKUP=%s   (backup/lant-%s)" % (backup or "(NECITIT)", zi))
+    L.append("BACKUP=%s   (backup/lant-%s, citit din %s)"
+             % (backup or "(NECITIT)", zi, sursa_backup))
     L.append("LIVE_PROCESS_COMMIT=%s" % (viu or "(NECITIT)"))
     L.append("  sursa procesului viu: GET /admin/versiune -> %s" % detaliu)
     L.append("")
