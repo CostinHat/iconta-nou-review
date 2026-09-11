@@ -1,0 +1,65 @@
+Valul 3, închis: `ACTION_REQUIRED` 19 → 0, șapte familii de rețea scoase de sub conexiune
+
+# multe-fisiere-ok: șapte familii reparate în aceeași tură, plus proba care le ține pe toate la
+# clichet 0 și registrele regenerate. Separate n-ar avea sens: contractul comun — I/O extern în
+# afara tranzacției, cu revalidare — se probează o dată, pe toate.
+
+REGULA APROBATĂ, aplicată de șapte ori:
+
+    FAZA 1 — citirile          I/O — cu pool-ul liber          FAZA 2 — tranzacție scurtă, cu
+                                                                REVALIDARE, apoi scrierea
+
+    EXTERNAL_IO_UNDER_DB_CONNECTION=NO   ȘI   STALE_BUSINESS_DECISION_ALLOWED=NO
+
+Cele două sunt în tensiune, și de-aia se probează amândouă: e ușor să scoți I/O-ul din tranzacție
+dacă accepți să scrii pe o stare veche, și e ușor să nu scrii pe stare veche dacă ții tranzacția
+deschisă. Proba cere să fie adevărate simultan.
+
+DAR NU TOATE FAMILIILE AU ACEEAȘI FORMĂ, și ăsta e miezul turei:
+
+  (a) `verifica_vies` — rezultatul DECIDE dacă livrarea IC e acceptată. Se revalidează accesul și
+      luna deschisă; la refuz, rezultatul VIES se aruncă și iese exact eroarea de azi.
+  (b) `woocommerce` — rezultatul decide ce facturi se emit. Configul se re-citește; `deja_importata`
+      ERA DEJA revalidarea per comandă, și rămâne unde e.
+  (c) `reges_client` — rezultatul NU alimentează o decizie: el ESTE efectul. Salariatul e deja în
+      registrul de evidență a muncii, iar `poll_mesaj` CONSUMĂ un mesaj din coada lor. Acolo
+      scrierea e NECONDIȚIONATĂ: rândul e urma unui act petrecut, iar o revalidare care l-ar arunca
+      ar face ca REGES să știe ceva ce noi nu știm. Aceeași clasă cu rotația de token.
+  (d) `duk::versiune_validator`, `d112::_enum_xsd` — citiri de FIȘIER care nu depind de bază, deci
+      n-au ce revalida. Prima se ridică înaintea conexiunii; a doua se mută la încărcarea modulului.
+  (e) `valideaza_cui` — best-effort declarat. `precompleteaza_din_anaf` se desparte în `date_din_anaf`
+      (apelul) și scrierea; eșecul se înghite și se consemnează, literal ca înainte.
+  (f) `curs_bnr` — cursul intră în calculul facturii. Descărcarea se desparte de DECIZIE:
+      `asigura_cursul` aduce și salvează în cache, fără conexiunea apelantului; `curs_pentru` rămâne
+      literă cu literă în partea de decizie — același prag, aceleași trei refuzuri, aceleași câmpuri.
+      *Recitirea cache-ului din tranzacție ESTE revalidarea, și exista deja.*
+
+CE NU S-A SCHIMBAT NICĂIERI: formula, criteriul de validare, cursul ales, validitatea CUI,
+verdictul DUK/D112, regulile VIES, destinatarii, payloadul, semantica once și cea de retry.
+
+O CALE PE CARE UN OMONIM O ASCUNDEA — `alerta_acces`. Scannerul rezolvă `trimite`, care acolo e un
+PARAMETRU cu valoarea implicită `_trimite_brevo`, la funcția omonimă din e-factură; verdictul poartă
+`omonim=True`, deci instrumentul nu minte — spune că nu poate ști. Calea reală trimitea alertele în
+buclă, cu conexiunea în mână. Mutată după bloc; rezervarea de dedup rămâne unde era.
+
+MĂSURAT CU DETECTORUL MECANIC P5, nu cu unul propriu:
+
+  · ACTION_REQUIRED (clasa C5 a valului 3):  19 → 0
+  · familii C5 sigure:                       14 → 5
+  · candidați bruți:                         74 → 65
+
+CELE CINCI RĂMASE SUNT `ACCEPTABLE_BY_DESIGN`, prin reguli scrise mai devreme în P5, nu prin
+decizia de azi: patru rute de fișier (`gdpr_export`, `tenant_stergere`, `portal_bon`,
+`raportari_imagine`) sub **SINCRON-MARGINIT** — rulează în threadpool, iar I/O-ul lor e de fișier,
+nu extern; și `facturi_recurente::__main__` sub **FUNDAL** — lucrător de fundal, unde I/O blocant e
+forma normală. Niciuna nu e datorie tăcută: fiecare are verdictul scris în registru.
+
+PROBA, 20 de teste, RED-proof pe `7701a99c` — pică 12. Trei feluri:
+  · CLICHET 0 pe clasa C5, cu anti-vacuum (detectorul trebuie să vadă 514 puncte de intrare și
+    peste 50 de candidați) — orice cale nouă care ține o conexiune peste un apel extern pică aici;
+  · o probă PE FAMILIE, ca o regresie să se numească singură, nu să se piardă într-o cifră globală;
+  · funcțional: starea se schimbă în timpul I/O → decizia stale NU se comite. Accesul la firmă
+    există în FAZA 1, dispare în cele 15 s ale apelului VIES, iar FAZA 2 refuză cu 404 fără să
+    scrie nimic — deși VIES a răspuns „valid".
+
+POARTA A RULAT ÎN MEDIUL IZOLAT R68, cu amprenta producției înainte și după.

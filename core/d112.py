@@ -85,6 +85,18 @@ def _cod_boala_acceptat(cod):
     return _ncm.accepta(cod)
 
 
+#: [P5 val 3, 11.09.2026] XSD-ul se citeste ODATA, la INCARCAREA modulului — nu pe calea cererii.
+#: Forma dinainte il deschidea lenes, la primul apel, iar acel prim apel putea cadea in interiorul
+#: unei rute care tinea o conexiune din pool. Fisierul e in repo, are cativa zeci de KB si nu se
+#: schimba in timpul unui proces. Pe lipsa lui, `_XSD_TEXT` ramane gol si fiecare `_enum_xsd`
+#: intoarce multime goala — exact fallback-ul de dinainte, pastrat.
+try:
+    with open(_D112_XSD, encoding="utf-8") as _fh_xsd:
+        _XSD_TEXT = _fh_xsd.read()
+except Exception:      # noqa: BLE001 — lipsa fisierului NU opreste modulul, ca si pana acum
+    _XSD_TEXT = ""
+
+
 def _enum_xsd(tip):
     """Valorile enumerate ale unui xs:simpleType din XSD-ul D112 (anaf_surse/d112_06082026.xsd,
     autoritatea in-repo pt nomenclatoarele inchise). Extrage <xs:enumeration value=...> din blocul
@@ -92,14 +104,10 @@ def _enum_xsd(tip):
     if tip in _ENUM_XSD_CACHE:
         return _ENUM_XSD_CACHE[tip]
     vals = set()
-    try:
-        with open(_D112_XSD, encoding="utf-8") as _f:
-            _txt = _f.read()
-        _m = re.search(r'<xs:simpleType name="%s">(.*?)</xs:simpleType>' % re.escape(tip), _txt, re.S)
-        if _m:
-            vals = set(re.findall(r'<xs:enumeration value="([^"]*)"', _m.group(1)))
-    except Exception:
-        vals = set()
+    _m = re.search(r'<xs:simpleType name="%s">(.*?)</xs:simpleType>' % re.escape(tip),
+                   _XSD_TEXT, re.S) if _XSD_TEXT else None
+    if _m:
+        vals = set(re.findall(r'<xs:enumeration value="([^"]*)"', _m.group(1)))
     _ENUM_XSD_CACHE[tip] = vals
     return vals
 

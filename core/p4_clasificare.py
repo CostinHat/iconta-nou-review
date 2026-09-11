@@ -785,6 +785,13 @@ EFECTE_EXTERNE = {
             "nu lasa nimic la ANAF: e o intrebare, nu un act. Un rollback la noi nu are ce "
             "desface acolo. Ce ramane e ca tranzactia sta deschisa peste un apel de retea — "
             "durata, nu proprietate; e numita la restante, ca intrebare de concurenta.",
+        "reparat":
+            "[P5 val 3, 11.09.2026] Chiar lucrul pe care verdictul il numea ca ramas — «tranzactia "
+            "sta deschisa peste un apel de retea» — s-a inchis. Cele cinci cai care ajungeau aici "
+            "au fost despartite: `precompleteaza_din_anaf` se imparte in `date_din_anaf` (apelul, "
+            "fara conexiune) si scrierea, iar `platitor_tva_freeze` se cheama inaintea blocului, pe "
+            "CUI-ul din payload. Caracterul de INTEROGARE ramane neschimbat, deci restul "
+            "verdictului sta in picioare; ce s-a mutat e durata, nu proprietatea.",
     },
     "core/curs_bnr.py:_descarca": {
         "fel": INTEROGARE,
@@ -802,6 +809,12 @@ EFECTE_EXTERNE = {
             "interogare pe o pagina publica. Alertele derivate din ea se scriu idempotent, pe "
             "`ON CONFLICT (sursa, titlu) DO NOTHING`, deci o rulare intrerupta se reia fara sa "
             "dubleze nimic.",
+        "reparat":
+            "[P5 val 3, 11.09.2026] Jobul nu mai tine o conexiune peste cele doua descarcari de "
+            "cate 30 s: lista si PDF-ul se aduc fara nicio conexiune, iar `_procesat` si `salveaza` "
+            "isi iau fiecare tranzactia lor scurta. Idempotenta descrisa mai sus e NEATINSA — "
+            "`_procesat` a ramas verificarea de dinainte, iar buletinul se marcheaza chiar si fara "
+            "alerte, ca pana acum.",
     },
     "core/woocommerce.py:comenzi": {
         "fel": INTEROGARE,
@@ -809,6 +822,12 @@ EFECTE_EXTERNE = {
         "verdict":
             "interogare. Facturile emise din comenzi sunt fiecare o tranzactie atomica, iar "
             "duplicarea e aparata de cheia comenzii, nu de soarta tranzactiei.",
+        "reparat":
+            "[P5 val 3, 11.09.2026] Citirea magazinului (termen 30 s) nu mai sta sub conexiunea "
+            "firmei: `sincronizeaza` face config (faza 1) -> HTTP fara conexiune -> tranzactie "
+            "scurta cu revalidarea configului (faza 2). Apararea impotriva duplicarii pe care o "
+            "numeste verdictul — `deja_importata`, cheia comenzii — a ramas EXACT unde era, in "
+            "bucla de emitere, si e chiar revalidarea per comanda ceruta de regula valului 3.",
     },
     "core/observare.py:_trimite_brevo": {
         "fel": EFECT,

@@ -1,6 +1,6 @@
 {
  "baza": "iconta_v2",
- "globala": "3ce0d8467c6a65dc62c34d3264aa02cbf1adac47a57463b0d00e4ebbbadcca0f",
+ "globala": "1aa25a386c174241633ef6b5dd9f39e9203aa6cc04a52775f5e70f283339671f",
  "tabele": {
   "public.accounting_firms": {
    "md5": "19c6164cb0599ad0fa962a6a4d197ef7",
@@ -53,7 +53,7 @@
    "randuri": 4422
   },
   "public.cron_batai": {
-   "md5": "69844e83fbb5e125f8c214eb601e5fb9",
+   "md5": "ef0b620f5c30fec27bdf1815f6227b74",
    "md5_omis": false,
    "randuri": 13
   },
@@ -93,7 +93,7 @@
    "randuri": 58
   },
   "public.firma_tip": {
-   "md5": "cf34527fb623174edf3f94a17c80880f",
+   "md5": "0d9cfa33da3845fecf8ae3154edf331d",
    "md5_omis": false,
    "randuri": 36
   },
@@ -118,9 +118,9 @@
    "randuri": 0
   },
   "public.metrici_sanatate": {
-   "md5": "94fb488a1d0895c88dc6c225d8d4c72a",
+   "md5": "c91a6ecfd5fc0764b753c4f1e553b061",
    "md5_omis": false,
-   "randuri": 11599
+   "randuri": 11624
   },
   "public.migrare_status": {
    "md5": "4ab408c4031106713c90c56f2ad98400",

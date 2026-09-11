@@ -1,0 +1,23 @@
+stat brut: intrari=514 candidati=65
+numaratori din registru:
+   ACCEPTABLE_BY_DESIGN         65
+   ACTION_REQUIRED              0
+   CLASSIFIED_CANDIDATES        65
+   EXCLUSIONS_TOTAL             65
+   FALSE_POSITIVES              0
+   RAW_CANDIDATES               65
+   RAW_CLASS_ACCOUNTING         PASS
+   RAW_CLASS_SUM                65
+   UNCLASSIFIED_RAW_CANDIDATES  0
+   UNEXPLAINED_EXCLUSIONS       0
+   neclasificate                []
+   nemotivate                   []
+   pe_dovada                    {'THREADPOOL': 57, 'REPARAT': 1, 'FARA_BUCLA': 6, 'PORNIRE': 1}
+   pe_regula                    {'SINCRON-MARGINIT': 57, 'INDIVIDUAL': 2, 'FUNDAL': 6}
+   valuri                       {}
+
+clasificate: tuple
+   (nu e dict) 2
+
+excluderi: 65
+randuri fara cale: ['POST /tenants/{tenant_id}/banca/parse-extras', 'middleware main.py::_audit_middleware()']

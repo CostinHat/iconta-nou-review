@@ -240,7 +240,23 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
     return {"ok": True, "tenant_id": tenant_id, "schema_name": schema_noua}
 
 
-def precompleteaza_din_anaf(conn, schema_name, cui, seteaza_nume=False):
+def date_din_anaf(cui):
+    """[P5 val 3, 11.09.2026] APELUL la ANAF, FARA nicio conexiune in mana.
+
+    Termenul e 20 s, iar `valideaza_cui` mai si doarme 1,1 s intre loturi (regula ANAF de o cerere
+    pe secunda) — forma dinainte facea tot asta cu conexiunea de creare a firmei deschisa.
+
+    Intoarce datele firmei sau `None` daca ANAF n-a gasit CUI-ul. Ridica daca ANAF e jos; toti
+    apelantii prind si consemneaza, ca inainte."""
+    from core import anaf_api
+    cuic = str(cui).replace("RO", "").strip()
+    rez = anaf_api.valideaza_cui([cuic])
+    if not (rez and rez[0].get("gasit")):
+        return None
+    return rez[0]
+
+
+def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
     """[F188/register_profil_anaf] SURSA UNICA de precompletare a firma_profil din ANAF v9, pentru
     TOATE caile de creare a unei firme: register (firma proprie), adaugare manuala, import in masa.
     Inainte, fiecare cale scria un subset DIFERIT (register: snapshot TVA + data inceput; add-firm:
@@ -253,12 +269,8 @@ def precompleteaza_din_anaf(conn, schema_name, cui, seteaza_nume=False):
     corectabil din Date firma. Intoarce True daca a precompletat, False daca ANAF n-a gasit CUI-ul.
     NU scrie tip_decont (periodicitatea TVA): ANAF v9 nu o intoarce -> ramane alegerea contabilului
     (necunoscut declarat explicit, nu fabricat)."""
-    from core import anaf_api
-    cuic = str(cui).replace("RO", "").strip()
-    rez = anaf_api.valideaza_cui([cuic])
-    if not (rez and rez[0].get("gasit")):
+    if not d:
         return False
-    d = rez[0]
     # [nume_anaf_v1, 27.08.2026] Denumirea de la ANAF se PASTREAZA intotdeauna, cu data ei, pe
     # `public.tenants` — chiar si cand `seteaza_nume=False`, adica la add-firm si import, unde
     # numele afisat e al contabilului. Pana azi denumirea ANAF nu se retinea nicaieri: de-aia

@@ -52,17 +52,49 @@ def config(conn, schema):
         return cur.fetchone()
 
 
-def sincronizeaza(conn, schema):
-    """Import comenzi noi -> facturi emise (status de_preluat). Idempotent pe numar WC-<nr>."""
-    from core import facturi_api
-    with conn.cursor() as _c:
-        _c.execute(f"SET search_path TO {schema}")  # [wc_searchpath_v1] emite_factura/produse_api asteapta schema pe conexiune
-    cfg = config(conn, schema)
+def sincronizeaza(schema):
+    """Import comenzi noi -> facturi emise (status de_preluat). Idempotent pe numar WC-<nr>.
+
+    [P5 val 3, 11.09.2026] NU mai primeste o conexiune. Citirea magazinului are termen de 30 s, iar
+    forma dinainte o facea cu conexiunea firmei in mana — impreuna cu toata bucla de emitere.
+    Acum: config (faza 1) -> HTTP fara conexiune -> tranzactie scurta cu REVALIDARE (faza 2).
+    """
+    from core import db, facturi_api
+    # ── FAZA 1: configul, fara nimic extern ─────────────────────────────────────────────
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as _c:
+            _c.execute(f"SET search_path TO {schema}")  # [wc_searchpath_v1] emite_factura/produse_api asteapta schema pe conexiune
+        cfg = config(conn, schema)
     if not (cfg and cfg["wc_url"] and cfg["wc_ck"] and cfg["wc_cs"]):
         return {"eroare": "WooCommerce neconfigurat"}
     dupa = str(cfg["wc_ultima_sinc"]) if cfg["wc_ultima_sinc"] else None
+    # ── I/O EXTERN, fara nicio conexiune (termen 30 s) ──────────────────────────────────
     lista_c = comenzi(cfg["wc_url"], cfg["wc_ck"], cfg["wc_cs"], dupa=dupa)
+    # [P5 val 3] Cursul BNR, INAINTE de tranzactia de emitere: monedele sunt deja in comenzile
+    # aduse mai sus, iar `curs_pentru` decide pe cache — deci descarcarea trebuie sa se fi facut.
+    from core import curs_bnr as _cb
+    import datetime as _dt
+    for _c in lista_c:
+        _f = comanda_in_factura(_c)
+        try:
+            _cb.asigura_cursul(_f["moneda"], _dt.date.fromisoformat(_f["data"]))
+        except Exception:      # noqa: BLE001 — pre-incalzirea nu poate strica importul
+            pass
+    # ── FAZA 2: tranzactie scurta, cu REVALIDARE ────────────────────────────────────────
     importate, sarite = [], 0
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as _c:
+            _c.execute(f"SET search_path TO {schema}")
+        # REVALIDARE: magazinul mai e configurat? Daca a fost deconfigurat in cele 30 s, nu se
+        # scrie nimic — acelasi raspuns ca atunci cand n-a fost niciodata.
+        if not config(conn, schema):
+            return {"eroare": "WooCommerce neconfigurat"}
+        return _importa(conn, schema, lista_c, facturi_api, importate, sarite)
+
+
+def _importa(conn, schema, lista_c, facturi_api, importate, sarite):
+    """Bucla de emitere, pe conexiunea fazei a doua. `deja_importata` ramane REVALIDAREA per
+    comanda: una intrata intre timp de alta rulare se sare, ca inainte."""
     for c in lista_c:
         f = comanda_in_factura(c)
         if not f["linii"]:
@@ -104,10 +136,11 @@ def _main():
         try:
             with db.get_conn(schema) as conn:
                 cfg = config(conn, schema)
-                if not (cfg and cfg["wc_url"]):
-                    continue
-                r = sincronizeaza(conn, schema)
-                print(f"{schema}: {len(r.get('importate', []))} importate, {r.get('sarite', 0)} sarite")
+            if not (cfg and cfg["wc_url"]):
+                continue
+            # [P5 val 3] conexiunea de mai sus s-a inchis; `sincronizeaza` si le deschide pe ale ei
+            r = sincronizeaza(schema)
+            print(f"{schema}: {len(r.get('importate', []))} importate, {r.get('sarite', 0)} sarite")
         except Exception as e:
             print(f"{schema}: EROARE {e}")
 

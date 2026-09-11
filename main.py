@@ -1458,6 +1458,14 @@ def register(date: RegisterIn):
     _firma_motiv = ""
     if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
         _firma_ok = False
+        # [P5 val 3, 11.09.2026] ANAF ÎNAINTE de conexiune: apelul are termen 20 s, iar forma
+        # dinainte îl făcea cu tranzacția de creare a cabinetului deschisă. Eșecul se înghite și
+        # se consemnează, exact ca înainte — firma rămâne creată, profilul completabil manual.
+        try:
+            _d_anaf = tenant_provisioning.date_din_anaf(date.cui)
+        except Exception as _e:
+            _obs.esec_secundar("precompletare ANAF la register", _e)
+            _d_anaf = None
         try:
             with db.get_conn() as conn:
                 _cui = date.cui.replace("RO", "").strip()
@@ -1480,8 +1488,9 @@ def register(date: RegisterIn):
                     # [register_profil_anaf_v2] SURSA UNICA de precompletare ANAF
                     # (tenant_provisioning.precompleteaza_din_anaf), aceeasi ca la add-firm/import.
                     # seteaza_nume=True: firma proprie preia si denumirea de la ANAF.
+                    # [P5 val 3] datele ANAF s-au luat INAINTE de bloc (`_d_anaf`); aici doar scrie.
                     if _t and _t.get("schema_name"):
-                        tenant_provisioning.precompleteaza_din_anaf(conn, _t["schema_name"], _cui, seteaza_nume=True)
+                        tenant_provisioning.precompleteaza_din_anaf(conn, _t["schema_name"], _d_anaf, seteaza_nume=True)
                 except Exception as _e:
                     # ANAF jos -> profilul ramane de completat manual. Firma EXISTA, doar
                     # datele preluate lipsesc - deci NU e esec de provisionare.
@@ -1666,6 +1675,12 @@ def tenant_detalii(tenant_id: int, ctx=Depends(cere_cabinet)):
 def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
     if _TENANT_TEMPLATE is None:
         raise HTTPException(500, "template tenant indisponibil pe server")
+    # [P5 val 3] ANAF ÎNAINTE de conexiune — vezi nota de la `register`.
+    try:
+        _d_anaf = tenant_provisioning.date_din_anaf(date.cui)
+    except Exception as _e:
+        _obs.esec_secundar("precompletare ANAF la firma noua", _e)
+        _d_anaf = None
     try:  # tenant_cui_400
         with db.get_conn() as conn:
             r = tenant_provisioning.provision_tenant(
@@ -1675,7 +1690,8 @@ def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
             # aceeasi ca la register/import. NU atinge 'nume' (setat de contabil): seteaza_nume=False.
             # ANAF jos -> default, corectabil din Date firma.
             try:
-                tenant_provisioning.precompleteaza_din_anaf(conn, r["schema_name"], date.cui, seteaza_nume=False)
+                # [P5 val 3] datele ANAF s-au luat INAINTE de bloc (`_d_anaf`); aici doar scrie.
+                tenant_provisioning.precompleteaza_din_anaf(conn, r["schema_name"], _d_anaf, seteaza_nume=False)
             except Exception as _e:
                 _obs.esec_secundar("precompletare ANAF la firma noua", _e)  # inghitit, dar nu tacut (27.07.2026)
     except ValueError as e:
@@ -2115,6 +2131,7 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
     if _TENANT_TEMPLATE is None:
         raise HTTPException(500, "template tenant indisponibil pe server")
     creat, erori = [], []
+    _de_precompletat = []          # [(schema_name, cui)] — ANAF se cheamă abia după bloc
     with db.get_conn() as conn:
         # CUI-urile deja existente în portofoliul cabinetului (normalizate la cifre)
         with conn.cursor() as cur:
@@ -2138,10 +2155,9 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
             try:
                 r = tenant_provisioning.provision_tenant(
                     conn, nume, str(f.cui), ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
-                try:  # [import_profil_anaf_v1] aceeasi precompletare ANAF ca la add-firm (SURSA UNICA)
-                    tenant_provisioning.precompleteaza_din_anaf(conn, r["schema_name"], f.cui, seteaza_nume=False)
-                except Exception as _ea:
-                    _obs.esec_secundar("precompletare ANAF la import firma", _ea)  # firma creata; ANAF completabil manual
+                # [P5 val 3] ANAF se cheamă DUPĂ bloc, și numai pentru firmele CHIAR create —
+                # exact ca azi. Aici doar se reține ce urmează să se precompleteze.
+                _de_precompletat.append((r["schema_name"], f.cui))
                 creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id")})
                 if cuic:
                     existente.add(cuic)   # prinde și duplicate în același lot
@@ -2152,6 +2168,20 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
                 erori.append(migrare_api.respinge(
                     "firmă", "firma %s (CUI %s)" % (nume, f.cui), "creare_esuata",
                     "nu s-a putut crea: %s" % e, cui=str(f.cui), nume=nume))
+    # ── [P5 val 3] ANAF, FĂRĂ nicio conexiune (termen 20 s + 1,1 s între loturi) ────────
+    _anaf = []
+    for _schema_n, _cui_f in _de_precompletat:
+        try:
+            _anaf.append((_schema_n, tenant_provisioning.date_din_anaf(_cui_f)))
+        except Exception as _ea:
+            _obs.esec_secundar("precompletare ANAF la import firma", _ea)  # firma creata; ANAF completabil manual
+    if _anaf:
+        with db.get_conn() as conn:          # tranzacție scurtă, doar scrierea
+            for _schema_n, _d in _anaf:
+                try:
+                    tenant_provisioning.precompleteaza_din_anaf(conn, _schema_n, _d, seteaza_nume=False)
+                except Exception as _ea:
+                    _obs.esec_secundar("precompletare ANAF la import firma", _ea)
     return {"creat": creat, "erori": erori, "total": len(creat)}
 
 
@@ -3556,9 +3586,30 @@ def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_context)):
         raise HTTPException(404, r["eroare"])
     return r
 
+def _preincalzeste_cursul(moneda, data_emitere):
+    """[P5 val 3, 11.09.2026] Aduce cursul BNR ÎNAINTE de orice tranzacție.
+
+    `curs_bnr.curs_pentru` nu mai descarcă: decide pe cache. Descărcarea (până la 3×10 s) trebuie
+    deci să se fi făcut înainte, cu pool-ul liber. Un singur loc, ca să nu ajungă șapte rute să
+    repete aceeași secvență — și ca garda să aibă ce număra.
+
+    Tăcută la intrări invalide: refuzul lor vine de la validarea rutei, ca și până acum.
+    """
+    from datetime import date as _d
+    from core import curs_bnr as _cb
+    if not moneda or str(moneda).upper() == "RON" or not data_emitere:
+        return
+    try:
+        zi = data_emitere if isinstance(data_emitere, _d) else _d.fromisoformat(str(data_emitere))
+        _cb.asigura_cursul(str(moneda), zi)
+    except Exception:      # noqa: BLE001 — pre-încălzirea nu poate strica o cerere
+        pass
+
+
 @app.post("/tenants/{tenant_id}/facturi/emite")
 # [R42] „emiterea unui document" — factura primește număr din serie și ajunge la un om.
 def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_firma"))):
+    _preincalzeste_cursul(date.moneda, date.data_emitere)   # [P5 val 3] descărcarea BNR, înainte de tranzacție
     schema = _schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
     if not (date.tert_nume or "").strip():
@@ -3724,10 +3775,24 @@ def factura_creeaza(tenant_id: int, date: FacturaIn,
     return r
 
 
+def _moneda_facturii(schema, factura_id):
+    """Moneda unei facturi, citita intr-o tranzactie SCURTA — ca pre-incalzirea cursului sa se
+    poata face inainte de cea de emitere. [P5 val 3, 11.09.2026]"""
+    with db.get_conn(schema) as _c:
+        with _c.cursor() as _cur:
+            _cur.execute("SELECT moneda FROM facturi WHERE id=%s", (factura_id,))
+            _r = _cur.fetchone()
+    return (_r[0] if _r else None)
+
+
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/transforma")
 def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal)."""
     schema = _schema_sau_404(ctx, tenant_id)
+    # [P5 val 3] Moneda se citeste intr-o tranzactie SCURTA, apoi cursul se aduce — amandoua
+    # inaintea tranzactiei de emitere, ca descarcarea BNR sa nu tina o conexiune din pool.
+    import datetime as _dtx
+    _preincalzeste_cursul(_moneda_facturii(schema, factura_id), _dtx.date.today())
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT tip, transformat_in_id FROM facturi WHERE id=%s", (factura_id,))
@@ -4080,10 +4145,10 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat")))
         raise HTTPException(409, r["mesaj"])
     # verdictul intră odată cu elementul, nu la prima privire asupra lui
     if r.get("ok") and r.get("coada_id"):
+        _versiune = _duk_poarta.versiune_validator(date.tip)   # [P5 val 3] citire de fisier, INAINTE
         try:
             with db.get_conn() as conn:
-                coada_api.scrie_verdict(conn, r["coada_id"], _rez,
-                                        _duk_poarta.versiune_validator(date.tip), xml)
+                coada_api.scrie_verdict(conn, r["coada_id"], _rez, _versiune, xml)
         except Exception as _e:
             import logging
             logging.getLogger("iconta").warning("verdict nepersistat la intrarea in coada (%s): %s",
@@ -4138,9 +4203,10 @@ def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
     # [R41] Verdictul se PĂSTREAZĂ. Până azi se producea aici și se arunca, iar ecranul numea
     # „De depus" o listă care conținea declarații fără verdict. Nu se adaugă o a doua rulare de
     # validator: se scrie exact rezultatul celei care se făcea oricum, cu amprenta XML-ului validat.
+    _versiune = _duk.versiune_validator(tip)                   # [P5 val 3] citire de fisier, INAINTE
     try:
         with db.get_conn() as conn:
-            coada_api.scrie_verdict(conn, coada_id, rez, _duk.versiune_validator(tip), xml)
+            coada_api.scrie_verdict(conn, coada_id, rez, _versiune, xml)
     except Exception as _e:
         import logging
         logging.getLogger("iconta").warning("verdict nepersistat (coada %s): %s", coada_id, _e)
@@ -6791,6 +6857,7 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
 
 @app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
 def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cere_api_key)):
+    _preincalzeste_cursul(corp.get("moneda"), corp.get("data_emitere"))   # [P5 val 3]
     # [26.08.2026] DOUA DIFERENTE FATA DE RUTA DIN ECRAN, amandoua reparate aici.
     #
     # (1) `platitor_tva` venea DIN CORPUL CERERII, cu implicit `True`. E un FAPT DESPRE FIRMA,
@@ -6881,8 +6948,9 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
 def wc_sinc(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
     from core import woocommerce as _wc
     schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _wc.sincronizeaza(conn, schema)
+    # [P5 val 3] `sincronizeaza` isi deschide singura conexiunile: una pentru config, alta pentru
+    # scriere — iar intre ele nu tine niciuna peste apelul de 30 s catre magazin.
+    r = _wc.sincronizeaza(schema)
     if r.get("eroare"):
         _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
         raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
@@ -8785,12 +8853,13 @@ def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).
     try:
         from core import duk as _duk
+        _versiune = _duk.versiune_validator("s1005")           # [P5 val 3] citire de fisier, INAINTE
         with db.get_conn() as _c:
             _art.pastreaza(_c, schema, "s1005", str(an), xml,
                            produs_de_id=int(ctx["uid"]),
                            produs_de=ctx.get("nume") or str(ctx["uid"]),
                            verdict=("valid" if ok else "erori"),
-                           verdict_versiune=_duk.versiune_validator("s1005"),
+                           verdict_versiune=_versiune,
                            verdict_amprenta=_art.amprenta(xml))
     except Exception as _e:
         import logging
@@ -8848,12 +8917,13 @@ def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).
     try:
         from core import duk as _duk
+        _versiune = _duk.versiune_validator("s1003")           # [P5 val 3] citire de fisier, INAINTE
         with db.get_conn() as _c:
             _art.pastreaza(_c, schema, "s1003", str(an), xml,
                            produs_de_id=int(ctx["uid"]),
                            produs_de=ctx.get("nume") or str(ctx["uid"]),
                            verdict=("valid" if ok else "erori"),
-                           verdict_versiune=_duk.versiune_validator("s1003"),
+                           verdict_versiune=_versiune,
                            verdict_amprenta=_art.amprenta(xml))
     except Exception as _e:
         import logging
@@ -9957,6 +10027,7 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
     Trimite InregistrareSalariat (+ AdaugareContract daca vine si contract dupa referinta)."""
     from core import reges_client as _rg
     import uuid as _uuid
+    # ── [P5 val 3, 11.09.2026] FAZA 1: citirile ─────────────────────────────────────────
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -9972,15 +10043,20 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
             s = cur.fetchone()
             if not s:
                 raise HTTPException(404, "salariat inexistent")
-        mid = _uuid.uuid4()
-        xml = _rg.mesaj_inregistrare_salariat(
-            {"cnp": s[0], "nume": s[1], "prenume": s[2], "adresa": corp.get("adresa")},
-            str(chei[3]), chei[0], message_id=mid)
-        cl = _rg.RegesClient(chei[0], chei[1], chei[2])
-        try:
-            status, rasp = cl.trimite_salariat(xml)
-        except Exception as e:
-            raise HTTPException(502, f"REGES: {e}")
+    mid = _uuid.uuid4()
+    xml = _rg.mesaj_inregistrare_salariat(
+        {"cnp": s[0], "nume": s[1], "prenume": s[2], "adresa": corp.get("adresa")},
+        str(chei[3]), chei[0], message_id=mid)
+    cl = _rg.RegesClient(chei[0], chei[1], chei[2])
+    # ── APELUL EXTERN, fără nicio conexiune (token 30 s + POST 60 s) ────────────────────
+    try:
+        status, rasp = cl.trimite_salariat(xml)
+    except Exception as e:
+        raise HTTPException(502, f"REGES: {e}")
+    # ── FAZA 2: tranzacție scurtă. NECONDIȚIONAT — salariatul e deja la REGES, iar rândul
+    #    ăsta e urma lui. Dacă l-am condiționa de o revalidare, am putea pierde dovada unui
+    #    act deja petrecut. Aceeași clasă cu rotația de token: efectul e SURSA valorii. ────
+    with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("""INSERT INTO public.reges_mesaje
                            (tenant_id, salariat_id, operatie, message_id, response_id, raspuns)
@@ -10000,6 +10076,7 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje."""
     from core import reges_client as _rg
     import re as _re
+    # ── [P5 val 3, 11.09.2026] FAZA 1: citirile ─────────────────────────────────────────
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -10010,14 +10087,18 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
             chei = cur.fetchone()
             if not chei:
                 raise HTTPException(422, "chei REGES neconfigurate")
-        cl = _rg.RegesClient(chei[0], chei[1], chei[2])
-        try:
-            status, rasp = cl.poll_mesaj()
-        except Exception as e:
-            raise HTTPException(502, f"REGES: {e}")
-        m_mid = _re.search(r"<(?:Initial)?MessageId>([0-9a-f-]{36})", rasp)
-        m_rs = _re.search(r"ReferintaSalariat>?\s*<Id>([0-9a-f-]{36})", rasp)
-        m_rc = _re.search(r"ReferintaContract>?\s*<Id>([0-9a-f-]{36})", rasp)
+    cl = _rg.RegesClient(chei[0], chei[1], chei[2])
+    # ── APELUL EXTERN, fără conexiune. `poll_mesaj` CONSUMĂ un mesaj din coada REGES —
+    #    ireversibil, deci ce urmează nu se poate condiționa de nicio revalidare. ─────────
+    try:
+        status, rasp = cl.poll_mesaj()
+    except Exception as e:
+        raise HTTPException(502, f"REGES: {e}")
+    m_mid = _re.search(r"<(?:Initial)?MessageId>([0-9a-f-]{36})", rasp)
+    m_rs = _re.search(r"ReferintaSalariat>?\s*<Id>([0-9a-f-]{36})", rasp)
+    m_rc = _re.search(r"ReferintaContract>?\s*<Id>([0-9a-f-]{36})", rasp)
+    # ── FAZA 2: tranzacție scurtă, necondiționat ────────────────────────────────────────
+    with db.get_conn() as conn:
         if m_mid:
             with conn.cursor() as cur:
                 cur.execute("""UPDATE public.reges_mesaje
@@ -10039,7 +10120,15 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
     Nota ciorna: cont_dest=401 valoare + 4426=4427 TVA (norme pct. 109)."""
     from decimal import Decimal
     from datetime import date as _date
+    from core import anaf_api as _anaf
     from core import taxare_inversa as _ti
+    # ── [P5 val 3, 11.09.2026] ANAF ÎNAINTE de conexiune ────────────────────────────────
+    # Statutul TVA al furnizorului se îngheață pe factură și depinde doar de payload. Forma
+    # dinainte îl cerea din interiorul tranzacției, deci ținea o conexiune din pool peste un apel
+    # cu termen de 20 s. `platitor_tva_freeze` e best-effort: ANAF jos → fallback, nu excepție.
+    furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
+    _furn_pl = str(corp.get("furnizor_platitor_tva", True)).strip().lower() not in ("false", "nu", "0")
+    _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=_furn_pl) if furnizor_cui else _furn_pl
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -10060,8 +10149,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
             val = Decimal(str(corp["valoare"]))
             cota = _common.cota_ceruta(corp)
             tva = _ti.tva_beneficiar(val, cota)
-            furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
-            if not furnizor_cui:
+            if not furnizor_cui:      # calculat înaintea blocului; validarea rămâne aici (422)
                 raise ValueError("CUI furnizor obligatoriu (taxare inversa e intre platitori RO - furnizor cu CUI)")
             numar = str(corp.get("numar") or "").strip()
             if not numar:
@@ -10074,9 +10162,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
             cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
             #    = sursa citita de D394 (op1 tip C + op11 codPR). Linie cota reala -> baza/tva reverse-charge.
-            from core import anaf_api as _anaf
-            _furn_pl = str(corp.get("furnizor_platitor_tva", True)).strip().lower() not in ("false", "nu", "0")
-            _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=_furn_pl)   # INGHETAT la creare (fapt)
+            # `_tert_pl` s-a înghețat înaintea blocului — v. nota de la începutul rutei
             fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                        linii=[{"descriere": descr[:200], "cantitate": 1,
                                                "pret_unitar": str(val), "cota_tva": cota}],
@@ -10241,26 +10327,36 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
     cont_venit?, descriere?}. Verifica VIES LIVE. Nota: 4111=70x fara TVA."""
     from decimal import Decimal
     from core import intracomunitar as _ic
+    # ── [P5 val 3, 11.09.2026] FAZA 1: citirile, fără nimic extern ──────────────────────
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         _cere_luna_deschisa(conn, schema, corp.get("data"))
-        # [lotul 8, 04.09.2026] Citirea campului era INAUNTRUL `try`-ului care prinde `Exception`,
-        # deci un camp lipsa iesea ca „VIES indisponibil: 'cod_tva_client'" — o afirmatie falsa
-        # despre un serviciu extern, cu numele campului intre ghilimele simple. *Ce nu s-a trimis
-        # nu se afla de la VIES.*
-        _cod_client = str(corp.get("cod_tva_client") or "").strip()
-        if not _cod_client:
-            raise HTTPException(422, "Lipsește codul de TVA al clientului. Fără el livrarea "
-                                     "intracomunitară nu se poate verifica în VIES și nu ajunge "
-                                     "în D390.")
-        try:
-            v = _ic.verifica_vies(_cod_client)
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-        except Exception as e:
-            raise HTTPException(502, f"VIES indisponibil: {e}")
+    # [lotul 8, 04.09.2026] Citirea campului era INAUNTRUL `try`-ului care prinde `Exception`,
+    # deci un camp lipsa iesea ca „VIES indisponibil: 'cod_tva_client'" — o afirmatie falsa
+    # despre un serviciu extern, cu numele campului intre ghilimele simple. *Ce nu s-a trimis
+    # nu se afla de la VIES.*
+    _cod_client = str(corp.get("cod_tva_client") or "").strip()
+    if not _cod_client:
+        raise HTTPException(422, "Lipsește codul de TVA al clientului. Fără el livrarea "
+                                 "intracomunitară nu se poate verifica în VIES și nu ajunge "
+                                 "în D390.")
+    # ── I/O EXTERN, fără nicio conexiune în mână (termen 15 s) ──────────────────────────
+    try:
+        v = _ic.verifica_vies(_cod_client)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    except Exception as e:
+        raise HTTPException(502, f"VIES indisponibil: {e}")
+    # ── FAZA 2: tranzacție scurtă, cu REVALIDARE înainte de orice scriere ───────────────
+    # Ce s-ar fi putut schimba în cele 15 s: accesul revocat, luna închisă de altcineva. Se cer
+    # din nou, amândouă, iar la refuz iese exact eroarea de azi — rezultatul VIES se aruncă.
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             if corp.get("tip") == "servicii":
                 ok, ment = _ic.valideaza_prestare_ic(corp["cod_tva_client"], v["valid"])
@@ -10493,6 +10589,7 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
     """Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765.
     corp: {data, valoare_valuta, moneda, curs_evidenta, tip creanta|datorie,
     cont_tert, cont_banca?, descriere?}. Cursul decontarii = BNR la data (auto)."""
+    _preincalzeste_cursul(corp.get("moneda", "EUR"), corp.get("data"))   # [P5 val 3] descărcarea BNR, înainte de tranzacție
     from datetime import date as _date
     from core import diferente_curs as _dc
     from core import curs_bnr as _cb
@@ -10772,6 +10869,10 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
               "brevet":      ("205", "2805", None),
               "dezvoltare":  ("203", "2803", None),
               "constituire": ("201", "2801", 60)}
+    from core import anaf_api as _anaf
+    # [P5 val 3] ANAF ÎNAINTE de conexiune — vezi nota de la `achizitie_taxare_inversa`.
+    furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
+    _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=True) if furnizor_cui else True
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -10798,8 +10899,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
                                  "decât zero.")
             cota = _common.cota_ceruta(corp)
             tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"))
-            furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
-            if not furnizor_cui:
+            if not furnizor_cui:      # calculat înaintea blocului; validarea rămâne aici
                 raise ValueError("CUI furnizor obligatoriu (achizitia necorporala e factura de la furnizor)")
             numar = str(corp.get("numar") or "").strip()
             if not numar:
@@ -10819,8 +10919,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
             cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
             # rand FACTURA (achizitie normala de la furnizor RO cu CUI) -> D394 tip A. MF (mijloace_fixe) ramane
             # separat: factura = documentul de achizitie; imobilizarea = activul amortizabil (amortizare/D406).
-            from core import anaf_api as _anaf
-            _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=True)   # TVA deductibila -> furnizor platitor
+            # `_tert_pl` s-a înghețat înaintea blocului (TVA deductibilă -> furnizor plătitor)
             fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                        linii=[{"descriere": corp["denumire"][:200], "cantitate": 1,
                                                "pret_unitar": str(val), "cota_tva": cota}],

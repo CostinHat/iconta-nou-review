@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**556 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**557 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 531
+### `core/` — 532
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8196,6 +8196,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_tva_incasare_291_5.py` — Garda R151 — cele două ramuri ale art. 291 alin. (5) se CER, nu se ghicesc.
 - `core/test_unde.py` — GARDĂ: `unde` e o REFERINȚĂ citabilă mecanic, nu proză. (P8, 22.08.2026)
 - `core/test_upsert_motivat.py` — [Regula 4 — fara mutatie tacuta] GARD: orice INSERT ... ON CONFLICT DO UPDATE din codul de PRODUCTIE
+- `core/test_val3_contracte.py` — core/test_val3_contracte.py — valul 3: I/O extern in afara tranzactiei, cu REVALIDARE.
 - `core/test_valoare_in_citat.py` — GARDĂ pentru interdicția 53: citatul conține VALOAREA pe care o justifică.
 - `core/test_valori_fiscale_js.py` — Valorile fiscale scrise in ECRANE se confrunta cu REGISTRUL, nu cu memoria mea.
 - `core/test_vector_camp_marcat.py` — [Regula 14.4 pct.4] GARD: eroarea de camp obligatoriu la vectorul fiscal NUMESTE campul vinovat ('camp'),

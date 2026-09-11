@@ -231,6 +231,64 @@ def _salveaza_cache(harta: dict):
         c2.commit()
 
 
+#: [P5 val 3, 11.09.2026] Ce a aflat ultima descarcare, ca `curs_pentru` sa poata da ACELEASI
+#: mesaje de refuz ca inainte fara sa mai atinga reteaua. Cheiate pe (moneda, data) — o cerere
+#: pentru alta pereche nu citeste ce a lasat alta.
+_ULTIMA_EROARE = {}
+_COTATE = {}
+
+
+def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):
+    """Aduce de la BNR ce lipseste din cache — FARA conexiunea apelantului. Nu decide nimic.
+
+    [P5 val 3, 11.09.2026] Se cheama INAINTEA tranzactiei care va emite factura. Descarcarea are
+    termen de 10 s pe fiecare din cele (pana la) trei adrese, iar forma dinainte o facea din
+    mijlocul lui `curs_pentru`, adica din mijlocul tranzactiei de emitere. Zece cereri de facturare
+    in valuta goleau pool-ul pentru toata aplicatia.
+
+    *Nu ia nicio decizie:* pragul de vechime, alegerea cursului si cele trei refuzuri raman in
+    `curs_pentru`, unde erau, si se aplica pe cache-ul de ATUNCI — deci o harta adusa aici nu sare
+    peste nicio verificare.
+    """
+    from core import db
+    moneda = moneda.upper()
+    if moneda == "RON":
+        return
+    with db.get_conn() as conn:                      # scurta, doar citirea cache-ului
+        c, dc = _din_cache(conn, moneda, data_factura)
+    if c is not None and (data_factura - dc).days <= prag_zile:
+        return                                       # destul de proaspat: nimic de adus
+
+    urls = []
+    azi = date.today()
+    if (azi - data_factura).days <= 9:
+        urls.append(URL_10ZILE)
+    urls.append(URL_AN.format(an=data_factura.year))
+    if data_factura.year != azi.year:
+        urls.append(URL_10ZILE)  # fallback
+
+    ultima_eroare = None
+    cotate = set()          # ce monede a cotat BNR in hartile pe care CHIAR le-am citit
+    for url in urls:
+        try:
+            xml = _descarca(url)                     # FARA nicio conexiune in mana
+            harta = parse_xml(xml)
+            if harta:
+                # Bucla DOAR aduce si salveaza. Nu intoarce cursul: pana la calibrare o facea, si
+                # asa sarea peste pragul de vechime — un prag aplicat pe un singur drum din doua
+                # nu e un prag. Decizia se ia intr-un singur loc, in `curs_pentru`.
+                _salveaza_cache(harta)
+                for _zi in harta.values():
+                    cotate.update(_zi)
+                if curs_din_harta(harta, moneda, data_factura)[0] is not None:
+                    break
+        except Exception as e:  # retea, timeout, IP blocat, parse
+            ultima_eroare = e
+            continue
+    _ULTIMA_EROARE[(moneda, data_factura)] = ultima_eroare
+    _COTATE[(moneda, data_factura)] = cotate
+
+
 def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):
     """
     Intoarce (curs: Decimal, data_curs: date, sursa: str) pentru factura in valuta.
@@ -257,37 +315,14 @@ def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VEC
     if c is not None and (data_factura - dc).days <= prag_zile:
         return c, dc, "bnr"
 
-    # 3) descarca + salveaza + re-cauta
-    #    aleg sursa dupa vechime: date din ultimele ~10 zile -> 10days; altfel arhiva anuala.
-    urls = []
-    azi = date.today()
-    if (azi - data_factura).days <= 9:
-        urls.append(URL_10ZILE)
-    urls.append(URL_AN.format(an=data_factura.year))
-    if data_factura.year != azi.year:
-        urls.append(URL_10ZILE)  # fallback
+    # 3) DECIZIA, pe cache. Descarcarea s-a facut (sau nu) in `asigura_cursul`, INAINTE de
+    #    tranzactia apelantului — v. nota functiei aceleia. Aici nu mai atinge nimeni reteaua.
+    ultima_eroare = _ULTIMA_EROARE.get((moneda, data_factura))
+    cotate = _COTATE.get((moneda, data_factura)) or set()
 
-    ultima_eroare = None
-    cotate = set()          # ce monede a cotat BNR in hartile pe care CHIAR le-am citit
-    for url in urls:
-        try:
-            xml = _descarca(url)
-            harta = parse_xml(xml)
-            if harta:
-                # Bucla DOAR aduce si salveaza. Nu intoarce cursul: pana la calibrare o facea, si
-                # asa sarea peste pragul de vechime de mai jos — un prag aplicat pe un singur drum
-                # din doua nu e un prag. Decizia se ia intr-un singur loc, dupa bucla.
-                _salveaza_cache(harta)
-                for _zi in harta.values():
-                    cotate.update(_zi)
-                if curs_din_harta(harta, moneda, data_factura)[0] is not None:
-                    break
-        except Exception as e:  # retea, timeout, IP blocat, parse
-            ultima_eroare = e
-            continue
-
-    # Reteaua s-a incercat; recitesc cache-ul, care poate a fost tocmai imbogatit de ea. Daca ce
-    # iese e in interiorul pragului, e un raspuns; daca e mai vechi, e un refuz care POARTA cursul.
+    # Recitesc cache-ul, care poate a fost tocmai imbogatit. Daca ce iese e in interiorul pragului,
+    # e un raspuns; daca e mai vechi, e un refuz care POARTA cursul. *Recitirea asta E revalidarea:
+    # decizia se ia pe ce e in cache ACUM, nu pe ce a adus descarcarea.*
     c, dc = _din_cache(conn, moneda, data_factura)
     if c is not None:
         vechime = (data_factura - dc).days

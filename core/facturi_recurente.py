@@ -101,10 +101,20 @@ def de_emis(sabloane, azi=None):
 
 def emite_scadente(conn, schema, azi=None):
     """Emite facturile scadente pentru un tenant. Intoarce lista emisa."""
+    from core import curs_bnr as _cb
     from core import facturi_api
     azi = azi or datetime.date.today()
     emise = []
-    for s in de_emis(lista(conn, schema), azi):
+    _scadente = de_emis(lista(conn, schema), azi)
+    # [P5 val 3, 11.09.2026] Cursul BNR se aduce ACUM, pentru toate monedele lotului: `curs_pentru`
+    # decide pe cache, iar descarcarea n-are ce cauta in mijlocul emiterii. Monedele se stiu din
+    # abonamentele deja citite, deci nu se cere nimic in plus de la baza.
+    for _m in {(_s.get("moneda") or "RON") for _s in _scadente}:
+        try:
+            _cb.asigura_cursul(_m, azi)
+        except Exception:      # noqa: BLE001 — pre-incalzirea nu poate strica emiterea
+            pass
+    for s in _scadente:
         try:
             with conn.cursor() as cur:
                 cur.execute(f"SET search_path TO {schema}")

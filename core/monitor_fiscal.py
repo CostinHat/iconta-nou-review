@@ -114,7 +114,15 @@ def _procesat(conn, titlu):
         return cur.fetchone() is not None
 
 
-def ruleaza(conn, max_buletine=3):
+def ruleaza(max_buletine=3):
+    """[P5 val 3, 11.09.2026] NU mai primeste o conexiune. Cele doua descarcari au termen de 30 s
+    fiecare, iar forma dinainte le facea cu o conexiune din pool in mana — pentru tot lotul.
+
+    Acum: HTTP fara conexiune -> tranzactie scurta pentru citirea `_procesat` -> HTTP fara
+    conexiune -> tranzactie scurta pentru scriere. `_procesat` ramane unde era, ca verificare de
+    DINAINTE, si `salveaza` marcheaza buletinul chiar si fara alerte — idempotenta, neschimbata.
+    """
+    from core import db
     toate_noi = []
     try:
         r = requests.get(SURSA_LISTA, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
@@ -126,18 +134,22 @@ def ruleaza(conn, max_buletine=3):
     for titlu, href in buletine_din_lista(r.text):
         if procesate >= max_buletine:
             break
-        if _procesat(conn, titlu):
+        with db.get_conn() as conn:                 # scurta, doar citirea
+            deja = _procesat(conn, titlu)
+        if deja:
             continue
         url = href if href.startswith("http") else BAZA + href.lstrip("/")
-        try:
+        try:                                        # fara nicio conexiune in mana
             rb = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
             text = text_din_pdf(rb.content) if rb.status_code == 200 else ""
             alerte = analizeaza(text) if text else []
         except Exception:
             alerte = []
-        # marcam buletinul ca procesat chiar si fara alerte (idempotenta)
-        salveaza(conn, "anaf_buletin", [{"titlu": titlu, "rezumat": f"{len(alerte)} modificari relevante", "relevanta": "info"}], url)
-        toate_noi += salveaza(conn, "anaf_alerta", alerte, url)
+        with db.get_conn() as conn:                 # scurta, doar scrierea
+            # marcam buletinul ca procesat chiar si fara alerte (idempotenta)
+            salveaza(conn, "anaf_buletin", [{"titlu": titlu, "rezumat": f"{len(alerte)} modificari relevante", "relevanta": "info"}], url)
+            toate_noi += salveaza(conn, "anaf_alerta", alerte, url)
+            conn.commit()
         procesate += 1
     return toate_noi
 
@@ -151,8 +163,8 @@ def _main():
             n = emite_alerte_programate(conn)
         print(f"{n} anunturi automate emise")
         return
+    noi = ruleaza()                    # [P5 val 3] isi deschide singura tranzactiile scurte
     with db.get_conn() as conn:
-        noi = ruleaza(conn)
         emise = emite_alerte_programate(conn)  # [F103 auto] si dupa detectie
     print(f"{len(noi)} alerte noi; {emise} anunturi automate")
     if noi:

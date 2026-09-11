@@ -1,0 +1,42 @@
+
+C5 SIGURE (nu omonime) — 5 familii, 5 cai
+  core/gdpr_export.py::export_cabinet                  cai=1  locuri=['core/gdpr_export.py:55', 'core/gdpr_export.py:59']
+        GET /gdpr/export-cabinet
+  core/tenant_stergere.py::sterge_fisiere              cai=1  locuri=['core/tenant_stergere.py:350', 'core/tenant_stergere.py:352', 'core/tenant_stergere.py:354']
+        POST /gdpr/sterge-cabinet/{cabinet_id}/executa
+  main.py::portal_bon                                  cai=1  locuri=['main.py:6271']
+        POST /portal/bon
+  main.py::raportari_imagine                           cai=1  locuri=['main.py:7819', 'main.py:7821']
+        POST /raportari/mesaj/{mid}/imagine
+  core/curs_bnr.py::_descarca                          cai=1  locuri=['core/curs_bnr.py:173']
+        core/facturi_recurente.py::__main__ -> _main()
+
+C5 prin OMONIM (instrumentul spune ca nu poate sti) — 1 familii, 1 cai
+  core/d406.py::plan_oficial                           cai=1  locuri=['core/d406.py:347']
+        GET /tenants/{tenant_id}/d390-clasificare
+
+CLASA INTREAGA: candidati=65  C1=1  C2=37  C5=6
+{
+ "familii": {
+  "core/gdpr_export.py::export_cabinet": [
+   "GET /gdpr/export-cabinet"
+  ],
+  "core/tenant_stergere.py::sterge_fisiere": [
+   "POST /gdpr/sterge-cabinet/{cabinet_id}/executa"
+  ],
+  "main.py::portal_bon": [
+   "POST /portal/bon"
+  ],
+  "main.py::raportari_imagine": [
+   "POST /raportari/mesaj/{mid}/imagine"
+  ],
+  "core/curs_bnr.py::_descarca": [
+   "core/facturi_recurente.py::__main__ -> _main()"
+  ]
+ },
+ "omonime": {
+  "core/d406.py::plan_oficial": [
+   "GET /tenants/{tenant_id}/d390-clasificare"
+  ]
+ }
+}
