@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**557 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**559 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 532
+### `core/` — 533
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8172,6 +8172,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_spv_conector.py` — Teste core/spv_conector.py — pe MOCK, niciodata pe ANAF real (brief BRIEF_CODE_CONECTOR_SPV.md).
 - `core/test_spv_poll.py` — Teste core/spv_poll.py (F178) — pe MOCK, niciodata pe ANAF real.
 - `core/test_spv_receive.py` — Teste core/spv_receive.py (F179) — pe MOCK (retea + parser), niciodata pe ANAF real.
+- `core/test_stare_proces.py` — Garda instrumentului P6 — inventarul starii din memoria procesului.
 - `core/test_stat_plata_emis.py` — GARDĂ: statul de plată e un DOCUMENT EMIS, nu o vedere recalculată. (21.08.2026)
 - `core/test_status_factura_un_loc.py` — GARDĂ: stările unei FACTURI trăiesc într-un singur loc. (22.08.2026, după reparația de prag 1)
 - `core/test_stergere_salariat_completa.py` — GARD (D5, 20.08.2026): stergerea unui salariat nu lasa jumatate din inregistrare in urma.
@@ -8215,7 +8216,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 25
+### `scripts/` — 26
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -8240,6 +8241,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `scripts/scan_regimuri.py` — CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
 - `scripts/scan_rute_clasificate.py` — CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
 - `scripts/scan_sonde_stare.py` — scripts/scan_sonde_stare.py — SONDELE CARE MĂSOARĂ FĂRĂ SĂ ȘTIE DACĂ CEREREA A REUȘIT.
+- `scripts/scan_stare_proces.py` — P6 — inventarul STARII care traieste in memoria procesului, intre cereri.
 - `scripts/scan_tranzactii.py` — scripts/scan_tranzactii.py — CINE DEȚINE LIMITA TRANZACȚIEI, derivat din cod.
 - `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
 
