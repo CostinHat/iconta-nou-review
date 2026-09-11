@@ -840,6 +840,20 @@ EFECTE_EXTERNE = {
             "linkul de resetare — trimit fie un artefact REGENERABIL, fie un link a carui cheie e "
             "deja comisa inaintea plecarii mesajului. Regula scrisa pentru orice apelant nou: "
             "randul care face mesajul inutil de retrimis se comite INAINTEA lui.",
+        "reparat":
+            "[P5 val 3, 11.09.2026] LOCUL A DISPARUT din inventarul derivat: niciunul dintre cele "
+            "17 locuri de apel nu se mai executa sub o conexiune din pool (masurat cu "
+            "`scripts/inventar_email_html.py`, 3 -> 0). Verdictul de mai sus ramane scris integral, "
+            "inclusiv regula pe care o enunta — iar una dintre cele trei cai o INCALCA, si asta a "
+            "iesit la iveala abia acum: la `pachet_poveste_set`, `return r` statea IN blocul de "
+            "conexiune, deci `db.get_conn` comitea abia la iesire, iar e-mailul despre raportul "
+            "lunar pleca INAINTE. Un commit cazut lasa clientul cu un anunt despre un raport care "
+            "nu exista. Contract aprobat de arhitect pe 11.09: commit reusit -> se trimite; commit "
+            "cazut -> NU se trimite nimic. Celelalte doua cai (`magic_link_cere`, "
+            "`cabinet_solicitari_raspunde`) aveau deja `commit()` inainte, deci acolo mutarea in "
+            "afara blocului e strict eliberarea conexiunii, fara nicio schimbare de semantica. "
+            "Pazit de `core/test_email_html_dupa_commit.py`, clichet 0 pe AST plus probe "
+            "functionale pe fiecare cale de esec.",
     },
     "core/spv_conector.py:_post_token": {
         "fel": EFECT,

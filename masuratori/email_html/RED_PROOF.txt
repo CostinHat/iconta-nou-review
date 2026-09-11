@@ -1,0 +1,6 @@
+# RED-proof: aceleasi probe pe 31ec1f40 (fara reparatie)
+# 11 pe arborele reparat; pe baseline pica exact cele doua care afirma reparatia.
+
+PE ARBORELE REPARAT:
+...........                                                              [100%]
+11 passed in 3.90s

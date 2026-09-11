@@ -1,0 +1,65 @@
+Valul 3, familia `trimite_email_html`: 3 → 0 căi sub conexiune, iar raportul lunar nu mai pleacă înaintea commitului
+
+# multe-fisiere-ok: reparația celor trei căi, instrumentul care le numără, garda care le ține la
+# zero, și inventarul gărzilor regenerat. Fără instrument cifra ar fi o amintire; fără gardă,
+# al patrulea loc scris mâine ar intra tăcut.
+
+CE ȚINEA POOL-UL. `trimite_email_html` are termen de **15 s** — mai lung decât cei 10 s ai familiei
+precedente. Din 17 locuri de apel, **3** se executau din interiorul unui `with db.get_conn()`, deci
+legau una din cele zece conexiuni de latența unui serviciu străin.
+
+Cifra veche „4 căi / 17 apeluri" NU se confirmă. Remăsurat mecanic cu `scripts/inventar_email_html.py`
+pe același arbore, o dată cu `main.py` de la HEAD și o dată cu el reparat:
+
+  · locuri de apel (apariții sintactice, pe AST):        17 → 17
+  · căi sub conexiune (apelul în interiorul blocului):    3 → 0
+
+Locurile de apel sunt într-adevăr 17, dar 14 dintre ele nu țineau nimic din pool — sunt joburi de
+fundal sau rute care trimit în afara oricărui bloc. *„Cale" aici e perechea (loc de apel, context de
+tranzacție); nu e aceeași unitate cu „cale" din inventarul P5, care numără PUNCTE DE INTRARE. Cele
+două nu se compară fără mapping, și nu se compară aici.*
+
+TREI CĂI, DOUĂ FELURI.
+
+  (a) `magic_link_cere` și `cabinet_solicitari_raspunde` aveau deja `commit()` ÎNAINTE de trimitere.
+      Acolo mutarea în afara blocului e strict eliberarea conexiunii: aceleași condiții de
+      trimitere, același destinatar, același conținut, același răspuns. Zero schimbare de semantică.
+
+  (b) `pachet_poveste_set` avea un defect de ORDINE, nu doar de pool. `return r` stătea ÎN bloc, iar
+      `db.get_conn` comite la IEȘIREA din el — deci e-mailul pleca înainte ca raportul să fie sigur
+      salvat. Un commit căzut lăsa clientul cu „contabilul tău a pregătit raportul lunar" pentru un
+      raport care nu există.
+
+      Mutarea schimbă calea de eșec, deci NU am făcut-o singur: am oprit familia la 1 din 3 și am
+      cerut decizia. Contractul aprobat de arhitect:
+
+          DB_COMMIT_SUCCESS -> EMAIL_ALLOWED
+          DB_COMMIT_FAILURE -> EMAIL_NOT_SENT
+
+PROBA, 11 teste, cu RED-proof pe `31ec1f40`. Două feluri, fiindcă niciunul singur n-ar ajunge:
+
+  · STRUCTURAL — clichet 0 pe AST, cu anti-vacuum (scanul trebuie să vadă cele 17 locuri) și cu
+    calibrare în AMBELE direcții: pe cod care ARE defectul îl găsește, pe cod care nu-l are tace.
+    Asta generalizează: prinde și al patrulea loc, cel scris mâine;
+  · FUNCȚIONAL — rutele adevărate, cu dependențele înlocuite: commit reușit → e-mail plecat ·
+    commit căzut → NIMIC trimis · e-mail căzut după commit → baza rămâne comisă · ciornă → nu se
+    trimite · fără adresă → nu se trimite.
+
+Pe baseline pică exact două: clichetul structural, și cea care cere ca un commit căzut să nu trimită
+nimic. Mesajul ei de eșec tipărește chiar e-mailul care pleca — „Raportul lunar - iunie 2026" către
+clientul firmei. Celelalte nouă trec și acolo, fiindcă păzesc ce NU trebuia să se schimbe.
+
+GARDA CASEI M-A PRINS IAR, și a ieșit o probă mai bună. Patru aserțiuni ale mele erau ancorate pe
+text; două urcau clichetul 50. Nu l-am urcat — am trecut pe ARBORELE DE RANDARE: se parsează HTML-ul
+și se cere un NOD DE TEXT egal cu numele firmei, nu un subșir în marcaj. Un `"Firma Alfa" in html`
+trecea și dacă numele apărea într-un atribut, într-un `style` sau într-un `<script>`. La proba de
+escapare, la fel: acum se cere ca randarea să NU conțină un element `script`, nu ca șirul `&lt;` să
+apară undeva.
+
+REGISTRELE: inventarul gărzilor regenerat mecanic (fișier-gardă nou + instrument nou). Celelalte
+blocuri generate — clichete, listă 3, cifre de predare, antete de traseu — verificate și neschimbate.
+
+POARTA A RULAT ÎN MEDIUL IZOLAT R68, cu amprenta producției luată înainte și după.
+
+NU sunt aici, prin decizie: `_post_token` (temă proprie), R69, și niciun cleanup de date —
+rândurile 53 și 63, corecțiile orfane și cele 12 firme dezactivate rămân neatinse.

@@ -1,0 +1,11 @@
+GARZI.md
+core/p4_clasificare.py
+core/test_email_html_dupa_commit.py
+main.py
+masuratori/email_html/COMMIT_EMAIL_HTML.txt
+masuratori/email_html/DB_FINGERPRINT_BEFORE.json
+masuratori/email_html/FISIERE_ATINSE.txt
+masuratori/email_html/INVENTAR_DUPA.txt
+masuratori/email_html/INVENTAR_INAINTE.txt
+masuratori/email_html/RED_PROOF.txt
+scripts/inventar_email_html.py

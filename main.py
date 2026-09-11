@@ -1921,6 +1921,7 @@ def magic_link_cere(date: MagicCereIn, request: Request):
     _rate_limit_email(_magic_rate, request)  # [magic_link_v1] anti-spam: 5/15min per IP (ca reset)
     import secrets as _sec
     email = (date.email or "").strip().lower()
+    _html_magic = None          # ce ramane de trimis DUPA ce se inchide blocul de conexiune
     with db.get_conn() as conn, conn.cursor() as cur:
         cur.execute("SELECT id FROM public.users WHERE email=%s AND activ", (email,))
         r = cur.fetchone()
@@ -1930,14 +1931,20 @@ def magic_link_cere(date: MagicCereIn, request: Request):
             conn.commit()
             baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
             link = baza + "/#magic=" + tok
-            html = ("<p>Buna,</p><p>Apasa butonul pentru a intra in iConta.eu, fara parola:</p>"
+            _html_magic = ("<p>Buna,</p><p>Apasa butonul pentru a intra in iConta.eu, fara parola:</p>"
                     "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in iConta.eu</a></p>"
                     "<p>Linkul e valabil 15 minute si poate fi folosit o singura data.</p>") % link
-            try:
-                _obs.trimite_email_html(email, "Link de logare iConta.eu", html)
-            except Exception as _e:
-                # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
-                _obs.esec_secundar("email link de logare", _e, alerta=True)
+    # [P5 val 3, 11.09.2026] AICI, nu inauntru. Tokenul e COMIS mai sus (`conn.commit()`), deci
+    # trimiterea nu mai are ce sa astepte de la tranzactie — dar tinea o conexiune din pool peste un
+    # apel cu termen de 15 s. Conditiile de trimitere sunt neschimbate: se trimite exact cand exista
+    # `_html_magic`, adica exact cand exista utilizatorul. Raspunsul rutei ramane acelasi indiferent,
+    # ca sa nu se poata enumera adresele.
+    if _html_magic is not None:
+        try:
+            _obs.trimite_email_html(email, "Link de logare iConta.eu", _html_magic)
+        except Exception as _e:
+            # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
+            _obs.esec_secundar("email link de logare", _e, alerta=True)
     return {"ok": True, "mesaj": MESAJ_LINK_LOGARE_CERUT}
 
 class MagicLoginIn(BaseModel):
@@ -4384,6 +4391,7 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,
                        ctx=Depends(cere_rol("admin_firma"))):
     _cere_perioada(an, luna)
     _pachet_schema(ctx, tenant_id)
+    _de_trimis = None           # ce ramane de trimis DUPA ce blocul s-a inchis si a comis
     with db.get_conn() as cp:
         r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
         if (date.status or "") == "aprobat":
@@ -4399,8 +4407,14 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,
                         "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
                         "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
                         "Deschide portalul</a></p></div>")
-                _obs.trimite_email_html(email, subiect, html)
-        return r
+                _de_trimis = (email, subiect, html)
+    # [P5 val 3, 11.09.2026] AICI, dupa bloc. `db.get_conn` comite la IESIREA din el, iar `return r`
+    # statea inauntru — deci e-mailul pleca INAINTE ca raportul sa fie sigur salvat. Contract
+    # aprobat: commit reusit -> se trimite; commit cazut -> exceptia iese de aici si NU se trimite
+    # nimic. In plus, apelul (termen 15 s) nu mai tine o conexiune din pool.
+    if _de_trimis is not None:
+        _obs.trimite_email_html(*_de_trimis)
+    return r
 
 @app.get("/pachete/{tenant_id}/preview")
 def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depends(cere_cabinet)):
@@ -7147,6 +7161,7 @@ def cabinet_solicitari_lista(tenant_id: int, ctx=Depends(cere_context)):
 def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,
                                 ctx=Depends(cere_rol("admin_firma"))):
     _schema_sau_404(ctx, tenant_id)
+    _de_trimis = None           # ce ramane de trimis DUPA ce se inchide blocul de conexiune
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -7165,7 +7180,12 @@ def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,
                     "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
                     "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
                     "Deschide portalul</a></p></div>")
-            _obs.trimite_email_html(email, subiect, html)
+            _de_trimis = (email, subiect, html)
+    # [P5 val 3, 11.09.2026] AICI, nu inauntru. `conn.commit()` s-a facut mai sus, deci raspunsul e
+    # deja in evidenta; apelul la Brevo (termen 15 s) nu mai tine nimic din pool. Se trimite exact
+    # cand exista adresa clientului, ca inainte.
+    if _de_trimis is not None:
+        _obs.trimite_email_html(*_de_trimis)
     return {"ok": True}
 
 

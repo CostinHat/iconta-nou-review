@@ -1,0 +1,194 @@
+EMAIL_HTML_CALLSITES=17
+EMAIL_HTML_PATHS_SUB_CONEXIUNE=0
+
+FILE:LINE                    FUNCTIE                            RUTA  SUB_CX  COMMIT? REZULTAT_CITIT
+core/notificari_scadenta.py:162 emite_pentru_firma                 -     nu      -       da
+core/pachete_api.py:215      trimite                            -     nu      -       da
+core/sinteza_zilnica.py:172  ruleaza                            -     nu      -       da
+main.py:684                  _verifica_si_alerta                -     nu      -       nu
+main.py:702                  admin_sanatate_test_alerta         da    nu      -       da
+main.py:1436                 register                           da    nu      -       nu
+main.py:1753                 client_acces_creeaza               da    nu      -       nu
+main.py:1886                 reset_parola_cere                  da    nu      -       nu
+main.py:1944                 magic_link_cere                    da    nu      -       nu
+main.py:3515                 factura_email                      da    nu      -       da
+main.py:4416                 pachet_poveste_set                 da    nu      -       nu
+main.py:4769                 portal_schimba_email               da    nu      -       nu
+main.py:4777                 portal_schimba_email               da    nu      -       nu
+main.py:4822                 portal_adauga_acces                da    nu      -       nu
+main.py:7042                 _trimite_recomandari               -     nu      -       da
+main.py:7188                 cabinet_solicitari_raspunde        da    nu      -       nu
+main.py:7278                 asistent_creeaza                   da    nu      -       nu
+
+[
+ {
+  "fisier_linie": "core/notificari_scadenta.py:162",
+  "functie": "emite_pentru_firma",
+  "e_ruta": null,
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": true,
+  "async": false
+ },
+ {
+  "fisier_linie": "core/pachete_api.py:215",
+  "functie": "trimite",
+  "e_ruta": null,
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": true,
+  "async": false
+ },
+ {
+  "fisier_linie": "core/sinteza_zilnica.py:172",
+  "functie": "ruleaza",
+  "e_ruta": null,
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": true,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:684",
+  "functie": "_verifica_si_alerta",
+  "e_ruta": null,
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:702",
+  "functie": "admin_sanatate_test_alerta",
+  "e_ruta": "POST /admin/sanatate/test-alerta",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": true,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:1436",
+  "functie": "register",
+  "e_ruta": "POST /auth/register",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:1753",
+  "functie": "client_acces_creeaza",
+  "e_ruta": "POST /tenants/{tenant_id}/client-acces",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:1886",
+  "functie": "reset_parola_cere",
+  "e_ruta": "POST /public/reset-parola/cere",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:1944",
+  "functie": "magic_link_cere",
+  "e_ruta": "POST /public/magic-link",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:3515",
+  "functie": "factura_email",
+  "e_ruta": "POST /tenants/{tenant_id}/facturi/{factura_id}/email",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": true,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:4416",
+  "functie": "pachet_poveste_set",
+  "e_ruta": "POST /pachete/{tenant_id}/poveste",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:4769",
+  "functie": "portal_schimba_email",
+  "e_ruta": "PUT /portal/acces-cont/email",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:4777",
+  "functie": "portal_schimba_email",
+  "e_ruta": "PUT /portal/acces-cont/email",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:4822",
+  "functie": "portal_adauga_acces",
+  "e_ruta": "POST /portal/acces-cont/acces",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:7042",
+  "functie": "_trimite_recomandari",
+  "e_ruta": null,
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": true,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:7188",
+  "functie": "cabinet_solicitari_raspunde",
+  "e_ruta": "POST /tenants/{tenant_id}/solicitari",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ },
+ {
+  "fisier_linie": "main.py:7278",
+  "functie": "asistent_creeaza",
+  "e_ruta": "POST /asistenti",
+  "sub_conexiune": false,
+  "bloc_conexiune_linii": null,
+  "commit_inainte": false,
+  "rezultat_citit": false,
+  "async": false
+ }
+]
