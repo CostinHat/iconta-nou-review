@@ -37,6 +37,7 @@ from decimal import Decimal
 import pytest
 
 from core import db as _db
+from core import tenant_provisioning as _tprov
 from core import contare_facturi as _cf
 from core import facturi_api as _fa
 from core import jurnal_api as _ja
@@ -67,8 +68,10 @@ def conn():
     with _db.get_conn() as c:
         with c.cursor() as cur:
             cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCH)
-            cur.execute(io.open("tenant_template.sql", encoding="utf-8").read()
-                        .replace("TENANT_PLACEHOLDER", _SCH))
+            # [R68] prin sursa unica, nu cu `replace` propriu: sablonul poarta si
+            # `OWNER TO`, iar parametrizarea e singurul loc care le stie pe toate
+            cur.execute(_tprov.parametrizeaza_template(
+                io.open("tenant_template.sql", encoding="utf-8").read(), _SCH))
             cur.execute("SET search_path TO %s, public" % _SCH)
             cur.execute("""INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, email,
                            telefon, caen, declarant_nume, declarant_prenume, declarant_functie,

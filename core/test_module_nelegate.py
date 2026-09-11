@@ -23,6 +23,16 @@ from core import scan_module_nelegate as scan
 
 # Fiecare intrare poartă DE CE e aici. O intrare fără motiv ar face clichetul o listă de tolerat.
 PIN = {
+    # [R68, 11.09.2026] INSTRUMENT DE DIAGNOSTIC, legat din afara domeniului scanului.
+    # Apelantul lui e `conftest.py` (radacina), care il monteaza cand `ICONTA_SONDA_SCRIERI=1` —
+    # iar scanul citeste `core/` si `main.py`, nu radacina. Nu e cod mort si nu e nelegat: e
+    # comutatorul cu care se reproduce incidentul randului 53 in mediul izolat. Se scoate din PIN
+    # cand reproducerea se incheie SI producatorul e numit — atunci sonda ori dispare, ori devine
+    # garda permanenta cu apelant din `core/`.
+    "core/sonda_scrieri.py":
+        "sonda de scrieri pe salariu_istoric/state_plata; apelantul e conftest.py (radacina), "
+        "in afara domeniului scanului. Aceeasi clasa cu scan_populatii_registre / scan_rol_pe_efect: "
+        "consumator legitim, dar nu din core/",
     # [01.09.2026] `core/supervizor.py` A IESIT DE AICI, si merita citit de ce — a doua oara cand
     # gardul asta cere singur scoaterea unei intrari (prima: `core/fisa_cont.py`, 30.08).
     #

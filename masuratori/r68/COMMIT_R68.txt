@@ -1,0 +1,90 @@
+R68 — suita nu mai poate scrie în producție, iar refuzul vine de la PostgreSQL
+
+# multe-fisiere-ok: frontiera (mediu + probe + conftest), cele patru reparații fără de care suita
+# nu poate rula izolat, garda gazdei de producție, și artefactele măsurate. Un singur lucru, în
+# bucăți care n-au sens separat: fără reparații suita nu pornește, fără probe frontiera nu e
+# dovedită, fără artefacte nu se poate reface măsurătoarea.
+
+FRONTIERA E LA POSTGRESQL, NU ÎN PYTHON. Rolul cu care rulează suita (`iconta_test_user`) nu are
+`CONNECT` pe `iconta_v2`. Refuzul e al serverului:
+
+  iconta_test_user -> iconta_test : SE CONECTEAZĂ
+  iconta_test_user -> iconta_v2   : FATAL: permission denied for database "iconta_v2"
+
+Ambele direcții, fiindcă doar a doua n-ar dovedi frontiera — ar dovedi o parolă greșită.
+
+ORDINEA A CONTAT, și a fost măsurată înainte. ACL-ul lui `iconta_v2` era
+`=Tc/postgres | postgres=CTc/postgres | iconta_user=C/postgres` — aplicația se conecta *prin*
+`CONNECT`-ul lui PUBLIC, nu printr-unul propriu. Revocarea de la PUBLIC fără grant explicit în
+prealabil ar fi tăiat aplicația de la baza ei. Grant întâi, revoke după, cu verificarea aplicației
+după fiecare pas.
+
+A DOUA ÎNCUIETOARE, în Python: `core/mediu_test.py` oprește suita ÎNAINTE de colectare dacă nu se
+poate dovedi că mediul e de test. Lipsa unei informații NU e permisiune. Patru configurații, toate
+cu cod 4 și ZERO teste colectate: DSN de producție · fără `test.env` și mediu nedeclarat · fără
+`test.env` dar cu DSN de producție în mediu · configurație ambiguă (`DATABASE_URL` ≠ `DB_NAME`).
+Nu există cădere pe producție, și nu trebuie să existe: exact acolo s-ar pierde tot.
+
+Un motiv de refuz e un OBIECT cu câmpuri (`Motiv(cod, detaliu)`), iar excepția poartă `coduri` și
+`cale_remediu`. Namedtuple, nu dicționar — un dict cu cheia `motiv` e citit de garda afirmațiilor
+tipate drept afirmație despre datele unei firme. A treia oară când cheia asta aprinde un gard.
+
+PATRU REPARAȚII, fără de care suita nu putea rula izolat:
+
+  (a) `tenant_template.sql` numea un PROPRIETAR — 35 de linii `ALTER ... OWNER TO iconta_user`, iar
+      sub orice alt rol fiecare cere apartenență la rolul ăla. Leacul evident (să i-o dau) ar fi
+      desființat least-privilege. `parametrizeaza_template` pune `OWNER TO CURRENT_USER`: în
+      producție aplicația rulează CA `iconta_user`, deci e același lucru literă cu literă. Fișierul
+      șablon rămâne neatins — se transformă acolo unde se transformă deja numele schemei.
+
+  (b) `test_contare_automata` și `test_achizitii_factura` își făceau SINGURE
+      `replace("TENANT_PLACEHOLDER", ...)`. Logică paralelă, de-aia reparația (a) n-avea cum să
+      ajungă la ele: 43 de erori au rămas concentrate într-un fișier după ce „reparasem" tot.
+
+  (c) `test_premisa_restanta` și `test_d390_autoderivare` își citeau singure `~/.iconta/db.env`.
+      Bariera de rol NU le acoperea — acreditările de acolo sunt ale lui `iconta_user`, care ARE
+      `CONNECT`. Ținea doar prin `setdefault`, adică iar prin convenție, și doar cât timp `test.env`
+      acoperă fiecare cheie din `db.env`. Acum nu mai citesc fișierul deloc. Al doilea e cazul
+      ascuțit: face `DROP SCHEMA ... CASCADE`.
+
+  (d) `core/sonda_scrieri.py` — declanșator PostgreSQL pe `salariu_istoric`/`state_plata`, inert
+      fără `ICONTA_SONDA_SCRIERI=1`, care va numi producătorul rândului 53. Prima formă îmbrăca
+      `psycopg2.extensions.cursor` și n-ar fi prins NIMIC: aplicația cere explicit `RealDictCursor`,
+      deci `cursor_factory`-ul meu nu s-ar fi aplicat — ar fi raportat zero scrieri pe o rulare
+      plină de ele. Declanșatorul nu se poate ocoli, și aduce discriminatorul pe gratis: rândul de
+      jurnal trăiește în ACEEAȘI tranzacție cu scrierea observată, deci dacă a supraviețuit,
+      scrierea a fost comisă.
+
+GAZDA DE PRODUCȚIE, DECLARATĂ ȘI PĂZITĂ — `sonda_web.GAZDA_PRODUCTIE = "https://iconta.eu"` +
+`core/test_gazda_productie.py`. Scrisă dintr-o greșeală a mea, în aceeași zi: verificam `iconta.ro`
+după fiecare pas al frontierei. Aplicația e pe `iconta.eu`. `iconta.ro` răspundea 200 tot timpul,
+inclusiv în cele două ore în care aplicația era căzută cu 502 — patru verzi la rând despre o lume pe
+care n-o vedeam. Garda compară pe HOST, nu pe subșir (`https://iconta.eu.atacator.tld` conține
+gazda bună și nu e ea), iar eșantionul de calibrare se compune la rulare, ca scanul să nu-și
+găsească propria calibrare și să trebuiască să se excludă pe sine.
+
+Sonda deadman RĂMÂNE pe procesul local, și garda o fixează acolo: un 200 prin nginx poate veni
+dintr-un cache sau de la alt upstream, deci ar putea fi verde peste un proces mort. „Procesul
+răspunde" și „domeniul răspunde" sunt două întrebări diferite.
+
+MĂSURAT:
+  · acceptanță 7/7, plus 4 calibrări — o gardă care refuză orice trece la fel de ușor ca una care
+    acceptă orice;
+  · non-contaminare pe 1087 de tabele: în cele 26 de minute ale suitei izolate s-au mișcat DOUĂ,
+    `cron_batai` și `metrici_sanatate` — bătăile aplicației vii. Niciun tabel de firmă;
+  · poarta în mediul izolat: 5427 trecute, 0 roșii, exit 0. Drumul: 145F+345E → 16F+43E → 2 → 0.
+
+CE NU ACOPERĂ, DECLARAT. Procesul. Suita rulează ca `costin`, ca și serviciul (`User=costin`), iar
+sudoers are `NOPASSWD` pe `systemctl restart iconta-nou` — de care depinde publicarea. Capabilitatea
+există; inventarul mecanic NU găsește niciun apelant din suită. E R69, hardening, temă separată,
+prin decizia arhitectului.
+
+Și o CORECTURĂ de atribuire, fiindcă am dat-o greșit prima dată: indisponibilitatea din 11.09 nu a
+fost provocată de suită, ci de `unattended-upgrades` → `libc6` → `needrestart`, care a repornit 20
+de servicii deodată. Lanțul real: suita a scris 12 firme-fantomă în producție ÎNAINTE de R68 →
+repornire legitimă → P2 a refuzat fail-closed pe infrastructură inconsistentă → cădere până la
+07:52. Defectul latent era al suitei; declanșatorul, nu. P2 a funcționat exact cum trebuie.
+
+NU sunt în commitul ăsta, prin decizie: `_trimite_brevo` și valul 3 (rămân în stash), migrarea pe
+utilizator de serviciu (R69), și niciun cleanup de date — rândurile 53 și 63, corecțiile orfane și
+cele 12 firme rămân neatinse.

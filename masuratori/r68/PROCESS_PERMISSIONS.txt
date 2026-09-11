@@ -1,0 +1,51 @@
+# §6 — permisiunile utilizatorului care ruleaza suita
+# capturat: 2026-09-11T07:58:37+03:00
+# utilizatorul suitei: costin (uid 1000), grupuri: costin adm sudo users
+
+## cine ruleaza procesul de productie
+EnvironmentFiles=/home/costin/.iconta/db.env (ignore_errors=no)
+EnvironmentFiles=/home/costin/.iconta/api_keys.env (ignore_errors=no)
+User=costin
+Group=
+FragmentPath=/etc/systemd/system/iconta-nou.service
+  ExecMainPID=243719
+   243719 costin   costin   Fri Sep 11 07:52:06 2026 /home/costin/iconta_nou/venv/bin/python3 /home/costin/iconta_nou/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8010
+
+## TEST_USER_CAN_CONTROL_PROD_SERVICE
+  systemctl restart (dry-run) direct: PERMIS
+  sudo -n -l (ce are voie fara parola):
+    Matching Defaults entries for costin on iconta-prod:
+        env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty, timestamp_timeout=1440
+    
+    User costin may run the following commands on iconta-prod:
+        (ALL : ALL) ALL
+        (ALL) NOPASSWD: /usr/bin/systemctl restart iconta-nou, /usr/bin/systemctl restart iconta-nou.service, /usr/bin/systemctl status iconta-nou, /usr/bin/systemctl status iconta-nou.service, /usr/bin/journalctl -u iconta-nou, /usr/bin/journalctl -u iconta-nou.service, /usr/local/bin/iconta-config-backup.sh
+        (postgres) NOPASSWD: /usr/bin/psql
+  sudo pentru systemctl: PERMIS
+  TEST_USER_CAN_CONTROL_PROD_SERVICE=YES
+
+## TEST_USER_CAN_SIGNAL_PROD_PROCESS
+  kill -0 243719: REUSIT -> procesul poate fi semnalat de utilizatorul asta
+  TEST_USER_CAN_SIGNAL_PROD_PROCESS=YES
+
+## TEST_USER_CAN_WRITE_PROD_UNIT
+  -rw-r--r-- 1 root root 528 Jul 27 15:29 /etc/systemd/system/iconta-nou.service
+  TEST_USER_CAN_WRITE_PROD_UNIT=NO
+  directorul unitatii scriibil? NU
+
+## TEST_USER_CAN_WRITE_PROD_ENV
+  -rw------- 1 costin costin 646 Sep 10 23:31 /home/costin/.iconta/db.env
+  -rw------- 1 costin costin 1229 Jul 26 16:25 /home/costin/.iconta/api_keys.env
+  TEST_USER_CAN_WRITE_PROD_ENV=YES
+
+## portul live
+  cine asculta pe 8010:
+    LISTEN 0      2048       127.0.0.1:8010      0.0.0.0:*    users:(("uvicorn",pid=243719,fd=23))
+  poate utilizatorul suitei sa lege portul 8010? (nu incerc — e ocupat de productie)
+
+## hook-uri de publicare/restart in depozit
+  total 36
+  -rwxr-xr-x 1 costin costin 9123 Sep  3 18:08 commit-msg
+  -rwxr-xr-x 1 costin costin 9598 Sep  8 02:27 post-commit
+  -rwxrwxr-x 1 costin costin 6206 Sep  3 14:28 pre-commit
+  -rw-rw-r-- 1 costin costin 1377 Aug  7 20:38 README.md

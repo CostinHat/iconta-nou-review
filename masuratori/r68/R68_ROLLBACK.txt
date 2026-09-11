@@ -1,0 +1,10 @@
+# R68 — COMANDA DE REVENIRE, daca ceva pica
+# Se ruleaza ca postgres. Readuce iconta_v2 la ACL-ul de dinainte:
+#   =Tc/postgres | postgres=CTc/postgres | iconta_user=C/postgres
+
+sudo -u postgres psql -c "GRANT CONNECT ON DATABASE iconta_v2 TO PUBLIC;"
+sudo -u postgres psql -c "REVOKE CONNECT ON DATABASE iconta_v2 FROM iconta_user;"
+
+# Daca trebuie desfacut si mediul de test (NU e necesar pentru productie):
+sudo -u postgres psql -c "DROP DATABASE IF EXISTS iconta_test;"
+sudo -u postgres psql -c "DROP ROLE IF EXISTS iconta_test_user;"

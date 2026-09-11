@@ -1,0 +1,37 @@
+# INCIDENT PRODUCTIE 2026-09-11 — amprenta DUPA
+# capturat: 2026-09-11T07:52:52+03:00
+
+## cele 12 randuri, dupa
+  105564  ztest_apik_a  activ=false  nume=TENANT APIK A
+  105565  ztest_apik_b  activ=false  nume=TENANT APIK B
+  105568  ztest_iso_a  activ=false  nume=TENANT A
+  105569  ztest_iso_b  activ=false  nume=TENANT B
+  105570  ztest_izs_a  activ=false  nume=TENANT A
+  105571  ztest_izs_b  activ=false  nume=TENANT B
+  105572  ztest_izs_c  activ=false  nume=TENANT C
+  105756  ztest_rol_cabinet  activ=false  nume=ZTEST firma de cabinet
+  105757  ztest_rol_liber  activ=false  nume=ZTEST firma fara cabinet
+  105776  ztest_sv_efect  activ=false  nume=PROBA EFECT
+  105777  ztest_sv_efect2  activ=false  nume=PROBA EFECT 2
+  105778  ztest_sv_efect3  activ=false  nume=PROBA EFECT 3
+
+## contabilitatea
+  ACTIVE_TENANTS_AFTER=37
+  ACTIVE_TENANTS_WITHOUT_SCHEMA_AFTER=0
+  randuri cu activ=false din cele 12: 12
+
+## P2, dupa pornirea reala a aplicatiei
+  P2_PROJECTIONS_PRESENT=37
+  P2_PROJECTIONS_EXPECTED=37
+  (aplicatia a pornit = verificarea P2 a trecut; e verdictul autoritar)
+
+## serviciu si sit
+  NRestarts=1280
+  ExecMainStartTimestamp=Fri 2026-09-11 07:52:07 EEST
+  ExecMainPID=243719
+  ActiveState=active
+  SubState=running
+  port 8010: 1 ascultator
+  iconta.eu -> 200
+  HEAD=96f026f8
+  commit servit (din logul de pornire): 

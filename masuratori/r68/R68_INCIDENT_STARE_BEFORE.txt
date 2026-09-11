@@ -1,0 +1,14 @@
+# starea serviciului si a sitului, INAINTE
+2026-09-11T07:51:25+03:00
+## systemd
+NRestarts=1271
+ExecMainStartTimestamp=Fri 2026-09-11 07:51:22 EEST
+ActiveState=activating
+SubState=auto-restart
+## port 8010
+nimic pe 8010
+## HTTP
+iconta.eu -> 502
+iconta.ro -> 200  (alt sit, NU aplicatia)
+## commit
+HEAD=96f026f8

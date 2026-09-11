@@ -1,0 +1,31 @@
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_predare_cifre.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_r97_livrat_tacut.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_ramas.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_refuzuri.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_regimuri.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_rute_clasificate.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_sonde_stare.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_tranzactii.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/scan_trasee.py] PASSED [ 98%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/seed_alfa_d406.py] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/sinteza_p3.sh] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/sinteza_post_p2.sh] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/sonda_facturi_necontate.py] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/sonda_note_fara_factura_id.py] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/sonda_r34.py] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/sonda_r35.py] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/vigoare_articol.py] PASSED [ 99%]
+core/test_gazda_productie.py::test_niciun_fisier_de_verificare_nu_cere_alt_domeniu_al_nostru[/home/costin/iconta_nou/scripts/vigoare_punct.py] PASSED [ 99%]
+core/test_gazda_productie.py::test_domeniul_public_chiar_raspunde PASSED [100%]
+============================= 989 passed in 0.83s ==============================
+core/test_izolare_productie.py::test_calibrare_garda_refuza_productia  PASS
+core/test_izolare_productie.py::test_calibrare_garda_accepta_mediul_izolat  PASS
+core/test_izolare_productie.py::test_calibrare_tacerea_nu_trece  PASS
+core/test_izolare_productie.py::test_calibrare_dsn_cu_parola_ciudata_nu_minte  PASS
+core/test_izolare_productie.py::test_test_db_is_distinct_from_production  PASS
+core/test_izolare_productie.py::test_test_credentials_distinct  PASS
+core/test_izolare_productie.py::test_production_dsn_guard  PASS
+core/test_izolare_productie.py::test_production_write_attempt_fails_closed  PASS
+core/test_izolare_productie.py::test_explicit_commit_cannot_persist_to_production  PASS
+core/test_izolare_productie.py::test_second_connection_cannot_persist_to_production  PASS
+core/test_izolare_productie.py::test_missing_rollback_cannot_persist_to_production  PASS

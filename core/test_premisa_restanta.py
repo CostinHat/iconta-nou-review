@@ -66,15 +66,10 @@ def test_B_D406_neplatitor_ramane_trimestrial():
 #  DB (firma grea tenant_017) — audit inline al premiselor
 # ============================================================
 def _incarca_db_env():
-    cale = os.path.expanduser("~/.iconta/db.env")
-    if not os.path.exists(cale):
-        return False
-    for l in open(cale, encoding="utf-8"):
-        l = l.strip()
-        if l and not l.startswith("#") and "=" in l:
-            k, val = l.split("=", 1)
-            os.environ.setdefault(k.strip(), val.strip().strip('"').strip("'"))
-    return True
+    """Mediul e deja incarcat SI VERIFICAT de `conftest.py` (R68). Nu mai citim noi `db.env`:
+    acreditarile de acolo sunt ale rolului de PRODUCTIE, iar un test care si le aduce singur
+    ocoleste exact frontiera construita azi."""
+    return bool(os.environ.get("DATABASE_URL"))
 
 
 def _ultima_zi(an, luna):

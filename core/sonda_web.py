@@ -48,6 +48,14 @@ NUME = "sonda_web"
 BAZA = "http://127.0.0.1:8010"
 UNITATE = "iconta-nou.service"
 
+#: [11.09.2026] Gazda PUBLICA a aplicatiei, declarata intr-un singur loc. Nu e folosita de
+#: sonda deadman — aia cere procesul LOCAL, si asa trebuie sa ramana (un 200 prin nginx poate
+#: veni dintr-un cache sau de la alt upstream, deci ar putea fi verde peste un proces mort).
+#: Sta aici ca sa existe UN loc adevarat: in aceeasi zi am verificat de patru ori la rand un
+#: alt domeniu de-al nostru, care raspundea 200 in timp ce aplicatia era cazuta cu 502.
+#: Pazita de `core/test_gazda_productie.py`.
+GAZDA_PRODUCTIE = "https://iconta.eu"
+
 
 def ora_pornirii(unitate=None):
     # globala se citeste AICI, nu ca argument implicit: altfel valoarea se fixeaza la definirea

@@ -1,0 +1,46 @@
+# INCIDENT PRODUCTIE 2026-09-11 — amprenta INAINTE (numai citire)
+# capturat: 2026-09-11 07:51:25.751796+03
+
+## A. cele 12 randuri, complete
+  {"accounting_firm_id": 48713, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:46:49.301437+03:00", "cui": "14399840", "id": 105564, "nume": "TENANT APIK A", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_apik_a"}
+  {"accounting_firm_id": 48714, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:46:49.303445+03:00", "cui": "14399840", "id": 105565, "nume": "TENANT APIK B", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_apik_b"}
+  {"accounting_firm_id": 48719, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:46:51.932948+03:00", "cui": "14399840", "id": 105568, "nume": "TENANT A", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_iso_a"}
+  {"accounting_firm_id": 48720, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:46:51.934538+03:00", "cui": "14399840", "id": 105569, "nume": "TENANT B", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_iso_b"}
+  {"accounting_firm_id": 48729, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:46:53.416306+03:00", "cui": "14399840", "id": 105570, "nume": "TENANT A", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_izs_a"}
+  {"accounting_firm_id": 48730, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:46:53.417290+03:00", "cui": "14399840", "id": 105571, "nume": "TENANT B", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_izs_b"}
+  {"accounting_firm_id": 48729, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:46:53.417912+03:00", "cui": "14399840", "id": 105572, "nume": "TENANT C", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_izs_c"}
+  {"accounting_firm_id": 48747, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:49:18.973349+03:00", "cui": null, "id": 105756, "nume": "ZTEST firma de cabinet", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_rol_cabinet"}
+  {"accounting_firm_id": null, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:49:18.973982+03:00", "cui": null, "id": 105757, "nume": "ZTEST firma fara cabinet", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_rol_liber"}
+  {"accounting_firm_id": null, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:58:09.782208+03:00", "cui": null, "id": 105776, "nume": "PROBA EFECT", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_sv_efect"}
+  {"accounting_firm_id": null, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:58:09.786055+03:00", "cui": null, "id": 105777, "nume": "PROBA EFECT 2", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_sv_efect2"}
+  {"accounting_firm_id": null, "activ": true, "balanta_importata_la": null, "creat_la": "2026-09-11 00:58:09.787834+03:00", "cui": null, "id": 105778, "nume": "PROBA EFECT 3", "nume_ales": null, "nume_ales_de": null, "nume_ales_la": null, "nume_anaf": null, "nume_anaf_la": null, "plan_importat_la": null, "salariati_importati_la": null, "schema_name": "ztest_sv_efect3"}
+  randuri gasite: 12 (astept 12)
+
+## B. cele cinci verificari, pe FIECARE rand
+  105564  activ=True · schema='ztest_apik_a' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105565  activ=True · schema='ztest_apik_b' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105568  activ=True · schema='ztest_iso_a' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105569  activ=True · schema='ztest_iso_b' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105570  activ=True · schema='ztest_izs_a' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105571  activ=True · schema='ztest_izs_b' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105572  activ=True · schema='ztest_izs_c' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105756  activ=True · schema='ztest_rol_cabinet' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105757  activ=True · schema='ztest_rol_liber' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105776  activ=True · schema='ztest_sv_efect' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105777  activ=True · schema='ztest_sv_efect2' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+  105778  activ=True · schema='ztest_sv_efect3' OK · schema exista in PostgreSQL=NU · forma de reziduu=DA · alt tenant activ pe aceeasi schema=0
+
+## C. contabilitatea
+  ACTIVE_TENANTS_BEFORE=49
+  ACTIVE_TENANTS_WITH_REAL_SCHEMA_BEFORE=37
+  TARGET_ROWS_WITH_MISSING_SCHEMA=12
+  49 - 12 = 37  OK
+  cei fara schema: [105564, 105565, 105568, 105569, 105570, 105571, 105572, 105756, 105757, 105776, 105777, 105778]
+
+## D. verdictul P2, citit din instrumentul casei (numai SELECT)
+  firme_vazute=49  proiectii_tip_firma=20  domeniu_gol=False
+  P2 ar pica: True
+
+## E. starea serviciului si a sitului — capturate separat, vezi R68_INCIDENT_STARE_BEFORE.txt
+
+## PRECONDITII: TOATE TRECUTE

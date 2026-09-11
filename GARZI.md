@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**550 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**552 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 525
+### `core/` — 527
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8002,6 +8002,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_garzi_mesaje_afisabile.py` — core/test_garzi_mesaje_afisabile.py — GARD STRUCTURAL (C-5, pct.5 Costin): niciun test nu asertează
 - `core/test_garzi_pe_text.py` — GARD PESTE GĂRZI — o gardă asertează pe STRUCTURĂ, nu pe text.
 - `core/test_garzi_tacere_ui.py` — core/test_garzi_tacere_ui.py — GARDURI STATICE anti tacere-la-esec + info-leak in UI (JS).
+- `core/test_gazda_productie.py` — core/test_gazda_productie.py — o verificare care loveste ALT domeniu nu e o verificare.
 - `core/test_get_fara_scriere.py` — GARD (20.08.2026): o rută GET nu scrie în starea de business. GET trebuie să fie SAFE (RFC 9110 §9.2.1).
 - `core/test_ghiduri_servite.py` — Gard: ghid/ e SURSA UNICA a paginilor publice de ghid.
 - `core/test_golden_xsd.py` — GARD completitudine golden-XSD: fiecare XSD de declaratie din corpus (anaf_surse/*.xsd +
@@ -8030,6 +8031,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_inventar_randuri_dinamice.py` — GARD cap.24 regula 2 — inventar (sectiuneaCV), re-rulat IN POARTA prin chromium headless.
 - `core/test_izolare_api_key.py` — core/test_izolare_api_key.py — GARD de izolare pe CHEIE API (namespace /api/v1/firme/{tenant_id}).
 - `core/test_izolare_incrucisata.py` — Proba DINAMICA de izolare tenanti: acces incrucisat real prin HTTP.
+- `core/test_izolare_productie.py` — core/test_izolare_productie.py — ACCEPTANTA R68 (arhitect, 11.09.2026).
 - `core/test_izolare_raportari.py` — core/test_izolare_raportari.py — GARD structural de izolare pe /raportari (apararea de DATE, nu doar ruta).
 - `core/test_izolare_structurala.py` — core/test_izolare_structurala.py — GARD STRUCTURAL de izolare (C-5 P1, clasele 5+6).
 - `core/test_joburi_supravegheate.py` — GARD [R74, 27.08.2026]: lista deadman-ului se compară cu SISTEMUL, nu cu o copie a ei.

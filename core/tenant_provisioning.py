@@ -18,6 +18,7 @@ REGULI = "2026.1"
 MODUL = "tenant_provisioning"
 
 SCHEMA_SURSA = "TENANT_PLACEHOLDER"   # schema din care s-a generat template-ul
+PROPRIETAR_SABLON = "iconta_user"     # proprietarul inghetat in dump; vezi parametrizeaza_template
 _RE_TENANT_NR = re.compile(r"^tenant_(\d+)$")
 
 
@@ -87,6 +88,12 @@ def parametrizeaza_template(sql_template, schema_noua, schema_sursa=SCHEMA_SURSA
     sql = "\n".join(linii)
     # înlocuiește numele schemei (prefix calificat: schema.tabela + CREATE SCHEMA)
     sql = sql.replace(schema_sursa, schema_noua)
+    # [R68, 11.09.2026] Proprietarul nu se scrie in clar. Sablonul e un dump al schemei sursa,
+    # deci poarta `OWNER TO iconta_user`; sub orice alt rol, fiecare astfel de linie cere
+    # apartenenta la rolul ala (`must be able to SET ROLE`). In productie aplicatia ruleaza CA
+    # iconta_user, deci `CURRENT_USER` e acelasi lucru — dar in mediul izolat al suitei e rolul
+    # de test, care NU are si nu trebuie sa aiba drepturi pe productie.
+    sql = sql.replace("OWNER TO %s;" % PROPRIETAR_SABLON, "OWNER TO CURRENT_USER;")
     return sql
 
 

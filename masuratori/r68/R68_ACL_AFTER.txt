@@ -1,0 +1,21 @@
+# R68 — ACL si privilegii DUPA construirea frontierei
+# capturat: 2026-09-11T04:37:22+03:00
+
+## pg_database (ACL pe baze)
+iconta  ::  =Tc/iconta_user | iconta_user=CTc/iconta_user
+iconta_test  ::  =Tc/iconta_test_user | iconta_test_user=CTc/iconta_test_user
+iconta_v2  ::  =T/postgres | postgres=CTc/postgres | iconta_user=Cc/postgres
+postgres  ::  (implicit)
+
+## roluri
+iconta_test_user  super=false createdb=false createrole=false login=true
+iconta_user  super=false createdb=true createrole=false login=true
+postgres  super=true createdb=true createrole=true login=true
+
+## dovada frontierei
+iconta_test_user -> iconta_test : SE CONECTEAZA
+iconta_test_user -> iconta_v2 : REFUZAT — psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  permission denied for database "iconta_v2"
+
+## aplicatia, dupa toate modificarile
+conectat ca iconta_user pe iconta_v2
+site HTTP 200

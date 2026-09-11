@@ -1,0 +1,11 @@
+# R68 — baza de TEST, dovezi
+# capturat: 2026-09-11T04:38:19+03:00
+# sursa: /var/backups/iconta/iconta_v2_20260910_030001.dump (dump de dinaintea incidentului)
+
+baza: iconta_test  rol: iconta_test_user
+scheme de firma: 20
+tabele: 1086
+
+## plecare curata
+randul 53 (2026-06-01): 0
+exemplare state_plata tenant_001: 0

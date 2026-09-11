@@ -16,14 +16,11 @@ SCH = "_t_d390auto_%d" % os.getpid()
 
 
 def _db():
-    cale = os.path.expanduser("~/.iconta/db.env")
-    if not os.path.exists(cale):
+    """Mediul e deja incarcat SI VERIFICAT de `conftest.py` (R68) — vezi nota din
+    `test_premisa_restanta._incarca_db_env`. Testul asta face `DROP SCHEMA ... CASCADE`, deci e
+    exact cel care nu are voie sa-si aduca singur DSN-ul de productie."""
+    if not os.environ.get("DATABASE_URL"):
         return None
-    for l in open(cale, encoding="utf-8"):
-        l = l.strip()
-        if l and not l.startswith("#") and "=" in l:
-            k, v = l.split("=", 1)
-            os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
     try:
         from core import db
         db.init_pool()

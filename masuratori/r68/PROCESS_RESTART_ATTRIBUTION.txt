@@ -1,0 +1,51 @@
+# §4 — AUTORUL repornirii de la 06:04:34
+# capturat: 2026-09-11T08:00:33+03:00
+
+EXACT_PROCESS_RESTART_PRODUCER_IDENTIFIED=YES
+TEST_OR_SCRIPT=NICIUNUL — nu suita
+CAUZA=unattended-upgrades + needrestart, dupa actualizarea libc6
+
+## dovada 1: apt
+  
+  Start-Date: 2026-09-11  06:04:28
+  Commandline: /usr/bin/unattended-upgrade
+  Upgrade: libc6:amd64 (2.39-0ubuntu8.8, 2.39-0ubuntu8.9), locales:amd64 (2.39-0ubuntu8.8, 2.39-0ubuntu8.9), libc-dev-bin:amd64 (2.39-0ubuntu8.8, 2.39-0ubuntu8.9), libc-bin:amd64 (2.39-0ubuntu8.8, 2.39-0ubuntu8.9), libc-devtools:amd64 (2.39-0ubuntu8.8, 2.39-0ubuntu8.9), libc6-dev:amd64 (2.39-0ubuntu8.8, 2.39-0ubuntu8.9)
+  End-Date: 2026-09-11  06:04:34
+
+## dovada 2: needrestart a repornit TOATE serviciile, nu doar iconta-nou
+  servicii oprite in 2 secunde: 20
+  Stopping atd.service
+  Stopping cron.service
+  Stopping fail2ban.service
+  Stopping iconta-nou.service
+  Stopping mariadb.service
+  Stopping multipathd.service
+  Stopping nginx.service
+  Stopping packagekit.service
+  Stopping php8.3-fpm.service
+  Stopping polkit.service
+  Stopping postgresql@16-main.service
+  Stopping qemu-guest-agent.service
+  Stopping rsyslog.service
+  Stopping ssh.service
+  Stopping systemd-journald.service
+  Stopping systemd-networkd.service
+  Stopping systemd-networkd-wait-online.service
+  Stopping systemd-resolved.service
+  Stopping systemd-timesyncd.service
+  Stopping systemd-udevd.service
+
+## dovada 3: hook-ul de publicare NU a rulat
+  -rw-rw-r-- 1 costin costin 0 2026-09-10 21:30:41.828623941 +0300 /tmp/restart_iconta.log
+  (ultima publicare reala: 2026-09-10 21:30:41; niciun commit dupa 96f026f8)
+
+## dovada 4: needrestart, in jurnal
+
+## ce ramane adevarat
+  CAPABILITATEA suitei de a controla procesul EXISTA (vezi PROCESS_PERMISSIONS.txt).
+  Dar nu ea a produs incidentul din 11.09. Lantul real a fost:
+   1. suita a scris 12 firme-fantoma in productie (00:46-00:58), inainte de R68;
+   2. libc6 actualizat la 06:04, needrestart a repornit tot;
+   3. iconta-nou a refuzat sa porneasca — P2 fail-closed pe cele 12;
+   4. cadere pana la 07:52, cand dezactivarea le-a scos din numaratoare.
+  Defectul latent era al suitei. Declansatorul, nu.

@@ -1,0 +1,49 @@
+# INCIDENT 2026-09-11 03:55 — public.sonda_izolare
+# artefact creat de PROBELE MELE de acceptanta, rulate inainte sa existe frontiera.
+# capturat inainte de stergere: 2026-09-11T04:40:55+03:00
+
+## 1. DOVADA ca a aparut la incident, nu inainte
+Dumpul de la 2026-09-11 03:00 (cu 55 de minute INAINTE de incident) o contine?
+  NU o contine. Deci a aparut dupa 03:00.
+
+Randurile poarta momentul incidentului:
+  id=1  cum=commit  creat_la=2026-09-11 03:55:27.950975+03
+  id=2  cum=commit  creat_la=2026-09-11 03:55:28.046187+03
+
+## 2. exact doua randuri?
+  randuri: 2
+
+## 3. dependente / referinte din productie
+chei straine care trimit CATRE ea:
+  (gol = niciuna)
+obiecte care depind de ea (fara coloanele si secventa ei proprie):
+  (gol = niciunul in afara de ce-i apartine)
+vizualizari/functii care o numesc:
+ERROR:  "array_agg" is an aggregate function
+  (gol = niciuna)
+o numeste codul aplicatiei, in afara probelor de izolare?
+  (niciun loc)
+
+## 4. schema si continutul, capturate INAINTE de stergere
+\restrict H4gCj5FF28c2O92Tz7c7RW5xhHzsivVQcH7yI87TRWARDg49lMSIgxgqM2IzHsh
+CREATE TABLE public.sonda_izolare (
+    id integer NOT NULL,
+    cum text,
+    creat_la timestamp with time zone DEFAULT now()
+);
+CREATE SEQUENCE public.sonda_izolare_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE public.sonda_izolare_id_seq OWNED BY public.sonda_izolare.id;
+ALTER TABLE ONLY public.sonda_izolare ALTER COLUMN id SET DEFAULT nextval('public.sonda_izolare_id_seq'::regclass);
+COPY public.sonda_izolare (id, cum, creat_la) FROM stdin;
+1	commit	2026-09-11 03:55:27.950975+03
+2	commit	2026-09-11 03:55:28.046187+03
+\.
+ALTER TABLE ONLY public.sonda_izolare
+    ADD CONSTRAINT sonda_izolare_pkey PRIMARY KEY (id);
+\unrestrict H4gCj5FF28c2O92Tz7c7RW5xhHzsivVQcH7yI87TRWARDg49lMSIgxgqM2IzHsh

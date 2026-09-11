@@ -22,7 +22,10 @@ _SCH = "efemer_achizitii_factura"
 
 def _scratch(cur):
     cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCH)
-    sql = open("tenant_template.sql", encoding="utf-8").read().replace("TENANT_PLACEHOLDER", _SCH)
+    # [R68] prin sursa unica, nu cu `replace` propriu — vezi nota din test_contare_automata
+    from core import tenant_provisioning as _tprov
+    sql = _tprov.parametrizeaza_template(
+        open("tenant_template.sql", encoding="utf-8").read(), _SCH)
     cur.execute(sql)   # template isi creeaza schema + tabelele, calificate cu _SCH
     cur.execute("SET search_path TO %s" % _SCH)
     cur.execute("""INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, email, telefon, caen,

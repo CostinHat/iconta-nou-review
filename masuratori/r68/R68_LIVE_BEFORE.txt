@@ -1,0 +1,29 @@
+# R68 — identitatea procesului VIU si conectivitatea, INAINTE
+# capturat: 2026-09-11T04:36:25+03:00
+
+## unitatea systemd
+ExecMainStartTimestamp=Thu 2026-09-10 21:30:42 EEST
+ExecMainPID=125221
+EnvironmentFiles=/home/costin/.iconta/db.env (ignore_errors=no)
+EnvironmentFiles=/home/costin/.iconta/api_keys.env (ignore_errors=no)
+User=costin
+ActiveState=active
+
+## procesul
+ 125221 costin   Thu Sep 10 21:30:41 2026 /home/costin/iconta_nou/venv/bin/python3 /home/costin/iconta_nou/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8010
+
+## cine e conectat ACUM la PostgreSQL (din baza)
+ERROR:  ORDER BY position 2 is not in select list
+LINE 1: ...ULL GROUP BY datname, usename, application_name ORDER BY 1,2
+                                                                      ^
+
+## DSN-ul aplicatiei, fara parola
+DB_NAME=iconta_v2
+DB_USER=iconta_user
+DATABASE_URL=postgresql://iconta_user:***@localhost:5432/iconta_v2
+
+## conexiune de proba cu acreditarile aplicatiei
+conectat ca iconta_user pe iconta_v2
+
+## site
+HTTP 200

@@ -1,0 +1,186 @@
+# INVENTAR — corectiile orfane din state_plata
+# capturat: 2026-09-11T04:42:40+03:00      NIMIC NU S-A STERS
+#
+# ORPHAN_ROWS_PROBABLE_TEST_RESIDUE=YES
+# DELETE_AUTHORIZED=NO
+
+## CUM AU APARUT
+Testul core/test_fluturas_egal_stat.py::test_corectia_se_vede_pe_hartie emite un exemplar
+(de_cine='garda'), apoi cheama spe.corectie(..., de_cine='costin'). Curatenia mea din
+11.09 a filtrat pe emis_de='garda' — deci a sters ORIGINALUL si a lasat CORECTIA.
+Criteriul meu citea emis_de ca pe un autor; testul scrie acolo numele arhitectului.
+
+## tenant_003  id=59 — toate coloanele
+  {
+    "id": 59,
+    "date": {
+        "id": 3,
+        "cam": 22.5,
+        "cas": 250.0,
+        "cnp": "1850715410012",
+        "cor": "",
+        "net": 650.0,
+        "brut": 1000.0,
+        "cass": 100.0,
+        "cost": 1985.0,
+        "iban": "",
+        "nume": "Ionescu Radu",
+        "cadou": 0.0,
+        "cm_net": 0.0,
+        "ore_zi": "8.0",
+        "cm_brut": 0,
+        "cm_zile": 0,
+        "impozit": 0.0,
+        "nume_ed": "Ionescu",
+        "deducere": 810.0,
+        "tip_norma": "intreaga",
+        "baza_lipsa": false,
+        "facilitate": 0.0,
+        "prenume_ed": "Radu",
+        "cass_tichete": 0.0,
+        "salariu_baza": 1000.0,
+        "tichete_zile": 0,
+        "cadou_taxabil": false,
+        "cas_suprataxa": 687.5,
+        "data_angajare": "2021-03-01",
+        "data_incetare": "",
+        "deducere_baza": 810.0,
+        "tichete_cresa": 0.0,
+        "cass_suprataxa": 275.0,
+        "deducere_copii": 0.0,
+        "deducere_tineri": 0.0,
+        "impozit_salariu": 0.0,
+        "impozit_tichete": 0.0,
+        "retinut_tichete": 0.0,
+        "tichete_nominal": 0.0,
+        "tichete_vacanta": 0.0,
+        "valoare_tichete": 0.0,
+        "tichete_cultural": 0.0,
+        "total_disponibil": 650.0,
+        "pontaj_neconfirmat": false,
+        "tichet_masa_valoare": 0.0,
+        "vacanta_peste_plafon": false
+    },
+    "luna": "2026-06-01",
+    "motiv": null,
+    "emis_de": "costin",
+    "emis_la": "2026-09-10T23:54:38.617245+03:00",
+    "amprenta": "9d33522cad43d3fdb9e99806051015df72f4e9da7e48e95943a421b417fba172",
+    "creat_la": "2026-09-10T23:54:38.617245+03:00",
+    "exemplar": 2,
+    "motiv_de": null,
+    "motiv_la": null,
+    "venit_brut": 1000.0,
+    "corectie_la": 57,
+    "salariat_id": 3,
+    "zile_lucrate": 0
+}
+
+   corectie_la = 57
+   tinta id=57 exista? 0  ->  LIPSA (orfan)
+   emis_de     = costin
+   creat_la    = 2026-09-10 23:54:38.617245+03
+   salariatul  = 3 Ionescu (CNP 1850715410012)
+   firma       = 4838 Comert Micro TVA SRL
+
+## tenant_014  id=2 — toate coloanele
+  {
+    "id": 2,
+    "date": {
+        "id": 1,
+        "cam": 22.5,
+        "cas": 250.0,
+        "cnp": "2900722120336",
+        "cor": "331101",
+        "net": 650.0,
+        "brut": 1000.0,
+        "cass": 100.0,
+        "cost": 1985.0,
+        "iban": "",
+        "nume": "GEORGESCU ANA",
+        "cadou": 0.0,
+        "cm_net": 0.0,
+        "ore_zi": "8.0",
+        "cm_brut": 0,
+        "cm_zile": 0,
+        "impozit": 0.0,
+        "nume_ed": "GEORGESCU",
+        "deducere": 810.0,
+        "tip_norma": "intreaga",
+        "baza_lipsa": false,
+        "facilitate": 0.0,
+        "prenume_ed": "ANA",
+        "cass_tichete": 0.0,
+        "salariu_baza": 1000.0,
+        "tichete_zile": 0,
+        "cadou_taxabil": false,
+        "cas_suprataxa": 687.5,
+        "data_angajare": "2026-02-01",
+        "data_incetare": "",
+        "deducere_baza": 810.0,
+        "tichete_cresa": 0.0,
+        "cass_suprataxa": 275.0,
+        "deducere_copii": 0.0,
+        "deducere_tineri": 0.0,
+        "impozit_salariu": 0.0,
+        "impozit_tichete": 0.0,
+        "retinut_tichete": 0.0,
+        "tichete_nominal": 0.0,
+        "tichete_vacanta": 0.0,
+        "valoare_tichete": 0.0,
+        "tichete_cultural": 0.0,
+        "total_disponibil": 650.0,
+        "pontaj_neconfirmat": false,
+        "tichet_masa_valoare": 0.0,
+        "vacanta_peste_plafon": false
+    },
+    "luna": "2026-06-01",
+    "motiv": null,
+    "emis_de": "costin",
+    "emis_la": "2026-09-11T00:44:46.545501+03:00",
+    "amprenta": "df2da2864cc91603ea9c7df0cfcdfca73a7e02a484d716de1bc7004d6750c530",
+    "creat_la": "2026-09-11T00:44:46.545501+03:00",
+    "exemplar": 2,
+    "motiv_de": null,
+    "motiv_la": null,
+    "venit_brut": 1000.0,
+    "corectie_la": 1,
+    "salariat_id": 1,
+    "zile_lucrate": 0
+}
+
+   corectie_la = 1
+   tinta id=1 exista? 0  ->  LIPSA (orfan)
+   emis_de     = costin
+   creat_la    = 2026-09-11 00:44:46.545501+03
+   salariatul  = 1 GEORGESCU (CNP 2900722120336)
+   firma       = 8397 BETA PROFIT SRL
+
+## REFERINTE RUNTIME
+chei straine catre state_plata:
+  (gol = niciuna)
+
+cod de productie care citeste state_plata:
+  core/tenant_stergere.py
+  core/salariati_api.py
+  core/sonda_scrieri.py
+  core/migrare_stat_emis.py
+  core/amprenta_declaratie.py
+  core/baza_cm.py
+  core/echilibru_perioada.py
+  core/scan_ancore.py
+  core/stat_plata_emis.py
+  main.py
+
+## EFECT ASUPRA CITIRILOR DE AZI
+rand_fluturas (core/stat_plata_api.py) intoarce exemplarul INGHETAT cand luna e emisa.
+Deci pentru salariatii de mai sus, luna 2026-06, fluturasul tiparit e CORECTIA — un
+document care se anunta drept «corectie a exemplarului N», unde N nu mai exista.
+
+exemplarul curent pentru fiecare pereche (salariat, 2026-06):
+  tenant_003 salariat 3: exemplar 2 (id 59)
+  tenant_014 salariat 1: exemplar 2 (id 2)
+
+## RANDURILE 53 SI 63 — neatinse, reconfirmate acum
+  salariat 53  2026-06-01  7000.0  creat_la 2026-09-10 23:54:38.428518+03
+  salariat 63  2026-08-01  5000.0  creat_la 2026-09-05 18:52:37.955867+03

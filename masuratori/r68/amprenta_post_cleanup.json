@@ -1,0 +1,5441 @@
+{
+ "baza": "iconta_v2",
+ "globala": "2a3661d41c251fd217cad76f65c1d912d4deb97547211b57c19073f3220d7d78",
+ "tabele": {
+  "public.accounting_firms": {
+   "md5": "19c6164cb0599ad0fa962a6a4d197ef7",
+   "motiv": null,
+   "randuri": 55
+  },
+  "public.acord_termeni": {
+   "md5": "db56a91797613119ecfca90c7679837e",
+   "motiv": null,
+   "randuri": 5
+  },
+  "public.alerte_acces_dedup": {
+   "md5": "432dc556b44bdc44454630da5789066f",
+   "motiv": null,
+   "randuri": 3
+  },
+  "public.alerte_control_emise": {
+   "md5": "446f5428dc39271aae22ea0a5b316bce",
+   "motiv": null,
+   "randuri": 22
+  },
+  "public.alerte_emise": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.alerte_fiscale": {
+   "md5": "84e5bf2cc8a7db6b6d6fb420e11be324",
+   "motiv": null,
+   "randuri": 23
+  },
+  "public.anunturi_cabinet": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.api_chei": {
+   "md5": "88b4180ad9330bcfb73f91a9e5dea8ef",
+   "motiv": null,
+   "randuri": 2
+  },
+  "public.audit_log": {
+   "md5": null,
+   "motiv": "peste 200000 randuri — numai numarul",
+   "randuri": 292084
+  },
+  "public.cor_ocupatii": {
+   "md5": "1a0f05655e68e2aad196cd085daf524b",
+   "motiv": null,
+   "randuri": 4422
+  },
+  "public.cron_batai": {
+   "md5": "840316406ce2dc05bd76e40887e661fa",
+   "motiv": null,
+   "randuri": 13
+  },
+  "public.curs_bnr_zilnic": {
+   "md5": "cec1cede4b52db2a20ecc2eda16b8a86",
+   "motiv": null,
+   "randuri": 6253
+  },
+  "public.declaratii_coada": {
+   "md5": "be2bc2265b5447427d62f00941b4d5f0",
+   "motiv": null,
+   "randuri": 40
+  },
+  "public.declaratii_depuse": {
+   "md5": "9e228b6e49bbc2cc7fe4efc7bd93a6d8",
+   "motiv": null,
+   "randuri": 119
+  },
+  "public.eveniment_public": {
+   "md5": "d1d0b70a10a024e7a4ee218ffdd09e6c",
+   "motiv": null,
+   "randuri": 254
+  },
+  "public.firma_aspect_sursa": {
+   "md5": "0d35e622e9dc737f76eb4b91d80e5c06",
+   "motiv": null,
+   "randuri": 41
+  },
+  "public.firma_rezumat": {
+   "md5": "24c6b0ca75caf4dc5e67399c74e51f17",
+   "motiv": null,
+   "randuri": 460
+  },
+  "public.firma_sursa_versiune": {
+   "md5": "956e53c9d0c3245e9c6e7dd938b86d08",
+   "motiv": null,
+   "randuri": 56
+  },
+  "public.firma_tip": {
+   "md5": "a18bc9a8d28d3195e2988c4e3196d011",
+   "motiv": null,
+   "randuri": 35
+  },
+  "public.firme_scoase": {
+   "md5": "d03cffd83456b56215db88f7588bacbc",
+   "motiv": null,
+   "randuri": 4
+  },
+  "public.gdpr_cereri_stergere": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.gdpr_stergeri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.invitatii_cont": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.metrici_sanatate": {
+   "md5": "6cd0321bb6212f612b1eaee13b791ab6",
+   "motiv": null,
+   "randuri": 11427
+  },
+  "public.migrare_status": {
+   "md5": "4ab408c4031106713c90c56f2ad98400",
+   "motiv": null,
+   "randuri": 6
+  },
+  "public.notificari": {
+   "md5": "69c477b9efa4ec88e8b4991b8a6694a7",
+   "motiv": null,
+   "randuri": 36
+  },
+  "public.pachet_povestea": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.plata_referinte": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.raportari": {
+   "md5": "772194cb2bc6556309ae135fae4a3dad",
+   "motiv": null,
+   "randuri": 1
+  },
+  "public.raportari_atasamente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.raportari_mesaje": {
+   "md5": "ebae9293682bc91fc924403ab63bd0bc",
+   "motiv": null,
+   "randuri": 1
+  },
+  "public.reges_chei": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.reges_mesaje": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.reset_parola_token": {
+   "md5": "5e1455bd2478e18c0c6f2a086e1fe0c5",
+   "motiv": null,
+   "randuri": 2
+  },
+  "public.schimbari_email": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.solicitari_client": {
+   "md5": "62126b72a242f3612a5c5a293770dc6a",
+   "motiv": null,
+   "randuri": 6
+  },
+  "public.spv_cui_acoperit": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.spv_token": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.supervizor_confirmari": {
+   "md5": "9395f45e6cf1ed7f25e6032eed0c875b",
+   "motiv": null,
+   "randuri": 2
+  },
+  "public.supervizor_rezultat": {
+   "md5": "f81edddcc6c550e878f76af5f1464071",
+   "motiv": null,
+   "randuri": 20
+  },
+  "public.supervizor_sursa": {
+   "md5": "acf3b6bc7acf878b38449647291a003e",
+   "motiv": null,
+   "randuri": 20
+  },
+  "public.sursa_supervizor": {
+   "md5": "00663c3e56b3036a114fbc17508b26d4",
+   "motiv": null,
+   "randuri": 8
+  },
+  "public.tenants": {
+   "md5": "aa5f57e0b4d8eab3c7c3ba0efc8bd600",
+   "motiv": null,
+   "randuri": 49
+  },
+  "public.tokene_activare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.urme_portal": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "public.user_tenants": {
+   "md5": "66dca2881718565b3149b9e61a19d7cc",
+   "motiv": null,
+   "randuri": 27
+  },
+  "public.users": {
+   "md5": "3b28b32247fe794fe54cd9686d25d333",
+   "motiv": null,
+   "randuri": 29
+  },
+  "tenant_001.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.beneficii_lunare": {
+   "md5": "91b34a8f9833c54762236f49ff25e484",
+   "motiv": null,
+   "randuri": 4
+  },
+  "tenant_001.bonuri": {
+   "md5": "e83ee509891f983f9fc501575819631b",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_001.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.concedii_medicale": {
+   "md5": "7d34b72219edf2a54dbf9a1f769f80f2",
+   "motiv": null,
+   "randuri": 11
+  },
+  "tenant_001.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.factura_linii": {
+   "md5": "e606a0e5555dbe32cee015b616b6e1b4",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_001.facturi": {
+   "md5": "ba50959f228dea62ebf472fff232b293",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_001.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.firma_profil": {
+   "md5": "9fca5a8fc11bf9c152877c16cea25478",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_001.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.inregistrari": {
+   "md5": "989aaaac317d08488e453c2e4fb24a77",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_001.inregistrari_linii": {
+   "md5": "52b27de93e8178a64f9900b50f68bf4b",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_001.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.perioada_confirmata": {
+   "md5": "8c01fe21de44f6b755f8d60298dc6cbb",
+   "motiv": null,
+   "randuri": 11
+  },
+  "tenant_001.perioade_blocate": {
+   "md5": "33d5f732160ffad70d117dfde228d5ad",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_001.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_001.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.salariati": {
+   "md5": "f3e6f224425304cfe002e24a735707df",
+   "motiv": null,
+   "randuri": 13
+  },
+  "tenant_001.salariu_istoric": {
+   "md5": "c8116ea97008c3280e9c39425528ce34",
+   "motiv": null,
+   "randuri": 32
+  },
+  "tenant_001.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_001.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.factura_linii": {
+   "md5": "8ecdce3b4ecd429b9af48d3f6465267d",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_002.facturi": {
+   "md5": "0d5f8439f93dc1dd762e77c4627dfdef",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_002.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.firma_profil": {
+   "md5": "5dc20c6e52370b3315be18b6fc7b09c8",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_002.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.inregistrari": {
+   "md5": "dcea094ba271606cfab6959771b9cff2",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_002.inregistrari_linii": {
+   "md5": "e30ab5e2619518d7ecc8c6eb8258868d",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_002.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_002.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_002.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.ai_corectii": {
+   "md5": "3c3d13b5a24ddb231693c4b7f660fd2d",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_003.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.articole": {
+   "md5": "ee66b5794de217e6e8eb44953a68ea17",
+   "motiv": null,
+   "randuri": 9
+  },
+  "tenant_003.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.casa_operatiuni": {
+   "md5": "c3271d857dff63632cd712eb3029c113",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_003.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.extras_linii": {
+   "md5": "579576056f575680cef3434bd998e9af",
+   "motiv": null,
+   "randuri": 12
+  },
+  "tenant_003.factura_linii": {
+   "md5": "0e8eaa29244c2348f033764662fcb525",
+   "motiv": null,
+   "randuri": 6
+  },
+  "tenant_003.facturi": {
+   "md5": "765d6addacf640dfca1fcd21b463b567",
+   "motiv": null,
+   "randuri": 6
+  },
+  "tenant_003.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.firma_profil": {
+   "md5": "610b94d5ac240f728467b544ec4ce711",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_003.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.inregistrari": {
+   "md5": "b6453858a197a17d0e824be11c5caa22",
+   "motiv": null,
+   "randuri": 28
+  },
+  "tenant_003.inregistrari_linii": {
+   "md5": "38a3d5f355a9d7332777e329aa1bdfb1",
+   "motiv": null,
+   "randuri": 40
+  },
+  "tenant_003.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.miscari_stoc": {
+   "md5": "a63d75b477572ec5548bc62e60cea569",
+   "motiv": null,
+   "randuri": 8
+  },
+  "tenant_003.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_003.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.salariati": {
+   "md5": "d83966cb2cc95e451eb4a74d9cf1e038",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_003.salariu_istoric": {
+   "md5": "babc44350bf24083f15a15c8205a5b0e",
+   "motiv": null,
+   "randuri": 4
+  },
+  "tenant_003.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_003.state_plata": {
+   "md5": "8b45d576be02d34b61a8a7405d911219",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_004.ai_corectii": {
+   "md5": "4b84abb73e4e3556e29046d189c1966b",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_004.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.efactura_trimiteri": {
+   "md5": "cd47dbba20c788b57353e1d9dc494f1a",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_004.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.factura_linii": {
+   "md5": "463271728f7444e0a05e40e4f143ca91",
+   "motiv": null,
+   "randuri": 9
+  },
+  "tenant_004.facturi": {
+   "md5": "b7af05711999bed8106620427b9a4df1",
+   "motiv": null,
+   "randuri": 12
+  },
+  "tenant_004.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.firma_profil": {
+   "md5": "75547af5f227c7473110810c949d6aca",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_004.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.inregistrari": {
+   "md5": "6261aa3230887be52b57789c8dff2594",
+   "motiv": null,
+   "randuri": 12
+  },
+  "tenant_004.inregistrari_linii": {
+   "md5": "806bc86bf37c7bec71b447611d8acbad",
+   "motiv": null,
+   "randuri": 18
+  },
+  "tenant_004.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_004.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_004.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.asociati": {
+   "md5": "b8f26e1e517e23fd31f552cfb2b71198",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_005.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.factura_linii": {
+   "md5": "4ec3f325714ded7f0dd95cf8c1b7e953",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_005.facturi": {
+   "md5": "55abfbcc922b7be29cb65a24c59f5189",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_005.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.firma_profil": {
+   "md5": "5856f738fe9291b2fb8afe1924bd4b1a",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_005.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.inregistrari": {
+   "md5": "c7fa52b08b3901a2ddb9c1e04fef72fb",
+   "motiv": null,
+   "randuri": 10
+  },
+  "tenant_005.inregistrari_linii": {
+   "md5": "12b3c40adc4a516e79fb28007c7568f3",
+   "motiv": null,
+   "randuri": 12
+  },
+  "tenant_005.mijloace_fixe": {
+   "md5": "57709e04f52020c18a4db53b8093ef01",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_005.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.plan_conturi": {
+   "md5": "a0a5829fb4d773422fad500031b66ec4",
+   "motiv": null,
+   "randuri": 186
+  },
+  "tenant_005.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_005.salariati": {
+   "md5": "19eed0ea333de16a08ffec2124d1d010",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_005.salariu_istoric": {
+   "md5": "7d4ff08d2198085b25d257068719f2bc",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_005.solduri_initiale": {
+   "md5": "ea06440d290fd87fdefc08eab27436fc",
+   "motiv": null,
+   "randuri": 4
+  },
+  "tenant_005.solduri_parteneri": {
+   "md5": "a0c2a785be11b52c794d860476bcc2ca",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_005.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.d301_operatiuni": {
+   "md5": "2445b9e0e06f12374e54201f222c35a4",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_006.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.firma_profil": {
+   "md5": "aac43e26305ed4fdc691cc27b2ef7150",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_006.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_006.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_006.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.factura_linii": {
+   "md5": "19d53bc87008a14f9823dcce70f1ddad",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_007.facturi": {
+   "md5": "8036579a279544e03eccc55a74b8218b",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_007.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.firma_profil": {
+   "md5": "19779b1e9ca80c9a756a94401942290c",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_007.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.inregistrari": {
+   "md5": "b536c069dde4bbff3d4cc57db37eeda4",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_007.inregistrari_linii": {
+   "md5": "dd3f3a32d5603a6284785b6f52de7067",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_007.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_007.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_007.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.firma_profil": {
+   "md5": "02ef90ab0c8b757000d3d0014533ff23",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_008.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_008.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_008.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.factura_linii": {
+   "md5": "3630f63d2993cc08d131971d76fc5f5a",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_009.facturi": {
+   "md5": "93d4c8cdaf891e7f5b183abc72003d6a",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_009.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.firma_profil": {
+   "md5": "06c0329ee17e4e1947976b4e41db4b24",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_009.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.inregistrari": {
+   "md5": "fc9b75b4e06cfcab21490ebb47011312",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_009.inregistrari_linii": {
+   "md5": "e27dcf277d0d061f7acad23c8f89a8c1",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_009.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_009.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_009.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.factura_linii": {
+   "md5": "c1661f9f22ab82384a93bef34be0ab56",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_010.facturi": {
+   "md5": "66e743860dfc83038ffd60c87fcf9867",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_010.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.firma_profil": {
+   "md5": "3129fd62ed8583c08aabd3c4cdf218ad",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_010.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.inregistrari": {
+   "md5": "8c5757e8430f69fa867b4831e471e945",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_010.inregistrari_linii": {
+   "md5": "fd28c03f88bfb4568c0d95559c1d555b",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_010.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_010.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_010.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.firma_profil": {
+   "md5": "70595fa4adea099f6e86926be131d8da",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_011.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_011.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_011.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.firma_profil": {
+   "md5": "23aaecdf0fa49ca08bc52d069eabf81c",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_012.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_012.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_012.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.ai_corectii": {
+   "md5": "ed0654be297e79f1cca4073185b66b5e",
+   "motiv": null,
+   "randuri": 10
+  },
+  "tenant_013.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.articole": {
+   "md5": "24be81d870fb0e7235994345845bc951",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_013.asociati": {
+   "md5": "57fdb916d36b5ea629b1c0c96196ecaa",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_013.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.bonuri": {
+   "md5": "d9a96eb41661d7e6cf0c0fe891fd675d",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_013.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.casa_operatiuni": {
+   "md5": "56086ad961380f98d35f16eb754ddb82",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_013.centre_cost": {
+   "md5": "358b2cd0e658b669de944df3848db772",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.chitante": {
+   "md5": "a8f3996b60e28806f1450b1378b1c105",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.clienti": {
+   "md5": "a9e75105842cbad356ced5925d17b7f0",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.concedii_medicale": {
+   "md5": "4282be871d6ba8f0df546666833195a6",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_013.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.d390_manual": {
+   "md5": "42c102e914242435105c69e92df84601",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_013.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.extras_linii": {
+   "md5": "67ca2ea0e8999615cc90be8c2faf5d2e",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.factura_linii": {
+   "md5": "14d1153511cf2d6a8fe63c4bfa7a8404",
+   "motiv": null,
+   "randuri": 6
+  },
+  "tenant_013.facturi": {
+   "md5": "65630569b3fd4d26bdfb663631220984",
+   "motiv": null,
+   "randuri": 6
+  },
+  "tenant_013.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.firma_profil": {
+   "md5": "2637c4b1ffddaf777a49eff095cde58f",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_013.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.inregistrari": {
+   "md5": "c4b8cce659b4190921f152bf1a32126d",
+   "motiv": null,
+   "randuri": 32
+  },
+  "tenant_013.inregistrari_linii": {
+   "md5": "3686140683b7892c4e6fb15fd1d394d8",
+   "motiv": null,
+   "randuri": 42
+  },
+  "tenant_013.mijloace_fixe": {
+   "md5": "0b2d37bf14b0276c678476b9ccedce3a",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.miscari_stoc": {
+   "md5": "ab0ae6b244a159ec3b48aa5c01a3876b",
+   "motiv": null,
+   "randuri": 5
+  },
+  "tenant_013.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_013.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.produse": {
+   "md5": "88ed64f1dfd1ae69bfb519413e1ae410",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_013.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.registratura": {
+   "md5": "352f2b9c995ed75a630b64f2e1333f45",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.retete": {
+   "md5": "ba11c0810fa996cc20c0175392618607",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_013.retete_linii": {
+   "md5": "7796f15544a5cd62a2195b735ab1241b",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_013.salariati": {
+   "md5": "09d02e33a2e5c5e6146b9bdbaa76fe60",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_013.salariu_istoric": {
+   "md5": "c2549babddd01a154b2967551d8cb2a9",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.solduri_initiale": {
+   "md5": "8c607eea99f236f04beb23b2278f152f",
+   "motiv": null,
+   "randuri": 5
+  },
+  "tenant_013.solduri_parteneri": {
+   "md5": "dd53423b4d4e0b35a15fb51f78c4e8dd",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_013.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.ai_corectii": {
+   "md5": "112cd0406b84498ee355c2d847407871",
+   "motiv": null,
+   "randuri": 4
+  },
+  "tenant_014.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.asociati": {
+   "md5": "e090d1a4c09757ae7982a03b77a848f4",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_014.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.concedii_medicale": {
+   "md5": "5c58edb5f4e19c402a6c09739402fe72",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_014.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.d301_operatiuni": {
+   "md5": "bb18874e4d2b58ba8aad323a12925e76",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_014.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.factura_linii": {
+   "md5": "74473a6de3b0804a717dd44a643102a1",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_014.facturi": {
+   "md5": "97d1dd1c91b8e29e0fd7d08c8ed919be",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_014.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.firma_profil": {
+   "md5": "138c36909bdef083c843f5c75e990b1c",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_014.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.inregistrari": {
+   "md5": "d0e6ef159f27f18b2cbe55b213c828e8",
+   "motiv": null,
+   "randuri": 15
+  },
+  "tenant_014.inregistrari_linii": {
+   "md5": "be2de6b855b0db5caa3787c104052ffe",
+   "motiv": null,
+   "randuri": 19
+  },
+  "tenant_014.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_014.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_014.salariati": {
+   "md5": "c6d7c7cdc05dd1155fbc44cfdad4cc0a",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_014.salariu_istoric": {
+   "md5": "fcd0db48451a08aeea9f881f4ec91304",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_014.solduri_initiale": {
+   "md5": "b21ac9a9d4d96b302096ca2a3ead6e35",
+   "motiv": null,
+   "randuri": 4
+  },
+  "tenant_014.solduri_parteneri": {
+   "md5": "b4d0c0de699cc9049c585259c39f64b3",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_014.state_plata": {
+   "md5": "fbd5335bf50badcac6c61f68e00c7a9f",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_015.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.firma_profil": {
+   "md5": "70de7e3562a1925edd2f1e278fd588f5",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_015.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_015.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_015.salariati": {
+   "md5": "23ad9ff9bca2d87b2f65b79297712f49",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_015.salariu_istoric": {
+   "md5": "b69b3b5eace7287430311bf99c11f56c",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_015.solduri_initiale": {
+   "md5": "1ebff6120c70cbeca7e60ed60baf8a6c",
+   "motiv": null,
+   "randuri": 4
+  },
+  "tenant_015.solduri_parteneri": {
+   "md5": "4dff9bdc5707ed9a348d91f59d421ed1",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_015.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.asociati": {
+   "md5": "c6e2174b780fc0843240cfa596f7a098",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_016.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.factura_linii": {
+   "md5": "fe0fa4d6c3bee82bfa6ee91aa490ae87",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_016.facturi": {
+   "md5": "cbadf2062f1f29e3fa57462443fed53d",
+   "motiv": null,
+   "randuri": 3
+  },
+  "tenant_016.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.firma_profil": {
+   "md5": "0bc925e57ed6fd88e8c3cb2db880399d",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_016.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.inregistrari": {
+   "md5": "8516d5468483edad55c0bfb83233f336",
+   "motiv": null,
+   "randuri": 5
+  },
+  "tenant_016.inregistrari_linii": {
+   "md5": "8340cc287c4572205dedd748a322ee2c",
+   "motiv": null,
+   "randuri": 7
+  },
+  "tenant_016.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_016.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_016.salariati": {
+   "md5": "1aadfdd921427c10b34384badfaf9355",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_016.salariu_istoric": {
+   "md5": "94c3313ae8b8247bbb5f18c875a30126",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_016.solduri_initiale": {
+   "md5": "02bf9cf1281cd87ec220087957e444e0",
+   "motiv": null,
+   "randuri": 4
+  },
+  "tenant_016.solduri_parteneri": {
+   "md5": "e2b670b8120cb711f19dd1016ece2352",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_016.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.concedii_medicale": {
+   "md5": "5bd3be3abd3bb88561ced16788543b55",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_017.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.d300_manual": {
+   "md5": "604a204c5325fbf037046b375bd7bae0",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_017.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.d390_reclasificare": {
+   "md5": "65669ea35818d0547d719e3bba593a36",
+   "motiv": null,
+   "randuri": 2
+  },
+  "tenant_017.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.factura_linii": {
+   "md5": "6e11c6eda1bd5403465bac6fbff9adf1",
+   "motiv": null,
+   "randuri": 11
+  },
+  "tenant_017.facturi": {
+   "md5": "2646f30e5f9f5cd768af4caccf1cca09",
+   "motiv": null,
+   "randuri": 10
+  },
+  "tenant_017.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.firma_profil": {
+   "md5": "a1dcd032e402d2c46bf4bcb2dc16001f",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_017.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.inregistrari": {
+   "md5": "3b992239b187a69d4f0b5d272465358a",
+   "motiv": null,
+   "randuri": 11
+  },
+  "tenant_017.inregistrari_linii": {
+   "md5": "4dd2cbde387367420a4c440c23de08f9",
+   "motiv": null,
+   "randuri": 15
+  },
+  "tenant_017.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_017.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.salariati": {
+   "md5": "93f8409c459bad785a96d6ed853d4a6c",
+   "motiv": null,
+   "randuri": 5
+  },
+  "tenant_017.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_017.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.firma_profil": {
+   "md5": "ee442a88624946261c108e9d148d2cf8",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_018.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_018.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_018.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.firma_profil": {
+   "md5": "f94f16766630b47f245497565f0a9450",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_045.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_045.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.registru_fiscal_pf": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_045.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.ai_corectii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.artefacte_produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.articole": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.asociati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.beneficii_lunare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.bonuri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.bugete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.casa_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.centre_cost": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.chitante": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.clienti": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.concedii_medicale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.contracte_sabloane": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.d300_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.d301_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.d390_manual": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.d390_reclasificare": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.efactura_primite": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.efactura_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.etransport_trimiteri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.extras_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.factura_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.facturi": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.facturi_recurente": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.firma_profil": {
+   "md5": "79a8c429d35acc7d0674cc087e9d92ef",
+   "motiv": null,
+   "randuri": 1
+  },
+  "tenant_048.furnizori": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.inregistrari": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.inregistrari_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.mijloace_fixe": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.miscari_stoc": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.nir": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.nir_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.notificari_scadenta": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.perioada_confirmata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.perioade_blocate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.perioade_inchideri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.plan_conturi": {
+   "md5": "d088b33336f81d3ec633f0f28bda915c",
+   "motiv": null,
+   "randuri": 185
+  },
+  "tenant_048.pontaj": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.produse": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.rapoarte_salvate": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.registratura": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.registre_art321": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.registru_inventar": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.retete": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.retete_linii": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.rip_operatiuni": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.salariati": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.salariu_istoric": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.solduri_initiale": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.solduri_parteneri": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  },
+  "tenant_048.state_plata": {
+   "md5": "d41d8cd98f00b204e9800998ecf8427e",
+   "motiv": null,
+   "randuri": 0
+  }
+ }
+}
