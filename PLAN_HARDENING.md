@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-11 (pool pre-încălzit + valul 3, două familii)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; **valul 3**: două familii din șapte închise) · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-12 (**P5 ÎNCHIS** — valul 3 la zero căi C5)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -660,9 +660,35 @@ Brevo prin `trimite_email_html`, iar `monitor_fiscal` și `spv_refresh` sunt job
 verdictul rămâne scris, inclusiv partea care spune că amânarea după commit ar fi fost GREȘITĂ pentru
 alertă. Nu s-a amânat nimic: s-a mutat pe alt fir.
 
-**Rămâne, în ordinea aprobată:** `trimite_email_html` (4 căi, **17 locuri de apel** în cod — e o
-bucată proprie) · `valideaza_cui` (5) · `_descarca` BNR (5) · `_obtine_token` REGES (2) · diverse (6)
-· `_post_token` (3) — **temă separată, prin decizia arhitectului**.
+**VALUL 3, ÎNCHIS (11.09.2026, `f61df1b8`).** Lista de mai sus s-a golit — și s-a dovedit mai
+lungă decât părea: auditul mecanic de după `_post_token` a găsit **14 familii, nu 7**, fiindcă
+gruparea inițială era scrisă de mână, nu derivată. Toate au fost închise în aceeași zi.
+
+```
+C5_PATHS_BEFORE=19          C5_PATHS_AFTER=0
+WAVE3_FAMILIES_OPEN=0       WAVE3_PATHS_OPEN=0
+P5_BLOCKING_ITEMS=0         WAVE3_STATUS=CLOSED_ACCEPTED
+P5_FINAL_COMMIT=f61df1b8    P5_STATUS=CLOSED_ACCEPTED
+```
+
+**Patru forme de contract, nu una** — și asta e ce merită reținut din val:
+
+| formă | familii | ce revalidează |
+|---|---|---|
+| rezultatul extern **decide** | `verifica_vies`, `woocommerce` | accesul + luna · configul + `deja_importata` |
+| rezultatul extern **ESTE** efectul | `reges_client`, `_post_token`, `_trimite_brevo` | **nimic** — scrierea e necondiționată, fiindcă e urma unui act deja petrecut |
+| nu depinde de bază | `duk`, `d112` | n-au ce revalida |
+| descărcare vs decizie | `curs_bnr` | recitirea cache-ului **era deja** revalidarea |
+
+**Cele 5 căi C5 rămase nu sunt datorie tăcută**: patru rute de fișier sub **SINCRON-MARGINIT**
+(threadpool, I/O de fișier — nu extern) și jobul de recurente sub **FUNDAL**. Fiecare are verdictul
+scris în registrul P5, măsurat înainte de valul 3.
+
+**Ce a scos valul la iveală, în plus față de ce căuta:** un **omonim** care ascundea o cale
+(`alerta_acces`, unde `trimite` e un parametru, rezolvat de scanner la funcția din e-factură); un
+verdict P4 care afirma conformitatea unui loc neconform (`pachet_poveste_set`); și o măsurătoare
+proprie prea îngustă — `trimite_email_html` declarat închis pe o definiție LEXICALĂ, care nu vedea
+conexiunea ținută de apelant.
 
 
 ---

@@ -1,0 +1,33 @@
+docs: starea normativă adusă la zi după închiderea P5
+
+# diff-citit: PLAN_HARDENING.md (+33/-5) și CONFORMITATE.md (+2/-1), citite integral înainte de a
+# fi comise. CE S-A SCHIMBAT: (a) în PLAN_HARDENING.md — antetul „ultima actualizare", linia de
+# stare a fazelor („P5 VALURILE 1 și 1b EXECUTATE" → „P5 ÎNCHIS", cu `ACTION_REQUIRED 19 → 0"), și
+# paragraful „Rămâne, în ordinea aprobată", care lista șapte familii deschise și a fost înlocuit cu
+# starea finală: blocul de cifre, tabelul celor patru forme de contract, cele cinci căi C5 rămase
+# cu regula care le acceptă, și ce a scos valul la iveală în plus; (b) în CONFORMITATE.md — data
+# antetului la 2026-09-12 și o linie de trimitere care consemnează P5 ÎNCHIS pe `f61df1b8`.
+# CERINȚE NOI PE CARE LE CONȚIN: niciuna — ambele consemnează o stare deja atinsă și acceptată, nu
+# cer nimic. CE FAC CU ELE: nimic de făcut; linia din CONFORMITATE spune explicit că starea fazelor
+# se ține în PLAN_HARDENING, ca să nu apară o a doua sursă de adevăr pentru aceeași stare.
+
+CE ERA STALE. `PLAN_HARDENING.md` scria „valul 3: două familii din șapte închise" — adevărat acum
+două ture, fals de la `f61df1b8` încoace. E aceeași clasă cu cifrele corectate în aceeași zi în
+același fișier: *proza care reafirmă o stare îmbătrânește tăcut, și se citește ca verificată.*
+
+Iar „șapte familii" era el însuși greșit: auditul mecanic de după `_post_token` a găsit **14**,
+fiindcă gruparea inițială fusese scrisă de mână, nu derivată. Numărul nou e în text, cu motivul.
+
+CE S-A SCRIS ÎN LOC — starea finală, cu cifrele din detectorul mecanic, nu din raportul precedent:
+`C5_PATHS_AFTER=0` · `WAVE3_FAMILIES_OPEN=0` · `P5_BLOCKING_ITEMS=0` · `P5_FINAL_COMMIT=f61df1b8`.
+Plus tabelul celor **patru forme de contract** — fiindcă asta e ce rămâne util din val: nu că s-au
+închis 19 căi, ci că a fost nevoie de patru raționamente diferite, iar unul dintre ele (`reges`,
+`_post_token`, `_trimite_brevo`) cere ca revalidarea să NU se facă.
+
+Și cele cinci căi C5 rămase, scrise ca atare: `SINCRON-MARGINIT` pentru cele patru rute de fișier,
+`FUNDAL` pentru jobul de recurente. Nu sunt datorie tăcută — au verdictul în registrul P5, măsurat
+înainte de val.
+
+NIMIC ALTCEVA. Fără cod de producție, fără teste, fără atingerea logicii P5, a clasificării R69, a
+rândurilor 53/63, a corecțiilor orfane, a celor 12 firme `ztest_*`, a istoricului curățeniei din
+11.09 sau a sondei de scrieri. P6 neînceput.
