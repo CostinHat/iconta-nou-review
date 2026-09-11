@@ -58,17 +58,18 @@ def ruleaza(acum=None):
     for (tid, firm_id, ten_id, serial, refresh_enc, access_expira) in randuri:
         eticheta = ("firma %s" % firm_id) if firm_id is not None else ("gratuit tenant %s" % ten_id)
         try:
-            # tranzactie per token: un esec nu strica commit-urile reusite (get_conn
-            # face commit la succes / rollback la exceptie)
-            with db.get_conn() as conn:
-                token_row = {
-                    "id": tid,
-                    "accounting_firm_id": firm_id,
-                    "tenant_id": ten_id,
-                    "serial_certificat": serial,
-                    "refresh_token": s.decripteaza(refresh_enc),  # reimprospateaza_token cere clar
-                }
-                nou = s.reimprospateaza_token(conn, token_row)
+            # [P5 val 3, 11.09.2026] Tranzactie per token, ca inainte — dar ea apartine ACUM
+            # rotatiei, nu jobului: `reimprospateaza_token` face apelul `/token` (termen 30 s)
+            # FARA conexiune, apoi deschide una scurta in care scrie si COMITE. Un esec pe un token
+            # nu strica ce s-a comis pentru celelalte, exact ca inainte.
+            token_row = {
+                "id": tid,
+                "accounting_firm_id": firm_id,
+                "tenant_id": ten_id,
+                "serial_certificat": serial,
+                "refresh_token": s.decripteaza(refresh_enc),  # reimprospateaza_token cere clar
+            }
+            nou = s.reimprospateaza_token(token_row)
             reusite += 1
             print("  OK token %s (%s): access_expira %s -> %s"
                   % (tid, eticheta, access_expira.isoformat(), nou["access_expira"].isoformat()))

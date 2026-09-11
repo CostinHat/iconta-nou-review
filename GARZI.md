@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**554 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**555 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 529
+### `core/` — 530
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8104,6 +8104,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_portal_acces.py` — GARD [R62, 26.08.2026]: portalul nu mută identitatea fără confirmare, nu trece un cont dintr-un
 - `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
 - `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
+- `core/test_post_token_fara_conexiune.py` — core/test_post_token_fara_conexiune.py — rotatia tokenului nu mai tine o conexiune din pool.
 - `core/test_prag_mijloc_fix_unic.py` — GARD [01.09.2026, R108]: pragul de încadrare ca mijloc fix are o SINGURĂ sursă.
 - `core/test_prag_per_articol.py` — GARD [01.09.2026, R109]: pragul de reverificare e per articol, dar nicio cotă nu iese din pază.
 - `core/test_prapastie_salariu.py` — GARD [R49, varianta (c)]: prăpastia salariului minim se spune CU CIFRE, și cifrele sunt ale

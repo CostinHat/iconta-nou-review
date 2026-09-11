@@ -52,6 +52,7 @@ def ruleaza(trimite=None, **override):
     try: db.pool()
     except Exception: db.init_pool()
     alerte = 0
+    de_trimis = []
     with db.get_conn() as c:
         flagged = detecteaza(c, p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"])
         for u in flagged:
@@ -62,8 +63,15 @@ def ruleaza(trimite=None, **override):
                 mesaj = ("Semnal automat (art.33): userul %s a atins %s tenanti distincti si %s actiuni "
                          "in ultimele %s min (praguri %s tenanti / %s actiuni). NU s-a blocat nimic. Verifica manual."
                          % (u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"]))
-                trimite(subiect, mesaj); alerte += 1
+                de_trimis.append((subiect, mesaj))
         # [P4] `c` nu mai scrie nimic: detectia e o citire, iar rezervarea si-a luat tranzactia ei.
+    # [P5 val 3, 11.09.2026] TRIMITEREA, AICI: apelul la Brevo are termen de 10 s, iar forma
+    # dinainte il facea in bucla, cu conexiunea in mana — cate 10 s pentru fiecare alerta. Ordinea
+    # ramane aceeasi: rezervarea de dedup s-a facut deja mai sus, deci nici numarul de alerte, nici
+    # continutul, nici conditia nu se schimba.
+    for subiect, mesaj in de_trimis:
+        trimite(subiect, mesaj)
+        alerte += 1
     return {"verificati": len(flagged), "alerte_trimise": alerte, "praguri": p}
 
 if __name__ == "__main__":

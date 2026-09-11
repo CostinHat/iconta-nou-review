@@ -76,8 +76,11 @@ def monteaza(app, dep_context):
         except spv_conector.EroareSpv as e:
             return _retur({"eroare": str(e)})
         try:
-            with db.get_conn() as conn:
-                spv_conector.finalizeaza_autorizare(conn, principal, code)  # APEL REAL ANAF
+            # [P5 val 3, 11.09.2026] FARA conexiune in mana. Schimbul `code -> token` are termen de
+            # 30 s si fereastra ANAF de 60 s; baza se atinge abia dupa raspuns, iar
+            # `finalizeaza_autorizare` isi deschide singura tranzactia scurta in care persista si
+            # COMITE — deci tokenul e salvat inainte ca ruta sa se intoarca.
+            spv_conector.finalizeaza_autorizare(principal, code)  # APEL REAL ANAF
         except spv_conector.EroareSpv as e:
             return _retur({"eroare": str(e)})
         return _retur({"ok": "1"})

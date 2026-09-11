@@ -1,0 +1,12 @@
+GARZI.md
+core/alerta_acces.py
+core/p4_clasificare.py
+core/spv_conector.py
+core/spv_refresh.py
+core/spv_rute.py
+core/test_post_token_fara_conexiune.py
+core/test_spv_conector.py
+masuratori/post_token/AUDIT_VAL3.txt
+masuratori/post_token/COMMIT_POST_TOKEN.txt
+masuratori/post_token/DB_FINGERPRINT_BEFORE.json
+masuratori/post_token/INVENTAR_DUPA.txt

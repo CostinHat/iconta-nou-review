@@ -1,0 +1,74 @@
+POST_TOKEN_CALLSITES_BASELINE_CURRENT=4
+   core/spv_conector.py:338           _post_token                in schimba_cod_pe_token         sub_conexiune_lexical=False
+   core/spv_conector.py:348           _post_token                in reimprospateaza_pereche      sub_conexiune_lexical=False
+   core/spv_conector.py:366           schimba_cod_pe_token       in finalizeaza_autorizare       sub_conexiune_lexical=False
+   core/spv_conector.py:407           reimprospateaza_pereche    in reimprospateaza_token        sub_conexiune_lexical=False
+
+POST_TOKEN_PATHS_BASELINE_CURRENT=3   (puncte de intrare, din 514 intrari)
+   GET /anaf/oauth/callback                           C2             C5=nu
+        via: anaf_oauth_callback -> finalizeaza_autorizare -> schimba_cod_pe_token -> _post_token
+   POST /tenants/{tenant_id}/etransport/trimite       C2             C5=nu
+        via: etransport_trimite -> trimite -> valideaza_pe_test -> upload_uit -> apel_anaf -> reimprospateaza_token -> reimprospateaza_pereche -> _post_token
+   POST /tenants/{tenant_id}/facturi/{factura_id}/tri C2             C5=nu
+        via: factura_trimite_spv -> trimite -> upload_ubl -> apel_anaf -> reimprospateaza_token -> reimprospateaza_pereche -> _post_token
+
+{
+ "locuri": [
+  {
+   "loc": "core/spv_conector.py:338",
+   "apelat": "_post_token",
+   "in_functia": "schimba_cod_pe_token",
+   "sub_conexiune_lexical": false
+  },
+  {
+   "loc": "core/spv_conector.py:348",
+   "apelat": "_post_token",
+   "in_functia": "reimprospateaza_pereche",
+   "sub_conexiune_lexical": false
+  },
+  {
+   "loc": "core/spv_conector.py:366",
+   "apelat": "schimba_cod_pe_token",
+   "in_functia": "finalizeaza_autorizare",
+   "sub_conexiune_lexical": false
+  },
+  {
+   "loc": "core/spv_conector.py:407",
+   "apelat": "reimprospateaza_pereche",
+   "in_functia": "reimprospateaza_token",
+   "sub_conexiune_lexical": false
+  }
+ ],
+ "cai": [
+  {
+   "intrare": "GET /anaf/oauth/callback",
+   "fel": "ruta",
+   "detectori": [
+    "C2"
+   ],
+   "loc_primitiva": "core/spv_conector.py:324",
+   "via": "anaf_oauth_callback -> finalizeaza_autorizare -> schimba_cod_pe_token -> _post_token",
+   "in_domeniu_db": false
+  },
+  {
+   "intrare": "POST /tenants/{tenant_id}/etransport/trimite",
+   "fel": "ruta",
+   "detectori": [
+    "C2"
+   ],
+   "loc_primitiva": "core/spv_conector.py:324",
+   "via": "etransport_trimite -> trimite -> valideaza_pe_test -> upload_uit -> apel_anaf -> reimprospateaza_token -> reimprospateaza_pereche -> _post_token",
+   "in_domeniu_db": false
+  },
+  {
+   "intrare": "POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv",
+   "fel": "ruta",
+   "detectori": [
+    "C2"
+   ],
+   "loc_primitiva": "core/spv_conector.py:324",
+   "via": "factura_trimite_spv -> trimite -> upload_ubl -> apel_anaf -> reimprospateaza_token -> reimprospateaza_pereche -> _post_token",
+   "in_domeniu_db": false
+  }
+ ]
+}

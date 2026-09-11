@@ -143,6 +143,40 @@ def conn():
         c.close()
 
 
+@pytest.fixture
+def conn_comis():
+    """Conexiune care COMITE, pentru probele de ROTATIE.
+
+    [P5 val 3, 11.09.2026] `reimprospateaza_token` nu mai primeste o conexiune: face apelul la ANAF
+    fara niciuna in mana, apoi deschide singura o tranzactie scurta in care scrie si COMITE. O
+    proba care si-ar lasa setup-ul necomis i-ar da de citit o lume pe care n-o vede.
+
+    Curatenia e explicita si marginita pe principalii de test — baza izolata nu e o scuza sa lasi
+    reziduu (v. R67/R68: exact din reziduu de proba a iesit indisponibilitatea din 11.09).
+    """
+    try:
+        c = psycopg2.connect(_db.dsn_din_config(_db.config_din_env()))
+    except Exception as e:  # noqa: BLE001
+        pytest.skip("DB indisponibil: %s" % e)
+    # rotatia isi deschide conexiunea din POOL, nu una bruta ca fixtura asta — deci pool-ul
+    # trebuie sa existe. In productie il initializeaza pornirea (`main`, `spv_refresh`,
+    # `alerta_acces`); aici, proba.
+    try:
+        _db.pool()
+    except Exception:      # noqa: BLE001
+        _db.init_pool()
+    c.autocommit = True
+    try:
+        yield c
+    finally:
+        try:
+            with c.cursor() as cur:
+                cur.execute("DELETE FROM public.spv_token WHERE accounting_firm_id=%s "
+                            "   OR tenant_id=%s", (FIRM_TEST, TENANT_TEST))
+        finally:
+            c.close()
+
+
 def _salveaza_initial(conn, principal=PRIN_FIRM, serial="SER-1", access="acc-0", refresh="ref-0"):
     acum = int(time.time())
     valori = {
@@ -180,8 +214,9 @@ def test_salveaza_si_citeste_gratuit_izolat_de_cabinet(conn):
     assert s.ia_token_activ(conn, s.principal_firm(TENANT_TEST)) is None  # nu e cheiat pe firm
 
 
-def test_refresh_salveaza_ambele_valori_noi(conn, monkeypatch):
+def test_refresh_salveaza_ambele_valori_noi(conn_comis, monkeypatch):
     """CAPCANA CRITICA: refresh-ul salveaza AMBELE valori noi (access + refresh)."""
+    conn = conn_comis          # aceeasi conexiune, dar care COMITE
     _salveaza_initial(conn, serial="SER-1", access="acc-0", refresh="ref-0")
     tok = s.ia_token_activ(conn, PRIN_FIRM)
 
@@ -192,7 +227,7 @@ def test_refresh_salveaza_ambele_valori_noi(conn, monkeypatch):
         "expires_in": 90 * 86400,
     }
     monkeypatch.setattr(s, "reimprospateaza_pereche", lambda rt: raspuns_nou)
-    s.reimprospateaza_token(conn, tok)
+    s.reimprospateaza_token(tok)          # HTTP fara conexiune + tranzactie scurta proprie
 
     dupa = s.ia_token_activ(conn, PRIN_FIRM)
     assert dupa["refresh_token"] == "ref-1-NOU", "refresh-ul NOU nu a fost salvat (capcana rotatiei)"
@@ -200,15 +235,16 @@ def test_refresh_salveaza_ambele_valori_noi(conn, monkeypatch):
     assert dupa["access_token"] != "acc-0" and dupa["refresh_token"] != "ref-0"
 
 
-def test_refresh_gratuit_deriveaza_principal_tenant(conn, monkeypatch):
+def test_refresh_gratuit_deriveaza_principal_tenant(conn_comis, monkeypatch):
     """GARDUL 3: refresh pe un token GRATUIT deriva principal_tenant, nu crapa pe firm NULL."""
+    conn = conn_comis          # aceeasi conexiune, dar care COMITE
     _salveaza_initial(conn, principal=PRIN_TENANT, serial="SER-G", access="acc-0", refresh="ref-0")
     tok = s.ia_token_activ(conn, PRIN_TENANT)
     acum = int(time.time())
     monkeypatch.setattr(s, "reimprospateaza_pereche", lambda rt: {
         "access_token": _fake_jwt({"serial_number": "SER-G", "exp": acum + 90 * 86400}),
         "refresh_token": "ref-grat-NOU", "expires_in": 90 * 86400})
-    s.reimprospateaza_token(conn, tok)
+    s.reimprospateaza_token(tok)
     assert s.ia_token_activ(conn, PRIN_TENANT)["refresh_token"] == "ref-grat-NOU"
 
 
@@ -241,7 +277,8 @@ def test_stare_conexiune_conectat_fara_secrete(conn):
     assert st["expira_curand"] is False
 
 
-def test_refresh_esuat_dezactiveaza_tokenul(conn, monkeypatch):
+def test_refresh_esuat_dezactiveaza_tokenul(conn_comis, monkeypatch):
+    conn = conn_comis          # aceeasi conexiune, dar care COMITE
     id0 = _salveaza_initial(conn, refresh="ref-0")
     tok = s.ia_token_activ(conn, PRIN_FIRM)
 
@@ -250,7 +287,7 @@ def test_refresh_esuat_dezactiveaza_tokenul(conn, monkeypatch):
     monkeypatch.setattr(s, "reimprospateaza_pereche", _cade)
 
     with pytest.raises(s.EroareSpvRefreshEsuat):
-        s.reimprospateaza_token(conn, tok)
+        s.reimprospateaza_token(tok)
     assert s.ia_token_activ(conn, PRIN_FIRM) is None
     with conn.cursor() as cur:
         cur.execute("SELECT activ FROM public.spv_token WHERE id=%s", (id0,))

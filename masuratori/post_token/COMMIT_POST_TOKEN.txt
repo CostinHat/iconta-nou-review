@@ -1,0 +1,70 @@
+Valul 3, familia `_post_token`: rotația deține tranzacția, iar apelul de 30 s nu mai ține pool
+
+# multe-fisiere-ok: mutarea proprietății tranzacției atinge rotația, cei doi apelanți direcți,
+# verdictul P4 care o descria, probele care o demonstrează, și cele trei teste care rulau pe o
+# conexiune necomisă. Sunt o singură schimbare; separate n-ar trece niciuna.
+
+CE ȚINEA POOL-UL. `/token` are termen de **30 s** — cel mai lung din val. Toate cele **7 căi** care
+ajung la `_post_token` îl executau cu o conexiune din cele zece în mână.
+
+PROPRIETATEA TRANZACȚIEI S-A MUTAT, prin decizia arhitectului din 11.09.2026:
+
+    VECHI: commitul aparține USE-CASE-ului — `apel_anaf` deschide conexiunea, deci el comite.
+    NOU:   rotația deține tranzacția SCURTĂ de persist+commit, de după HTTP.
+
+`SUPERSEDED_FOR_POST_TOKEN_ROTATION=YES` · `P4_GENERAL_REOPEN=NO` — niciun alt contract P4 nu se
+redeschide.
+
+DE CE NU E REGRESIA PE CARE P4 A PRINS-O. Nota lui `_roteste_si_comite` spunea că prima formă a
+reparației R180 deschidea *o a doua conexiune și scria pe același rând*, iar suita a atârnat la 80%.
+Aici nu există suprapunere: fiecare bloc **se închide** înainte ca următorul să se deschidă. Probat
+structural — niciun `with get_conn` din rotație nu-l conține pe altul.
+
+GARANȚIA DE ATOMICITATE SE PĂSTREAZĂ, și e probată pe calea reală: `apel_anaf` rotește, apoi apelul
+propriu-zis cade — perechea nouă rămâne comisă. Dacă s-ar pierde, ANAF ar rămâne cu singura pereche
+pe care o consideră validă, iar principalul s-ar deconecta tăcut.
+
+`_roteste_si_comite` a dispărut: nu mai avea ce înveli, iar un înveliș gol e cod mort.
+
+MĂSURAT MECANIC, pe ambii arbori, cu același instrument:
+
+  · căi C5 (rețea executată cât timp e ținută o conexiune):   7 → 0
+  · puncte de intrare care ajung la `_post_token`:            7 → 3   (toate C2 — altă clasă:
+    rută sincronă care atinge rețeaua, adică un fir ocupat, nu o conexiune blocată)
+  · locuri de apel, pe AST:                                   4 → 4
+
+PROBA, 11 teste, RED-proof pe `6b971f36` — pică 6. Cea care contează cel mai mult nu deduce din
+forma codului: **numără conexiunile scoase din pool CHIAR ÎN TIMPUL apelului la ANAF.** Zero. Și are
+perechea ei de calibrare, care arată că măsurătoarea chiar vede o conexiune scoasă — altfel „zero"
+ar fi trecut și pe codul stricat.
+
+Acoperă contractul cerut: HTTP fără conexiune · succes → comis · apelantul cade după rotație →
+rămâne comis · persistarea cade → NU se raportează succes · eșec HTTP → niciun token nou, cel mort
+dezactivat · 401 + rotație → aceeași regulă · jobul de fundal → aceeași proprietate.
+
+CE NU VEDE GARDA STRUCTURALĂ, declarat lângă ea: e **lexicală**. Prinde un apel pus într-un
+`with get_conn` din aceeași funcție, dar NU cazul în care conexiunea e ținută de apelant, două
+funcții mai sus — chiar forma defectului reparat azi. De-aia trece și pe baseline. Cazul acela e
+acoperit de proba care numără pe pool și de inventarul P5, care urmărește lanțul.
+
+TREI TESTE REScrise, fiindcă rulau pe o conexiune de fixtură NECOMISĂ. Rotația își deschide acum
+propria tranzacție, deci nu poate vedea un rând necomis — *asta nu e un neajuns al probei, e chiar
+proprietatea pe care o probează*. Setup-ul se comite, iar curățenia e explicită și mărginită pe
+principalii de test: baza izolată nu e o groapă, iar din reziduu de probă a ieșit indisponibilitatea
+de azi-dimineață.
+
+ȘI O CALE PE CARE UN OMONIM O ASCUNDEA — `core/alerta_acces.py`. Inventarul lui `_post_token` a
+raportat lanțul `ruleaza -> trimite -> upload_ubl -> apel_anaf`, marcat `omonim=True`: în
+`alerta_acces`, `trimite` e un **parametru** cu valoarea implicită `observare._trimite_brevo`, iar
+scannerul îl rezolvase la funcția `trimite` din e-factură. Instrumentul nu minte — spune că nu poate
+ști. Uitându-mă acolo, calea reală era alta și tot de val 3: alertele plecau **în buclă, cu
+conexiunea în mână**, câte 10 s fiecare. Măsurătoarea familiei `_trimite_brevo` n-o văzuse niciodată,
+din același omonim. Trimiterea s-a mutat după bloc; rezervarea de dedup rămâne unde era, deci nici
+numărul de alerte, nici conținutul, nici condiția nu se schimbă.
+
+VALUL 3 NU E ÎNCHIS, și auditul mecanic din `masuratori/post_token/AUDIT_VAL3.txt` o spune: rămân
+**14 familii, 31 de căi C5**. Printre ele, **2 ale lui `trimite_email_html`** — declarat închis ieri
+pe o măsurătoare LEXICALĂ, mai îngustă decât clasa C5. Acolo conexiunea e ținută de apelant. Se
+raportează, nu se ascunde.
+
+POARTA A RULAT ÎN MEDIUL IZOLAT R68, cu amprenta producției înainte și după.

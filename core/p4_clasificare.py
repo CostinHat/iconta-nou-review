@@ -865,6 +865,20 @@ EFECTE_EXTERNE = {
             "cerut-o sa poata esua. Prima forma a reparatiei deschidea o A DOUA conexiune si se "
             "BLOCA pe randul tinut de tranzactia apelantului; poarta a prins-o. V. randul critic "
             "`core/spv_conector.reimprospateaza_token`.",
+        "reparat":
+            "[P5 val 3, 11.09.2026] PROPRIETATEA TRANZACTIEI S-A MUTAT, prin decizia arhitectului. "
+            "REGULA VECHE: commitul apartinea USE-CASE-ULUI — `apel_anaf` deschidea conexiunea, "
+            "deci el hotara cand se comite. Consecinta nevazuta pana acum: apelul `/token`, cu "
+            "termen de 30 s (cel mai lung din val), se executa cu o conexiune din pool in mana, pe "
+            "toate cele sapte cai masurate. REGULA NOUA: rotatia detine tranzactia SCURTA de "
+            "persist+commit, de dupa HTTP. Vechea regula e SUPERSEDED DOAR pentru rotatia de token; "
+            "niciun alt contract P4 nu se redeschide. GARANTIA DE ATOMICITATE SE PASTREAZA: "
+            "perechea noua e comisa inainte ca apelantul sa poata continua sau sa poata esua — "
+            "probat pe calea reala in `test_C_tokenul_rotit_ramane_comis_cand_apelantul_cade_dupa`. "
+            "REGRESIA CELOR DOUA CONEXIUNI e imposibila prin constructie, fiindca fiecare bloc se "
+            "inchide inainte ca urmatorul sa se deschida — probat structural in "
+            "`test_F_rotatia_nu_deschide_o_conexiune_peste_alta`. `_roteste_si_comite` a disparut: "
+            "nu mai avea ce face, iar un invelis care nu mai inveleste nimic e cod mort.",
     },
     "core/spv_conector.py:apel_anaf": {
         "fel": EFECT,

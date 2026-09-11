@@ -351,71 +351,77 @@ def reimprospateaza_pereche(refresh_token):
     })
 
 
-def finalizeaza_autorizare(conn, principal, code, acum=None):
-    """Callback: schimba codul pe token si salveaza (criptat) pentru principal. Intoarce id-ul."""
-    tok = schimba_cod_pe_token(code)
-    valori = valori_din_raspuns_token(tok, acum=acum)
-    return salveaza_token(conn, principal, valori)
+def finalizeaza_autorizare(principal, code, acum=None):
+    """Callback: schimba codul pe token si il salveaza (criptat) pentru principal. Intoarce id-ul.
 
+    [P5 val 3, 11.09.2026] APELUL HTTP SE FACE FARA NICIO CONEXIUNE IN MANA. Schimbul `code ->
+    token` are fereastra de 60 de secunde la ANAF si termen de 30 s, iar codul se consuma o singura
+    data — nu e ceva ce se poate relua. Forma dinainte il facea din interiorul blocului rutei, deci
+    o conexiune din cele zece statea blocata tot atat, pentru un apel care n-avea nevoie de ea:
+    baza se atinge abia DUPA raspuns.
 
-def reimprospateaza_token(conn, token_row, acum=None):
+    Tranzactia scurta de mai jos e a rotatiei, si se COMITE inainte de a intoarce — deci tokenul e
+    persistat inainte ca apelantul sa poata continua.
     """
-    Refresh sincron pentru un rand token. Salveaza AMBELE valori noi (ROTATIE). Deriva
-    PRINCIPALUL din rand (cabinet SAU gratuit - GARDUL 3: nu presupune firm).
-    La esec: dezactiveaza tokenul si ridica EroareSpvRefreshEsuat.
+    tok = schimba_cod_pe_token(code)                    # HTTP, fara conexiune
+    valori = valori_din_raspuns_token(tok, acum=acum)
+    with db.get_conn() as conn:                         # scurta, proprie
+        id_ = salveaza_token(conn, principal, valori)
+        conn.commit()
+    return id_
+
+
+def reimprospateaza_token(token_row, acum=None):
+    """Rotatia unui token: HTTP FARA conexiune, apoi tranzactie scurta proprie care COMITE.
+
+    Salveaza AMBELE valori noi (ROTATIE). Deriva PRINCIPALUL din rand (GARDUL 3: nu presupune
+    `firm`). La esec: dezactiveaza tokenul si ridica `EroareSpvRefreshEsuat`.
+
+    **[P5 val 3, 11.09.2026] PROPRIETATEA TRANZACTIEI S-A MUTAT AICI.** Contractul P4 de dinainte
+    spunea ca *limita apartine use-case-ului* — `apel_anaf` deschidea conexiunea, deci el hotara
+    cand se comite. Consecinta era ca apelul `/token`, cu termen de 30 s, se executa cu o conexiune
+    din pool in mana, pe toate cele sapte cai. Decizia arhitectului din 11.09: rotatia detine
+    tranzactia scurta de persist+commit, de dupa HTTP.
+
+    **Garantia P4 ramane**: perechea noua e COMISA inainte ca functia sa se intoarca, deci inainte
+    ca apelantul sa poata esua. Daca `apel_anaf` cade dupa rotatie, ce a scris ANAF si ce am scris
+    noi raman de acord.
+
+    **Regresia de care avertiza P4 e imposibila prin constructie**: fiecare bloc de mai jos se
+    INCHIDE inainte ca urmatorul sa se deschida. Prima forma a reparatiei R180 deschidea o a doua
+    conexiune *peste* prima si se bloca pe randul tinut de tranzactia apelantului; aici nu exista
+    nicio suprapunere.
+
+    **Si pe calea de esec se comite**: dezactivarea tokenului mort e tot un fapt — daca s-ar
+    intoarce, un token pe care ANAF l-a refuzat ar ramane `activ = true` si ar fi reincercat la
+    nesfarsit.
     """
     if token_row.get("accounting_firm_id") is not None or token_row.get("tenant_id") is not None:
-        principal = principal_din_rand(token_row.get("accounting_firm_id"), token_row.get("tenant_id"))
+        principal = principal_din_rand(token_row.get("accounting_firm_id"),
+                                       token_row.get("tenant_id"))
     else:
-        principal = _principal_din_token(conn, token_row["id"])
+        with db.get_conn() as conn:                     # scurta, DOAR citire; se inchide inainte de HTTP
+            principal = _principal_din_token(conn, token_row["id"])
+
     try:
-        tok = reimprospateaza_pereche(token_row["refresh_token"])
+        tok = reimprospateaza_pereche(token_row["refresh_token"])    # HTTP, fara conexiune
         valori = valori_din_raspuns_token(tok, acum=acum)
     except EroareSpv:
-        dezactiveaza_token(conn, token_row["id"])
+        with db.get_conn() as conn:                     # scurta, proprie
+            dezactiveaza_token(conn, token_row["id"])
+            conn.commit()
         raise EroareSpvRefreshEsuat(
             "refresh esuat pentru token %s — principalul reconecteaza SPV" % token_row["id"])
+
     # serialul ramane cel cunoscut daca noul JWT nu-l expune
     if valori["serial_certificat"] == "NECONFIRMAT":
         valori["serial_certificat"] = token_row["serial_certificat"]
-    # [P4, 09.09.2026] Scrierea ramane pe conexiunea apelantului — v. `_roteste_si_comite`, care e
-    # locul unde se COMITE, imediat, fiindca rotatia la ANAF e ireversibila. Functia asta nu comite
-    # singura: apelantii ei directi din teste tin o tranzactie proprie si o intorc la final.
-    salveaza_token(conn, principal, valori)
-    return ia_token_activ(conn, principal)
 
+    with db.get_conn() as conn:                         # scurta, proprie: scrie SI COMITE
+        salveaza_token(conn, principal, valori)
+        conn.commit()
+        return ia_token_activ(conn, principal)
 
-def _roteste_si_comite(conn, token_row, acum=None):
-    """Rotește tokenul și **COMITE imediat**, pe conexiunea care deține tranzacția. [P4, 09.09.2026]
-
-    ANAF ROTEȘTE la refresh: în secunda răspunsului, vechiul `refresh_token` e mort acolo. E un
-    efect IREVERSIBIL într-un sistem străin, iar un `rollback` la noi nu-l desface. Dacă perechea
-    nouă ar rămâne necomisă până la capătul lui `apel_anaf`, orice eroare de după (403 fără drept,
-    cădere de rețea, backoff epuizat) ar întoarce tranzacția și ar șterge din bază **exact perechea
-    pe care ANAF o consideră singura validă**. Principalul rămâne deconectat, și nimic nu pică:
-    apelul eșuează din alt motiv, iar tokenul dispare tăcut.
-
-    **DE CE AICI ȘI NU ÎNTR-O TRANZACȚIE PROPRIE.** Prima formă a reparației deschidea o a doua
-    conexiune și scria pe același rând. Se BLOCHEAZĂ: tranzacția apelantului poate ține rândul, iar
-    a doua așteaptă la infinit un commit care nu vine. Poarta a prins-o — suita a atârnat la 80% —,
-    iar regula era deja scrisă în casă: *o probă care ține o tranzacție deschisă nu poate deschide o
-    a doua conexiune pe același rând*. Limita aparține **use-case-ului**: `apel_anaf` deschide
-    conexiunea, deci `apel_anaf` hotărăște când se comite.
-
-    **Și pe calea de eșec se comite**: `reimprospateaza_token` dezactivează tokenul mort, iar aia e
-    tot un fapt — dacă s-ar întoarce, un token pe care ANAF l-a refuzat ar rămâne `activ = true` și
-    ar fi reîncercat la nesfârșit.
-    """
-    try:
-        nou = reimprospateaza_token(conn, token_row, acum=acum)
-    except Exception:
-        try:
-            conn.commit()
-        except Exception:
-            pass
-        raise
-    conn.commit()
-    return nou
 
 
 def _principal_din_token(conn, token_id):
@@ -457,8 +463,12 @@ def apel_anaf(principal, metoda, url, acum_dt=None, _dormi=time.sleep, **kw):
         tok = ia_token_activ(conn, principal)
         if not tok:
             raise EroareSpvNeconectat("principalul %r nu are token SPV activ" % (principal,))
-        if _expirat(tok["access_expira"], acum_dt):
-            tok = _roteste_si_comite(conn, tok, acum=None)
+        _cere_rotatie = _expirat(tok["access_expira"], acum_dt)
+    # [P5 val 3] Rotatia e AFARA din blocul de mai sus: apelul `/token` are termen de 30 s, iar
+    # blocul asta nu mai are nimic de facut dupa citire. `reimprospateaza_token` isi deschide
+    # singura tranzactia scurta in care scrie si comite.
+    if _cere_rotatie:
+        tok = reimprospateaza_token(tok, acum=None)
 
     # ANTETELE, citite O SINGURĂ DATĂ. Forma veche avea `kw.pop("headers", {})` ÎN BUCLĂ: la a doua
     # încercare `kw` nu mai avea `headers`, deci antetele apelantului — `Content-Type:
@@ -476,8 +486,9 @@ def apel_anaf(principal, metoda, url, acum_dt=None, _dormi=time.sleep, **kw):
                              **kw)
         if r.status_code == 401 and not incercat_refresh:
             incercat_refresh = True
-            with db.get_conn() as conn:      # conexiune NOUĂ și SCURTĂ, doar pentru rotație
-                tok = _roteste_si_comite(conn, tok, acum=None)
+            # [P5 val 3] Nici aici nu se mai tine conexiune peste apelul `/token`: rotatia si-o
+            # deschide singura, DUPA raspunsul ANAF, si o inchide imediat.
+            tok = reimprospateaza_token(tok, acum=None)
             continue
         if r.status_code == 429 and backoff < MAX_BACKOFF_429:
             _dormi(2 ** backoff)
