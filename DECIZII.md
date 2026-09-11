@@ -14372,6 +14372,12 @@ pentru altceva — reduce numărul de interogări —, dar nu pentru problema m�
 
 ## Alerta pleacă pe alt fir; e-mailul GDPR pleacă după commit (10.09.2026, valul 3)
 
+> **Amendament, 11.09.2026** — `masuratori/brevo/AMENDAMENT_35_20.md`. Raportul turei a
+> explicat greșit o cifră din `TRASEE_VERIFICARI.md` (`T05`, 35 → 20 firme), spunând că e
+> efectul celor 12 firme dezactivate la incident. **Contribuția lor e 0** — n-au schemă,
+> deci n-au fost numărate niciodată de metrica aia. Cele două numere sunt măsurate pe baze
+> DIFERITE: 35 pe producție, 20 pe baza izolată. Codul familiei nu e atins de corectură.
+
 **Aceeași familie, două reparații diferite** — și deosebirea era deja scrisă în verdictul P4 al lui
 `_trimite_brevo`: *„e un efect, dar unul care VORBEȘTE DESPRE un eșec, nu unul care consemnează un
 act."*
