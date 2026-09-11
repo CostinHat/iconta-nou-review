@@ -818,6 +818,18 @@ EFECTE_EXTERNE = {
             "Daca tranzactia se intoarce dupa alerta, ce ramane e o alerta despre ceva ce nu s-a "
             "scris — adica exact ce trebuie sa afle cineva. Ordinea inversa ar fi gresita: o "
             "alerta amanata pana dupa commit s-ar pierde chiar cand actul cade.",
+        "reparat":
+            "[P5 val 3, 10.09.2026] LOCUL A DISPARUT din inventarul derivat, iar verdictul de mai "
+            "sus ramane scris — inclusiv partea care spune ca ordinea inversa ar fi GRESITA. Nu s-a "
+            "amanat nimic dupa commit: alerta pleaca pe un FIR PROPRIU, prin "
+            "`observare.alerteaza_in_fundal`, chemata din `esec_secundar`. Deci se trimite la fel "
+            "de devreme ca inainte — chiar si cand tranzactia se intoarce dupa —, dar nu mai tine o "
+            "conexiune din pool cele pana la 10 secunde ale apelului la Brevo. Firul NU e daemon: "
+            "interpretorul il asteapta la oprire, ca o alerta ridicata inainte de restart sa nu se "
+            "piarda. A doua cale, e-mailul cererii GDPR, s-a mutat DUPA commit si dupa iesirea din "
+            "bloc — acolo ordinea P4 se aplica, fiindca ala consemneaza un act, nu vorbeste despre "
+            "un esec. *Aceeasi familie, doua reparatii diferite, fiindcă verdictul de mai sus "
+            "deosebeste corect cele doua feluri de e-mail.*",
     },
     "core/observare.py:trimite_email_html": {
         "fel": EFECT,

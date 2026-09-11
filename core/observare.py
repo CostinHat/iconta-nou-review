@@ -155,10 +155,39 @@ def alerteaza(cheie, subiect, mesaj, acum=None):
     """
     Trimite alerta DOAR dacă throttling permite. cheie = grupează alertele
     de același fel (ex. 'pool_plin') ca să nu se retrimită des.
+
+    **SINCRONĂ, și rămâne așa.** Întoarce dacă alerta chiar a plecat, iar `expirare_cote` numără pe
+    răspunsul ăsta. Cine nu are nevoie de răspuns și nu vrea să aștepte Brevo folosește
+    `alerteaza_in_fundal`.
     """
     if trebuie_trimisa(cheie, acum=acum):
         return _trimite_brevo(subiect, mesaj)
     return False
+
+
+def alerteaza_in_fundal(cheie, subiect, mesaj, acum=None):
+    """Ca `alerteaza`, dar trimiterea pleacă pe un FIR PROPRIU. Întoarce dacă a fost pornită.
+
+    **[P5 val 3, 10.09.2026] De ce.** Alerta despre un eșec secundar se ridică din interiorul unui
+    `except` care, de cele mai multe ori, e sub un `with db.get_conn()`. Apelul la Brevo are termen
+    de **10 s** — deci o conexiune din cele 10 ale pool-ului stătea blocată tot atâta, pentru un
+    e-mail care n-are nicio legătură cu tranzacția. *Alerta nu e un efect al tranzacției: e o
+    observație despre ceva care s-a întâmplat deja.*
+
+    **Firul NU e `daemon`.** Interpretorul îl așteaptă la oprirea procesului, deci o alertă ridicată
+    cu o clipă înainte de restart tot pleacă. Întârzierea maximă a opririi e chiar termenul de 10 s
+    al apelului. *O alertă pierdută la restart ar fi exact tăcerea pe care funcția asta există s-o
+    înlăture.*
+
+    **Ce se pierde, declarat:** apelantul nu mai află dacă e-mailul a plecat. De-aia funcția e
+    separată, nu o schimbare a celei de sus — `expirare_cote` numără pe răspunsul ei.
+    """
+    if not trebuie_trimisa(cheie, acum=acum):
+        return False
+    import threading
+    threading.Thread(target=_trimite_brevo, args=(subiect, mesaj),
+                     name="alerta-brevo", daemon=False).start()
+    return True
 
 
 # ============================================================
@@ -234,7 +263,10 @@ def esec_secundar(eticheta, eroare, alerta=False):
     print("[esec secundar: %s] %s: %s" % (eticheta, type(eroare).__name__, eroare), flush=True)
     if alerta:
         import traceback
-        alerteaza("secundar_%s" % eticheta,
-                  "Esec pe cale secundara: %s" % eticheta,
-                  "Operatia principala a continuat, dar '%s' a esuat:\n\n%s"
-                  % (eticheta, traceback.format_exc()))
+        # [P5 val 3] ÎN FUNDAL: apelantul e aproape întotdeauna sub un `with db.get_conn()`, iar
+        # Brevo are termen de 10 s. Nimeni nu citește rezultatul de aici, deci nu se pierde nimic
+        # în afară de așteptare.
+        alerteaza_in_fundal("secundar_%s" % eticheta,
+                            "Esec pe cale secundara: %s" % eticheta,
+                            "Operatia principala a continuat, dar '%s' a esuat:\n\n%s"
+                            % (eticheta, traceback.format_exc()))

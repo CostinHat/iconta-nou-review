@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-10 (cauza așteptării pe pool + valul 3 pornit)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; **valul 3 PORNIT**, o familie din șapte închisă) · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-11 (pool pre-încălzit + valul 3, două familii)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; **valul 3**: două familii din șapte închise) · P6–P7 nedeschise
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -623,6 +623,46 @@ mult mai mică. *O cifră care ar fi scăzut ar fi ascuns că familia nu e compl
 mai lungă (60 s + backoff) și fiindcă închide o restanță scrisă. Restul se face cu aceeași metodă,
 familie cu familie — iar familia `_post_token` cere grijă: e chiar locul unde P4 a documentat un
 blocaj produs de o a doua conexiune deschisă peste prima.*
+
+
+## POOL-UL PRE-ÎNCĂLZIT (10.09.2026) — aplicat în producție
+
+`ICONTA_POOL_MIN=10` scris în `/home/costin/.iconta/db.env`, cu motivul lângă el și cu o copie de
+siguranță a fișierului. Aprobat de arhitect. Intră în vigoare la prima repornire, adică la publicarea
+commitului ăstuia. *Fișierul e în afara depozitului, deci schimbarea se consemnează AICI — altfel ar
+fi singura piesă a lanțului fără urmă scrisă.*
+
+## VALUL 3 — familia `_trimite_brevo`, închisă
+
+Patru căi țineau o conexiune din pool peste un apel la Brevo, cu termen de **10 s**. Două feluri de
+e-mail, deci **două reparații diferite** — iar deosebirea era deja scrisă în verdictul P4 al lui
+`_trimite_brevo`:
+
+* **alerta despre un eșec secundar** (3 căi) — nu e un efect al tranzacției, e o observație despre
+  ceva care s-a întâmplat deja, iar rezultatul ei nu-l citește nimeni. Pleacă pe un **fir propriu**
+  (`observare.alerteaza_in_fundal`), deci se trimite la fel de devreme ca înainte — inclusiv când
+  tranzacția se întoarce după —, dar nu mai ține nicio conexiune. *Firul NU e `daemon`:
+  interpretorul îl așteaptă la oprire, ca o alertă ridicată înainte de restart să nu se piardă.*
+* **e-mailul cererii de ștergere GDPR** (1 cale) — ăla consemnează un act, deci i se aplică regula
+  P4. Și avea o problemă de ordine, nu doar de pool: comentariul spunea *„eșecul e-mailului NU
+  anulează cererea (deja jurnalizată)"*, dar `INSERT`-ul era **necomis** — ruta comitea abia după.
+  Un eșec de după e-mail întorcea cererea și rămânea un e-mail despre o cerere care nu există. Acum
+  se trimite după `commit()` **și după ieșirea din bloc**.
+
+**MĂSURAT MECANIC** cu `scripts/masoara_brevo.py`, pe `3332f495` și pe arborele reparat —
+nu reluat din gruparea manuală de acum două zile, care număra altceva:
+**căile care ajung la `_trimite_brevo` 17 → 5**, dintre ele **C5 10 → 3** și C2 14 → 2;
+locuri de apel 5 → 5. Clasa întreagă, pe același instrument: candidați 82 → 78 · C5 45 → 42
+· C2 45 → 39. *Cele 3 căi C5 rămase nu sunt ale familiei: `POST /auth/register` ajunge la
+Brevo prin `trimite_email_html`, iar `monitor_fiscal` și `spv_refresh` sunt joburi de fundal.*
+
+**Al doilea verdict P4 marcat `reparat`** — `core/observare.py:_trimite_brevo`, cu aceeași regulă:
+verdictul rămâne scris, inclusiv partea care spune că amânarea după commit ar fi fost GREȘITĂ pentru
+alertă. Nu s-a amânat nimic: s-a mutat pe alt fir.
+
+**Rămâne, în ordinea aprobată:** `trimite_email_html` (4 căi, **17 locuri de apel** în cod — e o
+bucată proprie) · `valideaza_cui` (5) · `_descarca` BNR (5) · `_obtine_token` REGES (2) · diverse (6)
+· `_post_token` (3) — **temă separată, prin decizia arhitectului**.
 
 
 ---

@@ -1,0 +1,39 @@
+{
+ "radacina": "/home/costin/iconta_nou",
+ "intrari": 514,
+ "candidati": 78,
+ "_trimite_brevo": {
+  "cai": 5,
+  "cai_C5": 3,
+  "cai_C2": 2,
+  "intrari": [
+   "POST /auth/register",
+   "POST /gdpr/cerere-stergere",
+   "core/monitor_fiscal.py::__main__ -> _main()",
+   "core/sonda_web.py::__main__ -> _main()",
+   "core/spv_refresh.py::__main__ -> ruleaza()"
+  ],
+  "intrari_C5": [
+   "POST /auth/register",
+   "core/monitor_fiscal.py::__main__ -> _main()",
+   "core/spv_refresh.py::__main__ -> ruleaza()"
+  ],
+  "locuri_de_apel": [
+   "core/gdpr_cerere.py:89",
+   "core/monitor_fiscal.py:160",
+   "core/observare.py:164",
+   "core/spv_refresh.py:96",
+   "main.py:1447"
+  ]
+ },
+ "alerteaza_in_fundal": {
+  "cai": 0,
+  "cai_C5": 0,
+  "cai_C2": 0,
+  "intrari": [],
+  "intrari_C5": [],
+  "locuri_de_apel": [
+   "core/observare.py:269"
+  ]
+ }
+}

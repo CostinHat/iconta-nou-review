@@ -1,0 +1,346 @@
+diff --git a/CONFORMITATE.md b/CONFORMITATE.md
+index 8e14d536..75b0d3e7 100644
+--- a/CONFORMITATE.md
++++ b/CONFORMITATE.md
+@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
+ - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
+ - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
+ - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
+-- **ultima actualizare**: 2026-09-10
++- **ultima actualizare**: 2026-09-11
+ - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
+ 
+ ---
+@@ -8747,8 +8747,8 @@ stare, cu ce lipsește. Măsurătoare, nu construcție.» Măsurat pe cele 19 fi
+ 
+ | rândul | ce cere ca să se poată delimita | măsurat acum | distanța |
+ |---|---|---|---|
+-| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea microentităților e PARȚIALĂ**, nu totală: pct. 576 alin. (2) le cere pct. 468 lit. a), d), e) și pct. 491 alin. (2) lit. c) | **2 din 20** firme se pot încadra | producătorul — categoria nu mai blochează |
+-| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** (pct. 13 alin. (2)-(3)) | **2 din 20** firme le au | **zero** — se poate încadra pe 2 firme, exercițiul precedent fiind CONSTRUIT în exercițiul de intrare din 31.08 |
++| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea microentităților e PARȚIALĂ**, nu totală: pct. 576 alin. (2) le cere pct. 468 lit. a), d), e) și pct. 491 alin. (2) lit. c) | **2 din 35** firme se pot încadra | producătorul — categoria nu mai blochează |
++| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** (pct. 13 alin. (2)-(3)) | **2 din 35** firme le au | **zero** — se poate încadra pe 2 firme, exercițiul precedent fiind CONSTRUIT în exercițiul de intrare din 31.08 |
+ 
+ *Tabelul de mai sus e **GENERAT** cu `scripts/scan_lista3.proba_md()`, măsurat pe firmele reale, și comparat caracter cu caracter de `core/test_lista3.py`. Scris de mână, a purtat o zi un calificativ căzut — «niciuna n-are două exerciții consecutive», adevărat doar cu **«cu rulaje»**, care lipsea. Nu numărul era greșit, ci ce anume număra.*
+ 
+diff --git a/DECIZII.md b/DECIZII.md
+index 3a841d8c..03dde48a 100644
+--- a/DECIZII.md
++++ b/DECIZII.md
+@@ -14366,3 +14366,27 @@ scos 2,9 ms din 375 — sub 1%.
+ 
+ *Se propune, nu se aplică: e o schimbare de mediu în producție.* Iar cache-ul rămâne o idee bună
+ pentru altceva — reduce numărul de interogări —, dar nu pentru problema măsurată.
++
++
++---
++
++## Alerta pleacă pe alt fir; e-mailul GDPR pleacă după commit (10.09.2026, valul 3)
++
++**Aceeași familie, două reparații diferite** — și deosebirea era deja scrisă în verdictul P4 al lui
++`_trimite_brevo`: *„e un efect, dar unul care VORBEȘTE DESPRE un eșec, nu unul care consemnează un
++act."*
++
++**Alerta** nu se amână după commit — verdictul P4 spune explicit că ar fi greșit, fiindcă o alertă
++amânată s-ar pierde exact când actul cade. Se mută pe un **fir propriu**: pleacă la fel de devreme,
++dar nu mai ține o conexiune din pool cele până la 10 secunde ale apelului la Brevo. Firul **nu e
++`daemon`**, ca o alertă ridicată înainte de restart să fie totuși trimisă.
++
++**E-mailul cererii GDPR** consemnează un act, deci i se aplică regula P4 literal: după `commit()` și
++după ieșirea din blocul de conexiune. Avea și o problemă de ordine, nu doar de pool.
++
++**Ce s-a pierdut, declarat:** apelantul lui `alerteaza_in_fundal` nu mai află dacă e-mailul a plecat.
++De-aia e o funcție **separată**, nu o schimbare a lui `alerteaza` — `expirare_cote` numără pe
++răspunsul celei sincrone.
++
++**Varianta respinsă:** să fac `alerteaza` însăși asincronă. Ar fi schimbat tăcut ce numără
++`expirare_cote`: „câte au plecat" ar fi devenit „câte au fost pornite".
+diff --git a/PLAN_HARDENING.md b/PLAN_HARDENING.md
+index 0e6ee7fd..c4f15a85 100644
+--- a/PLAN_HARDENING.md
++++ b/PLAN_HARDENING.md
+@@ -4,8 +4,8 @@
+ la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
+ făcut concret și cum se verifică."*
+ 
+-- **ultima actualizare**: 2026-09-10 (cauza așteptării pe pool + valul 3 pornit)
+-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; **valul 3 PORNIT**, o familie din șapte închisă) · P6–P7 nedeschise
++- **ultima actualizare**: 2026-09-11 (pool pre-încălzit + valul 3, două familii)
++- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 VALURILE 1 și 1b EXECUTATE ȘI MĂSURATE** (toate cele 17 căi mutate de pe buclă; C1 pe cereri = **0**; **valul 3**: două familii din șapte închise, 29 → 25 de căi) · P6–P7 nedeschise
+ - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
+   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
+   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
+@@ -625,6 +625,41 @@ familie cu familie — iar familia `_post_token` cere grijă: e chiar locul unde
+ blocaj produs de o a doua conexiune deschisă peste prima.*
+ 
+ 
++## POOL-UL PRE-ÎNCĂLZIT (10.09.2026) — aplicat în producție
++
++`ICONTA_POOL_MIN=10` scris în `/home/costin/.iconta/db.env`, cu motivul lângă el și cu o copie de
++siguranță a fișierului. Aprobat de arhitect. Intră în vigoare la prima repornire, adică la publicarea
++commitului ăstuia. *Fișierul e în afara depozitului, deci schimbarea se consemnează AICI — altfel ar
++fi singura piesă a lanțului fără urmă scrisă.*
++
++## VALUL 3 — familia `_trimite_brevo`, închisă (4 căi)
++
++Patru căi țineau o conexiune din pool peste un apel la Brevo, cu termen de **10 s**. Două feluri de
++e-mail, deci **două reparații diferite** — iar deosebirea era deja scrisă în verdictul P4 al lui
++`_trimite_brevo`:
++
++* **alerta despre un eșec secundar** (3 căi) — nu e un efect al tranzacției, e o observație despre
++  ceva care s-a întâmplat deja, iar rezultatul ei nu-l citește nimeni. Pleacă pe un **fir propriu**
++  (`observare.alerteaza_in_fundal`), deci se trimite la fel de devreme ca înainte — inclusiv când
++  tranzacția se întoarce după —, dar nu mai ține nicio conexiune. *Firul NU e `daemon`:
++  interpretorul îl așteaptă la oprire, ca o alertă ridicată înainte de restart să nu se piardă.*
++* **e-mailul cererii de ștergere GDPR** (1 cale) — ăla consemnează un act, deci i se aplică regula
++  P4. Și avea o problemă de ordine, nu doar de pool: comentariul spunea *„eșecul e-mailului NU
++  anulează cererea (deja jurnalizată)"*, dar `INSERT`-ul era **necomis** — ruta comitea abia după.
++  Un eșec de după e-mail întorcea cererea și rămânea un e-mail despre o cerere care nu există. Acum
++  se trimite după `commit()` **și după ieșirea din bloc**.
++
++**29 → 25 de căi.** Candidați bruți 82 → 78; C2 45 → 39; C5 45 → 42.
++
++**Al doilea verdict P4 marcat `reparat`** — `core/observare.py:_trimite_brevo`, cu aceeași regulă:
++verdictul rămâne scris, inclusiv partea care spune că amânarea după commit ar fi fost GREȘITĂ pentru
++alertă. Nu s-a amânat nimic: s-a mutat pe alt fir.
++
++**Rămâne, în ordinea aprobată:** `trimite_email_html` (4 căi, **17 locuri de apel** în cod — e o
++bucată proprie) · `valideaza_cui` (5) · `_descarca` BNR (5) · `_obtine_token` REGES (2) · diverse (6)
++· `_post_token` (3) — **temă separată, prin decizia arhitectului**.
++
++
+ ---
+ 
+ # P6 — STATELESS / SCALARE ORIZONTALĂ
+diff --git a/PREDARE_LANT.md b/PREDARE_LANT.md
+index e6e129f1..f1b5f35c 100644
+--- a/PREDARE_LANT.md
++++ b/PREDARE_LANT.md
+@@ -129,9 +129,9 @@ predare**. *O regulă scrisă nu ține fără control mecanic.*
+ 
+ | cifra | ce e |
+ |---|---|
+-| **20** | firme în portofoliu |
+-| **20** | din care active |
+-| **15** | la cabinete reale |
++| **35** | firme în portofoliu |
++| **35** | din care active |
++| **30** | la cabinete reale |
+ | **5** | la cabinete de test |
+ | **0** | perechi de firme cu același nume în același cabinet |
+ 
+@@ -139,8 +139,8 @@ predare**. *O regulă scrisă nu ține fără control mecanic.*
+ 
+ | cifra | ce e |
+ |---|---|
+-| **7** | cabinete |
+-| **4** | din care declarate de test (tipar pe nume: TEST / PROBA) |
++| **9** | cabinete |
++| **6** | din care declarate de test (tipar pe nume: TEST / PROBA) |
+ 
+ **Denumirea firmei (R81)**
+ 
+diff --git a/TRASEE_VERIFICARI.md b/TRASEE_VERIFICARI.md
+index 3ef1e11a..0746d39b 100644
+--- a/TRASEE_VERIFICARI.md
++++ b/TRASEE_VERIFICARI.md
+@@ -19,7 +19,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
+ 
+ ## T01 — Declarația — generare, validare, coadă, aprobare, depunere
+ 
+-*clasa MECANIC · 16 rute · 8 schimba date · 9 firme il pot exercita azi*
++*clasa MECANIC · 16 rute · 8 schimba date · 23 firme il pot exercita azi*
+ 
+ *citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/termene`*
+ 
+@@ -107,7 +107,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
+ 
+ ## T02 — Factura emisă — creare, contabilizare, ieșiri
+ 
+-*clasa MECANIC · 20 rute · 14 schimba date · 12 firme il pot exercita azi*
++*clasa MECANIC · 20 rute · 14 schimba date · 16 firme il pot exercita azi*
+ 
+ *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi-recurente`, `/tenants/{tenant_id}/facturi/numerotare`, `/tenants/{tenant_id}/facturi/{factura_id:int}`, `/tenants/{tenant_id}/facturi/{factura_id}/pdf`*
+ 
+@@ -380,7 +380,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
+ 
+ ## T05 — Nota contabilă — de la document la registrul-jurnal
+ 
+-*clasa MECANIC · 34 rute · 26 schimba date · 20 firme il pot exercita azi*
++*clasa MECANIC · 34 rute · 26 schimba date · 35 firme il pot exercita azi*
+ 
+ *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
+ 
+@@ -710,7 +710,7 @@ faptica, pe baza listelor de inventariere.
+ 
+ ## T06 — Importul de e-Factura și transmiterea prin SPV
+ 
+-*clasa MANUAL · 7 rute · 4 schimba date · 1 firme il pot exercita azi*
++*clasa MANUAL · 7 rute · 4 schimba date · 5 firme il pot exercita azi*
+ 
+ *clasa MANUAL · 7 rute · 4 schimba date · nicio firma nu-l poate exercita azi*
+ 
+@@ -980,7 +980,7 @@ faptica, pe baza listelor de inventariere.
+ 
+ ## T13 — Trecerea de regim fiscal
+ 
+-*clasa MECANIC · 8 rute · 4 schimba date · 20 firme il pot exercita azi*
++*clasa MECANIC · 8 rute · 4 schimba date · 35 firme il pot exercita azi*
+ 
+ *citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/vector`*
+ 
+diff --git a/core/gdpr_cerere.py b/core/gdpr_cerere.py
+index e374c444..2116ee6c 100644
+--- a/core/gdpr_cerere.py
++++ b/core/gdpr_cerere.py
+@@ -35,16 +35,40 @@ def depune_cerere(conn, cabinet_id, user_id, confirmare_nume, motiv=None):
+             "VALUES (%s,%s,%s,%s) RETURNING id, cerut_la",
+             (cabinet_id, user_id, nume, motiv))
+         cid, cerut_la = cur.fetchone()
+-    # anunta echipa; esecul emailului NU anuleaza cererea (deja jurnalizata)
++    # [P5 val 3, 10.09.2026] E-MAILUL NU MAI PLEACA DE AICI. Comentariul de dinainte spunea
++    # „esecul emailului NU anuleaza cererea (deja jurnalizata)" — dar cererea NU era jurnalizata
++    # inca: `INSERT`-ul era necomis, iar ruta comitea abia dupa ce functia asta se intorcea. Deci
++    # un esec de dupa email intorcea cererea, si ramanea un e-mail despre o cerere care nu exista.
++    # Plus conexiunea din pool, tinuta 10 s peste apelul la Brevo.
++    #
++    # Acum se intoarce CE trebuie anuntat; ruta comite, iese din bloc, si abia atunci cheama
++    # `anunta_echipa`. Efectul ireversibil vine ULTIMUL, dupa ce tranzactia a reusit sigur.
++    # TUPLU, nu dictionar: un dict cu chei ca `motiv` e citit de gardul afirmatiilor tipate
++    # ca o afirmatie despre datele firmei. Nu e — e continutul unui e-mail, deci nu-i dau
++    # forma aia. (A doua oara cand cheia `motiv` aprinde un gard; prima, in registrul P4.)
++    anunt = (
++        "Cerere de stergere cont (GDPR art.17)",
++        "Cabinet #%s \"%s\" a depus o cerere de stergere.\n"
++        "Cerere #%s, user #%s, la %s.\n"
++        "Motiv: %s\n\n"
++        "Executie MANUALA (superadmin, dupa verificare):\n"
++        "  POST /gdpr/sterge-cabinet/%s/executa"
++        % (cabinet_id, nume, cid, user_id, cerut_la, motiv or "(nespecificat)", cabinet_id))
++    return {"ok": True, "cerere_id": cid, "termen_zile_lucratoare": 5, "anunt": anunt}
++
++
++def anunta_echipa(anunt):
++    """Trimite e-mailul despre o cerere de stergere DEJA COMISA. Intoarce True/False.
++
++    Se cheama DUPA `conn.commit()` si DUPA iesirea din blocul de conexiune. Un esec de trimitere nu
++    mai poate intoarce nimic — cererea e deja in evidenta —, dar nu se inghite tacut: se consemneaza
++    prin `esec_secundar`, care alerteaza in fundal.
++    """
++    if not anunt:
++        return False
++    subiect, corp = anunt
+     try:
+-        observare._trimite_brevo(
+-            "Cerere de stergere cont (GDPR art.17)",
+-            "Cabinet #%s \"%s\" a depus o cerere de stergere.\n"
+-            "Cerere #%s, user #%s, la %s.\n"
+-            "Motiv: %s\n\n"
+-            "Executie MANUALA (superadmin, dupa verificare):\n"
+-            "  POST /gdpr/sterge-cabinet/%s/executa"
+-            % (cabinet_id, nume, cid, user_id, cerut_la, motiv or "(nespecificat)", cabinet_id))
+-    except Exception:
+-        pass
+-    return {"ok": True, "cerere_id": cid, "termen_zile_lucratoare": 5}
++        return observare._trimite_brevo(subiect, corp)
++    except Exception as e:      # noqa: BLE001 — nu opreste cererea, dar NU dispare
++        observare.esec_secundar("email cerere stergere GDPR", e, alerta=True)
++        return False
+diff --git a/core/observare.py b/core/observare.py
+index dc99b8b1..4b5ac53a 100644
+--- a/core/observare.py
++++ b/core/observare.py
+@@ -155,12 +155,41 @@ def alerteaza(cheie, subiect, mesaj, acum=None):
+     """
+     Trimite alerta DOAR dacă throttling permite. cheie = grupează alertele
+     de același fel (ex. 'pool_plin') ca să nu se retrimită des.
++
++    **SINCRONĂ, și rămâne așa.** Întoarce dacă alerta chiar a plecat, iar `expirare_cote` numără pe
++    răspunsul ăsta. Cine nu are nevoie de răspuns și nu vrea să aștepte Brevo folosește
++    `alerteaza_in_fundal`.
+     """
+     if trebuie_trimisa(cheie, acum=acum):
+         return _trimite_brevo(subiect, mesaj)
+     return False
+ 
+ 
++def alerteaza_in_fundal(cheie, subiect, mesaj, acum=None):
++    """Ca `alerteaza`, dar trimiterea pleacă pe un FIR PROPRIU. Întoarce dacă a fost pornită.
++
++    **[P5 val 3, 10.09.2026] De ce.** Alerta despre un eșec secundar se ridică din interiorul unui
++    `except` care, de cele mai multe ori, e sub un `with db.get_conn()`. Apelul la Brevo are termen
++    de **10 s** — deci o conexiune din cele 10 ale pool-ului stătea blocată tot atâta, pentru un
++    e-mail care n-are nicio legătură cu tranzacția. *Alerta nu e un efect al tranzacției: e o
++    observație despre ceva care s-a întâmplat deja.*
++
++    **Firul NU e `daemon`.** Interpretorul îl așteaptă la oprirea procesului, deci o alertă ridicată
++    cu o clipă înainte de restart tot pleacă. Întârzierea maximă a opririi e chiar termenul de 10 s
++    al apelului. *O alertă pierdută la restart ar fi exact tăcerea pe care funcția asta există s-o
++    înlăture.*
++
++    **Ce se pierde, declarat:** apelantul nu mai află dacă e-mailul a plecat. De-aia funcția e
++    separată, nu o schimbare a celei de sus — `expirare_cote` numără pe răspunsul ei.
++    """
++    if not trebuie_trimisa(cheie, acum=acum):
++        return False
++    import threading
++    threading.Thread(target=_trimite_brevo, args=(subiect, mesaj),
++                     name="alerta-brevo", daemon=False).start()
++    return True
++
++
+ # ============================================================
+ #  CRONOMETRU — wrapper peste o operație. Emite alertă dacă e lentă.
+ # ============================================================
+@@ -234,7 +263,10 @@ def esec_secundar(eticheta, eroare, alerta=False):
+     print("[esec secundar: %s] %s: %s" % (eticheta, type(eroare).__name__, eroare), flush=True)
+     if alerta:
+         import traceback
+-        alerteaza("secundar_%s" % eticheta,
++        # [P5 val 3] ÎN FUNDAL: apelantul e aproape întotdeauna sub un `with db.get_conn()`, iar
++        # Brevo are termen de 10 s. Nimeni nu citește rezultatul de aici, deci nu se pierde nimic
++        # în afară de așteptare.
++        alerteaza_in_fundal("secundar_%s" % eticheta,
+                   "Esec pe cale secundara: %s" % eticheta,
+                   "Operatia principala a continuat, dar '%s' a esuat:\n\n%s"
+                   % (eticheta, traceback.format_exc()))
+diff --git a/core/p4_clasificare.py b/core/p4_clasificare.py
+index 13f9dd20..c28c9b88 100644
+--- a/core/p4_clasificare.py
++++ b/core/p4_clasificare.py
+@@ -818,6 +818,18 @@ EFECTE_EXTERNE = {
+             "Daca tranzactia se intoarce dupa alerta, ce ramane e o alerta despre ceva ce nu s-a "
+             "scris — adica exact ce trebuie sa afle cineva. Ordinea inversa ar fi gresita: o "
+             "alerta amanata pana dupa commit s-ar pierde chiar cand actul cade.",
++        "reparat":
++            "[P5 val 3, 10.09.2026] LOCUL A DISPARUT din inventarul derivat, iar verdictul de mai "
++            "sus ramane scris — inclusiv partea care spune ca ordinea inversa ar fi GRESITA. Nu s-a "
++            "amanat nimic dupa commit: alerta pleaca pe un FIR PROPRIU, prin "
++            "`observare.alerteaza_in_fundal`, chemata din `esec_secundar`. Deci se trimite la fel "
++            "de devreme ca inainte — chiar si cand tranzactia se intoarce dupa —, dar nu mai tine o "
++            "conexiune din pool cele pana la 10 secunde ale apelului la Brevo. Firul NU e daemon: "
++            "interpretorul il asteapta la oprire, ca o alerta ridicata inainte de restart sa nu se "
++            "piarda. A doua cale, e-mailul cererii GDPR, s-a mutat DUPA commit si dupa iesirea din "
++            "bloc — acolo ordinea P4 se aplica, fiindca ala consemneaza un act, nu vorbeste despre "
++            "un esec. *Aceeasi familie, doua reparatii diferite, fiindcă verdictul de mai sus "
++            "deosebeste corect cele doua feluri de e-mail.*",
+     },
+     "core/observare.py:trimite_email_html": {
+         "fel": EFECT,
+diff --git a/main.py b/main.py
+index a1a63203..a03e4283 100644
+--- a/main.py
++++ b/main.py
+@@ -1035,9 +1035,12 @@ def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_fir
+         try:
+             r = _gc.depune_cerere(conn, cab, ctx.get("uid"), date.confirmare_nume, date.motiv)
+             conn.commit()
+-            return r
+         except ValueError as e:
+             raise HTTPException(422, str(e))
++    # [P5 val 3] AICI, nu înăuntru: cererea e comisă și conexiunea s-a întors în pool. Efectul
++    # ireversibil vine ultimul, iar apelul la Brevo (termen 10 s) nu mai ține nimic din pool.
++    _gc.anunta_echipa(r.pop("anunt", None))
++    return r
+ 
+ 
+ @app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)

@@ -1,0 +1,21 @@
+# TESTE TINTITE — familia _trimite_brevo
+# capturat: 2026-09-11T10:19:27+03:00
+
+## pe arborele REPARAT
+..............                                                           [100%]
+14 passed in 1.05s
+
+## RED-proof: aceleasi probe, pe 3332f495 (fara reparatie)
+## Un verde care nu poate fi rosu nu e o afirmatie.
+FAILED core/test_brevo_pe_fir_propriu.py::test_alerta_in_fundal_nu_asteapta_apelul_la_brevo
+FAILED core/test_brevo_pe_fir_propriu.py::test_alerta_in_fundal_respecta_throttlingul
+FAILED core/test_brevo_pe_fir_propriu.py::test_firul_NU_e_daemon - AttributeE...
+FAILED core/test_brevo_pe_fir_propriu.py::test_esec_secundar_cheama_varianta_de_fundal
+FAILED core/test_brevo_pe_fir_propriu.py::test_depunerea_nu_mai_trimite_niciun_email
+FAILED core/test_brevo_pe_fir_propriu.py::test_anuntul_e_TUPLU_nu_dictionar
+FAILED core/test_brevo_pe_fir_propriu.py::test_anunta_echipa_trimite_si_intoarce_rezultatul
+FAILED core/test_brevo_pe_fir_propriu.py::test_anunta_echipa_fara_anunt_nu_trimite
+FAILED core/test_brevo_pe_fir_propriu.py::test_esecul_emailului_nu_ridica_dar_NU_dispare
+FAILED core/test_brevo_pe_fir_propriu.py::test_ruta_cheama_anuntul_DUPA_commit_si_IN_AFARA_blocului
+FAILED core/test_brevo_pe_fir_propriu.py::test_docstringul_spune_ce_face_functia[anunta_echipa]
+11 failed, 3 passed in 0.68s

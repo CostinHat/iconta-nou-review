@@ -1035,9 +1035,12 @@ def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_fir
         try:
             r = _gc.depune_cerere(conn, cab, ctx.get("uid"), date.confirmare_nume, date.motiv)
             conn.commit()
-            return r
         except ValueError as e:
             raise HTTPException(422, str(e))
+    # [P5 val 3] AICI, nu înăuntru: cererea e comisă și conexiunea s-a întors în pool. Efectul
+    # ireversibil vine ultimul, iar apelul la Brevo (termen 10 s) nu mai ține nimic din pool.
+    _gc.anunta_echipa(r.pop("anunt", None))
+    return r
 
 
 @app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)

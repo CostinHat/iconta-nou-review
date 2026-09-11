@@ -14366,3 +14366,27 @@ scos 2,9 ms din 375 — sub 1%.
 
 *Se propune, nu se aplică: e o schimbare de mediu în producție.* Iar cache-ul rămâne o idee bună
 pentru altceva — reduce numărul de interogări —, dar nu pentru problema măsurată.
+
+
+---
+
+## Alerta pleacă pe alt fir; e-mailul GDPR pleacă după commit (10.09.2026, valul 3)
+
+**Aceeași familie, două reparații diferite** — și deosebirea era deja scrisă în verdictul P4 al lui
+`_trimite_brevo`: *„e un efect, dar unul care VORBEȘTE DESPRE un eșec, nu unul care consemnează un
+act."*
+
+**Alerta** nu se amână după commit — verdictul P4 spune explicit că ar fi greșit, fiindcă o alertă
+amânată s-ar pierde exact când actul cade. Se mută pe un **fir propriu**: pleacă la fel de devreme,
+dar nu mai ține o conexiune din pool cele până la 10 secunde ale apelului la Brevo. Firul **nu e
+`daemon`**, ca o alertă ridicată înainte de restart să fie totuși trimisă.
+
+**E-mailul cererii GDPR** consemnează un act, deci i se aplică regula P4 literal: după `commit()` și
+după ieșirea din blocul de conexiune. Avea și o problemă de ordine, nu doar de pool.
+
+**Ce s-a pierdut, declarat:** apelantul lui `alerteaza_in_fundal` nu mai află dacă e-mailul a plecat.
+De-aia e o funcție **separată**, nu o schimbare a lui `alerteaza` — `expirare_cote` numără pe
+răspunsul celei sincrone.
+
+**Varianta respinsă:** să fac `alerteaza` însăși asincronă. Ar fi schimbat tăcut ce numără
+`expirare_cote`: „câte au plecat" ar fi devenit „câte au fost pornite".

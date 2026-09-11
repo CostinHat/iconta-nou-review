@@ -1,0 +1,184 @@
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................xxxxxxx.x...xxx. [ 32%]
+....x..x................................................................ [ 34%]
+..................x..................................................... [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 50%]
+........................................................................ [ 51%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 59%]
+.................................................s.s..s..s.............. [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 63%]
+............................s..s.sss.......................F............ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 67%]
+..........ss............................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+..............................................................F......... [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+............................................................F........... [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+....................................................................     [100%]
+=================================== FAILURES ===================================
+___________________ test_tabelul_de_proba_e_GENERAT_nu_scris ___________________
+
+doc = '# CONFORMITATE — confruntarea codului cu PLAN_ARHITECTURA.md\n\n**Registrul măsurătorilor.** Planul spune cum trebuie...graf_temei` a arătat 12 consumatori ai salariului minim în loc de 83, timp de 22 de zile, fără ca vreun test să pice\n'
+
+    def test_tabelul_de_proba_e_GENERAT_nu_scris(doc):
+        """[31.08.2026] Extinderea regulii, cerută de Costin după **a treia instanță în două zile**:
+    
+        *«Regula de ieri acoperă de acum și CALIFICATIVUL derivat, nu doar numărul. O afirmație al cărei
+        adevăr depinde de un calificativ măsurat ori se regenerează din instrument, ori nu se scrie.»*
+    
+        **Instanța care a cerut-o e a mea.** Tabelul ăsta, scris de mână, a purtat o zi propoziția
+        *„niciuna n-are două exerciții consecutive"* — adevărată doar cu **«cu rulaje»**, calificativ
+        care lipsea. Numărul era corect; **ce anume număra**, nu. Un clichet pe cifre n-ar fi prins-o:
+        cifra n-avea nimic.
+    
+        De-aia tabelul se generează din măsurătoare, nu din memoria a ce s-a măsurat.
+        """
+        gen = sl.proba_md()
+        cap = gen.split(chr(10))[0]
+        assert cap in doc, (
+            "capul tabelului de probă nu se mai găsește în registru — ori s-a rescris de mână, ori "
+            "instrumentul produce altă formă. Regenerează cu `scan_lista3.proba_md()`.")
+        i = doc.index(cap)
+        scris = doc[i:i + len(gen)]
+>       assert scris == gen, (
+            "tabelul de probă diferă de ce generează instrumentul.\n  scris:   %r\n  generat: %r\n\n"
+            "Nu-l corecta cu mâna — regenerează-l. Adevărul lui depinde de calificative măsurate "
+            "(«cu rulaje», «cu note»), iar acelea se schimbă fără să anunțe."
+            % (scris[:220], gen[:220]))
+E       AssertionError: tabelul de probă diferă de ce generează instrumentul.
+E           scris:   '| rândul | ce cere ca să se poată delimita | măsurat acum | distanța |\n|---|---|---|---|\n| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea microentităților e PARȚIALĂ**, nu totală: pct. '
+E           generat: '| rândul | ce cere ca să se poată delimita | măsurat acum | distanța |\n|---|---|---|---|\n| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea microentităților e PARȚIALĂ**, nu totală: pct. '
+E         
+E         Nu-l corecta cu mâna — regenerează-l. Adevărul lui depinde de calificative măsurate («cu rulaje», «cu note»), iar acelea se schimbă fără să anunțe.
+E       assert '| rândul | c...e din 31.08 |' == '| rândul | c...e din 31.08 |'
+E         
+E         Skipping 297 identical leading characters in diff, use -v to show
+E         Skipping 121 identical trailing characters in diff, use -v to show
+E         - | **2 din 20** firme se pot încadra | producătorul — categoria nu mai blochează |
+E         ?           ^^
+E         + | **2 din 35** firme se pot încadra | producătorul — categoria nu mai blochează |
+E         ?           ^^...
+E         
+E         ...Full output truncated (4 lines hidden), use '-vv' to show
+
+core/test_lista3.py:122: AssertionError
+____________ test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM _____________
+
+    def test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM():
+        """doc↔cod, caracter cu caracter. Regenerare:
+        `./venv/bin/python scripts/scan_predare_cifre.py --md`, rescris între marcaje."""
+        doc = io.open(_DOC, encoding="utf-8").read()
+        assert sc.MARCA_START in doc and sc.MARCA_STOP in doc, (
+            "PREDARE_LANT.md n-are blocul de cifre generate — a fost șters? Fără el, cifrele despre "
+            "date se scriu iar din memorie, iar asta a greșit de două ori în două zile.")
+        a = doc.index(sc.MARCA_START)
+        b = doc.index(sc.MARCA_STOP) + len(sc.MARCA_STOP)
+        din_doc, generat = doc[a:b], sc.redare_md(_cifre())
+        if din_doc != generat:
+            ld, lg = din_doc.split(chr(10)), generat.split(chr(10))
+            prima = next((i for i in range(max(len(ld), len(lg)))
+                          if (ld[i] if i < len(ld) else None) != (lg[i] if i < len(lg) else None)), 0)
+>           raise AssertionError(
+                "blocul de cifre din PREDARE_LANT.md nu mai descrie baza, prima diferență la linia "
+                "%d:%s  doc:     %r%s  acum:    %r%s"
+                "Regenerează: ./venv/bin/python scripts/scan_predare_cifre.py --md"
+                % (prima + 1, chr(10), ld[prima] if prima < len(ld) else "(lipsește)", chr(10),
+                   lg[prima] if prima < len(lg) else "(lipsește)", chr(10)))
+E           AssertionError: blocul de cifre din PREDARE_LANT.md nu mai descrie baza, prima diferență la linia 9:
+E             doc:     '| **35** | firme în portofoliu |'
+E             acum:    '| **20** | firme în portofoliu |'
+E           Regenerează: ./venv/bin/python scripts/scan_predare_cifre.py --md
+
+core/test_predare_cifre.py:66: AssertionError
+___________________ test_temeiuri_reguli_validator_canonice ____________________
+
+    def test_temeiuri_reguli_validator_canonice():
+        """Nicio citare `regula <cod>` fara prefix DUK/eFactura in core/*.py."""
+        rap = []
+        for f in sorted(_RAD.glob("core/*.py")):
+            if f.name == "test_temeiuri.py":
+                continue  # contine mostre cu incalcari intentionate (testul de mutatie)
+            for (ln, motiv, cont) in _incalcari_temei(f.read_text(encoding="utf-8", errors="replace")):
+                rap.append("%s:%d %s | %s" % (f.name, ln, motiv, cont[:80]))
+>       assert not rap, "citari de regula necanonice (vezi CLAUDE.md §3.1):\n" + "\n".join(rap)
+E       AssertionError: citari de regula necanonice (vezi CLAUDE.md §3.1):
+E         test_brevo_pe_fir_propriu.py:12 regula 'P4' fara prefix 'DUK regula'/'eFactura regula' | (b) E-MAILUL cererii GDPR consemneaza un act, deci i se aplica regula P4 literal
+E         test_brevo_pe_fir_propriu.py:250 regula 'P4' fara prefix 'DUK regula'/'eFactura regula' | """STRUCTURAL, pe AST, fiindcă asta e chiar regula P4 — efectul ireversibil vine
+E       assert not ["test_brevo_pe_fir_propriu.py:12 regula 'P4' fara prefix 'DUK regula'/'eFactura regula' | (b) E-MAILUL cererii GDPR c...\'DUK regula\'/\'eFactura regula\' | """STRUCTURAL, pe AST, fiindcă asta e chiar regula P4 — efectul ireversibil vine']
+
+core/test_temeiuri.py:50: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_lista3.py::test_tabelul_de_proba_e_GENERAT_nu_scris - Assert...
+FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+FAILED core/test_temeiuri.py::test_temeiuri_reguli_validator_canonice - Asser...
+SKIPPED [1] core/test_harta_casete.py:170: firma nu e pe verde în starea scanată
+SKIPPED [1] core/test_harta_casete.py:189: una din cele două secțiuni nu s-a randat în starea asta
+SKIPPED [1] core/test_harta_casete.py:241: firma scanată n-are nicio obligație stinsă — constrângerea n-ar discrimina nimic
+SKIPPED [1] core/test_harta_casete.py:292: firma scanată n-are nicio obligație stinsă și nicio depunere — constrângerea ar trece 0==0 fără să discrimineze (vezi harta_casete.LIMITE)
+SKIPPED [1] core/test_limita_text_anaf.py:113: d100 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d205 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d301 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d390 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [1] core/test_limita_text_anaf.py:113: d394 nu se datoreaza / profil incomplet pe firma efemera
+SKIPPED [2] core/test_nomenclator_pe_norma.py:70: norma nu închide lista (deschis=True) - se verifică prin dezacord, nu prin egalitate
+3 failed, 5440 passed, 11 skipped, 14 xfailed in 1585.26s (0:26:25)
+FULL_SUITE_EXIT_CODE=1

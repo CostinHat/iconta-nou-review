@@ -1,0 +1,56 @@
+{
+ "radacina": "/tmp/brevo_base",
+ "intrari": 514,
+ "candidati": 82,
+ "_trimite_brevo": {
+  "cai": 17,
+  "cai_C5": 10,
+  "cai_C2": 14,
+  "intrari": [
+   "GET /admin/sanatate",
+   "GET /gdpr/export-cabinet",
+   "POST /admin/sanatate/test-alerta",
+   "POST /asistenti",
+   "POST /auth/login",
+   "POST /auth/register",
+   "POST /gdpr/cerere-stergere",
+   "POST /migrare/importa",
+   "POST /public/magic-link",
+   "POST /public/reset-parola/cere",
+   "POST /public/reset-parola/seteaza",
+   "POST /tenants",
+   "POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza",
+   "PUT /tenants/{tenant_id}/jurnal/{nota_id}",
+   "core/monitor_fiscal.py::__main__ -> _main()",
+   "core/sonda_web.py::__main__ -> _main()",
+   "core/spv_refresh.py::__main__ -> ruleaza()"
+  ],
+  "intrari_C5": [
+   "GET /gdpr/export-cabinet",
+   "POST /auth/register",
+   "POST /gdpr/cerere-stergere",
+   "POST /migrare/importa",
+   "POST /public/magic-link",
+   "POST /tenants",
+   "POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza",
+   "PUT /tenants/{tenant_id}/jurnal/{nota_id}",
+   "core/monitor_fiscal.py::__main__ -> _main()",
+   "core/spv_refresh.py::__main__ -> ruleaza()"
+  ],
+  "locuri_de_apel": [
+   "core/gdpr_cerere.py:40",
+   "core/monitor_fiscal.py:160",
+   "core/observare.py:160",
+   "core/spv_refresh.py:96",
+   "main.py:1444"
+  ]
+ },
+ "alerteaza_in_fundal": {
+  "cai": 0,
+  "cai_C5": 0,
+  "cai_C2": 0,
+  "intrari": [],
+  "intrari_C5": [],
+  "locuri_de_apel": []
+ }
+}

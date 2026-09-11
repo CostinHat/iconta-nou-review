@@ -1,0 +1,90 @@
+Valul 3, familia `_trimite_brevo`: alerta pleacă pe alt fir, e-mailul GDPR după commit
+
+# diff-citit: CONFORMITATE.md (+1/-1) și PLAN_HARDENING.md (+37/-2), citite integral înainte de
+# a fi comise. CE S-A SCHIMBAT: în CONFORMITATE.md, o singură linie — antetul «ultima actualizare»
+# trece la 2026-09-11, fiindcă registrul se atinge în tura asta; restul fișierului, neatins. În
+# PLAN_HARDENING.md, linia de stare a lui P5 și două secțiuni noi: pool-ul pre-încălzit (aplicat în
+# producție, `ICONTA_POOL_MIN=10`) și familia `_trimite_brevo` (închisă, cu cele două reparații
+# diferite explicate). CERINȚE NOI PE CARE LE CONȚIN: (1) `ICONTA_POOL_MIN=10` e scris într-un
+# fișier din AFARA depozitului, deci consemnarea din plan e singura urmă a lui în lanț — cine reface
+# serverul trebuie s-o citească de acolo; (2) harta familiilor rămase, cu `trimite_email_html`
+# marcată ca bucată proprie (17 locuri de apel) și `_post_token` ca temă separată. CE FAC CU ELE:
+# (1) am lăsat copia de siguranță `db.env.bak-2026-09-10` lângă fișier și am verificat că valoarea
+# e activă în procesul viu; (2) nu pornesc familia următoare în tura asta, prin decizia arhitectului.
+# CE AM CORECTAT ÎN ELE: planul purta «29 → 25 de căi» și «(4 căi)» — cifre din gruparea manuală de
+# acum două zile, pe care chiar comanda asta îmi cere să nu le reutilizez. Le-am înlocuit cu
+# măsurătoarea mecanică de azi, cu instrumentul numit lângă ele.
+
+# multe-fisiere-ok: o singură reparație în bucăți care n-au sens separat — cele două feluri de
+# e-mail, proba care le acoperă, instrumentul care măsoară familia, și registrele care poartă
+# cifrele mutate. Fără probă reparația e neverificată; fără instrument cifra e o amintire.
+
+CE ȚINEA POOL-UL. Apelul la Brevo are termen de 10 s și se făcea din interiorul unui
+`with db.get_conn()`. Zece secunde dintr-un pool de zece conexiuni, pentru un e-mail care n-are
+nicio legătură cu tranzacția.
+
+DOUĂ FELURI DE E-MAIL, DOUĂ REPARAȚII DIFERITE — iar deosebirea era deja scrisă în verdictul P4 al
+lui `_trimite_brevo`: «e un efect, dar unul care VORBEȘTE DESPRE un eșec, nu unul care consemnează
+un act».
+
+  (a) ALERTA despre un eșec secundar (`observare.esec_secundar`) NU se amână după commit. Verdictul
+      P4 spune explicit că ar fi greșit: o alertă amânată s-ar pierde exact când actul cade. Pleacă
+      pe un FIR PROPRIU — `alerteaza_in_fundal` —, deci se trimite la fel de devreme, fără să țină
+      nicio conexiune. Firul NU e daemon: interpretorul îl așteaptă la oprire, ca o alertă ridicată
+      înainte de restart să nu se piardă. Întârzierea maximă a opririi e chiar termenul de 10 s.
+
+  (b) E-MAILUL cererii de ștergere GDPR consemnează un act, deci i se aplică regula P4 literal. Și
+      avea o problemă de ORDINE, nu doar de pool: comentariul spunea «eșecul e-mailului NU anulează
+      cererea (deja jurnalizată)», dar `INSERT`-ul era NECOMIS — ruta comitea abia după ce funcția
+      se întorcea. Un eșec de după e-mail întorcea cererea, și rămânea un e-mail despre o cerere
+      care nu există. Acum `depune_cerere` întoarce CE trebuie anunțat, ruta comite, iese din bloc,
+      și abia atunci cheamă `anunta_echipa`. S-a scos și `except Exception: pass` de peste el:
+      eșecul se consemnează prin `esec_secundar`.
+
+`alerteaza` RĂMÂNE SINCRONĂ, și e o alegere, nu o scăpare: `expirare_cote` numără pe răspunsul ei.
+Făcând-o asincronă aș fi schimbat tăcut ce numără — «câte au plecat» ar fi devenit «câte au fost
+pornite», alt lucru măsurat sub aceeași cifră. De-aia varianta de fundal e o funcție SEPARATĂ.
+
+CE SE PIERDE, DECLARAT: apelantul lui `alerteaza_in_fundal` nu mai află dacă e-mailul a plecat.
+
+MĂSURAT MECANIC PE ARBORELE CURENT, nu reluat din raportul vechi. Cifra „29 → 25" de acum două zile
+venea din lista de lucru a valului 3, grupată pe familii; instrumentul de aici numără altceva, deci
+nu se compară. `scripts/masoara_brevo.py`, rulat pe `3332f495` și pe arborele reparat:
+
+  · căi (puncte de intrare din care lanțul ajunge la `_trimite_brevo`):  17 → 5
+  · dintre ele C5 (rețea executată cât timp e ținută o conexiune):       10 → 3
+  · C2 (rută sincronă care ajunge la un apel de rețea):                  14 → 2
+  · locuri de apel, pe AST:                                              5 → 5
+  · clasa întreagă, pe același instrument: C5 45 → 42 · C2 45 → 39 · candidați 82 → 78
+
+Cele 3 căi C5 rămase NU sunt ale familiei ăsteia: `POST /auth/register` ajunge la Brevo prin
+`trimite_email_html` — familia următoare, neatinsă prin decizie —, iar `monitor_fiscal` și
+`spv_refresh` sunt joburi de fundal (`__main__`), nu căi de cerere.
+
+PROBA, 14 teste, cu RED-proof. Familia n-avea NICIUN test — reparația era neacoperită. Rulate pe
+`3332f495`, adică fără reparație, 11 din 14 pică; cele 3 care trec sunt exact perechile anti-vacuum,
+care trebuie să treacă și acolo. Acoperă: calea reușită · eșecul trimiterii · throttling · lipsa
+anunțului · firul care nu e daemon · și două gărzi STRUCTURALE pe AST — că `esec_secundar` cheamă
+exact varianta de fundal, și că ruta cheamă `anunta_echipa` DUPĂ `commit()` și ÎN AFARA blocului de
+conexiune, comparând poziții în arbore, nu șiruri în fișier.
+
+DOUĂ LUCRURI PE CARE LE-AU CERUT GĂRZILE CASEI, și amândouă au ieșit reparații adevărate:
+
+  · clichetul 50 ar fi urcat 1222 → 1223, fiindcă proba mea verifica anunțul cu `"7" in corp`. Nu am
+    urcat clichetul ca să-mi accept propria regresie: am dat corpului un NUME. `corp_anunt` e acum
+    funcție pură, iar proba compară pe EGALITATE valoarea întreagă — un `in` ar fi trecut și dacă
+    jumătate din anunț dispărea. A doua: `"alerteaza_in_fundal" in apelate` a devenit egalitate de
+    listă, deci spune în plus că există EXACT un apel de alertă;
+  · docstringul lui `depune_cerere` enumera cheile întoarse și rămăsese la forma veche. Un docstring
+    care enumeră greșit e mai rău decât unul lipsă: se citește ca verificat (R16).
+
+REGISTRELE, REGENERATE MECANIC — nu corectate cu mâna. Cinci antete de traseu poartă cifre măsurate
+pe firmele reale și s-au mutat odată cu lumea: `T05` trece de la 35 la 20 de firme, `T01` de la 23
+la 9. Cauza e chiar incidentul de azi-dimineață — cele 12 firme-fantomă au ieșit din numărătoarea
+activă. Blocul de clichete și inventarul gărzilor, la fel.
+
+POARTA A RULAT ÎN MEDIUL IZOLAT R68, iar amprenta producției e luată înainte și după.
+
+NU sunt aici, prin decizie: `trimite_email_html` (familia următoare), `_post_token` (temă proprie),
+R69, și niciun cleanup de date — rândurile 53 și 63, corecțiile orfane și cele 12 firme dezactivate
+rămân neatinse.
