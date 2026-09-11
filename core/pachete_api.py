@@ -201,8 +201,15 @@ def preview_html(conn_schema, conn_public, tenant_id, an, luna, text, uid, firm)
     return _html(prof.get("nume"), an, luna, text or "", semnatura)
 
 
-def trimite(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
-    """Trimite povestea aprobata la antreprenor. Necesita email + status aprobat."""
+def pregateste(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
+    """CE ar pleca la antreprenor — numai CITIRE, niciun efect. Necesita email + status aprobat.
+
+    [P5 val 3, 11.09.2026] Despartita de trimiterea propriu-zisa fiindca apelul la Brevo are
+    termen de 15 s, iar ruta tinea DOUA conexiuni din pool peste el. Functia asta nu scrie nimic —
+    deci separarea nu muta nicio decizie, doar elibereaza conexiunile inainte de efect.
+
+    Intoarce `{ok: False, cod}` ca inainte, sau `{ok: True, email, subiect, html}`.
+    """
     rz = rezumat_luna(conn_schema, conn_public, tenant_id, an, luna)
     email = rz["email"]
     if not email:
@@ -210,12 +217,18 @@ def trimite(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
     pov = get_poveste(conn_public, tenant_id, an, luna)
     if not pov.get("exista") or pov.get("status") != "aprobat":
         return {"ok": False, "cod": "NEAPROBATA"}
-    subiect = "Raport lunar %02d/%d - %s" % (luna, an, rz["nume_firma"] or "firma")
-    html = _html(rz["nume_firma"], an, luna, pov["text"], semnatura)
-    ok = observare.trimite_email_html(email, subiect, html)
-    if not ok:
+    return {"ok": True, "email": email,
+            "subiect": "Raport lunar %02d/%d - %s" % (luna, an, rz["nume_firma"] or "firma"),
+            "html": _html(rz["nume_firma"], an, luna, pov["text"], semnatura)}
+
+
+def trimite_pregatit(pregatit):
+    """EFECTUL, in afara oricarei conexiuni. Codurile de raspuns raman exact cele de dinainte."""
+    if not pregatit.get("ok"):
+        return pregatit
+    if not observare.trimite_email_html(pregatit["email"], pregatit["subiect"], pregatit["html"]):
         return {"ok": False, "cod": "EMAIL_ESUAT"}
-    return {"ok": True, "email": email}
+    return {"ok": True, "email": pregatit["email"]}
 
 
 # ICRD_POVESTI_LISTA_V1 - listeaza povestile aprobate ale unei firme (portal client)

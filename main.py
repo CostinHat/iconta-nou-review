@@ -4432,7 +4432,9 @@ def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("adm
     schema = _pachet_schema(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
         semnatura = _pachete.semnatura_cabinet(cp, ctx.get("uid"), ctx.get("firm"))
-        r = _pachete.trimite(cs, cp, tenant_id, an, luna, semnatura=semnatura)
+        _pregatit = _pachete.pregateste(cs, cp, tenant_id, an, luna, semnatura=semnatura)
+    # [P5 val 3] AICI: cele DOUA conexiuni s-au intors in pool inainte de apelul la Brevo (15 s).
+    r = _pachete.trimite_pregatit(_pregatit)
     if not r.get("ok"):
         cod = r.get("cod")
         msg = {"FARA_EMAIL": "Firma nu are email setat in profil.",

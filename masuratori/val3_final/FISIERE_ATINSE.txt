@@ -1,0 +1,10 @@
+GARZI.md
+core/notificari_scadenta.py
+core/pachete_api.py
+core/test_email_html_doua_cai.py
+core/test_p4_fault_injection.py
+main.py
+masuratori/val3_final/ACTION_REQUIRED.txt
+masuratori/val3_final/AUDIT_VAL3_DUPA.txt
+masuratori/val3_final/COMMIT_DOUA_CAI.txt
+masuratori/val3_final/DB_FINGERPRINT_BEFORE.json

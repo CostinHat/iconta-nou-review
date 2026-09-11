@@ -522,7 +522,7 @@ def test_notificare_scadenta_nu_pleaca_de_doua_ori(mediu, monkeypatch):
     with defect_in(NS, "_scrie_rezultatul", "P4: defect dupa e-mail"):
         with _db.get_conn(mediu["schema"]) as conn:
             with pytest.raises(RuntimeError):
-                NS.emite_pentru_firma(conn, mediu["schema"], azi=azi)
+                NS.emite_pentru_firma(mediu["schema"], azi=azi)
     assert len(trimise) == 1, "e-mailul trebuia să plece o dată: %d" % len(trimise)
 
     with _db.get_conn(mediu["schema"]) as conn:
@@ -535,7 +535,7 @@ def test_notificare_scadenta_nu_pleaca_de_doua_ori(mediu, monkeypatch):
 
     # rulare 2: același prag NU se mai trimite
     with _db.get_conn(mediu["schema"]) as conn:
-        NS.emite_pentru_firma(conn, mediu["schema"], azi=azi)
+        NS.emite_pentru_firma(mediu["schema"], azi=azi)
     assert len(trimise) == 1, (
         "e-mailul a plecat de două ori pentru același prag: %d trimiteri" % len(trimise))
 

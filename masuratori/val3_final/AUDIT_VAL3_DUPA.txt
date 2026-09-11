@@ -1,0 +1,122 @@
+
+C5 SIGURE (nu omonime) — 13 familii, 29 cai
+  core/curs_bnr.py::_descarca                          cai=8  locuri=['core/curs_bnr.py:173']
+        POST /api/v1/firme/{tenant_id}/facturi
+        POST /tenants/{tenant_id}/decontare-valuta
+        POST /tenants/{tenant_id}/facturi/emite
+        POST /tenants/{tenant_id}/facturi/{factura_id}/transforma
+        POST /tenants/{tenant_id}/reevaluare-valuta
+        POST /tenants/{tenant_id}/woocommerce/sincronizeaza
+        core/facturi_recurente.py::__main__ -> _main()
+        core/woocommerce.py::__main__ -> _main()
+  core/anaf_api.py::valideaza_cui                      cai=5  locuri=['core/anaf_api.py:142', 'core/anaf_api.py:145']
+        POST /auth/register
+        POST /migrare/importa
+        POST /tenants
+        POST /tenants/{tenant_id}/achizitie-necorporala
+        POST /tenants/{tenant_id}/achizitie-taxare-inversa
+  core/duk.py::versiune_validator                      cai=4  locuri=['core/duk.py:92']
+        GET /coada/{coada_id}/continut
+        POST /coada
+        POST /tenants/{tenant_id}/s1003-valideaza
+        POST /tenants/{tenant_id}/s1005-valideaza
+  core/d112.py::_enum_xsd                              cai=4  locuri=['core/d112.py:96']
+        GET /tenants/{tenant_id}/firma-profil/date
+        POST /tenants/{tenant_id}/firma-profil/date
+        POST /tenants/{tenant_id}/salarii-contare
+        POST /tenants/{tenant_id}/salarii-contare/propunere
+  core/reges_client.py::_obtine_token                  cai=2  locuri=['core/reges_client.py:137']
+        POST /tenants/{tenant_id}/reges-poll
+        POST /tenants/{tenant_id}/reges-trimite-salariat
+  core/reges_client.py::_post                          cai=2  locuri=['core/reges_client.py:147']
+        POST /tenants/{tenant_id}/reges-poll
+        POST /tenants/{tenant_id}/reges-trimite-salariat
+  core/woocommerce.py::comenzi                         cai=2  locuri=['core/woocommerce.py:15']
+        POST /tenants/{tenant_id}/woocommerce/sincronizeaza
+        core/woocommerce.py::__main__ -> _main()
+  core/gdpr_export.py::export_cabinet                  cai=1  locuri=['core/gdpr_export.py:55', 'core/gdpr_export.py:59']
+        GET /gdpr/export-cabinet
+  core/tenant_stergere.py::sterge_fisiere              cai=1  locuri=['core/tenant_stergere.py:350', 'core/tenant_stergere.py:352', 'core/tenant_stergere.py:354']
+        POST /gdpr/sterge-cabinet/{cabinet_id}/executa
+  main.py::portal_bon                                  cai=1  locuri=['main.py:6205']
+        POST /portal/bon
+  main.py::raportari_imagine                           cai=1  locuri=['main.py:7751', 'main.py:7753']
+        POST /raportari/mesaj/{mid}/imagine
+  core/intracomunitar.py::verifica_vies                cai=1  locuri=['core/intracomunitar.py:44']
+        POST /tenants/{tenant_id}/vanzare-ic
+  core/monitor_fiscal.py::ruleaza                      cai=1  locuri=['core/monitor_fiscal.py:120', 'core/monitor_fiscal.py:133']
+        core/monitor_fiscal.py::__main__ -> _main()
+
+C5 prin OMONIM (instrumentul spune ca nu poate sti) — 1 familii, 1 cai
+  core/d406.py::plan_oficial                           cai=1  locuri=['core/d406.py:347']
+        GET /tenants/{tenant_id}/d390-clasificare
+
+CLASA INTREAGA: candidati=73  C1=1  C2=39  C5=30
+{
+ "familii": {
+  "core/anaf_api.py::valideaza_cui": [
+   "POST /auth/register",
+   "POST /migrare/importa",
+   "POST /tenants",
+   "POST /tenants/{tenant_id}/achizitie-necorporala",
+   "POST /tenants/{tenant_id}/achizitie-taxare-inversa"
+  ],
+  "core/curs_bnr.py::_descarca": [
+   "POST /api/v1/firme/{tenant_id}/facturi",
+   "POST /tenants/{tenant_id}/decontare-valuta",
+   "POST /tenants/{tenant_id}/facturi/emite",
+   "POST /tenants/{tenant_id}/facturi/{factura_id}/transforma",
+   "POST /tenants/{tenant_id}/reevaluare-valuta",
+   "POST /tenants/{tenant_id}/woocommerce/sincronizeaza",
+   "core/facturi_recurente.py::__main__ -> _main()",
+   "core/woocommerce.py::__main__ -> _main()"
+  ],
+  "core/duk.py::versiune_validator": [
+   "GET /coada/{coada_id}/continut",
+   "POST /coada",
+   "POST /tenants/{tenant_id}/s1003-valideaza",
+   "POST /tenants/{tenant_id}/s1005-valideaza"
+  ],
+  "core/d112.py::_enum_xsd": [
+   "GET /tenants/{tenant_id}/firma-profil/date",
+   "POST /tenants/{tenant_id}/firma-profil/date",
+   "POST /tenants/{tenant_id}/salarii-contare",
+   "POST /tenants/{tenant_id}/salarii-contare/propunere"
+  ],
+  "core/gdpr_export.py::export_cabinet": [
+   "GET /gdpr/export-cabinet"
+  ],
+  "core/tenant_stergere.py::sterge_fisiere": [
+   "POST /gdpr/sterge-cabinet/{cabinet_id}/executa"
+  ],
+  "main.py::portal_bon": [
+   "POST /portal/bon"
+  ],
+  "main.py::raportari_imagine": [
+   "POST /raportari/mesaj/{mid}/imagine"
+  ],
+  "core/reges_client.py::_obtine_token": [
+   "POST /tenants/{tenant_id}/reges-poll",
+   "POST /tenants/{tenant_id}/reges-trimite-salariat"
+  ],
+  "core/reges_client.py::_post": [
+   "POST /tenants/{tenant_id}/reges-poll",
+   "POST /tenants/{tenant_id}/reges-trimite-salariat"
+  ],
+  "core/intracomunitar.py::verifica_vies": [
+   "POST /tenants/{tenant_id}/vanzare-ic"
+  ],
+  "core/woocommerce.py::comenzi": [
+   "POST /tenants/{tenant_id}/woocommerce/sincronizeaza",
+   "core/woocommerce.py::__main__ -> _main()"
+  ],
+  "core/monitor_fiscal.py::ruleaza": [
+   "core/monitor_fiscal.py::__main__ -> _main()"
+  ]
+ },
+ "omonime": {
+  "core/d406.py::plan_oficial": [
+   "GET /tenants/{tenant_id}/d390-clasificare"
+  ]
+ }
+}

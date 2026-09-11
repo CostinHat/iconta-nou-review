@@ -1,0 +1,55 @@
+Cele două căi C5 pe care măsurătoarea mea lexicală le ratase — `trimite_email_html`, închis pe detectorul mecanic
+
+# multe-fisiere-ok: aceeași corectură în două locuri care n-au sens separate — ruta pachetului și
+# jobul de notificări —, plus proba care le ține și actualizarea semnăturii în probele P4.
+
+CE AM MĂSURAT GREȘIT. Am declarat familia `trimite_email_html` închisă la `3 → 0`, pe o definiție
+**lexicală**: apeluri aflate într-un `with get_conn` din ACEEAȘI funcție. Auditul mecanic de după,
+pe detectorul P5, a găsit încă **două căi C5 reale** — acolo conexiunea e ținută de APELANT, două
+funcții mai sus.
+
+Limita o scrisesem chiar în tura aia, lângă garda structurală a lui `_post_token`: *„e lexicală, nu
+prinde cazul în care conexiunea e ținută de apelant"*. Am numit-o la o familie și n-am aplicat-o
+retroactiv la cealaltă. Verdictul de atunci nu se rescrie; se corectează aici.
+
+  EMAIL_HTML_PREVIOUS_IMPLEMENTATION=VALID
+  EMAIL_HTML_PREVIOUS_PATH_MEASUREMENT=INCOMPLETE
+
+CELE DOUĂ CĂI, și de ce niciuna nu cere o decizie nouă:
+
+  (a) `POST /pachete/{tenant_id}/trimite` — ruta ținea **două** conexiuni (`cs` și `cp`) peste un
+      apel cu termen de 15 s. `pachete_api.trimite` doar CITEA — rezumatul lunii și povestea —, nu
+      scria nimic. Deci s-a despărțit în `pregateste` (citire, fără efect) și `trimite_pregatit`
+      (efect, în afara oricărei conexiuni). Codurile de refuz sunt aceleași, literă cu literă:
+      `FARA_EMAIL`, `NEAPROBATA`, `EMAIL_ESUAT`.
+
+  (b) `notificari_scadenta.emite_pentru_firma` — ținea conexiunea firmei peste TOATĂ bucla, adică
+      un apel de până la 15 s pentru fiecare factură scadentă. Citirea s-a strâns în
+      `_plan_notificari`; conexiunea se închide înainte de primul e-mail. *Alegerea „cel mult o
+      dată" rămâne neatinsă*: rezervarea pragului se comite înainte de trimitere, iar rezultatul se
+      scrie după — fiecare cu tranzacția lui, exact ca din 09.09.
+
+Funcția nu mai primește o conexiune, deci semnătura s-a schimbat; cele două apeluri din probele P4
+s-au actualizat odată cu ea. `pachete_api.trimite` a dispărut: lăsată lângă cele două, ar fi fost
+logică paralelă — iar reparația n-ar fi ajuns la ea.
+
+PROBA, 8 teste. Două structurale, pe poziții în arbore: apelul extern NU stă sub niciun bloc de
+conexiune, în ambele locuri. Plus calibrarea în cealaltă direcție — pe `_plan_notificari`, care
+CHIAR stă în bloc (și acolo îi e locul), detectorul spune `True`; fără ea, cele două probe ar fi
+putut trece pe o măsurătoare oarbă.
+
+GARDA ASERȚIUNILOR PE TEXT, iar. Verificam mulțimea funcțiilor cu `"pregateste" in nume`. A devenit
+algebră de mulțimi: `asteptate - nume == set()`. Clichetul 50 rămâne la 1222.
+
+MĂSURAT CU DETECTORUL MECANIC P5, nu cu unul propriu:
+
+  · familii C5 rămase:  14 → 13
+  · căi C5 (ACTION_REQUIRED în registrul P5):  19 → 18
+  · `observare.py::trimite_email_html` nu mai apare deloc în clasa C5
+
+  EMAIL_HTML_C5_PATHS_OPEN=0   EMAIL_HTML_STATUS=CLOSED_ACCEPTED
+
+VALUL 3 RĂMÂNE DESCHIS: 13 familii, 18 căi. Ele cer analiză de contract familie cu familie, ca la
+`_post_token` — nu sunt aceeași clasă cu asta.
+
+POARTA A RULAT ÎN MEDIUL IZOLAT R68, cu amprenta producției înainte și după.

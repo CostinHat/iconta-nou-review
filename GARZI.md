@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**555 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**556 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 530
+### `core/` — 531
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7969,6 +7969,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_echilibru_perioada.py` — core/test_echilibru_perioada.py — GARD C3 (integritate in timp): partida dubla pe perioada + orfani.
 - `core/test_edge_canonic_head.py` — GARD edge SEO/crawler (_edge_canonic_head din main.py):
 - `core/test_efactura_send.py` — Teste generator e-Factura SEND (core/efactura_send.py) — pe date minime construite
+- `core/test_email_html_doua_cai.py` — core/test_email_html_doua_cai.py — cele doua cai C5 ratate de masuratoarea lexicala.
 - `core/test_email_html_dupa_commit.py` — core/test_email_html_dupa_commit.py — `trimite_email_html` nu se mai executa sub o conexiune.
 - `core/test_emitere_randuri_dinamice.py` — GARD cap.24 batch 3b — randuri dinamice emitere factura, re-rulate IN POARTA prin chromium headless.
 - `core/test_esec_trimitere_email.py` — GARD [R73, 27.08.2026]: un eșec de trimitere a emailului nu se mai poate stinge tăcut.

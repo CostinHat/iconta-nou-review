@@ -1,0 +1,19 @@
+ACTION_REQUIRED = 18
+ 1. GET /coada/{coada_id}/continut                       C3,C5,C7
+ 2. POST /api/v1/firme/{tenant_id}/facturi               C2,C5
+ 3. POST /auth/register                                  C2,C4,C5,C7
+ 4. POST /coada                                          C3,C5,C7
+ 5. POST /migrare/importa                                C2,C4,C5
+ 6. POST /tenants                                        C2,C4,C5
+ 7. POST /tenants/{tenant_id}/achizitie-necorporala      C2,C4,C5
+ 8. POST /tenants/{tenant_id}/achizitie-taxare-inversa   C2,C4,C5
+ 9. POST /tenants/{tenant_id}/decontare-valuta           C2,C5
+10. POST /tenants/{tenant_id}/facturi/emite              C2,C5
+11. POST /tenants/{tenant_id}/facturi/{factura_id}/trans C2,C5
+12. POST /tenants/{tenant_id}/reevaluare-valuta          C2,C5
+13. POST /tenants/{tenant_id}/reges-poll                 C2,C5
+14. POST /tenants/{tenant_id}/reges-trimite-salariat     C2,C5
+15. POST /tenants/{tenant_id}/s1003-valideaza            C3,C5,C7
+16. POST /tenants/{tenant_id}/s1005-valideaza            C3,C5,C7
+17. POST /tenants/{tenant_id}/vanzare-ic                 C2,C5
+18. POST /tenants/{tenant_id}/woocommerce/sincronizeaza  C2,C5

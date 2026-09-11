@@ -105,20 +105,20 @@ def _scrie_rezultatul(schema, factura_id, prag, stare):
                         " WHERE factura_id = %s AND prag = %s", (stare, factura_id, prag))
 
 
-def emite_pentru_firma(conn, schema, azi=None):
-    """Trimite notificarile scadente pentru o firma (daca opt-in). Intoarce
-    {trimise, fara_reply_to, fara_email_client, inactiv}. Conexiunea pozitionata pe schema."""
-    from core import observare
-    from datetime import date as _d
-    azi = azi or _d.today()
-    rez = {"trimise": 0, "fara_reply_to": 0, "fara_email_client": 0, "inactiv": False}
+def _plan_notificari(conn, azi):
+    """CITIREA, si numai ea: ce ar trebui notificat azi. Niciun efect, nicio scriere.
+
+    [P5 val 3, 11.09.2026] Despartita de bucla de trimitere ca sa se poata inchide conexiunea
+    inainte de primul apel la Brevo (termen 15 s, pool de 10).
+
+    Intoarce `(inactiv, firma_nume, firma_email, reply_ok, [(factura, prag)])`.
+    """
     with conn.cursor() as cur:
         cur.execute("SELECT nume, email, COALESCE(notificari_scadenta_activ, false) "
                     "FROM firma_profil WHERE id = 1")
         r = cur.fetchone()
         if not r or not r[2]:
-            rez["inactiv"] = True
-            return rez
+            return True, None, None, False, []
         firma_nume, firma_email = r[0] or "Firma", r[1]
         reply_ok = email_valid(firma_email)
         cur.execute(
@@ -132,44 +132,60 @@ def emite_pentru_firma(conn, schema, azi=None):
             "   AND f.data_scadenta IS NOT NULL", (azi,))
         facturi = [dict(id=x[0], numar=x[1], data_scadenta=x[2], suma=x[3],
                         moneda=x[4], client_email=x[5]) for x in cur.fetchall()]
+        plan = []
         for f in facturi:
             cur.execute("SELECT prag FROM notificari_scadenta WHERE factura_id=%s", (f["id"],))
             deja = {x[0] for x in cur.fetchall()}
             prag = prag_curent(f["data_scadenta"], azi, deja)
-            if prag is None:
-                continue
-            if not reply_ok:
-                stare = "fara_reply_to"
-            elif not email_valid(f["client_email"]):
-                stare = "fara_email_client"
-            else:
-                # [P4, 09.09.2026] REZERVAREA PRAGULUI SE COMITE ÎNAINTE DE E-MAIL.
-                #
-                # Ce era până azi: e-mailul pleca la CLIENTUL firmei, iar rândul care împiedică
-                # retrimiterea se scria după el — amândouă în tranzacția deschisă pentru toată
-                # firma, pentru toate facturile ei. O eroare la orice factură de după, sau la
-                # commit, întorcea tranzacția: e-mailurile plecate rămâneau plecate, rândurile
-                # care le consemnau nu. A doua zi, cronul le trimitea din nou. *Un `rollback` nu
-                # desface un e-mail — iar aici desfăcea exact evidența care l-ar fi oprit.*
-                #
-                # Acum: se rezervă pragul într-o tranzacție PROPRIE, comisă; abia apoi pleacă
-                # e-mailul; apoi se scrie rezultatul, tot separat. Alegerea e deliberată — **cel
-                # mult o dată**, nu cel puțin o dată: o notificare pierdută se vede în evidență ca
-                # prag rămas `in_curs`; una trimisă de două ori ajunge la clientul firmei și nu se
-                # mai poate lua înapoi.
-                if not _rezerva_pragul(schema, f["id"], prag):
-                    continue          # rezervat de altcineva între citire și acum
-                ok = observare.trimite_email_html(
-                    f["client_email"],
-                    "Factura %s - %s" % (f["numar"] or "", _eticheta(prag)),
-                    _email_corp(firma_nume, f, prag),
-                    reply_to=firma_email, expeditor_nume="%s prin iConta.eu" % firma_nume)
-                stare = "trimis" if ok else "fara_reply_to"  # esec Brevo -> nu bloca pragul
-                _scrie_rezultatul(schema, f["id"], prag, stare)
-                rez["trimise" if stare == "trimis" else stare] += 1
-                continue
-            _consemneaza(schema, f["id"], prag, stare)
+            if prag is not None:
+                plan.append((f, prag))
+    return False, firma_nume, firma_email, reply_ok, plan
+
+
+def emite_pentru_firma(schema, azi=None):
+    """Trimite notificarile scadente pentru o firma (daca opt-in). Intoarce
+    {trimise, fara_reply_to, fara_email_client, inactiv}.
+
+    [P5 val 3, 11.09.2026] NU mai primeste o conexiune: si-o deschide singura pentru CITIRE si o
+    inchide inainte de prima trimitere. Restul pasilor — rezervarea pragului si scrierea
+    rezultatului — isi aveau deja tranzactiile lor proprii (P4, 09.09.2026), deci nimic din
+    ordinea lor nu se schimba.
+    """
+    from core import observare
+    from datetime import date as _d
+    azi = azi or _d.today()
+    rez = {"trimise": 0, "fara_reply_to": 0, "fara_email_client": 0, "inactiv": False}
+
+    with db.get_conn(schema) as conn:
+        inactiv, firma_nume, firma_email, reply_ok, plan = _plan_notificari(conn, azi)
+    if inactiv:
+        rez["inactiv"] = True
+        return rez
+
+    # ── de aici incolo, NICIO conexiune tinuta peste apelurile la Brevo ──────────────
+    for f, prag in plan:
+        if not reply_ok:
+            stare = "fara_reply_to"
+        elif not email_valid(f["client_email"]):
+            stare = "fara_email_client"
+        else:
+            # [P4, 09.09.2026] REZERVAREA PRAGULUI SE COMITE INAINTE DE E-MAIL. Alegerea e
+            # deliberata — **cel mult o data**, nu cel putin o data: o notificare pierduta se vede
+            # in evidenta ca prag ramas `in_curs`; una trimisa de doua ori ajunge la clientul
+            # firmei si nu se mai poate lua inapoi.
+            if not _rezerva_pragul(schema, f["id"], prag):
+                continue          # rezervat de altcineva intre citire si acum
+            ok = observare.trimite_email_html(
+                f["client_email"],
+                "Factura %s - %s" % (f["numar"] or "", _eticheta(prag)),
+                _email_corp(firma_nume, f, prag),
+                reply_to=firma_email, expeditor_nume="%s prin iConta.eu" % firma_nume)
+            stare = "trimis" if ok else "fara_reply_to"  # esec Brevo -> nu bloca pragul
+            _scrie_rezultatul(schema, f["id"], prag, stare)
             rez["trimise" if stare == "trimis" else stare] += 1
+            continue
+        _consemneaza(schema, f["id"], prag, stare)
+        rez["trimise" if stare == "trimis" else stare] += 1
     return rez
 
 
@@ -183,8 +199,7 @@ def _main():
     tot = {"trimise": 0, "fara_reply_to": 0, "fara_email_client": 0}
     for s in scheme:
         try:
-            with db.get_conn(s) as conn:
-                r = emite_pentru_firma(conn, s)
+            r = emite_pentru_firma(s)
             if not r.get("inactiv"):
                 for k in tot:
                     tot[k] += r.get(k, 0)
