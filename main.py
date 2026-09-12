@@ -37,6 +37,20 @@ from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO;
 from core import common as _common
 from core import tenant_stergere  # [R72] calea UNICA de scoatere a unei firme
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api, declaratii_componente, supervizor
+# [P7 · V1] Repository-urile de citire: SQL-ul rutelor a plecat acolo.
+from core import repo_admin
+from core import repo_casa
+from core import repo_contabilitate
+from core import repo_declaratii
+from core import repo_efactura
+from core import repo_facturi
+from core import repo_firma_profil
+from core import repo_mijloace_fixe
+from core import repo_portal
+from core import repo_salariati
+from core import repo_stocuri
+from core import repo_tenants
+from core import repo_utilizatori
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
@@ -817,13 +831,7 @@ def admin_sanatate_istoric(ore: int = 24, ctx=Depends(cere_cabinet)):
     ore = _interval_cerut(ore, "Numărul de ore de istoric", 1, 168, "ore")   # [R150]
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("""
-                SELECT ram_procent, disc_procent, load1, conexiuni_db, erori_noi, creat_la
-                FROM public.metrici_sanatate
-                WHERE creat_la > now() - (%s || ' hours')::interval
-                ORDER BY creat_la ASC
-            """, (ore,))
-            rows = cur.fetchall()
+            rows = repo_admin.istoric_sanatate(cur, ore)
     return {"istoric": rows}
 
 @app.get("/admin/sanatate")
@@ -876,10 +884,8 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT count(*) FROM pg_stat_activity WHERE datname = current_database()")
-                db_info["conexiuni"] = cur.fetchone()[0]
-                cur.execute("SELECT pg_size_pretty(pg_database_size(current_database()))")
-                db_info["marime"] = cur.fetchone()[0]
+                db_info["conexiuni"] = repo_admin.conexiuni_active(cur)[0]
+                db_info["marime"] = repo_admin.marimea_bazei(cur)[0]
     except Exception as _e:
         _obs.esec_secundar("admin sanatate: info DB", _e)  # inghitit, dar nu tacut (27.07.2026)
 
@@ -889,14 +895,7 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
     try:
         with db.get_conn() as conn:
             with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-                cur.execute("""
-                    SELECT id, actiune, tenant_id, user_id, created_at, detalii
-                    FROM public.audit_log
-                    WHERE created_at > now() - interval '24 hours'
-                      AND (detalii->>'status')::int >= 500
-                    ORDER BY created_at DESC
-                """)
-                rows = cur.fetchall()
+                rows = repo_admin.ultimele_actiuni(cur)
                 erori_24h = len(rows)
                 lista_erori = rows[:50]
     except Exception as _e:
@@ -944,8 +943,7 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
             cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (date.cabinet_id, mesaj, data_af))
             n = 1
         else:
-            cur.execute("SELECT id FROM public.accounting_firms WHERE activ")
-            for (cid,) in cur.fetchall():
+            for (cid,) in repo_tenants.cabinete_active(cur):
                 cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (cid, mesaj, data_af))
                 n += 1
         conn.commit()
@@ -954,9 +952,7 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
 @app.get("/admin/alerte-fiscale")  # [F103 partea 2] propunerile monitorului pentru anunturi
 def admin_alerte_fiscale(ctx=Depends(cere_rol("superadmin"))):
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        cur.execute("""SELECT id, sursa, titlu, rezumat, url, relevanta, creat_la
-                       FROM public.alerte_fiscale WHERE NOT vazut AND sursa != 'anaf_buletin' ORDER BY id DESC LIMIT 30""")
-        rows = [dict(r) for r in cur.fetchall()]
+        rows = [dict(r) for r in repo_admin.alerte_fiscale(cur)]
     for r in rows:
         r["creat_la"] = str(r["creat_la"])
     return {"alerte": rows}
@@ -973,9 +969,7 @@ def admin_alerta_tratata(aid: int, ctx=Depends(cere_rol("superadmin"))):
 def eu_anunturi(ctx=Depends(cere_cabinet)):
     from psycopg2.extras import RealDictCursor
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        cur.execute("""SELECT id, mesaj, creat_la FROM public.anunturi_cabinet
-                       WHERE cabinet_id=%s AND confirmat_la IS NULL AND (data_afisare IS NULL OR data_afisare <= CURRENT_DATE) ORDER BY id""", (ctx.get("firm"),))
-        rows = [dict(r) for r in cur.fetchall()]
+        rows = [dict(r) for r in repo_admin.anunturi_pentru_cabinet(cur, ctx.get("firm"))]
     for r in rows:
         r["creat_la"] = str(r["creat_la"])
     return {"anunturi": rows}
@@ -997,28 +991,7 @@ def admin_activitate_cabinete(ctx=Depends(cere_cabinet)):
         raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("""
-                SELECT f.id, f.nume, f.activ,
-                       (SELECT COUNT(*) FROM public.tenants t WHERE t.accounting_firm_id = f.id) AS nr_firme,
-                       (SELECT COUNT(*) FROM public.users u2 WHERE u2.accounting_firm_id = f.id
-                          AND u2.activ = true AND u2.rol IN ('admin_firma','angajat')) AS nr_angajati,
-                       (SELECT COUNT(*) FROM public.audit_log a2 JOIN public.users u3 ON u3.id = a2.user_id
-                          WHERE u3.accounting_firm_id = f.id AND a2.actiune LIKE 'POST /recomanda%%') AS nr_recomandari,
-                       (SELECT COUNT(*) FROM public.audit_log a5 JOIN public.users u6 ON u6.id = a5.user_id
-                          WHERE u6.accounting_firm_id = f.id AND a5.actiune LIKE '%%/facturi/emite%%') AS nr_facturi,
-                       (SELECT COUNT(*) FROM public.audit_log a6 JOIN public.users u7 ON u7.id = a6.user_id
-                          WHERE u7.accounting_firm_id = f.id AND a6.actiune LIKE '%%/depune%%') AS nr_declaratii,  -- ICRD_CABINETE_CATEGORII_V1
-                       MAX(a.created_at) AS ultima_activitate,
-                       MAX(a.created_at) FILTER (WHERE a.actiune = 'login') AS ultim_login,
-                       COUNT(a.id) AS nr_actiuni,
-                       COUNT(a.id) FILTER (WHERE a.actiune = 'login') AS nr_logari
-                FROM public.accounting_firms f
-                LEFT JOIN public.users u ON u.accounting_firm_id = f.id
-                LEFT JOIN public.audit_log a ON a.user_id = u.id
-                GROUP BY f.id, f.nume, f.activ
-                ORDER BY f.nume
-            """)
-            rows = cur.fetchall()
+            rows = repo_admin.activitate_pe_cabinete(cur)
     return {"cabinete": rows}
 
 @app.post("/admin/cabinete/{firm_id}/suspenda")
@@ -1052,20 +1025,11 @@ def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_c
             # *Absenta inregistrarilor si inexistenta subiectului sunt doua lucruri diferite, iar
             # primul e o afirmatie despre cabinet.* Clasa e chiar cea pazita de
             # `core/test_absenta_nu_e_neaplicabil.py`, pe alt obiect.
-            cur.execute("SELECT 1 FROM public.accounting_firms WHERE id = %s", (firm_id,))
-            if not cur.fetchone():
+            if not repo_tenants.cabinetul_exista(cur, firm_id):
                 raise HTTPException(404, "Nu există niciun cabinet cu numărul %d. "
                                          "Verifică numărul: un cabinet fără activitate ar fi "
                                          "răspuns cu o listă goală, nu cu asta." % firm_id)
-            cur.execute("""
-                SELECT a.id, a.actiune, a.tenant_id, a.created_at, u.nume, u.prenume
-                FROM public.audit_log a
-                JOIN public.users u ON u.id = a.user_id
-                WHERE u.accounting_firm_id = %s
-                ORDER BY a.created_at DESC
-                LIMIT %s
-            """, (firm_id, limita))
-            rows = cur.fetchall()
+            rows = repo_admin.actiunile_cabinetului(cur, firm_id, limita)
     return {"activitate": rows}
 
 
@@ -1657,13 +1621,7 @@ def firme_scoase(ctx=Depends(cere_cabinet)):
     singura dovadă că firma a existat.
     """
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        cur.execute(
-            "SELECT id, tenant_id, nume, cui, schema_name, motiv, randuri_sterse, "
-            "       urme_pastrate, scos_de_user_id, scos_la, "
-            "       (SELECT u.email FROM public.users u WHERE u.id = fs.scos_de_user_id) AS scos_de "
-            "FROM public.firme_scoase fs WHERE cabinet_id = %s "
-            "ORDER BY scos_la DESC LIMIT 200", (ctx["firm"],))
-        return {"firme": [dict(r) for r in cur.fetchall()]}
+        return {"firme": [dict(r) for r in repo_utilizatori.firme_scoase_din_portofoliu(cur, ctx["firm"])]}
 
 
 @app.get("/tenants/{tenant_id}/scoatere")
@@ -1825,10 +1783,7 @@ def client_acces_lista(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "anga
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("""SELECT u.id, u.email, u.nume, u.activ FROM public.users u
-                           JOIN public.user_tenants ut ON ut.user_id = u.id
-                           WHERE ut.tenant_id = %s AND u.rol = 'client' ORDER BY u.id""", (tenant_id,))
-            return {"clienti": cur.fetchall()}
+            return {"clienti": repo_utilizatori.conturi_client_ale_firmei(cur, tenant_id)}
 
 @app.post("/tenants/{tenant_id}/client-acces")
 def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
@@ -1844,9 +1799,7 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
             raise HTTPException(404, "tenant inexistent sau fără acces")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT id, rol, activ, accounting_firm_id FROM public.users "
-                        "WHERE lower(email)=%s", (email,))
-            _ex = cur.fetchone()
+            _ex = repo_utilizatori.contul_dupa_email(cur, email)
             if _ex and (_ex["rol"] != "client" or _ex["activ"]):
                 raise HTTPException(400, EMAIL_EXISTA)
             # [R62 (2)] Aceeasi ramura de reactivare exista si aici. Gardul repara CLASA, nu
@@ -2053,8 +2006,7 @@ def magic_link_cere(date: MagicCereIn, request: Request):
     email = (date.email or "").strip().lower()
     _html_magic = None          # ce ramane de trimis DUPA ce se inchide blocul de conexiune
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.users WHERE email=%s AND activ", (email,))
-        r = cur.fetchone()
+        r = repo_utilizatori.id_cont_activ_dupa_email(cur, email)
         if r:
             tok = "ml_" + _sec.token_urlsafe(32)
             _pune_token(cur, tok, r[0], "15 minutes")
@@ -2086,9 +2038,7 @@ def magic_login(date: MagicLoginIn):
     if not tok.startswith("ml_"):
         raise HTTPException(401, "link invalid")
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""SELECT user_id FROM public.tokene_activare
-                       WHERE token_hash=%s AND NOT folosit AND expira > now()""", (_hash_tok(tok),))
-        r = cur.fetchone()
+        r = repo_utilizatori.cont_din_token_activare(cur, _hash_tok(tok))
         if not r:
             raise HTTPException(401, "link expirat sau folosit")
         cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token_hash=%s", (_hash_tok(tok),))
@@ -2105,9 +2055,7 @@ def activare_cont(date: ActivareIn):
         raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("""SELECT user_id FROM public.tokene_activare
-                           WHERE token_hash=%s AND NOT folosit AND expira > now()""", (_hash_tok(date.token),))
-            r = cur.fetchone()
+            r = repo_utilizatori.cont_din_token_activare_2(cur, _hash_tok(date.token))
             if not r:
                 raise HTTPException(400, "link de activare invalid sau expirat")
             cur.execute("UPDATE public.users SET password_hash=%s, parola_schimbata=true, activ=true WHERE id=%s",
@@ -2138,15 +2086,10 @@ def acces_portal_preview(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "an
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("""SELECT u.id FROM public.users u
-                           JOIN public.user_tenants ut ON ut.user_id = u.id
-                           WHERE ut.tenant_id=%s AND u.rol='client' AND u.activ=true
-                           ORDER BY u.id LIMIT 1""", (tenant_id,))
-            row = cur.fetchone()
+            row = repo_utilizatori.primul_client_al_firmei(cur, tenant_id)
             # [F-preview] identitatea tenantului previzualizat: nume_tenant + tenant_are_cabinet
             # (accounting_firm_id setat) -> exact ce foloseste portal.js/_eGratuit ca la login.
-            cur.execute("SELECT nume, accounting_firm_id FROM public.tenants WHERE id=%s", (tenant_id,))
-            tr = cur.fetchone()
+            tr = repo_tenants.nume_si_cabinet(cur, tenant_id)
     if not row:
         raise HTTPException(400, "Firma nu are încă un cont de client. Invită unul din 'Acces client', apoi poți previzualiza.")
     # token de client, marcat preview -> read-only middleware blocheaza orice mutatie
@@ -2249,9 +2192,8 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
     with db.get_conn() as conn:
         # CUI-urile deja existente în portofoliul cabinetului (normalizate la cifre)
         with conn.cursor() as cur:
-            cur.execute("SELECT cui FROM public.tenants WHERE accounting_firm_id = %s", (ctx["firm"],))
             existente = set()
-            for (c,) in cur.fetchall():
+            for (c,) in repo_tenants.cui_uri_din_portofoliu(cur, ctx["firm"]):
                 cc = anaf_api._curata(c)
                 if cc:
                     existente.add(cc)
@@ -2382,13 +2324,9 @@ def tenant_plan_conturi_lista(tenant_id: int, q: Optional[str] = None, ctx=Depen
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             if q:
-                cur.execute(
-                    "SELECT simbol, denumire, tip FROM plan_conturi "
-                    "WHERE simbol ILIKE %s OR denumire ILIKE %s ORDER BY simbol LIMIT 100",
-                    (f"%{q}%", f"%{q}%"))
+                rows = repo_contabilitate.conturi_dupa_text(cur, f"%{q}%", f"%{q}%")
             else:
-                cur.execute("SELECT simbol, denumire, tip FROM plan_conturi ORDER BY simbol LIMIT 100")
-            rows = cur.fetchall()
+                rows = repo_contabilitate.toate_conturile(cur)
     return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2]} for r in rows]}
 # [p95_plan_conturi] Modelul TREBUIE definit INAINTE de handler: cu `from __future__ import annotations`
 # (PEP 563) adnotarea `date: PlanContIn` e string, iar @app.post o rezolva la IMPORT, in ordinea sursei.
@@ -2427,8 +2365,7 @@ def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,
             # Regula 4 + 14.4: un simbol care exista deja NU se suprascrie tacut (ar redenumi un cont OMFP
             # standard, seed-uit la crearea firmei). Calea bulk (solduri_api) foloseste ON CONFLICT DO NOTHING;
             # calea manuala refuza explicit, cu denumirea contului existent, si trimite la cautarea de mai sus.
-            cur.execute("SELECT denumire FROM plan_conturi WHERE simbol = %s", (simbol,))
-            existent = cur.fetchone()
+            existent = repo_contabilitate.denumirea_contului(cur, simbol)
             if existent:
                 raise HTTPException(409,
                     "Contul %s există deja în plan: „%s”. Caută-l în lista de mai sus; dacă ai nevoie "
@@ -3172,8 +3109,7 @@ def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_rol("admin_fi
     with db.get_conn(schema) as cs, db.get_conn() as cp:
         r = audit_preluare.audit(cs, schema, tenant_id, cp)
         with cp.cursor() as cur:  # creat_la = de cand e firma in iConta sub cabinet (proxy preluare)
-            cur.execute("SELECT creat_la FROM public.tenants WHERE id=%s", (tenant_id,))
-            row = cur.fetchone()
+            row = repo_tenants.creat_la(cur, tenant_id)
     r["data"] = datetime.datetime.now().isoformat(timespec="minutes")  # cu ora: doua rulari/zi se disting
     r["in_iconta_din"] = row[0].date().isoformat() if row and row[0] else None  # data simpla (scara = luni)
     # [R45] Verdictul se pastreaza: continut (verdictul intreg, serializat), moment, autor,
@@ -3559,8 +3495,7 @@ def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_ro
     # [F180] CUI din public.tenants -> apel ANAF live FARA a tine conexiunea pe schema
     with db.get_conn() as cpub:
         with cpub.cursor() as cur:
-            cur.execute("SELECT cui FROM public.tenants WHERE id = %s", (tenant_id,))
-            row = cur.fetchone()
+            row = repo_tenants.cui_dupa_id(cur, tenant_id)
     anaf_val, avert, tva_inceput = _anaf_tva_check(row[0] if row else None, date.platitor_tva)
     with db.get_conn(schema) as conn:
         # [R46] `platitor_tva` decide daca firma datoreaza D300/D394 si pe ce perioade.
@@ -3821,8 +3756,7 @@ def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_
     # nume+cui din public.tenants (pt cazul cand firma_profil e gol si trebuie creat)  # [p83_upsert]
     with db.get_conn() as cpub:
         with cpub.cursor() as cur:
-            cur.execute("SELECT nume, cui FROM public.tenants WHERE id = %s", (tenant_id,))
-            row = cur.fetchone()
+            row = repo_tenants.nume_si_cui_spatiat(cur, tenant_id)
     t_nume = row[0] if row else None
     t_cui = row[1] if row else None
     # [F180] apel ANAF live pe CUI INAINTE de a deschide conexiunea pe schema
@@ -3909,8 +3843,7 @@ def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("a
     _preincalzeste_cursul(_moneda_facturii(schema, factura_id), _dtx.date.today())
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT tip, transformat_in_id FROM facturi WHERE id=%s", (factura_id,))
-            r = cur.fetchone()
+            r = repo_facturi.tip_si_transformare(cur, factura_id)
         if not r:
             raise HTTPException(404, "document inexistent")
         if r[0] == "factura":
@@ -4004,8 +3937,7 @@ def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,
         # fara motiv si fara cod. „N-am putut actualiza" si „clientul asta nu exista" nu sunt
         # acelasi lucru, iar primul nu spune nimic.
         with conn.cursor() as cur:
-            cur.execute("SELECT 1 FROM clienti WHERE id=%s", (client_id,))
-            if not cur.fetchone():
+            if not repo_portal.clientul_exista(cur, client_id):
                 raise HTTPException(404, "client inexistent")
         return clienti_api.actualizeaza_client(conn, client_id, **date.model_dump())
 
@@ -4068,8 +4000,7 @@ def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
             # actualizat" despre cineva care nu e in firma. A TREIA oara in campanie cand o ruta
             # despre un salariat nu verifica daca el exista (lotul 4: concediile, de doua ori).
             with conn.cursor() as cur:
-                cur.execute("SELECT 1 FROM salariati WHERE id=%s", (salariat_id,))
-                if not cur.fetchone():
+                if not repo_salariati.salariatul_exista(cur, salariat_id):
                     raise HTTPException(404, "salariat inexistent")
             return salariati_api.actualizeaza_salariat(conn, salariat_id,
                                                        _golite=golite, **date.model_dump())
@@ -4127,8 +4058,7 @@ def cm_lista(tenant_id: int, salariat_id: int, an: int = None, ctx=Depends(cere_
     _cere_perioada(an=an)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT 1 FROM salariati WHERE id=%s", (salariat_id,))
-            if not cur.fetchone():
+            if not repo_salariati.salariatul_exista_2(cur, salariat_id):
                 raise HTTPException(404, "salariat inexistent")
         return {"concedii": salariati_api.lista_concedii(conn, salariat_id, an)}
 
@@ -4140,8 +4070,7 @@ def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),
     try:
         with db.get_conn(schema) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT 1 FROM salariati WHERE id=%s", (salariat_id,))
-                if not cur.fetchone():
+                if not repo_salariati.salariatul_exista_3(cur, salariat_id):
                     raise HTTPException(404, "salariat inexistent")
             return salariati_api.salveaza_concediu(conn, salariat_id, corp)
     except (ValueError, ZeroDivisionError) as e:
@@ -4300,10 +4229,7 @@ def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
     from core import duk as _duk
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT tip, payload, (payload->>'_an')::int, (payload->>'_luna')::int "
-                        "FROM public.declaratii_coada WHERE id=%s AND cabinet_id=%s",
-                        (coada_id, ctx["firm"]))
-            row = cur.fetchone()
+            row = repo_declaratii.continutul_din_coada(cur, coada_id, ctx["firm"])
     if not row:
         raise HTTPException(404, "Element de coadă negăsit (sau alt cabinet).")
     tip, payload, _an, _luna = row
@@ -4641,8 +4567,7 @@ def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT tip_firma, tip_decont, platitor_tva, operatiuni_ic, regim_fiscal FROM firma_profil WHERE id = 1")
-            row = cur.fetchone()
+            row = repo_firma_profil.profil_fiscal(cur)
         _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2],
                  "operatiuni_ic": row[3], "regim_fiscal": row[4]}   # [R94] regimul intra in vector
                 if row else {})
@@ -4800,10 +4725,7 @@ def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client))
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             pid = _titular_client(cur, t["id"])
-            cur.execute("""SELECT u.id, u.email, u.nume FROM public.users u
-                           JOIN public.user_tenants ut ON ut.user_id=u.id
-                           WHERE ut.tenant_id=%s AND u.rol='client' ORDER BY u.id""", (t["id"],))
-            conturi = cur.fetchall()
+            conturi = repo_utilizatori.clientii_firmei(cur, t["id"])
     # Fara fallback: `_titular_client` ESTE regula, deci n-are pe ce sa cada. Fallback-ul de aici
     # era chiar jumatatea care mintea — citirea il avea, scrierile nu.
     principal = next((c for c in conturi if c["id"] == pid), None)
@@ -4817,8 +4739,7 @@ def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client))
         with conn_s.cursor() as cur:
             # [R65] O SINGURA adresa: `patron_email` s-a scos din schema, avea precedenta si niciun
             # scriitor. Aici era a doua folosire a lui `coalesce`, pusa ieri pentru R63.
-            cur.execute("SELECT email FROM firma_profil WHERE id = 1")
-            rand = cur.fetchone()
+            rand = repo_firma_profil.email_firma(cur)
     email_pachet = ((rand[0] if rand else None) or "").strip()
     email_logare = ((principal or {}).get("email") or "").strip()
     return {"principal": principal, "suplimentare": suplimentare,
@@ -4885,11 +4806,7 @@ def portal_confirma_email(date: ConfirmaEmailIn):
     lua adresa, iar o scriere facuta pe nevazute ar sparge unicitatea."""
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT id, user_id, tenant_id, email_vechi, email_nou "
-                        "FROM public.schimbari_email "
-                        "WHERE token_hash=%s AND confirmat_la IS NULL AND expira > now()",
-                        (_hash_tok(date.token),))
-            r = cur.fetchone()
+            r = repo_utilizatori.schimbare_email_in_asteptare(cur, _hash_tok(date.token))
             if not r:
                 raise HTTPException(400, MESAJ_EMAIL_TOKEN_INVALID)
             _adresa_e_libera(cur, r["email_nou"], r["user_id"])
@@ -4910,9 +4827,7 @@ def cabinet_urme_portal(tenant_id: int, ctx=Depends(cere_cabinet)):
         if not auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT actiune, detaliu, autor_id, creat_la FROM public.urme_portal "
-                        "WHERE tenant_id=%s ORDER BY creat_la DESC LIMIT 200", (tenant_id,))
-            urme = [dict(x) for x in cur.fetchall()]
+            urme = [dict(x) for x in repo_utilizatori.urme_portal_ale_firmei(cur, tenant_id)]
     return {"urme": urme, "nr": len(urme)}
 
 
@@ -4931,8 +4846,7 @@ def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
             # [R62 (1)] NU se mai scrie `users.email` aici. Adresa e identitatea de autentificare
             # (intrarea se face prin magic-link pe email), deci un UPDATE imediat insemna ca cine
             # are o sesiune deschisa muta contul, definitiv, dintr-un singur camp.
-            cur.execute("SELECT email FROM public.users WHERE id=%s", (ctx["uid"],))
-            email_vechi = ((cur.fetchone() or {}).get("email") or "").strip().lower()
+            email_vechi = ((repo_utilizatori.emailul_contului(cur, ctx["uid"]) or {}).get("email") or "").strip().lower()
             if email_vechi == email_nou:
                 raise HTTPException(400, MESAJ_EMAIL_ACELASI)
             import secrets as _sec3
@@ -4972,11 +4886,8 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
             pid = _titular_client(cur, t["id"])   # [R62 (b)] aceeasi regula ca la citire
             if pid is None or pid != ctx["uid"]:
                 raise HTTPException(403, MESAJ_DOAR_TITULARUL)
-            cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id=%s", (t["id"],))
-            firm_id = cur.fetchone()["accounting_firm_id"]
-            cur.execute("SELECT id, rol, activ, accounting_firm_id FROM public.users "
-                        "WHERE lower(email)=%s", (email,))
-            ex = cur.fetchone()
+            firm_id = repo_tenants.cabinetul_firmei(cur, t["id"])["accounting_firm_id"]
+            ex = repo_utilizatori.contul_dupa_email_2(cur, email)
             if ex and (ex["rol"] != "client" or ex["activ"]):
                 raise HTTPException(400, EMAIL_EXISTA)
             _cere_acelasi_cabinet(ex, firm_id)   # [R62 (2)] izolarea intre cabinete, P12
@@ -5014,8 +4925,7 @@ def portal_revoca_acces(user_id: int, tenant_id: Optional[int] = None, ctx=Depen
             if user_id == pid:
                 raise HTTPException(400, "nu poți revoca propriul acces principal")
             cur.execute("DELETE FROM public.user_tenants WHERE user_id=%s AND tenant_id=%s", (user_id, t["id"]))
-            cur.execute("SELECT count(*) AS n FROM public.user_tenants WHERE user_id=%s", (user_id,))
-            if cur.fetchone()["n"] == 0:
+            if repo_utilizatori.cate_firme_mai_are_contul(cur, user_id)["n"] == 0:
                 cur.execute("UPDATE public.users SET activ=false WHERE id=%s", (user_id,))
             _urma_portal(cur, t["id"], "acces_retras",
                          "clientul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
@@ -5048,10 +4958,6 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""
-                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la, orientare
-                FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la DESC
-            """)
             bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
                        "data": r[3].isoformat() if r[3] else None,
                        "total": float(r[4] or 0),
@@ -5061,7 +4967,8 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
                        "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
                        "numar_document": r[11], "mentiuni": r[12],
                        "primit_la": r[14].isoformat() if r[14] else None,
-                       "orientare": r[15] or 0} for r in cur.fetchall()]  # bon_flux_e9_v1
+                       "orientare": r[15] or 0}
+                      for r in repo_casa.bonuri_de_verificat(cur, schema)]  # bon_flux_e9_v1
     return {"bonuri": bonuri}
 class BonLinie(BaseModel):
     cont: str
@@ -5085,8 +4992,7 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:  # bon_flux_e1b_v1
-            cur.execute(f"SELECT tip FROM {schema}.bonuri WHERE id=%s", (bon_id,))
-            rt = cur.fetchone()
+            rt = repo_casa.tipul_bonului(cur, schema, bon_id)
             if not rt:
                 raise HTTPException(404, "bon inexistent")
             if (rt[0] or "bon") != "bon":
@@ -5139,8 +5045,7 @@ def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(ce
             # fara asta ar ajunge la el ca 500 gol.
             raise HTTPException(422, str(e))
     with db.get_conn(schema) as conn, conn.cursor() as cur:
-        cur.execute("SELECT id FROM inregistrari WHERE numar = %s", (p["document_ref"],))
-        r = cur.fetchone()
+        r = repo_contabilitate.id_nota_dupa_numar(cur, p["document_ref"])
     p["deja_contata"] = bool(r)
     p["nota_id"] = r[0] if r else None
     return p
@@ -5166,8 +5071,7 @@ def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
         except ValueError as e:
             raise HTTPException(422, str(e))
         with conn.cursor() as cur:
-            cur.execute("SELECT id FROM inregistrari WHERE numar = %s", (p["document_ref"],))
-            r = cur.fetchone()
+            r = repo_contabilitate.id_nota_dupa_numar_2(cur, p["document_ref"])
             if r:
                 return {**p, "deja_contata": True, "nota_id": r[0],
                          "cod": "DEJA_CONTATA"}
@@ -5206,18 +5110,9 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int,
         _cere_luna_deschisa(conn, schema, _date(an, luna, 1).replace(day=28))
         ref = _date(an, luna, 1)
         with conn.cursor() as cur:
-            cur.execute(f"""
-                SELECT numar FROM {schema}.inregistrari
-                WHERE sursa = 'amortizare' AND numar = %s
-            """, (f"AMORT-{an}-{luna:02d}",))
-            if cur.fetchone():
+            if repo_contabilitate.nota_de_amortizare(cur, schema, f"AMORT-{an}-{luna:02d}"):
                 raise HTTPException(400, "Amortizarea lunii e deja generată.")
-            cur.execute(f"""
-                SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni,
-                       data_pif, cont_imobilizare, metoda
-                FROM {schema}.mijloace_fixe WHERE activ = true
-            """)
-            mf = cur.fetchall()
+            mf = repo_mijloace_fixe.de_amortizat(cur, schema)
         from core import d406_active as _d406
         linii = []
         for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met in mf:
@@ -5368,8 +5263,7 @@ def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT an, luna FROM {schema}.perioade_blocate ORDER BY an, luna")
-            return {"blocate": [{"an": r[0], "luna": r[1]} for r in cur.fetchall()]}
+            return {"blocate": [{"an": r[0], "luna": r[1]} for r in repo_contabilitate.perioade_blocate(cur, schema)]}
 
 def _facturi_neincheiate_in_perioada(cur, schema, an, luna):
     """[PPP1, 29.08.2026] Câte FACTURI ale perioadei sunt încă într-o stare neîncheiată.
@@ -5518,28 +5412,10 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
             # "numarul curent al operatiunilor inregistrate incepand de la 1 ianuarie ... pana la
             # sfarsitul exercitiului financiar". De aceea fereastra e pe AN, iar filtrul pe luna se
             # aplica DUPA numerotare - altfel fiecare luna ar reincepe de la 1.
-            cur.execute(f"""
-                WITH pe_an AS (
-                    SELECT id, data, numar, descriere, sursa, status, factura_id, document_ref,
-                           ROW_NUMBER() OVER (ORDER BY data, id) AS nr_curent
-                    FROM {schema}.inregistrari
-                    WHERE date_trunc('year', data) = %s
-                )
-                SELECT n.id, n.data, n.numar, n.descriere, n.sursa, n.status, n.factura_id,
-                       n.document_ref, n.nr_curent,
-                       f.tip, f.serie, f.numar, f.data_emitere,
-                       l.cont_debit, l.cont_credit, l.suma, l.centru_cost_id, cc.nume AS centru_nume
-                FROM pe_an n
-                JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = n.id
-                LEFT JOIN {schema}.facturi f ON f.id = n.factura_id
-                LEFT JOIN {schema}.centre_cost cc ON cc.id = l.centru_cost_id
-                WHERE date_trunc('month', n.data) = %s
-                ORDER BY n.data, n.id, l.id
-            """, (f"{an}-01-01", f"{an}-{luna:02d}-01"))
             note, total = {}, 0.0
             for (iid, data, nr, desc, sursa, status, fid, dref, nrc,
                  f_tip, f_serie, f_nr, f_data,
-                 deb, cre, suma, cc_id, cc_nume) in cur.fetchall():
+                 deb, cre, suma, cc_id, cc_nume) in repo_contabilitate.jurnal_pe_an(cur, schema, f"{an}-01-01", f"{an}-{luna:02d}-01"):
                 if iid not in note:
                     note[iid] = {"id": iid, "nr_curent": int(nrc), "data": data.isoformat(),
                                  "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
@@ -5754,8 +5630,7 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
         for _r in stat:
             _r["compozitie"] = _sp.compozitie_fluturas(_r)
         with conn.cursor() as _rc:
-            _rc.execute("SELECT 1 FROM public.reges_chei WHERE tenant_id=%s", (tenant_id,))
-            _reges_ok = _rc.fetchone() is not None
+            _reges_ok = repo_salariati.firma_are_chei_reges(_rc, tenant_id) is not None
         return {"stat": stat, "reges_configurat": _reges_ok}
 @app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
 # [R52] Poartă salariul unei PERSOANE — date despre cineva care nu e firma.
@@ -5768,8 +5643,8 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int,
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
-        nf = (cur.fetchone() or [""])[0]
+        cur = conn.cursor()
+        nf = (repo_tenants.nume_dupa_id(cur, tenant_id) or [""])[0]
     with db.get_conn(schema) as conn:  # fluturas_pdf foloseste nume necalificate -> search_path pe tenant
         pdf = _sp.fluturas_pdf(conn, schema, salariat_id, an, luna, nf)
     if pdf is None:
@@ -5873,8 +5748,8 @@ def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
-        nf = (cur.fetchone() or [""])[0]
+        cur = conn.cursor()
+        nf = (repo_tenants.nume_dupa_id_2(cur, tenant_id) or [""])[0]
     with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
         try:
             _xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
@@ -5899,8 +5774,8 @@ def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int,
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
-        nf = (cur.fetchone() or [""])[0]
+        cur = conn.cursor()
+        nf = (repo_tenants.nume_dupa_id_3(cur, tenant_id) or [""])[0]
     with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
         try:
             xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
@@ -6046,8 +5921,7 @@ def d300_manual_sterge(tenant_id: int, rid: int, ctx=Depends(cere_cabinet)):
         # [R42 (b)] Aceeași regulă ca la D390. Perioada nu vine din cerere, ci din rândul însuși —
         # altfel s-ar putea șterge un rând dintr-o lună generată trimițând altă lună.
         with conn.cursor() as _cur_per:
-            _cur_per.execute(f"SELECT an, luna FROM {schema}.d300_manual WHERE id=%s", (rid,))
-            _r = _cur_per.fetchone()
+            _r = repo_declaratii.perioada_d300_manual(_cur_per, schema, rid)
         if _r and _declaratie_generata(conn, tenant_id, "D300", _r[0], _r[1]):
             _cere_admin_firma(ctx, "declarația D300 pe %02d/%d e deja generată — un rând completat "
                                    "manual face parte din ea, iar scoaterea lui o face să nu mai "
@@ -6463,25 +6337,16 @@ def bon_facturi_candidate(tenant_id: int, bon_id: int, ctx=Depends(cere_cabinet)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT cui, total FROM {schema}.bonuri WHERE id=%s", (bon_id,))
-            r = cur.fetchone()
+            r = repo_casa.cui_si_total_bon(cur, schema, bon_id)
             if not r:
                 raise HTTPException(404, "document inexistent")
             cui = (r[0] or "").upper().replace("RO", "").strip()
             suma = float(r[1] or 0)
-            cur.execute(f"""
-                SELECT id, numar, serie, data_emitere, total, tert_nume, tert_cui
-                FROM {schema}.facturi
-                WHERE directie='primita' AND COALESCE(status,'') <> 'anulata' AND platita_la IS NULL
-                ORDER BY (upper(replace(COALESCE(tert_cui,''),'RO','')) = %s) DESC,
-                         abs(total - %s) ASC, data_emitere DESC
-                LIMIT 10
-            """, (cui, suma))
             fc = [{"id": x[0], "numar": ((x[2] or "") + str(x[1] or "")).strip(),
                    "data": x[3].isoformat() if x[3] else None,
                    "total": float(x[4] or 0), "furnizor": x[5], "cui": x[6],
                    "potrivire_cui": bool(cui) and (x[6] or "").upper().replace("RO", "").strip() == cui,
-                   "potrivire_suma": abs(float(x[4] or 0) - suma) <= 0.05} for x in cur.fetchall()]
+                   "potrivire_suma": abs(float(x[4] or 0) - suma) <= 0.05} for x in repo_facturi.candidate_pentru_bon(cur, schema, cui, suma)]
     return {"facturi": fc}
 
 class ChitantaStinge(BaseModel):
@@ -6504,8 +6369,7 @@ def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge,
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT tip, status FROM {schema}.bonuri WHERE id=%s", (bon_id,))
-            r = cur.fetchone()
+            r = repo_casa.tip_si_status_bon(cur, schema, bon_id)
             if not r:
                 raise HTTPException(404, "document inexistent")
             if (r[0] or "bon") != "chitanta":
@@ -6549,8 +6413,7 @@ def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_rol("admin
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             if c.factura_id:
-                cur.execute(f"SELECT serie, numar, tert_nume, tert_cui, total, directie, data_emitere FROM {schema}.facturi WHERE id=%s", (c.factura_id,))
-                r = cur.fetchone()
+                r = repo_facturi.factura_pentru_chitanta(cur, schema, c.factura_id)
                 if not r:
                     raise HTTPException(404, "factură inexistentă")
                 if r[5] != "emisa":
@@ -6561,11 +6424,9 @@ def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_rol("admin
                     nrtxt = str(r[0]) + nrtxt
                 reprezentand = "contravaloare factura %s din %s" % (
                     nrtxt, data_ro(r[6]))
-            cur.execute(f"SELECT COALESCE(serie_chitanta, 'CH') FROM {schema}.firma_profil LIMIT 1")
-            rs = cur.fetchone()
+            rs = repo_firma_profil.seria_chitantei(cur, schema)
             serie = (rs[0] if rs else None) or "CH"
-            cur.execute(f"SELECT COALESCE(max(numar), 0) + 1 FROM {schema}.chitante WHERE serie=%s", (serie,))
-            nr = cur.fetchone()[0]
+            nr = repo_casa.urmatorul_numar_chitanta(cur, schema, serie)[0]
         rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "incasare_client",
                                              "suma": c.suma, "document": "%s-%s" % (serie, nr),
                                              "partener": client_nume, "cui": client_cui})
@@ -6589,11 +6450,11 @@ def chitante_lista(tenant_id: int, factura_id: Optional[int] = None, ctx=Depends
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         if factura_id:
-            cur.execute(f"SELECT id, serie, numar, data, suma, client_nume FROM {schema}.chitante WHERE factura_id=%s AND NOT anulata ORDER BY id DESC", (factura_id,))
+            _randuri = repo_casa.chitante_ale_facturii(cur, schema, factura_id)
         else:
-            cur.execute(f"SELECT id, serie, numar, data, suma, client_nume FROM {schema}.chitante WHERE NOT anulata ORDER BY id DESC LIMIT 100")
+            _randuri = repo_casa.chitante_toate(cur, schema)
         chi = [{"id": r[0], "serie": r[1], "numar": r[2], "data": r[3].isoformat() if r[3] else None,
-                "suma": float(r[4] or 0), "client_nume": r[5]} for r in cur.fetchall()]
+                "suma": float(r[4] or 0), "client_nume": r[5]} for r in _randuri]
     return {"chitante": chi}
 
 @app.get("/tenants/{tenant_id}/chitante/{chitanta_id}/pdf")
@@ -6603,12 +6464,10 @@ def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_rol("admin_f
     from core import chitante as _ch
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute(f"SELECT serie, numar, data, client_nume, client_cui, suma, reprezentand FROM {schema}.chitante WHERE id=%s", (chitanta_id,))
-        r = cur.fetchone()
+        r = repo_casa.chitanta_pentru_pdf(cur, schema, chitanta_id)
         if not r:
             raise HTTPException(404, "chitanță inexistentă")
-        cur.execute("SELECT nume, cui FROM public.tenants WHERE id=%s", (tenant_id,))
-        te = cur.fetchone() or (None, None)
+        te = repo_tenants.nume_si_cui(cur, tenant_id) or (None, None)
     pdf = _ch.pdf_chitanta({"nume": te[0], "cui": te[1]},
                            {"serie": r[0], "numar": r[1],
                             "data": data_ro(r[2]),
@@ -6912,9 +6771,7 @@ def api_cheie_revoca(kid: int, ctx=Depends(cere_rol("admin_firma"))):
 @app.get("/api/v1/firme")  # api_public_v1
 def apiv1_firme(actx=Depends(cere_api_key)):
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""SELECT id, nume, cui FROM public.tenants
-                       WHERE accounting_firm_id=%s ORDER BY nume""", (actx["firm"],))
-        return {"firme": [{"id": r[0], "nume": r[1], "cui": r[2]} for r in cur.fetchall()]}
+        return {"firme": [{"id": r[0], "nume": r[1], "cui": r[2]} for r in repo_tenants.firme_pentru_api(cur, actx["firm"])]}
 
 
 @app.get("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
@@ -7077,8 +6934,7 @@ def wc_config_get(tenant_id: int, ctx=Depends(cere_context)):
     # [wc_config_no_mask] o eroare de DB NU se ambaleaza intr-un 200 "neconfigurat" (masca cat.0) - se propaga
     # (500), iar frontend-ul arata eroare vizibila. "neconfigurat" ramane DOAR pentru lipsa reala de rand (r None).
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute(f"SELECT wc_url, (wc_ck IS NOT NULL AND wc_cs IS NOT NULL) AS are_chei FROM {schema}.firma_profil LIMIT 1")
-        r = cur.fetchone()
+        r = repo_firma_profil.config_woocommerce(cur, schema)
     if not r:
         return {"configurat": False, "url": None}
     return {"configurat": bool(r[0] and r[1]), "url": r[0]}
@@ -7128,10 +6984,7 @@ def cabinet_consolidare(an: Optional[int] = None, luna: Optional[int] = None,
     an = an or azi.year
     luna = luna or azi.month
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""SELECT id, nume, schema_name FROM public.tenants
-                       WHERE accounting_firm_id = %s ORDER BY nume""",
-                    (ctx["firm"],))
-        tenanti = cur.fetchall()
+        tenanti = repo_tenants.firme_cu_schema(cur, ctx["firm"])
     firme = []
     total = {"venituri": 0, "cheltuieli": 0, "profit": 0,
              "cash": 0, "de_incasat": 0, "de_platit": 0}
@@ -7174,11 +7027,9 @@ def portal_cashflow(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     k = _kpi.kpi_din_balanta(randuri)
     with db.get_conn(t["schema_name"]) as conn:
         with conn.cursor() as cur:
-            cur.execute("""SELECT directie, data_emitere, data_scadenta, total
-                           FROM facturi WHERE tip='factura' AND storno_din_id IS NULL""")
             fs = [{"directie": r[0], "data_emitere": str(r[1]),
                    "data_scadenta": str(r[2]) if r[2] else None, "total": float(r[3] or 0)}
-                  for r in cur.fetchall()]
+                  for r in repo_facturi.pentru_cashflow(cur)]
     emise = _cf.aloca_sold([f for f in fs if f["directie"] == "emisa"], k["de_incasat"])
     primite = _cf.aloca_sold([f for f in fs if f["directie"] == "primita"], k["de_platit"])
     obligatii = _cf.obligatii_din_balanta(randuri)  # portal_cashflow_v2
@@ -7291,10 +7142,7 @@ def portal_solicitari_contor(tenant_id: Optional[int] = None, ctx=Depends(cere_c
     t = _tenant_client(ctx, tenant_id)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                "SELECT count(*) FROM public.solicitari_client "
-                "WHERE tenant_id=%s AND autor_rol='cabinet' AND citit=false", (t["id"],))
-            n = cur.fetchone()[0]
+            n = repo_portal.cate_solicitari_necitite(cur, t["id"])[0]
     return {"necitite": n}
 
 @app.get("/portal/solicitari")
@@ -7302,10 +7150,7 @@ def portal_solicitari_lista(tenant_id: Optional[int] = None, ctx=Depends(cere_cl
     t = _tenant_client(ctx, tenant_id)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_sol.RealDictCursor) as cur:
-            cur.execute(
-                "SELECT id, mesaj, autor_rol, creat_la FROM public.solicitari_client "
-                "WHERE tenant_id=%s ORDER BY id", (t["id"],))
-            rows = cur.fetchall()
+            rows = repo_portal.solicitarile_firmei(cur, t["id"])
     return {"solicitari": rows}
 
 @app.post("/portal/solicitari")
@@ -7317,14 +7162,10 @@ def portal_solicitari_trimite(date: SolicitareIn, tenant_id: Optional[int] = Non
                 "INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
                 "VALUES (%s,%s,'client',%s)", (t["id"], date.mesaj, ctx["uid"]))
         with conn.cursor() as cur:
-            cur.execute("SELECT accounting_firm_id, nume FROM public.tenants WHERE id=%s", (t["id"],))
-            r = cur.fetchone()
+            r = repo_tenants.cabinetul_si_numele(cur, t["id"])
         if r and r[0]:
             with conn.cursor() as cur:
-                cur.execute(
-                    "SELECT id FROM public.users WHERE accounting_firm_id=%s AND activ=true "
-                    "AND rol IN ('admin_firma', 'angajat')", (r[0],))
-                ids = [x[0] for x in cur.fetchall()]
+                ids = [x[0] for x in repo_utilizatori.conturi_active_ale_cabinetului(cur, r[0])]
             txt = "Mesaj nou de la %s: %s" % (r[1] or "firma", date.mesaj[:80])
             _notif.adauga_multi(conn, ids, "solicitare_client", txt, link="solicitari:%s" % t["id"])
     return {"ok": True}
@@ -7334,10 +7175,7 @@ def cabinet_solicitari_lista(tenant_id: int, ctx=Depends(cere_context)):
     _schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_sol.RealDictCursor) as cur:
-            cur.execute(
-                "SELECT id, mesaj, autor_rol, creat_la, citit FROM public.solicitari_client "
-                "WHERE tenant_id=%s ORDER BY id", (tenant_id,))
-            rows = cur.fetchall()
+            rows = repo_portal.solicitarile_pentru_cabinet(cur, tenant_id)
     return {"solicitari": rows}
 
 @app.post("/tenants/{tenant_id}/solicitari")
@@ -7442,8 +7280,7 @@ def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
         raise HTTPException(422, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT id, activ FROM public.users WHERE email=%s", (email,))
-            if cur.fetchone():
+            if repo_utilizatori.id_si_activ_dupa_email(cur, email):
                 raise HTTPException(422, EMAIL_EXISTA)
             cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ, poate_valida)
                            VALUES (%s, %s, %s, 'angajat', %s, true, %s) RETURNING id""",
@@ -7700,8 +7537,7 @@ def eu_schimba_parola(date: SchimbaParolaIn, ctx=Depends(cere_cabinet)):
         raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT password_hash FROM public.users WHERE id = %s", (ctx["uid"],))
-            row = cur.fetchone()
+            row = repo_utilizatori.hash_parola(cur, ctx["uid"])
         if not row or not auth_api.verifica_parola_orice(date.parola_veche, row[0]):
             raise HTTPException(403, "Parola actuala este gresita.")
         auth_api.schimba_parola(conn, ctx["uid"], date.parola_noua)
@@ -7967,10 +7803,7 @@ def eu_permisiuni(ctx=Depends(cere_cabinet)):
                 "rol": "superadmin"}
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                "SELECT poate_pregati, poate_valida, poate_depune, rol "
-                "FROM public.users WHERE id = %s", (ctx["uid"],))
-            r = cur.fetchone()
+            r = repo_utilizatori.permisiuni(cur, ctx["uid"])
     if not r:
         raise HTTPException(status_code=404, detail="user inexistent")
     return {"poate_pregati": bool(r[0]), "poate_valida": bool(r[1]),
@@ -8796,8 +8629,7 @@ def cv_locatii(tenant_id: int, articol_id: int = None, ctx=Depends(cere_cabinet)
         # lotul 4 si contul din lotul 3.
         if articol_id is not None and schema:
             with db.get_conn(schema) as _c2, _c2.cursor() as _cur:
-                _cur.execute("SELECT 1 FROM articole WHERE id=%s", (articol_id,))
-                if not _cur.fetchone():
+                if not repo_stocuri.articolul_exista(_cur, articol_id):
                     raise HTTPException(404, "articol inexistent")
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
@@ -9103,28 +8935,18 @@ def verificare_stocuri(tenant_id: int, ctx=Depends(cere_cabinet)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute(f"SELECT id, denumire, cont_stoc FROM {schema}.articole ORDER BY id")
-            arts = [dict(r) for r in cur.fetchall()]
+            arts = [dict(r) for r in repo_stocuri.articole_cu_cont(cur, schema)]
             val_cv = {}
             for a in arts:
-                cur.execute(f"""SELECT data, tip, cantitate, pret_unitar FROM {schema}.miscari_stoc
-                                WHERE articol_id=%s ORDER BY data, id""", (a["id"],))
-                fisa = _m.fisa_magazie([dict(r) for r in cur.fetchall()])
+                fisa = _m.fisa_magazie([dict(r) for r in repo_stocuri.miscari_ale_articolului(cur, schema, a["id"])])
                 if fisa:
                     u = fisa[-1]
                     v = Decimal(str(u["sold_cantitate"] or 0)) * Decimal(str(u["cmp"] or 0))
                     val_cv[a["cont_stoc"]] = val_cv.get(a["cont_stoc"], Decimal("0")) + v
             rez = []
             for cont, vcv in sorted(val_cv.items()):
-                cur.execute(f"""SELECT COALESCE(SUM(sold_debitor - sold_creditor),0) AS si
-                                FROM {schema}.solduri_initiale WHERE cont = %s""", (cont,))
-                sold = Decimal(str(cur.fetchone()["si"]))
-                cur.execute(f"""SELECT COALESCE(SUM(CASE WHEN l.cont_debit=%s THEN l.suma ELSE 0 END),0) AS d,
-                                       COALESCE(SUM(CASE WHEN l.cont_credit=%s THEN l.suma ELSE 0 END),0) AS c
-                                FROM {schema}.inregistrari_linii l
-                                JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                                WHERE i.status = 'validata'""", (cont, cont))
-                r = cur.fetchone()
+                sold = Decimal(str(repo_contabilitate.sold_initial_pe_cont(cur, schema, cont)["si"]))
+                r = repo_contabilitate.rulaj_pe_cont_stoc(cur, schema, cont, cont)
                 sold += Decimal(str(r["d"])) - Decimal(str(r["c"]))
                 dif = (sold - vcv).quantize(Decimal("0.01"))
                 rez.append({"cont": cont, "sold_contabil": str(sold.quantize(Decimal("0.01"))),
@@ -9145,8 +8967,7 @@ def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id = 1")
-            r = cur.fetchone() or {}
+            r = repo_firma_profil.cui_firma(cur, schema) or {}
     cui = re.sub(r"\D", "", r.get("cui") or "")
     if not cui:
         raise HTTPException(422, CUI_FIRMA_LIPSA)
@@ -9177,8 +8998,7 @@ def etransport_trimite(tenant_id: int, corp: dict = Body(...),
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
-            r0 = cur.fetchone()
+            r0 = repo_firma_profil.cui_firma_2(cur, schema)
     cui = _re2.sub(r"\D", "", (r0[0] if r0 else "") or "")
     if not cui:
         raise HTTPException(422, CUI_FIRMA_LIPSA)
@@ -9209,10 +9029,7 @@ def etransport_trimiteri_lista(tenant_id: int, ctx=Depends(cere_context)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT id, stare, uit, data_transport, uit_valabil_pana, intracom, error_message
-                              FROM {schema}.etransport_trimiteri WHERE mediu='prod'
-                              ORDER BY id DESC LIMIT 50""")
-            rows = cur.fetchall()
+            rows = repo_declaratii.trimiteri_etransport(cur, schema)
     azi = _date.today()
     out = []
     for (tid, stare, uit, dt, valp, intra, err) in rows:
@@ -9270,9 +9087,7 @@ def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("ad
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT status, directie, (xml IS NOT NULL) FROM {schema}.facturi "
-                        f"WHERE id=%s FOR UPDATE", (factura_id,))
-            r = cur.fetchone()
+            r = repo_facturi.stare_pentru_recunoastere(cur, schema, factura_id)
         if not r:
             raise HTTPException(404, "factură inexistentă")
         stare, directie, din_import = r
@@ -9620,15 +9435,7 @@ def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet))
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT i.id, i.data, i.descriere, i.status,
-                                   l.cont_credit, l.suma, l.id
-                            FROM {schema}.inregistrari i
-                            JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                            WHERE i.descriere LIKE %s
-                              AND to_char(i.data, 'YYYY-MM') = %s
-                            ORDER BY i.data, i.id, l.id""",
-                        ("%" + marker + "%", luna))
-            rows = cur.fetchall()
+            rows = repo_contabilitate.linii_pentru_jurnal_marja(cur, schema, "%" + marker + "%", luna)
     note = {}
     for iid, data, descr, status, cont, suma, lid in rows:
         n = note.setdefault(iid, {"id": iid, "data": str(data), "descriere": descr,
@@ -9660,14 +9467,8 @@ def d406_active_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
-                                   valoare, rezidual, dnf_luni, data_pif, metoda, activ
-                            FROM {schema}.mijloace_fixe
-                            WHERE data_pif IS NOT NULL
-                              AND EXTRACT(YEAR FROM data_pif) <= %s
-                            ORDER BY id""", (an,))
             cols = [d[0] for d in cur.description]
-            lista = [dict(zip(cols, r)) for r in cur.fetchall()]
+            lista = [dict(zip(cols, r)) for r in repo_mijloace_fixe.active_pentru_d406(cur, schema, an)]
     if not lista:
         raise HTTPException(404, "niciun mijloc fix cu PIF până în anul cerut")
     try:
@@ -9703,13 +9504,7 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT a.id, a.denumire, a.um, a.cont_stoc,
-                                   m.data, m.tip, m.cantitate, m.valoare
-                            FROM {schema}.articole a
-                            JOIN {schema}.miscari_stoc m ON m.articol_id = a.id
-                            WHERE m.data <= %s
-                            ORDER BY a.id, m.data, m.id""", (de,))
-            rows = cur.fetchall()
+            rows = repo_stocuri.miscari_pentru_d406(cur, schema, de)
     grupat = {}
     for aid, den, um, cont, data, tip, cant, val in rows:
         art, mis = grupat.setdefault(aid, ({"id": aid, "denumire": den, "um": um,
@@ -9856,9 +9651,7 @@ def facturi_trimiteri_spv(tenant_id: int, ctx=Depends(cere_context)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT DISTINCT ON (factura_id) factura_id, stare, index_incarcare, error_message
-                              FROM {schema}.efactura_trimiteri ORDER BY factura_id, id DESC""")
-            rows = cur.fetchall()
+            rows = repo_efactura.ultima_trimitere_per_factura(cur, schema)
     return {str(r[0]): {"stare": r[1], "index_incarcare": r[2], "error_message": r[3]} for r in rows}
 
 
@@ -9909,8 +9702,7 @@ def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT cui FROM {schema}.firma_profil LIMIT 1")
-            rand = cur.fetchone()
+            rand = repo_firma_profil.cui_firma_3(cur, schema)
             if not rand or not rand[0]:
                 raise HTTPException(422, CUI_FIRMA_LIPSA)
             cui_firma = rand[0]
@@ -9944,15 +9736,9 @@ def facturi_primite_lista(tenant_id: int, ctx=Depends(cere_context)):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         out = []
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT id, cif_emitent, cif_beneficiar, status, xml_brut, factura_id
-                              FROM {schema}.efactura_primite WHERE status IN ('descarcata','ciorna')
-                              ORDER BY importat_la DESC LIMIT 100""")
-            rows = cur.fetchall()
+            rows = repo_efactura.primite_in_asteptare(cur, schema)
             for (pid, cife, cifb, status, xmlb, fid) in rows:
-                cur.execute(f"""SELECT cont_cheltuiala FROM {schema}.efactura_primite
-                                WHERE cif_emitent=%s AND cont_cheltuiala IS NOT NULL
-                                ORDER BY validat_la DESC NULLS LAST LIMIT 1""", (cife,))
-                pr = cur.fetchone()
+                pr = repo_efactura.contul_invatat_al_emitentului(cur, schema, cife)
                 info = {"id": pid, "cif_emitent": cife, "status": status, "factura_id": fid,
                         "cont_sugerat": pr[0] if pr else ""}
                 try:
@@ -9978,8 +9764,7 @@ def factura_primita_xml(tenant_id: int, primita_id: int, ctx=Depends(cere_contex
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT xml_brut FROM {schema}.efactura_primite WHERE id=%s", (primita_id,))
-            r = cur.fetchone()
+            r = repo_efactura.xml_brut(cur, schema, primita_id)
     if not r:
         raise HTTPException(404, "factură primită inexistentă")
     return {"xml": r[0] or ""}
@@ -9999,9 +9784,7 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT status, xml_brut, cif_beneficiar, factura_id
-                              FROM {schema}.efactura_primite WHERE id=%s FOR UPDATE""", (primita_id,))
-            r = cur.fetchone()
+            r = repo_efactura.primita_pentru_validare(cur, schema, primita_id)
             if not r:
                 raise HTTPException(404, "factură primită inexistentă")
             status, xmlb, cifb, fid_ex = r
@@ -10090,8 +9873,7 @@ def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"SELECT status FROM {schema}.efactura_primite WHERE id=%s FOR UPDATE", (primita_id,))
-            r = cur.fetchone()
+            r = repo_efactura.starea_primitei_blocata(cur, schema, primita_id)
             if not r:
                 raise HTTPException(404, "factură primită inexistentă")
             if r[0] == "validata":
@@ -10147,14 +9929,10 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute("SELECT username, parola, mediu, author_id FROM public.reges_chei WHERE tenant_id=%s",
-                        (tenant_id,))
-            chei = cur.fetchone()
+            chei = repo_salariati.chei_reges(cur, tenant_id)
             if not chei:
                 raise HTTPException(422, "chei REGES neconfigurate - folosește reges-config")
-            cur.execute(f"SELECT cnp, nume, prenume FROM {schema}.salariati WHERE id=%s",
-                        (corp["salariat_id"],))
-            s = cur.fetchone()
+            s = repo_salariati.identitate_pentru_reges(cur, schema, corp["salariat_id"])
             if not s:
                 raise HTTPException(404, "salariat inexistent")
     mid = _uuid.uuid4()
@@ -10196,9 +9974,7 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute("SELECT username, parola, mediu FROM public.reges_chei WHERE tenant_id=%s",
-                        (tenant_id,))
-            chei = cur.fetchone()
+            chei = repo_salariati.chei_reges_fara_autor(cur, tenant_id)
             if not chei:
                 raise HTTPException(422, "chei REGES neconfigurate")
     cl = _rg.RegesClient(chei[0], chei[1], chei[2])
@@ -10249,8 +10025,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
             raise HTTPException(404, "tenant inexistent sau fără acces")
         _cere_luna_deschisa(conn, schema, corp.get("data"))
         with conn.cursor() as cur:
-            cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
-            rand = cur.fetchone()
+            rand = repo_firma_profil.platitor_tva(cur, schema)
             beneficiar_tva = bool(rand[0]) if rand else True
         from core import facturi_api as _fa
         try:
@@ -10516,8 +10291,7 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             raise HTTPException(404, "tenant inexistent sau fără acces")
         _cere_luna_deschisa(conn, schema, corp.get("data"))
         with conn.cursor() as cur:
-            cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
-            rand = cur.fetchone()
+            rand = repo_firma_profil.platitor_tva_2(cur, schema)
             platitor = bool(rand[0]) if rand else True
         try:
             # [lotul 5] `procent_taxa_vamala=500` trecea: taxa vamala 5.000 la o valoare
@@ -10615,12 +10389,7 @@ def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         intro, exped = {}, {}
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT directie, tert_cui,
-                                   EXTRACT(MONTH FROM data_emitere)::int AS luna,
-                                   COALESCE(total,0) - COALESCE(tva,0) AS baza
-                            FROM {schema}.facturi
-                            WHERE EXTRACT(YEAR FROM data_emitere) = %s""", (an,))
-            for directie, cui, luna, baza in cur.fetchall():
+            for directie, cui, luna, baza in repo_facturi.emise_pe_luni_pentru_intrastat(cur, schema, an):
                 if not _is.e_partener_ue(cui):
                     continue
                 tinta = intro if directie == "primita" else exped
@@ -11076,11 +10845,7 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
                 extra = {}
             else:
                 with conn.cursor() as cur:
-                    cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
-                                           valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda
-                                    FROM {schema}.mijloace_fixe WHERE id=%s AND activ=true""",
-                                (corp["mijloc_fix_id"],))
-                    mf = cur.fetchone()
+                    mf = repo_mijloace_fixe.pentru_reevaluare(cur, schema, corp["mijloc_fix_id"])
                 if not mf:
                     # [R147] „inexistent/inactiv" lasa omul sa ghiceasca pe care din doua.
                     raise HTTPException(404, "Mijlocul fix ales nu există în registrul "
@@ -11687,10 +11452,7 @@ def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
     out = []
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            cur.execute("""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
-                                  valoare, rezidual, dnf_luni, data_pif, metoda, activ
-                           FROM mijloace_fixe ORDER BY activ DESC, id""")
-            rows = cur.fetchall()
+            rows = repo_mijloace_fixe.toate(cur)
     from core import d406_active as _d406
     for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ) in rows:
         val = Decimal(str(val or 0)); rez = Decimal(str(rez or 0))
@@ -11753,11 +11515,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 if corp.get("mijloc_fix_id"):
                     mf_id = corp["mijloc_fix_id"]
                     with conn.cursor() as cur:
-                        cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
-                                               valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda
-                                        FROM {schema}.mijloace_fixe
-                                        WHERE id=%s AND activ=true""", (mf_id,))
-                        mf = cur.fetchone()
+                        mf = repo_mijloace_fixe.pentru_inventariere(cur, schema, mf_id)
                     if not mf:
                         # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
                         raise HTTPException(404, "Mijlocul fix ales nu există în registrul "
@@ -12201,20 +11959,10 @@ def admin_analytics(zile: int = 30, ctx=Depends(cere_rol("superadmin"))):
     Fara date personale (tabela nu contine niciun identificator)."""
     zile = _interval_cerut(zile if zile is not None else 30, "Numărul de zile", 1, 365, "zile")  # [R150]
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        cur.execute("SELECT tip, COUNT(*) AS n FROM public.eveniment_public "
-                    "WHERE creat_la >= now() - (%s || ' days')::interval GROUP BY tip ORDER BY n DESC", (zile,))
-        pe_eveniment = cur.fetchall()
-        cur.execute("SELECT to_char(date_trunc('day', creat_la), 'YYYY-MM-DD') AS zi, COUNT(*) AS n "
-                    "FROM public.eveniment_public WHERE creat_la >= now() - (%s || ' days')::interval "
-                    "GROUP BY 1 ORDER BY 1 DESC", (zile,))
-        pe_zi = cur.fetchall()
-        cur.execute("SELECT COALESCE(NULLIF(pagina,''),'landing') AS pagina, COUNT(*) AS n "
-                    "FROM public.eveniment_public WHERE creat_la >= now() - (%s || ' days')::interval "
-                    "GROUP BY 1 ORDER BY n DESC LIMIT 100", (zile,))
-        pe_pagina = cur.fetchall()
-        cur.execute("SELECT COUNT(*) AS n FROM public.eveniment_public "
-                    "WHERE creat_la >= now() - (%s || ' days')::interval", (zile,))
-        total = cur.fetchone()["n"]
+        pe_eveniment = repo_admin.evenimente_pe_tip(cur, zile)
+        pe_zi = repo_admin.evenimente_pe_zi(cur, zile)
+        pe_pagina = repo_admin.evenimente_pe_pagina(cur, zile)
+        total = repo_admin.cate_evenimente(cur, zile)["n"]
     return {"zile": zile, "total": total, "pe_eveniment": pe_eveniment, "pe_zi": pe_zi, "pe_pagina": pe_pagina}
 
 

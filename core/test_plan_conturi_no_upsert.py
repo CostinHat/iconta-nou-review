@@ -35,7 +35,26 @@ def test_manual_add_nu_face_upsert_tacut():
 
 def test_manual_add_refuza_duplicatul_cu_mesaj():
     body = _handler_src()
-    assert "SELECT denumire FROM plan_conturi WHERE simbol" in body, \
+    # [P7 · V1, 13.09.2026] SELECT-ul a plecat în repository; apelul se cere pe STRUCTURĂ.
+    import ast as _ast
+    _arb = _ast.parse(open("main.py", encoding="utf-8").read())
+    _ruta = [n for n in _ast.walk(_arb)
+             if isinstance(n, _ast.FunctionDef) and n.name == "tenant_plan_conturi_adauga"]
+    assert _ruta, "handler-ul `tenant_plan_conturi_adauga` nu mai exista"
+    _apelate = {getattr(c.func, "attr", None) for c in _ast.walk(_ruta[0]) if isinstance(c, _ast.Call)}
+    assert _apelate >= {"denumirea_contului"}, \
         "handler-ul nu mai verifica existenta simbolului inainte de INSERT"
     assert "există deja" in body, "handler-ul nu mai refuza duplicatul cu mesaj de contabil"
     assert "409" in body, "refuzul duplicatului ar trebui sa fie un 409 (conflict)"
+
+
+def test_citirea_din_repository_intreaba_de_simbolul_existent():
+    """Perechea probei de mai sus, cu sursa EI: verificarea chiar întreabă baza de simbol.
+
+    Ruptă în două fiindcă o probă care citește două fișiere nu-și mai poate rezolva ancorele
+    (v. `core/test_ancore_in_cod.py`).
+    """
+    _f = open("core/repo_contabilitate.py", encoding="utf-8").read()
+    _f = _f.split("def denumirea_contului")[1][:400]
+    assert "SELECT denumire FROM plan_conturi WHERE simbol" in _f, \
+        "citirea din repository nu mai intreaba de simbolul existent"

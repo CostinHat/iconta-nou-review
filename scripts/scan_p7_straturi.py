@@ -70,6 +70,7 @@ import ast
 import collections
 import io
 import os
+import re
 import sys
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -176,6 +177,120 @@ def _nume_cursoare(corp):
         if isinstance(tinta, ast.Name):
             legate.add(tinta.id)
     return legate
+
+
+# ------------------------------------------------------------
+#  FELUL instrucțiunii — READ / WRITE / TRANSACTION_CONTROL / UNKNOWN
+# ------------------------------------------------------------
+READ = "READ"
+WRITE = "WRITE"
+TRANSACTION_CONTROL = "TRANSACTION_CONTROL"
+UNKNOWN = "UNKNOWN"
+
+#: Cuvintele care deschid o scriere. Cautate ca CUVINTE (margini), nu ca subsiruri: un tabel numit
+#: `insert_log` n-are voie sa transforme o citire in scriere.
+_SCRIERE = ("INSERT", "UPDATE", "DELETE", "MERGE", "TRUNCATE")
+
+
+def text_sql(nod):
+    """Textul literal al argumentului, cat se poate afla STATIC. `None` daca nu incepe cu literal.
+
+    [V1, 13.09.2026] Prefixul e de ajuns pentru a citi primul cuvant-cheie, si de-aia se accepta:
+    `f"UPDATE {schema}.facturi SET " + ", ".join(...)` are partea dreapta necunoscuta, dar stanga
+    spune limpede ce operatie e. *Ce nu incepe cu literal ramane UNKNOWN — nu se ghiceste.*
+    """
+    if isinstance(nod, ast.Constant) and isinstance(nod.value, str):
+        return nod.value
+    if isinstance(nod, ast.JoinedStr):
+        out = []
+        for x in nod.values:
+            if isinstance(x, ast.Constant) and isinstance(x.value, str):
+                out.append(x.value)
+            else:
+                out.append(" ")          # partea interpolata: un spatiu, ca sa nu lipeasca cuvinte
+        return "".join(out)
+    if isinstance(nod, ast.BinOp) and isinstance(nod.op, ast.Add):
+        st = text_sql(nod.left)
+        if st is None:
+            return None
+        dr = text_sql(nod.right)
+        return st + (dr if dr is not None else " ")
+    return None
+
+
+def _curat(sql):
+    """SQL-ul, fara linii goale si fara comentarii `--`, pe un singur rand, majuscule."""
+    linii = []
+    for linie in sql.splitlines():
+        l = linie.strip()
+        if not l or l.startswith("--"):
+            continue
+        linii.append(l)
+    return " ".join(linii).lstrip("( ").upper()
+
+
+def _contine_cuvant(text, cuvinte):
+    return any(re.search(r"\b%s\b" % c, text) for c in cuvinte)
+
+
+def fel_sql(sql):
+    """(clasa, cuvant) pentru textul unei instructiuni. `(UNKNOWN, None)` cand nu se poate sti.
+
+    CE NU GHICESTE, declarat:
+      * un `WITH` NU e citire doar fiindca incepe cu `WITH`: se cauta in tot corpul o operatie de
+        scriere (`INSERT`/`UPDATE`/`DELETE`/`MERGE`), fiindca un CTE poate scrie;
+      * `SET` e control de tranzactie NUMAI pe `search_path` — orice alt `SET` ramane UNKNOWN, ca sa
+        nu intre o clasa intreaga pe usa din dos;
+      * SQL fara prefix literal: UNKNOWN.
+    """
+    if sql is None:
+        return UNKNOWN, None
+    cap = _curat(sql)
+    if not cap:
+        return UNKNOWN, None
+    if cap.startswith("SELECT"):
+        return READ, "SELECT"
+    if cap.startswith("WITH"):
+        return (WRITE, "WITH_SCRIERE") if _contine_cuvant(cap, _SCRIERE) else (READ, "WITH_CITIRE")
+    for c in _SCRIERE:
+        if cap.startswith(c + " "):
+            return WRITE, c
+    if cap.startswith("SAVEPOINT") or cap.startswith("RELEASE SAVEPOINT") \
+            or cap.startswith("ROLLBACK TO SAVEPOINT"):
+        return TRANSACTION_CONTROL, "SAVEPOINT"
+    if cap.startswith("SET LOCAL SEARCH_PATH") or cap.startswith("SET SEARCH_PATH"):
+        return TRANSACTION_CONTROL, "SEARCH_PATH"
+    return UNKNOWN, None
+
+
+def _apel_la(rel, linie, arbore_cache={}):
+    """Nodul `Call` de la (fisier, linie) — ca sa se poata citi argumentul instructiunii."""
+    if rel not in arbore_cache:
+        cache = {}
+        for x in ast.walk(_arbore(rel)):
+            if (isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
+                    and x.func.attr in ("execute", "executemany")):
+                cache.setdefault(x.lineno, x)
+        arbore_cache[rel] = cache
+    return arbore_cache[rel].get(linie)
+
+
+def fel_itemului(it):
+    """(clasa, cuvant) pentru un item D1."""
+    n = _apel_la(it.fisier, it.linie)
+    if n is None or not n.args:
+        return UNKNOWN, None
+    return fel_sql(text_sql(n.args[0]))
+
+
+def d1_pe_fel(itemi=None):
+    """{clasa: [Item]} — universul lui D1, despartit pe felul instructiunii."""
+    itemi = d1_sql_in_ruta()[0] if itemi is None else itemi
+    out = {READ: [], WRITE: [], TRANSACTION_CONTROL: [], UNKNOWN: []}
+    for it in itemi:
+        clasa, _cuvant = fel_itemului(it)
+        out[clasa].append(it)
+    return out
 
 
 def d1_din_rute(lista_rute):

@@ -30,7 +30,7 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
 | **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
 | **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
-| **P7** — stratul de aplicație | **DESCHIS** | diagnostic închis (`b67d2bfb`) · valul V3, registrul de straturi, închis (`364fbc63`) · **V1/V2 neîncepute**; `ACTION_REQUIRED` **296** |
+| **P7** — stratul de aplicație | **DESCHIS** | diagnostic închis (`b67d2bfb`) · V3 registrul de straturi închis (`364fbc63`) · **V1 citirile în repository închis**: 107 citiri mutate, `D1_READ` 107 → 0 · **V2 neînceput**; `ACTION_REQUIRED` **296 → 189** |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de

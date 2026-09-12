@@ -1186,7 +1186,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca` — garda `cere_cabinet`
 - `GET /termene` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `declaratii_api`, `declaratii_componente`, `duk`, `firma_rezumat`, `istoric_declaratii_import_api`, `migrare_api`, `supervizor`, `supervizor_cache`, `termene_api`
+**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `declaratii_api`, `declaratii_componente`, `duk`, `firma_rezumat`, `istoric_declaratii_import_api`, `migrare_api`, `repo_declaratii`, `repo_firma_profil`, `supervizor`, `supervizor_cache`, `termene_api`
 
 **Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `firma_aspect_sursa` (DELETE/INSERT) · `firma_rezumat` (INSERT) · `firma_sursa_versiune` (INSERT) · `firma_tip` (INSERT) · `migrare_status` (INSERT) · `supervizor_confirmari` (INSERT) · `supervizor_rezultat` (INSERT) · `supervizor_sursa` (INSERT) · `sursa_supervizor` (DELETE/INSERT)
 
@@ -1223,7 +1223,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/facturi/{factura_id}/storno` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma` — garda `cere_rol` rol:admin_firma
 
-**Module:** `contare_facturi`, `factura_pdf`, `facturi_api`, `facturi_recurente`, `firma_profil_api`, `observare`, `scadentar`, `stocuri_cv_api`
+**Module:** `contare_facturi`, `factura_pdf`, `facturi_api`, `facturi_recurente`, `firma_profil_api`, `observare`, `repo_facturi`, `scadentar`, `stocuri_cv_api`
 
 **Scrie in:** `articole` (INSERT/UPDATE) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `facturi_recurente` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `miscari_stoc` (INSERT)
 
@@ -1246,9 +1246,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/stat-plata/emite` — garda `cere_rol` rol:admin_firma drept:poate_valida
 - `POST /tenants/{tenant_id}/stat-plata/motiv` — garda `cere_cabinet` drept:poate_valida
 
-**Module:** `salarii_contare`, `stat_plata_api`, `stat_plata_emis`
+**Module:** `repo_contabilitate`, `repo_salariati`, `repo_tenants`, `salarii_contare`, `stat_plata_api`, `stat_plata_emis`
 
 **Scrie in:** `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `state_plata` (INSERT/UPDATE)
+
+**Stari puse:** `validata`
 
 **Firme care il pot exercita azi: 2** — `tenant_001`, `tenant_003`
 
@@ -1266,7 +1268,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii` — garda `cere_rol` rol:admin_firma,angajat
 - `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}` — garda `cere_rol` rol:admin_firma,angajat
 
-**Module:** `baza_cm`, `coduri_cm_api`, `salariati_api`, `salarizare`, `scadente`
+**Module:** `baza_cm`, `coduri_cm_api`, `repo_salariati`, `salariati_api`, `salarizare`, `scadente`
 
 **Scrie in:** `concedii_medicale` (DELETE/INSERT/UPDATE) · `pontaj` (DELETE) · `salariati` (DELETE/INSERT/UPDATE) · `salariu_istoric` (DELETE)
 
@@ -1315,7 +1317,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/registru-inventar` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/registru-inventar/propunere` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `avansuri`, `bacsis`, `comodat_chirii`, `cont_valid`, `contare_facturi`, `contracte_speciale`, `cota_tva_incasare`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `fisa_cont`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `registru_inventar`, `sgr`, `sponsorizari`, `subventii`, `tenant_provisioning`, `tva_incasare`
+**Module:** `afirmatii`, `avansuri`, `bacsis`, `comodat_chirii`, `cont_valid`, `contare_facturi`, `contracte_speciale`, `cota_tva_incasare`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `fisa_cont`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `registru_inventar`, `repo_contabilitate`, `repo_mijloace_fixe`, `sgr`, `sponsorizari`, `subventii`, `tenant_provisioning`, `tva_incasare`
 
 **Scrie in:** `ai_corectii` (INSERT) · `audit_log` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `firma_profil` (INSERT/UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `plan_conturi` (INSERT) · `registru_inventar` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 
@@ -1339,7 +1341,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/import-efactura` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/trimiteri-spv` — garda `cere_context`
 
-**Module:** `afirmatii`, `contare_facturi`, `efactura_import`, `efactura_send`, `spv_rute`
+**Module:** `afirmatii`, `contare_facturi`, `efactura_import`, `efactura_send`, `repo_efactura`, `repo_firma_profil`, `spv_rute`
 
 **Scrie in:** `efactura_primite` (UPDATE) · `efactura_trimiteri` (INSERT/UPDATE) · `facturi` (UPDATE)
 
@@ -1422,7 +1424,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/stocuri/inventar` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/verificare-stocuri` — garda `cere_cabinet`
 
-**Module:** `d406_active`, `d406_stocuri`, `rip_api`, `stocuri_cv`, `stocuri_cv_api`
+**Module:** `d406_active`, `d406_stocuri`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_stocuri`, `rip_api`, `stocuri_cv`, `stocuri_cv_api`
 
 **Scrie in:** `articole` (INSERT/UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `miscari_stoc` (INSERT) · `rip_operatiuni` (DELETE/INSERT/UPDATE)
 
@@ -1446,9 +1448,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/perioade-blocate` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/perioade-blocate/istoric` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `inchidere_luna`, `migrare_inchideri`
+**Module:** `afirmatii`, `inchidere_luna`, `migrare_inchideri`, `repo_contabilitate`
 
 **Scrie in:** `perioade_blocate` (DELETE/INSERT) · `perioade_inchideri` (INSERT)
+
+**Stari puse:** `validata`
 
 **Firme care il pot exercita azi: 1** — `tenant_001`
 
@@ -1491,7 +1495,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/vector` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/vector` — garda `cere_rol` rol:admin_firma
 
-**Module:** `firma_profil_api`, `migrare_api`, `vector_fiscal_api`
+**Module:** `firma_profil_api`, `migrare_api`, `repo_tenants`, `vector_fiscal_api`
 
 **Scrie in:** `firma_profil` (INSERT/UPDATE) · `migrare_status` (INSERT)
 
@@ -1538,7 +1542,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/solduri` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/solduri/incarca` — garda `cere_cabinet`
 
-**Module:** `anaf_api`, `artefacte`, `articole_import_api`, `asociati_import_api`, `audit_preluare`, `cor_api`, `istoric_declaratii_import_api`, `migrare_api`, `mijloace_fixe_import_api`, `observare`, `retete_import_api`, `rip_migrare_api`, `salariati_import_api`, `solduri_api`, `solduri_parteneri_api`, `tenant_provisioning`
+**Module:** `anaf_api`, `artefacte`, `articole_import_api`, `asociati_import_api`, `audit_preluare`, `cor_api`, `istoric_declaratii_import_api`, `migrare_api`, `mijloace_fixe_import_api`, `observare`, `repo_tenants`, `retete_import_api`, `rip_migrare_api`, `salariati_import_api`, `solduri_api`, `solduri_parteneri_api`, `tenant_provisioning`
 
 **Scrie in:** `artefacte_produse` (INSERT) · `articole` (INSERT) · `asociati` (DELETE/INSERT) · `audit_log` (INSERT) · `declaratii_depuse` (DELETE/INSERT) · `firma_profil` (INSERT/UPDATE) · `migrare_status` (INSERT) · `mijloace_fixe` (DELETE/INSERT) · `miscari_stoc` (INSERT) · `plan_conturi` (INSERT) · `rip_operatiuni` (INSERT) · `salariati` (INSERT) · `solduri_initiale` (DELETE/INSERT) · `solduri_parteneri` (DELETE/INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 
@@ -1572,7 +1576,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta` — garda `cere_rol` rol:admin_firma
 - `PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar` — garda `cere_rol` rol:admin_firma,angajat
 
-**Module:** `adeverinta`, `beneficii_api`, `contracte_api`, `cor_api`, `prapastie_salariu`, `reges_client`, `salariati_api`
+**Module:** `adeverinta`, `beneficii_api`, `contracte_api`, `cor_api`, `prapastie_salariu`, `reges_client`, `repo_salariati`, `salariati_api`
 
 **Scrie in:** `beneficii_lunare` (DELETE/INSERT) · `concedii_medicale` (DELETE/INSERT/UPDATE) · `contracte_sabloane` (DELETE/INSERT/UPDATE) · `pontaj` (DELETE) · `reges_chei` (INSERT) · `reges_mesaje` (INSERT/UPDATE) · `salariati` (DELETE/INSERT/UPDATE) · `salariu_istoric` (DELETE)
 
@@ -1610,7 +1614,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/plata-salarii-fisier` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/plata-salarii-preview` — garda `cere_cabinet`
 
-**Module:** `artefacte`, `plata_salarii`
+**Module:** `artefacte`, `plata_salarii`, `repo_tenants`
 
 **Scrie in:** `artefacte_produse` (INSERT)
 
@@ -1628,9 +1632,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/chitante` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/chitante/{chitanta_id}/pdf` — garda `cere_rol` rol:admin_firma
 
-**Module:** `casa_api`, `chitante`
+**Module:** `casa_api`, `chitante`, `repo_casa`, `repo_facturi`, `repo_firma_profil`, `repo_tenants`
 
 **Scrie in:** `casa_operatiuni` (DELETE/INSERT) · `chitante` (INSERT) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT) · `inregistrari_linii` (INSERT)
+
+**Stari puse:** `de_verificat`
 
 **Firme care il pot exercita azi: 1** — `tenant_013`
 
@@ -1672,7 +1678,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/stocuri/reclasificare` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/stocuri/transfer` — garda `cere_cabinet`
 
-**Module:** `stocuri_api`, `stocuri_cv_api`
+**Module:** `repo_stocuri`, `stocuri_api`, `stocuri_cv_api`
 
 **Scrie in:** `articole` (INSERT/UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `miscari_stoc` (INSERT) · `nir` (INSERT) · `nir_linii` (INSERT)
 
@@ -1716,9 +1722,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/mijloace-fixe` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/reevaluare-imobilizare` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `d406_active`, `reevaluare`
+**Module:** `afirmatii`, `d406_active`, `reevaluare`, `repo_contabilitate`, `repo_mijloace_fixe`
 
 **Scrie in:** `inregistrari` (INSERT) · `inregistrari_linii` (INSERT)
+
+**Stari puse:** `validata`
 
 **Firme care il pot exercita azi: 2** — `tenant_005`, `tenant_013`
 
@@ -1740,9 +1748,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge` — garda `cere_rol` rol:admin_firma
 
-**Module:** `ai_client`, `casa_api`
+**Module:** `ai_client`, `casa_api`, `repo_casa`, `repo_facturi`
 
 **Scrie in:** `bonuri` (DELETE/INSERT/UPDATE) · `casa_operatiuni` (DELETE/INSERT) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT) · `inregistrari_linii` (INSERT)
+
+**Stari puse:** `de_verificat`
 
 **Firme care il pot exercita azi: 2** — `tenant_001`, `tenant_013`
 
@@ -1775,7 +1785,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `PUT /tenants/{tenant_id}/woocommerce/config` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/woocommerce/sincronizeaza` — garda `cere_rol` rol:admin_firma
 
-**Module:** `woocommerce`
+**Module:** `repo_firma_profil`, `woocommerce`
 
 **Scrie in:** `facturi` (UPDATE) · `firma_profil` (UPDATE)
 
@@ -1812,7 +1822,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/etransport/trimite` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/etransport/trimiteri` — garda `cere_context`
 
-**Module:** `etransport`, `etransport_send`, `spv_rute`
+**Module:** `etransport`, `etransport_send`, `repo_declaratii`, `repo_firma_profil`, `spv_rute`
 
 **Scrie in:** `etransport_trimiteri` (INSERT/UPDATE)
 
@@ -1841,7 +1851,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/verifica-cui/{cui}` — garda `cere_context`
 - `GET /tenants/{tenant_id}/verifica-vies` — garda `cere_context`
 
-**Module:** `anaf_api`, `cont_valid`, `d390_clasificare_api`, `facturi_api`, `intracomunitar`, `intrastat`, `registre_art321`
+**Module:** `anaf_api`, `cont_valid`, `d390_clasificare_api`, `facturi_api`, `intracomunitar`, `intrastat`, `registre_art321`, `repo_facturi`
 
 **Scrie in:** `d390_manual` (DELETE/INSERT) · `d390_reclasificare` (DELETE/INSERT) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `registre_art321` (INSERT)
 
@@ -1867,9 +1877,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/vanzare-marja` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/vanzare-marja-turism` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `anaf_api`, `cont_valid`, `d394`, `facturi_api`, `import_export`, `taxare_inversa`, `tva_agricultori`, `tva_aur`, `tva_marja`, `tva_marja_turism`
+**Module:** `afirmatii`, `anaf_api`, `cont_valid`, `d394`, `facturi_api`, `import_export`, `repo_contabilitate`, `repo_firma_profil`, `taxare_inversa`, `tva_agricultori`, `tva_aur`, `tva_marja`, `tva_marja_turism`
 
 **Scrie in:** `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `mijloace_fixe` (INSERT)
+
+**Stari puse:** `validata`
 
 **Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
 
@@ -1907,7 +1919,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/registru-evidenta-fiscala` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/registru-evidenta-fiscala` — garda `cere_cabinet`
 
-**Module:** `d300_manual_api`, `d301_operatiuni_api`, `registru_evidenta_fiscala`
+**Module:** `d300_manual_api`, `d301_operatiuni_api`, `registru_evidenta_fiscala`, `repo_declaratii`
 
 **Scrie in:** `d300_manual` (DELETE/INSERT) · `d301_operatiuni` (DELETE/INSERT) · `registru_fiscal_pf` (INSERT)
 
@@ -1978,7 +1990,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/rapoarte-salvate` — garda `cere_cabinet`
 - `DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}` — garda `cere_cabinet`
 
-**Module:** `ajutor`, `centre_cost_api`, `documente_api`, `kpi_client`, `rapoarte_comerciale_api`
+**Module:** `ajutor`, `centre_cost_api`, `documente_api`, `kpi_client`, `rapoarte_comerciale_api`, `repo_tenants`
 
 **Scrie in:** `bugete` (INSERT) · `centre_cost` (INSERT/UPDATE) · `rapoarte_salvate` (DELETE/INSERT)
 
@@ -2033,7 +2045,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/solicitari` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/urme-portal` — garda `cere_cabinet`
 
-**Module:** `cashflow`, `clienti_api`, `control_fiscal_api`, `documente_api`, `facturi_api`, `kpi_client`, `notificari_api`, `observare`, `pachete_api`, `portal_api`, `tenant_provisioning`
+**Module:** `cashflow`, `clienti_api`, `control_fiscal_api`, `documente_api`, `facturi_api`, `kpi_client`, `notificari_api`, `observare`, `pachete_api`, `portal_api`, `repo_facturi`, `repo_firma_profil`, `repo_portal`, `repo_tenants`, `repo_utilizatori`, `tenant_provisioning`
 
 **Scrie in:** `audit_log` (INSERT) · `clienti` (DELETE/INSERT/UPDATE) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (INSERT/UPDATE) · `notificari` (INSERT/UPDATE) · `pachet_povestea` (INSERT) · `schimbari_email` (DELETE/INSERT/UPDATE) · `solicitari_client` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (DELETE/INSERT) · `users` (INSERT/UPDATE)
 
@@ -2059,7 +2071,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/nume-ales` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/scoatere` — garda `cere_cabinet`
 
-**Module:** `observare`, `tenant_provisioning`, `tenant_stergere`
+**Module:** `observare`, `repo_utilizatori`, `tenant_provisioning`, `tenant_stergere`
 
 **Scrie in:** `audit_log` (INSERT) · `firma_profil` (INSERT/UPDATE) · `firme_scoase` (INSERT/UPDATE) · `tenants` (DELETE/INSERT/UPDATE) · `user_tenants` (INSERT) · `users` (UPDATE)
 

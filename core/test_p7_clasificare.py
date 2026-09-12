@@ -83,14 +83,17 @@ def test_D1_universul_e_RUTA_nu_orice_functie():
 
 
 def test_D1_ANTI_VACUUM_universul_real_nu_e_gol_si_contine_un_item_cunoscut():
-    """Pe repo-ul real: universul are sute de rute, iar detectorul găsește un item pe care l-am
-    citit cu ochii (`main.py`, ruta `admin_sanatate`). Fără asta, un detector care întoarce mereu
-    lista goală ar trece toate probele de mai sus."""
+    """Pe repo-ul real: universul are sute de rute, iar detectorul găsește un item citit cu ochii.
+
+    [V1, 13.09.2026] Ancora era `admin_sanatate` — o CITIRE, mutată între timp în repository. O probă
+    de anti-vacuum trebuie ancorată pe ceva care NU se mișcă în valul curent, așa că ancora e acum o
+    SCRIERE (`admin_anunt_creeaza`), care rămâne în rute până la V2.
+    """
     toate = S.rute()
     assert len(toate) >= 400, "universul rutelor s-a golit: %d" % len(toate)
     gasite, _ = S.d1_sql_in_ruta()
     cunoscute = {(i.fisier, i.cale.split(" ")[0]) for i in gasite}
-    assert ("main.py", "admin_sanatate") in cunoscute, (
+    assert ("main.py", "admin_anunt_creeaza") in cunoscute, (
         "detectorul nu mai vede un item citit cu ochii în cod")
 
 

@@ -38,13 +38,19 @@ def test_fiecare_modul_din_univers_are_un_strat_declarat():
         "module relevante fără strat declarat (adaugă-le în `core/straturi.py`): %s" % lipsa)
 
 
-def test_registrul_nu_declara_module_din_afara_universului():
-    """Cealaltă direcție: o declarație rămasă în urma unui fișier șters ar face registrul să
-    descrie o lume care nu mai există."""
-    univers = S.univers_registru()
-    declarate = {d.cale for d in R.REGISTRU}
-    fantoma = sorted(declarate - univers)
-    assert not fantoma, "declarații fără obiect: %s" % fantoma
+def test_registrul_nu_declara_module_INEXISTENTE():
+    """[V1, 13.09.2026] Proba s-a îngustat, deliberat, și merită citit de ce.
+
+    Cerea ca tot ce e declarat să fie în universul derivat. Dar universul spune cine TREBUIE să aibă
+    o declarație, nu cine ARE VOIE: un repository nou, curat — fără rute, fără valori fiscale — n-ar
+    fi intrat în el, iar proba l-ar fi respins tocmai fiindcă e curat. Ce rămâne cerut e ce conta de
+    fapt: o declarație să nu trimită la un fișier care nu există. Exhaustivitatea (univers ⊆
+    declarate) e neatinsă, și e probată separat.
+    """
+    import os
+    fantoma = sorted(d.cale for d in R.REGISTRU
+                     if not os.path.exists(os.path.join(RADACINA, d.cale)))
+    assert not fantoma, "declarații fără fișier: %s" % fantoma
 
 
 def test_un_modul_NOU_in_univers_FARA_declaratie_pica():

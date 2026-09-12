@@ -63,9 +63,23 @@ def _chei_construite():
             if isinstance(k, ast.Constant) and isinstance(k.value, str)}
 
 
+def _functia_repo():
+    """Nodul AST al citirii `jurnal_pe_an` din repository — acolo a plecat SQL-ul la P7 · V1."""
+    arb = ast.parse(io.open(os.path.join(RAD, "core/repo_contabilitate.py"),
+                            encoding="utf-8").read())
+    for n in ast.walk(arb):
+        if isinstance(n, ast.FunctionDef) and n.name == "jurnal_pe_an":
+            return n
+    raise AssertionError("nu mai gasesc `jurnal_pe_an` in repository — gardul masoara ce nu vede")
+
+
 def _sql():
-    """Constantele de șir lungi din rută, concatenate: SQL-ul, localizat prin AST."""
-    return "\n".join(n.value for n in ast.walk(_functia())
+    """Constantele de șir lungi din CITIRE, concatenate: SQL-ul, localizat prin AST.
+
+    [P7 · V1, 13.09.2026] Înainte se citeau din corpul rutei. SQL-ul e neschimbat, dar locul lui e
+    acum `repo_contabilitate.jurnal_pe_an`; că ruta chiar îl cheamă se cere separat, mai jos.
+    """
+    return "\n".join(n.value for n in ast.walk(_functia_repo())
                      if isinstance(n, ast.Constant) and isinstance(n.value, str)
                      and len(n.value) > 200)
 
@@ -120,8 +134,9 @@ def test_ruta_chiar_cheama_derivarea():
     tot din AST, deci un apel comentat nu contează."""
     apeluri = {getattr(n.func, "attr", None) or getattr(n.func, "id", None)
                for n in ast.walk(_functia()) if isinstance(n, ast.Call)}
-    assert apeluri >= {"document_justificativ"}, (
-        "ruta nu mai cheamă derivarea documentului — cheia poate fi acolo, dar goală")
+    assert apeluri >= {"document_justificativ", "jurnal_pe_an"}, (
+        "ruta nu mai cheamă derivarea documentului sau citirea jurnalului — cheia poate fi acolo, "
+        "dar goală, iar SQL-ul pe care îl pinează gardul ar fi cod nechemat")
 
 
 # ── singura aserțiune pe text, cu motivul declarat mai sus ───────────────────
