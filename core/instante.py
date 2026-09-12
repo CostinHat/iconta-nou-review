@@ -141,8 +141,47 @@ def cine_e_lider(conn, rol):
 # ============================================================
 #  3. REGISTRUL INSTANTELOR — bratul four-way redefinit
 # ============================================================
+def traieste(pid):
+    """Exista procesul asta pe gazda ASTA? Intrebarea se pune sistemului de operare, nu unui
+    cronometru. `PermissionError` inseamna «exista, dar nu e al meu» — deci traieste."""
+    try:
+        os.kill(pid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+
+
+def retrage_mortii_de_pe_gazda(conn):
+    """Scoate rindurile gazdei ASTEIA ale caror PID-uri nu mai exista.
+
+    [12.09.2026] Adaugata dupa ce bratul four-way a raportat, PE DREPT, un proces mort ca fiind
+    viu: fereastra de bataie (900 s) e mai lunga decat intervalul dintre doua reporniri, iar cu
+    `Restart=always` asta se intampla de la sine. Pe gazda proprie moartea nu trebuie ghicita.
+
+    CE NU ACOPERA, declarat: (a) rindurile ALTOR gazde — acolo bataia ramane singurul semn;
+    (b) reciclarea unui PID, caz in care rindul vechi supravietuieste pana ii expira bataia.
+    """
+    gazda, _pid = eu()
+    scoase = []
+    with conn.cursor() as cur:
+        cur.execute("SELECT pid FROM public.instante WHERE gazda = %s", (gazda,))
+        for (p,) in cur.fetchall():
+            if not traieste(p):
+                scoase.append(p)
+        for p in scoase:
+            cur.execute("DELETE FROM public.instante WHERE gazda = %s AND pid = %s", (gazda, p))
+    return scoase
+
+
 def inregistreaza(conn, commit_sha):
-    """Procesul asta intra in registru cu commitul pe care il poarta. La pornire."""
+    """Procesul asta intra in registru cu commitul pe care il poarta. La pornire.
+
+    Retrage intai mortii de pe gazda lui: un registru care pastreaza fantome raspunde gresit exact
+    la intrebarea pentru care exista — «toate procesele poarta HEAD?».
+    """
+    retrage_mortii_de_pe_gazda(conn)
     gazda, pid = eu()
     with conn.cursor() as cur:
         # upsert-ok: un PID se poate refolosi dupa o repornire; randul vechi descrie un proces

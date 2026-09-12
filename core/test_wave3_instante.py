@@ -281,6 +281,61 @@ def test_registrul_gol_NU_inchide_bratul():
         "registru gol, dar bratul s-a inchis — `all([])` e `True` si asta e capcana")
 
 
+def test_un_proces_MORT_de_pe_gazda_ASTA_iese_la_inregistrare():
+    """Proba pentru defectul pe care bratul l-a prins singur, pe productie, la prima lui rulare.
+
+    Serviciul repornise (`Restart=always`) si procesul vechi ramasese in registru cu commitul lui
+    vechi, fiindca moartea se afla NUMAI prin absenta batailor — iar fereastra aia (900 s) e mai
+    lunga decat intervalul dintre doua publicari. Bratul a raportat, PE DREPT, «1 din 1 procese nu
+    poarta HEAD». Acum moartea se afla de la sistemul de operare, nu de la un cronometru.
+    """
+    gazda, pid_meu = _inst.eu()
+    PID_MORT = 4194300          # peste `pid_max` obisnuit: nu poate exista
+    assert not _inst.traieste(PID_MORT), "premisa: PID-ul de proba chiar nu exista"
+    assert _inst.traieste(pid_meu), "procesul care ruleaza proba nu se vede pe el insusi"
+    with _db.get_conn() as c, c.cursor() as cur:
+        cur.execute("DELETE FROM public.instante WHERE gazda = %s AND pid = %s", (gazda, PID_MORT))
+        cur.execute("INSERT INTO public.instante (gazda, pid, commit_sha) VALUES (%s, %s, %s)",
+                    (gazda, PID_MORT, "VECHI777"))
+    try:
+        with _db.get_conn() as c:
+            assert (gazda, PID_MORT, "VECHI777") in [(x[0], x[1], x[2]) for x in _inst.vii(c)], (
+                "premisa: randul mort se citeste ca VIU inainte de reparatie — daca nu, proba "
+                "n-ar dovedi nimic")
+            scoase = _inst.retrage_mortii_de_pe_gazda(c)
+        assert PID_MORT in scoase, "retragerea n-a scos PID-ul mort: %s" % scoase
+        with _db.get_conn() as c, c.cursor() as cur:
+            cur.execute("SELECT count(*) FROM public.instante WHERE gazda = %s AND pid = %s",
+                        (gazda, PID_MORT))
+            assert cur.fetchone()[0] == 0
+    finally:
+        with _db.get_conn() as c, c.cursor() as cur:
+            cur.execute("DELETE FROM public.instante WHERE gazda = %s AND pid = %s",
+                        (gazda, PID_MORT))
+
+
+def test_retragerea_NU_scoate_procesele_vii():
+    """Directia a doua. O retragere prea lacoma ar sterge chiar workerii frati — si atunci bratul
+    s-ar inchide pe o multime vida, adica ar afirma mai putin decat pare."""
+    gazda, pid_meu = _inst.eu()
+    with _db.get_conn() as c, c.cursor() as cur:
+        cur.execute("DELETE FROM public.instante WHERE gazda = %s AND pid = %s", (gazda, pid_meu))
+        cur.execute("INSERT INTO public.instante (gazda, pid, commit_sha) VALUES (%s, %s, %s)",
+                    (gazda, pid_meu, "VIU1234"))
+    try:
+        with _db.get_conn() as c:
+            scoase = _inst.retrage_mortii_de_pe_gazda(c)
+        assert pid_meu not in scoase, "a fost scos un proces care TRAIESTE"
+        with _db.get_conn() as c, c.cursor() as cur:
+            cur.execute("SELECT count(*) FROM public.instante WHERE gazda = %s AND pid = %s",
+                        (gazda, pid_meu))
+            assert cur.fetchone()[0] == 1
+    finally:
+        with _db.get_conn() as c, c.cursor() as cur:
+            cur.execute("DELETE FROM public.instante WHERE gazda = %s AND pid = %s",
+                        (gazda, pid_meu))
+
+
 def test_curatenia_registrului_e_MARGINITA():
     """Fara ea, registrul ar creste cu fiecare repornire si ar raporta drept vii niste PID-uri
     disparute — adica ar face bratul four-way sa pice pe fantome."""
