@@ -111,6 +111,28 @@ CLASIFICARE = {
         "proba": "test_depunere_confirmarea_nu_ramane_fara_depunere",
     },
 
+    "POST /auth/login": {
+        "clasa": NECRITIC,
+        "efecte": "contorul de esecuri (public.login_esecuri) <-> verdictul de autentificare "
+                  "<-> randul de audit (public.audit_log)",
+        "de_ce":
+            "[P6 val 1, 12.09.2026] ruta a intrat in inventar fiindca esecurile de autentificare "
+            "nu mai stau in memoria procesului, ci in baza — deci ce era o scriere invizibila a "
+            "devenit una numarata. Sunt patru tranzactii scurte, si sunt scurte DELIBERAT: "
+            "(1) intrebarea «e blocat?», o citire; (2) autentificarea propriu-zisa; (3) "
+            "consemnarea esecului SAU stergerea contorului la reusita; (4) auditul. "
+            "NU se pot comasa intr-una singura, si nu dintr-un motiv de stil: blocarea trebuie sa "
+            "fie COMISA si vizibila celorlalte procese in clipa in care s-a produs esecul, nu la "
+            "sfarsitul cererii; iar o conexiune tinuta peste toti pasii ar fi exact clasa C5 pe "
+            "care P5 a inchis-o. "
+            "NIMIC PARTIAL NU POATE MINTI: contorul inregistreaza numai ESECURI, iar un esec se "
+            "termina cu 401 — deci nu exista stare in care cineva e autentificat si contorul spune "
+            "altceva. La reusita, stergerea contorului e ultima scriere inaintea tokenului; daca "
+            "ea cade, cererea cade cu ea, iar contorul ramane pe o valoare mai MARE, adica in "
+            "partea sigura. Auditul e a patra tranzactie, deliberat, cu `esec_secundar` la cadere "
+            "— anuntat, nu tacut, aceeasi decizie ca la `/public/reset-parola/*` din 27.07.2026. "
+            "Niciun efect ireversibil in afara aplicatiei pe calea asta.",
+    },
     "POST /auth/register": {
         "clasa": CRITIC,
         "reparat": True,

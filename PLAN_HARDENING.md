@@ -680,9 +680,18 @@ P5_FINAL_COMMIT=f61df1b8    P5_STATUS=CLOSED_ACCEPTED
 | nu depinde de bază | `duk`, `d112` | n-au ce revalida |
 | descărcare vs decizie | `curs_bnr` | recitirea cache-ului **era deja** revalidarea |
 
-**Cele 5 căi C5 rămase nu sunt datorie tăcută**: patru rute de fișier sub **SINCRON-MARGINIT**
-(threadpool, I/O de fișier — nu extern) și jobul de recurente sub **FUNDAL**. Fiecare are verdictul
-scris în registrul P5, măsurat înainte de valul 3.
+**Cele 6 căi C5 rămase nu sunt datorie tăcută**: **cinci** rute de fișier sub
+**SINCRON-MARGINIT** (threadpool, I/O de fișier — nu extern) — `gdpr_export`, `tenant_stergere`,
+`portal_bon`, `raportari_imagine` și `d390_clasificare` — plus jobul de recurente sub **FUNDAL**.
+Fiecare are verdictul scris în registrul P5.
+
+> **Corecție, 12.09.2026.** Propoziția de mai sus scria „**5** căi" și „**patru** rute de fișier".
+> Detectorul mecanic vede **șase**, respectiv **cinci**: lipsea `GET /tenants/{tenant_id}/d390-clasificare`.
+> Cifra a fost greșită **când am scris-o eu**, acum două ture — nu s-a stricat între timp:
+> `main.py` e neschimbat de la `f61df1b8`, iar ruta e din 27.07.2026. **P5 nu se redeschide**:
+> contractul e `ACTION_REQUIRED=0`, măsurat din nou pe 12.09, iar toate șase sunt
+> `ACCEPTABLE_BY_DESIGN` prin reguli scrise înainte de valul 3, cu `UNEXPLAINED_EXCLUSIONS=0`.
+> Ce s-a stricat a fost o cifră numărată de mână într-un text care descrie un instrument.
 
 **Ce a scos valul la iveală, în plus față de ce căuta:** un **omonim** care ascundea o cale
 (`alerta_acces`, unde `trimite` e un parametru, rezolvat de scanner la funcția din e-factură); un

@@ -28,21 +28,14 @@ V = collections.namedtuple("V", "categorie fel regula de_ce")
 #: Cele CINCI lucruri cerute de PLAN_HARDENING.md:704-707 pentru un cache admis.
 CINCI = ("rol", "sursa_autoritativa", "motiv", "invalidare", "dovada_reconstructie")
 
+#: [VALUL 1, 12.09.2026] Cele doua nume pe care textul canonic le numea explicit —
+#: `main._login_fail` si `main._alerte_ultima_trimitere` — NU mai sunt aici fiindca nu mai exista
+#: in cod. Starea lor a trecut in `public.login_esecuri` si `public.alerte_cooldown`; v.
+#: `core/stare_partajata.py` si probele din `core/test_wave1_stare_partajata.py`. Nu le-am lasat
+#: cu o eticheta «rezolvat»: garda `test_nicio_clasificare_fara_obiect` cere ca tabelul sa descrie
+#: codul de ACUM, iar o intrare fara obiect ar fi exact amintirea pe care o interzice.
 TABEL = {
-    # ---------------------------------------------------------------- ACTION_REQUIRED / muta
-    ("main", "_login_fail"): V(
-        AR, "muta",
-        "PLAN_HARDENING.md:699-701 — numit EXPLICIT ca stare business",
-        "Blocarea contului dupa 5 esecuri e o decizie de securitate luata pe o cifra care traieste "
-        "doar aici. Masurat: doua procese diverg (A blocat, B neblocat), iar sub concurenta "
-        "sustinuta 86% din esecuri se pierd la k=10 — `_login_blocat` citeste-filtreaza-SCRIE "
-        "peste dictionar si inlocuieste lista pe care `_login_esec` tocmai a crescut-o."),
-    ("main", "_alerte_ultima_trimitere"): V(
-        AR, "muta",
-        "PLAN_HARDENING.md:699-701 — numit EXPLICIT ca stare business",
-        "Cooldown-ul de 3600 s decide DACA se trimite o alerta. Cu N procese, fiecare isi tine "
-        "propriul ultim-trimis, deci pragul se aplica de N ori: aceeasi alerta pleaca de N ori. "
-        "Criteriul canonic cere literal «cooldown-ul alertelor nu trimite dublu»."),
+    # ---------------------------------------------------------------- ACTION_REQUIRED / declara
     ("core.curs_bnr", "_ULTIMA_EROARE"): V(
         AR, "declara",
         "PLAN_HARDENING.md:704-707 — cache admis numai DECLARAT",
@@ -128,15 +121,19 @@ def main():
     neclasificate = sorted(mutabile - clasificate)
     fantoma = sorted(clasificate - mutabile)
 
+    scanate = len({(m, n) for m, _c, n, _l in inv["raw"]})
     print("CONTABILITATE P6")
-    print("  P6_RAW_ITEMS (nume la nivel de modul, in proces) : %d"
-          % len({(m, n) for m, _c, n, _l in inv["raw"]}))
-    print("    din care E4 legat-dar-neschimbat               : %d" % inv["excluse"]["E4_legat_dar_neschimbat"])
-    print("    din care MUTABILE la rulare  <- unitatea       : %d" % len(mutabile))
-    print("  P6_RAW_PATHS                                     : %d" % len(inv["cai"]))
-    print("  P6_CLASSIFIED_ITEMS                              : %d" % len(mutabile & clasificate))
-    print("  P6_UNCLASSIFIED_ITEMS                            : %d" % len(neclasificate))
-    print("  clasificari fara obiect (fantoma)                : %d" % len(fantoma))
+    print("  P6_SCANNED_NAMES         : %d   (populatia parcursa, nu unitatea)" % scanate)
+    print("  P6_EXCLUDED_E4_IMMUTABLE : %d   (legate o data, niciodata schimbate)"
+          % inv["excluse"]["P6_EXCLUDED_E4_IMMUTABLE"])
+    print("  P6_RAW_ITEMS             : %d   <- UNITATEA: se schimba la rulare" % len(mutabile))
+    print("  P6_RAW_PATHS             : %d   (locuri de mutatie)" % len(inv["cai"]))
+    print("  P6_CLASSIFIED_ITEMS      : %d" % len(mutabile & clasificate))
+    print("  P6_UNCLASSIFIED_ITEMS    : %d" % len(neclasificate))
+    print("  clasificari fara obiect  : %d" % len(fantoma))
+    assert scanate == inv["excluse"]["P6_EXCLUDED_E4_IMMUTABLE"] + len(mutabile), (
+        "contabilitatea nu inchide: %d != %d + %d"
+        % (scanate, inv["excluse"]["P6_EXCLUDED_E4_IMMUTABLE"], len(mutabile)))
     for m, n in neclasificate:
         print("    NECLASIFICAT: %s::%s" % (m, n))
     for m, n in fantoma:

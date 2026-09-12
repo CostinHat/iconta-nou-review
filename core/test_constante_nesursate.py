@@ -43,7 +43,19 @@ from core import scan_constante
 #
 # Cealalta constanta nou-vazuta, `Decimal("0.1")` de pe `.quantize()`, NU a intrat in clichet: e
 # precizie, clasa D, iar lista de precizie a fost completata — `scan_constante._este_precizie`.
+# RIDICAT 134 -> 136 la 12.09.2026, DELIBERAT si cu motivul, in aceeasi clasa cu intrarea lui
+# `intrastat.py`: **largirea domeniului, nu datorie noua**. Valul 1 al lui P6 a mutat contractul de
+# blocare la autentificare din `main.py` in `core/stare_partajata.py` — `PRAG_ESECURI = 5` si
+# `FEREASTRA_ESECURI_SEC = 900`. Cele doua valori EXISTAU si inainte, ca literale in `_login_blocat`
+# din `main.py`, unde scanul de clasa C nu se uita (e restrans la `core/`). Deci ce s-a schimbat nu e
+# numarul lor, ci faptul ca au devenit VIZIBILE — si asta e un castig, nu o pierdere.
+#
+# Zero fiscale: sunt o regula de produs (cate esecuri, in cate minute), fara act normativ de citat.
+# `CITARE` recunoaste numai citari legale, deci nu pot deveni clasa E fara sa mint despre ce sunt.
+# Drumul de coborare ramane acelasi ca la `intrastat.py`: o clasa pentru valorile OPERATIONALE din
+# `core/`, care azi nu exista.
 BASELINE = {
+    "stare_partajata.py": 2,
     "intrastat.py": 1,
     # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.

@@ -27,9 +27,11 @@ import p6_clasificare as CL  # noqa: E402
 import scan_stare_proces as S  # noqa: E402
 
 #: Clichetul de DIAGNOSTIC, nu de conformitate: cate nume cer actiune la data masurarii.
-#: P6 e DESCHISA, deci cifra asta nu e zero si nu trebuie sa fie. Rolul ei e sa nu CREASCA
-#: pe tacute: o stare noua in memoria procesului pica aici, nu peste trei luni.
-CLICHET_ACTION_REQUIRED = 10
+#: P6 e DESCHISA (valurile 2 si 3 nu sunt facute), deci cifra nu e zero si nu trebuie sa fie.
+#: Rolul ei e sa nu CREASCA pe tacute: o stare noua in memoria procesului pica aici.
+#: 10 -> 8 pe 12.09.2026, dupa VALUL 1: `main._login_fail` si `main._alerte_ultima_trimitere` au
+#: iesit din memoria procesului in `public.login_esecuri` / `public.alerte_cooldown`.
+CLICHET_ACTION_REQUIRED = 8
 
 #: Anti-vacuum. Daca graful de import se rupe, inchiderea din `main.py` scade, inventarul iese
 #: mic si curat, iar clichetul de mai sus trece degeaba. Pragurile sunt mult sub valorile
@@ -186,10 +188,25 @@ def test_clichetul_de_actiune_nu_creste(inv):
         % (len(ar), CLICHET_ACTION_REQUIRED, ["%s::%s" % x for x in ar]))
 
 
-def test_cele_doua_nume_din_textul_canonic_sunt_gasite(inv):
-    """Calibrare pe corpusul REAL: `PLAN_HARDENING.md:699-701` numeste doua stari business.
-    Daca detectorul nu le vede, nu masoara P6 — masoara altceva."""
+def test_cele_doua_nume_din_textul_canonic_au_IESIT_din_memoria_procesului(inv):
+    """VALUL 1, 12.09.2026 — proba s-a intors pe dos, si de-aia merita citita.
+
+    Pana azi verifica pozitiv: `PLAN_HARDENING.md:699-701` numeste doua stari business, iar un
+    detector care nu le vede nu masoara P6. Amandoua au fost mutate in baza, deci nu mai exista
+    ca nume de modul. Proba pazeste acum sensul invers: **nu se pot intoarce**. O repunere in
+    `main` a vreunui dictionar de esecuri sau de cooldown pica aici.
+    """
+    mutabile = set(inv["nume_mutabile"])
     for nume in (("main", "_login_fail"), ("main", "_alerte_ultima_trimitere")):
-        assert nume in set(inv["nume_mutabile"]), (
-            "%s::%s e numit explicit in definitia canonica si detectorul nu-l vede" % nume)
-        assert CL.TABEL[nume].categorie == CL.AR
+        assert nume not in mutabile, (
+            "%s::%s a reaparut ca stare in memoria procesului — valul 1 il scosese in baza" % nume)
+
+
+def test_detectorul_NU_e_orb_pe_corpusul_real(inv):
+    """Perechea probei de mai sus, si motivul pentru care ea singura n-ar fi de ajuns: «nu le
+    gasesc» si «nu gasesc nimic» arata identic. Un nume de stare care CHIAR exista trebuie sa fie
+    tot acolo, altfel absenta celor doua n-ar dovedi nimic."""
+    mutabile = set(inv["nume_mutabile"])
+    assert ("core.db", "_pool") in mutabile, (
+        "detectorul nu mai gaseste nici macar `core.db::_pool` — masoara o alta lume")
+    assert len(mutabile) >= 5, "inventar suspect de mic: %d" % len(mutabile)

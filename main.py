@@ -25,6 +25,9 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
+#: [P6 val 1, 12.09.2026] Casa comuna a starii business care nu mai are voie sa traiasca
+#: in memoria unui proces. V. docstringul modulului pentru masuratorile de dinainte.
+from core import stare_partajata as _stare_part
 from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
@@ -172,6 +175,12 @@ async def lifespan(app):
             # EXISTS), langa migrarea existenta, cu aceeasi purtare la esec.
             from core import supervizor_cache as _sc_boot
             _sc_boot.aplica_ddl(conn)
+            # [P6 val 1, 12.09.2026] Tabelele starii business scoase din memoria procesului.
+            # In blocul FAIL-CLOSED deliberat: fara ele, blocarea la autentificare n-ar mai
+            # exista, iar o poarta de securitate care lipseste in TACERE e mai rea decat un
+            # serviciu care refuza sa porneasca.
+            from core import stare_partajata as _sp_boot
+            _sp_boot.aplica_ddl(conn)
             # [P2-remediere 08.09.2026] Modelul de citire al portofoliului: tabelele, functiile de
             # trigger si registrul aspect->sursa.
             from core import firma_rezumat as _fr_boot
@@ -555,7 +564,6 @@ _PRAG_RAM_PROCENT = 75
 _PRAG_DISC_PROCENT = 75
 _PRAG_CONEXIUNI_DB = 20
 _ALERTE_COOLDOWN_SEC = 3600
-_alerte_ultima_trimitere = {}
 
 def _citeste_metrici_pentru_alerte():
     import os as _os
@@ -610,12 +618,24 @@ def _email_superadmin():
         return None
 
 def _poate_alerta(categorie):
-    import time as _time
-    ultima = _alerte_ultima_trimitere.get(categorie, 0)
-    if _time.time() - ultima < _ALERTE_COOLDOWN_SEC:
+    """REZERVA dreptul de a trimite alerta din categoria asta. `True` = trimite TU.
+
+    [P6 val 1, 12.09.2026] Era un dictionar de modul, deci pragul de o ora se aplica de N ori cu
+    N procese: aceeasi alerta pleca de N ori. E o rezervare si acum — ca inainte, apelul care
+    raspunde `True` scrie si marca de timp —, dar intrebarea si scrierea sunt o SINGURA
+    instructiune atomica in baza, deci din doua procese care incearca simultan castiga exact unul.
+
+    La baza cazuta raspunde `False` si CONSEMNEAZA. Fara rezervare nu putem sti ca alt proces nu
+    trimite chiar acum, iar a trimite «ca sa fim siguri» e chiar defectul pe care valul il inchide.
+    Consecinta, declarata: cat timp baza e jos, alertele nu pleaca — semnalul pentru asta e
+    deadman-ul de cron, care nu trece pe aici.
+    """
+    try:
+        with db.get_conn() as conn:
+            return _stare_part.rezerva_alerta(conn, categorie, _ALERTE_COOLDOWN_SEC)
+    except Exception as _e:
+        _obs.esec_secundar("rezervare alerta %s" % categorie, _e)  # inghitit, dar nu tacut
         return False
-    _alerte_ultima_trimitere[categorie] = _time.time()
-    return True
 
 def _verifica_drift_p2():
     """[POST-P2 HARDENING] Driftul infrastructurii P2, verificat periodic și **read-only**.
@@ -1357,17 +1377,24 @@ class DepuneIn(BaseModel):
 # [R138] Faptul „ce e o adresa de email" traieste in `core/common`, nu aici. Numele vechi
 # ramane, ca sa nu se schimbe apelantul, dar nu mai poarta el definitia.
 _email_valid = _common.email_valid  # [email_valid_v1] [R138]
-_login_fail = {}  # [login_lockout_v1] esecuri per CONT (email); per-IP e la nginx (iconta_auth 5r/m)
+# [login_lockout_v1] esecuri per CONT (email); per-IP ramane la nginx (iconta_auth 5r/m).
+# [P6 val 1, 12.09.2026] Era `_login_fail = {}`, un dictionar la nivel de modul. Purta o DECIZIE
+# DE SECURITATE — blocarea unui cont — care se pierdea la fiecare repornire si pe care al doilea
+# proces n-o vedea (masurat: cinci esecuri pe A, `blocat=False` pe B). Iar `_login_blocat` facea
+# CITESTE-FILTREAZA-SCRIE peste acelasi dictionar, deci esecurile concurente se pierdeau unul pe
+# altul: 4326 din 5000 la k=10 fire x 500 runde. Acum: un RAND per esec, un COUNT cu fereastra in
+# `WHERE`. Contractul e acelasi — cinci esecuri in cincisprezece minute.
+# Fiecare functie isi deschide tranzactia EI, scurta. Loginul deschide oricum conexiuni separate
+# pentru autentificare si pentru audit; una tinuta peste toti pasii ar fi exact clasa C5.
 def _login_blocat(email):
-    import time as _t
-    q = [t for t in _login_fail.get(email, []) if _t.time() - t < 900]
-    _login_fail[email] = q
-    return len(q) >= 5
+    with db.get_conn() as conn:
+        return _stare_part.login_blocat(conn, email)
 def _login_esec(email):
-    import time as _t
-    _login_fail.setdefault(email, []).append(_t.time())
+    with db.get_conn() as conn:
+        _stare_part.login_esec(conn, email)
 def _login_reset(email):
-    _login_fail.pop(email, None)
+    with db.get_conn() as conn:
+        _stare_part.login_reset(conn, email)
 
 @app.post("/auth/login")
 def login(date: LoginIn):

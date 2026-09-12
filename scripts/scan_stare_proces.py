@@ -24,9 +24,13 @@ UNITATILE (P6_*_DEFINITION), scrise inainte de a masura:
       tranzitiva a importurilor lui, intersectata cu fisierele .py ale repo-ului. Nu «tot repo-ul»:
       un scanner sau un test are si el nume de modul, dar nu traieste in procesul care serveste
       cereri, deci nu poate purta stare intre doua cereri.
-  P6_RAW_ITEM_DEFINITION = o pereche (modul, nume) legata la nivel de modul: `Assign`, `AnnAssign`,
-      `AugAssign`, `FunctionDef`, `AsyncFunctionDef`, `ClassDef`, `Import`/`ImportFrom` — tot ce
-      pune un nume in `__dict__`-ul modulului.
+  P6_SCANNED_NAMES = populatia scanata: o pereche (modul, nume) legata la nivel de modul —
+      `Assign`, `AnnAssign`, `AugAssign`, `FunctionDef`, `AsyncFunctionDef`, `ClassDef`,
+      `Import`/`ImportFrom`. E ce se PARCURGE, nu ce se clasifica.
+  P6_RAW_ITEM_DEFINITION = un nume din populatia de mai sus care se SCHIMBA la rulare, adica are
+      cel putin o cale de mutatie. **Asta e unitatea** — in detector, in clasificare, in
+      contabilitate si in raport. Un nume legat o data si niciodata schimbat e o constanta, si
+      iese la `P6_EXCLUDED_E4_IMMUTABLE`.
   P6_PATH_DEFINITION = un triplet (modul, nume, loc-de-mutatie): UN loc concret, cu linie, unde
       numele acela isi schimba valoarea DUPA import. Un nume cu >=1 astfel de loc e MUTABIL. Se
       numara caile, nu doar numele: doua locuri care scriu acelasi cache sunt doua cai.
@@ -35,7 +39,8 @@ UNITATILE (P6_*_DEFINITION), scrise inainte de a masura:
       E2 mutatie doar in corpul modulului — e initializare la import, nu schimbare la rulare;
       E3 nume importat (`Import`/`ImportFrom`) — starea apartine modulului care il defineste, si
          e numarata acolo; altfel acelasi obiect s-ar numara de N ori;
-      E4 nume legat, dar niciodata schimbat — constanta; e raw item, nu cale.
+      E4 nume legat, dar niciodata schimbat — constanta (`P6_EXCLUDED_E4_IMMUTABLE`): e in
+         populatia scanata, nu in unitatea de inventar.
 
 CELE CINCI DETECTOARE, separate ca sa poata fi calibrate separat (METODA §22 — fiecare instrument
 primeste mutatie pe PROPRIUL mod de esec, si in ambele directii):
@@ -388,7 +393,7 @@ def inventar():
         apel_tot += p
 
     nume_mutabile = {(c.modul, c.nume) for c in cai}
-    excluse["E4_legat_dar_neschimbat"] = len({(m, n) for m, _, n, _ in raw}) - len(nume_mutabile)
+    excluse["P6_EXCLUDED_E4_IMMUTABLE"] = len({(m, n) for m, _, n, _ in raw}) - len(nume_mutabile)
     return {
         "fisiere_in_proces": fisiere,
         "raw": raw,
@@ -406,8 +411,8 @@ def main(argv):
     if "--json" in argv:
         print(json.dumps({
             "fisiere": len(inv["fisiere_in_proces"]),
-            "raw": len({(m, n) for m, _, n, _ in inv["raw"]}),
-            "nume_mutabile": ["%s::%s" % (m, n) for m, n in inv["nume_mutabile"]],
+            "P6_SCANNED_NAMES": len({(m, n) for m, _, n, _ in inv["raw"]}),
+            "P6_RAW_ITEMS": ["%s::%s" % (m, n) for m, n in inv["nume_mutabile"]],
             "cai": [c._asdict() for c in inv["cai"]],
             "excluse": inv["excluse"],
             "orbire": {"alias": len(inv["orbire_alias"]),
@@ -417,14 +422,15 @@ def main(argv):
 
     print("PERIMETRU (P6_ENTRYPOINT_DEFINITION: %s + inchiderea importurilor)" % RADACINA_PROCES)
     print("  fisiere in procesul de productie : %d" % len(inv["fisiere_in_proces"]))
-    print("  nume legate la nivel de modul    : %d  (P6_RAW_ITEM)"
+    print("  P6_SCANNED_NAMES (nume de modul) : %d"
           % len({(m, n) for m, _, n, _ in inv["raw"]}))
     print()
     print("CAI DE MUTATIE (P6_PATH: modul::nume @ linie)")
     for cl in sorted(pe_clasa):
         print("  %-4s %4d" % (cl, pe_clasa[cl]))
     print("  %-4s %4d  TOTAL cai" % ("", len(inv["cai"])))
-    print("  nume distincte mutabile la rulare: %d" % len(inv["nume_mutabile"]))
+    print("  P6_RAW_ITEMS (se schimba la rulare): %d  <- unitatea de inventar"
+          % len(inv["nume_mutabile"]))
     print()
     print("EXCLUSE, numarate (P6_EXCLUSION_DEFINITION)")
     for k in sorted(inv["excluse"]):
@@ -434,7 +440,7 @@ def main(argv):
     print("  O1 alias    (x = NUME_MODUL)  : %d locuri" % len(inv["orbire_alias"]))
     print("  O2 prin apel (f(NUME_MODUL))  : %d locuri" % len(inv["orbire_prin_apel"]))
     print()
-    print("NUME MUTABILE, cu caile lor")
+    print("P6_RAW_ITEMS, cu caile lor")
     dupa_nume = collections.defaultdict(list)
     for c in inv["cai"]:
         dupa_nume[(c.modul, c.nume)].append(c)
