@@ -1,12 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **planul de întărire P0–P7: patru pași închiși** (09.09.2026)
+# PREDARE LANȚ — **planul de întărire P0–P7: șase pași închiși, P7 în lucru** (13.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-10**, la închiderea lui **P4** (lucrul a intrat pe 09.09 seara, registrele pe 10.09 — ziua s-a schimbat sub tură).
-- **pe commit**: `0742e177`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-13**, la sincronizarea registrelor după valul V3 al lui P7.
+- **pe commit**: `364fbc63`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
+- **[13.09.2026] ANTETUL ĂSTA A FOST STĂTUT TREI ZILE**, deși documentul își cere singur, mai jos, ca antetul să fie rescris la fiecare oprire: a rămas pe `0742e177` / 10.09 prin două rescrieri care au atins alte secțiuni. *O regulă pe care documentul și-o dă singur nu se respectă singură.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde suntem", starea și restanțele sunt **rescrise**.
   Tabelul cifrelor invalidate, capcanele, operaționalul, „ce cere poarta" și lecțiile sunt
@@ -27,7 +28,9 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P2** — portofoliu / N+1 | **ÎNCHIS** (`f3567121`) | `control-fiscal` la 1000 de firme: **278.882 interogări · 70,8 s → 1 · 17 ms** |
 | **P3** — rutele care cresc cu portofoliul | **ÎNCHIS** (`3cd7aebe`) | șase rute N-dependente eliminate în trei valuri; **toate cele 12 rute de portofoliu derivate din cod sunt acum 5q/3c constant de la N=5 la N=1000** |
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
-| P5…P7 | nedeschise | v. `PLAN_HARDENING.md` |
+| **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
+| **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
+| **P7** — stratul de aplicație | **DESCHIS** | diagnostic închis (`b67d2bfb`) · valul V3, registrul de straturi, închis (`364fbc63`) · **V1/V2 neîncepute**; `ACTION_REQUIRED` **296** |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de

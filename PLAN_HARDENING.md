@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-12 (**P6 ÎNCHIS** — două procese reale în producție, criteriile canonice exercitate pe ele)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · P7 nedeschis
+- **ultima actualizare**: 2026-09-13 (**P7 DESCHIS** — diagnostic închis, valul V3 «registrul de straturi» închis; V1 nu a început)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · **P7 DESCHIS** (diagnostic `CLOSED_ACCEPTED` `b67d2bfb` · valul V3, registrul de straturi, `CLOSED_ACCEPTED` `364fbc63`; `P7_ACTION_REQUIRED=296`, V1 și V2 neîncepute)
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -731,6 +731,17 @@ fără `--workers`, confirmat un singur PID) la **mai multe instanțe** — `--w
 ---
 
 # P7 — APPLICATION LAYER
+
+- **stare (13.09.2026)**: **DESCHISĂ**. Diagnostic `CLOSED_ACCEPTED` (`b67d2bfb`) · **V3 — registrul
+  de straturi** `CLOSED_ACCEPTED` (`364fbc63`) · **V1 și V2 NEÎNCEPUTE**.
+- **măsurat**: `P7_RAW_ITEMS=297` = `ACTION_REQUIRED` **296** + `ACCEPTABLE_BY_DESIGN` **1**;
+  `EVIDENCE_LIMITATION` **0**, `UNCLASSIFIED` **0**, `UNEXPLAINED_EXCLUSIONS` **0**.
+  Pe detector: **D1** 257 (SQL în rută, 139 din 424 de rute) · **D2** 1 (`core/efactura_send.py`,
+  motor fiscal care importă `db`) · **D3** 1 (acceptabil: într-un modul care conține rute) ·
+  **D4** 38 (module care fac două straturi deodată).
+- **unde se citesc**: instrumentele — `core/straturi.py` (registrul, 114 module declarate),
+  `scripts/scan_p7_straturi.py`, `scripts/p7_clasificare.py`; raportul datat —
+  `RAPORT_P7_DIAGNOSTIC.md`. *Cifrele de mai sus se recalculează, nu se citesc de aici.*
 
 **Ce trebuie făcut.** Separarea **HTTP → use-case → motor fiscal → repository**. Azi ruta face
 adesea toate patru: citește cererea, decide, calculează și scrie.
