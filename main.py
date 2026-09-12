@@ -591,7 +591,18 @@ async def _edge_canonic_head(request: Request, call_next):
 # ICRD_ALERTE_SANATATE_V1
 _PRAG_RAM_PROCENT = 75
 _PRAG_DISC_PROCENT = 75
-_PRAG_CONEXIUNI_DB = 20
+#: [P6 val 3, 12.09.2026] Cate conexiuni sunt NORMALE nu mai e un numar ales, e o consecinta:
+#: fiecare worker isi tine pool-ul lui. Era `20`, scris cand exista un singur proces cu pool maxim
+#: 10 — iar la doi workeri ar fi devenit o ALARMA FALSA PERMANENTA, fiindca 2 x 10 atinge pragul
+#: din prima clipa, cu aplicatia complet inactiva. Nu e o ipoteza: zborul de proba de pe portul
+#: 8011 a pornit chiar o alerta (inerta, fiindca rulase fara cheia Brevo, dinadins).
+#:
+#: LA UN SINGUR WORKER FORMULA DA TOT 20. Adica schimbarea nu misca purtarea de azi — o face doar
+#: sa se tina singura cand numarul de procese creste. `WEB_CONCURRENCY` e aceeasi variabila pe care
+#: o citeste uvicorn pentru `--workers` (verificat empiric, nu presupus), deci numarul de instante
+#: are UN singur loc unde e scris.
+_WORKERI = max(1, int(os.environ.get("WEB_CONCURRENCY") or 1))
+_PRAG_CONEXIUNI_DB = _WORKERI * db.config_din_env()["maxconn"] + 10
 _ALERTE_COOLDOWN_SEC = 3600
 
 def _citeste_metrici_pentru_alerte():

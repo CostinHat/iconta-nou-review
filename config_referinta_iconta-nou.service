@@ -8,6 +8,10 @@ User=costin
 WorkingDirectory=/home/costin/iconta_nou
 EnvironmentFile=/home/costin/.iconta/db.env
 EnvironmentFile=/home/costin/.iconta/api_keys.env
+# [P6 val 3, 12.09.2026] Numarul de instante. `uvicorn` citeste chiar variabila asta pentru
+# `--workers` (verificat empiric pe portul 8011), iar `main.py` o citeste ca sa-si aseze
+# pragul de alerta pe conexiuni — deci numarul de procese are UN singur loc unde e scris.
+Environment=WEB_CONCURRENCY=2
 ExecStart=/opt/iconta/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8010
 Restart=always
 RestartSec=3

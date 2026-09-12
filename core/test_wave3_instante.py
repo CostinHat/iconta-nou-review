@@ -402,6 +402,33 @@ def test_bratul_e_chemat_de_hook():
         "care nu masoara nimic" % asteptat)
 
 
+def test_pragul_de_conexiuni_e_PESTE_ce_tine_aplicatia_singura():
+    """Proprietatea care conteaza, si care tine pentru ORICE numar de workeri.
+
+    Fiecare worker isi tine pool-ul lui, deci aplicatia complet inactiva ocupa deja
+    `workeri x maxconn` conexiuni. Un prag de alerta sub valoarea aia nu masoara o problema —
+    masoara faptul ca aplicatia ruleaza. Zborul de proba de pe 12.09.2026 a aratat exact asta:
+    cu doua procese, `20` ar fi fost atins din prima clipa.
+    """
+    from core import db as _db_prag
+    import main
+    tinut_in_repaus = main._WORKERI * _db_prag.config_din_env()["maxconn"]
+    assert main._PRAG_CONEXIUNI_DB > tinut_in_repaus, (
+        "pragul (%d) nu e peste ce tine aplicatia in repaus (%d workeri x %d) — ar alerta despre "
+        "propria ei pornire" % (main._PRAG_CONEXIUNI_DB, main._WORKERI,
+                                _db_prag.config_din_env()["maxconn"]))
+
+
+def test_la_un_singur_worker_pragul_e_CEL_DINAINTE():
+    """Schimbarea nu are voie sa miste purtarea de azi.
+
+    `20` e valoarea scrisa de mana inainte de valul 3. Se pinează aici, ca formula sa fie o
+    REFORMULARE a ei, nu o alta decizie luata pe furis.
+    """
+    from core import db as _db_prag
+    assert 1 * _db_prag.config_din_env()["maxconn"] + 10 == 20
+
+
 def test_curatenia_registrului_e_MARGINITA():
     """Fara ea, registrul ar creste cu fiecare repornire si ar raporta drept vii niste PID-uri
     disparute — adica ar face bratul four-way sa pice pe fantome."""
