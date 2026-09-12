@@ -182,14 +182,28 @@ async def lifespan(app):
     _log_boot = logging.getLogger("iconta")
     try:
         with db.get_conn() as conn:
-            # [P6 val 3, 12.09.2026] PRIMUL lucru din tranzactie. `migreaza_triggerele` face
-            # `DROP TRIGGER` + `CREATE TRIGGER` pentru FIECARE firma; patru workeri care pornesc
-            # in aceeasi secunda ar face-o simultan, pe aceleasi obiecte. Blocajul e legat de
-            # TRANZACTIE, deci se elibereaza singur la commit sau la rollback — un worker care
-            # moare la mijloc nu lasa poarta incuiata. Nimeni nu SARE peste instalare: se asteapta.
-            _instante.aplica_ddl(conn)
+            # [P6 val 3, 12.09.2026 · REPARAT 12.09.2026] PRIMUL lucru din tranzactie — si de
+            # data asta chiar primul. `migreaza_triggerele` face `DROP TRIGGER` + `CREATE TRIGGER`
+            # pentru FIECARE firma; doi workeri porniti in aceeasi secunda ar face-o simultan, pe
+            # aceleasi obiecte. Blocajul e legat de TRANZACTIE, deci se elibereaza singur la commit
+            # sau la rollback — un worker care moare la mijloc nu lasa poarta incuiata. Nimeni nu
+            # SARE peste instalare: se asteapta.
+            #
+            # CE ERA STRICAT, masurat pe productie la prima pornire reala cu doi workeri: blocajul
+            # se lua aici, dar linia URMATOARE (`migrare_api.asigura_tabel`) se termina cu
+            # `conn.commit()`, iar un blocaj legat de tranzactie moare odata cu ea. Deci tot ce
+            # trebuia aparat — DDL-ul supervizorului, tabelele valului 1, triggerele celor 37 de
+            # firme, verificarea P2 — rula NESERIALIZAT, si la fiecare repornire un worker murea cu
+            # `tuple concurrently updated`. Patru reporniri din patru. In `pg_locks`, pe toata
+            # durata pornirii, blocajul nu se vedea NICIODATA — asa s-a si gasit.
+            #
+            # Reparatia are trei parti, si a treia conteaza cel mai mult: blocajul se ia INAINTE de
+            # orice · `asigura_tabel` nu mai comite pe calea asta · iar la CAPATUL sectiunii se cere
+            # dovada ca blocajul mai e tinut. Fara a treia, orice apel viitor care comite ar putea
+            # desface serializarea la fel de tacut.
             _instante.blocaj_pornire(conn)
-            migrare_api.asigura_tabel(conn)
+            _instante.aplica_ddl(conn)
+            migrare_api.asigura_tabel(conn, comite=False)
             # [P1] tabelele rezultatului persistat al supervizorului. Idempotent (CREATE IF NOT
             # EXISTS), langa migrarea existenta, cu aceeasi purtare la esec.
             from core import supervizor_cache as _sc_boot
@@ -253,6 +267,10 @@ async def lifespan(app):
             # *Un proces care n-a terminat verificarea nu are voie sa apara ca viu* — altfel bratul
             # four-way ar numara un proces care tocmai refuza sa porneasca.
             from core import versiune as _versiune_reg
+            # [P6 val 3 reparatie, 12.09.2026] DOVADA, nu presupunerea: sectiunea critica s-a
+            # terminat cu blocajul inca in mana. Daca ceva l-a eliberat pe drum, pornirea pica aici
+            # — in acelasi bloc fail-closed cu celelalte verificari, nu cu un avertisment in log.
+            _instante.confirma_blocaj(conn)
             _instante.inregistreaza(conn, _versiune_reg.RUNNING_COMMIT)
             _log_boot.info("[P6] instanta inregistrata: %s pid=%s commit=%s",
                            _instante.eu()[0], _instante.eu()[1],
@@ -762,6 +780,11 @@ def _ciclu_sanatate():
     with db.get_conn() as conn:
         _instante.bate(conn)
         _instante.curata(conn)
+        # [12.09.2026] Perechea lui `curata` pentru LEASE. Fara ea, dupa o repornire lease-ul
+        # ramanea pe procesul mort pana la expirare (900 s), iar in tot acel timp munca de fundal
+        # nu se facea deloc — masurat pe productie de doua ori. Bucla ruleaza un ciclu CHIAR LA
+        # pornire, deci fereastra fara lider devine durata unei reporniri, nu un sfert de ora.
+        _instante.retrage_liderul_mort(conn, "sanatate")
         sunt_lider = _instante.cere_lider(conn, "sanatate")
     if sunt_lider:
         _verifica_si_alerta()

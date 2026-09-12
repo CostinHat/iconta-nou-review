@@ -59,8 +59,17 @@ def regim_efectiv(profil: dict) -> str | None:
 STARI = ("gata", "in_lucru")
 
 
-def asigura_tabel(conn):
-    """Creează tabelul de status dacă nu există. Idempotent."""
+def asigura_tabel(conn, comite=True):
+    """Creează tabelul de status dacă nu există. Idempotent.
+
+    `comite=False` cerut de calea de PORNIRE (`main.lifespan`), si numai de ea. Motivul, masurat pe
+    productie pe 12.09.2026: acolo apelul asta sta imediat dupa `pg_advisory_xact_lock`, iar un
+    `commit` incheie tranzactia — deci ELIBEREAZA blocajul de pornire inainte ca el sa fi aparat
+    ceva. Sectiunea critica rula neserializata, si la fiecare repornire cu doi workeri unul murea
+    cu `tuple concurrently updated`.
+
+    Implicitul ramane `True`, deci ceilalti apelanti (rutele de migrare, care isi deschid propria
+    conexiune si se asteapta ca tabelul sa existe dupa apel) nu se schimba cu nimic."""
     with conn.cursor() as cur:
         cur.execute("""
             CREATE TABLE IF NOT EXISTS public.migrare_status (
@@ -73,7 +82,8 @@ def asigura_tabel(conn):
                 UNIQUE (accounting_firm_id, strat)
             )
         """)
-    conn.commit()
+    if comite:
+        conn.commit()
 
 
 def citeste_status(conn, firm_id):

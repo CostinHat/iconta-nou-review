@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-12 (**P5 ÎNCHIS** — valul 3 la zero căi C5)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · P6–P7 nedeschise
+- **ultima actualizare**: 2026-09-12 (**P6 ÎNCHIS** — două procese reale în producție, criteriile canonice exercitate pe ele)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · P7 nedeschis
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.

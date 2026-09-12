@@ -26,6 +26,7 @@ sys.path.insert(0, "/home/costin/iconta_nou")
 import scan_stare_proces as S  # noqa: E402
 
 AR, ABD, FP = "ACTION_REQUIRED", "ACCEPTABLE_BY_DESIGN", "FALSE_POSITIVE"
+INCHIS = "CLOSED_ACCEPTED"
 V = collections.namedtuple("V", "categorie fel regula de_ce")
 
 #: Cele CINCI lucruri cerute de PLAN_HARDENING.md:704-707 pentru un cache admis.
@@ -106,15 +107,20 @@ TABEL = {
 I = collections.namedtuple("I", "stare cerinta de_ce inchis_de")
 TABEL_INFRA = {
     "un_singur_proces": I(
-        AR,
+        INCHIS,
         "PLAN_HARDENING.md:709-711 — «Include infrastructura, nu doar codul»: trecerea de la un "
         "singur proces la mai multe instante",
-        "`ExecStart` e fara `--workers` si serveste un singur PID. Cat timp e asa, criteriile "
-        "canonice de acceptare (doua instante identice · fault-check cu o instanta oprita in "
-        "timpul unei cereri · four-way redefinit la «TOATE procesele poarta HEAD») nu se pot "
-        "indeplini, oricat de curat ar fi codul. Valul 1 si valul 2 sunt PRECONDITIILE ei: "
-        "pornirea multi-proces peste starea din memorie ar fi activat chiar defectele inchise.",
-        "valul 3"),
+        "INCHIS 12.09.2026. Unitatea poarta `Environment=WEB_CONCURRENCY=2`, iar productia serveste "
+        "din DOUA procese. Criteriile canonice au fost exercitate pe ele, nu pe procese de test: "
+        "doua instante inregistrate cu acelasi commit · blocarea la autentificare creata pe un "
+        "worker si vazuta de celalalt · cooldownul cu un singur castigator · sesiunea acceptata de "
+        "amandoi · fault-check cu SIGKILL in timpul unei cereri, fara stare partiala · four-way "
+        "redefinit, 2 din 2. BASCULAREA A SCOS UN DEFECT PE CARE NIMIC NU-L VEDEA: blocajul de "
+        "pornire se lua, dar `migrare_api.asigura_tabel` comitea o linie mai jos si il elibera, "
+        "deci instalarea P2 rula neserializata si un worker murea la FIECARE repornire (4 din 4). "
+        "Reparat in aceeasi zi; `core/test_wave3_serializare_pornire.py` il pazeste acum la capat, "
+        "pe blocajul REAL, nu pe functia care il ia.",
+        "valul 3 + reparatia serializarii de pornire, 12.09.2026"),
 }
 
 
@@ -169,7 +175,9 @@ def main():
     print("CONTABILITATE P6 — INFRASTRUCTURA (ce nu se vede in AST)")
     print("  P6_INFRA_ACTION_REQUIRED : %d" % n["P6_INFRA_ACTION_REQUIRED"])
     for k, x in sorted(TABEL_INFRA.items()):
-        print("    [%s] %s  -> se inchide la %s" % (x.stare, k, x.inchis_de))
+        print("    [%s] %s  -> %s %s" % (x.stare, k,
+                                         "se inchide la" if x.stare == AR else "inchis de",
+                                         x.inchis_de))
     print()
     print("  P6_STATUS = %s" % ("OPEN" if (n["P6_ACTION_REQUIRED"] or n["P6_INFRA_ACTION_REQUIRED"])
                                 else "CANDIDATE_FOR_CLOSE"))

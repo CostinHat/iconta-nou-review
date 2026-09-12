@@ -629,33 +629,49 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
 22. **[12.09] Zborul de probă se face pe port separat ȘI fără cheile care produc efecte în afară.**
     Două instanțe pe 8011, cu `BREVO_API_KEY` scoasă dinadins: a pornit o alertă reală, care n-a
     putut pleca. *Dacă o probă ar putea trimite ceva unui om, scoate-i mai întâi mijlocul.*
+23. **[12.09] Un blocaj legat de tranzacție moare la primul `commit` din interiorul secțiunii pe
+    care o apără — chiar dacă acel commit e într-o funcție chemată.** `main.py` lua
+    `pg_advisory_xact_lock`, iar linia următoare (`migrare_api.asigura_tabel`) se termina cu
+    `conn.commit()`. Instalarea P2 rula neserializată, și la fiecare repornire cu doi workeri unul
+    murea cu `tuple concurrently updated`. *Blocajul nu se vedea NICIODATĂ în `pg_locks` — de acolo
+    s-a aflat, nu din citirea codului.* De reținut: **întreabă la capăt dacă blocajul mai e al tău**;
+    o gardă care probează funcția care ia blocajul nu poate afla că altcineva i l-a luat din mână.
+24. **[12.09] O probă care nu-și produce propria condiție măsoară altceva decât scrie pe ea.** Proba
+    „patru procese cer conducerea în aceeași clipă" a picat cu două câștigătoare — și avea dreptate:
+    copiii mureau imediat după ce cereau, deci al doilea găsea un lider *real* mort și îl retrăgea
+    corect. Nu codul era greșit, ci hamul: fără barieră de ceas și fără să rămână în viață, „în
+    aceeași clipă" era o vorbă, nu o stare.
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
 
 ---
 ## DACĂ CONTINUI DE AICI
 
-0. **PRIMUL LUCRU: P6 are UN SINGUR PAS RĂMAS, și e blocat pe permisiuni, nu pe muncă.**
+0. **P6 E ÎNCHIS (12.09.2026). Producția servește din DOUĂ procese.**
 
-   Tot codul valului 3 e așezat, probat și publicat. Producția rulează **un singur proces**, deci
-   `P6_INFRA_ACTION_REQUIRED=1` și etapa e OPEN. Ce lipsește:
+   Unitatea poartă `Environment=WEB_CONCURRENCY=2` (editată de Costin — pasul cere root; `sudo -n -l`
+   dă doar `systemctl restart|status` și `journalctl`). Criteriile canonice au fost exercitate pe
+   procese REALE, nu pe copii de test: login blocat pe un worker și văzut de celălalt · cooldown cu
+   un singur câștigător · sesiune acceptată de amândoi · `SIGKILL` în timpul unei cereri, fără stare
+   parțială · four-way 2 din 2.
 
-   ```
-   (a) LOCUL PROPRIU, versionat prin config_referinta_iconta-nou.service:
-       Environment=WEB_CONCURRENCY=2   în [Service], apoi daemon-reload + restart
-   (b) varianta care NU cere parolă: o linie WEB_CONCURRENCY=2 în ~/.iconta/db.env, apoi restart
-   ```
+   **BASCULAREA A SCOS UN DEFECT PE CARE SUITA VERDE NU-L PUTEA VEDEA**, și merită citit înainte de
+   orice: blocajul de pornire se lua, dar `migrare_api.asigura_tabel` comitea o linie mai jos și îl
+   elibera. Instalarea P2 rula neserializată, iar un worker murea la **fiecare** repornire (4 din 4).
+   Reparat în aceeași zi: blocajul se ia primul · `asigura_tabel(comite=False)` pe calea de pornire ·
+   iar la CAPĂTUL secțiunii `instante.confirma_blocaj` cere dovada că blocajul mai e ținut — ca un
+   viitor apel care comite să nu mai poată desface serializarea în tăcere.
 
-   `sudo -n -l` dă doar `systemctl restart|status` și `journalctl` — editarea unității cere parolă.
-   Varianta (b) a fost oprită de clasificatorul de permisiuni și **nu s-a ocolit**.
+   **Ce se verifică la orice repornire de acum înainte:** `pgrep -f multiprocessing-fork` dă DOUĂ
+   PID-uri *(atenție: `pgrep -f "uvicorn main:app"` dă doar supervizorul — cu `--workers`, workerii
+   poartă linia de comandă a lui `multiprocessing.spawn`)* · registrul `instante` are două rânduri cu
+   același commit · `scripts/toate_poarta_head.py` închide brațul · zero `ERROR` în `uvicorn.log` la
+   pornire · `iconta.eu` 200.
 
-   **Ce se verifică imediat după basculare** (toate probate deja pe portul 8011, în baza de test):
-   două procese înregistrate cu același commit · exact un lider · `toate_poarta_head.py` închide
-   brațul · `iconta.eu` 200 · un login greșit răspunde 401, nu 500. **Și apoi se coboară
-   `TABEL_INFRA` din `scripts/p6_clasificare.py`** — altfel cifra minte în cealaltă direcție.
-
-   **De întors, dacă ceva scârțâie:** se scoate linia și se repornește. Copia unității de dinainte
-   e la `~/.iconta/db.env.inainte-de-workers-2026-09-12` dacă s-a folosit varianta (b).
+   **De întors, dacă apare un incident:** se scoate linia `Environment=WEB_CONCURRENCY=2` din
+   `/etc/systemd/system/iconta-nou.service` (cere root), `daemon-reload`, `restart`. La un singur
+   worker totul se comportă ca înainte — pragul de conexiuni dă tot 20, blocajul e necontestat,
+   liderul e singurul candidat.
 
 1. **RESTUL: NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e
    închisă. Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi

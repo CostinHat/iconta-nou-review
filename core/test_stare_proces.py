@@ -205,20 +205,32 @@ def test_cele_doua_nume_din_textul_canonic_au_IESIT_din_memoria_procesului(inv):
             "%s::%s a reaparut ca stare in memoria procesului — valul 1 il scosese in baza" % nume)
 
 
-def test_datoria_de_infrastructura_tine_P6_deschisa():
-    """Perechea obligatorie a clichetului de zero de mai sus.
+def test_datoria_de_infrastructura_nu_poate_DISPAREA_tacut():
+    """[12.09.2026] Proba s-a intors pe dos — asa cum cerea chiar mesajul ei de dinainte.
 
-    `PLAN_HARDENING.md:709-711` spune literal ca P6 «include infrastructura, nu doar codul».
-    Partea aia nu se vede in niciun AST: e `ExecStart` fara `--workers` si un singur PID. Daca ar
-    lipsi de la numaratoare, cifra din cod ar atinge zero si etapa ar parea inchisa cu valul 3
-    neinceput. Proba cade in ziua in care cineva sterge intrarea din `TABEL_INFRA` fara sa fi
-    facut valul 3 — adica exact atunci cand cifra ar incepe sa minta.
+    Pana azi cerea ca datoria sa fie DESCHISA: `PLAN_HARDENING.md:709-711` spune ca P6 «include
+    infrastructura, nu doar codul», iar partea aia nu se vede in niciun AST. Cat timp productia
+    rula un singur proces, o cifra de cod la zero s-ar fi citit drept «P6 gata».
+
+    Azi unitatea poarta `WEB_CONCURRENCY=2` si productia serveste din doua procese, cu criteriile
+    canonice exercitate pe ele. Deci datoria e INCHISA — dar paza ramane, mutata pe ce se poate
+    strica de-acum inainte: intrarea n-are voie sa **dispara**. O cifra care atinge zero fiindca
+    cineva a sters randul nu se deosebeste, la citire, de una care atinge zero fiindca s-a facut
+    treaba; singura deosebire e ca prima minte. Proba cade daca intrarea e stearsa, daca isi pierde
+    starea, sau daca se inchide fara sa spuna CINE a inchis-o.
     """
+    # multime, nu `in`: `in` peste un dict se transforma tacut in sub-sir daca dreapta devine
+    # vreodata un sir, si arata identic. `>=` crapa in loc sa treaca (METODA §23).
+    assert set(CL.TABEL_INFRA) >= {"un_singur_proces"}, (
+        "intrarea de infrastructura a fost STEARSA din `TABEL_INFRA`. Cifra atinge zero prin "
+        "absenta, nu prin fapt — iar din raport nu se mai poate deosebi una de alta.")
+    intrare = CL.TABEL_INFRA["un_singur_proces"]
+    assert intrare.stare == CL.INCHIS, (
+        "datoria de infrastructura nu mai e nici deschisa, nici inchisa, ci %r" % intrare.stare)
+    assert intrare.inchis_de and intrare.inchis_de.strip(), (
+        "inchisa fara sa spuna de cine — o inchidere fara autor nu se poate confrunta")
     n = CL.numaratori()
-    assert n["P6_INFRA_ACTION_REQUIRED"] >= 1, (
-        "datoria de infrastructura a disparut din numaratoare. Daca valul 3 CHIAR s-a facut, "
-        "proba asta se schimba odata cu el, deliberat; daca nu, `P6_ACTION_REQUIRED=0` tocmai a "
-        "devenit o afirmatie falsa despre etapa.")
+    assert n["P6_INFRA_ACTION_REQUIRED"] == 0
     assert n["P6_ACTION_REQUIRED"] == 0, (
         "codul a capatat stare nedeclarata inapoi: %d" % n["P6_ACTION_REQUIRED"])
 

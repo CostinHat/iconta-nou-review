@@ -104,6 +104,79 @@ def blocaj_pornire(conn):
 # ============================================================
 #  2. LIDERUL, PRIN LEASE
 # ============================================================
+def blocaj_tinut(conn):
+    """Tine procesul asta, CHIAR ACUM, blocajul de pornire? Intrebat la sursa, nu dedus.
+
+    `pg_locks` sparge cheia de 64 de biti in doua coloane de 32; `objsubid = 1` inseamna forma cu
+    un singur intreg, care e chiar forma lui `pg_advisory_xact_lock(bigint)`.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT count(*) FROM pg_locks "
+            " WHERE locktype = 'advisory' AND classid = %s AND objid = %s AND objsubid = 1 "
+            "   AND pid = pg_backend_pid() AND granted",
+            (CHEIE_PORNIRE >> 32, CHEIE_PORNIRE & 0xFFFFFFFF))
+        return cur.fetchone()[0] > 0
+
+
+class BlocajPierdut(RuntimeError):
+    """Blocajul de pornire s-a pierdut inainte de capatul sectiunii critice.
+
+    Tip propriu, nu `RuntimeError` gol, ca proba sa poata intreba CE s-a intamplat fara sa citeasca
+    proza mesajului: o conditie numita primeste o eroare numita (METODA §23).
+    """
+
+
+def confirma_blocaj(conn):
+    """Ridica daca blocajul NU mai e tinut la capatul sectiunii critice.
+
+    DE CE EXISTA (12.09.2026, dupa un defect masurat pe productie). Blocajul se lua corect, dar
+    apelul URMATOR — `migrare_api.asigura_tabel` — se termina cu `conn.commit()`, iar un blocaj
+    legat de tranzactie moare odata cu ea. Instalarea infrastructurii rula NESERIALIZATA, si la
+    fiecare repornire cu doi workeri unul murea cu `tuple concurrently updated`. Patru din patru.
+
+    *Nimic nu se plangea.* Proba care exista verifica `blocaj_pornire` IZOLAT — acolo functia chiar
+    serializeaza —, iar o poarta care intreaba daca functia merge nu poate afla ca cineva i-a luat
+    blocajul din mana trei linii mai jos. Deci intrebarea se pune acum acolo unde conteaza: la
+    CAPAT, despre blocajul REAL. Un apel viitor care comite in mijlocul sectiunii nu mai poate
+    desface serializarea in tacere — opreste pornirea, ca orice alta verificare din blocul asta.
+    """
+    if not blocaj_tinut(conn):
+        raise BlocajPierdut(
+            "[P6] blocajul de pornire NU mai e tinut la capatul sectiunii critice — ceva a incheiat "
+            "tranzactia intre timp (un `commit` intr-un apel chemat de aici). Instalarea "
+            "infrastructurii a rulat NESERIALIZAT, deci pornirea asta nu poate fi declarata sigura.")
+
+
+def retrage_liderul_mort(conn, rol):
+    """Scoate lease-ul unui lider care nu mai exista PE GAZDA ASTA. Intoarce PID-ul scos, sau `None`.
+
+    DE CE (12.09.2026, masurat de doua ori pe productie). `instante` isi retrage mortii de pe gazda
+    proprie; `instante_lider` nu avea perechea. Consecinta: dupa fiecare repornire, lease-ul ramanea
+    pe procesul mort pana la EXPIRARE — 900 s in care munca de fundal nu se facea deloc (masurat:
+    nicio scriere in `metrici_sanatate` intre 14:36 si 14:49). Textul de langa `LEASE_SEC` spunea
+    «destul de scurt cat un lider mort sa fie inlocuit intr-un ciclu», iar ciclul e 300 s — deci
+    proza si purtarea nu se potriveau.
+
+    NU se scurteaza niciun termen ca sa iasa cifra: pe gazda proprie moartea nu se ghiceste, o stie
+    sistemul de operare — exact mecanismul lui `retrage_mortii_de_pe_gazda`, chemat pentru acelasi
+    fel de rand. Termenul de 900 s ramane neschimbat, si ramane singurul raspuns pentru un lider de
+    pe ALTA gazda: acolo bataia e tot ce se stie. Se declara, nu se ascunde.
+
+    Stergerea e legata de (rol, gazda, pid): daca intre citire si stergere altcineva a preluat deja,
+    randul lui NU se atinge.
+    """
+    gazda, _pid = eu()
+    with conn.cursor() as cur:
+        cur.execute("SELECT gazda, pid FROM public.instante_lider WHERE rol = %s", (rol,))
+        r = cur.fetchone()
+        if not r or r[0] != gazda or traieste(r[1]):
+            return None
+        cur.execute("DELETE FROM public.instante_lider "
+                    " WHERE rol = %s AND gazda = %s AND pid = %s", (rol, r[0], r[1]))
+        return r[1]
+
+
 def cere_lider(conn, rol, lease_sec=LEASE_SEC):
     """`True` daca procesul asta are dreptul sa faca munca de fundal pentru `rol`.
 
