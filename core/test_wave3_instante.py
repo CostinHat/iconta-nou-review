@@ -19,6 +19,8 @@ poate arata simuland.
 """
 from __future__ import annotations
 
+import ast
+import io
 import json
 import os
 import signal
@@ -334,6 +336,70 @@ def test_retragerea_NU_scoate_procesele_vii():
         with _db.get_conn() as c, c.cursor() as cur:
             cur.execute("DELETE FROM public.instante WHERE gazda = %s AND pid = %s",
                         (gazda, pid_meu))
+
+
+# ------------------------------------------------------------------ bratul isi cere baza
+def _modul_brat():
+    import importlib.util
+    cale = os.path.join(RADACINA, "scripts", "toate_poarta_head.py")
+    spec = importlib.util.spec_from_file_location("toate_poarta_head", cale)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m, cale
+
+
+def test_bratul_NU_citeste_baza_din_mediu():
+    """Defectul masurat pe 12.09.2026, si de ce e o clasa, nu un accident.
+
+    Prima forma folosea `DATABASE_URL` din mediu. Hook-ul `post-commit` mostenește insa mediul
+    scriptului de commit, iar acela sursează `test.env` — fiindca asa cere R68. Deci o afirmatie
+    despre procesele de PRODUCTIE se facea pe `iconta_test`: o rulare a raportat «ratacit» un
+    proces de test (`TestClient` ruleaza `lifespan`, deci se inregistreaza), alta a raportat
+    «niciun proces» acolo unde productia avea unul corect.
+
+    Aserţiunea e pe AST: nicaieri in modul nu se citeste `DATABASE_URL` din `os.environ`.
+    """
+    _m, cale = _modul_brat()
+    arb = ast.parse(io.open(cale, encoding="utf-8").read())
+    for nod in ast.walk(arb):
+        if isinstance(nod, ast.Subscript) and isinstance(nod.value, ast.Attribute) \
+                and nod.value.attr == "environ":
+            raise AssertionError("modulul citeste din `os.environ` la linia %d" % nod.lineno)
+        if isinstance(nod, ast.Call) and isinstance(nod.func, ast.Attribute) \
+                and nod.func.attr in ("get", "getenv") \
+                and isinstance(nod.func.value, ast.Attribute) \
+                and nod.func.value.attr == "environ":
+            raise AssertionError("modulul citeste din `os.environ` la linia %d" % nod.lineno)
+
+
+def test_bratul_REFUZA_daca_acreditarea_nu_duce_la_productie(monkeypatch, capsys):
+    """Oglinda lui R68: acela refuza sa porneasca peste productie, asta refuza sa raspunda despre
+    altceva decat productia. Fara refuz, un raspuns despre alta baza ar arata exact ca unul bun."""
+    m, _cale = _modul_brat()
+    monkeypatch.setattr(m, "dsn_productie",
+                        lambda: "postgresql://cineva:x@localhost:5432/alta_baza")
+    assert m.main(["abc"]) == 2, "a raspuns despre o baza care nu e productia"
+
+
+def test_bratul_e_chemat_de_hook():
+    """Un brat construit si necablat n-ar spune nimic.
+
+    Fisierul e `sh`, deci n-are AST — dar are LEXIC. Se tokenizeaza cu `shlex`, care sare peste
+    comentarii, si se cere ca numele scriptului sa fie un TOKEN, nu un subsir. Diferenta nu e
+    cosmetica: forma cu `in text` ar fi trecut si daca scriptul era doar POMENIT intr-un comentariu
+    — adica exact felul de verde care nu spune nimic despre ce se executa.
+    """
+    import shlex
+    _m, cale_brat = _modul_brat()
+    asteptat = os.path.relpath(cale_brat, RADACINA).replace(os.sep, "/")
+    hook = io.open(os.path.join(RADACINA, "scripts", "githooks", "post-commit"),
+                   encoding="utf-8").read()
+    lexer = shlex.shlex(hook, posix=True)
+    lexer.whitespace_split = True
+    jetoane = set(lexer)
+    assert asteptat in jetoane, (
+        "bratul redefinit nu e chemat din post-commit (%s lipseste dintre jetoane) — ar fi cod "
+        "care nu masoara nimic" % asteptat)
 
 
 def test_curatenia_registrului_e_MARGINITA():
