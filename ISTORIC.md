@@ -8677,3 +8677,74 @@ portofoliul ăla e al unui `admin_firma`, iar funcția are trei ramuri de SQL, u
 de măsurat lăsa rânduri orfane în baza de producție, fiindcă lucrătorul viu scria rezultate pentru
 firme sintetice pe care curățenia tocmai le ștersese. *Un instrument care lasă baza mai murdară
 decât a găsit-o nu e un instrument, e o scurgere.*
+
+---
+
+## 12.09.2026 — **pentru un contabil, ziua asta n-a schimbat nimic**
+
+**Și merită spus așa, nu ocolit.** Opt commituri, patru etape de muncă, nouă rulări ale porții
+complete. Niciun ecran nou, niciun câmp, niciun calcul, niciun refuz cu alt text. Cine deschide
+aplicația azi vede exact ce vedea ieri și apasă exact aceleași butoane.
+
+Ziua a fost **P6 — stateless / scalare orizontală**: aplicația să poată rula în mai multe procese
+fără să se contrazică pe ea însăși. Asta nu se vede din scaunul contabilului **decât în ziua în
+care nu s-ar fi făcut**.
+
+### Ce s-a schimbat, totuși, sub capotă
+
+**Valul 1** (`a25afc04`). Două dicționare din memoria procesului au trecut în PostgreSQL: eșecurile
+de autentificare și cooldownul alertelor de sănătate. Contractul e neatins — tot cinci eșecuri în
+cincisprezece minute, per cont. Ce era stricat și s-a văzut abia măsurând: `_login_blocat` făcea
+*citește–filtrează–scrie* peste același dicționar, iar la zece încercări concurente pe același cont
+**87% dintre eșecuri se pierdeau**. Adică blocarea contului putea fi ocolită apăsând repede. Acum un
+eșec e un RÂND inserat, nu un contor rescris — cursa nu e micșorată, e scoasă din construcție.
+*Singura schimbare a zilei cu miză de securitate, și nici ea nu se vede.*
+
+**Valul 2** (`081c8ba2`). Cele șapte cache-uri locale rămase și-au primit declarația cerută de plan:
+rol, sursă autoritativă, motiv, invalidare, și **dovadă de reconstrucție identică** — a cincea
+lipsea la toate. Nu e birocrație: fiecare are acum o probă care golește cache-ul și arată că
+răspunsul e același. Unul singur — predarea de la descărcarea BNR către decizia de curs — n-avea
+**nicio** invalidare și creștea cu fiecare pereche (monedă, dată) văzută vreodată; a primit termen
+și plafon.
+
+**Valul 3** (`a20524d0`, `0d9c445d`, `6ab854aa`, `ccfde808`). Trei lucruri care se strică la mai
+multe procese, niciunul vizibil pornindu-le: instalarea infrastructurii ar rula simultan pe aceleași
+obiecte (acum se serializează), bucla de sănătate s-ar dubla (acum are un lider ales prin lease), iar
+four-way-ul măsura unitatea systemd în loc de fiecare proces (acum fiecare se înregistrează cu
+commitul lui). **Bascularea propriu-zisă la două instanțe NU s-a făcut** — cere o linie în unitatea
+systemd, iar editarea ei cere parolă.
+
+### Singura urmă pe care un om ar putea s-o vadă, și se scrie
+
+La `curs_bnr`, un refuz de curs valutar poate ieși, într-o cale rară, cu un diagnostic **mai puțin
+specific** decât ieri: predarea de la descărcare nu se mai citește dacă e mai veche de 60 s, deci
+„moneda nu e cotată de BNR" poate deveni „cursul nu se poate lua acum". **Cursul ales, pragul de
+vechime și condiția refuzului sunt neschimbate** — se schimbă doar cât de precis e motivul, și numai
+când predarea vine de la altă cerere. Compromisul e deliberat: o predare care trece de la o cerere la
+alta e chiar felul de stare pe care ziua asta a scos-o din memoria procesului.
+
+### Ce a prins poarta, și ce am greșit
+
+Poarta a respins de **patru** ori din nouă rulări, și de fiecare dată a avut dreptate: un bloc de
+registru neregenerat, o constantă operațională într-un fișier nou, o aserțiune ancorată pe text în
+propria mea gardă, și o declarație scrisă fără diacritice într-un modul de declarații.
+
+Două greșeli au fost ale mele, amândouă **în instrumentele de măsură, nu în codul măsurat**:
+
+- registrul de procese afla de moartea unui proces numai din lipsa bătăii, iar fereastra (15 minute)
+  e mai lungă decât intervalul dintre două publicări — deci păstra fantome exact când era întrebat.
+  **Găsit de propria lui gardă, la prima rulare pe date reale.**
+- brațul care verifică „toate procesele poartă HEAD" citea baza din mediu, iar scriptul de commit
+  sursează mediul de TEST (fiindcă exact asta cere izolarea R68) — deci făcea o afirmație despre
+  producție uitându-se la altă bază. **M-am înșelat de două ori** — „e o cursă", apoi „răbdarea e
+  prea scurtă" — înainte să întreb *la ce lume se uită*.
+
+Și o constatare despre chiar documentul de predare: blocul lui de cifre despre date descrie, de la
+R68 încoace, **baza de test**, nu producția (20 de firme față de 49). Mecanismul care-l ține proaspăt
+e intact; subiectul lui s-a mutat în tăcere. Scris acum lângă bloc.
+
+### Cifre
+
+Poarta finală: **5598 verzi / 0 roșii** · 12 sărite · 14 xfail · verificator TOTAL 0 · five-way
+închis pe `ccfde808` · `iconta.eu` 200. `P6_CODE_ACTION_REQUIRED=0` · `P6_UNDECLARED_CACHES=0` ·
+`P6_INFRA_ACTION_REQUIRED=1` — ultima cifră e singurul motiv pentru care etapa rămâne deschisă.

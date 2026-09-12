@@ -121,6 +121,14 @@ nu se potrivesc, **poarta cade**. Nu se editează cu mâna.
 fusese **deja invalidată o dată**, iar corectura era în tabelul „cifre invalidate" **din aceeași
 predare**. *O regulă scrisă nu ține fără control mecanic.*
 
+**DESPRE CE BAZĂ VORBEȘTE BLOCUL — s-a schimbat sub mecanism, și nimic n-a spus-o.**
+Garda compară blocul cu interogarea **din mediul în care rulează poarta**. Din R68 (11.09) poarta
+rulează în `iconta_test`, deci blocul descrie **restaurarea de test**, nu producția. Măsurat pe
+12.09: `iconta_test` are **20** de firme, `iconta_v2` are **49**. Mecanismul e intact — cifrele tot
+nu pot îmbătrâni —, dar **subiectul lor s-a mutat în tăcere**, iar cine le citește ca stare a
+producției greșește. *Aceeași clasă cu brațul four-way care întreba baza de test: izolarea și
+măsurarea producției trag în direcții opuse, iar unde se întâlnesc trebuie spus care e care.*
+
 <!-- CIFRE-DATE:START (generat de scripts/scan_predare_cifre.py --md) -->
 
 *Generat din bază. **Nu se scrie cu mâna** — `core/test_predare_cifre.py` compară blocul cu interogarea curentă și pică dacă diferă. Regenerare: `./venv/bin/python scripts/scan_predare_cifre.py --md`.*
@@ -404,6 +412,8 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **„12 fișiere cu referințe moarte"** (căi și rute) | auditul de suită, 07.09 | **0.** Căile erau **date de test** date unui clasificator, nu căi folosite; rutele erau **sufixe** ale unor rute reale (`/facturi/emite` există ca `/tenants/{id}/facturi/emite`), iar potrivirea mea era întoarsă pe dos. Plus: citeam doar `main.py`, deși rutele stau și în `core/spv_rute.py` |
 | **„toate cele 12 funcții din `test_cashflow.py` să se colecteze"** | comanda din 07.09, luată din **raportul meu de audit** | **9.** Cele trei umbrite erau **identice caracter cu caracter** cu cele vii; a le redenumi ar fi fabricat trei teste care verifică aceeași condiție pe aceeași cale de cod — chiar clasa pe care auditul o numise dublură. *„12" era numărătoarea mea de DEFINIȚII, nu o țintă de acoperire — și a intrat în comandă prin raportul meu* |
 | **„perimetrul de registre e singura scurtare"** | regula 5, așa cum era scrisă | **incomplet.** Regula 4 (perimetrul derivat din graful de import) exista în `perimetru.py` din 02.09, dar **fără lansator**, deci nu se folosea. Măsurat abia pe 07.09: 168 s pe felia doar-cod a lui R94, față de ~1.550 s |
+| **„cele 5 căi C5 rămase · patru rute de fișier"** | proza cu care **eu** am închis P5, `PLAN_HARDENING.md`, 11.09 | **6** și **cinci**. Lipsea `GET /tenants/{id}/d390-clasificare`. Datat: `main.py` e **neschimbat** de la `f61df1b8`, iar ruta e din **27.07.2026** — deci cifra era greșită **când am scris-o**, nu s-a stricat între timp. *Contractul (`ACTION_REQUIRED=0`) a rămas adevărat tot timpul: ce s-a stricat a fost o numărătoare de mână într-un text care descrie un instrument.* |
+| **„35 de nume la nivel de modul se pot schimba la rulare"** | `PLAN_HARDENING.md`, secțiunea P6, măsurat ad-hoc pe 07.09 | **nu se poate reconstitui — n-a existat instrument.** Refăcut pe 12.09 cu unul: `P6_SCANNED_NAMES=3828`, din care **15** se schimbau la rulare. Cele două cifre nu măsoară același lucru, iar „35" n-are cum fi confruntat cu nimic. *A doua oară în trei zile când o cifră dintr-un plan se dovedește o amintire: [[o-cifra-care-nu-se-poate-recalcula]].* |
 
 ---
 ## CE NU E ADEVĂRAT DESPRE STAREA ASTA, ȘI SE SPUNE
@@ -467,6 +477,23 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
     n-a ajuns niciodată la monedă: se oprea la codul de partener, un câmp pe care eu nu-l
     completasem. *Când răspunsul unei probe vorbește despre alt câmp decât cel probat, prima ipoteză
     e că proba e oarbă — nu că aplicația confundă câmpurile.*
+15. **[12.09] O gardă despre PRODUCȚIE trebuie să întrebe producția — și n-o face singură.**
+    Brațul four-way redefinit citea `DATABASE_URL` din mediu. `post-commit` moștenește mediul
+    scriptului de commit, iar acela sursează `test.env`, **fiindcă exact asta cere R68**. Deci o
+    afirmație despre procesele de producție se făcea, în tăcere, pe `iconta_test`: o rulare a numit
+    „rătăcit" un proces de TEST (`TestClient` rulează `lifespan`, deci se înregistrează), alta a
+    raportat „niciun proces" acolo unde producția avea unul corect. *Aceeași clasă cu gazda greșită
+    din P5 — și o clasă pe care o măsurasem deja o dată.* Reparat: întrebarea își citește singură
+    acreditarea de producție și **refuză** să răspundă altfel. **Izolarea de test și măsurarea
+    producției trag în direcții opuse: unde se întâlnesc, cineva trebuie să spună care e care.**
+16. **[12.09] M-am înșelat de DOUĂ ori înainte să mă uit unde trebuie.** La aceeași defecțiune am
+    zis întâi „e o cursă", apoi „răbdarea e prea scurtă" — și abia a treia oară am întrebat *în ce
+    bază s-a uitat*. Ambele ipoteze erau plauzibile și amândouă false. *Când o măsurătoare dă un
+    răspuns ciudat, prima întrebare nu e «de ce s-a purtat așa lumea», ci «la ce lume se uita».*
+17. **[12.09] `pkill -f "<tipar>"` peste ssh își omoară propriul shell** dacă tiparul apare în
+    comanda trimisă. Mi s-a întâmplat de două ori în aceeași zi; a doua oară a înghițit un heredoc
+    care rescria un script, iar zborul de probă a rulat cu versiunea veche și a picat pe un motiv
+    care nu mai exista. *Se sparge tiparul (`"80""11"`) sau se omoară după PID.*
 
 ---
 ## OPERAȚIONAL — ce se rupe repetat
@@ -481,6 +508,12 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 - **Un patch rulează PE SERVER** — pe Windows, `io.open(..., "w")` trece fișierul la CRLF în tăcere.
 - **Ghilimelele românești rup șirul Python**; **backtick-urile dintr-un `<<EOF` neghilimetat sunt
   executate de shell** — se folosește `<<'EOF'`.
+- **Scriptul de commit sursează `test.env`** — deci TOT ce rulează din `pre-commit` și
+  `post-commit` vede baza de TEST, nu producția. Orice unealtă chemată de-acolo care vrea să
+  vorbească despre producție trebuie să-și ia singură acreditarea.
+- **Aplicația rulează din ARBORELE DE LUCRU.** Cu `Restart=always`, o repornire oarecare ridică
+  cod NECOMIS. Pe 12.09 asta a produs un proces înregistrat cu codul valului 3 și commitul valului
+  2 — care arăta exact ca un proces rămas în urmă.
 - **Stage pe nume, niciodată `git add -A`.** Escape declarat: `# multe-fisiere-ok:`.
 - **O probă care ține o tranzacție deschisă nu poate deschide o a doua conexiune pe același rând.**
 - **O probă care blochează o lună trebuie s-o deblocheze în `finally`.**
@@ -581,16 +614,54 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
     `divid_D1` (schița pe coloane) în loc de `divid_D` (ce emite `build_xml`), și
     `SelectionStartDate` în loc de tuplul `Period*`. Norma dă `<xs:choice>`; codul alege o ramură.
 
+19. **[12.09] `all([])` e `True`, iar un braț care se închide pe mulțime vidă afirmă mai puțin
+    decât pare.** Întrebarea „toate procesele poartă HEAD?" trebuie să ceară explicit să existe
+    cel puțin unul; altfel răspunde „da" tocmai când nu se știe nimic despre niciunul.
+20. **[12.09] Un registru care află de moarte numai din lipsa bătăii păstrează fantome exact când e
+    întrebat.** Fereastra era de 900 s, iar cu `Restart=always` intervalul dintre două reporniri e
+    mai mic. *Pe gazda proprie, moartea nu se ghicește — o știe sistemul de operare.* Găsit de
+    propria mea gardă, la prima ei rulare pe date reale.
+21. **[12.09] Un prag calibrat pentru un proces devine alarmă falsă permanentă la N procese.**
+    `_PRAG_CONEXIUNI_DB = 20` era corect cu un worker și pool maxim 10; la doi, aplicația inactivă
+    atinge pragul din prima clipă. *Un prag care poate fi depășit de propria pornire nu măsoară o
+    problemă.* Rescris ca **consecință** — `workeri × maxconn + 10` —, formulă care la un worker dă
+    tot 20: o reformulare, nu altă decizie luată pe furiș.
+22. **[12.09] Zborul de probă se face pe port separat ȘI fără cheile care produc efecte în afară.**
+    Două instanțe pe 8011, cu `BREVO_API_KEY` scoasă dinadins: a pornit o alertă reală, care n-a
+    putut pleca. *Dacă o probă ar putea trimite ceva unui om, scoate-i mai întâi mijlocul.*
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
 
 ---
 ## DACĂ CONTINUI DE AICI
 
-1. **NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e închisă.
-   Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi rămase din
-   clasa R164."* Cele **50** de restanțe deschise **nu sunt o coadă de sarcini**; `PLAN_LUCRU.md`
-   → „⬛ STAREA, DUPĂ R118".
+0. **PRIMUL LUCRU: P6 are UN SINGUR PAS RĂMAS, și e blocat pe permisiuni, nu pe muncă.**
+
+   Tot codul valului 3 e așezat, probat și publicat. Producția rulează **un singur proces**, deci
+   `P6_INFRA_ACTION_REQUIRED=1` și etapa e OPEN. Ce lipsește:
+
+   ```
+   (a) LOCUL PROPRIU, versionat prin config_referinta_iconta-nou.service:
+       Environment=WEB_CONCURRENCY=2   în [Service], apoi daemon-reload + restart
+   (b) varianta care NU cere parolă: o linie WEB_CONCURRENCY=2 în ~/.iconta/db.env, apoi restart
+   ```
+
+   `sudo -n -l` dă doar `systemctl restart|status` și `journalctl` — editarea unității cere parolă.
+   Varianta (b) a fost oprită de clasificatorul de permisiuni și **nu s-a ocolit**.
+
+   **Ce se verifică imediat după basculare** (toate probate deja pe portul 8011, în baza de test):
+   două procese înregistrate cu același commit · exact un lider · `toate_poarta_head.py` închide
+   brațul · `iconta.eu` 200 · un login greșit răspunde 401, nu 500. **Și apoi se coboară
+   `TABEL_INFRA` din `scripts/p6_clasificare.py`** — altfel cifra minte în cealaltă direcție.
+
+   **De întors, dacă ceva scârțâie:** se scoate linia și se repornește. Copia unității de dinainte
+   e la `~/.iconta/db.env.inainte-de-workers-2026-09-12` dacă s-a folosit varianta (b).
+
+1. **RESTUL: NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e
+   închisă. Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi
+   rămase din clasa R164."* Cele **54** de restanțe deschise **nu sunt o coadă de sarcini**;
+   `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118". *Rămâne în vigoare: din 07.09 se lucrează la
+   `PLAN_HARDENING.md`, iar temele vin de la Costin, una câte una.*
 
    **CE E ÎNCHIS, ca să nu se redeschidă din reflex:**
 
