@@ -58,12 +58,11 @@ REGULI = {
         "lexical în afara corpului rutei nu-i schimbă stratul. *Regula nu se extinde la module "
         "fără rute: acolo același apel ar fi ACTION_REQUIRED.*"),
 
-    "D2_DEZACORD_DEFINITIE": Regula(
-        EL, "cele două instrumente independente nu cad de acord ce e «motor fiscal»",
-        "Modulul poartă valori fiscale după `core/scan_constante.py`, dar nu e generator de "
-        "declarație după `scripts/scan_lanturi_declaratie.py`. Textul canonic spune «motor fiscal» "
-        "fără să-l definească mecanic, iar repo-ul n-are încă un registru de straturi. Deci nu se "
-        "poate decide azi dacă atingerea bazei e o încălcare — și nu se decide pe ghicite."),
+    "D4_STRAT_MIXT": Regula(
+        AR, "PLAN_HARDENING.md:742-746 — cele patru straturi, fiecare cu sarcina lui",
+        "Modulul face azi două lucruri deodată (are un al doilea strat declarat în `mixt_cu`). "
+        "Comanda V3 o cere limpede: nu se inventează o clasificare, se numește amestecul și se "
+        "trece ca poziție de lucru pentru valul care separă. Nu se repară aici."),
 }
 
 
@@ -100,23 +99,8 @@ def itemi():
         are_rute = bool(S.rute([it.fisier]))
         out.append((it, "D3_HTTP_SUB_HTTP_IN_MODUL_DE_RUTE" if are_rute
                     else "D3_HTTP_SUB_HTTP"))
-    for it in dezacorduri():
-        out.append((it, "D2_DEZACORD_DEFINITIE"))
-    return out
-
-
-def dezacorduri():
-    """Itemii clasei EVIDENCE_LIMITATION: modulele pe care cele două instrumente le clasifică
-    diferit ȘI care ating baza. Fără atingerea bazei, dezacordul n-ar avea consecință."""
-    f1, _sursa = S.module_fiscale()
-    f2 = S.module_cu_valori_fiscale()
-    out = []
-    for rel in sorted(f2 - f1):
-        atins = S._atinge_db(rel)
-        if atins:
-            linie, cum = atins[0]
-            out.append(S.Item("D2_DEZACORD", rel, linie, cum, rel,
-                              "fiscal dupa scan_constante, NEfiscal dupa scan_lanturi_declaratie"))
+    for it in inv["D4"]:
+        out.append((it, "D4_STRAT_MIXT"))
     return out
 
 
@@ -137,11 +121,13 @@ def numaratori():
         "P7_UNCLASSIFIED_ITEMS": len([1 for _it, cheie in lista if cheie not in REGULI]),
         "P7_UNEXPLAINED_EXCLUSIONS": len([1 for regula in excluse if not regula]),
         "universuri": {"rute": inv["rute"], "module_core": inv["module_core"],
-                       "module_fiscale": len(S.module_fiscale()[0])},
+                       "module_fiscale": len(S.module_fiscale()[0]),
+                       "registru": len(S.univers_registru())},
         "pe_detector": {
             "D1": len(inv["D1"]) + len(inv["D1_necunoscute"]),
-            "D2": len(inv["D2"]) + len(dezacorduri()),
+            "D2": len(inv["D2"]),
             "D3": len(inv["D3"]),
+            "D4": len(inv["D4"]),
         },
     }
 

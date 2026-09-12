@@ -1,11 +1,13 @@
 # P7 — DIAGNOSTIC. Nicio reparație.
 
-**Instantaneu datat, nu registru viu.** Măsurat pe `f260df2e`, 13.09.2026. Se reproduce cu:
+**Instantaneu datat, nu registru viu.** Măsurat prima oară pe `f260df2e` (12.09.2026), **rescris
+după valul V3** pe `b67d2bfb` (13.09.2026). Se reproduce cu:
 
 ```
+./venv/bin/python core/straturi.py                     # registrul straturilor
 ./venv/bin/python scripts/scan_p7_straturi.py          # universurile și itemii
 ./venv/bin/python scripts/p7_clasificare.py --itemi    # clasificarea, item cu item
-./venv/bin/python -m pytest -q core/test_p7_clasificare.py   # calibrările celor trei detectoare
+./venv/bin/python -m pytest -q core/test_p7_clasificare.py core/test_p7_straturi.py
 ```
 
 *Cifrele de mai jos NU se citesc ca stare curentă: se recalculează. Un raport de diagnostic e
@@ -23,166 +25,172 @@ fotografia zilei, iar instrumentul e cel care rămâne adevărat.*
 - **`738-740`** — criteriul: *„separarea responsabilităților, NU numărul de linii din `main.py`"*.
 - **`742-746`** — cele patru straturi și ce are voie fiecare.
 - **`748-751`** — **cum se verifică, mecanic**: *„un motor fiscal nu importă `db`; un use-case nu
-  construiește `HTTPException`; ruta nu conține SQL. Fiecare din cele trei se poate deriva cu `ast`
-  și se poate garda cu clichet."*
-- **`752-755`** — celelalte două criterii de acceptare: testele rutelor rămân verzi **fără să fie
-  rescrise**; se măsoară ce s-a mutat, iar *„main.py a scăzut cu N linii" NU e criteriu*.
+  construiește `HTTPException`; ruta nu conține SQL."*
+- **`752-755`** — testele rutelor rămân verzi **fără să fie rescrise**; se măsoară ce s-a mutat.
 
-### Omonimia lui „P7", măsurată — și de ce contează pentru orice unealtă
+### Omonimia lui „P7"
 
-`grep -n "P7"` peste registre întoarce **patru** lucruri diferite. Nu e o contradicție normativă;
-e un omonim, și oricine construiește un instrument pe `grep P7` măsoară altceva:
-
-| unde | ce înseamnă acolo |
-|---|---|
-| `PLAN_HARDENING.md:733` | **faza P7 — APPLICATION LAYER** *(subiectul de aici)* |
-| `PLAN_ARHITECTURA.md:279` | **principiul P7** — „Verificarea e independentă prin construcție și prin disciplină" |
-| `DECIZII.md:6434`, `TESTE.md:495` | **rândul P7** din declarația D101 („Rezultat brut") |
-| `TESTE.md:167`, `GARZI.md:1727` | **clasa P7** din catalogul C-5 al mesajelor |
-
-Cele două *planuri* nu se contrazic: PLAN_ARHITECTURA nu spune nimic despre stratificare, iar
-PLAN_HARDENING nu spune nimic despre independența verificării. **`P7_NORMATIVE_CONFLICT=NO`.**
+`grep -n "P7"` peste registre întoarce **patru** lucruri diferite: faza (`PLAN_HARDENING.md:733`) ·
+principiul „verificarea e independentă" (`PLAN_ARHITECTURA.md:279`) · rândul P7 din D101
+(`DECIZII.md:6434`, `TESTE.md:495`) · clasa P7 din catalogul C-5 (`TESTE.md:167`). Nu e contradicție
+— cele două planuri vorbesc despre lucruri disjuncte. **`P7_NORMATIVE_CONFLICT=NO`.**
 
 ---
 
-## 2. CE NU E P7 — datoriile care rămân unde sunt
+## 2. CE NU E P7
 
-- **`R69_IN_P7_SCOPE=NO`.** R69 e *„o declarație depusă pe un regim care s-a schimbat între timp nu
-  contrazice pe nimeni"* (`CONFORMITATE.md`) — o verificare business care lipsește. Niciunul dintre
-  cele trei criterii mecanice ale lui P7 nu o atinge: nu e SQL în rută, nu e motor fiscal care
-  deschide conexiuni, nu e HTTP sub HTTP. Derivat din definiție, nu din faptul că e deschisă.
-- **`OPERATIONAL_CONSTANT_TAXONOMY_IN_P7_SCOPE=NO`.** Taxonomia constantelor operaționale din
-  `core/` e despre **citarea temeiului** unei valori, nu despre stratul în care trăiește. P7 nu
-  vorbește despre constante.
+- **`R69_IN_P7_SCOPE=NO`** — e o verificare business care lipsește; nu atinge niciunul dintre cele
+  trei criterii mecanice.
+- **`OPERATIONAL_CONSTANT_TAXONOMY_IN_P7_SCOPE=NO`** — e despre citarea temeiului unei valori, nu
+  despre stratul în care trăiește.
 
 ---
 
-## 3. UNIVERSUL, definit înainte de scanare
+## 3. VALUL V3 — REGISTRUL STRATURILOR *(13.09.2026)*
+
+**Ce era de reparat.** Prima formă a diagnosticului a măsurat *„un motor fiscal nu importă `db`"* și
+a găsit **zero** — dar pe un univers derivat din DOUĂ instrumente care nu cădeau de acord
+(generatoarele celor nouă declarații: 25 de module; modulele care poartă valori fiscale: 104). Șapte
+module cădeau între ele, iar pentru ele întrebarea nu se putea decide: `EVIDENCE_LIMITATION`.
+*Un criteriu al cărui univers nu e definit nu e o măsurătoare, e o aproximare.*
+
+**Ce s-a construit.** `core/straturi.py` — **o singură sursă autoritativă**, scrisă, nu regenerată:
+`MODULE → STRAT`, cu `motiv` (faptul mecanic măsurat la declarare) și `regula` (linia canonică) pe
+fiecare rând. Detectorul D2 **o consumă**; nu mai are nicio definiție proprie.
 
 | | |
 |---|---|
-| **`P7_ENTRYPOINT_DEFINITION`** | funcție decorată cu `@<obiect>.<metodă>(...)`, metoda ∈ {get, post, put, delete, patch, head, options}. Derivat din AST peste `main.py` + `core/*.py`. **424** — *3 dintre ele nu sunt în `main.py`, ci în `core/spv_rute.py`* |
-| **`P7_RAW_ITEM_DEFINITION`** | **D1**: un apel `.execute`/`.executemany` pe un nume legat de `.cursor()`, lexical în corpul unei rute · **D2**: un import/o folosire a lui `core.db` într-un modul-motor fiscal · **D3**: o construcție `HTTPException(...)` în `core/`, în afara oricărei rute |
-| **`P7_PATH_DEFINITION`** | ruta în al cărei corp stă itemul (D1); modulul (D2, D3) |
-| **`P7_EXCLUSION_DEFINITION`** | `core/test_*.py` (probe) · `core/scan_*.py` (instrumente de măsură) · `scripts/*` (unelte, nu sunt pe calea unei cereri) · `_arhiva_*` · `frontend_test/*`. **603 fișiere**, fiecare sub o regulă scrisă; `P7_UNEXPLAINED_EXCLUSIONS=0` |
+| **`LAYER_REGISTRY_UNIVERSE`** | reuniunea celor două definiții candidate de „fiscal" cu modulele care poartă rute, fără instrumentele de măsură și fără probe — **114 module**, derivată din repo la fiecare rulare |
+| **`LAYER_REGISTRY_ENTRY_DEFINITION`** | `D(cale, strat, mixt_cu, motiv, regula)`; `strat` ∈ {HTTP, USE_CASE, FISCAL_ENGINE, REPOSITORY} |
+| **`LAYER_REGISTRY_EXCLUSIONS`** | `core/scan_*` (instrumente de măsură), `core/test_*` (probe), `scripts/*`, `_arhiva_*`, `frontend_test/*` |
 
-**Universul nu e o listă scrisă:** se regenerează la fiecare rulare din repo.
+```
+MODULE_DECLARATE=114     HTTP=2   USE_CASE=2   FISCAL_ENGINE=96   REPOSITORY=14
+UNDECLARED_RELEVANT_MODULES=0     MULTI_LAYER_MODULES=0     UNKNOWN_LAYER_MODULES=0
+MIXED_LAYER_MODULES=38
+```
 
----
+**Cele 29 de module unde faptele mecanice nu ajungeau** poartă `regula = „citit la sursa"`: le-am
+citit docstringul și ce fac, și am decis. Restul de 85 urmează o regulă declarată, cu evidența
+mecanică scrisă lângă fiecare (câte rute, câte instrucțiuni SQL, dacă e generator de declarație).
 
-## 4. CE A GĂSIT DIAGNOSTICUL
+**`mixt_cu` nu e un al cincilea strat.** 38 de module fac azi două lucruri deodată — un motor fiscal
+care își citește singur datele, o rută care scrie SQL. Comanda V3 cere să nu inventez o clasificare:
+`strat` rămâne responsabilitatea principală (una singură), iar `mixt_cu` numește al doilea strat
+atins. Fiecare e `ACTION_REQUIRED` pentru valul care separă.
 
-| detector | univers | itemi | rezultat |
+### Cele șapte, rezolvate
+
+| MODULE | DECLARED_LAYER | IMPORTS_CORE_DB | D2_CLASSIFICATION |
 |---|---|---|---|
-| **D1 — SQL în rută** | 424 rute | **257** | **139 din 424 de rute execută SQL în corpul lor.** 91 SELECT · 100 INSERT · 28 UPDATE · 5 DELETE · 33 pe mai multe linii (felul nedeterminat din prima linie, declarat). Zero apeluri `.execute` pe altceva decât un cursor |
-| **D2 — motor fiscal care atinge baza** | 25 module-motor | **0** | **Criteriul e deja îndeplinit.** Niciunul dintre cele 25 de module ale celor nouă declarații nu importă `db`: primesc `conn` ca parametru. *Zero e o măsurătoare, nu o orbire — detectorul găsește importul în `core/firma_rezumat.py` și în alte trei module, probat* |
-| **D3 — HTTP sub stratul HTTP** | 323 module `core/` | **1** | `core/spv_rute.py:42` — și e ACCEPTABIL: modulul conține rute, deci **e** stratul HTTP, iar ce face acolo e autorizare tradusă în cod HTTP, exact sarcina stratului (`PLAN_HARDENING.md:743`) |
+| `core/curs_bnr.py` | REPOSITORY | YES | **FALSE_POSITIVE** — aduce și păstrează cursuri; nu aplică o regulă fiscală |
+| `core/efactura_send.py` | **FISCAL_ENGINE** | **YES** | **ACTION_REQUIRED** — generator de document normat care își deschide singur conexiunea |
+| `core/firma_rezumat.py` | REPOSITORY | YES | **FALSE_POSITIVE** — model de citire (P2) |
+| `core/monitor_fiscal.py` | USE_CASE | YES | **FALSE_POSITIVE** — cron care orchestrează, nu calculează obligații |
+| `core/notificari_scadenta.py` | USE_CASE | YES | **FALSE_POSITIVE** — orchestrează un efect extern |
+| `core/stare_partajata.py` | REPOSITORY | YES | **FALSE_POSITIVE** — starea scoasă din memoria procesului (P6 valul 1) |
+| `core/stat_plata_emis.py` | REPOSITORY | YES | **FALSE_POSITIVE** — păstrează documentul emis |
 
-### Dezacordul dintre cele două instrumente — clasa `EVIDENCE_LIMITATION`
+**Registrul NU a fost folosit ca să le facă pe toate să dispară**: șase ies din D2 fiindcă nu sunt
+motoare fiscale, dar al șaptelea **rămâne** motor fiscal și importă `db` — deci e o încălcare
+adevărată, și a devenit **singurul item D2 al repo-ului**. `D2_EVIDENCE_LIMITATIONS=0`.
 
-„Motor fiscal" nu e definit mecanic nicăieri. Am folosit **două** definiții independente și le-am
-confruntat, în loc să aleg tăcut una:
-
-- **F1** = modulele celor nouă declarații (`scripts/scan_lanturi_declaratie.py::generatoare()`) — **25**;
-- **F2** = modulele care poartă valori fiscale (`core/scan_constante.py::inventar()`) — **104**;
-- în comun: **16**; numai în F1: **9**; **7 module sunt fiscale după F2, nefiscale după F1, și ating
-  baza**: `curs_bnr` · `efactura_send` · `firma_rezumat` · `monitor_fiscal` · `notificari_scadenta` ·
-  `stare_partajata` · `stat_plata_emis`.
-
-Pentru ele întrebarea „e o încălcare a lui «motorul fiscal nu importă `db`»?" **nu se poate decide
-azi** — și nu se decide pe ghicite. *Asta e chiar prima cerință a implementării P7: un registru de
-straturi, altfel criteriul rămâne nemăsurabil exact.*
+*Și o observație care nu se repară aici:* `core/efactura_send.py` își spune în docstring „generator
+PUR de XML", dar are `db.get_conn()` în trei locuri (l. 469, 485, 523); la fel, `core/scadentar.py`
+spune „Calcul PUR, fara DB" și are cinci instrucțiuni SQL. Proza descrie miezul, nu modulul — clasa
+**R16**. Consemnat în registru, lăsat pentru valul potrivit.
 
 ---
 
-## 5. FELUL DOVEZII, separat
+## 4. CE A GĂSIT DIAGNOSTICUL, după V3
 
-| clasă de dovadă | ce acoperă aici |
+| detector | univers | itemi | clasă |
+|---|---|---|---|
+| **D1 — SQL în rută** | 424 rute | **257** | `ACTION_REQUIRED` (toate) — 139 din 424 de rute execută SQL în corpul lor: 91 SELECT · 100 INSERT · 28 UPDATE · 5 DELETE · 33 pe mai multe linii |
+| **D2 — motor fiscal cu `db`** | **96 module declarate** | **1** | `ACTION_REQUIRED` — `core/efactura_send.py:368` |
+| **D3 — HTTP sub stratul HTTP** | 324 module `core/` | **1** | `ACCEPTABLE_BY_DESIGN` — `core/spv_rute.py:42`, într-un modul care conține rute |
+| **D4 — strat mixt** | 114 module declarate | **38** | `ACTION_REQUIRED` — poziții pentru valul care separă |
+
+---
+
+## 5. FELUL DOVEZII
+
+| clasă | ce acoperă |
 |---|---|
-| **STATIC_EVIDENCE** | toate cele 265 de poziții. Cele trei criterii canonice sunt proprietăți **structurale** ale codului („ruta conține SQL"), nu comportamente la rulare — AST-ul e forma potrivită, nu o scurtătură |
-| **SYNTHETIC_EVIDENCE** | calibrările celor trei detectoare (fragmente scrise de mână, în `core/test_p7_clasificare.py`) |
-| **REAL_PATH_EVIDENCE** | universul rutelor e chiar populația pe care o numără și verificatorul; itemii cunoscuți (`admin_sanatate`, `core/spv_rute.py:42`) sunt pinați în probe |
-| **PRODUCTION_EVIDENCE** | **niciuna, și nu e nevoie de niciuna.** Nimic din P7 nu depinde de numărul de procese, de concurență sau de o cădere. *Nu prezint o probă statică drept probă de producție* |
+| **STATIC_EVIDENCE** | toate cele 297 de poziții — cele trei criterii canonice sunt proprietăți structurale |
+| **SYNTHETIC_EVIDENCE** | calibrările detectoarelor și ale registrului (fragmente scrise de mână) |
+| **REAL_PATH_EVIDENCE** | universurile derivate din repo; itemii cunoscuți pinați în probe |
+| **PRODUCTION_EVIDENCE** | **niciuna, și nu e nevoie de niciuna** — nimic din P7 nu depinde de numărul de procese, de concurență sau de o cădere |
 
 ---
 
 ## 6. CONTRACTE CARE NU SE REDESCHID
 
-Măsurat: **139 din 139** de rute cu SQL își deschid singure conexiunea (`db.get_conn()` în corpul
-rutei). Deci azi **ruta deține tranzacția**.
+Măsurat: **139 din 139** de rute cu SQL își deschid singure conexiunea. Azi **ruta deține
+tranzacția**. `P4_TRANSACTION_OWNERSHIP_CHANGED=NO` — V3 n-a atins asta.
 
-| contract | atins de reparația P7? | constrângerea pe care reparația TREBUIE s-o păstreze |
+| contract | atins de reparația viitoare? | constrângerea de păstrat |
 |---|---|---|
-| **P4 — tranzacția** | **DA** | tranzacția trece de la rută la **use-case**, nu la repository. Un repository care își deschide propria conexiune ar sparge atomicitatea pe care P4 a închis-o |
-| **P5 — I/O extern** | **NU** | nicio poziție P7 nu mută un apel extern |
-| **P6 — starea procesului** | **NU** | nicio poziție P7 nu introduce stare în memoria procesului; `stare_partajata` apare doar în lista de dezacord, ca modul, nu ca stare nouă |
-| altele | `[login_lockout_v1]`, `[upsert-ok]`, fail-closed-ul de pornire | mutarea SQL-ului nu are voie să schimbe nici pragurile, nici purtarea la eșec |
+| **P4 — tranzacția** | **DA** | tranzacția urcă de la rută la **USE_CASE**; repository-ul NU-și creează tranzacție proprie dacă asta ar rupe atomicitatea |
+| **P5 — I/O extern** | NU | nicio poziție P7 nu mută un apel extern |
+| **P6 — starea procesului** | NU | nicio poziție P7 nu introduce stare în memoria procesului |
 
 ---
 
-## 7. VALURI PROPUSE — nicio implementare
+## 7. VALURI
 
-**V1 — repository pentru citiri** · 91 de poziții SELECT · cauză comună: ruta știe SQL ·
-contract propus: *toate citirile trec printr-un modul-repository; ruta nu mai conține `cur.execute`
-pe citire* · risc: **mic** (citirile n-au efect) · probe: gardă pe AST cu clichet descrescător +
-testele existente ale rutelor rămân verzi **nerescrise** · exercițiu de producție: **NU**.
+**V3 — registrul de straturi: FĂCUT** (13.09.2026). Univers 114, zero nedeclarate, zero ambiguități,
+`EVIDENCE_LIMITATION` 7 → 0.
 
-**V2 — repository pentru scrieri** · 133 de poziții (100 INSERT + 28 UPDATE + 5 DELETE) · contract
-propus: la fel, **plus** tranzacția rămâne a apelantului (P4) · risc: **mare** (atomicitate) ·
-probe: pe lângă cele de la V1, o probă că fiecare scriere mutată rămâne în aceeași tranzacție ·
-exercițiu de producție: **NU** (probele P4 existente acoperă atomicitatea).
+**V1 — repository pentru citiri** · 91 de poziții SELECT · risc mic · gardă cu clichet descrescător ·
+testele rutelor rămân verzi **nerescrise** · fără exercițiu de producție.
 
-**V3 — registrul de straturi** · cele 7 dezacorduri + definiția lui „motor fiscal" · contract
-propus: fiecare modul își declară stratul, iar `scan_p7_straturi` citește declarația în loc să
-folosească două aproximări · risc: mic · exercițiu de producție: **NU**.
+**V2 — repository pentru scrieri** · 133 de poziții (100 INSERT · 28 UPDATE · 5 DELETE) · risc mare
+(atomicitate) · în plus: probă că fiecare scriere rămâne în aceeași tranzacție · fără exercițiu de
+producție.
 
-**Ordinea e dată de risc și dependență**, nu de comoditate: V1 înainte de V2 fiindcă citirile nu pot
-strica date; V3 poate merge oricând, dar **înaintea** oricărei afirmații că „D2 = 0" e completă.
-
-**Cele 33 de poziții cu felul nedeterminat** se împart între V1 și V2 după ce se citesc — nu le-am
-repartizat din prima linie a instrucțiunii.
+**V4 — separarea modulelor mixte** · 38 de module + `core/efactura_send.py` (singura încălcare D2) ·
+risc mediu · se face după V1/V2, fiindcă multe amestecuri dispar odată cu mutarea SQL-ului.
 
 ---
 
 ## 8. PLANUL DE ACCEPTANȚĂ
 
-| criteriu (`PLAN_HARDENING.md`) | baseline azi | țintă | măsurare | gardă | probă de producție |
-|---|---|---|---|---|---|
-| `751` — ruta nu conține SQL | **257** poziții / 139 rute | **0** | `scan_p7_straturi.d1_sql_in_ruta()` | clichet descrescător, fișier cu fișier | NU |
-| `749` — motorul fiscal nu importă `db` | **0** (deja îndeplinit) | **rămâne 0** | `d2_motor_fiscal_cu_db()` | gardă anti-regresie | NU |
-| `750` — use-case fără `HTTPException` | **0** sub stratul HTTP | **rămâne 0** | `d3_http_sub_http()` | gardă anti-regresie | NU |
-| `752-753` — testele rutelor rămân verzi **nerescrise** | 5634 verzi | 5634 verzi, **fără rescrieri** | diff-ul probelor la fiecare val | poarta completă | NU |
-| `754-755` — se măsoară **ce s-a mutat** | — | raport per val | numărul de poziții mutate, pe rută | — | NU |
-
-*Nicio țintă inventată: fiecare vine dintr-o linie a textului canonic. „main.py a scăzut cu N linii"
-nu apare, fiindcă textul spune explicit că nu e criteriu.*
+| criteriu | baseline | țintă | măsurare | gardă |
+|---|---|---|---|---|
+| `751` — ruta nu conține SQL | **257** / 139 rute | **0** | `d1_sql_in_ruta()` | clichet descrescător |
+| `749` — motorul fiscal nu importă `db` | **1** | **0** | `d2_motor_fiscal_cu_db()` | gardă + registru |
+| `750` — use-case fără `HTTPException` | **0** | rămâne 0 | `d3_http_sub_http()` | gardă anti-regresie |
+| straturi declarate | **114 / 114** | rămâne exhaustiv | `univers_registru()` vs registru | `core/test_p7_straturi.py` |
+| module mixte | **38** | **0** | `straturi.mixte()` | clichet descrescător |
+| `752-753` — testele rutelor verzi **nerescrise** | 5652 verzi | idem, fără rescrieri | diff-ul probelor | poarta completă |
 
 ---
 
 ## 9. CONTABILITATEA
 
 ```
-P7_SCANNED_ITEMS           324      (main.py + 323 module core/)
-P7_EXCLUDED_ITEMS          603      (fiecare sub o regulă scrisă)
-P7_RAW_ITEMS               265
-P7_CLASSIFIED_ITEMS        265
-P7_ACTION_REQUIRED         257
+P7_SCANNED_ITEMS           325      (main.py + 324 module core/)
+P7_EXCLUDED_ITEMS          604      (fiecare sub o regulă scrisă)
+P7_RAW_ITEMS               297
+P7_CLASSIFIED_ITEMS        297
+P7_ACTION_REQUIRED         296      (D1 257 + D4 38 + D2 1)
 P7_ACCEPTABLE_BY_DESIGN      1
 P7_FALSE_POSITIVES           0
-P7_EVIDENCE_LIMITATIONS      7
+P7_EVIDENCE_LIMITATIONS      0
 P7_UNCLASSIFIED_ITEMS        0
 P7_UNEXPLAINED_EXCLUSIONS    0
 
-pe detector:  D1 = 257   ·   D2 = 0 + 7 dezacorduri   ·   D3 = 1
-universuri :  424 rute   ·   323 module core/   ·   25 module fiscale
+pe detector:  D1 = 257  ·  D2 = 1  ·  D3 = 1  ·  D4 = 38
+universuri :  424 rute  ·  324 module core/  ·  96 module FISCAL_ENGINE  ·  114 în registru
 ```
 
-**Egalitatea se verifică mecanic**, nu se citește de aici:
-`core/test_p7_clasificare.py::test_contabilitatea_se_inchide`.
+Egalitatea se verifică mecanic: `core/test_p7_clasificare.py::test_contabilitatea_se_inchide` și
+`core/test_p7_straturi.py::test_contabilitatea_P7_se_inchide_dupa_V3`.
 
-**Cele 257 de poziții `ACTION_REQUIRED` împart același contract, aceeași dovadă și același motiv**
-(regula `D1_SQL_IN_RUTA`, temei `PLAN_HARDENING.md:751`) — de aceea câmpurile comune sunt scrise o
-dată, la clasă, iar fiecare poziție își are rândul ei mai jos, cu fișier, linie, simbol și ruta.
+**Cele 257 `D1_SQL_IN_RUTA`** împart același contract, aceeași dovadă și același motiv (temei
+`PLAN_HARDENING.md:751`) — câmpurile comune sunt scrise o dată, la clasă; fiecare poziție își are
+rândul ei mai jos.
 
 ---
 
@@ -449,12 +457,44 @@ editează de mână.*
   ACTION_REQUIRED D1_SQL_IN_RUTA         main.py:12207  cur.execute  <- admin_analytics (app.get:12199)
   ACTION_REQUIRED D1_SQL_IN_RUTA         main.py:12211  cur.execute  <- admin_analytics (app.get:12199)
   ACTION_REQUIRED D1_SQL_IN_RUTA         main.py:12215  cur.execute  <- admin_analytics (app.get:12199)
+  ACTION_REQUIRED D2_MOTOR_FISCAL_CU_DB  core/efactura_send.py:368  from core import db  <- core/efactura_send.py
   ACCEPTABLE_BY_DESIGN D3_HTTP_SUB_HTTP       core/spv_rute.py:42  HTTPException(...)  <- core/spv_rute.py
-  EVIDENCE_LIMITATION D2_DEZACORD            core/curs_bnr.py:225  from core import db  <- core/curs_bnr.py
-  EVIDENCE_LIMITATION D2_DEZACORD            core/efactura_send.py:368  from core import db  <- core/efactura_send.py
-  EVIDENCE_LIMITATION D2_DEZACORD            core/firma_rezumat.py:469  from core import db  <- core/firma_rezumat.py
-  EVIDENCE_LIMITATION D2_DEZACORD            core/monitor_fiscal.py:125  from core import db  <- core/monitor_fiscal.py
-  EVIDENCE_LIMITATION D2_DEZACORD            core/notificari_scadenta.py:20  from core import db  <- core/notificari_scadenta.py
-  EVIDENCE_LIMITATION D2_DEZACORD            core/stare_partajata.py:171  from core import db  <- core/stare_partajata.py
-  EVIDENCE_LIMITATION D2_DEZACORD            core/stat_plata_emis.py:31  from core import db  <- core/stat_plata_emis.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/beneficii_api.py:1  FISCAL_ENGINE + REPOSITORY  <- core/beneficii_api.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/categorie_marime.py:1  FISCAL_ENGINE + REPOSITORY  <- core/categorie_marime.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/control_fiscal_api.py:1  FISCAL_ENGINE + REPOSITORY  <- core/control_fiscal_api.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/control_incrucisat.py:1  FISCAL_ENGINE + REPOSITORY  <- core/control_incrucisat.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d100.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d100.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d100_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d100_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d101.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d101.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d101_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d101_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d101g.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d101g.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d104.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d104.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d112.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d112.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d112_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d112_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d205.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d205.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d205_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d205_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d207.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d207.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d220.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d220.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d221.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d221.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d223.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d223.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d300.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d300.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d300_manual_api.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d300_manual_api.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d300_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d300_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d301.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d301.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d301_operatiuni_api.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d301_operatiuni_api.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d301_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d301_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d390.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d390.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d390_clasificare_api.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d390_clasificare_api.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d390_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d390_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d394.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d394.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d394_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d394_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d406.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d406.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/d406_reconciliere.py:1  FISCAL_ENGINE + REPOSITORY  <- core/d406_reconciliere.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/efactura_send.py:1  FISCAL_ENGINE + REPOSITORY  <- core/efactura_send.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/monitor_fiscal.py:1  USE_CASE + REPOSITORY  <- core/monitor_fiscal.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/notificari_scadenta.py:1  USE_CASE + REPOSITORY  <- core/notificari_scadenta.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/registru_evidenta_fiscala.py:1  FISCAL_ENGINE + REPOSITORY  <- core/registru_evidenta_fiscala.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/registru_inventar.py:1  FISCAL_ENGINE + REPOSITORY  <- core/registru_inventar.py
+  ACTION_REQUIRED D4_STRAT_MIXT          core/scadentar.py:1  FISCAL_ENGINE + REPOSITORY  <- core/scadentar.py
+  ACTION_REQUIRED D4_STRAT_MIXT          main.py:1  HTTP + REPOSITORY  <- main.py
 ```

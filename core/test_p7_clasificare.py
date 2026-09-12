@@ -116,24 +116,34 @@ def test_D2_NEGATIV_un_modul_care_primeste_conn_nu_e_raportat(tmp_path):
 
 
 def test_D2_ANTI_VACUUM_universul_fiscal_nu_e_gol():
-    """Zero itemi e un rezultat ONEST doar dacă universul are obiecte. 25 de module fiscale, iar
-    niciunul nu importă `db` — de-aia D2 e zero, nu fiindcă n-are pe cine să se uite."""
+    """[V3, 13.09.2026] Universul lui D2 nu mai e o aproximare: sunt modulele DECLARATE motor fiscal.
+
+    Proba s-a întors pe dos, și merită citit de ce. Până azi cerea `d2 == []` — și trecea, pe un
+    univers de 25 de module derivat dintr-un singur instrument. Registrul a adus 96 de module
+    declarate `FISCAL_ENGINE`, iar printre ele unul CHIAR importă `db`: `core/efactura_send.py`.
+    *Aceeași întrebare, pe universul adevărat, dă alt răspuns — asta e tot rostul lui V3.*
+    """
     fiscale, sursa = S.module_fiscale()
-    assert len(fiscale) >= 20, "universul modulelor fiscale s-a golit: %d" % len(fiscale)
-    assert sursa, "sursa universului nu mai e numită"
-    assert S.d2_motor_fiscal_cu_db() == [], (
-        "un motor fiscal a început să importe `db` — asta e chiar interdicția P7")
+    assert len(fiscale) >= 90, "universul modulelor fiscale s-a golit: %d" % len(fiscale)
+    assert sursa == "core/straturi.py::REGISTRU", (
+        "D2 și-a luat definiția din altă parte decât registrul: %r" % sursa)
+    gasite = {(i.fisier, i.linie) for i in S.d2_motor_fiscal_cu_db()}
+    assert gasite == {("core/efactura_send.py", 368)}, (
+        "încălcările D2 s-au schimbat fără ca proba să fie actualizată: %s" % sorted(gasite))
 
 
-def test_D2_cele_doua_instrumente_se_confrunta_si_dezacordul_se_NUMESTE():
-    """Regula casei: două instrumente independente, iar dezacordul se raportează, nu se alege
-    tăcut unul dintre ele. Dezacordurile devin EVIDENCE_LIMITATION, nu ACTION_REQUIRED."""
-    f1, _ = S.module_fiscale()
-    f2 = S.module_cu_valori_fiscale()
-    assert f1 and f2, "unul dintre cele două instrumente s-a golit"
-    assert f1 & f2, "cele două nu mai au nimic în comun — unul dintre ele măsoară altceva"
-    for it in CL.dezacorduri():
-        assert CL.REGULI["D2_DEZACORD_DEFINITIE"].clasa == CL.EL
+def test_D2_isi_ia_definitia_NUMAI_din_registru():
+    """Contractul V3: `D2_RAW_ITEM = module.layer == FISCAL_ENGINE AND module uses core.db`.
+
+    Cele două instrumente de dinainte n-au dispărut — dar rolul lor s-a mutat: definesc UNIVERSUL
+    REGISTRULUI (cine trebuie să aibă o declarație), nu răspunsul. Proba cere exact asta: mulțimea
+    pe care se uită D2 e identică cu cea din registru, nu cu vreuna dintre ele.
+    """
+    from core import straturi
+    fiscale, _ = S.module_fiscale()
+    assert fiscale == straturi.module_din_strat(straturi.FISCAL_ENGINE)
+    assert fiscale != S.generatoare_declaratii(), "D2 s-a întors la definiția veche"
+    assert fiscale != S.module_cu_valori_fiscale(), "D2 s-a întors la a doua definiție veche"
 
 
 # ============================================================

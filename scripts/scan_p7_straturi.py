@@ -28,15 +28,22 @@ numara orice `.execute` ar masura cuvantul, nu operatia.*
 
 ## D2 — MOTOR FISCAL CARE ATINGE BAZA
 
-UNIVERS: modulele care produc cele NOUA declaratii pe care aplicatia le emite — lista taiata de
-Costin pe 05.09.2026 si derivata deja de `scripts/scan_lanturi_declaratie.py`. NU o lista noua:
-`P1` cere ca definitia sa aiba un singur loc.
+UNIVERS: modulele DECLARATE `FISCAL_ENGINE` in `core/straturi.py`. Atat — nicio euristica, nicio a
+doua definitie.
 
 ITEM: un import sau o folosire a lui `core.db` intr-un asemenea modul.
 
-CONFRUNTAREA (cerinta casei: doua instrumente independente, iar dezacordul se raporteaza): aceeasi
-intrebare se pune si multimii derivate din `core/scan_constante.py` — modulele care POARTA valori
-fiscale. Un modul fiscal dupa un instrument si nefiscal dupa celalalt e un DEZACORD, si se numeste.
+[V3, 13.09.2026] PANA AZI universul venea din doua instrumente care nu cadeau de acord: generatoarele
+celor noua declaratii (25 de module) si modulele care poarta valori fiscale (104). Sapte module
+cadeau intre ele, iar pentru ele intrebarea nu se putea decide — clasa `EVIDENCE_LIMITATION`. *Un
+criteriu al carui univers nu e definit nu e o masuratoare, e o aproximare.* Registrul le-a dat
+fiecaruia un strat, iar cele doua instrumente raman ce erau: definesc UNIVERSUL REGISTRULUI (cine
+trebuie sa aiba o declaratie), nu raspunsul.
+
+## D4 — MODULE CARE FAC DOUA STRATURI DEODATA
+
+ITEM: un modul declarat cu `mixt_cu` in registru. Nu e o toleranta si nu e un al cincilea strat: e
+pozitia de lucru a valului care separa. Comanda V3 o cere explicit clasificata `ACTION_REQUIRED`.
 
 ## D3 — HTTP SUB STRATUL HTTP
 
@@ -205,18 +212,37 @@ def d1_sql_in_ruta():
 #  D2 — MOTOR FISCAL CARE ATINGE BAZA
 # ============================================================
 def module_fiscale():
-    """(module, sursa) — motoarele celor noua declaratii, derivate de instrumentul care le detine."""
+    """(module, sursa) — modulele DECLARATE motor fiscal. O singura sursa: registrul."""
+    from core import straturi
+    return straturi.module_din_strat(straturi.FISCAL_ENGINE), "core/straturi.py::REGISTRU"
+
+
+def generatoare_declaratii():
+    """Generatoarele celor noua declaratii. NU mai defineste D2 — intra in universul registrului."""
     import scan_lanturi_declaratie as L
     module = set()
     for _declaratie, lista in L.generatoare().items():
         module.update("core/%s.py" % m for m in lista)
-    return module, "scripts/scan_lanturi_declaratie.py::generatoare()"
+    return module
 
 
 def module_cu_valori_fiscale():
-    """Al doilea instrument, independent: modulele care POARTA valori fiscale."""
+    """Modulele care POARTA valori fiscale. Ca si cele de mai sus: intra in UNIVERSUL registrului,
+    nu in raspunsul lui D2."""
     from core import scan_constante as C
     return {"core/" + h["f"] for h in C.inventar()}
+
+
+def univers_registru():
+    """Cine TREBUIE sa aiba o declaratie de strat — derivat din repo, nu scris.
+
+    Reuniunea celor doua definitii candidate de „fiscal" cu modulele care poarta rute; fara
+    instrumentele de masura si fara probe, care nu sunt strat de aplicatie. Un modul care intra
+    maine in multimea asta si n-are declaratie pica poarta — asa ramane registrul exhaustiv fata de
+    UNIVERS, nu fata de ziua in care a fost scris.
+    """
+    u = generatoare_declaratii() | module_cu_valori_fiscale() | {r[0] for r in rute()}
+    return {m for m in u if not os.path.basename(m).startswith(("scan_", "test_"))}
 
 
 def _atinge_db(rel):
@@ -233,6 +259,13 @@ def _atinge_db(rel):
                 if a.name in ("core.db", "db"):
                     out.append((x.lineno, "import %s" % a.name))
     return out
+
+
+def d4_strat_mixt():
+    """[Item] — modulele care ating doua straturi, luate din registru."""
+    from core import straturi
+    return [Item("D4_STRAT_MIXT", d.cale, 1, "%s + %s" % (d.strat, d.mixt_cu), d.cale, d.motiv)
+            for d in straturi.mixte()]
 
 
 def d2_motor_fiscal_cu_db():
@@ -295,6 +328,7 @@ def inventar():
         "D1_necunoscute": d1_necunoscute,
         "D2": d2_motor_fiscal_cu_db(),
         "D3": d3_http_sub_http(),
+        "D4": d4_strat_mixt(),
     }
 
 
@@ -306,7 +340,7 @@ def main():
     fiscale, sursa = module_fiscale()
     print("  module fiscale (universul D2): %d   <- %s" % (len(fiscale), sursa))
     print()
-    for cheie in ("D1", "D2", "D3"):
+    for cheie in ("D1", "D2", "D3", "D4"):
         print("  %-22s %d itemi" % (cheie, len(inv[cheie])))
     print("  %-22s %d (apeluri `.execute` pe ceva ce nu e cursor)"
           % ("D1_necunoscute", len(inv["D1_necunoscute"])))
