@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**564 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**565 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 538
+### `core/` — 539
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7996,6 +7996,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.
 - `core/test_fluturas_egal_stat.py` — GARDĂ: fluturașul TIPĂREȘTE statul, nu îl recalculează. (21.08.2026)
 - `core/test_fluturas_eticheta.py` — O eticheta de pe fluturas nu are voie sa numeasca un lucru si sa arate altul.
+- `core/test_four_way_cardinalitate.py` — Bratul four-way nu se poate inchide pe o multime INCOMPLETA.
 - `core/test_frecventa_document_care_raspunde.py` — GARD [01.09.2026, R111]: frecvența nu se citește dintr-un document care nu poate răspunde.
 - `core/test_front_e_editare_identitate.py` — core/test_front_e_editare_identitate.py — GARD Front E: identitatea/contractul salariatului
 - `core/test_g10_eroare_langa_camp.py` — GARD G10 (DESIGN_SYSTEM cap.6 v2.30) — rollout mecanism A (eroare LANGA campul care a cauzat-o, via

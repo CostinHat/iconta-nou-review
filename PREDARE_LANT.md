@@ -641,6 +641,13 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
     copiii mureau imediat după ce cereau, deci al doilea găsea un lider *real* mort și îl retrăgea
     corect. Nu codul era greșit, ci hamul: fără barieră de ceas și fără să rămână în viață, „în
     aceeași clipă" era o vorbă, nu o stare.
+25. **[13.09] O SUBMULȚIME nu e o mulțime, iar un verificator care numără doar ce găsește nu
+    știe ce-i lipsește.** Brațul four-way a tipărit *„TOATE procesele de producție poartă HEAD: 1
+    din 1"* pe o producție cu **doi** workeri: cei doi se înregistrează la ~0,8 s distanță, iar
+    întrebarea a nimerit fereastra dintre ele. N-a mințit despre ce a văzut — a mințit prin ce nu
+    s-a întrebat: *câți ar fi trebuit să fie.* Aceeași clasă cu `all([])`, cu un pas mai departe.
+    *Un verificator de acceptanță are nevoie de CARDINALITATEA AȘTEPTATĂ, citită din configurația
+    canonică, nu de mulțimea pe care o găsește.* Și: „nu știu câți" nu are voie să devină „da".
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
 
