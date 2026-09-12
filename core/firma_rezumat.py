@@ -66,6 +66,7 @@ from __future__ import annotations
 import json
 
 from core import cron as _cron
+from core.cache_declarat import Declaratie as _Dec
 
 CURENT, INVALIDAT, LIPSESTE, EROARE = "curent", "invalidat", "lipseste", "eroare"
 
@@ -749,6 +750,19 @@ def verifica_triggerele(conn):
 #: calea de cerere: o verificare per cerere ar întreba catalogul de zeci de ori pe secundă, adică
 #: exact felul de muncă pe care P2 a scos-o din cererea interactivă.
 _SANATATE = {"ok": None, "verificat_la": None, "probleme": [], "detaliu": {}}
+_SANATATE_DECLARATIE = _Dec(
+    rol="ultimul rezultat cunoscut al verificarii de drift, ca `/admin/sanatate` sa raspunda fara "
+        "sa interogheze catalogul PostgreSQL la fiecare cerere",
+    sursa="catalogul PostgreSQL, prin `verifica_infrastructura(conn)` — singura autoritate despre "
+          "ce triggere si ce coloane exista cu adevarat",
+    motiv="P2 a scos verificarea din calea cererii: una per cerere ar intreba catalogul de zeci de "
+          "ori pe secunda",
+    invalidare="rescris INTEGRAL la fiecare rulare a buclei de sanatate (5 minute), prin "
+               "`verifica_drift`. Pana la prima rulare, `ok` e `None` — nu `False` si nu `True`: "
+               "un serviciu abia pornit n-a apucat sa masoare, iar a spune «ok» despre ceva "
+               "nemasurat e chiar clasa de defect pe care P2 o repara",
+    dovada="core/test_cache_declarat.py::test_sanatatea_se_reconstruieste_identic",
+)
 
 
 def stare_infrastructura():

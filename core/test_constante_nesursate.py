@@ -54,8 +54,20 @@ from core import scan_constante
 # `CITARE` recunoaste numai citari legale, deci nu pot deveni clasa E fara sa mint despre ce sunt.
 # Drumul de coborare ramane acelasi ca la `intrastat.py`: o clasa pentru valorile OPERATIONALE din
 # `core/`, care azi nu exista.
+# RIDICAT 136 -> 138 la 12.09.2026 (valul 2 P6), ACEEASI CLASA: `curs_bnr._PREDARE_TTL_SEC = 60`
+# si `_PREDARE_MAX = 256` — termenul si plafonul INVALIDARII pe care predarea BNR n-o avea deloc
+# pana azi. Sunt parametri operationali, nu valori din lege; `CITARE` recunoaste numai citari
+# legale, deci n-au cum sa devina clasa E fara sa mint despre ce sunt.
+#
+# DE CONSEMNAT, fiindca e a DOUA oara intr-o singura zi: si `stare_partajata.py`, si
+# `curs_bnr.py` au crescut clichetul pentru acelasi motiv — **nu exista o clasa pentru valorile
+# OPERATIONALE din `core/`**. Gaura e numita inca de la 01.09 (v. comentariul lui `intrastat`),
+# iar azi a produs patru unitati de datorie care nu sunt datorie fiscala. Cat timp clasa
+# lipseste, fiecare prag de infrastructura mutat in `core/` va arata ca o constanta fiscala
+# nesursata — si drumul de coborare al clichetului va cere, de fapt, ALT instrument.
 BASELINE = {
     "stare_partajata.py": 2,
+    "curs_bnr.py": 2,
     "intrastat.py": 1,
     # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.

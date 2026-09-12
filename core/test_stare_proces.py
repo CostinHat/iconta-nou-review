@@ -31,7 +31,10 @@ import scan_stare_proces as S  # noqa: E402
 #: Rolul ei e sa nu CREASCA pe tacute: o stare noua in memoria procesului pica aici.
 #: 10 -> 8 pe 12.09.2026, dupa VALUL 1: `main._login_fail` si `main._alerte_ultima_trimitere` au
 #: iesit din memoria procesului in `public.login_esecuri` / `public.alerte_cooldown`.
-CLICHET_ACTION_REQUIRED = 8
+#: 8 -> 0 pe 12.09.2026, dupa VALUL 2: cele sapte cache-uri ramase si-au primit cele cinci lucruri,
+#: iar declaratiile sunt verificate structural de `core/test_cache_declarat.py`.
+#: ZERO AICI NU INSEAMNA «P6 gata» — v. `test_datoria_de_infrastructura_tine_P6_deschisa`.
+CLICHET_ACTION_REQUIRED = 0
 
 #: Anti-vacuum. Daca graful de import se rupe, inchiderea din `main.py` scade, inventarul iese
 #: mic si curat, iar clichetul de mai sus trece degeaba. Pragurile sunt mult sub valorile
@@ -200,6 +203,37 @@ def test_cele_doua_nume_din_textul_canonic_au_IESIT_din_memoria_procesului(inv):
     for nume in (("main", "_login_fail"), ("main", "_alerte_ultima_trimitere")):
         assert nume not in mutabile, (
             "%s::%s a reaparut ca stare in memoria procesului — valul 1 il scosese in baza" % nume)
+
+
+def test_datoria_de_infrastructura_tine_P6_deschisa():
+    """Perechea obligatorie a clichetului de zero de mai sus.
+
+    `PLAN_HARDENING.md:709-711` spune literal ca P6 «include infrastructura, nu doar codul».
+    Partea aia nu se vede in niciun AST: e `ExecStart` fara `--workers` si un singur PID. Daca ar
+    lipsi de la numaratoare, cifra din cod ar atinge zero si etapa ar parea inchisa cu valul 3
+    neinceput. Proba cade in ziua in care cineva sterge intrarea din `TABEL_INFRA` fara sa fi
+    facut valul 3 — adica exact atunci cand cifra ar incepe sa minta.
+    """
+    n = CL.numaratori()
+    assert n["P6_INFRA_ACTION_REQUIRED"] >= 1, (
+        "datoria de infrastructura a disparut din numaratoare. Daca valul 3 CHIAR s-a facut, "
+        "proba asta se schimba odata cu el, deliberat; daca nu, `P6_ACTION_REQUIRED=0` tocmai a "
+        "devenit o afirmatie falsa despre etapa.")
+    assert n["P6_ACTION_REQUIRED"] == 0, (
+        "codul a capatat stare nedeclarata inapoi: %d" % n["P6_ACTION_REQUIRED"])
+
+
+def test_fiecare_cache_acceptat_are_declaratie_ceruta_de_regula():
+    """Legatura dintre cele doua garzi, ca regula sa nu devina o eticheta.
+
+    Un `ACCEPTABLE_BY_DESIGN` cu `fel == 'declarat'` e acceptat NUMAI fiindca declaratia exista.
+    Daca maine cineva ar pune eticheta fara declaratie, `core/test_cache_declarat.py` ar cadea —
+    proba asta doar face legatura vizibila de aici, unde se citeste clichetul."""
+    declarate = [k for k, v in CL.TABEL.items() if v.fel == "declarat"]
+    assert declarate, "nicio intrare `declarat`: regula s-a golit"
+    for k in declarate:
+        assert CL.TABEL[k].regula == CL.REGULA_DECLARAT, (
+            "%s::%s e acceptat pe alta regula decat cea a cache-ului declarat" % k)
 
 
 def test_detectorul_NU_e_orb_pe_corpusul_real(inv):

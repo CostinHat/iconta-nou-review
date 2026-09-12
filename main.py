@@ -28,6 +28,7 @@ from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_
 #: [P6 val 1, 12.09.2026] Casa comuna a starii business care nu mai are voie sa traiasca
 #: in memoria unui proces. V. docstringul modulului pentru masuratorile de dinainte.
 from core import stare_partajata as _stare_part
+from core import cache_declarat as _cache_declarat
 from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
@@ -86,6 +87,14 @@ TENANT_TEMPLATE_PATH = os.environ.get(
     "ICONTA_TENANT_TEMPLATE",
     os.path.join(os.path.dirname(__file__), "tenant_template.sql"))
 _TENANT_TEMPLATE = None
+_TENANT_TEMPLATE_DECLARATIE = _cache_declarat.Declaratie(
+    rol="sablonul SQL al schemei unui tenant nou, citit o data la pornire",
+    sursa="fisierul de la `TENANT_TEMPLATE_PATH` (implicit `tenant_template.sql`, versionat)",
+    motiv="citirea unui fisier SQL mare pe calea crearii unei firme",
+    invalidare="la repornirea procesului. Identic pe orice numar de instante, fiindca toate "
+               "pornesc din acelasi commit — deci nu poate diverge intre procese",
+    dovada="core/test_cache_declarat.py::test_sablonul_de_tenant_se_reconstruieste_identic",
+)
 
 
 # ============================================================

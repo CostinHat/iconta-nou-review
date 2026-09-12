@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**560 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**561 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 534
+### `core/` — 535
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7751,6 +7751,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
 - `core/test_c6_c5_motiv_acord.py` — GARD C6 + C5 (audit vizual tenant_003, 16.08.2026).
 - `core/test_c7_periodicitate_trimestriala.py` — GARD C7 — generarea TVA-decont (d300/d394/d406) urmeaza periodicitatea EFECTIVA a firmei (tip_decont),
+- `core/test_cache_declarat.py` — P6 valul 2 — un cache admis isi poarta cele cinci lucruri, si dovada nu e o promisiune.
 - `core/test_cai_creare_factura.py` — GARDA inventarului de căi prin care se naște o factură (HHH1). Instrumentul:
 - `core/test_cai_fisiere_date.py` — GARD CLASA "cale de fisier construita relativ la radacina" (01.08.2026).
 - `core/test_cale_a_doua.py` — GARD (20.08.2026): a doua cale nu poate fi mutată peste prima în tăcere.

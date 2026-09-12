@@ -16,6 +16,7 @@ Sărbătorile sunt într-un dict EDITABIL per an (Paște/Rusalii variază anual)
 from __future__ import annotations
 import calendar
 from datetime import date, timedelta
+from core.cache_declarat import Declaratie as _Dec
 
 REGULI = "2026.1"
 MODUL = "scadente"
@@ -29,6 +30,17 @@ _SARB_FIXE = [(1, 1), (1, 2), (1, 6), (1, 7), (1, 24), (5, 1), (6, 1),
               (8, 15), (11, 30), (12, 1), (12, 25), (12, 26)]
 _AN_MIN, _AN_MAX = 2024, 2099   # set fix (cu 6-7 ian) valabil din 2024; offset iulian +13 pana 2099
 _cache_sarb = {}
+_cache_sarb_DECLARATIE = _Dec(
+    rol="memo pentru `sarbatori_legale(an)`, chemata de fiecare calcul de scadenta si de fiecare "
+        "proratare de concediu medical",
+    sursa="chiar functia `sarbatori_legale`, care e PURA: `_SARB_FIXE` (art. 139 Codul muncii) plus "
+          "cele cinci zile derivate din `paste_ortodox(an)` (Legea 220/2016)",
+    motiv="calculul Pastelui ortodox se reface altfel la fiecare intrebare despre o zi lucratoare",
+    invalidare="NICIODATA, si asta e raspunsul corect, nu o lipsa: valoarea unui an nu se poate "
+               "schimba la rulare, iar domeniul e marginit prin `_AN_MIN`/`_AN_MAX` la [2024, 2099], "
+               "deci cel mult 76 de chei — un plafon scris, nu unul sperat",
+    dovada="core/test_cache_declarat.py::test_sarbatori_se_reconstruiesc_identic",
+)
 
 # [R4, 21.08.2026] TEMEIUL PER TIP, ca DATE — nu ca proză. Termenele sunt constante fiscale ca oricare
 # altele: notorietatea e o proprietate a CUNOAȘTERII, nu a valorii. S-au schimbat de două ori în viața

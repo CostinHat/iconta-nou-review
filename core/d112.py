@@ -10,6 +10,7 @@ DENUMIRE_OFICIALA = 'Declarație privind obligațiile de plată a contribuțiilo
 
 from core.common import text_anaf as _t, cere_coloane_cursor, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from dataclasses import dataclass, field
+from core.cache_declarat import Declaratie as _Dec
 import re
 from core import scadente as _scad
 from core import pontaj as _pontaj
@@ -21,6 +22,17 @@ from core.identitate import valideaza_cnp as _vcnp_id, valideaza_cui as _vcui_id
 
 _D112_XSD = _os.path.join(_os.path.dirname(__file__), "..", "anaf_surse", "d112_06082026.xsd")
 _ENUM_XSD_CACHE = {}
+_ENUM_XSD_CACHE_DECLARATIE = _Dec(
+    rol="valorile enumerate ale unui `xs:simpleType` din XSD-ul D112, ca să nu se reia căutarea cu "
+        "expresie regulată prin tot XSD-ul la fiecare verificare de CAEN sau de nomenclator",
+    sursa="anaf_surse/d112_06082026.xsd — artefact ADUS, cu amprentă în registrul de proveniență; "
+          "nimic din aplicație nu-l scrie",
+    motiv="`re.search` peste textul întreg al XSD-ului, pe calea unei validări",
+    invalidare="la repornirea procesului. Un XSD nou de la ANAF intră ca FIȘIER NOU, cu alt nume "
+               "și altă amprentă, deci nu poate schimba răspunsul cheii vechi — cache-ul nu are "
+               "cum să rămână în urma unei surse care nu se modifică în loc",
+    dovada="core/test_cache_declarat.py::test_enum_xsd_se_reconstruieste_identic",
+)
 from core import nomenclator_cm as _ncm
 
 

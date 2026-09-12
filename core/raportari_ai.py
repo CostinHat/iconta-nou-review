@@ -8,8 +8,18 @@ Fallback sigur: AI indisponibil/eroare -> escaladare (comportamentul de dinainte
 """
 import csv, json, pathlib
 from core import ai_client
+from core.cache_declarat import Declaratie as _Dec
 
 _BAZA = None
+_BAZA_DECLARATIE = _Dec(
+    rol="baza de cunostinte trimisa lui Claude la fiecare sesizare — pozitiile LIVE din registru, "
+        "gata formatate",
+    sursa="FUNCTIONALITATI.csv, coloana 7 (`LIVE`) — acelasi fisier versionat ca la `ajutor`",
+    motiv="parsarea CSV-ului plus filtrarea si formatarea celor ~200 de linii, la fiecare sesizare",
+    invalidare="la repornirea procesului; acelasi rationament ca la `ajutor._CACHE` — sursa e "
+               "versionata, iar orice schimbare a ei trece prin commit, deci prin repornire",
+    dovada="core/test_cache_declarat.py::test_baza_ai_se_reconstruieste_identic",
+)
 
 def _baza_cunostinte():
     global _BAZA

@@ -38,6 +38,9 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 import xml.etree.ElementTree as ET
+import collections
+import time as _time
+from core.cache_declarat import Declaratie as _Dec
 
 #: PRAGUL DE VECHIME al unui curs, in zile CALENDARISTICE, intre data cursului si data facturii.
 #: **Decizie de produs, nu norma fiscala** — Costin, 04.09.2026, verbatim: *„pragul e 5 zile
@@ -231,11 +234,50 @@ def _salveaza_cache(harta: dict):
         c2.commit()
 
 
-#: [P5 val 3, 11.09.2026] Ce a aflat ultima descarcare, ca `curs_pentru` sa poata da ACELEASI
-#: mesaje de refuz ca inainte fara sa mai atinga reteaua. Cheiate pe (moneda, data) — o cerere
-#: pentru alta pereche nu citeste ce a lasat alta.
-_ULTIMA_EROARE = {}
-_COTATE = {}
+#: [P5 val 3, 11.09.2026 · P6 val 2, 12.09.2026] Ce a aflat ultima descarcare, ca `curs_pentru`
+#: sa poata da ACELEASI mesaje de refuz ca inainte fara sa mai atinga reteaua.
+#:
+#: ERAU DOUA DICTIONARE, `_ULTIMA_EROARE` si `_COTATE`. Cheiate identic, scrise in aceeasi linie,
+#: citite in aceeasi linie: erau un singur lucru tinut in doua locuri. Contopite la valul 2.
+#:
+#: SI N-AVEAU NICIO INVALIDARE — cresteau cu fiecare (moneda, data) vazuta vreodata de proces, iar
+#: o intrare lasata de o cerere putea fi citita de alta, ore mai tarziu. Acum au doua plafoane,
+#: amandoua scrise: un TERMEN, fiindca predarea e de la `asigura_cursul` catre `curs_pentru` din
+#: ACEEASI cerere, iar bugetul descarcarii e de cel mult 3 x 10 s; si un PLAFON DE CHEI.
+#: O intrare expirata sau evacuata nu produce un curs gresit — produce exact raspunsul de dinainte
+#: de orice descarcare, adica diagnosticul mai sarac, niciodata unul fals.
+_PREDARE_TTL_SEC = 60
+_PREDARE_MAX = 256
+_PREDARE = collections.OrderedDict()
+_PREDARE_DECLARATIE = _Dec(
+    rol="ce a aflat descarcarea BNR (eroarea de retea, monedele cotate in hartile CHIAR citite), "
+        "predat de la `asigura_cursul` la `curs_pentru`, care nu mai are voie sa atinga reteaua",
+    sursa="reteaua BNR. NU e cache-ul cursului — acela e in baza, in `curs_bnr_cache`, si el ramane "
+          "singura sursa a DECIZIEI; aici sta doar de ce n-a mers, ca refuzul sa spuna acelasi "
+          "lucru ca inainte de P5",
+    motiv="descarcarea s-a mutat in afara tranzactiei apelantului (P5 val 3, clasa C5); fara "
+          "predarea asta, mesajele de refuz si-ar fi pierdut continutul",
+    invalidare="TERMEN de 60 s (predarea e intre doi pasi ai aceleiasi cereri) SI plafon de 256 chei, "
+               "cu evacuarea celei mai vechi. O intrare cazuta degradeaza la comportamentul de "
+               "dinainte de descarcare, niciodata la un curs gresit",
+    dovada="core/test_cache_declarat.py::test_predarea_bnr_se_reconstruieste_identic",
+)
+
+
+def _preda(moneda, data_factura, eroare, cotate):
+    """Lasa pentru `curs_pentru` ce a aflat descarcarea. Cu plafon, ca sa nu creasca la nesfarsit."""
+    _PREDARE[(moneda, data_factura)] = (_time.monotonic(), eroare, cotate)
+    _PREDARE.move_to_end((moneda, data_factura))
+    while len(_PREDARE) > _PREDARE_MAX:
+        _PREDARE.popitem(last=False)
+
+
+def _preluare(moneda, data_factura):
+    """Ce a aflat descarcarea ACESTEI cereri. Ce a ramas de la alta, expirat, nu se citeste."""
+    x = _PREDARE.get((moneda, data_factura))
+    if x is None or _time.monotonic() - x[0] > _PREDARE_TTL_SEC:
+        return None, set()
+    return x[1], (x[2] or set())
 
 
 def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):
@@ -285,8 +327,7 @@ def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIM
         except Exception as e:  # retea, timeout, IP blocat, parse
             ultima_eroare = e
             continue
-    _ULTIMA_EROARE[(moneda, data_factura)] = ultima_eroare
-    _COTATE[(moneda, data_factura)] = cotate
+    _preda(moneda, data_factura, ultima_eroare, cotate)
 
 
 def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):
@@ -317,8 +358,7 @@ def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VEC
 
     # 3) DECIZIA, pe cache. Descarcarea s-a facut (sau nu) in `asigura_cursul`, INAINTE de
     #    tranzactia apelantului — v. nota functiei aceleia. Aici nu mai atinge nimeni reteaua.
-    ultima_eroare = _ULTIMA_EROARE.get((moneda, data_factura))
-    cotate = _COTATE.get((moneda, data_factura)) or set()
+    ultima_eroare, cotate = _preluare(moneda, data_factura)
 
     # Recitesc cache-ul, care poate a fost tocmai imbogatit. Daca ce iese e in interiorul pragului,
     # e un raspuns; daca e mai vechi, e un refuz care POARTA cursul. *Recitirea asta E revalidarea:

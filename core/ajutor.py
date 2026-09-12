@@ -6,7 +6,19 @@ invalidat la restart (ca _BAZA din raportari_ai)."""
 import csv
 import pathlib
 
+from core.cache_declarat import Declaratie as _Dec
+
 _CACHE = None
+_CACHE_DECLARATIE = _Dec(
+    rol="textul de ajutor per functionalitate, ca semnul `?` sa nu reciteasca si sa nu reparseze "
+        "CSV-ul la fiecare afisare de tooltip",
+    sursa="FUNCTIONALITATI.csv — fisier VERSIONAT din repo; nimic din aplicatie nu-l scrie",
+    motiv="citire de disc + parsare CSV pe calea unei cereri interactive",
+    invalidare="la repornirea procesului, si e SUFICIENT fiindca sursa se poate schimba numai "
+               "printr-un commit, iar `post-commit` reporneste serviciul NECONDITIONAT — deci "
+               "fereastra in care cache-ul poate fi mai vechi decat fisierul este zero",
+    dovada="core/test_cache_declarat.py::test_ajutor_se_reconstruieste_identic",
+)
 _CALE = pathlib.Path(__file__).resolve().parent.parent / "FUNCTIONALITATI.csv"
 
 
