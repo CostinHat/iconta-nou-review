@@ -29,6 +29,9 @@ from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_
 #: in memoria unui proces. V. docstringul modulului pentru masuratorile de dinainte.
 from core import stare_partajata as _stare_part
 from core import cache_declarat as _cache_declarat
+#: [P6 val 3, 12.09.2026] Ce trebuie sa stie un proces care nu mai e singur: cine instaleaza
+#: infrastructura, cine face munca de fundal, si cine poarta ce commit.
+from core import instante as _instante
 from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
@@ -179,6 +182,13 @@ async def lifespan(app):
     _log_boot = logging.getLogger("iconta")
     try:
         with db.get_conn() as conn:
+            # [P6 val 3, 12.09.2026] PRIMUL lucru din tranzactie. `migreaza_triggerele` face
+            # `DROP TRIGGER` + `CREATE TRIGGER` pentru FIECARE firma; patru workeri care pornesc
+            # in aceeasi secunda ar face-o simultan, pe aceleasi obiecte. Blocajul e legat de
+            # TRANZACTIE, deci se elibereaza singur la commit sau la rollback — un worker care
+            # moare la mijloc nu lasa poarta incuiata. Nimeni nu SARE peste instalare: se asteapta.
+            _instante.aplica_ddl(conn)
+            _instante.blocaj_pornire(conn)
             migrare_api.asigura_tabel(conn)
             # [P1] tabelele rezultatului persistat al supervizorului. Idempotent (CREATE IF NOT
             # EXISTS), langa migrarea existenta, cu aceeasi purtare la esec.
@@ -237,6 +247,16 @@ async def lifespan(app):
                 raise RuntimeError("[R61] verificarea indexului Z a picat: %s | lipsă pe: %s"
                                    % (_vz["detaliu"], _vz["lipsa"]))
             _log_boot.info("[R61] unicitate raport Z: %s", _vz["detaliu"])
+
+            # [P6 val 3, 12.09.2026] Procesul intra in registru ABIA ACUM, in aceeasi tranzactie
+            # cu verificarile de mai sus: daca vreuna pica, inregistrarea se intoarce odata cu ele.
+            # *Un proces care n-a terminat verificarea nu are voie sa apara ca viu* — altfel bratul
+            # four-way ar numara un proces care tocmai refuza sa porneasca.
+            from core import versiune as _versiune_reg
+            _instante.inregistreaza(conn, _versiune_reg.RUNNING_COMMIT)
+            _log_boot.info("[P6] instanta inregistrata: %s pid=%s commit=%s",
+                           _instante.eu()[0], _instante.eu()[1],
+                           (_versiune_reg.RUNNING_COMMIT or "?")[:8])
     except Exception:
         _log_boot.exception(
             "[P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să "
@@ -712,11 +732,35 @@ def _verifica_si_alerta():
             "</ul><p>Verifica panoul 'Sanatate server' din Admin iConta.</p></div>")
     _obs.trimite_email_html(email, "Alerta iConta.eu - sanatate server", html)
 
+def _ciclu_sanatate():
+    """Un ciclu al buclei de sanatate, cu mai multe procese in minte.
+
+    [P6 val 3, 12.09.2026] Se despart doua lucruri care pana azi erau unul singur:
+      · BATAIA si curatenia registrului se fac din FIECARE worker. Un registru care ar bate numai
+        pentru lider ar declara moarte toate celelalte instante, iar bratul four-way ar raporta
+        ca poarta HEAD un singur proces din patru.
+      · MUNCA — metricile, verificarea de drift, alertele — o face DOAR liderul. Cu N workeri,
+        `_verifica_si_alerta` ar scrie N randuri in `metrici_sanatate` la fiecare 5 minute si ar
+        intreba catalogul de N ori. Alertele n-ar pleca de N ori (cooldownul e global din valul 1),
+        dar munca s-ar face degeaba.
+
+    Liderul se alege prin LEASE, nu prin `pg_try_advisory_lock`: acela s-ar lega de o CONEXIUNE,
+    iar conexiunile vin dintr-un pool si se rotesc. Un lease expira singur, deci daca liderul moare
+    urmatorul il preia fara ca nimeni sa curete nimic.
+    """
+    with db.get_conn() as conn:
+        _instante.bate(conn)
+        _instante.curata(conn)
+        sunt_lider = _instante.cere_lider(conn, "sanatate")
+    if sunt_lider:
+        _verifica_si_alerta()
+
+
 async def _bucla_alerte_sanatate():
     import asyncio as _asyncio
     while True:
         try:
-            await _run_in_threadpool_audit(_verifica_si_alerta)
+            await _run_in_threadpool_audit(_ciclu_sanatate)
         except Exception:
             pass
         await _asyncio.sleep(300)

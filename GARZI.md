@@ -7678,9 +7678,9 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**561 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**562 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 535
+### `core/` — 536
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8215,6 +8215,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_vigoare_articole_registru.py` — GARDĂ pentru interdicția 50 — confirmarea unei valori e ULTERIOARĂ ultimei modificări a articolului.
 - `core/test_vigoare_punct.py` — Garda instrumentului de vigoare PE PUNCT (`scripts/vigoare_punct.py`, R2).
 - `core/test_wave1_stare_partajata.py` — P6 valul 1 — probele de acceptare: starea business e comuna intre procese, si nu mai pierde.
+- `core/test_wave3_instante.py` — P6 valul 3 — probele de acceptare pentru mai multe procese care servesc.
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 

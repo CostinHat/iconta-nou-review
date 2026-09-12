@@ -158,6 +158,18 @@ LIPSA=""
 [ "$REMOTE_BK4" = "$HEAD_SHA" ] || LIPSA="$LIPSA $BK4"
 [ "$START_TS" -gt "$COMMIT_TS" ] 2>/dev/null || LIPSA="$LIPSA proces-viu(pornire<=commit)"
 
+# [P6 val 3, 12.09.2026] Bratul REDEFINIT. Ora de pornire a unitatii spune ca restartul a avut loc;
+# nu spune ca FIECARE worker poarta HEAD. Cu `--workers N` diferenta devine reala, iar textul
+# canonic (PLAN_HARDENING.md:718-720) cere tocmai a doua afirmatie. Fiecare proces se inregistreaza
+# la capatul verificarii lui de pornire, deci intrebarea se poate pune pe date.
+if [ -x ./venv/bin/python ] && [ -f scripts/toate_poarta_head.py ]; then
+    if ./venv/bin/python scripts/toate_poarta_head.py "$HEAD_SHA"; then
+        :
+    else
+        LIPSA="$LIPSA toate-procesele-poarta-HEAD"
+    fi
+fi
+
 if [ -z "$LIPSA" ]; then
     echo "[post-commit] FOUR-WAY INCHIS: HEAD = origin/main = $BK4 = procesul viu"
 else
