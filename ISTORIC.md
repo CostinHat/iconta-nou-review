@@ -8905,3 +8905,13 @@ trei sunt zero, a treia nu. *Zero pe două detectoare nu e zero pe fază.*
 Poarta: **5735 verzi / 0 roșii** · 12 sărite · 14 xfail · COLLECTED
 **5761** · ruff OK · verificator **TOTAL 0** · 1783 s. Cele 8 instrucțiuni mutate au fost
 confruntate cu versiunea de la `HEAD`, normalizate pe spații albe: s-au regăsit toate opt.
+
+
+### Addendum, aceeași zi: proba pe care structura n-o putea da
+
+Valul D2 fusese probat pe AST, pe confruntarea SQL-ului cu versiunea de la `HEAD` și pe suita verde —
+toate trei despre **forma** codului. Niciuna nu vede o **eroare de apel**: `trimitere_vie(cur, schema,
+factura_id, mediu)` cu ultimele două inversate trece tot, și desface idempotența porții 3, pe un
+upload care nu e idempotent. `core/test_efactura_trimitere.py` cheamă `trimite` cap-coadă pe o schemă
+efemeră, cu rețeaua pe mock, și se uită la ce a rămas în bază. **8 probe · 3 mutații · 8 roșii.**
+*Un val care mută cod are nevoie de amândouă felurile de probă.*

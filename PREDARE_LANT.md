@@ -108,6 +108,13 @@ gardat pe AST. **Detectorul rămas fără instanță** și-a primit calibrarea *
 în care `main.py` e declarat motor fiscal —, plus cele patru forme de import și două negative.
 *Un detector care raportează zero fiindcă s-a stricat arată identic cu unul care n-are ce găsi.*
 
+**Și o probă pe care structura n-o putea da.** AST-ul, confruntarea SQL-ului și suita verde sunt
+afirmații despre FORMA codului; niciuna nu vede o **eroare de apel** — `trimitere_vie(cur,
+schema, factura_id, mediu)` cu ultimele două inversate trece tot și desface idempotența porții 3,
+pe un upload care nu e idempotent. `core/test_efactura_trimitere.py` cheamă `trimite` cap-coadă
+pe schemă efemeră, cu rețeaua pe mock: **8 probe**, 7 din cele 8 instrucțiuni mutate, RED-proof
+cu trei mutații. *Un val care mută cod are nevoie de amândouă felurile de probă.*
+
 **Unde se citește adevărul, nu proza asta:** `core/straturi.py` (registrul de straturi, 130 de
 declarații), `scripts/scan_p7_straturi.py` (detectoarele), `scripts/p7_clasificare.py` (contabilitatea).
 
@@ -339,13 +346,13 @@ predare în alta e greșită exact acolo unde pare cea mai sigură.*
   produs.*
 - **interdicții, din 78**: MĂSURATE **24** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
-- **gărzi și instrumente**: **571** (544 în `core/`), din **518** fișiere de test.
+- **gărzi și instrumente**: **572** (545 în `core/`), din **519** fișiere de test.
 - **decizii care blochează: niciuna.**
 
 ---
 ## STAREA LA PREDARE
 
-**5735 teste trec** *(ieșirea porții valului D2)* · 12 skip · 14 xfail · ruff OK ·
+**5743 teste trec** *(ieșirea porții valului D2, cu proba funcțională)* · 12 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).

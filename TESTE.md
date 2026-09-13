@@ -2421,3 +2421,11 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   cu două negative. A doua gardă a valului e despre ce NU s-a schimbat: `trimite` deschide tot trei
   `db.get_conn()`, deci proprietatea tranzacției (P4) a rămas unde era. **RED-proof: trei mutații,
   nouă probe roșii.**
+
+
+- **P7 · valul D2, proba funcțională (13.09.2026)** — `core/test_efactura_trimitere.py`, **8 probe**
+  pe DB reală (schemă efemeră comisă) cu rețeaua pe mock. Acoperă 7 din cele 8 instrucțiuni mutate
+  din motorul fiscal, plus a opta prin `spv_conector.principal_pentru_schema`. Cele patru porți ale
+  trimiterii, fiecare în ambele direcții, cu o calibrare negativă pe `mediu` fără de care proba de
+  idempotență ar trece și cu parametrul ignorat. **RED-proof: trei mutații, opt probe roșii.**
+  *Motivul existenței ei: o probă pe forma codului nu poate vedea o eroare de APEL.*

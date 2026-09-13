@@ -7722,11 +7722,39 @@ ori la `efactura_send.trimite`, funcție care nu mai există acolo. Reancorate �
 confruntarea că fiecare din cele patru linii chiar poartă un `timeout=`. *A doua instanță a lecției
 26 în două zile: ce se strică la o mutare nu e cifra pe care o corectezi, e cea de lângă ea.*
 
+### `core/test_efactura_trimitere.py` — proba pe care structura n-o putea da
+
+**Ce nu acoperea valul.** Mutarea a fost probată pe AST, pe confruntarea textului SQL cu versiunea
+de la `HEAD` și pe suita rămasă verde. Toate trei sunt afirmații despre **forma** codului — și niciuna
+nu vede modul de eșec pe care chiar mutarea îl introduce: **o funcție de repository chemată cu
+argumentele în altă ordine**. `trimitere_vie(cur, schema, factura_id, mediu)` cu ultimele două
+inversate se compilează, trece `ruff`, trece toate gărzile de strat — și întoarce mereu *„nicio
+trimitere vie"*, adică desface exact idempotența pe care poarta 3 o apără. Upload-ul ANAF **nu** e
+idempotent: dublă trimitere = dublă factură.
+
+**Ce face proba.** Cheamă `efactura_trimitere.trimite` cap-coadă, pe o schemă efemeră comisă din
+`tenant_template`, cu rețeaua și validatorul de structură pe mock — amândouă în afara a ce a mutat
+valul. Se uită la ce a rămas **în bază**, nu la ce a întors funcția. Cele patru porți au fiecare
+proba ei, în ambele direcții: fără token nu se scrie nimic · structură nevalidată nu ajunge la
+upload (și upload-ul e cablat să *crape* dacă e chemat) · upload refuzat lasă rândul cu motivul la
+vedere și cu `finalizat_la` · a doua trimitere e refuzată, iar **alt mediu nu e** — calibrarea
+negativă fără de care proba de idempotență ar trece și cu `mediu` ignorat.
+
+**Acoperire, numărată:** 7 din cele 8 instrucțiuni mutate trec pe aici. A opta,
+`repo_tenants.dupa_numele_schemei`, are proba ei prin `spv_conector.principal_pentru_schema` — pe
+schemă inexistentă, unde ce se cere e ca răspunsul GOL să devină refuz, nu un principal fabricat.
+
+**RED-proof, trei mutații pe copie:** argumentele lui `trimitere_vie` inversate → 4 roșii ·
+`cui_emitent` citind altă coloană → 1 roșie · poarta 4 care nu mai scrie rezultatul → 3 roșii.
+
+*Lecția, scrisă fiindcă e clasa: o probă pe FORMA codului nu poate vedea o eroare de APEL. Un val
+care mută cod are nevoie de amândouă.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**571 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**572 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 544
+### `core/` — 545
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8017,6 +8045,7 @@ confruntarea că fiecare din cele patru linii chiar poartă un `timeout=`. *A do
 - `core/test_echilibru_perioada.py` — core/test_echilibru_perioada.py — GARD C3 (integritate in timp): partida dubla pe perioada + orfani.
 - `core/test_edge_canonic_head.py` — GARD edge SEO/crawler (_edge_canonic_head din main.py):
 - `core/test_efactura_send.py` — Teste generator e-Factura SEND (core/efactura_send.py) — pe date minime construite
+- `core/test_efactura_trimitere.py` — PROBA FUNCTIONALA a use-case-ului de trimitere — cele patru porti, pe DB reala, cu retea MOCK.
 - `core/test_email_html_doua_cai.py` — core/test_email_html_doua_cai.py — cele doua cai C5 ratate de masuratoarea lexicala.
 - `core/test_email_html_dupa_commit.py` — core/test_email_html_dupa_commit.py — `trimite_email_html` nu se mai executa sub o conexiune.
 - `core/test_emitere_randuri_dinamice.py` — GARD cap.24 batch 3b — randuri dinamice emitere factura, re-rulate IN POARTA prin chromium headless.
