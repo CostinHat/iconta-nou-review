@@ -4,8 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-13**, la închiderea valului **V2** al lui P7.
-- **pe commit**: `8d182afa`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-13**, la închiderea valului **V2** al lui P7, plus corectura de după (`5223d8f7`).
+- **pe commit**: `5223d8f7`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **[13.09.2026] ANTETUL ĂSTA A FOST STĂTUT TREI ZILE**, deși documentul își cere singur, mai jos, ca antetul să fie rescris la fiecare oprire: a rămas pe `0742e177` / 10.09 prin două rescrieri care au atins alte secțiuni. *O regulă pe care documentul și-o dă singur nu se respectă singură.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
@@ -658,6 +658,13 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
     exact ce s-a mutat: **295 − 257 = 38**. *Ce contează nu e că cifra era greșită, ci că arăta
     măsurată.* Reparat cu o gardă care recalculează, la fiecare rulare, fiecare motiv care poartă o
     cifră — iar faptul că 27 din 28 coincideau deja e dovada că metrica nu s-a ales azi ca să iasă.
+    **Și are o coadă, care e partea mai bună a lecției** (`5223d8f7`): în aceeași linie pe care o
+    corectam am atins și a doua cifră și am scris-o greșit — `424` în loc de `421`, fiindcă 424 e
+    totalul rutelor pe TOATE modulele, nu pe `main.py`. Garda pe care tocmai o scrisesem recalcula
+    numărul de instrucțiuni, nu numărul de rute, deci a trecut peste. *O gardă scrisă pentru cifra
+    care tocmai a îmbătrânit nu acoperă cifra de lângă ea* — iar cea mai probabilă mână care strică
+    a doua cifră e a celui care o corectează pe prima. Garda s-a lărgit: ambele măsuri, fiecare cu
+    tiparul și cu pragul ei de anti-vacuum.
 27. **[13.09] Când o comandă își cere singură două lucruri care nu pot fi adevărate deodată, alegi
     și SPUI care.** V2 cerea ca use-case-ul să dețină tranzacția și, două paragrafe mai jos,
     `P4_TRANSACTION_OWNERSHIP_CHANGED=NO`. Am ținut proprietatea unde era și am mutat doar
