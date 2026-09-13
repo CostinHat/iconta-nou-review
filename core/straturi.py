@@ -456,7 +456,7 @@ REGISTRU = (
       "P7 · V1: conturile și accesul clienților — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:746 — repository-ul e singurul care stie SQL si scheme"),
     D("main.py", HTTP, REPOSITORY,
-      "424 rute montate in modul si 38 instructiuni SQL — toate in helperi de modul; "
+      "421 rute montate in modul si 38 instructiuni SQL — toate in helperi de modul; "
       "dupa P7 - V1+V2 niciuna nu mai sta in CORPUL unei rute",
       "PLAN_HARDENING.md:743 — stratul HTTP e acolo unde sunt rutele"),)
 

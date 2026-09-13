@@ -212,26 +212,41 @@ def test_cifra_din_motiv_nu_imbatraneste_tacut():
     Metrica nu e aleasa azi ca sa iasa: din 28 de intrari care poarta o cifra, 27 coincideau deja
     cu numarul de apeluri `execute`/`executemany` din modul. Singurul dezacord era cel imbatranit.
     """
-    tipar = re.compile(r"(\d+) instructiuni SQL")
-    cu_cifra, dezacorduri = 0, []
-    for d in R.REGISTRU:
-        m = tipar.search(d.motiv)
-        if not m:
-            continue
-        cu_cifra += 1
-        cale = os.path.join(RADACINA, d.cale)
-        if not os.path.exists(cale):
-            dezacorduri.append((d.cale, int(m.group(1)), None))
-            continue
-        try:
-            arb = ast.parse(io.open(cale, encoding="utf-8").read())
-        except SyntaxError:
-            continue
-        real = sum(1 for x in ast.walk(arb)
+    import scan_p7_straturi as _S
+
+    def _numar_executii(arb):
+        return sum(1 for x in ast.walk(arb)
                    if isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
                    and x.func.attr in ("execute", "executemany"))
-        if real != int(m.group(1)):
-            dezacorduri.append((d.cale, int(m.group(1)), real))
-    assert cu_cifra >= 28, "ANTI-VACUUM: garda nu mai vede nicio cifra in registru: %d" % cu_cifra
+
+    def _numar_rute(arb, rel):
+        return len(_S.rute_din_arbore(arb, rel))
+
+    # (tipar, cum se recalculeaza) — ambele cifre pe care le poarta un motiv
+    MASURI = ((re.compile(r"(\d+) instructiuni SQL"), _numar_executii, 28),
+              (re.compile(r"(\d+) rute montate in modul"), _numar_rute, 1))
+    dezacorduri, vazute = [], []
+    for tipar, masoara, _prag in MASURI:
+        n = 0
+        for d in R.REGISTRU:
+            m = tipar.search(d.motiv)
+            if not m:
+                continue
+            n += 1
+            cale = os.path.join(RADACINA, d.cale)
+            if not os.path.exists(cale):
+                dezacorduri.append((d.cale, tipar.pattern, int(m.group(1)), None))
+                continue
+            try:
+                arb = ast.parse(io.open(cale, encoding="utf-8").read())
+            except SyntaxError:
+                continue
+            real = masoara(arb) if masoara is _numar_executii else masoara(arb, d.cale)
+            if real != int(m.group(1)):
+                dezacorduri.append((d.cale, tipar.pattern, int(m.group(1)), real))
+        vazute.append(n)
+    assert vazute >= [p for _t, _m, p in MASURI], (
+        "ANTI-VACUUM: garda nu mai vede cifrele din registru: %s" % vazute)
     assert dezacorduri == [], (
-        "registrul poarta cifre care nu mai sunt adevarate (cale, scris, real): %s" % dezacorduri)
+        "registrul poarta cifre care nu mai sunt adevarate "
+        "(cale, masura, scris, real): %s" % dezacorduri)
