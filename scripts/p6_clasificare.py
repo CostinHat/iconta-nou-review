@@ -12,7 +12,7 @@ un nume clasificat care nu mai e mutabil, la fel.
 CELE DOUA TABELE, si de ce sunt doua.
 
 `TABEL` priveste numele din cod, si se confrunta cu AST-ul. `TABEL_INFRA` priveste ce nu se vede
-in niciun AST: **cate procese servesc**. Textul canonic cere amandoua — `PLAN_HARDENING.md:709-711`
+in niciun AST: **cate procese servesc**. Textul canonic cere amandoua — `PLAN_HARDENING.md:718-719`
 spune literal «Include infrastructura, nu doar codul». Fara al doilea tabel, `P6_ACTION_REQUIRED`
 ar ajunge la zero dupa valul 2 si s-ar citi ca «P6 gata», desi partea cea mai grea a etapei —
 trecerea la mai multe instante — n-ar fi inceputa. *O cifra care atinge zero cat timp etapa e
@@ -29,13 +29,13 @@ AR, ABD, FP = "ACTION_REQUIRED", "ACCEPTABLE_BY_DESIGN", "FALSE_POSITIVE"
 INCHIS = "CLOSED_ACCEPTED"
 V = collections.namedtuple("V", "categorie fel regula de_ce")
 
-#: Cele CINCI lucruri cerute de PLAN_HARDENING.md:704-707 pentru un cache admis.
+#: Cele CINCI lucruri cerute de PLAN_HARDENING.md:713-716 pentru un cache admis.
 CINCI = ("rol", "sursa", "motiv", "invalidare", "dovada")
 
 #: Regula care accepta un cache DUPA valul 2. Nu e o tolerare: e conditionata, iar conditia e
 #: verificata mecanic de `core/test_cache_declarat.py` — cele cinci campuri exista si sunt pline,
 #: iar testul numit in `dovada` EXISTA cu adevarat si goleste chiar cache-ul acela.
-REGULA_DECLARAT = ("PLAN_HARDENING.md:704-707 — cache local admis, DECLARAT cu cele cinci lucruri, "
+REGULA_DECLARAT = ("PLAN_HARDENING.md:713-716 — cache local admis, DECLARAT cu cele cinci lucruri, "
                    "cu declaratia verificata structural si dovada de reconstructie rulata")
 
 TABEL = {
@@ -78,26 +78,26 @@ TABEL = {
 
     # ---------------------------------------------------------------- RESURSE DE PROCES
     ("core.db", "_pool"): V(
-        ABD, "resursa", "PLAN_HARDENING.md:697 — cerinta priveste starea BUSINESS",
+        ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
         "Un pool de conexiuni e o resursa a procesului prin definitie; nu poarta nicio decizie de "
         "business si nu poate fi partajat intre procese. EXCEPTIA NU GOLESTE DETECTORUL: "
         "detectorul l-a GASIT si l-a numit (S1, doua cai, `init_pool`/`inchide_pool`) — regula il "
         "accepta dupa ce a fost vazut, nu il ascunde de masuratoare."),
     ("core.firma_rezumat", "_LOG"): V(
-        ABD, "resursa", "PLAN_HARDENING.md:697 — cerinta priveste starea BUSINESS",
+        ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
         "Logger memoizat lenes. Valoarea lui nu intra in nicio decizie; doua procese cu doua "
         "obiecte de log se comporta identic."),
     ("core.pdf_fonturi", "_INIT"): V(
-        ABD, "resursa", "PLAN_HARDENING.md:697 — cerinta priveste starea BUSINESS",
+        ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
         "Flag de initializare idempotenta a fonturilor reportlab — o resursa care TREBUIE "
         "inregistrata o data in fiecare proces. Partajarea lui ar fi gresita, nu utila."),
     ("core.versiune", "RUNNING_COMMIT"): V(
-        ABD, "resursa", "PLAN_HARDENING.md:718-720 — intra in criteriile de acceptare, nu in cod",
+        ABD, "resursa", "PLAN_HARDENING.md:728-729 — intra in criteriile de acceptare, nu in cod",
         "E chiar «ce cod poarta ACEST proces», deci trebuie sa fie per proces. Textul canonic nu "
         "cere sa fie mutat, cere ca bratul four-way sa fie redefinit din «procesul viu poarta "
         "HEAD» in «TOATE procesele poarta HEAD» — o schimbare in POARTA, si ea e la valul 3."),
     ("main", "_TASKURI_FUNDAL_PORNITE"): V(
-        ABD, "resursa", "PLAN_HARDENING.md:697 — cerinta priveste starea BUSINESS",
+        ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
         "Contor de observabilitate, scris o data in `lifespan` si citit de o proba care verifica "
         "ordinea pornirii. Nu poarta decizie. *Faptul pe care il numara* — ca fiecare proces isi "
         "porneste propriile bucle — e datorie de INFRASTRUCTURA, si e in `TABEL_INFRA`, nu aici."),
@@ -108,7 +108,7 @@ I = collections.namedtuple("I", "stare cerinta de_ce inchis_de")
 TABEL_INFRA = {
     "un_singur_proces": I(
         INCHIS,
-        "PLAN_HARDENING.md:709-711 — «Include infrastructura, nu doar codul»: trecerea de la un "
+        "PLAN_HARDENING.md:718-719 — «Include infrastructura, nu doar codul»: trecerea de la un "
         "singur proces la mai multe instante",
         "INCHIS 12.09.2026. Unitatea poarta `Environment=WEB_CONCURRENCY=2`, iar productia serveste "
         "din DOUA procese. Criteriile canonice au fost exercitate pe ele, nu pe procese de test: "

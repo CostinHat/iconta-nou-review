@@ -4,8 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-13**, rescriere completă la capătul valului **V2** al lui P7.
-- **pe commit**: `6d73eec1`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-13**, la capătul valului **D2** al lui P7 (a treia oprire a zilei).
+- **pe commit**: `92696b41`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **[13.09.2026] CE A IEȘIT LA IVEALĂ CHIAR RESCRIIND, și se scrie fiindcă e clasa pe care documentul
@@ -22,6 +22,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   **păstrate** — documentul își interzice singur să le șteargă.
 - **CE E REMĂSURAT**: cele patru clichete generate · blocul cifrelor despre date · inventarul
   gărzilor · numărul restanțelor deschise (`scripts/scan_ramas.py`).
+- **[13.09.2026, valul D2] CE A IEȘIT LA IVEALĂ MUTÂND COD:** o trimitere pe **număr de linie**
+  se strică la orice mutare, și nimic n-o prindea. Adăugând paisprezece rânduri în
+  `PLAN_HARDENING.md`, toate citările de sub ele au început să arate spre alt text — printre
+  care cele **116** din `core/straturi.py` —, iar zona P6 era stătută **dinainte** (patru ancore,
+  ~nouă rânduri). Gardat de `core/test_citari_plan.py`. *A treia oară în două zile când clasa e
+  «ce scrie de mână un registru despre altceva».*
 
 ---
 ## PRIMUL LUCRU DE ȘTIUT: **campania rămâne închisă; se lucrează la ÎNTĂRIRE, după un plan scris**
@@ -38,7 +44,7 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
 | **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
 | **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
-| **P7** — stratul de aplicație | **DESCHIS** | diagnostic (`b67d2bfb`) · V3 registrul de straturi (`364fbc63`) · V1 citirile (`8d182afa`) · **V2 scrierile + controlul de tranzacție** (`cd5538ae`): 140 + 10 mutate, `D1`=**0** pe toate clasele; `ACTION_REQUIRED` **296 → 189 → 39**. Rămâne deschis pentru `D2`=1, `D4`=38 și fiindcă **rutele încă orchestrează** |
+| **P7** — stratul de aplicație | **DESCHIS** | diagnostic (`b67d2bfb`) · V3 registrul de straturi (`364fbc63`) · V1 citirile (`8d182afa`) · V2 scrierile + controlul de tranzacție (`cd5538ae`) · **valul D2: motorul fiscal fără bază de date**. `D1`=**0** pe toate clasele, `D2`=**0**; `ACTION_REQUIRED` **296 → 189 → 39 → 37**. Rămâne deschis pentru `D4`=37 și fiindcă **rutele încă orchestrează** |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de
@@ -91,7 +97,18 @@ NU se schimbe; am ținut-o unde era și am scris alegerea — lecția 27.*
 rute**. N-au fost niciodată în universul D1 (care e „corpul unei rute"), dar sunt motivul pentru care
 `main.py` e în continuare `D4_STRAT_MIXT`.
 
-**Unde se citește adevărul, nu proza asta:** `core/straturi.py` (registrul de straturi, 129 de
+**VALUL D2 — a doua verificare canonică închisă, și cea mai mică.** `core/efactura_send.py` era
+declarat `FISCAL_ENGINE` și importa `db`: **8 instrucțiuni SQL**, **trei conexiuni** proprii,
+singura încălcare `D2` din repo. Orchestrarea a trecut în `core/efactura_trimitere.py`
+(`USE_CASE`, nou), SQL-ul în `core/repo_efactura.py` (7) și `core/repo_tenants.py` (1), iar
+`principal_pentru_schema` în `core/spv_conector.py`. **Modulul a rămas `FISCAL_ENGINE`** —
+reclasificarea ar fi dat `D2`=0 fără să atingă o linie de cod, iar o probă interzice acum exact
+asta. **Proprietatea tranzacției n-a fost mutată**: `trimite` deschide tot trei `db.get_conn()`,
+gardat pe AST. **Detectorul rămas fără instanță** și-a primit calibrarea *sintetică* — un univers
+în care `main.py` e declarat motor fiscal —, plus cele patru forme de import și două negative.
+*Un detector care raportează zero fiindcă s-a stricat arată identic cu unul care n-are ce găsi.*
+
+**Unde se citește adevărul, nu proza asta:** `core/straturi.py` (registrul de straturi, 130 de
 declarații), `scripts/scan_p7_straturi.py` (detectoarele), `scripts/p7_clasificare.py` (contabilitatea).
 
 **Tiparul comun al lui P1 și P2, și confirmat de P3:** ce era calculat în cerere se
@@ -322,13 +339,13 @@ predare în alta e greșită exact acolo unde pare cea mai sigură.*
   produs.*
 - **interdicții, din 78**: MĂSURATE **24** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
-- **gărzi și instrumente**: **570** (543 în `core/`), din **517** fișiere de test.
+- **gărzi și instrumente**: **571** (544 în `core/`), din **518** fișiere de test.
 - **decizii care blochează: niciuna.**
 
 ---
 ## STAREA LA PREDARE
 
-**5724 teste trec** *(ieșirea porții care a produs `6d73eec1`)* · 12 skip · 14 xfail · ruff OK ·
+**5735 teste trec** *(ieșirea porții valului D2)* · 12 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
@@ -726,6 +743,22 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
     instrucțiunile. *A muta hotarele tăcut ar fi arătat ca o separare completă și ar fi redeschis P4
     fără să scrie nimeni asta.*
 
+28. **[13.09] O trimitere pe NUMĂR DE LINIE e o cifră scrisă de mână, cu toate bolile ei.** Mutând
+    cod din `efactura_send.py` am stricat trei registre care îi citau liniile; adăugând paisprezece
+    rânduri în `PLAN_HARDENING.md` am mutat sub picioare **toate** citările de dedesubt, printre care
+    cele 116 din `core/straturi.py`. Iar măsurând ca să le repar, zona P6 era stătută dinainte.
+    *O citare care nu se poate confrunta nu e un temei, e o amintire.* Gardat:
+    `core/test_citari_plan.py` — fiecare ancoră poartă textul pentru care e citată, în amândouă
+    direcțiile, cu mutație pe un plan simulat deplasat cu un rând. **Și limita, declarată:** un
+    interval tolerează o deplasare mai mică decât înălțimea lui — cine citează un interval cumpără
+    toleranța lui.
+29. **[13.09] Când o fază bagă un strat, instrumentele care citeau codul încep să TACĂ, nu să mintă.**
+    `scan_trasee` face o închidere de un pas de la rută la modul; P7 a mutat SQL-ul cu doi, iar
+    adnotarea rutei de trimitere în SPV a trecut de la «efactura_trimiteri (INSERT/UPDATE)» la
+    **nimic**. O tăcere se citește ca „ruta n-are efect". Reparat cu un pas în plus **mărginit de
+    registrul de straturi** (`USE_CASE` → `REPOSITORY`) — prima formă, nemărginită, lărgea 12
+    adnotări deodată și făcea clasa inutilă.
+
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
 
@@ -767,15 +800,19 @@ a ce e adevărat **acum**.
    injecție care azi nu există). **Garda cade dacă pui `.execute` într-o rută**, pe oricare din cele
    patru clase: `core/test_p7_v2_scrieri.py`, cu cei zece mutanți.
 
-   **Ce a rămas de făcut, în ordinea propusă (niciunul început):** `D2` — un motor fiscal
-   (`core/efactura_send.py`) importă `db`; e **o singură** încălcare, cu cauză numită, deci e valul
-   cel mai mic care închide o verificare canonică întreagă. Apoi `D4` — 38 de module cu două straturi,
-   din care **32 au aceeași formă** (generator de declarație + repository), deci un val cu tipar
-   repetabil. Ultimul e `main.py` însuși: cei 38 de helperi de modul, care e de fapt valul use-case
-   pe care §4 al comenzii V2 îl cerea și pe care nu l-am făcut.
+   **`D2` E ÎNCHIS (13.09.2026).** Motorul fiscal `core/efactura_send.py` nu mai importă `db` și
+   n-are nicio instrucțiune SQL; orchestrarea trăiește în `core/efactura_trimitere.py` (`USE_CASE`),
+   SQL-ul în `repo_efactura` / `repo_tenants`, principalul la `spv_conector`. **Ce trebuie știut
+   înainte de a-l atinge:** modulul a rămas declarat `FISCAL_ENGINE` **dinadins**, iar o probă cere
+   asta explicit — dacă un val viitor îl reclasifică, `D2` ar cădea la zero pentru motivul greșit.
 
-   **Ce NU e închis, deși cifra arată bine:** `D1=0` e **una** din cele trei verificări canonice.
-   *Zero pe un detector nu e zero pe fază.*
+   **Ce a rămas de făcut, în ordinea propusă (niciunul început):** `D4` — **37** de module cu două
+   straturi, din care **32 au aceeași formă** (generator de declarație + repository), deci un val cu
+   tipar repetabil. Ultimul e `main.py` însuși: cei 38 de helperi de modul, care e de fapt valul
+   use-case pe care §4 al comenzii V2 îl cerea și pe care nu l-am făcut.
+
+   **Ce NU e închis, deși două cifre arată bine:** `D1`=0 și `D2`=0 sunt **două** din cele trei
+   verificări canonice. *Zero pe două detectoare nu e zero pe fază.*
 
 1. **RESTUL: NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e
    închisă. Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi

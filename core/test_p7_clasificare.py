@@ -123,17 +123,24 @@ def test_D2_NEGATIV_un_modul_care_primeste_conn_nu_e_raportat(tmp_path):
 def test_D2_ANTI_VACUUM_universul_fiscal_nu_e_gol():
     """[V3, 13.09.2026] Universul lui D2 nu mai e o aproximare: sunt modulele DECLARATE motor fiscal.
 
-    Proba s-a întors pe dos, și merită citit de ce. Până azi cerea `d2 == []` — și trecea, pe un
-    univers de 25 de module derivat dintr-un singur instrument. Registrul a adus 96 de module
-    declarate `FISCAL_ENGINE`, iar printre ele unul CHIAR importă `db`: `core/efactura_send.py`.
-    *Aceeași întrebare, pe universul adevărat, dă alt răspuns — asta e tot rostul lui V3.*
+    Proba s-a întors pe dos de două ori într-o zi, și amândouă întoarcerile merită citite.
+
+    **V3** a găsit-o cerând `d2 == []` pe un univers de 25 de module derivat dintr-un singur
+    instrument. Registrul a adus 96 de module declarate `FISCAL_ENGINE`, iar printre ele unul CHIAR
+    importa `db`: `core/efactura_send.py`. *Aceeași întrebare, pe universul adevărat, dă alt
+    răspuns — asta e tot rostul lui V3.*
+
+    **Valul D2** a închis-o mutând codul, deci cifra e iar zero — dar nu aceeași zero: universul e
+    tot cel din registru, iar anti-vacuumul de mai jos (≥90 de module, sursa = registrul) rămâne
+    cerut. Că detectorul se mai poate aprinde se probează separat, pe un univers sintetic:
+    `core/test_p7_straturi.py::test_D2_SE_APRINDE_pe_un_univers_sintetic`.
     """
     fiscale, sursa = S.module_fiscale()
     assert len(fiscale) >= 90, "universul modulelor fiscale s-a golit: %d" % len(fiscale)
     assert sursa == "core/straturi.py::REGISTRU", (
         "D2 și-a luat definiția din altă parte decât registrul: %r" % sursa)
     gasite = {(i.fisier, i.linie) for i in S.d2_motor_fiscal_cu_db()}
-    assert gasite == {("core/efactura_send.py", 368)}, (
+    assert gasite == set(), (
         "încălcările D2 s-au schimbat fără ca proba să fie actualizată: %s" % sorted(gasite))
 
 

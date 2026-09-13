@@ -119,9 +119,14 @@ CELE_SAPTE = {
 def test_cele_sapte_foste_EVIDENCE_LIMITATION_au_fiecare_un_strat():
     """Fiecare dintre cele șapte are acum o clasă adevărată, nu o excludere.
 
-    *Registrul n-a fost folosit ca să le facă pe toate să dispară*: șase ies din D2 fiindcă nu sunt
-    motoare fiscale, dar `efactura_send` RĂMÂNE motor fiscal și importă `db` — deci e încălcare, și
-    a devenit singurul item D2 al repo-ului.
+    *Registrul n-a fost folosit ca să le facă pe toate să dispară*: șase au ieșit din D2 fiindcă nu
+    sunt motoare fiscale, iar `efactura_send` a RĂMAS motor fiscal și a rămas încălcare — singurul
+    item D2 al repo-ului, din 13.09.2026 (V3) până tot pe 13.09 (valul D2).
+
+    **Ce s-a schimbat la valul D2, și de ce proba asta se uită acum la zero:** încălcarea s-a
+    închis mutând codul, nu reclasificând modulul. `efactura_send` e tot `FISCAL_ENGINE` — verificat
+    mai jos, pe stratul declarat —, dar nu mai importă `db`. *Dacă răspunsul ar fi venit dintr-o
+    schimbare de strat, exact proba asta ar fi trecut degeaba.*
     """
     pe_cale = R.pe_cale()
     for cale, strat_asteptat in CELE_SAPTE.items():
@@ -130,7 +135,9 @@ def test_cele_sapte_foste_EVIDENCE_LIMITATION_au_fiecare_un_strat():
             "%s și-a schimbat stratul fără ca proba să fie actualizată: %s"
             % (cale, pe_cale[cale].strat))
     d2 = {i.fisier for i in S.d2_motor_fiscal_cu_db()}
-    assert d2 & set(CELE_SAPTE) == {"core/efactura_send.py"}
+    assert d2 & set(CELE_SAPTE) == set()
+    assert pe_cale["core/efactura_send.py"].strat == R.FISCAL_ENGINE, (
+        "D2 s-a închis mutând stratul, nu codul — exact ce proba asta interzice")
     assert len([c for c, s in CELE_SAPTE.items() if s != R.FISCAL_ENGINE]) == 6
 
 
@@ -157,15 +164,19 @@ def test_D2_vede_FISCAL_ENGINE_cu_db_si_NU_vede_celelalte_straturi():
                  "core/monitor_fiscal.py"):
         assert cale not in d2, "%s (strat %s) a ajuns item D2" % (cale, R.strat(cale))
         assert S._atinge_db(cale), "premisa: %s chiar atinge baza" % cale
-    assert d2 >= {"core/efactura_send.py"}
     assert R.strat("core/efactura_send.py") == R.FISCAL_ENGINE
 
 
 def test_un_motor_fiscal_FARA_db_nu_e_item():
-    """Negativul: 96 de module declarate motor fiscal, unul singur atinge baza."""
+    """Negativul: din 13.09.2026 (valul D2), NICIUN modul declarat motor fiscal nu atinge baza.
+
+    Proba era `len(fiscale) - 1` — cel unu fiind `efactura_send`. Acum e egalitate, și ASTA e
+    afirmația livrată: nu «detectorul n-a găsit nimic», ci «niciunul dintre cele 96 nu importă
+    `db`», întrebat fișier cu fișier. Că detectorul se mai poate aprinde e altă probă, sintetică.
+    """
     fiscale, _ = S.module_fiscale()
     fara_db = [m for m in fiscale if not S._atinge_db(m)]
-    assert len(fara_db) == len(fiscale) - 1
+    assert len(fara_db) == len(fiscale)
     d2 = {i.fisier for i in S.d2_motor_fiscal_cu_db()}
     assert not (set(fara_db) & d2)
 
@@ -176,6 +187,92 @@ def test_ANTI_VACUUM_registrul_si_straturile_nu_sunt_goale():
     for s in R.STRATURI:
         assert n["pe_strat"].get(s, 0) > 0, "stratul %s n-are niciun modul — universul s-a rupt" % s
     assert len(S.univers_registru()) >= 100
+
+
+# ============================================================
+#  4b. D2 DUPĂ ÎNCHIDERE — calibrarea care nu mai are voie să stea pe o încălcare reală
+# ============================================================
+def test_D2_SE_APRINDE_pe_un_univers_sintetic(monkeypatch):
+    """Valul D2 a lăsat detectorul fără nicio instanță. Fără proba asta, `D2=0` ar fi ambiguu.
+
+    **De ce e nevoie de ea, și de ce arată așa.** Până la valul D2, dovada că detectorul FUNCȚIONEAZĂ
+    era chiar încălcarea pe care o raporta: `core/efactura_send.py`. Închizând-o, calibrarea pozitivă
+    a dispărut odată cu ea — iar un detector care raportează zero fiindcă s-a stricat arată identic
+    cu unul care raportează zero fiindcă n-are ce găsi (`METODA_VERIFICARE.md` §22).
+
+    Proba nu fabrică un fișier: schimbă UNIVERSUL, nu lumea. Îi dă lui D2 un univers în care
+    `main.py` — modul REAL, care chiar importă `db` — e declarat motor fiscal, și cere ca detectorul
+    să-l numească. Așa rămâne exercitat drumul întreg: registru → citirea fișierului → AST → item.
+    """
+    monkeypatch.setattr(S, "module_fiscale", lambda: ({"main.py"}, "UNIVERS SINTETIC (probă)"))
+    itemi = S.d2_motor_fiscal_cu_db()
+    assert [i.fisier for i in itemi] == ["main.py"], (
+        "D2 nu se mai aprinde nici pe un modul care CHIAR importă `db`: %s" % itemi)
+    assert itemi[0].detector == "D2_MOTOR_FISCAL_CU_DB"
+    assert itemi[0].linie > 0
+
+
+def test_D2_vede_TOATE_cele_patru_forme_de_import(tmp_path):
+    """Calibrare pe FORMĂ, nu pe fișier: cele patru feluri în care un modul poate lua `core.db`.
+
+    Un detector care ar prinde numai `from core import db` ar raporta zero despre un modul care
+    scrie `import core.db` — și ar face-o tăcut. Fiecare formă are aici propriul caz, iar al
+    cincilea caz e cel negativ: un `db` care nu e al nostru (`from sqlite3 import db`) NU se numără.
+    """
+    FORME = {
+        "from core import db": 1,
+        "from core.db import get_conn": 1,
+        "import core.db": 1,
+        "import db": 1,
+        "from sqlite3 import dbapi2": 0,
+        "x = 1": 0,
+    }
+    for sursa, asteptat in FORME.items():
+        f = tmp_path / "zt_forma.py"
+        f.write_text(sursa + "\n", encoding="utf-8")
+        rel = os.path.relpath(str(f), RADACINA)
+        gasite = S._atinge_db(rel)
+        assert len(gasite) == asteptat, (
+            "forma %r: detectorul a găsit %d, se aștepta %d" % (sursa, len(gasite), asteptat))
+
+
+def test_motorul_fiscal_efactura_send_NU_mai_atinge_baza():
+    """Ce a livrat valul D2, afirmat pe structură: zero `db`, zero SQL, în modulul care era D2.
+
+    Nu se afirmă prin numărătoarea globală (aia ar fi verde și dacă modulul ar fi dispărut din
+    univers): se întreabă fișierul, pe AST, plus faptul că a rămas DECLARAT motor fiscal.
+    """
+    import ast as _ast
+    import io as _io
+    cale = "core/efactura_send.py"
+    assert R.strat(cale) == R.FISCAL_ENGINE
+    assert R.pe_cale()[cale].mixt_cu is None, "a rămas declarat mixt după ce s-a separat"
+    assert S._atinge_db(cale) == [], "motorul fiscal a reînceput să importe `db`"
+    arb = _ast.parse(_io.open(os.path.join(RADACINA, cale), encoding="utf-8").read())
+    executii = [x for x in _ast.walk(arb)
+                if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)
+                and x.func.attr in ("execute", "executemany")]
+    assert executii == [], "motorul fiscal a reînceput să execute SQL"
+
+
+def test_use_case_ul_trimiterii_detine_aceleasi_TREI_tranzactii():
+    """Proprietatea tranzacției NU s-a mutat — lecția 27, verificată pe structură, nu pe promisiune.
+
+    `trimite` deschidea trei `db.get_conn()` în motorul fiscal; le deschide tot el, în use-case.
+    Dacă un val viitor le-ar contopi sau le-ar urca în rută, contractul P4 s-ar schimba în tăcere —
+    și proba asta cade înainte.
+    """
+    import ast as _ast
+    import io as _io
+    arb = _ast.parse(_io.open(os.path.join(RADACINA, "core/efactura_trimitere.py"),
+                              encoding="utf-8").read())
+    fn = [x for x in arb.body if isinstance(x, _ast.FunctionDef) and x.name == "trimite"]
+    assert len(fn) == 1, "`trimite` nu mai e în use-case"
+    conexiuni = [x for x in _ast.walk(fn[0])
+                 if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)
+                 and x.func.attr == "get_conn"]
+    assert len(conexiuni) == 3, (
+        "hotarele tranzacțiilor s-au schimbat: %d conexiuni, erau 3" % len(conexiuni))
 
 
 # ============================================================
@@ -197,7 +294,8 @@ def test_contabilitatea_P7_se_inchide_dupa_V3():
     assert n["P7_UNCLASSIFIED_ITEMS"] == 0
     assert n["P7_UNEXPLAINED_EXCLUSIONS"] == 0
     assert n["P7_EVIDENCE_LIMITATIONS"] == 0
-    assert n["pe_detector"]["D2"] == 1
+    assert n["pe_detector"]["D2"] == 0, (
+        "valul D2 a inchis singura incalcare; o instanta noua cere val nou, nu clichet")
     assert n["pe_detector"]["D4"] == len(R.mixte())
 
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """P6 valul 3 — probele de acceptare pentru mai multe procese care servesc.
 
-Cele patru criterii canonice (`PLAN_HARDENING.md:713-721`), fiecare cu proba lui:
+Cele patru criterii canonice (`PLAN_HARDENING.md:721-729`), fiecare cu proba lui:
 
   1  DOUA INSTANTE IDENTICE   blocarea la autentificare tine pe ambele · cooldownul nu trimite
                               dublu · sesiunile merg indiferent de instanta.

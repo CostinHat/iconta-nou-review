@@ -70,7 +70,7 @@ DE_CE_ZERO = {
         "formă erau ACELAȘI loc, numărat de cinci ori: `core/spv_conector.py:455`, "
         "`requests.request(metoda, url, ..., **kw)` din `apel_anaf`. La locul apelului nu scrie "
         "`timeout`, dar toți cei 7 apelanți reali îl trimit prin despachetare "
-        "(`efactura_send.py:393,400,407,442` · `etransport_send.py:82,89,97` — `timeout=30/60/120`, "
+        "(`efactura_send.py:350,356,363,386` · `etransport_send.py:82,89,97` — `timeout=30/60/120`, "
         "verificat rând cu rând). Detectorul are acum trei stări, iar C6 se aprinde numai pe "
         "absența CERTĂ. RĂMÂNE ADEVĂRAT, și se scrie: `apel_anaf` n-are termen IMPLICIT, deci un "
         "apelant viitor care uită `timeout=` produce chiar defectul, și nimic nu l-ar opri."),

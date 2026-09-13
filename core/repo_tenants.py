@@ -2,7 +2,7 @@
 """REPOSITORY — firmele din portofoliu și cabinetele lor (`public.tenants`, `public.accounting_firms`).
 
 [P7 · V1, 13.09.2026] Citirile de aici stăteau în corpul rutelor din `main.py`. Textul canonic
-(`PLAN_HARDENING.md:746`) spune că repository-ul e *„singurul care știe SQL și scheme"*, iar ruta nu
+(`PLAN_HARDENING.md:794`) spune că repository-ul e *„singurul care știe SQL și scheme"*, iar ruta nu
 conține SQL — deci SQL-ul s-a mutat, nu s-a rescris: aceleași instrucțiuni, aceiași parametri,
 aceeași ordine, același `fetchone`/`fetchall`.
 
@@ -113,3 +113,10 @@ def suspenda_cabinetul(cur, id_):
 def reactiveaza_cabinetul(cur, id_):
     cur.execute("UPDATE public.accounting_firms SET activ=true WHERE id=%s",
                 (id_,))
+
+
+# ── P7 · valul D2: din `efactura_send.principal_pentru_schema` ──
+
+def dupa_numele_schemei(cur, schema):
+    cur.execute("SELECT id, accounting_firm_id FROM public.tenants WHERE schema_name=%s", (schema,))
+    return cur.fetchone()

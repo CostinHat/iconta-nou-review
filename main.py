@@ -9487,10 +9487,11 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/trimite-spv")
 # [R42] „iese către o autoritate" — e-Factura ajunge la ANAF.
 def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
-    """Trimite o factura emisa in SPV (F126/F160). Porti in ordine fixa (efactura_send.trimite):
+    """Trimite o factura emisa in SPV (F126/F160). Porti in ordine fixa (efactura_trimitere.trimite):
     token viu -> validare/FACT1 -> idempotency -> upload pe tokenul PRINCIPALULUI (cabinet/gratuit).
     Poll-ul stareMesaj/descarcare ramane pe cron. Recipisa live = pending drept (ca F176)."""
-    from core import efactura_send as _efs
+    from core import efactura_send as _efs          # EDateIncomplete — motorul fiscal
+    from core import efactura_trimitere as _eft     # [P7 · D2] orchestrarea trimiterii
     principal = _spv_rute.spv_principal(ctx)   # token owner (cabinet XOR gratuit); 403 daca niciunul
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -9498,7 +9499,7 @@ def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("a
         raise HTTPException(404, "tenant inexistent sau fără acces")
     mediu = os.environ.get("EFACTURA_MEDIU", "prod")
     try:
-        r = _efs.trimite(schema, factura_id, principal, mediu=mediu)
+        r = _eft.trimite(schema, factura_id, principal, mediu=mediu)
     except _efs.EDateIncomplete as e:
         raise HTTPException(422, str(e))
     except NotImplementedError as e:

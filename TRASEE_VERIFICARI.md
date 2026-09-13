@@ -720,7 +720,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in efactura_primite, factur, validata*
 
-*ce face: Respinge o factura primita: status=respinsa + motiv — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (UPDATE) — prin `repo_efactura`*
+*ce face: Respinge o factura primita: status=respinsa + motiv — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) — prin `repo_efactura`*
 
 - [x] respingerea poartă motivul, obligatoriu
 - ciorna rămâne, cu starea „respinsă" — nu se șterge; e o urmă a ceea ce a sosit
@@ -729,7 +729,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
 
-*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (UPDATE) — prin `repo_efactura`, `repo_facturi`*
+*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) — prin `repo_efactura`, `repo_facturi`*
 
 - [x] cine validează e consemnat, și e diferit de cine a importat dacă patru ochi e activ și posibil
 - factura creată poartă legătura către ciorna din care a ieșit — lanțul nu se rupe
@@ -740,7 +740,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Trimite o factura emisa in SPV (F126/F160) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_trimiteri (INSERT/UPDATE) — prin `efactura_send`*
+*ce face: Trimite o factura emisa in SPV (F126/F160) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) — prin `efactura_trimitere`*
 
 - [x] rândul poartă starea explicită: în curs / confirmată / respinsă / **nelămurită**
 - fără identificator de la autoritate, starea nu e „confirmată"

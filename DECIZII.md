@@ -14396,3 +14396,28 @@ răspunsul celei sincrone.
 
 **Varianta respinsă:** să fac `alerteaza` însăși asincronă. Ar fi schimbat tăcut ce numără
 `expirare_cote`: „câte au plecat" ar fi devenit „câte au fost pornite".
+
+
+## 13.09.2026 — `D2` se închide MUTÂND codul, nu reclasificând modulul
+
+**Decizia.** `core/efactura_send.py` rămâne declarat `FISCAL_ENGINE`. Ce s-a mutat e codul care
+atingea baza: orchestrarea în `core/efactura_trimitere.py` (`USE_CASE`, nou), cele 8 instrucțiuni SQL
+în `core/repo_efactura.py` și `core/repo_tenants.py`, iar `principal_pentru_schema` în
+`core/spv_conector.py`, lângă ceilalți principali.
+
+**Varianta respinsă, și e cea ieftină:** modulul putea fi redeclarat `USE_CASE` — are, la propriu,
+un orchestrator înăuntru —, iar `D2` ar fi căzut la zero **fără să se atingă o linie de cod**.
+Criteriul canonic ar fi fost trecut la literă, cu problema nemișcată. *Aceeași clasă cu `UNION ALL`-ul
+refuzat la P3: o cifră care se supune fără ca lucrul de sub ea să se schimbe.* Registrul își scrisese
+deja regula, la V3 — *„registrul n-a fost folosit ca să le facă pe toate să dispară"* —, iar proba
+care o păzea (`test_cele_sapte_foste_EVIDENCE_LIMITATION_au_fiecare_un_strat`) cere acum, explicit,
+ca `efactura_send` să fi rămas `FISCAL_ENGINE` **după** ce `D2` a ajuns zero.
+
+**Proprietatea tranzacției NU s-a mutat**, deliberat, și e continuarea lecției 27: `trimite` deschide
+exact aceleași trei conexiuni, la aceleași locuri în șir. A le contopi ar fi schimbat hotarele măsurate
+de P4 sub o comandă care cerea o separare de straturi, nu o rescriere de tranzacții. Ce s-a schimbat e
+fișierul care le deschide; gardat pe AST, ca un val viitor să nu le miște în tăcere.
+
+**Temei:** `PLAN_HARDENING.md:748` (*„un motor fiscal nu importă `db`"*) și `:742-746` (cele patru
+straturi). **Proba:** cele 8 instrucțiuni au fost confruntate mecanic cu versiunea de la `HEAD`,
+normalizate pe spații albe — s-au regăsit toate opt, în noile module.

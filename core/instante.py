@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """P6 valul 3 — mai multe procese care servesc, fara ca vreunul sa creada ca e singur.
 
-CE CERE TEXTUL CANONIC (`PLAN_HARDENING.md:709-721`): trecerea de la **un singur proces**
+CE CERE TEXTUL CANONIC (`PLAN_HARDENING.md:718-729`): trecerea de la **un singur proces**
 (`ExecStart` fara `--workers`, un singur PID) la **mai multe instante**, cu patru criterii de
 acceptare — doua instante care se comporta identic · reconstructia fiecarui cache ramas (facuta la
 valul 2) · **fault-check**, o instanta oprita in timpul unei cereri · si four-way-ul redefinit din

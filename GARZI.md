@@ -7676,11 +7676,57 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 
 *O funcționalitate retrasă fără gard se reîntoarce la prima tură care nu știe că a fost retrasă.*
 
+## 13.09.2026 — P7 · valul D2: un detector rămas fără instanță trebuie să dovedească singur că mai poate cădea
+
+### `core/test_p7_straturi.py` — patru gărzi noi, și una întoarsă pe dos
+
+Valul a închis **singura** încălcare `D2` din repo: `core/efactura_send.py`, modul declarat
+`FISCAL_ENGINE`, importa `db` și executa 8 instrucțiuni SQL. Textul canonic
+(`PLAN_HARDENING.md:748`) cere, mecanic, ca *un motor fiscal să nu importe `db`*.
+
+**Problema gărzii nu e închiderea, e ce rămâne după ea.** Până azi, dovada că detectorul
+FUNCȚIONEAZĂ era chiar încălcarea pe care o raporta — calibrarea pozitivă stătea pe un defect real.
+Închizându-l, calibrarea dispărea odată cu el, iar `D2=0` ar fi însemnat deopotrivă *„n-are ce
+găsi"* și *„s-a stricat"*. Clasa e scrisă deja, de două ori: `METODA_VERIFICARE.md` §22 și
+[[gard-care-nu-se-verifica-pe-sine]].
+
+- **`test_D2_SE_APRINDE_pe_un_univers_sintetic`** — schimbă UNIVERSUL, nu lumea: îi dă lui `D2` un
+  univers în care `main.py` (modul real, care chiar importă `db`) e declarat motor fiscal, și cere
+  ca detectorul să-l numească. Drumul întreg rămâne exercitat — registru → fișier → AST → item.
+  *Nu fabrică un fișier: un fișier fabricat ar proba parserul, nu detectorul.*
+- **`test_D2_vede_TOATE_cele_patru_forme_de_import`** — calibrare pe FORMĂ, nu pe fișier: `from core
+  import db` · `from core.db import ...` · `import core.db` · `import db`, plus două negative
+  (`from sqlite3 import dbapi2`, cod fără import). Un detector care ar prinde numai prima formă ar
+  raporta zero despre un modul care scrie a treia, și ar face-o tăcut.
+- **`test_motorul_fiscal_efactura_send_NU_mai_atinge_baza`** — ce a livrat valul, afirmat pe
+  structură, nu pe numărătoarea globală: zero `db`, zero `execute`, **și** stratul declarat rămas
+  `FISCAL_ENGINE` cu `mixt_cu is None`. *Numărătoarea globală ar fi verde și dacă modulul ar fi ieșit
+  din univers — adică dacă răspunsul ar fi venit dintr-o reclasificare.*
+- **`test_use_case_ul_trimiterii_detine_aceleasi_TREI_tranzactii`** — contractul P4, pe AST:
+  `trimite` deschidea trei `db.get_conn()` și le deschide tot trei. Un val viitor care le-ar contopi
+  sau le-ar urca în rută ar muta proprietatea tranzacției **în tăcere**; garda cade înainte.
+- **întoarsă:** `test_un_motor_fiscal_FARA_db_nu_e_item` cerea `len(fiscale) - 1`. Acum cere
+  egalitate — afirmația livrată nu e *„detectorul n-a găsit nimic"*, ci *„niciunul dintre cele 96 nu
+  importă `db`"*, întrebat fișier cu fișier.
+
+**RED-proof, trei mutații pe copie (niciodată `git checkout`):** `_atinge_db` orbit → cad probele
+sintetică și de forme · `from core import db` pus la loc în motorul fiscal → cad patru gărzi, printre
+ele contabilitatea `D2==0` · o tranzacție contopită în `trimite` → cade garda hotarelor.
+
+### Și ce a arătat mutarea despre registrele scrise de mână
+
+Trei trimiteri s-au stricat prin simpla deplasare a codului, **niciuna păzită mecanic**:
+`scan_blocante.py` și `test_blocante_clasificate.py` citau `efactura_send.py:393,400,407,442` pentru
+cele patru apeluri cu `timeout=` (acum `350,356,363,386`), iar `p4_clasificare.py` trimitea de cinci
+ori la `efactura_send.trimite`, funcție care nu mai există acolo. Reancorate în aceeași tură, cu
+confruntarea că fiecare din cele patru linii chiar poartă un `timeout=`. *A doua instanță a lecției
+26 în două zile: ce se strică la o mutare nu e cifra pe care o corectezi, e cea de lângă ea.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**570 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**571 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 543
+### `core/` — 544
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7763,6 +7809,7 @@ izolarea ei nu mai are obiect — dar închiderea, da. Fișierul păzește acum 
 - `core/test_categorie_marime.py` — GARD — categoria de mărime nu se rotunjește la „micro", și pragurile citează actul.
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
+- `core/test_citari_plan.py` — GARDĂ: o trimitere la un număr de linie din `PLAN_HARDENING.md` arată spre ce spune că citează.
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
 - `core/test_cititor_js.py` — GARD [04.09.2026]: cititorul comun de JS nu poate orbi tacut peste cod real.
 - `core/test_clasificator_alerte.py` — CLICHET: eticheta unei alerte e o PREDICȚIE confruntabilă, iar greșelile ei nu mai pot crește.

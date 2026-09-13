@@ -57,8 +57,8 @@ def clasifica_stare(text, vechime_zile, prag_zile=None):
 
 
 def _principal_pentru_schema(conn, schema):
-    """Deleg la helper-ul partajat (efactura_send) - un singur loc pt derivarea principalului."""
-    return efs.principal_pentru_schema(conn, schema)
+    """Deleg la helper-ul partajat (spv_conector) - un singur loc pt derivarea principalului."""
+    return spv_conector.principal_pentru_schema(conn, schema)
 
 
 def de_polat(conn, schema):

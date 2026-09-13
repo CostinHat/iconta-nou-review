@@ -8843,3 +8843,65 @@ five-way închis pe `6d73eec1` · două procese vii, 2 din 2 · `iconta.eu` 200.
 
 `D1` **150 → 0** pe toate cele patru clase · `P7_ACTION_REQUIRED` **296 → 189 → 39** · rămân `D2`=1 și
 `D4`=38, deci **P7 rămâne DESCHISĂ**. *Zero pe un detector nu e zero pe fază.*
+
+
+## 13.09.2026, partea a treia — **P7 · valul D2: motorul fiscal a rămas fără bază de date**
+
+Pentru un contabil, nici de data asta nu s-a schimbat nimic: aceleași ecrane, aceleași declarații,
+aceeași factură trimisă în SPV prin aceleași patru porți, în aceeași ordine. Ce s-a schimbat e cine
+ține SQL-ul.
+
+### Ce s-a schimbat, sub capotă
+
+`core/efactura_send.py` era declarat `FISCAL_ENGINE` și importa `db`, cu **8 instrucțiuni SQL** și
+**trei conexiuni** deschise de el însuși. Era **singura** încălcare `D2` din repo — a doua din cele
+trei verificări canonice ale lui P7. S-a închis mutând codul:
+
+- orchestrarea trimiterii → `core/efactura_trimitere.py`, modul nou, declarat `USE_CASE`;
+- cele 8 instrucțiuni → `core/repo_efactura.py` (7) și `core/repo_tenants.py` (1);
+- `principal_pentru_schema` → `core/spv_conector.py`, lângă `principal_firm`/`principal_tenant`.
+
+**Modulul a rămas `FISCAL_ENGINE`.** Putea fi redeclarat `USE_CASE` — are un orchestrator înăuntru,
+la propriu — și `D2` ar fi căzut la zero fără să se atingă o linie de cod. *Aceeași clasă cu
+`UNION ALL`-ul refuzat la P3: criteriul trecut la literă, problema nemișcată.* Proba cere acum,
+explicit, ca stratul să fi rămas neschimbat după ce cifra a ajuns zero.
+
+**Proprietatea tranzacției n-a fost mutată** (lecția 27, a doua oară): `trimite` deschide tot trei
+`db.get_conn()`, la aceleași locuri în șir. Gardat pe AST, ca un val viitor să nu le contopească
+tăcut.
+
+### Ce a scos ziua, și e partea care merită citită
+
+**1. Un detector rămas fără instanță nu mai poate dovedi nimic despre sine.** Calibrarea pozitivă a
+lui `D2` era chiar încălcarea pe care o raporta. Închizând-o, `D2=0` ar fi însemnat deopotrivă
+*„n-are ce găsi"* și *„s-a stricat"*. A primit calibrare **sintetică**: un univers în care `main.py`
+— modul real, care chiar importă `db` — e declarat motor fiscal, plus cele patru forme de import și
+două negative. *Nu un fișier fabricat: ăla ar proba parserul, nu detectorul.*
+
+**2. Trimiterile pe număr de linie îmbătrânesc tăcut, și le-am stricat chiar eu.** Mutând cod din
+`efactura_send.py`, trei registre au rămas să citeze `efactura_send.py:393,400,407,442` și
+`efactura_send.trimite`. Iar adăugând paisprezece rânduri în `PLAN_HARDENING.md`, **toate** citările
+de sub ele au început să arate spre alt text — printre care cele **116** din `core/straturi.py`.
+Măsurând ca să le repar, am găsit că zona P6 era stătută **dinainte**: patru ancore, greșite cu
+~nouă rânduri, scrise pe 12.09. **Generalizat**: `core/test_citari_plan.py` cere ca fiecare ancoră
+citată din cod să poarte chiar textul pentru care e citată, în amândouă direcțiile, cu o mutație pe
+un plan simulat deplasat cu un rând.
+
+**3. Instrumentul traseelor a tăcut exact acolo unde P7 a băgat un strat.** Adnotarea rutei
+`POST /tenants/{id}/facturi/{id}/trimite-spv` a trecut de la *„efactura_trimiteri (INSERT/UPDATE)"*
+la **nimic** — fiindcă `scan_trasee` face o închidere de UN pas, iar SQL-ul se mutase cu două.
+N-a mințit, a tăcut, iar o tăcere se citește ca *„ruta n-are efect"*. Reparat cu un pas în plus,
+**mărginit de registrul de straturi**: numai de la `USE_CASE` către `REPOSITORY`. *Prima formă a
+reparației îl dădea oricărui modul care atinge un depozit — și 12 adnotări s-au lărgit dintr-o dată,
+`woocommerce` căpătând `curs_bnr_zilnic` fiindcă folosește cursul BNR. Adevărat ca plafon, inutil ca
+clasă.* Îngustat, pasul acoperă exact golul pe care l-a făcut P7.
+
+### Cifre
+
+`D2` **1 → 0** · `D4` **38 → 37** · `P7_RAW_ITEMS` **40 → 38** · `P7_ACTION_REQUIRED` **39 → 37** ·
+`EVIDENCE_LIMITATIONS` 0 · `UNCLASSIFIED` 0. **P7 rămâne DESCHISĂ**: două verificări canonice din
+trei sunt zero, a treia nu. *Zero pe două detectoare nu e zero pe fază.*
+
+Poarta: **5735 verzi / 0 roșii** · 12 sărite · 14 xfail · COLLECTED
+**5761** · ruff OK · verificator **TOTAL 0** · 1783 s. Cele 8 instrucțiuni mutate au fost
+confruntate cu versiunea de la `HEAD`, normalizate pe spații albe: s-au regăsit toate opt.

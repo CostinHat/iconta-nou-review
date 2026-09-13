@@ -2,7 +2,7 @@
 """REPOSITORY — e-Factura primită și trimiterile către SPV.
 
 [P7 · V1, 13.09.2026] Citirile de aici stăteau în corpul rutelor din `main.py`. Textul canonic
-(`PLAN_HARDENING.md:746`) spune că repository-ul e *„singurul care știe SQL și scheme"*, iar ruta nu
+(`PLAN_HARDENING.md:794`) spune că repository-ul e *„singurul care știe SQL și scheme"*, iar ruta nu
 conține SQL — deci SQL-ul s-a mutat, nu s-a rescris: aceleași instrucțiuni, aceiași parametri,
 aceeași ordine, același `fetchone`/`fetchall`.
 
@@ -67,3 +67,62 @@ def marcheaza_primita_respinsa(cur, schema, motiv_respins, id_):
     cur.execute(f"""UPDATE {schema}.efactura_primite SET status='respinsa', motiv_respins=%s
                             WHERE id=%s""",
                 (motiv_respins, id_))
+
+
+# ── P7 · valul D2: SQL-ul care statea in motorul fiscal `core/efactura_send.py` ──
+#
+# Cele sapte de mai jos erau, pana la 13.09.2026, in corpul lui `incarca_factura` si al lui
+# `trimite`, intr-un modul declarat `FISCAL_ENGINE`. Textul canonic cere ca un motor fiscal sa nu
+# atinga baza; instructiunile s-au MUTAT, nu s-au rescris — acelasi text, aceiasi parametri,
+# aceeasi ordine. Proiectiile sunt cele cerute de UBL 2.1 / CIUS-RO, de-aia stau aici si nu in
+# `repo_facturi`: nu sunt „factura", sunt „factura asa cum o cere e-Factura".
+
+def factura_pentru_ubl(cur, schema, factura_id):
+    cur.execute(f"""SELECT id, numar, serie, data_emitere, data_scadenta, moneda,
+                               tert_nume, tert_cui, tert_adresa, tert_oras, tert_judet,
+                               taxare_inversa, tip, storno_din_id, total, tva
+                          FROM {schema}.facturi WHERE id = %s""", (int(factura_id),))
+    return cur.fetchone()
+
+
+def linii_pentru_ubl(cur, schema, factura_id):
+    cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva
+                          FROM {schema}.factura_linii WHERE factura_id = %s ORDER BY id""",
+                (int(factura_id),))
+    return cur.fetchall()
+
+
+def emitent_pentru_ubl(cur, schema):
+    cur.execute(f"""SELECT nume, cui, reg_com, adresa, oras, judet, cod_postal, iban,
+                               platitor_tva
+                          FROM {schema}.firma_profil WHERE id = 1""")
+    return cur.fetchone()
+
+
+def cui_emitent(cur, schema):
+    cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
+    return cur.fetchone()
+
+
+def trimitere_vie(cur, schema, factura_id, mediu):
+    cur.execute(f"""SELECT id, stare FROM {schema}.efactura_trimiteri
+                WHERE factura_id=%s AND mediu=%s AND stare IN ('incarcat','in_prelucrare','ok')
+                LIMIT 1""", (factura_id, mediu))
+    return cur.fetchone()
+
+
+def insereaza_trimitere_pregatita(cur, schema, factura_id, mediu, xml, sha):
+    cur.execute(f"""INSERT INTO {schema}.efactura_trimiteri
+                (factura_id, mediu, stare, xml_trimis, xml_sha256, trimis_la)
+                VALUES (%s,%s,'pregatit',%s,%s, now()) RETURNING id""",
+                (factura_id, mediu, xml, sha))
+    return cur.fetchone()
+
+
+def rezultatul_trimiterii(cur, schema, stare, index_incarcare, execution_status, errmsg, trimitere_id):
+    cur.execute(f"""UPDATE {schema}.efactura_trimiteri
+                SET stare=%s, index_incarcare=%s, execution_status=%s, error_message=%s,
+                    actualizat_la=now(),
+                    finalizat_la=CASE WHEN %s IN ('nok','eroare_upload') THEN now() ELSE finalizat_la END
+                WHERE id=%s""",
+                (stare, index_incarcare, execution_status, errmsg, stare, trimitere_id))

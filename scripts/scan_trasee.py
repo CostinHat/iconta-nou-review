@@ -562,6 +562,52 @@ def citeste_module():
             "retea": any(x in src for x in RETEA),
             "local": any(x in src for x in LOCAL),
         }
+    return _prin_depozit(rez, cdir)
+
+
+def _prin_depozit(rez, cdir):
+    """UN SINGUR PAS IN PLUS, si numai catre stratul REPOSITORY declarat.
+
+    [P7 · valul D2, 13.09.2026] Pana la P7, SQL-ul statea in modulul care il chema, deci „ce scrie
+    modulul asta" se putea citi din sirurile lui. P7 a bagat un strat dedesubt: un use-case nu mai
+    contine SQL, il cheama din `core/repo_*.py`. Masurat in ziua mutarii: adnotarea rutei
+    `POST /tenants/{id}/facturi/{id}/trimite-spv` a trecut de la *„efactura_trimiteri
+    (INSERT/UPDATE)"* la **nimic** — instrumentul nu mintea, dar tacea, si o tacere se citeste ca
+    „ruta n-are efect".
+
+    DE CE E INGUST DIN DOUA PARTI, si masurat. Pasul merge numai **de la** modulele declarate
+    `USE_CASE` **catre** cele declarate `REPOSITORY`, amandoua citite din `core/straturi.py`. Prima
+    forma, scrisa azi, il dadea oricarui modul care atinge un depozit — si **12 adnotari** s-au
+    largit dintr-o data, `woocommerce` capatand `curs_bnr_zilnic` fiindca foloseste cursul BNR.
+    Adevarat ca plafon, dar un plafon care creste asa nu mai deosebeste nimic: exact motivul pentru
+    care `module_margine` se opreste la un pas. Ingustat, pasul acopera EXACT golul pe care l-a
+    facut P7 — stratul nou, care prin contract n-are SQL propriu — si nimic altceva.
+
+    *Cand o faza muta codul, instrumentele care il citeau se mut si ele, sau raporteaza despre o
+    lume de dinainte.*
+
+    Ce ramane adevarat: rezultatul e tot un PLAFON SUPERIOR, cu aceeasi eticheta ca inainte — alta
+    functie din acelasi depozit poate scrie acolo fara ca use-case-ul s-o cheme.
+    """
+    import re as _re
+    from core import straturi as _R
+    nume_scurt = lambda cai: {os.path.basename(x)[:-3] for x in cai}
+    depozite = sorted(nume_scurt(_R.module_din_strat(_R.REPOSITORY)) & set(rez))
+    cazuri = sorted(nume_scurt(_R.module_din_strat(_R.USE_CASE)) & set(rez))
+    assert depozite, "ANTI-VACUU: niciun modul declarat REPOSITORY — pasul in plus n-ar face nimic"
+    assert cazuri, "ANTI-VACUU: niciun modul declarat USE_CASE — pasul in plus n-ar pleca de nicaieri"
+    for nume in cazuri:
+        info = rez[nume]
+        try:
+            src = open(os.path.join(cdir, nume + ".py"), encoding="utf-8").read()
+        except OSError:
+            continue
+        for d in depozite:
+            if not _re.search(r"\bfrom core import [^\n]*\b%s\b|\bcore\.%s\b" % (d, d), src):
+                continue
+            for tab, op in rez[d]["scrie"].items():
+                info["scrie"][tab] = sorted(set(info["scrie"].get(tab, [])) | set(op))
+        info["scrie"] = {k: info["scrie"][k] for k in sorted(info["scrie"])}
     return rez
 
 

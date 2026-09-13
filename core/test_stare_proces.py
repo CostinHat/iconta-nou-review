@@ -194,7 +194,7 @@ def test_clichetul_de_actiune_nu_creste(inv):
 def test_cele_doua_nume_din_textul_canonic_au_IESIT_din_memoria_procesului(inv):
     """VALUL 1, 12.09.2026 — proba s-a intors pe dos, si de-aia merita citita.
 
-    Pana azi verifica pozitiv: `PLAN_HARDENING.md:699-701` numeste doua stari business, iar un
+    Pana azi verifica pozitiv: `PLAN_HARDENING.md:708-710` numeste doua stari business, iar un
     detector care nu le vede nu masoara P6. Amandoua au fost mutate in baza, deci nu mai exista
     ca nume de modul. Proba pazeste acum sensul invers: **nu se pot intoarce**. O repunere in
     `main` a vreunui dictionar de esecuri sau de cooldown pica aici.
@@ -208,7 +208,7 @@ def test_cele_doua_nume_din_textul_canonic_au_IESIT_din_memoria_procesului(inv):
 def test_datoria_de_infrastructura_nu_poate_DISPAREA_tacut():
     """[12.09.2026] Proba s-a intors pe dos — asa cum cerea chiar mesajul ei de dinainte.
 
-    Pana azi cerea ca datoria sa fie DESCHISA: `PLAN_HARDENING.md:709-711` spune ca P6 «include
+    Pana azi cerea ca datoria sa fie DESCHISA: `PLAN_HARDENING.md:718-719` spune ca P6 «include
     infrastructura, nu doar codul», iar partea aia nu se vede in niciun AST. Cat timp productia
     rula un singur proces, o cifra de cod la zero s-ar fi citit drept «P6 gata».
 

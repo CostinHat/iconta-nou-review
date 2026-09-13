@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """P6 valul 2 — forma unei DECLARAȚII de cache local.
 
-CE CERE TEXTUL CANONIC (`PLAN_HARDENING.md:704-707`, citat): *«Cache local admis, dar numai
+CE CERE TEXTUL CANONIC (`PLAN_HARDENING.md:713-716`, citat): *«Cache local admis, dar numai
 DECLARAT»*, cu cinci lucruri scrise lângă el — **rol** (ce accelerează) · **sursa autoritativă**
 (de unde se poate reface) · **motiv** (de ce e în memorie) · **invalidare** (când și cum) ·
 **dovadă de reconstrucție identică** (o probă care golește cache-ul și arată că răspunsul e același).

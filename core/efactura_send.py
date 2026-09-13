@@ -19,6 +19,12 @@ HOST-uri e-Factura (VERIFICAT LIVE 18.07 - trei metode, trei host-uri; DECIZII.m
 Corectie fata de nota 18.07 care pusese webserviceapl pentru upload (aia e ruta mTLS).
 Fiecare host = o SINGURA constanta; upload/stare/descarcare o refolosesc, nu o rescriu.
 
+[P7 · valul D2, 13.09.2026] STRAT: FISCAL_ENGINE, si de-acum chiar e unul. Loaderul,
+orchestrarea trimiterii si cele 8 instructiuni SQL au trecut in `core/efactura_trimitere.py`
+(use-case) si `core/repo_efactura.py` / `core/repo_tenants.py` (repository). Textul canonic,
+`PLAN_HARDENING.md:797`: *un motor fiscal nu importa `db`*. Aici a ramas ce produce si ce
+valideaza documentul: XML-ul UBL, validatorul de structura ANAF si invelisurile de apel.
+
 LIMITE v1 (de confirmat pe TEST la pasul 2, NU ghicite aici):
   - Cumparatorul are in schema doar tert_nume/tert_cui/tert_adresa (adresa libera);
     CIUS-RO cere oras (BT-52). Pana cand formularul de factura capteaza orasul separat,
@@ -152,48 +158,6 @@ def _vatid(cui):
     """CUI -> RO+cifre (identificator VAT, pentru platitor TVA)."""
     digits = "".join(ch for ch in str(cui or "") if ch.isdigit())
     return ("RO" + digits) if digits else ""
-
-
-# ============================================================
-#  LOADER — din schema CURENTA
-# ============================================================
-def incarca_factura(conn, schema, factura_id):
-    """
-    Citeste factura + linii + emitent (firma_profil) + cumparator (tert_* pe factura),
-    pe schema curenta. Intoarce (factura, linii, furnizor, client) - dict-uri simple.
-    Cumparatorul e denormalizat pe factura (tert_nume/tert_cui/tert_adresa); nu mai
-    exista tabelul `clienti` cu adresa structurata din build-ul vechi.
-    """
-    import psycopg2.extras as _E
-    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(f"""SELECT id, numar, serie, data_emitere, data_scadenta, moneda,
-                               tert_nume, tert_cui, tert_adresa, tert_oras, tert_judet,
-                               taxare_inversa, tip, storno_din_id, total, tva
-                          FROM {schema}.facturi WHERE id = %s""", (int(factura_id),))
-        factura = cur.fetchone()
-        if not factura:
-            raise ValueError("factura %s inexistenta in %s" % (factura_id, schema))
-        cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva
-                          FROM {schema}.factura_linii WHERE factura_id = %s ORDER BY id""",
-                    (int(factura_id),))
-        linii = cur.fetchall()
-        cur.execute(f"""SELECT nume, cui, reg_com, adresa, oras, judet, cod_postal, iban,
-                               platitor_tva
-                          FROM {schema}.firma_profil WHERE id = 1""")
-        furnizor = cur.fetchone()
-    if not furnizor:
-        raise ValueError("firma_profil (emitent) neconfigurat in %s" % schema)
-    if not linii:
-        raise ValueError("factura %s nu are linii" % factura_id)
-    client = {
-        "nume": factura.get("tert_nume"),
-        "cui": factura.get("tert_cui"),
-        "adresa": factura.get("tert_adresa"),
-        "oras": factura.get("tert_oras"),
-        "judet": factura.get("tert_judet"),
-        "cod_postal": None,   # cod postal cumparator: inca nestructurat (optional BT-53)
-    }
-    return dict(factura), [dict(l) for l in linii], dict(furnizor), client
 
 
 # ============================================================
@@ -336,12 +300,6 @@ def genereaza_xml(factura, linii, furnizor, client):
     return "\n".join(P)
 
 
-def genereaza_din_factura(conn, schema, factura_id):
-    """Convenienta: loader + generator intr-un pas. Intoarce (xml, factura)."""
-    factura, linii, furnizor, client = incarca_factura(conn, schema, factura_id)
-    return genereaza_xml(factura, linii, furnizor, client), factura
-
-
 def valideaza(xml, standard="FACT1"):
     """
     Valideaza STRUCTURA XML pe validatorul oficial ANAF (schematron CIUS-RO), FARA token si
@@ -364,8 +322,6 @@ def valideaza(xml, standard="FACT1"):
 # ============================================================
 #  TRIMITERE SPV — prin apel_anaf (pasul 2). TOATE apelurile ANAF trec prin conector.
 # ============================================================
-import hashlib
-from core import db
 from core import spv_conector
 
 
@@ -407,18 +363,6 @@ def descarca(principal, id_descarcare, mediu="test"):
     return spv_conector.apel_anaf(principal, "GET", url, timeout=120)
 
 
-def principal_pentru_schema(conn, schema):
-    """Token owner (Principal) pentru o schema tenant: cabinet daca accounting_firm_id setat, altfel
-    gratuit (tenant). Partajat de cr-oanele SPV (poll F178 + receive F179) - un singur loc."""
-    with conn.cursor() as cur:
-        cur.execute("SELECT id, accounting_firm_id FROM public.tenants WHERE schema_name=%s", (schema,))
-        r = cur.fetchone()
-    if not r:
-        raise ValueError("schema %s fara tenant public" % schema)
-    tid, afid = r
-    return spv_conector.principal_firm(afid) if afid is not None else spv_conector.principal_tenant(tid)
-
-
 def lista_mesaje(principal, cif, mediu="test", zile=3, filtru="P"):
     """
     GET listaMesajeFactura?zile=N&cif=X&filtru=F prin apel_anaf (pe tokenul principalului).
@@ -449,84 +393,3 @@ def lista_mesaje(principal, cif, mediu="test", zile=3, filtru="P"):
     if isinstance(j, dict):
         return (j.get("mesaje") or []), None
     return [], "forma neasteptata listaMesajeFactura: %s" % str(j)[:200]
-
-
-def trimite(schema, factura_id, principal, mediu="test"):
-    """
-    Trimite o factura in SPV cu PORTILE IN ORDINE FIXA (niciuna sarita):
-      1) TOKEN VIU: principalul are token activ? altfel stare='fara_token' (conecteaza ANAF intai).
-      2) VALIDARE/FACT1 (Regula 1): structura valida la validatorul ANAF? altfel stare='nevalidat'
-         + erorile BR-RO, FARA upload. Diferentiatorul vs SmartBill: nu trimitem gunoi.
-      3) IDEMPOTENCY: exista deja send VIU (incarcat/in_prelucrare/ok) pe factura+mediu? altfel
-         stare='deja_trimisa'. Upload-ul ANAF NU e idempotent - dubla trimitere = dubla factura.
-      4) UPLOAD prin apel_anaf pe tokenul principalului -> scrie randul INDIFERENT de rezultat
-         (ok/eroare_upload + error_message integral).
-    Poll-ul (stareMesaj/descarcare) ramane pe cron, NU sincron aici. Intoarce {stare, ...}.
-    genereaza_din_factura poate ridica EDateIncomplete (sector Bucuresti lipsa) / NotImplementedError
-    (taxare inversa) - apelantul (ruta) le mapeaza la 422.
-    """
-    # P0: genereaza XML (poate ridica EDateIncomplete/NotImplementedError -> prinse de ruta)
-    with db.get_conn() as conn:
-        # POARTA 1: token viu?
-        if spv_conector.ia_token_activ(conn, principal) is None:
-            return {"stare": "fara_token", "mesaj": "Conectează ANAF (SPV) înainte de a trimite factura."}
-        xml, _factura = genereaza_din_factura(conn, schema, factura_id)
-        with conn.cursor() as cur:
-            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
-            cif = "".join(c for c in str(cur.fetchone()[0] or "") if c.isdigit())
-    sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()
-
-    # POARTA 2: validare structura pe validatorul ANAF - FARA upload daca nok
-    val_ok, val_msg = valideaza(xml)
-    if not val_ok:
-        return {"stare": "nevalidat", "validare_ok": False, "validare_mesaje": val_msg}
-
-    # POARTA 3: idempotency (send viu existent) + insert 'pregatit' in aceeasi tranzactie
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(f"""SELECT id, stare FROM {schema}.efactura_trimiteri
-                WHERE factura_id=%s AND mediu=%s AND stare IN ('incarcat','in_prelucrare','ok')
-                LIMIT 1""", (factura_id, mediu))
-            viu = cur.fetchone()
-            if viu:
-                return {"stare": "deja_trimisa", "trimitere_id": viu[0], "stare_existenta": viu[1]}
-            cur.execute(f"""INSERT INTO {schema}.efactura_trimiteri
-                (factura_id, mediu, stare, xml_trimis, xml_sha256, trimis_la)
-                VALUES (%s,%s,'pregatit',%s,%s, now()) RETURNING id""",
-                        (factura_id, mediu, xml, sha))
-            tid = cur.fetchone()[0]
-
-    rez = {"trimitere_id": tid, "cif": cif, "xml_sha256": sha, "mediu": mediu, "validare_ok": True}
-
-    # POARTA 4: upload real prin apel_anaf (scrie randul indiferent de rezultat)
-    try:
-        r = upload_ubl(principal, cif, xml, mediu)
-        text = r.text or ""
-        ex, index, errs = _parse_upload(text)
-        rez.update({"http": r.status_code, "execution_status": ex,
-                    "index_incarcare": index, "errors": errs, "raspuns": text})
-        if r.status_code == 200 and ex == 0 and index:
-            stare, errmsg = "incarcat", None
-        else:
-            stare, errmsg = "nok", ("\n".join(errs) if errs else text[:4000])
-    except spv_conector.EroareSpvFaraDrept as e:
-        # 403 = certificatul nu are drept (CIF/serviciu) - NU e eroare de structura
-        rez.update({"http": 403, "execution_status": None, "index_incarcare": None,
-                    "errors": [], "raspuns": str(e), "fara_drept": True})
-        stare, errmsg, index, ex = "eroare_upload", "403 fara drept SPV: %s" % e, None, None
-    except Exception as e:
-        rez.update({"http": None, "execution_status": None, "index_incarcare": None,
-                    "errors": [], "raspuns": str(e)})
-        stare, errmsg, index, ex = "eroare_upload", "exceptie upload: %s" % str(e)[:2000], None, None
-
-    # 3) scrie rezultatul complet (commit) - INDIFERENT de rezultat
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(f"""UPDATE {schema}.efactura_trimiteri
-                SET stare=%s, index_incarcare=%s, execution_status=%s, error_message=%s,
-                    actualizat_la=now(),
-                    finalizat_la=CASE WHEN %s IN ('nok','eroare_upload') THEN now() ELSE finalizat_la END
-                WHERE id=%s""",
-                        (stare, index, ex, errmsg, stare, tid))
-    rez["stare"] = stare
-    return rez

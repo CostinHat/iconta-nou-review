@@ -172,7 +172,7 @@ def _are_timeout(nod):
 
     Forma dinainte întorcea `True/False` și dădea **fals-pozitiv** pe termenul primit prin
     despachetare: `requests.request(metoda, url, **kw)` n-are `timeout` la locul apelului, dar toți
-    apelanții lui `spv_conector.apel_anaf` îl trimit prin `kw` (`efactura_send.py:393,400,407,442`
+    apelanții lui `spv_conector.apel_anaf` îl trimit prin `kw` (`efactura_send.py:350,356,363,386`
     și `etransport_send.py:82,89,97` — verificat rând cu rând). Două căi de cerere fuseseră
     clasificate `ACTION_REQUIRED` pe dovada asta.
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """P6 valul 2 — un cache admis isi poarta cele cinci lucruri, si dovada nu e o promisiune.
 
-Textul canonic (`PLAN_HARDENING.md:704-707`) admite cache local **numai DECLARAT**, cu cinci
+Textul canonic (`PLAN_HARDENING.md:713-716`) admite cache local **numai DECLARAT**, cu cinci
 lucruri langa el: rol · sursa autoritativa · motiv · invalidare · dovada de reconstructie identica.
 
 Garda are trei straturi, si al treilea e cel care conteaza:

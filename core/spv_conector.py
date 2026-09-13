@@ -90,6 +90,23 @@ def principal_tenant(tid):
     return Principal("tenant", int(tid))
 
 
+def principal_pentru_schema(conn, schema):
+    """Token owner (Principal) pentru o schema tenant: cabinet daca accounting_firm_id setat, altfel
+    gratuit (tenant). Partajat de cr-oanele SPV (poll F178 + receive F179) - un singur loc.
+
+    [P7 · valul D2, 13.09.2026] Statea in `core/efactura_send.py`, care e motor fiscal si n-avea
+    voie sa atinga baza. Locul ei e aici, langa `principal_firm`/`principal_tenant`: intrebarea e
+    despre PRINCIPALI, nu despre e-Factura. Interogarea a trecut in `repo_tenants`.
+    """
+    from core import repo_tenants as _rt
+    with conn.cursor() as cur:
+        r = _rt.dupa_numele_schemei(cur, schema)
+    if not r:
+        raise ValueError("schema %s fara tenant public" % schema)
+    tid, afid = r
+    return principal_firm(afid) if afid is not None else principal_tenant(tid)
+
+
 def _principal_sql(p):
     """(cond_where, params, coloana) pentru un principal. Unicul loc care stie schema cheii."""
     if p.kind == "firm":

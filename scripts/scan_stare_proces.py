@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """P6 — inventarul STARII care traieste in memoria procesului, intre cereri.
 
-DEFINITIA CANONICA de la care porneste instrumentul (PLAN_HARDENING.md:696-722, citata, nu
+DEFINITIA CANONICA de la care porneste instrumentul (PLAN_HARDENING.md:705-730, citata, nu
 rezumata): *«Nicio stare business autoritativa doar in memoria unui proces.»* Plus: *«Cache local
 admis, dar numai DECLARAT»*, cu cinci lucruri scrise langa el — rol, sursa autoritativa, motiv,
 invalidare, dovada de reconstructie identica.

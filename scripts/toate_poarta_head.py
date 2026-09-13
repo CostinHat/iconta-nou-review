@@ -9,7 +9,7 @@ s-au gasit, si care e ratacit — un brat care spune doar «nu» obliga pe cinev
 DE CE EXISTA. Pana la 12.09.2026 bratul citea `ActiveEnterTimestamp > data commitului`: un PROXY
 care spunea «unitatea a repornit dupa commit», si din care se deducea «procesul viu poarta HEAD».
 Cu un singur proces, deductia era buna. Cu mai multe, proxy-ul afirma despre UNITATE ce trebuie
-afirmat despre FIECARE PROCES — exact ce cere `PLAN_HARDENING.md:718-720` sa se schimbe.
+afirmat despre FIECARE PROCES — exact ce cere `PLAN_HARDENING.md:728-729` sa se schimbe.
 
 DE CE ISI CITESTE SINGUR ACREDITAREA DE PRODUCTIE, in loc s-o mosteneasca din mediu. Prima forma
 folosea `DATABASE_URL` din mediu. Hook-ul `post-commit` mosteneste insa mediul scriptului de

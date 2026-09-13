@@ -2412,3 +2412,12 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   marchează în loc să dispară. Proba care apără nu e cea care cere motivul scris, ci **cealaltă
   direcție**: niciun `reparat` nu poate acoperi un loc care face ÎNCĂ efectul extern în tranzacție.
   Fără ea, eticheta ar deveni o portiță prin care orice verdict viu ar putea fi scutit.
+
+
+- **P7 · valul D2 (13.09.2026)** — patru gărzi noi în `core/test_p7_straturi.py` (35 de probe în
+  fișierele P7, toate verzi) pentru detectorul care tocmai a rămas **fără instanță reală**: `D2`
+  **1 → 0**. Calibrarea pozitivă nu mai stă pe un defect din repo, ci pe un **univers sintetic** —
+  `main.py` declarat motor fiscal într-o probă — plus cele patru forme de import ale lui `core.db`,
+  cu două negative. A doua gardă a valului e despre ce NU s-a schimbat: `trimite` deschide tot trei
+  `db.get_conn()`, deci proprietatea tranzacției (P4) a rămas unde era. **RED-proof: trei mutații,
+  nouă probe roșii.**

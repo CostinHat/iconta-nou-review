@@ -8,6 +8,7 @@ FOUR-EYES: NU creeaza cheltuiala automat - contabilul valideaza (pasul 5), abia 
 
 GARDURI (nenegociabile):
 - Reutilizeaza efactura_send.lista_mesaje/descarca (apel_anaf pe PRINCIPAL, fara client paralel).
+- [P7 · D2] principalul unei scheme vine de la `spv_conector`, nu din motorul fiscal.
 - DEDUP pe id_mesaj_anaf: pre-check + INSERT ... ON CONFLICT DO NOTHING (fereastra 2-3z suprapusa la
   30 min -> aceeasi factura la mai multe rulari). Nu re-descarca ce e deja importat.
 - cif_beneficiar VALIDAT la insert (== CIF tenant), nu doar stocat. Pe token de cabinet care acopera
@@ -107,7 +108,7 @@ def ruleaza(_dormi=None):
             "skip_auth": 0, "descarca_esec": 0, "fara_xml": 0, "tenanti_fara_cif": 0}
     for schema in scheme:
         with db.get_conn() as conn:
-            principal = efs.principal_pentru_schema(conn, schema)
+            principal = spv_conector.principal_pentru_schema(conn, schema)
             with conn.cursor() as cur:
                 cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
                 row = cur.fetchone()

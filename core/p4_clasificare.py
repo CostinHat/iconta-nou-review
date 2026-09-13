@@ -80,7 +80,10 @@ FALS = "FALSE_POSITIVE"
 
 #: Tiparul de casă pentru un efect ireversibil, numit o dată și citat de mai multe ori.
 TIPARUL_PREGATIT = (
-    "tiparul din `efactura_send.trimite` si `etransport_send.trimite`: randul care consemneaza "
+    # [P7 · D2, 13.09.2026] `trimite` s-a mutat din `core/efactura_send.py` in
+    # `core/efactura_trimitere.py` — acelasi cod, acelasi sir de trei tranzactii, alt strat.
+    # Clasificarea P4 e neschimbata: s-a mutat fisierul, nu proprietatea.
+    "tiparul din `efactura_trimitere.trimite` si `etransport_send.trimite`: randul care consemneaza "
     "actul se scrie si SE COMITE cu starea «pregatit» INAINTE de efectul ireversibil, iar "
     "rezultatul se scrie dupa, in tranzactia lui. Asa, un esec lasa un rand vizibil («pregatit» "
     "care n-a mai avansat), nu o tacere"
@@ -229,7 +232,7 @@ CLASIFICARE = {
             "alertele plecasera. O eroare de dupa intorcea randurile, nu si alertele; la urmatoarea "
             "rulare (cron la 15 minute) plecau din nou, identice. "
             "Nota despre inventar: din cele 16 domenii care scriu pe calea asta, 15 sunt omonimie "
-            "(parametrul `trimite` se ciocneste cu `efactura_send.trimite` si surorile lui); real e "
+            "(parametrul `trimite` se ciocneste cu `efactura_trimitere.trimite` si surorile lui); real e "
             "unul singur, chiar rezervarea de dedup.",
         "reparatie":
             "`_poate_trimite` isi deschide propria tranzactie si o comite inainte ca alerta sa "
@@ -339,7 +342,7 @@ CLASIFICARE = {
         "efecte": "incarcarea facturii in SPV (ireversibila) <-> randul din efactura_trimiteri "
                   "<-> rotatia tokenului SPV",
         "de_ce":
-            "aceeasi justificare ca e-Transport: `efactura_send.trimite` scrie si comite randul "
+            "aceeasi justificare ca e-Transport: `efactura_trimitere.trimite` scrie si comite randul "
             "`pregatit`, cu poarta de idempotenta inaintea lui, si abia apoi incarca. Upload-ul "
             "ANAF nu e idempotent, iar codul o spune explicit — de-aia poarta 3 exista.",
     },
@@ -622,7 +625,7 @@ REGULI = [
             "evenimentele caii vin din nume rezolvate pe treapta a treia (toate definitiile cu "
             "acel nume, reunite), deci faptele pe care s-ar sprijini orice alta regula nu sunt "
             "ale caii asteia. Instanta din casa: parametrul `trimite` al lui `alerta_acces.ruleaza` "
-            "se ciocneste cu `efactura_send.trimite` si surorile lui"),
+            "se ciocneste cu `efactura_trimitere.trimite` si surorile lui"),
     },
 ]
 
@@ -928,7 +931,7 @@ EFECTE_EXTERNE = {
             "AMESTECAT, si se spune: `stareMesaj`, `descarcare` si `listaMesaje` sunt INTEROGARI; "
             "`upload` (e-Factura, e-Transport) e un EFECT — documentul pleaca la autoritate si nu "
             "se mai poate lua inapoi. Pentru upload, ordinea e deja corecta si e modelul casei: "
-            "`efactura_send.trimite` si `etransport_send.trimite` scriu si COMIT randul `pregatit` "
+            "`efactura_trimitere.trimite` si `etransport_send.trimite` scriu si COMIT randul `pregatit` "
             "inaintea incarcarii, cu poarta de idempotenta inaintea lui, si abia apoi incarca. "
             "Ce ramane deschis: tranzactia lui `apel_anaf` sta deschisa peste apel si peste "
             "backoff-ul de 429 — durata, nu proprietate; numita la restante.",

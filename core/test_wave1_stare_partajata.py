@@ -118,7 +118,7 @@ def _copil(rol, arg, n=1):
 #  A. LOGIN MULTI-PROCESS
 # ============================================================
 def test_A_blocarea_produsa_de_un_proces_e_vazuta_de_celalalt():
-    """Criteriul canonic `PLAN_HARDENING.md:715`: «blocarea la autentificare ține pe ambele»."""
+    """Criteriul canonic `PLAN_HARDENING.md:723`: «blocarea la autentificare ține pe ambele»."""
     email = EMAIL_BAZA % "multiproc"
     _curata(email=email)
     try:
