@@ -8915,3 +8915,10 @@ factura_id, mediu)` cu ultimele două inversate trece tot, și desface idempoten
 upload care nu e idempotent. `core/test_efactura_trimitere.py` cheamă `trimite` cap-coadă pe o schemă
 efemeră, cu rețeaua pe mock, și se uită la ce a rămas în bază. **8 probe · 3 mutații · 8 roșii.**
 *Un val care mută cod are nevoie de amândouă felurile de probă.*
+
+**Și încă o cifră derivată în loc de copiată.** În predare scrisesem «5743 teste trec»,
+socotind 5735 + cele 8 probe noi. Poarta a tipărit **5744**: rularea pe care mă bazam avea o
+gardă roșie — blocul din `GARZI.md`, neregenerat încă —, iar ea a trecut la verde odată cu
+regenerarea. *A patra oară azi când cifra greșită e una care nu s-a copiat din locul pe care
+regula îl numește.* Poarta: **5744** verzi / 0 roșii · 12 sărite · 14 xfail · verificator
+TOTAL 0 · five-way închis pe `5287eb98` · două procese, 2 din 2.

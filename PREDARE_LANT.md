@@ -22,6 +22,11 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   **păstrate** — documentul își interzice singur să le șteargă.
 - **CE E REMĂSURAT**: cele patru clichete generate · blocul cifrelor despre date · inventarul
   gărzilor · numărul restanțelor deschise (`scripts/scan_ramas.py`).
+- **[13.09.2026] ȘI CIFRA ASTA A FOST GREȘITĂ, TOT PRIN DERIVARE.** Am scris «5743 teste trec»
+  socotind 5735 + cele 8 probe noi, în loc s-o copiez din ieșirea porții. Real: **5744** —
+  rularea pe care mă bazam avea o gardă roșie (blocul din `GARZI.md`, neregenerat încă), iar ea
+  a trecut la verde odată cu regenerarea. *Aritmetica pe o bază măsurată arată sigură exact cât
+  o cifră copiată: rândul de mai jos spune, în text, DE UNDE se ia.*
 - **[13.09.2026, valul D2] CE A IEȘIT LA IVEALĂ MUTÂND COD:** o trimitere pe **număr de linie**
   se strică la orice mutare, și nimic n-o prindea. Adăugând paisprezece rânduri în
   `PLAN_HARDENING.md`, toate citările de sub ele au început să arate spre alt text — printre
@@ -352,7 +357,7 @@ predare în alta e greșită exact acolo unde pare cea mai sigură.*
 ---
 ## STAREA LA PREDARE
 
-**5743 teste trec** *(ieșirea porții valului D2, cu proba funcțională)* · 12 skip · 14 xfail · ruff OK ·
+**5744 teste trec** *(ieșirea porții care a produs `5287eb98`)* · 12 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
