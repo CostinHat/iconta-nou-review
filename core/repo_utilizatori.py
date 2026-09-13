@@ -132,3 +132,89 @@ def cate_firme_mai_are_contul(cur, user_id):
     cur.execute("SELECT count(*) AS n FROM public.user_tenants WHERE user_id=%s",
                 (user_id,))
     return cur.fetchone()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def scrie_acordul_termenilor(cur, user_id, cabinet_id, email, versiune):
+    cur.execute("INSERT INTO public.acord_termeni (user_id, cabinet_id, email, versiune) "
+                    "VALUES (%s,%s,%s,%s)",
+                (user_id, cabinet_id, email, versiune))
+
+
+def activeaza_contul_cu_nume(cur, nume, id_):
+    cur.execute("UPDATE public.users SET activ=true, nume=%s WHERE id=%s",
+                (nume, id_))
+
+
+def leaga_contul_de_firma_idempotent(cur, user_id, tenant_id):
+    cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+                (user_id, tenant_id))
+
+
+def creeaza_cont(cur, email, password_hash, nume, rol):
+    cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ)
+                               VALUES (%s, %s, %s, 'client', %s, true) RETURNING id""",
+                (email, password_hash, nume, rol))
+    return cur.fetchone()
+
+
+def leaga_contul_de_firma(cur, user_id, tenant_id):
+    cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)",
+                (user_id, tenant_id))
+
+
+def marcheaza_tokenul_folosit(cur, token_hash):
+    cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token_hash=%s",
+                (token_hash,))
+
+
+def seteaza_parola(cur, password_hash, id_):
+    cur.execute("UPDATE public.users SET password_hash=%s, parola_schimbata=true, activ=true WHERE id=%s",
+                (password_hash, id_))
+
+
+def dezactiveaza_clientul_firmei(cur, id_, user_tenantsWHEREtenant_id):
+    cur.execute("""UPDATE public.users SET activ=false WHERE id=%s AND rol='client'
+                           AND id IN (SELECT user_id FROM public.user_tenants WHERE tenant_id=%s)""",
+                (id_, user_tenantsWHEREtenant_id))
+
+
+def schimba_emailul(cur, email, id_):
+    cur.execute("UPDATE public.users SET email=%s WHERE id=%s",
+                (email, id_))
+
+
+def confirma_schimbarea_de_email(cur, id_):
+    cur.execute("UPDATE public.schimbari_email SET confirmat_la=now() WHERE id=%s",
+                (id_,))
+
+
+def sterge_schimbarile_de_email_neconfirmate(cur, p1):
+    cur.execute("DELETE FROM public.schimbari_email "
+                        "WHERE user_id=%s AND confirmat_la IS NULL",
+                (p1,))
+
+
+def cere_schimbarea_de_email(cur, user_id, tenant_id, email_vechi, email_nou, token_hash):
+    cur.execute("INSERT INTO public.schimbari_email "
+                        "(user_id, tenant_id, email_vechi, email_nou, token_hash, expira) "
+                        "VALUES (%s, %s, %s, %s, %s, now() + interval '48 hours')",
+                (user_id, tenant_id, email_vechi, email_nou, token_hash))
+
+
+def dezleaga_contul_de_firma(cur, user_id, tenant_id):
+    cur.execute("DELETE FROM public.user_tenants WHERE user_id=%s AND tenant_id=%s",
+                (user_id, tenant_id))
+
+
+def dezactiveaza_contul(cur, id_):
+    cur.execute("UPDATE public.users SET activ=false WHERE id=%s",
+                (id_,))
+
+
+def creeaza_cont_de_client(cur, email, password_hash, nume, rol, accounting_firm_id):
+    cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ, poate_valida)
+                           VALUES (%s, %s, %s, 'angajat', %s, true, %s) RETURNING id""",
+                (email, password_hash, nume, rol, accounting_firm_id))
+    return cur.fetchone()

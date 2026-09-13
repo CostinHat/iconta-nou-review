@@ -412,6 +412,13 @@ REGISTRU = (
     D("core/repo_admin.py", REPOSITORY, None,
       "P7 · V1: panoul de administrare: sănătate, activitate, anunțuri, evenimente publice — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:746 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/repo_banca.py", REPOSITORY, None,
+      "P7 · V2: extrasul de cont si liniile lui — scrieri mutate din rute, zero `get_conn`, zero commit",
+      "PLAN_HARDENING.md:746 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/tranzactie.py", USE_CASE, None,
+      "P7 · V2: cele zece instructiuni de control de tranzactie (SAVEPOINT, SET LOCAL search_path) "
+      "scoase din stratul HTTP. NU detine tranzactia: executa pe cursorul primit, la acelasi loc",
+      "PLAN_HARDENING.md:744 — use-case-ul detine tranzactia si orchestreaza"),
     D("core/repo_casa.py", REPOSITORY, None,
       "P7 · V1: casa: bonuri și chitanțe — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:746 — repository-ul e singurul care stie SQL si scheme"),
@@ -449,7 +456,8 @@ REGISTRU = (
       "P7 · V1: conturile și accesul clienților — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:746 — repository-ul e singurul care stie SQL si scheme"),
     D("main.py", HTTP, REPOSITORY,
-      "421 rute montate in modul si 295 instructiuni SQL",
+      "424 rute montate in modul si 38 instructiuni SQL — toate in helperi de modul; "
+      "dupa P7 - V1+V2 niciuna nu mai sta in CORPUL unei rute",
       "PLAN_HARDENING.md:743 — stratul HTTP e acolo unde sunt rutele"),)
 
 

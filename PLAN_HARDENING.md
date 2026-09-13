@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-13 (**P7 DESCHIS** — diagnostic închis; valurile **V3** «registrul de straturi» și **V1** «citirile în repository» închise; V2 nu a început)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · **P7 DESCHIS** (diagnostic `CLOSED_ACCEPTED` `b67d2bfb` · V3 registrul de straturi `CLOSED_ACCEPTED` `364fbc63` · **V1 citirile în repository `CLOSED_ACCEPTED`**; `P7_ACTION_REQUIRED` **296 → 189**, V2 neînceput)
+- **ultima actualizare**: 2026-09-13 (**P7 DESCHIS** — diagnostic închis; valurile **V3** «registrul de straturi», **V1** «citirile în repository» și **V2** «scrierile și controlul de tranzacție» închise; rămân `D2`=1 și `D4`=38)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · **P7 DESCHIS** (diagnostic `CLOSED_ACCEPTED` `b67d2bfb` · V3 registrul de straturi `CLOSED_ACCEPTED` `364fbc63` · V1 citirile în repository `CLOSED_ACCEPTED` `8d182afa` · **V2 scrierile și controlul de tranzacție `CLOSED_ACCEPTED`**; `P7_ACTION_REQUIRED` **296 → 189 → 39**, `D1`=0 pe toate clasele; rămâne deschisă pentru `D2`=1 și `D4`=38)
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -733,14 +733,28 @@ fără `--workers`, confirmat un singur PID) la **mai multe instanțe** — `--w
 # P7 — APPLICATION LAYER
 
 - **stare (13.09.2026)**: **DESCHISĂ**. Diagnostic `CLOSED_ACCEPTED` (`b67d2bfb`) · **V3 — registrul
-  de straturi** `CLOSED_ACCEPTED` (`364fbc63`) · **V1 — citirile în repository** `CLOSED_ACCEPTED` ·
-  **V2 NEÎNCEPUT**.
-- **măsurat**: `P7_RAW_ITEMS=190` = `ACTION_REQUIRED` **189** + `ACCEPTABLE_BY_DESIGN` **1**;
+  de straturi** `CLOSED_ACCEPTED` (`364fbc63`) · **V1 — citirile în repository** `CLOSED_ACCEPTED`
+  (`8d182afa`) · **V2 — scrierile și controlul de tranzacție** `CLOSED_ACCEPTED`.
+- **măsurat**: `P7_RAW_ITEMS=40` = `ACTION_REQUIRED` **39** + `ACCEPTABLE_BY_DESIGN` **1**;
   `EVIDENCE_LIMITATION` **0**, `UNCLASSIFIED` **0**, `UNEXPLAINED_EXCLUSIONS` **0**.
-  Pe detector: **D1** 150 — **zero citiri** (erau 107), 140 de scrieri și 10 instrucțiuni de control
-  de tranzacție, amândouă treaba lui V2 · **D2** 1 (`core/efactura_send.py`, motor fiscal care
-  importă `db`) · **D3** 1 (acceptabil: într-un modul care conține rute) · **D4** 38 (module care fac
-  două straturi deodată).
+  Pe detector: **D1 0 pe TOATE clasele** — `READ` 0, `WRITE` 0, `TRANSACTION_CONTROL` 0, `UNKNOWN` 0
+  · **D2** 1 (`core/efactura_send.py`, motor fiscal care importă `db`) · **D3** 1 (acceptabil:
+  într-un modul care conține rute) · **D4** 38 (module care fac două straturi deodată).
+- **de ce rămâne DESCHISĂ**: `D1`=0 e o singură verificare din cele trei canonice. Un motor fiscal
+  încă importă `db` și 38 de module încă fac două straturi deodată — printre ele `main.py`, care mai
+  atinge baza din **helperii de modul** (38 de instrucțiuni, niciuna în corpul unei rute). *Zero pe
+  un detector nu e zero pe fază.*
+- **V2, pe scurt**: cele **140 de scrieri** (106 `INSERT`, 29 `UPDATE` — unul compus la rulare —,
+  5 `DELETE`) și cele **10 instrucțiuni de control de tranzacție** (6 din familia `SAVEPOINT`,
+  4 `SET LOCAL search_path`) au ieșit din corpul rutelor: scrierile în repository, controlul în
+  `core/tranzactie.py`. **Proprietatea tranzacției NU s-a mutat** — `core/tranzactie.py` execută pe
+  cursorul primit, la același loc în șir, iar `commit`/`rollback` au rămas unde erau; contractul P4
+  nu s-a redeschis. Conservarea se vede în două feluri: 257 de apeluri din `main.py` către straturile
+  de sub HTTP (107 + 150), și cifra din registrul de straturi, **295 − 257 = 38**.
+- **ce NU a făcut V2, și se spune**: rutele **încă orchestrează**. Comanda cere ca use-case-ul să
+  dețină tranzacția (§2, §4), dar cere și `P4_TRANSACTION_OWNERSHIP_CHANGED=NO` (§3). Cele două nu
+  pot fi adevărate deodată, așa că am ținut proprietatea unde era și am mutat doar instrucțiunile.
+  **Nu s-au extras 139 de use-case-uri.** Asta rămâne de făcut, ca val separat.
 - **V1, pe scurt**: cele **107 citiri** (106 `SELECT` + un CTE read-only) au ieșit din corpul rutelor
   în **13 module de repository**, fiecare primind CURSORUL apelantului — deci aceeași tranzacție,
   aceeași conexiune, același `search_path`. Instrucțiunile s-au mutat, nu s-au rescris: 150 rămase în

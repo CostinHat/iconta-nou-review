@@ -52,3 +52,32 @@ def chei_reges_fara_autor(cur, tenant_id):
     cur.execute("SELECT username, parola, mediu FROM public.reges_chei WHERE tenant_id=%s",
                 (tenant_id,))
     return cur.fetchone()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def salveaza_cheile_reges(cur, tenant_id, username, parola, mediu):
+    # upsert-ok: salvare credentiale REGES per tenant - update intentionat al aceleiasi chei (tenant_id)
+    cur.execute("""INSERT INTO public.reges_chei (tenant_id, username, parola, mediu)
+                           VALUES (%s,%s,%s,%s)
+                           ON CONFLICT (tenant_id) DO UPDATE
+                           SET username=EXCLUDED.username, parola=EXCLUDED.parola,
+                               mediu=EXCLUDED.mediu""",
+                (tenant_id, username, parola, mediu))
+
+
+def scrie_mesaj_reges(cur, tenant_id, salariat_id, operatie, message_id, response_id):
+    cur.execute("""INSERT INTO public.reges_mesaje
+                           (tenant_id, salariat_id, operatie, message_id, response_id, raspuns)
+                           VALUES (%s,%s,'InregistrareSalariat',%s,%s,%s) RETURNING id""",
+                (tenant_id, salariat_id, operatie, message_id, response_id))
+    return cur.fetchone()
+
+
+def scrie_raspunsul_reges(cur, raspuns, referinta_salariat, referinta_contract, message_id, tenant_id):
+    cur.execute("""UPDATE public.reges_mesaje
+                               SET status='raspuns', raspuns=%s,
+                                   referinta_salariat=COALESCE(%s::uuid, referinta_salariat),
+                                   referinta_contract=COALESCE(%s::uuid, referinta_contract)
+                               WHERE message_id=%s::uuid AND tenant_id=%s""",
+                (raspuns, referinta_salariat, referinta_contract, message_id, tenant_id))

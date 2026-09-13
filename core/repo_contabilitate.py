@@ -107,3 +107,189 @@ def conturi_dupa_text(cur, tipar_simbol, tipar_denumire):
 def toate_conturile(cur):
     cur.execute("SELECT simbol, denumire, tip FROM plan_conturi ORDER BY simbol LIMIT 100")
     return cur.fetchall()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def adauga_cont_in_plan(cur, simbol, denumire, tip):
+    cur.execute("INSERT INTO plan_conturi (simbol, denumire, tip) VALUES (%s, %s, %s)",
+                (simbol, denumire, tip))
+
+
+def nota_bon_validata(cur, schema, data_, numar, descriere):
+    cur.execute(f"""
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                VALUES (%s, %s, %s, 'bon', 'validata') RETURNING id
+            """,
+                (data_, numar, descriere))
+    return cur.fetchone()
+
+
+def adauga_linie_credit_casa(cur, schema, inregistrare_id, cont_debit, cont_credit):
+    cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, %s, '5311', %s)",
+                (inregistrare_id, cont_debit, cont_credit))
+
+
+def adauga_linie_tva_din_casa(cur, schema, inregistrare_id, cont_debit):
+    cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4426', '5311', %s)",
+                (inregistrare_id, cont_debit))
+
+
+def nota_cu_sursa_si_status(cur, data_, numar, descriere, sursa, status):
+    cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status) "
+                        "VALUES (%s,%s,%s,%s,%s) RETURNING id",
+                (data_, numar, descriere, sursa, status))
+    return cur.fetchone()
+
+
+def adauga_linie_fara_schema(cur, inregistrare_id, cont_debit, cont_credit, suma):
+    cur.execute("INSERT INTO inregistrari_linii "
+                            "(inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
+                (inregistrare_id, cont_debit, cont_credit, suma))
+
+
+def nota_amortizare_validata(cur, schema, data_, numar, descriere):
+    cur.execute(f"""
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                VALUES (%s, %s, %s, 'amortizare', 'validata') RETURNING id
+            """,
+                (data_, numar, descriere))
+    return cur.fetchone()
+
+
+def adauga_linie_cheltuiala_amortizare(cur, schema, inregistrare_id, cont_debit, cont_credit):
+    cur.execute(f"""
+                    INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                    VALUES (%s, '6811', %s, %s)
+                """,
+                (inregistrare_id, cont_debit, cont_credit))
+
+
+def blocheaza_perioada(cur, schema, an, luna, blocat_de):
+    cur.execute(f"""INSERT INTO {schema}.perioade_blocate (an, luna, blocat_de)
+                            VALUES (%s,%s,%s) ON CONFLICT DO NOTHING""",
+                (an, luna, blocat_de))
+
+
+def deblocheaza_perioada(cur, schema, an, luna):
+    cur.execute(f"DELETE FROM {schema}.perioade_blocate WHERE an=%s AND luna=%s",
+                (an, luna))
+
+
+def nota_amef_ciorna(cur, schema, data_, numar, descriere):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                                VALUES (%s,%s,%s,'amef','ciorna') RETURNING id""",
+                (data_, numar, descriere))
+    return cur.fetchone()
+
+
+def adauga_linie_4(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                (inregistrare_id, cont_debit, cont_credit, suma))
+
+
+def nota_horeca_z_validata(cur, schema, data_, numar, descriere):
+    cur.execute(f"""
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                VALUES (%s, %s, %s, 'horeca_z', 'validata') RETURNING id
+            """,
+                (data_, numar, descriere))
+    return cur.fetchone()
+
+
+def adauga_linie_3(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
+    cur.execute(f"""
+                    INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                    VALUES (%s, %s, %s, %s)
+                """,
+                (inregistrare_id, cont_debit, cont_credit, suma))
+
+
+def nota_facturi_ciorna(cur, schema, data_, descriere):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                (data_, descriere))
+    return cur.fetchone()
+
+
+def adauga_linie_2(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                    (inregistrare_id, cont_debit, cont_credit, suma)
+                                    VALUES (%s,%s,%s,%s)""",
+                (inregistrare_id, cont_debit, cont_credit, suma))
+
+
+def adauga_linie_venit_marfa(cur, schema, inregistrare_id, cont_debit):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,'4111','707',%s)""",
+                (inregistrare_id, cont_debit))
+
+
+def adauga_linie(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""",
+                (inregistrare_id, cont_debit, cont_credit, suma))
+
+
+def adauga_linie_venit_servicii(cur, schema, inregistrare_id, cont_debit):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,'4111','704',%s)""",
+                (inregistrare_id, cont_debit))
+
+
+def nota_facturi_cu_factura(cur, schema, data_, factura_id, descriere):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
+                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
+                (data_, factura_id, descriere))
+    return cur.fetchone()
+
+
+def adauga_linie_furnizor(cur, schema, inregistrare_id, cont_debit, cont_credit):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,%s,'401',%s)""",
+                (inregistrare_id, cont_debit, cont_credit))
+
+
+def adauga_linie_client(cur, schema, inregistrare_id, cont_debit, cont_credit):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,'4111',%s,%s)""",
+                (inregistrare_id, cont_debit, cont_credit))
+
+
+def adauga_linie_5(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                (inregistrare_id, cont_debit, cont_credit, suma))
+
+
+def nota_banca_ciorna(cur, schema, data_, descriere):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'banca','ciorna') RETURNING id""",
+                (data_, descriere))
+    return cur.fetchone()
+
+
+def nota_facturi_ciorna_2(cur, schema, data_, descriere):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                                VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                (data_, descriere))
+    return cur.fetchone()
+
+
+def nota_casa_ciorna(cur, schema, data_, descriere):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'casa','ciorna') RETURNING id""",
+                (data_, descriere))
+    return cur.fetchone()
+
+
+def nota_salarii_ciorna(cur, schema, data_, descriere):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'salarii','ciorna') RETURNING id""",
+                (data_, descriere))
+    return cur.fetchone()

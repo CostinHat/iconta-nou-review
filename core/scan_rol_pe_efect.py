@@ -96,7 +96,13 @@ def scrie_validata(fn):
 
     Se sare peste `inregistrari_linii` — alt tabel, care n-are stare. Se citește doar bucata
     `VALUES (...)`, ca un `WHERE status='validata'` să nu treacă drept scriere."""
-    for n in ast.walk(fn):
+    noduri = list(ast.walk(fn))
+    for sursa_repo in _surse_repository(fn):
+        try:
+            noduri += list(ast.walk(ast.parse(sursa_repo)))
+        except SyntaxError:
+            pass
+    for n in noduri:
         if not (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
                 and n.func.attr in ("execute", "executemany") and n.args):
             continue
@@ -109,9 +115,41 @@ def scrie_validata(fn):
     return False
 
 
+_REPO = {}
+
+
+def _surse_repository(fn):
+    """Sursele funcțiilor de repository chemate direct de rută.
+
+    [P7 · V1+V2, 13.09.2026] Instrucțiunile au plecat sub stratul HTTP; întrebarea sondei e despre
+    ce PRODUCE ruta, nu despre unde stă textul. Un nivel, nu mai mult.
+    """
+    if not _REPO:
+        baza = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "core")
+        for f in sorted(os.listdir(baza)):
+            if not (f.startswith("repo_") or f == "tranzactie.py") or not f.endswith(".py"):
+                continue
+            try:
+                src = io.open(os.path.join(baza, f), encoding="utf-8").read()
+                arb = ast.parse(src)
+            except (OSError, SyntaxError):
+                continue
+            for n in ast.walk(arb):
+                if isinstance(n, ast.FunctionDef):
+                    _REPO[(f[:-3], n.name)] = ast.get_source_segment(src, n) or ""
+    out = []
+    for c in ast.walk(fn):
+        if (isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+                and isinstance(c.func.value, ast.Name)):
+            s = _REPO.get((c.func.value.id, c.func.attr))
+            if s:
+                out.append(s)
+    return out
+
+
 def atinge_credentiale(fn):
     """Ruta SCRIE într-o tabelă/câmp de credențiale ale unui sistem extern?"""
-    corp = ast.unparse(fn)
+    corp = ast.unparse(fn) + "\n" + "\n".join(_surse_repository(fn))
     if not re.search(r"\b(INSERT|UPDATE|DELETE)\b", corp, re.I):
         return False
     return any(s in corp for s in SEMNE_CREDENTIALE)

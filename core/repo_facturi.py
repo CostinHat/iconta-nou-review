@@ -58,3 +58,36 @@ def emise_pe_luni_pentru_intrastat(cur, schema, an):
                             WHERE EXTRACT(YEAR FROM data_emitere) = %s""",
                 (an,))
     return cur.fetchall()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def leaga_proforma_de_factura(cur, transformat_in_id, id_):
+    cur.execute("UPDATE facturi SET transformat_in_id=%s WHERE id=%s",
+                (transformat_in_id, id_))
+
+
+def marcheaza_primita_platita(cur, schema, id_):
+    cur.execute(f"UPDATE {schema}.facturi SET platita_la=now() WHERE id=%s AND directie='primita'",
+                (id_,))
+
+
+def marcheaza_platita(cur, schema, id_):
+    cur.execute(f"UPDATE {schema}.facturi SET platita_la=now() WHERE id=%s",
+                (id_,))
+
+
+def marcheaza_emisa(cur, schema, id_):
+    cur.execute(f"UPDATE {schema}.facturi SET status='emisa' WHERE id=%s",
+                (id_,))
+
+
+def actualizeaza_clasificarea(cur, schema, bucati_set, valori):
+    """Scrie clasificarea aleasă la validare, pe coloanele pe care apelantul le-a ales.
+
+    `bucati_set` sunt bucățile `coloana=%s` compuse de apelant, iar `valori` le urmează în ordine,
+    cu `id`-ul la coadă. Repository-ul nu alege coloanele și nu decide dacă operația are loc — asta
+    rămâne la apelant; el doar persistă.
+    """
+    cur.execute(f"UPDATE {schema}.facturi SET " + ", ".join(bucati_set) + " WHERE id=%s",
+                valori)

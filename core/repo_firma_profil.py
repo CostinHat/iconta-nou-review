@@ -55,3 +55,16 @@ def platitor_tva(cur, schema):
 def platitor_tva_2(cur, schema):
     cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
     return cur.fetchone()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def seteaza_platitor_tva(cur, platitor_tva):
+    cur.execute("UPDATE firma_profil SET platitor_tva = %s",
+                (platitor_tva,))
+
+
+def seteaza_config_woocommerce(cur, schema, wc_url, wc_ck, wc_cs):
+    cur.execute(f"""UPDATE {schema}.firma_profil
+                        SET wc_url=%s, wc_ck=%s, wc_cs=%s""",
+                (wc_url, wc_ck, wc_cs))

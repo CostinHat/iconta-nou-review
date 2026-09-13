@@ -33,6 +33,7 @@ Rulare:
     ./venv/bin/python scripts/scan_trasee.py --json
 """
 import ast
+import io
 import json
 import os
 import re
@@ -288,6 +289,41 @@ def firme_cunoscute():
         return None
 
 
+_REPO_CACHE = {}
+
+
+def _repo_functii():
+    """{(modul, functie): sursa} pentru straturile de sub HTTP — repository + helperul tranzacțional."""
+    if _REPO_CACHE:
+        return _REPO_CACHE
+    baza = os.path.join(RAD, "core")
+    for f in sorted(os.listdir(baza)):
+        if not (f.startswith("repo_") or f == "tranzactie.py") or not f.endswith(".py"):
+            continue
+        try:
+            src = io.open(os.path.join(baza, f), encoding="utf-8").read()
+            arb = ast.parse(src)
+        except (OSError, SyntaxError):
+            continue
+        for n in ast.walk(arb):
+            if isinstance(n, ast.FunctionDef):
+                _REPO_CACHE[(f[:-3], n.name)] = ast.get_source_segment(src, n) or ""
+    return _REPO_CACHE
+
+
+def _surse_de_repository(fn):
+    """Sursele funcțiilor de repository chemate direct de `fn`."""
+    tabel = _repo_functii()
+    out = []
+    for n in ast.walk(fn):
+        if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                and isinstance(n.func.value, ast.Name)):
+            sursa = tabel.get((n.func.value.id, n.func.attr))
+            if sursa:
+                out.append(sursa)
+    return out
+
+
 def normalizeaza(cale):
     return re.sub(r"\{[^}]+\}", "{}", cale)
 
@@ -445,7 +481,12 @@ def citeste_rute():
             # cărui UPDATE stă în corpul rutei (pontaj, vector) apare ca „nu scrie
             # nimic" — aceeași absență falsă ca la `firma_profil_api`.
             propriu = {}
-            for m in RE_W.finditer("\n".join(_siruri(ast.unparse(fn)))):
+            # [P7 · V1+V2, 13.09.2026] SQL-ul rutelor a plecat în repository. Un inventar care s-ar
+            # opri la corpul rutei ar raporta „nu scrie nimic" despre rute care scriu — deci se
+            # urmărește apelul UN NIVEL, în funcțiile de repository chemate. Mai departe nu: un
+            # nivel e cât ține definiția de „scrie ruta asta", nu „scrie ceva, undeva, în lanț".
+            surse = [ast.unparse(fn)] + _surse_de_repository(fn)
+            for m in RE_W.finditer("\n".join(_siruri("\n".join(surse)))):
                 tab = m.group(2)
                 if tab.lower() in ("set", "from", "into", "where"):
                     continue

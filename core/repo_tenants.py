@@ -101,3 +101,15 @@ def cabinetul_exista(cur, firm_id):
     cur.execute("SELECT 1 FROM public.accounting_firms WHERE id = %s",
                 (firm_id,))
     return cur.fetchone()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def suspenda_cabinetul(cur, id_):
+    cur.execute("UPDATE public.accounting_firms SET activ=false WHERE id=%s",
+                (id_,))
+
+
+def reactiveaza_cabinetul(cur, id_):
+    cur.execute("UPDATE public.accounting_firms SET activ=true WHERE id=%s",
+                (id_,))

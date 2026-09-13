@@ -4,8 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-13**, la sincronizarea registrelor după valul V3 al lui P7.
-- **pe commit**: `364fbc63`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-13**, la închiderea valului **V2** al lui P7.
+- **pe commit**: `8d182afa`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **[13.09.2026] ANTETUL ĂSTA A FOST STĂTUT TREI ZILE**, deși documentul își cere singur, mai jos, ca antetul să fie rescris la fiecare oprire: a rămas pe `0742e177` / 10.09 prin două rescrieri care au atins alte secțiuni. *O regulă pe care documentul și-o dă singur nu se respectă singură.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
@@ -30,7 +30,7 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
 | **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
 | **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
-| **P7** — stratul de aplicație | **DESCHIS** | diagnostic închis (`b67d2bfb`) · V3 registrul de straturi închis (`364fbc63`) · **V1 citirile în repository închis**: 107 citiri mutate, `D1_READ` 107 → 0 · **V2 neînceput**; `ACTION_REQUIRED` **296 → 189** |
+| **P7** — stratul de aplicație | **DESCHIS** | diagnostic închis (`b67d2bfb`) · V3 registrul de straturi închis (`364fbc63`) · V1 citirile închis (`8d182afa`) · **V2 scrierile + controlul de tranzacție închis**: 140 + 10 mutate, `D1`=0 pe toate clasele; `ACTION_REQUIRED` **296 → 189 → 39**. Rămâne deschis pentru `D2`=1, `D4`=38 și pentru faptul că **rutele încă orchestrează** |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de
@@ -651,6 +651,19 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
     s-a întrebat: *câți ar fi trebuit să fie.* Aceeași clasă cu `all([])`, cu un pas mai departe.
     *Un verificator de acceptanță are nevoie de CARDINALITATEA AȘTEPTATĂ, citită din configurația
     canonică, nu de mulțimea pe care o găsește.* Și: „nu știu câți" nu are voie să devină „da".
+26. **[13.09] Un registru scris de mână îmbătrânește tăcut, iar un detector care îl citește dă
+    cifra veche drept DOVADĂ.** `core/straturi.py` spunea, pentru `main.py`, *„421 rute montate in
+    modul si 295 instructiuni SQL"* — adevărat la V3, când a fost scris. V1 a mutat 107 instrucțiuni,
+    V2 încă 150, și nimic n-a întrebat registrul. `D4` a continuat să tipărească `295`. Diferența e
+    exact ce s-a mutat: **295 − 257 = 38**. *Ce contează nu e că cifra era greșită, ci că arăta
+    măsurată.* Reparat cu o gardă care recalculează, la fiecare rulare, fiecare motiv care poartă o
+    cifră — iar faptul că 27 din 28 coincideau deja e dovada că metrica nu s-a ales azi ca să iasă.
+27. **[13.09] Când o comandă își cere singură două lucruri care nu pot fi adevărate deodată, alegi
+    și SPUI care.** V2 cerea ca use-case-ul să dețină tranzacția și, două paragrafe mai jos,
+    `P4_TRANSACTION_OWNERSHIP_CHANGED=NO`. Am ținut proprietatea unde era și am mutat doar
+    instrucțiunile. *A muta hotarele tăcut ar fi arătat ca o separare completă și ar fi redeschis P4
+    fără să scrie nimeni asta.*
+
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
 

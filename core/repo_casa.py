@@ -59,3 +59,58 @@ def bonuri_de_verificat(cur, schema):
                 FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la DESC
             """)
     return cur.fetchall()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def aproba_bonul(cur, schema, comerciant, data_, total, inregistrare_id, id_):
+    cur.execute(f"""
+                UPDATE {schema}.bonuri SET status='aprobat',
+                       comerciant=%s, data=%s, total=%s, inregistrare_id=%s
+                WHERE id=%s
+            """,
+                (comerciant, data_, total, inregistrare_id, id_))
+
+
+def sterge_bonurile_extrase_vechi(cur, schema):
+    cur.execute(f"""DELETE FROM {schema}.bonuri
+                            WHERE status='extras' AND creat_la < now() - interval '24 hours'
+                            RETURNING id""")
+    return cur.fetchall()
+
+
+def adauga_bon(cur, schema, comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni):
+    cur.execute(f"""
+                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, orientare)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s, %s) RETURNING id
+            """,
+                (comerciant, cui, data_, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni))
+    return cur.fetchone()
+
+
+def trece_bonul_la_de_verificat(cur, schema, id_):
+    cur.execute(f"UPDATE {schema}.bonuri SET status='de_verificat' WHERE id=%s AND status='extras' RETURNING id",
+                (id_,))
+    return cur.fetchone()
+
+
+def sterge_bonul_extras(cur, schema, id_):
+    cur.execute(f"DELETE FROM {schema}.bonuri WHERE id=%s AND status='extras' RETURNING id",
+                (id_,))
+    return cur.fetchone()
+
+
+def aproba_bonul_cu_documente(cur, schema, factura_id, casa_operatiune_id, inregistrare_id, comerciant, data_, total, id_):
+    cur.execute(f"""UPDATE {schema}.bonuri SET status='aprobat', factura_id=%s,
+                            casa_operatiune_id=%s, inregistrare_id=%s,
+                            comerciant=%s, data=%s, total=%s WHERE id=%s""",
+                (factura_id, casa_operatiune_id, inregistrare_id, comerciant, data_, total, id_))
+
+
+def adauga_chitanta(cur, schema, serie, numar, data_, factura_id, client_nume, client_cui, suma, reprezentand, casa_operatiune_id, inregistrare_id):
+    cur.execute(f"""INSERT INTO {schema}.chitante
+                            (serie, numar, data, factura_id, client_nume, client_cui, suma, reprezentand,
+                             casa_operatiune_id, inregistrare_id)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                (serie, numar, data_, factura_id, client_nume, client_cui, suma, reprezentand, casa_operatiune_id, inregistrare_id))
+    return cur.fetchone()

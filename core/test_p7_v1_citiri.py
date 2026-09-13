@@ -124,14 +124,27 @@ def test_READ_SQL_IN_HTTP_ROUTE_e_zero():
 
 
 def test_ANTI_VACUUM_detectorul_inca_vede_celelalte_feluri():
-    """Zero citiri e o veste bună doar dacă detectorul chiar mai vede ceva. Scrierile și controlul
-    de tranzacție au rămas în rute — sunt treaba lui V2 — și se numără."""
+    """[V2, 13.09.2026] Ancora s-a mutat, deliberat, și merită citit de ce.
+
+    Până la V2, proba se sprijinea pe faptul că scrierile erau ÎNCĂ în rute: „zero citiri" era
+    credibil fiindcă detectorul vedea 140 de scrieri. V2 le-a mutat și pe acelea, deci ancora aia
+    nu mai există. Ce rămâne verificabil e că universul nu s-a golit și că instrumentul chiar se
+    uită la el: 424 de rute parcurse, zero instrucțiuni neclasificabile, și 257 de apeluri către
+    straturile de sub HTTP — adică exact atâtea câte instrucțiuni erau înainte de V1.
+    """
     pe_fel = S.d1_pe_fel()
-    assert len(pe_fel[S.WRITE]) >= 100, "detectorul nu mai vede scrierile: %d" % len(pe_fel[S.WRITE])
-    assert len(pe_fel[S.TRANSACTION_CONTROL]) >= 5
     assert pe_fel[S.UNKNOWN] == [], "instrucțiuni pe care detectorul nu le poate clasifica: %s" % (
         [(i.fisier, i.linie) for i in pe_fel[S.UNKNOWN]])
     assert len(S.rute()) >= 400, "universul rutelor s-a golit"
+    import ast as _ast
+    import io as _io
+    module = {f[:-3] for f in os.listdir(os.path.join(RADACINA, "core"))
+              if f.startswith("repo_") or f == "tranzactie.py"}
+    arb = _ast.parse(_io.open(os.path.join(RADACINA, "main.py"), encoding="utf-8").read())
+    apeluri = sum(1 for x in _ast.walk(arb)
+                  if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)
+                  and isinstance(x.func.value, _ast.Name) and x.func.value.id in module)
+    assert apeluri >= 250, "apelurile către straturile de sub HTTP au dispărut: %d" % apeluri
 
 
 def test_o_citire_pusa_INAPOI_intr_o_ruta_ar_fi_prinsa():

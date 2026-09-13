@@ -14,6 +14,9 @@ verdictul D2 care decurge din el.
 """
 from __future__ import annotations
 
+import ast
+import io
+import re
 import os
 import sys
 
@@ -196,3 +199,39 @@ def test_contabilitatea_P7_se_inchide_dupa_V3():
     assert n["P7_EVIDENCE_LIMITATIONS"] == 0
     assert n["pe_detector"]["D2"] == 1
     assert n["pe_detector"]["D4"] == len(R.mixte())
+
+
+def test_cifra_din_motiv_nu_imbatraneste_tacut():
+    """O declaratie care spune «N instructiuni SQL» se confrunta cu modulul, la fiecare rulare.
+
+    De ce exista garda asta: pana la V2, `main.py` purta in registru cifra 295, scrisa la V3 si
+    adevarata atunci. V1 si V2 au mutat 257 de instructiuni si nimic n-a intrebat registrul —
+    `D4` a continuat sa dea cifra veche drept DOVADA. Un registru care isi tine singur cifrele
+    la zi nu mai poate face asta.
+
+    Metrica nu e aleasa azi ca sa iasa: din 28 de intrari care poarta o cifra, 27 coincideau deja
+    cu numarul de apeluri `execute`/`executemany` din modul. Singurul dezacord era cel imbatranit.
+    """
+    tipar = re.compile(r"(\d+) instructiuni SQL")
+    cu_cifra, dezacorduri = 0, []
+    for d in R.REGISTRU:
+        m = tipar.search(d.motiv)
+        if not m:
+            continue
+        cu_cifra += 1
+        cale = os.path.join(RADACINA, d.cale)
+        if not os.path.exists(cale):
+            dezacorduri.append((d.cale, int(m.group(1)), None))
+            continue
+        try:
+            arb = ast.parse(io.open(cale, encoding="utf-8").read())
+        except SyntaxError:
+            continue
+        real = sum(1 for x in ast.walk(arb)
+                   if isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
+                   and x.func.attr in ("execute", "executemany"))
+        if real != int(m.group(1)):
+            dezacorduri.append((d.cale, int(m.group(1)), real))
+    assert cu_cifra >= 28, "ANTI-VACUUM: garda nu mai vede nicio cifra in registru: %d" % cu_cifra
+    assert dezacorduri == [], (
+        "registrul poarta cifre care nu mai sunt adevarate (cale, scris, real): %s" % dezacorduri)

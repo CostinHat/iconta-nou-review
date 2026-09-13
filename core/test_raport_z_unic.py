@@ -77,6 +77,14 @@ def _linia_primei_executii(fn):
     linii = [n.lineno for n in ast.walk(fn)
              if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
              and n.func.attr == "execute"]
+    if not linii:
+        # [P7 · V1+V2, 13.09.2026] SQL-ul rutei a plecat în repository. Ancora rămâne un nod de
+        # AST, dar acum e APELUL către stratul de sub HTTP — prima atingere a bazei, oricare ar fi
+        # ea. Afirmația păzită e neschimbată: gărzile stau ÎNAINTEA primei atingeri.
+        linii = [n.lineno for n in ast.walk(fn)
+                 if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                 and isinstance(n.func.value, ast.Name)
+                 and (n.func.value.id.startswith("repo_") or n.func.value.id == "tranzactie")]
     return min(linii) if linii else None
 
 

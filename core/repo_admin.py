@@ -123,3 +123,49 @@ def cate_evenimente(cur, zile):
                     "WHERE creat_la >= now() - (%s || ' days')::interval",
                 (zile,))
     return cur.fetchone()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def adauga_anunt(cur, cabinet_id, mesaj, data_afisare):
+    cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)",
+                (cabinet_id, mesaj, data_afisare))
+
+
+def marcheaza_alerta_vazuta(cur, id_):
+    cur.execute("UPDATE public.alerte_fiscale SET vazut=true WHERE id=%s RETURNING id",
+                (id_,))
+    return cur.fetchone()
+
+
+def confirma_anunt(cur, id_, cabinet_id):
+    cur.execute("""UPDATE public.anunturi_cabinet SET confirmat_la=now()
+                       WHERE id=%s AND cabinet_id=%s AND confirmat_la IS NULL RETURNING id""",
+                (id_, cabinet_id))
+    return cur.fetchone()
+
+
+def scrie_audit_cu_detalii(cur, user_id, actiune, entitate, entitate_id):
+    cur.execute("INSERT INTO public.audit_log (user_id, actiune, entitate, entitate_id, detalii) "
+                    "VALUES (%s,'gdpr_export',%s,%s,%s)",
+                (user_id, actiune, entitate, entitate_id))
+
+
+def scrie_audit_login(cur, user_id):
+    cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'login')",
+                (user_id,))
+
+
+def scrie_audit_reset_cerut(cur, user_id):
+    cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_cerut')",
+                (user_id,))
+
+
+def scrie_audit_reset_schimbat(cur, user_id):
+    cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_schimbat')",
+                (user_id,))
+
+
+def scrie_eveniment_public(cur, tip, pagina):
+    cur.execute("INSERT INTO public.eveniment_public (tip, pagina) VALUES (%s, %s)",
+                (tip, pagina))

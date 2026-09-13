@@ -50,3 +50,20 @@ def ultima_trimitere_per_factura(cur, schema):
     cur.execute(f"""SELECT DISTINCT ON (factura_id) factura_id, stare, index_incarcare, error_message
                               FROM {schema}.efactura_trimiteri ORDER BY factura_id, id DESC""")
     return cur.fetchall()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def marcheaza_primita_validata(cur, schema, factura_id, cont_cheltuiala, id_):
+    cur.execute(f"""UPDATE {schema}.efactura_primite
+                            SET status='validata', factura_id=COALESCE(%s, factura_id),
+                                cont_cheltuiala=%s, validat_la=now() WHERE id=%s
+                            RETURNING factura_id""",
+                (factura_id, cont_cheltuiala, id_))
+    return cur.fetchone()
+
+
+def marcheaza_primita_respinsa(cur, schema, motiv_respins, id_):
+    cur.execute(f"""UPDATE {schema}.efactura_primite SET status='respinsa', motiv_respins=%s
+                            WHERE id=%s""",
+                (motiv_respins, id_))

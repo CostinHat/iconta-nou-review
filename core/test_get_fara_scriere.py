@@ -51,6 +51,34 @@ def _scrieri(nod, src, helperi, adanc=1):
         for c in ast.walk(nod):
             if isinstance(c, ast.Call) and isinstance(c.func, ast.Name) and c.func.id in helperi:
                 out += _scrieri(helperi[c.func.id], src, helperi, adanc - 1)
+        # [P7 · V2] și în repository: scrierile au plecat acolo, iar întrebarea e despre ce
+        # PRODUCE ruta, nu despre unde stă instrucțiunea
+        for seg in _surse_repository(nod):
+            for m in _SCRIE.finditer(seg):
+                out.append((m.group(1).split()[0].upper(), (m.group(2) or "").strip()))
+    return out
+
+
+def _surse_repository(nod):
+    """Sursele funcțiilor de repository chemate direct de `nod`."""
+    baza = os.path.join(os.path.dirname(_MAIN), "core")
+    if not hasattr(_surse_repository, "_tabel"):
+        tabel = {}
+        for f in sorted(os.listdir(baza)):
+            if not (f.startswith("repo_") or f == "tranzactie.py"):
+                continue
+            src = open(os.path.join(baza, f), encoding="utf-8").read()
+            for n in ast.walk(ast.parse(src)):
+                if isinstance(n, ast.FunctionDef):
+                    tabel[(f[:-3], n.name)] = ast.get_source_segment(src, n) or ""
+        _surse_repository._tabel = tabel
+    out = []
+    for c in ast.walk(nod):
+        if (isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+                and isinstance(c.func.value, ast.Name)):
+            s = _surse_repository._tabel.get((c.func.value.id, c.func.attr))
+            if s:
+                out.append(s)
     return out
 
 

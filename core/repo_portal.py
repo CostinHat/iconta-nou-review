@@ -37,3 +37,17 @@ def clientul_exista(cur, client_id):
     cur.execute("SELECT 1 FROM clienti WHERE id=%s",
                 (client_id,))
     return cur.fetchone()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def adauga_solicitare(cur, tenant_id, mesaj, autor_rol):
+    cur.execute("INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
+                "VALUES (%s,%s,'client',%s)",
+                (tenant_id, mesaj, autor_rol))
+
+
+def adauga_solicitare_2(cur, tenant_id, mesaj, autor_rol):
+    cur.execute("INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
+                "VALUES (%s,%s,'cabinet',%s)",
+                (tenant_id, mesaj, autor_rol))

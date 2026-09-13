@@ -38,6 +38,8 @@ from core import common as _common
 from core import tenant_stergere  # [R72] calea UNICA de scoatere a unei firme
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api, declaratii_componente, supervizor
 # [P7 · V1] Repository-urile de citire: SQL-ul rutelor a plecat acolo.
+from core import repo_banca
+from core import tranzactie
 from core import repo_admin
 from core import repo_casa
 from core import repo_contabilitate
@@ -937,14 +939,14 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
     with db.get_conn() as conn, conn.cursor() as cur:
         if date.cabinet_ids:  # [anunturi_alese_v1] cabinete alese cu bife
             for cid in date.cabinet_ids:
-                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (int(cid), mesaj, data_af))
+                repo_admin.adauga_anunt(cur, int(cid), mesaj, data_af)
                 n += 1
         elif date.cabinet_id:
-            cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (date.cabinet_id, mesaj, data_af))
+            repo_admin.adauga_anunt(cur, date.cabinet_id, mesaj, data_af)
             n = 1
         else:
             for (cid,) in repo_tenants.cabinete_active(cur):
-                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (cid, mesaj, data_af))
+                repo_admin.adauga_anunt(cur, cid, mesaj, data_af)
                 n += 1
         conn.commit()
     return {"ok": True, "trimise": n}
@@ -959,8 +961,7 @@ def admin_alerte_fiscale(ctx=Depends(cere_rol("superadmin"))):
 @app.post("/admin/alerte-fiscale/{aid}/tratat")  # [F103 partea 2]
 def admin_alerta_tratata(aid: int, ctx=Depends(cere_rol("superadmin"))):
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("UPDATE public.alerte_fiscale SET vazut=true WHERE id=%s RETURNING id", (aid,))
-        r = cur.fetchone()
+        r = repo_admin.marcheaza_alerta_vazuta(cur, aid)
         conn.commit()
     if not r:
         raise HTTPException(404, "alertă inexistentă")
@@ -977,9 +978,7 @@ def eu_anunturi(ctx=Depends(cere_cabinet)):
 @app.post("/eu/anunturi/{aid}/confirma")
 def eu_anunt_confirma(aid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""UPDATE public.anunturi_cabinet SET confirmat_la=now()
-                       WHERE id=%s AND cabinet_id=%s AND confirmat_la IS NULL RETURNING id""", (aid, ctx.get("firm")))
-        r = cur.fetchone()
+        r = repo_admin.confirma_anunt(cur, aid, ctx.get("firm"))
         conn.commit()
     if not r:
         raise HTTPException(404, "anunt inexistent")
@@ -1000,7 +999,7 @@ def admin_cabinet_suspenda(firm_id: int, ctx=Depends(cere_cabinet)):
         raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("UPDATE public.accounting_firms SET activ=false WHERE id=%s", (firm_id,))
+            repo_tenants.suspenda_cabinetul(cur, firm_id)
     return {"ok": True}
 
 @app.post("/admin/cabinete/{firm_id}/reactiveaza")
@@ -1009,7 +1008,7 @@ def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
         raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("UPDATE public.accounting_firms SET activ=true WHERE id=%s", (firm_id,))
+            repo_tenants.reactiveaza_cabinetul(cur, firm_id)
     return {"ok": True}
 
 @app.get("/admin/activitate/cabinet/{firm_id}")
@@ -1085,10 +1084,7 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
         _zip = _ge.export_cabinet(conn, cab)
         try:  # [F199] jurnalizare export (cine/cand, FARA continut)
             with conn.cursor() as _cur:
-                _cur.execute(
-                    "INSERT INTO public.audit_log (user_id, actiune, entitate, entitate_id, detalii) "
-                    "VALUES (%s,'gdpr_export',%s,%s,%s)",
-                    (ctx.get("uid"), "cabinet", cab, _json_audit.dumps({"octeti": len(_zip)})))
+                repo_admin.scrie_audit_cu_detalii(_cur, ctx.get("uid"), "cabinet", cab, _json_audit.dumps({"octeti": len(_zip)}))
             conn.commit()
         except Exception as _e:
             _obs.esec_secundar("audit_log export GDPR", _e, alerta=True)  # inghitit, dar nu tacut (27.07.2026)
@@ -1462,9 +1458,7 @@ def login(date: LoginIn):
     try:
         with db.get_conn() as conn2:
             with conn2.cursor() as cur:
-                cur.execute(
-                    "INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'login')",
-                    (r["user"]["id"],))
+                repo_admin.scrie_audit_login(cur, r["user"]["id"])
     except Exception as _e:
         _obs.esec_secundar("audit_log login", _e)  # inghitit, dar nu tacut (27.07.2026)
     return {"token": r["token"], "user": r["user"]}
@@ -1500,11 +1494,7 @@ def register(date: RegisterIn):
             nume=date.nume, prenume=date.prenume)
         if r["ok"]:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune
             with conn.cursor() as cur:
-                cur.execute(
-                    "INSERT INTO public.acord_termeni (user_id, cabinet_id, email, versiune) "
-                    "VALUES (%s,%s,%s,%s)",
-                    (r.get("user_id"), r.get("firm_id"), date.email.strip().lower(),
-                     _versiune_termeni))
+                repo_utilizatori.scrie_acordul_termenilor(cur, r.get("user_id"), r.get("firm_id"), date.email.strip().lower(), _versiune_termeni)
     if not r["ok"]:
         raise HTTPException(400, r["mesaj"])
     try:  # register_email_v1: email de bun venit
@@ -1807,16 +1797,12 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
             _cere_acelasi_cabinet(_ex, ctx["firm"])
             if _ex:  # client_mesaj_v1: reinvitare client dezactivat
                 uid = _ex["id"]
-                cur.execute("UPDATE public.users SET activ=true, nume=%s WHERE id=%s",
-                            (date.nume or email.split("@")[0], uid))
-                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (uid, tenant_id))
+                repo_utilizatori.activeaza_contul_cu_nume(cur, date.nume or email.split("@")[0], uid)
+                repo_utilizatori.leaga_contul_de_firma_idempotent(cur, uid, tenant_id)
             el_creaza = _ex is None
             if el_creaza:
-                cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ)
-                               VALUES (%s, %s, %s, 'client', %s, true) RETURNING id""",
-                            (email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"]))
-                uid = cur.fetchone()["id"]
-                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, tenant_id))
+                uid = repo_utilizatori.creeaza_cont(cur, email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"])["id"]
+                repo_utilizatori.leaga_contul_de_firma(cur, uid, tenant_id)
             _urma_portal(cur, tenant_id, "acces_dat",
                          "cabinetul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
                          ctx["uid"])
@@ -1973,7 +1959,7 @@ def reset_parola_cere(date: ResetCereIn, request: Request):
             _obs.esec_secundar("email resetare parola", _e, alerta=True)
         try:
             with db.get_conn() as c, c.cursor() as cur:
-                cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_cerut')", (u["user_id"],))
+                repo_admin.scrie_audit_reset_cerut(cur, u["user_id"])
                 c.commit()
         except Exception as _e:
             _obs.esec_secundar("audit_log reset parola cerut", _e)  # inghitit, dar nu tacut (27.07.2026)
@@ -1992,7 +1978,7 @@ def reset_parola_seteaza(date: ResetSeteazaIn):
             raise HTTPException(400, "Link invalid, expirat sau deja folosit. Cere alt link din sectiunea Am uitat parola.")
     try:
         with db.get_conn() as c, c.cursor() as cur:
-            cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_schimbat')", (r["user_id"],))
+            repo_admin.scrie_audit_reset_schimbat(cur, r["user_id"])
             c.commit()
     except Exception as _e:
         _obs.esec_secundar("audit_log reset parola schimbat", _e)  # inghitit, dar nu tacut (27.07.2026)
@@ -2041,7 +2027,7 @@ def magic_login(date: MagicLoginIn):
         r = repo_utilizatori.cont_din_token_activare(cur, _hash_tok(tok))
         if not r:
             raise HTTPException(401, "link expirat sau folosit")
-        cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token_hash=%s", (_hash_tok(tok),))
+        repo_utilizatori.marcheaza_tokenul_folosit(cur, _hash_tok(tok))
         conn.commit()
     with db.get_conn() as conn:
         rez = auth_api.sesiune_pentru_user(conn, r[0])
@@ -2058,9 +2044,8 @@ def activare_cont(date: ActivareIn):
             r = repo_utilizatori.cont_din_token_activare_2(cur, _hash_tok(date.token))
             if not r:
                 raise HTTPException(400, "link de activare invalid sau expirat")
-            cur.execute("UPDATE public.users SET password_hash=%s, parola_schimbata=true, activ=true WHERE id=%s",
-                        (_nucleu.hash_parola(date.parola), r["user_id"]))
-            cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token_hash=%s", (_hash_tok(date.token),))
+            repo_utilizatori.seteaza_parola(cur, _nucleu.hash_parola(date.parola), r["user_id"])
+            repo_utilizatori.marcheaza_tokenul_folosit(cur, _hash_tok(date.token))
     return {"ok": True}
 
 @app.delete("/tenants/{tenant_id}/client-acces/{user_id}")
@@ -2069,9 +2054,7 @@ def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_rol("admi
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute("""UPDATE public.users SET activ=false WHERE id=%s AND rol='client'
-                           AND id IN (SELECT user_id FROM public.user_tenants WHERE tenant_id=%s)""",
-                        (user_id, tenant_id))
+            repo_utilizatori.dezactiveaza_clientul_firmei(cur, user_id, tenant_id)
             _urma_portal(cur, tenant_id, "acces_retras",
                          "cabinetul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
     return {"ok": True}
@@ -2370,9 +2353,7 @@ def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,
                 raise HTTPException(409,
                     "Contul %s există deja în plan: „%s”. Caută-l în lista de mai sus; dacă ai nevoie "
                     "de un cont diferit, folosește alt simbol." % (simbol, existent[0]))
-            cur.execute(
-                "INSERT INTO plan_conturi (simbol, denumire, tip) VALUES (%s, %s, %s)",
-                (simbol, denumire, date.tip or "Bifunctional"))
+            repo_contabilitate.adauga_cont_in_plan(cur, simbol, denumire, date.tip or "Bifunctional")
         conn.commit()
     return {"ok": True, "simbol": simbol}
 @app.get("/migrare/vector")  # [p84_vector_front] lista firmelor cu status vector fiscal
@@ -3504,7 +3485,7 @@ def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_ro
         except ValueError as e:
             raise HTTPException(422, str(e))
         with conn.cursor() as cur:
-            cur.execute("UPDATE firma_profil SET platitor_tva = %s", (date.platitor_tva,))
+            repo_firma_profil.seteaza_platitor_tva(cur, date.platitor_tva)
         if anaf_val is not None:                      # ANAF a raspuns -> reimprospateaza snapshot (+ data inceput TVA)
             _fp.seteaza_snapshot_tva(conn, anaf_val, tva_inceput)
         conn.commit()
@@ -3862,8 +3843,7 @@ def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("a
         except ValueError as e:
             raise HTTPException(422, str(e))
         with conn.cursor() as cur:
-            cur.execute("UPDATE facturi SET transformat_in_id=%s WHERE id=%s",
-                        (rez["factura_id"], factura_id))
+            repo_facturi.leaga_proforma_de_factura(cur, rez["factura_id"], factura_id)
         conn.commit()
     return rez
 
@@ -4360,17 +4340,17 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
             # de bază, tranzacția e deja abortată, iar depunerea de după ar pica din alt motiv
             # decât cel real. Savepointul întoarce exact partea lui.
             with conn.cursor() as _cur:
-                _cur.execute("SAVEPOINT supervizor")
+                tranzactie.savepoint_supervizor(_cur)
             try:
                 _ramase = supervizor.poarta_confirmarii(
                     conn, _schema_d, _tid, _an_d, _luna_d,
                     confirmari=date.confirmari, confirmat_de=str(ctx["uid"]),
                     confirmat_de_id=int(ctx["uid"]))
                 with conn.cursor() as _cur:
-                    _cur.execute("RELEASE SAVEPOINT supervizor")
+                    tranzactie.elibereaza_supervizor(_cur)
             except Exception as _e:
                 with conn.cursor() as _cur:
-                    _cur.execute("ROLLBACK TO SAVEPOINT supervizor")
+                    tranzactie.intoarce_la_supervizor(_cur)
                 import logging
                 logging.getLogger("iconta").warning(
                     "poarta confirmarii supervizorului a esuat pe coada %s: %s — depunerea "
@@ -4810,10 +4790,8 @@ def portal_confirma_email(date: ConfirmaEmailIn):
             if not r:
                 raise HTTPException(400, MESAJ_EMAIL_TOKEN_INVALID)
             _adresa_e_libera(cur, r["email_nou"], r["user_id"])
-            cur.execute("UPDATE public.users SET email=%s WHERE id=%s",
-                        (r["email_nou"], r["user_id"]))
-            cur.execute("UPDATE public.schimbari_email SET confirmat_la=now() WHERE id=%s",
-                        (r["id"],))
+            repo_utilizatori.schimba_emailul(cur, r["email_nou"], r["user_id"])
+            repo_utilizatori.confirma_schimbarea_de_email(cur, r["id"])
             _urma_portal(cur, r["tenant_id"], "email_confirmat",
                          "adresa de autentificare schimbata: %s -> %s"
                          % (r["email_vechi"], r["email_nou"]), r["user_id"])
@@ -4851,12 +4829,8 @@ def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
                 raise HTTPException(400, MESAJ_EMAIL_ACELASI)
             import secrets as _sec3
             tok = "se_" + _sec3.token_urlsafe(32)
-            cur.execute("DELETE FROM public.schimbari_email "
-                        "WHERE user_id=%s AND confirmat_la IS NULL", (ctx["uid"],))
-            cur.execute("INSERT INTO public.schimbari_email "
-                        "(user_id, tenant_id, email_vechi, email_nou, token_hash, expira) "
-                        "VALUES (%s, %s, %s, %s, %s, now() + interval '48 hours')",
-                        (ctx["uid"], t["id"], email_vechi, email_nou, _hash_tok(tok)))
+            repo_utilizatori.sterge_schimbarile_de_email_neconfirmate(cur, ctx["uid"])
+            repo_utilizatori.cere_schimbarea_de_email(cur, ctx["uid"], t["id"], email_vechi, email_nou, _hash_tok(tok))
             _urma_portal(cur, t["id"], "email_cerut",
                          "schimbare de adresa ceruta: %s -> %s" % (email_vechi, email_nou),
                          ctx["uid"])
@@ -4894,14 +4868,11 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
             import secrets as _sec2
             if ex:
                 uid = ex["id"]
-                cur.execute("UPDATE public.users SET activ=true, nume=%s WHERE id=%s", (date.nume or email.split("@")[0], uid))
-                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (uid, t["id"]))
+                repo_utilizatori.activeaza_contul_cu_nume(cur, date.nume or email.split("@")[0], uid)
+                repo_utilizatori.leaga_contul_de_firma_idempotent(cur, uid, t["id"])
             else:
-                cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ)
-                               VALUES (%s, %s, %s, 'client', %s, true) RETURNING id""",
-                            (email, _nucleu.hash_parola(_sec2.token_urlsafe(16)), date.nume or email.split("@")[0], firm_id))
-                uid = cur.fetchone()["id"]
-                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, t["id"]))
+                uid = repo_utilizatori.creeaza_cont(cur, email, _nucleu.hash_parola(_sec2.token_urlsafe(16)), date.nume or email.split("@")[0], firm_id)["id"]
+                repo_utilizatori.leaga_contul_de_firma(cur, uid, t["id"])
             tok = "ml_" + _sec2.token_urlsafe(32)
             _pune_token(cur, tok, uid, "48 hours")
             _urma_portal(cur, t["id"], "acces_dat",
@@ -4924,9 +4895,9 @@ def portal_revoca_acces(user_id: int, tenant_id: Optional[int] = None, ctx=Depen
                 raise HTTPException(403, MESAJ_DOAR_TITULARUL)
             if user_id == pid:
                 raise HTTPException(400, "nu poți revoca propriul acces principal")
-            cur.execute("DELETE FROM public.user_tenants WHERE user_id=%s AND tenant_id=%s", (user_id, t["id"]))
+            repo_utilizatori.dezleaga_contul_de_firma(cur, user_id, t["id"])
             if repo_utilizatori.cate_firme_mai_are_contul(cur, user_id)["n"] == 0:
-                cur.execute("UPDATE public.users SET activ=false WHERE id=%s", (user_id,))
+                repo_utilizatori.dezactiveaza_contul(cur, user_id)
             _urma_portal(cur, t["id"], "acces_retras",
                          "clientul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
     return {"ok": True}
@@ -5004,22 +4975,12 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,
         # valorile articolelor sunt cu TVA inclus; scad TVA proportional
         factor = (b.total - b.tva) / b.total if b.total else 1
         with conn.cursor() as cur:
-            cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                VALUES (%s, %s, %s, 'bon', 'validata') RETURNING id
-            """, (b.data, f"BON-{bon_id}", f"Bon {b.comerciant}"))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_bon_validata(cur, schema, b.data, f"BON-{bon_id}", f"Bon {b.comerciant}")[0]
             for l in b.linii:
-                cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, %s, '5311', %s)",
-                            (iid, l.cont, round(l.valoare * factor, 2)))
+                repo_contabilitate.adauga_linie_credit_casa(cur, schema, iid, l.cont, round(l.valoare * factor, 2))
             if b.tva:
-                cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4426', '5311', %s)",
-                            (iid, b.tva))
-            cur.execute(f"""
-                UPDATE {schema}.bonuri SET status='aprobat',
-                       comerciant=%s, data=%s, total=%s, inregistrare_id=%s
-                WHERE id=%s
-            """, (b.comerciant, b.data, b.total, iid, bon_id))
+                repo_contabilitate.adauga_linie_tva_din_casa(cur, schema, iid, b.tva)
+            repo_casa.aproba_bonul(cur, schema, b.comerciant, b.data, b.total, iid, bon_id)
     return {"ok": True, "nota_id": iid}
 # [R33] Nota propusa mecanic intra CIORNA. Validarea o face al doilea om - patru-ochi.
 STARE_CIORNA = "ciorna"
@@ -5077,15 +5038,9 @@ def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
                          "cod": "DEJA_CONTATA"}
             # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
             # intra CIORNA (patru-ochi), nu cautand `'ciorna'` intr-un sir (METODA §23).
-            cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status) "
-                        "VALUES (%s,%s,%s,%s,%s) RETURNING id",
-                        (ultima, p["document_ref"],
-                         "Stat de plata %02d/%d" % (luna, an), "salarii", STARE_CIORNA))
-            nota_id = cur.fetchone()[0]
+            nota_id = repo_contabilitate.nota_cu_sursa_si_status(cur, ultima, p["document_ref"], "Stat de plata %02d/%d" % (luna, an), "salarii", STARE_CIORNA)[0]
             for n in p["note"]:
-                cur.execute("INSERT INTO inregistrari_linii "
-                            "(inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
-                            (nota_id, n["debit"], n["credit"], n["suma"]))
+                repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
         conn.commit()
     return {**p, "deja_contata": True, "nota_id": nota_id, "cod": "CONTATA"}
 
@@ -5130,16 +5085,9 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int,
         if not linii:
             return {"ok": True, "mesaj": "nimic de amortizat", "linii": 0}
         with conn.cursor() as cur:
-            cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                VALUES (%s, %s, %s, 'amortizare', 'validata') RETURNING id
-            """, (_date(an, luna, 1).replace(day=28), f"AMORT-{an}-{luna:02d}", f"Amortizare {luna:02d}/{an}"))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_amortizare_validata(cur, schema, _date(an, luna, 1).replace(day=28), f"AMORT-{an}-{luna:02d}", f"Amortizare {luna:02d}/{an}")[0]
             for cont_am, rata, den in linii:
-                cur.execute(f"""
-                    INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
-                    VALUES (%s, '6811', %s, %s)
-                """, (iid, cont_am, rata))
+                repo_contabilitate.adauga_linie_cheltuiala_amortizare(cur, schema, iid, cont_am, rata)
     return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
 def _perioada_blocata(conn, schema, data_nota):
     """True daca luna notei e blocata. data_nota: date sau str ISO.
@@ -5347,8 +5295,7 @@ def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol(
                 cod="PERIOADA_NU_SE_POATE_INCHIDE",
                 motive=motive, ciorne=ciorne, facturi=facturi_desch, blocaj=bl))
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.perioade_blocate (an, luna, blocat_de)
-                            VALUES (%s,%s,%s) ON CONFLICT DO NOTHING""", (an, luna, ctx["uid"]))
+            repo_contabilitate.blocheaza_perioada(cur, schema, an, luna, ctx["uid"])
         _ui.scrie(conn, schema, an, luna, "inchisa", ctx["uid"])
         conn.commit()
     return {"blocat": f"{luna:02d}/{an}"}
@@ -5373,7 +5320,7 @@ def perioada_deblocheaza(tenant_id: int, an: int, luna: int, motiv: str = "",
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"DELETE FROM {schema}.perioade_blocate WHERE an=%s AND luna=%s", (an, luna))
+            repo_contabilitate.deblocheaza_perioada(cur, schema, an, luna)
         _ui.scrie(conn, schema, an, luna, "redeschisa", ctx["uid"], motiv.strip())
         conn.commit()
     return {"deblocat": f"{luna:02d}/{an}"}
@@ -5500,16 +5447,12 @@ def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
             # produce ACELAȘI refuz, nu un `500`: *o cursă pierdută și o a doua încercare
             # conștientă trebuie să arate la fel pentru cel care operează casa de marcat.*
             try:
-                cur.execute("SAVEPOINT z_insert")
-                cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                                VALUES (%s,%s,%s,'amef','ciorna') RETURNING id""",
-                            (rz["data"], _numar_z,
-                             f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit"))
+                tranzactie.savepoint_z_insert(cur)
                 # id-ul se citește ÎNAINTE de `RELEASE`: orice `execute` următor golește cursorul
-                iid = cur.fetchone()[0]
-                cur.execute("RELEASE SAVEPOINT z_insert")
+                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit")[0]
+                tranzactie.elibereaza_z_insert(cur)
             except _psycopg2.errors.UniqueViolation:
-                cur.execute("ROLLBACK TO SAVEPOINT z_insert")
+                tranzactie.intoarce_la_z_insert(cur)
                 _cere_z_unic(cur, schema, _numar_z)   # ridică 409, cu documentul existent numit
                 raise                                  # dacă totuși nu l-a găsit, nu înghițim
             linii = []
@@ -5519,9 +5462,7 @@ def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
                 if cota["tva"]:
                     linii.append(("707", "4427", cota["tva"]))
             for deb, cred, suma in linii:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                            (iid, deb, cred, suma))
+                repo_contabilitate.adauga_linie_4(cur, schema, iid, deb, cred, suma)
         conn.commit()
     return {"inregistrare_id": iid, "status": "ciorna", "data": rz["data"],
             "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
@@ -5559,11 +5500,7 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ,
         baza21 = D(str(rz.total_21)) - tva21
         with conn.cursor() as cur:
             _cere_z_unic(cur, schema, numar)
-            cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                VALUES (%s, %s, %s, 'horeca_z', 'validata') RETURNING id
-            """, (rz.data, numar, "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport)))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_horeca_z_validata(cur, schema, rz.data, numar, "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport))[0]
             linii = []
             if rz.numerar: linii.append(("5311", "707", rz.numerar))
             if rz.card: linii.append(("5125", "707", rz.card))
@@ -5571,10 +5508,7 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ,
             tva_total = tva11 + tva21
             if tva_total: linii.append(("707", "4427", float(tva_total)))
             for deb, cre, suma in linii:
-                cur.execute(f"""
-                    INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
-                    VALUES (%s, %s, %s, %s)
-                """, (iid, deb, cre, suma))
+                repo_contabilitate.adauga_linie_3(cur, schema, iid, deb, cre, suma)
     return {"ok": True, "nota_id": iid,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}
@@ -6249,10 +6183,7 @@ def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] =
     schema = t["schema_name"]
     with db.get_conn() as conn:  # verif_doc_pozate_v1: drafturi abandonate >24h se curata (rand + poze)
         with conn.cursor() as cur:
-            cur.execute(f"""DELETE FROM {schema}.bonuri
-                            WHERE status='extras' AND creat_la < now() - interval '24 hours'
-                            RETURNING id""")
-            for (vechi_id,) in cur.fetchall():
+            for (vechi_id,) in repo_casa.sterge_bonurile_extrase_vechi(cur, schema):
                 import shutil as _shutil
                 d = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(vechi_id))
                 if _os.path.isdir(d):
@@ -6260,15 +6191,7 @@ def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] =
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
-            cur.execute(f"""
-                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, orientare)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s, %s) RETURNING id
-            """, (date.get("comerciant"), date.get("cui"), date.get("data"),
-                  total, tva_11, tva_21, _json.dumps(date.get("articole") or []),
-                  _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False,
-                  tip_doc, date.get("numar_document"), date.get("mentiuni"),
-                  int(date.get("orientare") or 0) % 360))
-            bon_id = cur.fetchone()[0]
+            bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), int(date.get("orientare") or 0) % 360)[0]
     dir_bon = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(bon_id))
     _os.makedirs(dir_bon, exist_ok=True)
     _EXT = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
@@ -6287,8 +6210,7 @@ def portal_bon_confirma(bon_id: int, tenant_id: Optional[int] = None, ctx=Depend
     """Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil."""
     t = _tenant_pentru_documente(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute(f"UPDATE {t['schema_name']}.bonuri SET status='de_verificat' WHERE id=%s AND status='extras' RETURNING id", (bon_id,))
-        if not cur.fetchone():
+        if not repo_casa.trece_bonul_la_de_verificat(cur, t['schema_name'], bon_id):
             raise HTTPException(404, "bon inexistent sau deja trimis")
     return {"ok": True}
 
@@ -6298,8 +6220,7 @@ def portal_bon_sterge(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(
     import os as _os, shutil as _shutil
     t = _tenant_pentru_documente(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute(f"DELETE FROM {t['schema_name']}.bonuri WHERE id=%s AND status='extras' RETURNING id", (bon_id,))
-        if not cur.fetchone():
+        if not repo_casa.sterge_bonul_extras(cur, t['schema_name'], bon_id):
             raise HTTPException(404, "bon inexistent sau deja trimis")
     dir_bon = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), t["schema_name"], str(bon_id))
     if _os.path.isdir(dir_bon):
@@ -6382,13 +6303,9 @@ def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge,
         if rez.get("eroare"):
             raise HTTPException(400, rez["eroare"])
         with conn.cursor() as cur:
-            cur.execute(f"""UPDATE {schema}.bonuri SET status='aprobat', factura_id=%s,
-                            casa_operatiune_id=%s, inregistrare_id=%s,
-                            comerciant=%s, data=%s, total=%s WHERE id=%s""",
-                        (c.factura_id, rez["id"], rez["inregistrare_id"],
-                         c.partener or None, c.data, c.suma, bon_id))
+            repo_casa.aproba_bonul_cu_documente(cur, schema, c.factura_id, rez["id"], rez["inregistrare_id"], c.partener or None, c.data, c.suma, bon_id)
             if c.factura_id:
-                cur.execute(f"UPDATE {schema}.facturi SET platita_la=now() WHERE id=%s AND directie='primita'", (c.factura_id,))
+                repo_facturi.marcheaza_primita_platita(cur, schema, c.factura_id)
     return {"ok": True, "operatiune_id": rez["id"], "nota_id": rez["inregistrare_id"],
             "avertismente": rez.get("avertismente") or []}
 
@@ -6433,15 +6350,9 @@ def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_rol("admin
         if rez.get("eroare"):
             raise HTTPException(400, rez["eroare"])
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.chitante
-                            (serie, numar, data, factura_id, client_nume, client_cui, suma, reprezentand,
-                             casa_operatiune_id, inregistrare_id)
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                        (serie, nr, c.data, c.factura_id, client_nume, client_cui, c.suma,
-                         reprezentand, rez["id"], rez["inregistrare_id"]))
-            cid = cur.fetchone()[0]
+            cid = repo_casa.adauga_chitanta(cur, schema, serie, nr, c.data, c.factura_id, client_nume, client_cui, c.suma, reprezentand, rez["id"], rez["inregistrare_id"])[0]
             if c.factura_id and total_fact is not None and c.suma >= total_fact - 0.005:
-                cur.execute(f"UPDATE {schema}.facturi SET platita_la=now() WHERE id=%s", (c.factura_id,))
+                repo_facturi.marcheaza_platita(cur, schema, c.factura_id)
     return {"ok": True, "chitanta_id": cid, "serie": serie, "numar": nr,
             "avertismente": rez.get("avertismente") or []}
 
@@ -6967,9 +6878,7 @@ def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_rol("admi
                                  "WooCommerce — dacă asta vrei, trimite explicit `url`, `ck` și "
                                  "`cs` goale.")
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute(f"""UPDATE {schema}.firma_profil
-                        SET wc_url=%s, wc_ck=%s, wc_cs=%s""",
-                    (corp.get("url"), corp.get("ck"), corp.get("cs")))
+        repo_firma_profil.seteaza_config_woocommerce(cur, schema, corp.get("url"), corp.get("ck"), corp.get("cs"))
         conn.commit()
     return {"ok": True}
 
@@ -7158,9 +7067,7 @@ def portal_solicitari_trimite(date: SolicitareIn, tenant_id: Optional[int] = Non
     t = _tenant_client(ctx, tenant_id)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                "INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
-                "VALUES (%s,%s,'client',%s)", (t["id"], date.mesaj, ctx["uid"]))
+            repo_portal.adauga_solicitare(cur, t["id"], date.mesaj, ctx["uid"])
         with conn.cursor() as cur:
             r = repo_tenants.cabinetul_si_numele(cur, t["id"])
         if r and r[0]:
@@ -7186,9 +7093,7 @@ def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,
     _de_trimis = None           # ce ramane de trimis DUPA ce se inchide blocul de conexiune
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                "INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
-                "VALUES (%s,%s,'cabinet',%s)", (tenant_id, date.mesaj, ctx["uid"]))
+            repo_portal.adauga_solicitare_2(cur, tenant_id, date.mesaj, ctx["uid"])
         conn.commit()
         email = _email_client_tenant(conn, tenant_id)
         if email:
@@ -7282,11 +7187,7 @@ def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             if repo_utilizatori.id_si_activ_dupa_email(cur, email):
                 raise HTTPException(422, EMAIL_EXISTA)
-            cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ, poate_valida)
-                           VALUES (%s, %s, %s, 'angajat', %s, true, %s) RETURNING id""",
-                        (email, _nucleu.hash_parola(_sec.token_urlsafe(16)),
-                         date.nume or email.split("@")[0], ctx["firm"], date.poate_valida))
-            uid = cur.fetchone()["id"]
+            uid = repo_utilizatori.creeaza_cont_de_client(cur, email, _nucleu.hash_parola(_sec.token_urlsafe(16)), date.nume or email.split("@")[0], ctx["firm"], date.poate_valida)["id"]
         with conn.cursor() as cur:
             tok = _sec.token_urlsafe(32)
             _pune_token(cur, tok, uid, "48 hours")
@@ -8376,8 +8277,7 @@ def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"UPDATE {schema}.extras_linii SET status='ignorat' WHERE id=%s AND status != 'contat' RETURNING id", (linie_id,))
-            r = cur.fetchone()
+            r = repo_banca.ignora_linia_de_extras(cur, schema, linie_id)
         conn.commit()
     if not r:
         raise HTTPException(400, "linie inexistentă sau deja contată")
@@ -9051,9 +8951,7 @@ def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabine
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
-            cur.execute(f"""UPDATE {schema}.extras_linii SET status='nou'
-                            WHERE id=%s AND status='ignorat' RETURNING id""", (linie_id,))
-            r = cur.fetchone()
+            r = repo_banca.readuce_linia_de_extras(cur, schema, linie_id)
         conn.commit()
     if not r:
         raise HTTPException(422, "linia nu e ignorata")
@@ -9107,7 +9005,7 @@ def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("ad
         try:
             with _cf.cursor_dict(conn) as cur:
                 rez = _cf.contabilizeaza(cur, schema, factura_id, automat=True)
-                cur.execute(f"UPDATE {schema}.facturi SET status='emisa' WHERE id=%s", (factura_id,))
+                repo_facturi.marcheaza_emisa(cur, schema, factura_id)
         except _cf.RefuzContare as e:
             conn.rollback()
             if e.cod == "LUNA_INCHISA":
@@ -9172,10 +9070,7 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
         except (ValueError, KeyError) as e:
             raise HTTPException(422, _mesaj_intrare(e))
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312)")[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312)")[:200])[0]
             linii = [("4111", "707", Decimal(str(corp["pret_cumparare"])))]
             if r["marja_neta"] > 0:
                 linii.append(("4111", "707", r["marja_neta"]))
@@ -9183,9 +9078,7 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
                 linii.append(("4111", "4427", r["tva"]))
             for d, c, s in linii:
                 if s > 0:
-                    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                    (inregistrare_id, cont_debit, cont_credit, suma)
-                                    VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+                    repo_contabilitate.adauga_linie_2(cur, schema, iid, d, c, s)
         conn.commit()
     return dict(_af.afirmatie(
         "fapt", "vânzare în regim de marjă", r["nota"] or "marjă calculată conform art. 312",
@@ -9241,15 +9134,10 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         except (ValueError, KeyError) as e:
             raise HTTPException(422, _mesaj_intrare(e))
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], (corp.get("descriere") or f"Vanzare marja turism ({regim}, art. 311)")[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], (corp.get("descriere") or f"Vanzare marja turism ({regim}, art. 311)")[:200])[0]
             for d, c, s in linii:
                 if s > 0:
-                    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                    (inregistrare_id, cont_debit, cont_credit, suma)
-                                    VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+                    repo_contabilitate.adauga_linie_2(cur, schema, iid, d, c, s)
         conn.commit()
     rasp["inregistrare_id"] = iid
     return rasp
@@ -9286,13 +9174,8 @@ def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
         descr = (corp.get("descriere") or "Livrare aur investitii") + " - " + mentiune \
                 + " - client: " + corp["client_identificare"]
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma)
-                            VALUES (%s,'4111','707',%s)""", (iid, suma))
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            repo_contabilitate.adauga_linie_venit_marfa(cur, schema, iid, suma)
         conn.commit()
     return {"inregistrare_id": iid, "regim": regim, "suma": str(suma)}
 
@@ -9319,14 +9202,9 @@ def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") \
                 + ((" - " + corp["agricultor"]) if corp.get("agricultor") else "")
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for d, c, s in [(cont, "401", r["pret"]), ("4426", "401", r["compensatie"])]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
     return {"inregistrare_id": iid, "pret": str(r["pret"]),
             "compensatie": str(r["compensatie"]), "total": str(r["total"])}
@@ -9361,14 +9239,9 @@ def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         descr = (corp.get("descriere") or "Livrare produse agricole") \
                 + " - regim special agricultori (art. 315^1), compensatie 8%"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for s in (r["pret"], r["compensatie"]):
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,'4111','704',%s)""", (iid, s))
+                repo_contabilitate.adauga_linie_venit_servicii(cur, schema, iid, s)
         conn.commit()
     return {"inregistrare_id": iid, "pret": str(r["pret"]),
             "compensatie": str(r["compensatie"]), "total": str(r["total"])}
@@ -9815,11 +9688,7 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
             except Exception as e:
                 raise HTTPException(422, "XML neparsabil: %s" % str(e)[:200])
             fid, _nou = _factura_din_parsat(cur, schema, f)   # leaga si factura existenta (dedup)
-            cur.execute(f"""UPDATE {schema}.efactura_primite
-                            SET status='validata', factura_id=COALESCE(%s, factura_id),
-                                cont_cheltuiala=%s, validat_la=now() WHERE id=%s
-                            RETURNING factura_id""", (fid, cont or None, primita_id))
-            fid_final = cur.fetchone()[0]
+            fid_final = repo_efactura.marcheaza_primita_validata(cur, schema, fid, cont or None, primita_id)[0]
             # [B1 D300] optiuni de clasificare pe factura primita, alese de contabil la validare:
             # furnizor cu TVA la incasare (deducere amanata la plata, art.297 alin.2) / tara
             # partenerului (achizitie IC vs import). Setate pe factura legata (fid_final).
@@ -9832,7 +9701,7 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
                 if _ttara:
                     _sets.append("tert_tara=%s"); _vals.append(_ttara)
                 _vals.append(fid_final)
-                cur.execute(f"UPDATE {schema}.facturi SET " + ", ".join(_sets) + " WHERE id=%s", _vals)
+                repo_facturi.actualizeaza_clasificarea(cur, schema, _sets, _vals)
         # [FFF1] NOTA SE SCRIE AICI, în același act cu validarea — după ce clasificarea e pusă pe
         # factură, ca nota s-o poată citi. Validarea *este* actul prin care firma recunoaște
         # cheltuiala: patru-ochi s-a consumat deja, contul tocmai a fost ales, regimul tocmai a fost
@@ -9878,8 +9747,7 @@ def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(
                 raise HTTPException(404, "factură primită inexistentă")
             if r[0] == "validata":
                 raise HTTPException(409, "factura a fost deja validată")
-            cur.execute(f"""UPDATE {schema}.efactura_primite SET status='respinsa', motiv_respins=%s
-                            WHERE id=%s""", (motiv, primita_id))
+            repo_efactura.marcheaza_primita_respinsa(cur, schema, motiv, primita_id)
         conn.commit()
     return {"stare": "respinsa"}
 
@@ -9904,13 +9772,7 @@ def reges_config(tenant_id: int, corp: dict = Body(...),
                 raise HTTPException(422, "Lipsește %s. Fără el, trimiterile către REGES nu se pot "
                                          "autentifica." % _et)
         with conn.cursor() as cur:
-            # upsert-ok: salvare credentiale REGES per tenant - update intentionat al aceleiasi chei (tenant_id)
-            cur.execute("""INSERT INTO public.reges_chei (tenant_id, username, parola, mediu)
-                           VALUES (%s,%s,%s,%s)
-                           ON CONFLICT (tenant_id) DO UPDATE
-                           SET username=EXCLUDED.username, parola=EXCLUDED.parola,
-                               mediu=EXCLUDED.mediu""",
-                        (tenant_id, corp["username"], corp["parola"], corp.get("mediu", "test")))
+            repo_salariati.salveaza_cheile_reges(cur, tenant_id, corp["username"], corp["parola"], corp.get("mediu", "test"))
         conn.commit()
     return {"ok": True}
 
@@ -9950,11 +9812,7 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
     #    act deja petrecut. Aceeași clasă cu rotația de token: efectul e SURSA valorii. ────
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("""INSERT INTO public.reges_mesaje
-                           (tenant_id, salariat_id, operatie, message_id, response_id, raspuns)
-                           VALUES (%s,%s,'InregistrareSalariat',%s,%s,%s) RETURNING id""",
-                        (tenant_id, corp["salariat_id"], str(mid), None, rasp[:4000]))
-            rid = cur.fetchone()[0]
+            rid = repo_salariati.scrie_mesaj_reges(cur, tenant_id, corp["salariat_id"], str(mid), None, rasp[:4000])[0]
         conn.commit()
     return {"mesaj_id": rid, "http_status": status, "raspuns": rasp[:500]}
 
@@ -9991,13 +9849,7 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
     with db.get_conn() as conn:
         if m_mid:
             with conn.cursor() as cur:
-                cur.execute("""UPDATE public.reges_mesaje
-                               SET status='raspuns', raspuns=%s,
-                                   referinta_salariat=COALESCE(%s::uuid, referinta_salariat),
-                                   referinta_contract=COALESCE(%s::uuid, referinta_contract)
-                               WHERE message_id=%s::uuid AND tenant_id=%s""",
-                            (rasp[:4000], m_rs.group(1) if m_rs else None,
-                             m_rc.group(1) if m_rc else None, m_mid.group(1), tenant_id))
+                repo_salariati.scrie_raspunsul_reges(cur, rasp[:4000], m_rs.group(1) if m_rs else None, m_rc.group(1) if m_rc else None, m_mid.group(1), tenant_id)
             conn.commit()
     return {"http_status": status, "raspuns": rasp[:1000]}
 
@@ -10048,7 +9900,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Achizitie") + " - " + mentiune
         with conn.cursor() as cur:
-            cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
+            tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
             #    = sursa citita de D394 (op1 tip C + op11 codPR). Linie cota reala -> baza/tva reverse-charge.
             # `_tert_pl` s-a înghețat înaintea blocului — v. nota de la începutul rutei
@@ -10060,14 +9912,9 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
                                        tert_platitor_tva=_tert_pl)
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge 4426=4427, NU cea standard
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
-                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], fid, descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
             for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
     return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva),
             "mentiune": mentiune}
@@ -10132,7 +9979,7 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),
         tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
         descr = (corp.get("descriere") or "AIC") + f" - {tip}, taxare inversa 4426=4427"
         with conn.cursor() as cur:
-            cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
+            tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor UE) = sursa citita de D390. Factura UE fara TVA RON
             #    (taxare inversa la beneficiar) -> linie cota 0 -> total=val, tva=0 -> baza D390 = val.
             fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
@@ -10142,14 +9989,9 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),
                                        data_faptului_generator=data_fg, status="importata")
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge, NU cea standard
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
-                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], fid, descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
             for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
     return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)}
 
@@ -10187,7 +10029,7 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Achizitie de la neinregistrat") + " - " + furnizor_nume
         with conn.cursor() as cur:
-            cur.execute(f"SET LOCAL search_path TO {schema}")
+            tranzactie.fixeaza_schema(cur, schema)
             # tert_cui GOL -> clasifica_partener -> tip_partener 2 (N); PF nu factureaza TVA -> linie cota 0.
             # `tert_pf=True` (23.08.2026): pana azi lipsa codului era declarata DOAR in comentariul de
             # deasupra, iar garda noua de la `cere_cod_partener` n-avea cum s-o citeasca. Achizitia de la
@@ -10198,12 +10040,8 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
                                        tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
                                        status="importata", tert_platitor_tva=False, tert_pf=True)
             fid = fres["factura_id"]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
-                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], fid, descr[:200]))
-            iid = cur.fetchone()[0]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
-                            VALUES (%s,%s,'401',%s)""", (iid, cont, val))
+            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
+            repo_contabilitate.adauga_linie_furnizor(cur, schema, iid, cont, val)
         conn.commit()
     return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val),
             "categorie": categorie, "in_d394": bool(categorie)}
@@ -10265,13 +10103,8 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Vanzare IC") + " - " + ment +                 f" [{v['nume']}]"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma)
-                            VALUES (%s,'4111',%s,%s)""", (iid, cont_venit, val))
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            repo_contabilitate.adauga_linie_client(cur, schema, iid, cont_venit, val)
         conn.commit()
     return {"inregistrare_id": iid, "mentiune": ment, "vies": v}
 
@@ -10324,14 +10157,9 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         else:
             linii.append((cont, "446", r["tva"]))
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for d, c, s in linii:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
     return {"inregistrare_id": iid, "taxa_vamala": str(r["taxa_vamala"]),
             "baza_tva": str(r["baza_tva"]), "tva": str(r["tva"]), "mod_tva": r["mod_tva"]}
@@ -10365,13 +10193,8 @@ def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Export") + f" ({corp['tara_client']}) - " + ment
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma)
-                            VALUES (%s,'4111',%s,%s)""", (iid, cont_venit, val))
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            repo_contabilitate.adauga_linie_client(cur, schema, iid, cont_venit, val)
         conn.commit()
     return {"inregistrare_id": iid, "mentiune": ment}
 
@@ -10458,12 +10281,8 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
             + ("incasare (art. 282)" if sens == "incasare" else "plata furnizor")
             + "; " + _c295.descrierea(_al))
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""", (corp["data"], desc[:200]))
-            iid = cur.fetchone()[0]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                        (iid, debit, credit, tva))
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], desc[:200])[0]
+            repo_contabilitate.adauga_linie_5(cur, schema, iid, debit, credit, tva)
         conn.commit()
     return {"inregistrare_id": iid, "tva_exigibil": str(tva), "nota": f"{debit}={credit}"}
 
@@ -10498,14 +10317,9 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
         d = r["diferenta"]
         descr = (corp.get("descriere") or "Decontare valuta") +                 f" {corp['valoare_valuta']} {corp.get('moneda','EUR')} curs {curs_dec}" +                 (f", dif. {d['sens']} {bani(d['diferenta'], 'lei')} ({d['cont']})" if d["cont"] else "")
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'banca','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_banca_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "curs_decontare": str(curs_dec),
             "lei_evidenta": str(r["lei_evidenta"]),
@@ -10559,15 +10373,10 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 temei_completitudine="soldurile în valută ale firmei, la cursul BNR din data cerută"),
                 inregistrare_id=None, detalii=[], mesaj="nicio diferență de reevaluat")
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'banca','ciorna') RETURNING id""",
-                        (corp["data"], f"Reevaluare solduri valuta la {corp['data']} "
-                                       "(OMFP 1802 pct. 316, curs BNR)"))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_banca_ciorna(cur, schema, corp["data"], f"Reevaluare solduri valuta la {corp['data']} "
+                                       "(OMFP 1802 pct. 316, curs BNR)")[0]
             for dd, cc, ss in linii:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "detalii": detalii}
 
@@ -10608,14 +10417,9 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 212-217"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
@@ -10659,14 +10463,9 @@ def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'banca','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_banca_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
@@ -10726,14 +10525,9 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - art. 282(2)b CF"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
@@ -10791,15 +10585,8 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e) or "valoare invalidă")
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
-                            (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
-                             rezidual, dnf_luni, data_pif, metoda, activ)
-                            VALUES (%s,%s,%s,%s,%s,0,%s,%s,'liniara',true) RETURNING id""",
-                        (corp.get("cod") or f"NEC-{tip[:3].upper()}",
-                         corp["denumire"][:200], cont_imo, cont_am, val,
-                         int(dnf), corp["data"]))
-            mfid = cur.fetchone()[0]
-            cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
+            mfid = repo_mijloace_fixe.adauga(cur, schema, corp.get("cod") or f"NEC-{tip[:3].upper()}", corp["denumire"][:200], cont_imo, cont_am, val, int(dnf), corp["data"])[0]
+            tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
             # rand FACTURA (achizitie normala de la furnizor RO cu CUI) -> D394 tip A. MF (mijloace_fixe) ramane
             # separat: factura = documentul de achizitie; imobilizarea = activul amortizabil (amortizare/D406).
             # `_tert_pl` s-a înghețat înaintea blocului (TVA deductibilă -> furnizor plătitor)
@@ -10809,15 +10596,10 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
                                        tert_nume=furnizor_nume or None, tert_cui=furnizor_cui, status="importata",
                                        tert_platitor_tva=_tert_pl)
             fid = fres["factura_id"]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
-                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], fid, f"Achizitie necorporala {tip}: {corp['denumire']}"
-                                       f" (amortizare {dnf} luni, art. 28(9) CF)"[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, f"Achizitie necorporala {tip}: {corp['denumire']}"
+                                       f" (amortizare {dnf} luni, art. 28(9) CF)"[:200])[0]
             for dd, cc, ss in [(cont_imo, "404", val), ("4426", "404", tva)]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "factura_id": fid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
             "conturi": [cont_imo, cont_am]}
@@ -10874,14 +10656,9 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
         except (ValueError, KeyError) as e:
             raise HTTPException(422, _mesaj_intrare(e))
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **extra}
@@ -10924,14 +10701,9 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - art. 26 CF / OMFP 1802"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
@@ -10966,14 +10738,9 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
@@ -11013,14 +10780,9 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 / OUG 8/2026"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
@@ -11063,14 +10825,9 @@ def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0)
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
@@ -11103,14 +10860,9 @@ def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         descr = (corp.get("descriere") or "Sponsorizare (6582, nedeductibil, "
                  "credit fiscal art. 25(4)i)")
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], "credit_fiscal": info}
@@ -11148,14 +10900,9 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 392-402"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
@@ -11208,15 +10955,10 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         with conn.cursor() as cur:
             for d0, linii in note:
                 descr = (corp.get("descriere") or d0)
-                cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                                VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                            (corp["data"], descr[:200]))
-                iid = cur.fetchone()[0]
+                iid = repo_contabilitate.nota_facturi_ciorna_2(cur, schema, corp["data"], descr[:200])[0]
                 ids.append(iid)
                 for dd, cc, ss in linii:
-                    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                    (inregistrare_id, cont_debit, cont_credit, suma)
-                                    VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                    repo_contabilitate.adauga_linie_2(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrari": ids, **info}
 
@@ -11259,14 +11001,9 @@ def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - art. 76(2)k CF / HG 714/2018"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'casa','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_casa_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
@@ -11299,14 +11036,9 @@ def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - Legea 376/2022"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'casa','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_casa_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
@@ -11352,14 +11084,9 @@ def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - HG 1074/2021"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
@@ -11387,14 +11114,9 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
                  f"Perisabilitati: limita {r['limita']}, deductibil {r['deductibil']}, "
                  f"nedeductibil {r['nedeductibil']} (PV inventariere)")[:200]
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr + " - HG 831/2004"))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr + " - HG 831/2004")[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "limita": str(r["limita"]),
             "deductibil": str(r["deductibil"]), "nedeductibil": str(r["nedeductibil"]),
@@ -11422,14 +11144,9 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         descr = (corp.get("descriere") or
                  f"Remuneratie {fel} brut {corp['brut']} (net {r['net']})") +                 (" - L52/2011" if fel == "zilier" else " - art. 76(2)g/i CF")
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'salarii','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_salarii_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "brut": str(r["brut"]), "cas": str(r["cas"]),
             "cass": str(r["cass"]), "impozit": str(r["impozit"]), "net": str(r["net"]),
@@ -11540,27 +11257,14 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 2861/2009"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
             if mf_id:
-                cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ=false WHERE id=%s",
-                            (mf_id,))
+                repo_mijloace_fixe.scoate_din_evidenta(cur, schema, mf_id)
             mf_nou_id = None
             if op == "plus_mf":
-                cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
-                                (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
-                                 rezidual, dnf_luni, data_pif, metoda, activ)
-                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true) RETURNING id""",
-                            (mf_reg["cod"], mf_reg["denumire"], mf_reg["cont_imobilizare"],
-                             mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"],
-                             mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"]))
-                mf_nou_id = cur.fetchone()[0]
+                mf_nou_id = repo_mijloace_fixe.adauga_cu_reevaluare(cur, schema, mf_reg["cod"], mf_reg["denumire"], mf_reg["cont_imobilizare"], mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"], mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"])[0]
         conn.commit()
     rez_out = {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
     if mf_nou_id:
@@ -11604,14 +11308,9 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 897/2015"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
@@ -11644,14 +11343,9 @@ def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
         descr = (corp.get("descriere") or
                  f"Venit AFSP {corp.get('fel', 'cotizatie')} pe {r['cont_venit']}") +                 " - OMFP 3103/2017"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'casa','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
-            iid = cur.fetchone()[0]
+            iid = repo_contabilitate.nota_casa_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return {"inregistrare_id": iid, "cont_venit": r["cont_venit"],
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
@@ -11947,7 +11641,7 @@ def eveniment_public(date: EvenimentPublicIn):
                      if c.isalnum() or c in "/_-")[:128] or "landing"
     try:
         with db.get_conn() as conn, conn.cursor() as cur:
-            cur.execute("INSERT INTO public.eveniment_public (tip, pagina) VALUES (%s, %s)", (tip, pagina))
+            repo_admin.scrie_eveniment_public(cur, tip, pagina)
     except Exception:
         return {"ok": False}
     return {"ok": True}

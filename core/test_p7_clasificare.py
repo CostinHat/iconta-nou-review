@@ -93,8 +93,10 @@ def test_D1_ANTI_VACUUM_universul_real_nu_e_gol_si_contine_un_item_cunoscut():
     assert len(toate) >= 400, "universul rutelor s-a golit: %d" % len(toate)
     gasite, _ = S.d1_sql_in_ruta()
     cunoscute = {(i.fisier, i.cale.split(" ")[0]) for i in gasite}
-    assert ("main.py", "admin_anunt_creeaza") in cunoscute, (
-        "detectorul nu mai vede un item citit cu ochii în cod")
+    assert cunoscute == set(), (
+        "[V2, 13.09.2026] După V2 nu mai există NICIUN item D1: ancora de anti-vacuum s-a mutat "
+        "de la «detectorul vede un item cunoscut» la «universul e parcurs și nu mai are itemi». "
+        "Că instrumentul nu s-a golit se cere mai sus, pe numărul de rute: %s" % sorted(cunoscute)[:5])
 
 
 # ============================================================

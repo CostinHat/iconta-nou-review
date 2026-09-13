@@ -54,3 +54,28 @@ def pentru_inventariere(cur, schema, mijloc_id):
                                         WHERE id=%s AND activ=true""",
                 (mijloc_id,))
     return cur.fetchone()
+
+
+# ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
+
+def adauga(cur, schema, cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni):
+    cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
+                            (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
+                             rezidual, dnf_luni, data_pif, metoda, activ)
+                            VALUES (%s,%s,%s,%s,%s,0,%s,%s,'liniara',true) RETURNING id""",
+                (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni))
+    return cur.fetchone()
+
+
+def scoate_din_evidenta(cur, schema, id_):
+    cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ=false WHERE id=%s",
+                (id_,))
+
+
+def adauga_cu_reevaluare(cur, schema, cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda):
+    cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
+                                (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
+                                 rezidual, dnf_luni, data_pif, metoda, activ)
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true) RETURNING id""",
+                (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda))
+    return cur.fetchone()
