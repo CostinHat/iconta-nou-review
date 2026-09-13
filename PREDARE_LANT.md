@@ -1,14 +1,22 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **planul de întărire P0–P7: șase pași închiși, P7 în lucru** (13.09.2026)
+# PREDARE LANȚ — **planul de întărire P0–P7: șapte pași închiși, P7 în lucru** (13.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-13**, la închiderea valului **V2** al lui P7, plus corectura de după (`5223d8f7`).
-- **pe commit**: `5223d8f7`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-13**, rescriere completă la capătul valului **V2** al lui P7.
+- **pe commit**: `6d73eec1`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
-- **[13.09.2026] ANTETUL ĂSTA A FOST STĂTUT TREI ZILE**, deși documentul își cere singur, mai jos, ca antetul să fie rescris la fiecare oprire: a rămas pe `0742e177` / 10.09 prin două rescrieri care au atins alte secțiuni. *O regulă pe care documentul și-o dă singur nu se respectă singură.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
+- **[13.09.2026] CE A IEȘIT LA IVEALĂ CHIAR RESCRIIND, și se scrie fiindcă e clasa pe care documentul
+  o păzește:** titlul spunea *„șase pași închiși"* — sunt **șapte** (P0…P6) · „interdicții, din **77**:
+  **23** măsurate" — sunt **78** și **24** · iar „restanțe deschise" scria **50** într-un tabel și
+  **54** în altă secțiune, în același document. *Toate trei erau cifre scrise de mână în secțiuni pe
+  care regula de mai sus le declară RESCRISE — deci nu îmbătrâniseră în tăcere, ci fiindcă rescrierea
+  le sărise. A treia oară în trei zile când cifra greșită e una copiată, nu una măsurată.*
+- **[13.09.2026] ANTETUL A FOST STĂTUT TREI ZILE** — a rămas pe `0742e177` / 10.09 prin două
+  rescrieri care au atins alte secțiuni. *Se păstrează notat: o regulă pe care documentul și-o dă
+  singur nu se respectă singură.*
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde suntem", starea și restanțele sunt **rescrise**.
   Tabelul cifrelor invalidate, capcanele, operaționalul, „ce cere poarta" și lecțiile sunt
   **păstrate** — documentul își interzice singur să le șteargă.
@@ -30,7 +38,7 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
 | **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
 | **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
-| **P7** — stratul de aplicație | **DESCHIS** | diagnostic închis (`b67d2bfb`) · V3 registrul de straturi închis (`364fbc63`) · V1 citirile închis (`8d182afa`) · **V2 scrierile + controlul de tranzacție închis**: 140 + 10 mutate, `D1`=0 pe toate clasele; `ACTION_REQUIRED` **296 → 189 → 39**. Rămâne deschis pentru `D2`=1, `D4`=38 și pentru faptul că **rutele încă orchestrează** |
+| **P7** — stratul de aplicație | **DESCHIS** | diagnostic (`b67d2bfb`) · V3 registrul de straturi (`364fbc63`) · V1 citirile (`8d182afa`) · **V2 scrierile + controlul de tranzacție** (`cd5538ae`): 140 + 10 mutate, `D1`=**0** pe toate clasele; `ACTION_REQUIRED` **296 → 189 → 39**. Rămâne deschis pentru `D2`=1, `D4`=38 și fiindcă **rutele încă orchestrează** |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de
@@ -58,6 +66,33 @@ pe care **stratul de ecran o ignora** — deci o firmă necalculată încă ară
 și găsită goală („fără parteneri încă"). Un necunoscut arătat ca un nu hotărât, pe șapte ecrane.
 Corectat pe toate șapte, probat pe arborele de randare în chromium (`core/test_p3_val_b.py`, 48 de
 probe). *Când adaugi un model de citire, întreabă imediat ce arată ecranul cât timp modelul e rece.*
+
+**P7, pe scurt — și e cea mai mare schimbare de formă a codului din toată campania.** Stratul HTTP
+nu mai conține SQL. **257 de instrucțiuni** au ieșit din corpul rutelor în două valuri: **107 citiri**
+(V1) și **140 de scrieri + 10 instrucțiuni de control de tranzacție** (V2). Unde au ajuns: **15 module
+de sub HTTP** — 14 `core/repo_*.py` plus `core/tranzactie.py`.
+
+**Contractul lor, și e ce trebuie știut înainte de a scrie o rută nouă:**
+
+- **fiecare funcție primește CURSORUL apelantului** (`def f(cur, …)`) — aceeași tranzacție, aceeași
+  conexiune, același `search_path`, același `cursor_factory`;
+- **niciun `get_conn`, niciun `commit`, niciun `rollback`, nicio `HTTPException`** sub stratul HTTP —
+  cerut pe AST de `core/test_p7_v2_scrieri.py`, nu prin convenție;
+- cele 15 module au, măsurat, **zero importuri** și exact patru nume de apel: `execute` (192),
+  `fetchone` (92), `fetchall` (41), `join` (1). *Nicio rețea, niciun fișier, niciun `await` — de-asta
+  contractul P5 nu s-a putut atinge nici din greșeală.*
+
+**Proprietatea tranzacției NU s-a mutat.** Rutele orchestrează în continuare; `core/tranzactie.py` e
+declarat USE_CASE dar își scrie în docstring că nu deține tranzacția — execută pe cursorul primit, la
+același loc în șir. *Comanda V2 cerea și ca use-case-ul să dețină tranzacția, și ca proprietatea să
+NU se schimbe; am ținut-o unde era și am scris alegerea — lecția 27.*
+
+**Ce a rămas în `main.py`: 38 de instrucțiuni**, toate în helperi de modul, **niciuna în corpul unei
+rute**. N-au fost niciodată în universul D1 (care e „corpul unei rute"), dar sunt motivul pentru care
+`main.py` e în continuare `D4_STRAT_MIXT`.
+
+**Unde se citește adevărul, nu proza asta:** `core/straturi.py` (registrul de straturi, 129 de
+declarații), `scripts/scan_p7_straturi.py` (detectoarele), `scripts/p7_clasificare.py` (contabilitatea).
 
 **Tiparul comun al lui P1 și P2, și confirmat de P3:** ce era calculat în cerere se
 persistă ca **model de citire** în `public`, invalidat de **triggere** pe tabelele-sursă, cu
@@ -278,18 +313,30 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 54**  *(remăsurat 09.09 la închiderea lui P4: patru deschise și rezolvate în aceeași tură — R179–R182 —, una deschisă și rămasă — R183)*, derivat cu `scripts/scan_ramas.py` — **nu se scrie de mână**.
-- **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
+*Toate cifrele de mai jos sunt DERIVATE (`scripts/raport_b.py`, `scripts/scan_ramas.py`) și
+remăsurate pe `6d73eec1`. **Nu se scriu de mână** — de trei ori s-a dovedit că o cifră copiată dintr-o
+predare în alta e greșită exact acolo unde pare cea mai sigură.*
+
+- **restanțe deschise: 54** (din care ale etapei E1: **25**) — SURSĂ 7 · VERIFICARE 31 · ARTEFACT 9 ·
+  ORDINE 7. *P7 n-a deschis niciuna și n-a închis niciuna: e o mutare de cod, nu o reparație de
+  produs.*
+- **interdicții, din 78**: MĂSURATE **24** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
+- **gărzi și instrumente**: **570** (543 în `core/`), din **517** fișiere de test.
 - **decizii care blochează: niciuna.**
 
 ---
 ## STAREA LA PREDARE
 
-**4347 teste trec** *(ieșirea porții care a produs `0742e177`)* · 11 skip · 14 xfail · ruff OK ·
+**5724 teste trec** *(ieșirea porții care a produs `6d73eec1`)* · 12 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
+
+**Brațul four-way cere acum și CARDINALITATEA** (din 12.09): numărul așteptat de procese se citește
+din `Environment=` al unității systemd, iar „2 din 2" e o afirmație despre TOATE, nu despre cele
+găsite. *Un rând rămas de la un proces mort face brațul `PREA_MULTE`, deci „instanțe stătute = 0" nu
+e o vorbă, e o consecință.*
 
 **Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.**
 
@@ -517,6 +564,11 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 - **Aplicația rulează din ARBORELE DE LUCRU.** Cu `Restart=always`, o repornire oarecare ridică
   cod NECOMIS. Pe 12.09 asta a produs un proces înregistrat cu codul valului 3 și commitul valului
   2 — care arăta exact ca un proces rămas în urmă.
+- **[13.09] `A && B && C & sleep 5` BACKGROUNDEAZĂ TOT LANȚUL, nu doar ultima verigă.** Am trimis
+  prin ssh `cat > MESAJ.txt && git add … && git commit -F MESAJ.txt &` — iar `git commit` a pornit
+  înainte ca `cat` să fi terminat de scris fișierul. Poarta a rulat **29 de minute** și a trecut, iar
+  commitul a căzut la capăt cu *„Aborting commit due to empty commit message"*. *Scrierea fișierului
+  de mesaj e un pas separat, verificat cu `wc -c`, înainte de commit.*
 - **Stage pe nume, niciodată `git add -A`.** Escape declarat: `# multe-fisiere-ok:`.
 - **O probă care ține o tranzacție deschisă nu poate deschide o a doua conexiune pe același rând.**
 - **O probă care blochează o lună trebuie s-o deblocheze în `finally`.**
@@ -557,6 +609,9 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **orice ratchet atins** | blocurile generate **regenerate ULTIMELE**, după toate celelalte schimbări | `test_clichete_generate` · `test_predare_cifre` |
 | **un fișier de gardă NOU** | clichetul de aserțiuni-pe-text îl pornește **de la zero**: orice `x in text` îl urcă. Se scrie pe **numărătoare** (`count`) sau pe mulțime (`>=`) | `test_garzi_pe_text` (clichetele 50 și 19) |
 | **o editare de JS** | pe lângă versionare și scan: **publicare din arbore**, altfel proba testează altceva decât ai scris | R118 — nimic nu pică, dar măsori altceva |
+| **SQL într-o rută** | nu trece: se scrie o funcție de repository care primește `cur`, sau una din `core/tranzactie.py` pentru control de tranzacție | `test_p7_v2_scrieri` (zece mutanți) |
+| **un modul nou sub HTTP** | o declarație de strat, exact una, în `core/straturi.py` | `test_p7_straturi` |
+| **o cifră scrisă în motivul unei declarații de strat** | se recalculează la fiecare rulare — «N instrucțiuni SQL» și «N rute montate in modul» se confruntă cu modulul | `test_p7_straturi::test_cifra_din_motiv_nu_imbatraneste_tacut` |
 
 *Cel mai ieftin drum: rulează gărzile de registru **înainte** de commit (`perimetru.py`), nu după —
 o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
@@ -703,6 +758,25 @@ a ce e adevărat **acum**.
    worker totul se comportă ca înainte — pragul de conexiuni dă tot 20, blocajul e necontestat,
    liderul e singurul candidat.
 
+0b. **P7 E DESCHIS, iar V1+V2 sunt închise (13.09.2026). `main.py` nu mai conține SQL în rute.**
+
+   **Ce se schimbă pentru cine scrie cod de acum:** o rută nouă care atinge baza **nu scrie SQL**.
+   Scrie o funcție într-un `core/repo_*.py`, care primește `cur` și nu comite nimic. Dacă ai nevoie
+   de `SAVEPOINT` sau de `SET LOCAL search_path`, sunt în `core/tranzactie.py` — o funcție per
+   instrucțiune, cu SQL-ul literal, dinadins (un nume de savepoint interpolat ar fi o suprafață de
+   injecție care azi nu există). **Garda cade dacă pui `.execute` într-o rută**, pe oricare din cele
+   patru clase: `core/test_p7_v2_scrieri.py`, cu cei zece mutanți.
+
+   **Ce a rămas de făcut, în ordinea propusă (niciunul început):** `D2` — un motor fiscal
+   (`core/efactura_send.py`) importă `db`; e **o singură** încălcare, cu cauză numită, deci e valul
+   cel mai mic care închide o verificare canonică întreagă. Apoi `D4` — 38 de module cu două straturi,
+   din care **32 au aceeași formă** (generator de declarație + repository), deci un val cu tipar
+   repetabil. Ultimul e `main.py` însuși: cei 38 de helperi de modul, care e de fapt valul use-case
+   pe care §4 al comenzii V2 îl cerea și pe care nu l-am făcut.
+
+   **Ce NU e închis, deși cifra arată bine:** `D1=0` e **una** din cele trei verificări canonice.
+   *Zero pe un detector nu e zero pe fază.*
+
 1. **RESTUL: NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e
    închisă. Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi
    rămase din clasa R164."* Cele **54** de restanțe deschise **nu sunt o coadă de sarcini**;
@@ -716,7 +790,7 @@ a ce e adevărat **acum**.
    | **etapa 1** — date invalide | 364/364, închisă 05.09.2026 |
    | **etapa 2** — date valide, până în declarație | **toate cele nouă**, închisă 06.09.2026, 0 nepotriviri pe cele cinci loturi |
    | **R151** — ultima restanță deblocată de decizie | răspuns primit 05.09, construită 06.09 |
-   | **restanțe deschise** | **50** *(se derivă cu `scripts/raport_b.py`, nu se crede din proza asta)* |
+   | **restanțe deschise** | **54** *(se derivă cu `scripts/raport_b.py`, nu se crede din proza asta — iar „50" a stat aici o săptămână, contrazicând „54" din altă secțiune a aceluiași document)* |
 
    **CE A RĂMAS EXPRES NEATINS, și de cine s-a decis:**
    - **backlogul A3** (Playwright/infra: reconciliator #5, matrice de stări #4, baseline determinist

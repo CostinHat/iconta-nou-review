@@ -8748,3 +8748,98 @@ e intact; subiectul lui s-a mutat în tăcere. Scris acum lângă bloc.
 Poarta finală: **5598 verzi / 0 roșii** · 12 sărite · 14 xfail · verificator TOTAL 0 · five-way
 închis pe `ccfde808` · `iconta.eu` 200. `P6_CODE_ACTION_REQUIRED=0` · `P6_UNDECLARED_CACHES=0` ·
 `P6_INFRA_ACTION_REQUIRED=1` — ultima cifră e singurul motiv pentru care etapa rămâne deschisă.
+
+
+---
+
+## 12.09.2026, partea a doua — **P6 s-a închis efectiv, iar intrarea de dimineață rămăsese s-o spună**
+
+*Intrarea de mai sus a fost scrisă la `94d655a8` (12:29) și se oprește la `ccfde808`. După ea au mai
+intrat cinci commituri în aceeași zi, iar ultima propoziție a intrării — „`P6_INFRA_ACTION_REQUIRED=1`
+e singurul motiv pentru care etapa rămâne deschisă" — a rămas în registru după ce încetase să fie
+adevărată. Se completează acum, nu se rescrie.*
+
+**Pentru un contabil: tot nimic.** Niciun ecran, niciun câmp, niciun calcul, niciun refuz cu alt text.
+
+**Ce s-a întâmplat, pe scurt.** Costin a editat unitatea systemd (pasul cere root) și producția a
+trecut la **două procese**. Bascularea a scos imediat un defect pe care suita verde nu-l putea vedea:
+blocajul de pornire se lua, dar `migrare_api.asigura_tabel` comitea o linie mai jos și îl elibera —
+deci instalarea P2 rula **neserializată**, iar un worker murea la **fiecare** repornire, 4 din 4.
+Reparat în aceeași zi (`a9566af0`), împreună cu a doua gaură: un lider mort nu ieșea din registru
+decât după 900 s, deci munca de fundal putea sta un sfert de oră. După reparație, preluarea măsurată:
+**2,0 s**.
+
+Apoi brațul four-way a tipărit *„TOATE procesele poartă HEAD: 1 din 1"* pe o producție cu **doi**
+workeri — a nimerit fereastra de ~0,8 s dintre înregistrările lor. N-a mințit despre ce a văzut; a
+mințit prin ce nu s-a întrebat. Reparat cerându-i **cardinalitatea** din configurația canonică
+(`f260df2e`). *„Nu știu câți" nu are voie să devină „da".*
+
+Restul zilei a fost **P7, diagnostic** (`b67d2bfb`) — cele trei verificări canonice devenite trei
+detectoare calibrate, 257 de poziții, zero neclasificate —, **V3** (`364fbc63`) — „motor fiscal" a
+încetat să fie o aproximare și a devenit o declarație, `core/straturi.py`, iar întrebarea pusă pe
+universul adevărat a dat alt răspuns: `D2` **0 → 1** — și sincronizarea registrelor (`b97bb930`).
+
+---
+
+## 13.09.2026 — **pentru un contabil, ziua asta n-a schimbat absolut nimic**
+
+**Și e cel mai curat caz de până acum.** Patru commituri, trei porți complete, **257 de instrucțiuni
+SQL mutate dintr-un fișier în altul** — și zero diferență pentru omul care ține contabilitatea unei
+firme. Nu „aproape nimic", ca pe 07.09. **Nimic.**
+
+Motivul e chiar natura muncii: V1 și V2 ale lui P7 au **mutat** cod, nu l-au rescris. Același SQL,
+aceiași parametri, aceeași ordine, același cursor, aceleași hotare de tranzacție. Dacă ziua ar fi
+schimbat ceva vizibil, ar fi însemnat că am greșit.
+
+### Ce s-a schimbat, sub capotă
+
+`main.py` nu mai conține nicio instrucțiune SQL în **corpul unei rute**. Cele 257 au ieșit în două
+valuri — **107 citiri** (`8d182afa`) și **140 de scrieri plus 10 instrucțiuni de control de
+tranzacție** (`cd5538ae`) — în 15 module de sub stratul HTTP: 14 de repository și unul tranzacțional.
+
+Fiecare funcție de acolo primește **cursorul apelantului**: aceeași tranzacție, aceeași conexiune,
+același `search_path`. Niciun `get_conn`, niciun `commit`, niciun `rollback`, nicio `HTTPException` —
+cerut pe AST, nu prin convenție. Măsurat: cele 15 module au **zero importuri** și exact patru nume de
+apel (`execute`, `fetchone`, `fetchall`, `join`). *Nu pot atinge rețeaua nici din greșeală.*
+
+**Ce NU s-a mutat, deliberat: proprietatea tranzacției.** Rutele orchestrează în continuare. Comanda
+cerea și ca use-case-ul să dețină tranzacția, și ca proprietatea să nu se schimbe — două lucruri care
+nu pot fi adevărate deodată. Am ales să n-o mut și am scris alegerea în trei registre, în loc s-o iau
+tăcut.
+
+### Cum se dovedește că n-am schimbat nimic
+
+Nu prin afirmație. Cele 150 de texte SQL care erau în rute se regăsesc **toate** în straturi, zero
+pierdute. Numărul de interogări și numărul de conexiuni sunt **identice pe toate cele 421 de rute** —
+nu în total, per rută. Iar în `main.py` s-au adăugat 154 de linii, din care 150 sunt exact apelurile
+și 2 importurile.
+
+### Ce a scos ziua, și e partea care merită citită
+
+Un **defect de registru**, găsit fiindcă aritmetica nu se închidea. `core/straturi.py` spunea, despre
+`main.py`, *„295 instructiuni SQL"* — adevărat când a fost scris, la V3. V1 a mutat 107, V2 încă 150,
+și nimic n-a întrebat registrul; detectorul `D4` a continuat să tipărească `295` **ca dovadă**.
+Diferența e exact ce s-a mutat: **295 − 257 = 38**. *Nu cifra greșită e problema, ci că arăta
+măsurată.*
+
+Și are o coadă mai bună decât lecția: corectând-o, am stricat cifra de lângă — am scris 424 de rute
+în loc de 421, fiindcă 424 e totalul pe toate modulele. Garda pe care tocmai o scrisesem recalcula
+numărul de instrucțiuni, nu numărul de rute, deci n-a văzut-o. *O gardă scrisă pentru cifra care
+tocmai a îmbătrânit nu acoperă cifra de lângă ea — iar cea mai probabilă mână care o strică pe a doua
+e a celui care o repară pe prima.* Lărgită la ambele măsuri, calibrată în ambele direcții
+(`5223d8f7`).
+
+### Ce a costat ziua
+
+Poarta completă a rulat de **trei ori**, ~29 de minute fiecare. **O respingere**, și nu a codului: un
+commit a căzut la capătul porții cu *„empty commit message"*, fiindcă scrisesem fișierul de mesaj și
+commitul în același lanț backgroundat cu `&`, iar commitul a pornit primul. Douăzeci și nouă de
+minute de poartă verde, aruncate de un `&`.
+
+### Cifre
+
+Poarta finală: **5724 verzi / 0 roșii** · 12 sărite · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+five-way închis pe `6d73eec1` · două procese vii, 2 din 2 · `iconta.eu` 200.
+
+`D1` **150 → 0** pe toate cele patru clase · `P7_ACTION_REQUIRED` **296 → 189 → 39** · rămân `D2`=1 și
+`D4`=38, deci **P7 rămâne DESCHISĂ**. *Zero pe un detector nu e zero pe fază.*
