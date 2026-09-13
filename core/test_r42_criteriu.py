@@ -23,6 +23,8 @@ n-ar apărea într-o listă scrisă de mână. Aici se descoperă din AST toate 
 `inregistrari` și se cere fiecăreia verificarea.
 """
 import ast
+
+from core import scan_sql_efectiv as _efectiv
 import io
 import pathlib
 import re
@@ -83,6 +85,9 @@ def _tabele_citite(nod):
             buc.append(x.value)
         elif isinstance(x, ast.JoinedStr):
             buc.append("".join(v.value for v in x.values if isinstance(v, ast.Constant)))
+    # [P7 · D4] plus SQL-ul chemat din depozitul nominal al lui `main.py`: dupa val, o functie care
+    # citeste doua tabele prin `_repo` n-ar mai avea niciun `FROM` in corpul ei.
+    buc += _efectiv.sql_din_nod("main.py", nod)
     return set(_RE_FROM.findall(" ".join(" ".join(buc).split()).lower()))
 
 

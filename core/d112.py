@@ -34,6 +34,7 @@ _ENUM_XSD_CACHE_DECLARATIE = _Dec(
     dovada="core/test_cache_declarat.py::test_enum_xsd_se_reconstruieste_identic",
 )
 from core import nomenclator_cm as _ncm
+from core import repo_d112 as _repo
 
 
 @dataclass
@@ -704,16 +705,12 @@ _COLOANE_SALARIAT = ("id", "nume", "prenume", "cnp", "data_angajare", "salariu_b
 def pull(conn, schema, an, luna):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
-        prof = dict(cur.fetchone() or {})
+        prof = dict(_repo.select_firma_profil(cur, schema) or {})
         from datetime import date as _dsal
         # [fix data-angajare 06.08.2026] salariat activ IN luna = angajat pana la sfarsitul lunii SI
         # neincetat inainte de inceputul ei. Fara gardul pe data_angajare, D112 pe o luna anterioara angajarii
         # includea salariatul -> DUK S7 (dataAng > data raportare). Aceeasi clasa ca migrarea date-aware pe jumatate.
-        cur.execute(f"SELECT * FROM {schema}.salariati WHERE (data_incetare IS NULL OR data_incetare >= %s) "
-                    f"AND (data_angajare IS NULL OR data_angajare < (%s::date + INTERVAL '1 month')) ORDER BY id",
-                    (_dsal(an, luna, 1), _dsal(an, luna, 1)))
-        sal = [dict(r) for r in cur.fetchall()]
+        sal = [dict(r) for r in _repo.select_salariati(cur, schema, _dsal, an, luna)]
         # GARDA COLOANE (27.07.2026): SELECT * nu crapa cand o coloana dispare din schema -
         # randul iese fara cheia aceea, s.get() da None, iar None e absenta legitima ->
         # valoarea devine TACIT 0. Dovedit: cu salariu_brut redenumita, D112 emitea o
@@ -722,9 +719,7 @@ def pull(conn, schema, an, luna):
         # cur.description complet). Verificam PREZENTA coloanei; valoarea 0 ramane legitima
         # (salariat in concediu medical toata luna).
         cere_coloane_cursor(cur, _COLOANE_SALARIAT, "salariati")
-        cur.execute(f"""SELECT * FROM {schema}.concedii_medicale
-                        WHERE an=%s AND luna=%s""", (an, luna))
-        cms = [dict(r) for r in cur.fetchall()]
+        cms = [dict(r) for r in _repo.select_concedii_medicale(cur, schema, an, luna)]
     # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
     vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
     cult_luna = _ben.lista_luna(conn, schema, an, luna, "cultural")  # [tichete culturale]

@@ -28,6 +28,8 @@ CE NU FACE, declarat:
     27.08. Spune că e aplicată, și că nu se poate strecura pe lângă ea.
 """
 import ast
+
+from core import scan_sql_efectiv as _efectiv
 import io
 import os
 import re
@@ -363,8 +365,9 @@ def test_auditul_nu_mai_produce_orfani_dupa_stergere():
     (`NotNullViolation`), iar pe cele nullable ar **respinge** rândul de după ștergere, nu l-ar
     trece pe NULL: linia de audit ar **dispărea**, nu ar rămâne orfană.
     """
-    sursa = io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
-    inserturi = [s for s in _sql_executat(ast.parse(sursa))
+    # [P7 · D4] `main.py` nu mai poarta SQL nici in helperii de modul: a trecut in
+    # `core/repo_main.py`. Intrebarea — „INSERT-ul de audit isi pazeste tenant_id?" — e neatinsa.
+    inserturi = [s for s in _efectiv.sql_modul("main.py")
                  if s.startswith("INSERT INTO public.audit_log")]
     assert inserturi, "n-am găsit niciun INSERT în audit_log"
     fara_gard = [s[:90] for s in inserturi

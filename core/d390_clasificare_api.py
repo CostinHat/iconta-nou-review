@@ -13,6 +13,7 @@ Validează tranzițiile la sursă (nu se poate face o achiziție să fie livrare
 from core import afirmatii as _af  # [P8] statutul e o afirmatie
 from decimal import Decimal
 from core.d390 import TARI_UE, TIPURI, TIPURI_DIRECTIE, operatiuni_auto, pull, pull_manual, pull_reclasificari
+from core import repo_d390_clasificare_api as _repo
 
 # TIPURI_DIRECTIE: sursa unica in core.d390 (regula de tranzitie, importata mai sus)
 _CU_COD_OBLIG = ("L", "T", "P", "R")  # codO obligatoriu (ca d390.valideaza)
@@ -43,15 +44,9 @@ def salveaza_reclasificare(conn, schema, an, luna, directie, tara, cod, tip):
     tip_def = "L" if directie == "emisa" else "A"
     with conn.cursor() as cur:
         if tip == tip_def:  # revine la auto -> nu mai ține override
-            cur.execute(f"DELETE FROM {schema}.d390_reclasificare "
-                        f"WHERE an=%s AND luna=%s AND directie=%s AND tara=%s AND cod=%s",
-                        (an, luna, directie, tara, cod))
+            _repo.delete_d390_reclasificare(cur, schema, an, luna, directie, tara, cod)
         else:
-            # upsert-ok: override reclasificare D390 pe (an,luna,directie,tara,cod) - set intentionat
-            cur.execute(f"""INSERT INTO {schema}.d390_reclasificare (an,luna,directie,tara,cod,tip)
-                            VALUES (%s,%s,%s,%s,%s,%s)
-                            ON CONFLICT (an,luna,directie,tara,cod) DO UPDATE SET tip=EXCLUDED.tip""",
-                        (an, luna, directie, tara, cod, tip))
+            _repo.insert_d390_reclasificare(cur, schema, an, luna, directie, tara, cod, tip)
     conn.commit()
     return {"ok": True}
 
@@ -61,8 +56,7 @@ def manual_adauga(conn, schema, an, luna, tip, tara, cod, den, baza):
     # [gard consistenta vector<->D390, audit tenant_006] D390 e pentru firme cu operatiuni IC.
     # Daca operatiuni_ic=False, D390 e blocat in selector -> nu acceptam linii manuale. Simetric d300/d301.
     with conn.cursor() as _cur:
-        _cur.execute(f"SELECT operatiuni_ic FROM {schema}.firma_profil WHERE id=1")
-        _pr = _cur.fetchone()
+        _pr = _repo.select_firma_profil(_cur, schema)
     if _pr and _pr[0] is False:
         _t = ("Firma nu are operațiuni intracomunitare în Vectorul fiscal — D390 "
               "(declarația recapitulativă) nu i se aplică. Dacă firma face operațiuni "
@@ -95,18 +89,14 @@ def manual_adauga(conn, schema, an, luna, tip, tara, cod, den, baza):
                 "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
     den = (den or "")[:200]
     with conn.cursor() as cur:
-        cur.execute(f"""INSERT INTO {schema}.d390_manual (an,luna,tip,tara,cod,den,baza)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                    (an, luna, tip, tara, cod, den, b))
-        mid = cur.fetchone()[0]
+        mid = _repo.insert_d390_manual(cur, schema, an, luna, tip, tara, cod, den, b)[0]
     conn.commit()
     return {"ok": True, "id": mid}
 
 
 def manual_sterge(conn, schema, an, luna, id):
     with conn.cursor() as cur:
-        cur.execute(f"DELETE FROM {schema}.d390_manual WHERE id=%s AND an=%s AND luna=%s",
-                    (id, an, luna))
+        _repo.delete_d390_manual(cur, schema, id, an, luna)
         ok = cur.rowcount > 0
     conn.commit()
     return {"ok": ok}

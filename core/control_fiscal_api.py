@@ -26,6 +26,7 @@ from core import afirmatii as _af   # [P3] afirmatiile despre datele firmei sunt
 from core import scadente  # sursa unica de scadente + zile lucratoare (fara import circular)
 from core.common import azi_ro, pastila_firma, perioada_tva_tip  # [fus] ziua RO; [semafor] escaladare; [ruptura] normalizare tip_decont
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
+from core import repo_control_fiscal_api as _repo
 
 PRAG_URMARIT_ZILE = 7   # termen in <= 7 zile, nedepus -> galben
 
@@ -155,11 +156,9 @@ def ic_fapt_din_db(conn, schema, an):
         return None                      # nu pot citi faptul -> nu afirm absenta (fail-safe)
     try:
         with conn.cursor() as cur:
-            cur.execute("SELECT to_regclass(%s)", (schema + ".efactura_primite",))
+            _repo.select(cur, schema)
             if cur.fetchone()[0]:
-                cur.execute("SELECT count(*) FROM " + schema + ".efactura_primite "
-                            "WHERE status = 'descarcata'")
-                if cur.fetchone()[0]:
+                if _repo.select_schema(cur, schema)[0]:
                     return None          # documente descarcate, neinregistrate -> evidenta incompleta
     except Exception:
         # MASCA MOTIVATA: daca nu pot CITI faptul, nu am voie sa afirm absenta lui. Tacerea aici
@@ -832,11 +831,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
 
     # vector + salariati
     with conn_schema.cursor() as cur:
-        cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, "
-                    "platitor_tva_anaf, platitor_tva_anaf_data, tip_firma, platitor_tva_anaf_inceput, "
-                    "inreg_art317 "
-                    "FROM firma_profil LIMIT 1")
-        row = cur.fetchone()
+        row = _repo.select_firma_profil(cur)
         vector = {}
         if row:
             from core.migrare_api import regim_contabil
@@ -848,11 +843,10 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
                       "tva_data_inceput": row[7], "inreg_art317": row[8],
                       # partida_simpla din regim_contabil (FAPTUL intr-un singur loc, nu recopiat). DECIZII 23.07.
                       "partida_simpla": regim_contabil(row[6]) == "simpla"}
-        cur.execute("SELECT to_regclass('salariati')")
+        _repo.select_2(cur)
         are_sal = False
         if cur.fetchone()[0]:
-            cur.execute("SELECT count(*) FROM salariati WHERE (data_incetare IS NULL OR data_incetare >= CURRENT_DATE) AND (data_angajare IS NULL OR data_angajare <= CURRENT_DATE)")
-            are_sal = cur.fetchone()[0] > 0
+            are_sal = _repo.select_salariati(cur)[0] > 0
 
     if not vector:
         return {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": [],
@@ -879,8 +873,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # schema (facturi/salariati/note, prin puntea control_incrucisat.existenta_firma_an). D100/D101/D406-neplatitor
     # pe un an nedemonstrabil -> GRI "necunoscut declarat", NU restanta.
     with conn_public.cursor() as _curt:
-        _curt.execute("SELECT (creat_la AT TIME ZONE 'Europe/Bucharest')::date FROM public.tenants WHERE id=%s", (tenant_id,))
-        _rt = _curt.fetchone()
+        _rt = _repo.select_public(_curt, tenant_id)
         _creat_la = _rt[0] if _rt else None
     def _existenta_fapt(an):
         if _ci_sal.existenta_firma_an(conn_schema, schema, an):
@@ -906,9 +899,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
                 return True
             inc, sf = per.interval()
             with conn_schema.cursor() as _cf:
-                _cf.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
-                            "AND data_emitere >= %s AND data_emitere < %s", (inc.isoformat(), sf.isoformat()))
-                nf = _cf.fetchone()[0]
+                nf = _repo.select_facturi(_cf, inc, sf)[0]
             return None if nf else False
         except Exception:
             # MASCA MOTIVATA: fail-safe DELIBERAT - daca nu pot calcula baza de venituri (pull/DB esueaza),
@@ -933,8 +924,8 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
 
     # depuse din public (cu data depunerii, pentru motivul verde)
     with conn_public.cursor() as cur:
-        cur.execute("SELECT tip, an, luna, (data_depunere AT TIME ZONE 'Europe/Bucharest')::date AS data_depunere "
-                    "FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))  # [F163v2] vederea = depunerea curentă (nr_depunere max)
+        _repo.select_public_2(cur, tenant_id)
+  # [F163v2] vederea = depunerea curentă (nr_depunere max)
         depuse = {}
         for t, a, l, dd in cur.fetchall():
             depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd

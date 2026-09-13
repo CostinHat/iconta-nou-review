@@ -28,6 +28,8 @@ CE NU FACE, DECLARAT: nu verifică dacă o cale nouă **ar trebui** să contabil
 decizie (R91). Verifică doar că nu apare una **tăcut**.
 """
 import ast
+
+from core import scan_sql_efectiv as _efectiv
 import io
 import os
 
@@ -77,17 +79,16 @@ def cai(radacina, doar=None):
                 arb = ast.parse(io.open(cale, encoding="utf-8").read())
             except SyntaxError:
                 continue
-            fn_de_linie = {}
-            for fn in ast.walk(arb):
-                if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    for ln in range(fn.lineno, (fn.end_lineno or fn.lineno) + 1):
-                        fn_de_linie.setdefault(ln, fn.name)
-            for n in ast.walk(arb):
-                if not (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
-                        and n.func.attr == "execute" and n.args):
-                    continue
-                if e_insert_in_facturi(_literal(n.args[0])):
-                    out.append((rel, fn_de_linie.get(n.lineno, "<modul>")))
+            # [P7 · D4] Depozitele nu se numara ca LOCURI: intrebarea e din cate locuri ale
+            # aplicatiei se naste o factura, nu in cate depozite sta INSERT-ul. Instructiunea
+            # chemata printr-un depozit se atribuie functiei APELANTE — altfel, dupa valul D4,
+            # `main.py::_factura_din_parsat` ar disparea din inventar si ar aparea in locul lui
+            # `core/repo_main.py::insert_facturi`, ceea ce e adevarat si fara sens.
+            if os.path.basename(rel).startswith("repo_"):
+                continue
+            for fn_nume, sql in _efectiv.executii_pe_functie(rel):
+                if e_insert_in_facturi(sql):
+                    out.append((rel, fn_nume))
     return sorted(set(out))
 
 

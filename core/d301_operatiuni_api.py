@@ -24,6 +24,7 @@ from decimal import Decimal, ROUND_HALF_UP
 _DATA_DOC = re.compile(r"^\d{2}\.\d{2}\.\d{4}$")   # ZZ.LL.AAAA (structura ANAF, poz.35 C(10) DA)
 from core import common as _c
 from core.d301 import TIPURI_OP, VALUTE, calc_baza
+from core import repo_d301_operatiuni_api as _repo
 
 # Etichetele oficiale ale celor 5 tipuri (OPANAF 592/2016, formularul 301) — sursa UNICA,
 # EXACT ca in formular; frontend-ul le randeaza, nu le rescrie.
@@ -92,9 +93,7 @@ def lista(conn, schema, an, luna):
     """Operatiunile lunii (cu baza si tva) + nomenclatoarele pt formular (o singura sursa)."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(f"SELECT id, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, "
-                    f"partener_tara, partener_cod, partener_den, temei_307 "
-                    f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+        _repo.select_d301_operatiuni(cur, schema, an, luna)
         ops = []
         for r in cur.fetchall():
             baza = calc_baza(r["val_valuta"] or 0, r["curs"])
@@ -128,8 +127,7 @@ def adauga(conn, schema, an, luna, d):
     # pot depune niciodata (selectorul le blocheaza: control_fiscal_api "firma e platitoare") -> nu le
     # acceptam la introducere, altfel stare inconsistenta (operatiuni pentru o declaratie blocata).
     with conn.cursor() as _cur:
-        _cur.execute(f"SELECT platitor_tva FROM {schema}.firma_profil WHERE id=1")
-        _pr = _cur.fetchone()
+        _pr = _repo.select_firma_profil(_cur, schema)
     if _pr and _pr[0] is True:
         _t = ("Firma e înregistrată în scopuri de TVA (plătitoare) — D301 (decontul "
               "special) e pentru NEplătitori. Achizițiile intracomunitare ale unui "
@@ -211,21 +209,14 @@ def adauga(conn, schema, an, luna, d):
                       "(DUK regula R24.1) la generarea D390. Verifică-l acum." % (partener_tara, partener_cod, partener_tara, _mo))
     baza, tva = _tva_din(val_valuta, curs, cota)
     with conn.cursor() as cur:
-        cur.execute(f"""INSERT INTO {schema}.d301_operatiuni
-                        (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
-                         partener_tara, partener_cod, partener_den, temei_307)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                    (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
-                     partener_tara, partener_cod, partener_den, temei_307))
-        oid = cur.fetchone()[0]
+        oid = _repo.insert_d301_operatiuni(cur, schema, an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, partener_tara, partener_cod, partener_den, temei_307)[0]
     conn.commit()
     return {"ok": True, "id": oid, "baza": baza, "tva": tva, "avertisment": _avert}
 
 
 def sterge(conn, schema, an, luna, op_id):
     with conn.cursor() as cur:
-        cur.execute(f"DELETE FROM {schema}.d301_operatiuni WHERE id=%s AND an=%s AND luna=%s",
-                    (op_id, an, luna))
+        _repo.delete_d301_operatiuni(cur, schema, op_id, an, luna)
         ok = cur.rowcount > 0
     conn.commit()
     return {"ok": ok}

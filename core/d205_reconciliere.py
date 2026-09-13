@@ -25,6 +25,7 @@ NON-TAUTOLOGIE (AST): NU importa/foloseste d205.calcul_d205 / d205.pull. Cotele:
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d205_reconciliere as _repo
 
 
 class ReconciliereD205(ValueError):
@@ -39,13 +40,8 @@ def _dividende_independent(conn, an):
     """Total dividende (Σ cont debit 457, note VALIDATE, anul) + asociatii cu cota>0 - SQL PROPRIU."""
     inc, sf = date(an, 1, 1).isoformat(), date(an + 1, 1, 1).isoformat()
     with conn.cursor() as cur:
-        cur.execute("SELECT COALESCE(SUM(l.suma),0) FROM inregistrari_linii l "
-                    "JOIN inregistrari i ON i.id = l.inregistrare_id "
-                    "WHERE i.status='validata' AND l.cont_debit LIKE '457%%' "
-                    "AND i.data >= %s AND i.data < %s", (inc, sf))
-        total_div = _q(cur.fetchone()[0] or 0)
-        cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0 ORDER BY nume")
-        asoc = cur.fetchall()
+        total_div = _q(_repo.select_inregistrari_linii(cur, inc, sf)[0] or 0)
+        asoc = _repo.select_asociati(cur)
     return total_div, asoc
 
 

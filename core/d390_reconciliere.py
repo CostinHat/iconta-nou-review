@@ -54,6 +54,7 @@ deja curate), inainte de / impreuna cu poarta-zero. `conn` e pozitionat pe schem
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d390_reconciliere as _repo
 
 # Nomenclator UE re-declarat LOCAL (nu se importa din core.d390 - non-tautologie inclusiv pe
 # nomenclator). Identic ca CONTINUT cu d390.TARI_UE; daca diverge, testul de baseline pe ALFA/DELTA
@@ -116,8 +117,7 @@ def _pull_facturi(conn, schema, an, luna):
          "FROM {s}.facturi f LEFT JOIN {s}.clienti c ON c.id = f.client_id "
          "WHERE {e} >= %s AND {e} < %s ORDER BY f.id").format(s=schema, e=_EXIG_SQL)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(q, (inceput, sfarsit))
-        rows = cur.fetchall()
+        rows = _repo.sql(cur, q, inceput, sfarsit)
     out = []
     for r in rows:
         baza = Decimal(str(r["total"] if r["total"] is not None else 0)) \
@@ -130,18 +130,14 @@ def _pull_reclasificari(conn, schema, an, luna):
     """Override-urile de tip {(directie, tara, cod): tip}. SQL propriu (nu se importa
     pull_reclasificari)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT directie, tara, cod, tip FROM {s}.d390_reclasificare "
-                    "WHERE an=%s AND luna=%s".format(s=schema), (an, luna))
-        return {(d, t, c): tip for (d, t, c, tip) in cur.fetchall()}
+        return {(d, t, c): tip for (d, t, c, tip) in _repo.select_s(cur, schema, an, luna)}
 
 
 def _pull_manual(conn, schema, an, luna):
     """Liniile pur manuale {tip, tara, cod, den, baza}. SQL propriu (nu se importa pull_manual)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT tip, tara, cod, den, baza FROM {s}.d390_manual "
-                    "WHERE an=%s AND luna=%s".format(s=schema), (an, luna))
         return [{"tip": t, "tara": ta, "cod": c, "den": d, "baza": b}
-                for (t, ta, c, d, b) in cur.fetchall()]
+                for (t, ta, c, d, b) in _repo.select_s_2(cur, schema, an, luna)]
 
 
 _D301_TIP_COD = {1: "A", 3: "A", 5: "S"}  # mirror d390._D301_TIP_COD (NU se importa - a doua cale independenta)
@@ -155,11 +151,9 @@ def _pull_d301(conn, schema, an, luna):
     if conn is None:
         return []
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
-        if not cur.fetchone()[0]:
+        if not _repo.select(cur, schema)[0]:
             return []
-        cur.execute("SELECT tip, val_valuta, curs, partener_tara, partener_cod, partener_den "
-                    "FROM {s}.d301_operatiuni WHERE an=%s AND luna=%s".format(s=schema), (an, luna))
+        _repo.select_s_3(cur, schema, an, luna)
         out = []
         for (tip, val, curs, tara, cod, den) in cur.fetchall():
             codD = _D301_TIP_COD.get(int(tip or 1))

@@ -982,7 +982,30 @@ def analiza_izolare(rad):
     _repath = re.compile(r"@\w+\.\w+\(.([^\"]+)")
     _redn = re.compile(r"(?:async )?def (\w+)")
 
+    # [P7 · valul D4, 13.09.2026] Corpul unei functii include si sursa functiilor de DEPOZIT pe
+    # care le cheama prin `_repo.` — un singur pas, numai catre `core/repo_*.py`. Fara asta, dupa
+    # ce valul a mutat instructiunile, doua rute `/api/v1/firme/{tenant_id}/…` au aparut ca
+    # LEAK-POTENTIAL desi rezolvarea de acces era neatinsa: se mutase, nu disparuse.
+    _iz_depozit = {}
+    _dir_repo = os.path.join(rad, "core")
+    if os.path.isdir(_dir_repo):
+        for _fr in sorted(os.listdir(_dir_repo)):
+            if not (_fr.startswith("repo_") and _fr.endswith(".py")):
+                continue
+            _sr = open(os.path.join(_dir_repo, _fr), encoding="utf-8").read().split("\n")
+            _poz = [(_i, _ln[4:_ln.index("(")]) for _i, _ln in enumerate(_sr)
+                    if _ln.startswith("def ") and "(" in _ln]
+            for _q, (_i, _nm) in enumerate(_poz):
+                _sf = _poz[_q + 1][0] if _q + 1 < len(_poz) else len(_sr)
+                _iz_depozit.setdefault(_nm, []).append("\n".join(_sr[_i:_sf]))
+
+    def _cu_depozit(_bd):
+        _extra = [_s for _nm, _lst in _iz_depozit.items() if ("_repo.%s(" % _nm) in _bd
+                  for _s in _lst]
+        return _bd + ("\n" + "\n".join(_extra) if _extra else "")
+
     def _iz_resolver(_bd):
+        _bd = _cu_depozit(_bd)
         return ("schema_tenant" in _bd or
                 ("public.tenants" in _bd and ("accounting_firm_id" in _bd or "user_tenants" in _bd)))
 

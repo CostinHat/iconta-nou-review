@@ -34,6 +34,7 @@ from core.pdf_util import bani
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 from core.identitate import valideaza_cui  # T1: validator partajat CUI (read-only) - checksum + lungime pre-DUK
+from core import repo_d301 as _repo
 
 NS = "mfp:anaf:dgti:d301:declaratie:v1"
 REGULI = "2026.1"
@@ -351,13 +352,8 @@ def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     an, luna = perioada.an, perioada.luna
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, banca, iban, "
-                    "declarant_nume, declarant_prenume, declarant_functie, inreg_art317 "
-                    "FROM firma_profil WHERE id = 1")
-        prof = cur.fetchone() or {}
-        cur.execute("SELECT tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva "
-                    "FROM d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
-        ops = [dict(r) for r in cur.fetchall()]
+        prof = _repo.select_firma_profil(cur) or {}
+        ops = [dict(r) for r in _repo.select_d301_operatiuni(cur, an, luna)]
     return prof, ops
 
 

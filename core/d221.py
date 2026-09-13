@@ -32,6 +32,7 @@ DENUMIRE_OFICIALA = 'Declarație privind veniturile din activități agricole im
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re
+from core import repo_d221 as _repo
 
 NS = "mfp:anaf:dgti:d221:declaratie:v1"
 _NEDIGIT = re.compile(r"\D")
@@ -74,8 +75,7 @@ def calcul_d221(manual):
 
 def pull(conn, schema, perioada):
     with conn.cursor() as cur:
-        cur.execute("SELECT declarant_nume, declarant_prenume, declarant_functie FROM firma_profil WHERE id = 1")
-        r = cur.fetchone()
+        r = _repo.select_firma_profil(cur)
     if not r:
         return {}
     return {"declarant_nume": r[0], "declarant_prenume": r[1], "declarant_functie": r[2]}

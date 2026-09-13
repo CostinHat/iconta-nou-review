@@ -147,8 +147,7 @@ def verifica_fus_orar(offset_local=None, pg_tz=None):
     if pg_tz is None:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute("SHOW timezone")
-                pg_tz = cur.fetchone()[0]
+                pg_tz = _repo.sql(cur)[0]
     if pg_tz != "Europe/Bucharest":
         raise RuntimeError(
             "PG timezone nu e Europe/Bucharest (%s) — app-ul refuză să pornească "
@@ -499,10 +498,7 @@ def cere_cabinet(ctx=Depends(cere_context)):
     # [suspendare-live] cabinet suspendat => 403 imediat, nu doar la login
     if ctx["rol"] != "superadmin":
         with db.get_conn() as conn, conn.cursor() as cur:
-            cur.execute("""SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u
-                           LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id
-                           WHERE u.id = %s""", (ctx["uid"],))
-            r = cur.fetchone()
+            r = _repo.select_u(cur, ctx)
             if r and r[0] is False:
                 raise HTTPException(403, "Cabinetul este suspendat. Contactați furnizorul.")
             # [reset_parola_v1] sesiune emisa INAINTE de o schimbare de parola (iat < sesiuni_valide_de) -> invalidata
@@ -550,10 +546,7 @@ def _inregistreaza_activitate(method, path, status, auth_header):
                 # `tenant_id NOT NULL` ar face stergerea IMPOSIBILA (NotNullViolation), iar pe cele
                 # nullable ar RESPINGE randul de dupa stergere, nu l-ar trece pe NULL. Adica linia
                 # de audit ar disparea in loc sa ramana orfana. Vezi R79.
-                cur.execute(
-                    "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) "
-                    "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), %s, %s)",
-                    (uid, tenant_id, actiune, _json_audit.dumps({"status": status})))
+                _repo.insert_public(cur, uid, tenant_id, actiune, _json_audit, status)
     except Exception as _e:
         _obs.esec_secundar("audit_log activitate", _e)  # inghitit, dar nu tacut (27.07.2026)
 
@@ -668,14 +661,8 @@ def _citeste_metrici_pentru_alerte():
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT count(*) FROM pg_stat_activity WHERE datname = current_database()")
-                rezultat["conexiuni_db"] = cur.fetchone()[0]
-                cur.execute("""
-                    SELECT count(*) FROM public.audit_log
-                    WHERE created_at > now() - interval '10 minutes'
-                      AND (detalii->>'status')::int >= 500
-                """)
-                rezultat["erori_noi"] = cur.fetchone()[0]
+                rezultat["conexiuni_db"] = _repo.select_pg_stat_activity(cur)[0]
+                rezultat["erori_noi"] = _repo.select_public(cur)[0]
     except Exception as _e:
         _obs.esec_secundar("metrici sanatate: citire", _e)  # inghitit, dar nu tacut (27.07.2026)
     return rezultat
@@ -684,8 +671,7 @@ def _email_superadmin():
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT email FROM public.users WHERE rol='superadmin' AND activ=true ORDER BY id LIMIT 1")
-                r = cur.fetchone()
+                r = _repo.select_public_2(cur)
         return r[0] if r else None
     except Exception as _e:
         _obs.esec_secundar("email superadmin", _e)  # inghitit, dar nu tacut (27.07.2026)
@@ -758,11 +744,7 @@ def _verifica_si_alerta():
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    "INSERT INTO public.metrici_sanatate "
-                    "(ram_procent, disc_procent, load1, conexiuni_db, erori_noi) "
-                    "VALUES (%s,%s,%s,%s,%s)",
-                    (m["ram_procent"], m["disc_procent"], m["load1"], m["conexiuni_db"], m["erori_noi"]))
+                _repo.insert_public_2(cur, m)
     except Exception as _e:
         _obs.esec_secundar("metrici sanatate: scriere", _e)  # inghitit, dar nu tacut (27.07.2026)
 
@@ -1655,8 +1637,7 @@ def _acces_pentru_activare(conn, rol, firm, tenant_id):
     despart, ca să nu se poată afla din afară ce firme există.
     """
     with conn.cursor() as cur:
-        cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id = %s", (tenant_id,))
-        r = cur.fetchone()
+        r = _repo.select_public_3(cur, tenant_id)
     if not r:
         return False
     cabinet = r[0]
@@ -1835,9 +1816,8 @@ def _hash_tok(t):
 
 def _pune_token(cur, tok, user_id, interval_sql):
     """Curata expiratele/folositele, apoi stocheaza DOAR hash-ul tokenului (nu clarul)."""
-    cur.execute("DELETE FROM public.tokene_activare WHERE expira < now() OR folosit = true")
-    cur.execute("INSERT INTO public.tokene_activare (token_hash, user_id, expira) "
-                "VALUES (%s, %s, now() + (%s)::interval)", (_hash_tok(tok), user_id, interval_sql))
+    _repo.delete_public(cur)
+    _repo.insert_public_3(cur, user_id, interval_sql, _hash_tok, tok)
 
 class MagicCereIn(BaseModel):
     email: str
@@ -3134,9 +3114,7 @@ def _termene_una_firma(f, ctx, azi):
             return (None, None)
         with db.get_conn(schema) as cs:
             with cs.cursor() as cur:
-                cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, tip_firma, "
-                            "platitor_tva_anaf_inceput, inreg_art317 FROM firma_profil LIMIT 1")
-                row = cur.fetchone()
+                row = _repo.select_firma_profil(cur)
                 from core.migrare_api import regim_contabil
                 vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
                           "tip_decont": row[2], "operatiuni_ic": row[3],
@@ -3146,11 +3124,10 @@ def _termene_una_firma(f, ctx, azi):
                           # [§4] data inceperii inregistrarii TVA (fapt ANAF) -> motorul margineste D300/D394/D406
                           # la perioadele DE DUPA inregistrare (marginit=True), ca semaforul. Inchide asimetria intre ecrane.
                           "tva_data_inceput": row[5], "inreg_art317": row[6]} if row else {}
-                cur.execute("SELECT to_regclass('salariati')")
+                _repo.select(cur)
                 are_sal = False
                 if cur.fetchone()[0]:
-                    cur.execute("SELECT count(*) FROM salariati WHERE (data_incetare IS NULL OR data_incetare >= CURRENT_DATE) AND (data_angajare IS NULL OR data_angajare <= CURRENT_DATE)")
-                    are_sal = cur.fetchone()[0] > 0
+                    are_sal = _repo.select_salariati(cur)[0] > 0
             if not vector:
                 # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
                 # [P8] NECUNOASTERE declarata, nu o cauza in proza: „nu pot evalua" e o afirmatie
@@ -3168,8 +3145,8 @@ def _termene_una_firma(f, ctx, azi):
                 return (None, neevaluate[0] if neevaluate else None)
             with db.get_conn() as cp:
                 with cp.cursor() as cur:
-                    cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tid,))  # [F163v2] vederea = depunerea curentă
-                    depuse = {(t, a, l) for (t, a, l) in cur.fetchall()}
+  # [F163v2] vederea = depunerea curentă
+                    depuse = {(t, a, l) for (t, a, l) in _repo.select_public_4(cur, tid)}
             # [D390-fapt] termene intreaba faptul lunar prin cs (conn pe schema firmei, cat timp e deschis):
             # luna deschisa -> AFISAM (nu putem exclude operatiuni pana la finalul lunii); vezi obligatii_datorate.
             from core import d390 as _d390
@@ -3362,8 +3339,7 @@ def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_cabinet)):  
 def _platitor_tva_firma(conn):
     """Citeste daca firma emitenta e platitoare TVA (din firma_profil)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT platitor_tva FROM firma_profil LIMIT 1")
-        row = cur.fetchone()
+        row = _repo.select_firma_profil_2(cur)
     return bool(row[0]) if row and row[0] is not None else True
 
 @app.get("/tenants/{tenant_id}/facturi/numerotare")
@@ -3809,8 +3785,7 @@ def _moneda_facturii(schema, factura_id):
     poata face inainte de cea de emitere. [P5 val 3, 11.09.2026]"""
     with db.get_conn(schema) as _c:
         with _c.cursor() as _cur:
-            _cur.execute("SELECT moneda FROM facturi WHERE id=%s", (factura_id,))
-            _r = _cur.fetchone()
+            _r = _repo.select_facturi(_cur, factura_id)
     return (_r[0] if _r else None)
 
 
@@ -4071,9 +4046,7 @@ def cm_sterge(tenant_id: int, salariat_id: int, cm_id: int,
 # [p57_notif] helpere notificari pe fluxul cozii
 def _coada_info(conn, coada_id):
     with conn.cursor() as cur:
-        cur.execute("SELECT tip, perioada, creat_de_id, cabinet_id FROM public.declaratii_coada WHERE id=%s",
-                    (coada_id,))
-        r = cur.fetchone()
+        r = _repo.select_public_5(cur, coada_id)
     if not r:
         return None
     return {"tip": r[0], "perioada": r[1], "creat_de_id": r[2], "cabinet_id": r[3]}
@@ -4459,16 +4432,12 @@ def pachet_poveste_get(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabi
 # ICRD_NOTIF_EMAIL_CLIENT_V1
 def _email_client_tenant(conn, tenant_id):
     with conn.cursor() as cur:
-        cur.execute(
-            "SELECT u.email FROM public.users u JOIN public.user_tenants ut ON ut.user_id=u.id "
-            "WHERE ut.tenant_id=%s AND u.rol='client' AND u.activ=true LIMIT 1", (tenant_id,))
-        r = cur.fetchone()
+        r = _repo.select_public_6(cur, tenant_id)
     return r[0] if r else None
 
 def _nume_tenant(conn, tenant_id):
     with conn.cursor() as cur:
-        cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
-        r = cur.fetchone()
+        r = _repo.select_public_7(cur, tenant_id)
     return r[0] if r else ""
 
 @app.post("/pachete/{tenant_id}/poveste")
@@ -4689,11 +4658,7 @@ def _titular_client(cur, tenant_id):
 
     De aceea `principal_client_id` s-a si SCOS: o coloana cu drum de citire si fara drum de scriere
     e a treia cale prin care intrebarea s-ar putea pune altfel maine."""
-    cur.execute("""SELECT u.id FROM public.users u
-                   JOIN public.user_tenants ut ON ut.user_id = u.id
-                   WHERE ut.tenant_id = %s AND u.rol = 'client'
-                   ORDER BY u.id LIMIT 1""", (tenant_id,))
-    r = cur.fetchone()
+    r = _repo.select_public_8(cur, tenant_id)
     if not r:
         return None
     return r["id"] if isinstance(r, dict) else r[0]
@@ -4732,9 +4697,7 @@ def _adresa_e_libera(cur, email, exclude_user_id):
     Intre cele doua momente pot trece 48 de ore: daca intrebarea ar fi pusa doar la cerere, o
     adresa luata intre timp ar fi aplicata peste, iar unicitatea s-ar sparge. Un loc, ca gardul
     sa poata asertea STRUCTURAL ca amandoua rutele il cheama."""
-    cur.execute("SELECT id FROM public.users WHERE lower(email)=%s AND id<>%s",
-                (email, exclude_user_id))
-    if cur.fetchone():
+    if _repo.select_public_9(cur, email, exclude_user_id):
         raise HTTPException(400, EMAIL_EXISTA)
 
 
@@ -4745,8 +4708,7 @@ def _urma_portal(cur, tenant_id, actiune, detaliu, autor_id):
     SUB cabinet, fara ca acesta sa afle: niciun rand de audit, nicio notificare. Singurul email
     pleca la cel invitat. Append-only, `actiune` dintr-o lista inchisa in BAZA, `detaliu` care nu
     poate fi gol — o urma care nu spune nimic nu e o urma."""
-    cur.execute("INSERT INTO public.urme_portal (tenant_id, actiune, detaliu, autor_id) "
-                "VALUES (%s, %s, %s, %s)", (tenant_id, actiune, detaliu, autor_id))
+    _repo.insert_public_4(cur, tenant_id, actiune, detaliu, autor_id)
 
 
 def _cere_acelasi_cabinet(ex, firm_id):
@@ -5186,21 +5148,14 @@ def _declaratie_generata(conn, tenant_id, tip, an, luna):
         perioada = None
     with conn.cursor() as cur:
         if perioada:
-            cur.execute("SELECT 1 FROM public.declaratii_coada "
-                        "WHERE tenant_id=%s AND tip=%s AND perioada=%s LIMIT 1",
-                        (tenant_id, tip, perioada))
-            if cur.fetchone():
+            if _repo.select_public_10(cur, tenant_id, tip, perioada):
                 return True
-        cur.execute("SELECT 1 FROM public.declaratii_depuse "
-                    "WHERE tenant_id=%s AND tip=%s AND an=%s AND luna=%s LIMIT 1",
-                    (tenant_id, tip, an, luna))
-        return cur.fetchone() is not None
+        return _repo.select_public_11(cur, tenant_id, tip, an, luna) is not None
 
 
 def _cere_perioada_deschisa(conn, schema, nota_id):
     with conn.cursor() as cur:
-        cur.execute(f"SELECT data FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
-        r = cur.fetchone()
+        r = _repo.select_inregistrari(cur, schema, nota_id)
     if r and _perioada_blocata(conn, schema, r[0]):
         raise HTTPException(423, PERIOADA_INCHISA)
 
@@ -5226,11 +5181,7 @@ def _facturi_neincheiate_in_perioada(cur, schema, an, luna):
     uită la el."""
     from datetime import date as _d
     sfarsit = _d(an + (luna == 12), (luna % 12) + 1, 1)
-    cur.execute(f"""SELECT count(*) FROM {schema}.facturi
-                    WHERE status IN ('ciorna','de_recunoscut')
-                      AND data_emitere >= %s AND data_emitere < %s""",
-                (_d(an, luna, 1), sfarsit))
-    return cur.fetchone()[0]
+    return _repo.select_facturi_2(cur, schema, sfarsit, _d, an, luna)[0]
 
 
 def _ciorne_in_perioada(cur, schema, an, luna):
@@ -5239,10 +5190,7 @@ def _ciorne_in_perioada(cur, schema, an, luna):
     dispare fără urmă."*"""
     from datetime import date as _d
     sfarsit = _d(an + (luna == 12), (luna % 12) + 1, 1)
-    cur.execute(f"""SELECT count(*) FROM {schema}.inregistrari
-                    WHERE status='ciorna' AND data >= %s AND data < %s""",
-                (_d(an, luna, 1), sfarsit))
-    return cur.fetchone()[0]
+    return _repo.select_inregistrari_2(cur, schema, sfarsit, _d, an, luna)[0]
 
 
 @app.post("/tenants/{tenant_id}/perioade-blocate")
@@ -5398,10 +5346,7 @@ def _cere_z_unic(cur, schema, numar):
     Cauta in AMANDOUA sursele. Cheia e aceeasi la ruta tastata si la import, deci un raport deja
     importat nu mai poate fi tastat a doua oara, si invers — altfel poarta ar fi tinut doar
     jumatate din drum."""
-    cur.execute("SELECT id, data, sursa FROM %s.inregistrari "
-                "WHERE sursa = ANY(%%s) AND numar = %%s LIMIT 1" % schema,
-                (list(_SURSE_Z), numar))
-    r = cur.fetchone()
+    r = _repo.select_2(cur, schema, numar, _SURSE_Z)
     if not r:
         return
     iid, data_ex, sursa = (r["id"], r["data"], r["sursa"]) if isinstance(r, dict) else r
@@ -5998,13 +5943,8 @@ def tenant_pontaj_confirma(tenant_id: int, date: ConfirmaPontajIn, ctx=Depends(c
 def _verifica_documente_pozate(schema):  # verif_doc_pozate_v1
     """Documente pozate de clienti blocate in flux: necontate >3 zile sau note ciorna casa >3 zile."""
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute(f"""SELECT count(*) FROM {schema}.bonuri
-                        WHERE status='de_verificat' AND creat_la < now() - interval '3 days'""")
-        bonuri_vechi = cur.fetchone()[0]
-        cur.execute(f"""SELECT count(*) FROM {schema}.casa_operatiuni co
-                        JOIN {schema}.inregistrari i ON i.id = co.inregistrare_id
-                        WHERE i.status='ciorna' AND co.creat_la < now() - interval '3 days'""")
-        ciorne = cur.fetchone()[0]
+        bonuri_vechi = _repo.select_bonuri(cur, schema)[0]
+        ciorne = _repo.select_casa_operatiuni(cur, schema)[0]
     return {"ok": bonuri_vechi == 0 and ciorne == 0,
             "bonuri_neverificate": bonuri_vechi, "ciorne_casa": ciorne}
 
@@ -6013,15 +5953,8 @@ def _verificari_contabile(schema, an, luna):
     from datetime import date as _date
     sfarsit = _date(an + (luna == 12), (luna % 12) + 1, 1)
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute(f"""
-            SELECT l.cont_debit, l.cont_credit, l.suma
-            FROM {schema}.inregistrari_linii l
-            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-            WHERE i.data < %s
-        """, (sfarsit,))
-        note = [{"debit": r[0], "credit": r[1], "suma": r[2]} for r in cur.fetchall()]
-        cur.execute(f"SELECT cont, SUM(sold_debitor) - SUM(sold_creditor) FROM {schema}.solduri_initiale GROUP BY cont")
-        si = {r[0]: r[1] for r in cur.fetchall()}
+        note = [{"debit": r[0], "credit": r[1], "suma": r[2]} for r in _repo.select_inregistrari_linii(cur, schema, sfarsit)]
+        si = {r[0]: r[1] for r in _repo.select_solduri_initiale(cur, schema)}
     bal = _vf.balanta(note, si)
     # [R33 varianta b'', 26.08.2026] ECHILIBRUL E UN VERDICT COMPUS DIN DOUA VERIFICARI.
     # Pana azi aici rula doar `verifica_balanta`, iar `core/echilibru_perioada` -- scris, testat,
@@ -6635,9 +6568,7 @@ def cere_api_key(x_api_key: Optional[str] = Header(None)):
 
 def _api_schema(actx, tenant_id):
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""SELECT schema_name FROM public.tenants
-                       WHERE id=%s AND accounting_firm_id=%s""", (tenant_id, actx["firm"]))
-        r = cur.fetchone()
+        r = _repo.select_public_12(cur, tenant_id, actx)
     if not r:
         # [probare invalid lot 2, 03.09.2026] Spunea „firmă inexistentă" și pentru o firmă care
         # EXISTĂ, dar e a altui cabinet — aceeași afirmație falsă scoasă din `FARA_ACCES_TENANT`
@@ -7689,9 +7620,7 @@ def _are_permisiune(ctx, flag):
         return False
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT %s FROM public.users WHERE id = %%s" % flag,
-                        (ctx["uid"],))
-            r = cur.fetchone()
+            r = _repo.select_public_13(cur, flag, ctx)
             return bool(r and r[0])
 
 
@@ -8167,10 +8096,7 @@ def _urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv):
                              "exista dezlegare fără ea",
         nota_id=nota_id, factura_id=factura_id)
     with conn.cursor() as cur:
-        cur.execute(
-            "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) "
-            "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), %s, %s)",
-            (uid, tenant_id, "DEZLEGARE nota-factura", _json_audit.dumps(fapt)))
+        _repo.insert_public_5(cur, uid, tenant_id, fapt, _json_audit)
 
 
 @app.post("/tenants/{tenant_id}/jurnal/{nota_id}/valideaza")
@@ -9534,10 +9460,7 @@ def _factura_din_parsat(cur, schema, f):
     Idempotent pe (numar, tert_cui, data_emitere). Intoarce (factura_id, creat_nou): daca exista
     deja, intoarce id-ul EXISTENT + False (nu insereaza). Sursa UNICA a inserarii - folosit de
     /import-efactura (upload manual) SI de validarea four-eyes a facturilor primite (nu doua conducte)."""
-    cur.execute(f"""SELECT id FROM {schema}.facturi
-                    WHERE numar=%s AND COALESCE(tert_cui,'')=%s AND data_emitere=%s""",
-                (f["numar"], f["tert_cui"], f["data_emitere"]))
-    ex = cur.fetchone()
+    ex = _repo.select_facturi_3(cur, schema, f)
     if ex:
         return ex[0], False
     # [R91/KKK1] Starea depinde de DIRECȚIE, și nu e o subtilitate:
@@ -9548,19 +9471,9 @@ def _factura_din_parsat(cur, schema, f):
     # **NICIUNA nu primește notă aici** — la fel ca înainte. Ce se schimbă e că absența nu mai e o
     # scăpare declarată, ci o etapă cu act propriu.
     _stare = "de_recunoscut" if f["directie"] == "emisa" else "importata"
-    cur.execute(f"""INSERT INTO {schema}.facturi
-                    (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status,
-                     xml, tert_nume, tert_cui)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                (f["numar"], f["data_emitere"], f["data_scadenta"], f["total"], f["tva"],
-                 f["moneda"], f["directie"], _stare, f["xml"], (f["tert_nume"] or "")[:255],
-                 (f["tert_cui"] or "")[:30]))
-    fid = cur.fetchone()[0]
+    fid = _repo.insert_facturi(cur, schema, _stare, f)[0]
     for ln in f["linii"]:
-        cur.execute(f"""INSERT INTO {schema}.factura_linii
-                        (factura_id, descriere, cantitate, pret_unitar, cota_tva)
-                        VALUES (%s,%s,%s,%s,%s)""",
-                    (fid, ln["descriere"][:255], ln["cantitate"], ln["pret_unitar"], ln["cota_tva"]))
+        _repo.insert_factura_linii(cur, schema, fid, ln)
     return fid, True
 
 
@@ -11409,6 +11322,7 @@ def cont_bun_venit_vazut(ctx=Depends(cere_context)):
 import re as _ghid_re
 import html as _ghid_html
 import json as _ghid_json
+from core import repo_main as _repo
 
 _GHID_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ghid")
 _GHID_SLUG_RE = _ghid_re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")

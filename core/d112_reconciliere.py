@@ -64,6 +64,7 @@ from core import afirmatii as _af  # [P8] blocajul numeste regula
 import calendar as _cal
 from datetime import date as _date
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d112_reconciliere as _repo
 
 
 class ReconciliereD112(ValueError):
@@ -92,22 +93,17 @@ def _cote(la_data):
 def _brut_la(cur, schema, sid, data):
     """Brut contractual valabil la `data` — SQL PROPRIU (mirror pe salariu_istoric.salariu_la,
     fara a importa modulul). Fallback la salariati.salariu_brut, ca generatorul."""
-    cur.execute("SELECT salariu_brut FROM %s.salariu_istoric WHERE salariat_id=%%s AND valabil_din<=%%s "
-                "ORDER BY valabil_din DESC LIMIT 1" % schema, (sid, data))
-    r = cur.fetchone()
+    r = _repo.select(cur, schema, sid, data)
     if r and r["salariu_brut"] is not None:
         return Decimal(str(r["salariu_brut"]))
-    cur.execute("SELECT salariu_brut FROM %s.salariati WHERE id=%%s" % schema, (sid,))
-    r = cur.fetchone()
+    r = _repo.select_2(cur, schema, sid)
     return Decimal(str(r["salariu_brut"])) if (r and r["salariu_brut"] is not None) else None
 
 
 def _stabil_la_minim(cur, schema, sid, luna_inc, luna_sf):
     """True daca salariul NU s-a schimbat IN cursul lunii (nicio intrare salariu_istoric cu valabil_din
     strict dupa prima zi si pana la ultima). Fara schimbare + la minim -> facilitate_prorata = 1.0."""
-    cur.execute("SELECT COUNT(*) AS n FROM %s.salariu_istoric WHERE salariat_id=%%s "
-                "AND valabil_din > %%s AND valabil_din <= %%s" % schema, (sid, luna_inc, luna_sf))
-    return int((cur.fetchone() or {"n": 0})["n"] or 0) == 0
+    return int((_repo.select_3(cur, schema, sid, luna_inc, luna_sf) or {"n": 0})["n"] or 0) == 0
 
 
 def reconciliaza(conn, schema, an, luna, salariati_generator):
@@ -130,18 +126,11 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
     gen = {s.get("id"): s for s in (salariati_generator or [])}
     divergente, suspecte, reconciliati, reconciliati_cas_doar, sarite = [], [], [], [], []
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT id, salariu_brut, part_time, scutit_contrib_minim, tichet_masa_valoare, "
-                    "data_angajare, data_incetare FROM %s.salariati "
-                    "WHERE (data_incetare IS NULL OR data_incetare >= %%s) ORDER BY id" % schema, (luna_inc,))
-        rows = cur.fetchall()
-        cur.execute("SELECT DISTINCT salariat_id FROM %s.concedii_medicale WHERE an=%%s AND luna=%%s"
-                    % schema, (an, luna))
-        cm_ids = {r["salariat_id"] for r in cur.fetchall()}
+        rows = _repo.select_4(cur, schema, luna_inc)
+        cm_ids = {r["salariat_id"] for r in _repo.select_5(cur, schema, an, luna)}
         ben_ids = set()
         try:
-            cur.execute("SELECT DISTINCT salariat_id FROM %s.beneficii_lunare WHERE an=%%s AND luna=%%s"
-                        % schema, (an, luna))
-            ben_ids = {r["salariat_id"] for r in cur.fetchall()}
+            ben_ids = {r["salariat_id"] for r in _repo.select_6(cur, schema, an, luna)}
         except Exception:
             ben_ids = set()   # tabela optionala; absenta ei nu e o eroare
 

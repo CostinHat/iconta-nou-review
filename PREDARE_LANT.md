@@ -4,8 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-13**, la capătul valului **D2** al lui P7 (a treia oprire a zilei).
-- **pe commit**: `92696b41`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-13**, la capătul valului **D4** al lui P7 (a patra oprire a zilei).
+- **pe commit**: `919a0e75`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **[13.09.2026] CE A IEȘIT LA IVEALĂ CHIAR RESCRIIND, și se scrie fiindcă e clasa pe care documentul
@@ -49,7 +49,7 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
 | **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
 | **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
-| **P7** — stratul de aplicație | **DESCHIS** | diagnostic (`b67d2bfb`) · V3 registrul de straturi (`364fbc63`) · V1 citirile (`8d182afa`) · V2 scrierile + controlul de tranzacție (`cd5538ae`) · **valul D2: motorul fiscal fără bază de date**. `D1`=**0** pe toate clasele, `D2`=**0**; `ACTION_REQUIRED` **296 → 189 → 39 → 37**. Rămâne deschis pentru `D4`=37 și fiindcă **rutele încă orchestrează** |
+| **P7** — stratul de aplicație | **DESCHIS** | diagnostic (`b67d2bfb`) · V3 (`364fbc63`) · V1 (`8d182afa`) · V2 (`cd5538ae`) · D2 (`e1cf6ee1`) · **D4: cele 37 de module mixte**. `D1`=`D2`=`D4`=**0**, `ACTION_REQUIRED` **296 → … → 0**. Rămâne deschis fiindcă **use-case-ul nu deține tranzacția**: 385 din 421 de rute și-o deschid singure |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de
@@ -120,8 +120,26 @@ pe un upload care nu e idempotent. `core/test_efactura_trimitere.py` cheamă `tr
 pe schemă efemeră, cu rețeaua pe mock: **8 probe**, 7 din cele 8 instrucțiuni mutate, RED-proof
 cu trei mutații. *Un val care mută cod are nevoie de amândouă felurile de probă.*
 
-**Unde se citește adevărul, nu proza asta:** `core/straturi.py` (registrul de straturi, 130 de
-declarații), `scripts/scan_p7_straturi.py` (detectoarele), `scripts/p7_clasificare.py` (contabilitatea).
+**VALUL D4 — a treia verificare canonică închisă, și cea mai mare mutare de cod din campanie.**
+Cele **37 de module mixte** purtau **215 instrucțiuni SQL**; toate au trecut în **37 de
+`core/repo_*.py`**, fiecare funcție primind cursorul apelantului. Mutarea a fost făcută de
+`scripts/p7_d4_separa.py` — **rest 0 din 215** —, iar dovada că s-a mutat și nu s-a rescris e
+amprenta SQL a întregului cod de producție: **1050 distincte / 1307 total, identică înainte și
+după**. Niciun `get_conn`, `commit` sau `rollback` n-a intrat în vreun depozit: contractul P4 e
+gardat pe AST.
+
+**ȘI DE CE P7 TOT NU E ÎNCHISĂ, deși contabilitatea arată 0 peste tot.** După D4:
+`D1`=`D2`=`D4`=0 și `P7_ACTION_REQUIRED`=0. Citită singură, cifra spune că faza s-a terminat.
+Măsurat: **385 din 421 de rute își deschid singure tranzacția**, doar 7 deleagă către un
+`USE_CASE`, iar use-case-uri declarate sunt 4 — deci stratul pe care textul canonic îl definește
+prin *«deține tranzacția (P4), orchestrează»* aproape că nu există. *Un `ACTION_REQUIRED=0` care
+nu acoperă un criteriu canonic nu e o stare, e o lipsă de detector.* Golul e închis cu
+`scripts/p7_criterii.py` + `core/test_p7_criterii.py`, care ține clichetul celor 385 și
+**interzice planului să declare P7 închisă peste el**.
+
+**Unde se citește adevărul, nu proza asta:** `core/straturi.py` (registrul de straturi, 167 de
+declarații), `scripts/scan_p7_straturi.py` (detectoarele), `scripts/p7_clasificare.py`
+(contabilitatea celor trei), `scripts/p7_criterii.py` (**toate** criteriile canonice).
 
 **Tiparul comun al lui P1 și P2, și confirmat de P3:** ce era calculat în cerere se
 persistă ca **model de citire** în `public`, invalidat de **triggere** pe tabelele-sursă, cu
@@ -351,13 +369,13 @@ predare în alta e greșită exact acolo unde pare cea mai sigură.*
   produs.*
 - **interdicții, din 78**: MĂSURATE **24** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
-- **gărzi și instrumente**: **572** (545 în `core/`), din **519** fișiere de test.
+- **gărzi și instrumente**: **574** (547 în `core/`), din **520** fișiere de test.
 - **decizii care blochează: niciuna.**
 
 ---
 ## STAREA LA PREDARE
 
-**5744 teste trec** *(ieșirea porții care a produs `5287eb98`)* · 12 skip · 14 xfail · ruff OK ·
+**5795 teste trec** *(ieșirea porții valului D4)* · 12 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
@@ -771,6 +789,23 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
     registrul de straturi** (`USE_CASE` → `REPOSITORY`) — prima formă, nemărginită, lărgea 12
     adnotări deodată și făcea clasa inutilă.
 
+30. **[13.09] O cifră de contabilitate poate fi zero peste o fază care mai are un val întreg.**
+    După D4: `D1`=`D2`=`D4`=0, `P7_ACTION_REQUIRED`=0 — și totuși 385 din 421 de rute își deschid
+    singure tranzacția, adică stratul use-case aproape că nu există. *Un `ACTION_REQUIRED=0` care nu
+    acoperă un criteriu canonic nu e o stare, e o lipsă de detector.* Gardat:
+    `scripts/p7_criterii.py` + `core/test_p7_criterii.py`, care interzice și planului să declare
+    închis ce codul contrazice.
+31. **[13.09] O justificare ancorată prin VECINĂTATE nu se mută odată cu codul.** Trei
+    `ON CONFLICT DO UPDATE` au trecut în depozit, iar `# upsert-ok:` a rămas în modulul vechi, la
+    douăsprezece linii deasupra unui cod care nu mai e acolo. Aceeași clasă cu trimiterea pe număr de
+    linie (lecția 28) — și, ca atunci, a prins-o un instrument, nu eu.
+32. **[13.09] O mutare de 215 poziții se face cu un instrument, iar instrumentul greșește de trei
+    ori înainte să meargă.** Separatorul a luat variabila unei comprehensiuni drept nume liber
+    (prins de `ruff`), a numit trei depozite `insert_set` fiindcă nu citea tabelul prin interpolare,
+    iar reancoratorul a cerut unicitate pe tot planul și a luat reperul din fișierul deja editat.
+    *Fiecare greșeală a fost prinsă de o poartă, niciuna de citire — ceea ce e chiar argumentul
+    pentru care mutarea n-a fost făcută cu mâna.*
+
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
 
@@ -811,6 +846,16 @@ a ce e adevărat **acum**.
    instrucțiune, cu SQL-ul literal, dinadins (un nume de savepoint interpolat ar fi o suprafață de
    injecție care azi nu există). **Garda cade dacă pui `.execute` într-o rută**, pe oricare din cele
    patru clase: `core/test_p7_v2_scrieri.py`, cu cei zece mutanți.
+
+   **`D4` E ÎNCHIS (13.09.2026), și cu el TOATE cele trei detectoare.** Cele 37 de module mixte
+   și-au dat cele 215 instrucțiuni la 37 de `core/repo_*.py`. `D1`=`D2`=`D4`=0,
+   `P7_ACTION_REQUIRED`=0.
+
+   **DAR P7 RĂMÂNE DESCHISĂ, și ăsta e primul lucru de știut înainte de a citi cifrele:** criteriul
+   canonic *«use-case-ul deține tranzacția»* NU e satisfăcut — **385 din 421 de rute și-o deschid
+   singure**. Valul următor e **exact ăsta**: extragerea use-case-urilor din rute, adică §4 al
+   comenzii V2, nefăcut nici atunci. Clichetul celor 385 e în `core/test_p7_criterii.py` și poate
+   doar să coboare; când ajunge la zero, garda o spune și cere reluarea verificării de închidere.
 
    **`D2` E ÎNCHIS (13.09.2026).** Motorul fiscal `core/efactura_send.py` nu mai importă `db` și
    n-are nicio instrucțiune SQL; orchestrarea trăiește în `core/efactura_trimitere.py` (`USE_CASE`),

@@ -31,6 +31,7 @@ from decimal import Decimal
 from core import bilant as _b
 from core.afirmatii import afirmatie
 from core.common import Temei
+from core import repo_categorie_marime as _repo
 
 MODUL = "categorie_marime"
 
@@ -199,18 +200,7 @@ def nr_mediu_salariati(cur, schema, an):
     De-aia `incadreaza` marchează separat cazurile în care criteriul ăsta **decide** încadrarea —
     când cele două criterii monetare ajung singure la „două din trei", aproximarea nu contează.
     """
-    cur.execute(f"""
-        SELECT AVG(n)::numeric FROM (
-            SELECT generate_series(1, 12) AS luna
-        ) l, LATERAL (
-            SELECT COUNT(*) AS n FROM {schema}.salariati s
-             WHERE (s.data_angajare IS NULL
-                    OR s.data_angajare < make_date(%s, l.luna, 1) + INTERVAL '1 month')
-               AND (s.data_incetare IS NULL
-                    OR s.data_incetare >= make_date(%s, l.luna, 1))
-        ) x
-    """, (an, an))
-    r = cur.fetchone()
+    r = _repo.select_salariati(cur, schema, an)
     v = r[0] if not isinstance(r, dict) else list(r.values())[0]
     return None if v is None else int(round(float(v)))
 

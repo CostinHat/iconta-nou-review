@@ -14421,3 +14421,38 @@ fișierul care le deschide; gardat pe AST, ca un val viitor să nu le miște în
 **Temei:** `PLAN_HARDENING.md:748` (*„un motor fiscal nu importă `db`"*) și `:742-746` (cele patru
 straturi). **Proba:** cele 8 instrucțiuni au fost confruntate mecanic cu versiunea de la `HEAD`,
 normalizate pe spații albe — s-au regăsit toate opt, în noile module.
+
+
+## 13.09.2026 — valul D4 se face cu un INSTRUMENT, iar P7 NU se închide deși contabilitatea e zero
+
+**Decizia 1: mutarea celor 215 instrucțiuni se face mecanic, nu cu mâna.** Universul era de 37 de
+module și 215 poziții, cu 13 forme diferite de loc (fetch imediat, fetch într-o expresie, fără
+fetch, cursor primit ca parametru…). O mutare manuală pe atâtea locuri are un mod de eșec propriu —
+parametri schimbați de ordine, un `fetchone` devenit `fetchall`, un `%s` pierdut — și **niciunul nu
+se vede la citire**. `scripts/p7_d4_separa.py` mută EXPRESII, nu text: primul argument al lui
+`execute` pleacă verbatim cu tot cu f-string, parametrii la fel, fetch-ul își păstrează felul. Ce nu
+poate rezolva mecanic raportează și lasă neatins — **rest: 0 din 215**.
+
+*Dovada că s-a mutat, nu s-a rescris, nu e cuvântul meu:* amprenta SQL a întregului cod de producție
+(**1050 instrucțiuni distincte, 1307 în total**, normalizate pe spații albe) e **identică** înainte
+și după val.
+
+**Decizia 2: `mixt_cu` se scoate numai pe dovadă, nu pe intenție.** Scriptul care rescrie registrul
+verifică pe AST, la scriere, că modulul chiar a rămas cu zero `execute`; dacă nu, se oprește. Iar
+`core/test_p7_straturi.py` cere același lucru pe fișiere, separat de registru — altfel proba ar fi
+verde și dacă `mixt_cu` ar fi fost șters fără să se mute o linie de cod.
+
+**Decizia 3, și e cea care contează: P7 NU se închide, deși `D1`=`D2`=`D4`=0 și
+`P7_ACTION_REQUIRED`=0.** Comanda cerea închiderea *doar dacă toate criteriile canonice sunt
+satisfăcute*. Verificate: trei din patru sunt. Al patrulea — *«use-case — deține tranzacția (P4),
+orchestrează»* (`PLAN_HARDENING.md:806`) — nu e: **385 din 421 de rute își deschid singure
+tranzacția**, doar **7** deleagă către un modul `USE_CASE`, iar use-case-uri declarate sunt **4**.
+
+*Un `ACTION_REQUIRED=0` care nu acoperă un criteriu canonic nu e o stare, e o lipsă de detector.*
+Golul s-a închis cu un instrument și o gardă, nu cu o promisiune: `scripts/p7_criterii.py` măsoară
+toate patru criteriile, iar `core/test_p7_criterii.py` ține clichetul celor 385 **și interzice
+planului să declare P7 închisă cât timp criteriul nu e satisfăcut** (doc↔cod, în sensul care
+contează: documentul nu poate raporta mai mult decât codul).
+
+**Varianta respinsă:** să raportez P7 închisă pe baza cifrelor detectoarelor. Ar fi fost adevărat
+despre ce măsuram și fals despre fază — aceeași clasă cu brațul four-way care număra doar ce găsea.

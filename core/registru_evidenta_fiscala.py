@@ -27,6 +27,7 @@ from decimal import Decimal
 from core.afirmatii import afirmatie
 from core.common import Temei
 from core.unde import Unde
+from core import repo_registru_evidenta_fiscala as _repo
 
 MODUL = "registru_evidenta_fiscala"
 
@@ -325,18 +326,8 @@ def adauga_pf(conn, schema, an, date):
     sursa din fiecare categorie, deci si numerotarea curge acolo, nu global."""
     valideaza_pf(date)
     with conn.cursor() as cur:
-        cur.execute("SELECT COALESCE(MAX(nr_crt), 0) + 1 FROM {s}.registru_fiscal_pf "
-                    "WHERE an = %s AND categorie_venit = %s AND sursa_venit = %s".format(s=schema),
-                    (an, str(date["categorie"]), date["sursa_venit"]))
-        nr = cur.fetchone()[0]
-        cur.execute(
-            "INSERT INTO {s}.registru_fiscal_pf (an, categorie_venit, sursa_venit, nr_crt, "
-            "venit_brut, cheltuieli_deductibile, rectificare, motiv_rectificare) "
-            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id".format(s=schema),
-            (an, str(date["categorie"]), date["sursa_venit"], nr,
-             date["venit_brut"], date.get("cheltuieli_deductibile") or 0,
-             bool(date.get("rectificare")), date.get("motiv_rectificare")))
-        iid = cur.fetchone()[0]
+        nr = _repo.select_s(cur, schema, an, date)[0]
+        iid = _repo.insert_s(cur, schema, an, nr, date)[0]
     conn.commit()
     return {"id": iid, "nr_crt": nr}
 
@@ -344,9 +335,7 @@ def adauga_pf(conn, schema, an, date):
 def randuri_pf(conn, schema, an):
     from psycopg2.extras import RealDictCursor
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute("SELECT * FROM {s}.registru_fiscal_pf WHERE an = %s "
-                    "ORDER BY categorie_venit, sursa_venit, nr_crt".format(s=schema), (an,))
-        return [dict(r) for r in cur.fetchall()]
+        return [dict(r) for r in _repo.select_s_2(cur, schema, an)]
 
 
 def registru_pf(conn, schema, an):

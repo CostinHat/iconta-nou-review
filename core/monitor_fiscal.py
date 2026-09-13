@@ -6,6 +6,7 @@ import re
 import requests
 
 from core import clasificator_alerte as _ca
+from core import repo_monitor_fiscal as _repo
 
 SURSA_LISTA = "https://static.anaf.ro/static/10/Anaf/Legislatie_R/noutati_legislative.htm"
 BAZA = "https://static.anaf.ro/static/10/Anaf/Legislatie_R/"
@@ -77,13 +78,7 @@ def salveaza(conn, sursa, alerte, url):
                 directie = "necunoscut"
             decl = [str(x)[:16] for x in (a.get("declaratii_atinse") or [])]
             rel = _ca.relevanta_din(directie, decl)
-            cur.execute("""INSERT INTO public.alerte_fiscale (sursa, titlu, rezumat, url, relevanta,
-                                                              data_vigoare, directie, declaratii_atinse)
-                           VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-                           ON CONFLICT (sursa, titlu) DO NOTHING RETURNING id""",
-                        (sursa, a.get("titlu", "")[:500], a.get("rezumat"), url,
-                         rel, dv, directie, decl))
-            if cur.fetchone():
+            if _repo.insert_public(cur, sursa, url, rel, dv, directie, decl, a):
                 noi.append(a)
     conn.commit()
     return noi
@@ -110,8 +105,7 @@ def text_din_pdf(continut):
 
 def _procesat(conn, titlu):
     with conn.cursor() as cur:
-        cur.execute("SELECT 1 FROM public.alerte_fiscale WHERE sursa='anaf_buletin' AND titlu=%s", (titlu[:500],))
-        return cur.fetchone() is not None
+        return _repo.select_public(cur, titlu) is not None
 
 
 def ruleaza(max_buletine=3):
@@ -176,27 +170,23 @@ def emite_alerte_programate(conn):
     catre TOATE cabinetele active. Idempotent: jurnal public.alerte_emise (alerta_id, prag)."""
     emise = 0
     with conn.cursor() as cur:
-        cur.execute("""SELECT id, titlu, rezumat, data_vigoare FROM public.alerte_fiscale
-                       WHERE data_vigoare IS NOT NULL AND data_vigoare >= CURRENT_DATE""")
-        alerte = cur.fetchall()
+        alerte = _repo.select_public_2(cur)
         for aid, titlu, rezumat, dv in alerte:
             for prag in (7, 3, 0):
-                cur.execute("SELECT (%s - CURRENT_DATE) = %s", (dv, prag))
-                if not cur.fetchone()[0]:
+                if not _repo.select(cur, dv, prag)[0]:
                     continue
-                cur.execute("SELECT 1 FROM public.alerte_emise WHERE alerta_id=%s AND prag=%s", (aid, prag))
-                if cur.fetchone():
+                if _repo.select_public_3(cur, aid, prag):
                     continue  # deja emis pragul asta
                 if prag == 0:
                     cap = "AZI intra in vigoare: "
                 else:
                     cap = "In %d zile intra in vigoare: " % prag
                 mesaj = cap + (titlu or "") + ((" - " + rezumat) if rezumat else "")
-                cur.execute("SELECT id FROM public.accounting_firms WHERE activ")
+                _repo.select_public_4(cur)
                 for (cid,) in cur.fetchall():
-                    cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s)", (cid, mesaj))
+                    _repo.insert_public_2(cur, cid, mesaj)
                     emise += 1
-                cur.execute("INSERT INTO public.alerte_emise (alerta_id, prag) VALUES (%s, %s)", (aid, prag))
+                _repo.insert_public_3(cur, aid, prag)
     conn.commit()
     return emise
 

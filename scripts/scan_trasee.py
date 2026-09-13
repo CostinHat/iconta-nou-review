@@ -596,6 +596,22 @@ def _prin_depozit(rez, cdir):
     cazuri = sorted(nume_scurt(_R.module_din_strat(_R.USE_CASE)) & set(rez))
     assert depozite, "ANTI-VACUU: niciun modul declarat REPOSITORY — pasul in plus n-ar face nimic"
     assert cazuri, "ANTI-VACUU: niciun modul declarat USE_CASE — pasul in plus n-ar pleca de nicaieri"
+
+    # [P7 · valul D4] PERECHEA NOMINALA: fiecare modul mosteneste scrierile depozitului LUI, adica
+    # `repo_<acelasi nume>`. Fara ea, dupa D4 instrumentul tace despre 12 rute — nu minte, tace, iar
+    # o tacere se citeste ca „ruta n-are efect". Nu largeste clasa: un modul nu capata prin ea decat
+    # ce si-a dat singur, si numai daca perechea chiar exista.
+    perechi = 0
+    for nume, info in rez.items():
+        pereche = "repo_%s" % nume
+        if nume.startswith("repo_") or pereche not in rez:
+            continue
+        perechi += 1
+        for tab, op in rez[pereche]["scrie"].items():
+            info["scrie"][tab] = sorted(set(info["scrie"].get(tab, [])) | set(op))
+        info["scrie"] = {k: info["scrie"][k] for k in sorted(info["scrie"])}
+    assert perechi >= 30, "ANTI-VACUU: perechile modul↔depozit s-au rarit: %d" % perechi
+
     for nume in cazuri:
         info = rez[nume]
         try:

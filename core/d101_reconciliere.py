@@ -25,6 +25,7 @@ numeste randul si AMBELE valori; NU repara tacit (tipar DECIZII 05.08).
 
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d101_reconciliere as _repo
 
 
 class ReconciliereD101(ValueError):
@@ -47,8 +48,7 @@ def _baza_contabila_independenta(conn, an):
          "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
          "WHERE i.status='validata' AND i.data >= %s AND i.data < %s")
     with conn.cursor() as cur:
-        cur.execute(q, (inc, sf))
-        ven_fin, ven_expl, chelt_fin, chelt_expl = cur.fetchone()
+        ven_fin, ven_expl, chelt_fin, chelt_expl = _repo.sql(cur, q, inc, sf)
     return {"P1": _q(ven_expl or 0), "P2": _q(chelt_expl or 0),
             "P4": _q(ven_fin or 0), "P5": _q(chelt_fin or 0)}
 

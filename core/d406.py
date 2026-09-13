@@ -377,6 +377,7 @@ def _d(x):
 # reconciliere, iar aceea nu are voie sa importe generatorul. Se re-exporta ca sa ramana
 # `d406.fereastra_d406` pentru cine o cheama pe drumul generatorului.
 from core.common import fereastra_d406        # noqa: E402  (re-export deliberat)
+from core import repo_d406 as _repo
 
 
 def _ultima_zi(an, luna):
@@ -1255,9 +1256,7 @@ def build_xml(res):
 def pull(conn, schema, an, luna):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, cod_postal, platitor_tva, tip_decont "
-                    "FROM firma_profil WHERE id = 1")
-        prof = cur.fetchone() or {}
+        prof = _repo.select_firma_profil(cur) or {}
         # [R165, 05.09.2026] FEREASTRA URMEAZA PERIOADA FISCALA TVA, nu luna-ancora. Pana azi
         # era `[luna, luna+1)`, deci SAF-T-ul unei firme TRIMESTRIALE continea o singura luna
         # din trei — in timp ce D300 si D394 pe acelasi trimestru le contineau pe toate.
@@ -1267,9 +1266,7 @@ def pull(conn, schema, an, luna):
         conturi, clienti, furnizori, note = [], [], [], []
         strain = []   # conturi din plan care nu apartin normei declarate
         try:
-            cur.execute("SELECT simbol, denumire, COALESCE(tip,'Bifunctional') AS tip, "
-                        "COALESCE(sold_debitor,0) AS sd, COALESCE(sold_creditor,0) AS sc "
-                        "FROM plan_conturi ORDER BY simbol")
+            _repo.select_plan_conturi(cur)
             # Declaram DOAR conturile din planul normei firmei: ANAF respinge restul
             # ("ID-ul contului [731] trebuie sa se gaseasca in planul de conturi").
             # Filtram dupa nomenclatorul OFICIAL, nu dupa o lista scrisa de noi.
@@ -1300,7 +1297,7 @@ def pull(conn, schema, an, luna):
             # nomenclator: bug PROD (11.08) -> DUK "RegistrationNumber/CustomerID format invalid"
             # pe orice tenant cu nomenclator POPULAT; mascat de nomenclator gol (-> calea fallback).
             # Gard anti-regresie: core/test_d406_partener_id_neconform.py.
-            cur.execute("SELECT id, nume, cui, oras FROM clienti ORDER BY id")
+            _repo.select_clienti(cur)
             vazut_cl = set()
             for r in cur.fetchall():
                 pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
@@ -1322,7 +1319,7 @@ def pull(conn, schema, an, luna):
             # nomenclator: bug PROD (11.08) -> DUK "RegistrationNumber/CustomerID format invalid"
             # pe orice tenant cu nomenclator POPULAT; mascat de nomenclator gol (-> calea fallback).
             # Gard anti-regresie: core/test_d406_partener_id_neconform.py.
-            cur.execute("SELECT id, nume, cui, oras FROM furnizori ORDER BY id")
+            _repo.select_furnizori(cur)
             vazut_fu = set()
             for r in cur.fetchall():
                 pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
@@ -1362,9 +1359,7 @@ def pull(conn, schema, an, luna):
             # Dedup pe identitatea SAF-T (pid), NU pe tert_cui: toti PF au tert_cui=''
             # -> DISTINCT ON (tert_cui) i-ar fi colapsat pe toti intr-un singur rand.
             if not clienti:
-                cur.execute(
-                    "SELECT tert_cui, tert_nume FROM facturi "
-                    "WHERE directie='emisa' ORDER BY id")
+                _repo.select_facturi(cur)
                 vazut = set()
                 for r in cur.fetchall():
                     pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"])
@@ -1373,9 +1368,7 @@ def pull(conn, schema, an, luna):
                         clienti.append(Partener(id=pid, nume=r["tert_nume"] or "",
                                                 cui=r["tert_cui"] or "", oras=""))
             if not furnizori:
-                cur.execute(
-                    "SELECT tert_cui, tert_nume FROM facturi "
-                    "WHERE directie='primita' ORDER BY id")
+                _repo.select_facturi_2(cur)
                 vazut = set()
                 for r in cur.fetchall():
                     pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"])
@@ -1411,12 +1404,7 @@ def pull(conn, schema, an, luna):
             # primeau toate CustomerID-ul aceluiasi client, fiscal incorect - Auchan
             # Italia aparea pe factura ALTEX). Notele fara factura_id (dividende,
             # inregistrari manuale) raman fara partener - nu se aplica.
-            cur.execute("SELECT i.id, i.data, i.descriere, i.sursa, l.cont_debit, l.cont_credit, "
-                        "l.suma, f.tert_cui, f.tert_nume "
-                        "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-                        "LEFT JOIN facturi f ON f.id = i.factura_id "
-                        "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s "
-                        "ORDER BY i.id, l.id", (di, ds))
+            _repo.select_inregistrari(cur, di, ds)
             nmap = {}
             surse_necunoscute = []   # R22: sursa nemapata -> DIVERSE, dar NUMITA in avertisment
             for r in cur.fetchall():
@@ -1467,21 +1455,11 @@ def pull(conn, schema, an, luna):
             # factura_linii are descriere/um/cantitate/pret_unitar/cota_tva. uom_unece()
             # exista din 16.07 (d406.py:101) si traducea deja 'buc'/'kg' in H87/KGM -
             # era scrisa si NEAPELATA aici.
-            cur.execute("SELECT factura_id, id, descriere, um, "
-                        "COALESCE(cantitate,0) AS cantitate, "
-                        "COALESCE(pret_unitar,0) AS pret_unitar, "
-                        "COALESCE(cota_tva,0) AS cota_tva "
-                        "FROM factura_linii WHERE factura_id IN "
-                        "(SELECT id FROM facturi WHERE data_emitere >= %s AND data_emitere < %s) "
-                        "ORDER BY factura_id, id", (di, ds))
+            _repo.select_factura_linii(cur, di, ds)
             linii_pe_factura = {}
             for lr in cur.fetchall():
                 linii_pe_factura.setdefault(lr["factura_id"], []).append(lr)
-            cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, "
-                        "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
-                        "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie "
-                        "FROM facturi WHERE data_emitere >= %s AND data_emitere < %s ORDER BY id", (di, ds))
-            for r in cur.fetchall():
+            for r in _repo.select_facturi_3(cur, di, ds):
                 total = Decimal(str(r["total"]))
                 tva = Decimal(str(r["tva"]))
                 net = total - tva

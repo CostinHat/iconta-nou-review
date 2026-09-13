@@ -40,6 +40,7 @@ from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM 
 from core.identitate import valideaza_cui  # T1 (CATALOG_INVALIDITATE.md): sursa CANONICA checksum CUI, import READ-ONLY (LEAF, fara db)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d100 as _repo
 
 NS = "mfp:anaf:dgti:d100:declaratie:v2"
 
@@ -308,19 +309,11 @@ def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, regim_fiscal, "
-                    "declarant_nume, declarant_prenume, declarant_functie "
-                    "FROM firma_profil WHERE id = 1")
-        prof = cur.fetchone() or {}
+        prof = _repo.select_firma_profil(cur) or {}
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
-        cur.execute(
-            "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '70%%' THEN l.suma ELSE 0 END),0) AS venituri, "
-            "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma ELSE 0 END),0) AS cheltuieli "
-            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-            "WHERE i.status='validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
-        r = cur.fetchone() or {"venituri": 0, "cheltuieli": 0}
+        r = _repo.select_inregistrari_linii(cur, _inc, _sf) or {"venituri": 0, "cheltuieli": 0}
     return prof, r["venituri"], r["cheltuieli"]
 
 
@@ -388,9 +381,7 @@ def genereaza(conn, schema, perioada, manual=None):
     if not obligatii:
         _inc, _sf = perioada.interval()
         with conn.cursor() as _cur:
-            _cur.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
-                         "AND data_emitere >= %s AND data_emitere < %s", (_inc.isoformat(), _sf.isoformat()))
-            _nf = _cur.fetchone()[0]
+            _nf = _repo.select_facturi(_cur, _inc, _sf)[0]
         _hint = (" Există %d facturi emise necontabilizate în perioada - contabilizează-le întâi." % _nf) if _nf else ""
         if _avert_profit == "LOSS":
             raise ValueError("D100 nu se depune pe zero: regim profit cu PIERDERE în trimestru (venituri %d - "

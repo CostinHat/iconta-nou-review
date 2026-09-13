@@ -60,6 +60,7 @@ from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM 
 from core.identitate import valideaza_cui, valideaza_cnp  # T1: checksum CUI/CNP pre-DUK, read-only (LEAF, fara import circular)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d205 as _repo
 
 NS = "mfp:anaf:dgti:d205:declaratie:v3"
 
@@ -320,24 +321,12 @@ def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, "
-                    "declarant_nume, declarant_prenume, declarant_functie "
-                    "FROM firma_profil WHERE id = 1")
-        prof = cur.fetchone() or {}
+        prof = _repo.select_firma_profil(cur) or {}
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
-        cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0")
-        asoc = cur.fetchall()
-        cur.execute(
-            "SELECT "
-            "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '457%%' THEN l.suma ELSE 0 END),0) AS distribuit, "
-            "COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '457%%' THEN l.suma ELSE 0 END),0) AS platit "
-            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-            "WHERE i.status='validata' "
-            "AND (l.cont_credit LIKE '457%%' OR l.cont_debit LIKE '457%%') "
-            "AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
-        row = cur.fetchone() or {"distribuit": 0, "platit": 0}
+        asoc = _repo.select_asociati(cur)
+        row = _repo.select_inregistrari_linii(cur, _inc, _sf) or {"distribuit": 0, "platit": 0}
         total_distribuit = _i(row["distribuit"] or 0)
         total_platit = _i(row["platit"] or 0)
     return prof, asoc, total_distribuit, total_platit

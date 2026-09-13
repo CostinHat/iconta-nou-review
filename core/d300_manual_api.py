@@ -29,6 +29,7 @@ SURSA ETICHETE: OPANAF 174/2026 (anaf_surse/opanaf_174_2026_d300.txt) + structur
 nu rescris în JS. Fiecare etichetă e ancorată pe descrierea din structură (verificată la sursă).
 """
 from core import afirmatii as _af  # [P8] statutul firmei e o afirmatie, nu un sir
+from core import repo_d300_manual_api as _repo
 
 # Rândurile de INTRARE acceptate manual (fără col.2 sunt marcate în _FARA_TVA). Sursă:
 # d300.calcul_d300 allow-list (colectată + deductibilă). Ordinea = ordinea din formular.
@@ -124,8 +125,7 @@ def lista(conn, schema, an, luna):
     """Rândurile manuale ale perioadei + rândurile încă disponibile de adăugat."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(f"SELECT id, rand, baza, tva, descriere FROM {schema}.d300_manual "
-                    f"WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+        _repo.select_d300_manual(cur, schema, an, luna)
         randuri = []
         deja = set()
         for r in cur.fetchall():
@@ -146,8 +146,7 @@ def adauga(conn, schema, an, luna, d):
     # Daca platitor_tva=False, D300 e blocat in selector -> nu acceptam randuri manuale (altfel stare
     # inconsistenta ca la D301). Simetric cu d301_operatiuni_api / d390_clasificare_api.
     with conn.cursor() as _cur:
-        _cur.execute(f"SELECT platitor_tva FROM {schema}.firma_profil WHERE id=1")
-        _pr = _cur.fetchone()
+        _pr = _repo.select_firma_profil(_cur, schema)
     if _pr and _pr[0] is False:
         _t = ("Firma NU e înregistrată în scopuri de TVA — D300 (decontul de TVA) se "
               "depune doar de plătitori. Dacă firma e de fapt plătitoare, corectează "
@@ -191,22 +190,14 @@ def adauga(conn, schema, an, luna, d):
                 "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
     descriere = (d.get("descriere") or "").strip() or None
     with conn.cursor() as cur:
-        # upsert-ok: editare rand D300 manual pe (an,luna,rand) - re-scrierea aceluiasi rand
-        cur.execute(f"""INSERT INTO {schema}.d300_manual (an, luna, rand, baza, tva, descriere)
-                        VALUES (%s,%s,%s,%s,%s,%s)
-                        ON CONFLICT (an, luna, rand)
-                        DO UPDATE SET baza=EXCLUDED.baza, tva=EXCLUDED.tva,
-                                      descriere=EXCLUDED.descriere
-                        RETURNING id""",
-                    (an, luna, rand, baza, tva, descriere))
-        rid = cur.fetchone()[0]
+        rid = _repo.insert_d300_manual(cur, schema, an, luna, rand, baza, tva, descriere)[0]
     conn.commit()
     return {"ok": True, "id": rid, "rand": rand, "baza": baza, "tva": tva}
 
 
 def sterge(conn, schema, rid):
     with conn.cursor() as cur:
-        cur.execute(f"DELETE FROM {schema}.d300_manual WHERE id=%s", (rid,))
+        _repo.delete_d300_manual(cur, schema, rid)
         ok = cur.rowcount > 0
     conn.commit()
     return {"ok": ok}
@@ -218,9 +209,7 @@ def incarca_manual(conn, schema, an, luna):
     Folosit de d300.genereaza când param `manual` e None (calea de depunere /coada)."""
     out = {}
     with conn.cursor() as cur:
-        cur.execute(f"SELECT rand, baza, tva FROM {schema}.d300_manual WHERE an=%s AND luna=%s",
-                    (an, luna))
-        for rand, baza, tva in cur.fetchall():
+        for rand, baza, tva in _repo.select_d300_manual_2(cur, schema, an, luna):
             if baza:
                 out[rand + "_1"] = int(baza)
             if tva:

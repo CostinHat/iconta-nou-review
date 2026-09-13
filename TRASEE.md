@@ -1190,7 +1190,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `firma_aspect_sursa` (DELETE/INSERT) · `firma_profil` (UPDATE) · `firma_rezumat` (INSERT) · `firma_sursa_versiune` (INSERT) · `firma_tip` (INSERT) · `migrare_status` (INSERT) · `supervizor_confirmari` (INSERT) · `supervizor_rezultat` (INSERT) · `supervizor_sursa` (INSERT) · `sursa_supervizor` (DELETE/INSERT)
 
-**Stari puse:** `aprobata`, `depusa`, `descarcata`, `ok`, `respinsa`
+**Stari puse:** `aprobata`, `depusa`, `ok`, `respinsa`
 
 **Firme care il pot exercita azi: 7** — `tenant_003`, `tenant_005`, `tenant_006`, `tenant_013`, `tenant_014`, `tenant_015`, `tenant_016`
 
@@ -2063,7 +2063,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Scrie in:** `accounting_firms` (UPDATE) · `acord_termeni` (INSERT) · `audit_log` (INSERT) · `clienti` (DELETE/INSERT/UPDATE) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (INSERT/UPDATE) · `notificari` (INSERT/UPDATE) · `pachet_povestea` (INSERT) · `schimbari_email` (DELETE/INSERT/UPDATE) · `solicitari_client` (INSERT) · `tenants` (INSERT/UPDATE) · `tokene_activare` (UPDATE) · `user_tenants` (DELETE/INSERT) · `users` (INSERT/UPDATE)
 
-**Stari puse:** `aprobat`, `descarcata`, `emisa`, `validata`
+**Stari puse:** `aprobat`, `emisa`, `validata`
 
 **Firme care il pot exercita azi: 1** — `tenant_013`
 

@@ -18,6 +18,7 @@ Reguli (agreate cu Costin 17.07.2026):
     (fara_reply_to / fara_email_client) - se raporteaza, nu se reincearca pragul.
 """
 from core import common, db
+from core import repo_notificari_scadenta as _repo
 
 PRAGURI = [-3, 1, 7]
 # [R138] Copia regexului s-a scos: faptul e in `core/common`. Numele ramane exportat, fiindca
@@ -76,10 +77,7 @@ def _rezerva_pragul(schema, factura_id, prag):
     """
     with db.get_conn(schema) as c:
         with c.cursor() as cur:
-            cur.execute("INSERT INTO notificari_scadenta (factura_id, prag, stare) "
-                        "VALUES (%s, %s, 'in_curs') ON CONFLICT (factura_id, prag) "
-                        "DO NOTHING RETURNING factura_id", (factura_id, prag))
-            return cur.fetchone() is not None
+            return _repo.insert_notificari_scadenta(cur, factura_id, prag) is not None
 
 
 def _consemneaza(schema, factura_id, prag, stare):
@@ -91,9 +89,7 @@ def _consemneaza(schema, factura_id, prag, stare):
     P4 il scoate din cap si il pune in cod."""
     with db.get_conn(schema) as c:
         with c.cursor() as cur:
-            cur.execute("INSERT INTO notificari_scadenta (factura_id, prag, stare) "
-                        "VALUES (%s, %s, %s) ON CONFLICT (factura_id, prag) DO NOTHING",
-                        (factura_id, prag, stare))
+            _repo.insert_notificari_scadenta_2(cur, factura_id, prag, stare)
 
 
 def _scrie_rezultatul(schema, factura_id, prag, stare):
@@ -101,8 +97,7 @@ def _scrie_rezultatul(schema, factura_id, prag, stare):
     nescris: se vede, și e mai bun decât un e-mail trimis de două ori."""
     with db.get_conn(schema) as c:
         with c.cursor() as cur:
-            cur.execute("UPDATE notificari_scadenta SET stare = %s "
-                        " WHERE factura_id = %s AND prag = %s", (stare, factura_id, prag))
+            _repo.update_notificari_scadenta(cur, stare, factura_id, prag)
 
 
 def _plan_notificari(conn, azi):
@@ -114,28 +109,16 @@ def _plan_notificari(conn, azi):
     Intoarce `(inactiv, firma_nume, firma_email, reply_ok, [(factura, prag)])`.
     """
     with conn.cursor() as cur:
-        cur.execute("SELECT nume, email, COALESCE(notificari_scadenta_activ, false) "
-                    "FROM firma_profil WHERE id = 1")
-        r = cur.fetchone()
+        r = _repo.select_firma_profil(cur)
         if not r or not r[2]:
             return True, None, None, False, []
         firma_nume, firma_email = r[0] or "Firma", r[1]
         reply_ok = email_valid(firma_email)
-        cur.execute(
-            "SELECT f.id, f.numar, f.data_scadenta, COALESCE(f.total,0) AS suma, f.moneda, "
-            "       c.email AS client_email "
-            "  FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
-            " WHERE f.directie='emisa' AND f.platita_la IS NULL "
-            "   AND COALESCE(f.tip,'factura')='factura' AND f.storno_din_id IS NULL "
-            "   AND COALESCE(f.notificare_stop, false) = false "
-            "   AND (f.notificare_amanata_pana IS NULL OR f.notificare_amanata_pana < %s) "
-            "   AND f.data_scadenta IS NOT NULL", (azi,))
         facturi = [dict(id=x[0], numar=x[1], data_scadenta=x[2], suma=x[3],
-                        moneda=x[4], client_email=x[5]) for x in cur.fetchall()]
+                        moneda=x[4], client_email=x[5]) for x in _repo.select_facturi(cur, azi)]
         plan = []
         for f in facturi:
-            cur.execute("SELECT prag FROM notificari_scadenta WHERE factura_id=%s", (f["id"],))
-            deja = {x[0] for x in cur.fetchall()}
+            deja = {x[0] for x in _repo.select_notificari_scadenta(cur, f)}
             prag = prag_curent(f["data_scadenta"], azi, deja)
             if prag is not None:
                 plan.append((f, prag))
@@ -193,9 +176,7 @@ def _main():
     db.init_pool()
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT schema_name FROM information_schema.schemata "
-                        "WHERE schema_name ~ '^tenant_[0-9]+$' ORDER BY schema_name")
-            scheme = [r[0] for r in cur.fetchall()]
+            scheme = [r[0] for r in _repo.select_information_schema(cur)]
     tot = {"trimise": 0, "fara_reply_to": 0, "fara_email_client": 0}
     for s in scheme:
         try:

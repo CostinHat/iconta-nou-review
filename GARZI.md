@@ -7750,11 +7750,69 @@ schemă inexistentă, unde ce se cere e ca răspunsul GOL să devină refuz, nu 
 *Lecția, scrisă fiindcă e clasa: o probă pe FORMA codului nu poate vedea o eroare de APEL. Un val
 care mută cod are nevoie de amândouă.*
 
+## 13.09.2026 (2) — P7 · valul D4: 215 instrucțiuni mutate, și gardul care spune că faza tot nu e gata
+
+### `core/test_p7_straturi.py` — patru gărzi noi, una întoarsă pe dos
+
+Valul a golit `mixt_cu` din tot registrul: cele 37 de module care făceau două straturi deodată și-au
+dat cele **215 instrucțiuni SQL** la 37 de `core/repo_*.py`. `D4` **37 → 0**.
+
+- **`test_NICIUN_modul_nu_mai_face_doua_straturi_deodata`** — proba s-a întors pe dos: cerea
+  `assert mixte`, acum cere mulțimea goală. Ce rămâne cerut e ce conta: clasa `D4` **există** și e
+  `ACTION_REQUIRED` dacă reapare.
+- **`test_D4_SE_APRINDE_pe_un_registru_sintetic`** — a doua oară în aceeași fază când calibrarea
+  pozitivă rămâne fără instanță reală. La `D2` universul era real și declarația fabricată; aici
+  **declarația e fabricată**, fiindcă `D4` *e* o declarație.
+- **`test_cele_37_de_module_separate_chiar_nu_mai_au_SQL`** — afirmă pe FIȘIERE, nu pe registru.
+  Fără ea, proba de mai sus ar fi verde și dacă `mixt_cu` ar fi fost șters fără să se mute o linie.
+  Lista celor 37 nu se scrie: sunt exact modulele cu pereche `core/repo_<nume>.py`.
+- **`test_depozitele_D4_nu_deschid_conexiuni_si_nu_comit`** — contractul depozitului pe AST: niciun
+  `get_conn`, `commit`, `rollback` sau `HTTPException` în cele 51 de `core/repo_*.py`. *Ăsta e locul
+  în care se vede că hotarele P4 n-au fost atinse.*
+
+**RED-proof, patru mutații pe copie:** un modul redevine mixt în registru · detectorul `D4` orbește ·
+un modul separat își ia SQL-ul înapoi · un depozit comite. Toate patru roșii, toate puse înapoi.
+
+### `core/test_p7_criterii.py` — gardul care NU lasă „zero" să fie citit ca „gata"
+
+Cea mai importantă gardă a turei, și s-a născut dintr-o cifră care arăta bine. După D4:
+`D1`=`D2`=`D4`=0, `P7_ACTION_REQUIRED`=**0**. Citită singură, cifra spune că faza s-a terminat.
+Măsurat în aceeași tură: **385 din 421 de rute își deschid singure tranzacția**, deci stratul
+use-case — pe care textul canonic îl definește prin *«deține tranzacția (P4), orchestrează»* —
+aproape că nu există.
+
+Garda ține trei lucruri: cele trei detectoare rămân zero · criteriul nesatisfăcut rămâne **măsurat**,
+cu clichet care poate coborî și nu urca · și, doc↔cod, **`PLAN_HARDENING.md` nu poate declara P7
+închisă** cât timp un criteriu canonic nu e satisfăcut. *Zero pe toate detectoarele nu e zero pe
+fază — de azi n-o mai spune proza din predare, o spune o gardă.*
+
+**RED-proof:** instrumentul orbit la `get_conn` → 3 roșii · planul care declară «P7 ÎNCHIS» peste
+criteriul nesatisfăcut → 1 roșie.
+
+### Și două instrumente care au aflat că lumea s-a mutat sub ele
+
+- **`core/test_upsert_motivat.py`**, la prima rulare după val: trei `ON CONFLICT DO UPDATE` au trecut
+  în depozit, iar `# upsert-ok:` a rămas în modulul vechi, la douăsprezece linii deasupra unui cod
+  care nu mai e acolo. *O justificare ancorată prin VECINĂTATE nu se mută odată cu codul* — aceeași
+  clasă cu trimiterea pe număr de linie din valul D2, și tot un instrument a prins-o.
+- **`scripts/scan_trasee.py`**, a doua oară în două valuri: după D4 **12 adnotări** au tăcut deodată
+  (`d301_operatiuni_api` nu mai „atingea" nimic, deși depozitul lui scrie în `d301_operatiuni`).
+  S-a adăugat pasul care lipsea, și tot mărginit: **perechea nominală** modul ↔ `repo_<același
+  nume>`. Nu lărgește clasa — un modul nu capătă prin ea decât ce și-a dat singur.
+
+### `scripts/reancoreaza_plan.py` — reparația clasei prinse la valul D2
+
+`core/test_citari_plan.py` **prinde** citările care nu mai arată unde spun; instrumentul ăsta le
+**repară**, ca reparația să nu fie o căutare cu mâna prin șaizeci de fișiere. A greșit de două ori
+înainte să meargă, și amândouă sunt scrise în el: cerea unicitatea fragmentului pe tot planul (dar
+`**Cum se verifică.**` apare de șapte ori, o dată per pas), și lua reperul intervalului din fișierul
+**deja editat**. *Când repari o deplasare, reperul se ia de dinainte de deplasare.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**572 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**574 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 545
+### `core/` — 547
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7780,6 +7838,7 @@ care mută cod are nevoie de amândouă.*
 - `core/scan_respingeri.py` — core/scan_respingeri.py — ce coduri de respingere sunt CHIAR FOLOSITE in module?
 - `core/scan_rol_pe_efect.py` — core/scan_rol_pe_efect.py — INSTRUMENT: ce face fiecare rută, ca să se poată cere rolul după
 - `core/scan_simetrie_denumire.py` — Instrumentul simetriei de scriere a denumirii unei firme (R81, decis 28.08.2026).
+- `core/scan_sql_efectiv.py` — SQL-ul EFECTIV al unei funcții — cel scris în ea plus cel chemat din depozitul ei.
 - `core/scan_valoare_in_citat.py` — core/scan_valoare_in_citat.py — INTERDICȚIA 53: citatul conține VALOAREA pe care o justifică?
 - `core/scan_valori_afisate.py` — Valori FISCALE scrise literal in TEXTUL AFISAT de ecrane.
 - `core/test_11_deducere_copii_gard.py` — GARD #11: deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) NU se acorda tacit — art.77 alin.(12)-(13)
@@ -8157,6 +8216,7 @@ care mută cod are nevoie de amândouă.*
 - `core/test_p3_wave_a.py` — GARD P3 · VALUL A — cele două rute set-based nu mai cresc cu numărul de firme.
 - `core/test_p4_fault_injection.py` — GARD P4 — INJECȚIE DE DEFECT pe fiecare operație compusă critică.
 - `core/test_p7_clasificare.py` — Calibrarea celor trei detectoare P7 — în ambele direcții, plus anti-vacuum.
+- `core/test_p7_criterii.py` — GARDĂ: `P7_ACTION_REQUIRED = 0` nu are voie să fie citit ca „faza e închisă".
 - `core/test_p7_straturi.py` — GARDA REGISTRULUI DE STRATURI (P7 · V3) — un modul relevant nu poate apărea fără strat declarat.
 - `core/test_p7_v1_citiri.py` — GARDA V1 — nicio citire SQL în corpul unei rute, și un detector de FEL care poate fi arătat greșit.
 - `core/test_p7_v2_scrieri.py` — GARDA V2 — nicio scriere și niciun control de tranzacție în corpul unei rute.

@@ -54,6 +54,7 @@ from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 
 from core.common import cota as _cota, cheie_manual as _cheie_manual
+from core import repo_d100_reconciliere as _repo
 
 # Nomenclator regim -> (cod_oblig XML, nume cota in registrul COTE). RE-DECLARAT aici (NU
 # importat din d100) ca sa nu existe cod comun cu calea 1: micro=poz.5 cod_oblig 121 (impozit
@@ -83,8 +84,7 @@ def _venituri_independent(conn, perioada):
          "WHERE i.status='validata' AND l.cont_credit LIKE '70%%' "
          "AND i.data >= %s AND i.data < %s")
     with conn.cursor() as cur:
-        cur.execute(q, (inc.isoformat(), sf.isoformat()))
-        return Decimal(str(cur.fetchone()[0] or 0))
+        return Decimal(str(_repo.sql(cur, q, inc, sf)[0] or 0))
 
 
 def _cheltuieli_independent(conn, perioada):
@@ -96,8 +96,7 @@ def _cheltuieli_independent(conn, perioada):
          "WHERE i.status='validata' AND l.cont_debit LIKE '6%%' "
          "AND i.data >= %s AND i.data < %s")
     with conn.cursor() as cur:
-        cur.execute(q, (inc.isoformat(), sf.isoformat()))
-        return Decimal(str(cur.fetchone()[0] or 0))
+        return Decimal(str(_repo.sql_2(cur, q, inc, sf)[0] or 0))
 
 
 def _cota_procent(regim, nume_cota, an, luna, manual):

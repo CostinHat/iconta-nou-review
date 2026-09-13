@@ -12,6 +12,7 @@ Tratament fiscal (verificat la sursa 2026):
 """
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
+from core import repo_beneficii_api as _repo
 
 TIPURI = ("vacanta", "cadou", "cultural", "cresa")
 # [F133 Faza 2b1] evenimentele cadou. Cele 4 LEGALE (<=300 lei = neimpozabil); 'altul' = nelegal
@@ -78,20 +79,12 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
             return {"eroare": "valoarea %s depășește plafonul %s/%s pentru %s-%s (%s)"
                     % (v, _plaf, ("eveniment" if _ocaz else "luna"), an, luna, _sursa)}
     with conn.cursor() as cur:
-        cur.execute(f"SELECT 1 FROM {schema}.salariati WHERE id = %s", (salariat_id,))
-        if not cur.fetchone():
+        if not _repo.select_salariati(cur, schema, salariat_id):
             return None
         if v == 0:
-            cur.execute(f"DELETE FROM {schema}.beneficii_lunare "
-                        f"WHERE salariat_id=%s AND an=%s AND luna=%s AND tip=%s AND eveniment=%s",
-                        (salariat_id, an, luna, tip, eveniment))
+            _repo.delete_beneficii_lunare(cur, schema, salariat_id, an, luna, tip, eveniment)
         else:
-            # upsert-ok: set beneficiu pe (salariat,an,luna,tip,eveniment) - re-setare intentionata
-            cur.execute(f"""INSERT INTO {schema}.beneficii_lunare (salariat_id, an, luna, tip, valoare, eveniment)
-                            VALUES (%s,%s,%s,%s,%s,%s)
-                            ON CONFLICT (salariat_id, an, luna, tip, eveniment)
-                            DO UPDATE SET valoare = EXCLUDED.valoare""",
-                        (salariat_id, an, luna, tip, v, eveniment))
+            _repo.insert_beneficii_lunare(cur, schema, salariat_id, an, luna, tip, v, eveniment)
     conn.commit()
     return {"ok": True}
 
@@ -100,18 +93,14 @@ def lista_luna(conn, schema, an, luna, tip):
     """{salariat_id: total(float)} pentru o luna si un tip (pt stat). Agregat pe salariat
     (cadoul poate avea mai multe evenimente/luna -> SUM)."""
     with conn.cursor() as cur:
-        cur.execute(f"""SELECT salariat_id, COALESCE(SUM(valoare),0) FROM {schema}.beneficii_lunare
-                        WHERE an=%s AND luna=%s AND tip=%s GROUP BY salariat_id""", (an, luna, tip))
-        return {sid: float(v) for sid, v in cur.fetchall()}
+        return {sid: float(v) for sid, v in _repo.select_beneficii_lunare(cur, schema, an, luna, tip)}
 
 
 def cadou_detalii_luna(conn, schema, an, luna):
     """Per salariat: [{eveniment, valoare, taxabil}] pt cadou. taxabil = eveniment NELEGAL
     ('altul') SAU valoare > plafon (300) -> necesita taxare ca salariu (Faza 2b2; 2b1 semnaleaza)."""
     with conn.cursor() as cur:
-        cur.execute(f"""SELECT salariat_id, eveniment, valoare FROM {schema}.beneficii_lunare
-                        WHERE an=%s AND luna=%s AND tip='cadou' ORDER BY salariat_id, eveniment""",
-                    (an, luna))
+        _repo.select_beneficii_lunare_2(cur, schema, an, luna)
         out = {}
         for sid, ev, val in cur.fetchall():
             val = float(val)
@@ -143,10 +132,7 @@ def total_an(conn, schema, salariat_id, an, tip, pana_luna=12):
     """Suma acordata unui salariat intr-un an (pt plafonul anual - vacanta 6 sal.minime).
     pana_luna: cumulat pana la luna inclusiv (pt verificare la momentul acordarii)."""
     with conn.cursor() as cur:
-        cur.execute(f"""SELECT COALESCE(SUM(valoare),0) FROM {schema}.beneficii_lunare
-                        WHERE salariat_id=%s AND an=%s AND tip=%s AND luna<=%s""",
-                    (salariat_id, an, tip, pana_luna))
-        return float(cur.fetchone()[0])
+        return float(_repo.select_beneficii_lunare_3(cur, schema, salariat_id, an, tip, pana_luna)[0])
 
 
 def exces_vacanta_luna(cumul_curent, cumul_anterior, plafon_an):

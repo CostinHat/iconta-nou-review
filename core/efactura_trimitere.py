@@ -2,7 +2,7 @@
 """USE_CASE — trimiterea unei facturi in SPV: orchestrarea, si numai ea.
 
 [P7 · valul D2, 13.09.2026] Ce e aici statea in `core/efactura_send.py`, modul declarat
-`FISCAL_ENGINE`. Textul canonic (`PLAN_HARDENING.md:797`) cere, mecanic, ca *„un motor fiscal nu
+`FISCAL_ENGINE`. Textul canonic (`PLAN_HARDENING.md:811`) cere, mecanic, ca *„un motor fiscal nu
 importa `db`"* — iar acela il importa, cu 8 instructiuni SQL si trei conexiuni deschise de el
 insusi. Era SINGURA incalcare `D2` din repo.
 

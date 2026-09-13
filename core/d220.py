@@ -39,6 +39,7 @@ from decimal import Decimal, ROUND_HALF_UP
 import re
 
 from core.numere import numar_fiscal
+from core import repo_d220 as _repo
 
 NS = "mfp:anaf:dgti:d220:declaratie:v2"
 _NEDIGIT = re.compile(r"\D")
@@ -90,8 +91,7 @@ def calcul_d220(manual):
 def pull(conn, schema, perioada):
     """Declarantul (fallback din firma_profil). D220 e a unei PERSOANE FIZICE - identitatea vine din manual."""
     with conn.cursor() as cur:
-        cur.execute("SELECT declarant_nume, declarant_prenume, declarant_functie FROM firma_profil WHERE id = 1")
-        r = cur.fetchone()
+        r = _repo.select_firma_profil(cur)
     if not r:
         return {}
     return {"declarant_nume": r[0], "declarant_prenume": r[1], "declarant_functie": r[2]}

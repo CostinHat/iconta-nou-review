@@ -14,6 +14,7 @@ Facturile achitate (platita_la != NULL) NU intra in scadentar - nu mai sunt de u
 Ordinea de urgenta (ca la semafoare, cap.8 DS): restanta -> scade_curand -> in_termen.
 """
 from decimal import Decimal
+from core import repo_scadentar as _repo
 
 PRAG_ZILE = 7
 
@@ -75,20 +76,9 @@ def pull(conn, schema, azi=None, prag_zile=PRAG_ZILE):
     from datetime import date as _d
     azi = azi or _d.today()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT COALESCE(notificari_scadenta_activ, false) AS activ FROM firma_profil WHERE id=1")
-        r = cur.fetchone()
+        r = _repo.select_firma_profil(cur)
         optin = bool(r["activ"]) if r else False
-        cur.execute(
-            "SELECT f.id, f.numar, f.serie, f.data_emitere, f.data_scadenta, "
-            "       COALESCE(f.total,0) AS suma, f.moneda, f.tert_nume, f.tert_cui, "
-            "       f.client_id, c.email, "
-            "       COALESCE(f.notificare_stop, false) AS notificare_stop, f.notificare_amanata_pana "
-            "  FROM facturi f "
-            "  LEFT JOIN clienti c ON c.id = f.client_id "
-            " WHERE f.directie = 'emisa' AND f.platita_la IS NULL "
-            "   AND COALESCE(f.tip, 'factura') = 'factura' "
-            "   AND f.storno_din_id IS NULL")
-        facturi = [dict(r) for r in cur.fetchall()]
+        facturi = [dict(r) for r in _repo.select_facturi(cur)]
     rez = scadentar(facturi, azi, prag_zile)
     rez["optin"] = optin
     return rez
@@ -100,12 +90,11 @@ def seteaza_optin(conn, activ):
     from core.notificari_scadenta import email_valid
     with conn.cursor() as cur:
         if activ:
-            cur.execute("SELECT email FROM firma_profil WHERE id=1")
-            r = cur.fetchone()
+            r = _repo.select_firma_profil_2(cur)
             if not (r and email_valid(r[0])):
                 return {"ok": False, "mesaj": "Completează un email valid al firmei "
                         "(Reply-To) înainte de a activa notificările."}
-        cur.execute("UPDATE firma_profil SET notificari_scadenta_activ=%s WHERE id=1", (bool(activ),))
+        _repo.update_firma_profil(cur, activ)
     return {"ok": True, "activ": bool(activ)}
 
 
@@ -123,6 +112,5 @@ def seteaza_supapa(conn, factura_id, stop=False, amanata_pana=None):
             raise ValueError("data amânării: %r nu e o dată din calendar. Aștept forma "
                              "AAAA-LL-ZZ." % (amanata_pana,))
     with conn.cursor() as cur:
-        cur.execute("UPDATE facturi SET notificare_stop=%s, notificare_amanata_pana=%s "
-                    "WHERE id=%s AND directie='emisa'", (bool(stop), amanata_pana or None, factura_id))
+        _repo.update_facturi(cur, factura_id, stop, amanata_pana)
         return {"ok": cur.rowcount > 0}

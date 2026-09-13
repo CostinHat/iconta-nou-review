@@ -13,6 +13,8 @@ sau daca buclele de nomenclator nu mai folosesc _partener_id_saft.
 import os
 import re
 
+from core import scan_sql_efectiv as _efectiv
+
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(_RAD, "core", "d406.py")
 
@@ -34,9 +36,16 @@ def test_fara_id_brut_ca_identitate_partener():
 
 def test_nomenclatorul_foloseste_partener_id_saft():
     """Ambele bucle de nomenclator (clienti, furnizori) trebuie sa treaca prin _partener_id_saft."""
+    # [P7 · D4] SQL-ul nomenclatorului a trecut in `core/repo_d406.py`, deci un regex care cerea
+    # instructiunea SI `except ValueError` in acelasi text nu mai poate potrivi. Intrebarea ramane
+    # aceeasi si se pune in doua bucati, fiecare unde traieste acum: instructiunea EXISTA (in
+    # depozit) si bucla care o consuma trece prin `_partener_id_saft`, cu passthrough de ValueError.
     t = _text()
+    sql = " ".join(_efectiv.sql_modul("core/d406.py"))
     for tab in ("clienti", "furnizori"):
-        m = re.search(r'SELECT id, nume, cui, oras FROM %s ORDER BY id.*?except ValueError' % tab, t, re.S)
+        assert sql.count("SELECT id, nume, cui, oras FROM %s ORDER BY id" % tab) == 1, (
+            "instructiunea de nomenclator '%s' lipseste din SQL-ul efectiv al lui d406" % tab)
+        m = re.search(r'_repo\.[a-z0-9_]*%s[a-z0-9_]*\(.*?except ValueError' % tab, t, re.S)
         assert m, "bucla de nomenclator '%s' lipseste sau nu are passthrough ValueError" % tab
         assert "_partener_id_saft" in m.group(0), (
             "bucla de nomenclator '%s' nu foloseste _partener_id_saft (risc de id brut)" % tab)

@@ -2,7 +2,7 @@
 """REPOSITORY — profilul firmei din schema ei (`firma_profil`).
 
 [P7 · V1, 13.09.2026] Citirile de aici stăteau în corpul rutelor din `main.py`. Textul canonic
-(`PLAN_HARDENING.md:794`) spune că repository-ul e *„singurul care știe SQL și scheme"*, iar ruta nu
+(`PLAN_HARDENING.md:808`) spune că repository-ul e *„singurul care știe SQL și scheme"*, iar ruta nu
 conține SQL — deci SQL-ul s-a mutat, nu s-a rescris: aceleași instrucțiuni, aceiași parametri,
 aceeași ordine, același `fetchone`/`fetchall`.
 

@@ -27,6 +27,8 @@ acolo fereastra TVA are reguli proprii — rămâne în **R40**.
 None` -> GRI, *„absența datelor nu e divergență"*. Reparația asta o **aplică**, nu o introduce.
 """
 import ast
+
+from core import scan_sql_efectiv as _efectiv
 import io
 import os
 
@@ -116,8 +118,9 @@ def test_cititorul_depusului_are_cale_de_NECUNOSCUT():
 def test_citeste_depunerea_CURENTA_nu_orice_depunere():
     """O firmă poate depune de mai multe ori aceeași perioadă (rectificative). Comparația trebuie să
     stea pe cea în vigoare, altfel apără o cifră înlocuită."""
-    sql = "\n".join(n.value for n in ast.walk(_functia("_d112_depus_xml"))
-                    if isinstance(n, ast.Constant) and isinstance(n.value, str))
+    # [P7 · D4] SQL-ul functiei nu mai sta in corpul ei, ci in depozitul nominal; intrebarea
+    # e aceeasi, domeniul e cel care s-a mutat.
+    sql = "\n".join(_efectiv.sql_functie("core/control_incrucisat.py", "_d112_depus_xml"))
     assert "declaratii_depuse_curente" in sql, (
         "nu se citește din `declaratii_depuse_curente` — o rectificativă n-ar fi luată în seamă")
 

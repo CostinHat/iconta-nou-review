@@ -39,6 +39,7 @@ from datetime import date as _date_v
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re
+from core import repo_d101 as _repo
 
 NS = "mfp:anaf:dgti:d101:declaratie:v10"
 
@@ -451,45 +452,18 @@ def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, caen, "
-                    "declarant_nume, declarant_prenume, declarant_functie "
-                    "FROM firma_profil WHERE id = 1")
-        prof = cur.fetchone() or {}
+        prof = _repo.select_firma_profil(cur) or {}
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
-        cur.execute(
-            "SELECT "
-            "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_fin, "
-            "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_expl, "
-            "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '70%%' THEN l.suma ELSE 0 END),0) AS cifra_afaceri, "
-            "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
-            "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
-            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-            "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s",
-            (_inc.isoformat(), _sf.isoformat()))
-        r = cur.fetchone() or {}
+        r = _repo.select_inregistrari_linii(cur, _inc, _sf) or {}
         # Balante pentru rezerva legala deductibila (CF art.26 alin.(1) lit.a):
         #  capital 1012 (subscris/varsat) = sold cumulat pana la SFARSITUL perioadei (credit-debit);
         #  rezerva 1061 EXISTENTA = sold cumulat pana la INCEPUTUL anului (din anii anteriori);
         #  691 = cheltuiala cu impozitul pe profit pe anul curent (baza rezervei = profit contabil + 691).
-        cur.execute(
-            "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '1012%%' THEN l.suma ELSE 0 END),0) "
-            "     - COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '1012%%' THEN l.suma ELSE 0 END),0) AS capital "
-            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-            "WHERE i.status = 'validata' AND i.data < %s", (_sf.isoformat(),))
-        r["capital"] = (cur.fetchone() or {}).get("capital", 0)
-        cur.execute(
-            "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '1061%%' THEN l.suma ELSE 0 END),0) "
-            "     - COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '1061%%' THEN l.suma ELSE 0 END),0) AS rez "
-            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-            "WHERE i.status = 'validata' AND i.data < %s", (_inc.isoformat(),))
-        r["rezerva_existenta"] = (cur.fetchone() or {}).get("rez", 0)
-        cur.execute(
-            "SELECT COALESCE(SUM(CASE WHEN l.cont_debit LIKE '691%%' THEN l.suma ELSE 0 END),0) AS imp "
-            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-            "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
-        r["chelt_impozit"] = (cur.fetchone() or {}).get("imp", 0)
+        r["capital"] = (_repo.select_inregistrari_linii_2(cur, _sf) or {}).get("capital", 0)
+        r["rezerva_existenta"] = (_repo.select_inregistrari_linii_3(cur, _inc) or {}).get("rez", 0)
+        r["chelt_impozit"] = (_repo.select_inregistrari_linii_4(cur, _inc, _sf) or {}).get("imp", 0)
     return prof, r
 
 

@@ -43,15 +43,15 @@ ANCORE = {
     "723": "blocarea la autentificare ține pe ambele",
     "728-729": "brațul se redefinește",
     # P7
-    "733-803": "# P7 — APPLICATION LAYER",
-    "790-794": "**repository** — singurul care știe SQL și scheme",
-    "791": "**HTTP** — validare de formă",
-    "792": "**use-case** — deține tranzacția (P4)",
-    "793": "**motor fiscal** — pur pe cât se poate",
-    "794": "**repository** — singurul care știe SQL și scheme",
-    "796-799": "un motor fiscal nu importă `db`",
-    "797": "un motor fiscal nu importă `db`",
-    "798": "ruta nu conține SQL",
+    "733-817": "# P7 — APPLICATION LAYER",
+    "804-808": "**repository** — singurul care știe SQL și scheme",
+    "805": "**HTTP** — validare de formă",
+    "806": "**use-case** — deține tranzacția (P4)",
+    "807": "**motor fiscal** — pur pe cât se poate",
+    "808": "**repository** — singurul care știe SQL și scheme",
+    "810-813": "un motor fiscal nu importă `db`",
+    "811": "un motor fiscal nu importă `db`",
+    "812": "ruta nu conține SQL",
 }
 
 _CITARE = re.compile(r"PLAN_HARDENING\.md:(\d+(?:-\d+)?)")

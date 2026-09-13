@@ -57,6 +57,7 @@ _EXIG_NORMAL = ("(CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
 # staging DESI calea de emitere a aplicatiei il produce — 4 facturi emise, 3.052,00 lei TVA colectata,
 # nu intrau in decont. Vezi decizia de interpretare din antetul nomenclatorului.
 from core import nomenclator_status_factura as _nsf
+from core import repo_d300 as _repo
 _STATUS_FINAL = _nsf.clauza_sql("f")
 
 
@@ -875,25 +876,11 @@ def _pull_incasare(cur, inceput, sfarsit):
     """Facturi cu DECONTARE (incasare cont 4111 / plata cont 401) VALIDATA in perioada. Pentru
     fiecare, suma decontata alocata pe cote -> `decontari`. Exigibilitatea D300 se calculeaza din
     aceste decontari (art.282 alin.3 CF), nu din emitere."""
-    cur.execute(
-        "SELECT i.factura_id AS fid, f.directie AS directie, SUM(l.suma) AS settled "
-        "FROM inregistrari i "
-        "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-        "JOIN facturi f ON f.id = i.factura_id "
-        "WHERE i.status = 'validata' AND i.factura_id IS NOT NULL "
-        "AND COALESCE(f.taxare_inversa, false) = false "  # art.282(6)/297(3): taxare inversa = regim general, nu la incasare
-        "AND " + _STATUS_FINAL + " "  # [B1] doar facturi contabilizabile
-        "AND i.data >= %s AND i.data < %s "
-        "AND ((f.directie = 'emisa' AND l.cont_credit = '4111') "
-        "  OR (f.directie = 'primita' AND l.cont_debit = '401')) "
-        "GROUP BY i.factura_id, f.directie", (inceput, sfarsit))
-    settle = cur.fetchall()
+    settle = _repo.select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit)
     if not settle:
         return []
     fids = [r["fid"] for r in settle]
-    cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
-                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-                "WHERE f.id = ANY(%s)", (fids,))
+    _repo.select_facturi(cur, fids)
     linii, totaluri = {}, {}
     for r in cur.fetchall():
         totaluri[r["fid"]] = (r["total"], r["tva"])
@@ -914,15 +901,7 @@ def _pull_taxare_inversa(cur, inceput, sfarsit):
     Folosit DOAR pe calea tva_la_incasare: _pull_incasare EXCLUDE taxarea inversa (art.282 alin.6 CF:
     exigibila la faptul generator, nu la incasare) - o aducem separat ca sa NU dispara tacit din decont
     (rd.13 pt emise / rd.12+rd.25 pt primite). Aceeasi forma de dict ca pull() normal."""
-    cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
-                "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
-                "COALESCE(f.tert_tara, 'RO') AS tert_tara, "
-                "l.cantitate, l.pret_unitar, l.cota_tva "
-                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-                "WHERE " + _EXIG_NORMAL + " >= %s AND " + _EXIG_NORMAL + " < %s "
-                "AND " + _STATUS_FINAL + " "
-                "AND COALESCE(f.taxare_inversa, false) = true ORDER BY f.id",
-                (inceput, sfarsit))
+    _repo.select_facturi_2(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit)
     fmap = {}
     for r in cur.fetchall():
         f = fmap.setdefault(r["id"], {"directie": r["directie"],
@@ -941,24 +920,11 @@ def _pull_furnizor_incasare(cur, inceput, sfarsit):
     amana pana la PLATA (cont 401 decontat), CHIAR daca firma proprie e in regim normal. Aceeasi cale
     de decontare ca _pull_incasare (suma platita alocata pe cote), dar filtrata pe furnizor_tva_incasare.
     Marcheaza dict-urile cu exigibil_la_decontare=True ca sa fie tratate pe decontari in calcul_d300."""
-    cur.execute(
-        "SELECT i.factura_id AS fid, SUM(l.suma) AS settled "
-        "FROM inregistrari i "
-        "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-        "JOIN facturi f ON f.id = i.factura_id "
-        "WHERE i.status = 'validata' AND i.factura_id IS NOT NULL "
-        "AND f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true "
-        "AND COALESCE(f.taxare_inversa, false) = false "
-        "AND " + _STATUS_FINAL + " "
-        "AND i.data >= %s AND i.data < %s AND l.cont_debit = '401' "
-        "GROUP BY i.factura_id", (inceput, sfarsit))
-    settle = cur.fetchall()
+    settle = _repo.select_inregistrari_2(cur, _STATUS_FINAL, inceput, sfarsit)
     if not settle:
         return []
     fids = [r["fid"] for r in settle]
-    cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
-                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-                "WHERE f.id = ANY(%s)", (fids,))
+    _repo.select_facturi_3(cur, fids)
     linii, totaluri = {}, {}
     for r in cur.fetchall():
         totaluri[r["fid"]] = (r["total"], r["tva"])
@@ -977,11 +943,7 @@ def _pull_furnizor_incasare(cur, inceput, sfarsit):
 def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, caen, banca, iban, tip_decont, pro_rata, "
-                    "COALESCE(tva_la_incasare, false) AS tva_la_incasare, "
-                    "declarant_nume, declarant_prenume, declarant_functie "
-                    "FROM firma_profil WHERE id = 1")
-        prof = cur.fetchone() or {}
+        prof = _repo.select_firma_profil(cur) or {}
         # [06.08.2026] Fereastra de date urmeaza PERIOADA FISCALA TVA (tip_decont din vectorul
         # firmei), nu luna-ancora: un platitor trimestrial agrega TOT trimestrul. Eticheta XML
         # (perioada.luna) ramane separata (build_xml). Fara default tacit: tip_decont lipsa -> eroare.
@@ -994,26 +956,7 @@ def pull(conn, schema, perioada):
             # generator (art.282 alin.6 CF), nu la incasare - _pull_incasare o EXCLUDE; o aducem pe
             # calea de emitere (_pull_taxare_inversa) ca sa NU dispara tacit (rd.13 / rd.12+rd.25).
             return prof, _pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
-        cur.execute(
-            "SELECT f.id, f.directie, f.total, f.tva, "
-            "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
-            "COALESCE(f.tert_tara, 'RO') AS tert_tara, f.tert_cui, "
-            # [F125] LUNA de exigibilitate (aceeasi expresie pe care se face fereastra): cheia
-            # reclasificarii D390 e per-luna (acelasi partener poate fi reclasificat diferit in luni
-            # diferite - trimestru). Fara ea D300 nu poate potrivi factura pe luna corecta.
-            + _EXIG_NORMAL + " AS exig, "
-            "l.cantitate, l.pret_unitar, l.cota_tva "
-            "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-            # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere); avans->emitere)
-            "WHERE " + _EXIG_NORMAL + " >= %s AND " + _EXIG_NORMAL + " < %s "
-            # [B1] doar facturi contabilizabile (exclude ciorna/de_preluat/descarcata/anulata/stornata)
-            "AND " + _STATUS_FINAL + " "
-            # [B1] deducere amanata (art.297 alin.2): primita de la furnizor la incasare -> exclusa din
-            # calea de EMITERE, adusa separat pe calea de PLATA (_pull_furnizor_incasare)
-            "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "
-            "ORDER BY f.id",
-            (inceput, sfarsit))
-        rows = cur.fetchall()
+        rows = _repo.select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit)
         deferred = _pull_furnizor_incasare(cur, inceput, sfarsit)
     fmap = {}
     for r in rows:
@@ -1101,10 +1044,7 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
         from core import common as _c
         _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(prof))
         with conn.cursor() as _cur:
-            _cur.execute("SELECT count(*) FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
-                         "AND " + _nsf.clauza_sql(None),
-                         (_inc.isoformat(), _sf.isoformat()))
-            _nf = _cur.fetchone()[0]
+            _nf = _repo.select_facturi_5(_cur, _nsf, _inc, _sf)[0]
         # [zero_base_v1 extins B1] Decont complet gol -> NU XML gol tacit: afirmatie EXPLICITA surfatata
         # (flag res.nula_asumata + mesaj). Acopera si cazul FARA nicio factura (un platitor depune nul pe
         # luna fara activitate) - depunerea NU se refuza, dar nulul e ASUMAT explicit.

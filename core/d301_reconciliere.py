@@ -55,6 +55,7 @@ care interogheaza d301_operatiuni fara a seta search_path).
 
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d301_reconciliere as _repo
 
 TIPURI_OP = (1, 2, 3, 4, 5)   # re-declarat aici, NU importat din d301 (fara cod comun cu calea 1)
 
@@ -84,9 +85,7 @@ def _agrega_independent(conn, perioada):
     import psycopg2.extras as _E
     an, luna = perioada.an, perioada.luna
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT tip, val_valuta, tip_valuta, curs, tva "
-                    "FROM d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
-        rows = cur.fetchall()
+        rows = _repo.select_d301_operatiuni(cur, an, luna)
 
     tot = {t: [0, 0] for t in TIPURI_OP}
     for r in rows:

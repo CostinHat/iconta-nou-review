@@ -48,6 +48,7 @@ remediu SUGERAT (asteapta validare), nu executabil (nota exista deja, nu se dubl
 from decimal import Decimal
 from core.pdf_util import bani
 from core import afirmatii as _af  # [P8] o constatare E o afirmatie, imbracata pentru ecran
+from core import repo_control_incrucisat as _repo
 
 TOLERANTA = Decimal("1")  # 1 leu: D300 rotunjeste la leu, contabilitatea are bani
 MODUL = "control_incrucisat"
@@ -72,22 +73,7 @@ def rulaje_interval(conn, schema, data_de, data_pana, conturi):
     if not conturi:
         return out
     with conn.cursor() as cur:
-        cur.execute(f"""
-            SELECT l.cont_debit AS cont, SUM(l.suma) AS s, 'debit' AS sens
-            FROM {schema}.inregistrari_linii l
-            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-            WHERE i.data >= %s AND i.data < %s AND i.status = 'validata'
-              AND l.cont_debit = ANY(%s)
-            GROUP BY l.cont_debit
-            UNION ALL
-            SELECT l.cont_credit, SUM(l.suma), 'credit'
-            FROM {schema}.inregistrari_linii l
-            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-            WHERE i.data >= %s AND i.data < %s AND i.status = 'validata'
-              AND l.cont_credit = ANY(%s)
-            GROUP BY l.cont_credit
-        """, (data_de, data_pana, list(conturi), data_de, data_pana, list(conturi)))
-        for cont, suma, sens in cur.fetchall():
+        for cont, suma, sens in _repo.select_inregistrari_linii(cur, schema, data_de, data_pana, conturi):
             if cont in out:
                 out[cont][sens] += _d(suma)
     return out
@@ -112,15 +98,8 @@ def dividende_distribuite(conn, schema, an):
     de = "%04d-01-01" % an
     pana = "%04d-01-01" % (an + 1)
     with conn.cursor() as cur:
-        cur.execute(f"""SELECT COALESCE(SUM(l.suma), 0)
-                        FROM {schema}.inregistrari_linii l
-                        JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                        WHERE i.data >= %s AND i.data < %s AND i.status='validata'
-                          AND l.cont_debit LIKE '457%%'""", (de, pana))
-        suma = _d(cur.fetchone()[0])
-        cur.execute(f"""SELECT 1 FROM {schema}.inregistrari
-                        WHERE data >= %s AND data < %s AND status='validata' LIMIT 1""", (de, pana))
-        are_note = cur.fetchone() is not None
+        suma = _d(_repo.select_inregistrari_linii_2(cur, schema, de, pana)[0])
+        are_note = _repo.select_inregistrari(cur, schema, de, pana) is not None
     return suma, are_note
 
 
@@ -128,11 +107,9 @@ def d301_luni_operatiuni(conn, schema, an):
     """Set de luni (1-12) din anul `an` cu operatiuni IC inregistrate (tabelul d301_operatiuni,
     creat lazy de d301.py). Daca tabelul nu exista -> set gol. Faptul pe care se decide D301."""
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
-        if cur.fetchone()[0] is None:
+        if _repo.select(cur, schema)[0] is None:
             return set()
-        cur.execute(f"SELECT DISTINCT luna FROM {schema}.d301_operatiuni WHERE an=%s", (an,))
-        return {r[0] for r in cur.fetchall()}
+        return {r[0] for r in _repo.select_d301_operatiuni(cur, schema, an)}
 
 
 def d301_luni_facturi_ic(conn, schema, an):
@@ -157,14 +134,9 @@ def are_salariat_activ_luna(conn, schema, an, luna):
     prima = _dt.date(an, luna, 1)
     ultima = _dt.date(an, luna, _cal.monthrange(an, luna)[1])
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".salariati",))
-        if cur.fetchone()[0] is None:
+        if _repo.select_2(cur, schema)[0] is None:
             return False
-        cur.execute(f"""SELECT 1 FROM {schema}.salariati
-                        WHERE (data_angajare IS NULL OR data_angajare <= %s)
-                          AND (data_incetare IS NULL OR data_incetare >= %s) LIMIT 1""",
-                    (ultima, prima))
-        return cur.fetchone() is not None
+        return _repo.select_salariati(cur, schema, ultima, prima) is not None
 
 
 def existenta_firma_an(conn, schema, an):
@@ -179,23 +151,17 @@ def existenta_firma_an(conn, schema, an):
     activitate -> EXCLUSE. Aceeasi logica ca audit_restante.existenta_an."""
     import datetime as _dt
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".facturi",))
+        _repo.select_3(cur, schema)
         if cur.fetchone()[0]:
-            cur.execute(f"SELECT 1 FROM {schema}.facturi WHERE EXTRACT(year FROM data_emitere)=%s LIMIT 1", (an,))
-            if cur.fetchone():
+            if _repo.select_facturi(cur, schema, an):
                 return True
-        cur.execute("SELECT to_regclass(%s)", (schema + ".salariati",))
+        _repo.select_4(cur, schema)
         if cur.fetchone()[0]:
-            cur.execute(f"""SELECT 1 FROM {schema}.salariati
-                            WHERE (data_angajare IS NULL OR data_angajare <= %s)
-                              AND (data_incetare IS NULL OR data_incetare >= %s) LIMIT 1""",
-                        (_dt.date(an, 12, 31), _dt.date(an, 1, 1)))
-            if cur.fetchone():
+            if _repo.select_salariati_2(cur, schema, an, _dt):
                 return True
-        cur.execute("SELECT to_regclass(%s)", (schema + ".inregistrari",))
+        _repo.select_5(cur, schema)
         if cur.fetchone()[0]:
-            cur.execute(f"SELECT 1 FROM {schema}.inregistrari WHERE EXTRACT(year FROM data)=%s LIMIT 1", (an,))
-            if cur.fetchone():
+            if _repo.select_inregistrari_2(cur, schema, an):
                 return True
         # [#existenta d301/casa/banca - audit tenant_006, 18.08.2026] Activitatea reala NU trece doar prin
         # facturi/salariati/note: un NEPLATITOR cu achizitii intracomunitare isi inregistreaza operatiunile
@@ -210,10 +176,9 @@ def existenta_firma_an(conn, schema, an):
                             ("bonuri", "EXTRACT(year FROM data) = %s"),
                             ("chitante", "EXTRACT(year FROM data) = %s"),
                             ("mijloace_fixe", "EXTRACT(year FROM data_pif) = %s")):
-            cur.execute("SELECT to_regclass(%s)", (schema + "." + _tab,))
+            _repo.select_6(cur, _tab, schema)
             if cur.fetchone()[0]:
-                cur.execute(f"SELECT 1 FROM {schema}.{_tab} WHERE {_unde} LIMIT 1", (an,))
-                if cur.fetchone():
+                if _repo.select_7(cur, schema, _tab, _unde, an):
                     return True
     return False
 
@@ -231,23 +196,7 @@ def facturi_necontabilizate(conn, schema, inceput, sfarsit):
     are_ciorna=True -> nota exista dar asteapta patru-ochi: NU se recontabilizeaza."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(f"""
-            SELECT f.id, f.numar, f.directie, f.total, f.tva, f.tert_nume,
-                   EXISTS (SELECT 1 FROM {schema}.inregistrari ic
-                           WHERE ic.factura_id = f.id AND ic.status = 'ciorna') AS are_ciorna
-            FROM {schema}.facturi f
-            WHERE f.data_emitere >= %s AND f.data_emitere < %s
-              AND NOT EXISTS (
-                    SELECT 1 FROM {schema}.inregistrari i
-                    LEFT JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                    WHERE i.factura_id = f.id AND i.status = 'validata'
-                      AND ( COALESCE(f.tva, 0) = 0
-                         OR COALESCE(f.taxare_inversa, false) = true
-                         OR (f.directie = 'emisa'   AND l.cont_credit = '4427')
-                         OR (f.directie = 'primita' AND l.cont_debit  = '4426') ) )
-            ORDER BY f.id
-        """, (inceput, sfarsit))
-        return [dict(r) for r in cur.fetchall()]
+        return [dict(r) for r in _repo.select_inregistrari_3(cur, schema, inceput, sfarsit)]
 
 
 
@@ -258,12 +207,10 @@ def _patru_ochi_activ(conn, schema):
     Fail-open pe True (formularea prudentă "al doilea utilizator") dacă maparea nu se poate citi."""
     try:
         with conn.cursor() as cur:
-            cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE schema_name = %s", (schema,))
-            r = cur.fetchone()
+            r = _repo.select_public(cur, schema)
             if not r or r[0] is None:
                 return True
-            cur.execute("SELECT patru_ochi_activ FROM public.accounting_firms WHERE id = %s", (r[0],))
-            r2 = cur.fetchone()
+            r2 = _repo.select_public_2(cur, r)
         return bool(r2[0]) if r2 and r2[0] is not None else False
     except Exception:
         return True
@@ -552,9 +499,7 @@ def _document_ref_populat(conn, schema):
     [R39/interdictia 32] Daca nu e, orice filtru pe ea nu poate deosebi nimic, iar un 0 din el nu e
     o observatie - e o constanta. Masurat 24.08.2026: 0 din 48 de cai de INSERT o ating."""
     with conn.cursor() as cur:
-        cur.execute(f"""SELECT EXISTS (SELECT 1 FROM {schema}.inregistrari
-                                       WHERE document_ref IS NOT NULL)""")
-        return bool(cur.fetchone()[0])
+        return bool(_repo.select_inregistrari_4(cur, schema)[0])
 
 
 def note_salarii_ciorna(conn, schema, an, luna):
@@ -568,11 +513,7 @@ def note_salarii_ciorna(conn, schema, an, luna):
     if not _document_ref_populat(conn, schema):
         return None
     with conn.cursor() as cur:
-        cur.execute(f"""SELECT count(*) FROM {schema}.inregistrari
-                        WHERE data >= %s AND data < %s AND status = 'ciorna'
-                          AND sursa = 'salarii' AND document_ref = %s""",
-                    (inceput, sfarsit, "SAL %02d/%04d" % (luna, an)))
-        return int(cur.fetchone()[0] or 0)
+        return int(_repo.select_inregistrari_5(cur, schema, inceput, sfarsit, luna, an)[0] or 0)
 
 
 def _d112_depus_xml(conn, schema, an, luna):
@@ -586,14 +527,10 @@ def _d112_depus_xml(conn, schema, an, luna):
     Aceeasi disciplina cu `_d300_depus_randuri`: trei valori, nu doua - aici None inseamna
     "nu se poate sti ce s-a depus", si NU se rotunjeste la "s-a depus ce as genera eu acum"."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
-        row = cur.fetchone()
+        row = _repo.select_public_3(cur, schema)
         if not row:
             return None
-        cur.execute("SELECT xml FROM public.declaratii_depuse_curente "
-                    "WHERE tenant_id = %s AND tip = 'd112' AND an = %s AND luna = %s",
-                    (row[0], an, luna))
-        r = cur.fetchone()
+        r = _repo.select_public_4(cur, an, luna, row)
     return r[0] if r and r[0] else None
 
 
@@ -666,8 +603,7 @@ def verifica_tva(conn, schema, an, luna):
     # Verdele pe 0-vs-0 ar afirma o verificare fara subiect. platitor_tva==True cu luna goala e legitim (decont
     # nul coincide) -> ramane verde. None (vector incomplet) -> lasat sa ruleze; D300-declaratie e deja gri. DECIZII 23.07.
     with conn.cursor() as cur:
-        cur.execute(f"SELECT platitor_tva, tip_decont FROM {schema}.firma_profil LIMIT 1")
-        _row = cur.fetchone()
+        _row = _repo.select_firma_profil(cur, schema)
     _prof = {}
     if _row is not None:
         _prof["platitor_tva"] = _row[0]
@@ -813,19 +749,7 @@ def facturi_ic(conn, schema, data_de, data_pana):
     from core.d390 import _CUI_UE, TARI_UE
     out = {"emisa": [], "primita": []}
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(f"""
-            SELECT f.id, f.numar, f.directie, f.total, f.tva, f.tert_nume, f.data_emitere,
-                   c.cui AS c_cui, f.tert_cui,
-                   EXISTS (SELECT 1 FROM {schema}.inregistrari i
-                           WHERE i.factura_id = f.id AND i.status = 'validata') AS contabilizata,
-                   EXISTS (SELECT 1 FROM {schema}.inregistrari ic
-                           WHERE ic.factura_id = f.id AND ic.status = 'ciorna') AS are_ciorna
-            FROM {schema}.facturi f
-            LEFT JOIN {schema}.clienti c ON c.id = f.client_id
-            WHERE f.data_emitere >= %s AND f.data_emitere < %s
-            ORDER BY f.id
-        """, (data_de, data_pana))
-        for r in cur.fetchall():
+        for r in _repo.select_inregistrari_6(cur, schema, data_de, data_pana):
             cui = (r["c_cui"] or r["tert_cui"] or "").strip().upper().replace(" ", "").replace("-", "")
             m = _CUI_UE.match(cui)
             if not m:
@@ -1021,14 +945,10 @@ def _d300_depus_randuri(conn, schema, an, luna):
     -> depus fără rânduri persistate (pre-F198). Citește public.* calificat (conn e poziționat pe schema
     tenantului). tip='d300' = depunere prin app (importurile istorice sunt 'D300' uppercase, randuri NULL)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
-        row = cur.fetchone()
+        row = _repo.select_public_5(cur, schema)
         if not row:
             return False, None
-        cur.execute("SELECT randuri FROM public.declaratii_depuse_curente "
-                    "WHERE tenant_id = %s AND tip = 'd300' AND an = %s AND luna = %s",
-                    (row[0], an, luna))
-        r = cur.fetchone()
+        r = _repo.select_public_6(cur, an, luna, row)
     return (r is not None), (r[0] if r else None)
 
 
@@ -1040,14 +960,10 @@ def _d300_depus_recent(conn, schema):
     e luna curentă (D300 se depune în luna URMĂTOARE -> mereu gri), ci ultima perioadă efectiv depusă;
     baza D390 se recalculează pe ACEA perioadă (apelantul), ca ambele laturi să fie aceeași perioadă."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
-        row = cur.fetchone()
+        row = _repo.select_public_7(cur, schema)
         if not row:
             return None
-        cur.execute("SELECT an, luna, randuri FROM public.declaratii_depuse_curente "
-                    "WHERE tenant_id = %s AND tip = 'd300' ORDER BY an DESC, luna DESC LIMIT 1",
-                    (row[0],))
-        r = cur.fetchone()
+        r = _repo.select_public_8(cur, row)
     return (r[0], r[1], r[2]) if r else None
 
 
@@ -1116,8 +1032,7 @@ def verifica_d390(conn, schema, an, luna):
     secțiunii F163 pentru filozofie (NU e D-vs-D)."""
     from core import d390 as _d390
     with conn.cursor() as cur:
-        cur.execute(f"SELECT tip_decont FROM {schema}.firma_profil WHERE id = 1")
-        row = cur.fetchone()
+        row = _repo.select_firma_profil_2(cur, schema)
     tip_dec = row[0] if row else None
     luni, data_de, data_pana, fereastra = _fereastra_tva(tip_dec, an, luna)
     try:
@@ -1220,14 +1135,7 @@ def verifica_cota_tva(conn, schema, an, luna):
     sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     try:
         with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-            cur.execute(f"""
-                SELECT f.id, f.numar, f.data_emitere, l.cantitate, l.pret_unitar, l.cota_tva
-                FROM {schema}.facturi f
-                JOIN {schema}.factura_linii l ON l.factura_id = f.id
-                WHERE f.directie = 'emisa' AND f.data_emitere >= %s AND f.data_emitere < %s
-                ORDER BY f.id
-            """, (inceput, sfarsit))
-            linii = [dict(r) for r in cur.fetchall()]
+            linii = [dict(r) for r in _repo.select_facturi_2(cur, schema, inceput, sfarsit)]
     except Exception as e:
         return _gri_cota_tva(an, luna, f"nu pot citi facturile emise ({e}).")
     return constatare_cota_tva(linii, an, luna)
@@ -1647,20 +1555,15 @@ def _vector_firma(conn, schema):
     from core.migrare_api import regim_contabil
     vector = {}
     with conn.cursor() as cur:
-        cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, tip_firma "
-                    "FROM %s.firma_profil LIMIT 1" % schema)
-        row = cur.fetchone()
+        row = _repo.select_8(cur, schema)
         if row:
             vector = {"regim_fiscal": row[0], "platitor_tva": row[1], "tip_decont": row[2],
                       "operatiuni_ic": row[3], "tip_firma": row[4],
                       "partida_simpla": regim_contabil(row[4]) == "simpla"}
-        cur.execute("SELECT to_regclass(%s)", (schema + ".salariati",))
+        _repo.select_9(cur, schema)
         are_sal = False
         if cur.fetchone()[0]:
-            cur.execute("SELECT count(*) FROM %s.salariati WHERE "
-                        "(data_incetare IS NULL OR data_incetare >= CURRENT_DATE) AND "
-                        "(data_angajare IS NULL OR data_angajare <= CURRENT_DATE)" % schema)
-            are_sal = cur.fetchone()[0] > 0
+            are_sal = _repo.select_10(cur, schema)[0] > 0
     return vector, are_sal
 
 
@@ -1783,14 +1686,10 @@ def _depuneri(conn, schema, tip, an):
     Spre deosebire de `_d300_depus_randuri` (care ia o perioadă anume), aici se adună **anul
     întreg**: identitatea D101↔D100 e pe an, iar D100 se depune trimestrial."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
-        row = cur.fetchone()
+        row = _repo.select_public_9(cur, schema)
         if not row:
             return []
-        cur.execute("SELECT an, luna, randuri FROM public.declaratii_depuse_curente "
-                    "WHERE tenant_id = %s AND tip = %s AND an = %s ORDER BY luna",
-                    (row[0], tip, an))
-        return [(r[0], r[1], r[2]) for r in cur.fetchall()]
+        return [(r[0], r[1], r[2]) for r in _repo.select_public_10(cur, tip, an, row)]
 
 
 def _plati_anticipate_din_d100(depuneri):
@@ -1840,13 +1739,10 @@ def _d101_depus_recent(conn, schema):
     nu există niciodată — iar o pereche ancorată pe el ar fi GRI PERMANENT prin construcție. Aceeași
     capcană pe care perechea D390 a rezolvat-o cu `_d300_depus_recent`; se refolosește tiparul."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
-        row = cur.fetchone()
+        row = _repo.select_public_11(cur, schema)
         if not row:
             return None
-        cur.execute("SELECT max(an) FROM public.declaratii_depuse_curente "
-                    "WHERE tenant_id = %s AND tip = 'd101'", (row[0],))
-        r = cur.fetchone()
+        r = _repo.select_public_12(cur, row)
     return r[0] if (r and r[0]) else None
 
 
@@ -1983,13 +1879,7 @@ def _ciorna_pe_cont(conn, schema, an, cont):
     """Exista note NEVALIDATE care ating contul, in anul dat? `rulaje_interval` numara doar
     `status='validata'` — deci fara intrebarea asta, o nota in ciorna arata identic cu absenta ei."""
     with conn.cursor() as cur:
-        cur.execute(f"""
-            SELECT count(*) FROM {schema}.inregistrari_linii l
-            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-            WHERE i.data >= %s AND i.data < %s AND i.status <> 'validata'
-              AND (l.cont_debit = %s OR l.cont_credit = %s)
-        """, ("%d-01-01" % an, "%d-01-01" % (an + 1), cont, cont))
-        return (cur.fetchone() or [0])[0] > 0
+        return (_repo.select_inregistrari_linii_3(cur, schema, cont, an) or [0])[0] > 0
 
 
 def _pereche_691(conn, schema, an, p48, d_grup):
@@ -2111,20 +2001,10 @@ def _perioada_cu_ambele(conn, schema):
     **De ce nu luna curentă**: aceeași capcană ca la D390 și la D101 — declarațiile se depun în luna
     următoare, deci o pereche ancorată pe luna curentă e gri prin construcție."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
-        row = cur.fetchone()
+        row = _repo.select_public_13(cur, schema)
         if not row:
             return None
-        cur.execute("""
-            SELECT d3.an, d3.luna, d3.randuri, d9.randuri
-            FROM public.declaratii_depuse_curente d3
-            JOIN public.declaratii_depuse_curente d9
-              ON d9.tenant_id = d3.tenant_id AND d9.an = d3.an AND d9.luna = d3.luna
-             AND d9.tip = 'd394'
-            WHERE d3.tenant_id = %s AND d3.tip = 'd300'
-              AND d3.randuri IS NOT NULL AND d9.randuri IS NOT NULL
-            ORDER BY d3.an DESC, d3.luna DESC LIMIT 1""", (row[0],))
-        r = cur.fetchone()
+        r = _repo.select_public_14(cur, row)
     return (r[0], r[1], r[2], r[3]) if r else None
 
 
@@ -2226,17 +2106,9 @@ def _facturi_transmise(conn, schema, data_de, data_pana):
     `stare='ok'` = recipisa ANAF a confirmat; `mediu='prod'` = trimitere reală, nu validare pe TEST.
     Amândouă contează: o trimitere pe „test" n-a plecat nicăieri."""
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".efactura_trimiteri",))
-        if not cur.fetchone()[0]:
+        if not _repo.select_11(cur, schema)[0]:
             return None                     # tabela nu există pe schema asta -> nu pot ști
-        cur.execute(f"""
-            SELECT DISTINCT t.factura_id
-              FROM {schema}.efactura_trimiteri t
-              JOIN {schema}.facturi f ON f.id = t.factura_id
-             WHERE t.stare = 'ok' AND t.mediu = 'prod'
-               AND f.data_emitere >= %s AND f.data_emitere < %s
-        """, (data_de, data_pana))
-        return {r[0] for r in cur.fetchall()}
+        return {r[0] for r in _repo.select_efactura_trimiteri(cur, schema, data_de, data_pana)}
 
 
 def _d394_depus_recent_cu_facturi(conn, schema):
@@ -2245,15 +2117,10 @@ def _d394_depus_recent_cu_facturi(conn, schema):
     Depunerile de dinainte de R119 n-au cheia `facturi_incluse` — și absența ei **nu** înseamnă
     „nicio factură", înseamnă „nu pot ști"."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
-        row = cur.fetchone()
+        row = _repo.select_public_15(cur, schema)
         if not row:
             return None
-        cur.execute("SELECT an, luna, randuri FROM public.declaratii_depuse_curente "
-                    "WHERE tenant_id = %s AND tip = 'd394' AND randuri IS NOT NULL "
-                    "  AND randuri ? 'facturi_incluse' "
-                    "ORDER BY an DESC, luna DESC LIMIT 1", (row[0],))
-        r = cur.fetchone()
+        r = _repo.select_public_16(cur, row)
     return (r[0], r[1], r[2]) if r else None
 
 
@@ -2296,8 +2163,7 @@ def _orizontal_efactura_vs_d394(conn, schema):
             % (luna, an, manuale), an, luna)]
 
     with conn.cursor() as cur:
-        cur.execute(f"SELECT tip_decont FROM {schema}.firma_profil WHERE id = 1")
-        row = cur.fetchone()
+        row = _repo.select_firma_profil_3(cur, schema)
     _luni, data_de, data_pana, _fer = _fereastra_tva(row[0] if row else None, an, luna)
     transmise = _facturi_transmise(conn, schema, data_de, data_pana)
     if transmise is None:

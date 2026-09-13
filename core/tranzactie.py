@@ -3,7 +3,7 @@
 
 [P7 · V2, 13.09.2026] Zece instrucțiuni trăiau în corpul rutelor: șase din familia `SAVEPOINT` și
 patru `SET LOCAL search_path`. Nu sunt nici citiri, nici scrieri de business; sunt mecanica
-tranzacției. `PLAN_HARDENING.md:798` cere ca ruta să nu conțină SQL — inclusiv pe acesta.
+tranzacției. `PLAN_HARDENING.md:812` cere ca ruta să nu conțină SQL — inclusiv pe acesta.
 
 CE **NU** FACE MODULUL ĂSTA, și e partea care contează: **nu deține tranzacția**. Nu deschide
 conexiuni, nu comite, nu face rollback complet. Fiecare funcție e o singură instrucțiune executată pe

@@ -2429,3 +2429,12 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   trimiterii, fiecare în ambele direcții, cu o calibrare negativă pe `mediu` fără de care proba de
   idempotență ar trece și cu parametrul ignorat. **RED-proof: trei mutații, opt probe roșii.**
   *Motivul existenței ei: o probă pe forma codului nu poate vedea o eroare de APEL.*
+
+
+- **P7 · valul D4 (13.09.2026)** — patru gărzi noi în `core/test_p7_straturi.py` (`D4` 37 → 0, cu
+  calibrare **sintetică** pe un registru fabricat, fiindcă detectorul a rămas fără instanță reală) și
+  un fișier nou, `core/test_p7_criterii.py`, **6 probe**: cele trei detectoare rămân zero · criteriul
+  canonic nesatisfăcut («use-case-ul deține tranzacția») rămâne **măsurat**, cu clichet **385** care
+  poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
+  **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
+  `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*

@@ -47,6 +47,7 @@ PRECONDITIE: conn pozitionat pe schema tenantului (acelasi contract ca d394.pull
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d394_reconciliere as _repo
 
 _NEDIGIT = re.compile(r"\D")
 
@@ -105,8 +106,7 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
          "  AND COALESCE(f.tip, 'factura') = 'factura' "
          "GROUP BY f.id, c.cui ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(q, (inceput.isoformat(), sfarsit.isoformat()))
-        rows = cur.fetchall()
+        rows = _repo.sql(cur, q, inceput, sfarsit)
 
     acc = {}  # cota -> {'bazaL','tvaL','bazaA','tvaA'} in Decimal
 

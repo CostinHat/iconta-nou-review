@@ -41,6 +41,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca
 from core import nomenclator_status_factura as _nsf
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d300_reconciliere as _repo
 
 # Randurile AUTOMATE derivate din facturi (aceleasi cote ca generatorul, dar
 # maparea e re-declarata aici - nu se importa _LIVRARE_RAND/_ACHIZ_RAND din d300,
@@ -82,8 +83,7 @@ def _agrega_independent(conn, inceput, sfarsit):
          "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "  # [B1] deducere amanata la plata, in afara reconcilierii pe emitere (limita)
          "ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(q, (inceput.isoformat(), sfarsit.isoformat()))
-        rows = cur.fetchall()
+        rows = _repo.sql(cur, q, inceput, sfarsit)
 
     # regrupez randurile SQL pe factura (LEFT JOIN -> N randuri/factura, sau 1 cu cant/cota NULL)
     inv = {}
@@ -147,13 +147,7 @@ def _deferred_activ(conn, inceput, sfarsit):
     """[B1] True daca exista deducere amanata (furnizor la incasare) cu PLATA (cont 401) validata in
     perioada - generatorul o include pe calea de plata; recon pe emitere n-o acopera (limita extinsa)."""
     with conn.cursor() as cur:
-        cur.execute(
-            "SELECT 1 FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-            "JOIN facturi f ON f.id = i.factura_id "
-            "WHERE i.status = 'validata' AND f.directie = 'primita' "
-            "AND COALESCE(f.furnizor_tva_incasare, false) = true AND l.cont_debit = '401' "
-            "AND i.data >= %s AND i.data < %s LIMIT 1", (inceput.isoformat(), sfarsit.isoformat()))
-        return cur.fetchone() is not None
+        return _repo.select_inregistrari(cur, inceput, sfarsit) is not None
 
 
 def reconciliaza(conn, perioada, res, manual=None):

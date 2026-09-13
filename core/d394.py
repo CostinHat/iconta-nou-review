@@ -46,6 +46,7 @@ _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
+from core import repo_d394 as _repo
 
 MODUL = "d394"
 REGULI = "2026.1"
@@ -989,7 +990,7 @@ def pull(conn, schema, perioada):
     an, luna = perioada.an, perioada.luna  # [fix NameError 10.08.2026] folosite la cota_standard (taxare inversa primita fara linii)
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT * FROM firma_profil WHERE id = 1")
+        _repo.select_firma_profil(cur)
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         prof = dict(cur.fetchone() or {})
         # [06.08.2026] fereastra pe PERIOADA FISCALA TVA (ca d300.pull); trimestrial -> tot trimestrul.
@@ -998,23 +999,7 @@ def pull(conn, schema, perioada):
         sfarsit = _sf.isoformat()
         # partener: emise -> clienti (client_id); primite -> tert_* (furnizorul).
         # proformele nu se raporteaza (nu sunt facturi fiscale).
-        cur.execute("""
-            SELECT f.id, f.directie, f.total, f.tva, f.taxare_inversa AS ti,
-                   f.categorie_331, f.tert_nume, f.tert_cui, f.tert_platitor_tva,
-                   c.nume AS c_nume, c.cui AS c_cui,
-                   COALESCE(json_agg(json_build_object(
-                       'cota', l.cota_tva,
-                       'baza', ROUND(l.cantitate * l.pret_unitar, 2))
-                     ORDER BY l.id) FILTER (WHERE l.id IS NOT NULL), '[]') AS linii
-              FROM facturi f
-              LEFT JOIN clienti c ON c.id = f.client_id
-              LEFT JOIN factura_linii l ON l.factura_id = f.id
-             WHERE f.data_emitere >= %s AND f.data_emitere < %s
-               AND COALESCE(f.tip, 'factura') = 'factura'
-             GROUP BY f.id, c.nume, c.cui
-             ORDER BY f.id
-        """, (inceput, sfarsit))
-        rows = cur.fetchall()
+        rows = _repo.select_facturi(cur, inceput, sfarsit)
     facturi = []
     for r in rows:
         emisa = (r["directie"] == "emisa")
@@ -1076,11 +1061,7 @@ def nr_facturi_emise(conn, inceput, sfarsit):
     import re as _re
     n = 0
     with conn.cursor() as cur:
-        cur.execute("""SELECT numar FROM facturi
-                         WHERE data_emitere >= %s AND data_emitere < %s
-                           AND directie = 'emisa' AND COALESCE(tip, 'factura') = 'factura'
-                    """, (inceput, sfarsit))
-        for (numar,) in cur.fetchall():
+        for (numar,) in _repo.select_facturi_2(cur, inceput, sfarsit):
             if _re.sub(r"\D", "", str(numar or "")):
                 n += 1
     return n
@@ -1094,12 +1075,7 @@ def serii_emise(conn, schema, inceput, sfarsit):
     import re as _re
     out = {}
     with conn.cursor() as cur:
-        cur.execute("""SELECT COALESCE(NULLIF(serie, ''), '-') AS s, numar
-                         FROM facturi
-                        WHERE data_emitere >= %s AND data_emitere < %s
-                          AND directie = 'emisa' AND COALESCE(tip, 'factura') = 'factura'
-                    """, (inceput, sfarsit))
-        for serie, numar in cur.fetchall():
+        for serie, numar in _repo.select_facturi_3(cur, inceput, sfarsit):
             cifre = _re.sub(r"\D", "", str(numar or ""))
             if not cifre:
                 continue

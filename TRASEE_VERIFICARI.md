@@ -767,7 +767,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: intoarce {nr, tranzactii}*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): extras_linii (UPDATE) — prin `banca`*
 
 - [x] **nu scrie nimic** — verificat structural
 - fiecare tranzacție din fișier apare în răspuns; cele care nu s-au putut citi se numesc, cu rândul lor
@@ -778,7 +778,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `banca`, `reconciliere_api`*
 
 - [x] fiecare tranzacție importată produce **o singură** linie de extras
 - un extras importat de două ori nu dublează liniile — verifică pe numărul extrasului și pe conținut

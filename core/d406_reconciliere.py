@@ -29,6 +29,7 @@ PRECONDITIE: conn pozitionat pe schema tenantului (contractul d406.pull).
 """
 
 from decimal import Decimal
+from core import repo_d406_reconciliere as _repo
 
 
 class ReconciliereD406(ValueError):
@@ -53,8 +54,7 @@ def _rulaje_independente(conn, schema, an, luna):
     celei de-a doua cai e in CALCUL, nu in perioada."""
     from core.common import fereastra_d406 as _fd
     with conn.cursor() as _c:
-        _c.execute("SELECT platitor_tva, tip_decont FROM firma_profil WHERE id = 1")
-        _r = _c.fetchone()
+        _r = _repo.select_firma_profil(_c)
     _prof = {"platitor_tva": _r[0], "tip_decont": _r[1]} if _r else {}
     _di, _ds = _fd(_prof, an, luna)
     di, ds = _di.isoformat(), _ds.isoformat()
@@ -63,8 +63,7 @@ def _rulaje_independente(conn, schema, an, luna):
          "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s")
     deb, cred = {}, {}
     with conn.cursor() as cur:
-        cur.execute(q, (di, ds))
-        for cd, cc, suma in cur.fetchall():
+        for cd, cc, suma in _repo.sql(cur, q, di, ds):
             s = Decimal(str(suma or 0))
             if cd:
                 deb[cd] = deb.get(cd, Decimal(0)) + s

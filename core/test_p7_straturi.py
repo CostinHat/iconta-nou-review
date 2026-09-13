@@ -278,14 +278,90 @@ def test_use_case_ul_trimiterii_detine_aceleasi_TREI_tranzactii():
 # ============================================================
 #  5. AMESTECUL, numit
 # ============================================================
-def test_modulele_mixte_sunt_ACTION_REQUIRED_nu_tolerate():
-    """`MIXED_LAYER_MODULE=YES` nu e o excepție: e o poziție de lucru. Comanda V3 o cere clasificată
-    `ACTION_REQUIRED`, iar aici se verifică exact asta."""
+def test_NICIUN_modul_nu_mai_face_doua_straturi_deodata():
+    """`MIXED_LAYER_MODULE=NO` pe tot registrul — ce a livrat valul D4, afirmat pe registru.
+
+    **Proba s-a întors pe dos, și e a doua oară în aceeași fază.** Până azi cerea `assert mixte`
+    — *„dacă n-ar fi niciunul, V1/V2 n-au ce separa"* —, iar `mixt_cu` era poziția de lucru a 37 de
+    module. Valul D4 le-a golit: cele 215 instrucțiuni au trecut în 37 de `core/repo_*.py`, iar
+    `mixt_cu` a dispărut fiindcă modulul chiar a rămas fără SQL, nu fiindcă i s-a schimbat eticheta.
+
+    Ce rămâne cerut e ce conta de fapt: clasa `D4` **există** și e `ACTION_REQUIRED` dacă apare — un
+    modul mixt nou n-are voie să treacă drept normal. Că detectorul se mai poate aprinde se probează
+    mai jos, pe un registru sintetic.
+    """
     mixte = R.mixte()
-    assert mixte, "niciun modul mixt — dacă e adevărat, V1/V2 n-au ce separa"
-    assert CL.REGULI["D4_STRAT_MIXT"].clasa == CL.AR
-    itemi_d4 = {i.fisier for i in S.d4_strat_mixt()}
-    assert itemi_d4 == {d.cale for d in mixte}
+    assert mixte == [], "au reapărut module mixte: %s" % sorted(d.cale for d in mixte)
+    assert CL.REGULI["D4_STRAT_MIXT"].clasa == CL.AR, (
+        "clasa D4 s-a înmuiat odată cu golirea ei — un modul mixt nou ar trece drept acceptabil")
+    assert S.d4_strat_mixt() == []
+
+
+def test_D4_SE_APRINDE_pe_un_registru_sintetic(monkeypatch):
+    """Calibrarea care nu mai poate sta pe modulele reale, fiindcă nu mai există niciunul.
+
+    Aceeași clasă cu `test_D2_SE_APRINDE_pe_un_univers_sintetic`, cu un pas mai departe: acolo
+    universul era real și declarația falsă; aici declarația e fabricată, fiindcă `D4` **e** o
+    declarație. Se cere ca detectorul să numească modulul mixt, cu ambele straturi în dovadă.
+    """
+    fals = (R.D("core/zt_mixt.py", R.FISCAL_ENGINE, R.REPOSITORY, "motiv de probă", "regulă de probă"),)
+    monkeypatch.setattr(R, "REGISTRU", fals)
+    itemi = S.d4_strat_mixt()
+    assert [i.fisier for i in itemi] == ["core/zt_mixt.py"], itemi
+    assert itemi[0].detector == "D4_STRAT_MIXT"
+    assert itemi[0].simbol.count("FISCAL_ENGINE") == 1 and itemi[0].simbol.count("REPOSITORY") == 1
+
+
+def test_cele_37_de_module_separate_chiar_nu_mai_au_SQL():
+    """Ce a livrat valul, afirmat pe FIȘIERE, nu pe registru — altfel proba de mai sus ar fi verde
+    și dacă `mixt_cu` ar fi fost șters fără să se mute o linie de cod.
+
+    Lista celor 37 nu se scrie: sunt exact modulele care au azi un `core/repo_*.py` pereche, iar
+    perechea e cerută în amândouă direcțiile.
+    """
+    import ast as _ast
+    import io as _io
+    perechi = []
+    for d in R.REGISTRU:
+        baza = os.path.basename(d.cale)[:-3]
+        repo = "core/repo_%s.py" % baza
+        if d.cale != repo and os.path.exists(os.path.join(RADACINA, repo)):
+            perechi.append((d.cale, repo))
+    assert len(perechi) >= 37, "perechile modul↔depozit s-au rărit: %d" % len(perechi)
+    vinovate = []
+    for modul, _repo in perechi:
+        arb = _ast.parse(_io.open(os.path.join(RADACINA, modul), encoding="utf-8").read())
+        n = sum(1 for x in _ast.walk(arb)
+                if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)
+                and x.func.attr in ("execute", "executemany"))
+        if n:
+            vinovate.append((modul, n))
+    assert vinovate == [], "module care și-au recăpătat SQL-ul după ce l-au dat depozitului: %s" % vinovate
+
+
+def test_depozitele_D4_nu_deschid_conexiuni_si_nu_comit():
+    """Contractul depozitului, pe AST: primește cursorul apelantului și nimic altceva.
+
+    Un `get_conn`/`commit`/`rollback` într-un `core/repo_*.py` ar muta hotarele tranzacției în
+    stratul greșit — exact ce P4 interzice și ce valul D4 promite că n-a atins.
+    """
+    import ast as _ast
+    import io as _io
+    import glob as _glob
+    interzise = ("get_conn", "commit", "rollback")
+    gasite = []
+    fisiere = sorted(_glob.glob(os.path.join(RADACINA, "core", "repo_*.py")))
+    assert len(fisiere) >= 50, "depozitele au dispărut din vedere: %d" % len(fisiere)
+    for f in fisiere:
+        arb = _ast.parse(_io.open(f, encoding="utf-8").read())
+        for x in _ast.walk(arb):
+            if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute) \
+                    and x.func.attr in interzise:
+                gasite.append((os.path.relpath(f, RADACINA), x.lineno, x.func.attr))
+            if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Name) \
+                    and x.func.id == "HTTPException":
+                gasite.append((os.path.relpath(f, RADACINA), x.lineno, "HTTPException"))
+    assert gasite == [], "depozite care ies din contract: %s" % gasite
 
 
 def test_contabilitatea_P7_se_inchide_dupa_V3():

@@ -21,6 +21,7 @@ from decimal import Decimal
 from core.afirmatii import afirmatie
 from core.common import Temei
 from core.unde import Unde
+from core import repo_registru_inventar as _repo
 
 MODUL = "registru_inventar"
 
@@ -152,16 +153,8 @@ def adauga(conn, schema, exercitiu, date):
     campuri = list(CAMPURI_CERUTE) + [c for c in ("gestiune", "cauza", "data_inventariere",
                                                   "document") if not _gol(date.get(c))]
     with conn.cursor() as cur:
-        cur.execute("SELECT COALESCE(MAX(nr_curent), 0) + 1 FROM {s}.registru_inventar "
-                    "WHERE exercitiu = %s AND momentul = %s".format(s=schema),
-                    (exercitiu, date["momentul"]))
-        nr = cur.fetchone()[0]
-        cur.execute(
-            "INSERT INTO {s}.registru_inventar (exercitiu, momentul, nr_curent, {c}) "
-            "VALUES (%s, %s, %s, {p}) RETURNING id".format(
-                s=schema, c=", ".join(campuri), p=", ".join(["%s"] * len(campuri))),
-            [exercitiu, date["momentul"], nr] + [date.get(c) for c in campuri])
-        iid = cur.fetchone()[0]
+        nr = _repo.select_s(cur, schema, exercitiu, date)[0]
+        iid = _repo.insert_s(cur, schema, campuri, exercitiu, nr, date)[0]
     conn.commit()
     return {"id": iid, "nr_curent": nr}
 
@@ -169,9 +162,7 @@ def adauga(conn, schema, exercitiu, date):
 def randuri(conn, schema, exercitiu, momentul):
     from psycopg2.extras import RealDictCursor
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute("SELECT * FROM {s}.registru_inventar WHERE exercitiu = %s AND momentul = %s "
-                    "ORDER BY nr_curent".format(s=schema), (exercitiu, momentul))
-        return [dict(r) for r in cur.fetchall()]
+        return [dict(r) for r in _repo.select_s_2(cur, schema, exercitiu, momentul)]
 
 
 def _simplu(v):

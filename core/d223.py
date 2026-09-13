@@ -33,6 +33,7 @@ from decimal import Decimal, ROUND_HALF_UP
 import re
 
 from core.numere import numar_fiscal
+from core import repo_d223 as _repo
 
 NS = "mfp:anaf:dgti:d223:declaratie:v1"
 _NEDIGIT = re.compile(r"\D")
@@ -95,9 +96,7 @@ def calcul_d223(manual):
 def pull(conn, schema, perioada):
     """Declarant + fallback asociere din firma_profil (daca tenant=asocierea)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, declarant_nume, declarant_prenume, "
-                    "declarant_functie, telefon, email FROM firma_profil WHERE id = 1")
-        r = cur.fetchone()
+        r = _repo.select_firma_profil(cur)
     if not r:
         return {}
     adresa = " ".join(x for x in (r[2], r[3], r[4]) if x)

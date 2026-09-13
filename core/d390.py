@@ -42,6 +42,7 @@ from core import d390_reconciliere as _recon  # POARTA a-doua-cale (recalcul ind
 from core.identitate import valideaza_cui as _valideaza_cui  # T1: checksum CUI RO (partener/firma), sursa canonica (read-only)
 from dataclasses import dataclass, field
 from decimal import Decimal
+from core import repo_d390 as _repo
 
 NS = "mfp:anaf:dgti:d390:declaratie:v3"
 REGULI = "2026.1"
@@ -483,10 +484,7 @@ def pull(conn, schema, an, luna):
     inceput = "%04d-%02d-01" % (an, luna)
     sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, email, telefon, "
-                    "declarant_nume, declarant_prenume, declarant_functie "
-                    "FROM firma_profil WHERE id = 1")
-        prof = cur.fetchone() or {}
+        prof = _repo.select_firma_profil(cur) or {}
         # [A2 art.284 "ziua 15"] Incadrarea in perioada se face pe EXIGIBILITATE, nu pe data_emitere bruta.
         # CF art.284: exigibilitatea operatiunilor IC intervine la data emiterii facturii, DAR nu mai tarziu de
         # a 15-a zi a lunii urmatoare celei in care a avut loc faptul generator. Deci exigibilitate =
@@ -496,12 +494,7 @@ def pull(conn, schema, an, luna):
         _exig = ("CASE WHEN f.data_faptului_generator IS NULL THEN f.data_emitere "
                  "ELSE LEAST(f.data_emitere, (date_trunc('month', f.data_faptului_generator) "
                  "+ interval '1 month' + interval '14 days')::date) END")
-        cur.execute("SELECT f.id, f.tert_nume, f.tert_cui, c.nume AS c_nume, c.cui AS c_cui, "
-                    "f.directie, f.total, f.tva "
-                    "FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
-                    "WHERE " + _exig + " >= %s AND " + _exig + " < %s ORDER BY f.id",
-                    (inceput, sfarsit))
-        rows = cur.fetchall()
+        rows = _repo.select_facturi(cur, _exig, inceput, sfarsit)
     # CUI-ul: intai clientul din nomenclator (c.cui), altfel tert_cui de pe factura.
     # Bug dovedit 16.07.2026 prin audit pe date reale: se citea DOAR c.cui, legat de
     # client_id. Facturile create direct (fara fisa de client) si TOATE facturile
@@ -522,18 +515,14 @@ def pull_manual(conn, schema, an, luna):
     .../manual/{id}). Fara id, GET-ul returna linii nestergibile (data-id=undefined -> 422).
     Consumatorii de calcul (calcul_d390) ignora cheia id."""
     with conn.cursor() as cur:
-        cur.execute(f"SELECT id, tip, tara, cod, den, baza FROM {schema}.d390_manual "
-                    f"WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
         return [{"id": i, "tip": t, "tara": ta, "cod": c, "den": d, "baza": b}
-                for (i, t, ta, c, d, b) in cur.fetchall()]
+                for (i, t, ta, c, d, b) in _repo.select_d390_manual(cur, schema, an, luna)]
 
 
 def pull_reclasificari(conn, schema, an, luna):
     """[F125] Override-urile de tip pe operațiuni auto-derivate: {(directie, tara, cod): tip}."""
     with conn.cursor() as cur:
-        cur.execute(f"SELECT directie, tara, cod, tip FROM {schema}.d390_reclasificare "
-                    f"WHERE an=%s AND luna=%s", (an, luna))
-        return {(dir_, ta, c): t for (dir_, ta, c, t) in cur.fetchall()}
+        return {(dir_, ta, c): t for (dir_, ta, c, t) in _repo.select_d390_reclasificare(cur, schema, an, luna)}
 
 
 def achizitii_d301(conn, schema, an, luna):
@@ -545,12 +534,9 @@ def achizitii_d301(conn, schema, an, luna):
     if conn is None:
         return 0
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
-        if not cur.fetchone()[0]:
+        if not _repo.select(cur, schema)[0]:
             return 0
-        cur.execute(f"SELECT count(*) FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s "
-                    f"AND tip IN (1, 3, 5) AND coalesce(partener_tara, '') = ''", (an, luna))
-        return cur.fetchone()[0]
+        return _repo.select_d301_operatiuni(cur, schema, an, luna)[0]
 
 
 # [auto-derivare d301->D390, decizia Costin 18.08.2026] Maparea tipului D301 (OPANAF 592/2016) -> codul
@@ -579,11 +565,9 @@ def operatiuni_din_d301(conn, schema, an, luna):
     if conn is None:
         return []
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
-        if not cur.fetchone()[0]:
+        if not _repo.select_2(cur, schema)[0]:
             return []
-        cur.execute(f"SELECT tip, val_valuta, curs, partener_tara, partener_cod, partener_den "
-                    f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+        _repo.select_d301_operatiuni_2(cur, schema, an, luna)
         out = []
         for tip, val, curs, tara, cod, den in cur.fetchall():
             codD = _D301_TIP_COD.get(int(tip or 1))
@@ -607,11 +591,9 @@ def excluse_d301(conn, schema, an, luna):
     if conn is None:
         return []
     with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
-        if not cur.fetchone()[0]:
+        if not _repo.select_3(cur, schema)[0]:
             return []
-        cur.execute(f"SELECT tip, nr_doc, partener_tara, partener_cod, partener_den, temei_307 "
-                    f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+        _repo.select_d301_operatiuni_3(cur, schema, an, luna)
         out = []
         for tip, nr_doc, tara, cod, den, temei in cur.fetchall():
             tip = int(tip or 1)
@@ -699,14 +681,9 @@ def evidenta_incompleta(conn, schema, an, luna):
         return None
     try:
         with conn.cursor() as cur:
-            cur.execute("SELECT to_regclass(%s)", (schema + ".efactura_primite",))
-            if not cur.fetchone()[0]:
+            if not _repo.select_4(cur, schema)[0]:
                 return None
-            cur.execute("SELECT count(*) FROM " + schema + ".efactura_primite "
-                        "WHERE status = 'descarcata' AND data_creare >= %s AND data_creare < %s",
-                        (datetime.date(an, luna, 1),
-                         (datetime.date(an + 1, 1, 1) if luna == 12 else datetime.date(an, luna + 1, 1))))
-            n = cur.fetchone()[0]
+            n = _repo.select_schema(cur, schema, an, luna, datetime)[0]
     except Exception:
         # MASCA MOTIVATA: None = „nu stiu de nimic in asteptare", deci poarta ramane cum era inainte
         # de intarire (comportament vechi). Un esec de citire NU are voie sa produca gri pe toate
