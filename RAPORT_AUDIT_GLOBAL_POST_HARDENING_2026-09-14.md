@@ -131,7 +131,9 @@ revocă chei care ocolesc parola), iar `/admin/cabinete/{id}/suspenda` schimbă 
 
 > **URMARE (14.09.2026).** Cele două rute au acum probe de comportament în suită —
 > `core/test_comportament_chei_suspendare.py`, 10 probe. Ele au scos o constatare pe care raportul
-> n-o avea: **suspendarea unui cabinet nu invalidează cheile lui de API**. Vezi DECIZII.md (43).
+> n-o avea: **suspendarea unui cabinet nu invalidează cheile lui de API**. Constatarea a fost
+> reparată în aceeași zi, pe decizia lui Costin: suspendarea închide și cheile, iar reactivarea le
+> redă fără regenerare. Vezi DECIZII.md (43) pentru constatare și (44) pentru decizie.
 >
 > **CORECȚIE (14.09.2026), la o cifră a acestui raport.** Căutarea a numărat doar fișiere
 > `test_*.py`. Pentru `POST /cabinet/api-chei` **există** o probă cap-coadă —

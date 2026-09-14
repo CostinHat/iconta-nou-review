@@ -7814,12 +7814,18 @@ cheia revocată chiar nu mai deschide — **200 înainte, 401 după**, fiindcă 
 lui A rămâne bună**, nu doar că răspunsul a fost 404. La fel la suspendare: după un refuz, coloana
 `activ` e citită înapoi din baza de date.
 
-**Ce a scos la iveală, și e consemnat ca datorie, nu reparat în aceeași tură:** `suspenda` oprește
-**loginul** (`auth_api.login` se uită la `af.activ`), dar **nu** și cheile de API —
-`api_public.verifica` întreabă doar de `api_chei.activ`. Un cabinet suspendat păstrează acces
-programatic deplin la datele lui. Răspunsul corect e o decizie de **produs** (poate fi și „cheia
-moare cu cabinetul", și „accesul programatic rămâne pentru export/facturare"), de-aia proba stă ca
-`xfail(strict=True)` cu criteriu de închidere scris, nu ca o reparație luată din proprie inițiativă.
+**Ce a scos la iveală, și a primit răspuns în aceeași zi:** `suspenda` oprea **loginul**
+(`auth_api.login` se uită la `af.activ`), dar **nu** și cheile de API — `api_public.verifica`
+întreba doar de `api_chei.activ`, deci un cabinet suspendat păstra acces programatic deplin. Proba a
+stat `xfail(strict=True)` cât întrebarea era de **produs**; decizia lui Costin (DECIZII 44) a închis-o:
+cabinet suspendat = nicio cheie nu mai deschide, iar reactivarea redă cheile existente, fără
+regenerare. Poarta stă în `verifica`, singurul loc prin care trece o cheie.
+
+**Cum se păzește acum:** aceeași cheie, **trei stări** — bună → suspendat 401 → reactivat 200 —, plus
+citirea lui `api_chei.activ`, ca să se vadă că suspendarea n-a revocat-o. Trei stări, fiindcă un 401
+poate veni și de la altceva (o cheie stricată, o rută căzută) și ar trece drept „suspendarea
+funcționează". Separat, `ultima_folosire` nu se mișcă pe o încercare respinsă: o încercare nu e o
+folosire, iar coloana ar spune altfel că un cabinet suspendat își folosește cheile.
 
 *Detaliu de metodă: aici nu se pune savepoint per cerere, ca la gărzile de izolare — probele sunt
 lanțuri (emit o cheie, o folosesc, o revoc), iar un savepoint per cerere ar șterge chiar efectul

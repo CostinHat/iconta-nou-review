@@ -3,7 +3,37 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 14.09.2026 (44) — **Cabinet suspendat = nicio cheie nu mai deschide.** Decizia lui Costin
+
+**Decizia.** Suspendarea unui cabinet e o **poarta de autentificare** si inchide TOT accesul, nu doar
+loginul oamenilor. `api_public.verifica` respinge cand cabinetul nu e activ, indiferent de
+`api_chei.activ`. Datele unui cabinet suspendat se livreaza prin **export explicit**, nu prin chei
+live: un canal pe care cineva il cere, il vede si il poate opri — nu unul care merge mai departe de
+la sine, dupa ce accesul a fost inchis.
+
+**Reactivarea reda cheile existente, fara regenerare.** Suspendarea NU atinge `api_chei.activ`:
+revocarea ramane un act separat, al cabinetului. Asa, reactivarea e reversul exact al suspendarii —
+aceeasi cheie, aceleasi drepturi. Daca suspendarea ar revoca, reactivarea ar cere ca fiecare
+integrare sa fie re-configurata cu chei noi, adica ar transforma o masura temporara intr-una
+ireversibila.
+
+**Unde sta poarta si de ce acolo.** In `verifica`, singurul loc prin care trece o cheie. Pusa pe
+rute, ar trebui tinuta minte la fiecare ruta noua din `/api/v1` — exact felul de regula care se
+uita. **Si un detaliu care nu e cosmetic:** `ultima_folosire` se scrie doar cand cheia chiar
+deschide. O incercare respinsa nu e o folosire; daca ar fi scrisa, coloana ar spune ca un cabinet
+suspendat isi foloseste cheile.
+
+**Cum se pazeste.** `test_cheia_moare_cu_cabinetul_suspendat_si_INVIE_la_reactivare` — **aceeasi**
+cheie, trei stari (buna → suspendat 401 → reactivat 200), plus citirea lui `api_chei.activ` ca sa se
+vada ca suspendarea n-a revocat-o. Si `test_o_incercare_respinsa_nu_se_scrie_ca_folosire`, cu martor
+pe o folosire reusita. *Trei stari ale aceleiasi chei, fiindca un 401 poate veni si de la altceva —
+o cheie stricata, o ruta cazuta — si ar trece drept „suspendarea functioneaza".*
+
 ## 14.09.2026 (43) — Suspendarea unui cabinet opreste oamenii, nu si cheile: ce NU am facut si de ce
+
+> **INCHISA in aceeasi zi de decizia (44).** Intrebarea de produs pe care o lasam deschisa a
+> primit raspuns: cheia moare cu cabinetul, si invie la reactivare. Constatarea ramane scrisa
+> aici asa cum a fost gasita.
 
 **Constatarea, gasita de o proba noua.** `POST /admin/cabinete/{id}/suspenda` scrie
 `accounting_firms.activ = false`. Coloana asta e citita de `auth_api.login` (deci loginul se

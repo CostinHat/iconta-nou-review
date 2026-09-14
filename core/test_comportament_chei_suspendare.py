@@ -286,9 +286,15 @@ def test_suspendarea_opreste_loginul_iar_reactivarea_il_reda(env):
     assert redat["cod"] == "AUTH_ESEC", "reactivarea nu redă accesul: %r" % redat
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 14.09.2026: `suspenda` opreste LOGINUL (auth_api.login verifica af.activ), dar NU si cheile de API: api_public.verifica cauta doar `api_chei.activ`, fara sa se uite la cabinet. Un cabinet suspendat pastreaza deci acces programatic deplin la datele lui, iar suspendarea e o poarta doar pentru oameni. Gasit de proba asta, nereparat in aceeasi tura: raspunsul corect poate fi si 'cheia moare cu cabinetul' si 'accesul programatic ramane pentru export/facturare', iar asta e o decizie de PRODUS. Se inchide cand decizia e scrisa in DECIZII.md si probata aici.")
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_DATORIE_cheia_de_api_a_unui_cabinet_suspendat_nu_mai_deschide(env):
+def test_cheia_moare_cu_cabinetul_suspendat_si_INVIE_la_reactivare(env):
+    """[DECIZIA lui Costin, 14.09.2026] Suspendarea e poartă de autentificare și închide TOT
+    accesul: datele unui cabinet suspendat se livrează prin export explicit, nu prin chei live.
+    Reactivarea redă cheile existente — fără regenerare și fără ca ele să fi fost revocate.
+
+    Proba a fost scrisă `xfail(strict=True)` când a găsit gaura (cheile mergeau mai departe);
+    acum e poarta deciziei. **Aceeași cheie**, trei stări — altfel un 401 de la altceva (o cheie
+    stricată, o rută căzută) ar trece drept „suspendarea funcționează"."""
     cl = _client()
     k = _cheie(cl, env["tok_adminA"], "inainte de suspendare")
     assert cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]}).status_code == 200
@@ -298,3 +304,38 @@ def test_DATORIE_cheia_de_api_a_unui_cabinet_suspendat_nu_mai_deschide(env):
     dupa = cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]})
     assert dupa.status_code == 401, (
         "cheia unui cabinet SUSPENDAT încă deschide API-ul (%d)" % dupa.status_code)
+
+    assert cl.post("/admin/cabinete/%d/reactiveaza" % env["firmA"],
+                   headers=_H(env["tok_super"])).status_code == 200
+    redat = cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]})
+    assert redat.status_code == 200, (
+        "după reactivare, ACEEAȘI cheie nu mai deschide (%d) — reactivarea ar cere regenerarea "
+        "cheilor, ceea ce decizia spune explicit că nu trebuie" % redat.status_code)
+
+    with env["conn"].cursor() as cur:
+        cur.execute("SELECT activ FROM public.api_chei WHERE id=%s", (k["id"],))
+        assert cur.fetchone()[0] is True, (
+            "suspendarea a REVOCAT cheia (`api_chei.activ=false`) — revocarea e un act separat, "
+            "iar o cheie revocată de suspendare n-ar mai învia la reactivare")
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_o_incercare_respinsa_nu_se_scrie_ca_folosire(env):
+    """`ultima_folosire` spune când a deschis cheia, nu când a fost încercată. Dacă poarta de
+    suspendare ar scrie-o oricum, coloana ar arăta că un cabinet suspendat își folosește cheile."""
+    cl = _client()
+    k = _cheie(cl, env["tok_adminA"], "urma folosirii")
+    assert cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]}).status_code == 200
+    with env["conn"].cursor() as cur:
+        cur.execute("SELECT ultima_folosire FROM public.api_chei WHERE id=%s", (k["id"],))
+        dupa_folosire = cur.fetchone()[0]
+    assert dupa_folosire is not None, "martor: o folosire REUȘITĂ nu lasă urmă — proba n-ar separa nimic"
+
+    assert cl.post("/admin/cabinete/%d/suspenda" % env["firmA"],
+                   headers=_H(env["tok_super"])).status_code == 200
+    assert cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]}).status_code == 401
+    with env["conn"].cursor() as cur:
+        cur.execute("SELECT ultima_folosire FROM public.api_chei WHERE id=%s", (k["id"],))
+        dupa_refuz = cur.fetchone()[0]
+    assert dupa_refuz == dupa_folosire, (
+        "o încercare RESPINSĂ a mutat `ultima_folosire` (%s -> %s)" % (dupa_folosire, dupa_refuz))

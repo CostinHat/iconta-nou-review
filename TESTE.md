@@ -2445,8 +2445,10 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   fără nume e refuzată · un angajat nu poate emite), revocarea (**200 înainte, 401 după** — fără
   perechea asta, `{"revocat": id}` e doar un cuvânt · B nu poate revoca cheia lui A, măsurat pe
   efect, nu pe cod), suspendarea (cere superadmin, iar refuzul chiar n-are efect în coloană ·
-  oprește loginul și reactivarea îl redă). **Datoria pe care a scos-o:** un cabinet suspendat
-  păstrează acces programatic deplin — `api_public.verifica` nu se uită la cabinet.
+  oprește loginul și reactivarea îl redă). **Ce a scos la iveală, reparat în aceeași zi pe decizia
+  lui Costin (DECIZII 44):** un cabinet suspendat păstra acces programatic deplin — acum
+  `api_public.verifica` cere și cabinetul activ, iar garda urmărește **aceeași cheie prin trei
+  stări** (bună → suspendat 401 → reactivat 200), fără regenerare și fără revocare.
 - **Coduri de validator, verificate la sursă (14.09.2026)** — `core/test_coduri_validator.py`,
   **4 probe**, peste `scripts/scan_coduri_validator.py`: fiecare `DUK regula <cod>` se confruntă cu
   jarul declarației în care e scrisă · clichet **8** pe citările nerezolvate (7 în `core/d402.py`,
