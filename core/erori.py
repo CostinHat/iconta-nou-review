@@ -2,7 +2,7 @@
 """VOCABULARUL DE REFUZ al stratului use-case — ce spune aplicația, nu în ce protocol o spune.
 
 DE CE EXISTĂ (13.09.2026, valul use-case al lui P7). Textul canonic cere două lucruri deodată:
-*«use-case — deține tranzacția (P4), orchestrează»* (`PLAN_HARDENING.md:827`) și *«un use-case nu
+*«use-case — deține tranzacția (P4), orchestrează»* (`PLAN_HARDENING.md:840`) și *«un use-case nu
 construiește `HTTPException`»* (`:811`). În `main.py` erau **212 rute** care ridicau `HTTPException`
 **dinăuntrul** tranzacției: decizia care produce refuzul se ia acolo unde se citesc datele. Mutând
 tranzacția fără vocabular, `HTTPException` ar fi plecat cu ea și al doilea criteriu ar fi căzut.

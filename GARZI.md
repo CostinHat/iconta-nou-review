@@ -8497,6 +8497,7 @@ nouă; e datoria veche, numărată prima dată.*
 
 
 
+
 ---
 
 # REGULĂ DE DEZVOLTARE — o RAMURĂ FISCALĂ NOUĂ vine cu acoperirea ei

@@ -372,7 +372,7 @@ ANTET_REPO = '''# -*- coding: utf-8 -*-
 """REPOSITORY — instructiunile SQL ale lui `%(modul)s`.
 
 [P7 · valul D4, 13.09.2026] Statele in `%(modul)s`, modul care facea DOUA straturi deodata. Textul
-canonic (`PLAN_HARDENING.md:829`): *repository-ul e singurul care stie SQL si scheme*. Instructiunile
+canonic (`PLAN_HARDENING.md:842`): *repository-ul e singurul care stie SQL si scheme*. Instructiunile
 s-au MUTAT, nu s-au rescris — acelasi text, aceiasi parametri, aceeasi ordine, acelasi
 `fetchone`/`fetchall`. Mutarea a fost facuta de `scripts/p7_d4_separa.py`, iar
 `core/test_p7_d4.py` confrunta multimea de instructiuni a repo-ului cu cea de dinainte.

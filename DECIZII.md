@@ -3,6 +3,30 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 14.09.2026 (39) — Nouă perechi verificator↔verificat atinse în aceeași tură: e o REANCORARE, nu o aliniere
+
+**Ce cere garda.** `core/test_cale_a_doua.py` oprește un commit care atinge, în aceeași tură, și
+verificatorul, și verificatul — `repo_d100.py` + `repo_d100_reconciliere.py`, și încă opt perechi la
+fel. Nu e interzis: *„o schimbare de lege cere ambele căi"*. Ce cere e **motivul scris**, ca nimeni
+să nu mai poată deosebi din context „amândouă implementează noua regulă" de „am aliniat
+verificatorul ca să tacă".
+
+**Motivul, verificabil în trei secunde.** Închiderea formală a planului a adăugat o secțiune la
+capătul lui `PLAN_HARDENING.md`, deci rândurile de sub ea s-au mutat. `core/test_citari_plan.py`
+cere ca fiecare citare pe **număr de linie** să arate chiar spre textul pentru care e citată, iar
+`scripts/reancoreaza_plan.py` le-a mutat pe toate, mecanic: **280 de linii schimbate, 280 șterse** —
+câte un număr într-un docstring, nimic altceva. `git diff HEAD~1 -- core/repo_d100.py` arată un
+singur rând, iar el e `PLAN_HARDENING.md:827` → `:840`.
+
+**Deci:** nu s-a atins nicio regulă, nici în verificator, nici în verificat. Nu e o schimbare de
+lege, nu e o aliniere — e o adresă care s-a mutat. *Garda a întrebat corect; răspunsul e că
+perechea n-a fost atinsă ca pereche.*
+
+**Ce se învață:** o trimitere pe număr de linie produce co-modificări în masă la fiecare mișcare a
+documentului țintă. Clasa e cunoscută (valul D2 a prins-o prima dată) și are deja instrumentul ei;
+ce se adaugă azi e că **reancorarea trece prin gărzile de co-modificare**, deci cere o decizie
+scrisă de fiecare dată. E un preț mic pentru o trimitere care nu poate îmbătrâni tăcut.
+
 ## 13.09.2026 (38) — Valul use-case: patru decizii, dintre care una schimbă ce înseamnă „refuz"
 
 **(1) Use-case-ul numește CONDIȚIA; stratul HTTP alege codul.** `core/erori.py` nu adaugă înțeles —

@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-13 (**P7 ÎNCHIS** — diagnostic închis; valurile **V3**, **V1**, **V2**, **D2**, **D4** și **use-case** închise. **Toate cele patru criterii canonice sunt satisfăcute**, măsurate cu `scripts/p7_criterii.py`: `D1`=`D2`=`D4`=**0** și `RUTE_CARE_DESCHID_SINGURE_TRANZACTIA` **385 → 0** din 421)
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · **P7 ÎNCHIS** (diagnostic `CLOSED_ACCEPTED` `b67d2bfb` · V3 registrul de straturi `CLOSED_ACCEPTED` `364fbc63` · V1 citirile în repository `CLOSED_ACCEPTED` `8d182afa` · V2 `CLOSED_ACCEPTED` `cd5538ae` · valul D2 `CLOSED_ACCEPTED` `e1cf6ee1` · valul D4 cele 37 de module mixte `CLOSED_ACCEPTED` · **valul use-case cele 385 de corpuri de rută `CLOSED_ACCEPTED`**; `P7_ACTION_REQUIRED` **296 → 189 → 39 → 37 → 0**, `D1`=`D2`=`D4`=**0**, iar rutele care își dețin tranzacția **385 → 0**)
+- **ultima actualizare**: 2026-09-14 — **PLANUL E ÎNCHIS**. **P7 ÎNCHIS** (`CLOSED_ACCEPTED`, `f5e6cffc`), iar odată cu el **toți cei opt pași, P0…P7, sunt `CLOSED_ACCEPTED`**. Toate cele patru criterii canonice ale lui P7 sunt satisfăcute, măsurate cu `scripts/p7_criterii.py`: `D1`=`D2`=`D4`=**0** și `RUTE_CARE_DESCHID_SINGURE_TRANZACTIA` **385 → 0** din 421. Închiderea e consemnată la capătul documentului, cu poarta care a lăsat commitul să treacă și cu restanțele **neblocante** numite una câte una
+- **stare**: **toți cei opt pași `CLOSED_ACCEPTED`** — **P0 ÎNCHIS** (`8996f486`) · **P1 ÎNCHIS** (`ced26440`) · **P2 ÎNCHIS** (`f3567121`) · **P3 ÎNCHIS** (`3cd7aebe`) · **P4 ÎNCHIS** (`0742e177`) · **P5 ÎNCHIS** (`f61df1b8`) (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (`f260df2e`; valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · **P7 ÎNCHIS** (`f5e6cffc`; diagnostic `CLOSED_ACCEPTED` `b67d2bfb` · V3 registrul de straturi `CLOSED_ACCEPTED` `364fbc63` · V1 citirile în repository `CLOSED_ACCEPTED` `8d182afa` · V2 `CLOSED_ACCEPTED` `cd5538ae` · valul D2 `CLOSED_ACCEPTED` `e1cf6ee1` · valul D4 cele 37 de module mixte `CLOSED_ACCEPTED` · **valul use-case cele 385 de corpuri de rută `CLOSED_ACCEPTED`**; `P7_ACTION_REQUIRED` **296 → 189 → 39 → 37 → 0**, `D1`=`D2`=`D4`=**0**, iar rutele care își dețin tranzacția **385 → 0**)
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -732,12 +732,25 @@ fără `--workers`, confirmat un singur PID) la **mai multe instanțe** — `--w
 
 # P7 — APPLICATION LAYER
 
-- **stare (13.09.2026)**: **ÎNCHISĂ**. Diagnostic `CLOSED_ACCEPTED` (`b67d2bfb`) · **V3 — registrul
+- **stare (14.09.2026)**: **ÎNCHISĂ** — `P7_STATUS=CLOSED_ACCEPTED`, `P7_FINAL_COMMIT=f5e6cffc`.
+  Diagnostic `CLOSED_ACCEPTED` (`b67d2bfb`) · **V3 — registrul
   de straturi** `CLOSED_ACCEPTED` (`364fbc63`) · **V1 — citirile în repository** `CLOSED_ACCEPTED`
   (`8d182afa`) · **V2 — scrierile și controlul de tranzacție** `CLOSED_ACCEPTED` (`cd5538ae`) ·
   **valul D2 — motorul fiscal fără bază de date** `CLOSED_ACCEPTED` (`e1cf6ee1`) ·
   **valul D4 — cele 37 de module mixte** `CLOSED_ACCEPTED` ·
-  **valul use-case — cele 385 de corpuri de rută** `CLOSED_ACCEPTED`.
+  **valul use-case — cele 385 de corpuri de rută** `CLOSED_ACCEPTED` (`f5e6cffc`).
+- **cele patru criterii canonice, la închidere** — recalculate cu `scripts/p7_criterii.py` pe arborele
+  publicat, nu copiate:
+
+```
+D1_SQL_IN_RUTA=0                        D2_MOTOR_FISCAL_CU_DB=0
+D4_STRAT_MIXT=0                         RUTE_TOTAL=421
+RUTE_CARE_DESCHID_SINGURE_TRANZACTIA=0  RUTE_CARE_CHEAMA_UN_USE_CASE=385
+MODULE_USE_CASE_DECLARATE=60            P7_ACTION_REQUIRED=0
+P7_ACCEPTABLE_BY_DESIGN=1               P7_UNCLASSIFIED_ITEMS=0
+P7_FINAL_COMMIT=f5e6cffc                P7_STATUS=CLOSED_ACCEPTED
+```
+
 - **măsurat**: `P7_RAW_ITEMS=40` = `ACTION_REQUIRED` **39** + `ACCEPTABLE_BY_DESIGN` **1**;
   `EVIDENCE_LIMITATION` **0**, `UNCLASSIFIED` **0**, `UNEXPLAINED_EXCLUSIONS` **0**.
   Pe detector, după valul D4: **D1** 0 pe TOATE clasele · **D2** 0 · **D4** 0 · **D3** 1
@@ -838,6 +851,77 @@ flatantă.
   „main.py a scăzut cu N linii" ca rezultat — e un efect, nu un criteriu.*
 
 ---
+
+# ÎNCHIDEREA PLANULUI — P0…P7 `CLOSED_ACCEPTED` (14.09.2026, `f5e6cffc`)
+
+**Ce înseamnă închiderea, și ce NU înseamnă.** Fiecare pas are un criteriu scris în capitolul lui,
+un instrument care îl recalculează și un commit publicat în care instrumentul dă cifra cerută.
+`CLOSED_ACCEPTED` spune exact atât: **criteriul pasului e satisfăcut, măsurat, pe arborele publicat**.
+Nu spune că aplicația n-are datorii — cele care rămân sunt numite mai jos, cu cifra lor, și rămân
+**deschise și neblocante**, fără nicio lucrare pornită pentru ele.
+
+| pas | ce cerea | commit final | stare |
+|---|---|---|---|
+| **P0** — feedback pe niveluri | patru niveluri derivate din graful de import; four-way verificat de el însuși | `8996f486` | `CLOSED_ACCEPTED` |
+| **P1** — supervizor | rezultat persistat și versionat; citirea nu recalculează portofoliul | `ced26440` | `CLOSED_ACCEPTED` |
+| **P2** — portofoliu / N+1 | o cerere de portofoliu nu crește cu numărul de firme | `f3567121` | `CLOSED_ACCEPTED` |
+| **P3** — rute N-dependente | toate cele 12 rute de portofoliu constante de la N=5 la N=1000 | `3cd7aebe` | `CLOSED_ACCEPTED` |
+| **P4** — proprietatea tranzacției | inventar derivat pe 510 puncte de intrare; cele 7 căi critice păzite, cu injecție de defect | `0742e177` | `CLOSED_ACCEPTED` |
+| **P5** — async / I/O blocant | `ACTION_REQUIRED` 19 → 0, C1 pe cereri 0 | `f61df1b8` | `CLOSED_ACCEPTED` |
+| **P6** — stateless / scalare | starea business în PostgreSQL, cache-urile declarate, două procese reale, four-way 2 din 2 | `f260df2e` | `CLOSED_ACCEPTED` |
+| **P7** — stratul de aplicație | cele patru criterii canonice = 0 | `f5e6cffc` | `CLOSED_ACCEPTED` |
+
+```
+P0_STATUS=CLOSED_ACCEPTED  P0_FINAL_COMMIT=8996f486
+P1_STATUS=CLOSED_ACCEPTED  P1_FINAL_COMMIT=ced26440
+P2_STATUS=CLOSED_ACCEPTED  P2_FINAL_COMMIT=f3567121
+P3_STATUS=CLOSED_ACCEPTED  P3_FINAL_COMMIT=3cd7aebe
+P4_STATUS=CLOSED_ACCEPTED  P4_FINAL_COMMIT=0742e177
+P5_STATUS=CLOSED_ACCEPTED  P5_FINAL_COMMIT=f61df1b8
+P6_STATUS=CLOSED_ACCEPTED  P6_FINAL_COMMIT=f260df2e
+P7_STATUS=CLOSED_ACCEPTED  P7_FINAL_COMMIT=f5e6cffc
+HARDENING_STATUS=CLOSED_ACCEPTED        HARDENING_FINAL_COMMIT=f5e6cffc
+HARDENING_BLOCKING_ITEMS=0              HARDENING_OPEN_NONBLOCKING=6
+```
+
+## POARTA CARE A LĂSAT ÎNCHIDEREA SĂ TREACĂ
+
+Copiat din ieșirea hook-ului `pre-commit` de pe `f5e6cffc`, nu dintr-o rulare separată:
+
+```
+ruff (F821/F822/F823)                OK
+pytest (suita întreagă)              5840 passed · 12 skipped · 14 xfailed · 33 min 38 s
+verificator_conformitate.py          TOTAL: 0 candidate
+  · TOTAL scanat 189 = ACCEPTAT 188 + GRI 0 + ROSU 0 + EXCLUS 1
+  · TOTAL rute  421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+arbore de lucru                      curat
+```
+
+**Publicat, verificat pe cinci brațe:** `HEAD` = `origin/main` = `public/main` =
+`origin/backup/lant-2026-09-14` = `f5e6cffc`; statica publicată din HEAD; **2 din 2 procese de
+producție poartă HEAD** (`scripts/toate_poarta_head.py`, cardinalitatea citită din `Environment=`
+al unității systemd); `iconta.eu` răspunde **200**.
+
+## CE RĂMÂNE DESCHIS — și de ce nu blochează
+
+Fiecare rând de mai jos e o datorie **cunoscută, măsurată și declarată**, nu una descoperită la
+închidere. Niciuna nu contrazice criteriul pasului ei; niciuna n-are lucrare pornită.
+
+| # | ce e | cifra de azi | de ce nu blochează | unde e scris |
+|---|---|---|---|---|
+| 1 | `core/uc_comun._raspuns` construiește un `JSONResponse` | 1 loc | e serializarea mutată de pe bucla de evenimente la **P5**; niciun criteriu canonic P7 nu o interzice, iar mutarea ei ar redeschide o măsurătoare închisă | `DECIZII.md` (14.09) |
+| 2 | `D3` — un `HTTPException` sub HTTP, într-un modul care conține rute | 1 | clasificat `ACCEPTABLE_BY_DESIGN` de la diagnostic încoace: e chiar stratul HTTP | `scripts/p7_clasificare.py` |
+| 3 | rute despre care detectorul de apelanți nu poate afirma nimic (**GRI**) | 7 | clichet **R80**, poate doar să scadă; GRI **nu** e verde, și asta e scris în verdict | `scripts/scan_ancore_rute.py` |
+| 4 | căi C5 rămase la **P5** | 6 | cinci rute de fișier sub `SINCRON-MARGINIT` (threadpool, I/O local — nu extern) + jobul de recurente sub `FUNDAL`; fiecare cu verdict scris | capitolul P5 |
+| 5 | **R178** — la 10 cereri de portofoliu simultane, conexiunile ating `ICONTA_POOL_MAX=10` | rezervă 0 | e o proprietate a **configurației**, măsurată; mărirea pool-ului ar ascunde-o, nu ar rezolva-o | `CONFORMITATE.md` |
+| 6 | **R183** — `spv_conector.apel_anaf` ține conexiunea peste apelul extern | — | **proprietatea** e reparată (R180); ce rămâne e **durata**, aceeași clasă cu R178, și se închide împreună cu ea | `CONFORMITATE.md` |
+
+*Restanțele de produs care nu țin de întărire (**R69**, **R121**, **R174**–**R177**) rămân unde
+erau, în `CONFORMITATE.md`. Închiderea planului nu le atinge și nu le reclasifică.*
+
+**Ce rămâne în vigoare după închidere:** gărzile. Criteriile celor opt pași nu sunt afirmații dintr-un
+raport, ci probe care rulează la fiecare commit — `core/test_p7_criterii.py` cere acum **zero**, nu un
+clichet, și interzice ca planul să declare altceva decât codul, **în amândouă sensurile**.
 
 ## REGULI DE LIVRARE, valabile la toți pașii
 

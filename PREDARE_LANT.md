@@ -1,11 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **planul de întărire P0–P7: TOȚI OPT PAȘII ÎNCHIȘI** (13.09.2026)
+# PREDARE LANȚ — **planul de întărire P0–P7: ÎNCHIS FORMAL, toți opt `CLOSED_ACCEPTED`** (14.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-13**, la capătul valului **use-case** al lui P7, **care închide
-  P7 și cu el tot planul de întărire** (a cincea oprire a zilei).
+- **ultima rescriere**: **2026-09-14**, la **închiderea formală a planului de întărire**: toți cei
+  opt pași P0…P7 sunt `CLOSED_ACCEPTED`, fiecare cu commitul lui final, iar tabelul de închidere
+  (cu poarta care a lăsat-o să treacă și cu restanțele **neblocante** numite) stă la capătul lui
+  `PLAN_HARDENING.md`. *Închiderea n-a atins cod de producție: e consemnare.*
 - **pe commit**: `43fd2197`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
@@ -59,8 +61,8 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P3** — rutele care cresc cu portofoliul | **ÎNCHIS** (`3cd7aebe`) | șase rute N-dependente eliminate în trei valuri; **toate cele 12 rute de portofoliu derivate din cod sunt acum 5q/3c constant de la N=5 la N=1000** |
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
 | **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
-| **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
-| **P7** — stratul de aplicație | **ÎNCHIS** | diagnostic (`b67d2bfb`) · V3 (`364fbc63`) · V1 (`8d182afa`) · V2 (`cd5538ae`) · D2 (`e1cf6ee1`) · D4: cele 37 de module mixte · **valul use-case: cele 385 de corpuri de rută**. **Toate patru criteriile canonice satisfăcute**: `D1`=`D2`=`D4`=**0** și rutele care își dețin tranzacția **385 → 0** |
+| **P6** — stateless / scalare orizontală | **ÎNCHIS** `CLOSED_ACCEPTED` (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
+| **P7** — stratul de aplicație | **ÎNCHIS** `CLOSED_ACCEPTED` (`f5e6cffc`) | diagnostic (`b67d2bfb`) · V3 (`364fbc63`) · V1 (`8d182afa`) · V2 (`cd5538ae`) · D2 (`e1cf6ee1`) · D4: cele 37 de module mixte · **valul use-case: cele 385 de corpuri de rută**. **Toate patru criteriile canonice satisfăcute**: `D1`=`D2`=`D4`=**0** și rutele care își dețin tranzacția **385 → 0** |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de

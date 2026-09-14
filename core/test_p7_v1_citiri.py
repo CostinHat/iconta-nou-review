@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """GARDA V1 — nicio citire SQL în corpul unei rute, și un detector de FEL care poate fi arătat greșit.
 
-CE PĂZEȘTE. `PLAN_HARDENING.md:833` cere ca ruta să nu conțină SQL. V1 a mutat cele **107 citiri**
+CE PĂZEȘTE. `PLAN_HARDENING.md:846` cere ca ruta să nu conțină SQL. V1 a mutat cele **107 citiri**
 (106 `SELECT` + un CTE read-only) din `main.py` în treisprezece module de repository. Garda de mai
 jos ține cifra la **zero**: o citire nouă scrisă direct în rută pică poarta.
 
@@ -198,7 +198,7 @@ def _arbore_repo(modul):
 
 
 def test_repository_urile_NU_deschid_conexiuni_si_NU_comit():
-    """Contractul din `PLAN_HARDENING.md:829` plus P4: repository-ul primește cursorul apelantului.
+    """Contractul din `PLAN_HARDENING.md:842` plus P4: repository-ul primește cursorul apelantului.
 
     Un `get_conn` aici ar rupe tranzacția apelantului în două — exact ce P4 a închis.
     """

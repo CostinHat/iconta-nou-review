@@ -297,7 +297,7 @@ def test_harta_acopera_tot_vocabularul():
 
 
 def test_niciun_HTTPException_in_stratul_use_case():
-    """Criteriul canonic: *un use-case nu construieste `HTTPException`* (PLAN_HARDENING.md:832)."""
+    """Criteriul canonic: *un use-case nu construieste `HTTPException`* (PLAN_HARDENING.md:845)."""
     gasit = []
     for f in sorted(os.listdir(os.path.join(RAD, "core"))):
         if not f.startswith("uc_") or not f.endswith(".py"):

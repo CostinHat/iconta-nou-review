@@ -126,14 +126,14 @@ def criterii():
     n = numaratori()
     return [
         ("ruta nu contine SQL", n["D1_SQL_IN_RUTA"] == 0, n["D1_SQL_IN_RUTA"],
-         "PLAN_HARDENING.md:833"),
+         "PLAN_HARDENING.md:846"),
         ("un motor fiscal nu importa `db`", n["D2_MOTOR_FISCAL_CU_DB"] == 0,
-         n["D2_MOTOR_FISCAL_CU_DB"], "PLAN_HARDENING.md:832"),
+         n["D2_MOTOR_FISCAL_CU_DB"], "PLAN_HARDENING.md:845"),
         ("niciun modul nu face doua straturi deodata", n["D4_STRAT_MIXT"] == 0,
-         n["D4_STRAT_MIXT"], "PLAN_HARDENING.md:829-833"),
+         n["D4_STRAT_MIXT"], "PLAN_HARDENING.md:842-846"),
         ("use-case-ul detine tranzactia, nu ruta",
          n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"] == 0,
-         n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"], "PLAN_HARDENING.md:827"),
+         n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"], "PLAN_HARDENING.md:840"),
     ]
 
 

@@ -1,6 +1,26 @@
 
 
 
+## 14.09.2026 — **planul de întărire P0…P7 se închide formal**
+
+Pentru un contabil: nimic. Nicio linie de cod de producție n-a fost atinsă azi — e o zi de
+consemnare, nu de lucru.
+
+**Ce s-a scris.** Cei opt pași P0…P7 sunt marcați `CLOSED_ACCEPTED`, fiecare cu commitul lui final,
+într-un tabel la capătul lui `PLAN_HARDENING.md`. Lângă el stau două lucruri care fac diferența
+între o închidere și o declarație: **poarta care a lăsat-o să treacă**, copiată din ieșirea
+hook-ului (5840 de teste, ruff OK, verificator `TOTAL: 0`, arbore curat), și **cele șase restanțe
+care rămân deschise**, fiecare cu cifra ei și cu motivul pentru care nu blochează.
+
+*O închidere care n-ar numi ce rămâne ar fi o cifră flatantă — exact clasa pe care planul o
+păzește de opt pași.* Niciuna dintre cele șase n-are lucrare pornită, și niciuna nu contrazice
+criteriul pasului ei: `_raspuns` e serializarea mutată la P5 · `D3`=1 e stratul HTTP însuși ·
+cele 7 rute GRI sunt clichet, iar GRI nu e verde · cele 6 căi C5 au verdict scris · R178 și R183
+sunt proprietăți ale configurației, măsurate, nu regresii.
+
+**Ce rămâne în vigoare:** gărzile. Criteriile celor opt pași nu sunt propoziții dintr-un raport, ci
+probe care rulează la fiecare commit.
+
 ## 13.09.2026, partea a cincea — **P7 · valul use-case: 385 de corpuri de rută, și faza se ÎNCHIDE**
 
 Pentru un contabil, a cincea oară azi: nu s-a schimbat nimic. Aceleași ecrane, aceleași declarații,
