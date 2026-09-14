@@ -162,6 +162,22 @@ RUTE_TOTAL                        = 421
 RUTE_FARA_PROBA_CARE_LE_NUMESTE   = 59
   din care SCRIU (POST/PUT/PATCH/DELETE) = 21
 ```
+
+> **BASELINE RE-MĂSURAT, 14.09.2026, cu instrument** (`scripts/scan_rute_fara_proba.py`):
+> ```
+> RUTE_CARE_SCRIU                  = 243
+> NENUMITE_NICAIERI                = 3     (core/ + frontend_test/ + scripts/)
+> NENUMITE_IN_SUITA                = 131   (doar core/test_*.py — ce rulează POARTA)
+> ```
+> Cele **21** ale auditului nu se pot reproduce: măsurătoarea aceea n-a lăsat un instrument. Cifra
+> care contează pentru E3 e **131**, fiindcă `frontend_test/` nu e cules de pytest — o rută probată
+> acolo nu e păzită de nimic la commit. Deci E3 e de **șase ori** mai mare decât scria aici, iar asta
+> e chiar ce trebuia să se vadă. Clichet dublu în `core/test_rute_probate.py`.
+>
+> **Închise până acum (4 rute grele din lista auditului + 3 din familia bonului):**
+> `POST/DELETE /cabinet/api-chei`, `POST /admin/cabinete/{id}/suspenda|reactiveaza`,
+> `POST /portal/bon`, `POST /portal/bon/{id}/confirma`, `DELETE /portal/bon/{id}`,
+> `POST /eu/schimba-parola`.
 Cele mai grele patru, cu corpul lor: `POST/DELETE /cabinet/api-chei` (`core/uc_cabinet.py`) —
 suprafață de autentificare; `POST /admin/cabinete/{id}/suspenda|reactiveaza` (`core/uc_admin.py`);
 `POST /portal/bon*` (`core/uc_portal.py`) — singurul flux în care **un client**, nu contabilul,

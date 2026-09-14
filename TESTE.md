@@ -2438,6 +2438,14 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **E3 · ce scrie, se probează — instrumentul și primele rute (14.09.2026)** —
+  `scripts/scan_rute_fara_proba.py` + `core/test_rute_probate.py` (**4 probe**, clichet dublu:
+  **131** rute care scriu fără probă în suită, **3** nenumite nicăieri) · `core/test_portal_bon.py`
+  (**5 probe**: bonul rămâne DRAFT până la confirmare, citit din coloană · confirmarea îl trimite și
+  nu se repetă · ștergerea ia și pozele, dar nu atinge un bon trimis · **un fișier care nu e imagine
+  se refuză ÎNAINTE de apelul la AI**, probat numărând chemările furnizorului, nu codul HTTP ·
+  izolare pe id străin) · `core/test_eu_parola.py` (**4 probe**: parola nouă deschide **și** cea
+  veche nu mai deschide · un refuz nu apucă să scrie · urma din `parola_schimbata`).
 - **Cheia de API și suspendarea, probate pe EFECT (14.09.2026)** —
   `core/test_comportament_chei_suspendare.py`, **10 probe + 1 datorie**. Cele două rute pe care
   auditul le numea cele mai grele dintre cele 59 fără probă: emiterea (cheia întoarsă chiar deschide

@@ -7800,6 +7800,46 @@ criteriul nesatisfăcut → 1 roșie.
   S-a adăugat pasul care lipsea, și tot mărginit: **perechea nominală** modul ↔ `repo_<același
   nume>`. Nu lărgește clasa — un modul nu capătă prin ea decât ce și-a dat singur.
 
+### `core/test_portal_bon.py` · `core/test_eu_parola.py` — primele rute grele din E3
+
+**Bonul pozat** e singurul flux în care *un client*, nu contabilul, scrie date care ajung în
+contabilitate. Probele întreabă **unde ajunge documentul**, citit din coloană: încărcat rămâne DRAFT
+(`status='extras'`), confirmarea îl mută la contabil și nu se poate repeta, iar ștergerea îl scoate
+cu tot cu poze — dar peste un bon deja trimis nu mai are efect. *Două jumătăți ale aceleiași reguli:
+clientul își poate reface poza cât e draft, dar nu poate retrage un document ajuns la contabil.*
+
+**Una dintre ele nu e despre baza de date:** un fișier care nu e imagine se refuză **înainte** de
+apelul la furnizorul de AI (R155). Asta nu se vede dintr-un cod de răspuns — proba numără dacă
+furnizorul a fost chemat, fiindcă acolo e diferența care se plătește.
+
+**Schimbarea parolei** se măsoară tot pe efect: parola nouă deschide loginul **și** cea veche nu-l
+mai deschide — perechea e testul, un `{"ok": true}` singur nu spune nimic. Iar un refuz (parolă
+actuală greșită, parolă nouă prea scurtă) trebuie să lase parola neatinsă: *o rută care refuză dar
+apucă să scrie e mai rea decât una care acceptă.*
+
+### `core/test_rute_probate.py` — o rută care scrie și pe care nicio probă n-o numește
+
+E3 din plan, constatarea R1 a auditului. Rutele *sunt* acoperite structural — sweep-urile generice le
+trec pe toate, deci nimeni nu poate adăuga una fără gardă sau fără model de corp. Ce lipsește e
+**comportamentul**.
+
+**Cifra auditului și cifra gărzii nu sunt aceeași, și garda scrie de ce.** Auditul a raportat *„59
+nenumite, din care 21 scriu"*. Instrumentul, pe aceeași întrebare, găsește **3**. N-am putut
+reproduce 21 — măsurătoarea aceea n-a lăsat un instrument, deci nu se poate recalcula; exact lucrul
+despre care METODA spune că e o amintire, nu o măsurătoare. Ce se recalculează sunt două cifre, și
+amândouă au clichet: **3** nenumite nicăieri și **131** nenumite *în suită*. A doua e cea care
+contează: `frontend_test/` nu e cules de pytest, deci o rută „probată" acolo nu e păzită de nimic la
+commit. **E3 e de șase ori mai mare decât scria în plan** — și asta e chiar ce trebuia să se vadă.
+
+**Calibrarea are patru direcții**, iar a patra e o greșeală găsită în chiar instrumentul ăsta: un
+tipar de cale neancorat la capăt făcea ca `/tenants/{id}/produse` să fie „numită" de o probă care
+cheamă `/tenants/5/produse/7` — adică o rută trecea drept probată de proba **alteia**. Cu tiparul
+lax, cifra ieșea 125; ancorat, 134.
+
+**Ce NU poate spune, scris lângă ea:** „numită" nu e „probată pe comportament". O probă care doar
+cere ruta și se uită la codul HTTP numără la fel ca una care verifică ce s-a schimbat. Garda spune
+cine n-are *nimic*, nu cine are *destul*.
+
 ### `core/test_comportament_chei_suspendare.py` — cheia deschide, revocarea închide, suspendarea oprește
 
 Auditul a numărat **59** de rute fără nicio probă în suită și a numit cele mai grele două: emiterea
@@ -8015,9 +8055,9 @@ nouă; e datoria veche, numărată prima dată.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**580 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**584 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 552
+### `core/` — 555
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8320,6 +8360,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_eticheta_conturi_ecran.py` — Eticheta din ECRAN și conturile din BACKEND nu pot diverge tăcut.
 - `core/test_etransport_randuri_dinamice.py` — GARD cap.24 batch 3a — randuri dinamice e-Transport, re-rulate in POARTA prin chromium headless.
 - `core/test_etransport_send.py` — Teste core/etransport_send.py (F121) — pe MOCK, niciodata pe ANAF real.
+- `core/test_eu_parola.py` — `POST /eu/schimba-parola` — a doua suprafață de autentificare fără probă din lista auditului.
 - `core/test_eveniment_public.py` — Garda de CONFIDENTIALITATE pentru analytics public (public.eveniment_public).
 - `core/test_exces_vacanta_d112.py` — D3 (02.08.2026): excesul de tichete de vacanta peste plafonul anual (6 sm) = venit salarial in BRUTUL
 - `core/test_existenta_activitate.py` — [Regula 13 + Regula 6] GARDA: existenta_firma_an numara TOATA activitatea reala datata.
@@ -8454,6 +8495,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_poarta_scurta.py` — GARD (07.09.2026) — poarta scurta din PLAN_LUCRU regula 4 nu poate deveni o formalitate.
 - `core/test_populatii_registre.py` — GARD [R96, 06.09.2026]: cele trei registre obligatorii ori citesc aceeași mulțime, ori abaterea e DECLARATĂ.
 - `core/test_portal_acces.py` — GARD [R62, 26.08.2026]: portalul nu mută identitatea fără confirmare, nu trece un cont dintr-un
+- `core/test_portal_bon.py` — Fluxul bonului pozat — singurul loc în care **un client**, nu contabilul, scrie în contabilitate.
 - `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
 - `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
 - `core/test_post_token_fara_conexiune.py` — core/test_post_token_fara_conexiune.py — rotatia tokenului nu mai tine o conexiune din pool.
@@ -8503,6 +8545,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_ruta_fara_apelant.py` — GARD [R70, 26.08.2026]: o rută NOUĂ fără apelant nu trece poarta.
 - `core/test_rute_autentificate.py` — Garda: fiecare ruta HTTP declara o dependenta de autentificare.
 - `core/test_rute_model_body.py` — core/test_rute_model_body.py — GARD: un model Pydantic pe un handler e BODY, nu query.
+- `core/test_rute_probate.py` — O rută care SCRIE și pe care nicio probă n-o numește — clichet, ca să nu mai crească.
 - `core/test_salariati_blocaj_vizibil.py` — core/test_salariati_blocaj_vizibil.py — GARD: pe Stat de plata, butoanele dezactivate SEPA
 - `core/test_salariati_import_iban.py` — core/test_salariati_import_iban.py — GARD: importul de salariati (stratul 4 migrare) aduce IBAN
 - `core/test_salarii_contare.py` — Teste gardian pentru salarii_contare (partea pura).
@@ -8572,7 +8615,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 28
+### `scripts/` — 29
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -8598,6 +8641,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `scripts/scan_refuzuri.py` — scripts/scan_refuzuri.py — CE POARTA un refuz al aplicatiei, si ce nu poarta.
 - `scripts/scan_regimuri.py` — CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
 - `scripts/scan_rute_clasificate.py` — CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
+- `scripts/scan_rute_fara_proba.py` — Ce rută SCRIE fără ca vreo probă s-o numească.
 - `scripts/scan_sonde_stare.py` — scripts/scan_sonde_stare.py — SONDELE CARE MĂSOARĂ FĂRĂ SĂ ȘTIE DACĂ CEREREA A REUȘIT.
 - `scripts/scan_stare_proces.py` — P6 — inventarul STARII care traieste in memoria procesului, intre cereri.
 - `scripts/scan_tranzactii.py` — scripts/scan_tranzactii.py — CINE DEȚINE LIMITA TRANZACȚIEI, derivat din cod.

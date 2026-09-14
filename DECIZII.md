@@ -3,6 +3,28 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 14.09.2026 (45) — Cifra lui E3 s-a facut de sase ori mai mare cand a primit instrument
+
+**Ce scria planul.** E3: „21 de rute care scriu si n-au nicio proba", 3–4 zile.
+
+**Ce spune instrumentul** (`scripts/scan_rute_fara_proba.py`, scris azi): rute care scriu **243**;
+nenumite nicaieri **3**; nenumite **in suita** — adica fara nicio proba pe care s-o ruleze poarta —
+**131**.
+
+**De ce difera, si de ce nu am ales cifra mai mica.** Cele 21 ale auditului nu se pot reproduce:
+masuratoarea aceea n-a lasat un instrument. As fi putut declara ca instrumentul „corecteaza" auditul
+si ca au mai ramas 3 — e chiar cifra pe intrebarea pe care auditul spune ca si-a pus-o. Dar cele 3 se
+obtin numarand si `frontend_test/`, care **nu e cules de pytest**: o ruta probata acolo nu e pazita
+de nimic la commit. Cifra onesta pentru „ce scrie, se probeaza" e 131.
+
+*Un plan care se face de sase ori mai mare la prima masuratoare nu e un plan prost — e un plan care
+si-a primit instrumentul.* Alternativa era sa inchid E3 cu trei probe si o cifra care suna bine.
+
+**Ce s-a facut azi, si ce nu.** Facut: instrumentul, clichetul dublu, si primele **7** rute grele
+(chei API, suspendare/reactivare cabinet, familia bonului pozat, schimbarea parolei) — alese in
+ordinea auditului, cea mai grea prima. Nefacut: restul de 131; se scad cu probe, niciodata prin
+largirea definitiei lui „numita".
+
 ## 14.09.2026 (44) — **Cabinet suspendat = nicio cheie nu mai deschide.** Decizia lui Costin
 
 **Decizia.** Suspendarea unui cabinet e o **poarta de autentificare** si inchide TOT accesul, nu doar
