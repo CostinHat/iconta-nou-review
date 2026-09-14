@@ -72,7 +72,14 @@ from core import scan_constante
 # rotunjire a unei comparatii, scrisa in ruta INAINTE de val, neatinsa de el; se regaseste in
 # `git show HEAD:main.py`. Clichetul urca cu 1 fiindca DOMENIUL a crescut, nu codul.
 BASELINE = {
-    "stare_partajata.py": 2,
+    # [E1, 14.09.2026] 2 -> 4: `PRAG_RITM = 5` si `FEREASTRA_RITM_SEC = 900`. NU sunt valori noi
+    # — sunt chiar cele care traiau in `main.py` ca argumente implicite ale limitatorului
+    # (`maxreq=5, fereastra=900`), iar scanul nu le vedea acolo: isi declara domeniul ca fiind
+    # `core/`. Mutandu-le langa interogarea care le foloseste, au intrat in domeniu. Clichetul urca
+    # fiindca instrumentul VEDE mai mult, nu fiindca s-a scris o cifra noua — aceeasi clasa ca la
+    # valul use-case. Sunt praguri OPERATIONALE (anti-abuz), din aceeasi familie cu `PRAG_ESECURI`
+    # si `FEREASTRA_ESECURI_SEC`, cele doua care formau clichetul de pana acum.
+    "stare_partajata.py": 4,
     "curs_bnr.py": 2,
     "intrastat.py": 1,
     "uc_tenants.py": 1,

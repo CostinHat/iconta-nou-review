@@ -7800,6 +7800,28 @@ criteriul nesatisfăcut → 1 roșie.
   S-a adăugat pasul care lipsea, și tot mărginit: **perechea nominală** modul ↔ `repo_<același
   nume>`. Nu lărgește clasa — un modul nu capătă prin ea decât ce și-a dat singur.
 
+### `core/test_ritm_partajat.py` — ritmul se numără o singură dată, pe amândouă procesele
+
+Prima gardă a etapei E1, și se naște dintr-o **premisă moartă scrisă în cod**: limitatorul de ritm
+își spunea în docstring *„in-memory, single worker"*, iar producția rulează cu
+`WEB_CONCURRENCY=2` de la P6 valul 3. Consecința măsurată: prag efectiv **dublu** pe trei rute
+publice, contoare golite la fiecare publicare, și un dicționar care nu uita niciodată un IP.
+
+Garda are un detector structural — `RATE_LIMIT_IN_PROCES` — care prinde **două** forme, fiindcă
+defectul le poate lua pe amândouă: un dicționar de modul al cărui nume vorbește despre ritm, și un
+limitator chemat cu un **obiect** în loc de numele limitatorului (adică un depozit pasat, adică tot
+stare în proces, oricum s-ar numi el).
+
+**RED-proof pe sursa REALĂ de dinainte**, nu pe una fabricată: rulat peste `git show 6b9ba2da:main.py`
+și `:core/uc_comun.py`, detectorul găsește **6** locuri — cele două dicționare din `main`, cel din
+`uc_comun`, și cele trei apeluri care le pasau. Pe sursa de acum: **0**.
+
+Restul probelor nu se uită la formă, ci la purtare: **două procese reale** (una pe mecanism, una pe
+**ruta întreagă**, cu `429` și textul lui), numărătoarea care supraviețuiește dispariției
+procesului, pragurile și fereastra neatinse, expirarea **mărginită** (20 de IP-uri expirate + o
+scriere → un rând rămas), **opt fire simultane din care trec exact cinci**, și ridicarea la bază
+căzută.
+
 ### `core/test_p7_uc.py` — contractul HTTP, confruntat cu starea de dinainte de val
 
 Garda pe care valul use-case o cerea, și care **era citată în cod înainte să existe**: `core/erori.py`
@@ -7907,9 +7929,9 @@ nouă; e datoria veche, numărată prima dată.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**575 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**576 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 548
+### `core/` — 549
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8384,6 +8406,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_respingeri_import.py` — GARDĂ: o respingere de rând la import e o AFIRMAȚIE, cu regulă numită. (P8/C, 21.08.2026)
 - `core/test_retete_randuri_dinamice.py` — GARD cap.24 — randuri dinamice RETETE (ingrediente HoReCa), re-rulate IN POARTA prin chromium headless.
 - `core/test_reverificare.py` — GARD [31.08.2026]: categoria de reverificare se CALCULEAZĂ, iar necunoscutul rămâne necunoscut.
+- `core/test_ritm_partajat.py` — E1 — ritmul se numără O SINGURĂ DATĂ, pe amândouă procesele, și nu se golește la repornire.
 - `core/test_rol_pe_efect.py` — core/test_rol_pe_efect.py — GARD: rolul se cere după CE FACE ruta, nu după cum se numește.
 - `core/test_rotunjire_fiscala.py` — [Rotunjire fiscală] GARD: în modulele de declarații (`core/d*.py`, `*engine*.py`) o sumă fiscală NU se
 - `core/test_running_head.py` — GARD detector "running == HEAD" (DECIZII/GARZI iulie: detector vizibil, NU auto-restart).
@@ -8491,6 +8514,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
 
 <!-- INVENTAR-GARZI:STOP -->
+
 
 
 

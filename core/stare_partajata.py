@@ -66,6 +66,17 @@ import sys
 PRAG_ESECURI = 5
 FEREASTRA_ESECURI_SEC = 900
 
+#: [E1, 14.09.2026] Contractul de RITM, neschimbat fata de forma din memorie: cinci cereri la
+#: cincisprezece minute, per IP. `/public/verifica-cui` isi cere pragul lui (10) la apel, ca si
+#: inainte. Stau AICI, langa interogare, ca sa nu existe doua locuri care spun «cinci».
+PRAG_RITM = 5
+FEREASTRA_RITM_SEC = 900
+
+#: Cheia spatiului de blocaje consultative, DIFERITA de `firma_rezumat.CHEIE_BLOCAJ` (0x1C0A7A) si
+#: de `instante.CHEIE_PORNIRE` (0x1C0A7B). Al doilea argument e amprenta lui `(cheie, ip)`, deci
+#: doua IP-uri diferite nu se asteapta unul pe altul.
+CHEIE_RITM = 0x1C0A7C
+
 DDL = """
 -- [P6 val 1, 12.09.2026] Esecurile de autentificare, per CONT. Un RAND per esec — nu un contor —
 -- fiindca doua inserari concurente nu se pot suprascrie, iar un contor actualizat se poate.
@@ -86,6 +97,21 @@ CREATE TABLE IF NOT EXISTS public.alerte_cooldown (
     categorie        text        PRIMARY KEY,
     ultima_trimitere timestamptz NOT NULL DEFAULT now()
 );
+
+-- [E1, 14.09.2026] Cererile numarate pentru ritm, per (limitator, IP). Un RAND per cerere admisa —
+-- aceeasi forma ca `login_esecuri`, din acelasi motiv. O cerere REFUZATA nu se scrie: asa era si in
+-- memorie, iar pragul ramane «a sasea in fereastra», nu «a sasea de cand am inceput sa numar».
+CREATE TABLE IF NOT EXISTS public.cereri_ritm (
+    id    bigserial   PRIMARY KEY,
+    cheie text        NOT NULL,
+    ip    text        NOT NULL,
+    la    timestamptz NOT NULL DEFAULT now()
+);
+-- Indexul serveste amandoua interogarile: COUNT-ul pe (cheie, ip, fereastra) si stergerea pe timp.
+CREATE INDEX IF NOT EXISTS idx_cereri_ritm_cheie_ip_timp
+    ON public.cereri_ritm (cheie, ip, la DESC);
+CREATE INDEX IF NOT EXISTS idx_cereri_ritm_timp
+    ON public.cereri_ritm (la);
 """
 
 
@@ -165,6 +191,59 @@ def rezerva_alerta(conn, categorie, cooldown_sec):
             "RETURNING categorie",
             (categorie, cooldown_sec))
         return cur.fetchone() is not None
+
+
+# ============================================================
+#  RITMUL CERERILOR PUBLICE
+# ============================================================
+def ritm_incape(conn, cheie, ip, maxreq=PRAG_RITM, fereastra_sec=FEREASTRA_RITM_SEC):
+    """`True` daca cererea INCAPE in fereastra — si atunci e si consemnata. `False` = prea des.
+
+    O intrebare si o scriere, dar nu doua curse. Blocajul consultativ pe `(cheie, ip)` serializeaza
+    cererile aceluiasi IP pe acelasi limitator; doua IP-uri diferite nu se asteapta. Fara el, doua
+    cereri simultane ar putea numara amandoua 4 si ar trece amandoua de pragul 5 — o scapare mica,
+    dar exact clasa pe care valul P6 a scos-o din constructie la `login_esec`.
+
+    Instructiunea a doua face trei lucruri intr-una singura, deci nu exista fereastra intre ele:
+      · sterge ce a iesit din fereastra — TOATE randurile expirate, ca la `login_esec`;
+      · numara cererile IP-ului in fereastra (fereastra e in `WHERE`, nu in Python);
+      · insereaza **numai daca** numarul de dinainte e sub prag, si intoarce daca a incaput.
+    `WITH`-ul care modifica date se executa o singura data si intotdeauna, independent de ce
+    citeste interogarea principala — deci stergerea si inserarea nu depind de plan.
+
+    LA BAZA CAZUTA **RIDICA**, ca `login_blocat`: un limitator care raspunde „nu e prea des" cand
+    nu poate numara e o poarta deschisa. Consecinta declarata: cat timp baza e jos, cele trei rute
+    publice raspund cu eroare — iar doua din trei oricum ar fi cazut mai jos, la propria conexiune.
+    """
+    with conn.cursor() as cur:
+        cur.execute("SELECT pg_advisory_xact_lock(%s, hashtext(%s))",
+                    (CHEIE_RITM, "%s|%s" % (cheie, ip)))
+        cur.execute(
+            "WITH sters AS ("
+            "    DELETE FROM public.cereri_ritm"
+            "     WHERE la <= now() - make_interval(secs => %(f)s)"
+            "), nr AS ("
+            "    SELECT count(*) AS c FROM public.cereri_ritm"
+            "     WHERE cheie = %(k)s AND ip = %(ip)s"
+            "       AND la > now() - make_interval(secs => %(f)s)"
+            "), ins AS ("
+            "    INSERT INTO public.cereri_ritm (cheie, ip)"
+            "    SELECT %(k)s, %(ip)s FROM nr WHERE nr.c < %(max)s"
+            "    RETURNING 1"
+            ") SELECT nr.c < %(max)s FROM nr",
+            {"f": fereastra_sec, "k": cheie, "ip": ip, "max": maxreq})
+        return bool(cur.fetchone()[0])
+
+
+def cereri_in_fereastra(conn, cheie, ip, fereastra_sec=FEREASTRA_RITM_SEC):
+    """Cate cereri vede baza. Exista pentru PROBE — `ritm_incape` intoarce un prag, iar un prag nu
+    poate arata daca s-a pierdut o inserare pe drum."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT count(*) FROM public.cereri_ritm "
+            " WHERE cheie = %s AND ip = %s AND la > now() - make_interval(secs => %s)",
+            (cheie, ip, fereastra_sec))
+        return cur.fetchone()[0]
 
 
 def main():

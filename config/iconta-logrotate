@@ -1,0 +1,54 @@
+# [E1, 14.09.2026] Rotatia jurnalelor aplicatiei. Masurat inainte: `uvicorn.log` = 63,7 MB, scris cu
+# `append` de unitatea systemd (`iconta-nou.service`, StandardOutput/StandardError), fara nicio
+# intrare in /etc/logrotate.d/ — deci o resursa fara plafon pe partitia aplicatiei.
+#
+# INSTALARE (cere root, ca si `Environment=WEB_CONCURRENCY=2` de la P6 val 3):
+#     sudo install -m 0644 -o root -g root \
+#          /home/costin/iconta_nou/config/iconta-logrotate /etc/logrotate.d/iconta
+#     sudo logrotate --debug /etc/logrotate.d/iconta      # verificare, nu roteste nimic
+#
+# Fara extensie, dinadins: `.gitignore` ignora `*.conf` la nivel de depozit, iar
+# destinatia (`/etc/logrotate.d/iconta`) n-are nici ea extensie. Un fisier de
+# configurare care nu intra in depozit ar exista numai pe masina — adica nicaieri.
+#
+# DE CE `copytruncate` si nu `create`: systemd tine fisierul DESCHIS cu `append:`. La `create`,
+# procesul ar continua sa scrie in inodul vechi, redenumit — jurnalul ar parea gol pana la
+# repornire. `copytruncate` copiaza si trunchiaza fisierul EXISTENT, deci descriptorul ramane bun.
+# Fereastra de scriere pierduta intre copiere si trunchiere e de milisecunde si e acceptata
+# deliberat: alternativa ar fi o repornire zilnica a serviciului, ceea ce ar fi mai rau.
+#
+# `maxsize`, nu `size`: cu `size` singur logrotate IGNORA intervalul si roteste numai la prag,
+# iar comentariul de mai sus ar fi spus „zilnic" despre o regula care nu e zilnica. Cu
+# `maxsize`, rotatia se face la interval SAU mai devreme, daca fisierul a trecut pragul.
+# Verificat: `logrotate --debug` spune acum „after 1 days (14 rotations)", fara nota de
+# suprascriere.
+
+/home/costin/iconta_nou/uvicorn.log {
+    daily
+    rotate 14
+    maxsize 20M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    su costin costin
+}
+
+# Jurnalele scrise de aplicatie insasi (nu de systemd). Aceeasi regula, retentie mai scurta:
+# nu poarta pornirile, ci evenimente pe care baza le are oricum.
+/home/costin/iconta_nou/alerta_acces.log
+/home/costin/iconta_nou/firma_rezumat.log
+/home/costin/iconta_nou/audit_retentie.log
+/home/costin/iconta_nou/config_backup.log
+/home/costin/iconta_nou/expirare_cote.log {
+    weekly
+    rotate 8
+    maxsize 10M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    su costin costin
+}

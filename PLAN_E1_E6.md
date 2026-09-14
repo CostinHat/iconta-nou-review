@@ -17,9 +17,29 @@ Ca la P0…P7: **baseline** (măsurat azi, cu instrumentul care îl recalculeaz�
 
 ---
 
-# E1 — Ritmul se numără o singură dată
+# E1 — Ritmul se numără o singură dată · **ÎNCHIS 14.09.2026**
 
-**Constatările:** D1, D2, D3 din audit.
+**Constatările:** D1, D2, D3 din audit. **Rezultat: `RATE_LIMIT_IN_PROCES` 6 → 0.**
+
+```
+E1_STATUS=CLOSED_ACCEPTED            E1_BAZA=6b9ba2da  (commitul de dinainte de E1)
+#  commitul care POARTA E1 e chiar cel care contine randul asta — ca la predare, un document
+#  nu-si poate scrie propriul commit fara sa-l fi facut deja
+RATE_LIMIT_IN_PROCES_INAINTE=6       RATE_LIMIT_IN_PROCES_ACUM=0
+PRAGURI_SCHIMBATE=0                  CONTRACT_HTTP_SCHIMBAT=0
+LOGROTATE_SCRIS=1                    LOGROTATE_INSTALAT=0   (cere root — v. mai jos)
+```
+
+**Ce s-a făcut:** cele trei dicționare au plecat în `public.cereri_ritm`, cu tiparul de la
+`login_esecuri` — un rând per cerere admisă, fereastra în `WHERE`, ștergerea celor expirate la
+fiecare scriere, **ridică** la bază căzută. Peste tipar s-a adăugat un **blocaj consultativ pe
+`(cheie, ip)`**: la login cursa dintre două inserări e inofensivă, aici ar fi fost o scăpare de
+prag. Probat: opt fire simultane trec exact cinci.
+
+**Ce a rămas, explicit:** `config/iconta-logrotate.conf` e scris și verificat
+(`logrotate --debug`, zero note), dar **instalarea în `/etc/logrotate.d/` cere root** — ca
+`Environment=WEB_CONCURRENCY=2` la P6 val 3. Comanda e în antetul fișierului. Până atunci,
+**D3 din audit rămâne deschis**, iar `uvicorn.log` crește în continuare.
 
 ### Baseline (măsurat, `b8bcead0`)
 ```

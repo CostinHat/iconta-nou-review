@@ -289,6 +289,18 @@ CLASIFICARE = {
             "identic cu `/aproba`: a doua tranzactie e anuntul, best-effort si logat, iar actul "
             "respingerii — cu motivul lui — e intreg intr-o singura tranzactie.",
     },
+    "POST /public/magic-link": {
+        "clasa": NECRITIC,
+        "efecte": "numararea ritmului (`cereri_ritm`) <-> tokenul de logare <-> e-mailul cu linkul",
+        "de_ce":
+            "[E1, 14.09.2026] Calea a devenit compusa fiindca numararea ritmului si-a luat propria "
+            "tranzactie, inaintea muncii rutei. DESPARTIREA E SCOPUL, nu un efect secundar: "
+            "incercarea se consemneaza INDEPENDENT de ce se intampla dupa. Daca numararea ar sta in "
+            "aceeasi tranzactie cu trimiterea, o trimitere cazuta ar sterge si incercarea — iar "
+            "cine poate forta esecul ar putea cere la nesfarsit. Ordinea efectelor e cea corecta: "
+            "se numara, apoi se lucreaza, apoi pleaca e-mailul (ireversibilul, ultimul). Refuzul "
+            "de ritm cade INAINTE de orice atingere a contului, deci nu exista stare partiala.",
+    },
     "POST /public/reset-parola/cere": {
         "clasa": NECRITIC,
         "efecte": "tokenul de resetare <-> e-mailul cu linkul <-> randul de audit",

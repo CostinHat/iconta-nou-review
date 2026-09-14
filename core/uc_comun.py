@@ -476,7 +476,8 @@ def _rip_ctx(conn, ctx, tenant_id):
 # de rute le cereau din `main.py`. Mutate VERBATIM; `HTTPException` tradus in `_erori`, cu acelasi
 # mesaj. In `main.py` a ramas un invelis cu aceeasi semnatura pentru fiecare functie, iar
 # constantele se importa inapoi de aici — o singura definitie, si acelasi OBIECT pentru cele
-# mutabile (`_magic_rate`, `_TENANT_TEMPLATE` se rescrie prin `pune_sablon_tenant`).
+# mutabile (`_TENANT_TEMPLATE` se rescrie prin `pune_sablon_tenant`; `_magic_rate` a plecat la
+# E1, in `public.cereri_ritm`, fiindca numararea trebuia sa fie una singura pe doua procese).
 # ============================================================================================
 
 BON_DIR_BAZA = "~/iconta_date/bonuri"
@@ -503,8 +504,6 @@ _SURSE_Z = _raport_z.SURSE
 
 _email_valid = _common.email_valid
 
-
-_magic_rate = {}
 
 
 def _acces_pentru_activare(conn, rol, firm, tenant_id):
@@ -977,7 +976,8 @@ def pune_static_dir(cale):
 # de rute le cereau din `main.py`. Mutate VERBATIM; `HTTPException` tradus in `_erori`, cu acelasi
 # mesaj. In `main.py` a ramas un invelis cu aceeasi semnatura pentru fiecare functie, iar
 # constantele se importa inapoi de aici — o singura definitie, si acelasi OBIECT pentru cele
-# mutabile (`_magic_rate`, `_TENANT_TEMPLATE` se rescrie prin `pune_sablon_tenant`).
+# mutabile (`_TENANT_TEMPLATE` se rescrie prin `pune_sablon_tenant`; `_magic_rate` a plecat la
+# E1, in `public.cereri_ritm`, fiindca numararea trebuia sa fie una singura pe doua procese).
 # ============================================================================================
 
 

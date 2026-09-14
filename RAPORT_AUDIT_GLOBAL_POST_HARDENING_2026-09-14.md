@@ -28,6 +28,10 @@ contra legii, și n-am verificat corectitudinea fiscală a rezultatelor pe date 
 
 ## D1 — Limitarea de ritm e per-proces, iar producția rulează două procese (IMPACT MARE)
 
+> **ÎNCHIS la E1 (14.09.2026).** Cele trei dicționare au trecut în `public.cereri_ritm`;
+> `RATE_LIMIT_IN_PROCES` 6 → 0, gardat de `core/test_ritm_partajat.py`. Constatarea rămâne
+> scrisă aici cu măsurătoarea ei — un raport de audit consemnează ce a găsit, nu se rescrie.
+
 Trei limitatoare anti-abuz țin starea în memoria procesului:
 
 | unde | ce apără |
@@ -53,6 +57,9 @@ limitatoare au rămas în urmă.
 
 ## D2 — Aceleași trei dicționare nu uită niciodată un IP (IMPACT MEDIU)
 
+> **ÎNCHIS la E1.** Orice scriere șterge TOATE rândurile ieșite din fereastră, ca la
+> `login_esec`; probat pe 20 de IP-uri expirate + o scriere → un singur rând rămas.
+
 `main.py:1563-1566`:
 
 ```
@@ -67,6 +74,9 @@ dicționar cât trăiește procesul. Cheia e controlată de client (antetul `X-R
 care ating trei rute publice.
 
 ## D3 — `uvicorn.log` crește nemărginit; nu există rotație (IMPACT MEDIU)
+
+> **PARȚIAL la E1.** `config/iconta-logrotate.conf` e scris și verificat; **instalarea cere
+> root**, deci constatarea rămâne DESCHISĂ până când fișierul ajunge în `/etc/logrotate.d/`.
 
 Unitatea scrie cu `append` în arborele aplicației — `config_referinta_iconta-nou.service:22-23`
 (și `/etc/systemd/system/iconta-nou.service:15` pe server). **Măsurat pe snapshot: 63,7 MB**, plus

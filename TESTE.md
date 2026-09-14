@@ -2438,6 +2438,15 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **E1 · ritmul partajat (14.09.2026)** — un fișier nou, `core/test_ritm_partajat.py`, **12
+  probe**: `RATE_LIMIT_IN_PROCES = 0` pe AST, cu **calibrare pe univers fabricat în ambele
+  direcții** · **două procese REALE**, o dată pe mecanism și o dată **pe ruta întreagă**
+  (`/public/magic-link`: cinci cereri pe A, a șasea **429 pe B**, cu textul verificat) ·
+  numărătoarea supraviețuiește dispariției procesului · pragurile (5 și 10) și fereastra (900 s)
+  neschimbate · cererea refuzată nu se numără · expirarea e **și mărginită**, nu doar filtrată
+  (20 de IP-uri expirate + o scriere → un rând) · **opt fire simultane trec exact cinci** · la bază
+  căzută **ridică**. *RED-proof pe sursa reală de dinainte (`6b9ba2da`): detectorul găsește acolo
+  cele 6 locuri, aici 0.*
 - **P7 · valul use-case (13.09.2026)** — un fișier nou, `core/test_p7_uc.py`, **11 probe**: harta de
   coduri acoperă tot vocabularul de refuz (o clasă fără traducere ar ieși ca `500`) · niciun
   `HTTPException` construit în stratul use-case · **perechile `(cod, mesaj)` sunt neschimbate**,

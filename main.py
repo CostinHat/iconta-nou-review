@@ -1542,7 +1542,6 @@ class ResetSeteazaIn(BaseModel):
     token: str
     parola: str
 
-_reset_rate = {}  # [reset_parola_v1] rate-limit in-memory per IP (single worker uvicorn) — anti-spam prin emailurile noastre
 def _ip_client(request):
     # [xff_realip_v1] nginx suprascrie X-Real-IP cu $remote_addr (nefalsificabil); primul hop XFF e
     # controlat de client -> citim X-Real-IP, altfel ULTIMUL hop XFF (adaugat de nginx), altfel peer TCP.
@@ -1553,18 +1552,30 @@ def _ip_client(request):
     if xff:
         return xff.split(",")[-1].strip()
     return request.client.host if request.client else "?"
-from core.uc_comun import _magic_rate  # noqa: E402  [P7 lot 2] definitia a plecat in use-case  # [magic_link_v1] rate-limit per IP pt /public/magic-link (aceleasi praguri ca reset)
-_cui_rate = {}  # [verifica_cui_v1] rate-limit /public/verifica-cui (protejeaza cheia ANAF)
-def _rate_limit_email(store, request, maxreq=5, fereastra=900):
-    """Anti-spam per IP (in-memory, single worker). Implicit 5 cereri / 15 min."""
-    import time as _t
-    ip = _ip_client(request); acum = _t.time()
-    q = [t for t in store.get(ip, []) if acum - t < fereastra]
-    if len(q) >= maxreq:
+def _rate_limit_email(cheie, request, maxreq=_stare_part.PRAG_RITM,
+                      fereastra=_stare_part.FEREASTRA_RITM_SEC):
+    """Anti-spam per IP, NUMARAT IN BAZA. Implicit 5 cereri / 15 min.
+
+    [E1, 14.09.2026] Forma dinainte tinea cate un dictionar in memoria procesului — `_reset_rate`,
+    `_cui_rate`, `_magic_rate` — iar docstringul ei scria premisa: «in-memory, single worker».
+    Premisa a murit la **P6 valul 3**, cand unitatea a primit `WEB_CONCURRENCY=2`: cu doua procese,
+    fiecare cu dictionarul lui, pragul efectiv era DUBLU, iar la fiecare publicare contoarele se
+    goleau. Numararea trece unde e si blocarea la autentificare, din 12.09 si din acelasi motiv.
+
+    Ce NU s-a schimbat, si e probat: pragurile (5, respectiv 10 la `/public/verifica-cui`),
+    fereastra de 900 s, si raspunsul — acelasi `429`, acelasi text.
+
+    `cheie` numeste limitatorul (`"reset_parola"`, `"magic_link"`, `"verifica_cui"`), nu mai e un
+    dictionar. Conexiunea e a ei si se inchide imediat: garda sta INAINTEA tranzactiei rutei, deci
+    nu tine nimic peste munca ei.
+    """
+    ip = _ip_client(request)
+    with db.get_conn() as conn:
+        incape = _stare_part.ritm_incape(conn, cheie, ip, maxreq=maxreq, fereastra_sec=fereastra)
+    if not incape:
         raise HTTPException(429, "Prea multe cereri. Încearcă din nou peste câteva minute.")
-    q.append(acum); store[ip] = q
 def _rate_limit_reset(request):
-    _rate_limit_email(_reset_rate, request)
+    _rate_limit_email("reset_parola", request)
 
 @app.post("/public/reset-parola/cere")  # [reset_parola_v1] "Am uitat parola" cabinet — raspuns IDENTIC (anti-enumerare), rate-limited
 def reset_parola_cere(date: ResetCereIn, request: Request):
@@ -1584,7 +1595,7 @@ def reset_parola_seteaza(date: ResetSeteazaIn):
 @app.post("/public/magic-link")
 def magic_link_cere(date: MagicCereIn, request: Request):
     """Trimite link de logare fara parola. Raspuns identic indiferent daca emailul exista (fara enumerare)."""
-    _rate_limit_email(_magic_rate, request)
+    _rate_limit_email("magic_link", request)
     try:
         return _uc_public.magic_link_cere(date)
     except _erori.EroareDeDomeniu as e:
@@ -2659,7 +2670,7 @@ def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_
 # ICRD_PUBLIC_VERIFICA_CUI_V1
 @app.get("/public/verifica-cui/{cui}")
 def public_verifica_cui(cui: str, request: Request):
-    _rate_limit_email(_cui_rate, request, maxreq=10)  # [verifica_cui_v1] protejeaza cheia ANAF (10/15min per IP)
+    _rate_limit_email("verifica_cui", request, maxreq=10)  # [verifica_cui_v1] protejeaza cheia ANAF (10/15min per IP)
     try:
         rez = anaf_api.valideaza_cui([cui])
     except Exception as e:

@@ -3,6 +3,27 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 14.09.2026 (40) — E1: trei alegeri la mutarea ritmului în baza de date
+
+**(1) Blocaj consultativ pe `(cheie, ip)`, peste tiparul de la `login_esecuri`.** La login, două
+inserări concurente sunt amândouă adevărate: fiecare eșec s-a întâmplat, niciunul nu-l anulează pe
+celălalt. La ritm nu e la fel — două cereri simultane pot număra amândouă 4 și pot trece amândouă de
+pragul 5, fiindcă sub `READ COMMITTED` fiecare instrucțiune își ia propriul instantaneu. *Nu se
+micșorează cursa, se scoate:* `pg_advisory_xact_lock(CHEIE_RITM, hashtext(cheie||'|'||ip))`
+serializează cererile aceluiași IP pe același limitator, iar două IP-uri diferite nu se așteaptă.
+Probat: opt fire simultane, exact cinci trec.
+
+**(2) La bază căzută se RIDICĂ, nu se răspunde „nu e prea des".** Aceeași doctrină ca `login_blocat`,
+scrisă în chiar docstringul modulului: *un refuz de a răspunde n-are voie să devină «nu e blocat»*.
+**Consecința declarată, fiindcă nu e gratis:** `/public/verifica-cui` nu mai poate răspunde cât timp
+baza e jos, deși el cheamă ANAF, nu baza. Alegerea e deliberată — un limitator care se deschide la
+o avarie apără exact atunci când nu trebuie. Celelalte două rute oricum ar fi căzut mai jos, la
+propria lor conexiune.
+
+**(3) Cererea REFUZATĂ nu se scrie.** Ca în memorie: pragul rămâne „a șasea în fereastră", nu „a
+șasea de când am început să număr". Altfel, sub presiune susținută, fereastra nu s-ar mai goli
+niciodată, iar un IP odată refuzat ar rămâne refuzat cât ține presiunea.
+
 ## 14.09.2026 (39) — Nouă perechi verificator↔verificat atinse în aceeași tură: e o REANCORARE, nu o aliniere
 
 **Ce cere garda.** `core/test_cale_a_doua.py` oprește un commit care atinge, în aceeași tură, și

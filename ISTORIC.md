@@ -1,6 +1,33 @@
 
 
 
+## 14.09.2026, partea a doua — **E1: ritmul se numără o singură dată**
+
+Pentru un contabil: nimic vizibil. Aceleași praguri, același refuz, același text. Ce s-a schimbat e
+**unde** se numără.
+
+**Ce era.** Trei limitatoare anti-abuz țineau starea în memoria procesului — `_reset_rate`,
+`_cui_rate`, `_magic_rate` —, iar funcția care le folosea își scria premisa în docstring:
+*„in-memory, **single worker**"*. Premisa murise la P6 valul 3, când unitatea a primit
+`WEB_CONCURRENCY=2`. Consecința, măsurată: **prag efectiv dublu** pe trei rute publice (una dintre
+ele apără cheia ANAF), contoare golite la fiecare publicare, și un dicționar care nu uita niciodată
+un IP — cheiat pe un antet venit din cerere.
+
+**Ce e acum.** `public.cereri_ritm`, cu tiparul scris la P6 pentru `login_esecuri`: un rând per
+cerere admisă, fereastra în `WHERE`, ștergerea celor expirate la fiecare scriere, ridicare la bază
+căzută. Peste tipar, un lucru nou: un **blocaj consultativ pe `(cheie, ip)`**. La login, două
+inserări concurente sunt amândouă adevărate; la ritm, două cereri simultane ar fi putut trece
+amândouă de prag. *Cursa nu s-a micșorat, s-a scos.*
+
+**Cum se știe că ține.** Nu din citirea codului: din **două procese reale**. Unul epuizează pragul
+pe `/public/magic-link`, celălalt — alt PID, altă memorie — primește `429` la a șasea. Forma
+dinainte ar fi răspuns `200`, fiindcă al doilea proces pornea cu dicționarul gol.
+
+**Ce a rămas deschis, și se scrie ca să nu pară închis:** rotația jurnalelor. Fișierul e scris și
+verificat (`config/iconta-logrotate`, `logrotate --debug` fără nicio notă), dar instalarea în
+`/etc/logrotate.d/` cere root — ca `WEB_CONCURRENCY=2` la P6. Până atunci, `uvicorn.log` crește în
+continuare, iar constatarea D3 din audit rămâne DESCHISĂ.
+
 ## 14.09.2026 — **planul de întărire P0…P7 se închide formal**
 
 Pentru un contabil: nimic. Nicio linie de cod de producție n-a fost atinsă azi — e o zi de
