@@ -473,22 +473,23 @@ def _masoara_aspect(aspect, tenant_id, schema, azi, scheme, cu_stat):
                 with _db.get_conn(schema) as cs:
                     _fr.ASPECTE[aspect]["calcul"](cs, schema)
             elif aspect == "termene":
-                import main as _main
+                # [E6] Functia a plecat din `main.py` langa singurul ei apelant, `firma_rezumat`.
                 with _db.get_conn() as c:
                     with c.cursor() as cur:
                         cur.execute("SELECT nume, cui FROM public.tenants WHERE id=%s", (tenant_id,))
                         r = cur.fetchone()
                 nume, cui = (r[0], r[1]) if r else (None, None)
-                _main._termene_una_firma({"id": tenant_id, "nume": nume, "cui": cui},
-                                         _ctx_admin(tenant_id), azi)
+                _fr._termene_una_firma({"id": tenant_id, "nume": nume, "cui": cui},
+                                       _ctx_admin(tenant_id), azi)
             elif aspect == "control_fiscal":
-                import main as _main
+                # [E6] La fel: `_construieste_contabil` traieste in `core/uc_comun.py`.
+                from core import uc_comun as _uc_comun
                 from core import control_fiscal_api as _cf
                 ctx = _ctx_admin(tenant_id)
                 with _db.get_conn(schema) as cs, _db.get_conn() as cp:
                     rr = _cf.evalueaza_firma(cs, cp, tenant_id, schema, azi)
-                _main._construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month,
-                                             rr.get("regim_tva_anaf"))
+                _uc_comun._construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month,
+                                                 rr.get("regim_tva_anaf"))
         except Exception as e:      # noqa: BLE001 — o firmă care ridică NU oprește inventarul;
             m._eroare = "%s: %s" % (type(e).__name__, e)   # se notează și se merge mai departe
     rap = m.raport()

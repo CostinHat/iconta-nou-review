@@ -147,8 +147,14 @@ def test_apelul_extern_nu_sta_sub_conexiune(cale, apel):
 
 def test_calibrare_detectorul_vede_un_apel_care_CHIAR_sta_sub_conexiune():
     """ANTI-VACUUM in cealalta directie: pe un apel care e in bloc (si acolo ii e locul),
-    detectorul spune DA. `schema_tenant` se cheama din interiorul conexiunii, mereu."""
-    sub = [e for _ln, e in _apeluri_sub_conexiune("main.py", "schema_tenant")]
+    detectorul spune DA. `schema_tenant` se cheama din interiorul conexiunii, mereu.
+
+    [E6, 14.09.2026] Instanta se lua din `main.py`. Acolo nu mai e niciun apel `schema_tenant`:
+    corpurile rutelor plecasera la valul use-case, iar ultimul ramas era in `_termene_una_firma`,
+    mutata acum in `core/firma_rezumat.py`. Cele trei potriviri ramase in `main.py` sunt PROZA —
+    comentarii care numesc poarta. Se ia de unde e: `core/uc_comun.py::_schema_sau_404`, un
+    `schema_tenant` chemat dinauntrul unui `with db.get_conn()`. Intrebarea probei e neatinsa."""
+    sub = [e for _ln, e in _apeluri_sub_conexiune("core/uc_comun.py", "schema_tenant")]
     assert sub, "scanul nu gaseste niciun apel `schema_tenant` — domeniu gresit"
     # `any`, nu `all`: exista si un apel in afara blocului, si e in regula sa existe. Afirmatia
     # probei e ca detectorul NU e orb la cele dinauntru — nu ca toate ar fi acolo.

@@ -234,9 +234,23 @@ Niciuna — și nicio urgență.
 
 ---
 
-# E6 — Modelul de citire nu mai depinde de HTTP
+# E6 — Modelul de citire nu mai depinde de HTTP · **ÎNCHIS 14.09.2026**
 
-**Constatarea:** D4 din audit.
+**Constatarea:** D4 din audit. **Rezultat: `CORE_IMPORTA_MAIN` 2 → 0.**
+
+```
+E6_STATUS=CLOSED_ACCEPTED            E6_BAZA=d76cf9d2  (commitul de dinainte de E6)
+CORE_IMPORTA_MAIN_INAINTE=2          CORE_IMPORTA_MAIN_ACUM=0
+FUNCTII_MUTATE=1                     LINII_MUTATE=81   (verbatim)
+CONTRACT_SCHIMBAT=0                  COMPORTAMENT_SCHIMBAT=0
+```
+
+**Cum:** `pastila_firma` se cere de la `core/common.py` (în `main` era re-export),
+`_construieste_contabil` de la `core/uc_comun.py` (în `main` rămăsese doar învelișul HTTP), iar
+`_termene_una_firma` **s-a mutat** în `core/firma_rezumat.py`, lângă singurul ei apelant.
+*Mutată, nu redirecționată:* `core/uc_termene.py` importă `firma_rezumat`, deci mutarea acolo ar
+fi închis un ciclu — iar ruta `/termene` n-o mai cheamă din P2. Așa dependența **dispare**, nu
+se schimbă în alta.
 
 ### Baseline (măsurat)
 ```

@@ -7800,6 +7800,28 @@ criteriul nesatisfăcut → 1 roșie.
   S-a adăugat pasul care lipsea, și tot mărginit: **perechea nominală** modul ↔ `repo_<același
   nume>`. Nu lărgește clasa — un modul nu capătă prin ea decât ce și-a dat singur.
 
+### `core/test_core_fara_main.py` — stratul de sub HTTP nu mai depinde de HTTP
+
+A doua gardă a etapei E1…E6, și singura care păzește o **muchie**, nu o valoare:
+`CORE_IMPORTA_MAIN = 0`.
+
+**Prețul inversării fusese deja plătit.** `core/firma_rezumat.py` cerea de la `main` trei nume, iar
+în valul use-case o curățenie automată de importuri a scos din `main.py` re-exportul
+`pastila_firma` — nefolosit *acolo*. Lucrătorul modelului de citire a început să dea
+`AttributeError`, și **șase firme** au ajuns cu `control_fiscal` în stare de eroare. Reparația de
+atunci a pus importul la loc, cu `# noqa` — adică a păstrat inversarea. E6 o scoate.
+
+**De ce garda citește AST-ul și nu textul, și e cel mai instructiv detaliu de aici:** după mutare, în
+chiar fișierul reparat a rămas un **comentariu** care spune *«îl cerea prin `import main`»*. Un
+`grep` l-ar număra drept import și ar raporta `1` acolo unde codul are `0`. O gardă care se înșală în
+direcția asta se dezactivează singură, prin zgomot. Calibrarea are de-aia trei direcții, nu două:
+prinde ambele forme de import, tace pe forma corectă, **și tace pe proză**.
+
+**Și două probe care păzesc reparația, nu forma:** cele trei nume chiar există la noile adrese, iar
+`main` nu mai ține o a doua definiție a funcției mutate; apoi, pe AST, că `recalculeaza_greu` chiar
+le mai cheamă. *Fără ele, `CORE_IMPORTA_MAIN = 0` s-ar fi putut obține și ștergând apelurile — adică
+stingând funcționalitatea în loc s-o mut.*
+
 ### `core/test_ritm_partajat.py` — ritmul se numără o singură dată, pe amândouă procesele
 
 Prima gardă a etapei E1, și se naște dintr-o **premisă moartă scrisă în cod**: limitatorul de ritm
@@ -7929,9 +7951,9 @@ nouă; e datoria veche, numărată prima dată.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**576 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**577 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 549
+### `core/` — 550
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8046,6 +8068,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_control_incrucisat_wiring.py` — core/test_control_incrucisat_wiring.py — GARD end-to-end pentru verifica_tva (cablaj, nu logica pura).
 - `core/test_control_reconciliere_vizibila.py` — core/test_control_reconciliere_vizibila.py — GARD pentru SUPRAFATA UNIFICATA de reconciliere
 - `core/test_cor.py` — Teste gardian pentru F137 (nomenclator COR).
+- `core/test_core_fara_main.py` — E6 — `core/` nu mai depinde de stratul HTTP. `CORE_IMPORTA_MAIN = 0`.
 - `core/test_corpus_amprenta.py` — GARDĂ: amprentele corpusului se verifică, nu doar se scriu. (22.08.2026)
 - `core/test_corpus_surse.py` — Corpus (2): cele TREI garzi peste registrul de temeiuri COTE + manifestul anaf_surse/INDEX.json.
 - `core/test_cota_efect.py` — GOLDEN pe EFECT: ce cifră iese pe căile reparate la R26, nu ce cotă a intrat.

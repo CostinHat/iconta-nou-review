@@ -32,9 +32,8 @@ from core import instante as _instante
 # de acolo. Scoase de o curatenie automata, sase firme au ajuns cu `control_fiscal` in stare de
 # EROARE. „Nefolosit aici" nu inseamna „nefolosit" intr-un modul care e citit din afara.
 from core.common import pastila_firma, stare_din_nivel  # noqa: F401
-from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, termene_api, produse_api, observare as _obs
+from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, observare as _obs
 # [P7 · V1] Repository-urile de citire: SQL-ul rutelor a plecat acolo.
-from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
 from core import cronometru as _crono   # [P5] segmentele unei cereri; INERT fara ICONTA_CRONOMETRU
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
@@ -2176,7 +2175,6 @@ def _flag_constatare(stare, eticheta, mesaj, temei, an, luna, remediu=None):
         raise _http_din(e)
 
 
-from core.uc_comun import _LOG_VERDICT  # noqa: E402  [P7 lot 2] definitia a plecat in use-case
 
 
 def _constatare_esuata(eticheta, nume, e, an, luna):
@@ -2290,87 +2288,6 @@ def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_rol("admin_fi
 # ============================================================
 #  TERMENE — scadente viitoare pe portofoliu (orizont 60 zile)
 # ============================================================
-def _termene_una_firma(f, ctx, azi):
-    """Blocul per firmă al lui `/termene`, MUTAT din buclă — cuvânt cu cuvânt.
-
-    [P2, 08.09.2026] Nu mai rulează într-o cerere interactivă: îl cheamă calea de
-    recalculare (`firma_rezumat.recalculeaza_greu`), o dată per firmă per schimbare.
-    Măsurat înainte: `/termene` costa 8.000 de interogări și 3.001 de conexiuni la 1000 de
-    firme — 12,9 s pentru o cerere. Codul e ACELAȘI; ce s-a schimbat e cine îl plătește.
-
-    Întoarce `(eval, neevaluat)` — exact cele două ramuri ale buclei."""
-    firme_eval = []
-    neevaluate = []
-    tid = f.get("id")
-    try:
-        with db.get_conn() as c:
-            schema = auth_api.schema_tenant(c, ctx["uid"], tid)
-        if not schema:
-            # [P2] era `continue` in bucla; in functie: firma nu produce nimic
-            return (None, None)
-        with db.get_conn(schema) as cs:
-            with cs.cursor() as cur:
-                row = _repo.select_firma_profil(cur)
-                from core.migrare_api import regim_contabil
-                vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
-                          "tip_decont": row[2], "operatiuni_ic": row[3],
-                          "tip_firma": row[4],
-                          # [T2] partida_simpla din primitiva UNICA (ca semaforul) -> motorul nu emite D100/D101/D406 la PFA.
-                          "partida_simpla": regim_contabil(row[4]) == "simpla",
-                          # [§4] data inceperii inregistrarii TVA (fapt ANAF) -> motorul margineste D300/D394/D406
-                          # la perioadele DE DUPA inregistrare (marginit=True), ca semaforul. Inchide asimetria intre ecrane.
-                          "tva_data_inceput": row[5], "inreg_art317": row[6]} if row else {}
-                _repo.select(cur)
-                are_sal = False
-                if cur.fetchone()[0]:
-                    are_sal = _repo.select_salariati(cur)[0] > 0
-            if not vector:
-                # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
-                # [P8] NECUNOASTERE declarata, nu o cauza in proza: „nu pot evalua" e o afirmatie
-                # despre firma, si trebuie sa spuna PE CE perioada nu poate - altfel peste sase
-                # luni se citeste ca fapt permanent.
-                _n = _af.afirmatie(
-                    "necunoastere", "obligații fiscale",
-                    "Vector fiscal necompletat — nu pot evalua obligațiile firmei.",
-                    domeniu_de=azi.isoformat(), domeniu_pana=azi.isoformat())
-                _n["tenant_id"] = tid
-                _n["nume"] = f.get("nume")
-                _n["cauza"] = _n["motiv"]
-                neevaluate.append(_n)
-                # [P2] era `continue`; in functie: firma iese NEEVALUATA, cu afirmatia ei
-                return (None, neevaluate[0] if neevaluate else None)
-            with db.get_conn() as cp:
-                with cp.cursor() as cur:
-  # [F163v2] vederea = depunerea curentă
-                    depuse = {(t, a, l) for (t, a, l) in _repo.select_public_4(cur, tid)}
-            # [D390-fapt] termene intreaba faptul lunar prin cs (conn pe schema firmei, cat timp e deschis):
-            # luna deschisa -> AFISAM (nu putem exclude operatiuni pana la finalul lunii); vezi obligatii_datorate.
-            from core import d390 as _d390
-            _fapt = lambda a, l: _d390.d390_are_operatiuni(cs, schema, a, l, azi)
-            term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt)
-            # [P2] deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} + [regim_card] regim_contabil
-            # (contract STRICT in meniuFirma pe amandoua). Le avem din firma_profil (vector) prin primitiva.
-            firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                               "tip_firma": vector.get("tip_firma"),
-                               "regim_contabil": regim_contabil(vector.get("tip_firma")), "termene": term})
-    except Exception as e:
-        # [T1] o firma care crapa NU dispare din ecran: gri cu temei (doctrina 23.07 — gri = "nu am putut", nu tacere).
-        # [item4] numele tehnic al exceptiei merge DOAR in log (%r); pe ecran - temei citibil pentru contabil (DS cap.6).
-        _LOG_VERDICT.warning("termene: evaluare esuata tenant %s -> gri (%r)", tid, e)
-        # [P8] VERIFICARE RUPTA, nu necunoastere: masinaria a crapat, iar asta se spune ca atare -
-        # altfel se amesteca pe ecran cu „nu am date", si nimeni nu mai stie unde sa se uite.
-        # `eroare` sta in obiect pentru diagnostic; pe ecran ramane `cauza`, in limba omului.
-        _n = _af.afirmatie(
-            "verificare_rupta", "obligații fiscale",
-            "Nu am putut evalua această firmă acum — a apărut o eroare internă. "
-            "Am notat-o; reîncearcă mai târziu sau anunță suportul.",
-            eroare="%s: %s" % (type(e).__name__, e))
-        _n["tenant_id"] = tid
-        _n["nume"] = f.get("nume")
-        _n["cauza"] = _n["motiv"]
-        neevaluate.append(_n)
-    return (firme_eval[0] if firme_eval else None,
-            neevaluate[0] if neevaluate else None)
 
 
 @app.get("/termene")

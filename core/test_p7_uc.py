@@ -453,7 +453,16 @@ def test_CE_CERE_ALTCINEVA_de_la_main_exista():
                 continue
             for m in re.finditer(r"\b_main\d*\.([A-Za-z_][A-Za-z0-9_]*)", s):
                 ceruti.add((os.path.join(os.path.basename(rad), f), m.group(1)))
-    assert len(ceruti) >= 3, "anti-vacuu: doar %d accese gasite — cautarea s-a rupt" % len(ceruti)
+    # [E6, 14.09.2026] Pragul a fost 3 și a coborât la 2, iar motivul e chiar reușita: cele două
+    # accese ale lui `core/firma_rezumat.py` (`pastila_firma`, `_termene_una_firma`) au dispărut
+    # când stratul de sub HTTP a încetat să mai depindă de HTTP. Ce a rămas sunt cele două unelte
+    # de măsură care pornesc aplicația (`_main.app`) — legitime, și singurele.
+    # *Un anti-vacuum care cere ca aplicația să fie murdară se stinge exact când munca reușește*,
+    # de-aia proba care contează e cea de mai jos, pe univers FABRICAT.
+    assert len(ceruti) >= 2, "anti-vacuu: doar %d accese gasite — cautarea s-a rupt" % len(ceruti)
+    fals = {("zt/fals.py", "nume_care_nu_exista_pe_main")}
+    assert [x for x in fals if not hasattr(main, x[1])], (
+        "calibrare: un nume inexistent pe `main` nu e raportat — verificarea nu verifica")
     lipsa = sorted("%s -> main.%s" % (f, n) for f, n in ceruti if not hasattr(main, n))
     assert not lipsa, ("nume cerute de la `main` care nu mai exista:\n    %s"
                        % "\n    ".join(lipsa))

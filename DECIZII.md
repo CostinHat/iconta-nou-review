@@ -3,6 +3,26 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 14.09.2026 (41) — E6: funcția se MUTĂ, nu se redirecționează
+
+**Întrebarea.** `core/firma_rezumat.py` cerea trei nume de la `main`. Două aveau adresă evidentă
+(`core/common.py`, `core/uc_comun.py`). Al treilea, `_termene_una_firma`, trăia doar în `main.py` —
+deci trebuia mutat undeva. Unde?
+
+**Ce n-am ales, și de ce.** `core/uc_termene.py` pare locul firesc: e blocul per firmă al rutei
+`/termene`. Dar `core/uc_termene.py:24` **importă** `firma_rezumat`, iar `firma_rezumat` e chiar cel
+care cheamă funcția — ar fi ieșit un ciclu. Aș fi schimbat o inversare cu o buclă.
+
+**Ce am ales.** Funcția are **un singur consumator**: `firma_rezumat.recalculeaza_greu`. Ruta
+`/termene` n-o mai cheamă din P2 — citește modelul. Mutată lângă apelantul ei, dependența
+**dispare**, nu se transformă în alta. *Cel mai bun loc pentru o funcție cu un singur apelant e
+lângă apelant; „stratul potrivit" e o întrebare care apare abia când sunt doi.*
+
+**Ce n-am atins, deși se vedea de acolo.** `core/firma_rezumat.py` e declarat `REPOSITORY` în
+registrul de straturi, deși deschide nouă conexiuni, comite, și orchestrează — una dintre cele șase
+contradicții declarație↔cod numărate la audit. **Clasificarea lui e treaba lui E2a**, iar E6 n-o
+atinge: a muta o funcție în el nu-i schimbă stratul, doar scoate muchia către HTTP.
+
 ## 14.09.2026 (40) — E1: trei alegeri la mutarea ritmului în baza de date
 
 **(1) Blocaj consultativ pe `(cheie, ip)`, peste tiparul de la `login_esecuri`.** La login, două

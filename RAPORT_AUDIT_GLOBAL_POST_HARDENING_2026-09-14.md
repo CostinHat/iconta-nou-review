@@ -86,6 +86,9 @@ plafon pe partiția aplicației, iar jurnalele de pornire sunt chiar locul unde 
 
 ## D4 — Inversare de strat: un modul din `core/` importă `main` (IMPACT MEDIU)
 
+> **ÎNCHIS la E6 (14.09.2026).** `CORE_IMPORTA_MAIN` 2 → 0, gardat de
+> `core/test_core_fara_main.py`. Constatarea rămâne scrisă aici cu măsurătoarea ei.
+
 `core/firma_rezumat.py:1009` și `:1024` — lucrătorul modelului de citire face `import main as _main`
 și cheamă `_main._construieste_contabil(...)`, `_main.pastila_firma(...)`, `_main._termene_una_firma(...)`.
 Stratul de sub HTTP depinde de stratul HTTP.
@@ -125,6 +128,14 @@ suspendă, sau când un client încarcă un bon.
 Cele mai grele două: `POST/DELETE /cabinet/api-chei` e **suprafață de autentificare** (creează și
 revocă chei care ocolesc parola), iar `/admin/cabinete/{id}/suspenda` schimbă accesul unui cabinet
 întreg.
+
+> **CORECȚIE (14.09.2026), la o cifră a acestui raport.** Căutarea a numărat doar fișiere
+> `test_*.py`. Pentru `POST /cabinet/api-chei` **există** o probă cap-coadă —
+> `frontend_test/proba_verificare_functionalitati.py:1232` chiar cheamă ruta prin HTTP —, dar ea
+> **nu e în suită**: fișierul nu se numește `test_*`, iar `pytest --collect-only` pe el întoarce
+> *„no tests collected"*. Deci cifra **59** rămâne corectă pentru SUITĂ, iar formularea „nicio
+> probă" era prea tare pentru ruta aceea: există una, doar că nu rulează la poartă. Pentru
+> `DELETE /cabinet/api-chei/{kid}` și cele două rute de suspendare/reactivare nu există nimic.
 
 ## R2 — Trei reparații fiscale aplicate, dar niciodată exercitate (IMPACT MEDIU-MARE)
 

@@ -2438,6 +2438,14 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **E6 · `core/` fără HTTP (14.09.2026)** — un fișier nou, `core/test_core_fara_main.py`, **4
+  probe**: `CORE_IMPORTA_MAIN = 0` citit pe **AST**, nu pe text — și a treia calibrare spune de ce:
+  după mutare a rămas în `core/firma_rezumat.py` un COMENTARIU care pomenește `import main`, iar un
+  `grep` l-ar fi numărat drept import · calibrare în trei direcții (două forme de import prinse,
+  forma corectă tăcută, proza tăcută) · **anti-vacuum pe reparație**: cele trei nume chiar există la
+  noile adrese, iar `main` **nu** mai are o a doua definiție a funcției mutate · și apelurile sunt
+  chemate mai departe din `recalculeaza_greu`, citit pe AST. *Fără ultimele două, `CORE_IMPORTA_MAIN
+  = 0` s-ar fi putut obține și ștergând apelurile — adică stingând funcționalitatea.*
 - **E1 · ritmul partajat (14.09.2026)** — un fișier nou, `core/test_ritm_partajat.py`, **12
   probe**: `RATE_LIMIT_IN_PROCES = 0` pe AST, cu **calibrare pe univers fabricat în ambele
   direcții** · **două procese REALE**, o dată pe mecanism și o dată **pe ruta întreagă**

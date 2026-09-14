@@ -215,7 +215,9 @@ def test_paritate_termene(client, teren):
     _uid, firme, azi, _t = teren
     din_model = _get(client, teren, "/termene")
 
-    import main as _main
+    # [E6] Blocul per firmă a plecat din `main.py` lângă singurul lui apelant. Proba cheamă
+    # ACEEAȘI funcție, de la noua ei adresă — întrebarea ei (modelul dă ce dădea bucla) e neatinsă.
+    from core import firma_rezumat as _fr_paritate
     from core import termene_api
     ctx = {"uid": _uid}
     # Bucla de dinainte de P2 — pe TOATE firmele utilizatorului, fiindcă ruta agreghează pe toate.
@@ -223,7 +225,7 @@ def test_paritate_termene(client, teren):
         toate = auth_api.tenantii_userului(c, _uid)
     ev, neev = [], []
     for f in toate:
-        e, n = _main._termene_una_firma(f, ctx, azi)
+        e, n = _fr_paritate._termene_una_firma(f, ctx, azi)
         if e:
             ev.append(e)
         if n:
