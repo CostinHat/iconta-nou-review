@@ -156,12 +156,22 @@ def test_datorie_staleness_sesiune_b_content():
     assert b is not None and b["etape_facute"] > 0
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: cele 8 mentiuni canonizate la DUK/eFactura regula n-au fost re-verificate la sursa - s-a schimbat doar markerul. Daca vreuna cita o regula GRESITA inainte, canonizarea a facut-o sa arate corect si sa ramana greșita. De verificat fiecare cod (A91b, R28, R17, R11b, R15, F10_68, BR-RO-100, BR-RO-110) contra documentatiei de validator: ce spune regula si daca e cea aplicabila acolo.")
+# [INCHISA 14.09.2026] Cele 8 coduri verificate la sursa - jarurile validatoarelor + RULARE pe XML
+# mutat deliberat (D100/D119/D710) + validatorul public ANAF pentru BR-RO-100/110. Trei din opt erau
+# gresite (A91b citat sub D300/D390, R17 sub D710, R15 sub D119) - corectate. Vezi DECIZII.md (42).
+# Ce a ramas e o clasa NOUA, cu datoria ei mai jos: `test_datorie_coduri_d402_d301_necorelate`.
 def test_datorie_reguli_validator_verificate_la_sursa():
     # Se inchide cand verificarea la sursa e consemnata in DECIZII.md (marker stabil, case-insensitive).
-    # strict=True: cand devine adevarat, xpass -> pica -> semnaleaza sa scoti xfail-ul.
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "reguli validator verificate la sursa" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 14.09.2026: 8 citari `DUK regula <cod>` nu se regasesc in validatorul declaratiei lor, gasite de scripts/scan_coduri_validator.py - 7 in core/d402.py (R14, R34, R39, R43 x2, R50; D402Validator.jar instalat are in TOT jarul patru coduri: R29, R40, R49.1, R49.2) + R24.1 in core/d301_operatiuni_api.py (D301 are R24). Nu se stie daca sunt coduri gresite, sub-coduri compuse la rulare, sau coduri dintr-o versiune de validator care nu mai e instalata. Se lamureste PRIN RULARE (XML mutat deliberat, ca la D100/D119/D710 pe 14.09), nu prin citirea constantelor - vezi DECIZII.md (42).")
+def test_datorie_coduri_d402_d301_necorelate():
+    # Se inchide cand fiecare din cele 8 e lamurit si clichetul din core/test_coduri_validator.py
+    # coboara la 0 (PLAFON_NECORELATE), consemnat in DECIZII.md.
+    from core import test_coduri_validator as _tcv
+    assert _tcv.PLAFON_NECORELATE == 0
 
 
 @pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: R17/R28/R32 din D300/D394 au fost lasate bare ca RANDURI de declaratie, dedus din CONTEXT, nu verificat in structura oficiala a formularului. Daca vreunul e de fapt regula de validator, a rămas nemarcat si gardul nu-l va prinde. De verificat in structura oficiala D300 si D394 ce reprezinta fiecare.")

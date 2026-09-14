@@ -134,8 +134,16 @@ def test_tipuri_operatiune_sunt_exact_nomenclatorul_oficial_opanaf_705_2020():
 
 
 def test_d390_rotunjeste_aritmetic_nu_bancar_A91b():
-    """Sumele fiscale D390 se rotunjesc ARITMETIC (ROUND_HALF_UP), nu bancar. Referinta:
-    DUK regula A91b (ANAF cere half-up; Python round() e half-to-even). Proba pe valorile unde
+    """Sumele fiscale D390 se rotunjesc ARITMETIC (ROUND_HALF_UP), nu bancar.
+
+    (Numele functiei pastreaza codul A91b: asa e citat in TESTE.md/GARZI.md, iar o redenumire ar
+    muta o bifa de vechime fara ca proba sa se fi schimbat. Ce era gresit e TEMEIUL, mai jos.)
+
+    [14.09.2026, verificare la sursa] Referinta era codul A91b, fara marca de formular. A91b nu exista
+    in D390Validator.jar - e DUK regula A91b (D112) ("Contributia angajator CAM nu este calculata
+    corect"), regula care a respins rotunjirea bancara PE D112. D390 nu are o regula omonima:
+    half-up vine din consecventa intre generatoare + risc asimetric, scris in core/d390.py.
+    (ANAF cere half-up; Python round() e half-to-even.) Proba pe valorile unde
     difera - .5 urca MEREU, nu la parul cel mai apropiat. d390 e deja si in gardul de identitate
     cross-generator (test_rotunjirea_e_identica_intre_generatoare) si in scanul anti-round() bancar
     (test_toate_generatoarele_rotunjesc_aritmetic); asta fixeaza VALOAREA aritmetica, nu doar

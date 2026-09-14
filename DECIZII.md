@@ -3,6 +3,73 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 14.09.2026 (43) — Suspendarea unui cabinet opreste oamenii, nu si cheile: ce NU am facut si de ce
+
+**Constatarea, gasita de o proba noua.** `POST /admin/cabinete/{id}/suspenda` scrie
+`accounting_firms.activ = false`. Coloana asta e citita de `auth_api.login` (deci loginul se
+opreste, cu `CABINET_SUSPENDAT`) si de doua bucle de fundal. `api_public.verifica`, poarta cheilor
+de API, **nu o citeste**: cauta doar `api_chei.activ = true`. Un cabinet suspendat pastreaza deci
+acces programatic deplin la datele lui — suspendarea e o poarta doar pentru oameni.
+
+**De ce n-am reparat-o in aceeasi tura.** Reparatia e o linie (un `JOIN` in `verifica`), dar
+raspunsul corect nu e evident: „cheia moare cu cabinetul" si „accesul programatic ramane, ca sa se
+poata exporta datele / rula facturarea dupa suspendare" sunt amandoua coerente, iar alegerea intre
+ele e o decizie de **produs**, nu una de implementare. O reparatie luata din proprie initiativa ar
+fi inchis intrebarea tacit, in dreptul unei porti de autentificare.
+
+**Ce am facut in schimb.** Proba exista si e ROSIE prin constructie:
+`test_DATORIE_cheia_de_api_a_unui_cabinet_suspendat_nu_mai_deschide`, `xfail(strict=True)` — in ziua
+in care comportamentul se schimba, ea trece si **pica poarta**, cerand sa i se scoata marcajul.
+Criteriul de inchidere e scris in dreptul ei: decizia consemnata aici + proba verde.
+
+## 14.09.2026 (42) — **Reguli validator verificate la sursa**: trei din opt erau gresite
+
+**Datoria, scrisa pe 30.07.2026.** Opt mentiuni fusesera canonizate la forma `DUK regula <cod>`.
+S-a schimbat MARCAJUL, nu s-a verificat continutul, iar datoria numea exact riscul: *daca vreuna
+cita o regula GRESITA inainte, canonizarea a facut-o sa arate corect si sa ramana greșita.*
+
+**Cum s-a verificat.** Nu din memorie si nu din proza: din **jarurile validatoarelor instalate**
+(`/opt/duk/dist/lib`, `~/duk/dist/lib` — constantele de sir din `.class`), iar unde citirea nu
+decidea, **prin rulare**: XML construit de generatorul nostru, stricat deliberat intr-un singur loc,
+trecut prin DUKIntegrator. Pentru cele doua coduri eFactura, prin validatorul public ANAF
+(`FCTEL/rest/validare/FACT1`), pe facturi sintetice, cu martor ACCEPTAT ca sa se stie ca respingerea
+vine din mutatie.
+
+**Cinci corecte.** `R28` (D398: „Taxable_amount must be greater than 0"; D301: suma de control),
+`R11b` (D100, literal), `F10_68` (S1005/S1003: `F10_0061 = F10_3011 + F10_3021`, literal),
+`BR-RO-100` si `BR-RO-110` (textul intors de validator se suprapune cuvant cu cuvant peste ce scrie
+`core/efactura_send.py`). La fel `R17` in D119/D101G/D394 si `R15` in D710/D205.
+
+**Trei gresite.**
+1. **`A91b` in D300 si D390.** Nu exista in `D300Validator.jar` si nici in `D390Validator.jar` —
+   **zero** potriviri in tot jarul. E o regula din D112 („Contributia angajator CAM nu este
+   calculata corect"), care chiar respinsese rotunjirea bancara, dar **acolo**. Faptul ramane
+   (half-up), temeiul se corecteaza: la D390 rationamentul scris era deja corect (consecventa +
+   risc asimetric), la D300 nu era.
+2. **`R17` in D710.** Citatul dintre ghilimele era exact — dar rularea (cota=5) da
+   `eroare atribut: cota: valoarea '5' nu se incadreaza in intervalul cerut`, adica **domeniul
+   atributului**, nu regula R17 (aceea spune „Cota impozitare eronata ... pt cod obligatie = 121").
+   cota=3 trece — lista inchisa (1, 3) e confirmata.
+3. **`R15` in D119.** Ramura `Suma_dat >= Suma_ded` e **R14**; R15 e oglinda ei. Anomalia scrisa
+   sub ea s-a **re-probat si e reala**: pe `dat=400, ded=1000, rest=600, plata=0` — adica fix ce
+   cere R15 — validatorul tot respinge. Refuzul din generator ramane justificat.
+
+**Ce m-a invatat rularea, si merita tinut minte.** La D100 citirea din bytecode spunea ca textul
+„scadenta ar fi trebuit sa fie ..." sta sub `R15`, deci citarea `R15.1` parea gresita. Rulat:
+validatorul emite **R15.1**. *Adiacenta constantelor dintr-un `.class` nu e ordinea de emitere* —
+unde se poate rula, se ruleaza.
+
+**Ce las in urma.** `scripts/scan_coduri_validator.py` + `core/test_coduri_validator.py`: fiecare
+`DUK regula <cod>` se confrunta cu jarul declaratiei in care e scrisa, iar o regula imprumutata de
+la alt formular **isi numeste formularul** — `DUK regula A91b (D112)`. Instrumentul spune singur ce
+nu poate: codurile scurte apar coincidental intr-un jar de cativa MB, deci greseste spre indulgenta,
+si nu poate spune daca regula INSEAMNA ce credem.
+
+**Si o datorie noua, gasita de el, nu de mine:** 8 citari nerezolvate — 7 in `core/d402.py` (R14,
+R34, R39, R43, R50: jarul D402 instalat are in TOT cuprinsul lui patru coduri, R29/R40/R49.1/R49.2,
+si niciunul dintre cele citate) + `R24.1` in `core/d301_operatiuni_api.py` (D301 are `R24`).
+Consemnata, nu reparata azi: se lamureste prin rulare, ca aceasta.
+
 ## 14.09.2026 (41) — E6: funcția se MUTĂ, nu se redirecționează
 
 **Întrebarea.** `core/firma_rezumat.py` cerea trei nume de la `main`. Două aveau adresă evidentă

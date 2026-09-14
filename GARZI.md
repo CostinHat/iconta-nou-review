@@ -7800,6 +7800,64 @@ criteriul nesatisfăcut → 1 roșie.
   S-a adăugat pasul care lipsea, și tot mărginit: **perechea nominală** modul ↔ `repo_<același
   nume>`. Nu lărgește clasa — un modul nu capătă prin ea decât ce și-a dat singur.
 
+### `core/test_comportament_chei_suspendare.py` — cheia deschide, revocarea închide, suspendarea oprește
+
+Auditul a numărat **59** de rute fără nicio probă în suită și a numit cele mai grele două: emiterea
+și revocarea cheilor de API (suprafață de autentificare — chei care ocolesc parola) și suspendarea
+unui cabinet întreg. Pentru emitere exista o probă cap-coadă în `frontend_test/`, dar acolo ruta e
+**țeavă** — de unde se ia o cheie pentru alte probe —, nu subiect, iar fișierul nu e cules de pytest.
+
+**Ce întreabă probele astea, și de ce nu codul HTTP:** ce se schimbă în lume. Cheia emisă chiar
+deschide `/api/v1/firme` (cu martor: o cheie inventată ia 401, altfel proba n-ar dovedi nimic);
+cheia revocată chiar nu mai deschide — **200 înainte, 401 după**, fiindcă fără perechea asta
+`{"revocat": id}` e doar un cuvânt; iar când B încearcă să revoce cheia lui A, se măsoară că **cheia
+lui A rămâne bună**, nu doar că răspunsul a fost 404. La fel la suspendare: după un refuz, coloana
+`activ` e citită înapoi din baza de date.
+
+**Ce a scos la iveală, și e consemnat ca datorie, nu reparat în aceeași tură:** `suspenda` oprește
+**loginul** (`auth_api.login` se uită la `af.activ`), dar **nu** și cheile de API —
+`api_public.verifica` întreabă doar de `api_chei.activ`. Un cabinet suspendat păstrează acces
+programatic deplin la datele lui. Răspunsul corect e o decizie de **produs** (poate fi și „cheia
+moare cu cabinetul", și „accesul programatic rămâne pentru export/facturare"), de-aia proba stă ca
+`xfail(strict=True)` cu criteriu de închidere scris, nu ca o reparație luată din proprie inițiativă.
+
+*Detaliu de metodă: aici nu se pune savepoint per cerere, ca la gărzile de izolare — probele sunt
+lanțuri (emit o cheie, o folosesc, o revoc), iar un savepoint per cerere ar șterge chiar efectul
+măsurat. Curățenia o face un singur `rollback` la final.*
+
+### `core/test_coduri_validator.py` — un cod de validator citat ca temei chiar există acolo
+
+Datoria din 30.07.2026 spunea limpede riscul: opt mențiuni fuseseră canonizate la forma
+`DUK regula <cod>` — *s-a schimbat marcajul, nu s-a verificat conținutul; dacă vreuna cita o regulă
+greșită înainte, canonizarea a făcut-o să arate corect și să rămână greșită.* Verificate la sursă pe
+14.09.2026, **trei din opt** erau greșite.
+
+**Cea mai limpede:** `A91b` era temeiul rotunjirii half-up în D300 și D390. În `D300Validator.jar` și
+`D390Validator.jar` codul ăsta are **zero** potriviri — e o regulă din D112 („Contribuția angajator
+CAM nu este calculată corect"), care chiar respinsese rotunjirea bancară, dar acolo. Faptul rămâne;
+temeiul se corectează.
+
+**Ce păzește garda, îngust:** un cod citat care nu apare deloc în jarul declarației lui. Atât. Dacă
+regula *înseamnă* ce credem noi se află doar rulând validatorul pe un XML stricat într-un singur loc
+— așa s-au lămurit D100, D119 și D710 în aceeași zi. **Și tot rularea m-a corectat:** la D100,
+adiacența constantelor din `.class` spunea `R15`, deci citarea `R15.1` părea greșită; validatorul a
+răspuns `R15.1`. *Ordinea din constant pool nu e ordinea de emitere.*
+
+**Marca de formular.** O regulă împrumutată de la alt formular își numește formularul:
+`DUK regula A91b (D112)`. Fără marcă, codul se caută unde l-ar căuta orice cititor — în validatorul
+fișierului.
+
+**Unde e oarbă, scris ca să nu fie citită mai larg:** codurile scurte (`R4`, `R15`) apar aproape
+sigur ca subșir într-un jar de câțiva MB, deci instrumentul greșește spre **indulgență**; câte
+citări are coduri destul de distinctive ca să conteze e o cifră **raportată**, nu presupusă (117 din
+250). Un validator neinstalat se raportează ca lipsă de dovadă, nu ca defect — la fel SAF-T, ale
+cărui reguli nu stau într-un jar.
+
+**Clichetul e 8**, și fiecare din cele opt are un nume: șapte în `core/d402.py` (jarul D402 instalat
+are în tot cuprinsul lui patru coduri, niciunul dintre cele citate) și `R24.1` în
+`core/d301_operatiuni_api.py`. Sunt o clasă **nouă**, găsită de instrument, nu de mine — consemnată
+ca datorie, nu reparată în aceeași tură.
+
 ### `core/test_core_fara_main.py` — stratul de sub HTTP nu mai depinde de HTTP
 
 A doua gardă a etapei E1…E6, și singura care păzește o **muchie**, nu o valoare:
@@ -7951,9 +8009,9 @@ nouă; e datoria veche, numărată prima dată.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**577 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**580 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 550
+### `core/` — 552
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8050,9 +8108,11 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_cod_boala_nomenclator.py` — GARDĂ: codul de indemnizație se ia din NOMENCLATORUL 9, nu din enumerarea XSD. (22.08.2026)
 - `core/test_cod_partener.py` — GARD (prag 2, 23.08.2026): codul fiscal al partenerului se CERE la introducere.
 - `core/test_coduri_cm_din_registru.py` — GARDĂ: codurile de concediu medical vin din registru, nu dintr-o listă scrisă în JS. (22.08.2026)
+- `core/test_coduri_validator.py` — Un cod de validator citat ca temei chiar există în validatorul declarației unde e citat.
 - `core/test_coerenta_salarii.py` — GARD [R33, decizia lui Costin 25.08.2026]: semnalul de coerență notă-vs-D112 apare LA PROPUNERE,
 - `core/test_compara_ce_s_a_depus.py` — GARD — D112 ȘI D300 se confruntă cu ce s-a DEPUS, când s-a păstrat; altfel o spun.
 - `core/test_comparatii_clasificate.py` — GARDA PE DIRECTIA INVERSA: o comparatie pe o valoare de registru e CLASIFICATA. (P11, 22.08.2026)
+- `core/test_comportament_chei_suspendare.py` — Ce FAC, de fapt, cheia de API și suspendarea unui cabinet — probate prin lanțul aplicației.
 - `core/test_compozitie_fluturas.py` — GARD — compoziția netului ajunge CHIAR la om, și e o singură sursă pentru hârtie și pentru ecran.
 - `core/test_conflicte_sursa.py` — GARDĂ pentru partea deschisă a interdicției 58 — conflictele NEÎNREGISTRATE între surse.
 - `core/test_conformitate.py` — GARDĂ: fiecare interdicție din plan are secțiune în CONFORMITATE.md, completă. (22.08.2026)
@@ -8506,7 +8566,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 27
+### `scripts/` — 28
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -8514,6 +8574,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `scripts/scan_axa_garzi.py` — FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua.
 - `scripts/scan_blocante.py` — scripts/scan_blocante.py — CE ȚINE BUCLA DE EVENIMENTE OCUPATĂ, derivat din cod. (P5)
 - `scripts/scan_cale_cerere.py` — scripts/scan_cale_cerere.py — CARE RUTE pot crește cu numărul de firme, derivat din cod.
+- `scripts/scan_coduri_validator.py` — Fiecare „DUK regula <cod>" se confruntă cu validatorul DECLARAȚIEI unde e scrisă.
 - `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
 - `scripts/scan_dependente.py` — scripts/scan_dependente.py — CE CITEȘTE, de fapt, fiecare aspect al modelului de citire.
 - `scripts/scan_ds_verificator.py` — RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026.

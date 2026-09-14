@@ -44,9 +44,18 @@ def test_d4_cod_bugetar_manual_corect_trece():
 # ---- E: cota (rata micro) in afara ratelor valide pt cod 121 ----
 
 def test_e_cota_micro_invalida_ridica_r17():
+    """[14.09.2026] Cerea ca refuzul sa citeze "R17". Rulat pe D710Validator: cota=5 e respinsa cu
+    `eroare atribut: cota: valoarea '5' nu se incadreaza in intervalul cerut` — DOMENIUL atributului,
+    nu DUK regula R17 (D710)
+    (aceea spune "Cota impozitare eronata ... pt cod obligatie = 121"). Temeiul citat
+    a fost scos din mesaj, deci si de aici. Ce se cere acum e ce ajuta pe cine citeste refuzul:
+    valoarea respinsa si ratele admise. (Numele functiei ramane: e citat in registre.)"""
     with pytest.raises(ValueError) as ei:
         _gen([{"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "16"}])
-    assert "R17" in str(ei.value) and "16" in str(ei.value)
+    m = str(ei.value)
+    assert "16" in m, "refuzul nu spune CE cota a fost respinsa: %s" % m
+    for rata in ("1", "3"):
+        assert rata in m, "refuzul nu spune care sunt ratele admise: %s" % m
 
 
 def test_e_cota_micro_valida_trece():

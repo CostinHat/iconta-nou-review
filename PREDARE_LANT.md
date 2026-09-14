@@ -410,7 +410,7 @@ e o vorbă, e o consecință.*
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **862** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -604,6 +604,11 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
     comanda trimisă. Mi s-a întâmplat de două ori în aceeași zi; a doua oară a înghițit un heredoc
     care rescria un script, iar zborul de probă a rulat cu versiunea veche și a picat pe un motiv
     care nu mai exista. *Se sparge tiparul (`"80""11"`) sau se omoară după PID.*
+18. **[14.09] Un roadmap propus într-un raport de audit NU e comandă de execuție — se pornește doar
+    pasul numit explicit de Costin; și invers, o reparație pe care am propus-o rămâne în coadă cu o
+    condiție scrisă, nu dispare fiindcă s-a comandat altceva.** Instanța: cele trei reparații din
+    audit (importul inversat, cele 8 coduri DUK, probele de rută) au stat netrecute printr-un E1 și
+    un E6 comandate explicit, fiindcă le scrisesem într-un raport și le socotisem astfel programate.
 
 ---
 ## OPERAȚIONAL — ce se rupe repetat

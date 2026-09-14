@@ -24,10 +24,15 @@ si PROBATE camp cu camp pe DUKIntegrator (-v D119 -> "ok"). Structura in vigoare
   nepopulate deliberat): telefon, fax, email, numeDeclar, prenumeDeclar, functieDeclar,
   tipPerioada.
 Reguli extrase (mesaje validator, coduri REALE la rulare) - prefix "DUK regula <cod>":
-  DUK regula R15: cand Suma_dat >= Suma_ded -> Suma_plata = Suma_dat - Suma_ded si Suma_rest = 0.
-    ANOMALIE PROBATA (nu presupusa): mesajul R15 spune "daca Suma_dat <= Suma_ded atunci Suma_rest
-    = Suma_ded - Suma_dat", DAR validatorul NU accepta NICIO combinatie cand Suma_dat < Suma_ded
-    (R15 se declanseaza pt. orice rest/plata; iar Suma_rest negativ e "in afara intervalului").
+  DUK regula R14: cand Suma_dat >= Suma_ded -> Suma_plata = Suma_dat - Suma_ded si Suma_rest = 0.
+    [14.09.2026, verificare la sursa] Linia asta scria R15. Rulat pe D119Validator: ramura
+    dat >= ded e R14 ("Daca Suma_dat (1000) >= Suma_ded (400) atunci Suma_plata (500) = ..."),
+    iar R15 e oglinda ei. Eticheta era gresita; aritmetica de dedesubt, nu.
+  DUK regula R15: cand Suma_dat <= Suma_ded -> Suma_rest = Suma_ded - Suma_dat si Suma_plata = 0.
+    ANOMALIE PROBATA, re-probata 14.09.2026: desi mesajul cere exact combinatia asta, validatorul
+    NU accepta NICIO combinatie cand Suma_dat < Suma_ded - pe dat=400/ded=1000/rest=600/plata=0,
+    adica FIX ce cere regula, R15 tot se declanseaza (iar Suma_rest negativ e "in afara
+    intervalului").
     Practic Suma_dat >= Suma_ded e OBLIGATORIU. Generatorul RESPINGE Suma_ded > Suma_dat cu eroare
     clara (nu emite XML mereu respins de validator) - vezi calcul_d119.
   DUK regula R20: totalPlata_A = Suma_dat + Suma_ded + Suma_plata + Suma_rest.
@@ -119,7 +124,7 @@ class RezultatD119:
 
 
 def calcul_d119(an, luna, manual):
-    """Aritmetica obligatiei (DUK regula R15/R20). Suma_dat/Suma_ded din `manual` (lei intregi).
+    """Aritmetica obligatiei (DUK regula R14/R15/R20). Suma_dat/Suma_ded din `manual` (lei intregi).
     Suma_dat >= Suma_ded OBLIGATORIU (anomalia R15 probata: dat < ded e mereu respins, Suma_rest
     negativ e in afara intervalului) -> respingem inainte de a emite XML respins de validator.
     Scadenta implicita = 25 a lunii urmatoare; override manual in format ZZ.LL.AAAA (nr_evid

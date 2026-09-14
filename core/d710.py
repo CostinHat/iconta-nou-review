@@ -73,8 +73,11 @@ from core.identitate import valideaza_cui   # T1: checksum CUI comun, sursa cano
 NS = "mfp:anaf:dgti:d710:declaratie:v2"
 
 # Ratele micro valide pt cod_oblig 121 (impozit microintreprinderi): 1% si 3% (art.51 Cod fiscal /
-# nomenclator D100-D710). DUK regula R17 respinge orice alta valoare ('cota ... nu se incadreaza in
-# intervalul cerut'). Lista inchisa a ratelor legale, NU un default inline.
+# nomenclator D100-D710). Validatorul respinge orice alta valoare cu "eroare atribut: cota:
+# valoarea '5' nu se incadreaza in intervalul cerut" - re-probat 14.09.2026 pe D710Validator, cota=3
+# trece, cota=5 pica. [Corectie de temei] Pana atunci era citat codul R17: citatul de mesaj era exact, dar
+# respingerea vine din DOMENIUL atributului, nu din DUK regula R17 (D710) (aceea spune "Cota impozitare eronata
+# ... pt cod obligatie = 121"). Lista inchisa a ratelor legale, NU un default inline.
 COTE_MICRO = ("1", "3")
 
 
@@ -222,11 +225,13 @@ def calcul_d710(prof, perioada, date, manual=None):
             raise ValueError("D710: cod_bugetar %r nu corespunde nomenclatorului pentru cod_oblig %s "
                              "(așteptat %s); DUK regula R14a l-ar respinge." % (o["cod_bugetar"], cod, nomen_bug))
         # E: cota (rata micro) pentru cod 121 trebuie sa fie o rata valida (COTE_MICRO); altfel DUK regula
-        # R17 ('cota ... nu se incadreaza in intervalul cerut'). Prezenta/absenta o pazeste build_xml.
+        # Domeniul atributului 'cota' ('valoarea ... nu se incadreaza in intervalul cerut',
+        # re-probat 14.09.2026 - nu DUK regula R17 (D710)). Prezenta/absenta o pazeste build_xml.
         cota_val = str(o.get("cota") or "").strip()
         if cod == "121" and cota_val and cota_val not in COTE_MICRO:
             raise ValueError("D710: cod_oblig 121 (micro): cota %r nu e o rata micro valida (%s); "
-                             "DUK regula R17 o respinge." % (cota_val, "/".join(COTE_MICRO)))
+                             "validatorul o respinge (domeniul atributului cota)."
+                             % (cota_val, "/".join(COTE_MICRO)))
         # J1/T7: DEDUCEREA (suma_ded_i/_c). Era LISTATA in docstring ca input acceptat dar NICIODATA
         # citita: ObligatieRect emitea suma_plata=suma_dat indiferent -> o rectificare cu deducere
         # producea o declaratie DUK-VALIDA dar ARITMETIC GRESITA (deducerea disparea tacit). Rezolvat per

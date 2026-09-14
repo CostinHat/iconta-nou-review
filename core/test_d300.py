@@ -409,7 +409,12 @@ def test_pro_rata_d300_proba_duk_valid():
 
 
 # ============================================================
-#  Rotunjire aritmetica | d300 (DUK regula A91b: sumele fiscale se rotunjesc half-up, nu bancar).
+#  Rotunjire aritmetica | d300. [14.09.2026, verificare la sursa] Aici era citat codul A91b, fara marca de formular.
+#  A91b NU exista in D300Validator.jar (0 potriviri in tot jarul); e o regula din D112Validator
+#  (DUK regula A91b (D112)) si spune "Contributia angajator CAM nu este calculata corect" - ea
+#  a respins rotunjirea
+#  bancara, pe D112. Pentru D300 rotunjirea half-up ramane din CONSECVENTA intre generatoare
+#  (vezi core/d390.py, unde rationamentul e scris intreg), nu dintr-o regula omonima.
 #  _int = numar_fiscal(...).quantize(ROUND_HALF_UP). Deja in gardul de identitate cross-generator.
 # ============================================================
 def test_d300_rotunjeste_aritmetic_nu_bancar():
