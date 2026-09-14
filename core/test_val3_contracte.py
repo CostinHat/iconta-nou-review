@@ -27,6 +27,10 @@ import io
 import os
 
 import pytest
+# [P7 · valul use-case] Cusatura s-a mutat odata cu functia: corpul lui `_schema_sau_404`
+# si al surorilor lui traieste in `core/uc_comun.py`, iar rutele il cheama de acolo. Proba
+# inlocuieste acelasi lucru, in noul lui loc — intrebarea ei e neatinsa.
+from core import uc_comun as _uc_comun
 
 RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -221,7 +225,7 @@ def test_VIES_revalidarea_respinge_accesul_pierdut_in_timpul_apelului(monkeypatc
 
     monkeypatch.setattr(main.db, "get_conn", _get_conn_fals([c1, c2]))
     monkeypatch.setattr(main.auth_api, "schema_tenant", _schema)
-    monkeypatch.setattr(main, "_cere_luna_deschisa", lambda *a, **k: None)
+    monkeypatch.setattr(_uc_comun, "_cere_luna_deschisa", lambda *a, **k: None)
     from core import intracomunitar as _ic
     monkeypatch.setattr(_ic, "verifica_vies",
                         lambda cod: {"valid": True, "nume": "X", "adresa": "", "tara": "DE",

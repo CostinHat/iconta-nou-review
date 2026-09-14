@@ -29,6 +29,14 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                                 "scripts"))
 import inventar_email_html as inv  # noqa: E402
+# [P7 · valul use-case] Cusatura s-a mutat odata cu functia: corpul lui `_schema_sau_404`
+# si al surorilor lui traieste in `core/uc_comun.py`, iar rutele il cheama de acolo. Proba
+# inlocuieste acelasi lucru, in noul lui loc — intrebarea ei e neatinsa.
+from core import uc_comun as _uc_comun
+# [P7 · valul use-case] Corpurile celor doua rute probate traiesc aici; cusatura se pune pe modulul
+# care EXECUTA, nu pe `main`, care doar le cheama. Rutele se cheama mai jos tot prin stratul HTTP.
+from core import uc_pachete as _uc_pachete
+from core import uc_tenants as _uc_tenants
 
 RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -80,7 +88,14 @@ def test_anti_vacuum_scanul_chiar_vede_familia():
     toate = _toate()
     assert len(toate) >= 15, "scanul vede doar %d locuri de apel — domeniu prea mic" % len(toate)
     fisiere = [x["fisier_linie"].rsplit(":", 1)[0] for x in toate]
-    assert fisiere.count("main.py") >= 10, "scanul nu vede main.py: %r" % sorted(set(fisiere))
+    # [P7 · valul use-case] Pana azi proba cerea ca `main.py` sa aiba cel putin zece apeluri. Premisa
+    # a murit odata cu valul: apelurile traiau in corpurile rutelor, iar corpurile au plecat in
+    # `core/uc_*.py`. Ce ramane adevarat — si e chiar intrebarea — e ca scanul vede STRATUL DE
+    # APLICATIE, nu un fisier. *O proba care cere ca munca sa stea intr-un anume fisier se stinge
+    # exact cand codul se aseaza mai bine.*
+    aplicatie = [f for f in fisiere if f == "main.py" or os.path.basename(f).startswith("uc_")]
+    assert len(aplicatie) >= 10, (
+        "scanul nu vede stratul de aplicatie: %r" % sorted(set(fisiere)))
     assert [f for f in fisiere if os.path.dirname(f) == "core"], (
         "scanul nu vede niciun modul din core/: %r" % sorted(set(fisiere)))
 
@@ -180,14 +195,14 @@ def m():
 
 def _pregateste_poveste(m, monkeypatch, conn, cade=False):
     postas = _Postas()
-    monkeypatch.setattr(m, "_cere_perioada", lambda an, luna: None)
-    monkeypatch.setattr(m, "_pachet_schema", lambda ctx, tid: "tenant_001")
-    monkeypatch.setattr(m.db, "get_conn", _conn_fals(conn, cade))
-    monkeypatch.setattr(m._pachete, "salveaza_poveste",
+    monkeypatch.setattr(_uc_comun, "_cere_perioada", lambda an, luna: None)
+    monkeypatch.setattr(_uc_comun, "_pachet_schema", lambda ctx, tid: "tenant_001")
+    monkeypatch.setattr(_uc_pachete.db, "get_conn", _conn_fals(conn, cade))
+    monkeypatch.setattr(_uc_pachete._pachete, "salveaza_poveste",
                         lambda *a, **k: {"ok": True, "status": "aprobat"})
-    monkeypatch.setattr(m, "_email_client_tenant", lambda c, tid: "client@firma.ro")
-    monkeypatch.setattr(m, "_nume_tenant", lambda c, tid: "Firma Alfa")
-    monkeypatch.setattr(m._obs, "trimite_email_html", postas)
+    monkeypatch.setattr(_uc_comun, "_email_client_tenant", lambda c, tid: "client@firma.ro")
+    monkeypatch.setattr(_uc_comun, "_nume_tenant", lambda c, tid: "Firma Alfa")
+    monkeypatch.setattr(_uc_pachete._obs, "trimite_email_html", postas)
     return postas
 
 
@@ -247,7 +262,7 @@ def test_fara_email_de_client_nu_se_trimite(m, monkeypatch):
     """Lipsa configuratiei: fara adresa, nu e nimic de trimis — nu un e-mail gol."""
     conn = _Conn()
     postas = _pregateste_poveste(m, monkeypatch, conn)
-    monkeypatch.setattr(m, "_email_client_tenant", lambda c, tid: None)
+    monkeypatch.setattr(_uc_comun, "_email_client_tenant", lambda c, tid: None)
     m.pachet_poveste_set(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
     assert postas.trimise == []
 
@@ -256,11 +271,11 @@ def test_solicitarea_trimite_dupa_commit(m, monkeypatch):
     """A doua cale: raspunsul catre client. Continut si destinatar neschimbate."""
     conn = _Conn()
     postas = _Postas()
-    monkeypatch.setattr(m, "_schema_sau_404", lambda ctx, tid: "tenant_001")
-    monkeypatch.setattr(m.db, "get_conn", _conn_fals(conn))
-    monkeypatch.setattr(m, "_email_client_tenant", lambda c, tid: "client@firma.ro")
-    monkeypatch.setattr(m, "_nume_tenant", lambda c, tid: "Firma Alfa")
-    monkeypatch.setattr(m._obs, "trimite_email_html", postas)
+    monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "tenant_001")
+    monkeypatch.setattr(_uc_tenants.db, "get_conn", _conn_fals(conn))
+    monkeypatch.setattr(_uc_comun, "_email_client_tenant", lambda c, tid: "client@firma.ro")
+    monkeypatch.setattr(_uc_comun, "_nume_tenant", lambda c, tid: "Firma Alfa")
+    monkeypatch.setattr(_uc_tenants._obs, "trimite_email_html", postas)
 
     class _S:
         mesaj = "am raspuns la intrebarea ta"
@@ -279,11 +294,11 @@ def test_solicitarea_escapeaza_mesajul_in_html(m, monkeypatch):
     """Continutul ramane NESCHIMBAT, inclusiv escaparea — mutarea n-a atins-o."""
     conn = _Conn()
     postas = _Postas()
-    monkeypatch.setattr(m, "_schema_sau_404", lambda ctx, tid: "tenant_001")
-    monkeypatch.setattr(m.db, "get_conn", _conn_fals(conn))
-    monkeypatch.setattr(m, "_email_client_tenant", lambda c, tid: "client@firma.ro")
-    monkeypatch.setattr(m, "_nume_tenant", lambda c, tid: "Firma Alfa")
-    monkeypatch.setattr(m._obs, "trimite_email_html", postas)
+    monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "tenant_001")
+    monkeypatch.setattr(_uc_tenants.db, "get_conn", _conn_fals(conn))
+    monkeypatch.setattr(_uc_comun, "_email_client_tenant", lambda c, tid: "client@firma.ro")
+    monkeypatch.setattr(_uc_comun, "_nume_tenant", lambda c, tid: "Firma Alfa")
+    monkeypatch.setattr(_uc_tenants._obs, "trimite_email_html", postas)
 
     class _S:
         mesaj = "<script>furt()</script>"

@@ -12,7 +12,6 @@ Rulare:  PYTHONPATH=<rad>:<rad>/frontend_test ./venv/bin/python frontend_test/vi
 """
 import json
 import os
-import re
 import sys
 import urllib.request
 

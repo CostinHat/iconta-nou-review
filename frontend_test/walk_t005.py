@@ -2,7 +2,7 @@
 """Audit vizual tenant_005 (Constructii Profit Trim SRL / P2, cabinet 1968) - cap-coada.
 Reutilizeaza w_auth (auth cabinet mintuit). Deschide firma prin numele ei."""
 import os
-from w_auth import BAZA, new_page
+from w_auth import BAZA
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "t005_shots")
 os.makedirs(OUT, exist_ok=True)

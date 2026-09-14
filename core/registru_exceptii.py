@@ -47,7 +47,7 @@ EXCEPTII = [
     {"fisier": "core/tipare_api.py", "functie": "tipare", "motiv": "raspuns_extern_verbatim",
      "de_ce": "motivele de respingere sunt textul ANAF, citit din `declaratii_coada.motiv_respingere` "
               "si GRUPAT ca sa se vada tiparele. Le tipam = pretindem ca sunt afirmatiile noastre."},
-    {"fisier": "main.py", "functie": "factura_trimite_spv", "motiv": "raspuns_extern_verbatim",
+    {"fisier": "core/uc_tenants.py", "functie": "factura_trimite_spv", "motiv": "raspuns_extern_verbatim",
      "de_ce": "raspunsul SPV la trimiterea unei facturi (index_incarcare, execution_status, erori de "
               "validare ANAF). Se reda neatins - o reformulare ar ascunde ce a spus autoritatea."},
     {"fisier": "core/gdpr_sterge.py", "functie": "previzualizare", "motiv": "avertisment_de_actiune",
@@ -60,7 +60,7 @@ EXCEPTII = [
               "SURSA (22.08): ambii consumatori - `produse_ecran.js:129` si `emitere_ecran.js:266` - "
               "testeaza `r.ok` si pe FALS pun `innerHTML = \"\"`. Textul `mesaj` nu ajunge la niciun "
               "om; il tipam = ceremonie peste un protocol intre functii."},
-    {"fisier": "main.py", "functie": "portal_acasa", "motiv": "trecere_prin_tipat",
+    {"fisier": "core/uc_portal.py", "functie": "portal_acasa", "motiv": "trecere_prin_tipat",
      "de_ce": "portalul re-impacheteaza pentru client verdictul deja produs de "
               "`control_fiscal_api.evalueaza_firma`. Tiparea aici ar face a doua sursa a aceluiasi text."},
 ]

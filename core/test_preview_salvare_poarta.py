@@ -26,6 +26,10 @@ from core import salariati_import_api as _sal
 from core import asociati_import_api as _aso
 from core import mijloace_fixe_import_api as _mf
 from core import istoric_declaratii_import_api as _ist
+# [P7 · valul use-case] Cusatura s-a mutat odata cu functia: corpul lui `_schema_sau_404`
+# si al surorilor lui traieste in `core/uc_comun.py`, iar rutele il cheama de acolo. Proba
+# inlocuieste acelasi lucru, in noul lui loc — intrebarea ei e neatinsa.
+from core import uc_comun as _uc_comun
 
 
 def _continut(raspuns):
@@ -75,7 +79,7 @@ CAZURI = [
 @pytest.mark.parametrize("nume,endpoint,modul,randuri,motiv,cu_conn",
                          CAZURI, ids=[c[0] for c in CAZURI])
 def test_preview_intoarce_verdictul_salvarii(monkeypatch, nume, endpoint, modul, randuri, motiv, cu_conn):
-    monkeypatch.setattr(main, "_schema_sau_404", lambda ctx, tid: "public")
+    monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(modul, "extrage", lambda *a, **k: randuri)
     if cu_conn:
         monkeypatch.setattr(main.db, "get_conn", _fake_conn)
@@ -97,7 +101,7 @@ def test_preview_curat_nu_blocheaza():
     import types
     mp = pytest.MonkeyPatch()
     try:
-        mp.setattr(main, "_schema_sau_404", lambda ctx, tid: "public")
+        mp.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
         mp.setattr(_mf, "extrage", lambda *a, **k: randuri)
         res = _continut(main.mijloace_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
     finally:

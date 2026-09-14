@@ -26,6 +26,7 @@ from core import facturi_api as _fa
 from core import inchidere_luna as _il
 from core import perioada as _per
 from core import tenant_provisioning as _tp
+from core import scan_sql_efectiv as _efectiv
 
 SCHEMA = "ztest_inchidere"
 
@@ -228,7 +229,8 @@ def test_documentele_in_asteptare_bat_lipsa_inchiderii(conn):
 def test_rutele_exista_si_cheama_modulul():
     import os
     rad = os.path.dirname(os.path.dirname(os.path.abspath(_il.__file__)))
-    src = open(os.path.join(rad, "main.py"), encoding="utf-8").read()
+    # [P7 · valul use-case] Corpul rutei traieste in `core/uc_*.py`; intrebarea e neatinsa.
+    src = _efectiv.sursa_aplicatie()
     for r in ("/tenants/{tenant_id}/facturi/perioada",
               "/tenants/{tenant_id}/facturi/perioada/confirma",
               "/tenants/{tenant_id}/facturi/perioada/redeschide"):

@@ -7800,6 +7800,103 @@ criteriul nesatisfăcut → 1 roșie.
   S-a adăugat pasul care lipsea, și tot mărginit: **perechea nominală** modul ↔ `repo_<același
   nume>`. Nu lărgește clasa — un modul nu capătă prin ea decât ce și-a dat singur.
 
+### `core/test_p7_uc.py` — contractul HTTP, confruntat cu starea de dinainte de val
+
+Garda pe care valul use-case o cerea, și care **era citată în cod înainte să existe**: `core/erori.py`
+și `main.py` o numeau amândouă ca dovadă a parității. *Trimiterea la ceva inexistent se semnalează;
+aici s-a semnalat construind lucrul citat.*
+
+Ce face: ia `main.py` de la commitul dinainte de val (`git show 43fd2197:main.py`), adună pentru
+fiecare rută și fiecare helper mulțimea perechilor `(cod HTTP, mesaj)` pe care le ridică, și o
+compară cu cea de acum — citită din funcția use-case unde a ajuns corpul, cu clasa tradusă înapoi în
+cod prin **aceeași hartă** pe care o folosește `main._http_din`.
+
+**Trei lucruri care fac comparația să însemne ceva:**
+
+- **mesajul se compară ca ARBORE**, nu ca șir: corpul a fost dedentat când a plecat, deci un mesaj
+  scris pe două rânduri își schimbă sursa fără să-și schimbe valoarea;
+- **calificarea se normalizează**: `_mesaj_intrare(e)` și `_uc_comun._mesaj_intrare(e)` sunt același
+  apel — ce s-a schimbat e unde locuiește funcția, nu ce spune. Fără asta, proba ar fi raportat 40 de
+  „schimbări de contract" care sunt, toate, același nume scris cu adresa lui;
+- **un cod scris ca EXPRESIE** (`409 if ... else 404`) se compară ca **mulțime de frunze**, pe
+  amândouă părțile — altfel cele patru rute de coadă ar fi ieșit din univers exact acolo unde
+  traducerea e cea mai delicată.
+
+**Calibrare în trei direcții, pe univers FABRICAT** (un 404 devenit 409 → prins · un mesaj schimbat →
+prins · un univers neschimbat → zero diferențe). *A treia e cea care lipsește de obicei: un
+comparator care strigă mereu e la fel de inutil ca unul care tace mereu.*
+
+**O singură abatere e acceptată, cu numele și motivul ei, în fișier:** input-guardul `"suma
+invalida"` din `vanzare_aur_investitii`, care a intrat în domeniul regulii G5 odată cu mutarea
+corpului și și-a primit constrângerea în mesaj. Orice altă abatere face garda roșie.
+
+**ȘI O A DOUA PROBĂ, ÎN ACELAȘI FIȘIER, FIINDCĂ PRIMA NU VEDEA TOT — conservarea apelurilor.**
+Perechile `(cod, mesaj)` spun ce se întâmplă când operațiunea **refuză**; nu spun nimic despre o
+instrucțiune care a dispărut tăcut. Instanța, prinsă la citirea codului generat, nu de vreo probă:
+mutatorul lăsase pe dinafară `_rate_limit_reset(request)` și `_rate_limit_email(_magic_rate,
+request)` — **două gărzi anti-spam** —, fiindcă o variabilă locală din instrument se numea ca alta și
+o umbrea. Contractul de refuz: identic. Suita: verde. Ruff: verde.
+
+Proba nouă numără, pentru fiecare rută, **ce cheamă** — înainte, din `main.py` de la commitul de
+bază; acum, din înveliș **plus** use-case. Normalizează exact cele trei feluri în care valul
+schimbă numele unui apel fără să-l schimbe (`_uc_comun.X` ≡ `X`, `_erori.<Clasa>` ≡ `HTTPException`,
+inclusiv când clasa se alege printr-o expresie sau printr-un nume local) și scade cele două apeluri
+pe care valul le **adaugă** prin construcție (delegarea și `_http_din`). Calibrare pe univers
+fabricat, în ambele direcții: învelișul care a uitat garda → prins; cel corect → tăcut.
+
+*Lecția, scrisă ca regulă: **o probă care confruntă REZULTATE nu vede o instrucțiune pierdută.**
+Când muți cod, mai trebuie una care confruntă ce se FACE.*
+
+**ȘI O A TREIA, DIN ACEEAȘI FAMILIE — decoratorii, literă cu literă.** Mutatorul reconstruia
+decoratorul din AST (`"@" + get_source_segment(nod)`), iar **AST-ul n-are comentarii**: 27 de rute
+și-au pierdut comentariul de pe linia decoratorului. Cinci dintre ele purtau `[api_intern_v1]` — un
+marcaj pe care `core/test_ruta_fara_apelant` îl citește **exact de pe linia decoratorului** ca să
+știe care rute își declară singure lipsa unui ecran. Le-a prins **verificatorul**, nu o probă:
+`RUTE_VERDICT` a trecut de la 0 la „5 rute fără apelant și nedeclarate".
+
+Reparația n-a rescris nimic: a luat textul decoratorilor din `git show 43fd2197:main.py` și l-a pus
+înapoi. Garda cere de acum egalitatea literală, pe toate cele 421 de rute.
+
+**ȘI O A PATRA — ce cere ALTCINEVA de la `main`.** `core/firma_rezumat.py` cheamă
+`main.pastila_firma(...)`: un nume pe care `main.py` îl importa **pentru alții**, fără să-l
+folosească el însuși. Odată plecate cele 385 de corpuri, `ruff --select F401 --fix` l-a văzut
+nefolosit și l-a scos — iar lucrătorul modelului de citire a început să dea `AttributeError`, cu
+**șase firme** ajunse cu `control_fiscal` în stare de eroare. A prins-o `core/test_paritate_p2.py`,
+care refuză să compare un verdict cu o absență. Importul s-a pus înapoi **cu motivul scris** și
+`# noqa: F401`, iar garda nouă citește ACCESELE din cod, nu o listă de mână.
+
+*Patru pierderi tăcute în același val, fiecare prinsă de alt instrument: contractul de refuz (probă),
+un apel dispărut (citire de cod), un comentariu-declarație (verificator), un re-export (proba de
+paritate a modelului de citire). Numitorul comun: toate patru erau lucruri pe care **codul le
+spunea**, iar valul le-a rescris din ceva care nu le conținea — AST-ul n-are comentarii, iar
+„nefolosit aici" nu înseamnă „nefolosit".*
+
+### Ce a ieșit la iveală mutând logica din `main.py`, și e clasa zilei
+
+**Mașinăria de gărzi doc↔cod era ancorată pe o presupunere nescrisă: că logica aplicației stă în
+`main.py`.** Mutând-o, ~40 de gărzi au devenit deodată oarbe sau roșii — nu fiindcă s-a stricat
+codul, ci fiindcă se uitau unde nu mai e nimic. Toate au fost re-ancorate prin accesorul comun
+(`core/scan_sql_efectiv.py`), care dă **proiecția stratului de aplicație**: fiecare rută o dată, cu
+antetul porții și corpul muncii.
+
+Trei lecții, fiecare cu instanța ei:
+
+- **o cusătură se pune unde RULEAZĂ corpul, nu unde a fost.** `core/test_email_html_dupa_commit.py`
+  peticea `main._pachete` — un nume care a plecat cu corpul rutei. Proba n-a căzut cu un verdict
+  despre e-mail, ci cu `AttributeError`;
+- **aliasurile se rezolvă PE MODUL.** Un arbore lipit din tot stratul amestecă hărțile — `_fa`
+  înseamnă alt modul în `uc_tenants` decât în `main.py` —, iar unsprezece module au arătat „real 0"
+  tocmai așa;
+- **docstringul rutei și corpul ei sunt acum în locuri diferite.** Calibrarea din
+  `core/test_registru_jurnal_14_1_1.py` cerea o frază din docstringul rutei **și** absența ei dintre
+  cheile construite în corp; se cer acum de la `ruta_http()`, respectiv de la corp.
+
+**Și două scanere care aveau `main.py` ca punct orb DECLARAT** (`scan_data_curenta`,
+`scan_constante`) l-au pierdut: valul le-a închis gaura, iar clichetele lor au urcat. Fiecare urcare
+e scrisă cu **lista exactă** a cazurilor nou-expuse, și fiecare caz se regăsește, la aceeași formă,
+în `git show HEAD:main.py`. *Un clichet care urcă fiindcă instrumentul vede mai mult nu e o datorie
+nouă; e datoria veche, numărată prima dată.*
+
 ### `scripts/reancoreaza_plan.py` — reparația clasei prinse la valul D2
 
 `core/test_citari_plan.py` **prinde** citările care nu mai arată unde spun; instrumentul ăsta le
@@ -7810,9 +7907,9 @@ criteriul nesatisfăcut → 1 roșie.
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**574 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**575 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 547
+### `core/` — 548
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8216,8 +8313,9 @@ criteriul nesatisfăcut → 1 roșie.
 - `core/test_p3_wave_a.py` — GARD P3 · VALUL A — cele două rute set-based nu mai cresc cu numărul de firme.
 - `core/test_p4_fault_injection.py` — GARD P4 — INJECȚIE DE DEFECT pe fiecare operație compusă critică.
 - `core/test_p7_clasificare.py` — Calibrarea celor trei detectoare P7 — în ambele direcții, plus anti-vacuum.
-- `core/test_p7_criterii.py` — GARDĂ: `P7_ACTION_REQUIRED = 0` nu are voie să fie citit ca „faza e închisă".
+- `core/test_p7_criterii.py` — GARDĂ: cele patru criterii canonice ale lui P7, măsurate — și niciunul nu are voie să scadă.
 - `core/test_p7_straturi.py` — GARDA REGISTRULUI DE STRATURI (P7 · V3) — un modul relevant nu poate apărea fără strat declarat.
+- `core/test_p7_uc.py` — core/test_p7_uc.py — CONTRACTUL HTTP al valului use-case, confruntat cu starea de dinainte.
 - `core/test_p7_v1_citiri.py` — GARDA V1 — nicio citire SQL în corpul unei rute, și un detector de FEL care poate fi arătat greșit.
 - `core/test_p7_v2_scrieri.py` — GARDA V2 — nicio scriere și niciun control de tranzacție în corpul unei rute.
 - `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
@@ -8393,6 +8491,10 @@ criteriul nesatisfăcut → 1 roșie.
 - `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
 
 <!-- INVENTAR-GARZI:STOP -->
+
+
+
+
 
 
 ---

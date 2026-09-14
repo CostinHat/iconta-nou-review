@@ -29,8 +29,13 @@ _JURNAL = ("audit_log",)          # singurul destinatar permis dintr-un GET
 
 
 def _surse():
-    src = open(_MAIN, encoding="utf-8").read()
-    return src, ast.parse(src)
+    """[P7 · valul use-case] Sursa si arborele STRATULUI DE APLICATIE, nu ale unui fisier.
+
+    Ruta GET isi poarta decoratorul in `main.py`, dar corpul — cel despre care e proba, fiindca ea
+    intreaba *ce SCRIE un GET* — traieste in `core/uc_*.py`. Citind numai fisierul, proba ar fi
+    raspuns „niciun GET nu scrie nimic" despre o aplicatie pe care n-o mai vedea."""
+    from core import scan_sql_efectiv as _efectiv
+    return _efectiv.sursa_aplicatie(), _efectiv.arbore_aplicatie()
 
 
 def _metoda(fn):
@@ -44,7 +49,9 @@ def _metoda(fn):
 def _scrieri(nod, src, helperi, adanc=1):
     """[(fel, tinta)] - scrieri SQL din corpul nodului sau dintr-un helper local chemat."""
     out = []
-    seg = ast.get_source_segment(src, nod) or ""
+    # [P7 · valul use-case] Nodul poate veni din `main.py` sau din oricare `core/uc_*.py`: pe o
+    # proiectie a mai multor fisiere, taierea dupa `lineno` n-are sursa careia sa-i corespunda.
+    seg = ast.unparse(nod)
     for m in _SCRIE.finditer(seg):
         out.append((m.group(1).split()[0].upper(), (m.group(2) or "").strip()))
     if adanc > 0:

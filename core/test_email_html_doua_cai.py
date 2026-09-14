@@ -21,6 +21,7 @@ import os
 
 from core import observare
 from core import pachete_api as PA
+from core import scan_sql_efectiv as _efectiv
 
 RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -84,10 +85,16 @@ def test_trimite_pregatit_raporteaza_esecul_lui_brevo(monkeypatch):
 # ============================================================
 def _apel_sub_get_conn(cale, nume_functie, nume_apel):
     """Apelul `nume_apel` se executa lexical intr-un `with ...get_conn(...)` din `nume_functie`?"""
-    arbore = ast.parse(io.open(os.path.join(RADACINA, cale), encoding="utf-8").read())
-    fn = next((n for n in ast.walk(arbore)
-               if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-               and n.name == nume_functie), None)
+    # [P7 · valul use-case] Pe `main.py`, corpul rutei traieste in `core/uc_*.py`; intrebarea —
+    # «apelul se executa cu conexiunea in mana?» — se pune pe functia care poarta munca. Pentru
+    # celelalte cai (joburi de fundal, `core/observare.py`), fisierul se citeste ca pana acum.
+    if cale == "main.py":
+        _c, fn = _efectiv.functia(nume_functie)
+    else:
+        arbore = ast.parse(io.open(os.path.join(RADACINA, cale), encoding="utf-8").read())
+        fn = next((n for n in ast.walk(arbore)
+                   if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                   and n.name == nume_functie), None)
     assert fn is not None, "nu gasesc %s in %s" % (nume_functie, cale)
     parinte = {}
     for n in ast.walk(fn):

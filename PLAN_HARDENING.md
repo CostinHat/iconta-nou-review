@@ -4,8 +4,8 @@
 la nivelul de detaliu cu care au fost date comenzile de P0 și P1 — nu doar titlul, ci ce trebuie
 făcut concret și cum se verifică."*
 
-- **ultima actualizare**: 2026-09-13 (**P7 DESCHIS** — diagnostic închis; valurile **V3**, **V1**, **V2**, **D2** și **D4** închise. **Toate cele trei detectoare sunt 0** și `P7_ACTION_REQUIRED`=**0** — dar faza RĂMÂNE DESCHISĂ: criteriul canonic *«use-case-ul deține tranzacția»* nu e satisfăcut, măsurat **385 din 421 de rute** își deschid singure tranzacția (`scripts/p7_criterii.py`))
-- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · **P7 DESCHIS** (diagnostic `CLOSED_ACCEPTED` `b67d2bfb` · V3 registrul de straturi `CLOSED_ACCEPTED` `364fbc63` · V1 citirile în repository `CLOSED_ACCEPTED` `8d182afa` · V2 `CLOSED_ACCEPTED` `cd5538ae` · valul D2 `CLOSED_ACCEPTED` `e1cf6ee1` · **valul D4 cele 37 de module mixte `CLOSED_ACCEPTED`**; `P7_ACTION_REQUIRED` **296 → 189 → 39 → 37 → 0**, `D1`=`D2`=`D4`=**0**; rămâne deschisă fiindcă **use-case-ul nu deține încă tranzacția**)
+- **ultima actualizare**: 2026-09-13 (**P7 ÎNCHIS** — diagnostic închis; valurile **V3**, **V1**, **V2**, **D2**, **D4** și **use-case** închise. **Toate cele patru criterii canonice sunt satisfăcute**, măsurate cu `scripts/p7_criterii.py`: `D1`=`D2`=`D4`=**0** și `RUTE_CARE_DESCHID_SINGURE_TRANZACTIA` **385 → 0** din 421)
+- **stare**: **P0 ÎNCHIS** · **P1 ÎNCHIS** · **P2 ÎNCHIS** · **P3 ÎNCHIS** · **P4 ÎNCHIS** · **P5 ÎNCHIS** (valurile 1, 1b și 3 executate și măsurate; C1 pe cereri = **0**; valul 3: `ACTION_REQUIRED` **19 → 0**) · **P6 ÎNCHIS** (valul 1: starea business în PostgreSQL · valul 2: cele șapte cache-uri declarate · valul 3: pornire serializată, lider prin lease, four-way pe registru de instanțe; `WEB_CONCURRENCY=2` în unitate, `P6_INFRA_ACTION_REQUIRED=0`) · **P7 ÎNCHIS** (diagnostic `CLOSED_ACCEPTED` `b67d2bfb` · V3 registrul de straturi `CLOSED_ACCEPTED` `364fbc63` · V1 citirile în repository `CLOSED_ACCEPTED` `8d182afa` · V2 `CLOSED_ACCEPTED` `cd5538ae` · valul D2 `CLOSED_ACCEPTED` `e1cf6ee1` · valul D4 cele 37 de module mixte `CLOSED_ACCEPTED` · **valul use-case cele 385 de corpuri de rută `CLOSED_ACCEPTED`**; `P7_ACTION_REQUIRED` **296 → 189 → 39 → 37 → 0**, `D1`=`D2`=`D4`=**0**, iar rutele care își dețin tranzacția **385 → 0**)
 - **unde stau dovezile**: fiecare pas are commitul lui, raportul lui și ZIP-ul lui
   (`iconta_P<n>_<data>.zip`). Cifrele din planul ăsta se copiază din **ieșirea măsurătorii**, nu din
   raportul precedent — regula care a prins deja trei cifre purtate prin copiere.
@@ -732,25 +732,46 @@ fără `--workers`, confirmat un singur PID) la **mai multe instanțe** — `--w
 
 # P7 — APPLICATION LAYER
 
-- **stare (13.09.2026)**: **DESCHISĂ**. Diagnostic `CLOSED_ACCEPTED` (`b67d2bfb`) · **V3 — registrul
+- **stare (13.09.2026)**: **ÎNCHISĂ**. Diagnostic `CLOSED_ACCEPTED` (`b67d2bfb`) · **V3 — registrul
   de straturi** `CLOSED_ACCEPTED` (`364fbc63`) · **V1 — citirile în repository** `CLOSED_ACCEPTED`
   (`8d182afa`) · **V2 — scrierile și controlul de tranzacție** `CLOSED_ACCEPTED` (`cd5538ae`) ·
   **valul D2 — motorul fiscal fără bază de date** `CLOSED_ACCEPTED` (`e1cf6ee1`) ·
-  **valul D4 — cele 37 de module mixte** `CLOSED_ACCEPTED`.
+  **valul D4 — cele 37 de module mixte** `CLOSED_ACCEPTED` ·
+  **valul use-case — cele 385 de corpuri de rută** `CLOSED_ACCEPTED`.
 - **măsurat**: `P7_RAW_ITEMS=40` = `ACTION_REQUIRED` **39** + `ACCEPTABLE_BY_DESIGN` **1**;
   `EVIDENCE_LIMITATION` **0**, `UNCLASSIFIED` **0**, `UNEXPLAINED_EXCLUSIONS` **0**.
   Pe detector, după valul D4: **D1** 0 pe TOATE clasele · **D2** 0 · **D4** 0 · **D3** 1
   (acceptabil: într-un modul care conține rute). `P7_RAW_ITEMS` **1**, `P7_ACTION_REQUIRED` **0**,
   `EVIDENCE_LIMITATION` 0, `UNCLASSIFIED` 0, `UNEXPLAINED_EXCLUSIONS` 0.
-- **de ce rămâne DESCHISĂ, deși contabilitatea arată 0**: fiindcă *«ACTION_REQUIRED=0» măsoară cele
-  trei detectoare, nu faza*. Textul canonic cere patru straturi, iar despre use-case spune că
-  **deține tranzacția (P4) și orchestrează**. Măsurat cu `scripts/p7_criterii.py`: **385 din 421 de
-  rute își deschid singure tranzacția**, doar **7** deleagă către un modul `USE_CASE`, iar
-  use-case-urile declarate sunt **4**. Deci stratul HTTP orchestrează în continuare, iar valul care
-  extrage use-case-urile — cel pe care §4 al comenzii V2 îl cerea — **n-a fost făcut**.
-  *Zero pe toate detectoarele nu e zero pe fază; de azi n-o mai spune proza, o spune
-  `core/test_p7_criterii.py`, care ține și clichetul celor 385 și interzice ca planul să declare P7
-  închisă peste un criteriu nesatisfăcut.*
+- **de ce se ÎNCHIDE abia acum, deși contabilitatea arăta 0 de două valuri**: fiindcă
+  *«ACTION_REQUIRED=0» măsoară cele trei detectoare, nu faza*. Textul canonic cere patru straturi,
+  iar despre use-case spune că **deține tranzacția (P4) și orchestrează**. Cifra care a ținut faza
+  deschisă — **385 din 421 de rute își deschideau singure tranzacția** — n-a venit dintr-o părere,
+  ci dintr-un instrument scris atunci (`scripts/p7_criterii.py`), care măsoară **toate patru**
+  criteriile. Azi: **0**. Iar garda care ținea clichetul s-a rescris în gardă de zero, fiindcă un
+  clichet la 0 n-ar mai păzi nimic.
+- **valul use-case, pe scurt**: cele **385 de corpuri de rută** au plecat din `main.py` în **27 de
+  module `core/uc_*.py`**, împreună cu **58 de helperi** și **12 nume de modul** pe care le cereau.
+  `main.py`: **11714 → 6546** de linii. Fiecare rută a rămas cu decoratorul, semnătura și
+  docstringul ei, plus delegarea — FastAPI validează pe semnătură, deci contractul de intrare e
+  literal același. Mutarea a fost făcută de un instrument (`scripts/p7_uc_extrage.py` +
+  mutatorul de corpuri), nu cu mâna: taie o **felie contiguă** de sursă, aplică editările pe
+  **poziții de AST** și refuză ce nu poate rezolva mecanic, cu motivul scris.
+- **vocabularul de refuz** (`core/erori.py`): `HTTPException(cod, mesaj)` a devenit
+  `_erori.<Clasa>(mesaj)`, iar codul se pune la loc într-o **singură hartă**, în stratul HTTP
+  (`main._COD_EROARE`). Se poate face fiindcă `HTTPException` **nu e prinsă nicăieri** — zero
+  `except HTTPException` în tot repo-ul — deci înlocuirea nu poate schimba niciun flux de control.
+  Treisprezece rute ridicau coduri fără clasă (`413`, `415`, `429`, `500`, `502`, `503`); vocabularul
+  le-a primit, fiindcă erau condiții pe care aplicația le deosebea deja prin cod, dar nu le numea.
+- **ce NU a trecut granița**: obiectele de protocol. Un `Response`/`FileResponse` se construiește tot
+  în înveliș, din valorile pe care use-case-ul le întoarce (15 rute); `UploadFile` se citește în
+  înveliș și se pasează ca `bytes` + nume (12 rute); gărzile de ritm care se uită la IP rămân
+  deasupra, pe primul rând (2 rute). *Un use-case care vorbește HTTP n-ar fi un use-case.*
+- **dovada că nu s-a schimbat contractul**: `core/test_p7_uc.py` ia `main.py` de la commitul dinainte
+  de val (`git show 43fd2197:main.py`) și confruntă, **funcție cu funcție**, mulțimile de perechi
+  `(cod HTTP, mesaj)` — mesajul comparat ca **arbore**, nu ca text. Trece cu **o singură abatere
+  declarată**, cu motivul ei scris în fișier: un input-guard telegrafic (`"suma invalida"`) care a
+  intrat în domeniul regulii G5 odată cu mutarea și și-a primit constrângerea în mesaj.
 - **valul D4, pe scurt**: cele **37 de module mixte** (`mixt_cu` în registru) purtau **215
   instrucțiuni SQL** — de la `core/d223.py` cu una la `core/control_incrucisat.py` cu 45 și `main.py`
   cu 38 în helperii de modul. Toate au trecut în **37 de `core/repo_*.py`**, fiecare funcție primind

@@ -34,7 +34,10 @@ import pytest
 RAD = pathlib.Path(__file__).resolve().parent.parent
 MAIN = RAD / "main.py"
 _SRC = io.open(MAIN, encoding="utf-8").read()
-_TREE = ast.parse(_SRC)
+# [P7 · valul use-case] Inventarul rutelor ramane citit din `main.py` (acolo stau
+# decoratorii), dar CORPURILE se citesc din proiectia stratului de aplicatie: fiecare nume
+# o data, cu munca lui. Intrebarile de mai jos sunt neatinse.
+_TREE = _efectiv.arbore_aplicatie()
 
 _METODE = ("post", "put", "patch", "delete")
 
@@ -53,7 +56,22 @@ def _rute():
 
 
 def _cheama(nod, nume):
-    return any(isinstance(x, ast.Call) and getattr(x.func, "id", "") == nume for x in ast.walk(nod))
+    """Functia  e chemata in  — ca nume liber SAU prin modulul care o gazduieste.
+
+    [P7 · valul use-case] Helperii comuni (, , …) au
+    trecut in , deci corpurile mutate ii cheama .
+    Intrebarea — «ruta asta trece pe la verificarea aia» — e neatinsa; se schimba doar forma
+    apelului, iar a cere numai forma veche ar face garda sa raporteze lipsa acolo unde e prezenta.
+    """
+    for x in ast.walk(nod):
+        if not isinstance(x, ast.Call):
+            continue
+        f = x.func
+        if getattr(f, "id", "") == nume:
+            return True
+        if isinstance(f, ast.Attribute) and f.attr == nume:
+            return True
+    return False
 
 
 def _garzi(nod):
@@ -74,7 +92,7 @@ def _garzi(nod):
 _RE_FROM = re.compile(r"\bfrom\s+(?:\{[^}]*\}\.|public\.)?([a-z_][a-z0-9_]*)")
 
 
-def _tabele_citite(nod):
+def _tabele_citite(nod, cale="main.py"):
     """SETUL tabelelor din care CITEȘTE funcția, extras din `FROM ...`.
 
     Nu e o căutare de șir: se extrag numele și se compară mulțimi. Într-un f-string `{schema}` e un
@@ -87,7 +105,7 @@ def _tabele_citite(nod):
             buc.append("".join(v.value for v in x.values if isinstance(v, ast.Constant)))
     # [P7 · D4] plus SQL-ul chemat din depozitul nominal al lui `main.py`: dupa val, o functie care
     # citeste doua tabele prin `_repo` n-ar mai avea niciun `FROM` in corpul ei.
-    buc += _efectiv.sql_din_nod("main.py", nod)
+    buc += _efectiv.sql_din_nod(cale, nod)
     return set(_RE_FROM.findall(" ".join(" ".join(buc).split()).lower()))
 
 
@@ -309,10 +327,11 @@ def test_declaratie_generata_se_uita_SI_in_coada_SI_in_depuse():
     """O declarație generată dar nedepusă e tot generată. Dacă ajutorul s-ar uita doar în
     `declaratii_depuse`, ștergerea ar fi liberă exact în fereastra în care contează cel mai mult:
     între generare și depunere."""
-    fn = next((n for n in _TREE.body
-               if isinstance(n, ast.FunctionDef) and n.name == "_declaratie_generata"), None)
+    # [P7 · valul use-case] `_declaratie_generata` a plecat in `core/uc_comun.py`; in `main.py` a
+    # ramas invelisul. Intrebarea e neatinsa — se pune acolo unde traieste acum corpul.
+    _cale, fn = _efectiv.functia("_declaratie_generata")
     assert fn is not None
-    citite = _tabele_citite(fn)
+    citite = _tabele_citite(fn, _cale)
     assert {"declaratii_coada", "declaratii_depuse"} <= citite, (
         "se uită doar în %s — o declarație generată și nedepusă trăiește în coadă, iar fereastra "
         "dintre generare și depunere e exact cea în care ștergerea contează"

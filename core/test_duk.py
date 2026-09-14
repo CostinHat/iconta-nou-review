@@ -2,6 +2,7 @@
 """Teste gardian pentru duk (partea pura, fara java)."""
 import os
 from core.duk import CHEIE_DUK, validatoare_instalate, poate_valida, valideaza
+from core import scan_sql_efectiv as _efectiv
 
 
 def _fals_dist(tmp, jars):
@@ -93,8 +94,8 @@ def test_ruta_valideaza_trimite_an_si_luna():
     Ruta care cheama duk.valideaza fara ele primeste GRI garantat - o validare care
     nu se intampla niciodata, fara ca nimic sa semnaleze. Dovedit 27.07.2026: asa a
     fost din constructie, desi XML-ul trecea la ANAF cand era rulat manual."""
-    import pathlib
-    src = (pathlib.Path(__file__).resolve().parent.parent / "main.py").read_text(encoding="utf-8")
+    # [P7 · valul use-case] Intrebarea e neatinsa; corpul rutei traieste in `core/uc_*.py`.
+    src = _efectiv.sursa_aplicatie()
     apeluri = _apeluri_valideaza(src)
     assert apeluri, "nu mai exista apel _duk.valideaza in main.py - actualizeaza garda"
     for a in apeluri:

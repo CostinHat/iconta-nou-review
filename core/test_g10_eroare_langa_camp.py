@@ -3,6 +3,7 @@
 `eroareCamp`) pe formularele multi-camp. Lista se EXTINDE la fiecare batch. Verifica dupa fiecare batch ca
 gardul vede noile formulare. e-Transport = batch 3 (restructurare randuri dinamice), EXPLICIT in afara listei."""
 import os
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -36,9 +37,14 @@ def test_backend_contract_erori_campuri_wired():
     apijs = open(os.path.join(_RAD, "static/js/api.js"), encoding="utf-8").read()
     assert "_erisCampuri" in apijs and "erori_campuri: _erisCampuri" in apijs, \
         "api.js nu mai poarta erori_campuri din raspuns (contract G10 rule2/4)"
-    main = open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
-    assert 'detail={"mesaj": str(e), "erori_campuri"' in main, \
+    main = _efectiv.sursa_aplicatie()
+    # [P7 · valul use-case] Refuzul e acum o eroare de domeniu care POARTA detaliul ca obiect, iar
+    # adaptorul HTTP il trece neatins. Intrebarea — «detaliul duce erori_campuri la ecran» — e
+    # neatinsa; se cer acum DOUA lucruri, nu unul, deci garda e mai tare.
+    assert '{"mesaj": str(e), "erori_campuri"' in main, \
         "ruta salariat nu mai trimite erori_campuri (contract G10)"
+    assert '_erori.DateInvalide({"mesaj": str(e), "erori_campuri"' in main, \
+        "refuzul nu mai e o eroare de domeniu — detaliul n-ar mai ajunge intreg la ecran"
 
 
 def test_g10_fara_exceptii_dupa_batch3b():

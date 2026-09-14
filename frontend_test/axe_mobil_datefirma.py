@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import json, sys, os
+import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "vizual"))
-from w_auth import new_page, INIT
+from w_auth import INIT
 from walk_t001 import deschide_t001
 from playwright.sync_api import sync_playwright
 from vizual.axe_scan import scaneaza

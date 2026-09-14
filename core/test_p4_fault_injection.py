@@ -39,6 +39,10 @@ if _RAD not in sys.path:
 from core import db as _db          # noqa: E402
 from core import auth_api           # noqa: E402
 from core import tenant_provisioning as _tp   # noqa: E402
+# [P7 · valul use-case] Cusatura s-a mutat odata cu functia: corpul lui `_schema_sau_404`
+# si al surorilor lui traieste in `core/uc_comun.py`, iar rutele il cheama de acolo. Proba
+# inlocuieste acelasi lucru, in noul lui loc — intrebarea ei e neatinsa.
+from core import uc_comun as _uc_comun
 
 SCHEMA = "ztest_p4"
 EMAIL_CAB = "ztest_p4_cabinet@exemplu.ro"
@@ -311,7 +315,6 @@ def test_register_contul_nu_ramane_fara_dovada_acordului(monkeypatch):
     refuză, deci scrierea a doua cade — exact scenariul pe care vechea formă îl înghițea într-un
     `print`, lăsând contul în urmă.
     """
-    import main
 
     _curata()
     cl = _client()
@@ -336,7 +339,7 @@ def test_register_contul_nu_ramane_fara_dovada_acordului(monkeypatch):
                              "public.accounting_firms": ("t.nume LIKE 'ZTEST P4%%'", ()),
                              "public.acord_termeni": ("t.email = %s", (email,))})
 
-    monkeypatch.setattr(main, "_termeni_versiune", lambda _txt: None)
+    monkeypatch.setattr(_uc_comun, "_termeni_versiune", lambda _txt: None)
     try:
         r = cl.post("/auth/register", json=corp)
         assert r.status_code >= 400, "defectul injectat trebuia să oprească înregistrarea"
@@ -398,7 +401,11 @@ def test_client_acces_contul_nu_ramane_fara_token(mediu, monkeypatch):
         return u, t, p
 
     inainte = _stare()
-    with defect_in(main, "_pune_token", "P4: defect intre cont si tokenul lui"):
+    # [P7 · valul use-case] Defectul se injecteaza in modulul care EXECUTA: corpul rutei traieste
+    # in `core/uc_tenants.py` si cheama `_uc_comun._pune_token`. Peticit pe `main`, defectul n-ar
+    # mai ajunge pe cale, iar proba ar trece printr-un cod nedefect.
+    from core import uc_comun as _uc_comun
+    with defect_in(_uc_comun, "_pune_token", "P4: defect intre cont si tokenul lui"):
         try:
             r = cl.post("/tenants/%d/client-acces" % mediu["tid"], headers=H,
                         json={"email": email, "nume": "Client P4"})

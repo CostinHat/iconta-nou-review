@@ -25,6 +25,7 @@ mecanic; declarațiile depuse fără perioadă închisă rămân neacoperite, ia
 import ast
 import io
 import os
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -37,6 +38,10 @@ _CAI = {
 
 
 def _arbore(cale):
+    # [P7 · valul use-case] Pe `main.py`, corpurile rutelor sunt in `core/uc_*.py`; pentru
+    # celelalte cai, fisierul e citit ca pana acum.
+    if cale == "main.py":
+        return _efectiv.arbore_aplicatie()
     return ast.parse(io.open(os.path.join(_RAD, cale), encoding="utf-8").read())
 
 

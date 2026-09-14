@@ -56,7 +56,10 @@ def _linii_apeluri(nume_functie):
 
     Se citeste STRUCTURA, nu textul: un apel numit intr-un comentariu sau intr-un sir nu conteaza
     (METODA §23). Numele apelului = atributul final (`poarta_confirmarii`, `marcheaza_depusa`...)."""
-    arbore = ast.parse(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+    # [P7 · valul use-case] Corpul lui `coada_depune` traieste in `core/uc_coada.py`; proiectia
+    # stratului de aplicatie il da sub numele rutei, cu antetul portii din `main.py`.
+    from core import scan_sql_efectiv as _efectiv
+    arbore = _efectiv.arbore_aplicatie()
     fn = next((n for n in ast.walk(arbore)
                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == nume_functie), None)
     assert fn is not None, "n-am gasit functia %r in main.py" % nume_functie

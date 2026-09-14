@@ -26,12 +26,12 @@ STRUCTURA, NU TEXT (METODA §23): antetul se citeste ca ARBORE (`ElementTree`), 
 de validare ca AST — nu prin `"..." in sursa`.
 """
 import ast
-import os
 from datetime import date
 
 import pytest
 
 from core import d406 as m
+from core import scan_sql_efectiv as _efectiv
 
 PROF_L = {"cui": "14399840", "nume": "FIRMA TEST SRL", "adresa": "Str. Test 1",
           "oras": "Bucuresti", "cod_postal": "010101", "baza_contabila": "A",
@@ -180,11 +180,10 @@ def test_ruta_de_validare_ia_perioada_de_pe_rezultat():
     Instanta: cat timp le lua din `body`, D406 nu se putea valida NICIODATA din aplicatie —
     generarea cere `trim`, iar `luna` nu ajungea niciodata in corp.
     """
-    cale = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "main.py")
-    arbore = ast.parse(open(cale, encoding="utf-8").read())
-    fn = next((n for n in ast.walk(arbore)
-               if isinstance(n, ast.FunctionDef) and n.name == "declaratie_valideaza"), None)
-    assert fn is not None, "ruta `declaratie_valideaza` a disparut din main.py — garda ar fi vida"
+    # [P7 · valul use-case] Corpul rutei traieste in `core/uc_*.py`; in `main.py` a ramas
+    # invelisul. Intrebarea e neatinsa — se pune pe nodul care poarta munca.
+    fn = _efectiv.functia("declaratie_valideaza")[1]
+    assert fn is not None, "ruta `declaratie_valideaza` a disparut — garda ar fi vida"
 
     apel = None
     for n in ast.walk(fn):

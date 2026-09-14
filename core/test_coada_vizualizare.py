@@ -6,6 +6,7 @@ stocat; (b) frontend-ul (validat.js) rendează o afordanță de vizualizare pe f
 coadă și cheamă endpoint-ul. Reversul oricăreia -> pică."""
 import os
 import re
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,10 +23,9 @@ def test_backend_expune_continut_coada():
     # [P7 · V1, 13.09.2026] Citirea a plecat în repository. Apelul se cere pe STRUCTURĂ (AST),
     # nu pe text: un apel scris într-un comentariu n-ar trebui să treacă.
     import ast as _ast
-    arb = _ast.parse(main)
-    ruta = [n for n in _ast.walk(arb)
-            if isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef))
-            and n.name == "coada_continut"]
+    # [P7 · valul use-case] Corpul rutei traieste in `core/uc_*.py`; in `main.py` a ramas
+    # invelisul. Intrebarea e neatinsa — se pune pe nodul care poarta munca.
+    ruta = [_efectiv.functia("coada_continut")[1]]
     assert ruta, "ruta `coada_continut` nu mai există — garda ar măsura ce nu vede"
     apelate = {getattr(c.func, "attr", None) for c in _ast.walk(ruta[0])
                if isinstance(c, _ast.Call)}

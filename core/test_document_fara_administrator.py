@@ -166,7 +166,9 @@ def test_refuzul_SPUNE_UNDE_se_completeaza():
 
 def test_rutele_transforma_refuzul_in_422_nu_in_500():
     """Un `ValueError` scăpat din rută devine 500, adică «s-a stricat ceva», nu «lipsește ceva»."""
-    arb = _arbore("main.py")
+    # [P7 · valul use-case] Corpurile rutelor traiesc in `core/uc_*.py`; proiectia le da pe toate.
+    from core import scan_sql_efectiv as _efectiv
+    arb = _efectiv.arbore_aplicatie()
     fns = {n.name: n for n in ast.walk(arb)
            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
     rele = []
@@ -181,9 +183,18 @@ def test_rutele_transforma_refuzul_in_422_nu_in_500():
             if "ValueError" not in tipuri:
                 continue
             for c in ast.walk(h):
-                if (isinstance(c, ast.Call) and getattr(c.func, "id", None) == "HTTPException"
+                # [P7 · valul use-case] Doua scrieri ale aceluiasi refuz: `HTTPException(422, …)` in
+                # stratul HTTP, `_erori.DateInvalide(…)` in use-case. Codul se pune la loc dintr-o
+                # harta fixa (`main._COD_EROARE`), deci ce iese din aplicatie e acelasi 422 —
+                # confruntat, rand cu rand, de `core/test_p7_uc.py`.
+                if not isinstance(c, ast.Call):
+                    continue
+                if (getattr(c.func, "id", None) == "HTTPException"
                         and c.args and isinstance(c.args[0], ast.Constant)
                         and c.args[0].value == 422):
+                    prinde = True
+                if isinstance(c.func, ast.Attribute) and isinstance(c.func.value, ast.Name) \
+                        and c.func.value.id == "_erori" and c.func.attr == "DateInvalide":
                     prinde = True
         if not prinde:
             rele.append(r)

@@ -22,7 +22,7 @@ Fiecare host = o SINGURA constanta; upload/stare/descarcare o refolosesc, nu o r
 [P7 · valul D2, 13.09.2026] STRAT: FISCAL_ENGINE, si de-acum chiar e unul. Loaderul,
 orchestrarea trimiterii si cele 8 instructiuni SQL au trecut in `core/efactura_trimitere.py`
 (use-case) si `core/repo_efactura.py` / `core/repo_tenants.py` (repository). Textul canonic,
-`PLAN_HARDENING.md:811`: *un motor fiscal nu importa `db`*. Aici a ramas ce produce si ce
+`PLAN_HARDENING.md:832`: *un motor fiscal nu importa `db`*. Aici a ramas ce produce si ce
 valideaza documentul: XML-ul UBL, validatorul de structura ANAF si invelisurile de apel.
 
 LIMITE v1 (de confirmat pe TEST la pasul 2, NU ghicite aici):

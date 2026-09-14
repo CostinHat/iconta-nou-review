@@ -58,8 +58,11 @@ def _functii(sursa):
 
 
 def _linia_primului_apel(fn, nume):
+    # [P7 · valul use-case] Si calificat: corpul mutat cheama `_uc_comun._cere_z_unic`. Aceeasi
+    # garda, alt loc de locuit — se citesc si `Name`, si `Attribute`.
     linii = [n.lineno for n in ast.walk(fn)
-             if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == nume]
+             if isinstance(n, ast.Call)
+             and (getattr(n.func, "id", None) or getattr(n.func, "attr", None)) == nume]
     return min(linii) if linii else None
 
 
@@ -112,7 +115,10 @@ def _lipsuri(sursa):
 
 @pytest.fixture(scope="module")
 def sursa():
-    return io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
+    # [P7 · valul use-case] Sursa stratului de aplicatie: cele doua rute de raport Z si-au dus
+    # corpurile in `core/uc_tenants.py`, iar `_SURSE_Z` a plecat in `core/uc_comun.py`.
+    from core import scan_sql_efectiv as _efectiv
+    return _efectiv.sursa_aplicatie()
 
 
 def test_ambele_rute_verifica_unicitatea_si_perioada_INAINTE_de_a_scrie(sursa):
@@ -280,9 +286,11 @@ def test_multimea_surselor_e_UNA_SINGURA():
     Două liste ar fi putut descrie două mulțimi diferite, iar codul și baza ar fi apărat lucruri
     diferite fără ca nimic să spună.
     """
-    import main as _main
-    assert _main._SURSE_Z is Z.SURSE, (
-        "`main._SURSE_Z` nu mai E obiectul din `raport_z.SURSE` — s-a copiat în loc să se importe")
+    # [P7 · valul use-case] Mulțimea a plecat în `core/uc_comun.py`, cu rutele care o citesc.
+    # Întrebarea — *e ACELAȘI obiect, nu o copie* — e neatinsă.
+    from core import uc_comun as _uc_comun
+    assert _uc_comun._SURSE_Z is Z.SURSE, (
+        "`_SURSE_Z` nu mai E obiectul din `raport_z.SURSE` — s-a copiat în loc să se importe")
 
 
 def test_pornirea_migreaza_SI_verifica_SI_refuza_la_esec():
@@ -291,7 +299,8 @@ def test_pornirea_migreaza_SI_verifica_SI_refuza_la_esec():
     Se citește din AST, nu din text: interesează că apelurile EXISTĂ în funcție și că e un `raise`
     în ramura de eșec — nu că fișierul conține niște cuvinte.
     """
-    m = ast.parse(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+    from core import scan_sql_efectiv as _efectiv
+    m = _efectiv.arbore_aplicatie()
     ls = [n for n in ast.walk(m)
           if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == "lifespan"]
     assert len(ls) == 1, "nu găsesc `lifespan` (sau e definit de mai multe ori)"

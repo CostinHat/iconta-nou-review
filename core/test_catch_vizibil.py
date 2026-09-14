@@ -5,6 +5,7 @@ perioada.e_confirmat primea `schema` dar folosea perioada_confirmata NECALIFICAT
 search_path. Vezi E1E12_GASITE DEFECT-3. DS cap.6: eroarea de load = ecran-nota (distinct), NU .stare-goala (gol)."""
 import re, glob, os
 import pytest
+from core import scan_sql_efectiv as _efectiv
 
 _EMPTY_CATCH = re.compile(r"catch\s*(\([a-z_]*\))?\s*\{\s*\}")
 _APICALL = re.compile(r"api\.(get|post|del)\(")
@@ -91,5 +92,5 @@ def test_backend_e_confirmat_calificat_pe_conn_fara_search_path():
 
 def test_backend_rute_tenant_deschid_get_conn_schema():
     """Rutele payroll/documente deschid db.get_conn(schema) (marcaj search_path_tenant_v1), nu get_conn() gol."""
-    main = open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
+    main = _efectiv.sursa_aplicatie()
     assert main.count("search_path_tenant_v1") >= 5, "regresie DEFECT-3.1 (rute fara search_path pe tenant)"

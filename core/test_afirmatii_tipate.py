@@ -38,7 +38,12 @@ BASELINE = {
     "core/supervizor.py": 1,
     "core/raportari_ai.py": 3,
     "core/articole_import_api.py": 2,
-    "main.py": 2,
+    # [P7 · valul use-case, 13.09.2026] Cele doua afirmatii netipate din  au plecat cu
+    # corpurile rutelor:  in ,  in
+    # . TOTALUL e neschimbat (15 = 15) — datoria si-a schimbat adresa, nu
+    # marimea; confruntat inainte si dupa, cu acelasi instrument.
+    "core/uc_portal.py": 1,
+    "core/uc_tenants.py": 1,
     "core/control_fiscal_api.py": 1,
     "core/cote_tva.py": 1,
     "core/etransport_send.py": 1,

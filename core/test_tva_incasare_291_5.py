@@ -29,6 +29,7 @@ import re
 import pytest
 
 from core import cota_tva_incasare as m
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _MAIN = os.path.join(_RAD, "main.py")
@@ -142,7 +143,8 @@ def test_ruta_deleaga_si_foloseste_data_data_de_regula():
     Pe AST: ruta cheamă `alegerea(...)` și trimite mai departe `.data_cotei`, nu vreo dată aleasă
     de ea. Instanța apărată e chiar cea de dinainte de R151: ruta își alegea singură data.
     """
-    arb = ast.parse(io.open(_MAIN, encoding="utf-8").read())
+    # [P7 · valul use-case] Intrebarea e neatinsa; corpul rutei traieste in `core/uc_*.py`.
+    arb = _efectiv.arbore_aplicatie()
     fn = next((n for n in ast.walk(arb)
                if isinstance(n, ast.FunctionDef) and n.name == "nota_tva_incasare"), None)
     assert fn is not None, "ruta `nota_tva_incasare` a dispărut — garda ar fi vidă"

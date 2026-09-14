@@ -15,105 +15,128 @@ from fastapi import FastAPI, HTTPException, Depends, Header, Body, UploadFile, F
 import re as _re_audit
 import json as _json_audit
 from starlette.concurrency import run_in_threadpool as _run_in_threadpool_audit
-import psycopg2 as _psycopg2
-import psycopg2.extras as _E_audit
 from fastapi.responses import Response
-from fastapi.responses import JSONResponse as _JSONResponse
-from fastapi.encoders import jsonable_encoder as _jsonable_encoder
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
+from core import articole_import_api
 #: [P6 val 1, 12.09.2026] Casa comuna a starii business care nu mai are voie sa traiasca
 #: in memoria unui proces. V. docstringul modulului pentru masuratorile de dinainte.
 from core import stare_partajata as _stare_part
-from core import cache_declarat as _cache_declarat
 #: [P6 val 3, 12.09.2026] Ce trebuie sa stie un proces care nu mai e singur: cine instaleaza
 #: infrastructura, cine face munca de fundal, si cine poarta ce commit.
 from core import instante as _instante
-from core.pdf_util import bani, data_ro
-from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
-from core import common as _common
-from core import tenant_stergere  # [R72] calea UNICA de scoatere a unei firme
-from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api, declaratii_componente, supervizor
+# [R23] RE-EXPORT, nu import nefolosit: `core/firma_rezumat.py` cheama `main.pastila_firma` si
+# `main.stare_din_nivel` prin `import main as _main` — lucratorul modelului de citire ii cere
+# de acolo. Scoase de o curatenie automata, sase firme au ajuns cu `control_fiscal` in stare de
+# EROARE. „Nefolosit aici" nu inseamna „nefolosit" intr-un modul care e citit din afara.
+from core.common import pastila_firma, stare_din_nivel  # noqa: F401
+from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, termene_api, produse_api, observare as _obs
 # [P7 · V1] Repository-urile de citire: SQL-ul rutelor a plecat acolo.
-from core import repo_banca
-from core import tranzactie
-from core import repo_admin
-from core import repo_casa
-from core import repo_contabilitate
-from core import repo_declaratii
-from core import repo_efactura
-from core import repo_facturi
-from core import repo_firma_profil
-from core import repo_mijloace_fixe
-from core import repo_portal
-from core import repo_salariati
-from core import repo_stocuri
-from core import repo_tenants
-from core import repo_utilizatori
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
-from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
 from core import cronometru as _crono   # [P5] segmentele unei cereri; INERT fara ICONTA_CRONOMETRU
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
-from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
-                         EMAIL_NICIUNUL_VALID, EMAIL_INVALID_LISTA, CUI_FIRMA_LIPSA,
-                         PERIOADA_INCHISA,
-                              MESAJ_Z_DUPLICAT, MESAJ_Z_FARA_CHEIE,
-                              MESAJ_CLIENT_ALT_CABINET, MESAJ_EMAIL_ACELASI,
-                              MESAJ_DOAR_TITULARUL, MESAJ_LINK_LOGARE_CERUT,
-                              MESAJ_EMAIL_TOKEN_INVALID, MESAJ_EMAIL_DE_CONFIRMAT,
-                         ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
-                         FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_ACCES_TENANT,
-                         COD_FARA_ACCES_TENANT,
-                         FARA_ACCES_RAPORTARE, FARA_ACCES)
+from core.mesaje import (ROL_INSUFICIENT, DOAR_ADMIN_ICONTA)
 from core.common import nomenclator_cerut
 
 
-def _cere_perioada(an=None, luna=None, exercitiu=None, camp_an="an"):
-    """Refuza o perioada care nu exista, INAINTE de a cauta date pentru ea.
+# ============================================================
+#  [P7 · valul use-case, 13.09.2026] HOTARUL HTTP <-> USE_CASE
+# ============================================================
+# Stratul use-case refuza in limbajul domeniului (`core/erori.py`); AICI, si numai aici, refuzul
+# devine cod de protocol. Harta e completa peste `erori.TOATE` — o clasa noua fara traducere ar iesi
+# din aplicatie ca `500`, si de-aia `core/test_p7_uc.py` cere acoperirea ei.
+#
+# De ce se poate face traducerea fara sa schimbe nimic: `HTTPException` **nu e prinsa nicaieri** in
+# aplicatie (masurat: zero `except HTTPException`), deci rolul ei e exclusiv de iesire. Codul si
+# mesajul ies literă cu literă cum ieseau.
+from core import erori as _erori
+from core import uc_comun as _uc_comun
+from core import uc_auth as _uc_auth
+from core import uc_recomanda as _uc_recomanda
+from core import uc_firme as _uc_firme
+from core import uc_tipare as _uc_tipare
+from core import uc_termene as _uc_termene
+from core import uc_tenants as _uc_tenants
+from core import uc_supervizor as _uc_supervizor
+from core import uc_raportari as _uc_raportari
+from core import uc_public as _uc_public
+from core import uc_portal as _uc_portal
+from core import uc_pachete as _uc_pachete
+from core import uc_notificari as _uc_notificari
+from core import uc_migrare as _uc_migrare
+from core import uc_gdpr as _uc_gdpr
+from core import uc_firme_scoase as _uc_firme_scoase
+from core import uc_eu as _uc_eu
+from core import uc_declaratii as _uc_declaratii
+from core import uc_cor as _uc_cor
+from core import uc_control_fiscal as _uc_control_fiscal
+from core import uc_cont as _uc_cont
+from core import uc_coada as _uc_coada
+from core import uc_capacitate as _uc_capacitate
+from core import uc_cabinet as _uc_cabinet
+from core import uc_asistenti as _uc_asistenti
+from core import uc_api as _uc_api
+from core import uc_admin as _uc_admin
 
-    [lotul 3, 04.09.2026] Masurat pe sase rute: `luna=13` pe `GET /jurnal` dadea `500`; pe
-    `GET /balanta`, pe calea de API si pe `registru-inventar/propunere` dadea `200` cu rezultat
-    gol; iar `GET /documente/balanta?luna=0` **genera un PDF** — un document oficial pentru o luna
-    care nu exista. Cel mai rau era `balanta`, care adauga si o afirmatie: `"stare":
-    "nimic_de_verificat"`. *„Nu exista date pentru luna asta" si „luna asta nu exista" nu sunt
-    acelasi lucru, iar a doua nu se repara cautand mai bine.*"""
-    if luna is not None and not (1 <= luna <= 12):
-        raise HTTPException(422, "luna invalidă: %r (aștept 1-12)" % (luna,))
-    if an is not None and not (1990 <= an <= 2100):
-        raise HTTPException(422, "%s invalid: %r (aștept 1990-2100)" % (camp_an, an))
-    if exercitiu is not None and not (1990 <= exercitiu <= 2100):
-        raise HTTPException(422, "exercițiu invalid: %r (aștept 1990-2100)" % (exercitiu,))
+_COD_EROARE = (
+    (_erori.CerereGresita, 400),
+    (_erori.Neautentificat, 401),
+    (_erori.FaraDrept, 403),
+    (_erori.Inexistent, 404),
+    (_erori.Conflict, 409),
+    (_erori.DateInvalide, 422),
+    (_erori.Blocat, 423),
+    (_erori.IntrarePreaMare, 413),
+    (_erori.FormatNeacceptat, 415),
+    (_erori.PreaDes, 429),
+    (_erori.EsecIntern, 500),
+    (_erori.ServiciuStrainCazut, 502),
+    (_erori.ServiciuIndisponibil, 503),
+)
+
+
+def _http_din(e):
+    """Traduce un refuz de domeniu in `HTTPException`. INTOARCE exceptia; ridicarea o face apelantul.
+
+    De ce nu un inveli care cheama functia: pasand-o ca valoare, muchia ruta -> use-case dispare din
+    orice analiza statica de graf. Masurat: candidatii P5 au scazut 54 -> 48, nu fiindca s-ar fi
+    reparat ceva, ci fiindca patru rute nu mai erau vizibile de la punctul de intrare.
+
+    Ce nu e in vocabular nu se traduce: se re-ridica neatins, ca sa nu inventam niciun cod."""
+    for _clasa, _cod in _COD_EROARE:
+        if isinstance(e, _clasa):
+            return HTTPException(_cod, e.detaliu)
+    return e
+
+
+
+def _cere_perioada(an=None, luna=None, exercitiu=None, camp_an="an"):
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._cere_perioada` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._cere_perioada(an, luna, exercitiu, camp_an)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _mesaj_intrare(e):
-    """Mesajul unui refuz de intrare, cand exceptia poate fi si `KeyError`.
-
-    [lotul 3, 04.09.2026] `except (ValueError, KeyError) as e: HTTPException(422, str(e))` apare in
-    37 de locuri, iar pe ramura `KeyError` `str(e)` e **numele campului intre ghilimele simple**:
-    contabilul primea `{"detail": "'brut'"}`. Cod intern ca mesaj — aceeasi clasa scoasa din coada
-    in lotul 1, gasita aici pe alta cale. Se traduce o data, in locul comun."""
-    if isinstance(e, KeyError):
-        return ("Lipsește câmpul `%s` din cererea trimisă. Operațiunea nu se poate consemna fără "
-                "el." % (e.args[0] if e.args else "?"))
-    return str(e)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._mesaj_intrare` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._mesaj_intrare(e)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
 TENANT_TEMPLATE_PATH = os.environ.get(
     "ICONTA_TENANT_TEMPLATE",
     os.path.join(os.path.dirname(__file__), "tenant_template.sql"))
-_TENANT_TEMPLATE = None
-_TENANT_TEMPLATE_DECLARATIE = _cache_declarat.Declaratie(
-    rol="sablonul SQL al schemei unui tenant nou, citit o data la pornire",
-    sursa="fisierul de la `TENANT_TEMPLATE_PATH` (implicit `tenant_template.sql`, versionat)",
-    motiv="citirea unui fisier SQL mare pe calea crearii unei firme",
-    invalidare="la repornirea procesului. Identic pe orice numar de instante, fiindca toate "
-               "pornesc din acelasi commit — deci nu poate diverge intre procese",
-    dovada="core/test_cache_declarat.py::test_sablonul_de_tenant_se_reconstruieste_identic",
-)
+# [P7 · lotul 2] Sablonul traieste in `core/uc_comun.py`; aici se PUNE, in `lifespan`.
+# [P7 · valul use-case] Declaratia a plecat cu VALOAREA, in `core/uc_comun.py`: registrul P6 cere ca
+# fiecare stare declarata sa-si poarte cele cinci lucruri in modulul in care traieste.
 
 
 # ============================================================
@@ -165,7 +188,6 @@ _TASKURI_FUNDAL_PORNITE = 0
 
 @asynccontextmanager
 async def lifespan(app):
-    global _TENANT_TEMPLATE
     verifica_secrete_obligatorii()   # fail-fast INAINTE de orice: fara JWT_SECRET nu pornim
     from core import versiune as _versiune_boot; _versiune_boot.stampileaza()  # running==HEAD: commitul de pornire (in memorie)
     db.init_pool()
@@ -310,9 +332,9 @@ async def lifespan(app):
     _TASKURI_FUNDAL_PORNITE += 1
     try:
         with open(TENANT_TEMPLATE_PATH, encoding="utf-8") as f:
-            _TENANT_TEMPLATE = f.read()
+            _uc_comun.pune_sablon_tenant(f.read())
     except FileNotFoundError:
-        _TENANT_TEMPLATE = None   # creare tenant va da eroare clară până e pus
+        _uc_comun.pune_sablon_tenant(None)   # creare tenant va da eroare clară până e pus
     yield
     db.inchide_pool()
 
@@ -392,7 +414,6 @@ async def _handler_validare_camp(request: Request, exc: _RVE):
     return _JR(status_code=422, content={"detail": {"mesaj": rezumat, "erori_campuri": campuri}})
 
 
-_APP_PORNIT_LA = __import__("time").time()  # ICRD_SANATATE_SERVER_V1 - uptime proces
 
 # frontend: servit static de pe același origin cu API-ul (fără build step)
 #
@@ -435,6 +456,7 @@ def _alege_static():
 
 _STATIC_DIR, _STATIC_MOTIV = _alege_static()
 logging.getLogger("iconta").info("[R118] /static servit din %s — %s", _STATIC_DIR, _STATIC_MOTIV)
+_uc_comun.pune_static_dir(_STATIC_DIR)   # [P7 · lotul 2] HTTP alege, use-case consuma
 if os.path.isdir(_STATIC_DIR):
     # [nocache_static_v1]: browserul revalideaza automat (304), fara ?v= manual
     class _StaticNoCache(StaticFiles):
@@ -810,97 +832,17 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
 
 @app.get("/admin/sanatate/istoric")
 def admin_sanatate_istoric(ore: int = 24, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    ore = _interval_cerut(ore, "Numărul de ore de istoric", 1, 168, "ore")   # [R150]
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            rows = repo_admin.istoric_sanatate(cur, ore)
-    return {"istoric": rows}
+    try:
+        return _uc_admin.admin_sanatate_istoric(ore, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/admin/sanatate")
 def admin_sanatate(ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    import time as _time
-    import shutil as _shutil
-    import os as _os
-
-    # --- server: load average, RAM, disk ---
     try:
-        load1, load5, load15 = _os.getloadavg()
-    except Exception:
-        load1 = load5 = load15 = None
-
-    ram = {"total_mb": None, "disponibil_mb": None, "folosit_procent": None}
-    try:
-        info = {}
-        with open("/proc/meminfo") as f:
-            for linie in f:
-                k, v = linie.split(":", 1)
-                info[k.strip()] = int(v.strip().split()[0])  # kB
-        total_kb = info.get("MemTotal", 0)
-        disp_kb = info.get("MemAvailable", 0)
-        if total_kb:
-            ram = {
-                "total_mb": round(total_kb / 1024, 1),
-                "disponibil_mb": round(disp_kb / 1024, 1),
-                "folosit_procent": round(100 * (1 - disp_kb / total_kb), 1),
-            }
-    except Exception:
-        pass
-
-    disc = {"total_gb": None, "liber_gb": None, "folosit_procent": None}
-    try:
-        total, folosit, liber = _shutil.disk_usage("/")
-        disc = {
-            "total_gb": round(total / (1024 ** 3), 1),
-            "liber_gb": round(liber / (1024 ** 3), 1),
-            "folosit_procent": round(100 * folosit / total, 1),
-        }
-    except Exception:
-        pass
-
-    uptime_sec = round(_time.time() - _APP_PORNIT_LA)
-
-    # --- baza de date ---
-    db_info = {"conexiuni": None, "marime": None}
-    try:
-        with db.get_conn() as conn:
-            with conn.cursor() as cur:
-                db_info["conexiuni"] = repo_admin.conexiuni_active(cur)[0]
-                db_info["marime"] = repo_admin.marimea_bazei(cur)[0]
-    except Exception as _e:
-        _obs.esec_secundar("admin sanatate: info DB", _e)  # inghitit, dar nu tacut (27.07.2026)
-
-    # --- erori recente (status >= 500 in ultimele 24h) ---
-    erori_24h = 0
-    lista_erori = []
-    try:
-        with db.get_conn() as conn:
-            with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-                rows = repo_admin.ultimele_actiuni(cur)
-                erori_24h = len(rows)
-                lista_erori = rows[:50]
-    except Exception as _e:
-        _obs.esec_secundar("admin sanatate: erori 24h", _e)  # inghitit, dar nu tacut (27.07.2026)
-
-    # [POST-P2 HARDENING] Starea infrastructurii P2, din INSTANTANEUL buclei de sănătate — nu
-    # recalculată aici. Ruta e de administrare, dar tot o cerere: verificarea stă în afara ei.
-    # `ok = None` înseamnă „încă neverificat", și NU se rotunjește la `true`.
-    from core import firma_rezumat as _fr_s
-    _p2 = _fr_s.stare_infrastructura()
-    return {
-        "server": {"load1": load1, "load5": load5, "load15": load15, "ram": ram, "disc": disc},
-        "aplicatie": {"uptime_secunde": uptime_sec},
-        "baza_date": db_info,
-        "erori_24h": erori_24h,
-        "erori_lista": lista_erori,
-        "p2_infrastructure_ok": _p2["ok"],
-        "p2_infrastructure_last_checked_at": (_p2["verificat_la"].isoformat()
-                                              if _p2["verificat_la"] else None),
-        "p2_infrastructure_probleme": [p["cod"] for p in _p2["probleme"]],
-    }
+        return _uc_admin.admin_sanatate(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # === ANUNTURI CABINET === # anunturi_v1
 class AnuntIn(BaseModel):
@@ -913,105 +855,64 @@ class AnuntIn(BaseModel):
 
 @app.post("/admin/anunturi")
 def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
-    if not (date.mesaj or "").strip():
-        raise HTTPException(422, "mesaj gol")
-    mesaj = date.mesaj.strip()
-    data_af = (date.data_afisare or "").strip() or None
-    n = 0
-    with db.get_conn() as conn, conn.cursor() as cur:
-        if date.cabinet_ids:  # [anunturi_alese_v1] cabinete alese cu bife
-            for cid in date.cabinet_ids:
-                repo_admin.adauga_anunt(cur, int(cid), mesaj, data_af)
-                n += 1
-        elif date.cabinet_id:
-            repo_admin.adauga_anunt(cur, date.cabinet_id, mesaj, data_af)
-            n = 1
-        else:
-            for (cid,) in repo_tenants.cabinete_active(cur):
-                repo_admin.adauga_anunt(cur, cid, mesaj, data_af)
-                n += 1
-        conn.commit()
-    return {"ok": True, "trimise": n}
+    try:
+        return _uc_admin.admin_anunt_creeaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/admin/alerte-fiscale")  # [F103 partea 2] propunerile monitorului pentru anunturi
 def admin_alerte_fiscale(ctx=Depends(cere_rol("superadmin"))):
-    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        rows = [dict(r) for r in repo_admin.alerte_fiscale(cur)]
-    for r in rows:
-        r["creat_la"] = str(r["creat_la"])
-    return {"alerte": rows}
+    try:
+        return _uc_admin.admin_alerte_fiscale(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.post("/admin/alerte-fiscale/{aid}/tratat")  # [F103 partea 2]
 def admin_alerta_tratata(aid: int, ctx=Depends(cere_rol("superadmin"))):
-    with db.get_conn() as conn, conn.cursor() as cur:
-        r = repo_admin.marcheaza_alerta_vazuta(cur, aid)
-        conn.commit()
-    if not r:
-        raise HTTPException(404, "alertă inexistentă")
-    return {"ok": True}
+    try:
+        return _uc_admin.admin_alerta_tratata(aid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.get("/eu/anunturi")
 def eu_anunturi(ctx=Depends(cere_cabinet)):
-    from psycopg2.extras import RealDictCursor
-    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        rows = [dict(r) for r in repo_admin.anunturi_pentru_cabinet(cur, ctx.get("firm"))]
-    for r in rows:
-        r["creat_la"] = str(r["creat_la"])
-    return {"anunturi": rows}
+    try:
+        return _uc_eu.eu_anunturi(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/eu/anunturi/{aid}/confirma")
 def eu_anunt_confirma(aid: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn, conn.cursor() as cur:
-        r = repo_admin.confirma_anunt(cur, aid, ctx.get("firm"))
-        conn.commit()
-    if not r:
-        raise HTTPException(404, "anunt inexistent")
-    return {"ok": True}
+    try:
+        return _uc_eu.eu_anunt_confirma(aid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/admin/activitate/cabinete")
 def admin_activitate_cabinete(ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            rows = repo_admin.activitate_pe_cabinete(cur)
-    return {"cabinete": rows}
+    try:
+        return _uc_admin.admin_activitate_cabinete(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/admin/cabinete/{firm_id}/suspenda")
 def admin_cabinet_suspenda(firm_id: int, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            repo_tenants.suspenda_cabinetul(cur, firm_id)
-    return {"ok": True}
+    try:
+        return _uc_admin.admin_cabinet_suspenda(firm_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/admin/cabinete/{firm_id}/reactiveaza")
 def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            repo_tenants.reactiveaza_cabinetul(cur, firm_id)
-    return {"ok": True}
+    try:
+        return _uc_admin.admin_cabinet_reactiveaza(firm_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/admin/activitate/cabinet/{firm_id}")
 def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    limita = _interval_cerut(limita, "Numărul de înregistrări", 1, 2000, "înregistrări")
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            # [R150] Pana azi, un cabinet INEXISTENT primea `{"activitate": []}` — adica raspunsul
-            # „cabinetul asta n-a facut nimic" la o intrebare despre un cabinet care nu exista.
-            # Gasit apasand, in lotul 14: `GET /admin/activitate/cabinet/999999` -> `200`.
-            # *Absenta inregistrarilor si inexistenta subiectului sunt doua lucruri diferite, iar
-            # primul e o afirmatie despre cabinet.* Clasa e chiar cea pazita de
-            # `core/test_absenta_nu_e_neaplicabil.py`, pe alt obiect.
-            if not repo_tenants.cabinetul_exista(cur, firm_id):
-                raise HTTPException(404, "Nu există niciun cabinet cu numărul %d. "
-                                         "Verifică numărul: un cabinet fără activitate ar fi "
-                                         "răspuns cu o listă goală, nu cu asta." % firm_id)
-            rows = repo_admin.actiunile_cabinetului(cur, firm_id, limita)
-    return {"activitate": rows}
+    try:
+        return _uc_admin.admin_activitate_cabinet(firm_id, limita, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class StergereCabinetIn(BaseModel):
@@ -1025,97 +926,59 @@ class CerereStergereIn(BaseModel):  # [F200b] cabinetul DEPUNE o cerere; NU exec
 
 @app.post("/gdpr/sterge-cabinet/{cabinet_id}/previzualizare")  # [F200] GDPR art.17 pas 1 (superadmin)
 def gdpr_sterge_previzualizare(cabinet_id: int, ctx=Depends(cere_rol("superadmin"))):
-    from core import gdpr_sterge as _gs
-    with db.get_conn() as conn:
-        try:
-            return _gs.previzualizare(conn, cabinet_id)
-        except ValueError as e:
-            raise HTTPException(404, str(e))
+    try:
+        return _uc_gdpr.gdpr_sterge_previzualizare(cabinet_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/gdpr/sterge-cabinet/{cabinet_id}/executa")  # [F200] GDPR art.17 pas 2 (superadmin, confirmare typed-back)
 def gdpr_sterge_executa(cabinet_id: int, date: StergereCabinetIn, ctx=Depends(cere_rol("superadmin"))):
-    from core import gdpr_sterge as _gs
-    with db.get_conn() as conn:
-        try:
-            return _gs.executa(conn, cabinet_id, date.confirmare, ctx.get("uid"))
-        except ValueError as e:
-            raise HTTPException(422, str(e))
+    try:
+        return _uc_gdpr.gdpr_sterge_executa(cabinet_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/gdpr/export-cabinet")  # [F199] GDPR art.20 portabilitate — export complet cabinet
 def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("admin_firma"))):
-    from core import gdpr_export as _ge
-    if ctx["rol"] == "superadmin":
-        cab = cabinet_id
-        if not cab:
-            raise HTTPException(422, "Alegeți cabinetul (obligatoriu pentru superadmin).")
-    else:
-        # [lotul 9] `cabinet_id` era IGNORAT tacut pentru cine nu e superadmin: cereai exportul
-        # cabinetului X si primeai, cu `200`, arhiva cabinetului TAU. Nu e o scurgere — dar pe o
-        # rutà GDPR, „am exportat" despre alt cabinet decat cel cerut e cea mai proasta forma de
-        # tacere: arhiva pleaca mai departe cu numele gresit in minte.
-        if cabinet_id is not None and cabinet_id != ctx.get("firm"):
-            raise HTTPException(403, "Poți exporta numai cabinetul tău. Cererea a numit "
-                                     "cabinetul %s, iar al tău e %s — arhiva n-a fost produsă."
-                                     % (cabinet_id, ctx.get("firm")))
-        cab = ctx.get("firm")
-    if not cab:
-        raise HTTPException(400, FARA_CABINET)
-    with db.get_conn() as conn:
-        _zip = _ge.export_cabinet(conn, cab)
-        try:  # [F199] jurnalizare export (cine/cand, FARA continut)
-            with conn.cursor() as _cur:
-                repo_admin.scrie_audit_cu_detalii(_cur, ctx.get("uid"), "cabinet", cab, _json_audit.dumps({"octeti": len(_zip)}))
-            conn.commit()
-        except Exception as _e:
-            _obs.esec_secundar("audit_log export GDPR", _e, alerta=True)  # inghitit, dar nu tacut (27.07.2026)
-    return Response(content=_zip, media_type="application/zip",
-                    headers={"Content-Disposition": 'attachment; filename="gdpr-export-cabinet-%s.zip"' % cab})
+    try:
+        _zip, cab = _uc_gdpr.gdpr_export_cabinet(cabinet_id, ctx)
+        return Response(content=_zip, media_type="application/zip",
+                        headers={"Content-Disposition": 'attachment; filename="gdpr-export-cabinet-%s.zip"' % cab})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/gdpr/cerere-stergere")  # [F200b] GDPR art.17 — cabinetul DEPUNE o cerere; superadmin executa. NU sterge nimic.
 def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_firma"))):
-    from core import gdpr_cerere as _gc
-    cab = ctx.get("firm")
-    if not cab:
-        raise HTTPException(400, FARA_CABINET)
-    with db.get_conn() as conn:
-        try:
-            r = _gc.depune_cerere(conn, cab, ctx.get("uid"), date.confirmare_nume, date.motiv)
-            conn.commit()
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-    # [P5 val 3] AICI, nu înăuntru: cererea e comisă și conexiunea s-a întors în pool. Efectul
-    # ireversibil vine ultimul, iar apelul la Brevo (termen 10 s) nu mai ține nimic din pool.
-    _gc.anunta_echipa(r.pop("anunt", None))
-    return r
+    try:
+        return _uc_gdpr.gdpr_cerere_stergere(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)
 def capacitate_panou(ctx=Depends(cere_rol("admin_firma"))):
-    cab = ctx.get("firm")
-    if not cab:
-        raise HTTPException(400, FARA_CABINET)
-    with db.get_conn() as conn:
-        return capacitate_api.capacitate(conn, cab)
+    try:
+        return _uc_capacitate.capacitate_panou(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tipare")  # [p72_tipare] educatie pe tipare (doar patron)
 def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
-    cab = ctx.get("firm")
-    if not cab:
-        raise HTTPException(400, FARA_CABINET)
-    with db.get_conn() as conn:
-        return tipare_api.tipare(conn, cab)
+    try:
+        return _uc_tipare.tipare_panou(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tipare/ai")  # [F120] analiza generativa AI peste tiparele de respingere (doar patron)
 def tipare_ai_panou(ctx=Depends(cere_rol("admin_firma"))):
-    cab = ctx.get("firm")
-    if not cab:
-        raise HTTPException(400, FARA_CABINET)
-    with db.get_conn() as conn:
-        return tipare_api.analiza_ai(conn, cab)
+    try:
+        return _uc_tipare.tipare_ai_panou(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -1405,7 +1268,6 @@ class DepuneIn(BaseModel):
 # ============================================================
 # [R138] Faptul „ce e o adresa de email" traieste in `core/common`, nu aici. Numele vechi
 # ramane, ca sa nu se schimbe apelantul, dar nu mai poarta el definitia.
-_email_valid = _common.email_valid  # [email_valid_v1] [R138]
 # [login_lockout_v1] esecuri per CONT (email); per-IP ramane la nginx (iconta_auth 5r/m).
 # [P6 val 1, 12.09.2026] Era `_login_fail = {}`, un dictionar la nivel de modul. Purta o DECIZIE
 # DE SECURITATE — blocarea unui cont — care se pierdea la fiecare repornire si pe care al doilea
@@ -1416,161 +1278,41 @@ _email_valid = _common.email_valid  # [email_valid_v1] [R138]
 # Fiecare functie isi deschide tranzactia EI, scurta. Loginul deschide oricum conexiuni separate
 # pentru autentificare si pentru audit; una tinuta peste toti pasii ar fi exact clasa C5.
 def _login_blocat(email):
-    with db.get_conn() as conn:
-        return _stare_part.login_blocat(conn, email)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._login_blocat` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._login_blocat(email)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 def _login_esec(email):
-    with db.get_conn() as conn:
-        _stare_part.login_esec(conn, email)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._login_esec` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._login_esec(email)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 def _login_reset(email):
-    with db.get_conn() as conn:
-        _stare_part.login_reset(conn, email)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._login_reset` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._login_reset(email)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/auth/login")
 def login(date: LoginIn):
-    _email = (date.email or "").strip().lower()
-    if _login_blocat(_email):  # [login_lockout_v1] 5 esecuri / 15 min per cont
-        raise HTTPException(429, "Prea multe încercări eșuate pentru acest cont. Încearcă din nou peste câteva minute.")
-    with db.get_conn() as conn:
-        r = auth_api.login(conn, date.email, date.parola)
-    if not r["ok"]:
-        _login_esec(_email)
-        raise HTTPException(401, r["mesaj"])
-    _login_reset(_email)
-    # [beta_gate_v1 SCOS 14.08] poarta "Site in lucru" eliminata - acces liber (decizie Costin).
     try:
-        with db.get_conn() as conn2:
-            with conn2.cursor() as cur:
-                repo_admin.scrie_audit_login(cur, r["user"]["id"])
-    except Exception as _e:
-        _obs.esec_secundar("audit_log login", _e)  # inghitit, dar nu tacut (27.07.2026)
-    return {"token": r["token"], "user": r["user"]}
+        return _uc_auth.login(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/auth/register")
 def register(date: RegisterIn):
-    if not date.accept_termeni:  # [termeni_v1] fara bifa -> contul NU se creeaza (gard pe backend, nu doar JS)
-        raise HTTPException(400, "Trebuie să accepți Termenii și condițiile pentru a crea contul.")
-    if not _nucleu.parola_ok(date.parola):  # [parola_min_v1] aceeasi cerinta ca activare/reset/schimbare
-        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
-    if not _email_valid(date.email):  # [email_valid_v1] email obligatoriu + format valid
-        raise HTTPException(400, EMAIL_INVALID)
-    # [P4, 09.09.2026] Versiunea termenilor se citește ÎNAINTE de tranzacție. Un fișier care
-    # lipsește trebuie să oprească înregistrarea înainte de orice scriere — nu să lase în urmă un
-    # cont fără dovada acordului.
     try:
-        _versiune_termeni = _termeni_versiune(open(_TERMENI_PATH, encoding="utf-8").read())
-    except OSError as _e:
-        raise HTTPException(503, "Termenii și condițiile nu se pot citi acum, deci acordul tău "
-                                 "nu s-ar putea consemna. Contul NU a fost creat. Încearcă din "
-                                 "nou peste câteva minute.")
-    # [P4] CONTUL ȘI DOVADA ACORDULUI, ÎN ACEEAȘI TRANZACȚIE.
-    #
-    # Ce era până azi: contul se crea într-o tranzacție, iar `acord_termeni` — dovada
-    # consimțământului, cu versiunea textului — într-a doua, ambalată într-un `try` care doar
-    # TIPĂREA la eșec. Ruta refuză din prima linie o înregistrare fără bifă; dar dovada bifei
-    # putea lipsi în tăcere, iar contul rămânea. *Fără bifă contul nu se creează — deci nici
-    # fără dovada ei.*
-    with db.get_conn() as conn:
-        r = auth_api.inregistreaza_cabinet(
-            conn, date.email, date.parola, date.nume_cabinet,
-            nume=date.nume, prenume=date.prenume)
-        if r["ok"]:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune
-            with conn.cursor() as cur:
-                repo_utilizatori.scrie_acordul_termenilor(cur, r.get("user_id"), r.get("firm_id"), date.email.strip().lower(), _versiune_termeni)
-    if not r["ok"]:
-        raise HTTPException(400, r["mesaj"])
-    try:  # register_email_v1: email de bun venit
-        html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
-                "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
-                "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (date.nume_cabinet, date.email)
-        _obs.trimite_email_html(date.email, "Bine ai venit pe iConta.eu", html)
-    except Exception as _e:
-        # [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
-        _obs.esec_secundar("email bun venit cabinet", _e)
-    try:  # [alerta_cont_nou_v1] notificare interna la fiecare cont nou de cabinet (fara date personale)
-        from datetime import datetime as _dt
-        from zoneinfo import ZoneInfo as _Z
-        _acum = _dt.now(_Z("Europe/Bucharest")).strftime("%Y-%m-%d %H:%M:%S")
-        _mesaj_cn = ("S-a inregistrat un cont nou de cabinet pe iConta.eu la %s (ora Romaniei). "
-                     "Alerta nu contine date personale." % _acum)
-        if _obs.trebuie_trimisa("cont_nou_cabinet"):  # [alerta_dedup_v1] throttle anti-flood (implicit 15 min)
-            _ok_cn = _obs._trimite_brevo("Cont nou de cabinet", _mesaj_cn)
-            print("[alerta_cont_nou] trimisa=%s | %s" % (_ok_cn, _mesaj_cn), flush=True)
-        else:
-            print("[alerta_cont_nou] throttled (dedup) | %s" % _mesaj_cn, flush=True)
-    except Exception as _e:
-        print("[alerta_cont_nou] netrimisa: %s" % _e, flush=True)
-    # [register_firma_v2 27.07.2026] Provisionarea primei firme poate esua (ANAF jos, schema
-    # incompleta, DB). Inainte, esecul era INGHITIT si raspunsul spunea SUCCES - userul ramanea
-    # cu cont valid si FARA firma, fara sa stie. Contul NU se anuleaza (e valid si util), dar
-    # raspunsul poarta adevarul, iar ecranul il arata.
-    _firma_ok = None                       # None = nu s-a incercat (fara CUI la inregistrare)
-    _firma_motiv = ""
-    if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
-        _firma_ok = False
-        # [P5 val 3, 11.09.2026] ANAF ÎNAINTE de conexiune: apelul are termen 20 s, iar forma
-        # dinainte îl făcea cu tranzacția de creare a cabinetului deschisă. Eșecul se înghite și
-        # se consemnează, exact ca înainte — firma rămâne creată, profilul completabil manual.
-        try:
-            _d_anaf = tenant_provisioning.date_din_anaf(date.cui)
-        except Exception as _e:
-            _obs.esec_secundar("precompletare ANAF la register", _e)
-            _d_anaf = None
-        try:
-            with db.get_conn() as conn:
-                _cui = date.cui.replace("RO", "").strip()
-                _t = tenant_provisioning.provision_tenant(
-                    conn, date.nume_cabinet, _cui,
-                    r["firm_id"], r["user_id"], _TENANT_TEMPLATE)
-                # [register_cabinet_cui_v1] CUI-ul a trecut cifra de control in provision_tenant
-                # -> descrie entitatea proprie a cabinetului. Se persista SI pe accounting_firms.cui
-                # (nu doar pe firma-tenant): altfel get_cabinet il citeste NULL si ecranul Setari
-                # cabinet ramane gol desi userul l-a tastat si verificat la ANAF la inregistrare.
-                auth_api.actualizeaza_cabinet(conn, r["firm_id"], cui=_cui)
-                # [register_profil_anaf_v1] Datele de la ANAF se SALVEAZA in profil, nu
-                # doar se afiseaza pe ecran la inregistrare. Fara ele firma noua se naste
-                # cu caen gol si platitor_tva necunoscut -> D394 blocat (caen e obligatoriu),
-                # iar TVA-ul ramane pe valoarea din template in loc de realitate.
-                # Acelasi tipar ca [gratuit_tva_anaf_v1] la contul gratuit (DS: aceeasi
-                # situatie = aceeasi rezolvare), extins la toate campurile pe care ANAF
-                # le da: denumire, cod_caen, adresa, platitor_tva.
-                try:
-                    # [register_profil_anaf_v2] SURSA UNICA de precompletare ANAF
-                    # (tenant_provisioning.precompleteaza_din_anaf), aceeasi ca la add-firm/import.
-                    # seteaza_nume=True: firma proprie preia si denumirea de la ANAF.
-                    # [P5 val 3] datele ANAF s-au luat INAINTE de bloc (`_d_anaf`); aici doar scrie.
-                    if _t and _t.get("schema_name"):
-                        tenant_provisioning.precompleteaza_din_anaf(conn, _t["schema_name"], _d_anaf, seteaza_nume=True)
-                except Exception as _e:
-                    # ANAF jos -> profilul ramane de completat manual. Firma EXISTA, doar
-                    # datele preluate lipsesc - deci NU e esec de provisionare.
-                    _obs.esec_secundar("precompletare ANAF la register", _e)
-                conn.commit()
-                _firma_ok = True
-        except Exception as _e:
-            # Contul RAMANE valid: userul se poate loga si adauga firma manual din ecranul
-            # Firme. Dar raspunsul NU mai minte cu succes - vezi register_firma_v2 mai sus.
-            # [register_motiv_real_v1] Raspunsul poarta MOTIVUL real, nu un generic. Modelul e mesajul
-            # de la numerotarea facturilor ("nu putem presupune numarul 1") - spune DE CE. Contul + cabinetul
-            # SUNT create si userul e logat automat -> mesajul il indruma spre ecranul Firme, nu "te poti loga".
-            _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)
-            _txt = str(_e).lower()
-            _cui_afis = (date.cui or "").strip()
-            if "cifra de control" in _txt or "cui invalid" in _txt:
-                _motiv = ("CUI-ul introdus (%s) nu este valid \u2014 cifra de control nu corespunde. "
-                          "Verific\u0103 cifrele (f\u0103r\u0103 spa\u021bii sau litere)." % _cui_afis)
-            elif "exist" in _txt and "deja" in _txt:
-                _motiv = "exist\u0103 deja o firm\u0103 cu acest CUI \u00een portofoliul cabinetului."
-            else:
-                _motiv = "a ap\u0103rut o eroare tehnic\u0103 la ad\u0103ugarea firmei."
-            _firma_motiv = ("Contul \u0219i cabinetul au fost create. Firma proprie NU a putut fi ad\u0103ugat\u0103 "
-                            "automat: %s O po\u021bi ad\u0103uga oric\u00e2nd din ecranul Firme." % _motiv)
-    raspuns = {"user_id": r["user_id"], "firm_id": r["firm_id"]}
-    if _firma_ok is not None:
-        raspuns["firma_creata"] = _firma_ok
-        if _firma_motiv:
-            raspuns["avertisment"] = _firma_motiv
-    return raspuns
+        return _uc_auth.register(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -1580,8 +1322,10 @@ def register(date: RegisterIn):
 def tenants(inactive: bool = False, ctx=Depends(cere_cabinet)):
     """`inactive=true` cuprinde ȘI firmele dezactivate — altfel o firmă dezactivată ar ieși din
     listă fără nicio cale de întoarcere. [R72]"""
-    with db.get_conn() as conn:
-        return {"tenants": auth_api.tenantii_userului(conn, ctx["uid"], doar_active=not inactive)}
+    try:
+        return _uc_tenants.tenants(inactive, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/firme-scoase")
@@ -1592,18 +1336,20 @@ def firme_scoase(ctx=Depends(cere_cabinet)):
     declarate dimineață la `urme-portal`: *scrisă, necitită de om*. După o ștergere, ea e
     singura dovadă că firma a existat.
     """
-    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        return {"firme": [dict(r) for r in repo_utilizatori.firme_scoase_din_portofoliu(cur, ctx["firm"])]}
+    try:
+        return _uc_firme_scoase.firme_scoase(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/scoatere")
 def tenant_scoatere_previzualizare(tenant_id: int, ctx=Depends(cere_cabinet)):
     """[R72] Ce se întâmplă dacă firma se scoate: are evidență sau nu, și ce anume s-a găsit.
     Se citește ÎNAINTE de apăsare — un refuz care apare abia după apăsare e o surpriză."""
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return tenant_stergere.previzualizare(conn, tenant_id)
+    try:
+        return _uc_tenants.tenant_scoatere_previzualizare(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class FirmaActivareIn(BaseModel):
@@ -1611,39 +1357,12 @@ class FirmaActivareIn(BaseModel):
 
 
 def _acces_pentru_activare(conn, rol, firm, tenant_id):
-    """[R83/JJ1, 28.08.2026] Poarta rutei de ACTIVARE — scrisă **local**, nu în funcția comună.
-
-    DE CE EXISTĂ. `auth_api.schema_tenant` cere `activ = true` pe **toate trei** ramurile de rol.
-    E corect pentru orice rută care lucrează *în* firmă — o firmă scoasă din portofoliul de lucru
-    n-are de ce să răspundă la cereri de conținut. Dar ruta de activare e **singura** al cărei act
-    are sens tocmai pe o firmă **inactivă**: reactivarea. Cu poarta comună, ea răspundea 404
-    întotdeauna, deci **reactivarea nu se putea face niciodată** (R83, probat pe 28.08.2026).
-
-    DE CE AICI ȘI NU ÎN `schema_tenant`. Decizia lui Costin — varianta **(a)**: *„restul rutelor
-    rămân neatinse — nicio semnătură comună nu se schimbă, izolarea rămâne exact cum era."*
-    Un parametru `si_inactive=` pe funcția comună ar fi reparat clasa, dar ar fi atins o semnătură
-    folosită în **154** de rute, fiecare cu propriul risc *(numărate pe AST înainte de reparație;
-    după ea sunt 153 — ruta asta a ieșit din mulțime)*. Excepția e locală, deci și riscul e.
-
-    CE PĂSTREAZĂ NEATINS: **regula de rol**, identică cu a funcției comune —
-      * `superadmin` ajunge doar la firme **fără cabinet** (GDPR: nu vede conținutul clienților);
-      * oricine altcineva ajunge doar la firmele **cabinetului lui**.
-    Singura diferență față de `schema_tenant` e `activ`, și e diferența cerută.
-
-    CE NU FACE: nu întoarce schema și nu dă acces la **conținut**. Întoarce un `bool` — dreptul de a
-    comuta un rând din `public.tenants`. Cine vrea conținutul firmei trece tot prin poarta comună.
-
-    Refuzul e **același mesaj** ca al porții comune, deliberat: „inexistent" și „fără acces" nu se
-    despart, ca să nu se poată afla din afară ce firme există.
-    """
-    with conn.cursor() as cur:
-        r = _repo.select_public_3(cur, tenant_id)
-    if not r:
-        return False
-    cabinet = r[0]
-    if rol == "superadmin":
-        return cabinet is None
-    return cabinet is not None and cabinet == firm
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._acces_pentru_activare` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._acces_pentru_activare(conn, rol, firm, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/activare")
@@ -1659,13 +1378,10 @@ def tenant_activare(tenant_id: int, date: FirmaActivareIn, ctx=Depends(cere_rol(
     e al ecranului: butonul se poate apăsa de două ori, iar o a doua apăsare care ar da eroare ar
     arăta ca un defect acolo unde nu e niciunul. Un refuz se păstrează pentru ce **nu se poate
     face**, nu pentru ce **e deja făcut**."""
-    with db.get_conn() as conn:
-        if not _acces_pentru_activare(conn, ctx["rol"], ctx.get("firm"), tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            return tenant_stergere.comuta_activ(conn, tenant_id, date.activ, ctx["uid"])
-        except ValueError as e:
-            raise HTTPException(400, str(e))
+    try:
+        return _uc_tenants.tenant_activare(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class NumeAlesIn(BaseModel):
@@ -1676,70 +1392,36 @@ class NumeAlesIn(BaseModel):
 def tenant_nume_ales(tenant_id: int, date: NumeAlesIn, ctx=Depends(cere_rol("admin_firma"))):
     """[R77] Alegerea între denumirea din aplicație și cea de la ANAF. **Amândouă** ramurile scriu:
     a păstra pe a ta e un act, nu absența unuia."""
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            return tenant_provisioning.alege_denumirea(conn, tenant_id, date.alege, ctx["uid"])
-        except ValueError as e:
-            raise HTTPException(400, str(e))
+    try:
+        return _uc_tenants.tenant_nume_ales(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}")
 def tenant_scoate(tenant_id: int, confirmare: str = "", ctx=Depends(cere_rol("admin_firma"))):
     """[R72] Scoate din portofoliu o firmă FĂRĂ evidență. Confirmarea e CUI-ul, nu numele:
     instanța care a produs restanța sunt două firme cu ACELAȘI nume."""
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            r = tenant_stergere.sterge(conn, tenant_id, "scoatere_firma", ctx["uid"],
-                                       confirmare=confirmare)
-        except PermissionError as e:
-            raise HTTPException(409, str(e))
-        except ValueError as e:
-            raise HTTPException(400, str(e))
-    # DUPĂ commit: un `rmtree` nu se dă înapoi.
-    r["fisiere_sterse"] = tenant_stergere.sterge_fisiere(r["schema"])
-    return r
+    try:
+        return _uc_tenants.tenant_scoate(tenant_id, confirmare, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}")
 def tenant_detalii(tenant_id: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        # verific accesul (schema_tenant întoarce None dacă userul n-are acces)
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        d = tenant_provisioning.detalii_tenant(conn, tenant_id)
-    return d
+    try:
+        return _uc_tenants.tenant_detalii(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants")
 def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
-    if _TENANT_TEMPLATE is None:
-        raise HTTPException(500, "template tenant indisponibil pe server")
-    # [P5 val 3] ANAF ÎNAINTE de conexiune — vezi nota de la `register`.
     try:
-        _d_anaf = tenant_provisioning.date_din_anaf(date.cui)
-    except Exception as _e:
-        _obs.esec_secundar("precompletare ANAF la firma noua", _e)
-        _d_anaf = None
-    try:  # tenant_cui_400
-        with db.get_conn() as conn:
-            r = tenant_provisioning.provision_tenant(
-                conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE,
-                tip_firma=date.tip_firma)
-            # [F188] pre-completare din ANAF v9 - SURSA UNICA (tenant_provisioning.precompleteaza_din_anaf),
-            # aceeasi ca la register/import. NU atinge 'nume' (setat de contabil): seteaza_nume=False.
-            # ANAF jos -> default, corectabil din Date firma.
-            try:
-                # [P5 val 3] datele ANAF s-au luat INAINTE de bloc (`_d_anaf`); aici doar scrie.
-                tenant_provisioning.precompleteaza_din_anaf(conn, r["schema_name"], _d_anaf, seteaza_nume=False)
-            except Exception as _e:
-                _obs.esec_secundar("precompletare ANAF la firma noua", _e)  # inghitit, dar nu tacut (27.07.2026)
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    return r
+        return _uc_tenants.tenant_creeaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [client_acces_v1] acces client la portal: creare cont + email cu parola temporara
@@ -1750,58 +1432,18 @@ class ClientAccesIn(BaseModel):
 
 @app.get("/tenants/{tenant_id}/client-acces")
 def client_acces_lista(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            return {"clienti": repo_utilizatori.conturi_client_ale_firmei(cur, tenant_id)}
+    try:
+        return _uc_tenants.client_acces_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/client-acces")
 def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
                          ctx=Depends(cere_rol("admin_firma"))):
-    email = (date.email or "").strip().lower()
-    if not _email_valid(email):  # [R138] forma, nu doar prezenta unui @
-        raise HTTPException(400, EMAIL_INVALID)
-    import secrets
-    parola_temp = secrets.token_urlsafe(9)
-    tok = "ml_" + secrets.token_urlsafe(32)   # [P4] se pregătește înainte: intră cu contul
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        d = tenant_provisioning.detalii_tenant(conn, tenant_id)
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            _ex = repo_utilizatori.contul_dupa_email(cur, email)
-            if _ex and (_ex["rol"] != "client" or _ex["activ"]):
-                raise HTTPException(400, EMAIL_EXISTA)
-            # [R62 (2)] Aceeasi ramura de reactivare exista si aici. Gardul repara CLASA, nu
-            # instanta: daca ar sta doar pe ruta clientului, calea prin cabinet ar ramane deschisa.
-            _cere_acelasi_cabinet(_ex, ctx["firm"])
-            if _ex:  # client_mesaj_v1: reinvitare client dezactivat
-                uid = _ex["id"]
-                repo_utilizatori.activeaza_contul_cu_nume(cur, date.nume or email.split("@")[0], uid)
-                repo_utilizatori.leaga_contul_de_firma_idempotent(cur, uid, tenant_id)
-            el_creaza = _ex is None
-            if el_creaza:
-                uid = repo_utilizatori.creeaza_cont(cur, email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"])["id"]
-                repo_utilizatori.leaga_contul_de_firma(cur, uid, tenant_id)
-            _urma_portal(cur, tenant_id, "acces_dat",
-                         "cabinetul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
-                         ctx["uid"])
-            # [P4, 09.09.2026] TOKENUL INTRĂ CU CONTUL, ÎN ACEEAȘI TRANZACȚIE.
-            #
-            # Ce era până azi: contul de client (cu o parolă temporară pe care n-o știe nimeni) se
-            # scria într-o tranzacție, iar tokenul de activare — singura lui cale de intrare — în
-            # a doua. O eroare între ele lăsa un utilizator care NU poate intra niciodată, iar
-            # urma din portal spunea „cabinetul a dat acces". Fundătură, și scrisă ca reușită.
-            _pune_token(cur, tok, uid, "48 hours")
-    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
-    link = baza + "/#magic=" + tok
-    _pm = ("<p style='border-left:3px solid #3d8fd6;padding-left:12px;color:#334155'>%s</p>" % date.mesaj.strip()) if (date.mesaj or "").strip() else ""  # client_mesaj_v1
-    html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
-            "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link)
-    _obs.trimite_email_html(email, "Acces portal iConta.eu — " + d.get("nume", ""), html)
-    return {"ok": True, "user_id": uid}
+    try:
+        return _uc_tenants.client_acces_creeaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class ActivareIn(BaseModel):
     token: str
@@ -1811,23 +1453,33 @@ class ActivareIn(BaseModel):
 # [token_hash_v1] Tokenurile de acces (magic-link + activare) se stocheaza DOAR ca hash sha256:
 # un dump/backup nu mai permite impersonarea. Clarul traieste doar in link (email). Mecanica = ca la reset.
 def _hash_tok(t):
-    import hashlib
-    return hashlib.sha256((t or "").encode("utf-8")).hexdigest()
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._hash_tok` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._hash_tok(t)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _pune_token(cur, tok, user_id, interval_sql):
-    """Curata expiratele/folositele, apoi stocheaza DOAR hash-ul tokenului (nu clarul)."""
-    _repo.delete_public(cur)
-    _repo.insert_public_3(cur, user_id, interval_sql, _hash_tok, tok)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._pune_token` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._pune_token(cur, tok, user_id, interval_sql)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class MagicCereIn(BaseModel):
     email: str
 
-_TERMENI_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TERMENI_SI_CONDITII.md")
+from core.uc_comun import _TERMENI_PATH  # noqa: E402  [P7 lot 2] definitia a plecat in use-case
 
 def _termeni_versiune(txt):
-    """Versiunea = linia 3 din fisier (fara markdown bold). Stocata la acceptare ca dovada."""
-    linii = txt.split("\n")
-    return (linii[2].strip().strip("*").strip() if len(linii) > 2 else "necunoscuta")
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._termeni_versiune` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._termeni_versiune(txt)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _termeni_public_md(txt):
     """Randeaza fisierul PUBLIC, dar ELIMINA ce fisierul insusi marcheaza intern: nota 'de eliminat
@@ -1901,7 +1553,7 @@ def _ip_client(request):
     if xff:
         return xff.split(",")[-1].strip()
     return request.client.host if request.client else "?"
-_magic_rate = {}  # [magic_link_v1] rate-limit per IP pt /public/magic-link (aceleasi praguri ca reset)
+from core.uc_comun import _magic_rate  # noqa: E402  [P7 lot 2] definitia a plecat in use-case  # [magic_link_v1] rate-limit per IP pt /public/magic-link (aceleasi praguri ca reset)
 _cui_rate = {}  # [verifica_cui_v1] rate-limit /public/verifica-cui (protejeaza cheia ANAF)
 def _rate_limit_email(store, request, maxreq=5, fereastra=900):
     """Anti-spam per IP (in-memory, single worker). Implicit 5 cereri / 15 min."""
@@ -1917,127 +1569,50 @@ def _rate_limit_reset(request):
 @app.post("/public/reset-parola/cere")  # [reset_parola_v1] "Am uitat parola" cabinet — raspuns IDENTIC (anti-enumerare), rate-limited
 def reset_parola_cere(date: ResetCereIn, request: Request):
     _rate_limit_reset(request)
-    from core import reset_parola as _rp
-    with db.get_conn() as conn:
-        token, u = _rp.cere_reset(conn, date.email)
-        conn.commit()
-    if token and u:
-        try:
-            baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
-            link = baza + "/#reset=" + token
-            nume = (u.get("prenume") or u.get("nume") or "").strip()
-            html = ("<p>Buna%s,</p>"
-                    "<p>Am primit o cerere de resetare a parolei contului tau de cabinet pe iConta.eu.</p>"
-                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Seteaza o parola noua</a></p>"
-                    "<p>Linkul e valabil 60 de minute si poate fi folosit o singura data. "
-                    "Daca nu tu ai cerut resetarea, ignora acest mesaj — parola ramane neschimbata.</p>"
-                    % ((" " + nume) if nume else "", link))
-            _obs.trimite_email_html(u["email"], "Resetare parola iConta.eu", html)
-        except Exception as _e:
-            # [R73] ALERTA: e cale de acces. Tacerea aici inseamna ca omul nu mai poate intra
-            # si nimeni nu afla — chiar criteriul din docstringul lui `esec_secundar`.
-            _obs.esec_secundar("email resetare parola", _e, alerta=True)
-        try:
-            with db.get_conn() as c, c.cursor() as cur:
-                repo_admin.scrie_audit_reset_cerut(cur, u["user_id"])
-                c.commit()
-        except Exception as _e:
-            _obs.esec_secundar("audit_log reset parola cerut", _e)  # inghitit, dar nu tacut (27.07.2026)
-    return {"ok": True, "mesaj": "Dacă adresa e înregistrată, vei primi un mesaj cu instrucțiuni de resetare."}
+    try:
+        return _uc_public.reset_parola_cere(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/public/reset-parola/seteaza")  # [reset_parola_v1] valideaza tokenul (single-use), seteaza parola, invalideaza sesiunile
 def reset_parola_seteaza(date: ResetSeteazaIn):
-    if not _nucleu.parola_ok(date.parola):
-        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
-    from core import reset_parola as _rp
-    with db.get_conn() as conn:
-        try:
-            r = _rp.seteaza(conn, date.token, date.parola)
-            conn.commit()
-        except ValueError:
-            raise HTTPException(400, "Link invalid, expirat sau deja folosit. Cere alt link din sectiunea Am uitat parola.")
     try:
-        with db.get_conn() as c, c.cursor() as cur:
-            repo_admin.scrie_audit_reset_schimbat(cur, r["user_id"])
-            c.commit()
-    except Exception as _e:
-        _obs.esec_secundar("audit_log reset parola schimbat", _e)  # inghitit, dar nu tacut (27.07.2026)
-    return {"ok": True}
+        return _uc_public.reset_parola_seteaza(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/public/magic-link")
 def magic_link_cere(date: MagicCereIn, request: Request):
     """Trimite link de logare fara parola. Raspuns identic indiferent daca emailul exista (fara enumerare)."""
-    _rate_limit_email(_magic_rate, request)  # [magic_link_v1] anti-spam: 5/15min per IP (ca reset)
-    import secrets as _sec
-    email = (date.email or "").strip().lower()
-    _html_magic = None          # ce ramane de trimis DUPA ce se inchide blocul de conexiune
-    with db.get_conn() as conn, conn.cursor() as cur:
-        r = repo_utilizatori.id_cont_activ_dupa_email(cur, email)
-        if r:
-            tok = "ml_" + _sec.token_urlsafe(32)
-            _pune_token(cur, tok, r[0], "15 minutes")
-            conn.commit()
-            baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
-            link = baza + "/#magic=" + tok
-            _html_magic = ("<p>Buna,</p><p>Apasa butonul pentru a intra in iConta.eu, fara parola:</p>"
-                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in iConta.eu</a></p>"
-                    "<p>Linkul e valabil 15 minute si poate fi folosit o singura data.</p>") % link
-    # [P5 val 3, 11.09.2026] AICI, nu inauntru. Tokenul e COMIS mai sus (`conn.commit()`), deci
-    # trimiterea nu mai are ce sa astepte de la tranzactie — dar tinea o conexiune din pool peste un
-    # apel cu termen de 15 s. Conditiile de trimitere sunt neschimbate: se trimite exact cand exista
-    # `_html_magic`, adica exact cand exista utilizatorul. Raspunsul rutei ramane acelasi indiferent,
-    # ca sa nu se poata enumera adresele.
-    if _html_magic is not None:
-        try:
-            _obs.trimite_email_html(email, "Link de logare iConta.eu", _html_magic)
-        except Exception as _e:
-            # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
-            _obs.esec_secundar("email link de logare", _e, alerta=True)
-    return {"ok": True, "mesaj": MESAJ_LINK_LOGARE_CERUT}
+    _rate_limit_email(_magic_rate, request)
+    try:
+        return _uc_public.magic_link_cere(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class MagicLoginIn(BaseModel):
     token: str
 
 @app.post("/public/magic-login")
 def magic_login(date: MagicLoginIn):
-    tok = (date.token or "").strip()
-    if not tok.startswith("ml_"):
-        raise HTTPException(401, "link invalid")
-    with db.get_conn() as conn, conn.cursor() as cur:
-        r = repo_utilizatori.cont_din_token_activare(cur, _hash_tok(tok))
-        if not r:
-            raise HTTPException(401, "link expirat sau folosit")
-        repo_utilizatori.marcheaza_tokenul_folosit(cur, _hash_tok(tok))
-        conn.commit()
-    with db.get_conn() as conn:
-        rez = auth_api.sesiune_pentru_user(conn, r[0])
-    if not rez.get("ok"):
-        raise HTTPException(401, rez.get("mesaj", "cont inactiv"))
-    return rez
+    try:
+        return _uc_public.magic_login(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/public/activare")
 def activare_cont(date: ActivareIn):
-    if not _nucleu.parola_ok(date.parola):
-        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            r = repo_utilizatori.cont_din_token_activare_2(cur, _hash_tok(date.token))
-            if not r:
-                raise HTTPException(400, "link de activare invalid sau expirat")
-            repo_utilizatori.seteaza_parola(cur, _nucleu.hash_parola(date.parola), r["user_id"])
-            repo_utilizatori.marcheaza_tokenul_folosit(cur, _hash_tok(date.token))
-    return {"ok": True}
+    try:
+        return _uc_public.activare_cont(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/client-acces/{user_id}")
 def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_rol("admin_firma"))):
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            repo_utilizatori.dezactiveaza_clientul_firmei(cur, user_id, tenant_id)
-            _urma_portal(cur, tenant_id, "acces_retras",
-                         "cabinetul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
-    return {"ok": True}
+    try:
+        return _uc_tenants.client_acces_revoca(tenant_id, user_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/acces-portal")  # [F-preview] previzualizare portal client din cabinet
@@ -2045,46 +1620,18 @@ def acces_portal_preview(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "an
     """Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei.
     Cabinetul vede exact ce vede clientul, fara sa poata scrie (guard pe backend, nu doar UI).
     Necesita un cont de client al firmei (rol=client in user_tenants); daca nu exista -> 400 cu indrumare."""
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            row = repo_utilizatori.primul_client_al_firmei(cur, tenant_id)
-            # [F-preview] identitatea tenantului previzualizat: nume_tenant + tenant_are_cabinet
-            # (accounting_firm_id setat) -> exact ce foloseste portal.js/_eGratuit ca la login.
-            tr = repo_tenants.nume_si_cabinet(cur, tenant_id)
-    if not row:
-        raise HTTPException(400, "Firma nu are încă un cont de client. Invită unul din 'Acces client', apoi poți previzualiza.")
-    # token de client, marcat preview -> read-only middleware blocheaza orice mutatie
-    token = auth_api.emite_token({"id": row["id"], "rol": "client", "accounting_firm_id": None, "preview": True})
-    # user cu contextul de tenant: fara el, tab-ul de preview cade pe portalul gratuit (bug F197).
-    return {"token": token, "user": {"rol": "client",
-                                     "nume_tenant": tr["nume"] if tr else None,
-                                     "tenant_are_cabinet": bool(tr and tr["accounting_firm_id"])}}
+    try:
+        return _uc_tenants.acces_portal_preview(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.put("/tenants/{tenant_id}")
-def tenant_actualizeaza(tenant_id: int, date: TenantEdit,
-                        ctx=Depends(cere_rol("admin_firma"))):
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        # [R77] `ctx["uid"]` nu e decorativ: o redenumire care se departeaza de denumirea de la
-        # ANAF se consemneaza ca alegere deliberata, iar o alegere fara autor nu e o alegere.
-        #
-        # [LOTUL 11, 04.09.2026] `try` NU e decorativ nici el. Toate portile puse aici pe 27.08 —
-        # cifra de control a CUI-ului, unicitatea CUI-ului, unicitatea denumirii — refuza ridicand
-        # `ValueError`, iar ruta nu-l prindea: fiecare refuz iesea **500 Internal Server Error**.
-        # Masurat apasand: `PUT /tenants/4838 {"cui": "123"}` -> 500. Mesajele scrise cu grija
-        # („CUI invalid: cifra de control nu corespunde") n-au ajuns niciodata la un contabil.
-        # *O poarta al carei refuz arata ca o cadere invata pe cineva ca aplicatia e stricata, nu
-        # ca datele sunt gresite.*
-        try:
-            r = tenant_provisioning.actualizeaza_tenant(conn, tenant_id, date.nume, date.cui,
-                                                        user_id=ctx["uid"])
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-    return r
+def tenant_actualizeaza(tenant_id: int, date: TenantEdit,                         ctx=Depends(cere_rol("admin_firma"))):
+    try:
+        return _uc_tenants.tenant_actualizeaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -2148,69 +1695,19 @@ def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
 @app.post("/migrare/importa")
 def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))):
     """Creează câte un tenant pentru fiecare firmă selectată. Sare peste CUI-uri deja în portofoliu."""
-    if _TENANT_TEMPLATE is None:
-        raise HTTPException(500, "template tenant indisponibil pe server")
-    creat, erori = [], []
-    _de_precompletat = []          # [(schema_name, cui)] — ANAF se cheamă abia după bloc
-    with db.get_conn() as conn:
-        # CUI-urile deja existente în portofoliul cabinetului (normalizate la cifre)
-        with conn.cursor() as cur:
-            existente = set()
-            for (c,) in repo_tenants.cui_uri_din_portofoliu(cur, ctx["firm"]):
-                cc = anaf_api._curata(c)
-                if cc:
-                    existente.add(cc)
-        for f in date.firme:
-            nume = (f.denumire or "").strip() or f"Firmă {f.cui}"
-            cuic = anaf_api._curata(f.cui)
-            if cuic and cuic in existente:
-                # [P8/C] respingere TIPATA: pana azi ecranul numara duplicatele potrivind PROZA
-                # (`(e.mesaj || "").includes("există deja")`), deci o reformulare a textului ar fi
-                # spus tacit „0 firme erau deja in portofoliu" despre un import in care erau.
-                erori.append(migrare_api.respinge(
-                    "firmă", "firma %s (CUI %s)" % (nume, f.cui), "deja_exista",
-                    "există deja în portofoliu - nu s-a dublat", cui=str(f.cui), nume=nume))
-                continue
-            try:
-                r = tenant_provisioning.provision_tenant(
-                    conn, nume, str(f.cui), ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
-                # [P5 val 3] ANAF se cheamă DUPĂ bloc, și numai pentru firmele CHIAR create —
-                # exact ca azi. Aici doar se reține ce urmează să se precompleteze.
-                _de_precompletat.append((r["schema_name"], f.cui))
-                creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id")})
-                if cuic:
-                    existente.add(cuic)   # prinde și duplicate în același lot
-            except Exception as e:
-                # ESEC, nu respingere de date: sta in aceeasi lista cu `deja_exista`, dar cauza e
-                # alta si omul trebuie s-o poata deosebi - altfel cauta greseala in fisier cand
-                # problema e la noi.
-                erori.append(migrare_api.respinge(
-                    "firmă", "firma %s (CUI %s)" % (nume, f.cui), "creare_esuata",
-                    "nu s-a putut crea: %s" % e, cui=str(f.cui), nume=nume))
-    # ── [P5 val 3] ANAF, FĂRĂ nicio conexiune (termen 20 s + 1,1 s între loturi) ────────
-    _anaf = []
-    for _schema_n, _cui_f in _de_precompletat:
-        try:
-            _anaf.append((_schema_n, tenant_provisioning.date_din_anaf(_cui_f)))
-        except Exception as _ea:
-            _obs.esec_secundar("precompletare ANAF la import firma", _ea)  # firma creata; ANAF completabil manual
-    if _anaf:
-        with db.get_conn() as conn:          # tranzacție scurtă, doar scrierea
-            for _schema_n, _d in _anaf:
-                try:
-                    tenant_provisioning.precompleteaza_din_anaf(conn, _schema_n, _d, seteaza_nume=False)
-                except Exception as _ea:
-                    _obs.esec_secundar("precompletare ANAF la import firma", _ea)
-    return {"creat": creat, "erori": erori, "total": len(creat)}
+    try:
+        return _uc_migrare.migrare_importa(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/migrare/status")
 def migrare_status_citeste(ctx=Depends(cere_cabinet)):
     """Starea fiecărui strat de migrare + reminderul (straturi în lucru)."""
-    with db.get_conn() as conn:
-        status = migrare_api.citeste_status(conn, ctx["firm"])
-        rem = migrare_api.reminder(conn, ctx["firm"])
-    return {"straturi": migrare_api.STRATURI, "status": status, "reminder": rem}
+    try:
+        return _uc_migrare.migrare_status_citeste(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/migrare/straturi")
@@ -2230,11 +1727,9 @@ def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet
 def migrare_status_seteaza(date: MigrareStatusIn, ctx=Depends(cere_rol("admin_firma"))):
     """Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru)."""
     try:
-        with db.get_conn() as conn:
-            r = migrare_api.seteaza_status(conn, ctx["firm"], date.strat, date.stare, date.nota)
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    return r
+        return _uc_migrare.migrare_status_seteaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -2283,14 +1778,10 @@ def migrare_plan_conturi_status(ctx=Depends(cere_cabinet)):
     return {"firme": out}
 @app.get("/tenants/{tenant_id}/plan-conturi")  # [p95_plan_conturi] cauta/listeaza conturile firmei
 def tenant_plan_conturi_lista(tenant_id: int, q: Optional[str] = None, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        with conn.cursor() as cur:
-            if q:
-                rows = repo_contabilitate.conturi_dupa_text(cur, f"%{q}%", f"%{q}%")
-            else:
-                rows = repo_contabilitate.toate_conturile(cur)
-    return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2]} for r in rows]}
+    try:
+        return _uc_tenants.tenant_plan_conturi_lista(tenant_id, q, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # [p95_plan_conturi] Modelul TREBUIE definit INAINTE de handler: cu `from __future__ import annotations`
 # (PEP 563) adnotarea `date: PlanContIn` e string, iar @app.post o rezolva la IMPORT, in ordinea sursei.
 # Definit DUPA handler => FastAPI nu-l recunoaste ca model de body => trateaza `date` ca query param =>
@@ -2306,36 +1797,11 @@ class PlanContIn(BaseModel):  # [p95_plan_conturi]
 # cont inexistent (R54) „nu apara nimic daca oricine poate adauga contul". Planul de conturi e
 # nomenclator de registru (PLAN_ARHITECTURA Partea III), iar a-l extinde e o decizie despre ce
 # poate inregistra firma — nu o completare de formular.
-def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,
-                               ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    simbol = (date.simbol or "").strip()
-    denumire = (date.denumire or "").strip()
-    if not simbol or not denumire:
-        raise HTTPException(422, "Completează atât simbolul, cât și denumirea contului.")
-    # [lotul 3, 04.09.2026] `simbol="ABC"` intra in plan si de acolo putea ajunge pe o nota, intr-o
-    # balanta si intr-o declaratie. Criteriul e DERIVAT din nomenclatorul propriu: planul general
-    # seed-uit la crearea firmei are peste 700 de conturi, toate incepand cu o cifra de clasa.
-    if not simbol[0].isdigit() or simbol[0] == "0":
-        raise HTTPException(422, "Simbolul contului începe cu cifra clasei (1-9), ca toate "
-                                 "conturile din planul general — am primit %r. Dacă e un analitic, "
-                                 "scrie-l după contul sintetic (de exemplu 4111.01)." % simbol)
-    if not all(c.isdigit() or c in "._-/" for c in simbol):
-        raise HTTPException(422, "Simbolul contului se scrie din cifre, cu separator pentru "
-                                 "analitic (`.`, `_`, `-`, `/`) — am primit %r." % simbol)
-    with db.get_conn(schema) as conn:
-        with conn.cursor() as cur:
-            # Regula 4 + 14.4: un simbol care exista deja NU se suprascrie tacut (ar redenumi un cont OMFP
-            # standard, seed-uit la crearea firmei). Calea bulk (solduri_api) foloseste ON CONFLICT DO NOTHING;
-            # calea manuala refuza explicit, cu denumirea contului existent, si trimite la cautarea de mai sus.
-            existent = repo_contabilitate.denumirea_contului(cur, simbol)
-            if existent:
-                raise HTTPException(409,
-                    "Contul %s există deja în plan: „%s”. Caută-l în lista de mai sus; dacă ai nevoie "
-                    "de un cont diferit, folosește alt simbol." % (simbol, existent[0]))
-            repo_contabilitate.adauga_cont_in_plan(cur, simbol, denumire, date.tip or "Bifunctional")
-        conn.commit()
-    return {"ok": True, "simbol": simbol}
+def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,                                ctx=Depends(cere_rol("admin_firma"))):
+    try:
+        return _uc_tenants.tenant_plan_conturi_adauga(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.get("/migrare/vector")  # [p84_vector_front] lista firmelor cu status vector fiscal
 def migrare_vector_status(ctx=Depends(cere_cabinet)):
     """Lista firmelor cabinetului cu status vector (completat sau nu)."""
@@ -2377,22 +1843,19 @@ def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(
 @app.get("/tenants/{tenant_id}/solduri")
 def solduri_rezumat(tenant_id: int, ctx=Depends(cere_cabinet)):
     """Rezumatul soldurilor salvate pentru o firmă."""
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return solduri_api.rezumat(conn)
+    try:
+        return _uc_tenants.solduri_rezumat(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/solduri")
 def solduri_salveaza(tenant_id: int, date: SolduriIn, ctx=Depends(cere_rol("admin_firma"))):
     """Salvează soldurile inițiale ale unei firme (înlocuiește ce era)."""
-    schema = _schema_sau_404(ctx, tenant_id)
-    randuri = [{"cont": r.cont, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
-               for r in date.randuri]
-    with db.get_conn(schema) as conn:
-        try:
-            return solduri_api.importa(conn, randuri, date.data_referinta)
-        except ValueError as e:  # balanta neechilibrata -> 422 cu mesaj explicativ
-            raise HTTPException(422, str(e))
+    try:
+        return _uc_tenants.solduri_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -2421,45 +1884,28 @@ def migrare_parteneri_status(ctx=Depends(cere_cabinet)):
 @app.post("/tenants/{tenant_id}/parteneri/incarca")
 def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta."""
-    schema = _schema_sau_404(ctx, tenant_id)
-    continut = _octetii(fisier)
     try:
-        randuri = solduri_parteneri_api.extrage(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    # [lotul 6] Un `.txt` cu o linie de proza intorcea `{"randuri": []}` — „fisierul n-are parteneri"
-    # arata identic cu „fisierul n-a fost citit". A treia cale cu aceeasi gaura in lotul asta.
-    if not randuri:
-        raise HTTPException(422, "Din fișierul %s n-am putut citi niciun partener. Se așteaptă un "
-                                 "CSV sau un XLSX cu solduri pe parteneri — un fișier necitit nu e "
-                                 "un fișier gol." % (fisier.filename or "trimis",))
-    td = round(sum(r["debit"] for r in randuri), 2)
-    tc = round(sum(r["credit"] for r in randuri), 2)
-    with db.get_conn(schema) as conn:
-        coer = solduri_parteneri_api.coerenta(conn, randuri)
-    erori = migrare_api.erori_verifica(solduri_parteneri_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return _raspuns({"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer, "erori": erori})
+        return _uc_tenants.parteneri_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/parteneri")
 def parteneri_rezumat(tenant_id: int, ctx=Depends(cere_cabinet)):
     """Rezumatul partenerilor salvati pentru o firma."""
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return solduri_parteneri_api.rezumat(conn)
+    try:
+        return _uc_tenants.parteneri_rezumat(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/parteneri")
 def parteneri_salveaza(tenant_id: int, date: ParteneriIn, ctx=Depends(cere_rol("admin_firma"))):
     """Salveaza soldurile partenerilor unei firme (inlocuieste ce era)."""
-    schema = _schema_sau_404(ctx, tenant_id)
-    randuri = [{"cont": r.cont, "cui": r.cui, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
-               for r in date.randuri]
-    with db.get_conn(schema) as conn:
-        try:
-            return solduri_parteneri_api.importa(conn, randuri, date.data_referinta)
-        except ValueError as e:  # randuri invalide -> 422 cu mesaj explicativ
-            raise HTTPException(422, str(e))
+    try:
+        return _uc_tenants.parteneri_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -2489,37 +1935,19 @@ def migrare_salariati_status(ctx=Depends(cere_cabinet)):
 @app.post("/tenants/{tenant_id}/salariati-import/incarca")
 def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza)."""
-    _schema_sau_404(ctx, tenant_id)
-    continut = _octetii(fisier)
     try:
-        randuri = salariati_import_api.extrage(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    valizi = sum(1 for r in randuri if r["cnp_valid"])
-    erori = migrare_api.erori_verifica(salariati_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    from core import cor_api as _cor   # [Q16] imbogateste COR cu denumirea ocupatiei (nomenclator public.cor_ocupatii)
-    _cache = {}
-    with db.get_conn() as conn:
-        for r in randuri:
-            c = (r.get("cor") or "").strip()
-            if c and c not in _cache:
-                _cache[c] = _cor.denumire(conn, c)
-    for r in randuri:
-        r["cor_denumire"] = _cache.get((r.get("cor") or "").strip())
-    return _raspuns({"randuri": randuri, "total": len(randuri), "valizi": valizi,
-            "invalizi": len(randuri) - valizi, "erori": erori})
+        return _uc_tenants.salariati_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/salariati-import")
 def salariati_import_salveaza(tenant_id: int, date: SalariatiImportIn, ctx=Depends(cere_rol("admin_firma"))):
     """Importa salariatii cu CNP valid (upsert pe CNP). Sare peste cei invalizi."""
-    schema = _schema_sau_404(ctx, tenant_id)
-    randuri = [r.model_dump() for r in date.randuri]
-    with db.get_conn(schema) as conn:
-        try:
-            return salariati_import_api.importa(conn, randuri)
-        except ValueError as e:  # randuri invalide -> 422 cu mesaj
-            raise HTTPException(422, str(e))
+    try:
+        return _uc_tenants.salariati_import_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -2561,13 +1989,10 @@ def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
 
 @app.post("/tenants/{tenant_id}/asociati-import")
 def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    randuri = [r.model_dump() for r in date.randuri]
-    with db.get_conn(schema) as conn:
-        try:
-            return asociati_import_api.importa(conn, randuri)
-        except ValueError as e:  # randuri invalide -> 422 cu mesaj
-            raise HTTPException(422, str(e))
+    try:
+        return _uc_tenants.asociati_import_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -2576,20 +2001,16 @@ class ReteteImportIn(BaseModel):
     retete: list[dict]
 @app.post("/tenants/{tenant_id}/retete-import/incarca")
 def retete_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    continut = _octetii(fisier)
     try:
-        retete = retete_import_api.extrage(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    with db.get_conn(schema) as conn:
-        retete = retete_import_api.potriveste(conn, schema, retete)
-    return _raspuns({"retete": retete, "rezumat": retete_import_api.rezumat(retete)})
+        return _uc_tenants.retete_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.post("/tenants/{tenant_id}/retete-import")
 def retete_import_salveaza(tenant_id: int, date: ReteteImportIn, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return retete_import_api.importa(conn, schema, date.retete)
+    try:
+        return _uc_tenants.retete_import_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # === IMPORT ARTICOLE + STOC INITIAL CV (F151) ===
 class ArticolImportIn(BaseModel):
     denumire: str
@@ -2614,13 +2035,10 @@ def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
     return _raspuns({"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri)})
 @app.post("/tenants/{tenant_id}/articole-import")
 def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    randuri = [r.model_dump() for r in date.randuri]
-    with db.get_conn(schema) as conn:
-        try:
-            return articole_import_api.importa(conn, schema, randuri, data_sold=date.data_sold)
-        except (ValueError, KeyError) as e:    # [lotul 6] refuzul ajunge ca mesaj, nu ca 500
-            raise HTTPException(422, _mesaj_intrare(e))
+    try:
+        return _uc_tenants.articole_import_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # ============================================================
 #  MIGRARE STRAT 6 — MIJLOACE FIXE (registru amortizare)
 # ============================================================
@@ -2662,13 +2080,10 @@ def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import")
 def mijloace_import_salveaza(tenant_id: int, date: MijloaceFixeImportIn, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    randuri = [r.model_dump() for r in date.randuri]
-    with db.get_conn(schema) as conn:
-        try:
-            return mijloace_fixe_import_api.importa(conn, randuri)
-        except ValueError as e:  # randuri invalide -> 422 cu mesaj
-            raise HTTPException(422, str(e))
+    try:
+        return _uc_tenants.mijloace_import_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -2691,20 +2106,10 @@ def migrare_istoric_status(ctx=Depends(cere_cabinet)):
     eșuează pentru toate —, iar atunci fiecare firmă primește exact valoarea pe care i-ar fi
     dat-o bucla veche în aceeași situație. *Se scrie aici fiindcă e singurul loc în care forma
     nouă nu e identică cu cea veche, ci echivalentă.*"""
-    out = []
-    with db.get_conn() as conn:
-        firme = auth_api.tenantii_userului(conn, ctx["uid"])
-        try:
-            rez = istoric_declaratii_import_api.rezumat_lot(conn, [f.get("id") for f in firme])
-        except Exception:
-            _LOG_VERDICT.warning("istoric-declaratii: rezumatul de lot a esuat -> zero pentru tot "
-                                 "portofoliul (ca bucla veche, per firma)", exc_info=True)
-            rez = {}
-    for f in firme:
-        r = rez.get(f.get("id")) or {"are_istoric": False, "randuri": 0}
-        out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
-                    "are_istoric": r["are_istoric"], "randuri": r["randuri"]})
-    return {"firme": out}
+    try:
+        return _uc_migrare.migrare_istoric_status(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import/incarca")
@@ -2722,13 +2127,10 @@ def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=D
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import")
 def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depends(cere_rol("admin_firma"))):
-    _schema_sau_404(ctx, tenant_id)
-    randuri = [r.model_dump() for r in date.randuri]
-    with db.get_conn() as conn:
-        try:
-            return istoric_declaratii_import_api.importa(conn, tenant_id, randuri)
-        except ValueError as e:  # randuri invalide -> 422 cu mesaj
-            raise HTTPException(422, str(e))
+    try:
+        return _uc_tenants.istoric_import_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -2744,29 +2146,10 @@ def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
     valide intr-o tranzactie atomica (rip_migrare_api.importa) si marcheaza stratul 'rip'
     pentru reminder(): 'gata' daca nimic respins, 'in_lucru' cu nota daca au ramas randuri.
     """
-    schema = _schema_sau_404(ctx, tenant_id)
-    continut = _octetii(fisier)
     try:
-        date, raport = rip_migrare_api.extrage_operatiuni(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    ops = date.get("operatiuni", [])
-    respinse = raport.get("respinse", [])
-    if not ops and not respinse:
-        raise HTTPException(400, "fișierul nu conține operațiuni de import")
-    # import atomic (importa face commit/rollback propriu); erori DB -> nimic scris
-    with db.get_conn(schema) as conn:
-        rez = rip_migrare_api.importa(conn, schema, ops)
-    if rez["erori"]:
-        raise HTTPException(422, "import eșuat: " + str(rez["erori"][0].get("motiv", "eroare la scriere")))
-    # marcheaza stratul rip (public.migrare_status, per cabinet) pentru reminder()
-    with db.get_conn() as conn:
-        if respinse:
-            migrare_api.seteaza_status(conn, ctx["firm"], "rip", "in_lucru",
-                                       f"{len(respinse)} rânduri respinse la import — de completat")
-        else:
-            migrare_api.seteaza_status(conn, ctx["firm"], "rip", "gata", "")
-    return _raspuns({"importate": rez["importate"], "sarite_duplicat": rez.get("sarite_duplicat", 0), "raport": raport})
+        return _uc_tenants.rip_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -2774,53 +2157,33 @@ def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
 #  CONTROL FISCAL — semafor conformare per portofoliu
 # ============================================================
 def _flag_constatare(stare, eticheta, mesaj, temei, an, luna, remediu=None):
-    # [verdict_colapsat] constatare STRUCTURATA (dot + mesaj + temei + remediu), randata identic cu D390/TVA
-    # in control.js. `eticheta` = label scurt (sumar de lista + dedup fata de «Declaratie vs contabilitate»).
-    # [P8, 21.08.2026] Constatarea E o afirmatie, imbracata pentru ecran - ca in control_incrucisat.
-    # Felul se alege dupa STARE, fiindca asta E ce afirma: verde = am verificat si tine (fapt);
-    # rosu = doua surse nu pot fi amandoua adevarate (contradictie); gri = nu pot spune (necunoastere).
-
-    _txt = mesaj or eticheta
-    if stare == "gri":
-        _dom = ("%04d-%02d" % (an, luna)) if (an and luna) else (str(an) if an else None)
-        _a = _af.afirmatie("necunoastere", eticheta, _txt, domeniu_de=_dom, domeniu_pana=_dom)
-    elif stare == "rosu":
-        _a = _af.afirmatie("contradictie", eticheta, _txt,
-                           sursele="evidența contabilă a firmei; verificarea „%s”" % eticheta)
-    else:
-        _a = _af.afirmatie("fapt", eticheta, _txt, an=an, luna=luna,
-                           temei_completitudine=temei or "verificarea „%s” a rulat pe datele lunii"
-                                                         % eticheta)
-    # Campurile se pun UNUL CATE UNUL: un `{... "mesaj": ...}` aici ar fi numarat de
-    # `core/scan_afirmatii` drept inca o afirmatie netipata, iar CONSTRUCTORUL afirmatiilor ar aparea
-    # pe vecie in clichet ca datorie. Nu e cosmetica - chiar exista un singur dictionar, imbogatit.
-    _a["stare"] = stare
-    _a["eticheta"] = eticheta
-    _a["mesaj"] = _txt
-    _a["temei"] = temei or ""
-    _a["remediu"] = remediu
-    return _a
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._flag_constatare` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._flag_constatare(stare, eticheta, mesaj, temei, an, luna, remediu)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
-import logging as _logging
-_LOG_VERDICT = _logging.getLogger("iconta.verdict")
+from core.uc_comun import _LOG_VERDICT  # noqa: E402  [P7 lot 2] definitia a plecat in use-case
 
 
 def _constatare_esuata(eticheta, nume, e, an, luna):
-    """Constatare GRI pentru un verificator care CRAPA (nu 'nimic de raportat' - e 'nu am putut verifica').
-    Excepția înghițită face firma să pară mai curată decât e (minciună prin omisiune). GRI nu escaladeaza
-    pastila_firma (rezistenta se pastreaza - un esec izolat nu doboara semaforul), dar il anunta pe CONTABIL,
-    care decide. Doua straturi: GRI = principal (il vede contabilul); log = secundar (sa se vada daca pica
-    SISTEMATIC). Vezi DECIZII 23.07. Intoarce constatarea (apelantul o pune unde e vizibila)."""
-    _LOG_VERDICT.warning("verificator esuat pe cale de verdict: %s -> gri (%r)", nume, e)
-    return _flag_constatare("gri", eticheta, "Nu am putut verifica %s." % nume,
-        "Verificarea a eșuat (%s). GRI înseamnă 'nu am putut verifica', NU 'curat' — o constatare reală "
-        "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e, an, luna)
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._constatare_esuata` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._constatare_esuata(eticheta, nume, e, an, luna)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _verificator_esuat(contabil, eticheta, nume, e, an, luna):
-    """Varianta pt lista de constatari (contabil): adauga constatarea gri. Vezi _constatare_esuata."""
-    contabil.append(_constatare_esuata(eticheta, nume, e, an, luna))
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._verificator_esuat` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._verificator_esuat(contabil, eticheta, nume, e, an, luna)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [paritate_severitate 24.07] Chei din verificari_contabile (vc) care NU se pliaza in `contabil` -> nu urca
@@ -2836,62 +2199,12 @@ VC_FARA_SEVERITATE = {
 
 
 def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
-    """Constatarile contabile STRUCTURATE ale unei firme + verificari_contabile brute (vc). UN SINGUR loc,
-    folosit de LISTA (portofoliu) SI de DETALIU -> severitatea (pastila_firma) e aceeasi indiferent cine
-    intreaba (headerul de detaliu nu mai poate fi mai bun decat ce e sub el). Cost pe calea de detaliu:
-    _verificari_contabile rula deja acolo (partea grea - regenereaza D300/D112/D390); se adauga doar
-    verificare_stocuri (O(articole) query-uri usoare) + intrastat_praguri (1 query). Vezi DECIZII 23.07.
-    Intoarce (contabil, vc)."""
-    contabil = []
-    vc = None
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._construieste_contabil` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
     try:
-        vc = _verificari_contabile(schema, an, luna)
-        ech = vc.get("echilibru") or {}
-        if not ech.get("ok", True):
-            contabil.append(_flag_constatare(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei"), an, luna))
-        tz = vc.get("trezorerie") or []
-        tz_probleme = tz if isinstance(tz, list) else ([tz] if isinstance(tz, dict) and not tz.get("ok", True) else [])
-        for p in tz_probleme:
-            contabil.append(_flag_constatare(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei"), an, luna))
-        # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta. Constatarea INTREAGA e in «Declaratie vs
-        # contabilitate»; aici doar sumarul (eticheta + temei). Etichete = EXACT cele filtrate in control.js.
-        for cheie, et in (("tva_incrucisat", "TVA declarat diferă de contabilitate"),
-                          ("d112_incrucisat", "Salarii declarate diferă de contabilitate"),
-                          ("d390_incrucisat", "Operațiuni intracomunitare declarate diferă de evidență"),
-                          ("cota_tva_conformitate", "Facturi emise cu cotă TVA greșită pentru perioadă")):
-            vd = vc.get(cheie) or {}
-            if vd.get("stare") == "rosu":
-                prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
-                contabil.append(_flag_constatare(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), an, luna, prima.get("remediu")))
-    except Exception as e:
-        _verificator_esuat(contabil, "Verificări contabile — eșuate",
-                           "verificările contabile (echilibru, trezorerie, declarație vs contabilitate)",
-                           e, an, luna)
-    try:  # stocuri contabil vs fise CV
-        vs = verificare_stocuri(tid, ctx)
-        if not vs.get("ok", True):
-            difs = [c for c in vs.get("conturi", []) if not c.get("ok")]
-            mesaj = ("Sold contabil diferit de fișele CV pe conturile: " + ", ".join(c["cont"] for c in difs) + "."
-                     if difs else "Soldul contabil diferă de fișele de magazie CV.")
-            # verificare_stocuri NU declara `nivel` (cauze legitime) -> stare_din_nivel(None)=gri. Vezi DECIZII 23.07.
-            contabil.append(_flag_constatare(stare_din_nivel(vs.get("nivel")), "Diferențe stocuri", mesaj, vs.get("nota"), an, luna))
-    except Exception as e:
-        _verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile (sold contabil vs fișe CV)", e, an, luna)
-    try:  # praguri Intrastat
-        ip = intrastat_praguri(tid, an, ctx)
-        fluxuri = [nume for nume in ("introduceri", "expedieri") if ip[nume]["status"] != "sub_prag"]
-        if fluxuri:
-            # Intrastat declara nivel=AVERTISMENT (intrastat.NIVEL_STATUS) -> galben prin stare_din_nivel.
-            contabil.append(_flag_constatare(stare_din_nivel(ip.get("nivel")), "Prag Intrastat depășit",
-                                             "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".",
-                                             ip.get("nota"), an, luna))
-    except Exception as e:
-        _verificator_esuat(contabil, "Verificare Intrastat — eșuată", "pragurile Intrastat", e, an, luna)
-    # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
-    rta = regim_tva_anaf or {}
-    if rta.get("stare") == "rosu":
-        contabil.append(_flag_constatare(rta.get("stare"), "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), an, luna, rta.get("remediu")))
-    return contabil, vc
+        return _uc_comun._construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/control-fiscal")
@@ -2908,56 +2221,19 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
     `prospetime` care spune de ce. *O stare „în recalculare" declarată e acceptabilă; una veche și
     tăcută nu e.*
     """
-    from core import firma_rezumat as _fr
-    out = []
-    sumar = {"verde": 0, "galben": 0, "rosu": 0, "gri": 0}
-    with db.get_conn() as conn:
-        firme = auth_api.tenantii_userului(conn, ctx["uid"])
-        model = _fr.citeste(conn, [f.get("id") for f in firme], ["control_fiscal"])
-    for f in firme:
-        tid = f.get("id")
-        st = (model.get(tid) or {}).get("control_fiscal") or {}
-        d = st.get("date") or {}
-        curent = st.get("stare") == _fr.CURENT and not d.get("eroare")
-        stare = d.get("stare", "gri") if curent else "gri"
-        sumar[stare] = sumar.get(stare, 0) + 1
-        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                    "stare": stare,
-                    "lipsa": d.get("lipsa", 0) if curent else 0,
-                    "urmarit": d.get("urmarit", 0) if curent else 0,
-                    # [eticheta_din_fapt 20.08.2026] fara numarul de neverificabile, lista nu poate
-                    # spune DE CE e o firma gri.
-                    "neclar": d.get("neclar", 0) if curent else 0,
-                    "contabil": d.get("contabil") or [],
-                    "prospetime": {"stare": st.get("stare") or _fr.LIPSESTE,
-                                   "calculat_la": st.get("calculat_la")}})
-    return {"firme": out, "sumar": sumar}
+    try:
+        return _uc_control_fiscal.control_fiscal_portofoliu(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/control-fiscal/{tenant_id}")
 def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
     """Detaliu conformare pentru o firma: lista lipsa + de urmarit + constatari contabile."""
-    azi = azi_ro()   # [fus] verdict de zi = zi RO (acelasi ca portofoliul)
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, azi)
-    try:  # cf_verificari_v1 — ACEEASI functie partajata ca lista: severitatea (pastila_firma) e identica.
-        contabil, vc = _construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month, r.get("regim_tva_anaf"))
-        r["verificari_contabile"] = vc
-        r["contabil"] = contabil
-        # [P4 21.08.2026] Fiecare verificator isi declara SINGUR limita; sectiunea o aduna, n-o
-        # repovesteste. Fara asta, limitele apar doar cand exista o constatare - adica dispar exact
-        # cand verdictul e cel mai usor de citit gresit.
-        r["limite"] = list(r.get("limite") or []) + [
-            {"fel": "acoperire", "text": v["limita"], "sursa": k}
-            for k, v in sorted((vc or {}).items())
-            if isinstance(v, dict) and v.get("limita")]
-        # Headerul de detaliu nu poate fi mai bun decat ce e sub el: pastila_firma peste constatari (ex.
-        # trezorerie BLOCANT -> nu mai poate ramane "la zi" cu rosu dedesubt). Vezi DECIZII 23.07.
-        r["stare"] = pastila_firma(r["stare"], contabil)
-    except Exception:
-        pass
-    return r
+    try:
+        return _uc_control_fiscal.control_fiscal_detaliu(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/supervizor")
@@ -2979,81 +2255,10 @@ def supervizor_la_cerere(ctx=Depends(cere_cabinet)):
     citi ca portofoliul întreg — de-aia `ruleaza_portofoliu` RIDICĂ dacă i se dau firme fără să i se
     spună ce sunt.
     """
-    azi = azi_ro()   # [fus] perioada evaluată = zi RO, ca la /control-fiscal și ca în cronul de 08:00
-    with db.get_conn() as conn:
-        ale_mele = auth_api.tenantii_userului(conn, ctx["uid"])
-    # [P3, 09.09.2026] SCHEMA VINE DIN LISTA DEJA CITITĂ, nu se recere firmă cu firmă.
-    #
-    # Bucla de aici chema `auth_api.schema_tenant(c, uid, tid)` pentru fiecare firmă, fiecare cu
-    # conexiunea ei din pool: măsurat, `q = 5 + 2*N`, `c = 4 + 1*N` — 2.005 interogări și 1.004
-    # conexiuni la 1000 de firme, DOAR ca să afle numele schemei și să reverifice accesul.
-    #
-    # **Reverificarea era redundantă, și se poate arăta:** `tenantii_userului` filtrează pe exact
-    # aceleași reguli ca `schema_tenant` — superadmin → firme fără cabinet; admin_firma → firmele
-    # cabinetului lui; restul → prin `user_tenants` —, toate cu `activ = true`, și întoarce deja
-    # `schema_name`. Pentru o firmă venită din acea listă, `schema_tenant` nu poate întoarce
-    # altceva. Gardat de `core/test_p3_wave_a.py`, care compară cele două căi firmă cu firmă pe
-    # portofoliul real, în loc să creadă echivalența pe cuvânt.
-    #
-    # Garda `if not schema` RĂMÂNE: e ieftină, iar o firmă fără `schema_name` n-are ce căuta în
-    # rezultat. Ce dispare e conexiunea per firmă, nu verificarea.
-    firme = []
-    for f in ale_mele:
-        schema = f.get("schema_name")
-        if not schema:
-            continue   # fara acces la tenant — nu se afiseaza (identic cu semaforul /control-fiscal)
-        firme.append({"tenant_id": f.get("id"), "schema": schema, "nume": f.get("nume")})
-    # [P1, 08.09.2026] CITEȘTE rezultatele persistate — NU recalculează portofoliul la fiecare GET.
-    # Măsurat înainte: 9 ms/firmă, adică ~5 s la 1000 de firme, peste ținta cerută (p95 < 1 s).
-    # Măsurat după, pe 1000 de firme cu sarcină realistă: p95 = 45 ms, într-o singură interogare.
-    #
-    # FIECARE FIRMĂ ÎȘI POARTĂ STAREA. O valoare veche NU se arată ca fiind curentă: `stare` e
-    # `curent` / `invalidat` / `lipseste`, derivată din compararea versiunii sursei cu cea din care
-    # s-a calculat rezultatul. Un rezultat `invalidat` se ARATĂ — e ultima măsurătoare bună — dar
-    # etichetat, cu `calculat_la`. *O stare „în recalculare" declarată e acceptabilă; una veche și
-    # tăcută nu e.*
-    from core import supervizor_cache as _sc
-    ids = [f["tenant_id"] for f in firme]
-    with db.get_conn() as conn:
-        stari = _sc.citeste(conn, ids, azi.year, azi.month)
-
-    randuri = []
-    for f in firme:
-        st = stari.get(f["tenant_id"]) or {"rezultat": None, "stare": _sc.LIPSESTE,
-                                           "calculat_la": None, "versiune_sursa": None,
-                                           "versiune_curenta": 0}
-        rez = st["rezultat"] or {}
-        randuri.append({
-            "tenant_id": f["tenant_id"], "nume": f.get("nume"),
-            "constatari": rez.get("constatari") or [],
-            "de_confirmat": rez.get("de_confirmat") or 0,
-            "rezultat": rez.get("rezultat") or supervizor.NEVERIFICAT,
-            # o firmă fără rezultat NU tace: spune că e NECALCULATĂ, cu aceeași formă tipată ca
-            # celelalte două feluri de neverificare.
-            "neverificat": rez.get("neverificat") or (
-                None if st["stare"] != _sc.LIPSESTE else
-                supervizor._neverificat(f, "rezultatul nu a fost calculat încă (recalculare "
-                                           "asincronă); nu e un defect, e o așteptare",
-                                        supervizor.NECALCULAT)),
-            "prospetime": {"stare": st["stare"], "calculat_la": st["calculat_la"],
-                           "versiune_sursa": st["versiune_sursa"],
-                           "versiune_curenta": st["versiune_curenta"]},
-        })
-
-    nerecalculate = sum(1 for x in randuri if x["prospetime"]["stare"] != _sc.CURENT)
-    return {
-        "an": azi.year, "luna": azi.month,
-        "domeniu": ("firmele la care are acces utilizatorul curent (%d), NU tot portofoliul; "
-                    "supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta" % len(firme)),
-        "firme": randuri,
-        "rezumat": supervizor.rezumat_din_randuri(randuri) if hasattr(supervizor, "rezumat_din_randuri")
-                   else {"firme": len(randuri)},
-        # Contor, nu afirmație: afirmația despre o firmă e `neverificat`, și e tipată. Firmele cu
-        # `invalidat`/`lipseste` își poartă starea fiecare, în `prospetime.stare` — aici e doar
-        # câte sunt.
-        "nerecalculate": nerecalculate,
-        "tipuri_neatribuite": supervizor.tipuri_neatribuite(),
-    }
+    try:
+        return _uc_supervizor.supervizor_la_cerere(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/control-fiscal/{tenant_id}/audit-preluare")
@@ -3064,30 +2269,10 @@ def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_rol("admin_fi
     (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs istoric declaratii, RIP la
     PFA). Motor separat (core/audit_preluare), NU control_incrucisat: la preluare ambele surse sunt EXTERNE.
     Repetabil, datat cu momentul rularii — gri-urile trec in verde/rosu pe masura ce apar documentele."""
-    import datetime
-    from core import audit_preluare
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        r = audit_preluare.audit(cs, schema, tenant_id, cp)
-        with cp.cursor() as cur:  # creat_la = de cand e firma in iConta sub cabinet (proxy preluare)
-            row = repo_tenants.creat_la(cur, tenant_id)
-    r["data"] = datetime.datetime.now().isoformat(timespec="minutes")  # cu ora: doua rulari/zi se disting
-    r["in_iconta_din"] = row[0].date().isoformat() if row and row[0] else None  # data simpla (scara = luni)
-    # [R45] Verdictul se pastreaza: continut (verdictul intreg, serializat), moment, autor,
-    # amprenta, numar de exemplar. Cheia e ANUL rularii — doua audituri in ani diferiti sunt
-    # doua artefacte, doua in aceeasi zi sunt exemplarul 1 si 2 ale aceluiasi.
     try:
-        import json as _json
-        from core import artefacte as _art
-        with db.get_conn(schema) as _c:
-            _art.pastreaza(_c, schema, "audit_preluare", str(datetime.date.today().year),
-                           _json.dumps(r, ensure_ascii=False, default=str),
-                           produs_de_id=int(ctx["uid"]),
-                           produs_de=ctx.get("nume") or str(ctx["uid"]))
-    except Exception as _e:
-        import logging
-        logging.getLogger("iconta").warning("[R45] audit de preluare nepastrat: %s", _e)
-    return r
+        return _uc_control_fiscal.control_fiscal_audit_preluare(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -3185,32 +2370,10 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
     al căror rezumat lipsește sau e învechit NU tac: intră în `neevaluate` cu o afirmație
     tipată care spune **de ce** — aceeași interdicție ca la P1, o valoare veche nu se arată
     drept curentă."""
-    from core import firma_rezumat as _fr
-    azi = azi_ro()   # [fus] fereastra scadentelor = verdict (ce vede contabilul), zi RO
-    with db.get_conn() as conn:
-        firme = auth_api.tenantii_userului(conn, ctx["uid"])
-        model = _fr.citeste(conn, [f.get("id") for f in firme], ["termene"])
-    firme_eval = []
-    neevaluate = []
-    for f in firme:
-        st = (model.get(f.get("id")) or {}).get("termene") or {}
-        d = st.get("date") or {}
-        if st.get("stare") == _fr.CURENT and d.get("eval"):
-            firme_eval.append(d["eval"])
-            continue
-        if d.get("neevaluat"):
-            neevaluate.append(d["neevaluat"])
-            continue
-        _n = _af.afirmatie(
-            "necunoastere", "obligații fiscale",
-            "Termenele acestei firme nu sunt încă recalculate — se actualizează în fundal.",
-            domeniu_de=azi.isoformat(), domeniu_pana=azi.isoformat())
-        _n["tenant_id"] = f.get("id")
-        _n["nume"] = f.get("nume")
-        _n["cauza"] = _n["motiv"]
-        _n["prospetime"] = st.get("stare") or _fr.LIPSESTE
-        neevaluate.append(_n)
-    return termene_api.portofoliu(firme_eval, azi, neevaluate)
+    try:
+        return _uc_termene.termene_portofoliu(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -3218,83 +2381,48 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
 #  FACTURI (în schema tenantului)
 # ============================================================
 def _raspuns(continut):
-    """Răspunsul JSON, serializat AICI — adică pe firul handler-ului, nu pe buclă.
-
-    **De ce nu `return {...}`.** FastAPI nu serializează în handler: trece rezultatul prin
-    `jsonable_encoder` și `json.dumps` în învelișul `async` de după, deci **pe buclă**, oricât de
-    sincron ar fi handler-ul. Pentru un răspuns mare asta e muncă de zeci de milisecunde pe care o
-    așteaptă toate celelalte cereri. Măsurat la P5: 67,6 ms de `jsonable_encoder` + 7,2 ms de
-    `json.dumps` pentru 5000 de tranzacții (998 KB), din care ieșeau 93,7 ms de coadă la o cerere
-    fără nicio legătură. *Valul 1 mutase handler-ul; răspunsul rămăsese unde era.*
-
-    **Octeții sunt aceiași.** Fără `response_model` — și `main.py` n-are niciunul —
-    `serialize_response` face exact `jsonable_encoder` (`fastapi/routing.py:317`), iar
-    `JSONResponse.render` exact `json.dumps` cu aceiași parametri (`starlette/responses.py:194`).
-    Se schimbă firul pe care se produc, nu conținutul.
-
-    **Se folosește numai unde răspunsul crește cu intrarea.** Pe un răspuns mic, hopul în plus
-    n-ar cumpăra nimic, iar `return {...}` se citește mai bine.
-    """
-    _crono.marca("inainte_serializare")
-    r = _JSONResponse(_jsonable_encoder(continut))
-    # [P5, 10.09.2026] Antetele de cronometrare, DOAR când instrumentarea e pornită. În producție
-    # `_crono.antete()` întoarce `{}`, deci răspunsul e octet cu octet cel dinainte — inclusiv
-    # antetele. *O măsurătoare care schimbă lucrul măsurat nu măsoară nimic.*
-    for _k, _v in _crono.antete().items():
-        r.headers[_k] = _v
-    return r
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._raspuns` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._raspuns(continut)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _octetii(fisier):
-    """Conținutul unui fișier încărcat, citit SINCRON — pentru rutele `def`.
-
-    **De ce nu `await fisier.read()`.** `UploadFile.read()` e `async`, dar pe un fișier ținut în
-    memorie face chiar `self.file.read()`, iar pe unul ajuns pe disc îl trece prin
-    `run_in_threadpool` (`starlette/datastructures.py:462`). Într-un handler **sincron** suntem
-    deja pe un fir din threadpool, deci hopul n-ar avea ce să elibereze — și `await` n-ar avea
-    cine să-l aștepte. Parserul de multipart lasă fișierul poziționat la 0
-    (`starlette/formparsers.py:266`), deci octeții sunt acaeiași.
-
-    **Nu se «repară» înapoi în `await fisier.read()`.** Asta ar cere ca ruta să redevină
-    `async def`, adică exact defectul măsurat la P5: 17 rute care țineau bucla de evenimente
-    ocupată cât dura importul cuiva. Măsurat: la N=5000 de tranzacții, o cerere fără nicio
-    legătură aștepta 158,7 ms, față de 3,4 ms linia de bază.
-    """
-    return fisier.file.read()
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._octetii` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._octetii(fisier)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _schema_sau_404(ctx, tenant_id):
-    """Verifică accesul userului la tenant; întoarce schema sau ridică 404."""
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(404, "tenant inexistent sau fără acces")
-    return schema
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._schema_sau_404` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._schema_sau_404(ctx, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _anaf_tva_check(cui, valoare_manuala):
-    """[F180] Live ANAF v9 pe CUI. Întoarce (anaf_val|None, avertisment|None, tva_data_inceput|None). NU atinge
-    DB și NU ridică niciodată (ANAF jos/notFound -> (None,None,None), salvarea trece — signal-not-block).
-    anaf_val None = ANAF necunoscut -> snapshot NU se reîmprospătează. [B1] data inceperii inregistrarii TVA."""
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._anaf_tva_check` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
     try:
-        c = (cui or "").replace("RO", "").strip()
-        if not c:
-            return None, None, None
-        rez = anaf_api.valideaza_cui([c])
-        if not (rez and rez[0].get("gasit")):
-            return None, None, None
-        anaf_val = bool(rez[0].get("platitor_tva"))
-        return anaf_val, _fp.avertisment_tva_anaf(valoare_manuala, anaf_val), rez[0].get("tva_data_inceput")
-    except Exception:
-        return None, None, None
+        return _uc_comun._anaf_tva_check(cui, valoare_manuala)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [p97_produse_rute] NOMENCLATOR PRODUSE — rute generice pe tenant (cabinet + client + gratuit)
 # guard unificat: _schema_sau_404 accepta orice user cu acces la tenant (schema_tenant)
 @app.get("/tenants/{tenant_id}/produse")
 def produse_lista(tenant_id: int, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return {"produse": produse_api.lista(conn)}
+    try:
+        return _uc_tenants.produse_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/produse/potriveste")
 def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cere_context)):
@@ -3303,105 +2431,81 @@ def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cer
     return produse_api.potriveste(date.denumire, platitor_tva=date.platitor_tva)
 
 @app.post("/tenants/{tenant_id}/produse")
-def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026] DECIS 24.07: scrierea e de cabinet
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = produse_api.creeaza(conn, date.denumire, um=date.um,
-                                pret_unitar=date.pret_unitar, cota_tva=date.cota_tva,
-                                categorie=date.categorie, confirmat=date.confirmat)
-    if not r.get("ok"):
-        raise HTTPException(400, r.get("mesaj", "produs invalid"))
-    return r
+def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.produse_creeaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/produse/{produs_id}")
-def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,
-                         ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026]
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = produse_api.actualizeaza(conn, produs_id, denumire=date.denumire,
-                                     um=date.um, pret_unitar=date.pret_unitar,
-                                     cota_tva=date.cota_tva, categorie=date.categorie,
-                                     confirmat=date.confirmat)
-    if not r.get("ok"):
-        raise HTTPException(404, "produs inexistent")
-    return r
+def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,                          ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.produse_actualizeaza(tenant_id, produs_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/produse/{produs_id}")
-def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026]
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = produse_api.sterge(conn, produs_id)
-    if not r.get("ok"):
-        raise HTTPException(404, "produs inexistent")
-    return r
+def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.produse_sterge(tenant_id, produs_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [p104_emitere_rute] EMITERE FACTURI — rute generice pe tenant (client + gratuit + cabinet)
 def _platitor_tva_firma(conn):
-    """Citeste daca firma emitenta e platitoare TVA (din firma_profil)."""
-    with conn.cursor() as cur:
-        row = _repo.select_firma_profil_2(cur)
-    return bool(row[0]) if row and row[0] is not None else True
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._platitor_tva_firma` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._platitor_tva_firma(conn)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/facturi/numerotare")
 def facturi_numerotare_get(tenant_id: int, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return facturi_api.numerotare(conn)
+    try:
+        return _uc_tenants.facturi_numerotare_get(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/facturi/numerotare")
 # [R42] Seria documentelor emise: o schimbare aici lasa goluri intr-o numerotare (interdictia 35).
-def facturi_numerotare_set(tenant_id: int, date: NumerotareIn,
-                           ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = facturi_api.seteaza_numerotare(conn, serie=date.serie, numar_start=date.numar_start)
-    if not r.get("ok"):
-        raise HTTPException(400, r.get("mesaj", "eroare"))
-    return r
+def facturi_numerotare_set(tenant_id: int, date: NumerotareIn,                            ctx=Depends(cere_rol("admin_firma"))):
+    try:
+        return _uc_tenants.facturi_numerotare_set(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/scadentar")
 def scadentar_get(tenant_id: int, ctx=Depends(cere_context)):
     """F131: scadentarul facturilor emise neincasate (restante/scade curand/in termen)
     + fisa client agregata. Read-only, fara schema noua."""
-    from core import scadentar as _sc
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _sc.pull(conn, schema)
+    try:
+        return _uc_tenants.scadentar_get(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class OptInScadentarIn(BaseModel):
     activ: bool
 
 @app.put("/tenants/{tenant_id}/scadentar/opt-in")
-def scadentar_optin(tenant_id: int, date: OptInScadentarIn,
-                    ctx=Depends(cere_rol("admin_firma"))):
+def scadentar_optin(tenant_id: int, date: OptInScadentarIn,                     ctx=Depends(cere_rol("admin_firma"))):
     """F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF)."""
-    from core import scadentar as _sc
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _sc.seteaza_optin(conn, date.activ)
-    if not r.get("ok"):
-        raise HTTPException(422, r.get("mesaj", "eroare"))
-    return r
+    try:
+        return _uc_tenants.scadentar_optin(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class SupapaScadentarIn(BaseModel):
     stop: bool = False
     amanata_pana: Optional[str] = None
 
 @app.put("/tenants/{tenant_id}/facturi/{factura_id}/notificare")
-def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn,
-                     ctx=Depends(cere_rol("admin_firma"))):
+def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn,                      ctx=Depends(cere_rol("admin_firma"))):
     """F131: supapa per factura - nu notifica (stop) / amana pana la data X."""
-    from core import scadentar as _sc
-    schema = _schema_sau_404(ctx, tenant_id)
     try:
-        with db.get_conn(schema) as conn:
-            r = _sc.seteaza_supapa(conn, factura_id, stop=date.stop,
-                                   amanata_pana=date.amanata_pana)
-    except ValueError as e:   # [lot 2] data amanarii invalida: mesaj, nu 500
-        raise HTTPException(422, str(e))
-    if not r.get("ok"):
-        raise HTTPException(404, "factură inexistentă")
-    return r
+        return _uc_tenants.scadentar_supapa(tenant_id, factura_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/util/zile-lucratoare")
 def util_zile_lucratoare(start: str, end: str, ctx=Depends(cere_context)):
@@ -3435,9 +2539,10 @@ class ModelFacturaIn(BaseModel):
 
 @app.get("/tenants/{tenant_id}/firma-profil")
 def firma_profil_get(tenant_id: int, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _fp.citeste_profil(conn)
+    try:
+        return _uc_tenants.firma_profil_get(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class RegimTvaIn(BaseModel):
     platitor_tva: bool
@@ -3448,74 +2553,42 @@ class RegimTvaIn(BaseModel):
 # pe ce perioade. O schimbare greșită nu produce o eroare vizibilă: produce declarații care nu se
 # mai depun, sau se depun greșit.
 def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    # [F180] CUI din public.tenants -> apel ANAF live FARA a tine conexiunea pe schema
-    with db.get_conn() as cpub:
-        with cpub.cursor() as cur:
-            row = repo_tenants.cui_dupa_id(cur, tenant_id)
-    anaf_val, avert, tva_inceput = _anaf_tva_check(row[0] if row else None, date.platitor_tva)
-    with db.get_conn(schema) as conn:
-        # [R46] `platitor_tva` decide daca firma datoreaza D300/D394 si pe ce perioade.
-        try:
-            _fp.cere_perioade_deschise(conn, "Regimul de TVA")
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-        with conn.cursor() as cur:
-            repo_firma_profil.seteaza_platitor_tva(cur, date.platitor_tva)
-        if anaf_val is not None:                      # ANAF a raspuns -> reimprospateaza snapshot (+ data inceput TVA)
-            _fp.seteaza_snapshot_tva(conn, anaf_val, tva_inceput)
-        conn.commit()
-    r = {"ok": True, "platitor_tva": date.platitor_tva}
-    if avert:                                          # divergenta -> informeaza, nu blocheaza
-        r["avertisment"] = avert
-    return r
+    try:
+        return _uc_tenants.firma_profil_regim_tva(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/firma-profil/date")  # [date_firma_v1]
 def firma_profil_date(tenant_id: int, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _fp.citeste_date(conn)
+    try:
+        return _uc_tenants.firma_profil_date(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/firma-profil/date")  # [date_firma_v1]
-def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),
-                               ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _fp.salveaza_date(conn, date, tenant_id=tenant_id)
-    if not r.get("ok"):
-        raise HTTPException(422, r.get("mesaj", "date invalide"))
-    return r
+def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),                                ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.firma_profil_date_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/firma-profil/model")
 def firma_profil_model(tenant_id: int, date: ModelFacturaIn, ctx=Depends(cere_context)):
-    import re as _re
-    if date.culoare and not _re.fullmatch(r"#[0-9a-fA-F]{6}", date.culoare.strip()):
-        raise HTTPException(422, "Culoarea se scrie ca un cod hexazecimal de șase cifre, cu diez "
-                                 "(de exemplu #1d4ed8) — am primit %r. Ea ajunge pe factura "
-                                 "tipărită." % date.culoare)
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _fp.salveaza_model(conn, font=date.font, culoare=date.culoare, logo=date.logo)
+    try:
+        return _uc_tenants.firma_profil_model(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/facturi/{factura_id}/pdf")
 def factura_pdf_ruta(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        f = facturi_api.detalii_factura(conn, factura_id)
-        if not f:
-            raise HTTPException(404, "factură inexistentă")
-        profil = _fp.citeste_profil(conn)
     try:
-        pdf = _pdf.genereaza_pdf(profil, f)
-    except ValueError as e:
-        # [bilant_422_v1] refuzul motivat al generatorului de PDF (ex. linie fara cota TVA)
-        # ajungea la contabil ca 500 gol. Gasit de core/test_refuz_generator_422.py.
-        raise HTTPException(422, str(e))
-    nume = "factura_" + str(f.get("numar") or factura_id).replace("/", "-") + ".pdf"
-    return Response(content=pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": f'inline; filename="{nume}"'})
+        pdf, nume = _uc_tenants.factura_pdf_ruta(tenant_id, factura_id, ctx)
+        return Response(content=pdf, media_type="application/pdf",
+                        headers={"Content-Disposition": f'inline; filename="{nume}"'})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class EmailFacturaIn(BaseModel):
     email: str
@@ -3525,158 +2598,63 @@ class EmailFacturaIn(BaseModel):
 # [R42] Trimiterea către client: „iese către un om". Un email plecat nu se poate reface.
 def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn,
                   ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    email = (date.email or "").strip()
-    if not _email_valid(email):  # [R138] acelasi criteriu ca peste tot, nu unul propriu
-        raise HTTPException(422, EMAIL_INVALID)
-    with db.get_conn(schema) as conn:
-        f = facturi_api.detalii_factura(conn, factura_id)
-        if not f:
-            raise HTTPException(404, "factură inexistentă")
-        profil = _fp.citeste_profil(conn)
-    import base64 as _b64
     try:
-        pdf = _pdf.genereaza_pdf(profil, f)
-    except ValueError as e:
-        # [bilant_422_v1] refuzul motivat al generatorului de PDF (ex. linie fara cota TVA)
-        # ajungea la contabil ca 500 gol. Gasit de core/test_refuz_generator_422.py.
-        raise HTTPException(422, str(e))
-    nume_pdf = "factura_" + str(f.get("numar") or factura_id).replace("/", "-") + ".pdf"
-    b64 = _b64.b64encode(pdf).decode()
-    numar = f.get("numar") or ""
-    firma = profil.get("nume") or ""
-    subiect = "Factura %s%s" % (numar, (" - " + firma if firma else ""))
-    corp_mesaj = date.mesaj or ("Bună ziua,<br><br>Atașat găsiți factura %s.<br><br>O zi bună!" % numar)
-    html = "<div style='font-family:Arial,sans-serif;font-size:14px;color:#222'>%s</div>" % corp_mesaj
-    ok = _obs.trimite_email_html(email, subiect, html,
-                                 attachments=[{"content": b64, "name": nume_pdf}])
-    if not ok:
-        raise HTTPException(502, "trimiterea email a eșuat")
-    return {"ok": True, "email": email}
+        return _uc_tenants.factura_email(tenant_id, factura_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/facturi-recurente")
 def fr_lista(tenant_id: int, ctx=Depends(cere_context)):
-    from core import facturi_recurente as _fr
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn() as conn:
-        return {"sabloane": _fr.lista(conn, schema)}
+    try:
+        return _uc_tenants.fr_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/facturi-recurente")
 def fr_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_context)):
-    from core import facturi_recurente as _fr
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn() as conn:
-        r = _fr.adauga(conn, schema, corp)
-    if r.get("eroare"):
-        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
-    return r
+    try:
+        return _uc_tenants.fr_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/facturi-recurente/{sid}")
 def fr_comuta(tenant_id: int, sid: int, activ: bool, ctx=Depends(cere_context)):
-    from core import facturi_recurente as _fr
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn() as conn:
-        r = _fr.comuta(conn, schema, sid, activ)
-    if r.get("eroare"):
-        raise HTTPException(404, r["eroare"])
-    return r
+    try:
+        return _uc_tenants.fr_comuta(tenant_id, sid, activ, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/facturi-recurente/{sid}")
 def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_context)):
-    from core import facturi_recurente as _fr
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn() as conn:
-        r = _fr.sterge(conn, schema, sid)
-    if r.get("eroare"):
-        raise HTTPException(404, r["eroare"])
-    return r
+    try:
+        return _uc_tenants.fr_sterge(tenant_id, sid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _preincalzeste_cursul(moneda, data_emitere):
-    """[P5 val 3, 11.09.2026] Aduce cursul BNR ÎNAINTE de orice tranzacție.
-
-    `curs_bnr.curs_pentru` nu mai descarcă: decide pe cache. Descărcarea (până la 3×10 s) trebuie
-    deci să se fi făcut înainte, cu pool-ul liber. Un singur loc, ca să nu ajungă șapte rute să
-    repete aceeași secvență — și ca garda să aibă ce număra.
-
-    Tăcută la intrări invalide: refuzul lor vine de la validarea rutei, ca și până acum.
-    """
-    from datetime import date as _d
-    from core import curs_bnr as _cb
-    if not moneda or str(moneda).upper() == "RON" or not data_emitere:
-        return
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._preincalzeste_cursul` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
     try:
-        zi = data_emitere if isinstance(data_emitere, _d) else _d.fromisoformat(str(data_emitere))
-        _cb.asigura_cursul(str(moneda), zi)
-    except Exception:      # noqa: BLE001 — pre-încălzirea nu poate strica o cerere
-        pass
+        return _uc_comun._preincalzeste_cursul(moneda, data_emitere)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/emite")
 # [R42] „emiterea unui document" — factura primește număr din serie și ajunge la un om.
 def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_firma"))):
-    _preincalzeste_cursul(date.moneda, date.data_emitere)   # [P5 val 3] descărcarea BNR, înainte de tranzacție
-    schema = _schema_sau_404(ctx, tenant_id)
-    linii = [l.model_dump() for l in date.linii]
-    if not (date.tert_nume or "").strip():
-        raise HTTPException(422, "Denumirea beneficiarului e obligatorie pe factură. Completeaz-o înainte de emitere.")
-    with db.get_conn(schema) as conn:
-        are_stoc = any(l.get("articol_id") for l in linii)
-        # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc
-        poarta_ceruta = (date.tip == "factura") and are_stoc
-        if poarta_ceruta and date.pleaca_marfa is None:
-            raise HTTPException(422, "Raspunde la poarta: pleaca marfa acum? (DA descarca gestiunea / NU doar fiscal)")
-        platitor = _platitor_tva_firma(conn)
-        try:
-            r = facturi_api.emite_factura(
-                conn, linii, client_id=date.client_id, tert_nume=date.tert_nume,
-                tert_cui=date.tert_cui, tert_adresa=date.tert_adresa, data_emitere=date.data_emitere,
-                data_scadenta=date.data_scadenta, moneda=date.moneda,
-                platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip,
-                tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
-                data_curs_manual=date.data_curs_manual,
-                # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
-                # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
-                curs_manual_de="utilizator %s" % ctx["uid"])
-        except facturi_api.LiniiIncomplete as e:
-            # [R139] Rezumatul poarta MOTIVELE, nu doar numele campurilor, si nu mai spune
-            # „Completează" despre un camp care e completat gresit. Mesajele per camp ajung tot
-            # langa casetele lor (api.js:41 -> eroareCamp); asta e doar rezumatul de deasupra.
-            raise HTTPException(422, {"cod": "LINII_INCOMPLETE",
-                "mesaj": "Liniile facturii nu sunt bune: " + "; ".join(
-                    "%s — %s" % (x["eticheta"], x.get("mesaj") or "") for x in e.campuri),
-                "campuri": e.campuri})
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-        # descarcare gestiune DOAR la poarta = DA, in ACEEASI tranzactie (atomic: emit + descarcare)
-        if poarta_ceruta and date.pleaca_marfa is True and isinstance(r, dict) and r.get("factura_id"):
-            from core import stocuri_cv_api as _cv
-            from datetime import date as _dt_date  # fix F821: datetime neimportat in scope (date = param Pydantic)
-            r["descarcare"] = _cv.descarca_factura(conn, schema, r["factura_id"],
-                                                   date.data_emitere or _dt_date.today().isoformat())
-    # [lot 2] moneda inexistenta e o INTRARE gresita (422), nu un conflict temporar (409):
-    # 409 cu „reincearca / manual" ii promitea contabilului ca mai tarziu ar merge.
-    if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "MONEDA_NECOTATA":
-        raise HTTPException(422, detail=r)
-    # [R130] Cursul e mai vechi decat pragul: emiterea AUTOMATA se opreste, facturarea NU. `409`,
-    # cu iesirea numita in corp (curs manual + data lui) — un refuz fara iesire ar fi interdictia 47.
-    if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_PREA_VECHI":
-        raise HTTPException(409, detail=r)
-    # curs BNR indisponibil -> 409 cu detaliile pt frontend (Reincearca / Manual)
-    if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_INDISPONIBIL":
-        raise HTTPException(409, detail=r)
-    return r
+    try:
+        return _uc_tenants.facturi_emite(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/storno")
 # [R42] Stornarea nu corectează documentul emis — emite AL DOILEA document (P4).
 def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        try:
-            r = facturi_api.storneaza(conn, factura_id)
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-    return r
+    try:
+        return _uc_tenants.facturi_storno(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # ICRD_PUBLIC_VERIFICA_CUI_V1
 @app.get("/public/verifica-cui/{cui}")
@@ -3703,341 +2681,204 @@ def verifica_cui(tenant_id: int, cui: str, ctx=Depends(cere_context)):
 
 @app.get("/tenants/{tenant_id}/vector")  # [p82_vector] citeste vectorul fiscal
 def vector_citeste(tenant_id: int, ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return vector_fiscal_api.citeste(conn)
+    try:
+        return _uc_tenants.vector_citeste(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/vector")  # [p82_vector] scrie vectorul (doar admin_firma)
 def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    # nume+cui din public.tenants (pt cazul cand firma_profil e gol si trebuie creat)  # [p83_upsert]
-    with db.get_conn() as cpub:
-        with cpub.cursor() as cur:
-            row = repo_tenants.nume_si_cui_spatiat(cur, tenant_id)
-    t_nume = row[0] if row else None
-    t_cui = row[1] if row else None
-    # [F180] apel ANAF live pe CUI INAINTE de a deschide conexiunea pe schema
-    anaf_val, avert, tva_inceput = _anaf_tva_check(t_cui, date.platitor_tva)
-    with db.get_conn(schema) as conn:
-        rez = vector_fiscal_api.salveaza(conn, date.regim_fiscal, date.platitor_tva,
-                                         date.tip_decont, date.operatiuni_ic,
-                                         nume=t_nume, cui=t_cui, inreg_art317=date.inreg_art317,
-                                         tva_data_inceput=date.tva_data_inceput)  # [tva_inceput] data manuala INTAI
-        # [tva_inceput] ANAF autoritar CAND are data: seteaza_snapshot_tva o suprascrie. Cand ANAF nu raspunde
-        # (anaf_val None, gasit=False) NU se cheama deloc -> data manuala ramane. Cand ANAF raspunde dar NU are
-        # data (tva_inceput None), guard-ul din seteaza_snapshot_tva NU goleste coloana -> data manuala ramane.
-        if rez.get("ok") and anaf_val is not None:     # salvat + ANAF a raspuns -> snapshot (+ data inceput TVA)
-            _fp.seteaza_snapshot_tva(conn, anaf_val, tva_inceput)
-    if not rez.get("ok"):
-        _mesaj = rez.get("mesaj", "vector invalid")
-        _camp = rez.get("camp")
-        if _camp:   # Regula 14.4 pct.4: marcheaza campul vinovat, nu doar mesaj generic
-            raise HTTPException(400, {"mesaj": _mesaj, "erori_campuri": [{"camp": _camp, "mesaj": _mesaj}]})
-        raise HTTPException(400, _mesaj)
-    if avert:                                          # divergenta -> informeaza, nu blocheaza
-        rez["avertisment"] = avert
-    # marcheaza stratul de migrare ca gata
     try:
-        with db.get_conn() as c:
-            migrare_api.seteaza_status(c, ctx["firm"], "vector_fiscal", "gata", "")
-    except Exception:
-        pass
-    return rez
+        return _uc_tenants.vector_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/facturi")  # [p117_facturi_lista_acces] acces client+gratuit+cabinet
-def facturi_lista(tenant_id: int, an: Optional[int] = None,
-                  luna: Optional[int] = None, directie: Optional[str] = None,
-                  limit: Optional[int] = None, offset: int = 0,
-                  ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
+def facturi_lista(tenant_id: int, an: Optional[int] = None,                   luna: Optional[int] = None, directie: Optional[str] = None,                   limit: Optional[int] = None, offset: int = 0,                   ctx=Depends(cere_context)):
     try:
-        with db.get_conn(schema) as conn:
-            return {"facturi": facturi_api.lista_facturi(conn, an, luna, directie,
-                                                         limit=limit, offset=offset)}
-    except ValueError as e:   # [lot 2] filtru invalid: mesaj, nu 500 si nu lista goala tacuta
-        raise HTTPException(422, str(e))
+        return _uc_tenants.facturi_lista(tenant_id, an, luna, directie, limit, offset, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi")
 # [R42] A doua cale de creare a facturii (vezi R14: două funcții, stări implicite diferite).
 # Amândouă produc un document numerotat, deci amândouă intră la „emiterea unui document".
-def factura_creeaza(tenant_id: int, date: FacturaIn,
-                    ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    linii = [l.model_dump() for l in date.linii]
+def factura_creeaza(tenant_id: int, date: FacturaIn,                     ctx=Depends(cere_rol("admin_firma"))):
     try:
-        with db.get_conn(schema) as conn:
-            r = facturi_api.creeaza_factura(
-                conn, date.numar, date.data_emitere, date.directie, linii,
-                client_id=date.client_id, tert_nume=date.tert_nume,
-                tert_cui=date.tert_cui, data_scadenta=date.data_scadenta,
-                moneda=date.moneda, status=date.status,
-                tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
-                furnizor_tva_incasare=date.furnizor_tva_incasare)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    return r
+        return _uc_tenants.factura_creeaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _moneda_facturii(schema, factura_id):
-    """Moneda unei facturi, citita intr-o tranzactie SCURTA — ca pre-incalzirea cursului sa se
-    poata face inainte de cea de emitere. [P5 val 3, 11.09.2026]"""
-    with db.get_conn(schema) as _c:
-        with _c.cursor() as _cur:
-            _r = _repo.select_facturi(_cur, factura_id)
-    return (_r[0] if _r else None)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._moneda_facturii` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._moneda_facturii(schema, factura_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/transforma")
 def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal)."""
-    schema = _schema_sau_404(ctx, tenant_id)
-    # [P5 val 3] Moneda se citeste intr-o tranzactie SCURTA, apoi cursul se aduce — amandoua
-    # inaintea tranzactiei de emitere, ca descarcarea BNR sa nu tina o conexiune din pool.
-    import datetime as _dtx
-    _preincalzeste_cursul(_moneda_facturii(schema, factura_id), _dtx.date.today())
-    with db.get_conn(schema) as conn:
-        with conn.cursor() as cur:
-            r = repo_facturi.tip_si_transformare(cur, factura_id)
-        if not r:
-            raise HTTPException(404, "document inexistent")
-        if r[0] == "factura":
-            raise HTTPException(422, "documentul e deja factura")
-        if r[1]:
-            raise HTTPException(409, f"deja transformat in factura #{r[1]}")
-        f = facturi_api.detalii_factura(conn, factura_id)
-        linii = [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"),
-                  "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva")}
-                 for l in (f.get("linii") or [])]
-        platitor = _platitor_tva_firma(conn)
-        try:
-            rez = facturi_api.emite_factura(conn, linii, client_id=f.get("client_id"),
-                tert_nume=f.get("tert_nume"), tert_cui=f.get("tert_cui"),
-                moneda=f.get("moneda") or "RON", platitor_tva=platitor)
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-        with conn.cursor() as cur:
-            repo_facturi.leaga_proforma_de_factura(cur, rez["factura_id"], factura_id)
-        conn.commit()
-    return rez
+    try:
+        return _uc_tenants.proforma_transforma(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/facturi/{factura_id:int}")  # [p115_detalii_acces] acces client+gratuit+cabinet
 # {factura_id:int} (F187): fara tipare int, ruta asta captura literalele /facturi/export-saga si
 # /facturi/export-winmentor (factura_id="export-..."->422 int_parsing), umbrindu-le. Bug latent la SAGA
 # month (F171) - export-zip pe luna era nereachable. :int face literalele sa treaca la rutele lor.
 def factura_detalii(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        f = facturi_api.detalii_factura(conn, factura_id)
-    if not f:
-        raise HTTPException(404, "factură inexistentă")
-    return f
+    try:
+        return _uc_tenants.factura_detalii(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}/facturi/{factura_id}")
 # [R42] „ștergerea a ceva emis" — o factură ștearsă lasă un gol în serie (interdicția 35).
-def factura_sterge(tenant_id: int, factura_id: int,
-                   ctx=Depends(cere_rol("admin_firma"))):
+def factura_sterge(tenant_id: int, factura_id: int,                    ctx=Depends(cere_rol("admin_firma"))):
     """[EEE2] Refuzul e EXPLICAT, nu o eroare de bază: `409`, cu numărul notei și cu ieșirea numită
     (storno). Fără el, cu note automate, ștergerea ar fi început să pice pe cheia străină
     `inregistrari_factura_id_fkey`, care n-are `ON DELETE`."""
-    from core import contare_facturi as _cf
-    schema = _schema_sau_404(ctx, tenant_id)
     try:
-        with db.get_conn(schema) as conn:
-            return facturi_api.sterge_factura(conn, factura_id)
-    except _cf.RefuzContare as e:
-        raise HTTPException(409, e.mesaj)
+        return _uc_tenants.factura_sterge(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
 #  CLIENȚI (în schema tenantului)
 # ============================================================
 @app.get("/tenants/{tenant_id}/clienti")
-def clienti_lista(tenant_id: int, status: Optional[str] = None,
-                  ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return {"clienti": clienti_api.lista_clienti(conn, status)}
+def clienti_lista(tenant_id: int, status: Optional[str] = None,                   ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.clienti_lista(tenant_id, status, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/clienti")
-def client_creeaza(tenant_id: int, date: ClientIn,
-                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
+def client_creeaza(tenant_id: int, date: ClientIn,                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
     try:
-        with db.get_conn(schema) as conn:
-            return clienti_api.creeaza_client(conn, **date.model_dump())
-    except ValueError as e:
-        raise HTTPException(422, str(e))
+        return _uc_tenants.client_creeaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/clienti/{client_id}")
 def client_detalii(tenant_id: int, client_id: int, ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        c = clienti_api.detalii_client(conn, client_id)
-    if not c:
-        raise HTTPException(404, "client inexistent")
-    return c
+    try:
+        return _uc_tenants.client_detalii(tenant_id, client_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.put("/tenants/{tenant_id}/clienti/{client_id}")
-def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,
-                        ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        # [lotul 9] Un client INEXISTENT primea `200 {"ok": false}` — un refuz deghizat in raspuns,
-        # fara motiv si fara cod. „N-am putut actualiza" si „clientul asta nu exista" nu sunt
-        # acelasi lucru, iar primul nu spune nimic.
-        with conn.cursor() as cur:
-            if not repo_portal.clientul_exista(cur, client_id):
-                raise HTTPException(404, "client inexistent")
-        return clienti_api.actualizeaza_client(conn, client_id, **date.model_dump())
+def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,                         ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    try:
+        return _uc_tenants.client_actualizeaza(tenant_id, client_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}/clienti/{client_id}")
-def client_sterge(tenant_id: int, client_id: int,
-                  ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = clienti_api.sterge_client(conn, client_id)
-    if not r["ok"] and r.get("cod") == "ARE_FACTURI":
-        raise HTTPException(409, r["mesaj"])
-    return r
+def client_sterge(tenant_id: int, client_id: int,                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    try:
+        return _uc_tenants.client_sterge(tenant_id, client_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
 #  SALARIAȚI (în schema tenantului)
 # ============================================================
 @app.get("/tenants/{tenant_id}/salariati")
-def salariati_lista(tenant_id: int, activ: Optional[bool] = None,
-                    ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return {"salariati": salariati_api.lista_salariati(conn, activ)}
+def salariati_lista(tenant_id: int, activ: Optional[bool] = None,                     ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.salariati_lista(tenant_id, activ, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/salariati")
-def salariat_creeaza(tenant_id: int, date: SalariatIn,
-                     ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
+def salariat_creeaza(tenant_id: int, date: SalariatIn,                      ctx=Depends(cere_rol("admin_firma", "angajat"))):
     try:
-        with db.get_conn(schema) as conn:
-            return salariati_api.creeaza_salariat(conn, **date.model_dump())
-    except ValueError as e:
-        _ec = getattr(e, "erori_campuri", None)  # [G10] contract {detail, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": str(e), "erori_campuri": _ec} if _ec else str(e))
+        return _uc_tenants.salariat_creeaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/salariati/{salariat_id}")
 def salariat_detalii(tenant_id: int, salariat_id: int, ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        s = salariati_api.detalii_salariat(conn, salariat_id)
-    if not s:
-        raise HTTPException(404, "salariat inexistent")
-    return s
+    try:
+        return _uc_tenants.salariat_detalii(tenant_id, salariat_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}")
-def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
-                          ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    # [R51] `None` inseamna doua lucruri diferite: „n-am trimis campul" si „goleste-l".
-    # `exclude_unset` le separa — ce a trimis clientul EXPLICIT cu null e o golire ceruta.
-    trimise = date.model_dump(exclude_unset=True)
-    golite = [k for k, v in trimise.items() if v is None]
+def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,                           ctx=Depends(cere_rol("admin_firma", "angajat"))):
     try:
-        with db.get_conn(schema) as conn:
-            # [lotul 7, 04.09.2026] `PUT /salariati/999999` raspundea `200 {"ok": true}` — „am
-            # actualizat" despre cineva care nu e in firma. A TREIA oara in campanie cand o ruta
-            # despre un salariat nu verifica daca el exista (lotul 4: concediile, de doua ori).
-            with conn.cursor() as cur:
-                if not repo_salariati.salariatul_exista(cur, salariat_id):
-                    raise HTTPException(404, "salariat inexistent")
-            return salariati_api.actualizeaza_salariat(conn, salariat_id,
-                                                       _golite=golite, **date.model_dump())
-    except ValueError as e:
-        _ec = getattr(e, "erori_campuri", None)  # [G10] contract {detail, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": str(e), "erori_campuri": _ec} if _ec else str(e))
+        return _uc_tenants.salariat_actualizeaza(tenant_id, salariat_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/cor")
 def cor_cauta(q: str = "", ctx=Depends(cere_context)):
     """[F137] Cauta in nomenclatorul COR national dupa cod (prefix) sau denumire (substring,
     diacritic-insensitiv). Pt lookup-ul de ocupatie pe contract/salariat. Orice user logat."""
-    from core import cor_api
-    with db.get_conn() as conn:
-        return {"rezultate": cor_api.cauta(conn, q)}
+    try:
+        return _uc_cor.cor_cauta(q, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar")
-def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body(...),
-                             ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body(...),                              ctx=Depends(cere_rol("admin_firma", "angajat"))):
     """[F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) - upsert; 0 = sterge."""
-    from core import beneficii_api as _ben
-    an, luna = corp.get("an"), corp.get("luna")
-    if not isinstance(an, int) or not isinstance(luna, int) or luna < 1 or luna > 12:
-        raise HTTPException(400, "an/luna invalide")
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _ben.seteaza(conn, schema, salariat_id, an, luna, corp.get("tip"), corp.get("valoare"),
-                         eveniment=corp.get("eveniment", ""), nr_copii=corp.get("nr_copii", 1))
-        if r is None:
-            raise HTTPException(404, "salariat inexistent")
-        if r.get("eroare"):
-            raise HTTPException(400, r["eroare"])
-        return r
+    try:
+        return _uc_tenants.salariat_beneficiu_lunar(tenant_id, salariat_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}/salariati/{salariat_id}")
-def salariat_sterge(tenant_id: int, salariat_id: int,
-                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = salariati_api.sterge_salariat(conn, salariat_id)
-    if not r["ok"] and r.get("cod") == "ARE_CONCEDII":
-        raise HTTPException(409, r["mesaj"])
-    return r
+def salariat_sterge(tenant_id: int, salariat_id: int,                     ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    try:
+        return _uc_tenants.salariat_sterge(tenant_id, salariat_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/salariati/{salariat_id}/concedii")  # cm_lista_v1
 def cm_lista(tenant_id: int, salariat_id: int, an: int = None, ctx=Depends(cere_cabinet)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    # [lotul 4] `salariat_id=999999` intorcea `{"concedii": []}` — „salariatul asta n-are concedii"
-    # arata identic cu „salariatul asta nu exista". Iar `GET /fluturas`, pe ACELASI id inexistent,
-    # raspunde `404 salariat inexistent`: aplicatia stia deosebirea intr-un loc si n-o facea in
-    # celalalt. `an=1900` intorcea la fel, gol.
-    _cere_perioada(an=an)
-    with db.get_conn(schema) as conn:
-        with conn.cursor() as cur:
-            if not repo_salariati.salariatul_exista_2(cur, salariat_id):
-                raise HTTPException(404, "salariat inexistent")
-        return {"concedii": salariati_api.lista_concedii(conn, salariat_id, an)}
+    try:
+        return _uc_tenants.cm_lista(tenant_id, salariat_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/salariati/{salariat_id}/concedii")  # cm_salveaza_v1
-def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),
-                ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
+def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),                 ctx=Depends(cere_rol("admin_firma", "angajat"))):
     try:
-        with db.get_conn(schema) as conn:
-            with conn.cursor() as cur:
-                if not repo_salariati.salariatul_exista_3(cur, salariat_id):
-                    raise HTTPException(404, "salariat inexistent")
-            return salariati_api.salveaza_concediu(conn, salariat_id, corp)
-    except (ValueError, ZeroDivisionError) as e:
-        raise HTTPException(422, str(e))
+        return _uc_tenants.cm_salveaza(tenant_id, salariat_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}")  # cm_sterge_v1
-def cm_sterge(tenant_id: int, salariat_id: int, cm_id: int,
-              ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return salariati_api.sterge_concediu(conn, salariat_id, cm_id)
+def cm_sterge(tenant_id: int, salariat_id: int, cm_id: int,               ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    try:
+        return _uc_tenants.cm_sterge(tenant_id, salariat_id, cm_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -4045,132 +2886,43 @@ def cm_sterge(tenant_id: int, salariat_id: int, cm_id: int,
 # ============================================================
 # [p57_notif] helpere notificari pe fluxul cozii
 def _coada_info(conn, coada_id):
-    with conn.cursor() as cur:
-        r = _repo.select_public_5(cur, coada_id)
-    if not r:
-        return None
-    return {"tip": r[0], "perioada": r[1], "creat_de_id": r[2], "cabinet_id": r[3]}
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._coada_info` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._coada_info(conn, coada_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id):
-    # notifica validatorii (mai putin pregatitorul)
-    ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
-    txt = "Declaratie %s (%s) trimisa spre validare." % ((tip or "").upper(), perioada or "")
-    _notif.adauga_multi(conn, ids, "de_validat", txt, link="validat")
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._notif_de_validat` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
-    info = _coada_info(conn, coada_id)
-    if not info or not info["creat_de_id"]:
-        return
-    tip = (info["tip"] or "").upper()
-    per = info["perioada"] or ""
-    if tip_eveniment == "respinsa":
-        txt = "Declaratia %s (%s) a fost respinsa." % (tip, per)
-        if motiv:
-            txt += " Motiv: " + motiv
-    elif tip_eveniment == "aprobata":
-        txt = "Declaratia %s (%s) a fost aprobata." % (tip, per)
-    elif tip_eveniment == "depusa":
-        txt = "Declaratia %s (%s) a fost depusa." % (tip, per)
-    else:
-        txt = "Actualizare declaratie %s (%s)." % (tip, per)
-    _notif.adauga(conn, info["creat_de_id"], tip_eveniment, txt, link="validat")
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._notif_pregatitor` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._notif_pregatitor(conn, coada_id, tip_eveniment, motiv)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/coada")
 def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    schema = _schema_sau_404(ctx, date.tenant_id)
-    body = date.model_dump(exclude_none=True)
-    for k in ("tenant_id", "tip", "inceput_la"):  # [p15] inceput_la nu merge la generator
-        body.pop(k, None)
-    # 1) generează declarația pe schema tenantului
     try:
-        with db.get_conn(schema) as conn:
-            xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    # [F163v2] păstrăm și `res` întreg (serializat) în payload, nu doar avertismente: e singura
-    # cale prin care rândurile depuse ajung persistate (marcheaza_depusa le scrie în
-    # declaratii_depuse.randuri). d112 -> randuri None (randuri_din_res, temei acolo).
-    payload = {"xml": xml,
-               "avertismente": (res if isinstance(res, list) else getattr(res, "avertismente", None)),
-               "note_rezultat": ([] if isinstance(res, list) else (getattr(res, "note_rezultat", None) or [])),
-               "randuri": coada_api.randuri_din_res(res)}
-    # 2) POARTA: se VALIDEAZĂ ÎNAINTE de a intra în coadă (decizia lui Costin, 26.08.2026).
-    #
-    # Până azi coada primea orice se genera, iar validatorul rula abia când cineva deschidea
-    # elementul (`GET /coada/{id}/continut`). Poarta exista, dar la DEPUNERE. Consecința: lista
-    # pe care ecranul o numește „De depus" putea conține declarații care n-au trecut niciodată
-    # prin validator — o afirmație falsă despre propria stare (P13). Cazul care a produs regula
-    # e chiar cel din antetul lui `TRASEE.md`: trei declarații în coadă fără verdict, găsite
-    # fiindcă cineva a apăsat un buton, nu de vreo măsurătoare.
-    #
-    # NU se adaugă o a doua rulare de validator în lanț: rularea de aici e cea care oricum se
-    # făcea la prima deschidere, mutată mai devreme. Verdictul se PĂSTREAZĂ imediat după
-    # inserare, cu amprenta XML-ului validat, deci elementul intră în coadă purtându-l din
-    # naștere — nu îl capătă când se uită cineva la el.
-    #
-    # `gri` (nu am putut valida) NU trece drept favorabil (P6): se refuză la fel ca `erori`.
-    # Portița e aceeași ca la aprobare și depunere — `motiv_trecere` scris explicit, care se
-    # păstrează. Fără ea, un validator picat ar bloca toată munca; cu ea, trecerea are autor.
-    from core import duk as _duk_poarta
-    _rez = _duk_poarta.valideaza(xml, date.tip, an=date.an, luna=date.luna) if xml else {
-        "stare": "gri", "erori": "", "severitate": None,
-        "temei": "Generarea n-a produs XML.", "limita": ""}
-    _motiv = (date.motiv_trecere or "").strip()
-    if _rez.get("stare") != "valid" and not _motiv:
-        # Refuzul poartă CE lipsește, nu doar că lipsește — altfel contabilul află ce are de
-        # făcut abia deschizând altceva.
-        raise HTTPException(422, detail={
-            "mesaj": ("Declarația nu intră în coadă: validatorul oficial a răspuns „%s”."
-                      % _rez.get("stare")),
-            "stare": _rez.get("stare"), "erori": _rez.get("erori") or "",
-            "severitate": _rez.get("severitate"), "temei": _rez.get("temei"),
-            "limita": _rez.get("limita"),
-            # Mesajul NU numește câmpul intern al cererii (Regula 14 pct.4): contabilul vede
-            # ce are de făcut, nu numele coloanei. Câmpul rămâne în contractul API, la `detalii`.
-            "actiune": ("Corectează ce semnalează validatorul și generează din nou. Dacă treci "
-                        "peste deliberat, scrie motivul trecerii — se păstrează cu numele tău."),
-            "camp_trecere": "motiv_trecere"})
-
-    # 3) pune în coadă (pe public), stare 'la_senior'
-    with db.get_conn() as conn:
-        r = coada_api.adauga_in_coada(
-            conn, ctx["firm"], date.tenant_id, date.tip, date.an, payload,
-            creat_de=str(ctx["uid"]), creat_de_id=int(ctx["uid"]), luna=date.luna, trim=date.trim,
-            inceput_la=date.inceput_la)  # [p15]
-    if not r["ok"] and r.get("cod") == "DEJA_IN_COADA":
-        raise HTTPException(409, r["mesaj"])
-    # verdictul intră odată cu elementul, nu la prima privire asupra lui
-    if r.get("ok") and r.get("coada_id"):
-        _versiune = _duk_poarta.versiune_validator(date.tip)   # [P5 val 3] citire de fisier, INAINTE
-        try:
-            with db.get_conn() as conn:
-                coada_api.scrie_verdict(conn, r["coada_id"], _rez, _versiune, xml)
-        except Exception as _e:
-            import logging
-            logging.getLogger("iconta").warning("verdict nepersistat la intrarea in coada (%s): %s",
-                                                r.get("coada_id"), _e)
-    r["verdict"] = {"stare": _rez.get("stare"), "trecut_cu_motiv": _motiv or None}
-    # [p57_notif] notifica validatorii ca e ceva de validat
-    if r.get("ok"):
-        try:
-            with db.get_conn() as conn:
-                _notif_de_validat(conn, ctx["firm"], date.tip,
-                                  r.get("perioada") or ("%s/%s" % (date.luna or date.trim or "", date.an)),
-                                  int(ctx["uid"]))
-        except Exception:
-            pass
-    return r
+        return _uc_coada.coada_adauga(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/coada")
 def coada_lista(stare: Optional[str] = None, ctx=Depends(cere_cabinet)):
-    # [probare invalid, 03.09.2026] Un filtru de stare necunoscut întorcea `200 {"coada": []}` —
-    # adică TĂCERE: „nu există nimic în starea asta" arată identic cu „starea asta nu există".
-    if stare is not None and stare not in coada_api.STARI:
-        raise HTTPException(422, "stare necunoscută: %r (stările cozii: %s)"
-                            % (stare, ", ".join(coada_api.STARI)))
-    with db.get_conn() as conn:
-        return {"coada": coada_api.lista_coada(conn, ctx["firm"], stare)}
+    try:
+        return _uc_coada.coada_lista(stare, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/coada/{coada_id}/continut")
@@ -4178,81 +2930,28 @@ def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
     """[patru-ochi] Continutul unui element din coada pentru VIZUALIZARE inainte de aprobare:
     declaratia (avertismente/note), XML-ul generat si verdictul DUK. Read-only. Fara asta,
     validarea in doi era oarba - cine aproba nu vedea ce aproba (declaratie/XML/verdict)."""
-    import base64 as _b64
-    from core import duk as _duk
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            row = repo_declaratii.continutul_din_coada(cur, coada_id, ctx["firm"])
-    if not row:
-        raise HTTPException(404, "Element de coadă negăsit (sau alt cabinet).")
-    tip, payload, _an, _luna = row
-    payload = payload or {}
-    xml = payload.get("xml") or ""
-    if xml:
-        rez = _duk.valideaza(xml, tip, an=_an, luna=_luna)  # java blocant - verdictul oficial ANAF
-    else:
-        rez = {"stare": "gri", "erori": "", "severitate": None,
-               "temei": "XML lipsă din payload-ul cozii.", "limita": ""}
-    # [R41] Verdictul se PĂSTREAZĂ. Până azi se producea aici și se arunca, iar ecranul numea
-    # „De depus" o listă care conținea declarații fără verdict. Nu se adaugă o a doua rulare de
-    # validator: se scrie exact rezultatul celei care se făcea oricum, cu amprenta XML-ului validat.
-    _versiune = _duk.versiune_validator(tip)                   # [P5 val 3] citire de fisier, INAINTE
     try:
-        with db.get_conn() as conn:
-            coada_api.scrie_verdict(conn, coada_id, rez, _versiune, xml)
-    except Exception as _e:
-        import logging
-        logging.getLogger("iconta").warning("verdict nepersistat (coada %s): %s", coada_id, _e)
-    return {"tip": tip,
-            "xml_b64": _b64.b64encode(xml.encode()).decode(),
-            "avertismente": payload.get("avertismente") or [],
-            "note_rezultat": payload.get("note_rezultat") or [],
-            "stare": rez["stare"], "erori": rez["erori"], "severitate": rez.get("severitate"),
-            "temei": rez.get("temei"), "limita": rez.get("limita")}
+        return _uc_coada.coada_continut(coada_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/coada/{coada_id}/aproba")
 def coada_aproba(coada_id: int, date: dict = Body(default={}),
                  ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    with db.get_conn() as conn:
-        if not _are_permisiune(ctx, "poate_valida"):
-            raise HTTPException(status_code=403, detail=FARA_DREPT_VALIDARE)
-        # [R41] `motiv_trecere` = trecerea EXPLICITĂ peste un verdict lipsă, stătut sau cu erori.
-        # Fără el, acțiunea e refuzată; cu el, se consemnează cine și de ce.
-        r = coada_api.aproba(conn, coada_id, str(ctx["uid"]), aprobat_de_id=int(ctx["uid"]),
-                             motiv_trecere=(date or {}).get("motiv_trecere"))
-    if not r["ok"]:
-        cod = r.get("cod")
-        http = (409 if cod == "STARE_GRESITA" else
-                403 if cod in ("PATRU_OCHI", "FARA_VERDICT") else 404)
-        raise HTTPException(http, r.get("mesaj", cod))
-    # [p57_notif] notifica pregatitorul
     try:
-        with db.get_conn() as conn:
-            _notif_pregatitor(conn, coada_id, "aprobata")
-    except Exception as _e:
-        import logging; logging.getLogger("iconta").warning("notificare pregatitor esuata (aprobare, coada %s): %s", coada_id, _e)
-    return r
+        return _uc_coada.coada_aproba(coada_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/coada/{coada_id}/respinge")
 def coada_respinge(coada_id: int, date: RespingeIn,
                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    with db.get_conn() as conn:
-        if not _are_permisiune(ctx, "poate_valida"):
-            raise HTTPException(status_code=403, detail=FARA_DREPT_VALIDARE)
-        r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]))
-    if not r["ok"]:  # [motiv_lipsa_400_v1] MOTIV_LIPSA e input invalid -> 400
-        _cod = r.get("cod")
-        _http = 409 if _cod == "STARE_GRESITA" else (400 if _cod == "MOTIV_LIPSA" else 404)
-        raise HTTPException(_http, r.get("mesaj", _cod))
-    # [p57_notif] notifica pregatitorul cu motivul
     try:
-        with db.get_conn() as conn:
-            _notif_pregatitor(conn, coada_id, "respinsa", motiv=date.motiv)
-    except Exception as _e:
-        import logging; logging.getLogger("iconta").warning("notificare pregatitor esuata (respingere, coada %s): %s", coada_id, _e)
-    return r
+        return _uc_coada.coada_respinge(coada_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/coada/{coada_id}/depune")
@@ -4260,142 +2959,38 @@ def coada_respinge(coada_id: int, date: RespingeIn,
 # Validarea (`aproba`/`respinge`) rămâne la asistent: aia se poate reface.
 def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
                  ctx=Depends(cere_rol("admin_firma"))):
-    # [supervizor, EFECT — Costin, 02.09.2026] „O constatare CERTĂ pe firma și perioada care se
-    # depune cere confirmare explicită înainte de depunere, iar confirmarea rămâne scrisă: cine,
-    # când, peste ce constatare. NU BLOCHEAZĂ NICIODATĂ."
-    #
-    # DE CE E TOT ÎNTR-UN `try` CARE ÎNGHITE: dacă supervizorul însuși crapă (schemă ruptă, profil
-    # incomplet, orice), depunerea TREBUIE să treacă. Altfel motorul care „nu blochează niciodată" ar
-    # deveni exact poarta pe care contractul lui o interzice — și ar bloca prin AVARIE, felul cel mai
-    # prost, fiindcă n-ar fi nici măcar o decizie. Eșecul se loghează, nu se ascunde.
-    # [P4, 09.09.2026 — PROPRIETATEA TRANZACȚIEI E A USE-CASE-ULUI]
-    #
-    # Ce era până azi: confirmarea supervizorului se scria în tranzacția EI, iar depunerea în
-    # alta. Între ele stăteau trei refuzuri posibile — dreptul `poate_depune` (403), starea
-    # elementului (409/404) și orice eroare de bază. Măsurat mecanic cu
-    # `scripts/scan_tranzactii.py`: **două domenii tranzacționale care scriu**, pe aceeași
-    # operație logică. Consecința: o confirmare scrisă, cu numele și motivul omului, peste o
-    # depunere care NU s-a făcut niciodată.
-    #
-    # Iar `PREDARE_LANT.md` scria despre proba din 03.09 că *„`depus_la` și `confirmat_la` sunt
-    # aceeași secundă — confirmarea și depunerea sunt un singur act, nu două care se pot
-    # despărți."* Erau două. Se despărțeau. Afirmația era adevărată despre ce s-a măsurat
-    # atunci, nu despre ce apăra codul.
-    #
-    # Acum: **o singură tranzacție** ține confirmarea, aprobarea și marcarea. Dreptul se cere
-    # ÎNAINTEA oricărei scrieri. Poarta supervizorului stă sub `SAVEPOINT`, ca să-și păstreze
-    # contractul — *nu blochează niciodată* — fără să otrăvească tranzacția depunerii când crapă.
-    #
-    # CE SE SCHIMBĂ, declarat: la `409 CONSTATARI_NECONFIRMATE`, confirmările trimise în chiar
-    # cererea aia **nu mai rămân scrise**. Sunt aceeași clasă cu defectul de mai sus — o
-    # confirmare fără depunerea ei —, iar calea de trecere e cea din mesaj: se retrimit toate
-    # odată, cum cere deja `actiune`.
-    if not _are_permisiune(ctx, "poate_depune"):
-        raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)
-    _tid = _an_d = _luna_d = _schema_d = None
     try:
-        with db.get_conn() as _cp:
-            _fp = coada_api.firma_si_perioada(_cp, coada_id)
-        if _fp:
-            _tid, _an_d, _luna_d = _fp
-            with db.get_conn() as _cp:
-                _schema_d = auth_api.schema_tenant(_cp, ctx["uid"], _tid)
-    except Exception as _e:
-        import logging
-        logging.getLogger("iconta").warning(
-            "contextul supervizorului n-a putut fi citit pe coada %s: %s — depunerea CONTINUA "
-            "(supervizorul nu blocheaza niciodata)", coada_id, _e)
-        _schema_d = None
-    with db.get_conn(_schema_d) as conn:
-        _ramase = []
-        if _schema_d:
-            # DE CE `SAVEPOINT` și nu un `try` care înghite: dacă supervizorul crapă cu o eroare
-            # de bază, tranzacția e deja abortată, iar depunerea de după ar pica din alt motiv
-            # decât cel real. Savepointul întoarce exact partea lui.
-            with conn.cursor() as _cur:
-                tranzactie.savepoint_supervizor(_cur)
-            try:
-                _ramase = supervizor.poarta_confirmarii(
-                    conn, _schema_d, _tid, _an_d, _luna_d,
-                    confirmari=date.confirmari, confirmat_de=str(ctx["uid"]),
-                    confirmat_de_id=int(ctx["uid"]))
-                with conn.cursor() as _cur:
-                    tranzactie.elibereaza_supervizor(_cur)
-            except Exception as _e:
-                with conn.cursor() as _cur:
-                    tranzactie.intoarce_la_supervizor(_cur)
-                import logging
-                logging.getLogger("iconta").warning(
-                    "poarta confirmarii supervizorului a esuat pe coada %s: %s — depunerea "
-                    "CONTINUA (supervizorul nu blocheaza niciodata)", coada_id, _e)
-                _ramase = []
-        if _ramase:
-            # NU e un blocaj: e o cerere de confirmare, cu calea de trecere numită în chiar
-            # răspunsul ăsta (trimite `confirmari` cu amprenta și motivul). Interdicția 47 — un
-            # refuz fără cale de ieșire pentru om.
-            raise HTTPException(409, {
-                "cod": "CONSTATARI_NECONFIRMATE",
-                "mesaj": ("%d constatare/constatări certe pe firma și perioada asta cer o "
-                          "confirmare scrisă înainte de depunere. Depunerea NU e blocată: "
-                          "confirmă-le, cu motiv, și continuă." % len(_ramase)),
-                # constatarile se trimit AȘA CUM SUNT: sunt deja afirmații tipate, produse de
-                # `control_incrucisat`. Reîmpachetarea lor aici ar fi fost o a doua afirmație,
-                # netipată — și cine o citea n-ar fi știut care e cea adevărată.
-                "constatari": _ramase,
-                "actiune": "Retrimite cererea cu `confirmari`: [{amprenta, motiv}] pentru fiecare.",
-            })
-        # [02.09.2026, defect gasit apasand] APROBAREA VINE DUPA POARTA, si e a serverului.
-        # Inlantuirea traia in client (`POST /aproba` apoi `POST /depune`), deci aprobarea trecea si
-        # poarta cadea dupa ea — iar elementul ramanea `aprobata`, stare din care nu se mai poate
-        # RESPINGE. Un refuz al portii ingusta optiunile omului, exact ce contractul interzice.
-        # Masurat in `uvicorn.log` pe elementul 8052; v. `coada_api.auto_aproba_daca_e_cazul`.
-        _ap = coada_api.auto_aproba_daca_e_cazul(
-            conn, coada_id, str(ctx["uid"]), int(ctx["uid"]),
-            motiv_trecere=getattr(date, "motiv_trecere", None))
-        if not _ap.get("ok"):
-            # [probare invalid, 03.09.2026] `INEXISTENT` cădea pe 403 — „n-ai voie" în loc de
-            # „nu există". Aceeași cerere pe `/aproba` răspundea 404: două coduri pentru
-            # aceeași stare.
-            _c = _ap.get("cod")
-            raise HTTPException(409 if _c in ("CERE_APROBARE", "STARE_GRESITA") else
-                                (404 if _c == "INEXISTENT" else 403),
-                                _ap.get("mesaj") or _c)
-        r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]),
-                                       depus_de_id=int(ctx["uid"]),
-                                       motiv_trecere=getattr(date, "motiv_trecere", None))
-        # [P4] REFUZUL SE RIDICA DINAUNTRUL TRANZACTIEI, ca sa se intoarca si aprobarea de dinainte.
-        #
-        # Pana azi, `raise` statea DUPA `with`, deci tranzactia se inchidea NORMAL si comitea ce
-        # scrisese `auto_aproba_daca_e_cazul`. Un refuz al marcarii lasa elementul `aprobata` fara
-        # sa fie depus — chiar forma pe care R128 o reparase venind din client: *un refuz care
-        # ingusta optiunile omului* (din `aprobata` nu se mai poate RESPINGE). Ordinea celor doua
-        # scrieri era corecta; ce lipsea era ca refuzul sa fie inauntrul limitei lor.
-        if not r["ok"]:
-            cod = r.get("cod")
-            raise HTTPException(409 if cod == "STARE_GRESITA"
-                                else (403 if cod == "FARA_VERDICT" else 404),
-                                r.get("mesaj", cod))
-    return r
+        return _uc_coada.coada_depune(coada_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [p57_notif] RUTE NOTIFICARI
 @app.get("/notificari")
 def notificari_lista(doar_necitite: bool = False, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _notif.lista(conn, ctx["uid"], doar_necitite=doar_necitite)
+    try:
+        return _uc_notificari.notificari_lista(doar_necitite, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/notificari/contor")
 def notificari_contor(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _notif.contor(conn, ctx["uid"])
+    try:
+        return _uc_notificari.notificari_contor(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.get("/notificari/sumar")  # [p63_notif_sumar]
 def notificari_sumar(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _notif.sumar(conn, ctx["uid"])
+    try:
+        return _uc_notificari.notificari_sumar(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/notificari/citit")
 def notificari_citit_toate(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _notif.marcheaza_citit(conn, ctx["uid"])
+    try:
+        return _uc_notificari.notificari_citit_toate(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [p62_pachete] RUTE PACHETE LUNARE
 class PachetTextIn(BaseModel):
@@ -4403,105 +2998,80 @@ class PachetTextIn(BaseModel):
     status: Optional[str] = "ciorna"
 
 def _pachet_schema(ctx, tenant_id):
-    with db.get_conn() as c:
-        schema = auth_api.schema_tenant(c, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
-    return schema
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._pachet_schema` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._pachet_schema(ctx, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/pachete/{tenant_id}/rezumat")
 def pachet_rezumat(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    schema = _pachet_schema(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        return _pachete.rezumat_luna(cs, cp, tenant_id, an, luna)
+    try:
+        return _uc_pachete.pachet_rezumat(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/pachete/{tenant_id}/genereaza")
 def pachet_genereaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    schema = _pachet_schema(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        return _pachete.genereaza_poveste(cs, cp, tenant_id, an, luna, schema)
+    try:
+        return _uc_pachete.pachet_genereaza(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/pachete/{tenant_id}/poveste")
 def pachet_poveste_get(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    _pachet_schema(ctx, tenant_id)
-    with db.get_conn() as cp:
-        return _pachete.get_poveste(cp, tenant_id, an, luna)
+    try:
+        return _uc_pachete.pachet_poveste_get(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # ICRD_NOTIF_EMAIL_CLIENT_V1
 def _email_client_tenant(conn, tenant_id):
-    with conn.cursor() as cur:
-        r = _repo.select_public_6(cur, tenant_id)
-    return r[0] if r else None
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._email_client_tenant` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._email_client_tenant(conn, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _nume_tenant(conn, tenant_id):
-    with conn.cursor() as cur:
-        r = _repo.select_public_7(cur, tenant_id)
-    return r[0] if r else ""
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._nume_tenant` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._nume_tenant(conn, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/pachete/{tenant_id}/poveste")
 # [R42] „iese către un om" — pe `status=aprobat` pleacă raportul lunar la client.
-def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,
-                       ctx=Depends(cere_rol("admin_firma"))):
-    _cere_perioada(an, luna)
-    _pachet_schema(ctx, tenant_id)
-    _de_trimis = None           # ce ramane de trimis DUPA ce blocul s-a inchis si a comis
-    with db.get_conn() as cp:
-        r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
-        if (date.status or "") == "aprobat":
-            email = _email_client_tenant(cp, tenant_id)
-            if email:
-                nume = _nume_tenant(cp, tenant_id)
-                luni_n = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
-                          "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"]
-                subiect = "Raportul lunar - " + (luni_n[luna] if 1 <= luna <= 12 else str(luna)) + " " + str(an)
-                html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
-                        "<p>Buna,</p><p>Contabilul tau a pregatit raportul lunar pentru <b>" +
-                        (nume or "firma ta") + "</b>. Il gasesti in portalul iConta.eu, la Povestea lunii.</p>"
-                        "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
-                        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
-                        "Deschide portalul</a></p></div>")
-                _de_trimis = (email, subiect, html)
-    # [P5 val 3, 11.09.2026] AICI, dupa bloc. `db.get_conn` comite la IESIREA din el, iar `return r`
-    # statea inauntru — deci e-mailul pleca INAINTE ca raportul sa fie sigur salvat. Contract
-    # aprobat: commit reusit -> se trimite; commit cazut -> exceptia iese de aici si NU se trimite
-    # nimic. In plus, apelul (termen 15 s) nu mai tine o conexiune din pool.
-    if _de_trimis is not None:
-        _obs.trimite_email_html(*_de_trimis)
-    return r
+def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,                        ctx=Depends(cere_rol("admin_firma"))):
+    try:
+        return _uc_pachete.pachet_poveste_set(tenant_id, an, luna, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/pachete/{tenant_id}/preview")
 def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    # preview = ACELASI _html ca trimiterea (corp + semnatura din DB). text vine din editor,
-    # deci reflecta ciorna needitata, nu doar ce e salvat in pachet_povestea.
-    schema = _pachet_schema(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        html = _pachete.preview_html(cs, cp, tenant_id, an, luna, text, ctx.get("uid"), ctx.get("firm"))
-    return {"html": html}
+    try:
+        return _uc_pachete.pachet_preview(tenant_id, an, luna, text, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/pachete/{tenant_id}/trimite")
 # [R42] „iese către un om" — pachetul lunar pleacă la clientul cabinetului.
 def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
-    schema = _pachet_schema(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        semnatura = _pachete.semnatura_cabinet(cp, ctx.get("uid"), ctx.get("firm"))
-        _pregatit = _pachete.pregateste(cs, cp, tenant_id, an, luna, semnatura=semnatura)
-    # [P5 val 3] AICI: cele DOUA conexiuni s-au intors in pool inainte de apelul la Brevo (15 s).
-    r = _pachete.trimite_pregatit(_pregatit)
-    if not r.get("ok"):
-        cod = r.get("cod")
-        msg = {"FARA_EMAIL": "Firma nu are email setat in profil.",
-               "NEAPROBATA": "Aproba povestea inainte de trimitere.",
-               "EMAIL_ESUAT": "Emailul nu a putut fi trimis."}.get(cod, cod or "eroare")
-        raise HTTPException(400, msg)
-    return r
+    try:
+        return _uc_pachete.pachet_trimite(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/notificari/{nid}/citit")
 def notificari_citit_una(nid: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _notif.marcheaza_citit(conn, ctx["uid"], notif_id=nid)
+    try:
+        return _uc_notificari.notificari_citit_una(nid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -4509,127 +3079,49 @@ def notificari_citit_una(nid: int, ctx=Depends(cere_cabinet)):
 # ============================================================
 @app.get("/declaratii/tipuri")
 def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)):
-    # [G1] tenant_id OBLIGATORIU: aplicabilitatea prin forma depinde de firma. Fara firma -> 400 (NU {} tacit -
-    # "nimic exclus" implicit = tiparul eliminat de 5 ori azi). UI-ul re-cere la fiecare schimbare de firma.
-    if tenant_id is None:
-        raise HTTPException(400, "Alege firma întâi.")
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        with conn.cursor() as cur:
-            row = repo_firma_profil.profil_fiscal(cur)
-        _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2],
-                 "operatiuni_ic": row[3], "regim_fiscal": row[4]}   # [R94] regimul intra in vector
-                if row else {})
-        # [21.08.2026] FAPTUL BATE VECTORUL: selectorul nu mai blocheaza D390/D301 pe bifa cand exista
-        # operatiuni IC reale (sau cand evidenta e incompleta). Tiparul tenant_006. Sonda se cheama
-        # INAINTE de inchiderea conexiunii - inainte era calculata dupa `with`, ceea ce n-ar fi mers.
-        _neap = control_fiscal_api.neaplicabile_selector(
-            _vec, ic_fapt=(lambda: control_fiscal_api.ic_fapt_din_db(conn, schema, azi_ro().year)))
-    _tipd = _vec.get("tip_decont")
-    return {"tipuri": declaratii_api.tipuri(),
-            "periodicitate": {t: declaratii_api.periodicitate_firma(t, _tipd) for t in declaratii_api.tipuri()},
-            "neaplicabile": _neap}
+    try:
+        return _uc_declaratii.declaratii_tipuri(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/declaratii/{tip}/valideaza")  # duk_valideaza_v1
-def declaratie_valideaza(tip: str, date: DeclaratieIn,
-                         ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def declaratie_valideaza(tip: str, date: DeclaratieIn,                          ctx=Depends(cere_rol("admin_firma", "angajat"))):
     """Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator).
     Intoarce TREI stari: valid / erori / gri (gri = nu am putut valida; un XML
     nevalidat NU se declara valid). Vezi core/duk.py."""
-    import base64 as _b64
-    from core import duk as _duk
-    body = date.model_dump(exclude_none=True)
-    tenant_id = body.pop("tenant_id")
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
     try:
-        with db.get_conn(schema) as conn:
-            xml, res = declaratii_api.genereaza(conn, schema, tip, body)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    # an/luna OBLIGATORII pentru D406 (27.07.2026): SAF-T se valideaza cu
-    # DUKIntegrator_AnLunaUI.jar, care le primeste ca parametri; fara ele
-    # _valideaza_saft intoarce GRI intotdeauna - deci validarea D406 din aplicatie
-    # nu s-a facut NICIODATA, desi calea merge (dovedit manual pe tenant_002/iunie
-    # 2026: "Validare fara erori"). Celelalte declaratii le ignora (optionale).
-    #
-    # [R166, 05.09.2026] ...si tot nu se facea: perioada se citea din CORPUL cererii, dar
-    # D406 se cere pe `trim` (cu `luna` generatorul da 422), iar conversia trim->luna-ancora
-    # se petrece INAUNTRUL lui `declaratii_api` si nu ajunge inapoi in `body`. Rezultat: nu
-    # exista niciun corp care sa treaca amandoua portile - forma care genereaza nu valideaza,
-    # forma care ar valida nu genereaza. Se ia perioada de pe REZULTATUL generatorului, adica
-    # cea folosita efectiv, cu corpul ca rezerva; o a doua conversie trim->luna aici ar fi
-    # inceputul aceleiasi divergente tacute pe care a reparat-o R165.
-    _an = getattr(res, "an", None) or body.get("an")
-    _luna = getattr(res, "luna", None) or body.get("luna")
-    rez = _duk.valideaza(xml, tip, an=_an, luna=_luna)  # java blocant
-    return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
-            "severitate": rez.get("severitate"),  # [A2] E:(eroare) vs A:(atentionare) - frontendul il citeste
-            "temei": rez["temei"], "limita": rez["limita"],
-            "avertismente": getattr(res, "avertismente", None),
-            "note_rezultat": getattr(res, "note_rezultat", None) or [],   # canal neutru (fapte despre rezultat); [] pt declaratiile fara canal
-            # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate
-            # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
-            # sa nu mai arate identic cu cea golita de un query rupt.
-            "operatiuni": declaratii_api.numar_operatiuni(tip, res),
-            # [lista 5, 30.08.2026] DIN CE e facuta cifra, nu doar CATE. Pana azi ruta intorcea un
-            # contor - „valid, 18 operatiuni" - iar contabilul nu putea vedea CARE 18: 0 din 92 de
-            # iesiri isi aratau componentele (1c). Componentele existau pe obiectul de rezultat al
-            # motorului; lipsea transportul. Ce nu se poate desface spune de ce, nu tace.
-            "componente": declaratii_componente.componente(tip, res),
-            "xml_b64": _b64.b64encode(xml.encode()).decode()}
+        return _uc_declaratii.declaratie_valideaza(tip, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/declaratii/{tip}")
-def declaratie_genereaza(tip: str, date: DeclaratieIn,
-                         ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    body = date.model_dump(exclude_none=True)
-    tenant_id = body.pop("tenant_id")
-    # 1) pe public: aflu schema tenantului + verific accesul userului
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
-    # 2) pe schema tenantului (SET LOCAL search_path în get_conn, PgBouncer-safe):
-    #    modulul rulează pe conexiunea deja poziționată, NU mai setează el search_path
+def declaratie_genereaza(tip: str, date: DeclaratieIn,                          ctx=Depends(cere_rol("admin_firma", "angajat"))):
     try:
-        with db.get_conn(schema) as conn:
-            xml, res = declaratii_api.genereaza(conn, schema, tip, body)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    avert = getattr(res, "avertismente", None)
-    constat = getattr(res, "note_rezultat", None) or []   # canal neutru; [] pt declaratiile fara canal
-    return {"tip": tip, "xml": xml, "avertismente": avert, "note_rezultat": constat,
-            "operatiuni": declaratii_api.numar_operatiuni(tip, res),  # [poarta_gol_v1]
-            "componente": declaratii_componente.componente(tip, res)}  # [lista 5]
+        return _uc_declaratii.declaratie_genereaza(tip, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)  # [lista 5]
 
 
 # ============================================================
 #  PORTAL CLIENT (read-only, izolat)
 # ============================================================
 def _tenant_client(ctx, tenant_id=None):
-    """Rezolvă tenantul clientului din user_tenants. Un singur tenant -> implicit."""
-    with db.get_conn() as conn:
-        tenants = auth_api.tenantii_userului(conn, ctx["uid"])
-    if not tenants:
-        raise HTTPException(404, "nu aveți nicio firmă asociată")
-    if tenant_id is not None:
-        t = next((x for x in tenants if x["id"] == tenant_id), None)
-        if not t:
-            raise HTTPException(404, "firmă inexistentă sau fără acces")
-        return t
-    if len(tenants) == 1:
-        return tenants[0]
-    raise HTTPException(400, "Aveți mai multe firme; alegeți firma.")
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._tenant_client` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._tenant_client(ctx, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/firme")
 def portal_firme(ctx=Depends(cere_client)):
-    with db.get_conn() as conn:
-        return {"firme": auth_api.tenantii_userului(conn, ctx["uid"])}
+    try:
+        return _uc_portal.portal_firme(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [portal_acces_cont_v1] patronul isi gestioneaza propriul email + acces suplimentar (fara parola, magic-link)
 class SchimbaEmailIn(BaseModel):
@@ -4640,92 +3132,45 @@ class AdaugaAccesIn(BaseModel):
     email: str
     nume: str = ""
 def _titular_client(cur, tenant_id):
-    """[R62 (b), 26.08.2026] Cine e titularul contului de portal: PRIMUL cont de client al firmei.
-
-    Regula era scrisa in DOUA locuri si era DIFERITA. Citirea (`GET /portal/acces-cont`) cadea pe
-    primul cont cand `tenants.principal_client_id` era NULL; cele trei scrieri comparau direct cu
-    coloana. Cum coloana n-avea NICIO cale de scriere — zero INSERT, zero UPDATE, niciun ecran,
-    iar `tenant_provisioning` insereaza fara ea — ecranul ii spunea omului *„esti titularul"* si ii
-    arata butoanele, iar rutele ii raspundeau 403. **O afirmatie falsa pe ecran, la un om real**
-    (utilizatorul #8284, firma #8396). Costin a ridicat-o la PRAG 1: *„ecranul spune una, serverul
-    face alta"* — P13, in forma cea mai directa.
-
-    Decizia lui, varianta (b): intrebarea se pune ALTFEL — primul cont de client — fiindca aia e
-    regula pe care citirea o folosea deja. *„Alinierea lor nu adauga nimic — scoate o
-    inconsistenta."* Iar *titular = primul venit* e o decizie de produs, asumata: la o firma mica,
-    primul care primeste acces la portal e patronul sau administratorul. Daca se dovedeste gresita,
-    se repara printr-o CALE de schimbare a titularului — alta functionalitate, nu o coloana.
-
-    De aceea `principal_client_id` s-a si SCOS: o coloana cu drum de citire si fara drum de scriere
-    e a treia cale prin care intrebarea s-ar putea pune altfel maine."""
-    r = _repo.select_public_8(cur, tenant_id)
-    if not r:
-        return None
-    return r["id"] if isinstance(r, dict) else r[0]
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._titular_client` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._titular_client(cur, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/acces-cont")
 def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            pid = _titular_client(cur, t["id"])
-            conturi = repo_utilizatori.clientii_firmei(cur, t["id"])
-    # Fara fallback: `_titular_client` ESTE regula, deci n-are pe ce sa cada. Fallback-ul de aici
-    # era chiar jumatatea care mintea — citirea il avea, scrierile nu.
-    principal = next((c for c in conturi if c["id"] == pid), None)
-    suplimentare = [c for c in conturi if principal and c["id"] != principal["id"]]
-    # [R63] A DOUA adresa a aceleiasi persoane. Pachetul lunar NU pleaca la `users.email`, ci la
-    # `firma_profil` (`pachete_api`: patron_email, altfel email). Ecranul le arata pe amandoua si
-    # le numeste diferit, fiindca decizia lui Costin e ca raman doua: cine INTRA si cine PRIMESTE
-    # pot fi persoane diferite. Un ecran care arata aceeasi adresa in doua campuri fara sa spuna
-    # ca sunt distincte produce chiar presupunerea gresita.
-    with db.get_conn(t["schema_name"]) as conn_s:
-        with conn_s.cursor() as cur:
-            # [R65] O SINGURA adresa: `patron_email` s-a scos din schema, avea precedenta si niciun
-            # scriitor. Aici era a doua folosire a lui `coalesce`, pusa ieri pentru R63.
-            rand = repo_firma_profil.email_firma(cur)
-    email_pachet = ((rand[0] if rand else None) or "").strip()
-    email_logare = ((principal or {}).get("email") or "").strip()
-    return {"principal": principal, "suplimentare": suplimentare,
-            "eu_principal": bool(principal) and principal["id"] == ctx["uid"],
-            "email_pachet": email_pachet,
-            "aceeasi_adresa": bool(email_pachet) and email_pachet.lower() == email_logare.lower()}
+    try:
+        return _uc_portal.portal_acces_cont(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 def _adresa_e_libera(cur, email, exclude_user_id):
-    """[R62] Adresa nu e a altcuiva. UN singur loc, chemat si la cerere, si la confirmare.
-
-    Intre cele doua momente pot trece 48 de ore: daca intrebarea ar fi pusa doar la cerere, o
-    adresa luata intre timp ar fi aplicata peste, iar unicitatea s-ar sparge. Un loc, ca gardul
-    sa poata asertea STRUCTURAL ca amandoua rutele il cheama."""
-    if _repo.select_public_9(cur, email, exclude_user_id):
-        raise HTTPException(400, EMAIL_EXISTA)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._adresa_e_libera` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._adresa_e_libera(cur, email, exclude_user_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _urma_portal(cur, tenant_id, actiune, detaliu, autor_id):
-    """[R62 (3), 26.08.2026] Urma pe care o vede CABINETUL.
-
-    Pana azi, un client putea sa-si schimbe adresa de autentificare si sa creeze un utilizator
-    SUB cabinet, fara ca acesta sa afle: niciun rand de audit, nicio notificare. Singurul email
-    pleca la cel invitat. Append-only, `actiune` dintr-o lista inchisa in BAZA, `detaliu` care nu
-    poate fi gol — o urma care nu spune nimic nu e o urma."""
-    _repo.insert_public_4(cur, tenant_id, actiune, detaliu, autor_id)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._urma_portal` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._urma_portal(cur, tenant_id, actiune, detaliu, autor_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _cere_acelasi_cabinet(ex, firm_id):
-    """[R62 (2), 26.08.2026] Un cont de client DEZACTIVAT al altui cabinet nu se reactiveaza aici.
-
-    Ruta refuza deja o adresa care apartine unui cont ACTIV, sau unuia care nu e `client`. Dar un
-    cont de client dezactivat intra pe ramura de reactivare si se lega de firma pastrandu-si
-    `accounting_firm_id`-ul vechi — care poate fi al altui cabinet. Rezultatul: un utilizator care
-    apartine, dupa coloana, cabinetului A, avand acces la o firma a cabinetului B.
-
-    Costin a cerut punctul asta PRIMUL din cele trei: *„e singura cale prin care date ale unui
-    cabinet ajung la altul, iar aia nu e o chestiune de urma, e izolarea din P12."*"""
-    if not ex:
-        return
-    al_lui = ex.get("accounting_firm_id") if isinstance(ex, dict) else None
-    if al_lui is not None and firm_id is not None and al_lui != firm_id:
-        raise HTTPException(400, MESAJ_CLIENT_ALT_CABINET)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._cere_acelasi_cabinet` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._cere_acelasi_cabinet(ex, firm_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class ConfirmaEmailIn(BaseModel):
@@ -4746,131 +3191,47 @@ def portal_confirma_email(date: ConfirmaEmailIn):
 
     Adresa se reconfrunta cu `users` la confirmare: intre cerere si confirmare, altcineva poate
     lua adresa, iar o scriere facuta pe nevazute ar sparge unicitatea."""
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            r = repo_utilizatori.schimbare_email_in_asteptare(cur, _hash_tok(date.token))
-            if not r:
-                raise HTTPException(400, MESAJ_EMAIL_TOKEN_INVALID)
-            _adresa_e_libera(cur, r["email_nou"], r["user_id"])
-            repo_utilizatori.schimba_emailul(cur, r["email_nou"], r["user_id"])
-            repo_utilizatori.confirma_schimbarea_de_email(cur, r["id"])
-            _urma_portal(cur, r["tenant_id"], "email_confirmat",
-                         "adresa de autentificare schimbata: %s -> %s"
-                         % (r["email_vechi"], r["email_nou"]), r["user_id"])
-    return {"ok": True, "email": r["email_nou"]}
+    try:
+        return _uc_public.portal_confirma_email(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/urme-portal")  # [api_intern_v1] scrisa, NECITITA de om: niciun ecran n-o cheama, deci punctul (3) din R62 ramane NESATISFACUT. Iese din lista cand se construieste ecranul. (27.08.2026)
 def cabinet_urme_portal(tenant_id: int, ctx=Depends(cere_cabinet)):
     """[R62 (3)] Urma se poate CITI. Lectia din R58: o urma care nu se poate citi e scrisa degeaba."""
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            urme = [dict(x) for x in repo_utilizatori.urme_portal_ale_firmei(cur, tenant_id)]
-    return {"urme": urme, "nr": len(urme)}
+    try:
+        return _uc_tenants.cabinet_urme_portal(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.put("/portal/acces-cont/email")
 def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, date.tenant_id)
-    email_nou = date.email.strip().lower()
-    if not _email_valid(email_nou):  # [R138]
-        raise HTTPException(400, EMAIL_INVALID)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            pid = _titular_client(cur, t["id"])   # [R62 (b)] aceeasi regula ca la citire
-            if pid is None or pid != ctx["uid"]:
-                raise HTTPException(403, MESAJ_DOAR_TITULARUL)
-            _adresa_e_libera(cur, email_nou, ctx["uid"])
-            # [R62 (1)] NU se mai scrie `users.email` aici. Adresa e identitatea de autentificare
-            # (intrarea se face prin magic-link pe email), deci un UPDATE imediat insemna ca cine
-            # are o sesiune deschisa muta contul, definitiv, dintr-un singur camp.
-            email_vechi = ((repo_utilizatori.emailul_contului(cur, ctx["uid"]) or {}).get("email") or "").strip().lower()
-            if email_vechi == email_nou:
-                raise HTTPException(400, MESAJ_EMAIL_ACELASI)
-            import secrets as _sec3
-            tok = "se_" + _sec3.token_urlsafe(32)
-            repo_utilizatori.sterge_schimbarile_de_email_neconfirmate(cur, ctx["uid"])
-            repo_utilizatori.cere_schimbarea_de_email(cur, ctx["uid"], t["id"], email_vechi, email_nou, _hash_tok(tok))
-            _urma_portal(cur, t["id"], "email_cerut",
-                         "schimbare de adresa ceruta: %s -> %s" % (email_vechi, email_nou),
-                         ctx["uid"])
-    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
-    link = baza + "/#email-nou=" + tok
-    _obs.trimite_email_html(email_nou, "Confirmă adresa nouă — iConta.eu",
-        "<p>Bună,</p><p>S-a cerut mutarea contului iConta.eu pe adresa asta.</p>"
-        "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;"
-        "padding:10px 22px;border-radius:6px;text-decoration:none'>Confirmă adresa</a></p>"
-        "<p>Linkul e valabil 48 de ore. Dacă nu ai cerut tu, ignoră mesajul — "
-        "nu se schimbă nimic.</p>" % link)
-    # Adresa VECHE afla, chiar daca nu ea confirma: altfel o mutare de cont ar fi tacuta
-    # exact pentru cel care pierde accesul.
-    _obs.trimite_email_html(email_vechi, "Cerere de schimbare a adresei — iConta.eu",
-        "<p>Bună,</p><p>S-a cerut mutarea contului tău iConta.eu pe adresa "
-        "<b>%s</b>.</p><p>Dacă nu ai cerut tu, spune-i cabinetului acum: "
-        "schimbarea se face doar după confirmarea de pe adresa nouă.</p>" % email_nou)
-    return {"ok": True, "confirmare_ceruta": True, "mesaj": MESAJ_EMAIL_DE_CONFIRMAT}
+    try:
+        return _uc_portal.portal_schimba_email(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.post("/portal/acces-cont/acces")
 def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, date.tenant_id)
-    email = date.email.strip().lower()
-    if not _email_valid(email):  # [R138]
-        raise HTTPException(400, EMAIL_INVALID)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            pid = _titular_client(cur, t["id"])   # [R62 (b)] aceeasi regula ca la citire
-            if pid is None or pid != ctx["uid"]:
-                raise HTTPException(403, MESAJ_DOAR_TITULARUL)
-            firm_id = repo_tenants.cabinetul_firmei(cur, t["id"])["accounting_firm_id"]
-            ex = repo_utilizatori.contul_dupa_email_2(cur, email)
-            if ex and (ex["rol"] != "client" or ex["activ"]):
-                raise HTTPException(400, EMAIL_EXISTA)
-            _cere_acelasi_cabinet(ex, firm_id)   # [R62 (2)] izolarea intre cabinete, P12
-            import secrets as _sec2
-            if ex:
-                uid = ex["id"]
-                repo_utilizatori.activeaza_contul_cu_nume(cur, date.nume or email.split("@")[0], uid)
-                repo_utilizatori.leaga_contul_de_firma_idempotent(cur, uid, t["id"])
-            else:
-                uid = repo_utilizatori.creeaza_cont(cur, email, _nucleu.hash_parola(_sec2.token_urlsafe(16)), date.nume or email.split("@")[0], firm_id)["id"]
-                repo_utilizatori.leaga_contul_de_firma(cur, uid, t["id"])
-            tok = "ml_" + _sec2.token_urlsafe(32)
-            _pune_token(cur, tok, uid, "48 hours")
-            _urma_portal(cur, t["id"], "acces_dat",
-                         "clientul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
-                         ctx["uid"])
-    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
-    link = baza + "/#magic=" + tok
-    html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
-            "<p>Linkul e valabil 48 de ore.</p>") % (t.get("nume", ""), link)
-    _obs.trimite_email_html(email, "Acces portal iConta.eu — " + t.get("nume", ""), html)
-    return {"ok": True}
+    try:
+        return _uc_portal.portal_adauga_acces(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.delete("/portal/acces-cont/acces/{user_id}")
 def portal_revoca_acces(user_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            pid = _titular_client(cur, t["id"])   # [R62 (b)] aceeasi regula ca la citire
-            if pid is None or pid != ctx["uid"]:
-                raise HTTPException(403, MESAJ_DOAR_TITULARUL)
-            if user_id == pid:
-                raise HTTPException(400, "nu poți revoca propriul acces principal")
-            repo_utilizatori.dezleaga_contul_de_firma(cur, user_id, t["id"])
-            if repo_utilizatori.cate_firme_mai_are_contul(cur, user_id)["n"] == 0:
-                repo_utilizatori.dezactiveaza_contul(cur, user_id)
-            _urma_portal(cur, t["id"], "acces_retras",
-                         "clientul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
-    return {"ok": True}
+    try:
+        return _uc_portal.portal_revoca_acces(user_id, tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/firma")
 def portal_firma(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn(t["schema_name"]) as conn:
-        firma = portal_api.date_firma(conn, t["schema_name"])
-    return {"tenant_id": t["id"], "nume": t.get("nume"), "firma": firma}
+    try:
+        return _uc_portal.portal_firma(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class RaportZ(BaseModel):
@@ -4886,23 +3247,10 @@ class RaportZ(BaseModel):
     card: float = 0
 @app.get("/tenants/{tenant_id}/bonuri/de-verificat")
 def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
-                       "data": r[3].isoformat() if r[3] else None,
-                       "total": float(r[4] or 0),
-                       "tva": (round(sum(float(x.get("valoare") or 0) for x in r[13]), 2)
-                               if r[13] else float(r[5] or 0) + float(r[6] or 0)),
-                       "articole": r[7] or [], "status": r[8],
-                       "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
-                       "numar_document": r[11], "mentiuni": r[12],
-                       "primit_la": r[14].isoformat() if r[14] else None,
-                       "orientare": r[15] or 0}
-                      for r in repo_casa.bonuri_de_verificat(cur, schema)]  # bon_flux_e9_v1
-    return {"bonuri": bonuri}
+    try:
+        return _uc_tenants.bonuri_de_verificat(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 class BonLinie(BaseModel):
     cont: str
     valoare: float
@@ -4918,34 +3266,12 @@ class BonAproba(BaseModel):
 # in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
 # reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
 # direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
-def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,
-               ctx=Depends(cere_rol("admin_firma"))):
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:  # bon_flux_e1b_v1
-            rt = repo_casa.tipul_bonului(cur, schema, bon_id)
-            if not rt:
-                raise HTTPException(404, "bon inexistent")
-            if (rt[0] or "bon") != "bon":
-                raise HTTPException(400, "documentul e chitanță; folosește stingerea de factură, nu contarea pe cheltuială")
-        _cere_luna_deschisa(conn, schema, b.data)   # [R42 (a)] nota poartă data bonului
-        suma_linii = sum(l.valoare for l in b.linii)
-        if abs(suma_linii - b.total) > 0.05:
-            raise HTTPException(400, f"suma articolelor ({suma_linii}) != total ({b.total})")
-        # valorile articolelor sunt cu TVA inclus; scad TVA proportional
-        factor = (b.total - b.tva) / b.total if b.total else 1
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_bon_validata(cur, schema, b.data, f"BON-{bon_id}", f"Bon {b.comerciant}")[0]
-            for l in b.linii:
-                repo_contabilitate.adauga_linie_credit_casa(cur, schema, iid, l.cont, round(l.valoare * factor, 2))
-            if b.tva:
-                repo_contabilitate.adauga_linie_tva_din_casa(cur, schema, iid, b.tva)
-            repo_casa.aproba_bonul(cur, schema, b.comerciant, b.data, b.total, iid, bon_id)
-    return {"ok": True, "nota_id": iid}
+def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,                ctx=Depends(cere_rol("admin_firma"))):
+    try:
+        return _uc_tenants.bon_aproba(tenant_id, bon_id, b, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # [R33] Nota propusa mecanic intra CIORNA. Validarea o face al doilea om - patru-ochi.
-STARE_CIORNA = "ciorna"
 
 
 @app.post("/tenants/{tenant_id}/salarii-contare/propunere")
@@ -4957,21 +3283,10 @@ STARE_CIORNA = "ciorna"
 # care o respecta e cealalta: un GET n-are voie sa scrie (interdictia 6). Aici nu scrie nimeni.
 def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre."""
-    _cere_perioada(an, luna)
-    from core import salarii_contare as _sc
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        try:
-            p = _sc.propunere(conn, schema, an, luna)
-        except ValueError as e:
-            # D112 nu se poate genera (profil incomplet). Refuzul lui e scris pentru contabil;
-            # fara asta ar ajunge la el ca 500 gol.
-            raise HTTPException(422, str(e))
-    with db.get_conn(schema) as conn, conn.cursor() as cur:
-        r = repo_contabilitate.id_nota_dupa_numar(cur, p["document_ref"])
-    p["deja_contata"] = bool(r)
-    p["nota_id"] = r[0] if r else None
-    return p
+    try:
+        return _uc_tenants.salarii_contare_propunere(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/salarii-contare")
@@ -4981,30 +3296,10 @@ def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(ce
 def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Scrie nota ciorna a statului de plata. Idempotent pe `document_ref` (interdictia 8:
     schema nu lasa un al doilea exemplar)."""
-    _cere_perioada(an, luna)
-    from datetime import date as _date
-    from core import salarii_contare as _sc
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        # [R42 (a)] Nota poarta ultima zi a lunii declarate; intr-o luna inchisa nu se scrie.
-        ultima = _date(an, luna, 28)
-        _cere_luna_deschisa(conn, schema, ultima)
-        try:
-            p = _sc.propunere(conn, schema, an, luna)
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-        with conn.cursor() as cur:
-            r = repo_contabilitate.id_nota_dupa_numar_2(cur, p["document_ref"])
-            if r:
-                return {**p, "deja_contata": True, "nota_id": r[0],
-                         "cod": "DEJA_CONTATA"}
-            # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
-            # intra CIORNA (patru-ochi), nu cautand `'ciorna'` intr-un sir (METODA §23).
-            nota_id = repo_contabilitate.nota_cu_sursa_si_status(cur, ultima, p["document_ref"], "Stat de plata %02d/%d" % (luna, an), "salarii", STARE_CIORNA)[0]
-            for n in p["note"]:
-                repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
-        conn.commit()
-    return {**p, "deja_contata": True, "nota_id": nota_id, "cod": "CONTATA"}
+    try:
+        return _uc_tenants.salarii_contare_scrie(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/amortizare")
@@ -5013,184 +3308,87 @@ def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
 # in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
 # reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
 # direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
-def tenant_amortizare(tenant_id: int, an: int, luna: int,
-                      ctx=Depends(cere_rol("admin_firma"))):
+def tenant_amortizare(tenant_id: int, an: int, luna: int,                       ctx=Depends(cere_rol("admin_firma"))):
     """Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ."""
-    _cere_perioada(an, luna)   # [lotul 7] `luna=13` dadea `500`, pe o ruta care scrie EVIDENTA
-    from datetime import date as _date
-    from decimal import Decimal as D
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        # [R42 (a)] Nota de amortizare se datează în ziua 28 a lunii cerute (mai jos).
-        _cere_luna_deschisa(conn, schema, _date(an, luna, 1).replace(day=28))
-        ref = _date(an, luna, 1)
-        with conn.cursor() as cur:
-            if repo_contabilitate.nota_de_amortizare(cur, schema, f"AMORT-{an}-{luna:02d}"):
-                raise HTTPException(400, "Amortizarea lunii e deja generată.")
-            mf = repo_mijloace_fixe.de_amortizat(cur, schema)
-        from core import d406_active as _d406
-        linii = []
-        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met in mf:
-            if not pif or not dnf:
-                continue
-            mf_d = {"cod": den, "denumire": den, "cont_imobilizare": cont_imob,
-                    "cont_amortizare": cont_am, "valoare": val, "rezidual": rez,
-                    "dnf_luni": dnf, "data_pif": pif, "metoda": met}
-            try:
-                rata = _d406.amortizare_luna(mf_d, an, luna)   # metoda reala (CF art.28), nu liniar
-            except ValueError as e:
-                raise HTTPException(422, f"Amortizarea nu se poate genera pentru {den}: {e}")
-            if rata > 0:
-                linii.append((cont_am or "2813", float(rata), den))
-        if not linii:
-            return {"ok": True, "mesaj": "nimic de amortizat", "linii": 0}
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_amortizare_validata(cur, schema, _date(an, luna, 1).replace(day=28), f"AMORT-{an}-{luna:02d}", f"Amortizare {luna:02d}/{an}")[0]
-            for cont_am, rata, den in linii:
-                repo_contabilitate.adauga_linie_cheltuiala_amortizare(cur, schema, iid, cont_am, rata)
-    return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
+    try:
+        return _uc_tenants.tenant_amortizare(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 def _perioada_blocata(conn, schema, data_nota):
-    """True daca luna notei e blocata. data_nota: date sau str ISO.
-
-    [29.08.2026] Interogarea s-a mutat in `core/contare_facturi.luna_blocata`, fiindca de azi o
-    cere si contarea automata. Doua definitii ale lui „luna e blocata" ar fi dat doua raspunsuri la
-    prima divergenta (P1); aici a ramas doar apelul."""
-    from core import contare_facturi as _cf
-    with conn.cursor() as cur:
-        return _cf.luna_blocata(cur, schema, data_nota)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._perioada_blocata` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._perioada_blocata(conn, schema, data_nota)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _interval_cerut(valoare, nume, minim, maxim, unitate):
-    """[R150, 05.09.2026] O valoare in afara intervalului se REFUZA, cu numele campului si limitele.
-
-    Pana azi cele trei rute de mai jos faceau `min(max(v, jos), sus)` — adica inlocuiau tacut o
-    valoare imposibila cu una convenabila. Masurat, apasand: `?ore=-5` intorcea `200` cu istoricul
-    ultimei ore, iar `?ore=99999` intorcea 168 de ore. Omul care a cerut 99999 crede ca se uita la
-    99999. *O coercitie tacita nu e o protectie, e o afirmatie falsa despre ce s-a cerut.*
-
-    `admin_analytics` era cazul cel mai bland — el ISI ECHIVALA valoarea folosita in raspuns
-    (`{"zile": 1}`), deci se putea vedea. Celelalte doua, nu. Se trateaza la fel toate trei: o
-    intrare imposibila primeste un refuz care spune intervalul.
-    """
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._interval_cerut` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
     try:
-        v = int(valoare)
-    except (TypeError, ValueError):
-        raise HTTPException(422, "%s trebuie să fie un număr întreg de %s. Am primit %r."
-                            % (nume, unitate, valoare))
-    if v < minim or v > maxim:
-        raise HTTPException(422, "%s se cere între %d și %d %s. Am primit %d."
-                            % (nume, minim, maxim, unitate, v))
-    return v
+        return _uc_comun._interval_cerut(valoare, nume, minim, maxim, unitate)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _cere_luna_deschisa(conn, schema, data):
-    """[R42 (a), 25.08.2026] P15 pe o notă NOUĂ, nu doar pe una existentă.
-
-    Decizia lui Costin: *„o notă contabilă nu e ceva emis — e o înregistrare în evidență, nu un
-    artefact predat. Dar nu e nici liberă: o notă care a intrat în evidență nu se șterge, se
-    stornează."* Deci nu `admin_firma`, ci verificarea de perioadă.
-
-    `_cere_perioada_deschisa` de mai jos păzea editarea, ștergerea și validarea unei note care
-    EXISTĂ. Crearea intra pe altă ușă și nu era păzită: o notă nouă datată într-o lună închisă e
-    tot o modificare a perioadei închise.
-
-    [R146, 05.09.2026] O DATĂ LIPSĂ NU MAI TRECE TĂCUT. Până azi linia era `if not data: return` —
-    adică „nu știu în ce perioadă suntem" se rotunjea la „e în regulă". Consecința nu era teoretică:
-    **19 rute** ajungeau apoi la `INSERT ... VALUES (corp["data"], …)` și cădeau cu `KeyError` →
-    **`500`**. Contabilul citea „eroare 500" în loc să afle că lipsește data.
-
-    Dar motivul adevărat e mai adânc decât cele 19 căderi, și e o decizie de arhitectură a lui
-    Costin (05.09.2026): *„cota de TVA se validează față de perioada în care cota a fost în vigoare,
-    nu față de o listă de cote acceptate. Data operațiunii decide ce cote sunt legale. Aceeași
-    regulă pentru praguri și plafoane."* Dacă data decide ce e legal, **o operațiune fără dată nu
-    poate fi verificată de nimic** — nici cota, nici plafonul, nici perioada închisă. Absența ei nu e
-    o lipsă de informație secundară: e imposibilitatea de a ști dacă înregistrarea e legală.
-
-    Din cele 41 de locuri care cheamă poarta asta, **35** îi dau `corp.get("data")` — un câmp pe care
-    ruta îl cere oricum mai jos; celelalte 6 îi dau o dată deja stabilită."""
-    if not data:
-        raise HTTPException(422, "Data operațiunii e obligatorie: de ea depind cota de TVA "
-                                 "aplicabilă, plafoanele în vigoare și perioada contabilă. "
-                                 "Fără ea, înregistrarea nu se poate verifica.")
-    # [31.08.2026] Data se VALIDEAZĂ înainte de a fi întrebată despre perioadă. Fără asta,
-    # `_perioada_blocata` primea „10.03.2025" brut, driverul de bază ridica, iar cererea ieșea 500 —
-    # o defecțiune în locul unui refuz, exact înainte ca producătorul (care are refuzul scris, cu
-    # temei) să apuce să fie chemat. Poarta de perioadă era corectă; ordinea nu era.
-    from core import jurnal_api as _ja
-    _d, _refuz = _ja._data_valida(data)
-    if _refuz:
-        raise HTTPException(400, {"mesaj": _refuz["eroare"], "temei": _refuz.get("temei"),
-                                  "erori_campuri": [{"camp": "data", "mesaj": _refuz["eroare"]}]})
-    if _perioada_blocata(conn, schema, _d):
-        raise HTTPException(423, PERIOADA_INCHISA)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._cere_luna_deschisa` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._cere_luna_deschisa(conn, schema, data)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _cere_admin_firma(ctx, mesaj):
-    """Verificarea pe care o face `cere_rol("admin_firma")`, dar în corp — pentru cazurile în care
-    rolul cerut depinde de STAREA datelor, nu de rută. Aceeași comparație, ca să nu existe două
-    definiții ale lui «e administrator» (P1)."""
-    if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(403, mesaj)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._cere_admin_firma` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._cere_admin_firma(ctx, mesaj)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _declaratie_generata(conn, tenant_id, tip, an, luna):
-    """[R42 (b)] Există deja o declarație generată pentru perioada asta — în coadă sau depusă?
-
-    Decizia lui Costin: *„o completare manuală e parte din declarație DA, după generare; NU,
-    înainte. Înainte de generare e pregătire — se poate schimba fără consecință. După, declarația
-    existentă nu mai corespunde datelor din care a ieșit."* Asta e P4 citit invers: documentul
-    emis e fapt, deci ce l-a produs nu mai poate dispărea în tăcere."""
-    from core import scadente as _sc
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._declaratie_generata` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
     try:
-        perioada = _sc.scadenta(tip, an, luna=luna)
-    except Exception:
-        perioada = None
-    with conn.cursor() as cur:
-        if perioada:
-            if _repo.select_public_10(cur, tenant_id, tip, perioada):
-                return True
-        return _repo.select_public_11(cur, tenant_id, tip, an, luna) is not None
+        return _uc_comun._declaratie_generata(conn, tenant_id, tip, an, luna)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _cere_perioada_deschisa(conn, schema, nota_id):
-    with conn.cursor() as cur:
-        r = _repo.select_inregistrari(cur, schema, nota_id)
-    if r and _perioada_blocata(conn, schema, r[0]):
-        raise HTTPException(423, PERIOADA_INCHISA)
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._cere_perioada_deschisa` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/perioade-blocate")
 def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            return {"blocate": [{"an": r[0], "luna": r[1]} for r in repo_contabilitate.perioade_blocate(cur, schema)]}
+    try:
+        return _uc_tenants.perioade_blocate_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _facturi_neincheiate_in_perioada(cur, schema, an, luna):
-    """[PPP1, 29.08.2026] Câte FACTURI ale perioadei sunt încă într-o stare neîncheiată.
-
-    Poarta vedea, din 26.08, doar notele. O factură lăsată în `ciorna` sau în `de_recunoscut` e
-    aceeași pierdere, pe alt obiect: documentul e acolo, dar actul care-l duce în evidență n-a fost
-    făcut, iar după închidere nu se mai poate face — `contabilizeaza` și `recunoaste` cer amândouă o
-    lună deschisă. **`de_recunoscut` e chiar starea introdusă azi la R91**, deci clasa n-avea cum să
-    fie acoperită de verificarea scrisă acum trei zile.
-
-    Se numără pe `data_emitere`, ca și restul porții: luna documentului, nu ziua în care cineva se
-    uită la el."""
-    from datetime import date as _d
-    sfarsit = _d(an + (luna == 12), (luna % 12) + 1, 1)
-    return _repo.select_facturi_2(cur, schema, sfarsit, _d, an, luna)[0]
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._facturi_neincheiate_in_perioada` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._facturi_neincheiate_in_perioada(cur, schema, an, luna)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _ciorne_in_perioada(cur, schema, an, luna):
-    """Câte note NEVALIDATE are perioada. [R58] O ciornă închisă înăuntru nu se mai poate valida,
-    nu se mai poate șterge, și nu apare nicăieri — Costin: *„e o cheltuială sau un venit care
-    dispare fără urmă."*"""
-    from datetime import date as _d
-    sfarsit = _d(an + (luna == 12), (luna % 12) + 1, 1)
-    return _repo.select_inregistrari_2(cur, schema, sfarsit, _d, an, luna)[0]
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._ciorne_in_perioada` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._ciorne_in_perioada(cur, schema, an, luna)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/perioade-blocate")
@@ -5206,47 +3404,10 @@ def _ciorne_in_perioada(cur, schema, an, luna):
 # Ce NU s-a adăugat, cu motivul lui: echilibrul și orfanii — cer o măsurătoare pe ce s-ar bloca
 # azi pe firme reale, iar aia se discută separat.
 def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
-    from core import inchidere_luna as _il
-    from core import migrare_inchideri as _ui
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            ciorne = _ciorne_in_perioada(cur, schema, an, luna)
-            facturi_desch = _facturi_neincheiate_in_perioada(cur, schema, an, luna)
-        bl = _il.blocaj(conn, schema, an, luna)
-        if ciorne or facturi_desch or bl:
-            # Refuzul spune CE oprește și UNDE se rezolvă — nu doar că nu se poate.
-            motive = []
-            if ciorne:
-                motive.append("%d notă(e) rămân în ciornă în perioadă; validează-le sau șterge-le "
-                              "din Jurnal, altfel rămân închise înăuntru și nu mai apar nicăieri"
-                              % ciorne)
-            if facturi_desch:
-                motive.append("%d factură(i) din perioadă sunt încă neîncheiate (ciornă sau "
-                              "ciornă de recunoaștere); contabilizează-le sau recunoaște-le, "
-                              "altfel după închidere nu se mai poate — amândouă actele cer o lună "
-                              "deschisă" % facturi_desch)
-            if bl:
-                motive.append(str(bl) + " Înregistrează-le (sau respinge-le) în e-Factura.")
-            # Refuzul e o AFIRMAȚIE DESPRE DATELE FIRMEI, deci poartă `fel` din nomenclator (P8):
-            # o valoare — starea perioadei — nu satisface o regulă. `unde` și `regula` sunt cerute
-            # tocmai fiindcă un refuz fără adresă e un reproș.
-            raise HTTPException(422, detail=dict(
-                _af.afirmatie(
-                    "neconformitate", "inchidere_perioada",
-                    "Luna %02d/%04d nu se poate închide." % (luna, an),
-                    unde="perioada %02d/%04d" % (luna, an),
-                    regula="o perioadă se închide doar după ce tot ce s-a întâmplat în ea e "
-                           "înregistrat și validat"),
-                cod="PERIOADA_NU_SE_POATE_INCHIDE",
-                motive=motive, ciorne=ciorne, facturi=facturi_desch, blocaj=bl))
-        with conn.cursor() as cur:
-            repo_contabilitate.blocheaza_perioada(cur, schema, an, luna, ctx["uid"])
-        _ui.scrie(conn, schema, an, luna, "inchisa", ctx["uid"])
-        conn.commit()
-    return {"blocat": f"{luna:02d}/{an}"}
+    try:
+        return _uc_tenants.perioada_blocheaza(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/perioade-blocate")
 # [R58] Redeschiderea e ACT CONSEMNAT, CU MOTIV — P15 și interdicția 36, care o cereau explicit.
@@ -5254,38 +3415,20 @@ def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol(
 # faptul că perioada fusese închisă. Urma trăiește acum în `perioade_inchideri` (append-only,
 # cu constrângerea de motiv în BAZĂ, nu doar aici — o urmă care se poate scrie fără motiv de pe
 # altă cale n-ar fi o urmă). Poarta rămâne neatinsă: `_cere_luna_deschisa` citește ca înainte.
-def perioada_deblocheaza(tenant_id: int, an: int, luna: int, motiv: str = "",
-                         ctx=Depends(cere_rol("admin_firma"))):
-    from core import migrare_inchideri as _ui
-    if not (motiv or "").strip():
-        raise HTTPException(422, detail={
-            "cod": "REDESCHIDERE_FARA_MOTIV",
-            "mesaj": "Redeschiderea unei perioade închise se consemnează cu motiv.",
-            "camp": "motiv",
-            "temei": "OMFP 1802/2014 — o perioadă închisă se redeschide ca act, nu prin ștergere."})
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            repo_contabilitate.deblocheaza_perioada(cur, schema, an, luna)
-        _ui.scrie(conn, schema, an, luna, "redeschisa", ctx["uid"], motiv.strip())
-        conn.commit()
-    return {"deblocat": f"{luna:02d}/{an}"}
+def perioada_deblocheaza(tenant_id: int, an: int, luna: int, motiv: str = "",                          ctx=Depends(cere_rol("admin_firma"))):
+    try:
+        return _uc_tenants.perioada_deblocheaza(tenant_id, an, luna, motiv, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/perioade-blocate/istoric")
 # [R58] Urma se poate CITI — altfel ar fi scrisă degeaba. Cine a închis, cine a redeschis, când
 # și de ce.
-def perioade_istoric(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
-                     ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)   # [lotul 6] `luna=13` si `an=1900` dadeau `{"istoric": []}`
-    _cere_perioada(an, luna)   # [lotul 6] `luna=13` si `an=1900` intorceau `{"istoric": []}`
-    from core import migrare_inchideri as _ui
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"istoric": _ui.istoric(conn, schema, an, luna)}
+def perioade_istoric(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,                      ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.perioade_istoric(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/jurnal")
 def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
@@ -5296,63 +3439,24 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
     se DERIVA aici, la citire - nicio cale de scriere nu se atinge. Ce nu se poate deriva
     ramane null: `note_fara_document` spune cate sunt, ca absenta sa fie numarata, nu ascunsa.
     """
-    _cere_perioada(an, luna)
-    from core import jurnal_api as _j
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            # [14-1-1] `nr_curent` se numara de la 1 IANUARIE, nu de la inceputul lunii: norma cere
-            # "numarul curent al operatiunilor inregistrate incepand de la 1 ianuarie ... pana la
-            # sfarsitul exercitiului financiar". De aceea fereastra e pe AN, iar filtrul pe luna se
-            # aplica DUPA numerotare - altfel fiecare luna ar reincepe de la 1.
-            note, total = {}, 0.0
-            for (iid, data, nr, desc, sursa, status, fid, dref, nrc,
-                 f_tip, f_serie, f_nr, f_data,
-                 deb, cre, suma, cc_id, cc_nume) in repo_contabilitate.jurnal_pe_an(cur, schema, f"{an}-01-01", f"{an}-{luna:02d}-01"):
-                if iid not in note:
-                    note[iid] = {"id": iid, "nr_curent": int(nrc), "data": data.isoformat(),
-                                 "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
-                                 "factura_id": fid,
-                                 "document": _j.document_justificativ(dref, f_tip, f_serie, f_nr, f_data),
-                                 "linii": []}
-                note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma),
-                                           "centru_cost_id": cc_id, "centru_nume": cc_nume})
-                total += float(suma)
-    # [14-1-1] "Sumele debitoare si sumele creditoare se totalizeaza lunar." In partida dubla fiecare
-    # linie e simultan debit si credit, deci cele doua totaluri sunt egale prin constructie - se dau
-    # amandoua, cum cere formularul, nu unul singur.
-    lista = list(note.values())
-    fara_document = sum(1 for n in lista if not n["document"])
-    return {"note": lista, "total_debit": round(total, 2), "total_credit": round(total, 2),
-            "note_fara_document": fara_document}
+    try:
+        return _uc_tenants.tenant_jurnal(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # Sursele in care traieste un raport Z. Constanta, nu literal in SQL: gardul o citeste din AST
 # si compara MULTIMEA, in loc sa caute un sir intr-un text (METODA §23).
 # [P5 val 1b] Se IMPORTA din `core/raport_z.py`, unde sta si indexul care o impune in baza:
 # doua liste scrise separat ar fi putut descrie doua multimi diferite, iar poarta din cod si
 # indexul din baza ar fi aparat lucruri diferite fara ca nimic sa spuna.
-_SURSE_Z = _raport_z.SURSE
 
 
 def _cere_z_unic(cur, schema, numar):
-    """[R61, 26.08.2026] Un raport Z e unic pe casa de marcat si pe zi — deci pe NUI + numar.
-
-    Decizia lui Costin: *„raportul Z e un document al casei de marcat, unic pe zi si pe aparat.
-    Doua rapoarte Z pe aceeasi data nu exista in realitate, deci nici in evidenta."* Varianta (a)
-    din R61: a doua nota se REFUZA, nu se accepta cu stornare — un duplicat nu e o corectie, e o
-    greseala de operare.
-
-    Cauta in AMANDOUA sursele. Cheia e aceeasi la ruta tastata si la import, deci un raport deja
-    importat nu mai poate fi tastat a doua oara, si invers — altfel poarta ar fi tinut doar
-    jumatate din drum."""
-    r = _repo.select_2(cur, schema, numar, _SURSE_Z)
-    if not r:
-        return
-    iid, data_ex, sursa = (r["id"], r["data"], r["sursa"]) if isinstance(r, dict) else r
-    raise HTTPException(409, MESAJ_Z_DUPLICAT % {
-        "numar": numar, "data": data_ex, "id": iid,
-        "cum": "importata din fisier AMEF" if sursa == "amef" else "tastata"})
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._cere_z_unic` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._cere_z_unic(cur, schema, numar)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/horeca/import-amef")
@@ -5364,55 +3468,10 @@ def _cere_z_unic(cur, schema, numar):
 def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA.
     Nota se genereaza pe cote reale din XML: 5311/5125=707 + 707=4427 per cota."""
-    from decimal import Decimal as D
-    from core import amef_import as _am
-    continut = _octetii(fisier)
     try:
-        xml = _am.extrage_xml(continut)
-        rz = _am.parseaza_raport_z(xml)
-    except (ValueError, Exception) as e:
-        raise HTTPException(422, f"fisier AMEF invalid: {e}")
-    if not rz["data"]:
-        raise HTTPException(422, "nu am putut extrage data din idR")
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        # [R61] Poarta de perioada lipsea DOAR aici, iar asta era pe dos: ruta fara rol era si
-        # cea fara poarta. O nota intr-o luna inchisa e aceeasi clasa indiferent ca e ciorna.
-        _cere_luna_deschisa(conn, schema, rz["data"])
-        numerar = sum((p["suma"] for p in rz["plati"] if p["tip"] == "numerar"), D("0"))
-        rest = sum((p["suma"] for p in rz["plati"] if p["tip"] != "numerar"), D("0"))
-        with conn.cursor() as cur:
-            _numar_z = f"Z-{rz['nui']}-{rz['nr_raport']}"
-            _cere_z_unic(cur, schema, _numar_z)
-            # [P5 val 1b] Verificarea de mai sus e calea RAPIDĂ, cea care dă omului un mesaj
-            # care se poate citi. Indexul unic e plasa de dedesubt, pentru cursa dintre două
-            # cereri simultane — acum posibilă, fiindcă ruta rulează pe un fir. Violarea lui
-            # produce ACELAȘI refuz, nu un `500`: *o cursă pierdută și o a doua încercare
-            # conștientă trebuie să arate la fel pentru cel care operează casa de marcat.*
-            try:
-                tranzactie.savepoint_z_insert(cur)
-                # id-ul se citește ÎNAINTE de `RELEASE`: orice `execute` următor golește cursorul
-                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit")[0]
-                tranzactie.elibereaza_z_insert(cur)
-            except _psycopg2.errors.UniqueViolation:
-                tranzactie.intoarce_la_z_insert(cur)
-                _cere_z_unic(cur, schema, _numar_z)   # ridică 409, cu documentul existent numit
-                raise                                  # dacă totuși nu l-a găsit, nu înghițim
-            linii = []
-            if numerar: linii.append(("5311", "707", numerar))
-            if rest: linii.append(("5125", "707", rest))
-            for cota in rz["cote"]:
-                if cota["tva"]:
-                    linii.append(("707", "4427", cota["tva"]))
-            for deb, cred, suma in linii:
-                repo_contabilitate.adauga_linie_4(cur, schema, iid, deb, cred, suma)
-        conn.commit()
-    return {"inregistrare_id": iid, "status": "ciorna", "data": rz["data"],
-            "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
-            "cote": [{"cota": x["cota"], "tva": str(x["tva"])} for x in rz["cote"]],
-            "numerar": str(numerar), "card_altele": str(rest)}
+        return _uc_tenants.horeca_import_amef(tenant_id, _octetii(fisier), ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/horeca/raport-z")
 # [R55, 26.08.2026] Rolul e aici fiindca ruta scrie nota `validata` DIRECT — deci produce
@@ -5422,114 +3481,32 @@ def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
 # direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
 def horeca_raport_z(tenant_id: int, rz: RaportZ,
                     ctx=Depends(cere_rol("admin_firma"))):
-    from decimal import Decimal as D
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, rz.data)   # [R42 (a)] nota poartă data raportului Z
-        nui = (rz.nui or "").strip()
-        nr_raport = (rz.nr_raport or "").strip()
-        if not nui or not nr_raport:
-            raise HTTPException(400, MESAJ_Z_FARA_CHEIE)
-        numar = "Z-%s-%s" % (nui, nr_raport)
-        total = D(str(rz.total_11)) + D(str(rz.total_21))
-        if total <= 0:
-            raise HTTPException(400, "totalul pe cote trebuie să fie pozitiv")
-        if abs(float(total) - (rz.numerar + rz.card)) > 0.01:
-            raise HTTPException(400, "numerar + card trebuie să fie egal cu totalul pe cote")
-        # suta marita: TVA = total * cota / (100 + cota)
-        tva11 = (D(str(rz.total_11)) * 11 / 111).quantize(D("0.01"))
-        tva21 = (D(str(rz.total_21)) * 21 / 121).quantize(D("0.01"))
-        baza11 = D(str(rz.total_11)) - tva11
-        baza21 = D(str(rz.total_21)) - tva21
-        with conn.cursor() as cur:
-            _cere_z_unic(cur, schema, numar)
-            iid = repo_contabilitate.nota_horeca_z_validata(cur, schema, rz.data, numar, "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport))[0]
-            linii = []
-            if rz.numerar: linii.append(("5311", "707", rz.numerar))
-            if rz.card: linii.append(("5125", "707", rz.card))
-            # corectie TVA: 707 -> 4427 pentru TVA colectata
-            tva_total = tva11 + tva21
-            if tva_total: linii.append(("707", "4427", float(tva_total)))
-            for deb, cre, suma in linii:
-                repo_contabilitate.adauga_linie_3(cur, schema, iid, deb, cre, suma)
-    return {"ok": True, "nota_id": iid,
-            "tva_11": float(tva11), "tva_21": float(tva21),
-            "baza_11": float(baza11), "baza_21": float(baza21)}
+    try:
+        return _uc_tenants.horeca_raport_z(tenant_id, rz, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.post("/tenants/{tenant_id}/banca/parse-extras")  # [api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat
 def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
-    # [P5, 10.09.2026] RUTA SUBIECT a bancului de măsură: reperele de mai jos despart cererea în
-    # segmente, ca să se poată afla UNDE stau cele ~460 ms de la k=10 din care doar ~18 sunt
-    # procesor. Instrumentarea e inertă fără `ICONTA_CRONOMETRU=1` — v. `core/cronometru.py`.
-    _crono.marca("intrare_handler")
-    from core import banca_parser, banca as _bk
-    _crono.marca("importuri")
-    with db.get_conn() as conn:
-        _crono.marca("conexiune")
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-    _crono.marca("acces")
-    continut = _octetii(fisier)
-    _crono.marca("citire_fisier")
     try:
-        tranzactii = banca_parser.parse_extras(continut, fisier.filename or "")
-    except Exception as e:
-        raise HTTPException(400, f"nu am putut citi extrasul: {e}")
-    _crono.marca("parsare")
-    for t in tranzactii:
-        linie = {"sens": "debit" if t["suma"] < 0 else "credit",
-                 "suma": abs(t["suma"]), "descriere": t.get("detalii", "")}
-        r = _bk.regula_cont(linie)
-        t["cui"] = r.get("cui")
-        t["tip"] = r.get("tip")
-        t["nota"] = r.get("nota")
-    _crono.marca("reguli")
-    return _raspuns({"tranzactii": tranzactii, "nr": len(tranzactii)})
+        return _uc_tenants.banca_parse_extras(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.get("/tenants/{tenant_id}/stat-plata")
 def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    from core import stat_plata_api as _sp
-    with db.get_conn() as conn:  # [search_path_tenant_v1] schema pe conn public
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-    with db.get_conn(schema) as conn:  # helper-ele (pontaj/perioada) folosesc nume necalificate -> search_path pe tenant
-        # [get_safe_v1 20.08.2026] AICI se chema _snapshot_stat_plata() -> INSERT + commit pe un GET.
-        # Efect: simpla deschidere a ecranului Salariati scria un rand per salariat si il comitea
-        # (orice monitorizare/prefetch/al doilea tab faceau acelasi lucru), iar poarta de stergere din
-        # salariati_api.sterge_salariat se inchidea din vizitare. Consumatorul (POST /calcul-cm)
-        # calculeaza acum media din sursa, nu din cache-ul de navigare.
-        stat = _sp.stat_plata(conn, schema, an, luna)
-        # [lista 5, 30.08.2026] Compozitia netului, din ACEEASI sursa ca fluturasul. Pana azi
-        # componentele se vedeau numai in PDF-ul descarcat: ruta trimitea cele 12 campuri, ecranul
-        # nu randa niciunul (R97). Se trimite gata compusa ca ecranul sa n-o compuna a doua oara -
-        # doua liste ale aceluiasi lucru nu raman egale.
-        for _r in stat:
-            _r["compozitie"] = _sp.compozitie_fluturas(_r)
-        with conn.cursor() as _rc:
-            _reges_ok = repo_salariati.firma_are_chei_reges(_rc, tenant_id) is not None
-        return {"stat": stat, "reges_configurat": _reges_ok}
+    try:
+        return _uc_tenants.tenant_stat_plata(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
 # [R52] Poartă salariul unei PERSOANE — date despre cineva care nu e firma.
 def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int,
                     ctx=Depends(cere_rol("admin_firma"))):
-    from fastapi.responses import Response
-    from core import stat_plata_api as _sp
-    _cere_perioada(an, luna)
-    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        cur = conn.cursor()
-        nf = (repo_tenants.nume_dupa_id(cur, tenant_id) or [""])[0]
-    with db.get_conn(schema) as conn:  # fluturas_pdf foloseste nume necalificate -> search_path pe tenant
-        pdf = _sp.fluturas_pdf(conn, schema, salariat_id, an, luna, nf)
-    if pdf is None:
-        raise HTTPException(404, "salariat inexistent")
-    return Response(content=pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
+    try:
+        pdf = _uc_tenants.tenant_fluturas(tenant_id, salariat_id, an, luna, ctx)
+        return Response(content=pdf, media_type="application/pdf",
+                        headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -5538,15 +3515,12 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int,
 # Emiterea ingheata cifrele cu amprenta; divergenta fata de recalcul se SEMNALEAZA; corectia e al
 # doilea exemplar, care il refera pe primul. Aplicatia nu corecteaza singura - contabilul decide.
 def _cere_an_luna(corp):
-    """(an, luna) din corp, sau 422. Nu KeyError -> 500: o cerere incompleta e o cerere gresita, nu
-    o defectiune a serverului, iar 500 spune mai mult decat trebuie despre ruta."""
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._cere_an_luna` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
     try:
-        an, luna = int((corp or {})["an"]), int((corp or {})["luna"])
-    except (KeyError, TypeError, ValueError):
-        raise HTTPException(422, "lipsesc an și luna")
-    if not (1 <= luna <= 12):
-        raise HTTPException(422, "luna trebuie să fie între 1 și 12")
-    return an, luna
+        return _uc_comun._cere_an_luna(corp)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stat-plata/emite")
@@ -5555,86 +3529,46 @@ def _cere_an_luna(corp):
 def tenant_stat_emite(tenant_id: int, corp: dict = Body(...),
                       ctx=Depends(cere_rol("admin_firma"))):
     """corp: {an, luna}. Idempotent: cine are deja exemplar nu primeste al doilea (ala e o corectie)."""
-    from core import stat_plata_emis as _spe
-    # ORDINEA: acces (404) -> drept (403) -> validarea corpului (422). Prima forma citea `corp["an"]`
-    # INAINTE de verificarea accesului: un strain primea KeyError -> 500, adica invata ca ruta exista
-    # si ce campuri asteapta. Prins de gardul de izolare structurala, care probeaza fiecare ruta noua
-    # {tenant_id} cu corp gol.
-    schema = _schema_sau_404(ctx, tenant_id)
-    if not _are_permisiune(ctx, "poate_valida"):
-        raise HTTPException(403, FARA_DREPT_VALIDARE)
-    an, luna = _cere_an_luna(corp)
-    with db.get_conn(schema) as conn:
-        _spe.aplica(conn, schema)
-        emise = _spe.emite(conn, schema, an, luna, de_cine=str(ctx["uid"]))
-        return {"emise": len(emise), "total": len(_spe.citeste(conn, schema, an, luna))}
+    try:
+        return _uc_tenants.tenant_stat_emite(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/stat-plata/emis")
 def tenant_stat_emis(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Exemplarele emise + contradictiile DERIVATE (emis vs recalcul de acum). Nu scrie nimic."""
-    _cere_perioada(an, luna)
-    from core import stat_plata_emis as _spe
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        ex = _spe.citeste(conn, schema, an, luna)
-        return {"exemplare": ex, "contradictii": _spe.verifica(conn, schema, an, luna)}
+    try:
+        return _uc_tenants.tenant_stat_emis(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stat-plata/corectie")
 def tenant_stat_corectie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {salariat_id, an, luna}. Al doilea exemplar. Primul ramane - el a ajuns la om."""
-    from core import stat_plata_emis as _spe
-    schema = _schema_sau_404(ctx, tenant_id)
-    if not _are_permisiune(ctx, "poate_valida"):
-        raise HTTPException(403, FARA_DREPT_VALIDARE)
-    an, luna = _cere_an_luna(corp)
     try:
-        sid = int(corp["salariat_id"])
-    except (KeyError, TypeError, ValueError):
-        raise HTTPException(422, "cererea nu spune pentru care salariat se face corecția")
-    with db.get_conn(schema) as conn:
-        try:
-            return _spe.corectie(conn, schema, sid, an, luna, de_cine=str(ctx["uid"]))
-        except ValueError as e:
-            raise HTTPException(409, str(e))
+        return _uc_tenants.tenant_stat_corectie(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stat-plata/motiv")
 def tenant_stat_motiv(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {exemplar_id, motiv}. ASUMA divergenta, nu o sterge: ramane in lista, cu cine si cand."""
-    from core import stat_plata_emis as _spe
-    schema = _schema_sau_404(ctx, tenant_id)
-    if not _are_permisiune(ctx, "poate_valida"):
-        raise HTTPException(403, FARA_DREPT_VALIDARE)
     try:
-        eid = int(corp["exemplar_id"])
-    except (KeyError, TypeError, ValueError):
-        raise HTTPException(422, "cererea nu spune care exemplar al statului se asumă")
-    with db.get_conn(schema) as conn:
-        try:
-            _spe.motiveaza(conn, schema, eid, corp.get("motiv") or "", de_cine=str(ctx["uid"]))
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-    return {"ok": True}
+        return _uc_tenants.tenant_stat_motiv(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/plata-salarii-preview")
 def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """[F134] Sumar inainte de generarea fisierului SEPA: cate plati, total, cine e exclus (fara IBAN)."""
-    from core import plata_salarii as _ps
-    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        cur = conn.cursor()
-        nf = (repo_tenants.nume_dupa_id_2(cur, tenant_id) or [""])[0]
-    with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
-        try:
-            _xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-    return meta
+    try:
+        return _uc_tenants.tenant_plata_salarii_preview(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/plata-salarii-fisier")
@@ -5644,90 +3578,57 @@ def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int,
                                 ctx=Depends(cere_rol("admin_firma"))):
     """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download).
     [R45] Se pastreaza: continut, moment, autor, amprenta, numar de exemplar."""
-    _cere_perioada(an, luna)   # [lotul 10] `luna=13` raspundea „month must be in 1..12" — mesajul
-                               # bibliotecii, in engleza, ajuns pana la contabil.
-    from fastapi.responses import Response
-    from core import plata_salarii as _ps
-    from core import artefacte as _art
-    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        cur = conn.cursor()
-        nf = (repo_tenants.nume_dupa_id_3(cur, tenant_id) or [""])[0]
-    with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
-        try:
-            xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-        _art.pastreaza(conn, schema, "plata_salarii", "%04d-%02d" % (an, luna), xml,
-                       produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
-    return Response(content=xml, media_type="application/xml",
-                    headers={"Content-Disposition": f'attachment; filename="{meta["fisier"]}"'})
+    try:
+        xml, meta = _uc_tenants.tenant_plata_salarii_fisier(tenant_id, an, luna, ctx)
+        return Response(content=xml, media_type="application/xml",
+                        headers={"Content-Disposition": f'attachment; filename="{meta["fisier"]}"'})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ---- [F125] clasificare manuala D390 (reclasificare + adaugare) ----
 def _schema_cabinet_sau_404(ctx, tenant_id):
-    """Rezolva schema tenantului (conexiune separata); d390.pull foloseste nume necalificate,
-    deci apelantul deschide apoi db.get_conn(schema) pozitionat pe schema."""
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(404, "tenant inexistent sau fără acces")
-    return schema
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._schema_cabinet_sau_404` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._schema_cabinet_sau_404(ctx, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/d390-clasificare")
 def d390_clasificare_stare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Operatiunile auto-derivate (cu tipul curent) + liniile manuale, pt ecranul de clasificare."""
-    _cere_perioada(an, luna)
-    from core import d390_clasificare_api as _cl
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _cl.stare(conn, schema, an, luna)
+    try:
+        return _uc_tenants.d390_clasificare_stare(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.put("/tenants/{tenant_id}/d390-clasificare/reclasificare")
 def d390_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}."""
-    from core import d390_clasificare_api as _cl
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _cl.salveaza_reclasificare(conn, schema, corp.get("an"), corp.get("luna"),
-                                       corp.get("directie"), corp.get("tara"), corp.get("cod"), corp.get("tip"))
-    if r.get("eroare"):
-        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
-    return r
+    try:
+        return _uc_tenants.d390_reclasificare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/d390-clasificare/manual")
 def d390_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}."""
-    from core import d390_clasificare_api as _cl
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _cl.manual_adauga(conn, schema, corp.get("an"), corp.get("luna"), corp.get("tip"),
-                              corp.get("tara"), corp.get("cod"), corp.get("den"), corp.get("baza"))
-    if r.get("eroare"):
-        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
-    return r
+    try:
+        return _uc_tenants.d390_manual_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}/d390-clasificare/manual/{mid}")
 def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    from core import d390_clasificare_api as _cl
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        # [R42 (b)] Înainte de generare linia manuală e pregătire — o poate scoate un asistent.
-        # După, e parte din declarația care există deja, iar ștergerea o face să nu mai
-        # corespundă datelor din care a ieșit.
-        if _declaratie_generata(conn, tenant_id, "D390", an, luna):
-            _cere_admin_firma(ctx, "declarația D390 pe %02d/%d e deja generată — o linie completată "
-                                   "manual face parte din ea, iar scoaterea ei o face să nu mai "
-                                   "corespundă datelor din care a ieșit" % (luna, an))
-        return _cl.manual_sterge(conn, schema, an, luna, mid)
+    try:
+        return _uc_tenants.d390_manual_sterge(tenant_id, mid, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [D301 27.07.2026] Introducerea operatiunilor D301 (decont special TVA). Geaman cu
@@ -5735,32 +3636,27 @@ def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends
 @app.get("/tenants/{tenant_id}/d301-operatiuni")
 def d301_operatiuni_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Operatiunile lunii + nomenclatoare (tipuri, valute, cote period-aware) pt ecranul D301."""
-    _cere_perioada(an, luna)
-    from core import d301_operatiuni_api as _op
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _op.lista(conn, schema, an, luna)
+    try:
+        return _uc_tenants.d301_operatiuni_lista(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/d301-operatiuni")
 def d301_operatiuni_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}."""
-    from core import d301_operatiuni_api as _op
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _op.adauga(conn, schema, corp.get("an"), corp.get("luna"), corp)
-    if r.get("eroare"):
-        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
-    return r
+    try:
+        return _uc_tenants.d301_operatiuni_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}/d301-operatiuni/{op_id}")
 def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    from core import d301_operatiuni_api as _op
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _op.sterge(conn, schema, an, luna, op_id)
+    try:
+        return _uc_tenants.d301_operatiuni_sterge(tenant_id, op_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -5772,40 +3668,27 @@ def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=D
 def d300_manual_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Randurile manuale ale perioadei + randurile inca disponibile de adaugat (allow-list minus
     auto-derivate minus deja introduse), cu etichete oficiale din backend."""
-    _cere_perioada(an, luna)
-    from core import d300_manual_api as _dm
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _dm.lista(conn, schema, an, luna)
+    try:
+        return _uc_tenants.d300_manual_lista(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/d300-manual")
 def d300_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}."""
-    from core import d300_manual_api as _dm
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _dm.adauga(conn, schema, corp.get("an"), corp.get("luna"), corp)
-    if r.get("eroare"):
-        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
-        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
-    return r
+    try:
+        return _uc_tenants.d300_manual_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/tenants/{tenant_id}/d300-manual/{rid}")
 def d300_manual_sterge(tenant_id: int, rid: int, ctx=Depends(cere_cabinet)):
-    from core import d300_manual_api as _dm
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        # [R42 (b)] Aceeași regulă ca la D390. Perioada nu vine din cerere, ci din rândul însuși —
-        # altfel s-ar putea șterge un rând dintr-o lună generată trimițând altă lună.
-        with conn.cursor() as _cur_per:
-            _r = repo_declaratii.perioada_d300_manual(_cur_per, schema, rid)
-        if _r and _declaratie_generata(conn, tenant_id, "D300", _r[0], _r[1]):
-            _cere_admin_firma(ctx, "declarația D300 pe %02d/%d e deja generată — un rând completat "
-                                   "manual face parte din ea, iar scoaterea lui o face să nu mai "
-                                   "corespundă datelor din care a ieșit" % (_r[1], _r[0]))
-        return _dm.sterge(conn, schema, rid)
+    try:
+        return _uc_tenants.d300_manual_sterge(tenant_id, rid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class AdeverintaIn(BaseModel):  # F136
@@ -5833,32 +3716,20 @@ class AdeverintaIn(BaseModel):  # F136
 def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn,
                       ctx=Depends(cere_rol("admin_firma"))):
     """F136: adeverinta de salariat (art. 34(5) Codul muncii) -> PDF."""
-    from fastapi.responses import Response
-    from core import adeverinta as _adv
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        try:
-            pdf = _adv.pdf(conn, schema, salariat_id, date.dict())
-        except ValueError as e:   # [R66 (c)] refuzul numeste documentul si unde se completeaza
-            raise HTTPException(422, str(e))
-    if pdf is None:
-        raise HTTPException(404, "salariat inexistent")
-    return Response(content=pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="adeverinta_{salariat_id}.pdf"'})
+    try:
+        pdf = _uc_tenants.tenant_adeverinta(tenant_id, salariat_id, date, ctx)
+        return Response(content=pdf, media_type="application/pdf",
+                        headers={"Content-Disposition": f'attachment; filename="adeverinta_{salariat_id}.pdf"'})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/salariati/{salariat_id}/pontaj")
 def tenant_pontaj_get(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_context)):
     """F135: grila lunara de pontaj (informativ) - zile lucratoare, exceptii, rezumat."""
-    from core import pontaj as _p
-    from core import perioada as _per
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        g = _p.grila(conn, schema, salariat_id, an, luna)
-        if g is not None:
-            g["perioada_confirmata"] = _per.e_confirmat(conn, schema, an, luna, "pontaj")  # [cap.23]
-    if g is None:
-        raise HTTPException(404, "salariat inexistent")
-    return g
+    try:
+        return _uc_tenants.tenant_pontaj_get(tenant_id, salariat_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class PontajIn(BaseModel):
     zi: str
@@ -5867,13 +3738,10 @@ class PontajIn(BaseModel):
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}/pontaj")
 def tenant_pontaj_set(tenant_id: int, salariat_id: int, date: PontajIn, ctx=Depends(cere_context)):
     """F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia)."""
-    from core import pontaj as _p
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _p.seteaza(conn, schema, salariat_id, date.zi, date.stare, tenant_id=tenant_id)
-    if not r.get("ok"):
-        raise HTTPException(422, r.get("mesaj", "eroare"))
-    return r
+    try:
+        return _uc_tenants.tenant_pontaj_set(tenant_id, salariat_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class ConfirmaPontajIn(BaseModel):
@@ -5885,280 +3753,108 @@ class ConfirmaPontajIn(BaseModel):
 def tenant_facturi_perioada(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
     """[cap.23, 21.08.2026] Starea INCHIDERII lunii pe domeniul `facturi`: confirmat / cine / cand,
     daca se poate confirma acum si — daca nu — DE CE (documente primite de la ANAF, neinregistrate)."""
-    _cere_perioada(an, luna)
-    from core import inchidere_luna as _il
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _il.stare(conn, schema, an, luna)
+    try:
+        return _uc_tenants.tenant_facturi_perioada(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/perioada/confirma")
-def tenant_facturi_perioada_confirma(tenant_id: int, date: ConfirmaPontajIn,
-                                     ctx=Depends(cere_rol("admin_firma"))):
+def tenant_facturi_perioada_confirma(tenant_id: int, date: ConfirmaPontajIn,                                      ctx=Depends(cere_rol("admin_firma"))):
     """[cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate
     sprijini pe ea cand spune ca o declaratie nu se datoreaza. Rol admin_firma, ca la pontaj.
     REFUZA motivat daca stim de e-Facturi primite si neinregistrate — nu lasam pe cineva sa declare
     complet ceva ce noi vedem deja ca nu e."""
-    from core import inchidere_luna as _il
-    # [lotul 6] `luna=13` cadea cu `500` la confirmare si raspundea `{"ok": true}` la
-    # redeschidere — adica „am redeschis" despre o luna care nu exista.
-    _cere_perioada(date.an, date.luna)
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        try:
-            st = _il.confirma(conn, schema, date.an, date.luna, ctx.get("uid"))
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-    return {"ok": True, "perioada": st}
+    try:
+        return _uc_tenants.tenant_facturi_perioada_confirma(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/perioada/redeschide")
-def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,
-                                       ctx=Depends(cere_rol("admin_firma"))):
+def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,                                        ctx=Depends(cere_rol("admin_firma"))):
     """[cap.23] Redeschide luna (o corectie de facturi cere redeschiderea). Simetric cu confirmarea;
     o modificare de facturi o face oricum AUTOMAT (facturi_api._redeschide_luna)."""
-    from core import inchidere_luna as _il
-    # [lotul 6] `luna=13` cadea cu `500` la confirmare si raspundea `{"ok": true}` la
-    # redeschidere — adica „am redeschis" despre o luna care nu exista.
-    _cere_perioada(date.an, date.luna)
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        st = _il.redeschide(conn, schema, date.an, date.luna)
-    return {"ok": True, "perioada": st}
+    try:
+        return _uc_tenants.tenant_facturi_perioada_redeschide(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/pontaj/confirma")
 def tenant_pontaj_confirma(tenant_id: int, date: ConfirmaPontajIn, ctx=Depends(cere_rol("admin_firma"))):
     """[cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv
     lucrate). Rol admin_firma. Idempotent (re-confirmarea reimprospateaza)."""
-    _cere_perioada(date.an, date.luna)   # [lotul 7] `luna=13` dadea `500`
-    from core import perioada as _per
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        _per.confirma(conn, schema, date.an, date.luna, "pontaj", ctx.get("uid"))
-        st = _per.e_confirmat(conn, schema, date.an, date.luna, "pontaj")
-    return {"ok": True, "perioada_confirmata": st}
+    try:
+        return _uc_tenants.tenant_pontaj_confirma(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # cf_verificari_v1: verificari contabile reutilizabile (echilibru + trezorerie)
-def _verifica_documente_pozate(schema):  # verif_doc_pozate_v1
-    """Documente pozate de clienti blocate in flux: necontate >3 zile sau note ciorna casa >3 zile."""
-    with db.get_conn() as conn, conn.cursor() as cur:
-        bonuri_vechi = _repo.select_bonuri(cur, schema)[0]
-        ciorne = _repo.select_casa_operatiuni(cur, schema)[0]
-    return {"ok": bonuri_vechi == 0 and ciorne == 0,
-            "bonuri_neverificate": bonuri_vechi, "ciorne_casa": ciorne}
+def _verifica_documente_pozate(schema):
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._verifica_documente_pozate` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._verifica_documente_pozate(schema)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _verificari_contabile(schema, an, luna):
-    from core import verificatoare as _vf
-    from datetime import date as _date
-    sfarsit = _date(an + (luna == 12), (luna % 12) + 1, 1)
-    with db.get_conn() as conn, conn.cursor() as cur:
-        note = [{"debit": r[0], "credit": r[1], "suma": r[2]} for r in _repo.select_inregistrari_linii(cur, schema, sfarsit)]
-        si = {r[0]: r[1] for r in _repo.select_solduri_initiale(cur, schema)}
-    bal = _vf.balanta(note, si)
-    # [R33 varianta b'', 26.08.2026] ECHILIBRUL E UN VERDICT COMPUS DIN DOUA VERIFICARI.
-    # Pana azi aici rula doar `verifica_balanta`, iar `core/echilibru_perioada` -- scris, testat,
-    # cu garda proprie -- nu era chemat de nimeni. Se credea ca e "a doua implementare a aceleiasi
-    # verificari"; masurat pe aceleasi date (25.08.2026), modurile de esec sunt DISJUNCTE:
-    #   echilibru_perioada -> linia cu o parte lipsa (NULL, gol sau numai spatii) si orfanul;
-    #   verifica_balanta   -> soldurile initiale care nu se inchid.
-    # Fiecare o rateaza pe cealalta, deci a alege una ar fi STERS o verificare (CONFORMITATE R33).
-    # Cele doua se compun intr-un SINGUR verdict `echilibru` -- contabilul nu trebuie sa stie ca
-    # sunt doua module -- iar compunerea se face LA CONSTRUCTIE, in verdict_echilibru (pur).
-    # LIMITA DECLARATA: felia de ledger e LUNA curenta si doar notele `validata` (domeniul
-    # modulului); o ciorna cu contul rupt se vede abia dupa validare, cand devine evidenta.
-    from core import echilibru_perioada as _ep
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._verificari_contabile` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
     try:
-        with db.get_conn() as _cl:
-            _ledger = _ep.echilibru_perioada_db(_cl, schema, an, luna)
-    except Exception as _e:
-        # verificare RUPTA, nu date curate: verdict_echilibru o trece la `neverificat`, deci
-        # verdele nu se poate afirma peste ea (P6).
-        _ledger = {"eroare": "%s: %s" % (type(_e).__name__, _e)}
-    # [control_incrucisat_v1 + F163_ui] punti declaratie <-> contabilitate/evidenta (D-vs-contabilitate):
-    #   D300 vs 4427/4426 · D112 (salarii) vs 444/4315/4316/436 · D390 (bunuri IC) vs evidenta validata.
-    # Motoare SEPARATE (core/control_incrucisat), doar EXPUSE aici - aceeasi anatomie (trei stari + temei +
-    # remediu). NU se atinge engine-ul. Fiecare pe conexiune proprie pe schema; esec izolat -> gri cu cauza
-    # (gri e informatie, nu absenta - filozofia control_incrucisat), nu doboara ceilalti verificatori.
-    from core import control_incrucisat as _ci
-    def _incrucisat(fn, eticheta):
-        try:
-            with db.get_conn(schema) as _c:
-                return fn(_c, schema, an, luna)
-        except Exception as _e:
-            # [P8] VERIFICARE RUPTA: motorul a crapat, nu datele lipsesc. Pe ecran ramane gri, in
-            # date se DEOSEBESTE - cine numara „cate nu pot fi verificate" nu mai inghite si rupturile.
-            # Starea intra la CONSTRUCTIE, nu prin atribuire dupa: `_c["stare"] = "gri"` e prins de
-            # verificator (VERDICT_COLAPSAT, stare-literal), si pe drept - un verdict carpit dupa
-            # constructie are doua surse. A doua oara azi cand fac asta.
-            _c = dict(_af.afirmatie("verificare_rupta", eticheta,
-                                    "NU pot verifica %s: %s" % (eticheta, _e),
-                                    eroare="%s: %s" % (type(_e).__name__, _e)),
-                      stare="gri", eticheta=eticheta, temei="Verificarea nu a rulat.",
-                      remediu={"fel": "investigatie", "cauza": "Eroare la verificare.",
-                               "actiune": "Reîncearcă; dacă persistă, verifică datele firmei.",
-                               "facturi": []})
-            _c["mesaj"] = _c["motiv"]
-            return {"stare": "gri", "constatari": [_c],
-                    "limita": "Verificarea %s nu a rulat: %s" % (eticheta, _e)}
-    tva_incr = _incrucisat(_ci.verifica_tva, "TVA")
-    d112_incr = _incrucisat(_ci.verifica_d112, "salarii (D112)")
-    d390_incr = _incrucisat(_ci.verifica_d390, "operatiuni intracomunitare (D390)")
-    # [F184] conformitate cota TVA facturi emise vs cota standard pe perioada (value-aware, NU decl-vs-contab)
-    cota_tva_incr = _incrucisat(_ci.verifica_cota_tva, "cotă TVA facturi emise")
-    rezultat = {
-        "tva_incrucisat": tva_incr,
-        "d112_incrucisat": d112_incr,
-        "d390_incrucisat": d390_incr,
-        "cota_tva_conformitate": cota_tva_incr,
-        "echilibru": _ep.verdict_echilibru(_ledger, _vf.verifica_balanta(bal),
-                                           "%04d-%02d" % (an, luna)),
-        "trezorerie": _vf.verifica_trezorerie(bal),
-        "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),
-        "note": len(note),
-    }
-    try:  # verif_doc_pozate_v1
-        rezultat["documente_pozate"] = _verifica_documente_pozate(schema)
-    except Exception as e:
-        # gri, nu tacere: chiar daca azi nu e surfacat in pastila, devine corect cand cineva il surfaceaza.
-        rezultat["documente_pozate"] = _constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", e, an, luna)
-    # [d205_legacy_eliminat 23.07] Verificarea d205_vs_457 a fost ELIMINATA: citea suma D205 din tabela
-    # d205_beneficiari care NU are niciun writer in cod -> suma_d205 era mereu 0 -> orice firma cu dividende
-    # (1171->457) primea rosu fals. D205 real foloseste cont 457 din d205.py; coerenta D205-vs-457 pe FAPT
-    # traieste deja in semafor (control_incrucisat.dividende_distribuite via declaratii_fapt). Vezi DECIZII 23.07.
-    return rezultat
+        return _uc_comun._verificari_contabile(schema, an, luna)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/firme/{tenant_id}/verificari")
 def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    # [probare invalid, 03.09.2026] `luna=13` întorcea 200 cu stare „gri" și „NU pot verifica" —
-    # adică o INTRARE GREȘITĂ îmbrăcată în NECUNOAȘTERE. Sunt două lucruri diferite: una se
-    # corectează tastând altceva, cealaltă e un risc rămas neacoperit. Confuzia le ascunde pe
-    # amândouă (și producea „trimestrul 5/2026").
-    # [lotul 3, 04.09.2026] Aceeasi verificare traia scrisa de mana aici si lipsea din alte sase
-    # rute. Acum toate sapte cheama acelasi ajutor: o singura sursa, si urmatoarea ruta o mosteneste.
-    _cere_perioada(an, luna)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(404, "tenant inexistent sau fără acces")
-    return _verificari_contabile(schema, an, luna)  # cf_verificari_v1
-BON_DIR_BAZA = "~/iconta_date/bonuri"  # bon_flux_e1_v1
+    try:
+        return _uc_firme.firma_verificari(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
-def _tenant_pentru_documente(ctx, tenant_id):  # bon_cabinet_v1
-    """Client -> firma lui (ca pana acum); rolurile de cabinet -> tenant_id obligatoriu,
-    cu verificarea accesului. Intoarce dict cu schema_name + id."""
-    if (ctx.get("rol") or "") == "client":
-        return _tenant_client(ctx, tenant_id)
-    if not tenant_id:
-        raise HTTPException(400, "Alegeți firma (necesar pentru rolurile de cabinet).")
-    return {"schema_name": _schema_sau_404(ctx, tenant_id), "id": tenant_id}
+def _tenant_pentru_documente(ctx, tenant_id):
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._tenant_pentru_documente` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._tenant_pentru_documente(ctx, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/portal/bon")
 def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     """Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc.
     Intra la contabil doar dupa confirmarea clientului (POST /portal/bon/{id}/confirma)."""
-    from core import ai_client
-    import json as _json, os as _os
-    t = _tenant_pentru_documente(ctx, tenant_id)
-    if not ai_client.disponibil():
-        raise HTTPException(503, "serviciul AI indisponibil")
-    imagini = []
-    for f in fisiere[:4]:
-        b = _octetii(f)
-        if len(b) > 8_000_000:
-            raise HTTPException(400, "imagine prea mare (max 8MB)")
-        # [R155, 05.09.2026] Tipul se citeste din octeti, nu din ce spune browserul: un fisier
-        # text numit `.png` soseste cu `content_type: image/png`. Refuzul cade INAINTE de apelul
-        # la furnizorul de AI — deci si o cerere platita mai putin pentru un fisier care oricum
-        # n-avea ce sa spuna.
-        _tip = _common.tip_imagine(b)
-        if not _tip:
-            raise HTTPException(422, "«%s» nu e o imagine: primii octeți nu sunt de JPEG, PNG, "
-                                     "GIF sau WEBP. Fotografiază bonul, sau încarcă poza lui."
-                                % (f.filename or "fișierul trimis"))
-        imagini.append((b, _tip))
-    prompt = ("Primesti un document pozat (un singur document, posibil pe mai multe imagini, in ordine). "
-              "Clasifica-l: bon fiscal SAU chitanta. Raspunde DOAR cu JSON, fara alt text: "
-              '{"tip": "bon", "comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
-              '"numar_document": "...", "mentiuni": "...", '
-              '"articole": [{"denumire": "...", "valoare": 0.0, "cota_tva": 0, "cont_propus": "..."}], '
-              '"tva": [{"cota": 0, "valoare": 0.0}], "bon_complet": true, "orientare": 0}. '
-              'tip = "bon" pentru bon fiscal, "chitanta" pentru chitanta. '
-              "Pentru BON FISCAL: numar_document = numarul bonului daca se vede; articole si tva ca mai jos. "
-              "Cotele TVA le citesti EXACT cum apar pe bon (pot fi 19/9/11/21/5 in functie de anul bonului). "
-              "cont_propus = contul de cheltuiala OMFP 1802 potrivit articolului: 6022 combustibil, "
-              "623 protocol (cafea, apa, mancare), 604 materiale nestocate, 628 alte servicii. "
-              "Reducerile primesc contul articolului principal. "
-              "Pentru CHITANTA: comerciant = emitentul chitantei (cel care a incasat), total = suma platita, "
-              "numar_document = numarul chitantei, mentiuni = textul de dupa 'reprezentand' (ex. factura platita); "
-              "articole si tva raman liste goale. "
-              "bon_complet = false daca documentul pare taiat in poza (nu se vad antetul si totalul) "
-              "ori e partial ilizibil. "
-              "orientare = cate grade trebuie rotita PRIMA imagine in sens orar ca textul sa fie drept: 0, 90, 180 sau 270. "
-              "Daca un camp nu se vede, pune null.")
     try:
-        text = ai_client.citeste_imagini(imagini, prompt)
-        text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-        date = _json.loads(text)
-    except Exception:
-        raise HTTPException(422, "nu am putut citi bonul; încearcă o poză mai clară")
-    avertismente = []
-    if date.get("bon_complet") is False:
-        avertismente.append("Documentul pare incomplet sau greu lizibil \u00een poz\u0103. Fotografiaz\u0103-l \u00eentreg, cu lumin\u0103 bun\u0103 \u0219i totalul vizibil.")  # bon_flux_e3b_v1
-    total = float(date.get("total") or 0)  # avertismentul aritmetic se arata doar contabilului (bon_flux_e3b_v1)
-    tva_lista = date.get("tva") or []
-    # cotele TVA period-aware din common.COTE (Legea 141/2025), nu literali cuplati la anul curent
-    _r_std = int(_common.cota("tva_standard", strict=False)[0] * 100)
-    _r_red = int(_common.cota("tva_redusa", strict=False)[0] * 100)
-    tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_red), 2)
-    tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_std), 2)
-    schema = t["schema_name"]
-    with db.get_conn() as conn:  # verif_doc_pozate_v1: drafturi abandonate >24h se curata (rand + poze)
-        with conn.cursor() as cur:
-            for (vechi_id,) in repo_casa.sterge_bonurile_extrase_vechi(cur, schema):
-                import shutil as _shutil
-                d = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(vechi_id))
-                if _os.path.isdir(d):
-                    _shutil.rmtree(d, ignore_errors=True)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
-            bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), int(date.get("orientare") or 0) % 360)[0]
-    dir_bon = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(bon_id))
-    _os.makedirs(dir_bon, exist_ok=True)
-    _EXT = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
-    for i, (b, mt) in enumerate(imagini, 1):
-        with open(_os.path.join(dir_bon, "img_%d.%s" % (i, _EXT.get(mt, "jpg"))), "wb") as fh:
-            fh.write(b)
-    return {"ok": True, "bon": date, "bon_id": bon_id, "avertismente": avertismente}
+        return _uc_portal.portal_bon([(_octetii(_f), _f.filename) for _f in fisiere], tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _bon_imagine_cale(schema, bon_id, n):
-    import os as _os, glob as _glob
-    cai = sorted(_glob.glob(_os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(int(bon_id)), "img_%d.*" % int(n))))
-    return cai[0] if cai else None
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._bon_imagine_cale` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._bon_imagine_cale(schema, bon_id, n)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/portal/bon/{bon_id}/confirma")
 def portal_bon_confirma(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     """Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil."""
-    t = _tenant_pentru_documente(ctx, tenant_id)
-    with db.get_conn() as conn, conn.cursor() as cur:
-        if not repo_casa.trece_bonul_la_de_verificat(cur, t['schema_name'], bon_id):
-            raise HTTPException(404, "bon inexistent sau deja trimis")
-    return {"ok": True}
+    try:
+        return _uc_portal.portal_bon_confirma(bon_id, tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/portal/bon/{bon_id}")
 def portal_bon_sterge(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     """Clientul reface poza -> draftul (status='extras') si pozele lui se sterg."""
-    import os as _os, shutil as _shutil
-    t = _tenant_pentru_documente(ctx, tenant_id)
-    with db.get_conn() as conn, conn.cursor() as cur:
-        if not repo_casa.sterge_bonul_extras(cur, t['schema_name'], bon_id):
-            raise HTTPException(404, "bon inexistent sau deja trimis")
-    dir_bon = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), t["schema_name"], str(bon_id))
-    if _os.path.isdir(dir_bon):
-        _shutil.rmtree(dir_bon, ignore_errors=True)
-    return {"ok": True}
+    try:
+        return _uc_portal.portal_bon_sterge(bon_id, tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/portal/bon/{bon_id}/imagine/{n}")
 def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
@@ -6173,35 +3869,19 @@ def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx
 # [R52] Fotografia unui bon: orice apare pe hârtia aia, inclusiv ce nu ține de firmă.
 def cabinet_bon_imagine(tenant_id: int, bon_id: int, n: int,
                         ctx=Depends(cere_rol("admin_firma"))):
-    from fastapi.responses import FileResponse
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(404, "tenant inexistent sau fără acces")
-    cale = _bon_imagine_cale(schema, bon_id, n)
-    if not cale:
-        raise HTTPException(404, "imagine inexistentă")
-    return FileResponse(cale)
+    try:
+        cale = _uc_tenants.cabinet_bon_imagine(tenant_id, bon_id, n, ctx)
+        return FileResponse(cale)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.get("/tenants/{tenant_id}/bonuri/{bon_id}/facturi-candidate")
 def bon_facturi_candidate(tenant_id: int, bon_id: int, ctx=Depends(cere_cabinet)):
     """Pentru o chitanta: facturile PRIMITE, neplatite, care ar putea fi stinse de ea.
     Ordonare: potrivire CUI intai, apoi apropiere de suma."""
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_casa.cui_si_total_bon(cur, schema, bon_id)
-            if not r:
-                raise HTTPException(404, "document inexistent")
-            cui = (r[0] or "").upper().replace("RO", "").strip()
-            suma = float(r[1] or 0)
-            fc = [{"id": x[0], "numar": ((x[2] or "") + str(x[1] or "")).strip(),
-                   "data": x[3].isoformat() if x[3] else None,
-                   "total": float(x[4] or 0), "furnizor": x[5], "cui": x[6],
-                   "potrivire_cui": bool(cui) and (x[6] or "").upper().replace("RO", "").strip() == cui,
-                   "potrivire_suma": abs(float(x[4] or 0) - suma) <= 0.05} for x in repo_facturi.candidate_pentru_bon(cur, schema, cui, suma)]
-    return {"facturi": fc}
+    try:
+        return _uc_tenants.bon_facturi_candidate(tenant_id, bon_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class ChitantaStinge(BaseModel):
     data: str
@@ -6212,35 +3892,14 @@ class ChitantaStinge(BaseModel):
     factura_id: Optional[int] = None
 
 @app.post("/tenants/{tenant_id}/bonuri/{bon_id}/stinge")
-def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge,
-                    ctx=Depends(cere_rol("admin_firma"))):
+def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge,                     ctx=Depends(cere_rol("admin_firma"))):
     """Chitanta certificata de contabil: plata furnizor prin Registrul de casa
     (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon).
     Optional leaga si marcheaza platita factura primita."""
-    from core import casa_api
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_casa.tip_si_status_bon(cur, schema, bon_id)
-            if not r:
-                raise HTTPException(404, "document inexistent")
-            if (r[0] or "bon") != "chitanta":
-                raise HTTPException(400, "documentul nu e chitanta")
-            if r[1] != "de_verificat":
-                raise HTTPException(400, "documentul nu e in asteptare")
-        rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "plata_furnizor",
-                                             "suma": c.suma, "document": c.document or ("CHIT-%d" % bon_id),
-                                             "partener": c.partener, "cui": c.cui})
-        if rez.get("eroare"):
-            raise HTTPException(400, rez["eroare"])
-        with conn.cursor() as cur:
-            repo_casa.aproba_bonul_cu_documente(cur, schema, c.factura_id, rez["id"], rez["inregistrare_id"], c.partener or None, c.data, c.suma, bon_id)
-            if c.factura_id:
-                repo_facturi.marcheaza_primita_platita(cur, schema, c.factura_id)
-    return {"ok": True, "operatiune_id": rez["id"], "nota_id": rez["inregistrare_id"],
-            "avertismente": rez.get("avertismente") or []}
+    try:
+        return _uc_tenants.chitanta_stinge(tenant_id, bon_id, c, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # chitante_emise_v1
 class ChitantaEmite(BaseModel):
@@ -6254,79 +3913,34 @@ def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_rol("admin
     """Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar:
     numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api
     (5311=4111, nota ciorna, verificare plafon Legea 70/2015)."""
-    from core import casa_api
-    schema = _schema_sau_404(ctx, tenant_id)
-    if c.suma <= 0:
-        raise HTTPException(400, "suma trebuie să fie > 0")
-    client_nume = client_cui = reprezentand = None
-    total_fact = None
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            if c.factura_id:
-                r = repo_facturi.factura_pentru_chitanta(cur, schema, c.factura_id)
-                if not r:
-                    raise HTTPException(404, "factură inexistentă")
-                if r[5] != "emisa":
-                    raise HTTPException(400, "chitanta se emite doar pentru facturi emise")
-                client_nume, client_cui, total_fact = r[2], r[3], float(r[4] or 0)
-                nrtxt = str(r[1] or "")  # chitante_emise_v2_reprezentand: numar contine adesea si seria (ex. MD-2)
-                if r[0] and not nrtxt.startswith(str(r[0])):
-                    nrtxt = str(r[0]) + nrtxt
-                reprezentand = "contravaloare factura %s din %s" % (
-                    nrtxt, data_ro(r[6]))
-            rs = repo_firma_profil.seria_chitantei(cur, schema)
-            serie = (rs[0] if rs else None) or "CH"
-            nr = repo_casa.urmatorul_numar_chitanta(cur, schema, serie)[0]
-        rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "incasare_client",
-                                             "suma": c.suma, "document": "%s-%s" % (serie, nr),
-                                             "partener": client_nume, "cui": client_cui})
-        if rez.get("eroare"):
-            raise HTTPException(400, rez["eroare"])
-        with conn.cursor() as cur:
-            cid = repo_casa.adauga_chitanta(cur, schema, serie, nr, c.data, c.factura_id, client_nume, client_cui, c.suma, reprezentand, rez["id"], rez["inregistrare_id"])[0]
-            if c.factura_id and total_fact is not None and c.suma >= total_fact - 0.005:
-                repo_facturi.marcheaza_platita(cur, schema, c.factura_id)
-    return {"ok": True, "chitanta_id": cid, "serie": serie, "numar": nr,
-            "avertismente": rez.get("avertismente") or []}
+    try:
+        return _uc_tenants.chitanta_emite(tenant_id, c, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/chitante")
 def chitante_lista(tenant_id: int, factura_id: Optional[int] = None, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn() as conn, conn.cursor() as cur:
-        if factura_id:
-            _randuri = repo_casa.chitante_ale_facturii(cur, schema, factura_id)
-        else:
-            _randuri = repo_casa.chitante_toate(cur, schema)
-        chi = [{"id": r[0], "serie": r[1], "numar": r[2], "data": r[3].isoformat() if r[3] else None,
-                "suma": float(r[4] or 0), "client_nume": r[5]} for r in _randuri]
-    return {"chitante": chi}
+    try:
+        return _uc_tenants.chitante_lista(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/chitante/{chitanta_id}/pdf")
 # [R52] Poartă numele și suma plătită de un terț.
 def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_rol("admin_firma"))):
-    from fastapi.responses import Response
-    from core import chitante as _ch
-    schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn() as conn, conn.cursor() as cur:
-        r = repo_casa.chitanta_pentru_pdf(cur, schema, chitanta_id)
-        if not r:
-            raise HTTPException(404, "chitanță inexistentă")
-        te = repo_tenants.nume_si_cui(cur, tenant_id) or (None, None)
-    pdf = _ch.pdf_chitanta({"nume": te[0], "cui": te[1]},
-                           {"serie": r[0], "numar": r[1],
-                            "data": data_ro(r[2]),
-                            "client_nume": r[3], "client_cui": r[4], "suma": float(r[5] or 0),
-                            "reprezentand": r[6]})
-    return Response(content=pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": 'attachment; filename="chitanta_%s_%s.pdf"' % (r[0], r[1])})
+    try:
+        pdf, r = _uc_tenants.chitanta_pdf(tenant_id, chitanta_id, ctx)
+        return Response(content=pdf, media_type="application/pdf",
+                        headers={"Content-Disposition": 'attachment; filename="chitanta_%s_%s.pdf"' % (r[0], r[1])})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/portal/documente/luni")
 def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        luni = documente_api.luni_disponibile(conn, t["schema_name"])
-        decl = documente_api.declaratii_depuse(conn, t["id"])
-    return {"luni": luni, "declaratii": decl}
+    try:
+        return _uc_portal.portal_documente_luni(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.get("/tenants/{tenant_id}/balanta")
 def cabinet_balanta_date(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """[lista 5, 30.08.2026] Balanta ca DATE, nu ca PDF.
@@ -6338,45 +3952,24 @@ def cabinet_balanta_date(tenant_id: int, an: int, luna: int, ctx=Depends(cere_ca
     Inchiderea vine ODATA cu randurile, si ca obiect, nu ca propozitie: pe o balanta goala starea e
     `nimic_de_verificat`, nu `se_inchide`.
     """
-    _cere_perioada(an, luna)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-    with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
-        randuri = documente_api.balanta(conn, schema, an, luna)
-    return {"randuri": randuri,
-            "totaluri": documente_api.totaluri_balanta(randuri),
-            "inchidere": documente_api.inchidere_balanta(randuri)}
+    try:
+        return _uc_tenants.cabinet_balanta_date(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/registru-evidenta-fiscala")
-def registru_fiscal_citeste(tenant_id: int, an: int, varianta: str = "profit",
-                            totalizare: str = "an", ctx=Depends(cere_cabinet)):
+def registru_fiscal_citeste(tenant_id: int, an: int, varianta: str = "profit",                             totalizare: str = "an", ctx=Depends(cere_cabinet)):
     """[lista 3, 30.08.2026] Registrul de evidență fiscală. Sunt DOUĂ, nu unul.
 
     `profit` — CF art. 19 alin. (7) + HG 1/2016 pct. 8, derivat din aceleași câmpuri din care iese
     D101. `venituri_pf` — CF art. 68 alin. (8)-(9) + OMFP 3254/2017, ținut pe fiecare sursă din
     fiecare categorie de venit.
     """
-    _cere_perioada(an=an)
-    from core import registru_evidenta_fiscala as _ref
-    if varianta not in _ref.VARIANTE:
-        raise HTTPException(404, "variantă necunoscută: %r" % varianta)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        if varianta == "venituri_pf":
-            return _ref.registru_pf(conn, schema, an)
-        try:
-            return _ref.registru_profit(conn, schema, an, totalizare)
-        except _ref.RegistruNeconstruibil:
-            # 409, nu 400: cererea e legitimă, iar refuzul nu e al ei — e al nostru, și poartă de ce.
-            # Corpul e o AFIRMAȚIE tipată, nu un dicționar de proză (decizia din 21.08): e o
-            # afirmație despre datele firmei, iar `verificare_rupta` o ține să nu fie citită ca un
-            # verdict gri permanent — „nu se poate pe trimestru", nu „nu există pe trimestru".
-            raise HTTPException(409, _ref.refuz_totalizare(an, totalizare))
+    try:
+        return _uc_tenants.registru_fiscal_citeste(tenant_id, an, varianta, totalizare, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/registru-evidenta-fiscala")
@@ -6386,103 +3979,59 @@ def registru_fiscal_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
     Varianta pe profit se derivă din D101 și n-are ce primi: un `POST` pe ea ar însemna o a doua
     sursă de adevăr despre același an.
     """
-    from core import registru_evidenta_fiscala as _ref
-    an = corp.get("an")
-    if not an:
-        raise HTTPException(400, {
-            "mesaj": "Nu am înscris rândul: lipsește anul.",
-            "erori_campuri": [{"camp": "an", "mesaj": "cerut, nu poate lipsi"}]})
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            return _ref.adauga_pf(conn, schema, int(an), corp)
-        except _ref.InregistrareIncompletaPF as e:
-            raise HTTPException(400, {
-                "mesaj": "Nu am înscris rândul: registrul cere un câmp pe care nu l-am primit.",
-                "erori_campuri": [{"camp": e.camp, "mesaj": str(e)}],
-                "temei": e.temei})
+    try:
+        return _uc_tenants.registru_fiscal_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/registru-inventar")
-def registru_inventar_citeste(tenant_id: int, exercitiu: int,
-                              momentul: str = "sfarsit_exercitiu",
-                              ctx=Depends(cere_cabinet)):
+def registru_inventar_citeste(tenant_id: int, exercitiu: int,                               momentul: str = "sfarsit_exercitiu",                               ctx=Depends(cere_cabinet)):
     """[lista 3, 30.08.2026] Registrul-inventar (cod 14-1-2), al doilea registru obligatoriu.
 
     Legea 82/1991 art. 20 il cere; OMFP 2634/2015 Anexa 2 ii spune continutul. Poarta COMUNA, ca la
     registrele art. 321 si din acelasi motiv.
     """
-    from core import registru_inventar as _ri
-    if momentul not in _ri.MOMENTE:
-        raise HTTPException(404, "moment necunoscut: %r" % momentul)
-    # [lotul 3] `exercitiu=1900` intorcea un registru gol — cu temeiul legal citat langa el, ca si
-    # cum ar fi fost un raspuns despre un exercitiu care exista.
-    _cere_perioada(exercitiu=exercitiu)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _ri.registru(conn, schema, exercitiu, momentul)
+    try:
+        return _uc_tenants.registru_inventar_citeste(tenant_id, exercitiu, momentul, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/registru-inventar/propunere")
-def registru_inventar_propunere(tenant_id: int, an: int, luna: int = 12,
-                                ctx=Depends(cere_cabinet)):
+def registru_inventar_propunere(tenant_id: int, an: int, luna: int = 12,                                 ctx=Depends(cere_cabinet)):
     """Coloana 3 PROPUSA din balanta — soldurile pe cont, ca sa nu fie retastate.
 
     Nu creeaza niciun rand si NU atinge coloana 4: valoarea de inventar vine din numararea faptica.
     Un ajutor care ar completa si coloana 4 ar produce un registru fara nicio diferenta, adica o
     inventariere perfecta care nu s-a facut.
     """
-    from core import registru_inventar as _ri
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-    # [lotul 3] `luna=13` intorcea `{"an": 2026, "luna": 13, "randuri": []}` — adica repeta luna
-    # imposibila inapoi, ca si cum ar fi o perioada goala.
-    _cere_perioada(an, luna)
-    with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
-        return {"an": an, "luna": luna, "randuri": _ri.solduri_de_pornire(conn, schema, an, luna)}
+    try:
+        return _uc_tenants.registru_inventar_propunere(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/registru-inventar")
 def registru_inventar_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Inscrie un rand. Refuzul iese pe contractul comun `detail.erori_campuri`."""
-    from core import registru_inventar as _ri
-    exercitiu = corp.get("exercitiu")
-    if not exercitiu:
-        raise HTTPException(400, {
-            "mesaj": "Nu am înscris rândul: lipsește exercițiul financiar.",
-            "erori_campuri": [{"camp": "exercitiu", "mesaj": "cerut, nu poate lipsi"}]})
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            return _ri.adauga(conn, schema, int(exercitiu), corp)
-        except _ri.InregistrareIncompleta as e:
-            raise HTTPException(400, {
-                "mesaj": "Nu am înscris rândul: registrul cere un câmp pe care nu l-am primit.",
-                "erori_campuri": [{"camp": e.camp, "mesaj": _mesaj_scurt_inventar(e)}],
-                "temei": e.temei})
+    try:
+        return _uc_tenants.registru_inventar_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _mesaj_scurt_inventar(e):
-    """Pe camp incape o propozitie, nu o norma. Cauza e singura care are nevoie de mai mult de
-    „cerut de norma": omul trebuie sa stie CA exista o diferenta, nu doar ca lipseste un camp."""
-    if e.camp == "cauza":
-        return "există o diferență între valoarea contabilă și cea de inventar — scrie cauza ei"
-    if e.camp == "valoare_inventar":
-        return "valoarea numărată; nu se completează singură din valoarea contabilă"
-    return "cerut de normă, nu poate lipsi"
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._mesaj_scurt_inventar` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._mesaj_scurt_inventar(e)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/registre-art321/{fel}")
-def registre_art321_citeste(tenant_id: int, fel: str, an: Optional[int] = None,
-                            ctx=Depends(cere_cabinet)):
+def registre_art321_citeste(tenant_id: int, fel: str, an: Optional[int] = None,                             ctx=Depends(cere_cabinet)):
     """[lista 3, 30.08.2026] Cele doua registre cerute de art. 321 alin. (4) CF, prin normele lui.
 
     POARTA COMUNA, nu cea de citire-istorica. Registrul e o clasa NOUA de acces, nu a doua iesire a
@@ -6491,19 +4040,14 @@ def registre_art321_citeste(tenant_id: int, fel: str, an: Optional[int] = None,
     vreodata se va cere citirea registrului pe o firma scoasa din portofoliu, se declara acolo, cu
     propozitie scrisa.
     """
-    from core import registre_art321 as _r
-    if fel not in _r.FELURI:
-        raise HTTPException(404, "registru necunoscut: %r" % fel)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _r.registru(conn, schema, fel, an)
+    try:
+        return _uc_tenants.registre_art321_citeste(tenant_id, fel, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/registre-art321/{fel}")
-def registre_art321_adauga(tenant_id: int, fel: str, corp: dict = Body(...),
-                           ctx=Depends(cere_cabinet)):
+def registre_art321_adauga(tenant_id: int, fel: str, corp: dict = Body(...),                            ctx=Depends(cere_cabinet)):
     """Inscrie un rand. Refuzul de completitudine iese ca 400 CU campul si temeiul, nu ca proza.
 
     Pe contractul care EXISTA deja — `detail.erori_campuri = [{camp, mesaj}]`, normalizat de
@@ -6511,49 +4055,29 @@ def registre_art321_adauga(tenant_id: int, fel: str, corp: dict = Body(...),
     insemnat ca acelasi fel de refuz se citeste in doua feluri; `temei` se adauga ALATURI de el,
     fiindca niciun refuz de-al nostru nu se rosteste fara norma pe care se sprijina.
     """
-    from core import registre_art321 as _r
-    if fel not in _r.FELURI:
-        raise HTTPException(404, "registru necunoscut: %r" % fel)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            return _r.adauga(conn, schema, fel, corp)
-        except _r.InregistrareIncompleta as e:
-            # Mesajul de pe CAMP e scurt — el se randeaza langa un input, iar acolo un paragraf de
-            # normа nu se citeste. Norma intreaga sta la nivelul refuzului, unde are loc.
-            raise HTTPException(400, {
-                "mesaj": "Nu am înscris rândul: registrul cere un câmp pe care nu l-am primit.",
-                "erori_campuri": [{"camp": e.camp, "mesaj": "cerut de normă, nu poate lipsi"}],
-                "temei": e.temei})
+    try:
+        return _uc_tenants.registre_art321_adauga(tenant_id, fel, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/documente/balanta")
 def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    from fastapi.responses import Response
-    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + detalii pe conn public
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        d = tenant_provisioning.detalii_tenant(conn, tenant_id)
-    with db.get_conn(schema) as conn:  # balanta_pdf foloseste nume necalificate -> search_path pe tenant
-        pdf = documente_api.balanta_pdf(conn, schema, an, luna, (d or {}).get("nume") or "")
-    return Response(content=pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
+    try:
+        pdf = _uc_tenants.cabinet_documente_balanta(tenant_id, an, luna, ctx)
+        return Response(content=pdf, media_type="application/pdf",
+                        headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/portal/documente/balanta")
 def portal_documente_balanta(an: int, luna: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    # [lotul 10] Acelasi document, doua cai: cea de cabinet refuza `luna=13` de la lotul 3, cea de
-    # portal tiparea PDF-ul. *Ce stie aplicatia intr-un loc nu poate sa nu stie in altul.*
-    _cere_perioada(an, luna)
-    from fastapi.responses import Response
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        pdf = documente_api.balanta_pdf(conn, t["schema_name"], an, luna, t.get("nume") or "")
-    return Response(content=pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
+    try:
+        pdf = _uc_portal.portal_documente_balanta(an, luna, tenant_id, ctx)
+        return Response(content=pdf, media_type="application/pdf",
+                        headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # === API PUBLIC === # api_public_v1
 def cere_api_key(x_api_key: Optional[str] = Header(None)):
     from core import api_public as _ap
@@ -6567,87 +4091,68 @@ def cere_api_key(x_api_key: Optional[str] = Header(None)):
 
 
 def _api_schema(actx, tenant_id):
-    with db.get_conn() as conn, conn.cursor() as cur:
-        r = _repo.select_public_12(cur, tenant_id, actx)
-    if not r:
-        # [probare invalid lot 2, 03.09.2026] Spunea „firmă inexistentă" și pentru o firmă care
-        # EXISTĂ, dar e a altui cabinet — aceeași afirmație falsă scoasă din `FARA_ACCES_TENANT`
-        # în lotul 1. Forma de acum nu deosebește cele două stări, deci nici nu divulgă care e.
-        raise HTTPException(404, "Firma nu există sau nu e în portofoliul cabinetului căruia îi "
-                                 "aparține cheia de API folosită.")
-    return r[0]
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._api_schema` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._api_schema(actx, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/cabinet/api-chei")  # api_public_v1
 def api_cheie_creeaza(corp: dict = Body(default={}), ctx=Depends(cere_rol("admin_firma"))):
-    from core import api_public as _ap
-    # [lotul 9] Corpul gol crea o cheie **fara nume** — iar cheia se arata O SINGURA DATA, la
-    # creare. Una fara nume nu se mai poate recunoaste in lista ca s-o revoci: ramane activa, si
-    # nimeni nu stie ce deschide.
-    _nume = str((corp or {}).get("nume") or "").strip()
-    if not _nume:
-        raise HTTPException(422, "Cheia de API are nevoie de un nume. Ea se arată o singură dată, "
-                                 "la creare; una fără nume nu se mai poate recunoaște în listă ca "
-                                 "s-o revoci.")
-    with db.get_conn() as conn:
-        return _ap.genereaza(conn, ctx["firm"], _nume)
+    try:
+        return _uc_cabinet.api_cheie_creeaza(corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/cabinet/api-chei")  # api_public_v1
 def api_chei_lista(ctx=Depends(cere_rol("admin_firma"))):
-    from core import api_public as _ap
-    with db.get_conn() as conn:
-        return {"chei": _ap.lista(conn, ctx["firm"])}
+    try:
+        return _uc_cabinet.api_chei_lista(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/cabinet/api-chei/{kid}")  # api_public_v1
 def api_cheie_revoca(kid: int, ctx=Depends(cere_rol("admin_firma"))):
-    from core import api_public as _ap
-    with db.get_conn() as conn:
-        r = _ap.revoca(conn, ctx["firm"], kid)
-    if r.get("eroare"):
-        raise HTTPException(404, r["eroare"])
-    return r
+    try:
+        return _uc_cabinet.api_cheie_revoca(kid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/api/v1/firme")  # api_public_v1
 def apiv1_firme(actx=Depends(cere_api_key)):
-    with db.get_conn() as conn, conn.cursor() as cur:
-        return {"firme": [{"id": r[0], "nume": r[1], "cui": r[2]} for r in repo_tenants.firme_pentru_api(cur, actx["firm"])]}
+    try:
+        return _uc_api.apiv1_firme(actx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
-def apiv1_facturi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
-                  actx=Depends(cere_api_key)):
-    schema = _api_schema(actx, tenant_id)
+def apiv1_facturi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,                   actx=Depends(cere_api_key)):
     try:
-        with db.get_conn(schema) as conn:
-            return {"facturi": facturi_api.lista_facturi(conn, an, luna, None)}
-    except ValueError as e:   # [lot 2] acelasi refuz ca in ecran, nu un 500 catre integrator
-        raise HTTPException(422, str(e))
+        return _uc_api.apiv1_facturi(tenant_id, an, luna, actx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/api/v1/firme/{tenant_id}/kpi")  # api_public_v1
-def apiv1_kpi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
-              actx=Depends(cere_api_key)):
-    _cere_perioada(an, luna)
-    from datetime import date as _d
-    from core import kpi_client as _kpi
-    schema = _api_schema(actx, tenant_id)
-    azi = _d.today()
-    an = an or azi.year
-    luna = luna or azi.month
-    with db.get_conn() as conn:
-        randuri = documente_api.balanta(conn, schema, an, luna)
-    return {"an": an, "luna": luna, "kpi": _kpi.kpi_din_balanta(randuri)}
+def apiv1_kpi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,               actx=Depends(cere_api_key)):
+    try:
+        return _uc_api.apiv1_kpi(tenant_id, an, luna, actx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/api/v1/firme/{tenant_id}/balanta")  # api_public_v1
 def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)):
-    _cere_perioada(an, luna)
-    schema = _api_schema(actx, tenant_id)
-    with db.get_conn() as conn:
-        return {"balanta": documente_api.balanta(conn, schema, an, luna)}
+    try:
+        return _uc_api.apiv1_balanta(tenant_id, an, luna, actx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # === LINK PLATA === scos 06.09.2026, odata cu retragerea caii de plata online (decizia 75).
 # Ruta `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata` a fost STEARSA, nu lasata
@@ -6670,91 +4175,10 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
 
 @app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
 def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cere_api_key)):
-    _preincalzeste_cursul(corp.get("moneda"), corp.get("data_emitere"))   # [P5 val 3]
-    # [26.08.2026] DOUA DIFERENTE FATA DE RUTA DIN ECRAN, amandoua reparate aici.
-    #
-    # (1) `platitor_tva` venea DIN CORPUL CERERII, cu implicit `True`. E un FAPT DESPRE FIRMA,
-    #     nu despre cerere: intra in `_potriveste_linii` -> `cote_tva.potriveste_cota`, deci
-    #     decide COTA de pe liniile facturii. Un integrator care nu-l trimite ar fi facturat cu
-    #     TVA o firma neplatitoare. Ruta din ecran il citeste din `firma_profil`
-    #     (`_platitor_tva_firma`); acum si aceasta. E interdictia 45 (P20): o valoare intrata
-    #     din afara, fara sursa si grad de certitudine, peste un fapt pe care il stim.
-    #     Masurat inainte de reparatie: `public.api_chei` = 0, deci efectul n-a fost produs.
-    # (2) Numele beneficiarului nu era cerut, desi ruta din ecran il refuza explicit — iar o
-    #     factura fara beneficiar nu e factura.
-    #
-    # CE RAMANE DIFERIT, DECLARAT: poarta „pleaca marfa acum?" (descarcarea gestiunii) nu se
-    # poate pune pe o cale neinteractiva fara sa alegem in locul integratorului. E o decizie de
-    # produs, consemnata, nu una tehnica.
-    schema = _api_schema(actx, tenant_id)
-    if not str(corp.get("tert_nume") or "").strip():
-        raise HTTPException(422, "Denumirea beneficiarului e obligatorie pe factură.")
-    # [R57, decizia lui Costin 26.08.2026] Aceeași poartă ca în ecran, dar pe o cale
-    # neinteractivă nu se poate ÎNTREBA — deci se REFUZĂ fără răspuns explicit. Motivul lui:
-    # *„un implicit, oricare ar fi, alege în locul integratorului: «descarcă» îl face să descarce
-    # gestiunea fără să știe; «nu descarcă» lasă stocul greșit fără să afle."* Iar refuzul e
-    # ieftin acum — `public.api_chei` = 0 — și ar fi imposibil de introdus peste un an.
-    # Câmpul spune CE SE ÎNTÂMPLĂ, nu ce face codul: `marfa_pleaca_cu_factura`.
-    _linii = corp.get("linii") or []
-    _tip = corp.get("tip", "factura")
-    _poarta_ceruta = (_tip == "factura") and any(
-        isinstance(l, dict) and l.get("articol_id") for l in _linii)
-    _pleaca = corp.get("marfa_pleaca_cu_factura")
-    if _poarta_ceruta and _pleaca is None:
-        raise HTTPException(422, detail={
-            "cod": "POARTA_GESTIUNE_FARA_RASPUNS",
-            "mesaj": ("Factura are linii de stoc, deci trebuie spus dacă marfa pleacă odată cu ea. "
-                      "Nu există un răspuns implicit: unul ar descărca gestiunea fără știrea ta, "
-                      "celălalt ar lăsa stocul greșit fără să afli."),
-            "camp": "marfa_pleaca_cu_factura",
-            "valori": {"true": "marfa pleacă acum — se descarcă gestiunea în aceeași tranzacție",
-                       "false": "marfa nu pleacă acum — factura e doar fiscală, stocul rămâne"}})
-    with db.get_conn(schema) as conn:
-        # [lot 2, 03.09.2026] Ruta din ecran traducea de mult `ValueError` in `422`; asta nu —
-        # deci `linii=[]` sau un cod de partener lipsa ieseau catre integrator ca
-        # `500 Internal Server Error`, adica fara nicio vorba despre ce lipseste.
-        try:
-            r = facturi_api.emite_factura(
-                conn,
-                linii=corp.get("linii"),
-                client_id=corp.get("client_id"),
-                tert_nume=corp.get("tert_nume"),
-                tert_cui=corp.get("tert_cui"),
-                tert_adresa=corp.get("tert_adresa"),
-                data_emitere=corp.get("data_emitere"),
-                data_scadenta=corp.get("data_scadenta"),
-                moneda=corp.get("moneda", "RON"),
-                platitor_tva=_platitor_tva_firma(conn),
-                status=corp.get("status", "de_preluat"),
-                curs_manual=corp.get("curs_manual"),
-                data_curs_manual=corp.get("data_curs_manual"),   # [R130] data cursului manual
-                # [R130] Pe calea de API „cine" e CHEIA cabinetului, nu un utilizator — se scrie ca
-                # atare. Un `integer` de utilizator ar fi trebuit sa inventeze unul.
-                curs_manual_de="cheie API a cabinetului %s" % actx["firm"],
-                tip=_tip,
-            )
-        except facturi_api.LiniiIncomplete as e:
-            raise HTTPException(422, {"cod": "LINII_INCOMPLETE",
-                                      "mesaj": "Completează liniile: "
-                                               + "; ".join(x["eticheta"] for x in e.campuri),
-                                      "campuri": e.campuri})
-        except ValueError as e:
-            raise HTTPException(422, str(e))
-        # [R57] Acelasi efect ca in ecran: descarcarea se face DOAR la raspuns afirmativ si in
-        # ACEEASI tranzactie cu emiterea (atomic), nu intr-un al doilea apel al integratorului.
-        if _poarta_ceruta and _pleaca is True and isinstance(r, dict) and r.get("factura_id"):
-            from core import stocuri_cv_api as _cv_api
-            from datetime import date as _dt_api
-            r["descarcare"] = _cv_api.descarca_factura(
-                conn, schema, r["factura_id"],
-                corp.get("data_emitere") or _dt_api.today().isoformat())
-    if not r.get("ok", True) and r.get("cod") == "MONEDA_NECOTATA":
-        raise HTTPException(422, r.get("mesaj"))      # [lot 2] aceeasi deosebire ca in ecran
-    if not r.get("ok", True) and r.get("cod") == "CURS_PREA_VECHI":
-        raise HTTPException(409, detail=r)            # [R130] acelasi refuz cu iesire ca in ecran
-    if not r.get("ok", True) and r.get("cod") == "CURS_INDISPONIBIL":
-        raise HTTPException(422, r.get("mesaj"))
-    return r
+    try:
+        return _uc_api.apiv1_factura_emite(tenant_id, corp, actx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/woocommerce/sincronizeaza")  # wc_sinc_v1
@@ -6772,333 +4196,177 @@ def wc_sinc(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
 
 @app.get("/tenants/{tenant_id}/woocommerce/config")  # wc_config_get_v1
 def wc_config_get(tenant_id: int, ctx=Depends(cere_context)):
-    schema = _schema_sau_404(ctx, tenant_id)
-    # [wc_config_no_mask] o eroare de DB NU se ambaleaza intr-un 200 "neconfigurat" (masca cat.0) - se propaga
-    # (500), iar frontend-ul arata eroare vizibila. "neconfigurat" ramane DOAR pentru lipsa reala de rand (r None).
-    with db.get_conn() as conn, conn.cursor() as cur:
-        r = repo_firma_profil.config_woocommerce(cur, schema)
-    if not r:
-        return {"configurat": False, "url": None}
-    return {"configurat": bool(r[0] and r[1]), "url": r[0]}
+    try:
+        return _uc_tenants.wc_config_get(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.put("/tenants/{tenant_id}/woocommerce/config")  # wc_sinc_v1
 # [R42 (d)] Pornirea și oprirea unui canal cer `admin_firma`. Costin: *„nu e organizare internă —
 # e o decizie despre cum comunică firma cu autoritatea și cu clienții."* Ruta asta scrie chiar
 # cheile canalului: cu ele pline canalul e pornit, golite îl oprește.
 def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_rol("admin_firma"))):
-    schema = _schema_sau_404(ctx, tenant_id)
-    # [lotul 7, 04.09.2026] Un corp GOL scria `NULL` in toate trei cheile — adica **oprea canalul**,
-    # tacut, si raspundea `{"ok": true}`. Chiar comentariul de deasupra o spune: „cu ele pline
-    # canalul e pornit, golite il opreste". Aceeasi clasa ca importurile din lotul 1b: *o
-    # operatiune de inlocuire care primeste un set vid nu are voie sa execute partea de stergere.*
-    # Oprirea ramane posibila — dar ceruta, nu dedusa din tacere.
-    # [R152, 05.09.2026] Gasit apasand: formularul umplut cu `«»@#$%` a fost ACCEPTAT, iar
-    # ecranul a anuntat «Stare: conectat la «»@#$%». Doua neadevaruri intr-un rand — sirul nu
-    # e o adresa, si nicio conexiune nu s-a incercat. Aici cade primul; al doilea, in
-    # `woo_ecran.js`, care spune de acum ce stie: „configurat pentru”.
-    _u = ((corp or {}).get("url") or "").strip()
-    if _u:
-        from urllib.parse import urlparse as _urlparse
-        _p = _urlparse(_u)
-        if _p.scheme not in ("http", "https") or "." not in (_p.netloc or ""):
-            raise HTTPException(422, "Adresa magazinului nu e o adresă web: %r. Aștept ceva "
-                                     "de forma https://magazin.ro." % _u)
-    _campuri = [k for k in ("url", "ck", "cs") if k in (corp or {})]
-    if not _campuri:
-        raise HTTPException(422, "N-ai trimis niciun câmp. Cererea asta ar fi golit adresa "
-                                 "magazinului și cheile lui, adică ar fi oprit canalul "
-                                 "WooCommerce — dacă asta vrei, trimite explicit `url`, `ck` și "
-                                 "`cs` goale.")
-    with db.get_conn() as conn, conn.cursor() as cur:
-        repo_firma_profil.seteaza_config_woocommerce(cur, schema, corp.get("url"), corp.get("ck"), corp.get("cs"))
-        conn.commit()
-    return {"ok": True}
+    try:
+        return _uc_tenants.wc_config(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/cabinet/consolidare")  # consolidare_v1
-def cabinet_consolidare(an: Optional[int] = None, luna: Optional[int] = None,
-                        ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    from datetime import date as _d
-    from core import kpi_client as _kpi
-    azi = _d.today()
-    an = an or azi.year
-    luna = luna or azi.month
-    with db.get_conn() as conn, conn.cursor() as cur:
-        tenanti = repo_tenants.firme_cu_schema(cur, ctx["firm"])
-    firme = []
-    total = {"venituri": 0, "cheltuieli": 0, "profit": 0,
-             "cash": 0, "de_incasat": 0, "de_platit": 0}
-    with db.get_conn() as conn:
-        for tid, nume, schema in tenanti:
-            try:
-                k = _kpi.kpi_din_balanta(documente_api.balanta(conn, schema, an, luna))
-            except Exception:
-                k = None
-            firme.append({"tenant_id": tid, "nume": nume, "kpi": k})
-            if k:
-                for c in total:
-                    total[c] = round(total[c] + k[c], 2)
-    return {"an": an, "luna": luna, "firme": firme, "total": total}
+def cabinet_consolidare(an: Optional[int] = None, luna: Optional[int] = None,                         ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_cabinet.cabinet_consolidare(an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/kpi")  # portal_kpi_v1
-def portal_kpi(an: Optional[int] = None, luna: Optional[int] = None,
-               tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    from datetime import date as _d
-    from core import kpi_client as _kpi
-    t = _tenant_client(ctx, tenant_id)
-    azi = _d.today()
-    an = an or azi.year
-    luna = luna or azi.month
-    with db.get_conn() as conn:
-        randuri = documente_api.balanta(conn, t["schema_name"], an, luna)
-    return {"an": an, "luna": luna, "kpi": _kpi.kpi_din_balanta(randuri)}
+def portal_kpi(an: Optional[int] = None, luna: Optional[int] = None,                tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    try:
+        return _uc_portal.portal_kpi(an, luna, tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/cashflow")  # portal_cashflow_v1
 def portal_cashflow(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    from datetime import date as _d
-    from core import kpi_client as _kpi
-    from core import cashflow as _cf
-    t = _tenant_client(ctx, tenant_id)
-    azi = _d.today()
-    with db.get_conn() as conn:
-        randuri = documente_api.balanta(conn, t["schema_name"], azi.year, azi.month)
-    k = _kpi.kpi_din_balanta(randuri)
-    with db.get_conn(t["schema_name"]) as conn:
-        with conn.cursor() as cur:
-            fs = [{"directie": r[0], "data_emitere": str(r[1]),
-                   "data_scadenta": str(r[2]) if r[2] else None, "total": float(r[3] or 0)}
-                  for r in repo_facturi.pentru_cashflow(cur)]
-    emise = _cf.aloca_sold([f for f in fs if f["directie"] == "emisa"], k["de_incasat"])
-    primite = _cf.aloca_sold([f for f in fs if f["directie"] == "primita"], k["de_platit"])
-    obligatii = _cf.obligatii_din_balanta(randuri)  # portal_cashflow_v2
-    medie = _cf.cheltuieli_lunare_cash(randuri, azi.month)
-    primite = primite + _cf.plati_estimate(obligatii, medie, azi=azi)
-    return {"cash": k["cash"], "medie_cheltuieli": medie,
-            "saptamani": _cf.forecast(k["cash"], emise, primite, azi=azi)}
+    try:
+        return _uc_portal.portal_cashflow(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/facturi")
-def portal_facturi(tenant_id: Optional[int] = None, an: Optional[int] = None,
-                   luna: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn(t["schema_name"]) as conn:
-        return {"facturi": facturi_api.lista_facturi(conn, an, luna, None)}
+def portal_facturi(tenant_id: Optional[int] = None, an: Optional[int] = None,                    luna: Optional[int] = None, ctx=Depends(cere_client)):
+    try:
+        return _uc_portal.portal_facturi(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/declaratii")
 def portal_declaratii(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        return {"declaratii": portal_api.declaratii_depuse(conn, t["id"])}
+    try:
+        return _uc_portal.portal_declaratii(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # ICRD_RECOMANDA_UNIFICAT_V1
 def _trimite_recomandari(emails, html, subiect):
-    if not emails:
-        raise HTTPException(400, EMAIL_NICIUNUL_VALID)
-    if len(emails) > 20:
-        raise HTTPException(400, "Maxim 20 de emailuri odata.")
-    # [R154, 05.09.2026] Masurat apasand: `{"emails": ["«»@#$%"]}` intorcea
-    # `200 {"stare": "esuat"}` — adica aplicatia SPUNEA ca n-a putut trimite, dupa ce chemase
-    # furnizorul de email cu un sir care nu poate fi adresa nimanui. Constanta de deasupra se
-    # cheama chiar `EMAIL_NICIUNUL_VALID`, deci verificarea era promisa in registrul de mesaje
-    # si nu exista in cod. Criteriul e cel din R138 (`core.common.email_valid`), imprumutat, nu
-    # rescris — a doua definitie a aceluiasi lucru e inceputul unei divergente tacute.
-    #
-    # REFUZUL E PE TOATA LISTA, nu pe adresele rele: o trimitere partiala ar fi lasat omul cu
-    # „3 trimise” si fara sa stie ca a patra n-a plecat niciodata — aceeasi coercitie tacuta ca
-    # la R150. Se refuza tot, si se spune CARE adresa nu e adresa.
-    rele = [e for e in emails if not _email_valid(e)]
-    if rele:
-        raise HTTPException(422, EMAIL_INVALID_LISTA % ", ".join(rele[:5]))
-    rezultate = []
-    for em in emails:
-        ok = _obs.trimite_email_html(em, subiect, html)
-        rezultate.append({"email": em, "stare": "trimis" if ok else "esuat"})
-    return rezultate
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._trimite_recomandari` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._trimite_recomandari(emails, html, subiect)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 def _mesaj_recomanda_client_html(nume_firma):
-    return (
-        "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
-        "<p>Buna,</p>"
-        "<p>Sunt client iConta.eu si ma tine departe de batai de cap cu ANAF - "
-        "imi arata din timp daca am ceva de depus sau de platit, inainte sa fie o problema.</p>"
-        "<p>M-am gandit ca ti-ar prinde bine si tie.</p>"
-        "<p style='margin:24px 0'><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
-        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Vezi iConta.eu</a></p>"
-        "</div>"
-    )
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._mesaj_recomanda_client_html` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._mesaj_recomanda_client_html(nume_firma)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 class RecomandareClientIn(BaseModel):
     emails: list[str]
 
 @app.get("/portal/recomanda/preview")
 def portal_recomanda_preview(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn(t["schema_name"]) as conn:
-        firma = portal_api.date_firma(conn, t["schema_name"])
-    nume_firma = (firma or {}).get("nume") or t.get("nume") or ""
-    return {"ok": True, "html": _mesaj_recomanda_client_html(nume_firma),
-            "subiect": "O recomandare de la " + (nume_firma or "un antreprenor")}
+    try:
+        return _uc_portal.portal_recomanda_preview(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/portal/recomanda")
 def portal_recomanda(date: RecomandareClientIn, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    emails = [e.strip() for e in (date.emails or []) if e and e.strip()]
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn(t["schema_name"]) as conn:
-        firma = portal_api.date_firma(conn, t["schema_name"])
-    nume_firma = (firma or {}).get("nume") or t.get("nume") or ""
-    html = _mesaj_recomanda_client_html(nume_firma)
-    rezultate = _trimite_recomandari(emails, html, "O recomandare de la " + (nume_firma or "un antreprenor"))
-    return {"ok": True, "rezultate": rezultate}
+    try:
+        return _uc_portal.portal_recomanda(date, tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/povesti")
 def portal_povesti(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        rows = _pachete.lista_povesti_aprobate(conn, t["id"])
-        with db.get_conn(t["schema_name"]) as conn_s:
-            for r in rows:
-                an, luna = r["an"], r["luna"]
-                an_p, luna_p = (an - 1, 12) if luna == 1 else (an, luna - 1)
-                cur_rz = _pachete.rezumat_luna(conn_s, conn, t["id"], an, luna)
-                prev_rz = _pachete.rezumat_luna(conn_s, conn, t["id"], an_p, luna_p)
-                r["venituri"] = cur_rz["venituri"]
-                r["cheltuieli"] = cur_rz["cheltuieli"]
-                r["rezultat"] = cur_rz["rezultat"]
-                r["rezultat_anterior"] = prev_rz["rezultat"]
-                r["diferenta"] = round(cur_rz["rezultat"] - prev_rz["rezultat"], 2)
-    return {"povesti": rows}
+    try:
+        return _uc_portal.portal_povesti(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # ICRD_SOLICITARI_V1 - bucla solicitari client <-> cabinet
-import psycopg2.extras as _E_sol
 class SolicitareIn(BaseModel):
     mesaj: str
 
 @app.get("/portal/solicitari/contor")  # [icrd_sol_badge_v1] necitite de la cabinet, pt clientul curent
 def portal_solicitari_contor(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            n = repo_portal.cate_solicitari_necitite(cur, t["id"])[0]
-    return {"necitite": n}
+    try:
+        return _uc_portal.portal_solicitari_contor(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/portal/solicitari")
 def portal_solicitari_lista(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_sol.RealDictCursor) as cur:
-            rows = repo_portal.solicitarile_firmei(cur, t["id"])
-    return {"solicitari": rows}
+    try:
+        return _uc_portal.portal_solicitari_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/portal/solicitari")
 def portal_solicitari_trimite(date: SolicitareIn, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            repo_portal.adauga_solicitare(cur, t["id"], date.mesaj, ctx["uid"])
-        with conn.cursor() as cur:
-            r = repo_tenants.cabinetul_si_numele(cur, t["id"])
-        if r and r[0]:
-            with conn.cursor() as cur:
-                ids = [x[0] for x in repo_utilizatori.conturi_active_ale_cabinetului(cur, r[0])]
-            txt = "Mesaj nou de la %s: %s" % (r[1] or "firma", date.mesaj[:80])
-            _notif.adauga_multi(conn, ids, "solicitare_client", txt, link="solicitari:%s" % t["id"])
-    return {"ok": True}
+    try:
+        return _uc_portal.portal_solicitari_trimite(date, tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/solicitari")
 def cabinet_solicitari_lista(tenant_id: int, ctx=Depends(cere_context)):
-    _schema_sau_404(ctx, tenant_id)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_sol.RealDictCursor) as cur:
-            rows = repo_portal.solicitarile_pentru_cabinet(cur, tenant_id)
-    return {"solicitari": rows}
+    try:
+        return _uc_tenants.cabinet_solicitari_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/solicitari")
 # [R42] „iese către un om" — răspunsul pleacă pe email la clientul firmei.
-def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,
-                                ctx=Depends(cere_rol("admin_firma"))):
-    _schema_sau_404(ctx, tenant_id)
-    _de_trimis = None           # ce ramane de trimis DUPA ce se inchide blocul de conexiune
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            repo_portal.adauga_solicitare_2(cur, tenant_id, date.mesaj, ctx["uid"])
-        conn.commit()
-        email = _email_client_tenant(conn, tenant_id)
-        if email:
-            nume = _nume_tenant(conn, tenant_id)
-            subiect = "Raspuns nou de la contabilul tau"
-            html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
-                    "<p>Buna,</p><p>Contabilul tau ti-a raspuns la o solicitare pentru <b>" +
-                    (nume or "firma ta") + "</b>:</p>"
-                    "<p style='background:#f5f5f5;padding:14px;border-radius:8px'>" +
-                    date.mesaj.replace("<", "&lt;").replace(">", "&gt;") + "</p>"
-                    "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
-                    "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
-                    "Deschide portalul</a></p></div>")
-            _de_trimis = (email, subiect, html)
-    # [P5 val 3, 11.09.2026] AICI, nu inauntru. `conn.commit()` s-a facut mai sus, deci raspunsul e
-    # deja in evidenta; apelul la Brevo (termen 15 s) nu mai tine nimic din pool. Se trimite exact
-    # cand exista adresa clientului, ca inainte.
-    if _de_trimis is not None:
-        _obs.trimite_email_html(*_de_trimis)
-    return {"ok": True}
+def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,                                 ctx=Depends(cere_rol("admin_firma"))):
+    try:
+        return _uc_tenants.cabinet_solicitari_raspunde(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/portal/acasa")  # [p91_portal_acasa] status ANAF + scadente pentru firma clientului
 def portal_acasa(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    schema = t["schema_name"]
-    with db.get_conn(schema) as conn_schema:
-        with db.get_conn() as conn_public:
-            rez = control_fiscal_api.evalueaza_firma(conn_schema, conn_public, t["id"], schema)
-    # normalizez pentru portal: stare + liste scurte de scadente
-    return {
-        "tenant_id": t["id"],
-        "nume": t.get("nume"),
-        "stare": rez.get("stare"),
-        "mesaj": rez.get("mesaj"),
-        "restante": rez.get("lipsa", []),
-        "de_urmarit": rez.get("urmarit", []),
-        "datorate": rez.get("datorate", 0),
-        "depuse": rez.get("depuse", 0),
-    }
+    try:
+        return _uc_portal.portal_acasa(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # === ASISTENTI_API ROUTES ===
-from core import asistenti_api as _asist
-import core.notificari_api as _notif  # [p57_notif]
-import core.pachete_api as _pachete  # [p62_pachete]
-import core.raportari_api as _rap  # [p33]
 
 
 def _cer_admin_cabinet(ctx):
-    """Doar admin_firma (și superadmin) gestionează actorii. Întoarce id cabinet."""
-    if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(status_code=403, detail=DOAR_ADMIN_CABINET)
-    return ctx["firm"]
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._cer_admin_cabinet` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._cer_admin_cabinet(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/asistenti")
 def asistenti_lista(ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        return {
-            "sumar": _asist.sumar(conn, cabinet_id),
-            "actori": _asist.lista_actori(conn, cabinet_id),
-        }
+    try:
+        return _uc_asistenti.asistenti_lista(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/asistenti/{uid}")
 def asistenti_detalii(uid: int, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.detalii_actor(conn, cabinet_id, uid)
-        if not r.get("ok"):
-            raise HTTPException(status_code=404, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_detalii(uid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # === ASISTENT NOU === # asistent_nou_v1
@@ -7109,186 +4377,120 @@ class AsistentNouIn(BaseModel):
 
 @app.post("/asistenti")
 def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
-    from core import nucleu as _nucleu
-    import secrets as _sec
-    email = date.email.strip().lower()
-    if not _email_valid(email):  # [R138] altfel `«»@#$%` devine un cont de `angajat`
-        raise HTTPException(422, EMAIL_INVALID)
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            if repo_utilizatori.id_si_activ_dupa_email(cur, email):
-                raise HTTPException(422, EMAIL_EXISTA)
-            uid = repo_utilizatori.creeaza_cont_de_client(cur, email, _nucleu.hash_parola(_sec.token_urlsafe(16)), date.nume or email.split("@")[0], ctx["firm"], date.poate_valida)["id"]
-        with conn.cursor() as cur:
-            tok = _sec.token_urlsafe(32)
-            _pune_token(cur, tok, uid, "48 hours")
-    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
-    link = baza + "/#activare=" + tok
-    html = ("<p>Buna,</p><p>Ai fost adaugat ca asistent in cabinetul tau pe iConta.eu.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
-            "<p>Dupa activare, intra cu emailul <b>%s</b> si parola setata. Linkul e valabil 48 de ore.</p>") % (link, email)
     try:
-        _obs.trimite_email_html(email, "Acces asistent iConta.eu", html)
-    except Exception as _e:
-        # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
-        _obs.esec_secundar("email invitatie asistent", _e, alerta=True)
-    return {"ok": True, "user_id": uid}
+        return _uc_asistenti.asistent_creeaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/asistenti/{uid}/permisiuni")
 def asistenti_permisiuni(uid: int, date: dict = Body(...), ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.set_permisiuni(
-            conn, cabinet_id, uid,
-            date.get("poate_pregati", False),
-            date.get("poate_valida", False),
-            date.get("poate_depune", False),
-        )
-        if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_permisiuni(uid, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/asistenti/{uid}/firme/{tid}")
 def asistenti_atribuie(uid: int, tid: int, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.atribuie_firma(conn, cabinet_id, uid, tid)
-        if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_atribuie(uid, tid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.delete("/asistenti/{uid}/firme/{tid}")
 def asistenti_elimina(uid: int, tid: int, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.elimina_firma(conn, cabinet_id, uid, tid)
-        if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_elimina(uid, tid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/asistenti/{uid}/dezactiveaza")
 def asistenti_dezactiveaza(uid: int, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.dezactiveaza(conn, cabinet_id, uid, ctx["uid"])
-        if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_dezactiveaza(uid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/asistenti/{uid}/reactiveaza")
 def asistenti_reactiveaza(uid: int, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.reactiveaza(conn, cabinet_id, uid)
-        if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_reactiveaza(uid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
 # [patch7_finalizeaza_firme]
 @app.post("/asistenti/{uid}/finalizeaza-firme")
 def asistenti_finalizeaza_firme(uid: int, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.aplica_regula_zero_firme(conn, cabinet_id, uid)
-        if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_finalizeaza_firme(uid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
 # [patch9_semafor_rute]
 @app.get("/asistenti/echipa/semafor")
 def asistenti_semafor(zile: int = 30, ctx=Depends(cere_cabinet)):
-    if zile < 1:
-        raise HTTPException(422, "Numărul de zile privite înapoi trebuie să fie cel puțin 1 — "
-                                 "am primit %d." % zile)
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        return _asist.semafor_echipa(conn, cabinet_id, zile)
+    try:
+        return _uc_asistenti.asistenti_semafor(zile, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/asistenti/echipa/erori")
 def asistenti_erori(zile: int = 30, ctx=Depends(cere_cabinet)):
-    if zile < 1:
-        raise HTTPException(422, "Numărul de zile privite înapoi trebuie să fie cel puțin 1 — "
-                                 "am primit %d." % zile)
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        return _asist.erori_echipa(conn, cabinet_id, zile)
+    try:
+        return _uc_asistenti.asistenti_erori(zile, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [p16_activitate_cabinet_routes]
 @app.get("/asistenti/echipa/centralizator")
-def asistenti_centralizator(de: Optional[str] = None, pana: Optional[str] = None,
-                            ctx=Depends(cere_cabinet)):
-    # [lotul 9] Intervalul INVERSAT intorcea un raport gol, si il repeta inapoi in
-    # raspuns. A cincea instanta a clasei „un interval are o ordine".
-    if de and pana and str(pana) < str(de):
-        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului "
-                                 "(%s). Raportul se cere pe un interval, iar intervalul "
-                                 "are o ordine." % (pana, de))
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        return _asist.centralizator(conn, cabinet_id, de=de, pana=pana)
+def asistenti_centralizator(de: Optional[str] = None, pana: Optional[str] = None,                             ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_asistenti.asistenti_centralizator(de, pana, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/asistenti/echipa/jurnal")
-def asistenti_jurnal(de: Optional[str] = None, pana: Optional[str] = None,
-                     limit: int = 200, ctx=Depends(cere_cabinet)):
-    # [lotul 9] Intervalul INVERSAT intorcea un raport gol, si il repeta inapoi in
-    # raspuns. A cincea instanta a clasei „un interval are o ordine".
-    if de and pana and str(pana) < str(de):
-        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului "
-                                 "(%s). Raportul se cere pe un interval, iar intervalul "
-                                 "are o ordine." % (pana, de))
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        return _asist.jurnal(conn, cabinet_id, de=de, pana=pana, limit=limit)
+def asistenti_jurnal(de: Optional[str] = None, pana: Optional[str] = None,                      limit: int = 200, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_asistenti.asistenti_jurnal(de, pana, limit, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [patch_asistenti_calitate]
 @app.get("/asistenti/{uid}/calitate")
-def asistenti_calitate(uid: int, de: Optional[str] = None,
-                       pana: Optional[str] = None, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.calitate(conn, cabinet_id, uid, de=de, pana=pana)
-        if not r.get("ok"):
-            raise HTTPException(404, mesaj_din_cod(r.get("cod")))
-        return r
+def asistenti_calitate(uid: int, de: Optional[str] = None,                        pana: Optional[str] = None, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_asistenti.asistenti_calitate(uid, de, pana, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/asistenti/{uid}/activitate")
 def asistenti_activitate(uid: int, ctx=Depends(cere_cabinet)):
-    cabinet_id = _cer_admin_cabinet(ctx)
-    with db.get_conn() as conn:
-        r = _asist.activitate(conn, cabinet_id, uid)
-        if not r.get("ok"):
-            raise HTTPException(status_code=404, detail=mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_asistenti.asistenti_activitate(uid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [p18_selfview]
 @app.get("/eu/calitate")
-def eu_calitate(de: Optional[str] = None, pana: Optional[str] = None,
-                ctx=Depends(cere_cabinet)):
+def eu_calitate(de: Optional[str] = None, pana: Optional[str] = None,                 ctx=Depends(cere_cabinet)):
     """Self-view: propria calitate (nivel, semafor, rata, tipare). uid din token."""
-    # [lotul 9] Intervalul INVERSAT intorcea un raport gol, si il repeta inapoi in
-    # raspuns. A cincea instanta a clasei „un interval are o ordine".
-    if de and pana and str(pana) < str(de):
-        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului "
-                                 "(%s). Raportul se cere pe un interval, iar intervalul "
-                                 "are o ordine." % (pana, de))
-    with db.get_conn() as conn:
-        r = _asist.calitate(conn, ctx["firm"], ctx["uid"], de=de, pana=pana)
-        if not r.get("ok"):
-            raise HTTPException(404, mesaj_din_cod(r.get("cod")))
-        return r
+    try:
+        return _uc_eu.eu_calitate(de, pana, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -7318,10 +4520,10 @@ class CompetenteIn(BaseModel):
 # [p50_edu]
 @app.get("/eu/educatie")
 def eu_educatie(ctx=Depends(cere_cabinet)):
-    if ctx["rol"] not in ("admin_firma", "superadmin"):
-        return {"ok": True, "educatii": []}
-    with db.get_conn() as conn:
-        return _asist.educatie_de_aratat(conn, ctx["firm"])
+    try:
+        return _uc_eu.eu_educatie(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [p54_4ochi]
 class PatruOchiIn(BaseModel):
@@ -7332,57 +4534,56 @@ def eu_patru_ochi_stare(ctx=Depends(cere_cabinet)):
     """[po_efectiv_v1] {activ, posibil, efectiv} din SURSA UNICA folosita si de enforcement
     (core.coada_api.patru_ochi_stare). Inainte intorcea DOAR flagul brut `activ`, iar UI-ul
     afisa "validarea in doi ✓" pe un cabinet cu un singur validator - divergenta front<->back."""
-    with db.get_conn() as conn:
-        return coada_api.patru_ochi_stare(conn, ctx["firm"])
+    try:
+        return _uc_eu.eu_patru_ochi_stare(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/eu/patru-ochi")
 def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(403, DOAR_PATRON)
-    with db.get_conn() as conn:
-        return _asist.patru_ochi_seteaza(conn, ctx["firm"], date.activ)
+    try:
+        return _uc_eu.eu_patru_ochi(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/eu/educatie/patru-ochi/vazut")
 def eu_educatie_vazut(ctx=Depends(cere_cabinet)):
-    if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(403, DOAR_PATRON)
-    with db.get_conn() as conn:
-        return _asist.educatie_marcheaza(conn, ctx["firm"])
+    try:
+        return _uc_eu.eu_educatie_vazut(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/eu/competente")
 def eu_competente_get(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _asist.get_competente_proprii(conn, ctx["uid"])
+    try:
+        return _uc_eu.eu_competente_get(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/eu/competente")
 def eu_competente_set(date: CompetenteIn, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _asist.set_competente_proprii(
-            conn, ctx["uid"], date.poate_pregati, date.poate_valida, date.poate_depune)
+    try:
+        return _uc_eu.eu_competente_set(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/eu/schimba-parola")
 def eu_schimba_parola(date: SchimbaParolaIn, ctx=Depends(cere_cabinet)):
-    if not _nucleu.parola_ok(date.parola_noua):
-        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            row = repo_utilizatori.hash_parola(cur, ctx["uid"])
-        if not row or not auth_api.verifica_parola_orice(date.parola_veche, row[0]):
-            raise HTTPException(403, "Parola actuala este gresita.")
-        auth_api.schimba_parola(conn, ctx["uid"], date.parola_noua)
-    return {"ok": True}
+    try:
+        return _uc_eu.eu_schimba_parola(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/eu/profil")
 def eu_profil(date: ProfilIn, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        r = auth_api.actualizeaza_profil(conn, ctx["uid"], nume=date.nume, prenume=date.prenume)
-    if not r.get("ok"):
-        raise HTTPException(422, mesaj_din_cod(r.get("cod")))
-    return r
+    try:
+        return _uc_eu.eu_profil(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [p29_cabinet_routes]
@@ -7393,53 +4594,30 @@ class CabinetIn(BaseModel):
 
 @app.get("/eu/cabinet")
 def eu_cabinet_get(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        r = auth_api.get_cabinet(conn, ctx["firm"])
-    if not r.get("ok"):
-        raise HTTPException(404, mesaj_din_cod(r.get("cod")))
-    return r
+    try:
+        return _uc_eu.eu_cabinet_get(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/eu/cabinet")
 def eu_cabinet_set(date: CabinetIn, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(403, "Doar administratorul cabinetului poate edita datele cabinetului.")
-    with db.get_conn() as conn:
-        r = auth_api.actualizeaza_cabinet(conn, ctx["firm"], nume=date.nume, cui=date.cui)
-    if not r.get("ok"):
-        raise HTTPException(422, mesaj_din_cod(r.get("cod")))
-    return r
+    try:
+        return _uc_eu.eu_cabinet_set(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [p30_recomanda]
-_APP_URL = "https://iconta.eu"
 
 
 def _mesaj_promo_html(nume_cabinet):
-    # [p32_mesaj] text cu diacritice, 4 atribute principale ale aplicatiei
-    cine = nume_cabinet or "Un cabinet de contabilitate"
-    _li = "margin:0 0 10px 0;padding-left:2px"
-    return (
-        "<!-- [p32_mesaj] -->"
-        "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
-        "<p>Bună,</p>"
-        "<p>" + cine + " folosește <b>iConta.eu</b> și s-a gândit că ți-ar prinde bine și ție.</p>"
-        "<p>iConta.eu e contabilitatea în cloud care lucrează pentru tine și echipa ta:</p>"
-        "<ul style='margin:14px 0;padding-left:20px'>"
-        "<li style='" + _li + "'><b>Te apără</b> &mdash; semaforul fiscal te avertizează înainte "
-        "să depui ceva ce-ți aduce control.</li>"
-        "<li style='" + _li + "'><b>Face munca grea</b> &mdash; citește documentele și propune "
-        "contările; tu doar verifici și aprobi.</li>"
-        "<li style='" + _li + "'><b>Îți conduce echipa</b> &mdash; împarți firmele pe asistenți, "
-        "urmărești cine ce lucrează, cu validare în patru ochi înainte de depunere.</li>"
-        "<li style='" + _li + "'><b>Adună tot</b> &mdash; contabilitate, salarizare, declarații, "
-        "e-Factura și SAF-T, pe același client.</li>"
-        "</ul>"
-        "<p>Mai puțin timp pierdut, mai puține greșeli costisitoare.</p>"
-        "<p style='margin:24px 0'><a href='" + _APP_URL + "' style='background:#2563eb;color:#fff;"
-        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Încearcă iConta.eu</a></p>"
-        "</div>"
-    )
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._mesaj_promo_html` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._mesaj_promo_html(nume_cabinet)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 class RecomandareIn(BaseModel):
@@ -7449,21 +4627,17 @@ class RecomandareIn(BaseModel):
 # [p67_recprev]
 @app.get("/recomanda/preview")
 def recomanda_preview(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        r = auth_api.get_cabinet(conn, ctx["firm"])
-    nume_cabinet = (r.get("cabinet") or {}).get("nume", "") if r.get("ok") else ""
-    return {"ok": True, "html": _mesaj_promo_html(nume_cabinet),
-            "subiect": "O recomandare pentru cabinetul tau: iConta.eu"}
+    try:
+        return _uc_recomanda.recomanda_preview(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/recomanda")
 def trimite_recomandari(date: RecomandareIn, ctx=Depends(cere_cabinet)):
-    emails = [e.strip() for e in (date.emails or []) if e and e.strip()]
-    with db.get_conn() as conn:
-        r = auth_api.get_cabinet(conn, ctx["firm"])
-    nume_cabinet = (r.get("cabinet") or {}).get("nume", "") if r.get("ok") else ""
-    html = _mesaj_promo_html(nume_cabinet)
-    rezultate = _trimite_recomandari(emails, html, "O recomandare pentru cabinetul tau: iConta.eu")
-    return {"ok": True, "rezultate": rezultate}
+    try:
+        return _uc_recomanda.trimite_recomandari(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [p33_raportari]
@@ -7478,76 +4652,58 @@ class MesajIn(BaseModel):
 
 @app.post("/raportari")
 def raportari_creeaza(date: RaportareNouaIn, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        r = _rap.creeaza_raportare(conn, ctx["uid"], ctx.get("firm"), date.subiect, date.text)
-    if not r.get("ok"):
-        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
-    # [triaj_ai] AI raspunde la intrebarile de folosire sau escaladeaza (pentru_admin); nu blocheaza crearea
-    import threading
-    from core import raportari_ai as _rai
-    threading.Thread(target=_rai.proceseaza, args=(r["raportare_id"], date.subiect, date.text), daemon=True).start()
-    return r
+    try:
+        return _uc_raportari.raportari_creeaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/raportari/eu")
 def raportari_mele(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _rap.raportarile_mele(conn, ctx["uid"])
+    try:
+        return _uc_raportari.raportari_mele(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/raportari/contor")
 def raportari_contor(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        return _rap.contor_necitite(conn, ctx["uid"])
+    try:
+        return _uc_raportari.raportari_contor(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/raportari/admin")
 def raportari_admin(ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    with db.get_conn() as conn:
-        return _rap.toate_raportarile(conn)
+    try:
+        return _uc_raportari.raportari_admin(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/raportari/{rid}")
 def raportari_fir(rid: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        r = _rap.firul_complet(conn, rid, cerut_de_uid=ctx["uid"], e_superadmin=(ctx["rol"] == "superadmin"))
-        if not r.get("ok"):
-            raise HTTPException(404, mesaj_din_cod(r.get("cod")))
-        # acces: autorul firului sau superadmin
-        if ctx["rol"] != "superadmin" and r["raportare"]["autor_id"] != ctx["uid"]:
-            raise HTTPException(403, FARA_ACCES_RAPORTARE)
-        return r
+    try:
+        return _uc_raportari.raportari_fir(rid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/raportari/{rid}/mesaj")
 def raportari_mesaj(rid: int, date: MesajIn, ctx=Depends(cere_cabinet)):
-    rol_autor = "admin" if ctx["rol"] == "superadmin" else "utilizator"
-    with db.get_conn() as conn:
-        # utilizatorul poate scrie doar in firele lui
-        if rol_autor == "utilizator":
-            f = _rap.firul_complet(conn, rid, cerut_de_uid=ctx["uid"], e_superadmin=False)
-            if not f.get("ok"):
-                raise HTTPException(404, "Inexistent.")
-            if f["raportare"]["autor_id"] != ctx["uid"]:
-                raise HTTPException(403, FARA_ACCES)
-        r = _rap.adauga_mesaj(conn, rid, ctx["uid"], rol_autor, date.text)
-    if not r.get("ok"):
-        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
-    return r
+    try:
+        return _uc_raportari.raportari_mesaj(rid, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/raportari/{rid}/citit")
 def raportari_citit(rid: int, ctx=Depends(cere_cabinet)):
-    cine_rol = "admin" if ctx["rol"] == "superadmin" else "utilizator"
-    with db.get_conn() as conn:
-        # [izolare_raportari 09.08.2026] utilizatorul marcheaza citit DOAR firele lui (nu ale altui cabinet)
-        if cine_rol == "utilizator":
-            f = _rap.firul_complet(conn, rid, cerut_de_uid=ctx["uid"], e_superadmin=False)
-            if not f.get("ok"):
-                raise HTTPException(404, "Inexistent.")
-        return _rap.marcheaza_citit(conn, rid, cine_rol)
+    try:
+        return _uc_raportari.raportari_citit(rid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [p38_pentru_admin]
@@ -7559,267 +4715,142 @@ class PentruAdminIn(BaseModel):
 
 @app.post("/raportari/{rid}/stare")  # [inchidere_v1]
 def raportari_stare(rid: int, date: StareIn, ctx=Depends(cere_rol("superadmin"))):
-    with db.get_conn() as conn:
-        r = _rap.seteaza_stare(conn, rid, date.stare)
-        conn.commit()
-    if not r.get("ok"):
-        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
-    return r
+    try:
+        return _uc_raportari.raportari_stare(rid, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/raportari/{rid}/pentru-admin")
 def raportari_pentru_admin(rid: int, date: PentruAdminIn, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, DOAR_ADMIN_ICONTA)
-    with db.get_conn() as conn:
-        r = _rap.seteaza_pentru_admin(conn, rid, date.valoare)
-    if not r.get("ok"):
-        raise HTTPException(404, mesaj_din_cod(r.get("cod")))
-    return r
+    try:
+        return _uc_raportari.raportari_pentru_admin(rid, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [p35_raportari_imagine]
 @app.post("/raportari/mesaj/{mid}/imagine")
 def raportari_imagine(mid: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
-    import os as _os, uuid as _uuid
-    tip = (fisier.content_type or "").lower()
-    if tip not in ("image/png", "image/jpeg", "image/jpg", "image/webp"):
-        raise HTTPException(415, "Doar capturi de ecran (PNG, JPG, WEBP).")
-    continut = _octetii(fisier)
-    if len(continut) > 8 * 1024 * 1024:
-        raise HTTPException(413, "Imaginea e prea mare (max 8MB).")
-    with db.get_conn() as conn:
-        info = _rap.autor_mesajului(conn, mid)
-        if not info:
-            raise HTTPException(404, "Mesaj inexistent.")
-        # acces: superadmin, sau autorul mesajului
-        if ctx["rol"] != "superadmin" and info["mesaj_autor"] != ctx["uid"]:
-            raise HTTPException(403, FARA_ACCES)
-        ext = {"image/png": ".png", "image/jpeg": ".jpg", "image/jpg": ".jpg",
-               "image/webp": ".webp"}.get(tip, ".png")
-        nume = "r%d_m%d_%s%s" % (info["raportare_id"], mid, _uuid.uuid4().hex[:8], ext)
-        director = _os.path.join(_STATIC_DIR, "raportari")
-        _os.makedirs(director, exist_ok=True)
-        cale_disc = _os.path.join(director, nume)
-        with open(cale_disc, "wb") as fh:
-            fh.write(continut)
-        cale_web = "/static/raportari/" + nume
-        r = _rap.adauga_atasament(conn, mid, cale_web, fisier.filename)
-    if not r.get("ok"):
-        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
-    return {"ok": True, "cale": cale_web}
+    try:
+        return _uc_raportari.raportari_imagine(mid, _octetii(fisier), fisier.filename, fisier.content_type, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # === /ASISTENTI_API ROUTES ===
 
 
 # === PERMISIUNI FLUX (coada) ===
 def _are_permisiune(ctx, flag):
-    """True dacă userul curent are flagul (poate_valida / poate_depune).
-    superadmin trece mereu. Citește direct din public.users."""
-    if ctx.get("rol") == "superadmin":
-        return True
-    if flag not in ("poate_pregati", "poate_valida", "poate_depune"):
-        return False
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            r = _repo.select_public_13(cur, flag, ctx)
-            return bool(r and r[0])
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._are_permisiune` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._are_permisiune(ctx, flag)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/eu/permisiuni")
 def eu_permisiuni(ctx=Depends(cere_cabinet)):
     """Permisiunile actorului curent — pentru ca frontendul să rescrie butoanele
     fără relogare (permisiunile se schimbă din cardul Asistenți)."""
-    if ctx.get("rol") == "superadmin":
-        return {"poate_pregati": True, "poate_valida": True, "poate_depune": True,
-                "rol": "superadmin"}
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            r = repo_utilizatori.permisiuni(cur, ctx["uid"])
-    if not r:
-        raise HTTPException(status_code=404, detail="user inexistent")
-    return {"poate_pregati": bool(r[0]), "poate_valida": bool(r[1]),
-            "poate_depune": bool(r[2]), "rol": r[3]}
+    try:
+        return _uc_eu.eu_permisiuni(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 # === /PERMISIUNI FLUX ===
 
 
 # --- reconciliere bancara ---
 @app.post("/tenants/{tenant_id}/banca/reconciliere/import")
 def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
-    from core import banca_parser, banca as _bk, reconciliere_api as _rec
-    continut = _octetii(fisier)
     try:
-        tranzactii = banca_parser.parse_extras(continut, fisier.filename or "")
-    except Exception as e:
-        raise HTTPException(400, f"nu am putut citi extrasul: {e}")
-    for t in tranzactii:
-        r = _bk.regula_cont({"sens": "debit" if t["suma"] < 0 else "credit",
-                             "suma": abs(t["suma"]), "descriere": t.get("detalii", "")})
-        t["cui"], t["tip"], t["nota"] = r.get("cui"), r.get("tip"), r.get("nota")
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _raspuns({"linii": _rec.importa_extras(conn, schema, tranzactii, fisier.filename or "")})
+        return _uc_tenants.banca_rec_import(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/banca/reconciliere")
 def banca_rec_lista(tenant_id: int, status: str = None, ctx=Depends(cere_cabinet)):
-    # [lotul 6] `status=INEXISTENT` intorcea `{"linii": []}` — „nicio linie in starea asta" arata
-    # identic cu „starea asta nu exista". Aceeasi clasa ca `GET /coada` din lotul 1.
-    _STARI_REC = ("noua", "potrivita", "contata", "ignorata")
-    if status is not None and status not in _STARI_REC:
-        raise HTTPException(422, "stare necunoscută: %r (stările reconcilierii: %s)"
-                                 % (status, ", ".join(_STARI_REC)))
-    from core import reconciliere_api as _rec
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"linii": _rec.lista(conn, schema, status)}
+    try:
+        return _uc_tenants.banca_rec_lista(tenant_id, status, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza")
 def banca_rec_conteaza(tenant_id: int, linie_id: int, corp: dict = Body(default={}), ctx=Depends(cere_cabinet)):
-    from core import reconciliere_api as _rec
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _rec.conteaza(conn, schema, linie_id, corp.get("alocari"))
-    if rez is None:
-        raise HTTPException(404, "linie inexistentă")
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.banca_rec_conteaza(tenant_id, linie_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/banca/reconciliere/facturi-deschise")
 def banca_rec_facturi(tenant_id: int, ctx=Depends(cere_cabinet)):
-    from core import reconciliere_api as _rec
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"facturi": _rec.facturi_deschise_detalii(conn, schema)}
+    try:
+        return _uc_tenants.banca_rec_facturi(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- rapoarte comerciale (F144 v1, read-only) ---
 def _perioada_an(de, pana):
-    """Fallback: daca lipsesc, perioada = anul curent (01.01 - 31.12)."""
-    import datetime
-    an = datetime.date.today().year
-    return (de or f"{an}-01-01", pana or f"{an}-12-31")
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._perioada_an` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._perioada_an(de, pana)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/rapoarte-comerciale")
 def rapoarte_comerciale(tenant_id: int, de: str = None, pana: str = None, ctx=Depends(cere_cabinet)):
-    # [lotul 8] Un interval INVERSAT intorcea un raport gol — „n-ai vandut nimic in perioada asta"
-    # arata identic cu „perioada e scrisa invers". A treia instanta a clasei, dupa SAF-T (lot 6) si
-    # zilele lucratoare (lot 7).
-    if de and pana and str(pana) < str(de):
-        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului (%s). "
-                                 "Raportul se cere pe un interval, iar intervalul are o ordine."
-                                 % (pana, de))
-    from core import rapoarte_comerciale_api as _rc
-    de, pana = _perioada_an(de, pana)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"vanzari": _rc.vanzari_pe_partener(conn, schema, de, pana),
-                "durata_incasare": _rc.durata_medie_incasare(conn, schema, de, pana),
-                "parteneri": _rc.lista_parteneri(conn, schema),
-                "profit_produs": _rc.profit_pe_produs(conn, schema, de, pana),  # [punte_stoc_v1] F144 LIVE la CV
-                "de": de, "pana": pana}
+    try:
+        return _uc_tenants.rapoarte_comerciale(tenant_id, de, pana, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/rapoarte-comerciale/fisa")
 def rapoarte_comerciale_fisa(tenant_id: int, cui: str, de: str = None, pana: str = None, ctx=Depends(cere_cabinet)):
-    from core import rapoarte_comerciale_api as _rc
-    de, pana = _perioada_an(de, pana)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _rc.fisa_partener(conn, schema, cui, de, pana)
+    try:
+        return _uc_tenants.rapoarte_comerciale_fisa(tenant_id, cui, de, pana, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- rapoarte salvate (F145: variante ale firmei, partajate) ---
 @app.get("/tenants/{tenant_id}/rapoarte-salvate")
 def rapoarte_salvate_lista(tenant_id: int, tip_raport: str = "comercial", ctx=Depends(cere_cabinet)):
-    from core import rapoarte_comerciale_api as _rc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"variante": _rc.variante(conn, schema, tip_raport)}
+    try:
+        return _uc_tenants.rapoarte_salvate_lista(tenant_id, tip_raport, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rapoarte-salvate")
 def rapoarte_salvate_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import rapoarte_comerciale_api as _rc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _rc.salveaza_varianta(conn, schema, corp.get("tip_raport", "comercial"),
-                                    corp.get("nume"), corp.get("filtru"), ctx["uid"])
-    if not rez.get("ok"):
-        mesaje = {"TIP_INVALID": "tip de raport necunoscut",
-                  "NUME_GOL": "numele variantei e obligatoriu",
-                  "NUME_EXISTA": "exista deja o varianta cu acest nume"}
-        raise HTTPException(422, mesaje.get(rez.get("cod"), "eroare"))
-    return rez
+    try:
+        return _uc_tenants.rapoarte_salvate_creeaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/rapoarte-salvate/{vid}")
 def rapoarte_salvate_sterge(tenant_id: int, vid: int, ctx=Depends(cere_cabinet)):
-    from core import rapoarte_comerciale_api as _rc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _rc.sterge_varianta(conn, schema, vid)
-    if not rez.get("ok"):
-        raise HTTPException(404, "variantă inexistentă")
-    return rez
+    try:
+        return _uc_tenants.rapoarte_salvate_sterge(tenant_id, vid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- registratura documente (F146: registru unic intrare-iesire) ---
 @app.get("/tenants/{tenant_id}/registratura")
 def registratura_lista(tenant_id: int, an: int = None, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an=an)   # [lotul 7] `an=1900` intorcea un registru gol, ca si cum ar exista
-    from core import registratura_api as _reg
-    import datetime as _dt
-    an = an or _dt.date.today().year
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _reg.lista(conn, schema, an)
+    try:
+        return _uc_tenants.registratura_lista(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/registratura")
 def registratura_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    # [R153, 05.09.2026] Gasit apasand: cu `1899-01-01` in casuta de data, inregistrarea
-    # INTRA (`registratura_api.inregistreaza` ia `int(data[:4])` fara nicio margine), iar
-    # re-citirea registrului pe acel an — `_cere_perioada` — o refuza cu
-    # `an invalid: 1899 (aștept 1990-2100)`. Documentul ramanea intr-un an in care aplicatia
-    # nu se poate uita. *Aceeasi aplicatie stia raspunsul la citire si nu-l avea la scriere* —
-    # clasa din lotul 14, de data asta intre cele doua capete ale ACELEIASI rute.
-    # Criteriul e imprumutat de la citire, nu rescris.
-    _d = (corp.get("data") or "").strip()
-    if _d:
-        from datetime import date as _date_reg
-        try:
-            _zi = _date_reg.fromisoformat(_d)
-        except ValueError:
-            raise HTTPException(422, "Data înregistrării nu e o dată: %r "
-                                     "(aștept AAAA-LL-ZZ)." % _d)
-        _cere_perioada(an=_zi.year)
-    from core import registratura_api as _reg
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _reg.inregistreaza(conn, schema, corp, ctx["uid"])
-    if not rez.get("ok"):
-        mesaje = {"DIRECTIE_INVALIDA": "directie invalida (intrare/iesire)",
-                  "DESCRIERE_GOALA": "descrierea e obligatorie"}
-        raise HTTPException(422, mesaje.get(rez.get("cod"), "eroare"))
-    return rez
+    try:
+        return _uc_tenants.registratura_creeaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- generare contracte din sabloane (F147: mail-merge) ---
@@ -7833,109 +4864,57 @@ def contracte_marcaje(ctx=Depends(cere_cabinet)):
 
 @app.get("/tenants/{tenant_id}/contracte/sabloane")
 def contracte_sabloane_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
-    from core import contracte_api as _ct
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"sabloane": _ct.lista_sabloane(conn, schema)}
+    try:
+        return _uc_tenants.contracte_sabloane_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/contracte/sabloane")
 def contracte_sabloane_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import contracte_api as _ct
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _ct.salveaza_sablon(conn, schema, corp.get("id"), corp.get("nume"),
-                                  corp.get("continut"), ctx["uid"])
-    if not rez.get("ok"):
-        mesaje = {"NUME_GOL": "numele sablonului e obligatoriu",
-                  "CONTINUT_GOL": "continutul sablonului e obligatoriu",
-                  "NUME_EXISTA": "Există deja un șablon cu numele ăsta. Alege alt nume, sau editează-l pe cel existent.",
-                  "MARCAJ_INVALID": "marcaj necunoscut: {{%s}}" % rez.get("marcaj"),
-                  "INEXISTENT": "sablon inexistent"}
-        raise HTTPException(422, mesaje.get(rez.get("cod"), "eroare"))
-    return rez
+    try:
+        return _uc_tenants.contracte_sabloane_salveaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/contracte/sabloane/{sid}")
 def contracte_sabloane_sterge(tenant_id: int, sid: int, ctx=Depends(cere_cabinet)):
-    from core import contracte_api as _ct
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _ct.sterge_sablon(conn, schema, sid)
-    if not rez.get("ok"):
-        raise HTTPException(404, "sablon inexistent")
-    return rez
+    try:
+        return _uc_tenants.contracte_sabloane_sterge(tenant_id, sid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/contracte/genereaza")
 # [R42] „iese către un om" — contractul individual de muncă.
 def contracte_genereaza(tenant_id: int, corp: dict = Body(...),
                         ctx=Depends(cere_rol("admin_firma"))):
-    from core import contracte_api as _ct
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            pdf = _ct.genereaza_pdf(conn, schema, corp.get("sablon_id"), corp)
-        except ValueError as e:   # [R66 (c)]
-            raise HTTPException(422, str(e))
-    if pdf is None:
-        raise HTTPException(404, "sablon inexistent")
-    return Response(content=pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": 'attachment; filename="contract.pdf"'})
+    try:
+        pdf = _uc_tenants.contracte_genereaza(tenant_id, corp, ctx)
+        return Response(content=pdf, media_type="application/pdf",
+                        headers={"Content-Disposition": 'attachment; filename="contract.pdf"'})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- export facturi emise catre SAGA (F171, read-only) ---
 @app.get("/tenants/{tenant_id}/facturi/{factura_id}/export-saga")
 def export_saga_factura(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
-    from core import export_saga as _xs
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        date_f = _xs.date_factura(conn, schema, factura_id)
-    if date_f is None:
-        raise HTTPException(404, "factură inexistentă sau nu e emisă")
-    firma, factura, linii = date_f
-    xml = _xs.xml_factura(firma, factura, linii)
-    nume = _xs.nume_fisier(firma.get("cui"), factura.get("numar"), factura.get("data_emitere"))
-    return Response(content=xml, media_type="application/xml",
-                    headers={"Content-Disposition": 'attachment; filename="%s"' % nume})
+    try:
+        xml, nume = _uc_tenants.export_saga_factura(tenant_id, factura_id, ctx)
+        return Response(content=xml, media_type="application/xml",
+                        headers={"Content-Disposition": 'attachment; filename="%s"' % nume})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/facturi/export-saga")
 # [R45] POST: exportul e un act (ce s-a exportat și când e chiar întrebarea la o preluare
 # inversă), iar un GET n-are voie să scrie.
 def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
-    from core import export_saga as _xs
-    from core import artefacte as _art
-    import io as _io, zipfile as _zip
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        ids = _xs.facturi_emise_luna(conn, schema, an, luna)
-        if not ids:
-            raise HTTPException(404, "nicio factură emisă în luna aleasă")
-        buf = _io.BytesIO()
-        with _zip.ZipFile(buf, "w", _zip.ZIP_DEFLATED) as z:
-            for fid in ids:
-                d = _xs.date_factura(conn, schema, fid)
-                if not d:
-                    continue
-                firma, factura, linii = d
-                z.writestr(_xs.nume_fisier(firma.get("cui"), factura.get("numar"), factura.get("data_emitere")),
-                           _xs.xml_factura(firma, factura, linii))
-    nume_zip = "export_saga_%04d_%02d.zip" % (an, luna)
-    # [R45] Arhiva se păstrează întreagă (base64 în coloană), iar amprenta e pe OCTEȚII ei.
-    with db.get_conn() as _c:
-        _art.pastreaza(_c, schema, "export_saga", "%04d-%02d" % (an, luna), buf.getvalue(),
-                       produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
-    return Response(content=buf.getvalue(), media_type="application/zip",
-                    headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
+    try:
+        buf, nume_zip = _uc_tenants.export_saga_luna(tenant_id, an, luna, ctx)
+        return Response(content=buf.getvalue(), media_type="application/zip",
+                        headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/export-winmentor")  # [F187]
@@ -7944,82 +4923,42 @@ def export_winmentor_luna(tenant_id: int, an: int, luna: int,
                           ctx=Depends(cere_rol("admin_firma"))):
     """Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip.
     Facturile emise ale lunii (paritate cu SAGA, fara filtru status). Dependenta de config nomenclator WinMentor (vezi export_winmentor)."""
-    from core import export_winmentor as _wm
-    from core import artefacte as _art
-    import io as _io, zipfile as _zip
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            fisiere = _wm.export_luna(conn, schema, an, luna)
-        except ValueError as e:  # caracter neencodabil cp1250 -> nu scrie byte gresit tacit
-            raise HTTPException(422, str(e))
-    if not fisiere:
-        raise HTTPException(404, "nicio factură emisă în luna aleasă")
-    buf = _io.BytesIO()
-    with _zip.ZipFile(buf, "w", _zip.ZIP_DEFLATED) as z:
-        for nume, continut in fisiere.items():
-            z.writestr(nume, continut)
-    nume_zip = "export_winmentor_%04d_%02d.zip" % (an, luna)
-    # [R45] Arhiva se pastreaza intreaga (base64), amprenta pe octetii ei.
-    with db.get_conn() as _c:
-        _art.pastreaza(_c, schema, "export_winmentor", "%04d-%02d" % (an, luna), buf.getvalue(),
-                       produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
-    return Response(content=buf.getvalue(), media_type="application/zip",
-                    headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
+    try:
+        buf, nume_zip = _uc_tenants.export_winmentor_luna(tenant_id, an, luna, ctx)
+        return Response(content=buf.getvalue(), media_type="application/zip",
+                        headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- jurnal: editare/stergere/validare ciorne ---
 def _jurnal_rez(rez):
-    if rez is None:
-        raise HTTPException(404, "notă inexistentă")
-    if rez.get("eroare"):
-        # [31.08.2026] Refuzul poartă temeiul mai departe, pe contractul comun
-        # `detail.erori_campuri`. Până azi îl turtea într-un șir: producătorul putea spune sub ce
-        # normă refuză, iar ruta arunca partea aia. Interdicția 77 pe cea mai folosită cale de
-        # scriere — măsurată în exercițiul de intrare din 31.08, 12 refuzuri fără niciun temei.
-        if rez.get("temei"):
-            # Producătorul întoarce o AFIRMAȚIE tipată (`neconformitate`); ruta o trece mai departe
-            # întreagă, nu construiește un al doilea obiect din bucăți. Prima formă o reconstruia,
-            # și era ea însăși o afirmație netipată — prinsă de gardul din 21.08.
-            det = dict(rez)
-            det["mesaj"] = rez["eroare"]
-            if rez.get("camp"):
-                det["erori_campuri"] = [{"camp": rez["camp"], "mesaj": rez["eroare"]}]
-            raise HTTPException(400, det)
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._jurnal_rez` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._jurnal_rez(rez)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/jurnal")
 def jurnal_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import jurnal_api as _j
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        return _jurnal_rez(_j.creeaza(conn, schema, corp.get("descriere"), corp.get("data"), corp.get("linii")))
+    try:
+        return _uc_tenants.jurnal_creeaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.put("/tenants/{tenant_id}/jurnal/{nota_id}")
 def jurnal_editeaza(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import jurnal_api as _j
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_perioada_deschisa(conn, schema, nota_id)
-        return _jurnal_rez(_j.editeaza(conn, schema, nota_id,
-                                       corp.get("descriere"), corp.get("data"), corp.get("linii")))
+    try:
+        return _uc_tenants.jurnal_editeaza(tenant_id, nota_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/jurnal/{nota_id}")
 def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
-    from core import jurnal_api as _j
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_perioada_deschisa(conn, schema, nota_id)
-        return _jurnal_rez(_j.sterge(conn, schema, nota_id))
+    try:
+        return _uc_tenants.jurnal_sterge(tenant_id, nota_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/jurnal/{nota_id}/dezleaga")  # [api_intern_v1] fara buton in UI, pastrat deliberat: MASURAT 29.08.2026 — nicio cale din `static/` nu sterge o factura (`api.del` pe facturi nu exista; cel de la 1015 e pe `facturi-recurente`), deci si `DELETE /facturi/{id}` e act de API. Dezlegarea e perechea lui: ar fi singurul buton dintr-un drum care n-are ecran. Clasa e R70 (rute fara apelant), iar orbirea detectorului pe cai compuse e R80 — amandoua deja deschise. R92 NU exista: comentariul asta a numit-o dintr-o forma intermediara a deciziei, iar o trimitere la ceva inexistent se semnaleaza, nu se lasa.
 # [R90, 29.08.2026 — varianta (a), decizia lui Costin] Rolul e `admin_firma`, nu `cere_cabinet`, și
@@ -8044,59 +4983,19 @@ def jurnal_dezleaga(tenant_id: int, nota_id: int, corp: dict = Body(default={}),
     **Motivul e OBLIGATORIU.** Actul repară o eroare de reconciliere; fără motiv, peste șase luni
     nimeni nu mai poate spune dacă potrivirea a fost greșită sau dacă cineva a vrut doar să scape de
     o factură."""
-    from core import contare_facturi as _cf
-    motiv = (corp.get("motiv") or "").strip()
-    if not motiv:
-        from core import afirmatii as _af
-        raise HTTPException(422, dict(_af.afirmatie(
-            "neconformitate", "MOTIV_OBLIGATORIU",
-            "Scrie motivul dezlegării: actul repară o potrivire greșită, iar peste șase luni "
-            "urma fără motiv nu mai spune dacă a fost o eroare sau o scăpare.",
-            unde="nota #%s" % nota_id, regula="dezlegarea unei note poartă motivul"),
-            cod="MOTIV_OBLIGATORIU"))
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        # P15, prin helperul canonic — același pe care îl cheamă editarea, ștergerea și validarea
-        # unei note care există. Dezlegarea schimbă soldul facturii, deci e o modificare a lunii.
-        _cere_perioada_deschisa(conn, schema, nota_id)
-        try:
-            with _cf.cursor_dict(conn) as cur:
-                fid = _cf.dezleaga_nota(cur, schema, nota_id)
-        except _cf.RefuzContare as e:
-            conn.rollback()
-            if e.cod == "NOTA_INEXISTENTA":
-                raise HTTPException(404, e.mesaj)
-            raise HTTPException(422, e.mesaj)
-        _urma_dezlegare(conn, ctx.get("uid"), tenant_id, nota_id, fid, motiv)
-        conn.commit()
-    # Fără cheie de revendicare în răspuns (`motiv` e una): afirmațiile despre datele firmei sunt
-    # obiecte tipate, iar aici motivul e ecoul intrării, nu o afirmație a aplicației. Urma îl poartă.
-    return {"ok": True, "nota_id": nota_id, "factura_id_dezlegata": fid}
+    try:
+        return _uc_tenants.jurnal_dezleaga(tenant_id, nota_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv):
-    """URMA actului, ca FAPTĂ, nu doar ca linie de acces.
-
-    Middleware-ul de audit scrie deja `POST <cale>` cu statusul, pentru orice mutație — dar atât:
-    *că* s-a cerut ceva, nu *ce* s-a dezlegat. Aici se scrie fapta: care notă, de pe care factură,
-    cu ce motiv. Se folosește ACELAȘI tabel (`public.audit_log`), cu aceeași sub-interogare pe
-    `tenant_id` ca middleware-ul — R79: un rând de audit scris după o ștergere ar trimite la o firmă
-    care nu mai există."""
-    from core import afirmatii as _af
-    # Urma e o AFIRMAȚIE TIPATĂ, nu proză într-un dicționar (P3, decizia din 21.08): `fel='fapt'`,
-    # fiindcă exact asta e — un fapt petrecut, cu domeniul lui (nota și factura) și cu temeiul care
-    # spune de ce e completă. Prima formă scria `{"motiv": ...}` și a fost prinsă de
-    # `test_afirmatii_tipate`: o cheie de revendicare fără `fel` e chiar clasa vânată acolo.
-    fapt = _af.afirmatie(
-        "fapt", "DEZLEGARE_NOTA_FACTURA", motiv[:500],
-        unde="nota #%s, factura #%s" % (nota_id, factura_id),
-        temei_completitudine="urma se scrie în ACEEAȘI tranzacție cu dezlegarea, deci nu poate "
-                             "exista dezlegare fără ea",
-        nota_id=nota_id, factura_id=factura_id)
-    with conn.cursor() as cur:
-        _repo.insert_public_5(cur, uid, tenant_id, fapt, _json_audit)
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._urma_dezlegare` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/jurnal/{nota_id}/valideaza")
@@ -8105,178 +5004,131 @@ def _urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv):
 # pe `cere_cabinet`: citite la sursa, `jurnal_api.editeaza` si `.sterge` refuza orice nota care
 # nu e `ciorna`, deci nu ating evidenta. E munca zilnica a asistentului.
 def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_rol("admin_firma"))):
-    from core import jurnal_api as _j
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_perioada_deschisa(conn, schema, nota_id)
-        return _jurnal_rez(_j.valideaza(conn, schema, nota_id))
+    try:
+        return _uc_tenants.jurnal_valideaza(tenant_id, nota_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # [F143 Faza 1] centre de cost — nomenclator per firma (dimensiune pe linia de nota)
 @app.get("/tenants/{tenant_id}/centre-cost")
 def centre_cost_lista(tenant_id: int, doar_active: bool = False, ctx=Depends(cere_cabinet)):
-    from core import centre_cost_api as _cc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"centre": _cc.lista(conn, schema, doar_active=doar_active)}
+    try:
+        return _uc_tenants.centre_cost_lista(tenant_id, doar_active, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/centre-cost")
 def centre_cost_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import centre_cost_api as _cc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        r = _cc.adauga(conn, schema, corp.get("nume"))
-        if r.get("eroare"):
-            raise HTTPException(400, r["eroare"])
-        return r
+    try:
+        return _uc_tenants.centre_cost_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/centre-cost/{centru_id}")
 def centre_cost_activ(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import centre_cost_api as _cc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        r = _cc.seteaza_activ(conn, schema, centru_id, bool(corp.get("activ", True)))
-        if r is None:
-            raise HTTPException(404, "centru inexistent")
-        return r
+    try:
+        return _uc_tenants.centre_cost_activ(tenant_id, centru_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/centre-cost/raport")
 def centre_cost_raport(tenant_id: int, de: str, pana: str, ctx=Depends(cere_cabinet)):
-    # [lotul 8] A patra instanta a clasei „un interval are o ordine", dupa SAF-T (lot 6), zilele
-    # lucratoare (lot 7) si rapoartele comerciale (tot lotul 8).
-    if de and pana and str(pana) < str(de):
-        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului (%s). "
-                                 "Raportul se cere pe un interval, iar intervalul are o ordine."
-                                 % (pana, de))
-    """Realizat pe centru de cost, perioada [de, pana] (note validate, clasele 6/7)."""
-    from core import centre_cost_api as _cc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _cc.raport_realizat(conn, schema, de, pana)
+    try:
+        return _uc_tenants.centre_cost_raport(tenant_id, de, pana, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # [F143 Faza 2] bugete anuale pe centru + varianta buget vs realizat
 @app.get("/tenants/{tenant_id}/centre-cost/varianta")
 def centre_cost_varianta(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     """Buget vs realizat pe an, per centru (note validate, clasele 6/7)."""
-    _cere_perioada(an=an)
-    from core import centre_cost_api as _cc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _cc.raport_varianta(conn, schema, an)
+    try:
+        return _uc_tenants.centre_cost_varianta(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/centre-cost/{centru_id}/buget")
 def centre_cost_buget(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an."""
-    from core import centre_cost_api as _cc
-    an = corp.get("an")
-    if not isinstance(an, int) or an < 2020 or an > 2100:
-        raise HTTPException(400, "an invalid")
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        r = _cc.seteaza_buget(conn, schema, centru_id, an,
-                              corp.get("buget_cheltuieli"), corp.get("buget_venituri"))
-        if r is None:
-            raise HTTPException(404, "centru inexistent")
-        if r.get("eroare"):
-            raise HTTPException(400, r["eroare"])
-        return r
+    try:
+        return _uc_tenants.centre_cost_buget(tenant_id, centru_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora")
 def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_banca.ignora_linia_de_extras(cur, schema, linie_id)
-        conn.commit()
-    if not r:
-        raise HTTPException(400, "linie inexistentă sau deja contată")
-    return {"ok": True}
+    try:
+        return _uc_tenants.banca_rec_ignora(tenant_id, linie_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- registru incasari/plati (RIP) ---
 def _rip_ctx(conn, ctx, tenant_id):
-    schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(404, "tenant inexistent sau fără acces")
-    return schema
+    """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._rip_ctx` — traduce refuzul de
+    domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._rip_ctx(conn, ctx, tenant_id)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/rip/registru")
 def rip_lista(tenant_id: int, an: int, luna: int = None, status: str = None, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        return _r.lista(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, status)
+    try:
+        return _uc_tenants.rip_lista(tenant_id, an, luna, status, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rip/operatiuni")
 def rip_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        rez = _r.adauga(conn, _rip_ctx(conn, ctx, tenant_id), corp, ctx["uid"])
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.rip_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza")
 def rip_valideaza(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        rez = _r.valideaza(conn, _rip_ctx(conn, ctx, tenant_id), op_id, ctx["uid"])
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.rip_valideaza(tenant_id, op_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/rip/operatiuni/{op_id}")
 def rip_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        rez = _r.sterge(conn, _rip_ctx(conn, ctx, tenant_id), op_id)
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.rip_sterge(tenant_id, op_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rip/import-banca")
 def rip_import_banca(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        return _r.import_banca(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, ctx["uid"])
+    try:
+        return _uc_tenants.rip_import_banca(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rip/import-casa")
 def rip_import_casa(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        return _r.import_casa(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, ctx["uid"])
+    try:
+        return _uc_tenants.rip_import_casa(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/rip/inventar/{an}")
 def rip_inventar(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        return _r.registru_inventar(conn, _rip_ctx(conn, ctx, tenant_id), an)
+    try:
+        return _uc_tenants.rip_inventar(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/rip/d212/{an}")
 def rip_d212(tenant_id: int, an: int, optiune_cas: bool = False, optiune_cass: bool = False, ctx=Depends(cere_cabinet)):
-    from core import rip_api as _r
-    with db.get_conn() as conn:
-        rez = _r.fisa_d212(conn, _rip_ctx(conn, ctx, tenant_id), an, optiune_cas, optiune_cass)
-    if isinstance(rez, dict) and rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.rip_d212(tenant_id, an, optiune_cas, optiune_cass, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # --- registru de casa ---
 @app.get("/tenants/{tenant_id}/concedii/coduri")  # [cm_coduri_v1] denumirea din nomenclator + procentul din registru
@@ -8286,269 +5138,149 @@ def concedii_coduri(tenant_id: int, la_data: Optional[str] = None, ctx=Depends(c
     Inainte de 22.08.2026 lista traia scrisa de mana in `flux_concediu.js` (18 coduri, cu procentele
     lipite in eticheta): ecranul NU oferea 11/91/92 - coduri legale pe care aplicatia le accepta -
     deci bloca un contabil sa introduca un cod valid. Vezi `core/coduri_cm_api.py`."""
-    from core import coduri_cm_api as _cc
-    import datetime as _d
-    # [izolare] ruta e sub {tenant_id}, deci ACCESUL se verifica, chiar daca raspunsul nu depinde de
-    # firma: altfel un 200 pe tenantul altui cabinet spune ca tenantul EXISTA. Prins de
-    # test_izolare_structurala, nu de mine.
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
-    d = None
-    if la_data:
-        try:
-            d = _d.date.fromisoformat(la_data)
-        except ValueError:
-            raise HTTPException(422, "Data trebuie să fie în formatul AAAA-LL-ZZ.")
-    return {"coduri": _cc.optiuni(d)}
+    try:
+        return _uc_tenants.concedii_coduri(tenant_id, la_data, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/casa/registru")
 def casa_registru(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)
-    from core import casa_api as _c
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _c.registru(conn, schema, an, luna)
+    try:
+        return _uc_tenants.casa_registru(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/casa/operatiuni")
 def casa_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import casa_api as _c
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _c.adauga(conn, schema, corp)
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.casa_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/casa/operatiuni/{op_id}")
 def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
-    from core import casa_api as _c
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _c.sterge(conn, schema, op_id)
-    if rez is None:
-        raise HTTPException(404, "operațiune inexistentă")
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.casa_sterge(tenant_id, op_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- stocuri global-valorica ---
 @app.get("/tenants/{tenant_id}/stocuri/nir")
 def stocuri_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an, luna)   # [lotul 5] `luna=13` dadea `500`, `an=1900` dadea `200 {"nir": []}`
-    from core import stocuri_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"nir": _s.lista_nir(conn, schema, an, luna)}
+    try:
+        return _uc_tenants.stocuri_lista(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/nir")
 def stocuri_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.adauga_nir(conn, schema, corp)
-    if rez.get("eroare"):
-        _ec = rez.get("erori_campuri")  # [cap.24] contract {mesaj, erori_campuri} ca celelalte ecrane
-        raise HTTPException(422, detail={"mesaj": rez["eroare"], "erori_campuri": _ec} if _ec else rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.stocuri_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/descarcare")
 def stocuri_descarcare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    from core import stocuri_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.descarca_luna(conn, schema, an, luna)
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.stocuri_descarcare(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- stocuri cantitativ-valorice ---
 @app.get("/tenants/{tenant_id}/stocuri/articole")
 def cv_articole(tenant_id: int, ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"articole": _s.articole(conn, schema)}
+    try:
+        return _uc_tenants.cv_articole(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/stocuri/articole/{articol_id}/fisa")
 def cv_fisa(tenant_id: int, articol_id: int, ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.fisa(conn, schema, articol_id)
-    if rez is None:
-        raise HTTPException(404, "articol inexistent")
-    return rez
+    try:
+        return _uc_tenants.cv_fisa(tenant_id, articol_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/intrare")
 def cv_intrare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            rez = _s.intrare(conn, schema, corp)
-        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
-            raise HTTPException(422, _mesaj_intrare(e))
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.cv_intrare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/iesire")
 def cv_iesire(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            rez = _s.iesire(conn, schema, corp)
-        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
-            raise HTTPException(422, _mesaj_intrare(e))
-    if rez is None:
-        raise HTTPException(404, "articol inexistent")
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.cv_iesire(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stocuri/inventar")
 def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            return _s.inventar(conn, schema, corp)
-        except (ValueError, KeyError) as e:      # [lotul 6] refuzul ajunge ca mesaj, nu ca 500
-            raise HTTPException(422, _mesaj_intrare(e))
+    try:
+        return _uc_tenants.cv_inventar(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/stocuri/locatii")
 def cv_locatii(tenant_id: int, articol_id: int = None, ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        # [lotul 7] Un articol care NU EXISTA intorcea `{"locatii": []}` — „articolul asta nu e
-        # nicaieri" arata identic cu „articolul asta nu exista". Aceeasi clasa ca salariatul din
-        # lotul 4 si contul din lotul 3.
-        if articol_id is not None and schema:
-            with db.get_conn(schema) as _c2, _c2.cursor() as _cur:
-                if not repo_stocuri.articolul_exista(_cur, articol_id):
-                    raise HTTPException(404, "articol inexistent")
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return {"locatii": _s.stoc_pe_locatii(conn, schema, articol_id)}
+    try:
+        return _uc_tenants.cv_locatii(tenant_id, articol_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stocuri/transfer")
 def cv_transfer(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            rez = _s.transfer(conn, schema, corp)
-        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
-            raise HTTPException(422, _mesaj_intrare(e))
-    if rez is None:
-        raise HTTPException(404, "articol inexistent")
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.cv_transfer(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stocuri/reclasificare")
 def cv_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            rez = _s.reclasificare(conn, schema, corp)
-        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
-            raise HTTPException(422, _mesaj_intrare(e))
-    if rez is None:
-        raise HTTPException(404, "articol inexistent")
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.cv_reclasificare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/stocuri/analitica")
 def cv_analitica(tenant_id: int, zile_inert: int = 90, ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _s.analitica(conn, schema, zile_inert)
+    try:
+        return _uc_tenants.cv_analitica(tenant_id, zile_inert, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim")
 def cv_nivel_minim(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.set_nivel_minim(conn, schema, articol_id, corp.get("nivel_minim"))
-    if rez is None:
-        raise HTTPException(404, "articol inexistent")
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.cv_nivel_minim(tenant_id, articol_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/stocuri/barcode/{cod}")
 def cv_barcode_gaseste(tenant_id: int, cod: str, ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        a = _s.gaseste_barcode(conn, schema, cod)
-    if a is None:
-        raise HTTPException(404, "niciun articol cu acest cod de bare")
-    return a
+    try:
+        return _uc_tenants.cv_barcode_gaseste(tenant_id, cod, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode")
 def cv_barcode_set(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import stocuri_cv_api as _s
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.set_barcode(conn, schema, articol_id, corp.get("barcode"))
-    if rez is None:
-        raise HTTPException(404, "articol inexistent")
-    if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
-    return rez
+    try:
+        return _uc_tenants.cv_barcode_set(tenant_id, articol_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- D112 ---
@@ -8566,322 +5298,124 @@ def cabinet_categorie_marime(tenant_id: int, an: int, ctx=Depends(cere_cabinet))
     `s1003-valideaza` nu se ating. *Aplicația spune ce știe; nu decide în locul omului pe baza unei
     derivări care poate să nu aibă datele.*
     """
-    _cere_perioada(an=an)
-    from core import categorie_marime as _cm
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-    with db.get_conn(schema) as conn:
-        return _cm.categorie(conn, schema, an)
+    try:
+        return _uc_tenants.cabinet_categorie_marime(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/s1005-xml")
 def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an=an)
-    from core import bilant_api as _ba
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            xml, av = _ba.genereaza(conn, schema, an)
-        except ValueError as e:
-            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
-            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
-            raise HTTPException(422, str(e))
-    return {"xml": xml, "avertismente": av}
+    try:
+        return _uc_tenants.s1005_xml(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/s1005-valideaza")
 # [R45] Artefactul care încheie exercițiul financiar se PĂSTREAZĂ: conținutul, momentul,
 # autorul, amprenta, numărul exemplarului — plus verdictul cu amprenta fișierului validat.
 # Se scrie aici, nu pe `-xml`: aia e o citire (GET), asta e actul.
 def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
-    import base64, subprocess, tempfile, os
-    from core import bilant_api as _ba
-    from core import artefacte as _art
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            xml, av = _ba.genereaza(conn, schema, an)
-        except ValueError as e:
-            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
-            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
-            raise HTTPException(422, str(e))
-    with tempfile.TemporaryDirectory() as td:
-        cale = os.path.join(td, f"s1005_{tenant_id}_{an}.xml")
-        open(cale, "w", encoding="utf-8").write(xml)
-        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "S1005", cale],
-                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
-        erori = ""
-        err_f = cale + ".err.txt"
-        if os.path.exists(err_f):
-            erori = open(err_f, encoding="utf-8").read()
-    ok = "fara erori" in (r.stdout + r.stderr)
-    # [R45] Artefactul se pastreaza AICI, dupa ce verdictul exista: cele cinci campuri plus
-    # verdictul cu amprenta fisierului validat. `verdict_amprenta` e amprenta XML-ului care a
-    # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).
     try:
-        from core import duk as _duk
-        _versiune = _duk.versiune_validator("s1005")           # [P5 val 3] citire de fisier, INAINTE
-        with db.get_conn() as _c:
-            _art.pastreaza(_c, schema, "s1005", str(an), xml,
-                           produs_de_id=int(ctx["uid"]),
-                           produs_de=ctx.get("nume") or str(ctx["uid"]),
-                           verdict=("valid" if ok else "erori"),
-                           verdict_versiune=_versiune,
-                           verdict_amprenta=_art.amprenta(xml))
-    except Exception as _e:
-        import logging
-        logging.getLogger("iconta").warning("[R45] artefact s1005 nepastrat: %s", _e)
-    return {"ok": ok, "erori": erori, "avertismente": av,
-            "xml_b64": base64.b64encode(xml.encode()).decode()}
+        return _uc_tenants.s1005_valideaza(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- S1003 (bilant mici) ---
 @app.get("/tenants/{tenant_id}/s1003-xml")
 def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
-    _cere_perioada(an=an)
-    from core import bilant_api as _ba
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            xml, av = _ba.genereaza_s1003(conn, schema, an)
-        except ValueError as e:
-            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
-            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
-            raise HTTPException(422, str(e))
-    return {"xml": xml, "avertismente": av}
+    try:
+        return _uc_tenants.s1003_xml(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/s1003-valideaza")
 # [R45] Artefactul care încheie exercițiul financiar se PĂSTREAZĂ: conținutul, momentul,
 # autorul, amprenta, numărul exemplarului — plus verdictul cu amprenta fișierului validat.
 # Se scrie aici, nu pe `-xml`: aia e o citire (GET), asta e actul.
 def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
-    import base64, subprocess, tempfile, os
-    from core import bilant_api as _ba
-    from core import artefacte as _art
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            xml, av = _ba.genereaza_s1003(conn, schema, an)
-        except ValueError as e:
-            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
-            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
-            raise HTTPException(422, str(e))
-    with tempfile.TemporaryDirectory() as td:
-        cale = os.path.join(td, f"s1003_{tenant_id}_{an}.xml")
-        open(cale, "w", encoding="utf-8").write(xml)
-        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "S1003", cale],
-                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
-        erori = ""
-        if os.path.exists(cale + ".err.txt"):
-            erori = open(cale + ".err.txt", encoding="utf-8").read()
-    ok = "fara erori" in (r.stdout + r.stderr)
-    # [R45] Artefactul se pastreaza AICI, dupa ce verdictul exista: cele cinci campuri plus
-    # verdictul cu amprenta fisierului validat. `verdict_amprenta` e amprenta XML-ului care a
-    # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).
     try:
-        from core import duk as _duk
-        _versiune = _duk.versiune_validator("s1003")           # [P5 val 3] citire de fisier, INAINTE
-        with db.get_conn() as _c:
-            _art.pastreaza(_c, schema, "s1003", str(an), xml,
-                           produs_de_id=int(ctx["uid"]),
-                           produs_de=ctx.get("nume") or str(ctx["uid"]),
-                           verdict=("valid" if ok else "erori"),
-                           verdict_versiune=_versiune,
-                           verdict_amprenta=_art.amprenta(xml))
-    except Exception as _e:
-        import logging
-        logging.getLogger("iconta").warning("[R45] artefact s1003 nepastrat: %s", _e)
-    return {"ok": ok, "erori": erori, "avertismente": av,
-            "xml_b64": base64.b64encode(xml.encode()).decode()}
+        return _uc_tenants.s1003_valideaza(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- Retetar HoReCa ---
 @app.get("/tenants/{tenant_id}/retete")
 def retete_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
-    from core import retete_api as _r
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _r.lista(conn, schema)
+    try:
+        return _uc_tenants.retete_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/retete")
 def retete_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import retete_api as _r
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        r = _r.salveaza(conn, schema, corp)
-    if r.get("eroare"):
-        _ec = r.get("erori_campuri")  # [cap.24] contract {mesaj, erori_campuri} ca facturi-recurente/emitere
-        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
-    return r
+    try:
+        return _uc_tenants.retete_salveaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/retete/{reteta_id}")
 def retete_sterge(tenant_id: int, reteta_id: int, ctx=Depends(cere_cabinet)):
-    from core import retete_api as _r
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        return _r.sterge(conn, schema, reteta_id)
+    try:
+        return _uc_tenants.retete_sterge(tenant_id, reteta_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/retete/descarca")
 def retete_descarca(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    from core import retete_api as _r
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            return _r.descarca(conn, schema, corp)
-        except (ValueError, KeyError) as e:      # [lotul 7] corp gol dadea `500`
-            raise HTTPException(422, _mesaj_intrare(e))
+    try:
+        return _uc_tenants.retete_descarca(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/verificare-stocuri")
 def verificare_stocuri(tenant_id: int, ctx=Depends(cere_cabinet)):
     """Compara soldul contabil (solduri_initiale + note validate) pe fiecare cont de stoc
     folosit in articole cu valoarea insumata a fiselor CV (cantitate x CMP)."""
-    from decimal import Decimal
-    from psycopg2.extras import RealDictCursor
-    from core import stocuri_cv as _m
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            arts = [dict(r) for r in repo_stocuri.articole_cu_cont(cur, schema)]
-            val_cv = {}
-            for a in arts:
-                fisa = _m.fisa_magazie([dict(r) for r in repo_stocuri.miscari_ale_articolului(cur, schema, a["id"])])
-                if fisa:
-                    u = fisa[-1]
-                    v = Decimal(str(u["sold_cantitate"] or 0)) * Decimal(str(u["cmp"] or 0))
-                    val_cv[a["cont_stoc"]] = val_cv.get(a["cont_stoc"], Decimal("0")) + v
-            rez = []
-            for cont, vcv in sorted(val_cv.items()):
-                sold = Decimal(str(repo_contabilitate.sold_initial_pe_cont(cur, schema, cont)["si"]))
-                r = repo_contabilitate.rulaj_pe_cont_stoc(cur, schema, cont, cont)
-                sold += Decimal(str(r["d"])) - Decimal(str(r["c"]))
-                dif = (sold - vcv).quantize(Decimal("0.01"))
-                rez.append({"cont": cont, "sold_contabil": str(sold.quantize(Decimal("0.01"))),
-                            "valoare_fise_cv": str(vcv.quantize(Decimal("0.01"))),
-                            "diferenta": str(dif), "ok": abs(dif) <= Decimal("0.01")})
-    return {"conturi": rez, "ok": all(x["ok"] for x in rez),
-            "nota": "Diferentele pot veni din note ciorna nevalidate sau operatiuni in afara fiselor CV."}
+    try:
+        return _uc_tenants.verificare_stocuri(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # --- e-Transport (v1: XML pt upload manual in SPV; API OAuth = etapa 2) ---
 @app.post("/tenants/{tenant_id}/etransport-xml")
 def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    import re
-    from core import etransport as _e
-    from psycopg2.extras import RealDictCursor
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            r = repo_firma_profil.cui_firma(cur, schema) or {}
-    cui = re.sub(r"\D", "", r.get("cui") or "")
-    if not cui:
-        raise HTTPException(422, CUI_FIRMA_LIPSA)
-    lipsa = _e.campuri_required_lipsa(corp)
-    if lipsa:
-        raise HTTPException(422, {"cod": "CAMPURI_LIPSA",
-            "mesaj": "Câmpuri obligatorii lipsă (schema eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
-            "campuri": lipsa})
     try:
-        xml = _e.xml_notificare(cui, corp)
-    except KeyError as e:
-        raise HTTPException(422, f"câmp lipsă: {e}")
-    return {"xml": xml,
-            "nota": "XML v2 pt. incarcare manuala in SPV (e-Transport). UIT-ul vine de la ANAF dupa upload."}
+        return _uc_tenants.etransport_xml(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/etransport/trimite")
 # [R42] „iese către o autoritate" — declarația UIT ajunge la ANAF.
-def etransport_trimite(tenant_id: int, corp: dict = Body(...),
-                       ctx=Depends(cere_rol("admin_firma"))):
+def etransport_trimite(tenant_id: int, corp: dict = Body(...),                        ctx=Depends(cere_rol("admin_firma"))):
     """Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp
     -> idempotency -> validare pe TEST -> upload). Poll-ul stare NU e sincron. Live pending drept e-Transport."""
-    import re as _re2
-    from core import etransport as _egen, etransport_send as _es
-    principal = _spv_rute.spv_principal(ctx)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r0 = repo_firma_profil.cui_firma_2(cur, schema)
-    cui = _re2.sub(r"\D", "", (r0[0] if r0 else "") or "")
-    if not cui:
-        raise HTTPException(422, CUI_FIRMA_LIPSA)
-    lipsa = _egen.campuri_required_lipsa(corp)
-    if lipsa:
-        raise HTTPException(422, {"cod": "CAMPURI_LIPSA",
-            "mesaj": "Câmpuri obligatorii lipsă (schema eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
-            "campuri": lipsa})
     try:
-        xml = _egen.xml_notificare(cui, corp)
-    except KeyError as e:
-        raise HTTPException(422, "câmp lipsă: %s" % e)
-    data_transport = (corp.get("transport") or {}).get("data")
-    if not data_transport:
-        raise HTTPException(422, "data transport lipsă")
-    intracom = str(corp.get("cod_tip_operatiune")) == "10"   # AIC = achizitie intracomunitara -> UIT 15 zile
-    mediu = os.environ.get("ETRANSPORT_MEDIU", os.environ.get("EFACTURA_MEDIU", "prod"))
-    return _es.trimite(schema, principal, cui, xml, data_transport, intracom=intracom,
-                       mediu=mediu, ref=corp.get("ref"))
+        return _uc_tenants.etransport_trimite(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/etransport/trimiteri")
 def etransport_trimiteri_lista(tenant_id: int, ctx=Depends(cere_context)):
     """UIT-uri trimise + semafor de TIMP (valabilitate UIT) SEPARAT de semaforul de trimitere. Fara apel ANAF."""
-    from datetime import date as _date
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            rows = repo_declaratii.trimiteri_etransport(cur, schema)
-    azi = _date.today()
-    out = []
-    for (tid, stare, uit, dt, valp, intra, err) in rows:
-        zile = (valp - azi).days if valp else None
-        timp = "gri" if zile is None else ("rosu" if zile < 0 else ("galben" if zile <= 1 else "verde"))
-        trimit = "verde" if stare in ("ok", "incarcat") else ("rosu" if stare in ("nok", "eroare_upload") else "gri")
-        out.append({"id": tid, "stare": stare, "uit": uit,
-                    "data_transport": str(dt) if dt else None,
-                    "uit_valabil_pana": str(valp) if valp else None,
-                    "zile_ramase": zile, "intracom": intra,
-                    "semafor_timp": timp, "semafor_trimitere": trimit, "error_message": err})
-    return {"trimiteri": out}
+    try:
+        return _uc_tenants.etransport_trimiteri_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza")
 def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_banca.readuce_linia_de_extras(cur, schema, linie_id)
-        conn.commit()
-    if not r:
-        raise HTTPException(422, "linia nu e ignorata")
-    return {"ok": True}
+    try:
+        return _uc_tenants.banca_rec_reactiveaza(tenant_id, linie_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/recunoaste")  # [api_intern_v1] fara buton in UI, pastrat deliberat: perechea lui `POST /import-efactura`, care n-are nici el ecran (R70). Un act de recunoastere fara calea care aduce documentul n-ar avea ce recunoaste.
@@ -8905,40 +5439,10 @@ def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("ad
     CE NU FACE, declarat: nu editează factura. Dacă documentul importat e greșit, corecția fiscală e
     prin al doilea document (storno, P4), nu prin retușarea celui adus.
     """
-    from core import contare_facturi as _cf
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_facturi.stare_pentru_recunoastere(cur, schema, factura_id)
-        if not r:
-            raise HTTPException(404, "factură inexistentă")
-        stare, directie, din_import = r
-        if stare != "de_recunoscut":
-            # Idempotență ca RĂSPUNS — dar NUMAI pentru o factură care chiar a venit prin import.
-            # Discriminatorul e `xml`: `_factura_din_parsat` îl scrie, `creeaza_factura` nu. Fără el,
-            # actul răspundea „deja recunoscută" și despre o factură emisă normal prin aplicație,
-            # care n-a fost niciodată ciornă de recunoaștere — o afirmație mică și falsă. Prins de
-            # gardă la prima rulare.
-            with _cf.cursor_dict(conn) as cur:
-                deja = _cf.contare_existenta(cur, schema, factura_id)
-            if deja and din_import:
-                return {"stare": "deja_recunoscuta", "factura_id": factura_id,
-                        "inregistrare_id": deja["id"]}
-            raise HTTPException(422, "factura nu e o ciornă de recunoaștere (stare `%s`): actul e "
-                                     "pentru facturile EMISE aduse prin import" % stare)
-        try:
-            with _cf.cursor_dict(conn) as cur:
-                rez = _cf.contabilizeaza(cur, schema, factura_id, automat=True)
-                repo_facturi.marcheaza_emisa(cur, schema, factura_id)
-        except _cf.RefuzContare as e:
-            conn.rollback()
-            if e.cod == "LUNA_INCHISA":
-                raise HTTPException(423, PERIOADA_INCHISA)
-            raise HTTPException(422, e.mesaj)
-        conn.commit()
-    return {"stare": "recunoscuta", "factura_id": factura_id, "contare": rez}
+    try:
+        return _uc_tenants.factura_recunoaste(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza")
@@ -8957,26 +5461,10 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
     Diferența față de calea automată e una singură, și e declarată: aici `automat=False`, deci clasa
     ambiguă de TVA la încasare **trece** (omul are contextul pe care automatul nu-l are), iar plasa
     anti-dublare **avertizează** în loc să oprească."""
-    from core import contare_facturi as _cf
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        try:
-            with _cf.cursor_dict(conn) as cur:
-                rez = _cf.contabilizeaza(cur, schema, factura_id, automat=False)
-        except _cf.RefuzContare as e:
-            conn.rollback()
-            if e.cod == "INEXISTENTA":
-                raise HTTPException(404, e.mesaj)
-            # Codul de stare se pastreaza pe fiecare clasa de refuz: luna inchisa raspundea `423`
-            # inainte de rescriere si raspunde `423` si acum. O rescriere care schimba tacit codul
-            # de raspuns ar rupe apelanti fara sa spuna.
-            if e.cod == "LUNA_INCHISA":
-                raise HTTPException(423, PERIOADA_INCHISA)
-            raise HTTPException(422, e.mesaj)
-        conn.commit()
-    return rez
+    try:
+        return _uc_tenants.factura_contabilizeaza(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -8984,35 +5472,10 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
 def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?}. Nota ciorna
     regim marja (art. 312): 4111=707 cost + 4111=707 marja neta + 4111=4427 TVA marja."""
-    from decimal import Decimal
-    from core import tva_marja as _m
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], _common.cota_ceruta(corp))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312)")[:200])[0]
-            linii = [("4111", "707", Decimal(str(corp["pret_cumparare"])))]
-            if r["marja_neta"] > 0:
-                linii.append(("4111", "707", r["marja_neta"]))
-            if r["tva"] > 0:
-                linii.append(("4111", "4427", r["tva"]))
-            for d, c, s in linii:
-                if s > 0:
-                    repo_contabilitate.adauga_linie_2(cur, schema, iid, d, c, s)
-        conn.commit()
-    return dict(_af.afirmatie(
-        "fapt", "vânzare în regim de marjă", r["nota"] or "marjă calculată conform art. 312",
-        unde=_Unde("inregistrare", iid),
-        temei_completitudine="prețul de vânzare și cel de cumpărare din nota creată "
-                             "(Cod fiscal art. 312, regimul marjei)"),
-        inregistrare_id=iid, marja_bruta=str(r["marja_bruta"]),
-        tva=str(r["tva"]), marja_neta=str(r["marja_neta"]), avertisment=r["nota"])
+    try:
+        return _uc_tenants.vanzare_marja(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/vanzare-marja-turism")
@@ -9021,52 +5484,10 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
     intermediar?, cota?, descriere?} + per regim:
     special: incasat, cost_ue, cost_non_ue? | normal: componente [{descriere,baza,cota}]
     | intermediar: comision, tva_inclus?. Nota intra mereu ciorna (art. 311 CF)."""
-    from decimal import Decimal
-    from core import tva_marja_turism as _m
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            regim = _m.determina_regim(corp["calitate_client"], corp.get("locuri", ["RO"]),
-                                       corp.get("optiune_normal", False),
-                                       corp.get("intermediar", False))
-            if regim == "special":
-                r = _m.marja_turism_special(corp["incasat"], corp["cost_ue"],
-                                            corp.get("cost_non_ue", 0), _common.cota_ceruta(corp))
-                linii = [("4111", "704", Decimal(str(corp["cost_ue"])) + Decimal(str(corp.get("cost_non_ue", 0))))]
-                if r["marja_neta"] > 0:
-                    linii.append(("4111", "704", r["marja_neta"]))
-                if r["tva"] > 0:
-                    linii.append(("4111", "4427", r["tva"]))
-                rasp = {"regim": regim, "marja_bruta": str(r["marja_bruta"]),
-                        "marja_scutita": str(r["marja_scutita"]), "tva": str(r["tva"]),
-                        "marja_neta": str(r["marja_neta"]), "nota": r["nota"]}
-            elif regim == "normal":
-                r = _m.marja_turism_normal(corp["componente"])
-                linii = [("4111", "704", comp["baza"]) for comp in r["componente"]]
-                if r["total_tva"] > 0:
-                    linii.append(("4111", "4427", r["total_tva"]))
-                rasp = {"regim": regim, "total_baza": str(r["total_baza"]),
-                        "total_tva": str(r["total_tva"]), "total_factura": str(r["total_factura"])}
-            else:
-                r = _m.comision_intermediar(corp["comision"], _common.cota_ceruta(corp), corp.get("tva_inclus", False))
-                linii = [("4111", "704", r["baza"])]
-                if r["tva"] > 0:
-                    linii.append(("4111", "4427", r["tva"]))
-                rasp = {"regim": regim, "baza": str(r["baza"]), "tva": str(r["tva"]),
-                        "total": str(r["total"])}
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], (corp.get("descriere") or f"Vanzare marja turism ({regim}, art. 311)")[:200])[0]
-            for d, c, s in linii:
-                if s > 0:
-                    repo_contabilitate.adauga_linie_2(cur, schema, iid, d, c, s)
-        conn.commit()
-    rasp["inregistrare_id"] = iid
-    return rasp
+    try:
+        return _uc_tenants.vanzare_marja_turism(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/vanzare-aur-investitii")
@@ -9075,65 +5496,20 @@ def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
     valoare_aur?, suma, optiune_taxare?, calitate_client PF|PJ, client_identificare,
     descriere?}. Scutit (art. 313 al. 3) sau taxare inversa (art. 331 al. 2 lit. h).
     Nota ciorna: 4111=707 fara TVA."""
-    from decimal import Decimal
-    from core import tva_aur as _m
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            ok, motiv = _m.este_aur_investitii(corp["tip"], corp["puritate"],
-                                               corp.get("an_emisie"), corp.get("pret_unitar"),
-                                               corp.get("valoare_aur"))
-            if not ok:
-                raise ValueError("nu este aur de investitii: " + motiv)
-            regim = _m.livrare_aur(corp.get("optiune_taxare", False),
-                                   corp["calitate_client"], corp["client_identificare"])
-            suma = Decimal(str(corp["suma"]))
-            if suma <= 0:
-                raise ValueError("suma invalida")
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        mentiune = "taxare inversa (art. 331 al. 2 lit. h)" if regim == "taxare_inversa" \
-                   else "scutit (art. 313 al. 3)"
-        descr = (corp.get("descriere") or "Livrare aur investitii") + " - " + mentiune \
-                + " - client: " + corp["client_identificare"]
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            repo_contabilitate.adauga_linie_venit_marfa(cur, schema, iid, suma)
-        conn.commit()
-    return {"inregistrare_id": iid, "regim": regim, "suma": str(suma)}
+    try:
+        return _uc_tenants.vanzare_aur_investitii(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/achizitie-agricultor")
 def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru,
     agricultor?, descriere?}. Nota ciorna: % cont_chelt + 4426(compensatie 8%) = 401."""
-    from decimal import Decimal
-    from core import tva_agricultori as _m
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            r = _m.achizitie_de_la_agricultor(corp["valoare"], corp["agricultor_in_registru"])
-            # [R54] confruntarea cu planul firmei inlocuieste verificarea de PREZENTA:
-            # `cere_cont` refuza si absenta, si contul care nu exista in plan, si spune CE
-            # cont si UNDE se creeaza. Doua verificari suprapuse ar fi doua locuri.
-            cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") \
-                + ((" - " + corp["agricultor"]) if corp.get("agricultor") else "")
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for d, c, s in [(cont, "401", r["pret"]), ("4426", "401", r["compensatie"])]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
-        conn.commit()
-    return {"inregistrare_id": iid, "pret": str(r["pret"]),
-            "compensatie": str(r["compensatie"]), "total": str(r["total"])}
+    try:
+        return _uc_tenants.achizitie_agricultor(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/vanzare-agricultor")
@@ -9152,30 +5528,14 @@ def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
 
     CE NU S-A VERIFICAT, declarat: daca `4111 = 704` pentru compensatie e tratamentul contabil
     corect. S-a citit ce FACE codul si ce cita modulul; nu s-a confruntat cu actul."""
-    from core import tva_agricultori as _m
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            r = _m.compensatie(corp["pret"])
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Livrare produse agricole") \
-                + " - regim special agricultori (art. 315^1), compensatie 8%"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for s in (r["pret"], r["compensatie"]):
-                repo_contabilitate.adauga_linie_venit_servicii(cur, schema, iid, s)
-        conn.commit()
-    return {"inregistrare_id": iid, "pret": str(r["pret"]),
-            "compensatie": str(r["compensatie"]), "total": str(r["total"])}
+    try:
+        return _uc_tenants.vanzare_agricultor(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/fisa-cont")
-def cabinet_fisa_cont(tenant_id: int, an: int, cont: Optional[str] = None,
-                      luna: Optional[int] = None, ctx=Depends(cere_cabinet)):
+def cabinet_fisa_cont(tenant_id: int, an: int, cont: Optional[str] = None,                       luna: Optional[int] = None, ctx=Depends(cere_cabinet)):
     """[lista 3, 30.08.2026] CARTEA MARE (14-1-3), prin inlocuitorul ei legal.
 
     Norma: *„Registrul Cartea mare poate fi inlocuit cu Fisa de cont pentru operatiuni diverse"*
@@ -9194,87 +5554,30 @@ def cabinet_fisa_cont(tenant_id: int, an: int, cont: Optional[str] = None,
     a uneia dintre ele. Asta e o ruta NOUA, deci ar fi o largire a deciziei — se cere, nu se face.
     LIMITA DECLARATA: Cartea mare a unei firme DEZACTIVATE nu se poate citi pe ruta asta.
     """
-    from core import fisa_cont as _fc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-    with db.get_conn(schema) as conn:
-        conturi = _fc.conturi_cu_miscare(conn, schema, an, luna)
-        fisa = None
-        if cont:
-            try:
-                # [lotul 3, 04.09.2026] `cont=9999` intorcea o FISA — cu `temei_completitudine`
-                # scris despre contul 9999, cu sold zero si zero randuri. Adica un artefact
-                # contabil, cu temei citat, despre un cont care nu exista in planul firmei.
-                # Aceeasi aplicatie il refuza explicit la `POST /jurnal` („contul 9999 nu exista
-                # in planul de conturi al firmei"): stia raspunsul, dar nu si aici. *Un formular
-                # gol despre un cont inexistent nu e o fisa goala — e o afirmatie ca acel cont
-                # exista si n-are miscare.* `cere_cont` ridica `ValueError`, deci intra in `try`.
-                _cv.cere_cont(conn, schema, cont, "cont")
-                fisa = _fc.pentru_json(_fc.fisa_cont(conn, schema, cont, an, luna))
-            except ValueError as e:
-                raise HTTPException(422, str(e))
-    return {"an": an, "luna": luna, "formular": _fc.COD_FORMULAR,
-            "conturi": conturi, "fisa": fisa}
+    try:
+        return _uc_tenants.cabinet_fisa_cont(tenant_id, an, cont, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/jurnal-marja")  # [api_intern_v1] raport regim marja - fara UI inca, pastrat deliberat
 def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet)):
     """tip: secondhand|turism; luna: YYYY-MM. Jurnal special vanzari regim marja:
     per nota cost/marja neta/TVA + totaluri perioada (norme pct. 86)."""
-    from decimal import Decimal
-    marker = {"secondhand": "art. 312", "turism": "art. 311"}.get(tip)
-    if not marker:
-        raise HTTPException(422, "tip invalid (secondhand|turism)")
-    if len(luna) != 7 or luna[4] != "-":
-        raise HTTPException(422, "luna format YYYY-MM")
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            rows = repo_contabilitate.linii_pentru_jurnal_marja(cur, schema, "%" + marker + "%", luna)
-    note = {}
-    for iid, data, descr, status, cont, suma, lid in rows:
-        n = note.setdefault(iid, {"id": iid, "data": str(data), "descriere": descr,
-                                  "status": status, "cost": Decimal("0"),
-                                  "marja_neta": Decimal("0"), "tva": Decimal("0")})
-        if cont == "4427":
-            n["tva"] += suma
-        elif n["cost"] == 0:
-            n["cost"] = suma
-        else:
-            n["marja_neta"] += suma
-    tot_cost = sum(n["cost"] for n in note.values())
-    tot_marja = sum(n["marja_neta"] for n in note.values())
-    tot_tva = sum(n["tva"] for n in note.values())
-    return {"tip": tip, "luna": luna, "numar_note": len(note),
-            "note": [{**n, "cost": str(n["cost"]), "marja_neta": str(n["marja_neta"]),
-                      "tva": str(n["tva"])} for n in note.values()],
-            "total_cost": str(tot_cost), "total_baza_marja_neta": str(tot_marja),
-            "total_tva_colectata": str(tot_tva)}
+    try:
+        return _uc_tenants.jurnal_marja(tenant_id, tip, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/d406-active")  # [api_intern_v1] SAF-T sub-sectiune - fara UI inca, pastrat deliberat
 def d406_active_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     """Sectiunea Assets SAF-T pentru anul dat (D406 anual - active)."""
-    from fastapi.responses import Response
-    from core import d406_active as _m
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            cols = [d[0] for d in cur.description]
-            lista = [dict(zip(cols, r)) for r in repo_mijloace_fixe.active_pentru_d406(cur, schema, an)]
-    if not lista:
-        raise HTTPException(404, "niciun mijloc fix cu PIF până în anul cerut")
     try:
-        xml = _m.xml_assets(lista, an)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    return Response(content=xml, media_type="application/xml")
+        xml = _uc_tenants.d406_active_xml(tenant_id, an, ctx)
+        return Response(content=xml, media_type="application/xml")
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/d406-stocuri")  # [api_intern_v1] SAF-T sub-sectiune - fara UI inca, pastrat deliberat
@@ -9282,38 +5585,11 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
                      ctx=Depends(cere_cabinet)):
     """Sectiunea PhysicalStock SAF-T pe perioada (D406 la cerere ANAF).
     data_start/data_end: YYYY-MM-DD; cui: OwnerID (CUI firma)."""
-    from datetime import date as _date
-    from fastapi.responses import Response
-    from core import d406_stocuri as _m
     try:
-        ds, de = _date.fromisoformat(data_start), _date.fromisoformat(data_end)
-    except ValueError:
-        # [lotul 6] „date format YYYY-MM-DD" nu spunea CARE dintre cele doua e gresita.
-        raise HTTPException(422, "Datele de început și de sfârșit se scriu ca AAAA-LL-ZZ, cu zile "
-                                 "care există în calendar — am primit %r și %r."
-                                 % (data_start, data_end))
-    # [lotul 6] Un interval INVERSAT producea un XML SAF-T, adica un fisier oficial despre o
-    # perioada care nu exista. Raportul se cere pe un interval, iar un interval are o ordine.
-    if de < ds:
-        raise HTTPException(422, "Sfârșitul perioadei (%s) e înaintea începutului (%s). "
-                                 "Raportul se cere pe un interval, iar intervalul are o ordine."
-                                 % (de.isoformat(), ds.isoformat()))
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            rows = repo_stocuri.miscari_pentru_d406(cur, schema, de)
-    grupat = {}
-    for aid, den, um, cont, data, tip, cant, val in rows:
-        art, mis = grupat.setdefault(aid, ({"id": aid, "denumire": den, "um": um,
-                                            "cont_stoc": cont}, []))
-        mis.append({"data": data, "tip": tip, "cantitate": cant, "valoare": val})
-    try:
-        xml = _m.xml_physical_stock(list(grupat.values()), ds, de, cui)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    return Response(content=xml, media_type="application/xml")
+        xml = _uc_tenants.d406_stocuri_xml(tenant_id, data_start, data_end, cui, ctx)
+        return Response(content=xml, media_type="application/xml")
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -9347,67 +5623,10 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
     Media pe 6 luni anterioare lunii certificatului (sau cate exista, art. 10 al. 4 OUG 158/2005),
     din statele EMISE - vezi core/baza_cm.py. Raspunsul poarta `baza_temei`, care spune pe ce s-a
     facut media (cate luni emise, cate recalculate) - o cifra fara sursa nu se poate contesta."""
-    from datetime import date as _date
-    from core import salarizare as _s
-    from core import stat_plata_api as _sp
-    from core import scadente as _scad
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-    # [lotul 4, 04.09.2026] Trei defecte, toate aici. `{}` cadea cu `KeyError` NEPRINS (`500`);
-    # `luna=13` mergea pana la capat si intorcea o indemnizatie calculata — cu alta baza, fiindca
-    # fereastra de 6 luni se muta —, iar `zile_lucratoare_cm=-5` trecea tacut, cu `brut 0`. *O
-    # indemnizatie de concediu medical calculata pe o luna care nu exista e o cifra care intra in
-    # stat, in D112 si in decontul cu CNAS.*
     try:
-        an, luna = int(corp["an"]), int(corp["luna"])
-        sal_id = int(corp["salariat_id"])
-        zile_cm = int(corp["zile_lucratoare_cm"])
-    except (KeyError, TypeError, ValueError) as e:
-        raise HTTPException(422, _mesaj_intrare(e) if isinstance(e, KeyError) else
-                            "Anul, luna, salariatul și zilele de concediu medical se așteaptă ca "
-                            "numere întregi: %s" % e)
-    _cere_perioada(an, luna)
-    if zile_cm < 0:
-        raise HTTPException(422, "Zilele de concediu medical nu pot fi negative (am primit %d). "
-                                 "Se numără zilele lucrătoare acoperite de certificat." % zile_cm)
-    # [baza_cm 22.08.2026, DECIS DE COSTIN: EMIS] Baza vine din statele EMISE; lunile neemise se
-    # recalculeaza, dar se NUMARA separat si se spun in `temei`.
-    #
-    # Argumentul din 20.08 („calculeaza, nu citi din state_plata") era corect PENTRU TABELUL DE
-    # ATUNCI: un cache de navigare, populat ca efect secundar al unui GET, in care lunile nedeschise
-    # lipseau tacit. Din 21.08 `state_plata` e REGISTRUL DOCUMENTELOR EMISE, cu amprenta si
-    # exemplare - sursa s-a schimbat sub argument. Ce s-a platit efectiv e un FAPT, iar media legala
-    # (OUG 158/2005 art.10 al.4) se face pe ce a PRIMIT omul, nu pe ce ar rezulta din calculul de azi.
-    from core import baza_cm as _bcm
-    _luni = _bcm.luni_anterioare(an, luna)
-    with db.get_conn(schema) as conn:  # stat_plata foloseste nume necalificate -> search_path pe tenant
-        _emise, _recalc = _bcm.culege(conn, schema, sal_id, _luni)
-    _b = _bcm.aduna(_luni, _emise, _recalc, _scad.zile_lucratoare_luna)
-    venituri, zile, nr_luni = _b["venituri"], _b["zile"], _b["nr_luni"]
-    if nr_luni == 0 or zile == 0:
-        raise HTTPException(422, "Nu pot calcula media: salariatul nu are nicio lună lucrată în cele "
-                                 "6 luni dinaintea certificatului. Verifică data angajării și pontajul.")
-    try:
-        r = _s.calcul_cm(venituri, zile, zile_cm,
-                         cod=corp.get("cod", "01"),
-                         zile_episod=corp.get("zile_episod"),
-                         prima_zi_din_episod=corp.get("prima_zi_din_episod", True),
-                         spitalizare=corp.get("spitalizare", False),
-                         la_data=_date.fromisoformat(corp["data_certificat"])
-                                 if corp.get("data_certificat") else None)
-    except (ValueError, KeyError) as e:
-        raise HTTPException(422, _mesaj_intrare(e))
-    r["luni_in_baza"] = nr_luni
-    r["venituri_baza"] = str(venituri)
-    r["zile_baza"] = int(zile)
-    # [baza_cm 22.08.2026] PE CE s-a facut media - o cifra fara sursa nu se poate contesta. Cand se
-    # amesteca luni emise cu luni recalculate, contabilul trebuie s-o vada, nu s-o deduca.
-    r["baza_temei"] = _b["temei"]
-    r["baza_luni_emise"] = _b["luni_emise"]
-    r["baza_luni_recalculate"] = _b["luni_recalculate"]
-    return r
+        return _uc_tenants.calcul_cm_endpoint(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/trimite-spv")
@@ -9416,65 +5635,28 @@ def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("a
     """Trimite o factura emisa in SPV (F126/F160). Porti in ordine fixa (efactura_trimitere.trimite):
     token viu -> validare/FACT1 -> idempotency -> upload pe tokenul PRINCIPALULUI (cabinet/gratuit).
     Poll-ul stareMesaj/descarcare ramane pe cron. Recipisa live = pending drept (ca F176)."""
-    from core import efactura_send as _efs          # EDateIncomplete — motorul fiscal
-    from core import efactura_trimitere as _eft     # [P7 · D2] orchestrarea trimiterii
-    principal = _spv_rute.spv_principal(ctx)   # token owner (cabinet XOR gratuit); 403 daca niciunul
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-    if not schema:
-        raise HTTPException(404, "tenant inexistent sau fără acces")
-    mediu = os.environ.get("EFACTURA_MEDIU", "prod")
     try:
-        r = _eft.trimite(schema, factura_id, principal, mediu=mediu)
-    except _efs.EDateIncomplete as e:
-        raise HTTPException(422, str(e))
-    except NotImplementedError as e:
-        raise HTTPException(422, "Tip de factură netratat încă în e-Factura: %s" % e)
-    st = r.get("stare")
-    if st == "fara_token":
-        raise HTTPException(409, r.get("mesaj", "Conectează ANAF (SPV) înainte de a trimite."))
-    if st == "deja_trimisa":
-        raise HTTPException(409, "Factura are deja o trimitere activa in SPV (%s)." % r.get("stare_existenta"))
-    if st == "nevalidat":
-        return {"stare": "nevalidat", "erori": r.get("validare_mesaje", [])}
-    return {"stare": st, "index_incarcare": r.get("index_incarcare"),
-            "execution_status": r.get("execution_status"),
-            "erori": r.get("errors") or ([r.get("raspuns", "")] if st in ("nok", "eroare_upload") else []),
-            "mesaj": r.get("raspuns")}
+        return _uc_tenants.factura_trimite_spv(tenant_id, factura_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/trimiteri-spv")
 def facturi_trimiteri_spv(tenant_id: int, ctx=Depends(cere_context)):
     """Starea SPV cea mai recenta per factura (pentru semaforul butonului). Fara apel ANAF."""
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            rows = repo_efactura.ultima_trimitere_per_factura(cur, schema)
-    return {str(r[0]): {"stare": r[1], "index_incarcare": r[2], "error_message": r[3]} for r in rows}
+    try:
+        return _uc_tenants.facturi_trimiteri_spv(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 def _factura_din_parsat(cur, schema, f):
-    """Insereaza o factura parsata (dict de la efactura_import.parseaza_xml) in facturi + linii.
-    Idempotent pe (numar, tert_cui, data_emitere). Intoarce (factura_id, creat_nou): daca exista
-    deja, intoarce id-ul EXISTENT + False (nu insereaza). Sursa UNICA a inserarii - folosit de
-    /import-efactura (upload manual) SI de validarea four-eyes a facturilor primite (nu doua conducte)."""
-    ex = _repo.select_facturi_3(cur, schema, f)
-    if ex:
-        return ex[0], False
-    # [R91/KKK1] Starea depinde de DIRECȚIE, și nu e o subtilitate:
-    #   * **primită** -> `importata`, ca până acum. Recunoașterea ei există deja și e alt act:
-    #     `/facturi-primite/{id}/valideaza`, unde omul alege contul și clasifică regimul (R88).
-    #   * **emisă** -> `de_recunoscut`. Documentul a fost emis în altă parte, deci sosirea lui nu e
-    #     faptul economic al firmei. Nota vine din `/facturi/{id}/recunoaste`.
-    # **NICIUNA nu primește notă aici** — la fel ca înainte. Ce se schimbă e că absența nu mai e o
-    # scăpare declarată, ci o etapă cu act propriu.
-    _stare = "de_recunoscut" if f["directie"] == "emisa" else "importata"
-    fid = _repo.insert_facturi(cur, schema, _stare, f)[0]
-    for ln in f["linii"]:
-        _repo.insert_factura_linii(cur, schema, fid, ln)
-    return fid, True
+    """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._factura_din_parsat` — traduce
+    refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
+    try:
+        return _uc_comun._factura_din_parsat(cur, schema, f)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/import-efactura")  # [api_intern_v1] upload manual XML/ZIP - fara buton in UI, pastrat deliberat. Verificat 27.08.2026 - niciun apelant in static/, in crontab sau in timerele systemd. (R70). CORECTAT 29.08.2026: forma veche scria ca `core/spv_receive` cheama direct `_factura_din_parsat` - E FALS. `spv_receive.importa_mesaj` scrie DOAR in `efactura_primite`, si numai mesaje al caror `cif_beneficiar` e chiar tenantul (gard anti-scurgere), deci numai PRIMITE. Consecinta, si e chiar perimetrul lui R91: singura cale prin care o factura EMISA intra prin import e ruta asta, incarcarea manuala de XML.
@@ -9482,79 +5664,29 @@ def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                           ctx=Depends(cere_cabinet)):
     """Upload XML/ZIP e-Factura. Parseaza UBL, directie auto (CUI firma vs furnizor),
     idempotent pe (numar, tert_cui, data_emitere)."""
-    from core import efactura_import as _ef
-    rezultate = {"importate": 0, "duplicate": 0, "erori": []}
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            rand = repo_firma_profil.cui_firma_3(cur, schema)
-            if not rand or not rand[0]:
-                raise HTTPException(422, CUI_FIRMA_LIPSA)
-            cui_firma = rand[0]
-            for up in fisiere:
-                continut = _octetii(up)
-                try:
-                    perechi = _ef.extrage_fisiere(up.filename or "f.xml", continut)
-                except Exception as e:
-                    rezultate["erori"].append(f"{up.filename}: {e}")
-                    continue
-                for nume, xmlb in perechi:
-                    try:
-                        f = _ef.parseaza_xml(xmlb, cui_firma)
-                    except ValueError as e:
-                        rezultate["erori"].append(f"{nume}: {e}")
-                        continue
-                    _fid, _nou = _factura_din_parsat(cur, schema, f)
-                    rezultate["importate" if _nou else "duplicate"] += 1
-        conn.commit()
-    return _raspuns(rezultate)
+    try:
+        return _uc_tenants.import_efactura(tenant_id, [(_octetii(_f), _f.filename) for _f in fisiere], ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/facturi-primite")
 def facturi_primite_lista(tenant_id: int, ctx=Depends(cere_context)):
     """Facturi primite din SPV de VALIDAT (four-eyes): ciorne parsate + cont sugerat. Acces = are
     acces la tenant (rol cu drept SAU proprietar gratuit); NU compara identitati (importatorul e cronul)."""
-    from core import efactura_import as _ef
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        out = []
-        with conn.cursor() as cur:
-            rows = repo_efactura.primite_in_asteptare(cur, schema)
-            for (pid, cife, cifb, status, xmlb, fid) in rows:
-                pr = repo_efactura.contul_invatat_al_emitentului(cur, schema, cife)
-                info = {"id": pid, "cif_emitent": cife, "status": status, "factura_id": fid,
-                        "cont_sugerat": pr[0] if pr else ""}
-                try:
-                    f = _ef.parseaza_xml((xmlb or "").encode("utf-8"), cifb)
-                    info.update({"parsabila": True, "furnizor": f.get("tert_nume"),
-                                 "numar": f.get("numar"), "data": str(f.get("data_emitere") or ""),
-                                 "total": str(f.get("total") or ""), "tva": str(f.get("tva") or ""),
-                                 "moneda": f.get("moneda"),
-                                 "linii": [{"descriere": l["descriere"], "cantitate": str(l["cantitate"]),
-                                            "pret": str(l["pret_unitar"]), "cota": str(l["cota_tva"])}
-                                           for l in (f.get("linii") or [])]})
-                except Exception as e:
-                    info.update({"parsabila": False, "eroare_parse": str(e)[:200]})
-                out.append(info)
-    return {"primite": out}
+    try:
+        return _uc_tenants.facturi_primite_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/facturi-primite/{primita_id}/xml")
 def factura_primita_xml(tenant_id: int, primita_id: int, ctx=Depends(cere_context)):
     """XML-ul brut arhivat (la click, nu in fata)."""
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_efactura.xml_brut(cur, schema, primita_id)
-    if not r:
-        raise HTTPException(404, "factură primită inexistentă")
-    return {"xml": r[0] or ""}
+    try:
+        return _uc_tenants.factura_primita_xml(tenant_id, primita_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza")
@@ -9563,107 +5695,19 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
     """FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) +
     leaga factura_id + status=validata. Idempotent (FOR UPDATE + verifica status). cont sugerat,
     confirmat de om. Gard = acces la tenant + actiune umana explicita; NU identitate != importator."""
-    from core import efactura_import as _ef
-    from core import contare_facturi as _cf
-    cont = (corp.get("cont") or "").strip()
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_efactura.primita_pentru_validare(cur, schema, primita_id)
-            if not r:
-                raise HTTPException(404, "factură primită inexistentă")
-            status, xmlb, cifb, fid_ex = r
-            if status == "validata":          # idempotent - nu crea a doua cheltuiala
-                return {"stare": "deja_validata", "factura_id": fid_ex}
-            if status == "respinsa":
-                raise HTTPException(409, "factura a fost respinsa; nu se poate valida")
-            # [FFF1] CONTUL DE CHELTUIALĂ E OBLIGATORIU. Decizia lui Costin (29.08.2026): nu cont
-            # implicit — la venit, implicitul e o presupunere despre ce vinde firma; la cheltuială ar
-            # fi una despre natura cheltuielii, adică exact lucrul pe care omul îl are în față —, și
-            # nu validare fără notă, fiindcă asta ar reintroduce golul R88 pe ușa din spate.
-            # SCHIMBARE DE COMPORTAMENT, declarată: până azi câmpul era `cont or None`, deci
-            # validarea trecea fără el. De azi refuză.
-            if not cont:
-                # Detaliul e o STRUCTURĂ, ca la `LINII_INCOMPLETE`: frontendul (și garda) citesc
-                # `cod`, nu propoziția. Un refuz recunoscut după text s-ar rupe la prima rescriere.
-                from core import afirmatii as _af
-                raise HTTPException(422, dict(_af.afirmatie(
-                    "neconformitate", "CONT_CHELTUIALA_OBLIGATORIU",
-                    "Alege contul de cheltuială înainte de a valida: validarea recunoaște "
-                    "cheltuiala și îi scrie nota contabilă în același act, iar nota nu poate "
-                    "ghici contul.",
-                    unde="factura primită #%s" % primita_id,
-                    regula="validarea unei facturi primite cere contul de cheltuială"),
-                    cod="CONT_CHELTUIALA_OBLIGATORIU"))
-            try:
-                f = _ef.parseaza_xml((xmlb or "").encode("utf-8"), cifb)
-            except Exception as e:
-                raise HTTPException(422, "XML neparsabil: %s" % str(e)[:200])
-            fid, _nou = _factura_din_parsat(cur, schema, f)   # leaga si factura existenta (dedup)
-            fid_final = repo_efactura.marcheaza_primita_validata(cur, schema, fid, cont or None, primita_id)[0]
-            # [B1 D300] optiuni de clasificare pe factura primita, alese de contabil la validare:
-            # furnizor cu TVA la incasare (deducere amanata la plata, art.297 alin.2) / tara
-            # partenerului (achizitie IC vs import). Setate pe factura legata (fid_final).
-            _ftva = corp.get("furnizor_tva_incasare")
-            _ttara = (corp.get("tert_tara") or "").strip().upper()
-            if fid_final and (_ftva is not None or _ttara):
-                _sets, _vals = [], []
-                if _ftva is not None:
-                    _sets.append("furnizor_tva_incasare=%s"); _vals.append(bool(_ftva))
-                if _ttara:
-                    _sets.append("tert_tara=%s"); _vals.append(_ttara)
-                _vals.append(fid_final)
-                repo_facturi.actualizeaza_clasificarea(cur, schema, _sets, _vals)
-        # [FFF1] NOTA SE SCRIE AICI, în același act cu validarea — după ce clasificarea e pusă pe
-        # factură, ca nota s-o poată citi. Validarea *este* actul prin care firma recunoaște
-        # cheltuiala: patru-ochi s-a consumat deja, contul tocmai a fost ales, regimul tocmai a fost
-        # clasificat. La import n-ar fi existat niciuna dintre ele.
-        # [FFF2] Clasa ambiguă — furnizor la încasare + firmă în regim normal — e REFUZATĂ automat
-        # (varianta (ii)), cu motivul întors pe ecran. Factura se validează oricum; nota o scrie omul
-        # din butonul de contabilizare. Un refuz al notei nu poate anula recunoașterea cheltuielii.
-        from core import afirmatii as _af
-        contare = {"stare": "neaplicabil", "afirmatie": _af.afirmatie(
-            "absenta_observatie", "CONTARE_NEAPLICABILA",
-            "validarea n-a legat nicio factură, deci n-are ce conta",
-            surse_consultate=["efactura_primite.factura_id"])}
-        if fid_final:
-            try:
-                with _cf.cursor_dict(conn) as cur2:
-                    contare = _cf.contabilizeaza(cur2, schema, fid_final, automat=True,
-                                                 cont_cheltuiala=cont or None)
-            except _cf.RefuzContare as e:
-                contare = {"stare": "refuzata", "cod": e.cod, "detalii": e.detalii,
-                           "afirmatie": _af.afirmatie(
-                               "neconformitate", e.cod, e.mesaj,
-                               unde="factura #%s" % fid_final,
-                               regula="nota automată se scrie doar când toate intrările ei sunt "
-                                      "cunoscute")}
-        conn.commit()
-    return {"stare": "validata", "factura_id": fid_final, "contare": contare}
+    try:
+        return _uc_tenants.factura_primita_valideaza(tenant_id, primita_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/respinge")
-def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(default={}),
-                             ctx=Depends(cere_context)):
+def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(default={}),                              ctx=Depends(cere_context)):
     """Respinge o factura primita: status=respinsa + motiv. NU sterge randul (ramane cu istoric)."""
-    motiv = (corp.get("motiv") or "").strip()
-    if not motiv:
-        raise HTTPException(422, "motivul respingerii e obligatoriu")
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            r = repo_efactura.starea_primitei_blocata(cur, schema, primita_id)
-            if not r:
-                raise HTTPException(404, "factură primită inexistentă")
-            if r[0] == "validata":
-                raise HTTPException(409, "factura a fost deja validată")
-            repo_efactura.marcheaza_primita_respinsa(cur, schema, motiv, primita_id)
-        conn.commit()
-    return {"stare": "respinsa"}
+    try:
+        return _uc_tenants.factura_primita_respinge(tenant_id, primita_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/reges-config")
@@ -9671,24 +5715,12 @@ def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(
 # CREDENTIALE. Costin: *„admin_firma, nu drept fin. Un drept nou e un al doilea sistem de
 # autorizare de intretinut, iar cele trei rute nu justifica unul."* Acelasi criteriu ca la
 # R42 (d), pornirea/oprirea unui canal — deja aplicat pe `PUT /woocommerce/config`.
-def reges_config(tenant_id: int, corp: dict = Body(...),
-                 ctx=Depends(cere_rol("admin_firma"))):
+def reges_config(tenant_id: int, corp: dict = Body(...),                  ctx=Depends(cere_rol("admin_firma"))):
     """corp: {username, parola, mediu test|prod}. Chei API din aplicatia REGES Angajator."""
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        if corp.get("mediu", "test") not in ("test", "prod"):
-            raise HTTPException(422, nomenclator_cerut("mediu", "test|prod"))
-        # [lotul 7] Corpul gol cadea mai jos, pe `corp["username"]`, cu `KeyError` neprins.
-        for _c, _et in (("username", "utilizatorul REGES"), ("parola", "parola REGES")):
-            if not str(corp.get(_c) or "").strip():
-                raise HTTPException(422, "Lipsește %s. Fără el, trimiterile către REGES nu se pot "
-                                         "autentifica." % _et)
-        with conn.cursor() as cur:
-            repo_salariati.salveaza_cheile_reges(cur, tenant_id, corp["username"], corp["parola"], corp.get("mediu", "test"))
-        conn.commit()
-    return {"ok": True}
+    try:
+        return _uc_tenants.reges_config(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/reges-trimite-salariat")
@@ -9697,38 +5729,10 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
                            ctx=Depends(cere_rol("admin_firma"))):
     """corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?}.
     Trimite InregistrareSalariat (+ AdaugareContract daca vine si contract dupa referinta)."""
-    from core import reges_client as _rg
-    import uuid as _uuid
-    # ── [P5 val 3, 11.09.2026] FAZA 1: citirile ─────────────────────────────────────────
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            chei = repo_salariati.chei_reges(cur, tenant_id)
-            if not chei:
-                raise HTTPException(422, "chei REGES neconfigurate - folosește reges-config")
-            s = repo_salariati.identitate_pentru_reges(cur, schema, corp["salariat_id"])
-            if not s:
-                raise HTTPException(404, "salariat inexistent")
-    mid = _uuid.uuid4()
-    xml = _rg.mesaj_inregistrare_salariat(
-        {"cnp": s[0], "nume": s[1], "prenume": s[2], "adresa": corp.get("adresa")},
-        str(chei[3]), chei[0], message_id=mid)
-    cl = _rg.RegesClient(chei[0], chei[1], chei[2])
-    # ── APELUL EXTERN, fără nicio conexiune (token 30 s + POST 60 s) ────────────────────
     try:
-        status, rasp = cl.trimite_salariat(xml)
-    except Exception as e:
-        raise HTTPException(502, f"REGES: {e}")
-    # ── FAZA 2: tranzacție scurtă. NECONDIȚIONAT — salariatul e deja la REGES, iar rândul
-    #    ăsta e urma lui. Dacă l-am condiționa de o revalidare, am putea pierde dovada unui
-    #    act deja petrecut. Aceeași clasă cu rotația de token: efectul e SURSA valorii. ────
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            rid = repo_salariati.scrie_mesaj_reges(cur, tenant_id, corp["salariat_id"], str(mid), None, rasp[:4000])[0]
-        conn.commit()
-    return {"mesaj_id": rid, "http_status": status, "raspuns": rasp[:500]}
+        return _uc_tenants.reges_trimite_salariat(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/reges-poll")
@@ -9738,227 +5742,53 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
 # R42 (d), pornirea/oprirea unui canal — deja aplicat pe `PUT /woocommerce/config`.
 def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje."""
-    from core import reges_client as _rg
-    import re as _re
-    # ── [P5 val 3, 11.09.2026] FAZA 1: citirile ─────────────────────────────────────────
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor() as cur:
-            chei = repo_salariati.chei_reges_fara_autor(cur, tenant_id)
-            if not chei:
-                raise HTTPException(422, "chei REGES neconfigurate")
-    cl = _rg.RegesClient(chei[0], chei[1], chei[2])
-    # ── APELUL EXTERN, fără conexiune. `poll_mesaj` CONSUMĂ un mesaj din coada REGES —
-    #    ireversibil, deci ce urmează nu se poate condiționa de nicio revalidare. ─────────
     try:
-        status, rasp = cl.poll_mesaj()
-    except Exception as e:
-        raise HTTPException(502, f"REGES: {e}")
-    m_mid = _re.search(r"<(?:Initial)?MessageId>([0-9a-f-]{36})", rasp)
-    m_rs = _re.search(r"ReferintaSalariat>?\s*<Id>([0-9a-f-]{36})", rasp)
-    m_rc = _re.search(r"ReferintaContract>?\s*<Id>([0-9a-f-]{36})", rasp)
-    # ── FAZA 2: tranzacție scurtă, necondiționat ────────────────────────────────────────
-    with db.get_conn() as conn:
-        if m_mid:
-            with conn.cursor() as cur:
-                repo_salariati.scrie_raspunsul_reges(cur, rasp[:4000], m_rs.group(1) if m_rs else None, m_rc.group(1) if m_rc else None, m_mid.group(1), tenant_id)
-            conn.commit()
-    return {"http_status": status, "raspuns": rasp[:1000]}
+        return _uc_tenants.reges_poll(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/achizitie-taxare-inversa")
-def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
-                             ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),                              ctx=Depends(cere_rol("admin_firma"))):
     """corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?,
     furnizor_platitor_tva, descriere?}. Beneficiarul (firma) trebuie platitor TVA.
     Nota ciorna: cont_dest=401 valoare + 4426=4427 TVA (norme pct. 109)."""
-    from decimal import Decimal
-    from datetime import date as _date
-    from core import anaf_api as _anaf
-    from core import taxare_inversa as _ti
-    # ── [P5 val 3, 11.09.2026] ANAF ÎNAINTE de conexiune ────────────────────────────────
-    # Statutul TVA al furnizorului se îngheață pe factură și depinde doar de payload. Forma
-    # dinainte îl cerea din interiorul tranzacției, deci ținea o conexiune din pool peste un apel
-    # cu termen de 20 s. `platitor_tva_freeze` e best-effort: ANAF jos → fallback, nu excepție.
-    furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
-    _furn_pl = str(corp.get("furnizor_platitor_tva", True)).strip().lower() not in ("false", "nu", "0")
-    _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=_furn_pl) if furnizor_cui else _furn_pl
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        with conn.cursor() as cur:
-            rand = repo_firma_profil.platitor_tva(cur, schema)
-            beneficiar_tva = bool(rand[0]) if rand else True
-        from core import facturi_api as _fa
-        try:
-            categorie = str(corp["categorie"])
-            ok, mentiune = _ti.se_aplica(categorie, corp["valoare"],
-                                         corp.get("furnizor_platitor_tva", True),
-                                         beneficiar_tva,
-                                         _date.fromisoformat(corp["data"]))
-            cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
-            val = Decimal(str(corp["valoare"]))
-            cota = _common.cota_ceruta(corp)
-            tva = _ti.tva_beneficiar(val, cota)
-            if not furnizor_cui:      # calculat înaintea blocului; validarea rămâne aici (422)
-                raise ValueError("CUI furnizor obligatoriu (taxare inversa e intre platitori RO - furnizor cu CUI)")
-            numar = str(corp.get("numar") or "").strip()
-            if not numar:
-                raise ValueError("numar factura furnizor obligatoriu")
-            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Achizitie") + " - " + mentiune
-        with conn.cursor() as cur:
-            tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
-            # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
-            #    = sursa citita de D394 (op1 tip C + op11 codPR). Linie cota reala -> baza/tva reverse-charge.
-            # `_tert_pl` s-a înghețat înaintea blocului — v. nota de la începutul rutei
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": descr[:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": cota}],
-                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui,
-                                       categorie_331=categorie, taxare_inversa=True, status="importata",
-                                       tert_platitor_tva=_tert_pl)
-            fid = fres["factura_id"]
-            # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge 4426=4427, NU cea standard
-            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
-            for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
-        conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva),
-            "mentiune": mentiune}
+    try:
+        return _uc_tenants.achizitie_taxare_inversa(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/verifica-vies")  # [vies_emitere_v1] validare VIES - folosit din emitere
 def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_context)):
     """Verifica un cod TVA UE in VIES (API oficial CE)."""
-    from core import intracomunitar as _ic
-    with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, "tenant inexistent sau fără acces")
     try:
-        return _ic.verifica_vies(cod_tva)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    except Exception as e:
-        raise HTTPException(502, f"VIES indisponibil: {e}")
+        return _uc_tenants.verifica_vies_ep(tenant_id, cod_tva, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/achizitie-ic")
-def achizitie_ic(tenant_id: int, corp: dict = Body(...),
-                 ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_ic(tenant_id: int, corp: dict = Body(...),                  ctx=Depends(cere_rol("admin_firma"))):
     """AIC bunuri/servicii primite (art. 268 / 278(2), plata = beneficiar art. 308).
     corp: {data, valoare (RON), cont_destinatie, cota?, tip bunuri|servicii, descriere?}.
     Nota ciorna: cont_dest=401 + 4426=4427 (norme 109)."""
-    from decimal import Decimal
-    from core import intracomunitar as _ic
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        from core import facturi_api as _fa
-        try:
-            val = Decimal(str(corp["valoare"]))
-            # [R148] Art. 291 alin. (8): pentru AIC cota e cea in vigoare la data EXIGIBILITATII,
-            # nu la data facturii. Cele doua difera cand factura furnizorului vine tarziu — atunci
-            # exigibilitatea a intervenit deja, in ziua 15 a lunii urmatoare faptului generator
-            # (art. 284 alin. 2). Aplicatia calcula deja exact asta pentru D390 (`d390.py:491`) si
-            # valida cota pe alta data: doua date pentru acelasi fapt.
-            _data_exig = _common.exigibilitate_aic(corp["data"], corp.get("data_faptului_generator"))
-            tva = _ic.tva_taxare_inversa(
-                val, _common.cota_ceruta({**corp, "data": _data_exig.isoformat()}))
-            cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
-            cod_tva_furnizor = str(corp.get("cod_tva_furnizor") or "").strip().upper().replace(" ", "")
-            if not cod_tva_furnizor:
-                raise ValueError("cod TVA furnizor UE obligatoriu (fara el achizitia NU ajunge in D390)")
-            numar = str(corp.get("numar") or "").strip()
-            if not numar:
-                raise ValueError("numar factura furnizor obligatoriu")
-            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
-            data_fg = corp.get("data_faptului_generator") or None
-            # [lotul 5, 04.09.2026] `tip` se citea cu un `if ... == "servicii" else bunuri`: orice
-            # altceva — inclusiv o valoare gresita — devenea BUNURI, tacut. Probat cu
-            # `tip="altceva"`: `200`, si achizitia a intrat in evidenta ca bunuri. Nu e o nuanta:
-            # tipul decide incadrarea in D390 (bunuri vs servicii) si temeiul citat pe nota.
-            if corp.get("tip") not in ("bunuri", "servicii"):
-                raise ValueError(nomenclator_cerut("tip", "bunuri|servicii"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
-        descr = (corp.get("descriere") or "AIC") + f" - {tip}, taxare inversa 4426=4427"
-        with conn.cursor() as cur:
-            tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
-            # 1) rand FACTURA (directie=primita, furnizor UE) = sursa citita de D390. Factura UE fara TVA RON
-            #    (taxare inversa la beneficiar) -> linie cota 0 -> total=val, tva=0 -> baza D390 = val.
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": descr[:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": 0}],
-                                       tert_nume=furnizor_nume or None, tert_cui=cod_tva_furnizor,
-                                       data_faptului_generator=data_fg, status="importata")
-            fid = fres["factura_id"]
-            # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge, NU cea standard
-            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
-            for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
-        conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)}
+    try:
+        return _uc_tenants.achizitie_ic(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/achizitie-neinregistrat")
-def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
-                            ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),                             ctx=Depends(cere_rol("admin_firma"))):
     """Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2).
     corp: {data, furnizor_nume (obligatoriu), valoare, cont_cheltuiala, numar?, categorie? (CODPR_N lit.D),
     descriere?}. Fara CUI furnizor -> tip N. categorie OPTIONALA: FARA ea N ramane EXCLUS din D394 cu avertisment
     (nu se ghiceste - continut declarat). PF nu factureaza TVA -> linie cota 0. Nota: cont_cheltuiala = 401."""
-    from decimal import Decimal
-    from core import facturi_api as _fa
-    from core import d394 as _d394
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
-            if not furnizor_nume:
-                raise ValueError("nume furnizor obligatoriu (persoana fizica - apare in denP si in avertisment)")
-            val = Decimal(str(corp["valoare"]))
-            if val <= 0:
-                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
-                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
-                                 "decât zero.")
-            cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")  # [R54]
-            numar = str(corp.get("numar") or "").strip() or ("BORDEROU-" + str(corp["data"]))
-            categorie = str(corp.get("categorie") or "").strip() or None
-            if categorie and not _d394.codpr_N_din_categorie(categorie):
-                raise ValueError("categorie N invalida (nomenclator lit.D CODPR_N): %s" % categorie)
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Achizitie de la neinregistrat") + " - " + furnizor_nume
-        with conn.cursor() as cur:
-            tranzactie.fixeaza_schema(cur, schema)
-            # tert_cui GOL -> clasifica_partener -> tip_partener 2 (N); PF nu factureaza TVA -> linie cota 0.
-            # `tert_pf=True` (23.08.2026): pana azi lipsa codului era declarata DOAR in comentariul de
-            # deasupra, iar garda noua de la `cere_cod_partener` n-avea cum s-o citeasca. Achizitia de la
-            # o persoana neinregistrata E cazul legitim fara cod - acum o spune CODUL, nu proza.
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": descr[:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": 0}],
-                                       tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
-                                       status="importata", tert_platitor_tva=False, tert_pf=True)
-            fid = fres["factura_id"]
-            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
-            repo_contabilitate.adauga_linie_furnizor(cur, schema, iid, cont, val)
-        conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val),
-            "categorie": categorie, "in_d394": bool(categorie)}
+    try:
+        return _uc_tenants.achizitie_neinregistrat(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/vanzare-ic")
@@ -9966,61 +5796,10 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
     """LIC bunuri (art. 294(2)a) sau prestare servicii IC (art. 278(2)).
     corp: {data, valoare, cod_tva_client, tip bunuri|servicii, dovada_transport?,
     cont_venit?, descriere?}. Verifica VIES LIVE. Nota: 4111=70x fara TVA."""
-    from decimal import Decimal
-    from core import intracomunitar as _ic
-    # ── [P5 val 3, 11.09.2026] FAZA 1: citirile, fără nimic extern ──────────────────────
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-    # [lotul 8, 04.09.2026] Citirea campului era INAUNTRUL `try`-ului care prinde `Exception`,
-    # deci un camp lipsa iesea ca „VIES indisponibil: 'cod_tva_client'" — o afirmatie falsa
-    # despre un serviciu extern, cu numele campului intre ghilimele simple. *Ce nu s-a trimis
-    # nu se afla de la VIES.*
-    _cod_client = str(corp.get("cod_tva_client") or "").strip()
-    if not _cod_client:
-        raise HTTPException(422, "Lipsește codul de TVA al clientului. Fără el livrarea "
-                                 "intracomunitară nu se poate verifica în VIES și nu ajunge "
-                                 "în D390.")
-    # ── I/O EXTERN, fără nicio conexiune în mână (termen 15 s) ──────────────────────────
     try:
-        v = _ic.verifica_vies(_cod_client)
-    except ValueError as e:
-        raise HTTPException(422, str(e))
-    except Exception as e:
-        raise HTTPException(502, f"VIES indisponibil: {e}")
-    # ── FAZA 2: tranzacție scurtă, cu REVALIDARE înainte de orice scriere ───────────────
-    # Ce s-ar fi putut schimba în cele 15 s: accesul revocat, luna închisă de altcineva. Se cer
-    # din nou, amândouă, iar la refuz iese exact eroarea de azi — rezultatul VIES se aruncă.
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            if corp.get("tip") == "servicii":
-                ok, ment = _ic.valideaza_prestare_ic(corp["cod_tva_client"], v["valid"])
-                cont_venit = _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "704")
-                cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")
-            else:
-                ok, ment = _ic.valideaza_lic(corp["cod_tva_client"], v["valid"],
-                                             bool(corp.get("dovada_transport")))
-                cont_venit = _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "707")
-                cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")
-            val = Decimal(str(corp["valoare"]))
-            if val <= 0:
-                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
-                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
-                                 "decât zero.")
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Vanzare IC") + " - " + ment +                 f" [{v['nume']}]"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            repo_contabilitate.adauga_linie_client(cur, schema, iid, cont_venit, val)
-        conn.commit()
-    return {"inregistrare_id": iid, "mentiune": ment, "vies": v}
+        return _uc_tenants.vanzare_ic(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 
@@ -10030,87 +5809,20 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
     cota?, certificat_amanare?, cont_destinatie, descriere?}.
     Nota ciorna: marfa cont=401; taxe vamale cont=446; TVA dupa mod:
     decont 4426=4427 | vama 4426=446 | cost cont=446."""
-    from decimal import Decimal
-    from core import import_export as _ie
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        with conn.cursor() as cur:
-            rand = repo_firma_profil.platitor_tva_2(cur, schema)
-            platitor = bool(rand[0]) if rand else True
-        try:
-            # [lotul 5] `procent_taxa_vamala=500` trecea: taxa vamala 5.000 la o valoare
-            # vamala de 1.000, baza TVA 6.000. Un procent e o parte dintr-un intreg.
-            _ptv = corp.get("procent_taxa_vamala", 0) or 0
-            if not (0 <= float(_ptv) <= 100):
-                raise ValueError("Procentul taxei vamale e între 0 și 100 — am primit %s. Taxa "
-                                 "vamală e o parte din valoarea în vamă, nu un multiplu al ei."
-                                 % (_ptv,))
-            r = _ie.calcul_import(corp["valoare_vamala"],
-                                  corp.get("procent_taxa_vamala", 0),
-                                  corp.get("accize", 0), corp.get("accesorii", 0),
-                                  _common.cota_ceruta(corp),
-                                  bool(corp.get("certificat_amanare")), platitor)
-            cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
-            val = Decimal(str(corp["valoare_vamala"]))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        mod_txt = {"decont": "TVA in decont (certificat art. 326(4), 4426=4427)",
-                   "vama": "TVA platita in vama (deducere pe DVI art. 299(1)c)",
-                   "cost": "neplatitor - TVA in cost"}[r["mod_tva"]]
-        descr = (corp.get("descriere") or "Import extracomunitar") + " - DVI, " + mod_txt
-        linii = [(cont, "401", val)]
-        if r["taxa_vamala"] > 0:
-            linii.append((cont, "446", r["taxa_vamala"]))
-        if r["mod_tva"] == "decont":
-            linii.append(("4426", "4427", r["tva"]))
-        elif r["mod_tva"] == "vama":
-            linii.append(("4426", "446", r["tva"]))
-        else:
-            linii.append((cont, "446", r["tva"]))
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for d, c, s in linii:
-                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
-        conn.commit()
-    return {"inregistrare_id": iid, "taxa_vamala": str(r["taxa_vamala"]),
-            "baza_tva": str(r["baza_tva"]), "tva": str(r["tva"]), "mod_tva": r["mod_tva"]}
+    try:
+        return _uc_tenants.import_extracomunitar(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/export-extracomunitar")
 def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?}.
     Scutit art. 294(1)a cu DVE. Nota: 4111=70x fara TVA."""
-    from decimal import Decimal
-    from core import import_export as _ie
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            ok, ment = _ie.valideaza_export(corp.get("tara_client"),
-                                            bool(corp.get("dovada_export")))
-            val = Decimal(str(corp["valoare"]))
-            if val <= 0:
-                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
-                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
-                                 "decât zero.")
-            # [R54] confruntarea cu planul firmei stă ÎN try: refuzul e un mesaj pentru om
-            # (422), nu o defecțiune (500). Era după `except`, deci ar fi ieșit 500.
-            cont_venit = _cv.cere_cont(conn, schema,
-                                       _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "707"),
-                                       "cont_venit")
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Export") + f" ({corp['tara_client']}) - " + ment
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            repo_contabilitate.adauga_linie_client(cur, schema, iid, cont_venit, val)
-        conn.commit()
-    return {"inregistrare_id": iid, "mentiune": ment}
+    try:
+        return _uc_tenants.export_extracomunitar(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/intrastat-praguri")
@@ -10118,31 +5830,10 @@ def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     """Monitor praguri Intrastat (Ordin INS 1604/2025, 1.000.000 lei/flux):
     introduceri = facturi primite de la parteneri UE; expedieri = facturi emise
     catre parteneri UE. Cumulat pe an, status + luna depasirii per flux."""
-    _cere_perioada(an=an)
-    from core import intrastat as _is
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        intro, exped = {}, {}
-        with conn.cursor() as cur:
-            for directie, cui, luna, baza in repo_facturi.emise_pe_luni_pentru_intrastat(cur, schema, an):
-                if not _is.e_partener_ue(cui):
-                    continue
-                tinta = intro if directie == "primita" else exped
-                tinta[luna] = tinta.get(luna, 0) + float(baza or 0)
-    ri = _is.analiza_flux(intro)
-    re_ = _is.analiza_flux(exped)
-    def fmt(r):
-        return {"cumulat": str(r["cumulat"]), "status": r["status"],
-                "luna_depasirii": r["luna_depasirii"], "procent": str(r["procent"]),
-                "prag": str(r["prag"])}
-    # nivel agregat pt constatare (severitatea vine din motor, cf. intrastat.NIVEL_STATUS): AVERTISMENT
-    # daca vreun flux e atentie/depasit, altfel None. Randarea deriva culoarea prin stare_din_nivel.
-    nivel = ri.get("nivel") or re_.get("nivel")
-    return {"an": an, "introduceri": fmt(ri), "expedieri": fmt(re_), "nivel": nivel,
-            "nota": "obligatia de declarare la INS (intrastat.ro) incepe cu luna "
-                    "depasirii pragului, separat pe flux (Ordin INS 1604/2025)"}
+    try:
+        return _uc_tenants.intrastat_praguri(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-tva-incasare")
@@ -10150,95 +5841,20 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
     """corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?}.
     incasare: 4428=4427 devine exigibil TVA colectat (suta marita);
     plata: 4426=4428 devine deductibil TVA achitat furnizorului. Nota ciorna."""
-    from core import cota_tva_incasare as _c295
-    from core import tva_incasare as _ti
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        sens = corp.get("sens")
-        if sens not in ("incasare", "plata"):
-            raise HTTPException(422, "sens invalid (incasare/plata)")
-        try:
-            # [R149] Art. 291 alin. (5), citit la sursa: *„In cazul operatiunilor supuse
-            # sistemului TVA la incasare, cota aplicabila este cea in vigoare la data la care
-            # intervine FAPTUL GENERATOR, cu exceptia situatiilor in care este emisa o factura sau
-            # este incasat un avans, inainte de data livrarii/prestarii, pentru care se aplica cota
-            # in vigoare la data la care a fost emisa factura ori la data la care a fost incasat
-            # avansul."*
-            #
-            # Deci **data incasarii nu e, in nicio ramura, data care decide cota** — desi ea e data
-            # la care intervine EXIGIBILITATEA (art. 282 alin. 3). Aici exigibilitatea si cota se
-            # despart, si exact asta numea decizia prin „sau exigibilitatea, unde difera".
-            #
-            # Pana azi ruta valida cota pe `corp["data"]` = data incasarii. Consecinta: o livrare din
-            # era 19%, incasata azi, ar fi avut cota 19 REFUZATA ca „nu e in vigoare" — o cifra
-            # corecta respinsa. Se cere data faptului generator, si pe ea se verifica.
-            # [R151, 05.09.2026] Care data decide cota — cele doua ramuri ale art. 291 alin. (5)
-            # — e o REGULA FISCALA, si sta in modulul ei, `core/cota_tva_incasare`, unde fiecare
-            # refuz isi poarta temeiul ca date. Ruta doar o cheama: aici nu se decide nimic
-            # despre norma, se transporta alegerea contabilului.
-            _al = _c295.alegerea(corp)
-            tva = _ti.tva_din_incasare(
-                corp["suma_incasata"],
-                _common.cota_ceruta({**corp, "data": _al.data_cotei}))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        debit, credit = ("4428", "4427") if sens == "incasare" else ("4426", "4428")
-        # [R151] Descrierea implicita numeste RAMURA aleasa: peste sase luni, cine citeste nota
-        # trebuie sa poata reconstitui de ce cota e aia si nu alta. Fraza vine de la regula
-        # (`cota_tva_incasare.descrierea`), nu se compune aici. O descriere scrisa de om nu se
-        # suprascrie — ea e a lui.
-        desc = corp.get("descriere") or (
-            "TVA la incasare - exigibilitate la "
-            + ("incasare (art. 282)" if sens == "incasare" else "plata furnizor")
-            + "; " + _c295.descrierea(_al))
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], desc[:200])[0]
-            repo_contabilitate.adauga_linie_5(cur, schema, iid, debit, credit, tva)
-        conn.commit()
-    return {"inregistrare_id": iid, "tva_exigibil": str(tva), "nota": f"{debit}={credit}"}
+    try:
+        return _uc_tenants.nota_tva_incasare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/decontare-valuta")
 def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765.
     corp: {data, valoare_valuta, moneda, curs_evidenta, tip creanta|datorie,
     cont_tert, cont_banca?, descriere?}. Cursul decontarii = BNR la data (auto)."""
-    _preincalzeste_cursul(corp.get("moneda", "EUR"), corp.get("data"))   # [P5 val 3] descărcarea BNR, înainte de tranzacție
-    from datetime import date as _date
-    from core import diferente_curs as _dc
-    from core import curs_bnr as _cb
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            data = _date.fromisoformat(corp["data"])
-            try:
-                curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
-            except _cb.MonedaNecotata as _mn:   # [lotul 8] iesea ca `500`
-                raise HTTPException(422, str(_mn))
-            except _cb.CursIndisponibil as _ci:
-                raise HTTPException(409, str(_ci))
-            r = _dc.nota_decontare(corp["valoare_valuta"], corp["curs_evidenta"],
-                                   curs_dec, corp["tip"],
-                                    _cv.cere_cont(conn, schema, corp.get("cont_tert"), "cont_tert"),
-                                   _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca", "5124"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        d = r["diferenta"]
-        descr = (corp.get("descriere") or "Decontare valuta") +                 f" {corp['valoare_valuta']} {corp.get('moneda','EUR')} curs {curs_dec}" +                 (f", dif. {d['sens']} {bani(d['diferenta'], 'lei')} ({d['cont']})" if d["cont"] else "")
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_banca_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "curs_decontare": str(curs_dec),
-            "lei_evidenta": str(r["lei_evidenta"]),
-            "diferenta": {"suma": str(d["diferenta"]), "cont": d["cont"],
-                          "sens": d["sens"]}}
+    try:
+        return _uc_tenants.decontare_valuta(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/reevaluare-valuta")
@@ -10246,53 +5862,10 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
     """Reevaluare lunara solduri valuta (OMFP 1802 pct. 316), curs BNR auto.
     corp: {data (ultima zi luna), solduri: [{cont, valoare_valuta, moneda,
     curs_evidenta, tip creanta|datorie|disponibil}]}. O nota cu toate liniile."""
-    from datetime import date as _date
-    from core import diferente_curs as _dc
-    from core import curs_bnr as _cb
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            data = _date.fromisoformat(corp["data"])
-            solduri = corp["solduri"]
-            if not solduri:
-                raise ValueError("solduri gol")
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        linii, detalii = [], []
-        try:
-            for s in solduri:
-                try:
-                    curs_bnr, _dcurs, _sursa = _cb.curs_pentru(conn, s.get("moneda", "EUR"), data)
-                except _cb.MonedaNecotata as _mn:   # [lotul 8] aceeasi gaura, a doua cale
-                    raise HTTPException(422, str(_mn))
-                except _cb.CursIndisponibil as _ci:
-                    raise HTTPException(409, str(_ci))
-                r = _dc.reevaluare_sold(s["valoare_valuta"], s["curs_evidenta"],
-                                        curs_bnr, s["tip"], str(s["cont"]))
-                if r:
-                    linii.append(r["linie"])
-                    detalii.append({"cont": s["cont"], "curs_bnr": str(curs_bnr),
-                                    "diferenta": str(r["diferenta"]["diferenta"]),
-                                    "cont_rezultat": r["diferenta"]["cont"]})
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        if not linii:
-            _d = _date.fromisoformat(str(corp["data"])[:10])
-            return dict(_af.afirmatie(
-                "fapt", "reevaluare valută", "nicio diferență de reevaluat",
-                an=_d.year, luna=_d.month,
-                temei_completitudine="soldurile în valută ale firmei, la cursul BNR din data cerută"),
-                inregistrare_id=None, detalii=[], mesaj="nicio diferență de reevaluat")
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_banca_ciorna(cur, schema, corp["data"], f"Reevaluare solduri valuta la {corp['data']} "
-                                       "(OMFP 1802 pct. 316, curs BNR)")[0]
-            for dd, cc, ss in linii:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "detalii": detalii}
+    try:
+        return _uc_tenants.reevaluare_valuta(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-leasing")
@@ -10301,41 +5874,10 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
     + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?};
     rata{capital, dobanda?, comision?}; reziduala{valoare_reziduala};
     operational{chirie, cont_cheltuiala?}}. Nota ciorna."""
-    from core import leasing as _ls
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        tip = corp.get("tip")
-        try:
-            if tip == "primire":
-                r = _ls.nota_primire_financiar(corp["valoare_capital"],
-                                               corp.get("dobanda_totala", 0),
-                                               _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2133"))
-                d0 = "Primire bun leasing financiar (2133=167 + D8051 dobanda)"
-            elif tip == "rata":
-                r = _ls.nota_rata_financiar(corp["capital"], corp.get("dobanda", 0),
-                                            corp.get("comision", 0), _common.cota_ceruta(corp))
-                d0 = "Rata leasing financiar (167/666/628=404 + C8051)"
-            elif tip == "reziduala":
-                r = _ls.nota_reziduala(corp["valoare_reziduala"], _common.cota_ceruta(corp))
-                d0 = "Valoare reziduala leasing (167=404, inchide 167)"
-            elif tip == "operational":
-                r = _ls.nota_rata_operational(corp["chirie"], _common.cota_ceruta(corp),
-                                              _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala", "612"))
-                d0 = "Rata leasing operational (612=401)"
-            else:
-                raise ValueError(nomenclator_cerut("tip", "primire|rata|reziduala|operational"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 212-217"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_leasing(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-credit")
@@ -10344,44 +5886,10 @@ def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
     descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?,
     comision?, dobanda_angajata?}; restanta{suma}; garantie{suma, fel primita|acordata,
     actiune inregistrare|eliberare}}. Nota ciorna."""
-    from core import credite as _cr
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        tip = corp.get("tip", "lung")
-        try:
-            if op == "primire":
-                r = _cr.nota_primire(corp["suma"], tip)
-                d0 = f"Primire credit bancar termen {tip}"
-            elif op == "dobanda":
-                r = _cr.nota_dobanda_angajata(corp["dobanda"], tip)
-                d0 = "Dobanda angajata credit (666=168x/519x)"
-            elif op == "plata":
-                r = _cr.nota_plata(corp.get("rata", 0), corp.get("dobanda", 0),
-                                   corp.get("comision", 0), tip,
-                                   dobanda_angajata=corp.get("dobanda_angajata", True))
-                d0 = "Plata rata/dobanda/comision credit"
-            elif op == "restanta":
-                r = _cr.nota_restanta(corp["suma"], tip)
-                d0 = "Credit nerambursat la scadenta"
-            elif op == "garantie":
-                r = _cr.nota_garantie(corp["suma"], corp.get("fel", "primita"),
-                                      corp.get("actiune", "inregistrare"))
-                d0 = f"Garantie {corp.get('fel','primita')} extracontabil 801x"
-            else:
-                raise ValueError(nomenclator_cerut("operatie", "primire|dobanda|plata|restanta|garantie"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 1802"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_banca_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_credit(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-avans")
@@ -10389,134 +5897,23 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
     """corp: {data, operatie avans_platit|regularizare_platit|avans_incasat|
     regularizare_incasat, suma (fara TVA), cota?, destinatie? (platit:
     stocuri|servicii|imobilizari|imobilizari_necorporale), descriere?}."""
-    from core import avansuri as _av
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        dest = corp.get("destinatie", "stocuri")
-        _OPERATII_AVANS = ("avans_platit", "regularizare_platit", "avans_incasat",
-                           "regularizare_incasat")
-        try:
-            # [lotul 3] ORDINEA e reparatia: cota se cerea INAINTE de a se uita la operatie, deci
-            # cine uita felul operatiunii — sau il scria gresit — afla despre cotă. Felul intai.
-            if op not in _OPERATII_AVANS:
-                raise ValueError(nomenclator_cerut("operatie", _OPERATII_AVANS))
-            # [R149] Art. 291 alin. (6): *„In cazul schimbarii cotei se va proceda la
-            # REGULARIZARE pentru a se aplica cota in vigoare la data LIVRARII de bunuri sau
-            # prestarii de servicii"*. Deci la o regularizare cota nu se verifica pe data
-            # regularizarii — se verifica pe data livrarii, care e chiar motivul pentru care
-            # regularizarea exista: intre avans si livrare s-a schimbat cota.
-            #
-            # *O regularizare verificata pe data ei ar refuza exact cota pe care legea o cere.*
-            _data_cota = corp.get("data")
-            if op.startswith("regularizare"):
-                _dl = corp.get("data_livrare")
-                if not _dl:
-                    raise ValueError(
-                        "Data livrării/prestării e obligatorie la o regularizare: cota care se "
-                        "regularizează e cea în vigoare ATUNCI, nu la data regularizării "
-                        "(art. 291 alin. 6 Cod fiscal).")
-                _data_cota = _dl
-            cota = _common.cota_ceruta({**corp, "data": _data_cota})
-            if op == "avans_platit":
-                r = _av.nota_avans_platit(corp["suma"], cota, dest)
-                d0 = f"Factura avans furnizor ({r['cont_avans']}+4426=401)"
-            elif op == "regularizare_platit":
-                r = _av.nota_regularizare_avans_platit(corp["suma"], cota, dest)
-                d0 = "Regularizare avans furnizor la factura finala"
-            elif op == "avans_incasat":
-                r = _av.nota_avans_incasat(corp["suma"], cota)
-                d0 = "Factura avans client (4111=419+4427)"
-            elif op == "regularizare_incasat":
-                r = _av.nota_regularizare_avans_incasat(corp["suma"], cota)
-                d0 = "Regularizare avans client la factura finala"
-            else:                       # nu se poate ajunge aici: `op` e verificat mai sus
-                raise ValueError(nomenclator_cerut("operatie", _OPERATII_AVANS))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - art. 282(2)b CF"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_avans(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/achizitie-necorporala")
-def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
-                          ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),                           ctx=Depends(cere_rol("admin_firma"))):
     """corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet|
     dezvoltare|constituire, dnf_luni?, cota?, cod?}.
     Art. 28(9): software = 36 luni (fix); licenta/brevet = durata contract (dnf_luni
     obligatoriu); constituire = max 60 luni. Nota ciorna 20x+4426=404 + inscriere
     in mijloace_fixe (amortizare lunara preluata de mecanismul existent)."""
-    from decimal import Decimal
-    TIPURI = {"software":    ("208", "2808", 36),
-              "licenta":     ("205", "2805", None),
-              "brevet":      ("205", "2805", None),
-              "dezvoltare":  ("203", "2803", None),
-              "constituire": ("201", "2801", 60)}
-    from core import anaf_api as _anaf
-    # [P5 val 3] ANAF ÎNAINTE de conexiune — vezi nota de la `achizitie_taxare_inversa`.
-    furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
-    _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=True) if furnizor_cui else True
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        tip = corp.get("tip")
-        if tip not in TIPURI:
-            raise HTTPException(422, nomenclator_cerut("tip", TIPURI))
-        cont_imo, cont_am, dnf_regula = TIPURI[tip]
-        dnf = corp.get("dnf_luni")
-        if tip == "software":
-            dnf = 36  # art. 28(9): programe informatice = 3 ani, fix
-        elif tip == "constituire":
-            dnf = min(int(dnf or 60), 60)  # art. 28(11): max 5 ani
-        elif not dnf:
-            raise HTTPException(422, f"Durata normală de funcționare (luni) obligatorie pentru {tip} "
-                                     "(durata contractului/de utilizare, art. 28(9))")
-        from core import facturi_api as _fa
-        try:
-            val = Decimal(str(corp["valoare"]))
-            if val <= 0:
-                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
-                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
-                                 "decât zero.")
-            cota = _common.cota_ceruta(corp)
-            tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"))
-            if not furnizor_cui:      # calculat înaintea blocului; validarea rămâne aici
-                raise ValueError("CUI furnizor obligatoriu (achizitia necorporala e factura de la furnizor)")
-            numar = str(corp.get("numar") or "").strip()
-            if not numar:
-                raise ValueError("numar factura furnizor obligatoriu")
-            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e) or "valoare invalidă")
-        with conn.cursor() as cur:
-            mfid = repo_mijloace_fixe.adauga(cur, schema, corp.get("cod") or f"NEC-{tip[:3].upper()}", corp["denumire"][:200], cont_imo, cont_am, val, int(dnf), corp["data"])[0]
-            tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
-            # rand FACTURA (achizitie normala de la furnizor RO cu CUI) -> D394 tip A. MF (mijloace_fixe) ramane
-            # separat: factura = documentul de achizitie; imobilizarea = activul amortizabil (amortizare/D406).
-            # `_tert_pl` s-a înghețat înaintea blocului (TVA deductibilă -> furnizor plătitor)
-            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                       linii=[{"descriere": corp["denumire"][:200], "cantitate": 1,
-                                               "pret_unitar": str(val), "cota_tva": cota}],
-                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui, status="importata",
-                                       tert_platitor_tva=_tert_pl)
-            fid = fres["factura_id"]
-            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, f"Achizitie necorporala {tip}: {corp['denumire']}"
-                                       f" (amortizare {dnf} luni, art. 28(9) CF)"[:200])[0]
-            for dd, cc, ss in [(cont_imo, "404", val), ("4426", "404", tva)]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
-            "conturi": [cont_imo, cont_am]}
+    try:
+        return _uc_tenants.achizitie_necorporala(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/reevaluare-imobilizare")
@@ -10525,57 +5922,10 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
     valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}}.
     Reevaluarea citeste valoarea+amortizarea cumulata din mijloace_fixe si
     actualizeaza valoarea/dnf ramane manual (raport evaluator)."""
-    from decimal import Decimal
-    from datetime import date as _date
-    from core import reevaluare as _rv
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie", "reevaluare")
-        try:
-            if op == "surplus":
-                r = _rv.nota_realizare_surplus(corp["suma"])
-                descr = "Transfer surplus reevaluare realizat (105=1175, pct.109-110)"
-                extra = {}
-            else:
-                with conn.cursor() as cur:
-                    mf = repo_mijloace_fixe.pentru_reevaluare(cur, schema, corp["mijloc_fix_id"])
-                if not mf:
-                    # [R147] „inexistent/inactiv" lasa omul sa ghiceasca pe care din doua.
-                    raise HTTPException(404, "Mijlocul fix ales nu există în registrul "
-                                             "firmei sau a fost casat. Alege-l din listă.")
-                den, ci, ca, val, rez, dnf, pif, met = mf
-                ref = _date.fromisoformat(corp["data"])
-                from core import d406_active as _d406
-                mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                        "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
-                amortizare = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
-                r = _rv.nota_reevaluare(val, amortizare, corp["valoare_justa"], ci, ca,
-                                        corp.get("sold_105_activ", 0),
-                                        corp.get("pierdere_655_anterioara", 0))
-                descr = f"Reevaluare {den}: neta {r['valoare_neta']} -> justa "                         f"{corp['valoare_justa']} (OMFP 1802 pct.111-116)"
-                extra = {"valoare_neta": str(r["valoare_neta"]),
-                         "diferenta": str(r["diferenta"]), "amortizare_eliminata": str(amortizare)}
-                if not r["linii"]:
-                    _d = _date.fromisoformat(str(corp["data"])[:10]) if corp.get("data") else None
-                    return dict(_af.afirmatie(
-                        "fapt", "reevaluare imobilizare", "nicio diferență de reevaluat",
-                        unde=_Unde("mijloc_fix", corp.get("mijloc_fix_id") or den),
-                        temei_completitudine="valoarea netă contabilă vs valoarea justă declarată "
-                                             "(OMFP 1802 pct.111-116)"),
-                        inregistrare_id=None, mesaj="nicio diferență de reevaluat",
-                        data=str(_d) if _d else None, **extra)
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **extra}
+    try:
+        return _uc_tenants.reevaluare_imobilizare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-provizion")
@@ -10584,43 +5934,10 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
     descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} |
     provizion{tip litigii|garantii|dezafectare|restructurare|impozite|altele} |
     stoc{cont_ajustare?}}. Raspunsul include deductibilitatea fiscala."""
-    from core import provizioane as _pv
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        fel = corp.get("fel")
-        act = corp.get("actiune", "constituire")
-        info = {}
-        try:
-            if fel == "creanta":
-                r = _pv.nota_ajustare_creanta(corp["suma"], act)
-                pct, temei = _pv.deductibilitate_creanta(
-                    corp.get("zile_depasire", 0), bool(corp.get("garantata")),
-                    bool(corp.get("afiliata")), bool(corp.get("faliment")))
-                info = {"deductibil_procent": pct, "temei": temei}
-                d0 = f"Ajustare creanta ({act}) - deductibil {pct}%"
-            elif fel == "provizion":
-                r = _pv.nota_provizion(corp["suma"], corp.get("tip", "garantii"), act)
-                info = {"deductibil": r["deductibil"]}
-                d0 = f"Provizion {corp.get('tip','garantii')} ({act})" +                      ("" if r["deductibil"] else " - NEDEDUCTIBIL fiscal")
-            elif fel == "stoc":
-                r = _pv.nota_ajustare_stoc(corp["suma"], _cv.cere_cont(conn, schema, corp.get("cont_ajustare"), "cont_ajustare", "397"), act)
-                info = {"deductibil": False}
-                d0 = f"Ajustare depreciere stocuri ({act}) - nedeductibil fiscal"
-            else:
-                raise ValueError(nomenclator_cerut("fel", "creanta|provizion|stoc"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - art. 26 CF / OMFP 1802"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    try:
+        return _uc_tenants.nota_provizion_ep(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-productie")
@@ -10628,35 +5945,10 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
     """corp: {data, operatie obtinere|pic|vanzare, descriere?, +
     obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare};
     vanzare{pret_vanzare, cost_standard_iesit, cota?, coef_348?}}."""
-    from core import productie as _pr
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        try:
-            if op == "obtinere":
-                r = _pr.nota_obtinere(corp["cost_standard"], corp.get("cost_efectiv"))
-                d0 = "Obtinere produse finite 345=711 (cost standard)"
-            elif op == "pic":
-                r = _pr.nota_productie_in_curs(corp["suma"], corp.get("moment", "constatare"))
-                d0 = f"Productie in curs ({corp.get('moment','constatare')}) 331/711"
-            elif op == "vanzare":
-                r = _pr.nota_vanzare(corp["pret_vanzare"], corp["cost_standard_iesit"],
-                                     _common.cota_ceruta(corp), corp.get("coef_348"))
-                d0 = "Vanzare produse finite 4111=701+4427, descarcare 711=345"
-            else:
-                raise ValueError(nomenclator_cerut("operatie", "obtinere|pic|vanzare"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 1802"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_productie(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-obiect-inventar")
@@ -10664,41 +5956,10 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
     """corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?,
     descriere?}. Achizitia verifica pragul MF (5000 din 25.02.2026, OUG 8/2026)
     si refuza daca valoarea e peste prag (foloseste fluxul de mijloace fixe)."""
-    from datetime import date as _date
-    from core import obiecte_inventar as _oi
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        try:
-            if op == "achizitie":
-                ref = _date.fromisoformat(corp["data"])
-                if not _oi.e_obiect_inventar(corp["valoare"], ref,
-                                             bool(corp.get("durata_sub_1_an"))):
-                    raise ValueError(f"valoarea depaseste pragul MF de "
-                                     f"{bani(_oi.prag_mf(ref), 'lei')} (OUG 8/2026) - "
-                                     "inregistreaza ca mijloc fix")
-                r = _oi.nota_achizitie(corp["valoare"], _common.cota_ceruta(corp))
-                d0 = "Achizitie obiect de inventar 303+4426=401"
-            elif op == "dare_folosinta":
-                r = _oi.nota_dare_folosinta(corp["valoare"])
-                d0 = "Dare in folosinta OI: 603=303 + D8035"
-            elif op == "scoatere":
-                r = _oi.nota_scoatere_uz(corp["valoare"])
-                d0 = "Scoatere din uz OI: C8035 (proces-verbal)"
-            else:
-                raise ValueError(nomenclator_cerut("operatie", "achizitie|dare_folosinta|scoatere"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 1802 / OUG 8/2026"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_obiect_inventar(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-asociati")
@@ -10706,45 +5967,10 @@ def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
     """corp: {data, operatie dividend|regularizare|imprumut, descriere?, +
     dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar,
     dividend_anual}; imprumut{suma, fel primire|restituire, dobanda?}}."""
-    from datetime import date as _date
-    from core import decontari_asociati as _da
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        info = {}
-        try:
-            if op == "dividend":
-                r = _da.nota_dividend(corp["brut"], _date.fromisoformat(corp["data"]),
-                                      bool(corp.get("interimar")),
-                                      corp.get("cu_plata", True))
-                info = {"impozit": str(r["impozit"]), "net": str(r["net"]),
-                        "cota": r["cota"]}
-                d0 = f"Dividende {'interimare' if corp.get('interimar') else 'anuale'} "                      f"brut {corp['brut']}, impozit {r['cota']}%"
-            elif op == "regularizare":
-                r = _da.nota_regularizare_interimar(corp["total_interimar"],
-                                                    corp["dividend_anual"])
-                info = {"exces_de_restituit": str(r["exces_de_restituit"])}
-                d0 = "Regularizare dividende interimare (457=463, OMFP 3067/2018)"
-            elif op == "imprumut":
-                r = _da.nota_imprumut_asociat(corp.get("suma", 0),
-                                              corp.get("fel", "primire"),
-                                              corp.get("dobanda", 0))
-                d0 = f"Imprumut asociat 4551 ({corp.get('fel','primire')})"
-            else:
-                raise ValueError(nomenclator_cerut("operatie", "dividend|regularizare|imprumut"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0)
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    try:
+        return _uc_tenants.nota_asociati(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-sponsorizare")
@@ -10752,34 +5978,10 @@ def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
     """corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul
     credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro,
     beneficiar_in_registru}. Nota 6582 + info credit fiscal/D177."""
-    from core import sponsorizari as _sp
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            r = _sp.nota_sponsorizare(corp["suma"], corp.get("mod", "contract"))
-            info = {}
-            if corp.get("cifra_afaceri") is not None:
-                c = _sp.credit_sponsorizare(corp["cifra_afaceri"],
-                                            corp.get("impozit_profit", 0),
-                                            corp["suma"],
-                                            corp.get("tip_impozit", "profit"),
-                                            corp.get("beneficiar_in_registru", True))
-                info = {k: (str(v) if not isinstance(v, str) else v)
-                        for k, v in c.items()}
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Sponsorizare (6582, nedeductibil, "
-                 "credit fiscal art. 25(4)i)")
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], "credit_fiscal": info}
+    try:
+        return _uc_tenants.nota_sponsorizare_ep(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-subventie")
@@ -10787,39 +5989,10 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
     """corp: {data, fel exploatare|investitii|reluare, descriere?, +
     exploatare/investitii{suma, moment drept|incasare};
     reluare{valoare_activ, subventie, amortizare_lunara}}."""
-    from core import subventii as _sb
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        fel = corp.get("fel")
-        info = {}
-        try:
-            if fel == "exploatare":
-                r = _sb.nota_subventie_exploatare(corp["suma"], corp.get("moment", "drept"),
-                                                  _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "741"))
-                d0 = f"Subventie exploatare ({corp.get('moment','drept')})"
-            elif fel == "investitii":
-                r = _sb.nota_subventie_investitii(corp["suma"], corp.get("moment", "drept"))
-                d0 = f"Subventie investitii 4751 ({corp.get('moment','drept')})"
-            elif fel == "reluare":
-                r = _sb.reluare_lunara_investitii(corp["valoare_activ"], corp["subventie"],
-                                                  corp["amortizare_lunara"])
-                info = {"procent_subventionat": r["procent_subventionat"]}
-                d0 = "Reluare subventie investitii 4751=7584 (proportional cu amortizarea)"
-            else:
-                raise ValueError(nomenclator_cerut("fel", "exploatare|investitii|reluare"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 392-402"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    try:
+        return _uc_tenants.nota_subventie(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-chirie")
@@ -10829,52 +6002,10 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
     chirie_platita{chirie, proprietar pj|pf}; chirie_incasata{chirie};
     refacturare{total_factura, parte_refacturata}}.
     Refacturarea creeaza DOUA note (primire+emitere)."""
-    from core import comodat_chirii as _cc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        fel = corp.get("fel")
-        note = []  # [(descriere, linii)]
-        info = {}
-        try:
-            if fel == "comodat":
-                r = _cc.nota_comodat(corp["valoare"], corp.get("moment", "primire"))
-                note.append((f"Comodat 8038 ({corp.get('moment','primire')}) - art. 2146 CC",
-                             r["linii"]))
-            elif fel == "chirie_platita":
-                r = _cc.nota_chirie_platita(corp["chirie"], _common.cota_ceruta(corp),
-                                            corp.get("proprietar", "pj"))
-                info = {"nota": r.get("nota", "")}
-                note.append((f"Chirie platita ({corp.get('proprietar','pj')})", r["linii"]))
-            elif fel == "chirie_incasata":
-                r = _cc.nota_chirie_incasata(corp["chirie"], _common.cota_ceruta(corp))
-                note.append(("Chirie incasata 4111=706", r["linii"]))
-            elif fel == "refacturare":
-                r = _cc.nota_refacturare(corp["total_factura"],
-                                         corp["parte_refacturata"], _common.cota_ceruta(corp))
-                info = {"tva_refacturat": str(r["tva_refacturat"])}
-                if r["primire"]:
-                    note.append(("Factura utilitati: parte proprie + de refacturat (art. 271)",
-                                 r["primire"]))
-                if r["emitere"]:
-                    note.append(("Refacturare utilitati 4111=708 (aceeasi cota)",
-                                 r["emitere"]))
-            else:
-                raise ValueError(nomenclator_cerut("fel", "comodat|chirie_platita|chirie_incasata|refacturare"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        ids = []
-        with conn.cursor() as cur:
-            for d0, linii in note:
-                descr = (corp.get("descriere") or d0)
-                iid = repo_contabilitate.nota_facturi_ciorna_2(cur, schema, corp["data"], descr[:200])[0]
-                ids.append(iid)
-                for dd, cc, ss in linii:
-                    repo_contabilitate.adauga_linie_2(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrari": ids, **info}
+    try:
+        return _uc_tenants.nota_chirie(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-decont-deplasare")
@@ -10883,44 +6014,10 @@ def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
     avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?};
     plafon{diurna_pe_zi, zile, salariu_baza, zile_lucratoare, diurna_bugetara?,
     curs?} - plafon NU creeaza nota, doar calculeaza}."""
-    from core import deconturi as _dp
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        fel = corp.get("fel")
-        info = {}
-        try:
-            if fel == "plafon":
-                p = _dp.plafon_diurna(corp["diurna_pe_zi"], corp["zile"],
-                                      corp["salariu_baza"], corp["zile_lucratoare"],
-                                      corp.get("diurna_bugetara"), corp.get("curs", 1))
-                return {k: str(v) for k, v in p.items()}
-            if fel == "avans":
-                r = _dp.nota_avans(corp["suma"], corp.get("sursa", "casa"))
-                d0 = "Avans spre decontare 542"
-            elif fel == "decont":
-                # cota CERUTA, ca la celelalte 14 rute: `corp.get("cota", 0)` punea tacit 0,
-                # adica „scutit", pe un decont care putea avea cazare cu TVA (R26, a doua runda).
-                r = _dp.nota_decont(corp.get("avans", 0), corp.get("diurna", 0),
-                                    corp.get("transport", 0), corp.get("cazare", 0),
-                                    _common.cota_ceruta(corp), corp.get("sursa", "casa"))
-                info = {"total_cheltuieli": str(r["total_cheltuieli"]),
-                        "diferenta": str(r["diferenta"])}
-                d0 = "Decont deplasare 625=542 (ordin de deplasare + justificative)"
-            else:
-                raise ValueError(nomenclator_cerut("fel", "avans|decont|plafon"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - art. 76(2)k CF / HG 714/2018"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_casa_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    try:
+        return _uc_tenants.nota_decont_deplasare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-bacsis")
@@ -10928,34 +6025,10 @@ def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
     """corp: {data, fel incasare|distribuire, suma, sursa card|numerar (incasare) /
     banca|casa (distribuire), descriere?}. Legea 376/2022: fara TVA, fara
     CAS/CASS, impozit 10% retinut la distribuire (D100, informativ D205)."""
-    from core import bacsis as _bc
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        fel = corp.get("fel")
-        info = {}
-        try:
-            if fel == "incasare":
-                r = _bc.nota_incasare(corp["suma"], corp.get("sursa", "card"))
-                d0 = "Bacsis incasat pe bon fiscal (461=462, fara TVA)"
-            elif fel == "distribuire":
-                r = _bc.nota_distribuire(corp["suma"], corp.get("sursa", "banca"))
-                info = {"impozit": str(r["impozit"]), "net": str(r["net"])}
-                d0 = "Distribuire bacsis salariati (impozit 10% retinut, 462=446)"
-            else:
-                raise ValueError(nomenclator_cerut("fel", "incasare|distribuire"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - Legea 376/2022"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_casa_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    try:
+        return _uc_tenants.nota_bacsis(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-sgr")
@@ -10964,45 +6037,10 @@ def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     descriere?, + nr_ambalaje|suma, sursa casa|banca, +
     autofactura{garantii_returnate, tarif_gestionare?, cota?}; virare{suma,
     catre furnizor|plata}}. Garantia 0,50 lei/ambalaj, in afara sferei TVA."""
-    from core import sgr as _sg
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        try:
-            if op == "achizitie":
-                r = _sg.nota_garantie_achizitie(corp.get("nr_ambalaje"), corp.get("suma"))
-                d0 = "SGR: garantie platita furnizorului 461=401 (fara TVA)"
-            elif op == "vanzare":
-                r = _sg.nota_garantie_vanzare(corp.get("nr_ambalaje"), corp.get("suma"),
-                                              corp.get("sursa", "casa"))
-                d0 = "SGR: garantie incasata de la client (distinct pe bon)"
-            elif op == "restituire":
-                r = _sg.nota_restituire_consumator(corp.get("nr_ambalaje"),
-                                                   corp.get("suma"),
-                                                   corp.get("sursa", "casa"))
-                d0 = "SGR: restituire garantie consumator (461=creanta RetuRO)"
-            elif op == "autofactura":
-                r = _sg.nota_autofactura_returo(corp.get("garantii_returnate", 0),
-                                                corp.get("tarif_gestionare", 0),
-                                                _common.cota_ceruta(corp))
-                d0 = "SGR: autofactura RetuRO (garantii fara TVA + tarif gestionare cu TVA)"
-            elif op == "virare":
-                r = _sg.nota_virare_garantii(corp["suma"], corp.get("catre", "furnizor"))
-                d0 = "SGR: virare garantii incasate catre amonte 462"
-            else:
-                raise ValueError(nomenclator_cerut("operatie", "achizitie|vanzare|restituire|autofactura|virare"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - HG 1074/2021"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_sgr(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-perisabilitati")
@@ -11011,31 +6049,10 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
     pierdere_constatata, cota?, cont_stoc?, degradare_dovedita_distrusa?,
     descriere?}. Nota 607 (split deductibil/nedeductibil) + ajustare TVA 635=4426
     pe depasire."""
-    from core import perisabilitati as _pe
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
-                           corp["pierdere_constatata"], _common.cota_ceruta(corp),
-                           _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
-                           bool(corp.get("degradare_dovedita_distrusa")))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or
-                 f"Perisabilitati: limita {r['limita']}, deductibil {r['deductibil']}, "
-                 f"nedeductibil {r['nedeductibil']} (PV inventariere)")[:200]
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr + " - HG 831/2004")[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "limita": str(r["limita"]),
-            "deductibil": str(r["deductibil"]), "nedeductibil": str(r["nedeductibil"]),
-            "ajustare_tva": str(r["ajustare_tva"]),
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_perisabilitati(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-contract-special")
@@ -11043,28 +6060,10 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
     """corp: {data, fel zilier|cenzor|mandat, brut, sursa casa|banca, descriere?}.
     Zilieri: impozit 10%+CAS 25% fara CASS (L52/2011). Cenzor/mandat: CAS+CASS+
     impozit, fara CAM (art. 76(2)g/i)."""
-    from core import contracte_speciale as _cs
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        try:
-            r = _cs.nota(corp["brut"], corp.get("fel", "zilier"),
-                         corp.get("sursa", "casa"), la_data=corp.get("data"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        fel = corp.get("fel", "zilier")
-        descr = (corp.get("descriere") or
-                 f"Remuneratie {fel} brut {corp['brut']} (net {r['net']})") +                 (" - L52/2011" if fel == "zilier" else " - art. 76(2)g/i CF")
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_salarii_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "brut": str(r["brut"]), "cas": str(r["cas"]),
-            "cass": str(r["cass"]), "impozit": str(r["impozit"]), "net": str(r["net"]),
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_contract_special(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/mijloace-fixe")
@@ -11076,33 +6075,10 @@ def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
     calculeaza liniar tacit: intoarce amortizat=None, ramas=None, eroare=<motiv> (DS cap.17).
     Casat: amortizat/ramas None (instantaneul de la casare nu se pastreaza in mijloace_fixe).
     Sursa unica pentru ID-ul cerut de casare/reevaluare (pana acum netastabil - niciun ecran)."""
-    from decimal import Decimal
-    from datetime import date as _date
-    schema = _schema_sau_404(ctx, tenant_id)
-    azi = _date.today()
-    out = []
-    with db.get_conn(schema) as conn:
-        with conn.cursor() as cur:
-            rows = repo_mijloace_fixe.toate(cur)
-    from core import d406_active as _d406
-    for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ) in rows:
-        val = Decimal(str(val or 0)); rez = Decimal(str(rez or 0))
-        amortizat = ramas = eroare = None
-        if activ:
-            mf_d = {"cod": cod, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                    "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
-            try:
-                r = _d406.amortizat_la_data(mf_d, azi)   # metoda reala (CF art.28), nu liniar
-                amortizat = str(r["amortizat"]); ramas = str(r["ramas"])
-            except (ValueError, KeyError) as e:
-                eroare = str(e)   # metoda nepermisa / date invalide -> se arata, nu se fabrica liniar
-        out.append({"id": mid, "cod": cod, "denumire": den,
-                    "cont_imobilizare": ci, "cont_amortizare": ca,
-                    "valoare": str(val), "rezidual": str(rez),
-                    "dnf_luni": dnf, "data_pif": str(pif) if pif else None,
-                    "metoda": met, "activ": bool(activ),
-                    "amortizat": amortizat, "ramas": ramas, "eroare": eroare})
-    return {"mijloace": out}
+    try:
+        return _uc_tenants.tenant_mijloace_fixe(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-inventariere")
@@ -11113,77 +6089,10 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
     salariat|tert, cota?, asigurat_sau_distrus?};
     casare{mijloc_fix_id SAU valoare_bruta+amortizare_cumulata+conturi}.
     Casarea cu mijloc_fix_id calculeaza amortizarea auto si dezactiveaza MF."""
-    from decimal import Decimal
-    from datetime import date as _date
-    from core import inventariere as _iv
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        mf_id = None
-        try:
-            if op == "plus":
-                r = _iv.nota_plus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"))
-                d0 = "Plus la inventar stocuri"
-            elif op == "plus_mf":
-                # [ruptura mijloc-fix post-migrare 14.08.2026] valideaza (art.28 alin.5/8^1) SI inscrie
-                # activul in registrul mijloace_fixe (nu doar nota 21x=4754) -> ajunge la amortizare/D406.
-                mf_reg = _iv.pregateste_mf_plus(corp)
-                r = _iv.nota_plus_mf(corp["valoare"], mf_reg["cont_imobilizare"])
-                d0 = "Plus la inventar mijloace fixe (21x=4754)"
-            elif op == "minus":
-                r = _iv.nota_minus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
-                                   bool(corp.get("imputabil")),
-                                   corp.get("valoare_imputare"),
-                                   corp.get("vinovat", "salariat"),
-                                   _common.cota_ceruta(corp),
-                                   bool(corp.get("asigurat_sau_distrus")))
-                d0 = "Minus la inventar" + (" imputabil" if corp.get("imputabil") else
-                                            " neimputabil")
-            elif op == "casare":
-                if corp.get("mijloc_fix_id"):
-                    mf_id = corp["mijloc_fix_id"]
-                    with conn.cursor() as cur:
-                        mf = repo_mijloace_fixe.pentru_inventariere(cur, schema, mf_id)
-                    if not mf:
-                        # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
-                        raise HTTPException(404, "Mijlocul fix ales nu există în registrul "
-                                                 "firmei sau a fost casat. Alege-l din listă.")
-                    den, ci, ca, val, rez, dnf, pif, met = mf
-                    ref = _date.fromisoformat(corp["data"])
-                    from core import d406_active as _d406
-                    mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                            "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
-                    am = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
-                    r = _iv.nota_casare_mf(val, am, ci, ca)
-                    d0 = f"Casare {den} (PV comisie, neamortizat {r['neamortizat']})"
-                else:
-                    r = _iv.nota_casare_mf(corp["valoare_bruta"],
-                                           corp["amortizare_cumulata"],
-                                           _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2131"),
-                                           _cv.cere_cont(conn, schema, corp.get("cont_amortizare"), "cont_amortizare", "2813"))
-                    d0 = "Casare mijloc fix (PV comisie)"
-            else:
-                raise ValueError(nomenclator_cerut("operatie", "plus|plus_mf|minus|casare"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 2861/2009"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-            if mf_id:
-                repo_mijloace_fixe.scoate_din_evidenta(cur, schema, mf_id)
-            mf_nou_id = None
-            if op == "plus_mf":
-                mf_nou_id = repo_mijloace_fixe.adauga_cu_reevaluare(cur, schema, mf_reg["cod"], mf_reg["denumire"], mf_reg["cont_imobilizare"], mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"], mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"])[0]
-        conn.commit()
-    rez_out = {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
-    if mf_nou_id:
-        rez_out["mijloc_fix_id"] = mf_nou_id
-    return rez_out
+    try:
+        return _uc_tenants.nota_inventariere(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-lichidare")
@@ -11191,43 +6100,10 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
     """corp: {data, operatie vanzare_activ|partaj, descriere?, +
     vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?};
     partaj{capital_social, rezerve?, profituri?}}. OMFP 897/2015."""
-    from datetime import date as _date
-    from core import lichidare as _li
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie")
-        info = {}
-        try:
-            if op == "vanzare_activ":
-                r = _li.nota_vanzare_activ(corp["pret"], corp["valoare_bruta"],
-                                           corp["amortizare_cumulata"],
-                                           _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2131"),
-                                           _cv.cere_cont(conn, schema, corp.get("cont_amortizare"), "cont_amortizare", "2813"),
-                                           _common.cota_ceruta(corp))
-                d0 = "Lichidare: valorificare activ (7583 + descarcare)"
-            elif op == "partaj":
-                r = _li.partaj(corp["capital_social"], corp.get("rezerve", 0),
-                               corp.get("profituri", 0),
-                               _date.fromisoformat(corp["data"]))
-                info = {"castig_impozabil": str(r["castig_impozabil"]),
-                        "impozit": str(r["impozit"]),
-                        "net_asociat": str(r["net_asociat"]), "cota": r["cota"]}
-                d0 = "Partaj lichidare: capital neimpozabil + castig cu impozit dividend"
-            else:
-                raise ValueError(nomenclator_cerut("operatie", "vanzare_activ|partaj"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 897/2015"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    try:
+        return _uc_tenants.nota_lichidare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/nota-ong")
@@ -11237,32 +6113,10 @@ def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     fonduri|ocazional|alte, sursa casa|banca};
     scutire{venituri_economice, venituri_neimpozabile, curs_eur} - doar calcul,
     fara nota}. OMFP 3103/2017 + art. 15(2)-(3) CF."""
-    from core import ong as _on
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fără acces")
-        _cere_luna_deschisa(conn, schema, corp.get("data"))
-        op = corp.get("operatie", "venit")
-        try:
-            if op == "scutire":
-                r = _on.scutire_economica(corp["venituri_economice"],
-                                          corp["venituri_neimpozabile"],
-                                          corp["curs_eur"])
-                return {k: str(v) for k, v in r.items()}
-            r = _on.nota_venit(corp["suma"], corp.get("fel", "cotizatie"),
-                               corp.get("sursa", "casa"))
-        except (ValueError, KeyError) as e:
-            raise HTTPException(422, _mesaj_intrare(e))
-        descr = (corp.get("descriere") or
-                 f"Venit AFSP {corp.get('fel', 'cotizatie')} pe {r['cont_venit']}") +                 " - OMFP 3103/2017"
-        with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_casa_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-        conn.commit()
-    return {"inregistrare_id": iid, "cont_venit": r["cont_venit"],
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    try:
+        return _uc_tenants.nota_ong(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 # bon_flux_e6_v1
 
@@ -11311,9 +6165,10 @@ def ansamblu_aplicatie(ctx=Depends(cere_context)):
 @app.post("/cont/bun-venit-vazut")
 def cont_bun_venit_vazut(ctx=Depends(cere_context)):
     """Marcheaza prezentarea de bun-venit ca vazuta (o data, la prima logare)."""
-    with db.get_conn() as conn:
-        auth_api.marcheaza_bun_venit(conn, ctx["uid"])
-    return {"ok": True}
+    try:
+        return _uc_cont.cont_bun_venit_vazut(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 # ============================================================
@@ -11534,8 +6389,6 @@ def _ghid_lista():
 
 
 # ---- Analytics public FARA date personale (eveniment: ce/de unde/cand; NU ip/UA/cookie/sesiune/user) ----
-_EVENIMENTE_PUBLICE = frozenset((
-    "vizita_landing", "modal_functionalitati", "deschide_preturi", "intra_in_cont", "vizita_ghid"))
 
 
 class EvenimentPublicIn(BaseModel):
@@ -11549,30 +6402,20 @@ def eveniment_public(date: EvenimentPublicIn):
     Se stocheaza DOAR: tip (lista alba), pagina (calea proprie, curatata) si momentul (DEFAULT now()).
     NU se citeste si NU se retine IP, User-Agent, cookie, sesiune sau vreun identificator -> fara date
     personale -> fara obligatie de consimtamant. Fire-and-forget (clientul foloseste sendBeacon)."""
-    tip = (date.tip or "").strip()
-    if tip not in _EVENIMENTE_PUBLICE:
-        return {"ok": False}   # tip necunoscut -> se ignora (nu strica clientul)
-    pagina = "".join(c for c in (date.pagina or "landing").strip().lower()
-                     if c.isalnum() or c in "/_-")[:128] or "landing"
     try:
-        with db.get_conn() as conn, conn.cursor() as cur:
-            repo_admin.scrie_eveniment_public(cur, tip, pagina)
-    except Exception:
-        return {"ok": False}
-    return {"ok": True}
+        return _uc_api.eveniment_public(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/admin/analytics")
 def admin_analytics(zile: int = 30, ctx=Depends(cere_rol("superadmin"))):
     """Cifre agregate din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
     Fara date personale (tabela nu contine niciun identificator)."""
-    zile = _interval_cerut(zile if zile is not None else 30, "Numărul de zile", 1, 365, "zile")  # [R150]
-    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        pe_eveniment = repo_admin.evenimente_pe_tip(cur, zile)
-        pe_zi = repo_admin.evenimente_pe_zi(cur, zile)
-        pe_pagina = repo_admin.evenimente_pe_pagina(cur, zile)
-        total = repo_admin.cate_evenimente(cur, zile)["n"]
-    return {"zile": zile, "total": total, "pe_eveniment": pe_eveniment, "pe_zi": pe_zi, "pe_pagina": pe_pagina}
+    try:
+        return _uc_admin.admin_analytics(zile, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/ghid/{slug}")

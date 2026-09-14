@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Walk top-level tenant_001: re-deschide firma pt fiecare modul (meniul e modal)."""
-import os
-from w_auth import BAZA, new_page
+from w_auth import new_page
 from walk_t001 import deschide_t001, shot
 from playwright.sync_api import sync_playwright
 

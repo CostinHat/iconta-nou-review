@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """P7 — cele TREI verificari mecanice ale separarii pe straturi, derivate din cod.
 
-TEXTUL CANONIC, `PLAN_HARDENING.md:810-813`, verbatim: *„Mecanic, nu prin impresie: un motor fiscal
+TEXTUL CANONIC, `PLAN_HARDENING.md:832-835`, verbatim: *„Mecanic, nu prin impresie: un motor fiscal
 nu importa `db`; un use-case nu construieste `HTTPException`; ruta nu contine SQL. Fiecare din cele
 trei se poate deriva cu `ast` si se poate garda cu clichet."* Deci nu una, ci TREI masuratori, fiecare
 cu universul ei. Fisierul asta le produce; clasificarea lor e in `scripts/p7_clasificare.py`.

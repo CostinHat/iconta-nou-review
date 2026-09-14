@@ -34,8 +34,7 @@ BASELINE = {
     "core/factura_pdf.py": 1, "core/facturi.py": 1, "core/lichidare.py": 1,
     "core/scan_constante.py": 1, "core/spv_poll.py": 1, "core/stat_plata_api.py": 3,
     "core/test_a11y_contrast_tokens.py": 1, "core/test_achizitii_factura.py": 1,
-    "core/test_amprenta_declaratie.py": 1, "core/test_api_public.py": 2, "core/test_baza_cm.py": 1,
-    "core/test_catch_vizibil.py": 1, "core/test_cauza_precisa_business.py": 1,
+    "core/test_amprenta_declaratie.py": 1, "core/test_api_public.py": 2, "core/test_catch_vizibil.py": 1, "core/test_cauza_precisa_business.py": 1,
     "core/test_control_fiscal.py": 1, "core/test_control_incrucisat.py": 2,
     "core/test_cui_cnp_test_valid.py": 1, "core/test_d112.py": 2, "core/test_d112_cnp_angajat.py": 1,
     "core/test_d205_imp_manual.py": 1, "core/test_d300.py": 1, "core/test_d300_reconciliere.py": 1,
@@ -53,8 +52,13 @@ BASELINE = {
     "core/test_preview_salvare_poarta.py": 1, "core/test_provenienta.py": 1, "core/test_q16_cor.py": 1,
     "core/test_rotunjire_fiscala.py": 2, "core/test_spv_poll.py": 1, "core/test_upsert_motivat.py": 1,
     "core/test_versionare_assets.py": 1, "core/test_vigoare_articole_registru.py": 1,
-    "core/woocommerce.py": 1, "main.py": 8, "scripts/scan_axa_garzi.py": 1,
+    "core/woocommerce.py": 1, "scripts/scan_axa_garzi.py": 1,
 }
+# [P7 · valul use-case, 13.09.2026] Si `core/test_baza_cm.py` a iesit: garda isi citea
+# sursa cu `io.open`, iar acum o cere accesorului stratului de aplicatie — importul a murit.
+# [P7 · valul use-case, 13.09.2026] `main.py` a IESIT din clichet: cele opt importuri nefolosite de
+# acolo erau folosite de corpurile rutelor, care au plecat in `core/uc_*.py` cu importurile lor.
+# Masurat dupa val: `ruff --select F401 main.py` da 0. Clichetul a coborat, nu s-a ridicat.
 
 
 def _f401():
@@ -69,13 +73,29 @@ def _f401():
     return c
 
 
-def test_ANTIVACUU_ruff_chiar_raporteaza():
+def test_ANTIVACUU_ruff_chiar_raporteaza(tmp_path):
     """Dacă ruff dispare, se schimbă formatul de ieșire sau se rupe parsarea, contorul devine 0 și
-    clichetul ar trece pe gol, raportând curățenie acolo unde nu s-a uitat nimeni."""
+    clichetul ar trece pe gol, raportând curățenie acolo unde nu s-a uitat nimeni.
+
+    [P7 · valul use-case] Până azi proba cerea ca `main.py` să apară mereu în raport. Premisa a
+    murit: importurile lui nefolosite erau ale corpurilor de rută, care au plecat cu ele. Iar o
+    probă care are nevoie ca aplicația să fie murdară ca să-și dovedească detectorul e o probă care
+    se stinge exact când munca reușește. Se calibrează acum pe un fișier FABRICAT — detectorul își
+    arată că mai poate raporta, indiferent cât de curat e codul real.
+    """
+    if not os.path.exists(_RUFF):
+        pytest.skip("ruff neinstalat în venv")
     c = _f401()
     assert sum(c.values()) >= 40, (
         "doar %d importuri nefolosite găsite — parsarea s-a rupt, nu codul s-a curățat" % sum(c.values()))
-    assert "main.py" in c, "`main.py` nu mai apare în raport — ținta s-a schimbat sub picioare"
+
+    fals = tmp_path / "zt_import_mort.py"
+    fals.write_text("import os\n\n\ndef f():\n    return 1\n", encoding="utf-8")
+    r = subprocess.run([_RUFF, "check", "--select", "F401", "--output-format", "concise", str(fals)],
+                       capture_output=True, text=True)
+    assert " F401 " in r.stdout, (
+        "ruff nu mai raportează F401 nici pe un import mort fabricat — parsarea sau selectorul s-au "
+        "rupt, iar clichetul de mai jos ar trece pe gol:\n%s%s" % (r.stdout, r.stderr))
 
 
 def test_clichetul_nu_creste():

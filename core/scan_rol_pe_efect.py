@@ -49,8 +49,14 @@ def _sursa():
 
 
 def rute():
-    """{(metoda, cale): nod} — din decoratorii `@app.<metoda>("<cale>")`."""
-    arb = ast.parse(_sursa())
+    """{(metoda, cale): nod} — din decoratorii `@app.<metoda>("<cale>")`.
+
+    [P7 · valul use-case] Nodul intors e PROIECTIA rutei: antetul portii din `main.py` (decorator,
+    parametri) cu corpul muncii din `core/uc_*.py`. Fara asta, sonda de evidenta ar citi invelisul
+    si ar raporta ca doua rute nu mai produc evidenta — cand ele o produc, in alt fisier.
+    """
+    from core import scan_sql_efectiv as _ef
+    arb = _ef.arbore_aplicatie()
     out = {}
     for n in ast.walk(arb):
         if not isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):

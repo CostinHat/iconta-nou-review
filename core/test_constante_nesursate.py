@@ -65,10 +65,17 @@ from core import scan_constante
 # iar azi a produs patru unitati de datorie care nu sunt datorie fiscala. Cat timp clasa
 # lipseste, fiecare prag de infrastructura mutat in `core/` va arata ca o constanta fiscala
 # nesursata — si drumul de coborare al clichetului va cere, de fapt, ALT instrument.
+# [P7 · valul use-case, 13.09.2026] `uc_tenants.py: 1` — si e o GAURA STRUCTURALA INCHISA, nu o
+# datorie noua. Comentariul de mai sus (l. ~217) spunea: *„o cota scrisa maine direct intr-o ruta din
+# `main.py` n-ar fi prinsa; gaura e structurala"*. Valul a mutat corpurile rutelor in `core/uc_*.py`,
+# deci scanul le vede. Cazul, numit: `uc_tenants.py` l.2419 `Decimal("0.01")` — toleranta de
+# rotunjire a unei comparatii, scrisa in ruta INAINTE de val, neatinsa de el; se regaseste in
+# `git show HEAD:main.py`. Clichetul urca cu 1 fiindca DOMENIUL a crescut, nu codul.
 BASELINE = {
     "stare_partajata.py": 2,
     "curs_bnr.py": 2,
     "intrastat.py": 1,
+    "uc_tenants.py": 1,
     # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.
     "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1,

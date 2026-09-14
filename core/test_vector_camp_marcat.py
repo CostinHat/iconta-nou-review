@@ -10,6 +10,7 @@ erori_campuri; migrare.js marcheaza grupul (#vf-regim/#vf-tva/#vf-decont/#vf-ic)
 import os
 import pytest
 from core import vector_fiscal_api
+from core import scan_sql_efectiv as _efectiv
 
 
 def test_tva_lipsa_numeste_campul():
@@ -35,7 +36,8 @@ def _f(p):
 
 
 def test_ruta_expune_erori_campuri():
-    s = _f("main.py")
+    # [P7 · valul use-case] Intrebarea e neatinsa; corpul rutei traieste in `core/uc_*.py`.
+    s = _efectiv.sursa_aplicatie()
     assert '"erori_campuri": [{"camp": _camp' in s, "ruta vector nu mai expune campul vinovat ca erori_campuri"
 
 

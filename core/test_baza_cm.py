@@ -21,7 +21,7 @@ REGULA, în trei părți:
 """
 import pytest
 
-from core import db
+from core import scan_sql_efectiv as _efectiv
 
 try:
     from core import baza_cm
@@ -110,7 +110,10 @@ def test_ruta_cere_emisele():
     # arătat-o: mutația care ocolea motorul trecea, fiindcă numele rămânea în sursă. Ce se interzice
     # de fapt e OCOLIREA: ruta să cheme singură recalculul lunar.
     from core import scan_ancore
-    cod = scan_ancore.fara_proza(sursa, "main.py")
+    # [P7 · valul use-case] Intrebarea e despre O RUTA, deci se pune pe corpul EI, nu pe tot
+    # stratul de aplicatie: `stat_plata(` apare si in alte rute, iar o sursa concatenata ar face
+    # garda sa acuze ruta asta pentru codul altora.
+    cod = scan_ancore.fara_proza(_efectiv.sursa_functiei("calcul_cm_endpoint"), "main.py")
     assert "stat_plata(" not in cod, (
         "ruta /calcul-cm cheamă DIRECT `stat_plata()` — asta e ocolirea: recalculează lunile pe lângă "
         "`baza_cm`, care ar fi luat cifrele EMISE")

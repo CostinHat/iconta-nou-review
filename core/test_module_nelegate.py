@@ -306,5 +306,12 @@ def test_un_apelant_din_scripts_NU_leaga_modulul(tmp_path):
 def test_perimetrul_dinamic_e_raportat_nu_inghitit(rez):
     """E1: importurile dinamice sunt invizibile pentru AST. Sonda trebuie sa le NUMEASCA, nu sa taca."""
     assert isinstance(rez["dinamice"], list)
-    assert "main.py" in rez["dinamice"], (
-        "main.py nu mai apare ca avand import dinamic — perimetrul necunoscut nu se mai raporteaza")
+    # [P7 · valul use-case] `importlib` se chema din CORPURILE rutelor, iar ele au plecat in
+    # `core/uc_*.py`. Ce trebuie sa ramana adevarat — si e chiar intrebarea — e ca sonda numeste
+    # perimetrul necunoscut al STRATULUI DE APLICATIE, nu al unui fisier anume. *O proba care cere
+    # ca importul dinamic sa stea intr-un anume fisier pazeste asezarea, nu necunoscutul.*
+    aplicatie = [f for f in rez["dinamice"]
+                 if f == "main.py" or os.path.basename(f).startswith("uc_")]
+    assert aplicatie, (
+        "niciun fisier din stratul de aplicatie nu mai apare ca avand import dinamic — "
+        "perimetrul necunoscut nu se mai raporteaza: %r" % sorted(rez["dinamice"])[:8])

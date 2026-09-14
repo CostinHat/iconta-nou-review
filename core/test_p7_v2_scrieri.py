@@ -142,12 +142,17 @@ def test_ANTI_VACUUM_detectorul_inca_vede_rutele_si_repository_urile():
 def _apeluri_catre_repository():
     module = {f[:-3] for f in os.listdir(os.path.join(RADACINA, "core"))
               if f.startswith("repo_") or f == "tranzactie.py"}
-    arb = ast.parse(io.open(os.path.join(RADACINA, "main.py"), encoding="utf-8").read())
+    # [P7 · valul use-case] Apelurile catre straturile de sub HTTP stau acum si in
+    # `core/uc_*.py`. Conservarea (257) e despre APLICATIE, nu despre un fisier — numarate
+    # doar in `main.py` ies 72, adica lipsa a 185 de apeluri care n-au plecat nicaieri.
+    from core import scan_sql_efectiv as _ef
     n = 0
-    for x in ast.walk(arb):
-        if (isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
-                and isinstance(x.func.value, ast.Name) and x.func.value.id in module):
-            n += 1
+    for _cale in _ef.straturi_aplicatie():
+        arb = ast.parse(io.open(os.path.join(RADACINA, _cale), encoding="utf-8").read())
+        for x in ast.walk(arb):
+            if (isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)
+                    and isinstance(x.func.value, ast.Name) and x.func.value.id in module):
+                n += 1
     return n
 
 

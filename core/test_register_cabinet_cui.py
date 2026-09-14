@@ -2,15 +2,16 @@
 """GARD register_cabinet_cui: la inregistrarea self-service, CUI-ul validat (cel care a trecut
 provision_tenant) se persista SI pe accounting_firms.cui, nu doar pe firma-tenant. Altfel
 get_cabinet il citeste NULL si ecranul Setari cabinet ramane gol desi userul l-a tastat."""
-import io
-import re
 
 
 def _corp_register():
-    src = io.open("main.py", encoding="utf-8").read()
-    m = re.search(r"def register\(date: RegisterIn\):([\s\S]+?)\n@app\.", src)
-    assert m, "nu gasesc handlerul register in main.py"
-    return m.group(1)
+    # [P7 · valul use-case] Corpul lui `register` traieste in `core/uc_auth.py`.
+    # Sursa functiei CU CORP, in ordinea straturilor: invelisul din `main.py` n-are decat
+    # delegarea, iar munca — provisionarea si scrierea CUI-ului — e in `core/uc_auth.py`.
+    from core import scan_sql_efectiv as _efectiv
+    src = _efectiv.sursa_functiei("register")
+    assert src, "nu gasesc handlerul register in stratul de aplicatie"
+    return src
 
 
 def test_register_persista_cui_pe_cabinet():

@@ -37,7 +37,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`*
 
 - [x] cine aprobă e consemnat, și e diferit de cine a pregătit dacă patru ochi e activ **și** posibil
 - dacă patru ochi e activ și imposibil (un singur validator), ruta refuză cu motivul, nu tace
@@ -47,7 +47,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · supervizor_confirmari (INSERT) — prin `coada_api`, `supervizor`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · supervizor_confirmari (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`, `supervizor`*
 
 - [x] ruta refuză o declarație fără verdict de validare păstrat, sau cu verdict pe altă amprentă decât fișierul curent
 - se scrie în `declaratii_depuse`: tip, perioadă, momentul, autorul autorizării, amprenta fișierului, indexul de la autoritate dacă există
@@ -58,7 +58,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`*
 
 - [x] respingerea poartă **motivul**, obligatoriu
 - declarația nu dispare din coadă — rămâne, cu starea „respinsă" și motivul vizibil
@@ -68,7 +68,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: intoarce {avertismente, componente, note_rezultat, operatiuni, tip, xml}*
+*ce face: intoarce ce da `_uc_declaratii.declaratie_genereaza()`*
 
 - [x] fiecare operațiune din evidență care ar trebui să apară în declarație, apare — absența nu e vizibilă în structură
 - `operatiuni` conține și cele excluse, cu motivul și temeiul excluderii, nu doar cele incluse
@@ -115,7 +115,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_api_key` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `facturi_api`, `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `curs_bnr`, `facturi_api`, `repo_main`, `stocuri_cv_api`*
 
 - [x] ruta cu cheie de API aplică **aceleași reguli** ca ruta din interfață: numerotare, cod fiscal obligatoriu, notă cu conturi valide
 - o cheie de API nu are rol, deci nu poate face ce cere admin_firma pe ruta echivalentă — verifică dacă asta e adevărat sau dacă cheia ocolește restricția
@@ -178,7 +178,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `facturi_api`, `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `curs_bnr`, `facturi_api`, `repo_main`, `stocuri_cv_api`*
 
 - [x] factura primește **următorul număr din serie**, fără goluri; două emiteri simultane nu produc același număr
 - exemplarul se îngheață cu amprenta; o regenerare ulterioară produce alt exemplar, nu îl rescrie pe primul
@@ -272,7 +272,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in facturi*
 
-*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · firma_profil (UPDATE) — prin `facturi_api`, `repo_facturi`*
+*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `curs_bnr`, `facturi_api`, `repo_facturi`, `repo_main`*
 
 - [x] proforma sau avizul devine factură fiscală cu **numerotare nouă**, din seria de facturi, nu cu numărul proformei
 - documentul original rămâne, cu starea „transformat" și legătura către factura rezultată
@@ -298,7 +298,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · scrie nota ciorna a statului de plata*
 
-*ce face: Scrie nota ciorna a statului de plata — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: Scrie nota ciorna a statului de plata — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] nota e ciornă, iar totalurile coincid cu propunerea văzută înainte
 - divergența față de D112, dacă a existat la propunere, rămâne consemnată pe notă — nu se stinge prin salvare
@@ -310,7 +310,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: corp: {salariat_id, an, luna} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+*ce face: corp: {salariat_id, an, luna} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · state_plata (INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`, `stat_plata_emis`*
 
 - [x] corecția e **al doilea exemplar**, cu referință la primul. Primul rămâne
 - diferența față de exemplarul corectat e vizibilă, pe fiecare cifră schimbată
@@ -320,7 +320,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: corp: {an, luna} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+*ce face: corp: {an, luna} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · state_plata (INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`, `stat_plata_emis`*
 
 - [x] statul se îngheață cu amprentă, exemplar numerotat, autor, moment
 - cifrele emise nu se mai recalculează la citire; un recalcul care diferă produce contradicție vizibilă, nu rescriere
@@ -331,7 +331,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: corp: {exemplar_id, motiv} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+*ce face: corp: {exemplar_id, motiv} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · state_plata (INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`, `stat_plata_emis`*
 
 - [x] motivul marchează contradicția ca **asumată**, nu o stinge — rândul rămâne în listă, cu motivul, cine și când
 - un motiv gol se refuză
@@ -401,7 +401,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (INSERT) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `jurnal_api`, `repo_main`*
 
 - [x] o notă validată nu se șterge — se stornează. Ștergerea ar rupe lanțul către documentul justificativ
 - ștergerea unei ciorne nu atinge documentul din care a ieșit
@@ -411,7 +411,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (INSERT) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `jurnal_api`, `repo_main`*
 
 - [x] o notă **validată** nu se editează — se stornează
 - editarea unei ciorne păstrează partida dublă
@@ -422,7 +422,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: RUPE legătura notă↔factură, cu URMĂ*
+*ce face: RUPE legătura notă↔factură, cu URMĂ — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`*
 
 - [x] nota nu mai poartă `factura_id`, dar **rămâne în evidență** cu aceleași linii și aceeași sumă — actul rupe legătura, nu șterge nota
 - [x] factura reapare ca **neîncasată, cu soldul întreg**: `reconciliere_api.facturi_deschise` o listează din nou, cu exact suma care fusese stinsă de nota dezlegată
@@ -440,7 +440,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (INSERT) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `jurnal_api`, `repo_main`*
 
 - [x] validarea verifică **înainte** de a marca: partidă dublă, conturi existente, perioadă deschisă, document justificativ prezent
 - nota validată intră în evidență; din acel moment nu se mai editează și nu se șterge
@@ -452,7 +452,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie dividend|regularizare|imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar, dividend_anual}; imprumut{suma, f — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie dividend|regularizare|imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar, dividend_anual}; imprumut{suma, f — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] distincția între aport, împrumut și retragere e obligatorie: au tratamente fiscale diferite
 - retragerea de bani fără temei e chiar cazul din ghidul „bani din firmă fără temei" — verifică dacă ruta o permite fără să semnaleze
@@ -463,7 +463,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie avans_platit|regularizare_platit|avans_incasat| regularizare_incasat, suma (fara TVA), cota?, destinatie? (platit: stocuri|servicii|imobilizari|imob — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie avans_platit|regularizare_platit|avans_incasat| regularizare_incasat, suma (fara TVA), cota?, destinatie? (platit: stocuri|servicii|imobilizari|imob — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] avansul încasat **nu e venit** — e datorie până la livrare
 - TVA-ul se colectează la încasarea avansului, dacă firma e plătitoare
@@ -474,7 +474,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel incasare|distribuire, suma, sursa card|numerar (incasare) / banca|casa (distribuire), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, fel incasare|distribuire, suma, sursa card|numerar (incasare) / banca|casa (distribuire), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] bacșișul are regim fiscal propriu din 2023 — venit al salariatului, cu impozit reținut, fără contribuții
 - verifică dacă se distinge de venit al firmei
@@ -485,7 +485,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare, descriere?, cota?, + comodat{valoare, moment primire|restituire}; chirie_platita{chirie, proprietar p — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare, descriere?, cota?, + comodat{valoare, moment primire|restituire}; chirie_platita{chirie, proprietar p — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] chiria plătită unei persoane fizice atrage impozit și, uneori, CASS — verifică dacă se rețin
 - chiria în valută produce diferențe de curs
@@ -496,7 +496,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel zilier|cenzor|mandat, brut, sursa casa|banca, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, fel zilier|cenzor|mandat, brut, sursa casa|banca, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] **nu pot scrie verificarea fără să știu ce contract.** De completat din cod
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
@@ -509,7 +509,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt, descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?, comision — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt, descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?, comision — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] rambursarea se desface în principal și dobândă; principalul stinge datoria, dobânda e cheltuială
 - comisioanele au tratament propriu — verifică dacă se disting
@@ -520,7 +520,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel avans|decont|plafon, descriere?, sursa casa|banca, + avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?}; plafon{diurna_pe_zi, zile, salariu_ — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, fel avans|decont|plafon, descriere?, sursa casa|banca, + avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?}; plafon{diurna_pe_zi, zile, salariu_ — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] diurna neimpozabilă e plafonată; ce depășește e venit asimilat salariilor
 - plafonul intern și cel extern sunt diferite, iar cel extern diferă pe țară — verifică dacă se cere din registru
@@ -531,7 +531,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
 
-*ce face: corp: {data, operatie plus|plus_mf|minus|casare, descriere?, + plus{valoare, cont_stoc?}; plus_mf{valoare, cont_imobilizare?}; minus{valoare, cont_stoc?, imputabil?, valo — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: corp: {data, operatie plus|plus_mf|minus|casare, descriere?, + plus{valoare, cont_stoc?}; plus_mf{valoare, cont_imobilizare?}; minus{valoare, cont_stoc?, imputabil?, valo — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`, `stocuri_cv_api`*
 
 - [x] plusul de inventar e venit; minusul e cheltuială, deductibilă doar în limita perisabilităților
 - minusul imputabil se recuperează de la gestionar — verifică dacă se distinge de cel neimputabil
@@ -546,7 +546,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?, + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?}; rata{capital, doban — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?, + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?}; rata{capital, doban — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] financiar sau operațional — cele două au tratamente contabile opuse. Verifică dacă ruta le distinge, sau presupune unul
 - la leasing financiar, bunul intră ca imobilizare și se amortizează; rata se desface în principal și dobândă
@@ -559,7 +559,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie vanzare_activ|partaj, descriere?, + vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?}; partaj{capital_social, rezerve?, profi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie vanzare_activ|partaj, descriere?, + vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?}; partaj{capital_social, rezerve?, profi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] lichidarea închide conturile; verifică ordinea: se sting datoriile, apoi se distribuie asociaților
 - impozitul pe dividende se aplică la distribuirea din lichidare
@@ -597,7 +597,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] valoarea e **sub pragul** de mijloc fix la data operațiunii — altfel e imobilizare, nu obiect de inventar
 - pragul se cere din registru, pe dată
@@ -608,7 +608,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie venit|scutire, descriere?, + venit{suma, fel cotizatie|contributie|donatie|sponsorizare|financiar| fonduri|ocazional|alte, sursa casa|banca}; scutir — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie venit|scutire, descriere?, + venit{suma, fel cotizatie|contributie|donatie|sponsorizare|financiar| fonduri|ocazional|alte, sursa casa|banca}; scutir — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] activitatea fără scop patrimonial e separată de cea economică — verifică dacă se disting
 - veniturile neimpozabile ale ONG au plafon; peste el se impozitează
@@ -619,7 +619,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, valoare_intrari, procent_limita (coef — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, valoare_intrari, procent_limita (coef — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] limita legală de perisabilitate e pe categorie de produs; ce depășește e cheltuială nedeductibilă
 - verifică dacă limita se cere din registru sau e literal
@@ -631,7 +631,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie obtinere|pic|vanzare, descriere?, + obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare}; vanzare{pret_vanzare, cost_standar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie obtinere|pic|vanzare, descriere?, + obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare}; vanzare{pret_vanzare, cost_standar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] costul de producție cuprinde materialele, manopera și cota de indirecte — verifică ce cuprinde efectiv
 - produsul finit intră în stoc la cost, nu la preț de vânzare
@@ -642,7 +642,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel creanta|provizion|stoc, actiune constituire|reluare, suma, descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} | provizion{tip litigi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, fel creanta|provizion|stoc, actiune constituire|reluare, suma, descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} | provizion{tip litigi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] provizionul deductibil fiscal e limitat prin lege; ce depășește e cheltuială nedeductibilă
 - verifică dacă ruta distinge deductibil de nedeductibil, sau lasă totul deductibil
@@ -654,7 +654,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie achizitie|vanzare|restituire|autofactura|virare, descriere?, + nr_ambalaje|suma, sursa casa|banca, + autofactura{garantii_returnate, tarif_gestionar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, operatie achizitie|vanzare|restituire|autofactura|virare, descriere?, + nr_ambalaje|suma, sursa casa|banca, + autofactura{garantii_returnate, tarif_gestionar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] garanția de ambalaje **nu e venit și nu e cheltuială** — e datorie, respectiv creanță
 - TVA-ul nu se aplică garanției
@@ -666,7 +666,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro, beneficiar_in_registru} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro, beneficiar_in_registru} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] creditul fiscal e minimul dintre 0,75% din cifra de afaceri și 20% din impozit — verifică dacă se calculează, sau se ia suma integral
 - beneficiarul e în Registrul entităților; altfel sponsorizarea nu dă credit fiscal
@@ -677,7 +677,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel exploatare|investitii|reluare, descriere?, + exploatare/investitii{suma, moment drept|incasare}; reluare{valoare_activ, subventie, amortizare_lunara}}. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, fel exploatare|investitii|reluare, descriere?, + exploatare/investitii{suma, moment drept|incasare}; reluare{valoare_activ, subventie, amortizare_lunara}}. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] subvenția pentru investiții se recunoaște la venit **pe măsura amortizării**, nu integral la încasare
 - subvenția de exploatare e venit în perioada în care se acoperă cheltuiala
@@ -689,7 +689,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] TVA-ul se colectează la **încasare**, nu la facturare — nota se leagă de plată, nu de factură
 - firma e în regimul de TVA la încasare la data operațiunii; altfel regimul nu se aplică
@@ -729,7 +729,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
 
-*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) — prin `repo_efactura`, `repo_facturi`*
+*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · factura_linii (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`*
 
 - [x] cine validează e consemnat, și e diferit de cine a importat dacă patru ochi e activ și posibil
 - factura creată poartă legătura către ciorna din care a ieșit — lanțul nu se rupe
@@ -750,7 +750,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Upload XML/ZIP e-Factura — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) — prin `repo_firma_profil`*
+*ce face: Upload XML/ZIP e-Factura — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_firma_profil`, `repo_main`*
 
 - [x] fiecare factură din fișier ajunge în `efactura_primite` ca **ciornă**, nu ca factură validată
 - valorile preluate poartă **sursa** (e-Factura) și **gradul de certitudine** — nimic nu devine fapt fără confirmare
@@ -940,7 +940,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
 
-*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · perioade_inchideri (INSERT) · plan_conturi (INSERT) — prin `migrare_inchideri`, `repo_contabilitate`*
+*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · perioade_inchideri (INSERT) · plan_conturi (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `migrare_inchideri`, `repo_contabilitate`, `repo_main`*
 
 - [x] închiderea e un act deliberat, cu **autor și moment** consemnate
 - după închidere, nicio scriere în perioada aceea nu mai trece — verificat pe toate cele 39 de operațiuni, nu doar pe cele testate
@@ -1174,7 +1174,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: intoarce ce da `retete_import_api.importa()`*
+*ce face: intoarce ce da `_uc_tenants.retete_import_salveaza()`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a importat
 - **nu pot scrie mai mult fără să știu ce scrie `importa()`** — ruta întoarce ce dă funcția, iar funcția nu e descrisă. De completat din cod
@@ -1187,7 +1187,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: intoarce {retete, rezumat}*
+*ce face: intoarce ce da `_uc_tenants.retete_import_incarca()`*
 
 - [x] previzualizare pură: nu scrie nimic, verificat structural
 - `rezumat` numește ce nu s-a putut citi, nu doar câte s-au citit
@@ -1638,7 +1638,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): mijloace_fixe (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] amortizarea lunară se calculează din valoarea de intrare și durata rămasă, la data lunii
 - un mijloc fix complet amortizat nu mai produce amortizare
@@ -1649,7 +1649,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): mijloace_fixe (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] reevaluarea schimbă valoarea de intrare, deci **schimbă amortizarea viitoare** — dar nu pe cea trecută
 - diferența din reevaluare merge la rezervă, nu la venit — verifică unde ajunge
@@ -1699,7 +1699,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in bonuri, inregistrari, inregistrari_linii*
 
-*ce face: scrie bonuri (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): chitante (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_casa`, `repo_contabilitate`*
+*ce face: scrie bonuri (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · chitante (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_casa`, `repo_contabilitate`*
 
 - [x] aprobarea produce evidență — de aceea a primit rol azi
 - bonul aprobat poartă legătura către imaginea din care a ieșit
@@ -1731,7 +1731,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_main`*
 
 - [x] nota produsă e **ciornă** — verificat pe starea scrisă
 - fișierul p7b e verificat ca semnătură, nu doar citit — altfel orice XML poate deveni raport Z
@@ -1743,7 +1743,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_main`*
 
 - [x] **nu pot scrie verificarea fără să știu ce o deosebește de `import-amef`.** Ambele produc nota de raport Z; una are rol, cealaltă nu
 - dacă e introducere manuală a raportului Z, verifică: totalurile pe cote de TVA se adună la totalul general
@@ -1763,7 +1763,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in firma_profil*
 
-*ce face: scrie firma_profil (UPDATE) — prin `repo_firma_profil`*
+*ce face: scrie firma_profil (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): pontaj (DELETE/INSERT) — prin `pontaj`, `repo_firma_profil`*
 
 - [x] cheile de acces nu se întorc în răspuns
 - schimbarea configurației nu atinge facturile deja sincronizate
@@ -1838,7 +1838,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `repo_contabilitate`*
+*ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] taxarea inversă: TVA-ul se înregistrează simultan deductibil și colectat, iar cele două se anulează în decont
 - cursul e cel de la data exigibilității, cerut din registru — nu introdus liber
@@ -1886,7 +1886,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `d390_clasificare_api`, `repo_main`*
 
 - [x] ștergerea unei linii dintr-o lună cu D390 depus produce contradicție — declarația depusă conținea linia
 - ștergerea se consemnează: cine, când, ce conținea linia
@@ -1908,7 +1908,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: LIC bunuri (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: LIC bunuri (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] livrarea intracomunitară e scutită cu drept de deducere; nu se colectează TVA
 - scutirea cere **dovada transportului** și codul de TVA valid al clientului. Fără ele, operațiunea nu e scutită
@@ -1931,7 +1931,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru, agricultor?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru, agricultor?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] compensația în cotă forfetară se calculează pe cota în vigoare la data operațiunii
 - agricultorul e verificat că e în regimul special — altfel e o achiziție obișnuită
@@ -1942,7 +1942,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
 
-*ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] durata normală de funcționare vine din catalog pentru tipul respectiv; `dnf_luni` din corp nu o poate coborî sub minim
 - valoarea sub pragul de imobilizare nu produce mijloc fix — e cheltuială. Verifică pragul la data operațiunii
@@ -1953,7 +1953,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `repo_contabilitate`*
+*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] operațiunea apare în D394 ca tip N, cu `tip_partener=2` — verificat pe declarația generată, nu pe intenția din cod
 - persoana fizică nu are cod fiscal, deci nu se cere; dar se cere o identificare, altfel operațiunea n-are partener
@@ -1964,7 +1964,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `repo_contabilitate`, `repo_firma_profil`*
+*ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_firma_profil`, `stocuri_cv_api`*
 
 - [x] bunul sau serviciul e din lista art. 331 — altfel taxarea inversă nu se aplică
 - pragul de 22.500 lei pentru telefoane, tablete, laptopuri, console e verificat pe factură, nu pe operațiune
@@ -1976,7 +1976,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] exportul e scutit cu drept de deducere; nu se colectează TVA
 - scutirea cere **dovada exportului** — declarația vamală de export. Fără ea, operațiunea nu e scutită, iar ruta primește `dovada_export` ca text liber
@@ -1989,7 +1989,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinatie, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`, `repo_firma_profil`*
+*ce face: corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinatie, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_firma_profil`, `stocuri_cv_api`*
 
 - [x] baza de TVA la import = valoarea vamală + taxa vamală + accize + accesorii până la primul loc de destinație. Verifică pe cifre, nu pe formulă
 - cu certificat de amânare, TVA-ul nu se plătește în vamă: se înregistrează simultan colectat și deductibil, iar cele două se anulează în decont
@@ -2002,7 +2002,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, pret (fara taxa), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, pret (fara taxa), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] **nu pot scrie verificarea fără să știu ce reprezintă.** O vânzare CĂTRE un agricultor în regim special, sau o vânzare FĂCUTĂ de firmă dacă ea e agricultorul? Cele două au tratamente opuse. De completat din cod
 - **completat din cod (26.08.2026) — și răspunsul contrazice docstringul.** Contarea e `4111 = 704` pentru **preț** ȘI pentru **compensație**, iar corpul cere doar `{data, pret, descriere?}`: **nicio identificare a agricultorului, niciun `in_registru`** — spre deosebire de `achizitie-agricultor`, care le cere. Deci **firma E agricultorul** în regim special și vinde; clientul îi datorează preț + compensație de 8%, iar compensația e **venitul ei**, nu TVA. Descrierea generată — *„Livrare produse agricole”* — spune la fel
@@ -2014,7 +2014,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, tip lingou|plancheta|moneda, puritate, an_emisie?, pret_unitar?, valoare_aur?, suma, optiune_taxare?, calitate_client PF|PJ, client_identificare, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, tip lingou|plancheta|moneda, puritate, an_emisie?, pret_unitar?, valoare_aur?, suma, optiune_taxare?, calitate_client PF|PJ, client_identificare, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] operațiunea e scutită fără drept de deducere; nu se colectează TVA
 - dacă firma a optat pentru taxare, opțiunea e consemnată și verificată la fiecare operațiune
@@ -2024,7 +2024,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] marja se calculează ca preț de vânzare minus preț de cumpărare, iar TVA-ul se aplică **pe marjă**, nu pe preț
 - o marjă negativă nu produce TVA negativă — se tratează ca marjă zero, sau se semnalează
@@ -2034,7 +2034,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, calitate_client PF|PJ, locuri [RO|UE|NONUE], optiune_normal?, intermediar?, cota?, descriere?} + per regim: special: incasat, cost_ue, cost_non_ue? | normal: — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `repo_contabilitate`*
+*ce face: corp: {data, calitate_client PF|PJ, locuri [RO|UE|NONUE], optiune_normal?, intermediar?, cota?, descriere?} + per regim: special: incasat, cost_ue, cost_non_ue? | normal: — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] aceleași ca la marjă, plus: locul prestării e România pentru ca regimul să se aplice
 - serviciile prestate de terți în afara UE au tratament distinct — verifică dacă se disting
@@ -2049,7 +2049,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `curs_bnr`, `repo_contabilitate`*
+*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · curs_bnr_zilnic (INSERT) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `curs_bnr`, `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] diferența de curs se calculează între cursul de la înregistrarea creanței și cel de la decontare
 - cursul vine din `curs_bnr_zilnic`; dacă lipsește pentru data respectivă, se aduce sau se refuză — **nu se folosește cel mai apropiat fără să se spună**
@@ -2061,7 +2061,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `curs_bnr`, `repo_contabilitate`*
+*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · curs_bnr_zilnic (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `curs_bnr`, `jurnal_api`, `repo_contabilitate`*
 
 - [x] reevaluarea se face la **finalul lunii**, pe soldurile în valută rămase — verifică dacă ruta o poate rula la orice dată
 - cursul e cel din ultima zi bancară a lunii
@@ -2092,7 +2092,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · d300_manual (DELETE/INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `d300_manual_api`, `repo_main`*
 
 - [x] ștergerea pe o lună cu D300 depus produce contradicție
 - ștergerea se consemnează cu ce conținea rândul
@@ -2327,7 +2327,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): pachet_povestea (INSERT) — prin `pachete_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · pachet_povestea (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `pachete_api`, `repo_main`*
 
 - [x] textul scris de contabil se păstrează cu autorul și momentul
 - textul nu conține cifre calculate de el — sau, dacă le conține, ele nu se confruntă cu cele din pachet, iar aia e o divergență posibilă
@@ -2351,7 +2351,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_client` · rol:verificat-în-corp · scrie in user_tenants, users*
 
-*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · acord_termeni (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tokene_activare (UPDATE) — prin `repo_tenants`, `repo_utilizatori`*
+*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tokene_activare (DELETE/INSERT/UPDATE) · urme_portal (INSERT) — prin `repo_main`, `repo_tenants`, `repo_utilizatori`*
 
 - [x] accesul dat nu poate depăși accesul celui care îl dă — un client nu poate acorda mai mult decât are
 - accesul e **doar pe firma lui**, verificat pe rândul din `user_tenants`, nu pe ce trimite în corp
@@ -2364,7 +2364,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_client` · **fara rol** · scrie in user_tenants, users*
 
-*ce face: scrie user_tenants (DELETE) · users (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tokene_activare (UPDATE) — prin `repo_utilizatori`*
+*ce face: scrie user_tenants (DELETE) · users (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tokene_activare (DELETE/INSERT/UPDATE) · urme_portal (INSERT) — prin `repo_main`, `repo_utilizatori`*
 
 - [x] clientul poate retrage doar accese pe **firma lui** — verificat pe rândul șters, nu pe ce cere
 - clientul nu se poate retrage pe sine, sau, dacă poate, firma rămâne fără niciun acces de client
@@ -2376,7 +2376,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_client` · **fara rol** · scrie in users*
 
-*ce face: scrie schimbari_email (DELETE/INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · tokene_activare (UPDATE) · user_tenants (DELETE/INSERT) · users (INSERT/UPDATE) — prin `repo_utilizatori`*
+*ce face: scrie schimbari_email (DELETE/INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT/UPDATE) · urme_portal (INSERT) · user_tenants (DELETE/INSERT) · users (INSERT/UPDATE) — prin `repo_main`, `repo_utilizatori`*
 
 **Din lotul în care s-a scris, valabil pentru tot traseul:** **Actorul e clientul. `cere_client` verifică identitatea, nu rolul — corect prin construcție.**
 
@@ -2389,7 +2389,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `FARA GARDA` · **fara rol** · scrie in oarb, schimbari_email, users*
 
-*ce face: [R62 (1)] Confirmarea schimbarii de adresa — scrie schimbari_email (UPDATE) · users (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · tokene_activare (UPDATE) · user_tenants (DELETE/INSERT) — prin `repo_utilizatori`*
+*ce face: [R62 (1)] Confirmarea schimbarii de adresa — scrie schimbari_email (UPDATE) · users (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT/UPDATE) · urme_portal (INSERT) · user_tenants (DELETE/INSERT) — prin `repo_main`, `repo_utilizatori`*
 
 - [x] **confirmarea e dovada că adresa nouă e citită de om, nu că sesiunea e deschisă** — ruta nu cere sesiune, deliberat; tokenul ajunge doar pe adresa nouă
 - până la confirmare, `users.email` e neatins: cine intră cu adresa veche intră în continuare
@@ -2402,7 +2402,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_client` · **fara rol***
 
-*ce face: intoarce {ok, rezultate}*
+*ce face: intoarce ce da `_uc_portal.portal_recomanda()`*
 
 - [x] **nu pot scrie verificarea fără să știu ce recomandă.** Recomandă cabinetul altcuiva? Recomandă clientului ce să facă? De completat din cod
 - oricare ar fi: nu scrie nimic, deci verificarea e că **nu scrie nimic** — verificat structural
@@ -2437,7 +2437,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma,verificat-în-corp · scrie in user_tenants, users*
 
-*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · firma_profil (INSERT/UPDATE) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (UPDATE) — prin `repo_utilizatori`, `tenant_provisioning`*
+*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · firma_profil (INSERT/UPDATE) · metrici_sanatate (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (DELETE/INSERT/UPDATE) · urme_portal (INSERT) — prin `repo_main`, `repo_utilizatori`, `tenant_provisioning`*
 
 - [x] **ruta creează un utilizator** — verifică ce drepturi primește: doar pe firma respectivă, doar citire, doar portalul
 - un utilizator existent legat de altă firmă nu primește acces la asta fără o operațiune explicită
@@ -2449,7 +2449,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma · scrie in users*
 
-*ce face: scrie users (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tokene_activare (UPDATE) · user_tenants (DELETE/INSERT) — prin `repo_utilizatori`*
+*ce face: scrie users (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tokene_activare (DELETE/INSERT/UPDATE) · urme_portal (INSERT) · user_tenants (DELETE/INSERT) — prin `repo_main`, `repo_utilizatori`*
 
 - [x] retragerea accesului e imediată — sesiunile active se închid, sau se spune că nu se închid
 - utilizatorul nu se șterge; se dezactivează. Ce a făcut rămâne în urmă cu autorul identificabil
@@ -2494,7 +2494,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma · scrie in solicitari_client*
 
-*ce face: scrie solicitari_client (INSERT) — prin `repo_portal`*
+*ce face: scrie solicitari_client (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`, `repo_portal`*
 
 - [x] **nu pot scrie verificarea fără să știu ce face cabinetul aici.** Răspunde la o solicitare? Creează una în numele clientului?
 - dacă creează în numele clientului, verifică că se distinge de una făcută de client — altfel istoricul devine ambiguu
@@ -2516,7 +2516,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: [R72] Dezactivează / reactivează firma — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firme_scoase (INSERT/UPDATE) · tenants (DELETE/UPDATE) · users (UPDATE) — prin `tenant_stergere`*
+*ce face: [R72] Dezactivează / reactivează firma — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · firme_scoase (INSERT/UPDATE) · metrici_sanatate (INSERT) · tenants (DELETE/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) · users (UPDATE) — prin `repo_main`, `tenant_stergere`*
 
 **Ce trebuie să fie adevărat după:**
 

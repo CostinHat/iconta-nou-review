@@ -13,7 +13,7 @@ Cazuri acoperite:
 Rulare:  venv/bin/python3 date_test/seed/firma_grea_audit.py
 Idempotent: nu dubleaza firma, salariati, CM sau facturi.
 """
-import sys, datetime
+import sys
 sys.path.insert(0, ".")
 from core import db, auth_api, tenant_provisioning as tp
 

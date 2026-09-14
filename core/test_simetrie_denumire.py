@@ -35,6 +35,7 @@ import os
 import re
 
 from core import scan_simetrie_denumire as s
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _TP = os.path.join(_RAD, "core", "tenant_provisioning.py")
@@ -274,7 +275,7 @@ def test_ruta_PUT_tenants_PRINDE_refuzul_si_nu_da_500():
     """STRUCTURAL: in corpul rutei `tenant_actualizeaza`, apelul catre `actualizeaza_tenant` std
     intr-un `try` al carui `except` prinde `ValueError`. Masurat inainte de reparatie:
     `PUT /tenants/4838 {"cui": "123"}` -> **500**. Mutatia care face gardul rosu: scoate `try`-ul."""
-    arb = ast.parse(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+    arb = _efectiv.arbore_aplicatie()
     fn = [n for n in ast.walk(arb)
           if isinstance(n, ast.FunctionDef) and n.name == "tenant_actualizeaza"]
     assert len(fn) == 1, "ruta PUT /tenants/{id} nu mai e o singura functie"

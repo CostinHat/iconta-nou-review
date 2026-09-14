@@ -24,6 +24,10 @@ import pytest
 import core.d406_active as _d406
 from core import db as _db, tenant_provisioning as _tp
 import main
+# [P7 · valul use-case] Cusatura s-a mutat odata cu functia: corpul lui `_schema_sau_404`
+# si al surorilor lui traieste in `core/uc_comun.py`, iar rutele il cheama de acolo. Proba
+# inlocuieste acelasi lucru, in noul lui loc — intrebarea ei e neatinsa.
+from core import uc_comun as _uc_comun
 
 SCH = "ztest_amort_ecran"
 
@@ -112,7 +116,7 @@ def _drop():
 def test_ecran_mf_intoarce_amortizat_degresiv_nu_liniar(monkeypatch):
     _seed("degresiva", "2131")   # echipament -> degresiva legala
     try:
-        monkeypatch.setattr(main, "_schema_sau_404", lambda ctx, tid: SCH)
+        monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: SCH)
         res = main.tenant_mijloace_fixe(1, ctx={"uid": 1})
         row = res["mijloace"][0]
         azi = date.today()
@@ -131,7 +135,7 @@ def test_ecran_mf_intoarce_amortizat_degresiv_nu_liniar(monkeypatch):
 def test_ecran_mf_metoda_nepermisa_da_eroare_nu_liniar(monkeypatch):
     _seed("degresiva", "212")   # constructii -> doar liniara permisa (alin.5 lit.a)
     try:
-        monkeypatch.setattr(main, "_schema_sau_404", lambda ctx, tid: SCH)
+        monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: SCH)
         res = main.tenant_mijloace_fixe(1, ctx={"uid": 1})
         row = res["mijloace"][0]
         assert row["amortizat"] is None and row["ramas"] is None   # nu fabrica liniar

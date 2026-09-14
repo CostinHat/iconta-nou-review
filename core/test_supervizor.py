@@ -1236,8 +1236,12 @@ def test_EFECTUL_nu_poate_ramane_NELEGAT_fara_sa_semnaleze():
     assert apelanti, (
         "`poarta_confirmarii` n-are niciun apelant de producție — efectul constatărilor CERTE e "
         "din nou doar un mecanism, nelegat la actul depunerii")
-    assert any(a == "main.py" for a in apelanti), (
-        "efectul nu mai e chemat din `main.py`, deci nu mai stă pe calea depunerii: %s" % apelanti)
+    # [P7 · valul use-case] Calea depunerii e ruta `POST /coada/{id}/depune`, iar corpul ei a
+    # plecat in `core/uc_coada.py`. Ce se cere e ca efectul sa fie chemat DIN CALEA DEPUNERII, nu
+    # dintr-un anume fisier — altfel garda ar pazi asezarea codului, nu actul.
+    assert any(a == "main.py" or os.path.basename(a).startswith("uc_") for a in apelanti), (
+        "efectul nu mai e chemat din stratul de aplicatie, deci nu mai stă pe calea depunerii: %s"
+        % apelanti)
 
 
 def test_poarta_confirmarii_chiar_foloseste_cele_doua_functii_ale_efectului():
@@ -1259,7 +1263,9 @@ def test_supervizorul_care_CRAPA_nu_opreste_depunerea():
     lui o interzice, și ar bloca în felul cel mai prost — fără ca nimeni s-o fi decis.
 
     Structural, pe AST: apelul din `main.py` stă într-un `try` al cărui `except` **nu re-ridică**."""
-    arb = ast.parse(_sursa("main.py"))
+    # [P7 · valul use-case] `try`-ul care imbraca poarta confirmarii a plecat cu corpul rutei.
+    from core import scan_sql_efectiv as _efectiv
+    arb = _efectiv.arbore_aplicatie()
     tries = [n for n in ast.walk(arb) if isinstance(n, ast.Try)
              and any(isinstance(c, ast.Call) and getattr(c.func, "attr", None) == "poarta_confirmarii"
                      for c in ast.walk(n))]

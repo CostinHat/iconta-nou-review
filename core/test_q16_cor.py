@@ -10,6 +10,10 @@ from starlette.datastructures import UploadFile
 import main
 from core import salariati_import_api as _sal
 from core import cor_api as _cor
+# [P7 · valul use-case] Cusatura s-a mutat odata cu functia: corpul lui `_schema_sau_404`
+# si al surorilor lui traieste in `core/uc_comun.py`, iar rutele il cheama de acolo. Proba
+# inlocuieste acelasi lucru, in noul lui loc — intrebarea ei e neatinsa.
+from core import uc_comun as _uc_comun
 
 
 @contextlib.contextmanager
@@ -39,7 +43,7 @@ def _uf():
 def test_preview_salariati_ataseaza_denumirea_cor(monkeypatch):
     rand = {"nume": "POP", "prenume": "ION", "cnp": "1960101078916", "cnp_valid": True,
             "tip_norma": "intreaga", "ore_zi": 8, "cor": "251401", "salariu_brut": 5000, "judet_casa": "B"}
-    monkeypatch.setattr(main, "_schema_sau_404", lambda ctx, tid: "public")
+    monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: "Programator" if cod == "251401" else None)
@@ -54,7 +58,7 @@ def test_preview_salariati_ataseaza_denumirea_cor(monkeypatch):
 def test_preview_salariati_cor_necunoscut_ramane_none(monkeypatch):
     rand = {"nume": "X", "prenume": "Y", "cnp": "1960101078916", "cnp_valid": True,
             "tip_norma": "intreaga", "ore_zi": 8, "cor": "999999", "salariu_brut": 5000, "judet_casa": "B"}
-    monkeypatch.setattr(main, "_schema_sau_404", lambda ctx, tid: "public")
+    monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: None)

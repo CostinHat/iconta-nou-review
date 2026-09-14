@@ -34,7 +34,7 @@ Regula = collections.namedtuple("Regula", "clasa temei de_ce")
 #: REGULILE. Fiecare are temeiul în textul canonic, cu linia.
 REGULI = {
     "D1_SQL_IN_RUTA": Regula(
-        AR, "PLAN_HARDENING.md:812 — «ruta nu conține SQL»",
+        AR, "PLAN_HARDENING.md:833 — «ruta nu conține SQL»",
         "Textul canonic nu lasă nicio excepție, iar eu nu inventez una: fiecare instrucțiune SQL "
         "executată în corpul unei rute e o poziție de mutat sub stratul repository. Nu e un defect "
         "de comportament — aplicația funcționează —, e chiar datoria pe care o numește P7."),
@@ -46,12 +46,12 @@ REGULI = {
         "discriminatorul a fost folosit, nu sărit."),
 
     "D2_MOTOR_FISCAL_CU_DB": Regula(
-        AR, "PLAN_HARDENING.md:811 — «un motor fiscal nu importă `db`»",
+        AR, "PLAN_HARDENING.md:832 — «un motor fiscal nu importă `db`»",
         "Un motor care își deschide singur conexiunea nu mai poate fi chemat din afara unei "
         "tranzacții deținute de use-case (P4) și nu mai e pur."),
 
     "D3_HTTP_SUB_HTTP_IN_MODUL_DE_RUTE": Regula(
-        ABD, "PLAN_HARDENING.md:805 — «HTTP — validare de formă, AUTENTIFICARE, traducerea "
+        ABD, "PLAN_HARDENING.md:826 — «HTTP — validare de formă, AUTENTIFICARE, traducerea "
              "erorilor în coduri»",
         "Itemul stă într-un modul care CONȚINE rute, deci e chiar stratul HTTP, iar ce face e "
         "autentificare/autorizare tradusă în cod HTTP — exact sarcina stratului. Că funcția e "
@@ -59,7 +59,7 @@ REGULI = {
         "fără rute: acolo același apel ar fi ACTION_REQUIRED.*"),
 
     "D4_STRAT_MIXT": Regula(
-        AR, "PLAN_HARDENING.md:804-808 — cele patru straturi, fiecare cu sarcina lui",
+        AR, "PLAN_HARDENING.md:829-833 — cele patru straturi, fiecare cu sarcina lui",
         "Modulul face azi două lucruri deodată (are un al doilea strat declarat în `mixt_cu`). "
         "Comanda V3 o cere limpede: nu se inventează o clasificare, se numește amestecul și se "
         "trece ca poziție de lucru pentru valul care separă. Nu se repară aici."),

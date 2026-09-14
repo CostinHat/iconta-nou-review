@@ -39,13 +39,14 @@ import os
 from datetime import date
 
 from core import jurnal_api as _j
+from core import scan_sql_efectiv as _efectiv
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def _functia():
     """Nodul AST al rutei `tenant_jurnal` din main.py — structură, nu text."""
-    arb = ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
+    arb = _efectiv.arbore_aplicatie()
     for n in ast.walk(arb):
         if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == "tenant_jurnal":
             return n
@@ -160,7 +161,9 @@ def test_CALIBRARE_gardul_citeste_STRUCTURA_nu_PROZA():
     `Confruntat cu norma` **exista** in docstringul rutei si **nu poate** aparea printre chei."""
     # PE TEXT, ȘI DE CE: aserțiunea asta e DESPRE proză — verifică chiar că fraza trăiește în
     # docstring. Un `in` pe un docstring nu e o scurtătură, e subiectul. Perechea ei e pe structură.
-    doc = ast.get_docstring(_functia()) or ""
+    # [P7 · valul use-case] Docstringul RUTEI a ramas in stratul HTTP, iar corpul a plecat in
+    # use-case: se cer de la locuri diferite, fiindca acum sunt locuri diferite.
+    doc = ast.get_docstring(_efectiv.ruta_http("tenant_jurnal")) or ""
     assert "Confruntat cu norma" in doc, "premisa calibrarii a disparut din docstringul rutei"
     assert not (_chei_construite() & {"Confruntat cu norma"}), (
         "proza rutei ajunge printre cheile construite — extractorul s-a rupt")

@@ -35,7 +35,23 @@ CLICHET_FUNCTII_CARE_CAD = 26
 #: Omisiuni reale rămase, după reparație. **1**: `intrastat.analiza_flux`, ținută separat fiindcă
 #: repararea ei schimbă ce AFIȘEAZĂ ecranul (pentru un an fără prag cunoscut, răspunsul onest e
 #: „nu se poate ști" — v. R112), deci cere poartă vizuală și tură proprie.
-CLICHET_OMISIUNI = 1
+# [P7 · valul use-case, 13.09.2026] 1 -> 6: PUNCTUL ORB DECLARAT AL SCANULUI S-A INCHIS.
+# `core/scan_data_curenta.py` scrie, in propriul docstring: *„numai `core/`. `main.py` nu e parcurs;
+# un apel de acolo care omite data nu se vede aici."* Valul a mutat corpurile rutelor in
+# `core/uc_*.py`, deci cele cinci apeluri de mai jos au intrat in domeniu. Sunt cod de DINAINTE de
+# val, neatins de el — se regasesc la aceeasi forma in `git show HEAD:main.py`:
+#     uc_tenants.py `vanzare_marja` · `marja_turism_special` · `trimite` · `credit_sponsorizare`
+#     uc_tenants.py `plafon_diurna` · `emite_factura`
+#     uc_portal.py  `cota()` de doua ori
+# A noua ramane cea veche, `intrastat.py:45 prag_intrastat`.
+# Clichetul urca fiindca instrumentul VEDE mai mult, nu fiindca s-a scris cod nou.
+#
+# [P7 · lotul 2-4, 13.09.2026] 6 -> 9: ultimele 73 de rute au plecat si ele, iar odata cu ele au
+# intrat in domeniu inca trei apeluri vechi — `uc_tenants.emite_factura` si cele doua `cota()` din
+# `uc_portal`. Toate trei se regasesc, la aceeasi forma, in `git show 43fd2197:main.py`. Nu se scriu
+# cu numarul liniei: liniile se muta la fiecare val, iar o cifra care nu se poate recalcula e o
+# amintire. Lista de NUME de mai sus se poate confrunta oricand cu iesirea instrumentului.
+CLICHET_OMISIUNI = 9
 
 
 def test_ANTI_VACUU_instrumentul_chiar_vede_ceva():

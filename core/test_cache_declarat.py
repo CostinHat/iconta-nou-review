@@ -207,9 +207,27 @@ def test_predarea_bnr_se_reconstruieste_identic():
             "ei ar putea schimba cursul, nu doar diagnosticul" % r.lineno)
 
 
+def test_static_dir_e_pus_de_stratul_HTTP():
+    """`_STATIC_DIR` nu se alege in use-case: stratul HTTP il alege la pornire si il PUNE aici.
+
+    Proba cere exact cusatura: dupa ce `main` s-a importat (deci si-a rulat alegerea), valoarea din
+    `core/uc_comun` e chiar cea pe care o serveste aplicatia. Daca cineva scoate punerea, ramane
+    `None`, iar rutele care scriu capturi ar construi cai sub `None/` — tacut, pana in productie."""
+    import main
+    from core import uc_comun as _uc_comun
+    assert _uc_comun._STATIC_DIR == main._STATIC_DIR, (
+        "stratul HTTP nu mai pune directorul static in use-case: %r vs %r"
+        % (_uc_comun._STATIC_DIR, main._STATIC_DIR))
+    assert _uc_comun._STATIC_DIR, "directorul static a ramas gol — capturile s-ar scrie sub `None/`"
+
+
 def test_sablonul_de_tenant_se_reconstruieste_identic():
     import main
-    vechi = main._TENANT_TEMPLATE
+    # [P7 · valul use-case] Sablonul nu mai e o variabila a lui `main`: se ALEGE la pornire, in
+    # stratul HTTP, si se PUNE in `core/uc_comun.py`, de unde-l citesc rutele. Proba il citeste de
+    # acolo — intrebarea ei („se reconstruieste identic?") e neatinsa.
+    from core import uc_comun as _uc_comun
+    vechi = _uc_comun._TENANT_TEMPLATE
     try:
         cale = main.TENANT_TEMPLATE_PATH
         if not os.path.exists(cale):

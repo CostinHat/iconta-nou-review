@@ -2438,3 +2438,28 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **P7 · valul use-case (13.09.2026)** — un fișier nou, `core/test_p7_uc.py`, **11 probe**: harta de
+  coduri acoperă tot vocabularul de refuz (o clasă fără traducere ar ieși ca `500`) · niciun
+  `HTTPException` construit în stratul use-case · **perechile `(cod, mesaj)` sunt neschimbate**,
+  confruntate funcție cu funcție cu `main.py` de la commitul dinainte de val · anti-vacuum pe
+  numărul de funcții confruntate și de perechi citite · **trei calibrări pe univers fabricat**, în
+  trei direcții (cod schimbat, mesaj schimbat, univers identic) · și **conservarea apelurilor**:
+  ce chema ruta înainte, cheamă și acum — învelișul plus use-case-ul, ca multiset, normalizat peste
+  traducerea refuzurilor. *Proba a doua n-a fost o idee, a fost o reparație: mutatorul lăsase pe
+  dinafară două gărzi anti-spam (`_rate_limit_reset`, `_rate_limit_email`), iar prima probă — cea
+  despre perechile `(cod, mesaj)` — le vedea contractul neschimbat. Un apel care nu se mai face nu
+  strigă.* · și **decoratorii sunt neatinși**, literă cu literă, cu comentariile lor — a treia
+  probă, tot dintr-o reparație: mutatorul reconstruia decoratorul din AST, iar AST-ul n-are
+  comentarii, așa că **27 de rute** și-au pierdut comentariul de pe linia decoratorului. Cinci
+  purtau marcajul `[api_intern_v1]`, pe care `core/test_ruta_fara_apelant` îl citește ca declarație:
+  au trecut din EXCLUS în **ROȘU** la verificator. *Un comentariu nu e decorativ când un instrument
+  îl citește.* · și **ce cere altcineva de la `main` există** — a patra, tot dintr-o reparație:
+  `core/firma_rezumat.py` cheamă `main.pastila_firma`, un RE-EXPORT pe care `main.py` îl ținea
+  pentru alții. Curățenia automată de importuri l-a văzut „nefolosit" și l-a scos; lucrătorul
+  modelului de citire a început să dea `AttributeError`, iar șase firme au ajuns cu
+  `control_fiscal` în stare de **eroare**. *Într-un modul care e citit din afară, «nefolosit aici»
+  nu înseamnă «nefolosit».* Și `core/test_p7_criterii.py` s-a
+  rescris: clichetul **385** a devenit **zero care nu are voie să crească**, iar doc↔cod merge acum
+  în amândouă sensurile — planul nu poate declara P7 nici închisă peste un criteriu nesatisfăcut,
+  nici deschisă peste patru satisfăcute.
+

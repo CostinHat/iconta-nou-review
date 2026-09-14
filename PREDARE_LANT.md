@@ -1,11 +1,12 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **planul de întărire P0–P7: șapte pași închiși, P7 în lucru** (13.09.2026)
+# PREDARE LANȚ — **planul de întărire P0–P7: TOȚI OPT PAȘII ÎNCHIȘI** (13.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-13**, la capătul valului **D4** al lui P7 (a patra oprire a zilei).
-- **pe commit**: `919a0e75`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-13**, la capătul valului **use-case** al lui P7, **care închide
+  P7 și cu el tot planul de întărire** (a cincea oprire a zilei).
+- **pe commit**: `43fd2197`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **[13.09.2026] CE A IEȘIT LA IVEALĂ CHIAR RESCRIIND, și se scrie fiindcă e clasa pe care documentul
@@ -34,6 +35,16 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   ~nouă rânduri). Gardat de `core/test_citari_plan.py`. *A treia oară în două zile când clasa e
   «ce scrie de mână un registru despre altceva».*
 
+- **[13.09.2026, valul use-case] CE A IEȘIT LA IVEALĂ MUTÂND LOGICA APLICAȚIEI, și e clasa zilei:**
+  **întreaga mașinărie de gărzi doc↔cod era ancorată pe o presupunere nescrisă — că logica aplicației
+  stă în `main.py`.** Mutând-o în `core/uc_*.py`, ~40 de gărzi au devenit deodată oarbe sau roșii, nu
+  fiindcă s-a stricat codul, ci fiindcă se uitau unde nu mai e nimic. *Nicio gardă n-a fost slăbită ca
+  să treacă: fiecare s-a re-ancorat prin accesorul comun, cu semantica ei.* Iar **două scanere aveau
+  `main.py` ca punct orb DECLARAT** (`scan_data_curenta`, `scan_constante`): valul le-a închis gaura,
+  iar clichetele lor au **urcat** — cu lista exactă a cazurilor nou-expuse, fiecare regăsibil în
+  `git show HEAD:main.py`. *Un clichet care urcă fiindcă instrumentul vede mai mult nu e o datorie
+  nouă; e datoria veche, numărată prima dată.*
+
 ---
 ## PRIMUL LUCRU DE ȘTIUT: **campania rămâne închisă; se lucrează la ÎNTĂRIRE, după un plan scris**
 
@@ -49,7 +60,7 @@ pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelu
 | **P4** — proprietatea tranzacției | **ÎNCHIS** (`0742e177`) | inventar DERIVAT pe 510 puncte de intrare; 32 de căi peste prag, clasificate și **păzite**; 7 critice, fiecare cu injecție de defect; **6 reparații** (R179–R182); 8 efecte ireversibile judecate |
 | **P5** — async / I/O blocant | **ÎNCHIS** (`f61df1b8`) | valurile 1, 1b și 3; `ACTION_REQUIRED` **19 → 0**, C1 pe cereri **0** |
 | **P6** — stateless / scalare orizontală | **ÎNCHIS** (`f260df2e`) | starea business în PostgreSQL · cele șapte cache-uri declarate · două procese reale în producție, four-way 2 din 2 |
-| **P7** — stratul de aplicație | **DESCHIS** | diagnostic (`b67d2bfb`) · V3 (`364fbc63`) · V1 (`8d182afa`) · V2 (`cd5538ae`) · D2 (`e1cf6ee1`) · **D4: cele 37 de module mixte**. `D1`=`D2`=`D4`=**0**, `ACTION_REQUIRED` **296 → … → 0**. Rămâne deschis fiindcă **use-case-ul nu deține tranzacția**: 385 din 421 de rute și-o deschid singure |
+| **P7** — stratul de aplicație | **ÎNCHIS** | diagnostic (`b67d2bfb`) · V3 (`364fbc63`) · V1 (`8d182afa`) · V2 (`cd5538ae`) · D2 (`e1cf6ee1`) · D4: cele 37 de module mixte · **valul use-case: cele 385 de corpuri de rută**. **Toate patru criteriile canonice satisfăcute**: `D1`=`D2`=`D4`=**0** și rutele care își dețin tranzacția **385 → 0** |
 
 **P3, pe scurt** (detaliile în `RAPORT_P3_IMPLEMENTARE.md`): valul A a strâns două bucle
 set-based (`1.004 q` → `5 q`; `2.005 q` → `5 q`); valul B a mutat patru rute de status pe modelul de
@@ -375,7 +386,7 @@ predare în alta e greșită exact acolo unde pare cea mai sigură.*
 ---
 ## STAREA LA PREDARE
 
-**5795 teste trec** *(ieșirea porții valului D4)* · 12 skip · 14 xfail · ruff OK ·
+**5840 teste trec** *(ieșirea porții valului use-case)* · 12 skip · 14 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
@@ -396,8 +407,8 @@ e o vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **877** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **862** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -838,7 +849,8 @@ a ce e adevărat **acum**.
    worker totul se comportă ca înainte — pragul de conexiuni dă tot 20, blocajul e necontestat,
    liderul e singurul candidat.
 
-0b. **P7 E DESCHIS, iar V1+V2 sunt închise (13.09.2026). `main.py` nu mai conține SQL în rute.**
+0b. **P7 E ÎNCHIS (13.09.2026), și cu el TOT PLANUL DE ÎNTĂRIRE. `main.py` nu mai conține nici SQL,
+   nici logică de aplicație.**
 
    **Ce se schimbă pentru cine scrie cod de acum:** o rută nouă care atinge baza **nu scrie SQL**.
    Scrie o funcție într-un `core/repo_*.py`, care primește `cur` și nu comite nimic. Dacă ai nevoie
@@ -851,11 +863,29 @@ a ce e adevărat **acum**.
    și-au dat cele 215 instrucțiuni la 37 de `core/repo_*.py`. `D1`=`D2`=`D4`=0,
    `P7_ACTION_REQUIRED`=0.
 
-   **DAR P7 RĂMÂNE DESCHISĂ, și ăsta e primul lucru de știut înainte de a citi cifrele:** criteriul
-   canonic *«use-case-ul deține tranzacția»* NU e satisfăcut — **385 din 421 de rute și-o deschid
-   singure**. Valul următor e **exact ăsta**: extragerea use-case-urilor din rute, adică §4 al
-   comenzii V2, nefăcut nici atunci. Clichetul celor 385 e în `core/test_p7_criterii.py` și poate
-   doar să coboare; când ajunge la zero, garda o spune și cere reluarea verificării de închidere.
+   **VALUL USE-CASE A ÎNCHIS CRITERIUL CARE ȚINEA FAZA DESCHISĂ.** Cele **385 de corpuri de rută**
+   au plecat în **27 de module `core/uc_*.py`**, cu **58 de helperi** și **12 nume de modul** după
+   ele; `main.py` a scăzut de la **11714** la **6546** de linii. Clichetul celor 385 a coborât la
+   **0** și s-a rescris în **gardă de zero** — un clichet la zero n-ar mai păzi nimic, fiindcă orice
+   rută nouă care își deschide singură tranzacția ar încăpea sub el.
+
+   **CE TREBUIE ȘTIUT ÎNAINTE DE A SCRIE O RUTĂ NOUĂ, și e scurt:**
+
+   - ruta ține **decoratorul, semnătura și docstringul**; corpul stă în `core/uc_<segment>.py`, unde
+     `<segment>` e primul segment al căii. FastAPI validează pe semnătură, deci contractul de intrare
+     e al rutei, nu al use-case-ului;
+   - use-case-ul **nu construiește `HTTPException`**. Refuzurile se spun în vocabularul din
+     `core/erori.py` — clase care numesc CONDIȚIA —, iar traducerea în cod HTTP e **o singură hartă**,
+     `main._COD_EROARE`. Învelișul o aplică: `except _erori.EroareDeDomeniu as e: raise _http_din(e)`;
+   - **obiectele de protocol nu trec granița.** `Response`/`FileResponse` se construiesc în înveliș,
+     din valorile întoarse; `UploadFile` se citește în înveliș (`_octetii`) și se pasează ca `bytes` +
+     nume; gărzile de ritm care se uită la IP rămân pe primul rând, deasupra lui `try`;
+   - ce se află **la pornire** (`_TENANT_TEMPLATE`, `_STATIC_DIR`) stă în `core/uc_comun.py`, iar
+     stratul HTTP îl **pune** acolo când îl află. *HTTP-ul configurează, use-case-ul consumă.*
+
+   **Contractul HTTP e PĂZIT, nu promis:** `core/test_p7_uc.py` confruntă, funcție cu funcție,
+   perechile `(cod, mesaj)` cu `main.py` de la commitul dinainte de val. O singură abatere e
+   acceptată, cu numele și motivul ei în fișier.
 
    **`D2` E ÎNCHIS (13.09.2026).** Motorul fiscal `core/efactura_send.py` nu mai importă `db` și
    n-are nicio instrucțiune SQL; orchestrarea trăiește în `core/efactura_trimitere.py` (`USE_CASE`),
@@ -863,13 +893,15 @@ a ce e adevărat **acum**.
    înainte de a-l atinge:** modulul a rămas declarat `FISCAL_ENGINE` **dinadins**, iar o probă cere
    asta explicit — dacă un val viitor îl reclasifică, `D2` ar cădea la zero pentru motivul greșit.
 
-   **Ce a rămas de făcut, în ordinea propusă (niciunul început):** `D4` — **37** de module cu două
-   straturi, din care **32 au aceeași formă** (generator de declarație + repository), deci un val cu
-   tipar repetabil. Ultimul e `main.py` însuși: cei 38 de helperi de modul, care e de fapt valul
-   use-case pe care §4 al comenzii V2 îl cerea și pe care nu l-am făcut.
+   **CE A RĂMAS DESCHIS DUPĂ ÎNCHIDERE, și se scrie ca să nu treacă drept curat:**
+   `core/uc_comun._raspuns` construiește un `JSONResponse` — e serializarea mutată de pe bucla de
+   evenimente la P5, ajunsă aici fiindcă o cereau corpurile a șapte rute. E **singurul** loc din
+   stratul use-case care mai atinge un obiect de protocol, nu e cerut de niciun criteriu canonic, și
+   nu s-a atins în valul ăsta fiindcă mutarea lui ar redeschide o măsurătoare de la P5.
 
-   **Ce NU e închis, deși două cifre arată bine:** `D1`=0 și `D2`=0 sunt **două** din cele trei
-   verificări canonice. *Zero pe două detectoare nu e zero pe fază.*
+   **Lecția valului, pentru orice mutare viitoare de cod:** *când muți codul, instrumentele care îl
+   citeau se mută și ele, sau raportează despre o lume de dinainte.* ~40 de gărzi au trebuit
+   re-ancorate, iar două scanere și-au pierdut un punct orb pe care și-l declaraseră singure.
 
 1. **RESTUL: NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e
    închisă. Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi

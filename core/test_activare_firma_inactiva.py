@@ -40,7 +40,11 @@ _MAIN = os.path.join(_RAD, "main.py")
 
 
 def _arbore():
-    return ast.parse(io.open(_MAIN, encoding="utf-8").read())
+    # [P7 · valul use-case] Proiectia stratului de aplicatie: fiecare ruta o data, cu
+    # antetul portii din `main.py` si corpul muncii din `core/uc_*.py`. Intrebarea probei
+    # e neatinsa — se schimba doar locul din care se citeste corpul.
+    from core import scan_sql_efectiv as _efectiv
+    return _efectiv.arbore_aplicatie()
 
 
 def _functia(arb, nume):

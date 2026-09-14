@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """GARDA V1 — nicio citire SQL în corpul unei rute, și un detector de FEL care poate fi arătat greșit.
 
-CE PĂZEȘTE. `PLAN_HARDENING.md:812` cere ca ruta să nu conțină SQL. V1 a mutat cele **107 citiri**
+CE PĂZEȘTE. `PLAN_HARDENING.md:833` cere ca ruta să nu conțină SQL. V1 a mutat cele **107 citiri**
 (106 `SELECT` + un CTE read-only) din `main.py` în treisprezece module de repository. Garda de mai
 jos ține cifra la **zero**: o citire nouă scrisă direct în rută pică poarta.
 
@@ -140,10 +140,16 @@ def test_ANTI_VACUUM_detectorul_inca_vede_celelalte_feluri():
     import io as _io
     module = {f[:-3] for f in os.listdir(os.path.join(RADACINA, "core"))
               if f.startswith("repo_") or f == "tranzactie.py"}
-    arb = _ast.parse(_io.open(os.path.join(RADACINA, "main.py"), encoding="utf-8").read())
-    apeluri = sum(1 for x in _ast.walk(arb)
-                  if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)
-                  and isinstance(x.func.value, _ast.Name) and x.func.value.id in module)
+    # [P7 · valul use-case] Apelurile catre straturile de sub HTTP stau acum si in
+    # `core/uc_*.py`. Conservarea (257) e despre APLICATIE, nu despre un fisier — numarate
+    # doar in `main.py` ies 72, adica lipsa a 185 de apeluri care n-au plecat nicaieri.
+    from core import scan_sql_efectiv as _ef
+    apeluri = 0
+    for _cale in _ef.straturi_aplicatie():
+        arb = _ast.parse(_io.open(os.path.join(RADACINA, _cale), encoding="utf-8").read())
+        apeluri += sum(1 for x in _ast.walk(arb)
+                       if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)
+                       and isinstance(x.func.value, _ast.Name) and x.func.value.id in module)
     assert apeluri >= 250, "apelurile către straturile de sub HTTP au dispărut: %d" % apeluri
 
 
@@ -192,7 +198,7 @@ def _arbore_repo(modul):
 
 
 def test_repository_urile_NU_deschid_conexiuni_si_NU_comit():
-    """Contractul din `PLAN_HARDENING.md:808` plus P4: repository-ul primește cursorul apelantului.
+    """Contractul din `PLAN_HARDENING.md:829` plus P4: repository-ul primește cursorul apelantului.
 
     Un `get_conn` aici ar rupe tranzacția apelantului în două — exact ce P4 a închis.
     """

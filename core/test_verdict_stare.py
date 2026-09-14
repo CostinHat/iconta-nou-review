@@ -44,14 +44,19 @@ def test_verificator_esuat_da_gri_cu_temei_nu_absenta():
 
 def test_construieste_contabil_verificator_care_arunca_da_gri(monkeypatch):
     # Integrare: un verificator care ARUNCA (ex. DB down) -> constatare gri in contabil, NU tacere.
-    import main
-    monkeypatch.setattr(main, "_verificari_contabile", lambda *a, **k: {})
-    monkeypatch.setattr(main, "intrastat_praguri", lambda *a, **k:
+    # [P7 · valul use-case] `_construieste_contabil` traieste in `core/uc_comun.py`, iar cele doua
+    # verificari pe care le cheama sunt use-case-uri in `core/uc_tenants.py` (fostele rute). Proba
+    # cheama acelasi lucru si peticeste acolo unde se executa — intrebarea ei, „un verificator care
+    # arunca da GRI, nu tacere", e neatinsa.
+    from core import uc_comun as _uc_comun
+    from core import uc_tenants as _uc_tenants
+    monkeypatch.setattr(_uc_comun, "_verificari_contabile", lambda *a, **k: {})
+    monkeypatch.setattr(_uc_tenants, "intrastat_praguri", lambda *a, **k:
                         {"introduceri": {"status": "sub_prag"}, "expedieri": {"status": "sub_prag"}, "nivel": None})
     def _boom(*a, **k):
         raise RuntimeError("stoc DB down")
-    monkeypatch.setattr(main, "verificare_stocuri", _boom)
-    contabil, vc = main._construieste_contabil("tenant_x", 1, {"uid": 0}, 2026, 7, {})
+    monkeypatch.setattr(_uc_tenants, "verificare_stocuri", _boom)
+    contabil, vc = _uc_comun._construieste_contabil("tenant_x", 1, {"uid": 0}, 2026, 7, {})
     gri = [c for c in contabil if c["stare"] == "gri" and "stocuri" in c["eticheta"].lower()]
     assert gri, "verificator picat trebuie sa dea o constatare gri, nu absenta"
     assert "stoc DB down" in gri[0]["temei"]

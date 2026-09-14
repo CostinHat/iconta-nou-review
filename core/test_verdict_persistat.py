@@ -19,13 +19,13 @@ amprenta XML-ului din coadă **acum**. Dacă diferă, verdictul e **stătut** ș
 păzește doar că **se păstrează, se leagă de un conținut, și se consultă**.
 """
 import ast
-import io
 import os
 
 import pytest
 
 from core import coada_api
 from core import db as _db
+from core import scan_sql_efectiv as _efectiv
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 XML_A = "<D300><R17_2>100</R17_2></D300>"
@@ -170,7 +170,8 @@ def test_depunerea_e_pazita_la_fel(element):
 def test_ruta_care_valideaza_chiar_SCRIE_verdictul():
     """Validatorul rula deja acolo; ce lipsea era scrierea. Dacă apelul dispare, verdictul redevine
     o valoare care se afișează și se pierde — iar toate testele de mai sus rămân verzi."""
-    t = io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
+    # [P7 · valul use-case] Intrebarea e neatinsa; corpul rutei traieste in `core/uc_*.py`.
+    t = _efectiv.sursa_functiei("coada_continut")
     arb = ast.parse(t)
     for n in ast.walk(arb):
         if isinstance(n, ast.FunctionDef) and n.name == "coada_continut":

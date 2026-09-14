@@ -33,6 +33,7 @@ import os
 import re
 
 from core import db
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -149,7 +150,7 @@ def test_REDENUMIREA_libera_e_si_ea_o_alegere_consemnata():
     # Autorul nu e opțional în fapt: ruta trebuie să-l dea. Citit ca ARGUMENT CU NUME în apel,
     # nu căutat ca șir în `main.py` — un `user_id=ctx["uid"]` scris într-un comentariu ar fi
     # trecut, iar unul reformatat pe două rânduri ar fi picat. Amândouă greșite.
-    ruta = ast.parse(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+    ruta = _efectiv.arbore_aplicatie()
     apeluri = [c for c in ast.walk(ruta)
                if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
                and c.func.attr == "actualizeaza_tenant"]

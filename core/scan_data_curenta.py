@@ -26,6 +26,11 @@ Fiecare dintre cele trei greșeli are calibrare proprie în `core/test_data_cure
 
 CE NU VEDE, declarat:
   - **numai `core/`**. `main.py` nu e parcurs; un apel de acolo care omite data nu se vede aici.
+    [P7 · valul use-case, 13.09.2026] Punctul orb S-A MICSORAT fara ca scanul sa fie atins:
+    corpurile rutelor au trecut in `core/uc_*.py`, deci apelurile lor intra acum in domeniu.
+    Au aparut cinci omisiuni reale, vechi — v. clichetul din `core/test_data_curenta.py`.
+    Ce ramane nevazut e doar ce a mai ramas in `main.py`: helperii de modul si cele 73 de
+    rute nemutate.
   - **nu urmărește valoarea**: dacă apelantul dă `la_data=None` explicit, apelul apare ca „dă data",
     deși efectul e identic cu omiterea. Direcția e cea permisivă, și se scrie.
   - **nu spune dacă „azi" e greșit** pentru un apel anume. Spune că nimeni n-a ales data. Alegerea

@@ -19,6 +19,7 @@ import pytest
 
 from core import control_fiscal_api as cf
 from core import d390
+from core import scan_sql_efectiv as _efectiv
 
 
 def _vec(ic):
@@ -152,7 +153,8 @@ def test_sonda_de_db_exista_si_e_citita_de_ruta():
     import os
     assert callable(cf.ic_fapt_din_db)
     rad = os.path.dirname(os.path.dirname(os.path.abspath(cf.__file__)))
-    src = open(os.path.join(rad, "main.py"), encoding="utf-8").read()
+    # [P7 · valul use-case] Intrebarea e neatinsa; corpul rutei traieste in `core/uc_*.py`.
+    src = _efectiv.sursa_aplicatie()
     assert "ic_fapt=(lambda: control_fiscal_api.ic_fapt_din_db(" in src, \
         "ruta /declaratii/tipuri nu mai cheamă sonda de fapt — selectorul ar bloca iar pe bifă"
     assert "SELECT" in inspect.getsource(cf.ic_fapt_din_db).upper()

@@ -7,6 +7,7 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _RAD not in sys.path:
     sys.path.insert(0, _RAD)
 from core import duk
+from core import scan_sql_efectiv as _efectiv
 
 # REALE (live): Panificatie d112/aug = atentionare; Ferma Agricultor d112/aug = eroare
 ATENTIONARE = "A: asigurat (4) [idAsig = 4] sectiune asiguratB4 (1)\n atentionare regula: SP1B4_1: B4_5P(4325) diferit de suma calculata 3750"
@@ -48,12 +49,8 @@ def test_ruta_valideaza_forwardeaza_severitate():
     """Regresie END-TO-END: ruta POST /declaratii/{tip}/valideaza (main.py) trebuie sa FORWARDEZE 'severitate'
     din duk.valideaza catre raspuns - altfel declaratii.js nu-l primeste si A2 n-are efect in UI (fixul unitar
     trece dar integrarea nu). Exact gapul scapat prima data (severitate=None live desi unit-testul era verde)."""
-    import ast
-    src = open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
-    tree = ast.parse(src)
-    fn = next((n for n in ast.walk(tree)
-               if isinstance(n, ast.FunctionDef) and n.name == "declaratie_valideaza"), None)
-    assert fn is not None, "ruta declaratie_valideaza nu a fost gasita in main.py"
-    body = ast.get_source_segment(src, fn)
+    # [P7 · valul use-case] Intrebarea e neatinsa; corpul rutei traieste in `core/uc_*.py`.
+    body = _efectiv.sursa_functiei("declaratie_valideaza")
+    assert body, "ruta declaratie_valideaza nu a fost gasita in stratul de aplicatie"
     assert "severitate" in body, ("ruta declaratie_valideaza NU forwardeaza 'severitate' -> frontendul primeste "
                                   "undefined si atentionarile apar tot ca 'erori' (A2 fara efect)")

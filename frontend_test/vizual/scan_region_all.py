@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Scan 'region' pe TOATE cele 5 ECRANE problematice + dashboard. Confirma 0 app-wide dupa fix-ul de landmarks.
 Capturi dashboard + o fereastra pentru privire (Regula 14: restructurarea barelor sa nu schimbe vizual)."""
-import os, json
+import os
 from playwright.sync_api import sync_playwright
 from w_auth import INIT, BAZA
 from nav_ecrane import ECRANE

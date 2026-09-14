@@ -67,8 +67,20 @@ def _cheama(fn, nume):
 
 
 def _module_use_case():
+    """Numele sub care stratul use-case e VIZIBIL in `main.py` — modulul si aliasul lui.
+
+    `core/uc_tenants.py` e legat acolo ca `_uc_tenants`; cautand numai numele modulului, detectorul
+    a vazut 3 delegari acolo unde erau 312.
+    """
     from core import straturi as R
-    return {os.path.basename(d.cale)[:-3] for d in R.REGISTRU if d.strat == R.USE_CASE}
+    module = {os.path.basename(d.cale)[:-3] for d in R.REGISTRU if d.strat == R.USE_CASE}
+    nume = set(module)
+    for n in ast.walk(_arbore("main.py")):
+        if isinstance(n, ast.ImportFrom) and (n.module or "").startswith("core"):
+            for a in n.names:
+                if a.name in module and a.asname:
+                    nume.add(a.asname)
+    return nume
 
 
 def _cheama_use_case(fn, module):
@@ -114,14 +126,14 @@ def criterii():
     n = numaratori()
     return [
         ("ruta nu contine SQL", n["D1_SQL_IN_RUTA"] == 0, n["D1_SQL_IN_RUTA"],
-         "PLAN_HARDENING.md:812"),
+         "PLAN_HARDENING.md:833"),
         ("un motor fiscal nu importa `db`", n["D2_MOTOR_FISCAL_CU_DB"] == 0,
-         n["D2_MOTOR_FISCAL_CU_DB"], "PLAN_HARDENING.md:811"),
+         n["D2_MOTOR_FISCAL_CU_DB"], "PLAN_HARDENING.md:832"),
         ("niciun modul nu face doua straturi deodata", n["D4_STRAT_MIXT"] == 0,
-         n["D4_STRAT_MIXT"], "PLAN_HARDENING.md:804-808"),
+         n["D4_STRAT_MIXT"], "PLAN_HARDENING.md:829-833"),
         ("use-case-ul detine tranzactia, nu ruta",
          n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"] == 0,
-         n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"], "PLAN_HARDENING.md:806"),
+         n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"], "PLAN_HARDENING.md:827"),
     ]
 
 

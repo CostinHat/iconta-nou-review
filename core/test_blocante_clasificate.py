@@ -287,7 +287,11 @@ def _rute_din_main():
     Inventarul spune ce APRINDE un detector; asta e o afirmație despre instrument. Aici se citește
     chiar structura codului, ca proba să nu depindă de scaner (METODA §23).
     """
-    m = ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
+    # [P7 · valul use-case] Structura se citeste din proiectia stratului de aplicatie: ruta
+    # isi poarta decoratorul in `main.py`, dar corpul — cel despre care e proba — traieste in
+    # `core/uc_*.py`. A citi numai fisierul ar insemna sa masori o ruta fara corp.
+    from core import scan_sql_efectiv as _efectiv
+    m = _efectiv.arbore_aplicatie()
     out = {}
     for n in ast.walk(m):
         if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -383,8 +387,11 @@ def test_cele_12_isi_serializeaza_singure_raspunsul():
         assert ret, "%s n-are nicio returnare cu valoare" % r
         for a in ret:
             v = a.value
-            ok = (isinstance(v, ast.Call) and isinstance(v.func, ast.Name)
-                  and v.func.id == P.AJUTOR_RASPUNS)
+            # [P7 · valul use-case] Si calificat: corpul mutat cheama `_uc_comun._raspuns`.
+            # E acelasi ajutor — ce s-a schimbat e unde locuieste, nu ce face.
+            ok = (isinstance(v, ast.Call)
+                  and (getattr(v.func, "id", None) or getattr(v.func, "attr", None))
+                  == P.AJUTOR_RASPUNS)
             if not ok:
                 rele.append("%s:%d" % (r, a.lineno))
     assert not rele, ("returnări care lasă serializarea pe buclă: %s" % rele)

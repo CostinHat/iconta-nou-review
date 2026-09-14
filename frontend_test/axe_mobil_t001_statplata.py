@@ -4,10 +4,10 @@ Regula 14 addendum."""
 import json, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "vizual"))
-from w_auth import new_page, INIT, BAZA
+from w_auth import INIT
 from walk_t001 import deschide_t001
 from playwright.sync_api import sync_playwright
-from vizual.axe_scan import AXE, AXE_RUN_JS, TITLE_ONLY_JS, scaneaza
+from vizual.axe_scan import scaneaza
 from vizual.mobil_scan import TAP_OVERFLOW_JS
 
 def deschide_statplata(pg):

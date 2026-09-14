@@ -28,6 +28,7 @@ import pytest
 
 from core import gdpr_cerere as gc
 from core import observare
+from core import scan_sql_efectiv as _efectiv
 
 RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -251,7 +252,7 @@ def test_ruta_cheama_anuntul_DUPA_commit_si_IN_AFARA_blocului():
 
     Nu se cauta un sir in `main.py`: se compara POZITIILE din arbore. Un `anunta_echipa` mutat
     inapoi in bloc ar trece orice proba pe text."""
-    arbore = ast.parse(io.open(os.path.join(RADACINA, "main.py"), encoding="utf-8").read())
+    arbore = _efectiv.arbore_aplicatie()
     fn = next(n for n in ast.walk(arbore)
               if isinstance(n, ast.FunctionDef) and n.name == "gdpr_cerere_stergere")
     blocuri = [n for n in ast.walk(fn) if isinstance(n, ast.With)]

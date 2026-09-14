@@ -44,7 +44,10 @@ def _sursa(rel, minim=2000):
 
 
 def _perechi_py():
-    m = PY.search(_sursa("main.py", minim=100000))
+    # [P7 · valul use-case] Maparea sens->conturi a plecat cu corpul rutei in .
+    # Intrebarea e despre O functie (), deci se pune pe corpul EI.
+    from core import scan_sql_efectiv as _efectiv
+    m = PY.search(_efectiv.sursa_functiei("nota_tva_incasare"))
     assert m, ("nu mai gasesc maparea sens->conturi in main.py (nota_tva_incasare) — "
                "ori s-a mutat, ori s-a rescris; gardul nu poate confrunta ce nu vede")
     return (m.group(1), m.group(2)), (m.group(3), m.group(4))

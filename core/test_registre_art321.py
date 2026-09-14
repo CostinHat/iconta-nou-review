@@ -29,6 +29,7 @@ import pytest
 from core import db as _db
 from core import registre_art321 as _r
 from core import tenant_provisioning as _tp
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCHEMA = "ztest_registre321"
@@ -253,7 +254,7 @@ def test_exceptiile_ajung_la_om_doar_pe_registrul_nontransferurilor(conn):
 def test_exista_rutele_si_ecranul_care_livreaza_registrul():
     """Defectul propriu al listei 3 e „producator fara livrare". Modulul asta s-a nascut din el, deci
     proba ca lantul e intreg sta LANGA producator, nu intr-un registru de trasee citit rar."""
-    main = io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
+    main = _efectiv.sursa_aplicatie()
     arb = ast.parse(main)
     cai = set()
     for f in ast.walk(arb):
@@ -288,7 +289,7 @@ def test_citirea_registrului_trece_pe_poarta_COMUNA():
     """Nu pe cea de citire-istorica: registrul e o clasa NOUA de acces, nu a doua iesire a unui
     artefact vechi. Zavorul din `test_poarta_citire_istorica` cere exact asta — proba e aici ca
     largirea sa nu se faca din neatentie, dintr-un copy-paste de la ruta vecina."""
-    arb = ast.parse(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+    arb = _efectiv.arbore_aplicatie()
     for f in ast.walk(arb):
         if isinstance(f, (ast.FunctionDef, ast.AsyncFunctionDef)) and f.name.startswith("registre_art321_"):
             apeluri = [c.func.attr for c in ast.walk(f)

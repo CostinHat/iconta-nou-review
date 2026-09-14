@@ -33,11 +33,17 @@ import json
 import os
 
 from core import fisa_cont as fc
+from core import scan_sql_efectiv as _efectiv
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def _fn(cale, nume):
+    # [P7 · valul use-case] Pe `main.py` functia poate fi doar INVELISUL; corpul
+    # traieste in `core/uc_*.py`. Intrebarea ramane despre O functie — accesorul o
+    # cauta prin straturi, nu peste tot.
+    if cale == "main.py":
+        return _efectiv.functia(nume)[1]
     arbore = ast.parse(io.open(os.path.join(RAD, cale), encoding="utf-8").read())
     return next(n for n in ast.walk(arbore)
                 if isinstance(n, ast.FunctionDef) and n.name == nume)
@@ -47,7 +53,11 @@ def test_ruta_exista_si_e_GET_pe_calea_asteptata():
     """Se citește NODUL decoratorului — un `ast.unparse` ar da text, iar comparația ar păzi
     ghilimelele, nu ruta."""
     fn = _fn("main.py", "cabinet_fisa_cont")
-    ruta = next((d.args[0].value for d in fn.decorator_list
+    # [P7 · valul use-case] Decoratorul e contract HTTP, deci sta pe invelisul din
+    # `main.py`; corpul e in use-case. Doua intrebari, doua noduri — iar garda le cere
+    # acum pe amandoua, deci e mai tare, nu mai slaba.
+    _http_fn = _efectiv.ruta_http("cabinet_fisa_cont")
+    ruta = next((d.args[0].value for d in _http_fn.decorator_list
                  if isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute)
                  and d.func.attr == "get" and d.args
                  and isinstance(d.args[0], ast.Constant)), None)

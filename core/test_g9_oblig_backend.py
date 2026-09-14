@@ -12,6 +12,14 @@ import re
 
 
 def _read(p):
+    """[P7 · valul use-case] `"main.py"` inseamna de azi STRATUL DE APLICATIE: corpurile rutelor au
+    plecat in `core/uc_*.py`, iar o garda care intreaba „backendul cere campul?" nu intreaba despre
+    un fisier. Citirea ramane in acelasi ajutor pentru toate sursele — o garda care citeste trei
+    surse trebuie sa arate ca citeste trei, altfel `core/test_ancore_in_cod.py` ii atribuie
+    ancorele uneia singure si le raporteaza pe celelalte ca absente."""
+    if p == "main.py":
+        from core import scan_sql_efectiv as _efectiv
+        return _efectiv.sursa_aplicatie()
     return io.open(p, encoding="utf-8").read()
 
 

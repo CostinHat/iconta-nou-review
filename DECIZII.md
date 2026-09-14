@@ -3,6 +3,40 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 13.09.2026 (38) — Valul use-case: patru decizii, dintre care una schimbă ce înseamnă „refuz"
+
+**(1) Use-case-ul numește CONDIȚIA; stratul HTTP alege codul.** `core/erori.py` nu adaugă înțeles —
+harta e azi aproape unu-la-unu cu codurile pe care le înlocuiește, fiindcă aplicația chiar avea
+șapte feluri de refuz, câte unul per cod. Ce face e să **mute decizia despre protocol acolo unde
+protocolul e cunoscut**. Un val viitor care descoperă că două refuzuri diferite trăiau sub același
+`404` le poate despărți în vocabular, iar harta din HTTP rămâne singurul loc care se atinge.
+
+*De ce se poate face fără risc, și e o măsurătoare:* `HTTPException` nu e prinsă nicăieri în
+aplicație. Dacă ar fi fost prinsă o singură dată, traducerea ar fi schimbat un flux de control fără
+ca vreo probă să observe.
+
+**(2) Șase condiții noi în vocabular, nu șase excepții de la regulă.** Treisprezece rute ridicau
+coduri fără clasă (`413`, `415`, `429`, `500`, `502`, `503`). Alegerea era între a le lăsa în
+`main.py` — și atunci criteriul rămânea nesatisfăcut pentru treisprezece rute — sau a numi condițiile
+pe care aplicația **le deosebea deja prin cod, dar nu le numea**. S-a ales a doua: *intrare prea
+mare*, *format neacceptat*, *prea des*, *eșec intern*, *serviciu străin căzut*, *serviciu
+indisponibil*.
+
+**(3) Stratul HTTP CONFIGUREAZĂ, use-case-ul CONSUMĂ.** Pentru `_TENANT_TEMPLATE` și `_STATIC_DIR` —
+valori alese la pornire — nu se mută valoarea, se mută **locul unde stă**, iar HTTP-ul o pune acolo
+când o află. Alternativa (mutarea ca valoare) ar fi lăsat use-case-ul cu `None` și scriitorul cu
+copia lui.
+
+**(4) Un răspuns HTTP nu pleacă în use-case, nici măcar ca `import`.** Cele 15 rute care construiesc
+`Response` întorc din use-case **valorile**, iar învelișul construiește obiectul. Și importul lui a
+fost scos din modulele de use-case: *un strat care importă `Response` fără să-l atingă e o urmă de
+HTTP lăsată acolo degeaba, iar un detector viitor ar avea dreptate s-o numească.*
+
+**RĂMÂNE DESCHIS, și se scrie ca să nu treacă drept închis:** `core/uc_comun._raspuns` construiește
+un `JSONResponse` — e serializarea mutată de pe bucla de evenimente la P5, ajunsă în `uc_comun`
+fiindcă o cereau corpurile a șapte rute. E singurul loc din stratul use-case care mai atinge un
+obiect de protocol.
+
 ## 05.09.2026 (33) — Trei răspunsuri, dintre care unul e o regulă de arhitectură: legalitatea se citește pe PERIOADĂ, nu pe o listă
 
 **(1) Cele șase mesaje se repară în aceeași tură, nu într-o trecere separată.**

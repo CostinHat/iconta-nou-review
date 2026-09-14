@@ -41,6 +41,7 @@ from core import tenant_provisioning as _tprov
 from core import contare_facturi as _cf
 from core import facturi_api as _fa
 from core import jurnal_api as _ja
+from core import scan_sql_efectiv as _efectiv
 
 _SCH = "efemer_contare_automata"
 
@@ -409,6 +410,11 @@ def _apeluri(cale, nume_functie):
     Ia amândouă formele de apel: `modul.functie(...)` (Attribute) și `functie(...)` (Name). Prima
     formă a testului lua doar Attribute, și a raportat lipsă pe un apel care exista — o gardă care
     se uită în jumătate de loc raportează despre o lume pe care n-o vede."""
+    # [P7 · valul use-case] Pe `main.py` functia poate fi doar INVELISUL; corpul
+    # traieste in `core/uc_*.py`. Intrebarea ramane despre O functie — accesorul o
+    # cauta prin straturi, nu peste tot.
+    if cale == "main.py":
+        return {c.func.attr if isinstance(c.func, ast.Attribute) else c.func.id for c in ast.walk(_efectiv.functia(nume_functie)[1]) if isinstance(c, ast.Call) and isinstance(c.func, (ast.Attribute, ast.Name))}
     arbore = ast.parse(io.open(cale, encoding="utf-8").read())
     for n in ast.walk(arbore):
         if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == nume_functie:

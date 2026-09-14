@@ -26,7 +26,10 @@ import pytest
 from core import salarii_contare as _sc   # [R33/QQ] harta felurilor se citeste de pe modul
 
 RAD = pathlib.Path(__file__).resolve().parent.parent
-_MAIN = ast.parse(io.open(RAD / "main.py", encoding="utf-8").read())
+# [P7 · valul use-case] Proiectia stratului de aplicatie, nu fisierul: corpurile rutelor au plecat
+# in `core/uc_*.py`, iar proba intreaba despre ce FACE ruta, nu despre unde sta.
+from core import scan_sql_efectiv as _efectiv   # noqa: E402
+_MAIN = _efectiv.arbore_aplicatie()
 
 _CAMPURI = {"eticheta", "cont", "fel", "nota", "declaratie", "diferenta", "toleranta"}
 #: [R33/QQ] `fel` nu e decor: separa un dezacord fiscal real de un cablaj stricat
@@ -205,12 +208,16 @@ def test_scrierea_e_CIORNA_nu_validata():
     # Statusul e parametru cu nume, deci se citește ca STRUCTURĂ: numele constantei folosite în
     # INSERT. Prima formă căuta `'ciorna'` în SQL — ar fi trecut și dacă șirul apărea într-un
     # comentariu, și n-ar fi văzut o schimbare a valorii constantei.
-    nume = {y.id for x2 in ast.walk(n) if isinstance(x2, ast.Call)
-            for y in ast.walk(x2) if isinstance(y, ast.Name)}
+    # [P7 · valul use-case] Constanta traieste in `core/uc_comun.py`, iar corpul mutat o scrie
+    # calificat (`_uc_comun.STARE_CIORNA`). Se citesc deci si numele, si atributele.
+    nume = {getattr(y, "id", None) or getattr(y, "attr", None)
+            for x2 in ast.walk(n) if isinstance(x2, ast.Call)
+            for y in ast.walk(x2) if isinstance(y, (ast.Name, ast.Attribute))}
     assert {"STARE_CIORNA"} <= nume, (
         "nota statului de plată nu mai intră ca STARE_CIORNA — patru-ochi se pierde")
-    import main as _m
-    assert _m.STARE_CIORNA == "ciorna", "STARE_CIORNA nu mai e ciornă, ci %r" % _m.STARE_CIORNA
+    from core import uc_comun as _uc_comun
+    assert _uc_comun.STARE_CIORNA == "ciorna", (
+        "STARE_CIORNA nu mai e ciornă, ci %r" % _uc_comun.STARE_CIORNA)
 
 
 def test_divergenta_se_intoarce_SI_dupa_contare():
@@ -231,8 +238,10 @@ def test_luna_inchisa_opreste_SCRIEREA_dar_nu_propunerea():
     se poate vedea oricând: a privi nu e a modifica."""
     scrie = _ruta("salarii_contare_scrie")
     prop = _ruta("salarii_contare_propunere")
-    chemat = {getattr(x.func, "id", "") for x in ast.walk(scrie) if isinstance(x, ast.Call)}
+    chemat = {getattr(x.func, "id", "") or getattr(x.func, "attr", "")
+              for x in ast.walk(scrie) if isinstance(x, ast.Call)}
     assert {"_cere_luna_deschisa"} <= chemat, "scrierea notei nu verifică dacă luna e închisă"
-    chemat_prop = {getattr(x.func, "id", "") for x in ast.walk(prop) if isinstance(x, ast.Call)}
+    chemat_prop = {getattr(x.func, "id", "") or getattr(x.func, "attr", "")
+                   for x in ast.walk(prop) if isinstance(x, ast.Call)}
     assert not {"_cere_luna_deschisa"} & chemat_prop, (
         "propunerea refuză pe lună închisă — dar ea nu scrie nimic, deci n-are ce să încalce")

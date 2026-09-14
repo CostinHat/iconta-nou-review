@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""GARDĂ: `P7_ACTION_REQUIRED = 0` nu are voie să fie citit ca „faza e închisă".
+"""GARDĂ: cele patru criterii canonice ale lui P7, măsurate — și niciunul nu are voie să scadă.
 
 DE CE EXISTĂ (13.09.2026, la capătul valului D4). Cele trei detectoare au ajuns toate la zero —
 `D1`=0 (V1+V2), `D2`=0 (valul D2), `D4`=0 (valul D4) — și odată cu ele `P7_ACTION_REQUIRED`=**0**.
@@ -8,15 +8,25 @@ rute își deschid singure tranzacția**, adică stratul HTTP orchestrează în 
 use-case — cel pe care textul canonic îl definește prin *„deține tranzacția (P4), orchestrează"* —
 aproape că nu există (4 module declarate, 7 rute care deleagă).
 
-*Zero pe toate detectoarele nu e zero pe fază — iar acum nu mai e o propoziție din predare, e o
-gardă.* Clasa e aceeași cu `all([])` și cu brațul four-way care număra doar ce găsea: **o măsurătoare
-care nu-și cunoaște domeniul afirmă despre „tot" ce a verificat despre „o parte".**
+*Zero pe toate detectoarele nu e zero pe fază — iar asta n-a fost o propoziție din predare, a fost
+o gardă.* Clasa e aceeași cu `all([])` și cu brațul four-way care număra doar ce găsea: **o
+măsurătoare care nu-și cunoaște domeniul afirmă despre „tot" ce a verificat despre „o parte".**
+
+**CE S-A ÎNTÂMPLAT ÎNTRE TIMP (13.09.2026, valul use-case).** Cele **385 de corpuri de rută** au
+plecat în stratul `USE_CASE` — 27 de module `core/uc_*.py` —, împreună cu **58 de helperi** și
+**12 nume de modul** pe care le cereau. `main.py` a scăzut de la **11714** la **6546** de linii, iar
+fiecare rută a rămas cu decoratorul, semnătura și docstringul ei, plus o delegare. Contractul HTTP
+nu s-a atins, iar asta nu e o afirmație: `core/test_p7_uc.py` confruntă, funcție cu funcție, cu
+`main.py` de la commitul dinainte de val, perechile `(cod, mesaj)` — cu o singură abatere declarată,
+cu motivul ei.
 
 CE PĂZEȘTE, în amândouă direcțiile:
   · cele trei detectoare rămân zero (dacă unul urcă, valul lui s-a stricat);
-  · criteriul care NU e satisfăcut rămâne măsurat, cu clichet — poate coborî, nu urca;
-  · cât timp un criteriu canonic nu e satisfăcut, `PLAN_HARDENING.md` **nu** are voie să declare P7
-    închisă. Doc↔cod, în sensul care contează: documentul nu poate raporta mai mult decât codul.
+  · **al patrulea criteriu e ZERO și rămâne zero** — nu mai e clichet, fiindcă n-are unde coborî:
+    o rută nouă care își deschide singură tranzacția face garda roșie din prima zi;
+  · `PLAN_HARDENING.md` nu poate declara P7 deschisă peste patru criterii satisfăcute, nici închisă
+    peste unul nesatisfăcut. Doc↔cod în amândouă sensurile: documentul nu poate raporta nici mai
+    mult, nici mai puțin decât codul.
 """
 import io
 import os
@@ -29,8 +39,9 @@ for _p in (RADACINA, os.path.join(RADACINA, "scripts")):
 
 import p7_criterii as C  # noqa: E402
 
-#: clichet: cifra de azi a criteriului nesatisfăcut. Poate SCĂDEA (valul use-case), niciodată urca.
-CLICHET_RUTE_CU_TRANZACTIE = 385
+#: zero, și rămâne zero. A fost clichet la **385** cât a durat valul use-case; de când criteriul
+#: e satisfăcut, singura cifră care trece e cea care nu mai lasă loc de întors.
+RUTE_CU_TRANZACTIE_ADMISE = 0
 
 
 def test_cele_trei_detectoare_sunt_ZERO_si_raman():
@@ -40,34 +51,38 @@ def test_cele_trei_detectoare_sunt_ZERO_si_raman():
     assert n["D4_STRAT_MIXT"] == 0
 
 
-def test_criteriul_use_case_e_MASURAT_si_nu_creste():
-    """Clichet pe singurul criteriu canonic rămas nesatisfăcut.
+def test_use_case_ul_DETINE_tranzactia_si_asa_ramane():
+    """Criteriul care a ținut faza deschisă, acum satisfăcut — și păzit ca zero.
 
-    Nu se cere să fie zero — asta ar face garda roșie din prima zi, adică un ceas cu alarmă, nu un
-    clichet. Se cere să nu crească: o rută nouă care își deschide singură tranzacția o face roșie.
+    Cât a durat valul, cifra a fost un clichet: 385 care puteau doar să scadă. De când e zero,
+    clichetul n-ar mai păzi nimic — orice rută nouă care își deschide singură tranzacția ar încăpea
+    sub el. Se cere deci egalitatea, iar delegările se numără ca anti-vacuum: o rută care nu mai
+    deschide nimic fiindcă a fost ștearsă nu e același lucru cu una care deleagă.
     """
     n = C.numaratori()
-    assert n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"] <= CLICHET_RUTE_CU_TRANZACTIE, (
-        "au apărut rute care își deschid singure tranzacția: %d, clichetul e %d"
-        % (n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"], CLICHET_RUTE_CU_TRANZACTIE))
-    assert n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"] > 0, (
-        "dacă a ajuns la zero, criteriul s-a satisfăcut — coboară clichetul și "
-        "reia verificarea de închidere a lui P7")
+    assert n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"] == RUTE_CU_TRANZACTIE_ADMISE, (
+        "%d rute își deschid singure tranzacția, iar stratul HTTP n-are voie s-o dețină: %s"
+        % (n["RUTE_CARE_DESCHID_SINGURE_TRANZACTIA"], C.detaliu()[1]["detin_tranzactia"][:8]))
+    assert n["RUTE_CARE_CHEAMA_UN_USE_CASE"] >= 380, (
+        "doar %d rute deleagă către un use-case — stratul s-a golit, nu s-a curățat"
+        % n["RUTE_CARE_CHEAMA_UN_USE_CASE"])
 
 
-def test_P7_nu_se_poate_INCHIDE_cat_timp_un_criteriu_canonic_nu_e_satisfacut():
-    """Verdictul mecanic, plus doc↔cod: planul nu poate declara închis ce codul contrazice."""
-    assert not C.se_poate_inchide(), (
-        "toate criteriile canonice sunt satisfăcute — P7 se poate închide, iar garda asta trebuie "
-        "rescrisă odată cu închiderea")
+def test_P7_e_INCHISA_si_planul_o_spune():
+    """Verdictul mecanic, plus doc↔cod în amândouă sensurile.
+
+    Regula n-a fost „planul să zică deschis", ci **planul nu poate raporta altceva decât codul**.
+    Cât timp un criteriu nu era satisfăcut, planul n-avea voie să declare închis; acum, cu toate
+    patru satisfăcute, n-are voie să mai declare deschis."""
     nesatisfacute = [nume for nume, ok, _c, _t in C.criterii() if not ok]
-    assert nesatisfacute == ["use-case-ul detine tranzactia, nu ruta"], nesatisfacute
+    assert not nesatisfacute, nesatisfacute
+    assert C.se_poate_inchide()
 
     plan = io.open(os.path.join(RADACINA, "PLAN_HARDENING.md"), encoding="utf-8").read()
-    assert plan.count("**P7 DESCHIS**") >= 1, (
-        "`PLAN_HARDENING.md` nu mai declară P7 deschisă, deși un criteriu canonic nu e satisfăcut")
-    assert plan.count("**P7 ÎNCHIS**") == 0, (
-        "`PLAN_HARDENING.md` declară P7 închisă peste un criteriu canonic nesatisfăcut")
+    assert plan.count("**P7 ÎNCHIS**") >= 1, (
+        "toate criteriile canonice sunt satisfăcute, dar `PLAN_HARDENING.md` nu declară P7 închisă")
+    assert plan.count("**P7 DESCHIS**") == 0, (
+        "`PLAN_HARDENING.md` încă declară P7 deschisă peste patru criterii satisfăcute")
 
 
 def test_fiecare_criteriu_isi_poarta_TEMEIUL():

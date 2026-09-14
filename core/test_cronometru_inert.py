@@ -14,7 +14,6 @@ care schimbă răspunsul livrat clientului e mai rea decât nicio măsurătoare.
 pe un modul mort, iar prima măsurătoare de mâine ar raporta segmente goale.
 """
 import ast
-import io
 import os
 import sys
 
@@ -26,7 +25,10 @@ from core import cronometru as C  # noqa: E402
 
 
 def _main_ast():
-    return ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
+    """[P7 · valul use-case] Proiectia stratului de aplicatie: fiecare ruta o data, cu antetul
+    portii si corpul muncii. Reperele de cronometru stau in CORP, care a plecat in `core/uc_*.py`."""
+    from core import scan_sql_efectiv as _efectiv
+    return _efectiv.arbore_aplicatie()
 
 
 def _functie(nume):

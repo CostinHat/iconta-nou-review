@@ -394,16 +394,27 @@ def _felie_py(text, ancora, capete):
     poz = [rest.find(c) for c in capete if rest.find(c) >= 0]
     return rest[:min(poz)] if poz else rest
 
-_main_src = open(os.path.join(BAZA_PY, "main.py"), encoding="utf-8").read()
+# [P7 · valul use-case, 13.09.2026] Cele trei felii de mai jos (`_verificari_contabile`,
+# `_construieste_contabil`, `VC_FARA_SEVERITATE`) sunt despre MUNCA verdictului, nu despre protocol —
+# iar munca a plecat din `main.py` in `core/uc_*.py`. Se citeste sursa STRATULUI DE APLICATIE, cap la
+# cap: altfel taietura iese goala si verificatorul raporteaza „n-am putut extrage", ceea ce e corect
+# ca semnal, dar despre instrument, nu despre cod.
+import sys as _sys_uc
+if BAZA_PY not in _sys_uc.path:
+    _sys_uc.path.insert(0, BAZA_PY)
+from core import scan_sql_efectiv as _efectiv_uc  # noqa: E402
+_main_src = _efectiv_uc.sursa_aplicatie()
 # chei PRODUSE: dict-ul `rezultat = {...}` din _verificari_contabile + orice rezultat["x"] = ...
-_vf = _felie_py(_main_src, "def _verificari_contabile", ("\ndef ",))
+# Nu din sursa lipita: acolo `def _verificari_contabile` apare de DOUA ori — invelisul din
+# `main.py`, care n-are corp, si munca din `core/uc_comun.py`. Accesorul da functia CU CORP.
+_vf = _efectiv_uc.sursa_functiei("_verificari_contabile") or ""
 _produse = set()
 _mrez = re.search(r'rezultat\s*=\s*\{(.*?)\n    \}', _vf, re.S)
 if _mrez:
     _produse |= set(re.findall(r'"(\w+)"\s*:', _mrez.group(1)))
 _produse |= set(re.findall(r'rezultat\[\s*"(\w+)"\s*\]\s*=', _vf))
 # chei PLIATE in contabil (severitate): vc.get("x") + tuplul (cheie, eticheta) din _construieste_contabil
-_cc = _felie_py(_main_src, "def _construieste_contabil", ("\ndef ",))
+_cc = _efectiv_uc.sursa_functiei("_construieste_contabil") or ""
 _pliate = set(re.findall(r'vc\.get\(\s*"(\w+)"', _cc))
 _pliate |= set(re.findall(r'"(\w+_incrucisat|cota_tva_conformitate)"\s*,', _cc))
 # exceptii de severitate declarate (cu motiv)

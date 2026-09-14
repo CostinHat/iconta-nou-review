@@ -82,6 +82,33 @@ def _poarta_temei_structurat(nod):
     return False
 
 
+def _vocabular():
+    """{nume_clasa: cod HTTP} — vocabularul de refuz al stratului use-case, CITIT, nu rescris.
+
+    [P7 · valul use-case] Cele 599 de `HTTPException` din corpurile rutelor au devenit
+    `_erori.<Clasa>`, iar codul se pune la loc in stratul HTTP. Fara ele in nomenclator, inventarul
+    a scazut de la peste 800 la 635 — o curatenie care nu s-a intamplat. Se citeste din
+    `core/erori.py` si din harta `main._COD_EROARE`, ca o clasa noua sa intre in aceeasi zi.
+    """
+    if not hasattr(_vocabular, "_h"):
+        import importlib
+        import sys as _sys
+        if RAD not in _sys.path:
+            _sys.path.insert(0, RAD)
+        try:
+            erori = importlib.import_module("core.erori")
+            harta = {c.__name__: None for c in erori.TOATE}
+            try:
+                m = importlib.import_module("main")
+                harta.update({c.__name__: cod for c, cod in m._COD_EROARE})
+            except Exception:
+                pass
+        except Exception:
+            harta = {}
+        _vocabular._h = harta
+    return _vocabular._h
+
+
 def _clasa_si_stare(nod):
     """(clasa, stare_http|None) pentru un `raise`. `None` daca nu e un refuz."""
     exc = nod.exc
@@ -89,6 +116,14 @@ def _clasa_si_stare(nod):
         return None, None
     tinta = exc.func if isinstance(exc, ast.Call) else exc
     nume = tinta.id if isinstance(tinta, ast.Name) else getattr(tinta, "attr", None)
+    voc = _vocabular()
+    if nume in voc:
+        stare = voc[nume]
+        if stare in _ACCES:
+            return "acces", stare
+        if stare in _NEGASIT:
+            return "negasit", stare
+        return "refuz", stare
     if nume == "HTTPException":
         stare = None
         if isinstance(exc, ast.Call) and exc.args and isinstance(exc.args[0], ast.Constant):

@@ -71,10 +71,19 @@ TABEL = {
         "DIVERGE intre procese, si asta e declarat: cu N instante, `/admin/sanatate` raspunde din "
         "cea care serveste. Nu e stare autoritativa — autoritatea e catalogul PostgreSQL, si el e "
         "unul singur —, deci raspunsurile difera prin VECHIME, nu prin adevar."),
-    ("main", "_TENANT_TEMPLATE"): V(
+    # [P7 · valul use-case, 13.09.2026] Amandoua se ALEG la pornire, in stratul HTTP, si se PUN in
+    # `core/uc_comun.py`, de unde le citeste stratul use-case. Clasificarea e neschimbata; s-a
+    # schimbat modulul in care locuiesc. `_STATIC_DIR` intra abia acum in registru: in `main.py`
+    # detectorul nu-l vedea, iar un nume care intra in domeniul instrumentului se clasifica.
+    ("core.uc_comun", "_TENANT_TEMPLATE"): V(
         ABD, "declarat", REGULA_DECLARAT,
         "Sablonul SQL citit o data la pornire. Identic pe orice numar de instante, fiindca toate "
         "pornesc din acelasi commit."),
+    ("core.uc_comun", "_STATIC_DIR"): V(
+        ABD, "declarat", REGULA_DECLARAT,
+        "Directorul din care se servesc fisierele statice, ales la pornire de `_alege_static()` si "
+        "pus aici de stratul HTTP. Identic pe orice numar de instante: alegerea depinde de commitul "
+        "publicat si de disc, nu de cerere."),
 
     # ---------------------------------------------------------------- RESURSE DE PROCES
     ("core.db", "_pool"): V(

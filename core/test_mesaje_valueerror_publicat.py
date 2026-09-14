@@ -64,19 +64,47 @@ def _publica_valueerror(fn):
             tipuri = ty.elts if isinstance(ty, ast.Tuple) else ([ty] if ty else [])
             if not any(isinstance(x, ast.Name) and x.id == "ValueError" for x in tipuri):
                 continue
-            if "HTTPException" in ast.dump(ast.Module(body=h.body, type_ignores=[])):
+            # [P7 · valul use-case] Doua forme ale aceleiasi publicari: `HTTPException` in stratul
+            # HTTP, `_erori.<Clasa>` in use-case (codul se pune la loc in HTTP, mesajul trece
+            # neatins). Acelasi canal catre contabil, deci amandoua se numara — si se citesc din
+            # NODUL RIDICAT, nu dintr-un dump cautat cu `in`.
+            if any(_publicare(r) for r in ast.walk(ast.Module(body=h.body, type_ignores=[]))):
                 out.append(t)
     return out
 
 
+def _publicare(nod):
+    """`raise` care scoate mesajul din aplicatie: `HTTPException(...)` sau `_erori.<Clasa>(...)`."""
+    if not isinstance(nod, ast.Raise) or not isinstance(nod.exc, ast.Call):
+        return False
+    f = nod.exc.func
+    if isinstance(f, ast.Name):
+        return f.id == "HTTPException"
+    return isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name) \
+        and f.value.id in ("_erori", "erori")
+
+
 def _tinte():
     """{(modul_core, functie)} chemate direct în interiorul unui try care publică."""
-    arb = ast.parse(open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
-    glob = {}
-    for n in arb.body:
-        if isinstance(n, ast.ImportFrom) and (n.module or "").startswith("core"):
-            for a in n.names:
-                glob[a.asname or a.name] = a.name
+    # [P7 · valul use-case] Se parcurge FIECARE fisier al stratului de aplicatie cu harta LUI de
+    # aliasuri. Un arbore lipit ar amesteca hartile — `_fa` inseamna alt modul in `uc_tenants` decat
+    # in `main.py` —, iar unsprezece module au aratat „real 0" tocmai asa.
+    from core import scan_sql_efectiv as _ef
+    out, rute = set(), 0
+    for _cale in _ef.straturi_aplicatie():
+        arb = ast.parse(open(os.path.join(_RAD, _cale), encoding="utf-8").read())
+        glob = {}
+        for n in arb.body:
+            if isinstance(n, ast.ImportFrom) and (n.module or "").startswith("core"):
+                for a in n.names:
+                    glob[a.asname or a.name] = a.name
+        out_f, rute_f = _din_arbore(arb, glob)
+        out |= out_f
+        rute += rute_f
+    return out, rute
+
+
+def _din_arbore(arb, glob):
     out, rute = set(), 0
     for fn in ast.walk(arb):
         # RUTELE `async def` INTRĂ ȘI ELE. Prima formă cerea `ast.FunctionDef`, deci cele 20

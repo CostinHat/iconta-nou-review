@@ -26,6 +26,7 @@ import os
 import pytest
 
 from core import artefacte
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _MAIN = os.path.join(_RAD, "main.py")
@@ -43,7 +44,10 @@ _ACTE = {
 
 def _rute():
     """{(cale): metoda} din main.py, citit din AST."""
-    arb = ast.parse(open(_MAIN, encoding="utf-8").read())
+    # [P7 · valul use-case] Inventarul rutelor ramane citit din `main.py` (acolo stau
+    # decoratorii), dar CORPURILE se citesc din proiectia stratului de aplicatie: fiecare nume
+    # o data, cu munca lui. Intrebarile de mai jos sunt neatinse.
+    arb = _efectiv.arbore_aplicatie()
     out = {}
     for fn in ast.walk(arb):
         if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -146,7 +150,10 @@ def test_rutele_care_produc_artefacte_NU_sunt_GET():
 
 def test_fiecare_ruta_de_artefact_cheama_pastreaza():
     """Pe structură: ruta chiar persistă, nu doar importă modulul."""
-    arb = ast.parse(open(_MAIN, encoding="utf-8").read())
+    # [P7 · valul use-case] Inventarul rutelor ramane citit din `main.py` (acolo stau
+    # decoratorii), dar CORPURILE se citesc din proiectia stratului de aplicatie: fiecare nume
+    # o data, cu munca lui. Intrebarile de mai jos sunt neatinse.
+    arb = _efectiv.arbore_aplicatie()
     gasite = set()
     for fn in ast.walk(arb):
         if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):

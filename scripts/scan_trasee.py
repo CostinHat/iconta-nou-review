@@ -250,7 +250,7 @@ MARGINI = {
 # Module de infrastructură: apar în aproape orice rută și nu spun nimic despre traseu.
 # Se scot din setul traseului, altfel `db`/`auth_api` aduc `users` și `accounting_firms`
 # ca „tabele scrise" în toate cele 35.
-INFRA = {"db", "auth_api", "common", "mesaje", "nucleu"}
+INFRA = {"db", "auth_api", "common", "mesaje", "nucleu", "erori"}
 
 NEMARGINI = {
     "observare": "email și telemetrie: pleacă o COPIE, nu artefactul, iar traseul nu "
@@ -311,6 +311,100 @@ def _repo_functii():
     return _REPO_CACHE
 
 
+def _delegare(fn):
+    """(alias_modul, nume_functie) daca `fn` e un invelis care deleaga in stratul use-case.
+
+    Se citeste din APELUL din corp, nu din conventia de nume: daca maine invelisul cheama alta
+    functie, instrumentul o urmeaza pe aia, nu pe cea pe care o presupunea.
+    """
+    corp = [s for s in fn.body
+            if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))]
+    if not corp or not isinstance(corp[-1], ast.Try):
+        return None
+    # [P7 · valul use-case] Delegarea se cauta IN CORPUL lui `try`, oriunde — nu in forma lui
+    # `return`. Invelisurile au trei forme: delegare pura, delegare + `return Response(...)` (ruta
+    # care construieste raspunsul), si o garda de protocol deasupra lui `try` (rate-limit pe IP).
+    # Cerand prima forma, celelalte doua aratau ca rute nedelegate, iar inventarul le citea modulele
+    # din invelis: `uc_tenants`, atat.
+    for ap in ast.walk(ast.Module(body=corp[-1].body, type_ignores=[])):
+        if isinstance(ap, ast.Call) and isinstance(ap.func, ast.Attribute) \
+                and isinstance(ap.func.value, ast.Name) and ap.func.value.id.startswith("_uc"):
+            return ap.func.value.id, ap.func.attr
+    return None
+
+
+_UC_CACHE = {}
+
+
+def _corp_efectiv(fn, local):
+    """(nod, alias) — functia care poarta MUNCA rutei, si harta de aliasuri a modulului ei.
+
+    Pentru o ruta nedelegata, se intoarce chiar ea. Pentru una delegata, functia din
+    `core/uc_*.py`, impreuna cu aliasurile modulului aceluia — altfel `chemate` s-ar citi cu harta
+    de importuri a lui `main.py`, care nu se aplica acolo.
+    """
+    d = _delegare(fn)
+    if d is None:
+        return fn, local, None
+    alias, nume = d
+    modul = alias.lstrip("_")
+    cale = os.path.join(RAD, "core", "%s.py" % modul)
+    if not os.path.exists(cale):
+        return fn, local, None
+    if modul not in _UC_CACHE:
+        arb = ast.parse(open(cale, encoding="utf-8").read())
+        harta = {}
+        for n in ast.walk(arb):
+            if isinstance(n, ast.ImportFrom) and (n.module or "").split(".")[0] == "core":
+                for al in n.names:
+                    harta[al.asname or al.name] = al.name
+            elif isinstance(n, ast.Import):
+                for al in n.names:
+                    if al.name.startswith("core."):
+                        harta[al.asname or al.name.split(".")[-1]] = al.name.split(".")[-1]
+        _UC_CACHE[modul] = (arb, harta)
+    arb, harta = _UC_CACHE[modul]
+    for n in ast.walk(arb):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == nume:
+            # aliasul LOCAL bate pe cel de modul: corpul mutat isi poarta importurile lui
+            propriu = dict(harta)
+            for x in ast.walk(n):
+                if isinstance(x, ast.ImportFrom) and (x.module or "").split(".")[0] == "core":
+                    for al in x.names:
+                        propriu[al.asname or al.name] = al.name
+                elif isinstance(x, ast.Import):
+                    for al in x.names:
+                        if al.name.startswith("core."):
+                            propriu[al.asname or al.name.split(".")[-1]] = al.name.split(".")[-1]
+            return n, propriu, modul
+    return fn, local, None
+
+
+def _helperi_comuni(fn):
+    """Functiile din `core/uc_comun.py` chemate de `fn` — urmarite pe NUME, nu ca modul intreg.
+
+    `uc_comun` e un sac de helperi; atribuit ca modul, ar da oricarei rute reuniunea scrierilor
+    tuturor (paisprezece tabele), iar clasa n-ar mai deosebi nimic. Un pas, la nivel de functie.
+    """
+    cale = os.path.join(RAD, "core", "uc_comun.py")
+    if not os.path.exists(cale):
+        return [], {}
+    if "uc_comun" not in _UC_CACHE:
+        arb = ast.parse(open(cale, encoding="utf-8").read())
+        harta = {}
+        for n in ast.walk(arb):
+            if isinstance(n, ast.ImportFrom) and (n.module or "").split(".")[0] == "core":
+                for al in n.names:
+                    harta[al.asname or al.name] = al.name
+        _UC_CACHE["uc_comun"] = (arb, harta)
+    arb, harta = _UC_CACHE["uc_comun"]
+    cerute = {n.func.attr for n in ast.walk(fn)
+              if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+              and isinstance(n.func.value, ast.Name) and n.func.value.id.lstrip("_") == "uc_comun"}
+    return [n for n in ast.walk(arb)
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name in cerute], harta
+
+
 def _surse_de_repository(fn):
     """Sursele funcțiilor de repository chemate direct de `fn`."""
     tabel = _repo_functii()
@@ -331,7 +425,15 @@ def normalizeaza(cale):
 # ============================================================
 #  CITIREA CODULUI
 # ============================================================
-def _garzi_si_rol(fn, dec):
+def _garzi_si_rol(fn, dec, corp=None):
+    """Gardile si rolurile unei rute.
+
+    [P7 · valul use-case] Doua surse, fiindca de azi sunt doua locuri: **protocolul** (decorator,
+    dependente, adnotari) se citeste din `fn` — invelisul, care le poarta —, iar ce se verifica **in
+    corp** (`_are_permisiune`, `_cer_admin_cabinet`, un `ctx["rol"]` scris in cod) din `corp`,
+    functia care tine munca. Cu o singura sursa, o ruta care isi verifica dreptul in corp arata ca o
+    ruta fara nicio verificare."""
+    corp = corp if corp is not None else fn
     garzi, roluri, fine = set(), set(), set()
     surse = [dec]
     a = fn.args
@@ -356,7 +458,7 @@ def _garzi_si_rol(fn, dec):
                     for arg in n.args:
                         if isinstance(arg, ast.Constant):
                             roluri.add(str(arg.value))
-    for n in ast.walk(fn):
+    for n in ast.walk(corp):
         if isinstance(n, ast.Call):
             f = getattr(n.func, "id", None) or getattr(n.func, "attr", None)
             if f in ("_are_permisiune", "are_permisiune"):
@@ -438,7 +540,6 @@ def citeste_rute():
                 continue
             if not isinstance(dec.args[0], ast.Constant):
                 continue
-            garzi, roluri, fine = _garzi_si_rol(fn, dec)
             # Aliasurile LOCALE bat pe cele de modul. Multe rute fac
             # `from core import stocuri_api as _s` ÎN CORP, iar `_s` e refolosit de zeci
             # de ori pentru module diferite: fără harta locală, ruta de NIR primea
@@ -473,9 +574,22 @@ def citeste_rute():
                     for al in n.names:
                         if al.name.startswith("core."):
                             local[al.asname or al.name.split(".")[-1]] = al.name.split(".")[-1]
-            chemate = {local[n.value.id] for n in ast.walk(fn)
+            # [P7 · valul use-case] Campurile derivate din CORP se citesc din functia catre care
+            # delega ruta; cele de PROTOCOL raman ale invelisului. Fara asta, o ruta delegata pare
+            # ca nu atinge nimic — si clasificarea traseelor se prabuseste.
+            corp_fn, local, corp_modul = _corp_efectiv(fn, local)
+            # [P7 · valul use-case] Gardile se citesc ABIA ACUM, fiindca partea lor de CORP
+            # (`_are_permisiune`, un `ctx["rol"]` scris in cod) traieste in functia catre care
+            # deleaga ruta. Protocolul ramane citit din invelis, care poarta decoratorul.
+            garzi, roluri, fine = _garzi_si_rol(fn, dec, corp_fn)
+            helperi, harta_comun = _helperi_comuni(corp_fn)
+            chemate = {local[n.value.id] for n in ast.walk(corp_fn)
                        if isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name)
                        and n.value.id in local}
+            for h in helperi:
+                chemate |= {harta_comun[n.value.id] for n in ast.walk(h)
+                            if isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name)
+                            and n.value.id in harta_comun}
             chemate -= INFRA
             # SQL scris INLINE în rută, nu doar prin module. Fără asta, un traseu al
             # cărui UPDATE stă în corpul rutei (pontaj, vector) apare ca „nu scrie
@@ -485,7 +599,9 @@ def citeste_rute():
             # opri la corpul rutei ar raporta „nu scrie nimic" despre rute care scriu — deci se
             # urmărește apelul UN NIVEL, în funcțiile de repository chemate. Mai departe nu: un
             # nivel e cât ține definiția de „scrie ruta asta", nu „scrie ceva, undeva, în lanț".
-            surse = [ast.unparse(fn)] + _surse_de_repository(fn)
+            surse = [ast.unparse(corp_fn)] + _surse_de_repository(corp_fn)
+            for h in helperi:
+                surse += [ast.unparse(h)] + _surse_de_repository(h)
             for m in RE_W.finditer("\n".join(_siruri("\n".join(surse)))):
                 tab = m.group(2)
                 if tab.lower() in ("set", "from", "into", "where"):
@@ -495,8 +611,10 @@ def citeste_rute():
                          "norm": normalizeaza(dec.args[0].value), "fn": fn.name,
                          "linie": fn.lineno, "garzi": garzi, "roluri": roluri,
                          "fine": fine, "module": sorted(chemate),
+                         "corp_modul": corp_modul,
                          "scrie_inline": {k: sorted(v) for k, v in sorted(propriu.items())},
-                         "refuzuri": ast.unparse(fn).count("HTTPException("),
+                         "refuzuri": (ast.unparse(corp_fn).count("HTTPException(")
+                                      + ast.unparse(corp_fn).count("_erori.")),
                          "doc": _prima_fraza(ast.get_docstring(fn))})
     return rute
 
@@ -645,6 +763,14 @@ def module_margine(mod):
     for k in mod:
         if k in gasite:
             continue
+        # [P7 · valul use-case] Stratul USE_CASE nu intra in pasul de vecinatate. Un `core/uc_*.py`
+        # e un SAC de corpuri de ruta si de helperi, nu un modul cu o tema: `uc_comun` are 60 de
+        # functii, din care una trimite e-mailuri, iar pasul ar face din orice ruta care cere o
+        # schema o „cale care atinge lumea din afara" (masurat: MANUAL 5 -> 13, fara ca vreo ruta sa
+        # capete vreun efect). Ce cheama CORPUL rutei e deja in lista ei de module, deci o ruta care
+        # chiar trimite un e-mail iese MANUAL pe drumul drept.
+        if k.startswith("uc_"):
+            continue
         try:
             src = open(os.path.join(cdir, k + ".py"), encoding="utf-8").read()
         except OSError:
@@ -715,8 +841,14 @@ def construieste(cu_db=False):
             info = mod.get(m)
             if not info:
                 continue
-            for tab, verbe in info["scrie"].items():
-                scrise.setdefault(tab, set()).update(verbe)
+            # [P7 · valul use-case] Niciun modul din stratul USE_CASE nu intra in PLAFONUL de
+            # scrieri. Ele raman in lista de module — ruta chiar le atinge —, dar ca modul ar aduce
+            # reuniunea scrierilor tuturor corpurilor pe care le tin (`uc_tenants` tine 254), si
+            # traseul declaratiilor ar ajunge sa „scrie" in `bonuri` sau `chitante`. Atribuirea
+            # precisa exista: corpul rutei ESTE functia din use-case, citita in `scrie_inline`.
+            if not m.startswith("uc_"):
+                for tab, verbe in info["scrie"].items():
+                    scrise.setdefault(tab, set()).update(verbe)
             stari.update(info["stari"])
             refuz += info["refuzuri"]
             if m in ext:
@@ -1199,6 +1331,11 @@ def pasii_ordonati():
             propriu = {tab: set(op) for tab, op in r.get("scrie_inline", {}).items()}
             mostenit, prin = {}, []
             for m in r["module"]:
+                # [P7 · valul use-case] Niciun modul din stratul USE_CASE nu intra in PLAFON:
+                # scrierile lor sunt deja atribuite precis, pe functia chemata, in `scrie_inline`.
+                # Ca module ar aduce reuniunea corpurilor pe care le tin (`uc_tenants`: 254).
+                if m.startswith("uc_"):
+                    continue
                 info = mod.get(m)
                 if not info or not info.get("scrie"):
                     continue

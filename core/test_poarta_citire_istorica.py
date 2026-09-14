@@ -32,6 +32,7 @@ import io
 import os
 
 from core import auth_api, db, tenant_stergere as ts
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _MAIN = os.path.join(_RAD, "main.py")
@@ -62,7 +63,10 @@ SCRIERI_PE_ACELEASI_CAI = frozenset({"jurnal_creeaza", "rapoarte_salvate_creeaza
 
 
 def _arbore():
-    return ast.parse(io.open(_MAIN, encoding="utf-8").read())
+    # [P7 · valul use-case] Inventarul rutelor ramane citit din `main.py` (acolo stau
+    # decoratorii), dar CORPURILE se citesc din proiectia stratului de aplicatie: fiecare nume
+    # o data, cu munca lui. Intrebarile de mai jos sunt neatinse.
+    return _efectiv.arbore_aplicatie()
 
 
 def _nume_apel(c):

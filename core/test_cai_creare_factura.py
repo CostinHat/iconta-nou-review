@@ -19,13 +19,16 @@ import os
 import pytest
 
 from core import scan_cai_factura as _s
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Cele două căi de PRODUCȚIE, numite. Un al treilea nume aici cere o decizie, nu o completare.
 ASTEPTATE = {
     ("core/facturi_api.py", "creeaza_factura"),
-    ("main.py", "_factura_din_parsat"),
+    # [P7 · valul use-case, 13.09.2026] `_factura_din_parsat` a plecat din `main.py` in stratul
+    # use-case, cu corpul neatins. Calea e ACEEASI — se schimba numai fisierul in care locuieste.
+    ("core/uc_comun.py", "_factura_din_parsat"),
 }
 # Clichetul l-a dat INSTRUMENTUL, nu numărătoarea mea de dinainte: numărasem 4 (fișiere), el numără
 # 5 (funcții) — `firma_grea_audit.py` are trei locuri care inserează facturi.
@@ -66,7 +69,7 @@ def test_calea_de_import_e_singura_care_ocoleste_actul_de_emitere(productie):
     """Formularea exactă a întrebării HHH1, citită din inventar, nu din memorie."""
     ocolesc = {(f, fn) for (f, fn) in productie
                if (f, fn) != ("core/facturi_api.py", "creeaza_factura")}
-    assert ocolesc == {("main.py", "_factura_din_parsat")}, ocolesc
+    assert ocolesc == {("core/uc_comun.py", "_factura_din_parsat")}, ocolesc
 
 
 def test_calea_de_import_are_ACUM_actul_ei_de_recunoastere():
@@ -79,8 +82,8 @@ def test_calea_de_import_are_ACUM_actul_ei_de_recunoastere():
     Se verifică pe AST, nu pe proză: actul există, cheamă generatorul de notă, iar calea de import
     scrie o stare care îl așteaptă."""
     import ast
-    import io as _io
-    sursa = _io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
+    # [P7 · valul use-case] Corpul rutei traieste in `core/uc_*.py`; intrebarea e neatinsa.
+    sursa = _efectiv.sursa_aplicatie()
     arb = ast.parse(sursa)
     functii = {n.name: n for n in ast.walk(arb)
                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}

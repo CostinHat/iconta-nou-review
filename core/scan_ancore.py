@@ -92,6 +92,12 @@ def _tinta_functiei(fn):
             c = _cale_din_apel(n)
             if c:
                 tinte.append(("cale", c))
+        # [P7 · valul use-case] O garda nu mai deschide `main.py`: cere stratul de aplicatie prin
+        # accesor. E tot o SURSA CITITA, deci tot o tinta — altfel ancorele ei par absente.
+        if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) \
+                and n.func.attr in ("sursa_aplicatie", "sursa_functiei"):
+            arg = ast.unparse(n.args[0]) if n.args else ""
+            tinte.append(("aplicatie", arg))
     unice = list(dict.fromkeys(tinte))
     if len(unice) == 1:
         return unice[0]
@@ -139,6 +145,11 @@ def inventar():
 
 
 def _sursa_tinta(fel, ref):
+    if fel == "aplicatie":
+        from core import scan_sql_efectiv as _ef
+        if ref:
+            return _ef.sursa_functiei(ref.strip("\'\"")), "main.py"
+        return _ef.sursa_aplicatie(), "main.py"
     if fel == "cale":
         p = ref if os.path.isabs(ref) else os.path.join(RAD, ref)
         if os.path.exists(p):

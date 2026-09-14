@@ -55,7 +55,6 @@ def test_garda_an_neacoperit_esueaza_zgomotos():
 def test_proratare_cm_luna_cu_sarbatoare():
     # Regresie fiscala: aprilie 2026 are 2 sarbatori pe zi lucratoare (10 + 13 apr).
     # Vechi (weekday<5): 22 zile. Corect (fara sarbatori): 20 zile.
-    import calendar
     vechi = sum(1 for z in range(1, 31) if date(2026, 4, z).weekday() < 5)
     assert vechi == 22                            # ce dadea codul buggy
     assert zile_lucratoare_luna(2026, 4) == 20    # ce da acum, corect

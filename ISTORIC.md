@@ -1,6 +1,79 @@
 
 
 
+## 13.09.2026, partea a cincea — **P7 · valul use-case: 385 de corpuri de rută, și faza se ÎNCHIDE**
+
+Pentru un contabil, a cincea oară azi: nu s-a schimbat nimic. Aceleași ecrane, aceleași declarații,
+aceleași refuzuri — cuvânt cu cuvânt, și asta nu mai e o promisiune, e o confruntare.
+
+### Ce s-a schimbat, sub capotă
+
+**Cele 385 de corpuri de rută au plecat din `main.py`** în **27 de module `core/uc_*.py`**, împreună
+cu **58 de helperi** și **12 nume de modul** pe care le cereau. `main.py`: **11714 → 6546** de linii.
+Fiecare rută a rămas la locul ei, cu decoratorul, semnătura și docstringul — FastAPI validează pe
+semnătură, deci contractul de intrare e literal același —, iar corpul a devenit o delegare.
+
+Cifra care a ținut faza deschisă două valuri, **`RUTE_CARE_DESCHID_SINGURE_TRANZACTIA`**, a mers
+**385 → 73 → 17 → 5 → 0**. Cu ea, **toate cele patru criterii canonice ale lui P7 sunt satisfăcute**,
+și faza se închide.
+
+### Ce a făcut posibilă mutarea: un vocabular de refuz
+
+`HTTPException` nu poate trăi în use-case — al doilea criteriu canonic o interzice. Dar decizia care
+produce refuzul se ia **înăuntrul tranzacției**, adică exact în codul care pleacă. S-a scris deci
+`core/erori.py`: clase care numesc **condiția** (*inexistent*, *fără drept*, *conflict*, *date
+invalide*…), iar traducerea condiție → cod HTTP e **o singură hartă**, în stratul HTTP.
+
+**Ce face traducerea sigură e o măsurătoare, nu o speranță:** `HTTPException` **nu e prinsă
+nicăieri** — zero `except HTTPException` în tot repo-ul —, deci înlocuirea ei nu poate schimba niciun
+flux de control. La fel s-a măsurat că niciun obiect de răspuns nu se construiește înăuntrul unei
+tranzacții.
+
+### Ce NU a trecut granița
+
+Obiectele de protocol. Un `Response`/`FileResponse` se construiește tot în înveliș, din valorile pe
+care use-case-ul le întoarce (**15 rute**); un `UploadFile` se citește în înveliș și se pasează ca
+`bytes` + nume (**12 rute**); gărzile de ritm care se uită la IP-ul cererii rămân deasupra, pe primul
+rând (**2 rute**). *Un use-case care vorbește HTTP n-ar fi un use-case.*
+
+Și un al treilea fel de graniță, care n-a fost evident: `_TENANT_TEMPLATE` și `_STATIC_DIR` nu sunt
+constante — se **aleg la pornire**, în stratul HTTP. Mutate ca valori, use-case-ul ar fi rămas cu
+`None` iar scriitorul cu copia lui: o legătură ruptă pe tăcute, care s-ar fi văzut abia în producție.
+S-au mutat invers, și așa e și corect ca strat: **HTTP-ul configurează, use-case-ul consumă.**
+
+### Dovada că nu s-a schimbat contractul
+
+`core/test_p7_uc.py` ia `main.py` **de la commitul dinainte de val** (`git show 43fd2197:main.py`) și
+confruntă, **funcție cu funcție**, mulțimile de perechi `(cod HTTP, mesaj)` pe care le ridică —
+mesajul comparat ca **arbore**, nu ca text, fiindcă dedentarea schimbă sursa fără să schimbe
+valoarea. Trece cu **o singură abatere declarată**, cu motivul scris în fișier: un input-guard
+telegrafic (`"suma invalida"`) care a intrat în domeniul regulii G5 odată cu mutarea și și-a primit
+constrângerea în mesaj.
+
+*Fișierul acela era citat de două ori în cod înainte să existe — `core/erori.py` și `main.py` îl
+numeau ca dovadă a parității. Trimiterea la ceva inexistent se semnalează; aici s-a semnalat
+construind lucrul citat.*
+
+### Ce a ieșit la iveală mutând, și e clasa zilei
+
+**Întreaga mașinărie de gărzi doc↔cod era ancorată pe presupunerea că logica aplicației stă în
+`main.py`.** Mutând-o, ~40 de gărzi au devenit deodată oarbe sau roșii — nu fiindcă s-ar fi stricat
+codul, ci fiindcă se uitau unde nu mai e nimic. Fiecare a fost re-ancorată prin accesorul comun
+(`core/scan_sql_efectiv.py`), fără să-și piardă semantica.
+
+**Patru lucruri s-au pierdut tăcut, și fiecare a fost prins de alt instrument:** două gărzi
+anti-spam (`_rate_limit_*`) lăsate pe dinafară de mutator · comentariile de pe linia decoratorului,
+printre care cinci marcaje `[api_intern_v1]` pe care un instrument le citește ca declarație · și un
+RE-EXPORT (`main.pastila_firma`) scos de curățenia automată de importuri, care a lăsat șase firme cu
+`control_fiscal` în eroare. Toate patru erau lucruri pe care codul le spunea, iar valul le-a rescris
+din ceva care nu le conținea. Fiecare și-a primit garda.
+
+**Iar două scanere aveau `main.py` ca punct orb DECLARAT** (`scan_data_curenta`, `scan_constante`):
+valul le-a închis gaura, iar clichetele lor au urcat — nu fiindcă s-a scris cod nou, ci fiindcă
+**instrumentul vede mai mult**. Fiecare urcare e scrisă cu lista exactă a cazurilor nou-expuse, și
+fiecare caz se regăsește, la aceeași formă, în `git show HEAD:main.py`.
+
+
 ## 13.09.2026, partea a patra — **P7 · valul D4: 215 instrucțiuni mutate, și faza tot nu se închide**
 
 Pentru un contabil, a patra oară azi: nu s-a schimbat nimic. Aceleași ecrane, aceleași declarații,

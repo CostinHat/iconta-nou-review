@@ -307,6 +307,28 @@ def test_ANTI_VACUU_modulul_atribuit_unei_rute_e_VIZIBIL_ei(st):
         if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
             local[(fn.name, fn.lineno)] = _importuri_core(ast.walk(fn), st)
 
+    # [P7 · valul use-case] Pentru o ruta delegata, codul care cheama modulele sta in
+    # `core/uc_*.py`. Intrebarea ramane aceeasi — vizibil ACOLO UNDE e chemat —, doar ca „acolo" s-a
+    # mutat. `uc_comun` e vizibil prin constructie oricarui modul de use-case: fiecare il importa.
+    import glob as _glob
+    _cale_comun = os.path.join(st.RAD, "core", "uc_comun.py")
+    _vizibile_uc_comun = set()
+    if os.path.exists(_cale_comun):
+        _a = ast.parse(io.open(_cale_comun, encoding="utf-8").read())
+        _vizibile_uc_comun = _importuri_core(ast.walk(_a), st)
+    nivel_uc = {}
+    for _c in sorted(_glob.glob(os.path.join(st.RAD, "core", "uc_*.py"))):
+        _m = os.path.basename(_c)[:-3]
+        _arb = ast.parse(io.open(_c, encoding="utf-8").read())
+        nivel_uc[_m] = _importuri_core(st._noduri_nivel_modul(_arb), st) | {"uc_comun"}
+        # Un modul ajuns in lista rutei PRIN helperul comun e vizibil rutei prin acel helper —
+        # inventarul il atribuie tocmai fiindca il urmareste pe nume, un pas. Fara randul asta,
+        # garda ar cere ca ruta sa importe ea insasi ce importa helperul pe care il cheama.
+        nivel_uc[_m] |= _vizibile_uc_comun
+        for _fn in ast.walk(_arb):
+            if isinstance(_fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                nivel_uc[_m] |= _importuri_core(ast.walk(_fn), st)
+
     rute = st.citeste_rute()
     assert len(rute) > 150, (
         "anti-vacuu: doar %d rute citite din main.py — testul ar fi trecut pe o mulțime "
@@ -315,6 +337,8 @@ def test_ANTI_VACUU_modulul_atribuit_unei_rute_e_VIZIBIL_ei(st):
     rele = []
     for r in rute:
         vizibile = nivel | local.get((r["fn"], r["linie"]), set())
+        if r.get("corp_modul"):
+            vizibile = nivel_uc.get(r["corp_modul"], set())
         lipsa = sorted(set(r["module"]) - vizibile)
         if lipsa:
             rele.append("%s %s <- %s" % (r["metoda"], r["cale"], ", ".join(lipsa)))
@@ -356,10 +380,15 @@ def _rute_care_predau_document(st):
                 continue
             if not dec.args or not isinstance(dec.args[0], ast.Constant):
                 continue
-            corp = ast.unparse(fn).lower()
+            # [P7 · valul use-case] Corpul EFECTIV: invelisul plus functia din use-case catre
+            # care deleaga. Semnele unui document livrat stau unde se construieste documentul, iar
+            # citind numai `main.py` detectorul a inceput sa vada mai putine rute — progres aparent,
+            # din mutarea codului sub instrument.
+            corp_fn, _local, _mm = st._corp_efectiv(fn, {})
+            corp = (ast.unparse(fn) + chr(10) + ast.unparse(corp_fn)).lower()
             if not any(m in corp for m in _DOC_PREDAT):
                 continue
-            _g, roluri, fine = st._garzi_si_rol(fn, dec)
+            _g, roluri, fine = st._garzi_si_rol(fn, dec, corp_fn)
             out.append((dec.func.attr.upper(), dec.args[0].value, bool(roluri or fine)))
     return out
 

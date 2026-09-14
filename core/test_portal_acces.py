@@ -32,10 +32,10 @@ Cu titularul = primul cont de client, rutele SE POT exercita pe firma #8396.)*
 """
 import ast
 import importlib.util
-import io
 import os
 
 import pytest
+from core import scan_sql_efectiv as _efectiv
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _SCAN = os.path.join(_RAD, "scripts", "scan_trasee.py")
@@ -55,14 +55,31 @@ def _functii(sursa):
             if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
 
 
+def _functii_aplicatie():
+    # [P7 · valul use-case] Proiectia stratului de aplicatie: fiecare nume o data, cu antetul portii
+    # si corpul muncii. O sursa concatenata ar da invelisul din , care nu face nimic.
+    return {n.name: n for n in _efectiv.arbore_aplicatie().body
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+
+
 def _apeluri(fn):
-    return {n.func.id for n in ast.walk(fn)
-            if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+    # [P7 · valul use-case] Helperii comuni se cheama acum prin modul (). Intrebarea —
+    # «ruta trece pe la X» — e neatinsa; se accepta si forma calificata, altfel garda ar raporta
+    # lipsa acolo unde apelul e prezent.
+    out = set()
+    for n in ast.walk(fn):
+        if not isinstance(n, ast.Call):
+            continue
+        if isinstance(n.func, ast.Name):
+            out.add(n.func.id)
+        elif isinstance(n.func, ast.Attribute):
+            out.add(n.func.attr)
+    return out
 
 
 @pytest.fixture(scope="module")
 def fns():
-    return _functii(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+    return _functii_aplicatie()
 
 
 @pytest.fixture(scope="module")

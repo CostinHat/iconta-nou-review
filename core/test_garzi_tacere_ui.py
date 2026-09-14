@@ -143,7 +143,11 @@ def test_b9_e_mesaj_inainte_de_e_message():
 def test_b4_b5_main_notif_nu_inghitit():
     """B4/B5: notificarea pregatitorului dupa aproba/respinge era inghitita (except: pass). Fix: logata
     (observabil), nu tacut. (Actiunea primara reuseste; esecul notificarii se logheaza.)"""
-    assert "notificare pregatitor esuata" in _read("main.py"), "B4/B5: notificarea inca inghitita tacut"
+    # [P7 · valul use-case] Corpurile lui `aproba`/`respinge` au plecat in `core/uc_coada.py`; se
+    # cauta in SURSA stratului de aplicatie, cap la cap, nu intr-un singur fisier.
+    from core import scan_sql_efectiv as _efectiv
+    assert "notificare pregatitor esuata" in _efectiv.sursa_aplicatie(), (
+        "B4/B5: notificarea inca inghitita tacut")
 
 
 def test_b6_b12_load_esec_stare_de_eroare():

@@ -16,7 +16,7 @@ import os, sys, re
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _DIR)
-from core.common import COTE, Temei  # noqa: E402
+from core.common import COTE  # noqa: E402
 
 OVERLAY = os.path.join(_DIR, "INVENTAR_A_OVERLAY.tsv")
 OUT = os.path.join(_DIR, "INVENTAR_A.md")
