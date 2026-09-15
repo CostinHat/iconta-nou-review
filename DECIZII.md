@@ -3,6 +3,49 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 15.09.2026 (46) — **O PROFORMA intra in D300 ca livrare taxabila.** Gasita de probe, nereparata
+
+**Ce s-a masurat.** Pe o firma cu o singura operatiune in luna — o **proforma** de 500 lei + 105 TVA,
+emisa prin `POST /tenants/{id}/facturi/emite` cu `tip: "proforma"` — D300 pe luna aia iese cu
+`R9_1 = 500`, `R9_2 = 105`, TVA de plata 105. Proforma nu e document fiscal: TVA-ul nu e exigibil pe
+ea (art. 281 Cod fiscal cere faptul generator / factura).
+
+**Unde se rupe, exact.** `core/repo_d300.select_facturi_4` — interogarea principala a perioadei —
+filtreaza pe **data de exigibilitate** si pe **status**, dar niciodata pe `tip`. Iar proforma primeste
+`status = 'de_preluat'`, care e **declarabil** (nomenclatorul de stari, decizia R91). Deci intra pe
+usa din fata.
+
+**Si mai rau: dubla numarare.** Dupa `POST /facturi/{id}/transforma`, factura rezultata intra SI ea
+in D300, pe luna transformarii. Aceeasi operatiune economica, declarata de doua ori, in doua luni.
+
+**Ca dovada ca tiparul corect exista deja in cod:** `core/repo_d394.py:32` scrie
+`AND COALESCE(f.tip, 'factura') = 'factura'`. D394 exclude proformele; D300 nu. *Nu e o intrebare de
+design deschisa — e o omisiune, iar celalalt generator arata raspunsul.*
+
+**De ce n-am reparat-o eu.** Schimbarea atinge cifre fiscale pe **toate** firmele si toate lunile
+generate de aici inainte: o reparatie luata din proprie initiativa ar schimba tacit continutul unor
+declaratii. Proba sta `xfail(strict=True)` cu criteriul scris: in ziua in care D300 nu mai numara
+proformele, ea trece si **pica poarta**, cerand sa i se scoata marcajul.
+
+**Reparatia, cand se decide:** `tip` intra in filtrul lui `select_facturi_4` (si al surorilor lui din
+D390), exact ca in D394. De verificat atunci si `aviz`.
+
+
+## 15.09.2026 (47) — Identitatea partenerului din D394 urmeaza FISA CLIENTULUI, nu factura
+
+**Masurat, nu presupus.** `core/repo_d394.py:29` aduce partenerul cu `LEFT JOIN clienti`. Daca dupa
+emiterea facturii se corecteaza CUI-ul in fisa clientului, un D394 **regenerat pentru luna trecuta**
+iese cu CUI-ul NOU — desi factura isi pastreaza `tert_cui`-ul de la emitere.
+
+**De ce o scriu ca decizie, nu ca defect.** Amandoua citirile sunt aparabile: „declaratia urmeaza
+datele de master, corectate" si „declaratia urmeaza documentul, asa cum a fost emis". Prima
+corecteaza o greseala de tastare fara sa ceara refacerea facturii; a doua nu poate rescrie niciodata
+o luna depusa. Nu aleg eu intre ele.
+
+**Ce am facut:** am **pinat comportamentul** intr-o proba care verifica amandoua capetele — D394
+urmeaza fisa, iar factura ramane cum a fost emisa. Daca maine precedenta se inverseaza, proba cade si
+cere o decizie, in loc sa se schimbe tacit.
+
 ## 14.09.2026 (45) — Cifra lui E3 s-a facut de sase ori mai mare cand a primit instrument
 
 **Ce scria planul.** E3: „21 de rute care scriu si n-au nicio proba", 3–4 zile.

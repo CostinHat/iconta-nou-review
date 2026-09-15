@@ -174,7 +174,12 @@ RUTE_FARA_PROBA_CARE_LE_NUMESTE   = 59
 > acolo nu e păzită de nimic la commit. Deci E3 e de **șase ori** mai mare decât scria aici, iar asta
 > e chiar ce trebuia să se vadă. Clichet dublu în `core/test_rute_probate.py`.
 >
-> **Închise până acum (4 rute grele din lista auditului + 3 din familia bonului):**
+> **[15.09.2026] Lotul „scrierile care ajung în cifre de declarație": subsetul derivat din cod
+> (tabele scrise ∩ tabele citite de generatoare) = **49** de rute; probate **41**, rămase **8** (cer
+> fixturi grele: stoc, extras bancar, bon, mijloc fix, rețetă, fișier de migrare). Clichetul general
+> 131 → 88. Două constatări: DECIZII 46 (proforma în D300) și 47 (partenerul din D394).**
+>
+> **Închise până atunci (4 rute grele din lista auditului + 3 din familia bonului):**
 > `POST/DELETE /cabinet/api-chei`, `POST /admin/cabinete/{id}/suspenda|reactiveaza`,
 > `POST /portal/bon`, `POST /portal/bon/{id}/confirma`, `DELETE /portal/bon/{id}`,
 > `POST /eu/schimba-parola`.

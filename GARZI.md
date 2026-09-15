@@ -7817,6 +7817,34 @@ mai deschide — perechea e testul, un `{"ok": true}` singur nu spune nimic. Iar
 actuală greșită, parolă nouă prea scurtă) trebuie să lase parola neatinsă: *o rută care refuză dar
 apucă să scrie e mai rea decât una care acceptă.*
 
+### `core/test_scrieri_pana_in_declaratie.py` — ruta scrie, declarația se mișcă
+
+Din cele 131 de rute care scriu fără probă în suită, nu toate cântăresc la fel. O rută care schimbă o
+preferință de ecran greșește vizibil și local; una care schimbă un rând din care se ridică D300
+greșește **într-un fișier depus la ANAF**. Subsetul se derivă **din cod**, nu din apreciere:
+`scripts/scan_scrieri_declaratii.py` intersectează tabelele scrise de fiecare rută (corpul ei real,
+plus depozitul nominal, plus un nivel de apeluri către alte module) cu tabelele citite de
+generatoare. **49 de rute.**
+
+**Forma probei, aceeași peste tot:** se generează declarația ÎNAINTE, se apasă ruta, se generează
+DUPĂ, se compară **cifra**. O rută care răspunde `200` și scrie într-un rând pe care generatorul
+nu-l citește trece orice probă de cod HTTP și pică aici.
+
+**Ce a scos la iveală, în prima zi:**
+- **o proformă intră în D300 ca livrare taxabilă** — `select_facturi_4` filtrează pe dată și pe
+  status, niciodată pe `tip`, iar proforma primește un status declarabil. Plus dubla numărare după
+  transformare. `core/repo_d394.py:32` arată tiparul corect: D394 exclude proformele. *Nereparat
+  deliberat — schimbă cifre fiscale pe toate firmele; stă `xfail(strict=True)`, DECIZII 46.*
+- **partenerul din D394 urmează fișa clientului, nu factura** — o corectură de CUI schimbă o lună
+  deja calculabilă. Pinat în probă, în amândouă capetele, fiindcă ambele citiri sunt apărabile
+  (DECIZII 47).
+
+**Ce NU acoperă, numit ca să nu se piardă în cifră:** opt rute din subset cer fiecare o lume
+pregătită — articol de stoc (`stocuri/iesire|inventar|reclasificare`), linie de extras bancar
+(`banca/reconciliere/{id}/conteaza`), bon pozat (`bonuri/{id}/stinge`), mijloc fix
+(`reevaluare-imobilizare`), rețetă (`retete/descarca`), fișier de migrare (`migrare/importa`). Rămân
+în clichet, la vedere.
+
 ### `core/test_rute_probate.py` — o rută care scrie și pe care nicio probă n-o numește
 
 E3 din plan, constatarea R1 a auditului. Rutele *sunt* acoperite structural — sweep-urile generice le
@@ -8055,9 +8083,9 @@ nouă; e datoria veche, numărată prima dată.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**584 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**586 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 555
+### `core/` — 556
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8555,6 +8583,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_scan_instrumente.py` — Garda instrumentului de FAZA 4 (`scripts/scan_instrumente.py`).
 - `core/test_scan_js_texte.py` — CALIBRAREA instrumentului JS — scrisă ÎNAINTE de prima măsurătoare, nu după.
 - `core/test_schema_coloane.py` — Garda: coloanele referite in SQL EXISTA in schema reala a tabelelor tenant.
+- `core/test_scrieri_pana_in_declaratie.py` — Rutele care scriu în tabele din care se ridică declarații — probate PÂNĂ ÎN RÂNDUL DECLARAȚIEI.
 - `core/test_secrete_jwt.py` — Teste securitate JWT — default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile).
 - `core/test_selector_vector.py` — S1 + #2 (plimbare 14.08.2026): selectorul de declaratii respecta vectorul TVA si periodicitatea firmei.
 - `core/test_separa_cui.py` — [Regula 4 + Regula 14.4] GARD: intrarile care nu-s CUI NU dispar in tacere la validarea la ANAF.
@@ -8615,7 +8644,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 29
+### `scripts/` — 30
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -8642,6 +8671,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `scripts/scan_regimuri.py` — CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
 - `scripts/scan_rute_clasificate.py` — CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
 - `scripts/scan_rute_fara_proba.py` — Ce rută SCRIE fără ca vreo probă s-o numească.
+- `scripts/scan_scrieri_declaratii.py` — Care rute SCRIU în tabele din care se calculează cifre de declarație.
 - `scripts/scan_sonde_stare.py` — scripts/scan_sonde_stare.py — SONDELE CARE MĂSOARĂ FĂRĂ SĂ ȘTIE DACĂ CEREREA A REUȘIT.
 - `scripts/scan_stare_proces.py` — P6 — inventarul STARII care traieste in memoria procesului, intre cereri.
 - `scripts/scan_tranzactii.py` — scripts/scan_tranzactii.py — CINE DEȚINE LIMITA TRANZACȚIEI, derivat din cod.

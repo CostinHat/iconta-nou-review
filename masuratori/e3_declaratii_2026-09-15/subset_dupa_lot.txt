@@ -1,0 +1,13 @@
+2026-09-15 03:57:01,582 INFO iconta [R118] /static servit din /home/costin/iconta_publicat/static — publicat (commit c28000ec)
+tabele citite de generatoare: 14
+rute neprobate care scriu: 88
+  din care fara niciun tabel vazut (punct orb declarat): 17
+SUBSET — scriu in tabele din care se calculeaza declaratii: 8
+  POST   /migrare/importa                                     migrare_importa              firma_profil  ->  d100,d101,d101g,d104,d106,d107,d110,d112,d177,d205,d207,d220,d221,d223,d300,d301,d307,d311,d390,d394,d406,d710
+  POST   /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza banca_rec_conteaza           inregistrari,inregistrari_linii  ->  d100,d101,d205,d300,d406
+  POST   /tenants/{tenant_id}/bonuri/{bon_id}/stinge          chitanta_stinge              facturi,inregistrari,inregistrari_linii  ->  d100,d101,d205,d300,d390,d394,d406
+  POST   /tenants/{tenant_id}/reevaluare-imobilizare          reevaluare_imobilizare       inregistrari,inregistrari_linii  ->  d100,d101,d205,d300,d406
+  POST   /tenants/{tenant_id}/retete/descarca                 retete_descarca              inregistrari,inregistrari_linii  ->  d100,d101,d205,d300,d406
+  POST   /tenants/{tenant_id}/stocuri/iesire                  cv_iesire                    inregistrari,inregistrari_linii  ->  d100,d101,d205,d300,d406
+  POST   /tenants/{tenant_id}/stocuri/inventar                cv_inventar                  inregistrari,inregistrari_linii  ->  d100,d101,d205,d300,d406
+  POST   /tenants/{tenant_id}/stocuri/reclasificare           cv_reclasificare             inregistrari,inregistrari_linii  ->  d100,d101,d205,d300,d406

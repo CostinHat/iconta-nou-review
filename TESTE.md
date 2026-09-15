@@ -2438,6 +2438,14 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **E3 · scrierile care ajung în CIFRE DE DECLARAȚIE (15.09.2026)** —
+  `scripts/scan_scrieri_declaratii.py` derivă **din cod** subsetul care contează (tabele scrise de
+  rută ∩ tabele citite de generatoare): **49** de rute. `core/test_scrieri_pana_in_declaratie.py`,
+  **36 de probe + 1 datorie**, le duce pe **41** dintre ele până în rândul declarației: se generează
+  D300/D301/D390/D394 înainte, se apasă ruta, se generează după, se compară cifra. Subset **49 → 8**,
+  clichet nou `PLAFON_SUBSET_FISCAL`. **Ce a scos la iveală:** o proformă intră în D300 ca livrare
+  taxabilă (DECIZII 46), iar identitatea partenerului din D394 urmează fișa clientului, nu factura
+  (DECIZII 47). Măsurători și durate: `masuratori/e3_declaratii_2026-09-15/`.
 - **E3 · ce scrie, se probează — instrumentul și primele rute (14.09.2026)** —
   `scripts/scan_rute_fara_proba.py` + `core/test_rute_probate.py` (**4 probe**, clichet dublu:
   **131** rute care scriu fără probă în suită, **3** nenumite nicăieri) · `core/test_portal_bon.py`

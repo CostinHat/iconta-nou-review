@@ -28,10 +28,17 @@ if RAD not in sys.path:
     sys.path.insert(0, RAD)
 from scripts import scan_rute_fara_proba as _s  # noqa: E402
 
-# Măsurate la 14.09.2026, după probele pentru chei API, suspendare cabinet, portal bon și parolă.
+# Măsurate la 15.09.2026, după lotul „scrierile care ajung în cifre de declarație" (41 de rute).
 # Scad doar cu probe scrise, niciodată prin lărgirea definiției lui „numită".
-PLAFON_IN_SUITA = 131
+PLAFON_IN_SUITA = 88          # 131 la 14.09, înainte de lot
 PLAFON_NICAIERI = 3
+
+# Clichetul care contează cel mai tare: rute care scriu în tabele din care se RIDICĂ DECLARAȚII,
+# derivate din cod de `scripts/scan_scrieri_declaratii.py` (tabele scrise ∩ tabele citite de
+# generatoare). 49 la derivare, 8 rămase. Cele opt cer fiecare o lume pregătită (articol de stoc,
+# linie de extras bancar, bon pozat, mijloc fix, rețetă, fișier de migrare) — sunt numite în
+# GARZI.md, nu lăsate să se piardă în cifră.
+PLAFON_SUBSET_FISCAL = 8
 
 
 def test_CLICHET_rutele_care_scriu_fara_proba_in_suita_nu_cresc():
@@ -80,3 +87,25 @@ def test_CALIBRARE_pe_univers_fabricat_in_patru_directii():
     assert [x for x in _s.nenumite(surse=['cl.post("%s")' % mai_lunga]) if x[0] == cale], (
         "o cale MAI LUNGĂ (`%s`) trece drept numirea rutei scurte — tiparul nu e ancorat la capăt"
         % mai_lunga)
+
+
+def test_CLICHET_rutele_care_scriu_IN_CIFRE_DE_DECLARATIE_nu_cresc():
+    """Subsetul derivat din cod: tabelele scrise de rută ∩ tabelele citite de generatoare.
+
+    E clichetul cu cel mai mare preț per unitate: o rută de aici greșește **într-un fișier depus la
+    ANAF**, nu pe un ecran. De-aia probele lui merg până în rândul declarației, nu până la `200`.
+    """
+    import sys
+    if _s.RAD not in sys.path:
+        sys.path.insert(0, _s.RAD)
+    from scripts import scan_scrieri_declaratii as _sd
+    sub, fara = _sd.subsetul()
+    assert len(sub) <= PLAFON_SUBSET_FISCAL, (
+        "rute care scriu în tabele de declarație, fără probă în suită: %d > %d\n  %s"
+        % (len(sub), PLAFON_SUBSET_FISCAL,
+           "\n  ".join("%-6s %s -> %s" % (m, c, ",".join(d)) for c, m, _f, _tb, d in sub)))
+    # anti-vacuum: dacă intersecția se golește (alt domeniu, alt tipar), clichetul ar deveni gol
+    assert len(_sd.citite_de_generatoare()) >= 5, "generatoarele nu mai declară niciun tabel citit"
+    assert len(fara) < 40, ("prea multe rute fără niciun tabel văzut (%d): scanul de SQL efectiv "
+                            "s-a rupt, iar subsetul s-ar goli fără ca lumea să se fi schimbat"
+                            % len(fara))
