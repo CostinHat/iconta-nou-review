@@ -145,7 +145,7 @@ contradicții ale lui (import de `main`, 9 `get_conn`, declarat `REPOSITORY`).
 ### Ce NU face
 Nu mută nicio linie de cod. E2a **numește**; separarea e E2b.
 
-## E2b — valul care separă
+## E2b — valul care separă · **ÎNCHIS 15.09.2026**
 
 ### Criteriu de ieșire
 `D4b_MIXT_OBSERVAT → 0`, cu aceleași reguli ca la valurile P7: mutare verbatim, contract HTTP
@@ -157,6 +157,15 @@ neschimbat, confruntare cu commitul dinainte.
 ### Ce NU face
 Nu se planifică acum. **Mărimea lui se citește din E2a**, nu se estimează înainte — regula care a
 ținut la D4 (37 de module, 215 instrucțiuni, aflate abia după ce s-au numărat).
+
+> **ÎNCHIS 15.09.2026.** `REPOSITORY care își deschid conexiunea sau comit` **32 → 0**, cu clichet.
+> 20 de depozite nu mai comit (39 de `commit`-uri scoase, toate verificate întâi că apelanții stau
+> sub `db.get_conn`, care comite oricum la ieșire) · `stocuri_cv_api` și-a pierdut și parametrul
+> `commit` · actul cursului BNR a plecat în `core/uc_curs_bnr.py` (conexiunea lui proprie rămâne —
+> decizia din 04.09) · două programe CLI au plecat în `scripts/` · 8 acte etichetate greșit
+> REPOSITORY și-au primit stratul adevărat. `D4b` 41 → 18 (cele rămase sunt ACTE, care au voie).
+> Probe: câte una pentru fiecare depozit, pe ambele jumătăți — tranzacția ȘI schema vin din strat.
+> DECIZII 51.
 
 ---
 

@@ -115,7 +115,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_api_key` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `curs_bnr`, `facturi_api`, `repo_main`, `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_main`, `stocuri_cv_api`*
 
 - [x] ruta cu cheie de API aplică **aceleași reguli** ca ruta din interfață: numerotare, cod fiscal obligatoriu, notă cu conturi valide
 - o cheie de API nu are rol, deci nu poate face ce cere admin_firma pe ruta echivalentă — verifică dacă asta e adevărat sau dacă cheia ocolește restricția
@@ -143,7 +143,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -155,7 +155,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -166,7 +166,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -178,7 +178,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `curs_bnr`, `facturi_api`, `repo_main`, `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_main`, `stocuri_cv_api`*
 
 - [x] factura primește **următorul număr din serie**, fără goluri; două emiteri simultane nu produc același număr
 - exemplarul se îngheață cu amprenta; o regenerare ulterioară produce alt exemplar, nu îl rescrie pe primul
@@ -272,7 +272,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in facturi*
 
-*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `curs_bnr`, `facturi_api`, `repo_facturi`, `repo_main`*
+*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`*
 
 - [x] proforma sau avizul devine factură fiscală cu **numerotare nouă**, din seria de facturi, nu cu numărul proformei
 - documentul original rămâne, cu starea „transformat" și legătura către factura rezultată
@@ -1773,7 +1773,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
 
 - [x] fiecare comandă sincronizată produce **o singură** factură; o a doua rulare nu dublează
 - cota de TVA vine din articol sau din configurație — **nu se ghicește din denumire**
@@ -2049,7 +2049,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · curs_bnr_zilnic (INSERT) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `curs_bnr`, `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
+*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] diferența de curs se calculează între cursul de la înregistrarea creanței și cel de la decontare
 - cursul vine din `curs_bnr_zilnic`; dacă lipsește pentru data respectivă, se aduce sau se refuză — **nu se folosește cel mai apropiat fără să se spună**
@@ -2061,7 +2061,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · curs_bnr_zilnic (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `curs_bnr`, `jurnal_api`, `repo_contabilitate`*
+*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] reevaluarea se face la **finalul lunii**, pe soldurile în valută rămase — verifică dacă ruta o poate rula la orice dată
 - cursul e cel din ultima zi bancară a lunii

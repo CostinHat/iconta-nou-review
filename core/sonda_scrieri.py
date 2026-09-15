@@ -21,7 +21,11 @@ Identitatea testului vine prin `application_name`, pus de `pytest` la fiecare fa
 
 **Numai in mediul izolat.** `instaleaza` refuza sa creeze declansatorul daca `core.mediu_test`
 spune ca baza nu e dovedit de test.
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 
 import os
@@ -109,7 +113,6 @@ def instaleaza(conn, scheme=None):
                 if exista:
                     cur.execute(sql_declansator(schema, tabela))
                     montate.append("%s.%s" % (schema, tabela))
-    conn.commit()
     return montate
 
 

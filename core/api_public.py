@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+
 """API public: chei per cabinet. Cheia se arata O SINGURA DATA la creare; stocam doar SHA256."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 import hashlib
 import secrets
 from psycopg2.extras import RealDictCursor
@@ -13,7 +17,6 @@ def genereaza(conn, firm_id, nume=None):
                        VALUES (%s,%s,%s,%s) RETURNING id""",
                     (firm_id, h, cheie[:12], nume))
         kid = cur.fetchone()[0]
-    conn.commit()
     return {"id": kid, "cheie": cheie, "prefix": cheie[:12]}
 
 
@@ -35,7 +38,6 @@ def revoca(conn, firm_id, kid):
                        WHERE id=%s AND accounting_firm_id=%s RETURNING id""", (kid, firm_id))
         if not cur.fetchone():
             return {"eroare": "cheie inexistentă"}
-    conn.commit()
     return {"revocat": kid}
 
 
@@ -65,5 +67,4 @@ def verifica(conn, cheie):
                                      WHERE f.id = k.accounting_firm_id AND f.activ)
                        RETURNING k.accounting_firm_id""", (h,))
         r = cur.fetchone()
-    conn.commit()
     return r[0] if r else None

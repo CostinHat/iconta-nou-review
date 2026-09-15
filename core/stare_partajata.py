@@ -59,7 +59,6 @@ PURTAREA LA ESEC DE BAZA — diferita intre cele doua, si fiecare cu motivul ei:
     inchide. Consecinta declarata: cat timp baza e jos, alertele nu pleaca — semnalul pentru asta
     e deadman-ul de cron, care nu trece prin functia asta.
 """
-import sys
 
 #: Contractul de blocare, neschimbat fata de `[login_lockout_v1]`. Stau AICI, langa interogarile
 #: care le folosesc, ca sa nu existe doua locuri care spun «cinci» si «cincisprezece minute».
@@ -245,15 +244,6 @@ def cereri_in_fereastra(conn, cheie, ip, fereastra_sec=FEREASTRA_RITM_SEC):
             (cheie, ip, fereastra_sec))
         return cur.fetchone()[0]
 
-
-def main():
-    from core import db
-    db.init_pool()
-    with db.get_conn() as conn:
-        aplica_ddl(conn)
-    print("stare_partajata: gata")
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+# [E2b, 15.09.2026] Programul de linie de comanda (`main()`) a plecat in
+# `scripts/stare_partajata_cli.py`: el isi deschidea conexiunea, iar un DEPOZIT n-are voie.
+# Functiile de aici primesc, toate, cursorul apelantului.

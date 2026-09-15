@@ -26,12 +26,17 @@ import sys
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if RAD not in sys.path:
     sys.path.insert(0, RAD)
+import pytest  # noqa: E402
+
 from scripts import scan_univers_sql as _u  # noqa: E402
 
-#: Măsurate la 15.09.2026, după declararea celor 78. Scad prin SEPARARE (E2b), nu prin redefinirea
-#: cuvântului „amestec".
-PLAFON_D4B = 41
-PLAFON_REPOSITORY_CU_CONEXIUNE = 32
+#: Măsurate la 15.09.2026. `D4b` scade prin SEPARARE (E2b), nu prin redefinirea cuvântului
+#: „amestec". Cele 18 rămase sunt ACTE — cron-uri, lucrători, sonde, conectori — care își dețin
+#: tranzacția fiindcă aia e treaba lor (`PLAN_HARDENING.md:840`).
+PLAFON_D4B = 18                        # 41 înainte de E2b
+#: **ZERO, și rămâne zero.** Un depozit care își deschide singur conexiunea sau comite taie
+#: tranzacția apelantului în două (P4) — iar `db.get_conn` comite oricum la ieșirea din bloc.
+PLAFON_REPOSITORY_CU_CONEXIUNE = 0     # 32 înainte de E2b
 
 
 def test_CRITERIU_niciun_modul_cu_SQL_nu_e_nedeclarat():
@@ -103,3 +108,51 @@ def test_CALIBRARE_pe_univers_fabricat_in_patru_directii():
     doar_commit = "def f(conn):\n    conn.execute('UPDATE t SET a=1')\n    conn.commit()\n"
     assert _u.deschide_sau_comite("zt.py", doar_commit) == (0, 1), (
         "`commit` fără `get_conn` nu e văzut — jumătate din amestec ar scăpa")
+
+
+# ── E2b: fiecare depozit dovedește că tranzacția și schema vin din strat ─────────────────────
+
+def _depozite_cu_sql():
+    from core import straturi
+    u = _u.universul()
+    mg = _u.migrari(u)
+    return sorted(c for c in u if c not in mg and straturi.strat(c) == "REPOSITORY")
+
+
+def test_ANTI_VACUU_chiar_exista_depozite_de_probat():
+    assert len(_depozite_cu_sql()) > 40, (
+        "doar %d depozite cu SQL — universul s-a rupt, iar probele de mai jos ar trece pe gol"
+        % len(_depozite_cu_sql()))
+
+
+@pytest.mark.parametrize("cale", _depozite_cu_sql())
+def test_DEPOZITUL_nu_deschide_conexiunea_si_nu_comite(cale):
+    """Câte o probă pentru FIECARE depozit, nu o cifră pe toate: când cade, spune care.
+
+    `db.get_conn` comite la ieșirea din bloc (`core/db.py`), deci un `commit` în depozit nu adaugă
+    nimic — taie tranzacția apelantului în două. Iar un `get_conn` propriu ar însemna că depozitul
+    hotărăște singur granița, adică exact ce contractul dă use-case-ului."""
+    g, cm = _u.deschide_sau_comite(cale)
+    assert (g, cm) == (0, 0), (
+        "%s: get_conn=%d commit=%d — tranzacția trebuie să vină de la apelant "
+        "(PLAN_HARDENING.md:842)" % (cale, g, cm))
+
+
+@pytest.mark.parametrize("cale", _depozite_cu_sql())
+def test_DEPOZITUL_nu_isi_afla_singur_schema_tenantului(cale):
+    """A doua jumătate a întrebării lui E2b: schema vine tot din strat.
+
+    Rezolvarea schemei (`schema_tenant`, `_schema_sau_404`, `_schema_cabinet_sau_404`) e o decizie
+    de ACCES — cine are voie la ce firmă. Un depozit care și-ar afla singur schema ar decide, pe
+    tăcute, și cine are acces."""
+    import ast
+    arb = _u._arbore(cale)
+    gasite = {n.func.attr for n in ast.walk(arb)
+              if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+              and n.func.attr in ("schema_tenant", "_schema_sau_404", "_schema_cabinet_sau_404",
+                                  "schema_tenant_citire")}
+    gasite |= {n.func.id for n in ast.walk(arb)
+               if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+               and n.func.id in ("_schema_sau_404", "_schema_cabinet_sau_404")}
+    assert not gasite, ("%s își află singur schema tenantului (%s) — aia e o decizie de acces, "
+                        "a stratului de deasupra" % (cale, ", ".join(sorted(gasite))))

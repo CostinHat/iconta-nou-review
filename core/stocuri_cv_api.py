@@ -72,16 +72,18 @@ def intrare(conn, schema, corp):
                     (aid, corp["data"], cant, pret, val, corp.get("document"),
                      corp.get("locatie") or None))
         mid = cur.fetchone()["id"]
-    conn.commit()
     return {"id": mid, "articol_id": aid, "valoare": str(val)}
 
 
-def iesire(conn, schema, corp, factura_id=None, commit=True):
+def iesire(conn, schema, corp, factura_id=None):
     """corp: {articol_id, data, cantitate, document?, locatie?}. Valoare la CMP + notă ciornă
     cont_cheltuiala = cont_stoc.
     factura_id: leagă mișcarea de o factură (puntea factură->stoc, F172); NULL la ieșirea manuală.
-    commit: False când puntea o cheamă ÎN tranzacția emiterii (atomicitate emit+descărcare).
-    Ambii parametri sunt aditivi - /stocuri/iesire rămâne identic (factura_id=None, commit=True)."""
+
+    [E2b, 15.09.2026] Parametrul `commit` a fost scos. El exista ca să poată spune apelantul „nu
+    comite acum, sunt în tranzacția mea" — adică exact ce e acum REGULA: tranzacția e a stratului,
+    iar depozitul nu comite niciodată. Cu `commit`-urile scoase, parametrul n-ar mai fi comandat
+    nimic, iar un parametru care nu face nimic e o urmă de intenție, nu o decizie."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (corp["articol_id"],))
         a = cur.fetchone()
@@ -104,8 +106,6 @@ def iesire(conn, schema, corp, factura_id=None, commit=True):
                     (a["id"], corp["data"], Decimal(str(corp["cantitate"])), r["valoare"],
                      corp.get("document"), iid, corp.get("locatie") or None, factura_id))
         mid = cur.fetchone()["id"]
-    if commit:
-        conn.commit()
     return {"id": mid, "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
             "nota": f"{a['cont_cheltuiala']}={a['cont_stoc']}", "inregistrare_id": iid}
 
@@ -125,7 +125,7 @@ def descarca_factura(conn, schema, factura_id, data):
         rez = iesire(conn, schema,
                      {"articol_id": l["articol_id"], "data": data, "cantitate": l["cantitate"],
                       "document": f"Factura #{factura_id}"},
-                     factura_id=factura_id, commit=False)
+                     factura_id=factura_id)
         if rez is None:
             erori.append({"articol_id": l["articol_id"], "descriere": l["descriere"], "eroare": "articol inexistent"})
         elif rez.get("eroare"):
@@ -191,7 +191,6 @@ def inventar(conn, schema, corp):
             rez.append({"articol_id": a["id"], "denumire": a["denumire"],
                         "diferenta": str(dif), "valoare": str(val),
                         "nota": f"{debit}={credit}", "inregistrare_id": iid})
-    conn.commit()
     return {"rezultate": rez}
 
 
@@ -281,7 +280,6 @@ def set_barcode(conn, schema, articol_id, barcode):
             if cur.fetchone():
                 return {"eroare": "codul de bare există deja la alt articol"}
         cur.execute(f"UPDATE {schema}.articole SET barcode=%s WHERE id=%s", (bc, articol_id))
-    conn.commit()
     return {"articol_id": articol_id, "barcode": bc}
 
 
@@ -301,7 +299,6 @@ def set_nivel_minim(conn, schema, articol_id, nivel):
         if not cur.fetchone():
             return None
         cur.execute(f"UPDATE {schema}.articole SET nivel_minim=%s WHERE id=%s", (nm, articol_id))
-    conn.commit()
     return {"articol_id": articol_id, "nivel_minim": str(nm) if nm is not None else None}
 
 
@@ -370,7 +367,6 @@ def transfer(conn, schema, corp):
                         (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie)
                         VALUES (%s,%s,'intrare',%s,%s,%s,%s,%s)""",
                     (a["id"], corp["data"], cant, r["cmp"], r["valoare"], doc, catre))
-    conn.commit()
     return {"articol_id": a["id"], "denumire": a["denumire"], "cantitate": str(cant),
             "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
             "din_locatie": din or "(nespecificat)", "in_locatie": catre or "(nespecificat)"}
@@ -407,7 +403,6 @@ def reclasificare(conn, schema, corp):
                         (iid, cont_nou, a["cont_stoc"], val))
         cur.execute(f"UPDATE {schema}.articole SET cont_stoc=%s, cont_cheltuiala=%s WHERE id=%s",
                     (cont_nou, chelt_nou, a["id"]))
-    conn.commit()
     return {"articol_id": a["id"], "denumire": a["denumire"],
             "cont_stoc_vechi": a["cont_stoc"], "cont_stoc": cont_nou,
             "cont_cheltuiala": chelt_nou, "valoare_reclasificata": str(val),

@@ -10,7 +10,11 @@ Verificari informative (nu blocante):
 - valoare >= 5000 lei (plafon 2026 OUG 8/2026); sub plafon = avertisment
   (mijloacele existente la 31.12.2025 raman amortizabile pe durata ramasa - regula tranzitorie)
 Amortizarea cumulata = valoare - rezidual (afisata informativ).
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 import re as _re
 import datetime
@@ -243,5 +247,4 @@ def importa(conn, randuri):
                   r.get("rezidual", 0), r.get("dnf_luni", 0),
                   r.get("data_pif"), r.get("metoda", "liniara")))
             n += 1
-    conn.commit()
     return {"importati": n}

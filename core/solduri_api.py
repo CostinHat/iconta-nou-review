@@ -5,7 +5,11 @@ Citește o balanță (.xlsx/.csv) cu coloanele: Cont, Denumire, Sold debitor, So
 Soldurile se salvează în schema tenantului (tabel solduri_initiale, auto-creat).
 Conturile analitice (4111.ALPHA, 401.GAMMA) se păstrează ca atare — așa intră planul
 analitic, derivat direct din balanță.
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 
 
@@ -132,7 +136,6 @@ def asigura_tabel(conn):
                 data_referinta DATE
             )
         """)
-    conn.commit()
 
 
 def verifica_echilibru(randuri):
@@ -230,7 +233,6 @@ def importa(conn, randuri, data_referinta=None):
                 (r["cont"], r.get("denumire", ""), r.get("debit", 0), r.get("credit", 0), data_referinta))
             td += float(r.get("debit", 0) or 0)
             tc += float(r.get("credit", 0) or 0)
-    conn.commit()
     return {"randuri": len(randuri), "total_debit": round(td, 2), "total_credit": round(tc, 2)}
 
 

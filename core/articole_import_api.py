@@ -4,7 +4,11 @@ Citeste un export (.xlsx/.csv) cu denumire, UM, cantitate, pret unitar, cont sto
 Mapeaza flexibil coloanele (tiparul asociati_import_api). Creeaza articolele si o miscare
 de INTRARE initiala (document 'sold initial') -> CMP-ul de pornire al fisei de magazie.
 Idempotenta: articolele existente (aceeasi denumire) NU se dubleaza - se sare cu motiv.
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 
 
@@ -132,5 +136,4 @@ def importa(conn, schema, articole, data_sold=None):
                                 VALUES (%s,%s,'intrare',%s,%s,%s,'sold initial (import)')""",
                             (aid, d, a["cantitate"], a["pret"], val))
             create += 1
-    conn.commit()
     return {"create": create, "sarite": sarite}

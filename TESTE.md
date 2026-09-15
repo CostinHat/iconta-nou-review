@@ -2438,6 +2438,13 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **E2b · depozitul nu mai deschide și nu mai comite (15.09.2026)** — 32 → **0**, cu clichet.
+  39 de `commit`-uri scoase din 21 de depozite (verificat întâi, mecanic, că toate apelurile stau
+  sub `db.get_conn`, care comite la ieșire) · parametrul `commit` al lui `stocuri_cv_api`, eliminat ·
+  actul cursului BNR mutat în `core/uc_curs_bnr.py` · două programe CLI mutate în `scripts/` · 8
+  acte etichetate greșit REPOSITORY, corectate. Probele: **câte una pentru fiecare depozit**
+  (parametrizate, ~100), pe ambele jumătăți — nici tranzacție proprie, nici rezolvarea schemei
+  tenantului. DECIZII 51.
 - **E2a · universul se declară, amestecul se observă (15.09.2026)** — `scripts/scan_univers_sql.py`
   + `core/test_e2a_univers.py` (**6 probe**): universul = `main.py` + `core/` cu SQL (189), clasa
   numită `MIGRARE_UNICA` (51), de declarat 138 · **`MODULE_CU_SQL_FARA_STRAT` 78 → 0** (criteriu, nu

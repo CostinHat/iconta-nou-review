@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Registru-jurnal de încasări și plăți (OMFP 170/2015) + Fișa calcul D212.
+
 Convenție: funcții (conn, schema, ...). Tot ce e generat automat = ciorna."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import d212_engine as _e
@@ -112,7 +116,6 @@ def adauga(conn, schema, op, user_id=None):
              op.get("valuta", "RON"), op.get("suma_valuta"), op.get("curs_valutar"),
              op["metoda"], op["categorie"], op.get("deductibilitate"), user_id))
         rid = cur.fetchone()["id"]
-    conn.commit()
     return {"id": rid, "status": "ciorna"}
 
 
@@ -123,7 +126,6 @@ def valideaza(conn, schema, op_id, user_id=None):
                         WHERE id=%s AND status='ciorna' RETURNING id""", (user_id, op_id))
         if not cur.fetchone():
             return {"eroare": "operațiune inexistentă sau deja validată"}
-    conn.commit()
     return {"id": op_id, "status": "validata"}
 
 
@@ -132,7 +134,6 @@ def sterge(conn, schema, op_id):
         cur.execute(f"DELETE FROM {schema}.rip_operatiuni WHERE id=%s AND status='ciorna' RETURNING id", (op_id,))
         if not cur.fetchone():
             return {"eroare": "doar ciornele se pot șterge"}
-    conn.commit()
     return {"sters": op_id}
 
 
@@ -155,7 +156,6 @@ def import_banca(conn, schema, an, luna, user_id=None):
               AND NOT EXISTS (SELECT 1 FROM {schema}.rip_operatiuni r WHERE r.banca_linie_id=el.id)
             RETURNING id""", (user_id, an, luna))
         n = len(cur.fetchall())
-    conn.commit()
     return {"importate": n, "status": "ciorna",
             "nota": "categoriile/deductibilitatea propuse - de verificat de contabil"}
 
@@ -178,7 +178,6 @@ def import_casa(conn, schema, an, luna, user_id=None):
               AND NOT EXISTS (SELECT 1 FROM {schema}.rip_operatiuni r WHERE r.casa_operatiune_id=co.id)
             RETURNING id""", (user_id, an, luna))
         n = len(cur.fetchall())
-    conn.commit()
     return {"importate": n, "status": "ciorna"}
 
 

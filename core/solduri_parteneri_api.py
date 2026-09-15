@@ -7,7 +7,11 @@ Un rand = un partener pe un cont. Se salveaza in schema tenantului (tabel soldur
 Coerenta cu stratul 2 (solduri_initiale): suma soldurilor partenerilor pe contul sintetic
 (4111, 401) se compara cu soldul sintetic din balanta (analiticele 4111.X grupate pe radacina).
 Informativ, NU blocant — contabilul decide.
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 
 
@@ -116,7 +120,6 @@ def asigura_tabel(conn):
                 data_referinta DATE
             )
         """)
-    conn.commit()
 
 
 def coerenta(conn, randuri):
@@ -254,7 +257,6 @@ def importa(conn, randuri, data_referinta=None):
                  r.get("debit", 0), r.get("credit", 0), data_referinta))
             td += float(r.get("debit", 0) or 0)
             tc += float(r.get("credit", 0) or 0)
-    conn.commit()
     return {"randuri": len(randuri), "total_debit": round(td, 2), "total_credit": round(tc, 2)}
 
 

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Stocuri global-valorică — strat API. Motorul: core/stocuri.py.
+
 AI propune (note ciorne), contabilul validează în jurnal."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from core import afirmatii as _af  # [P8] absenta vanzarilor e un fapt
 import json
 from decimal import Decimal
@@ -91,7 +95,6 @@ def adauga_nir(conn, schema, nir):
                         (nid, l["denumire"], Decimal(str(l["cantitate"])),
                          Decimal(str(l["pret_achizitie"])), Decimal(str(l["pret_vanzare"])),
                          Decimal(str(l["cota_tva"]))))
-    conn.commit()
     return {"id": nid, "inregistrari": ids,
             "cost_total": str(rez["cost_total"]), "cost_baza_total": str(rez["cost_baza_total"]),
             "transport": str(rez["transport"]), "taxe": str(rez["taxe"]),
@@ -171,7 +174,6 @@ def descarca_luna(conn, schema, an, luna):
         ultima_zi = date(an, luna, calendar.monthrange(an, luna)[1])
         ids = _noteaza(cur, schema, ultima_zi,
                        f"Descarcare gestiune {luna:02d}/{an}", rez["note"])
-    conn.commit()
     return {"k": str(rez["k"].quantize(Decimal('0.000001'))), "cmv": str(rez["cmv"]),
             "adaos": str(rez["adaos"]), "tva": str(rez["tva"]),
             "total_371": str(rez["total_371"]), "inregistrari": ids}

@@ -37,7 +37,6 @@ ca ea sa fie sigura si masurabila.
 """
 import os
 import socket
-import sys
 
 #: Cheia blocajului de pornire. Un intreg fix, ales o data, DIFERIT de `firma_rezumat.CHEIE_BLOCAJ`
 #: (0x1C0A7A) — doua blocaje consultative cu aceeasi cheie ar parea ca se apara unul pe altul si
@@ -306,18 +305,6 @@ def toate_poarta(conn, head_sha, moarta_sec=INSTANTA_MOARTA_SEC):
     rataciti = [x for x in lista if x[2] != head_sha]
     return (bool(lista) and not rataciti), len(lista), rataciti
 
-
-def main():
-    """`python3 -m core.instante` — ce se vede acum. Pentru om si pentru hook."""
-    from core import db
-    db.init_pool()
-    with db.get_conn() as conn:
-        aplica_ddl(conn)
-        for g, p, c, t in vii(conn):
-            print("%s pid=%-7d commit=%s  pornit %s" % (g, p, (c or "?")[:8], t))
-        print("lider sanatate: %s" % (cine_e_lider(conn, "sanatate"),))
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+# [E2b, 15.09.2026] Programul de linie de comanda (`main()`) a plecat in
+# `scripts/instante_cli.py`: el isi deschidea conexiunea, iar un DEPOZIT n-are voie.
+# Functiile de aici primesc, toate, cursorul apelantului.

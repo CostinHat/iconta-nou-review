@@ -5,7 +5,11 @@ Citeste un export (.xlsx/.csv) cu nume, CNP/CUI, cota %. Mapeaza flexibil coloan
 Importa in tabelul existent `asociati` (DELETE + INSERT per firma).
 Valideaza CNP daca are 13 cifre (cheie 279146358279); CUI persoana juridica acceptat fara validare.
 Coerenta: suma cotelor ar trebui sa dea 100% (informativ, nu blocant).
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 import datetime
 from core.identitate import valideaza_cui as _valideaza_cui  # [Q4] CUI juridic validat ca CUI, nu ca CNP
@@ -180,5 +184,4 @@ def importa(conn, randuri):
                 "INSERT INTO asociati (nume, cnp, cota) VALUES (%s,%s,%s)",
                 (r["nume"], r.get("cnp", ""), r.get("cota", 0)))
             n += 1
-    conn.commit()
     return {"importati": n}

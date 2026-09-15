@@ -101,7 +101,7 @@ def de_emis(sabloane, azi=None):
 
 def emite_scadente(conn, schema, azi=None):
     """Emite facturile scadente pentru un tenant. Intoarce lista emisa."""
-    from core import curs_bnr as _cb
+    from core import uc_curs_bnr as _uc_cb
     from core import facturi_api
     azi = azi or datetime.date.today()
     emise = []
@@ -111,7 +111,7 @@ def emite_scadente(conn, schema, azi=None):
     # abonamentele deja citite, deci nu se cere nimic in plus de la baza.
     for _m in {(_s.get("moneda") or "RON") for _s in _scadente}:
         try:
-            _cb.asigura_cursul(_m, azi)
+            _uc_cb.asigura_cursul(_m, azi)
         except Exception:      # noqa: BLE001 — pre-incalzirea nu poate strica emiterea
             pass
     for s in _scadente:

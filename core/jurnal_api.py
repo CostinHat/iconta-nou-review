@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Jurnal — editare/ștergere/validare note. Doar ciornele se pot modifica:
+
 AI propune (ciorna), contabilul validează."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
@@ -151,7 +155,6 @@ def creeaza(conn, schema, descriere, data, linii):
             cur, schema, nota_id,
             [(str(l["debit"]).strip(), str(l["credit"]).strip(), Decimal(str(l["suma"])))
              for l in linii], data)
-    conn.commit()
     out = {"ok": True, "id": nota_id}
     if legata:
         out["factura_id"] = legata
@@ -207,7 +210,6 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
         if seturi:
             cur.execute(f"UPDATE {schema}.inregistrari SET {', '.join(seturi)} WHERE id=%s",
                         (*valori, nota_id))
-    conn.commit()
     return {"ok": True}
 
 
@@ -224,7 +226,6 @@ def sterge(conn, schema, nota_id):
                         WHERE status='contat'
                           AND alocari->'inregistrari_ids' @> %s::jsonb""", (str(nota_id),))
         cur.execute(f"DELETE FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
-    conn.commit()
     return {"ok": True}
 
 
@@ -257,7 +258,6 @@ def valideaza(conn, schema, nota_id):
         except Exception as _e:
             from core import observare as _obs
             _obs.esec_secundar("invatare AI la validare nota", _e)  # inghitit, dar nu tacut (27.07.2026)
-    conn.commit()
     return {"ok": True}
 
 

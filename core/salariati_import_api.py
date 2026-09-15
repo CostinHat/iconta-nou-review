@@ -5,7 +5,11 @@ Citeste un export din vechea aplicatie (.xlsx/.csv) si mapeaza flexibil coloanel
 (nume/prenume/CNP/salariu/functie/data angajare) indiferent de ordine sau denumire exacta.
 Importa in tabelul existent `salariati` din schema tenantului (NU il recreeaza).
 Valideaza CNP (cheie de control oficiala 279146358279 + structura data + judet).
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 import datetime
 
@@ -315,5 +319,4 @@ def importa(conn, randuri):
             from datetime import date as _dm
             _si.seteaza(cur, _sid, r.get("salariu_brut", 0), r.get("data_angajare") or _dm.today().isoformat())
             importati += 1
-    conn.commit()
     return {"importati": importati}

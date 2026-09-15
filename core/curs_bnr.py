@@ -35,7 +35,7 @@ ARHITECTURA:
 """
 
 from __future__ import annotations
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from decimal import Decimal, ROUND_HALF_UP
 import xml.etree.ElementTree as ET
 import collections
@@ -210,28 +210,10 @@ def _din_cache(conn, moneda: str, data_ref: date):
     return None, None
 
 
-def _salveaza_cache(harta: dict):
-    """Salveaza cursurile in cache (idempotent), pe o CONEXIUNE PROPRIE.
-
-    **DE CE NU PE CONEXIUNEA APELANTULUI** (gasit apasand, 04.09.2026). Pana azi primea `conn` si
-    facea `conn.commit()` pe el. Apelantul lui e `curs_pentru`, chemat din mijlocul emiterii unei
-    facturi — deci commitul asta comitea FACTURA, in mijlocul actului. Consecinta, probata: un
-    refuz de curs (`CURS_PREA_VECHI`) facea `rollback()` care nu mai avea ce anula, iar in baza
-    ramanea o factura numerotata si contata, fara curs si fara TVA in lei.
-
-    Cache-ul traieste in `public` si e o preocupare a APLICATIEI, nu a facturii; se scrie separat,
-    ca sa se pastreze si cand actul care l-a declansat esueaza — altfel fiecare incercare ar
-    re-descarca de la BNR, care blocheaza IP-urile cu trafic repetat."""
-    from core import db as _db
-    with _db.get_conn() as c2:
-        with c2.cursor() as cur:
-            for d, cursuri in harta.items():
-                for mon, c in cursuri.items():
-                    cur.execute(
-                        "INSERT INTO public.curs_bnr_zilnic (data, moneda, curs) VALUES (%s,%s,%s) "
-                        "ON CONFLICT (data, moneda) DO NOTHING",
-                        (d, mon, c))
-        c2.commit()
+# [E2b, 15.09.2026] ACTUL (`asigura_cursul` / `_salveaza_cache`) a plecat in
+# `core/uc_curs_bnr.py`: isi deschide conexiunea lui — deliberat, decizia din
+# 04.09.2026 — iar un DEPOZIT n-are voie s-o faca. Depozitul a ramas aici:
+# `curs_pentru` primeste conexiunea apelantului si decide.
 
 
 #: [P5 val 3, 11.09.2026 · P6 val 2, 12.09.2026] Ce a aflat ultima descarcare, ca `curs_pentru`
@@ -280,54 +262,10 @@ def _preluare(moneda, data_factura):
     return x[1], (x[2] or set())
 
 
-def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):
-    """Aduce de la BNR ce lipseste din cache — FARA conexiunea apelantului. Nu decide nimic.
-
-    [P5 val 3, 11.09.2026] Se cheama INAINTEA tranzactiei care va emite factura. Descarcarea are
-    termen de 10 s pe fiecare din cele (pana la) trei adrese, iar forma dinainte o facea din
-    mijlocul lui `curs_pentru`, adica din mijlocul tranzactiei de emitere. Zece cereri de facturare
-    in valuta goleau pool-ul pentru toata aplicatia.
-
-    *Nu ia nicio decizie:* pragul de vechime, alegerea cursului si cele trei refuzuri raman in
-    `curs_pentru`, unde erau, si se aplica pe cache-ul de ATUNCI — deci o harta adusa aici nu sare
-    peste nicio verificare.
-    """
-    from core import db
-    moneda = moneda.upper()
-    if moneda == "RON":
-        return
-    with db.get_conn() as conn:                      # scurta, doar citirea cache-ului
-        c, dc = _din_cache(conn, moneda, data_factura)
-    if c is not None and (data_factura - dc).days <= prag_zile:
-        return                                       # destul de proaspat: nimic de adus
-
-    urls = []
-    azi = date.today()
-    if (azi - data_factura).days <= 9:
-        urls.append(URL_10ZILE)
-    urls.append(URL_AN.format(an=data_factura.year))
-    if data_factura.year != azi.year:
-        urls.append(URL_10ZILE)  # fallback
-
-    ultima_eroare = None
-    cotate = set()          # ce monede a cotat BNR in hartile pe care CHIAR le-am citit
-    for url in urls:
-        try:
-            xml = _descarca(url)                     # FARA nicio conexiune in mana
-            harta = parse_xml(xml)
-            if harta:
-                # Bucla DOAR aduce si salveaza. Nu intoarce cursul: pana la calibrare o facea, si
-                # asa sarea peste pragul de vechime — un prag aplicat pe un singur drum din doua
-                # nu e un prag. Decizia se ia intr-un singur loc, in `curs_pentru`.
-                _salveaza_cache(harta)
-                for _zi in harta.values():
-                    cotate.update(_zi)
-                if curs_din_harta(harta, moneda, data_factura)[0] is not None:
-                    break
-        except Exception as e:  # retea, timeout, IP blocat, parse
-            ultima_eroare = e
-            continue
-    _preda(moneda, data_factura, ultima_eroare, cotate)
+# [E2b, 15.09.2026] ACTUL (`asigura_cursul` / `_salveaza_cache`) a plecat in
+# `core/uc_curs_bnr.py`: isi deschide conexiunea lui — deliberat, decizia din
+# 04.09.2026 — iar un DEPOZIT n-are voie s-o faca. Depozitul a ramas aici:
+# `curs_pentru` primeste conexiunea apelantului si decide.
 
 
 def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):

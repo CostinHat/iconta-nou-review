@@ -16,7 +16,11 @@ CE NU FACE, declarat:
   - nu valideaza continutul — doar il amprenteaza;
   - nu sterge si nu suprascrie NICIODATA. Al doilea exemplar e un fapt (P4), deci se adauga
     cu numar nou. Un artefact pastrat nu se poate rescrie prin modulul asta.
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 import base64
 import hashlib
 
@@ -84,7 +88,6 @@ def pastreaza(conn, schema, fel, cheie, continut, produs_de_id=None, produs_de=N
              verdict, verdict,
              verdict_versiune, verdict_amprenta))
         aid = cur.fetchone()[0]
-    conn.commit()
     return {"ok": True, "id": aid, "exemplar": exemplar, "amprenta": amp}
 
 

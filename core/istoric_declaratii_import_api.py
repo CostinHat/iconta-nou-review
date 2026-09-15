@@ -5,7 +5,11 @@ Citeste o lista de declaratii deja depuse (.xlsx/.csv): tip, an, luna, data depu
 Scrie in tabelul global public.declaratii_depuse cu sursa='migrare' (ca sa nu apara fals
 restanta). Import per firma: DELETE WHERE tenant_id=X AND sursa='migrare', apoi INSERT.
 NU sterge declaratiile depuse prin iConta (sursa='iconta').
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 import datetime
 
@@ -250,5 +254,4 @@ def importa(conn, tenant_id, randuri):
                   str(r["tip"]).strip().lower(),   # [tip_lowercase] canonic la STOCARE (CHECK-ul il impune)
                   r.get("data_depunere")))
             n += 1
-    conn.commit()
     return {"importati": n}

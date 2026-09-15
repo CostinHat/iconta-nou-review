@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Reconciliere bancară — strat API (tipar stat_plata_api: funcții conn+schema).
+
 Motorul de matching e în core/reconciliere.py (pur, testat)."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 import json
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
@@ -94,7 +98,6 @@ def importa_extras(conn, schema, tranzactii, fisier=""):
             out.append({"id": cur.fetchone()[0], "data": str(ln["data"]),
                         "descriere": ln["descriere"], "suma": str(ln["suma"]),
                         "tip": ln["tip"], "cui": ln["cui"], "status": status, **aloc})
-    conn.commit()
     return out
 
 
@@ -157,7 +160,6 @@ def conteaza(conn, schema, linie_id, alocari=None):
             """, (iid, np["debit"], np["credit"], Decimal(str(np.get("suma") or l["suma"]))))
             cur.execute(f"UPDATE {schema}.extras_linii SET status='contat', alocari=%s WHERE id=%s",
                         (json.dumps({**(l.get("alocari") or {}), "inregistrari_ids": [iid]}), linie_id))
-            conn.commit()
         banca = _cont_banca(l["valuta"])
         debit, credit = (banca, CONT_CLIENTI) if l["tip"] == "incasare" else (CONT_FURNIZORI, banca)
         create = []
@@ -196,7 +198,6 @@ def conteaza(conn, schema, linie_id, alocari=None):
                                  "alocari": [{"factura_id": a["factura_id"], "suma": str(a["suma"])}
                                              for a in aloc],
                                  "inregistrari_ids": create}), linie_id))
-    conn.commit()
     return {"inregistrari": create, "nota": f"{debit}={credit}"}
 
 

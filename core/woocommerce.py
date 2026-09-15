@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Conector WooCommerce: import comenzi -> facturi iConta.
 Config per tenant in firma_profil (wc_url, wc_ck, wc_cs). Idempotent pe numar comanda."""
-import json
 import requests
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
@@ -72,12 +71,12 @@ def sincronizeaza(schema):
     lista_c = comenzi(cfg["wc_url"], cfg["wc_ck"], cfg["wc_cs"], dupa=dupa)
     # [P5 val 3] Cursul BNR, INAINTE de tranzactia de emitere: monedele sunt deja in comenzile
     # aduse mai sus, iar `curs_pentru` decide pe cache — deci descarcarea trebuie sa se fi facut.
-    from core import curs_bnr as _cb
+    from core import uc_curs_bnr as _uc_cb
     import datetime as _dt
     for _c in lista_c:
         _f = comanda_in_factura(_c)
         try:
-            _cb.asigura_cursul(_f["moneda"], _dt.date.fromisoformat(_f["data"]))
+            _uc_cb.asigura_cursul(_f["moneda"], _dt.date.fromisoformat(_f["data"]))
         except Exception:      # noqa: BLE001 — pre-incalzirea nu poate strica importul
             pass
     # ── FAZA 2: tranzactie scurta, cu REVALIDARE ────────────────────────────────────────

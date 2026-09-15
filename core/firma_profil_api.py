@@ -3,7 +3,11 @@ core/firma_profil_api.py — profilul firmei din schema unui tenant.
 Ruleaza pe conexiunea deja pozitionata pe schema tenantului (get_conn(schema)).
 Folosit de ecranul "Model factura": datele firmei (pt preview) + personalizare
 (font, culoare, logo). Logo = string base64 (data URI), stocat in coloana logo (text).
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 
 from core.mesaje import MESAJ_FARA_ADMINISTRATOR, MESAJ_PESTE_PERIOADA_INCHISA
@@ -138,7 +142,6 @@ def salveaza_model(conn, font=None, culoare=None, logo=None):
             cur.execute(
                 "UPDATE firma_profil SET " + ", ".join(seturi) + " WHERE id = 1",
                 tuple(valori))
-        conn.commit()
 
     return {"ok": True, "profil": citeste_profil(conn)}
 
@@ -398,13 +401,11 @@ def salveaza_date(conn, date, tenant_id=None):
             conn.rollback()
             return {"ok": False, "camp": "nume", "mesaj": str(e)}
     if not curat:
-        conn.commit()
         return dict({"ok": True}, **citeste_date(conn))
     seturi = ", ".join("%s = %%s" % k for k in curat)
     with conn.cursor() as cur:
         cur.execute("UPDATE firma_profil SET " + seturi + " WHERE id = 1",
                     tuple(curat.values()))
-    conn.commit()
     return dict({"ok": True}, **citeste_date(conn))
 
 

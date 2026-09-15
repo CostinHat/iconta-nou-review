@@ -5,7 +5,11 @@ Management accounting intern: centrul de cost e o DIMENSIUNE pe linia de nota
 (inregistrari_linii.centru_cost_id), nu contabilitate bugetara publica. CRUD minimal
 per firma. Stergerea nu se face (liniile istorice trimit la centru prin FK) - un centru
 scos din uz se DEZACTIVEAZA (activ=false): ramane pe notele vechi, nu se mai ofera la note noi.
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from psycopg2.extras import RealDictCursor
 
 
@@ -31,7 +35,6 @@ def adauga(conn, schema, nume):
             return {"eroare": "există deja un centru cu acest nume"}
         cur.execute(f"INSERT INTO {schema}.centre_cost (nume) VALUES (%s) RETURNING id", (nume,))
         cid = cur.fetchone()["id"]
-    conn.commit()
     return {"ok": True, "id": cid}
 
 
@@ -41,7 +44,6 @@ def seteaza_activ(conn, schema, centru_id, activ):
         cur.execute(f"UPDATE {schema}.centre_cost SET activ = %s WHERE id = %s",
                     (bool(activ), centru_id))
         n = cur.rowcount
-    conn.commit()
     return {"ok": True} if n else None
 
 
@@ -107,7 +109,6 @@ def seteaza_buget(conn, schema, centru_id, an, buget_cheltuieli, buget_venituri)
                         SET buget_cheltuieli = EXCLUDED.buget_cheltuieli,
                             buget_venituri = EXCLUDED.buget_venituri""",
                     (centru_id, an, ch, ve))
-    conn.commit()
     return {"ok": True}
 
 

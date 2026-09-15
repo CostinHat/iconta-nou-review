@@ -593,12 +593,12 @@ def _preincalzeste_cursul(moneda, data_emitere):
     Tăcută la intrări invalide: refuzul lor vine de la validarea rutei, ca și până acum.
     """
     from datetime import date as _d
-    from core import curs_bnr as _cb
+    from core import uc_curs_bnr as _uc_cb
     if not moneda or str(moneda).upper() == "RON" or not data_emitere:
         return
     try:
         zi = data_emitere if isinstance(data_emitere, _d) else _d.fromisoformat(str(data_emitere))
-        _cb.asigura_cursul(str(moneda), zi)
+        _uc_cb.asigura_cursul(str(moneda), zi)
     except Exception:      # noqa: BLE001 — pre-încălzirea nu poate strica o cerere
         pass
 

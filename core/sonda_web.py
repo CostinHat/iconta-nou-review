@@ -37,7 +37,11 @@ aia e o afirmație mai slabă care se scrie ca atare."*
       `cron.verifica_batai`, și pe ea o acoperă doar un deadman EXTERN.
 
 Rulare: `python3 -m core.sonda_web` (crontab, la 15 minute).
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 import json
 import subprocess
 import sys
@@ -118,7 +122,6 @@ def _scrie_ultima(conn, pornit_la, commit):
                     "VALUES (%s, now(), 0, %s) "
                     "ON CONFLICT (nume) DO UPDATE SET detalii = EXCLUDED.detalii",
                     (NUME, _E.Json({"pornit_la": pornit_la, "commit": commit})))
-    conn.commit()
 
 
 def fel_repornirii(pornit_inainte, pornit_acum, commit_inainte, commit_acum):

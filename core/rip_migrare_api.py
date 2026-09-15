@@ -14,7 +14,11 @@ contabil RO/EN, sufixe RON/lei) — un singur loc pentru interpretarea sumelor, 
 Operațiunile importate intră cu status='validata' (sunt istoric preluat, nu ciornă de
 verificat) — dar vezi LIMITA la final: preluarea nu certifică corectitudinea contabilului
 anterior; e evidență preluată, marcată ca atare.
+
 """
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from __future__ import annotations
 from decimal import Decimal, ROUND_HALF_UP
 from core.solduri_api import _numar, _gaseste_col
@@ -199,7 +203,6 @@ def importa(conn, schema, operatiuni):
     if erori:
         conn.rollback()
         return {"importate": 0, "sarite_duplicat": 0, "erori": erori}
-    conn.commit()
     return {"importate": importate, "sarite_duplicat": sarite_duplicat, "erori": []}
 
 

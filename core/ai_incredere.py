@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """Incredere + invatare pentru propunerile AI.
 Context = cheie text (CUI partener sau descriere normalizata).
+
 Invatare: contul validat de contabil pentru acelasi context devine propunerea viitoare."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 import re
 
 
@@ -21,7 +25,6 @@ def inregistreaza(conn, schema, context, cont_propus, cont_final):
         cur.execute(f"""INSERT INTO {schema}.ai_corectii (context, cont_propus, cont_final, corectat)
                         VALUES (%s,%s,%s,%s)""",
                     (ctx, cont_propus, cont_final, (cont_propus or "") != (cont_final or "")))
-    conn.commit()
     return {"ok": True}
 
 

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Retetar - strat DB. Consum pe reteta -> iesiri miscari_stoc la CMP + nota ciorna
+
 (cont_cheltuiala per articol = cont_stoc, ex. 371=371 la marfa; tipic 601/607=3xx)."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import retete as _r
@@ -114,14 +118,12 @@ def salveaza(conn, schema, corp):
         for l in corp.get("linii", []):
             cur.execute(f"""INSERT INTO {schema}.retete_linii (reteta_id, articol_id, cantitate)
                             VALUES (%s,%s,%s)""", (rid, l["articol_id"], l["cantitate"]))
-    conn.commit()
     return {"id": rid}
 
 
 def sterge(conn, schema, reteta_id):
     with conn.cursor() as cur:
         cur.execute(f"DELETE FROM {schema}.retete WHERE id=%s", (reteta_id,))
-    conn.commit()
     return {"ok": True}
 
 
@@ -172,6 +174,5 @@ def descarca(conn, schema, corp):
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                             (inregistrare_id, cont_debit, cont_credit, suma)
                             VALUES (%s,%s,%s,%s)""", (iid, deb, cred, suma))
-    conn.commit()
     return _fara_decimal({"inregistrare_id": iid, "cost_total": cons["cost_total"],
                           "linii": cons["linii"]})

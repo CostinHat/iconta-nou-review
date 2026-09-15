@@ -108,10 +108,14 @@ def test_fiecare_modul_e_intr_UN_SINGUR_strat():
 CELE_SAPTE = {
     "core/curs_bnr.py": R.REPOSITORY,
     "core/efactura_send.py": R.FISCAL_ENGINE,
-    "core/firma_rezumat.py": R.REPOSITORY,
+    # [E2b, 15.09.2026] Era REPOSITORY. E LUCRATORUL modelului de citire: recalculeaza in
+    # tranzactii proprii, cu lacat consultativ — adica un ACT. Auditul din 14.09 numise chiar asta
+    # („declarat REPOSITORY, dar deschide conexiuni si comite"); E2b a inchis contradictia pe partea
+    # declaratiei, fiindcă codul era cel onest.
+    "core/firma_rezumat.py": R.USE_CASE,
     "core/monitor_fiscal.py": R.USE_CASE,
     "core/notificari_scadenta.py": R.USE_CASE,
-    "core/stare_partajata.py": R.REPOSITORY,
+    "core/stare_partajata.py": R.REPOSITORY,   # depozit curat dupa E2b: programul lui a plecat
     "core/stat_plata_emis.py": R.REPOSITORY,
 }
 
@@ -155,12 +159,17 @@ def test_niciunul_dintre_cele_sapte_nu_e_EVIDENCE_LIMITATION():
 def test_D2_vede_FISCAL_ENGINE_cu_db_si_NU_vede_celelalte_straturi():
     """Contractul, în ambele direcții: contează stratul DECLARAT, nu ce pare modulul.
 
-    `main.py` importă `db` și are 295 de instrucțiuni SQL — dar e declarat `HTTP`, deci nu e item
-    D2. `core/firma_rezumat.py` importă `db` de cinci ori — dar e `REPOSITORY`, iar stratul ăla are
+    `main.py` importă `db` și are sute de instrucțiuni SQL — dar e declarat `HTTP`, deci nu e item
+    D2. `core/firma_rezumat.py` importă `db` — dar e ACT (`USE_CASE` din E2b), iar stratul ăla are
     voie. Dacă D2 le-ar raporta, ar însemna că nu citește registrul.
+
+    [E2b, 15.09.2026] `core/stare_partajata.py` a ieșit din listă: programul lui de linie de comandă
+    a plecat în `scripts/`, iar odată cu el singurul `import db` al modulului. Premisa probei — «chiar
+    atinge baza» — nu mai e adevărată despre el, iar o probă care ar păstra numele fără premisă ar
+    trece pe gol. În loc a intrat `core/supervizor_cache.py`, lucrător care importă `db`.
     """
     d2 = {i.fisier for i in S.d2_motor_fiscal_cu_db()}
-    for cale in ("main.py", "core/firma_rezumat.py", "core/stare_partajata.py",
+    for cale in ("main.py", "core/firma_rezumat.py", "core/supervizor_cache.py",
                  "core/monitor_fiscal.py"):
         assert cale not in d2, "%s (strat %s) a ajuns item D2" % (cale, R.strat(cale))
         assert S._atinge_db(cale), "premisa: %s chiar atinge baza" % cale

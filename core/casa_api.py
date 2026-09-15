@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """Registru de casă — API. Motorul de plafoane e în core/casa.py.
+
 Fiecare operațiune generează notă ciornă (AI propune, contabilul validează)."""
+# [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
+# `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
+# deschide, nu comite.
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import casa as _m
@@ -61,7 +65,6 @@ def adauga(conn, schema, op):
                     (op["data"], tip, cat, op.get("document"), op.get("partener"),
                      op.get("cui"), suma, iid))
         oid = cur.fetchone()["id"]
-    conn.commit()
     return {"id": oid, "inregistrare_id": iid, "nota": f"{debit}={credit}",
             "avertismente": verifica_plafon(conn, schema, op["data"])}
 
@@ -121,5 +124,4 @@ def sterge(conn, schema, op_id):
             cur.execute(f"DELETE FROM {schema}.inregistrari WHERE id=%s",
                         (op["inregistrare_id"],))
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE id=%s", (op_id,))
-    conn.commit()
     return {"ok": True}

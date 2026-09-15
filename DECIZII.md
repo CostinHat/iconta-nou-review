@@ -3,6 +3,53 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 15.09.2026 (51) — E2b: depozitul nu mai deschide si nu mai comite (32 -> 0)
+
+**Ce cerea E2b.** Cele 32 de module declarate REPOSITORY care isi deschideau singure conexiunea sau
+comiteau sa treaca pe stratul comun: schema si tranzactia vin din strat, nu din modul.
+
+**Faptul de la care porneste totul, si care face reparatia ieftina:** `db.get_conn` **comite la
+iesirea din bloc** (`core/db.py`). Deci un `conn.commit()` intr-un depozit care PRIMESTE conexiunea
+nu adauga nimic — taie in doua tranzactia apelantului, exact ce interzice P4. Inainte de a sterge
+vreunul, s-a verificat mecanic ca **toate** apelurile catre functiile alea stau sub un
+`with db.get_conn(...)`: doua exceptii, amandoua benigne (un test care-si tine singur conexiunea si
+un depozit care cheama alt depozit, deci tot sub conexiunea apelantului).
+
+**Cum s-au inchis cele 32, pe clase:**
+  * **20 de depozite** nu mai comit — 39 de `commit`-uri scoase, cu motivul scris o data in capul
+    fiecarui modul;
+  * **`core/stocuri_cv_api.py`**: si-a pierdut si parametrul `commit=True/False`. El exista ca sa
+    poata spune apelantul *„nu comite acum, sunt in tranzactia mea"* — adica tocmai ce e acum
+    REGULA. Un parametru care nu mai comanda nimic e o urma de intentie, nu o decizie;
+  * **`core/curs_bnr.py`**: actul (`asigura_cursul` + `_salveaza_cache`) a plecat in
+    `core/uc_curs_bnr.py`, declarat USE_CASE. **Conexiunea lui proprie NU s-a desfacut** — e decizia
+    scrisa pe 04.09.2026: cache-ul de cursuri trebuie sa supravietuiasca esecului actului care l-a
+    declansat. Ce era gresit nu era conexiunea, ci faptul ca ACTUL statea in modulul DEPOZITULUI;
+  * **`core/instante.py` si `core/stare_partajata.py`**: programele lor de linie de comanda
+    (`main()`) au plecat in `scripts/`. Un program are voie sa-si deschida conexiunea; un depozit,
+    nu. Nimic nu le chema din aplicatie — verificat pe tot arborele, inclusiv hookuri;
+  * **8 module** erau ACTE etichetate gresit REPOSITORY (cron-uri, lucratori, sonde, auditorul de
+    scheme). Declaratia s-a corectat, cu motivul scris — exact iesirea pe care E2a o numise:
+    *contradictia dintre declaratie si cod nu ramane nenumita*. Printre ele, `core/firma_rezumat.py`,
+    despre care auditul spusese chiar asta.
+
+```
+REPOSITORY care isi deschid conexiunea sau comit   32 -> 0   (clichet: nu poate creste)
+D4b_MIXT_OBSERVAT                                  41 -> 18  (cele ramase sunt ACTE)
+MODULE_CU_SQL_FARA_STRAT                            0 -> 0
+D4 (declarat mixt, criteriul P7)                    0 -> 0
+```
+
+**Proba nu e o cifra, ci cate una pentru FIECARE depozit** (parametrizata, ~50): cand cade, spune
+*care* modul. Si intreaba amandoua jumatatile: nici `get_conn`/`commit` propriu, nici rezolvarea
+schemei tenantului (`schema_tenant`, `_schema_sau_404`) — aia e o decizie de ACCES, a stratului de
+deasupra; un depozit care si-ar afla singur schema ar decide pe tacute si cine are acces.
+
+**Doua probe P7 si-au vazut premisa mutata si s-au re-ancorat:** `firma_rezumat` e acum USE_CASE in
+lista celor sapte, iar `stare_partajata` a iesit din proba lui D2 — odata cu programul mutat i-a
+plecat si singurul `import db`, deci premisa *„chiar atinge baza"* nu mai e adevarata despre el. In
+loc a intrat `supervizor_cache`. *O proba care ar fi pastrat numele fara premisa ar fi trecut pe gol.*
+
 ## 15.09.2026 (50) — E2a: universul se declara, amestecul se OBSERVA — si cele doua cifre au nume diferite
 
 **Constatarea (L1).** Registrul straturilor acoperea un univers derivat din doua definitii de
