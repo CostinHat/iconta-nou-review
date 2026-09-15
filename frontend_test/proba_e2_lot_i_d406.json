@@ -1,0 +1,93 @@
+{
+ "firma": "Comert Micro TVA SRL",
+ "tenant_id": 4838,
+ "schema": "tenant_003",
+ "perioada": "2026-T3",
+ "rulare": 1,
+ "lanturi": [
+  {
+   "lant": "1 · plan-conturi: cont analitic nou → apare în planul firmei",
+   "ruta": "POST /tenants/{}/plan-conturi",
+   "cont": "208.91",
+   "raspuns": {
+    "stare": 422,
+    "corp": "{'detail': {'mesaj': 'Cererea nu poate fi acceptată: simbol — lipsește.', 'erori_campuri': [{'camp': 'simbol', 'mesaj': 'lipsește'}]}}"
+   },
+   "in_plan": [],
+   "OK": false
+  },
+  {
+   "lant": "2 · solduri: sold inițial pe contul nou → rezumatul îl arată",
+   "ruta": "POST /tenants/{}/solduri",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'randuri': 2, 'total_debit': 3000.0, 'total_credit': 3000.0}"
+   },
+   "rezumat": "{'are_solduri': True, 'randuri': 2, 'total_debit': 3000.0, 'total_credit': 3000.0}",
+   "OK": true
+  },
+  {
+   "lant": "3 · nota-inventariere `plus_mf` 3.000 → apare un mijloc fix",
+   "ruta": "POST /tenants/{}/nota-inventariere",
+   "raspuns": {
+    "stare": 422,
+    "corp": "{'detail': 'Valoarea mijlocului fix trebuie sa fie un numar pozitiv.'}"
+   },
+   "mijloace_fixe": {
+    "inainte": 5,
+    "dupa": 5
+   },
+   "OK": false
+  },
+  {
+   "lant": "4 · mijloace-fixe (MARTOR): citirea arată ce a scris lanțul 3",
+   "ruta": "GET /tenants/{}/mijloace-fixe",
+   "stare": 200,
+   "cate": 5,
+   "OK": true
+  },
+  {
+   "lant": "5 · d406-active (MARTOR): secțiunea Assets se generează și conține imobilizări",
+   "ruta": "GET /tenants/{}/d406-active",
+   "d406_active": {
+    "stare": 500,
+    "octeti": 21,
+    "raspuns": null
+   },
+   "are_asset": false,
+   "OK": false
+  },
+  {
+   "lant": "6 · amortizare: nota lunară → secțiunea Assets se schimbă",
+   "ruta": "POST /tenants/{}/amortizare",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'ok': True, 'mesaj': 'nimic de amortizat', 'linii': 0}"
+   },
+   "d406_active": {
+    "stare": 500,
+    "octeti": 21,
+    "raspuns": null
+   },
+   "s_a_schimbat": false,
+   "OK": false
+  },
+  {
+   "lant": "7 · reevaluare-imobilizare → valoarea din Assets se schimbă",
+   "ruta": "POST /tenants/{}/reevaluare-imobilizare",
+   "mijloc_fix_id": null,
+   "NEPROBAT": "mijlocul fix al probei nu s-a regăsit în listă după denumire, deci reevaluarea n-are subiect; se scrie, nu se sare",
+   "OK": false
+  },
+  {
+   "lant": "8 · d406-stocuri: secțiunea se generează pe perioada trimestrului",
+   "ruta": "GET /tenants/{}/d406-stocuri",
+   "raspuns": {
+    "stare": 200,
+    "octeti": 7975,
+    "corp": null
+   },
+   "OK": true
+  }
+ ]
+}

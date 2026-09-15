@@ -4982,8 +4982,18 @@ def d406_active_xml(tenant_id, an, ctx):
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         with conn.cursor() as cur:
+            # [R190, etapa 2 lotul I, 15.09.2026] ORDINEA: se cer RANDURILE, abia apoi coloanele.
+            # `cur.description` descrie ultima interogare EXECUTATA — iar cea care o executa e chiar
+            # apelul la depozit. Pana azi linia de coloane sta deasupra apelului, deci `description`
+            # era `None` si ruta raspundea `500` la ORICE cerere. Nu de la o zi anume: de la valul V1
+            # al lui P7 (`8d182afa`), care a mutat `cur.execute` in depozit si a lasat linia unde
+            # era. N-a prins-o nicio garda fiindca ruta n-are apelant (R70) — prima apasare pe ea a
+            # fost proba lantului. Masurat: singura instanta din repo; celelalte patru locuri cu
+            # `cur.description` au ordinea corecta (`artefacte`, `salariati_api`, `gdpr_export`,
+            # `stat_plata_emis`).
+            randuri = repo_mijloace_fixe.active_pentru_d406(cur, schema, an)
             cols = [d[0] for d in cur.description]
-            lista = [dict(zip(cols, r)) for r in repo_mijloace_fixe.active_pentru_d406(cur, schema, an)]
+            lista = [dict(zip(cols, r)) for r in randuri]
     if not lista:
         raise _erori.Inexistent("niciun mijloc fix cu PIF până în anul cerut")
     try:

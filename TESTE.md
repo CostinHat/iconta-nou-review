@@ -2587,3 +2587,38 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   **R189**, a confirmat prin măsurare golul declarat al Fazei 2b2 (beneficiul peste plafon nu se
   impozitează încă), iar cititorul ei a fost cel greșit la prima rulare — `cnpAsig`, nu `cnp` —,
   moment în care **s-a oprit declarat** în loc să raporteze delte de zero.
+
+
+- **`core/test_ordinea_cursorului.py` — GARDĂ NOUĂ (15.09.2026, 5 probe)**: `cur.description` nu se
+  citește ÎNAINTE de interogarea care îl umple. Instanța: `GET /tenants/{id}/d406-active` a răspuns
+  `500` la **orice** cerere din 13.09 (valul V1 al lui P7 a mutat `cur.execute` în depozit și a lăsat
+  linia de coloane deasupra), și n-a aflat nimeni fiindcă ruta n-are apelant (R70). Garda e pe
+  **ordine**, structural, la nivel de bloc `with … .cursor()`. Calibrare în ambele direcții: mutație
+  pe forma reală care a produs defectul · trei forme corecte care trebuie să tacă (inclusiv citirea și
+  execuția în aceeași instrucțiune, unde ordinea e a evaluării — limită declarată) · `description`-ul
+  altui cursor · **anti-vacuu** cu podea de 150 de blocuri.
+
+- **`frontend_test/proba_e2_lot_i_d406.py` — PROBĂ DE LANȚ, etapa 2 lotul I (15.09.2026)**: 8 lanțuri
+  pe unitățile-nucleu ale D406/SAF-T (plan de conturi, solduri, plus de inventar ca imobilizare,
+  amortizare, reevaluare, cele trei citiri-martor). A scos **R190**. Trei dintre cererile ei au fost
+  greșite, iar **refuzurile aplicației le-au corectat**: `simbol` nu `cont` (cu erori per câmp),
+  `valoare`/`dnf_luni` la nivelul de sus nu în `plus_mf`, iar elementele SAF-T poartă prefix de spațiu
+  de nume (`<nsSAFT:Asset>`).
+
+- **`frontend_test/proba_e2_lot_j_d205.py` — PROBĂ DE LANȚ, etapa 2 lotul J (15.09.2026)**: ultima
+  unitate-nucleu. **1/1**, cu aserțiune pe **două direcții** — `nrben` crește, `Tbaza`/`Timp` NU —,
+  fiindcă numai împreună deosebesc împărțirea corectă de o dublare. Proba **desface** la capăt și
+  **verifică** întoarcerea; un rând incomplet o **oprește** în loc să fie trimis, după ce prima ei
+  formă a suprascris un asociat real citind atribute din docstring (`nume1`/`cif`) în loc de cele
+  emise (`den1`/`cifR`).
+
+
+- **`core/test_paritate_p2.py` — PRECONDIȚIE LĂRGITĂ (16.09.2026)**: `test_paritate_termene` compară
+  **agregatul** rutei `/termene` (pe toate firmele utilizatorului) cu bucla pe toate firmele, dar
+  precondiția fixturii reîmprospăta modelul doar pentru primele `CATE_FIRME = 6`. Modelul are
+  prospețime **pe zi**: la prima poartă de după miezul nopții el expirase pentru firmele 7+, ruta le-a
+  exclus din agregat, iar bucla le-a numărat — `d112` **2 vs 4**, `d406` **5 vs 13**. *Proba trecuse
+  zile la rând nu fiindcă paritatea ținea, ci fiindcă modelul era proaspăt din altă cauză: verde nu era
+  o verificare, era o coincidență de zi.* Reparat prin **lărgirea precondiției** la exact populația
+  comparată — **nu** prin relaxarea comparației sau tăierea firmelor din agregat, care ar fi fost
+  alinierea verificatorului ca să tacă. Găsit de poartă, nu de citire.

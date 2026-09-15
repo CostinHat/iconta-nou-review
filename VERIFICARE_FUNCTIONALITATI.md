@@ -2291,3 +2291,56 @@ patru loturi când așteptarea mea e greșită, iar aplicația se poartă cum sp
 
 Salariatul probei primește, la capăt, **dată de încetare** (`31.08`), prin ruta aplicației — fără
 ea, fiecare rulare ar lăsa un salariat activ în D112-urile următoare ale firmei.
+
+
+---
+
+## ETAPA 2 — LOT J: ultima unitate-nucleu, importul de asociați (15.09.2026)
+
+**Firma:** «ALFA MICRO SRL» (`tenant_013`), anul **2026** — firma cu dividende, aceeași ca lotul E.
+Se intră cu utilizatorul cabinetului **4163**, căruia îi e atribuită.
+
+### Așteptarea, scrisă înainte, pe DOUĂ direcții
+
+| ce | așteptat | obținut |
+|---|---|---|
+| `nrben` | **+1** | **1 → 2**, exact |
+| `Tbaza` | **NESCHIMBAT** | 40.000 → 40.000, exact |
+| `Timp` | **NESCHIMBAT** | 6.400 → 6.400, exact |
+| asociatul nou | `baza1` proporțional cu cota (1%) | `baza1` = **400**, `imp1` = **64** (16%) |
+
+**Confruntare lot J: 0 nepotriviri. DUK: `valid`.** *Cele două direcții împreună sunt proba: o
+verificare numai pe „a apărut un beneficiar" n-ar deosebi împărțirea pe cotă de o dublare a
+totalului.*
+
+### Trei refuzuri corecte, care au refăcut lanțul
+
+1. **`tenant_003` n-are beneficiari** — *„D205 fără niciun beneficiar de venit - nu se generează
+   declarație fără conținut."* Firma se alege după cui i se aplică declarația (decizia 66).
+2. **Firma cu dividende e a altui cabinet** — *„Firma nu există în portofoliu sau nu ți-e
+   atribuită."* E poarta de izolare între cabinete (**R43**), și a ținut.
+3. **Importul ÎNLOCUIEȘTE lista și cere 100%** — *„cotele asociaților însumează 1.0%, nu 100%.
+   Asociații și cotele lor intră în D205 (dividende)."* Un refuz care spune și **ce** e greșit și
+   **de ce** contează.
+
+### Ce a greșit proba, cu efect REAL, și cum s-a reparat
+
+A doua formă a citit beneficiarul existent pe atributele `nume1`/`cif` — cele din **docstringul** lui
+`d205.py:16` —, dar generatorul emite `den1`/`cifR` (**R16**: *proza care descrie codul poate fi
+falsă*). A citit gol, **a completat cu un nume de rezervă și un CNP gol**, și a trimis lista la un
+import care înlocuiește: **asociatul real al firmei a fost suprascris**, iar D205 n-a mai putut fi
+generat.
+
+**Restaurat** prin ruta aplicației, cu valorile luate din artefactul lotului E (`POPESCU ION`,
+`1700510400076`, cotă 100%) — nu ghicite. Verificat: 676 de octeți, `nrben=1`, `Tbaza=40000`,
+`Timp=6400`, identic cu starea de dinainte.
+
+**Două lucruri s-au schimbat în probă din asta:** un rând incomplet **OPREȘTE** proba în loc să fie
+trimis (*o probă care completează cu valori de rezervă ce n-a putut citi nu e o probă, e o scriere*),
+iar lanțul **desface** la capăt — reimportă lista de la pornire, cu cotele derivate din
+`baza1 / Tbaza × 100`, și **verifică** întoarcerea.
+
+### Scenariul, DECLARAT
+
+**Nimic nu rămâne.** Fără desfacere, fiecare rulare ar reîmpărți cotele celorlalți
+(100 → 99 → 49,5 → …) — adică proba ar strica încet chiar datele pe care se sprijină.

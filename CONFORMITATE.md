@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-13
+- **ultima actualizare**: 2026-09-16
 - **P5 (ASYNC / BLOCKING I/O)**: **ÎNCHIS**, `f61df1b8` (11.09.2026). Poarta finală: 5498 verzi / 0 roșii, verificator ROȘU 0, amprenta producției neschimbată de suita izolată. `P5_BLOCKING_ITEMS=0` · `P6_ALLOWED=YES`. *Starea fazelor se ține în `PLAN_HARDENING.md`; linia asta e doar trimiterea, ca registrul să nu tacă despre o etapă închisă.*
 - **P6 (STATELESS / SCALARE ORIZONTALĂ)**: **ÎNCHISĂ**, `f260df2e` (12.09.2026). **Valul 1 închis 12.09.2026** (`a25afc04`): `main._login_fail` și `main._alerte_ultima_trimitere` au ieșit din memoria procesului în `public.login_esecuri` / `public.alerte_cooldown`; măsurat înainte, două procese divergeau și blocarea pierdea 87% din eșecuri la k=10 susținut, după: `LOST_UPDATES=0`. **Valul 2 închis 12.09.2026** (`081c8ba2`): cele șapte cache-uri locale rămase își poartă cele cinci lucruri ca STRUCTURĂ, iar câmpul `dovadă` trimite la o probă care există și chiar golește cache-ul; predarea BNR a primit și invalidarea pe care n-o avea. `P6_ACTION_REQUIRED` **10 → 8 → 0**, `P6_UNDECLARED_CACHES=0`. **Valul 3 închis 12.09.2026**: pornirea se serializează cu un blocaj legat de tranzacție, munca de fundal se face de un singur lider ales prin lease, iar brațul four-way s-a redefinit din «procesul viu poartă HEAD» în «TOATE procesele poartă HEAD», pe un registru de instanțe. **Unitatea poartă `WEB_CONCURRENCY=2` și producția servește din două procese**, iar criteriile canonice au fost exercitate pe ele: blocarea la autentificare creată pe un worker și văzută de celălalt · cooldown cu un singur câștigător · sesiune acceptată de amândoi · fault-check cu `SIGKILL` în timpul unei cereri, `PARTIAL_STATE=0` · four-way 2 din 2. **Bascularea a scos un defect pe care suita verde nu-l putea vedea**: blocajul de pornire se lua, dar `migrare_api.asigura_tabel` comitea o linie mai jos și îl elibera — instalarea P2 rula NESERIALIZATĂ și un worker murea la fiecare repornire, 4 din 4. Proba de dinainte verifica funcția `blocaj_pornire` izolat, unde ea chiar serializează; *o poartă care întreabă dacă funcția merge nu poate afla că cineva îi ia blocajul din mână trei linii mai jos.* Reparat în aceeași zi, cu gardă la CAPĂTUL secțiunii, pe blocajul real. `P6_INFRA_ACTION_REQUIRED` **1 → 0**. *Starea fazelor se ține în `PLAN_HARDENING.md`; linia asta e trimiterea.*
 - **P7 (APPLICATION LAYER)**: **DESCHISĂ**. Diagnosticul e închis (`b67d2bfb`, 13.09.2026): cele trei verificări canonice au devenit trei detectoare calibrate, iar contabilitatea se închide — `ACTION_REQUIRED` **296**, `UNCLASSIFIED` **0**. **Valul V3 închis** (`364fbc63`): „motor fiscal" nu mai e o aproximare, e o declarație — `core/straturi.py`, 114 module, fiecare cu exact un strat, sub gardă de exhaustivitate. Întrebarea pusă pe universul adevărat a dat alt răspuns decât pe cel aproximativ: `D2` **0 → 1**. **Valul V1 închis**: cele **107 citiri** din corpul rutelor au trecut în 13 module de repository, fiecare primind cursorul apelantului — `D1_READ` **107 → 0**, `P7_ACTION_REQUIRED` **296 → 189**, iar numărul total de instrucțiuni SQL e neschimbat (150 în rute + 107 în repository = 257). Universul lui V1 a fost corectat înainte de mutare: «91» era o euristică pe prima linie a apelului, cifra reală e 107. **Valul V2 închis**: cele **140 de scrieri** și cele **10 instrucțiuni de control de tranzacție** au ieșit din corpul rutelor — scrierile în repository, controlul în `core/tranzactie.py`, care execută pe cursorul primit și **nu deține tranzacția**. `D1` e **0 pe toate clasele**, `P7_ACTION_REQUIRED` **189 → 39**. Conservarea, în două feluri: 257 de apeluri din `main.py` către straturile de sub HTTP, și cifra scrisă în registrul de straturi, **295 − 257 = 38**. **V2 a scos și un defect de registru**: `core/straturi.py` purta pentru `main.py` cifra `295`, adevărată la V3 și îmbătrânită tăcut prin V1 și V2 — iar `D4` o dădea mai departe ca DOVADĂ. Corectată, și pusă sub gardă: din 28 de intrări care poartă o cifră, 27 coincideau deja cu recalcularea, deci metrica nu e aleasă azi ca să iasă. **Valul D2 închis**: `core/efactura_send.py` — motorul fiscal care importa `db`, cu 8 instrucțiuni SQL și trei conexiuni proprii — s-a despărțit în use-case (`core/efactura_trimitere.py`), repository (`repo_efactura`, `repo_tenants`) și principalul mutat la `spv_conector`; `D2` **1 → 0**, `D4` **38 → 37**, `P7_ACTION_REQUIRED` **39 → 37**. Modulul a **rămas** declarat `FISCAL_ENGINE`: închiderea vine din mutarea codului, nu dintr-o reclasificare, iar proba o cere explicit. Detectorul, rămas fără nicio instanță, și-a primit calibrarea **sintetică** — altfel `D2=0` ar fi însemnat deopotrivă «n-are ce găsi» și «s-a stricat» (`METODA_VERIFICARE.md` §22). **Valul D4 închis**: cele **37 de module mixte** purtau **215 instrucțiuni SQL**; toate au trecut în 37 de `core/repo_*.py`, mutate de un instrument, nu cu mâna, iar amprenta SQL a întregului cod de producție (1050 distincte / 1307 total) e **identică** înainte și după. `D4` **37 → 0**, `P7_ACTION_REQUIRED` **37 → 0**. **P7 rămâne DESCHISĂ, și asta e partea care contează**: contabilitatea arată zero pe toate cele trei detectoare, dar criteriul canonic *«use-case-ul deține tranzacția»* nu e satisfăcut — măsurat, **385 din 421 de rute** își deschid singure tranzacția, doar 7 deleagă către un `USE_CASE`. *Un `ACTION_REQUIRED=0` care nu acoperă un criteriu canonic nu e o stare, e o lipsă de detector* — închisă cu `scripts/p7_criterii.py` + `core/test_p7_criterii.py`, care ține clichetul celor 385 și interzice planului să declare P7 închisă peste el. *Starea fazelor se ține în `PLAN_HARDENING.md`; linia asta e trimiterea.*
@@ -8000,6 +8000,141 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   tranzacție (conexiunea se cere abia la scriere) sau nu se atinge nimic. *Scoaterea apelului din
   tranzacție e ieftină ca schimbare și scumpă ca risc — atinge singura funcție prin care trec toate
   apelurile ANAF —, deci nu se face pe o presimțire.*
+
+### R184 — O proformă făcea decontul de TVA NEGENERABIL, fiindcă a doua cale o număra
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — găsită de proba de lanț a etapei 2 · **PRAG 1**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `d23cc51d`
+- **rezolvată pe commit**: `d23cc51d`
+- **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
+- **ce blochează**: **nimic acum.** Decizia 46 (`3ca96f2f`, aceeași zi) a scos proforma din D300 pe
+  cele **patru** drumuri ale generatorului prin `facturi`. `core/d300_reconciliere.py` e al
+  **cincilea** cititor, cu SQL propriu, și a rămas în urmă. Efectul nu era o cifră greșită, ci o
+  **blocare**: măsurat la pasul 8 al probei lotului F, `generator=4800` vs `cale2=5400` — diferența
+  exact proforma de 600 —, iar gardul de reconciliere refuză să genereze. *O firmă care emite o
+  proformă nu-și mai putea depune D300.*
+- **condiția de deblocare**: închisă. Clauza vine din registru
+  (`nomenclator_status_factura.clauza_tip_document`), nu din SQL scris a doua oară; iar
+  `core/d394_reconciliere.py`, care AVEA filtrul dar **literal**, îl cere acum tot de acolo — a patra
+  copie a aceluiași adevăr era chiar forma din care s-a născut divergența. Probat de
+  `frontend_test/proba_e2_lot_f_d300.py`, lanțul 8, în **ambele** jumătăți: proforma nu e în decont,
+  transformarea o bagă.
+
+### R185 — Achiziția intracomunitară se scria ca fiind din România, deci lipsea din decont
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — găsită de proba de lanț a etapei 2 · **PRAG 1**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `d23cc51d`
+- **rezolvată pe commit**: `d23cc51d`
+- **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
+- **ce blochează**: **nimic acum.** `POST /tenants/{id}/achizitie-ic` — ruta **dedicată** achiziției
+  intracomunitare — crea factura fără `tert_tara`, deci cu implicitul `"RO"`, deși avea în mână
+  codul de TVA al furnizorului (`DE…`). D300 rutează pe **țară** (`core/d300.py:247-249`), nu pe
+  codul partenerului. Pentru un contabil: nota contabilă purta taxarea inversă (`4426=4427`), iar
+  decontul **nu declara operațiunea deloc** — două evidențe care spun lucruri diferite despre același
+  fapt. Măsurat: 1.000 lei AIC bunuri, **zero** în toate cele patru rânduri așteptate
+  (`R5_1`, `R5_2`, `R18_1`, `R18_2`).
+- **condiția de deblocare**: închisă. Țara se derivă din chiar codul de TVA, cu
+  `intracomunitar.desparte_cod_tva` — helperul care știe lista UE și cazul Greciei —, nu cu `cod[:2]`
+  scris a doua oară. După reparație, delta e exactă pe toate patru. *Un beneficiu lateral: un prefix
+  care nu e al unui stat membru devine acum refuz motivat, nu o factură „internă" tăcută.*
+
+### R186 — Axa bunuri/servicii a unei achiziții IC se cere de la om și se pierde pe drum
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: în afara axei E1–E5 — găsită de proba de lanț a etapei 2 · **PRAG 1**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `d23cc51d`
+- **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
+- **ce blochează**: **declararea corectă a serviciilor intracomunitare primite.** Ruta acceptă
+  `tip: bunuri|servicii` și **refuză** orice altceva (reparație a lotului 5, 04.09) — dar valoarea
+  intră doar în **textul descrierii**. D300 ia axa din `tip_def_ic = "L" if emisa else "A"`
+  (`core/d300.py:255`), adică **orice achiziție IC e „bunuri"** dacă n-o reclasifică cineva manual.
+  Măsurat: 800 lei servicii IC au intrat la **rd.5** în loc de rd.7, iar `R5_1` a crescut cu
+  1.800 = 1.000 bunuri + 800 servicii. Aceeași axă hrănește și D390 (A vs S).
+- **condiția de deblocare**: **o alegere între două locuri**, și fiecare duce în altă direcție:
+  **(a) pe FACTURĂ** — cere o coloană nouă în `facturi` (azi nu există niciuna pentru axă) și schimbă
+  contractul „sursa unică D390"; **(b) prin RECLASIFICARE** — mecanismul există
+  (`d390._reclasificare_tip`), dar cheia lui e `(direcție, țară, cod)`, adică **partener-lună**, nu
+  operațiune: același furnizor cu bunuri ȘI servicii în aceeași lună n-ar putea fi despărțit.
+  *O reparație care alege singură între ele ar fi o decizie de produs luată în tăcere* — de-aia
+  restanța rămâne deschisă în loc să fie „reparată".
+
+### R187 — O vânzare intracomunitară nu produce nicio factură, deci nu poate ajunge în nicio declarație
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: în afara axei E1–E5 — observație deschisă din R185 · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `d23cc51d`
+- **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
+- **ce blochează**: **nimic probat — se scrie ca observație, nu ca defect măsurat pe date.**
+  `vanzare_ic` (perechea lui `achizitie_ic`) creează **doar nota contabilă** (`4111 = 70x`), nicio
+  linie în `facturi`. Derivat din cod: livrarea intracomunitară n-ar putea ajunge nici la rd.1/rd.3
+  din D300, nici în D390 — amândouă citesc `facturi`. Consecință mecanică vizibilă în perimetru:
+  ruta **nu** e în nucleul niciunei declarații, exact fiindcă nu scrie în tabelul lor.
+- **condiția de deblocare**: se probează pe date (o vânzare IC reală, confruntată cu D300 și D390) și
+  **abia apoi** se decide dacă lipsa e o scăpare sau o alegere. *Nu se repară pe o presimțire: dacă
+  vânzarea IC trebuie să producă factură, asta schimbă ce numerotare primește documentul și ce
+  ajunge la client — o decizie de produs, nu una tehnică.*
+
+### R188 — Două ortografii ale aceluiași partener fac D394 de NEDEPUS, și nimic n-o spunea
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — găsită de proba de lanț a etapei 2, lotul G · **PRAG 1**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `d23cc51d`
+- **rezolvată pe commit**: `d23cc51d`
+- **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
+- **ce blochează**: **nimic acum.** Validatorul oficial a respins declarația:
+  `R218.4: cvatrupla (tip_partener, cota, tip, cuiP) trebuie sa fie unica pe declaratie`. Cheia de
+  grupare a generatorului e `(tip, tip_partener, cota, cuiP, denP)` (`core/d394.py:444`) — **denumirea
+  intră în cheie** —, iar regula ANAF cere unicitate **fără** ea. Două facturi către același partener,
+  cu numele scris puțin altfel, produc două `op1`, și ANAF respinge **întregul** document. Măsurat pe
+  `tenant_003`: un singur CUI, **patru** denumiri. *Nu e un artefact de probă: o factură poate purta
+  legitim numele scris altfel, iar aplicația nu numai că accepta — emitea o declarație respinsă, fără
+  să spună de ce.*
+- **condiția de deblocare**: închisă ca **santinelă**, în tiparul care exista deja pentru R218.2 și
+  R218.3: un avertisment care numește CUI-ul, **toate** ortografiile și ce e de făcut. **NU se
+  contopesc automat** — *care denumire câștigă* e o decizie, iar factura e autoritatea (decizia 47),
+  deci corectura se face pe factură. Calibrat în ambele direcții: se aprinde pe datele reale, tace pe
+  un set cu o singură ortografie.
+
+### R189 — Refuzul certificatului medical vorbea în limba programatorului
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — găsită de proba de lanț a etapei 2, lotul H · **PRAG 2**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `d23cc51d`
+- **rezolvată pe commit**: `d23cc51d`
+- **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
+- **ce blochează**: **nimic acum.** `POST /tenants/{id}/salariati/{id}/concedii` cu
+  `loc_prescriere="ambulatoriu"` răspundea `422` cu textul **`invalid literal for int() with base 10:
+  'ambulatoriu'`** — `core/salariati_api.py` chema `int()` direct pe o valoare venită de la om.
+  **De ce a scăpat de campania etapei 1, și e o lecție despre PERIMETRU:** campania a apăsat
+  **ecranul**, iar ecranul trimite un cod numeric dintr-un `<select>`. Câmpul e atins doar de cine
+  cheamă **ruta** direct — adică de un integrator. *Aceeași clasă cu «punctul orb e firma, nu
+  ecranul», pe alt obiect: suprafața probată a fost ecranul, nu ruta.*
+- **condiția de deblocare**: închisă, cu o limită **declarată**. Câmpul pleacă în D112 ca `D_10`
+  (`core/d112.py:522`) și trebuie să fie numeric, deci refuzul spune asta în română, numind câmpul,
+  câmpul-țintă și de unde se ia valoarea. **Nu se enumeră codurile**: structura ANAF nu s-a verificat
+  la sursă în tura în care s-a găsit defectul, iar *un mesaj cu coduri neverificate ar fi a doua
+  greșeală, nu o reparație.* Rămâne de făcut, când se deschide structura D112 la sursă: nomenclatorul
+  închis al lui `D_10`, cu codurile lui.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

@@ -1,0 +1,117 @@
+{
+ "firma": "ALFA MICRO SRL",
+ "tenant_id": 8396,
+ "schema": "tenant_013",
+ "an": 2026,
+ "d205_la_pornire": {
+  "stare": 200,
+  "octeti_xml": 839,
+  "benef_citiți": 2
+ },
+ "lanturi": [
+  {
+   "lant": "1 · asociati-import: un asociat cu cotă 1%% → `nrben` +1, `Tbaza`/`Timp` NESCHIMBATE",
+   "ruta": "POST /tenants/{}/asociati-import",
+   "cnp": "1950203151121",
+   "rulare": 2,
+   "inainte": {
+    "nrben": 2,
+    "Tbaza": "40000",
+    "Timp": "6400"
+   },
+   "randuri_trimise": [
+    {
+     "nume": "POPESCU ION",
+     "cnp": "1700510400076",
+     "cota": 49.5,
+     "tip": "fizica",
+     "cnp_valid": true,
+     "cnp_motiv": "ok"
+    },
+    {
+     "nume": "PROBA-E2-J Asociat 1",
+     "cnp": "1950202151110",
+     "cota": 49.5,
+     "tip": "fizica",
+     "cnp_valid": true,
+     "cnp_motiv": "ok"
+    },
+    {
+     "nume": "PROBA-E2-J Asociat 2",
+     "cnp": "1950203151121",
+     "cota": 1,
+     "tip": "fizica",
+     "cnp_valid": true,
+     "cnp_motiv": "ok"
+    }
+   ],
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'importati': 3}"
+   },
+   "d205": {
+    "stare": 200,
+    "octeti_xml": 1010,
+    "benef_citiți": 3
+   },
+   "dupa": {
+    "nrben": 3,
+    "Tbaza": "40000",
+    "Timp": "6400"
+   },
+   "al_meu": [
+    {
+     "id_inreg": "3",
+     "den1": "PROBA-E2-J Asociat 2",
+     "tip_venit1": "08",
+     "Rezid": "1",
+     "cifR": "1950203151121",
+     "tip_plata": "2",
+     "divid_D": "400",
+     "divid_P": "400",
+     "baza1": "400",
+     "imp1": "64"
+    }
+   ],
+   "nepotriviri": {},
+   "OK": true
+  }
+ ],
+ "desfacere": {
+  "ce_face": "reimportă lista de asociați de la pornire, cu cotele derivate din `baza1 / Tbaza × 100`",
+  "randuri": [
+   {
+    "nume": "POPESCU ION",
+    "cnp": "1700510400076",
+    "cota": 99.0,
+    "tip": "fizica",
+    "cnp_valid": true,
+    "cnp_motiv": "ok"
+   },
+   {
+    "nume": "PROBA-E2-J Asociat 1",
+    "cnp": "1950202151110",
+    "cota": 1.0,
+    "tip": "fizica",
+    "cnp_valid": true,
+    "cnp_motiv": "ok"
+   }
+  ],
+  "suma_cotelor": 100.0,
+  "import": {
+   "stare": 200,
+   "corp": "{'importati': 2}"
+  },
+  "d205_dupa_desfacere": {
+   "nrben": "2",
+   "Tbaza": "40000",
+   "Timp": "6400"
+  },
+  "revenit_exact": true
+ },
+ "duk": {
+  "stare_http": 200,
+  "stare": "valid",
+  "erori": ""
+ }
+}

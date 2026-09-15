@@ -8360,11 +8360,90 @@ Căutam `cnp` pe `<asigurat>`; atributul e **`cnpAsig`** (`d112.py:566`). Proba 
 declarat** — *„fără salariatul importat, lanțurile 2–5 n-au subiect"* — în loc să raporteze delte de
 zero. Aserțiunea anti-vacuu pusă după lotul F și-a făcut treaba pe lotul următor.
 
+## 15.09.2026 (5) — R190: o rută care răspundea `500` la ORICE cerere, de două zile, și garda clasei
+
+**GARDĂ NOUĂ: una** — `core/test_ordinea_cursorului.py`, 5 probe. Plus lotul J (D205), 1/1.
+
+### Ce s-a găsit, apăsând pe o rută pe care n-o apăsase nimeni
+
+`GET /tenants/{id}/d406-active` — secțiunea **Assets** din SAF-T — răspundea `500` la **orice**
+cerere. În jurnalul aplicației: `TypeError: 'NoneType' object is not iterable`. Codul era:
+
+```
+with conn.cursor() as cur:
+    cols = [d[0] for d in cur.description]          # <- `description` e None aici
+    lista = [dict(zip(cols, r)) for r in repo_mijloace_fixe.active_pentru_d406(cur, schema, an)]
+```
+
+`cur.description` descrie ultima interogare **executată**; fără una, e `None`.
+
+**DATAT ÎN GIT, nu presupus.** Înainte de valul **V1** al lui P7 (`8d182afa`, 13.09) codul avea
+`cur.execute(...)` **chiar acolo**, deasupra liniei de coloane — corect. Valul a mutat `execute` în
+depozit (*„același SQL, aceeași tranzacție, alt strat"*) și a lăsat linia unde era. **Ruta e ruptă
+din 13.09 până azi.**
+
+**De ce n-a prins-o nicio gardă:** ruta n-are apelant — `[api_intern_v1] SAF-T sub-secțiune, fără UI
+încă, păstrat deliberat`. Adică exact clasa pe care **R70** o numește: *„o rută poate fi scrisă,
+gardată și verde, fără ca nimic s-o cheme."* Prima apăsare pe ea a fost proba de lanț a etapei 2.
+*Iar asta e chiar argumentul etapei 2: gărzile verifică forma, lanțul apasă.*
+
+**Reparat**, și verificat pe date reale: ruta produce acum **8.682 de octeți** de `<nsSAFT:Assets>`,
+cu imobilizările firmei — inclusiv licența software creată de lanțul 4 al lotului F.
+
+### Garda clasei: `core/test_ordinea_cursorului.py`
+
+Nu e o gardă pe fișier, e pe **ordine**: în fiecare bloc `with … .cursor() as cur:`, prima
+instrucțiune care citește `cur.description` nu are voie să stea înaintea primei care **execută** ceva
+pe `cur` (direct, sau printr-un apel care primește cursorul — adică un depozit).
+
+*De ce merită o gardă și nu doar o reparație: clasa e a valurilor de MUTARE. Un val viitor care scoate
+un `execute` dintr-o funcție lasă exact aceeași urmă, iar singurul lucru care o deosebește de cod bun
+e ORDINEA — deci se poate verifica mecanic.*
+
+**Calibrare, ambele direcții:** mutația pe **forma reală** care a produs defectul (trebuie să cadă) ·
+**trei** forme corecte care trebuie să tacă, inclusiv cea în care citirea și execuția stau în aceeași
+instrucțiune (acolo ordinea e a evaluării, nu a liniilor — limită declarată) · un `description` al
+**altui** cursor, care nu e al blocului · **anti-vacuu** cu podea de 150 de blocuri, fiindcă un scan
+orb ar trece prima probă triumfător. Măsurat pe repo: **0 abateri** după reparație, **1** înainte.
+
+### Lotul J — ultima unitate-nucleu, și o aserțiune pe două direcții
+
+`POST /tenants/{}/asociati-import`, nucleul D205, pe «ALFA MICRO SRL» (`tenant_013`), anul 2026:
+`nrben` **1 → 2**, iar `Tbaza` și `Timp` **NESCHIMBATE** (40.000 / 6.400) — asociatul nou apare cu
+`baza1 = 400` (1% din total) și `imp1 = 64` (16%). DUK: **valid**.
+
+*Cele două direcții împreună sunt proba: o verificare numai pe „a apărut un beneficiar" n-ar deosebi
+împărțirea corectă de o dublare a totalului.*
+
+### Trei refuzuri și o greșeală a mea, toate consemnate
+
+Aplicația m-a corectat de trei ori pe acest lot, și de fiecare dată avea dreptate: **(1)** `tenant_003`
+n-are beneficiari — *„D205 fără niciun beneficiar de venit"*; **(2)** firma cu dividende e a altui
+cabinet — *„Firma nu există în portofoliu sau nu ți-e atribuită"*, adică poarta de izolare R43;
+**(3)** importul **înlocuiește** lista și cere ca cotele să însumeze **exact 100%** — *„cotele
+asociaților însumează 1.0%, nu 100%. Asociații și cotele lor intră în D205"*.
+
+**GREȘEALA MEA, scrisă fără scuze:** a doua formă a probei a citit beneficiarul existent pe
+atributele `nume1`/`cif` — cele din **docstringul** lui `d205.py:16` —, dar generatorul emite
+`den1`/`cifR` (R16: *proza care descrie codul poate fi falsă*). A citit gol, a completat cu un nume
+de rezervă și un CNP **gol**, și a trimis lista la un import care înlocuiește: **asociatul real al
+firmei a fost suprascris**, iar D205 n-a mai putut fi generat.
+
+**Restaurat** prin ruta aplicației, cu valorile luate din artefactul lotului E (`POPESCU ION`,
+`1700510400076`, cotă 100%) — nu ghicite. Verificat: D205 e din nou la 676 de octeți, `nrben=1`,
+`Tbaza=40000`, `Timp=6400`, identic cu starea de dinainte.
+
+**Și două lucruri s-au schimbat în probă din asta:** un rând incomplet **OPREȘTE** proba în loc să
+fie trimis (*o probă care completează cu valori de rezervă ce n-a putut citi nu e o probă, e o
+scriere*), iar lanțul **desface** la capăt — reimportă lista de la pornire, cu cotele derivate din
+`baza1 / Tbaza × 100`, și **verifică** întoarcerea. Fără desfacere, fiecare rulare ar reîmpărți
+cotele celorlalți (100 → 99 → 49,5 → …), adică proba ar strica încet chiar datele pe care se sprijină.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**589 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**590 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 558
+### `core/` — 559
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8768,6 +8847,7 @@ zero. Aserțiunea anti-vacuu pusă după lotul F și-a făcut treaba pe lotul ur
 - `core/test_octeti_invizibili.py` — GARD (21.08.2026): niciun octet de CONTROL invizibil în codul sursă.
 - `core/test_onboarding_ux.py` — GARD onboarding_ux: fereastra de bun venit (salut inaintea Suportului, firul spune unde se face
 - `core/test_operatiuni_speciale.py` — Teste gardian pentru operatiuni speciale P2.7 (leasing, avansuri,
+- `core/test_ordinea_cursorului.py` — GARDĂ (15.09.2026): `cur.description` nu se citește ÎNAINTE de interogarea care îl umple.
 - `core/test_p2_contract.py` — GARD P2 — CONTRACTUL ARHITECTURAL, în șapte propoziții și sub zece secunde.
 - `core/test_p2_infrastructura.py` — GARD P2 — infrastructura nu poate eșua tăcut, iar blocajul lucrătorului e al unei SESIUNI.
 - `core/test_p3_val_b.py` — GARD P3 · VALUL B — un necunoscut nu se randează ca un „nu". **Pe toate cele șapte ecrane.**

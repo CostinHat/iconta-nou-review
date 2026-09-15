@@ -213,16 +213,29 @@ def test_paritate_termene(client, teren):
     `termene_api.portofoliu` grupează pe dată și tip; o diferență într-o singură firmă schimbă
     numărătorile din grup. De-aia se compară agregatul, nu bucățile."""
     _uid, firme, azi, _t = teren
+
+    # [16.09.2026] PRECONDIȚIA ACOPERĂ CE SE COMPARĂ. Fixtura reîmprospătează modelul pentru primele
+    # `CATE_FIRME` firme, dar proba asta compară AGREGATUL pe TOATE firmele utilizatorului. Modelul
+    # are prospețime PE ZI: la prima poartă de după miezul nopții el expirase pentru firmele 7+, ruta
+    # le-a exclus din agregat, iar bucla le-a numărat — `d112` 2 vs 4, `d406` 5 vs 13.
+    # *Proba trecuse zile la rând nu fiindcă paritatea ținea, ci fiindcă modelul era proaspăt din
+    # altă cauză. Verde nu era o verificare, era o coincidență de zi.* Nu se relaxează comparația și
+    # nu se taie firme din agregat — aceea ar fi alinierea verificatorului ca să tacă; se lărgește
+    # precondiția.
+    from core import firma_rezumat as _fr_paritate
+    from core import termene_api
+    ctx = {"uid": _uid}
+    with _db.get_conn() as c:
+        toate = auth_api.tenantii_userului(c, _uid)
+    for _f in toate:
+        FR.recalculeaza_firma(_f["id"], _f["schema_name"], azi=azi)
+        FR.recalculeaza_greu(_f["id"], _f["schema_name"], azi=azi,
+                             nume=_f.get("nume"), cui=_f.get("cui"))
+
     din_model = _get(client, teren, "/termene")
 
     # [E6] Blocul per firmă a plecat din `main.py` lângă singurul lui apelant. Proba cheamă
     # ACEEAȘI funcție, de la noua ei adresă — întrebarea ei (modelul dă ce dădea bucla) e neatinsă.
-    from core import firma_rezumat as _fr_paritate
-    from core import termene_api
-    ctx = {"uid": _uid}
-    # Bucla de dinainte de P2 — pe TOATE firmele utilizatorului, fiindcă ruta agreghează pe toate.
-    with _db.get_conn() as c:
-        toate = auth_api.tenantii_userului(c, _uid)
     ev, neev = [], []
     for f in toate:
         e, n = _fr_paritate._termene_una_firma(f, ctx, azi)
