@@ -491,7 +491,7 @@ blocaj, o afirmație falsă pe ecran — se repară, ca oricând. *Un prag 1 nu 
 
 ---
 
-## Opt reguli de conducere a lucrului *(Costin, 01–03.09.2026)*
+## Nouă reguli de conducere a lucrului *(Costin, 01–03.09 și 15.09.2026)*
 
 **1. Deciziile care nu mută direcția sunt ale mele, nu urcă la arhitect.** O alegere între două
 implementări care duc în același loc, ordinea a două reparații din aceeași familie, forma unui gard,
@@ -792,3 +792,26 @@ douăzeci de minute mai târziu — plătește doar dreptul de a nu fi surprins.
 **75 de minute, 66 au fost porți** — trei rulări a câte 22 de minute, dintre care **una preventivă**.
 Aceeași tură, sub regulile 6–8: **zero minute de poartă**, fiindcă ștergerile nu ating nimic ce se
 execută.
+
+---
+
+**9. UN MOTOR FISCAL DESCHIS PENTRU ALTCEVA SE LASĂ CITIBIL** *(Costin, 15.09.2026)*.
+
+E5 din `PLAN_E1_E6.md` — *„motoarele fiscale se pot citi"* — **nu e un pas, e o regulă permanentă**,
+și de aceea trăiește aici, nu acolo. Nu se programează un val de lizibilitate: se face **când
+modulul se deschide oricum**, pentru altă lucrare.
+
+**Ce înseamnă „citibil", concret:** funcția atinsă își spune regula și temeiul ei (`DUK regula
+<cod> (<formular>)`, articolul de lege, structura ANAF) · o formulă lungă primește numele mărimilor
+pe care le calculează, nu litere · un prag sau o cotă nu stă ca literal fără sursă (clichetul
+constantelor nesursate există de dinainte, aici e doar celălalt capăt al aceleiași reguli) · ce NU
+poate spune codul se scrie lângă el, ca limită.
+
+**Ce NU cere:** să deschizi un modul ca să-l faci citibil. *O tură de lizibilitate curată n-ar
+schimba nimic pentru un contabil — regula 2 i-ar cere o justificare pe care n-o are.* Prețul e
+aproape zero când ești deja înăuntru, și e o tură întreagă când nu ești.
+
+**De ce e regulă și nu etapă, spus mecanic:** o etapă are criteriu de ieșire și se închide; asta
+n-are — lizibilitatea nu se termină, fiindcă motoarele se schimbă odată cu legea. *Un pas care nu se
+poate închide, ținut în plan ca pas, e o datorie care crește tăcut în dreptul unui plan altfel
+terminat.*

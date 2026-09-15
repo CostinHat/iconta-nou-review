@@ -1,5 +1,23 @@
 # PLAN E1…E6 — etapa de după închiderea P0…P7
 
+
+## ⬛ PLANUL E — ÎNCHIS (15.09.2026)
+
+| pas | stare | cifra care-l închide |
+|---|---|---|
+| **E1** — ritmul se numără o singură dată | ÎNCHIS 14.09 | `RATE_LIMIT_IN_PROCES` 3 → **0** |
+| **E6** — modelul de citire nu depinde de HTTP | ÎNCHIS 14.09 | `CORE_IMPORTA_MAIN` 2 → **0** |
+| **E3** — ce scrie, se probează | lot fiscal ÎNCHIS 15.09 | subset declarații 49 → **8**; rute fără probă 131 → **88** |
+| **E4** — reparația se vede rulând | ÎNCHIS 15.09 | cele **4** `xfail(strict)` scoase |
+| **E2a** — universul se declară | ÎNCHIS 15.09 | `MODULE_CU_SQL_FARA_STRAT` 78 → **0** |
+| **E2b** — valul care separă | ÎNCHIS 15.09 | `REPOSITORY cu conexiune proprie` 32 → **0** |
+| **E5** — motoarele fiscale se pot citi | **REGULĂ**, nu pas | regula 9 din `PLAN_LUCRU.md` |
+
+**Ce rămâne scris ca datorie, nu ca pas:** 88 de rute care scriu fără probă în suită (din care
+**8** ating cifre de declarație și cer fixturi grele), 18 module cu amestec OBSERVAT — toate acte,
+care au voie —, și 8 citări `DUK regula` nerezolvate în `core/d402.py` / `core/d301_operatiuni_api.py`.
+Fiecare are clichet și nume; niciuna nu blochează.
+
 **Baza:** `RAPORT_AUDIT_GLOBAL_POST_HARDENING_2026-09-14.md`, acceptat ca punct de plecare.
 **Măsurat pe:** `b8bcead0` (arbore curat, poartă verde). **Scris:** 14.09.2026.
 
@@ -255,7 +273,9 @@ Nu atinge cele 139 de constante fără temei (T1) — altă clasă, alt pas.
 
 ---
 
-# E5 — Motoarele fiscale se pot citi
+# E5 — Motoarele fiscale se pot citi · **MUTAT ca REGULĂ PERMANENTĂ, 15.09.2026**
+
+> Nu se închide ca etapă, fiindcă n-are criteriu de ieșire: lizibilitatea nu se termină, motoarele se schimbă odată cu legea. A devenit **regula 9** din `PLAN_LUCRU.md` — *un motor fiscal deschis pentru altceva se lasă citibil la închidere.* Aici rămâne doar trimiterea.
 
 **Constatarea:** T2 din audit. **Nu e campanie.**
 
