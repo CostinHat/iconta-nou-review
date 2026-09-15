@@ -8081,11 +8081,96 @@ nouă; e datoria veche, numărată prima dată.*
 `**Cum se verifică.**` apare de șapte ori, o dată per pas), și lua reperul intervalului din fișierul
 **deja editat**. *Când repari o deplasare, reperul se ia de dinainte de deplasare.*
 
+## 15.09.2026 — Perimetrul etapei 2 măsura o lume de dinainte: atribuirea scrierilor, reancorată
+
+**GARDĂ NOUĂ: una** — `core/test_atribuire_scrieri.py`, șase probe. Nu s-a construit din plan: a
+ieșit din **prima operațiune a comenzii etapei 2**, care cerea continuarea probării pe *„cele 45 de
+unități-nucleu"*. Ca să le pot numi, am rulat instrumentul care dă perimetrul. El a răspuns **266**.
+
+### Cifra care n-a mai avut voie să treacă drept perimetru
+
+`scripts/scan_lanturi_declaratie.py` grupează unitățile pe declarație după o singură întrebare —
+*„în ce tabele scrie ruta asta?"* —, iar răspunsul venea, până azi, de la `scan_functionalitati`, ca
+**reuniunea scrierilor tuturor modulelor rutei**. Valul use-case al lui P7 (`f5e6cffc`, 14.09) a
+mutat cele 385 de corpuri de rută în `core/uc_*.py`. `uc_comun` e importat de aproape fiecare
+înveliș, iar prin pasul modul→depozit din `scan_trasee` el moștenește scrierile a **18** tabele.
+
+**Măsurat înainte de a repara**, ca defectul să fie o cifră, nu o impresie:
+
+| ce | înainte | după |
+|---|---|---|
+| `GET /declaratii/tipuri` — rută de PURĂ CITIRE | „scrie" **18** tabele | **0** |
+| unități cărora li se atribuie 10+ tabele | **255** din 424 | **0** (maximul e 9) |
+| unități-NUCLEU pe cele nouă declarații | **266** | **44** |
+| aceeași cifră, pe `c125e0ed` (05.09, înainte de P7) | **72** | — |
+
+Cele 72 se pot recalcula: instrumentul rulat într-un worktree pe `c125e0ed` dă exact 72, adică
+cifra din registrul etapei 2. *Deci nu instrumentul a fost greșit când s-a scris, ci lumea s-a mutat
+sub el* — aceeași clasă cu [[garzile-urmeaza-codul-mutat]], a treia oară în două zile.
+
+### Reparația: atribuirea coboară la FUNCȚIE, cu adâncimea MĂSURATĂ
+
+Lanțul de azi e `main.py` (înveliș) → `core/uc_*.py` (use-case) → `core/X_api.py` (domeniu) →
+`core/repo_X.py` (depozit). Ultimul pas îl știa deja `core.scan_sql_efectiv`, scris chiar pentru
+clasa asta la valul D4; **nu s-a rescris nimic din el** — s-a adăugat pasul din mijloc, la
+granularitate de funcție: nu tot ce scrie `facturi_api`, ci ce scrie `facturi_api.creeaza`.
+
+Adâncimea nu e aleasă, e măsurată: la **1** nu se vede nimic (învelișul doar deleagă), la **2**
+apare depozitul modulului de domeniu, la **3** apare lanțul lung (`facturi_emite` → notă contabilă →
+mișcare de stoc), iar de la **4** distribuția **nu se mai mișcă** — 4, 5 și 6 dau aceeași cifră, cu
+maximum 9 tabele pe unitate. `ADANCIME_APEL = 5`: dincolo de convergență, departe de degenerare.
+
+### Propriul ei mod de eșec, găsit de propria ei calibrare
+
+Prima formă a reparației rezolva aliasurile de import **pe fișier**. Dar stratul use-case importă
+*în corpul funcției* și **refolosește același alias**: `_s` e `stocuri_api` într-o funcție și
+`stocuri_cv_api` în următoarea. Pe fișier, al doilea îl suprascrie pe primul, apelul aterizează în
+modulul greșit, iar numele nu există acolo — deci **tăcere**, nu eroare. Așa ieșeau goale
+`stocuri_adauga` și `cv_intrare`, două rute care chiar scriu. *Un punct orb nu minte, tace — și
+tăcerea se citește ca „ruta n-are efect".* Aliasurile se rezolvă acum pe domeniul funcției, iar
+`test_aliasul_refolosit_nu_se_amesteca_intre_functii` e mutația care ține reparația reparată.
+
+### Calibrarea, în AMBELE direcții, pe populația reală
+
+- **pozitiv**: zece rute care scriu își cer tabelul prin incluziune (`factura_creeaza` → `facturi` +
+  `factura_linii`, `casa_adauga` → `casa_operatiuni`, `stocuri_adauga` → `nir`…);
+- **negativ**: nouă rute de pură citire trebuie să iasă goale — acolo a căzut instrumentul după P7;
+- **anti-degenerare**: nicio unitate peste 14 tabele (înainte: 255 peste 10);
+- **anti-vacuu**: cel puțin 100 de unități trebuie să mai aibă vreo scriere — fără el, un instrument
+  amuțit ar trece triumfător primele trei probe;
+- **confruntarea cu lumea de dinainte**: `LISTA_FUNCTIONALITATI.md` poartă coloana «atinge o
+  declarație» așa cum a fost măsurată pe **03.09**, adică înainte de P7 — singurul martor al lumii
+  vechi. Rând cu rând: **339 la fel · 83 `da`→`nu` · 2 `nu`→`da`**. Cele 83 s-au citit pe nume, nu
+  s-au însumat: 22 sunt `GET`-uri de pură citire, patru sunt rute de `încărcare` care doar
+  previzualizează (`solduri_incarca`: *„Parsează o balanță și întoarce preview (nu salvează)"*),
+  restul scriu în tabele pe care nu le citește niciun generator (`users`, `accounting_firms`,
+  `declaratii_coada`). *Cifra veche nu era mai bogată, era mai puțin ascuțită.*
+
+### Ce NU vede, declarat
+
+SQL asamblat la rulare (limită moștenită de la `RE_W` — de acolo vine un „tabel" numit `UPDATE` la
+`factura_recunoaste`) · apeluri prin variabilă sau dicționar de handlere · rutele montate din afara
+stratului de aplicație (`core/spv_rute.py`, trei), pentru care se cade **declarat** pe atribuirea
+veche, pe modul: acolo răspunsul e un **plafon superior**, nu o tăcere. Proba a șasea cere exact
+asta, ca plafonul să nu dispară tăcut.
+
+### Ce s-a schimbat în perimetrul etapei 2, și de ce se scrie aici
+
+**72 → 44** de unități-nucleu: **31 ies**, **3 intră**. Ies mai ales citirile care nu pun nimic în
+declarație; intră `import-efactura`, `facturi-primite/{}/valideaza` și `woocommerce/sincronizeaza` —
+trei rute prin care chiar intră facturi. Dintre cele 44, **15** sunt deja atinse de loturile A–E, deci
+**rămân 29**, nu 45. *Cifra din comandă nu se rotunjește la ce s-a măsurat, dar nici măsurătoarea nu
+se ajustează ca să iasă cifra din comandă: se scriu amândouă, cu instrumentul lângă ele.*
+
+Un efect al îngustării merită numit: `DELETE /tenants/{}/facturi/{}` scrie doar în `facturi`, tabel
+citit de cinci generatoare, deci trece în **periferie**. Ștergerea unei facturi chiar mișcă D300 și
+D394 — se probează prin declarația al cărei nucleu e, nu se pierde.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**588 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**589 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 557
+### `core/` — 558
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8140,6 +8225,7 @@ nouă; e datoria veche, numărată prima dată.*
 - `core/test_aritmetica_in_prezentare.py` — GARD (interdicția 4): aritmetica fiscală din ecran nu diverge de cea din server.
 - `core/test_artefacte_pastrate.py` — GARD [R45]: un artefact produs se păstrează, cu cele cinci câmpuri — și producerea lui e
 - `core/test_asistent_arbore.py` — GARD (06.09.2026) — arborele de navigare al asistentului si cardurile lui nu pot diverge.
+- `core/test_atribuire_scrieri.py` — GARDA (15.09.2026): atribuirea scrierilor la o ruta nu poate nici degenera, nici tacea.
 - `core/test_audit_campuri_oficiale.py` — GARD AUDIT SEMANTIC — numele campurilor emise = campuri OFICIALE (01.08.2026, Conditia 2 Costin).
 - `core/test_audit_preluare.py` — Teste gardian F183 — audit_preluare (nucleele PURE, date minime construite manual).
 - `core/test_audit_schema.py` — Teste F165 — auditor conformitate schema tenant vs tenant_template.sql.

@@ -14893,3 +14893,26 @@ contează: documentul nu poate raporta mai mult decât codul).
 
 **Varianta respinsă:** să raportez P7 închisă pe baza cifrelor detectoarelor. Ar fi fost adevărat
 despre ce măsuram și fals despre fază — aceeași clasă cu brațul four-way care număra doar ce găsea.
+
+
+## 15.09.2026 — Perimetrul unei etape se RE-DERIVĂ înainte de a fi folosit, niciodată citat din predare
+
+**Situația.** Comanda etapei 2 cerea continuarea pe *„cele 45 de unități-nucleu neprobate
+individual"*. Cifra e scrisă în `PREDARE_LANT.md` și e corectă pentru ziua în care s-a măsurat
+(72 de unități-nucleu minus 27 atinse de loturile A–E, pe `c125e0ed`). Între timp, valul use-case al
+lui P7 a mutat corpurile de rută, iar instrumentul care dă perimetrul a început să răspundă **266**.
+
+**Decizia.** Perimetrul se re-derivă cu instrumentul, ÎNAINTE de a se lucra în el, iar dacă cifra
+diferă de cea din comandă, se raportează **amândouă**, cu derivarea fiecăreia. Nu se lucrează pe o
+listă citată dintr-un document, oricât de proaspăt: *o cifră care nu se poate recalcula azi nu e o
+măsurătoare, e o amintire.* Efectul concret: lista de lucru a etapei 2 are **29** de unități, nu 45,
+iar diferența e scrisă unitate cu unitate în `GARZI.md` (15.09.2026), nu însumată.
+
+**De ce nu s-a ajustat instrumentul ca să dea 45.** Ar fi fost ordinea inversă a celor trei acte din
+`METODA_VERIFICARE.md`: așteptarea scrisă ÎNAINTE e „perimetrul se derivă din cod", nu „perimetrul
+are 45 de elemente". Un instrument acordat ca să confirme o cifră dinainte nu mai măsoară nimic.
+
+**Ce rămâne deschis, numit:** `R53` (*inventarul de traseu atribuie unei rute tot ce scrie modulul*)
+NU se închide cu asta. Reparația de azi atinge `scan_functionalitati.scrie_unitatea`, adică
+perimetrul etapei 2; `scan_trasee` răspunde mai departe la nivel de modul, iar restanța rămâne
+deschisă pe el, cu domeniul ei micșorat.

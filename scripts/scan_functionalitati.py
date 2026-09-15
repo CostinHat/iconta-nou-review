@@ -176,9 +176,146 @@ def tabele_declaratie(decl, cunoscute):
     return tab
 
 
+#: Cate niveluri de apel se urmaresc de la corpul rutei in jos. MASURAT, nu ales (15.09.2026):
+#: la 1 nimic nu se vede (corpul rutei doar deleaga), la 2 apare depozitul modulului de domeniu,
+#: la 3 apare lantul lung (`facturi_emite` -> nota contabila -> stoc), iar de la 4 cifrele NU se mai
+#: misca: 4, 5 si 6 dau aceeasi distributie, cu maximum 9 tabele pe unitate. Se opreste la 5 —
+#: dincolo de convergenta, dar departe de degenerare.
+ADANCIME_APEL = 5
+
+_ARB_FIS, _FN_FIS, _ALIAS_FIS, _SCRIE_FN = {}, {}, {}, {}
+
+
+def _arbore_fisier(cale_rel):
+    """Arborele unui fisier din repo, o singura data. Un fisier nesintactic NU opreste scanul."""
+    if cale_rel not in _ARB_FIS:
+        try:
+            _ARB_FIS[cale_rel] = ast.parse(io.open(os.path.join(RAD, cale_rel),
+                                                   encoding="utf-8").read())
+        except (OSError, SyntaxError):
+            _ARB_FIS[cale_rel] = None
+    return _ARB_FIS[cale_rel]
+
+
+def _functii_fisier(cale_rel):
+    """{nume: nod} — prima definitie a fiecarei functii dintr-un fisier."""
+    if cale_rel not in _FN_FIS:
+        a = _arbore_fisier(cale_rel)
+        out = {}
+        if a is not None:
+            for n in ast.walk(a):
+                if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    out.setdefault(n.name, n)
+        _FN_FIS[cale_rel] = out
+    return _FN_FIS[cale_rel]
+
+
+def _alias_core(cale_rel):
+    """{aliasul folosit in fisier: modulul din core/}. `from core import x as _y` intra si el."""
+    if cale_rel not in _ALIAS_FIS:
+        a = _arbore_fisier(cale_rel)
+        out = {}
+        if a is not None:
+            for n in ast.walk(a):
+                if isinstance(n, ast.ImportFrom) and (n.module or "").startswith("core"):
+                    for nm in n.names:
+                        out[nm.asname or nm.name] = nm.name
+        _ALIAS_FIS[cale_rel] = out
+    return _ALIAS_FIS[cale_rel]
+
+
+def _alias_local(nod):
+    """{alias: modul} pentru importurile scrise CHIAR IN corpul unei functii.
+
+    Nu e un amanunt: stratul use-case importa in corpul fiecarei functii, si REFOLOSESTE acelasi
+    alias — `_s` e `stocuri_api` intr-o functie si `stocuri_cv_api` in urmatoarea. Un dictionar pe
+    FISIER le suprascrie, iar apelul se rezolva in modulul gresit, unde numele nu exista: efectul e
+    o TACERE, adica exact citirea „ruta nu scrie nimic". Masurat pe `stocuri_adauga` si `cv_intrare`,
+    doua rute care chiar scriu si ieseau goale.
+    """
+    out = {}
+    for n in ast.walk(nod):
+        if isinstance(n, ast.ImportFrom) and (n.module or "").startswith("core"):
+            for nm in n.names:
+                out[nm.asname or nm.name] = nm.name
+    return out
+
+
+def _tabele_scrise(sqluri):
+    """Tabelele din literele SQL, cu acelasi cititor ca restul repo-ului (`scan_trasee.RE_W`)."""
+    return {m.group(2) for s in sqluri for m in T.RE_W.finditer(s or "")}
+
+
+def scrie_functia(r):
+    """Tabelele scrise de CHIAR functia rutei, urmarind apelurile nominale `ADANCIME_APEL` niveluri.
+
+    [REANCORAT 15.09.2026, dupa valul use-case al lui P7] Forma veche — reuniunea scrierilor
+    TUTUROR modulelor rutei — a degenerat in ziua in care corpurile de ruta au plecat in
+    `core/uc_*.py`: `uc_comun` e importat de aproape fiecare invelis si mosteneste, prin pasul
+    modul->depozit din `scan_trasee`, scrierile a 18 tabele. Efect masurat: `GET /declaratii/tipuri`,
+    o ruta de pura citire, „scria" 18 tabele, iar 255 din 424 de unitati „scriau" 10 sau mai multe.
+    Nucleul etapei 2 iesea 266 in loc de 72 — adica perimetrul nu mai grupa nimic.
+
+    Lantul de azi e: invelis (`main.py`) -> use-case (`core/uc_*.py`) -> modul de domeniu
+    (`core/X_api.py`) -> depozit (`core/repo_X.py`). Ultimul pas il stie deja
+    `core.scan_sql_efectiv` (valul D4); aici se adauga pasul din mijloc, la granularitate de
+    FUNCTIE: nu tot ce scrie `facturi_api`, ci ce scrie `facturi_api.creeaza`.
+
+    CE NU VEDE, declarat: apeluri prin variabila sau prin dictionar de handlere; SQL asamblat la
+    rulare (limita mostenita de la `RE_W`); rutele montate din afara stratului de aplicatie
+    (`core/spv_rute.py`) — pentru ele se intoarce None, iar apelantul cade pe atribuirea veche, pe
+    modul, ceea ce e un PLAFON SUPERIOR, nu o tacere.
+    """
+    nume = r.get("fn")
+    if not nume:
+        return None
+    if nume in _SCRIE_FN:
+        return _SCRIE_FN[nume]
+    from core import scan_sql_efectiv as _sql
+    try:
+        cale, nod = _sql.functia(nume)
+    except LookupError:
+        _SCRIE_FN[nume] = None
+        return None
+    tab, vazut, frontiera = set(), set(), [(cale, nod)]
+    for _pas in range(ADANCIME_APEL):
+        urmatoare = []
+        for c, n in frontiera:
+            tab |= _tabele_scrise(_sql.sql_din_nod(c, n))
+            # domeniul functiei BATE fisierul: acelasi alias denumeste module diferite
+            alias = dict(_alias_core(c))
+            alias.update(_alias_local(n))
+            proprii = _functii_fisier(c)
+            for nd in ast.walk(n):
+                if not isinstance(nd, ast.Call):
+                    continue
+                f = nd.func
+                if isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name):
+                    m = alias.get(f.value.id)
+                    # depozitele se urmaresc de `sql_din_nod`, pe perechea nominala a modulului
+                    if not m or m.startswith("repo_"):
+                        continue
+                    c2 = "core/%s.py" % m
+                    n2 = _functii_fisier(c2).get(f.attr)
+                    if n2 is not None and (c2, f.attr) not in vazut:
+                        vazut.add((c2, f.attr))
+                        urmatoare.append((c2, n2))
+                elif isinstance(f, ast.Name) and f.id in proprii and (c, f.id) not in vazut:
+                    vazut.add((c, f.id))
+                    urmatoare.append((c, proprii[f.id]))
+        frontiera = urmatoare
+        if not frontiera:
+            break
+    _SCRIE_FN[nume] = tab
+    return tab
+
+
 def scrie_unitatea(r, mod):
-    """Tabelele in care scrie o ruta: inline, plus prin modulele ei (fara infrastructura)."""
+    """Tabelele in care scrie o ruta. Intai pe FUNCTIE; pe modul numai unde functia nu se rezolva."""
     t = set(r.get("scrie_inline") or {})
+    pe_functie = scrie_functia(r)
+    if pe_functie is not None:
+        return t | pe_functie
     for m in r.get("module") or []:
         t |= set((mod.get(m) or {}).get("scrie") or {})
     return t

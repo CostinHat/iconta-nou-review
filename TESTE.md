@@ -2540,3 +2540,16 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   în amândouă sensurile — planul nu poate declara P7 nici închisă peste un criteriu nesatisfăcut,
   nici deschisă peste patru satisfăcute.
 
+
+
+- **`core/test_atribuire_scrieri.py` — GARDĂ NOUĂ (15.09.2026, 6 probe)**: atribuirea scrierilor la o
+  rută nu poate nici **degenera**, nici **tăcea**. Construită după ce s-a măsurat că, odată cu valul
+  use-case al lui P7, `GET /declaratii/tipuri` — rută de pură citire — „scria" 18 tabele, 255 din 424
+  de unități primeau 10 sau mai multe, iar nucleul etapei 2 ieșea 266 în loc de 72. Patru feluri de
+  eșec păzite: degenerare (plafon 14 tabele/unitate) · tăcere (zece rute care scriu își cer tabelul
+  prin incluziune) · vacuu (podea de 100 de unități cu vreo scriere) · **aliasul refolosit** — modul
+  propriu de eșec al reparației, prins de propria ei calibrare: stratul use-case importă în corpul
+  funcției și refolosește `_s` pentru module diferite, iar o rezolvare pe fișier trimitea apelul în
+  modulul greșit. A șasea probă cere ca rutele montate din afara stratului de aplicație
+  (`core/spv_rute.py`) să cadă **declarat** pe atribuirea veche, pe modul — un plafon superior, nu o
+  tăcere. Perimetrul recalculat: **44** unități-nucleu, din care 15 atinse, **29 rămase**.
