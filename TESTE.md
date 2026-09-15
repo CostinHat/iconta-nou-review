@@ -2553,3 +2553,37 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   modulul greșit. A șasea probă cere ca rutele montate din afara stratului de aplicație
   (`core/spv_rute.py`) să cadă **declarat** pe atribuirea veche, pe modul — un plafon superior, nu o
   tăcere. Perimetrul recalculat: **44** unități-nucleu, din care 15 atinse, **29 rămase**.
+
+
+- **`frontend_test/proba_e2_lot_f_d300.py` — PROBĂ DE LANȚ, etapa 2 lotul F (15.09.2026)**: 11
+  lanțuri pe cele 10 unități-nucleu ale D300 rămase neprobate individual. Fiecare cu așteptarea
+  scrisă înainte și cu locul din generator lângă ea. Re-rulabilă, cu **numărul rulării derivat** din
+  câte facturi poartă marca — nu sare peste intrări la a doua rulare (decizia 69: o probă care nu-și
+  poate măsura delta se reduce tăcut la invarianți absoluți). Rezultat: **10 din 11 trec**, DUK
+  `valid`; defectele **R184** și **R185** reparate, **R186** numit și lăsat deschis fiindcă cere o
+  decizie. O unitate (`facturi-primite/{}/valideaza`) **nu se poate proba pe date valide**, și
+  motivul e măsurat, nu presupus: coada `efactura_primite` e goală, iar singurul producător al unui
+  rând acolo e calea SPV — se probează REFUZUL, cu motiv, pe id inexistent. Proba poartă o
+  **aserțiune anti-vacuu** pe propriul cititor, pusă după ce el a raportat opt delte de zero despre
+  o aplicație care lucra corect.
+
+
+- **`frontend_test/proba_e2_lot_g_d394.py` — PROBĂ DE LANȚ, etapa 2 lotul G (15.09.2026)**: cele trei
+  unități-nucleu ale D394 (fișa clientului: creare, actualizare, ștergere). Prima formă a lanțului a
+  fost **greșită** și se scrie în docstring: voiam ramura de rezervă `c_cui`, dar ruta de emitere
+  refuză o factură fără numele și codul fiscal al partenerului (art. 319 alin. 20) — deci ramura aia
+  e inaccesibilă pe date noi. Așteptarea s-a refăcut pe decizia 47: **editarea fișei nu rescrie o
+  factură emisă**. **3 din 3**, cu lanțul 1 ca **martor** al celorlalte două (o aserțiune de
+  neschimbare fără martor e adevărată degeaba). Cititorul de `<op1>` poartă aceeași **aserțiune
+  anti-vacuu** ca lotul F. A scos **R188**.
+
+
+- **`frontend_test/proba_e2_lot_h_d112.py` — PROBĂ DE LANȚ, etapa 2 lotul H (15.09.2026)**: 8 lanțuri
+  pe cele 7 unități-nucleu ale D112. Comparațiile se fac pe **amprenta** declarației (SHA-256 al
+  XML-ului), nu pe text. CNP-ul **nu e scris de mână**: se caută cifra de control pe care o acceptă
+  chiar `core.identitate` — o a doua copie a algoritmului ar fi începutul unei divergențe. Trei
+  perechi de aserțiuni **SE SCHIMBĂ / NU se schimbă** (plafonul cadoului, importul de istoric), unde
+  o singură direcție n-ar deosebi „aplică regula" de „adună orice". **5 din 8 trec**; a scos
+  **R189**, a confirmat prin măsurare golul declarat al Fazei 2b2 (beneficiul peste plafon nu se
+  impozitează încă), iar cititorul ei a fost cel greșit la prima rulare — `cnpAsig`, nu `cnp` —,
+  moment în care **s-a oprit declarat** în loc să raporteze delte de zero.

@@ -48,6 +48,7 @@ from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
 from decimal import Decimal, ROUND_HALF_UP
 from core import repo_d394_reconciliere as _repo
+from core import nomenclator_status_factura as _nsf394
 
 _NEDIGIT = re.compile(r"\D")
 
@@ -103,7 +104,11 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
          "LEFT JOIN clienti c ON c.id = f.client_id "
          "LEFT JOIN factura_linii l ON l.factura_id = f.id "
          "WHERE f.data_emitere >= %s AND f.data_emitere < %s "
-         "  AND COALESCE(f.tip, 'factura') = 'factura' "
+         # [15.09.2026] acelasi adevar, cerut din REGISTRU, nu scris a patra oara. Decizia 46
+         # spune ca `clauza_tip_document` e singurul loc unde scrie ce e un document fiscal;
+         # o copie literala aici s-ar rupe tacut de el la prima schimbare — exact felul in
+         # care a aparut divergenta din D300 (gasita in aceeasi tura).
+         "  AND " + _nsf394.clauza_tip_document("f") + " "
          "GROUP BY f.id, c.cui ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         rows = _repo.sql(cur, q, inceput, sfarsit)

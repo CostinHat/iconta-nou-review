@@ -1,0 +1,81 @@
+{
+ "firma": "Comert Micro TVA SRL",
+ "tenant_id": 4838,
+ "schema": "tenant_003",
+ "perioada": "2026-T3",
+ "rulare": 1,
+ "lanturi": [
+  {
+   "lant": "1 · clienti (creare) + factură 400 @21% pe `tert_cui=CUI_1` → `op1` în D394",
+   "ruta": "POST /tenants/{}/clienti",
+   "client": {
+    "stare": 200,
+    "id": 2,
+    "corp": "{'ok': True, 'client_id': 2}"
+   },
+   "factura": {
+    "stare": 200,
+    "id": 82,
+    "corp": "{'ok': True, 'factura_id': 82, 'total': 484.0, 'tva': 84.0, 'contare': {'stare': 'contata', 'inregistrare_id': 130, 'tva_la_incasare': False, 'linii': [{'debit': '4111', 'credit': '704', 'suma': '400."
+   },
+   "d394": {
+    "stare": 200,
+    "octeti_xml": 4043,
+    "op1_citite": 11
+   },
+   "op1_cu_CUI_1": [
+    {
+     "tip": "L",
+     "tip_partener": "1",
+     "cota": "21",
+     "cuiP": "95687300",
+     "denP": "PROBA-E2-G Client 1 SRL",
+     "nrFact": "1",
+     "baza": "400",
+     "tva": "84"
+    }
+   ],
+   "OK": true
+  },
+  {
+   "lant": "2 · clienti (actualizare CUI pe fișă) → declarația NU se schimbă",
+   "ruta": "PUT /tenants/{}/clienti/{}",
+   "martor": "lanțul 1 a pus `CUI_1` în declarație; fără el, «nu s-a schimbat» n-ar spune nimic",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'ok': True}"
+   },
+   "d394": {
+    "stare": 200,
+    "octeti_xml": 4043,
+    "op1_citite": 11
+   },
+   "op1_cu_CUI_1_ramase": 1,
+   "op1_cu_CUI_2_aparute": 0,
+   "declaratia_identica": true,
+   "OK": true
+  },
+  {
+   "lant": "3 · clienti (ștergere) → declarația rămâne identică",
+   "ruta": "DELETE /tenants/{}/clienti/{}",
+   "raspuns": {
+    "stare": 409,
+    "corp": "{\"detail\": \"clientul are 1 facturi — nu poate fi șters\"}"
+   },
+   "d394": {
+    "stare": 200,
+    "octeti_xml": 4043,
+    "op1_citite": 11
+   },
+   "op1_cu_CUI_1_ramase": 1,
+   "declaratia_identica": true,
+   "ce_s_a_intamplat": "REFUZ — acceptabil, dar trebuie MOTIVAT (nu 500)",
+   "OK": true
+  }
+ ],
+ "duk": {
+  "stare_http": 200,
+  "stare": "erori",
+  "erori": "E: op1 (6)\n partener: CLIENT PROBA F\n eroare regula: R218.4: cvatrupla (tip_partener (1), cota (21), tip (L), cuiP (95275466)) trebuie sa fie unica pe declaratie\nE: op1 (7)\n partener: CLIENT PROBA F API\n eroare regula: R218.4: cvatrupla (tip_partener (1), cota (21), tip (L), cuiP (95275466)) trebuie sa fie unica pe declaratie\nE: op1 (8)\n partener: CLIENT PROBA F UBL\n eroare regula: R218.4: cvatrupla (tip_partener (1), cota (21), tip (L), cuiP (95275466)) trebuie sa fie unica pe declaratie"
+ }
+}

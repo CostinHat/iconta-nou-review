@@ -33,7 +33,9 @@ def desparte_cod_tva(cod):
                          "verifica în VIES. O livrare intracomunitară cere un partener "
                          "înregistrat într-un stat membru." % tara)
     if not nr:
-        raise ValueError("numar TVA lipsa dupa codul de tara")
+        raise ValueError("Codul de TVA al partenerului are doar prefixul de țară (%s), fără "
+                         "numărul de după el. Un cod complet arată ca %s123456789 — "
+                         "completează-l de pe factura furnizorului." % (tara, tara))
     return tara, nr
 
 def verifica_vies(cod_tva, timeout=15):

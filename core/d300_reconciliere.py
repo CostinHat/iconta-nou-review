@@ -80,6 +80,13 @@ def _agrega_independent(conn, inceput, sfarsit):
          "AND COALESCE(f.taxare_inversa, false) = false "  # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300
          "AND COALESCE(f.tert_tara, 'RO') = 'RO' "  # [B1/F125] IC/export -> randuri proprii (rd.1/5/14/18 bunuri; rd.3/rd.7+rd.20 servicii reclasificate P/S in D390), in afara reconcilierii pe cote 21/11/9 (limita) - filtrul pe tert_tara le exclude coerent, ca la IC bunuri
          "AND " + _nsf.clauza_sql("f") + " "  # [B1] doar facturi DECLARABILE — din nomenclator, nu din lista scrisa aici (P1)
+         # [15.09.2026, etapa 2 lotul F] si doar DOCUMENTE FISCALE. Decizia 46 (aceeasi zi)
+         # a scos proforma din D300 pe cele PATRU drumuri ale generatorului prin `facturi` —
+         # dar calea 2 e al CINCILEA cititor, cu SQL propriu, si a ramas in urma. Efectul nu
+         # era o cifra gresita, ci o BLOCARE: generator=4800 vs cale2=5400 (exact proforma de
+         # 600), iar gardul refuza sa genereze. O firma care emite proforme nu mai putea
+         # depune D300. *Cand o decizie se aplica "pe toate drumurile", drumurile se NUMARA.*
+         "AND " + _nsf.clauza_tip_document("f") + " "
          "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "  # [B1] deducere amanata la plata, in afara reconcilierii pe emitere (limita)
          "ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:

@@ -3099,6 +3099,15 @@ def achizitie_ic(tenant_id, corp, ctx):
             cod_tva_furnizor = str(corp.get("cod_tva_furnizor") or "").strip().upper().replace(" ", "")
             if not cod_tva_furnizor:
                 raise ValueError("cod TVA furnizor UE obligatoriu (fara el achizitia NU ajunge in D390)")
+            # [etapa 2, lotul F, 15.09.2026] TARA furnizorului, derivata din chiar codul lui de TVA.
+            # Fara ea factura se scria cu implicitul `tert_tara="RO"`, iar D300 ruteaza pe TARA
+            # (`d300.py:247-249`), nu pe codul partenerului: achizitia intracomunitara nu ajungea
+            # nici la rd.5/rd.18 (bunuri), nici la rd.7/rd.20 (servicii). Nota contabila purta
+            # taxarea inversa, decontul nu declara nimic — doua evidente care spun lucruri diferite
+            # despre acelasi fapt. Prefixul se desparte cu helperul care stie si lista UE si cazul
+            # Greciei (`intracomunitar.desparte_cod_tva`), nu cu `cod[:2]` scris aici: un `RO` scris
+            # de doua ori e inceputul unei divergente.
+            tara_furnizor, _nr_tva = _ic.desparte_cod_tva(cod_tva_furnizor)
             numar = str(corp.get("numar") or "").strip()
             if not numar:
                 raise ValueError("numar factura furnizor obligatoriu")
@@ -3122,6 +3131,7 @@ def achizitie_ic(tenant_id, corp, ctx):
                                        linii=[{"descriere": descr[:200], "cantitate": 1,
                                                "pret_unitar": str(val), "cota_tva": 0}],
                                        tert_nume=furnizor_nume or None, tert_cui=cod_tva_furnizor,
+                                       tert_tara=tara_furnizor,
                                        data_faptului_generator=data_fg, status="importata")
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge, NU cea standard

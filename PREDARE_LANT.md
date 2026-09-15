@@ -439,7 +439,7 @@ e o vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **862** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **863** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -885,11 +885,25 @@ a ce e adevărat **acum**.
    înregistrează, ajunge în rândul corect cu suma corectă, declarația se generează și validează* —,
    iar „suprapunere" **nu** contează ca probă.
 
-   **Înainte de a porni etapa 2, comanda cere un pas de verificare:** starea celor 133 + 15 defecte
-   găsite (reparate / deschise / în `xfail`), citită din registre (`GARZI.md`, `core/test_datorie.py`),
-   nu din memorie. Am apucat să măsor din tabel: **toate cele 133 (etapa 1) și 15 (etapa 2) poartă
-   „defect găsit ȘI REPARAT"**; niciunul nu e lăsat deschis în `LISTA_FUNCTIONALITATI.md`. Ce **nu**
-   e verificat încă e confruntarea acelei afirmații cu registrul de datorii — acolo se oprise tura.
+   **[15.09.2026] Pasul de verificare S-A FĂCUT, iar cifrele de mai sus sunt INVALIDATE.** Starea
+   e confirmată: **zero defecte deschise**, **zero în `xfail`** din temă — detectorul care caută un
+   defect fără cuvântul „reparat" în aceeași propoziție dă **0** pe tot registrul, iar din cele 54 de
+   restanțe DESCHISE (`scripts/raport_b.py`) **niciuna** nu e din intervalul temei; toate codurile ei
+   apar la *restanțe REZOLVATE*. Cele 12 `xfail(strict=True)` din suită sunt toate din afara temei.
+
+   **Dar cifrele „133" și „15" nu se pot reconstitui, deci se INVALIDEAZĂ** — aceeași regulă ca la
+   cifra 131 (`core/test_predare_proaspata.py`): *o cifră ai cărei termeni nu se mai pot reconstitui
+   se invalidează, nu se corectează.* Recalculat din `LISTA_FUNCTIONALITATI.md`: etapa 1 are **145**
+   de rânduri cu defect reparat (122 cu fraza canonică `**defect găsit și reparat**` + 23 cu alte
+   formulări), iar etapa 2 numea **12** coduri R înainte de 15.09 (R161–R170 + R165c, R166b). Singura
+   cifră care se reproduce exact e **27** — unitățile atinse de etapa 2 până atunci.
+
+   **Și „cele 45" sunt INVALIDATE.** Perimetrul se re-derivă, nu se citează: `scan_lanturi_declaratie`
+   dă **44** de unități-nucleu, din care 15 erau deja atinse — deci **29** rămase, nu 45. Cifra veche
+   (72 − 27) era corectă pe `c125e0ed` și se poate reproduce acolo; s-a schimbat fiindcă valul
+   use-case al lui P7 a mutat codul sub instrument, iar instrumentul a fost reancorat pe 15.09
+   (`357a4d8a`). Din cele 29, **20 sunt probate** în loturile F (D300, 10), G (D394, 3) și H (D112, 7);
+   rămân **9**: D406 (8) și D205 (1).
 
 0Y. **[15.09.2026] CE E DE ȘTIUT DESPRE CELE DOUĂ REPARAȚII FISCALE, dacă apare o mirare.**
 

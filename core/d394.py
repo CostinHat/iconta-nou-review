@@ -571,6 +571,31 @@ def calcul_d394(prof, perioada, date, manual=None):
                 avert.append("Partener \"%s\": cod fiscal \"%s\" invalid (%s) - DUK regula R218.3 îl "
                              "respinge. Corectează codul pe factura." % (denP or "?", cuiP, motiv))
 
+    # [R188, etapa 2 lotul G, 15.09.2026] ACELASI PARTENER CU DOUA ORTOGRAFII face declaratia de
+    # NEDEPUS, si pana azi nimic n-o spunea. Cheia de grupare a generatorului e
+    # `(tip, tip_partener, cota, cuiP, denP)` — denumirea INTRA in ea —, dar regula ANAF R218.4 cere
+    # ca `(tip_partener, cota, tip, cuiP)` sa fie UNICA pe declaratie. Doua facturi catre acelasi
+    # CUI, scrise cu nume usor diferite, produc doua `op1` si DUK respinge tot documentul.
+    # Masurat pe `tenant_003`: trei `op1` cu `cuiP=95275466` si trei denumiri.
+    #
+    # NU se contopesc automat: *care denumire castiga* e o decizie, iar factura e autoritatea
+    # (decizia 47) — corectura se face pe factura, nu in generator. Se face ce fac si R218.2/R218.3
+    # de deasupra: se NUMESTE problema, cu partenerul si toate ortografiile lui.
+    _ortografii = {}
+    for (tip, tp, cota, cuiP, denP) in op1:
+        if not cuiP:
+            continue
+        _ortografii.setdefault((tip, tp, cota, cuiP), set()).add(denP or "")
+    for (tip, tp, cota, cuiP), _nume in sorted(_ortografii.items()):
+        if len(_nume) < 2:
+            continue
+        avert.append(
+            "Partenerul cu CUI \"%s\" apare în declarație cu %d denumiri diferite (%s) pe aceeași "
+            "operațiune (tip %s, cota %s) — regula DUK R218.4 cere ca perechea (tip_partener, cotă, "
+            "tip, CUI) să fie UNICĂ, deci respinge ÎNTREAGA declarație. Scrie același nume pe toate "
+            "facturile către partenerul ăsta și regenerează."
+            % (cuiP, len(_nume), ", ".join('"%s"' % n for n in sorted(_nume)), tip, cota))
+
     # [T4/G-bc1 + G-bc2 10.08.2026] op1 care NECESITA op11 dar NU-l poate obtine -> EXCLUS aici, INAINTE de
     # rezumat1/rezumat2 (totalurile raman coerente) si de reconciliere. ANTERIOR (T4): op1 C/V (tip_partener=1)
     # fara categorie art.331 se emitea FARA op11 -> DUK R233.5 respingea, iar avertismentul NU bloca (avertiza-

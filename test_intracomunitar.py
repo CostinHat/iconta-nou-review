@@ -12,8 +12,16 @@ def test_desparte_non_ue():
         m.desparte_cod_tva("US123456")
 
 def test_desparte_gol():
-    with pytest.raises(ValueError, match="lipsa"):
+    # [15.09.2026] Proba cerea cuvantul „lipsa" din vechiul mesaj („numar TVA lipsa dupa codul de
+    # tara"). Mesajul s-a rescris — R185 l-a facut PUBLICAT, iar clichetul de diacritice cere ca un
+    # text afisat sa fie in romana intreaga. Proba se muta pe ce CONTEAZA, nu pe un cuvant: refuzul
+    # trebuie sa numeasca prefixul primit si sa arate forma asteptata. *Un test ancorat pe un cuvant
+    # apara formularea, nu comportamentul.*
+    with pytest.raises(ValueError) as e:
         m.desparte_cod_tva("DE")
+    mesaj = str(e.value)
+    assert "DE" in mesaj, "refuzul nu spune ce prefix a primit"
+    assert "DE123456789" in mesaj, "refuzul nu arata forma unui cod complet"
 
 def test_tva_ti():
     assert m.tva_taxare_inversa(10000, cota=21) == Decimal("2100.00")

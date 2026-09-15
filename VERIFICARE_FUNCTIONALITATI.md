@@ -2157,3 +2157,137 @@ pe `data-op` — structural —, iar cele două s-au deschis: amândouă răspun
    utilizatorul se rulează după ce i-ai dovedit ținta, nu după ce ai presupus-o.* Reprobarea s-a
    făcut apoi într-o copie reală (`cp -al`), fără `iconta_publicat` alături, unde aplicația servește
    declarat „arbore de lucru (nepublicat)".
+
+
+---
+
+## ETAPA 2 — LOT F: cele zece unități-nucleu ale D300 rămase neprobate (15.09.2026)
+
+Primul lot de după reancorarea perimetrului. **Cifra din comandă era 45; derivarea de azi dă 29** —
+vezi `DECIZII.md` (15.09) și `GARZI.md` (15.09). Lotul F ia primele **10**, cele ale D300.
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), plătitor TVA **trimestrial**, trimestrul
+**III/2026** — aceeași ca lotul A, ca delta să se citească peste starea lui. Sumele sunt rotunde, ca
+TVA-ul să nu depindă de rotunjire.
+
+### Așteptarea, scrisă ÎNAINTE — și ce a ieșit
+
+| # | unitatea | intrarea | așteptat (și de unde) | obținut |
+|---|---|---|---|---|
+| 1 | `POST /achizitie-ic` · bunuri | 1.000 @ 21% | `R5_1`+1000 `R5_2`+210 · `R18_1`+1000 `R18_2`+210 — `d300.py:405` | **defect (R185)** — zero pe toate patru. După reparație: exact |
+| 2 | `POST /achizitie-ic` · servicii | 800 @ 21% | `R7_1`+800 `R7_2`+168 · `R20_1`+800 `R20_2`+168 — `d300.py:309,454` | **defect (R186), NEREPARAT** — au intrat la **rd.5**, nu la rd.7 |
+| 3 | `POST /achizitie-taxare-inversa` | 400 @ 21%, lit. a) deșeuri | `R12_1`+400 `R12_2`+84 · `R25_1`+400 `R25_2`+84 — `d300.py:384` | exact |
+| 4 | `POST /achizitie-necorporala` | 1.000 @ 21%, software 36 luni | `R22_1`+1000 `R22_2`+210 — `_ACHIZ_RAND`, `d300.py:47` | exact (+ rând în `mijloace_fixe`) |
+| 5 | `POST /achizitie-neinregistrat` | 150, PF fără CUI | **niciun** rând de TVA nu se mișcă — `main.py:5710` | exact (absența e verificată, nu presupusă) |
+| 6 | `POST /woocommerce/sincronizeaza` | — | **refuz motivat** | `422` *„WooCommerce neconfigurat"* |
+| 7 | `POST /facturi/{}/storno` | storno peste o emisă 1.000 @ 21% | `R9_1`−1000 `R9_2`−210 | exact |
+| 8 | `POST /facturi/{}/transforma` | proformă 600 @ 21% → factură | proforma **nu** e în decont; după transformare `R9_1`+600 `R9_2`+126 | **defect (R184)** — decontul nu se mai genera DELOC. După reparație: exact, în ambele jumătăți |
+| 9 | `POST /api/v1/firme/{}/facturi` | emisă 500 @ 21%, prin **cheie de API** | `R9_1`+500 `R9_2`+105 | exact |
+| 10 | `POST /import-efactura` | UBL, emisă 300 @ 21% | `R9_1`+300 `R9_2`+63 | exact |
+| 11 | `POST /facturi-primite/{}/valideaza` | — | lanțul pe date valide **nu se poate exercita** | refuz `404` motivat; motivul absenței, măsurat (mai jos) |
+
+**Confruntare lot F: o singură nepotrivire rămasă — R186**, numită și lăsată deschisă fiindcă
+repararea ei cere o decizie. **DUK: `valid`** pe D300 după reparații.
+
+### Unitatea care nu se poate proba, cu motivul MĂSURAT
+
+`facturi-primite/{}/valideaza` lucrează pe un rând din `efactura_primite`. Coada e **goală pe toate
+firmele de probă** (verificat pe `tenant_003`, `_004`, `_005`), iar singurul producător al unui rând
+acolo e calea de recepție SPV (`spv_receive.importa_mesaj`, chemată de cron) — **nu există rută prin
+care un om să pună un rând în coadă**. *Aș fi putut semăna rândul direct în tabel, dar o probă care
+își scrie singură precondiția pe la spatele aplicației dovedește citirea aplicației, nu lanțul ei.*
+Ce s-a exercitat: refuzul pe id inexistent — `404`, *„factură primită inexistentă"*, nu `500`.
+
+### Trei corecturi ale așteptării MELE, oprite înainte de raport
+
+1. **Decontul se cere pe TRIMESTRU.** Prima rulare a cerut luna; ruta a refuzat, citând art. 322
+   alin. (2). Refuzul e corect — și e chiar R167, scris pe 06.09.
+2. **Categoria art. 331 nu e oricare.** `deseuri` (lit. a) e singura fără dată de expirare **și**
+   fără prag; cu `cereale` (expiră în 2026) refuzul corect ar fi intrat în raport ca defect.
+3. **Cititorul probei era orb** — vezi mai jos; a raportat opt delte de zero pe o aplicație corectă.
+
+### Ce a greșit proba, nu aplicația
+
+`U.randuri_xml` ia atributele **primului element**; eu îi dădeam XML-ul cu declarația `<?xml …?>` în
+față, deci citea `version` și `encoding`. Lotul A tăia declarația (`proba_e2_d300.py:121`). Proba are
+acum o **aserțiune anti-vacuu**: dacă decontul s-a generat dar nu i s-a citit niciun rând `R*`,
+rularea se oprește. *A doua oară în două loturi când proba, nu aplicația, e cea care ascunde.*
+
+### Scenariul, DECLARAT
+
+Intrările poartă `PROBA-E2-F-<lanț>-<rulare>`, iar numărul rulării se derivă numărând facturile cu
+marca — deci **nu se sare peste intrări** la a doua rulare (decizia 69). Costul: `tenant_003`
+acumulează un set per rulare; la închiderea lotului sunt **25**. Se vede în decont: `R26_1 = 5.400`
+sunt achizițiile cu cotă 0% rămase din rulările de **dinainte** de R185, când AIC-urile se scriau ca
+interne.
+
+
+---
+
+## ETAPA 2 — LOT G: cele trei unități-nucleu ale D394 (15.09.2026)
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), trimestrul **III/2026**, ca la loturile A și F.
+
+### Așteptarea, REFĂCUTĂ după două refuzuri care aveau dreptate
+
+Prima formă cerea o factură emisă doar pe `client_id`, ca să calce ramura de rezervă din
+`d394.py:1015`. Ruta a refuzat: *„Denumirea beneficiarului e obligatorie pe factură"*, apoi
+*„Factura nu se poate salva fără codul fiscal al partenerului … (Cod fiscal art. 319 alin. 20)"*.
+**Ramura de rezervă e inaccesibilă pe date noi** — o spune și comentariul ei. Așteptarea s-a mutat pe
+decizia 47.
+
+| lanț | intrarea | așteptat | obținut |
+|---|---|---|---|
+| 1 | fișă nouă (`CUI_1`) + factură 400 @21% cu `tert_cui=CUI_1` | `<op1 cuiP="CUI_1" baza="400">` | exact |
+| 2 | `PUT /clienti/{}` schimbă CUI-ul fișei la `CUI_2` | declarația **identică**, `CUI_2` absent | exact |
+| 3 | `DELETE /clienti/{}` | declarația identică | `409` *„clientul are 1 facturi — nu poate fi șters"* |
+
+**Confruntare lot G: 0 nepotriviri.** DUK: **`erori`** — și nu din cauza lanțului, ci din cauza a
+ceea ce lăsase lotul F: **R188**.
+
+### R188 — ce a scos validatorul, și de ce nu e o eroare de probă
+
+`R218.4: cvatrupla (tip_partener, cota, tip, cuiP) trebuie sa fie unica pe declaratie`, pe patru
+`op1` cu același CUI și patru denumiri. Generatorul grupează pe `(…, cuiP, denP)`; regula ANAF cere
+unicitate **fără** `denP`. *Două facturi către același partener, cu numele scris puțin altfel, fac
+declarația de nedepus — iar aplicația nu spunea nimic.* Reparat ca **santinelă** (avertisment care
+numește CUI-ul și toate ortografiile), nu ca o contopire automată: *care denumire câștigă* e o
+decizie, iar factura e autoritatea.
+
+### Scenariul, DECLARAT
+
+Fișa creată la lanțul 1 **rămâne** (ștergerea e refuzată, și pe drept — are o factură). Firma
+acumulează o fișă și o factură per rulare; numărul rulării se derivă din facturile cu marcă.
+
+
+---
+
+## ETAPA 2 — LOT H: cele șapte unități-nucleu ale D112 (15.09.2026)
+
+**Firma:** «Panificatie Salarii Speciale SRL» (`tenant_001`), luna **08/2026**, ca la lotul D.
+Comparațiile se fac pe **amprenta** declarației, nu pe text.
+
+| # | unitatea | intrarea | așteptat | obținut |
+|---|---|---|---|---|
+| 1 | `POST /salariati-import` | un salariat, CNP cu cifra de control calculată, COR din nomenclator | `+1 <asigurat>` | exact (13 → 14) |
+| 2 | `PUT /salariati/{}/pontaj` | o zi pusă `absent_nemotivat` | declarația **se schimbă** | exact |
+| 3a | `PUT /salariati/{}/beneficiu-lunar` | cadou **300** lei | **NU** se schimbă (= plafon) | exact |
+| 3b | aceeași rută | cadou **500** lei | se schimbă (200 peste plafon) | **nu s-a schimbat** — gol DECLARAT în cod (Faza 2b2), nu defect |
+| 4 | `POST /salariati/{}/concedii` | certificat CM cod 01 | se schimbă | **defect (R189)**: `422` cu textul lui `int()` |
+| 5 | `DELETE /salariati/{}/concedii/{}` | revine exact | fără subiect (blocat de 4) |
+| 6 | `POST /istoric-declaratii-import` | o depunere din 07/2026 | declarația lunii 08 **NU** se schimbă | exact |
+| 7 | `POST /coada/{}/depune` | id inexistent | refuz motivat | `404`, cu cele trei cauze numite |
+
+**Confruntare lot H: 5 din 8.** Unul e defect reparat (R189), unul e un gol declarat în cod, unul a
+rămas fără subiect.
+
+### De ce 3b nu e defect
+
+`core/beneficii_api.py:18-20` scrie: *„Peste plafon sau nelegal -> taxabil (Faza 2b2; in 2b1 doar
+SEMNAL)"*. Partea de peste plafon **nu se impozitează azi**, iar asta e scris. *A patra oară în
+patru loturi când așteptarea mea e greșită, iar aplicația se poartă cum spune despre sine.*
+
+### Scenariul, DECLARAT
+
+Salariatul probei primește, la capăt, **dată de încetare** (`31.08`), prin ruta aplicației — fără
+ea, fiecare rulare ar lăsa un salariat activ în D112-urile următoare ale firmei.

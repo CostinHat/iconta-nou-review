@@ -8166,6 +8166,200 @@ Un efect al îngustării merită numit: `DELETE /tenants/{}/facturi/{}` scrie do
 citit de cinci generatoare, deci trece în **periferie**. Ștergerea unei facturi chiar mișcă D300 și
 D394 — se probează prin declarația al cărei nucleu e, nu se pierde.
 
+## 15.09.2026 (2) — ETAPA 2, LOTUL F: zece unități-nucleu ale D300, și trei defecte pe care numai lanțul le putea vedea
+
+**GĂRZI NOI: niciuna.** Lotul a probat lanțuri și a reparat două defecte; al treilea e numit și
+lăsat deschis, fiindcă repararea lui cere o decizie, nu o reparație. *Comanda etapei 2 cere probe,
+nu gărzi* — regula lotului A, rămasă în vigoare.
+
+### Ce s-a probat, și cum
+
+**11 lanțuri pe 10 unități**, pe «Comert Micro TVA SRL» (`tenant_003`), trimestrul III/2026 —
+aceeași firmă și perioadă ca lotul A, ca delta să se citească peste starea lui. Fiecare lanț are
+așteptarea scrisă **înainte**, cu locul din generator lângă ea: `R5/R18` pentru AIC bunuri
+(`d300.py:405`), `R7/R20` pentru servicii IC (`:309`, `:454`), `R12/R25` pentru art. 331 (`:384`),
+`R22` pentru achiziții 21% (`_ACHIZ_RAND`, `:47`), **absență** pentru achiziția de la persoană
+fizică. **10 din 11 trec. D300 se generează ȘI validează: DUK `valid`.**
+
+Categoria art. 331 nu e aleasă la întâmplare: `deseuri` (lit. a) e singura din nomenclator **fără
+dată de expirare și fără prag**. *Cu `cereale` — care expiră în 2026 — refuzul corect al aplicației
+ar fi intrat în raport ca defect.*
+
+### R184 — a doua cale a D300 număra proformele, iar decontul nu se mai genera DELOC
+
+Decizia 46 (dimineața aceleiași zile, `3ca96f2f`) a scos proforma din D300 **pe cele patru drumuri
+ale generatorului** prin `facturi`. Dar `core/d300_reconciliere.py` e **al cincilea cititor**, cu
+SQL propriu — și a rămas în urmă. Efectul nu e o cifră greșită: e o **blocare**. Măsurat, la pasul
+8 al probei: `generator=4800` vs `cale2=5400`, diferența **exact proforma de 600**, iar gardul de
+reconciliere refuză să genereze. *O firmă care emite o proformă nu-și mai putea depune D300.*
+
+**Reparat**: clauza vine acum din registru (`nomenclator_status_factura.clauza_tip_document`), nu
+din SQL scris a doua oară. Și **`core/d394_reconciliere.py`** a primit același tratament: el AVEA
+filtrul, dar **literal** — a patra copie a aceluiași adevăr, adică exact forma din care s-a născut
+divergența din D300. *Când o decizie se aplică „pe toate drumurile", drumurile se NUMĂRĂ.*
+
+### R185 — achiziția intracomunitară se scria ca fiind din România
+
+`POST /tenants/{}/achizitie-ic` — ruta **dedicată** achiziției IC — crea factura fără `tert_tara`,
+deci cu implicitul `"RO"`, deși avea în mână codul de TVA al furnizorului (`DE…`). D300 rutează pe
+**țară** (`d300.py:247-249`), nu pe codul partenerului.
+
+**Ce însemna pentru un contabil:** nota contabilă purta taxarea inversă (`4426=4427`), iar decontul
+**nu declara operațiunea deloc**. Nu o cifră greșită într-un rând — o operațiune lipsă din
+declarație, cu evidența contabilă spunând altceva despre același fapt. Măsurat: 1.000 lei AIC
+bunuri, zero în toate cele patru rânduri așteptate.
+
+**Reparat**: țara se derivă din chiar codul de TVA, cu `intracomunitar.desparte_cod_tva` — helperul
+care știe și lista UE și cazul Greciei —, nu cu `cod[:2]` scris aici. După reparație: `R5_1` și
+`R18_1` cresc exact cu baza, `R5_2`/`R18_2` cu TVA-ul.
+
+### R186 — axa bunuri/servicii se cere de la om și se pierde pe drum. **NEREPARAT, cere o decizie**
+
+Ruta acceptă `tip: bunuri|servicii` și **refuză** orice altceva (reparație a lotului 5, 04.09).
+Dar valoarea nu ajunge nicăieri: intră doar în **textul descrierii**. D300 ia axa din
+`tip_def_ic = "L" if emisa else "A"` (`d300.py:255`) — adică **orice achiziție IC e „bunuri"**, dacă
+n-o reclasifică cineva manual. Măsurat: 800 lei servicii IC au intrat la **rd.5** (bunuri), nu la
+rd.7, iar `R5_1` a crescut cu 1.800 = 1.000 bunuri + 800 servicii.
+
+**De ce nu s-a reparat:** cele două locuri posibile duc în direcții diferite, iar alegerea e a lui
+Costin, nu a mea. (a) **pe factură** — cere o coloană nouă în `facturi` (nu există azi nicio coloană
+pentru axă) și schimbă contractul „sursa unică D390"; (b) **prin reclasificare** — mecanismul există,
+dar cheia lui e `(direcție, țară, cod)`, adică **partener-lună**, nu operațiune: același furnizor cu
+bunuri ȘI servicii în aceeași lună n-ar putea fi despărțit. *O reparație care alege singură între
+ele ar fi o decizie de produs luată în tăcere.*
+
+### R187 — o vânzare intracomunitară nu produce nicio factură. **NEREPARAT, observație**
+
+Găsit citind perechea lui R185: `vanzare_ic` creează **doar nota contabilă** (`4111 = 70x`), nicio
+linie în `facturi`. Consecința, derivată din cod, nu probată pe date: livrarea IC nu poate ajunge
+nici la rd.1/rd.3 din D300, nici în D390, care citesc amândouă `facturi`. Se scrie ca observație,
+nu ca defect probat — iar faptul că ruta **nu** e în nucleul D300 (instrumentul de perimetru o
+clasifică în afara lui) e chiar consecința mecanică a aceleiași absențe.
+
+### Ce a greșit PROBA, și se scrie fiindcă era să mintă despre aplicație
+
+**Cititorul probei era orb.** `randuri_xml` ia atributele **primului element**, iar eu îi dădeam
+XML-ul cu declarația `<?xml …?>` în față — deci citea `version` și `encoding` și întorcea **zero
+rânduri**. Efect: **opt lanțuri raportate ca „delta 0"** pe o aplicație care lucra corect. Lotul A
+tăia declarația (`proba_e2_d300.py:121`); eu am uitat-o.
+
+*Un cititor care nu găsește nimic trebuie să CADĂ, nu să întoarcă gol* — proba are acum o aserțiune
+anti-vacuu care oprește rularea dacă decontul s-a generat dar nu i s-a citit niciun rând `R*`.
+A doua oară în două loturi când proba, nu aplicația, e cea care ascunde (lotul E: `null` în loc de
+cădere).
+
+**Și o a doua corectură a așteptării mele:** prima rulare cerea decontul pe **lună**, iar ruta a
+refuzat, citând art. 322 alin. (2) — firma e trimestrială. Refuzul e corect și își spune temeiul
+(R167, 06.09). *A treia oară când un mesaj al aplicației îmi corectează așteptarea înainte să ajungă
+în raport ca defect.*
+
+### Costul, scris
+
+Probele lotului construiesc fapte REALE, numerotate pe rulare, iar firma le acumulează: la
+închiderea lotului, `tenant_003` poartă **25** de seturi. Se vede în decont — `R26_1 = 5.400` sunt
+achizițiile cu cotă 0% rămase din rulările de **dinainte** de R185, când AIC-urile se scriau ca
+interne. *Costul se scrie; alternativa era o probă care nu-și poate măsura delta (decizia 69).*
+
+## 15.09.2026 (3) — ETAPA 2, LOTUL G: fișa clientului nu rescrie istoria, iar două ortografii fac declarația de nedepus
+
+**GĂRZI NOI: niciuna** — dar o **santinelă** nouă în generator, în tiparul celor existente.
+
+### Lanțul, refăcut după ce aplicația m-a refuzat de două ori
+
+Voiam să probez ramura de **rezervă** din `d394.py:1015` (`cui = r["tert_cui"] or r["c_cui"]`),
+emițând o factură doar pe `client_id`. Ruta a refuzat, și amândouă refuzurile aveau dreptate:
+*„Denumirea beneficiarului e obligatorie pe factură"*, apoi *„Factura nu se poate salva fără codul
+fiscal al partenerului … codul nu mai poate fi completat mai târziu de altcineva decât cel care a
+emis-o (Cod fiscal art. 319 alin. 20)"*.
+
+**Deci ramura de rezervă e, pe date NOI, inaccesibilă** — și codul o spunea deja în comentariul ei
+(*„o factura veche fara `tert_cui`…"*). *Perimetrul zice „poate ajunge", nu „ajunge"; asta e o
+instanță a limitei lui declarate.* Așteptarea s-a refăcut pe direcția care contează, decizia 47:
+**editarea fișei nu are voie să rescrie o factură emisă.**
+
+| lanț | intrarea | așteptat | obținut |
+|---|---|---|---|
+| 1 | fișă nouă + factură 400 @21% cu `tert_cui` scris pe factură | `<op1 cuiP=CUI_1 baza=400>` | exact — **martorul** celorlalte două |
+| 2 | se schimbă CUI-ul **fișei** | declarația **identică**; `CUI_2` nu apare nicăieri | exact |
+| 3 | se șterge fișa | declarația identică | **refuz motivat**: `409` *„clientul are 1 facturi — nu poate fi șters"* |
+
+**3 din 3.** Lanțurile 2 și 3 sunt aserțiuni de **NEschimbare**, deci fiecare poartă un martor:
+fără lanțul 1, *„nu s-a schimbat nimic"* ar fi fost adevărat degeaba.
+
+### R188 — două ortografii ale aceluiași partener fac D394 de NEDEPUS, și nimic n-o spunea
+
+DUK a respins declarația: `R218.4: cvatrupla (tip_partener, cota, tip, cuiP) trebuie sa fie unica pe
+declaratie`. Cauza, citită la sursă: cheia de grupare a generatorului e
+`(tip, tip_partener, cota, cuiP, denP)` (`d394.py:444`) — **denumirea intră în cheie** —, iar regula
+ANAF cere unicitate **fără** ea. Măsurat pe `tenant_003`: un singur CUI, **patru** denumiri.
+
+*Nu e un artefact al probei mele: o factură poate purta legitim numele scris altfel, iar aplicația
+nu numai că acceptă — emite o declarație pe care ANAF o respinge, fără să spună de ce.*
+
+**Reparat ca SANTINELĂ, nu ca reparație tăcută.** Aplicația pre-întâmpină deja R218.2 și R218.3 cu
+avertismente care numesc partenerul; R218.4 n-avea nimic. Acum are un avertisment în același tipar,
+care numește CUI-ul, **toate** ortografiile și ce e de făcut. **Nu se contopesc automat**: *care
+denumire câștigă* e o decizie, iar factura e autoritatea (decizia 47) — corectura se face pe factură.
+
+**Calibrat în ambele direcții**: se aprinde pe datele reale (1 avertisment, cu cele patru nume) și
+tace pe un set cu o singură ortografie.
+
+## 15.09.2026 (4) — ETAPA 2, LOTUL H: D112, și un refuz care vorbea în limba programatorului
+
+**GĂRZI NOI: niciuna.** Un defect reparat (**R189**), un gol **declarat în cod** confirmat prin
+măsurare, și a treia instanță a aceleiași lecții despre cititorul probei.
+
+### Ce s-a probat: 8 lanțuri pe 7 unități, 5 trec
+
+«Panificatie Salarii Speciale SRL» (`tenant_001`), luna **08/2026**, ca la lotul D. Comparațiile se
+fac pe **amprenta declarației** (SHA-256 al XML-ului), nu pe text — *„s-a schimbat / nu s-a
+schimbat" e o întrebare despre conținut.*
+
+| lanț | așteptat | obținut |
+|---|---|---|
+| 1 · import salariați | `+1 <asigurat>` cu CNP-ul importat | exact (13 → 14) |
+| 2 · pontaj, o zi `absent_nemotivat` | declarația **se schimbă** | exact |
+| 3a · cadou **300** lei (= plafon) | declarația **NU** se schimbă | exact |
+| 3b · cadou **500** lei | declarația **se schimbă** | **nu s-a schimbat** — v. mai jos |
+| 4 · certificat CM | declarația se schimbă | **defect (R189)** |
+| 5 · ștergerea CM | revine exact | fără subiect, blocat de 4 |
+| 6 · import istoric (07/2026) | declarația lunii 08 **NU** se schimbă | exact |
+| 7 · `coada/{}/depune`, id inexistent | refuz motivat | `404`, cu cele trei cauze posibile numite |
+
+**Perechile sunt dinadins.** 3a+3b: o probă care arată doar că beneficiul crește baza n-ar deosebi
+*„aplicația aplică plafonul"* de *„aplicația adună orice"*. 6 e o aserțiune de NEschimbare, iar
+martorul ei sunt lanțurile 2 și 3b, care arată că declarația chiar se mișcă atunci când trebuie.
+
+### 3b nu e un defect: e un gol pe care codul îl DECLARĂ
+
+Cadoul de 500 lei n-a mișcat declarația. Citit la sursă (`core/beneficii_api.py:18-20`): *„Peste
+plafon sau nelegal -> taxabil (**Faza 2b2**; in 2b1 doar SEMNAL)"*. Deci **partea de peste plafon nu
+se impozitează azi**, iar asta e scris, nu uitat. *Așteptarea mea a fost greșită, aplicația se poartă
+cum spune despre sine* — a patra oară în patru loturi. Se consemnează ca stare cunoscută, nu ca
+restanță nouă: faza are deja numele ei.
+
+### R189 — refuzul certificatului medical vorbea în limba programatorului
+
+`POST /tenants/{}/salariati/{}/concedii` cu `loc_prescriere="ambulatoriu"` răspundea `422` cu
+textul: **`invalid literal for int() with base 10: 'ambulatoriu'`**. `salariati_api.py:573` chema
+`int()` direct pe o valoare venită de la om.
+
+**De ce a scăpat de etapa 1, și e o lecție despre PERIMETRU, nu despre atenție:** campania etapei 1
+a apăsat **ecranul**, iar ecranul trimite un cod numeric dintr-un `<select>`. Câmpul e atins doar de
+cine cheamă **ruta** direct — adică de un integrator. *Aceeași clasă cu „punctul orb e firma, nu
+ecranul", pe alt obiect: suprafața probată a fost ecranul, nu ruta.*
+
+**Reparat, cu o limită declarată:** câmpul pleacă în D112 ca `D_10` (`d112.py:522`) și trebuie să fie
+numeric, deci refuzul spune asta în română, numind câmpul, câmpul-țintă și de unde se ia valoarea.
+**Nu se enumeră codurile**: structura ANAF nu s-a verificat la sursă în tura asta, iar *un mesaj cu
+coduri neverificate ar fi a doua greșeală, nu o reparație.*
+
+### A treia oară: cititorul probei, nu aplicația
+
+Căutam `cnp` pe `<asigurat>`; atributul e **`cnpAsig`** (`d112.py:566`). Proba **s-a oprit
+declarat** — *„fără salariatul importat, lanțurile 2–5 n-au subiect"* — în loc să raporteze delte de
+zero. Aserțiunea anti-vacuu pusă după lotul F și-a făcut treaba pe lotul următor.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **589 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

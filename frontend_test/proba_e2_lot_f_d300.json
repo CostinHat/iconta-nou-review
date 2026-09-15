@@ -1,0 +1,681 @@
+{
+ "firma": "Comert Micro TVA SRL",
+ "tenant_id": 4838,
+ "schema": "tenant_003",
+ "perioada": "2026-09",
+ "rulare": 25,
+ "cum_s_a_aflat": {
+  "stare": 200,
+  "facturi_cu_marca": 24
+ },
+ "lanturi": [
+  {
+   "lant": "1 · achizitie-ic BUNURI 1000 @21%%",
+   "ruta": "POST /tenants/4838/achizitie-ic",
+   "corp_trimis": {
+    "data": "2026-09-15",
+    "valoare": 1000,
+    "cont_destinatie": "371",
+    "cota": 21,
+    "tip": "bunuri",
+    "cod_tva_furnizor": "DE811907980",
+    "numar": "PROBA-E2-F-1-25",
+    "furnizor_nume": "FURNIZOR UE GMBH",
+    "descriere": "PROBA-E2-F achizitie IC bunuri"
+   },
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "inregistrare_id": 121,
+     "factura_id": 71,
+     "valoare": "1000",
+     "tva": "210.00"
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 980,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R5_1": {
+     "inainte": 1800,
+     "dupa": 2800,
+     "delta": 1000
+    },
+    "R5_2": {
+     "inainte": 378,
+     "dupa": 588,
+     "delta": 210
+    },
+    "R18_1": {
+     "inainte": 1800,
+     "dupa": 2800,
+     "delta": 1000
+    },
+    "R18_2": {
+     "inainte": 378,
+     "dupa": 588,
+     "delta": 210
+    }
+   },
+   "nepotriviri": {},
+   "OK": true
+  },
+  {
+   "lant": "2 · achizitie-ic SERVICII 800 @21%%",
+   "ruta": "POST /tenants/4838/achizitie-ic",
+   "corp_trimis": {
+    "data": "2026-09-16",
+    "valoare": 800,
+    "cont_destinatie": "628",
+    "cota": 21,
+    "tip": "servicii",
+    "cod_tva_furnizor": "DE811907980",
+    "numar": "PROBA-E2-F-2-25",
+    "furnizor_nume": "FURNIZOR UE GMBH",
+    "descriere": "PROBA-E2-F servicii IC"
+   },
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "inregistrare_id": 122,
+     "factura_id": 72,
+     "valoare": "800",
+     "tva": "168.00"
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 980,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R7_1": {
+     "inainte": 0,
+     "dupa": 0,
+     "delta": 0
+    },
+    "R7_2": {
+     "inainte": 0,
+     "dupa": 0,
+     "delta": 0
+    },
+    "R20_1": {
+     "inainte": 0,
+     "dupa": 0,
+     "delta": 0
+    },
+    "R20_2": {
+     "inainte": 0,
+     "dupa": 0,
+     "delta": 0
+    }
+   },
+   "nepotriviri": {
+    "R7_1": {
+     "asteptat": 800,
+     "masurat": 0
+    },
+    "R7_2": {
+     "asteptat": 168,
+     "masurat": 0
+    },
+    "R20_1": {
+     "asteptat": 800,
+     "masurat": 0
+    },
+    "R20_2": {
+     "asteptat": 168,
+     "masurat": 0
+    }
+   },
+   "OK": false
+  },
+  {
+   "lant": "3 · achizitie-taxare-inversa 400 @21%% (deseuri, lit. a)",
+   "ruta": "POST /tenants/4838/achizitie-taxare-inversa",
+   "corp_trimis": {
+    "data": "2026-09-17",
+    "categorie": "deseuri",
+    "valoare": 400,
+    "cont_destinatie": "371",
+    "cota": 21,
+    "furnizor_cui": "95275466",
+    "furnizor_platitor_tva": true,
+    "numar": "PROBA-E2-F-3-25",
+    "furnizor_nume": "FURNIZOR RO SRL",
+    "descriere": "PROBA-E2-F taxare inversa"
+   },
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "inregistrare_id": 123,
+     "factura_id": 73,
+     "valoare": "400",
+     "tva": "84.00",
+     "mentiune": "taxare inversa - art. 331 alin. (2) lit. a) Cod fiscal"
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 981,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R12_1": {
+     "inainte": 1600,
+     "dupa": 2000,
+     "delta": 400
+    },
+    "R12_2": {
+     "inainte": 336,
+     "dupa": 420,
+     "delta": 84
+    },
+    "R25_1": {
+     "inainte": 1600,
+     "dupa": 2000,
+     "delta": 400
+    },
+    "R25_2": {
+     "inainte": 336,
+     "dupa": 420,
+     "delta": 84
+    }
+   },
+   "nepotriviri": {},
+   "OK": true
+  },
+  {
+   "lant": "4 · achizitie-necorporala 1000 @21%% (software, 36 luni)",
+   "ruta": "POST /tenants/4838/achizitie-necorporala",
+   "corp_trimis": {
+    "data": "2026-09-18",
+    "denumire": "PROBA-E2-F licenta software",
+    "valoare": 1000,
+    "tip": "software",
+    "cota": 21,
+    "furnizor_cui": "95275466",
+    "furnizor_nume": "FURNIZOR RO SRL",
+    "numar": "PROBA-E2-F-4-25"
+   },
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "inregistrare_id": 124,
+     "factura_id": 74,
+     "mijloc_fix_id": 6,
+     "dnf_luni": 36,
+     "conturi": [
+      "208",
+      "2808"
+     ]
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 982,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R22_1": {
+     "inainte": 4500,
+     "dupa": 5500,
+     "delta": 1000
+    },
+    "R22_2": {
+     "inainte": 945,
+     "dupa": 1155,
+     "delta": 210
+    }
+   },
+   "nepotriviri": {},
+   "OK": true
+  },
+  {
+   "lant": "5 · achizitie-neinregistrat 150 (PF, fara CUI)",
+   "ruta": "POST /tenants/4838/achizitie-neinregistrat",
+   "corp_trimis": {
+    "data": "2026-09-19",
+    "furnizor_nume": "PROBA-E2-F Persoana Fizica",
+    "valoare": 150,
+    "cont_cheltuiala": "607",
+    "categorie": "alte_bunuri",
+    "numar": "PROBA-E2-F-5-25"
+   },
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "inregistrare_id": 125,
+     "factura_id": 75,
+     "valoare": "150",
+     "categorie": "alte_bunuri",
+     "in_d394": true
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 982,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R22_1": {
+     "inainte": 5500,
+     "dupa": 5500,
+     "delta": 0
+    },
+    "R22_2": {
+     "inainte": 1155,
+     "dupa": 1155,
+     "delta": 0
+    },
+    "R23_1": {
+     "inainte": 0,
+     "dupa": 0,
+     "delta": 0
+    },
+    "R23_2": {
+     "inainte": 0,
+     "dupa": 0,
+     "delta": 0
+    }
+   },
+   "nepotriviri": {},
+   "OK": true
+  },
+  {
+   "lant": "6 · woocommerce/sincronizeaza (magazin neconectat)",
+   "ruta": "POST /tenants/4838/woocommerce/sincronizeaza",
+   "corp_trimis": {},
+   "raspuns": {
+    "stare": 422,
+    "corp": {
+     "detail": "WooCommerce neconfigurat"
+    }
+   },
+   "OK": true,
+   "ce_s_a_cerut": "refuz MOTIVAT (nu 200 tăcut, nu mesaj gol)"
+  },
+  {
+   "lant": "7 · facturi/{}/storno peste o emisă 1000 @21%",
+   "preconditie": {
+    "emitere_stare": 200,
+    "factura_id": 76
+   },
+   "ruta": "POST /tenants/{}/facturi/{}/storno",
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "ok": true,
+     "factura_id": 77,
+     "total": -1210.0,
+     "tva": -210.0,
+     "contare": {
+      "stare": "contata",
+      "inregistrare_id": 127,
+      "tva_la_incasare": false,
+      "linii": [
+       {
+        "debit": "4111",
+        "credit": "707",
+        "suma": "-1000.00"
+       },
+       {
+        "debit": "4111",
+        "credit": "4427",
+        "suma": "-210.00"
+       }
+      ]
+     },
+     "numar": "CMT169",
+     "storno_din_id": 76
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 982,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R9_1": {
+     "inainte": 10000,
+     "dupa": 9000,
+     "delta": -1000
+    },
+    "R9_2": {
+     "inainte": 2100,
+     "dupa": 1890,
+     "delta": -210
+    }
+   },
+   "nepotriviri": {},
+   "OK": true
+  },
+  {
+   "lant": "8 · proforma 600 @21% NU e în decont, transformarea o bagă",
+   "preconditie": {
+    "emitere_proforma": 200,
+    "factura_id": 78
+   },
+   "a_proforma_absenta": {
+    "R9_1": {
+     "inainte": 9000,
+     "dupa": 9000,
+     "delta": 0
+    },
+    "R9_2": {
+     "inainte": 1890,
+     "dupa": 1890,
+     "delta": 0
+    }
+   },
+   "ruta": "POST /tenants/{}/facturi/{}/transforma",
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "ok": true,
+     "factura_id": 79,
+     "total": 726.0,
+     "tva": 126.0,
+     "contare": {
+      "stare": "contata",
+      "inregistrare_id": 128,
+      "tva_la_incasare": false,
+      "linii": [
+       {
+        "debit": "4111",
+        "credit": "707",
+        "suma": "600.00"
+       },
+       {
+        "debit": "4111",
+        "credit": "4427",
+        "suma": "126.00"
+       }
+      ]
+     },
+     "curs_bnr": 1,
+     "tva_lei": 126.0,
+     "total_lei": 726.0,
+     "curs_sursa": "ron",
+     "data_curs": "2026-09-15",
+     "curs_vechime_zile": 0,
+     "numar": "CMT170",
+     "serie": "CMT"
+    }
+   },
+   "b_dupa_transformare": {
+    "R9_1": {
+     "inainte": 9000,
+     "dupa": 9600,
+     "delta": 600
+    },
+    "R9_2": {
+     "inainte": 1890,
+     "dupa": 2016,
+     "delta": 126
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 982,
+    "randuri_citite": 50
+   },
+   "OK": true,
+   "nepotriviri": {}
+  },
+  {
+   "lant": "9 · api/v1/firme/{}/facturi, emisă 500 @21%% prin CHEIE DE API",
+   "ruta": "POST /api/v1/firme/{}/facturi",
+   "preconditie": {
+    "emitere_cheie": 200,
+    "s_a_primit_cheia": true,
+    "id": 7245
+   },
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "ok": true,
+     "factura_id": 80,
+     "total": 605.0,
+     "tva": 105.0,
+     "contare": {
+      "stare": "contata",
+      "inregistrare_id": 129,
+      "tva_la_incasare": false,
+      "linii": [
+       {
+        "debit": "4111",
+        "credit": "707",
+        "suma": "500.00"
+       },
+       {
+        "debit": "4111",
+        "credit": "4427",
+        "suma": "105.00"
+       }
+      ]
+     },
+     "curs_bnr": 1,
+     "tva_lei": 105.0,
+     "total_lei": 605.0,
+     "curs_sursa": "ron",
+     "data_curs": "2026-09-22",
+     "curs_vechime_zile": 0,
+     "numar": "CMT171",
+     "serie": "CMT"
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 983,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R9_1": {
+     "inainte": 9600,
+     "dupa": 10100,
+     "delta": 500
+    },
+    "R9_2": {
+     "inainte": 2016,
+     "dupa": 2121,
+     "delta": 105
+    }
+   },
+   "nepotriviri": {},
+   "OK": true,
+   "cheia_revocata": {
+    "stare": 200
+   }
+  },
+  {
+   "lant": "10 · import-efactura, UBL emisă 300 @21%%",
+   "ruta": "POST /tenants/{}/import-efactura",
+   "raspuns": {
+    "stare": 200,
+    "corp": {
+     "importate": 1,
+     "duplicate": 0,
+     "erori": []
+    }
+   },
+   "d300_dupa": {
+    "stare": 200,
+    "octeti_xml": 983,
+    "randuri_citite": 50
+   },
+   "delta": {
+    "R9_1": {
+     "inainte": 10100,
+     "dupa": 10400,
+     "delta": 300
+    },
+    "R9_2": {
+     "inainte": 2121,
+     "dupa": 2184,
+     "delta": 63
+    }
+   },
+   "nepotriviri": {},
+   "OK": true
+  },
+  {
+   "lant": "11 · facturi-primite/{}/valideaza (four-eyes)",
+   "ruta": "POST /tenants/{}/facturi-primite/{}/valideaza",
+   "coada_de_validat": {
+    "stare": 200,
+    "cate": 0
+   },
+   "refuz_pe_id_inexistent": {
+    "stare": 404,
+    "corp": {
+     "detail": "factură primită inexistentă"
+    }
+   },
+   "NEPROBAT_pe_date_valide": "coada `efactura_primite` e GOALĂ pe firma probată, iar singurul producător al unui rând acolo e calea de recepție SPV (`spv_receive.importa_mesaj`, chemată de cron) — nu există rută prin care un om să pună un rând în coadă. Semănarea directă în tabel ar fi o probă despre citirea aplicației, nu despre lanțul ei. Ce s-a exercitat: REFUZUL pe id inexistent, care trebuie să fie motivat, nu 500.",
+   "OK": true,
+   "ce_s_a_cerut": "refuz MOTIVAT (nu 500, nu tăcere) pe un id inexistent"
+  }
+ ],
+ "d300_la_pornire": {
+  "stare": 200,
+  "octeti_xml": 980,
+  "randuri_citite": 50
+ },
+ "duk": {
+  "stare_http": 200,
+  "verdict": {
+   "tip": "d300",
+   "stare": "valid",
+   "erori": "",
+   "severitate": null,
+   "temei": "DUKIntegrator -v D300 (pachet oficial ANAF).",
+   "limita": "Validare structura si reguli ANAF. NU verifica daca cifrele corespund evidentei contabile - pentru asta e controlul incrucisat.",
+   "avertismente": [
+    "6 achiziţii cu cotă 0% (bază 5.400 lei) — raportate automat la R26 (scutite de taxă sau neimpozabile), fără impact pe TVA. Verifică: dacă sunt achiziţii intracomunitare, reclasifică-le la taxare inversă (R5/R18).",
+    "5 achiziţii cu categorie art.331 (taxare inversă) dar cotă 0% (bază 750 lei) — cota aplicabilă nu e capturată, deci rd.12/rd.25 (colectat+deductibil) NU se pot derivă. Declar-o manual la R12/R25 sau completează cota (altfel taxarea inversă nu apare în decont).",
+    "4 achiziții intracomunitare de bunuri din UE (bază 3.600 lei, TVA autolichidat 756 lei la 21%) — declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt SERVICII, reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.7 colectat + rd.20 deductibil."
+   ],
+   "note_rezultat": [
+    "5 achiziţii cu taxare inversă primită (bază 2.000 lei, TVA 420 lei) — derivate automat: rd.12 colectat + rd.25 deductibil (net zero, art.331). Anterior dispăreau tacit din decont.",
+    "Rezultat TVA de plată 1.436 lei."
+   ],
+   "operatiuni": 24,
+   "componente": {
+    "acoperire": "completa",
+    "sectiuni": [
+     {
+      "nume": "Rânduri completate",
+      "total": 24,
+      "aratate": 24,
+      "monetare": [
+       "valoare"
+      ],
+      "randuri": [
+       {
+        "rând": "R9_1",
+        "valoare": 10400
+       },
+       {
+        "rând": "R9_2",
+        "valoare": 2184
+       },
+       {
+        "rând": "R10_1",
+        "valoare": 3700
+       },
+       {
+        "rând": "R10_2",
+        "valoare": 407
+       },
+       {
+        "rând": "R12_1",
+        "valoare": 2000
+       },
+       {
+        "rând": "R12_2",
+        "valoare": 420
+       },
+       {
+        "rând": "R25_1",
+        "valoare": 2000
+       },
+       {
+        "rând": "R25_2",
+        "valoare": 420
+       },
+       {
+        "rând": "R5_1",
+        "valoare": 3600
+       },
+       {
+        "rând": "R5_2",
+        "valoare": 756
+       },
+       {
+        "rând": "R18_1",
+        "valoare": 3600
+       },
+       {
+        "rând": "R18_2",
+        "valoare": 756
+       },
+       {
+        "rând": "R17_1",
+        "valoare": 19700
+       },
+       {
+        "rând": "R17_2",
+        "valoare": 3767
+       },
+       {
+        "rând": "R22_1",
+        "valoare": 5500
+       },
+       {
+        "rând": "R22_2",
+        "valoare": 1155
+       },
+       {
+        "rând": "R27_1",
+        "valoare": 11100
+       },
+       {
+        "rând": "R27_2",
+        "valoare": 2331
+       },
+       {
+        "rând": "R28_2",
+        "valoare": 2331
+       },
+       {
+        "rând": "R32_2",
+        "valoare": 2331
+       },
+       {
+        "rând": "R34_2",
+        "valoare": 1436
+       },
+       {
+        "rând": "R37_2",
+        "valoare": 1436
+       },
+       {
+        "rând": "R41_2",
+        "valoare": 1436
+       },
+       {
+        "rând": "R26_1",
+        "valoare": 5400
+       }
+      ]
+     }
+    ],
+    "total": 24
+   },
+   "xml_b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPGRlY2xhcmF0aWUzMDAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeG1sbnM9Im1mcDphbmFmOmRndGk6ZDMwMDpkZWNsYXJhdGllOnYxMiIgeHNpOnNjaGVtYUxvY2F0aW9uPSJtZnA6YW5hZjpkZ3RpOmQzMDA6ZGVjbGFyYXRpZTp2MTIgRDMwMC54c2QiIGx1bmE9IjkiIGFuPSIyMDI2IiBkZXB1c1JlcHJlemVudGFudD0iMCIgYmlmYV9pbnRlcm5lPSIwIiB0ZW1laT0iMCIgbnVtZV9kZWNsYXI9IkRvYnJlc2N1IiBwcmVudW1lX2RlY2xhcj0iRWxlbmEiIGZ1bmN0aWVfZGVjbGFyPSJBRE1JTklTVFJBVE9SIiBjdWk9Ijk1MTQxNTM3IiBkZW49IkNvbWVydCBNaWNybyBUVkEgU1JMIiBhZHJlc2E9IlN0ci4gVGVzdHVsdWkgbnIuIDEgQnVjdXJlc3RpIEJ1Y3VyZciZdGkiIGJhbmNhPSJCYW5jYSBUZXN0IiBjb250PSJSTzQ5QUFBQTFCMzEwMDc1OTM4NDAwMDAiIGNhZW49IjQ3MTEiIHRpcF9kZWNvbnQ9IlQiIHByb19yYXRhPSIxMDAuMDAiIGJpZmFfY2VyZWFsZT0iTiIgYmlmYV9tb2I9Ik4iIGJpZmFfZGlzcD0iTiIgYmlmYV9jb25zPSJOIiBzb2xpY2l0X3JhbWI9Ik4iIG5yX2V2aWQ9IjEwMzAyMDEwOTI2MjUxMDI2MDAwMDQwIiB0b3RhbFBsYXRhX0E9Ijg4MTY2IiBSMTBfMT0iMzcwMCIgUjEwXzI9IjQwNyIgUjEyXzE9IjIwMDAiIFIxMl8yPSI0MjAiIFIxN18xPSIxOTcwMCIgUjE3XzI9IjM3NjciIFIxOF8xPSIzNjAwIiBSMThfMj0iNzU2IiBSMjJfMT0iNTUwMCIgUjIyXzI9IjExNTUiIFIyNV8xPSIyMDAwIiBSMjVfMj0iNDIwIiBSMjZfMT0iNTQwMCIgUjI3XzE9IjExMTAwIiBSMjdfMj0iMjMzMSIgUjI4XzI9IjIzMzEiIFIzMl8yPSIyMzMxIiBSMzRfMj0iMTQzNiIgUjM3XzI9IjE0MzYiIFI0MV8yPSIxNDM2IiBSNV8xPSIzNjAwIiBSNV8yPSI3NTYiIFI5XzE9IjEwNDAwIiBSOV8yPSIyMTg0Ii8+"
+  }
+ }
+}

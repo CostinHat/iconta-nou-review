@@ -1,0 +1,170 @@
+{
+ "firma": "Panificatie Salarii Speciale SRL",
+ "tenant_id": 4784,
+ "schema": "tenant_001",
+ "perioada": "2026-08",
+ "rulare": 2,
+ "cnp": "1900108151120",
+ "cor": "111101",
+ "lanturi": [
+  {
+   "lant": "1 · salariati-import → +1 `<asigurat>` cu CNP-ul importat",
+   "ruta": "POST /tenants/{}/salariati-import",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'importati': 1}"
+   },
+   "d112": {
+    "stare": 200,
+    "octeti_xml": 14527,
+    "asigurati": 15
+   },
+   "asigurati": {
+    "inainte": 14,
+    "dupa": 15
+   },
+   "asiguratul_meu": [
+    {
+     "idAsig": "15",
+     "cnpAsig": "1900108151120",
+     "numeAsig": "PROBA-E2-H Salariat",
+     "prenAsig": "Rularea2",
+     "dataAng": "01.08.2026",
+     "casaSn": "_B",
+     "asigCI": "1",
+     "asigSO": "1",
+     "asigExc": "0",
+     "Timp_E3": "267"
+    }
+   ],
+   "OK": true
+  },
+  {
+   "lant": "2 · pontaj: o zi lucrătoare pusă `absent_nemotivat` → declarația se schimbă",
+   "ruta": "PUT /tenants/{}/salariati/{}/pontaj",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'ok': True}"
+   },
+   "d112": {
+    "stare": 422,
+    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+   },
+   "amprenta": {
+    "inainte": "3c8337982bd2dc25",
+    "dupa": null
+   },
+   "s_a_schimbat": true,
+   "ce_s_a_cerut": "SE SCHIMBĂ",
+   "OK": true
+  },
+  {
+   "lant": "3a · cadou 300 lei (= PLAFON_CADOU) → declarația NU se schimbă",
+   "ruta": "PUT /tenants/{}/salariati/{}/beneficiu-lunar",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'ok': True}"
+   },
+   "d112": {
+    "stare": 422,
+    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+   },
+   "amprenta": {
+    "inainte": null,
+    "dupa": null
+   },
+   "s_a_schimbat": false,
+   "ce_s_a_cerut": "NU se schimbă",
+   "OK": true
+  },
+  {
+   "lant": "3b · cadou 500 lei (200 peste plafon) → declarația SE schimbă",
+   "ruta": "PUT /tenants/{}/salariati/{}/beneficiu-lunar",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'ok': True}"
+   },
+   "d112": {
+    "stare": 422,
+    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+   },
+   "amprenta": {
+    "inainte": null,
+    "dupa": null
+   },
+   "s_a_schimbat": false,
+   "ce_s_a_cerut": "SE SCHIMBĂ",
+   "OK": false
+  },
+  {
+   "lant": "4 · certificat CM cod 01, 3 zile → declarația SE schimbă",
+   "ruta": "POST /tenants/{}/salariati/{}/concedii",
+   "raspuns": {
+    "stare": 422,
+    "corp": "{'detail': \"invalid literal for int() with base 10: 'ambulatoriu'\"}"
+   },
+   "d112": {
+    "stare": 422,
+    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+   },
+   "amprenta": {
+    "inainte": null,
+    "dupa": null
+   },
+   "s_a_schimbat": false,
+   "ce_s_a_cerut": "SE SCHIMBĂ",
+   "OK": false
+  },
+  {
+   "lant": "5 · ștergerea CM → declarația revine EXACT la amprenta de dinainte de 4",
+   "ruta": "DELETE /tenants/{}/salariati/{}/concedii/{}",
+   "cm_id": null,
+   "NEPROBAT": "răspunsul lui `cm_salveaza` n-a purtat id-ul certificatului, deci ștergerea n-are subiect; se scrie, nu se sare",
+   "OK": false
+  },
+  {
+   "lant": "6 · istoric-declaratii-import (o depunere din 07/2026) → declarația lunii 08 NU se schimbă",
+   "ruta": "POST /tenants/{}/istoric-declaratii-import",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'importati': 1}"
+   },
+   "d112": {
+    "stare": 422,
+    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+   },
+   "amprenta": {
+    "inainte": null,
+    "dupa": null
+   },
+   "s_a_schimbat": false,
+   "ce_s_a_cerut": "NU se schimbă",
+   "OK": true
+  },
+  {
+   "lant": "7 · coada/{}/depune pe id inexistent → refuz MOTIVAT, nu 500",
+   "ruta": "POST /coada/{}/depune",
+   "raspuns": {
+    "stare": 404,
+    "corp": "{\"detail\": \"declarația nu mai e în coadă (id 999999999): a fost ștearsă, depusă de altcineva, sau id-ul e greșit\"}"
+   },
+   "NEPROBAT_pe_date_valide": "depunerea reală cere un element în coadă ȘI canalul SPV; precondiția nu se poate construi prin aplicație pe firma de probă. Se exercită refuzul, care trebuie să fie motivat.",
+   "OK": true
+  }
+ ],
+ "d112_la_pornire": {
+  "stare": 200,
+  "octeti_xml": 13676,
+  "asigurati": 14
+ },
+ "salariat_id": 69,
+ "incheiere": {
+  "stare": 200,
+  "corp": "{'ok': True}",
+  "de_ce": "fără ea, fiecare rulare ar lăsa un salariat activ în D112-urile următoare ale firmei"
+ },
+ "duk": {
+  "stare_http": 422,
+  "stare": null
+ }
+}

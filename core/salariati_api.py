@@ -555,6 +555,22 @@ def salveaza_concediu(conn, salariat_id, date):
                             data_eliberare=data_elib, program_national=program_national)
     taxe = _s.taxe_cm(calc["brut"], cod=cod, la_data=la_data)
 
+    # [R189, etapa 2 lotul H, 15.09.2026] LOCUL PRESCRIERII: `int(...)` pe o valoare venita de la om
+    # ridica mesajul Python, si acela ajungea la utilizator („invalid literal for int() with base 10").
+    # Campul pleaca in D112 ca `D_10` (`d112.py:522`), deci trebuie sa fie numeric. NU se enumera
+    # codurile — structura ANAF nu s-a verificat la sursa in tura in care s-a gasit defectul —, dar se
+    # numeste campul, campul-tinta si de unde se ia valoarea.
+    _loc = date.get("loc_prescriere")
+    if _loc not in (None, ""):
+        try:
+            int(_loc)
+        except (TypeError, ValueError):
+            raise ValueError(
+                "Locul prescrierii trebuie să fie codul NUMERIC de pe certificatul medical, nu un "
+                "text (primit: %r). El pleacă în D112 ca D_10, iar declarația nu acceptă acolo "
+                "decât un număr. Ia-l din certificat, de la rubrica locului prescrierii."
+                % (_loc,))
+
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, "

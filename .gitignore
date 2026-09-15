@@ -70,3 +70,8 @@ venv/lib/python3.12/site-packages/pyee-*.dist-info/
 
 # venv-ul nu e al nostru: dependentele nu se versioneaza. [03.09.2026]
 venv/
+
+# Pachetele de lot (15.09.2026): arhive DERIVATE din git + artefactele probelor, produse cu
+# scripts/pachet_lot.py la inchiderea fiecarui lot. Se refac oricand din aceleasi intrari, deci
+# nu se versioneaza — un ZIP in repo ar fi o a doua copie a unei stari pe care git o tine deja.
+pachete_loturi/

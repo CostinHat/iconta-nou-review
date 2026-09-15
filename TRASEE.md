@@ -1258,7 +1258,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T04 — Concediul medical
 
-**Clasa:** MECANIC · **rute:** 5 (din care schimba date: 3) · **refuzuri explicite:** 35
+**Clasa:** MECANIC · **rute:** 5 (din care schimba date: 3) · **refuzuri explicite:** 36
 
 **Cine:** rol cerut: `admin_firma`, `angajat`. **Rute care schimba date fara nicio verificare de rol: 1 din 3.**
 
@@ -1558,7 +1558,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T15 — Salariatul — angajare, contract, adeverință, REGES
 
-**Clasa:** MANUAL · **rute:** 17 (din care schimba date: 12) · **refuzuri explicite:** 47
+**Clasa:** MANUAL · **rute:** 17 (din care schimba date: 12) · **refuzuri explicite:** 48
 
 **Cine:** rol cerut: `admin_firma`, `angajat`. **Rute care schimba date fara nicio verificare de rol: 3 din 12.**
 

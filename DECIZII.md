@@ -14916,3 +14916,30 @@ are 45 de elemente". Un instrument acordat ca să confirme o cifră dinainte nu 
 NU se închide cu asta. Reparația de azi atinge `scan_functionalitati.scrie_unitatea`, adică
 perimetrul etapei 2; `scan_trasee` răspunde mai departe la nivel de modul, iar restanța rămâne
 deschisă pe el, cu domeniul ei micșorat.
+
+
+## 15.09.2026 — De ce s-au atins în aceeași tură ȘI verificatorul, ȘI verificatul lui D394
+
+**Garda a cerut asta, și pe drept** (`core/test_cale_a_doua.py`): *„nimeni nu mai poate distinge
+«amândouă implementează noua regulă» de «am aliniat verificatorul ca să tacă»"*. Deci se scrie.
+
+**Cele două schimbări NU se ating una de alta. Sunt independente, și amândouă merg în direcția în
+care verificarea devine mai STRICTĂ, nu mai îngăduitoare:**
+
+- **`core/d394_reconciliere.py` (verificatorul)** — avea filtrul de document fiscal scris **literal**
+  (`COALESCE(f.tip,'factura')='factura'`), a patra copie a aceluiași adevăr. Îl cere acum din registru
+  (`nomenclator_status_factura.clauza_tip_document`). **Comportamentul nu se schimbă**: aceeași
+  condiție, altă sursă. Motivul e chiar defectul găsit în aceeași tură pe D300 (**R184**), unde a
+  cincea copie a acelui adevăr **lipsea** și bloca generarea decontului.
+- **`core/d394.py` (verificatul)** — a primit o **santinelă NOUĂ** pentru regula ANAF R218.4
+  (**R188**): două ortografii ale aceluiași partener fac declarația de nedepus. E o **detecție în
+  plus**, nu o relaxare: adaugă un avertisment care înainte nu exista și nu schimbă nicio cifră.
+
+*Non-tautologia celei de-a doua căi rămâne întreagă*: modulul de reconciliere tot nu importă și nu
+cheamă nimic din `core.d394`. Singurul lucru pe care îl împart acum e **registrul**, pe care îl
+citesc amândouă — iar asta e chiar P1, nu o încălcare a lui.
+
+**Cum ar fi arătat „alinierea ca să tacă", și de ce nu e cazul:** dacă aș fi lărgit fereastra
+verificatorului sau i-aș fi scos o condiție, ca să nu mai raporteze divergența de la R184. Divergența
+aia s-a închis în direcția **opusă** — verificatul a primit condiția care îi lipsea, iar verificatorul
+a rămas la fel de strict.
