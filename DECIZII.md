@@ -3,6 +3,49 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 15.09.2026 (49) — **Reparate**: proforma iese din D300, iar partenerul D394 se citeste de pe FACTURA
+
+Doua decizii ale lui Costin, luate pe constatarile de la (46) si (47), si reparate azi.
+
+### (a) Proforma nu intra in D300 — si operatiunea transformata se declara O SINGURA data
+
+Filtrul pe `tip` intra in interogarile D300, dupa tiparul pe care D394 il avea deja
+(`repo_d394.py:32`). Ca sa nu existe acelasi adevar in doua locuri, regula a primit o functie
+canonica — `nomenclator_status_factura.clauza_tip_document()` —, iar D394 o cere acum de acolo, in
+loc sa-si repete literalul de trei ori. **NU e o incalcare a lui P7**: cele doua cai nu se citesc una
+pe alta, ci amandoua citesc registrul. Filtrul s-a pus pe toate cele patru drumuri prin `facturi` ale
+lui D300: fereastra principala, taxarea inversa, calea TVA-la-incasare si numaratoarea de diagnostic.
+
+**Masurat pe portofoliu, inainte de a schimba ceva** (citire pura pe `iconta_v2`, 37 de firme
+active): **47 de documente in tot portofoliul, TOATE de tip `factura`** — zero proforme, zero avize.
+Deci **nicio cifra D300 nu se schimba pentru nicio firma**. Defectul era real in cod, dar
+neexercitat in productie: reparatia nu rescrie nicio declaratie existenta. *Cifra asta trebuia
+masurata, nu presupusa — daca portofoliul ar fi avut proforme, reparatia ar fi schimbat declaratii
+deja depuse, si ar fi cerut alt plan.*
+
+### (b) Partenerul din D394 se citeste de pe FACTURA, nu din fisa clientului
+
+**Motivarea lui Costin, scrisa ca sa nu se piarda: factura e AUTORITATEA. Istoria se corecteaza prin
+storno si reemitere, nu prin editarea fisei.** O identificare ingheata la emitere: cine a fost
+partenerul se citeste din documentul emis atunci, nu din cum arata fisa lui azi. Altfel, o corectura
+de CUI in fisa ar schimba continutul unui D394 regenerat pentru o luna trecuta — fara ca vreun
+document sa se fi schimbat.
+
+`core/d394.py:1006` prefera `c_cui` (fisa) pe facturile emise; acum ordinea e `tert_cui` intai. Fisa
+ramane **rezerva**, si asta nu e slabiciune: o factura veche fara `tert_cui` — emisa doar pe
+`client_id`, inainte ca poarta de azi sa ceara codul fiscal — si-ar pierde altfel partenerul cu
+totul.
+
+**Masurat pe portofoliu:** 28 de facturi emise; **zero** cu `tert_cui` diferit de fisa; **zero** fara
+`tert_cui`. Deci, si aici, nicio cifra nu se schimba azi.
+
+### Ce pazeste fiecare
+`test_o_proforma_nu_are_ce_cauta_in_D300` si
+`test_operatiunea_iesita_din_proforma_se_declara_O_SINGURA_data` (suma peste AMBELE luni, nu fiecare
+luna separat — dubla numarare se vedea doar asa), plus
+`test_CORECTURA_din_fisa_clientului_NU_rescrie_D394_pe_luni_trecute`, cu martor pe cealalta parte:
+fisa chiar s-a schimbat, deci proba nu trece degeaba.
+
 ## 15.09.2026 (48) — E4: nu lipsea o FIRMA DE PROBA, lipseau DATELE. Si pragul era vechi
 
 **Datoria (29.07.2026), in trei bucati:** fix-ul de trunchiere e aplicat in d205/d390/d710, dar
@@ -41,7 +84,10 @@ firma imposibila. Acum e `profit`.
 e platitoare (fiindca asa cer D300/D394). O firma nu poate fi si una si alta; ar trebui o a doua
 fixtura. Sarirea lui e singura ramasa, si e scrisa aici ca sa nu treaca drept acoperire.
 
-## 15.09.2026 (46) — **O PROFORMA intra in D300 ca livrare taxabila.** Gasita de probe, nereparata
+## 15.09.2026 (46) — **O PROFORMA intra in D300 ca livrare taxabila.** Gasita de probe
+
+> **REPARATA in aceeasi zi, pe decizia lui Costin — vezi (49).** Constatarea ramane scrisa aici
+> asa cum a fost gasita.
 
 **Ce s-a masurat.** Pe o firma cu o singura operatiune in luna — o **proforma** de 500 lei + 105 TVA,
 emisa prin `POST /tenants/{id}/facturi/emite` cu `tip: "proforma"` — D300 pe luna aia iese cu
@@ -70,6 +116,9 @@ D390), exact ca in D394. De verificat atunci si `aviz`.
 
 
 ## 15.09.2026 (47) — Identitatea partenerului din D394 urmeaza FISA CLIENTULUI, nu factura
+
+> **DECISA si REPARATA in aceeasi zi — vezi (49): factura e autoritatea.** Constatarea ramane
+> scrisa aici asa cum a fost masurata.
 
 **Masurat, nu presupus.** `core/repo_d394.py:29` aduce partenerul cu `LEFT JOIN clienti`. Daca dupa
 emiterea facturii se corecteaza CUI-ul in fisa clientului, un D394 **regenerat pentru luna trecuta**

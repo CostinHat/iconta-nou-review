@@ -16,6 +16,9 @@ def select_firma_profil(cur):
     cur.execute("SELECT * FROM firma_profil WHERE id = 1")
 
 
+from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
+
+
 def select_facturi(cur, inceput, sfarsit):
     cur.execute("""
                     SELECT f.id, f.directie, f.total, f.tva, f.taxare_inversa AS ti,
@@ -29,7 +32,7 @@ def select_facturi(cur, inceput, sfarsit):
                       LEFT JOIN clienti c ON c.id = f.client_id
                       LEFT JOIN factura_linii l ON l.factura_id = f.id
                      WHERE f.data_emitere >= %s AND f.data_emitere < %s
-                       AND COALESCE(f.tip, 'factura') = 'factura'
+                       AND """ + _doc_fiscal("f") + """
                      GROUP BY f.id, c.nume, c.cui
                      ORDER BY f.id
                 """, (inceput, sfarsit))
@@ -39,7 +42,7 @@ def select_facturi(cur, inceput, sfarsit):
 def select_facturi_2(cur, inceput, sfarsit):
     cur.execute("""SELECT numar FROM facturi
                      WHERE data_emitere >= %s AND data_emitere < %s
-                       AND directie = 'emisa' AND COALESCE(tip, 'factura') = 'factura'
+                       AND directie = 'emisa' AND """ + _doc_fiscal(None) + """
                 """, (inceput, sfarsit))
     return cur.fetchall()
 
@@ -48,6 +51,6 @@ def select_facturi_3(cur, inceput, sfarsit):
     cur.execute("""SELECT COALESCE(NULLIF(serie, ''), '-') AS s, numar
                      FROM facturi
                     WHERE data_emitere >= %s AND data_emitere < %s
-                      AND directie = 'emisa' AND COALESCE(tip, 'factura') = 'factura'
+                      AND directie = 'emisa' AND """ + _doc_fiscal(None) + """
                 """, (inceput, sfarsit))
     return cur.fetchall()

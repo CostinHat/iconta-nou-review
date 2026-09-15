@@ -253,20 +253,50 @@ def test_TRANSFORMAREA_proformei_produce_factura_in_luna_ei(firma):
         "factura ieșită din proformă nu ajunge în D300 pe luna transformării")
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 15.09.2026, gasita de proba asta: o PROFORMA intra in D300 ca livrare taxabila. `core/repo_d300.select_facturi_4` filtreaza facturile pe data de exigibilitate si pe STATUS, dar niciodata pe `tip`; proforma emisa de `POST /facturi/emite` primeste status `de_preluat`, care e DECLARABIL (nomenclator_status_factura, decizia R91). Masurat: proforma de 500+105 lei, singura din luna, da R9_1=500 / R9_2=105. Mai rau: dupa `POST /facturi/{id}/transforma`, factura rezultata intra SI ea in D300 pe luna transformarii — aceeasi operatiune economica declarata de DOUA ori. Reparatia (excluderea `tip IN ('proforma','aviz')` din interogarile D300/D394/D390) schimba cifre fiscale, deci se face pe decizie scrisa, nu din proprie initiativa. Se inchide cand decizia e in DECIZII.md si proba asta trece.")
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_DATORIE_o_proforma_nu_are_ce_cauta_in_D300(firma):
+def test_o_proforma_nu_are_ce_cauta_in_D300(firma):
+    """[DECIZIA lui Costin, 15.09.2026 — DECIZII 46] O proformă nu e document fiscal: TVA-ul nu e
+    exigibil pe ea. Proba a găsit defectul (D300 o număra ca livrare taxabilă) și a stat
+    `xfail(strict=True)` cât întrebarea era a lui Costin; acum e poarta reparației."""
     cl = _client()
     r = cl.post(_U(firma, "/tenants/{tenant_id}/facturi/emite"), headers=_H(firma), json={
         "tip": "proforma", "tert_nume": "PARTENER ZT", "tert_cui": "RO40372003",
         "data_emitere": ZI,
         "linii": [{"descriere": "serviciu", "cantitate": 1, "pret_unitar": 500, "cota_tva": 21}]})
     assert r.status_code == 200, r.text[:300]
+    assert _numar(firma, "SELECT count(*) FROM facturi WHERE tip = 'proforma'") == 1, (
+        "martor: proforma nici n-a fost scrisă, deci proba n-ar dovedi nimic")
 
     res = declaratie(firma, "d300")
-    assert _R(res, "R9_2") == 0, (
+    assert _R(res, "R9_2") == 0 and _R(res, "R9_1") == 0, (
         "o proformă (document NEFISCAL) e declarată ca livrare taxabilă: R9_1=%s R9_2=%s"
         % (_R(res, "R9_1"), _R(res, "R9_2")))
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_operatiunea_iesita_din_proforma_se_declara_O_SINGURA_data(firma):
+    """A doua jumătate a deciziei 46, și cea mai ușor de pierdut: înainte, proforma intra în luna ei
+    ȘI factura ieșită din ea în luna transformării — aceeași operațiune economică, declarată de
+    două ori. Proba numără **suma peste ambele luni**, nu fiecare lună separat."""
+    import datetime
+    cl = _client()
+    pid = cl.post(_U(firma, "/tenants/{tenant_id}/facturi/emite"), headers=_H(firma), json={
+        "tip": "proforma", "tert_nume": "PARTENER ZT", "tert_cui": "RO40372003",
+        "data_emitere": ZI,
+        "linii": [{"descriere": "serviciu", "cantitate": 1, "pret_unitar": 500,
+                   "cota_tva": 21}]}).json()["factura_id"]
+    t = cl.post(_U(firma, "/tenants/{tenant_id}/facturi/{factura_id}/transforma", factura_id=pid),
+                headers=_H(firma))
+    assert t.status_code == 200, t.text[:300]
+
+    azi = datetime.date.today()
+    luna_proformei = _R(declaratie(firma, "d300"), "R9_2")
+    luna_transformarii = _R(declaratie(firma, "d300", an=azi.year, luna=azi.month), "R9_2")
+    assert luna_proformei == 0, "proforma a rămas în declarația lunii ei: %s" % luna_proformei
+    assert luna_transformarii == 105, (
+        "factura ieșită din proformă nu se declară în luna transformării: %s" % luna_transformarii)
+    assert luna_proformei + luna_transformarii == 105, (
+        "aceeași operațiune declarată de două ori: %s + %s" % (luna_proformei, luna_transformarii))
 
 
 # ── D301: operațiunile se adaugă și se scot, iar declarația le urmează ───────────────────────
@@ -399,16 +429,15 @@ def test_CLIENTUL_creat_da_identitatea_partenerului_in_D394(firma):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_CLIENTUL_actualizat_MUTA_partenerul_din_D394_iar_factura_ramane_cum_a_fost(firma):
-    """Întrebarea grea a rutelor de editare: ce se întâmplă cu ce e deja declarabil.
+def test_CORECTURA_din_fisa_clientului_NU_rescrie_D394_pe_luni_trecute(firma):
+    """[DECIZIA lui Costin, 15.09.2026 — DECIZII 47] Partenerul din D394 se citește de pe FACTURĂ,
+    identificare înghețată la emitere. O corectură de CUI în fișa clientului **nu** schimbă un D394
+    regenerat pentru o lună trecută: *factura e autoritatea; istoria se corectează prin storno și
+    reemitere, nu prin editarea fișei.*
 
-    Măsurat, nu presupus: `core/repo_d394.py:29` aduce partenerul cu `LEFT JOIN clienti`, iar
-    identitatea din declarație urmează **fișa clientului de ACUM**, nu ce s-a scris pe factură la
-    emitere. Deci o corectură de CUI în fișă schimbă partenerul dintr-un D394 regenerat pentru o
-    lună trecută — pe când factura însăși își păstrează `tert_cui`-ul de la emitere.
-
-    Proba pinează exact asta, în amândouă capetele. *Nu e o judecată — e precedența, scrisă ca
-    s-o vadă cine o schimbă: dacă mâine câștigă factura, proba cade și cere o decizie.*"""
+    Proba a pinat mai întâi comportamentul vechi (fișa câștiga, prin `LEFT JOIN clienti`), fiindcă
+    ambele citiri erau apărabile și alegerea nu era a mea. Acum pinează capătul decis — și tot în
+    ambele capete: factura își păstrează `tert_cui`-ul, iar declarația îl urmează."""
     cl = _client()
     cid = _client_nou(cl, firma)
     cl.post(_U(firma, "/tenants/{tenant_id}/facturi"), headers=_H(firma), json={
@@ -423,14 +452,15 @@ def test_CLIENTUL_actualizat_MUTA_partenerul_din_D394_iar_factura_ramane_cum_a_f
     assert u.status_code == 200, u.text[:300]
 
     dupa = _parteneri_d394(declaratie(firma, "d394"))
-    assert dupa == {"14399840"}, (
-        "D394 nu urmează fișa clientului după editare: %r" % (dupa,))
+    assert dupa == {"40372003"}, (
+        "corectura din fișa clientului a rescris RETROACTIV partenerul din D394: %r" % (dupa,))
     with firma["conn"].cursor() as cur:
         cur.execute('SET search_path TO "%s", public' % SCH)
         cur.execute("SELECT tert_cui FROM facturi WHERE numar = 'ZT-C2'")
-        assert cur.fetchone()[0] == "RO40372003", (
-            "editarea fișei a rescris ȘI documentul emis — atunci nu mai există nicio urmă a "
-            "datelor cu care s-a emis factura")
+        assert cur.fetchone()[0] == "RO40372003", "documentul emis s-a schimbat odată cu fișa"
+        cur.execute("SELECT cui FROM clienti WHERE id = %s", (cid,))
+        assert cur.fetchone()[0] == "RO14399840", (
+            "martor pe cealaltă parte: fișa NU s-a schimbat, deci proba n-ar dovedi nimic")
 
     d = cl.delete(_U(firma, "/tenants/{tenant_id}/clienti/{client_id}", client_id=cid), headers=_H(firma))
     assert d.status_code in (400, 409, 422), (

@@ -2438,6 +2438,12 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **Două reparații fiscale, pe decizia lui Costin (15.09.2026)** — proforma iese din D300
+  (filtru pe `tip`, dintr-o funcție canonică din nomenclator; D394 o cere acum tot de acolo) și
+  partenerul D394 se citește de pe **factură**, nu din fișa clientului. Probele care găsiseră
+  defectele au devenit gărzi, iar cea de dublă numărare compară **suma peste ambele luni**.
+  Măsurat pe portofoliu înainte: 47 de documente, toate `factura` (zero proforme) și zero facturi cu
+  CUI divergent de fișă — **nicio cifră nu se schimbă azi**. DECIZII 49.
 - **E4 · reparația se vede rulând (15.09.2026)** — cele trei datorii de trunchiere (d205, d390,
   d710) **închise prin exercitare**: fixtura din `core/test_limita_text_anaf.py` seamănă datele care
   fac declarația datorată (asociat + dividende distribuite ȘI plătite; operațiune IC; factura

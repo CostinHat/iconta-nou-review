@@ -997,14 +997,23 @@ def pull(conn, schema, perioada):
         _inc, _sf = _fer(perioada, _ptv(prof))
         inceput = _inc.isoformat()
         sfarsit = _sf.isoformat()
-        # partener: emise -> clienti (client_id); primite -> tert_* (furnizorul).
+        # partener: de pe FACTURA (tert_*), in ambele directii. Vezi decizia de mai jos.
         # proformele nu se raporteaza (nu sunt facturi fiscale).
         rows = _repo.select_facturi(cur, inceput, sfarsit)
     facturi = []
     for r in rows:
+        # [DECIZIA lui Costin, 15.09.2026 — DECIZII 47] Identitatea partenerului se citeste de pe
+        # FACTURA (`tert_cui`/`tert_nume`), inghetata la emitere. Pana azi, pe facturile emise
+        # castiga FISA CLIENTULUI (`c_cui`), adusa cu `LEFT JOIN clienti` — deci o corectura de CUI
+        # in fisa schimba partenerul dintr-un D394 REGENERAT pentru o luna trecuta, desi documentul
+        # emis spune altceva. *Factura e autoritatea; istoria se corecteaza prin storno si
+        # reemitere, nu prin editarea fisei.*
+        #
+        # Fisa ramane rezerva: o factura veche fara `tert_cui` (emisa doar pe `client_id`, inainte
+        # ca poarta de azi sa ceara codul fiscal) si-ar pierde altfel partenerul cu totul.
         emisa = (r["directie"] == "emisa")
-        cui = ((r["c_cui"] if emisa else None) or r["tert_cui"] or r["c_cui"] or "")
-        nume = ((r["c_nume"] if emisa else None) or r["tert_nume"] or r["c_nume"] or "")
+        cui = (r["tert_cui"] or r["c_cui"] or "")
+        nume = (r["tert_nume"] or r["c_nume"] or "")
         comun = {"cui": cui, "nume": nume, "directie": r["directie"],
                  "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"],
                  "platitor_tva": r["tert_platitor_tva"],

@@ -80,6 +80,11 @@ def declarabile():
     return tuple(sorted(s for s, (d, _) in STARI.items() if d))
 
 
+#: Tipul unui document în `facturi.tip`. Implicit (coloană goală / lipsă) = `factura`, fiindcă așa
+#: s-au scris rândurile înainte ca proformele și avizele să existe ca tip.
+TIP_IMPLICIT = "factura"
+
+
 def nedeclarabile():
     return tuple(sorted(s for s, (d, _) in STARI.items() if not d))
 
@@ -97,6 +102,27 @@ def clauza_sql(alias="f", coloana="status"):
     pref = ("%s." % alias) if alias else ""
     lista = ", ".join("'%s'" % s for s in nedeclarabile())
     return "COALESCE(%s%s, '%s') NOT IN (%s)" % (pref, coloana, IMPLICITA, lista)
+
+
+def clauza_tip_document(alias="f", coloana="tip"):
+    """Fragmentul SQL care păstrează doar DOCUMENTELE FISCALE: `tip = 'factura'`.
+
+    [DECIZIA lui Costin, 15.09.2026 — DECIZII 46] O **proformă** nu e document fiscal: TVA-ul nu e
+    exigibil pe ea (faptul generator / factura, art. 281 CF). Până azi D300 o număra ca livrare
+    taxabilă, fiindcă filtra pe dată și pe status — iar proforma primește un status DECLARABIL
+    (`de_preluat`). Măsurat: o proformă de 500+105 lei, singura din lună, dădea `R9_1=500`,
+    `R9_2=105`. Iar după transformare, factura rezultată intra ȘI ea — aceeași operațiune
+    economică declarată de două ori.
+
+    De ce aici și nu scris în fiecare interogare: același adevăr scris în două locuri dă două
+    răspunsuri la prima divergență. `clauza_sql` (statusul) trăiește aici din același motiv; D394
+    avea deja filtrul, literal, în trei locuri — acum îl cere tot de aici.
+
+    NU e o încălcare a lui P7: cele două căi nu se citesc una pe alta, ci **amândouă citesc
+    registrul**.
+    """
+    pref = ("%s." % alias) if alias else ""
+    return "COALESCE(%s%s, '%s') = '%s'" % (pref, coloana, TIP_IMPLICIT, TIP_IMPLICIT)
 
 
 def e_declarabila(stare):
