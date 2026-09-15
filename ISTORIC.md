@@ -1,3 +1,50 @@
+## 15.09.2026 — **planul E se închide; și, pentru prima dată în etapa asta, se schimbă o cifră pe care o vede contabilul**
+
+**Pentru un contabil: da, azi s-a schimbat ceva** — și merită citit, fiindcă zilele dinainte au fost
+toate „nimic vizibil".
+
+**O PROFORMĂ NU MAI INTRĂ ÎN D300.** Până azi, o proformă emisă era numărată ca livrare taxabilă:
+măsurat pe o firmă cu o singură operațiune în lună, o proformă de 500 + 105 lei dădea `R9_1=500`,
+`R9_2=105`, TVA de plată 105. Iar dacă proforma se transforma apoi în factură, **aceeași operațiune
+economică se declara de două ori**, în două luni. Cauza, în cod: interogarea principală a lui D300
+filtra pe dată și pe status, dar niciodată pe **tipul documentului** — iar proforma primește un status
+declarabil. Tiparul corect exista deja alături: D394 excludea proformele de mult. Acum regula trăiește
+într-un singur loc (`nomenclator_status_factura.clauza_tip_document`), iar D300 o cere pe toate cele
+patru drumuri ale lui prin `facturi`.
+
+**PARTENERUL DIN D394 SE CITEȘTE DE PE FACTURĂ**, nu din fișa clientului. Până azi, o corectură de CUI
+în fișa unui client schimba partenerul dintr-un D394 **regenerat pentru o lună trecută**, deși
+documentul emis atunci spunea altceva. Decizia lui Costin, scrisă în registru: *factura e autoritatea;
+istoria se corectează prin storno și reemitere, nu prin editarea fișei.* Fișa rămâne rezervă — o
+factură veche fără cod fiscal, emisă doar pe `client_id`, și-ar pierde altfel partenerul cu totul.
+
+**Cât de mult s-a schimbat azi, măsurat înainte de a atinge codul:** **zero**. Portofoliul viu are 47
+de documente, toate de tip `factura` — nicio proformă, niciun aviz —, și 28 de facturi emise, niciuna
+cu CUI diferit de fișă. Defectele erau reale în cod și **neexercitate în producție**. *Dacă
+portofoliul ar fi avut proforme, reparația ar fi rescris declarații deja depuse, și ar fi cerut alt
+plan — de-aia cifra se măsoară înainte, nu se presupune după.*
+
+**Restul zilei a fost întărire**, fără efect vizibil: planul E s-a închis pe toate etapele lui.
+`MODULE_CU_SQL_FARA_STRAT` **78 → 0** (E2a: registrul straturilor s-a lărgit la *orice* modul cu SQL,
+cu migrările într-o clasă de excludere numită, nu tăcută) · `REPOSITORY care își deschid conexiunea`
+**32 → 0** (E2b: 39 de `commit`-uri scoase din depozite, actul cursului BNR mutat în modulul lui, două
+programe CLI plecate în `scripts/`, opt acte etichetate greșit care și-au primit stratul adevărat) ·
+cele patru datorii fiscale din registru, **scoase** (E4) · iar subsetul rutelor care scriu în cifre de
+declarație, **49 → 8**, cu probe care merg până în rândul declarației, nu până la codul HTTP.
+
+**Două lucruri pe care le-am aflat greșind, și se scriu ca atare.** La E4, „dependența" scrisă în plan
+— *o firmă de probă cu profilul potrivit* — **nu exista**: lipseau datele, nu firma, iar ele încap în
+câteva rânduri semănate în schema efemeră a probei. Se aștepta de o lună și jumătate după trei
+insert-uri. Și, tot la E4: pragul „75 de caractere" din datorie era **vechi** — din 03.08 fiecare câmp
+are limita lui oficială, iar garda care conta **sărea** exact peste declarațiile din datorie. *Un test
+care sare nu e o verificare, e o intenție.*
+
+**E5 n-a fost închis: a fost mutat.** „Motoarele fiscale se pot citi" nu are criteriu de ieșire —
+lizibilitatea nu se termină, fiindcă motoarele se schimbă odată cu legea. A devenit **regula 9** din
+`PLAN_LUCRU.md`: un motor deschis pentru altceva se lasă citibil la închidere. *Un pas care nu se
+poate închide, ținut în plan ca pas, e o datorie care crește tăcut în dreptul unui plan altfel
+terminat.*
+
 
 
 

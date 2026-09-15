@@ -1,15 +1,25 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **planul de întărire P0–P7: ÎNCHIS FORMAL, toți opt `CLOSED_ACCEPTED`** (14.09.2026)
+# PREDARE LANȚ — **planul E (de după audit) e ÎNCHIS; E5 a devenit regulă permanentă** (15.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-14**, la **închiderea formală a planului de întărire**: toți cei
-  opt pași P0…P7 sunt `CLOSED_ACCEPTED`, fiecare cu commitul lui final, iar tabelul de închidere
-  (cu poarta care a lăsat-o să treacă și cu restanțele **neblocante** numite) stă la capătul lui
-  `PLAN_HARDENING.md`. *Închiderea n-a atins cod de producție: e consemnare.*
-- **pe commit**: `43fd2197`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-15**, la **închiderea planului E** — cele șase etape derivate din
+  auditul de ansamblu (E1, E2a, E2b, E3 lot fiscal, E4, E6) sunt închise cu cifră, iar **E5 a ieșit
+  din plan și a devenit regula 9 din `PLAN_LUCRU.md`**: *un motor fiscal deschis pentru altceva se
+  lasă citibil la închidere.* Motivul e mecanic, nu estetic: o etapă are criteriu de ieșire și se
+  închide, iar lizibilitatea nu se termină — motoarele se schimbă odată cu legea. *Un pas care nu se
+  poate închide, ținut în plan ca pas, e o datorie care crește tăcut în dreptul unui plan altfel
+  terminat.*
+- **pe commit**: `0976154e`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
+- **[15.09.2026] ZIUA ASTA A SCHIMBAT ȘI CE VEDE CONTABILUL**, spre deosebire de cele dinainte: o
+  **proformă nu mai intră în D300** (și operațiunea ieșită din ea nu se mai declară de două ori), iar
+  **partenerul din D394 se citește de pe factură**, nu din fișa clientului. Amândouă pe decizia lui
+  Costin, amândouă **măsurate pe portofoliu înainte de a schimba codul**: 47 de documente, toate de
+  tip `factura` → **zero cifre schimbate azi**. Defectul era real în cod și neexercitat în producție.
+  *Dacă portofoliul ar fi avut proforme, reparația ar fi rescris declarații deja depuse — și ar fi
+  cerut alt plan. De-aia cifra se măsoară, nu se presupune.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **[13.09.2026] CE A IEȘIT LA IVEALĂ CHIAR RESCRIIND, și se scrie fiindcă e clasa pe care documentul
   o păzește:** titlul spunea *„șase pași închiși"* — sunt **șapte** (P0…P6) · „interdicții, din **77**:
@@ -48,10 +58,30 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   nouă; e datoria veche, numărată prima dată.*
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **campania rămâne închisă; se lucrează la ÎNTĂRIRE, după un plan scris**
+## PRIMUL LUCRU DE ȘTIUT: **P0…P7 și planul E sunt închise; ce urmează se alege, nu se moștenește**
 
-Etapele 1 și 2 ale campaniei sunt **neatinse**. Din 07.09 se lucrează la `PLAN_HARDENING.md` — opt
-pași, P0…P7, fiecare cu *ce trebuie făcut* și *cum se verifică*, la nivelul de detaliu al comenzilor.
+Etapele 1 și 2 ale campaniei sunt **neatinse**. Din 07.09 s-a lucrat la `PLAN_HARDENING.md` (P0…P7,
+închis formal pe 14.09), iar din 14.09 la `PLAN_E1_E6.md` — cele șase etape derivate din auditul de
+ansamblu, **închise pe 15.09**:
+
+| pas | cifra care-l închide | commit |
+|---|---|---|
+| **E1** — ritmul se numără o singură dată | `RATE_LIMIT_IN_PROCES` 3 → **0** | `d76cf9d2` |
+| **E6** — modelul de citire nu depinde de HTTP | `CORE_IMPORTA_MAIN` 2 → **0** | `6aa687fb` |
+| **E3** — ce scrie, se probează *(lotul fiscal)* | subsetul declarațiilor 49 → **8**; rute care scriu fără probă: **88**, cu **43** mai puține | `c28000ec`, `32919d88` |
+| **E4** — reparația se vede rulând | cele **4** `xfail(strict)` din registrul de datorii, scoase | `622dec8e` |
+| **E2a** — universul se declară | `MODULE_CU_SQL_FARA_STRAT` 78 → **0** | `df361e9c` |
+| **E2b** — valul care separă | `REPOSITORY care își deschid conexiunea` 32 → **0** | `1ca3b7ee` |
+| **E5** — motoarele fiscale se pot citi | **nu e pas, e regula 9** din `PLAN_LUCRU.md` | `0976154e` |
+
+**Ce NU s-a închis odată cu ele, și e scris ca datorie cu clichet, nu ca pas:** 88 de rute care scriu
+fără probă în suită (din care **8** ating cifre de declarație și cer fixturi grele: stoc, extras
+bancar, bon pozat, mijloc fix, rețetă, fișier de migrare) · **18** module cu amestec OBSERVAT, toate
+ACTE, care au voie să-și dețină tranzacția · **8** citări `DUK regula` nerezolvate în `core/d402.py`
+și `core/d301_operatiuni_api.py` · **logrotate** neinstalat (cere root) · `d301` rămâne singura
+sărire din garda de limite, fiindcă cere o firmă NEplătitoare, iar fixtura e plătitoare.
+
+*Vechiul tabel P0…P7 rămâne mai jos, fiindcă lanțul întreg e întrebat des.*
 
 | pas | stare | ce a livrat, pe scurt |
 |---|---|---|
@@ -388,7 +418,7 @@ predare în alta e greșită exact acolo unde pare cea mai sigură.*
 ---
 ## STAREA LA PREDARE
 
-**5840 teste trec** *(ieșirea porții valului use-case)* · 12 skip · 14 xfail · ruff OK ·
+**6172 teste trec** *(ieșirea porții de la `1ca3b7ee`, E2b)* · 7 skip · 11 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
@@ -415,7 +445,12 @@ e o vorbă, e o consecință.*
 
 <!-- CLICHETE-VII:STOP -->
 
-**POARTA DUREAZĂ ~26 DE MINUTE** — măsurat pe 06–08.09: **1.474–1.595 s**, pe 14 rulări.
+**POARTA DUREAZĂ ~33 DE MINUTE** — măsurat pe 14–15.09: **1.898–1.991 s**, pe nouă rulări.
+*Cifra veche (~26 de minute, 1.474–1.595 s pe 14 rulări, 06–08.09) se păstrează alături: suita a
+crescut cu ~430 de probe între timp, deci diferența e conținut, nu încetinire.* **Consecința
+practică, de planificat:** o tură cu trei respingeri la poartă costă aproape două ore numai în
+porți — de-aia regulile 6–8 (fără rulare preventivă) contează mai mult acum decât când au fost
+scrise.
 
 **POARTA SCURTĂ EXISTĂ, și are patru trepte** (`scripts/poarta_scurta.py --nivel=`). Măsurat: N1 pe
 `control_fiscal_api` = **27 s**; N2 pe `d112` = 338 s; N3 = 349 s. **Refuză** — corect — când se
@@ -429,6 +464,10 @@ atinge un `.md`, un `.js` sau `main.py` **alături de cod**; când se ating **nu
 |---|---|
 | **prag 1** | **niciuna deschisă** |
 | **decizii** | **niciuna deschisă** |
+| **rute fără probă** | *(15.09)* **88** de rute care SCRIU n-au nicio probă în suită; dintre ele **8** ating tabele din care se ridică declarații și cer fiecare o lume pregătită (articol de stoc ×3, linie de extras bancar, bon pozat, mijloc fix, rețetă, fișier de migrare). Clichet dublu în `core/test_rute_probate.py` + `PLAFON_SUBSET_FISCAL` — scad **numai** cu probe scrise, niciodată prin lărgirea definiției lui „numită" |
+| **D4b = 18** | *(15.09)* module cu SQL care își deschid singure conexiunea sau comit. **Toate sunt ACTE** (cron-uri, lucrători, sonde, conectori), iar un act are voie — `PLAN_HARDENING.md:840`. Cifra e clichetată ca să nu crească pe tăcute, nu fiindcă ar fi o datorie |
+| **8 citări DUK** | *(15.09)* `R14/R34/R39/R43/R50` în `core/d402.py` și `R24.1` în `core/d301_operatiuni_api.py` nu se regăsesc în validatoarele lor. Jarul D402 instalat are în tot cuprinsul lui patru coduri — niciunul dintre cele citate. **Se lămurește prin RULARE** (XML mutat deliberat), nu prin citirea constantelor: la D100, adiacența din bytecode m-a mințit, iar validatorul m-a corectat |
+| **d301, sărit** | *(15.09)* garda de limite per-câmp exercită opt declarații pe date semănate, dar `d301` rămâne sărit: decontul special e doar pentru NEplătitori, iar fixtura e plătitoare fiindcă așa cer D300/D394. **O firmă nu poate fi și una și alta** — cere a doua fixtură |
 | **R183** | *(nou, 09.09, P4)* `spv_conector.apel_anaf` ține o conexiune din pool și tranzacția ei **deschise** peste apelul către ANAF (timeout până la 60 s la upload), peste retry-ul de `401` și peste backoff-ul de `429`. **Proprietatea e reparată** (R180: scrierea de token nu mai depinde de tranzacția aia); ce rămâne e **durata**, aceeași clasă ca R178, și se închide împreună cu ea. *Nu e o cifră, e o formă a codului — cifra ar cere trafic real* |
 | **R178** | *(nou, 09.09, măsurat nu presupus)* la **10 cereri de portofoliu simultane**, conexiunile simultane ating exact `ICONTA_POOL_MAX = 10` — rezervă zero —, iar latența crește ~liniar cu concurența (p50 56 → 755 ms), deci debitul e practic plat. **Nu e o regresie P3** (înainte o singură cerere lua 1.003–2.003 conexiuni pe rând); e o proprietate a configurației, măsurată acum fiindcă înainte n-a fost. Mărirea pool-ului ar ascunde-o, nu ar rezolva-o |
 | **R177** | clasa „model de citire cu dependențe scrise din memorie". **Instanța e reparată** (`224cfc40`); ce rămâne deschis e că **nimic nu spune câți alți purtători ai clasei are aplicația**. P3 a mai găsit unul, fără să-l caute — v. mai jos |
@@ -829,6 +868,40 @@ a ce e adevărat **acum**.
 
 ---
 ## DACĂ CONTINUI DE AICI
+
+0Z. **[15.09.2026] PLANUL E E ÎNCHIS. Următoarea temă e ALEASĂ de Costin, nu moștenită.**
+
+   Nu există pas următor „la rând". `PLAN_E1_E6.md` are tabelul de închidere în cap; `PLAN_LUCRU.md`
+   are acum **regula 9** (motorul fiscal deschis pentru altceva se lasă citibil) — o regulă, nu o
+   etapă, deci nu se „pornește".
+
+   **Tema care ASTEAPTĂ COMANDĂ, cu cifrele ei din tabel** (`LISTA_FUNCTIONALITATI.md`,
+   `VERIFICARE_FUNCTIONALITATI.md`): *probarea suprafeței de introducere a datelor*. Etapa 1 (date
+   invalide) e terminată — **333** de unități probate din cele **364** ale perimetrului, **133** cu
+   defect găsit și reparat. Etapa 2 (date valide, până în rândul declarației) s-a oprit pe
+   **05.09.2026, lotul E**, cu **27** de unități atinse și toate cele nouă declarații acoperite ca
+   generare. Ce a cerut Costin și n-a început: **cele 45 de unități-nucleu neprobate individual**, în
+   ordinea d300 → d394 → d112 → d406 → restul, fiecare cu lanțul complet — *valoarea intră, se
+   înregistrează, ajunge în rândul corect cu suma corectă, declarația se generează și validează* —,
+   iar „suprapunere" **nu** contează ca probă.
+
+   **Înainte de a porni etapa 2, comanda cere un pas de verificare:** starea celor 133 + 15 defecte
+   găsite (reparate / deschise / în `xfail`), citită din registre (`GARZI.md`, `core/test_datorie.py`),
+   nu din memorie. Am apucat să măsor din tabel: **toate cele 133 (etapa 1) și 15 (etapa 2) poartă
+   „defect găsit ȘI REPARAT"**; niciunul nu e lăsat deschis în `LISTA_FUNCTIONALITATI.md`. Ce **nu**
+   e verificat încă e confruntarea acelei afirmații cu registrul de datorii — acolo se oprise tura.
+
+0Y. **[15.09.2026] CE E DE ȘTIUT DESPRE CELE DOUĂ REPARAȚII FISCALE, dacă apare o mirare.**
+
+   `nomenclator_status_factura.clauza_tip_document()` e acum **singurul loc** unde scrie că un
+   document fiscal e `tip = 'factura'`; D300 o cere pe toate cele patru drumuri ale lui prin
+   `facturi`, iar D394 și-a înlocuit cei trei literali cu ea. Dacă mâine o proformă „dispare" dintr-un
+   raport, ăsta e motivul, și e deliberat.
+
+   `core/d394.py` citește partenerul de pe **factură** (`tert_cui`/`tert_nume`), cu fișa clientului ca
+   **rezervă** — nu invers, ca până acum. Motivarea lui Costin, scrisă în DECIZII 47: *factura e
+   autoritatea; istoria se corectează prin storno și reemitere, nu prin editarea fișei.*
+
 
 0. **P6 E ÎNCHIS (12.09.2026). Producția servește din DOUĂ procese.**
 
