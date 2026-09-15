@@ -1845,6 +1845,13 @@ citirea corectează.*
   **Nu e o scăpare tăcută** — docstringul o declară: *„actualizeaza valoarea/dnf ramane manual (raport evaluator)"*. Dar o limită declarată **în docstring** nu e o limită declarată **contabilului**: aplicația nu spune nicăieri, la niciun ecran, că baza de amortizare a rămas în urmă.
 - **de unde a ieșit**: din măsurătoarea cerută de Costin la lotul 5 — *„reevaluare-imobilizare, care schimbă baza de amortizare (deci impozitul pe profit) dar nu scrie `validata`"*. **Premisa lui era mai bună decât realitatea**: ruta nici măcar nu schimbă baza. Întrebarea era despre rol; răspunsul e despre consistență.
 - **ce NU e**: nu e o restanță de rol. Criteriul de la R55 (scrie `validata` direct) n-o prinde, și **corect** — scrie ciornă. Dacă registrul ar începe să fie actualizat aici, ar deveni o schimbare imediată de bază fiscală, iar atunci criteriul s-ar reaplica.
+- **MĂSURAT pe declarație (16.09.2026, etapa 2 lotul I)**, și schimbă ce spune restanța:
+  efectul nu se oprește la amortizare, ajunge în **DECLARAȚIE**. Pe un activ de 3.000 lei reevaluat la
+  3.550, ruta a răspuns `200` (note `2813=2131` 50 și `2131=105` **550**, `valoare_neta` 2.950), dar
+  `mijloace_fixe.valoare` a rămas **3.000**, iar SAF-T declară `AcquisitionAndProductionCostsEnd` =
+  **3.000**, nu 3.550. *Evidența contabilă poartă reevaluarea; declarația nu. Două evidențe despre
+  același activ.* Proba care o arată: `frontend_test/proba_e2_lot_i_d406.py`, lanțul 7 — rămas
+  **roșu** deliberat, fiindcă defectul e real și deschis.
 - **condiția de deblocare**: decizia lui Costin între **(a)** ruta actualizează `mijloace_fixe` la validarea notei — reevaluarea devine un act complet, cu riscul că un `UPDATE` pe registru se face dintr-o ciornă; **(b)** ruta rămâne cum e, dar aplicația **spune** divergența — un semnal pe mijlocul fix reevaluat și pe ecranul de amortizare, până la actualizarea manuală; **(c)** altceva. Se închide când divergența ori nu mai există, ori e vizibilă contabilului — cu gard.
 
 ### R60 — Instrumentul care hrănește verificările atribuia rutei modulul importat de altcineva
@@ -8135,6 +8142,49 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   la sursă în tura în care s-a găsit defectul, iar *un mesaj cu coduri neverificate ar fi a doua
   greșeală, nu o reparație.* Rămâne de făcut, când se deschide structura D112 la sursă: nomenclatorul
   închis al lui `D_10`, cu codurile lui.
+
+### R190 — O rută răspundea `500` la ORICE cerere, două zile, și n-a aflat nimeni
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — găsită de proba de lanț a etapei 2, lotul I · **PRAG 1**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `8d182afa`
+- **rezolvată pe commit**: `cc34fa92`
+- **măsurat la**: 2026-09-16 · **pe commit**: `cc34fa92`
+- **ce blochează**: **nimic acum.** `GET /tenants/{id}/d406-active` — secțiunea **Assets** din SAF-T —
+  răspundea `500` la **orice** cerere: `TypeError: 'NoneType' object is not iterable`.
+  `cols = [d[0] for d in cur.description]` sta **deasupra** apelului care execută interogarea, iar
+  `cur.description` descrie ultima interogare **executată** — fără una, e `None`. **Datat în git:**
+  înainte de valul **V1** al lui P7 (`8d182afa`, 13.09) codul avea `cur.execute(...)` chiar acolo;
+  valul a mutat `execute` în depozit și a lăsat linia unde era. *N-a prins-o nicio gardă fiindcă ruta
+  n-are apelant — clasa pe care R70 o numește. Prima apăsare pe ea a fost proba de lanț.*
+- **condiția de deblocare**: închisă. Ordinea e inversată (randurile întâi, coloanele după), verificat
+  pe date reale: **12.154 octeți** de `<nsSAFT:Assets>`. Clasa e păzită de
+  `core/test_ordinea_cursorului.py` — pe **ordine**, nu pe fișier —, cu mutație pe forma reală care a
+  produs defectul și podea anti-vacuu de 150 de blocuri.
+
+### R191 — Amortizarea se calculează de DOUĂ ori, din surse diferite, și nimic nu confruntă cifrele
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — deschisă de proba de lanț a etapei 2, lotul I · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `cc34fa92`
+- **măsurat la**: 2026-09-16 · **pe commit**: `cc34fa92`
+- **ce blochează**: **nimic azi — neblocantă**, și se scrie fiindcă `stare` are exact două valori.
+  Secțiunea Assets din D406 **își calculează singură** amortizarea, din registrul `mijloace_fixe`:
+  măsurat pe un activ de 3.000 lei / 60 de luni, `DepreciationForPeriod = 200`,
+  `AccumulatedDepreciation = 200`, `BookValueEnd = 2.800`. Nota lunară de amortizare
+  (`6811 = 2813`, 50 lei/lună) e un calcul **independent**, din altă sursă. Aici coincid, prin
+  construcție — dar **nimic nu le confruntă**. Pentru D300 și D394 repo-ul are „a doua cale"; pentru
+  Assets nu are. *Iar R59 arată că registrul POATE rămâne în urmă: acolo cele două chiar divergează.*
+- **condiția de deblocare**: se închide cu **instrumentul #5** din `INSTRUMENTE_ROADMAP.md`
+  (reconciliatorul), pe obiectul „amortizare declarată contra amortizare înregistrată" — nu cu o
+  gardă scrisă aici. Ordinea contează: **întâi R59**, fiindcă un reconciliator pornit peste o
+  divergență cunoscută ar raporta roșu despre ceva deja numit.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

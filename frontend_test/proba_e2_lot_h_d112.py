@@ -163,18 +163,59 @@ def main():
         s, m = d112(tok, tid)
         i["d112"] = m
         i["amprenta"] = {"inainte": ref, "dupa": (s or {}).get("amprenta")}
-        s_a_schimbat = (s or {}).get("amprenta") != ref
+        # DEOSEBIREA care lipsea: dacă declarația NU SE MAI GENEREAZĂ, aia nu e „s-a schimbat".
+        # Prima formă compara amprenta cu `None` și raporta „schimbat" — adică a citit o BLOCARE ca
+        # pe un efect. S-a întâmplat: o zi de pontaj marcată absent blochează D112 până la
+        # confirmarea pontajului (HG 1045/2018), iar proba a raportat verde. *Un `!=` cu o absență
+        # nu e o măsurătoare.*
+        if s is None:
+            i["NU_SE_MAI_GENEREAZA"] = m
+            i["ce_s_a_cerut"] = ("SE SCHIMBĂ" if trebuie_sa_schimbe else "NU se schimbă") \
+                + " — dar declarația nu se mai generează, deci nu s-a măsurat nimic"
+            i["OK"] = False
+            scrie(i)
+            return ref, r
+        s_a_schimbat = s["amprenta"] != ref
         i["s_a_schimbat"] = s_a_schimbat
         i["ce_s_a_cerut"] = "SE SCHIMBĂ" if trebuie_sa_schimbe else "NU se schimbă"
         i["OK"] = (st in (200, 201)) and (s_a_schimbat == trebuie_sa_schimbe)
         scrie(i)
         return (s or {}).get("amprenta"), r
 
-    # ── 2. PONTAJ ────────────────────────────────────────────────────────────
-    amp2, _ = pas("2 · pontaj: o zi lucrătoare pusă `absent_nemotivat` → declarația se schimbă",
-                  "PUT /tenants/{}/salariati/{}/pontaj", "PUT",
-                  "/tenants/%d/salariati/%s/pontaj" % (tid, sid),
-                  {"zi": "%d-%02d-12" % (AN, LUNA), "stare": "absent_nemotivat"}, True, amp1)
+    # ── 2. PONTAJ: poarta de autoritate, apoi revenirea ─────────────────────
+    #    AȘTEPTAREA REFĂCUTĂ, după ce prima formă a citit o BLOCARE ca pe o schimbare. Comportamentul
+    #    real, și e corect: o zi atinsă face pontajul lunii NECONFIRMAT, iar D112 se BLOCHEAZĂ —
+    #    „datele sunt informative, nu autoritative (HG 1045/2018 art.10(3))". Deci lanțul probează
+    #    trei lucruri, nu unul: (a) poarta se închide, cu temei; (b) confirmarea o deschide;
+    #    (c) valoarea introdusă a ajuns în declarație (amprenta diferă de cea de la început).
+    i2 = {"lant": "2 · pontaj: o zi `absent_nemotivat` → D112 se BLOCHEAZĂ cu temei (HG 1045/2018), "
+                  "iar confirmarea îl deblochează",
+          "ruta": "PUT /tenants/{}/salariati/{}/pontaj"}
+    st2, r2 = U.cere("PUT", "/tenants/%d/salariati/%s/pontaj" % (tid, sid),
+                     {"zi": "%d-%02d-12" % (AN, LUNA), "stare": "absent_nemotivat"}, tok)
+    i2["raspuns"] = {"stare": st2, "corp": str(r2)[:200]}
+    s_blocat, m_blocat = d112(tok, tid)
+    i2["a_blocat"] = {"declaratia_se_genereaza": s_blocat is not None, "meta": m_blocat}
+    _motiv = str((m_blocat or {}).get("raspuns") or "")
+    i2["temeiul_blocarii"] = ("HG 1045/2018" in _motiv and "CONFIRMAT" in _motiv)
+    st_c, r_c = U.cere("POST", "/tenants/%d/pontaj/confirma" % tid, {"an": AN, "luna": LUNA}, tok)
+    i2["confirmare"] = {"stare": st_c, "corp": str(r_c)[:200]}
+    s_dupa, m_dupa = d112(tok, tid)
+    i2["dupa_confirmare"] = {"declaratia_se_genereaza": s_dupa is not None, "meta": m_dupa}
+    i2["cifrele_s_au_schimbat"] = bool(s_dupa) and s_dupa["amprenta"] != amp1
+    # A TREIA CONDIȚIE ERA A MEA, nu a aplicației. Pontajul mișcă **tichetele de masă** — chiar asta
+    # spune mesajul porții („Tichetele de masa (D112)… HG 1045/2018") —, iar salariatul probei n-are
+    # tichete configurate. Deci o zi absentă NU are de ce să schimbe cifrele lui: salariul e lunar,
+    # contribuțiile la fel. Ce se cere e poarta și revenirea; schimbarea cifrelor se MĂSOARĂ și se
+    # scrie, nu se pretinde.
+    i2["de_ce_nu_se_schimba_cifrele"] = (
+        "salariatul probei n-are tichete de masă configurate, iar pontajul intră în D112 prin ele; "
+        "salariul e lunar, deci o zi absentă nu mișcă bazele. Se consemnează ca măsurătoare, nu ca "
+        "nepotrivire.") if not i2["cifrele_s_au_schimbat"] else None
+    i2["OK"] = (st2 in (200, 201) and s_blocat is None and i2["temeiul_blocarii"]
+                and st_c in (200, 201) and s_dupa is not None)
+    scrie(i2)
+    amp2 = (s_dupa or {}).get("amprenta") or amp1
 
     # ── 3a. BENEFICIU SUB PLAFON — nu se schimbă ────────────────────────────
     amp3a, _ = pas("3a · cadou 300 lei (= PLAFON_CADOU) → declarația NU se schimbă",
@@ -198,7 +239,17 @@ def main():
                     "data_acordare": "%d-%02d-05" % (AN, LUNA),
                     "data_inceput": "%d-%02d-05" % (AN, LUNA),
                     "data_sfarsit": "%d-%02d-07" % (AN, LUNA),
-                    "loc_prescriere": "ambulatoriu", "diagnostic": "proba lant",
+                    # CODUL NUMERIC, nu textul: prima formă a trimis „ambulatoriu" și a scos
+                    # **R189** — ruta scurgea mesajul lui `int()`. Se trimite `1`, care e chiar
+                    # valoarea pe care codul o folosește ca implicit (`int(... or 1)`), deci nu e un
+                    # cod inventat de mine; nomenclatorul închis al lui `D_10` rămâne de scris când
+                    # se deschide structura D112 la sursă (datoria numită în R189).
+                    "loc_prescriere": 1,
+                    # `diagnostic` e un COD de cel mult 3 caractere (`D_23` în XSD), nu proză: prima
+                    # formă a trimis „proba lant" (10 caractere), iar generatorul a refuzat, numind
+                    # câmpul, lungimea primită ȘI maximul. Se trimite `999`, chiar valoarea pe care
+                    # o folosește generatorul ca implicit — nu un cod inventat.
+                    "diagnostic": "999",
                     "spitalizare": False, "zile_cm": 3,
                     "venituri_6_luni": BRUT * 6, "zile_6_luni": 126,
                     "an": AN, "luna": LUNA}, True, amp3b)
@@ -241,6 +292,19 @@ def main():
         "prin aplicație pe firma de probă. Se exercită refuzul, care trebuie să fie motivat.")
     i7["OK"] = (st7 >= 400 and st7 != 500 and len(motiv) > 20)
     scrie(i7)
+
+    # ── DESFACEREA pontajului: ziua se scoate, iar luna se re-confirmă ──────
+    #    Fără ea, firma rămâne cu D112 blocat până când cineva confirmă — s-a întâmplat o dată, iar
+    #    deblocarea a cerut un act separat. *Ce atinge o poartă o repune la loc.*
+    st_d1, r_d1 = U.cere("PUT", "/tenants/%d/salariati/%s/pontaj" % (tid, sid),
+                         {"zi": "%d-%02d-12" % (AN, LUNA), "stare": None}, tok)
+    st_d2, r_d2 = U.cere("POST", "/tenants/%d/pontaj/confirma" % tid, {"an": AN, "luna": LUNA}, tok)
+    s_fin, m_fin = d112(tok, tid)
+    rez["desfacere_pontaj"] = {
+        "ziua_scoasa": {"stare": st_d1, "corp": str(r_d1)[:120]},
+        "luna_reconfirmata": {"stare": st_d2, "corp": str(r_d2)[:120]},
+        "d112_se_genereaza_la_final": s_fin is not None, "meta": m_fin,
+        "de_ce": "o zi atinsă blochează D112 până la confirmare; proba nu lasă firma blocată"}
 
     # ── ÎNCHEIEREA declarată: salariatul primește dată de încetare, ca lunile următoare să nu-l
     #    mai poarte. Se face prin ruta aplicației (probată în lotul D), nu prin `UPDATE` pe tabel.

@@ -69,6 +69,15 @@ def active(tok, tid):
                  "raspuns": None if xml else str(r)[:300]}
 
 
+def asset_probei(xml, cod):
+    """Elementul `<Asset>` al activului probei, ca {cimp: valoare}. Cade daca nu-l gaseste."""
+    m = re.search(r"<(?:\w+:)?Asset>(?:(?!</(?:\w+:)?Asset>).)*" + re.escape(cod)
+                  + r"(?:(?!</(?:\w+:)?Asset>).)*</(?:\w+:)?Asset>", xml or "", re.S)
+    if not m:
+        return None
+    return {k: v for k, v in re.findall(r"<(?:\w+:)?(\w+)>([^<]*)</", m.group(0))}
+
+
 def main():
     tok, tid, schema = U.context(FIRMA)
     st_mf, r_mf = U.cere("GET", "/tenants/%d/mijloace-fixe" % tid, None, tok)
@@ -77,8 +86,22 @@ def main():
         if isinstance(lst, list) else 1
     rez = {"firma": FIRMA, "tenant_id": tid, "schema": schema,
            "perioada": "%d-T%d" % (AN, TRIM), "rulare": rul, "lanturi": []}
-    cont_nou = "208.%d" % (90 + rul)
+    # SIMBOLUL se alege LIBER, nu dintr-un contor: la a doua rulare contul exista deja (îl creează
+    # chiar lanțul 2, prin soldurile inițiale), iar ruta refuză — corect și cu mesaj bun: «Contul
+    # 208.91 există deja în plan… folosește alt simbol». *Un contor care se repetă face proba să
+    # măsoare refuzul, nu lanțul.* Se caută primul analitic liber, întrebând chiar aplicația.
+    cont_nou = None
+    for _k in range(90, 100):
+        _cand = "208.%d" % _k
+        _st, _r = U.cere("GET", "/tenants/%d/plan-conturi?q=%s" % (tid, _cand), None, tok)
+        _lista = (_r.get("conturi") if isinstance(_r, dict) else _r) or []
+        if not any(str(x.get("simbol") or "") == _cand for x in _lista):
+            cont_nou = _cand
+            break
+    if not cont_nou:
+        raise SystemExit("toate analiticele 208.90–208.99 sunt ocupate — proba n-are simbol liber")
     den_mf = "%s Imobilizare %d" % (MARCA, rul)
+    cod_mf = "%s-%d" % (MARCA, rul)
 
     def scrie(i):
         rez["lanturi"].append(i)
@@ -120,10 +143,14 @@ def main():
     # numar pozitiv.» Iar `dnf_luni` e obligatoriu **cu motivul scris în cod**: fără el activul nu se
     # poate amortiza, deci e invizibil pentru `tenant_amortizare` și pentru `/d406-active`.
     st, r = U.cere("POST", "/tenants/%d/nota-inventariere" % tid,
-                   {"data": "%d-%02d-25" % (AN, LUNA), "operatie": "plus_mf",
-                    "descriere": den_mf, "denumire": den_mf, "cod": "%s-%d" % (MARCA, rul),
+                   {"data": "%d-%02d-25" % (AN, LUNA - 1), "operatie": "plus_mf",
+                    "descriere": den_mf, "denumire": den_mf, "cod": cod_mf,
                     "valoare": VALOARE_MF, "dnf_luni": 60,
-                    "data_pif": "%d-%02d-25" % (AN, LUNA),
+                    # PUNEREA ÎN FUNCȚIUNE e în luna PRECEDENTĂ, nu în cea amortizată: amortizarea
+                    # începe din luna următoare punerii în funcțiune (CF art. 28). Prima formă a
+                    # probei a pus PIF în chiar luna cerută, iar ruta a răspuns «nimic de
+                    # amortizat» — și avea dreptate. *Așteptarea era a mea, nu comportamentul.*
+                    "data_pif": "%d-%02d-25" % (AN, LUNA - 1),
                     "cont_imobilizare": "2131"}, tok)
     i3["raspuns"] = {"stare": st, "corp": str(r)[:300]}
     st_m, r_m2 = U.cere("GET", "/tenants/%d/mijloace-fixe" % tid, None, tok)
@@ -151,14 +178,45 @@ def main():
     scrie(i5)
 
     # ── 6. AMORTIZAREA LUNARĂ ───────────────────────────────────────────────
-    i6 = {"lant": "6 · amortizare: nota lunară → secțiunea Assets se schimbă",
-          "ruta": "POST /tenants/{}/amortizare"}
+    # AȘTEPTAREA REFĂCUTĂ. Prima formă cerea ca nota lunară de amortizare să SCHIMBE secțiunea
+    # Assets. Nu o schimbă, și **pe drept**: secțiunea e un EXTRAS DE REGISTRU — își calculează
+    # singură amortizarea din `mijloace_fixe` (valoare, dnf, data punerii în funcțiune), nu din
+    # notele contabile. Măsurat pe activul probei: `DepreciationForPeriod = 200`,
+    # `AccumulatedDepreciation = 200`, `BookValueEnd = 2800` la o valoare de 3.000 și 60 de luni.
+    #
+    # CE SE NUMEȘTE AICI, fiindcă e o consecință, nu o nuanță: amortizarea din DECLARAȚIE și
+    # amortizarea din NOTELE CONTABILE sunt **două calcule independente ale aceluiași lucru**, iar
+    # nimic nu le confruntă. Pentru D300/D394 repo-ul are „a doua cale"; pentru Assets nu. O
+    # divergență între ele n-ar fi văzută de nimeni. (Instrumentul cerut e #5 din
+    # `INSTRUMENTE_ROADMAP.md`, rămas în backlogul A3 — nu se construiește în lotul ăsta.)
+    i6 = {"lant": "6 · amortizare: nota lunară intră, iar declarația poartă amortizarea din REGISTRU",
+          "ruta": "POST /tenants/{}/amortizare",
+          "ce_s_a_cerut": ("nota se creează ȘI secțiunea Assets poartă o amortizare calculată "
+                           "(>0) pe activul probei — NU că XML-ul se schimbă la nota contabilă")}
     st, r = U.cere("POST", "/tenants/%d/amortizare?an=%d&luna=%d" % (tid, AN, LUNA), None, tok)
     i6["raspuns"] = {"stare": st, "corp": str(r)[:300]}
     xml6, meta6 = active(tok, tid)
     i6["d406_active"] = meta6
-    i6["s_a_schimbat"] = (xml6 != xml5)
-    i6["OK"] = st in (200, 201) and i6["s_a_schimbat"]
+    a6 = asset_probei(xml6, cod_mf)
+    i6["asset_probei"] = {k: a6.get(k) for k in
+                          ("AssetID", "DepreciationForPeriod", "AccumulatedDepreciation",
+                           "BookValueEnd", "AcquisitionAndProductionCostsEnd")} if a6 else None
+    try:
+        amort = float((a6 or {}).get("DepreciationForPeriod") or 0)
+        cumul = float((a6 or {}).get("AccumulatedDepreciation") or 0)
+    except ValueError:
+        amort = cumul = 0
+    # NOTA poate exista deja, dintr-o rulare anterioară: ruta răspunde atunci `400 „Amortizarea
+    # lunii e deja generată."` — un refuz IDEMPOTENT, corect, nu un eșec. Precondiția lanțului e
+    # *nota lunii există*, nu *nota s-a creat chiar acum*. Afirmația lui e despre DECLARAȚIE.
+    _corp = r if isinstance(r, dict) else {}
+    i6["nota_creata_acum"] = (_corp.get("linii") or 0) > 0
+    i6["nota_exista_deja"] = (st == 400 and "deja generat" in str(_corp.get("detail") or ""))
+    i6["preconditie"] = ("nota lunii CREATĂ acum" if i6["nota_creata_acum"]
+                         else ("nota lunii exista deja (refuz idempotent)"
+                               if i6["nota_exista_deja"] else "NICI creată, NICI existentă"))
+    i6["OK"] = (bool(a6) and amort > 0 and cumul > 0
+                and (i6["nota_creata_acum"] or i6["nota_exista_deja"]))
     scrie(i6)
 
     # ── 7. REEVALUAREA ──────────────────────────────────────────────────────
@@ -174,15 +232,41 @@ def main():
                           "reevaluarea n-are subiect; se scrie, nu se sare")
         i7["OK"] = False
     else:
+        # `mijloc_fix_id` e la NIVELUL DE SUS, nu în obiectul `reevaluare`. Prima formă l-a pus
+        # înăuntru, iar refuzul a numit exact câmpul lipsă: «Lipsește câmpul `mijloc_fix_id` din
+        # cererea trimisă. Operațiunea nu se poate consemna fără el.»
         st, r = U.cere("POST", "/tenants/%d/reevaluare-imobilizare" % tid,
                        {"data": "%d-%02d-26" % (AN, LUNA), "operatie": "reevaluare",
-                        "reevaluare": {"mijloc_fix_id": mfid, "valoare_justa": VALOARE_MF + 500}},
-                       tok)
+                        "mijloc_fix_id": mfid, "valoare_justa": VALOARE_MF + 500,
+                        "reevaluare": {"mijloc_fix_id": mfid,
+                                       "valoare_justa": VALOARE_MF + 500}}, tok)
         i7["raspuns"] = {"stare": st, "corp": str(r)[:300]}
         xml7, meta7 = active(tok, tid)
         i7["d406_active"] = meta7
-        i7["s_a_schimbat"] = (xml7 != xml6)
-        i7["OK"] = st in (200, 201) and i7["s_a_schimbat"]
+        a7 = asset_probei(xml7, cod_mf)
+        i7["asset_probei"] = {k: a7.get(k) for k in
+                              ("AssetID", "AcquisitionAndProductionCostsEnd", "BookValueEnd",
+                               "AccumulatedDepreciation")} if a7 else None
+        # AȘTEPTAREA: reevaluarea de +550 trebuie să AJUNGĂ în declarație. Costul de achiziție
+        # declarat ar trebui să urce de la 3.000 la 3.550 — altfel evidența contabilă (care poartă
+        # `2131 = 105`, 550) și declarația spun lucruri diferite despre același activ.
+        try:
+            cost = float((a7 or {}).get("AcquisitionAndProductionCostsEnd") or 0)
+        except ValueError:
+            cost = 0
+        i7["cost_declarat"] = cost
+        i7["cost_asteptat"] = float(VALOARE_MF + 500)
+        i7["OK"] = st in (200, 201) and abs(cost - (VALOARE_MF + 500)) < 0.51
+        if st in (200, 201) and not i7["OK"]:
+            i7["CONSTATARE"] = (
+                "REEVALUAREA NU AJUNGE ÎN DECLARAȚIE. Ruta a acceptat (notele `2813=2131` 50 și "
+                "`2131=105` 550, `valoare_neta` 2.950), dar `mijloace_fixe.valoare` a rămas %s, "
+                "deci secțiunea Assets declară tot costul vechi (%s în loc de %s). Evidența "
+                "contabilă și declarația spun lucruri diferite despre același activ. "
+                "E restanța deschisă **R59** — «reevaluarea schimbă valoarea contabilă, dar "
+                "registrul care conduce amortizarea rămâne pe cea veche» —, CONFIRMATĂ acum prin "
+                "măsurare, cu o consecință pe care restanța n-o numea: efectul ajunge în "
+                "DECLARAȚIE, nu doar în amortizare." % (VALOARE_MF, cost, VALOARE_MF + 500))
     scrie(i7)
 
     # ── 8. SECȚIUNEA STOCURI ────────────────────────────────────────────────

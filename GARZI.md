@@ -8439,6 +8439,84 @@ scriere*), iar lanțul **desface** la capăt — reimportă lista de la pornire,
 `baza1 / Tbaza × 100`, și **verifică** întoarcerea. Fără desfacere, fiecare rulare ar reîmpărți
 cotele celorlalți (100 → 99 → 49,5 → …), adică proba ar strica încet chiar datele pe care se sprijină.
 
+## 16.09.2026 — ETAPA 2, LOTUL I (D406) și lotul H închis: toate cele 29 de unități sunt probate
+
+**GĂRZI NOI: niciuna.** Lotul I a confirmat prin măsurare o restanță deschisă (**R59**) și a deschis
+una nouă (**R191**); lotul H s-a închis la **8/8** după ce trei așteptări ale mele au fost corectate.
+
+### Lotul I — 7 din 8, iar singura roșie e un defect REAL și deschis
+
+«Comert Micro TVA SRL», anul 2026. Lanțurile: cont analitic nou · solduri iniţiale · plus de inventar
+ca imobilizare · cele trei citiri-martor (`mijloace-fixe`, `d406-active`, `d406-stocuri`) ·
+amortizarea lunară · reevaluarea.
+
+**Ce a arătat R190 reparat:** `d406-active` întoarce acum **10.418 → 12.154 octeți** de
+`<nsSAFT:Assets>`, cu activul probei în el. *Ruta pe care nimeni n-o chemase e acum exercitată cap la
+cap.*
+
+### R59, CONFIRMATĂ PRIN MĂSURARE — și cu o consecință pe care restanța n-o numea
+
+Restanța spune: *„Reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea
+rămâne pe cea veche."* Măsurat acum, pe un activ de 3.000 lei reevaluat la 3.550:
+
+| ce | valoare |
+|---|---|
+| ruta a răspuns | `200`, note `2813=2131` 50 și `2131=105` **550**, `valoare_neta` 2.950 |
+| `mijloace_fixe.valoare` | **3.000** — neschimbat |
+| `AcquisitionAndProductionCostsEnd` din SAF-T | **3.000**, nu 3.550 |
+| `BookValueEnd` | **2.800** |
+
+**Consecința nouă: efectul ajunge în DECLARAȚIE, nu doar în amortizare.** Evidența contabilă poartă
+reevaluarea (`2131 = 105`, 550), iar D406 declară tot costul vechi. *Două evidențe care spun lucruri
+diferite despre același activ — exact clasa pe care etapa 2 a fost făcută să o vadă.* Lanțul rămâne
+**roșu**, pe drept: defectul e real și deschis.
+
+### R191 — amortizarea se calculează de DOUĂ ori, și nimic nu confruntă cele două cifre
+
+Secțiunea Assets **își calculează singură** amortizarea din registru: măsurat pe activul probei,
+`DepreciationForPeriod = 200`, `AccumulatedDepreciation = 200`, `BookValueEnd = 2.800` la 3.000 lei și
+60 de luni. Nota lunară de amortizare (`6811 = 2813`, 50 lei/lună) e un calcul **independent**, din
+altă sursă.
+
+Aici coincid, prin construcție. Dar **nimic nu le confruntă**: pentru D300 și D394 repo-ul are „a doua
+cale"; pentru Assets nu are. *O divergență între registru și evidență n-ar fi văzută de nimeni* — și
+tocmai R59 arată că registrul POATE rămâne în urmă. Instrumentul cerut e **#5** din
+`INSTRUMENTE_ROADMAP.md`, rămas în backlogul A3; nu s-a construit în lotul ăsta, fiindcă comanda cere
+probe, nu gărzi.
+
+### Lotul H, închis la 8/8 — și o poartă pe care n-o știam
+
+**Lanțul 2 s-a refăcut complet**, după ce prima formă a citit o **BLOCARE** ca pe o schimbare. Fapta
+reală, și e corectă: o zi de pontaj atinsă face pontajul lunii **NECONFIRMAT**, iar D112 **se
+blochează** — *„Tichetele de masa (D112) nu se poate calcula …: pontajul lunii nu e CONFIRMAT - datele
+sunt informative, nu autoritative (HG 1045/2018 art.10(3))"*. Lanțul probează acum **trei** lucruri:
+poarta se închide cu temei · confirmarea o deschide · declarația se generează iar.
+
+**Iar a treia condiție pe care o pusesem era a mea:** cifrele **nu** se schimbă, fiindcă pontajul
+intră în D112 prin **tichetele de masă** — chiar asta spune mesajul porții —, iar salariatul probei
+n-are tichete. Salariul e lunar, deci o zi absentă nu mișcă bazele. Se consemnează ca **măsurătoare**,
+nu ca nepotrivire.
+
+**Și o consecință operațională, plătită:** proba lăsase firma cu D112 **blocat**, iar deblocarea a
+cerut un act separat (confirmarea pontajului, prin ruta aplicației). Scoaterea zilelor **nu** deblochează
+— odată ce pontajul lunii există, el trebuie confirmat. Lanțul are acum **desfacere**: scoate ziua și
+**re-confirmă** luna. *Ce atinge o poartă o repune la loc.*
+
+**Două date corectate de refuzuri:** `loc_prescriere` cere codul NUMERIC (a scos R189), iar
+`diagnostic` e un **cod de cel mult 3 caractere** (`D_23` în XSD) — trimisesem „proba lant", 10
+caractere, iar generatorul a numit câmpul, lungimea primită ȘI maximul.
+
+**DUK pe D112: `erori` — dar e divergența CUNOSCUTĂ**, scrisă cu temei încă din lotul D:
+`SP1B4_1: B4_5P(4125) diferit de suma calculata 3750`, o **atenționare** pe pragul part-time (OUG
+156/2024 art. LXVI alin. (5) = OUG 89/2025 art. III). *Aplicația are dreptate, arbitrul e în urmă.*
+Nu e o constatare nouă.
+
+### Cifra de închidere a etapei 2
+
+**29 de unități-nucleu, 31 de lanțuri, 29 verzi.** Cele două roșii sunt **R186** (cere o decizie) și
+**R59** (restanță deschisă, confirmată acum prin măsurare). *Niciuna nu e o probă care nu s-a putut
+face: amândouă sunt defecte numite.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **590 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

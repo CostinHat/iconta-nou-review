@@ -3,8 +3,8 @@
  "tenant_id": 4784,
  "schema": "tenant_001",
  "perioada": "2026-08",
- "rulare": 2,
- "cnp": "1900108151120",
+ "rulare": 4,
+ "cnp": "1900108151147",
  "cor": "111101",
  "lanturi": [
   {
@@ -16,19 +16,19 @@
    },
    "d112": {
     "stare": 200,
-    "octeti_xml": 14527,
-    "asigurati": 15
+    "octeti_xml": 16277,
+    "asigurati": 17
    },
    "asigurati": {
-    "inainte": 14,
-    "dupa": 15
+    "inainte": 16,
+    "dupa": 17
    },
    "asiguratul_meu": [
     {
-     "idAsig": "15",
-     "cnpAsig": "1900108151120",
+     "idAsig": "17",
+     "cnpAsig": "1900108151147",
      "numeAsig": "PROBA-E2-H Salariat",
-     "prenAsig": "Rularea2",
+     "prenAsig": "Rularea4",
      "dataAng": "01.08.2026",
      "casaSn": "_B",
      "asigCI": "1",
@@ -40,22 +40,34 @@
    "OK": true
   },
   {
-   "lant": "2 · pontaj: o zi lucrătoare pusă `absent_nemotivat` → declarația se schimbă",
+   "lant": "2 · pontaj: o zi `absent_nemotivat` → D112 se BLOCHEAZĂ cu temei (HG 1045/2018), iar confirmarea îl deblochează",
    "ruta": "PUT /tenants/{}/salariati/{}/pontaj",
    "raspuns": {
     "stare": 200,
     "corp": "{'ok': True}"
    },
-   "d112": {
-    "stare": 422,
-    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+   "a_blocat": {
+    "declaratia_se_genereaza": false,
+    "meta": {
+     "stare": 422,
+     "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+    }
    },
-   "amprenta": {
-    "inainte": "3c8337982bd2dc25",
-    "dupa": null
+   "temeiul_blocarii": true,
+   "confirmare": {
+    "stare": 200,
+    "corp": "{'ok': True, 'perioada_confirmata': {'confirmat': True, 'confirmat_de': 1968, 'confirmat_la': '2026-09-16T01:42:16.742315+03:00'}}"
    },
-   "s_a_schimbat": true,
-   "ce_s_a_cerut": "SE SCHIMBĂ",
+   "dupa_confirmare": {
+    "declaratia_se_genereaza": true,
+    "meta": {
+     "stare": 200,
+     "octeti_xml": 16277,
+     "asigurati": 17
+    }
+   },
+   "cifrele_s_au_schimbat": false,
+   "de_ce_nu_se_schimba_cifrele": "salariatul probei n-are tichete de masă configurate, iar pontajul intră în D112 prin ele; salariul e lunar, deci o zi absentă nu mișcă bazele. Se consemnează ca măsurătoare, nu ca nepotrivire.",
    "OK": true
   },
   {
@@ -66,12 +78,13 @@
     "corp": "{'ok': True}"
    },
    "d112": {
-    "stare": 422,
-    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+    "stare": 200,
+    "octeti_xml": 16277,
+    "asigurati": 17
    },
    "amprenta": {
-    "inainte": null,
-    "dupa": null
+    "inainte": "929e8d477b726876",
+    "dupa": "929e8d477b726876"
    },
    "s_a_schimbat": false,
    "ce_s_a_cerut": "NU se schimbă",
@@ -85,42 +98,56 @@
     "corp": "{'ok': True}"
    },
    "d112": {
-    "stare": 422,
-    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+    "stare": 200,
+    "octeti_xml": 16301,
+    "asigurati": 17
    },
    "amprenta": {
-    "inainte": null,
-    "dupa": null
+    "inainte": "929e8d477b726876",
+    "dupa": "c882fad55dc930aa"
    },
-   "s_a_schimbat": false,
+   "s_a_schimbat": true,
    "ce_s_a_cerut": "SE SCHIMBĂ",
-   "OK": false
+   "OK": true
   },
   {
    "lant": "4 · certificat CM cod 01, 3 zile → declarația SE schimbă",
    "ruta": "POST /tenants/{}/salariati/{}/concedii",
    "raspuns": {
-    "stare": 422,
-    "corp": "{'detail': \"invalid literal for int() with base 10: 'ambulatoriu'\"}"
+    "stare": 200,
+    "corp": "{'ok': True, 'id': 69, 'calcul': {'baza': 30000.0, 'media_zilnica': 238.1, 'procent': 55.0, 'zile_platite': 2, 'diminuare': 1, 'zile_ang': 2, 'zile_fnuass': 0, 'brut': 262.0, 'brut_ang': 262.0, 'brut_fnuass': 0.0, 'cas': 66.0, 'cass': 26.0, 'impozit'"
    },
    "d112": {
-    "stare": 422,
-    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+    "stare": 200,
+    "octeti_xml": 16617,
+    "asigurati": 17
    },
    "amprenta": {
-    "inainte": null,
-    "dupa": null
+    "inainte": "c882fad55dc930aa",
+    "dupa": "87c473d1696854c6"
    },
-   "s_a_schimbat": false,
+   "s_a_schimbat": true,
    "ce_s_a_cerut": "SE SCHIMBĂ",
-   "OK": false
+   "OK": true
   },
   {
    "lant": "5 · ștergerea CM → declarația revine EXACT la amprenta de dinainte de 4",
    "ruta": "DELETE /tenants/{}/salariati/{}/concedii/{}",
-   "cm_id": null,
-   "NEPROBAT": "răspunsul lui `cm_salveaza` n-a purtat id-ul certificatului, deci ștergerea n-are subiect; se scrie, nu se sare",
-   "OK": false
+   "cm_id": 69,
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'ok': True}"
+   },
+   "d112": {
+    "stare": 200,
+    "octeti_xml": 16301,
+    "asigurati": 17
+   },
+   "amprenta": {
+    "dinainte_de_4": "c882fad55dc930aa",
+    "dupa_stergere": "c882fad55dc930aa"
+   },
+   "OK": true
   },
   {
    "lant": "6 · istoric-declaratii-import (o depunere din 07/2026) → declarația lunii 08 NU se schimbă",
@@ -130,12 +157,13 @@
     "corp": "{'importati': 1}"
    },
    "d112": {
-    "stare": 422,
-    "raspuns": "{'detail': 'PERIOADA_BLOCATA: Tichetele de masa (D112) nu se poate calcula pentru 08.2026: pontajul lunii (pontaj) nu e CONFIRMAT - datele sunt informative, nu autoritative (HG 1045/2018 art.10(3)). Confirmă pontaj-ul lunii (buton, rol de administrator al firmei, la închidere) sau corectează datele; până atunci calculul e blocat.'}"
+    "stare": 200,
+    "octeti_xml": 16301,
+    "asigurati": 17
    },
    "amprenta": {
-    "inainte": null,
-    "dupa": null
+    "inainte": "c882fad55dc930aa",
+    "dupa": "c882fad55dc930aa"
    },
    "s_a_schimbat": false,
    "ce_s_a_cerut": "NU se schimbă",
@@ -154,17 +182,34 @@
  ],
  "d112_la_pornire": {
   "stare": 200,
-  "octeti_xml": 13676,
-  "asigurati": 14
+  "octeti_xml": 15426,
+  "asigurati": 16
  },
- "salariat_id": 69,
+ "salariat_id": 71,
+ "desfacere_pontaj": {
+  "ziua_scoasa": {
+   "stare": 200,
+   "corp": "{'ok': True}"
+  },
+  "luna_reconfirmata": {
+   "stare": 200,
+   "corp": "{'ok': True, 'perioada_confirmata': {'confirmat': True, 'confirmat_de': 1968, 'confirmat_la': '2026-09-16T01:42:17.40415"
+  },
+  "d112_se_genereaza_la_final": true,
+  "meta": {
+   "stare": 200,
+   "octeti_xml": 16301,
+   "asigurati": 17
+  },
+  "de_ce": "o zi atinsă blochează D112 până la confirmare; proba nu lasă firma blocată"
+ },
  "incheiere": {
   "stare": 200,
   "corp": "{'ok': True}",
   "de_ce": "fără ea, fiecare rulare ar lăsa un salariat activ în D112-urile următoare ale firmei"
  },
  "duk": {
-  "stare_http": 422,
-  "stare": null
+  "stare_http": 200,
+  "stare": "erori"
  }
 }

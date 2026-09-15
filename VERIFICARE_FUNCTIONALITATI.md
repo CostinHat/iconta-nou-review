@@ -2344,3 +2344,63 @@ iar lanțul **desface** la capăt — reimportă lista de la pornire, cu cotele 
 
 **Nimic nu rămâne.** Fără desfacere, fiecare rulare ar reîmpărți cotele celorlalți
 (100 → 99 → 49,5 → …) — adică proba ar strica încet chiar datele pe care se sprijină.
+
+
+---
+
+## ETAPA 2 — LOT I: cele opt unități-nucleu ale D406/SAF-T (16.09.2026)
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), anul **2026**. Lotul E probase **fereastra** și
+**antetul**; lotul I ia ce are D406 și n-au celelalte: **imobilizările și planul de conturi**.
+
+| # | unitatea | așteptat | obținut |
+|---|---|---|---|
+| 1 | `POST /plan-conturi` | contul analitic apare în plan | exact (simbolul se alege LIBER, după ce un contor repetat a produs un `409` corect) |
+| 2 | `POST /solduri` | soldul inițial intră | exact |
+| 3 | `POST /nota-inventariere` `plus_mf` | apare un mijloc fix | exact (5 → 6) |
+| 4 | `GET /mijloace-fixe` (MARTOR) | îl conține | exact |
+| 5 | `GET /d406-active` (MARTOR) | secțiunea Assets se generează și îl conține | exact — **12.154 octeți**, după R190 |
+| 6 | `POST /amortizare` | nota lunii există ȘI declarația poartă amortizarea din REGISTRU | exact (`DepreciationForPeriod` 200, `AccumulatedDepreciation` 200) |
+| 7 | `POST /reevaluare-imobilizare` | costul declarat urcă 3.000 → 3.550 | **NU** — `R59` confirmată: declarația ține costul vechi |
+| 8 | `GET /d406-stocuri` | secțiunea se generează | exact (7.975 octeți) |
+
+**Confruntare lot I: 7 din 8.** Singura roșie e **R59**, restanță deschisă, confirmată acum prin
+măsurare — cu o consecință pe care restanța n-o numea: efectul ajunge în **declarație**, nu doar în
+amortizare.
+
+### Trei corecturi ale așteptării mele, toate din refuzuri
+
+1. **`simbol`, nu `cont`** — cu erori per câmp. Și, la a doua rulare, `409`: *„Contul 208.91 există
+   deja în plan… folosește alt simbol"*. Simbolul se alege acum **liber**, întrebând aplicația.
+2. **`valoare`/`dnf_luni`/`data_pif` la nivelul de sus**, nu într-un obiect `plus_mf`.
+3. **Punerea în funcțiune în luna PRECEDENTĂ** — amortizarea începe din luna următoare (CF art. 28).
+   Prima formă a pus PIF în chiar luna amortizată, iar ruta a răspuns *„nimic de amortizat"*.
+   Plus: a doua rulare primește `400 „Amortizarea lunii e deja generată."` — refuz **idempotent**,
+   acceptat acum ca precondiție satisfăcută.
+4. **Elementele SAF-T poartă prefix de spațiu de nume** (`<nsSAFT:Asset>`) — căutam `<Asset` și
+   găseam zero pe un XML plin de active.
+
+### R191, deschisă din lotul ăsta
+
+Amortizarea se calculează de **două ori**, din surse diferite — registrul (în declarație) și nota
+contabilă — iar **nimic nu confruntă** cele două cifre. Pentru D300/D394 există „a doua cale"; pentru
+Assets nu. *Iar R59 arată că registrul poate rămâne în urmă.*
+
+---
+
+## ETAPA 2 — LOT H, ÎNCHIS la 8/8 (16.09.2026)
+
+Reluat pe codul publicat, după R189. Ce s-a schimbat față de prima rulare:
+
+- **Lanțul 2, refăcut complet.** Prima formă citea o **BLOCARE** ca pe o schimbare. Real: o zi de
+  pontaj atinsă face pontajul lunii NECONFIRMAT, iar D112 se **blochează** (HG 1045/2018 art. 10(3)).
+  Lanțul probează acum poarta, confirmarea și revenirea.
+- **A treia condiție era a mea:** cifrele nu se schimbă, fiindcă pontajul intră în D112 prin
+  **tichetele de masă**, iar salariatul probei n-are tichete.
+- **Lanțurile 4 și 5, închise:** `loc_prescriere` cere codul numeric (a scos R189), iar `diagnostic`
+  e un cod de cel mult **3** caractere (`D_23`) — trimisesem 10.
+- **Desfacere adăugată:** ziua se scoate ȘI luna se re-confirmă. Prima rulare lăsase firma cu D112
+  blocat, iar deblocarea a cerut un act separat.
+
+**DUK: `erori`, dar e divergența cunoscută** din lotul D (`SP1B4_1`, pragul part-time) — o
+atenționare cu temei scris, nu o constatare nouă.
