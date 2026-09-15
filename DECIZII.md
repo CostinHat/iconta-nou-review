@@ -3,6 +3,48 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 15.09.2026 (50) — E2a: universul se declara, amestecul se OBSERVA — si cele doua cifre au nume diferite
+
+**Constatarea (L1).** Registrul straturilor acoperea un univers derivat din doua definitii de
+„fiscal" plus modulele cu rute. Intrebarea care conteaza e alta: **orice modul al aplicatiei care
+contine SQL**. Pe universul ala, **78** de module n-aveau strat declarat — adica nimeni nu spusese
+ce sunt.
+
+**Universul, definit ca sa poata fi contestat:** `main.py` + `core/`. `scripts/`, `frontend_test/`,
+`date_test/`, `masuratori/` NU intra — un instrument care scrie SQL ca sa masoare nu e un depozit.
+Iar `core/migrare_*.py` intra intr-o clasa de excludere **NUMITA**, `MIGRARE_UNICA`: migrari care
+ruleaza o data, 51 la numar, raportate — nu ascunse in excludere.
+
+```
+MODULE_CU_SQL (aplicatie)        = 189
+  MIGRARE_UNICA                  =  51
+  in universul de declarat       = 138
+MODULE_CU_SQL_FARA_STRAT         =  78  ->  0
+D4b_MIXT_OBSERVAT                =  41
+REPOSITORY care isi deschid conexiunea sau comit = 32
+```
+
+**Miezul deciziei: NICIUN `mixt_cu` pe cele 78.** `D4` — criteriul canonic al lui P7,
+`CLOSED_ACCEPTED` — numara cate module **declara** doua straturi si trebuie sa ramana **0**. Daca
+declaratiile noi ar fi primit `mixt_cu`, D4 ar fi sarit de la 0 si o faza inchisa s-ar fi redeschis
+**printr-o cifra**, fara ca nimeni s-o fi cerut. Amestecul exista totusi in cod — 41 de module au SQL
+si isi deschid singure conexiunea sau comit. El se masoara sub **alt nume**, pe observatie:
+`D4b_MIXT_OBSERVAT`, in `scripts/scan_univers_sql.py`. *O cifra veche si una noua care se ating
+primesc nume diferite.* Faptul (cate `get_conn` / `commit`) intra in `motiv`, unde e o masuratoare,
+nu un al doilea strat.
+
+**Cum s-au decis cele 78.** Propunerea e mecanica — rute → HTTP; generator `d###` → FISCAL_ENGINE;
+altfel REPOSITORY —, dar **cincisprezece** module au fost CITITE si decise altfel, fiecare cu motivul
+scris: `contare_facturi` si `echilibru_perioada` sunt REGULI, nu depozite; `inchidere_luna`,
+`declaratii_api`, `cron`, `gdpr_sterge`, `facturi_recurente`, `supervizor`, conectorii SPV/Woo/
+eTransport sunt ACTE care orchestreaza. Restul poarta in `motiv` prima fraza a propriului docstring
+si faptele masurate.
+
+**Ce NU face E2a, si se scrie ca sa nu se creada altceva:** nu muta nicio linie de cod. Cele **32** de
+module declarate REPOSITORY care isi deschid singure conexiunea sunt contradictia declaratie↔cod, si
+ele sunt exact pozitiile de lucru ale lui **E2b** — a carui marime se citeste acum din cifra, nu se
+estimeaza.
+
 ## 15.09.2026 (49) — **Reparate**: proforma iese din D300, iar partenerul D394 se citeste de pe FACTURA
 
 Doua decizii ale lui Costin, luate pe constatarile de la (46) si (47), si reparate azi.

@@ -2438,6 +2438,12 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **E2a · universul se declară, amestecul se observă (15.09.2026)** — `scripts/scan_univers_sql.py`
+  + `core/test_e2a_univers.py` (**6 probe**): universul = `main.py` + `core/` cu SQL (189), clasa
+  numită `MIGRARE_UNICA` (51), de declarat 138 · **`MODULE_CU_SQL_FARA_STRAT` 78 → 0** (criteriu, nu
+  clichet) · detector nou **`D4b_MIXT_OBSERVAT` = 41**, cu clichet, plus **32** de module declarate
+  REPOSITORY care își deschid conexiunea — pozițiile lui E2b · o probă păzește explicit că **D4
+  rămâne 0**, adică lărgirea universului nu redeschide P7 printr-o cifră. DECIZII 50.
 - **Două reparații fiscale, pe decizia lui Costin (15.09.2026)** — proforma iese din D300
   (filtru pe `tip`, dintr-o funcție canonică din nomenclator; D394 o cere acum tot de acolo) și
   partenerul D394 se citește de pe **factură**, nu din fișa clientului. Probele care găsiseră

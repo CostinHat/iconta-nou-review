@@ -115,7 +115,7 @@ def d4_strat_mixt():
 acceptat P7 — *„câte module sunt declarate mixte"*, pe universul de atunci. Alături apare
 `D4b_MIXT_OBSERVAT`, care nu citește declarația, ci **codul**.
 
-## E2a — universul se declară, amestecul se OBSERVĂ
+## E2a — universul se declară, amestecul se OBSERVĂ · **ÎNCHIS 15.09.2026**
 
 ### Criteriu de ieșire
 - `MODULE_CU_SQL_FARA_STRAT = 0` pentru cele **87 vii**; cele **51 de migrări unice** intră într-o
@@ -133,6 +133,14 @@ acceptat P7 — *„câte module sunt declarate mixte"*, pe universul de atunci.
 **E6** — `core/firma_rezumat.py` nu poate primi un strat onest cât timp importă `main`: un modul de
 sub HTTP care depinde de HTTP n-are strat, are contradicție. E6 scoate una din cele trei
 contradicții ale lui (import de `main`, 9 `get_conn`, declarat `REPOSITORY`).
+
+> **ÎNCHIS 15.09.2026.** `MODULE_CU_SQL_FARA_STRAT` **78 → 0** (universul: `main.py` + `core/`, 189
+> module cu SQL, din care 51 în clasa numită `MIGRARE_UNICA`, deci 138 de declarat). Detector nou,
+> pe observație: **`D4b_MIXT_OBSERVAT = 41`**, iar `REPOSITORY` care își deschid conexiunea sau
+> comit = **32** — pozițiile de lucru ale lui E2b, numărate. `D1/D2/D4` neatinse: niciuna din cele
+> 78 de declarații n-a primit `mixt_cu`, tocmai ca P7 să nu se redeschidă printr-o cifră.
+> Instrument: `scripts/scan_univers_sql.py`; gardă: `core/test_e2a_univers.py` (6 probe, calibrare
+> în patru direcții pe univers fabricat). DECIZII 50.
 
 ### Ce NU face
 Nu mută nicio linie de cod. E2a **numește**; separarea e E2b.

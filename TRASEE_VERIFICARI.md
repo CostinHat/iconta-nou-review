@@ -143,7 +143,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -155,7 +155,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -166,7 +166,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · facturi_recurente (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -1773,7 +1773,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
 
 - [x] fiecare comandă sincronizată produce **o singură** factură; o a doua rulare nu dublează
 - cota de TVA vine din articol sau din configurație — **nu se ghicește din denumire**

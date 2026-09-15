@@ -1797,7 +1797,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `pontaj`, `repo_firma_profil`, `uc_comun`, `woocommerce`
 
-**Scrie in:** `facturi` (UPDATE) · `firma_profil` (UPDATE) · `pontaj` (DELETE/INSERT)
+**Scrie in:** `curs_bnr_zilnic` (INSERT) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `pontaj` (DELETE/INSERT)
 
 **Margine:** `woocommerce` (sincronizează comenzile cu magazinul online)
 
