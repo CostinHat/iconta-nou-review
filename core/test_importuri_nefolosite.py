@@ -40,7 +40,7 @@ BASELINE = {
     "core/test_d205_imp_manual.py": 1, "core/test_d300.py": 1, "core/test_d300_reconciliere.py": 1,
     "core/test_d300_zero_rate.py": 1, "core/test_d390.py": 1, "core/test_d390_d301_semnal.py": 1,
     "core/test_d390_nota1.py": 1, "core/test_d394.py": 1, "core/test_d402.py": 1,
-    "core/test_datorie.py": 1, "core/test_declaratii_lot3_duk.py": 1,
+    "core/test_declaratii_lot3_duk.py": 1,
     "core/test_diacritice_afisate.py": 1, "core/test_edge_canonic_head.py": 1,
     "core/test_expirare_cote_de_baza.py": 1, "core/test_export_cota.py": 1,
     "core/test_faptul_bate_vectorul.py": 1, "core/test_fixturi_shared_period.py": 1,

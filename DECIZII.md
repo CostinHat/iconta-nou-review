@@ -3,6 +3,44 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 15.09.2026 (48) — E4: nu lipsea o FIRMA DE PROBA, lipseau DATELE. Si pragul era vechi
+
+**Datoria (29.07.2026), in trei bucati:** fix-ul de trunchiere e aplicat in d205/d390/d710, dar
+NEEXERCITAT — generatoarele sar cu „nu se datoreaza", iar d710 nici macar nu era in lista garzii. Se
+astepta „o firma Faza 1 cu dividende / achizitii intracomunitare".
+
+**Ce era de fapt, aflat sapand.**
+
+1. **Nu lipsea o firma, lipseau datele.** Se seamana in schema EFEMERA a probei, in cateva randuri:
+   un asociat + o distribuire SI o plata de dividende (credit si debit 457) fac D205 datorata; o
+   operatiune intracomunitara face D390 datorata; D710 n-avea nevoie de nimic — e rectificativa,
+   obligatiile ei vin din corpul cererii. Trei luni de asteptare dupa o firma, pentru trei insert-uri.
+
+2. **Pragul „75" din datorie era VECHI, si asta schimba intrebarea.** Din 03.08.2026 fiecare camp
+   are limita LUI oficiala (`LIMITE_TEXT_ANAF`): la D390, `denO` e **C(200)**. Deci o denumire de
+   129 de caractere e CORECTA acolo — proba veche ar fi raportat o „scapare" inexistenta. Garda care
+   conteaza e cea per-camp, `test_atributele_respecta_limita_per_camp`.
+
+3. **Si exact ea SAREA.** Pe firma efemera fara date, garda per-camp raspundea `skip` — „nu se
+   datoreaza / profil incomplet" — tocmai pe d205, d301, d390, d394. *Un test care sare nu e o
+   verificare, e o intentie.* Un `xfail` scris altundeva pazea o datorie despre care garda adevarata
+   nu spunea nimic.
+
+**Ce s-a facut.** Fixtura semaneaza datele; iar pentru tipurile din `DATORATE_DE_FIXTURA`, „nu se
+datoreaza" **nu mai e motiv de sarire, e esec**: ar insemna ca semanatul s-a rupt. Opt declaratii
+(d100, d101, d112, d205, d300, d390, d394, d710) isi verifica acum limitele pe date reale, nu pe o
+firma goala. Cele trei `xfail`-uri s-au scos; in locul lor au ramas doua garzi care opresc
+intoarcerea: tipurile nu pot iesi din lista garzii si nu pot recadea in sarire.
+
+**Ce a mai iesit la lumina, si se scrie ca sa nu se piarda:** profilul fixturii avea
+`regim_fiscal = 'real'` — o valoare care NU exista in domeniu (codul cunoaste `micro` si `profit`).
+De-aia D100 nu producea nicio obligatie. Nu e un defect al generatorului, e o fixtura care descria o
+firma imposibila. Acum e `profit`.
+
+**Ce RAMANE sarit, numit:** `d301` — decontul special e doar pentru NEplatitori de TVA, iar fixtura
+e platitoare (fiindca asa cer D300/D394). O firma nu poate fi si una si alta; ar trebui o a doua
+fixtura. Sarirea lui e singura ramasa, si e scrisa aici ca sa nu treaca drept acoperire.
+
 ## 15.09.2026 (46) — **O PROFORMA intra in D300 ca livrare taxabila.** Gasita de probe, nereparata
 
 **Ce s-a masurat.** Pe o firma cu o singura operatiune in luna — o **proforma** de 500 lei + 105 TVA,

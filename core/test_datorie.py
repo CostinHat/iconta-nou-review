@@ -96,49 +96,44 @@ def test_datoria_nu_imbatraneste_nelimitat():
         "(Daca data e A UNUI ACT NORMATIV, nu vechimea datoriei, scrie-o cu luna in litere - "
         "ex. '1 august 2025' - ca garda sa n-o citeasca; vezi conventia in TESTE.md.)"
         % sorted(vechi))
-import re as _re, io as _io
 
 
-def _exercita_trunchiere_den(tip, body):
-    """Genereaza <tip> pe firma efemera cu nume >75 car. si afirma ca niciun atribut nu depaseste 75.
-    Fix-ul de trunchiere (29.07) e aplicat in generator; testul il EXERCITA - dar doar daca firma
-    datoreaza declaratia. Fara datele care o declanseaza, generatorul sare -> xfail pana la Faza 1."""
-    from core import db as _db, tenant_provisioning as _tp, declaratii_api
-    _db.init_pool()
-    with _db.get_conn() as conn:
-        try:
-            with conn.cursor() as cur:
-                cur.execute("DROP SCHEMA IF EXISTS ztest_dat CASCADE")
-                cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), "ztest_dat"))
-                cur.execute("SET LOCAL search_path TO ztest_dat, public")
-                cur.execute("INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, banca, iban, "
-                            "tip_decont, regim_fiscal, platitor_tva) VALUES "
-                            "(1, %s, '14399840', 'Str Test 1', 'Bucuresti', 'B', 'BCR', "
-                            "'RO49BCRA0000000000000000', 'L', 'real', true)", ("CABINET " + "X" * 120,))
-                xml, _ = declaratii_api.genereaza(conn, "ztest_dat", tip, dict(body))
-            t = xml.decode("utf-8") if isinstance(xml, (bytes, bytearray)) else xml
-            lungi = [(a, len(v)) for a, v in _re.findall(r'(\w+)="([^"]*)"', t) if len(v) > 75]
-            assert not lungi, "atribute >75: %s" % lungi
-        finally:
-            conn.rollback()
+# ── [INCHISE 15.09.2026, E4] Cele trei datorii de trunchiere (d205, d390, d710) ─────────────
+#
+# CE SPUNEA DATORIA (29.07.2026): fix-ul de trunchiere e aplicat in generatoare, dar NEEXERCITAT —
+# d205 sare „nu se datoreaza" pe o firma fara dividende, d390 la fel fara operatiuni IC, iar d710
+# nu era deloc in lista garzii. Se astepta „o firma Faza 1".
+#
+# CE ERA DE FAPT. Doua lucruri, amandoua aflate sapand:
+#   1. Nu lipsea o FIRMA, lipseau DATELE. Se seamana in schema efemera a probei: un asociat + o
+#      distribuire SI o plata de dividende (credit/debit 457) pentru d205; o operatiune
+#      intracomunitara pentru d390; nimic pentru d710, care e rectificativa si-si primeste
+#      obligatiile din corpul cererii.
+#   2. Pragul „75" din datorie era VECHI. Din 03.08.2026 fiecare camp are limita LUI oficiala
+#      (`LIMITE_TEXT_ANAF`): la D390 `denO` e C(200), deci o denumire de 129 de caractere e corecta
+#      acolo. Garda care conteaza e cea per-camp — si exact ea SAREA pe declaratiile din datorie.
+#      *Un test care sare nu e o verificare, e o intentie.*
+#
+# Reparatia traieste acum in `core/test_limita_text_anaf.py`: fixtura seamana datele, iar „nu se
+# datoreaza" e ESEC pentru tipurile din `DATORATE_DE_FIXTURA`. Ce ramane aici sunt gardurile care
+# opresc intoarcerea: tipurile nu pot iesi din lista garzii, si nu pot recadea in sarire.
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 29.07.2026: fix trunchiere den/adresa aplicat in d205, dar NEEXERCITAT - d205 sare 'nu se datoreaza' pe firma fara beneficiari. Il exercita o firma Faza 1 cu dividende.")
-@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_datorie_d205_trunchiere_neexercitata():
-    _exercita_trunchiere_den("d205", {"an": 2026})
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 29.07.2026: fix trunchiere den/adresa aplicat in d390, dar NEEXERCITAT - d390 sare 'nu se datoreaza' pe firma fara operatiuni IC. Il exercita o firma Faza 1 cu achizitii intracomunitare.")
-@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_datorie_d390_trunchiere_neexercitata():
-    _exercita_trunchiere_den("d390", {"an": 2026, "luna": 6})
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 29.07.2026: fix trunchiere den/adresa aplicat in d710, dar d710 nu e in CERERI din test_limita_text_anaf - niciun test ii verifica trunchierea. De adaugat cand se cunoaste profilul care il datoreaza.")
-def test_datorie_d710_trunchiere_in_garda():
+def test_d205_d390_d710_sunt_CERUTE_de_garda_de_limite():
+    """Datoria a fost inchisa prin exercitare. Daca un tip iese din lista, ea se redeschide tacit."""
     from core.test_limita_text_anaf import CERERI
-    assert any(t == "d710" for t, _ in CERERI), "d710 lipseste din garda de 75 (test_limita_text_anaf)"
+    ceruti = {tip for tip, _ in CERERI}
+    lipsa = {"d205", "d390", "d710"} - ceruti
+    assert not lipsa, "tipuri scoase din garda de limite (se redeschide datoria 29.07): %s" % sorted(lipsa)
+
+
+def test_d205_d390_nu_pot_recadea_in_SARIRE():
+    """A doua jumatate: sa fie in lista NU ajunge — garda le sarea, cu motiv scris, si totusi trecea
+    verde. Ce le tine exercitate e `DATORATE_DE_FIXTURA`, adica datele semanate de fixtura."""
+    from core.test_limita_text_anaf import DATORATE_DE_FIXTURA
+    lipsa = {"d205", "d390", "d710"} - set(DATORATE_DE_FIXTURA)
+    assert not lipsa, ("tipuri scoase dintre cele DATORATE de fixtura — garda le va sari din nou, "
+                       "iar trunchierea lor redevine neexercitata: %s" % sorted(lipsa))
 
 
 # INCHISA 21.08.2026 - datoria state_plata. Statul se PERSISTA la emitere, cu amprenta

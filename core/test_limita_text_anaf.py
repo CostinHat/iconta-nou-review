@@ -34,6 +34,11 @@ CERERI = [
     ("d112", {"an": 2026, "luna": 6}), ("d205", {"an": 2026}),
     ("d300", {"an": 2026, "luna": 6}), ("d301", {"an": 2026, "luna": 6}),
     ("d390", {"an": 2026, "luna": 6}), ("d394", {"an": 2026, "luna": 6}),
+    # [15.09.2026] d710 lipsea din garda de 75 si asta era o DATORIE scrisa: „de adaugat cand se
+    # cunoaste profilul care il datoreaza". Nu era nevoie de niciun profil — d710 e RECTIFICATIVA,
+    # iar obligatiile corectate vin din corpul cererii.
+    ("d710", {"an": 2026, "trim": 2, "obligatii": [
+        {"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"}]}),
     # d406 SCOS din garda ANAF-75 (29.07): SAF-T are limite PROPRII din XSD (SAFmiddle2textType=70,
     # SAFlongtextType=256) - un Name de 256 e valid acolo, deci pragul 75 nu se aplica. Trunchierea
     # d406 (Name 256, StreetName/LastName 70) e pazita de validarea XSD SAF-T, nu de acest gard.
@@ -51,6 +56,59 @@ def _db_ok():
         return False
 
 
+#: Declarațiile pe care fixtura le face DATORATE. Pentru ele, „nu se datorează" nu mai e un motiv
+#: de sărire: ar însemna că semănatul s-a rupt, nu că firma n-are ce declara.
+DATORATE_DE_FIXTURA = ("d205", "d300", "d390", "d394", "d710", "d100", "d101")
+
+
+def _seamana_ca_sa_fie_datorate(cur):
+    """Datele minime care declanșează declarațiile din `DATORATE_DE_FIXTURA`.
+
+    [15.09.2026, E4] Până azi fixtura avea doar profilul, iar garda **sărea** pe d205/d301/d390/d394
+    cu „nu se datorează" — deci limitele per-câmp nu erau exercitate tocmai pe declarațiile pentru
+    care exista o datorie scrisă. Ce lipsea nu era „o firmă de probă", ci **datele**:
+
+      * o factură emisă cu partener cu denumire lungă → D300, D394 (și baza pentru D100/D101);
+      * dividende DISTRIBUITE și PLĂTITE (credit/debit 457) + un asociat → D205;
+      * o operațiune intracomunitară → D390 (linia manuală, pe drumul ei).
+    """
+    cur.execute("INSERT INTO clienti (nume, cui) VALUES (%s, 'RO40372003') RETURNING id",
+                (NUME_LUNG,))
+    cid = cur.fetchone()[0]
+    cur.execute("INSERT INTO facturi (numar, data_emitere, directie, client_id, tert_nume, "
+                "tert_cui, tert_tara, total, tva, status, tip) VALUES "
+                "('ZT-1','2026-06-10','emisa',%s,%s,'RO40372003','RO',1210,210,'emisa','factura') "
+                "RETURNING id", (cid, NUME_LUNG))
+    fid = cur.fetchone()[0]
+    cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                "VALUES (%s, 'serviciu', 1, 1000, 21)", (fid,))
+    # Factura CONTABILIZATĂ: fără nota de venit (70x), D100 refuză — și are dreptate, mesajul lui o
+    # spune exact: „există 1 facturi emise necontabilizate". Venitul e ce se declară, nu documentul.
+    cur.execute("INSERT INTO inregistrari (data, descriere, status, factura_id) "
+                "VALUES ('2026-06-10', 'Venit din servicii', 'validata', %s) RETURNING id", (fid,))
+    nid = cur.fetchone()[0]
+    for debit, credit, suma in (("4111", "707", 1000), ("4111", "4427", 210)):
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                    "VALUES (%s, %s, %s, %s)", (nid, debit, credit, suma))
+
+    # D205: asociat cu cotă + dividende distribuite (credit 457) ȘI plătite (debit 457).
+    # Fără PLATĂ, `d205.genereaza` nu construiește niciun beneficiar (cere `total_platit > 0`).
+    cur.execute("INSERT INTO asociati (nume, cnp, cota) VALUES (%s, '1800101221144', 100)",
+                (NUME_LUNG,))
+    for descriere, debit, credit in (("Repartizare dividende", "117", "457"),
+                                     ("Plata dividende", "457", "5121")):
+        cur.execute("INSERT INTO inregistrari (data, descriere, status) "
+                    "VALUES ('2026-06-30', %s, 'validata') RETURNING id", (descriere,))
+        iid = cur.fetchone()[0]
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                    "VALUES (%s, %s, %s, 10000)", (iid, debit, credit))
+
+    # D390: operațiunea intracomunitară, pe drumul liniei manuale a contabilului.
+    cur.execute("UPDATE firma_profil SET operatiuni_ic = true WHERE id = 1")
+    cur.execute("INSERT INTO d390_manual (an, luna, tip, tara, cod, den, baza) "
+                "VALUES (2026, 6, 'P', 'DE', 'DE123456789', %s, 1500)", (NUME_LUNG,))
+
+
 @pytest.fixture
 def firma_nume_lung():
     """Schema efemera din tenant_template cu firma cu denumire >75 car., ROLLBACK garantat.
@@ -66,10 +124,13 @@ def firma_nume_lung():
                 cur.execute("SET search_path TO %s, public" % SCHEMA_T)
                 cur.execute(
                     "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
-                    "declarant_nume, declarant_prenume, declarant_functie, platitor_tva, tip_decont, regim_fiscal) "
+                    "declarant_nume, declarant_prenume, declarant_functie, platitor_tva, tip_decont, "
+                    "regim_fiscal, telefon) "
                     "VALUES (1, %s, '14399840', 'Str. Testul 1', 'Bucuresti', 'B', '6920', 'BCR', "
-                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')",
+                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', "
+                    "'profit', '0700000000')",
                     (NUME_LUNG,))
+                _seamana_ca_sa_fie_datorate(cur)
             yield conn, SCHEMA_T
         finally:
             conn.rollback()
@@ -109,7 +170,14 @@ def test_atributele_respecta_limita_per_camp(tip, body, firma_nume_lung):
     conn, schema = firma_nume_lung
     try:
         xml, _ = declaratii_api.genereaza(conn, schema, tip, dict(body))
-    except ValueError:
+    except ValueError as e:
+        # [15.09.2026, E4] Pentru declarațiile pe care fixtura le face DATORATE, „nu se datorează"
+        # nu mai e motiv de sărire: ar însemna că semănatul s-a rupt. *Un test care sare nu e o
+        # verificare, e o intenție* — și exact asta a ținut deschisă datoria trunchierii.
+        if tip in DATORATE_DE_FIXTURA:
+            raise AssertionError(
+                "%s ar trebui să fie DATORATĂ pe firma fixturii, dar generatorul refuză: %s"
+                % (tip, e))
         pytest.skip("%s nu se datoreaza / profil incomplet pe firma efemera" % tip)
     xml = xml.decode("utf-8") if isinstance(xml, bytes) else xml
     lim = LIMITE_TEXT_ANAF.get(tip, {})
@@ -143,6 +211,12 @@ def test_d390_pe_firma_fara_operatiuni_da_mesaj_citibil(firma_nume_lung):
     # DECUPLAT (29.07): firma efemera FARA operatiuni IC (refolosim fixtura firma_nume_lung) ->
     # d390.genereaza refuza luna pe zero. genereaza e CITITOR; ROLLBACK-ul fixturii curata schema.
     conn, schema = firma_nume_lung
+    # [15.09.2026] Fixtura seamănă acum o operațiune IC (ca să nu mai SARĂ garda de limite pe d390).
+    # Proba asta e despre LUNA FĂRĂ operațiuni, deci și-o scoate — explicit, nu printr-o altă fixtură
+    # care ar diverge tăcut de cea folosită de restul fișierului.
+    with conn.cursor() as cur:
+        cur.execute("SET search_path TO %s, public" % schema)
+        cur.execute("DELETE FROM d390_manual")
     with pytest.raises(ValueError) as e:
         declaratii_api.genereaza(conn, schema, "d390", {"an": 2026, "luna": 6})
     m = str(e.value)

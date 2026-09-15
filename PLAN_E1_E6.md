@@ -203,7 +203,7 @@ Nu acoperă cele 38 de rute de citire fără probă (rămân în `L4`, declarate
 
 ---
 
-# E4 — Reparația se vede rulând
+# E4 — Reparația se vede rulând · **ÎNCHIS 15.09.2026**
 
 **Constatările:** R2, R3 din audit.
 
@@ -221,6 +221,12 @@ DATORII_FISCALE_CA_XFAIL_STRICT = 4 relevante
 ### Criteriu de ieșire
 Cele patru `xfail(strict=True)` devin **xpass** — deci **roșii**, fiindcă `strict=True` — și se scot
 odată cu datoria. Asta e criteriul: registrul de datorii semnalează singur când datoria s-a stins.
+
+> **ÎNCHIS 15.09.2026.** Toate patru scoase: cele 8 coduri DUK verificate la sursă (DECIZII 42) și
+> cele trei trunchieri exercitate (DECIZII 48). **Dependența scrisă aici — „o firmă de probă" — nu
+> exista:** lipseau datele, nu firma, iar ele se seamănă în schema efemeră. Pe deasupra, pragul 75
+> din baseline era vechi: limitele sunt per-câmp din 03.08.2026. Rămâne o singură sărire numită,
+> `d301` (cere o firmă NEplătitoare de TVA — fixtura e plătitoare, fiindcă așa cer D300/D394).
 
 ### Dependențe
 **Date, nu cod:** o firmă de probă cu profilul care declanșează d205 (dividende), d390 (achiziții

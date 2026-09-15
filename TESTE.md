@@ -2438,6 +2438,13 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   poate coborî și nu urca · iar `PLAN_HARDENING.md` **nu poate declara P7 închisă** peste el.
   **RED-proof: șase mutații, opt probe roșii.** *Gardul s-a născut dintr-o cifră care arăta bine:
   `P7_ACTION_REQUIRED=0` peste o fază care mai are un val întreg de făcut.*
+- **E4 · reparația se vede rulând (15.09.2026)** — cele trei datorii de trunchiere (d205, d390,
+  d710) **închise prin exercitare**: fixtura din `core/test_limita_text_anaf.py` seamănă datele care
+  fac declarația datorată (asociat + dividende distribuite ȘI plătite; operațiune IC; factura
+  contabilizată), iar „nu se datorează" devine **eșec** pentru cele opt tipuri din
+  `DATORATE_DE_FIXTURA` — până azi garda per-câmp le **sărea**. Pragul „75" din datorie era vechi:
+  limitele sunt per-câmp din 03.08 (`denO` la D390 e C(200)). Rămân două gărzi care opresc
+  întoarcerea + o singură sărire numită (d301, care cere o firmă NEplătitoare). DECIZII 48.
 - **E3 · scrierile care ajung în CIFRE DE DECLARAȚIE (15.09.2026)** —
   `scripts/scan_scrieri_declaratii.py` derivă **din cod** subsetul care contează (tabele scrise de
   rută ∩ tabele citite de generatoare): **49** de rute. `core/test_scrieri_pana_in_declaratie.py`,
