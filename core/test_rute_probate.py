@@ -30,7 +30,11 @@ from scripts import scan_rute_fara_proba as _s  # noqa: E402
 
 # Măsurate la 15.09.2026, după lotul „scrierile care ajung în cifre de declarație" (41 de rute).
 # Scad doar cu probe scrise, niciodată prin lărgirea definiției lui „numită".
-PLAFON_IN_SUITA = 88          # 131 la 14.09, înainte de lot
+PLAFON_IN_SUITA = 82          # 131 la 14.09 · 88 la 15.09 (plafon, nu cifră: realul era 86)
+#: [16.09.2026] 88 -> 82. Măsurat pe commitul de bază printr-un `git worktree`: la `cfdd00ae`
+#: cifra REALĂ era 86, iar 88 era un plafon pus mai sus. Cele patru care au ieșit azi au ieșit
+#: cu probe SCRISE (`core/test_rute_stoc_pana_in_declaratie.py`), nu prin lărgirea definiției
+#: lui „numită". Clichetul se pune acum pe cifra reală, nu peste ea.
 PLAFON_NICAIERI = 3
 
 # Clichetul care contează cel mai tare: rute care scriu în tabele din care se RIDICĂ DECLARAȚII,
@@ -38,7 +42,13 @@ PLAFON_NICAIERI = 3
 # generatoare). 49 la derivare, 8 rămase. Cele opt cer fiecare o lume pregătită (articol de stoc,
 # linie de extras bancar, bon pozat, mijloc fix, rețetă, fișier de migrare) — sunt numite în
 # GARZI.md, nu lăsate să se piardă în cifră.
-PLAFON_SUBSET_FISCAL = 8
+PLAFON_SUBSET_FISCAL = 4
+#: [16.09.2026] 8 -> 4. Patru dintre cele opt au primit probă care merge PÂNĂ ÎN CIFRA
+#: DECLARAȚIEI, nu până la `200`: `stocuri/iesire`, `stocuri/inventar`,
+#: `stocuri/reclasificare`, `reevaluare-imobilizare`. Fiecare apasă ruta prin HTTP, VALIDEAZĂ
+#: nota (ciorna nu e evidență), și citește rulajul contului — sursa din care se ridică
+#: `GeneralLedgerEntries`. Cele patru rămase (`migrare/importa`, `banca/…/conteaza`,
+#: `bonuri/…/stinge`, `retete/descarca`) cer fiecare altă lume și sunt lotul următor.
 
 
 def test_CLICHET_rutele_care_scriu_fara_proba_in_suita_nu_cresc():
