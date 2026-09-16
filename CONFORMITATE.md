@@ -1836,8 +1836,9 @@ citirea corectează.*
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T22 · P6 · **PRAG 2** *(măsurat, nu presupus: **0 note de reevaluare** pe toate cele 17 scheme, pe 3 mijloace fixe active în total — efectul nu e produs azi)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `abc0bc2`
+- **rezolvată pe commit**: `d937eef6`
 - **măsurat la**: 2026-08-26 · **pe commit**: `abc0bc2`
 - **planul**: NEACOPERIT. Am citit `PLAN_ARHITECTURA.md` după *reevaluare*, *amortizare* și *mijloace fixe*: **niciun cuvânt**. Cel mai aproape e **P6** — *verdele afirmă, necunoscutul domină favorabilul* — dar aici nu e un verdict care afirmă prea mult, ci **două înregistrări care spun lucruri diferite despre același activ, iar niciuna nu știe de cealaltă**. Planul nu spune ce se întâmplă când un registru operațional și evidența contabilă divergează prin construcție. (METODA §25)
 - **ce blochează**: `POST /reevaluare-imobilizare` **nu atinge `mijloace_fixe`** — citește valoarea și amortizarea cumulată (`SELECT … WHERE id=%s AND activ=true`) și scrie **doar o notă ciornă**. Niciun `UPDATE` pe registru, verificat pe tot corpul rutei. Iar `POST /amortizare` calculează „per MF activ" din **exact acel registru**. Deci după o reevaluare: nota contabilă spune o valoare, registrul spune alta, iar amortizarea lunii următoare se calculează pe cea veche.
@@ -1862,6 +1863,51 @@ citirea corectează.*
   Criteriul e scris **înaintea** reparației, dinadins: scris după, s-ar fi potrivit pe ce a ieșit.
   Proba care îl verifică există deja și e roșie: `frontend_test/proba_e2_lot_i_d406.py`, lanțul 7 —
   compară costul declarat cu cel așteptat, nu coloana cu ea însăși.
+
+- **REZOLVATĂ 16.09.2026, pe commitul `d937eef6` — AMBELE cifre din criteriu, măsurate.**
+
+  **Ce s-a construit, și de ce nu era de ajuns o coloană.** Reevaluarea e acum un **fapt cu
+  atribute** (`reevaluari`, per firmă): ce activ, ce notă, ce valoare brută avea, ce amortizare s-a
+  eliminat, ce valoare justă s-a stabilit, și **când s-a aplicat**. Ruta consemnează faptul lângă
+  ciornă; `mijloace_fixe.valoare` urcă la **validarea notei**, în aceeași tranzacție cu ea — varianta
+  **(a)** din condiția de deblocare, cu riscul ei numit acolo închis de indexul unic pe
+  `inregistrare_id`: *o a doua validare a aceleiași note nu mai poate urca valoarea încă o dată.*
+
+  **Și partea care nu se vedea din criteriu.** O valoare urcată în registru **fără** etapă de
+  amortizare ar fi făcut motorul să recalculeze cumulata pe valoarea **nouă** de la **PIF-ul
+  original** — o cifră pe care evidența n-a înregistrat-o niciodată. Adică exact divergența pe care
+  restanța asta o numește, mutată de pe o coloană pe alta. De-aceea reevaluarea **taie durata în
+  etape** (OMFP 1802/2014 pct.111-116, metoda valorii nete): de la data ei se amortizează valoarea
+  justă, de la zero, pe durata rămasă. O reevaluare peste o durată **deja epuizată** se **refuză**:
+  durata rămasă vine din raportul evaluatorului (pct.113), iar registrul n-o poate deriva.
+
+  **CIFRELE, pe instanță vie cu codul nou** (`tenant_003`, trim. III/2026,
+  `frontend_test/proba_e2_lot_i_d406.py` lanțul 7 — **8 lanțuri, 0 nepotriviri**):
+
+  | momentul | `mijloace_fixe.valoare` | `AcquisitionAndProductionCostsEnd` |
+  |---|---:|---:|
+  | după rută (ciornă) | 3.000 | 3.000 |
+  | după validarea notei | **3.500** | **3.500** |
+
+  Plus `AppreciationForPeriod` **500,00** (era literalul `0.00` de când există generatorul),
+  `AccumulatedDepreciation` 177,96 și `BookValueEnd` 3.322,04 — toate recalculabile: rata nouă e
+  3.500/59 = 59,32, iar octombrie–decembrie dau 177,96.
+
+  **Arbitrul a fost întrebat, fiindcă un câmp constant a devenit variabil:**
+  `DUKIntegrator_AnLunaUI -v D406` (pachet oficial ANAF, reguli 2026.1) pe un fișier anual cu
+  apreciere nenulă — `stare=valid`, `erori=""`. Calibrat și invers (XML stricat → `stare=erori`).
+
+  **GARDA:** `core/test_reevaluare_registru.py` (13 probe), cu **momentul** asertat, nu doar cifra:
+  *după rută și înainte de validare, registrul e NEATINS*. Fără capătul ăsta, o reparație care ar
+  urca valoarea direct din ciornă ar trece la fel de verde. RED-proof pe **cinci** mutații, fiecare
+  omorând exact proba care o păzește — inclusiv una pe **cablul** validare→aplicare, fiindcă
+  celelalte probe cheamă aplicarea de-a dreptul și ar fi rămas verzi dacă apelul dispărea. *O probă
+  care sare exact peste cablu măsoară piesa, nu instalația.*
+
+  **CE NU VEDE MĂSURĂTOAREA, și de-aia a ieșit o restanță nouă:** proba merge pe firma care avea
+  nota lunii **deja generată**. Amortizarea eliminată se calculează din **motor**, nu din evidență —
+  v. **R192**.
+
 ### R60 — Instrumentul care hrănește verificările atribuia rutei modulul importat de altcineva
 
 - **felul**: VERIFICARE
@@ -8207,6 +8253,33 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   (reconciliatorul), pe obiectul „amortizare declarată contra amortizare înregistrată" — nu cu o
   gardă scrisă aici. Ordinea contează: **întâi R59**, fiindcă un reconciliator pornit peste o
   divergență cunoscută ar raporta roșu despre ceva deja numit.
+
+### R192 — Amortizarea ELIMINATĂ la reevaluare se calculează din motor, nu din evidență
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: în afara axei E1–E5 — ieșită construind R59 · **PRAG 1** *(produce o cifră greșită
+  în evidență, nu doar în afara ei; măsurat: **zero** note de reevaluare pe cele 17 scheme, deci
+  efectul nu e produs azi — dar calea e vie, precedentul e R22)*
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `d937eef6`
+- **măsurat la**: 2026-09-16 · **pe commit**: `d937eef6`
+- **ce blochează**: linia `2813 = 2131` a notei de reevaluare poartă amortizarea cumulată dată de
+  **motor** (`d406_active.amortizat_la_data`), nu soldul **înregistrat** al contului `2813`. Motorul
+  numără lunile scurse de la PIF, **inclusiv luna în curs**; evidența are doar notele lunare chiar
+  generate. Dacă reevaluarea se consemnează înaintea notei de amortizare a lunii ei, eliminarea
+  **depășește** ce s-a înregistrat, iar `2813` trece pe minus — tăcut.
+
+  **Instanța, măsurată azi:** activ 3.000 lei, PIF în august, reevaluare la 26.09. Motorul dă 50,00
+  (o lună); dacă nota lunii septembrie n-ar fi fost generată înainte, evidența ar fi avut 0, iar
+  nota ar fi debitat `2813` cu 50 dintr-un sold de 0. *În lanțul probei ordinea a fost cea bună —
+  lanțul 6 rulează înaintea lanțului 7 —, deci defectul n-a apărut. Ordinea aia nu e impusă nicăieri.*
+- **ce NU e**: nu e R59. R59 era despre **registru** (coloana care conduce amortizarea), și e închisă.
+  Asta e despre **evidență**: cifra pusă pe linia notei. Cele două se ating, dar se repară separat.
+- **condiția de deblocare**: se închide odată cu **R191** — confruntarea „amortizare declarată contra
+  amortizare înregistrată" e chiar instrumentul care spune care din cele două cifre e care. *Ordinea
+  e cea scrisă la R191: întâi se poate confrunta, apoi se decide care sursă câștigă pe linia notei.*
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

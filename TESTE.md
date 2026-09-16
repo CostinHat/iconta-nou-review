@@ -2635,3 +2635,24 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   700 → D300 `R3_1` += 700, D390 tip `P`. Cele două lanțuri sunt o **pereche pe același client, în
   aceeași lună** — fără axa pe document s-ar fi contopit. Apelul VIES e REAL: dacă serviciul refuză
   codul, refuzul aplicației e rezultatul și se scrie ca atare.
+
+- **`core/test_reevaluare_registru.py` — GARDĂ NOUĂ (16.09.2026, R59, 14 probe)**: reevaluarea ajunge
+  pe `mijloace_fixe` **și** în `AcquisitionAndProductionCostsEnd` — dar numai la **validarea notei**.
+  Proba asertează și starea INTERMEDIARĂ (după rută, înainte de validare, registrul e NEATINS), fără
+  de care o reparație care ar urca valoarea direct din ciornă ar trece la fel de verde. Plus etapele
+  de amortizare (după reevaluare se amortizează valoarea justă, de la zero, pe durata rămasă),
+  idempotența la a doua validare, și refuzul pe durata epuizată. **RED-proof pe cinci mutații**, între
+  care una pe **cablul** validare→aplicare: celelalte probe cheamă aplicarea de-a dreptul, deci
+  ștergerea apelului le-ar fi lăsat pe toate verzi. *O probă care sare exact peste cablu măsoară
+  piesa, nu instalația.* Schema efemeră ia DDL-ul din **migrare**, nu-l rescrie.
+
+- **`core/migrare_reevaluare.py` — MIGRARE (16.09.2026, R59)**: tabelul `reevaluari` per firmă —
+  reevaluarea ca **fapt cu atribute**, cu `aplicata_la` care deosebește propunerea de evidență și
+  spune și **când**. Index unic pe `inregistrare_id`: poarta de idempotență e în **bază**. Oglindă în
+  `tenant_template.sql`. Aplicată pe 20 de scheme, 20 verificate, 0 eșecuri. **Fără backfill**: zero
+  note de reevaluare pe toate schemele, deci n-ar fi avut ce reconstitui.
+
+- **`core/test_d406_active_duk.py` — PROBĂ NOUĂ (16.09.2026, R59)**: `AppreciationForPeriod` era
+  literalul `0.00` de când există generatorul; acum poartă apreciere reală, deci „structura rămâne
+  validă" nu se mai putea presupune. `DUKIntegrator_AnLunaUI -v D406` (reguli 2026.1): `stare=valid`.
+  Calibrat și invers — pe un XML stricat, `stare=erori`.

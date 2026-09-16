@@ -15003,3 +15003,49 @@ două. *Dacă generatorul ar ruta greșit mâine, divergența ar apărea din nou
 
 Aceeași lecție ca la R184, a doua instanță în două zile: **când o decizie se aplică „pe toate
 drumurile", drumurile se NUMĂRĂ** — iar a doua cale e un drum, nu o oglindă.
+
+## 16.09.2026 (52) — Reevaluarea e un FAPT consemnat, iar registrul se mișcă la VALIDARE
+
+**Ce cerea R59.** Criteriul de închidere, lărgit de Costin **înainte** de reparație: `mijloace_fixe.valoare`
+urcă la valoarea reevaluată **și** `AcquisitionAndProductionCostsEnd` din Assets o declară.
+
+**Decizia 1 — MOMENTUL: la validarea notei, nu la scrierea ei.** Varianta (a) din condiția de
+deblocare o scria deja; ce se adaugă aici e **de ce nu e o formalitate**. Ruta produce o **ciornă**,
+adică o propunere. Un `UPDATE` pe registrul care conduce amortizarea, făcut dintr-o propunere, e
+chiar riscul numit în textul variantei (a). Alternativa respinsă: urcarea valorii în rută, cu
+de-aplicare la ștergerea ciornei — ar fi cerut un al doilea drum de anulare, iar o ciornă ștearsă
+fără să treacă pe acolo ar fi lăsat registrul mutat fără nicio notă în spate.
+
+**Decizia 2 — reevaluarea ca OBIECT (`reevaluari`), nu ca o coloană pe `mijloace_fixe`.** O coloană
+`data_reevaluare` ar fi fost a doua definiție a aceluiași fapt, iar `mijloace_fixe` poartă deja
+valoarea curentă. Tabelul ține și **istoria** (un activ se poate reevalua de mai multe ori) și
+**momentul aplicării** — `aplicata_la NULL` deosebește propunerea de evidență mai bine decât un
+`boolean`, fiindcă spune și **când**. Alternativa respinsă: `sursa='reevaluare'` + `document_ref`
+parsat la validare — ar fi însemnat o gardă care asertează pe **text**, interzis de METODA §23.
+
+**Decizia 3 — amortizarea peste reevaluare: ETAPE, nu o bază urcată.** Metoda valorii nete (OMFP
+1802/2014 pct.111-116) elimină cumulata, deci de la data reevaluării se amortizează valoarea justă,
+**de la zero**, pe durata rămasă. Alternativa respinsă — a urca doar `valoare` — ar fi fost mai
+ieftină și **falsă**: motorul ar fi recalculat cumulata pe valoarea nouă de la PIF-ul original,
+adică o amortizare pe care n-a înregistrat-o nicio notă. *Reparația ar fi mutat divergența de pe o
+coloană pe alta, exact acolo unde criteriul n-ar mai fi văzut-o.*
+
+**Limita, declarată:** o reevaluare peste o durată deja **epuizată** se **refuză** cu motivul scris.
+Durata rămasă vine din raportul evaluatorului (pct.113); registrul n-o poate deriva, iar o durată
+„rezonabilă" aleasă de aplicație ar fi chiar interdicția din CLAUDE.md §3.
+
+**Decizia 4 — anul reevaluării declară `AppreciationForPeriod` și costul de DESCHIDERE.** Nu e cerut
+de criteriu; se face fiindcă alternativa e o afirmație falsă: `cost_begin` = `cost_end` într-un an în
+care valoarea s-a schimbat spune că soldul de deschidere era deja cel nou. Iar amortizarea anului se
+raportează ca **suma ratelor lunare**, nu ca diferența bornelor — diferența ar scădea o **eliminare**
+din cheltuială și ar putea ieși negativă. *Un singur motor pentru declarație și pentru nota lunară;
+altfel ar fi două surse, adică fix ce numără R191.*
+
+**Proba că schimbarea de câmp e admisă:** `AppreciationForPeriod` era literalul `0.00` de când există
+generatorul, deci „structura rămâne validă" nu se mai putea presupune. `DUKIntegrator_AnLunaUI -v D406`
+(pachet oficial ANAF, reguli 2026.1): `stare=valid`. Pinat ca probă.
+
+**Ce NU s-a decis, și se spune:** cum cere ANAF să se prezinte **eliminarea** cumulatei între
+`BookValueBegin` și `BookValueEnd` în anul reevaluării. DUK acceptă forma emisă — dar acceptarea
+validatorului nu e o regulă citită la sursă. Consemnat, nu presupus.
+

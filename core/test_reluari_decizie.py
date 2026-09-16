@@ -50,7 +50,12 @@ _NENUMARATE = {
     # 29.08.2026, a doua oara: SAPTE au iesit dintr-o data - R45, R54, R58, R63, R66, R70, R73 -
     # toate INCHISE in aceeasi tura. Sase dintre ele erau deja construite si asteptau doar decizia
     # scrisa; fotografia asta le tinea de „bucla tacuta" tocmai fiindca nimeni nu scrisese decizia.
-    "R9", "R18", "R26", "R38", "R47", "R59", "R64", "R67", "R68",
+    # 16.09.2026: R59 a IESIT - INCHISA pe `d937eef6`. Decizia pe care o astepta fusese de fapt
+    # DATA, dar sub alta forma decat astepta gardul: Costin n-a raspuns „(a), (b) sau (c)", ci a
+    # LARGIT criteriul de inchidere, iar criteriul largit *este* varianta (a) scrisa ca cifra.
+    # *O decizie poate veni ca o masura, nu ca un raspuns — si atunci contorul nu urca, iar bucla
+    # pare tacuta pana in ziua in care restanta se inchide.*
+    "R9", "R18", "R26", "R38", "R47", "R64", "R67", "R68",
 }
 
 

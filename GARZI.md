@@ -8572,6 +8572,42 @@ independent încă `bazaA=12600, bazaS=0, nrOPI=1` — **și a blocat generarea*
 non-tautologia lor. *A doua instanță în două zile a aceleiași lecții: când o decizie se aplică „pe
 toate drumurile", drumurile se NUMĂRĂ.*
 
+### `core/test_reevaluare_registru.py` — reevaluarea ajunge pe registru, ȘI în declarație
+
+Închide **R59**, deschisă pe 26.08.2026. Ruta de reevaluare scria o notă corectă și **nu atingea
+`mijloace_fixe`** — deci secțiunea Assets a D406 declara costul vechi. Criteriul de închidere l-a
+scris Costin **înainte** de reparație, și cere **două** cifre: coloana din registru urcă, **și**
+`AcquisitionAndProductionCostsEnd` o declară.
+
+**Ce păzește, și e mai mult decât cele două cifre:**
+
+| ce | de ce e o probă separată |
+|---|---|
+| **momentul** — după rută și înainte de validare, registrul e **NEATINS** | fără capătul ăsta, o reparație care ar urca valoarea direct din ciornă ar trece la fel de verde. Ruta produce o propunere; evidența se face la validare |
+| **etapele de amortizare** — după reevaluare se amortizează valoarea justă, de la zero, pe durata rămasă | o reparație care ar urca doar coloana ar face motorul să recalculeze cumulata pe valoarea **nouă** de la **PIF-ul original** — o cifră pe care evidența n-a înregistrat-o niciodată. *Divergența s-ar fi mutat de pe o coloană pe alta, acolo unde criteriul n-o mai vede* |
+| **idempotența** — a doua validare a aceleiași note nu urcă valoarea încă o dată | poarta e în **bază** (index unic pe `inregistrare_id`), nu în grija apelantului |
+| **durata epuizată** — reevaluarea peste o durată consumată se **refuză** | durata rămasă vine din raportul evaluatorului (OMFP 1802 pct.113); registrul n-o poate deriva, iar una „rezonabilă" ar fi chiar interdicția din CLAUDE.md §3 |
+| **cablul** validare→aplicare, pe AST | **lecția gardului ăstuia.** Toate probele de mai sus cheamă aplicarea de-a dreptul, deci cea mai simplă mutație — ștergerea apelului din `jurnal_valideaza` — le-ar fi lăsat pe toate verzi. *O probă care sare exact peste cablu măsoară piesa, nu instalația.* Se cere și **ordinea**: aplicarea stă sub verificarea că validarea a reușit, altfel registrul s-ar mișca și pentru o notă respinsă |
+| **citirile care hrănesc motorul** aduc reevaluările, pe AST | o interogare viitoare care ar uita coloana ar da înapoi amortizarea de dinainte de R59, iar totul ar arăta verde: activul există, cifrele sunt plauzibile, nimic nu e `None` |
+
+**RED-proof, cinci mutații, fiecare omorând exact proba care o păzește:** cablul tăiat · scrierea
+care nu urcă valoarea · interogarea care uită reevaluările · motorul fără etape · filtrul
+`aplicata_la` scos (o ciornă ar intra în baza de amortizare).
+
+**Calibrare pe direcția tăcută:** fără reevaluări aplicate, motorul întoarce activul **neatins** —
+se cere chiar identitatea obiectului (`is mf`), ca să nu existe nici măcar o a doua cale pentru cazul
+obișnuit, care e tot restul registrului.
+
+**Și arbitrul, fiindcă un câmp constant a devenit variabil.** `AppreciationForPeriod` era literalul
+`0.00` de când există generatorul. `DUKIntegrator_AnLunaUI -v D406` (pachet oficial ANAF, reguli
+2026.1) pe un fișier anual cu apreciere nenulă: `stare=valid`. Calibrat și invers. Pinat în
+`core/test_d406_active_duk.py`.
+
+**Ce NU păzește, declarat:** cum cere ANAF să se prezinte **eliminarea** cumulatei între
+`BookValueBegin` și `BookValueEnd` în anul reevaluării. DUK acceptă forma emisă — dar acceptarea
+validatorului nu e o regulă citită la sursă. Și nu păzește **cifra eliminată** de pe linia notei: ea
+vine din motor, nu din evidență — **R192**, care se închide cu R191.
+
 ### Ce a mai cerut poarta, și avea dreptate de fiecare dată
 
 Avertismentul nou fără diacritice · blocul generat din `TRASEE.md` · **antetele din

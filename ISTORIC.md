@@ -1,3 +1,35 @@
+## 16.09.2026, partea a doua — **reevaluarea unei imobilizări ajunge, în sfârșit, și în declarație**
+
+**Pentru un contabil: da, s-a schimbat ceva.** Până azi, când reevaluai un mijloc fix, aplicația
+scria corect nota contabilă — dar **fișa activului rămânea pe valoarea veche**. Consecința pe care
+n-o vedea nimeni: SAF-T-ul anual declara către ANAF **costul vechi**, iar amortizarea lunilor
+următoare se calcula tot pe el. Două evidențe despre același utilaj, și nici una nu știa de cealaltă.
+
+**Acum:** reevaluarea se consemnează ca propunere (notă ciornă, ca înainte), iar în momentul în care
+**validezi nota**, fișa activului urcă la valoarea reevaluată — și declarația o declară. Măsurat pe
+un activ de 3.000 lei reevaluat la 3.500: după ciornă declarația spune tot 3.000 (corect — nimic n-a
+fost aprobat încă), după validare spune 3.500.
+
+**Și ceva ce nu se vedea din cerință.** Amortizarea nu continuă pur și simplu pe valoarea nouă: la
+reevaluare, amortizarea strânsă până atunci se **șterge** din valoarea activului (așa cere norma
+contabilă), deci de la data aceea utilajul se amortizează de la zero, pe valoarea nouă, pe **durata
+rămasă**. Dacă am fi urcat doar cifra din fișă, aplicația ar fi socotit amortizare care nu s-a
+înregistrat niciodată — o greșeală mai greu de găsit decât cea reparată. Dacă durata normală s-a
+epuizat deja, aplicația **refuză** și spune de ce: durata nouă se ia din raportul evaluatorului, nu
+o poate inventa programul.
+
+**Ce s-a întrebat pe validatorul oficial.** Un câmp din SAF-T (`AppreciationForPeriod`) era zero de
+când există generatorul, iar acum poartă creșterea reală. Validatorul ANAF a fost rulat pe fișierul
+nou: **valid**.
+
+**Ce a ieșit la iveală reparând, și rămâne deschis:** cifra pe care nota o șterge din amortizare se
+calculează din **motorul de amortizare**, nu din ce s-a înregistrat efectiv. Dacă reevaluezi înainte
+de a genera amortizarea lunii, cele două nu coincid. E consemnat ca **R192** și se închide împreună
+cu R191 — confruntarea dintre amortizarea declarată și cea înregistrată, care e chiar lucrarea
+următoare.
+
+*Restanța închisă: R59, deschisă pe 26.08.2026. Restanță deschisă: R192.*
+
 ## 16.09.2026 — **etapa 2 se închide; trei lucruri care schimbă ce vede contabilul, dintre care unul bloca declarația de tot**
 
 **Pentru un contabil: da, azi s-a schimbat ceva, în trei locuri.** Nu e o zi de întărire.
