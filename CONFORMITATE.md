@@ -8067,7 +8067,8 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
 - **cine deblochează**: DECIZIE
 - **unde intră**: în afara axei E1–E5 — găsită de proba de lanț a etapei 2 · **PRAG 1**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `fe12784a`
 - **deschisă pe commit**: `d23cc51d`
 - **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
 - **ce blochează**: **declararea corectă a serviciilor intracomunitare primite.** Ruta acceptă
@@ -8076,13 +8077,19 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   (`core/d300.py:255`), adică **orice achiziție IC e „bunuri"** dacă n-o reclasifică cineva manual.
   Măsurat: 800 lei servicii IC au intrat la **rd.5** în loc de rd.7, iar `R5_1` a crescut cu
   1.800 = 1.000 bunuri + 800 servicii. Aceeași axă hrănește și D390 (A vs S).
-- **condiția de deblocare**: **o alegere între două locuri**, și fiecare duce în altă direcție:
-  **(a) pe FACTURĂ** — cere o coloană nouă în `facturi` (azi nu există niciuna pentru axă) și schimbă
-  contractul „sursa unică D390"; **(b) prin RECLASIFICARE** — mecanismul există
-  (`d390._reclasificare_tip`), dar cheia lui e `(direcție, țară, cod)`, adică **partener-lună**, nu
-  operațiune: același furnizor cu bunuri ȘI servicii în aceeași lună n-ar putea fi despărțit.
-  *O reparație care alege singură între ele ar fi o decizie de produs luată în tăcere* — de-aia
-  restanța rămâne deschisă în loc să fie „reparată".
+- **condiția de deblocare**: **închisă pe decizia lui Costin (16.09.2026)**: *„axa bunuri/servicii se
+  înregistrează pe document (coloană pe factură), înghețată la introducere. Reclasificarea nu e sursa
+  — cheia ei partener-lună nu poate despărți două operațiuni din aceeași lună."* Construit:
+  `facturi.axa_ic` (`'bunuri'|'servicii'|NULL`) cu `CHECK` **în bază**, nomenclator într-un singur loc
+  (`core/migrare_axa_ic.AXE`), oglindă în `tenant_template.sql`, migrare idempotentă aplicată și
+  **verificată** pe 20 de scheme de producție și 20 de test. `NULL` e a **treia** stare — factură
+  istorică —, pe care se păstrează calea veche **și se semnalează**; **fără backfill**, fiindcă nimic
+  din factura veche nu spune dacă a fost bun sau serviciu.
+  **Probat pe lanț:** servicii IC → **rd.7 + rd.20** (`R7_1`/`R20_1` = 1.600), bunuri → **rd.5 +
+  rd.18** (`R5_1`/`R18_1` = 5.600); iar în D390 **același partener, aceeași lună** poartă acum două
+  operațiuni, `A` 11.000 și `S` 1.600 — ceea ce cheia partener-lună nu putea exprima.
+  *A doua cale a lui D390 a PRINS reparația și a blocat generarea până când a învățat și ea axa, din
+  registru — motivul e scris în `DECIZII.md`, cum cere garda.*
 
 ### R187 — O vânzare intracomunitară nu produce nicio factură, deci nu poate ajunge în nicio declarație
 
@@ -8090,7 +8097,8 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
 - **cine deblochează**: DECIZIE
 - **unde intră**: în afara axei E1–E5 — observație deschisă din R185 · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `fe12784a`
 - **deschisă pe commit**: `d23cc51d`
 - **măsurat la**: 2026-09-15 · **pe commit**: `d23cc51d`
 - **ce blochează**: **nimic probat — se scrie ca observație, nu ca defect măsurat pe date.**
@@ -8098,10 +8106,16 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   linie în `facturi`. Derivat din cod: livrarea intracomunitară n-ar putea ajunge nici la rd.1/rd.3
   din D300, nici în D390 — amândouă citesc `facturi`. Consecință mecanică vizibilă în perimetru:
   ruta **nu** e în nucleul niciunei declarații, exact fiindcă nu scrie în tabelul lor.
-- **condiția de deblocare**: se probează pe date (o vânzare IC reală, confruntată cu D300 și D390) și
-  **abia apoi** se decide dacă lipsa e o scăpare sau o alegere. *Nu se repară pe o presimțire: dacă
-  vânzarea IC trebuie să producă factură, asta schimbă ce numerotare primește documentul și ce
-  ajunge la client — o decizie de produs, nu una tehnică.*
+- **condiția de deblocare**: **închisă pe decizia lui Costin (16.09.2026)**: *„vânzarea
+  intracomunitară produce factură, ca orice livrare. Fără rând în facturi nu ajunge în D300 rd.1/rd.3
+  și nici în D390."* `vanzare_ic` emite acum factura, cu **numărul din seria proprie** (la o livrare
+  documentul e al nostru, spre deosebire de `achizitie_ic`), cu țara și axa **înghețate** pe ea și
+  cotă 0 (art. 294 alin. (2) lit. a) la bunuri; art. 278 alin. (2) la servicii). Nota rămâne ciornă,
+  dar e **legată** de factură.
+  **Probat pe lanț, 2/2** (`frontend_test/proba_r187_vanzare_ic.py`): bunuri 900 → factură `CMT181`,
+  D300 `R1_1` += 900, D390 tip `L`; servicii 700 → `CMT182`, D300 `R3_1` += 700, D390 tip `P`.
+  **Un efect lateral reparat în aceeași tură:** `tip` se citea cu `== "servicii"`, deci orice altceva
+  devenea tacit bunuri — iar odată ce axa se îngheață pe document, ar fi înghețat o minciună.
 
 ### R188 — Două ortografii ale aceluiași partener fac D394 de NEDEPUS, și nimic n-o spunea
 
