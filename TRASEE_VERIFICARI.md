@@ -1647,17 +1647,20 @@ faptica, pe baza listelor de inventariere.
 
 ### `POST /tenants/{tenant_id}/reevaluare-imobilizare`
 
-*garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+*garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii, reevaluari*
 
-*ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · reevaluari (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_reevaluari`*
 
 - [x] reevaluarea schimbă valoarea de intrare, deci **schimbă amortizarea viitoare** — dar nu pe cea trecută
 - diferența din reevaluare merge la rezervă, nu la venit — verifică unde ajunge
 - reevaluarea în minus sub valoarea contabilă e cheltuială, nu rezervă negativă
 - **fără rol, deși schimbă o bază de calcul care intră în declarația de profit** — poziție, nu notă
-- **MĂSURAT 26.08.2026, la cererea ta — și răspunsul e altul decât presupuneai, în direcția mai proastă.** Ruta **NU schimbă baza de amortizare**: citește valoarea și amortizarea cumulată din `mijloace_fixe` (`SELECT … WHERE id=%s AND activ=true`) și scrie **doar o notă ciornă**. Niciun `UPDATE` pe `mijloace_fixe` — verificat pe tot corpul rutei
-- **deci reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe valoarea veche** — iar `POST /amortizare` calculează „per MF activ” din exact acel registru. Docstringul o recunoaște: *„actualizeaza valoarea/dnf ramane manual (raport evaluator)”*. Nu e o scăpare tăcută; e o limită declarată. Dar consecința e că **nota și registrul spun două lucruri diferite despre același activ**
-- deci verificarea de fond nu e „cere rol”, ci: **după reevaluare, amortizarea lunii următoare se calculează pe valoarea reevaluată** — sau, dacă nu, aplicația o spune. Azi nu o spune nicăieri
+- **MĂSURAT 26.08.2026, la cererea ta — și răspunsul a fost altul decât presupuneai, în direcția mai proastă.** Ruta **NU schimba baza de amortizare**: citea valoarea și amortizarea cumulată din `mijloace_fixe` și scria **doar o notă ciornă**. Niciun `UPDATE` pe `mijloace_fixe`. *Se păstrează scris, fiindcă e măsurătoarea care a deschis R59 — nu se șterge o constatare fiindcă între timp s-a reparat.*
+- **[x] REPARAT 16.09.2026 (R59 închisă).** Registrul se mișcă acum — dar la **VALIDAREA notei**, nu din ciornă: ruta consemnează reevaluarea ca fapt (`reevaluari`, cu `aplicata_la` NULL), iar `jurnal_valideaza` urcă `mijloace_fixe.valoare` în aceeași tranzacție cu validarea. *Ciorna rămâne o propunere; evidența se face la validare.*
+- **[x] și ajunge în DECLARAȚIE**, care era a doua jumătate a criteriului: `AcquisitionAndProductionCostsEnd` din Assets urcă odată cu registrul (măsurat: 3.000 → 3.500), iar anul reevaluării declară `AppreciationForPeriod`. DUK: `valid`.
+- **verificarea de fond, acum că e reparată**: după reevaluare, amortizarea lunii următoare se calculează pe valoarea reevaluată, **de la zero, pe durata rămasă** — nu pe valoarea nouă de la PIF-ul original. Dacă durata normală era deja epuizată, ruta **refuză** și spune de ce (durata nouă vine din raportul evaluatorului, OMFP 1802 pct.113)
+- **rămâne de verificat, și e restanță deschisă (R192):** cifra pe care nota o elimină de pe `2813` vine din **motorul** de amortizare, nu din soldul înregistrat. Dacă reevaluarea se consemnează înaintea notei de amortizare a lunii ei, eliminarea depășește ce s-a înregistrat. Se închide cu R191
+- **fără rol, deși schimbă o bază de calcul care intră în declarația de profit** — poziție, nu notă. *Neschimbat de reparație: rolul e cerut la VALIDARE (`admin_firma`), care e acum și momentul efectului pe registru — deci poarta de rol stă chiar acolo unde se produce evidența*
 - iar despre rol: criteriul de la R55 (scrie `validata`) **nu o prinde**, corect — scrie ciornă. Dar dacă registrul ar începe să fie actualizat aici, ar deveni o schimbare imediată de bază fiscală, iar atunci criteriul ar trebui reaplicat
 
 ## T23 — Bonul de la client — portalul și decontul

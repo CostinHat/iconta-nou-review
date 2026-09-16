@@ -59,3 +59,43 @@ def test_d406_anual_active_toate_metodele_duk_valid():
     if v.get("stare") == "gri":
         pytest.skip("validator SAF-T indisponibil: %s" % v.get("temei"))
     assert v.get("stare") == "valid", "DUK nu e valid: %s" % v
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_apreciere_nenula_e_DUK_valida():
+    """[R59] `AppreciationForPeriod` era literalul `0.00` de cand exista generatorul.
+
+    Reparatia lui R59 il face sa poarte apreciere reala — deci afirmatia „structura ramane valida"
+    nu se mai poate presupune, se cere ARBITRULUI. *Validatorul e judecatorul final; adiacenta din
+    bytecode m-a mintit deja o data, la D100.*
+    """
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SET search_path TO %s, public" % _SCHEMA)
+            prof = d406.pull(conn, _SCHEMA, 2026, 12)
+            prof = prof[0] if isinstance(prof, tuple) else prof
+        conn.rollback()
+
+    reevaluat = dict(_mf("liniara"), cod="MF-REEV-R59", valoare=3500,
+                     data_pif=date(2025, 1, 15),
+                     reevaluari=[{"data": date(2026, 3, 20), "valoare_bruta_veche": 3000,
+                                  "amortizare_eliminata": 700, "valoare_justa": 3500}])
+    xml = d406_active.xml_d406_anual_active(prof, [reevaluat], 2026)
+
+    # Pe ELEMENTE, nu pe siruri: fara verificarea asta proba ar putea valida cu DUK un fisier in
+    # care campul masurat nici nu e emis — verde despre altceva. (METODA §23)
+    import xml.etree.ElementTree as ET
+    ns = "{mfp:anaf:dgti:d406:declaratie:v1}"
+    val = ET.fromstring(xml).find(".//%sValuation" % ns)
+    assert val is not None, "fisierul anual n-are <Valuation> — structura s-a schimbat, nu cifra"
+    camp = {e.tag.split("}")[-1]: (e.text or "") for e in val}
+    assert camp["AppreciationForPeriod"] == "500.00", \
+        "aprecierea nu ajunge in XML — proba ar valida un fisier fara campul masurat"
+    assert camp["AcquisitionAndProductionCostsBegin"] == "3000.00"
+    assert camp["AcquisitionAndProductionCostsEnd"] == "3500.00"
+
+    v = duk.valideaza(xml, "d406", an=2026, luna=12, timeout=240)
+    if v.get("stare") == "gri":
+        pytest.skip("validator SAF-T indisponibil: %s" % v.get("temei"))
+    assert v.get("stare") == "valid", "DUK nu e valid pe apreciere nenula: %s" % v

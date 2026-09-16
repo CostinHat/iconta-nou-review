@@ -1730,9 +1730,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/mijloace-fixe` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/reevaluare-imobilizare` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `d406_active`, `jurnal_api`, `reevaluare`, `repo_contabilitate`, `repo_mijloace_fixe`, `uc_comun`
+**Module:** `afirmatii`, `d406_active`, `jurnal_api`, `reevaluare`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_reevaluari`, `uc_comun`
 
-**Scrie in:** `ai_corectii` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT) · `reevaluari` (INSERT)
 
 **Stari puse:** `contat`, `potrivit`, `validata`
 

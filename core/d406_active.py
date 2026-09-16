@@ -182,49 +182,171 @@ def _verifica_categorie(mf, metoda, pif):
                (", ".join(sorted(permise)) or "niciuna (activ neamortizabil)"), temei))
 
 
+# ── REEVALUAREA, ca etapa a amortizarii (R59) ───────────────────────────────────────────────
+# OMFP 1802/2014 pct.111-116, METODA VALORII NETE — chiar cea implementata de `core/reevaluare.py`:
+# amortizarea cumulata se ELIMINA din valoarea bruta (28xx = 21x), apoi diferenta pana la valoarea
+# justa. Consecinta pentru amortizare, si e intreaga regula de mai jos: de la data reevaluarii
+# activul se amortizeaza DE LA ZERO, pe valoarea justa, pe durata RAMASA.
+#
+# De ce sta aici si nu in registru: reevaluarea nu schimba un camp, TAIE durata in etape. Un
+# `mijloace_fixe.valoare` urcat fara etapa ar face motorul sa recalculeze amortizarea cumulata pe
+# valoarea NOUA de la PIF-ul ORIGINAL — adica sa afirme o amortizare care nu s-a inregistrat
+# niciodata, exact divergenta pe care R59 o numeste, mutata de pe o coloana pe alta.
+
+class DurataEpuizata(ValueError):
+    """Reevaluare peste o durata normala deja consumata.
+
+    Clasa proprie, nu un `ValueError` oarecare, si nu din eleganta: fara ea, singurul fel de a
+    asearta MOTIVUL refuzului ar fi cautarea unui cuvant in mesaj — adica o garda pe TEXT, care
+    pazeste formularea de langa lucru, nu lucrul (METODA §23). Iar un test care accepta ORICE refuz
+    nu apara motivul refuzului. Mosteneste `ValueError` ca apelantii care il prind deja (generatorul
+    SAF-T, ruta de reevaluare) sa se poarte neschimbat.
+    """
+
+
+def _reev_aplicate(mf):
+    """Reevaluarile APLICATE ale activului, normalizate si in ordine cronologica.
+
+    `data` se accepta si ca `date`, si ca sir ISO: randurile vin din depozit, dar si din fixturi.
+    Fara cheia `reevaluari` lista e goala — si atunci tot ce urmeaza e identic cu comportamentul
+    de dinainte, bit cu bit.
+    """
+    out = []
+    for r in (mf.get("reevaluari") or []):
+        d = r.get("data")
+        if isinstance(d, str):
+            d = date.fromisoformat(d[:10])
+        if d is None:
+            continue
+        out.append({"data": d,
+                    "valoare_bruta_veche": _d(r.get("valoare_bruta_veche")),
+                    "amortizare_eliminata": _d(r.get("amortizare_eliminata")),
+                    "valoare_justa": _d(r.get("valoare_justa"))})
+    out.sort(key=lambda r: r["data"])
+    return out
+
+
+def _mf_la(mf, la_data):
+    """(mf_efectiv, pif_real) — activul asa cum il vede AMORTIZAREA la `la_data`.
+
+    Intoarce un `mf` sintetic cu `valoare` / `data_pif` / `dnf_luni` mutate pe ETAPA care contine
+    `la_data`; restul (metoda, rezidual, cont) ramane neatins. Fara reevaluari aplicate intoarce
+    `mf` NEATINS — nu o copie, ca sa nu existe nici macar o cale diferita pentru cazul obisnuit.
+
+    `pif_real` se intoarce SEPARAT fiindca `_verifica_categorie` judeca pe data punerii in
+    functiune (alin.8^1: „active NOI puse in functiune in 2026"). O reevaluare nu face activul nou;
+    daca PIF-ul sintetic ar ajunge acolo, un activ din 2024 reevaluat in 2026 ar deveni deodata
+    eligibil pentru superaccelerata. *Reevaluarea schimba valoarea, nu vechimea.*
+    """
+    pif = mf.get("data_pif")
+    reev = _reev_aplicate(mf)
+    if not reev:
+        return mf, pif
+    dnf = int(mf.get("dnf_luni") or 0)
+    if pif is None or dnf <= 0:
+        return mf, pif
+    start, valoare, consumate = pif, reev[0]["valoare_bruta_veche"], 0
+    for r in reev:
+        if la_data < r["data"]:
+            break
+        luni = max(0, min(dnf - consumate, _luni_intre(start, r["data"].year, r["data"].month)))
+        consumate += luni
+        start, valoare = r["data"], r["valoare_justa"]
+    if start == pif:
+        # `la_data` e INAINTEA primei reevaluari. Valoarea bruta de atunci NU e cea din registru
+        # (registrul poarta valoarea de azi), ci cea consemnata pe prima reevaluare. *Fara randul
+        # asta, bornele de deschidere ale anilor dinainte s-ar calcula pe valoarea de dupa.*
+        ef = dict(mf)
+        ef["valoare"] = valoare
+        return ef, pif
+    ramase = dnf - consumate
+    if ramase <= 0:
+        # Durata normala s-a epuizat inainte de reevaluare. Cat se amortizeaza de acum e o
+        # DECIZIE cu temei din afara (raportul evaluatorului: durata de viata ramasa reestimata,
+        # OMFP 1802 pct.113). Nu se poate deriva din registru, deci nu se fabrica.
+        raise DurataEpuizata(
+            "MF %s: reevaluare la %s peste o durată normală deja epuizată (%d luni de la %s). "
+            "Durata rămasă după reevaluare se ia din raportul evaluatorului (OMFP 1802/2014 "
+            "pct.113); registrul nu o poate deriva."
+            % (mf.get("cod"), start.isoformat(), dnf, pif.isoformat()))
+    ef = dict(mf)
+    ef["valoare"], ef["data_pif"], ef["dnf_luni"] = valoare, start, ramase
+    return ef, pif
+
+
 def calc_asset(mf, an):
     """mf: dict {cod, denumire, cont_imobilizare, cont_amortizare, valoare,
     rezidual, dnf_luni, data_pif, metoda, activ}. Returneaza dict Valuation pentru anul `an`.
-    Metoda din activ decide calculul (CF art.28). Amortizarea incepe cu luna urmatoare PIF."""
-    val = _d(mf["valoare"])
-    rez = _d(mf.get("rezidual"))
+    Metoda din activ decide calculul (CF art.28). Amortizarea incepe cu luna urmatoare PIF.
+
+    [R59] `mf['reevaluari']` (reevaluarile APLICATE) taie durata in etape — v. `_mf_la`. Cele doua
+    borne ale anului se calculeaza fiecare pe etapa ei, fiindca o reevaluare din cursul anului le
+    pune in etape DIFERITE: 31.12.<an-1> pe valoarea veche, 31.12.<an> pe cea justa.
+    """
+    reev = _reev_aplicate(mf)
+    mf_i, pif_real = _mf_la(mf, date(an - 1, 12, 31))
+    mf_s, _ = _mf_la(mf, date(an, 12, 31))
+    val = _d(mf_s["valoare"])
     dnf = int(mf.get("dnf_luni") or 0)
     if dnf <= 0 or val <= 0:
         raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
-    pif = mf.get("data_pif")
-    amortizabil = val - rez
-    metoda = _norm_metoda(mf.get("metoda"))
-    _verifica_categorie(mf, metoda, pif)   # alin.5/8^1: ce legea nu permite pe categorie -> refuza
+    _verifica_categorie(mf, _norm_metoda(mf.get("metoda")), pif_real)   # alin.5/8^1: ce legea nu permite -> refuza
 
-    if metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR:
-        # liniara (alin.6) - si fallback pentru durate sub 2 ani, unde metodele ne-liniare nu au sens
-        rata = (amortizabil / dnf).quantize(B, rounding=ROUND_HALF_UP)
-        luni_pana_inceput = max(0, min(dnf, _luni_intre(pif, an - 1, 12)))
-        luni_pana_sfarsit = max(0, min(dnf, _luni_intre(pif, an, 12)))
+    am_inceput = _acumulat_final_an(mf_i, pif_real, an - 1)
+    am_sfarsit = _acumulat_final_an(mf_s, pif_real, an)
 
-        def _am(luni):
-            if luni >= dnf:
-                return amortizabil
-            return (rata * luni).quantize(B, rounding=ROUND_HALF_UP)
-
-        am_inceput = _am(luni_pana_inceput)
-        am_sfarsit = _am(luni_pana_sfarsit)
+    achizitie_in_an = bool(pif_real and pif_real.year == an)
+    reev_an = [r for r in reev if r["data"].year == an]
+    # Valoarea bruta la 1 ianuarie: intr-un an cu reevaluare e cea de dinaintea PRIMEI dintre ele.
+    # `cost_begin` = `cost_end` intr-un an in care valoarea s-a schimbat ar fi o afirmatie falsa
+    # despre soldul de DESCHIDERE — exact felul de cifra pe care R59 il numeste.
+    val_inceput = reev_an[0]["valoare_bruta_veche"] if reev_an else val
+    apreciere = sum((r["valoare_justa"] - r["valoare_bruta_veche"] for r in reev_an),
+                    Decimal("0.00"))
+    if reev_an:
+        # Amortizarea ANULUI nu mai e diferenta celor doua borne: reevaluarea ELIMINA amortizarea
+        # cumulata intre ele, deci diferenta ar scadea o eliminare din cheltuiala si ar putea iesi
+        # chiar negativa. Ce se raporteaza e CHELTUIALA anului — suma ratelor lunare, adica exact
+        # ce inregistreaza nota lunara de amortizare (6811 = 28xx). *Un singur motor pentru
+        # amandoua; altfel declaratia si evidenta ar avea din nou doua surse.*
+        depr = sum((amortizare_luna(mf, an, l) for l in range(1, 13)), Decimal("0.00")).quantize(B)
     else:
-        luni = _amort_lunar_neliniar(metoda, amortizabil, dnf)
-        am_inceput = min(amortizabil, _accum_neliniar(luni, pif, an - 1)).quantize(B, rounding=ROUND_HALF_UP)
-        am_sfarsit = min(amortizabil, _accum_neliniar(luni, pif, an)).quantize(B, rounding=ROUND_HALF_UP)
-
-    achizitie_in_an = bool(pif and pif.year == an)
+        depr = (am_sfarsit - am_inceput).quantize(B)
     return {
-        "cost_begin": Decimal("0.00") if achizitie_in_an else val,
+        "cost_begin": Decimal("0.00") if achizitie_in_an else val_inceput,
         "cost_end": val,
-        "addition": val if achizitie_in_an else Decimal("0.00"),
-        "book_begin": (Decimal("0.00") if achizitie_in_an else val - am_inceput).quantize(B),
-        "depr_period": (am_sfarsit - am_inceput).quantize(B),
+        "addition": val_inceput if achizitie_in_an else Decimal("0.00"),
+        "apreciere": apreciere.quantize(B),
+        "book_begin": (Decimal("0.00") if achizitie_in_an else val_inceput - am_inceput).quantize(B),
+        "depr_period": depr,
         "accum_depr": am_sfarsit,
         "book_end": (val - am_sfarsit).quantize(B),
         "procent_anual": (Decimal("100") * 12 / dnf).quantize(B, rounding=ROUND_HALF_UP),
     }
+
+
+def _acumulat_final_an(mf_ef, pif_real, an):
+    """Amortizarea cumulata la 31.12.<an>, pe ETAPA primita (`mf_ef` vine din `_mf_la`).
+
+    Corpul e cel dinainte de R59, mutat aici neschimbat, ca cele doua borne ale anului sa se poata
+    calcula pe etape DIFERITE. `pif_real` doar pentru `_verifica_categorie` — v. `_mf_la`.
+    """
+    val = _d(mf_ef["valoare"])
+    rez = _d(mf_ef.get("rezidual"))
+    dnf = int(mf_ef.get("dnf_luni") or 0)
+    pif = mf_ef.get("data_pif")
+    amortizabil = val - rez
+    metoda = _norm_metoda(mf_ef.get("metoda"))
+    _verifica_categorie(mf_ef, metoda, pif_real)
+    if metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR:
+        # liniara (alin.6) - si fallback pentru durate sub 2 ani, unde metodele ne-liniare nu au sens
+        rata = (amortizabil / dnf).quantize(B, rounding=ROUND_HALF_UP)
+        luni_pana = max(0, min(dnf, _luni_intre(pif, an, 12)))
+        if luni_pana >= dnf:
+            return amortizabil
+        return (rata * luni_pana).quantize(B, rounding=ROUND_HALF_UP)
+    luni = _amort_lunar_neliniar(metoda, amortizabil, dnf)
+    return min(amortizabil, _accum_neliniar(luni, pif, an)).quantize(B, rounding=ROUND_HALF_UP)
 
 def amortizat_la_data(mf, la_data):
     """Amortizarea cumulata 'la zi' (pana la `la_data` inclusiv) pe METODA reala a activului
@@ -233,7 +355,11 @@ def amortizat_la_data(mf, la_data):
     plafonat la dnf. La granita de an (la_data = 31.12.<an>) rezultatul coincide cu
     calc_asset(mf, an)['accum_depr'] / ['book_end'] - aceeasi sursa de amortizare, un singur motor.
     mf: acelasi dict ca la calc_asset. Ridica ValueError pe metoda nepermisa pe categorie
-    (alin.5/8^1) sau date invalide - apelantul decide cum arata randul, NU fabrica liniar tacit."""
+    (alin.5/8^1) sau date invalide - apelantul decide cum arata randul, NU fabrica liniar tacit.
+
+    [R59] Daca activul are reevaluari APLICATE, se raspunde pe ETAPA care contine `la_data`:
+    amortizarea cumulata a fost ELIMINATA la reevaluare, deci dupa ea porneste de la zero."""
+    mf, _pif_real = _mf_la(mf, la_data)
     val = _d(mf["valoare"])
     rez = _d(mf.get("rezidual"))
     dnf = int(mf.get("dnf_luni") or 0)
@@ -241,7 +367,7 @@ def amortizat_la_data(mf, la_data):
         raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
     pif = mf.get("data_pif")
     metoda = _norm_metoda(mf.get("metoda"))
-    _verifica_categorie(mf, metoda, pif)   # ce legea nu permite pe categorie -> refuza (nu calcula gresit)
+    _verifica_categorie(mf, metoda, _pif_real)   # ce legea nu permite pe categorie -> refuza (nu calcula gresit)
     amortizabil = val - rez
     if pif is None:
         return {"amortizat": Decimal("0.00"), "ramas": val.quantize(B), "metoda": metoda}
@@ -260,7 +386,12 @@ def amortizare_luna(mf, an, luna):
     0.00 daca luna e inaintea primei luni de amortizare (luna urmatoare PIF, alin.12) sau dupa
     epuizarea dnf. Ultima luna liniara absoarbe restul de rotunjire, ca suma lunilor 1..dnf =
     valoarea amortizabila (coerent cu amortizat_la_data la epuizare). Ridica ValueError pe metoda
-    nepermisa pe categorie (alin.5/8^1) - apelantul (nota lunara) decide, nu fabrica liniar tacit."""
+    nepermisa pe categorie (alin.5/8^1) - apelantul (nota lunara) decide, nu fabrica liniar tacit.
+
+    [R59] Luna se calculeaza pe ETAPA in care cade: dupa o reevaluare aplicata, rata e valoarea
+    JUSTA impartita la durata RAMASA. Luna reevaluarii apartine etapei NOI — reevaluarea se
+    inregistreaza cu data ei, iar amortizarea incepe luna urmatoare (alin.12), ca la PIF."""
+    mf, _pif_real = _mf_la(mf, date(an, luna, 28))
     val = _d(mf["valoare"])
     rez = _d(mf.get("rezidual"))
     dnf = int(mf.get("dnf_luni") or 0)
@@ -268,7 +399,7 @@ def amortizare_luna(mf, an, luna):
         raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
     pif = mf.get("data_pif")
     metoda = _norm_metoda(mf.get("metoda"))
-    _verifica_categorie(mf, metoda, pif)
+    _verifica_categorie(mf, metoda, _pif_real)
     if pif is None:
         return Decimal("0.00")
     luni_trecute = (an - pif.year) * 12 + (luna - pif.month)   # index (1-based) al lunii de amortizare
@@ -311,7 +442,7 @@ def xml_asset(mf, an, valuation_class="2"):
 <nsSAFT:DepreciationMethod>{e(_norm_metoda(mf.get('metoda')))}</nsSAFT:DepreciationMethod>
 <nsSAFT:DepreciationPercentage>{v['procent_anual']}</nsSAFT:DepreciationPercentage>
 <nsSAFT:DepreciationForPeriod>{v['depr_period']}</nsSAFT:DepreciationForPeriod>
-<nsSAFT:AppreciationForPeriod>0.00</nsSAFT:AppreciationForPeriod>
+<nsSAFT:AppreciationForPeriod>{v['apreciere']}</nsSAFT:AppreciationForPeriod>
 <nsSAFT:ExtraordinaryDepreciationsForPeriod><nsSAFT:ExtraordinaryDepreciationForPeriod>
 <nsSAFT:ExtraordinaryDepreciationMethod>nu</nsSAFT:ExtraordinaryDepreciationMethod>
 <nsSAFT:ExtraordinaryDepreciationAmountForPeriod>0.00</nsSAFT:ExtraordinaryDepreciationAmountForPeriod>

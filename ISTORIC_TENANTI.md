@@ -22,7 +22,7 @@ control fiscal / semafor · cele 4 straturi de import (firme, plan conturi, sold
 coada de validare. Pe acest perimetru, F1–F9 din [`MODEL_AUDIT_TENANT.md`](MODEL_AUDIT_TENANT.md) = parcurse;
 coloana „Rămas" se citește pe el, nu pe toată aplicația.
 
-**În afara perimetrului (tabele care trebuie să rămână goale):** `salariati`, `salariu_istoric`, `state_plata`, `pontaj`, `concedii_medicale`, `beneficii_lunare`, `facturi`, `factura_linii`, `facturi_recurente`, `efactura_primite`, `efactura_trimiteri`, `clienti`, `furnizori`, `asociati`, `casa_operatiuni`, `bonuri`, `chitante`, `extras_linii`, `rip_operatiuni`, `produse`, `articole`, `miscari_stoc`, `nir`, `nir_linii`, `retete`, `retete_linii`, `mijloace_fixe`, `solduri_initiale`, `solduri_parteneri`, `inregistrari`, `inregistrari_linii`, `registratura`, `centre_cost`, `bugete`, `etransport_trimiteri`.
+**În afara perimetrului (tabele care trebuie să rămână goale):** `salariati`, `salariu_istoric`, `state_plata`, `pontaj`, `concedii_medicale`, `beneficii_lunare`, `facturi`, `factura_linii`, `facturi_recurente`, `efactura_primite`, `efactura_trimiteri`, `clienti`, `furnizori`, `asociati`, `casa_operatiuni`, `bonuri`, `chitante`, `extras_linii`, `rip_operatiuni`, `produse`, `articole`, `miscari_stoc`, `nir`, `nir_linii`, `retete`, `retete_linii`, `mijloace_fixe`, `reevaluari`, `solduri_initiale`, `solduri_parteneri`, `inregistrari`, `inregistrari_linii`, `registratura`, `centre_cost`, `bugete`, `etransport_trimiteri`.
 
 **De ce nu se parcurg și restul fațetelor pe modulele astea — și de ce firma NU se exclude din matrice.**
 F3 e definită pe *date populate* („nu pe fixture goale") și F7 compară *cifrele afișate cu faptele*: pe tabele
@@ -95,11 +95,17 @@ vector fiscal · e-Factura.
 Criteriul: firma are `operatiuni_ic=False`, deci NU datorează D301 (art.317) și nici
 D390 (recapitulativa IC) — nici pe cale automată, nici manuală. Regimul IC e purtat de t004 și t006.
 
-**În perimetru, tabele care pot primi date:** `ai_corectii`, `artefacte_produse`, `articole`, `asociati`, `bugete`, `casa_operatiuni`, `centre_cost`, `chitante`, `clienti`, `contracte_sabloane`, `d300_manual`, `efactura_primite`, `efactura_trimiteri`, `etransport_trimiteri`, `extras_linii`, `facturi_recurente`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `nir`, `nir_linii`, `notificari_scadenta`, `perioade_inchideri`, `pontaj`, `produse`, `rapoarte_salvate`, `registratura`, `registre_art321`, `registru_fiscal_pf`, `registru_inventar`, `retete`, `retete_linii`, `rip_operatiuni`, `solduri_initiale`, `solduri_parteneri`, `state_plata`.
+**În perimetru, tabele care pot primi date:** `ai_corectii`, `artefacte_produse`, `articole`, `asociati`, `bugete`, `casa_operatiuni`, `centre_cost`, `chitante`, `clienti`, `contracte_sabloane`, `d300_manual`, `efactura_primite`, `efactura_trimiteri`, `etransport_trimiteri`, `extras_linii`, `facturi_recurente`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `nir`, `nir_linii`, `notificari_scadenta`, `perioade_inchideri`, `pontaj`, `produse`, `rapoarte_salvate`, `reevaluari`, `registratura`, `registre_art321`, `registru_fiscal_pf`, `registru_inventar`, `retete`, `retete_linii`, `rip_operatiuni`, `solduri_initiale`, `solduri_parteneri`, `state_plata`.
 
 **De ce lista de mai sus e scurtă, spre deosebire de 006.** t001 nu e *scopată*, e **SUB-EXERCITATĂ**: o
 brutărie cu 12 salariați, profit și TVA lunar poate avea în mod legitim clienți, furnizori, facturi, casă,
-bancă, stocuri, NIR, rețete, mijloace fixe și solduri. Golul lor e o stare de moment, nu o proprietate a
+bancă, stocuri, NIR, rețete, mijloace fixe și solduri.
+
+**`reevaluari` — tabel NOU (16.09.2026, R59), clasificat pe amândouă firmele în aceeași tură, iar clasificarea
+se DERIVĂ, nu se alege:** o reevaluare are ca subiect un mijloc fix, deci stă de aceeași parte cu
+`mijloace_fixe`. Pe **006** acela e *în afara perimetrului* (regimul „neplătitor micro cu achiziții IC" nu
+poartă imobilizări), deci și `reevaluari` e — și se gardează să rămână gol. Pe **001** `mijloace_fixe` *poate
+primi date*, deci și `reevaluari` poate: golul lui e o stare de moment, nu o proprietate a regimului. Golul lor e o stare de moment, nu o proprietate a
 regimului — deci nu se gardează să rămână gol. `state_plata` e gol prin datoria declarată (nu se persistă la
 emitere, vezi `test_datorie.py`), nu prin regim. `reg_com`, `banca` și `iban` din `firma_profil` rămân NULL
 deliberat: C-2 nu le fixează, iar lipsa lor e chiar cazul de test care a scos refuzul de bilanț și cel de D300.

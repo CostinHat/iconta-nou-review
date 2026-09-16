@@ -18,7 +18,7 @@ altceva: **imobilizările și planul de conturi**, adică secțiunile pe care D3
 | 4 | `GET /tenants/{}/mijloace-fixe` | — | îl conține, cu valoarea lui | citire |
 | 5 | `GET /tenants/{}/d406-active` | — | secțiunea Assets îl conține | `d406_active_xml` |
 | 6 | `POST /tenants/{}/amortizare` | luna curentă | nota de amortizare **validată** (nu ciornă, R55) · amortizarea cumulată crește · Assets se schimbă | `main.py:3233` |
-| 7 | `POST /tenants/{}/reevaluare-imobilizare` | valoare justă nouă | valoarea din Assets se schimbă | `main.py:5848` |
+| 7 | `POST /tenants/{}/reevaluare-imobilizare` + `.../jurnal/{}/valideaza` | valoare justă nouă | **ciorna NU mișcă registrul**; după validare, valoarea din Assets se schimbă | `main.py:5848` |
 | 8 | `GET /tenants/{}/d406-stocuri` | perioada trimestrului | secțiunea se generează, nu cade | `d406_stocuri_xml` |
 
 **Lanțurile 4, 5 și 8 sunt CITIRI** — ele nu introduc nimic, dar sunt unități-nucleu fiindcă scriu…
@@ -241,32 +241,51 @@ def main():
                         "reevaluare": {"mijloc_fix_id": mfid,
                                        "valoare_justa": VALOARE_MF + 500}}, tok)
         i7["raspuns"] = {"stare": st, "corp": str(r)[:300]}
-        xml7, meta7 = active(tok, tid)
+        nota_id = (r or {}).get("inregistrare_id") if isinstance(r, dict) else None
+        i7["nota_id"] = nota_id
+
+        def _cost():
+            xml, meta = active(tok, tid)
+            a = asset_probei(xml, cod_mf)
+            try:
+                return float((a or {}).get("AcquisitionAndProductionCostsEnd") or 0), a, meta
+            except ValueError:
+                return 0.0, a, meta
+
+        # [R59, reparat 16.09.2026] MOMENTUL face parte din așteptare, nu doar cifra. Ruta produce
+        # o CIORNĂ; registrul — și deci declarația — se mișcă abia la VALIDAREA notei. Se măsoară
+        # AMÂNDOUĂ stările: fără cea dintâi, o reparație care ar urca valoarea direct din ciornă
+        # (un `UPDATE` pe registrul care conduce amortizarea, făcut dintr-o propunere — chiar
+        # riscul numit în varianta (a) a condiției de deblocare) ar trece la fel de verde.
+        cost_ciorna, _a, _m = _cost()
+        i7["cost_dupa_ciorna"] = cost_ciorna
+        i7["ciorna_nu_misca_registrul"] = abs(cost_ciorna - VALOARE_MF) < 0.51
+
+        st_v, r_v = (None, None)
+        if nota_id:
+            st_v, r_v = U.cere("POST", "/tenants/%d/jurnal/%d/valideaza" % (tid, nota_id),
+                               {}, tok)
+        i7["validare"] = {"stare": st_v, "corp": str(r_v)[:200]}
+
+        cost, a7, meta7 = _cost()
         i7["d406_active"] = meta7
-        a7 = asset_probei(xml7, cod_mf)
         i7["asset_probei"] = {k: a7.get(k) for k in
                               ("AssetID", "AcquisitionAndProductionCostsEnd", "BookValueEnd",
-                               "AccumulatedDepreciation")} if a7 else None
+                               "AccumulatedDepreciation", "AppreciationForPeriod")} if a7 else None
         # AȘTEPTAREA: reevaluarea de +550 trebuie să AJUNGĂ în declarație. Costul de achiziție
-        # declarat ar trebui să urce de la 3.000 la 3.550 — altfel evidența contabilă (care poartă
-        # `2131 = 105`, 550) și declarația spun lucruri diferite despre același activ.
-        try:
-            cost = float((a7 or {}).get("AcquisitionAndProductionCostsEnd") or 0)
-        except ValueError:
-            cost = 0
+        # declarat urcă de la 3.000 la 3.500 — altfel evidența contabilă (care poartă `2131 = 105`,
+        # 550) și declarația spun lucruri diferite despre același activ.
         i7["cost_declarat"] = cost
         i7["cost_asteptat"] = float(VALOARE_MF + 500)
-        i7["OK"] = st in (200, 201) and abs(cost - (VALOARE_MF + 500)) < 0.51
+        i7["OK"] = (st in (200, 201) and i7["ciorna_nu_misca_registrul"]
+                    and st_v in (200, 201) and abs(cost - (VALOARE_MF + 500)) < 0.51)
         if st in (200, 201) and not i7["OK"]:
             i7["CONSTATARE"] = (
-                "REEVALUAREA NU AJUNGE ÎN DECLARAȚIE. Ruta a acceptat (notele `2813=2131` 50 și "
-                "`2131=105` 550, `valoare_neta` 2.950), dar `mijloace_fixe.valoare` a rămas %s, "
-                "deci secțiunea Assets declară tot costul vechi (%s în loc de %s). Evidența "
-                "contabilă și declarația spun lucruri diferite despre același activ. "
-                "E restanța deschisă **R59** — «reevaluarea schimbă valoarea contabilă, dar "
-                "registrul care conduce amortizarea rămâne pe cea veche» —, CONFIRMATĂ acum prin "
-                "măsurare, cu o consecință pe care restanța n-o numea: efectul ajunge în "
-                "DECLARAȚIE, nu doar în amortizare." % (VALOARE_MF, cost, VALOARE_MF + 500))
+                "REEVALUAREA NU AJUNGE ÎN DECLARAȚIE. Ruta a acceptat, nota s-a validat cu `%s`, "
+                "dar `mijloace_fixe.valoare` a rămas %s după ciornă și %s după validare, deci "
+                "secțiunea Assets declară %s în loc de %s. Evidența contabilă și declarația spun "
+                "lucruri diferite despre același activ — restanța **R59**."
+                % (st_v, VALOARE_MF, cost, cost, VALOARE_MF + 500))
     scrie(i7)
 
     # ── 8. SECȚIUNEA STOCURI ────────────────────────────────────────────────

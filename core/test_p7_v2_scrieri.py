@@ -158,8 +158,9 @@ def _apeluri_catre_repository():
 
 def test_numarul_de_instructiuni_se_conserva():
     """257 de instrucțiuni SQL stăteau în rute înainte de V1 (107 citiri + 150 scrieri/control).
-    Acum sunt **258** de APELURI către straturile de sub HTTP — niciuna pierdută, niciuna dublată,
-    plus una ADĂUGATĂ deliberat (R187: `vanzare_ic` fixează schema, fiindcă emite o factură).
+    Acum sunt **262** de APELURI către straturile de sub HTTP — niciuna pierdută, niciuna dublată,
+    plus cinci ADĂUGATE deliberat (R187: `vanzare_ic` fixează schema, fiindcă emite o factură;
+    R59: cele patru apeluri prin care reevaluarea ajunge pe registru, la validarea notei).
 
     *Instrucțiunile din repository sunt mai puține decât apelurile (192), fiindcă 140 de poziții de
     scriere au doar 78 de texte SQL distincte: una singură apare de douăzeci și cinci de ori.*
@@ -169,7 +170,16 @@ def test_numarul_de_instructiuni_se_conserva():
     # NECALIFICAT — aceeasi linie exista deja in `achizitie_ic`, din acelasi motiv. Nu e o
     # instructiune noua de SQL: e un apel de CONTROL, spre `tranzactie.py`, pe care numaratoarea il
     # include. *Clichetul urca fiindca aplicatia face un pas in plus, nu fiindca s-a pierdut ceva.*
-    assert _apeluri_catre_repository() == 258
+    #
+    # [R59, 16.09.2026] 258 -> 262, cu cele PATRU apeluri numite, ca sa nu fie o cifra fara continut:
+    #   repo_reevaluari.consemneaza             — reevaluarea, consemnata langa ciorna
+    #   repo_reevaluari.neaplicata_pentru_nota  — randul neaplicat al notei, la validare
+    #   repo_mijloace_fixe.urca_valoarea        — coloana din registru urca (criteriul 1 al lui R59)
+    #   repo_reevaluari.marcheaza_aplicata      — faptul devine aplicat, cu momentul lui
+    # Niciuna nu muta SQL din alta parte: registrul chiar nu se atingea deloc pana acum, si tocmai
+    # asta era restanta. *Clichetul urca fiindca aplicatia face patru pasi in plus, nu fiindca s-a
+    # pierdut ceva — conservarea se probeaza de celelalte doua probe ale fisierului.*
+    assert _apeluri_catre_repository() == 262
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

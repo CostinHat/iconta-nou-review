@@ -671,6 +671,56 @@ ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ALTER COLUMN id ADD GENERATED ALWAY
 
 
 --
+-- Name: reevaluari; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
+--
+-- [R59, 16.09.2026] Reevaluarea unei imobilizari, ca FAPT cu atribute. Sursa unica a DDL-ului e
+-- core/migrare_reevaluare.py (idempotent, pentru schemele EXISTENTE); aici e oglinda pentru
+-- tenantii NOI. `aplicata_la` NULL = nota inca e ciorna: efectul pe `mijloace_fixe.valoare` se
+-- produce la VALIDAREA notei, nu la scrierea ei.
+--
+
+CREATE TABLE TENANT_PLACEHOLDER.reevaluari (
+    id integer NOT NULL,
+    inregistrare_id integer NOT NULL,
+    mijloc_fix_id integer NOT NULL,
+    data date NOT NULL,
+    valoare_bruta_veche numeric NOT NULL,
+    amortizare_eliminata numeric NOT NULL,
+    valoare_justa numeric NOT NULL,
+    aplicata_la timestamp with time zone,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE TENANT_PLACEHOLDER.reevaluari OWNER TO iconta_user;
+
+ALTER TABLE TENANT_PLACEHOLDER.reevaluari ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME TENANT_PLACEHOLDER.reevaluari_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+ALTER TABLE ONLY TENANT_PLACEHOLDER.reevaluari
+    ADD CONSTRAINT reevaluari_pkey PRIMARY KEY (id);
+
+-- O nota = cel mult o reevaluare. Poarta e in BAZA: o a doua validare a aceleiasi note ar urca
+-- valoarea inca o data, si nimic n-ar spune.
+CREATE UNIQUE INDEX IF NOT EXISTS reevaluari_nota_unic
+    ON TENANT_PLACEHOLDER.reevaluari (inregistrare_id);
+
+CREATE INDEX IF NOT EXISTS reevaluari_mijloc_idx
+    ON TENANT_PLACEHOLDER.reevaluari (mijloc_fix_id, data);
+
+
+GRANT ALL ON TABLE TENANT_PLACEHOLDER.reevaluari TO iconta_user;
+GRANT ALL ON SEQUENCE TENANT_PLACEHOLDER.reevaluari_id_seq TO iconta_user;
+
+
+--
 -- Name: miscari_stoc; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
 --
 

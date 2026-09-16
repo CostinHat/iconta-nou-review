@@ -28,6 +28,7 @@ from core import repo_facturi
 from core import repo_firma_profil
 from core import repo_mijloace_fixe
 from core import repo_portal
+from core import repo_reevaluari
 from core import repo_salariati
 from core import repo_stocuri
 from core import repo_tenants
@@ -883,12 +884,12 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
             mf = repo_mijloace_fixe.de_amortizat(cur, schema)
         from core import d406_active as _d406
         linii = []
-        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met in mf:
+        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met, reev in mf:
             if not pif or not dnf:
                 continue
             mf_d = {"cod": den, "denumire": den, "cont_imobilizare": cont_imob,
                     "cont_amortizare": cont_am, "valoare": val, "rezidual": rez,
-                    "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+                    "dnf_luni": dnf, "data_pif": pif, "metoda": met, "reevaluari": reev}
             try:
                 rata = _d406.amortizare_luna(mf_d, an, luna)   # metoda reala (CF art.28), nu liniar
             except ValueError as e:
@@ -3599,6 +3600,7 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie", "reevaluare")
         try:
+            fapt = None   # [R59] reevaluarea ca OBIECT, consemnata langa ciorna; `None` la surplus
             if op == "surplus":
                 r = _rv.nota_realizare_surplus(corp["suma"])
                 descr = "Transfer surplus reevaluare realizat (105=1175, pct.109-110)"
@@ -3610,11 +3612,12 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
                     # [R147] „inexistent/inactiv" lasa omul sa ghiceasca pe care din doua.
                     raise _erori.Inexistent("Mijlocul fix ales nu există în registrul "
                                                  "firmei sau a fost casat. Alege-l din listă.")
-                den, ci, ca, val, rez, dnf, pif, met = mf
+                den, ci, ca, val, rez, dnf, pif, met, reev = mf
                 ref = _date.fromisoformat(corp["data"])
                 from core import d406_active as _d406
                 mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                        "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+                        "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
+                        "metoda": met, "reevaluari": reev}
                 amortizare = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                 r = _rv.nota_reevaluare(val, amortizare, corp["valoare_justa"], ci, ca,
                                         corp.get("sold_105_activ", 0),
@@ -3622,6 +3625,12 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
                 descr = f"Reevaluare {den}: neta {r['valoare_neta']} -> justa "                         f"{corp['valoare_justa']} (OMFP 1802 pct.111-116)"
                 extra = {"valoare_neta": str(r["valoare_neta"]),
                          "diferenta": str(r["diferenta"]), "amortizare_eliminata": str(amortizare)}
+                # Valoarea justa se ia din MOTOR (neta + diferenta), nu din corpul cererii: asa
+                # randul consemnat e exact cifra pe care s-au construit liniile notei. O a doua
+                # citire a intrarii ar putea sa nu rotunjeasca la fel.
+                fapt = {"mijloc_fix_id": corp["mijloc_fix_id"], "data": ref,
+                        "valoare_bruta_veche": val, "amortizare_eliminata": amortizare,
+                        "valoare_justa": r["valoare_neta"] + r["diferenta"]}
                 if not r["linii"]:
                     _d = _date.fromisoformat(str(corp["data"])[:10]) if corp.get("data") else None
                     return dict(_af.afirmatie(
@@ -3637,6 +3646,15 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            if fapt:
+                # [R59] Efectul pe registru NU se produce aici: nota e CIORNA. Se consemneaza ce
+                # propune ea, iar `mijloace_fixe.valoare` urca la VALIDARE (`jurnal_valideaza`).
+                # *Altfel un `UPDATE` pe registrul care conduce amortizarea s-ar face dintr-o
+                # propunere — chiar riscul numit in varianta (a) a conditiei de deblocare.*
+                repo_reevaluari.consemneaza(
+                    cur, schema, iid, fapt["mijloc_fix_id"], fapt["data"],
+                    fapt["valoare_bruta_veche"], fapt["amortizare_eliminata"],
+                    fapt["valoare_justa"])
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **extra}
@@ -4100,12 +4118,13 @@ def tenant_mijloace_fixe(tenant_id, ctx):
         with conn.cursor() as cur:
             rows = repo_mijloace_fixe.toate(cur)
     from core import d406_active as _d406
-    for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ) in rows:
+    for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ, reev) in rows:
         val = Decimal(str(val or 0)); rez = Decimal(str(rez or 0))
         amortizat = ramas = eroare = None
         if activ:
             mf_d = {"cod": cod, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                    "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+                    "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
+                    "metoda": met, "reevaluari": reev}
             try:
                 r = _d406.amortizat_la_data(mf_d, azi)   # metoda reala (CF art.28), nu liniar
                 amortizat = str(r["amortizat"]); ramas = str(r["ramas"])
@@ -4159,11 +4178,12 @@ def nota_inventariere(tenant_id, corp, ctx):
                         # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
                         raise _erori.Inexistent("Mijlocul fix ales nu există în registrul "
                                                      "firmei sau a fost casat. Alege-l din listă.")
-                    den, ci, ca, val, rez, dnf, pif, met = mf
+                    den, ci, ca, val, rez, dnf, pif, met, reev = mf
                     ref = _date.fromisoformat(corp["data"])
                     from core import d406_active as _d406
                     mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                            "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+                            "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
+                            "metoda": met, "reevaluari": reev}
                     am = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                     r = _iv.nota_casare_mf(val, am, ci, ca)
                     d0 = f"Casare {den} (PV comisie, neamortizat {r['neamortizat']})"
@@ -4969,14 +4989,43 @@ def jurnal_dezleaga(tenant_id, nota_id, corp, ctx):
 
 
 def jurnal_valideaza(tenant_id, nota_id, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/jurnal/{nota_id}/valideaza`; docstringul ei a ramas in stratul HTTP."""
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/jurnal/{nota_id}/valideaza`; docstringul ei a ramas in stratul HTTP.
+
+    [R59] Validarea e momentul in care o propunere devine EVIDENTA — deci si momentul in care
+    efectul unei reevaluari intra pe registrul mijloacelor fixe (varianta (a) din conditia de
+    deblocare a lui R59: *„ruta actualizeaza `mijloace_fixe` la validarea notei"*). Aceeasi
+    tranzactie ca validarea: ori nota e validata SI registrul urcat, ori niciuna.
+    """
     from core import jurnal_api as _j
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
-        return _uc_comun._jurnal_rez(_j.valideaza(conn, schema, nota_id))
+        rez = _j.valideaza(conn, schema, nota_id)
+        if isinstance(rez, dict) and rez.get("ok"):
+            _aplica_reevaluarea(conn, schema, nota_id)
+        return _uc_comun._jurnal_rez(rez)
+
+
+def _aplica_reevaluarea(conn, schema, nota_id):
+    """[R59] Daca nota validata poarta o reevaluare neaplicata, urca valoarea bruta pe registru.
+
+    Intoarce `True` daca a aplicat ceva. Nota fara reevaluare -> `False`, tacut: cele mai multe
+    note n-au nicio legatura cu mijloacele fixe.
+
+    IDEMPOTENT prin DATE, nu prin grija apelantului: randul se citeste cu `aplicata_la IS NULL` si
+    `FOR UPDATE`, iar indexul unic pe `inregistrare_id` inchide si cazul in care s-ar consemna doua.
+    *O a doua validare a aceleiasi note ar urca valoarea inca o data — si nimic n-ar spune.*
+    """
+    with conn.cursor() as cur:
+        rand = repo_reevaluari.neaplicata_pentru_nota(cur, schema, nota_id)
+        if not rand:
+            return False
+        rid, mijloc_fix_id, valoare_justa = rand
+        repo_mijloace_fixe.urca_valoarea(cur, schema, mijloc_fix_id, valoare_justa)
+        repo_reevaluari.marcheaza_aplicata(cur, schema, rid)
+    return True
 
 
 

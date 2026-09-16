@@ -3,20 +3,20 @@
  "tenant_id": 4838,
  "schema": "tenant_003",
  "perioada": "2026-T3",
- "rulare": 4,
+ "rulare": 5,
  "lanturi": [
   {
    "lant": "1 · plan-conturi: cont analitic nou → apare în planul firmei",
    "ruta": "POST /tenants/{}/plan-conturi",
-   "cont": "208.93",
+   "cont": "208.94",
    "raspuns": {
     "stare": 200,
-    "corp": "{'ok': True, 'simbol': '208.93'}"
+    "corp": "{'ok': True, 'simbol': '208.94'}"
    },
    "in_plan": [
     {
-     "simbol": "208.93",
-     "denumire": "PROBA-E2-I cont analitic 4",
+     "simbol": "208.94",
+     "denumire": "PROBA-E2-I cont analitic 5",
      "tip": "Bifunctional"
     }
    ],
@@ -37,11 +37,11 @@
    "ruta": "POST /tenants/{}/nota-inventariere",
    "raspuns": {
     "stare": 200,
-    "corp": "{'inregistrare_id': 137, 'linii': [['2131', '4754', '3000.00']], 'mijloc_fix_id': 10}"
+    "corp": "{'inregistrare_id': 178, 'linii': [['2131', '4754', '3000.00']], 'mijloc_fix_id': 14}"
    },
    "mijloace_fixe": {
-    "inainte": 8,
-    "dupa": 9
+    "inainte": 12,
+    "dupa": 13
    },
    "OK": true
   },
@@ -49,7 +49,7 @@
    "lant": "4 · mijloace-fixe (MARTOR): citirea arată ce a scris lanțul 3",
    "ruta": "GET /tenants/{}/mijloace-fixe",
    "stare": 200,
-   "cate": 9,
+   "cate": 13,
    "OK": true
   },
   {
@@ -57,7 +57,7 @@
    "ruta": "GET /tenants/{}/d406-active",
    "d406_active": {
     "stare": 200,
-    "octeti": 15626,
+    "octeti": 22552,
     "raspuns": null
    },
    "are_asset": true,
@@ -73,11 +73,11 @@
    },
    "d406_active": {
     "stare": 200,
-    "octeti": 15626,
+    "octeti": 22552,
     "raspuns": null
    },
    "asset_probei": {
-    "AssetID": "PROBA-E2-I-4",
+    "AssetID": "PROBA-E2-I-5",
     "DepreciationForPeriod": "200.00",
     "AccumulatedDepreciation": "200.00",
     "BookValueEnd": "2800.00",
@@ -91,26 +91,33 @@
   {
    "lant": "7 · reevaluare-imobilizare → valoarea din Assets se schimbă",
    "ruta": "POST /tenants/{}/reevaluare-imobilizare",
-   "mijloc_fix_id": 10,
+   "mijloc_fix_id": 14,
    "raspuns": {
     "stare": 200,
-    "corp": "{'inregistrare_id': 138, 'linii': [['2813', '2131', '50.00'], ['2131', '105', '550.00']], 'valoare_neta': '2950.00', 'diferenta': '550.00', 'amortizare_eliminata': '50.00'}"
+    "corp": "{'inregistrare_id': 179, 'linii': [['2813', '2131', '50.00'], ['2131', '105', '550.00']], 'valoare_neta': '2950.00', 'diferenta': '550.00', 'amortizare_eliminata': '50.00'}"
+   },
+   "nota_id": 179,
+   "cost_dupa_ciorna": 3000.0,
+   "ciorna_nu_misca_registrul": true,
+   "validare": {
+    "stare": 200,
+    "corp": "{'ok': True}"
    },
    "d406_active": {
     "stare": 200,
-    "octeti": 15626,
+    "octeti": 22554,
     "raspuns": null
    },
    "asset_probei": {
-    "AssetID": "PROBA-E2-I-4",
-    "AcquisitionAndProductionCostsEnd": "3000.00",
-    "BookValueEnd": "2800.00",
-    "AccumulatedDepreciation": "200.00"
+    "AssetID": "PROBA-E2-I-5",
+    "AcquisitionAndProductionCostsEnd": "3500.00",
+    "BookValueEnd": "3322.04",
+    "AccumulatedDepreciation": "177.96",
+    "AppreciationForPeriod": "500.00"
    },
-   "cost_declarat": 3000.0,
+   "cost_declarat": 3500.0,
    "cost_asteptat": 3500.0,
-   "OK": false,
-   "CONSTATARE": "REEVALUAREA NU AJUNGE ÎN DECLARAȚIE. Ruta a acceptat (notele `2813=2131` 50 și `2131=105` 550, `valoare_neta` 2.950), dar `mijloace_fixe.valoare` a rămas 3000, deci secțiunea Assets declară tot costul vechi (3000.0 în loc de 3500). Evidența contabilă și declarația spun lucruri diferite despre același activ. E restanța deschisă **R59** — «reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe cea veche» —, CONFIRMATĂ acum prin măsurare, cu o consecință pe care restanța n-o numea: efectul ajunge în DECLARAȚIE, nu doar în amortizare."
+   "OK": true
   },
   {
    "lant": "8 · d406-stocuri: secțiunea se generează pe perioada trimestrului",
