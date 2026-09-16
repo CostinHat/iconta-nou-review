@@ -48,8 +48,12 @@ def test_d402_xml_valideaza_xsd_oficial():
 
 
 def test_d402_calcul_total_suma_randuri():
-    """DUK regula R14: totalPlata_A = suma tuturor Suma_venit din toate <venit>
-    (Regula 14.2 - totalul afisat = suma randurilor). Probat pe 2 venituri."""
+    """totalPlata_A = suma tuturor Suma_venit din toate <venit>
+    (Regula 14.2 - totalul afisat = suma randurilor). Probat pe 2 venituri.
+
+    TEMEIUL e `anaf_surse/structuraXML_D402_2022.pdf`, NU validatorul: masurat pe 16.09.2026,
+    un `totalPlata_A` gresit trece `valid` la DUKIntegrator. Marcajul de pana atunci spunea
+    altceva."""
     m = _manual()
     m["beneficiari"][0]["venituri"].append({
         "id_venit": 2, "tip_venit": 4, "da_nu": 1, "data_i": "01.06.2024",

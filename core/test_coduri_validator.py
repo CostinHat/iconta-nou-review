@@ -24,20 +24,36 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from scripts import scan_coduri_validator as _s  # noqa: E402
 
-# Clichet. Cele opt rămase, numite pe clase - nu o cifră fără conținut:
-#   * 7 în `core/d402.py` + proba lui (R14, R34, R39, R43 x2, R50): `D402Validator.jar` instalat are
-#     în TOT jarul patru coduri (R29, R40, R49.1, R49.2). Niciunul dintre cele citate nu e printre
-#     ele. E o clasă nouă, găsită de instrument, NEVERIFICATĂ încă la rulare - datorie deschisă.
-#   * 1 în `core/d301_operatiuni_api.py` (R24.1): D301 are `R24`, nu `R24.1`. Poate fi un sub-cod
-#     compus la rulare; se lămurește tot prin rulare, nu prin citire.
-# Scade doar cu verificare, nu cu ștergerea citării.
-PLAFON_NECORELATE = 8
+# Cele opt care erau aici pe 14.09 — 7 în `core/d402.py` + proba lui, 1 în
+# `core/d301_operatiuni_api.py` — au fost scrise atunci ca datorie deschisă, cu propoziția
+# „NEVERIFICATĂ încă la rulare". Pe 16.09 s-au verificat, la rulare. Ce a ieșit e mai jos.
+# Regula rămâne: scade doar cu VERIFICARE, nu cu ștergerea citării.
+#: [16.09.2026] 8 -> 0, si de-aia e scris ca EGALITATE, nu ca plafon: un clichet la zero n-ar mai
+#: pazi nimic. Cele opt s-au lamurit PRIN RULARE — XML mutat deliberat, cu mutatia DOVEDITA in
+#: fisier inainte de a crede raspunsul —, nu prin citirea constantelor din jar:
+#:   * `R50` -> `R29`: validatorul raspunde verbatim „eroare regula: R29: CIF_Rom … trebuie sa fie
+#:     unic". Codul era pur si simplu gresit.
+#:   * `R34` -> XSD: nu e o „regula" cu cod, e intervalul atributului („eroare atribut:
+#:     Impozit_venit: valoarea '-5' nu se incadreaza in intervalul cerut"), adica `IntPoz15SType`,
+#:     `minInclusive 0` — confruntat la sursa in `anaf_surse/d402_20160226_xsd_linii.txt`.
+#:   * `R14`, `R39`, `R43` -> validatorul NU LE VERIFICA. Toate trei trec `valid` cu valoarea rea IN
+#:     fisier. Sunt insa reguli REALE, confruntate verbatim in
+#:     `anaf_surse/structuraXML_D402_2022.pdf` — deci verificarile noastre RAMAN; ce era fals era
+#:     ATRIBUIREA. *Si deosebirea conteaza: cine citea marcajul de validator putea crede ca el prinde
+#:     lipsa. N-o prinde; o prindem noi, inainte de depunere.*
+#:   * `R24.1` -> CORECT, confirmat verbatim de validatorul D390 („eroare regula: R24.1: operatorul
+#:     codO … trebuie sa respecte algoritmul specific 'IT'"). Ii lipsea doar MARCA DE FORMULAR: e o
+#:     regula a lui D390, citata intr-un fisier `d301_*`, iar scanul o cauta in jarul declaratiei
+#:     fisierului. Conventia exista deja in antetul de mai sus; acum e aplicata.
+PLAFON_NECORELATE = 0
 
 
 def test_CLICHET_citarile_necorelate_nu_cresc():
     nec, _fara, _disc = _s.confrunta()
-    assert len(nec) <= PLAFON_NECORELATE, (
-        "coduri citate care nu apar în validatorul declarației lor: %d > %d\n  %s"
+    assert len(nec) == PLAFON_NECORELATE, (
+        "coduri citate care nu apar în validatorul declarației lor: %d, așteptat %d.\n"
+        "  E un CRITERIU, nu un clichet: o citare nouă se confruntă cu validatorul ÎNAINTE de a "
+        "intra, iar dacă regula e a altui formular își poartă marca.\n  %s"
         % (len(nec), PLAFON_NECORELATE,
            "\n  ".join("%s:%d  %s (căutat în %s)"
                        % (m["fisier"], m["linia"], m["cod"], "/".join(m["cautat_in"]))

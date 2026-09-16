@@ -161,10 +161,15 @@ def test_datorie_reguli_validator_verificate_la_sursa():
     assert "reguli validator verificate la sursa" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 14.09.2026: 8 citari `DUK regula <cod>` nu se regasesc in validatorul declaratiei lor, gasite de scripts/scan_coduri_validator.py - 7 in core/d402.py (R14, R34, R39, R43 x2, R50; D402Validator.jar instalat are in TOT jarul patru coduri: R29, R40, R49.1, R49.2) + R24.1 in core/d301_operatiuni_api.py (D301 are R24). Nu se stie daca sunt coduri gresite, sub-coduri compuse la rulare, sau coduri dintr-o versiune de validator care nu mai e instalata. Se lamureste PRIN RULARE (XML mutat deliberat, ca la D100/D119/D710 pe 14.09), nu prin citirea constantelor - vezi DECIZII.md (42).")
+# [INCHISA 16.09.2026] Cele 8 s-au lamurit PRIN RULARE — XML mutat deliberat, cu mutatia DOVEDITA
+# in fisier inainte de a crede raspunsul. Ce a iesit: `R50` era de fapt `R29` (validatorul o spune
+# verbatim); `R34` nu e o regula cu cod, e intervalul atributului, adica XSD; iar `R14`, `R39` si
+# `R43` NU SUNT VERIFICATE DE VALIDATOR — trec `valid` cu valoarea rea in fisier —, dar sunt reguli
+# reale, confruntate verbatim in `anaf_surse/structuraXML_D402_2022.pdf`. `R24.1` era CORECT, ii
+# lipsea marca de formular `(D390)`. Deci verificarile noastre raman; ce era fals era ATRIBUIREA.
+# Tabelul complet e in `core/test_coduri_validator.py`, langa clichetul devenit CRITERIU.
 def test_datorie_coduri_d402_d301_necorelate():
-    # Se inchide cand fiecare din cele 8 e lamurit si clichetul din core/test_coduri_validator.py
-    # coboara la 0 (PLAFON_NECORELATE), consemnat in DECIZII.md.
+    # Ramane ca proba: daca vreo citare noua necorelata ar reaparea, clichetul urca si asta cade.
     from core import test_coduri_validator as _tcv
     assert _tcv.PLAFON_NECORELATE == 0
 

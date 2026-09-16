@@ -15,20 +15,46 @@ in vigoare (namespace declaratie:v1, version 1.02, universalCode D402_A1.0.0) a 
                                              d402_surse_sha256.txt)
   - anaf_surse/structuraXML_D402_2022.pdf   (structura + nomenclatoare N1/N3/N4 + corelatii)
   - bytecode D402Validator.jar (d402validator/v0/{Declaratie402,Beneficiar,Venit}) - confirmare
-    radacina `declaratie402`, campuri, domenii enum, mesajele de validare R49 si R50.
-Toate campurile si domeniile de mai jos sunt PROBATE camp cu camp pe validatorul oficial (DUK).
-
+    radacina `declaratie402`, campuri, domenii enum, mesajele de validare R49 si cea de
+    unicitate a CIF_Rom. *Citirea din bytecode a numit-o pe a doua cu alt cod decat o numeste
+    validatorul cand chiar ruleaza — v. mai jos. Adiacenta din constant pool nu e ordinea de
+    emitere; a mintit si la D100.*
 Ierarhie: <declaratie402> > <beneficiar> (1-n aparitii) > <venit> (1-n aparitii).
 
-Reguli probate (citari "DUK regula ..."):
-  - R14 : totalPlata_A = suma tuturor Suma_venit (suma de control).
-  - R34 : Impozit_venit >= 0.
-  - R39 : anul(Data_I) <= anul raportarii.
-  - R40 : daca Data_S completat -> Data_S >= Data_I si anul(Data_S) = anul raportarii.
-  - R43 : declaratie initiala (d_rec=0) => Suma_venit > 0; rectificativa (d_rec=1) => >= 0.
+REGULILE, SI DE UNDE VINE FIECARE — remasurat 16.09.2026, PRIN RULARE, cu XML mutat deliberat si cu
+mutatia dovedita in fisier inainte de a crede raspunsul. Pana la data aia scria aici, in bloc, ca
+"toate campurile si domeniile de mai jos sunt PROBATE camp cu camp pe validatorul oficial (DUK)",
+si ca toate cele de mai jos ar fi citari de reguli ale validatorului. NU ERA ADEVARAT pentru
+cinci din opt:
+
+  ┌ REGULI ALE VALIDATORULUI (confirmate rulandu-l, cu mesajul lui verbatim)
+  - R40  : daca Data_S completat -> Data_S >= Data_I si anul(Data_S) = anul raportarii.
+           „eroare regula: R40: anul atributului Data_S (2023) este diferit de anul raportarii (2024)"
   - R49.1: Categ_B=1 (dependent)      => Tip_venit NU in (1,2,3).
-  - R49.2: Categ_B=2 (alte categorii) => Tip_venit NU in (5,6,8,9,10).
-  - R50 : <beneficiar> unic dupa CIF_Rom (fara aparitii multiple pe acelasi CIF_Rom).
+           „eroare regula: R49.1: pentru Categ_B = 1 (dependent) nu se admite Tip_venit = 1, 2 sau 3"
+  - R29  : <beneficiar> unic dupa CIF_Rom. **Codul scris aici pana la remasurare era pur si
+           simplu altul**; validatorul raspunde „eroare regula: R29: CIF_Rom (...) unic".
+  - R49.2: Categ_B=2 => Tip_venit NU in (5,6,8,9,10). Cod prezent in jar, neexercitat aici.
+
+  ┌ CONSTRANGERE DE SCHEMA, nu regula cu cod
+  - Impozit_venit >= 0 : validatorul raspunde „eroare atribut: Impozit_venit: valoarea '-5' nu se
+           incadreaza in intervalul cerut" — adica `IntPoz15SType`, `minInclusive 0`, confruntat la
+           sursa in `anaf_surse/d402_20160226_xsd_linii.txt`. Pana la remasurare purta, gresit, un
+           marcaj de validator; codul vechi e scris in `core/test_coduri_validator.py`, unde e
+           si tabelul corectiilor.
+
+  ┌ REGULI PE CARE VALIDATORUL NU LE VERIFICA — si totusi REALE
+    Toate trei trec `valid` cu valoarea rea IN fisier (masurat). Sunt insa scrise verbatim in
+    `anaf_surse/structuraXML_D402_2022.pdf`, deci verificarile noastre RAMAN — ce era fals era
+    ATRIBUIREA. *Deosebirea conteaza: cine citea marcajul de validator putea crede ca el prinde
+    lipsa. Nu o prinde; o prindem noi, inainte de depunere.*
+  - totalPlata_A = suma tuturor Suma_venit.  Doc: „totalPlata_A = Σ (beneficiar.venit.Suma_venit)",
+           cu eroarea numita acolo: „ERR – camp totalPlata_A calculat gresit".
+  - anul(Data_I) <= anul raportarii.         Doc: „if (Data_I !=null ) then anul(Data_I)<= an",
+           „ERR –Anul din Data_I > anul raportarii".
+  - d_rec=0 => Suma_venit > 0; altfel >= 0.  Doc: „daca d_rec=0 Suma_venit > 0 altfel
+           Suma_venit >= 0 (modif.16.03.2017)".
+
   - Data format ZZ.LL.AAAA (dd.mm.yyyy); luna raportare = 12 (fix, camp de raportare anuala).
 
 Nomenclatoare (din XSD/PDF): Tip_P(1-4), Forma_jurid_P(1-8), Nationalitate=N3 (toate statele),
@@ -193,7 +219,13 @@ def _int_in(val, dom):
 
 
 def calcul_d402(manual):
-    """DUK regula R14: totalPlata_A = suma tuturor Suma_venit din toate <venit>."""
+    """totalPlata_A = suma tuturor Suma_venit din toate <venit>.
+
+    TEMEI: `anaf_surse/structuraXML_D402_2022.pdf` — verbatim, *"totalPlata_A = Σ (beneficiar.venit.Suma_venit)"*, cu eroarea numita tot acolo: *"ERR – camp totalPlata_A calculat gresit"*.
+
+    NU E REGULA DUK, desi pana la 16.09.2026 scria ca ar fi. Masurat, cu `totalPlata_A="9999"`
+    peste un total real de 12000 si cu mutatia dovedita in fisier: validatorul oficial raspunde
+    **`valid`**. Noi il calculam corect; daca ar fi gresit, ar pleca la ANAF asa."""
     total = 0
     nv = 0
     for b in (manual.get("beneficiari") or []):
@@ -258,7 +290,8 @@ def erori_generare(prof, manual):
         if not _int_in(b.get("categ_b"), _CATEG_B):
             er.append(p + "Categ_B (categ_b) obligatoriu în (1,2).")
         if _intval(b.get("impozit_venit")) < 0:
-            er.append(p + "Impozit_venit (impozit_venit) >= 0 (DUK regula R34).")
+            er.append(p + "Impozit_venit (impozit_venit) >= 0 "
+                          "(interval de schema, minim 0).")
         nat = b.get("nationalitate")
         if nat and str(nat).strip().upper() not in _TARI:
             er.append(p + "Nationalitate (nationalitate) neregasita în N3.")
@@ -287,7 +320,8 @@ def erori_generare(prof, manual):
             if di is None:
                 er.append(pv + "Data_I (data_i) obligatoriu, format ZZ.LL.AAAA.")
             elif di[0] > an:
-                er.append(pv + "anul din Data_I > anul raportarii (DUK regula R39).")
+                er.append(pv + "anul din Data_I > anul raportarii "
+                               "(structuraXML_D402_2022; DUK nu o verifica).")
             ds = _parse_data(v.get("data_s"))
             if v.get("data_s") and ds is None:
                 er.append(pv + "Data_S format ZZ.LL.AAAA.")
@@ -302,14 +336,16 @@ def erori_generare(prof, manual):
                 er.append(pv + "Regim_fisc (regim_fisc) obligatoriu în (1,2,3).")
             sv = _intval(v.get("suma_venit"))
             if d_rec == 0 and sv <= 0:
-                er.append(pv + "Suma_venit > 0 intr-o declarație initiala (DUK regula R43).")
+                er.append(pv + "Suma_venit > 0 intr-o declarație initiala "
+                               "(structuraXML_D402_2022, declaratie initiala; DUK nu o verifica).")
             elif sv < 0:
-                er.append(pv + "Suma_venit >= 0 (DUK regula R43).")
+                er.append(pv + "Suma_venit >= 0 "
+                               "(structuraXML_D402_2022; DUK nu o verifica).")
             if str(v.get("moneda_venit") or "").strip().upper() not in _MONEDE:
                 er.append(pv + "Moneda_venit (moneda_venit) obligatoriu în N4 (EUR,RON,USD,...).")
     dup = sorted(set(x for x in cifuri if cifuri.count(x) > 1))
     if dup:
-        er.append("CIF_Rom duplicat intre beneficiari: %s (DUK regula R50)." % ", ".join(dup))
+        er.append("CIF_Rom duplicat intre beneficiari: %s (DUK regula R29)." % ", ".join(dup))
     return er
 
 

@@ -206,7 +206,7 @@ def adauga(conn, schema, an, luna, d):
         _st, _mo = _cv(partener_tara, partener_cod)
         if _st == "invalid":
             _avert = ("Codul de TVA %s%s nu trece algoritmul %s (%s) — va fi respins de DUKIntegrator "
-                      "(DUK regula R24.1) la generarea D390. Verifică-l acum." % (partener_tara, partener_cod, partener_tara, _mo))
+                      "(DUK regula R24.1 (D390)) la generarea D390. Verifică-l acum." % (partener_tara, partener_cod, partener_tara, _mo))
     baza, tva = _tva_din(val_valuta, curs, cota)
     with conn.cursor() as cur:
         oid = _repo.insert_d301_operatiuni(cur, schema, an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, partener_tara, partener_cod, partener_den, temei_307)[0]
