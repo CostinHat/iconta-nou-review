@@ -3,10 +3,10 @@
  "tenant_id": 4838,
  "schema": "tenant_003",
  "perioada": "2026-09",
- "rulare": 37,
+ "rulare": 43,
  "cum_s_a_aflat": {
   "stare": 200,
-  "facturi_cu_marca": 36
+  "facturi_cu_marca": 42
  },
  "lanturi": [
   {
@@ -19,43 +19,43 @@
     "cota": 21,
     "tip": "bunuri",
     "cod_tva_furnizor": "DE811907980",
-    "numar": "PROBA-E2-F-1-37",
+    "numar": "PROBA-E2-F-1-43",
     "furnizor_nume": "FURNIZOR UE GMBH",
     "descriere": "PROBA-E2-F achizitie IC bunuri"
    },
    "raspuns": {
     "stare": 200,
     "corp": {
-     "inregistrare_id": 148,
-     "factura_id": 94,
+     "inregistrare_id": 169,
+     "factura_id": 111,
      "valoare": "1000",
      "tva": "210.00"
     }
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1086,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R5_1": {
-     "inainte": 4600,
-     "dupa": 5600,
+     "inainte": 5600,
+     "dupa": 6600,
      "delta": 1000
     },
     "R5_2": {
-     "inainte": 966,
-     "dupa": 1176,
+     "inainte": 1176,
+     "dupa": 1386,
      "delta": 210
     },
     "R18_1": {
-     "inainte": 4600,
-     "dupa": 5600,
+     "inainte": 5600,
+     "dupa": 6600,
      "delta": 1000
     },
     "R18_2": {
-     "inainte": 966,
-     "dupa": 1176,
+     "inainte": 1176,
+     "dupa": 1386,
      "delta": 210
     }
    },
@@ -72,43 +72,43 @@
     "cota": 21,
     "tip": "servicii",
     "cod_tva_furnizor": "DE811907980",
-    "numar": "PROBA-E2-F-2-37",
+    "numar": "PROBA-E2-F-2-43",
     "furnizor_nume": "FURNIZOR UE GMBH",
     "descriere": "PROBA-E2-F servicii IC"
    },
    "raspuns": {
     "stare": 200,
     "corp": {
-     "inregistrare_id": 149,
-     "factura_id": 95,
+     "inregistrare_id": 170,
+     "factura_id": 112,
      "valoare": "800",
      "tva": "168.00"
     }
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R7_1": {
-     "inainte": 800,
-     "dupa": 1600,
+     "inainte": 1600,
+     "dupa": 2400,
      "delta": 800
     },
     "R7_2": {
-     "inainte": 168,
-     "dupa": 336,
+     "inainte": 336,
+     "dupa": 504,
      "delta": 168
     },
     "R20_1": {
-     "inainte": 800,
-     "dupa": 1600,
+     "inainte": 1600,
+     "dupa": 2400,
      "delta": 800
     },
     "R20_2": {
-     "inainte": 168,
-     "dupa": 336,
+     "inainte": 336,
+     "dupa": 504,
      "delta": 168
     }
    },
@@ -126,15 +126,15 @@
     "cota": 21,
     "furnizor_cui": "95275466",
     "furnizor_platitor_tva": true,
-    "numar": "PROBA-E2-F-3-37",
+    "numar": "PROBA-E2-F-3-43",
     "furnizor_nume": "FURNIZOR RO SRL",
     "descriere": "PROBA-E2-F taxare inversa"
    },
    "raspuns": {
     "stare": 200,
     "corp": {
-     "inregistrare_id": 150,
-     "factura_id": 96,
+     "inregistrare_id": 171,
+     "factura_id": 113,
      "valoare": "400",
      "tva": "84.00",
      "mentiune": "taxare inversa - art. 331 alin. (2) lit. a) Cod fiscal"
@@ -142,28 +142,28 @@
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R12_1": {
-     "inainte": 2400,
-     "dupa": 2800,
+     "inainte": 2800,
+     "dupa": 3200,
      "delta": 400
     },
     "R12_2": {
-     "inainte": 504,
-     "dupa": 588,
+     "inainte": 588,
+     "dupa": 672,
      "delta": 84
     },
     "R25_1": {
-     "inainte": 2400,
-     "dupa": 2800,
+     "inainte": 2800,
+     "dupa": 3200,
      "delta": 400
     },
     "R25_2": {
-     "inainte": 504,
-     "dupa": 588,
+     "inainte": 588,
+     "dupa": 672,
      "delta": 84
     }
    },
@@ -181,14 +181,14 @@
     "cota": 21,
     "furnizor_cui": "95275466",
     "furnizor_nume": "FURNIZOR RO SRL",
-    "numar": "PROBA-E2-F-4-37"
+    "numar": "PROBA-E2-F-4-43"
    },
    "raspuns": {
     "stare": 200,
     "corp": {
-     "inregistrare_id": 151,
-     "factura_id": 97,
-     "mijloc_fix_id": 12,
+     "inregistrare_id": 172,
+     "factura_id": 114,
+     "mijloc_fix_id": 13,
      "dnf_luni": 36,
      "conturi": [
       "208",
@@ -198,18 +198,18 @@
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R22_1": {
-     "inainte": 6500,
-     "dupa": 7500,
+     "inainte": 7500,
+     "dupa": 8500,
      "delta": 1000
     },
     "R22_2": {
-     "inainte": 1365,
-     "dupa": 1575,
+     "inainte": 1575,
+     "dupa": 1785,
      "delta": 210
     }
    },
@@ -225,13 +225,13 @@
     "valoare": 150,
     "cont_cheltuiala": "607",
     "categorie": "alte_bunuri",
-    "numar": "PROBA-E2-F-5-37"
+    "numar": "PROBA-E2-F-5-43"
    },
    "raspuns": {
     "stare": 200,
     "corp": {
-     "inregistrare_id": 152,
-     "factura_id": 98,
+     "inregistrare_id": 173,
+     "factura_id": 115,
      "valoare": "150",
      "categorie": "alte_bunuri",
      "in_d394": true
@@ -239,18 +239,18 @@
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R22_1": {
-     "inainte": 7500,
-     "dupa": 7500,
+     "inainte": 8500,
+     "dupa": 8500,
      "delta": 0
     },
     "R22_2": {
-     "inainte": 1575,
-     "dupa": 1575,
+     "inainte": 1785,
+     "dupa": 1785,
      "delta": 0
     },
     "R23_1": {
@@ -284,19 +284,19 @@
    "lant": "7 · facturi/{}/storno peste o emisă 1000 @21%",
    "preconditie": {
     "emitere_stare": 200,
-    "factura_id": 99
+    "factura_id": 116
    },
    "ruta": "POST /tenants/{}/facturi/{}/storno",
    "raspuns": {
     "stare": 200,
     "corp": {
      "ok": true,
-     "factura_id": 100,
+     "factura_id": 117,
      "total": -1210.0,
      "tva": -210.0,
      "contare": {
       "stare": "contata",
-      "inregistrare_id": 154,
+      "inregistrare_id": 175,
       "tva_la_incasare": false,
       "linii": [
        {
@@ -311,24 +311,24 @@
        }
       ]
      },
-     "numar": "CMT178",
-     "storno_din_id": 99
+     "numar": "CMT188",
+     "storno_din_id": 116
     }
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R9_1": {
-     "inainte": 13200,
-     "dupa": 12200,
+     "inainte": 14600,
+     "dupa": 13600,
      "delta": -1000
     },
     "R9_2": {
-     "inainte": 2772,
-     "dupa": 2562,
+     "inainte": 3066,
+     "dupa": 2856,
      "delta": -210
     }
    },
@@ -339,17 +339,17 @@
    "lant": "8 · proforma 600 @21% NU e în decont, transformarea o bagă",
    "preconditie": {
     "emitere_proforma": 200,
-    "factura_id": 101
+    "factura_id": 118
    },
    "a_proforma_absenta": {
     "R9_1": {
-     "inainte": 12200,
-     "dupa": 12200,
+     "inainte": 13600,
+     "dupa": 13600,
      "delta": 0
     },
     "R9_2": {
-     "inainte": 2562,
-     "dupa": 2562,
+     "inainte": 2856,
+     "dupa": 2856,
      "delta": 0
     }
    },
@@ -358,12 +358,12 @@
     "stare": 200,
     "corp": {
      "ok": true,
-     "factura_id": 102,
+     "factura_id": 119,
      "total": 726.0,
      "tva": 126.0,
      "contare": {
       "stare": "contata",
-      "inregistrare_id": 155,
+      "inregistrare_id": 176,
       "tva_la_incasare": false,
       "linii": [
        {
@@ -384,26 +384,26 @@
      "curs_sursa": "ron",
      "data_curs": "2026-09-16",
      "curs_vechime_zile": 0,
-     "numar": "CMT179",
+     "numar": "CMT189",
      "serie": "CMT"
     }
    },
    "b_dupa_transformare": {
     "R9_1": {
-     "inainte": 12200,
-     "dupa": 12800,
+     "inainte": 13600,
+     "dupa": 14200,
      "delta": 600
     },
     "R9_2": {
-     "inainte": 2562,
-     "dupa": 2688,
+     "inainte": 2856,
+     "dupa": 2982,
      "delta": 126
     }
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "OK": true,
    "nepotriviri": {}
@@ -414,18 +414,18 @@
    "preconditie": {
     "emitere_cheie": 200,
     "s_a_primit_cheia": true,
-    "id": 7247
+    "id": 7248
    },
    "raspuns": {
     "stare": 200,
     "corp": {
      "ok": true,
-     "factura_id": 103,
+     "factura_id": 120,
      "total": 605.0,
      "tva": 105.0,
      "contare": {
       "stare": "contata",
-      "inregistrare_id": 156,
+      "inregistrare_id": 177,
       "tva_la_incasare": false,
       "linii": [
        {
@@ -446,24 +446,24 @@
      "curs_sursa": "ron",
      "data_curs": "2026-09-22",
      "curs_vechime_zile": 0,
-     "numar": "CMT180",
+     "numar": "CMT190",
      "serie": "CMT"
     }
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R9_1": {
-     "inainte": 12800,
-     "dupa": 13300,
+     "inainte": 14200,
+     "dupa": 14700,
      "delta": 500
     },
     "R9_2": {
-     "inainte": 2688,
-     "dupa": 2793,
+     "inainte": 2982,
+     "dupa": 3087,
      "delta": 105
     }
    },
@@ -486,18 +486,18 @@
    },
    "d300_dupa": {
     "stare": 200,
-    "octeti_xml": 1090,
-    "randuri_citite": 58
+    "octeti_xml": 1128,
+    "randuri_citite": 61
    },
    "delta": {
     "R9_1": {
-     "inainte": 13300,
-     "dupa": 13600,
+     "inainte": 14700,
+     "dupa": 15000,
      "delta": 300
     },
     "R9_2": {
-     "inainte": 2793,
-     "dupa": 2856,
+     "inainte": 3087,
+     "dupa": 3150,
      "delta": 63
     }
    },
@@ -524,8 +524,8 @@
  ],
  "d300_la_pornire": {
   "stare": 200,
-  "octeti_xml": 1084,
-  "randuri_citite": 58
+  "octeti_xml": 1128,
+  "randuri_citite": 61
  },
  "duk": {
   "stare_http": 200,
@@ -538,34 +538,36 @@
    "limita": "Validare structura si reguli ANAF. NU verifica daca cifrele corespund evidentei contabile - pentru asta e controlul incrucisat.",
    "avertismente": [
     "6 achiziţii cu cotă 0% (bază 5.400 lei) — raportate automat la R26 (scutite de taxă sau neimpozabile), fără impact pe TVA. Verifică: dacă sunt achiziţii intracomunitare, reclasifică-le la taxare inversă (R5/R18).",
-    "7 achiziţii cu categorie art.331 (taxare inversă) dar cotă 0% (bază 1.050 lei) — cota aplicabilă nu e capturată, deci rd.12/rd.25 (colectat+deductibil) NU se pot derivă. Declar-o manual la R12/R25 sau completează cota (altfel taxarea inversă nu apare în decont).",
-    "4 facturi intracomunitare (primita) NU au axa bunuri/servicii inregistrata pe document (facturi: 60, 61, 71, 72) - sunt tratate ca BUNURI (rd.1/rd.5), asa cum se facea inainte, si reclasificarea D390 le mai poate schimba. Axa se inregistreaza la introducere si se INGHEATA pe factura (R186); pentru facturile vechi ea nu se poate deduce din nimic, deci NU s-a ghicit.",
-    "6 achiziții intracomunitare de bunuri din UE (bază 5.600 lei, TVA autolichidat 1.176 lei la 21%) — declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt SERVICII, reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.7 colectat + rd.20 deductibil."
+    "8 achiziţii cu categorie art.331 (taxare inversă) dar cotă 0% (bază 1.200 lei) — cota aplicabilă nu e capturată, deci rd.12/rd.25 (colectat+deductibil) NU se pot derivă. Declar-o manual la R12/R25 sau completează cota (altfel taxarea inversă nu apare în decont).",
+    "4 facturi intracomunitare (primita) NU au axa bunuri/servicii înregistrată pe document (facturi: 60, 61, 71, 72) — sunt tratate ca BUNURI (rd.1/rd.5), așa cum se făcea înainte, iar reclasificarea D390 le mai poate schimba. Axa se înregistrează la introducere și se ÎNGHEAȚĂ pe factură (R186); pentru facturile vechi ea nu se poate deduce din nimic, deci NU s-a ghicit.",
+    "Livrări intracomunitare de bunuri către UE (bază 2.700 lei) — declarate la rd.1 (0%, art.294 alin.2). Dacă sunt PRESTĂRI de servicii intracomunitare, reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.3.",
+    "7 achiziții intracomunitare de bunuri din UE (bază 6.600 lei, TVA autolichidat 1.386 lei la 21%) — declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt SERVICII, reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.7 colectat + rd.20 deductibil."
    ],
    "note_rezultat": [
-    "7 achiziţii cu taxare inversă primită (bază 2.800 lei, TVA 588 lei) — derivate automat: rd.12 colectat + rd.25 deductibil (net zero, art.331). Anterior dispăreau tacit din decont.",
-    "2 achiziții de servicii intracomunitare din UE (bază 1.600 lei, TVA autolichidat 336 lei la 21%) — reclasificate ca serviciu (S) în D390, declarate la rd.7 colectat + rd.7.1 + oglindă rd.20 deductibil + rd.20.1 (taxare inversă, net zero). Mutate din rd.5+rd.18, nu adăugate.",
-    "Rezultat TVA de plată 1.688 lei."
+    "8 achiziţii cu taxare inversă primită (bază 3.200 lei, TVA 672 lei) — derivate automat: rd.12 colectat + rd.25 deductibil (net zero, art.331). Anterior dispăreau tacit din decont.",
+    "Prestări de servicii intracomunitare către UE (bază 2.100 lei) — reclasificate ca serviciu (P) în D390, declarate la rd.3 + rd.3.1 (locul prestării în afară României, 0%). Mutate din rd.1 (livrări de bunuri), nu adăugate — fără dublă numărare.",
+    "3 achiziții de servicii intracomunitare din UE (bază 2.400 lei, TVA autolichidat 504 lei la 21%) — reclasificate ca serviciu (S) în D390, declarate la rd.7 colectat + rd.7.1 + oglindă rd.20 deductibil + rd.20.1 (taxare inversă, net zero). Mutate din rd.5+rd.18, nu adăugate.",
+    "Rezultat TVA de plată 1.772 lei."
    ],
-   "operatiuni": 32,
+   "operatiuni": 35,
    "componente": {
     "acoperire": "completa",
     "sectiuni": [
      {
       "nume": "Rânduri completate",
-      "total": 32,
-      "aratate": 32,
+      "total": 35,
+      "aratate": 35,
       "monetare": [
        "valoare"
       ],
       "randuri": [
        {
         "rând": "R9_1",
-        "valoare": 13600
+        "valoare": 15000
        },
        {
         "rând": "R9_2",
-        "valoare": 2856
+        "valoare": 3150
        },
        {
         "rând": "R10_1",
@@ -577,111 +579,123 @@
        },
        {
         "rând": "R12_1",
-        "valoare": 2800
+        "valoare": 3200
        },
        {
         "rând": "R12_2",
-        "valoare": 588
+        "valoare": 672
        },
        {
         "rând": "R25_1",
-        "valoare": 2800
+        "valoare": 3200
        },
        {
         "rând": "R25_2",
-        "valoare": 588
+        "valoare": 672
+       },
+       {
+        "rând": "R1_1",
+        "valoare": 2700
        },
        {
         "rând": "R5_1",
-        "valoare": 5600
+        "valoare": 6600
        },
        {
         "rând": "R5_2",
-        "valoare": 1176
+        "valoare": 1386
        },
        {
         "rând": "R18_1",
-        "valoare": 5600
+        "valoare": 6600
        },
        {
         "rând": "R18_2",
-        "valoare": 1176
+        "valoare": 1386
+       },
+       {
+        "rând": "R3_1",
+        "valoare": 2100
+       },
+       {
+        "rând": "R3_1_1",
+        "valoare": 2100
        },
        {
         "rând": "R7_1",
-        "valoare": 1600
+        "valoare": 2400
        },
        {
         "rând": "R7_2",
-        "valoare": 336
+        "valoare": 504
        },
        {
         "rând": "R7_1_1",
-        "valoare": 1600
+        "valoare": 2400
        },
        {
         "rând": "R7_1_2",
-        "valoare": 336
+        "valoare": 504
        },
        {
         "rând": "R20_1",
-        "valoare": 1600
+        "valoare": 2400
        },
        {
         "rând": "R20_2",
-        "valoare": 336
+        "valoare": 504
        },
        {
         "rând": "R20_1_1",
-        "valoare": 1600
+        "valoare": 2400
        },
        {
         "rând": "R20_1_2",
-        "valoare": 336
+        "valoare": 504
        },
        {
         "rând": "R17_1",
-        "valoare": 27300
+        "valoare": 35700
        },
        {
         "rând": "R17_2",
-        "valoare": 5363
+        "valoare": 6119
        },
        {
         "rând": "R22_1",
-        "valoare": 7500
+        "valoare": 8500
        },
        {
         "rând": "R22_2",
-        "valoare": 1575
+        "valoare": 1785
        },
        {
         "rând": "R27_1",
-        "valoare": 17500
+        "valoare": 20700
        },
        {
         "rând": "R27_2",
-        "valoare": 3675
+        "valoare": 4347
        },
        {
         "rând": "R28_2",
-        "valoare": 3675
+        "valoare": 4347
        },
        {
         "rând": "R32_2",
-        "valoare": 3675
+        "valoare": 4347
        },
        {
         "rând": "R34_2",
-        "valoare": 1688
+        "valoare": 1772
        },
        {
         "rând": "R37_2",
-        "valoare": 1688
+        "valoare": 1772
        },
        {
         "rând": "R41_2",
-        "valoare": 1688
+        "valoare": 1772
        },
        {
         "rând": "R26_1",
@@ -690,9 +704,9 @@
       ]
      }
     ],
-    "total": 32
+    "total": 35
    },
-   "xml_b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPGRlY2xhcmF0aWUzMDAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeG1sbnM9Im1mcDphbmFmOmRndGk6ZDMwMDpkZWNsYXJhdGllOnYxMiIgeHNpOnNjaGVtYUxvY2F0aW9uPSJtZnA6YW5hZjpkZ3RpOmQzMDA6ZGVjbGFyYXRpZTp2MTIgRDMwMC54c2QiIGx1bmE9IjkiIGFuPSIyMDI2IiBkZXB1c1JlcHJlemVudGFudD0iMCIgYmlmYV9pbnRlcm5lPSIwIiB0ZW1laT0iMCIgbnVtZV9kZWNsYXI9IkRvYnJlc2N1IiBwcmVudW1lX2RlY2xhcj0iRWxlbmEiIGZ1bmN0aWVfZGVjbGFyPSJBRE1JTklTVFJBVE9SIiBjdWk9Ijk1MTQxNTM3IiBkZW49IkNvbWVydCBNaWNybyBUVkEgU1JMIiBhZHJlc2E9IlN0ci4gVGVzdHVsdWkgbnIuIDEgQnVjdXJlc3RpIEJ1Y3VyZciZdGkiIGJhbmNhPSJCYW5jYSBUZXN0IiBjb250PSJSTzQ5QUFBQTFCMzEwMDc1OTM4NDAwMDAiIGNhZW49IjQ3MTEiIHRpcF9kZWNvbnQ9IlQiIHByb19yYXRhPSIxMDAuMDAiIGJpZmFfY2VyZWFsZT0iTiIgYmlmYV9tb2I9Ik4iIGJpZmFfZGlzcD0iTiIgYmlmYV9jb25zPSJOIiBzb2xpY2l0X3JhbWI9Ik4iIG5yX2V2aWQ9IjEwMzAyMDEwOTI2MjUxMDI2MDAwMDQwIiB0b3RhbFBsYXRhX0E9IjEyOTM2MiIgUjEwXzE9IjM3MDAiIFIxMF8yPSI0MDciIFIxMl8xPSIyODAwIiBSMTJfMj0iNTg4IiBSMTdfMT0iMjczMDAiIFIxN18yPSI1MzYzIiBSMThfMT0iNTYwMCIgUjE4XzI9IjExNzYiIFIyMF8xPSIxNjAwIiBSMjBfMV8xPSIxNjAwIiBSMjBfMV8yPSIzMzYiIFIyMF8yPSIzMzYiIFIyMl8xPSI3NTAwIiBSMjJfMj0iMTU3NSIgUjI1XzE9IjI4MDAiIFIyNV8yPSI1ODgiIFIyNl8xPSI1NDAwIiBSMjdfMT0iMTc1MDAiIFIyN18yPSIzNjc1IiBSMjhfMj0iMzY3NSIgUjMyXzI9IjM2NzUiIFIzNF8yPSIxNjg4IiBSMzdfMj0iMTY4OCIgUjQxXzI9IjE2ODgiIFI1XzE9IjU2MDAiIFI1XzI9IjExNzYiIFI3XzE9IjE2MDAiIFI3XzFfMT0iMTYwMCIgUjdfMV8yPSIzMzYiIFI3XzI9IjMzNiIgUjlfMT0iMTM2MDAiIFI5XzI9IjI4NTYiLz4="
+   "xml_b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPGRlY2xhcmF0aWUzMDAgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeG1sbnM9Im1mcDphbmFmOmRndGk6ZDMwMDpkZWNsYXJhdGllOnYxMiIgeHNpOnNjaGVtYUxvY2F0aW9uPSJtZnA6YW5hZjpkZ3RpOmQzMDA6ZGVjbGFyYXRpZTp2MTIgRDMwMC54c2QiIGx1bmE9IjkiIGFuPSIyMDI2IiBkZXB1c1JlcHJlemVudGFudD0iMCIgYmlmYV9pbnRlcm5lPSIwIiB0ZW1laT0iMCIgbnVtZV9kZWNsYXI9IkRvYnJlc2N1IiBwcmVudW1lX2RlY2xhcj0iRWxlbmEiIGZ1bmN0aWVfZGVjbGFyPSJBRE1JTklTVFJBVE9SIiBjdWk9Ijk1MTQxNTM3IiBkZW49IkNvbWVydCBNaWNybyBUVkEgU1JMIiBhZHJlc2E9IlN0ci4gVGVzdHVsdWkgbnIuIDEgQnVjdXJlc3RpIEJ1Y3VyZciZdGkiIGJhbmNhPSJCYW5jYSBUZXN0IiBjb250PSJSTzQ5QUFBQTFCMzEwMDc1OTM4NDAwMDAiIGNhZW49IjQ3MTEiIHRpcF9kZWNvbnQ9IlQiIHByb19yYXRhPSIxMDAuMDAiIGJpZmFfY2VyZWFsZT0iTiIgYmlmYV9tb2I9Ik4iIGJpZmFfZGlzcD0iTiIgYmlmYV9jb25zPSJOIiBzb2xpY2l0X3JhbWI9Ik4iIG5yX2V2aWQ9IjEwMzAyMDEwOTI2MjUxMDI2MDAwMDQwIiB0b3RhbFBsYXRhX0E9IjE2MTA1MCIgUjEwXzE9IjM3MDAiIFIxMF8yPSI0MDciIFIxMl8xPSIzMjAwIiBSMTJfMj0iNjcyIiBSMTdfMT0iMzU3MDAiIFIxN18yPSI2MTE5IiBSMThfMT0iNjYwMCIgUjE4XzI9IjEzODYiIFIxXzE9IjI3MDAiIFIyMF8xPSIyNDAwIiBSMjBfMV8xPSIyNDAwIiBSMjBfMV8yPSI1MDQiIFIyMF8yPSI1MDQiIFIyMl8xPSI4NTAwIiBSMjJfMj0iMTc4NSIgUjI1XzE9IjMyMDAiIFIyNV8yPSI2NzIiIFIyNl8xPSI1NDAwIiBSMjdfMT0iMjA3MDAiIFIyN18yPSI0MzQ3IiBSMjhfMj0iNDM0NyIgUjMyXzI9IjQzNDciIFIzNF8yPSIxNzcyIiBSMzdfMj0iMTc3MiIgUjNfMT0iMjEwMCIgUjNfMV8xPSIyMTAwIiBSNDFfMj0iMTc3MiIgUjVfMT0iNjYwMCIgUjVfMj0iMTM4NiIgUjdfMT0iMjQwMCIgUjdfMV8xPSIyNDAwIiBSN18xXzI9IjUwNCIgUjdfMj0iNTA0IiBSOV8xPSIxNTAwMCIgUjlfMj0iMzE1MCIvPg=="
   }
  }
 }
