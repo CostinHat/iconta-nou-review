@@ -1,3 +1,31 @@
+## 16.09.2026, partea a treia — **aplicația compară, în sfârșit, amortizarea pe care o declară cu cea pe care a înregistrat-o**
+
+**Pentru un contabil: nu se schimbă nimic din ce vezi azi, dar aplicația începe să-ți spună ceva ce
+până acum nu putea.** Amortizarea unui mijloc fix se calculează în două locuri: în fișa activului
+(de unde pleacă raportarea SAF-T către ANAF) și în nota lunară care intră în contabilitate. Până azi
+nimic nu verifica dacă cele două spun același lucru.
+
+**Acum verifică — și prima rulare a găsit trei nepotriviri pe firmele existente**, dintre care una
+mare: o firmă la care fișele activelor spun 3.500 lei amortizare strânsă, iar contul din
+contabilitate are 2.600. Cauza obișnuită e simplă și reparabilă: nota lunară de amortizare n-a fost
+generată pe una sau mai multe luni. Aplicația o spune acum, cu ambele cifre, și îți zice ce să faci.
+
+**Ce NU face, deliberat: nu blochează nimic.** Constatarea se vede în supervizor și atât. Dacă cere
+sau nu o confirmare înainte de depunere e o decizie a lui Costin, pe care n-o iau eu — și până o dă,
+constatarea n-are niciun efect asupra depunerii.
+
+**Când refuză să acuze.** Dacă există note încă în ciornă pe contul de amortizare, aplicația spune
+*„nu mă pronunț încă"*, nu *„e greșit": diferența se poate închide chiar la validarea lor. La fel
+dacă nu poate calcula amortizarea unui activ (metodă nepermisă de lege pe categoria lui) — atunci
+propria ei cifră e incompletă, și n-are dreptul să acuze contabilitatea pentru asta.
+
+**Ce a ieșit la iveală construind, și e despre unealta mea, nu despre aplicație:** prima formă a
+comparației **tăcea** exact în cazul în care nu putea citi fișele — adică fix când ar fi trebuit să
+strige. A prins-o propria ei probă, înainte de orice rulare pe date reale.
+
+*Restanța închisă: R191. Restanță redeschisă: R115 (tăria constatării noi e a lui Costin). R192
+rămâne deschisă: confruntarea există, decizia de produs nu.*
+
 ## 16.09.2026, partea a doua — **reevaluarea unei imobilizări ajunge, în sfârșit, și în declarație**
 
 **Pentru un contabil: da, s-a schimbat ceva.** Până azi, când reevaluai un mijloc fix, aplicația

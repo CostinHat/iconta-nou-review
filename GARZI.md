@@ -8572,6 +8572,50 @@ independent încă `bazaA=12600, bazaS=0, nrOPI=1` — **și a blocat generarea*
 non-tautologia lor. *A doua instanță în două zile a aceleiași lecții: când o decizie se aplică „pe
 toate drumurile", drumurile se NUMĂRĂ.*
 
+### `core/test_r191_amortizare_confruntata.py` — registrul de imobilizări, confruntat cu evidența
+
+Închide **R191**. Secțiunea Assets a D406 își calcula singură amortizarea, din `mijloace_fixe`; nota
+lunară (`6811 = 28xx`) e un calcul independent — și **nimic nu le confrunta**.
+`core/d406_reconciliere.py` își declarase asta ca limită, verbatim: *„NU acopera sub-sectiunile …
+Assets"*.
+
+**MĂSURAT ÎNAINTE de a fi scrisă** (portofoliul viu, 20 de scheme, tranzacție anulată): **trei
+conturi diverg** — `tenant_003` 2808 666,72/0,00 · `tenant_003` 2813 927,96/0,00 · `tenant_013` 2813
+3.500,00/2.600,00. *Perechea nu se naște ca precauție.*
+
+**Identitatea, CUMULATIVĂ dinadins:** Σ `AccumulatedDepreciation` pe activele unui cont == soldul
+creditor al contului (OMFP 1802/2014, grupa 28). Cumulativul prinde și o lună niciodată
+înregistrată, **și** o eliminare de reevaluare peste ce s-a înregistrat (**R192**) — pe care
+comparația cheltuielii anului n-ar vedea-o: eliminarea e un **debit**, nu un credit al lui 6811.
+
+| ce păzește | de ce e o probă separată |
+|---|---|
+| coincident → **verde** | *o pereche care nu poate spune „da" e o constantă, nu o măsurătoare* (METODA §22) |
+| divergent → **roșu**, cu ambele cifre în **câmpuri** | fără ele constatarea n-ar fi verificabilă de nimeni |
+| ciornă pe cont → **gri**, `motiv_gri='ciorna_pe_cont'` | explicația legitimă cerută de criteriul CERTEI, **închisă în cod** |
+| registru incomplet → **gri**, `motiv_gri='registru_incomplet'` | stânga incompletă n-are voie să acuze dreapta |
+| forma **R192** → roșu | eliminarea peste sold face contul să scadă sub declarat |
+| firmă fără imobilizări → **tace** | *un verde pe o mulțime vidă afirmă mai mult decât s-a măsurat* |
+| non-tautologie, pe AST | dreapta nu are voie să vină din motorul care produce stânga |
+| cablul supervizor→pereche, pe AST | lecția gardului lui R59, aplicată din prima |
+
+**Cele două griuri se deosebesc din DATE** (`motiv_gri`), nu după un cuvânt din mesaj. Iar
+aserțiunile de apartenență folosesc **operatorul de mulțime** (`>=`, `isdisjoint`), nu `in`: un `in`
+pe ceva ce ar deveni vreodată un șir s-ar transforma tăcut în sub-șir și ar arăta identic. *Forma o
+recomandă chiar `core/scan_garzi_pe_text.py`, în antetul lui.*
+
+**RED-proof, cinci mutații.** Una a părut prima dată că **nu omoară nimic** — escaparea din shell nu
+aplicase mutația. *O mutație care nu se aplică arată exact ca un test care nu păzește;* a doua
+rulare a tipărit „ancora găsită: 1" înainte de a scrie.
+
+**Și ce a prins garda asta în chiar codul pe care îl păzește:** când motorul refuză **toate**
+activele unui cont, prima formă a perechii itera numai peste conturile calculate — deci **tăcea
+exact când stânga era ilizibilă**. Contul se reține acum înainte de a încerca calculul.
+
+**Ce NU păzește, declarat:** contul 28xx e ținut la nivel de **cont**, nu de activ. Perechea spune
+**că** există divergență și **cu cât**, nu **care** activ o produce — și de-aia tăria ei nu se
+atribuie singură (**R115, redeschisă**).
+
 ### `core/test_reevaluare_registru.py` — reevaluarea ajunge pe registru, ȘI în declarație
 
 Închide **R59**, deschisă pe 26.08.2026. Ruta de reevaluare scria o notă corectă și **nu atingea

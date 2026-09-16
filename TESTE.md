@@ -2656,3 +2656,19 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   literalul `0.00` de când există generatorul; acum poartă apreciere reală, deci „structura rămâne
   validă" nu se mai putea presupune. `DUKIntegrator_AnLunaUI -v D406` (reguli 2026.1): `stare=valid`.
   Calibrat și invers — pe un XML stricat, `stare=erori`.
+
+- **`core/test_r191_amortizare_confruntata.py` — GARDĂ NOUĂ (16.09.2026, R191, 11 probe)**: registrul
+  de imobilizări (Σ `AccumulatedDepreciation`) confruntat cu soldul conturilor 28xx din evidența
+  validată. **Măsurat înainte de a fi scrisă**: trei conturi diverg pe portofoliul viu. Ambele
+  direcții, plus cele două griuri deosebite din **date** (`motiv_gri`), non-tautologia pe AST și
+  cablul supervizor→pereche. **RED-proof pe cinci mutații** — una a părut că nu omoară nimic fiindcă
+  escaparea din shell n-o aplicase: *o mutație care nu se aplică arată exact ca un test care nu
+  păzește*. Aserțiunile de apartenență folosesc operatorul de **mulțime**, forma recomandată de
+  `core/scan_garzi_pe_text.py` (un `in` care ar ajunge pe un șir devine tăcut sub-șir).
+
+- **`core/test_supervizor.py` — PRODUCĂTOR NOU în stubs (16.09.2026, R191)**: perechea nouă a
+  trebuit adăugată în **toate cele trei** locuri care monkeypatch-uiesc producătorii; prima rulare a
+  căzut pe `UndefinedTable`, fiindcă probele rulează pe scheme sintetice fără `mijloace_fixe`. Nu e o
+  slăbire: lista aia e chiar contractul *„ce produce constatări"*. Și
+  `test_perechea_reala_e_EURISTICA…` a cerut **redeschiderea lui R115** — aserțiunea a rămas o
+  **egalitate** cu lista tipurilor neatribuite, deci al doilea tip fără tărie o face iar roșie.

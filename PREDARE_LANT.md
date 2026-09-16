@@ -9,8 +9,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   alege**: sunt **patru lucrări numite de Costin**, în ordine, la punctul **0Z**. *Diferența față de
   toate predările dinainte: nu mai există „tema următoare se alege" — există o listă de terminat, și
   o regulă care spune ce se întâmplă după ea.*
-- **pe commit**: `d937eef6`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **pe commit**: `fcd13ac9`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
+- **[16.09.2026] LOTUL 2 E ÎNCHIS: R191.** Aplicația confruntă acum amortizarea pe care o **declară**
+  registrul de imobilizări cu cea **înregistrată** în conturile 28xx — și a găsit **trei** conturi
+  divergente la prima rulare pe portofoliul viu. *Tăria constatării e a lui Costin: tipul intră cu
+  `tarie=None`, deci se vede și nu produce niciun efect. Consecință: **R115 s-a redeschis**, cerută
+  de propria gardă.* R192 rămâne deschisă — confruntarea există, decizia de produs nu.
 - **[16.09.2026] LOTUL 1 AL CELOR PATRU LUCRĂRI E ÎNCHIS: R59.** Reevaluarea unei imobilizări ajunge
   acum pe registrul care conduce amortizarea **și** în declarație — dar numai la **validarea notei**,
   nu din ciornă. *Ce n-a cerut criteriul, și totuși s-a făcut: amortizarea de după reevaluare pornește
@@ -908,7 +913,7 @@ a ce e adevărat **acum**.
    | # | lucrarea | unde e scrisă | de ce exact în locul ăsta |
    |---|---|---|---|
    | **1** | ✔ **ÎNCHISĂ** (`d937eef6`) — **R59** — reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe cea veche | `CONFORMITATE.md` R59 | criteriul de închidere a fost **lărgit pe 16.09, ÎNAINTE de reparație**: cere **și cifra din SAF-T**, nu doar coloana din registru. *Lărgit după, ar fi fost o măsură luată pe rezultatul care tocmai a ieșit* |
-   | **2** | **R191** — amortizarea se calculează de DOUĂ ori, din surse diferite, și nimic nu confruntă cifrele | `CONFORMITATE.md` R191 | vine **după** R59: confruntarea celor două calcule înainte ca R59 să stabilească valoarea corectă ar compara două greșeli și ar da verde |
+   | **2** | ✔ **ÎNCHISĂ** (`fcd13ac9`) — **R191** — amortizarea se calculează de DOUĂ ori, din surse diferite, și nimic nu confruntă cifrele | `CONFORMITATE.md` R191 | vine **după** R59: confruntarea celor două calcule înainte ca R59 să stabilească valoarea corectă ar compara două greșeli și ar da verde |
    | **3** | **cele 8 rute cu clichet care ating cifre de declarație** | `core/test_rute_probate.py`, `PLAFON_SUBSET_FISCAL` | sunt cele 8 din cele **88** de rute care scriu fără probă și ating tabele din care se ridică declarații: articol de stoc ×3, linie de extras bancar, bon pozat, mijloc fix, rețetă, fișier de migrare. **Fiecare cere o lume pregătită** — de-aia n-au probă, nu din uitare |
    | **4** | **cele 8 citări `DUK regula` nerezolvate** | `core/d402.py` (R14/R34/R39/R43/R50) și `core/d301_operatiuni_api.py` (R24.1) | se lămuresc prin **RULARE** — XML mutat deliberat —, **nu** prin citirea constantelor: jarul D402 instalat are în tot cuprinsul lui patru coduri, niciunul dintre cele citate. *La D100, adiacența din bytecode m-a mințit, iar validatorul m-a corectat* |
 

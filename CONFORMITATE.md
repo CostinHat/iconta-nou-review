@@ -2749,10 +2749,40 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   `::test_perechea_reala_e_EURISTICA_deci_nu_cere_NICIODATA_confirmare`, pe tipul REAL, nu pe cel
   sintetic. **Efect: niciun tip nu mai așteaptă tăria, iar o EURISTICĂ nu cere confirmare niciodată —
   deci nimic nu atinge depunerea, ceea ce e chiar contractul.**
-- **reluări**: 0
-- **stare**: REZOLVATĂ
+- **reluări**: 1
+- **de ce contorul a urcat la 1**: decizia se cere **a doua oară**, pe un tip NOU. Prima dată
+  (01.09.2026) a fost DATĂ, pentru tipurile de atunci — o tărie nu se moștenește la un tip care
+  n-a existat. *Câmpurile de mai sus se citesc de gardă până la capătul rândului: o paranteză pusă
+  lângă cifră a făcut `reluări` să crape la `int()`. A doua oară în aceeași tură — prima a fost pe
+  `stare`.*
+- **stare**: DESCHISĂ
 - **deschisă pe commit**: `1fa8f88`
-- **rezolvată pe commit**: `d217e16`
+- **rezolvată pe commit**: —
+- **prima închidere, răsturnată**: `d217e16` (01.09.2026) — REDESCHISĂ pe `fcd13ac9` (16.09.2026),
+  v. rândul de la capătul secțiunii. *Câmpurile de stare rămân curate: gardul le citește până la
+  capătul rândului, iar o paranteză pusă acolo a făcut `stare` să se citească `DESCHISĂ** *`.*
+
+
+- **REDESCHISĂ 16.09.2026, pe `fcd13ac9` — și garda însăși a cerut-o.**
+
+  Perechea nouă a lui **R191** (registrul de imobilizări ↔ conturile 28xx) intră cu **`tarie=None`**:
+  atribuirea e a lui Costin, pe tip, și n-o dau în numele lui. Iar
+  `core/test_supervizor.py::test_perechea_reala_e_EURISTICA_deci_nu_cere_NICIODATA_confirmare` scria
+  negru pe alb, de la prima ei formă: *„R115 e închisă, deci niciun tip nu mai așteaptă tăria; dacă
+  apare unul nou, **restanța se redeschide cu el, nu tăcut**."* Poarta a căzut roșie exact acolo.
+
+  **Aserțiunea NU s-a slăbit** la „ignoră tipurile noi": a rămas o **egalitate** cu lista exactă a
+  tipurilor neatribuite. Deci **al doilea** tip fără tărie o face iar roșie, și redeschide restanța
+  încă o dată.
+
+  **Ce așteaptă, concret:** tăria tipului `D406_ASSETS_VS_CONT_28X`. Propunerea mea, scrisă în
+  `TIPURI` cu motivul ei, e **CERTA** — ambele explicații legitime sunt închise în cod. **Rezerva
+  mea, tot scrisă:** contul 28xx e ținut la nivel de cont, nu de activ, deci constatarea nu poate
+  numi CARE activ divergă, iar una care cere confirmare fără să poată numi subiectul e mai greu de
+  închis decât una care semnalează.
+
+  *Până la răspuns nu se blochează nimic: un tip fără tărie se vede și nu cere confirmare. Probat pe
+  portofoliu — `tarie=None`, `cere_confirmare=False`.*
 
 ### R116 — Cronul de alerte numără firmele DUPĂ succes, deci una care ridică nu apare nicăieri
 
@@ -8239,8 +8269,9 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
 - **cine deblochează**: INTERN
 - **unde intră**: în afara axei E1–E5 — deschisă de proba de lanț a etapei 2, lotul I · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `cc34fa92`
+- **rezolvată pe commit**: `fcd13ac9`
 - **măsurat la**: 2026-09-16 · **pe commit**: `cc34fa92`
 - **ce blochează**: **nimic azi — neblocantă**, și se scrie fiindcă `stare` are exact două valori.
   Secțiunea Assets din D406 **își calculează singură** amortizarea, din registrul `mijloace_fixe`:
@@ -8253,6 +8284,57 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   (reconciliatorul), pe obiectul „amortizare declarată contra amortizare înregistrată" — nu cu o
   gardă scrisă aici. Ordinea contează: **întâi R59**, fiindcă un reconciliator pornit peste o
   divergență cunoscută ar raporta roșu despre ceva deja numit.
+
+
+- **REZOLVATĂ 16.09.2026, pe commitul `fcd13ac9` — confruntarea există, și a găsit divergențe la prima rulare.**
+
+  **Ce s-a construit.** Perechea `D406_ASSETS_VS_CONT_28X`, după tiparul „a doua cale" al lui
+  D300/D394/D112: **stânga** e registrul de imobilizări trecut prin chiar motorul care emite
+  secțiunea Assets; **dreapta** e evidența contabilă, citită cu `rulaje_interval` — sursa unică de
+  rulaje pe cont din repo, nu un SQL scris încă o dată. Niciuna nu se derivă din cealaltă.
+  *Spre deosebire de D390↔D300, verdele ăsteia afirmă ceva.*
+
+  **Identitatea, și de ce e CUMULATIVĂ:** `AccumulatedDepreciation` al unui activ e amortizarea lui
+  cumulată; contabil, ea e soldul creditor al contului de amortizare (OMFP 1802/2014, grupa 28).
+  Se compară cumulativul, nu cheltuiala anului — cumulativul prinde și o lună niciodată
+  înregistrată, **și** o eliminare de reevaluare mai mare decât ce s-a înregistrat vreodată
+  (**R192**), pe care comparația cheltuielii n-ar vedea-o: eliminarea e un DEBIT, nu un credit al
+  lui 6811.
+
+  **MĂSURAT ÎNAINTE DE A SCRIE O LINIE DE COD** (portofoliul viu, 20 de scheme, tranzacție anulată).
+  **Trei conturi diverg:**
+
+  | firmă | cont | cumulat DECLARAT | sold ÎNREGISTRAT |
+  |---|---|---:|---:|
+  | `tenant_003` | 2808 | 666,72 | **0,00** |
+  | `tenant_003` | 2813 | 927,96 | **0,00** |
+  | `tenant_013` | 2813 | 3.500,00 | **2.600,00** |
+
+  *Deci perechea nu se naște ca precauție: se naște peste o divergență care există. Declarația
+  raportează amortizare pe care evidența n-o conține.*
+
+  **Cele două explicații legitime sunt ÎNCHISE ÎN COD**, nu lăsate cititorului: note în CIORNĂ pe
+  contul de amortizare → GRI (`motiv_gri='ciorna_pe_cont'`); un activ pe care motorul îl refuză →
+  GRI (`motiv_gri='registru_incomplet'`), fiindcă atunci stânga e incompletă, iar o comparație pe o
+  sumă incompletă ar acuza evidența pentru o lipsă a registrului. Cele două griuri se deosebesc din
+  **date**, nu după un cuvânt din mesaj.
+
+  **TĂRIA NU E ATRIBUITĂ** — e a lui Costin, pe tip. Tipul intră cu `tarie=None`, deci **se vede și
+  nu produce niciun efect**; propunerea mea (`CERTA`) e scrisă alături, cu motivul, ca răspunsul să
+  ia o tură, nu două. Consecința: **R115 se REDESCHIDE** — și chiar garda a cerut-o.
+
+  **CE NU ACOPERĂ, declarat:** contul 28xx e ținut la nivel de **cont**, nu de activ (nota lunară
+  scrie `6811 = 28xx` fără id-ul mijlocului fix). Perechea spune **că** există divergență și **cu
+  cât**, nu **care** activ o produce. E și motivul pentru care nu-mi atribui singur tăria.
+
+  **GARDA:** `core/test_r191_amortizare_confruntata.py`, 11 probe, ambele direcții, RED-proof pe
+  cinci mutații. *Una dintre ele a părut prima dată că nu omoară nimic — escaparea din shell nu
+  aplicase mutația. O mutație care nu se aplică arată exact ca un test care nu păzește; a doua
+  rulare a tipărit „ancora găsită: 1" înainte de a scrie.*
+
+  **Și ce a prins propria gardă, construind:** când motorul refuză **toate** activele unui cont,
+  prima formă a perechii itera numai peste conturile calculate — deci **tăcea exact când stânga era
+  ilizibilă**. Contul se reține acum înainte de a încerca calculul.
 
 ### R192 — Amortizarea ELIMINATĂ la reevaluare se calculează din motor, nu din evidență
 
@@ -8280,6 +8362,20 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
 - **condiția de deblocare**: se închide odată cu **R191** — confruntarea „amortizare declarată contra
   amortizare înregistrată" e chiar instrumentul care spune care din cele două cifre e care. *Ordinea
   e cea scrisă la R191: întâi se poate confrunta, apoi se decide care sursă câștigă pe linia notei.*
+
+- **[16.09.2026] JUMĂTATEA ÎNTÂI E FĂCUTĂ: confruntarea EXISTĂ** (R191, `fcd13ac9`). Divergența nu mai e
+  invizibilă — perechea o numește, cu ambele cifre. **Ce rămâne e o DECIZIE DE PRODUS, nu muncă**, și
+  de-aia restanța rămâne deschisă: ce face ruta de reevaluare când amortizarea pe care ar elimina-o
+  depășește ce s-a înregistrat?
+  **(a)** refuză, numind luna a cărei notă de amortizare lipsește — nu fabrică nimic, dar blochează
+  un act legitim pe o firmă în urmă cu notele; **(b)** acceptă și semnalează divergența, lăsând
+  soldul `28xx` să treacă pe minus până la regularizare; **(c)** altceva.
+  *Nu o aleg singur: schimbă ce ajunge la contabil (§2.3 pct.2). Alternativa pe care am respins-o
+  fără să întreb e ca aplicația să genereze singură nota lipsă — ar fi contabilitate făcută în locul
+  omului.*
+  **Ce se poate spune deja, măsurat:** pe `tenant_003` soldul contului `2813` e **0,00** iar
+  registrul declară **927,96** — deci pe firma aia varianta (a) ar refuza **orice** reevaluare până
+  la punerea la zi a notelor.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

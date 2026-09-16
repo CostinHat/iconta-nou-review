@@ -28,6 +28,11 @@ trebuie schimbat, altfel poarta pică. Așa roadmap-ul poate CREȘTE, nu doar s�
 - **#2 Fuzzer de formulare** — PARȚIAL (interactiune_scan apasă/completează). RĂMAS: generarea invalidelor per câmp (gol/peste-lungime/tip/duplicat/limită) + verdict 14.4 automat. Playwright, deja instalat.
 - **#4 Matrice de stări de date** — PROPUS: fiecare ecran peste stări (gol/populat/limită, micro/profit/PFA). Playwright + seed.
 - **#5 Reconciliator de cifre (Regula 14.2)** — PROPUS: total = suma rândurilor; previzualizare = buton = rezultat, asertat. Playwright.
+  **RĂMÂNE NEÎNCEPUT** — și se scrie explicit, ca să nu fie citit ca făcut. Pe 16.09.2026 (`fcd13ac9`) s-a construit
+  un reconciliator pe ALT OBIECT, cerut de `CONFORMITATE.md` R191: *amortizarea declarată de registrul de
+  imobilizări contra celei înregistrate în conturile 28xx*. Acela nu atinge niciun ecran și nu cere Playwright;
+  #5, așa cum e propus aici, e despre ECRANE (total = suma rândurilor, previzualizare = buton = rezultat) și
+  rămâne în backlogul A3. *Două lucruri cu același nume nu sunt același lucru.*
 - **#8 Baseline determinist** — PROPUS: ceas + firmă-snapshot înghețate → pixel-diff real. `freezegun` (mic, de instalat).
 - **#9 Pas keyboard-only** — PROPUS: tab-order, focus-trap în modal, Escape închide. Playwright.
 - **#10 Linter de consistență între ecrane** — PROPUS: „identitate între situații similare" (DS). Python (+ AST JS opțional).
