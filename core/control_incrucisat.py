@@ -2199,3 +2199,171 @@ def _orizontal_efactura_vs_d394(conn, schema):
                                      "intracomunitară). Dacă nu e exclusă motivat, D394 se "
                                      "rectifică. Corecția o confirmă omul.",
                           "facturi": [str(i) for i in lipsa[:LIMITE_FACTURI_ENUMERATE]]})]
+
+
+# ============================================================
+#  R191 — AMORTIZAREA DECLARATĂ ↔ AMORTIZAREA ÎNREGISTRATĂ (16.09.2026)
+#
+#  **De unde vine.** `CONFORMITATE.md` R191: *„amortizarea se calculează de DOUĂ ori, din surse
+#  diferite, și nimic nu confruntă cifrele"*. Secțiunea **Assets** a D406/SAF-T își calculează
+#  singură amortizarea, din registrul `mijloace_fixe`; nota lunară (`6811 = 28xx`) e un calcul
+#  independent, care ajunge în evidență. Pentru D300 și D394 repo-ul are „a doua cale"; pentru
+#  Assets n-avea — iar `core/d406_reconciliere.py` își declară asta ca limită, verbatim:
+#  *„NU acopera sub-sectiunile … Assets"*.
+#
+#  **CE CONFRUNTĂ, și de ce identitatea asta:** amortizarea CUMULATĂ declarată pe fiecare cont de
+#  amortizare (Σ `AccumulatedDepreciation`) față de **soldul creditor** al aceluiași cont în
+#  evidența validată. E identitatea cumulativă, nu cea a anului, dinadins: ea prinde și o lună de
+#  amortizare niciodată înregistrată, și o ELIMINARE de la reevaluare mai mare decât ce s-a
+#  înregistrat vreodată (**R192**) — pe care comparația cheltuielii anului n-ar vedea-o, fiindcă
+#  eliminarea e un DEBIT, nu un credit al lui 6811.
+#
+#  **SURSE INDEPENDENTE, și e chiar rostul perechii:** stânga e **registrul de imobilizări** trecut
+#  prin motorul care hrănește declarația; dreapta e **evidența contabilă**, citită cu
+#  `rulaje_interval` — sursa unică de rulaje pe cont din repo, nu un SQL paralel. Niciuna nu se
+#  derivă din cealaltă. *Spre deosebire de D390↔D300, verdele ăsteia afirmă ceva.*
+#
+#  **MĂSURAT ÎNAINTE DE A FI SCRISĂ** (16.09.2026, portofoliul viu, tranzacție anulată): din 20 de
+#  scheme, **trei conturi diverg** — t003 `2808` 666,72 declarat / 0,00 înregistrat · t003 `2813`
+#  927,96 / 0,00 · t013 `2813` 3.500,00 / 2.600,00. *Deci perechea nu se naște ca precauție: se
+#  naște peste o divergență care există.*
+# ============================================================
+
+TIP_D406_ASSETS_VS_28X = "D406_ASSETS_VS_CONT_28X"
+
+#: Prefixul conturilor de amortizare a imobilizărilor (OMFP 1802/2014, grupa 28 „Amortizări privind
+#: imobilizările"). Nu e un prag și nu e o cotă — e apartenența la grupă, citită din planul de
+#: conturi general.
+GRUPA_AMORTIZARI = "28"
+
+
+def _amortizare_declarata(conn, schema, an):
+    """({cont: cumulat_declarat}, [active refuzate], {toate conturile 28xx din registru}).
+
+    Stânga perechii: registrul de imobilizări, trecut prin chiar motorul care emite secțiunea
+    Assets. Un activ pe care motorul îl refuză (metodă nepermisă pe categorie, date invalide) NU se
+    sare: se întoarce, fiindcă atunci suma din stânga e INCOMPLETĂ, iar o comparație pe o sumă
+    incompletă ar acuza evidența pentru o lipsă a registrului.
+    """
+    from core import d406_active as _d406
+    from core import repo_mijloace_fixe as _rmf
+    with conn.cursor() as cur:
+        randuri = _rmf.active_pentru_d406(cur, schema, an)
+        cols = [d[0] for d in cur.description]
+    cumulat, refuzate, conturi = {}, [], set()
+    for r in randuri:
+        mf = dict(zip(cols, r))
+        cont = mf.get("cont_amortizare") or ""
+        if not cont.startswith(GRUPA_AMORTIZARI):
+            continue
+        # Contul se retine INAINTE de a incerca calculul, si asta e o reparatie ceruta de propria
+        # garda: cand motorul refuza TOATE activele unui cont, `cumulat` ramane gol, iar o pereche
+        # care itereaza numai peste conturile calculate ar TACE exact cand stanga e ilizibila —
+        # adica felul de tacere care arata ca un raspuns.
+        conturi.add(cont)
+        try:
+            v = _d406.calc_asset(mf, an)
+        except ValueError as e:
+            refuzate.append("%s (%s)" % (mf.get("cod") or mf.get("id"), str(e)[:80]))
+            continue
+        cumulat[cont] = cumulat.get(cont, Decimal("0")) + _d(v["accum_depr"])
+    return cumulat, refuzate, conturi
+
+
+def _amortizare_inregistrata(conn, schema, an, conturi):
+    """{cont: sold_creditor} la 31.12.<an>, din evidența VALIDATĂ.
+
+    Dreapta perechii. Se cere de la `rulaje_interval` — **sursa unică de rulaje pe cont** din repo
+    —, nu dintr-un SQL scris încă o dată aici: o a doua definiție a aceleiași citiri e începutul
+    unei divergențe tăcute. Soldul e `credit - debit`, iar debitele contează: ele sunt chiar
+    ELIMINĂRILE de la reevaluare și ieșirile din evidență.
+    """
+    if not conturi:
+        return {}
+    r = rulaje_interval(conn, schema, "1900-01-01", "%d-01-01" % (an + 1), sorted(conturi))
+    return {c: _d(v.get("credit")) - _d(v.get("debit")) for c, v in r.items()}
+
+
+def _cu_motiv(motiv, constatare):
+    """Pune `motiv_gri` pe o constatare gri. Doua griuri diferite trebuie sa se poata deosebi din
+    DATE, nu dupa un cuvant din mesaj."""
+    constatare["motiv_gri"] = motiv
+    return constatare
+
+
+def _pereche_amortizare(conn, schema, an):
+    """Amortizarea cumulată DECLARATĂ (registrul de imobilizări) ↔ soldul conturilor 28xx (evidența).
+
+    **IDENTITATEA:** `AccumulatedDepreciation` al unui activ e amortizarea lui cumulată la sfârșitul
+    perioadei; contabil, ea e chiar soldul creditor al contului de amortizare care îi corespunde
+    (OMFP 1802/2014, grupa 28 — *„Amortizări privind imobilizările"*). Deci, pe fiecare cont, suma
+    declarată pe activele care îl folosesc trebuie să fie soldul lui.
+
+    **EXPLICAȚIA LEGITIMĂ pe care criteriul o cere căutată** — note încă în CIORNĂ pe contul de
+    amortizare — e închisă în cod: cât timp există, perechea spune GRI și numește motivul, în loc să
+    afirme o eroare. La fel dacă motorul refuză vreun activ: atunci stânga e incompletă, și se spune.
+    """
+    declarat, refuzate, conturi = _amortizare_declarata(conn, schema, an)
+    if not conturi:
+        return []                                   # firmă fără imobilizări amortizabile: fără subiect
+    inregistrat = _amortizare_inregistrata(conn, schema, an, conturi)
+    out = []
+    for cont in sorted(conturi | set(inregistrat)):
+        eticheta = "Amortizare declarată vs cont %s — %d" % (cont, an)
+        temei = ("Amortizarea cumulată a activelor din registrul de imobilizări (secțiunea Assets a "
+                 "D406/SAF-T, `AccumulatedDepreciation`) față de soldul creditor al contului %s din "
+                 "evidența contabilă VALIDATĂ, la 31.12.%d (OMFP 1802/2014, grupa 28 — «Amortizări "
+                 "privind imobilizările»). Registrul față de evidență — surse independente."
+                 % (cont, an))
+        d = _d(declarat.get(cont))
+        i = _d(inregistrat.get(cont))
+        if refuzate:
+            # `motiv_gri` face MOTIVUL unui gri citibil mecanic. Fara el, singurul fel de a deosebi
+            # cele doua griuri ar fi cautarea unui cuvant in mesaj — o garda pe TEXT, care pazeste
+            # formularea de langa lucru, nu lucrul (METODA §23).
+            out.append(_cu_motiv("registru_incomplet", _gri_liber(
+                "d406", eticheta,
+                temei + " Motorul de amortizare refuză %d activ(e) din registru." % len(refuzate),
+                "Nu mă pronunț: suma declarată e INCOMPLETĂ — motorul refuză %s. Comparația ar "
+                "acuza evidența pentru o lipsă a registrului."
+                % "; ".join(refuzate[:3]), an, PERIODICITATE_JURNAL_ANUAL)))
+            continue
+        if abs(d - i) > TOLERANTA and _ciorna_pe_cont(conn, schema, an, cont):
+            out.append(_cu_motiv("ciorna_pe_cont", _gri_liber(
+                "d406", eticheta,
+                temei + " Există note NEVALIDATE pe contul %s în anul evaluat." % cont,
+                "Nu mă pronunț încă: registrul declară %s, contul %s are sold %s validat, dar "
+                "există note în CIORNĂ pe %s în %d. Diferența se poate închide la validarea lor."
+                % (_lei(d), cont, _lei(i), cont, an), an, PERIODICITATE_JURNAL_ANUAL)))
+            continue
+        baza = {"eticheta": eticheta, "cont": cont, "declarat_registru": int(d),
+                "inregistrat_contabil": int(i), "diferenta": int(d - i), "an": an,
+                "luna": PERIODICITATE_JURNAL_ANUAL}
+        if d == 0 and i == 0:
+            continue                                # niciun activ, niciun rulaj: fără subiect
+        if abs(d - i) <= TOLERANTA:
+            out.append(dict(baza, stare="verde", temei=temei, remediu=None,
+                            mesaj="%s: amortizarea cumulată din registru și soldul contului %s "
+                                  "coincid (%s)." % (eticheta, cont, _lei(d))))
+            continue
+        out.append(dict(baza, stare="rosu", temei=temei,
+                        mesaj="%s: registrul de imobilizări declară %s amortizare cumulată, iar "
+                              "contul %s are sold %s (diferență %s)."
+                              % (eticheta, _lei(d), cont, _lei(i), _lei(d - i)),
+                        remediu={"fel": "sugerat",
+                                 "cauza": "Amortizarea pe care o declară registrul de imobilizări "
+                                          "nu se regăsește în contul %s. Cel mai des: nota lunară "
+                                          "de amortizare n-a fost generată pe una sau mai multe "
+                                          "luni." % cont,
+                                 "actiune": "Verifică pe ce luni din %d lipsește nota de "
+                                            "amortizare și generează-le. Dacă diferența rămâne, "
+                                            "compară activ cu activ: o ieșire din evidență sau o "
+                                            "reevaluare poate să fi debitat contul. Corecția o "
+                                            "confirmă omul." % an,
+                                 "facturi": []}))
+    return out
+
+
+def orizontal_d406_amortizare(conn, schema, an):
+    """ÎNVELIȘ: o singură ieșire, ștampilată o dată — tiparul din `orizontal_d390_vs_d300`."""
+    return _stampileaza(_pereche_amortizare(conn, schema, an), TIP_D406_ASSETS_VS_28X)

@@ -100,9 +100,13 @@ def test_perechea_reala_e_EURISTICA_deci_nu_cere_NICIODATA_confirmare():
     assert S.TIPURI[_ci.TIP_D390_VS_D300]["confirmat"] is True
     assert S.cere_confirmare(_ci.TIP_D390_VS_D300) is False, (
         "o EURISTICĂ cere confirmare — «semnalează, nu opresc niciodată» s-a rupt")
-    assert not S.tipuri_neatribuite(), (
-        "R115 e închisă, deci niciun tip nu mai așteaptă tăria; dacă apare unul nou, "
-        "restanța se redeschide cu el, nu tăcut")
+    # [R191, 16.09.2026] R115 S-A REDESCHIS, și chiar garda asta a cerut-o. Perechea nouă
+    # (registrul de imobilizări ↔ conturile 28xx) intră cu `tarie=None`: atribuirea e a lui Costin,
+    # pe tip, iar eu n-o dau în numele lui. Aserțiunea NU se slăbește la „ignoră tipurile noi" —
+    # rămâne o egalitate, deci **al doilea** tip neatribuit o face iar roșie.
+    assert S.tipuri_neatribuite() == [_ci.TIP_D406_ASSETS_VS_28X], (
+        "tipuri care așteaptă tăria: %s. R115 e redeschisă pe EXACT unul (cel din R191); dacă "
+        "apare încă unul, se scrie și el în R115 — nu tăcut" % S.tipuri_neatribuite())
 
 
 def test_o_tarie_NEVALIDA_nu_trece():
@@ -400,6 +404,7 @@ def _cu_plan(monkeypatch):
     monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
     monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
     monkeypatch.setattr(_ci, "orizontal_efactura_vs_d394", lambda conn, schema: [])
+    monkeypatch.setattr(_ci, "orizontal_d406_amortizare", lambda conn, schema, an: [])
 
 
 def test_TOATE_CELE_TREI_rezultate_apar_si_SUMA_lor_e_domeniul(monkeypatch):
@@ -488,6 +493,7 @@ def test_campul_ORIZONTAL_RULAT_lipsa_RIDICA_nu_cade_pe_implicit(monkeypatch):
     monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
     monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
     monkeypatch.setattr(_ci, "orizontal_efactura_vs_d394", lambda conn, schema: [])
+    monkeypatch.setattr(_ci, "orizontal_d406_amortizare", lambda conn, schema, an: [])
     with pytest.raises(ValueError):
         S._culege_firma(object(), "s", 2026, 8)
 
@@ -1283,6 +1289,7 @@ def _cu_producatori(monkeypatch, constatari):
     monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
     monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
     monkeypatch.setattr(_ci, "orizontal_efactura_vs_d394", lambda conn, schema: [])
+    monkeypatch.setattr(_ci, "orizontal_d406_amortizare", lambda conn, schema, an: [])
 
 
 def test_o_CERTA_ROSIE_cere_confirmare_iar_confirmarea_RAMANE_SCRISA(monkeypatch):

@@ -8617,9 +8617,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**591 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**592 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 560
+### `core/` — 561
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9079,6 +9079,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_publicare_restart_neconditionat.py` — Gard: pasul de restart din ritualul de publicare (scripts/githooks/post-commit) e NECONDITIONAT de continut.
 - `core/test_pull_declaratii.py` — Teste pe pull() — granita COD <-> BAZA DE DATE pentru generatoarele de declaratii.
 - `core/test_q16_cor.py` — GARD Q16 — preview salariati imbogateste COR cu denumirea ocupatiei (nu doar codul).
+- `core/test_r191_amortizare_confruntata.py` — R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA in conturile 28xx.
 - `core/test_r42_criteriu.py` — GARD [R42, cele patru decizii ale lui Costin, 25.08.2026].
 - `core/test_ramas.py` — GARDĂ anti-vacuu pe lista derivată a ce a rămas de făcut.
 - `core/test_raport_z_unic.py` — GARD [R61, 26.08.2026]: raportul Z nu se poate înregistra de două ori, iar niciuna din cele

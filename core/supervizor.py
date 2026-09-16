@@ -170,6 +170,32 @@ TIPURI = {
             "ambele laturi se derivă din aceleași facturi — temeiul o spune, nu o lasă pe seama "
             "cititorului.*",
     },
+    "D406_ASSETS_VS_CONT_28X": {
+        "axa": "ORIZONTALA",
+        "ce": "Amortizarea cumulată pe care o declară registrul de imobilizări (secțiunea Assets a "
+              "D406/SAF-T, `AccumulatedDepreciation`) față de soldul creditor al contului de "
+              "amortizare din evidența contabilă validată.",
+        "identitate": "Σ AccumulatedDepreciation pe activele unui cont 28xx == soldul creditor al "
+                      "acelui cont la 31.12 (OMFP 1802/2014, grupa 28 — «Amortizări privind "
+                      "imobilizările»)",
+        "sursa_stanga": "{schema}.mijloace_fixe, prin motorul care emite Assets (`d406_active`)",
+        "sursa_dreapta": "{schema}.inregistrari_linii, note VALIDATE, prin `rulaje_interval`",
+        "tarie": None,
+        "confirmat": False,
+        "propus": CERTA,
+        "motiv_propunere":
+            "PROPUS CERTA — **eu, 16.09.2026; atribuirea e a lui Costin, nu a mea.** Aplicând "
+            "criteriul lui (*diferența admite o explicație legitimă?*), cele două explicații pe "
+            "care le-am găsit sunt deja ÎNCHISE ÎN COD, nu lăsate pe seama cititorului: notele în "
+            "CIORNĂ pe contul de amortizare dau GRI, iar un activ pe care motorul îl refuză face "
+            "stânga incompletă și dă tot GRI. Ce rămâne după ele e o nepotrivire aritmetică între "
+            "ce se declară și ce e în evidență — chiar definiția pe care el a dat-o CERTEI. "
+            "**DAR nu o atribui singur, și spun de ce:** contul 28xx e ținut la nivel de CONT, nu "
+            "de activ (nota lunară scrie `6811 = 28xx` fără id-ul mijlocului fix), deci perechea "
+            "nu poate arăta CARE activ divergă. O constatare care cere confirmare fără să poată "
+            "numi subiectul e mai greu de închis decât una care semnalează. *Măsurat la naștere: "
+            "3 conturi divergente pe 20 de scheme — t003 2808 și 2813, t013 2813.*",
+    },
     "EFACTURA_VS_D394": {
         "axa": "ORIZONTALA",
         "ce": "Facturile transmise efectiv la ANAF prin e-Factura (recipisă acceptată, mediu prod), "
@@ -275,6 +301,11 @@ def _culege_firma(conn, schema, an, luna):
     # [R119, 02.09.2026] singura pereche pe surse cu adevarat independente: ce a plecat la ANAF
     # prin e-Factura fata de ce a declarat D394 ca a inclus. Isi alege singura perioada.
     brute = brute + _ci.orizontal_efactura_vs_d394(conn, schema)
+    # [R191, 16.09.2026] Registrul de imobilizari fata de conturile de amortizare. E pe AN, ca
+    # perechile D101 — `AccumulatedDepreciation` e o cifra de sfarsit de an —, deci primeste `an`,
+    # nu fereastra TVA. Singura pereche in care stanga NU e o declaratie depusa, ci un REGISTRU;
+    # temeiul ei o spune, ca verdele sa nu fie citit mai tare decat e.
+    brute = brute + _ci.orizontal_d406_amortizare(conn, schema, an)
 
     out = []
     for c in brute:
