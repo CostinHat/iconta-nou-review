@@ -30,11 +30,13 @@ from scripts import scan_rute_fara_proba as _s  # noqa: E402
 
 # Măsurate la 15.09.2026, după lotul „scrierile care ajung în cifre de declarație" (41 de rute).
 # Scad doar cu probe scrise, niciodată prin lărgirea definiției lui „numită".
-PLAFON_IN_SUITA = 82          # 131 la 14.09 · 88 la 15.09 (plafon, nu cifră: realul era 86)
-#: [16.09.2026] 88 -> 82. Măsurat pe commitul de bază printr-un `git worktree`: la `cfdd00ae`
-#: cifra REALĂ era 86, iar 88 era un plafon pus mai sus. Cele patru care au ieșit azi au ieșit
-#: cu probe SCRISE (`core/test_rute_stoc_pana_in_declaratie.py`), nu prin lărgirea definiției
-#: lui „numită". Clichetul se pune acum pe cifra reală, nu peste ea.
+PLAFON_IN_SUITA = 77          # 131 la 14.09 · 88 la 15.09 (plafon; realul era 86) · 82 la 16.09
+#: [16.09.2026] 88 -> 82 -> 77, în două jumătăți ale aceleiași lucrări. Și o corectură de-a mea:
+#: **88 era un PLAFON, nu o cifră.** Măsurat pe commitul de bază printr-un `git worktree`, la
+#: `cfdd00ae` realul era **86** — scrisesem întâi „a scăzut 88 -> 86", ceea ce era fals: nu scăzuse
+#: nimic, plafonul era doar mai sus decât cifra. Cele nouă rute care au ieșit azi au ieșit cu probe
+#: SCRISE (`test_rute_stoc_pana_in_declaratie.py`, `test_rute_fiscale_lot3b.py`), nu prin lărgirea
+#: definiției lui „numită". Clichetul stă acum pe cifra reală, nu peste ea.
 PLAFON_NICAIERI = 3
 
 # Clichetul care contează cel mai tare: rute care scriu în tabele din care se RIDICĂ DECLARAȚII,
@@ -42,13 +44,19 @@ PLAFON_NICAIERI = 3
 # generatoare). 49 la derivare, 8 rămase. Cele opt cer fiecare o lume pregătită (articol de stoc,
 # linie de extras bancar, bon pozat, mijloc fix, rețetă, fișier de migrare) — sunt numite în
 # GARZI.md, nu lăsate să se piardă în cifră.
-PLAFON_SUBSET_FISCAL = 4
-#: [16.09.2026] 8 -> 4. Patru dintre cele opt au primit probă care merge PÂNĂ ÎN CIFRA
-#: DECLARAȚIEI, nu până la `200`: `stocuri/iesire`, `stocuri/inventar`,
-#: `stocuri/reclasificare`, `reevaluare-imobilizare`. Fiecare apasă ruta prin HTTP, VALIDEAZĂ
-#: nota (ciorna nu e evidență), și citește rulajul contului — sursa din care se ridică
-#: `GeneralLedgerEntries`. Cele patru rămase (`migrare/importa`, `banca/…/conteaza`,
-#: `bonuri/…/stinge`, `retete/descarca`) cer fiecare altă lume și sunt lotul următor.
+#: [16.09.2026] 8 -> 4 -> **0**, în două jumătăți ale aceleiași lucrări. Fiecare din cele opt a
+#: primit probă care merge PÂNĂ ÎN CIFRA DECLARAȚIEI, nu până la `200`: apasă ruta prin HTTP,
+#: VALIDEAZĂ nota (ciorna nu e evidență), și citește rulajul contului — sursa din care se ridică
+#: `GeneralLedgerEntries`. `core/test_rute_stoc_pana_in_declaratie.py` (stocuri ×3 +
+#: reevaluare-imobilizare) și `core/test_rute_fiscale_lot3b.py` (migrare/importa,
+#: banca/…/conteaza, bonuri/…/stinge, retete/descarca).
+#:
+#: **ȘI DE-AIA NU MAI E UN CLICHET, E UN CRITERIU.** Un clichet la zero n-ar mai păzi nimic: „cel
+#: mult zero" și „exact zero" se citesc la fel doar cât timp cifra chiar e zero, iar prima rută nouă
+#: care ar scrie într-un tabel de declarație fără probă ar încăpea sub el. Scris ca EGALITATE,
+#: creșterea se vede în ziua în care se produce. *Aceeași mutare ca la clichetul celor 385 de rute
+#: din valul use-case, și din același motiv.*
+PLAFON_SUBSET_FISCAL = 0
 
 
 def test_CLICHET_rutele_care_scriu_fara_proba_in_suita_nu_cresc():
@@ -110,8 +118,10 @@ def test_CLICHET_rutele_care_scriu_IN_CIFRE_DE_DECLARATIE_nu_cresc():
         sys.path.insert(0, _s.RAD)
     from scripts import scan_scrieri_declaratii as _sd
     sub, fara = _sd.subsetul()
-    assert len(sub) <= PLAFON_SUBSET_FISCAL, (
-        "rute care scriu în tabele de declarație, fără probă în suită: %d > %d\n  %s"
+    assert len(sub) == PLAFON_SUBSET_FISCAL, (
+        "rute care scriu în tabele de declarație, fără probă în suită: %d, așteptat %d.\n"
+        "  E un CRITERIU, nu un clichet: o rută nouă care scrie într-un tabel din care se ridică o "
+        "declarație are nevoie de probă ÎNAINTE de a intra, nu după.\n  %s"
         % (len(sub), PLAFON_SUBSET_FISCAL,
            "\n  ".join("%-6s %s -> %s" % (m, c, ",".join(d)) for c, m, _f, _tb, d in sub)))
     # anti-vacuum: dacă intersecția se golește (alt domeniu, alt tipar), clichetul ar deveni gol

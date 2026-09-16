@@ -8661,9 +8661,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**593 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**594 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 562
+### `core/` — 563
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9155,6 +9155,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_ruptura_seed_control.py` — Garda anti-ruptura seed<->control (plimbare vizuala 14.08.2026).
 - `core/test_ruta_fara_apelant.py` — GARD [R70, 26.08.2026]: o rută NOUĂ fără apelant nu trece poarta.
 - `core/test_rute_autentificate.py` — Garda: fiecare ruta HTTP declara o dependenta de autentificare.
+- `core/test_rute_fiscale_lot3b.py` — Ultimele PATRU rute cu clichet fiscal, probate pana in cifra declaratiei.
 - `core/test_rute_model_body.py` — core/test_rute_model_body.py — GARD: un model Pydantic pe un handler e BODY, nu query.
 - `core/test_rute_probate.py` — O rută care SCRIE și pe care nicio probă n-o numește — clichet, ca să nu mai crească.
 - `core/test_rute_stoc_pana_in_declaratie.py` — Patru din cele opt rute cu clichet fiscal, probate PANA IN CIFRA DECLARATIEI.

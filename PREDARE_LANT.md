@@ -321,7 +321,7 @@ măsurarea producției trag în direcții opuse, iar unde se întâlnesc trebuie
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **48** | contorul `tenant_schema_seq` |
+| **55** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**
