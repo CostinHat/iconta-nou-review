@@ -1,3 +1,61 @@
+## 16.09.2026 — **etapa 2 se închide; trei lucruri care schimbă ce vede contabilul, dintre care unul bloca declarația de tot**
+
+**Pentru un contabil: da, azi s-a schimbat ceva, în trei locuri.** Nu e o zi de întărire.
+
+**MIJLOACELE FIXE NU PUTEAU IEȘI DELOC ÎN SAF-T, de două zile.** Ruta care scoate lista de mijloace
+fixe pentru D406 răspundea cu eroare la **orice** cerere — nu la una anume, la toate. Cine încerca să
+genereze SAF-T-ul cu mijloace fixe nu primea nici fișier, nici un motiv pe care să-l poată citi.
+Cauza, în cod: numele coloanelor se citeau **înainte** de a se face interogarea, deci veneau de la
+interogarea dinainte sau lipseau cu totul. Reparat, și păzit de-acum: o gardă nouă cade dacă cineva
+mai scrie vreodată cele două în ordinea greșită. *Defectul stătea de două zile și nu-l semnalase
+nimeni — nu fiindcă nu se folosea, ci fiindcă eroarea era de tipul care nu ajunge la un om.*
+
+**O ACHIZIȚIE INTRACOMUNITARĂ DE SERVICII AJUNGEA PE RÂNDUL BUNURILOR.** În decont, serviciile primite
+din UE se declară la rândul 7, bunurile la rândul 5 — două rânduri diferite, cu aceeași sumă
+posibilă. Aplicația întreba omul „bunuri sau servicii?" la introducere, **și apoi uita răspunsul**:
+nu-l scria nicăieri, iar la generarea decontului totul cădea pe rândul bunurilor. Acum răspunsul se
+scrie **pe factură**, ca o coloană a ei, și rămâne înghețat acolo: o factură emisă azi va spune
+peste doi ani același lucru, indiferent ce s-a mai schimbat în fișe. *Alegerea a fost a lui Costin, și
+motivul ei e mecanic: singura altă sursă posibilă — reclasificarea — ține minte perechea
+partener-lună, deci n-ar fi putut despărți două operațiuni ale aceluiași partener din aceeași lună.*
+
+**O VÂNZARE INTRACOMUNITARĂ NU PRODUCEA NICIO FACTURĂ.** Se înregistra ca operațiune, dar nu lăsa
+niciun rând în facturi — iar fără rând în facturi nu ajungea nici în decont (rândurile 1 și 3), nici
+în declarația 390. Practic: livrarea exista în aplicație și **lipsea din amândouă declarațiile**. Acum
+emite factură, ca orice livrare, și s-a probat cap-coadă că ajunge în amândouă.
+
+**Cât de mult s-a schimbat pe portofoliul viu:** deocamdată **nimic de recalculat**, fiindcă nicio
+firmă din portofoliu n-are încă o achiziție IC de servicii sau o vânzare IC înregistrată pe calea
+asta. Ca și ieri, defectele erau reale în cod și neexercitate în producție. *Diferența e că azi două
+dintre ele ar fi produs o declarație greșită, nu una imposibil de generat — iar o declarație greșită
+pleacă la ANAF fără să se plângă nimeni.*
+
+**Restul zilei: etapa 2 a campaniei s-a închis.** Cele 29 de unități rămase — locurile prin care o
+valoare intră în aplicație și ajunge într-o declarație — sunt acum probate una câte una, pe lanțul
+întreg: valoarea intră, se înregistrează, ajunge în rândul corect al declarației cu suma corectă, iar
+declarația se generează și trece validatorul oficial. **31 de lanțuri, 29 verzi.** Cele două roșii
+n-au fost greșeli ale probei: erau chiar defectele de mai sus.
+
+**Ce a mai ieșit la iveală ieri seară, și se scrie aici fiindcă ziua de ieri s-a consemnat la prânz:**
+o **proformă** făcea decontul de TVA imposibil de generat, fiindcă a doua cale de verificare o
+număra · o **achiziție intracomunitară** se scria ca fiind din România, deci lipsea din decont · iar
+**două ortografii ale aceluiași partener** (cu și fără diacritice) fac declarația 394 de nedepus, și
+nimic nu spunea asta înainte de a o trimite. Toate trei, reparate.
+
+**Un lucru pe care l-am aflat greșind, și e de folos oricui atinge zona:** am lărgit interogarea ca să
+aducă noua coloană, dar am uitat locul de dedesubt care **enumeră** câmpurile facturii — coloana
+venea din bază și se pierdea o linie mai jos, tăcut, iar declarația arăta exact ca înainte. *Un
+SELECT lărgit nu e o citire lărgită.* Și, tot azi: proba mea a citit greșit fișierul XML de cinci ori
+la rând, iar a patra oară **a suprascris datele reale ale unui asociat** — refăcute din artefactul
+probei dinainte. De-aceea fiecare probă are acum două lucruri pe care nu le avea: o verificare că
+n-a măsurat în gol, și o desfacere care readuce starea de unde a plecat.
+
+**Ce urmează nu se mai alege.** Costin a numit patru lucrări, în ordine: reevaluarea care nu ajunge la
+registrul de amortizare · amortizarea calculată de două ori din surse diferite, fără nimic care să
+confrunte cifrele · cele opt locuri prin care se scriu date de declarație fără nicio probă · și cele
+opt trimiteri la validatorul oficial care nu se regăsesc în el. După ele nu se deschide nicio temă
+nouă.
+
 ## 15.09.2026 — **planul E se închide; și, pentru prima dată în etapa asta, se schimbă o cifră pe care o vede contabilul**
 
 **Pentru un contabil: da, azi s-a schimbat ceva** — și merită citit, fiindcă zilele dinainte au fost

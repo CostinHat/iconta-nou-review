@@ -1,17 +1,15 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **planul E (de după audit) e ÎNCHIS; E5 a devenit regulă permanentă** (15.09.2026)
+# PREDARE LANȚ — **etapa 2 a campaniei e ÎNCHISĂ; urmează PATRU LUCRĂRI NUMITE, în ordine** (16.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-15**, la **închiderea planului E** — cele șase etape derivate din
-  auditul de ansamblu (E1, E2a, E2b, E3 lot fiscal, E4, E6) sunt închise cu cifră, iar **E5 a ieșit
-  din plan și a devenit regula 9 din `PLAN_LUCRU.md`**: *un motor fiscal deschis pentru altceva se
-  lasă citibil la închidere.* Motivul e mecanic, nu estetic: o etapă are criteriu de ieșire și se
-  închide, iar lizibilitatea nu se termină — motoarele se schimbă odată cu legea. *Un pas care nu se
-  poate închide, ținut în plan ca pas, e o datorie care crește tăcut în dreptul unui plan altfel
-  terminat.*
-- **pe commit**: `0976154e`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **ultima rescriere**: **2026-09-16**, la **închiderea etapei 2 a campaniei** — cele **29** de
+  unități-nucleu rămase sunt probate individual, pe lanț, în cinci loturi, iar ce urmează **nu se mai
+  alege**: sunt **patru lucrări numite de Costin**, în ordine, la punctul **0Z**. *Diferența față de
+  toate predările dinainte: nu mai există „tema următoare se alege" — există o listă de terminat, și
+  o regulă care spune ce se întâmplă după ea.*
+- **pe commit**: `7f37934c`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **[15.09.2026] ZIUA ASTA A SCHIMBAT ȘI CE VEDE CONTABILUL**, spre deosebire de cele dinainte: o
   **proformă nu mai intră în D300** (și operațiunea ieșită din ea nu se mai declară de două ori), iar
@@ -21,6 +19,22 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   *Dacă portofoliul ar fi avut proforme, reparația ar fi rescris declarații deja depuse — și ar fi
   cerut alt plan. De-aia cifra se măsoară, nu se presupune.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
+- **[16.09.2026] ZIUA ASTA A SCHIMBAT CE VEDE CONTABILUL, în trei locuri — și e a doua zi la rând.**
+  O **rută de SAF-T răspundea `500` la ORICE cerere, de două zile** (R190): mijloacele fixe nu puteau
+  ieși deloc în D406, și n-a aflat nimeni. O **achiziție intracomunitară de SERVICII** ajungea pe
+  rândul bunurilor din decont, fiindcă axa nu se păstra nicăieri (R186) — acum se scrie **pe
+  factură**, înghețată la introducere, iar rd.7 primește serviciile și rd.5 bunurile. Și o **vânzare
+  intracomunitară nu producea nicio factură** (R187), deci nu ajungea nici în D300 rd.1/rd.3, nici în
+  D390 — acum emite factură, ca orice livrare. *Toate trei au fost găsite de LANȚ, nu de o gardă:
+  niciuna nu se vedea generând declarația singură.*
+- **[16.09.2026] LECȚIA ZILEI, și e despre citit, nu despre scris:** *un SELECT lărgit nu e o citire
+  lărgită.* Am adăugat `axa_ic` în interogare și am uitat dicționarul care **enumeră** cheile
+  facturii — coloana venea din bază și se pierdea o linie mai jos, tăcut, iar declarația arăta exact
+  ca înainte. Aceeași clasă, de cinci ori la rând, în cititorul probelor: declarația XML în loc de
+  rădăcină · `cnp` în loc de `cnpAsig` · `<Asset>` în loc de `<nsSAFT:Asset>` · numele din docstring
+  (`nume1`/`cif`) în loc de cele emise (`den1`/`cifR`). **A patra oară proba a suprascris un asociat
+  real**, refăcut prin ruta aplicației cu valorile din artefactul lotului E. *De-aia fiecare probă
+  poartă acum aserțiune anti-vacuu și desfacere cu întoarcere verificată.*
 - **[13.09.2026] CE A IEȘIT LA IVEALĂ CHIAR RESCRIIND, și se scrie fiindcă e clasa pe care documentul
   o păzește:** titlul spunea *„șase pași închiși"* — sunt **șapte** (P0…P6) · „interdicții, din **77**:
   **23** măsurate" — sunt **78** și **24** · iar „restanțe deschise" scria **50** într-un tabel și
@@ -58,11 +72,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   nouă; e datoria veche, numărată prima dată.*
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **P0…P7 și planul E sunt închise; ce urmează se alege, nu se moștenește**
+## PRIMUL LUCRU DE ȘTIUT: **P0…P7, planul E și etapa 2 sunt închise; ce urmează e SCRIS, nu ales**
 
-Etapele 1 și 2 ale campaniei sunt **neatinse**. Din 07.09 s-a lucrat la `PLAN_HARDENING.md` (P0…P7,
-închis formal pe 14.09), iar din 14.09 la `PLAN_E1_E6.md` — cele șase etape derivate din auditul de
-ansamblu, **închise pe 15.09**:
+**Etapa 2 a campaniei s-a închis pe 16.09.2026**: cele 29 de unități-nucleu rămase sunt probate
+individual, pe lanț, iar cele patru lucrări care urmează sunt numite la **0Z**, în ordine. Înainte de
+ea: `PLAN_HARDENING.md` (P0…P7, închis formal pe 14.09) și `PLAN_E1_E6.md` — cele șase etape derivate
+din auditul de ansamblu, **închise pe 15.09**:
 
 | pas | cifra care-l închide | commit |
 |---|---|---|
@@ -403,22 +418,25 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-*Toate cifrele de mai jos sunt DERIVATE (`scripts/raport_b.py`, `scripts/scan_ramas.py`) și
-remăsurate pe `6d73eec1`. **Nu se scriu de mână** — de trei ori s-a dovedit că o cifră copiată dintr-o
-predare în alta e greșită exact acolo unde pare cea mai sigură.*
+*Toate cifrele de mai jos sunt DERIVATE (`scripts/raport_b.py`, `scripts/scan_ramas.py`,
+`scripts/scan_garzi_inventar.py`) și remăsurate pe `7f37934c`. **Nu se scriu de mână** — de patru ori
+s-a dovedit că o cifră copiată dintr-o predare în alta e greșită exact acolo unde pare cea mai
+sigură.*
 
-- **restanțe deschise: 54** (din care ale etapei E1: **25**) — SURSĂ 7 · VERIFICARE 31 · ARTEFACT 9 ·
-  ORDINE 7. *P7 n-a deschis niciuna și n-a închis niciuna: e o mutare de cod, nu o reparație de
-  produs.*
+- **restanțe deschise: 55** (din care ale etapei E1: **26**) — SURSĂ 7 · VERIFICARE 32 · ARTEFACT 9 ·
+  ORDINE 7. *A crescut cu una față de 15.09, și e **R191**, deschisă de lotul I: amortizarea se
+  calculează de două ori, din surse diferite. Cele șapte defecte reparate azi nu scad numărul — erau
+  deja consemnate ca REZOLVATE în aceeași tură în care au fost găsite.*
 - **interdicții, din 78**: MĂSURATE **24** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
-- **gărzi și instrumente**: **574** (547 în `core/`), din **520** fișiere de test.
+- **gărzi și instrumente**: **590**, din **532** de fișiere de test în `core/`.
 - **decizii care blochează: niciuna.**
 
 ---
 ## STAREA LA PREDARE
 
-**6172 teste trec** *(ieșirea porții de la `1ca3b7ee`, E2b)* · 7 skip · 11 xfail · ruff OK ·
+**6190 teste trec** *(ieșirea porții de la `5b8a61b3`; cele trei roșii de-atunci sunt defecte
+numite și reparate în `fe12784a`)* · 7 skip · 11 xfail · ruff OK ·
 verificator **TOTAL 0** · four-way se închide la `post-commit`, care publică pe `origin/main`,
 **pe `public/main`**, pe `backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat, și
 **verifică singur cele patru brațe** la capăt (pasul 4, P0).
@@ -445,9 +463,11 @@ e o vorbă, e o consecință.*
 
 <!-- CLICHETE-VII:STOP -->
 
-**POARTA DUREAZĂ ~33 DE MINUTE** — măsurat pe 14–15.09: **1.898–1.991 s**, pe nouă rulări.
-*Cifra veche (~26 de minute, 1.474–1.595 s pe 14 rulări, 06–08.09) se păstrează alături: suita a
-crescut cu ~430 de probe între timp, deci diferența e conținut, nu încetinire.* **Consecința
+**POARTA DUREAZĂ ~36 DE MINUTE** — măsurat pe 15–16.09: **2.156–2.216 s**, pe șase rulări.
+*Șirul întreg se păstrează, fiindcă el arată că e conținut, nu încetinire: ~26 de minute
+(1.474–1.595 s, 06–08.09) → ~33 (1.898–1.991 s, 14–15.09) → **~36 acum**, pe ~6.190 de teste.
+Comentariul din `pre-commit` a fost corectat pe 16.09: scria „~32s", fals cu trei ordine de
+mărime — iar cine citea hook-ul întâi afla de acolo cât costă o respingere.* **Consecința
 practică, de planificat:** o tură cu trei respingeri la poartă costă aproape două ore numai în
 porți — de-aia regulile 6–8 (fără rulare preventivă) contează mai mult acum decât când au fost
 scrise.
@@ -464,6 +484,8 @@ atinge un `.md`, un `.js` sau `main.py` **alături de cod**; când se ating **nu
 |---|---|
 | **prag 1** | **niciuna deschisă** |
 | **decizii** | **niciuna deschisă** |
+| **R59** — *lucrarea 1* | reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe cea veche. **Criteriul de închidere a fost LĂRGIT pe 16.09, ÎNAINTE de reparație, la cererea lui Costin: cere ȘI cifra din SAF-T**, nu doar coloana din registru. *O reparație trecută pe criteriul vechi ar fi lăsat D406 pe valoarea veche și ar fi arătat verde* |
+| **R191** — *lucrarea 2* | *(nouă, 16.09, deschisă de lotul I)* amortizarea se calculează de **două ori**, din surse diferite, și **nimic nu confruntă cifrele**. Se atacă **după** R59, fiindcă R59 stabilește care e valoarea corectă |
 | **rute fără probă** | *(15.09)* **88** de rute care SCRIU n-au nicio probă în suită; dintre ele **8** ating tabele din care se ridică declarații și cer fiecare o lume pregătită (articol de stoc ×3, linie de extras bancar, bon pozat, mijloc fix, rețetă, fișier de migrare). Clichet dublu în `core/test_rute_probate.py` + `PLAFON_SUBSET_FISCAL` — scad **numai** cu probe scrise, niciodată prin lărgirea definiției lui „numită" |
 | **D4b = 18** | *(15.09)* module cu SQL care își deschid singure conexiunea sau comit. **Toate sunt ACTE** (cron-uri, lucrători, sonde, conectori), iar un act are voie — `PLAN_HARDENING.md:840`. Cifra e clichetată ca să nu crească pe tăcute, nu fiindcă ar fi o datorie |
 | **8 citări DUK** | *(15.09)* `R14/R34/R39/R43/R50` în `core/d402.py` și `R24.1` în `core/d301_operatiuni_api.py` nu se regăsesc în validatoarele lor. Jarul D402 instalat are în tot cuprinsul lui patru coduri — niciunul dintre cele citate. **Se lămurește prin RULARE** (XML mutat deliberat), nu prin citirea constantelor: la D100, adiacența din bytecode m-a mințit, iar validatorul m-a corectat |
@@ -562,6 +584,9 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **„toate cele 12 funcții din `test_cashflow.py` să se colecteze"** | comanda din 07.09, luată din **raportul meu de audit** | **9.** Cele trei umbrite erau **identice caracter cu caracter** cu cele vii; a le redenumi ar fi fabricat trei teste care verifică aceeași condiție pe aceeași cale de cod — chiar clasa pe care auditul o numise dublură. *„12" era numărătoarea mea de DEFINIȚII, nu o țintă de acoperire — și a intrat în comandă prin raportul meu* |
 | **„perimetrul de registre e singura scurtare"** | regula 5, așa cum era scrisă | **incomplet.** Regula 4 (perimetrul derivat din graful de import) exista în `perimetru.py` din 02.09, dar **fără lansator**, deci nu se folosea. Măsurat abia pe 07.09: 168 s pe felia doar-cod a lui R94, față de ~1.550 s |
 | **„cele 5 căi C5 rămase · patru rute de fișier"** | proza cu care **eu** am închis P5, `PLAN_HARDENING.md`, 11.09 | **6** și **cinci**. Lipsea `GET /tenants/{id}/d390-clasificare`. Datat: `main.py` e **neschimbat** de la `f61df1b8`, iar ruta e din **27.07.2026** — deci cifra era greșită **când am scris-o**, nu s-a stricat între timp. *Contractul (`ACTION_REQUIRED=0`) a rămas adevărat tot timpul: ce s-a stricat a fost o numărătoare de mână într-un text care descrie un instrument.* |
+| **„poarta durează ~32s"** | comentariul din `scripts/githooks/pre-commit`, purtat de la începuturi până pe **16.09.2026** | **~36 de minute** (2.156–2.216 s pe șase rulări). Cifra n-a îmbătrânit: era falsă cu **trei ordine de mărime** și a stat în chiar fișierul pe care îl citește oricine vrea să afle cât costă o respingere. *Nicio gardă nu se uita la ea, fiindcă e un comentariu — iar un comentariu care afirmă o măsurătoare e o cifră, nu o explicație* |
+| **„cele 45 de unități-nucleu neprobate"** | comanda din 16.09 și predarea dinainte | **29**, re-derivat cu `scan_lanturi_declaratie`. Cifra veche (72 − 27) era corectă pe `c125e0ed` și se poate reproduce acolo; s-a schimbat fiindcă **valul use-case al lui P7 a mutat codul sub instrument**, iar instrumentul a fost reancorat abia pe 15.09 (`357a4d8a`). *Un perimetru se re-derivă la fiecare folosire, nu se citează dintr-o comandă* |
+| **„133 (etapa 1) + 15 (etapa 2) defecte"** | tema din 03.09, purtată în comenzi până pe 16.09 | **nu se pot reconstitui, deci sunt INVALIDATE.** Recalculat din `LISTA_FUNCTIONALITATI.md`: etapa 1 are **145** de rânduri cu defect reparat, iar etapa 2 numea **12** coduri R înainte de 15.09. Singura care se reproduce exact e **27** — unitățile atinse de etapa 2 până atunci |
 | **„35 de nume la nivel de modul se pot schimba la rulare"** | `PLAN_HARDENING.md`, secțiunea P6, măsurat ad-hoc pe 07.09 | **nu se poate reconstitui — n-a existat instrument.** Refăcut pe 12.09 cu unul: `P6_SCANNED_NAMES=3828`, din care **15** se schimbau la rulare. Cele două cifre nu măsoară același lucru, iar „35" n-are cum fi confruntat cu nimic. *A doua oară în trei zile când o cifră dintr-un plan se dovedește o amintire: [[o-cifra-care-nu-se-poate-recalcula]].* |
 
 ---
@@ -869,48 +894,63 @@ a ce e adevărat **acum**.
 ---
 ## DACĂ CONTINUI DE AICI
 
-0Z. **[15.09.2026] PLANUL E E ÎNCHIS. Următoarea temă e ALEASĂ de Costin, nu moștenită.**
+0Z. **[16.09.2026] ETAPA 2 E ÎNCHISĂ. Urmează PATRU LUCRĂRI NUMITE, ÎN ORDINEA ASTA.**
 
-   Nu există pas următor „la rând". `PLAN_E1_E6.md` are tabelul de închidere în cap; `PLAN_LUCRU.md`
-   are acum **regula 9** (motorul fiscal deschis pentru altceva se lasă citibil) — o regulă, nu o
-   etapă, deci nu se „pornește".
+   Comanda lui Costin, 16.09.2026. **Ordinea nu e o preferință**: fiecare lucrare o face vizibilă pe
+   următoarea, iar a doua nu se poate judeca înainte de prima.
 
-   **Tema care ASTEAPTĂ COMANDĂ, cu cifrele ei din tabel** (`LISTA_FUNCTIONALITATI.md`,
-   `VERIFICARE_FUNCTIONALITATI.md`): *probarea suprafeței de introducere a datelor*. Etapa 1 (date
-   invalide) e terminată — **333** de unități probate din cele **364** ale perimetrului, **133** cu
-   defect găsit și reparat. Etapa 2 (date valide, până în rândul declarației) s-a oprit pe
-   **05.09.2026, lotul E**, cu **27** de unități atinse și toate cele nouă declarații acoperite ca
-   generare. Ce a cerut Costin și n-a început: **cele 45 de unități-nucleu neprobate individual**, în
-   ordinea d300 → d394 → d112 → d406 → restul, fiecare cu lanțul complet — *valoarea intră, se
-   înregistrează, ajunge în rândul corect cu suma corectă, declarația se generează și validează* —,
-   iar „suprapunere" **nu** contează ca probă.
+   | # | lucrarea | unde e scrisă | de ce exact în locul ăsta |
+   |---|---|---|---|
+   | **1** | **R59** — reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe cea veche | `CONFORMITATE.md` R59 | criteriul de închidere a fost **lărgit pe 16.09, ÎNAINTE de reparație**: cere **și cifra din SAF-T**, nu doar coloana din registru. *Lărgit după, ar fi fost o măsură luată pe rezultatul care tocmai a ieșit* |
+   | **2** | **R191** — amortizarea se calculează de DOUĂ ori, din surse diferite, și nimic nu confruntă cifrele | `CONFORMITATE.md` R191 | vine **după** R59: confruntarea celor două calcule înainte ca R59 să stabilească valoarea corectă ar compara două greșeli și ar da verde |
+   | **3** | **cele 8 rute cu clichet care ating cifre de declarație** | `core/test_rute_probate.py`, `PLAFON_SUBSET_FISCAL` | sunt cele 8 din cele **88** de rute care scriu fără probă și ating tabele din care se ridică declarații: articol de stoc ×3, linie de extras bancar, bon pozat, mijloc fix, rețetă, fișier de migrare. **Fiecare cere o lume pregătită** — de-aia n-au probă, nu din uitare |
+   | **4** | **cele 8 citări `DUK regula` nerezolvate** | `core/d402.py` (R14/R34/R39/R43/R50) și `core/d301_operatiuni_api.py` (R24.1) | se lămuresc prin **RULARE** — XML mutat deliberat —, **nu** prin citirea constantelor: jarul D402 instalat are în tot cuprinsul lui patru coduri, niciunul dintre cele citate. *La D100, adiacența din bytecode m-a mințit, iar validatorul m-a corectat* |
 
-   **[15.09.2026] Pasul de verificare S-A FĂCUT, iar cifrele de mai sus sunt INVALIDATE.** Starea
-   e confirmată: **zero defecte deschise**, **zero în `xfail`** din temă — detectorul care caută un
-   defect fără cuvântul „reparat" în aceeași propoziție dă **0** pe tot registrul, iar din cele 54 de
-   restanțe DESCHISE (`scripts/raport_b.py`) **niciuna** nu e din intervalul temei; toate codurile ei
-   apar la *restanțe REZOLVATE*. Cele 12 `xfail(strict=True)` din suită sunt toate din afara temei.
+   **REGULA CARE ÎNSOȚEȘTE LISTA, și e la fel de obligatorie ca lista:**
 
-   **Dar cifrele „133" și „15" nu se pot reconstitui, deci se INVALIDEAZĂ** — aceeași regulă ca la
-   cifra 131 (`core/test_predare_proaspata.py`): *o cifră ai cărei termeni nu se mai pot reconstitui
-   se invalidează, nu se corectează.* Recalculat din `LISTA_FUNCTIONALITATI.md`: etapa 1 are **145**
-   de rânduri cu defect reparat (122 cu fraza canonică `**defect găsit și reparat**` + 23 cu alte
-   formulări), iar etapa 2 numea **12** coduri R înainte de 15.09 (R161–R170 + R165c, R166b). Singura
-   cifră care se reproduce exact e **27** — unitățile atinse de etapa 2 până atunci.
+   - **după cele patru NU se deschide nicio temă de investigație nouă.** Lista se termină; nu
+     continuă cu ce pare, la momentul ăla, următorul lucru rezonabil de făcut;
+   - **restanțele rămase se închid DOAR când le atinge altă lucrare.** Cele **55** de restanțe
+     deschise **nu sunt o coadă de sarcini** și nu se iau la rând: una se închide fiindcă o lucrare a
+     trecut peste ea, nu fiindcă i-a venit rândul.
 
-   **Și „cele 45" sunt INVALIDATE.** Perimetrul se re-derivă, nu se citează: `scan_lanturi_declaratie`
-   dă **44** de unități-nucleu, din care 15 erau deja atinse — deci **29** rămase, nu 45. Cifra veche
-   (72 − 27) era corectă pe `c125e0ed` și se poate reproduce acolo; s-a schimbat fiindcă valul
-   use-case al lui P7 a mutat codul sub instrument, iar instrumentul a fost reancorat pe 15.09
-   (`357a4d8a`). Din cele 29, **20 sunt probate** în loturile F (D300, 10), G (D394, 3) și H (D112, 7);
-   rămân **9**: D406 (8) și D205 (1).
+   *De ce stă scrisă aici și nu doar în registru: lista a venit ca o comandă, iar o comandă trăiește
+   într-un fir de conversație care se golește la primul `/clear`. Predarea e singurul loc care
+   supraviețuiește golirii — v. lecția pachetului de livrare, mai jos, care s-a pierdut exact așa.*
 
-0Y. **[15.09.2026] CE E DE ȘTIUT DESPRE CELE DOUĂ REPARAȚII FISCALE, dacă apare o mirare.**
+0Y. **[16.09.2026] CE A ÎNCHIS ETAPA 2, și ce a scos.**
 
-   `nomenclator_status_factura.clauza_tip_document()` e acum **singurul loc** unde scrie că un
-   document fiscal e `tip = 'factura'`; D300 o cere pe toate cele patru drumuri ale lui prin
-   `facturi`, iar D394 și-a înlocuit cei trei literali cu ea. Dacă mâine o proformă „dispare" dintr-un
-   raport, ăsta e motivul, și e deliberat.
+   Perimetrul s-a **re-derivat, nu s-a citat**: `scan_lanturi_declaratie` dă **29** de unități-nucleu
+   neprobate — cifra „45" e INVALIDATĂ, v. tabelul de cifre invalidate. Toate 29 sunt probate, pe
+   **31** de lanțuri, în loturile **F** (D300, 11), **G** (D394, 3), **H** (D112, 8), **I** (D406, 8)
+   și **J** (D205, 1). **29 de lanțuri verzi; două roșii — și amândouă erau defecte reale**, nu
+   așteptări greșite ale mele.
+
+   **Șapte defecte reparate și publicate**: **R184** (o proformă făcea decontul de TVA NEGENERABIL,
+   fiindcă a doua cale o număra) · **R185** (achiziția IC se scria ca fiind din România, deci lipsea
+   din decont) · **R186** (axa bunuri/servicii) · **R187** (vânzarea IC fără factură) · **R188** (două
+   ortografii ale aceluiași partener fac D394 de nedepus, și nimic n-o spunea) · **R189** (refuzul
+   certificatului medical vorbea în limba programatorului) · **R190** (o rută răspundea `500` la
+   ORICE cerere, două zile).
+
+   **CE S-A DECIS, și e de știut înainte de a atinge zona:** axa bunuri/servicii se înregistrează
+   **pe document** — coloană pe factură, **înghețată la introducere**. *Reclasificarea NU e sursa:
+   cheia ei partener-lună nu poate despărți două operațiuni din aceeași lună.* Iar vânzarea
+   intracomunitară **produce factură**, ca orice livrare: fără rând în `facturi` nu ajunge nici în
+   D300 rd.1/rd.3, nici în D390. Amândouă sunt deciziile lui Costin din 16.09, probate pe lanț până
+   în declarație.
+
+   **Și o gardă nouă, născută dintr-un defect care arăta ca altceva:** `core/test_ordinea_cursorului.py`
+   — `cur.description` citit **înainte** de interogare dă coloanele interogării precedente, sau
+   `None`. Așa răspundea ruta de mijloace fixe `500` la orice cerere. Clichet 150, cu mutație pe
+   forma reală care s-a stricat.
+
+0X. **[15.09.2026] CE E DE ȘTIUT DESPRE CELE DOUĂ REPARAȚII FISCALE DE IERI, dacă apare o mirare.**
+
+   `nomenclator_status_factura.clauza_tip_document()` e **singurul loc** unde scrie că un document
+   fiscal e `tip = 'factura'`; D300 o cere pe toate cele patru drumuri ale lui prin `facturi`, iar
+   D394 și-a înlocuit cei trei literali cu ea. Dacă mâine o proformă „dispare" dintr-un raport, ăsta
+   e motivul, și e deliberat.
 
    `core/d394.py` citește partenerul de pe **factură** (`tert_cui`/`tert_nume`), cu fișa clientului ca
    **rezervă** — nu invers, ca până acum. Motivarea lui Costin, scrisă în DECIZII 47: *factura e
@@ -997,9 +1037,11 @@ a ce e adevărat **acum**.
    citeau se mută și ele, sau raportează despre o lume de dinainte.* ~40 de gărzi au trebuit
    re-ancorate, iar două scanere și-au pierdut un punct orb pe care și-l declaraseră singure.
 
-1. **RESTUL: NU DESCHIDE NIMIC.** Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e
+1. **RESTUL: NU DESCHIDE NIMIC** — iar din 16.09 regula are și o formă pozitivă: *ce se face* e
+   lista de patru de la **0Z**, în ordine, și **după ea nu se deschide nicio temă de investigație
+   nouă**. Comanda de capăt de etapă, verbatim (06.09.2026): *„Etapa 2 e
    închisă. Nu deschide nimic altceva — nici restanțele, nici backlogul A3, nici cele opt căi
-   rămase din clasa R164."* Cele **54** de restanțe deschise **nu sunt o coadă de sarcini**;
+   rămase din clasa R164."* Cele **55** de restanțe deschise **nu sunt o coadă de sarcini**;
    `PLAN_LUCRU.md` → „⬛ STAREA, DUPĂ R118". *Rămâne în vigoare: din 07.09 se lucrează la
    `PLAN_HARDENING.md`, iar temele vin de la Costin, una câte una.*
 
@@ -1010,7 +1052,7 @@ a ce e adevărat **acum**.
    | **etapa 1** — date invalide | 364/364, închisă 05.09.2026 |
    | **etapa 2** — date valide, până în declarație | **toate cele nouă**, închisă 06.09.2026, 0 nepotriviri pe cele cinci loturi |
    | **R151** — ultima restanță deblocată de decizie | răspuns primit 05.09, construită 06.09 |
-   | **restanțe deschise** | **54** *(se derivă cu `scripts/raport_b.py`, nu se crede din proza asta — iar „50" a stat aici o săptămână, contrazicând „54" din altă secțiune a aceluiași document)* |
+   | **restanțe deschise** | **55** *(se derivă cu `scripts/raport_b.py`, nu se crede din proza asta — iar „50" a stat aici o săptămână, contrazicând „54" din altă secțiune a aceluiași document)* |
 
    **CE A RĂMAS EXPRES NEATINS, și de cine s-a decis:**
    - **backlogul A3** (Playwright/infra: reconciliator #5, matrice de stări #4, baseline determinist
