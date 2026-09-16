@@ -3132,6 +3132,12 @@ def achizitie_ic(tenant_id, corp, ctx):
                                                "pret_unitar": str(val), "cota_tva": 0}],
                                        tert_nume=furnizor_nume or None, tert_cui=cod_tva_furnizor,
                                        tert_tara=tara_furnizor,
+                                       # [R186, 16.09.2026] AXA, INGHETATA pe document. `corp["tip"]`
+                                       # e deja validat contra nomenclatorului mai sus (bunuri|servicii,
+                                       # orice altceva = refuz), deci ce se scrie e ce a declarat omul.
+                                       # Pana azi valoarea intra doar in textul descrierii, iar D300
+                                       # rutata pe implicit: serviciile IC ajungeau la rd.5, nu la rd.7.
+                                       axa_ic=corp.get("tip"),
                                        data_faptului_generator=data_fg, status="importata")
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge, NU cea standard
@@ -5315,6 +5321,12 @@ def vanzare_ic(tenant_id, corp, ctx):
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
+            # [R186/R187, 16.09.2026] TIPUL se valideaza contra nomenclatorului, nu se citeste cu
+            # `== "servicii"`: axa se INGHEATA pe document, deci o valoare gresita ar ingheta o
+            # minciuna. Pana azi orice altceva decat „servicii" devenea TACIT bunuri — aceeasi clasa
+            # pe care lotul 5 a reparat-o la `achizitie_ic` pe 04.09.
+            if corp.get("tip") not in ("bunuri", "servicii"):
+                raise ValueError(nomenclator_cerut("tip", "bunuri|servicii"))
             if corp.get("tip") == "servicii":
                 ok, ment = _ic.valideaza_prestare_ic(corp["cod_tva_client"], v["valid"])
                 cont_venit = _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "704")
@@ -5332,11 +5344,33 @@ def vanzare_ic(tenant_id, corp, ctx):
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or "Vanzare IC") + " - " + ment +                 f" [{v['nume']}]"
+        # [R187, decizia lui Costin 16.09.2026] LIVRAREA PRODUCE FACTURA. Fara rand in `facturi`,
+        # operatiunea nu putea ajunge nici la rd.1/rd.3 din D300, nici in D390 — amandoua citesc
+        # `facturi`. Numarul vine din SERIA proprie (`emite_factura` numeroteaza), nu din corpul
+        # cererii: la o LIVRARE documentul e al nostru, nu al partenerului — spre deosebire de
+        # `achizitie_ic`, unde numarul e cel de pe factura furnizorului.
+        # Cota e 0: livrarea IC e scutita cu drept de deducere (art. 294 alin. (2) lit. a) pentru
+        # bunuri; prestarea IC e neimpozabila in Romania, taxabila la beneficiar (art. 278 alin. (2)).
+        # Tara si axa se INGHEATA pe document: tara din chiar codul de TVA al clientului, axa din
+        # `tip`, validat mai sus.
+        _tara_client, _ = _ic.desparte_cod_tva(corp["cod_tva_client"])
+        from core import facturi_api as _fa_vic
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            tranzactie.fixeaza_schema(cur, schema)   # emite_factura foloseste INSERT necalificat
+        fres = _fa_vic.emite_factura(
+            conn, linii=[{"descriere": descr[:200], "cantitate": 1, "pret_unitar": str(val),
+                          "cota_tva": 0}],
+            tert_nume=(v.get("nume") or "").strip() or None,
+            tert_cui=corp["cod_tva_client"], data_emitere=corp["data"],
+            tert_tara=_tara_client, axa_ic=corp.get("tip"))
+        fid = fres["factura_id"]
+        with conn.cursor() as cur:
+            iid = repo_contabilitate.nota_facturi_cu_factura(
+                cur, schema, corp["data"], fid, descr[:200])[0]
             repo_contabilitate.adauga_linie_client(cur, schema, iid, cont_venit, val)
         conn.commit()
-    return {"inregistrare_id": iid, "mentiune": ment, "vies": v}
+    return {"inregistrare_id": iid, "factura_id": fid, "numar": fres.get("numar"),
+            "mentiune": ment, "vies": v}
 
 
 

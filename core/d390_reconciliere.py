@@ -106,14 +106,16 @@ _EXIG_SQL = ("CASE WHEN f.data_faptului_generator IS NULL THEN f.data_emitere "
 
 def _pull_facturi(conn, schema, an, luna):
     """Pull SQL PROPRIU al facturilor din fereastra de exigibilitate (an, luna). Intoarce
-    [(directie, cui, nume, baza_Decimal)]. CUI-ul: intai clientul (c.cui), altfel tert_cui - ca
+    [(directie, cui, nume, baza_Decimal, axa)]. `axa` = 'bunuri'|'servicii'|None, de pe document
+    ([R186] a doua cale o citeste din REGISTRU, nu de la generator). CUI-ul: intai clientul (c.cui),
+    altfel tert_cui - ca
     la generator (facturile PRIMITE n-au client_id). SQL schema-calificat (independent de search_path)."""
     import psycopg2.extras as _E
     inceput = "%04d-%02d-01" % (an, luna)
     sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     q = ("SELECT f.directie AS directie, "
          "COALESCE(c.cui, f.tert_cui) AS cui, COALESCE(c.nume, f.tert_nume) AS nume, "
-         "f.total AS total, f.tva AS tva "
+         "f.total AS total, f.tva AS tva, f.axa_ic AS axa_ic "   # [R186] axa, de pe document
          "FROM {s}.facturi f LEFT JOIN {s}.clienti c ON c.id = f.client_id "
          "WHERE {e} >= %s AND {e} < %s ORDER BY f.id").format(s=schema, e=_EXIG_SQL)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -122,7 +124,8 @@ def _pull_facturi(conn, schema, an, luna):
     for r in rows:
         baza = Decimal(str(r["total"] if r["total"] is not None else 0)) \
             - Decimal(str(r["tva"] if r["tva"] is not None else 0))
-        out.append((r["directie"], (r["cui"] or "").strip(), (r["nume"] or "").strip(), baza))
+        out.append((r["directie"], (r["cui"] or "").strip(), (r["nume"] or "").strip(), baza,
+                    (r.get("axa_ic") or "").strip().lower() or None))
     return out
 
 
@@ -176,14 +179,22 @@ def _recalcul_independent(conn, schema, an, luna, manual, reclasificari):
 
     ops = {}   # (tip, tara, cod, den) -> Decimal
     # latura AUTO din facturi IC
-    for (directie, cui, nume, baza) in _pull_facturi(conn, schema, an, luna):
+    for (directie, cui, nume, baza, axa) in _pull_facturi(conn, schema, an, luna):
         ue = _clasifica_ue(cui)
         if ue is None:
             continue                                   # domestic/ne-UE: exclus (nu intra in D390)
         tara, cod = ue
         den = (nume or "")[:200]
-        tip_def = "L" if directie == "emisa" else "A"
-        tip = recl.get((directie, tara, cod), tip_def)
+        # [R186, 16.09.2026] AXA DE PE DOCUMENT decide tipul; reclasificarea nu o mai suprascrie.
+        # Maparea e scrisa AICI, nu importata din `d390` — cele doua cai nu impart codul, asta e chiar
+        # non-tautologia lor. Pe axa nedeclarata (factura istorica) se pastreaza calea veche.
+        if axa == "servicii":
+            tip = "P" if directie == "emisa" else "S"
+        elif axa == "bunuri":
+            tip = "L" if directie == "emisa" else "A"
+        else:
+            tip_def = "L" if directie == "emisa" else "A"
+            tip = recl.get((directie, tara, cod), tip_def)
         ops[(tip, tara, cod, den)] = ops.get((tip, tara, cod, den), Decimal(0)) + baza
     # latura MANUALA (P/S/T/R introduse de contabil, fara factura) + auto-derivarea din d301 (A/S, cu furnizor).
     # d301 se adauga INTOTDEAUNA (ca facturile) - independent de parametrul manual, oglinda calculeaza().

@@ -38,7 +38,8 @@ fi
 # sau `.js`, niciun registru, si nimic din ce dispare nu e numit in ce se comite. Orice esec al lui
 # inseamna „nu e curatenie" — fail closed.
 #
-# CE SE SARE: pytest si verificatorul (cele ~22 de minute). CE A RULAT DEJA: `ruff`. Nu se ruleaza
+# CE SE SARE: pytest si verificatorul (cele ~36 de minute; v. cifra de mai jos). CE A RULAT DEJA:
+# `ruff`. Nu se ruleaza
 # nici avertismentul de vechime a predarii — un commit de curatenie nu e o tura de lucru.
 if "$PY" scripts/curatenie.py > /tmp/precommit_curatenie.log 2>&1; then
     sed 's/^/[pre-commit] /' /tmp/precommit_curatenie.log
@@ -46,7 +47,12 @@ if "$PY" scripts/curatenie.py > /tmp/precommit_curatenie.log 2>&1; then
     echo "[pre-commit]   Mesajul TREBUIE sa poarte '# doar-curatenie: <motiv>' - o cere commit-msg."
     exit 0
 fi
-echo "[pre-commit] pytest (suita intreaga, ~32s)..."
+# [16.09.2026] CIFRA, CORECTATA: scria „~32s" — statut de mult si fals cu trei ordine de
+# marime. Masurat pe sase rulari consecutive: 2156-2216 s, adica ~36 de minute pentru ~6.190
+# de teste. Nu e o estimare: se RECALCULEAZA din `.poarta_jurnal.log`, care poarta durata
+# fiecarei rulari respinse. Conteaza fiindca de ea atarna cat costa o RESPINGERE — iar cine
+# citeste hook-ul intai afla de aici cat de scump e sa intri in poarta nepregatit.
+echo "[pre-commit] pytest (suita intreaga, ~36 min pe ~6.190 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)..."
 "$PY" -m pytest -q > /tmp/precommit_pytest.log 2>&1
 RC=$?
 tail -1 /tmp/precommit_pytest.log

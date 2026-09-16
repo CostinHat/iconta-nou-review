@@ -41,6 +41,36 @@ ABATERI = {
 }
 
 
+#: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
+#: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
+APELURI_INLOCUITE = {
+    ("vanzare_ic", "nota_facturi_ciorna"): (
+        "nota_facturi_cu_factura",
+        "R187 (16.09.2026, decizia lui Costin): livrarea intracomunitara produce acum FACTURA, iar "
+        "nota ramane CIORNA — amandoua helperele scriu `status='ciorna'` — dar e LEGATA de factura "
+        "prin `factura_id`. Deci apelul n-a dispărut: a fost inlocuit cu unul care scrie tot ce "
+        "scria cel vechi, PLUS legatura. Fara factura, operatiunea nu putea ajunge nici in D300 "
+        "rd.1/rd.3, nici in D390."),
+}
+
+
+def test_INLOCUIRILE_declarate_chiar_exista():
+    """ANTI-VACUU pe tabelul de mai sus: o inlocuire declarata care nu e in cod ar scuza o pierdere
+    ADEVARATA. Se cere ca inlocuitorul sa fie chemat de chiar functia numita."""
+    import ast as _ast
+    from core import scan_sql_efectiv as _ef
+    for (fn_nume, vechi), (nou, motiv) in APELURI_INLOCUITE.items():
+        assert len(motiv) > 80, "%s: motivul inlocuirii e prea scurt ca sa fie util" % fn_nume
+        _cale, _nod = _ef.functia(fn_nume)
+        chemate = {x.func.attr for x in _ast.walk(_nod)
+                   if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)}
+        assert nou in chemate, (
+            "%s: inlocuirea declarata (%s -> %s) NU e in cod — tabelul ar scuza o pierdere reala"
+            % (fn_nume, vechi, nou))
+        assert vechi not in chemate, (
+            "%s: apelul vechi (%s) mai e chemat, deci nu s-a inlocuit nimic" % (fn_nume, vechi))
+
+
 def _sursa_veche():
     r = subprocess.run(["git", "show", "%s:main.py" % BAZA], cwd=RAD,
                        capture_output=True, text=True)
@@ -382,6 +412,11 @@ def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
         acum[tinta[1]] = acum.get(tinta[1], 0) - 1          # delegarea, adăugată de val
         if acum.get(tinta[1]) == 0:
             acum.pop(tinta[1])
+        # [R187] INLOCUIRILE declarate se contabilizeaza pe numele VECHI: apelul nu s-a pierdut, i
+        # s-a schimbat numele. Tabelul e pazit de `test_INLOCUIRILE_declarate_chiar_exista`.
+        for (_fn, _vechi), (_nou, _m) in APELURI_INLOCUITE.items():
+            if _fn == nume and acum.get(_nou):
+                acum[_vechi] = acum.get(_vechi, 0) + acum[_nou]
         lipsa = {k: inainte[k] - acum.get(k, 0) for k in inainte if inainte[k] > acum.get(k, 0)}
         if lipsa:
             dif.append("%s: apeluri pierdute %s" % (nume, lipsa))

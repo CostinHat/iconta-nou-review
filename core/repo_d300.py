@@ -81,6 +81,8 @@ def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
     cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
                 "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
                 "COALESCE(f.tert_tara, 'RO') AS tert_tara, f.tert_cui, "
+                "f.axa_ic, "   # [R186] axa bunuri/servicii, INGHETATA pe document
+
                 # [F125] LUNA de exigibilitate (aceeasi expresie pe care se face fereastra): cheia
                 # reclasificarii D390 e per-luna (acelasi partener poate fi reclasificat diferit in luni
                 # diferite - trimestru). Fara ea D300 nu poate potrivi factura pe luna corecta.

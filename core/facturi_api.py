@@ -194,7 +194,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     data_scadenta=None, moneda="RON", status="emisa",
                     categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
                     tert_platitor_tva=None, tert_tara="RO", tip_operatiune="normal",
-                    furnizor_tva_incasare=False, tert_pf=False, tip="factura"):
+                    furnizor_tva_incasare=False, tert_pf=False, tip="factura", axa_ic=None):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
@@ -239,6 +239,18 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     # emitere, art.282 alin.2 lit.b); furnizor_tva_incasare doar pe PRIMITE (deducere amanata la
     # plata, art.297 alin.2). Fara default tacit peste o valoare invalida -> refuz cu mesaj clar.
     tert_tara_v = (tert_tara or "RO").strip().upper() or "RO"
+    # [R186, 16.09.2026] AXA bunuri/servicii, ÎNGHEȚATĂ pe document. Nomenclatorul vine din
+    # `migrare_axa_ic.AXE`, nu scris aici: a doua definiție a aceluiași nomenclator e începutul unei
+    # divergențe. `None` e a TREIA stare — „nedeclarată" —, nu un implicit: pentru operațiunile
+    # interne axa n-are sens, iar pentru facturile istorice nu se știe. O valoare din afara
+    # nomenclatorului e REFUZATĂ aici, nu lăsată pe seama constrângerii din bază: refuzul trebuie să
+    # ajungă la om cu numele câmpului.
+    from core.migrare_axa_ic import AXE as _AXE
+    axa_v = (str(axa_ic).strip().lower() or None) if axa_ic is not None else None
+    if axa_v is not None and axa_v not in _AXE:
+        raise ValueError("Axa operațiunii intracomunitare poate fi doar %s (primit: %r). Ea se "
+                         "înregistrează PE document și nu se mai schimbă după introducere."
+                         % (" sau ".join(_AXE), axa_ic))
     tip_op_v = (tip_operatiune or "normal").strip().lower() or "normal"
     if tip_op_v not in ("normal", "avans", "regularizare_avans"):
         raise ValueError("Tipul operațiunii %r nu e recunoscut. Alege: normal, avans sau "
@@ -261,12 +273,12 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             "INSERT INTO facturi (client_id, numar, data_emitere, data_scadenta, "
             "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
-            "tert_tara, tip_operatiune, furnizor_tva_incasare, tip) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            "tert_tara, tip_operatiune, furnizor_tva_incasare, tip, axa_ic) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
             (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
              status, moneda, directie, tert_nume, tert_cui, tert_adresa,
              categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
-             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v))
+             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v, axa_v))
         factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(
@@ -604,7 +616,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                   data_emitere=None, data_scadenta=None, moneda="RON",
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
                   tert_tara="RO", tip_operatiune="normal", tert_pf=False,
-                  data_curs_manual=None, curs_manual_de=None):
+                  data_curs_manual=None, curs_manual_de=None, axa_ic=None):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -643,7 +655,8 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     r = creeaza_factura(conn, numar, data_emitere, "emisa", linii,
                         client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
                         data_scadenta=data_scadenta, moneda=moneda, status=status,
-                        tert_tara=tert_tara, tip_operatiune=tip_operatiune, tip=tip)
+                        tert_tara=tert_tara, tip_operatiune=tip_operatiune, tip=tip,
+                        axa_ic=axa_ic)   # [R186] axa, INGHETATA pe document
     # setez seria pe factura + incrementez contorul
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s WHERE id = %s", (serie, r["factura_id"]))

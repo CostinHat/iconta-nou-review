@@ -33,7 +33,12 @@ def test_migrare_si_exigibilitate_ziua15():
                 cur.execute("INSERT INTO %s.firma_profil VALUES (1,'TEST SRL','RO14399840','Str 1','Buc','B','e@x.ro','0722','P','I','ADMIN')" % SCH)
                 cur.execute('CREATE TABLE %s.clienti (id int PRIMARY KEY, nume text, cui text)' % SCH)
                 # facturi VECHI - fara coloana (ca sa probam migrarea idempotenta)
-                cur.execute('CREATE TABLE %s.facturi (id int PRIMARY KEY, client_id int, tert_nume text, tert_cui text, data_emitere date NOT NULL, total numeric, tva numeric, directie varchar(10))' % SCH)
+                # [R186 16.09.2026] `axa_ic` intra si aici. Tabelul e scris DE MANA in proba —
+                # a doua definitie a lui `facturi`, langa `tenant_template.sql` —, deci o
+                # coloana noua nu ajunge la el prin migrare. *Divergenta nu e teoretica: ea a
+                # facut proba sa cada cu `column f.axa_ic does not exist`.* Se adauga minimul
+                # de care are nevoie citirea, nu se rescrie proba.
+                cur.execute('CREATE TABLE %s.facturi (id int PRIMARY KEY, client_id int, tert_nume text, tert_cui text, data_emitere date NOT NULL, total numeric, tva numeric, directie varchar(10), axa_ic text)' % SCH)
             conn.commit()
 
         # migrare idempotenta

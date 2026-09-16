@@ -80,6 +80,21 @@ TIPURI = ("L", "T", "A", "P", "S", "R")
 TIPURI_DIRECTIE = {"emisa": ("L", "T", "P", "R"), "primita": ("A", "S")}
 
 
+def _tip_din_axa(directie, axa):
+    """[R186, 16.09.2026] Tipul D390 derivat din AXA de pe document, sau None dac ea nu e declarata.
+
+    Decizia lui Costin: *axa bunuri/servicii se inregistreaza pe document, inghetata la introducere;
+    reclasificarea nu e sursa, fiindca cheia ei partener-luna nu poate desparti doua operatiuni din
+    aceeasi luna.* Cand axa exista, ea decide — si reclasificarea nu mai are ce sa suprascrie.
+    Cand nu exista (factura ISTORICA), se intoarce None si apelantul pastreaza calea veche.
+    """
+    if axa == "bunuri":
+        return "L" if directie == "emisa" else "A"
+    if axa == "servicii":
+        return "P" if directie == "emisa" else "S"
+    return None
+
+
 def _reclasificare_tip(directie, tara, cod, recl, tip_def):
     """Tipul reclasificat al unei operatiuni auto, VALIDAT contra directiei - la fel ca la scriere
     (salveaza_reclasificare). Un override care nu e legal pentru directie (achizitia nu poate deveni
@@ -234,7 +249,10 @@ def _facturi_ic(facturi):
                 diag.append(dict(info, categorie="checksum",
                                  motiv="cod TVA %s%s invalid: %s (va fi respins de DUK regula R24.1)" % (tara, cod, mo)))
         out.append({"directie": f.get("directie"), "tara": tara, "cod": cod,
-                    "den": den[:200], "baza": baza})
+                    "den": den[:200], "baza": baza,
+                    # [R186] axa se duce PER FACTURA pana la tip: doua facturi catre acelasi partener,
+                    # una de bunuri si una de servicii, nu mai pot fi confundate.
+                    "axa": (f.get("axa_ic") or "").strip().lower() or None})
     return out, diag
 
 
@@ -245,14 +263,20 @@ def operatiuni_auto(facturi, reclasificari=None):
     ic, _diag = _facturi_ic(facturi)
     agg = {}
     for o in ic:
-        k = (o["directie"], o["tara"], o["cod"], o["den"])
+        # [R186] AXA INTRA IN CHEIE. Fara ea, doua facturi catre acelasi partener — una de bunuri,
+        # una de servicii — s-ar contopi intr-un singur rand, iar axa uneia s-ar pierde. Exact
+        # imposibilitatea pe care o numeste decizia: cheia partener-luna nu le poate desparti.
+        k = (o["directie"], o["tara"], o["cod"], o["den"], o.get("axa"))
         agg[k] = agg.get(k, Decimal("0")) + o["baza"]
     out = []
-    for (directie, tara, cod, den), b in agg.items():
-        tip_def = "L" if directie == "emisa" else "A"
+    for (directie, tara, cod, den, axa), b in agg.items():
+        tip_din_axa = _tip_din_axa(directie, axa)
+        tip_def = tip_din_axa or ("L" if directie == "emisa" else "A")
         out.append({"directie": directie, "tara": tara, "cod": cod, "den": den,
-                    "baza": _int(b), "tip_default": tip_def,
-                    "tip_curent": _reclasificare_tip(directie, tara, cod, recl, tip_def)})
+                    "baza": _int(b), "tip_default": tip_def, "axa": axa,
+                    # axa de pe document nu se mai reclasifica: ea E sursa
+                    "tip_curent": tip_def if tip_din_axa else
+                    _reclasificare_tip(directie, tara, cod, recl, tip_def)})
     return sorted(out, key=lambda x: (x["directie"], x["tara"], x["cod"]))
 
 
@@ -268,9 +292,15 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
     recl = reclasificari or {}
     ic, diag = _facturi_ic(facturi)
     for o in ic:
-        tip_def = "L" if o["directie"] == "emisa" else "A"       # implicit: bunuri
-        # override contabil, VALIDAT contra directiei (ca la scriere); invalid -> eroare, nu fallback tacit
-        tip = _reclasificare_tip(o["directie"], o["tara"], o["cod"], recl, tip_def)
+        # [R186] AXA DE PE DOCUMENT E SURSA. Cand exista, ea decide tipul si reclasificarea nu mai
+        # are ce sa suprascrie; cand nu exista (factura istorica), se pastreaza calea veche.
+        _tip_axa = _tip_din_axa(o["directie"], o.get("axa"))
+        tip_def = _tip_axa or ("L" if o["directie"] == "emisa" else "A")   # implicit: bunuri
+        if _tip_axa:
+            tip = _tip_axa
+        else:
+            # override contabil, VALIDAT contra directiei (ca la scriere); invalid -> eroare, nu fallback tacit
+            tip = _reclasificare_tip(o["directie"], o["tara"], o["cod"], recl, tip_def)
         k = (tip, o["tara"], o["cod"], o["den"])
         ops[k] = ops.get(k, Decimal("0")) + o["baza"]
         _sursa.setdefault(k, set()).add("factura")
@@ -505,7 +535,9 @@ def pull(conn, schema, an, luna):
                 "nume": (r["c_nume"] or r["tert_nume"] or "").strip(),
                 "directie": r["directie"],
                 "total": r["total"] if r["total"] is not None else 0,
-                "tva": r["tva"] if r["tva"] is not None else 0} for r in rows]
+                "tva": r["tva"] if r["tva"] is not None else 0,
+                # [R186] axa bunuri/servicii, INGHETATA pe document; `None` = nedeclarata (istorica)
+                "axa_ic": r.get("axa_ic")} for r in rows]
     return prof, facturi
 
 

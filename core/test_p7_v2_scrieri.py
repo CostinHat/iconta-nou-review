@@ -158,12 +158,18 @@ def _apeluri_catre_repository():
 
 def test_numarul_de_instructiuni_se_conserva():
     """257 de instrucțiuni SQL stăteau în rute înainte de V1 (107 citiri + 150 scrieri/control).
-    Acum sunt 257 de APELURI către straturile de sub HTTP — niciuna pierdută, niciuna dublată.
+    Acum sunt **258** de APELURI către straturile de sub HTTP — niciuna pierdută, niciuna dublată,
+    plus una ADĂUGATĂ deliberat (R187: `vanzare_ic` fixează schema, fiindcă emite o factură).
 
     *Instrucțiunile din repository sunt mai puține decât apelurile (192), fiindcă 140 de poziții de
     scriere au doar 78 de texte SQL distincte: una singură apare de douăzeci și cinci de ori.*
     """
-    assert _apeluri_catre_repository() == 257
+    # [R187, 16.09.2026] 257 -> 258, cu motivul: `vanzare_ic` a capatat un
+    # `tranzactie.fixeaza_schema(cur, schema)`, cerut fiindca `emite_factura` foloseste INSERT
+    # NECALIFICAT — aceeasi linie exista deja in `achizitie_ic`, din acelasi motiv. Nu e o
+    # instructiune noua de SQL: e un apel de CONTROL, spre `tranzactie.py`, pe care numaratoarea il
+    # include. *Clichetul urca fiindca aplicatia face un pas in plus, nu fiindca s-a pierdut ceva.*
+    assert _apeluri_catre_repository() == 258
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

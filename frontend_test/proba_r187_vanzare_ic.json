@@ -1,0 +1,98 @@
+{
+ "firma": "Comert Micro TVA SRL",
+ "tenant_id": 4838,
+ "schema": "tenant_003",
+ "perioada": "2026-T3 / luna 9",
+ "lanturi": [
+  {
+   "lant": "1 · vanzare IC de BUNURI 900 → factura, D300 R1_1 += 900, D390 tip L",
+   "ruta": "POST /tenants/{}/vanzare-ic",
+   "tip": "bunuri",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'inregistrare_id': 162, 'factura_id': 107, 'numar': 'CMT183', 'mentiune': 'scutit cu drept de deducere - art. 294 alin. (2) lit. a) Cod fiscal (LIC)', 'vies': {'valid': True, 'nume': '---', 'adresa': '---', 'tara': 'DE', 'numar': '811907980', 'eroare': None}}"
+   },
+   "factura_id": 107,
+   "d300": {
+    "stare": 200,
+    "octeti": 1126
+   },
+   "d390": {
+    "stare": 200,
+    "operatiuni": 4
+   },
+   "rand": {
+    "nume": "R1_1",
+    "inainte": 900,
+    "dupa": 1800,
+    "delta": 900
+   },
+   "d390_tipuri": {
+    "inainte": [
+     "A",
+     "L",
+     "P",
+     "S"
+    ],
+    "dupa": [
+     "A",
+     "L",
+     "P",
+     "S"
+    ]
+   },
+   "d390_are_tipul": true,
+   "OK": true
+  },
+  {
+   "lant": "2 · vanzare IC de SERVICII 700 → factura, D300 R3_1 += 700, D390 tip P",
+   "ruta": "POST /tenants/{}/vanzare-ic",
+   "tip": "servicii",
+   "raspuns": {
+    "stare": 200,
+    "corp": "{'inregistrare_id': 164, 'factura_id': 108, 'numar': 'CMT184', 'mentiune': 'neimpozabil in RO - art. 278 alin. (2) Cod fiscal (locul = beneficiarul)', 'vies': {'valid': True, 'nume': '---', 'adresa': '---', 'tara': 'DE', 'numar': '811907980', 'eroare': None}}"
+   },
+   "factura_id": 108,
+   "d300": {
+    "stare": 200,
+    "octeti": 1128
+   },
+   "d390": {
+    "stare": 200,
+    "operatiuni": 4
+   },
+   "rand": {
+    "nume": "R3_1",
+    "inainte": 700,
+    "dupa": 1400,
+    "delta": 700
+   },
+   "d390_tipuri": {
+    "inainte": [
+     "A",
+     "L",
+     "P",
+     "S"
+    ],
+    "dupa": [
+     "A",
+     "L",
+     "P",
+     "S"
+    ]
+   },
+   "d390_are_tipul": true,
+   "OK": true
+  }
+ ],
+ "la_pornire": {
+  "d300": {
+   "stare": 200,
+   "octeti": 1125
+  },
+  "d390": {
+   "stare": 200,
+   "operatiuni": 4
+  }
+ }
+}

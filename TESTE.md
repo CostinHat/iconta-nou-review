@@ -2622,3 +2622,16 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   o verificare, era o coincidență de zi.* Reparat prin **lărgirea precondiției** la exact populația
   comparată — **nu** prin relaxarea comparației sau tăierea firmelor din agregat, care ar fi fost
   alinierea verificatorului ca să tacă. Găsit de poartă, nu de citire.
+
+
+- **`core/migrare_axa_ic.py` — MIGRARE (16.09.2026, R186)**: coloana `facturi.axa_ic`
+  (`'bunuri'|'servicii'|NULL`) cu `CHECK` în bază, nomenclatorul într-un singur loc (`AXE`), oglindă în
+  `tenant_template.sql`. `verifica()` cere **amândouă** — coloana ȘI constrângerea —, nu doar prima.
+  Aplicată pe 20 de scheme de producție și 20 de test, verificată după fiecare. **Fără backfill**,
+  deliberat: nimic din factura veche nu spune dacă a fost bun sau serviciu.
+
+- **`frontend_test/proba_r187_vanzare_ic.py` — PROBĂ DE LANȚ (16.09.2026, R187)**: vânzarea IC până în
+  **ambele** declarații. 2/2: bunuri 900 → `facturi` +1, D300 `R1_1` += 900, D390 tip `L`; servicii
+  700 → D300 `R3_1` += 700, D390 tip `P`. Cele două lanțuri sunt o **pereche pe același client, în
+  aceeași lună** — fără axa pe document s-ar fi contopit. Apelul VIES e REAL: dacă serviciul refuză
+  codul, refuzul aplicației e rezultatul și se scrie ca atare.

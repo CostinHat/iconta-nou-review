@@ -2404,3 +2404,40 @@ Reluat pe codul publicat, după R189. Ce s-a schimbat față de prima rulare:
 
 **DUK: `erori`, dar e divergența cunoscută** din lotul D (`SP1B4_1`, pragul part-time) — o
 atenționare cu temei scris, nu o constatare nouă.
+
+
+---
+
+## R186 și R187 — reparate pe deciziile lui Costin, probate pe lanț (16.09.2026)
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), trimestrul III/2026 · luna 09.
+
+### R186 — axa pe document
+
+| ce | așteptat | obținut |
+|---|---|---|
+| achiziție IC **bunuri** | rd.5 + rd.18 | `R5_1` = 5.600 · `R18_1` = 5.600 |
+| achiziție IC **servicii** | rd.7 + rd.20 | `R7_1` = 1.600 · `R20_1` = 1.600 |
+| D390, același partener și lună | **două** operațiuni, `A` și `S` | `A` 11.000 · `S` 1.600 |
+
+Lotul F: **11/11**. *Dovada decisivă e a treia linie: cheia partener-lună a reclasificării nu putea
+purta două axe pe același partener în aceeași lună.*
+
+### R187 — livrarea produce factură
+
+| lanț | așteptat | obținut |
+|---|---|---|
+| vânzare IC **bunuri** 900 | factură · D300 `R1_1` += 900 · D390 `L` | `CMT181` · +900 · `L` |
+| vânzare IC **servicii** 700 | factură · D300 `R3_1` += 700 · D390 `P` | `CMT182` · +700 · `P` |
+
+**2/2.** Numărul vine din **seria proprie**: la o livrare documentul e al nostru.
+
+### Trei corecturi ale așteptării mele
+
+1. **Coloana în `SELECT` nu e coloană în dicționar.** Prima formă a lărgit interogarea și a uitat
+   dicționarul facturii (chei enumerate) — serviciile au continuat să intre la rd.5.
+2. **Rândul rd.1 se numește `R1_1`**, nu `R1` — comentariul din cod spune „(R1)", atributul emis e
+   `R1_1`. Doc contra cod, a doua oară în două zile.
+3. **Antetele din `TRASEE_VERIFICARI.md` depind de BAZĂ.** Le regenerasem pe producție, iar garda le
+   compară cu ce iese pe baza de test: „16 rute · 26 firme" contra „3 rute · 2 firme". *O cifră
+   derivată dintr-o bază trebuie regenerată pe baza pe care o citește gardul.*

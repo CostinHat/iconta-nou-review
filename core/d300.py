@@ -230,6 +230,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     ic_serv_b = Decimal(0); ic_serv_t = Decimal(0); ic_serv_n = 0 # rd.7 colectat + rd.20 deductibil (achizitii servicii IC, tip S, net zero)
     tr_reclas = []                       # [(directie, tip)] operatiuni reclasificate T/R in D390 (triangulatie/regim) - NEACOPERIT D300, semnalat
     foreign_pos = []                     # [(tara, baza, tva)] factura straina cu cota interna pozitiva (probabil eroare) -> avertisment, nu R9
+    axa_nedeclarata = []                 # [R186] facturi IC fara axa pe document -> cad pe implicit, SEMNALAT
     livrare_ti_base = Decimal(0)   # rd.13: baza livrarilor cu taxare inversa (furnizor art.331), fara TVA
     # [Task2 10.08.2026] beneficiar taxare inversa PRIMITA (art.331, masuri de simplificare): anterior
     # se arunca tacit (`continue`). Acum se DERIVA rd.12 colectat + rd.25 deductibil (net zero).
@@ -253,12 +254,27 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         # a scris panoul D390). Doar partenerii clasificati "ic" au override; fara CUI IC valid ramane bunuri.
         directie = "emisa" if emisa else "primita"
         tip_def_ic = "L" if emisa else "A"
-        _cat_p, _ptara, _pcod, _motiv_p = _clas_part(f.get("cui"))
-        if _cat_p == "ic":
-            _an_f = f.get("an_exig", an); _luna_f = f.get("luna_exig", luna)
-            tip_ic = _recl_tip(directie, _ptara, _pcod, _recl_luna(_an_f, _luna_f), tip_def_ic)
+        # [R186, decizia lui Costin 16.09.2026] AXA DE PE DOCUMENT E SURSA, iar reclasificarea nu mai
+        # e. Motivul lui: *cheia reclasificarii e (directie, tara, cod) — partener-luna —, deci nu
+        # poate desparti doua operatiuni din aceeasi luna catre acelasi furnizor: una de bunuri si una
+        # de servicii ar primi acelasi tip.* Axa se inregistreaza la introducere si nu se mai schimba.
+        # Cele trei stari ale coloanei sunt tratate ca trei, nu ca doua: pe `NULL` (factura ISTORICA,
+        # de dinainte de coloana) se pastreaza comportamentul de pana acum — implicit + reclasificare —
+        # SI se semnaleaza, ca absenta sa se vada in loc sa treaca drept „bunuri".
+        _axa = (f.get("axa_ic") or "").strip().lower() or None
+        if _axa == "servicii":
+            tip_ic = "P" if emisa else "S"
+        elif _axa == "bunuri":
+            tip_ic = "L" if emisa else "A"
         else:
-            tip_ic = tip_def_ic
+            _cat_p, _ptara, _pcod, _motiv_p = _clas_part(f.get("cui"))
+            if _cat_p == "ic":
+                _an_f = f.get("an_exig", an); _luna_f = f.get("luna_exig", luna)
+                tip_ic = _recl_tip(directie, _ptara, _pcod, _recl_luna(_an_f, _luna_f), tip_def_ic)
+            else:
+                tip_ic = tip_def_ic
+            if strain and ue:
+                axa_nedeclarata.append((f.get("id"), directie, tara))
         if (tvai or f.get("exigibil_la_decontare")) and not ti:
             # taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare:
             # ramane pe calea de emitere (_segmente) chiar sub tva_la_incasare - vezi _pull_taxare_inversa.
@@ -643,6 +659,20 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "Registrul agricultorilor), dar NU se pierde tacit. Declar-o MANUAL la rândul deductibil, "
             "altfel TVA de plată e supraevaluată." % _f(orphan_ded))
     rez = ("de plată " + _f(de_plata)) if de_plata else (("de recuperat " + _f(de_recuperat)) if de_recuperat else "0")
+    if axa_nedeclarata:
+        # [R186] Nu e o eroare: e o NECUNOASTERE care pana azi trecea drept „bunuri". Se numeste,
+        # cu facturile, ca sa poata fi completata — iar declaratia spune pe ce s-a sprijinit.
+        _dir = sorted({x[1] for x in axa_nedeclarata})
+        res.avertismente.append(
+            "%d facturi intracomunitare (%s) NU au axa bunuri/servicii înregistrată pe document "
+            "(facturi: %s) — sunt tratate ca BUNURI (rd.1/rd.5), așa cum se făcea înainte, iar "
+            "reclasificarea D390 le mai poate schimba. Axa se înregistrează la introducere și se "
+            "ÎNGHEAȚĂ pe factură (R186); pentru facturile vechi ea nu se poate deduce din nimic, "
+            "deci NU s-a ghicit."
+            % (len(axa_nedeclarata), "/".join(_dir),
+               ", ".join(str(x[0]) for x in axa_nedeclarata[:12])
+               + (" …" if len(axa_nedeclarata) > 12 else "")))
+
     if foreign_pos:
         _fpb = sum((x[1] for x in foreign_pos), Decimal(0))
         _fpt = sum((x[2] for x in foreign_pos), Decimal(0))
@@ -971,6 +1001,20 @@ def pull(conn, schema, perioada):
                                       # [F125] luna de exigibilitate (potrivirea reclasificarii per-luna)
                                       "an_exig": (_exig.year if _exig is not None else None),
                                       "luna_exig": (_exig.month if _exig is not None else None),
+                                      # [R186] AXA de pe document, si ID-ul facturii (numit in
+                                      # avertismentul axei nedeclarate). Dictul se construieste
+                                      # cu chei ENUMERATE, deci o coloana noua nu ajunge aici doar
+                                      # fiindca a fost selectata — prima forma a reparatiei a
+                                      # uitat-o si serviciile IC au continuat sa intre la rd.5.
+                                      # *Un SELECT largit nu e o citire largita.*
+                                      #
+                                      # LIMITA DECLARATA: pe o firma cu TVA LA INCASARE, `pull`
+                                      # nu ajunge aici — intoarce decontari agregate pe cota
+                                      # (`_pull_incasare`), unde identitatea facturii se pierde
+                                      # oricum. Rutarea IC per-factura e deci pe calea normala;
+                                      # pe cea de incasare ea era deja neper-factura, dinainte.
+                                      "axa_ic": r.get("axa_ic"),
+                                      "id": r["id"],
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:

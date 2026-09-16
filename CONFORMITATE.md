@@ -1854,6 +1854,14 @@ citirea corectează.*
   **roșu** deliberat, fiindcă defectul e real și deschis.
 - **condiția de deblocare**: decizia lui Costin între **(a)** ruta actualizează `mijloace_fixe` la validarea notei — reevaluarea devine un act complet, cu riscul că un `UPDATE` pe registru se face dintr-o ciornă; **(b)** ruta rămâne cum e, dar aplicația **spune** divergența — un semnal pe mijlocul fix reevaluat și pe ecranul de amortizare, până la actualizarea manuală; **(c)** altceva. Se închide când divergența ori nu mai există, ori e vizibilă contabilului — cu gard.
 
+- **CRITERIUL DE ÎNCHIDERE, LĂRGIT — decizia lui Costin, 16.09.2026.** Închiderea cere **DOUĂ** cifre,
+  nu una: **(1)** coloana din registru (`mijloace_fixe.valoare`) urcă la valoarea reevaluată, **și
+  (2)** `AcquisitionAndProductionCostsEnd` din secțiunea Assets a D406 o declară. *Motivul e chiar
+  măsurătoarea de mai sus: efectul nu se oprește la amortizare, ajunge în declarație — iar o reparație
+  care mută doar coloana ar închide restanța pe jumătate, exact acolo unde se vede din afară.*
+  Criteriul e scris **înaintea** reparației, dinadins: scris după, s-ar fi potrivit pe ce a ieșit.
+  Proba care îl verifică există deja și e roșie: `frontend_test/proba_e2_lot_i_d406.py`, lanțul 7 —
+  compară costul declarat cu cel așteptat, nu coloana cu ea însăși.
 ### R60 — Instrumentul care hrănește verificările atribuia rutei modulul importat de altcineva
 
 - **felul**: VERIFICARE

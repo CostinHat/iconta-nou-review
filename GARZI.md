@@ -8517,6 +8517,68 @@ Nu e o constatare nouă.
 **R59** (restanță deschisă, confirmată acum prin măsurare). *Niciuna nu e o probă care nu s-a putut
 face: amândouă sunt defecte numite.*
 
+## 16.09.2026 (2) — R186 și R187, reparate pe deciziile lui Costin: axa pe document, factura la livrare
+
+**GĂRZI NOI: niciuna** — dar o **coloană nouă cu poartă în bază**, o migrare, și două lanțuri probate
+cap la cap. Plus un avertisment care numește ce NU se poate ști.
+
+### R186 — axa bunuri/servicii, ÎNGHEȚATĂ pe document
+
+`facturi.axa_ic` (`'bunuri'|'servicii'|NULL`), cu `CHECK` în bază — poarta nu e doar în cod, deci o
+valoare din afara nomenclatorului nu poate intra nici prin `psql`. Nomenclatorul trăiește într-un
+**singur** loc (`core/migrare_axa_ic.AXE`).
+
+**Cele TREI stări sunt tratate ca trei.** Pe `NULL` (factură istorică) se păstrează calea veche —
+implicit + reclasificare — **și se semnalează**, cu facturile numite: *„… NU au axa bunuri/servicii
+înregistrată pe document … sunt tratate ca BUNURI, așa cum se făcea înainte … pentru facturile vechi
+ea nu se poate deduce din nimic, deci NU s-a ghicit."* **Fără backfill**, deliberat: prefixul CUI-ului
+spune țara, nu axa.
+
+**Probat pe lanț** (lotul F, 11/11, pe instanță cu codul nou):
+
+| ce | rândul | măsurat |
+|---|---|---|
+| achiziție IC de **bunuri** | rd.5 + rd.18 | `R5_1` = 5.600, `R18_1` = 5.600 |
+| achiziție IC de **servicii** | rd.7 + rd.20 | `R7_1` = 1.600, `R20_1` = 1.600 |
+
+**Și dovada decisivă, în D390:** același partener (`DE811907980`), aceeași lună, **două** operațiuni —
+`A` bunuri 11.000 și `S` servicii 1.600. *Cheia partener-lună a reclasificării nu putea exprima asta
+niciodată — chiar argumentul deciziei.*
+
+**O capcană a reparației, scrisă fiindcă e clasa:** prima formă a adăugat coloana în `SELECT` și a
+uitat-o în **dicționarul** facturii, care se construiește cu chei ENUMERATE. Serviciile au continuat
+să intre la rd.5, iar proba a rămas roșie. *Un SELECT lărgit nu e o citire lărgită.*
+
+### R187 — vânzarea intracomunitară produce FACTURĂ
+
+`vanzare_ic` emite acum factura, cu **numărul din seria proprie** (`emite_factura`) — la o livrare
+documentul e al nostru, spre deosebire de `achizitie_ic`, unde numărul e cel de pe factura
+furnizorului. Țara și axa se îngheață pe ea; cota e 0 (art. 294 alin. (2) lit. a) la bunuri, art. 278
+alin. (2) la servicii). Nota rămâne ciornă, dar e **legată** de factură.
+
+**Probat pe lanț, 2/2:** vânzare de bunuri 900 → `facturi` +1 (`CMT181`), D300 `R1_1` += 900, D390
+capătă `L`; vânzare de servicii 700 → `CMT182`, D300 `R3_1` += 700, D390 capătă `P`. *Cele două lanțuri
+sunt o pereche pe același client, în aceeași lună: fără axa pe document s-ar fi contopit.*
+
+**Un efect lateral reparat:** `tip` se citea cu `== "servicii"`, deci orice altceva devenea tacit
+bunuri. Cât timp valoarea nu se persista era o clasificare greșită; odată ce axa se îngheață pe
+document, ar fi înghețat o minciună.
+
+### A doua cale a lui D390 a PRINS reparația
+
+După ce generatorul a învățat axa, el dădea `bazaA=11000, bazaS=1600, nrOPI=2`, iar recalculul
+independent încă `bazaA=12600, bazaS=0, nrOPI=1` — **și a blocat generarea**. Abia atunci a fost
+învățată și ea, **din registru**, cu maparea scrisă separat: cele două căi nu împart codul, asta e
+non-tautologia lor. *A doua instanță în două zile a aceleiași lecții: când o decizie se aplică „pe
+toate drumurile", drumurile se NUMĂRĂ.*
+
+### Ce a mai cerut poarta, și avea dreptate de fiecare dată
+
+Avertismentul nou fără diacritice · blocul generat din `TRASEE.md` · **antetele din
+`TRASEE_VERIFICARI.md`**, care depind de BAZĂ (le regenerasem pe producție, iar garda le compară pe
+baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a devenit** una care scrie în
+`facturi` · blocul de clichete din predare · decizia perechii verificator/verificat.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **590 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

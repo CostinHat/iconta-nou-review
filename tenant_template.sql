@@ -403,6 +403,8 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi (
     tert_tara text DEFAULT 'RO'::text NOT NULL,  -- [B1 D300] cod ISO 2 litere partener (IC/export)
     tip_operatiune text DEFAULT 'normal'::text NOT NULL,  -- [B1 D300] {normal,avans,regularizare_avans}: avansul e exigibil la emitere (art.282 al.2 lit.b)
     furnizor_tva_incasare boolean DEFAULT false NOT NULL,  -- [B1 D300] pe PRIMITE: furnizor la incasare -> deducere amanata la plata (art.297 al.2)
+    axa_ic text,  -- [R186 16.09.2026] 'bunuri'|'servicii' pe operatiunea IC, INGHETATA la introducere; NULL = nedeclarata (facturi istorice). Vezi core/migrare_axa_ic.py
+    CONSTRAINT facturi_axa_ic_chk CHECK (axa_ic IS NULL OR axa_ic IN ('bunuri','servicii')),
     categorie_331 character varying(30),
     tip character varying(10) DEFAULT 'factura'::character varying NOT NULL,
     transformat_in_id integer,

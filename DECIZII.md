@@ -14943,3 +14943,63 @@ citesc amândouă — iar asta e chiar P1, nu o încălcare a lui.
 verificatorului sau i-aș fi scos o condiție, ca să nu mai raporteze divergența de la R184. Divergența
 aia s-a închis în direcția **opusă** — verificatul a primit condiția care îi lipsea, iar verificatorul
 a rămas la fel de strict.
+
+
+## 16.09.2026 — Axa bunuri/servicii se înregistrează PE DOCUMENT, iar vânzarea IC produce factură
+
+Două decizii ale lui Costin, luate după ce probele de lanț ale etapei 2 au numit R186 și R187.
+
+### (1) R186 — axa pe document, înghețată la introducere
+
+**Decizia, verbatim:** *„axa bunuri/servicii se înregistrează pe document (coloană pe factură),
+înghețată la introducere. Reclasificarea nu e sursa — cheia ei partener-lună nu poate despărți două
+operațiuni din aceeași lună. Serviciile IC primite ajung la rd.7, bunurile la rd.5, probat pe lanț."*
+
+**Ce s-a construit:** coloana `facturi.axa_ic` (`'bunuri'|'servicii'|NULL`), cu `CHECK` în bază și
+nomenclatorul într-un singur loc (`core/migrare_axa_ic.AXE`). Se scrie la introducere, din valoarea
+pe care omul a declarat-o și ruta a validat-o; se citește în D300 și în D390.
+
+**`NULL` e a TREIA stare, nu un implicit.** Pentru facturile istorice nu se poate ști care era axa,
+iar un implicit ar transforma o necunoaștere în afirmație (interdicția 32). Pe absență se păstrează
+comportamentul de până acum — implicit + reclasificare — **și se semnalează**, cu facturile numite.
+**Nu s-a făcut backfill**: prefixul CUI-ului spune țara, nu axa; *un backfill ar fi exact rotunjirea
+pe care coloana o repară.*
+
+**Consecința pe care decizia o numește, și care se vede acum în declarație:** în D390, **același
+partener, aceeași lună**, poartă două operațiuni — `A` (bunuri, 11.000) și `S` (servicii, 1.600).
+Cheia `(direcție, țară, cod)` a reclasificării nu putea exprima asta niciodată.
+
+### (2) R187 — vânzarea intracomunitară produce factură
+
+**Decizia, verbatim:** *„vânzarea intracomunitară produce factură, ca orice livrare. Fără rând în
+facturi nu ajunge în D300 rd.1/rd.3 și nici în D390. Probează lanțul până în ambele declarații."*
+
+**Ce s-a construit:** `vanzare_ic` emite factura (`emite_factura`, deci **numărul vine din seria
+proprie** — la o livrare documentul e al nostru, spre deosebire de `achizitie_ic`, unde numărul e cel
+de pe factura furnizorului), cu `tert_tara` și `axa_ic` **înghețate** pe ea, cotă 0 (scutit cu drept
+de deducere, art. 294 alin. (2) lit. a) la bunuri; neimpozabil în RO, art. 278 alin. (2) la servicii).
+Nota contabilă rămâne **ciornă**, dar e acum **legată** de factură (`nota_facturi_cu_factura`).
+
+**Un efect lateral, reparat în aceeași tură:** `tip` se citea cu `== "servicii"`, deci orice altceva
+devenea TACIT bunuri. Cât timp valoarea nu se persista, era o clasificare greșită; odată ce axa se
+**îngheață pe document**, ar fi înghețat o minciună. Se validează acum contra nomenclatorului — aceeași
+clasă pe care lotul 5 a reparat-o la `achizitie_ic` pe 04.09.
+
+### (3) R59 — criteriul de închidere, lărgit ÎNAINTE de reparație
+
+**Decizia:** *„criteriul de închidere cere și cifra din SAF-T, nu doar coloana din registru.
+Actualizează-l în registru acum, înainte de reparație. R191 rămâne după el."* Scris în
+`CONFORMITATE.md` la R59. *Criteriul scris după reparație s-ar fi potrivit pe ce a ieșit.*
+
+### De ce s-au atins A DOUA OARĂ ambele căi ale lui D390
+
+Garda `core/test_cale_a_doua.py` a cerut motivul scris, ca și pe 15.09, și pe drept.
+
+**A doua cale a PRINS reparația, nu a fost aliniată ca să tacă.** După ce generatorul a învățat axa,
+el dădea `bazaA=11000, bazaS=1600, nrOPI=2`, iar recalculul independent încă `bazaA=12600, bazaS=0,
+nrOPI=1` — și **a blocat generarea**. Abia atunci a fost învățată și ea, **din registru** (coloana
+`axa_ic`), nu de la generator: maparea axă→tip e scrisă separat în fiecare cale, exact ca să rămână
+două. *Dacă generatorul ar ruta greșit mâine, divergența ar apărea din nou.*
+
+Aceeași lecție ca la R184, a doua instanță în două zile: **când o decizie se aplică „pe toate
+drumurile", drumurile se NUMĂRĂ** — iar a doua cale e un drum, nu o oglindă.
