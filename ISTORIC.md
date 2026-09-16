@@ -1,3 +1,27 @@
+## 16.09.2026, partea a patra — **cele patru lucrări numite sunt terminate**
+
+**Pentru un contabil, ce s-a schimbat azi în total, în ordinea în care se simte:**
+
+1. **Reevaluarea unei imobilizări ajunge, în sfârșit, și în declarație.** Până azi fișa activului
+   rămânea pe valoarea veche, iar SAF-T-ul anual declara către ANAF costul vechi.
+2. **Aplicația compară amortizarea pe care o declară cu cea pe care a înregistrat-o** — și a găsit
+   trei nepotriviri pe firmele existente, dintre care una de 900 de lei.
+3. **Opt operațiuni care ajung în declarații au acum probă până în cifră**, nu doar până la „a
+   mers": ieșire de stoc, inventar, reclasificare, reevaluare, contare bancară, chitanță de casă,
+   consum de rețetă, import de firmă. *Nu se schimbă nimic din ce vezi; se schimbă ce nu mai poate
+   trece neobservat.*
+4. **Trei verificări spuneau că le face validatorul ANAF. Nu le face.** Le facem noi, înainte de
+   depunere — și acum scrie corect cine le face. *Dacă cineva s-ar fi bazat pe validator pentru un
+   `totalPlata_A` greșit sau o sumă zero pe o declarație inițială, ar fi trecut.*
+
+**Trei lecții de metodă din ziua asta, fiecare plătită:**
+- *Un `valid` de la validator nu înseamnă nimic până nu dovedești că valoarea rea era în fișier.*
+- *`rollback` nu întoarce o secvență* — singurul lucru care supraviețuiește tranzacției.
+- *Poarta rulează arborele de lucru, nu indexul* — un lucru în curs poate înroși commitul altcuiva.
+
+*Restanțe închise azi: R59, R191. Deschise: R192 (așteaptă o decizie de produs), R115 (redeschisă —
+tăria constatării noi e a lui Costin).*
+
 ## 16.09.2026, partea a treia — **aplicația compară, în sfârșit, amortizarea pe care o declară cu cea pe care a înregistrat-o**
 
 **Pentru un contabil: nu se schimbă nimic din ce vezi azi, dar aplicația începe să-ți spună ceva ce

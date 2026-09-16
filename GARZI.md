@@ -8572,6 +8572,91 @@ independent încă `bazaA=12600, bazaS=0, nrOPI=1` — **și a blocat generarea*
 non-tautologia lor. *A doua instanță în două zile a aceleiași lecții: când o decizie se aplică „pe
 toate drumurile", drumurile se NUMĂRĂ.*
 
+### Cele opt rute cu clichet fiscal, probate PÂNĂ ÎN CIFRA DECLARAȚIEI
+
+`core/test_rute_stoc_pana_in_declaratie.py` (7 probe) + `core/test_rute_fiscale_lot3b.py` (9 probe).
+Închid lucrarea 3 de la **0Z**: cele 8 rute care scriu în tabele din care se ridică declarații și
+n-aveau nicio probă în suită. Predarea spunea și de ce n-aveau: *„fiecare cere o lume pregătită —
+de-aia n-au probă, nu din uitare"*.
+
+**Ce întreabă, și de ce NU codul HTTP.** Fiecare probă face trei lucruri, în ordine: apasă **ruta**
+prin HTTP, cu jeton și rol real · **validează nota** prin ruta aplicației (ciorna nu e evidență) ·
+citește **rulajul contului** cu `control_incrucisat.rulaje_luna`, adică sursa din care se ridică
+`GeneralLedgerEntries`.
+
+**Și pasul dintre ele, care e miezul:** se măsoară starea **INTERMEDIARĂ** — după rută și **înainte**
+de validare, rulajul e **zero**. *Fără capătul ăla, o rută care ar scrie direct `validata` ar trece
+la fel de verde, iar poarta patru-ochi ar dispărea fără să spună nimeni nimic.*
+
+| ruta | cifra, recalculabilă |
+|---|---|
+| `stocuri/iesire` | 3 buc la CMP 10,00 → `607 = 371`, 30,00 |
+| `stocuri/inventar` | faptic 8 față de scriptic 10 → minus 2 buc, 20,00 |
+| `stocuri/reclasificare` | `301 = 371`, 100,00; **cantitatea nu se atinge** |
+| `reevaluare-imobilizare` | 14 luni × 100,00 eliminate; diferență 400,00 pe `2131 = 105` |
+| `banca/…/conteaza` | încasare 250,00 → `5121 = 4111`; linia trece pe `contat` |
+| `bonuri/…/stinge` | 70,00 → `401 = 5311`, plus operațiunea în registrul de casă |
+| `retete/descarca` | 10 porții × 0,500 kg la CMP 5,00 → `601 = 301`, 25,00; stocul scade cu 5 kg |
+| `migrare/importa` | firmă nouă, cu tabelele declarațiilor **cerute pe nume** |
+
+**Ambele direcții pe fiecare unde există:** a doua contare a aceleiași linii se refuză *și nu produce
+a doua notă* · un bon care nu e chitanță se refuză *și nu lasă operațiune de casă* · o rețetă peste
+stoc se refuză *și nu lasă nici notă, nici ieșire* · un CUI deja în portofoliu se respinge **TIPAT**
+(pe `regula`, nu pe proză — codul spune singur de ce: *„ecranul număra duplicatele potrivind PROZA"*).
+
+**CLICHETUL DEVINE CRITERIU.** `PLAFON_SUBSET_FISCAL` 8 → **0**, scris ca **egalitate**: *un clichet
+la zero n-ar mai păzi nimic — „cel mult zero" și „exact zero" se citesc la fel doar cât timp cifra
+chiar e zero.* O rută nouă care scrie într-un tabel de declarație are nevoie de probă **înainte** de
+a intra.
+
+**CE A PRINS POARTA, și e lecția care merită reținută: `rollback` NU întoarce o SECVENȚĂ.**
+`migrare/importa` consumă `public.tenant_schema_seq`, iar contorul ei e o cifră **pinată** în blocul
+generat din `PREDARE_LANT.md` (măsoară reciclarea numelor de schemă — R79). Proba muta cifra cu +1 la
+**fiecare** rulare a suitei, deci ar fi înroșit poarta altcuiva a doua zi, pe un motiv fără nicio
+legătură cu ce s-a schimbat. Fixtura salvează acum `last_value`/`is_called` și le pune la loc **după**
+`rollback`, pe altă conexiune — altfel restaurarea ar fi ea însăși anulată. *Aceeași clasă cu
+„fixturi pe tabele partajate", pe obiectul care se uită cel mai ușor: singurul care supraviețuiește
+tranzacției.*
+
+**Și o a doua lecție de procedură, plătită pe o poartă întreagă:** poarta rulează pytest pe
+**arborele de lucru**, nu pe **index**. Un lucru în curs (reparațiile lucrării 4, încă nestagiate) a
+înroșit commitul lucrării 3 — iar cifra „2 failed" nu spunea despre ce.
+
+### `core/test_coduri_validator.py` — cele opt citări, lămurite PRIN RULARE
+
+Închide lucrarea 4 de la **0Z**, și datoria din 14.09.2026. **Trei din opt erau afirmații FALSE
+despre validator.**
+
+| citarea | ce a răspuns `DUKIntegrator`, rulat pe XML mutat deliberat |
+|---|---|
+| `R14` (`totalPlata_A` = Σ) | **`valid`** cu `totalPlata_A="9999"` → **nu o verifică** |
+| `R34` (`Impozit_venit` ≥ 0) | *„eroare atribut … nu se incadreaza in intervalul cerut"* → e **XSD**, nu regulă |
+| `R39` (`anul(Data_I) ≤ an`) | **`valid`** cu `Data_I="01.01.2030"` → **nu o verifică** |
+| `R43` (`Suma_venit` > 0) | **`valid`** cu `Suma_venit="0"` → **nu o verifică** |
+| `R50` (CIF_Rom unic) | *„eroare regula: **R29**: CIF_Rom … trebuie sa fie unic"* → codul era **altul** |
+| `R24.1` (codO VIES) | *„eroare regula: R24.1: operatorul codO …"* → **corect**, îi lipsea marca `(D390)` |
+
+**CALIBRARE în direcția cealaltă**, ca „valid" să însemne ceva: pe aceeași fixtură, `R40` și `R49.1`
+— codurile care **chiar** sunt în jar — au răspuns cu mesajele lor, verbatim; iar fixtura de bază e
+`valid`. *Deci validatorul vorbea; pe cele trei chiar n-avea ce spune.*
+
+**ANTI-VACUU, și a fost necesar:** pentru cele trei „valid" s-a **tipărit atributul din XML** înainte
+de a concluziona. *Fără pasul ăsta, „DUK nu verifică regula" și „mutația mea n-a intrat în fișier"
+arată IDENTIC.* La D390 exact verificarea asta m-a prins: căutam `<operatiune` într-un XML care emite
+`<operatie`, deci prima rulare raporta „nicio operație în fișier" — fără ea aș fi citit un `valid`
+fals și l-aș fi crezut.
+
+**Ce sunt, de fapt, cele trei:** reguli **reale**, confruntate verbatim în
+`anaf_surse/structuraXML_D402_2022.pdf`. Deci verificările noastre **rămân**; ce era fals era
+**atribuirea**. *Și deosebirea contează practic: cine citea marcajul de validator putea crede că DUK
+prinde lipsa înainte de depunere. N-o prinde — o prindem noi.*
+
+**Clichetul 8 → 0, scris ca EGALITATE**, din același motiv ca la rute.
+
+**Și ce a prins poarta, de două ori în același loc:** proza mea despre marcajele **vechi**
+reintroducea tiparul pe care tocmai îl scosesem. *Un citat și o citare arată la fel pentru un
+instrument.* Codurile vechi trăiesc acum în tabelul de mai sus, nu în mesajele modulului fiscal.
+
 ### `core/test_r191_amortizare_confruntata.py` — registrul de imobilizări, confruntat cu evidența
 
 Închide **R191**. Secțiunea Assets a D406 își calcula singură amortizarea, din `mijloace_fixe`; nota

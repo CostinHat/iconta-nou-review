@@ -2666,6 +2666,28 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   păzește*. Aserțiunile de apartenență folosesc operatorul de **mulțime**, forma recomandată de
   `core/scan_garzi_pe_text.py` (un `in` care ar ajunge pe un șir devine tăcut sub-șir).
 
+- **`core/test_rute_stoc_pana_in_declaratie.py` + `core/test_rute_fiscale_lot3b.py` — PROBE NOI
+  (16.09.2026, lucrarea 3, 7+9 probe)**: cele **8** rute cu clichet fiscal, apăsate prin HTTP și
+  urmărite **până în rulajul contului** — sursa din care se ridică `GeneralLedgerEntries`. Între
+  apăsare și citire se **validează nota**, prin ruta aplicației; și se măsoară starea
+  **intermediară**, unde rulajul e **zero**. *Fără capătul ăla, o rută care ar scrie direct
+  `validata` ar trece la fel de verde.* Clichetul `PLAFON_SUBSET_FISCAL` **8 → 0**, rescris ca
+  **egalitate** — un clichet la zero n-ar mai păzi nimic. `PLAFON_IN_SUITA` 88 → 77, cu corectura
+  scrisă lângă el: **88 era un plafon, nu o cifră** (realul la commitul de bază era 86, măsurat
+  printr-un `git worktree`).
+  **Și lecția lor:** `rollback` **nu** întoarce o secvență. `migrare/importa` consumă
+  `tenant_schema_seq`, al cărei contor e pinat într-un bloc generat — fixtura îl salvează și îl pune
+  la loc **după** rollback, pe altă conexiune.
+
+- **`core/test_coduri_validator.py` — CLICHET ÎNCHIS (16.09.2026, lucrarea 4)**: cele 8 citări
+  `DUK regula` s-au lămurit **prin RULARE**, cu mutația **dovedită în fișier** înainte de a crede
+  răspunsul. **Trei erau afirmații false despre validator** (`R14`, `R39`, `R43` — trec `valid` cu
+  valoarea rea); una era alt cod (`R50` → **`R29`**); una era o constrângere XSD (`R34`); una era
+  corectă și-i lipsea marca de formular (`R24.1 (D390)`). Cele trei rămân ca verificări ale noastre,
+  confruntate verbatim în `anaf_surse/structuraXML_D402_2022.pdf`. Clichet **8 → 0**, ca egalitate.
+  Datoria `test_datorie_coduri_d402_d301_necorelate` s-a închis singură, prin `xfail(strict)` care a
+  trecut — exact cum e proiectat registrul.
+
 - **`core/test_supervizor.py` — PRODUCĂTOR NOU în stubs (16.09.2026, R191)**: perechea nouă a
   trebuit adăugată în **toate cele trei** locuri care monkeypatch-uiesc producătorii; prima rulare a
   căzut pe `UndefinedTable`, fiindcă probele rulează pe scheme sintetice fără `mijloace_fixe`. Nu e o

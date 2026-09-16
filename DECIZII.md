@@ -15049,3 +15049,47 @@ generatorul, deci „structura rămâne validă" nu se mai putea presupune. `DUK
 `BookValueBegin` și `BookValueEnd` în anul reevaluării. DUK acceptă forma emisă — dar acceptarea
 validatorului nu e o regulă citită la sursă. Consemnat, nu presupus.
 
+## 16.09.2026 (53) — Un clichet care ajunge la zero se rescrie ca CRITERIU, nu se lasă plafon
+
+**Ce s-a decis.** Când o cifră de clichet ajunge la **0**, aserțiunea trece de la `<=` la `==`.
+Aplicat azi în două locuri: `PLAFON_SUBSET_FISCAL` (rute care scriu în tabele de declarație fără
+probă) și `PLAFON_NECORELATE` (citări de validator necorelate).
+
+**De ce, spus mecanic.** *„Cel mult zero" și „exact zero" se citesc la fel doar cât timp cifra chiar
+e zero.* Prima rută nouă care ar scrie într-un tabel de declarație fără probă, sau prima citare nouă
+necorelată, ar încăpea **sub** plafon — iar clichetul ar tăcea exact în ziua în care ar avea ceva de
+spus. Ca egalitate, creșterea se vede când se produce.
+
+**Nu e o decizie nouă**, e aceeași cu cea de la clichetul celor 385 de rute din valul use-case
+(13.09): *„un clichet la zero n-ar mai păzi nimic"*. Se scrie fiindcă azi s-a aplicat de două ori,
+iar regula merită să fie una, nu trei precedente.
+
+**Alternativa respinsă:** a lăsa plafonul la 0 cu `<=`. E identic **azi** și tăcut **mâine** — adică
+forma de eroare pe care întreg registrul de gărzi o vânează.
+
+---
+
+## 16.09.2026 (54) — O citare de validator se lămurește prin RULARE, iar mutația se dovedește ÎNTÂI
+
+**Ce s-a decis, ca metodă.** Un cod de regulă citat în cod nu se confirmă citind constantele din jar,
+ci **rulând validatorul pe un XML mutat deliberat**. Și, înainte de a crede un răspuns `valid`, se
+**tipărește valoarea rea din fișier**.
+
+**De ce al doilea pas nu e zel.** *„Validatorul nu verifică regula" și „mutația mea n-a intrat în
+fișier" arată IDENTIC din afară* — amândouă dau `valid`. La D390, exact verificarea asta m-a prins:
+căutam `<operatiune` într-un XML care emite `<operatie`, deci prima rulare raporta „nicio operație în
+fișier". Fără ea aș fi citit un `valid` fals și l-aș fi crezut.
+
+**Ce a produs metoda azi:** din opt citări, **trei erau afirmații false despre validator** (`R14`,
+`R39`, `R43`), una era alt cod (`R50` → `R29`), una era o constrângere de schemă (`R34`), una era
+corectă. Cele trei sunt reguli **reale** — confruntate verbatim în documentul de structură ANAF din
+corpus —, deci verificările rămân; ce era fals era **atribuirea**.
+
+**Și de ce contează practic, nu doar ca igienă:** cine citea marcajul de validator putea crede că DUK
+prinde lipsa înainte de depunere. **N-o prinde.** O prindem noi, iar asta trebuie să rămână scris
+corect ca nimeni să nu scoată verificarea crezând că e duplicat.
+
+**Calibrarea, obligatorie:** în aceeași rulare s-au exercitat și codurile care **chiar** sunt în jar
+(`R40`, `R49.1`) — au răspuns cu mesajele lor. *Un validator care tace la tot ar fi dat același
+`valid`.*
+
