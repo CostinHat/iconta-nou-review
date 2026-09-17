@@ -27,7 +27,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`*
 
 - [x] declarația intră în coadă **numai cu verdict de validare păstrat** — altfel ruta refuză și spune de ce
 - rândul din coadă poartă: tip, perioadă, firmă, cine a pregătit, momentul

@@ -179,7 +179,13 @@ def test_numarul_de_instructiuni_se_conserva():
     # Niciuna nu muta SQL din alta parte: registrul chiar nu se atingea deloc pana acum, si tocmai
     # asta era restanta. *Clichetul urca fiindca aplicatia face patru pasi in plus, nu fiindca s-a
     # pierdut ceva — conservarea se probeaza de celelalte doua probe ale fisierului.*
-    assert _apeluri_catre_repository() == 262
+    #
+    # [B1, 17.09.2026, audit A1] 262 -> 263, cu apelul numit:
+    #   repo_declaratii.cabinet_din_coada — poarta de APARTENENTA a lui `coada_depune` intreaba prin
+    #   repository cine detine elementul de coada (cabinet_id), inainte sa atinga firma altui cabinet.
+    # Nu muta SQL din alta parte: e o citire NOUA, ceruta ca use-case-ul sa nu execute el SELECT (P7).
+    # *Clichetul urca fiindca aplicatia verifica un pas in plus (apartenenta), nu fiindca s-a pierdut ceva.*
+    assert _apeluri_catre_repository() == 263
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

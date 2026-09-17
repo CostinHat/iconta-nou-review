@@ -39,6 +39,7 @@ def select_facturi(cur, fids):
 
 def select_facturi_2(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
     cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
+                "f.moneda, f.curs_bnr, f.total_lei, f.tva_lei, "  # [A1] conversia in lei (core.sume_lei)
                 "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
                 "COALESCE(f.tert_tara, 'RO') AS tert_tara, "
                 "l.cantitate, l.pret_unitar, l.cota_tva "
@@ -79,6 +80,7 @@ def select_firma_profil(cur):
 
 def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
     cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
+                "f.moneda, f.curs_bnr, f.total_lei, f.tva_lei, "  # [A1] conversia in lei (core.sume_lei)
                 "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
                 "COALESCE(f.tert_tara, 'RO') AS tert_tara, f.tert_cui, "
                 "f.axa_ic, "   # [R186] axa bunuri/servicii, INGHETATA pe document

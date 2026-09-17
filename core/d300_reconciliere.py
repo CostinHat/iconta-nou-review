@@ -70,6 +70,7 @@ def _agrega_independent(conn, inceput, sfarsit):
     Fereastra pe data_emitere [inceput, sfarsit) - contractul non-tva_la_incasare al D300."""
     import psycopg2.extras as _E
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
+         "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "  # [A1] a doua cale IN LEI, ca generatorul
          "l.cantitate AS cant, l.pret_unitar AS pret, l.cota_tva AS cota "
          "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
          # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere); avans->emitere), ca generatorul
@@ -93,9 +94,12 @@ def _agrega_independent(conn, inceput, sfarsit):
         rows = _repo.sql(cur, q, inceput, sfarsit)
 
     # regrupez randurile SQL pe factura (LEFT JOIN -> N randuri/factura, sau 1 cu cant/cota NULL)
+    from core import sume_lei as _sl
     inv = {}
     for r in rows:
-        f = inv.setdefault(r["fid"], {"directie": r["directie"],
+        f = inv.setdefault(r["fid"], {"id": r["fid"], "directie": r["directie"],
+                                      "moneda": r["moneda"], "curs_bnr": r["curs_bnr"],
+                                      "total_lei": r["total_lei"], "tva_lei": r["tva_lei"],
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0,
                                       "linii": []})
@@ -106,15 +110,22 @@ def _agrega_independent(conn, inceput, sfarsit):
     dedb = {21: Decimal(0), 11: Decimal(0)}
     for f in inv.values():
         emisa = (f["directie"] == "emisa")
-        segmente = []  # (cota_int, baza_Decimal)
+        # [A1] Baza IN LEI (cantitate x pret x curs; RON->1). O factura in valuta fara curs se EXCLUDE
+        # — la fel ca generatorul (calcul_d300), altfel cele doua cai ar diverge tocmai pe ea.
+        try:
+            _curs = _sl.curs_factura(f)
+        except _sl.LipsaCurs:
+            continue
+        segmente = []  # (cota_int, baza_Decimal_LEI)
         if f["linii"]:
             for (cant, pret, cota) in f["linii"]:
                 ci = int(round(float(cota)))  # ROTUNJIRE PE COTA (procent intreg RO 21/11/9/5/0): bancar==aritmetic, nu pe lei
-                segmente.append((ci, Decimal(str(cant)) * Decimal(str(pret))))
+                segmente.append((ci, Decimal(str(cant)) * Decimal(str(pret)) * _curs))
         else:
-            # factura fara linii: baza=total-tva, cota dedusa din raport (limita 5)
-            baza = Decimal(str(f["total"])) - Decimal(str(f["tva"]))
-            tva = Decimal(str(f["tva"]))
+            # factura fara linii: baza=total_lei-tva_lei, cota dedusa din raport (limita 5)
+            _tl, _vl = _sl.antet_lei(f)
+            baza = _tl - _vl
+            tva = _vl
             ci = int(round(float(tva) / float(baza) * 100)) if (baza and tva) else None  # ROTUNJIRE PE COTA (procent dedus, nu lei): bancar==aritmetic
             if ci is not None:
                 segmente.append((ci, baza))

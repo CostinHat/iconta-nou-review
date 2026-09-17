@@ -85,7 +85,9 @@ def portal_revoca_acces(user_id, tenant_id, ctx):
                 raise _erori.CerereGresita("nu poți revoca propriul acces principal")
             repo_utilizatori.dezleaga_contul_de_firma(cur, user_id, t["id"])
             if repo_utilizatori.cate_firme_mai_are_contul(cur, user_id)["n"] == 0:
-                repo_utilizatori.dezactiveaza_contul(cur, user_id)
+                # [B3] doar conturi de CLIENT rămase fără firmă; un angajat/admin/superadmin fără
+                # rânduri în `user_tenants` NU se stinge din portal (dezactiveaza_contul_client filtrează pe rol).
+                repo_utilizatori.dezactiveaza_contul_client(cur, user_id)
             _uc_comun._urma_portal(cur, t["id"], "acces_retras",
                          "clientul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
     return {"ok": True}

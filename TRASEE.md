@@ -1163,14 +1163,14 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 84
+**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 86
 
-**Cine:** rol cerut: `admin_firma`, `angajat` · drept fin: `poate_depune`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 1 din 8.**
+**Cine:** rol cerut: `admin_firma`, `angajat` · drept fin: `poate_depune`, `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 1 din 8.**
 
 **Pasii, din cod:**
 
 - `GET /coada` — garda `cere_cabinet`
-- `POST /coada` — garda `cere_rol` rol:admin_firma,angajat
+- `POST /coada` — garda `cere_rol` rol:admin_firma,angajat drept:poate_pregati
 - `POST /coada/{coada_id}/aproba` — garda `cere_rol` rol:admin_firma,angajat drept:poate_valida
 - `GET /coada/{coada_id}/continut` — garda `cere_cabinet`
 - `POST /coada/{coada_id}/depune` — garda `cere_rol` rol:admin_firma drept:poate_depune

@@ -38,6 +38,7 @@ from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
 from core.common import cheie_manual
 from core.common import perioada_tva_tip as _ptv, fereastra_tva as _fer  # [fix trim 06.08.2026]
+from core import sume_lei as _sl  # [A1] conversia in lei, sursa unica
 # [LANT legislatie TURA 3, 10.08.2026] SURSA CANONICA de validare a identitatii fiscale (T1/T3 din
 # CATALOG_INVALIDITATE.md). Import READ-ONLY, modul LEAF (fara db) - fara risc de import circular.
 from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif
@@ -1039,6 +1040,12 @@ def pull(conn, schema, perioada):
         emisa = (r["directie"] == "emisa")
         cui = (r["tert_cui"] or r["c_cui"] or "")
         nume = (r["tert_nume"] or r["c_nume"] or "")
+        # [A1, 17.09.2026] Cursul facturii, din SURSA UNICA. O factura in valuta fara curs se EXCLUDE
+        # din D394 (nu intra tacit ca lei) — la fel ca in D300, care semnaleaza aceleasi facturi.
+        try:
+            _curs = _sl.curs_factura(r)
+        except _sl.LipsaCurs:
+            continue
         comun = {"cui": cui, "nume": nume, "directie": r["directie"],
                  "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"],
                  "platitor_tva": r["tert_platitor_tva"],
@@ -1050,7 +1057,7 @@ def pull(conn, schema, perioada):
             if l.get("cota") is None or l.get("baza") is None:
                 continue
             c = int(Decimal(str(l["cota"])))
-            pe_cota[c] = pe_cota.get(c, Decimal(0)) + _d(l["baza"])
+            pe_cota[c] = pe_cota.get(c, Decimal(0)) + _d(l["baza"]) * _curs  # [A1] baza IN LEI
         if pe_cota:
             # [nrFact multi-cota, OPANAF 2194/2025 pct.C.5:1221-1227] Pentru o factura cu operatiuni
             # pe cote DIFERITE, la "numar de facturi" se inscrie valoarea 1 in dreptul operatiunii cu
@@ -1068,7 +1075,7 @@ def pull(conn, schema, perioada):
             # ANAF cere COTA BUNULUI: structD394 pct.217 - "valoarea 0 este permisa daca
             # si numai daca tip in (LS, AS, N, V)". C nu e in lista. (ASI eliminat - vezi TIPURI)
             # Fara asta, orice achizitie cu taxare inversa cadea din declaratie.
-            total, tva = _d(r["total"]), _d(r["tva"])
+            total, tva = _sl.antet_lei(r)   # [A1] antet IN LEI (total_lei/tva_lei, sau total/tva x curs)
             baza = total - tva
             if tva and baza:
                 cota = int((tva / baza * Decimal(100)).quantize(

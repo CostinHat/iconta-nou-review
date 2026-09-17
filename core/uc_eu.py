@@ -19,7 +19,7 @@ from core import db, auth_api, coada_api
 from core import nucleu as _nucleu
 from core import repo_admin
 from core import repo_utilizatori
-from core.mesaje import mesaj_din_cod, DOAR_PATRON
+from core.mesaje import mesaj_din_cod, DOAR_PATRON, DOAR_ADMIN_CABINET
 import psycopg2.extras as _E_audit
 from core import erori as _erori
 
@@ -93,7 +93,15 @@ def eu_competente_get(ctx):
 
 
 def eu_competente_set(date, ctx):
-    """[P7 · use-case] Corpul rutei `/eu/competente`; docstringul ei a ramas in stratul HTTP."""
+    """[P7 · use-case] Corpul rutei `/eu/competente`; docstringul ei a ramas in stratul HTTP.
+
+    [B2, 17.09.2026] CINE POATE ACORDA. `poate_valida`/`poate_depune` sunt privilegii de CONTROL
+    INTERN (patru-ochi): le acordă administratorul cabinetului prin `/asistenti/{uid}/permisiuni`, nu
+    și le acordă fiecare singur. Până azi orice angajat sub `cere_cabinet` își scria toate trei
+    flagurile pe propriul rând și apoi aproba orice. Acum ruta e rezervată admin_firma/superadmin
+    (care își administrează legitim propriile competențe); restul primesc competențele de la admin."""
+    if ctx.get("rol") not in ("admin_firma", "superadmin"):
+        raise _erori.FaraDrept(DOAR_ADMIN_CABINET)
     with db.get_conn() as conn:
         return _asist.set_competente_proprii(
             conn, ctx["uid"], date.poate_pregati, date.poate_valida, date.poate_depune)

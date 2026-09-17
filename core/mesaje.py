@@ -126,6 +126,7 @@ DOAR_ADMIN_CABINET = "Acțiune rezervată administratorului cabinetului. Cere-i 
 DOAR_PATRON = "Acțiune rezervată patronului cabinetului. Cere-i lui să o facă."
 FARA_DREPT_VALIDARE = "Nu ai dreptul de a valida declarații. Cere-i administratorului cabinetului să ți-l acorde."
 FARA_DREPT_DEPUNERE = "Nu ai dreptul de a depune declarații. Cere-i administratorului cabinetului să ți-l acorde."
+FARA_DREPT_PREGATIRE = "Nu ai dreptul de a pregăti declarații. Cere-i administratorului cabinetului să ți-l acorde."  # [B4]
 # [probare invalid, 03.09.2026] Forma dinainte — „Nu ai acces la această firmă. Cere-i
 # administratorului cabinetului să ți-o atribuie." — AFIRMA o cauză pe care ruta nu o poate
 # ști: pe un `tenant_id` inexistent (999999) spunea că firma există și că e o chestiune de

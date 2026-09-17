@@ -38,7 +38,11 @@ def test_migrare_si_exigibilitate_ziua15():
                 # coloana noua nu ajunge la el prin migrare. *Divergenta nu e teoretica: ea a
                 # facut proba sa cada cu `column f.axa_ic does not exist`.* Se adauga minimul
                 # de care are nevoie citirea, nu se rescrie proba.
-                cur.execute('CREATE TABLE %s.facturi (id int PRIMARY KEY, client_id int, tert_nume text, tert_cui text, data_emitere date NOT NULL, total numeric, tva numeric, directie varchar(10), axa_ic text)' % SCH)
+                # [A1 17.09.2026] moneda/curs_bnr/total_lei/tva_lei intra si aici, din acelasi motiv
+                # ca axa_ic mai sus: conversia in lei le CITESTE (repo_d390 le selecteaza). Fara ele,
+                # proba ar cadea cu `column f.moneda does not exist`. NULL = RON (curs 1), deci
+                # comportamentul e neschimbat pentru facturile fara valuta ale acestei probe.
+                cur.execute('CREATE TABLE %s.facturi (id int PRIMARY KEY, client_id int, tert_nume text, tert_cui text, data_emitere date NOT NULL, total numeric, tva numeric, directie varchar(10), axa_ic text, moneda varchar(3), curs_bnr numeric, total_lei numeric, tva_lei numeric)' % SCH)
             conn.commit()
 
         # migrare idempotenta

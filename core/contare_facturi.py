@@ -344,6 +344,12 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
     directie = f.get("directie")
     tvai = bool(tva_incasare_firma) or (directie == "primita" and bool(f.get("furnizor_tva_incasare")))
     la_data = str(f["data_emitere"])
+    # [A1, 17.09.2026] CARTEA E IN LEI. Baza notelor (4111/401/4426/4427) se inmulteste cu cursul
+    # facturii — altfel o factura in valuta ar posta valuta drept lei, iar D300/D394/D406 (care citesc
+    # cartea) ar mosteni greseala. `contabilizeaza` refuza deja o factura in valuta fara curs (poarta
+    # de mai sus), deci aici `curs_factura` nu ridica: RON->1, valuta->cursul de pe document.
+    from core import sume_lei as _sl
+    _curs = _sl.curs_factura(f)
 
     if directie == "emisa":
         cvi = cont_venit_implicit or "707"
@@ -354,9 +360,9 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
         grupuri = [dict(r) for r in cur.fetchall()]
         total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
         if total_baza == 0:
-            # factură fără linii (legacy): cade pe antet, un singur cont.
-            baza = (Decimal(str(f.get("total_lei") or f.get("total") or 0))
-                    - Decimal(str(f.get("tva") or 0)))
+            # factură fără linii (legacy): cade pe antet, un singur cont. Antetul IN LEI.
+            _tl, _vl = _sl.antet_lei(f)
+            baza = _tl - _vl
             cur.execute("SELECT MAX(cota_tva) AS cota FROM %sfactura_linii WHERE factura_id=%%s"
                         % _p(schema), (fid,))
             r = cur.fetchone()
@@ -369,7 +375,7 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
             raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
         note = []
         for g in grupuri:
-            note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)),
+            note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)) * _curs,   # [A1] baza IN LEI
                                       cota=Decimal(str(g["cota_tva"])) / 100, la_data=la_data,
                                       tva_incasare=tvai, cont_venit=g["cv"])
         return note
@@ -377,11 +383,11 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
     cur.execute("SELECT COALESCE(SUM(cantitate*pret_unitar),0) AS baza, MAX(cota_tva) AS cota "
                 "FROM %sfactura_linii WHERE factura_id=%%s" % _p(schema), (fid,))
     fl = cur.fetchone()
-    baza = Decimal(str((fl["baza"] if isinstance(fl, dict) else fl[0]) or 0))
+    baza = Decimal(str((fl["baza"] if isinstance(fl, dict) else fl[0]) or 0)) * _curs  # [A1] baza IN LEI
     cota = (fl["cota"] if isinstance(fl, dict) else fl[1])
     if baza == 0:
-        baza = (Decimal(str(f.get("total_lei") or f.get("total") or 0))
-                - Decimal(str(f.get("tva") or 0)))
+        _tl, _vl = _sl.antet_lei(f)
+        baza = _tl - _vl
     if cota is None:
         raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
     cota = Decimal(str(cota)) / 100
@@ -448,6 +454,23 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     if (f.get("tip") or "factura") != "factura":
         raise RefuzContare("NU_E_DOCUMENT_FISCAL",
                            "proforma/avizul nu se contabilizează (nu e document fiscal)")
+
+    # [A1, 17.09.2026] POARTA CONVERSIEI: o factură în valută FĂRĂ curs BNR nu se poate exprima în
+    # lei, iar cartea e în lei. Nu se ghicește 1 (asta e chiar greșeala A1) — se refuză cu ieșirea
+    # numită. Criteriul cerut: o factură fără total în lei nu poate fi contată și nu intră în
+    # declarație. RON și facturile cu curs trec neatinse.
+    from core import sume_lei as _sl_gate
+    try:
+        _sl_gate.curs_factura(f)
+    except _sl_gate.LipsaCurs as _e:
+        raise RefuzContare(
+            "LIPSA_CURS_LEI",
+            "Factura #%s e în %s și nu are curs BNR — nota s-ar scrie în valută drept lei. "
+            "Completează cursul pe factură (ultimul curs comunicat până la data ei); abia apoi se "
+            "contează și intră în declarații (A1, Cod fiscal art. 290)."
+            % (factura_id, (f.get("moneda") or "?")),
+            detalii={"factura_id": factura_id, "moneda": f.get("moneda"),
+                     "iesire": "completeaza_curs"})
 
     # [EEE3 / FFF3] IDEMPOTENȚĂ: a doua chemare pe o factură deja contată e NO-OP, nu a doua notă
     # și nici eroare. Refuzul era corect, prezentarea lui nu — `422` face un comportament corect să

@@ -19,6 +19,14 @@ def continutul_din_coada(cur, coada_id, tenant_id):
     return cur.fetchone()
 
 
+def cabinet_din_coada(cur, coada_id):
+    """[B1, 17.09.2026] Cabinetul care DEȚINE elementul de coadă (sau None). Poarta de apartenență
+    a lui `coada_depune` interoghează prin AICI — SQL-ul stă în repository, nu în use-case (P7)."""
+    cur.execute("SELECT cabinet_id FROM public.declaratii_coada WHERE id=%s", (coada_id,))
+    r = cur.fetchone()
+    return r[0] if r else None
+
+
 def perioada_d300_manual(cur, schema, manual_id):
     cur.execute(f"SELECT an, luna FROM {schema}.d300_manual WHERE id=%s",
                 (manual_id,))

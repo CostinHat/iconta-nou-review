@@ -64,6 +64,7 @@ def select_factura_linii(cur, di, ds):
 def select_facturi_3(cur, di, ds):
     cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, "
                 "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
+                "moneda, curs_bnr, total_lei, tva_lei, "  # [A1] conversia in lei (SAF-T CurrencyCode=RON)
                 "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie "
                 "FROM facturi WHERE data_emitere >= %s AND data_emitere < %s ORDER BY id", (di, ds))
     return cur.fetchall()

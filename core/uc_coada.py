@@ -19,12 +19,17 @@ from core import repo_declaratii
 from core import erori as _erori
 from core import uc_comun as _uc_comun
 from core import db, auth_api, coada_api, supervizor
-from core.mesaje import (FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE)
+from core.mesaje import (FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_DREPT_PREGATIRE)
 from core import tranzactie
 
 
 def coada_adauga(date, ctx):
     """[P7 · use-case] Corpul rutei `/coada`; docstringul ei a ramas in stratul HTTP."""
+    # [B4, 17.09.2026] A pune o declarație în coadă e actul de PREGĂTIRE — cere `poate_pregati`.
+    # Până azi flagul apărea doar la setare, nu la folosire: orice angajat sub `cere_cabinet` genera
+    # și punea în coadă. Poarta e aici, pe acțiune, nu doar în profil.
+    if not _uc_comun._are_permisiune(ctx, "poate_pregati"):
+        raise _erori.FaraDrept(FARA_DREPT_PREGATIRE)
     schema = _uc_comun._schema_sau_404(ctx, date.tenant_id)
     body = date.model_dump(exclude_none=True)
     for k in ("tenant_id", "tip", "inceput_la"):  # [p15] inceput_la nu merge la generator
@@ -162,9 +167,11 @@ def coada_aproba(coada_id, date, ctx):
         # [R41] `motiv_trecere` = trecerea EXPLICITĂ peste un verdict lipsă, stătut sau cu erori.
         # Fără el, acțiunea e refuzată; cu el, se consemnează cine și de ce.
         r = coada_api.aproba(conn, coada_id, str(ctx["uid"]), aprobat_de_id=int(ctx["uid"]),
-                             motiv_trecere=(date or {}).get("motiv_trecere"))
+                             motiv_trecere=(date or {}).get("motiv_trecere"),
+                             cabinet_id_apelant=ctx["firm"])  # [B1] apartenenta pe obiect
     if not r["ok"]:
         cod = r.get("cod")
+        # [B1] ALT_CABINET -> 404 (Inexistent): elementul altui cabinet nu-si dezvaluie existenta.
         http = ((_erori.Conflict if cod == "STARE_GRESITA" else _erori.FaraDrept if cod in ("PATRU_OCHI", "FARA_VERDICT") else _erori.Inexistent))
         raise http(r.get("mesaj", cod))
     # [p57_notif] notifica pregatitorul
@@ -182,9 +189,11 @@ def coada_respinge(coada_id, date, ctx):
     with db.get_conn() as conn:
         if not _uc_comun._are_permisiune(ctx, "poate_valida"):
             raise _erori.FaraDrept(FARA_DREPT_VALIDARE)
-        r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]))
+        r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]),
+                               cabinet_id_apelant=ctx["firm"])  # [B1] apartenenta pe obiect
     if not r["ok"]:  # [motiv_lipsa_400_v1] MOTIV_LIPSA e input invalid -> 400
         _cod = r.get("cod")
+        # [B1] ALT_CABINET -> 404 (Inexistent) prin ramura else.
         _http = (_erori.Conflict if _cod == "STARE_GRESITA" else _erori.CerereGresita if _cod == "MOTIV_LIPSA" else _erori.Inexistent)
         raise _http(r.get("mesaj", _cod))
     # [p57_notif] notifica pregatitorul cu motivul
@@ -201,6 +210,15 @@ def coada_depune(coada_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/coada/{coada_id}/depune`; docstringul ei a ramas in stratul HTTP."""
     if not _uc_comun._are_permisiune(ctx, "poate_depune"):
         raise _erori.FaraDrept(FARA_DREPT_DEPUNERE)
+    # [B1, 17.09.2026] APARTENENȚA PE OBIECT, verificată ÎNAINTE de poarta supervizorului: elementul
+    # e al cabinetului apelant? Altfel 404, fără să atingem firma altui cabinet. Fără ea, un cabinet
+    # depunea declarația altuia — scrisă în `declaratii_depuse` al firmei lui. SQL-ul stă în
+    # repository (P7): use-case-ul întreabă `repo_declaratii.cabinet_din_coada`, nu execută el SELECT.
+    with db.get_conn() as _cp:
+        with _cp.cursor() as _cur:
+            _own = repo_declaratii.cabinet_din_coada(_cur, coada_id)
+    if _own is None or _own != ctx["firm"]:
+        raise _erori.Inexistent("Element de coadă negăsit (sau alt cabinet).")
     _tid = _an_d = _luna_d = _schema_d = None
     try:
         with db.get_conn() as _cp:
@@ -260,16 +278,18 @@ def coada_depune(coada_id, date, ctx):
         # Masurat in `uvicorn.log` pe elementul 8052; v. `coada_api.auto_aproba_daca_e_cazul`.
         _ap = coada_api.auto_aproba_daca_e_cazul(
             conn, coada_id, str(ctx["uid"]), int(ctx["uid"]),
-            motiv_trecere=getattr(date, "motiv_trecere", None))
+            motiv_trecere=getattr(date, "motiv_trecere", None),
+            cabinet_id_apelant=ctx["firm"])  # [B1] apartenenta pe obiect
         if not _ap.get("ok"):
             # [probare invalid, 03.09.2026] `INEXISTENT` cădea pe 403 — „n-ai voie" în loc de
             # „nu există". Aceeași cerere pe `/aproba` răspundea 404: două coduri pentru
             # aceeași stare.
             _c = _ap.get("cod")
-            raise (_erori.Conflict if _c in ("CERE_APROBARE", "STARE_GRESITA") else _erori.Inexistent if _c == "INEXISTENT" else _erori.FaraDrept)(_ap.get("mesaj") or _c)
+            raise (_erori.Conflict if _c in ("CERE_APROBARE", "STARE_GRESITA") else _erori.Inexistent if _c in ("INEXISTENT", "ALT_CABINET") else _erori.FaraDrept)(_ap.get("mesaj") or _c)
         r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]),
                                        depus_de_id=int(ctx["uid"]),
-                                       motiv_trecere=getattr(date, "motiv_trecere", None))
+                                       motiv_trecere=getattr(date, "motiv_trecere", None),
+                                       cabinet_id_apelant=ctx["firm"])  # [B1] apartenenta pe obiect
         # [P4] REFUZUL SE RIDICA DINAUNTRUL TRANZACTIEI, ca sa se intoarca si aprobarea de dinainte.
         #
         # Pana azi, `raise` statea DUPA `with`, deci tranzactia se inchidea NORMAL si comitea ce

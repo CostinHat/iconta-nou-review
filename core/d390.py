@@ -224,11 +224,25 @@ def _facturi_ic(facturi):
     (latura auto, FARA tip inca). diag = probleme per-partener (domestic/prefix/tara/checksum/codO_lung).
     NU ridica - calcul PUR (control_incrucisat cheama calculeaza); blocarea o face genereaza via valideaza.
     Sursa unica a filtrului IC - folosit si de calcul_d390 si de operatiuni_auto (fara dublura)."""
+    from core import sume_lei as _sl
     out, diag = [], []
     for f in facturi:
         cat, tara, cod, motiv = _clasifica_partener(f.get("cui"))
         den = (f.get("nume") or "")
-        baza = Decimal(str(f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
+        # [A1, 17.09.2026] Baza IC in LEI (total_lei - tva_lei, sau total/tva x curs). O factura in
+        # valuta fara curs se EXCLUDE (nu intra tacit ca lei) si se semnaleaza in diag.
+        try:
+            _tl, _vl = _sl.antet_lei(f)
+        except _sl.LipsaCurs:
+            diag.append(dict(_af.afirmatie(
+                "fapt", "d390", "factură în valută fără curs BNR — exclusă din D390 (nu se poate "
+                "exprima în lei); completează cursul pe factură (A1)",
+                unde=_Unde("factura", (f.get("cui") or "?"), den or "(fără denumire)"),
+                temei_completitudine="curs BNR pe document"), categorie="fara_curs",
+                den=den, cui=(f.get("cui") or ""), directie=f.get("directie"),
+                tara="", cod="", baza=Decimal(0)))
+            continue
+        baza = _tl - _vl
         # [P8, 22.08] FAPT despre FACTURA, nu despre o luna: `_facturi_ic` e pura si clasifica
         # fiecare factura in parte. Domeniul e factura; `unde` il poarta.
         info = dict(_af.afirmatie(
@@ -536,6 +550,10 @@ def pull(conn, schema, an, luna):
                 "directie": r["directie"],
                 "total": r["total"] if r["total"] is not None else 0,
                 "tva": r["tva"] if r["tva"] is not None else 0,
+                # [A1] cursul + sumele in lei: baza IC intra in lei (core.sume_lei), iar o factura in
+                # valuta fara curs se EXCLUDE in _facturi_ic (nu intra tacit ca lei).
+                "id": r["id"], "moneda": r.get("moneda"), "curs_bnr": r.get("curs_bnr"),
+                "total_lei": r.get("total_lei"), "tva_lei": r.get("tva_lei"),
                 # [R186] axa bunuri/servicii, INGHETATA pe document; `None` = nedeclarata (istorica)
                 "axa_ic": r.get("axa_ic")} for r in rows]
     return prof, facturi

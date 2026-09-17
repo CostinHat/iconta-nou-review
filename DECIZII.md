@@ -15110,3 +15110,30 @@ D402 ieșite `valid` cu valoarea rea în fișier · `<operatiune` vs `<operatie`
 
 **Intrarea 54 rămâne scrisă**, ca istorie: registrul e append-only, iar o decizie mutată nu e o
 decizie ștearsă. *Ce nu se păstrează e ambiguitatea despre care e sursa: de acum, sursa e METODA.*
+
+## 17.09.2026 (56) — A1: generatorul ȘI a doua cale de reconciliere se schimbă împreună (amândouă în lei)
+
+**Colțul 2 din `test_cale_a_doua`.** Am schimbat în aceeași tură verificatorul și verificatul:
+`d300.py`+`d300_reconciliere.py`, `d394.py`+`d394_reconciliere.py`, `d390.py`+`d390_reconciliere.py`.
+Regula cere ca motivul să fie scris, ca nimeni să nu confunde *„amândouă implementează regula nouă"*
+cu *„am aliniat verificatorul ca să tacă"*.
+
+**Ce spune arbitrul (auditul independent, constatarea A1):** facturile în valută intrau în D300/D394/
+D390/D406 și în nota contabilă cu sumele **în valută**, fiindcă generatoarele citeau `cantitate×preț`
+și `total/tva`, nu `total_lei/curs_bnr`. O factură de 1.000 EUR la curs 5 intra ca 1.000 lei. A doua
+cale de reconciliere trecea nu fiindcă era independentă, ci fiindcă **citea aceeași sursă cu aceeași
+greșeală**.
+
+**De ce se schimbă amândouă, și de ce NU e aliniere-ca-să-tacă.** Regula nouă e una singură: *baza
+intră în lei (cantitate × preț × curs; RON→1)*. Ea trebuie aplicată în AMBELE căi, altfel a doua cale
+ar diverge de prima tocmai pe factura în valută și ar **bloca** generarea (exact ce s-a întâmplat la
+prima rulare: `generator=5000 vs cale2=1000`). Dacă aș fi „aliniat verificatorul să tacă", cifra ar fi
+rămas 1.000; în schimb, **cifra s-a schimbat**: a doua cale recalculează acum INDEPENDENT 5.000 din
+lei și **confirmă** generatorul, nu îl acoperă. Proba `test_a1_valuta_pana_in_declaratie` arată lanțul
+de la factura EUR până în rd.9 (5.000/1.050) și în nota 4111=4427; ea PICĂ pe codul de dinainte și
+TRECE după — dovada că schimbarea e de fond, nu de tăcere.
+
+**Sursa unică:** conversia trăiește într-un singur loc, `core/sume_lei.py` (`curs_factura`/`baza_lei`/
+`antet_lei`), apelat de generatoare, de reconcilieri și de contare. O a doua definiție a cursului ar
+fi începutul unei divergențe. O factură în valută fără curs NU se rotunjește la 1 (interdicția 32):
+se exclude și se semnalează, iar contarea o refuză.

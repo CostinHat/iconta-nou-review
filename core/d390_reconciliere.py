@@ -115,15 +115,21 @@ def _pull_facturi(conn, schema, an, luna):
     sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     q = ("SELECT f.directie AS directie, "
          "COALESCE(c.cui, f.tert_cui) AS cui, COALESCE(c.nume, f.tert_nume) AS nume, "
-         "f.total AS total, f.tva AS tva, f.axa_ic AS axa_ic "   # [R186] axa, de pe document
+         "f.total AS total, f.tva AS tva, f.axa_ic AS axa_ic, "   # [R186] axa, de pe document
+         "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei "  # [A1] a doua cale IN LEI
          "FROM {s}.facturi f LEFT JOIN {s}.clienti c ON c.id = f.client_id "
          "WHERE {e} >= %s AND {e} < %s ORDER BY f.id").format(s=schema, e=_EXIG_SQL)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         rows = _repo.sql(cur, q, inceput, sfarsit)
+    from core import sume_lei as _sl
     out = []
     for r in rows:
-        baza = Decimal(str(r["total"] if r["total"] is not None else 0)) \
-            - Decimal(str(r["tva"] if r["tva"] is not None else 0))
+        # [A1] Baza IN LEI, ca generatorul. Valuta fara curs se EXCLUDE (generatorul _facturi_ic la fel).
+        try:
+            _tl, _vl = _sl.antet_lei(r)
+        except _sl.LipsaCurs:
+            continue
+        baza = _tl - _vl
         out.append((r["directie"], (r["cui"] or "").strip(), (r["nume"] or "").strip(), baza,
                     (r.get("axa_ic") or "").strip().lower() or None))
     return out

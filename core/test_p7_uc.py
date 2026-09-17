@@ -41,6 +41,27 @@ ABATERI = {
 }
 
 
+#: Perechi (cod, mesaj) ADAUGATE deliberat DUPA mutarea P7, cu motivul. Simetric cu APELURI_INLOCUITE:
+#: garda P7 pazeste ca MUTAREA a fost verbatim; o functionalitate NOUA adaugata dupa mutare (auth) nu
+#: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
+#: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
+PERECHI_ADAUGATE = {
+    ("coada_adauga", "FARA_DREPT_PREGATIRE"): (
+        "B4 (17.09.2026, audit A1): a pune o declaratie in coada e actul de PREGATIRE — cere "
+        "`poate_pregati`. In BAZA flagul aparea doar la setare, nu la folosire; orice angajat sub "
+        "`cere_cabinet` genera si punea in coada. Poarta e acum pe ACTIUNE, nu doar in profil."),
+    ("eu_competente_set", "DOAR_ADMIN_CABINET"): (
+        "B2 (17.09.2026, audit A1): `poate_valida`/`poate_depune` sunt privilegii de CONTROL INTERN "
+        "(patru-ochi) — le acorda administratorul prin `/asistenti/{uid}/permisiuni`, nu si le acorda "
+        "fiecare singur. In BAZA orice angajat isi scria toate trei flagurile pe propriul rand si "
+        "apoi aproba orice. Ruta e rezervata acum admin_firma/superadmin."),
+    ("coada_depune", "Element de coadă negăsit (sau alt cabinet)."): (
+        "B1 (17.09.2026, audit A1): apartenenta pe OBIECT verificata devreme — elementul e al "
+        "cabinetului apelant? Altfel 404, fara sa atinga `declaratii_depuse` al altei firme. In BAZA "
+        "aproba/respinge/depune lucrau pe orice `coada_id`, doar cu dreptul apelantului verificat."),
+}
+
+
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
@@ -51,6 +72,12 @@ APELURI_INLOCUITE = {
         "prin `factura_id`. Deci apelul n-a dispărut: a fost inlocuit cu unul care scrie tot ce "
         "scria cel vechi, PLUS legatura. Fara factura, operatiunea nu putea ajunge nici in D300 "
         "rd.1/rd.3, nici in D390."),
+    ("portal_revoca_acces", "dezactiveaza_contul"): (
+        "dezactiveaza_contul_client",
+        "B3 (17.09.2026, audit A1): portalul dezactiva un cont NEscoped — un client titular stingea "
+        "orice user fara randuri in `user_tenants` (un angajat neatribuit, un admin ale carui firme "
+        "fusesera scoase, superadminul). Inlocuitorul filtreaza pe `rol='client'`: portalul stinge "
+        "DOAR conturi de client. Face strict mai putin daunator, acoperind exact clasa vulnerabila."),
 }
 
 
@@ -69,6 +96,25 @@ def test_INLOCUIRILE_declarate_chiar_exista():
             % (fn_nume, vechi, nou))
         assert vechi not in chemate, (
             "%s: apelul vechi (%s) mai e chemat, deci nu s-a inlocuit nimic" % (fn_nume, vechi))
+
+
+def test_ADAUGARILE_declarate_chiar_exista():
+    """ANTI-VACUU pe PERECHI_ADAUGATE: o adaugare declarata care nu e in cod ar scuza o schimbare de
+    contract nedeclarata. Se cere ca perechea (cod, mesaj) declarata sa fie chiar ridicata de functia
+    numita, in stratul use-case."""
+    harta = _harta_cod()
+    uc_dupa_nume = {nume: nod for (_mod, nume), nod in _module_uc().items()}
+    for (fn_nume, msg_repr), motiv in PERECHI_ADAUGATE.items():
+        assert len(motiv) > 80, "%s: motivul adaugarii e prea scurt ca sa fie util" % fn_nume
+        corp = uc_dupa_nume.get(fn_nume)
+        assert corp is not None, (
+            "%s: functia declarata nu exista in stratul use-case — adaugarea ar scuza o schimbare "
+            "fantoma" % fn_nume)
+        forme = _forme_mesaj(msg_repr)
+        mesaje = {p[1] for p in perechi_noi(corp, harta)}
+        assert forme & mesaje, (
+            "%s: adaugarea declarata (%s) NU e in cod — tabelul ar scuza o schimbare de contract reala"
+            % (fn_nume, msg_repr))
 
 
 def _sursa_veche():
@@ -301,6 +347,13 @@ def confrunta(vechi_src, nou_src, uc, harta):
     return dif, confruntate, perechi
 
 
+def _forme_mesaj(msg_repr):
+    """Cele doua forme sub care un mesaj declarat poate aparea in cod: constanta NUMITA
+    (`FARA_DREPT_PREGATIRE`) sau literal (`"Element de coadă..."`). Se potriveste oricare."""
+    return {ast.dump(ast.Name(id=msg_repr, ctx=ast.Load())),
+            ast.dump(ast.Constant(value=msg_repr))}
+
+
 def _fara_abateri(nume, ramase_v, ramase_n):
     """Scoate abaterile DECLARATE — fiecare cu motivul ei, sus in fisier."""
     for (rut, mesaj), _motiv in ABATERI.items():
@@ -311,6 +364,13 @@ def _fara_abateri(nume, ramase_v, ramase_n):
         if v and len(ramase_n) == len(v):
             ramase_v = [p for p in ramase_v if p not in v]
             ramase_n = [p for p in ramase_n if p[0] != v[0][0]]
+    # [B, 17.09.2026] Adaugarile DECLARATE (auth care nu exista in BAZA) se scot din „acum, fara
+    # pereche": nu sunt drift al mutarii P7, ci functionalitate noua, fiecare cu motiv (v. sus).
+    for (rut, msg_repr), _motiv in PERECHI_ADAUGATE.items():
+        if rut != nume:
+            continue
+        forme = _forme_mesaj(msg_repr)
+        ramase_n = [p for p in ramase_n if p[1] not in forme]
     return ramase_v, ramase_n
 
 

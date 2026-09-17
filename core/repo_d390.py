@@ -21,7 +21,8 @@ def select_firma_profil(cur):
 
 def select_facturi(cur, _exig, inceput, sfarsit):
     cur.execute("SELECT f.id, f.tert_nume, f.tert_cui, c.nume AS c_nume, c.cui AS c_cui, "
-                "f.directie, f.total, f.tva, f.axa_ic "
+                "f.directie, f.total, f.tva, f.axa_ic, "
+                "f.moneda, f.curs_bnr, f.total_lei, f.tva_lei "  # [A1] conversia in lei (core.sume_lei)
                 "FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
                 "WHERE " + _exig + " >= %s AND " + _exig + " < %s ORDER BY f.id", (inceput, sfarsit))
     return cur.fetchall()

@@ -129,17 +129,24 @@ class Rezultat:
 
 
 def _segmente(f):
-    """[(cota_int|None, baza_Decimal), ...] dintr-o factură."""
+    """[(cota_int|None, baza_Decimal_LEI), ...] dintr-o factură.
+
+    [A1, 17.09.2026] Baza e ÎN LEI: `cantitate × preț × curs` (RON→1). Cursul vine din SURSA UNICĂ
+    `core.sume_lei.curs_factura`. O factură în valută FĂRĂ curs nu se poate exprima în lei — atunci
+    `curs_factura` ridică `LipsaCurs`, iar `calcul_d300` o EXCLUDE și o semnalează (nu se ghicește 1)."""
+    from core import sume_lei as _sl
+    curs = _sl.curs_factura(f)
     linii = f.get("linii") or []
     if linii:
         out = []
         for (cant, pret, cota) in linii:
-            baza = Decimal(str(cant)) * Decimal(str(pret))
+            baza = Decimal(str(cant)) * Decimal(str(pret)) * curs
             ci = None if cota is None else int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
             out.append((ci, baza))
         return out
-    baza = Decimal(str(f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
-    tva = Decimal(str(f.get("tva") or 0))
+    total_lei, tva_lei = _sl.antet_lei(f)
+    baza = total_lei - tva_lei
+    tva = tva_lei
     ci = int(round(float(tva) / float(baza) * 100)) if (baza and tva) else None  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
     return [(ci, baza)]
 
@@ -239,7 +246,17 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # forfetara agricultor art.315^1 al.17). NU se auto-deduce (nu se forteaza - lipsa flag Registrul
     # agricultorilor), dar NU se pierde tacit -> se masoara si se semnaleaza cantitativ (avertisment jos).
     orphan_ded = Decimal(0)
+    fara_curs = []                       # [A1] facturi in valuta fara curs -> EXCLUSE din decont, SEMNALAT (nu se ghiceste 1)
+    from core import sume_lei as _sl
     for f in facturi:
+        # [A1, 17.09.2026] O factura in valuta fara `curs_bnr` nu se poate exprima in lei. Nu intra
+        # tacit ca lei (asta e chiar greseala A1) si nici nu opreste tot decontul: se EXCLUDE si se
+        # semnaleaza. Facturile RON / cu curs trec neatinse (curs_factura -> 1 / cursul lor).
+        try:
+            _sl.curs_factura(f)
+        except _sl.LipsaCurs:
+            fara_curs.append(f.get("id"))
+            continue
         emisa = (f.get("directie") == "emisa")
         ti = bool(f.get("taxare_inversa"))
         cat331 = f.get("categorie_331")   # [Task1] natura art.331 (taxare inversa) pt achizitii 0%
@@ -608,6 +625,14 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     res.total_plata_a = sum(R.values())
 
     _f = lambda x: format(int(x), ",").replace(",", ".")
+    # [A1, 17.09.2026] Facturi in valuta EXCLUSE fiindca n-au curs BNR: nu intra tacit ca lei, dar
+    # nici nu dispar in tacere. Semnalul NUMESTE facturile — corectia e sa li se puna cursul.
+    if fara_curs:
+        _ids = ", ".join("#%s" % i for i in fara_curs if i is not None) or "(fără id)"
+        res.avertismente.append(
+            "%d factură(i) în valută FĂRĂ curs BNR — EXCLUSE din decont (nu se pot exprima în lei): %s. "
+            "Completează cursul pe fiecare (ultimul curs comunicat până la data facturii); altfel suma nu "
+            "intră în declarație (A1, Cod fiscal art. 290)." % (len(fara_curs), _ids))
     # Livrări TAXABILE fără rând valid pentru perioadă (19/5% etc): TVA-ul lor DISPARE din decont
     # (sub-declarare). ANAF (DUK v12, 2026) RESPINGE rândurile 19/5% (colectat R69/R71) — probat —
     # deci NU sunt auto-emise si NU trebuie adaugate manual acolo (ar invalida declaratia).
@@ -938,6 +963,10 @@ def _pull_taxare_inversa(cur, inceput, sfarsit):
                                       "taxare_inversa": r["taxare_inversa"],
                                       "categorie_331": r["categorie_331"],
                                       "tert_tara": r["tert_tara"],
+                                      # [A1] cursul + sumele in lei (taxarea inversa trece prin _segmente)
+                                      "id": r["id"], "moneda": r.get("moneda"),
+                                      "curs_bnr": r.get("curs_bnr"),
+                                      "total_lei": r.get("total_lei"), "tva_lei": r.get("tva_lei"),
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:
@@ -1015,6 +1044,11 @@ def pull(conn, schema, perioada):
                                       # pe cea de incasare ea era deja neper-factura, dinainte.
                                       "axa_ic": r.get("axa_ic"),
                                       "id": r["id"],
+                                      # [A1] cursul si sumele in lei calatoresc cu factura: _segmente
+                                      # exprima baza in lei (cantitate x pret x curs), iar o factura
+                                      # in valuta fara curs se EXCLUDE (calcul_d300).
+                                      "moneda": r.get("moneda"), "curs_bnr": r.get("curs_bnr"),
+                                      "total_lei": r.get("total_lei"), "tva_lei": r.get("tva_lei"),
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:

@@ -378,6 +378,7 @@ def _d(x):
 # `d406.fereastra_d406` pentru cine o cheama pe drumul generatorului.
 from core.common import fereastra_d406        # noqa: E402  (re-export deliberat)
 from core import repo_d406 as _repo
+from core import sume_lei as _sl  # [A1] conversia in lei, sursa unica
 
 
 def _ultima_zi(an, luna):
@@ -1437,6 +1438,7 @@ def pull(conn, schema, an, luna):
         facturi_vanzare, facturi_cumparare, plati = [], [], []
         um_necunoscute = []  # [B17] UM necunoscute -> H87; (factura, UM) NUMITE in avertisment, nu tacit (T3)
         cote_necunoscute = []  # T3: cota fara cod TaxCode livrari -> 310312 (taxare inversa); (factura, cota) NUMITE
+        facturi_fara_curs = []  # [A1] facturi in valuta fara curs -> EXCLUSE (nu se declara valuta drept RON)
         try:
             # COLOANE REALE facturi (dovedit 16.07.2026 prin \d tenant_002.facturi):
             # data_emitere (NU 'data'), tert_cui/tert_nume (NU partener_id/nume),
@@ -1460,8 +1462,16 @@ def pull(conn, schema, an, luna):
             for lr in cur.fetchall():
                 linii_pe_factura.setdefault(lr["factura_id"], []).append(lr)
             for r in _repo.select_facturi_3(cur, di, ds):
-                total = Decimal(str(r["total"]))
-                tva = Decimal(str(r["tva"]))
+                # [A1, 17.09.2026] SAF-T declara CurrencyCode=RON pe toate sumele -> ele TREBUIE sa fie
+                # in lei. Antetul si liniile se exprima in lei prin cursul de pe document (RON->1). O
+                # factura in valuta fara curs se EXCLUDE (nu se declara valuta drept RON).
+                try:
+                    _curs_f = _sl.curs_factura(r)
+                    total_lei_h, tva = _sl.antet_lei(r)
+                except _sl.LipsaCurs:
+                    facturi_fara_curs.append(r["numar"] or str(r["id"]))
+                    continue
+                total = total_lei_h
                 net = total - tva
                 este_v = (r["directie"] or "emisa") in ("emisa", "vanzare")
                 # InvoiceType = COD SAFcodeType (Nom_Tipuri_facturi): 380 factura
@@ -1483,7 +1493,7 @@ def pull(conn, schema, an, luna):
                 linii = []
                 for idx, lr in enumerate(linii_pe_factura.get(r["id"], []), 1):
                     cant = Decimal(str(lr["cantitate"]))
-                    pret = Decimal(str(lr["pret_unitar"]))
+                    pret = Decimal(str(lr["pret_unitar"])) * _curs_f   # [A1] pretul IN LEI (SAF-T RON)
                     cota_l = Decimal(str(lr["cota_tva"])).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
                     val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
                     tva_l = (val * cota_l / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -1507,7 +1517,11 @@ def pull(conn, schema, an, luna):
                     # tacuta intre doua surse ale aceleiasi facturi = eroare, nu detaliu.
                     nl = sum(l.valoare for l in linii)
                     tl = sum(l.tva_suma for l in linii)
-                    if abs(nl - net) > Decimal("0.01") or abs(tl - tva) > Decimal("0.01"):
+                    # [A1] Toleranța ține cont de rotunjirea PE LINIE după conversia în lei: fiecare
+                    # din cele n linii poate abate 0,01 față de antetul rotunjit o dată. RON (curs 1)
+                    # se comportă ca înainte (n=număr linii, dar diferența e 0).
+                    _tol = Decimal("0.01") * max(1, len(linii))
+                    if abs(nl - net) > _tol or abs(tl - tva) > _tol:
                         raise ValueError(
                             "D406: factura %s nu se reconciliază - antet net=%s tva=%s, "
                             "linii net=%s tva=%s. Corectează factura înainte de generare."
@@ -1544,7 +1558,7 @@ def pull(conn, schema, an, luna):
             # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
             raise RuntimeError("D406: citirea facturilor a eșuat - %s" % e) from e
     return (prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati,
-            strain, um_necunoscute, cote_necunoscute, surse_necunoscute)
+            strain, um_necunoscute, cote_necunoscute, surse_necunoscute, facturi_fara_curs)
 
 
 def erori_generare(prof):
@@ -1570,7 +1584,7 @@ def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     (prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute,
-     cote_necunoscute, surse_necunoscute) = pull(conn, schema, an, luna)
+     cote_necunoscute, surse_necunoscute, facturi_fara_curs) = pull(conn, schema, an, luna)
     # [R165] antetul urmeaza aceeasi fereastra ca datele: un fisier care spune „septembrie"
     # purtand iulie-septembrie ar inlocui o lipsa cu o minciuna.
     _fdi, _fds = fereastra_d406(prof, an, luna)
@@ -1614,6 +1628,12 @@ def genereaza(conn, schema, an, luna):
                                    "nomenclator, înlocuită(e) TACIT cu 310312 (taxare inversa) - date "
                                    "GRESITE la ANAF. %s. Verifică cota facturii / actualizeaza "
                                    "nomenclatorul de coduri de taxa." % _detc)
+    if facturi_fara_curs:
+        _detfc = ", ".join(facturi_fara_curs)
+        res.avertismente.insert(0, "ATENTIE (D406): %d factură(i) în valută FĂRĂ curs BNR EXCLUSE din "
+                                   "SalesInvoices/PurchaseInvoices (SAF-T declară CurrencyCode=RON — "
+                                   "nu se poate raporta valuta drept lei): %s. Completează cursul pe "
+                                   "factură (A1)." % (len(facturi_fara_curs), _detfc))
     # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 4/6): balanta de rulaje per cont
     # INDEPENDENTA din inregistrari_linii, legata de SAF-T emis + invariant Sdebit=Scredit.
     # Divergenta = HARD-BLOCK. Vezi core/d406_reconciliere.py.

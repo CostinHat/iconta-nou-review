@@ -194,10 +194,20 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     data_scadenta=None, moneda="RON", status="emisa",
                     categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
                     tert_platitor_tva=None, tert_tara="RO", tip_operatiune="normal",
-                    furnizor_tva_incasare=False, tert_pf=False, tip="factura", axa_ic=None):
+                    furnizor_tva_incasare=False, tert_pf=False, tip="factura", axa_ic=None,
+                    curs=None, data_curs=None, curs_sursa=None):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
+
+    [A1, 17.09.2026] CONVERSIA ÎN LEI E PAS OBLIGATORIU AL CREĂRII. `total_lei/tva_lei/curs_bnr` se
+    scriu AICI, la INSERT, pentru ORICE factură — RON primește cursul 1 prin lege. Punctul e unic
+    (toate emiterile trec prin `creeaza_factura`: emitere, storno, transformare proformă, `POST
+    /facturi` primite), deci nicio factură nu mai ajunge în carte sau în declarație fără să fi trecut
+    prin curs. Pentru valută, cursul vine de la apelant (`emite_factura` îl calculează cu logica lui
+    de manual/auto/refuz); dacă nu vine, se încearcă auto o dată — iar dacă nici așa, `curs_bnr` rămâne
+    `NULL`, factura se creează dar contarea o refuză (nu se ghicește 1). Nota automată (care rulează la
+    capătul acestei funcții) vede deja sumele în lei.
     """
     if not linii:
         raise ValueError("factura trebuie să aibă cel puțin o linie")
@@ -268,17 +278,42 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         raise ValueError("TVA la încasare la furnizor se poate bifa doar pe facturile primite "
                          "— pe cele emise nu se aplică.")
     t = totaluri_din_linii(linii)
+    # [A1] Conversia în lei, calculată O DATĂ, la creare. RON → curs 1 (total_lei=total). Valută:
+    # cursul dat de apelant, altfel o încercare auto; pe eșec rămâne NULL (factura există, dar
+    # contarea o refuză și declarațiile o exclud — nu se ghicește 1).
+    _moneda_v = (moneda or "RON").strip().upper() or "RON"
+    _d_emit_lei = _d_emitere or _data_ceruta("data emiterii", data_emitere)
+    if _moneda_v == "RON":
+        _curs_v, _dcurs_v, _sursa_v = Decimal(1), _d_emit_lei, "ron"
+        _total_lei_v, _tva_lei_v = t["total"], t["tva"]
+    elif curs is not None:
+        _curs_v = Decimal(str(curs))
+        _dcurs_v = data_curs or _d_emit_lei
+        _sursa_v = curs_sursa or "manual"
+        _total_lei_v = _q(t["total"] * _curs_v)
+        _tva_lei_v = _q(t["tva"] * _curs_v)
+    else:
+        _curs_v = _dcurs_v = _sursa_v = _total_lei_v = _tva_lei_v = None
+        try:
+            _c_auto, _dc_auto, _s_auto = curs_bnr.curs_pentru(conn, _moneda_v, _d_emit_lei)
+            _curs_v, _dcurs_v, _sursa_v = Decimal(str(_c_auto)), _dc_auto, _s_auto
+            _total_lei_v, _tva_lei_v = _q(t["total"] * _curs_v), _q(t["tva"] * _curs_v)
+        except Exception:
+            pass   # valută fără curs disponibil: NULL, semnalat la contare/declarație (nu se inventează)
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO facturi (client_id, numar, data_emitere, data_scadenta, "
             "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
-            "tert_tara, tip_operatiune, furnizor_tva_incasare, tip, axa_ic) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            "tert_tara, tip_operatiune, furnizor_tva_incasare, tip, axa_ic, "
+            "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa) "  # [A1] lei la INSERT
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+            "%s,%s,%s,%s,%s) RETURNING id",
             (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
              status, moneda, directie, tert_nume, tert_cui, tert_adresa,
              categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
-             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v, axa_v))
+             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v, axa_v,
+             _curs_v, _tva_lei_v, _total_lei_v, _dcurs_v, _sursa_v))
         factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(
@@ -652,24 +687,12 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
         serie = prefix
         numar = f"{prefix}{numar_int}"
 
-    r = creeaza_factura(conn, numar, data_emitere, "emisa", linii,
-                        client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
-                        data_scadenta=data_scadenta, moneda=moneda, status=status,
-                        tert_tara=tert_tara, tip_operatiune=tip_operatiune, tip=tip,
-                        axa_ic=axa_ic)   # [R186] axa, INGHETATA pe document
-    # setez seria pe factura + incrementez contorul
-    with conn.cursor() as cur:
-        cur.execute("UPDATE facturi SET serie = %s WHERE id = %s", (serie, r["factura_id"]))
-        if tip == "factura":
-            cur.execute("UPDATE firma_profil SET urmator_numar_factura = %s", (numar_int + 1,))
-        else:
-            col = "urmator_numar_proforma" if tip == "proforma" else "urmator_numar_aviz"
-            cur.execute(f"UPDATE firma_profil SET {col} = %s", (numar_int + 1,))
-    # ---- CURS VALUTAR (art. 290/319 Cod fiscal): TVA obligatoriu si in lei ----
+    # ---- CURS VALUTAR (art. 290/319 Cod fiscal): [A1] calculat ÎNAINTE de creare și pasat în
+    # `creeaza_factura`, ca nota automată (care rulează ÎN creare) să vadă deja sumele în lei. Până
+    # azi cursul se aplica printr-un UPDATE de DUPĂ creare — deci nota valutei se scria cu cursul
+    # calculat de `creeaza` (auto), nu cu cel manual al emiterii. Ordinea corectă: întâi cursul, apoi
+    # documentul și nota lui.
     import datetime as _dt
-    _fid = r["factura_id"]
-    _total = r["total"]
-    _tva = r["tva"]
     if isinstance(data_emitere, str):
         _d = _dt.date.fromisoformat(data_emitere)
     elif isinstance(data_emitere, _dt.date):
@@ -707,7 +730,9 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
             _curs, _dcurs, _sursa = float(_c), _dc, _s
         except curs_bnr.CursPreaVechi as _pv:
             # Emiterea AUTOMATĂ se oprește — dar facturarea nu se blochează: refuzul își numește
-            # ieșirea, iar cursul găsit merge cu el, ca omul să vadă de la ce pornește.
+            # ieșirea, iar cursul găsit merge cu el, ca omul să vadă de la ce pornește. Nimic n-a fost
+            # scris încă (cursul se verifică înaintea creării), dar `_potriveste_linii` a putut salva
+            # în nomenclator — rollback ca înainte.
             conn.rollback()
             return {"ok": False, "cod": "CURS_PREA_VECHI", "moneda": moneda,
                     "data": _d.isoformat(), "data_curs_gasit": _pv.data_curs.isoformat(),
@@ -724,22 +749,36 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
             return {"ok": False, "cod": "MONEDA_NECOTATA", "moneda": moneda,
                     "data": _d.isoformat(), "mesaj": str(_mn)}
         except curs_bnr.CursIndisponibil:
-            # nu emit factura in valuta fara curs valid; anulez inseratul si semnalez frontend-ului
+            # nu emit factura in valuta fara curs valid; nimic comis, semnalez frontend-ului
             conn.rollback()
             return {"ok": False, "cod": "CURS_INDISPONIBIL",
                     "moneda": moneda, "data": _d.isoformat(),
                     "mesaj": "Cursul BNR nu e disponibil momentan."}
 
-    _tva_lei = round(float(_tva) * _curs, 2)
-    _total_lei = round(float(_total) * _curs, 2)
+    r = creeaza_factura(conn, numar, data_emitere, "emisa", linii,
+                        client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
+                        data_scadenta=data_scadenta, moneda=moneda, status=status,
+                        tert_tara=tert_tara, tip_operatiune=tip_operatiune, tip=tip,
+                        axa_ic=axa_ic,   # [R186] axa, INGHETATA pe document
+                        # [A1] cursul emiterii intra ÎN creare, deci nota automată e în lei. RON→None
+                        # (creeaza pune cursul 1); valută→cursul calculat mai sus.
+                        curs=(None if (moneda or "RON").upper() == "RON" else _curs),
+                        data_curs=_dcurs, curs_sursa=_sursa)
+    _fid = r["factura_id"]
+    # setez seria pe factura + (manual) autorul cursului + incrementez contorul
     with conn.cursor() as cur:
-        cur.execute(
-            "UPDATE facturi SET curs_bnr=%s, tva_lei=%s, total_lei=%s, "
-            "data_curs=%s, curs_sursa=%s, curs_manual_de=%s, curs_manual_la=%s WHERE id=%s",
-            (_curs, _tva_lei, _total_lei, _dcurs, _sursa,
-             _urma_manual[0] if _urma_manual else None,
-             _urma_manual[1] if _urma_manual else None, _fid))
+        cur.execute("UPDATE facturi SET serie = %s WHERE id = %s", (serie, _fid))
+        if _urma_manual:
+            cur.execute("UPDATE facturi SET curs_manual_de=%s, curs_manual_la=%s WHERE id=%s",
+                        (_urma_manual[0], _urma_manual[1], _fid))
+        if tip == "factura":
+            cur.execute("UPDATE firma_profil SET urmator_numar_factura = %s", (numar_int + 1,))
+        else:
+            col = "urmator_numar_proforma" if tip == "proforma" else "urmator_numar_aviz"
+            cur.execute(f"UPDATE firma_profil SET {col} = %s", (numar_int + 1,))
 
+    _tva_lei = round(float(r["tva"]) * _curs, 2)
+    _total_lei = round(float(r["total"]) * _curs, 2)
     r["curs_bnr"] = _curs
     r["tva_lei"] = _tva_lei
     r["total_lei"] = _total_lei
@@ -782,10 +821,17 @@ def storneaza(conn, factura_id):
     serie = num["serie"]; numar_int = num["urmator_numar"]
     numar = f"{serie}{numar_int}" if serie else str(numar_int)
     import datetime
+    # [A1] Storno-ul unei facturi în valută păstrează CURSUL ORIGINALULUI: corecția e la rata la care
+    # s-a înregistrat operațiunea, nu la cursul zilei de stornare. Fără el, `creeaza` ar lua cursul
+    # de azi și storno-ul n-ar anula exact suma în lei a facturii inițiale.
+    _mon_orig = orig.get("moneda") or "RON"
+    _curs_orig = orig.get("curs_bnr")
     r = creeaza_factura(conn, numar, datetime.date.today().isoformat(), "emisa",
                         linii_neg, client_id=orig.get("client_id"),
                         tert_nume=orig.get("tert_nume"), tert_cui=orig.get("tert_cui"), tert_adresa=orig.get("tert_adresa"),
-                        moneda=orig.get("moneda", "RON"), status="de_preluat")
+                        moneda=_mon_orig, status="de_preluat",
+                        curs=(None if str(_mon_orig).upper() == "RON" else _curs_orig),
+                        data_curs=orig.get("data_curs"), curs_sursa=orig.get("curs_sursa"))
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s, storno_din_id = %s WHERE id = %s",
                     (serie, factura_id, r["factura_id"]))

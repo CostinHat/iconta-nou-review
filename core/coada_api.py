@@ -356,9 +356,15 @@ def _poarta_verdict(conn, coada_id, actiune, motiv, cine_id):
     return None
 
 
-def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
+def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, cabinet_id_apelant=None):
     """la_senior -> aprobata. Refuză dacă starea nu permite SAU dacă
-    aprobatorul e chiar pregătitorul (control „patru ochi")."""
+    aprobatorul e chiar pregătitorul (control „patru ochi").
+
+    [B1, 17.09.2026] APARTENENȚA PE OBIECT: `cabinet_id_apelant` = cabinetul care cere acțiunea
+    (`ctx["firm"]`). Dacă elementul aparține ALTUI cabinet, se refuză cu `ALT_CABINET` — mapat la 404
+    în stratul HTTP, ca elementul altui cabinet să nu-și dezvăluie nici existența. Până azi doar
+    `_are_permisiune` verifica DREPTUL apelantului, nu PROPRIETATEA elementului, iar `GET /continut`
+    era singura rută scoped; aproba/respinge/depune lucrau pe orice `coada_id`."""
     with conn.cursor() as cur:
         cur.execute(
             "SELECT stare, creat_de, creat_de_id, cabinet_id FROM public.declaratii_coada WHERE id = %s",  # [p54_4ochi]
@@ -368,6 +374,9 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
             return {"ok": False, "cod": "INEXISTENT",
                     "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
         st, creat_de, creat_de_id, _cabinet_id = r[0], r[1], r[2], r[3]  # [p54_4ochi]
+        if cabinet_id_apelant is not None and _cabinet_id != cabinet_id_apelant:
+            return {"ok": False, "cod": "ALT_CABINET",  # [B1] apartenenta pe OBIECT
+                    "mesaj": "element de coadă negăsit (sau alt cabinet)"}
         if not poate_tranzitiona(st, "aproba"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot aproba din starea '%s'" % st}
@@ -395,7 +404,8 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
     return {"ok": True, "stare": "aprobata"}
 
 
-def auto_aproba_daca_e_cazul(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
+def auto_aproba_daca_e_cazul(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None,
+                             cabinet_id_apelant=None):
     """`la_senior` -> `aprobata`, **numai** cand patru-ochi nu e efectiv. Altfel nu atinge nimic.
 
     **DE CE EXISTA (02.09.2026, defect gasit apasand).** Inlantuirea „aproba + depune" traia in
@@ -423,6 +433,9 @@ def auto_aproba_daca_e_cazul(conn, coada_id, aprobat_de, aprobat_de_id=None, mot
         return {"ok": False, "cod": "INEXISTENT",
                 "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
     stare, cabinet_id = r[0], r[1]
+    if cabinet_id_apelant is not None and cabinet_id != cabinet_id_apelant:
+        return {"ok": False, "cod": "ALT_CABINET",  # [B1] apartenenta pe OBIECT
+                "mesaj": "element de coadă negăsit (sau alt cabinet)"}
     if stare != "la_senior":
         return {"ok": True, "sarit": True, "stare": stare}
     if patru_ochi_stare(conn, cabinet_id)["efectiv"]:
@@ -430,20 +443,27 @@ def auto_aproba_daca_e_cazul(conn, coada_id, aprobat_de, aprobat_de_id=None, mot
         return {"ok": False, "cod": "CERE_APROBARE",
                 "mesaj": "declarația e încă la validare: cu patru-ochi activ, o aprobă un coleg "
                          "înainte de depunere"}
-    return aproba(conn, coada_id, aprobat_de, aprobat_de_id, motiv_trecere)
+    return aproba(conn, coada_id, aprobat_de, aprobat_de_id, motiv_trecere,
+                  cabinet_id_apelant=cabinet_id_apelant)
 
 
-def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None):
-    """la_senior -> respinsa + motiv. Refuză dacă starea nu permite."""
+def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None, cabinet_id_apelant=None):
+    """la_senior -> respinsa + motiv. Refuză dacă starea nu permite.
+    [B1] Apartenența pe obiect: `cabinet_id_apelant` = cabinetul care cere; alt cabinet -> ALT_CABINET."""
     # [motiv_obligatoriu_v1] respingerea fără motiv lasă contabilul fără explicație
     if motiv is None or not str(motiv).strip():
         return {"ok": False, "cod": "MOTIV_LIPSA",
                 "mesaj": "respingerea necesită un motiv (contabilul trebuie să știe ce să corecteze)"}
     with conn.cursor() as cur:
-        st = _stare_curenta(cur, coada_id)
+        cur.execute("SELECT stare, cabinet_id FROM public.declaratii_coada WHERE id = %s", (coada_id,))
+        _row = cur.fetchone()
+        st = _row[0] if _row else None
         if st is None:
             return {"ok": False, "cod": "INEXISTENT",
                     "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
+        if cabinet_id_apelant is not None and _row[1] != cabinet_id_apelant:
+            return {"ok": False, "cod": "ALT_CABINET",  # [B1] apartenenta pe OBIECT
+                    "mesaj": "element de coadă negăsit (sau alt cabinet)"}
         if not poate_tranzitiona(st, "respinge"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot respinge din starea '%s'" % st}
@@ -490,19 +510,23 @@ def firma_si_perioada(conn, coada_id):
     an, luna = perioada_din_payload(r[1])
     return r[0], an, luna
 def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=None,
-                     motiv_trecere=None):
+                     motiv_trecere=None, cabinet_id_apelant=None):
     """
     aprobata -> depusa. Scrie și în declaratii_depuse (jurnal final).
     an/luna se iau din payload (_an/_luna; pt trim/anual: luna finală/12).
+    [B1] Apartenența pe obiect: alt cabinet -> ALT_CABINET (nu scrie în declaratii_depuse al altei firme).
     """
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT stare, tenant_id, tip, payload FROM public.declaratii_coada "
+        cur.execute("SELECT stare, tenant_id, tip, payload, cabinet_id FROM public.declaratii_coada "
                     "WHERE id = %s", (coada_id,))
         r = cur.fetchone()
         if not r:
             return {"ok": False, "cod": "INEXISTENT",
                     "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
+        if cabinet_id_apelant is not None and r["cabinet_id"] != cabinet_id_apelant:
+            return {"ok": False, "cod": "ALT_CABINET",  # [B1] apartenenta pe OBIECT
+                    "mesaj": "element de coadă negăsit (sau alt cabinet)"}
         if not poate_tranzitiona(r["stare"], "depune"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot depune din starea '%s'" % r["stare"]}

@@ -95,6 +95,7 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
     import psycopg2.extras as _E
     an, luna = perioada.an, perioada.luna
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
+         "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "  # [A1] a doua cale IN LEI
          "f.taxare_inversa AS ti, f.tert_cui AS tert_cui, f.tert_platitor_tva AS tert_ptva, "
          "c.cui AS c_cui, "
          "COALESCE(json_agg(json_build_object('cota', l.cota_tva, "
@@ -123,9 +124,15 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
         r["baza" + bucket] += Decimal(baza)
         r["tva" + bucket] += Decimal(tva)
 
+    from core import sume_lei as _sl
     for r in rows:
         emisa = (r["directie"] == "emisa")
         ti = bool(r["ti"])
+        # [A1] Baza IN LEI, ca generatorul. Valuta fara curs se EXCLUDE (generatorul o exclude la fel).
+        try:
+            _curs = _sl.curs_factura(r)
+        except _sl.LipsaCurs:
+            continue
         cui = (r["c_cui"] if emisa else r["tert_cui"]) or r["c_cui"] or r["tert_cui"] or ""
         p = _partener(cui, r["tert_ptva"])
         # rutare pe bucketul rezumat2 (mirror tip_operatiune + REZ2_MAPARE, independent):
@@ -146,9 +153,10 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
             pe_cota[c] = pe_cota.get(c, Decimal(0)) + Decimal(str(l["baza"]))
         if pe_cota:
             for cota, baza in pe_cota.items():
+                baza = baza * _curs   # [A1] baza IN LEI
                 add(bucket, cota, baza, baza * Decimal(cota) / Decimal(100))
         else:
-            total = Decimal(str(r["total"] or 0)); tva = Decimal(str(r["tva"] or 0))
+            total, tva = _sl.antet_lei(r)   # [A1] antet IN LEI
             baza = total - tva
             if tva and baza:
                 cota = int((tva / baza * Decimal(100)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))

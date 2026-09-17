@@ -213,6 +213,16 @@ def dezactiveaza_contul(cur, id_):
                 (id_,))
 
 
+def dezactiveaza_contul_client(cur, id_):
+    """[B3, 17.09.2026] Dezactivare CIRCUMSCRISĂ la conturi de client. Portalul (clientul titular)
+    poate stinge doar conturi `rol='client'` rămase fără nicio firmă — NU angajați, admini de cabinet
+    sau superadmini. Până azi portalul chema `dezactiveaza_contul` (NEscoped): un client titular
+    dezactiva orice user fără rânduri în `user_tenants` (un angajat neatribuit, un admin ale cărui
+    firme fuseseră scoase, superadminul). Întoarce numărul de rânduri atinse (0 = nu era client)."""
+    cur.execute("UPDATE public.users SET activ=false WHERE id=%s AND rol='client'", (id_,))
+    return cur.rowcount
+
+
 def creeaza_cont_de_client(cur, email, password_hash, nume, rol, accounting_firm_id):
     cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ, poate_valida)
                            VALUES (%s, %s, %s, 'angajat', %s, true, %s) RETURNING id""",
