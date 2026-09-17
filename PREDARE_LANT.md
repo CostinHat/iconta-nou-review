@@ -9,15 +9,16 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   alege**: sunt **patru lucrări numite de Costin**, în ordine, la punctul **0Z**. *Diferența față de
   toate predările dinainte: nu mai există „tema următoare se alege" — există o listă de terminat, și
   o regulă care spune ce se întâmplă după ea.*
-- **pe commit**: `aa1129b2`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
+- **pe commit**: `fd7e40d4`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
   al celui precedent, prin construcție.*
 - **[16.09.2026] CELE PATRU LUCRĂRI DE LA 0Z SUNT TERMINATE.** R59 (`d937eef6`) · R191
   (`fcd13ac9`) · cele 8 rute (`0d1909eb` + `81558b74`, subsetul fiscal **8 → 0**, devenit CRITERIU) ·
   cele 8 citări DUK (`aa1129b2`, **trei erau afirmații false despre validator**). *Regula care
   însoțea lista se aplică de acum: după ele nu se deschide nicio temă de investigație nouă.*
-  **Ce rămâne în așteptarea lui Costin, și nu blochează nimic:** tăria constatării
-  `D406_ASSETS_VS_CONT_28X` (R115, redeschisă) și ce face reevaluarea când eliminarea depășește ce
-  s-a înregistrat (R192).
+  **[17.09.2026] CELE DOUĂ CERINȚE AU PRIMIT RĂSPUNS ȘI SUNT CONSTRUITE** (`fd7e40d4`): tăria e
+  **CERTA**, cu limita scrisă în chiar constatarea roșie (R115 **ÎNCHISĂ** a doua oară); iar
+  reevaluarea **se refuză** când eliminarea depășește ce s-a înregistrat, cu cauza spusă în
+  termenii contabilului și cu ambele cifre (R192 **ÎNCHISĂ**). *Nicio cerință deschisă.*
 - **[16.09.2026] LOTUL 2 E ÎNCHIS: R191.** Aplicația confruntă acum amortizarea pe care o **declară**
   registrul de imobilizări cu cea **înregistrată** în conturile 28xx — și a găsit **trei** conturi
   divergente la prima rulare pe portofoliul viu. *Tăria constatării e a lui Costin: tipul intră cu

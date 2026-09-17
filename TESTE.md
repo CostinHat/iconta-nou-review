@@ -2688,6 +2688,17 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   Datoria `test_datorie_coduri_d402_d301_necorelate` s-a închis singură, prin `xfail(strict)` care a
   trecut — exact cum e proiectat registrul.
 
+- **`core/test_r191_amortizare_confruntata.py` + `core/test_rute_stoc_pana_in_declaratie.py` —
+  DECIZIILE, PROBATE (17.09.2026, R115 și R192)**: tăria `CERTA` cerută pe **trei** lucruri (tăria ·
+  `motiv_tarie` · `limita_declarata`), plus efectul pe o constatare **reală** (`cere_confirmare` e
+  `True`, iar `limita` ajunge pe ea, cerută prin **egalitate** cu `LIMITA_D406_ASSETS`). Și refuzul
+  reevaluării, în **ambele** direcții: cont gol → `400` cu zero urme; după înregistrarea amortizării,
+  aceeași cerere **trece**.
+  **Lecția probei:** prima ei formă asertase pe TEXT (căuta cifrele în mesaj) și a fost respinsă de
+  clichetul aserțiunilor pe text — pe drept. Rezolvarea n-a fost renunțarea la conținut, ci mutarea
+  judecății și a textului în motorul **pur**: cifrele refuzului sunt acum **date**, iar `detail` se
+  compară prin egalitate cu mesajul construit din ele.
+
 - **`core/test_supervizor.py` — PRODUCĂTOR NOU în stubs (16.09.2026, R191)**: perechea nouă a
   trebuit adăugată în **toate cele trei** locuri care monkeypatch-uiesc producătorii; prima rulare a
   căzut pe `UndefinedTable`, fiindcă probele rulează pe scheme sintetice fără `mijloace_fixe`. Nu e o

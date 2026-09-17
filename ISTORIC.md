@@ -1,3 +1,24 @@
+## 17.09.2026 — **reevaluarea nu mai poate scădea o amortizare care nu s-a înregistrat**
+
+**Pentru un contabil: da, s-a schimbat ceva, și e un refuz nou.** Dacă reevaluezi un mijloc fix
+înainte de a fi înregistrat amortizarea lunilor scurse, aplicația **nu mai trece operațiunea**. Îți
+spune de ce, cu cifrele pe masă: *fișa activului arată atât, contul de amortizare are atât, diferența
+e atâta* — și îți spune ce să faci: înregistrează amortizarea lipsă, apoi reevaluarea merge.
+
+**De ce e un refuz și nu un avertisment.** Reevaluarea începe prin scoaterea din evidență a
+amortizării strânse. Dacă fișa a luat-o înainte, nota ar fi scăzut din cont o amortizare care nu
+există acolo — soldul ar fi trecut pe minus, iar valoarea rămasă a activului ar fi devenit o cifră
+care **arată bine și e greșită**: se calculează, se afișează, pleacă în declarație, și nimic n-o
+contrazice. *Un avertisment ar fi lăsat-o să plece.*
+
+**Și a doua schimbare, tot de azi:** nepotrivirea dintre registrul de imobilizări și contul de
+amortizare — găsită ieri pe trei conturi reale — **cere acum confirmare scrisă înainte de depunere**.
+Constatarea spune, de la prima frază, că poate numi **contul**, nu activul: amortizarea nu se ține pe
+mijloc fix. *Cine o citește află ce are și ce n-are, în loc să caute un activ pe care constatarea nu-l
+poate numi.*
+
+*Restanțe închise: R115 (a doua oară), R192. Ambele pe deciziile lui Costin din 17.09.*
+
 ## 16.09.2026, partea a patra — **cele patru lucrări numite sunt terminate**
 
 **Pentru un contabil, ce s-a schimbat azi în total, în ordinea în care se simte:**

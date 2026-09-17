@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-16
+- **ultima actualizare**: 2026-09-17
 - **P5 (ASYNC / BLOCKING I/O)**: **ÎNCHIS**, `f61df1b8` (11.09.2026). Poarta finală: 5498 verzi / 0 roșii, verificator ROȘU 0, amprenta producției neschimbată de suita izolată. `P5_BLOCKING_ITEMS=0` · `P6_ALLOWED=YES`. *Starea fazelor se ține în `PLAN_HARDENING.md`; linia asta e doar trimiterea, ca registrul să nu tacă despre o etapă închisă.*
 - **P6 (STATELESS / SCALARE ORIZONTALĂ)**: **ÎNCHISĂ**, `f260df2e` (12.09.2026). **Valul 1 închis 12.09.2026** (`a25afc04`): `main._login_fail` și `main._alerte_ultima_trimitere` au ieșit din memoria procesului în `public.login_esecuri` / `public.alerte_cooldown`; măsurat înainte, două procese divergeau și blocarea pierdea 87% din eșecuri la k=10 susținut, după: `LOST_UPDATES=0`. **Valul 2 închis 12.09.2026** (`081c8ba2`): cele șapte cache-uri locale rămase își poartă cele cinci lucruri ca STRUCTURĂ, iar câmpul `dovadă` trimite la o probă care există și chiar golește cache-ul; predarea BNR a primit și invalidarea pe care n-o avea. `P6_ACTION_REQUIRED` **10 → 8 → 0**, `P6_UNDECLARED_CACHES=0`. **Valul 3 închis 12.09.2026**: pornirea se serializează cu un blocaj legat de tranzacție, munca de fundal se face de un singur lider ales prin lease, iar brațul four-way s-a redefinit din «procesul viu poartă HEAD» în «TOATE procesele poartă HEAD», pe un registru de instanțe. **Unitatea poartă `WEB_CONCURRENCY=2` și producția servește din două procese**, iar criteriile canonice au fost exercitate pe ele: blocarea la autentificare creată pe un worker și văzută de celălalt · cooldown cu un singur câștigător · sesiune acceptată de amândoi · fault-check cu `SIGKILL` în timpul unei cereri, `PARTIAL_STATE=0` · four-way 2 din 2. **Bascularea a scos un defect pe care suita verde nu-l putea vedea**: blocajul de pornire se lua, dar `migrare_api.asigura_tabel` comitea o linie mai jos și îl elibera — instalarea P2 rula NESERIALIZATĂ și un worker murea la fiecare repornire, 4 din 4. Proba de dinainte verifica funcția `blocaj_pornire` izolat, unde ea chiar serializează; *o poartă care întreabă dacă funcția merge nu poate afla că cineva îi ia blocajul din mână trei linii mai jos.* Reparat în aceeași zi, cu gardă la CAPĂTUL secțiunii, pe blocajul real. `P6_INFRA_ACTION_REQUIRED` **1 → 0**. *Starea fazelor se ține în `PLAN_HARDENING.md`; linia asta e trimiterea.*
 - **P7 (APPLICATION LAYER)**: **DESCHISĂ**. Diagnosticul e închis (`b67d2bfb`, 13.09.2026): cele trei verificări canonice au devenit trei detectoare calibrate, iar contabilitatea se închide — `ACTION_REQUIRED` **296**, `UNCLASSIFIED` **0**. **Valul V3 închis** (`364fbc63`): „motor fiscal" nu mai e o aproximare, e o declarație — `core/straturi.py`, 114 module, fiecare cu exact un strat, sub gardă de exhaustivitate. Întrebarea pusă pe universul adevărat a dat alt răspuns decât pe cel aproximativ: `D2` **0 → 1**. **Valul V1 închis**: cele **107 citiri** din corpul rutelor au trecut în 13 module de repository, fiecare primind cursorul apelantului — `D1_READ` **107 → 0**, `P7_ACTION_REQUIRED` **296 → 189**, iar numărul total de instrucțiuni SQL e neschimbat (150 în rute + 107 în repository = 257). Universul lui V1 a fost corectat înainte de mutare: «91» era o euristică pe prima linie a apelului, cifra reală e 107. **Valul V2 închis**: cele **140 de scrieri** și cele **10 instrucțiuni de control de tranzacție** au ieșit din corpul rutelor — scrierile în repository, controlul în `core/tranzactie.py`, care execută pe cursorul primit și **nu deține tranzacția**. `D1` e **0 pe toate clasele**, `P7_ACTION_REQUIRED` **189 → 39**. Conservarea, în două feluri: 257 de apeluri din `main.py` către straturile de sub HTTP, și cifra scrisă în registrul de straturi, **295 − 257 = 38**. **V2 a scos și un defect de registru**: `core/straturi.py` purta pentru `main.py` cifra `295`, adevărată la V3 și îmbătrânită tăcut prin V1 și V2 — iar `D4` o dădea mai departe ca DOVADĂ. Corectată, și pusă sub gardă: din 28 de intrări care poartă o cifră, 27 coincideau deja cu recalcularea, deci metrica nu e aleasă azi ca să iasă. **Valul D2 închis**: `core/efactura_send.py` — motorul fiscal care importa `db`, cu 8 instrucțiuni SQL și trei conexiuni proprii — s-a despărțit în use-case (`core/efactura_trimitere.py`), repository (`repo_efactura`, `repo_tenants`) și principalul mutat la `spv_conector`; `D2` **1 → 0**, `D4` **38 → 37**, `P7_ACTION_REQUIRED` **39 → 37**. Modulul a **rămas** declarat `FISCAL_ENGINE`: închiderea vine din mutarea codului, nu dintr-o reclasificare, iar proba o cere explicit. Detectorul, rămas fără nicio instanță, și-a primit calibrarea **sintetică** — altfel `D2=0` ar fi însemnat deopotrivă «n-are ce găsi» și «s-a stricat» (`METODA_VERIFICARE.md` §22). **Valul D4 închis**: cele **37 de module mixte** purtau **215 instrucțiuni SQL**; toate au trecut în 37 de `core/repo_*.py`, mutate de un instrument, nu cu mâna, iar amprenta SQL a întregului cod de producție (1050 distincte / 1307 total) e **identică** înainte și după. `D4` **37 → 0**, `P7_ACTION_REQUIRED` **37 → 0**. **P7 rămâne DESCHISĂ, și asta e partea care contează**: contabilitatea arată zero pe toate cele trei detectoare, dar criteriul canonic *«use-case-ul deține tranzacția»* nu e satisfăcut — măsurat, **385 din 421 de rute** își deschid singure tranzacția, doar 7 deleagă către un `USE_CASE`. *Un `ACTION_REQUIRED=0` care nu acoperă un criteriu canonic nu e o stare, e o lipsă de detector* — închisă cu `scripts/p7_criterii.py` + `core/test_p7_criterii.py`, care ține clichetul celor 385 și interzice planului să declare P7 închisă peste el. *Starea fazelor se ține în `PLAN_HARDENING.md`; linia asta e trimiterea.*
@@ -2755,9 +2755,9 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   n-a existat. *Câmpurile de mai sus se citesc de gardă până la capătul rândului: o paranteză pusă
   lângă cifră a făcut `reluări` să crape la `int()`. A doua oară în aceeași tură — prima a fost pe
   `stare`.*
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `1fa8f88`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `fd7e40d4`
 - **prima închidere, răsturnată**: `d217e16` (01.09.2026) — REDESCHISĂ pe `fcd13ac9` (16.09.2026),
   v. rândul de la capătul secțiunii. *Câmpurile de stare rămân curate: gardul le citește până la
   capătul rândului, iar o paranteză pusă acolo a făcut `stare` să se citească `DESCHISĂ** *`.*
@@ -2784,6 +2784,31 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   *Până la răspuns nu se blochează nimic: un tip fără tărie se vede și nu cere confirmare. Probat pe
   portofoliu — `tarie=None`, `cere_confirmare=False`.*
 
+- **ÎNCHISĂ A DOUA OARĂ, 17.09.2026, pe `fd7e40d4` — tăria a fost dată, cu criteriul aplicat până la capăt.**
+
+  **Costin, verbatim:** *„tăria CERTA, cu limita declarată în constatare — numește contul, nu
+  activul, fiindcă 28xx e ținut la nivel de cont. Cele două cifre trebuie să coincidă prin
+  construcție; divergența e certă chiar dacă originea nu e localizabilă."*
+
+  **Ce a rezolvat rezerva mea, și merită scris fiindcă am pus întrebarea greșit.** Ridicasem că
+  perechea nu poate numi CARE activ divergă, și tratasem asta ca pe un argument împotriva tăriei.
+  Nu era: **e o limită a constatării, nu a adevărului ei.** Amortizarea cumulată a activelor unui
+  cont **este** soldul creditor al acelui cont (OMFP 1802/2014, grupa 28) — nu o aproximare. Deci o
+  nepotrivire nu admite explicație legitimă; admite doar o origine nelocalizată.
+
+  **Unde a intrat limita: în CHIAR constatarea roșie**, nu doar în tabelul de tipuri. Mesajul spune
+  acum *„divergența e certă … dar se poate numi doar CONTUL, nu activul: amortizarea nu se ține pe
+  mijloc fix"*, iar câmpul `limita` călătorește cu constatarea. *Cine o citește află de la prima
+  frază ce are și ce n-are — altfel ar căuta un activ pe care constatarea nu-l poate numi.*
+
+  **Gardat:** `core/test_r191_amortizare_confruntata.py` cere TREI lucruri, nu unul — tăria ·
+  `motiv_tarie` scris · `limita_declarata` prezentă — plus o probă pe o constatare **reală**, care
+  verifică efectul (`cere_confirmare` e `True`) și că `limita` ajunge pe ea. RED-proof: scoțând tăria,
+  respectiv textul limitei, cad exact probele care le păzesc.
+
+  **Aserțiunea din `test_supervizor` a rămas o EGALITATE cu mulțimea vidă**, nu s-a relaxat la
+  „ignoră tipurile noi": primul tip fără tărie o face iar roșie și **redeschide restanța**, ca pe
+  16.09. *Închiderea nu dezarmează gardul care a redeschis-o.*
 ### R116 — Cronul de alerte numără firmele DUPĂ succes, deci una care ridică nu apare nicăieri
 
 - **felul**: VERIFICARE
@@ -8344,8 +8369,9 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   în evidență, nu doar în afara ei; măsurat: **zero** note de reevaluare pe cele 17 scheme, deci
   efectul nu e produs azi — dar calea e vie, precedentul e R22)*
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `d937eef6`
+- **rezolvată pe commit**: `fd7e40d4`
 - **măsurat la**: 2026-09-16 · **pe commit**: `d937eef6`
 - **ce blochează**: linia `2813 = 2131` a notei de reevaluare poartă amortizarea cumulată dată de
   **motor** (`d406_active.amortizat_la_data`), nu soldul **înregistrat** al contului `2813`. Motorul
@@ -8376,6 +8402,36 @@ azi nu se schimbă). Traseul care nu se putea proba deloc devine probabil.
   **Ce se poate spune deja, măsurat:** pe `tenant_003` soldul contului `2813` e **0,00** iar
   registrul declară **927,96** — deci pe firma aia varianta (a) ar refuza **orice** reevaluare până
   la punerea la zi a notelor.
+
+- **REZOLVATĂ 17.09.2026, pe `fd7e40d4` — decizia lui Costin: se REFUZĂ.**
+
+  **Verbatim:** *„reevaluarea se refuză când eliminarea depășește ce s-a înregistrat — altfel scade
+  o amortizare inexistentă și produce o cifră validă-dar-falsă. Refuzul numește cauza în termenii
+  contabilului: divergența dintre registru și cont, cu ambele cifre, și spune că se înregistrează
+  amortizarea lipsă, apoi reevaluarea trece. Nu «eliminarea depășește soldul»."*
+
+  **Ce s-a construit.** `uc_tenants._cere_amortizarea_inregistrata` compară, ÎNAINTE de a scrie
+  ceva, amortizarea pe care nota ar elimina-o (din **registru**, prin motor) cu soldul creditor al
+  contului la data reevaluării (din **evidența validată**, prin `rulaje_interval` — sursa unică de
+  rulaje din repo). Peste sold → refuz, fără notă și fără rând în `reevaluari`.
+
+  **Forma refuzului e chiar cerința, nu un detaliu de stil.** Nu spune „eliminarea depășește
+  soldul" — aia e o propoziție despre codul nostru. Spune:
+  *„Registrul mijloacelor fixe și contabilitatea nu spun același lucru despre amortizarea lui X.
+  Fișa activului arată A lei amortizare strânsă până la D, iar contul 28xx are B lei înregistrați —
+  o diferență de C lei. Reevaluarea pornește prin scoaterea din evidență a amortizării strânse, deci
+  pe diferența asta ar scădea o amortizare care nu s-a înregistrat niciodată. Înregistrează întâi
+  amortizarea lipsă (nota lunară, pe lunile care lipsesc), apoi reevaluarea trece."*
+
+  **Gardat, în AMBELE direcții:** cont gol + registru 1.400,00 → **400**, cu ambele cifre în mesaj,
+  cu contul numit, cu ce se face — și **zero** urme (nicio notă, niciun rând consemnat). Apoi,
+  după înregistrarea celor 1.400,00, **aceeași cerere trece**. *Un refuz care nu se poate ridica nu
+  e o poartă, e un zid — de-aia a doua direcție e obligatorie.*
+
+  **Și o consecință pe care a produs-o regula, nu eu:** proba de lanț a lui **R59** a căzut pe noul
+  refuz, fiindcă lumea ei avea contul `2813` gol — adică exact starea în care reevaluarea scădea o
+  amortizare neînregistrată. *Proba n-a fost slăbită ca să treacă: i s-a completat lumea cu ce îi
+  lipsea.*
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

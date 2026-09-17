@@ -8572,6 +8572,44 @@ independent încă `bazaA=12600, bazaS=0, nrOPI=1` — **și a blocat generarea*
 non-tautologia lor. *A doua instanță în două zile a aceleiași lecții: când o decizie se aplică „pe
 toate drumurile", drumurile se NUMĂRĂ.*
 
+### Cele două decizii ale lui Costin, construite: tăria CERTA și refuzul reevaluării
+
+Închid **R115** (a doua oară) și **R192**. *Amândouă erau cerințe deschise de două ture; niciuna nu
+bloca nimic — de-aia lanțul a continuat fără ele.*
+
+**TĂRIA `D406_ASSETS_VS_CONT_28X` = CERTA, cu limita în CHIAR constatarea roșie.** Rezerva pe care o
+ridicasem — că perechea nu poate numi CARE activ divergă — s-a dovedit a fi despre **altceva decât
+credeam**: e o limită a *constatării*, nu a *adevărului* ei. Amortizarea cumulată a activelor unui
+cont **este** soldul creditor al contului, nu o aproximare a lui.
+Limita e acum constanta `control_incrucisat.LIMITA_D406_ASSETS`, pusă pe câmpul `limita` al fiecărei
+constatări roșii — iar proba o cere prin **egalitate cu constanta**, nu căutând cuvinte în ea.
+*Așa garda păzește FAPTUL că limita călătorește cu constatarea, nu formularea ei.*
+
+**REEVALUAREA SE REFUZĂ când eliminarea depășește ce s-a înregistrat.** `2813 = 21x` pornea cu o
+cifră din **registru**, peste un cont care putea fi gol: soldul trecea pe minus, iar valoarea rămasă
+a activului devenea o **cifră validă și falsă** — se calcula, se afișa, pleca în declarație, și
+nimic n-o contrazicea.
+
+**Judecata și textul sunt PURE** (`core/reevaluare.divergenta_amortizare` / `mesaj_divergenta`), și
+nu din eleganță: așa cifrele refuzului sunt **date**, iar proba compară `detail` cu mesajul construit
+din ele, prin egalitate. *Prima formă a probei căuta „1.400,00" în mesaj — clichetul aserțiunilor pe
+text a respins-o, și a avut dreptate: conținutul refuzului se păzește pe valoare, nu pe sub-șir.*
+
+**Forma refuzului e cerința, nu stilul.** Nu spune „eliminarea depășește soldul" — aia e o propoziție
+despre codul nostru. Numește divergența dintre registru și cont, dă **ambele** cifre, și spune ce se
+face: se înregistrează amortizarea lipsă, apoi reevaluarea trece.
+
+**Ambele direcții, fiindcă una singură n-ar fi o poartă:** cont gol → `400`, cu zero urme (nicio
+notă, niciun rând consemnat); după înregistrarea celor 1.400,00, **aceeași cerere trece**. *Un refuz
+care nu se poate ridica nu e o poartă, e un zid.*
+
+**Și o consecință produsă de regulă, nu de mine:** proba de lanț a lui **R59** a căzut pe noul refuz
+— lumea ei avea contul gol, adică exact starea în care reevaluarea scădea o amortizare
+neînregistrată. *Proba n-a fost slăbită ca să treacă: i s-a completat lumea cu ce îi lipsea.*
+
+**RED-proof, patru mutații.** Una a trebuit refăcută: prima ei formă a produs o **eroare de sintaxă**,
+nu o cădere — iar o mutație care nu compilează nu dovedește nimic despre gardă.
+
 ### Cele opt rute cu clichet fiscal, probate PÂNĂ ÎN CIFRA DECLARAȚIEI
 
 `core/test_rute_stoc_pana_in_declaratie.py` (7 probe) + `core/test_rute_fiscale_lot3b.py` (9 probe).
