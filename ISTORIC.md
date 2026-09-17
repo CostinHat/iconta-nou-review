@@ -1,3 +1,35 @@
+## 17.09.2026, partea a doua — **nu s-a schimbat nimic pentru un contabil**
+
+**Se scrie ca atare, nu se sare.** Restul zilei n-a atins niciun ecran, niciun refuz, nicio cifră și
+nicio declarație. Dacă deschizi aplicația azi după-amiază, se poartă exact ca azi-dimineață. *O zi
+fără schimbare, nescrisă, se citește peste o lună ca o zi în care nu s-a lucrat — și asta ar fi la
+fel de fals ca o schimbare neconsemnată.*
+
+**Ce s-a făcut, și de ce nu se vede din scaunul contabilului:**
+
+- **Aplicația a primit un material de audit independent, publicat.** Tot ce se poate verifica despre
+  ea — registrele, cifrele cu instrumentul care le recalculează, lista a ce **nu** e verificat,
+  valorile fiscale cu temeiul și data verificării la sursă, măsurătorile brute — stă acum într-un
+  singur loc, pe oglinda publică, unde poate fi citit de cineva din afară. *Nu schimbă ce face
+  aplicația; schimbă cine poate să verifice ce face.*
+- **S-a scris, negru pe alb, ce NU e verificat.** Fără atenuare: cele 53 de restanțe deschise cu
+  starea lor, `xfail`-urile cu motivul, orbirea declarată a fiecărui instrument, rutele fără probă,
+  și faptul că nicio declarație n-a fost depusă efectiv la ANAF prin aplicație. *Partea asta e cea
+  care contează cel mai mult pentru un contabil care ar folosi-o pe date reale, chiar dacă nu se
+  vede pe niciun ecran.*
+- **Starea proiectului s-a scris ca stare:** lanțul e **în așteptarea folosirii aplicației de către
+  Costin**, nu în așteptarea unei teme. Nu se mai alege nimic din backlog; ce iese din folosire
+  devine lucrarea următoare.
+
+**Ce s-a reparat, și e o reparație la un instrument al meu, nu la aplicație:** scanul care caută
+chei și parole înainte de orice publicare **se număra pe sine** — mostrele lui de calibrare sunt
+secrete sintetice scrise cu mâna, iar propria lui ieșire conținea fragmentele care se potriveau cu
+tiparele ce le produseseră. Măsurat: 48 de potriviri cu el însuși numărat, 34 fără. *Un instrument
+care se măsoară pe sine raportează creșteri care nu există în lumea măsurată.*
+
+*Restanțe închise: niciuna. Restanțe deschise: niciuna. Poarta: verde de două ori, `b56bdca8` și
+`d8034c54`.*
+
 ## 17.09.2026 — **reevaluarea nu mai poate scădea o amortizare care nu s-a înregistrat**
 
 **Pentru un contabil: da, s-a schimbat ceva, și e un refuz nou.** Dacă reevaluezi un mijloc fix
