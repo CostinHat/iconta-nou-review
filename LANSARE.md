@@ -52,6 +52,7 @@
 | Validare declarații (DUK) | REZOLVAT | jar-uri oficiale ANAF (core/duk.py). |
 | Rotire secrete | ÎN LUCRU | Parola DB rotită 25.07; Fernet/JWT/ANAF/Brevo neroatate. |
 | Depunere la ANAF din app | AMÂNAT | F127 fără API (mTLS/certificat local); manual din SPV (DECIZII 25.07). |
+| **TZ=Europe/Bucharest obligatoriu** | REZOLVAT (documentat 17.09.2026) | Serverul de aplicație ȘI PostgreSQL trebuie să ruleze pe `TZ=Europe/Bucharest`: `common.azi_ro()` și `AT TIME ZONE 'Europe/Bucharest'` decid ce declarații sunt datorate azi și data depunerii (DECIZII 51). Fără el, o depunere de seară poate cădea în ziua fiscală greșită. La build de la zero / rularea suitei, `TZ=Europe/Bucharest` trebuie exportat înainte de pytest (constatare audit §0: ghidul nu o spunea; 4 teste picau cu «OS TZ nu e Europe/Bucharest»). |
 
 ## 5. Continuitate
 
