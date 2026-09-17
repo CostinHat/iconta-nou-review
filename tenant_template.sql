@@ -1450,6 +1450,13 @@ ALTER TABLE ONLY TENANT_PLACEHOLDER.factura_linii
 ALTER TABLE ONLY TENANT_PLACEHOLDER.facturi
     ADD CONSTRAINT facturi_pkey PRIMARY KEY (id);
 
+--
+-- [C1, 17.09.2026] numerotare secventiala UNICA pe emise (art. 319 CF): plasa a doua
+-- peste rezervarea atomica din facturi_api._rezerva_numar. Partial pe emise; primite pot
+-- repeta numarul furnizorului. Oglinda in core/migrare_unic_numar_factura.py.
+--
+CREATE UNIQUE INDEX IF NOT EXISTS facturi_numar_emisa_uniq ON TENANT_PLACEHOLDER.facturi (COALESCE(serie, ''), numar) WHERE directie = 'emisa';
+
 
 --
 -- Name: facturi_recurente facturi_recurente_pkey; Type: CONSTRAINT; Schema: TENANT_PLACEHOLDER; Owner: postgres

@@ -132,14 +132,37 @@ def get_conn(schema=None):
         yield conn
         conn.commit()
     except Exception:
-        conn.rollback()
+        # [C3] rollback-ul de aici nu are voie sa MASCHEZE eroarea originala: pe o conexiune moarta
+        # ridica la randul lui, iar `raise` gol ar propaga eroarea de rollback in loc de cea reala.
+        try:
+            conn.rollback()
+        except Exception:
+            pass
         raise
     finally:
-        if schema is not None:
+        # [C3, 17.09.2026] `putconn` RULEAZA MEREU, iar o conexiune MOARTA se INCHIDE (close=True).
+        # Inainte, cand `RESET search_path` (sau rollback-ul lui) ridica pe o conexiune moarta
+        # (pg_terminate_backend, failover PostgreSQL, RST), exceptia sarea PESTE `p.putconn(conn)` din
+        # `finally` -> conexiunea ramanea in `_used` pentru totdeauna. Dupa `ICONTA_POOL_MAX` astfel de
+        # evenimente: `PoolError('connection pool exhausted')` pe TOATE rutele, pana la restart manual
+        # (procesul web n-are deadman, R75). Masurat de audit (C3) cu `pg_terminate_backend` in bloc.
+        _moarta = bool(getattr(conn, "closed", 0))
+        if schema is not None and not _moarta:
             try:
                 with conn.cursor() as cur:
                     cur.execute("RESET search_path")
                 conn.commit()
             except Exception:
-                conn.rollback()
-        p.putconn(conn)
+                _moarta = True
+                try:
+                    conn.rollback()
+                except Exception:
+                    pass
+        try:
+            p.putconn(conn, close=_moarta)
+        except Exception:
+            # ultima plasa: daca nici putconn nu reuseste, inchidem manual ca sa nu scurgem.
+            try:
+                conn.close()
+            except Exception:
+                pass

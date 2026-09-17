@@ -185,7 +185,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repository cine detine elementul de coada (cabinet_id), inainte sa atinga firma altui cabinet.
     # Nu muta SQL din alta parte: e o citire NOUA, ceruta ca use-case-ul sa nu execute el SELECT (P7).
     # *Clichetul urca fiindca aplicatia verifica un pas in plus (apartenenta), nu fiindca s-a pierdut ceva.*
-    assert _apeluri_catre_repository() == 263
+    # [C2, 17.09.2026, audit C2] 263 -> 266, cu apelurile numite:
+    #   tranzactie.savepoint_firma / elibereaza_firma / intoarce_la_firma — SAVEPOINT per firmă la
+    #   importul în masă, ca o eroare la una (denumire prea lungă) să nu abortze tranzacția pentru
+    #   celelalte și să nu lase commitul final să facă ROLLBACK tăcut peste tot. SQL-ul stă în modulul
+    #   de tranzacție (nume literal, ca restul savepoint-urilor), nu în use-case.
+    assert _apeluri_catre_repository() == 266
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

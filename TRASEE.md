@@ -1548,7 +1548,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/solduri` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/solduri/incarca` — garda `cere_cabinet`
 
-**Module:** `anaf_api`, `artefacte`, `articole_import_api`, `asociati_import_api`, `audit_preluare`, `cor_api`, `cronometru`, `istoric_declaratii_import_api`, `migrare_api`, `mijloace_fixe_import_api`, `observare`, `repo_tenants`, `retete_import_api`, `rip_migrare_api`, `salariati_import_api`, `solduri_api`, `solduri_parteneri_api`, `tenant_provisioning`, `uc_comun`
+**Module:** `anaf_api`, `artefacte`, `articole_import_api`, `asociati_import_api`, `audit_preluare`, `cor_api`, `cronometru`, `istoric_declaratii_import_api`, `migrare_api`, `mijloace_fixe_import_api`, `observare`, `repo_tenants`, `retete_import_api`, `rip_migrare_api`, `salariati_import_api`, `solduri_api`, `solduri_parteneri_api`, `tenant_provisioning`, `tranzactie`, `uc_comun`
 
 **Scrie in:** `accounting_firms` (UPDATE) · `artefacte_produse` (INSERT) · `articole` (INSERT) · `asociati` (DELETE/INSERT) · `audit_log` (INSERT) · `declaratii_depuse` (DELETE/INSERT) · `firma_profil` (INSERT/UPDATE) · `migrare_status` (INSERT) · `mijloace_fixe` (DELETE/INSERT) · `miscari_stoc` (INSERT) · `plan_conturi` (INSERT) · `rip_operatiuni` (INSERT) · `salariati` (INSERT) · `solduri_initiale` (DELETE/INSERT) · `solduri_parteneri` (DELETE/INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 

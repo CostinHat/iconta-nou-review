@@ -140,7 +140,7 @@ care.*
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **55** | contorul `tenant_schema_seq` |
+| **48** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**
@@ -154,7 +154,7 @@ care.*
 
 | cifra | ce e |
 |---|---|
-| **69** | rânduri care trimit la o firmă inexistentă |
+| **0** | rânduri care trimit la o firmă inexistentă |
 | **20** | tabele din `public` cu `tenant_id`, numărate |
 
 <!-- CIFRE-DATE:STOP -->
@@ -249,7 +249,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **870** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **871** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

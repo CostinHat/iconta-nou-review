@@ -20,6 +20,7 @@ from core import db, auth_api, migrare_api, istoric_declaratii_import_api
 from core import uc_comun as _uc_comun
 from core import db, auth_api, tenant_provisioning, anaf_api, migrare_api, istoric_declaratii_import_api, observare as _obs
 from core import repo_tenants
+from core import tranzactie   # [C2] savepoint-uri numite (SQL sta in modulul de tranzactie, nu in use-case)
 
 
 def migrare_status_citeste(ctx):
@@ -83,9 +84,25 @@ def migrare_importa(date, ctx):
                     "firmă", "firma %s (CUI %s)" % (nume, f.cui), "deja_exista",
                     "există deja în portofoliu - nu s-a dublat", cui=str(f.cui), nume=nume))
                 continue
+            # [C2, 17.09.2026] Denumirea depaseste `tenants.nume varchar(255)`? Se respinge CURAT, nu
+            # se lasa sa crape INSERT-ul in mijlocul blocului. `MigrareFirma.denumire` e nelimitat.
+            if len(nume) > 255:
+                erori.append(migrare_api.respinge(
+                    "firmă", "firma %s (CUI %s)" % (nume[:60] + "…", f.cui), "creare_esuata",
+                    "denumirea depășește 255 de caractere (are %d)" % len(nume), cui=str(f.cui), nume=nume[:255]))
+                continue
+            # [C2] SAVEPOINT per firma: o eroare la UNA nu aborteaza tranzactia pentru celelalte si nu
+            # lasa commitul final sa faca ROLLBACK TACIT peste tot. Pana azi, o eroare psycopg2 (ex:
+            # denumire prea lunga) aborta tranzactia, firmele urmatoare picau cu „current transaction is
+            # aborted", iar la iesirea din `with` commitul pe tranzactie abortata = ROLLBACK tacit —
+            # raspunsul spunea „creat", baza nu continea nimic. Masurat de audit (C2).
+            with conn.cursor() as _cur:
+                tranzactie.savepoint_firma(_cur)
             try:
                 r = tenant_provisioning.provision_tenant(
                     conn, nume, str(f.cui), ctx["firm"], ctx["uid"], _uc_comun._TENANT_TEMPLATE)
+                with conn.cursor() as _cur:
+                    tranzactie.elibereaza_firma(_cur)
                 # [P5 val 3] ANAF se cheamă DUPĂ bloc, și numai pentru firmele CHIAR create —
                 # exact ca azi. Aici doar se reține ce urmează să se precompleteze.
                 _de_precompletat.append((r["schema_name"], f.cui))
@@ -93,9 +110,10 @@ def migrare_importa(date, ctx):
                 if cuic:
                     existente.add(cuic)   # prinde și duplicate în același lot
             except Exception as e:
-                # ESEC, nu respingere de date: sta in aceeasi lista cu `deja_exista`, dar cauza e
-                # alta si omul trebuie s-o poata deosebi - altfel cauta greseala in fisier cand
-                # problema e la noi.
+                # [C2] recuperam tranzactia la savepoint: firmele deja create raman, cea care a esuat
+                # se anuleaza doar pe ea. ESEC, nu respingere de date — cauza se poate deosebi.
+                with conn.cursor() as _cur:
+                    tranzactie.intoarce_la_firma(_cur)
                 erori.append(migrare_api.respinge(
                     "firmă", "firma %s (CUI %s)" % (nume, f.cui), "creare_esuata",
                     "nu s-a putut crea: %s" % e, cui=str(f.cui), nume=nume))

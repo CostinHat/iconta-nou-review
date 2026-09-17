@@ -379,7 +379,12 @@ def test_auditul_nu_mai_produce_orfani_dupa_stergere():
 
 
 # [R79 · G1] Clichetul pe date al orfanilor. Se citește în AMÂNDOUĂ direcțiile — vezi docstringul.
-_ORFANI_CUNOSCUTI = 69
+# [C2, 17.09.2026] 69 -> 0, deliberat: cei 105 orfani (audit_log 67, firma_sursa_versiune 18,
+# firma_tip 9, supervizor_sursa 9, alerte_control_emise 2) erau POLUARE de test acumulata din
+# rulari vechi de provision_tenant + stergeri brute, nu urma unor firme reale. Curatati in aceeasi
+# tura (o baza de test de la zero are 0 orfani), iar teardown-ul lui test_c2_import_firme sterge
+# acum toate tabelele cu tenant_id ale tenantilor pe care ii creeaza, ca sa nu se reacumuleze.
+_ORFANI_CUNOSCUTI = 0
 
 
 def test_niciun_orfan_NOU_dupa_ultima_stergere():

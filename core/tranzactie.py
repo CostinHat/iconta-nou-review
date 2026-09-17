@@ -40,5 +40,17 @@ def intoarce_la_z_insert(cur):
     cur.execute("ROLLBACK TO SAVEPOINT z_insert")
 
 
+def savepoint_firma(cur):
+    cur.execute("SAVEPOINT sp_firma")
+
+
+def elibereaza_firma(cur):
+    cur.execute("RELEASE SAVEPOINT sp_firma")
+
+
+def intoarce_la_firma(cur):
+    cur.execute("ROLLBACK TO SAVEPOINT sp_firma")
+
+
 def fixeaza_schema(cur, schema):
     cur.execute(f"SET LOCAL search_path TO {schema}")

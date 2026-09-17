@@ -563,6 +563,24 @@ def numerotare(conn):
     return {"serie": serie, "urmator_numar": urmator, "configurata": configurata}  # numerotare_configurata_v1
 
 
+def _rezerva_numar(conn, tip="factura"):
+    """[C1, 17.09.2026] Rezervă ATOMIC următorul număr al documentului: `UPDATE ... = +1 RETURNING`
+    valoarea DE DINAINTE. UPDATE-ul blochează rândul `firma_profil`, deci două cereri concurente NU mai
+    pot citi același număr. Până azi `numerotare` citea fără `FOR UPDATE`, iar incrementul venea într-un
+    UPDATE de mai târziu — între citire și scriere, douăsprezece cereri simultane primeau același număr
+    (măsurat de audit: numărul 6 pe 3 facturi). Rollback-ul tranzacției anulează și rezervarea, deci un
+    eșec ulterior (curs, cotă) nu consumă numărul. Întoarce `(serie, numar_int)`."""
+    col = {"factura": "urmator_numar_factura", "proforma": "urmator_numar_proforma",
+           "aviz": "urmator_numar_aviz"}[tip]
+    with conn.cursor() as cur:
+        cur.execute("UPDATE firma_profil SET %s = COALESCE(%s, 1) + 1 "
+                    "RETURNING serie_factura, %s - 1" % (col, col, col))
+        row = cur.fetchone() or (None, 1)
+    serie = row[0] if tip == "factura" else ("PF" if tip == "proforma" else "AV")
+    numar_int = int(row[1]) if row[1] is not None else 1
+    return serie, numar_int
+
+
 def seteaza_numerotare(conn, serie=None, numar_start=None):
     """Configureaza seria + numarul de start (continuitate cu istoricul).
     Se apeleaza o data; dupa, numarul se auto-incrementeaza la emitere."""
@@ -683,19 +701,13 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     data_emitere = data_emitere or datetime.date.today().isoformat()
 
     linii = _potriveste_linii(conn, linii, platitor_tva=platitor_tva)
+    # [C1] rezervare ATOMICĂ a numărului (UPDATE ... +1 RETURNING), nu citire-apoi-increment.
     if tip == "factura":
-        num = numerotare(conn)
-        serie = num["serie"]
-        numar_int = num["urmator_numar"]
+        serie, numar_int = _rezerva_numar(conn, "factura")
         numar = f"{serie}{numar_int}" if serie else str(numar_int)
     else:
-        prefix = "PF" if tip == "proforma" else "AV"
-        col = "urmator_numar_proforma" if tip == "proforma" else "urmator_numar_aviz"
-        with conn.cursor() as cur:
-            cur.execute(f"SELECT {col} FROM firma_profil LIMIT 1")
-            numar_int = (cur.fetchone() or [1])[0] or 1
-        serie = prefix
-        numar = f"{prefix}{numar_int}"
+        serie, numar_int = _rezerva_numar(conn, tip)
+        numar = f"{serie}{numar_int}"
 
     # ---- CURS VALUTAR (art. 290/319 Cod fiscal): [A1] calculat ÎNAINTE de creare și pasat în
     # `creeaza_factura`, ca nota automată (care rulează ÎN creare) să vadă deja sumele în lei. Până
@@ -775,17 +787,13 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                         curs=(None if (moneda or "RON").upper() == "RON" else _curs),
                         data_curs=_dcurs, curs_sursa=_sursa)
     _fid = r["factura_id"]
-    # setez seria pe factura + (manual) autorul cursului + incrementez contorul
+    # setez seria pe factura. [C1] contorul a fost DEJA incrementat atomic de `_rezerva_numar` la
+    # inceput — nu se mai incrementeaza aici (dublul increment ar sari numere).
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s WHERE id = %s", (serie, _fid))
         if _urma_manual:
             cur.execute("UPDATE facturi SET curs_manual_de=%s, curs_manual_la=%s WHERE id=%s",
                         (_urma_manual[0], _urma_manual[1], _fid))
-        if tip == "factura":
-            cur.execute("UPDATE firma_profil SET urmator_numar_factura = %s", (numar_int + 1,))
-        else:
-            col = "urmator_numar_proforma" if tip == "proforma" else "urmator_numar_aviz"
-            cur.execute(f"UPDATE firma_profil SET {col} = %s", (numar_int + 1,))
 
     _tva_lei = round(float(r["tva"]) * _curs, 2)
     _total_lei = round(float(r["total"]) * _curs, 2)
@@ -827,8 +835,7 @@ def storneaza(conn, factura_id):
             "pret_unitar": float(l.get("pret_unitar", 0)),
             "cota_tva": float(l["cota_tva"]),
         })
-    num = numerotare(conn)
-    serie = num["serie"]; numar_int = num["urmator_numar"]
+    serie, numar_int = _rezerva_numar(conn, "factura")   # [C1] rezervare atomica si la storno
     numar = f"{serie}{numar_int}" if serie else str(numar_int)
     import datetime
     # [A1] Storno-ul unei facturi în valută păstrează CURSUL ORIGINALULUI: corecția e la rata la care
@@ -858,7 +865,7 @@ def storneaza(conn, factura_id):
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s, storno_din_id = %s WHERE id = %s",
                     (serie, factura_id, r["factura_id"]))
-        cur.execute("UPDATE firma_profil SET urmator_numar_factura = %s", (numar_int + 1,))
+        # [C1] contorul a fost incrementat atomic de `_rezerva_numar`; nu se mai incrementeaza aici.
     r["numar"] = numar
     r["storno_din_id"] = factura_id
     return r

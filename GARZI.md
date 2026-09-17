@@ -8784,9 +8784,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**603 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**606 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 572
+### `core/` — 575
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8863,8 +8863,11 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
 - `core/test_blocante_clasificate.py` — core/test_blocante_clasificate.py — garda diagnosticului P5.
 - `core/test_brevo_pe_fir_propriu.py` — core/test_brevo_pe_fir_propriu.py — familia `_trimite_brevo` nu mai tine o conexiune din pool.
+- `core/test_c1_numerotare.py` — [C1, 17.09.2026] Numerotarea facturilor: două cereri concurente NU mai primesc același număr.
 - `core/test_c1_pontaj_neconfirmat_gri.py` — C1 (audit tenant_003): starea 'pontaj neconfirmat' pe Stat de plata e o stare de PERIOADA
+- `core/test_c2_import_firme.py` — [C2, 17.09.2026] Import în masă de firme: răspunsul „creat" corespunde bazei.
 - `core/test_c2_migrare_revenire_firma.py` — C2 (audit tenant_003): dupa salvarea unui strat de import (salariati, solduri, parteneri, asociati,
+- `core/test_c3_pool_scurgere.py` — [C3, 17.09.2026] O conexiune moartă nu se scurge din pool.
 - `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
 - `core/test_c6_c5_motiv_acord.py` — GARD C6 + C5 (audit vizual tenant_003, 16.08.2026).
 - `core/test_c7_periodicitate_trimestriala.py` — GARD C7 — generarea TVA-decont (d300/d394/d406) urmeaza periodicitatea EFECTIVA a firmei (tip_decont),
