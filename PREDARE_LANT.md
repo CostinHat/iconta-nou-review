@@ -1,10 +1,10 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **etapa 2 a campaniei e ÎNCHISĂ; urmează PATRU LUCRĂRI NUMITE, în ordine** (16.09.2026)
+# PREDARE LANȚ — **cele patru lucrări numite sunt TERMINATE; lanțul e în AȘTEPTAREA FOLOSIRII APLICAȚIEI DE CĂTRE COSTIN** (17.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-16**, la **închiderea etapei 2 a campaniei** — cele **29** de
+- **ultima rescriere**: **2026-09-17**, la **intrarea în așteptarea folosirii** (v. 0Z) — cele **29** de
   unități-nucleu rămase sunt probate individual, pe lanț, în cinci loturi, iar ce urmează **nu se mai
   alege**: sunt **patru lucrări numite de Costin**, în ordine, la punctul **0Z**. *Diferența față de
   toate predările dinainte: nu mai există „tema următoare se alege" — există o listă de terminat, și
@@ -936,6 +936,28 @@ a ce e adevărat **acum**.
    *De ce stă scrisă aici și nu doar în registru: lista a venit ca o comandă, iar o comandă trăiește
    într-un fir de conversație care se golește la primul `/clear`. Predarea e singurul loc care
    supraviețuiește golirii — v. lecția pachetului de livrare, mai jos, care s-a pierdut exact așa.*
+
+   ---
+
+   ### **[17.09.2026] STAREA DE ACUM: „ÎN AȘTEPTAREA FOLOSIRII APLICAȚIEI DE CĂTRE COSTIN".**
+
+   **Nu** „în așteptarea unei teme". *Costin, 17.09.2026, verbatim:* „**După asta nu urmează nicio
+   temă.** Backlogul A3, restanțele vechi și interdicțiile neîncepute rămân în registru și se închid
+   doar când le atinge altă lucrare."
+
+   **Ce înseamnă asta pentru cine citește predarea și n-are nicio comandă în față:**
+
+   | | |
+   |---|---|
+   | **ce NU se face** | nu se alege o temă din backlog. Nu se ia la rând nicio restanță deschisă. Nu se deschide o investigație fiindcă „pare următorul lucru rezonabil". **Nici măcar A3** (Playwright/infra: #4, #5, #8, #9, #10) — e backlog, nu coadă |
+   | **ce declanșează lucru** | **folosirea aplicației**. Ce iese din ea — un refuz care nu se înțelege, o cifră care nu se potrivește, un ecran care nu poate spune ce trebuie — devine lucrarea următoare. Până atunci nu există una |
+   | **ce se întâmplă cu restanțele** | rămân **scrise**, cu starea lor, și se închid **doar când le atinge altă lucrare**. Contorul lor de vechime (R1, R3, R4 — peste 290 de commituri fiecare) **nu** e un semnal de prioritate; e doar o măsură a cât de mult n-au fost atinse |
+
+   **De ce diferența dintre cele două formulări contează.** „În așteptarea unei teme" descrie o pauză
+   între două lucrări ale mele, și invită la umplerea ei — la prima citire fără comandă, cineva ar
+   alege ceva din backlog fiindcă tăcerea pare un gol. „În așteptarea folosirii" descrie o **stare a
+   proiectului**: aplicația a ajuns unde poate fi apăsată, iar ce urmează se decide din **ce face ea
+   când e apăsată**, nu din ce a mai rămas nebifat într-o listă. *Un backlog nu e o comandă.*
 
 0Y. **[16.09.2026] CE A ÎNCHIS ETAPA 2, și ce a scos.**
 
