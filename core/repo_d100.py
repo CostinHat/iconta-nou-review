@@ -20,7 +20,15 @@ def select_firma_profil(cur):
 
 
 def select_inregistrari_linii(cur, _inc, _sf):
-    cur.execute("SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '70%%' THEN l.suma ELSE 0 END),0) AS venituri, "
+    # [A8, 17.09.2026] Veniturile micro/profit sunt din ORICE SURSĂ, nu doar din exploatare (70x).
+    # Art. 53(1) / art. 19 CF: intră și 75x (alte venituri din exploatare) și 76x (venituri
+    # financiare), iar 709 (reduceri comerciale acordate) SE SCADE (cont de venit cu sold debitor).
+    # Până azi baza micro (cod 121) lua doar `cont_credit LIKE '70%'`, deci un venit financiar 766 sau
+    # o dobândă 766 nu intrau, iar reducerile 709 nu se scădeau. `71x` (variația stocurilor) rămâne în
+    # afară, deliberat: e o corecție de producție, nu venit din sursă (art. 53 nu o include în micro).
+    cur.execute("SELECT COALESCE(SUM(CASE WHEN (l.cont_credit LIKE '70%%' OR l.cont_credit LIKE '75%%' "
+                "        OR l.cont_credit LIKE '76%%') THEN l.suma ELSE 0 END),0) "
+                "     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) AS venituri, "
                 "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma ELSE 0 END),0) AS cheltuieli "
                 "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
                 "WHERE i.status='validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))

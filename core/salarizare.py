@@ -9,7 +9,7 @@ Conturi salarii (OMFP 1802):
 """
 from __future__ import annotations
 from decimal import Decimal
-from math import floor
+from math import ceil
 
 from core import common as c
 from core.common import _dec, _q
@@ -64,7 +64,12 @@ def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     else:
         pct = _PCT_DEDUCERE_BAZA[min(persoane, 4)]
         if b > sm:
-            trepte = floor((b - sm) / 50)
+            # [A7, 17.09.2026] Treapta se ROTUNJEȘTE ÎN SUS (ceil), nu în jos (floor). Art. 77 alin.(4)
+            # CF: tranșa „sm+1 … sm+50" e prima treaptă de reducere (deducerea scade cu 0,5 puncte pe
+            # fiecare 50 de lei sau fracție). Cu floor, un brut de sm+1 primea încă deducerea integrală
+            # (20%) în loc de 19,50%; măsurat: greșit pe 49 din fiecare 50 de valori de brut între sm și
+            # sm+2.000. `ceil((b-sm)/50)`: sm+1 → 1 treaptă (19,50%), sm+50 → 1, sm+51 → 2 (19,00%).
+            trepte = ceil((b - sm) / 50)
             pct = max(Decimal(0), pct - Decimal("0.005") * trepte)
         ded_baza = pct * sm
 

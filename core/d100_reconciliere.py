@@ -76,13 +76,17 @@ def _q(x):
 
 
 def _venituri_independent(conn, perioada):
-    """SUM(l.suma) pe cont_credit 70x, note VALIDATE, in fereastra perioada.interval().
-    SQL PROPRIU - aceeasi sursa ca d100.pull, dar agregare INDEPENDENTA (nu se cheama pull)."""
+    """Venituri din ORICE sursa (70x+75x+76x) minus 709, note VALIDATE, in fereastra.
+    SQL PROPRIU - aceeasi REGULA ca `repo_d100.select_inregistrari_linii` (A8, art. 53(1)), dar
+    agregare INDEPENDENTA (nu se cheama pull). [A8, 17.09.2026] Inainte lua doar 70x, deci diverge de
+    generator care include acum 75x/76x si scade 709 -> gardul bloca generarea D100."""
     inc, sf = perioada.interval()
-    q = ("SELECT COALESCE(SUM(l.suma),0) FROM inregistrari_linii l "
+    q = ("SELECT COALESCE(SUM(CASE WHEN (l.cont_credit LIKE '70%%' OR l.cont_credit LIKE '75%%' "
+         "        OR l.cont_credit LIKE '76%%') THEN l.suma ELSE 0 END),0) "
+         "     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) "
+         "FROM inregistrari_linii l "
          "JOIN inregistrari i ON i.id = l.inregistrare_id "
-         "WHERE i.status='validata' AND l.cont_credit LIKE '70%%' "
-         "AND i.data >= %s AND i.data < %s")
+         "WHERE i.status='validata' AND i.data >= %s AND i.data < %s")
     with conn.cursor() as cur:
         return Decimal(str(_repo.sql(cur, q, inc, sf)[0] or 0))
 

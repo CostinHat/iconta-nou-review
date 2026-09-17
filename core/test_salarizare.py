@@ -18,9 +18,12 @@ def test_brut_6000_fara_dependenti_sem2():
     assert r["facilitate"] == Decimal("0.00")
     assert r["cas"] == Decimal("1500.00")
     assert r["cass"] == Decimal("600.00")
-    assert r["deducere"]["total"] == Decimal("151.38")  # FIX3: fara rotunjire (0.035*4325)
-    assert r["impozit"] == Decimal("374.86")            # FIX3: 10% pe baza cu ded nerotunjita
-    assert r["net"] == Decimal("3525.14")
+    # [A7, 17.09.2026] treapta ceil (nu floor): brut 6000 = sm+1675 -> banda sm+1651…sm+1700 = treapta
+    # 34, deci pct = 20% - 34x0,5% = 3% -> 0,03x4325 = 129,75 (nu 33 trepte / 3,5% / 151,38, care era
+    # bug-ul A7). Lantul se recalculeaza: impozit 10% pe baza cu ded nerotunjita, apoi net.
+    assert r["deducere"]["total"] == Decimal("129.75")
+    assert r["impozit"] == Decimal("377.03")
+    assert r["net"] == Decimal("3522.98")
     assert r["cam"] == Decimal("135.00")
     assert r["cost_angajator"] == Decimal("6135.00")
 
@@ -59,7 +62,8 @@ def test_minim_difera_pe_semestru():
 
 
 def test_deducere_degresiva_pe_trepte():
-    assert deducere_personala(6000, la_data=SEM2)["total"] == Decimal("151.38")  # FIX3: fara rotunjire la 10 lei (0.035*4325=151.375)
+    # [A7] treapta ceil: sm+1675 -> treapta 34 -> 3% x 4325 = 129,75 (bug-ul floor dadea 151,375)
+    assert deducere_personala(6000, la_data=SEM2)["total"] == Decimal("129.75")
 
 
 def test_deducere_copil_scoala():
