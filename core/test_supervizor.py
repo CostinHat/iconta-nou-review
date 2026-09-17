@@ -104,9 +104,11 @@ def test_perechea_reala_e_EURISTICA_deci_nu_cere_NICIODATA_confirmare():
     # (registrul de imobilizări ↔ conturile 28xx) intră cu `tarie=None`: atribuirea e a lui Costin,
     # pe tip, iar eu n-o dau în numele lui. Aserțiunea NU se slăbește la „ignoră tipurile noi" —
     # rămâne o egalitate, deci **al doilea** tip neatribuit o face iar roșie.
-    assert S.tipuri_neatribuite() == [_ci.TIP_D406_ASSETS_VS_28X], (
-        "tipuri care așteaptă tăria: %s. R115 e redeschisă pe EXACT unul (cel din R191); dacă "
-        "apare încă unul, se scrie și el în R115 — nu tăcut" % S.tipuri_neatribuite())
+    # [R115, INCHISA a doua oara — 17.09.2026] Tipul din R191 a primit tarie (CERTA), deci lista
+    # e iar GOALA. Aserțiunea ramane o EGALITATE cu multimea vida: primul tip nou fara tarie o face
+    # rosie si redeschide restanta, exact ca pe 16.09.
+    assert S.tipuri_neatribuite() == [], (
+        "tipuri care asteapta taria: %s. R115 se redeschide cu ele, nu tacut" % S.tipuri_neatribuite())
 
 
 def test_o_tarie_NEVALIDA_nu_trece():

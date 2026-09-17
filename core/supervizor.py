@@ -180,21 +180,26 @@ TIPURI = {
                       "imobilizările»)",
         "sursa_stanga": "{schema}.mijloace_fixe, prin motorul care emite Assets (`d406_active`)",
         "sursa_dreapta": "{schema}.inregistrari_linii, note VALIDATE, prin `rulaje_interval`",
-        "tarie": None,
-        "confirmat": False,
-        "propus": CERTA,
-        "motiv_propunere":
-            "PROPUS CERTA — **eu, 16.09.2026; atribuirea e a lui Costin, nu a mea.** Aplicând "
-            "criteriul lui (*diferența admite o explicație legitimă?*), cele două explicații pe "
-            "care le-am găsit sunt deja ÎNCHISE ÎN COD, nu lăsate pe seama cititorului: notele în "
-            "CIORNĂ pe contul de amortizare dau GRI, iar un activ pe care motorul îl refuză face "
-            "stânga incompletă și dă tot GRI. Ce rămâne după ele e o nepotrivire aritmetică între "
-            "ce se declară și ce e în evidență — chiar definiția pe care el a dat-o CERTEI. "
-            "**DAR nu o atribui singur, și spun de ce:** contul 28xx e ținut la nivel de CONT, nu "
-            "de activ (nota lunară scrie `6811 = 28xx` fără id-ul mijlocului fix), deci perechea "
-            "nu poate arăta CARE activ divergă. O constatare care cere confirmare fără să poată "
-            "numi subiectul e mai greu de închis decât una care semnalează. *Măsurat la naștere: "
-            "3 conturi divergente pe 20 de scheme — t003 2808 și 2813, t013 2813.*",
+        "tarie": CERTA,
+        "confirmat": True,
+        "limita_declarata":
+            "Constatarea numește **CONTUL, nu activul** — `28xx` e ținut la nivel de cont (nota "
+            "lunară scrie `6811 = 28xx`, fără id-ul mijlocului fix). Limita intră în CHIAR textul "
+            "constatării, nu doar aici: cine o citește trebuie să afle din ea că originea nu e "
+            "localizabilă, altfel ar căuta un activ pe care constatarea nu-l poate numi.",
+        "motiv_tarie":
+            "CERTA — **Costin, 17.09.2026**, cu criteriul aplicat până la capăt: *„cele două cifre "
+            "trebuie să coincidă prin CONSTRUCȚIE; divergența e certă chiar dacă originea nu e "
+            "localizabilă.”* Amortizarea cumulată a activelor unui cont **este**, contabil, soldul "
+            "creditor al acelui cont (OMFP 1802/2014, grupa 28) — nu o aproximare a lui. Deci o "
+            "nepotrivire nu admite o explicație legitimă, ci doar una nelocalizată. "
+            "**Rezerva pe care o ridicasem — că nu poate numi CARE activ divergă — nu schimbă "
+            "tăria, ci textul:** e o limită a constatării, nu a adevărului ei, și de-aia se scrie "
+            "*în* constatare (`limita_declarata`), ca omul să știe de la prima citire ce are și ce "
+            "n-are. *Cele două explicații legitime care ar fi putut exista sunt deja închise în "
+            "cod: notă în CIORNĂ pe cont -> GRI; registru ilizibil -> GRI.* "
+            "Măsurat la atribuire: 3 conturi divergente pe 20 de scheme (t003 `2808` și `2813`, "
+            "t013 `2813`).",
     },
     "EFACTURA_VS_D394": {
         "axa": "ORIZONTALA",

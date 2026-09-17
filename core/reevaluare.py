@@ -53,3 +53,38 @@ def nota_realizare_surplus(suma):
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return {"linii": [("105", "1175", s)]}
+
+
+# ── R192: reevaluarea nu elimina o amortizare pe care evidenta n-o contine ────────────────────
+# Cele doua functii de mai jos sunt PURE si stau aici, langa motor, dinadins: cifrele refuzului
+# sunt DATE, iar textul se construieste DIN ele. Asa o proba poate cere continutul fara sa caute
+# cuvinte intr-un sir — `METODA §23` —, iar traducerea in limba contabilului ramane un singur loc.
+
+def divergenta_amortizare(de_eliminat, sold_inregistrat):
+    """`None` daca reevaluarea poate merge; altfel dict-ul divergentei, cu toate cifrele ei.
+
+    `de_eliminat` vine din REGISTRU (motorul o calculeaza din PIF, durata si metoda);
+    `sold_inregistrat` e soldul creditor al contului de amortizare, din notele chiar inregistrate.
+    """
+    a, b = _d(de_eliminat), _d(sold_inregistrat)
+    if a <= b:
+        return None
+    return {"in_registru": a, "in_cont": b, "diferenta": a - b}
+
+
+def mesaj_divergenta(div, denumire, cont, la_data):
+    """Divergenta, spusa in termenii contabilului — nu in aritmetica noastra.
+
+    NU „eliminarea depaseste soldul": aia e o propozitie despre codul nostru. Se numeste CAUZA
+    (registrul si contabilitatea nu spun acelasi lucru), se dau AMANDOUA cifrele, si se spune CE SE
+    FACE — se inregistreaza amortizarea lipsa, apoi reevaluarea trece.
+    """
+    from core.pdf_util import bani as _b
+    return ("Registrul mijloacelor fixe și contabilitatea nu spun același lucru despre amortizarea "
+            "lui %s. Fișa activului arată %s lei amortizare strânsă până la %s, iar contul %s are %s "
+            "lei înregistrați — o diferență de %s lei. Reevaluarea pornește prin scoaterea din "
+            "evidență a amortizării strânse, deci pe diferența asta ar scădea o amortizare care nu "
+            "s-a înregistrat niciodată. Înregistrează întâi amortizarea lipsă (nota lunară, pe "
+            "lunile care lipsesc), apoi reevaluarea trece."
+            % (denumire, _b(div["in_registru"]), la_data, cont, _b(div["in_cont"]),
+               _b(div["diferenta"])))

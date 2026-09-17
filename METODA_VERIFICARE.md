@@ -1588,3 +1588,48 @@ tăcut din măsurătoare un cabinet real.
 
 **Corolarul, și e mai larg decât R81:** orice măsurătoare viitoare *„pe firme reale"* lovește aceeași
 lipsă. Cifra care nu-și declară populația nu se corectează — **nu se scrie.**
+
+
+## §31 — UN VERDICT DE LA UN ARBITRU EXTERN NU ÎNSEAMNĂ NIMIC PÂNĂ NU DOVEDEȘTI CE I-AI DAT
+
+**Regula.** Când întrebi un arbitru din afară — validatorul ANAF, un serviciu, un linter — și
+răspunsul e **favorabil**, verdictul nu se citește până nu **arăți** că intrarea pe care o credeai
+stricată chiar era stricată **în ce i-ai trimis**.
+
+**De ce e o regulă și nu bun-simț: cele două cazuri arată IDENTIC din afară.**
+
+| ce s-a întâmplat de fapt | ce vezi |
+|---|---|
+| arbitrul nu verifică regula aia | `valid` |
+| mutația ta n-a ajuns în fișier | `valid` |
+
+*Un „valid" e cea mai ieftină formă de tăcere: nu spune despre ce tace.* La un verdict **nefavorabil**
+problema nu există — arbitrul numește ce a găsit, deci dovedește singur că a văzut intrarea.
+
+**Cum se face, în ordine:**
+
+1. rulează pe intrarea **bună** → trebuie să iasă favorabil. *Fără pasul ăsta, un arbitru care
+   respinge orice ar da „nefavorabil" pe mutație și ai crede că a prins regula.*
+2. mutează **un singur** lucru;
+3. **tipărește din fișierul trimis** exact locul mutat (atributul, rândul, elementul);
+4. abia apoi citește verdictul;
+5. rulează și o regulă despre care **știi** că e verificată → trebuie să iasă nefavorabil. *Altfel un
+   arbitru care tace la tot dă același `valid` la toate.*
+
+**INSTANȚA CARE A PRODUS REGULA (16.09.2026).** Opt citări `DUK regula <cod>` din `core/d402.py` și
+`core/d301_operatiuni_api.py` se lămureau prin rulare. Trei au ieșit `valid` cu valoarea rea în
+fișier — deci validatorul **nu verifică** `totalPlata_A`, `anul(Data_I)` și `Suma_venit > 0`. Concluzia
+a ținut **fiindcă** pasul 3 exista: s-a tipărit `Data_I="01.01.2030"`, `Suma_venit="0"`,
+`totalPlata_A="9999"` din XML-ul trimis.
+
+**Și instanța care arată că pasul 3 nu e zel.** La D390, în aceeași tură, prima rulare a raportat
+*„NICIO operație în XML"*: căutam `<operatiune` într-un document care emite `<operatie`. Verificarea
+a prins-o **înainte** de a citi verdictul. *Fără ea aș fi citit un `valid` despre un fișier gol și
+l-aș fi scris în registru ca fapt.*
+
+**Ce a costat absența ei, istoric:** trei citări au trăit ca **afirmații false despre validator** —
+„DUK prinde asta" — pe un lucru pe care DUK nu-l prinde. Cine le-ar fi crezut ar fi putut scoate
+verificarea noastră ca duplicat.
+
+*Mutată aici din `DECIZII.md` 54 (17.09.2026, la cererea lui Costin): e o regulă de METODĂ, nu o
+constatare despre o zi. Sursa unică e aici; `DECIZII.md` 55 trimite încoace.*

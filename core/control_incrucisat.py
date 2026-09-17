@@ -2231,6 +2231,15 @@ def _orizontal_efactura_vs_d394(conn, schema):
 
 TIP_D406_ASSETS_VS_28X = "D406_ASSETS_VS_CONT_28X"
 
+#: Limita constatarii, ca **dată**, nu ca proză de căutat: fiecare constatare roșie o poartă pe
+#: `limita`, iar o probă o cere prin EGALITATE cu constanta asta. *O aserțiune pe sub-șir ar păzi
+#: formularea; una pe constantă păzește faptul că limita chiar călătorește cu constatarea.*
+#: [R115, Costin 17.09.2026] Tăria e CERTA — dar constatarea trebuie să spună, de la prima frază,
+#: că numește CONTUL, nu activul. Altfel cine o citește ar căuta un activ pe care nu-l poate numi.
+LIMITA_D406_ASSETS = ("Constatarea numește CONTUL, nu activul: amortizarea se ține pe cont (nota "
+                      "lunară scrie `6811 = 28xx`, fără mijlocul fix), deci divergența e sigură, "
+                      "dar originea ei nu se poate localiza de aici.")
+
 #: Prefixul conturilor de amortizare a imobilizărilor (OMFP 1802/2014, grupa 28 „Amortizări privind
 #: imobilizările"). Nu e un prag și nu e o cotă — e apartenența la grupă, citită din planul de
 #: conturi general.
@@ -2347,8 +2356,11 @@ def _pereche_amortizare(conn, schema, an):
                                   "coincid (%s)." % (eticheta, cont, _lei(d))))
             continue
         out.append(dict(baza, stare="rosu", temei=temei,
+                        limita=LIMITA_D406_ASSETS,
                         mesaj="%s: registrul de imobilizări declară %s amortizare cumulată, iar "
-                              "contul %s are sold %s (diferență %s)."
+                              "contul %s are sold %s (diferență %s). Divergența e certă — cele două "
+                              "cifre trebuie să coincidă prin construcție —, dar se poate numi doar "
+                              "CONTUL, nu activul: amortizarea nu se ține pe mijloc fix."
                               % (eticheta, _lei(d), cont, _lei(i), _lei(d - i)),
                         remediu={"fel": "sugerat",
                                  "cauza": "Amortizarea pe care o declară registrul de imobilizări "

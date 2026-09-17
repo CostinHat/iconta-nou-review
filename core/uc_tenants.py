@@ -3589,6 +3589,35 @@ def achizitie_necorporala(tenant_id, corp, ctx):
             "conturi": [cont_imo, cont_am]}
 
 
+def _cere_amortizarea_inregistrata(conn, schema, cont_amortizare, ref, de_eliminat, denumire):
+    """[R192] Reevaluarea nu poate elimina o amortizare pe care evidența n-a înregistrat-o.
+
+    **DE CE E UN REFUZ, nu un avertisment.** Reevaluarea pe metoda valorii nete începe prin
+    `28xx = 21x` cu amortizarea cumulată. Cifra aia vine din **registru** (motorul o calculează din
+    PIF, durată și metodă); soldul contului vine din **notele chiar înregistrate**. Dacă registrul o
+    ia înainte, nota ar scădea din cont o amortizare care nu există acolo — soldul `28xx` trece pe
+    minus, iar valoarea rămasă a activului devine o **cifră validă și falsă**: se calculează, se
+    afișează, pleacă în declarație, și nimic nu o contrazice.
+
+    **Judecata și textul sunt PURE**, în `core/reevaluare.py`: aici rămâne doar citirea soldului.
+    *Așa cifrele refuzului sunt DATE, iar o probă poate cere conținutul fără să caute cuvinte
+    într-un șir.*
+
+    Soldul e CREDITOR (credit − debit) la data reevaluării: debitele sunt chiar eliminările
+    anterioare și ieșirile din evidență, deci trebuie scăzute.
+    """
+    from core import control_incrucisat as _ci
+    from core import reevaluare as _rv
+    r = _ci.rulaje_interval(conn, schema, "1900-01-01", ref.isoformat(), [cont_amortizare])
+    v = r.get(cont_amortizare) or {}
+    sold = (v.get("credit") or 0) - (v.get("debit") or 0)
+    div = _rv.divergenta_amortizare(de_eliminat, sold)
+    if div is None:
+        return
+    raise _erori.CerereGresita(
+        _rv.mesaj_divergenta(div, denumire, cont_amortizare, ref.isoformat()))
+
+
 def reevaluare_imobilizare(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/reevaluare-imobilizare`; docstringul ei a ramas in stratul HTTP."""
     from datetime import date as _date
@@ -3619,6 +3648,7 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
                         "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
                         "metoda": met, "reevaluari": reev}
                 amortizare = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
+                _cere_amortizarea_inregistrata(conn, schema, ca, ref, amortizare, den)
                 r = _rv.nota_reevaluare(val, amortizare, corp["valoare_justa"], ci, ca,
                                         corp.get("sold_105_activ", 0),
                                         corp.get("pierdere_655_anterioara", 0))

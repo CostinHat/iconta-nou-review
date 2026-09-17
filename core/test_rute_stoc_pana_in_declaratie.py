@@ -292,8 +292,14 @@ def test_REEVALUAREA_ajunge_pe_registru_SI_in_rulaj_dupa_validare(lume):
 
     Activ 6.000 / 60 de luni, PIF 15.01.<AN-1>: la 15.03.<AN> au trecut 14 luni x 100,00 = 1.400,00
     amortizare cumulata, deci valoarea neta e 4.600,00. Reevaluat la 5.000 -> diferenta 400,00.
+
+    [R192, 17.09.2026] Lumea probei poarta acum si amortizarea INREGISTRATA. Pana la decizia lui
+    Costin, proba asta trecea peste un cont `2813` gol — adica exact starea in care reevaluarea
+    scadea o amortizare care nu s-a inregistrat niciodata. *Proba n-a fost slabita ca sa treaca
+    noua regula: i s-a completat lumea cu ce ii lipsea.*
     """
     cl = _client()
+    _inregistreaza_amortizarea(lume, Decimal("1400.00"))
     r = cl.post("/tenants/%d/reevaluare-imobilizare" % lume["tid"],
                 json={"data": ZI, "operatie": "reevaluare", "mijloc_fix_id": lume["mfid"],
                       "valoare_justa": 5000}, headers=_H(lume))
@@ -331,3 +337,74 @@ def test_ANTI_VACUU_lumea_chiar_e_pregatita(lume):
         assert cur.fetchone()[0] == 1
         cur.execute("SELECT count(*) FROM \"%s\".inregistrari" % SCH)
         assert cur.fetchone()[0] == 0, "lumea porneste cu note — probele n-ar mai masura ce au produs"
+
+
+def _inregistreaza_amortizarea(lume, suma):
+    """Amortizarea deja INREGISTRATA in contul de amortizare, ca nota validata.
+
+    E precondiția pe care reevaluarea o cere de la R192 incoace: nu se poate scoate din evidenta o
+    amortizare pe care evidenta n-o contine."""
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".inregistrari (data, descriere, sursa, status) '
+                    "VALUES (%%s,'amortizare cumulata proba','amortizare','validata') RETURNING id"
+                    % SCH, ("%d-%02d-01" % (AN, LUNA),))
+        iid = cur.fetchone()[0]
+        cur.execute('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, '
+                    "cont_credit, suma) VALUES (%%s,'6811','2813',%%s)" % SCH, (iid, suma))
+
+
+# ─────────────────────── R192: reevaluarea nu elimină ce nu s-a înregistrat ───────────────────────
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_R192_reevaluarea_se_REFUZA_cand_amortizarea_nu_e_INREGISTRATA(lume):
+    """[R192, decizia lui Costin — 17.09.2026] Reevaluarea porneste prin scoaterea din evidenta a
+    amortizarii strange (`2813 = 2131`). Cifra aia vine din REGISTRU; soldul contului vine din
+    NOTELE chiar inregistrate. Daca registrul o ia inainte, nota ar scadea din cont o amortizare
+    care nu exista acolo — soldul trece pe minus, iar valoarea ramasa devine o **cifra valida si
+    falsa**: se calculeaza, se afiseaza, pleaca in declaratie, si nimic n-o contrazice.
+
+    In lumea probei, contul `2813` e GOL (nicio nota lunara), iar registrul spune 1.400,00 la
+    15.03.2026. Deci reevaluarea trebuie REFUZATA.
+    """
+    cl = _client()
+    r = cl.post("/tenants/%d/reevaluare-imobilizare" % lume["tid"],
+                json={"data": ZI, "operatie": "reevaluare", "mijloc_fix_id": lume["mfid"],
+                      "valoare_justa": 5000}, headers=_H(lume))
+    assert r.status_code == 400, (r.status_code, r.text[:300])
+
+    # CONTINUTUL refuzului se cere pe DATE, nu cautand cuvinte in sir (METODA §23). Judecata si
+    # textul sunt PURE (`core/reevaluare.py`), deci proba poate calcula exact ce trebuie sa spuna
+    # ruta si compara cu EGALITATE. *O aserțiune pe sub-sir ar pazi formularea; asta pazeste cifra.*
+    from core import reevaluare as _rv
+    div = _rv.divergenta_amortizare(Decimal("1400.00"), Decimal("0"))
+    assert div == {"in_registru": Decimal("1400.00"), "in_cont": Decimal("0.00"),
+                   "diferenta": Decimal("1400.00")}, div
+    asteptat = _rv.mesaj_divergenta(div, "Utilaj proba", "2813", ZI)
+    assert (r.json().get("detail") or "") == asteptat, r.json().get("detail")
+
+    # si ca ruta chiar REFUZA pe conditia asta, nu din alta cauza: fara divergenta, judecata tace
+    assert _rv.divergenta_amortizare(Decimal("1400.00"), Decimal("1400.00")) is None
+
+    # si nu lasa nicio urma
+    with lume["conn"].cursor() as cur:
+        cur.execute("SELECT count(*) FROM \"%s\".inregistrari" % SCH)
+        assert cur.fetchone()[0] == 0, "un refuz a lasat totusi o nota"
+        cur.execute("SELECT count(*) FROM \"%s\".reevaluari" % SCH)
+        assert cur.fetchone()[0] == 0, "un refuz a consemnat totusi reevaluarea"
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_R192_dupa_inregistrarea_amortizarii_reevaluarea_TRECE(lume):
+    """A doua directie, si e cea care face refuzul util: dupa ce amortizarea lipsa e inregistrata,
+    reevaluarea merge. *Un refuz care nu se poate ridica nu e o poarta, e un zid.*
+
+    Se inregistreaza cele 14 luni (100,00 fiecare) prin nota de amortizare, validate — apoi aceeasi
+    cerere trece, iar cifrele sunt cele din proba de deasupra.
+    """
+    cl = _client()
+    _inregistreaza_amortizarea(lume, Decimal("1400.00"))
+    r = cl.post("/tenants/%d/reevaluare-imobilizare" % lume["tid"],
+                json={"data": ZI, "operatie": "reevaluare", "mijloc_fix_id": lume["mfid"],
+                      "valoare_justa": 5000}, headers=_H(lume))
+    assert r.status_code == 200, r.text[:300]
+    assert r.json()["amortizare_eliminata"] == "1400.00", r.json()

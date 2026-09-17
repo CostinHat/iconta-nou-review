@@ -256,16 +256,43 @@ def test_TIPUL_e_INREGISTRAT_si_FIECARE_constatare_il_poarta(schema):
     assert _ci.TIP_D406_ASSETS_VS_28X in _S.TIPURI
 
 
-def test_TARIA_e_NEATRIBUITA_deci_NU_PRODUCE_NICIUN_EFECT():
-    """Atribuirea tariei e a lui Costin, pe tip (`core/supervizor.py`, antet). Pana o da, tipul
-    **se vede** dar nu cere confirmare — si NU cade pe o valoare implicita, fiindca *orice implicit
-    minte*. Proba asta cade in ziua in care tipul primeste tarie: atunci se rescrie cu motivul."""
+def test_TARIA_e_CERTA_si_LIMITA_e_DECLARATA_IN_CONSTATARE():
+    """Atribuita de Costin pe 17.09.2026, cu criteriul lui: *cele doua cifre trebuie sa coincida
+    prin CONSTRUCTIE; divergenta e certa chiar daca originea nu e localizabila.*
+
+    Proba cere TREI lucruri, nu unul: taria · motivul scris (fara el, un tip nou ar putea primi o
+    tarie prin analogie cu vecinul din tabel) · si LIMITA, scrisa in CHIAR constatarea rosie.
+    *Ultima e miezul rezolutiei: rezerva mea — ca perechea nu poate numi CARE activ divergă — nu
+    schimba adevarul constatarii, ci ce trebuie sa afle cine o citeste.*
+    """
     t = _ci.TIP_D406_ASSETS_VS_28X
-    assert _S.tarie(t) is None, (
-        "tipul a primit tarie — rescrie proba asta si cere `motiv_tarie`, nu o lasa sa treaca")
-    assert _S.cere_confirmare(t) is False
-    assert _S.TIPURI[t].get("propus") in _S.TARII, "propunerea mea lipseste — raspunsul ar lua doua ture"
-    assert (_S.TIPURI[t].get("motiv_propunere") or "").strip(), "propunere fara motiv scris"
+    assert _S.tarie(t) == _S.CERTA
+    assert _S.TIPURI[t]["confirmat"] is True
+    assert (_S.TIPURI[t].get("motiv_tarie") or "").strip(), "tarie fara motiv scris"
+    assert (_S.TIPURI[t].get("limita_declarata") or "").strip(), (
+        "taria a venit fara limita declarata — constatarea ar cere confirmare fara sa spuna ca nu "
+        "poate numi subiectul")
+    # si nu mai e o propunere de-a mea
+    assert "propus" not in _S.TIPURI[t] and "motiv_propunere" not in _S.TIPURI[t]
+
+
+def test_o_CERTA_ROSIE_cere_confirmare_SI_isi_poarta_limita(schema):
+    """Efectul tariei, masurat pe o constatare reala — nu pe tabel.
+
+    O CERTA rosie cere confirmare inainte de depunere; iar `limita` calatoreste CU ea, ca sa nu se
+    piarda intre tabel si ecran."""
+    db = schema
+    for luna in range(1, 12):
+        _nota(db, date(AN, luna, 28), [("6811", CONT_AM, Decimal("100.00"))])
+    c = _una(db)
+    assert c["stare"] == "rosu"
+    assert _S.cere_confirmare(c["tip_constatare"]) is True
+    # Pe EGALITATE cu constanta numita, nu pe sub-sir: asa proba pazeste FAPTUL ca limita
+    # calatoreste cu constatarea, nu formularea ei.
+    assert c["limita"] == _ci.LIMITA_D406_ASSETS, c.get("limita")
+    assert (_S.TIPURI[c["tip_constatare"]].get("limita_declarata") or "").strip(), (
+        "tabelul de tipuri n-o mai declara — cele doua audiente ar ramane cu una singura")
+    assert c["cont"] == CONT_AM, "limita spune ca numeste contul — deci contul trebuie sa fie acolo"
 
 
 def test_SUPERVIZORUL_CULEGE_perechea():

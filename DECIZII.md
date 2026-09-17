@@ -15093,3 +15093,20 @@ corect ca nimeni să nu scoată verificarea crezând că e duplicat.
 (`R40`, `R49.1`) — au răspuns cu mesajele lor. *Un validator care tace la tot ar fi dat același
 `valid`.*
 
+## 17.09.2026 (55) — PIVOT peste 54: regula de metodă se mută în `METODA_VERIFICARE.md`
+
+**Supersedează EXPLICIT intrarea 54** („o citare de validator se lămurește prin rulare, iar mutația
+se dovedește întâi"). Costin, 17.09.2026: *„DECIZII 54 se scrie în METODA_VERIFICARE.md — e o regulă
+de metodă, nu o constatare."*
+
+**Ce se schimbă:** nimic din conținut, totul din **loc**. `DECIZII.md` ține *de ce am făcut așa*
+într-o zi anume; `METODA_VERIFICARE.md` ține *cum se verifică*, permanent. O regulă care se aplică
+fiecărei întrebări puse unui arbitru extern aparține acolo — altfel ar trebui redescoperită citind
+jurnalul.
+
+**Unde e acum:** `METODA_VERIFICARE.md` **§31** — *un verdict de la un arbitru extern nu înseamnă
+nimic până nu dovedești ce i-ai dat*, cu cei cinci pași și cu cele două instanțe (cele trei citări
+D402 ieșite `valid` cu valoarea rea în fișier · `<operatiune` vs `<operatie` la D390).
+
+**Intrarea 54 rămâne scrisă**, ca istorie: registrul e append-only, iar o decizie mutată nu e o
+decizie ștearsă. *Ce nu se păstrează e ambiguitatea despre care e sursa: de acum, sursa e METODA.*
