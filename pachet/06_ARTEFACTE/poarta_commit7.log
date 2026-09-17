@@ -1,0 +1,18 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] pytest (suita intreaga, ~36 min pe ~6.190 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)...
+6244 passed, 7 skipped, 10 xfailed in 2109.66s (0:35:09)
+[pre-commit] verificator:   TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+TOTAL: 0 candidate
+[pre-commit] OK - poarta verde, commit permis.
+[post-commit] publicat pe origin/main: aa1129b2
+[post-commit] publicat pe public/main: aa1129b2
+[post-commit] backup publicat: backup/lant-2026-09-16 -> aa1129b2
+[post-commit] static publicat: publicat in /home/costin/iconta_publicat/static <- commit aa1129b2 (56 fisiere)
+[post-commit] iconta-nou restartat -> procesul viu preia aa1129b2
+[four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+[four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+[post-commit] FOUR-WAY INCHIS: HEAD = origin/main = backup/lant-2026-09-16 = procesul viu
+[main aa1129b2] Cele 8 citari `DUK regula`, lamurite PRIN RULARE — trei erau afirmatii FALSE despre validator
+ 5 files changed, 94 insertions(+), 33 deletions(-)

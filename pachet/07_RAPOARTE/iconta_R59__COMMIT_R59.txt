@@ -1,0 +1,73 @@
+PACHET R59 — 2026-09-16
+interval: cfdd00ae -> 5492f0da0348affa19b460ea83e7dbb482abc7fd
+
+commit 5492f0da0348affa19b460ea83e7dbb482abc7fd
+autor:  Costin Hateganu
+data:   2026-09-16 15:27:29 +0300
+subiect: R59, consemnata cu hash-ul real al reparatiei — plus R192, iesita construind-o
+
+commit d937eef664109bc39e8e2bb9d03c3be05286544c
+autor:  Costin Hateganu
+data:   2026-09-16 13:33:19 +0300
+subiect: R59 — reevaluarea ajunge pe registru SI in declaratie, la validarea notei
+
+=== DIFF --stat pe tot intervalul ===
+ CONFORMITATE.md                        |  75 ++++++-
+ DECIZII.md                             |  46 +++++
+ GARZI.md                               |  41 +++-
+ ISTORIC.md                             |  32 +++
+ ISTORIC_TENANTI.md                     |  12 +-
+ PREDARE_LANT.md                        |  12 +-
+ TESTE.md                               |  21 ++
+ TRASEE.md                              |   4 +-
+ TRASEE_VERIFICARI.md                   |  13 +-
+ core/d406_active.py                    | 197 +++++++++++++++----
+ core/migrare_reevaluare.py             | 114 +++++++++++
+ core/repo_mijloace_fixe.py             |  47 ++++-
+ core/repo_reevaluari.py                |  55 ++++++
+ core/straturi.py                       |   3 +
+ core/test_d406_active_duk.py           |  40 ++++
+ core/test_p7_v2_scrieri.py             |  16 +-
+ core/test_reevaluare_registru.py       | 349 +++++++++++++++++++++++++++++++++
+ core/test_reluari_decizie.py           |   7 +-
+ core/uc_tenants.py                     |  69 ++++++-
+ frontend_test/proba_e2_lot_i_d406.json |  51 ++---
+ frontend_test/proba_e2_lot_i_d406.py   |  57 ++++--
+ scripts/trasee_tabele.json             |   1 +
+ tenant_template.sql                    |  50 +++++
+ 23 files changed, 1202 insertions(+), 110 deletions(-)
+
+=== --stat per commit ===
+--- d937eef664109bc39e8e2bb9d03c3be05286544c ---
+R59 — reevaluarea ajunge pe registru SI in declaratie, la validarea notei
+
+ GARZI.md                               |   5 +-
+ ISTORIC_TENANTI.md                     |  12 +-
+ PREDARE_LANT.md                        |   2 +-
+ TRASEE.md                              |   4 +-
+ TRASEE_VERIFICARI.md                   |  13 +-
+ core/d406_active.py                    | 197 +++++++++++++++----
+ core/migrare_reevaluare.py             | 114 +++++++++++
+ core/repo_mijloace_fixe.py             |  47 ++++-
+ core/repo_reevaluari.py                |  55 ++++++
+ core/straturi.py                       |   3 +
+ core/test_d406_active_duk.py           |  40 ++++
+ core/test_p7_v2_scrieri.py             |  16 +-
+ core/test_reevaluare_registru.py       | 349 +++++++++++++++++++++++++++++++++
+ core/uc_tenants.py                     |  69 ++++++-
+ frontend_test/proba_e2_lot_i_d406.json |  51 ++---
+ frontend_test/proba_e2_lot_i_d406.py   |  57 ++++--
+ scripts/trasee_tabele.json             |   1 +
+ tenant_template.sql                    |  50 +++++
+ 18 files changed, 979 insertions(+), 106 deletions(-)
+--- 5492f0da0348affa19b460ea83e7dbb482abc7fd ---
+R59, consemnata cu hash-ul real al reparatiei — plus R192, iesita construind-o
+
+ CONFORMITATE.md              | 75 +++++++++++++++++++++++++++++++++++++++++++-
+ DECIZII.md                   | 46 +++++++++++++++++++++++++++
+ GARZI.md                     | 36 +++++++++++++++++++++
+ ISTORIC.md                   | 32 +++++++++++++++++++
+ PREDARE_LANT.md              | 10 ++++--
+ TESTE.md                     | 21 +++++++++++++
+ core/test_reluari_decizie.py |  7 ++++-
+ 7 files changed, 223 insertions(+), 4 deletions(-)

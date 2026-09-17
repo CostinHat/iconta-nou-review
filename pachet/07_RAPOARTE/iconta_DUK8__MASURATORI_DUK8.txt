@@ -1,0 +1,88 @@
+MASURATORI — LUCRAREA 4: cele 8 citari `DUK regula` · 16.09.2026 · 81558b74 -> aa1129b2
+================================================================================
+
+1. METODA, si de ce are DOI pasi
+--------------------------------------------------------------------------------
+Predarea o scria: „se lamuresc prin RULARE — XML mutat deliberat —, NU prin citirea constantelor".
+S-a adaugat un al doilea pas, obligatoriu: INAINTE de a crede un raspuns `valid`, se TIPARESTE
+valoarea rea din XML-ul trimis.
+
+  DE CE: „validatorul nu verifica regula" si „mutatia mea n-a intrat in fisier" dau AMANDOUA `valid`.
+  Instanta care a cerut pasul: la D390 cautam `<operatiune` intr-un XML care emite `<operatie`, deci
+  prima rulare a raportat „NICIO operatie in XML". Fara verificare, as fi citit un `valid` fals.
+
+
+2. CE A RASPUNS VALIDATORUL — rulare pe rulare, cu mesajul lui verbatim
+--------------------------------------------------------------------------------
+BAZA (calibrare): fixtura valida -> stare=valid, erori=(gol).
+  Fara asta, un `erori` pe o mutatie n-ar dovedi nimic: ar putea veni din fixtura.
+
+  R14   totalPlata_A="9999" (real 12000)   -> stare=valid, erori=(gol)
+        dovada ca mutatia era in fisier: totalPlata_A="9999" gasit in XML
+  R34   Impozit_venit=-5                   -> stare=erori
+        „E: beneficiar (1) / eroare atribut: Impozit_venit: valoarea '-5' nu se incadreaza in
+         intervalul cerut"                  => constrangere de ATRIBUT (XSD), nu regula cu cod
+  R39   Data_I="01.01.2030", raportare 2024 -> stare=valid, erori=(gol)
+        dovada: Data_I="01.01.2030" gasit in XML
+  R43   Suma_venit="0", declaratie initiala -> stare=valid, erori=(gol)
+        dovada: Suma_venit="0" gasit in XML
+  R50   acelasi CIF_Rom pe doi beneficiari -> stare=erori
+        „E: beneficiar (2) / CIF_Rom are aparitii multiple / eroare regula: R29: CIF_Rom
+         (1800101412340) trebuie sa fie unic"   => codul real e R29
+
+CALIBRARE IN DIRECTIA CEALALTA, pe aceeasi fixtura (ca `valid` sa insemne ceva):
+  R40   Data_S="31.12.2023", raportare 2024 -> „eroare regula: R40: anul atributului Data_S (2023)
+        este diferit de anul raportarii (2024)"
+  R49.1 Categ_B=1 cu Tip_venit=1           -> „eroare regula: R49.1: pentru Categ_B = 1 (dependent)
+        nu se admite Tip_venit = 1, 2 sau 3 (1)"
+  => validatorul VORBEA. Pe cele trei chiar n-avea ce spune.
+
+D390, pentru citarea din `core/d301_operatiuni_api.py`:
+  codO="00905811006" (valid)   -> stare=valid
+  codO="00905811007" (cifra de control stricata) -> „E: operatie (1) / codO invalid (nu respecta
+        algoritmul de tara) / eroare regula: R24.1: operatorul codO = '00905811007' trebuie sa
+        respecte algoritmul specific 'IT'"       => CORECT; ii lipsea doar marca de formular
+
+
+3. CE SUNT, DE FAPT, CELE TREI PE CARE VALIDATORUL NU LE VERIFICA
+--------------------------------------------------------------------------------
+Confruntate la sursa, in corpus (`anaf_surse/structuraXML_D402_2022.pdf`), verbatim:
+  linia 217-218  „totalPlata_A = Σ (beneficiar.venit.Suma_venit)"
+                 + „ERR – camp totalPlata_A calculat gresit"
+  linia 517-518  „if (Data_I !=null ) then anul(Data_I)<= an"
+                 + „ERR –Anul din Data_I > anul raportarii"
+  linia 570-571  „daca d_rec=0 Suma_venit > 0 altfel Suma_venit >= 0 (modif.16.03.2017)"
+
+Si `Impozit_venit >= 0` in XSD: `IntPoz15SType` = `xs:integer`, `minInclusive 0`, confruntat in
+`anaf_surse/d402_20160226_xsd_linii.txt` (liniile 46 si 117-122).
+
+=> Verificarile noastre RAMAN. Ce era fals era ATRIBUIREA.
+=> Si conteaza practic: cine citea marcajul de validator putea crede ca DUK prinde lipsa inainte de
+   depunere. N-o prinde. Un `totalPlata_A` gresit sau o suma zero pe o initiala ar fi trecut.
+
+
+4. CIFRA
+--------------------------------------------------------------------------------
+  citari `DUK regula` necorelate cu validatorul declaratiei lor:  8 -> 0
+  clichetul, rescris ca EGALITATE (criteriu), nu ca plafon.
+  datoria `test_datorie_coduri_d402_d301_necorelate` (xfail strict): INCHISA — a trecut singura in
+  poarta lotului dinainte, exact cum e proiectat registrul de datorii.
+
+
+5. CE A PRINS POARTA — de doua ori acelasi loc
+--------------------------------------------------------------------------------
+  `test_temeiuri` — proza mea despre marcajele VECHI reintroducea tiparul pe care tocmai il
+    scosesem: un cod scris langa cuvantul „regula", fara prefixul canonic. *Un citat si o citare
+    arata la fel pentru un instrument.*
+  `test_mesaje_generare_fara_camp_intern` — rescriind mesajele, am pus `d_rec` si `Impozit_venit`
+    (nume interne de camp) in text afisat contabilului. Baseline 19 -> 20.
+  Amandoua reparate: codurile vechi traiesc acum in tabelul din `core/test_coduri_validator.py`, nu
+  in mesajele si proza modulului fiscal.
+
+
+6. POARTA
+--------------------------------------------------------------------------------
+  0 failed / 6244 passed / 7 skipped / 10 xfailed — 2109,66 s (35:09)
+  verificator: TOTAL 0 candidate (207 scanat · 421 rute · clichet GRI 7)
+  COMMIT aa1129b2 · origin/main · public/main · backup/lant-2026-09-16 · static (56 fisiere)
+  restart -> four-way INCHIS: 2 din 2 procese poarta HEAD.

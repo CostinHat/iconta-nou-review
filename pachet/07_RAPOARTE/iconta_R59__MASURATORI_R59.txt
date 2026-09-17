@@ -1,0 +1,179 @@
+MASURATORI — TEMA R59 · 16.09.2026 · cfdd00ae -> 5492f0da
+================================================================================
+Fiecare cifra de mai jos poarta INSTRUMENTUL care o produce si CALIBRAREA lui.
+O cifra fara instrument nu e o masuratoare, e o amintire.
+
+
+1. MIGRAREA (tabelul `reevaluari`)
+--------------------------------------------------------------------------------
+instrument: core/migrare_reevaluare.py (`aplica` + `verifica`)
+calibrare:  `verifica()` cere AMANDOUA — tabelul EXISTA si poarta AMANDOI indecsii —,
+            nu doar primul. Ruleaza dupa fiecare aplicare, pe fiecare schema.
+
+  productie (iconta_v2):  scheme 20 · aplicat+verificat 20 · esec 0
+  test      (iconta_test): scheme 20 · aplicat+verificat 20 · esec 0
+
+  BACKFILL: niciunul, deliberat. Zero note de reevaluare pe toate schemele
+  (masurat la deschiderea R59, 26.08.2026). Nu exista istorie de reconstituit.
+
+
+2. PROBA DIN SUITA
+--------------------------------------------------------------------------------
+instrument: core/test_reevaluare_registru.py
+  13 probe · 0,53 s (schema efemera `tenant_proba_r59`, DDL luat din MIGRARE, nu rescris)
+
+  SCENARIUL, declarat (cifrele se refac cu creionul):
+    activ 3.000 lei · rezidual 0 · durata 60 luni · liniar · PIF 15.01.2026
+      -> rata veche 50,00
+    reevaluare 20.03.2026 la valoare justa 3.500
+      cumulata la 20.03 = 2 luni (feb, mar) x 50 = 100,00
+      valoare neta 2.900 · diferenta 600
+    dupa aplicare: valoare bruta 3.500 · durata ramasa 60-2 = 58
+      -> rata noua 3.500/58 = 60,34
+
+  MASURAT:
+    amortizare_luna(2026, 3) = 0,00   (luna reevaluarii e deja in cei 100 eliminati)
+    amortizare_luna(2026, 4) = 60,34
+    amortizat_la_data(31.12.2026) = 60,34 x 9 = 543,06
+    amortizat_la_data(20.03.2026) = 0,00   (cumulata s-a eliminat)
+
+
+3. RED-PROOF — cinci mutatii, cu ce a omorat fiecare
+--------------------------------------------------------------------------------
+metoda: backup de CONTINUT (`cp fisier /tmp/f.bak`), nu `git checkout` — lucrul era necomis
+        (CLAUDE.md, „Verificare prin mutatie — doua capcane").
+
+  M1  apelul `_aplica_reevaluarea` scos din `jurnal_valideaza`
+      -> 1 failed: test_ANTI_VACUU_validarea_notei_CHEAMA_aplicarea
+      (celelalte 12 au ramas VERZI — cheama aplicarea de-a dreptul. De-aia exista M1.)
+  M2  `urca_valoarea` scrie `valoare=valoare` (nu urca nimic)
+      -> 2 failed: test_LANT_ciorna_nu_misca_registrul_validarea_il_misca
+                   test_LANT_a_doua_validare_nu_urca_valoarea_inca_o_data
+  M3  `active_pentru_d406` intoarce `'[]'::json` in loc de reevaluari
+      -> 2 failed: test_LANT_ciorna_nu_misca... · test_ANTI_VACUU_fiecare_citire...
+  M4  `_mf_la` inert (intoarce mereu activul neatins)
+      -> 3 failed: ..._PORNESTE_DE_LA_ZERO... · ...ETAPE_DIFERITE · ...DURATA_EPUIZATA...
+  M5  filtrul `aplicata_la IS NOT NULL` scos din amandoua interogarile
+      -> 1 failed: test_LANT_ciorna_nu_misca_registrul_validarea_il_misca
+      (o ciorna nevalidata ar intra in baza de amortizare)
+
+  dupa revenire: 13 passed.
+
+
+4. PROBA FUNCTIONALA, pe INSTANTA VIE cu codul nou
+--------------------------------------------------------------------------------
+instrument: frontend_test/proba_e2_lot_i_d406.py (lantul 7), pe instanta proaspata
+            port 8011 (`PROBA_BAZA=http://127.0.0.1:8011`), firma `tenant_003`
+            «Comert Micro TVA SRL», trimestrul III/2026.
+            Instanta a fost OPRITA cu `fuser -k 8011/tcp` inainte de poarta
+            (altfel bratul four-way ar fi raportat PREA MULTE pana la reaper).
+
+  LANTURI: 8 · CU NEPOTRIVIRI: 0
+
+  lantul 7, iesire BRUTA:
+    raspuns 200:
+      linii  [2813, 2131, 50.00]  [2131, 105, 550.00]
+      valoare_neta 2950.00 · diferenta 550.00 · amortizare_eliminata 50.00
+    cost_dupa_ciorna           3000.0
+    ciorna_nu_misca_registrul  true
+    validare                   200  {ok: True}
+    asset dupa validare:
+      AcquisitionAndProductionCostsEnd  3500.00
+      AppreciationForPeriod              500.00
+      AccumulatedDepreciation            177.96
+      BookValueEnd                      3322.04
+    cost_declarat 3500.0 == cost_asteptat 3500.0  -> OK true
+
+  recalculabil: rata noua = 3.500 / 59 = 59,32 ; oct+nov+dec = 3 x 59,32 = 177,96 ;
+                3.500 - 177,96 = 3.322,04.
+
+  PE CODUL DE DINAINTE lantul era ROSU, cu constatarea scrisa in R59 (16.09, dimineata):
+  cost_declarat 3000.0 != 3500.0.
+
+
+5. ARBITRUL (validatorul oficial ANAF)
+--------------------------------------------------------------------------------
+instrument: core/duk.py -> DUKIntegrator_AnLunaUI -v D406, pachet oficial ANAF, reguli 2026.1
+motivul:    `AppreciationForPeriod` era emis ca literalul `0.00` de cand exista generatorul.
+            Devenind variabil, „structura ramane valida" nu se mai putea presupune.
+
+  fisier anual cu apreciere NENULA (activ 3.000 -> 3.500, reevaluat 20.03.2026):
+    calc_asset: cost_begin 3000.00 · cost_end 3500.00 · addition 0.00 · apreciere 500.00
+                book_begin 2450.00 · depr_period 784.81 · accum_depr 684.81
+                book_end 2815.19 · procent_anual 20.00
+    DUK: {'stare': 'valid', 'erori': '', 'reguli': '2026.1'}
+
+  CALIBRARE INVERSA, in acelasi mediu: pe un XML stricat (`<x/>`) validatorul raspunde
+    {'stare': 'erori', 'severitate': 'eroare', ...} — deci `valid` nu e o constanta.
+
+  pinat ca proba: core/test_d406_active_duk.py::test_apreciere_nenula_e_DUK_valida
+    (1,26 s — validatorul chiar ruleaza; aserteaza pe ELEMENTE parsate, nu pe siruri)
+
+
+6. CLICHETE — ce s-a miscat si ce NU
+--------------------------------------------------------------------------------
+  PLAFON_SUBSET_FISCAL            8  ->  8   NESCHIMBAT, si e important:
+    ruta `POST /tenants/{tenant_id}/reevaluare-imobilizare` e in continuare pe lista celor
+    8 rute care scriu in tabele de declaratie FARA proba in suita. Proba mea exercita
+    USE-CASE-ul (`_aplica_reevaluarea`) si lantul pe schema efemera, NU ruta HTTP — deci
+    clichetul nu are voie sa scada. *Ar fi scazut doar largind definitia lui „numita".*
+    Ruta ramane pe lista lotului 3.
+
+  rute care scriu fara proba in suita     86  ->  86   NESCHIMBAT
+    masurat pe cfdd00ae printr-un `git worktree` la commitul de baza, nu presupus.
+    Clichetul scris in cod e 88 — era deja un PLAFON peste valoarea reala, pus pe 15.09.
+    (Prima mea citire a spus „88 -> 86", adica o scadere. Era gresita: nu scazuse nimic,
+    plafonul era doar mai sus decat cifra. Corectata prin masurare pe arborele de baza.)
+
+  apeluri catre straturile de sub HTTP   258 -> 262   URCAT, cu cele patru numite:
+    repo_reevaluari.consemneaza · repo_reevaluari.neaplicata_pentru_nota ·
+    repo_mijloace_fixe.urca_valoarea · repo_reevaluari.marcheaza_aplicata
+
+  aserțiuni pe TEXT, core/test_reevaluare_registru.py   0 (fisier nou, pornit de la zero)
+
+  restante DESCHISE                       55 -> 55   (R59 inchisa, R192 deschisa)
+  restante REZOLVATE                      +1 (R59)
+
+
+7. POARTA — sapte rulari, toate cronometrate
+--------------------------------------------------------------------------------
+  #  rezultat                                        durata        ce a prins
+  1  13 failed, 6198 passed                          2099,11 s (34:59)   cele 13 din raport
+  2   1 failed, 6212 passed                          2113,68 s (35:13)   perimetrul firmei
+  3   0 failed, 6213 passed  -> COMMIT d937eef6      2107,97 s (35:07)   —
+  4   1 failed, 6212 passed                          2104,74 s (35:04)   fotografia buclelor
+  5  intrerupta de mine la ~1 min (mesaj de commit gresit, corectat inainte de a rula)
+  6   0 failed, 6213 passed, dar RESPINS de commit-msg  2104,10 s (35:04)  fisier normativ necitit
+  7   0 failed, 6213 passed  -> COMMIT 5492f0da      2101,01 s (35:01)   —
+
+  verificator, la amandoua commiturile verzi:
+    TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+    TOTAL rute  421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+    TOTAL: 0 candidate
+
+  COST TOTAL AL PORTILOR: 6 rulari complete x ~35 min = ~3 h 30 min.
+  Din ele, DOUA au fost respinse pentru ceva ce nu se putea sti dinainte (#1, #2), una
+  pentru un gard de registru (#4), una pentru o poarta de MESAJ (#6). *Regula 8 din
+  PLAN_LUCRU spune sa nu rulez suita „in avans, ca sa nu intru orb in poarta" — respectata:
+  nicio rulare preventiva. Poarta ESTE rularea.*
+
+
+8. PUBLICAREA
+--------------------------------------------------------------------------------
+  d937eef6: origin/main · public/main · backup/lant-2026-09-16 · static (56 fisiere)
+            restart -> four-way INCHIS, 2 din 2 procese
+  5492f0da: idem, four-way INCHIS, 2 din 2 procese
+
+  verificat separat, dupa ambele:
+    HEAD = origin/main = origin/backup/lant-2026-09-16 = 5492f0da0348affa19b460ea83e7dbb482abc7fd
+    `scripts/toate_poarta_head.py <sha COMPLET>` -> exit 0,
+      „TOATE procesele de productie poarta HEAD: 2 din 2"
+    niciuna dintre cele trei sentinele de esec nu exista
+    https://iconta.eu/ -> 200
+    git status --porcelain -> gol
+
+  OBSERVATIE despre instrument (nu defect, si spune de ce): prima mea rulare i-a dat SHA-ul
+  SCURT si a raportat „2 din 2 procese NU poarta HEAD", listand chiar procesele cu commitul
+  corect. `instante.toate_poarta` compara sirurile INTREGI. Greseala era a mea, iar
+  instrumentul greseste spre ALARMA, nu spre tacere — directia buna. Se consemneaza fiindca
+  un mesaj care se contrazice singur costa timp de citit.

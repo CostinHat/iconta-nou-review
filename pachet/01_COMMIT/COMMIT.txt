@@ -1,0 +1,33 @@
+COMMIT: d8034c54d62cc7ca8a82c2f1d6136ab87db86b69
+data:    2026-09-17 07:24:36 +0300
+autor:   Costin Hateganu
+subiect: scanul de secrete nu se mai măsoară pe sine
+
+=== git status (trebuie sa fie GOL) ===
+(gol de mai sus = arborele e curat)
+
+=== --stat al commitului ===
+ audit/scan_secrete.py | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+=== ultimele 20 de commituri ===
+d8034c54 scanul de secrete nu se mai măsoară pe sine
+b56bdca8 starea lanțului, scrisă la 0Z: „în așteptarea folosirii", nu „în așteptarea unei teme"
+3057e93c consemnare R115+R192 și cele două instrumente care rederivă cifrele pentru audit
+fd7e40d4 Cele doua decizii ale lui Costin, construite: taria CERTA si refuzul reevaluarii (R115, R192)
+45503d84 Lucrarile 3 si 4, consemnate cu hash-urile reale — cele patru de la 0Z sunt terminate
+aa1129b2 Cele 8 citari `DUK regula`, lamurite PRIN RULARE — trei erau afirmatii FALSE despre validator
+81558b74 Ultimele patru rute cu clichet fiscal — subsetul ajunge la ZERO, si devine CRITERIU
+0d1909eb Patru din cele opt rute cu clichet fiscal, probate PANA IN CIFRA DECLARATIEI
+4d938efd R191, consemnata cu hash-ul real — R115 REDESCHISA, R192 avanseaza
+fcd13ac9 R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA
+5492f0da R59, consemnata cu hash-ul real al reparatiei — plus R192, iesita construind-o
+d937eef6 R59 — reevaluarea ajunge pe registru SI in declaratie, la validarea notei
+cfdd00ae Predarea si ISTORICUL, rescrise la inchiderea etapei 2 — plus cele patru lucrari numite, in ordine
+7f37934c Artefactele celor doua probe, reprobate pe codul PUBLICAT
+4c8ca606 R186 si R187 — consemnarea, cu hash-ul real al reparatiilor
+fe12784a R186 si R187, reparate pe deciziile lui Costin: axa pe document, factura la livrare
+5b8a61b3 Etapa 2 INCHISA: cele 29 de unitati-nucleu sunt probate; R59 confirmata pe declaratie, R191 deschisa
+cc34fa92 R190 — o ruta care raspundea 500 la ORICE cerere, de doua zile; garda clasei; lotul J
+d23cc51d Etapa 2, loturile F, G si H: cinci defecte pe care numai lantul le putea vedea
+357a4d8a Perimetrul etapei 2 masura o lume de dinainte: atribuirea scrierilor, reancorata la FUNCTIE

@@ -1,0 +1,21 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] pytest (suita intreaga, ~36 min pe ~6.190 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)...
+6247 passed, 7 skipped, 10 xfailed in 2114.68s (0:35:14)
+[pre-commit] verificator:   TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+TOTAL: 0 candidate
+[pre-commit] OK - poarta verde, commit permis.
+[post-commit] publicat pe origin/main: 3057e93c
+[post-commit] publicat pe public/main: 3057e93c
+[post-commit] backup publicat: backup/lant-2026-09-17 -> 3057e93c
+[post-commit] static publicat: publicat in /home/costin/iconta_publicat/static <- commit 3057e93c (56 fisiere)
+[post-commit] iconta-nou restartat -> procesul viu preia 3057e93c
+[four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+[four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+[post-commit] FOUR-WAY INCHIS: HEAD = origin/main = backup/lant-2026-09-17 = procesul viu
+[main 3057e93c] consemnare R115+R192 și cele două instrumente care rederivă cifrele pentru audit
+ 7 files changed, 505 insertions(+), 8 deletions(-)
+ create mode 100644 audit/deriva_cifrele.py
+ create mode 100644 audit/deriva_neverificatul.py
+EXIT=0

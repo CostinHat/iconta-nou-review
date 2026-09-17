@@ -1,0 +1,3140 @@
+{
+  "_generat_de": "gen_index.py (Corpus 2)",
+  "_nota": "Regenereaza cu: venv/bin/python gen_index.py. tip_forma e declarat manual in TIP_FORMA.",
+  "fisiere": {
+    "D107_XML_2024_010726.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "D107_XML_2024_010726.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "D107_XML_2024_010726.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "D112_XML_2026_0726_050826.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "text_extras": false,
+      "motiv": "formular XFA neextractabil"
+    },
+    "D112_XML_2026_0726_050826.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "D212_IstoriaVersiunilor.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "D212_IstoriaVersiunilor.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "D311_XML_2021_290121.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "text_extras": false,
+      "motiv": "formular XFA neextractabil"
+    },
+    "D311_XML_2021_290121.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_3562_2024_D177.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_3562_2024_D177.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_3562_2024_D177.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "PORTAL_IDS.json": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "PROVENIENTA.json": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "RAPORT_verificare_temeiuri.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_bilete_de_valoare.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_bilete_de_valoare.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_bilete_de_valoare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_cass_concedii_medicale_2024.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_cass_concedii_medicale_2024.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_cass_concedii_medicale_2024.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_concedii_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_concedii_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_concedii_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_concedii_medicale_contributii.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_concedii_medicale_contributii.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_concedii_medicale_contributii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_limite_2025.pdf": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tichet_masa_plafon",
+          "data_in": "2025-01-01",
+          "valoare": "40.04",
+          "nivel_sursa": "MO",
+          "temei": "Ordin 4679/2024 art."
+        },
+        {
+          "cota": "tichet_masa_plafon",
+          "data_in": "2025-04-01",
+          "valoare": "40.18",
+          "nivel_sursa": "MO",
+          "temei": "Ordin 484/2025 art."
+        }
+      ]
+    },
+    "anaf_limite_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_limite_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_mo_apr_2026.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_mo_apr_2026.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_mo_apr_2026.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_oug_153_2020_capital_propriu.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_oug_153_2020_capital_propriu.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_oug_153_2020_capital_propriu.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_oug_153_2020_reduceri_impozit.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_oug_153_2020_reduceri_impozit.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_oug_153_2020_reduceri_impozit.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cf_2015_forma_initiala.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tva_standard",
+          "data_in": "2017-01-01",
+          "valoare": "0.19",
+          "nivel_sursa": "MO",
+          "temei": "Legea 227/2015 art.291"
+        }
+      ]
+    },
+    "cf_2015_forma_initiala.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cf_2015_forma_initiala.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cf_art291_2016_forma_initiala.txt": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tva_redusa_5",
+          "data_in": "2016-01-01",
+          "valoare": "0.05",
+          "nivel_sursa": "MO",
+          "temei": "Legea 227/2015 art.291"
+        },
+        {
+          "cota": "tva_redusa_9",
+          "data_in": "2016-01-01",
+          "valoare": "0.09",
+          "nivel_sursa": "MO",
+          "temei": "Legea 227/2015 art.291"
+        }
+      ]
+    },
+    "cf_art56_alin15_istoric_micro_sponsorizare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cod_civil_287_2009_art_1616_1623_compensare.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cod_civil_287_2009_art_1616_1623_compensare.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cod_civil_287_2009_art_1616_1623_compensare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cod_fiscal_227_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [
+        {
+          "cota": "cam",
+          "data_in": "2018-01-01",
+          "valoare": "0.0225",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.220^3"
+        },
+        {
+          "cota": "cas",
+          "data_in": "2018-01-01",
+          "valoare": "0.25",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.138"
+        },
+        {
+          "cota": "cass",
+          "data_in": "2018-01-01",
+          "valoare": "0.10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.156"
+        },
+        {
+          "cota": "impozit_micro",
+          "data_in": "2023-01-01",
+          "valoare": "0.01",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.51"
+        },
+        {
+          "cota": "impozit_profit",
+          "data_in": "2018-01-01",
+          "valoare": "0.16",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.17"
+        },
+        {
+          "cota": "impozit_venit",
+          "data_in": "2018-01-01",
+          "valoare": "0.10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.78"
+        }
+      ]
+    },
+    "cod_fiscal_227_2015_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cod_fiscal_227_2015_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d010_d020_d070_d700_status.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d100_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d100_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d101_scadenta_conflict_lege_validator.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d101_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d101_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d104.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d104.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d110_20260330.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d110_20260330.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d112_06082026.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d112_06082026.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d112_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d112_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d177_structura_note.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d205_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d205_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d214": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d220_20180108.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d220_20180108.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d221_20170303.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d221_20170303.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d223_20160113.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d223_20160113.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d230_structura_din_validator.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d300_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d300_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d301_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d301_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d307_20171205.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d307_20171205.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d311_20210129.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d311_20210129.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d318_instructiuni_anaf.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d318_instructiuni_anaf.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d390_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d390_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d394_codpr_gaze_naturale.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d394_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d394_struct_anaf.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d402_20160226.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d402_20160226.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d402_20160226_xsd_linii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d402_surse_sha256.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d406_nomenclatoare_anaf.properties": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d406_schema_anaf.xlsx": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "gen_index.py": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "hg518_1995_diurna_externa.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg714_2018_diurna_interna.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_hotarare.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_hotarare.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_hotarare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_norme_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_norme_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_norme_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1074_2021.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1074_2021.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1074_2021_stabilirea_sistemului_garantie_returnare_ambalaje.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1074_2021_stabilirea_sistemului_garantie_returnare_ambalaje.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1074_2021_stabilirea_sistemului_garantie_returnare_ambalaje.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1094_2025.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "hg_1094_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_145_2026.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_145_2026.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_146_2026_salariu_minim.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "salariu_minim",
+          "data_in": "2026-07-01",
+          "valoare": "4325",
+          "nivel_sursa": "MO",
+          "temei": "HG 146/2026 art."
+        }
+      ]
+    },
+    "hg_146_2026_salariu_minim.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_146_2026_salariu_minim.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1506_2024_salariu_minim.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "salariu_minim",
+          "data_in": "2025-01-01",
+          "valoare": "4050",
+          "nivel_sursa": "MO",
+          "temei": "HG 1506/2024 art."
+        }
+      ]
+    },
+    "hg_1506_2024_salariu_minim.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1506_2024_salariu_minim.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1510_2024_actualizarea_denumirii_descrierii_tehnice_adresei.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1510_2024_actualizarea_denumirii_descrierii_tehnice_adresei.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1510_2024_actualizarea_denumirii_descrierii_tehnice_adresei.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1_2016_norme_cod_fiscal.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1_2016_norme_cod_fiscal.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1_2016_norme_cod_fiscal.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": []
+    },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_276_2013.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_mijloc_fix",
+          "data_in": "2015-01-01",
+          "valoare": "2500",
+          "nivel_sursa": "MO",
+          "temei": "HG 276/2013 art."
+        }
+      ]
+    },
+    "hg_276_2013.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_276_2013.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_295_2025_reges_online_registru_salariati.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": []
+    },
+    "hg_295_2025_reges_online_registru_salariati.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_295_2025_reges_online_registru_salariati.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_295_2025_reges_online_registru_salariati.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_518_1995.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_518_1995.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_598_2024_stabilirea_salariului_baza_minim_brut.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_598_2024_stabilirea_salariului_baza_minim_brut.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_598_2024_stabilirea_salariului_baza_minim_brut.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_685_1999_norme_compensare_creante_datorii.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "stare": "abrogat",
+      "inlocuit_de": "hg_773_2019",
+      "nota": "abrogat de HG 773/2019 (in vigoare 01.01.2020); forma istorica adusa pt referinta - HG 773/2019 nu e in corpus"
+    },
+    "hg_685_1999_norme_compensare_creante_datorii.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_685_1999_norme_compensare_creante_datorii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_773_2019_norme_monitorizare_datorii_nerambursate.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_773_2019_norme_monitorizare_datorii_nerambursate.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_773_2019_norme_monitorizare_datorii_nerambursate.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_773_2019_norme_monitorizare_datorii_nerambursate.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "impozit_dividende_istoric_cote.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "lege_64_2026.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "lege_64_2026.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "lege_64_2026.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_125_2006_rambursarea_ratelor_capital_cota_parte.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_125_2006_rambursarea_ratelor_capital_cota_parte.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_125_2006_rambursarea_ratelor_capital_cota_parte.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_136_2020_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_136_2020_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_136_2020_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_141_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_141_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_141_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_141_2025_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [
+        {
+          "cota": "impozit_dividend",
+          "data_in": "2026-01-01",
+          "valoare": "0.16",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.97"
+        },
+        {
+          "cota": "tva_redusa",
+          "data_in": "2025-08-01",
+          "valoare": "0.11",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        },
+        {
+          "cota": "tva_redusa_5",
+          "data_in": "2025-08-01",
+          "valoare": "0.11",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        },
+        {
+          "cota": "tva_redusa_9",
+          "data_in": "2025-08-01",
+          "valoare": "0.11",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        },
+        {
+          "cota": "tva_standard",
+          "data_in": "2025-08-01",
+          "valoare": "0.21",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        }
+      ]
+    },
+    "legea_141_2025_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_141_2025_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_160_2026.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "legea_160_2026.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_161_2026.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "legea_161_2026.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_anaf.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_anaf.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_mf_2024.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_mf_2024.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_mf_2024.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_175_2018_modificarea_completarea_291_2_legea.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_175_2018_modificarea_completarea_291_2_legea.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_175_2018_modificarea_completarea_291_2_legea.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_1_2020.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "legea_1_2020.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_201_2025.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tichet_masa_plafon",
+          "data_in": "2025-11-01",
+          "valoare": "45",
+          "nivel_sursa": "MO",
+          "temei": "Legea 201/2025 art.I"
+        }
+      ]
+    },
+    "legea_201_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_201_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_207_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "legea_207_2015_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_207_2015_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_226_2023.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_226_2023.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_273_2006_fin_publice_locale.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata",
+      "nota": "consolidare 2018, nu la zi"
+    },
+    "legea_273_2006_fin_publice_locale.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_273_2006_fin_publice_locale.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_296_2020_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_tva_incasare",
+          "data_in": "2021-01-01",
+          "valoare": "4500000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 296/2020 art."
+        }
+      ]
+    },
+    "legea_296_2020_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_296_2020_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_319_2006_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_319_2006_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_319_2006_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_modif_L222_2023.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_modif_L222_2023.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_modif_L222_2023.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_modif_L239_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_modif_L239_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_modif_L239_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_societatile.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_societatile.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_31_1990_societatile.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_32_1994_sponsorizarea.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_32_1994_sponsorizarea.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_32_1994_sponsorizarea.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_346_2002_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_346_2002_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_346_2002_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_358_2015_aprobarea.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_358_2015_aprobarea.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_358_2015_aprobarea.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_370_2022_aprobarea_ordonantei_guvernului_16_2022.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_370_2022_aprobarea_ordonantei_guvernului_16_2022.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_370_2022_aprobarea_ordonantei_guvernului_16_2022.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_399_2006_aprobare_oug158.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_399_2006_aprobare_oug158.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_399_2006_aprobare_oug158.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": []
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_53_2003_codul_muncii.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_53_2003_codul_muncii.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_53_2003_codul_muncii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_56_2021_suplimentele_alimentare.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_56_2021_suplimentele_alimentare.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_56_2021_suplimentele_alimentare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_70_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_sold_casa",
+          "data_in": "2015-05-09",
+          "valoare": "50000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art."
+        }
+      ]
+    },
+    "legea_70_2015_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_70_2015_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "legea_82_1991_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_consolidat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_modif_oug115_2023.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_modif_oug115_2023.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_modif_oug115_2023.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_modif_oug138_2024.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_modif_oug138_2024.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_82_1991_modif_oug138_2024.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_16_2022_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "impozit_dividend",
+          "data_in": "2023-01-01",
+          "valoare": "0.08",
+          "nivel_sursa": "MO",
+          "temei": "OG 16/2022 art.97"
+        }
+      ]
+    },
+    "og_16_2022_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_16_2022_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_26_2000_asociatii_fundatii.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_26_2000_asociatii_fundatii.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_26_2000_asociatii_fundatii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_107_2025_principalele_aspecte_legate_intocmirea_depunerea.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_107_2025_principalele_aspecte_legate_intocmirea_depunerea.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_107_2025_principalele_aspecte_legate_intocmirea_depunerea.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_1235_2023.pdf": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": []
+    },
+    "omf_1235_2023.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_1235_2023.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_1855_2022.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_1855_2022.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_1855_2022.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_170_2015.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_170_2015.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_170_2015.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala",
+      "nota": "forma initiala 2014; NU include Ordinul 1239/2021, 4291/2022, 5378/2023, OMF 52/2024; planul de conturi e INCOMPLET (lipsesc 467, 6053, 694, 794)"
+    },
+    "omfp_1802_2014.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014_ordin_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "omfp_1802_2014_ordin_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014_ordin_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014_ordin_consolidat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014_reglementari_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "omfp_1802_2014_reglementari_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014_reglementari_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_1802_2014_reglementari_consolidat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa1_norme_generale.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa1_norme_generale.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa1_norme_generale.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa1_norme_generale.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa2_norme_specifice.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa2_norme_specifice.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa2_norme_specifice.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa2_norme_specifice.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa3_modele.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa3_modele.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa3_modele.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2634_2015_anexa3_modele.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2861_2009.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2861_2009.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_2861_2009.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3067_2018.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3067_2018.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3067_2018.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3103_2017.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3103_2017.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3103_2017.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_660_2017.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_660_2017.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_660_2017.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_897_2015.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_897_2015.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omfp_897_2015.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oms_15_2018_modificare_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oms_15_2018_modificare_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oms_15_2018_modificare_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oms_15_2018_norme.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oms_15_2018_norme.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oms_15_2018_norme.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_102_2025_modificarea_ordinului_presedintelui_agentiei_nationale.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_102_2025_modificarea_ordinului_presedintelui_agentiei_nationale.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_102_2025_modificarea_ordinului_presedintelui_agentiei_nationale.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1292_2014_d106_instructiuni.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1292_2014_d106_instructiuni.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1292_2014_d106_instructiuni.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_146_2018.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_146_2018.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_146_2018.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_174_2026_d300.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_174_2026_d300.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_174_2026_d300.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1783_2021_saft_d406.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1783_2021_saft_d406.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1783_2021_saft_d406.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_179_2022_d205_d207_baza.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_179_2022_d205_d207_baza.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_179_2022_d205_d207_baza.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_184_2013.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_184_2013.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_184_2013.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_130.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_130.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_decl130.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_decl130.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_decl130.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_instr_130_1950.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_instr_130_1950.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_1950_2012_instr_130_1950.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_206_2025_d101.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_206_2025_d101.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_206_2025_d101.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_216_2023_formular_213_instrainare_pachet_control_terenuri_agricole_extravilan.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_216_2023_formular_213_instrainare_pachet_control_terenuri_agricole_extravilan.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_216_2023_formular_213_instrainare_pachet_control_terenuri_agricole_extravilan.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_2175_2025_d169n.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_2175_2025_d169n.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_2175_2025_d169n.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_2194_2025_d394.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_2194_2025_d394.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_2194_2025_d394.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_299_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_299_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_299_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_303_2026_d205.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_303_2026_d205.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_303_2026_d205.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_355_2024.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_355_2024.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_355_2024.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_3562_2024.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "opanaf_3562_2024.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_3622_2015_aprobarea_modelului_continutului_formulare_utilizate.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_3622_2015_aprobarea_modelului_continutului_formulare_utilizate.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_3622_2015_aprobarea_modelului_continutului_formulare_utilizate.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_3769_2015_d394_baza.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_3769_2015_d394_baza.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_3769_2015_d394_baza.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_394_2017_d390_anexa2_instructiuni.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "stare": "abrogat",
+      "inlocuit_de": "opanaf_705_2020"
+    },
+    "opanaf_394_2017_d390_anexa2_instructiuni.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_394_2017_d390_anexa2_instructiuni.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_407_2025_saft_d406.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_407_2025_saft_d406.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_407_2025_saft_d406.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_57_2026_d100_d710.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_57_2026_d100_d710.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_57_2026_d100_d710.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_592_2016_d301.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_592_2016_d301.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_592_2016_d301.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_605_2026_d112.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_605_2026_d112.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_605_2026_d112.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_705_2020_d390.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_705_2020_d390.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_705_2020_d390.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_779_2024.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_779_2024.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_779_2024.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_77_2022.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_77_2022.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_77_2022.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_793_2016.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_793_2016.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_793_2016.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_888_2018.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_888_2018.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_888_2018.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1574_3246_2025_cultural.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1574_3246_2025_cultural.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1574_3246_2025_cultural.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1604_2025_intrastat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat_mo.pdf": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat_mo.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat_mo.txt": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_intrastat",
+          "data_in": "2026-01-01",
+          "valoare": "1000000",
+          "nivel_sursa": "MO",
+          "temei": "Ordin 1604/2025 art.1"
+        }
+      ],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat_mo.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_2066_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2066_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_361_2680_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_361_2680_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_361_2680_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_369_2624_2026.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_369_2624_2026.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_369_2624_2026.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_506_1030_2026_norme_oug158.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_506_1030_2026_norme_oug158.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_506_1030_2026_norme_oug158.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_115_2023_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_avans_decontare",
+          "data_in": "2023-12-15",
+          "valoare": "5000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 115/2023 art."
+        }
+      ]
+    },
+    "oug_115_2023_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_115_2023_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_120_2021.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_120_2021.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_120_2021.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_138_2024.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_138_2024.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_138_2024.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_156_2024.pdf": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "facilitate_salariu_minim",
+          "data_in": "2025-01-01",
+          "valoare": "300",
+          "nivel_sursa": "MO",
+          "temei": "OUG 156/2024 art.LXVI"
+        },
+        {
+          "cota": "plafon_facilitate_salariu_minim",
+          "data_in": "2025-01-01",
+          "valoare": "4300",
+          "nivel_sursa": "MO",
+          "temei": "OUG 156/2024 art.LXVI"
+        }
+      ]
+    },
+    "oug_156_2024.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_156_2024.txt": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "impozit_dividend",
+          "data_in": "2025-01-01",
+          "valoare": "0.10",
+          "nivel_sursa": "MO",
+          "temei": "OUG 156/2024 art.97"
+        }
+      ]
+    },
+    "oug_158_2005_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_158_2005_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_158_2005_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_158_2005_pre_L141.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_158_2005_pre_L141.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_158_2005_pre_L141.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_200_2008_modificarea_completarea.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_200_2008_modificarea_completarea.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_200_2008_modificarea_completarea.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_24_2026_contributie_solidaritate.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_24_2026_contributie_solidaritate.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_24_2026_contributie_solidaritate.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_24_2026_contributie_solidaritate.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_25_2018.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_25_2018.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_25_2018.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_26_2019_modificarea_completarea_acte_normative.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_26_2019_modificarea_completarea_acte_normative.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_26_2019_modificarea_completarea_acte_normative.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_34_2024_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_34_2024_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_34_2024_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_41_2022.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_41_2022.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_41_2022.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_50_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "impozit_dividend",
+          "data_in": "2016-01-01",
+          "valoare": "0.05",
+          "nivel_sursa": "MO",
+          "temei": "OUG 50/2015 art.97"
+        }
+      ]
+    },
+    "oug_50_2015_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_50_2015_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": []
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_77_1999_masuri_prevenire_incapacitate_plata.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_77_1999_masuri_prevenire_incapacitate_plata.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_77_1999_masuri_prevenire_incapacitate_plata.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_85_2022.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_85_2022.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_85_2022.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_89_2025.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "facilitate_salariu_minim",
+          "data_in": "2026-07-01",
+          "valoare": "200",
+          "nivel_sursa": "MO",
+          "temei": "OUG 89/2025 art.III"
+        },
+        {
+          "cota": "plafon_facilitate_salariu_minim",
+          "data_in": "2026-01-01",
+          "valoare": "4300",
+          "nivel_sursa": "MO",
+          "temei": "OUG 89/2025 art.III"
+        },
+        {
+          "cota": "plafon_facilitate_salariu_minim",
+          "data_in": "2026-07-01",
+          "valoare": "4600",
+          "nivel_sursa": "MO",
+          "temei": "OUG 89/2025 art.III"
+        }
+      ]
+    },
+    "oug_89_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_89_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_8_2009_acordarea_tichetelor_vacanta.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legex.ro",
+      "forma": "necunoscuta",
+      "nota": "sursa legex.ro, neoficiala"
+    },
+    "oug_8_2009_acordarea_tichetelor_vacanta.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_8_2009_acordarea_tichetelor_vacanta.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_8_2026.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_mijloc_fix",
+          "data_in": "2026-02-25",
+          "valoare": "5000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 8/2026 art.28"
+        },
+        {
+          "cota": "plafon_tva_incasare",
+          "data_in": "2026-03-01",
+          "valoare": "5000000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 8/2026 art.282"
+        },
+        {
+          "cota": "plafon_tva_incasare",
+          "data_in": "2027-01-01",
+          "valoare": "5500000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 8/2026 art.282"
+        }
+      ]
+    },
+    "oug_8_2026.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_8_2026.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_91_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_91_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_91_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_96_2003_protectia_maternitatii_locurile_munca.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_96_2003_protectia_maternitatii_locurile_munca.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_96_2003_protectia_maternitatii_locurile_munca.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "pdf_original": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structuraXML_D402_2022.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structuraXML_D402_2022.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D104_2012_v100_030613.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D104_2012_v100_030613.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D104_2012_v100_030613.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D107_2024_010726.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D107_2024_010726.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D107_2024_010726.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D110_2026_240326.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D110_2026_240326.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D110_2026_240326.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D112_0726_030826.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D112_0726_030826.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D112_0726_030826.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D177_2026.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D177_2026.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D177_2026.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D207_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D207_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D207_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D220_2017_09012018.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D220_2017_09012018.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D220_2017_09012018.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D221_2017_050118.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D221_2017_050118.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D221_2017_050118.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D223_2016_050116_13012016.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D223_2016_050116_13012016.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D223_2016_050116_13012016.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D307_2017_071117.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D307_2017_071117.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D307_2017_071117.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D311_2021_290121.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D311_2021_290121.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D311_2021_290121.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "versiuni.xml": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    }
+  },
+  "citate_dar_lipsa_pe_disc": [],
+  "fisiere_fara_tip_forma_declarat": []
+}

@@ -1,0 +1,46 @@
+PACHET R191 — 2026-09-16
+interval: 5492f0da -> 4d938efd2661f8076002bd3af0c7652abaf24b18
+
+commit 4d938efd2661f8076002bd3af0c7652abaf24b18
+autor:  Costin Hateganu
+data:   2026-09-16 18:01:58 +0300
+subiect: R191, consemnata cu hash-ul real — R115 REDESCHISA, R192 avanseaza
+
+commit fcd13ac94cdadd386011e7560a53fd6e95a3c370
+autor:  Costin Hateganu
+data:   2026-09-16 17:09:44 +0300
+subiect: R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA
+
+=== DIFF --stat pe tot intervalul ===
+ CONFORMITATE.md                          | 104 +++++++++++-
+ GARZI.md                                 |  49 +++++-
+ INSTRUMENTE_ROADMAP.md                   |   5 +
+ ISTORIC.md                               |  28 ++++
+ PREDARE_LANT.md                          |   9 +-
+ TESTE.md                                 |  16 ++
+ core/control_incrucisat.py               | 168 +++++++++++++++++++
+ core/supervizor.py                       |  31 ++++
+ core/test_r191_amortizare_confruntata.py | 280 +++++++++++++++++++++++++++++++
+ core/test_supervizor.py                  |  13 +-
+ 10 files changed, 692 insertions(+), 11 deletions(-)
+
+=== --stat per commit ===
+--- fcd13ac94cdadd386011e7560a53fd6e95a3c370 ---
+R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA
+
+ GARZI.md                                 |   5 +-
+ core/control_incrucisat.py               | 168 +++++++++++++++++++
+ core/supervizor.py                       |  31 ++++
+ core/test_r191_amortizare_confruntata.py | 280 +++++++++++++++++++++++++++++++
+ core/test_supervizor.py                  |  13 +-
+ 5 files changed, 492 insertions(+), 5 deletions(-)
+--- 4d938efd2661f8076002bd3af0c7652abaf24b18 ---
+R191, consemnata cu hash-ul real — R115 REDESCHISA, R192 avanseaza
+
+ CONFORMITATE.md        | 104 +++++++++++++++++++++++++++++++++++++++++++++++--
+ GARZI.md               |  44 +++++++++++++++++++++
+ INSTRUMENTE_ROADMAP.md |   5 +++
+ ISTORIC.md             |  28 +++++++++++++
+ PREDARE_LANT.md        |   9 ++++-
+ TESTE.md               |  16 ++++++++
+ 6 files changed, 200 insertions(+), 6 deletions(-)

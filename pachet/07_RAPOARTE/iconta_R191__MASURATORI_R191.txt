@@ -1,0 +1,125 @@
+MASURATORI — TEMA R191 · 16.09.2026 · 5492f0da -> 4d938efd
+================================================================================
+Fiecare cifra poarta INSTRUMENTUL care o produce si CALIBRAREA lui.
+
+
+1. MASURATOAREA DE DESCHIDERE — facuta INAINTE de a scrie o linie de cod
+--------------------------------------------------------------------------------
+instrument: script ad-hoc pe portofoliul viu, in tranzactie ANULATA, 20 de scheme, anul 2026.
+            Calea 1 = `d406_active.calc_asset` pe fiecare mijloc fix (ce declara Assets).
+            Calea 2 = SQL propriu pe `inregistrari_linii`, fara sa atinga `d406_active`.
+
+  schema        MF   cont    chelt.DECL   chelt.INREG    cumul.DECL   sold.INREG
+  tenant_003    13   2808        666.72          0.00        666.72         0.00   <-- DIVERG
+  tenant_003    13   2813        927.96         50.00        927.96         0.00   <-- DIVERG
+  tenant_005     1   2813          0.00          0.00          0.00         0.00
+  tenant_013     2   2813       3200.00       2600.00       3500.00      2600.00   <-- DIVERG
+
+  TOTAL conturi cu divergenta: 3 din 4 masurate.
+
+  CE SPUNE CIFRA: declaratia raporteaza amortizare pe care evidenta nu o contine. Pe tenant_003,
+  soldul lui 2813 e 0,00 fiindca cei 50 inregistrati in septembrie au fost ELIMINATI de reevaluarea
+  din lotul 1 — exact miscarea pe care R192 o numeste.
+
+  *Masuratoarea asta a fost primul act al lotului, nu ultimul. Perechea nu s-a nascut ca precautie.*
+
+
+2. PROBA DIN SUITA
+--------------------------------------------------------------------------------
+instrument: core/test_r191_amortizare_confruntata.py
+  11 probe · 0,50 s (schema efemera `tenant_proba_r191`; DDL-ul `reevaluari` luat din MIGRARE)
+
+  SCENARIUL, declarat: activ 6.000 lei · rezidual 0 · 60 luni · liniar · PIF 15.12.2025
+    -> rata 100,00/luna · la 31.12.2026 au trecut 12 luni -> cumulat DECLARAT 1.200,00
+
+  MASURAT:
+    12 note lunare a 100,00        -> sold 1.200,00 · stare VERDE
+    11 note lunare (una lipseste)  -> sold 1.100,00 · stare ROSU · diferenta 100
+    11 note + a 12-a in CIORNA     -> stare GRI · motiv_gri = 'ciorna_pe_cont'
+    metoda nepermisa pe categorie  -> stare GRI · motiv_gri = 'registru_incomplet'
+    12 note + eliminare de 300     -> sold 900,00 · stare ROSU · diferenta 300  [forma R192]
+    registru gol                   -> nicio constatare (fara subiect)
+
+
+3. RED-PROOF — cinci mutatii
+--------------------------------------------------------------------------------
+metoda: backup de CONTINUT (`cp fisier /tmp/x.bak`), nu `git checkout` — lucrul era necomis.
+
+  M1  ramura CIORNA scoasa               -> test_CIORNA_pe_cont_da_GRI_nu_ROSU
+  M2  ramura REGISTRU INCOMPLET scoasa   -> test_MOTOR_care_REFUZA_un_activ_da_GRI_nu_ROSU
+  M3  cablul supervizor->pereche taiat   -> test_SUPERVIZORUL_CULEGE_perechea
+  M4  rosul devine verde                 -> test_DIVERGENT... SI test_FORMA_R192...
+  M5  tipul primeste tarie               -> test_TARIA_e_NEATRIBUITA...
+
+  dupa revenire: 11 passed.
+
+  M5, PRIMA RULARE, A PARUT CA NU OMOARA NIMIC — 11 passed cu mutatia „aplicata". Cauza: escaparea
+  din shell nu inlocuise nimic. *O mutatie care nu se aplica arata EXACT ca un test care nu
+  pazeste.* A doua rulare a tiparit „ancora gasita: 1" INAINTE de a scrie fisierul; abia atunci
+  testul a cazut. Se scrie aici fiindcă e un mod de esec al PROPRIEI metode de verificare, nu al
+  codului verificat.
+
+
+4. PROBA CAP-COADA, prin supervizor, pe date reale
+--------------------------------------------------------------------------------
+instrument: `core.supervizor.constatari_firma`, conexiune legata de schema, tranzactie ANULATA.
+
+  tenant_003   constatari total=7 · R191=2
+      stare=rosu  tarie=None  cere_confirmare=False
+        „Amortizare declarata vs cont 2808 — 2026: registrul declara 666,72 lei ..., contul 0,00"
+      stare=gri   tarie=None  cere_confirmare=False   (motiv_gri = ciorna_pe_cont)
+  tenant_013   constatari total=7 · R191=1
+      stare=rosu  tarie=None  cere_confirmare=False
+        „... registrul declara 3.500,00 lei ..., contul 2.600,00"
+
+  CE CONFIRMA: constatarile AJUNG la supervizor, poarta `tip_constatare`, si — fiindca tipul n-are
+  tarie — NU cer confirmare. Adica se vad si nu produc niciun efect, exact contractul din antetul
+  lui `core/supervizor.py`.
+
+
+5. CE A PRINS PROPRIA GARDA, in codul pe care il pazeste
+--------------------------------------------------------------------------------
+Prima forma a perechii itera numai peste conturile CALCULATE. Cand motorul refuza TOATE activele
+unui cont, `cumulat` ramanea gol -> zero iteratii -> perechea TACEA exact cand stanga era ilizibila.
+Prins de `test_MOTOR_care_REFUZA_un_activ_da_GRI_nu_ROSU`, inainte de orice rulare pe date reale.
+Reparat: contul se retine INAINTE de a incerca calculul.
+
+
+6. CLICHETE SI CIFRE DE REGISTRU
+--------------------------------------------------------------------------------
+  garzi si instrumente (bloc generat, GARZI.md)   591 -> 592
+  teste in suita                                 6213 -> 6225  (+12: 11 probe noi + 1 recalibrata)
+  restante DESCHISE                                55 -> 55    (R191 inchisa, R115 REDESCHISA)
+  restante REZOLVATE                               +1 (R191)   ·  R115 iese din REZOLVATE
+  reluari pe R115                                   0 -> 1     (decizia se cere a doua oara)
+  tipuri de constatare in supervizor                5 -> 6     (al saselea, FARA tarie)
+  tipuri care asteapta taria                        0 -> 1
+
+
+7. POARTA — patru rulari, toate cronometrate
+--------------------------------------------------------------------------------
+  #  rezultat                                       durata          ce a prins
+  1   1 failed, 6224 passed                        2102,20 s (35:02)  blocul generat GARZI 591->592
+  2   0 failed, 6225 passed -> COMMIT fcd13ac9     2103,87 s (35:03)  —
+  3   (registre) rulari tintite, 117 passed         318,48 s ( 5:18)  R115: campuri decorate x2
+  4   0 failed, 6225 passed -> COMMIT 4d938efd     2111,41 s (35:11)  —
+
+  verificator, la amandoua commiturile verzi:
+    TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+    TOTAL rute  421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+    TOTAL: 0 candidate
+
+  COST: 3 rulari complete x ~35 min = ~1 h 45 min, plus ~5 min de rulari tintite pe registre.
+  O singura respingere de poarta completa, si aia pe un bloc generat.
+
+
+8. PUBLICAREA
+--------------------------------------------------------------------------------
+  fcd13ac9: origin/main · public/main · backup/lant-2026-09-16 · static (56 fisiere)
+            restart -> four-way INCHIS, 2 din 2
+  4d938efd: idem, four-way INCHIS, 2 din 2
+
+  verificat separat, dupa ambele:
+    `scripts/toate_poarta_head.py <sha COMPLET>` -> „TOATE procesele de productie poarta HEAD: 2 din 2"
+    git status --porcelain -> gol
+    https://iconta.eu/ -> 200

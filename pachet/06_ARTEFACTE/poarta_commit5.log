@@ -1,0 +1,19 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] pytest (suita intreaga, ~36 min pe ~6.190 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)...
+6233 passed, 7 skipped, 11 xfailed in 2106.05s (0:35:06)
+[pre-commit] verificator:   TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+TOTAL: 0 candidate
+[pre-commit] OK - poarta verde, commit permis.
+[post-commit] publicat pe origin/main: 0d1909eb
+[post-commit] publicat pe public/main: 0d1909eb
+[post-commit] backup publicat: backup/lant-2026-09-16 -> 0d1909eb
+[post-commit] static publicat: publicat in /home/costin/iconta_publicat/static <- commit 0d1909eb (56 fisiere)
+[post-commit] iconta-nou restartat -> procesul viu preia 0d1909eb
+[four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+[four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+[post-commit] FOUR-WAY INCHIS: HEAD = origin/main = backup/lant-2026-09-16 = procesul viu
+[main 0d1909eb] Patru din cele opt rute cu clichet fiscal, probate PANA IN CIFRA DECLARATIEI
+ 3 files changed, 348 insertions(+), 4 deletions(-)
+ create mode 100644 core/test_rute_stoc_pana_in_declaratie.py

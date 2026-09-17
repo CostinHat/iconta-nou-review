@@ -1,0 +1,26 @@
+PACHET DUK8 — 2026-09-16
+interval: 81558b74 -> aa1129b2
+
+commit aa1129b22043f075e199b02389c86784db90b0bf
+autor:  Costin Hateganu
+data:   2026-09-16 23:12:30 +0300
+subiect: Cele 8 citari `DUK regula`, lamurite PRIN RULARE — trei erau afirmatii FALSE despre validator
+
+=== DIFF --stat pe tot intervalul ===
+ core/d301_operatiuni_api.py   |  2 +-
+ core/d402.py                  | 70 ++++++++++++++++++++++++++++++++-----------
+ core/test_coduri_validator.py | 36 +++++++++++++++-------
+ core/test_d402.py             |  8 +++--
+ core/test_datorie.py          | 11 +++++--
+ 5 files changed, 94 insertions(+), 33 deletions(-)
+
+=== --stat per commit ===
+--- aa1129b22043f075e199b02389c86784db90b0bf ---
+Cele 8 citari `DUK regula`, lamurite PRIN RULARE — trei erau afirmatii FALSE despre validator
+
+ core/d301_operatiuni_api.py   |  2 +-
+ core/d402.py                  | 70 ++++++++++++++++++++++++++++++++-----------
+ core/test_coduri_validator.py | 36 +++++++++++++++-------
+ core/test_d402.py             |  8 +++--
+ core/test_datorie.py          | 11 +++++--
+ 5 files changed, 94 insertions(+), 33 deletions(-)

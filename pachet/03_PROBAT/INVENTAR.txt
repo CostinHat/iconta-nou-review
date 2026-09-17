@@ -1,0 +1,110 @@
+2026-09-17 08:01:12,778 INFO iconta [R118] /static servit din /home/costin/iconta_publicat/static — publicat (commit d8034c54)
+COMMITUL PE CARE S-A DERIVAT TOT CE E MAI SUS
+----------------------------------------------------------------------------------------------------
+  rev-parse HEAD           d8034c54d62cc7ca8a82c2f1d6136ab87db86b69
+  log -1                   2026-09-17 07:24:36 +0300 scanul de secrete nu se mai măsoară pe sine
+  status --porcelain       (arbore curat)
+
+A. CLICHETELE — valoarea scrisă față de valoarea RECALCULATĂ ACUM
+----------------------------------------------------------------------------------------------------
+  PLAFON_SUBSET_FISCAL     scris=0      acum=0       OK
+      rute care scriu în tabele de declarație, fără probă în suită. CRITERIU (egalitate), nu plafon.
+      recalculează: len(scripts.scan_scrieri_declaratii.subsetul()[0])
+  PLAFON_IN_SUITA          scris=77     acum=77      OK
+      rute care scriu, fără nicio probă pe care s-o ruleze poarta.
+      recalculează: len(scripts.scan_rute_fara_proba.nenumite(doar_suita=True))
+  PLAFON_NICAIERI          scris=3      acum=3       OK
+      rute care scriu, nenumite în niciun fișier de probă din depozit.
+      recalculează: len(scripts.scan_rute_fara_proba.nenumite())
+  PLAFON_NECORELATE        scris=0      acum=0       OK
+      coduri `DUK regula` citate care nu apar în validatorul declarației lor. CRITERIU.
+      recalculează: len(scripts.scan_coduri_validator.confrunta()[0])
+----------------------------------------------------------------------------------------------------
+  clichete care NU coincid: 0
+
+B. GĂRZILE — fișiere de probă și funcții de test, numărate din cod
+----------------------------------------------------------------------------------------------------
+  fișiere de probă în `core/`      : 536
+  funcții `test_*` în ele          : 3986
+  (numărul COLECTAT de pytest poate diferi: parametrizările produc mai multe cazuri)
+
+C. PROBELE DE LANȚ — `frontend_test/`, care NU sunt culese de pytest
+----------------------------------------------------------------------------------------------------
+  proba_blocaj_vizibil.py                    Proba: pe Stat de plata tenant_001 (fara IBAN, fara chei REGES) apar notele VIZIBILE .ca
+  proba_brut.py                              import os
+  proba_d107_formular.py                     Traseu REAL D107 (Regula 14): din ecranul Declaratii pe firma reala (ALFA MICRO) -> D107
+  proba_d112_wizard.py                       Conduce D112 prin wizardul Declaratii pt tenant_001, luna 06/2026: genereaza + DUKIntegr
+  proba_d177_formular.py                     Traseu REAL D177 (Regula 14): din ecranul Declaratii pe firma reala (ALFA MICRO) -> D177
+  proba_decl50.py                            PROBA celor 50 de declaratii pe ecranul PUBLIC de logare (07.09.2026).
+  proba_declarant.py                         Proba: pe Date firma, declarant_nume + declarant_functie au asterisc (ob) si Salvarea fa
+  proba_e2_d100_d101.py                      ETAPA 2, LOTUL C — impozitul pe profit: D100 si D101, hranite de NOTA CONTABILA.
+  proba_e2_d112.py                           ETAPA 2, LOTUL D — D112: declaratia de salarii, si lantul ei de la salariat la rand.
+  proba_e2_d300.py                           ETAPA 2, LOTUL A — lanțul până în DECONTUL DE TVA (D300), pe date VALIDE.
+  proba_e2_d390_d301.py                      ETAPA 2, LOTUL B — D390 (recapitulativa IC) si D301 (decontul special de TVA), pe date V
+  proba_e2_d394.py                           ETAPA 2, LOTUL A (a doua declarație) — lanțul până în D394, și confruntarea lui cu D300.
+  proba_e2_d406_d205.py                      ETAPA 2, LOTUL E — ultimele doua din cele noua: D406/SAF-T si D205.
+  proba_e2_lot_f_d300.py                     ETAPA 2, LOTUL F — unitățile-nucleu ale D300 care hrănesc decontul prin OPERAȚIUNI SPECI
+  proba_e2_lot_g_d394.py                     ETAPA 2, LOTUL G — cele trei unități-nucleu ale D394: fișa clientului nu rescrie istoria
+  proba_e2_lot_h_d112.py                     ETAPA 2, LOTUL H — cele șapte unități-nucleu ale D112 rămase neprobate individual.
+  proba_e2_lot_i_d406.py                     ETAPA 2, LOTUL I — cele opt unități-nucleu ale D406/SAF-T rămase neprobate individual.
+  proba_e2_lot_j_d205.py                     ETAPA 2, LOTUL J — ultima unitate-nucleu: importul de asociați, până în D205.
+  proba_patru_ochi.py                        PROBA LIVE I1 — cabinet Prisma 1968: indicatorul patru-ochi in AMBELE stari, before/afte
+  proba_r118_static.py                       PROBA R118 — o eroare de sintaxa scrisa in arborele de lucru NU MAI AJUNGE la un browser
+  proba_r126_confirmare.py                   PROBA R126 + R82/instanta — depunerea se incheie VIZIBIL, pe amandoua drumurile.
+  proba_r129_versiune.py                     PROBA R129 — aplicatia ANUNTA o publicare noua, si NU intrerupe nimic.
+  proba_r131_descarcare_muta.py              PROBA R131 — mesajul serverului ajunge la OM cand o descarcare esueaza.
+  proba_r140_reprobare.py                    REPROBARE R140 — cele OPT refuzuri ale registrului de partidă simplă, toate opt.
+  proba_r151.py                              Proba R151 pe aplicația vie — cele două ramuri ale art. 291 alin. (5).
+  proba_r167_temei_periodicitate.py          REPROBARE R167 — refuzul de periodicitate TVA își spune temeiul, și numai unde e al lui.
+  proba_r175_arbore_asistent.py              PROBA arborelui de navigare al asistentului (06.09.2026) — pe ARBORELE DE RANDARE, in br
+  proba_r187_vanzare_ic.py                   R187 — vanzarea intracomunitara produce FACTURA, si ajunge in AMANDOUA declaratiile.
+  proba_r33.py                               PROBA R33 pe procesul VIU: semnalul de coerenta nota-vs-D112 apare la propunere, arata A
+  proba_r43_izolare_plata.py                 REPROBARE R43 — pe ruta PUBLICĂ reală, prin HTTP, cu două firme.
+  proba_recomanda.py                         LOTUL 15 — proba pe ruta care trimite invitatia, cu o adresa care NU e o adresa.
+  proba_regim_placeholder.py                 Proba fix [alege]: Date firma pe tenant_001 (regim/tva/ic = NULL) NU afiseaza default fa
+  proba_sepa_reges.py                        Provoaca blocajele SEPA (fara IBAN) si REGES (fara COR) pe Stat de plata tenant_001; cit
+  proba_verificare_functionalitati.py        frontend_test/proba_verificare_functionalitati.py — HAMUL campaniei de verificare.
+  proba_wizard_antet.py                      GARD browser (Playwright) pentru defectul de antet al wizardurilor — calea REALA 'Migrar
+
+  TOTAL: 35 probe de lanț.
+  ATENȚIE, și e limita lor: `frontend_test/` NU e cules de pytest, deci NICIUNA nu rulează
+  la poartă. Ele se rulează de mână, pe o instanță vie. Ce e păzit la fiecare commit e
+  numai ce stă în `core/test_*.py`.
+
+D. INSTRUMENTELE de derivare — ce răspunde fiecare
+----------------------------------------------------------------------------------------------------
+  perimetru.py                       scripts/perimetru.py — PERIMETRUL PORTII SCURTE, derivat din cod.
+  poarta_scurta.py                   scripts/poarta_scurta.py — RULEAZA poarta scurta din PLAN_LUCRU regula 4.
+  raport_b.py                        SECȚIUNEA B a raportului („UNDE SUNTEM"), DERIVATĂ din `CONFORMITATE.md`.
+  scan_1b_regimuri.py                CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
+  scan_1c_verificabil.py             SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
+  scan_ancore_rute.py                Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70.
+  scan_axa_garzi.py                  FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte d
+  scan_blocante.py                   scripts/scan_blocante.py — CE ȚINE BUCLA DE EVENIMENTE OCUPATĂ, derivat din cod. (P5)
+  scan_cale_cerere.py                scripts/scan_cale_cerere.py — CARE RUTE pot crește cu numărul de firme, derivat din cod.
+  scan_coduri_validator.py           Fiecare „DUK regula <cod>" se confruntă cu validatorul DECLARAȚIEI unde e scrisă.
+  scan_contract_ecran.py             scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
+  scan_dependente.py                 scripts/scan_dependente.py — CE CITEȘTE, de fapt, fiecare aspect al modelului de citire.
+  scan_ds_verificator.py             RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 
+  scan_forme_punct.py                scripts/scan_forme_punct.py — CÂT DE LARG prinde un tipar de punct, pe TOT corpusul.
+  scan_functionalitati.py            scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.
+  scan_garzi_inventar.py             Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
+  scan_instrumente.py                scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat
+  scan_lanturi_declaratie.py         ETAPA 2 — CARE unitate alimentează CARE declarație, derivat din cod.
+  scan_lista3.py                     scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana.
+  scan_mutatie_garzi.py              FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
+  scan_p7_straturi.py                P7 — cele TREI verificari mecanice ale separarii pe straturi, derivate din cod.
+  scan_predare_cifre.py              Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat.
+  scan_r97_livrat_tacut.py           CÂT DE MARE E CLASA „RUTA LIVREAZĂ, ECRANUL TACE" — măsurarea lui R97, 29.08.2026.
+  scan_ramas.py                      scripts/scan_ramas.py — CE A RAMAS DE FACUT, derivat din fisiere, cu sursa pe fiecare rand.
+  scan_refuzuri.py                   scripts/scan_refuzuri.py — CE POARTA un refuz al aplicatiei, si ce nu poarta.
+  scan_regimuri.py                   CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
+  scan_rute_clasificate.py           CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
+  scan_rute_fara_proba.py            Ce rută SCRIE fără ca vreo probă s-o numească.
+  scan_scrieri_declaratii.py         Care rute SCRIU în tabele din care se calculează cifre de declarație.
+  scan_sonde_stare.py                scripts/scan_sonde_stare.py — SONDELE CARE MĂSOARĂ FĂRĂ SĂ ȘTIE DACĂ CEREREA A REUȘIT.
+  scan_stare_proces.py               P6 — inventarul STARII care traieste in memoria procesului, intre cereri.
+  scan_tranzactii.py                 scripts/scan_tranzactii.py — CINE DEȚINE LIMITA TRANZACȚIEI, derivat din cod.
+  scan_trasee.py                     scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
+  scan_univers_sql.py                Universul modulelor cu SQL, și AMESTECUL observat în cod (nu declarat).
+

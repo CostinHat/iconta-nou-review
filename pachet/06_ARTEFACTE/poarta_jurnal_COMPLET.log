@@ -1,0 +1,1106 @@
+=== 2026-08-23T08:50:24+03:00 RESPINS pytest exit 1
+    mesaj: 50 INCHISA: 16 din 16 confirmate ulterior modificarii · blocajul Codului fiscal s-a dizolvat prin c
+    HEAD : 3ed9923
+    FAILED core/test_schema_coloane.py::test_coloane_sql_exista_in_schema - Asser...
+    1 failed, 2835 passed, 8 skipped, 14 xfailed in 495.52s (0:08:15)
+=== 2026-08-23T16:32:52+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PLAN_LUCRU.md TESTE.md core/fisa_cont.py core/test_fisa_cont.py 
+    HEAD : edc3b9e
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    2 failed, 2905 passed, 8 skipped, 14 xfailed in 465.73s (0:07:45)
+=== 2026-08-23T17:08:35+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md METODA_VERIFICARE.md TESTE.md core/facturi_api.py core/test_cod_partener.py core/test_granite_cota.py core/woocom
+    HEAD : c22a0c5
+    FAILED core/test_achizitii_factura.py::test_achizitie_neinregistrat_N_ajunge_in_d394_duk_valid
+    FAILED core/test_achizitii_factura.py::test_handlerele_ingheata_flagul_la_creare
+    2 failed, 2916 passed, 8 skipped, 14 xfailed in 466.45s (0:07:46)
+=== 2026-08-23T18:39:53+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md METODA_VERIFICARE.md core/avansuri.py core/comodat_chirii.py core/import_export.py core/intracomunitar.py core/inventariere.
+    HEAD : 2bed6a5
+    FAILED test_avansuri.py::test_avans_platit_stocuri - ValueError: Cota de TVA ...
+    FAILED test_avansuri.py::test_regularizare_platit - ValueError: Cota de TVA n...
+    FAILED test_comodat_chirii.py::test_chirie_pj - ValueError: Cota de TVA nu s-...
+    FAILED test_comodat_chirii.py::test_chirie_pf - ValueError: Cota de TVA nu s-...
+    FAILED test_comodat_chirii.py::test_chirie_incasata - ValueError: Cota de TVA...
+    FAILED test_comodat_chirii.py::test_refacturare - ValueError: Cota de TVA nu ...
+    FAILED test_comodat_chirii.py::test_refacturare_totala - ValueError: Cota de ...
+    FAILED test_comodat_chirii.py::test_invalid - AssertionError: Regex pattern d...
+    FAILED test_import_export.py::test_import_fara_certificat - ValueError: Cota ...
+    FAILED test_import_export.py::test_import_neplatitor - ValueError: Cota de TV...
+    FAILED test_import_export.py::test_certificat_neplatitor - AssertionError: Re...
+    FAILED test_intracomunitar.py::test_tva_ti - ValueError: Cota de TVA nu s-a d...
+    FAILED test_inventariere.py::test_minus_neimputabil_neasigurat - ValueError: ...
+    FAILED test_inventariere.py::test_minus_neimputabil_distrus - ValueError: Cot...
+    FAILED test_inventariere.py::test_minus_imputabil_salariat - ValueError: Cota...
+    FAILED test_inventariere.py::test_minus_imputabil_tert - ValueError: Cota de ...
+    FAILED test_leasing.py::test_rata - ValueError: Cota de TVA nu s-a dat. Nu se...
+    FAILED test_leasing.py::test_rata_doar_capital - ValueError: Cota de TVA nu s...
+    FAILED test_leasing.py::test_reziduala - ValueError: Cota de TVA nu s-a dat. ...
+    FAILED test_leasing.py::test_operational - ValueError: Cota de TVA nu s-a dat...
+    FAILED test_lichidare.py::test_vanzare_activ - ValueError: Cota de TVA nu s-a...
+    FAILED test_obiecte_inventar.py::test_achizitie - ValueError: Cota de TVA nu ...
+    FAILED test_perisabilitati.py::test_in_limita - ValueError: Cota de TVA nu s-...
+    FAILED test_perisabilitati.py::test_peste_limita - ValueError: Cota de TVA nu...
+    FAILED test_perisabilitati.py::test_degradare_dovedita_fara_ajustare - ValueE...
+    FAILED test_perisabilitati.py::test_cont_stoc - ValueError: Cota de TVA nu s-...
+    FAILED test_sgr.py::test_autofactura - ValueError: Cota de TVA nu s-a dat. Nu...
+    FAILED test_sgr.py::test_autofactura_doar_garantii - ValueError: Cota de TVA ...
+    FAILED test_taxare_inversa.py::test_tva_beneficiar - ValueError: Cota de TVA ...
+    FAILED test_tva_marja_turism.py::test_special_simplu_21 - ValueError: Cota de...
+    FAILED test_tva_marja_turism.py::test_special_marja_negativa - ValueError: Co...
+    FAILED test_tva_marja_turism.py::test_special_split_non_ue - ValueError: Cota...
+    FAILED test_tva_marja_turism.py::test_special_integral_non_ue - ValueError: C...
+    FAILED test_tva_marja_turism.py::test_intermediar_fara_tva_inclus - ValueErro...
+    FAILED test_tva_marja_turism.py::test_intermediar_tva_inclus - ValueError: Co...
+    35 failed, 2885 passed, 8 skipped, 14 xfailed in 467.82s (0:07:47)
+=== 2026-08-23T20:26:23+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md TESTE.md core/scan_js_texte.py core/test_reaprindere.py core/test_scan_js_texte.py 
+    HEAD : 9af74be
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    1 failed, 2978 passed, 8 skipped, 14 xfailed in 472.80s (0:07:52)
+=== 2026-08-23T21:45:28+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md TESTE.md core/test_aritmetica_in_prezentare.py static/js/ecrane/emitere_ecran.js static/js/ecrane/facturi_ecran.j
+    HEAD : 60a7b15
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    FAILED core/test_versionare_assets.py::test_fiecare_referinta_are_tokenul_hashului_curent
+    2 failed, 2987 passed, 8 skipped, 14 xfailed in 476.06s (0:07:56)
+=== 2026-08-24T07:40:58+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md core/scan_module_nelegate.py core/test_module_nelegate.py 
+    HEAD : 88bc33b
+    FAILED core/test_ancore_in_cod.py::test_nicio_ancora_nu_traieste_doar_in_proza
+    FAILED core/test_ancore_in_cod.py::test_nicio_ancora_absenta - AssertionError...
+    2 failed, 3024 passed, 8 skipped, 14 xfailed in 477.95s (0:07:57)
+=== 2026-08-24T15:35:05+03:00 RESPINS pytest exit 1
+    stage: ghid/certificat-initial-si-in-continuare-episod-boala.md ghid/d112-noul-formular-iulie-2026.md ghid/d112-suma-netaxabila-300-200-lei-declarare.md ghid/d390-decl
+    HEAD : 04bc8cb
+    FAILED core/test_provenienta.py::test_fiecare_fisier_isi_stie_clasa - Asserti...
+    1 failed, 3045 passed, 8 skipped, 14 xfailed in 489.50s (0:08:09)
+=== 2026-08-24T16:16:58+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md core/produse_api.py core/test_cota_fara_default_fallback.py core/test_valori_fiscale_js.py frontend_test/vizual/acoperire_vizuala.json static/js
+    HEAD : 2636004
+    FAILED core/test_constante_nesursate.py::test_baseline_nu_e_stat - AssertionE...
+    FAILED core/test_nir_randuri_dinamice.py::test_noop_lista_nefiltrata_si_hash
+    2 failed, 3050 passed, 8 skipped, 14 xfailed in 496.26s (0:08:16)
+=== 2026-08-24T16:44:46+03:00 RESPINS pytest exit 1
+    stage: anaf_surse/OPANAF_179_2022_D207.pdf anaf_surse/OPANAF_179_2022_D207.pdf.sha256 anaf_surse/OPANAF_179_2022_D207.txt core/d207.py core/test_d207.py 
+    HEAD : 12811ff
+    FAILED core/test_provenienta.py::test_fiecare_fisier_isi_stie_clasa - Asserti...
+    1 failed, 3051 passed, 8 skipped, 14 xfailed in 488.65s (0:08:08)
+=== 2026-08-24T19:52:22+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md 
+    HEAD : 4a70fe2
+    FAILED core/test_conformitate.py::test_pasul_curent_nu_devine_naratiune - Ass...
+    1 failed, 3082 passed, 8 skipped, 14 xfailed in 484.81s (0:08:04)
+=== 2026-08-25T00:08:55+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md TRASEE.md 
+    HEAD : 6d3a414
+    FAILED core/test_conformitate.py::test_antetul_nu_e_stale - AssertionError: C...
+    1 failed, 3109 passed, 8 skipped, 14 xfailed in 488.25s (0:08:08)
+=== 2026-08-25T00:56:47+03:00 RESPINS pytest exit 1
+    stage: core/coada_api.py core/duk.py core/migrare_verdict_validare.py core/test_declaratii_depuse_randuri.py core/test_patru_ochi_efectiv.py core/test_verdict_persista
+    HEAD : 0c0bddf
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    3 failed, 3118 passed, 8 skipped, 14 xfailed in 494.45s (0:08:14)
+=== 2026-08-25T01:07:38+03:00 RESPINS pytest exit 1
+    stage: core/coada_api.py core/duk.py core/migrare_verdict_validare.py core/test_declaratii_depuse_randuri.py core/test_patru_ochi_efectiv.py core/test_verdict_persista
+    HEAD : 0c0bddf
+    FAILED core/test_diacritice_afisate.py::test_niciun_mesaj_user_facing_fara_diacritice
+    1 failed, 3120 passed, 8 skipped, 14 xfailed in 496.92s (0:08:16)
+=== 2026-08-25T06:34:27+03:00 RESPINS pytest exit 1
+    stage: DESIGN_SYSTEM.md GARZI.md TESTE.md core/coada_api.py core/test_coada_gata_de_depus.py frontend_test/vizual/acoperire_vizuala.json static/index.html static/js/ap
+    HEAD : 42b57c3
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    2 failed, 3140 passed, 8 skipped, 14 xfailed in 500.72s (0:08:20)
+=== 2026-08-25T13:15:21+03:00 RESPINS verificator
+      TOTAL scanat 180 = ACCEPTAT 179 + GRI 0 + ROSU 0 + EXCLUS 1
+TOTAL: 3 candidate
+    stage: TRASEE.md TRASEE_VERIFICARI.md core/prapastie_salariu.py core/test_prapastie_salariu.py frontend_test/vizual/acoperire_vizuala.json main.py scripts/scan_trasee.
+=== 2026-08-26T00:20:14+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md METODA_VERIFICARE.md PREDARE_LANT.md TESTE.md TRASEE_VERIFICARI.md core/common.py core/echilibru_perioada.py core/inventarie
+    HEAD : d0bd859
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    2 failed, 3248 passed, 10 skipped, 14 xfailed in 581.73s (0:09:41)
+=== 2026-08-26T02:18:08+03:00 RESPINS pytest exit 1
+    stage: .gitignore CONFORMITATE.md GARZI.md ISTORIC.md METODA_VERIFICARE.md PLAN_ARHITECTURA.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md core/cont_valid.
+    HEAD : e47b60e
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_mesaje_fara_camp_intern.py::test_niciun_mesaj_user_facing_cu_nume_intern_de_camp
+    FAILED core/test_mesaje_valueerror_publicat.py::test_diacritice_clichet_per_fisier
+    7 failed, 3248 passed, 10 skipped, 14 xfailed in 584.50s (0:09:44)
+=== 2026-08-26T04:47:44+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md main.py 
+    HEAD : ba72b39
+    FAILED core/test_r42_criteriu.py::test_nota_contabila_NU_cere_admin_firma - A...
+    1 failed, 3256 passed, 10 skipped, 14 xfailed in 588.42s (0:09:48)
+=== 2026-08-26T07:01:54+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md METODA_VERIFICARE.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md core/test_rol_pe_efect.py main.py 
+    HEAD : 3c774dc
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    5 failed, 3261 passed, 10 skipped, 14 xfailed in 588.84s (0:09:48)
+=== 2026-08-26T07:16:32+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md METODA_VERIFICARE.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md core/scan_rol_pe_efect.py core/test_rol_pe_efec
+    HEAD : 3c774dc
+    FAILED core/test_module_nelegate.py::test_setul_nu_creste - AssertionError: M...
+    1 failed, 3266 passed, 10 skipped, 14 xfailed in 595.67s (0:09:55)
+=== 2026-08-26T08:13:29+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md METODA_VERIFICARE.md PREDARE_LANT.md TESTE.md TRASEE_VERIFICARI.md core/migrare_inchideri.py main.py tenant_template.sql 
+    HEAD : 71d5b9a
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nu_creste - Assertio...
+    FAILED core/test_perimetru_firma_declarat.py::test_perimetrul_declarat_e_valid_si_complet
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    FAILED core/test_trasee.py::test_fisierul_de_tabele_cunoscute_nu_imbatraneste
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    5 failed, 3262 passed, 10 skipped, 14 xfailed in 591.82s (0:09:51)
+=== 2026-08-26T16:44:17+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md TESTE.md core/adeverinta.py core/contracte_api.py core/firma_profil_api.py core/mesaje.py core/test_perioada_indisponibila.py frontend_
+    HEAD : 3a2b9bd
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 3281 passed, 10 skipped, 14 xfailed in 604.79s (0:10:04)
+=== 2026-08-26T17:23:27+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md TESTE.md core/mesaje.py core/test_document_fara_administrator.py 
+    HEAD : 3f9b24c
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    FAILED core/test_reaprindere.py::test_o_restanta_cu_declansatorul_produs_a_fost_RELUATA
+    2 failed, 3286 passed, 10 skipped, 14 xfailed in 605.23s (0:10:05)
+=== 2026-08-26T18:09:02+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md TESTE.md core/firma_profil_api.py core/mesaje.py core/test_regim_peste_perioada_inchisa.py core/vector_fiscal_api.py main.py 
+    HEAD : 9cea90a
+    FAILED core/test_schema_coloane.py::test_coloane_sql_exista_in_schema - Asser...
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    2 failed, 3291 passed, 10 skipped, 14 xfailed in 609.75s (0:10:09)
+=== 2026-08-27T03:04:03+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md TESTE.md core/gdpr_sterge.py core/tenant_stergere.py core/test_tenant_stergere.py static/js/ecrane/asistent.js static/js/ecr
+    HEAD : 3391371
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    2 failed, 3335 passed, 10 skipped, 14 xfailed in 582.04s (0:09:42)
+=== 2026-08-27T07:03:50+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md TESTE.md TRASEE.md core/migrare_firme_scoase.py core/tenant_stergere.py core/test_tenant_stergere.py frontend_test/vizual/acoperire_viz
+    HEAD : 8de4226
+    FAILED core/test_aritmetica_in_prezentare.py::test_nicio_formula_noua_pe_nume_neutre
+    1 failed, 3343 passed, 10 skipped, 14 xfailed in 582.56s (0:09:42)
+=== 2026-08-27T08:44:33+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md TESTE.md core/scan_refuz_tacut.py core/tenant_provisioning.py core/test_nume_firma_unic.py core/test_refuz_tacut.py frontend
+    HEAD : 8e02a76
+    FAILED core/test_joburi_supravegheate.py::test_baseline_de_unitati_stricate_NU_pastreaza_morti
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    2 failed, 3361 passed, 10 skipped, 14 xfailed in 586.53s (0:09:46)
+=== 2026-08-27T08:59:03+03:00 RESPINS verificator
+      TOTAL scanat 180 = ACCEPTAT 179 + GRI 0 + ROSU 0 + EXCLUS 1
+TOTAL: 1 candidate
+    stage: CONFORMITATE.md DECIZII.md GARZI.md TESTE.md TRASEE.md core/scan_refuz_tacut.py core/tenant_provisioning.py core/test_conformitate.py core/test_joburi_supravegh
+=== 2026-08-27T12:16:09+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md TESTE.md core/auth_api.py core/cron.py core/sonda_web.py core/tenant_provisioning.py core/test_nume_anaf.py core/test_reluar
+    HEAD : 99a8cd9
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_joburi_supravegheate.py::test_RITMURI_nu_pastreaza_joburi_care_nu_mai_exista
+    2 failed, 3377 passed, 10 skipped, 14 xfailed in 600.40s (0:10:00)
+=== 2026-08-27T13:49:58+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md PREDARE_LANT.md 
+    HEAD : c9bf964
+    FAILED core/test_nume_firma_unic.py::test_cate_duplicate_mai_sunt_in_baza - A...
+    1 failed, 3381 passed, 10 skipped, 14 xfailed in 666.43s (0:11:06)
+=== 2026-08-28T01:36:04+03:00 RESPINS pytest exit 1
+    stage: PREDARE_LANT.md 
+    HEAD : 864edb8
+    FAILED core/test_predare_proaspata.py::test_cifra_131_e_marcata_invalidata_nu_corectata
+    FAILED core/test_reluari_decizie.py::test_nicio_decizie_NOUA_nu_ramane_pe_zero
+    2 failed, 3422 passed, 10 skipped, 14 xfailed in 739.33s (0:12:19)
+=== 2026-08-28T04:00:00+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md DESIGN_SYSTEM.md core/firma_profil_api.py core/migrare_r81_denumiri.py core/scan_simetrie_denumire.py core/tenant_provisioning.py core/test_nume_anaf
+    HEAD : be25471
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 3436 passed, 10 skipped, 14 xfailed in 721.48s (0:12:01)
+=== 2026-08-28T04:06:56+03:00 RESPINS pytest exit 143
+    stage: DECIZII.md DESIGN_SYSTEM.md TRASEE.md core/firma_profil_api.py core/migrare_r81_denumiri.py core/scan_simetrie_denumire.py core/tenant_provisioning.py core/test
+    HEAD : be25471
+    ...........Terminated
+=== 2026-08-28T06:19:48+03:00 RESPINS pytest exit 1
+    stage: CLAUDE.md CONFORMITATE.md DECIZII.md GARZI.md METODA_VERIFICARE.md TRASEE.md core/migrare_schema_seq.py core/tenant_provisioning.py core/test_ancore_rute.py cor
+    HEAD : 3362fbb
+    FAILED core/test_g9_oblig_backend.py::test_date_firma_oblig_egal_backend_obligatorii
+    FAILED core/test_octeti_invizibili.py::test_niciun_octet_de_control_in_sursa
+    2 failed, 3448 passed, 10 skipped, 14 xfailed in 755.49s (0:12:35)
+=== 2026-08-28T06:27:08+03:00 RESPINS pytest exit 137
+    stage: CLAUDE.md CONFORMITATE.md DECIZII.md GARZI.md METODA_VERIFICARE.md TRASEE.md core/migrare_schema_seq.py core/tenant_provisioning.py core/test_ancore_rute.py cor
+    HEAD : 3362fbb
+    ............................................................Killed
+=== 2026-08-28T12:24:24+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PLAN_ARHITECTURA.md PREDARE_LANT.md core/test_activare_firma_inactiva.py frontend_test/vizual/acoperire_vizuala.json main.py static/js/ecran
+    HEAD : 1feeb8a
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    2 failed, 3473 passed, 10 skipped, 14 xfailed in 725.30s (0:12:05)
+=== 2026-08-28T12:44:59+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PLAN_ARHITECTURA.md PREDARE_LANT.md core/test_activare_firma_inactiva.py frontend_test/vizual/acoperire_vizuala.json main.py static/js/ecran
+    HEAD : 1feeb8a
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    2 failed, 3473 passed, 10 skipped, 14 xfailed in 720.30s (0:12:00)
+=== 2026-08-28T17:22:13+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md PREDARE_LANT.md 
+    HEAD : 7e5e8ae
+    FAILED core/test_reluari_decizie.py::test_fotografia_nu_pastreaza_morti - Ass...
+    1 failed, 3479 passed, 10 skipped, 14 xfailed in 730.11s (0:12:10)
+=== 2026-08-28T22:44:40+03:00 RESPINS pytest exit 1
+    stage: GARZI.md METODA_VERIFICARE.md PREDARE_LANT.md core/control_incrucisat.py core/test_inlocuire_afirmata.py core/test_verde_peste_necunoscut.py scripts/inlocuieste
+    HEAD : 63d9168
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    4 failed, 3486 passed, 10 skipped, 14 xfailed in 724.46s (0:12:04)
+=== 2026-08-29T00:53:59+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md PLAN_ARHITECTURA.md PREDARE_LANT.md core/test_conformitate.py core/test_reluari_decizie.py 
+    HEAD : f05ee54
+    FAILED core/test_conformitate.py::test_commiturile_restantelor_exista - Asser...
+    1 failed, 3489 passed, 10 skipped, 14 xfailed in 735.91s (0:12:15)
+=== 2026-08-29T18:02:27+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md PREDARE_LANT.md core/test_conformitate.py 
+    HEAD : e9998ee
+    FAILED core/test_reluari_decizie.py::test_fotografia_nu_pastreaza_morti - Ass...
+    1 failed, 3561 passed, 10 skipped, 14 xfailed in 783.84s (0:13:03)
+=== 2026-08-29T19:01:58+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md PREDARE_LANT.md scripts/scan_regimuri.py 
+    HEAD : e13fb41
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 3561 passed, 10 skipped, 14 xfailed in 782.03s (0:13:02)
+=== 2026-08-29T21:07:01+03:00 RESPINS pytest exit 1
+    stage: scripts/scan_1b_regimuri.py 
+    HEAD : 7d49e79
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_module_nelegate.py::test_setul_nu_creste - AssertionError: [...
+    2 failed, 3560 passed, 10 skipped, 14 xfailed in 749.58s (0:12:29)
+=== 2026-08-29T21:44:28+03:00 RESPINS pytest exit 1
+    stage: GARZI.md core/scan_module_nelegate.py core/test_module_nelegate.py scripts/scan_1b_regimuri.py 
+    HEAD : 7d49e79
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    1 failed, 3563 passed, 10 skipped, 14 xfailed in 750.47s (0:12:30)
+=== 2026-08-30T02:52:26+03:00 RESPINS pytest exit 1
+    stage: GARZI.md core/d394.py core/scan_camp_blocant.py core/test_camp_blocant.py 
+    HEAD : de04143
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_temeiuri.py::test_temeiuri_reguli_validator_canonice - Asser...
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    3 failed, 3568 passed, 11 skipped, 14 xfailed in 758.58s (0:12:38)
+=== 2026-08-30T07:23:22+03:00 RESPINS pytest exit 1
+    stage: core/d100.py core/d101.py core/d112.py core/d205.py core/d300.py core/d301.py core/d390.py core/d394.py core/firma_profil_api.py core/scan_camp_blocant.py core/
+    HEAD : 04d50b0
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    1 failed, 3570 passed, 11 skipped, 14 xfailed in 755.40s (0:12:35)
+=== 2026-08-30T13:05:32+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md TRASEE.md core/coada_api.py core/d112.py core/declaratii_api.py core/declaratii_componente.py core/fisa_cont.py core/test_ca
+    HEAD : d67ae83
+    FAILED core/test_ancore_rute.py::test_clasa_oarba_nu_creste - AssertionError:...
+    FAILED core/test_ancore_rute.py::test_clichetul_de_GRI_in_ambele_directii - A...
+    FAILED core/test_ancore_rute.py::test_cei_trei_cititori_ai_GRI_ului_nu_pot_diverge
+    FAILED core/test_ancore_rute.py::test_CALIBRARE_verdictul_deosebeste_EXCLUS_de_GRI
+    FAILED core/test_module_nelegate.py::test_setul_nu_creste - AssertionError: [...
+    FAILED core/test_ruta_fara_apelant.py::test_gardul_isi_spune_NUMITORUL - Asse...
+    6 failed, 3665 passed, 11 skipped, 14 xfailed in 792.24s (0:13:12)
+=== 2026-08-30T13:29:46+03:00 RESPINS verificator
+      TOTAL scanat 182 = ACCEPTAT 181 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 415 = ACCEPTAT 332 + GRI 49 + ROSU 0 + EXCLUS 34  (clichet GRI 49)
+TOTAL: 1 candidate
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md TRASEE.md core/coada_api.py core/d112.py core/declaratii_api.py core/declaratii_componente.py core/fisa_cont.py core/test_an
+=== 2026-08-30T15:20:19+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md TRASEE.md core/categorie_marime.py core/test_ancore_rute.py core/test_categorie_marime.py core/test_ruta_fara_apelant.py frontend_test/vizual/ac
+    HEAD : 5a21659
+    FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    3 failed, 3680 passed, 11 skipped, 14 xfailed in 899.80s (0:14:59)
+=== 2026-08-30T18:18:20+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md anaf_surse/INDEX.json anaf_surse/omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.html anaf_surse/omfp_3254_2017_registru_evidenta_fisca
+    HEAD : 0a06d3f
+    FAILED core/test_capturi_numite.py::test_fiecare_captura_comisa_e_NUMITA_in_registru
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    2 failed, 3684 passed, 11 skipped, 14 xfailed in 903.82s (0:15:03)
+=== 2026-08-30T20:35:20+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md TRASEE.md TRASEE_VERIFICARI.md core/migrare_registre_art321.py core/registre_art321.py core/test_harta_ecrane.py core/test_registre_art
+    HEAD : bff7677
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_perimetru_firma_declarat.py::test_perimetrul_declarat_e_valid_si_complet
+    7 failed, 3698 passed, 11 skipped, 14 xfailed in 869.61s (0:14:29)
+=== 2026-08-30T21:04:54+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC_TENANTI.md TRASEE.md TRASEE_VERIFICARI.md core/migrare_registre_art321.py core/migrare_registru_inventar.py core/registre_art32
+    HEAD : bff7677
+    FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+    FAILED core/test_r42_criteriu.py::test_o_nota_noua_nu_se_scrie_intr_o_luna_inchisa
+    2 failed, 3720 passed, 11 skipped, 14 xfailed in 892.26s (0:14:52)
+=== 2026-08-30T23:13:40+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC_TENANTI.md TRASEE.md TRASEE_VERIFICARI.md core/migrare_registru_fiscal_pf.py core/registru_evidenta_fiscala.py core/test_confor
+    HEAD : 47e2b33
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nu_creste - Assertio...
+    FAILED core/test_constante_nesursate.py::test_botezul_nu_mai_inghite_tacut - ...
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    3 failed, 3746 passed, 11 skipped, 14 xfailed in 918.66s (0:15:18)
+=== 2026-08-31T09:14:28+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md core/registre_art321.py core/registru_inventar.py core/test_lista3.py core/test_refuzuri.py scripts/scan_lista3.py 
+    HEAD : 11514c2
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    1 failed, 3768 passed, 11 skipped, 14 xfailed in 914.19s (0:15:14)
+=== 2026-08-31T11:09:43+03:00 RESPINS pytest exit 1
+    stage: GARZI.md anaf_surse/INDEX.json anaf_surse/oug_24_2026_contributie_solidaritate.html anaf_surse/oug_24_2026_contributie_solidaritate.html.sha256 anaf_surse/oug_2
+    HEAD : 76ae256
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_refuzuri.py::test_norma_77_isi_scrie_LIMITA_pe_umbra - Asser...
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    4 failed, 3786 passed, 11 skipped, 14 xfailed in 917.71s (0:15:17)
+=== 2026-09-01T00:30:49+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md core/scan_constante.py core/test_constante_nesursate.py 
+    HEAD : d7a07dd
+    FAILED core/test_conformitate.py::test_antetul_nu_e_stale - AssertionError: C...
+    1 failed, 3880 passed, 11 skipped, 14 xfailed in 1107.89s (0:18:27)
+=== 2026-09-01T07:27:17+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md anaf_surse/INDEX.json anaf_surse/gen_index.py anaf_surse/ordin_1604_2025_intrastat_mo.pd
+    HEAD : 0a12a31
+    FAILED core/test_pereche_act_articol.py::test_perechile_neconfirmate_nu_cresc
+    1 failed, 3892 passed, 11 skipped, 14 xfailed in 1139.44s (0:18:59)
+=== 2026-09-01T09:11:06+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md TESTE.md core/articol_in_act.py core/reverificare.py core/scan_pereche_act_articol.py core/test_frecventa_documen
+    HEAD : ac2dfa0
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    2 failed, 3905 passed, 11 skipped, 14 xfailed in 1219.37s (0:20:19)
+=== 2026-09-01T10:59:42+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md core/contracte_speciale.py core/scan_data_curenta.py core/test_data_curenta.py main.py 
+    HEAD : d439391
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    1 failed, 3914 passed, 11 skipped, 14 xfailed in 1253.54s (0:20:53)
+=== 2026-09-01T11:22:22+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md core/contracte_speciale.py core/scan_data_curenta.py core/test_data_curenta.py main.py 
+    HEAD : d439391
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    2 failed, 3913 passed, 11 skipped, 14 xfailed in 1279.08s (0:21:19)
+=== 2026-09-01T14:04:03+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PLAN_LUCRU.md PREDARE_LANT.md TESTE.md core/control_incrucisat.py core/migrare_supervizor_confirmari.py core/supe
+    HEAD : 1fa8f88
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_module_nelegate.py::test_setul_nu_creste - AssertionError: M...
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    FAILED core/test_tenant_stergere.py::test_nicio_tabela_cu_tenant_id_neclasificata
+    FAILED core/test_trasee.py::test_fisierul_de_tabele_cunoscute_nu_imbatraneste
+    6 failed, 3922 passed, 11 skipped, 14 xfailed in 1251.02s (0:20:51)
+=== 2026-09-01T14:33:45+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PLAN_LUCRU.md PREDARE_LANT.md TESTE.md core/control_incrucisat.py core/migrare_supervizor_confirmari.py core/supe
+    HEAD : 1fa8f88
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    1 failed, 3927 passed, 11 skipped, 14 xfailed in 1275.02s (0:21:15)
+=== 2026-09-01T23:04:40+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md core/control_incrucisat.py core/notificari_scadenta.py core/supervizor.py core/test_control_incrucisat.p
+    HEAD : 7b1a7197
+    FAILED core/test_capturi_numite.py::test_fiecare_captura_comisa_e_NUMITA_in_registru
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_trasee.py::test_nicio_ruta_in_afara_inventarului - Assertion...
+    FAILED core/test_trasee.py::test_antetul_fiecarui_traseu_e_GENERAT_nu_scris
+    FAILED core/test_versionare_assets.py::test_fiecare_referinta_are_tokenul_hashului_curent
+    5 failed, 3938 passed, 11 skipped, 14 xfailed in 1233.70s (0:20:33)
+=== 2026-09-01T23:48:15+03:00 RESPINS verificator
+      TOTAL scanat 182 = ACCEPTAT 181 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 424 = ACCEPTAT 383 + GRI 7 + ROSU 0 + EXCLUS 34  (clichet GRI 7)
+TOTAL: 1 candidate
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md core/control_incrucisat.py core/notificari_scadenta.py co
+=== 2026-09-02T00:20:44+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md core/control_incrucisat.py core/notificari_scadenta.py co
+    HEAD : 7b1a7197
+    FAILED core/test_conformitate.py::test_antetul_nu_e_stale - AssertionError: C...
+    1 failed, 3942 passed, 11 skipped, 14 xfailed in 1232.29s (0:20:32)
+=== 2026-09-02T02:12:36+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md core/control_incrucisat.py core/supervizor.py core/test_supervizor.py 
+    HEAD : 5de98367
+    FAILED core/test_fixturi_shared_period.py::test_fixturi_shared_period_marcate
+    1 failed, 3948 passed, 11 skipped, 14 xfailed in 1233.55s (0:20:33)
+=== 2026-09-02T04:04:02+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md core/control_incrucisat.py core/supervizor.py core/test_supervizor.py 
+    HEAD : c532ea79
+    FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+    1 failed, 3949 passed, 11 skipped, 14 xfailed in 1233.66s (0:20:33)
+=== 2026-09-02T09:02:46+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md core/control_incrucisat.py core/d394.py core/supervizor.py core/test_supervizor.py 
+    HEAD : 9a6ecc26
+    FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    2 failed, 3957 passed, 11 skipped, 14 xfailed in 1240.25s (0:20:40)
+=== 2026-09-02T12:21:55+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md core/coada_api.py core/control_incrucisat.py core/supervizor.py core/test_supervizor
+    HEAD : 6b2d24f8
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    1 failed, 3964 passed, 11 skipped, 14 xfailed in 1249.32s (0:20:49)
+=== 2026-09-02T15:49:38+03:00 RESPINS verificator
+      TOTAL scanat 185 = ACCEPTAT 184 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 424 = ACCEPTAT 383 + GRI 7 + ROSU 0 + EXCLUS 34  (clichet GRI 7)
+TOTAL: 1 candidate
+    stage: GARZI.md TRASEE_VERIFICARI.md core/control_incrucisat.py core/d100.py core/d101.py core/test_d101_impozit_nededus.py core/test_perimetru.py core/test_supervizor
+=== 2026-09-02T16:15:13+03:00 RESPINS verificator
+      TOTAL scanat 185 = ACCEPTAT 184 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 424 = ACCEPTAT 383 + GRI 7 + ROSU 0 + EXCLUS 34  (clichet GRI 7)
+TOTAL: 1 candidate
+    stage: GARZI.md TRASEE_VERIFICARI.md core/control_incrucisat.py core/d100.py core/d101.py core/test_d101_impozit_nededus.py core/test_perimetru.py core/test_supervizor
+=== 2026-09-02T16:43:15+03:00 RESPINS pytest exit 1
+    stage: GARZI.md TRASEE_VERIFICARI.md core/control_incrucisat.py core/d100.py core/d101.py core/test_d101_impozit_nededus.py core/test_perimetru.py core/test_supervizor
+    HEAD : e2be44a6
+    FAILED core/test_graf_clustere_proprietar.py::test_muchiile_nu_cresc_peste_clichet_si_graful_nu_e_gol
+    1 failed, 3973 passed, 11 skipped, 14 xfailed in 1300.99s (0:21:40)
+=== 2026-09-02T21:09:01+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md core/test_perechi_citesc_generatorul.py frontend_test/proba_r126_confirmare.py frontend_test/r126_3_pas_confirmare.png frontend_test/r126_4_gol_
+    HEAD : 7fa054ed
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    4 failed, 3975 passed, 11 skipped, 14 xfailed in 1311.60s (0:21:51)
+=== 2026-09-03T00:30:28+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md PLAN_LUCRU.md core/coada_api.py core/test_poarta_inainte_de_aprobare.py frontend_test/proba_r118_static.py frontend_test/proba_r126_confirmare.p
+    HEAD : 31d4e47d
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    4 failed, 3980 passed, 11 skipped, 14 xfailed in 1310.11s (0:21:50)
+=== 2026-09-03T12:55:15+03:00 RESPINS pytest exit 1
+    stage: .gitignore CLAUDE.md CONFORMITATE.md GARZI.md ISTORIC.md LOT_1_VERIFICARI.md LOT_2_VERIFICARI.md LOT_3_VERIFICARI.md LOT_4_VERIFICARI.md LOT_5_VERIFICARI.md LOT
+    HEAD : 6910c5dd
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    2 failed, 3999 passed, 11 skipped, 14 xfailed in 1328.00s (0:22:08)
+=== 2026-09-03T14:57:25+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PLAN_LUCRU.md core/test_curatenie.py scripts/curatenie.py scripts/githooks/commit-msg scripts/githooks/pre-commit 
+    HEAD : e70e6051
+    FAILED core/test_curatenie.py::test_cautarea_de_referinte_VEDE_lumea_despre_care_raporteaza
+    1 failed, 4010 passed, 11 skipped, 14 xfailed in 1319.70s (0:21:59)
+=== 2026-09-03T17:30:25+03:00 RESPINS pytest exit 1
+    stage: LISTA_FUNCTIONALITATI.md VERIFICARE_FUNCTIONALITATI.md core/coada_api.py core/declaratii_api.py core/istoric_declaratii_import_api.py core/mesaje.py frontend_te
+    HEAD : 26292a9e
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    3 failed, 4008 passed, 11 skipped, 14 xfailed in 1344.96s (0:22:24)
+=== 2026-09-03T21:01:22+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md LISTA_FUNCTIONALITATI.md TRASEE.md VERIFICARE_FUNCTIONALITATI.md core/common.py core/curs_bnr.py core/facturi_api.py core/facturi_recurente.py core/m
+    HEAD : 01a96ff8
+    FAILED core/test_refuzuri.py::test_datoria_nu_creste_pe_niciun_fisier - Asser...
+    FAILED core/test_refuzuri.py::test_un_fisier_NOU_porneste_de_la_zero - Assert...
+    2 failed, 4010 passed, 11 skipped, 14 xfailed in 1368.24s (0:22:48)
+=== 2026-09-03T21:38:01+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md LISTA_FUNCTIONALITATI.md TRASEE.md VERIFICARE_FUNCTIONALITATI.md core/common.py core/curs_bnr.py core/facturi_api.py core/facturi_recurente.py core/m
+    HEAD : 01a96ff8
+    FAILED core/test_pereche_act_articol.py::test_perechile_neconfirmate_nu_cresc
+    FAILED core/test_reverificare.py::test_ANTI_VACUU_si_distributia_pinata - Ass...
+    2 failed, 4010 passed, 11 skipped, 14 xfailed in 1377.66s (0:22:57)
+=== 2026-09-03T23:30:40+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md PREDARE_LANT.md 
+    HEAD : c63b3ff3
+    FAILED core/test_conformitate.py::test_o_restanta_EXTERN_are_cerere_specifica
+    1 failed, 4011 passed, 11 skipped, 14 xfailed in 1362.53s (0:22:42)
+=== 2026-09-04T13:02:25+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md core/adeverinta.py core/scan_descarcare_muta.py core/test_descarcare_muta
+    HEAD : 277e4300
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    FAILED core/test_aritmetica_in_prezentare.py::test_clichetul_de_nume_neutre_nu_ramane_peste_realitate
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_predare_proaspata.py::test_cifra_131_e_marcata_invalidata_nu_corectata
+    FAILED core/test_refuz_tacut.py::test_scrierile_mute_nu_cresc - AssertionErro...
+    FAILED core/test_refuz_tacut.py::test_clichetul_de_scrieri_mute_nu_ramane_peste_realitate
+    8 failed, 4014 passed, 11 skipped, 14 xfailed in 1386.10s (0:23:06)
+=== 2026-09-04T13:52:00+03:00 RESPINS verificator
+      TOTAL scanat 187 = ACCEPTAT 184 + GRI 2 + ROSU 0 + EXCLUS 1  <== BLOCHEAZA
+  TOTAL rute 424 = ACCEPTAT 383 + GRI 7 + ROSU 0 + EXCLUS 34  (clichet GRI 7)
+TOTAL: 1 candidate
+    stage: CONFORMITATE.md GARZI.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md core/adeverinta.py core/cititor_js.py core/scan_descarcare_muta.
+=== 2026-09-04T15:46:23+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md core/tenant_provisioning.py core/test_simetrie_denumire.py fro
+    HEAD : ba7305b4
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_mesaje_valueerror_publicat.py::test_diacritice_clichet_per_fisier
+    FAILED core/test_reguli_ecran.py::test_E2_actele_de_nivel_firma_nu_se_inmultesc_in_tacere
+    FAILED core/test_reguli_ecran.py::test_TOATE_actele_de_nivel_firma_CONFIRMA
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    5 failed, 4050 passed, 11 skipped, 14 xfailed in 1345.41s (0:22:25)
+=== 2026-09-04T21:24:16+03:00 RESPINS verificator
+      TOTAL scanat 185 = ACCEPTAT 184 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 424 = ACCEPTAT 383 + GRI 7 + ROSU 0 + EXCLUS 34  (clichet GRI 7)
+TOTAL: 1 candidate
+    stage: DECIZII.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md core/test_conformitate.py frontend_test/vizual/acoperire_vizuala.json frontend
+=== 2026-09-05T01:37:30+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md core/bacsis.py core/beneficii_api.py core/common.py core/intracomunitar.py cor
+    HEAD : f67eebe5
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_granite_cota.py::test_cota_zero_scutit_e_valoare_valida_nu_absenta
+    FAILED core/test_granite_cota.py::test_cota_prezenta_se_intoarce_ca_atare - V...
+    FAILED core/test_mesaje_valueerror_publicat.py::test_baseline_nu_ramane_umflat
+    FAILED core/test_r42_criteriu.py::test_verificarea_LASA_o_data_din_luna_deschisa
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    7 failed, 4050 passed, 11 skipped, 14 xfailed in 1384.70s (0:23:04)
+=== 2026-09-05T05:10:39+03:00 RESPINS pytest exit 1
+    stage: VERIFICARE_FUNCTIONALITATI.md core/common.py frontend_test/vizual/acoperire_vizuala.json main.py static/js/ecrane/firme.js static/js/ecrane/operatiuni_ecran.js 
+    HEAD : bc15ef61
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    2 failed, 4058 passed, 11 skipped, 14 xfailed in 1386.64s (0:23:06)
+=== 2026-09-05T06:52:49+03:00 RESPINS pytest exit 1
+    stage: LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md frontend_test/vizual/nav_ecrane.py frontend_test/vizual/proba_ecrane_campanie.json fronte
+    HEAD : 1112d42e
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    2 failed, 4058 passed, 11 skipped, 14 xfailed in 1391.23s (0:23:11)
+=== 2026-09-05T11:00:27+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md ISTORIC.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md TESTE.md VERIFICARE_FUNCTIONALITATI.md core/common.py core/mesaje.py frontend_test/butoa
+    HEAD : b0270f9d
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    3 failed, 4057 passed, 11 skipped, 14 xfailed in 1389.42s (0:23:09)
+=== 2026-09-05T13:46:54+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md ISTORIC.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md frontend_test/e2_util.py frontend_test/proba_e2_d300.json 
+    HEAD : 02daf6dd
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 4059 passed, 11 skipped, 14 xfailed in 1390.94s (0:23:10)
+=== 2026-09-05T14:15:40+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md ISTORIC.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md VERIFICARE_FUNCTIONALITATI.md frontend_test/e2_util.py frontend_test/proba_e2_d300.json 
+    HEAD : 02daf6dd
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 4059 passed, 11 skipped, 14 xfailed in 1399.23s (0:23:19)
+=== 2026-09-05T21:13:39+03:00 RESPINS pytest exit 1
+    stage: core/d406.py core/d406_reconciliere.py core/test_d406_fereastra.py frontend_test/proba_e2_d406_d205.json frontend_test/proba_e2_d406_d205.py main.py 
+    HEAD : 3bf1f7ea
+    FAILED core/test_cale_a_doua.py::test_co_modificarea_cere_decizie_scrisa - As...
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_d406_accounttype_wired.py::test_accounttype_invalid_ridica_numind_contul
+    FAILED core/test_d406_cnp_tert.py::test_cnp_valid_emis_ca_03_in_supplier_si_master
+    FAILED core/test_d406_cnp_tert.py::test_cnp_valid_03_e_duk_valid - ValueError...
+    FAILED core/test_d406_cnp_tert.py::test_cnp_invalid_ridica_numind_partenerul
+    FAILED core/test_d406_coercitie_t3.py::test_uom_necunoscut_avertisment_numeste_factura_si_unitatea
+    FAILED core/test_d406_coercitie_t3.py::test_cota_necunoscuta_avertisment_numeste_factura_si_cota
+    FAILED core/test_d406_cui_checksum.py::test_partener_cui_checksum_gresit_ridica_numind_partenerul
+    FAILED core/test_d406_cui_checksum.py::test_partener_cnp_gresit_ridica_numind_partenerul
+    FAILED core/test_d406_cui_checksum.py::test_partener_cui_valid_nu_ridica - Va...
+    FAILED core/test_d406_cui_checksum.py::test_cui_firma_checksum_gresit_ridica
+    FAILED core/test_d406_reconciliere.py::test_non_tautologie_calea2_nu_foloseste_generatorul_d406
+    FAILED core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_reconciliere_vie.py::test_fiecare_reconciliere_e_non_tautologica
+    FAILED core/test_refuzuri.py::test_datoria_nu_creste_pe_niciun_fisier - Asser...
+    FAILED core/test_reluari_decizie.py::test_nicio_decizie_NOUA_nu_ramane_pe_zero
+    24 failed, 4051 passed, 11 skipped, 14 xfailed in 1366.06s (0:22:46)
+=== 2026-09-05T23:43:51+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PREDARE_LANT.md core/cota_tva_incasare.py core/test_tva_incasare_291_5.py frontend_test/proba_r151.py main.py static/js/ecrane/firme.js stat
+    HEAD : c125e0ed
+    FAILED core/test_acoperire_vizuala.py::test_scan_proaspat - AssertionError: U...
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    2 failed, 4098 passed, 11 skipped, 14 xfailed in 1365.15s (0:22:45)
+=== 2026-09-06T05:22:08+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md LISTA_FUNCTIONALITATI.md METODA_VERIFICARE.md VERIFICARE_FUNCTIONALITATI.md core/declaratii_api.py core/perioada_
+    HEAD : d788a9e8
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    FAILED core/test_pereche_act_articol.py::test_perechile_neconfirmate_nu_cresc
+    FAILED core/test_pereche_act_articol.py::test_negasitele_sunt_CELE_CUNOSCUTE_nu_doar_atatea
+    FAILED core/test_pereche_act_articol.py::test_CALIBRARE_conventia_NU_se_aplica_unde_articolul_e_chiar_al_actului
+    FAILED core/test_reverificare.py::test_ANTI_VACUU_si_distributia_pinata - Ass...
+    5 failed, 4100 passed, 11 skipped, 14 xfailed in 1456.61s (0:24:16)
+=== 2026-09-06T14:39:31+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md ISTORIC.md TRASEE.md TRASEE_VERIFICARI.md core/facturi_api.py core/migrare_plata_referinte.py core/plati.py core/tenant_stergere.py cor
+    HEAD : fda079a6
+    FAILED core/test_module_nelegate.py::test_setul_nu_creste - AssertionError: M...
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    2 failed, 4123 passed, 11 skipped, 14 xfailed in 1560.09s (0:26:00)
+=== 2026-09-06T16:57:34+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md core/plati.py core/test_plata_izolare.py frontend_test/vizual/acoperire_vizuala.json main.py static/js/ecrane/fac
+    HEAD : 17faf668
+    FAILED core/test_ancore_rute.py::test_clichetul_de_GRI_in_ambele_directii - A...
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_ruta_fara_apelant.py::test_nicio_ruta_NOUA_fara_apelant_DINTRE_CELE_VIZIBILE
+    FAILED core/test_trasee.py::test_fiecare_pas_din_loturi_spune_CE_face - Asser...
+    FAILED core/test_trasee.py::test_adnotarea_din_TRASEE_VERIFICARI_e_IDENTICA_cu_ce_masoara_instrumentul
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    7 failed, 4124 passed, 11 skipped, 14 xfailed in 1570.63s (0:26:10)
+=== 2026-09-07T17:59:23+03:00 RESPINS verificator
+      TOTAL scanat 188 = ACCEPTAT 187 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+TOTAL: 1 candidate
+    stage: GARZI.md ISTORIC.md core/d100.py core/d101.py core/d101g.py core/d104.py core/d106.py core/d107.py core/d108.py core/d110.py core/d112.py core/d114.py core/d119
+=== 2026-09-07T20:15:43+03:00 RESPINS pytest exit 1
+    stage: ISTORIC.md PREDARE_LANT.md 
+    HEAD : 2b05f886
+    FAILED core/test_predare_proaspata.py::test_predarea_spune_cand_se_rescrie - ...
+    1 failed, 4160 passed, 11 skipped, 14 xfailed in 1474.41s (0:24:34)
+=== 2026-09-08T11:51:13+03:00 RESPINS pytest exit 1
+    stage: ISTORIC.md PREDARE_LANT.md core/cron.py core/firma_rezumat.py 
+    HEAD : f3567121
+    FAILED core/test_clichete_generate.py::test_niciun_clichet_MASURAT_nu_lipseste_din_tabel_si_niciunul_INVENTAT
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    3 failed, 4187 passed, 11 skipped, 14 xfailed in 1511.49s (0:25:11)
+=== 2026-09-08T19:16:45+03:00 RESPINS pytest exit 1
+    stage: DEPENDENTE_P2.md core/firma_rezumat.py core/test_dependente_ramuri.py core/test_p2_infrastructura.py main.py scripts/scan_dependente.py 
+    HEAD : 7f40ee0c
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    5 failed, 4248 passed, 11 skipped, 14 xfailed in 1573.72s (0:26:13)
+=== 2026-09-08T19:50:43+03:00 RESPINS pytest exit 1
+    stage: DEPENDENTE_P2.md GARZI.md core/firma_rezumat.py core/test_dependente_ramuri.py core/test_p2_infrastructura.py main.py scripts/scan_dependente.py 
+    HEAD : 7f40ee0c
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+    FAILED core/test_mesaje_fara_camp_intern.py::test_niciun_mesaj_user_facing_cu_nume_intern_de_camp
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    3 failed, 4250 passed, 11 skipped, 14 xfailed in 1558.22s (0:25:58)
+=== 2026-09-09T13:11:44+03:00 RESPINS pytest exit 1
+    stage: GARZI.md core/istoric_declaratii_import_api.py core/test_p3_wave_a.py main.py masuratori/p3/wave_a_dupa.json masuratori/p3/wave_a_inainte.json scripts/masoara_v
+    HEAD : 7d921282
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    FAILED core/test_supervizor.py::test_ruta_la_cerere_NU_scapa_schema_si_isi_NUMESTE_domeniul
+    FAILED core/test_tenant_stergere.py::test_niciun_orfan_NOU_dupa_ultima_stergere
+    3 failed, 4274 passed, 11 skipped, 14 xfailed in 1568.41s (0:26:08)
+=== 2026-09-09T13:49:55+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PREDARE_LANT.md core/istoric_declaratii_import_api.py core/test_p3_wave_a.py core/test_supervizor.py main.py masuratori/p3/wave_a_dupa.json masuratori/
+    HEAD : 7d921282
+    FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    2 failed, 4276 passed, 11 skipped, 14 xfailed in 1572.13s (0:26:12)
+=== 2026-09-09T14:18:17+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PREDARE_LANT.md core/istoric_declaratii_import_api.py core/test_p3_wave_a.py core/test_supervizor.py main.py masuratori/p3/wave_a_dupa.json masuratori/
+    HEAD : 7d921282
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    2 failed, 4276 passed, 11 skipped, 14 xfailed in 1578.39s (0:26:18)
+=== 2026-09-09T14:53:18+03:00 RESPINS pytest exit 1
+    stage: GARZI.md core/istoric_declaratii_import_api.py core/test_p3_wave_a.py core/test_supervizor.py main.py masuratori/p3/wave_a_dupa.json masuratori/p3/wave_a_inaint
+    HEAD : 7d921282
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    2 failed, 4276 passed, 11 skipped, 14 xfailed in 1953.61s (0:32:33)
+=== 2026-09-09T16:31:48+03:00 RESPINS pytest exit 1
+    stage: DEPENDENTE_P2.md GARZI.md PREDARE_LANT.md core/firma_rezumat.py core/test_p3_val_b.py frontend_test/vizual/acoperire_vizuala.json main.py masuratori/p2/dependen
+    HEAD : e7ce0c2e
+    FAILED core/test_asistent_arbore.py::test_proba_e_proaspata - AssertionError:...
+    FAILED core/test_declaratii_50.py::test_proba_e_proaspata - AssertionError: l...
+    FAILED core/test_dependente_ramuri.py::test_ramurile_acopera_tot_ce_declara_registrul
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    4 failed, 4281 passed, 11 skipped, 14 xfailed in 1586.00s (0:26:26)
+=== 2026-09-09T21:59:30+03:00 RESPINS pytest exit 143
+    stage: core/alerta_acces.py core/notificari_scadenta.py core/p4_clasificare.py core/spv_conector.py core/test_p4_fault_injection.py core/test_tranzactii_clasificate.py
+    HEAD : a05618ce
+    ..................................Terminated
+=== 2026-09-09T22:04:39+03:00 RESPINS pytest exit 143
+    stage: core/alerta_acces.py core/notificari_scadenta.py core/p4_clasificare.py core/spv_conector.py core/test_p4_fault_injection.py core/test_tranzactii_clasificate.py
+    HEAD : a05618ce
+    .......Terminated
+=== 2026-09-09T22:57:27+03:00 RESPINS pytest exit 143
+    stage: core/alerta_acces.py core/notificari_scadenta.py core/p4_clasificare.py core/spv_conector.py core/test_p4_fault_injection.py core/test_tranzactii_clasificate.py
+    HEAD : a05618ce
+    ................................................................Terminated
+=== 2026-09-09T23:36:45+03:00 RESPINS pytest exit 1
+    stage: core/alerta_acces.py core/notificari_scadenta.py core/p4_clasificare.py core/spv_conector.py core/test_p4_fault_injection.py core/test_tranzactii_clasificate.py
+    HEAD : a05618ce
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    FAILED core/test_module_nelegate.py::test_setul_nu_creste - AssertionError: M...
+    FAILED core/test_schema_coloane.py::test_coloane_sql_exista_in_schema - Asser...
+    3 failed, 4344 passed, 11 skipped, 14 xfailed in 1600.59s (0:26:40)
+=== 2026-09-10T00:05:49+03:00 RESPINS pytest exit 1
+    stage: core/alerta_acces.py core/notificari_scadenta.py core/p4_clasificare.py core/spv_conector.py core/test_module_nelegate.py core/test_p4_fault_injection.py core/t
+    HEAD : a05618ce
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    FAILED core/test_tenant_stergere.py::test_niciun_orfan_NOU_dupa_ultima_stergere
+    2 failed, 4345 passed, 11 skipped, 14 xfailed in 1601.39s (0:26:41)
+=== 2026-09-10T00:50:59+03:00 RESPINS pytest exit 143
+    stage: CONFORMITATE.md DECIZII.md GARZI.md PLAN_HARDENING.md PREDARE_LANT.md RAPORT_P4.md TESTE.md 
+    HEAD : 0742e177
+    ..........................................................Terminated
+=== 2026-09-10T03:44:20+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md PLAN_HARDENING.md RAPORT_P4.md TESTE.md core/p4_clasificare.py core/test_tranzactii_clasificate.py masuratori/p4/acceptare.txt masuratori/p4/clasific
+    HEAD : d4127159
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+    FAILED core/test_diacritice_afisate.py::test_niciun_mesaj_user_facing_fara_diacritice
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_mesaje_fara_camp_intern.py::test_niciun_mesaj_user_facing_cu_nume_intern_de_camp
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    5 failed, 4364 passed, 11 skipped, 14 xfailed in 1587.75s (0:26:27)
+=== 2026-09-10T03:49:40+03:00 RESPINS pytest exit 143
+    stage: DECIZII.md GARZI.md PLAN_HARDENING.md RAPORT_P4.md TESTE.md core/p4_clasificare.py core/test_tranzactii_clasificate.py masuratori/p4/acceptare.txt masuratori/p4
+    HEAD : d4127159
+    ....Terminated
+=== 2026-09-10T15:18:22+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md PLAN_ARHITECTURA.md PLAN_HARDENING.md TESTE.md core/p5_clasificare.py core/test_blocante_clasificate.py core/test_sonde_star
+    HEAD : 8dfadd40
+    FAILED core/test_mesaje_valueerror_publicat.py::test_diacritice_clichet_per_fisier
+    FAILED core/test_preview_salvare_poarta.py::test_preview_intoarce_verdictul_salvarii[parteneri]
+    FAILED core/test_preview_salvare_poarta.py::test_preview_intoarce_verdictul_salvarii[salariati]
+    FAILED core/test_preview_salvare_poarta.py::test_preview_intoarce_verdictul_salvarii[asociati]
+    FAILED core/test_preview_salvare_poarta.py::test_preview_intoarce_verdictul_salvarii[mijloace]
+    FAILED core/test_preview_salvare_poarta.py::test_preview_intoarce_verdictul_salvarii[istoric]
+    FAILED core/test_preview_salvare_poarta.py::test_preview_curat_nu_blocheaza
+    FAILED core/test_q16_cor.py::test_preview_salariati_ataseaza_denumirea_cor - ...
+    FAILED core/test_q16_cor.py::test_preview_salariati_cor_necunoscut_ramane_none
+    9 failed, 4405 passed, 11 skipped, 14 xfailed in 1589.07s (0:26:29)
+=== 2026-09-10T15:56:52+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md PLAN_ARHITECTURA.md PLAN_HARDENING.md TESTE.md core/amef_import.py core/anaf_api.py core/articole_import_api.py core/asociat
+    HEAD : 8dfadd40
+    FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+    1 failed, 4413 passed, 11 skipped, 14 xfailed in 1636.00s (0:27:16)
+=== 2026-09-10T18:59:10+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md PLAN_HARDENING.md TESTE.md core/p5_clasificare.py core/raport_z.py core/test_blocante_clasificate.py core/test_preview_salva
+    HEAD : a3bf4c71
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    FAILED core/test_tenant_stergere.py::test_niciun_orfan_NOU_dupa_ultima_stergere
+    2 failed, 4426 passed, 11 skipped, 14 xfailed in 1568.35s (0:26:08)
+=== 2026-09-11T00:09:56+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md PLAN_HARDENING.md core/gdpr_cerere.py core/observare.py core/p4_clasificare.py main.py 
+    HEAD : 96f026f8
+    ERROR    iconta:main.py:264 Eroare 500 la POST /coada/11368/depune
+    ERROR    iconta:main.py:264 Eroare 500 la GET /api/v1/firme/104846/facturi
+    ERROR    iconta:main.py:264 Eroare 500 la GET /raportari/3554
+    ERROR    iconta:main.py:264 Eroare 500 la GET /tenants/104852/facturi
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:264 Eroare 500 la POST /coada/11368/depune
+    FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+    FAILED core/test_izolare_api_key.py::test_control_pozitiv_cheia_A_isi_vede_tenantul
+    FAILED core/test_izolare_raportari.py::test_fir_alt_cabinet_da_404_nu_403 - p...
+    FAILED core/test_izolare_structurala.py::test_control_pozitiv_adminA_isi_vede_tenantul
+    FAILED core/test_lista3.py::test_tabelul_de_proba_e_GENERAT_nu_scris - psycop...
+    FAILED core/test_lista3.py::test_fiecare_rand_DESCHIS_apare_in_proba - psycop...
+    FAILED core/test_p2_infrastructura.py::test_p2_startup_fails_if_trigger_migration_incomplete
+    FAILED core/test_p2_infrastructura.py::test_p2_startup_detects_missing_trigger
+    FAILED core/test_p2_infrastructura.py::test_p2_trigger_migration_is_idempotent
+    FAILED core/test_p2_infrastructura.py::test_p2_startup_happy_path - psycopg2....
+    FAILED core/test_p2_infrastructura.py::test_taskurile_de_fundal_pornesc_o_data_la_pornire_reusita
+    FAILED core/test_p2_infrastructura.py::test_o_firma_rupta_nu_contamineaza_diagnosticul_celorlalte
+    FAILED core/test_p2_infrastructura.py::test_driftul_unui_trigger_sters_e_detectat_si_reparabil
+    FAILED core/test_p4_fault_injection.py::test_depunere_confirmarea_nu_ramane_fara_depunere
+    FAILED core/test_p4_fault_injection.py::test_register_contul_nu_ramane_fara_dovada_acordului
+    FAILED core/test_poarta_citire_istorica.py::test_pe_date_izolarea_intre_cabinete_ramane_INTACTA
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    FAILED core/test_pull_declaratii.py::test_schema_temporara_chiar_dispare - As...
+    FAILED core/test_registru_exceptii.py::test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul
+    FAILED core/test_supervizor.py::test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE
+    FAILED core/test_trasee.py::test_antetul_fiecarui_traseu_e_GENERAT_nu_scris
+    ERROR core/test_izolare_api_key.py::test_cheia_A_nu_atinge_tenantul_B - psyco...
+    ERROR core/test_izolare_api_key.py::test_fara_cheie_401 - psycopg2.errors.Uni...
+    ERROR core/test_izolare_incrucisata.py::test_control_pozitiv_propriul_tenant_merge
+    ERROR core/test_izolare_raportari.py::test_citit_alt_cabinet_da_404 - psycopg...
+    ERROR core/test_izolare_raportari.py::test_autorul_isi_vede_firul - psycopg2....
+    ERROR core/test_izolare_structurala.py::test_izolare_cross_cabinet_admin - ps...
+    ERROR core/test_izolare_structurala.py::test_izolare_asistent_firma_neatribuita
+    ERROR core/test_izolare_structurala.py::test_izolare_client_portal_alta_firma
+    ERROR core/test_izolare_structurala.py::test_izolare_superadmin_nu_vede_tenant_cu_cabinet
+    ERROR core/test_izolare_structurala.py::test_gard_enumera_rute_netrivial - ps...
+    21 failed, 4383 passed, 17 skipped, 14 xfailed, 29 errors in 1562.46s (0:26:02)
+=== 2026-09-11T01:00:07+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md PLAN_HARDENING.md PREDARE_LANT.md TRASEE_VERIFICARI.md core/gdpr_cerere.py core/observare.py core/p4_clasificare.py main.py 
+    HEAD : 96f026f8
+    ERROR    iconta:main.py:264 Eroare 500 la POST /coada/11380/depune
+    ERROR    iconta:main.py:264 Eroare 500 la GET /api/v1/firme/105564/facturi
+    ERROR    iconta:main.py:264 Eroare 500 la GET /raportari/3567
+    ERROR    iconta:main.py:264 Eroare 500 la GET /tenants/105570/facturi
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:223 [P2] INFRASTRUCTURA CRITICĂ nu s-a putut instala sau verifica — aplicația REFUZĂ să pornească. O aplicație care nu poate garanta prospețimea read-modelului nu are voie să servească trafic: ar arăta valori vechi ca fiind curente, tăcut.
+    ERROR    iconta:main.py:264 Eroare 500 la POST /coada/11380/depune
+    FAILED core/test_fluturas_egal_stat.py::test_fluturasul_nu_isi_recalculeaza_cifrele
+    FAILED core/test_fluturas_egal_stat.py::test_toate_perechile_coincid_cu_statul
+    FAILED core/test_izolare_api_key.py::test_control_pozitiv_cheia_A_isi_vede_tenantul
+    FAILED core/test_izolare_raportari.py::test_fir_alt_cabinet_da_404_nu_403 - p...
+    FAILED core/test_izolare_structurala.py::test_control_pozitiv_adminA_isi_vede_tenantul
+    FAILED core/test_lista3.py::test_tabelul_de_proba_e_GENERAT_nu_scris - psycop...
+    FAILED core/test_lista3.py::test_fiecare_rand_DESCHIS_apare_in_proba - psycop...
+    FAILED core/test_nume_firma_unic.py::test_cabinetele_excluse_sunt_cele_declarate
+    FAILED core/test_p2_infrastructura.py::test_p2_startup_fails_if_trigger_migration_incomplete
+    FAILED core/test_p2_infrastructura.py::test_p2_startup_detects_missing_trigger
+    FAILED core/test_p2_infrastructura.py::test_p2_trigger_migration_is_idempotent
+    FAILED core/test_p2_infrastructura.py::test_p2_startup_happy_path - psycopg2....
+    FAILED core/test_p2_infrastructura.py::test_taskurile_de_fundal_pornesc_o_data_la_pornire_reusita
+    FAILED core/test_p2_infrastructura.py::test_o_firma_rupta_nu_contamineaza_diagnosticul_celorlalte
+    FAILED core/test_p2_infrastructura.py::test_driftul_unui_trigger_sters_e_detectat_si_reparabil
+    FAILED core/test_p3_wave_a.py::test_toate_cele_trei_roluri_primesc_schema_name
+    FAILED core/test_p4_fault_injection.py::test_depunere_confirmarea_nu_ramane_fara_depunere
+    FAILED core/test_p4_fault_injection.py::test_register_contul_nu_ramane_fara_dovada_acordului
+    FAILED core/test_poarta_citire_istorica.py::test_pe_date_izolarea_intre_cabinete_ramane_INTACTA
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    FAILED core/test_pull_declaratii.py::test_schema_temporara_chiar_dispare - As...
+    FAILED core/test_supervizor.py::test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE
+    FAILED core/test_supervizor.py::test_pereche_D101_vs_D100_COINCID_da_verde_si_DIVERG_da_rosu
+    FAILED core/test_supervizor.py::test_pereche_D101_vs_691_COINCID_da_verde_si_DIVERG_da_rosu
+    FAILED core/test_supervizor.py::test_o_nota_in_CIORNA_pe_691_face_perechea_sa_TACA_nu_sa_acuze
+    FAILED core/test_supervizor.py::test_un_MEMBRU_DE_GRUP_fiscal_nu_e_confruntat_pe_randurile_care_nu_se_completeaza
+    FAILED core/test_supervizor.py::test_o_depunere_D100_FARA_randuri_nu_se_numara_ca_ZERO
+    FAILED core/test_supervizor.py::test_perechile_anuale_NU_se_ancoreaza_pe_anul_CURENT
+    FAILED core/test_supervizor.py::test_un_TRIMESTRU_NEVAZUT_da_GRI_nu_ROSU - ps...
+    FAILED core/test_supervizor.py::test_deriva_D300_D394_COINCID_da_verde_SLAB_si_DIVERG_da_ROSU
+    FAILED core/test_supervizor.py::test_deriva_numara_DOAR_achizitiile_cu_taxare_inversa
+    37 failed, 4367 passed, 17 skipped, 14 xfailed, 29 errors in 1561.63s (0:26:01)
+=== 2026-09-11T11:24:02+03:00 RESPINS pytest exit 4
+    stage: CONFORMITATE.md DECIZII.md GARZI.md PLAN_HARDENING.md core/gdpr_cerere.py core/observare.py core/p4_clasificare.py core/test_brevo_pe_fir_propriu.py main.py mas
+    HEAD : 3332f495
+    E     Cum se porneste corect: cu ~/.iconta/test.env in mediu (ICONTA_MEDIU=test si DSN-ul bazei izolate). Frontiera adevarata e la PostgreSQL — rolul de test nu are CONNECT pe iconta_v2 —, iar mesajul asta e doar prima incuietoare.
+=== 2026-09-11T16:06:32+03:00 RESPINS pytest exit 1
+    stage: GARZI.md core/test_email_html_dupa_commit.py main.py masuratori/email_html/COMMIT_EMAIL_HTML.txt masuratori/email_html/DB_FINGERPRINT_BEFORE.json masuratori/ema
+    HEAD : 31ec1f40
+    FAILED core/test_tranzactii_clasificate.py::test_niciun_verdict_de_efect_nu_ramane_fara_loc
+    1 failed, 5455 passed, 11 skipped, 14 xfailed in 1683.10s (0:28:03)
+=== 2026-09-11T20:29:00+03:00 RESPINS pytest exit 1
+    stage: GARZI.md core/notificari_scadenta.py core/pachete_api.py core/test_email_html_doua_cai.py core/test_p4_fault_injection.py main.py masuratori/val3_final/ACTION_R
+    HEAD : 25a9d596
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    1 failed, 5476 passed, 11 skipped, 14 xfailed in 1593.05s (0:26:33)
+=== 2026-09-11T22:31:30+03:00 RESPINS pytest exit 1
+    stage: GARZI.md TRASEE.md TRASEE_VERIFICARI.md core/curs_bnr.py core/d112.py core/facturi_recurente.py core/monitor_fiscal.py core/tenant_provisioning.py core/test_val
+    HEAD : 7701a99c
+    FAILED core/test_rute_autentificate.py::test_orice_ruta_are_autentificare_sau_e_declarata_publica
+    FAILED core/test_tranzactii_clasificate.py::test_nicio_clasificare_individuala_nu_ramane_fara_cale
+    FAILED core/test_tranzactii_clasificate.py::test_niciun_verdict_de_efect_nu_ramane_fara_loc
+    3 failed, 5495 passed, 11 skipped, 14 xfailed in 1613.76s (0:26:53)
+=== 2026-09-12T02:53:46+03:00 RESPINS pytest exit 1
+    stage: core/test_stare_proces.py scripts/p6_clasificare.py scripts/scan_stare_proces.py 
+    HEAD : 15be9352
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 5532 passed, 11 skipped, 14 xfailed in 1611.45s (0:26:51)
+=== 2026-09-12T04:48:49+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PLAN_HARDENING.md core/stare_partajata.py core/test_stare_proces.py core/test_wave1_stare_partajata.py main.py scripts/p6_clasificare.py scripts/scan_s
+    HEAD : 99e25255
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_tranzactii_clasificate.py::test_fiecare_candidat_brut_are_verdict
+    FAILED core/test_tranzactii_clasificate.py::test_contabilitatea_inventarului_brut_se_inchide
+    FAILED core/test_tranzactii_clasificate.py::test_fiecare_verdict_poarta_regula_si_motiv
+    FAILED core/test_tranzactii_clasificate.py::test_regulile_care_cer_judecata_nu_au_regula_de_clasa
+    FAILED core/test_trasee.py::test_fisierul_de_tabele_cunoscute_nu_imbatraneste
+    FAILED core/test_upsert_motivat.py::test_do_update_are_justificare - Assertio...
+    13 failed, 5536 passed, 11 skipped, 14 xfailed in 1711.69s (0:28:31)
+=== 2026-09-12T06:54:30+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md core/ajutor.py core/cache_declarat.py core/curs_bnr.py core/d112.py core/firma_rezumat.py core/raportari_ai.py core/scadente.py core/te
+    HEAD : a25afc04
+    FAILED core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice
+    1 failed, 5578 passed, 11 skipped, 14 xfailed in 1630.23s (0:27:10)
+=== 2026-09-12T10:14:53+03:00 RESPINS pytest exit 1
+    stage: core/test_wave3_instante.py scripts/toate_poarta_head.py 
+    HEAD : 0d9c445d
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    6 failed, 5590 passed, 12 skipped, 14 xfailed in 1632.99s (0:27:12)
+=== 2026-09-12T17:11:49+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PREDARE_LANT.md core/test_four_way_cardinalitate.py scripts/toate_poarta_head.py 
+    HEAD : a9566af0
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    1 failed, 5633 passed, 12 skipped, 14 xfailed in 1643.83s (0:27:23)
+=== 2026-09-14T03:22:57+03:00 RESPINS verificator
+      TOTAL scanat 189 = ACCEPTAT 188 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+TOTAL: 1 candidate
+    stage: DECIZII.md GARZI.md ISTORIC.md PLAN_HARDENING.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md core/clichet_garzi_pe_text.json core/efactura_send.py c
+=== 2026-09-14T07:32:49+03:00 RESPINS pytest exit 1
+    stage: GARZI.md ISTORIC.md PLAN_HARDENING.md PREDARE_LANT.md core/efactura_send.py core/efactura_trimitere.py core/erori.py core/repo_admin.py core/repo_beneficii_api.
+    HEAD : f5e6cffc
+    FAILED core/test_cale_a_doua.py::test_co_modificarea_cere_decizie_scrisa - As...
+    1 failed, 5840 passed, 11 skipped, 14 xfailed in 1919.61s (0:31:59)
+=== 2026-09-14T14:11:05+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md ISTORIC.md PLAN_E1_E6.md RAPORT_AUDIT_GLOBAL_POST_HARDENING_2026-09-14.md TESTE.md config/iconta-logrotate core/p4_clasificare.py core/stare
+    HEAD : 6b9ba2da
+    FAILED core/test_constante_nesursate.py::test_clichetul_nu_creste - Assertion...
+    1 failed, 5852 passed, 12 skipped, 14 xfailed in 1892.61s (0:31:32)
+=== 2026-09-14T20:55:44+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PREDARE_LANT.md RAPORT_AUDIT_GLOBAL_POST_HARDENING_2026-09-14.md TESTE.md core/d119.py core/d390.py core/d710.py core/test_coduri_validator.
+    HEAD : 6aa687fb
+    FAILED core/test_d710_nomenclator_manual.py::test_e_cota_micro_invalida_ridica_r17
+    1 failed, 5876 passed, 11 skipped, 15 xfailed in 1902.50s (0:31:42)
+=== 2026-09-14T21:37:28+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PREDARE_LANT.md RAPORT_AUDIT_GLOBAL_POST_HARDENING_2026-09-14.md TESTE.md core/d119.py core/d390.py core/d710.py core/test_coduri_validator.
+    HEAD : 6aa687fb
+    FAILED core/test_d710_nomenclator_manual.py::test_e_cota_micro_invalida_ridica_r17
+    1 failed, 5875 passed, 12 skipped, 15 xfailed in 1898.56s (0:31:38)
+=== 2026-09-14T22:13:12+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PREDARE_LANT.md RAPORT_AUDIT_GLOBAL_POST_HARDENING_2026-09-14.md TESTE.md core/d119.py core/d390.py core/d710.py core/test_coduri_validator.
+    HEAD : 6aa687fb
+    FAILED core/test_temeiuri.py::test_temeiuri_reguli_validator_canonice - Asser...
+    1 failed, 5875 passed, 12 skipped, 15 xfailed in 1907.87s (0:31:47)
+=== 2026-09-15T00:38:17+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PLAN_E1_E6.md TESTE.md core/test_eu_parola.py core/test_portal_bon.py core/test_rute_probate.py scripts/scan_rute_fara_proba.py 
+    HEAD : 23110f8c
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    1 failed, 5895 passed, 11 skipped, 14 xfailed in 1917.63s (0:31:57)
+=== 2026-09-15T04:42:32+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PLAN_E1_E6.md TESTE.md core/test_rute_probate.py core/test_scrieri_pana_in_declaratie.py masuratori/e3_declaratii_2026-09-15/clichete.txt ma
+    HEAD : c28000ec
+    FAILED core/test_cui_cnp_test_valid.py::test_cui_cnp_de_test_trec_checksum - ...
+    1 failed, 5934 passed, 11 skipped, 15 xfailed in 1947.16s (0:32:27)
+=== 2026-09-15T06:17:19+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md PLAN_E1_E6.md TESTE.md core/test_datorie.py core/test_limita_text_anaf.py 
+    HEAD : 32919d88
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    1 failed, 5941 passed, 7 skipped, 12 xfailed in 1944.24s (0:32:24)
+=== 2026-09-15T06:23:48+03:00 RESPINS pytest exit 143
+    stage: DECIZII.md PLAN_E1_E6.md TESTE.md core/test_datorie.py core/test_limita_text_anaf.py 
+    HEAD : 32919d88
+    ................Terminated
+=== 2026-09-15T09:23:36+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md PLAN_E1_E6.md TESTE.md core/straturi.py core/test_e2a_univers.py scripts/scan_univers_sql.py 
+    HEAD : 3ca96f2f
+    FAILED core/test_trasee.py::test_adnotarea_din_TRASEE_VERIFICARI_e_IDENTICA_cu_ce_masoara_instrumentul
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    2 failed, 5950 passed, 7 skipped, 11 xfailed in 1970.12s (0:32:50)
+=== 2026-09-15T15:12:48+03:00 RESPINS pytest exit 1
+    stage: ISTORIC.md PREDARE_LANT.md 
+    HEAD : 0976154e
+    FAILED core/test_predare_proaspata.py::test_cifra_131_e_marcata_invalidata_nu_corectata
+    1 failed, 6171 passed, 7 skipped, 11 xfailed in 1992.26s (0:33:12)
+=== 2026-09-15T17:54:07+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md GARZI.md TESTE.md core/test_atribuire_scrieri.py scripts/scan_functionalitati.py 
+    HEAD : 09b562ce
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 6178 passed, 7 skipped, 11 xfailed in 2216.00s (0:36:56)
+=== 2026-09-15T19:16:17+03:00 RESPINS pytest exit 1
+    stage: .gitignore GARZI.md LISTA_FUNCTIONALITATI.md TESTE.md VERIFICARE_FUNCTIONALITATI.md core/d300_reconciliere.py core/d394_reconciliere.py core/uc_tenants.py front
+    HEAD : 357a4d8a
+    FAILED core/test_mesaje_valueerror_publicat.py::test_diacritice_clichet_per_fisier
+    1 failed, 6180 passed, 7 skipped, 11 xfailed in 2170.39s (0:36:10)
+=== 2026-09-15T20:25:26+03:00 RESPINS pytest exit 1
+    stage: .gitignore GARZI.md LISTA_FUNCTIONALITATI.md TESTE.md VERIFICARE_FUNCTIONALITATI.md core/d300_reconciliere.py core/d394_reconciliere.py core/intracomunitar.py c
+    HEAD : 357a4d8a
+    FAILED core/test_cale_a_doua.py::test_co_modificarea_cere_decizie_scrisa - As...
+    FAILED core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    FAILED test_intracomunitar.py::test_desparte_gol - AssertionError: Regex patt...
+    4 failed, 6178 passed, 7 skipped, 11 xfailed in 2158.31s (0:35:58)
+=== 2026-09-15T21:39:27+03:00 RESPINS pytest exit 1
+    stage: .gitignore DECIZII.md GARZI.md LISTA_FUNCTIONALITATI.md TESTE.md TRASEE.md VERIFICARE_FUNCTIONALITATI.md core/d300_reconciliere.py core/d394.py core/d394_reconc
+    HEAD : 357a4d8a
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    2 failed, 6181 passed, 7 skipped, 11 xfailed in 2167.24s (0:36:07)
+=== 2026-09-15T23:36:06+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md 
+    HEAD : d23cc51d
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 6183 passed, 7 skipped, 11 xfailed in 2156.72s (0:35:56)
+=== 2026-09-16T00:15:41+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md GARZI.md LISTA_FUNCTIONALITATI.md TESTE.md VERIFICARE_FUNCTIONALITATI.md core/test_ordinea_cursorului.py core/uc_tenants.py frontend_test/proba_
+    HEAD : d23cc51d
+    FAILED core/test_paritate_p2.py::test_paritate_termene - AssertionError: asse...
+    1 failed, 6190 passed, 7 skipped, 11 xfailed in 2160.93s (0:36:00)
+=== 2026-09-16T00:27:15+03:00 RESPINS pytest exit 143
+    stage: CONFORMITATE.md GARZI.md LISTA_FUNCTIONALITATI.md TESTE.md VERIFICARE_FUNCTIONALITATI.md core/test_ordinea_cursorului.py core/test_paritate_p2.py core/uc_tenant
+    HEAD : d23cc51d
+    ...............Terminated
+=== 2026-09-16T04:56:49+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md LISTA_FUNCTIONALITATI.md PREDARE_LANT.md TESTE.md TRASEE.md TRASEE_VERIFICARI.md VERIFICARE_FUNCTIONALITATI.md core/d300.py 
+    HEAD : 5b8a61b3
+    FAILED core/test_d390_ziua15.py::test_migrare_si_exigibilitate_ziua15 - psyco...
+    FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+    FAILED core/test_p7_v2_scrieri.py::test_numarul_de_instructiuni_se_conserva
+    3 failed, 6190 passed, 7 skipped, 11 xfailed in 2162.53s (0:36:02)
+=== 2026-09-16T12:27:45+03:00 RESPINS pytest exit 1
+    stage: core/d406_active.py core/migrare_reevaluare.py core/repo_mijloace_fixe.py core/repo_reevaluari.py core/test_d406_active_duk.py core/test_reevaluare_registru.py 
+    HEAD : cfdd00ae
+    FAILED core/test_audit_schema.py::test_toti_tenantii_conform_cu_template - Fa...
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice
+    FAILED core/test_e2a_univers.py::test_CRITERIU_niciun_modul_cu_SQL_nu_e_nedeclarat
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_p7_v1_citiri.py::test_fiecare_functie_de_repository_primeste_cursorul
+    FAILED core/test_p7_v2_scrieri.py::test_numarul_de_instructiuni_se_conserva
+    FAILED core/test_trasee.py::test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul
+    13 failed, 6198 passed, 7 skipped, 11 xfailed in 2099.11s (0:34:59)
+=== 2026-09-16T13:25:57+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PREDARE_LANT.md TRASEE.md TRASEE_VERIFICARI.md core/d406_active.py core/migrare_reevaluare.py core/repo_mijloace_fixe.py core/repo_reevaluari.py core/s
+    HEAD : cfdd00ae
+    FAILED core/test_perimetru_firma_declarat.py::test_perimetrul_declarat_e_valid_si_complet
+    1 failed, 6212 passed, 7 skipped, 11 xfailed in 2113.68s (0:35:13)
+=== 2026-09-16T14:46:18+03:00 RESPINS pytest exit 1
+    stage: CONFORMITATE.md DECIZII.md GARZI.md ISTORIC.md PREDARE_LANT.md TESTE.md 
+    HEAD : d937eef6
+    FAILED core/test_reluari_decizie.py::test_fotografia_nu_pastreaza_morti - Ass...
+    1 failed, 6212 passed, 7 skipped, 11 xfailed in 2104.74s (0:35:04)
+=== 2026-09-16T17:06:51+03:00 RESPINS pytest exit 1
+    stage: core/control_incrucisat.py core/supervizor.py core/test_r191_amortizare_confruntata.py core/test_supervizor.py 
+    HEAD : 5492f0da
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    1 failed, 6224 passed, 7 skipped, 11 xfailed in 2102.20s (0:35:02)
+=== 2026-09-16T19:26:25+03:00 RESPINS pytest exit 1
+    stage: core/test_rute_probate.py core/test_rute_stoc_pana_in_declaratie.py 
+    HEAD : 4d938efd
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_garzi_inventar.py::test_blocul_din_GARZI_e_identic_cu_ce_genereaza_instrumentul
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    FAILED core/test_importuri_nefolosite.py::test_clichetul_nu_creste - Assertio...
+    8 failed, 6225 passed, 7 skipped, 11 xfailed in 2199.50s (0:36:39)
+=== 2026-09-16T20:52:25+03:00 RESPINS pytest exit 1
+    stage: GARZI.md core/test_rute_fiscale_lot3b.py core/test_rute_probate.py 
+    HEAD : 0d1909eb
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    1 failed, 6242 passed, 7 skipped, 11 xfailed in 2106.47s (0:35:06)
+=== 2026-09-16T21:37:09+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PREDARE_LANT.md core/test_rute_fiscale_lot3b.py core/test_rute_probate.py 
+    HEAD : 0d1909eb
+    FAILED core/test_mesaje_generare_fara_camp_intern.py::test_niciun_fisier_nu_creste_peste_baseline
+    FAILED core/test_temeiuri.py::test_temeiuri_reguli_validator_canonice - Asser...
+    2 failed, 6241 passed, 7 skipped, 11 xfailed in 2112.87s (0:35:12)
+=== 2026-09-16T22:29:05+03:00 RESPINS pytest exit 1
+    stage: GARZI.md PREDARE_LANT.md core/test_rute_fiscale_lot3b.py core/test_rute_probate.py 
+    HEAD : 0d1909eb
+    FAILED core/test_datorie.py::test_datorie_coduri_d402_d301_necorelate - [XPAS...
+    FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+    2 failed, 6242 passed, 7 skipped, 10 xfailed in 2112.74s (0:35:12)
+=== 2026-09-17T03:09:30+03:00 RESPINS pytest exit 1
+    stage: DECIZII.md METODA_VERIFICARE.md core/control_incrucisat.py core/supervizor.py core/test_r191_amortizare_confruntata.py core/test_rute_stoc_pana_in_declaratie.py
+    HEAD : 45503d84
+    FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+    FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+    FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+    FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+    FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+    FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+    6 failed, 6241 passed, 7 skipped, 10 xfailed in 2145.03s (0:35:45)
