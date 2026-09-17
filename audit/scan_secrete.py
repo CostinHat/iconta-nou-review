@@ -17,7 +17,11 @@ Orbirea LUI, declarata (METODA §22 — un instrument care nu-si spune modul de 
     arata, iar decizia ramane a omului;
   · calibrarea lui e in --autotest: isi pune singur, intr-un fisier temporar, cate o instanta din
     fiecare clasa si cere sa le gaseasca pe toate. Fara asta, "0 gasite" ar insemna deopotriva
-    "n-are ce gasi" si "s-a stricat".
+    "n-are ce gasi" si "s-a stricat";
+  · PROPRIA lui sursa se sare, si se spune ca s-a sarit. Mostrele de calibrare de mai jos SUNT
+    secrete sintetice, scrise cu mana: numarate ca gasiri, ar pune un "AWS_ACCESS_KEY 1" intr-un
+    raport publicat, unde se citeste gresit. Sarirea nu ascunde nimic — fisierul e in pachet,
+    lizibil, iar randul "sarit" spune de ce.
 
 A doua intrebare, la fel de importanta ca prima: CE E NOU. Un fisier al carui continut e deja in
 depozitul public nu poate scurge nimic prin publicarea pachetului — e deja acolo. Deci fiecare fisier
@@ -97,6 +101,14 @@ def scaneaza(radacina):
             rel = os.path.relpath(cale, radacina).replace(os.sep, "/")
             if n.lower().endswith(BINARE):
                 sarite.append((rel, "extensie binara"))
+                continue
+            if n == "SCAN_SECRETE.txt":
+                sarite.append((rel, "e chiar IESIREA acestui scan — fragmentele redactate din ea "
+                                    "s-ar renumara, si scanul s-ar masura pe sine"))
+                continue
+            if n == os.path.basename(__file__):
+                sarite.append((rel, "e CHIAR instrumentul — mostrele lui de calibrare sunt "
+                                    "secrete sintetice, prin constructie"))
                 continue
             try:
                 with open(cale, "r", encoding="utf-8", errors="strict") as f:
