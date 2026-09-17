@@ -110,6 +110,9 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
          # o copie literala aici s-ar rupe tacut de el la prima schimbare — exact felul in
          # care a aparut divergenta din D300 (gasita in aceeasi tura).
          "  AND " + _nsf394.clauza_tip_document("f") + " "
+         # [A3, 17.09.2026] a doua cale filtreaza STATUSUL ca generatorul: fara el, o factura anulata
+         # ramanea in cale2 desi generatorul o excludea -> divergenta care BLOCA generarea D394.
+         "  AND " + _nsf394.clauza_sql("f") + " "
          "GROUP BY f.id, c.cui ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         rows = _repo.sql(cur, q, inceput, sfarsit)

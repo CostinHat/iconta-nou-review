@@ -455,6 +455,18 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         raise RefuzContare("NU_E_DOCUMENT_FISCAL",
                            "proforma/avizul nu se contabilizează (nu e document fiscal)")
 
+    # [A3, 17.09.2026] O factură ANULATĂ / STORNATĂ nu primește notă: e un document VOID, iar nota
+    # ar afirma un fapt economic care nu există. Până azi `_conteaza_la_creare` nu se uita la status,
+    # deci un `POST /facturi {"status":"anulata"}` producea 4111=707/4111=4427 pentru o factură
+    # anulată. (`ciorna`/`descarcata` NU se blochează aici — nota-ciornă a unei de_preluat e normală.)
+    _st = (f.get("status") or "").strip().lower()
+    if _st in ("anulata", "stornata"):
+        raise RefuzContare(
+            "STATUS_VOID",
+            "Factura e %s și nu se contabilizează: o notă ar înregistra un fapt economic care nu "
+            "există. Un document anulat nu se contează; o stornare se declară prin documentul ei nou."
+            % _st, detalii={"factura_id": factura_id, "status": _st})
+
     # [A1, 17.09.2026] POARTA CONVERSIEI: o factură în valută FĂRĂ curs BNR nu se poate exprima în
     # lei, iar cartea e în lei. Nu se ghicește 1 (asta e chiar greșeala A1) — se refuză cu ieșirea
     # numită. Criteriul cerut: o factură fără total în lei nu poate fi contată și nu intră în

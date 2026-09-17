@@ -113,12 +113,16 @@ def _pull_facturi(conn, schema, an, luna):
     import psycopg2.extras as _E
     inceput = "%04d-%02d-01" % (an, luna)
     sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    from core import nomenclator_status_factura as _nsf390
     q = ("SELECT f.directie AS directie, "
          "COALESCE(c.cui, f.tert_cui) AS cui, COALESCE(c.nume, f.tert_nume) AS nume, "
          "f.total AS total, f.tva AS tva, f.axa_ic AS axa_ic, "   # [R186] axa, de pe document
          "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei "  # [A1] a doua cale IN LEI
          "FROM {s}.facturi f LEFT JOIN {s}.clienti c ON c.id = f.client_id "
-         "WHERE {e} >= %s AND {e} < %s ORDER BY f.id").format(s=schema, e=_EXIG_SQL)
+         # [A3, 17.09.2026] a doua cale filtreaza status + tip ca generatorul D390 (repo_d390), altfel
+         # o factura anulata/proforma ar diverge intre cai si ar bloca generarea.
+         "WHERE {e} >= %s AND {e} < %s AND " + _nsf390.clauza_tip_document("f")
+         + " AND " + _nsf390.clauza_sql("f") + " ORDER BY f.id").format(s=schema, e=_EXIG_SQL)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         rows = _repo.sql(cur, q, inceput, sfarsit)
     from core import sume_lei as _sl

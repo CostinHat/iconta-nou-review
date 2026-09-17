@@ -19,12 +19,21 @@ def select_firma_profil(cur):
     return cur.fetchone()
 
 
+from core.nomenclator_status_factura import (clauza_sql as _status_declarabil,      # [A3] status
+                                             clauza_tip_document as _doc_fiscal)     # [A3] tip
+
+
 def select_facturi(cur, _exig, inceput, sfarsit):
+    # [A3, 17.09.2026] D390 NU filtra nimic — nici statusul, nici tipul: proforme/avize și facturi
+    # `anulata`/`stornata`/`ciorna` intrau în operațiunile IC (o proformă IC + factura rezultată =
+    # dublă numărare). Se adaugă filtrele de status ȘI de tip, aceeași sursă unică ca D300/D394.
     cur.execute("SELECT f.id, f.tert_nume, f.tert_cui, c.nume AS c_nume, c.cui AS c_cui, "
                 "f.directie, f.total, f.tva, f.axa_ic, "
                 "f.moneda, f.curs_bnr, f.total_lei, f.tva_lei "  # [A1] conversia in lei (core.sume_lei)
                 "FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
-                "WHERE " + _exig + " >= %s AND " + _exig + " < %s ORDER BY f.id", (inceput, sfarsit))
+                "WHERE " + _exig + " >= %s AND " + _exig + " < %s "
+                "AND " + _doc_fiscal("f") + " AND " + _status_declarabil("f") + " "  # [A3] tip + status
+                "ORDER BY f.id", (inceput, sfarsit))
     return cur.fetchall()
 
 

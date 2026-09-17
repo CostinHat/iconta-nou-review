@@ -16,7 +16,14 @@ from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
 
 
 def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
-    cur.execute("SELECT i.factura_id AS fid, f.directie AS directie, SUM(l.suma) AS settled "
+    cur.execute("SELECT i.factura_id AS fid, f.directie AS directie, SUM(l.suma) AS settled, "
+                # [A2, 17.09.2026] Clasificarea partenerului CALATORESTE cu decontarea: fara ea,
+                # `_pull_incasare` intorcea doar {directie, decontari}, iar `calcul_d300` trata orice
+                # operatiune la incasare drept RO interna (tara lipsa -> 'RO'). Consecinta: livrarile/
+                # achizitiile IC, exportul si serviciile la incasare cadeau la rd.26/rd.9 in loc de
+                # rd.1/rd.5/rd.7/rd.14. Cheile sunt PER FACTURA (GROUP BY pe factura le pastreaza unice).
+                "COALESCE(f.tert_tara, 'RO') AS tert_tara, f.tert_cui AS cui, "
+                "f.axa_ic AS axa_ic, f.categorie_331 AS categorie_331 "
                 "FROM inregistrari i "
                 "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
                 "JOIN facturi f ON f.id = i.factura_id "
@@ -27,7 +34,8 @@ def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
                 "AND i.data >= %s AND i.data < %s "
                 "AND ((f.directie = 'emisa' AND l.cont_credit = '4111') "
                 "  OR (f.directie = 'primita' AND l.cont_debit = '401')) "
-                "GROUP BY i.factura_id, f.directie", (inceput, sfarsit))
+                "GROUP BY i.factura_id, f.directie, f.tert_tara, f.tert_cui, f.axa_ic, f.categorie_331",
+                (inceput, sfarsit))
     return cur.fetchall()
 
 

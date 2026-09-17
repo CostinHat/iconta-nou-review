@@ -8784,9 +8784,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**598 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**601 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 567
+### `core/` — 570
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8823,6 +8823,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_a1_garda_lei.py` — [A1, 17.09.2026] GARDĂ anti-regresie: fiecare cititor care transformă factura în cifră de
 - `core/test_a1_lei_pur.py` — [A1, 17.09.2026] Conversia in lei — probe PURE, de la cifra in jos.
 - `core/test_a1_valuta_pana_in_declaratie.py` — [A1, 17.09.2026] Factura în VALUTĂ, de la caz până în decont — prin lanțul real.
+- `core/test_a2_tvai_ic.py` — [A2, 17.09.2026] TVA la încasare: o achiziție IC decontată ajunge la rd.5/rd.18, nu la rd.26.
+- `core/test_a3_a4_lant.py` — [A3, A4 — 17.09.2026] De la caz până în declarație, prin lanțul real.
+- `core/test_a5_rutare_non_ue.py` — [A5, 17.09.2026] Partener non-UE: serviciile se rutează pe rd.3 / rd.7+rd.20, nu pe rd.14 / rd.26.
 - `core/test_absenta_nu_e_neaplicabil.py` — GARD DE CLASĂ (21.08.2026): „niciun X înregistrat" nu poate deveni „nu se datorează".
 - `core/test_achizitii_factura.py` — NECONFORMITATE ACTIVA reparata (04.08): operatiunile de achizitie (achizitie_ic, achizitie_taxare_inversa)
 - `core/test_acoperire_vizuala.py` — [Regula 14 + metoda-ca-poarta, cerut de Costin 19.08.2026] GARD: o schimbare de UI cere un scan

@@ -11,6 +11,9 @@ FIECARE FUNCTIE PRIMESTE CURSORUL APELANTULUI. Nu deschide conexiuni, nu comite,
 nu construieste `HTTPException`. *Hotarele tranzactiei raman ale apelantului — contractul P4 nu se
 redeschide aici.*
 """
+from core.nomenclator_status_factura import (clauza_sql as _status_declarabil,      # [A3] status
+                                             clauza_tip_document as _doc_fiscal)     # [A3] tip
+
 
 def select_firma_profil(cur):
     cur.execute("SELECT nume, cui, adresa, oras, cod_postal, platitor_tva, tip_decont "
@@ -52,19 +55,25 @@ def select_inregistrari(cur, di, ds):
 
 
 def select_factura_linii(cur, di, ds):
+    # [A3, 17.09.2026] subquery-ul de facturi filtreaza status + tip (aceeasi sursa unica), altfel
+    # liniile unei facturi anulate/proforme intrau in SAF-T SalesInvoices/PurchaseInvoices.
     cur.execute("SELECT factura_id, id, descriere, um, "
                 "COALESCE(cantitate,0) AS cantitate, "
                 "COALESCE(pret_unitar,0) AS pret_unitar, "
                 "COALESCE(cota_tva,0) AS cota_tva "
                 "FROM factura_linii WHERE factura_id IN "
-                "(SELECT id FROM facturi WHERE data_emitere >= %s AND data_emitere < %s) "
+                "(SELECT id FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
+                " AND " + _doc_fiscal(None) + " AND " + _status_declarabil(None) + ") "
                 "ORDER BY factura_id, id", (di, ds))
 
 
 def select_facturi_3(cur, di, ds):
+    # [A3] D406 nu filtra status/tip — facturile anulate/proforme intrau in SAF-T. Se adauga filtrele.
     cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, "
                 "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
                 "moneda, curs_bnr, total_lei, tva_lei, "  # [A1] conversia in lei (SAF-T CurrencyCode=RON)
                 "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie "
-                "FROM facturi WHERE data_emitere >= %s AND data_emitere < %s ORDER BY id", (di, ds))
+                "FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
+                "AND " + _doc_fiscal(None) + " AND " + _status_declarabil(None) + " "
+                "ORDER BY id", (di, ds))
     return cur.fetchall()

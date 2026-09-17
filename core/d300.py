@@ -301,7 +301,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                 cd = d.get("cota")
                 ci = None if cd is None else int(round(float(cd)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
                 gross = Decimal(str(d.get("suma") or 0))
-                if gross <= 0:
+                if gross == 0:   # [A2] o decontare negativa (storno) reduce; doar zero exact nu poarta info
                     continue
                 tva = _tvi.tva_din_incasare(gross, ci) if ci else Decimal(0)
                 segmente.append((ci, gross - tva, tva))   # (cota, baza exigibila, tva exigibil)
@@ -334,7 +334,14 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                             if tip_ic in ("T", "R"):
                                 tr_reclas.append((directie, tip_ic))
                     else:
-                        export_livr += baza          # rd.14 export (scutit cu drept)
+                        # [A5, 17.09.2026] non-UE: SERVICIILE prestate au locul in afara RO -> rd.3
+                        # (prestari cu locul in afara RO, UE SAU non-UE — structD300 rd.3), NU rd.14.
+                        # rd.14 e EXPORT de BUNURI (scutit cu drept). Pana azi orice emisa non-UE cadea
+                        # la rd.14, indiferent de axa. Serviciile cer axa='servicii' pe document.
+                        if tip_ic == "P":
+                            ic_prest_serv += baza    # rd.3 prestari servicii cu locul in afara RO
+                        else:
+                            export_livr += baza          # rd.14 export bunuri (scutit cu drept)
                 else:
                     if ue:
                         # [F125] tip din SURSA UNICA D390: A=bunuri->rd.5+rd.18; S=servicii->rd.7+rd.20 (oglinda).
@@ -347,7 +354,18 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                             ic_ach_t += baza * Decimal(cota_std_ic) / Decimal(100)  # autolichidare la cota interna
                             ic_ach_n += 1
                     else:
-                        f_zero_b += baza             # import non-UE 0% -> ruta scutite/neimpozabile (rd.26)
+                        # [A5, 17.09.2026] non-UE: SERVICIILE primite pentru care beneficiarul RO e
+                        # obligat la plata se autolichideaza -> rd.7 colectat + rd.20 deductibil (oglinda,
+                        # net zero la deducere integrala), ca la serviciile IC. Pana azi orice primita
+                        # non-UE 0% cadea la rd.26 (neimpozabil), iar TVA-ul autolichidat disparea.
+                        # BUNURILE importate non-UE au TVA in vama (rd.21, TVA achitat la import) — NU e
+                        # modelat aici; raman pe rd.26 si se semnaleaza ca axa nedeclarata mai sus.
+                        if tip_ic == "S":
+                            ic_serv_b += baza                                      # rd.7 baza (autolichidare servicii non-UE)
+                            ic_serv_t += baza * Decimal(cota_std_ic) / Decimal(100)  # autolichidare la cota interna
+                            ic_serv_n += 1
+                        else:
+                            f_zero_b += baza             # import non-UE 0% bunuri -> ruta scutite/neimpozabile (rd.26; vama rd.21 nemodelat)
                 continue
             if emisa:
                 if ci in col:
@@ -944,10 +962,16 @@ def _pull_incasare(cur, inceput, sfarsit):
     out = []
     for r in settle:
         gross = Decimal(str(r["settled"] or 0))
-        if gross <= 0:
+        # [A2] o decontare NEGATIVA (storno rambursat) REDUCE, nu se pierde tacit: se lasa sa treaca
+        # (aloca proportional negativ). Doar zero-ul exact nu poarta informatie.
+        if gross == 0:
             continue
         dec = _aloca_pe_cote(gross, linii.get(r["fid"]), totaluri.get(r["fid"]))
-        out.append({"directie": r["directie"], "decontari": dec})
+        # [A2] clasificarea PER FACTURA calatoreste cu decontarea, ca `calcul_d300` sa ruteze IC/export/
+        # servicii la incasare pe randul corect (rd.1/rd.5/rd.7/rd.14), nu la RO intern.
+        out.append({"directie": r["directie"], "decontari": dec,
+                    "tert_tara": r.get("tert_tara"), "cui": r.get("cui"),
+                    "axa_ic": r.get("axa_ic"), "categorie_331": r.get("categorie_331")})
     return out
 
 

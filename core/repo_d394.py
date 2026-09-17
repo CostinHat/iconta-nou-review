@@ -17,9 +17,14 @@ def select_firma_profil(cur):
 
 
 from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
+from core.nomenclator_status_factura import clauza_sql as _status_declarabil  # [A3] filtru de STATUS
 
 
 def select_facturi(cur, inceput, sfarsit):
+    # [A3, 17.09.2026] D394 filtra doar TIPUL (proforma/aviz), NU statusul: o factura `anulata` sau
+    # `stornata` intra in D394 cu baza/TVA — desi D300 le exclude. Consecinta masurata de audit: op1
+    # si rezumat2 supra-declarate fata de D300 rd.9. Se adauga acelasi filtru de status ca D300 (sursa
+    # unica `nomenclator_status_factura`: ciorna/de_preluat/descarcata/anulata/stornata excluse).
     cur.execute("""
                     SELECT f.id, f.directie, f.total, f.tva, f.taxare_inversa AS ti,
                            f.moneda, f.curs_bnr, f.total_lei, f.tva_lei,
@@ -34,6 +39,7 @@ def select_facturi(cur, inceput, sfarsit):
                       LEFT JOIN factura_linii l ON l.factura_id = f.id
                      WHERE f.data_emitere >= %s AND f.data_emitere < %s
                        AND """ + _doc_fiscal("f") + """
+                       AND """ + _status_declarabil("f") + """
                      GROUP BY f.id, c.nume, c.cui
                      ORDER BY f.id
                 """, (inceput, sfarsit))

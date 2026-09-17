@@ -265,6 +265,15 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     if tip_op_v not in ("normal", "avans", "regularizare_avans"):
         raise ValueError("Tipul operațiunii %r nu e recunoscut. Alege: normal, avans sau "
                          "regularizare de avans." % tip_operatiune)
+    # [A3, 17.09.2026] Statusul e din NOMENCLATOR, nu text liber. Până azi `FacturaIn.status` trecea
+    # nevalidat prin `creeaza_factura`; o valoare inventată ar fi intrat în bază și ar fi decis tăcut
+    # includerea în declarații (clauza de status compară cu lista nedeclarabilelor). Refuzul numește câmpul.
+    from core import nomenclator_status_factura as _nsf_creare
+    _status_v = (status or _nsf_creare.IMPLICITA).strip().lower() or _nsf_creare.IMPLICITA
+    if _status_v not in _nsf_creare.STARI:
+        raise ValueError("Starea %r nu e recunoscută ca stare de factură. Stări acceptate: %s."
+                         % (status, ", ".join(sorted(_nsf_creare.STARI))))
+    status = _status_v
     # [EEE1] `tip` intra la INSERT, nu printr-un UPDATE de dupa. Motivul nu e stilistic: nota
     # automata se scrie in ACEEASI tranzactie, iar ea trebuie sa stie daca documentul e factura sau
     # proforma. Cat timp tipul se punea dupa, o proforma ar fi primit nota si abia apoi ar fi devenit
@@ -433,6 +442,7 @@ def detalii_factura(conn, factura_id):
             "SELECT id, client_id, numar, data_emitere, data_scadenta, total, tva, "
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "tert_tara, tip_operatiune, furnizor_tva_incasare, "
+            "taxare_inversa, categorie_331, axa_ic, tert_platitor_tva, data_faptului_generator, "  # [A4] clasificarea storno-ului
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
             "link_plata, platita_la, plata_confirmata_de, "  # [R43] marca de simulare
             "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
@@ -826,12 +836,25 @@ def storneaza(conn, factura_id):
     # de azi și storno-ul n-ar anula exact suma în lei a facturii inițiale.
     _mon_orig = orig.get("moneda") or "RON"
     _curs_orig = orig.get("curs_bnr")
+    # [A4, 17.09.2026] Storno-ul COPIAZĂ clasificarea originalului. Fără ea, `creeaza_factura` cădea
+    # pe implicite (`tert_tara="RO"`, `taxare_inversa=False`, axa None), iar storno-ul unei livrări IC
+    # devenea o „livrare RO cu cotă 0" neclasificabilă — nu scădea rd.1/rd.13, deci D300 ≠ D390. Cu
+    # bazele negate (linii_neg) și aceeași clasificare, storno-ul aterizează pe ACELAȘI rând ca
+    # originalul și îl reduce. `data_faptului_generator` se copiază: exigibilitatea corecției urmează
+    # faptul original (art. 284).
     r = creeaza_factura(conn, numar, datetime.date.today().isoformat(), "emisa",
                         linii_neg, client_id=orig.get("client_id"),
                         tert_nume=orig.get("tert_nume"), tert_cui=orig.get("tert_cui"), tert_adresa=orig.get("tert_adresa"),
                         moneda=_mon_orig, status="de_preluat",
                         curs=(None if str(_mon_orig).upper() == "RON" else _curs_orig),
-                        data_curs=orig.get("data_curs"), curs_sursa=orig.get("curs_sursa"))
+                        data_curs=orig.get("data_curs"), curs_sursa=orig.get("curs_sursa"),
+                        tert_tara=(orig.get("tert_tara") or "RO"),
+                        taxare_inversa=bool(orig.get("taxare_inversa")),
+                        categorie_331=orig.get("categorie_331"),
+                        axa_ic=orig.get("axa_ic"),
+                        tip_operatiune=(orig.get("tip_operatiune") or "normal"),
+                        tert_platitor_tva=orig.get("tert_platitor_tva"),
+                        data_faptului_generator=orig.get("data_faptului_generator"))
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s, storno_din_id = %s WHERE id = %s",
                     (serie, factura_id, r["factura_id"]))
