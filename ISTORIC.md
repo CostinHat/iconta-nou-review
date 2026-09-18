@@ -1,3 +1,36 @@
+## 18.09.2026 — **da, s-au schimbat patru cifre pe care le depui**
+
+**Pentru un contabil: patru corecții, fiecare la o cifră care pleacă la ANAF.** Toate au venit dintr-un
+audit independent al aplicației, iar fiecare a fost reparată cu o probă care merge de la cazul contabil
+până în rândul declarației.
+
+- **Dividende (D205): cota se ia după data DISTRIBUIRII, nu după anul depunerii.** Un dividend aprobat
+  în 2025 și plătit la începutul lui 2026 se impozitează acum cu **10%** (cota de la distribuire), nu cu
+  16% (Legea 141/2025 art. VII: cei care au distribuit interimar în 2025 rămân la 10%, fără recalculare).
+  Înainte, o astfel de plată ieșea supradeclarată cu 6% din dividend — cazul cel mai frecvent de la
+  început de an.
+- **Impozit pe profit (D100): se calculează CUMULAT de la 1 ianuarie.** Plata trimestrială e diferența
+  față de ce s-a impozitat deja, iar pierderea unui trimestru scade cumulatul. Un trimestru cu profit
+  după unul cu pierdere nu mai plătește 16% pe tot profitul lui, ci pe cumulat (art. 41 Cod fiscal).
+- **Import e-Factura: baza liniei ia reducerea și prețul „la mia de bucăți".** Dacă factura UBL are o
+  reducere pe linie (`AllowanceCharge`) sau un preț exprimat la o cantitate de bază (`BaseQuantity`),
+  baza care intră în D300/D394 e acum cea reală — nu `cantitate × preț` brut, care o umfla.
+- **Factură primită cu două cote (21 și 11): TVA deductibilă se face PE COTE.** Nota contabilă a unei
+  facturi mixte nu mai aplică cota cea mai mare pe toată baza; 4426 se calculează pe fiecare cotă, iar
+  controlul încrucișat cu D300 nu mai iese roșu degeaba.
+
+**Ce s-a mai făcut, și NU se vede din scaunul contabilului:** o recalibrare mare a instrumentelor cu care
+mă verific pe mine — scanerele care spun „ce rută atinge o cifră de declarație" și „ce n-are probă"
+raportau cifre goale fiindcă erau oarbe pe câteva drumuri (apeluri prin parametru, citiri prin `%s`, nume
+prinse dintr-un comentariu). Corectate, iar un clichet care spunea „zero" spune acum „zece", cu cele zece
+rute numite. *Nu schimbă nicio cifră pe care o depui; schimbă cât de mult pot minți instrumentele mele
+despre aplicație.* La fel, o reparație la o poartă internă care se blocase fiindcă a intrat a doua
+jumătate a lunii (o verificare care se activează spre scadența TVA) — invizibilă din afară.
+
+*Restanțe închise în runda asta: A1–A8, A10, B1–B4, C1–C3, E-nota, D1–D10. Restanțe rămase deschise, cu
+motiv scris: A9, A11, A12, C4, C5, C6, plafonul micro, CAM pe concediul medical, `salarizare.cam`, și
+căile de mașină din §0. Poarta: verde de trei ori azi — `d9de53a2`, `8bf059c2`, `5ff1b8ba`.*
+
 ## 17.09.2026, partea a doua — **nu s-a schimbat nimic pentru un contabil**
 
 **Se scrie ca atare, nu se sare.** Restul zilei n-a atins niciun ecran, niciun refuz, nicio cifră și

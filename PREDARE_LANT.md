@@ -1,13 +1,14 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **aplicația e construită și păzită; lanțul e în AȘTEPTAREA FOLOSIRII DE CĂTRE COSTIN** (17.09.2026)
+# PREDARE LANȚ — **aplicația e construită și păzită; runda a doua (audit independent) e închisă; lanțul e în AȘTEPTAREA FOLOSIRII DE CĂTRE COSTIN** (18.09.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-17**, la **intrarea în așteptarea folosirii**. *Rescriere completă:
-  campania s-a terminat, deci documentul nu mai descrie o lucrare în curs, ci o stare.*
-- **pe commit**: `d8034c54`. *Predarea se scrie ÎNAINTE de commitul care o poartă; numele de aici e
-  al celui precedent, prin construcție.*
+- **ultima rescriere**: **2026-09-18**, la **închiderea rundei a doua** (răspuns la un raport de audit
+  independent). *Rescriere țintită: s-au rescris antetul, lanțul, starea, restanțele și „dacă continui";
+  restul e păstrat. Documentul revine la a descrie o STARE, nu o lucrare — runda s-a terminat.*
+- **pe commit**: `5ff1b8ba` (ultimul al rundei). *Predarea se scrie ÎNAINTE de commitul care o poartă;
+  numele de aici e al celui precedent, prin construcție.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -43,6 +44,7 @@ deschizi documentul fără nicio comandă în față.
 | **etapa 2** — date valide, până în declarație | toate cele nouă declarații; 29 de unități-nucleu, pe 31 de lanțuri | 06 și 16.09.2026 |
 | **cele patru lucrări numite** | R59 · R191 · cele 8 rute cu clichet · cele 8 citări DUK | `45503d84` |
 | **cele două cerințe ale lui Costin** | tăria `CERTA` cu limita în constatare (R115) · refuzul reevaluării (R192) | `fd7e40d4` |
+| **runda a doua — audit independent** (18.09) | A1 conversia în lei (tot lanțul + reconcilieri) · B1–B4 apartenența pe obiect · A2–A5 · A6 cotă dividend după distribuire · A7/A8-micro/A8-profit · C1–C3 · A10 import e-Factura · E-nota contare mixtă · **D1–D10 scanerele care mint, clichete de la cifra reală (SUBSET 0→10, NICAIERI 3→21)** + gardă-mutație D4 · §0 parțial | `0dc088db`…`5ff1b8ba` |
 
 **Ce a rămas deschis, și e scris ca datorie cu clichet, nu ca pas:** rutele care scriu fără probă în
 suită · modulele cu amestec OBSERVAT, toate ACTE, care au voie să-și dețină tranzacția · `logrotate`
@@ -224,11 +226,11 @@ completă, fără excepție.**
 ---
 ## STAREA LA PREDARE
 
-**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** Ultima, pe `d8034c54`:
+**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** Ultima, pe `5ff1b8ba`:
 
 ```
-6247 passed, 7 skipped, 10 xfailed in 2107.04s (0:35:07)
-verificator:  TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+6315 passed, 7 skipped, 10 xfailed in 2106.88s (0:35:06)
+verificator:  TOTAL scanat 210 = ACCEPTAT 209 + GRI 0 + ROSU 0 + EXCLUS 1
               TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
 TOTAL: 0 candidate
 ```
@@ -292,6 +294,14 @@ VERIFICARE 26 · ARTEFACT 9 · ORDINE 7.
 
 **Regula care le guvernează pe toate, din 17.09:** o restanță se închide **doar când o atinge altă
 lucrare**. Nu sunt o coadă de sarcini și nu se iau la rând. V. **0Z**.
+
+**[18.09.2026 — runda a doua le-a atins pe multe.** Auditul independent a fost lucrarea care le-a
+atins. ÎNCHISE cu probă: A1–A8, A10, B1–B4, C1–C3, E-nota, D1–D10. DESCHISE cu motiv scris (în mesajele
+commiturilor `8bf059c2`/`5ff1b8ba`, nu aici): A9 (D394 tvai), A11 (exigibilitate D300/D390), A12 (pro-rata),
+C4 (cere ANAF), C5 (idempotență import extras — cere cheie pe import, nu index pe linie), C6-minore,
+plafonul micro 100.000 EUR, CAM pe indemnizația CM, `salarizare.cam` (atinge motorul de salarii), și
+§0-greu (căile `/home/costin` din 64 de fișiere + scriptul unic de construire a bazei). **Numărul total
+rămâne derivat cu `scripts/raport_b.py`**, nu scris aici.**
 
 ---
 ## CIFRE INVALIDATE — se păstrează, nu se șterg
@@ -758,7 +768,12 @@ a ce e adevărat **acum**.
    Trei, în `audit/`, toate rulabile de oricine are depozitul:
 
    - `deriva_cifrele.py` — pentru **fiecare clichet**, valoarea scrisă în cod și valoarea
-     recalculată **acum**, cu verdict și cu linia care o recalculează;
+     recalculată **acum**, cu verdict și cu linia care o recalculează. *[18.09.2026] Exact acest
+     instrument a dovedit, în runda a doua, că trei clichete reproduceau GOL: scanerele erau oarbe
+     (un nivel de apeluri, citiri prin `%s`, nume dintr-un comentariu), iar `SUBSET_FISCAL=0`/
+     `NICAIERI=3` erau artefacte, nu cifre. Recalibrate (D1–D10), realul e 10 și 21, plus o gardă-
+     mutație nouă (`test_d4_mutatie_prinsa`). Anti-vacuumul pentru NECORELATE=0 (jar DUK absent) e
+     acum în instrument, nu doar în probă.*;
    - `deriva_neverificatul.py` — ce **nu** e verificat: restanțele deschise cu condiția lor,
      interdicțiile nemăsurate, `xfail`-urile cu motivul, orbirea **declarată** a fiecărui instrument,
      rutele fără probă, acoperirea de browser;
