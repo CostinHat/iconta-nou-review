@@ -30,14 +30,20 @@ from scripts import scan_rute_fara_proba as _s  # noqa: E402
 
 # Măsurate la 15.09.2026, după lotul „scrierile care ajung în cifre de declarație" (41 de rute).
 # Scad doar cu probe scrise, niciodată prin lărgirea definiției lui „numită".
-PLAFON_IN_SUITA = 77          # 131 la 14.09 · 88 la 15.09 (plafon; realul era 86) · 82 la 16.09
+PLAFON_IN_SUITA = 76          # 131 la 14.09 · 88 la 15.09 · 82 la 16.09 · 76 la 18.09 (scaner onest)
 #: [16.09.2026] 88 -> 82 -> 77, în două jumătăți ale aceleiași lucrări. Și o corectură de-a mea:
 #: **88 era un PLAFON, nu o cifră.** Măsurat pe commitul de bază printr-un `git worktree`, la
 #: `cfdd00ae` realul era **86** — scrisesem întâi „a scăzut 88 -> 86", ceea ce era fals: nu scăzuse
 #: nimic, plafonul era doar mai sus decât cifra. Cele nouă rute care au ieșit azi au ieșit cu probe
 #: SCRISE (`test_rute_stoc_pana_in_declaratie.py`, `test_rute_fiscale_lot3b.py`), nu prin lărgirea
 #: definiției lui „numită". Clichetul stă acum pe cifra reală, nu peste ea.
-PLAFON_NICAIERI = 3
+#: [18.09.2026 · runda 2, D5] **3 era un ARTEFACT, nu o cifră.** `_fisiere_de_proba(doar_suita=False)`
+#: lua TOATE `.py` din `core/`, deci chiar modulul care DEFINEȘTE ruta o „numea" prin propria
+#: definiție — „nicăieri" ajunsese să însemne „în niciun fișier", nu „în niciun fișier care PROBEAZĂ".
+#: Cu modulele de implementare scoase (D5) + granița de cuvânt + fără comentarii (D3) + `%d`/`%s` în
+#: cale (D10), realul e **21**. Nu au apărut rute noi; s-a corectat un scaner orb. Clichetul stă acum
+#: pe cifra reală, ca o rută nou-nenumită să se vadă.
+PLAFON_NICAIERI = 21
 
 # Clichetul care contează cel mai tare: rute care scriu în tabele din care se RIDICĂ DECLARAȚII,
 # derivate din cod de `scripts/scan_scrieri_declaratii.py` (tabele scrise ∩ tabele citite de
@@ -51,12 +57,23 @@ PLAFON_NICAIERI = 3
 #: reevaluare-imobilizare) și `core/test_rute_fiscale_lot3b.py` (migrare/importa,
 #: banca/…/conteaza, bonuri/…/stinge, retete/descarca).
 #:
-#: **ȘI DE-AIA NU MAI E UN CLICHET, E UN CRITERIU.** Un clichet la zero n-ar mai păzi nimic: „cel
-#: mult zero" și „exact zero" se citesc la fel doar cât timp cifra chiar e zero, iar prima rută nouă
-#: care ar scrie într-un tabel de declarație fără probă ar încăpea sub el. Scris ca EGALITATE,
-#: creșterea se vede în ziua în care se produce. *Aceeași mutare ca la clichetul celor 385 de rute
-#: din valul use-case, și din același motiv.*
-PLAFON_SUBSET_FISCAL = 0
+#: **ȘI DE-AIA E UN CRITERIU (EGALITATE), NU UN PLAFON.** Prima rută nouă care ar scrie într-un tabel
+#: de declarație fără probă ar încăpea sub un `<=`. Scris ca EGALITATE, creșterea se vede în ziua în
+#: care se produce.
+#:
+#: [18.09.2026 · runda 2, D1+D2] **0 era FALS — scanerul era orb pe trei drumuri.** (a) urmărea UN
+#: singur nivel de apeluri, deci `wc_sinc` (-> `sincronizeaza` -> `_importa(facturi_api)` ->
+#: `emite_factura`) și `stocuri_descarcare` ieșeau cu ZERO tabele; (b) `citite_de_generatoare` nu
+#: vedea tabelele citite prin helperi/`FROM %s` (beneficii_lunare, pontaj, salariu_istoric, d300_manual)
+#: ori de sub-generatoarele D406 (mijloace_fixe, reevaluari, miscari_stoc); (c) rutele „numite" doar
+#: într-un comentariu ori ca subșir treceau drept probate. Cu recursia call-graph + suplimentele
+#: DECLARATE pentru dispatch-ul prin parametru/`%s` (D1/D2) + granița de cuvânt/fără comentarii (D3),
+#: realul e **10**: articole_import_salveaza, jurnal_sterge, jurnal_editeaza, mijloace_import_salveaza,
+#: nota_avans, salariat_beneficiu_lunar, tenant_pontaj_set, stocuri_descarcare, cv_transfer, wc_sinc.
+#: (jurnal_sterge/jurnal_editeaza erau „numite" de un comentariu; nota_avans e subșir al lui
+#: `nota_avans_platit` — exact cele scoase la iveală de D3.) Cele zece scriu în tabele de declarație și
+#: NU au probă de comportament în suită — restanță NUMITĂ (nu o zero falsă). O a unsprezecea se vede.
+PLAFON_SUBSET_FISCAL = 10
 
 
 def test_CLICHET_rutele_care_scriu_fara_proba_in_suita_nu_cresc():

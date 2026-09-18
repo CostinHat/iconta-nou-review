@@ -82,6 +82,19 @@ def sectiunea_A():
         print("  %-24s scris=%-6s acum=%-6s  %s" % (const, scris, acum, "OK" if ok else "!! DIVERG"))
         print("      %s" % ce)
         print("      recalculează: %s" % expr)
+        # [D6, 18.09.2026] ANTI-VACUUM pt NECORELATE: `acum=0` poate însemna „toate citările se
+        # corelează" SAU „niciun jar validator instalat, deci nu s-a putut confrunta nimic". Fără
+        # nota asta, un 0 vid s-ar citi ca un 0 curat — exact defectul pe care instrumentul îl caută.
+        if const == "PLAFON_NECORELATE" and acum == 0:
+            try:
+                from scripts import scan_coduri_validator as _sc
+                _nec, _fara, _disc = _sc.confrunta()
+                if _fara and not _disc:
+                    print("      !! VID: NECORELATE=0 fiindcă %d citări au mers în `fara_validator` "
+                          "(niciun jar instalat), NU fiindcă se corelează. Cifra nu e o măsurătoare "
+                          "cât timp DUKIntegrator lipsește din pachet." % len(_fara))
+            except Exception as _e:  # noqa: BLE001
+                print("      (anti-vacuum indisponibil: %s)" % str(_e)[:50])
     _linie()
     print("  clichete care NU coincid: %d" % rele)
     print()

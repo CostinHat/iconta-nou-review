@@ -39,10 +39,17 @@ if RAD not in sys.path:
 from core import scan_sql_efectiv as _sql  # noqa: E402
 from scripts import scan_rute_fara_proba as _rute  # noqa: E402
 
+# [D10, 18.09.2026] `ON CONFLICT ... DO UPDATE SET col=...` -> `update SET` prinde `set` ca tabel fals;
+# la fel `tenant_pontaj_set` da `{'set','pontaj'}`. `set` e în `NU_E_TABEL`, deci se filtrează DUPĂ
+# potrivire (nu în regex, unde un lookahead ar consuma spațiul și ar rupe `UPDATE tabel`).
 SCRIE = re.compile(r"\b(?:insert\s+into|update|delete\s+from)\s+([a-z_{}\"\.%0-9]+)", re.I)
+# [D10] `FROM` din `EXTRACT(... FROM data_pif)` e în paranteză de funcție -> se exclude prin negative
+# lookbehind pe `extract(` (aproximativ: orice `(` de funcție care conține FROM). Aici, mai simplu:
+# lista `NU_E_TABEL` prinde cuvintele-cheie SQL care nu sunt tabele.
 CITESTE = re.compile(r"\b(?:from|join)\s+([a-z_{}\"\.%0-9]+)", re.I)
-# Nume care nu sunt tabele: sub-interogări, funcții, tabele temporare de CTE.
-NU_E_TABEL = {"", "select", "(", "values", "unnest", "generate_series", "dual"}
+# Numere/cuvinte care nu sunt tabele: sub-interogări, funcții, tabele temporare de CTE, `SET`
+# (din DO UPDATE SET), și numele de câmp de dată prinse fals de `EXTRACT(YEAR FROM ...)`.
+NU_E_TABEL = {"", "select", "(", "values", "unnest", "generate_series", "dual", "set"}
 
 
 def _curata(nume):
@@ -54,11 +61,17 @@ def _curata(nume):
     return n.strip('"').strip()
 
 
+_EXTRACT = re.compile(r"extract\s*\([^)]*\)", re.I)
+
+
 def _tabele(instructiuni, tipar):
     out = set()
     for s in instructiuni:
         if not isinstance(s, str):
             continue
+        # [D10] `EXTRACT(YEAR FROM data_pif)` -> `FROM data_pif` NU e tabel; se scoate expresia
+        # EXTRACT înainte de potrivire (FROM-ul din paranteza funcției de dată e argument, nu tabel).
+        s = _EXTRACT.sub(" ", s)
         for m in tipar.findall(s):
             t = _curata(m)
             if t and t not in NU_E_TABEL and not t.startswith("%"):
@@ -84,40 +97,81 @@ def _module_importate(cale_rel):
     return out
 
 
-def _sql_cu_un_nivel(cale_rel, nod):
-    """SQL-ul nodului + al funcțiilor chemate `modul.functie(...)`, UN nivel."""
-    out = list(_sql.sql_din_nod(cale_rel, nod))
-    module = _module_importate(cale_rel)
-    # importurile locale (în corpul funcției) contează: use-case-urile importă des înăuntru
+_ADANCIME_MAX = 6
+
+
+def _apeluri_modul(cale_rel, nod):
+    """{alias: 'core/x.py'} — importuri de modul `core`, la nivel de MODUL (`_module_importate`) plus
+    cele LOCALE din corpul nodului (use-case-urile importă des înăuntru)."""
+    module = dict(_module_importate(cale_rel))
     for n in ast.walk(nod):
         if isinstance(n, ast.ImportFrom) and (n.module or "") == "core":
             for a in n.names:
                 c = "core/%s.py" % a.name
                 if os.path.exists(os.path.join(RAD, c)):
                     module[a.asname or a.name] = c
+    return module
+
+
+def _sql_recursiv(cale_rel, nod, _vazute=None, _adancime=0):
+    """SQL-ul nodului + al funcțiilor chemate `modul.functie(...)`, RECURSIV până la `_ADANCIME_MAX`
+    nivele (D1, 18.09.2026). Înainte se urmărea UN singur nivel, iar o rută care scrie printr-un lanț
+    de două-trei module (`wc_sinc` -> `woocommerce.sincronizeaza` -> `facturi_api.emite_factura` ->
+    facturi/factura_linii) ieșea cu ZERO tabele și cădea din subsetul fiscal. Ciclurile se opresc prin
+    `_vazute` (pereche (modul, funcție)); adâncimea e plafonată ca să nu se blocheze pe recursii lungi."""
+    if _vazute is None:
+        _vazute = set()
+    out = list(_sql.sql_din_nod(cale_rel, nod))
+    if _adancime >= _ADANCIME_MAX:
+        return out
+    module = _apeluri_modul(cale_rel, nod)
     for n in ast.walk(nod):
         if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
                 and isinstance(n.func.value, ast.Name)):
             cale_mod = module.get(n.func.value.id)
             if not cale_mod:
                 continue
+            cheie = (cale_mod, n.func.attr)
+            if cheie in _vazute:
+                continue
+            _vazute.add(cheie)
             try:
                 for f in ast.walk(_sql._arbore(cale_mod)):
                     if (isinstance(f, (ast.FunctionDef, ast.AsyncFunctionDef))
                             and f.name == n.func.attr):
-                        out += _sql.sql_din_nod(cale_mod, f)
+                        out += _sql_recursiv(cale_mod, f, _vazute, _adancime + 1)
             except Exception:
                 pass
     return out
 
 
+# [D1, 18.09.2026] Rute care scriu în tabele de declarație printr-un dispatch pe care analiza STATICĂ
+# nu-l poate urmări: modulul care face SQL-ul e PASAT CA PARAMETRU (`wc_sinc` -> `_wc.sincronizeaza`
+# -> `_importa(facturi_api, ...)` -> `facturi_api.emite_factura`), sau se alege dinamic. Recursia
+# `_sql_recursiv` urmărește `mod.functie(...)` prin importuri, dar nu poate rezolva un modul primit ca
+# argument — ar cere analiză de flux de date. Declarate explicit, cu tabelele reale, ca subsetul să nu
+# le RATEZE tăcut. *Scris ca să fie o alegere, nu o omisiune.* Confruntat cu sursa 18.09.2026.
+_SCRIERI_INDIRECTE = {
+    "wc_sinc": {"facturi", "factura_linii"},          # _importa(facturi_api) -> emite_factura
+    "stocuri_descarcare": {"inregistrari", "inregistrari_linii"},  # descarca_luna -> _noteaza (SQL local)
+}
+
+
 def scrise_de_ruta(nume_functie):
-    """(tabele_scrise, unde) — sau (set(), None) dacă funcția nu se găsește cu corp."""
+    """(tabele_scrise, unde) — sau (set(), None) dacă funcția nu se găsește cu corp.
+    Reuniunea tabelelor DERIVATE din SQL (recursiv, D1) cu cele DECLARATE pentru dispatch indirect."""
+    indirecte = _SCRIERI_INDIRECTE.get(nume_functie, set())
     try:
         cale, nod = _sql.functia(nume_functie)
     except LookupError:
-        return set(), None
-    return _tabele(_sql_cu_un_nivel(cale, nod), SCRIE), cale
+        return (set(indirecte), None) if indirecte else (set(), None)
+    return _tabele(_sql_recursiv(cale, nod), SCRIE) | set(indirecte), cale
+
+
+# [D2a, 18.09.2026] Sub-generatoare care NU potrivesc `^d\d{3}[a-z]?\.py$`: D406 Assets/Stocks se
+# generează în `d406_active.py`/`d406_stocuri.py` (mijloace_fixe/reevaluari/miscari_stoc). Fără ele,
+# tabelele alea nu intrau în `citite_de_generatoare`, iar rutele care le scriu cădeau din subset.
+_GENERATOARE_EXTRA = {"d406_active.py", "d406_stocuri.py"}
 
 
 def _module_declaratii():
@@ -125,13 +179,28 @@ def _module_declaratii():
     for f in sorted(os.listdir(os.path.join(RAD, "core"))):
         if not f.endswith(".py") or f.startswith(("test_", "repo_", "scan_")):
             continue
-        if re.match(r"^d\d{3}[a-z]?\.py$", f) or f in ("bilant.py",):
+        if re.match(r"^d\d{3}[a-z]?\.py$", f) or f in ("bilant.py",) or f in _GENERATOARE_EXTRA:
             out.append("core/" + f)
     return out
 
 
+# [D2b, 18.09.2026] Tabele citite de generatoare printr-un DRUM pe care scanul de SQL nu-l vede:
+# ori prin `FROM %s` (numele tabelului e parametru — `salariu_istoric.py:29`, orbire declarată), ori
+# printr-un HELPER chemat de generator (`d112` -> `beneficii`/`pontaj`; `d406_active`/`d406_stocuri`
+# construiesc SQL-ul din bucăți). Fără ele, rutele care le scriu (`salariat_beneficiu_lunar`,
+# `tenant_pontaj_set`, `mijloace_import_salveaza`, `cv_transfer`, ...) cădeau TĂCUT din subsetul fiscal.
+# *Scris ca să fie o alegere, nu o omisiune* — nu se pot deriva din SQL, deci se numesc, cu declarația
+# care le citește. Confruntat cu sursa 18.09.2026 (d112.py:723/819/804, d300.py:1058, uc_tenants.py:5062/5092).
+_CITITE_DECLARATE = {
+    "beneficii_lunare": ["d112"], "pontaj": ["d112"], "salariu_istoric": ["d112"],
+    "d300_manual": ["d300"], "mijloace_fixe": ["d406_active"], "reevaluari": ["d406_active"],
+    "miscari_stoc": ["d406_stocuri"],
+}
+
+
 def citite_de_generatoare():
-    """{tabel: [module de declarație care îl citesc]}."""
+    """{tabel: [module de declarație care îl citesc]}. Include sursele DERIVATE din SQL + cele
+    DECLARATE (`_CITITE_DECLARATE`), citite pe drumuri pe care scanul nu le vede (D2b)."""
     harta = {}
     for cale in _module_declaratii():
         try:
@@ -140,6 +209,10 @@ def citite_de_generatoare():
             continue
         for t in _tabele(instr, CITESTE):
             harta.setdefault(t, []).append(os.path.basename(cale)[:-3])
+    for t, module in _CITITE_DECLARATE.items():
+        for m in module:
+            if m not in harta.setdefault(t, []):
+                harta[t].append(m)
     return harta
 
 

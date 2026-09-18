@@ -25,6 +25,7 @@ import io
 import os
 import re
 import sys
+import tokenize
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if RAD not in sys.path:
@@ -59,26 +60,51 @@ def _fisiere_de_proba(doar_suita=False):
             for f in files:
                 if not f.endswith(".py"):
                     continue
-                if doar_suita and not f.startswith("test_"):
-                    continue
                 if f.startswith("scan_") or f.startswith("verificator"):
                     continue     # instrumentele NUMESC rute ca să le măsoare, nu ca să le probeze
+                if doar_suita and not f.startswith("test_"):
+                    continue
+                # [D5, 18.09.2026] Un fișier de PROBĂ e `test_*.py` sau orice din `frontend_test/`.
+                # Modulele de IMPLEMENTARE (`core/*.py`, `scripts/*.py` ne-test) NU sunt probe — altfel
+                # chiar modulul care DEFINEȘTE ruta o „numește" prin propria definiție, iar `NICAIERI`
+                # ieșea artificial de mic (3 în loc de realul de zeci). „Nicăieri" înseamnă „în niciun
+                # fișier care PROBEAZĂ", nu „în niciun fișier".
+                if not (f.startswith("test_") or loc == "frontend_test"):
+                    continue
                 yield os.path.join(dirpath, f)
 
 
 _CACHE = {}
 
 
+def _fara_comentarii(text):
+    """[D3, 18.09.2026] Textul fără COMENTARII, ca un nume de rută scris într-un comentariu să nu
+    „probeze" ruta. Șirurile rămân (probele lovesc calea prin literal: `cl.post(\"/x/5\")`). Pe fișier
+    invalid sintactic, se întoarce textul brut (mai bine zgomot decât o excepție care oprește scanul)."""
+    try:
+        bucati = []
+        for tok in tokenize.generate_tokens(io.StringIO(text).readline):
+            if tok.type == tokenize.COMMENT:
+                continue
+            bucati.append(tok.string)
+        return "\n".join(bucati)
+    except Exception:
+        return text
+
+
 def _sursele(doar_suita):
     if doar_suita not in _CACHE:
-        _CACHE[doar_suita] = [io.open(c, encoding="utf-8", errors="ignore").read()
+        _CACHE[doar_suita] = [_fara_comentarii(io.open(c, encoding="utf-8", errors="ignore").read())
                               for c in _fisiere_de_proba(doar_suita)]
     return _CACHE[doar_suita]
 
 
 def _tipar_cale(cale):
     """`/portal/bon/{bon_id}/confirma` → regex care prinde și `/portal/bon/5/confirma`."""
-    bucati = [re.escape(b) if not (b.startswith("{") and b.endswith("}")) else r"[^/\"'%]+"
+    # [D10, 18.09.2026] Un segment `{id}` se potrivește cu un segment concret (`5`) SAU cu un format
+    # `%d`/`%s` — stilul dominant al probelor e `\"/tenants/%d/...\" % tid`, pe care `[^/\"'%]+` îl rata
+    # (excludea `%`), iar ruta ieșea fals „nenumită".
+    bucati = [re.escape(b) if not (b.startswith("{") and b.endswith("}")) else r"(?:[^/\"'%]+|%[sd])"
               for b in cale.split("/")]
     # ANCORAT la capăt. Fără asta, `/tenants/{id}/produse` se potrivea și într-o probă care cheamă
     # `/tenants/5/produse/7` — adică o rută era declarată „numită" de proba ALTEIA, iar cifra ieșea
@@ -88,13 +114,19 @@ def _tipar_cale(cale):
 
 def nenumite(doar_suita=False, surse=None):
     """[(cale, metoda, functie)] — rute care scriu și pe care nicio probă nu le numește."""
-    texte = surse if surse is not None else _sursele(doar_suita)
+    # `surse` (univers fabricat pentru calibrare/gardă) trece prin ACELAȘI filtru de comentarii ca
+    # sursele reale — altfel un comentariu fabricat ar „numi" o rută, iar garda D4 ar minți.
+    texte = ([_fara_comentarii(t) for t in surse] if surse is not None else _sursele(doar_suita))
     out = []
     for cale, metoda, nume in rute():
         tipar = _tipar_cale(cale)
+        # [D3, 18.09.2026] numele se caută pe GRANIȚĂ DE CUVÂNT, nu ca subșir: `nota_avans` nu mai e
+        # „numit" de `nota_avans_platit`, iar `set` nu de `pontaj_set`. Împreună cu `_fara_comentarii`
+        # (numele dintr-un comentariu nu mai probează), asta oprește cele 20 de rute „numite" fals.
+        tipar_nume = re.compile(r"\b%s\b" % re.escape(nume)) if nume else None
         gasit = False
         for t in texte:
-            if (nume and nume in t) or tipar.search(t):
+            if (tipar_nume and tipar_nume.search(t)) or tipar.search(t):
                 gasit = True
                 break
         if not gasit:

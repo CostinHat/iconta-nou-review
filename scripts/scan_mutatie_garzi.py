@@ -23,7 +23,9 @@ import collections
 import pathlib
 import re
 
-RAD = pathlib.Path("/home/costin/iconta_nou")
+# [D8/§0, 18.09.2026] rădăcina se derivă din locul fișierului, nu se hardcodează la mașina cuiva —
+# altfel, pe orice alt clone, scanul măsura „0 fișiere din 0" și ieșea verde despre o lume goală.
+RAD = pathlib.Path(__file__).resolve().parents[1]
 CONV = re.compile(r"_(prinde|prind|detecteaza|detecteaza|semnaleaza|respinge)_", re.I)
 
 

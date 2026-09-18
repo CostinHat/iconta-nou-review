@@ -140,7 +140,10 @@ def sectiunea_D():
                 continue
             doc = ast.get_docstring(arb) or ""
             for ln in doc.split("\n"):
-                if any(x in ln for x in tipare):
+                # [D9, 18.09.2026] case-INSENSITIV: scanerele scriu antetul cu MAJUSCULE („UNDE E
+                # OARBĂ"), iar căutarea case-sensitive „Unde e oarbă" le rata, deci cele trei scanere
+                # ale clichetelor lipseau din lista §D.
+                if any(x.lower() in ln.lower() for x in tipare):
                     gasite += 1
                     print("  %s/%s" % (d, f))
                     print("      %s" % ln.strip()[:150])
