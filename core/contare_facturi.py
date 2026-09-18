@@ -380,24 +380,42 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
                                       tva_incasare=tvai, cont_venit=g["cv"])
         return note
 
-    cur.execute("SELECT COALESCE(SUM(cantitate*pret_unitar),0) AS baza, MAX(cota_tva) AS cota "
-                "FROM %sfactura_linii WHERE factura_id=%%s" % _p(schema), (fid,))
-    fl = cur.fetchone()
-    baza = Decimal(str((fl["baza"] if isinstance(fl, dict) else fl[0]) or 0)) * _curs  # [A1] baza IN LEI
-    cota = (fl["cota"] if isinstance(fl, dict) else fl[1])
-    if baza == 0:
+    # [E1/A6-runda2, 18.09.2026] PRIMITĂ pe COTE, ca emisa — nu `MAX(cota_tva)` pe toată factura.
+    # O factură mixtă 21/11 aplica 21% pe toată baza -> 4426 supraevaluat, iar controlul încrucișat cu
+    # D300 (care calculează corect pe rânduri) ieșea roșu -> risc de „corectare" a declarației după carte.
+    cur.execute("SELECT cota_tva, COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
+                "FROM %sfactura_linii WHERE factura_id=%%s GROUP BY cota_tva ORDER BY cota_tva"
+                % _p(schema), (fid,))
+    grupuri = [dict(r) for r in cur.fetchall()]
+    total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
+
+    def _nota_primita(baza_lei, cota_frac):
+        if f.get("taxare_inversa"):
+            # art. 331: la beneficiar 4426 = 4427 (autocolectare), nu TVA pe 401. Funcția exista în
+            # `core/facturi.py` de la început și nu o chema nimeni — cât timp contarea era un act rar,
+            # nu se vedea. De când e automată, se vede la fiecare factură.
+            return _fc.taxare_inversa(baza_lei, cota=cota_frac, la_data=la_data, cont=cont_cheltuiala or None)
+        return _fc.factura_primita(baza_lei, cota=cota_frac, la_data=la_data, tva_incasare=tvai,
+                                   cont=cont_cheltuiala or None)
+
+    if total_baza == 0:
+        # factură fără linii (legacy): cade pe antet, o singură cotă (MAX). Antetul IN LEI.
         _tl, _vl = _sl.antet_lei(f)
         baza = _tl - _vl
-    if cota is None:
+        cur.execute("SELECT MAX(cota_tva) AS cota FROM %sfactura_linii WHERE factura_id=%%s"
+                    % _p(schema), (fid,))
+        r = cur.fetchone()
+        cota_h = r["cota"] if isinstance(r, dict) else r[0]
+        if cota_h is None:
+            raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
+        return _nota_primita(baza, Decimal(str(cota_h)) / 100)
+    if any(g["cota_tva"] is None for g in grupuri):
         raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
-    cota = Decimal(str(cota)) / 100
-    if f.get("taxare_inversa"):
-        # art. 331: la beneficiar 4426 = 4427 (autocolectare), nu TVA pe 401. Funcția exista în
-        # `core/facturi.py` de la început și nu o chema nimeni — cât timp contarea era un act rar,
-        # nu se vedea. De când e automată, se vede la fiecare factură.
-        return _fc.taxare_inversa(baza, cota=cota, la_data=la_data, cont=cont_cheltuiala or None)
-    return _fc.factura_primita(baza, cota=cota, la_data=la_data, tva_incasare=tvai,
-                               cont=cont_cheltuiala or None)
+    note = []
+    for g in grupuri:
+        note += _nota_primita(Decimal(str(g["baza"] or 0)) * _curs,   # [A1] baza IN LEI
+                              Decimal(str(g["cota_tva"])) / 100)
+    return note
 
 
 def _descriere(f, data_nota=None, motiv_data=None):

@@ -24,6 +24,32 @@ def _txt(el, cale):
 def _cui_norm(cui):
     return re.sub(r"^RO", "", (cui or "").strip().upper()).strip()
 
+def _pret_efectiv(cant, pret, baza_linie, baza_qty):
+    """[A10, 18.09.2026] Prețul unitar EFECTIV al liniei, ca `cantitate × pret` să dea baza REALĂ.
+    UBL: `LineExtensionAmount` e netul liniei DUPĂ `AllowanceCharge` și cu `BaseQuantity` deja aplicat —
+    e sursa autoritară. Dacă e prezent, întoarce `LineExtensionAmount / cantitate`. Dacă lipsește, cade
+    pe `PriceAmount / BaseQuantity` (prețul e per `BaseQuantity` unități, nu per unitate). Fără asta, o
+    reducere pe linie sau un preț „la 1000 buc" supradeclară baza în D300/D394 (linia = cantitate × preț)."""
+    from decimal import Decimal, InvalidOperation
+
+    def _d(x):
+        try:
+            return Decimal(str(x))
+        except (InvalidOperation, ValueError, TypeError):
+            return None
+    q = _d(cant)
+    if q is None or q == 0:
+        q = Decimal(1)
+    le = _d(baza_linie)
+    if le is not None:
+        return str(le / q)
+    p = _d(pret) or Decimal(0)
+    bq = _d(baza_qty)
+    if bq is not None and bq != 0:
+        p = p / bq
+    return str(p)
+
+
 def _parte(el, tag):
     """Nume + CUI dintr-un cac:AccountingSupplierParty/AccountingCustomerParty."""
     p = el.find(f"cac:{tag}/cac:Party", NS)
@@ -59,10 +85,15 @@ def parseaza_xml(continut, cui_firma):
     tert = (cli_nume, cli_cui) if emisa else (furn_nume, furn_cui)
     linii = []
     for ln in root.findall("cac:InvoiceLine", NS):
+        cant = _txt(ln, "cbc:InvoicedQuantity") or "1"
         linii.append({
             "descriere": _txt(ln, "cac:Item/cbc:Name"),
-            "cantitate": _txt(ln, "cbc:InvoicedQuantity") or "1",
-            "pret_unitar": _txt(ln, "cac:Price/cbc:PriceAmount") or "0",
+            "cantitate": cant,
+            # [A10] pret EFECTIV: baza = LineExtensionAmount (net dupa AllowanceCharge/BaseQuantity),
+            # nu cantitate x PriceAmount brut. Vezi `_pret_efectiv`.
+            "pret_unitar": _pret_efectiv(
+                cant, _txt(ln, "cac:Price/cbc:PriceAmount") or "0",
+                _txt(ln, "cbc:LineExtensionAmount"), _txt(ln, "cac:Price/cbc:BaseQuantity")),
             "cota_tva": _txt(ln, "cac:Item/cac:ClassifiedTaxCategory/cbc:Percent") or "0",
         })
     return {

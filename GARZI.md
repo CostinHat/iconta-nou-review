@@ -8784,9 +8784,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**608 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**610 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 577
+### `core/` — 579
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8817,6 +8817,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/scan_valori_afisate.py` — Valori FISCALE scrise literal in TEXTUL AFISAT de ecrane.
 - `core/test_11_deducere_copii_gard.py` — GARD #11: deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) NU se acorda tacit — art.77 alin.(12)-(13)
 - `core/test_12_salariu_minim_luna.py` — GARD #12: CF art.77 alin.(3) teza finala — cand in aceeasi luna se aplica mai multe valori ale
+- `core/test_a10_efactura_baza_linie.py` — [A10, 18.09.2026] Import e-Factura: baza liniei = `LineExtensionAmount` (netul UBL după
 - `core/test_a11y_contrast_tokens.py` — core/test_a11y_contrast_tokens.py — GARD: token-urile de culoare trec contrastul WCAG AA (4.5:1).
 - `core/test_a11y_landmarks.py` — [Regula 6 + Regula 13] GARD LANDMARKS app-wide (18.08.2026).
 - `core/test_a11y_touch_target.py` — [Regula 6] GARD touch-target (AA 2.5.8, 18.08.2026) - ratchet pe stil.css (fara browser, ruleaza in poarta).
@@ -9092,6 +9093,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_ds_verificator.py` — GARDĂ [R103, 30.08.2026]: legătura `DESIGN_SYSTEM.md` → `verificator_conformitate.py` nu mai
 - `core/test_duk.py` — Teste gardian pentru duk (partea pura, fara java).
 - `core/test_duk_severitate.py` — GARD A2: DUK distinge atentionare (A:, NU blocheaza depunerea) de eroare (E:, blocheaza). Fixturi REALE
+- `core/test_e1_contare_primita_mixt.py` — [E1, 18.09.2026] Contarea unei facturi PRIMITE mixte (21/11) se face PE COTE, nu cu `MAX(cota_tva)`
 - `core/test_e2a_univers.py` — E2a — universul se declară, amestecul se OBSERVĂ.
 - `core/test_echilibru_legat.py` — core/test_echilibru_legat.py — GARDA R33 varianta b'' (26.08.2026).
 - `core/test_echilibru_perioada.py` — core/test_echilibru_perioada.py — GARD C3 (integritate in timp): partida dubla pe perioada + orfani.
