@@ -13,6 +13,9 @@ registrul. Diferența E lista ramurilor — tabelele pe care calculul le citeșt
 drumuri. Măsurat la 09.09.2026: din 27 de surse ale lui `control_fiscal`, **24 se citesc
 necondiționat**, iar trei sunt sub ramuri: `miscari_stoc`, `pontaj`, `salariu_istoric`.
 `termene` n-are niciuna — cele 5 surse ale lui se citesc de fiecare dată.
+[A6/Lot7, 18.09.2026] A 28-a sursă, `efactura_primite`, e CONDIȚIONATĂ de dată (citită doar spre
+scadența TVA, a doua jumătate a lunii) — declarată și cu trigger, dar exclusă din setul „atinsă pe
+orice zi" (vezi `firma_rezumat.TABELE_CONDITIONALE` și `test_ramurile_acopera_tot_ce_declara_registrul`).
 
 **CUM SE PROBEAZĂ.** Setup-urile se aplică **cumulativ** pe aceeași firmă, iar după fiecare se
 măsoară din nou. *Delta* arată ce a deschis chiar setup-ul acela. Ordinea contează și e declarată:
@@ -281,7 +284,12 @@ def test_ramurile_acopera_tot_ce_declara_registrul(acoperire):
     O sursă declarată și neatinsă de nicio ramură e ori moartă, ori are o ramură pe care n-am
     construit-o — și în al doilea caz nu știm dacă lista ei e completă."""
     atinse = _tot(acoperire)
-    declarate = set(FR.tabele_urmarite())
+    # [A6/Lot7, 18.09.2026] Sursele CONDIȚIONATE (ex. `efactura_primite`) sunt citite doar când o
+    # fereastră de obligație e deschisă (spre scadență), nu în fiecare zi — o ramură evaluată la
+    # `azi_ro()` nu le poate atinge determinist. Rămân DECLARATE și cu trigger, dar se scad din setul
+    # „trebuie atinsă de o ramură" (vezi `firma_rezumat.TABELE_CONDITIONALE`), altfel proba ar pica pe
+    # zilele de la început de lună când tabela nu e citită.
+    declarate = set(FR.tabele_urmarite()) - set(FR.TABELE_CONDITIONALE)
     neatinse = sorted(declarate - atinse)
     assert not neatinse, (
         "surse declarate pe care nicio ramură nu le atinge: %s\n"

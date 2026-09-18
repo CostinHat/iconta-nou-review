@@ -160,10 +160,20 @@ NEURMARITE_PUBLIC = ("tenants", "users", "accounting_firms")
 _T_CONTROL_FISCAL = (
     "articole", "asociati", "beneficii_lunare", "bonuri", "casa_operatiuni", "chitante",
     "clienti", "concedii_medicale", "d300_manual", "d301_operatiuni", "d390_manual",
-    "d390_reclasificare", "extras_linii", "factura_linii", "facturi", "firma_profil",
-    "furnizori", "inregistrari", "inregistrari_linii", "mijloace_fixe", "miscari_stoc",
-    "perioada_confirmata", "plan_conturi", "pontaj", "salariati", "salariu_istoric",
-    "solduri_initiale")
+    "d390_reclasificare", "efactura_primite", "extras_linii", "factura_linii", "facturi",
+    "firma_profil", "furnizori", "inregistrari", "inregistrari_linii", "mijloace_fixe",
+    "miscari_stoc", "perioada_confirmata", "plan_conturi", "pontaj", "salariati",
+    "salariu_istoric", "solduri_initiale")
+
+#: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
+#: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite
+#: neprocesate abia în a doua jumătate a lunii, spre termenul TVA (măsurat: necitită pe 17 ale lunii,
+#: citită pe 18 și 25). RĂMÂN surse cu drepturi depline — sunt în `_T_CONTROL_FISCAL`, deci DECLARATE
+#: (o citire nedeclarată = o valoare veche arătată drept curentă) și primesc TRIGGER (o e-factură nouă
+#: TREBUIE să invalideze verdictul din cache). Singura lor particularitate: nu pot fi cerute „atinse pe
+#: ORICE zi" — de aceea `test_ramurile_acopera_tot_ce_declara_registrul` le scade din setul obligatoriu.
+#: *Scris aici ca să fie o alegere, nu o omisiune* (ca `NEURMARITE_PUBLIC`).
+TABELE_CONDITIONALE = ("efactura_primite",)
 
 _T_TERMENE = ("clienti", "d390_manual", "facturi", "firma_profil", "salariati")
 

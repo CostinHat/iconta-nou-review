@@ -75,12 +75,14 @@ def _q(x):
     return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def _venituri_independent(conn, perioada):
+def _venituri_independent(conn, perioada, fereastra=None):
     """Venituri din ORICE sursa (70x+75x+76x) minus 709, note VALIDATE, in fereastra.
     SQL PROPRIU - aceeasi REGULA ca `repo_d100.select_inregistrari_linii` (A8, art. 53(1)), dar
     agregare INDEPENDENTA (nu se cheama pull). [A8, 17.09.2026] Inainte lua doar 70x, deci diverge de
-    generator care include acum 75x/76x si scade 709 -> gardul bloca generarea D100."""
-    inc, sf = perioada.interval()
+    generator care include acum 75x/76x si scade 709 -> gardul bloca generarea D100.
+    `fereastra=(inc, sf)` suprascrie perioada.interval() (folosit de reconcilierea PROFIT pentru
+    ferestrele CUMULATIVE de la 01.01, art.41 - vezi reconciliaza)."""
+    inc, sf = fereastra if fereastra is not None else perioada.interval()
     q = ("SELECT COALESCE(SUM(CASE WHEN (l.cont_credit LIKE '70%%' OR l.cont_credit LIKE '75%%' "
          "        OR l.cont_credit LIKE '76%%') THEN l.suma ELSE 0 END),0) "
          "     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) "
@@ -91,10 +93,11 @@ def _venituri_independent(conn, perioada):
         return Decimal(str(_repo.sql(cur, q, inc, sf)[0] or 0))
 
 
-def _cheltuieli_independent(conn, perioada):
+def _cheltuieli_independent(conn, perioada, fereastra=None):
     """SUM(l.suma) pe cont_debit 6xx (cheltuieli), note VALIDATE, in fereastra. SQL PROPRIU.
-    Pentru regim PROFIT: profit contabil = venituri(70x) - cheltuieli(6xx) (baza impozitului pe profit)."""
-    inc, sf = perioada.interval()
+    Pentru regim PROFIT: profit contabil = venituri(70x) - cheltuieli(6xx) (baza impozitului pe profit).
+    `fereastra=(inc, sf)` suprascrie perioada.interval() (ferestrele CUMULATIVE ale reconcilierii profit)."""
+    inc, sf = fereastra if fereastra is not None else perioada.interval()
     q = ("SELECT COALESCE(SUM(l.suma),0) FROM inregistrari_linii l "
          "JOIN inregistrari i ON i.id = l.inregistrare_id "
          "WHERE i.status='validata' AND l.cont_debit LIKE '6%%' "
@@ -129,16 +132,27 @@ def reconciliaza(conn, perioada, res, manual=None):
                     "D100 pentru el (limita 3)." % regim, res.an, res.luna)}
 
     cod_oblig, nume_cota = _REGIM_OBLIG[regim]
-    venituri = _venituri_independent(conn, perioada)
     # [profit base fix 16.08] profit 103 se impoziteaza pe PROFIT (venituri - cheltuieli 6xx), micro 121 pe
     # venituri. ACEEASI baza ca generatorul -> reconcilierea nu da fals-pozitiv (limita 5 ramane: ajustarile
     # FISCALE nedeductibile/neimpozabile art.19+ nu se recalculeaza aici, doar profitul contabil).
     if regim == "profit":
-        baza = venituri - _cheltuieli_independent(conn, perioada)
+        # [A8, 18.09.2026] Impozitul pe profit e CUMULAT de la 01.01 (art.41 CF), plata trimestriala =
+        # diferenta. Baza efectiva a trimestrului = max(0, profit cumulat pana la sfarsitul trim) -
+        # max(0, profit cumulat pana la sfarsitul trim anterior). ACEEASI regula ca `d100.pull` (calea 1) ->
+        # reconcilierea nu da fals-pozitiv. Un trimestru cu profit dupa unul cu pierdere nu se mai impoziteaza
+        # pe tot profitul (bug A8), iar pierderea nu genereaza obligatie negativa (clip la 0).
+        import datetime as _dt
+        _inc, _sf = perioada.interval()
+        _an1 = _dt.date(res.an, 1, 1)
+        _p_now = _venituri_independent(conn, perioada, (_an1, _sf)) - _cheltuieli_independent(conn, perioada, (_an1, _sf))
+        _p_prev = _venituri_independent(conn, perioada, (_an1, _inc)) - _cheltuieli_independent(conn, perioada, (_an1, _inc))
+        prof_now = _p_now if _p_now > 0 else Decimal(0)
+        prof_prev = _p_prev if _p_prev > 0 else Decimal(0)
+        baza = prof_now - prof_prev
         if baza < 0:
             baza = Decimal(0)
     else:
-        baza = venituri
+        baza = _venituri_independent(conn, perioada)
     procent = _cota_procent(regim, nume_cota, res.an, res.luna, manual)
     suma_cale2 = _q(baza * procent / Decimal(100))
 

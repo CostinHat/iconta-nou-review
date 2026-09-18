@@ -497,11 +497,11 @@ def test_fiecare_tabela_sursa_are_trigger_pe_o_firma_reala(firma_reala):
 
 def test_aspectele_grele_isi_declara_sursele():
     """Prima formă nu declara NICIUNA pentru cele două aspecte grele — deci nimic nu le invalida.
-    `control_fiscal` citește 27 de tabele, măsurat."""
+    `control_fiscal` citește 28 de tabele (a 28-a, `efactura_primite`, condiționată de dată — A6/Lot7)."""
     for a in FR.ASPECTE_GRELE:
         assert FR.ASPECTE[a]["tabele"], "%s nu declară nicio sursă" % a
     assert len(FR.ASPECTE["control_fiscal"]["tabele"]) >= 25, (
-        "control_fiscal declară %d tabele; măsurătoarea a găsit 27"
+        "control_fiscal declară %d tabele; măsurătoarea a găsit 28"
         % len(FR.ASPECTE["control_fiscal"]["tabele"]))
 
 

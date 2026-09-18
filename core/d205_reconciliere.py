@@ -37,12 +37,19 @@ def _q(x):
 
 
 def _dividende_independent(conn, an):
-    """Total dividende (Σ cont debit 457, note VALIDATE, anul) + asociatii cu cota>0 - SQL PROPRIU."""
+    """Total dividende (Σ cont debit 457, note VALIDATE, anul) + asociatii cu cota>0 + impozitul PONDERAT
+    pe rata fiecarei distribuiri (A6, art.VII Legea 141/2025) - SQL PROPRIU + atribuire FIFO independenta."""
+    from core import common as _c
+    from core import dividende_curs as _dc
     inc, sf = date(an, 1, 1).isoformat(), date(an + 1, 1, 1).isoformat()
     with conn.cursor() as cur:
         total_div = _q(_repo.select_inregistrari_linii(cur, inc, sf)[0] or 0)
         asoc = _repo.select_asociati(cur)
-    return total_div, asoc
+        randuri = _repo.select_457_miscari(cur, sf)
+    miscari = [{"data": r[0], "distribuit": r[1], "platit": r[2]} for r in randuri]
+    imp_pond, _pl, _di = _dc.impozit_ponderat(
+        miscari, an, lambda d: _c.cota("impozit_dividend", d)[0])
+    return total_div, asoc, imp_pond
 
 
 def _consistenta_interna(perioada, res):
@@ -55,11 +62,18 @@ def _consistenta_interna(perioada, res):
     de round() prin conventia de rotunjire a contabilului; o abatere >1 leu = eroare, nu rotunjire)."""
     an = perioada.an
     from core import common as _c   # registrul de lege (cota impozit dividende period-aware)
-    cota_div = Decimal(str(_c.cota("impozit_dividend", date(an, 12, 31))[0]))
+    rate_an = Decimal(str(_c.cota("impozit_dividend", date(an, 12, 31))[0]))
+    rate_prev = Decimal(str(_c.cota("impozit_dividend", date(an - 1, 12, 31))[0]))
+    rate_set = {rate_an, rate_prev}
     divergente = []
     for b in res.beneficiari:
-        asteptat = _q(Decimal(int(b.baza1)) * cota_div)
-        if abs(int(b.imp1) - asteptat) > 1:
+        # [A6, 18.09.2026] Un dividend poate fi DISTRIBUIT în anul anterior (cota acelui an) și plătit
+        # acum — imp1 e consistent dacă = round(baza1 × r) pentru rata anului CURENT SAU a celui
+        # ANTERIOR (art.VII alin.2 Legea 141/2025: distribuirea 2025 rămâne 10% chiar plătită în 2026).
+        # d1 rămâne o plasă contra unui imp1 grosolan greșit (0, dublu, cotă inexistentă), fără să bată
+        # rata legitimă de la granița anilor.
+        asteptat = _q(Decimal(int(b.baza1)) * rate_an)
+        if all(abs(int(b.imp1) - _q(Decimal(int(b.baza1)) * r)) > 1 for r in rate_set):
             divergente.append({"beneficiar": b.cif or b.nume1, "camp": "consistenta_interna",
                                "imp1": int(b.imp1), "rate_baza": asteptat})
     return divergente
@@ -81,16 +95,16 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
                     "aplica; verificata DOAR consistenta interna "
                     "imp1=round(cota dividendului x baza1).", perioada.an)}
     an = perioada.an
-    from core import common as _c   # registrul de lege (cota impozit dividende period-aware)
-    cota_div = Decimal(str(_c.cota("impozit_dividend", date(an, 12, 31))[0]))
-    total_div, asoc = _dividende_independent(conn, an)
+    total_div, asoc, imp_pond = _dividende_independent(conn, an)
     gen = {str(b.cif): b for b in res.beneficiari}
     divergente = []
     for nume, cnp, cota in asoc:
         parte = _q(Decimal(total_div) * Decimal(str(cota)) / Decimal(100))
         if parte <= 0:
             continue
-        imp = _q(Decimal(parte) * cota_div)
+        # [A6] impozitul căii 2 = ponderat pe rata fiecărei distribuiri (FIFO), × cota asociatului -
+        # ACEEAȘI regulă ca generatorul, dar recalculată INDEPENDENT din registru (nu single-rate 31.12).
+        imp = _q(Decimal(str(imp_pond)) * Decimal(str(cota)) / Decimal(100))
         b = gen.get(str(cnp or ""))
         if b is None:
             divergente.append({"beneficiar": cnp or nume, "camp": "beneficiar LIPSA din declaratie",

@@ -8784,9 +8784,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**606 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**608 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 575
+### `core/` — 577
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8826,8 +8826,10 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_a2_tvai_ic.py` — [A2, 17.09.2026] TVA la încasare: o achiziție IC decontată ajunge la rd.5/rd.18, nu la rd.26.
 - `core/test_a3_a4_lant.py` — [A3, A4 — 17.09.2026] De la caz până în declarație, prin lanțul real.
 - `core/test_a5_rutare_non_ue.py` — [A5, 17.09.2026] Partener non-UE: serviciile se rutează pe rd.3 / rd.7+rd.20, nu pe rd.14 / rd.26.
+- `core/test_a6_d205_cota_distribuire.py` — [A6, 18.09.2026] D205: cota impozitului pe dividende se ia după DATA DISTRIBUIRII (creditul 457),
 - `core/test_a7_deducere_transe.py` — [A7, 17.09.2026] Deducerea personală: tranșele de 50 lei se rotunjesc ÎN SUS (ceil), nu în jos.
 - `core/test_a8_micro_baza.py` — [A8, 17.09.2026] Baza micro = venituri din ORICE sursă (70x+75x+76x) minus 709, nu doar 70x.
+- `core/test_a8_profit_cumulat.py` — [A8-profit, 18.09.2026] Impozitul pe profit (cod 103) e CUMULAT de la 01.01 (art.41 CF); plata
 - `core/test_absenta_nu_e_neaplicabil.py` — GARD DE CLASĂ (21.08.2026): „niciun X înregistrat" nu poate deveni „nu se datorează".
 - `core/test_achizitii_factura.py` — NECONFORMITATE ACTIVA reparata (04.08): operatiunile de achizitie (achizitie_ic, achizitie_taxare_inversa)
 - `core/test_acoperire_vizuala.py` — [Regula 14 + metoda-ca-poarta, cerut de Costin 19.08.2026] GARD: o schimbare de UI cere un scan

@@ -33,3 +33,19 @@ def select_inregistrari_linii(cur, _inc, _sf):
                 "AND (l.cont_credit LIKE '457%%' OR l.cont_debit LIKE '457%%') "
                 "AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
     return cur.fetchone()
+
+
+def select_457_miscari(cur, _sf):
+    """[A6] Mișcările contului 457 pe NOTĂ (credit=distribuire, debit=plată) cu DATA, din tot registrul
+    până la `_sf` (sfârșitul anului declarației, exclusiv). Ordonate cronologic pentru atribuirea FIFO
+    plată->distribuire (cota se ia după data distribuirii). Include distribuirile din ANII ANTERIORI, ca
+    o plată de la începutul anului să se lege de distribuirea ei reală (Legea 141/2025 art.VII)."""
+    cur.execute("SELECT i.data, "
+                "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '457%%' THEN l.suma ELSE 0 END),0) AS distribuit, "
+                "COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '457%%' THEN l.suma ELSE 0 END),0) AS platit "
+                "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+                "WHERE i.status='validata' "
+                "AND (l.cont_credit LIKE '457%%' OR l.cont_debit LIKE '457%%') "
+                "AND i.data < %s "
+                "GROUP BY i.id, i.data ORDER BY i.data, i.id", (_sf.isoformat(),))
+    return cur.fetchall()

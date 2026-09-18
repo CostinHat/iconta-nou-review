@@ -303,16 +303,33 @@ def build_xml(res):
 
 
 def pull(conn, schema, perioada):
-    """Citeste profilul firmei si veniturile (cont 70x, note VALIDATE) din fereastra
-    trimestrului. Fereastra [inceput, sfarsit) din perioada.interval() = identica cu
-    intervalul vechi (trim*3, luna-2..luna+1)."""
+    """Citeste profilul firmei si baza D100. Micro: veniturile trimestrului (70x/75x/76x-709). Profit:
+    baza EFECTIVA a trimestrului = max(0, profit cumulat de la 01.01 pana la sfarsitul trim) - max(0,
+    profit cumulat pana la sfarsitul trim anterior).
+
+    [A8, 18.09.2026] Impozitul pe profit se calculeaza CUMULAT de la inceputul anului (art.41 CF), iar
+    plata trimestriala = diferenta fata de trimestrele anterioare. Anterior `pull` intorcea venituri/
+    cheltuieli ale TRIMESTRULUI izolat, iar `deriva_obligatii` impozita profitul trimestrului -> un
+    trimestru cu profit dupa unul cu pierdere platea 16% pe tot profitul, nu pe cumulat (bug A8:
+    masurat T1 -50.000, T2 +80.000 -> cod 103 = 12.800 in loc de 4.800). Intorcand baza efectiva ca
+    (venituri=prof_now, cheltuieli=prof_prev), `venituri - cheltuieli` (formula neschimbata a
+    generatorului SI a lui `_thunk_d100`) da EXACT impozitul incremental cumulat, cu clipping-ul
+    pierderii deja aplicat (max(0, ...)). `d100_reconciliere` recalculeaza la fel."""
     import psycopg2.extras as _E
+    import datetime as _dt
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         prof = _repo.select_firma_profil(cur) or {}
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
+        if (prof.get("regim_fiscal") or "").lower() == "profit":
+            _an1 = _dt.date(perioada.an, 1, 1)
+            _now = _repo.select_inregistrari_linii(cur, _an1, _sf) or {"venituri": 0, "cheltuieli": 0}
+            _prev = _repo.select_inregistrari_linii(cur, _an1, _inc) or {"venituri": 0, "cheltuieli": 0}
+            prof_now = max(Decimal(0), Decimal(str(_now["venituri"] or 0)) - Decimal(str(_now["cheltuieli"] or 0)))
+            prof_prev = max(Decimal(0), Decimal(str(_prev["venituri"] or 0)) - Decimal(str(_prev["cheltuieli"] or 0)))
+            return prof, prof_now, prof_prev
         r = _repo.select_inregistrari_linii(cur, _inc, _sf) or {"venituri": 0, "cheltuieli": 0}
     return prof, r["venituri"], r["cheltuieli"]
 
@@ -336,22 +353,28 @@ def deriva_obligatii(prof, venituri, cheltuieli, an, luna, cota=None):
         if suma > 0:
             obligatii.append({"cod_oblig": "121", "suma_dat": suma, "cota": "1"})
     elif regim == "profit":
-        # [profit base fix 16.08] Impozitul pe PROFIT (103) se aplica pe PROFIT (venituri - cheltuieli),
-        # NU pe venituri. Anterior venituri x 16% -> supra-declarare grosolana (SRL cu venituri 1M si
-        # profit 100k primea 160k in loc de 16k). Baza = profit CONTABIL (venituri 70x - cheltuieli 6xx);
-        # ajustarile fiscale (nedeductibile/neimpozabile art.19+ CF) si regularizarea anuala se fac la D101
-        # (avertizat). Profit <= 0 (pierdere in trimestru) -> fara avans de impozit pe profit.
+        # [profit base fix 16.08] Impozitul pe PROFIT (103) se aplica pe PROFIT, NU pe venituri.
+        # [A8, 18.09.2026] Impozitul pe profit e CUMULAT de la 01.01 (art.41 CF), plata trimestriala =
+        # diferenta fata de ce s-a impozitat deja. `pull` (calea 1) SI `_thunk_d100` (calea 2) trimit aici,
+        # pentru regimul profit, BAZA EFECTIVA a trimestrului codata ca `venituri` = profit cumulat pana
+        # ACUM (clip la 0) si `cheltuieli` = profit cumulat pana la trim ANTERIOR (clip la 0). Astfel
+        # formula neschimbata `venituri - cheltuieli` = impozitul incremental cumulat cu pierderea deja
+        # dedusa. Un trimestru cu profit dupa unul cu pierdere plateste pe CUMULAT, nu pe tot profitul lui
+        # (bug A8), iar profitul cumulat sub cel deja impozitat -> 0 de plata (regularizare la D101).
+        # (Pentru micro, `venituri`/`cheltuieli` raman veniturile brute ale trimestrului - vezi ramura micro.)
         c = Decimal(str(cota)) if cota is not None else _rata_impozit_default("profit", an, luna)
-        _profit = Decimal(str(venituri)) - Decimal(str(cheltuieli))
+        _cum_now = Decimal(str(venituri))   # profit cumulat pana la sfarsitul trim (clip la 0 in pull)
+        _cum_prev = Decimal(str(cheltuieli))  # profit cumulat pana la sfarsitul trim anterior (clip la 0)
+        _profit = _cum_now - _cum_prev  # baza incrementala de plata a trimestrului
         suma = _i(_profit * c / Decimal(100)) if _profit > 0 else 0
         if suma > 0:
             obligatii.append({"cod_oblig": "103", "suma_dat": suma})
-            avert = ("D100 profit: baza = profit contabil (venituri %d - cheltuieli %d = %d) x %s%%. "
-                     "Impozitul pe profit se aplică pe PROFIT, nu pe venituri. Ajustările fiscale "
+            avert = ("D100 profit (impozit CUMULAT art.41): profit cumulat de la 01.01 = %d, deja impozitat "
+                     "trimestrele anterioare = %d -> baza de plată = %d x %s%%. Ajustările fiscale "
                      "(nedeductibile/neimpozabile art.19+ CF) și regularizarea anuală se fac la D101." %
-                     (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli))), _i(_profit), c))
-        elif Decimal(str(venituri)) > 0:
-            avert = "LOSS"  # semnal pt mesajul de refuz (pierdere in trimestru)
+                     (_i(_cum_now), _i(_cum_prev), _i(_profit), c))
+        else:
+            avert = "LOSS"  # semnal pt refuzul-pe-zero: profit cumulat nu depaseste ce s-a impozitat deja
     return obligatii, avert
 
 
@@ -384,8 +407,9 @@ def genereaza(conn, schema, perioada, manual=None):
             _nf = _repo.select_facturi(_cur, _inc, _sf)[0]
         _hint = (" Există %d facturi emise necontabilizate în perioada - contabilizează-le întâi." % _nf) if _nf else ""
         if _avert_profit == "LOSS":
-            raise ValueError("D100 nu se depune pe zero: regim profit cu PIERDERE în trimestru (venituri %d - "
-                             "cheltuieli %d <= 0) -> fără avans de impozit pe profit. Regularizarea se face la D101."
+            raise ValueError("D100 nu se depune pe zero: profit cumulat de la 01.01 = %d nu depășește ce s-a "
+                             "impozitat deja = %d (pierdere sau profit sub cumulatul anterior) -> fără avans de "
+                             "impozit pe profit acest trimestru (art.41). Regularizarea se face la D101."
                              % (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli)))))
         raise ValueError("D100 nu se depune pe zero: nicio obligație (venituri contabilizate cont 70x = 0)." + _hint)
     res = calcul_d100(prof, an, luna, obligatii)

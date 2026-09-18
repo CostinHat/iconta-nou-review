@@ -15137,3 +15137,72 @@ TRECE după — dovada că schimbarea e de fond, nu de tăcere.
 `antet_lei`), apelat de generatoare, de reconcilieri și de contare. O a doua definiție a cursului ar
 fi începutul unei divergențe. O factură în valută fără curs NU se rotunjește la 1 (interdicția 32):
 se exclude și se semnalează, iar contarea o refuză.
+
+### De ce s-au atins ambele căi ale lui D100 — impozitul pe profit devine CUMULAT (A8-profit, 18.09.2026)
+
+**Ce spune arbitrul (auditul independent, constatarea A8, partea de profit):** impozitul pe profit
+(cod 103) se calculează CUMULAT de la începutul anului (art. 41 Cod fiscal), iar plata trimestrială e
+DIFERENȚA față de ce s-a impozitat deja. Generatorul `d100.pull` întorcea însă veniturile și
+cheltuielile TRIMESTRULUI izolat, iar `deriva_obligatii` impozita profitul acelui trimestru. Un
+trimestru cu profit după unul cu pierdere plătea 16% pe TOT profitul lui, nu pe cumulat — supra-declarare.
+Măsurat: Q1 pierdere −50.000, Q2 profit +80.000 → cod 103 = 12.800 (80.000×16%), în loc de 4.800
+(cumulat +30.000 × 16%, minus 0 impozitat în Q1).
+
+**De ce se schimbă amândouă, și de ce NU e aliniere-ca-să-tacă.** Regula nouă e una singură: *baza de
+plată a trimestrului = max(0, profit cumulat de la 01.01 până la sfârșitul trimestrului) − max(0, profit
+cumulat până la trimestrul anterior)*, cu pierderea dedusă (clip la 0) și fără obligație negativă.
+`d100.pull` (calea 1) codează pentru regimul profit această bază efectivă în `venituri`=profit cumulat
+acum și `cheltuieli`=profit cumulat anterior, astfel încât formula NESCHIMBATĂ `venituri − cheltuieli`
+a lui `deriva_obligatii` (folosită și de `control_incrucisat._thunk_d100`) dă exact impozitul incremental.
+`d100_reconciliere` (calea 2) recalculează INDEPENDENT aceleași două ferestre cumulative (SQL propriu pe
+`inregistrari_linii`, conturile 70x/75x/76x−709 la venituri și 6xx la cheltuieli — identice cu ale
+generatorului) și confruntă. Dacă aș fi aliniat doar verificatorul ca să tacă, cifra ar fi rămas 12.800;
+în schimb **cifra s-a schimbat**: ambele căi dau acum 4.800, iar a doua o CONFIRMĂ pe prima pe cumulat,
+nu o acoperă. Dacă reconcilierea rămânea pe trimestrul izolat, ar fi DIVERGET de generator (4.800 vs
+12.800) și ar fi blocat generarea — exact simptomul pe care auditul îl prezisese pentru „a doua cale care
+citește aceeași sursă cu aceeași greșeală".
+
+**Proba** `test_a8_profit_cumulat` arată cazul de la nota contabilă în jos: Q1 (venit 30.000, cheltuieli
+80.000 → pierdere) și Q2 (venit 130.000, cheltuieli 50.000) → cod 103 Q2 = 4.800, iar reconcilierea dă
+zero divergențe. PICĂ pe codul de dinainte (12.800) și TRECE după (4.800) — dovada că schimbarea e de
+fond. Refuzul-pe-zero al profitului numește acum CUMULATUL (art.41), nu mai cade pe mesajul fals
+„venituri contabilizate cont 70x = 0" al regimului micro. Pentru scenariile cu un singur trimestru
+(fără date în trimestrele anterioare) cumulatul = trimestrul, deci comportamentul vechi e păstrat
+(testele `test_d100_profit_baza` rămân verzi neschimbate la cifră).
+
+### De ce s-au atins ambele căi ale lui D205 — cota dividendului după DATA DISTRIBUIRII (A6, 18.09.2026)
+
+**Ce spune arbitrul (auditul independent, constatarea A6):** `d205.py` aplica cota impozitului pe
+dividende de la 31.12 al anului declarației (`_cota205("impozit_dividend", 31.12.an)`) pentru tot ce se
+plătise în an. Registrul (`common.py`) și Legea 141/2025 art. VII spun altceva: 16% se aplică
+dividendelor **DISTRIBUITE** începând cu 01.01.2026, iar alin.(2) fixează că dividendele interimare
+distribuite în 2025 rămân la 10% chiar dacă se plătesc sau se regularizează în 2026 — fără recalculare.
+Cazul cel mai frecvent din practică: dividende aprobate (credit 457) în decembrie 2025, plătite (debit
+457) în ianuarie 2026. Codul aplica 16%; corect e 10%.
+
+**De ce se schimbă amândouă, și de ce NU e aliniere-ca-să-tacă.** Modelul vechi agrega firm-wide
+`Σ credit 457` și `Σ debit 457` pe fereastra anului și **pierdea data distribuirii**, apoi împărțea pe
+cotă și aplica o singură rată (a anului declarației). Regula nouă: *cota se ia după data creditului 457
+care se stinge*. Un modul neutru, `core/dividende_curs.py`, atribuie **FIFO** plățile pe distribuirile
+deschise (cea mai veche distribuire se stinge prima, inclusiv distribuiri din ani anteriori) și întoarce
+impozitul **ponderat** pe rata fiecărei distribuiri. Ambele căi — generatorul (`d205.pull` + `repo_d205`)
+și reconcilierea (`d205_reconciliere._dividende_independent` + `repo_d205_reconciliere`) — își trag
+**SINGURE** mișcările 457 din registru (SQL propriu, fiecare cu repo-ul ei) și cheamă același atribuitor
+determinist. Independența rămâne acolo unde a fost mereu — la citirea din sursă — nu la aritmetica ratei
+(care și înainte era aceeași formulă `parte × cotă` în ambele; modulul neutru e o intrare partajată, ca
+`common.cota`). Dacă aș fi aliniat doar verificatorul, cifra ar fi rămas 16.000; în schimb **cifra s-a
+schimbat**: ambele dau acum 10.000, iar a doua o confirmă pe prima. Dovada că e de fond, nu de tăcere:
+cu generatorul de dinainte (16%) și reconcilierea nouă (FIFO, 10%), cele două **DIVERG** (16.000 vs
+10.000) și generarea se **blochează** — exact simptomul „a doua cale care citește aceeași sursă cu
+aceeași greșeală" pe care auditul îl prezisese.
+
+**Consistența internă (d1) pentru beneficiarii MANUALI** s-a lărgit la ratele anilor {an, an−1}: un
+dividend distribuit în anul anterior și plătit acum e consistent dacă `imp1 = round(baza1 × r)` pentru
+rata anului curent SAU a celui anterior. d1 rămâne o plasă contra unui `imp1` grosolan greșit (0, dublu,
+cotă inexistentă), fără să bată rata legitimă de la granița anilor.
+
+**Proba** `test_a6_d205_cota_distribuire` arată cazul de la nota de distribuire în jos (credit 457 în
+20.12.2025, debit 457 în 15.01.2026) → beneficiar `imp1 = 10.000` (10%, cota distribuirii 2025), iar
+reconcilierea dă zero divergențe. PICĂ pe codul de dinainte (16.000 / divergență) și TRECE după (10.000).
+Pentru scenariile cu plată în anul distribuirii (sau plată fără credit 457 înregistrat), FIFO cade pe
+rata anului plății — comportamentul vechi rămâne (testele `test_d205` rămân verzi neschimbate la cifră).

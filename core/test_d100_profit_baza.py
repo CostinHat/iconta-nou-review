@@ -82,13 +82,18 @@ def test_profit_fara_cheltuieli_neschimbat(conn):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_profit_pierdere_refuz_cu_mesaj_corect(conn):
-    """Cheltuieli > venituri (pierdere) -> fara avans, refuz cu mesaj de PIERDERE (nu 'venituri=0' fals)."""
+    """Cheltuieli > venituri (pierdere) -> fara avans, refuz care numeste PIERDEREA/CUMULATUL
+    (nu mesajul fals 'venituri contabilizate cont 70x = 0' al regimului micro). [A8-profit 18.09.2026]
+    refuzul profit e acum cumulativ (art.41): 'profit cumulat ... nu depaseste ce s-a impozitat deja
+    ... (pierdere sau profit sub cumulatul anterior)'."""
     with conn.cursor() as cur:
         _setup(cur, 50000, 80000)
     conn.commit()
     with pytest.raises(ValueError) as ei:
         d100.genereaza(conn, _SCHEMA, Perioada(2026, trim=2))
-    assert "PIERDERE" in str(ei.value), "pierderea trebuie numita explicit: %s" % ei.value
+    # refuzul profit numeste CUMULATUL (art.41), deci nu poate fi mesajul fals 'venituri cont 70x = 0'
+    # al regimului micro pe o pierdere de profit.
+    assert "cumulat" in str(ei.value).lower(), "pierderea/cumulatul trebuie numite explicit: %s" % ei.value
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

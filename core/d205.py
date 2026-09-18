@@ -319,6 +319,8 @@ def pull(conn, schema, perioada):
       total_platit     = Σ DEBIT  457 (se stinge datoria: 457 = 5121/446) -> divid_P
     Intoarce (prof, asoc, total_distribuit, total_platit)."""
     import psycopg2.extras as _E
+    from core import common as _c
+    from core import dividende_curs as _dc
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         prof = _repo.select_firma_profil(cur) or {}
@@ -329,7 +331,13 @@ def pull(conn, schema, perioada):
         row = _repo.select_inregistrari_linii(cur, _inc, _sf) or {"distribuit": 0, "platit": 0}
         total_distribuit = _i(row["distribuit"] or 0)
         total_platit = _i(row["platit"] or 0)
-    return prof, asoc, total_distribuit, total_platit
+        # [A6] Impozitul PONDERAT pe rata fiecărei distribuiri (cota după data creditului 457, art.VII
+        # Legea 141/2025), nu 16% aplicat pe tot ce s-a plătit în an. Mișcările 457 din tot registrul
+        # (inclusiv distribuiri din ani anteriori), atribuite FIFO plată->distribuire în modulul neutru.
+        miscari = _repo.select_457_miscari(cur, _sf)
+    impozit_ponderat, _pl, _di = _dc.impozit_ponderat(
+        miscari, perioada.an, lambda d: _c.cota("impozit_dividend", d)[0])
+    return prof, asoc, total_distribuit, total_platit, impozit_ponderat
 
 
 def genereaza(conn, schema, perioada, manual=None):
@@ -338,10 +346,8 @@ def genereaza(conn, schema, perioada, manual=None):
     contul 457: divid_D=distribuit credit 457, divid_P=platit debit 457; impozit pe dividende
     PERIOD-AWARE - cota("impozit_dividend"): 10% pana in 2025, 16% de la 01.01.2026 (Legea
     141/2025, CF art.97). Foloseste perioada.an."""
-    from core.common import cota as _cota205
-    from datetime import date as _date205
     manual = cheie_manual(manual, "beneficiari")
-    prof, asoc, total_distribuit, total_platit = pull(conn, schema, perioada)
+    prof, asoc, total_distribuit, total_platit, impozit_ponderat = pull(conn, schema, perioada)
 
     erori = erori_generare(prof)
     if erori:
@@ -355,13 +361,14 @@ def genereaza(conn, schema, perioada, manual=None):
                 platit = _i(Decimal(total_platit) * Decimal(str(a["cota"])) / Decimal(100))
                 distribuit = _i(Decimal(total_distribuit) * Decimal(str(a["cota"])) / Decimal(100))
                 if platit > 0:
-                    # impozit pe dividende PERIOD-AWARE: 8% (2023-2024), 10% (2025, OUG 156/2024), 16% de la
-                    # 01.01.2026 (Legea 141/2025, CF art.97 - "cota de impozit de 16% asupra
-                    # dividendului brut"). baza1/imp1 se calculeaza pe dividendul PLATIT
-                    # (impozitul se retine la plata; aliniat cu calea 2 de reconciliere care
-                    # recalculeaza din Σ debit 457).
-                    _cota_div = _cota205("impozit_dividend", _date205(perioada.an, 12, 31))[0]
-                    impozit = _i(Decimal(platit) * _cota_div)
+                    # [A6, 18.09.2026] impozit pe dividende după DATA DISTRIBUIRII (creditul 457), nu după
+                    # 31.12 al anului declarației: 8% (2023-2024), 10% (2025, OUG 156/2024), 16% de la
+                    # 01.01.2026 (Legea 141/2025 art.VII, CF art.97). Un dividend distribuit în 2025 și
+                    # plătit în 2026 rămâne 10% (art.VII alin.2, fără recalculare). `impozit_ponderat` e
+                    # impozitul firm-wide ponderat pe rata fiecărei distribuiri (atribuire FIFO în
+                    # `dividende_curs`); partea asociatului = ponderat × cota. baza1/imp1 pe dividendul
+                    # PLĂTIT (impozitul se reține la plată; aliniat cu calea 2 de reconciliere).
+                    impozit = _i(Decimal(str(impozit_ponderat)) * Decimal(str(a["cota"])) / Decimal(100))
                     # divid_D = dividend DISTRIBUIT (Σ credit 457 x cota); divid_P = dividend
                     # PLATIT (Σ debit 457 x cota). Regula fully-paid documentata: divid_D >=
                     # divid_P mereu (nu poti plati cumulat mai mult decat s-a distribuit); daca
