@@ -1,0 +1,70 @@
+COMMIT: 232e94893631db8a7c0000fc7279fc5d57136dd8
+data:    2026-09-18 18:15:20 +0300
+autor:   Costin Hateganu
+subiect: Runda 2 — predarea: PREDARE_LANT rescris, ISTORIC pe 18.09, raportul rundei
+
+=== git status (trebuie sa fie GOL) ===
+(gol de mai sus = arborele e curat)
+
+=== --stat al commitului ===
+ ISTORIC.md       |  33 +++++++++++++++
+ PREDARE_LANT.md  |  33 ++++++++++-----
+ RAPORT_RUNDA2.md | 119 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 176 insertions(+), 9 deletions(-)
+
+=== ultimele 20 de commituri ===
+232e9489 Runda 2 — predarea: PREDARE_LANT rescris, ISTORIC pe 18.09, raportul rundei
+5ff1b8ba Runda 2 — Lot 7 (D1-D10): recalibrarea scanerelor care mint · clichete de la cifra reala
+8bf059c2 Runda 2 — Lot 6: A10 (import e-Factura: baza liniei) + E-nota (contare primita pe cote)
+d9de53a2 Runda 2 — A8-profit (D100 cumulat de la 01.01) + A6 (D205 cota dupa data distribuirii)
+0e219330 Runda 2 — §0 pachet (parțial): scoate venv din index, sincronizează INVENTAR_A, documentează TZ
+f6c7dbb2 Runda 2 — C1 (numerotare atomică), C2 (import savepoint), C3 (pool fără scurgeri)
+8719c223 Runda 2 — A7 (deducere personală: ceil pe tranșe) + A8 micro (bază din orice sursă)
+dbaf8cc2 Runda 2 — A2–A5: TVA la încasare, filtre de status, storno IC, rutare non-UE
+0dc088db Runda 2 — excepțiile structurale: A1 (conversia în lei) + B1–B4 (apartenența pe obiect)
+726105de predarea, rescrisă pentru o stare — nu pentru o lucrare în curs
+d8034c54 scanul de secrete nu se mai măsoară pe sine
+b56bdca8 starea lanțului, scrisă la 0Z: „în așteptarea folosirii", nu „în așteptarea unei teme"
+3057e93c consemnare R115+R192 și cele două instrumente care rederivă cifrele pentru audit
+fd7e40d4 Cele doua decizii ale lui Costin, construite: taria CERTA si refuzul reevaluarii (R115, R192)
+45503d84 Lucrarile 3 si 4, consemnate cu hash-urile reale — cele patru de la 0Z sunt terminate
+aa1129b2 Cele 8 citari `DUK regula`, lamurite PRIN RULARE — trei erau afirmatii FALSE despre validator
+81558b74 Ultimele patru rute cu clichet fiscal — subsetul ajunge la ZERO, si devine CRITERIU
+0d1909eb Patru din cele opt rute cu clichet fiscal, probate PANA IN CIFRA DECLARATIEI
+4d938efd R191, consemnata cu hash-ul real — R115 REDESCHISA, R192 avanseaza
+fcd13ac9 R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA
+
+====================================================================================================
+CE S-A SCHIMBAT FAȚĂ DE PACHETUL PRECEDENT (2026-09-17, commit d8034c54)
+====================================================================================================
+Pachet precedent: d8034c54d62cc7ca8a82c2f1d6136ab87db86b69 (2026-09-17 07:24)
+Pachet curent:    232e94893631db8a7c0000fc7279fc5d57136dd8 (2026-09-18 18:15)
+
+Cele 10 commituri dintre ele:
+    232e9489 Runda 2 — predarea: PREDARE_LANT rescris, ISTORIC pe 18.09, raportul rundei
+    5ff1b8ba Runda 2 — Lot 7 (D1-D10): recalibrarea scanerelor care mint · clichete de la cifra reala
+    8bf059c2 Runda 2 — Lot 6: A10 (import e-Factura: baza liniei) + E-nota (contare primita pe cote)
+    d9de53a2 Runda 2 — A8-profit (D100 cumulat de la 01.01) + A6 (D205 cota dupa data distribuirii)
+    0e219330 Runda 2 — §0 pachet (parțial): scoate venv din index, sincronizează INVENTAR_A, documentează TZ
+    f6c7dbb2 Runda 2 — C1 (numerotare atomică), C2 (import savepoint), C3 (pool fără scurgeri)
+    8719c223 Runda 2 — A7 (deducere personală: ceil pe tranșe) + A8 micro (bază din orice sursă)
+    dbaf8cc2 Runda 2 — A2–A5: TVA la încasare, filtre de status, storno IC, rutare non-UE
+    0dc088db Runda 2 — excepțiile structurale: A1 (conversia în lei) + B1–B4 (apartenența pe obiect)
+    726105de predarea, rescrisă pentru o stare — nu pentru o lucrare în curs
+
+CE S-A SCHIMBAT, pe categorii:
+  · RUNDA 2 DE REPARAȚII (pe baza RAPORT_AUDIT_INDEPENDENT_2026-09-17.md):
+    - ÎNCHISE cu probă: A1-A8, A10, B1-B4, C1-C3, E-nota, D1-D10 (v. 04_NEVERIFICAT secțiunea (b)).
+    - Rămase DESCHISE cu motiv: A9, A11, A12, B5, C4, C5, C6 (idem).
+  · CURĂȚENIE STRUCTURALĂ (§0): `venv/` scos din indexul git (4688 fișiere venv șterse din
+    versionare; rămâne pe disc, ignorat). Restul non-venv atins: 84 fișiere sursă/registre.
+  · REGISTRE: ISTORIC.md (intrarea 18.09), PREDARE_LANT.md (rescris), RAPORT_RUNDA2.md (nou).
+
+CE NU S-A SCHIMBAT — corecție la premisa comenzii, verificată la sursă:
+  · CONECTORUL SPV/ANAF NU e nou față de pachetul precedent. `core/spv_conector.py` a fost comis
+    la 8c356fe2 („Conector SPV pas 3"), ANTERIOR lui d8034c54 — deci era DEJA în pachetul 17.09.
+    Verificare: `git cat-file -e d8034c54:core/spv_conector.py` -> există.
+    `git log d8034c54..232e9489 -- core/spv_conector.py core/spv_rute.py static/spv_callback.html`
+    -> gol (niciun commit SPV în fereastra dintre pachete).
+    Ce e NOU despre SPV în ACEST pachet e o AFIRMAȚIE, nu un cod: declararea explicită a stării lui
+    de verificare în 04_NEVERIFICAT secțiunea (a) — cod probat pe mock, produs neverificat pe ANAF real.

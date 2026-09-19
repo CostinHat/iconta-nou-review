@@ -1,0 +1,37 @@
+PACHET RUTE8 — 2026-09-16
+interval: 4d938efd -> 81558b74
+
+commit 81558b74d39e15e9449a9b1af432a2f149a39b0a
+autor:  Costin Hateganu
+data:   2026-09-16 22:35:37 +0300
+subiect: Ultimele patru rute cu clichet fiscal — subsetul ajunge la ZERO, si devine CRITERIU
+
+commit 0d1909eb7c91f7d8b7caf67241f4600eec5db378
+autor:  Costin Hateganu
+data:   2026-09-16 19:35:44 +0300
+subiect: Patru din cele opt rute cu clichet fiscal, probate PANA IN CIFRA DECLARATIEI
+
+=== DIFF --stat pe tot intervalul ===
+ GARZI.md                                  |   6 +-
+ PREDARE_LANT.md                           |   2 +-
+ core/test_rute_fiscale_lot3b.py           | 394 ++++++++++++++++++++++++++++++
+ core/test_rute_probate.py                 |  28 ++-
+ core/test_rute_stoc_pana_in_declaratie.py | 333 +++++++++++++++++++++++++
+ 5 files changed, 756 insertions(+), 7 deletions(-)
+
+=== --stat per commit ===
+--- 0d1909eb7c91f7d8b7caf67241f4600eec5db378 ---
+Patru din cele opt rute cu clichet fiscal, probate PANA IN CIFRA DECLARATIEI
+
+ GARZI.md                                  |   5 +-
+ core/test_rute_probate.py                 |  14 +-
+ core/test_rute_stoc_pana_in_declaratie.py | 333 ++++++++++++++++++++++++++++++
+ 3 files changed, 348 insertions(+), 4 deletions(-)
+--- 81558b74d39e15e9449a9b1af432a2f149a39b0a ---
+Ultimele patru rute cu clichet fiscal — subsetul ajunge la ZERO, si devine CRITERIU
+
+ GARZI.md                        |   5 +-
+ PREDARE_LANT.md                 |   2 +-
+ core/test_rute_fiscale_lot3b.py | 394 ++++++++++++++++++++++++++++++++++++++++
+ core/test_rute_probate.py       |  38 ++--
+ 4 files changed, 422 insertions(+), 17 deletions(-)

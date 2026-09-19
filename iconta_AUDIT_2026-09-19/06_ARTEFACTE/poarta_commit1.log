@@ -1,0 +1,21 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] pytest (suita intreaga, ~36 min pe ~6.190 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)...
+6213 passed, 7 skipped, 11 xfailed in 2107.97s (0:35:07)
+[pre-commit] verificator:   TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+TOTAL: 0 candidate
+[pre-commit] OK - poarta verde, commit permis.
+[post-commit] publicat pe origin/main: d937eef6
+[post-commit] publicat pe public/main: d937eef6
+[post-commit] backup publicat: backup/lant-2026-09-16 -> d937eef6
+[post-commit] static publicat: publicat in /home/costin/iconta_publicat/static <- commit d937eef6 (56 fisiere)
+[post-commit] iconta-nou restartat -> procesul viu preia d937eef6
+[four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+[four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+[post-commit] FOUR-WAY INCHIS: HEAD = origin/main = backup/lant-2026-09-16 = procesul viu
+[main d937eef6] R59 — reevaluarea ajunge pe registru SI in declaratie, la validarea notei
+ 18 files changed, 979 insertions(+), 106 deletions(-)
+ create mode 100644 core/migrare_reevaluare.py
+ create mode 100644 core/repo_reevaluari.py
+ create mode 100644 core/test_reevaluare_registru.py

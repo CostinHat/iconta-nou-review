@@ -1,0 +1,2443 @@
+# VERIFICARE_FUNCTIONALITATI.md — ce face aplicația când primește date greșite
+
+**Comanda** (Costin, 03.09.2026): *„Probează fiecare funcționalitate, întâi cu invalide, apoi cu
+valide… La invalide se urmărește un singur lucru: **aplicația vorbește**. Tăcerea e defect, chiar
+dacă valoarea n-a intrat. Refuzul spune care câmp, ce e greșit, în termeni de contabil, cu temei
+acolo unde aplică o regulă fiscală. Nu cade, nu dă 500, nu pierde ce s-a tastat, și nu confundă «e
+invalid» cu «n-am putut verifica»."*
+
+**Mesajele sunt VERBATIM.** Copiate din răspunsul aplicației, nerescrise ca să arate bine. Unde
+mesajul e lung, e tăiat cu `…` și se spune că e tăiat.
+
+**Perimetrul etapei 1** *(tăiat de Costin, 03.09.2026)*: numai suprafața prin care un om introduce
+date — cele 75 de ecrane și cele 289 de rute cu câmpuri de completat. **364 de unități** din 553.
+Ce a ieșit e marcat în `LISTA_FUNCTIONALITATI.md` cu motivul.
+
+**Cum se probează.** `frontend_test/proba_verificare_functionalitati.py` — cereri reale către
+aplicație, cu token emis pentru un utilizator real. Subiect: cabinetul 1968 (`Cabinet Contabil
+Prisma SRL`), utilizator `patron@prisma-cont.test` (rol `admin_firma`), firma **4838 `Comert Micro
+TVA SRL`** — plătitor de TVA cu **perioadă fiscală trimestrială**, ceea ce contează pentru trei
+dintre probe. Reprobarea de după reparații rulează pe o instanță proaspătă (`--port 8011`), fiindcă
+procesul de producție ține codul vechi până la repornire.
+
+---
+
+## LOT 1 — T01, drumul declarației (22 de probe INVALIDE pe 11 unități)
+
+*Unitățile `#7`, `#10`, `#11`, `#16`, `#19` din T01 nu sunt aici: sunt rute fără câmpuri de
+completat, ieșite din perimetrul etapei 1.*
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 4 | Lista cozii de declarații | `GET /coada` | `stare` | invalid: `stare=INEXISTENT` | **TĂCERE** — `200` cu listă goală. „Nu există nimic în starea asta" arată identic cu „starea asta nu există" | `{"coada":[]}` | — | **DA** — `main.py:coada_lista` verifică filtrul contra `coada_api.STARI`, derivate din tabela de tranziții (nu o a doua listă scrisă de mână) | `422` · `{"detail":"stare necunoscută: 'INEXISTENT' (stările cozii: aprobata, depusa, la_senior, respinsa)"}` |
+| 5 | Adăugare în coadă | `POST /coada` | `tenant_id` | invalid: `999999` | `404`, spune ce e | `{"detail":"tenant inexistent sau fără acces"}` | — | nu — răspunsul e corect și nu afirmă o cauză pe care n-o poate ști | neschimbat |
+| 5 | Adăugare în coadă | `POST /coada` | `luna` | invalid: `luna=13` | **NUMEA ALT CÂMP** — se plângea de trimestrul pe care omul nu-l trimisese, și tăcea despre luna 13 | `{"detail":"trimestru invalid: None (aștept 1-4)"}` | regulă fiscală: perioada fiscală TVA (lunar/trimestrial) — **necitată**, vezi nota de sub tabel | **DA** — `declaratii_api`: o valoare **trimisă** și greșită se spune pe numele ei, indiferent de periodicitatea firmei; iar nepotrivirea de periodicitate primește propriul mesaj | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12); firma depune d300 TRIMESTRIAL: trimite trimestrul (1-4), nu luna"}` |
+| 5 | Adăugare în coadă | `POST /coada` | `tip` | invalid: `tip=d999` | `422`, enumeră ce se poate | `{"detail":"tip declarație necunoscut: 'd999' (suportate: d100, d101, d107, d112, d177, d205, d207, d300, d301, d307, d311, d390, d394, d406, d710)"}` | — | nu — mesajul numește câmpul și dă lista completă | neschimbat |
+| 5 | Adăugare în coadă | `POST /coada` | tot corpul | lipsă: `{}` | `422` cu răspunsul brut al bibliotecii: engleză, formă de structură, fără ce-i de făcut | `{"detail":[{"type":"missing","loc":["body","tenant_id"],"msg":"Field required","input":{}},{"type":"missing","loc":["body","tip"],…]}` *(tăiat)* | — | **DA** — `main.py`: refuzul de validare vorbește românește și numește câmpul, în forma pe care ecranul o știe deja citi (`detail = {mesaj, erori_campuri}`, contractul din `static/js/api.js`) | `422` · `{"detail":{"mesaj":"Cererea nu poate fi acceptată, 3 câmpuri: tenant_id — lipsește; tip — lipsește; an — lipsește.","erori_campuri":[{"camp":"tenant_id","mesaj":"lipsește"},{"camp":"tip","mesaj":"lipsește"},{"camp":"an","mesaj":"lipsește"}]}}` |
+| 6 | Aprobarea unei declarații din coadă | `POST /coada/{id}/aproba` | `coada_id` | invalid: `999999` | `404`, dar mesajul era **codul intern**, nu o propoziție | `{"detail":"INEXISTENT"}` | — | **DA** — `coada_api`: cele patru locuri care întorceau codul gol poartă acum un mesaj | `404` · `{"detail":"declarația nu mai e în coadă (id 999999): a fost ștearsă, depusă de altcineva, sau id-ul e greșit"}` |
+| 8 | Depunerea unei declarații | `POST /coada/{id}/depune` | `coada_id` | invalid: `999999` | **`403`** — „n-ai voie" în loc de „nu există", plus codul intern ca mesaj. Aceeași cerere pe `/aproba` răspundea `404`: două coduri pentru aceeași stare | `{"detail":"INEXISTENT"}` | — | **DA** — `main.py`: `INEXISTENT` cade pe `404`, ca la aprobare | `404` · `{"detail":"declarația nu mai e în coadă (id 999999): a fost ștearsă, depusă de altcineva, sau id-ul e greșit"}` |
+| 9 | Respingerea unei declarații | `POST /coada/{id}/respinge` | `motiv` | invalid: `""` (șir gol) | `400`, spune și **de ce** e nevoie de motiv | `{"detail":"respingerea necesită un motiv (contabilul trebuie să știe ce să corecteze)"}` | — | nu — e chiar forma cerută: câmpul, ce e greșit, și pentru cine contează | neschimbat |
+| 9 | Respingerea unei declarații | `POST /coada/{id}/respinge` | `motiv` | lipsă: câmp absent | `422` brut, în engleză | `{"detail":[{"type":"missing","loc":["body","motiv"],"msg":"Field required","input":{}}]}` | — | **DA** — același handler de validare | `422` · `{"detail":{"mesaj":"Cererea nu poate fi acceptată: motiv — lipsește.","erori_campuri":[{"camp":"motiv","mesaj":"lipsește"}]}}` |
+| 12 | Ce declarații datorează o firmă | `GET /declaratii/tipuri` | `tenant_id` | invalid: `999999` | `404`, corect | `{"detail":"tenant inexistent sau fără acces"}` | — | nu | neschimbat |
+| 13 | Generarea unei declarații | `POST /declaratii/{tip}` | `tip` | invalid: `d999` | `422`, enumeră ce se poate | `{"detail":"tip declarație necunoscut: 'd999' (suportate: d100, d101, …, d710)"}` *(tăiat)* | — | nu | neschimbat |
+| 13 | Generarea unei declarații | `POST /declaratii/{tip}` | `luna` | invalid: `13` | numea alt câmp (v. `#5`) | `{"detail":"trimestru invalid: None (aștept 1-4)"}` | perioada fiscală TVA — **necitată** | **DA** — aceeași reparație | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12); firma depune d300 TRIMESTRIAL: trimite trimestrul (1-4), nu luna"}` |
+| 13 | Generarea unei declarații | `POST /declaratii/{tip}` | `an` | invalid: `1900` | `422` — partea despre an era corectă, dar urma zgomotul despre trimestru | `{"detail":"an invalid: 1900 (aștept întreg 2020-2100); trimestru invalid: None (aștept 1-4)"}` | — | **DA** — indirect, prin aceeași reparație: a doua propoziție spune acum ce se așteaptă, nu că lipsește ceva ce omul n-a trimis | `422` · `{"detail":"an invalid: 1900 (aștept întreg 2020-2100); firma depune d300 TRIMESTRIAL: trimite trimestrul (1-4), nu luna"}` |
+| 13 | Generarea unei declarații | `POST /declaratii/{tip}` | `an` | invalid: `"douamiidouazecisisase"` | `422` brut, în engleză | `{"detail":[{"type":"int_parsing","loc":["body","an"],"msg":"Input should be a valid integer, unable to parse string as an integer","input":"douamiidouazecisisase"}]}` | — | **DA** — handlerul de validare | `422` · `{"detail":{"mesaj":"Cererea nu poate fi acceptată: an — aștept un număr întreg, am primit 'douamiidouazecisisase'.","erori_campuri":[{"camp":"an","mesaj":"aștept un număr întreg, am primit 'douamiidouazecisisase'"}]}}` |
+| 13 | Generarea unei declarații | `POST /declaratii/{tip}` | `tenant_id` | invalid: `999999` | **AFIRMAȚIE FALSĂ** — `403` cu „Nu ai acces la această firmă. Cere-i administratorului cabinetului să ți-o atribuie.": firma nu există, iar omul e trimis să ceară o atribuire imposibilă | `{"detail":"Nu ai acces la această firmă. Cere-i administratorului cabinetului să ți-o atribuie."}` | — | **DA** — `core/mesaje.FARA_ACCES_TENANT` nu mai afirmă o cauză pe care ruta n-o poate ști | `403` · `{"detail":"Firma nu există în portofoliu sau nu ți-e atribuită. Dacă există și ar trebui să lucrezi pe ea, cere-i administratorului cabinetului să ți-o atribuie."}` |
+| 14 | Generare + validare la DUK | `POST /declaratii/{tip}/valideaza` | `luna` | invalid: `13` | numea alt câmp | `{"detail":"trimestru invalid: None (aștept 1-4)"}` | perioada fiscală TVA — **necitată** | **DA** — aceeași reparație | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12); firma depune d300 TRIMESTRIAL: trimite trimestrul (1-4), nu luna"}` |
+| 14 | Generare + validare la DUK | `POST /declaratii/{tip}/valideaza` | `tip` | invalid: `d999` | `422`, corect | `{"detail":"tip declarație necunoscut: 'd999' (suportate: …)"}` *(tăiat)* | — | nu | neschimbat |
+| 15 | Verificările contabile ale unei firme | `GET /firme/{id}/verificari` | `an`, `luna` | lipsă: ambii parametri | `422` brut | `{"detail":[{"type":"missing","loc":["query","an"],…},{"type":"missing","loc":["query","luna"],…}]}` *(tăiat)* | — | **DA** — handlerul de validare | `422` · `{"detail":{"mesaj":"Cererea nu poate fi acceptată, 2 câmpuri: an — lipsește; luna — lipsește.","erori_campuri":[{"camp":"an","mesaj":"lipsește"},{"camp":"luna","mesaj":"lipsește"}]}}` |
+| 15 | Verificările contabile ale unei firme | `GET /firme/{id}/verificari` | `luna` | invalid: `13` | **A CONFUNDAT „E INVALID" CU „N-AM PUTUT VERIFICA"** — `200`, stare `gri`, „necunoaștere", *„NU pot verifica TVA: decontul nu se poate calcula (D300 lunar: luna invalidă: 13)"*, plus fereastra inventată *„trimestrul 5/2026"*. O intrare greșită îmbrăcată în risc neacoperit | `{"tva_incrucisat":{"an":2026,"luna":13,"stare":"gri","constatari":[{"fel":"necunoastere","tip":"d300","motiv":"NU pot verifica TVA: decontul nu se poate calcula (D300 lunar: luna invalidă: 13).",…}]},"d390_incrucisat":{…"fereastra":"trimestrul 5/2026"…}}` *(tăiat)* | — | **DA** — `main.py:firma_verificari` respinge `luna` în afara lui 1-12 și `an` în afara lui 2020-2100 **înainte** de a chema verificările | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 17 | Import istoric de declarații depuse | `POST /tenants/{id}/istoric-declaratii-import` | `randuri` | lipsă: `[]` | **PIERDERE DE DATE RAPORTATĂ CA SUCCES** — `200 {"importati":0}`. Lista goală trecea de verificare, ajungea la `DELETE … WHERE sursa='migrare'` și **ștergea tot istoricul importat al firmei**, fără să insereze nimic și fără să spună | `{"importati":0}` | — | **DA** — `istoric_declaratii_import_api.importa` refuză lista goală, și spune ce s-ar fi pierdut | `422` · `{"detail":"nu ai trimis niciun rând. Importul ar fi șters istoricul de declarații încărcat până acum pentru firma asta și n-ar fi pus nimic în loc. Dacă chiar vrei să golești istoricul importat, e altă operațiune."}` |
+| 17 | Import istoric de declarații depuse | `POST /tenants/{id}/istoric-declaratii-import` | `randuri[0]` | invalid: `[{}]` | **CIFRĂ FALSĂ ÎN REFUZ** — un singur rând, iar mesajul spunea „2 rânduri nu pot intra" (număra erorile, nu rândurile). Omul caută al doilea rând | `{"detail":"2 rânduri nu pot intra: rand 2: ?: anul 0 e în afara intervalului; rand 2: ?: luna 0 (așteptat 1-12). Istoricul declarațiilor stă la baza termenelor și a controlului fiscal."}` | — | **DA** — se numără rândurile distincte, cu acordul gramatical | `422` · `{"detail":"Un rând nu poate intra: rand 2: ?: anul 0 e în afara intervalului; rand 2: ?: luna 0 (așteptat 1-12). Istoricul declarațiilor stă la baza termenelor și a controlului fiscal."}` |
+| 18 | Încărcarea fișierului cu istoricul | `POST /tenants/{id}/istoric-declaratii-import/incarca` | `fisier` | invalid: `.txt` cu o linie de proză | `400`, spune ce coloană caută | `{"detail":"nu găsesc coloana cu tipul declarației (tip/declarație/formular) - fișier nerecunoscut"}` | — | nu — numește ce lipsește și cu ce nume o caută | neschimbat |
+
+---
+
+## LOT 1b — aceeași clasă: importurile care goleau la intrare vidă
+
+**Cerut de Costin după lotul 1**, verbatim: *„Al optulea e altă clasă și se repară acum, nu la
+final: `randuri=[]` nu e o listă de importat, e o cerere fără conținut. Se refuză, nu se execută. Un
+import care nu aduce nimic nu are voie să șteargă ce era acolo, iar «importati: 0» arată identic cu
+un import inofensiv — contabilul nu are cum să afle că a pierdut istoricul. Verifică apoi dacă mai
+există alte căi de import sau de înlocuire care golesc la intrare vidă."*
+
+**Cum le-am căutat, mecanic:** `DELETE FROM <tabel>` **fără `WHERE`** în modulele care importă. Sunt
+**patru în tot `core/`** — cea din lotul 1 plus cele trei de mai jos. Restul ștergerilor poartă un
+`WHERE id=…` sau `WHERE tenant_id=…`, deci sunt țintite, nu golesc.
+
+**Toate trei aveau exact aceeași gaură, și una în plus față de prima:** parserul de fișier are deja
+o pază pe fișierul gol, dar `extrage()` întoarce `[]` și pentru un fișier **numai cu antet** — iar de
+acolo până la `DELETE` nu mai era nimic. Plus calea de API, care primește lista direct.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 148 | Import asociați (migrare) | `POST /tenants/{id}/asociati-import` | `randuri` | lipsă: `[]` | **ștergea toți asociații firmei** (`DELETE FROM asociati`) și raporta import reușit cu zero rânduri | *(înainte de reparație: `200` cu rezultatul importului, fără niciun cuvânt despre ștergere)* | — | **DA** — gardă la intrarea în `importa`, cu ce s-ar fi pierdut scris în mesaj | `422` · `{"detail":"nu ai trimis niciun rând. Importul ar fi șters lista de asociați a firmei, cu cotele lor de participare, și n-ar fi pus nimic în loc. Dacă chiar vrei să golești lista, e altă operațiune."}` |
+| 150 | Import mijloace fixe (migrare) | `POST /tenants/{id}/mijloace-fixe-import` | `randuri` | lipsă: `[]` | **ștergea registrul mijloacelor fixe** (`DELETE FROM mijloace_fixe`) — cel pe care stă amortizarea | *(idem)* | — | **DA** | `422` · `{"detail":"nu ai trimis niciun rând. Importul ar fi șters registrul mijloacelor fixe al firmei — cel pe care stă amortizarea — și n-ar fi pus nimic în loc. Dacă chiar vrei să golești registrul, e altă operațiune."}` |
+| 153 | Salvarea soldurilor de parteneri | `POST /tenants/{id}/parteneri` | `randuri` | lipsă: `[]` | **ștergea soldurile inițiale ale partenerilor** (`DELETE FROM solduri_parteneri`). Docstringul rutei spune „înlocuiește ce era" — dar o înlocuire cu nimic e o ștergere, nu o înlocuire | *(idem)* | — | **DA** | `422` · `{"detail":"nu ai trimis niciun rând. Importul ar fi șters soldurile inițiale ale partenerilor și n-ar fi pus nimic în loc. Dacă chiar vrei să le golești, e altă operațiune."}` |
+
+**De ce n-am scris mesajul verbatim „înainte" pentru cele trei:** nu le-am probat înainte de
+reparație. Le-am găsit citind codul, pe clasa dată de Costin, iar o probă „înainte" ar fi însemnat să
+**șterg efectiv** asociații, mijloacele fixe și soldurile firmei de probă ca să constat ce știam deja
+din cod. Ce s-a probat, și e scris mai sus, e **starea de după**. *Portofoliul e fictiv și n-aveam
+ce ocroti — dar o ștergere pe care o pot prezice din cod nu devine mai adevărată dacă o fac.*
+
+**Clasa, scrisă ca să se recunoască data viitoare:** *o operațiune de înlocuire care primește un set
+vid nu are voie să execute partea de ștergere.* Semnul ei în cod e `DELETE` fără `WHERE` urmat de un
+`INSERT` într-o buclă peste ceva ce poate fi gol; semnul ei în răspuns e un succes care nu numește
+ce a dispărut.
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **Temeiul legal al periodicității nu e citat.** Mesajul *„firma depune d300 TRIMESTRIAL"* aplică o
+   regulă fiscală — perioada fiscală a TVA —, iar comanda cere temei acolo unde se aplică una. Nu am
+   pus niciun articol, fiindcă **nu l-am verificat la sursă în tura asta**, iar un temei citat din
+   memorie e mai rău decât unul absent: intră în corpus ca fapt. Rămâne de făcut la prima trecere
+   prin lotul de declarații, cu verificarea la sursă.
+2. **`403` la firmă inexistentă pe `/declaratii/{tip}`, `404` pe `/coada`.** Mesajul nu mai minte pe
+   niciuna, dar codul rămâne diferit pentru aceeași stare. N-am uniformizat: alegerea între „nu
+   divulg dacă firma există" (`403`) și „nu există" (`404`) e transversală, atinge zeci de rute și
+   testele lor, și nu se ia dintr-un lot de 22 de probe.
+3. **`rand 2` pentru primul rând trimis prin API.** Numerotarea pornește de la 2 fiindcă drumul
+   normal e un fișier cu antet, unde „rândul 2" e chiar prima linie de date. Pe calea JSON arată
+   ciudat, dar corectarea ar strica mesajul pe calea care se folosește de fapt.
+
+### Cifre
+
+- probe INVALIDE rulate: **22**, pe **11 unități** · defecte găsite: **8** · reparate: **8** ·
+  reprobate: **8**, toate schimbate.
+- clase de defect: tăcere (1) · cod intern ca mesaj (2) · mesaj care numește alt câmp (4 probe, o
+  cauză) · afirmație falsă (1) · „invalid" confundat cu „n-am putut verifica" (1) · cifră falsă în
+  refuz (1) · **pierdere de date raportată ca succes (1)** · răspuns brut al bibliotecii (4 probe, o
+  cauză).
+- niciun `500`, nicio cădere, nicio cerere fără răspuns.
+
+---
+
+## LOT 2 — T02, factura emisă (37 de probe INVALIDE pe 11 unități)
+
+*Unitățile `#24`, `#26`, `#29`, `#32`, `#33`, `#36`, `#37`, `#38`, `#39` din T02 nu sunt aici: sunt
+rute fără câmpuri de completat, ieșite din perimetrul etapei 1.*
+
+**Ce s-a lăsat în urmă, măsurat:** nimic. Numerotarea firmei se citește înainte și se pune la loc
+în `finally`; cheia de API se emite prin `POST /cabinet/api-chei` (lanțul aplicației, nu un
+`INSERT`), se revocă și rândul ei se șterge. Verificat după ultima trecere: `facturi` = 3 (aceleași
+id-uri 1, 2, 3), `serie=CMT`, `urmator_numar=150`, `public.api_chei` = 0 — exact starea de dinainte.
+
+**Prima trecere a lăsat, însă, urme — și au fost refăcute.** Trei probe *au trecut* (cota 99% de
+două ori, numărul duplicat o dată) și au creat facturile 5, 6, 7 cu notele lor; iar refacerea
+numerotării a eșuat tăcut (v. „defectele hamului", mai jos), lăsând firma fără serie și cu contorul
+la 101. Cele trei facturi s-au șters **din bază**, nu prin aplicație: `DELETE /facturi/{id}` le
+refuză — corect — fiindcă au notă, iar stornarea ar fi adăugat alte trei documente false într-o
+firmă care e subiect de măsurătoare.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 22 | Lista facturilor | `GET /tenants/{id}/facturi` | `luna` | invalid: `an=2026&luna=13` | **A CĂZUT** — `500`. Intervalul se construia ca „2026-13-01 … 2026-14-01" și pica în driver | `Internal Server Error` | — | **DA** — `facturi_api.lista_facturi` verifică filtrele înainte de a atinge SQL-ul; ruta traduce `ValueError` în `422` | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 22 | Lista facturilor | `GET /tenants/{id}/facturi` | `limit` | invalid: `limit=-5` | **A CĂZUT** — `500`. Ajungea în `LIMIT -5`, refuzat de Postgres | `Internal Server Error` | — | **DA** — aceeași gardă de filtre | `422` · `{"detail":"limit invalid: -5 (aștept un număr pozitiv, sau nimic pentru tot)"}` |
+| 22 | Lista facturilor | `GET /tenants/{id}/facturi` | `directie` | invalid: `directie=lateral` | **TĂCERE** — `200` cu listă goală. „Nu există facturi așa" arăta identic cu „direcția asta nu există"; exact clasa scoasă din `GET /coada` în lotul 1 | `{"facturi":[]}` | — | **DA** — filtrul respinge acum exact ce respinge și crearea: nomenclatorul `DIRECTII`, o singură sursă | `422` · `{"detail":"direcție necunoscută: 'lateral' (direcțiile facturii: emisa, primita)"}` |
+| 22 | Lista facturilor | `GET /tenants/{id}/facturi` | `an` | invalid: `an=anul-trecut` | `422` românește, prin handlerul din lotul 1 | `{"detail":{"mesaj":"Cererea nu poate fi acceptată: an — aștept un număr întreg, am primit 'anul-trecut'.",…}}` | — | nu | neschimbat |
+| 23 | Crearea unei facturi | `POST /tenants/{id}/facturi` | tot corpul | lipsă: `{}` | `422`, enumeră cele patru câmpuri | `{"detail":{"mesaj":"Cererea nu poate fi acceptată, 4 câmpuri: numar — lipsește; data_emitere — lipsește; directie — lipsește; linii — lipsește.",…}}` | — | nu | neschimbat |
+| 23 | Crearea unei facturi | `POST /tenants/{id}/facturi` | `linii` | invalid: `[]` | `422`, corect | `{"detail":"factura trebuie să aibă cel puțin o linie"}` | — | nu | neschimbat |
+| 23 | Crearea unei facturi | `POST /tenants/{id}/facturi` | `directie` | invalid: `lateral` | `422`, corect | `{"detail":"Direcția facturii trebuie să fie 'emisă' sau 'primită'."}` | — | nu | neschimbat |
+| 23 | Crearea unei facturi | `POST /tenants/{id}/facturi` | `data_emitere` | invalid: `2026-02-31` | **A CĂZUT** — `500`. Data mergea neatinsă până în `INSERT`; o zi care nu există în calendar e o greșeală de tastare, nu o cădere | `Internal Server Error` | — | **DA** — `_data_ceruta` verifică ambele date și spune care câmp | `422` · `{"detail":"data emiterii: '2026-02-31' nu e o dată din calendar. Aștept forma AAAA-LL-ZZ, cu o zi care există în luna aia."}` |
+| 23 | Crearea unei facturi | `POST /tenants/{id}/facturi` | `linii[].cota_tva` | invalid: `99` | **VALOARE FISCALĂ INEXISTENTĂ, ACCEPTATĂ ȘI CONTABILIZATĂ** — `200`: factura s-a creat *și* și-a primit nota, cu `4427 = 99,00 lei`. O cotă care nu există în legea română intra în evidență fără o vorbă | `{"ok":true,"factura_id":5,"total":199.0,"tva":99.0,"contare":{…"linii":[{"debit":"4111","credit":"4427","suma":"99.00"}]}}` | **art. 291 Cod fiscal**, prin registrul `common.COTE` — period-aware, nu o listă scrisă de mână | **DA** — `common.cote_tva_in_vigoare(data)` derivă cotele din registru, cu temeiurile lor; `creeaza_factura` refuză ce nu era în lege **la data facturii** | `422` · `{"detail":"Linia 'consultanta' are cota de TVA 99.0%, care nu există în legea română la data facturii (2026-09-03). Cotele de atunci: 0%, 11.00%, 21.00%. Temei: Legea 141/2025 art.291 alin.(1); Legea 141/2025 art.291 alin.(2); Legea 141/2025 art.291 alin.(3)."}` |
+| 23 | Crearea unei facturi | `POST /tenants/{id}/facturi` | `numar` | invalid: `CMT149`, deja pe factura 3 | **AL DOILEA DOCUMENT CU ACELAȘI NUMĂR** — `200`. Două facturi emise cu numărul CMT149 | `{"ok":true,"factura_id":6,"total":121.0,…}` | **OMFP 2634/2015, Anexa 1, pct. 24** — verificat la sursă în corpus, verbatim | **DA** — un număr deja folosit pe o factură **emisă** se refuză și se spune pe ce e | `422` · `{"detail":"Numărul CMT149 e deja pe factura #3. Două documente emise cu același număr rup secvența cerută de OMFP 2634/2015 art.anexa 1 lit.pct. 24. Dacă documentul dinainte e greșit, se stornează — nu se reia numărul."}` |
+| 25 | Șablon de factură recurentă | `POST /tenants/{id}/facturi-recurente` | tot corpul | lipsă: `{}` | `422`, dar mesajul era o notiță, nu un refuz: nu numea câmpul și nu spunea ce se pierde | `{"detail":"cel puțin o linie"}` | — | **DA** — mesaj întreg, cu câmpul field-keyed pentru ecran | `422` · `{"detail":{"mesaj":"Șablonul trebuie să aibă cel puțin o linie de facturat (denumire, cantitate, preț). Fără ele, factura lunară n-ar avea ce emite.","erori_campuri":[{"camp":"fr-linii","mesaj":"cel puțin o linie"}]}}` |
+| 25 | Șablon de factură recurentă | `POST /tenants/{id}/facturi-recurente` | `zi_emitere` | invalid: `45` | `422`, corect | `{"detail":"Ziua emiterii trebuie să fie între 1 și 28."}` | — | nu | neschimbat |
+| 25 | Șablon de factură recurentă | `POST /tenants/{id}/facturi-recurente` | `zi_emitere` | invalid: `"prima"` | **A CĂZUT** — `500`, din `int("prima")` | `Internal Server Error` | — | **DA** — un câmp completat cu litere e greșeală de tastare, nu cădere | `422` · `{"detail":{"mesaj":"Ziua emiterii: 'prima' nu e un număr. Aștept o zi între 1 și 28.","erori_campuri":[{"camp":"fr-zi_emitere","mesaj":"aștept un număr între 1 și 28"}]}}` |
+| 27 | Comutarea unui șablon | `PUT /tenants/{id}/facturi-recurente/{sid}` | `activ` | lipsă | `422` românește | `{"detail":{"mesaj":"Cererea nu poate fi acceptată: activ — lipsește.",…}}` | — | nu | neschimbat |
+| 27 | Comutarea unui șablon | `PUT /tenants/{id}/facturi-recurente/{sid}` | `activ` | invalid: `poate` | `422` românește | `{"detail":{"mesaj":"Cererea nu poate fi acceptată: activ — aștept da/nu, am primit 'poate'.",…}}` | — | nu | neschimbat |
+| 27 | Comutarea unui șablon | `PUT /tenants/{id}/facturi-recurente/{sid}` | `sid` | invalid: `999999` | `404`, dar telegrafic și **fără diacritice** — text afișat scris ca marker | `{"detail":"sablon inexistent"}` | — | **DA** — propoziție, cu id-ul și cu ce s-a putut întâmpla | `404` · `{"detail":"Șablonul de factură recurentă cu id 999999 nu există (a fost șters, sau id-ul e greșit)."}` |
+| 28 | Emiterea unei facturi | `POST /tenants/{id}/facturi/emite` | tot corpul | lipsă: `{}` | `422` românește | `{"detail":{"mesaj":"Cererea nu poate fi acceptată: linii — lipsește.",…}}` | — | nu | neschimbat |
+| 28 | Emiterea unei facturi | `POST /tenants/{id}/facturi/emite` | `tert_nume` | invalid: `""` | `422`, corect | `{"detail":"Denumirea beneficiarului e obligatorie pe factură. Completeaz-o înainte de emitere."}` | — | nu | neschimbat |
+| 28 | Emiterea unei facturi | `POST /tenants/{id}/facturi/emite` | `linii` | invalid: `[]` | **NUMEA ALT CÂMP** — refuzul vorbea despre codul fiscal al partenerului, fiindcă `cere_cod_partener` rula ÎNAINTE de a se uita la linii | `{"detail":"Factura nu se poate salva fără codul fiscal al partenerului (Proba SRL)…"}` *(tăiat)* | — | **DA** — ORDINEA: liniile întâi, codul de partener după. Aceeași clasă ca „trimestru invalid: None" din lotul 1 | `422` · `{"detail":"Factura trebuie să aibă cel puțin o linie."}` |
+| 28 | Emiterea unei facturi | `POST /tenants/{id}/facturi/emite` | `linii[].cantitate` | invalid: `-5` | **NUMEA ALT CÂMP** — același refuz despre codul de partener | `{"detail":"Factura nu se poate salva fără codul fiscal al partenerului (Proba SRL)…"}` *(tăiat)* | — | **DA** — aceeași reparație de ordine | `422` · `{"detail":{"cod":"LINII_INCOMPLETE","mesaj":"Completează liniile: Linia 1: cantitate","campuri":[{"camp":"em-l0-cantitate","eticheta":"Linia 1: cantitate"}]}}` |
+| 28 | Emiterea unei facturi | `POST /tenants/{id}/facturi/emite` | `moneda` | invalid: `XYZ` | **A CONFUNDAT „E INVALID" CU „N-AM PUTUT VERIFICA"** — `409`, *„Cursul BNR nu e disponibil momentan."* Pentru o monedă care nu există, „momentan" îl trimite pe contabil să reîncerce ceva ce nu va reuși niciodată — sau, mai rău, să introducă un **curs manual** și să bage factura în evidență pe o monedă inventată. *(Găsit abia la a doua trecere: prima probă era oarbă — v. mai jos)* | `{"detail":{"ok":false,"cod":"CURS_INDISPONIBIL","moneda":"XYZ","data":"2026-09-03","mesaj":"Cursul BNR nu e disponibil momentan."}}` | — | **DA** — `curs_bnr.MonedaNecotata` (subclasă, deci `except` de dinainte rămâne valabil) deosebește „moneda nu e în nomenclatorul BNR" de „cursul nu se poate lua acum"; ruta răspunde `422`, nu `409` | `422` · `{"detail":{"ok":false,"cod":"MONEDA_NECOTATA","moneda":"XYZ",…,"mesaj":"Moneda 'XYZ' nu e cotată de BNR, deci factura nu se poate exprima în lei. Verifică simbolul (trei litere, ex. EUR, USD). Monedele din ultimul nomenclator citit de la BNR: AED, AUD, …, ZAR."}}` *(tăiat)* |
+| 30 | Seria și numărul facturilor | `PUT /tenants/{id}/facturi/numerotare` | tot corpul | lipsă: `{}` | `400` cu o notiță internă | `{"detail":"nimic de setat"}` | — | **DA** — propoziție | `400` · `{"detail":"Nu ai trimis nici seria, nici numărul de start, deci n-am ce schimba în numerotarea facturilor."}` |
+| 30 | Seria și numărul facturilor | `PUT /tenants/{id}/facturi/numerotare` | `numar_start` | invalid: `-5` | **ACCEPTAT TĂCUT** — `200 {"ok":true}`. Numărul următoarei facturi devenea `-5` | `{"ok":true}` | **OMFP 2634/2015, Anexa 1, pct. 24** | **DA** | `400` · `{"detail":"Numărul de start trebuie să fie cel puțin 1; am primit -5. Numerotarea documentelor pornește de la 1, nu de la zero sau de la un număr negativ (OMFP 2634/2015 art.anexa 1 lit.pct. 24)."}` |
+| 30 | Seria și numărul facturilor | `PUT /tenants/{id}/facturi/numerotare` | `numar_start` | invalid: `100`, sub cel atins (150) | **ACCEPTAT TĂCUT** — `200 {"ok":true}`. Contorul dat înapoi peste numere deja emise; **probat**: următoarea emitere prin API a produs documentul „100" | `{"ok":true}` | **OMFP 2634/2015, Anexa 1, pct. 24** | **DA** — un număr mai mic decât cel atins se refuză, cu ambele cifre în mesaj | `400` · `{"detail":"Numărul de start 100 e sub cel la care a ajuns seria (150). Dat înapoi, următoarea factură ar primi un număr deja emis, iar secvența cerută de OMFP 2634/2015 art.anexa 1 lit.pct. 24 s-ar rupe. Un număr mai mare sau egal se acceptă."}` |
+| 30 | Seria și numărul facturilor | `PUT /tenants/{id}/facturi/numerotare` | `serie` | invalid: `"   "` | **PIERDERE TĂCUTĂ** — `200 {"ok":true}`, iar `strip() or None` ștergea seria firmei. Probat: factura emisă după avea `"serie":null` | `{"ok":true}` | — | **DA** — o serie goală nu se poate deosebi de o greșeală de tastare, deci nu se ghicește | `400` · `{"detail":"Seria e goală (numai spații). Nu se poate ghici dacă ai vrut s-o ștergi sau ai greșit tastarea, iar seria firmei e pe documentele deja emise."}` |
+| 31 | Detaliile unei facturi | `GET /tenants/{id}/facturi/{fid}` | `factura_id` | invalid: `999999` | `404`, spune ce e | `{"detail":"factură inexistentă"}` | — | nu — v. observația de sub tabel | neschimbat |
+| 34 | Trimiterea facturii pe email | `POST /tenants/{id}/facturi/{fid}/email` | `email` | invalid: `nu-e-o-adresa` | `422`, cu exemplu | `{"detail":"Adresă de email invalidă. Verifică formatul (exemplu: nume@exemplu.ro)."}` | — | nu | neschimbat |
+| 34 | Trimiterea facturii pe email | `POST /tenants/{id}/facturi/{fid}/email` | `factura_id` | invalid: `999999`, adresă validă | `404` **înainte** de orice trimitere | `{"detail":"factură inexistentă"}` | — | nu | neschimbat |
+| 35 | Supapa de notificare | `PUT /tenants/{id}/facturi/{fid}/notificare` | `factura_id` | invalid: `999999` | `404`, corect | `{"detail":"factură inexistentă"}` | — | nu | neschimbat |
+| 35 | Supapa de notificare | `PUT /tenants/{id}/facturi/{fid}/notificare` | `amanata_pana` | invalid: `"maine"` | **A CĂZUT** — `500`. Data mergea neatinsă în `UPDATE` | `Internal Server Error` | — | **DA** — se verifică unde se poate spune care câmp | `422` · `{"detail":"data amânării: 'maine' nu e o dată din calendar. Aștept forma AAAA-LL-ZZ."}` |
+| 20 | Lista facturilor, prin API | `GET /api/v1/firme/{id}/facturi` | antetul `X-Api-Key` | lipsă | `401`, spune ce lipsește | `{"detail":"lipsă X-Api-Key"}` | — | nu | neschimbat |
+| 20 | Lista facturilor, prin API | `GET /api/v1/firme/{id}/facturi` | `X-Api-Key` | invalid: cheie inventată | `401`, și nu spune care din două | `{"detail":"cheie invalidă sau revocată"}` | — | nu | neschimbat |
+| 20 | Lista facturilor, prin API | `GET /api/v1/firme/{id}/facturi` | `luna` | invalid: `13` | **A CĂZUT** — `500`, aceeași cauză ca `#22` | `Internal Server Error` | — | **DA** — aceeași gardă, plus traducerea `ValueError` → `422` și pe calea de API | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 20 | Lista facturilor, prin API | `GET /api/v1/firme/{id}/facturi` | `tenant_id` | firma **34061**, a altui cabinet | **AFIRMAȚIE FALSĂ** — `404` „firmă inexistentă", deși firma există; aceeași clasă scoasă din `FARA_ACCES_TENANT` în lotul 1 | `{"detail":"firmă inexistentă"}` | — | **DA** — forma de acum nu deosebește cele două stări, deci nici nu divulgă care e | `404` · `{"detail":"Firma nu există sau nu e în portofoliul cabinetului căruia îi aparține cheia de API folosită."}` |
+| 21 | Emiterea prin API | `POST /api/v1/firme/{id}/facturi` | tot corpul | lipsă: `{}` | `422`, numește primul câmp lipsă | `{"detail":"Denumirea beneficiarului e obligatorie pe factură."}` | — | nu — v. observația de sub tabel | neschimbat |
+| 21 | Emiterea prin API | `POST /api/v1/firme/{id}/facturi` | `linii` | invalid: `[]` | **A CĂZUT** — `500`. Ruta din ecran traducea de mult `ValueError` în `422`; asta, nu | `Internal Server Error` | — | **DA** — același contract de refuz ca ruta din ecran, inclusiv `LINII_INCOMPLETE` | `422` · `{"detail":"Factura trebuie să aibă cel puțin o linie."}` |
+| 21 | Emiterea prin API | `POST /api/v1/firme/{id}/facturi` | `linii[].cota_tva` | invalid: `99` | **ACEEAȘI ACCEPTARE** ca la `#23`, pe a doua cale | `{"ok":true,"factura_id":7,…,"numar":"100","serie":null}` | art. 291 Cod fiscal | **DA** — reparația e în `creeaza_factura`, prin care trec amândouă căile | `422` · *(identic cu `#23`)* |
+
+### Defectele HAMULUI, nu ale aplicației — se scriu, fiindcă amândouă au falsificat o măsurătoare
+
+1. **Refacerea numerotării citea alte chei decât cele întoarse de rută** (`serie_factura` /
+   `urmator_numar_factura`, numele coloanelor, în loc de `serie` / `urmator_numar`). Trimitea două
+   `None`, primea „nimic de setat", **și tipărea că a pus la loc**. Firma a rămas fără serie și cu
+   contorul la 101. Reparat, și `finally` verifică acum **starea**, nu că a trimis cererea: *un
+   `finally` care raportează că a încercat, nu că a reușit, e chiar felul în care s-a pierdut seria.*
+2. **Proba monedei era oarbă.** Trimitea `tert_nume` fără `tert_cui`, deci emiterea se oprea —
+   legitim — la codul de partener, iar ce notasem ca „mesaj despre alt câmp" era răspunsul la altă
+   întrebare. Cu codul completat, proba a ajuns la monedă și a scos al optulea defect din listă.
+   *Aceeași clasă ca „sonda era oarbă: token de alt cabinet" din 31.08.*
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **„factură inexistentă" nu poartă id-ul.** Apare în șapte locuri din `main.py`, e adevărat și
+   numește obiectul, deci nu intră în niciuna dintre clasele comenzii. Ar fi mai bun cu id-ul, ca
+   refuzul cozii din lotul 1 — dar e o îmbunătățire transversală, nu un defect al lotului.
+2. **`POST /api/v1/.../facturi` cu corp gol numește un singur câmp** (beneficiarul), pe când ruta
+   din ecran le enumeră pe toate. Nu e fals — beneficiarul chiar lipsește —, dar cele două căi
+   răspund diferit la aceeași intrare. Nereparat: ordinea verificărilor de pe calea de API e o
+   alegere, nu o scăpare, iar schimbarea ei atinge contractul integratorului.
+3. **Fluxul XML al BNR nu mai răspunde** — măsurat azi: `nbrfxrates10days.xml` dă `302` către pagina
+   de start, iar ultima zi din cache e **10.07.2026**. Consecința e mai mare decât lotul: nicio
+   factură în valută nu-și mai poate lua cursul, iar pentru monedele din cache se folosește tăcut
+   **cel mai recent curs de dinaintea datei**, adică unul vechi de aproape două luni. **Restanță
+   EXTERNĂ**, scrisă în `CONFORMITATE.md`: cere aflarea noii adrese oficiale la sursă, la BNR.
+4. **`core/facturi_api.py` refuză în 19 locuri fără să spună pe ce se sprijină** — măsurat azi,
+   cu `scripts/scan_refuzuri`, fiindcă poarta l-a scos la iveală. Primul `Temei` scris în modul l-ar
+   fi mutat din **umbră** în **datoria normei 77**, care sare de la 0 la **17**, iar norma cere ca un
+   modul care *începe* să citeze legea să nu aibă niciunul. Temeiul numerotării a fost pus în
+   `core/common.py` — locul canonic, unde stau toate celelalte (registrul `COTE`), și de unde
+   `facturi_api` importă oricum cotele. *Cifra se scrie aici tocmai ca mutarea să nu treacă drept
+   dispariție: cele 19 sunt în umbră, unde erau și înainte, și de acolo se pot plăti.*
+5. **Garda de diacritice nu vede un `raise ValueError("…")` direct.** Două dintre mesajele reparate
+   azi („factura trebuie sa aiba…", „sablon inexistent") erau text afișat fără diacritice și au
+   trecut prin poartă. Garda se uită la `HTTPException`, la cheile de afișare din dicționare și la
+   corpul **subclaselor** de excepție — nu la un `ValueError` ridicat direct, al cărui mesaj ajunge
+   totuși la om prin `except ValueError → 422`. Consemnat, nu lărgit: lărgirea unei gărzi e o temă.
+
+### Cifre
+
+- probe INVALIDE rulate: **37**, pe **11 unități** · defecte găsite: **19** · reparate: **19** ·
+  reprobate: **19**, toate schimbate. Cele 19 s-au arătat pe **21 de probe** (două cauze au câte
+  două probe fiecare); al nouăsprezecelea — un mesaj afișat fără diacritice — n-a avut probă
+  proprie: a ieșit la iveală pe **rezultatul unei reprobări**, adică pe textul cu care aplicația
+  răspundea după prima reparație.
+- distribuția răspunsurilor la ultima trecere: **26 × 422 · 5 × 404 · 4 × 400 · 2 × 401 · 0 × 500 ·
+  0 × 200**. Înainte: **7 × 500** și **6 × 200** (dintre care trei scriau în baza de date).
+- clase de defect: **cădere `500`** (7 probe, 6 cauze) · **tăcere** (1) · **valoare fiscală
+  inexistentă acceptată și contabilizată** (2 probe, 1 cauză) · **al doilea document cu același
+  număr** (1) · **numerotare primită fără verificare** (3) · **mesaj care numește alt câmp** (2
+  probe, 1 cauză) · **afirmație falsă** (2) · **refuz telegrafic sau fără diacritice** (4).
+- două dintre reparații poartă **temei verificat la sursă în tura asta**: cotele de TVA prin
+  registrul `common.COTE` (art. 291 Cod fiscal) și numerotarea secvențială prin
+  `anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`, pct. 24, citit verbatim.
+
+---
+
+## LOT 3 — T05, nota contabilă (53 de probe INVALIDE pe 32 de unități)
+
+*Unitățile `#59` și `#62` din T05 nu sunt aici: sunt rute fără câmpuri de completat, ieșite din
+perimetrul etapei 1. Rămân **32 din 34**.*
+
+**Cum s-a probat o suprafață atât de largă.** Nouăsprezece dintre cele 32 sunt note speciale —
+`POST /tenants/{id}/nota-<fel>` —, toate cu aceeași formă: corp liber cu `data` plus un discriminator
+(`operatie` sau `fel`), toate trecând prin același `_cere_luna_deschisa`. Proba de bază e aceeași
+pentru toate nouăsprezece, tocmai fiindcă **un defect în punctul comun se vede numai probându-le pe
+toate**; patru dintre ele au primit și probe de adâncime (dată invalidă, discriminator inexistent,
+sumă negativă). Restul de 13 unități — balanțe, jurnal, fișă de cont, registru-inventar, plan de
+conturi — au fost probate una câte una.
+
+**Ce s-a lăsat în urmă:** nimic. Verificat după ultima trecere: `facturi` 3, `inregistrari` 4,
+`plan_conturi` 185, `api_chei` 0 — exact starea de dinainte. Prima trecere lăsase **o notă** (`#58`)
+și **un cont „ABC" în planul firmei** (`#83`), amândouă produse de probe care AU TRECUT; s-au șters
+din bază și se spune aici că s-au șters.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 57 | Registrul-jurnal, pe lună | `GET /tenants/{id}/jurnal` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** — `_cere_perioada`, ajutor comun pentru toate cele șapte rute care primesc o perioadă | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 57 | Registrul-jurnal, pe lună | `GET /tenants/{id}/jurnal` | `an` | invalid: `1900` | **TĂCERE** — `200`, jurnal gol. „Nu s-a înregistrat nimic în 1900" arăta identic cu „1900 nu e un an de lucru" | `{"note":[],"total_debit":0.0,"total_credit":0.0,"note_fara_document":0}` | — | **DA** — același ajutor | `422` · `{"detail":"an invalid: 1900 (aștept 1990-2100)"}` |
+| 54 | Balanța ca date | `GET /tenants/{id}/balanta` | `luna` | invalid: `13` | **TĂCERE CU AFIRMAȚIE** — `200`, balanță goală, **și** `"stare":"nimic_de_verificat"` cu trei perechi „închise". O lună care nu există primea un verdict de echilibru | `{"randuri":[],"totaluri":{…},"inchidere":{"stare":"nimic_de_verificat","perechi":[{"ce":"sold initial",…"inchisa":true},…]}}` *(tăiat)* | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 55 | Balanța ca document | `GET /tenants/{id}/documente/balanta` | `luna` | invalid: `0` | **A GENERAT UN PDF** — `200`, `%PDF-1.4`. Un document contabil, tipăribil, pentru luna zero | *(corpul e un PDF)* | — | **DA** | `422` · `{"detail":"luna invalidă: 0 (aștept 1-12)"}` |
+| 53 | Balanța, prin API | `GET /api/v1/firme/{id}/balanta` | `luna` | invalid: `13` | **TĂCERE** — `200` `{"balanta":[]}` | `{"balanta":[]}` | — | **DA** — aceeași gardă și pe calea integratorului | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 84 | Registrul-inventar | `GET /tenants/{id}/registru-inventar` | `exercitiu` | invalid: `1900` | **TĂCERE CU TEMEI CITAT** — `200`, registru gol, cu `temei_obligatie: "Lege 82/1991 art.20"` și `temei: "OMFP 2634/2015…"` lângă el. Un artefact legal despre un exercițiu inexistent | `{"fel":"fapt","tip":"registru_inventar","motiv":"Registrul-inventar (cod 14-1-2), tinut potrivit art. 20 din Legea 82/1991",…"an":1900,…}` *(tăiat)* | — | **DA** | `422` · `{"detail":"exercițiu invalid: 1900 (aștept 1990-2100)"}` |
+| 86 | Propunerea pentru registrul-inventar | `GET /tenants/{id}/registru-inventar/propunere` | `luna` | invalid: `13` | **TĂCERE** — `200`, și **repeta luna 13 înapoi**, ca și cum ar fi o perioadă goală | `{"an":2026,"luna":13,"randuri":[]}` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 56 | Fișa de cont (Cartea mare) | `GET /tenants/{id}/fisa-cont` | `cont` | invalid: `9999` | **AFIRMAȚIE DESPRE UN CONT INEXISTENT** — `200`, cu fișă, sold zero, și un `temei_completitudine` scris **despre contul 9999**. Aceeași aplicație îl refuză explicit la `POST /jurnal` (*„contul 9999 nu exista in planul de conturi al firmei"*): știa răspunsul, dar nu și aici | `{"an":2026,…"fisa":{"motiv":"Fisa de cont pentru operatiuni diverse (cod 14-6-22), contul 9999","temei_completitudine":"toate liniile din `inregistrari_linii` care ating contul 9999…","sold_final":0.0,…}}` *(tăiat)* | — | **DA** — `cont_valid.cere_cont`, aceeași funcție care păzește nota; ridică `ValueError`, deci intră în `try`-ul existent | `422` · refuzul cu contul cerut și conturile apropiate din planul firmei |
+| 63–81 | **Cele nouăsprezece note speciale** | `POST /tenants/{id}/nota-<fel>` | discriminatorul | lipsă: `{}` | **ENUMERARE FĂRĂ VERB, în 13 rute și 11 module** — spune ce se acceptă, dar nu că lipsește ceva, nici de ce câmpul n-are valoare implicită | `{"detail":"operatie: dividend|regularizare|imprumut"}` · `{"detail":"fel: incasare|distribuire"}` · `{"detail":"tip: primire|rata|reziduala|operational"}` … | — | **DA** — `common.nomenclator_cerut`, un singur mesaj, **31 de locuri rescrise mecanic** | `422` · `{"detail":"Câmpul \`operatie\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: dividend, regularizare, imprumut. Nu are valoare implicită — felul operațiunii se consemnează, nu se ghicește."}` |
+| 67 · 74 · 75 · 63 | Note speciale, alt drum | `POST /tenants/{id}/nota-<fel>` | un câmp obligatoriu | lipsă | **COD INTERN CA MESAJ** — `str(KeyError)`, adică numele câmpului între ghilimele simple. Aceeași clasă scoasă din coadă în lotul 1, găsită aici pe altă cale | `{"detail":"'brut'"}` · `{"detail":"'suma'"}` · `{"detail":"'valoare_intrari'"}` | — | **DA** — `_mesaj_intrare`, în locul comun: **35 de locuri** cu `except (ValueError, KeyError) → str(e)` | `422` · `{"detail":"Lipsește câmpul \`brut\` din cererea trimisă. Operațiunea nu se poate consemna fără el."}` |
+| 64 | Nota de avans | `POST /tenants/{id}/nota-avans` | `operatie` | lipsă, și invalid | **NUMEA ALT CÂMP** — toate trei probele (corp gol, operație inexistentă, sumă negativă) primeau mesajul despre **cotă**, fiindcă `cota_ceruta` rula înaintea dispecerului. **A treia instanță a clasei**, după lotul 1 („trimestru invalid: None") și lotul 2 (`cere_cod_partener`) | `{"detail":"cotă TVA obligatorie: operațiunea trebuie să declare explicit cota…"}` | — | **DA** — felul operațiunii se verifică primul | `422` · `{"detail":"Câmpul \`operatie\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: avans_platit, regularizare_platit, avans_incasat, regularizare_incasat…"}` |
+| 83 | Adăugarea unui cont în plan | `POST /tenants/{id}/plan-conturi` | `simbol` | invalid: `ABC` | **ACCEPTAT** — `200`, iar contul „ABC" **a intrat în planul firmei**. De acolo putea ajunge pe o notă, într-o balanță și într-o declarație | `{"ok":true,"simbol":"ABC"}` | criteriu **derivat din nomenclatorul propriu**, nu dintr-un act: planul general seed-uit are peste 700 de conturi, toate începând cu o cifră de clasă | **DA** — simbolul începe cu 1-9 și se scrie din cifre, cu separator de analitic | `422` · `{"detail":"Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit 'ABC'. Dacă e un analitic, scrie-l după contul sintetic (de exemplu 4111.01)."}` |
+| 58 | Nota nouă în registrul-jurnal | `POST /tenants/{id}/jurnal` | `data`, `linii`, conturile | patru probe | `400` de fiecare dată, **cu temei structurat** — cea mai bună formă întâlnită în toată campania | `{"detail":{"fel":"neconformitate","tip":"nota_contabila","motiv":"linia 1 are suma -100: o inregistrare consemneaza o operatiune efectuata, deci suma ei e strict pozitiva","regula":"Lege 82/1991 art.6 alin.(1)","camp":"suma","linia":1,…}}` | Lege 82/1991 art.6 alin.(1) | nu — e chiar forma cerută: câmpul, linia, ce e greșit, și temeiul | neschimbat |
+| 60 · 61 | Editarea și dezlegarea unei note | `PUT /jurnal/{id}` · `POST /jurnal/{id}/dezleaga` | `nota_id` | invalid: `999999` | `404` / `422`, corecte; dezlegarea cere motivul, cu de ce | `{"detail":"notă inexistentă"}` · `{"detail":{"tip":"MOTIV_OBLIGATORIU","motiv":"Scrie motivul dezlegării: actul repară o potrivire greșită, iar peste șase luni urma fără motiv…"}}` | — | nu | neschimbat |
+| 85 · 82 | Înscrierea în registrul-inventar · căutarea în plan | `POST /registru-inventar` · `GET /plan-conturi` | corp gol · `q` gol | | `400` cu câmpul numit · `200` cu tot planul (căutare fără filtru — corect) | `{"detail":{"mesaj":"Nu am înscris rândul: lipsește exercițiul financiar.","erori_campuri":[{"camp":"exercitiu","mesaj":"cerut, nu poate lipsi"}]}}` | — | nu | neschimbat |
+
+### O schimbare de comportament, declarată pentru că n-a fost cerută
+
+`GET /firme/{id}/verificari` accepta anii **2020–2100**, prin verificarea scrisă de mână acolo în
+lotul 1. Ajutorul comun cere **1990–2100**, iar ruta a trecut pe el. *Pragul 2020 n-avea motiv scris,
+iar registrele contabile pot privi ani mai vechi; consecvența între cele șapte rute valorează mai
+mult decât un prag ales fără temei.* Dacă 2020 era voit, se pune înapoi ca parametru.
+
+### Defectele PROBEI, nu ale aplicației — trei, toate consemnate
+
+1. **„Notă dezechilibrată" e imposibilă prin construcție.** Schema ține debit, credit și suma pe
+   **aceeași linie**, deci o notă nu poate fi dezechilibrată — clasă deja consemnată pe 31.08, și
+   uitată de mine aici. Ce trimiteam era un câmp `suma_totala` care nu există în contractul rutei
+   (`descriere`, `data`, `linii`), deci a fost ignorat, pe drept. Proba s-a înlocuit cu întrebarea
+   care are sens: o notă **fără linii**.
+2. **`POST /plan-conturi` probat pe câmpul greșit** — trimiteam `cont`, câmpul se numește `simbol`,
+   iar răspunsul „simbol — lipsește" era corect. Corectat; abia atunci s-a văzut defectul real.
+3. **Probele de „sumă negativă" erau oarbe pe trei din patru note.** Trimiteau discriminatorul
+   `dividend` la toate patru, deci pe `avans`, `bacsis` și `credit` se opreau la discriminator.
+   Corectate cu valoarea validă a fiecărei note. *A doua oară în două loturi când o probă măsoară
+   altă întrebare decât cea scrisă în eticheta ei.*
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **Mesajul `nomenclator_cerut` nu spune ce s-a primit — și RĂMÂNE așa, prin decizie.**
+   Înlocuirea celor 31 de locuri s-a făcut **mecanic**, iar numele variabilei care poartă valoarea
+   diferă de la un modul la altul (`op`, `fel`, `tip`, `moment`, `actiune`); a le lega pe toate ar
+   cere rescrierea fiecărui apel cu mâna. **Costin, 04.09.2026:** *„Mesajul numește câmpul și
+   valorile acceptate — atât e nevoie ca să corectezi. Repetarea valorii trimise e o îmbunătățire
+   mică, iar 31 de locuri cu nume diferite de variabilă înseamnă risc real de a lega greșit unul.
+   Consemnează, nu lucra la ea."* — `DECIZII.md` (27). *Nu e o restanță; e o limită decisă.*
+2. **Proba de „sumă negativă" pe `nota-asociati` măsoară un câmp lipsă, nu o sumă.** Nota de dividend
+   cere `brut`, nu `suma`; răspunsul („Lipsește câmpul `brut`") e corect, dar întrebarea despre
+   semnul sumei rămâne neprobată acolo. Se reia la o trecere cu date valide.
+
+### Cifre
+
+- probe INVALIDE rulate: **53**, pe **32 de unități** · defecte găsite: **11** · reparate: **11** ·
+  reprobate: **11**, toate schimbate.
+- distribuția răspunsurilor la ultima trecere: **41 × 422 · 10 × 400 · 1 × 404 · 1 × 200** (căutarea
+  în planul de conturi fără filtru — corect) · **0 × 500**. Înainte: **1 × 500** și **9 × 200**,
+  dintre care două scriau în baza de date.
+- clase de defect: **perioadă imposibilă acceptată sau căzută** (7 probe, 6 rute) · **afirmație
+  despre un cont inexistent** (1) · **refuz telegrafic** (13 probe, 31 de locuri rescrise) · **cod
+  intern ca mesaj** (4 probe, 35 de locuri) · **mesaj care numește alt câmp** (3 probe, 1 cauză) ·
+  **valoare fără formă acceptată în nomenclator** (1).
+- **cea mai bună formă de refuz din toată campania** e tot în lotul ăsta: `POST /jurnal` răspunde cu
+  `fel`, `tip`, `motiv`, `regula`, `camp`, `linia` și temeiul — *Lege 82/1991 art.6 alin.(1)*.
+
+---
+
+## LOT 4 — T03 + T04, statul de plată și concediul medical (30 de probe INVALIDE pe 12 unități)
+
+*Unitatea `#52` (ștergerea unui concediu) nu e aici: rută fără câmpuri de completat. Rămân **12 din
+13** — opt din T03, patru din T04.*
+
+**Lotul ăsta a scos cel mai grav defect al campaniei**, și nu e o cădere: e o **cifră fiscală
+calculată pe o intrare imposibilă**. `POST /calcul-cm` cu `cod=99` — un cod care nu există în
+nomenclatorul concediilor medicale — răspundea `200`, cu `"procent": 75.0` și `"brut": 714.0`.
+Aceeași cifră o primea și `cod="ABC"`. *Indemnizația aia intră în statul de plată, în D112 și în
+decontul cu CNAS.*
+
+**Ce s-a lăsat în urmă:** nimic. Patru dintre unități scriu (`#41` nota ciornă, `#44` corecția,
+`#46` emiterea, `#51` concediul); toate au fost refuzate. Verificat după: `facturi` 3,
+`inregistrari` 4, `plan_conturi` 185, `state_plata` 2 (din 19–21.08, preexistente),
+`concedii_medicale` 0, `salariati` 2.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | `cod` | invalid: `99` | **COTĂ FISCALĂ INVENTATĂ** — `200`, cu `procent 75%` și indemnizație calculată. Cauza, la sursă: `_procent_cm_l141_2025` se termină cu `return Decimal("0.75")  # 13, 15, rest`. „Restul" înseamnă, pentru nomenclator, șapte coduri reale — și, pentru orice altceva, o cifră pe care n-o cere nicio normă. E chiar interdicția **fără default fiscal tăcut**, pe cea mai scumpă cale | `{"baza":30000.0,"media_zilnica":238.1,"procent":75.0,"zile_platite":4,"brut":714.0,…}` *(tăiat)* | nomenclatorul `core/nomenclator_cm.CODURI` — 20 de coduri, fiecare cu temeiul lui | **DA** — codul se confruntă cu nomenclatorul **în dispecer**, deci amândouă variantele datate ale formulei sunt apărate deodată, iar cele șapte coduri reale rămân la 75% | `422` · `{"detail":"Codul de indemnizație '99' nu există în nomenclatorul concediilor medicale. Codurile cunoscute: 01, 02, …, 91, 92."}` |
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | `luna` | invalid: `13` | **INDEMNIZAȚIE PENTRU O LUNĂ CARE NU EXISTĂ** — `200`, `brut 454.0`, și cu **altă bază** (26.625 în loc de 30.000): luna 13 mutase fereastra de 6 luni | `{"baza":26625.0,"media_zilnica":206.4,"procent":55.0,"zile_platite":4,"brut":454.0,…}` *(tăiat)* | — | **DA** — `_cere_perioada`, același ajutor ca la lotul 3 | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | `zile_lucratoare_cm` | invalid: `-5` | **ACCEPTAT TĂCUT** — `200`, `zile_platite 0`, `brut 0`. Rezultatul e zero, dar nimeni nu spune că intrarea era imposibilă | `{"baza":30000.0,…"zile_platite":0,"brut":0.0,…}` *(tăiat)* | — | **DA** | `422` · `{"detail":"Zilele de concediu medical nu pot fi negative (am primit -5). Se numără zilele lucrătoare acoperite de certificat."}` |
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | tot corpul | lipsă: `{}` | **A CĂZUT** — `500`. `int(corp["an"])` era **în afara** try-ului care traduce `KeyError` | `Internal Server Error` | — | **DA** — aceeași reparație, un singur bloc de parsare | `422` · `{"detail":"Lipsește câmpul \`an\` din cererea trimisă. Operațiunea nu se poate consemna fără el."}` |
+| 40 | Fluturașul de salariu | `GET /tenants/{id}/fluturas/{sid}` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 41 | Nota ciornă a statului | `POST /tenants/{id}/salarii-contare` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 43 | Statul de plată | `GET /tenants/{id}/stat-plata` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 45 | Exemplarele emise | `GET /tenants/{id}/stat-plata/emis` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 42 | Propunerea de notă | `POST /tenants/{id}/salarii-contare/propunere` | `luna` | invalid: `0` | **MESAJ ÎN ENGLEZĂ, DIN BIBLIOTECĂ** — `422` cu textul lui `datetime`. Cod intern ca mesaj, pe altă cale decât `str(KeyError)` din lotul 3 | `{"detail":"month must be in 1..12"}` | — | **DA** — garda de perioadă răspunde înainte ca luna să ajungă la bibliotecă | `422` · `{"detail":"luna invalidă: 0 (aștept 1-12)"}` |
+| 50 | Lista concediilor unui salariat | `GET /tenants/{id}/salariati/{sid}/concedii` | `salariat_id` | invalid: `999999` | **TĂCERE, ȘI INCONSECVENȚĂ** — `200` `{"concedii":[]}`. „Salariatul n-are concedii" arăta identic cu „salariatul nu există" — iar `GET /fluturas`, pe **același id inexistent**, răspunde `404 salariat inexistent`. Aplicația știa deosebirea într-un loc și n-o făcea în celălalt | `{"concedii":[]}` | — | **DA** — aceeași verificare ca la fluturaș | `404` · `{"detail":"salariat inexistent"}` |
+| 50 | Lista concediilor unui salariat | `GET /tenants/{id}/salariati/{sid}/concedii` | `an` | invalid: `1900` | **TĂCERE** — `200`, listă goală | `{"concedii":[]}` | — | **DA** | `422` · `{"detail":"an invalid: 1900 (aștept 1990-2100)"}` |
+| 51 | Salvarea unui concediu | `POST /tenants/{id}/salariati/{sid}/concedii` | `cod`, datele | trei probe: cod `99` · sfârșit înaintea începutului · `data_inceput=2026-02-31` | **NUMEA ALT CÂMP** — toate trei primeau mesajul despre **veniturile pe 6 luni**, fiindcă verificarea bazei de calcul rula înaintea formei câmpurilor. **A patra instanță a clasei**, după loturile 1, 2 și 3 | `{"detail":"Veniturile brute pe 6 luni lipsesc sau sunt 0 - completeaza baza de calcul din statele de plata."}` | — | **DA** — forma întâi: codul contra nomenclatorului, datele contra calendarului, sfârșitul după început; apoi ce lipsește din dosarul firmei | `422` · trei mesaje distincte, fiecare despre câmpul lui: codul necunoscut · *„Concediul se sfârșește (2026-08-03) înaintea zilei în care începe (2026-08-07)."* · *„data inceput: '2026-02-31' nu e o dată din calendar."* |
+| 51 | Salvarea unui concediu | `POST /tenants/{id}/salariati/{sid}/concedii` | `salariat_id` | invalid: `999999` | Mesajul despre venituri — **nu e fals** (veniturile chiar lipsesc, fiindcă omul nu e în firmă), dar nu numește starea reală, și trimite contabilul să completeze statele de plată ale cuiva inexistent | `{"detail":"Veniturile brute pe 6 luni lipsesc sau sunt 0 …"}` | — | **DA** — a treia rută despre același salariat, acum cu același răspuns ca celelalte două | `404` · `{"detail":"salariat inexistent"}` |
+| 44 | Corecția pe stat | `POST /tenants/{id}/stat-plata/corectie` | corp gol · `salariat_id` · `luna` | trei probe | `422` / `409` / `422`, toate corecte, cu propoziții întregi | `{"detail":"lipsesc an și luna"}` · `{"detail":"salariatul 999999 nu are stat emis pe 2026-08 — nu există ce corecta"}` · `{"detail":"luna trebuie să fie între 1 și 12"}` | — | nu | neschimbat |
+| 46 · 47 | Emiterea statului · motivul unui exemplar | `POST /stat-plata/emite` · `POST /stat-plata/motiv` | corp gol · motiv gol · exemplar inexistent | | `422` de fiecare dată, cu **de ce** contează câmpul | `{"detail":"motivul nu poate fi gol: o contradicție se asumă cu o rațiune scrisă"}` · `{"detail":"exemplarul 999999 nu există — nu are ce să asume nimeni"}` | — | nu — e forma cerută | neschimbat |
+| 41 · 49 | Nota ciornă, pe an vechi · codurile de indemnizație | `POST /salarii-contare` · `GET /concedii/coduri` | `an=1900` · `la_data` invalidă | | `422` motivate — primul prin chiar mecanismul `PerioadaIndisponibila` | `{"detail":"PERIOADA_BLOCATA: 1900-01-01 nu poate fi calculată: valoarea 'salariu_minim' nu e definită înainte de 2025-01-01 (nu a fost verificată la sursă…)"}` · `{"detail":"Data trebuie să fie în formatul AAAA-LL-ZZ."}` | — | nu | neschimbat |
+
+### Cifre
+
+- probe INVALIDE rulate: **30**, pe **12 unități** · defecte găsite: **10** · reparate: **10** ·
+  reprobate: **10**, toate schimbate. Cele 10 s-au arătat pe **16 probe**.
+- distribuția răspunsurilor la ultima trecere: **26 × 422 · 3 × 404 · 1 × 409** · **0 × 500** ·
+  **0 × 200**. Înainte: **5 × 500** și **5 × 200**.
+- clase de defect: **cădere `500`** (5 probe, 5 rute) · **cotă fiscală inventată pentru un cod
+  inexistent** (1) · **cifră calculată pe o lună imposibilă** (1) · **valoare negativă acceptată
+  tăcut** (1) · **tăcere pe un subiect inexistent** (2 probe, 1 rută) · **mesaj care numește alt
+  câmp** (4 probe, 1 cauză) · **mesaj de bibliotecă, în engleză** (1).
+- **niciun defect al probei** în lotul ăsta — spre deosebire de loturile 2 și 3. Ce s-a schimbat:
+  am pus în ham un `SALARIAT` care **există în firma de probă**, tocmai fiindcă de două ori la rând
+  probele se opriseră mai devreme decât scria în eticheta lor.
+
+---
+
+## LOT 5 — facturile PRIMITE și achizițiile (29 de probe INVALIDE pe 11 unități)
+
+**Nu e un traseu, e o suprafață — și asta s-a aflat căutând.** Comanda spunea *„traseul facturilor
+primite și al achizițiilor, **oricare i-ar fi numărul**"*, cu alternativa *„dacă traseul nu există ca
+atare sau e deja acoperit, ia banca și casa"*. Căutat în inventar: **nu există** un traseu cu numele
+ăsta. Ce există e suprafața prin care intră **TVA-ul deductibil**, împrăștiată în patru trasee:
+
+| trasee | unități |
+|---|---|
+| **T06** — factura primită prin e-Factura | `#88` respinge · `#89` validează · `#92` import |
+| **T08** — recepția | `#101` lista NIR · `#102` NIR nou |
+| **T28** — achiziția intracomunitară | `#238` |
+| **T29** — regimurile speciale pe achiziții | `#249` agricultor · `#250` necorporală · `#251` de la neînregistrat · `#252` taxare inversă · `#254` import extracomunitar |
+
+**Unsprezece unități.** N-am trecut la bancă și casă: alternativa era pentru cazul în care suprafața
+nu există sau e acoperită — ea există și era neprobată. S-a adăugat o **a doua trecere** pe `#23`
+(`POST /facturi`), pe direcția **primită** — probată în lotul 2 numai pe emisă —, fiindcă ea e chiar
+poarta prin care o factură de achiziție ajunge în evidență. *Nu se numără ca unitate nouă.*
+
+**Ce s-a lăsat în urmă:** nimic. Trei probe **au trecut** la a doua trecere și au scris în evidență
+(înregistrările 29, 30, 31 și facturile 22, 23); s-au șters din bază după reparație. Verificat la
+final: `facturi` 3, `inregistrari` 4.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 238 | Achiziția intracomunitară | `POST /tenants/{id}/achizitie-ic` | `cota` | invalid: `99` | **COTĂ INVENTATĂ, ÎN EVIDENȚĂ** — `200`, `"tva":"990.00"` la o bază de 1.000, cu taxare inversă. Intră în **D300** și în **D390**. `common.cota_ceruta` cerea doar ca **să existe** o cotă, nu ca ea să fie una din lege — iar prin funcția aia trec **35 de operațiuni** | `{"inregistrare_id":30,"factura_id":23,"valoare":"1000","tva":"990.00"}` | art. 291 Cod fiscal, prin registrul `common.COTE` | **DA** — `cota_ceruta` verifică acum și apartenența, la **data operațiunii**, luată din corp (`data` e numele uniform). Zero apelanți modificați, 35 de operațiuni apărate deodată | `422` · `{"detail":"Cota de TVA 99% nu există în legea română la data operațiunii (2026-09-04). Cotele de atunci: 0%, 11.00%, 21.00%. Temei: Legea 141/2025 art.291 alin.(1); …"}` |
+| 238 | Achiziția intracomunitară | `POST /tenants/{id}/achizitie-ic` | `tip` | invalid: `altceva` | **ÎNCADRARE TĂCUTĂ** — `200`, achiziția a intrat ca **bunuri**. Codul era `"servicii" if corp.get("tip") == "servicii" else bunuri`: orice altă valoare devenea bunuri. *Tipul decide încadrarea în D390 și temeiul citat pe notă* | `{"inregistrare_id":29,"factura_id":22,"valoare":"1000","tva":"210.00"}` | — | **DA** | `422` · `{"detail":"Câmpul \`tip\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: bunuri, servicii…"}` |
+| 254 | Importul extracomunitar | `POST /tenants/{id}/import-extracomunitar` | `procent_taxa_vamala` | invalid: `500` | **PROCENT DE 500% ACCEPTAT** — `200`: taxă vamală **5.000** la o valoare în vamă de **1.000**, bază TVA 6.000, TVA 1.260 | `{"inregistrare_id":31,"taxa_vamala":"5000.00","baza_tva":"6000.00","tva":"1260.00","mod_tva":"vama"}` | — | **DA** | `422` · `{"detail":"Procentul taxei vamale e între 0 și 100 — am primit 500. Taxa vamală e o parte din valoarea în vamă, nu un multiplu al ei."}` |
+| 101 | Lista notelor de recepție | `GET /tenants/{id}/stocuri/nir` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** — `_cere_perioada`, al optulea apelant al aceluiași ajutor | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 101 | Lista notelor de recepție | `GET /tenants/{id}/stocuri/nir` | `an` | invalid: `1900` | **TĂCERE** — `200` `{"nir":[]}` | `{"nir":[]}` | — | **DA** | `422` · `{"detail":"an invalid: 1900 (aștept 1990-2100)"}` |
+| 102 | Nota de recepție | `POST /tenants/{id}/stocuri/nir` | tot corpul | lipsă: `{}` | **COD INTERN CA MESAJ** — `str(KeyError)`. A scăpat reparației din lotul 3 fiindcă ruta NIR nu folosește `except (ValueError, KeyError)`, ci contractul `{"eroare", "erori_campuri"}` | `{"detail":"'linii'"}` | — | **DA** — un NIR fără articole se refuză explicit, cu ce n-ar avea ce înregistra | `422` · `{"detail":{"mesaj":"Nota de recepție n-are niciun articol. O recepție consemnează ce a intrat efectiv în gestiune — fără articole n-ar avea ce înregistra, nici ce trece în jurnalul de cumpărări.","erori_campuri":[{"camp":"nir-linii",…}]}}` |
+| 250 | Achiziția necorporală | `POST /tenants/{id}/achizitie-necorporala` | `tip` | lipsă, și invalid | **ENUMERARE FĂRĂ VERB** — a scăpat reparației din lotul 3 fiindcă e `HTTPException`, nu `ValueError`; regexul de atunci căuta numai `ValueError` | `{"detail":"tip: software|licenta|brevet|dezvoltare|constituire"}` | — | **DA** — `nomenclator_cerut`, plus a doua instanță găsită cu aceeași căutare (`"mediu: test|prod"`) | `422` · `{"detail":"Câmpul \`tip\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: software, licenta, brevet, dezvoltare, constituire…"}` |
+| 238 | Achiziția intracomunitară | `POST /tenants/{id}/achizitie-ic` | `valoare` | invalid: `-1000` | **NUME CARE NU E AL CERERII** — „baza" nu e un câmp al corpului trimis | `{"detail":"baza invalida"}` | — | **DA** | `422` · `{"detail":"Valoarea achiziției trebuie să fie un număr pozitiv — o achiziție consemnează o operațiune efectuată. Pentru o corecție în minus se face o stornare, nu o valoare negativă."}` |
+| 249 | Achiziția de la agricultor | `POST /tenants/{id}/achizitie-agricultor` | `valoare` | invalid: `-500` | **IDEM** — „pret/procent" nu sunt câmpuri ale cererii | `{"detail":"pret/procent invalid"}` | — | **DA** | `422` · `{"detail":"Prețul achiziției și procentul de compensare trebuie să fie numere pozitive — o achiziție consemnează o operațiune efectuată."}` |
+| 254 | Importul extracomunitar | `POST /tenants/{id}/import-extracomunitar` | `valoare_vamala` | invalid: `-1000` | **IDEM** | `{"detail":"valoare vamala invalida"}` | — | **DA** | `422` · `{"detail":"Valoarea în vamă trebuie să fie un număr pozitiv — ea e baza pe care se calculează taxa vamală, accizele și TVA-ul la import."}` |
+| 88 · 89 | Factura primită — respingere și validare | `POST /facturi-primite/{id}/respinge` · `/valideaza` | `primita_id`, `motiv` | `999999` · motiv gol | `404` / `422`, corecte | `{"detail":"factură primită inexistentă"}` · `{"detail":"motivul respingerii e obligatoriu"}` | — | nu | neschimbat |
+| 251 · 252 | De la neînregistrat · taxarea inversă | `POST /achizitie-neinregistrat` · `/achizitie-taxare-inversa` | furnizor · categorie | gol · inexistentă | `422`, cu **de ce** contează câmpul, și cu nomenclatorul întreg | `{"detail":"nume furnizor obligatoriu (persoana fizica - apare in denP si in avertisment)"}` · `{"detail":"categorie necunoscuta (deseuri\|masa_lemnoasa\|cereale\|…)"}` | — | nu | neschimbat |
+| 23 | Crearea unei facturi — **a doua trecere, direcția PRIMITĂ** | `POST /tenants/{id}/facturi` | `cota_tva`, `data_emitere` | `99` · `2026-02-31` | `422` de fiecare dată — **reparațiile din lotul 2 țin și pe direcția primită**, inclusiv condiția scrisă atunci: cota se verifică pe primite doar când `tert_tara=RO` | `{"detail":"Linia 'marfa' are cota de TVA 99.0%, care nu există în legea română la data facturii (2026-09-04)…"}` | art. 291 Cod fiscal | nu | neschimbat |
+
+### Defectele PROBEI — patru grupuri, și de data asta era o clasă, nu un accident
+
+Rutele de achiziție cer mai multe câmpuri obligatorii, iar prima formă a probelor trimitea corpuri
+**incomplete**: se opreau la primul câmp lipsă și măsurau altă întrebare decât cea din eticheta lor.
+`#102` folosea numele de câmp de la **factură** (`descriere`, `pret_unitar`) în loc de cele ale
+**NIR-ului** (`denumire`, `pret_achizitie`); `#238` n-avea `cod_tva_furnizor`; `#252` n-avea CUI-ul
+furnizorului; `#254` n-avea cota. **Abia după corectare au ieșit la iveală cele trei defecte grave de
+mai sus** — până atunci, toate trei arătau ca niște refuzuri cuminți.
+
+**Regula hamului, scrisă acum ca regulă:** *corp de bază **valid**, minus o singură abatere — cea
+probată.* E a treia oară în campanie când o probă măsoară altceva decât scrie în eticheta ei (lotul
+2: monedă; lotul 3: sumă negativă; lotul 5: patru grupuri deodată).
+
+### Ce a rămas nereprobat, și de ce
+
+**Data și cota per linie pe `POST /stocuri/nir`.** După trei încercări, proba tot nu ajunge acolo:
+NIR-ul cere o cotă și la nivel de notă, nu doar pe linie, iar refuzul care vine (*„Cota de TVA nu s-a
+dat. Nu se folosește o valoare implicită…"*) e **corect și motivat** — dar despre alt câmp decât cel
+probat. M-am oprit după a treia rundă: ruta nu cade și nu tace, iar întrebarea rămâne deschisă pentru
+o trecere cu date valide. *Se scrie ce s-a măsurat, nu ce am vrut să măsor.*
+
+### Cifre
+
+- probe INVALIDE rulate: **29**, pe **11 unități** (plus 2 pe a doua trecere a lui `#23`) · defecte
+  găsite: **10** · reparate: **10** · reprobate: **10**, toate schimbate.
+- distribuția la ultima trecere: **26 × 422 · 2 × 404 · 1 × 400** · **0 × 500** · **0 × 200**.
+  Înainte: **1 × 500** și **1 × 200**; iar după corectarea probelor oarbe, **3 × 200** în plus —
+  toate trei scriind în evidență.
+- clase de defect: **cifră fiscală pe intrare imposibilă** (3: cotă inventată · încadrare tăcută ·
+  procent de 500%) · **cădere `500`** (1) · **tăcere** (1) · **cod intern ca mesaj** (1) · **refuz
+  telegrafic** (2 locuri, `HTTPException`) · **nume care nu e al cererii** (3).
+- **cea mai largă reparație a campaniei**: `common.cota_ceruta` verifică acum cota la data
+  operațiunii — **35 de operațiuni** apărate deodată, fără niciun apelant modificat.
+
+---
+
+## LOT 6 — OPT trasee într-unul singur (63 de probe INVALIDE pe 45 de unități)
+
+**Costin, 04.09.2026:** *„Mărește lotul: grupează mai multe trasee într-unul singur, nu unul-două.
+Ținta e cât încape într-o sesiune fără `/clear`, nu cât încape într-o oră. O singură poartă și o
+singură scriere de registre pe lot, la sfârșit."* Lotul ăsta e primul de mărimea cerută.
+
+| traseu | unități | ce e |
+|---|---|---|
+| **T-SPV** | 3 | conectorul SPV/ANAF |
+| **T07** | 4 | extrasul bancar și potrivirea |
+| **T09** | 2 | casa și registrul de casă |
+| **T10** | 3 | inventarierea |
+| **T11** | 6 | închiderea lunii |
+| **T12** | 5 | închiderea anului și situațiile financiare |
+| **T13** | 4 | trecerea de regim fiscal |
+| **T14** | 18 | preluarea unei firme |
+
+*T08 nu apare: unitățile lui au fost probate în lotul 5, ca parte a suprafeței achizițiilor.*
+
+**Probele s-au scris pe CLASE, nu una câte una.** La 45 de unități, scrisul de mână ar fi fost el
+însuși o sursă de greșeli: trei generatoare — perioadă imposibilă, import JSON cu `randuri` gol,
+încărcare a aceluiași `.txt` care nu e tabel — acoperă 33 din cele 63 de probe.
+
+**Ce s-a lăsat în urmă:** nimic — **dar o probă a schimbat CUI-ul firmei** și a trebuit pus la loc
+cu mâna (v. mai jos). Verificat la final: `facturi` 3, `inregistrari` 4, `plan_conturi` 185,
+`articole` 9, `salariati` 2, `firma_profil.cui` = `public.tenants.cui` = `95141537`, `api_chei` 0.
+
+### Cel mai grav: CUI-ul firmei — nicio verificare, și scris într-un singur loc din două
+
+| # | rută | ce s-a introdus | ce a făcut aplicația | reparat |
+|---|---|---|---|---|
+| 126 | `POST /tenants/{id}/firma-profil/date` | `{"cui": "RO1234567890"}` — cifră de control greșită | **`200`, ȘI L-A SCRIS.** Măsurat imediat după: `firma_profil.cui` devenise `RO1234567890`, iar `public.tenants.cui` rămăsese `95141537` | **DA**, în două părți |
+
+**Două lucruri deodată, și al doilea nu era numit nicăieri:**
+
+1. **Niciun control** — deși aplicația **știe** să valideze un CUI: `solduri_parteneri_api.valideaza_cui`
+   verifică cifra de control a **partenerilor**. Firma proprie n-avea niciun control. *A cincea
+   instanță a clasei „știe într-un loc și nu și în celălalt", după cont/fișă (lot 3),
+   salariat/concediu (lot 4) și celelalte.*
+2. **SORA LUI R81.** CUI-ul firmei stă în **două locuri** — `public.tenants.cui` și
+   `{schema}.firma_profil.cui` — iar ecranul „Date firmă" scria numai în al doilea. R81 a închis
+   exact clasa asta pentru **denumire**, cu un scriitor unic care atinge amândouă locurile în
+   aceeași tranzacție; **CUI-ul a rămas afară, și nimeni n-o numise.** Acum are `alege_cui`, scris
+   lângă `alege_denumirea`, cu aceeași regulă: nu comite, fiindcă simetria **este** proprietatea
+   tranzacției.
+
+*CUI-ul firmei intră în fiecare declarație depusă. Unul greșit nu se oprește la noi — îl respinge
+ANAF, după depunere.* Refuzul de acum: `422` · *„CUI-ul RO1234567890 nu e valid (cifra de control).
+CUI-ul firmei intră în fiecare declarație depusă — unul greșit nu se oprește aici, îl respinge ANAF,
+după depunere."*
+
+### Restul, pe clase
+
+| clasă | unde | ce era | ce e acum |
+|---|---|---|---|
+| **cădere `500`** | `#105` `casa/registru?luna=13` · `#103` `casa/operatiuni` cu `data=2026-02-31` · `#112` `perioada/confirma?luna=13` | `Internal Server Error` | `422`, cu câmpul numit |
+| **afirmație despre o perioadă care nu există** | `#111` `facturi/perioada?luna=13` | `200` · `{"confirmat":false,"poate_confirma":true}` — **un verdict despre închiderea lunii 13** | `422` · *„luna invalidă: 13"* |
+| **tăcere pe perioadă** | `#105` `an=1900` · `#117` istoric (×2) · `#118` categorie-mărime · `#120`/`#122` XML-urile de bilanț | `200` cu listă goală, sau un artefact cu **motiv scris** despre exercițiul 1900 | `422`, prin `_cere_perioada` — al **cincisprezecelea** apelant al aceluiași ajutor |
+| **„am făcut" despre ce nu există** | `#113` `perioada/redeschide?luna=13` | `200` · `{"ok":true}` — a *redeschis* luna 13 | `422` |
+| **tăcere pe nomenclator** | `#95` `banca/reconciliere?status=INEXISTENT` · `#144` `migrare/straturi?tip_firma=inexistent` | `200` cu listă goală · `200` cu **lista întreagă**, ca și cum ar fi răspunsul pentru tipul cerut | `422`, cu nomenclatorul enumerat |
+| **actul absent raportat ca rezultatul lui** | `#109` `stocuri/inventar` cu corp gol | `200` · `{"rezultate":[]}` — „am inventariat și n-am găsit diferențe" despre o numărătoare care nu s-a făcut | `422` · *„Un inventar fără linii nu e o inventariere fără diferențe — e o inventariere care nu s-a făcut."* |
+| **document oficial pe o perioadă imposibilă** | `#107` `d406-stocuri` cu sfârșit înaintea începutului | `200` cu **XML SAF-T generat** | `422`, plus mesajul de dată care spune acum **care** din cele două e greșită |
+| **valoare fără formă, acceptată** | `#127` `firma-profil/model` cu `culoare="ceva-ce-nu-e-culoare"` | `200` — și culoarea ajunge în PDF-ul facturii, unde generatorul o citește ca hex | `422`, cu forma cerută și un exemplu |
+| **cerere fără conținut raportată ca succes** | `#146` `articole-import` · `#158` `salariati-import`, cu `randuri=[]` | `200` · `{"create":0}` / `{"importati":0}` | `422` — **a doua și a treia cale** a clasei închise în lotul 1b |
+| **cifră falsă în refuz** | `#158` `salariati-import` cu un rând fără câmpuri | *„**2 rânduri** nu pot intra"* pentru **un** rând — numără erorile, nu rândurile | *„Un rând nu poate intra…"* — **a doua instanță** a defectului reparat în lotul 1, cu aceleași cuvinte |
+| **fișier necitit raportat ca fișier gol** | `#133` `migrare/fisier` · `#135` `migrare/incarca` · `#154` `parteneri/incarca` | `200` cu rezultate goale, pe un `.txt` cu o linie de proză | `422` · *„un fișier necitit nu e un fișier gol"*. Ruta `istoric-declaratii-import/incarca` refuza deja, din lotul 1 — **a șasea instanță** a clasei „știe într-un loc, nu și în celălalt" |
+| **mesaj care nu numește câmpul** | `#103` `categorie necunoscută: None` · `#107` `date format YYYY-MM-DD` | telegrafic, fără nomenclator și fără să spună care dată | propoziții, cu valorile posibile enumerate |
+
+### Trei `500` introduse de reparațiile MELE, prinse la reprobare
+
+Reprobarea a scos trei căderi noi, toate ale mele: refuzul importului de articole ieșea ca `500`
+(ruta nu prindea `ValueError`), iar cele două refuzuri de fișier aveau `%%s` într-un șir interpolat.
+*Reprobarea nu e o formalitate de confirmare — e a doua probă, și a găsit ce prima n-avea cum.*
+
+### Ce n-a fost defect, deși a răspuns `200`
+
+- **`#2` `spv/autorizare`** întoarce URL-ul de autorizare — asta e treaba ei; **`#3` `spv/stare`**
+  spune `{"conectat": false}`, corect.
+- **`#1` `anaf/oauth/callback`** cu un cod inventat redirecționează la pagina de retur **cu
+  `?eroare=`** — verificat în cod, nu dedus din codul HTTP.
+- **`#109`** cu articol inexistent sau cantitate negativă răspunde `200`, dar cu `eroare` **pe
+  linie** (`cvi-a999999-faptic`) — contractul field-keyed al ecranului. Refuzul există, la nivelul
+  la care ecranul îl poate arăta.
+- **`#126`** cu corp gol răspunde `200` cu profilul neschimbat. Un „salvează" fără câmpuri e un
+  no-op; `{"ok": true}` e discutabil, dar nu afirmă nimic fals.
+- **`#119` / `#121`** (validarea bilanțului) refuză `an=1900` — dar pentru **alt motiv**: lipsește
+  numărul de la registrul comerțului, verificat mai devreme. Refuzul e corect și motivat; anul nu
+  ajunge să fie evaluat. *Se scrie ce s-a măsurat.*
+
+### Cifre
+
+- probe INVALIDE rulate: **63**, pe **45 de unități**, în **opt trasee** · defecte găsite: **20** ·
+  reparate: **20** · reprobate: **20**, toate schimbate.
+- distribuția la ultima trecere: **40 × 422 · 15 × 400 · 2 × 404 · 6 × 200** (toate șase explicate
+  mai sus) · **0 × 500**. Înainte: **3 × 500** și **24 × 200**.
+- **niciun defect al probei** — a doua oară la rând, după ce regula „corp de bază valid, minus o
+  singură abatere" a intrat în ham la lotul 5.
+- `_cere_perioada`, ajutorul scris în lotul 3 pentru **patru** rute, are acum **cincisprezece**
+  apelanți. *Fiecare lot îl găsește într-un loc nou.*
+
+---
+
+## LOT 7 — TREISPREZECE trasee (61 de probe INVALIDE pe 49 de unități)
+
+T15 salariatul · T16 pontajul · T17 plata salariilor · T18 chitanța · T19 scadențarul · T20 mișcarea
+de stoc · T21 rețeta și producția · T22 mijlocul fix · T23 bonul de la client · T24 bonul fiscal ·
+T25 magazinul online · T26 registratura · T27 e-Transport.
+
+**Proba de deschidere a fost corpul gol, pe toate cele 28 de căi care primesc unul.** E cea mai
+ieftină probă și cea care scoate contractul la iveală: *ce răspunde o rută când nu primește nimic
+arată ce consideră ea obligatoriu — iar acolo unde răspunde `200`, întrebarea e ce a făcut fără să i
+se ceară.* Din cele 28, **șase au căzut cu `500`** și **una a oprit un canal**.
+
+**Ce s-a lăsat în urmă:** nimic. Verificat: `facturi` 3, `inregistrari` 4, `salariati` 2,
+`articole` 9, `produse` 0, `chitante` 0; `firma_profil.cui` = `95141537`, `wc_url` și `wc_ck` = NULL
+(cum erau).
+
+| # | rută | ce s-a introdus | ce a făcut aplicația | reparat |
+|---|---|---|---|---|
+| 170 · 201 · 202 · 204 · 205 · 213 | `reges-config` · `stocuri/iesire` · `stocuri/intrare` · `stocuri/reclasificare` · `stocuri/transfer` · `retete/descarca` | corp gol | **A CĂZUT** — `500` de șase ori. `corp["x"]` cu `KeyError` neprins | **DA** — refuzul iese acum ca mesaj, prin ajutorul comun din lotul 3 |
+| 180 | `POST /pontaj/confirma` | `luna=13` | **A CĂZUT** — `500` | **DA** — `_cere_perioada` |
+| 215 | `POST /amortizare` | `luna=13` | **A CĂZUT** — `500`, **și ruta asta scrie nota direct ca `validata`**, deci o lună imposibilă ar fi ajuns în evidență, nu într-o ciornă | **DA** |
+| 177 | `PUT /salariati/{id}` | `salariat_id=999999` | **`200` · `{"ok":true}`** — „am actualizat" despre cineva care nu e în firmă. **A treia oară** în campanie când o rută despre un salariat nu verifică dacă el există (lotul 4: concediile, de două ori) | **DA** — `404 salariat inexistent`, ca celelalte trei rute |
+| 230 | `PUT /woocommerce/config` | corp gol | **A OPRIT CANALUL, TĂCUT** — scria `NULL` în `wc_url`, `wc_ck`, `wc_cs` și răspundea `{"ok":true}`. Chiar comentariul de deasupra o spune: *„cu ele pline canalul e pornit, golite îl oprește"*. **Aceeași clasă ca importurile din lotul 1b**: o operațiune de înlocuire care primește un set vid nu are voie să execute partea de ștergere | **DA** — oprirea rămâne posibilă, dar **cerută**, nu dedusă din tăcere |
+| 183 | `GET /util/zile-lucratoare` | `end < start` | **`200` · `{"zile": 0}`** — o cifră, adică un răspuns. Iar cifra asta intră în **auto-calculul indemnizației de concediu medical** (OUG 158/2005 art. 10): *„0 zile lucrătoare" și „intervalul e scris invers" nu sunt același lucru* | **DA** |
+| 232 | `GET /registratura` | `an=1900` | `200` cu registru gol | **DA** — `_cere_perioada` |
+| 203 | `GET /stocuri/locatii` | `articol_id=999999` | `200` · `{"locatii":[]}` — „articolul nu e nicăieri" arăta identic cu „articolul nu există" | **DA** — `404`, ca la salariat (lot 4) și la cont (lot 3) |
+
+### Ce a răspuns bine, și merită scris
+
+Cele mai bune refuzuri din lot n-au avut nevoie de reparație: **e-Transport** (`#234`, `#235`)
+răspunde cu `{"cod":"CAMPURI_LIPSA","mesaj":"Câmpuri obligatorii lipsă (schema eTransport): Tip
+operațiune; Cel puțin un bun…"}` — numește schema, câmpurile și ce lipsește; **reevaluarea**
+(`#217`) spune *„mijloc fix inexistent/inactiv"*; **rețetele** (`#212`) — *„Denumirea rețetei e
+obligatorie."*
+
+### Defectele PROBEI — patru grupuri, și trei feluri diferite de a fi oarbă
+
+1. **Parametri care nu există în semnătură.** `#188` (chitanțe), `#194` (analitică) și `#173`
+   (salariați) nu *ignoră* `luna` — **n-o primesc deloc**; FastAPI lasă parametrii necunoscuți să
+   treacă. Probele mele măsurau o întrebare pe care rutele n-o puseseră niciodată.
+2. **Locul greșit al parametrului.** `#215` cere `an`/`luna` ca **parametri de adresă**, nu în corp;
+   prima formă îi trimitea în corp și primea „an lipsește". *Abia după corectare a ieșit `500`-ul.*
+3. **Rolul greșit.** `#219`–`#221` sunt rute de **portal** și cer rol `client`; cu tokenul de cabinet
+   se opreau la poarta de contexte („Alegeți firma"), nu la bonul inexistent.
+
+*A patra oară în campanie când probele măsoară altceva decât scrie în eticheta lor — dar de data asta
+fiecare fel a fost prins la prima reprobare, iar două dintre defectele reale ale lotului (`#215`,
+`#230`) s-au văzut **numai** după corectare.*
+
+### Cifre
+
+- probe INVALIDE rulate: **61**, pe **49 de unități**, în **treisprezece trasee** · defecte găsite:
+  **13** · reparate: **13** · reprobate: **13**, toate schimbate.
+- distribuția la ultima trecere: **41 × 422 · 11 × 404 · 5 × 400 · 2 × 200** (căutări în COR fără
+  rezultate — corect) · **0 × 500**. Înainte: **7 × 500** și **10 × 200**.
+- **opt din cele treisprezece defecte au fost căderi `500`** — cea mai mare proporție din campanie,
+  și toate pe **corpul gol**. *La 28 de căi probate cu aceeași intrare, șase au căzut: nu e un
+  accident, e o clasă — rutele care citesc `corp["camp"]` fără să treacă prin nicio validare.*
+- `_cere_perioada` are acum **optsprezece** apelanți.
+
+---
+
+## LOT 8 — ȘAPTE trasee (50 de probe INVALIDE pe 43 de unități)
+
+T28 operațiunile intracomunitare · T29 regimurile speciale de TVA · T30 operațiunile în valută ·
+T31 completările manuale la declarații · T32 partida simplă · T33 exportul contabil · T34 rapoartele
+comerciale și centrele de cost.
+
+**Ce s-a lăsat în urmă:** nimic — toate probele au fost refuzate.
+
+| # | rută | ce s-a introdus | ce a făcut aplicația | reparat |
+|---|---|---|---|---|
+| 246 | `POST /vanzare-ic` | corp gol | **`502` · *„VIES indisponibil: 'cod_tva_client'"*** — două lucruri într-un singur mesaj: o **afirmație falsă despre un serviciu extern** (contabilul crede că VIES e picat, când de fapt n-a completat un câmp) și **`str(KeyError)`**, adică numele câmpului între ghilimele simple. Cauza: citirea câmpului era **înăuntrul** `try`-ului care prinde `Exception` | **DA** — *ce nu s-a trimis nu se află de la VIES* |
+| 239 · 262 · 265 · 268 | `d390-clasificare` · `d300-manual` · `d301-operatiuni` · `registru-evidenta-fiscala` | `luna=13` / `an=1900` | **AU CĂZUT** — `500` de patru ori | **DA** — `_cere_perioada` |
+| 260 · 261 | `decontare-valuta` · `reevaluare-valuta` | `moneda=XYZ` | **A CĂZUT** — `500`. Rutele prind `(ValueError, KeyError)`, dar `MonedaNecotata` e subclasă de `CursIndisponibil`, care e `Exception`. **Reparația din lotul 2** — care deosebește „moneda nu există" de „cursul nu se poate lua acum" — trăia **numai pe calea facturii**; celelalte două căi n-o vedeau | **DA**, pe amândouă: `422` pentru monedă inexistentă, `409` pentru curs indisponibil |
+| 243 · 276 · 281 · 282 · 286 | `intrastat-praguri` · `rip/registru` · `api/v1/kpi` · `cabinet/consolidare` · `centre-cost/varianta` | `an=1900` / `luna=13` | **TĂCERE** — `200`. `api/v1/kpi` întorcea chiar `{"an":2026,"luna":13,...}`, repetând luna imposibilă înapoi; `cabinet/consolidare` întorcea **firmele cabinetului**, cu KPI calculat pe luna 13 | **DA** |
+| 289 | `GET /rapoarte-comerciale` | `pana < de` | `200` cu raport gol — „n-ai vândut nimic în perioada asta" arăta identic cu „perioada e scrisă invers". **A treia instanță** a clasei, după SAF-T (lot 6) și zilele lucrătoare (lot 7) | **DA** |
+
+### Ce a răspuns `200` și **nu** e defect
+
+- **`#258` `POST /vanzare-marja`** cu preț de vânzare **sub** cel de cumpărare: `200`, cu
+  `"motiv": "marja negativa/zero - fara TVA, se reporteaza in jurnalul de marja"`. **E corect
+  fiscal** — regimul de marjă permite vânzarea în pierdere, iar marja negativă nu produce TVA, se
+  raportează. *Aplicația nu doar acceptă: explică de ce.*
+- **`#291` `GET /rapoarte-salvate`** fără parametri: listă goală, care e chiar răspunsul.
+
+### Trei probe oarbe, același fel ca la lotul 7
+
+`#283` (centre de cost) n-are `an` în semnătură, `#286` are `an` dar nu `luna`, iar `#289` primește
+un **interval** (`de`/`pana`), nu an/lună. Corectate; **`#286` și `#289` au devenit defecte reale
+abia după corectare.**
+
+### Cifre
+
+- probe INVALIDE rulate: **50**, pe **43 de unități**, în **șapte trasee** · defecte găsite: **14** ·
+  reparate: **14** · reprobate: **14**.
+- distribuția la ultima trecere: **39 × 422 · 6 × 400 · 3 × 404 · 2 × 200** (ambele explicate mai
+  sus) · **0 × 500** · **0 × 502**. Înainte: **5 × 500**, **1 × 502**, **9 × 200**.
+- clase: **cădere pe perioadă** (4) · **cădere pe monedă inexistentă** (2 căi) · **afirmație falsă
+  despre un serviciu extern** (1) · **tăcere pe perioadă** (5) · **interval inversat** (1).
+- `_cere_perioada` are acum **treizeci și șapte** de apelanți. *Fiecare lot îl găsește într-un loc
+  nou — iar asta e chiar măsura clasei: nu era o scăpare, era o lipsă de sistem.*
+
+---
+
+## LOT 9 — pachetul lunar și ciclul de viață al firmei (72 de probe INVALIDE pe 72 de rute)
+
+T35 (pachetul lunar către client, 30) + **rutele** din T36 (ciclul de viață al firmei, 42).
+**Cele 75 de ECRANE din T36 nu sunt aici**: nu se probează cu cereri HTTP, ci prin Playwright — altă
+unealtă, deci alt lot.
+
+**Două excluderi DELIBERATE, declarate înainte de probare:** `DELETE /tenants/{id}` și
+`POST /gdpr/sterge-cabinet/{id}/executa` s-au probat **numai pe `999999`**. Sunt cele mai
+distructive două acte ale aplicației; pe un id real, o probă care „trece" ar șterge o firmă sau un
+cabinet întreg. *Nu se probează cu date valide ce nu se poate reface.*
+
+### Două cereri GOALE care au produs efecte reale
+
+| # | rută | ce a făcut | reparat |
+|---|---|---|---|
+| 382 | `POST /eu/competente` | **A SCOS TOATE DREPTURILE.** `CompetenteIn` avea toate cele trei câmpuri cu implicit `False`, deci un corp gol însemna *„scoate-mi tot"*. Probat, și s-a întâmplat: patronul **1968** — cel care depusese o declarație prin interfață cu o zi înainte — a rămas fără `poate_depune`. **Refăcut cu mâna** | **DA** — câmpurile n-au implicit: cine setează competențe le declară pe toate trei, iar cine nu trimite nimic primește un refuz, nu o golire |
+| 369 | `POST /cabinet/api-chei` | **A CREAT O CHEIE FĂRĂ NUME**, rămasă activă. Cheia se arată **o singură dată**, la creare; una fără nume nu se mai poate recunoaște în listă ca s-o revoci. **Ștearsă** | **DA** — numele e obligatoriu, cu motivul scris în refuz |
+
+*Amândouă sunt aceeași clasă ca `woocommerce/config` din lotul 7 și ca importurile din lotul 1b:
+**o cerere fără conținut nu e o cerere de golire**.*
+
+### Restul
+
+| clasă | unde | ce era | ce e acum |
+|---|---|---|---|
+| **perioadă imposibilă** | `#295` `#297` `#298` pachetul lunar, cu `luna=13` | `200` — iar `#297` **genera HTML-ul pachetului** pentru luna 13 | `422`; gardat și `#296` (scrierea poveștii), care n-a fost probat dar are aceeași semnătură |
+| **număr de zile negativ** | `#356` erori · `#358` semafor, cu `zile=-5` | `200`, iar `#356` repeta `"zile": -5` înapoi | `422` |
+| **interval inversat** | `#355` centralizator · `#357` jurnal · `#380` calitate | `200` cu raport gol, **și cu intervalul inversat repetat înapoi** în răspuns. **A cincea, a șasea și a șaptea instanță** a clasei, după SAF-T (lot 6), zilele lucrătoare (lot 7), rapoartele comerciale și centrele de cost (lot 8) | `422` |
+| **refuz deghizat în răspuns** | `#328` `PUT /clienti/999999` | `200` · `{"ok": false}` — fără motiv, fără cod. *„N-am putut actualiza" și „clientul ăsta nu există" nu sunt același lucru* | `404 client inexistent` |
+| **parametru ignorat tăcut, pe o rută GDPR** | `#400` `GET /gdpr/export-cabinet?cabinet_id=X` | `200` cu **arhiva cabinetului TĂU**, oricare ar fi fost `cabinet_id`. Nu e o scurgere — dar pe o rută GDPR, „am exportat" despre alt cabinet decât cel cerut e cea mai proastă formă de tăcere: *arhiva pleacă mai departe cu numele greșit în minte* | `403`, cu ambele numere în mesaj |
+
+### Ce a răspuns `200` și **nu** e defect
+
+Cele **12 citiri de portal** (`#300`–`#318`), probate cu rol `client` și fără parametri, răspund
+normal — n-au parametri obligatorii. `#337` `PUT /tenants/{id}` cu corp gol spune
+`{"ok":true,"neschimbat":true}` — *declară că n-a schimbat nimic*, ceea ce e chiar forma bună.
+`#324` cu căutare goală întoarce lista goală.
+
+### Probele oarbe — a cincea oară, aceeași clasă
+
+Șase probe trimiteau parametri **care nu există în semnătura rutei** (`#355`, `#357`, `#380` au
+`de`/`pana`, nu an/lună; `#358` are `zile`; `#400` are `cabinet_id`; `#403` are `doar_necitite`;
+`#333` are `inactive`). FastAPI lasă parametrii necunoscuți să treacă fără să se plângă nimeni.
+**Patru dintre defectele reale ale lotului au ieșit la iveală numai după corectare.**
+
+### Cifre
+
+- probe INVALIDE rulate: **72**, pe **72 de rute**, în **două trasee** · defecte găsite: **13** ·
+  reparate: **13** · reprobate: **13**.
+- distribuția la ultima trecere: **40 × 422 · 14 × 403 · 3 × 404 · 1 × 400 · 14 × 200** (12 citiri
+  de portal + două explicate mai sus) · **0 × 500**. Înainte: **28 × 200**.
+- **cele 14 × `403`** sunt rutele de administrare (`/admin/*`, `/asistenti/*`, `/gdpr/*`) refuzate
+  utilizatorului de probă — poarta de rol ține, și se vede.
+- *Lotul ăsta n-a avut nicio cădere `500`. A avut, în schimb, **două cereri goale care au schimbat
+  starea** — iar asta e mai greu de văzut decât o cădere: `200` arată ca un succes.*
+
+---
+
+## LOT 10 — ECRANUL: refuzul serverului ajunge la om, sau se pierde pe drum?
+
+Primul lot care nu se probează cu cereri HTTP. Cele 75 de unități rămase din T36 sunt **ecrane**,
+iar întrebarea campaniei are pe ele altă formă: *serverul a răspuns bine — dar ce citește omul?*
+
+**Ce s-a lăsat în urmă:** nimic. Sonda de ecran a scris de două ori un centru de cost și un raport
+salvat, ambele numite `«»@#$%`; **amândouă șterse**, verificat `centre_cost` 0 și
+`rapoarte_salvate` 0. Toate celelalte 50 de tabele ale schemei, neatinse.
+
+### Defectul de clasă: cele 13 descărcări care aruncau motivul serverului
+
+Un răspuns binar (PDF, XML, ZIP, imagine) nu poate trece prin `api.get`, deci ecranele care
+descarcă un fișier chemau `fetch` direct — și ocoleau `_refuzNevazut`, bannerul care din 27.08
+garantează că un refuz la scriere nu rămâne nevăzut. **Măsurat cu `core/scan_descarcare_muta.py`:
+toate 13 aveau aceeași formă** — `if (!r.ok) throw new Error("eroare " + r.status)`.
+
+| ce spunea serverul | ce citea omul |
+|---|---|
+| `chitanță inexistentă` | **„Eroare — reîncearcă"** |
+| `factură inexistentă` | **„Eroare — reîncearcă"** |
+| `sablon inexistent` | „eroare 404" |
+| `luna invalidă: 13 (aștept 1-12)` | „Nu am putut genera fluturașul." |
+| `nicio factură emisă în luna aleasă` | „eroare 404" |
+
+Cele două *„Eroare — reîncearcă"* sunt cel mai rău caz: **un sfat care nu poate reuși niciodată**,
+fiindcă factura tot nu există la a doua apăsare. Omul apasă din nou, și din nou.
+
+**Reparația e UNA, în `api.js`** — `cereBlob` / `descarca` / `deschide` —, nu treisprezece,
+formular cu formular. Aceeași formă ca `refuz_vazut_v1`. Un `fetch` direct care descarcă un fișier
+trece acum prin același loc care citește `detail` și pune bannerul. *Un GET pe care omul l-a cerut
+apăsând un buton nu e o citire de fundal: excepția „GET-urile tac" e pentru contoare și badge-uri,
+nu pentru un fișier care nu vine.*
+
+A patrusprezecea instanță — importul extrasului bancar — a intrat pe `api.postForm`, care era deja
+instrumentat.
+
+### Cele trei defecte de SERVER, găsite probând aceleași căi
+
+| # | rută | ce era | ce e acum |
+|---|---|---|---|
+| 456 | `POST /salariati/{id}/adeverinta` | pentru un salariat **inexistent** răspundea *„lipsește numele administratorului. Completează-l în Date firmă"*. Precondiția firmei se cerea **înaintea** căutării subiectului — un drum de reparat care nu duce nicăieri: și după ce-l completezi, salariatul tot nu există | `404 salariat inexistent`. *Ordinea întrebărilor E răspunsul.* |
+| 456 | `POST /plata-salarii-fisier` cu `luna=13` | **`422 "month must be in 1..12"`** — mesajul bibliotecii, în engleză, ajuns până la contabil. Aceeași clasă cu `str(KeyError)` din lotul 8 | `422 luna invalidă: 13 (aștept 1-12)` |
+| 487 | `GET /portal/documente/balanta` cu `luna=13` | **`200` cu PDF-ul tipărit** pentru luna 13. Calea de cabinet (`/tenants/{id}/documente/balanta`) o refuză din lotul 3; calea de portal, care produce **același document** pentru client, n-a aflat niciodată | `422`. **A opta instanță** a clasei „aplicația știe într-un loc și nu știe în altul" |
+
+### Infrastructura vizuală trăia pe bytecode
+
+`frontend_test/w_auth.py` — tokenul mințit și navigarea la firmă, de care atârnă `interactiune_scan`,
+`axe_scan`, `mobil_scan` și `nav_ecrane` — **fusese șters de pe disc pe 26.08**, odată cu `b87dad49`
+(„Scoate din urmărire cele 234 de artefacte măturate din greșeală"). Timp de nouă zile, **24 de
+fișiere** s-au importat dintr-un `.pyc` de 4,6 KB rămas în `__pycache__`. Nimic n-a devenit roșu:
+Python încarcă bytecode fără să-i ceară sursa. *Un `find -name __pycache__ -delete` — curățenia
+obișnuită, cea care e chiar regulă în casă — ar fi oprit tăcut toată infrastructura vizuală.*
+
+Sursa e **reconstruită din bytecode** (dezasamblare, funcție cu funcție) și verificată rulând
+scanurile. `core/test_infra_vizuala.py` cerea fișiere **dintr-o listă**, iar `w_auth` nu era în ea
+și nici măcar în același director; acum **derivă** ce trebuie să existe din chiar `import`-urile
+uneltelor. Calibrat pe viu: mutat `w_auth.py`, garda cade numind modulul; pus la loc, trece.
+
+### Ce a răspuns bine, și merită scris
+
+Cele **8 butoane de scriere** apăsate cu formularul umplut cu date imposibile (`«»@#$%`,
+`-99999999`, `1899-02-30`) — **toate 8 vorbesc**, zero tăceri. Cele mai bune sunt cele care
+colectează *toate* câmpurile lipsă odată și marchează fiecare cu `aria-invalid`, nu doar pe primul:
+vectorul fiscal și planul de conturi. Iar planul de conturi răspunde la un simbol imposibil cu
+*„Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit
+'«»@#$%'"* — numește regula, clasa și ce a primit.
+
+### Instrumentul a greșit în ambele direcții, și de două ori
+
+1. **Prima variantă a scanului** clasa forma din `app.js` (`.then((r) => r.json().then(...))`) drept
+   „fără ramură de eșec", deși tratează refuzul corect. *Un instrument care pune un caz bun într-o
+   categorie greșită minte și când nu acuză pe nedrept.*
+2. **Prima variantă a sondei de ecran** căuta semnele refuzului după clasele din convenție
+   (`.msg-eroare`, `[role=alert]`) și a raportat **„TACE" despre patru butoane**. Trei minciuni în
+   una: `migrare.js` își scrie eroarea într-un `.mig-eroare` (clasă proprie — instrumentul care
+   caută convenția nu vede ecranele care n-o urmează), iar alte două **nu tăceau, ci reușeau** —
+   scriseseră în baza de date. Sonda măsoară acum **text nou vizibil**, nu clase, și numără starea
+   tuturor celor 52 de tabele înainte și după fiecare apăsare. Verdictele sunt trei, nu două:
+   **a vorbit** · **a scris** · **TACE**. *O sondă „de citire" scrie până n-o dovedești.*
+
+### Cifre
+
+- probe INVALIDE rulate: **13** pe rute de descărcare · **8** pe butoane de ecran, în **15 ecrane**
+  parcurse · **1** probă pe viu în browser (5 aserțiuni) · defecte găsite: **5** · reparate: **5** ·
+  reprobate: **5**.
+- clasa mare: **14 locuri** care aruncau motivul serverului → **0**, măsurat de
+  `core/scan_descarcare_muta.py`; 15 cereri directe tratează acum refuzul, 1 excepție declarată
+  (telemetria `keepalive`), 1 fișier exceptat cu motiv (`versiune.js`, cerere către un fișier static).
+- pe ecran: **8 butoane probate, 8 vorbesc, 0 tac, 0 scrieri rămase, 0 erori JS**.
+- gărzi noi: `core/test_descarcare_muta.py` (8 teste, din care **6 de calibrare** — două forme mute
+  injectate, două forme bune care nu trebuie acuzate, una pe propriul mod de eșec) +
+  `core/test_infra_vizuala.py` (2 teste noi, unul anti-vacuu).
+- `_cere_perioada` are acum **patruzeci și doi** de apelanți.
+- *Lotul ăsta n-a găsit nicio cădere `500`. A găsit, în schimb, un strat întreg care înlocuia
+  răspunsul serverului cu al lui — și o infrastructură de testare care mergea fiindcă nimeni nu
+  ștersese încă un director temporar.*
+
+### Ce a scos POARTA lotului 10, și nu era despre ecrane
+
+Poarta a respins de opt ori, și una singură merită scrisă aici: *„scrieri NOI care pot refuza fără
+să spună motivul: **18 > 16**"*, cu două intrări noi în `ecrane/facturi_ecran.js`. Citit ca atare,
+lotul stricase două ecrane.
+
+**Măsurat înainte de reparat, pe un worktree detașat la `277e4300`** — commitul de dinaintea
+lotului, deci fără nicio schimbare a lotului în el —, cu cititorul reparat: **18 și acolo**. Lotul
+n-a adăugat nicio scriere mută. A **mutat o linie de cod** din `facturi_ecran.js` în `api.js` —
+`cd.match(/filename="([^"]+)"/)`, chiar reparația R131 —, iar odată cu ea s-a mutat **orbirea
+instrumentului**: a treia ghilimea deschidea un „șir" care înghițea sute de rânduri.
+
+Cele două clichete care stau pe cititorul acela se mișcaseră în **direcții opuse** în aceeași zi:
+unul prea mic (16 în loc de 18), celălalt prea mare (2 în loc de 1). *Asta e semnul, și e scris în
+METODA §22: un instrument care greșește în amândouă direcțiile n-are niciun plafon.* Reparația și
+cifrele, la **R133**.
+
+*Nu e o lecție despre ecrane. E despre ce se întâmplă când mesajul unei porți respinse se citește
+ca diagnostic: „18 > 16" spune că sunt 18, nu că lotul a făcut două.*
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **Cele 18 scrieri care refuză fără să spună motivul rămân mute la locul lor.** Plasa din
+   `api.js` le prinde pe toate — un refuz nu rămâne nevăzut —, dar un mesaj lângă butonul apăsat
+   e mai bun decât un banner. Clichetul e ca să nu **crească**, nu ca să fie declarată rezolvată;
+   asta scrie în `core/test_refuz_tacut.py` din 27.08 și nu s-a schimbat. *Ce s-a schimbat azi e
+   doar cifra: 16 era greșită, 18 e măsurată.*
+2. **Două din cele 18 nu sunt defecte deloc, și nu se pot deosebi automat.** Una cheamă o funcție
+   proprie care afișează (`plaseazaErori`), cealaltă e o căutare de fundal la tastare — un `POST`
+   folosit ca citire. Sunt exact modurile de eșec 1 și 3 pe care instrumentul și le declară în
+   antet: nu execută JS, și deosebește citirea de scriere după **metodă**. *Ca să se poată
+   deosebi, instrumentul ar trebui să știe ce face funcția chemată — adică să fie un alt
+   instrument.*
+3. **Cele 9 ecrane parcurse cu `campuri=0` n-au fost probate cu adevărat.** Formularul lor cere un
+   pas înainte — alegerea unei luni, a unui partener, deschiderea unei ferestre. Sonda le-a
+   parcurs și n-a avut ce completa, deci „a tăcut" nu se poate afirma despre ele. *Cer o cale de
+   navigare scrisă de mână, și aia e construcția lotului 11.*
+4. **Cititorul nou nu recunoaște o expresie regulată scrisă imediat după `}`** (`if(x){}/re/`).
+   `}` nu e în mulțimea de dinaintea unui regex fiindcă `{…}` e și obiect, iar `obj/2` e împărțire.
+   Direcția ratării e cea sigură — expresia rămâne vizibilă ca și cod, nu dispare cod real —, și e
+   scrisă ca modul de eșec 1 în `core/cititor_js.py`. *Zero instanțe în corpusul de azi; se
+   consemnează fiindcă e o alegere, nu o scăpare.*
+
+---
+
+## LOT 11 — cele 21 de ecrane de firmă rămase, și formularul care se deschide abia după o apăsare
+
+Lotul 10 a parcurs 15 ecrane și a raportat, pentru **nouă** din ele, `campuri=0`. Citit repede, asta
+înseamnă „ecran parcurs". Nu însemna: formularul lor trăiește într-o **fereastră** care se deschide
+după o apăsare — «+ Salariat nou», «+ Notă nouă», «+ Șablon nou» —, iar sonda ajungea pe ecran și
+n-avea ce completa. *Un `campuri=0` era un ecran NEPROBAT purtând numele unuia probat.*
+
+**Ce s-a construit:** navigare pentru cele 21 de ecrane `fa-*` care nu erau în nicio listă
+(`nav_ecrane.ECRANE_CAMPANIE`), și un pas de **deschidere** în sondă: dacă nu se găsește niciun câmp,
+se caută un deschizător, se apasă, și se recontrolează. Ce s-a deschis se scrie în artefact
+(`deschis_cu`) — ca să nu se confunde niciodată un ecran care n-are formular cu unul al cărui
+formular n-a fost găsit.
+
+**Măsurat, cap la cap:** 36 de ecrane parcurse (15 + 21) · **16 butoane apăsate** pe formulare umplute
+cu date imposibile · **15 au vorbit** · **1 a cerut un fișier** · **0 TAC**. Butoanele au crescut de la
+8 la 16, iar `stat_plata` a trecut de la `campuri=0` la **14 câmpuri**, prin deschizător.
+
+### Ce a scos ecranul «Date firmă» — trei defecte, pe același drum
+
+| # | ce era | ce e acum |
+|---|---|---|
+| **R134** | `PUT /tenants/{id}` răspundea **`500 Internal Server Error`** la ORICE refuz. Porțile puse pe 27.08 (cifra de control a CUI-ului, unicitatea) refuză ridicând `ValueError`, iar ruta nu-l prindea. Mesajele scrise cu grijă n-au ajuns niciodată la un contabil | `422`, cu motivul întreg |
+| **R135** | aceeași rută accepta **`«»@#$%` ca denumire de firmă** și o scria în amândouă locurile. De acolo pleacă pe `den` din D394 și pe antetul facturii | refuz, din scriitorul UNIC, deci fără cale de ocolire |
+| **R136** | ecranul trimitea **trei scrieri înlănțuite**, cu redenumirea PRIMA. Măsurat în `audit_log`: `PUT /tenants/4838` `200`, apoi `POST /firma-profil/date` `422` — refuz pe ecran, firmă redenumită în date | se scrie întâi ce poate fi refuzat; iar dacă denumirea cade după, mesajul o spune pe litere |
+
+*Al doilea nu se putea vedea cât timp exista primul: cu orice refuz ieșind `500`, nimeni n-ar fi
+deosebit „poarta lipsește" de „poarta a căzut".*
+
+### Ce a scos SONDA despre ea însăși (R137)
+
+Sonda declara starea schemei ca `count(*)` pe fiecare tabel. Un ecran de **date** nu inserează —
+**modifică**. Deci, când a redenumit firma, sonda a raportat *„SCHIMBĂRI DE STARE: niciuna"*. S-a
+văzut abia indirect: următoarele 14 ecrane au dat „navigare eșuată", fiindcă navigarea caută firma
+**după nume**, iar numele nu mai era al ei. Numele vechi s-a refăcut citindu-l din D394-urile
+**depuse**, nu din memorie.
+
+Reparat pe trei direcții: starea e acum `count/amprentă` · verdictele sunt **patru**, al patrulea
+fiind *„a cerut un fișier"* (butonul care deschide selectorul de fișiere **nu tăcea**) · iar
+curățenia de după probă e o unealtă cu **granița scrisă** — un `INSERT` se desface, un `UPDATE` nu,
+și acolo instrumentul refuză în loc să șteargă date reale.
+
+### Cele trei acceptări care NU sunt defecte
+
+`rapoarte_salvate`, `centre_cost` și `contracte_sabloane` au primit `«»@#$%` și l-au **scris**, cu
+mesaj de reușită. Sunt corecte: toate trei sunt **nume libere alese de contabil** — o variantă de
+raport, un centru de cost, un șablon de contract. Nu pleacă în nicio declarație. *Un instrument care
+ar refuza aici ar fi mai rău decât unul care acceptă.* Rândurile au fost șterse după probă, verificat.
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **`fa-rip` n-a fost probat: cardul nu se randează pe firma campaniei.** `Comert Micro TVA SRL` e
+   SRL, iar Registrul de Inventar și Plăți e al partidei simple. Sonda a raportat „navigare eșuată",
+   nu „fără defect". *Decizia lui Costin (`DECIZII.md` 31): lotul 12 rulează și pe o firmă de partidă
+   simplă, și numai pe ce nu se randează acum.* **Punctul orb e FIRMA, nu ecranul.**
+2. **Opt ecrane au formular, dar niciun buton de salvare**: `acces`, `bilant`, `fisacont`, `marja`,
+   `regfiscal`, `reginventar`, `registre321`, `solicitari`. Câmpurile lor sunt **filtre** (lună, an,
+   cont), nu date de înregistrat — n-au ce refuza. Sunt scrise „parcurse", nu „probate": deosebirea e
+   chiar ce a costat lotul 10 nouă ecrane.
+3. **Paisprezece ecrane au `campuri=0` și după deschizător.** Formularul lor cere **doi** pași
+   (alege luna → deschide fereastra), iar sonda încearcă cel mult trei deschizătoare, fiecare de un
+   singur pas. Declarat ca mod de eșec în antetul sondei.
+4. **R136 e îngustată, nu închisă.** Dacă redenumirea — acum ultima — cade după ce profilul și
+   vectorul au trecut, ele rămân salvate. Un singur act ar cere o rută care unește trei căi cu
+   **roluri diferite** și un apel ANAF live: o construcție, nu o reparație de lot.
+5. **Sonda umple numai ce e în `.fereastra`.** Un formular randat inline, în corpul ecranului, nu e
+   completat — și atunci `campuri=0` rămâne onest: „n-am avut ce completa", nu „nu refuză".
+
+---
+
+## LOT 12 — ecranele care nu sunt ale unei firme, și prima firmă de partidă simplă
+
+Cele 33 de unități rămase la nivel de FIȘIER (`#462`–`#501`) sunt de altă natură decât tot ce a fost
+până acum: trăiesc pe **desktopul unui rol** — cabinet, admin — și nu se ajunge la ele prin nicio
+firmă. Plus o a doua firmă, cerută de `DECIZII.md` 31.
+
+### Ce a trebuit construit înainte de a putea proba ceva
+
+1. **`w_auth` emite sesiune pentru orice rol, pe calea aplicației.** Până azi construia dicționarul
+   `iconta_user` câmp cu câmp, și **trei** câmpuri erau inventate: `nume_tenant: None`,
+   `tenant_are_cabinet: False`, `bun_venit_vazut: True`. Pe `admin_firma` se nimereau adevărate, deci
+   nimic n-a căzut vreodată. Măsurat pe rolul `client`: adevărul e `nume_tenant: "ALFA MICRO SRL"`,
+   `tenant_are_cabinet: true` — iar `navigator.contextBara` randează chiar `nume_tenant` în bară.
+   *O sondă care își fabrică singură intrarea dovedește că ecranul merge pe intrarea pe care i-o dai
+   TU (R125).* Acum sesiunea vine din `auth_api.sesiune_pentru_user`, funcția pe care o cheamă
+   aplicația la magic-link: același `SELECT`, aceleași câmpuri, aceeași verificare de `activ`.
+2. **Un context de browser per ROL.** `app.js` alege desktopul din `sesiune.rol()` **la pornire**,
+   deci rolul nu e un parametru al navigării: e o proprietate a filei.
+3. **Navigare scrisă pentru 22 de ecrane** (`nav_ecrane.ECRANE_CABINET`), cu contul lângă fiecare.
+   *Aserțiunea anti-vacuu a listelor a prins, la prima rulare, o coliziune reală: `fa-control`
+   (ecranul UNEI firme, #436) și cardul de portofoliu «Control fiscal» (#474) purtau același nume
+   scurt — două ecrane diferite care ar fi apărut ca unul.*
+4. **Firma nu mai e scrisă în cod.** `deschide_firma` avea „Comert Micro TVA" hardcodat, deci orice
+   unealtă vizuală vedea numai stările pe care le produc datele acelei firme.
+
+### Prima firmă de partidă simplă din bază
+
+**Măsurat înainte de a construi ceva: toate cele 19 firme erau `srl`.** Cardul `#fa-rip` se randează
+numai la `regim_contabil == "simpla"` — deci nu era un ecran neprobat, era un ecran pe care nimeni
+nu-l putuse deschide vreodată, și toată ramura de partidă simplă cu el.
+
+Firma s-a făcut **prin lanțul aplicației** — `POST /tenants` cu `tip_firma: "pfa"` —, nu printr-un
+`INSERT`, la cabinetul declarat de TEST (4163) ca să nu miște numărătoarea firmelor reale, cu CUI
+care trece cifra de control ANAF (verificat cu trei validatoare din corpus).
+
+Măsurat pe ea, cardurile: **31 pe partidă dublă · 22 pe partidă simplă · 21 comune**. Singurul card
+exclusiv partidei simple e **`#fa-rip`** — deci „doar ce nu se randează pe firma curentă" înseamnă,
+măsurat, exact un ecran. Ce **dispare** la partida simplă sunt zece carduri deja parcurse pe dublă
+(`balanta`, `bilant`, `centrecost`, `fisacont`, `jurnal`, `marja`, `mijloace`, `operatiuni`,
+`reginventar`, `stocuri`).
+
+### Cele trei defecte, toate găsite apăsând
+
+| | ce era | unde ajungea |
+|---|---|---|
+| **R138** | `«»@#$%` **conține** un `@`, iar patru rute verificau doar `"@" not in email` | `POST /asistenti` ar fi făcut `INSERT` în `public.users` cu emailul `«»@#$%`, rol `angajat`, **și ar fi trimis emailul de activare** |
+| **R139** | refuzul de pe linia facturii punea lângă câmp chiar **eticheta** câmpului, iar rezumatul spunea *„Completează"* despre un câmp completat | emitere + facturi recurente |
+| **R140** | cele opt refuzuri ale registrului de partidă simplă vorbeau limba programatorului (`suma trebuie să fie > 0`, `valuta != RON: suma_valuta si curs_valutar`); șapte din opt fără diacritice | singura cale de refuz a partidei simple |
+
+**R138 e cel care contează cel mai mult, și motivul e o măsurătoare, nu impresia:** din **cele șase**
+locuri care refuză cu `EMAIL_INVALID`, **unul singur** verifica formatul. Patru se mulțumeau cu un
+`@` — și toate patru **creează un cont** sau **dau un acces**. Regexul corect trăia deja în
+`main.py`, și copiat în `notificari_scadenta.py`. *Aceeași aplicație știa răspunsul într-un loc și
+nu-l avea în altul.*
+
+*Butonul care a găsit R138 nu se putea apăsa înainte de reparație: apăsarea lui ar fi produs chiar
+contul și emailul pe care le descrie defectul. S-a citit întâi ruta, s-a reparat, apoi s-a apăsat.*
+
+### Ce a măsurat sonda, cap la cap
+
+23 de ecrane parcurse, pe **trei conturi** · **0 navigări eșuate** · **8 butoane apăsate** (7 pe
+formular umplut) · **5 au vorbit** · **1 a cerut un fișier** · **0 TAC** · **0 scrieri** — amprenta
+tuturor celor **103** tabele ale celor două scheme, identică înainte și după.
+
+### Instrumentul a fost reparat în timpul lotului, și în direcția OPUSĂ celei de data trecută
+
+Lotul 10 a reparat **sub-numărarea**: „a vorbit" se măsoară pe text nou vizibil, nu pe clasele din
+convenție. Lotul 12 a găsit **supra-numărarea**: din șase „a vorbit" la prima rulare, **trei** erau
+text nou care nu răspundea la nimic — o fereastră care s-a închis, o navigare către alt ecran, un
+buton care a mai adăugat o linie de formular. *Același instrument greșea în amândouă direcțiile,
+deci n-avea **niciun** plafon (METODA §22).*
+
+Deosebirea nu se poate face pe text, și nu se face pe text: se numără câmpurile care mai poartă
+**valoarea-santinelă** pe care am scris-o eu, înainte și după apăsare. Dacă formularul umplut nu mai
+e acolo și nimic nu s-a scris, butonul nu mi-a răspuns — m-a dus în altă parte. Verdictele noi:
+**a plecat de pe formular** · **a crescut formularul** · **sărit: e deschizătorul**.
+
+Calibrat în amândouă direcțiile pe date reale: cele trei false „a vorbit" s-au reclasificat, iar cele
+două adevărate (`flux_concediu`, `admin_anunturi`) **au rămas** „a vorbit".
+
+### Trei granițe ale sondei, mutate — fiecare fiindcă ar fi produs o afirmație falsă
+
+- **Câmpurile nu se mai caută doar în `.fereastra`.** Un desktop de rol nu e o fereastră: acolo
+  `campuri=0` n-ar fi însemnat „n-are formular", ci „n-am știut unde să mă uit". Domeniul ales se
+  scrie în artefact.
+- **Selecturile se aleg, și sunt declarate ca VALIDE.** Într-un `<select>` nu se poate tasta
+  `«»@#$%`. Alegerea e **pasul care deschide formularul**, nu obiectul probei.
+- **Starea se măsoară pe TOATE schemele atinse.** Ecranul RIP trăiește pe altă schemă; o sondă care
+  numără `tenant_003` în timp ce apasă pe `tenant_048` ar fi raportat „n-a scris nimic" despre
+  scrieri pe care nu le vede. *A treia instanță a clasei „sonda era oarbă" — și singura prinsă
+  ÎNAINTE de a raporta.* Curățenia de după probă a fost lărgită la fel: un „STARE CURATĂ" despre o
+  schemă neprivită e chiar gardul care nu se verifică pe sine.
+
+### Două butoane pe care instrumentul le-a oprit, și de ce contează
+
+- **«Generează cu AI» / «Generează analiză AI»** — verificat la sursă: `/tipare/ai` cheamă
+  `core.ai_client`, iar `/pachete/{}/genereaza` trece prin `genereaza_poveste`. **Ies din
+  aplicație**, contra cost, exact ca `depune`/`trimite`. Oprite pe același temei, nu pe altul.
+- **«Trimite alertă de test»** (Sănătate server) — ar fi trimis o alertă REALĂ prin Brevo. Oprit de
+  regula existentă, și bine că era acolo.
+
+Iar unul a fost **deblocat**, cu ruta citită și numită: «Trimite» de pe ecranul de anunțuri face un
+`INSERT` în `public.anunturi_cabinet` (main.py:676) și atât. *Lista `OPRITE` decide după NUME, iar
+numele nu spune unde ajunge acțiunea — fără excepție, singurul formular din `admin.js` ar fi rămas
+neprobat, iar raportul ar fi spus „fără defect" despre un ecran pe care nu l-am apăsat.* Excepția se
+cere pe textul ÎNTREG, nu pe bucată: „trimite" ca substring ar fi deblocat și «Trimite invitația»,
+care chiar pleacă prin email.
+
+### Cifre
+
+- unități mutate din `neprobat`: **12** (8 probate prin apăsare · 4 verificate prin citire).
+  Campania: **322 probate · 42 rămase** din 364.
+- defecte găsite: **3** · reparate: **3** · reprobate: **3**.
+- clichetele refuzurilor, măsurate înainte și după R140: **n-au mișcat**.
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **`TVA 0,00 RON` se afișează pe ecranul de emitere când cota nu se știe.** `recalc()` face
+   `l.cota_tva || 0`, deci o cotă necunoscută devine zero, iar «Total» ajunge egal cu «Bază» pe o
+   firmă plătitoare de TVA. Arată ca interdicția 32 (*un necunoscut nu se rotunjește la „știu că
+   nu"*) — **dar nu e**: garda R29 declară explicit în afara domeniului ei „defaultul pe ZERO
+   (`cota or 0`) — altă clasă, legitimă în aritmetică, **18 instanțe reale**". A repara aici ar
+   însemna deschiderea acelei clase, adică o **temă**, nu o reparație de prag 1. *Se consemnează cu
+   măsurătoarea, ca să nu fie regăsită ca nouă.*
+2. **`«Emite factură»` deschide întâi poarta de stoc** («Pleacă marfa acum?»), deci apăsarea din
+   sondă se oprește acolo. Refuzul propriu-zis a fost probat pe rută și în probă țintită, nu prin
+   sondă. *Un răspuns care vorbește despre alt lucru decât cel probat nu se notează ca răspuns la
+   proba mea.*
+3. **`asistent.js` (#470) n-are subiect viu.** Desktopul asistentului cere rolul `angajat`, iar
+   singurul cont cu rolul ăsta din bază e **inactiv** — `sesiune_pentru_user` îl refuză. Nu e „fără
+   defect", e un ecran fără cont. Se probează după reactivarea lui **prin calea aplicației**
+   (`/asistenti/{id}/reactiveaza`), nu printr-un `UPDATE`.
+4. **Trei formulare n-au putut fi apăsate fără să iasă ceva real din aplicație**: `recomanda`
+   («Trimite invitația» = email), `raporteaza` («Trimite sesizarea» = email), `pachete` («Generează
+   cu AI» = furnizor extern). Câmpurile lor s-au umplut; butonul nu s-a apăsat. Declarat, nu ascuns
+   într-un „fără defect".
+5. **Cele 14 rute marcate `403` în lotul 9 rămân „fără defect" pe temeiul unui refuz de ROL, nu al
+   verificărilor lor proprii.** Lotul 9 o scrie corect (*„poarta de rol ține, și se vede"*), dar
+   rândurile din listă spun doar „fără defect". `POST /asistenti` era una dintre ele — și avea R138.
+   *O rută refuzată de poarta de rol n-a ajuns la gărzile ei; ce s-a măsurat acolo e poarta, nu ruta.*
+   Nu se corectează în lotul ăsta: sunt 14 rânduri de reprobat cu un token de rol potrivit, adică un
+   lot, nu o notă.
+6. **`"suma trebuie să fie > 0"` mai trăiește în `core/casa_api.py` și în `main.py`** (chitanța).
+   Sunt pe calea partidei duble, deja probată în alte loturi; rescrierea lor fără reprobare ar fi o
+   schimbare nemăsurată.
+7. **Douăzeci și unu de ecrane rămân `neprobat — parcurs`**, cu motivul scris pe fiecare rând: fără
+   niciun câmp în DOM (afișare pură), sau cu formularul la doi pași de deschizător. *Un `campuri=0`
+   nu e „fără defect".*
+
+### După raport — cele patru decizii ale lui Costin, aplicate
+
+**(1) Garda de LOC** — construită în `core/test_conformitate.py`, pe structură: compară mulțimea
+antetelor `### Rn` din tot documentul cu cea văzută de `_restante()`. **Mutație dovedită pe date
+reale**, nu doar pe document sintetic: cu R141 scos din secțiune, garda o numește exact pe ea.
+
+**(2) Cele „14" rute — sunt CINCI, și cifra era a mea.** O scrisesem în raport dedusă din proza
+lotului 9, fără s-o măsor. Măsurat la sursă și confirmat prin reapăsare: `403` real pe
+`/admin/analytics` · `POST /admin/anunturi` · `/gdpr/sterge-cabinet/{}/executa` ·
+`/admin/activitate/cabinet/{}` · `/admin/sanatate/istoric`. Celelalte nouă cer `admin_firma` sau
+`cere_cabinet` — rol pe care utilizatorul probei îl avea, iar patru dintre ele **chiar au găsit
+defecte**, ceea ce dovedește că au ajuns la logica lor. Cele cinci sunt acum `neprobat`, cu motivul
+pe rând; se reprobează în lotul 14.
+
+*Și o corectură despre `POST /asistenti`:* R138 n-a scăpat printr-o poartă de rol — ruta era
+accesibilă. Lotul 9 a probat-o cu **corp gol** și a primit un refuz corect. A scăpat fiindcă
+valoarea trimisă nu era greșită **în felul care conta**: `«»@#$%` conține un `@`.
+
+**(3) Desktopul asistentului (#470), probat pe cont reactivat prin ruta aplicației.** 7 carduri,
+**0 câmpuri și 0 selecturi**, 0 erori JS; bara a treia — motivațională, doar la rolul `angajat` — se
+randează cu cifre reale. Contul a fost dezactivat la loc în `finally`, iar starea **recitită din
+bază**: `False` → `True` → `False`. Cardurile lui deschid ecrane deja probate pe contul de cabinet.
+
+**(4) Cota necunoscută nu se mai afișează ca zero (R142).** Pe o linie cu valoare și fără cotă
+stabilită, «TVA» și «Total» sunt acum `—`, cu o notă care spune de unde vine cota. O linie de
+valoare zero **nu** blochează totalul: la valoare zero TVA-ul e zero oricare ar fi cota.
+
+*Calibrat în amândouă direcțiile, în browser:* linie goală → «Total 0,00» · linie cu valoare, cotă
+neștiută → «—» + notă · **după ce cota se propune (21%) → «TVA 420,00 · Total 2.420,00»**. A treia
+direcție e cea care contează: reparația nu supra-refuză.
+
+*Și o corectură a propriei reparații, prinsă reprobând:* prima formă a notei spunea *„Alege
+articolul, **sau cota**"* — și nu există niciun control de cotă; coloana e un `<span>`, iar valoarea
+vine numai din `POST /produse/potriveste`, propusă din denumire. **Un refuz care trimite omul să
+facă ceva ce nu poate face e mai rău decât unul scurt.**
+
+**Ce a costat reparația, și n-a fost prevăzut:** R142 a atins JS-ul ecranului, deci regula casei l-a
+mutat în inventarul porții vizuale — iar `axe` a găsit imediat **două violări preexistente**, una
+CRITICĂ: `select-name` pe `#em-moneda` (etichetă fără `for=`) și pe `#em-tip`, selectorul care alege
+FACTURĂ / PROFORMĂ / AVIZ. Plus contrast sub prag pe două reguli. Reparate (**R143**), ecranul e acum
+în inventar cu **zero** violări. *Regula „un ecran atins primește cele trei unelte" și-a arătat în
+aceeași tură și prețul, și rostul.*
+
+### Cifrele campaniei, după aplicarea deciziilor
+
+**317 probate · 47 rămase** din 364. Scăderea față de 322/42 nu e o regresie: sunt cele **cinci** rute
+mutate din „fără defect" în „neprobat", fiindcă așa e adevărat.
+
+---
+
+## LOT 13 — «Operațiuni speciale»: treizeci și două de formulare sub un singur rând de listă
+
+### Ce a arătat măsurarea populației
+
+Cele 42 de ecrane rămase nu sunt un rest omogen. Grupate mecanic, după motivul scris pe fiecare
+rând: **12** fără niciun câmp în DOM (afișare pură) · **13** cu formularul la doi pași de
+deschizător · **7** numai cu câmpuri de FILTRU · **3** al căror buton iese din aplicație · **7**
+neîncadrate, între care patru neparcurse niciodată.
+
+Diagnosticul grupei celei mari a răsturnat presupunerea: ecranele cu `campuri=0` **nu sunt „fără
+formular" — sunt MENIURI.** Formularul e cu un nivel mai jos.
+
+### Descinderea prin meniuri aduce puțin — cu o excepție care aduce mult
+
+Măsurat pe zece ecrane: `facturi` are 6 opțiuni, dintre care **una** duce la un formular (emiterea,
+deja probată la #478) · `verificari` are 6, toate rezultate, nu formulare · `jurnal` are 4 rânduri de
+listă · `mijloace` are **zero** — și nu e stricat: e o **stare goală**, cu un mesaj care numește chiar
+calea de adăugare (*„Se adaugă la migrare sau prin Operațiuni speciale → Inventariere anuală"*).
+*Punctul orb e FIRMA: firma campaniei n-are mijloace fixe.*
+
+Excepția e **«Operațiuni speciale»**: **32 de feluri de operațiune**, fiecare cu formularul lui și cu
+propriul buton «Generează nota (ciornă)» — toate sub **un singur rând** al listei (`#447`). Un
+„probat" pe rândul acela ar fi spus, până azi, ceva despre **unul din 32**.
+
+### A treia oară în aceeași tură când propriul meu instrument a raportat fals
+
+Prima enumerare a celor 32 a apăsat pe **poziția din DOM** (`data-op="i"`), după o re-navigare — iar
+pozițiile se re-atribuie, deci clicurile cădeau alături. Rezultatul arăta ca o descoperire:
+*„niciun formular nu se deschide, 0 din 32"*. Probat cu grijă pe un singur caz, «Leasing» deschide un
+formular întreg. Se navighează pe **NUME**.
+
+*(Celelalte două din tura asta: „a vorbit" acordat unui text nou care nu răspundea la nimic, și cifra
+„14 rute" dedusă din proză. Toate trei prinse înainte de a fi raportate ca fapt.)*
+
+### Și a patra: santinela de dată nu ateriza
+
+La prima rulare reală, **toate cele 32** au răspuns identic: *„Camp obligatoriu: Data"*. Cauza nu era
+aplicația: `1899-02-30` **nu e o zi din calendar**, deci `input[type=date]` refuză valoarea în
+browser și câmpul rămâne **gol**. Proba măsura un câmp LIPSĂ, nu o dată imposibilă — și o făcea așa
+**din lotul 10 încoace**, pe fiecare câmp de dată al campaniei. Înlocuită cu `1899-01-01`: o zi care
+există, și e la fel de imposibilă ca dată contabilă.
+
+*Abia atunci cele 32 de formulare au fost probate cu adevărat.*
+
+### Rezultatul: 32 au vorbit, 0 au scris, 0 au tăcut
+
+Iar calitatea mesajelor se vede acum, nu se presupune. Cele bune numesc câmpul, spun ce e greșit și
+citează temeiul:
+
+- *„Contul «»@#$% nu există în planul firmei (câmpul „cont_imobilizare")."* — Leasing
+- *„Procentul taxei vamale e între 0 și 100 — am primit -99999999."* — Import extracomunitar
+- *„Cota 1000 nu e o cotă în vigoare (art. 291 Cod fiscal) la data operațiunii (2026-09-01). Cotele
+  de atunci: 0%, 11.00%, 21.00%."* — apărut la reprobare, și e exemplar
+
+### Cele două defecte, amândouă de prag 1
+
+**R144 — «Aur de investiții (art. 313)» cădea cu `500`.** `Decimal(str("«»@#$%"))` ridică
+`decimal.InvalidOperation`, care e `ArithmeticError`, **nu** `ValueError` — iar ruta prinde numai
+`ValueError`. Deci textul tastat de un om ieșea ca eroare de server, iar contabilul citea *„eroare
+500"* în loc să afle ce câmp e greșit. **Aceeași clasă ca R134.** Reparat în motorul pur, pe
+contractul lui — și pe **toate patru** intrările numerice, nu doar pe cea care a căzut: *a repara
+doar instanța ar fi lăsat trei uși deschise pe același hol.*
+
+**R145 — «Chirii / comodat / refacturări» nu putea reuși NICIODATĂ din ecran.** Formularul colecta un
+singur câmp, «Suma», și îl trimitea așa; ruta cere nume **diferite după `fel`** — `valoare` la
+comodat, `chirie` la chirii, iar la refacturare **două** sume (`total_factura` + `parte_refacturata`).
+Confirmat cu **date perfect valide**: răspunsul era *„Lipsește câmpul `valoare` din cererea
+trimisă"*. *Întrebarea nu era dacă refuză, ci dacă poate reuși vreodată.*
+
+Reparat în ecran, cu `cond` — mecanismul exista deja acolo. Iar reparația a scos un al doilea defect,
+al ei: câmpul `chirie` e cerut la **două** feluri, iar declarat de două ori producea **două elemente
+cu același `id`**, deci valoarea nu se mai colecta pe al doilea. Condiția acceptă acum o listă de
+valori.
+
+**Reprobat pe toate patru felurile, cu date valide:** comodat → 1 notă · chirie plătită → 1 · chirie
+încasată → 1 · refacturare → **2** (cum spune contractul ei). Cele 6 note ale probei s-au șters
+**prin ruta aplicației** (`DELETE /tenants/{}/jurnal/{}`), iar starea s-a recitit din bază.
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **Șase din cele 32 de refuzuri vorbesc încă limba programatorului**: *„suma incasata trebuie sa
+   fie pozitiva"* · *„bacsis invalid"* · *„mijloc fix inexistent/inactiv"* · *„valoare invalidă"*
+   (nu spune care) · *„tara '' nu este stat membru UE (VIES)"* · *„nicio varianta de formula valabila
+   la 1899-01-01"*. Aceeași clasă ca R140, cu precedentul deciziei lui Costin — dar fiecare cere
+   reparație **și** reprobare proprie. Măsurate și numite; se repară în lotul următor.
+2. **Cele 32 de formulare au etichete fără diacritice** („Tip operatiune", „Valoare reziduala",
+   „Dobanda totala"). Text afișat, aceeași clasă pe care garda de diacritice n-o vede.
+3. **Ecranul de operațiuni a intrat în inventarul porții vizuale** (regula: un ecran al cărui JS se
+   atinge), și trece **fără nicio violare** — spre deosebire de emitere, care a avut două.
+4. **Restul celor 42**: 12 fără câmp în DOM și 7 numai cu filtre așteaptă un **verdict**, nu o probă
+   — dar verdictul trebuie dat pe un criteriu mecanic, nu pe eyeball, fiindcă „0 câmpuri" poate
+   însemna și „firma asta nu produce starea" (v. `mijloace`). Instrumentul care deosebește cele două
+   nu e construit.
+
+### Cifre
+
+- unități mutate: **2** (`#447`, `#485`). Campania: **319 probate · 45 rămase** din 364.
+- formulare probate efectiv: **32**, sub un singur rând de listă.
+- defecte găsite: **2** · reparate: **2** · reprobate: **2**.
+- instrumentul propriu, corectat de **două** ori în timpul lotului: navigarea pe nume, și santinela
+  de dată care nu ateriza.
+
+### După lotul 13 — cele trei răspunsuri ale lui Costin, aplicate
+
+**(1) Cele șase mesaje, reparate (R147).** Toate șase reprobate pe ecran, în context:
+*„Suma încasată trebuie să fie mai mare decât zero: din ea se extrage TVA-ul exigibil, prin suta
+mărită."* · *„Bacșișul încasat trebuie să fie o sumă mai mare decât zero…"* · *„Mijlocul fix ales nu
+există în registrul firmei sau a fost casat. Alege-l din listă."* · *„Codul de TVA al partenerului
+lipsește. El începe cu prefixul de țară (RO, DE, FR…)…"* · *„Pentru data 1899-01-01 nu există nicio
+regulă de calcul cunoscută de aplicație…"* · *„Valoarea operațiunii trebuie să fie un număr mai mare
+decât zero."*
+
+Două lucruri ies din reparație și merită scrise:
+
+- **`bacsis invalid` era în DOUĂ locuri, cu același text și înțelesuri diferite** — la încasare e
+  bacșișul primit, la distribuire e cel BRUT, din care se reține impozitul. Deosebite, nu copiate.
+- **`valoare invalidă` era în PATRU locuri.** Am reparat toate patru, nu doar pe cel găsit apăsând —
+  lecția lui R144: *a repara doar instanța lasă trei uși deschise pe același hol.*
+- Și o greșeală a mea, prinsă de `ruff`: un `str.replace` cu șablonul de 20 de spații a lovit și
+  înăuntrul liniei de 24, stricând indentarea. **Capcana 1 din predare, pe pielea mea** — un
+  `replace` fără aserțiune nu e o modificare, e o speranță.
+
+**(2) Verdictul celor 19, prin citirea șablonului — și criteriul a răsturnat propria mea grupare.**
+
+| ce arată șablonul | câte | ce înseamnă |
+|---|---|---|
+| niciun `<input>`/`<textarea>`/`<select>` | **13** | **fără suprafață de intrare** — verdict |
+| numai câmpuri de filtru | **2** | filtrele aleg ce se afișează, nu se înregistrează — verdict |
+| câmpuri care NU sunt filtre | **5** | **au formular real** — verdictul NU se aplică |
+
+Cele cinci: `fa-bilant` (`bl-tip`) · `fa-marja` (`jm-tip`) · `fa-regfiscal` (**`rf-venit_brut`,
+`rf-cheltuieli_deductibile`** — sume fiscale!) · `fa-reginventar` (`ri-moment`, `ri-cauza`,
+`ri-data_inventariere`, plus un câmp pe fiecare rând) · `fa-registre321` (`r3-fel`, plus pe rând).
+
+*Le clasificasem drept „numai filtre" citind DOM-ul. Criteriul cerut — pe ȘABLON — le-a scos la
+iveală. Exact deosebirea pe care decizia o cere: „0 câmpuri în DOM" nu e același lucru cu „n-are
+câmpuri".*
+
+**(3) Cota față de perioadă — măsurat, apoi reparat la margine (R146).**
+
+Măsurat înainte: **17** locuri validează o cotă · **0** compară cu o listă fixă de valori · **17**
+compară cu perioada, prin `cote_tva_in_vigoare(data)` · **9** funcții de prag/plafon au parametru de
+perioadă. **Regula era deja implementată acolo unde se validează.**
+
+Gaura era la marginea ei, și era scrisă în cod ca limită acceptată: `cota_ceruta` spunea *„un corp
+fără `data` nu se poate verifica … se cere să existe, atât"*, iar poarta comună de lună avea
+`if not data: return`. **Fix când verificarea devenea imposibilă, se renunța la ea.** Măsurat: **19
+rute** cădeau apoi cu `500` (`KeyError: 'data'`) la scriere.
+
+Reparat în două locuri. Verificat: coloana „fără dată" a trecut de la **19 × `500`** la **33 ×
+refuz cu mesaj**.
+
+### Ce a rămas nereparat
+
+1. **Exigibilitatea.** Decizia spune *„data operațiunii decide — sau exigibilitatea, unde diferă"*.
+   La TVA la încasare (art. 282) cota se aplică la data exigibilității, nu a facturii, iar
+   `cota_ceruta` citește `corp["data"]` fără să întrebe care dintre cele două e. Nu s-a atins: cere
+   o citire a fiecărei rute care are ambele date.
+2. **`categorie_marime.prag(categorie, criteriu)`** n-are parametru de perioadă, iar pragurile de
+   mărime se schimbă prin lege. E chiar subiectul restanței **R3**, deschisă; nu se deschide aici.
+3. **Cele 5 ecrane cu formular real** așteaptă probarea. Nu sunt „rămase" în același sens ca înainte:
+   acum se știe ce e în ele.
+
+### Cifre
+
+**334 probate · 30 rămase** din 364 — 25 de ecrane + 5 rute de rol. Cele 15 verdicte n-au fost
+probe: sunt citiri, pe criteriul scris.
+
+### Exigibilitatea, măsurată — cerința 1 din raportul precedent
+
+**Cum s-a măsurat.** Întâi: care rute poartă mai mult de o dată în corp? Mecanic, pe cele **223** de
+rute POST/PUT: **două**. Apoi, pentru cele **17** rute care validează o cotă: ce înseamnă `data` în
+fiecare. Iar regula legală s-a citit **la sursă**, din `anaf_surse/cod_fiscal_227_2015_consolidat.txt`
+— nu din memorie:
+
+| articol | ce spune, verbatim |
+|---|---|
+| **291 (4)** | cota e cea de la **faptul generator**, *„cu excepția cazurilor prevăzute la art. 282 alin. (2), pentru care se aplică cota în vigoare la data exigibilității"* |
+| **291 (5)** | la **TVA la încasare**: cota e cea de la **faptul generator**, excepție dacă s-a emis factură sau s-a încasat avans înainte de livrare |
+| **291 (6)** | la schimbarea cotei: **regularizare** pentru a aplica cota de la data **livrării** |
+| **291 (8)** | la **achiziția intracomunitară**: cota de la data **exigibilității** |
+| **284 (2)** | exigibilitatea AIC: la data facturii, *„ori în cea de-a 15-a zi a lunii următoare … dacă nu a fost emisă nicio factură"* |
+| **282 (2)** | exigibilitatea intervine la emiterea facturii (a), la încasarea avansului (b), la extragerea numerarului (c) |
+
+**Rezultatul, rută cu rută:**
+
+| rută | data legală | ce citea | verdict |
+|---|---|---|---|
+| **13 rute de notă** cu un singur `data` | faptul generator (291 alin. 4) | `data` = data operațiunii | **corect** |
+| `nota-avans`, operații de **avans** | data încasării avansului (282 alin. 2 lit. b + 291 alin. 4) | `data` | **corect** |
+| `achizitie-ic` | **exigibilitatea** (291 alin. 8 + 284 alin. 2) | data facturii | **greșit la factură întârziată** → R148 |
+| `nota-tva-incasare` | **faptul generator** (291 alin. 5) | data încasării | **greșit întotdeauna** → R149 |
+| `nota-avans`, operații de **regularizare** | data **livrării** (291 alin. 6) | data regularizării | **greșit** → R149 |
+
+**R148 nu era o regulă lipsă, ci una folosită pe jumătate.** `core/d390.py:491` calcula deja
+exigibilitatea aceleiași facturi ca `LEAST(data_emitere, ziua 15 a lunii următoare)`, citând art.
+284 — iar ajutorul câmpului de pe ecran o spune de dinainte, cuvânt cu cuvânt. **Aplicația își spunea
+singură regula în trei locuri și n-o aplica în al patrulea:** aceeași operațiune era așezată în
+declarație pe exigibilitate și avea cota validată pe data facturii.
+
+**R149 e chiar clasa numită de decizie, în oglindă.** O livrare din era **19%**, încasată azi,
+primea *„Cota de TVA 19% nu există în legea română … la data operațiunii (2026-09-01)"* — **o cifră
+corectă, respinsă**. Reprobat după reparație: cu faptul generator în 2024 → `200`, TVA 190,00; cu
+faptul generator în 2026 → `422`, cu cotele de atunci și temeiul citat.
+
+### Ce nu s-a putut stabili dintr-o rută anume — consemnat, nu ghicit
+
+1. **Excepția din art. 291 alin. (5)**: la TVA la încasare, dacă s-a emis factură sau s-a încasat
+   avans **înainte** de livrare, cota e la data aceea, nu la faptul generator. Ruta cere acum faptul
+   generator; care din cele două cazuri e nu se poate ști din corp. *Nu s-a ales unul.*
+2. **`achizitie-ic` fără `data_faptului_generator`** (câmp opțional): termenul de 15 zile nu se poate
+   calcula, deci exigibilitatea rămâne data facturii — la fel ca în `d390`. Se presupune, și se
+   spune că se presupune.
+3. **`categorie_marime.prag(categorie, criteriu)`** n-are parametru de perioadă, deși pragurile de
+   mărime se schimbă prin lege. E chiar subiectul restanței **R3**, deschisă — nu s-a deschis aici.
+
+---
+
+## LOT 14 — cele cinci rute de rol, și cele cinci ecrane cu formular real
+
+### Partea 1: rutele pe care lotul 9 le-a marcat „fără defect" pe temeiul unui `403`
+
+Reprobate cu token de **superadmin**, deci cererile au ajuns la verificările lor proprii. Aceleași
+cereri invalide ca în lotul 9 — ca să se vadă ce răspund ELE, nu poarta de rol.
+
+**Trei defecte din cinci** (**R150**), toate reparate și reprobate:
+
+1. **Un cabinet INEXISTENT răspundea `200 {"activitate": []}`.** Adică *„cabinetul ăsta n-a făcut
+   nimic"* la o întrebare despre un cabinet care nu există. Ruta nu verifica deloc existența —
+   `WHERE u.accounting_firm_id = 999999` întoarce zero rânduri, iar zero rânduri s-au citit ca un
+   fapt despre subiect. *Absența înregistrărilor și inexistența subiectului sunt două lucruri
+   diferite* — clasa păzită de `core/test_absenta_nu_e_neaplicabil.py`, pe alt obiect.
+2. **`/admin/analytics?zile=-5` → `zile=1`, tăcut.** Și `zile=99999` → `365`.
+3. **`/admin/sanatate/istoric?ore=-5` → 1 oră, `ore=99999` → 168**, fără ca valoarea folosită să
+   apară în răspuns. *Analytics era cazul cel mai blând — el își ECHIVALA valoarea în răspuns
+   (`{"zile": 1}`), deci se putea vedea. Celelalte două, nu.*
+
+**Ce le leagă:** o coerciție tăcită nu e o protecție, e o afirmație falsă despre ce s-a cerut. Omul
+care a cerut 99999 de ore crede că se uită la 99999. Toate trei se refuză acum, cu intervalul numit:
+*„Numărul de ore de istoric se cere între 1 și 168 ore. Am primit -5."*
+
+Celelalte două (`POST /admin/anunturi`, `POST /gdpr/sterge-cabinet/{}/executa`) **răspund bine**:
+`422` care numește câmpul lipsă, cu erori per câmp — iar ștergerea refuză înaintea oricărei acțiuni.
+
+*Și o notă despre lotul 9: parametrul probat acolo (`?zile=-5` pe ruta de sănătate) **nu există în
+semnătura ei** — ea primește `ore`. Deci coerciția n-ar fi ieșit la iveală nici dacă rolul ar fi
+fost bun. Aceeași clasă pe care lotul 9 și-o consemnase singur.*
+
+### Partea 2: cele cinci ecrane cu formular real
+
+| ecran | ce s-a găsit |
+|---|---|
+| **`fa-registre321`** | 13 câmpuri umplute, «Înscrie în registru» → **vorbește**, numind câmpul și norma |
+| **`fa-reginventar`** | formularul de 10 câmpuri apare abia după «Adu soldurile din balanță» — al doilea pas |
+| **`fa-bilant`** | două filtre + două acțiuni pe REZULTAT («Validează (ANAF)», «Descarcă XML») |
+| **`fa-marja`** | două filtre, **niciun buton**: ecran de raport |
+| **`fa-regfiscal`** | în DOM apar doar `rf-var` și `rf-an`; câmpurile de sume se randează pe altă variantă |
+
+**De ce `registre321` n-a fost apăsat până azi:** butonul lui de fond se cheamă **«Înscrie în
+registru»**, iar lista sondei căuta `salveaz|adaug|genereaz|emite`. Un submit ca oricare altul, doar
+cu alt verb. Adăugat.
+
+**Ce NU s-a adăugat, și de ce:** `valideaz`. «Validează (ANAF)» de pe bilanț ia conținutul
+formularului și rulează validatorul DUK **local** (`subprocess`, main.py:8303), deci n-ar ieși
+nicăieri — dar **același cuvânt, pe ecranul de jurnal, transformă o ciornă în înregistrare contabilă
+reală** (`/jurnal/{}/valideaza`). *Un cuvânt care înseamnă două lucruri nu poate intra într-o listă
+care decide după nume.*
+
+### Santinela de dată, reparată a doua oară — în sonda principală
+
+Lotul 13 a găsit că `1899-02-30` nu aterizează într-un `input[type=date]` (30 februarie nu există,
+browserul refuză valoarea, câmpul rămâne gol) și a reparat-o în `proba_operatiuni.py`. **Aceeași
+santinelă stătea neatinsă în sonda PRINCIPALĂ** — deci fiecare câmp de dată al campaniei, din lotul
+10 încoace, a fost probat ca LIPSĂ, nu ca dată imposibilă.
+
+Dovada că repararea contează: `registre321` a trecut de la *„Data transportului — cerut de normă"* la
+*„Cantitatea — cerut de normă"*. Prima era despre santinela mea; a doua e despre formular.
+
+### Alte mesaje citite la rulare
+
+`jurnal` → *„linia 1: contul «»@#$% nu exista in planul de conturi al firmei. Se adauga in Plan de
+conturi (Import date › Plan de conturi), sau se corecteaza aici"* — numește câmpul, spune ce e
+greșit **și unde se repară**. `raportz` → *„totalul pe cote trebuie să fie pozitiv"*. `contracte` →
+*„exista deja un sablon cu acest nume"*, fără diacritice — **reparat în aceeași trecere**.
+
+### Cifre
+
+- unități mutate: **10** (5 rute + `#454` + cele patru ecrane din Partea 2). Campania:
+  **344 probate · 20 rămase** din 364. *Rândul spunea „340 · 24”: cifrele momentului în care
+  a fost scris, nu ale capătului lotului — cele patru ecrane cu formular real s-au mutat după.
+  Corectat în lotul 15, numărând mecanic coloana «stare probare».*
+- defecte găsite: **3** · reparate: **3** · reprobate: **3**. Plus două reparații de instrument
+  (santinela de dată, verbul lipsă) și un mesaj fără diacritice.
+- `fa-rip` a ieșit din `ECRANE_CAMPANIE`: nu se randează pe firma acelei liste, deci raporta
+  „navigare eșuată" la fiecare rulare. E probat de `rip_pfa`, pe firma de partidă simplă.
+
+### Ce a rămas nereparat
+
+1. **`fa-reginventar`** — formularul e la doi pași; sonda face unul singur. Declarat de la lotul 11.
+2. **`fa-regfiscal`** — sonda alege doar selecturile **goale**; `rf-var` are o valoare implicită,
+   deci variantele care randează câmpurile de sume nu se explorează niciodată. **Limită a sondei**,
+   scrisă acum: nu e „ecran fără formular".
+3. **`fa-bilant` și `fa-marja`** — filtre și acțiuni pe rezultat, fără formular de înregistrat.
+
+## LOT 15 — cele 20 rămase: cinci feluri de orbire a sondei, opt defecte, și 364 din 364
+
+**Ce erau cele 20.** Fiecare purta în registru un motiv pentru care n-a fost probat — „formularul e
+la doi pași", „butonul iese din aplicație", „starea datelor nu produce formularul". Citite la sursă,
+**patru din cele opt motive scrise erau false**, iar restul descriau nu ecranul, ci **sonda**.
+Lotul n-a fost o campanie de probare: a fost una de **reparare a instrumentului**, urmată de probare.
+
+### Partea 1: cele CINCI feluri de orbire, fiecare numită de ecranul care a produs-o
+
+| # | ce nu vedea sonda | ecranul care a arătat-o | ce s-a schimbat |
+|---|---|---|---|
+| **1** | **„a vorbit" se măsura numai în jurul apăsării** | `fa-etransport` | textul se ia și ÎNAINTE de umplere; verdict propriu: **a vorbit la completare** |
+| **2** | **un buton DEZACTIVAT era invizibil, nu raportat** | `fa-casa`, `pachete` | se raportează, cu `title`-ul lui |
+| **3** | **domeniul nu cuprindea ferestrele PESTE fereastră** | `pachete`, `recomanda` | domeniul e ultimul container vizibil care ARE ce conține |
+| **4** | **`campuri=0` nu deosebea „n-are formular" de „nu l-am găsit"** | 27 de ecrane | se numără `intrari_dom` — toate intrările din DOM, văzute sau nu |
+| **5** | **două verbe de submit lipseau din listă** | `fa-registratura`, `fa-mijloace` | „înregistr", „reevalu" — măsurate pe tot `static/js` înainte de adăugare |
+
+**Și o a șasea, de altă natură: condiția de oprire a căutării.** Sonda se oprea la primul ecran cu
+CÂMPURI. `pachete` are două câmpuri în **pasul de alegere** și niciun buton de submit — deci sonda
+se oprea acolo și raporta „niciun buton probabil" despre un ecran al cărui formular real era **doi
+pași mai încolo**. Acum se merge până la un buton care POATE fi apăsat, cel mult trei trepte, și se
+scrie DRUMUL, nu doar ultima apăsare. *Un formular găsit nu e un formular probat: proba are nevoie
+de buton.*
+
+**Ce a costat greșeala mea de măsurare, prinsă înainte de raport:** prima formă a buclei aduna
+umplerile fiecărei trepte, iar `fa-casa` — al cărui buton rămâne stins, deci bucla mai încearcă o
+treaptă — a ieșit cu `campuri=10` pe un formular de **cinci**. *O cifră care crește cu numărul de
+încercări nu descrie ecranul, descrie sonda.*
+
+### Partea 2: opt defecte, toate reparate și reprobate
+
+**R152 — magazinul „conectat" la ceva cu care nu vorbise nimeni.** `PUT
+/tenants/{}/woocommerce/config` scria `url`, `ck`, `cs` fără nicio verificare, iar ecranul anunța
+apoi **`Stare: conectat la «»@#$%`**. Două neadevăruri într-un rând: șirul nu e o adresă, și nicio
+conexiune nu s-a încercat. Reparat în amândouă locurile — ruta refuză
+(«Adresa magazinului nu e o adresă web: '«»@#$%'. Aștept ceva de forma https://magazin.ro.»), iar
+ecranul spune de acum ce știe: **„configurat pentru"**, nu „conectat la".
+
+**R153 — un document înregistrat într-un an în care aplicația nu se poate uita.** Cu `1899-01-01` în
+căsuța de dată, `POST /tenants/{}/registratura` **a scris** (`registratura_api.inregistreaza` ia
+`int(data[:4])` fără nicio margine), iar re-citirea registrului pe acel an a răspuns **`an invalid:
+1899 (aștept 1990-2100)`** — refuzul propriei scrieri, o secundă mai târziu. *Aceeași aplicație știa
+răspunsul la citire și nu-l avea la scriere* — clasa lotului 14, de data asta între cele două capete
+ale **aceleiași rute**. Criteriul e împrumutat de la citire (`_cere_perioada`), nu rescris.
+
+**R154 — „n-am putut trimite" despre ceva ce nu era o adresă.** `POST /recomanda` cu
+`{"emails": ["«»@#$%"]}` întorcea **`200 {"stare": "esuat"}`** — după ce chemase furnizorul de email
+cu un șir care nu poate fi adresa nimănui. Constanta de refuz a rutei se cheamă chiar
+`EMAIL_NICIUNUL_VALID`: **verificarea era promisă în registrul de mesaje și nu exista în cod.**
+A cincea și a șasea instanță a clasei R138 (cealaltă cale e `POST /portal/recomanda`, prin același
+ajutor). Refuzul e pe TOATĂ lista, nu pe adresele rele: o trimitere parțială ar fi lăsat omul cu
+„3 trimise" fără să știe că a patra n-a plecat niciodată.
+
+**R155 — „încearcă o poză mai clară" despre un fișier care nu era o poză.** Un text numit `.png`,
+încărcat la «Adaugă document (pozează / încarcă)», ajungea la furnizorul de AI și se întorcea cu
+*„nu am putut citi bonul; încearcă o poză mai clară"* — o îndrumare pe care omul o poate urma la
+nesfârșit. Tipul se citește acum din **primii octeți**, nu din `content_type`-ul browserului (care
+se deduce din extensie, deci minte exact în cazul ăsta) — METODA §23: structură, nu text. Refuzul
+cade înaintea apelului plătit.
+
+**R156 — ecranul acoperea refuzul precis al serverului.** `an=-99999999` pe pachete: serverul refuză
+corect (`an invalid: -99999999 (aștept 1990-2100)`, din `_cere_perioada`), iar `pachete.js` scria
+**„Nu am putut încărca datele."** — „n-am putut" despre ceva ce aplicația ȘTIA.
+
+**R157 — singurul TACE al lotului.** `admin_raportari`, apăsat cu răspunsul GOL: **nimic nu se
+întâmplă și nimic nu se spune.** În client era un `return` gol; serverul are chiar codul `TEXT_GOL`,
+dar cererea nu pleca niciodată. Acum: *„Scrie un răspuns sau atașează o imagine înainte de a
+trimite."*
+
+**R158 — la fel, pe ecranul de recomandare.** `catch` care înlocuia mesajul serverului cu „Eroare la
+trimitere." Ce ajungea totuși la om venea din pastila globală a lui `api.js` — deci **ecranul spunea
+una și bara alta**.
+
+**R159 — «Ciornă salvată.» după o salvare care fusese refuzată.** `_salveaza` refuza corect casuța
+goală („Scrie povestea întâi."), dar apelantul tipărea imediat după, necondiționat, „Ciornă
+salvată." — iar al doilea mesaj îl acoperea pe primul. La fel la «Aprobă». *Un mesaj de reușită care
+nu se uită la rezultat nu e o confirmare, e o afirmație falsă.*
+
+### Partea 3: starea care lipsea, construită prin lanțul aplicației
+
+Două ecrane nu erau „fără formular", ci **fără date care să-l producă** — `PLAN_LUCRU`, regula 3:
+
+| ecran | ce lipsea | cum s-a construit |
+|---|---|---|
+| `fa-mijloace` (#446 / #484) | firma n-avea niciun activ, deci registrul randa starea goală | `POST /tenants/{}/nota-inventariere` cu `operatie: plus_mf` — calea ecranului «Operațiuni speciale». Cod `MF-PROBA-L15`, 1.200,00 lei, DNF 60 de luni |
+| `admin_raportari` (#467) | lista de sesizări era goală | `POST /raportari`, subiect `PROBA LOT 15` — calea ecranului «Raportează» (#490) |
+
+Nimic prin `INSERT`: *dacă o stare nu se poate produce prin lanțul aplicației, nu e o stare a
+aplicației.* Amândouă desfăcute la sfârșitul lotului, cu verificarea stării, nu a cererii.
+
+### Partea 4: cele patru motive scrise care erau FALSE
+
+*Se scriu fiindcă toate patru au stat în registru zile la rând, citite ca fapte.*
+
+| ce scria registrul | ce e adevărat |
+|---|---|
+| `fa-magazin`: „configurarea WooCommerce cere întâi o conexiune" | formularul se deschide la **o apăsare**, fără nicio conexiune. Motivul real: „Configurează magazinul" nu conținea niciun cuvânt din lista de deschizătoare |
+| `fa-verificari`: „verificările se randează pe alegerea unei luni" | ecranul **n-are niciun câmp**, pe nicio lună — `intrari_dom=0` |
+| `fa-control`: „formularul cere un pas înainte (alegerea unui control)" | nu există formular pe niciun drum — `intrari_dom=0` |
+| `pachete`: „singurul buton care ia formularul e «✨ Generează cu AI»" | «Salvează ciornă» ia `#pacm-text` și merge în `POST /pachete/{}/poveste`, care **nu iese nicăieri** |
+
+**Și o a cincea, despre listă însăși:** `#442` avea scris ca handler `firme.js::ecranSolicitariCabinet`
+— care e handlerul lui `#fa-solicitari`. `#fa-import` duce la `meniuMigrarePerFirma`. Scanul a
+atribuit funcția greșită, iar rândul a purtat-o de la generare.
+
+### Partea 5: ce s-a probat, pe verdict
+
+- **fără suprafață de intrare** (nimeni nu poate tasta nimic în ele), măsurat `intrari_dom=0`:
+  `fa-control` · `fa-facturi` · `fa-import` · `fa-verificari` · `admin_sanatate`.
+- **are formular, și vorbește**: `fa-acces` · `fa-etransport` · `fa-mijloace` · `fa-registratura` ·
+  `fa-magazin` · `fa-declaratii` (panoul manual) · `validat` (dialogul de motiv) · `pachete` ·
+  `recomanda` · `admin_raportari`.
+- **refuză prin buton stins**: `fa-casa` — «Adaugă (notă ciornă)» rămâne dezactivat, cu motivul în
+  `title`. *Observație, nu defect: motivul se vede doar la survol. Nu s-a reparat — nu e prag 1, și
+  o schimbare de așezare cere confirmare.*
+- **probat cu un FIȘIER, nu cu un formular**: `fa-bonuri`.
+
+### Partea 5b: a noua reparație, în chiar unealta care ar fi trebuit să vadă
+
+**R160.** Mutând cele trei ecrane atinse în inventarul porții vizuale (`nav_ecrane.ECRANE`), am
+descoperit că `acoperire_hash.ecrane_asteptate()` tăia lista la **prima paranteză dreaptă din
+text** — care nu e capătul listei, ci cea din comentariul `# [LOTUL 12, R142]`. Gardul cerea
+**16 ecrane din 18**, iar cele două lipsă (`emitere`, `operatiuni`) erau exact cele adăugate de
+tura care scrisese comentariul. *Găsit fiindcă am vrut să-i adaug ceva, nu fiindcă l-am
+verificat.* Reparat, cu anti-vacuu; artefactul refăcut pe toate 21, zero violări.
+
+*Al patrulea ecran atins — `admin_raportari` — n-a putut intra: trăiește pe desktopul de
+superadmin, iar cele trei unelte vizuale sunt pe un singur cont, prin construcție. Datorie
+numită în `GARZI.md`, nu tăcere.*
+
+### Partea 6: starea lăsată de probe, și desfacerea ei
+
+`curata_proba_ecrane.py` a desfăcut INSERT-urile purtătoare de semnătură (centre de cost, raport
+salvat, înregistrarea din registratură, un șablon de contract) și a **refuzat corect** modificarea
+din `firma_profil` — un UPDATE nu se desface pe ghicite. Restul, desfăcut pe obiecte numite
+(`frontend_test/curata_lot15.py`), cu **verificarea stării după**, nu a cererii:
+
+- `tenant_003.firma_profil.wc_*` → `NULL`. Valoarea de dinainte nu s-a luat din memorie: sonda
+  apăsase «Configurează magazinul», adică ramura `!cfg.configurat` — starea observată era
+  „neconfigurat", și exact aia s-a pus la loc.
+- `public.declaratii_coada` **8149** — proba dialogului de motiv a **respins un element real** al
+  portofoliului. Pus la loc: `la_senior`, motiv șters. *O probă care schimbă starea portofoliului o
+  lasă schimbată — capcana 9, a doua instanță.*
+- povestea lunii scrisă cu santinela · mijlocul fix și nota lui · sesizarea și cele 4 mesaje ale ei.
+
+### Cifre
+
+- unități mutate: **20** (toate ECRANE). Campania: **364 probate · 0 rămase** din 364 — numărate
+  mecanic, parcurgând coloana «stare probare».
+- defecte găsite: **9** · reparate: **9** · reprobate: **9** (R152…R160) — din care **opt în
+  aplicație** și **unul într-o gardă** (R160, găsit adăugându-i ceva).
+- reparații de instrument: **6** (cele cinci feluri de orbire + condiția de oprire), plus o cifră a
+  sondei corectată înainte de raport.
+- motive scrise în registru care s-au dovedit false: **5**.
+
+---
+
+# ETAPA 2 — probarea cu date VALIDE, pe lanțul până în declarație
+
+**Comanda** (Costin, 05.09.2026): *„Grupează pe declarație, nu pe funcționalitate: toate unitățile
+care alimentează aceeași declarație se probează într-o singură generare a ei, cu toate așteptările
+verificate deodată… Pentru fiecare lanț: scrie așteptarea înainte de probă — ce rând, ce sumă.
+Apoi probezi: valoarea intră, se înregistrează, ajunge în declarație în rândul corect și cu suma
+corectă, declarația se generează și se validează. **DUK verde nu e proba** — el confirmă forma; o
+cifră în rândul greșit trece la fel de bine."*
+
+**Perimetrul, restrâns de Costin în aceeași zi**: *„doar pe declarațiile pe care aplicația le
+generează: D100, D101, D112, D205, D300, D301, D390, D394, D406/SAF-T … doar cele nouă pentru care
+există generator în cod."*
+
+## Perimetrul, MĂSURAT (nu estimat)
+
+`scripts/scan_lanturi_declaratie.py` — instrument nou, care împrumută totul de la
+`scan_functionalitati` și `scan_trasee` (nicio a doua definiție a aceluiași lucru):
+
+| cifră | ce e |
+|---|---|
+| **197** | unități cu «atinge date care ajung într-o declarație» = `da`, din cele 364 ale etapei 1 |
+| **190** | atribuite cel puțin uneia din **cele nouă** |
+| **103** | sunt **NUCLEU** pentru cel puțin o declarație |
+| **3** | sunt **actul de generare** (`GET /declaratii/tipuri`, `POST /declaratii/{tip}`, `POST /declaratii/{tip}/valideaza`) — comune tuturor celor nouă, nu ale uneia |
+| **4** | alimentează bilanțul (`s1003`/`s1005`), care **nu e** între cele nouă |
+| **45** | module de declarație **în afara** celor nouă, numite: `bilant`, `bilant_api`, `d104`, `d106`, `d107`, `d110`, `d177`, `d207`, `d307`, `d311`, `d710`, … |
+
+**Nucleul pe declarație:** d112 **81** · d406 **29** · d300 **28** · d394 **18** · d390 **8** ·
+d205 **3** · d301 **3** · d100 **0** · d101 **0**.
+
+**De ce „nucleu" și „periferie", măsurat înainte de a alege.** Prima formă a atribuirii — „scrie
+într-un tabel pe care generatorul îl citește" — **degenerează**: `inregistrari` e citit de aproape
+toate generatoarele, deci orice rută care scrie o notă „alimentează" treizeci de declarații.
+Măsurat: cea mai mare grupă avea **171** de unități, iar suma apartenențelor **2204** pentru 194 de
+unități distincte — fiecare unitate ar fi intrat, în medie, în unsprezece loturi. *O grupare în care
+aproape totul aparține aproape peste tot nu grupează nimic.* Deosebirea se face pe **specificitatea
+tabelului** (câte generatoare îl citesc), nu pe judecată.
+
+---
+
+## LOT A — declarațiile de TVA hrănite de facturi: D300 și D394
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), plătitor de TVA cu perioadă **trimestrială**.
+**Perioada:** trimestrul **III/2026**. Sumele sunt alese rotunde, ca TVA-ul să nu depindă de
+rotunjire.
+
+### Așteptarea, scrisă ÎNAINTE — și de unde vine fiecare rând
+
+Regula fiecărui lanț e citită din generator (`core/d300.py`, antet) și din structura ANAF
+(`anaf_surse/d300_struct_anaf.txt`), nu din memorie:
+
+| lanț | intrarea | rândul | temeiul citirii |
+|---|---|---|---|
+| 1 | factură **emisă** 21%, bază 1.000 | `R9_1` = +1000, `R9_2` = +210 | `_LIVRARE_RAND = {21: "R9"}` |
+| 2 | factură **emisă** 11%, bază 200 | `R10_1` = +200, `R10_2` = +22 | `_LIVRARE_RAND = {11: "R10"}` |
+| 3 | factură **primită** 21%, bază 500 | `R22_1` = 500, `R22_2` = 105 (Rd.24) | `_ACHIZ_RAND = {21: "R22"}` |
+| 4 | rând **manual** D300 | `R14_1` = 300, exact | `d300_manual_api.adauga` (upsert) |
+| 5 | totalurile **calculate** | `R17`, `R27`, `R28`, `R32`, `R34_2` | formulele din `calcul_d300` |
+
+### Ce a ieșit
+
+**D300: 16 rânduri confruntate, 16 potrivite, 0 nepotrivite.** Suma de control coincide (21.510,
+calculată din XML și comparată cu `totalPlata_A`). Ciclul complet al rândului manual: intră → se
+vede în listă → se șterge → **dispare din decont** (`R14_1` revine la 0). DUK: **valid**.
+
+**D394: 0 nepotriviri**, pe o așteptare derivată din **faptele-sursă** (lista de facturi a firmei),
+nu ca delta: fiecare `<rezumat1>` pe perechea (tip_partener, cotă), cu numărul de facturi, baza și
+TVA-ul. DUK: **valid**.
+
+**ȘI CONFRUNTAREA ÎNTRE CELE DOUĂ DECLARAȚII** — proba care nu poate fi trecută de o cifră așezată
+în rândul greșit: **TVA colectată din D394 = 1.121 = `R17_2` din D300**. *Perechea din supervizor
+(`EFACTURA_VS_D394`), aplicată pe lanțul de intrare.*
+
+### Defecte în aplicație: **niciunul**. Dar de DOUĂ ORI așteptarea MEA a fost cea greșită
+
+Ambele prinse citind la sursă, înainte de a fi raportate ca defect. Se scriu fiindcă asta e chiar
+riscul formei ăsteia de probă: *o așteptare scrisă din memorie transformă un comportament corect
+într-un „defect".*
+
+1. **Rândul manual e UPSERT, nu adăugare.** A doua rulare cerea `R14_1 = 600` (300 + 300);
+   aplicația a răspuns 300, și avea dreptate — `d300_manual_api.adauga` face *„upsert pe
+   UNIQUE(an, luna, rand)"*, scris în chiar docstringul funcției. *Așteptarea trebuie să poarte
+   SEMANTICA intrării — adaugă vs. înlocuiește —, nu doar cifra.*
+2. **`nrFacturi` numără numai facturile EMISE.** Cerusem 5 (toate facturile trimestrului), am
+   primit 4. Structura ANAF îl definește ca *„Nr total facturi emise în perioadă"*, iar
+   `d394.nr_facturi_emise` îl numără exact așa. **Al doilea fals-pozitiv oprit de citirea la sursă**
+   în același lot — primul fusese `totalPlata_A`, pe care era să-l numesc „sumă de plată greșită"
+   până am citit că e **sumă de control**: `totalPlata_A = suma(camp 27 la 124)`.
+
+### Ce s-a reparat în lotul ăsta (din punctul 1 al comenzii)
+
+**R161 — `fa-casa`: motivul refuzului iese din `title`.** Butonul de fond stătea DEZACTIVAT, cu
+explicația doar în atributul `title` — pe atingere, invizibilă. Acum se apasă mereu, iar refuzul se
+așază **lângă câmpul vinovat**, cu `eroareCamp` (contur roșu + `aria-invalid` + mesaj ancorat):
+*„Completează data dispoziției."* și *„Suma trebuie să fie un număr mai mare ca 0."*, fiecare pe
+rândul lui, amândouă deodată când amândouă lipsesc.
+
+**R162 — «Nota … a fost creată ca ciornă» se scria și se ștergea în aceeași clipă.** Găsit
+**reprobând R161**: cu date bune dispoziția INTRA (rând în `casa_operatiuni`, notă ciornă), iar
+ecranul nu spunea nimic — mesajul se scria în `#c-mesaj`, iar `deseneaza()` refăcea imediat
+`corp.innerHTML`. *Un mesaj de reușită care pierde o cursă cu re-randarea e mai rău decât niciunul*
+— lecția 7 din predare, găsită a doua oară. Reparat cu tiparul care exista deja în casă
+(`mesajSucces` care traversează re-randarea).
+
+### Unitățile atinse de lotul A
+
+`POST /tenants/{}/facturi/emite` · `POST /tenants/{}/facturi` (primită) ·
+`GET /tenants/{}/facturi` · `POST|GET|DELETE /tenants/{}/d300-manual` ·
+`POST /declaratii/{tip}` · `POST /declaratii/{tip}/valideaza` — plus `POST /tenants/{}/casa/operatiuni`
+prin reparațiile R161/R162.
+
+### Scenariul, DECLARAT (se poate reface sau desface)
+
+Pe `tenant_003`, trimestrul III/2026, rămân în urmă: factura emisă **CMT150** (1.000 + 210 TVA,
+15.08.2026), factura emisă **CMT151** (200 + 22, 16.08.2026) și factura primită **PROBA-E2-A-P1**
+(500 + 105, 17.08.2026). Rândul manual R14 se creează și se șterge în aceeași rulare, deci nu
+rămâne. **Probele sunt re-rulabile**: `proba_e2_d300.py` își recunoaște propriile facturi după
+(direcție, dată, total) și nu le mai adaugă a doua oară — *o probă de lanț care nu se poate rula de
+două ori nu e o probă, e o singură lovitură.*
+
+---
+
+## LOT B — declarațiile hrănite de OPERAȚIUNI: D390 și D301
+
+Amândouă se alimentează din operațiuni introduse de contabil, nu din facturi — de-aia sunt un lot:
+nucleul lor, derivat cu `scan_lanturi_declaratie.py`, e format din aceleași trei feluri de rute
+(adaugă / listează / șterge), pe două registre diferite.
+
+**Două firme, fiindcă declarațiile cer două stări fiscale diferite** — și amândouă alegeri au fost
+corectate de aplicație, nu de mine:
+
+| declarație | firma | de ce acolo |
+|---|---|---|
+| **D390** | «Distributie Profit IC SRL» (`tenant_004`), 08/2026 | pe `tenant_003` ruta refuză: *„Firma nu are operațiuni intracomunitare în Vectorul fiscal"* |
+| **D301** | «Achizitii IC Neplatitor SRL» (`tenant_006`), 08/2026 | pe un plătitor ruta refuză: *„D301 (decontul special) e pentru NEplătitori"* |
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| lanț | intrarea | așteptat | obținut |
+|---|---|---|---|
+| 1 | reclasificare `A` → `S` pe operațiunea AUTO din facturi (BAUHAUS GMBH, DE, 12.000) | `tip="S"`, **baza neschimbată** | exact |
+| 2 | linie manuală `P`, DE, bază 1.500 | `<operatie tip="P" tara="DE" baza="1500"/>` | exact |
+| 3 | revenirea la `A` + ștergerea liniei manuale | D390 revine **exact** la starea de bază | exact |
+| 4 | operațiune D301 tip 1, 1.000 EUR × 5,0000, cotă 21% | `baza1` = 5.000, `tva1` = 1.050 | exact |
+| 5 | ștergerea ei | D301 refuză iar pe zero, cu temei | exact |
+
+**Confruntare lot B: 0 nepotriviri.** DUK: **valid** pe amândouă. *Dar DUK n-ar fi văzut nimic din
+ce s-a probat aici: că reclasificarea mișcă TIPUL și nu baza, că linia manuală ajunge cu suma ei, și
+că desfacerea readuce declarația exact de unde a plecat.*
+
+### Defecte în aplicație: **niciunul**. Patru corecturi, toate ale așteptării mele
+
+*Se scriu pentru că fiecare a fost oprită de ceea ce a SPUS aplicația — nu de o presupunere mai
+bună. Etapa 1 a construit mesajele astea; etapa 2 se sprijină pe ele.*
+
+1. **Tipul `L` nu se introduce manual în D390.** Ruta enumeră ce acceptă: *„Tip linie manuală: A
+   (achiziție bunuri IC fără cod furnizor, NOTA 1) / P / S / T / R"* — livrările de bunuri IC vin
+   din facturi.
+2. **Firma trebuie să aibă IC în Vectorul fiscal** pentru D390.
+3. **D301 e pentru NEplătitori de TVA** — alesesem firma campaniei, nu firma căreia i se aplică
+   declarația.
+4. **`data_doc` se trimite ca `ZZ.LL.AAAA`**, nu ISO: *„Data documentului e obligatorie în format
+   ZZ.LL.AAAA (ex. 15.06.2026)"*. Și **ștergerea cere perioada** (`an`, `luna`), din același motiv
+   ca la D390: nu se șterge dintr-o lună trimițând alta.
+
+*Împreună cu cele trei din lotul A, șapte „defecte" care erau ale așteptării mele, într-o singură
+zi. Nici unul n-a ajuns în raport ca defect — dar niciunul n-ar fi fost prins fără citirea la sursă
+sau fără un mesaj care spune exact ce lipsește.*
+
+### Scenariul, DECLARAT
+
+Nimic nu rămâne: linia manuală D390, override-ul de reclasificare și operațiunea D301 se creează și
+se desfac în aceeași rulare, iar proba **verifică** revenirea, nu o presupune. O operațiune rămasă
+dintr-o rulare picată (id 748, `tenant_006`) a fost ștearsă prin ruta aplicației, nu prin `DELETE`
+pe tabel, iar starea s-a recitit după.
+
+---
+
+## LOT C — impozitul pe profit: D100 și D101, hrănite de NOTA CONTABILĂ
+
+Singurele două declarații din cele nouă cu **nucleu ZERO**: nicio rută nu scrie într-un tabel care
+să fie numai al lor. Se hrănesc exclusiv prin periferie — `inregistrari` / `inregistrari_linii`.
+Lanțul lor are deci un pas pe care celelalte nu-l au: **validarea notei**.
+
+**Firma:** «Distributie Profit IC SRL» (`tenant_004`), regim **profit**, aleasă fiindcă **nu poartă
+niciun scenariu de supervizor** — spre deosebire de `tenant_005` și `tenant_014`, unde constatările
+roșii sunt puse deliberat și nu se ating.
+
+### Așteptarea, scrisă înainte, cu formula citită din generator
+
+| ce | formula, și de unde |
+|---|---|
+| `P1` | `SUM(suma)` unde `cont_credit LIKE '7%' AND NOT LIKE '76%'` — `d101.pull`, l.442 |
+| `P2` | `SUM(suma)` unde `cont_debit LIKE '6%' AND NOT LIKE '66%'` |
+| `P3` = `P1` − `P2` · `P7` = `P3` + `P6` | `calcul_d101`, l.248–254 |
+| D100 obligația `103` | `16% × (venituri70 − cheltuieli6)` — `d100.deriva_obligatii`, l.322 |
+| **condiția care nu există în celelalte loturi** | amândouă citesc **numai** note cu `i.status = 'validata'` |
+
+### Ce a ieșit
+
+| momentul | așteptat | obținut |
+|---|---|---|
+| nota de venit creată, **ciornă** | declarațiile **nu se mișcă** | exact — `P1` neschimbat, obligația neschimbată |
+| nota **validată** | `P1` += 10.000 · `P3` = `P7` += 10.000 · impozit += 1.600 | exact |
+| nota de cheltuială validată | `P2` += 4.000 · `P3` = `P7` = 6.000 · impozit = 960 | exact |
+| D100 ↔ D101 | `suma_dat`(103) = 16% × (`P1` − `P2`) | **960 = 16% × 6.000** |
+
+**Confruntare lot C: 0 nepotriviri.** DUK: **valid** pe amândouă.
+
+*Pasul care contează cel mai mult e al doilea rând al tabelului: o ciornă numărată ar umfla
+impozitul unei firme fără ca nimeni să fi validat ceva. E singurul pas al lanțului care putea eșua
+tăcut, și nu eșuează.*
+
+### R163 — nota contabilă cădea cu **500** pe un cont PLAUZIBIL, și numai pe unul plauzibil
+
+**Găsit la prima intrare a lotului**, înainte ca lanțul să poată începe: `POST /tenants/{}/jurnal`
+cu contul `7015` (inexistent în planul firmei, dar asemănător cu 701/704/705) → **500 Internal
+Server Error**.
+
+`cont_valid.cere_cont` refuză corect și compune un mesaj complet — numește contul, câmpul,
+conturile apropiate și locul unde se adaugă. `jurnal_api._linii_valide` prinde excepția și **își
+recompune singur** propoziția: `", ".join(d.get("apropiate"))` — dar `apropiate` e o listă de
+**perechi** `(cod, denumire)`, nu de șiruri. `TypeError`, deci 500.
+
+**DE CE N-A GĂSIT-O ETAPA 1, și de ce asta e chiar argumentul etapei 2.** Sonda campaniei a apăsat
+`jurnal` cu santinela `«»@#$%` și a primit un mesaj **bun** — scris în lotul 14. Motivul: pentru un
+șir fără nicio asemănare cu un cont, `apropiate` iese **goală**, iar ramura care crapă nu se execută
+niciodată. *Defectul se vede numai pe o intrare PLAUZIBILĂ — adică exact ce introduce un contabil
+care greșește o cifră.*
+
+**Clasa, măsurată** (`grep -rn "apropiate" --include=*.py`, tot repo-ul fără teste și `venv`): o
+**singură** recompunere în afara lui `cont_valid`, aceasta. Toți ceilalți lasă mesajul pe seama lui
+`ContNecunoscut.__init__`, care cheamă `randeaza(detalii)` — *„PURĂ. Propoziția, compusă din
+structura refuzului. **Singurul loc unde se face**."* Reparația folosește chiar acel loc.
+
+Aceeași clasă ca **R134** (toate porțile lui `PUT /tenants/{id}` refuzau cu 500, deci mesajele lor
+n-au ajuns niciodată la un om) și ca **R131**: un refuz bun, pierdut de stratul de deasupra.
+
+### Trei greșeli ale probei mele, dintre care una era să devină un defect fals
+
+1. **`<obligatie>` se scrie cu literă mică.** Parserul meu îl căuta cu majusculă, găsea zero
+   obligații și raporta `suma_dat = 0` pentru o declarație care scria **960**. Era să raportez
+   „impozitul pe profit nu ajunge în D100" despre o aplicație corectă.
+2. **Verificarea pe deltă trecea ÎN GOL la a doua rulare** (0 == 0), și exact asta a ascuns
+   greșeala de mai sus o rulare întreagă. Înlocuită cu o confruntare **generator contra
+   generator**: `suma_dat`(103) = 16% × (`P1` − `P2`), cu precondiția `P4 = P5 = 0` verificată
+   explicit — altfel bazele celor două generatoare diferă legitim.
+3. **D100 se cere pe TRIMESTRU**, nu pe lună: *„firma depune d100 TRIMESTRIAL: trimite trimestrul
+   (1-4), nu luna"*.
+
+### Scenariul, DECLARAT
+
+Pe `tenant_004`, august 2026, rămân două note **validate**: `PROBA-E2-C venit din exploatare`
+(4111 = 704, 10.000) și `PROBA-E2-C cheltuiala de exploatare` (6021 = 401, 4.000). Conturile sunt
+luate **din planul firmei**, nu inventate. Proba își recunoaște propriile note după descriere și,
+la o a doua rulare, **verifică** starea în loc să mai adauge un set.
+
+---
+
+## LOT D — D112: salariile, de la salariat până la rândul lui
+
+**Firma:** «Panificatie Salarii Speciale SRL» (`tenant_001`), 12 salariați. Luna **08/2026**.
+
+### Instrumentul de perimetru, ASCUȚIT — și cifrele loturilor A–C, corectate
+
+Nucleul lui D112 ieșea **81** de unități, și în el erau `/asistenti/*`, `/coada`,
+`DELETE /tenants/{id}` — lucruri fără nicio legătură cu statul de plată. Cauza, citită la sursă:
+`d112.py` **nu** citește `tenants` sau `accounting_firms`; le trage prin închiderea de un nivel,
+fiindcă importă `control_incrucisat` — modulul care **compară** declarații. *Un comparator citește
+tot portofoliul, deci lipește tot portofoliul de fiecare declarație care-l importă.*
+
+Regula e **derivată**, nu o listă: un modul importat de un generator, care nu e el însuși parte
+dintr-un generator și care importă generatoare din **două sau mai multe familii**, e un CONSUMATOR
+și se scoate din închidere. Azi întoarce exact unul: `control_incrucisat`. Unul care citește o
+singură familie (`inchidere_luna` → `d390`) **nu** e prins, și e corect.
+
+**Cifrele se corectează, nu se rescriu tăcut** — cele din loturile A–C erau măsurate cu închiderea
+veche:
+
+| | înainte | acum |
+|---|---|---|
+| unități NUCLEU (distincte) | 103 | **72** |
+| atribuite cel puțin unei declarații | 190 | **162** |
+| d112 | 81 nucleu, 16 tabele | **24** nucleu, **7** tabele |
+| d406 · d300 · d394 · d390 | 29 · 28 · 18 · 8 | **34 · 33 · 23 · 13** |
+
+Unele au **crescut**, și e coerent: scoțând comparatorul, tabelele lui nu mai sunt „citite de multe
+generatoare”, deci mai multe tabele devin specifice unei singure declarații. Cele **35** de unități
+rămase neatribuite sunt exact administrarea cabinetului, GDPR, ciclul de viață al firmei, actul de
+generare și bilanțul — niciuna nu hrănește un rând al celor nouă.
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| veriga | așteptat | obținut |
+|---|---|---|
+| 0 | fără declarant, D112 **refuză**, numind câmpurile | exact; completat prin «Date firmă», generează |
+| 1 | salariat nou → +1 `<asigurat>`, cu CNP-ul lui | exact (`idAsig 13`, `cnpAsig` corect) |
+| 2 | CAS/CASS/impozit = ce calculează **statul de plată** | **1.250 / 500 / 267**, leu cu leu |
+| 3 | ștergerea unui salariat cu luni declarate → **refuz** | exact: *„completează data încetării”* |
+| 4 | după încetare: luna LUCRATĂ îl păstrează, următoarea nu | exact |
+
+**Confruntare lot D: 0 nepotriviri.**
+
+*Verificarea contribuțiilor e **generator contra generator**, nu contra unei cifre scrise de mine:
+`d112.py` își declară singur sursa — „Sursa unică de adevăr: statul de plată (stat_plata_api)” —
+deci confruntarea corectă e cu cealaltă cale a aplicației. O cifră scrisă de mână acolo ar fi fost
+o copie a codului, nu o verificare.*
+
+### R164 — un CNP valid, deja folosit, întorcea `500` în loc de refuz
+
+`POST /tenants/{}/salariati` cu un CNP care e deja al unui salariat al firmei →
+`psycopg2.errors.UniqueViolation` neprinsă → **500**. Baza apără datele corect
+(`salariati_cnp_uniq` ține), dar refuzul ei nu ajungea la om.
+
+**A doua oară în aceeași zi când defectul e vizibil doar pe o intrare PLAUZIBILĂ**: santinela
+etapei 1 (`«»@#$%`) cade mai devreme, la cifra de control a CNP-ului; numai un CNP **valid** și
+deja folosit ajunge până la constrângere. Prima oară fusese R163, pe nota contabilă.
+
+**Clasa, măsurată:** schema unui tenant are **12** constrângeri UNIQUE, iar în tot codul există
+**un singur** loc care prinde `UniqueViolation` (`core/coada_api.py:151`). Trei dintre cele 12 nu
+pot ajunge la 500 (upsert la `d300_manual` și `d390_reclasificare`, verificare prealabilă la
+`contracte_sabloane` — etapa 1 i-a citit mesajul). Pentru restul **n-am probat fiecare cale, și o
+spun**: s-a reparat instanța găsită apăsând, plus s-a măsurat cât de mare poate fi clasa.
+
+### Ce a semnalat DUK, și de ce NU e defect
+
+`A: asigurat (4) … SP1B4_1: B4_5P(4125) diferit de suma calculata 3750` — o **atenționare** pe
+datele existente ale firmei, nu pe ce am introdus eu. Citit la sursă (`core/d112.py`, comentariul
+`[part-time-floor 20.08.2026]`): divergența e **cunoscută, decisă și documentată** — nivelul de
+referință part-time e salariul minim **diminuat** cu facilitatea (OUG 156/2024 art.LXVI alin.(5) =
+OUG 89/2025 art.III), adică 4.125 în S2 2026, în timp ce regula DUK calculează 3.750 pe minimul
+vechi. *Nu se repară nimic: e chiar cazul în care aplicația are dreptate și arbitrul e în urmă —
+iar asta era deja scris, cu temei, înainte să întreb eu.*
+
+### Scenariul, DECLARAT
+
+Pe `tenant_001` rămâne un salariat: `PROBA E2 D Salariat`, CNP `1900101511112`, brut 5.000,
+angajat 01.08.2026, **cu data încetării 31.08.2026** — deci nu apare în lunile următoare. Codul COR
+e luat din nomenclatorul aplicației, nu inventat; CNP-ul are cifra de control calculată. Proba își
+recunoaște salariatul și, la a doua rulare, **reprobează R164** în loc să mai creeze unul.
+
+
+---
+
+## ETAPA 2 — LOT E: D406/SAF-T și D205 (05.09.2026)
+
+Ultimele două din cele nouă. Cu ele, etapa 2 acoperă toate declarațiile pentru care există
+generator în cod.
+
+### Perimetrul lotului, măsurat
+
+| declarație | nucleu | periferie | tabele |
+|---|---|---|---|
+| d406 | 34 | 90 | 8 |
+| d205 | 3 | 107 | 4 |
+
+**Cele 34 nu s-au probat una câte una, și o spun.** Nucleul lui D406 se suprapune aproape complet
+cu ce s-a probat deja în loturile A și C — facturi emise și primite, note contabile, plăți: SAF-T
+citește aceleași fapte pe care le citesc D300 și D394. Ce a probat lotul E **în plus** e ce are
+D406 și n-au celelalte: **fereastra** (ce perioadă intră în fișier) și **antetul** (ce perioadă
+declară fișierul despre sine). Se scrie aici ca tabelul de mai sus să nu se citească drept „34 de
+unități probate azi”.
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| veriga | așteptat | obținut |
+|---|---|---|
+| 1 · D406 | firmă TRIMESTRIALĂ → fișierul conține TOT trimestrul; facturile din august sunt acolo | **defect (R165)** — conținea doar septembrie. După reparație: `CMT150`, `CMT151`, `PROBA-E2-A-P1`, prezente |
+| 2 · D406 | antetul declară perioada **acoperită**, nu luna-ancoră | **defect (R165c)** — declara `9/2026 – 9/2026` pe un fișier cu iulie–septembrie. Acum `7/2026 – 9/2026` |
+| 3 · D406 | facturi emise: SAF-T == `nrFacturi` din D394 | **4 == 4** |
+| 4 · D406 | validatorul oficial **rulează** | **defect (R166)** — validarea D406 era inaccesibilă, ieșea `gri` mereu. Reparat → validatorul a numit **R166b**. Acum **valid** |
+| 5 · D205 | `divid_D`, `divid_P`, `baza1` cresc cu 10.000 · `imp1` cu 1.600 (16%) | exact: 20.000 → 30.000 pe primele trei, 3.200 → 4.800 |
+| 6 · D205 | `Tbaza` = Σ `baza1` · `Timp` = Σ `imp1` · `nrben` = nr. beneficiari | 30.000 / 4.800 / 1 |
+
+**Confruntare lot E: 0 nepotriviri.** DUK: `valid` pe D406 **și** pe D205.
+
+### Lanțul care s-a deschis singur
+
+Cele patru reparații ale lotului nu sunt patru defecte găsite separat. Sunt **unul singur, desfăcut
+în patru** — fiecare pas a făcut vizibil pasul următor:
+
+1. **R165** — fereastra datelor era lunară pe o declarație care urmează perioada fiscală TVA. Găsit
+   confruntând aceeași perioadă între trei declarații: D300 și D394 vedeau tot trimestrul, D406 nu.
+2. **R165c** — largind fereastra, antetul a rămas în urmă și a început să **mintă**: fișier cu
+   iulie–septembrie, antet care spune „luna 9”. *Reparația (a) transformase o lipsă într-o
+   minciună.* Am scris fraza asta în docstringul lui R165 și tot n-am reparat-o: `di`/`ds` au
+   rămas **variabile moarte** în `_header`.
+3. **R166** — după ce am cerut validatorului să confirme antetul, el a răspuns `gri` cu validatorul
+   INSTALAT. Sonda directă pe rută, în ambele forme ale corpului: `trim` generează dar nu
+   validează, `luna` nici măcar nu generează. **Nu exista niciun corp care să treacă amândouă
+   porțile** — validarea D406 din aplicație nu era rară, era imposibilă.
+4. **R166b** — reparând drumul până la poartă, poarta a vorbit: *„HeaderComment: Tipul declarației
+   L nu corespunde cu perioada declarată: 7.2026 - 9.2026”*. Constanta `HEADER_COMMENT = "L"` era
+   acolo de la început; nimeni n-o putea vedea.
+
+*Asta cumperi când repari drumul până la un arbitru: arbitrul începe să judece. Iar validatorul
+oficial a găsit ultima piesă mai repede decât aș fi găsit-o eu — pentru că el compară exact cele
+două lucruri pe care le pusesem să vină din surse diferite.*
+
+### Trei greșeli ale mele, consemnate
+
+- **Numele atributelor le-am luat din schița de antet, nu din codul care emite.** Așteptarea cerea
+  `divid_D1`/`divid_P1` — forma generică pe coloane din docstring. XML-ul emite `divid_D`/`divid_P`
+  (`d205.build_xml`, l.300), sursate din structura ANAF și din formatul oficial de import. Două
+  „nepotriviri” care nu existau.
+- **Am scris așteptarea în absolut pe o firmă care avea deja dividende.** `baza1 = 20.000` pe un
+  dividend de 10.000 părea dublare; era 10.000 ai firmei + 10.000 ai mei. Așteptarea corectă e pe
+  **deltă**, cu baza **măsurată la începutul rulării**, nu presupusă.
+- **Proba raporta `null` în loc să cadă.** Verificarea antetului căuta `<SelectionStartDate>` —
+  cealaltă ramură a lui `<xs:choice>` din schemă, pe care fișierul nu o emite. Negăsind-o, `if m1:`
+  sărea aserțiunea și tipărea liniștit `{"start": null, "end": null}`. **R165c a stat ascunsă în
+  spatele propriei mele probe o rulare întreagă.** Un gard cu domeniul de căutare greșit e verde
+  despre o lume pe care n-o vede. Proba cere acum una din cele două ramuri, altfel pică.
+
+### Gardă, cu calibrare în ambele direcții
+
+`core/test_d406_fereastra.py` — **15 teste**: fereastra pe toate cele cinci feluri de perioadă
+fiscală (L, T, S→T, A→T, neplătitor→T), tipul depunerii derivat din întindere, antetul citit ca
+**arbore** (nu `"..." in xml`), contractul rutei de validare verificat pe **AST**, plus aserțiune
+anti-vacuu care pică dacă `<Header>` lipsește.
+
+**Calibrare negativă, 3 mutații / 3 roșii** — fiecare mutație readuce exact codul de dinaintea
+reparației: `HeaderComment` redevine constantă → 1 roșu · `SelectionCriteria` redevine luna-ancoră
+→ 1 roșu · ruta ia iar perioada din corpul cererii → 1 roșu. Fișierele s-au restaurat byte cu byte
+(`md5sum -c`, OK pe amândouă).
+
+**Și în cealaltă direcție, pe aplicația vie:** firmă LUNARĂ → `9/2026 – 9/2026`, `HeaderComment=L`,
+DUK **valid** (neschimbat) · firmă TRIMESTRIALĂ → `7/2026 – 9/2026`, `HeaderComment=T`, DUK
+**valid** (reparat). Reparația nu mișcă ce era corect.
+
+### Ce NU acoperă lotul, spus
+
+- **Secțiunile SAF-T față de normă.** Stocurile și activele au perioade proprii de raportare; aici
+  s-a probat fereastra și drumul valorii, nu acoperirea secțiunilor.
+- **`C`, `NL`, `NT` din nomenclatorul `HeaderComment`.** Depunerea la cerere nu e o proprietate a
+  perioadei, iar rezidența nu e modelată în `firma_profil` — antetul scrie `<Country>RO</Country>`
+  necondiționat. Se numește limita, în loc să se aleagă un cod pe ghicite.
+
+### Scenariul, DECLARAT
+
+Pe `tenant_003` nu rămâne nimic nou — D406 s-a generat din faptele lotului A. Pe `tenant_013`
+(`ALFA MICRO SRL`) proba adaugă **la fiecare rulare** o pereche numerotată de note (`PROBA-E2-E #k
+distribuire` 121=457 și `plata` 457=5121, 10.000 fiecare), deci firma acumulează 10.000 lei de
+dividend per rulare. E deliberat: `jurnal_api.sterge` refuză orice notă care nu e ciornă — și așa
+trebuie, o înregistrare validată nu dispare —, iar marcarea idempotentă ar lăsa **delta
+nemăsurată** la a doua rulare. Exact asta s-a întâmplat la prima reluare a lotului E, iar proba s-a
+redus tăcut la invarianții absoluți. Costul se scrie; tăcerea, nu.
+
+### Ce a cerut poarta, și de ce fiecare obiecție era întemeiată
+
+Prima rulare a porții: **24 de teste roșii**. Niciunul n-a fost zgomot; le scriu pe toate, fiindcă
+trei dintre ele sunt despre mine, nu despre cod.
+
+| garda | ce a spus | ce am făcut |
+|---|---|---|
+| `test_non_tautologie` (×2) | a doua cale nu are voie să importe generatorul | regula urcă în `common` — al treilea loc, neutru (`DECIZII.md` 71) |
+| 10 × `test_d406_*` | fixturile n-au vector fiscal, iar `pull` îl cere acum | fixturile îl **declară**; refuzul rămâne, e chiar norma „fără default fiscal tăcut" din 06.08 |
+| `test_garzi_pe_text` (×5) | **gardul meu nou** asertează pe text, `0 → 2` | refuzul devine **obiect cu atribute**; gardul citește câmpurile, nu propoziția |
+| `test_refuzuri` | refuz fără temei într-un modul care citează legea, `6 → 7` | `TEMEI_HEADER_COMMENT`, ca date |
+| `test_diacritice_afisate` | mesaj afișat fără diacritice | scris cu diacritice |
+| `test_cale_a_doua` | ai schimbat și verificatorul, și verificatul — scrie decizia | `DECIZII.md` 71, în **același** commit |
+| `test_clichete_generate`, `test_garzi_inventar` (×3) | blocurile generate nu mai corespund | regenerate (după `git add` — inventarul depinde de fișierele urmărite) |
+| `test_reluari_decizie` | R151 a trecut de 5 commituri cu `reluări: 0` | contorul urcă la 1, iar **întrebarea se formulează** |
+
+**Cele trei care sunt despre mine.** Gardul pe care l-am scris azi, cu docstringul care predică
+METODA §23, asertează pe text în două locuri. Refuzul pe care l-am scris azi, într-un modul care
+citează legea, nu poartă temeiul. Mesajul de refuz pe care l-am scris azi, text afișat, e fără
+diacritice. *Niciuna n-ar fi fost prinsă de mine; toate trei erau deja gardate.* Iar cea mai
+folositoare — `test_non_tautologie` — mi-a respins **designul**, nu o scăpare: împrumutasem
+fereastra din chiar generatorul pe care a doua cale trebuie să-l verifice independent.
+
+A doua rulare: **4075 passed, 11 skipped, 14 xfailed**, verificator 0 roșu, four-way închis pe
+`83c97f6c`.
+
+
+---
+
+## R151 — a doua ramură a art. 291 alin. (5), CERUTĂ de la contabil (06.09.2026)
+
+Nu e un lot de campanie: e **restanța deblocată de decizie** care a rămas deschisă la capătul
+etapei 2. Costin a răspuns varianta (a) — *„se cere de la contabil, la operațiune — nu se derivă"* —
+și a cerut câmpul de alegere pe ecran, cu explicația scurtă a celor două ramuri.
+
+### Așteptarea, scrisă înainte — și ce a ieșit
+
+| veriga | așteptat | obținut |
+|---|---|---|
+| 1 | ramura nealeasă → refuz care numește AMBELE situații | exact; „aplicația nu poate deduce singură… o alegere ghicită ar da o cifră validă și falsă" |
+| 2 | excepție fără data documentului → refuz care spune de ce e obligatorie | exact |
+| 3 | document DUPĂ livrare → refuz pentru **contradicție**, nu pentru lipsă | exact, cu ambele date numite |
+| 4 | **perechea care discriminează**: aceleași cifre, altă ramură → alt verdict | **200** pe excepție (TVA 190.00), **422** pe generală („19% nu există la 2025-09-10") |
+| 5 | ramura generală cu cota corectă → intră, ca înainte | 200, TVA 206.53 (R149 neatins) |
+| 6 | nota poartă motivul cotei | *„…; cota de la factura/avansul din 2025-07-15, anterior livrării din 2025-09-10"* |
+
+**Proba R151: 0 nepotriviri.**
+
+*Perechea de la veriga 4 e miezul. Dacă amândouă ar fi trecut, sau amândouă ar fi căzut, data nu
+s-ar fi mutat cu ramura, iar reparația ar fi fost doar un câmp în plus.*
+
+### Ce a cerut poarta
+
+Trei runde. **Prima**: `main.py 0 → 389` la clichetul refuzurilor — un singur nume `TEMEI*` a făcut
+fișierul „modul care citează legea", iar toate refuzurile lui vechi au intrat în datorie. Nu e fals
+pozitiv, e regula de migrare a interdicției 77; dar cele 389 amestecă două populații, iar norma
+interzice ea însăși un clichet pe o populație amestecată. Regula a urcat în modulul ei
+(`DECIZII.md` 73). Tot atunci, clichetul aserțiunilor pe text m-a prins pe **gardul meu** (1222 →
+1227): erau deja pe containere, dar forma `"literal" in ceva` nu se poate deosebi mecanic de
+căutarea unui șir în sursă — rescrise ca incluziune de mulțimi. **A doua**: blocul generat din
+`TRASEE.md` (modulul nou apare în lista rutei) și scanul vizual, fiindcă UI-ul se schimbase. **A
+treia**: verde.
+
+### Ce a găsit propria mutație
+
+A cincea mutație — scoaterea verificării ramurii — a lăsat garda **verde**. O ramură nealeasă cădea
+prin `else` pe ramura de excepție și era refuzată acolo, pentru lipsa datei documentului: rezultat
+corect, motiv greșit, iar testul cerea doar „un `ValueError`". Refuzurile poartă acum **cod**
+(`RefuzAlegere.cod`, nomenclator închis de patru), iar fiecare caz își cere codul potrivit. *Un test
+care acceptă orice refuz nu apără motivul refuzului.*
+
+
+## Trei reparații de claritate, cerute după audit (06.09.2026)
+
+Nu e un lot de campanie: sunt trei puncte cerute punctual, plus ce s-a deschis din ele. Comanda:
+temei legal la mesajul de periodicitate TVA · rescrierea celor opt refuzuri ale registrului de
+partidă simplă · diacriticele celor 32 de etichete din lotul 13.
+
+### Ce a cerut comanda, și ce a ieșit
+
+| punct | cerut | ce a ieșit |
+|---|---|---|
+| 1 | temei la „firma depune d300 TRIMESTRIAL…" | **R167** — art. 322 alin. (1) și (2), citit la sursă, într-un **modul propriu** (decizia 73), lipit **numai** pe setul TVA-decont |
+| 2 | rescrierea celor opt refuzuri ale RIP | **era deja făcut** (R140, lotul 12) — s-a verificat la sursă și s-a **reprobat toate opt**, ceea ce lipsea |
+| 3 | diacritice la etichetele celor 32 de formulare | **R168** — 125 de șiruri afișate, în **patru** ecrane, plus gardul care nu vedea pozițiile |
+
+### Punctul 2 era deja făcut — și asta se spune, nu se reface
+
+`core/rip_api._valideaza`, citit la sursă: toate cele opt refuzuri sunt deja în română întreagă, cu
+diacritice, numind câmpul și ce se așteaptă — rescrise pe **`bddfb287`**, lotul 12, ca **R140**.
+*Ce s-a cerut de două ori se face o dată.*
+
+Ce **lipsea** era reprobarea: R140 fusese reprobată atunci pe **unul** din opt. S-a făcut acum pe
+toate opt, în două straturi, fiindcă cele opt nu se pot declanșa toate din formular — `tip`,
+`metoda` și `categorie` sunt `<select>`-uri, iar `valuta` n-are câmp în ecran. **Trei pe ecran**,
+apăsând «Adaugă (ciornă)»; **toate opt pe rută**, din pagina autentificată. Plus o operațiune
+**validă**, care trebuie să treacă — altfel proba ar spune „opt refuzuri" despre un registru care
+refuză tot — ștearsă apoi prin ruta aplicației, cu numărătoarea de rânduri citită înainte și după.
+
+### Ce s-a deschis din cele trei, și nu era în comandă
+
+**R169 — o contradicție între două reguli ale casei.** Scriind modulul lui R167, cele două citări
+noi, verbatim din corpus, **nu apăreau în inventarul** lui `scan_citate`: el culege `Temei` numai
+din `core/common`. Dar **decizia 73** cere ca temeiul să stea în modulul REGULII. *Cu cât repo-ul
+urmează mai bine decizia 73, cu atât gardul vede mai puțin.* Lărgit pe structură (module care chiar
+au un `Temei`): citări văzute **36 → 60**, verbatim **12 → 26**, clichet ridicat cu motivul scris.
+
+**R170 — „32 de formulare probate" era spus despre un registru de 34.** Proba de etichete a lui R168
+a numărat **34** de formulare; proba lotului 13, în aceeași zi, pe aceeași instanță, **32**. Cauza:
+enumerarea filtra butoanele pe TEXT, cu `t.length > 46 → sari`, iar exact două titluri trec de 46 de
+caractere. *Nu erau „fără defect": erau nedeschise, purtând numele unora probate.* Enumerarea trece
+pe `data-op` — structural —, iar cele două s-au deschis: amândouă răspund corect.
+
+### Patru greșeli ale mele, consemnate
+
+1. **Prima formă a temeiului a fost în locul greșit.** Constantele `_TEMEI_TVA_*` puse în
+   `declaratii_api.py`. Decizia 73 o interzice — și, mai rău, underscore-ul le-ar fi ascuns de
+   `scan_refuzuri`, adică exact **eludarea prin numire** pe care decizia o numește. Refăcut ca modul.
+2. **Ancora testului anti-vacuu ateriza în cuprins.** `find("Articolul 322")` nimerea tabla de
+   materii, unde 322 e urmat de 323. *Un act se identifică după conținut, nu după număr.*
+3. **Forma a doua a fost prinsă de clichetul `apare_oricum`** (1222 → 1225): căutam trei fraze
+   într-un fișier, adică forma care nu deosebește „e acolo" de „e acolo din alt motiv". Rescris ca
+   apel la `scan_citate._verbatim`, cu o calibrare pe un citat inventat, care trebuie să pice.
+4. **Am republicat staticul de PRODUCȚIE din arborele de lucru, din greșeală.** Voiam o instanță
+   izolată care să servească JS-ul nou și am rulat `publica_static.py --din-arbore` dintr-un director
+   pe care îl credeam separat — dar Python rezolvă legătura simbolică, deci `RAD` a ieșit tot
+   `~/iconta_nou`, iar ținta tot `~/iconta_publicat/static`. **Restaurat imediat** din HEAD
+   (`d788a9e8`), verificat cu `--stare`. Ce a fost servit între cele două comenzi difereau de HEAD
+   **numai prin textul afișat** al celor patru ecrane (fiecare `.js` trecuse prin `node --check`, îl
+   cere publicarea) — dar asta e o circumstanță, nu o scuză: *o comandă care schimbă ce vede
+   utilizatorul se rulează după ce i-ai dovedit ținta, nu după ce ai presupus-o.* Reprobarea s-a
+   făcut apoi într-o copie reală (`cp -al`), fără `iconta_publicat` alături, unde aplicația servește
+   declarat „arbore de lucru (nepublicat)".
+
+
+---
+
+## ETAPA 2 — LOT F: cele zece unități-nucleu ale D300 rămase neprobate (15.09.2026)
+
+Primul lot de după reancorarea perimetrului. **Cifra din comandă era 45; derivarea de azi dă 29** —
+vezi `DECIZII.md` (15.09) și `GARZI.md` (15.09). Lotul F ia primele **10**, cele ale D300.
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), plătitor TVA **trimestrial**, trimestrul
+**III/2026** — aceeași ca lotul A, ca delta să se citească peste starea lui. Sumele sunt rotunde, ca
+TVA-ul să nu depindă de rotunjire.
+
+### Așteptarea, scrisă ÎNAINTE — și ce a ieșit
+
+| # | unitatea | intrarea | așteptat (și de unde) | obținut |
+|---|---|---|---|---|
+| 1 | `POST /achizitie-ic` · bunuri | 1.000 @ 21% | `R5_1`+1000 `R5_2`+210 · `R18_1`+1000 `R18_2`+210 — `d300.py:405` | **defect (R185)** — zero pe toate patru. După reparație: exact |
+| 2 | `POST /achizitie-ic` · servicii | 800 @ 21% | `R7_1`+800 `R7_2`+168 · `R20_1`+800 `R20_2`+168 — `d300.py:309,454` | **defect (R186), NEREPARAT** — au intrat la **rd.5**, nu la rd.7 |
+| 3 | `POST /achizitie-taxare-inversa` | 400 @ 21%, lit. a) deșeuri | `R12_1`+400 `R12_2`+84 · `R25_1`+400 `R25_2`+84 — `d300.py:384` | exact |
+| 4 | `POST /achizitie-necorporala` | 1.000 @ 21%, software 36 luni | `R22_1`+1000 `R22_2`+210 — `_ACHIZ_RAND`, `d300.py:47` | exact (+ rând în `mijloace_fixe`) |
+| 5 | `POST /achizitie-neinregistrat` | 150, PF fără CUI | **niciun** rând de TVA nu se mișcă — `main.py:5710` | exact (absența e verificată, nu presupusă) |
+| 6 | `POST /woocommerce/sincronizeaza` | — | **refuz motivat** | `422` *„WooCommerce neconfigurat"* |
+| 7 | `POST /facturi/{}/storno` | storno peste o emisă 1.000 @ 21% | `R9_1`−1000 `R9_2`−210 | exact |
+| 8 | `POST /facturi/{}/transforma` | proformă 600 @ 21% → factură | proforma **nu** e în decont; după transformare `R9_1`+600 `R9_2`+126 | **defect (R184)** — decontul nu se mai genera DELOC. După reparație: exact, în ambele jumătăți |
+| 9 | `POST /api/v1/firme/{}/facturi` | emisă 500 @ 21%, prin **cheie de API** | `R9_1`+500 `R9_2`+105 | exact |
+| 10 | `POST /import-efactura` | UBL, emisă 300 @ 21% | `R9_1`+300 `R9_2`+63 | exact |
+| 11 | `POST /facturi-primite/{}/valideaza` | — | lanțul pe date valide **nu se poate exercita** | refuz `404` motivat; motivul absenței, măsurat (mai jos) |
+
+**Confruntare lot F: o singură nepotrivire rămasă — R186**, numită și lăsată deschisă fiindcă
+repararea ei cere o decizie. **DUK: `valid`** pe D300 după reparații.
+
+### Unitatea care nu se poate proba, cu motivul MĂSURAT
+
+`facturi-primite/{}/valideaza` lucrează pe un rând din `efactura_primite`. Coada e **goală pe toate
+firmele de probă** (verificat pe `tenant_003`, `_004`, `_005`), iar singurul producător al unui rând
+acolo e calea de recepție SPV (`spv_receive.importa_mesaj`, chemată de cron) — **nu există rută prin
+care un om să pună un rând în coadă**. *Aș fi putut semăna rândul direct în tabel, dar o probă care
+își scrie singură precondiția pe la spatele aplicației dovedește citirea aplicației, nu lanțul ei.*
+Ce s-a exercitat: refuzul pe id inexistent — `404`, *„factură primită inexistentă"*, nu `500`.
+
+### Trei corecturi ale așteptării MELE, oprite înainte de raport
+
+1. **Decontul se cere pe TRIMESTRU.** Prima rulare a cerut luna; ruta a refuzat, citând art. 322
+   alin. (2). Refuzul e corect — și e chiar R167, scris pe 06.09.
+2. **Categoria art. 331 nu e oricare.** `deseuri` (lit. a) e singura fără dată de expirare **și**
+   fără prag; cu `cereale` (expiră în 2026) refuzul corect ar fi intrat în raport ca defect.
+3. **Cititorul probei era orb** — vezi mai jos; a raportat opt delte de zero pe o aplicație corectă.
+
+### Ce a greșit proba, nu aplicația
+
+`U.randuri_xml` ia atributele **primului element**; eu îi dădeam XML-ul cu declarația `<?xml …?>` în
+față, deci citea `version` și `encoding`. Lotul A tăia declarația (`proba_e2_d300.py:121`). Proba are
+acum o **aserțiune anti-vacuu**: dacă decontul s-a generat dar nu i s-a citit niciun rând `R*`,
+rularea se oprește. *A doua oară în două loturi când proba, nu aplicația, e cea care ascunde.*
+
+### Scenariul, DECLARAT
+
+Intrările poartă `PROBA-E2-F-<lanț>-<rulare>`, iar numărul rulării se derivă numărând facturile cu
+marca — deci **nu se sare peste intrări** la a doua rulare (decizia 69). Costul: `tenant_003`
+acumulează un set per rulare; la închiderea lotului sunt **25**. Se vede în decont: `R26_1 = 5.400`
+sunt achizițiile cu cotă 0% rămase din rulările de **dinainte** de R185, când AIC-urile se scriau ca
+interne.
+
+
+---
+
+## ETAPA 2 — LOT G: cele trei unități-nucleu ale D394 (15.09.2026)
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), trimestrul **III/2026**, ca la loturile A și F.
+
+### Așteptarea, REFĂCUTĂ după două refuzuri care aveau dreptate
+
+Prima formă cerea o factură emisă doar pe `client_id`, ca să calce ramura de rezervă din
+`d394.py:1015`. Ruta a refuzat: *„Denumirea beneficiarului e obligatorie pe factură"*, apoi
+*„Factura nu se poate salva fără codul fiscal al partenerului … (Cod fiscal art. 319 alin. 20)"*.
+**Ramura de rezervă e inaccesibilă pe date noi** — o spune și comentariul ei. Așteptarea s-a mutat pe
+decizia 47.
+
+| lanț | intrarea | așteptat | obținut |
+|---|---|---|---|
+| 1 | fișă nouă (`CUI_1`) + factură 400 @21% cu `tert_cui=CUI_1` | `<op1 cuiP="CUI_1" baza="400">` | exact |
+| 2 | `PUT /clienti/{}` schimbă CUI-ul fișei la `CUI_2` | declarația **identică**, `CUI_2` absent | exact |
+| 3 | `DELETE /clienti/{}` | declarația identică | `409` *„clientul are 1 facturi — nu poate fi șters"* |
+
+**Confruntare lot G: 0 nepotriviri.** DUK: **`erori`** — și nu din cauza lanțului, ci din cauza a
+ceea ce lăsase lotul F: **R188**.
+
+### R188 — ce a scos validatorul, și de ce nu e o eroare de probă
+
+`R218.4: cvatrupla (tip_partener, cota, tip, cuiP) trebuie sa fie unica pe declaratie`, pe patru
+`op1` cu același CUI și patru denumiri. Generatorul grupează pe `(…, cuiP, denP)`; regula ANAF cere
+unicitate **fără** `denP`. *Două facturi către același partener, cu numele scris puțin altfel, fac
+declarația de nedepus — iar aplicația nu spunea nimic.* Reparat ca **santinelă** (avertisment care
+numește CUI-ul și toate ortografiile), nu ca o contopire automată: *care denumire câștigă* e o
+decizie, iar factura e autoritatea.
+
+### Scenariul, DECLARAT
+
+Fișa creată la lanțul 1 **rămâne** (ștergerea e refuzată, și pe drept — are o factură). Firma
+acumulează o fișă și o factură per rulare; numărul rulării se derivă din facturile cu marcă.
+
+
+---
+
+## ETAPA 2 — LOT H: cele șapte unități-nucleu ale D112 (15.09.2026)
+
+**Firma:** «Panificatie Salarii Speciale SRL» (`tenant_001`), luna **08/2026**, ca la lotul D.
+Comparațiile se fac pe **amprenta** declarației, nu pe text.
+
+| # | unitatea | intrarea | așteptat | obținut |
+|---|---|---|---|---|
+| 1 | `POST /salariati-import` | un salariat, CNP cu cifra de control calculată, COR din nomenclator | `+1 <asigurat>` | exact (13 → 14) |
+| 2 | `PUT /salariati/{}/pontaj` | o zi pusă `absent_nemotivat` | declarația **se schimbă** | exact |
+| 3a | `PUT /salariati/{}/beneficiu-lunar` | cadou **300** lei | **NU** se schimbă (= plafon) | exact |
+| 3b | aceeași rută | cadou **500** lei | se schimbă (200 peste plafon) | **nu s-a schimbat** — gol DECLARAT în cod (Faza 2b2), nu defect |
+| 4 | `POST /salariati/{}/concedii` | certificat CM cod 01 | se schimbă | **defect (R189)**: `422` cu textul lui `int()` |
+| 5 | `DELETE /salariati/{}/concedii/{}` | revine exact | fără subiect (blocat de 4) |
+| 6 | `POST /istoric-declaratii-import` | o depunere din 07/2026 | declarația lunii 08 **NU** se schimbă | exact |
+| 7 | `POST /coada/{}/depune` | id inexistent | refuz motivat | `404`, cu cele trei cauze numite |
+
+**Confruntare lot H: 5 din 8.** Unul e defect reparat (R189), unul e un gol declarat în cod, unul a
+rămas fără subiect.
+
+### De ce 3b nu e defect
+
+`core/beneficii_api.py:18-20` scrie: *„Peste plafon sau nelegal -> taxabil (Faza 2b2; in 2b1 doar
+SEMNAL)"*. Partea de peste plafon **nu se impozitează azi**, iar asta e scris. *A patra oară în
+patru loturi când așteptarea mea e greșită, iar aplicația se poartă cum spune despre sine.*
+
+### Scenariul, DECLARAT
+
+Salariatul probei primește, la capăt, **dată de încetare** (`31.08`), prin ruta aplicației — fără
+ea, fiecare rulare ar lăsa un salariat activ în D112-urile următoare ale firmei.
+
+
+---
+
+## ETAPA 2 — LOT J: ultima unitate-nucleu, importul de asociați (15.09.2026)
+
+**Firma:** «ALFA MICRO SRL» (`tenant_013`), anul **2026** — firma cu dividende, aceeași ca lotul E.
+Se intră cu utilizatorul cabinetului **4163**, căruia îi e atribuită.
+
+### Așteptarea, scrisă înainte, pe DOUĂ direcții
+
+| ce | așteptat | obținut |
+|---|---|---|
+| `nrben` | **+1** | **1 → 2**, exact |
+| `Tbaza` | **NESCHIMBAT** | 40.000 → 40.000, exact |
+| `Timp` | **NESCHIMBAT** | 6.400 → 6.400, exact |
+| asociatul nou | `baza1` proporțional cu cota (1%) | `baza1` = **400**, `imp1` = **64** (16%) |
+
+**Confruntare lot J: 0 nepotriviri. DUK: `valid`.** *Cele două direcții împreună sunt proba: o
+verificare numai pe „a apărut un beneficiar" n-ar deosebi împărțirea pe cotă de o dublare a
+totalului.*
+
+### Trei refuzuri corecte, care au refăcut lanțul
+
+1. **`tenant_003` n-are beneficiari** — *„D205 fără niciun beneficiar de venit - nu se generează
+   declarație fără conținut."* Firma se alege după cui i se aplică declarația (decizia 66).
+2. **Firma cu dividende e a altui cabinet** — *„Firma nu există în portofoliu sau nu ți-e
+   atribuită."* E poarta de izolare între cabinete (**R43**), și a ținut.
+3. **Importul ÎNLOCUIEȘTE lista și cere 100%** — *„cotele asociaților însumează 1.0%, nu 100%.
+   Asociații și cotele lor intră în D205 (dividende)."* Un refuz care spune și **ce** e greșit și
+   **de ce** contează.
+
+### Ce a greșit proba, cu efect REAL, și cum s-a reparat
+
+A doua formă a citit beneficiarul existent pe atributele `nume1`/`cif` — cele din **docstringul** lui
+`d205.py:16` —, dar generatorul emite `den1`/`cifR` (**R16**: *proza care descrie codul poate fi
+falsă*). A citit gol, **a completat cu un nume de rezervă și un CNP gol**, și a trimis lista la un
+import care înlocuiește: **asociatul real al firmei a fost suprascris**, iar D205 n-a mai putut fi
+generat.
+
+**Restaurat** prin ruta aplicației, cu valorile luate din artefactul lotului E (`POPESCU ION`,
+`1700510400076`, cotă 100%) — nu ghicite. Verificat: 676 de octeți, `nrben=1`, `Tbaza=40000`,
+`Timp=6400`, identic cu starea de dinainte.
+
+**Două lucruri s-au schimbat în probă din asta:** un rând incomplet **OPREȘTE** proba în loc să fie
+trimis (*o probă care completează cu valori de rezervă ce n-a putut citi nu e o probă, e o scriere*),
+iar lanțul **desface** la capăt — reimportă lista de la pornire, cu cotele derivate din
+`baza1 / Tbaza × 100`, și **verifică** întoarcerea.
+
+### Scenariul, DECLARAT
+
+**Nimic nu rămâne.** Fără desfacere, fiecare rulare ar reîmpărți cotele celorlalți
+(100 → 99 → 49,5 → …) — adică proba ar strica încet chiar datele pe care se sprijină.
+
+
+---
+
+## ETAPA 2 — LOT I: cele opt unități-nucleu ale D406/SAF-T (16.09.2026)
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), anul **2026**. Lotul E probase **fereastra** și
+**antetul**; lotul I ia ce are D406 și n-au celelalte: **imobilizările și planul de conturi**.
+
+| # | unitatea | așteptat | obținut |
+|---|---|---|---|
+| 1 | `POST /plan-conturi` | contul analitic apare în plan | exact (simbolul se alege LIBER, după ce un contor repetat a produs un `409` corect) |
+| 2 | `POST /solduri` | soldul inițial intră | exact |
+| 3 | `POST /nota-inventariere` `plus_mf` | apare un mijloc fix | exact (5 → 6) |
+| 4 | `GET /mijloace-fixe` (MARTOR) | îl conține | exact |
+| 5 | `GET /d406-active` (MARTOR) | secțiunea Assets se generează și îl conține | exact — **12.154 octeți**, după R190 |
+| 6 | `POST /amortizare` | nota lunii există ȘI declarația poartă amortizarea din REGISTRU | exact (`DepreciationForPeriod` 200, `AccumulatedDepreciation` 200) |
+| 7 | `POST /reevaluare-imobilizare` | costul declarat urcă 3.000 → 3.550 | **NU** — `R59` confirmată: declarația ține costul vechi |
+| 8 | `GET /d406-stocuri` | secțiunea se generează | exact (7.975 octeți) |
+
+**Confruntare lot I: 7 din 8.** Singura roșie e **R59**, restanță deschisă, confirmată acum prin
+măsurare — cu o consecință pe care restanța n-o numea: efectul ajunge în **declarație**, nu doar în
+amortizare.
+
+### Trei corecturi ale așteptării mele, toate din refuzuri
+
+1. **`simbol`, nu `cont`** — cu erori per câmp. Și, la a doua rulare, `409`: *„Contul 208.91 există
+   deja în plan… folosește alt simbol"*. Simbolul se alege acum **liber**, întrebând aplicația.
+2. **`valoare`/`dnf_luni`/`data_pif` la nivelul de sus**, nu într-un obiect `plus_mf`.
+3. **Punerea în funcțiune în luna PRECEDENTĂ** — amortizarea începe din luna următoare (CF art. 28).
+   Prima formă a pus PIF în chiar luna amortizată, iar ruta a răspuns *„nimic de amortizat"*.
+   Plus: a doua rulare primește `400 „Amortizarea lunii e deja generată."` — refuz **idempotent**,
+   acceptat acum ca precondiție satisfăcută.
+4. **Elementele SAF-T poartă prefix de spațiu de nume** (`<nsSAFT:Asset>`) — căutam `<Asset` și
+   găseam zero pe un XML plin de active.
+
+### R191, deschisă din lotul ăsta
+
+Amortizarea se calculează de **două ori**, din surse diferite — registrul (în declarație) și nota
+contabilă — iar **nimic nu confruntă** cele două cifre. Pentru D300/D394 există „a doua cale"; pentru
+Assets nu. *Iar R59 arată că registrul poate rămâne în urmă.*
+
+---
+
+## ETAPA 2 — LOT H, ÎNCHIS la 8/8 (16.09.2026)
+
+Reluat pe codul publicat, după R189. Ce s-a schimbat față de prima rulare:
+
+- **Lanțul 2, refăcut complet.** Prima formă citea o **BLOCARE** ca pe o schimbare. Real: o zi de
+  pontaj atinsă face pontajul lunii NECONFIRMAT, iar D112 se **blochează** (HG 1045/2018 art. 10(3)).
+  Lanțul probează acum poarta, confirmarea și revenirea.
+- **A treia condiție era a mea:** cifrele nu se schimbă, fiindcă pontajul intră în D112 prin
+  **tichetele de masă**, iar salariatul probei n-are tichete.
+- **Lanțurile 4 și 5, închise:** `loc_prescriere` cere codul numeric (a scos R189), iar `diagnostic`
+  e un cod de cel mult **3** caractere (`D_23`) — trimisesem 10.
+- **Desfacere adăugată:** ziua se scoate ȘI luna se re-confirmă. Prima rulare lăsase firma cu D112
+  blocat, iar deblocarea a cerut un act separat.
+
+**DUK: `erori`, dar e divergența cunoscută** din lotul D (`SP1B4_1`, pragul part-time) — o
+atenționare cu temei scris, nu o constatare nouă.
+
+
+---
+
+## R186 și R187 — reparate pe deciziile lui Costin, probate pe lanț (16.09.2026)
+
+**Firma:** «Comert Micro TVA SRL» (`tenant_003`), trimestrul III/2026 · luna 09.
+
+### R186 — axa pe document
+
+| ce | așteptat | obținut |
+|---|---|---|
+| achiziție IC **bunuri** | rd.5 + rd.18 | `R5_1` = 5.600 · `R18_1` = 5.600 |
+| achiziție IC **servicii** | rd.7 + rd.20 | `R7_1` = 1.600 · `R20_1` = 1.600 |
+| D390, același partener și lună | **două** operațiuni, `A` și `S` | `A` 11.000 · `S` 1.600 |
+
+Lotul F: **11/11**. *Dovada decisivă e a treia linie: cheia partener-lună a reclasificării nu putea
+purta două axe pe același partener în aceeași lună.*
+
+### R187 — livrarea produce factură
+
+| lanț | așteptat | obținut |
+|---|---|---|
+| vânzare IC **bunuri** 900 | factură · D300 `R1_1` += 900 · D390 `L` | `CMT181` · +900 · `L` |
+| vânzare IC **servicii** 700 | factură · D300 `R3_1` += 700 · D390 `P` | `CMT182` · +700 · `P` |
+
+**2/2.** Numărul vine din **seria proprie**: la o livrare documentul e al nostru.
+
+### Trei corecturi ale așteptării mele
+
+1. **Coloana în `SELECT` nu e coloană în dicționar.** Prima formă a lărgit interogarea și a uitat
+   dicționarul facturii (chei enumerate) — serviciile au continuat să intre la rd.5.
+2. **Rândul rd.1 se numește `R1_1`**, nu `R1` — comentariul din cod spune „(R1)", atributul emis e
+   `R1_1`. Doc contra cod, a doua oară în două zile.
+3. **Antetele din `TRASEE_VERIFICARI.md` depind de BAZĂ.** Le regenerasem pe producție, iar garda le
+   compară cu ce iese pe baza de test: „16 rute · 26 firme" contra „3 rute · 2 firme". *O cifră
+   derivată dintr-o bază trebuie regenerată pe baza pe care o citește gardul.*

@@ -1,0 +1,97 @@
+MASURATORI — LUCRAREA 3: cele 8 rute cu clichet fiscal · 16.09.2026 · 4d938efd -> 81558b74
+================================================================================
+
+1. CLICHETUL — cifra care defineste lucrarea
+--------------------------------------------------------------------------------
+instrument: scripts/scan_scrieri_declaratii.subsetul() — tabele scrise de ruta ∩ tabele citite de
+            generatoarele de declaratii, DERIVAT din cod, nu enumerat.
+
+  inainte (4d938efd):  8     POST /migrare/importa
+                             POST /tenants/{id}/banca/reconciliere/{linie_id}/conteaza
+                             POST /tenants/{id}/bonuri/{bon_id}/stinge
+                             POST /tenants/{id}/reevaluare-imobilizare
+                             POST /tenants/{id}/retete/descarca
+                             POST /tenants/{id}/stocuri/iesire
+                             POST /tenants/{id}/stocuri/inventar
+                             POST /tenants/{id}/stocuri/reclasificare
+  dupa lotul 3a (0d1909eb): 4
+  dupa lotul 3b (81558b74): 0
+
+  rute care scriu fara proba IN SUITA: 86 -> 82 -> 77
+    Clichetul scris in cod era 88. MASURAT pe commitul de baza printr-un `git worktree`: realul la
+    `cfdd00ae` era 86. Deci 88 era un PLAFON, nu o cifra — iar prima mea afirmatie („a scazut
+    88 -> 86") era FALSA: nu scazuse nimic. Corectata prin masurare, nu prin rationament.
+
+
+2. CIFRELE FIECAREI PROBE — recalculabile cu creionul
+--------------------------------------------------------------------------------
+LUMEA (lot 3a): articol marfa, intrare 10 buc x 10,00 (CMP 10,00); mijloc fix 6.000 lei / 60 luni,
+PIF 15.01.2025. LUMEA (lot 3b): articol 20 kg x 5,00 (CMP 5,00); reteta 0,500 kg/portie; linie de
+extras 250,00 cu nota propusa; chitanta 70,00 `de_verificat`.
+
+  stocuri/iesire         3 buc x 10,00        -> 607 = 371     30,00
+  stocuri/inventar       faptic 8 vs 10       -> 607 = 371     20,00
+  stocuri/reclasificare  soldul la CMP        -> 301 = 371    100,00   (cantitatea NEATINSA: 10)
+  reevaluare-imobilizare 14 luni x 100,00     -> 2813 = 2131 1.400,00
+                         neta 4.600, justa 5.000 -> 2131 = 105  400,00 (registrul: 6.000 -> 5.000)
+  banca/…/conteaza       incasare             -> 5121 = 4111  250,00   (linia -> `contat`)
+  bonuri/…/stinge        plata furnizor       -> 401 = 5311    70,00   (+1 rand in casa_operatiuni)
+  retete/descarca        10 portii x 0,500 kg -> 601 = 301     25,00   (stoc 20 -> 15 kg)
+  migrare/importa        CUI 95141537         -> schema noua cu facturi, factura_linii, inregistrari,
+                                                inregistrari_linii, mijloace_fixe, miscari_stoc,
+                                                articole, salariati, reevaluari (cerute PE NUME)
+
+  PASUL INTERMEDIAR, masurat la fiecare: INAINTE de validarea notei, rulajul contului e 0,00.
+  Ciorna nu e evidenta; declaratia citeste numai note validate.
+
+
+3. CELE DOUA DIRECTII — refuzurile, si urma lor
+--------------------------------------------------------------------------------
+  inventar fara linii           -> 422, cu motiv scris · 0 note create
+  reclasificare pe acelasi cont -> 400                  · 0 note create
+  a doua contare a liniei       -> 400                  · o singura nota `banca`
+  bon care nu e chitanta        -> 400                  · 0 operatiuni de casa
+  reteta peste stoc (100 portii, 50 kg cerute din 20) -> 422 · 0 note, 0 iesiri de stoc
+  CUI deja in portofoliu        -> 200, `total=0`, o respingere cu `regula='deja_exista'`
+                                   si `motiv == mesaj` (contractul scris in `migrare_api.respinge`)
+
+
+4. CE A CORECTAT CODUL LA MINE — trei asteptari gresite, toate scrise langa aserțiune
+--------------------------------------------------------------------------------
+  * `cmp` vine cu PATRU zecimale (`10.0000`) — asa il tine `miscari_stoc.pret_unitar`.
+  * refuzul inventarului gol e `422`, nu `400`: `DateInvalide`, prin `main._COD_EROARE`.
+  * codul unei respingeri de import sta sub cheia `regula`, nu `cod` — iar `migrare_api.respinge`
+    isi scrie in docstring chiar ciocnirea de vocabular care a dus acolo.
+
+
+5. CE A PRINS POARTA — patru respingeri, toate reale
+--------------------------------------------------------------------------------
+  1. `test_importuri_nefolosite` — un `from datetime import date` mort in proba noua.
+  2. `test_garzi_pe_text` (+ clichetul din predare, care numara acelasi lucru) — asertasem
+     `"inventariere" in mesajul de refuz`. Garda pe TEXT. Acum se cere sa EXISTE un motiv.
+  3. `test_predare_cifre` — al PATRULEA bloc generat, pe care nu-l aveam in scriptul de regenerare.
+  4. **`rollback` NU intoarce o SECVENTA.** `migrare/importa` consuma `tenant_schema_seq`, iar
+     contorul ei e PINAT in blocul generat (masoara reciclarea numelor de schema, R79). Proba muta
+     cifra cu +1 la FIECARE rulare, deci ar fi inrosit poarta altcuiva a doua zi. Fixtura salveaza
+     `last_value`/`is_called` si le pune la loc DUPA rollback, pe ALTA conexiune.
+     PROBAT: 55 inainte, 55 dupa; blocul identic peste doua rulari consecutive.
+
+  SI O LECTIE DE PROCEDURA: poarta ruleaza pytest pe ARBORELE DE LUCRU, nu pe INDEX. Lucrul in curs
+  la lucrarea 4, inca nestagiat, a inrosit commitul lucrarii 3 — iar „2 failed" nu spunea despre ce.
+  Tot de acolo: `core/test_datorie.py` a fost scos din index inainte de commit, fiindca inchiderea
+  lui depindea de o valoare care se comitea in ALT commit. Ar fi fost verde pe arbore si rosu pe
+  propriul continut, iar poarta n-avea cum s-o prinda.
+
+
+6. POARTA — cinci rulari complete
+--------------------------------------------------------------------------------
+  lot 3a: 8 failed / 6225 passed (35:06) -> reparat -> 0 failed / 6233 passed (35:06) COMMIT 0d1909eb
+  lot 3b: 1 failed / 6242 passed (35:12) -> 2 failed / 6241 (35:12, cauza: lucrul lucrarii 4 din
+          arbore) -> 2 failed / 6242 (35:12) -> 0 failed / 6244 passed (35:09) COMMIT 81558b74
+  verificator, la ambele verzi: TOTAL 0 candidate (207 scanat · 421 rute · clichet GRI 7)
+
+
+7. PUBLICAREA
+--------------------------------------------------------------------------------
+  0d1909eb si 81558b74: origin/main · public/main · backup/lant-2026-09-16 · static (56 fisiere)
+  restart -> four-way INCHIS, 2 din 2 procese, la amandoua.

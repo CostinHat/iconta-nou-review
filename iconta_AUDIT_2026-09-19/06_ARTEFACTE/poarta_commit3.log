@@ -1,0 +1,19 @@
+[pre-commit] ruff (undefined-name F821/F822/F823)...
+[pre-commit] ruff OK.
+[pre-commit] pytest (suita intreaga, ~36 min pe ~6.190 de teste; durata reala a fiecarei rulari respinse e in .poarta_jurnal.log)...
+6225 passed, 7 skipped, 11 xfailed in 2103.87s (0:35:03)
+[pre-commit] verificator:   TOTAL scanat 207 = ACCEPTAT 206 + GRI 0 + ROSU 0 + EXCLUS 1
+  TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
+TOTAL: 0 candidate
+[pre-commit] OK - poarta verde, commit permis.
+[post-commit] publicat pe origin/main: fcd13ac9
+[post-commit] publicat pe public/main: fcd13ac9
+[post-commit] backup publicat: backup/lant-2026-09-16 -> fcd13ac9
+[post-commit] static publicat: publicat in /home/costin/iconta_publicat/static <- commit fcd13ac9 (56 fisiere)
+[post-commit] iconta-nou restartat -> procesul viu preia fcd13ac9
+[four-way] asteptati 2 (Environment= din unitatea iconta-nou) · gasiti 2
+[four-way] TOATE procesele de productie poarta HEAD: 2 din 2
+[post-commit] FOUR-WAY INCHIS: HEAD = origin/main = backup/lant-2026-09-16 = procesul viu
+[main fcd13ac9] R191 — amortizarea DECLARATA de registru, confruntata cu cea INREGISTRATA
+ 5 files changed, 492 insertions(+), 5 deletions(-)
+ create mode 100644 core/test_r191_amortizare_confruntata.py

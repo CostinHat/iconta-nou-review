@@ -1,0 +1,685 @@
+A. RESTANȚE DESCHISE — fiecare cu felul ei și cu CE O ÎNCHIDE
+----------------------------------------------------------------------------------------------------
+  R1     [SURSĂ / INTERN] Câte alte acte din corpus sunt PARȚIALE
+         închide când: un inventar al corpusului care spune, pentru fiecare act cu anexe, dacă anexele sunt aduse; plus regula de aducere scrisă în METODA, aplicată de acum 
+  R3     [ARTEFACT / INTERN] Categoria de mărime nu există în aplicație
+         închide când: categoria se derivă (active, cifră de afaceri netă, număr mediu de salariați, două criterii din trei, **la data bilanțului**) și **rezultatul devine i
+  R4     [SURSĂ / INTERN] Câte alte forme VECHI din corpus sunt citite ca fiind la zi
+         închide când: `TIP_FORMA` din `anaf_surse/gen_index.py` poartă deja răspunsul pentru fișierele legate de cote; se închide când orice fișier din care se citește un t
+  R5     [SURSĂ / INTERN] Marcajele din corpus nu se citesc la FOLOSIRE
+         închide când: marcajul ajunge la folosire, nu doar în manifest. Se închide când citirea unei valori CURENTE dintr-un fișier marcat `forma_la_data` sau cu notă e **i
+  R6     [SURSĂ / INTERN] Ceva a scris într-un fișier de corpus, și nu se știe ce
+         închide când: scriitorul e **numit**. Garda nouă `core/test_corpus_amprenta.py` transformă tăcerea în poartă roșie: dacă se repetă, se aprinde la primul commit, iar
+  R7     [VERIFICARE / INTERN] Câte câmpuri obligatorii sunt gardate ca PREZENȚĂ, dar necontrolate ca ADEVĂR
+         închide când: măsurătoarea e făcută — pentru fiecare câmp obligatoriu din registre se spune dacă are control de adevăr, iar fiecare câmp fără control primește **ori
+  R8     [ORDINE / INTERN] Cele trei egalități stricte, redeschise și nereverificate
+         închide când: **la reluarea interdicției 21**, sau mai devreme, la primul commit care atinge `d223.py` ori `d406.py`. Se citește fiecare pe context, se spune dacă e
+  R9     [ORDINE / DECIZIE] Ecranul statului de plată: STOP nemișcat
+         închide când: **când se atinge ecranul statului de plată** — fie pentru propunerea vizuală confirmată, fie pentru orice altă reparație pe el.
+  R11    [ORDINE / INTERN] Datoria veche consemnată doar în proză, în GARZI.md
+         închide când: **la triajul din faza 3b**, care trece o dată peste toate cele 75 de interdicții — acolo fiecare dintre ele primește ori o instanță într-o secțiune, o
+  R14    [ORDINE / INTERN] Două funcții de creare a facturii, cu stări implicite diferite
+         închide când: **două lucruri, în ordinea asta.** (1) — **LUAT 23.08** — Se decide dacă cele două funcții trebuie să producă **aceeași** stare — și atunci una dintre
+  R15    [VERIFICARE / INTERN] Perechile verificator/verificat copiază CONDIȚII, nu doar constante
+         închide când: fiecare condiție comună primește ori o **sursă unică** (ca `nomenclator_status_factura.clauza_sql`), ori o **declarație scrisă** că duplicarea e delib
+  R16    [VERIFICARE / INTERN] Proza care descrie codul poate fi FALSĂ DE LA NAȘTERE
+         închide când: proxy-ul pe propriile valori implicite devine gardă (ieftin: e deja scris ca măsurătoare), **iar** pentru afirmațiile despre alte module se scrie regu
+  R18    [VERIFICARE / DECIZIE] Două porți verzi care nu pot deveni roșii
+         închide când: **una din două, prin decizie, nu prin reparație** — (a) există iar clustere de ordonat, și atunci cele două redevin verificări reale; sau (b) se **dec
+  R23    [VERIFICARE / INTERN] Urme de intenție: nume declarate pe care nu le citește nimeni
+         închide când: fiecare candidat verificat **individual**, la sursă, cu întrebarea *„a fost început ceva aici și s-a oprit, sau e o convenție citită din altă parte?"*
+  R24    [VERIFICARE / INTERN] Trei cicluri în graful de clustere: reciproce în fapt, sau doar în graf?
+         închide când: se stabilește dacă cele trei sunt reciproce **în fapt** sau doar **în graf**. *În graf* ar însemna că muchia dintr-o direcție vine dintr-un utilitar c
+  R26    [VERIFICARE / DECIZIE] Cota de TVA scrisă ca valoare implicită în 25 de funcții, iar 23 de apeluri o folosesc
+         închide când: o **decizie de formă**, fiindcă reparația mecanică are două variante cu costuri diferite. **(a)** Defaultul devine `None`, iar funcția rezolvă din reg
+  R27    [VERIFICARE / INTERN] Pragul de reverificare din cod e încă cel global, deși tabelul lui 55 l-a înlocuit azi
+         închide când: `cote_neconfirmate` citește pragul din **categoria valorii** (clasa A × clasa B din 55), nu dintr-un parametru global. Precondiție: categoriile trebui
+  R32    [VERIFICARE / INTERN] Date de test al căror antet își contrazice propriile linii
+         închide când: seeder-ul scrie antetul **din linii**, nu pe lângă ele — sau, dacă divergența e intenționată pentru un scenariu anume, o declară explicit (o coloană, 
+  R37    [VERIFICARE / INTERN] Nota contabilă n-are autor, iar `sursa` ei e un nomenclator de fapt, scris în 48 de lo
+         închide când: `sursa` devine nomenclator închis, într-un loc unic, cu validare la scriere (după modelul `nomenclator_status_factura`); și `inregistrari` primește au
+  R38    [ORDINE / DECIZIE] Lista de cote din ecranul de NIR e scrisă de mână, fiindcă serverul n-o poate da
+         închide când: se scrie **care** dintre două, și **de ce** — *(a)* se reconstruiește o sursă de cote **pe dată** (`cote_valide(la_data)`), iar ecranul o cere de la s
+  R39    [ORDINE / INTERN] Coloana pe care se sprijină verificarea D112 nu se scrie de nicăieri
+         închide când: *(rescrisă 29.08.2026, după R36)* `document_ref` se scrie la crearea notei statului de plată, de către actul care o produce. Se închide când `note_sal
+  R47    [ORDINE / DECIZIE] NIR-ul creează nota contabilă direct validată, sărind peste ciornă
+         închide când: se răspunde la **R36**, apoi NIR-ul se aliniază modelului ales (sau excepția se scrie ca excepție, cu motivul). Se închide când starea pusă de `stocur
+  R48    [VERIFICARE / INTERN] Patru trasee nu se pot exercita pe nicio firmă, și nimic din afară nu le blochează
+         închide când: se introduc date pe cele patru trasee, pe firmele care le potrivesc, și se parcurge fiecare până la ieșirea lui. Se închide când `scripts/scan_trasee.
+  R53    [VERIFICARE / INTERN] Inventarul de trasee atribuie unei rute tot ce scrie modulul, nu ce scrie ruta
+         închide când: `scan_trasee` rezolvă, pentru fiecare rută, **ce funcții** ale modulului cheamă, și moștenește doar scrierile acelor funcții. Se închide când numărul 
+  R64    [ARTEFACT / DECIZIE] Contabilitatea și stocul sunt două evidențe disjuncte, iar niciun document nu le leagă
+         închide când: decizia e luată; se închide când cele 18 rute produc mișcare de stoc — **eșalonat, nu într-o zi**, cum a spus el — iar înainte de prima se leagă linia
+  R67    [VERIFICARE / DECIZIE] Suita de teste rulează pe baza de PRODUCȚIE, iar izolarea e o convenție, nu o barieră
+         închide când: decizia lui Costin între **(a)** o bază de test separată, iar `conftest` refuză să pornească suita pe `iconta_v2`; **(b)** un utilizator de test cu dr
+  R68    [VERIFICARE / DECIZIE] Suita n-are bază proprie; separarea rămâne de făcut după ce testele se decuplează
+         închide când: **când cele 3 nu mai depind de firme reale** — fiecare ori își construiește subiectul (schemă efemeră din `tenant_template.sql`), ori dispare. Abia at
+  R69    [ARTEFACT / INTERN] O declarație depusă pe un regim care s-a schimbat între timp nu contrazice pe nimeni
+         închide când: la schimbarea vectorului sau a regimului, declarațiile depuse din intervalul atins sunt **numite** — nu numărate — iar starea lor devine vizibilă acol
+  R71    [ARTEFACT / INTERN] Ce a scos prima exercitare pe date: șapte lucruri pe care nicio gardă nu le vede
+         închide când: se închide când toate șapte sunt **reparate sau retrase, una câte una** — nu ca grup. Costin a cerut explicit: *„consemnează-le. Nu le repara acum.”* 
+  R75    [VERIFICARE / DECIZIE] Joburile de fundal au deadman; procesul care servește ecranele, nu
+         închide când: *(rescrisă 27.08.2026, după decizie)* sonda rulează din `crontab` la 15 minute și **bate** — adică `cron.verifica_batai()` nu o mai listează. Se închi
+  R76    [VERIFICARE / INTERN] „Googlebot" într-un log nu mai e o informație: 70% din cererile care se declară așa su
+         închide când: la **prima măsurătoare care filtrează după User-Agent** — atunci verificarea prin rDNS intră în ea, iar cifra se dă pe lotul confirmat, nu pe cel decl
+  R92    [ARTEFACT / INTERN] Ecranul nu poate numi cinci din cele opt stări ale unei facturi, iar 10 din 41 afișeaz
+         închide când: **nu se închide prin adăugarea a cinci șiruri.** Reparația cerută e ca etichetele să se **derive din nomenclator** — o singură sursă —, plus o **gardă
+  R95    [ARTEFACT / INTERN] Semaforul nu are nicio cale prin care să ceară D100 unei firme pe regim de profit
+         închide când: `obligatii_datorate` evaluează obligația trimestrială de impozit pe profit pe firmele cu `regim_fiscal = profit`, cu aceeași poartă de FAPT pe care o 
+  R97    [ARTEFACT / INTERN] „Ruta livrează, ecranul tace": serverul trimite compoziția unei cifre, iar randarea o 
+         închide când: prima jumătate e **făcută** — clasa are cifră pe domeniu declarat. **Ce rămâne:** fiecare instanță ori **reparată**, ori **declarată cu motiv scris**,
+  R98    [VERIFICARE / INTERN] O interdicție care citează un inventar îmbătrânește singură la fiecare măsurătoare
+         închide când: **doar gardă, nu rescriere acum** (cuvintele deciziei). Se construiește o gardă care deosebește, în corpul unei secțiuni de interdicție, **regula și p
+  R99    [VERIFICARE / INTERN] Previzualizarea scoaterii unei firme arată ce s-a GĂSIT, dar nu ce s-a VERIFICAT
+         închide când: previzualizarea arată **și ce s-a verificat**, nu doar ce s-a găsit: fiecare evidență privită apare cu numărul ei, zero inclus, iar lista tabelelor ca
+  R100   [VERIFICARE / INTERN] O calibrare care testează doar ce știe instrumentul să caute confirmă presupunerea, nu
+         închide când: **doar gardă, nu rescrierea instrumentelor acum** (cuvintele deciziei: *„Deschide gardă, nu o construi acum."*). Se construiește o gardă care, pentru 
+  R104   [SURSĂ / INTERN] Optsprezece reguli din Design System nu numesc nimic: sunt preferințe, nu norme
+         închide când: fiecare din cele 18 ori **se rescrie ca să numească un artefact** (clasă, funcție, fișier, cheie) — și atunci intră în măsurătoare ca oricare —, ori *
+  R107   [SURSĂ / INTERN] Două temeiuri citează un document adus PARȚIAL, deci nu se poate confrunta nimic
+         închide când: **forma consolidată** a OUG 156/2024, adusă în corpus și amprentată, cu
+  R112   [SURSĂ / INTERN] Ianuarie 2026 stă pe un act care nu era în vigoare
+         închide când: Ordinul INS 2353/2024 adus și amprentat. Dacă poartă tot 1.000.000,
+  R113   [VERIFICARE / INTERN] Opt acte din corpus sunt nevăzute de instrumentele de articol, fiindcă poartă așezarea
+         închide când: cele 8 ies din CIOT **și** articolele lor se localizează corect, iar
+  R114   [ARTEFACT / INTERN] Ecranul Intrastat compară fluxurile unui an ales cu pragul de AZI
+         închide când: `analiza_flux` primește anul; pentru un an fără prag cunoscut ecranul
+  R116   [VERIFICARE / INTERN] Cronul de alerte numără firmele DUPĂ succes, deci una care ridică nu apare nicăieri
+         închide când: în ziua în care întoarcerea lui `ruleaza()` capătă un consumator
+  R117   [VERIFICARE / INTERN] Un gard al cărui subiect e o mulțime de lucruri NEREZOLVATE se golește când ultimul se
+         închide când: axa instrument/igienă se redeschide **prin decizie**, ȘI clasa capătă un
+  R121   [VERIFICARE / EXTERN] Decontul precompletat (RO e-TVA / P300) nu e accesibil programatic
+         închide când: trebuie o cale de citire programatică a decontului precompletat P300, de la ANAF prin SPV, fiindcă lipsa ei blochează confruntarea D300 cu ce vede ANA
+  R122   [VERIFICARE / INTERN] O absență la nivel de FUNCȚIE e invizibilă gărzii care lucrează la nivel de MODUL
+         închide când: există un instrument care deosebește **treapta internă a unui contract**
+  R173   [VERIFICARE / INTERN] Douăzeci și trei de temeiuri n-au prag fiindcă nu li se poate citi FRECVENȚA
+         închide când: se închide când fiecare din cele 23 ori primește o frecvență citibilă,
+  R174   [ARTEFACT / INTERN] O factură încasată prin bancă nu se marchează încasată nicăieri
+         închide când: se închide când o factură decontată prin bancă ajunge marcată încasată
+  R175   [VERIFICARE / INTERN] Desktopul asistentului e văzut de o probă proprie, nu de uneltele de listă
+         închide când: uneltele de listă acceptă un **cont per ecran** (nu unul global), iar
+  R176   [VERIFICARE / INTERN] „Publicat" a însemnat un singur repo, iar raportul n-a spus care
+         închide când: (1) `post-commit` împinge automat pe **amândouă**, cu contract identic — **FĂCUT 08.09**, pasul 1b: fast-forward, niciodată `--force`, sentinelă `.git
+  R177   [VERIFICARE / INTERN] Un model de citire poate avea dependențele scrise din memorie, iar sub-invalidarea nu 
+         închide când: **REGULA FINALĂ NU SE SCRIE ÎNCĂ, și asta e chiar decizia lui Costin din 08.09.2026** — *«deschide restanță acum, cu descrierea găsită azi, dar nu scr
+  R178   [VERIFICARE / INTERN] Pool-ul de conexiuni se saturează exact la 10 cereri de portofoliu simultane
+         închide când: **NU se mărește pool-ul ca prim gest** — asta ar muta plafonul fără să
+  R183   [VERIFICARE / INTERN] `apel_anaf` ține o tranzacție deschisă peste apelul la ANAF și peste backoff
+         închide când: se închide împreună cu R178, nu înaintea ei: întâi se măsoară câte
+----------------------------------------------------------------------------------------------------
+  TOTAL RESTANȚE DESCHISE: 53
+
+B. INTERDICȚIILE din PLAN_ARHITECTURA care NU sunt MĂSURATE
+----------------------------------------------------------------------------------------------------
+  NEÎNCEPUTĂ        78 : 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 …   <-- NEMĂSURATĂ
+----------------------------------------------------------------------------------------------------
+  INTERDICȚII CARE NU SUNT MĂSURATE: 78 din 78
+  (starea se citește din CONFORMITATE.md; `raport_b.py` dă același total)
+
+C. `xfail(strict=True)` — datoria verificabilă mecanic, cu MOTIVUL fiecăreia
+----------------------------------------------------------------------------------------------------
+  test_datorie.py::test_datorie_staleness_sesiune_b_content
+      DATORIE 30.07.2026: staleness pe continutul Sesiunii B nu se poate verifica mecanic pana nu exista teste N3 (cap-coada pe firma). Etapele Fazei 1 sunt neincepute si nu se mapeaza pe fisiere, deci nu e
+  test_datorie.py::test_datorie_d300_d394_randuri_vs_reguli_verificate
+      DATORIE 30.07.2026: R17/R28/R32 din D300/D394 au fost lasate bare ca RANDURI de declaratie, dedus din CONTEXT, nu verificat in structura oficiala a formularului. Daca vreunul e de fapt regula de valid
+  test_datorie.py::test_datorie_gard_structura_absent
+      DATORIE 30.07.2026: formatul ANAF structura <formular> <versiune> nu e pazit mecanic. Fraza 'structura oficiala D300' apare identic in proza explicativa si in citare, deci un gard ar da fals-pozitive 
+  test_datorie.py::test_datorie_deducere_copil_parinte_multi_angajatori
+      DATORIE 02.08.2026 (art.77 alin.(12)-(13)): deducerea de 100 lei/copil e NECABLATA - copii_scoala nu e coloana pe salariati, niciun apelant real n-o trece >0, deci nu se acorda azi. Gard defensiv pus 
+  test_datorie.py::test_datorie_citate_literale_tichete_portal
+      DATORIE 31.07.2026: doua citate literale la clusterul tichete confirmate din sursa SECUNDARA (noulcodfiscal.ro), NEreverificat verbatim pe legislatie.just.ro (portalul randeaza dinamic, pagina se trun
+  test_datorie.py::test_datorie_teste_care_apara_buguri
+      DATORIE 31.07.2026: teste care ASERTEAZA valoarea GRESITA apara bugul si impiedica repararea (a patra aparitie a clasei azi): test_cm_cas_mereu_zero (cas=0 pe CM, REPARAT 31.07 prin unificarea CM -> t
+  test_datorie.py::test_datorie_cm05_subrows_infectocontagioase
+      DATORIE 31.07.2026 (ingustata 02.08): sub-randurile C2 infectocontagioase (cod 05, Rd.1.1-1.4 cu conditii D_12/data) nedefalcate, emise 0 (corect cat timp nu exista cod 05 in luna). INCHISE separat 02
+  test_datorie.py::test_datorie_factura_pdf_proba_pe_profil_real
+      DATORIE 31.07.2026: factura_pdf - fix-ul cota_tva None -> eroare (runda 1 B) presupune ca genereaza_pdf atinge linia INAINTE de alte campuri lipsa; testul verifica DOAR ca ridica pe cota None, NU ca P
+  test_datorie.py::test_datorie_d300_9pct_deductibil_auto
+      DATORIE 03.08.2026 (cluster cote TVA->randuri | d300): achizitiile deductibile cu cota 9% (art.III Legea 141/2025) NU se pot declara AUTOMAT in D300 - structura v12.0.0 le pune la Rd.25.1 (R75), dar v
+  test_harta_casete.py::test_randurile_poarta_cheia_de_identificare
+      DATORIE 20.08.2026 (R1'): anatomia rândului nu poartă cheia de identificare a entității randate. public.declaratii_depuse o definește prin cheia primară (tenant_id, an, luna, tip, nr_depunere); rândur
+----------------------------------------------------------------------------------------------------
+  TOTAL xfail(strict): 10
+
+D. ORBIREA DECLARATĂ a instrumentelor — ce spun ELE ÎNSELE că nu văd
+----------------------------------------------------------------------------------------------------
+  scripts/curatenie.py
+      **CE NU FACE, declarat.**
+  scripts/inlocuieste.py
+      CE NU FACE, declarat: nu verifica daca inlocuirea e CORECTA - doar ca s-a produs. Un `nou` gresit
+  scripts/masoara_rute_portofoliu.py
+      **CE NU ACOPERĂ, scris ca să nu se citească mai mult decât spune:**
+  scripts/masoara_suprapunerea.py
+      LIMITĂ DECLARATĂ: șapte din cele nouă fișiere de checklist (`LOT_1..7_VERIFICARI.md`, **250** din
+  scripts/p7_criterii.py
+      *Un `ACTION_REQUIRED=0` care nu acopera un criteriu canonic nu e o stare, e o lipsa de detector.*
+  scripts/p7_d4_separa.py
+      CE NU FACE, declarat:
+  scripts/perimetru.py
+      **CE NU FACE, si de-aia are `--motiv-incert`.** Nu vede legaturile care nu trec prin `import`:
+  scripts/reancoreaza_plan.py
+      CE NU FACE, declarat: nu inventeaza ancore noi si nu sterge niciuna. Daca un fragment nu se mai
+  scripts/scan_1b_regimuri.py
+      CE NU VEDE, declarat:
+  scripts/scan_1c_verificabil.py
+      CE NU VEDE, declarat:
+  scripts/scan_blocante.py
+      **Ce nu vede (fals-negative):**
+  scripts/scan_cale_cerere.py
+      **CE NU VEDE, declarat** — și e important, fiindcă lista de mai jos e un PLAFON INFERIOR:
+  scripts/scan_coduri_validator.py
+      declarației în care e citat?** Atât. Nu poate spune dacă regula înseamnă ce credem noi că înseamnă
+  scripts/scan_contract_ecran.py
+      CE NU VEDE, declarat, ca să nu se citească drept „zero probleme":
+  scripts/scan_ds_verificator.py
+      CE NU VEDE, declarat:
+  scripts/scan_functionalitati.py
+      **CE NU VEDE, declarat.** SQL construit din bucati la rulare; scrieri facute prin module de
+  scripts/scan_garzi_inventar.py
+      CE NU FACE, declarat: **nu judecă dacă garda e bună**, nu numără aserțiunile și nu spune dacă păzește
+  scripts/scan_lanturi_declaratie.py
+      CE NU VEDE, declarat:
+  scripts/scan_p7_straturi.py
+      CE NU VEDE NICIUNUL, declarat:
+  scripts/scan_predare_cifre.py
+      CE NU ACOPERĂ, declarat, și nu din lene:
+  scripts/scan_r97_livrat_tacut.py
+      CE NU VEDE, declarat:
+  scripts/scan_ramas.py
+      2. **Nu vede ce nu e intr-o lista.** O sarcina care traieste doar intr-un mesaj sau intr-un
+  scripts/scan_rute_fara_proba.py
+      UNDE E OARBĂ, scris ca să nu fie citită mai larg:
+  scripts/scan_scrieri_declaratii.py
+      UNDE E OARBĂ, scris ca să nu fie citită mai larg decât e:
+  scripts/scan_sonde_stare.py
+      cifra fără să poată spune despre ce ramură vorbește.
+  scripts/scan_stare_proces.py
+      CE NU VEDE, prin constructie (formele de orbire; fiecare e MASURATA, nu doar declarata — o limita
+  scripts/scan_tranzactii.py
+      **CE NU VEDE, declarat.** Cifrele de mai jos nu sunt un plafon într-o singură direcție; unele axe
+  scripts/scan_trasee.py
+      CE NU VEDE, scris ca să nu se creadă altceva:
+  scripts/sonda_facturi_necontate.py
+      Limita declarata, comuna amandurora: o factura contata din jurnalul liber n-are `factura_id`, deci
+  scripts/sonda_note_fara_factura_id.py
+      de comoditate, e inchiderea unui punct orb aratat de propria lista.
+  scripts/sonda_r34.py
+      putea insemna la fel de bine ca sonda nu vede nimic (interdictia 19).
+  scripts/vigoare_articol.py
+      Ce NU face, declarat: nu spune ca articolul SPUNE ce ii atribuim — aia e pasul 3, si e o citire.
+  core/amprenta_declaratie.py
+      editarea retroactiva; DUK nu vede istoria). NON-TAUTOLOGIE: compara PREZENTUL (regenerare) cu SINELE TRECUT (amprenta
+  core/artefacte.py
+      CE NU FACE, declarat:
+  core/articol_in_act.py
+      CE NU FACE, declarat: nu spune că articolul **spune** ce îi atribuim — aia e o citire, nu o
+  core/contare_facturi.py
+      CE NU FACE, DECLARAT:
+  core/control_incrucisat.py
+      GRI (NU AM PUTUT verifica - lipsesc date). Un audit care nu poate spune "nu stiu"
+  core/cron.py
+      NU acopera: jobul care nu porneste DELOC (cron oprit, reboot, linie stricata in crontab).
+  core/d112_reconciliere.py
+      CE RAMANE IN AFARA (LIMITA DECLARATA, GARZI cat.4 - gardul NU acopera):
+  core/d300_reconciliere.py
+      CE NU PRINDE (limita declarata, GARZI cat.4 "Iesire catre autoritati"):
+  core/d390_reconciliere.py
+      sursa in declaratie?". Sunt complementare - stratul 2 NU acopera aceasta a doua intrebare
+  core/d394_reconciliere.py
+      LIMITA DECLARATA (GARZI cat.4):
+  core/d406_reconciliere.py
+      LIMITA DECLARATA (GARZI cat.4):
+  core/echilibru_perioada.py
+      LIMITA declarata: nu e snapshot+hash (regenerare-diff a declaratiei depuse) - aia e alta felie C3 (state_plata
+  core/fisa_cont.py
+      CE NU FACE, declarat:
+  core/interpretare.py
+      CE NU FACE, declarat: nu verifica daca alegerea e CORECTA. Nicio masina nu poate. Face imposibil ca
+  core/migrare_curs_manual_urma.py
+      peste sase luni, la un control, nimeni nu poate spune cine a ales cifra cu care s-a calculat TVA-ul.
+  core/migrare_data_incetare_salariat.py
+      nu poate spune CAND, iar doua campuri pt acelasi fapt diverg (tiparul care ne-a costat de doua ori).
+  core/migrare_declaratii_depuse_randuri.py
+      nu acopera public). F165 auditeaza doar tenant vs template; public n-are template/audit
+  core/migrare_declaratii_depuse_versiune.py
+      SCHEMA PUBLIC (nu tenant) — a doua migrare "ca lumea" pe public dupa randuri (F165 nu acopera
+  core/migrare_portal.py
+      CE NU FACE, declarat: nu rezolvă divergența dintre `users.email` (autentificare) și
+  core/migrare_supervizor_confirmari.py
+      cifrele se schimbă, amprenta se schimbă și confirmarea veche nu se mai potrivește — deci nu acoperă
+  core/perioada_fiscala_tva.py
+      CE NU FACE, declarat: **nu numără plafonul.** Cifra din alin. (2) n-are cheie în registrul de cote —
+  core/registru_evidenta_fiscala.py
+      CE NU ACOPERA, masurat: **lista de randuri a modelului din Anexa nr. 1 la OMFP 3254/2017 e ELIDATA
+  core/reverificare.py
+      CE NU FACE, declarat:
+  core/scan_afirmatii.py
+      CE NU POATE SPUNE. Clasificarea e pe NUME (chei + numele functiei), deci e un proxy. O lista numita
+  core/scan_ancore.py
+      CE NU POATE SPUNE. Nu rezolvă orice formă de citire (căi construite dinamic, fișiere alese la rulare).
+  core/scan_cai_factura.py
+      CE NU FACE, DECLARAT: nu verifică dacă o cale nouă **ar trebui** să contabilizeze automat — asta e o
+  core/scan_camp_blocant.py
+      CE NU VEDE, declarat:
+  core/scan_citate.py
+      CE NU POATE SPUNE. Când un citat NU se găsește, cauza poate fi oricare din trei, iar scanul nu le
+  core/scan_conflicte_sursa.py
+      part_time, textul legii vorbește de normă întreagă) TREBUIE să apară. E singurul conflict cunoscut și
+  core/scan_data_curenta.py
+      CE NU VEDE, declarat:
+  core/scan_descarcare_muta.py
+      ## Ce NU vede, declarat
+  core/scan_module_nelegate.py
+      că excluderea NU orbește sonda la un apelant de producție — e în gardă,
+  core/scan_norma_implementare.py
+      CE NU POATE SPUNE: că articolul citat e cel POTRIVIT. Măsoară prezența legăturii, nu corectitudinea ei
+  core/scan_pereche_act_articol.py
+      2. **Nu vede potrivirea GREȘITĂ.** Dacă actul citat conține din întâmplare un articol cu același
+  core/scan_populatii_registre.py
+      care amestecă două axe nu poate spune pe care din ele diferă.*
+  core/scan_provenienta.py
+      CE NU VEDE: nu verifica daca textul DECLARAT ca adus chiar coincide cu sursa - pentru
+  core/scan_refuz_tacut.py
+      4. **nu vede refuzurile care nu trec prin `api.*`** (`fetch` direct). Numărate separat.
+  core/scan_respingeri.py
+      CE NU POATE SPUNE. Vede doar codurile scrise LITERAL la apelul lui `respinge(...)`. Un cod calculat
+  core/scan_simetrie_denumire.py
+      CE NU FACE, declarat:
+  core/scan_sql_efectiv.py
+      CE NU FACE, declarat: nu urmărește apeluri prin variabile, nu rezolvă depozite chemate sub alt alias
+  core/scan_valoare_in_citat.py
+      CE NU POATE SPUNE, declarat: dacă valoarea LIPSEȘTE din citat, cauza poate fi (1) citatul e localizator
+  core/sonda_web.py
+      · **serverul jos cu totul.** Atunci nu rulează nici sonda. E aceeași limită declarată în
+  core/stat_plata_emis.py
+      CE NU POATE SPUNE. Amprenta nu știe dacă fluturașul a fost PREDAT salariatului — știe doar că a fost
+  core/supervizor.py
+      CE NU FACE, declarat:
+  core/tenant_stergere.py
+      CE NU FACE, declarat:
+  core/test_activare_firma_inactiva.py
+      CE NU FACE, declarat: **nu trece prin HTTP.** Verifică poarta și efectul ei pe date, nu stiva
+  core/test_ajutor_periodicitate_tva.py
+      **CE NU FACE, declarat:** nu verifică dacă textul e ADEVĂRAT. Că art. 322 spune ce spune textul e
+  core/test_an_hardcodat.py
+      CE NU FACE, declarat: nu repara cazul existent (R31 tine diferenta) si nu vede
+  core/test_ancore_rute.py
+      CE NU FACE, declarat: **nu spune care rute chiar n-au apelant.** Spune despre care dintre ele
+  core/test_aritmetica_in_prezentare.py
+      CE NU FACE, declarat — și e partea care contează: **nu scoate regula fiscală din stratul de
+  core/test_atribuire_scrieri.py
+      2. TACERE — o ruta care chiar scrie iese goala (asa arata un punct orb: nu minte, tace);
+  core/test_cache_declarat.py
+      CE NU ACOPERA, scris: probele compara raspunsul DUPA golire cu cel dinainte, in ACELASI proces.
+  core/test_cai_creare_factura.py
+      CE NU FACE, DECLARAT: nu verifică dacă o cale nouă **ar trebui** să contabilizeze automat — asta e o
+  core/test_cale_a_doua.py
+      LIMITĂ DECLARATĂ: colțul 1 prinde alinierea DECLARATĂ. O aliniere tăcută (schimbi formula fără s-o
+  core/test_camp_blocant.py
+      CE NU FACE, declarat: nu judecă dacă mesajul e bun (aia e o judecată de om), nu vede o poartă care
+  core/test_capturi_numite.py
+      CE NU FACE, declarat:
+  core/test_citate_verbatim.py
+      CE NU POATE SPUNE (declarat, ca tăcerea să nu se citească drept acoperire): când un citat nu se
+  core/test_cititor_js.py
+      CE NU FACE, declarat: nu spune ca ce ramane vizibil e citit CORECT, doar ca nu s-a pierdut un
+  core/test_clichete_generate.py
+      CE NU FACE, declarat:
+  core/test_coada_vizualizare.py
+      validarea în doi e oarbă — cine aprobă nu vede declarația/XML/verdictul DUK (defect prins pe
+  core/test_cod_boala_nomenclator.py
+      CE NU FACE, declarat: nu verifică dacă declarația trece DUK pe fiecare cod. Un cod legal poate cădea
+  core/test_cod_partener.py
+      CE NU FACE, declarat: nu verifică cifra de control a CUI-ului (aia e `identitate.valideaza_cui`, altă
+  core/test_coduri_validator.py
+      CE PĂZEȘTE, îngust: un cod citat care nu apare deloc în jarul declarației lui. Nu poate spune că
+  core/test_comparatii_clasificate.py
+      CE NU FACE, declarat: nu verifica ca temeiul CHIAR determina comparatia. Aia e o judecata
+  core/test_conformitate.py
+      CE NU FACE, declarat: nu verifică dacă cifra e CORECTĂ, nici dacă măsurătoarea a fost bine făcută.
+  core/test_contare_automata.py
+      CE NU FACE, DECLARAT: nu verifică dacă factura **trebuia** contabilizată în luna aia, și nu judecă
+  core/test_control_fiscal_diacritice.py
+      e in `core/*.py`) dar NU le vede ca user-facing -> punct orb.
+  core/test_corpus_amprenta.py
+      CE NU FACE, declarat: nu spune că textul de pe SURSĂ s-a schimbat — pentru asta ar trebui
+  core/test_cota_efect.py
+      CE NU FACE: nu acoperă toate cele 26 de funcții reparate — celelalte 23 sunt latente (niciun apelant nu
+  core/test_cota_fara_default.py
+      CE NU FACE, declarat: nu verifică dacă mesajul de refuz e cel potrivit pentru fiecare funcție în
+  core/test_d205_imp_manual.py
+      457 de recalculat), deci poarta A DOUA CALE nu vedea nimic;
+  core/test_d406_jurnal_origine.py
+      CE NU FACE, declarat: nu verifică dacă maparea `sursă → jurnal` e cea potrivită contabilicește —
+  core/test_dependente_ramuri.py
+      stoc, scanul nu vede `miscari_stoc`; registrul și scanul pot fi *egale și amândouă incomplete*.
+  core/test_document_fara_administrator.py
+      CE NU FACE, declarat: apără **două** documente, nu clasa. Alte artefacte care tipăresc date de
+  core/test_ds_verificator.py
+      CE NU FACE, declarat: **nu obligă la acoperire**, ci la **decizie**. Clichetele sunt praguri, nu
+  core/test_echilibru_legat.py
+      CE NU FACE, DECLARAT:
+  core/test_efactura_trimitere.py
+      si suita ramasa verde. Structura nu acopera insa modul de esec pe care chiar mutarea il introduce:
+  core/test_esec_trimitere_email.py
+      - **nu vede un `esec_secundar` chemat pe o ramură condiționată** (`if x: esec_secundar(...)`):
+  core/test_eticheta_conturi_ecran.py
+      CE NU FACE, declarat: nu spune că perechile sunt cele cerute de NORMĂ. Aia e verificarea 3 din Partea 0
+  core/test_fisa_cont.py
+      CE NU FACE, declarat: nu verifică dacă cifrele din evidență sunt corecte — verifică **forma** fișei și
+  core/test_gard_masca_zero.py
+      LIMITA declarata: prinde DOAR tiparul sintactic `except -> pass/return zero` in modulele listate; un `except` care
+  core/test_garzi_inventar.py
+      CE NU FACE, declarat: **nu judecă dacă garda e bună.** Partea narativă a registrului — de ce s-a
+  core/test_garzi_pe_text.py
+      CE NU VEDE, NUMĂRAT: din 1339 de aserțiuni, **899 (67%) rămân `nedeterminat`** — nu s-a putut
+  core/test_graf_clustere_proprietar.py
+      CE NU FACE, declarat: nu verifică dacă muchiile rămase sunt *corecte* — verifică doar că niciuna nu
+  core/test_graf_temei.py
+      vreuna, extractia nu vede ceva - se spune ce si de ce.
+  core/test_harta_casete.py
+      CE NU ACOPERĂ, declarat: vezi `harta_casete.LIMITE`. Pe scurt — cifrele din confruntarea
+  core/test_heartbeat.py
+      LIMITA DECLARATA: verificatorul ruleaza pe ACELASI server. Server jos = nimeni nu afla.
+  core/test_importuri_nefolosite.py
+      CE NU FACE, declarat: nu curăță nimic și nu judecă dacă importul e mort din neglijență sau din
+  core/test_izolare_api_key.py
+      vreodata calea cheii API. Punct orb: o ruta /api/v1/firme/{tenant_id}/X noua care uita chokepoint-ul
+  core/test_joburi_supravegheate.py
+      4. un instrument care se uită în gol: dacă nu vede nici `crontab`, nici unități, **pică**.
+  core/test_jurnal_refuz.py
+      | **contul `9999` intra în evidență** | notă creată, 200 | **R54 nu vede calea asta**: domeniul ei recunoaște citirile de cont după **numele cheii** (
+  core/test_limite_verificarii.py
+      GARD (P4, 21.08.2026): „Ce nu poate spune verificarea asta" e PERMANENTĂ și se COMPUNE.
+  core/test_masti.py
+      LIMITA DECLARATA: acopera doar mastile peste QUERY (execute/fetch). Mastile peste conversii
+  core/test_mesaj_commit_curat.py
+      CE NU FACE, declarat:2026-09-19 09:07:19,355 INFO iconta [R118] /static servit din /home/costin/iconta_publicat/static — publicat (commit 232e9489)
+
+  core/test_mesaje_generare_fara_camp_intern.py
+      HTTPException/dict-display) — ACELA nu vedea sirurile din LISTELE returnate de erori_generare,
+  core/test_module_nelegate.py
+      CE NU ACOPERĂ, declarat (vezi și modurile de eșec din antetul instrumentului): nivelul **funcție**.
+  core/test_mutant_zero.py
+      LIMITA declarata: gol vs non-gol - un output gol e LEGITIM pentru o firma fara date (D112 fara salariati e valid);
+  core/test_nume_anaf.py
+      CE NU FACE, declarat:
+  core/test_nume_firma_unic.py
+      CE NU FACE, declarat:
+  core/test_octeti_invizibili.py
+      CE NU ACOPERĂ: caracterele invizibile care NU sunt de control — spații non-breaking (U+00A0),
+  core/test_p4_fault_injection.py
+      **CE NU ACOPERĂ, declarat:**
+  core/test_p7_uc.py
+      CE NU ACOPERA: perechile pe care le ridica functii chemate DIN corp (ele se confrunta la randul lor,
+  core/test_pereche_act_articol.py
+      CE NU FACE, declarat:
+  core/test_perechi_citesc_generatorul.py
+      **CE NU ACOPERA, declarat:** perechea D101 rd.50 ↔ Σ D100 are gardul ei separat, in
+  core/test_perimetru_firma_declarat.py
+      LIMITA DECLARATA (GARZI.md cere sa fie scrisa): gardul apara sectiunile CARE EXISTA. Daca o tura
+  core/test_perioada_indisponibila.py
+      Decizie: LIMITA DECLARATA, nu backfill (nu se inventeaza o valoare, nu se cerceteaza istoricul acum).
+  core/test_poarta_citire_istorica.py
+      CE NU FACE, declarat: **nu trece prin HTTP.** Ca rutele raspund 200 pe o firma dezactivata s-a
+  core/test_populatii_registre.py
+      **CE NU ACOPERĂ, declarat:** registrul-jurnal e o rută cu SQL **inline în `main.py`**, care cere
+  core/test_portal_acces.py
+      CE NU FACE, declarat: nu probează pe date — e o gardă pe structura rutelor. Nu verifică nici ce
+  core/test_portal_nu_scrie_gol.py
+      CE NU FACE, declarat: nu atinge rețeaua și nu verifică extragerea în sine (`text()`) — verifică doar
+  core/test_prag_mijloc_fix_unic.py
+      **CE NU FACE, declarat:** nu verifică dacă pragul e *corect* — asta o fac citirea la sursă și
+  core/test_predare_cifre.py
+      CE NU FACE, declarat:
+  core/test_predare_proaspata.py
+      CE NU FACE, declarat: nu verifica daca ce scrie in predare e ADEVARAT — asta nu se
+  core/test_pull_declaratii.py
+      LIMITA DECLARATA: pe `SELECT *`, garda de coloane (common.cere_coloane) verifica randurile
+  core/test_r191_amortizare_confruntata.py
+      *„NU acopera sub-sectiunile … Assets"*.
+  core/test_reaprindere.py
+      CE NU FACE, declarat: nu verifică dacă restanța a fost și REZOLVATĂ — reaprinderea e reluare, nu
+  core/test_refuz_tacut.py
+      CE NU FACE, declarat: **nu spune că mesajul e bun**, doar că ajunge. Și **nu scade clasa** — cele
+  core/test_regim_peste_perioada_inchisa.py
+      CE NU FACE, declarat: nu verifică a doua jumătate a condiției lui R46 — *„declarații depuse pe
+  core/test_reguli_ecran.py
+      CE NU FACE, declarat:
+  core/test_reluari_decizie.py
+      CE NU FACE, declarat:
+  core/test_reverificare.py
+      CE NU FACE, declarat:
+  core/test_rol_pe_efect.py
+      CE NU FACE, DECLARAT: nu spune dacă `admin_firma` e rolul POTRIVIT — spune că **există** un rol
+  core/test_rute_autentificate.py
+      LIMITA DECLARATA: garda verifica PREZENTA unei dependente, nu CORECTITUDINEA ei. O ruta
+  core/test_simetrie_denumire.py
+      CE NU FACE, declarat:
+  core/test_sonda_web.py
+      CE NU FACE, declarat, și e afirmația mai slabă pe care Costin a cerut-o scrisă ca atare:
+  core/test_sonde_stare.py
+      core/test_sonde_stare.py — clichetul interdicției 78: o sondă care nu poate spune dacă a reușit.
+  core/test_stare_proces.py
+      masoara P6. Un detector necalibrat care raporteaza zero si unul care nu vede nimic arata identic
+  core/test_status_factura_un_loc.py
+      CE NU FACE, declarat: nu verifică dacă decizia e CORECTĂ — e o interpretare (P11), consemnată în
+  core/test_temeiuri.py
+      NU acopera (raportat, nu fortat):
+  core/test_tenant_stergere.py
+      CE NU FACE, declarat:
+  core/test_unde.py
+      CE NU FACE, declarat: nu verifică că referentul EXISTĂ în baza de date. Aia cere o conexiune și e o
+  core/test_valori_fiscale_js.py
+      CE NU FACE, declarat: (a) nu descopera singur valori fiscale noi in JS — tabelul
+  core/test_verde_derivat.py
+      formă**, nu pe **clasă**. Nu vede a patra apariție într-un fișier nou, și nu vede o rescriere care
+  core/test_verde_peste_necunoscut.py
+      CE NU FACE, declarat: nu verifica daca facturile alea CHIAR trebuiau contabilizate in luna aia.
+  core/test_verificator_al_treilea_rezultat.py
+      CE NU FACE, declarat:
+  core/test_vigoare_punct.py
+      2. cunoștea un singur tipar de numerotare, deci pe Normele OMFP 2634 nu vedea NICIUN punct — și
+  core/test_wave3_lider_mort.py
+      multi · liderul de pe alta gazda nu se atinge (limita declarata) · si RED-proof: fara retragere,
+  core/unde.py
+      CE NU FACE, declarat: NU verifica ca referentul EXISTA in baza. Aia cere o conexiune si e o garda
+----------------------------------------------------------------------------------------------------
+  INSTRUMENTE CU ORBIRE DECLARATĂ ÎN PROPRIUL DOCSTRING: 170
+  *Fiecare e o zonă despre care instrumentul spune singur că NU poate afirma nimic.*
+
+E. RUTELE CARE SCRIU ȘI N-AU PROBĂ
+----------------------------------------------------------------------------------------------------
+  fără probă pe care s-o ruleze POARTA : 76
+  fără probă NICĂIERI în depozit       : 21
+  din ele, care ating TABELE DE DECLARAȚIE: 10
+
+  Cele 76 fără probă în suită, pe nume:
+      POST   /admin/alerte-fiscale/{aid}/tratat
+      POST   /admin/sanatate/test-alerta
+      POST   /asistenti
+      POST   /asistenti/{uid}/dezactiveaza
+      POST   /asistenti/{uid}/finalizeaza-firme
+      DELETE /asistenti/{uid}/firme/{tid}
+      POST   /asistenti/{uid}/firme/{tid}
+      POST   /asistenti/{uid}/permisiuni
+      POST   /asistenti/{uid}/reactiveaza
+      POST   /cont/bun-venit-vazut
+      POST   /eu/anunturi/{aid}/confirma
+      POST   /eu/cabinet
+      POST   /eu/educatie/patru-ochi/vazut
+      POST   /eu/profil
+      POST   /migrare/incarca
+      POST   /notificari/citit
+      POST   /notificari/{nid}/citit
+      POST   /pachete/{tenant_id}/genereaza
+      POST   /portal/recomanda
+      POST   /portal/solicitari
+      POST   /raportari/mesaj/{mid}/imagine
+      POST   /raportari/{rid}/mesaj
+      POST   /raportari/{rid}/pentru-admin
+      POST   /raportari/{rid}/stare
+      POST   /recomanda
+      POST   /tenants/{tenant_id}/acces-portal
+      POST   /tenants/{tenant_id}/articole-import
+      POST   /tenants/{tenant_id}/articole-import/incarca
+      POST   /tenants/{tenant_id}/banca/reconciliere/import
+      POST   /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora
+      POST   /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza
+      POST   /tenants/{tenant_id}/centre-cost
+      PUT    /tenants/{tenant_id}/centre-cost/{centru_id}
+      PUT    /tenants/{tenant_id}/centre-cost/{centru_id}/buget
+      POST   /tenants/{tenant_id}/contracte/sabloane
+      DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}
+      POST   /tenants/{tenant_id}/etransport-xml
+      POST   /tenants/{tenant_id}/etransport/trimite
+      POST   /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge
+      POST   /tenants/{tenant_id}/facturi-recurente
+      DELETE /tenants/{tenant_id}/facturi-recurente/{sid}
+      PUT    /tenants/{tenant_id}/facturi-recurente/{sid}
+      POST   /tenants/{tenant_id}/facturi/{factura_id}/email
+      POST   /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv
+      POST   /tenants/{tenant_id}/istoric-declaratii-import
+      DELETE /tenants/{tenant_id}/jurnal/{nota_id}
+      PUT    /tenants/{tenant_id}/jurnal/{nota_id}
+      POST   /tenants/{tenant_id}/mijloace-fixe-import
+      POST   /tenants/{tenant_id}/nota-avans
+      POST   /tenants/{tenant_id}/parteneri
+      POST   /tenants/{tenant_id}/pontaj/confirma
+      POST   /tenants/{tenant_id}/prapastie-salariu
+      POST   /tenants/{tenant_id}/produse
+      POST   /tenants/{tenant_id}/produse/potriveste
+      DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}
+      POST   /tenants/{tenant_id}/reges-config
+      POST   /tenants/{tenant_id}/reges-poll
+      POST   /tenants/{tenant_id}/reges-trimite-salariat
+      POST   /tenants/{tenant_id}/registratura
+      POST   /tenants/{tenant_id}/retete-import
+      POST   /tenants/{tenant_id}/retete-import/incarca
+      POST   /tenants/{tenant_id}/rip-import/incarca
+      POST   /tenants/{tenant_id}/rip/import-banca
+      POST   /tenants/{tenant_id}/rip/import-casa
+      POST   /tenants/{tenant_id}/rip/operatiuni
+      DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}
+      PUT    /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza
+      PUT    /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar
+      PUT    /tenants/{tenant_id}/salariati/{salariat_id}/pontaj
+      POST   /tenants/{tenant_id}/solduri
+      POST   /tenants/{tenant_id}/solduri/incarca
+      POST   /tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode
+      POST   /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim
+      POST   /tenants/{tenant_id}/stocuri/descarcare
+      POST   /tenants/{tenant_id}/stocuri/transfer
+      POST   /tenants/{tenant_id}/woocommerce/sincronizeaza
+
+F. CHECKLISTUL DE BROWSER — ce e și ce NU acoperă
+----------------------------------------------------------------------------------------------------
+  TRASEE_VERIFICARI.md          239 secțiuni
+  T36_VERIFICARI.md               6 secțiuni
+  LOT_1_VERIFICARI.md            35 secțiuni
+  LOT_2_VERIFICARI.md            38 secțiuni
+  LOT_3_VERIFICARI.md            37 secțiuni
+  LOT_4_VERIFICARI.md            38 secțiuni
+  LOT_5_VERIFICARI.md            41 secțiuni
+  LOT_6_VERIFICARI.md            42 secțiuni
+  LOT_7_VERIFICARI.md            19 secțiuni
+----------------------------------------------------------------------------------------------------
+  TOTAL: 495 secțiuni de checklist de browser.
+
+  CE NU ACOPERĂ, măsurat (GARZI.md, 01.09.2026):
+    · 90% din ce atinge checklistul NU apare în backlog (228 din 252 de obiecte);
+    · 89% din ce atinge backlogul n-are NICIO verificare de browser (200 din 224).
+    · niciunul dintre fișierele astea nu e rulat de poartă — sunt liste scrise, nu probe.
+
+
+
+====================================================================================================
+ANEXĂ NARATIVĂ (18.09.2026) — SCRISĂ DE MÂNĂ, NU IEȘIRE A `deriva_neverificatul.py`
+====================================================================================================
+Tot ce e deasupra acestei linii e ieșirea instrumentului `deriva_neverificatul.py` și se
+recalculează rulându-l. Cele două secțiuni de mai jos NU se derivă din cod: descriu exact ce
+NICIUN instrument nu verifică — o poziție pe care un scaner nu o poate măsura. Sunt aici fiindcă
+tocmai asta cere `04_NEVERIFICAT`. Fiecare afirmație poartă sursa (fișier:linie sau comanda).
+
+----------------------------------------------------------------------------------------------------
+(a) CONECTORUL SPV / ANAF — verificat DOAR pe mock + manual, niciodată pe ANAF real
+----------------------------------------------------------------------------------------------------
+CE E: conectorul OAuth2 către SPV/ANAF (`core/spv_conector.py`, rute `core/spv_rute.py` montate în
+`main.py:6054`, migrarea `core/migrare_spv_token_principal.py` → tabelele `public.spv_token` +
+`public.spv_cui_acoperit`, timerele `config/spv-refresh|poll|receive.timer`, ecranul
+Setări → „Conectare SPV" din `static/js/ecrane/setari.js` + pagina de retur `static/spv_callback.html`).
+
+CE E VERIFICAT (mecanic): trei suite pe MOCK, rulate de poartă la fiecare commit —
+  · `core/test_spv_conector.py`  (23 teste)
+  · `core/test_spv_poll.py`      (9 teste)
+  · `core/test_spv_receive.py`   (4 teste)
+Ele probează logica pură: rotația refresh-ului (salvarea AMBELOR valori noi), semnarea `state`-ului
+CSRF, upsert-ul criptat (Fernet), ramurile 401/429/403 ale lui `apel_anaf`. TOATE cu ANAF simulat.
+
+CE NU E VERIFICAT DE NICIUN INSTRUMENT — se poate exercita DOAR manual, de Costin, cu certificatul lui:
+  1. Fluxul real OAuth cu certificat calificat: browser + stick/PIN → cod de autorizare → schimb pe
+     token la logincert.anaf.ro. Documentat explicit ca sarcină manuală în `core/spv_conector.py:21`
+     („Testul functional real il face Costin cu certificatul lui (TestOauth)").
+  2. DOVADA că n-a rulat încă, la data pachetului:
+        psql -c "SELECT count(*) FROM public.spv_token"        -> 0
+        psql -c "SELECT count(*) FROM public.spv_cui_acoperit"  -> 0
+     Zero tokene, zero CUI-uri acoperite. Fluxul real nu a produs niciodată un token pe această bază.
+  3. Numele exact al claim-ului JWT care poartă serialul certificatului este NEDOCUMENTAT de ANAF.
+     `extrage_serial` (`core/spv_conector.py:174-180`) încearcă un set de candidați
+     (`serial_number, serialNumber, serial, certSerial, sub`) și, dacă niciunul nu apare, întoarce
+     literal „NECONFIRMAT". Se confirmă abia la PRIMUL token real, decodat pe jwt.io. Până atunci,
+     serialul stocat ar fi „NECONFIRMAT" — o necunoscută declarată, nu o valoare ghicită.
+  4. Ce CUI-uri acoperă un token: nedocumentat prin OAuth; `spv_cui_acoperit` se populează EMPIRIC la
+     prima conectare reală. Azi: gol.
+  5. Comportamentul real ANAF (fereastra de 24h după înrolarea certificatului, 429 rate-limit, 403
+     fără drept pe CIF, rotația refresh pe token viu) — observat doar în mock, niciodată pe serverul ANAF.
+  6. Cele trei timere (`spv-refresh|poll|receive`) sunt `enabled` în systemd, dar fără token sunt
+     no-op; comportamentul lor real contra ANAF nu e exercitat.
+CONCLUZIE: conectorul e cod PROBAT pe mock, dar PRODUSUL „conectare la SPV" rămâne NEVERIFICAT pe
+ANAF real. E cea mai mare zonă a aplicației a cărei verificare atârnă de un test manual cu certificat,
+nu de un instrument — la fel de reală ca R40 (nicio declarație depusă efectiv), și înrudită cu ea.
+
+----------------------------------------------------------------------------------------------------
+(b) STAREA REALĂ A RESTANȚELOR RUNDA 2 — declarat la închidere (18.09) vs. acum
+----------------------------------------------------------------------------------------------------
+Schema A/B/C/D/E vine din `RAPORT_AUDIT_INDEPENDENT_2026-09-17.md` (A1-A12, B1-B5, C1-C6, D1-D10, E).
+Declarația de închidere = chiar commitul HEAD `232e9489` („Runda 2 — predarea"), care atinge DOAR
+documentație (ISTORIC.md, PREDARE_LANT.md, RAPORT_RUNDA2.md) — niciun fișier sursă. Munca reală s-a
+făcut în `0dc088db`…`5ff1b8ba`, toate ANTERIOARE declarației. Deci, transversal: NIMIC nu s-a mișcat
+pe sursă DUPĂ declarație — nu există commit după HEAD. Sursa de adevăr a stării = ISTORIC.md:30-31.
+
+  item   | stare la închidere (18.09)        | s-a mișcat de la declarare? | sursă
+  -------+-----------------------------------+-----------------------------+-------------------------
+  A9     | DESCHISĂ (D394 la TVA la încasare:  | NU — neabordată             | RAPORT_AUDIT…:167;
+         |   câmpuri 0, tip „AI" neemis)       |                             | ISTORIC:31; commit 8bf059c2
+  A10    | ÎNCHISĂ cu probă (Lot 6): baza      | NU (reparată în 8bf059c2,   | ISTORIC:30; RAPORT_RUNDA2:18;
+         |   liniei = LineExtensionAmount      |   înainte de declarație)    | test_a10_efactura_baza_linie.py
+  A11    | DESCHISĂ (exigibilitate D300 vs     | NU                          | RAPORT_AUDIT…:185;
+         |   D390 pe aceeași factură IC)       |                             | ISTORIC:31; commit 8bf059c2
+  A12    | DESCHISĂ (pro-rata pe tot rd.28)   | NU                          | RAPORT_AUDIT…:191;
+         |                                    |                             | ISTORIC:31; commit 8bf059c2
+  B5     | DESCHISĂ (SET search_path de       | NU                          | RAPORT_AUDIT…:237;
+         |   sesiune, nu LOCAL; latent PgBouncer)|                          | RAPORT_RUNDA2:80
+  C4     | DESCHISĂ (retrimitere → dublu XML  | NU — cere ANAF, neruabil    | RAPORT_AUDIT…:280;
+         |   în SPV)                           |   fără el                    | ISTORIC:31; commit 8bf059c2
+  C5     | DESCHISĂ (import extras             | NU — cere design cheie      | RAPORT_AUDIT…:284;
+         |   neidempotent)                    |   idempotență pe import      | ISTORIC:31; commit 8bf059c2
+  C6     | DESCHISĂ, partea minoră (search_   | NU (R183 din grup: ÎNCHIS   | RAPORT_AUDIT…:288-293;
+  (=C6-  |   path fără RESET în facturi_recur/ |   ca reparat, cu dovadă)     | RAPORT_RUNDA2:90-91
+  minore)|   woocommerce; portal_bon ordine)  |                             |
+  D1-D10 | ÎNCHISE cu probă (Lot 7): scanerele| NU (implementate în         | ISTORIC:30; RAPORT_RUNDA2:20;
+         |   care mințeau, recalibrate de la  |   5ff1b8ba, înainte de decl.)| commit 5ff1b8ba
+         |   cifra reală + gardă-mutație D4    |                             | (gardă test_d4_mutatie)
+
+REZUMAT: din cei 13 itemi ceruți — ÎNCHISE: A10, D1-D10 (11 itemi). DESCHISE: A9, A11, A12, B5, C4,
+C5, C6 (7 itemi; C6=C6-minore, același). NICIUNUL nu s-a mișcat între declarație și HEAD.
+
+TREI NECONCORDANȚE DE DOCUMENTAȚIE, semnalate onest (nu ascunse):
+  1. `RAPORT_RUNDA2.md:69` mai marchează A10 „RESTANȚĂ", contrazicând propria linie 18 + ISTORIC:30 +
+     corpul commitului 8bf059c2. Adevărul la închidere: ÎNCHISĂ. Linia 69 = proză nesincronizată din
+     draftul de 17.09.
+  2. `RAPORT_RUNDA2.md:94` mai marchează D1-D10 „RESTANȚĂ deschisă", contrazicând linia 20 + ISTORIC:30
+     + commitul 5ff1b8ba. Adevărul: ÎNCHISE.
+  3. B5 e declarat deschis în `RAPORT_RUNDA2.md:80`, dar LIPSEȘTE din fraza-rezumat a restanțelor
+     deschise din `ISTORIC.md:31` — o omisiune de consemnare în narativul de închidere, nu o
+     schimbare de stare.

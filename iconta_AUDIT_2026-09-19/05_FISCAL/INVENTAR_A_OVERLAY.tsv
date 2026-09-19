@@ -1,0 +1,14 @@
+# Overlay judecati umane pentru Inventar A (NEDERIVABILE din cod). Persistent: regenerarea nu-l pierde.
+# Format: cluster<TAB>risc<TAB>verificat<TAB>nota. cluster = cheia din common.COTE.
+salariu_minim	FISCAL	√ 31.07	HG 146/2026 (4325 S2 2026); HG 1506/2024 corectat 4050 (era 3700, act gresit)
+facilitate_salariu_minim	FISCAL	√ 31.07	OUG 89/2025 art.III + HG 146/2026; conditii cumulative norma/functie/contractual/plafon
+plafon_facilitate_salariu_minim	FISCAL	√ 31.07	venit brut total: S1 4300 / S2 4600
+tichet_masa_plafon	FISCAL	PARTIAL 31.07	fond fiscal verificat (45, imp/CASS, plafon); deschis: D2 nr tichete, D3 exces vacanta
+tva_standard	FISCAL	√ 31.07	Legea 141/2025 21% standard / 11% redusa de la 01.08.2025; golden test_d394
+cas	FISCAL	√ 31.07	CF art.138 25%; cluster concedii medicale (taxe_cm canonic, DUK cod01 valid)
+cass	FISCAL	√ 31.07	CF art.156 10%
+impozit_venit	FISCAL	√ 31.07	CF art.78 10%
+cam	FISCAL	√ 31.07	CF art.220^1 2.25% (angajator)
+plafon_mijloc_fix	STRUCTURA	—	OUG 8/2026 prag 5000
+plafon_sold_casa	STRUCTURA	—	Legea 70/2015 plafon sold casierie
+plafon_avans_decontare	STRUCTURA	—	OUG 115/2023 plafon avans decontare
