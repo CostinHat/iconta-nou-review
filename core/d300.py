@@ -155,16 +155,20 @@ def _segmente(f):
     linii = f.get("linii") or []
     if linii:
         out = []
-        for (cant, pret, cota) in linii:
+        for lin in linii:
+            cant, pret, cota = lin[0], lin[1], lin[2]
+            # [A12 art.300] destinatia TVA a liniei (taxabil/scutit/mixt); tuplu vechi fara ea -> taxabil
+            dest = lin[3] if len(lin) > 3 else "taxabil"
             baza = Decimal(str(cant)) * Decimal(str(pret)) * curs
             ci = None if cota is None else int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
-            out.append((ci, baza))
+            out.append((ci, baza, dest))
         return out
     total_lei, tva_lei = _sl.antet_lei(f)
     baza = total_lei - tva_lei
     tva = tva_lei
     ci = int(round(float(tva) / float(baza) * 100)) if (baza and tva) else None  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
-    return [(ci, baza)]
+    # factura fara linii (antet): destinatia nu e pe document -> taxabil (deducere integrala, comportament neschimbat)
+    return [(ci, baza, "taxabil")]
 
 
 def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
@@ -221,6 +225,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # scapata din decont (probat pe firma DELTA: livrare 19% cu TVA scapata tacit).
     drop_l_tax_b = drop_l_tax_t = Decimal(0); drop_l_tax_n = 0
     drop_a_tax_b = drop_a_tax_t = Decimal(0); drop_a_tax_n = 0
+    # [A12 art.300] achizitii SCUTITE (destinatie exclusiv fara drept, alin.4) excluse din deducere;
+    # TVA deductibila a achizitiilor MIXTE (alin.5) = singura baza pe care se aplica pro-rata (R31).
+    drop_a_scutit_b = drop_a_scutit_t = Decimal(0); drop_a_scutit_n = 0
+    ded_mixt_t = Decimal(0)
     # [Task1 10.08.2026 - cota ZERO, NU se arunca tacit]
     # Livrari 0%: natura scutirii (R14 scutit CU drept/export art.294 vs R15 scutit FARA drept) NU e
     #   capturata in factura -> per-linie avertisment (NU se inventeaza clasificarea; camp lipsa raportat).
@@ -320,11 +328,13 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                 if gross == 0:   # [A2] o decontare negativa (storno) reduce; doar zero exact nu poarta info
                     continue
                 tva = _tvi.tva_din_incasare(gross, ci) if ci else Decimal(0)
-                segmente.append((ci, gross - tva, tva))   # (cota, baza exigibila, tva exigibil)
+                # [A12] decontarile (tva la incasare) NU poarta destinatia liniei (agregate pe cota) ->
+                # dest=None; pro-rata pe mixt nu se poate izola in acest regim (limita declarata, vezi R31).
+                segmente.append((ci, gross - tva, tva, None))   # (cota, baza exigibila, tva exigibil, destinatie)
         else:
-            segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)))
-                        for (ci, baza) in _segmente(f)]
-        for (ci, baza, tva) in segmente:
+            segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)), dest)
+                        for (ci, baza, dest) in _segmente(f)]
+        for (ci, baza, tva, dest) in segmente:
             if ti:
                 # [decizie Costin 06.08.2026 + Task2 10.08.2026] Taxare inversa art.331 (masuri de
                 # simplificare): FURNIZORUL (emisa) raporteaza livrarea in rd.13 (baza, FARA TVA).
@@ -391,8 +401,14 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                 else:      # cotă 0% livrare (scutit/export/neimpozabil): clasificare manuala R14/R15
                     zero_livr.append(baza)
             else:
-                if ci in ded:
+                if dest == "scutit":
+                    # [A12 art.300 alin.4] achizitie destinata EXCLUSIV operatiunilor fara drept de
+                    # deducere -> NU se deduce. Semnalat (jos), nu se pierde tacit din decont.
+                    drop_a_scutit_b += baza; drop_a_scutit_t += tva; drop_a_scutit_n += 1
+                elif ci in ded:
                     ded[ci][0] += baza; ded[ci][1] += tva
+                    if dest == "mixt":
+                        ded_mixt_t += tva   # [A12 art.300 alin.5] baza pro-rata = DOAR achizitiile mixte
                 elif ci:   # cotă taxabilă fără rând deductibil auto (ex. 19/5%)
                     drop_a_tax_b += baza; drop_a_tax_t += tva; drop_a_tax_n += 1
                 else:      # cotă 0% achizitie: se clasifica per-factura mai jos (R26 vs art.331 vs forfait)
@@ -599,7 +615,14 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         else float(numar_fiscal(_pr, "pro_rata"))
     r31_2 = 0
     if pro_rata < 100:
-        r31_2 = _int(Decimal(str(r28_2)) * Decimal(str(100 - pro_rata)) / Decimal(100) * -1)
+        # [A12 art.300 alin.3/5/11] pro-rata se aplica DOAR pe achizitiile MIXTE (ded_mixt_t), NU pe tot
+        # deductibilul: art.300 alin.3 - achizitiile destinate EXCLUSIV operatiunilor cu drept se deduc
+        # INTEGRAL; alin.5 - doar cele cu destinatie mixta/necunoscuta se deduc pe pro-rata; alin.11 -
+        # taxa de dedus = valoarea de la alin.5 x pro-rata. LIMITA DECLARATA (TVA la incasare): decontarile
+        # se agrega pe cota si pierd destinatia liniei -> mixt nu se poate izola; pe acel regim baza ramane
+        # r28_2 (comportament anterior), semnalat in avertismente.
+        _baza_prorata = r28_2 if tvai else ded_mixt_t
+        r31_2 = _int(Decimal(str(_baza_prorata)) * Decimal(str(100 - pro_rata)) / Decimal(100) * -1)
     if r31_2:
         R["R31_2"] = r31_2
 
@@ -688,6 +711,12 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "Cotele 19/5%% nu au rând deductibil acceptat de ANAF în decontul v12 — NU le adăuga manual la "
             "R74/R24 (respinse); corectează cota facturii sau tratează ca regularizare."
             % (drop_a_tax_n, _f(drop_a_tax_b), _f(drop_a_tax_t)))
+    if drop_a_scutit_n:
+        res.avertismente.append(
+            "%d linii achiziție marcate «exclusiv scutit» (bază %s lei, TVA %s lei) — TVA NEDEDUSĂ "
+            "(art.300 alin.4: achiziții destinate exclusiv operațiunilor fără drept de deducere). "
+            "Dacă destinația e greșită, corectează «destinație TVA» pe linie."
+            % (drop_a_scutit_n, _f(drop_a_scutit_b), _f(drop_a_scutit_t)))
     if zero_achiz:
         res.avertismente.append(
             "%d achiziţii cu cotă 0%% (bază %s lei) — raportate automat la R26 (scutite de taxă sau "
@@ -1092,7 +1121,9 @@ def pull(conn, schema, perioada):
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:
-            f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
+            # [A12] destinatia TVA per linie (art.300) calatoreste in segment pentru pro-rata/scutit
+            f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"],
+                               r.get("destinatie_tva") or "taxabil"))
     return prof, list(fmap.values()) + deferred
 
 

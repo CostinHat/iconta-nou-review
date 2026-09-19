@@ -1,3 +1,17 @@
+## 19.09.2026 — A12 (nucleu fiscal): pro-rata TVA doar pe achizițiile mixte, clasificate per linie
+
+**Pentru un contabil:** la o firmă cu regim mixt (pro-rata < 100%), ajustarea de pro-rata se aplică
+acum DOAR pe achizițiile marcate „mixt", nu pe tot deductibilul. O achiziție „exclusiv taxabilă" se
+deduce integral chiar la pro-rata sub 100%; una „exclusiv scutită" nu se mai deduce deloc (și se
+semnalează). Clasificarea e per LINIE de achiziție (`destinație TVA`), implicit „exclusiv taxabilă".
+
+**Ce s-a făcut (tehnic).** Coloană nouă `factura_linii.destinatie_tva` (`core/migrare_destinatie_tva.py`
++ tenant_template; aplicată pe cele 20 de scheme reale). În `d300`, destinația călătorește prin
+`_segmente` → bucla `ded`: scutit exclus (art.300 alin.4), mixt izolat → `R31_2` pe `ded_mixt_t` (alin.
+3/5/11), nu pe tot `r28_2`. Garduri (test_d300): pro-rata **-42 nu -84** (mutație), taxabil neatins la
+pro_rata<100, scutit exclus; DUK valid. LIMITĂ: la TVA la încasare decontările pierd destinația liniei
+→ baza pro-rata rămâne r28_2 (combinație rară). Vezi DECIZII (54). **UI (câmpul pe formular) urmează.**
+
 ## 19.09.2026 — A9 part 2 (A9 ÎNCHIS): tvaDedAI = TVA pe facturile AI achitate în perioadă
 
 **Pentru un contabil:** câmpul `tvaDedAI` din D394 (TVA dedusă pe achizițiile de la furnizori cu TVA la

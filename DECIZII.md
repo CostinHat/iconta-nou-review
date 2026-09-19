@@ -3,6 +3,29 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 19.09.2026 (54) — A12: pro-rata TVA doar pe achizitiile mixte, clasificate PER LINIE
+
+**Ce era gresit.** D300 aplica pro-rata (R31_2) pe TOT deductibilul (r28_2), desi art.300 CF o aplica
+doar achizitiilor cu destinatie mixta. Consecinta: firma cu regim mixt care are si achizitii exclusiv
+taxabile isi pierdea nejustificat o parte din deducerea pe ACELEA.
+
+**TEMEI (MO).** CF art.300 alin.(3): achizitiile destinate EXCLUSIV operatiunilor cu drept de deducere
+se deduc INTEGRAL. alin.(4): cele destinate exclusiv operatiunilor FARA drept NU se deduc. alin.(5):
+doar cele cu destinatie mixta/necunoscuta se deduc pe baza de pro-rata. alin.(11): taxa de dedus =
+valoarea de la alin.(5) x pro-rata.
+
+**DECIZIE (Costin, 19.09): granularitate PER LINIE de achizitie** (nu per factura, nu baza la nivel de
+firma). Coloana noua `factura_linii.destinatie_tva` (taxabil|scutit|mixt), default 'taxabil'. In D300:
+scutit EXCLUS din deducere (alin.4); mixt izolat -> pro-rata DOAR pe el (alin.3/5/11); taxabil integral.
+
+**ALTERNATIVA RESPINSA.** Per factura / o baza mixta declarata la nivel de firma - mai grosiera; o
+factura poate avea linii cu destinatii diferite (art.300 e pe achizitie).
+
+**LIMITA DECLARATA.** La TVA la incasare, exigibilitatea deductibila vine din decontari agregate pe cota
+(`_pull_incasare`), care PIERD identitatea liniei -> destinatia mixt/scutit nu se poate izola. Pe acel
+regim baza pro-rata ramane r28_2 (comportament anterior). Combinatie rara (cash-VAT + regim mixt +
+pro-rata); se reia daca apare un caz real. Semnalat in cod (R31_2) si aici.
+
 ## 19.09.2026 (53) — A9: furnizor cu TVA la incasare din ANAF (freeze), nu tabel-registru separat
 
 **Ce cerea A9.** D394 emitea achizitiile de la furnizori cu TVA la incasare ca tip "A" (achizitie

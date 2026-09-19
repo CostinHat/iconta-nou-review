@@ -101,7 +101,16 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
      aduce destinatie_tva per linie; R31_2 (pro-rata) se aplica DOAR pe baza liniilor 'mixt', nu pe tot
      r28_2 (art.300 alin.3/5/11 pe linie); (iii) camp UI select `.camp-input` la finalul randului pe
      formularul de achizitie (cap.2/6 DS; plasare = append, nu STOP). Teste cu mutatie: linia 'taxabil'
-     nu pierde deducere la pro-rata<100. Poarta vizuala pe ecranul atins. STARE = NEINCEPUT (dupa A9)
+     nu pierde deducere la pro-rata<100. Poarta vizuala pe ecranul atins.
+     PART A GATA 19.09 (nucleu fiscal): (i) coloana `factura_linii.destinatie_tva` (taxabil/scutit/mixt,
+     default taxabil) — `core/migrare_destinatie_tva.py` + tenant_template; aplicata pe cele 20 scheme reale.
+     (ii) `d300`: `_segmente`+bucla `ded` firează destinatia; scutit EXCLUS din deducere (alin.4), mixt
+     izolat -> R31_2 (pro-rata) DOAR pe `ded_mixt_t` (alin.3/5/11), nu pe tot r28_2. Garduri test_d300:
+     pro-rata -42 nu -84 (mutatie), taxabil neatins la pro_rata<100, scutit exclus; DUK valid.
+     LIMITA DECLARATA: la TVA la incasare decontarile pierd destinatia liniei -> baza pro-rata ramane
+     r28_2 (combinatie rara tva-incasare+mixt; consemnata in cod + DECIZII 54).
+     PART B (UI) IN LUCRU: camp select `destinatie_tva` la finalul randului pe formularul de achizitie
+     (cap.2/6 DS) + poarta vizuala. STARE = PART A gata, PART B urmeaza
 - fir: SUPERVIZORUL — domeniul (portofoliul) si a cincea cale TACUTA (01.09.2026, comanda „continua
   cu constructia supervizorului"). Masurat inainte de a alege (PREDARE „daca continui de aici" pct.5),
   cu criteriul lui Costin — *ce poate produce o cifra valida si falsa*:

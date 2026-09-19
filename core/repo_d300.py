@@ -97,7 +97,8 @@ def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
                 # reclasificarii D390 e per-luna (acelasi partener poate fi reclasificat diferit in luni
                 # diferite - trimestru). Fara ea D300 nu poate potrivi factura pe luna corecta.
                 + _EXIG_NORMAL + " AS exig, "
-                "l.cantitate, l.pret_unitar, l.cota_tva "
+                "l.cantitate, l.pret_unitar, l.cota_tva, "
+                "COALESCE(l.destinatie_tva, 'taxabil') AS destinatie_tva "  # [A12 art.300] per linie
                 "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
                 # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere); avans->emitere)
                 "WHERE " + _EXIG_NORMAL + " >= %s AND " + _EXIG_NORMAL + " < %s "

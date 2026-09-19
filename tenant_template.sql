@@ -350,7 +350,8 @@ CREATE TABLE TENANT_PLACEHOLDER.factura_linii (
     um character varying(10) DEFAULT 'buc'::character varying NOT NULL,
     cantitate numeric(12,3) DEFAULT 1 NOT NULL,
     pret_unitar numeric(12,2) DEFAULT 0 NOT NULL,
-    cota_tva numeric(5,2) DEFAULT 21 NOT NULL
+    cota_tva numeric(5,2) DEFAULT 21 NOT NULL,
+    destinatie_tva text DEFAULT 'taxabil'::text NOT NULL
 );
 
 

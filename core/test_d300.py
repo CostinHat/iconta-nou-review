@@ -383,11 +383,14 @@ def test_taxare_inversa_rd13_MUTATIE_fara_flag_ar_fi_dropped():
 #  -(taxa dedusa x fractia nedeductibila); total dedus R32 = R28 x pro_rata/100. NU scalare directa.
 # ============================================================
 def test_pro_rata_ajustare_deductibila_art300():
-    facturi = [{"directie": "primita", "total": 1210, "tva": 210}]   # achizitie 21%
-    res = calcul_d300(_prof(pro_rata=80), Perioada(2026, luna=6), facturi)
+    # [A12, 19.09.2026] Pro-rata se aplica pe achizitia MIXTA (art.300 alin.5). ANTERIOR acest test
+    # folosea o achizitie NECLASIFICATA si astepta ajustare pe ea - incoda chiar bugul A12 (pro-rata
+    # pe tot deductibilul). Corect: doar mixt se ajusteaza; taxabilul se deduce integral (alin.3, vezi
+    # test_A12_achizitie_taxabila_nu_pierde_deducere_la_prorata).
+    res = calcul_d300(_prof(pro_rata=80), Perioada(2026, luna=6), [_ach(21, "mixt")])
     assert res.R["R22_2"] == 210      # deductibila bruta (rd.24)
     assert res.R["R28_2"] == 210      # subtotal dedusa inainte de ajustare (rd.30)
-    assert res.R["R31_2"] == -42      # ajustare pro-rata (rd.33): -210 x (100-80)/100
+    assert res.R["R31_2"] == -42      # ajustare pro-rata (rd.33): -210 x (100-80)/100, DOAR pe mixt
     assert res.R["R32_2"] == 168      # total dedusa: 210 x 80%
 
 
@@ -569,3 +572,42 @@ def test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390(conn_ic_exig):
     assert in_d300(JAN) is False, "A11: factura IC NU trebuie in D300 ianuarie (ar fi art.282 general, gresit)"
     # aceeasi luna ca D390 (alinierea D300<->D390 pe aceeasi factura)
     assert in_d390(FEB) is True and in_d390(JAN) is False, "A11: D390 pune IC tot in februarie"
+
+
+# ============================================================
+#  [A12] Pro-rata se aplica DOAR pe achizitiile MIXTE, nu pe tot R28 (art.300 alin.3/5/11 CF).
+#  Destinatia TVA e PER LINIE (factura_linii.destinatie_tva): taxabil (alin.3, deducere integrala) /
+#  scutit (alin.4, nedeductibil) / mixt (alin.5, pro-rata).
+# ============================================================
+def _ach(cota, dest):
+    """O achizitie primita 1210/210 pe o cota, cu destinatia data (linie unica)."""
+    return {"directie": "primita", "moneda": "RON", "curs_bnr": 1, "total": 1210, "tva": 210,
+            "taxare_inversa": False, "tert_tara": "RO", "categorie_331": None,
+            "linii": [(1, 1000, cota, dest)]}
+
+
+def test_A12_prorata_doar_pe_achizitiile_mixte():
+    # art.300 alin.3+5+11: la pro_rata 80%, ajustarea (R31_2) se aplica DOAR pe achizitia MIXTA (210),
+    # nu pe tot deductibilul (taxabil+mixt=420). MUTATIE inclusa: -42 (corect) vs -84 (bugul vechi).
+    res = calcul_d300(_prof(pro_rata=80), Perioada(2026, luna=6),
+                      [_ach(21, "taxabil"), _ach(21, "mixt")])
+    assert res.R["R27_2"] == 420, "ambele achizitii se deduc (R27)"
+    assert res.R["R31_2"] == -42, "pro-rata DOAR pe mixt (210*20%%=42), nu pe tot (420*20%%=84): %r" % res.R.get("R31_2")
+
+
+def test_A12_achizitie_taxabila_nu_pierde_deducere_la_prorata():
+    # art.300 alin.3: achizitia EXCLUSIV taxabila se deduce INTEGRAL chiar la pro_rata < 100.
+    res = calcul_d300(_prof(pro_rata=50), Perioada(2026, luna=6), [_ach(21, "taxabil")])
+    assert res.R["R27_2"] == 210
+    assert "R31_2" not in res.R, "o achizitie exclusiv taxabila NU se ajusteaza cu pro-rata: %r" % res.R.get("R31_2")
+
+
+def test_A12_achizitie_scutita_nu_se_deduce():
+    # art.300 alin.4: achizitia destinata exclusiv operatiunilor fara drept NU se deduce.
+    res = calcul_d300(_prof(pro_rata=100), Perioada(2026, luna=6),
+                      [_ach(21, "taxabil"), _ach(21, "scutit")])
+    assert res.R["R27_2"] == 210, "scutit exclus din deducere (ramane doar taxabil): %r" % res.R.get("R27_2")
+    # scutit-ul e semnalat in avertismente (nu dispare tacit); verificat structural (numarul de linii
+    # scutite semnalate creste fata de un decont fara scutit) - fara ancora pe text (clichet apare_oricum).
+    fara_scutit = calcul_d300(_prof(pro_rata=100), Perioada(2026, luna=6), [_ach(21, "taxabil")])
+    assert len(res.avertismente) > len(fara_scutit.avertismente), "excluderea scutit trebuie semnalata"
