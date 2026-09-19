@@ -4,9 +4,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-19**, după închiderea **A11** (restanță audit R2) și oprirea pe
-  **decizie de produs** pentru **A9/A12**. *Rescriere țintită: antet + „primul lucru" + restanțe; restul păstrat.*
-- **pe commit**: `eb3d6123` (A11, ultimul publicat four-way). *Predarea se scrie ÎNAINTE de commitul care o poartă.*
+- **ultima rescriere**: **2026-09-20**, după închiderea **A12b** (ultima restanță audit R2). Toate cele
+  trei restanțe TVA (A9/A11/A12) sunt ÎNCHISE. *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
+- **pe commit**: `eee3c1fd` (A12b, ultimul publicat four-way: HEAD = origin/main = public/main = backup/lant-2026-09-20 = proces viu). *Predarea se scrie ÎNAINTE de commitul care o poartă; excepția: A12b a fost publicat, iar predarea reflectă starea de DUPĂ.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -18,21 +18,23 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **A11 închis; A9 și A12 sunt OPRITE pe decizie de produs**
+## PRIMUL LUCRU DE ȘTIUT: **toate cele trei restanțe TVA (A9/A11/A12) sunt ÎNCHISE; agenda e goală**
 
-**Runda 2 a fost redeschisă țintit pe cele trei restanțe TVA rămase (A9/A11/A12).**
-- **A11 — ÎNCHIS** (`eb3d6123`, four-way): D300 aplică exigibilitatea IC art.284 alin.(2) (ca D390),
+**Runda 2 a fost redeschisă țintit pe cele trei restanțe TVA rămase (A9/A11/A12). Toate sunt acum închise, four-way.**
+- **A11 — ÎNCHIS** (`eb3d6123`): D300 aplică exigibilitatea IC art.284 alin.(2) (ca D390),
   sursă unică `d390.EXIG_IC`. Gard `test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390` + mutație probată.
-- **A9 — BLOCAT pe decizie:** statutul TVA-la-încasare e automatizabil (ANAF `PlatitorTvaRest/v9/tva`
-  → `RTVAI.statusTvaIncasare`, **deja integrat** în `anaf_api.py:162`; coloana `facturi.furnizor_tva_incasare`
-  **există deja**, folosită de D300). Decizia: **freeze-la-ingestie** (recomandat — reutilizează
-  `platitor_tva_freeze`, fără duplicare) vs. tabel-registru + cron. Fără decizie NU se construiește (ar duplica).
-- **A12 — BLOCAT pe decizie:** pro-rata trebuie pe achizițiile **MIXTE** (art.300 alin.3/5/11), nu pe tot
-  R28. Cere un câmp „destinație TVA" per achiziție (schema nouă) + granularitate (per-linie recomandat) —
-  decizie de produs + plasare pe formular (DS Regula 0 acoperă mecanic selectul, nu granularitatea). Fără decizie NU se atinge UI.
+- **A9 — ÎNCHIS** (`b27460e4` + `b2459f22`): D394 emite op tip **AI** pentru achiziții de la furnizori cu
+  TVA la încasare (`furnizor_tva_incasare` înghețat din ANAF `statusTvaIncasare` la ingestie, tiparul
+  `platitor_tva_freeze`); `tvaDedAI*` = TVA pe facturile AI **achitate** în perioadă, per cotă (art.297 alin.2).
+- **A12 — ÎNCHIS** (nucleu `c5e4b747` + UI `eee3c1fd`): pro-rata TVA doar pe achizițiile **MIXTE**
+  (art.300 alin.3/5/11), clasificate PER LINIE (`factura_linii.destinatie_tva`). A12b: contabilul alege
+  destinația (taxabil/scutit/mixt) per linie pe ecranul de validare SPV (`facturi_ecran.primitaDetaliu`),
+  default taxabil. DS cap.28 + gard verificator `CLASIF_SELECT`.
 
-Dacă deschizi documentul fără comandă: **cele două decizii de mai sus (A9 arhitectură, A12 granularitate) sunt ce așteaptă lanțul.**
-Restul (folosirea aplicației) rămâne valabil — v. **0Z**.
+**`core.agenda.urmator_cluster()` întoarce `[null, 0, 0]` — nu mai există cluster în agendă.** Lanțul de
+execuție autonomă s-a încheiat: R2 e complet. Dacă deschizi documentul fără comandă: **nu e nimic în
+așteptare în agendă**; lanțul e în AȘTEPTAREA FOLOSIRII / a unei direcții noi de la Costin — v. **0Z**.
+Datoria rămasă (nu piste de execuție autonomă) e mai jos, „Ce a rămas deschis".
 
 **Lanțul, întreg, cu commitul de închidere al fiecărei etape.** *Se scrie ca tabel fiindcă întrebarea
 „unde s-a oprit ce" a fost pusă de trei ori, iar răspunsul era împrăștiat prin patru rapoarte.*
@@ -53,6 +55,7 @@ Restul (folosirea aplicației) rămâne valabil — v. **0Z**.
 | **cele patru lucrări numite** | R59 · R191 · cele 8 rute cu clichet · cele 8 citări DUK | `45503d84` |
 | **cele două cerințe ale lui Costin** | tăria `CERTA` cu limita în constatare (R115) · refuzul reevaluării (R192) | `fd7e40d4` |
 | **runda a doua — audit independent** (18.09) | A1 conversia în lei (tot lanțul + reconcilieri) · B1–B4 apartenența pe obiect · A2–A5 · A6 cotă dividend după distribuire · A7/A8-micro/A8-profit · C1–C3 · A10 import e-Factura · E-nota contare mixtă · **D1–D10 scanerele care mint, clichete de la cifra reală (SUBSET 0→10, NICAIERI 3→21)** + gardă-mutație D4 · §0 parțial | `0dc088db`…`5ff1b8ba` |
+| **R2 — cele trei restanțe TVA** (19–20.09) | **A11** D300 exigibilitate IC pe art.284 (sursă unică `d390.EXIG_IC`) · **A9** D394 op tip AI + `tvaDedAI` din facturi AI achitate (art.297 alin.2; freeze `furnizor_tva_incasare` din ANAF) · **A12** pro-rata TVA doar pe achiziții MIXTE, clasificate per linie (`factura_linii.destinatie_tva`, art.300 alin.5) + **A12b** selectul de clasificare per linie pe ecranul de validare SPV (DS cap.28) | `eb3d6123` · `b27460e4`+`b2459f22` · `c5e4b747`+`eee3c1fd` |
 
 **Ce a rămas deschis, și e scris ca datorie cu clichet, nu ca pas:** rutele care scriu fără probă în
 suită · modulele cu amestec OBSERVAT, toate ACTE, care au voie să-și dețină tranzacția · `logrotate`
