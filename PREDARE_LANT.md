@@ -4,11 +4,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-18**, la **închiderea rundei a doua** (răspuns la un raport de audit
-  independent). *Rescriere țintită: s-au rescris antetul, lanțul, starea, restanțele și „dacă continui";
-  restul e păstrat. Documentul revine la a descrie o STARE, nu o lucrare — runda s-a terminat.*
-- **pe commit**: `5ff1b8ba` (ultimul al rundei). *Predarea se scrie ÎNAINTE de commitul care o poartă;
-  numele de aici e al celui precedent, prin construcție.*
+- **ultima rescriere**: **2026-09-19**, după închiderea **A11** (restanță audit R2) și oprirea pe
+  **decizie de produs** pentru **A9/A12**. *Rescriere țintită: antet + „primul lucru" + restanțe; restul păstrat.*
+- **pe commit**: `eb3d6123` (A11, ultimul publicat four-way). *Predarea se scrie ÎNAINTE de commitul care o poartă.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -20,11 +18,21 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **nu urmează nicio temă, și asta e o stare, nu o pauză**
+## PRIMUL LUCRU DE ȘTIUT: **A11 închis; A9 și A12 sunt OPRITE pe decizie de produs**
 
-**Tot ce era numit s-a terminat.** Nu mai există listă de lucrări, plan în curs sau etapă deschisă.
-Ce urmează se decide din **folosirea aplicației** — v. **0Z**, care e singurul loc de citit dacă
-deschizi documentul fără nicio comandă în față.
+**Runda 2 a fost redeschisă țintit pe cele trei restanțe TVA rămase (A9/A11/A12).**
+- **A11 — ÎNCHIS** (`eb3d6123`, four-way): D300 aplică exigibilitatea IC art.284 alin.(2) (ca D390),
+  sursă unică `d390.EXIG_IC`. Gard `test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390` + mutație probată.
+- **A9 — BLOCAT pe decizie:** statutul TVA-la-încasare e automatizabil (ANAF `PlatitorTvaRest/v9/tva`
+  → `RTVAI.statusTvaIncasare`, **deja integrat** în `anaf_api.py:162`; coloana `facturi.furnizor_tva_incasare`
+  **există deja**, folosită de D300). Decizia: **freeze-la-ingestie** (recomandat — reutilizează
+  `platitor_tva_freeze`, fără duplicare) vs. tabel-registru + cron. Fără decizie NU se construiește (ar duplica).
+- **A12 — BLOCAT pe decizie:** pro-rata trebuie pe achizițiile **MIXTE** (art.300 alin.3/5/11), nu pe tot
+  R28. Cere un câmp „destinație TVA" per achiziție (schema nouă) + granularitate (per-linie recomandat) —
+  decizie de produs + plasare pe formular (DS Regula 0 acoperă mecanic selectul, nu granularitatea). Fără decizie NU se atinge UI.
+
+Dacă deschizi documentul fără comandă: **cele două decizii de mai sus (A9 arhitectură, A12 granularitate) sunt ce așteaptă lanțul.**
+Restul (folosirea aplicației) rămâne valabil — v. **0Z**.
 
 **Lanțul, întreg, cu commitul de închidere al fiecărei etape.** *Se scrie ca tabel fiindcă întrebarea
 „unde s-a oprit ce" a fost pusă de trei ori, iar răspunsul era împrăștiat prin patru rapoarte.*
