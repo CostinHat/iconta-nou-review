@@ -91,3 +91,28 @@ def actualizeaza_clasificarea(cur, schema, bucati_set, valori):
     """
     cur.execute(f"UPDATE {schema}.facturi SET " + ", ".join(bucati_set) + " WHERE id=%s",
                 valori)
+
+
+def actualizeaza_destinatii_linii(cur, schema, fid, destinatii):
+    """[A12b] Aplica destinatia TVA (taxabil/scutit/mixt) per linie de factura, in ORDINEA
+    liniilor (ORDER BY id) — aceeasi ordine in care `_factura_din_parsat` insereaza `f["linii"]`
+    din XML. UPDATE, nu INSERT: functioneaza si cand factura era deja creata prin dedup (liniile
+    exista deja), nu doar la prima validare. destinatii[i] <-> linia i.
+
+    De ce coloana ramane taxabil implicit: art.300 alin.5 (pro-rata) se aplica DOAR achizitiilor cu
+    destinatie mixta; achizitia pur taxabila se deduce integral. Contabilul CLASIFICA un fapt
+    importat, nu-l editeaza — vezi DESIGN_SYSTEM cap.28 (clasificare per-linie pe ecran de validare).
+    """
+    from core.migrare_destinatie_tva import DESTINATII
+    if not destinatii:
+        return
+    cur.execute(f"SELECT id FROM {schema}.factura_linii WHERE factura_id=%s ORDER BY id",
+                (fid,))
+    ids = [r[0] for r in cur.fetchall()]
+    for lid, dest in zip(ids, destinatii):
+        d = (dest or "taxabil").strip()
+        if d not in DESTINATII:
+            raise ValueError("destinatie TVA invalida: %r (permise: %s)"
+                             % (d, ", ".join(DESTINATII)))
+        cur.execute(f"UPDATE {schema}.factura_linii SET destinatie_tva=%s WHERE id=%s",
+                    (d, lid))

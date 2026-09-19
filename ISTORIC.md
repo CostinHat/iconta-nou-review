@@ -1,3 +1,24 @@
+## 19.09.2026 — A12b (UI, A12 ÎNCHIS): clasificare destinație TVA per linie pe ecranul de validare SPV
+
+**Pentru un contabil:** la validarea unei facturi primite din SPV (e-Factura), fiecare linie importată
+primește acum un selector „destinație TVA" — **taxabilă** (implicit, deducere integrală), **scutită**
+(fără deducere) sau **mixtă** (intră în pro-rata, art. 300 alin. (5)). Restul liniei rămâne read-only:
+faptul importat din XML nu se editează, doar se clasifică. Alegerea ajunge exact pe achiziția din D300,
+deci pro-rata se aplică doar liniilor „mixt". Închide A12 pe calea SPV (partea „UI urmează" din A12 PART A).
+
+**Ce s-a făcut (tehnic).** (1) Regulă DS nouă **cap.28** (clasificare per-linie pe ecran de validare a
+documentelor importate) + gard verificator **CLASIF_SELECT** (un `<select>` de clasificare `pr-dest` fără
+`aria-label` pică poarta; `.camp-input` e deja cerut de INPUT_NECONFORM). (2) Frontend: `primitaDetaliu`
+randează per linie un `<select class="camp-input pr-dest">` (taxabilă/scutită/mixtă, default `selected`),
+trimis ca `destinatii[]` în ordinea liniilor. (3) Backend: `factura_primita_valideaza` aplică
+`repo_facturi.actualizeaza_destinatii_linii(fid_final, destinatii)` — UPDATE în ordinea liniilor (ORDER BY
+id), robustă și la dedup (liniile pre-existente). Valoare în afara setului închis → `ValueError`, nu
+scriere tăcută. **Verificat la sursă:** calea „flat" (operatiuni_ecran) e complet separată de
+`primitaDetaliu`; din 34 de operațiuni flat, doar 4 creează facturi, toate regimuri speciale (taxare
+inversă/IC/neînregistrat/necorporală), niciuna achiziție art.300-general → varianta (a) e suficientă.
+Garduri: `core/test_a12b_destinatie_linie.py` (4, end-to-end pe XML real cu 2 linii; mutație ORDER BY
+DESC → 2 teste RED, revertită). Vezi DECIZII (55), DESIGN_SYSTEM cap.28.
+
 ## 19.09.2026 — A12 (nucleu fiscal): pro-rata TVA doar pe achizițiile mixte, clasificate per linie
 
 **Pentru un contabil:** la o firmă cu regim mixt (pro-rata < 100%), ajustarea de pro-rata se aplică

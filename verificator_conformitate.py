@@ -37,7 +37,7 @@ for _d in _DIRS_FRONTEND:
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "input_neconform", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa", "filtrare_inainte_validare", "stare_goala_eroare"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa", "filtrare_inainte_validare", "stare_goala_eroare", "clasif_select"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -179,6 +179,13 @@ for nume, t in fisiere.items():
                 continue
             if "camp-input" not in _at:
                 rap["input_neconform"].append((nume, i, "", lin.strip()[:66]))
+        # CLASIF_SELECT (DS cap.28, A12b): un <select> de CLASIFICARE per-linie pe un ecran de validare
+        # a documentelor importate (marcat prin clasa `pr-dest`) trebuie sa poarte `aria-label`
+        # (regula 1: control accesibil, criteriul fiscal in .camp-ajutor). `.camp-input` e deja cerut
+        # de INPUT_NECONFORM; aici se adauga aria-label, pe care INPUT_NECONFORM nu-l verifica.
+        for _cs in re.finditer(r"<select\b([^>]*\bpr-dest\b[^>]*)>", lin):
+            if "aria-label" not in _cs.group(1):
+                rap["clasif_select"].append((nume, i, "fara-aria", lin.strip()[:66]))
         # INPUT_NECONFORM prin createElement (decizie Costin 11.08 seara, inchide gaura tag-urilor
         # literale): input/select construit programatic (document.createElement) fara .camp-input in
         # fereastra (linia + urmatoarele 4, unde se seteaza className/classList/setAttribute).

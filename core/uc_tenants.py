@@ -5188,6 +5188,12 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
                     _sets.append("tert_tara=%s"); _vals.append(_ttara)
                 _vals.append(fid_final)
                 repo_facturi.actualizeaza_clasificarea(cur, schema, _sets, _vals)
+            # [A12b] destinatia TVA per LINIE, aleasa de contabil la validare: taxabil (implicit) /
+            # scutit / mixt. Doar liniile MIXTE intra in pro-rata (art.300 alin.5); asa nu se mai
+            # prorateaza tot (bug A12). Aplicata pe factura legata (fid_final), in ordinea liniilor.
+            _dest = corp.get("destinatii")
+            if fid_final and _dest:
+                repo_facturi.actualizeaza_destinatii_linii(cur, schema, fid_final, _dest)
         # [FFF1] NOTA SE SCRIE AICI, în același act cu validarea — după ce clasificarea e pusă pe
         # factură, ca nota s-o poată citi. Validarea *este* actul prin care firma recunoaște
         # cheltuiala: patru-ochi s-a consumat deja, contul tocmai a fost ales, regimul tocmai a fost

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.32 · 21 august 2026 (editabil prin SSH)*
+*Document normativ · v2.63 · 19 septembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -623,7 +623,34 @@ aplicației**. Un semănător, un import sau un `UPDATE` de mână nu trec prin 
 așa s-au născut cele patru divergențe migrate pe 28.08. De-aia clichetul pe **date** rămâne, deși
 invariantul îl face structural imposibil: *un invariant nu se crede pe cuvânt, se măsoară.*
 
+## 28. Clasificare per-linie pe un ecran de validare a documentelor importate (v2.63, 19.09.2026)
+
+Un ecran de **validare a unui document importat** (linii venite din e-Factura SPV, read-only) poate cere
+o **decizie fiscală per linie** înainte de validare — de pildă destinația TVA a fiecărei achiziții
+(taxabilă / scutită / mixtă), de care depinde pro-rata (art. 300 alin. (5)). Regula:
+
+1. **Controlul de clasificare e un `<select class="camp-input">` la finalul rândului liniei** — nu un
+   input liber, fiindcă valorile sunt un set închis. Poartă `aria-label`, iar deasupra listei de linii
+   stă un `.camp-ajutor` (cap.6) care spune criteriul fiscal și consecința fiecărei valori.
+2. **Un default sigur, explicit** — valoarea cea mai frecventă și fără efect advers (aici `taxabil`:
+   deducere integrală, nu intră în pro-rata). Default-ul e `selected` în markup, nu tăcut.
+3. **Restul liniei rămâne read-only.** Faptul importat (descriere, cantitate, preț, cotă) **nu se
+   editează** — se afișează, iar lângă el se **adaugă** o decizie. Distincția e normativă:
+   **a CLASIFICA** (a adăuga o decizie proprie peste un fapt importat) **≠ a EDITA** (a schimba faptul
+   importat, care ar rupe corespondența cu XML-ul oficial din SPV).
+4. **Ordinea contează și e sursa unică.** Selectele `.camp-input` de clasificare se trimit ca listă în
+   **ordinea liniilor** (`destinatii[i]` ↔ linia `i`), iar backendul le aplică pe linii **în aceeași
+   ordine** (`ORDER BY id`), fiindcă liniile se inserează din XML în ordine. Fără o a doua funcție de
+   potrivire pe frontend.
+
+**De ce un capitol propriu, distinct de cap.24 (rânduri dinamice):** acolo utilizatorul **adaugă/șterge**
+rânduri pe care le compune el; aici lista e **importată și fixă** — utilizatorul nu o schimbă, doar o
+clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.primitaDetaliu`. Gard:
+`verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
+
 ## Changelog
+**v2.63 (19.09.2026)** — **cap.28 nou: clasificare per-linie pe ecran de validare a documentelor importate.** A12b: pe `facturi_ecran.primitaDetaliu` (validarea unei facturi primite din SPV), fiecare linie importată read-only primește un `<select class="camp-input">` de destinație TVA (taxabilă implicit / scutită / mixtă), trimis ca `destinatii[]` în ordinea liniilor și aplicat de backend în aceeași ordine (`repo_facturi.actualizeaza_destinatii_linii`, ORDER BY id). Doar liniile MIXTE intră în pro-rata (art. 300 alin. (5)) — închide A12 pe calea SPV. Faptul importat rămâne needitabil; se CLASIFICĂ, nu se editează. Gard verificator: un `<select>` de destinație fără `.camp-input`.
+
 **v2.62 (28.08.2026)** — **R81 decisă: simetrie de scriere pe denumirea unei firme** (cap.27 §27.4). Orice act care redenumește o firmă scrie `public.tenants.nume` **și** `{schema}.firma_profil.nume`, în aceeași tranzacție, cu aceeași valoare; **nu se construiește alias**. Toate cele patru căi trec printr-o singură funcție, `tenant_provisioning.scrie_denumirea`, cu poarta de unicitate înăuntru. Gard: `core/scan_simetrie_denumire.py` + `core/test_simetrie_denumire.py` — o funcție care scrie într-un singur loc din două pică poarta, iar scanul prinde și `SET`-urile compuse la rulare. **Scanul a găsit a patra cale asimetrică**, nevăzută de măsurătoarea de mână: `precompleteaza_din_anaf(seteaza_nume=True)`. **Pe ecran:** textul casetei de alegere revine la formularea simplă („denumirea aplicată e cea de pe documente"), iar marcajul `data-e1` **rămâne ca gardă de regresie**, nu ca decor — un invariant e o afirmație despre codul de azi. Cele două casete de denumire din „Date firmă" se leagă: sub simetrie, salvarea trimitea două cereri care se puteau suprascrie tăcut una pe alta.
 
 **v2.61 (28.08.2026)** — **Două reguli de ecran, scrise și gardate: E1 (cap.26) și E2 (cap.27).** **E1:** când aceeași entitate are un atribut în două locuri, ecranul nu alege tăcut — le arată pe amândouă cu etichete care spun de unde vine fiecare, iar când diferă spune **care produce efectul**; o sursă pe care ecranul n-o are se **declară lipsă**, nu se trece sub tăcere. Instanțele: R63 (două adrese ale aceleiași persoane) și R81 (denumirea din portofoliu vs. cea fiscală). **E2:** un act cu efect asupra unei entități se încheie cu o confirmare vizibilă care numește entitatea și consecința; demontarea ecranului nu e confirmare. Instanța măsurată: **4 acte de nivel firmă din 7** se termină în tăcere, iar toate patru **vorbesc pe calea de eroare**. Ambele sunt gardate pe **structură**, nu pe text: nodurile de randare se parsează din literalii de șablon (`data-e1*`), iar actele se citesc pe **blocul `try`** care le cuprinde — un `arataMesaj` din `catch` **nu** confirmă nimic, ceea ce e chiar defectul. Instrument: `core/scan_ecran_reguli.py`; gărzi: `core/test_reguli_ecran.py` (22 de teste, din care 11 de calibrare, cu mutație pe modul propriu de eșec) + bloc în `verificator_conformitate.py`. Reparat odată cu ele: **F1/F2** — caseta de alegere a denumirii spunea *„Denumirea din aplicație e cea folosită în documente"*, ceea ce e fals, iar butoanele nu spuneau ce ating.

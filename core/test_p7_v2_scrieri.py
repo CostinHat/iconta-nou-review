@@ -190,7 +190,13 @@ def test_numarul_de_instructiuni_se_conserva():
     #   importul în masă, ca o eroare la una (denumire prea lungă) să nu abortze tranzacția pentru
     #   celelalte și să nu lase commitul final să facă ROLLBACK tăcut peste tot. SQL-ul stă în modulul
     #   de tranzacție (nume literal, ca restul savepoint-urilor), nu în use-case.
-    assert _apeluri_catre_repository() == 266
+    # [A12b, 19.09.2026, restanta R2] 266 -> 267, cu apelul numit:
+    #   repo_facturi.actualizeaza_destinatii_linii — la validarea unei facturi primite din SPV,
+    #   contabilul clasifica destinatia TVA per linie (taxabil/scutit/mixt); use-case-ul o persista
+    #   prin repository, nu executand el UPDATE-ul (P7). SQL-ul (UPDATE factura_linii) sta in
+    #   repo_facturi, nu in use-case. *Clichetul urca fiindca aplicatia face un pas in plus
+    #   (clasificarea liniilor), nu fiindca s-a pierdut ceva.*
+    assert _apeluri_catre_repository() == 267
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -210,7 +210,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota — poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) — prin `repo_facturi`*
+*ce face: RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (UPDATE) · facturi (UPDATE) — prin `repo_facturi`*
 
 - [x] înainte de act, factura adusă prin import stă în starea `de_recunoscut` și **n-are nicio notă** — sosirea documentului nu e faptul economic
 - [x] **și totuși e DECLARABILĂ**: apare în D300 pe luna emiterii chiar nerecunoscută, fiindcă TVA-ul e datorat la emitere (art. 281 CF). *Verificarea asta e cea care apără defectul 1.1 din 22.08.2026*
@@ -272,7 +272,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in facturi*
 
-*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`*
+*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`*
 
 - [x] proforma sau avizul devine factură fiscală cu **numerotare nouă**, din seria de facturi, nu cu numărul proformei
 - documentul original rămâne, cu starea „transformat" și legătura către factura rezultată
@@ -729,7 +729,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
 
-*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · factura_linii (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`*
+*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie factura_linii (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`*
 
 - [x] cine validează e consemnat, și e diferit de cine a importat dacă patru ochi e activ și posibil
 - factura creată poartă legătura către ciorna din care a ieșit — lanțul nu se rupe
@@ -1447,7 +1447,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in chitante, facturi*
 
-*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
+*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT) · factura_linii (UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
 
 - [x] chitanța se păstrează cu numărul exemplarului, momentul, autorul, amprenta
 - **numerotarea nu are goluri și nu se reia** — o chitanță anulată își păstrează numărul
@@ -1713,7 +1713,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in bonuri, facturi*
 
-*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`*
+*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (INSERT) · factura_linii (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`*
 
 - [x] stingerea produce **o singură** operațiune de casă; o a doua apăsare nu produce a doua plată
 - suma stinsă nu depășește soldul neplătit al bonului

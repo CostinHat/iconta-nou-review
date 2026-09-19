@@ -3,6 +3,32 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 19.09.2026 (55) — A12b: destinatia TVA se CLASIFICA per linie pe ecranul de VALIDARE SPV, nu pe un formular nou
+
+**Context.** A12 (54) a adaugat coloana `factura_linii.destinatie_tva` si logica D300. Ramanea calea prin
+care contabilul alege destinatia. Intrebarea: PE CE ECRAN si CUM.
+
+**DECIZIE (Costin, 19.09): varianta (a)** — selector per linie pe ecranul care EXISTA deja de validare a
+facturii primite din SPV (`facturi_ecran.primitaDetaliu`), unde omul confirma oricum cheltuiala (cont,
+furnizor cu TVA la incasare, tara). Nu un formular nou, nu pe calea „flat" (operatiuni).
+
+**VERIFICAT LA SURSA (nu presupus).** Calea flat (operatiuni_ecran) e complet SEPARATA de primitaDetaliu.
+Enumerate EXHAUSTIV cele 34 de operatiuni acceptate pe calea flat: doar 4 creeaza facturi
+(achizitie_taxare_inversa / _ic / _neinregistrat / _necorporala), toate regimuri SPECIALE, niciuna
+achizitie art.300-general supusa pro-ratei -> (a) acopera tot ce intra in pro-rata. Restul liniei ramane
+read-only: faptul importat din XML nu se editeaza, se CLASIFICA (distinctie normativa, DESIGN_SYSTEM cap.28).
+
+**Norma rezultata traieste unde se aplica si se verifica** (REGULA SURSEI UNICE): DESIGN_SYSTEM **cap.28**
+(regula UI) + gard `verificator_conformitate.py` **CLASIF_SELECT** (select `pr-dest` fara aria-label pica).
+Aici doar temeiul deciziei; norma acolo.
+
+**ALTERNATIVA RESPINSA.** Formular de achizitie separat cu camp destinatie (planul initial din TESTE):
+ar fi dublat un ecran care exista, si ar fi cerut clasificare si pe caile care oricum nu intra in pro-rata.
+
+**LIMITA.** Ordinea `destinatii[i]` <-> linia i se bazeaza pe faptul ca `_factura_din_parsat` insereaza
+`f["linii"]` din XML in ordine, iar UPDATE-ul citeste ORDER BY id. Gardata end-to-end (mutatie ORDER BY
+DESC -> RED). O achizitie introdusa altfel decat prin validarea SPV ramane 'taxabil' implicit (default sigur).
+
 ## 19.09.2026 (54) — A12: pro-rata TVA doar pe achizitiile mixte, clasificate PER LINIE
 
 **Ce era gresit.** D300 aplica pro-rata (R31_2) pe TOT deductibilul (r28_2), desi art.300 CF o aplica

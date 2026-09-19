@@ -116,7 +116,15 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
       <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" value="${esc(p.total || "")}" readonly aria-label="Total"></label>
     </div>
     <div style="margin-top:10px"><div class="camp-eticheta">Linii</div>
-      ${linii.map((l) => `<div class="pf-frand-sub">${esc(l.descriere)} · ${esc(l.cantitate)} × ${esc(l.pret)} · ${esc(l.cota)}%</div>`).join("") || '<div class="pf-frand-sub">—</div>'}</div>
+      <span class="camp-ajutor">Clasifică destinația TVA a fiecărei linii importate: <b>taxabilă</b> (deducere integrală, implicit), <b>scutită</b> (fără deducere), <b>mixtă</b> (intră în pro-rata, art. 300 alin. (5)). Faptul importat rămâne neschimbat — doar îl clasifici.</span>
+      ${linii.map((l, i) => `<div class="pf-linie-clasif" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <span class="pf-frand-sub" style="flex:1 1 200px">${esc(l.descriere)} · ${esc(l.cantitate)} × ${esc(l.pret)} · ${esc(l.cota)}%</span>
+        <select class="camp-input pr-dest" data-i="${i}" aria-label="Destinație TVA linie" style="flex:0 0 auto;width:auto">
+          <option value="taxabil" selected>Taxabilă</option>
+          <option value="scutit">Scutită</option>
+          <option value="mixt">Mixtă</option>
+        </select>
+      </div>`).join("") || '<div class="pf-frand-sub">—</div>'}</div>
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:12px">
       <label class="camp"><span class="camp-eticheta">Cont cheltuială (sugerat, confirmă)</span><input class="camp-input" id="pr-cont" value="${esc(p.cont_sugerat || "")}" placeholder="ex. 628" aria-label="Cont cheltuiala"></label>
     </div>
@@ -137,10 +145,12 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
     confirmaCaseta(zona, "Validezi factura și creezi cheltuiala? Intră în evidența contabilă.", async () => {
       try {
         const _tara = (corp.querySelector("#pr-tara").value || "").trim().toUpperCase() || "RO";
+        const _dest = Array.from(corp.querySelectorAll(".pr-dest")).map((s) => s.value);  // [A12b] destinatie TVA per linie, ordinea liniilor
         const r = await api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, {
           cont: corp.querySelector("#pr-cont").value.trim(),
           furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked,  // [B1 D300]
-          tert_tara: _tara });
+          tert_tara: _tara,
+          destinatii: _dest });
         arataMesaj(zona, "Validată. Cheltuiala creată (factura #" + (r.factura_id || "—") + ").", "ok");
         setTimeout(() => nav.inapoi && nav.inapoi(), 900);
       } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
