@@ -640,3 +640,41 @@ def test_d394_scutit_livrare_ro_cui_inclus_ca_LS_nu_dropat():
     assert duk.poate_valida("d394"), "DUK d394 indisponibil - proba obligatorie nu poate rula"
     rez = duk.valideaza(xml, "d394", an=2026, luna=6)
     assert rez["stare"] == "valid", "D394 multi-cota cu scutit->LS trebuie valid pe DUK: %s" % rez.get("erori")
+
+
+# ============================================================
+#  [A9] Achizitie de la furnizor cu TVA la incasare -> op1.tip = AI (art.297 alin.2 CF).
+#  Inainte: era emisa ca "A" (achizitie normala), iar tipul AI nu aparea niciodata.
+# ============================================================
+def _f_ai(furnizor_incasare):
+    return {"cui": "RO14399840", "nume": "FURNIZOR AI", "directie": "primita", "cota": 21,
+            "baza": Decimal("1000"), "tva": Decimal("210"), "taxare_inversa": False,
+            "categorie_331": None, "furnizor_tva_incasare": furnizor_incasare}
+
+
+def test_A9_achizitie_de_la_furnizor_incasare_e_AI_nu_A():
+    # [A9 art.297 alin.2] furnizor RO cu TVA la incasare -> AI. MUTATIE inclusa: fara flag -> A.
+    res_ai = calcul_d394(PROF, 2026, 6, [_f_ai(True)])
+    tipuri_ai = {k[0] for k in res_ai.op1}
+    assert "AI" in tipuri_ai and "A" not in tipuri_ai, "furnizor cu TVA la incasare = AI, nu A"
+    # mutatie: acelasi furnizor FARA statut -> achizitie normala A, niciun AI
+    res_a = calcul_d394(PROF, 2026, 6, [_f_ai(False)])
+    tipuri_a = {k[0] for k in res_a.op1}
+    assert "A" in tipuri_a and "AI" not in tipuri_a, "fara TVA la incasare ramane A"
+
+
+def test_A9_taxare_inversa_nu_devine_AI():
+    # art.297 alin.3: deducerea amanata NU se aplica taxarii inverse -> C, chiar cu flag pus
+    fti = dict(_f_ai(True), taxare_inversa=True, cota=0, tva=Decimal("0"))
+    res = calcul_d394(PROF, 2026, 6, [fti])
+    assert "AI" not in {k[0] for k in res.op1}, "taxarea inversa nu devine AI (art.297 alin.3)"
+
+
+def test_A9_achizitie_AI_duk_valid():
+    from core import duk
+    if not duk.poate_valida("d394"):
+        import pytest as _pt; _pt.skip("DUK d394 indisponibil")
+    res = calcul_d394(PROF, 2026, 6, [_f_ai(True)])
+    assert "AI" in {k[0] for k in res.op1}, "AI trebuie in op1 inainte de DUK"  # structural, nu ancora pe text
+    rez = duk.valideaza(build_xml(res), "d394", an=2026, luna=6)
+    assert rez["stare"] == "valid", "D394 cu AI trebuie valid pe DUK: %s" % rez.get("erori")

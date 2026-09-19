@@ -3,6 +3,28 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 19.09.2026 (53) — A9: furnizor cu TVA la incasare din ANAF (freeze), nu tabel-registru separat
+
+**Ce cerea A9.** D394 emitea achizitiile de la furnizori cu TVA la incasare ca tip "A" (achizitie
+normala), tipul "AI" nu aparea niciodata, iar `tvaDedAI*` era hardcodat 0. Temei: CF art.297 alin.(2)
+(deducerea la achizitii de la un furnizor care aplica sistemul TVA la incasare e AMANATA pana la plata);
+structura D394 op1(tip)=AI; `tvaDedAI` = TVA pe facturi ACHITATE in perioada (d394_struct:1909).
+
+**DECIZIE (Costin, 19.09): varianta (b) — freeze din ANAF la ingestie, NU tabel-registru + cron.**
+Statutul TVA-la-incasare al furnizorului se INGHEATA din serviciul ANAF deja integrat
+(`anaf_api.py:162`, `RTVAI.statusTvaIncasare`), best-effort, la ingestia facturii primite, in coloana
+DEJA existenta `facturi.furnizor_tva_incasare` (migrare_d300_b1). D394 o consuma: `tip_operatiune`→AI,
+`tvaDedAI*` real.
+
+**ALTERNATIVA RESPINSA.** Tabel-registru separat + cron (dupa tiparul spv_refresh): ar DUPLICA
+integrarea `anaf_api` existenta si coloana existenta — contra „sursa unica, nu duplicare". Tiparul
+proiectului pentru statut ANAF pe factura e freeze-la-document (`platitor_tva_freeze`), reutilizat aici
+ca `furnizor_incasare_freeze`.
+
+**LIMITA / part 2.** `tvaDedAI` corect = TVA pe facturile AI ACHITATE in perioada (nu facturate) — cere
+apartajare per-cota a platilor, ca deducerea amanata D300. Livrat in doi pasi: part 1 (tip AI + freeze,
+DUK-valid cu tvaDedAI inca 0, necuplat), part 2 (tvaDedAI pe plati).
+
 ## 19.09.2026 (52) — A11: exigibilitatea IC in D300 urmeaza art.284, nu art.282 general
 
 **Ce era gresit.** D300 bucketa TOATE facturile pe `_EXIG_NORMAL` (COALESCE(data_faptului_generator,

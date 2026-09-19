@@ -107,6 +107,21 @@ def platitor_tva_freeze(cui, fallback=None):
     return fallback
 
 
+def furnizor_incasare_freeze(cui, fallback=False):
+    """[A9 art.297 alin.2 CF] Statutul TVA-la-incasare al FURNIZORULUI, INGHETAT din ANAF
+    (RTVAI.statusTvaIncasare, best-effort) - pentru stocare pe factura primita: decide deducerea
+    amanata (D300) si tipul AI (D394). ANAF indisponibil / CUI negasit -> `fallback` (ce a declarat
+    contabilul). NU ridica: nu blocheaza ingestia facturii pe ANAF-jos. Oglinda `platitor_tva_freeze`,
+    aceeasi sursa unica `valideaza_cui` (campul `tva_la_incasare`, RTVAI.statusTvaIncasare)."""
+    try:
+        r = valideaza_cui([cui])
+        if r and r[0].get("gasit"):
+            return bool(r[0].get("tva_la_incasare"))
+    except Exception:  # noqa: BLE001
+        pass
+    return fallback
+
+
 def separa_cui(lista_cui):
     """Imparte intrarile brute in (curatate_unice, ignorate).
     'ignorate' = intrari care nu contin nicio cifra -> nu pot fi un CUI (antet de coloana, nume, typo).

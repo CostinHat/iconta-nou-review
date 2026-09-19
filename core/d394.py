@@ -357,9 +357,12 @@ def clasifica_partener(cui_brut, platitor_tva=None):
     return P_TVA_RO, cif                # True sau NULL (fallback euristica: CUI valid presupus platitor)
 
 
-def tip_operatiune(directie, taxare_inversa, tip_partener):
+def tip_operatiune(directie, taxare_inversa, tip_partener, furnizor_incasare=False):
     """op1.tip din datele facturii, cu regulile de compatibilitate (pct. 215).
-    tip_partener=1 -> tip<>N ; =2 -> tip in (L,LS,N) ; in (3,4) -> tip in (L,LS,C)"""
+    tip_partener=1 -> tip<>N ; =2 -> tip in (L,LS,N) ; in (3,4) -> tip in (L,LS,C).
+    [A9 art.297 alin.2 CF] achizitie de la furnizor RO cu TVA la incasare -> AI (deducere amanata
+    la plata). art.297 alin.3: NU se aplica taxarii inverse / IC / importului -> AI doar pe
+    achizitia interna normala de la un platitor RO care aplica sistemul."""
     emisa = (directie == "emisa")
     if tip_partener == P_NEINREG:
         return "L" if emisa else "N"
@@ -367,7 +370,9 @@ def tip_operatiune(directie, taxare_inversa, tip_partener):
         return "L" if emisa else "C"
     if emisa:
         return "V" if taxare_inversa else "L"
-    return "C" if taxare_inversa else "A"
+    if taxare_inversa:
+        return "C"
+    return "AI" if furnizor_incasare else "A"
 
 
 def cota_standard(an, luna):
@@ -475,7 +480,7 @@ def calcul_d394(prof, perioada, date, manual=None):
         if tp in (P_UE, P_NONUE) and f.get("directie") == "primita":
             intracom += 1
             continue
-        tip = tip_operatiune(f.get("directie"), f.get("taxare_inversa"), tp)
+        tip = tip_operatiune(f.get("directie"), f.get("taxare_inversa"), tp, f.get("furnizor_tva_incasare"))
         if tip == "N":
             # [approach a, 04.08.2026] N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2). DESCOPERIRE
             # (proba jar v5 + DUK): validatorul INSTALAT v5 NU are atributul op1.tip_N (bunuri/servicii) - "tip_N
@@ -1049,6 +1054,8 @@ def pull(conn, schema, perioada):
         comun = {"cui": cui, "nume": nume, "directie": r["directie"],
                  "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"],
                  "platitor_tva": r["tert_platitor_tva"],
+                 # [A9 art.297 alin.2] furnizor RO cu TVA la incasare -> op1.tip = AI (deducere amanata)
+                 "furnizor_tva_incasare": bool(r["furnizor_tva_incasare"]),
                  # [R119, 02.09.2026] id-ul facturii traverseaza pana la rezultat, ca declaratia
                  # sa poata SPUNE ce a inclus. Era selectat in SQL si se pierdea chiar aici.
                  "factura_id": r["id"]}

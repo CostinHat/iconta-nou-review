@@ -8784,9 +8784,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**611 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**612 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 580
+### `core/` — 581
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8845,6 +8845,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_amortizare_ecran_metoda.py` — GARD amortizare pe METODA (Q6+Q15, tura import 16.08.2026).
 - `core/test_amprenta_declaratie.py` — core/test_amprenta_declaratie.py — GARD C3 (snapshot+hash): regenerare-diff prinde editarea retroactiva.
 - `core/test_an_hardcodat.py` — Un AN scris literal intr-o cerere catre server ingheata ecranul in trecut.
+- `core/test_anaf_api.py` — Teste core/anaf_api.py — freeze best-effort al statutului ANAF pe factura.
 - `core/test_ancore_in_cod.py` — GARD PESTE GĂRZI (21.08.2026): ancora unui gard trăiește în COD, nu în PROZĂ.
 - `core/test_ancore_rute.py` — GARD [R80, 27.08.2026]: clasa de rute despre care detectorul din R70 nu poate afirma nimic
 - `core/test_api_public.py` — —

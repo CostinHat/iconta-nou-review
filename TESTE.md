@@ -55,7 +55,8 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 - ultim: **A11 GATA** (19.09.2026) — D300 latura IC pe art.284 alin.(2), SURSA UNICA `d390.EXIG_IC`;
   gard `core/test_d300.py::test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390` (mutatie probata RED:
   fara fix factura IC cade in ianuarie, nu februarie)
-- urmator: A9 si A12 raman BLOCATE pe decizie de date. NEINCEPUT
+- urmator: A9 (freeze furnizor_tva_incasare la ingestie + cablare D394), apoi A12 (coloana per-linie
+  destinatie_tva + pro-rata doar pe mixte + camp UI). Decizii primite 19.09. IN LUCRU
 - pasi:
   1. **A11 — D300 exigibilitate IC (COD PUR, executabil).** `core/d300.py:52` `_EXIG_NORMAL`
      (COALESCE data_faptului_generator/data_emitere = art.282 general) se aplica si facturilor
@@ -73,13 +74,31 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
      BLOCANT: aplicatia NU stie daca un furnizor aplica TVA la incasare (`d394.py:872`); sursa =
      „Registrul persoanelor care aplica sistemul TVA la incasare" (ANAF, art.282 alin.3). Fara
      decizie despre cum intra faptul (camp per-partener / lookup ANAF), orice valoare AI e ghicita.
-     STARE = BLOCAT: decizie de produs (sursa `furnizor_tva_incasare`)
+     DECIZIE 19.09 = varianta (b): NU tabel+cron. Coloana `facturi.furnizor_tva_incasare` EXISTA deja
+     (migrare_d300_b1), sursa ANAF EXISTA deja (`anaf_api.py:162` statusTvaIncasare). Pasi concreti:
+     (i) `anaf_api.furnizor_incasare_freeze(cui)` — refoloseste `valideaza_cui`→`tva_la_incasare`, ca
+     `platitor_tva_freeze`; (ii) apel la ingestia facturii PRIMITE (uc_tenants, langa platitor_tva_freeze)
+     ca sa populeze furnizor_tva_incasare din ANAF (azi doar input user); (iii) `repo_d394.select_facturi`
+     aduce `furnizor_tva_incasare`; (iv) `d394.tip_operatiune`→"AI" pt primita+furnizor_tva_incasare+NEtaxare
+     inversa; (v) `tvaDedAI*` real (nu 0), pe cote. Teste cu mutatie.
+     PART 1 GATA 19.09: (i) `anaf_api.furnizor_incasare_freeze` + (ii) apel in `uc_tenants.factura_creeaza`
+     (inainte de conexiune) + (iii) `repo_d394.select_facturi` aduce furnizor_tva_incasare + (iv)
+     `tip_operatiune`→AI + pull propaga. Garduri: test_d394 (AI vs A mutatie + DUK valid), test_anaf_api
+     (freeze best-effort). DUK: AI valid cu tvaDedAI inca 0 (necuplat).
+     PART 2 IN LUCRU: (v) `tvaDedAI*` = TVA pe facturi AI ACHITATE in perioada (struct D394:1909 „achitate"),
+     per cota — refoloseste tiparul plati-AI din D300 (_pull_incasare/_aloca_pe_cote/select_inregistrari_2).
   3. **A12 — pro-rata doar pe achizitii mixte (BLOCAT: decizie de date).** `core/d300.py:569,581-588`
      aplica pro-rata (R31_2) pe `r28_2 = r27_2` = TOT deductibilul. Temei: art.300 alin.(3) (achizitii
      exclusiv taxabile → deducere integrala), alin.(5) (destinatie mixta/necunoscuta → pro-rata),
      alin.(11) (pro-rata inmulteste DOAR suma alin.5). BLOCANT: aplicatia nu clasifica achizitiile pe
      destinatie (taxabil/scutit/mixt); fara clasificare, pro-rata corecta nu se poate calcula.
-     STARE = BLOCAT: decizie de produs (clasificare destinatie achizitii)
+     DECIZIE 19.09 = granularitate PER LINIE de achizitie (nu per factura, nu baza la nivel de firma).
+     Pasi concreti: (i) coloana noua `factura_linii.destinatie_tva` (taxabil|scutit|mixt), default
+     'taxabil' — migrare (tenant_template + toti tenantii, ca migrare_d300_b1); (ii) `d300.py` pull
+     aduce destinatie_tva per linie; R31_2 (pro-rata) se aplica DOAR pe baza liniilor 'mixt', nu pe tot
+     r28_2 (art.300 alin.3/5/11 pe linie); (iii) camp UI select `.camp-input` la finalul randului pe
+     formularul de achizitie (cap.2/6 DS; plasare = append, nu STOP). Teste cu mutatie: linia 'taxabil'
+     nu pierde deducere la pro-rata<100. Poarta vizuala pe ecranul atins. STARE = NEINCEPUT (dupa A9)
 - fir: SUPERVIZORUL — domeniul (portofoliul) si a cincea cale TACUTA (01.09.2026, comanda „continua
   cu constructia supervizorului"). Masurat inainte de a alege (PREDARE „daca continui de aici" pct.5),
   cu criteriul lui Costin — *ce poate produce o cifra valida si falsa*:

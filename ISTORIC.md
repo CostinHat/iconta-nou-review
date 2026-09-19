@@ -1,3 +1,20 @@
+## 19.09.2026 — A9 part 1: D394 emite tipul AI, iar statutul furnizorului vine din ANAF
+
+**Pentru un contabil:** o achizitie de la un furnizor care aplica TVA la incasare apare acum in D394 cu
+tipul corect **AI** (inainte era raportata ca achizitie normala „A"). Statutul „furnizor cu TVA la
+incasare" se ia automat din ANAF la introducerea facturii (nu mai depinde doar de bifa manuala), din
+serviciul ANAF deja folosit pentru verificarea platitorului de TVA.
+
+**Ce s-a facut (tehnic).** `anaf_api.furnizor_incasare_freeze` (oglinda `platitor_tva_freeze`, aceeasi
+sursa `valideaza_cui`→`RTVAI.statusTvaIncasare`), apelat la ingestia facturii primite in
+`uc_tenants.factura_creeaza` (inainte de conexiune, ca sa nu tina o conexiune peste apelul ANAF).
+`repo_d394.select_facturi` aduce `furnizor_tva_incasare`; `d394.tip_operatiune`→"AI" (art.297 alin.2;
+alin.3 exclude taxarea inversa/IC/import). Garduri: `test_d394` (AI vs A, mutatie + DUK valid),
+`test_anaf_api` (freeze best-effort). Vezi DECIZII (53).
+
+**Part 2 (in lucru):** `tvaDedAI*` = TVA pe facturile AI ACHITATE in perioada (art.297 alin.2), per cota
+— refoloseste tiparul plati-AI din D300. Azi tvaDedAI ramane 0 (corect pentru AI neachitat; DUK valid).
+
 ## 19.09.2026 — A11 inchisa: exigibilitatea IC in D300 aliniata la art.284 (ca D390)
 
 **Pentru un contabil:** o factura intracomunitara (achizitie/livrare in UE) intra acum in decontul de TVA

@@ -592,6 +592,14 @@ def factura_creeaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
+    # [A9 art.297 alin.2] TVA la incasare la furnizor -> deducere amanata (D300) + tip AI (D394).
+    # Statutul se INGHEATA din ANAF (RTVAI.statusTvaIncasare), best-effort, INAINTE de conexiune
+    # (ca platitor_tva_freeze: nu tinem o conexiune din pool peste apelul ANAF de 20s). Doar pe
+    # PRIMITE cu CUI; fallback = ce a bifat contabilul. Pe emise nu se aplica.
+    from core import anaf_api as _anaf
+    _fti = date.furnizor_tva_incasare
+    if date.directie == "primita" and str(date.tert_cui or "").strip():
+        _fti = _anaf.furnizor_incasare_freeze(date.tert_cui, fallback=bool(date.furnizor_tva_incasare))
     try:
         with db.get_conn(schema) as conn:
             r = facturi_api.creeaza_factura(
@@ -600,7 +608,7 @@ def factura_creeaza(tenant_id, date, ctx):
                 tert_cui=date.tert_cui, data_scadenta=date.data_scadenta,
                 moneda=date.moneda, status=date.status,
                 tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
-                furnizor_tva_incasare=date.furnizor_tva_incasare)
+                furnizor_tva_incasare=_fti)
     except ValueError as e:
         raise _erori.DateInvalide(str(e))
     return r
