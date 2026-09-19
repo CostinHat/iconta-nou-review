@@ -1,3 +1,20 @@
+## 19.09.2026 — A11 inchisa: exigibilitatea IC in D300 aliniata la art.284 (ca D390)
+
+**Pentru un contabil:** o factura intracomunitara (achizitie/livrare in UE) intra acum in decontul de TVA
+(D300) pe ACEEASI luna ca in declaratia recapitulativa (D390). Inainte, o factura IC cu faptul generator
+intr-o luna si factura emisa in luna urmatoare putea aparea in D300 pe luna faptului si in D390 pe luna
+facturii — aceeasi operatiune, doua luni, reconciliere ANAF rosie degeaba.
+
+**Ce s-a facut (tehnic).** D300 aplica pe latura IC (partener UE) exigibilitatea art.284 alin.(2) /
+art.283 alin.(1) — data emiterii sau a 15-a zi a lunii urmatoare faptului, oricare mai devreme (LEAST) —
+nu regula generala art.282 (COALESCE). Expresia traieste intr-un singur loc (`core/d390.py::EXIG_IC`),
+folosita de ambele declaratii; `core/d300.py::_exig_d300()` o combina cu regula interna. Gard nou
+`test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390`, mutatie probata. Vezi DECIZII (52).
+
+**Supersedeaza** consemnarea din 18.09 (mai jos) care lista A11 printre restantele DESCHISE: A11 e acum
+INCHISA. A9 si A12 raman deschise, blocate pe decizii de date (sursa `furnizor_tva_incasare` din registrul
+ANAF; clasificarea destinatiei achizitiilor pentru pro-rata).
+
 ## 18.09.2026 — **da, s-au schimbat patru cifre pe care le depui**
 
 **Pentru un contabil: patru corecții, fiecare la o cifră care pleacă la ANAF.** Toate au venit dintr-un

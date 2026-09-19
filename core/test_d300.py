@@ -211,6 +211,7 @@ def test_firma_fara_tva_incasare_ramane_pe_emitere():
 # ============================================================
 from core import db as _db300, tenant_provisioning as _tp300, d300 as _d300mod
 _SCHEMA_TVAI = "test_d300_tvai"
+_SCHEMA_IC = "test_d300_ic_exig"
 
 
 def _db300_ok():
@@ -502,3 +503,69 @@ def test_subdeclarare_e_avertisment_nu_constatare():
     assert not any("afară 21/11/9" in c for c in res.note_rezultat), res.note_rezultat
     assert any("Rezultat TVA" in c for c in res.note_rezultat), res.note_rezultat
     assert not any("Rezultat TVA" in a for a in res.avertismente), res.avertismente
+
+
+# ============================================================
+#  [A11] Exigibilitatea IC in D300 = art.284 alin.(2), aceeasi luna ca D390.
+#  CF art.284 alin.(2): exigibilitatea achizitiilor IC intervine la data emiterii facturii ori in
+#  cea de-a 15-a zi a lunii urmatoare faptului generator, oricare mai devreme (LEAST) - NU art.282
+#  general (COALESCE faptul/emitere). D390 aplica deja regula; D300 trebuie sa cada pe aceeasi luna.
+# ============================================================
+@pytest.fixture
+def conn_ic_exig():
+    """Achizitie IC (partener DE, taxare inversa): fapt=20.01.2026, emitere=05.02.2026.
+    art.284: exigibil 05.02 -> FEBRUARIE. art.282 gresit pt IC: COALESCE(fapt)=20.01 -> IANUARIE.
+    ROLLBACK garantat."""
+    _db300.init_pool()
+    with _db300.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_IC)
+                cur.execute(_tp300.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_IC))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_IC)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "regim_fiscal, platitor_tva, tip_decont) VALUES "
+                    "(1,'IC SRL','14399840','Str Test 1','Bucuresti','B','4711','BCR',"
+                    "'RO49AAAA1B31007593840000','real',true,'L')")
+                # achizitie IC: fapt 20.01, factura emisa 05.02 (granita de luna)
+                cur.execute("INSERT INTO facturi (numar, data_emitere, data_faptului_generator, total, tva, "
+                            "directie, taxare_inversa, tert_tara, tert_cui) "
+                            "VALUES ('AIC1','2026-02-05','2026-01-20',1190,0,'primita',true,'DE','DE811234567') "
+                            "RETURNING id")
+                fid = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s,'marfa UE',1,1000,19)", (fid,))
+            yield conn, fid
+        finally:
+            conn.rollback()
+
+
+@pytest.mark.skipif(not _db300_ok(), reason="DB indisponibil")
+def test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390(conn_ic_exig):
+    # [A11 CF art.284 alin.(2)] Factura IC pe granita de luna cade in ACEEASI luna in D300 si D390.
+    from core import repo_d300, repo_d390, d300 as _d3, d390 as _d3390
+    from psycopg2.extras import RealDictCursor
+    conn, fid = conn_ic_exig
+    JAN = ("2026-01-01", "2026-02-01")
+    FEB = ("2026-02-01", "2026-03-01")
+
+    def _in(select_fn, expr, win):
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("SET search_path TO %s, public" % _SCHEMA_IC)
+            rows = select_fn(cur, expr, win[0], win[1])
+        return any(r["id"] == fid for r in rows)
+
+    def in_d300(win):  # expresia IC-constienta din d300 (art.284 pt UE)
+        return _in(lambda c, e, i, s: repo_d300.select_facturi_4(c, _d3._STATUS_FINAL, e, i, s),
+                   _d3._exig_d300(), win)
+
+    def in_d390(win):  # sursa unica a expresiei IC
+        return _in(repo_d390.select_facturi, _d3390.EXIG_IC, win)
+
+    # art.284: IC exigibil in FEBRUARIE (data emiterii), NU ianuarie (faptul generator)
+    assert in_d300(FEB) is True, "A11: factura IC trebuie in D300 FEBRUARIE (art.284 alin.2)"
+    assert in_d300(JAN) is False, "A11: factura IC NU trebuie in D300 ianuarie (ar fi art.282 general, gresit)"
+    # aceeasi luna ca D390 (alinierea D300<->D390 pe aceeasi factura)
+    assert in_d390(FEB) is True and in_d390(JAN) is False, "A11: D390 pune IC tot in februarie"

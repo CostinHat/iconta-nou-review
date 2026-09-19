@@ -3,6 +3,30 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 19.09.2026 (52) — A11: exigibilitatea IC in D300 urmeaza art.284, nu art.282 general
+
+**Ce era gresit.** D300 bucketa TOATE facturile pe `_EXIG_NORMAL` (COALESCE(data_faptului_generator,
+data_emitere) = regula generala art.282), inclusiv achizitiile/livrarile intracomunitare. Pentru aceeasi
+factura IC, D390 folosea deja art.284 (LEAST(data_emitere, ziua 15 a lunii urmatoare faptului)) -> cele
+doua declaratii puteau incadra aceeasi factura in luni diferite.
+
+**TEMEI (MO).** CF art.284 alin.(2) (achizitii IC): *„exigibilitatea taxei intervine la data emiterii
+facturii ... ori in cea de-a 15-a zi a lunii urmatoare celei in care a intervenit faptul generator, daca
+nu a fost emisa nicio factura ... pana la data respectiva."* CF art.283 alin.(1) (livrari IC scutite):
+aceeasi regula. CF art.283 alin.(2): exceptia de avans (art.282 alin.2 lit.b) NU se aplica IC.
+
+**Ce s-a facut.** Expresia IC extrasa in `core/d390.py::EXIG_IC` (SURSA UNICA); `core/d300.py::_exig_d300()`
+o aplica pe latura IC (partener UE) si pastreaza `_EXIG_NORMAL` pe intern. Gard
+`test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390` (mutatie RED probata: fara fix, factura IC cade in
+ianuarie, nu februarie).
+
+**ALTERNATIVA RESPINSA.** A copia expresia LEAST si in d300 (doua surse pentru aceeasi regula) — drift la
+prima schimbare legislativa. De aceea o singura expresie, importata.
+
+**LIMITA.** Discriminatorul IC la nivel SQL = `tert_tara IN (TARI_UE)`; export non-UE si intern RO raman
+pe art.282 (corect). Efect net-zero pe rezultatul D300 (taxare inversa), dar luna corecta conteaza pentru
+reconcilierea D300<->D390.
+
 ## 15.09.2026 (51) — E2b: depozitul nu mai deschide si nu mai comite (32 -> 0)
 
 **Ce cerea E2b.** Cele 32 de module declarate REPOSITORY care isi deschideau singure conexiunea sau

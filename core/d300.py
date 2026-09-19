@@ -51,6 +51,22 @@ _ACHIZ_RAND = {21: "R22", 11: "R23"}   # R22=Rd.24(21%), R23=Rd.25(11%). 9% dedu
 # data_emitere (exigibil la EMITEREA facturii de avans). Data faptului generator nu mai e cod mort.
 _EXIG_NORMAL = ("(CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
                 "ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END)")
+
+
+def _exig_d300():
+    """[A11 art.283/284 CF] Expresie de exigibilitate D300 constienta de IC. Pentru partenerii din UE
+    (operatiuni intracomunitare), exigibilitatea urmeaza art.284 alin.(2) / art.283 alin.(1) - data
+    emiterii facturii SAU a 15-a zi a lunii urmatoare faptului generator, oricare e mai devreme - prin
+    ACEEASI expresie ca D390 (`d390.EXIG_IC`, SURSA UNICA, nu copiata), ca aceeasi factura IC sa cada pe
+    aceeasi luna in ambele declaratii. Restul (RO / non-UE) ramane pe art.282 (_EXIG_NORMAL). art.283
+    alin.(2): exceptia de avans (art.282 alin.2 lit.b) NU se aplica IC -> latura IC nu trece prin 'avans'.
+    Lazy import ca restul referintelor d300->d390 din modul."""
+    from core.d390 import TARI_UE, EXIG_IC
+    ue = "(" + ",".join("'" + t + "'" for t in sorted(TARI_UE)) + ")"
+    return ("(CASE WHEN COALESCE(f.tert_tara,'RO') IN " + ue +
+            " THEN (" + EXIG_IC + ") ELSE " + _EXIG_NORMAL + " END)")
+
+
 # [B1 D300] Facturi DECLARABILE in decont. Lista NU mai traieste aici: vine din
 # `core/nomenclator_status_factura.py` — un adevar, un loc (P1). Pana la 22.08.2026 lista era scrisa
 # textual in TREI locuri (aici, la :1095, si in d300_reconciliere:80), iar `de_preluat` era clasat
@@ -980,7 +996,7 @@ def _pull_taxare_inversa(cur, inceput, sfarsit):
     Folosit DOAR pe calea tva_la_incasare: _pull_incasare EXCLUDE taxarea inversa (art.282 alin.6 CF:
     exigibila la faptul generator, nu la incasare) - o aducem separat ca sa NU dispara tacit din decont
     (rd.13 pt emise / rd.12+rd.25 pt primite). Aceeasi forma de dict ca pull() normal."""
-    _repo.select_facturi_2(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit)
+    _repo.select_facturi_2(cur, _STATUS_FINAL, _exig_d300(), inceput, sfarsit)  # [A11] IC pe art.284
     fmap = {}
     for r in cur.fetchall():
         f = fmap.setdefault(r["id"], {"directie": r["directie"],
@@ -1039,7 +1055,7 @@ def pull(conn, schema, perioada):
             # generator (art.282 alin.6 CF), nu la incasare - _pull_incasare o EXCLUDE; o aducem pe
             # calea de emitere (_pull_taxare_inversa) ca sa NU dispara tacit (rd.13 / rd.12+rd.25).
             return prof, _pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
-        rows = _repo.select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit)
+        rows = _repo.select_facturi_4(cur, _STATUS_FINAL, _exig_d300(), inceput, sfarsit)  # [A11] IC pe art.284
         deferred = _pull_furnizor_incasare(cur, inceput, sfarsit)
     fmap = {}
     for r in rows:

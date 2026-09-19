@@ -60,6 +60,14 @@ TARI_UE = {
 # (crezută corectă până la 03.08.2026) era GREȘITĂ - probă DUK: tara="CR" e respinsă ("nu se află în
 # lista"), tara="HR" e acceptată. Nomenclatorul ANAF D390 folosește HR pentru Croația. Gard:
 # test_croatia_emite_HR_nu_CR + test_croatia_HR_trece_duk.
+
+# [A2/A11 art.284 alin.(2) CF] Exigibilitatea operatiunilor IC = data emiterii facturii SAU a 15-a zi
+# a lunii urmatoare faptului generator, oricare e mai devreme (LEAST). SURSA UNICA a acestei reguli:
+# folosita de D390 (aici) SI de D300 (latura IC, core/d300.py) - o singura expresie, nu doua copii.
+# data_faptului_generator NULL -> data_emitere (backward-compat). Alias tabel presupus 'f'.
+EXIG_IC = ("CASE WHEN f.data_faptului_generator IS NULL THEN f.data_emitere "
+           "ELSE LEAST(f.data_emitere, (date_trunc('month', f.data_faptului_generator) "
+           "+ interval '1 month' + interval '14 days')::date) END")
 _TARA_XML = {}
 
 # TIPURI: SURSA e NORMA - OPANAF 705/2020 enumera exact cele sase tipuri la instructiunile de
@@ -535,9 +543,7 @@ def pull(conn, schema, an, luna):
         # MIN(data_emitere, ziua 15 a lunii urmatoare faptului). Camp data_faptului_generator OPTIONAL: cand e
         # NULL -> exigibilitate = data_emitere = comportamentul ANTERIOR (backward-compat). O factura emisa TARZIU
         # (dupa ziua 15) cu fapt intr-o luna anterioara se muta pe luna exigibilitatii (mai devreme).
-        _exig = ("CASE WHEN f.data_faptului_generator IS NULL THEN f.data_emitere "
-                 "ELSE LEAST(f.data_emitere, (date_trunc('month', f.data_faptului_generator) "
-                 "+ interval '1 month' + interval '14 days')::date) END")
+        _exig = EXIG_IC   # [A11] SURSA UNICA (definita la nivel de modul; aceeasi expresie o foloseste D300 pe latura IC)
         rows = _repo.select_facturi(cur, _exig, inceput, sfarsit)
     # CUI-ul: intai clientul din nomenclator (c.cui), altfel tert_cui de pe factura.
     # Bug dovedit 16.07.2026 prin audit pe date reale: se citea DOAR c.cui, legat de

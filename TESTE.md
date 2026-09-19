@@ -45,6 +45,41 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **RESTANTE RUNDA 2 — A9 / A11 / A12** (19.09.2026, comanda „deschide firul A9/A11/A12 §2.1").
+  Cele trei restante DESCHISE ale Rundei 2 pe TVA (audit RAPORT_AUDIT_INDEPENDENT_2026-09-17.md).
+  Comanda cere PROPUNERE (§2.2.2 „ce cer inapoi"), nu implementare — pasii sunt scrisi, temeiul
+  verificat la sursa, dar NU se atinge codul pana la decizia lui Costin. Faptele din comanda
+  verificate la sursa (§2.2.2): A11 se confirma cod pur; A9 si A12 lovesc DECIZIE DE DATE.
+- ultim: temei verificat la sursa pentru toate trei (CF art.282/283/284/297/300 din
+  `anaf_surse/cod_fiscal_227_2015_consolidat.txt`; structura D394 din `anaf_surse/d394_struct_anaf.txt`)
+- ultim: **A11 GATA** (19.09.2026) — D300 latura IC pe art.284 alin.(2), SURSA UNICA `d390.EXIG_IC`;
+  gard `core/test_d300.py::test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390` (mutatie probata RED:
+  fara fix factura IC cade in ianuarie, nu februarie)
+- urmator: A9 si A12 raman BLOCATE pe decizie de date. NEINCEPUT
+- pasi:
+  1. **A11 — D300 exigibilitate IC (COD PUR, executabil).** `core/d300.py:52` `_EXIG_NORMAL`
+     (COALESCE data_faptului_generator/data_emitere = art.282 general) se aplica si facturilor
+     intracomunitare, dar IC are exigibilitate SPECIALA: art.284 alin.(2) (achizitii IC) / art.283
+     (livrari IC) = data emiterii SAU a 15-a zi a lunii urmatoare faptului generator. D390 o
+     implementeaza deja (`core/d390.py:534-537`, `LEAST(data_emitere, faptul+1luna+14zile)`).
+     Fix: pe latura IC a selectiei D300, foloseste ACEEASI expresie ca D390 (sursa unica, nu a
+     doua copie). Gard: `core/test_d300.py` — factura IC cu fapt≠emitere pe granita de luna cade
+     in ACEEASI luna ca D390 (RED azi = divergent, GREEN dupa). Date necesare: EXISTA (data_faptului
+     _generator + clasificare IC deja folosite de D390). **GATA 19.09.2026** (gard + mutatie RED probata)
+  2. **A9 — D394 op AI + tvaDedAI (BLOCAT: decizie de date).** `core/d394.py:360 tip_operatiune`
+     intoarce "A" (nu "AI") pentru achizitii primite; `d394.py:724 tvaDedAI` hardcodat 0;
+     `repo_d394.select_facturi` nu aduce `furnizor_tva_incasare`. Temei: art.297 alin.(2) (deducere
+     amanata la plata pt achizitii de la furnizor cu TVA la incasare), structura D394 op1(tip)=AI.
+     BLOCANT: aplicatia NU stie daca un furnizor aplica TVA la incasare (`d394.py:872`); sursa =
+     „Registrul persoanelor care aplica sistemul TVA la incasare" (ANAF, art.282 alin.3). Fara
+     decizie despre cum intra faptul (camp per-partener / lookup ANAF), orice valoare AI e ghicita.
+     STARE = BLOCAT: decizie de produs (sursa `furnizor_tva_incasare`)
+  3. **A12 — pro-rata doar pe achizitii mixte (BLOCAT: decizie de date).** `core/d300.py:569,581-588`
+     aplica pro-rata (R31_2) pe `r28_2 = r27_2` = TOT deductibilul. Temei: art.300 alin.(3) (achizitii
+     exclusiv taxabile → deducere integrala), alin.(5) (destinatie mixta/necunoscuta → pro-rata),
+     alin.(11) (pro-rata inmulteste DOAR suma alin.5). BLOCANT: aplicatia nu clasifica achizitiile pe
+     destinatie (taxabil/scutit/mixt); fara clasificare, pro-rata corecta nu se poate calcula.
+     STARE = BLOCAT: decizie de produs (clasificare destinatie achizitii)
 - fir: SUPERVIZORUL — domeniul (portofoliul) si a cincea cale TACUTA (01.09.2026, comanda „continua
   cu constructia supervizorului"). Masurat inainte de a alege (PREDARE „daca continui de aici" pct.5),
   cu criteriul lui Costin — *ce poate produce o cifra valida si falsa*:
