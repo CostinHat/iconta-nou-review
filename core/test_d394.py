@@ -678,3 +678,75 @@ def test_A9_achizitie_AI_duk_valid():
     assert "AI" in {k[0] for k in res.op1}, "AI trebuie in op1 inainte de DUK"  # structural, nu ancora pe text
     rez = duk.valideaza(build_xml(res), "d394", an=2026, luna=6)
     assert rez["stare"] == "valid", "D394 cu AI trebuie valid pe DUK: %s" % rez.get("erori")
+
+
+# ============================================================
+#  [A9 part 2] tvaDedAI = TVA pe facturile AI ACHITATE in perioada (art.297 alin.2 CF,
+#  d394_struct:1909), per cota - din decontari reale (proba pe DB, ROLLBACK).
+# ============================================================
+import pytest as _pt394
+from core import db as _db394, tenant_provisioning as _tp394, d394 as _d394mod
+from core.common import Perioada as _Per
+_SCHEMA_AI = "test_d394_ai_platit"
+
+
+def _db394_ok():
+    try:
+        _db394.init_pool()
+        with _db394.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+def _pull_tvaDedAI_dupa_plata(suma_platita):
+    """Creeaza achizitie AI 1190/210@21% + plata `suma_platita` (401=5121) in iunie 2026,
+    ruleaza d394.pull, intoarce date['tva_ded_ai']. ROLLBACK garantat."""
+    _db394.init_pool()
+    with _db394.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_AI)
+                cur.execute(_tp394.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_AI))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_AI)
+                cur.execute(
+                    "INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
+                    "regim_fiscal,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) "
+                    "VALUES (1,'AI SRL','14399840','Str 1','Bucuresti','B','4711','BCR',"
+                    "'RO49AAAA1B31007593840000','real',true,'L','Pop','Ion','administrator')")
+                cur.execute(
+                    "INSERT INTO facturi (numar,data_emitere,total,tva,directie,furnizor_tva_incasare,"
+                    "tert_cui,tert_nume,tert_platitor_tva) VALUES "
+                    "('AI1','2026-06-05',1210,210,'primita',true,'RO14399840','FURN AI',true) RETURNING id")
+                fid = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id,descriere,cantitate,pret_unitar,cota_tva) "
+                            "VALUES (%s,'marfa',1,1000,21)", (fid,))
+                if suma_platita:
+                    cur.execute("INSERT INTO inregistrari (data,factura_id,status,sursa) "
+                                "VALUES ('2026-06-20',%s,'validata','test') RETURNING id", (fid,))
+                    nid = cur.fetchone()[0]
+                    cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) "
+                                "VALUES (%s,'401','5121',%s)", (nid, suma_platita))
+            _prof, date = _d394mod.pull(conn, _SCHEMA_AI, _Per(2026, luna=6))
+            return date.get("tva_ded_ai") or {}
+        finally:
+            conn.rollback()
+
+
+@_pt394.mark.skipif(not _db394_ok(), reason="DB indisponibil")
+def test_A9_tvaDedAI_din_plata_integrala():
+    # AI 1190 platit integral -> tvaDedAI21 = 210 (TVA-ul aferent platii)
+    assert _pull_tvaDedAI_dupa_plata(1210).get(21) == 210
+
+
+@_pt394.mark.skipif(not _db394_ok(), reason="DB indisponibil")
+def test_A9_tvaDedAI_apartajat_pe_plata_partiala():
+    # plata PARTIALA 605 (jumatate din 1210) -> se deduce doar jumatate din TVA: 105 (apartajare, art.297 alin.2)
+    assert _pull_tvaDedAI_dupa_plata(605).get(21) == 105
+
+
+@_pt394.mark.skipif(not _db394_ok(), reason="DB indisponibil")
+def test_A9_tvaDedAI_zero_daca_neachitat():
+    # AI nefactura NEACHITAT in perioada -> nicio TVA dedusa (deducere amanata, art.297 alin.2)
+    assert _pull_tvaDedAI_dupa_plata(0).get(21, 0) == 0

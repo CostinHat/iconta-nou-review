@@ -1,3 +1,17 @@
+## 19.09.2026 — A9 part 2 (A9 ÎNCHIS): tvaDedAI = TVA pe facturile AI achitate în perioadă
+
+**Pentru un contabil:** câmpul `tvaDedAI` din D394 (TVA dedusă pe achizițiile de la furnizori cu TVA la
+încasare) nu mai e 0 fix, ci reflectă **TVA-ul de pe facturile AI plătite efectiv în perioadă** (deducerea
+e amânată până la plată, art.297 alin.2). Plată integrală → toată TVA-ul; plată parțială → proporțional;
+neplătit → 0.
+
+**Ce s-a făcut (tehnic).** `d394._tva_ded_ai_platite` calculează, în `pull()`, TVA dedusă per cotă din
+decontările reale, reutilizând tiparul plăți-AI din D300 (`repo_d300.select_inregistrari_2` = plăți pe cont
+401 pe facturi cu `furnizor_tva_incasare`, + `d300._aloca_pe_cote` = apartajarea sumei plătite pe cote) —
+SURSĂ UNICĂ, nu a doua interogare. `calcul_d394` rămâne pur (primește `date["tva_ded_ai"]`). Garduri:
+plată integrală→210, parțială 605→105, neachitat→0; DUK valid cu tvaDedAI populat. Vezi DECIZII (53).
+**A9 (audit R2) e ÎNCHIS** (part 1 tip AI + freeze; part 2 tvaDedAI real).
+
 ## 19.09.2026 — A9 part 1: D394 emite tipul AI, iar statutul furnizorului vine din ANAF
 
 **Pentru un contabil:** o achizitie de la un furnizor care aplica TVA la incasare apare acum in D394 cu

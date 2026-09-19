@@ -85,8 +85,11 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
      (inainte de conexiune) + (iii) `repo_d394.select_facturi` aduce furnizor_tva_incasare + (iv)
      `tip_operatiune`→AI + pull propaga. Garduri: test_d394 (AI vs A mutatie + DUK valid), test_anaf_api
      (freeze best-effort). DUK: AI valid cu tvaDedAI inca 0 (necuplat).
-     PART 2 IN LUCRU: (v) `tvaDedAI*` = TVA pe facturi AI ACHITATE in perioada (struct D394:1909 „achitate"),
-     per cota — refoloseste tiparul plati-AI din D300 (_pull_incasare/_aloca_pe_cote/select_inregistrari_2).
+     PART 2 GATA 19.09: (v) `tvaDedAI*` = TVA pe facturi AI ACHITATE in perioada (struct D394:1909), per
+     cota. `d394._tva_ded_ai_platite` refoloseste `repo_d300.select_inregistrari_2` (plati-AI cont 401) +
+     `d300._aloca_pe_cote` (apartajare pe cote) - SURSA UNICA cu D300; calculat in pull(), pasat prin
+     `date["tva_ded_ai"]`, calcul_d394 ramane PUR. Garduri: plata integrala->210, partiala 605->105
+     (apartajare), neachitat->0; DUK valid cu tvaDedAI=210. A9 INCHIS.
   3. **A12 — pro-rata doar pe achizitii mixte (BLOCAT: decizie de date).** `core/d300.py:569,581-588`
      aplica pro-rata (R31_2) pe `r28_2 = r27_2` = TOT deductibilul. Temei: art.300 alin.(3) (achizitii
      exclusiv taxabile → deducere integrala), alin.(5) (destinatie mixta/necunoscuta → pro-rata),

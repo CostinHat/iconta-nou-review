@@ -723,10 +723,14 @@ def calcul_d394(prof, perioada, date, manual=None):
     #  - tvaDedAI*         : TVA dedusa din facturi primite de la FURNIZORI cu TVA la
     #    incasare -> obligatorii MEREU (orice firma poate cumpara de la un astfel de
     #    furnizor, indiferent de sistemul propriu).
+    # [A9 part 2 art.297 alin.2] tvaDedAI = TVA pe facturile AI (furnizor cu TVA la incasare) ACHITATE
+    # in perioada (d394_struct:1909 „facturi achitate"), per cota. Calculat in pull() din decontari
+    # (DB), pasat aici prin date - calcul_d394 ramane PUR. Absent (apelant pur / nicio plata AI) -> 0.
+    _tva_ded_ai = date.get("tva_ded_ai") or {}
     for c in COTE:
         if not c:
             continue
-        inf["tvaDedAI%d" % c] = 0
+        inf["tvaDedAI%d" % c] = _int(_tva_ded_ai.get(c, 0))
         if prof.get("tva_la_incasare"):
             inf["tvaDed%d" % c] = 0
             inf["tvaCol%d" % c] = 0
@@ -1097,7 +1101,38 @@ def pull(conn, schema, perioada):
                                 tva=(baza * Decimal(cota) / Decimal(100)
                                      if bool(r["ti"]) and r["directie"] == "primita" else tva)))
     return prof, {"facturi": facturi, "serii": serii_emise(conn, schema, inceput, sfarsit),
-                  "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit)}
+                  "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit),
+                  "tva_ded_ai": _tva_ded_ai_platite(conn, inceput, sfarsit)}
+
+
+def _tva_ded_ai_platite(conn, inceput, sfarsit):
+    """[A9 part 2 art.297 alin.2] TVA dedusa pe facturile AI (furnizor cu TVA la incasare) ACHITATE
+    in perioada (d394_struct:1909), per cota: {cota: tva}. SURSA UNICA cu D300 - aceeasi interogare de
+    plati-AI (`repo_d300.select_inregistrari_2`, cont 401 pe primite cu furnizor_tva_incasare) si
+    aceeasi apartajare a sumei platite pe cote (`d300._aloca_pe_cote`). Fara plati AI -> {}."""
+    import psycopg2.extras as _E
+    from core import repo_d300 as _r300, d300 as _d300m
+    out = {}
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        plati = _r300.select_inregistrari_2(cur, _d300m._STATUS_FINAL, inceput, sfarsit)
+        if not plati:
+            return out
+        fids = [p["fid"] for p in plati]
+        _r300.select_facturi_3(cur, fids)
+        linii, tot = {}, {}
+        for lr in cur.fetchall():
+            tot[lr["fid"]] = (lr["total"], lr["tva"])
+            if lr["cantitate"] is not None and lr["cota_tva"] is not None:
+                linii.setdefault(lr["fid"], []).append((lr["cantitate"], lr["pret_unitar"], lr["cota_tva"]))
+    for p in plati:
+        gross = _d(p["settled"] or 0)
+        if gross <= 0:
+            continue
+        for d in _d300m._aloca_pe_cote(gross, linii.get(p["fid"]), tot.get(p["fid"])):
+            ci = d["cota"]
+            if ci:
+                out[ci] = out.get(ci, Decimal(0)) + d["suma"] * Decimal(ci) / Decimal(100 + ci)
+    return {c: _int(v) for c, v in out.items()}
 
 
 def nr_facturi_emise(conn, inceput, sfarsit):
