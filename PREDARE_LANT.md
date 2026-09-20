@@ -4,10 +4,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-20**, după **GARZI cat.1 sub-lotul 2** (mijloace_fixe UNIQUE(cod)). Închise
-  azi, la cereri țintite ale lui Costin: restanțele TVA R2 (A9/A11/A12), **C5** (import extras idempotent),
-  **GARZI cat.1** (sub-loturile 1+2). *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
-- **pe commit**: `5e3c48e3` (ultimul four-way publicat: GARZI cat.1 sub-lot 1). *Sub-lotul 2 se publică ACUM, peste acest commit; predarea reflectă starea de DUPĂ, iar four-way-ul exact e în raportul §11.*
+- **ultima rescriere**: **2026-09-20**, după **SESIUNEA B — Faza 0 + F1 etapele 1-2**. Închise azi, la cereri
+  țintite ale lui Costin: R2 (A9/A11/A12), **C5**, **GARZI cat.1** (1+2), **Sesiunea B Faza 0** (curățenie prod)
+  + **F1 etapele 1-2** (prin interfață). *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
+- **pe commit**: `12da4b86` (ultimul four-way publicat: GARZI cat.1 sub-lot 2). *Sesiunea B (Faza 0 = date, F1 = fișiere de probă) se publică ACUM peste acest commit; four-way-ul exact e în raportul §11.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -19,7 +19,15 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **R2 + C5 + GARZI cat.1 (sub-loturile 1+2) ÎNCHISE; niciun front deschis — agenda goală**
+## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B în lucru — Faza 0 + F1 etapele 1-2 GATA; frontul deschis = F1 etapele 3-11, apoi F2-F7**
+
+**Sesiunea B (testare pe flux, TESTE.md „SESIUNEA B"):** Faza 0 (curățenie prod) ÎNCHISĂ; prod = clean slate
+(cabinete=0, tenants=0, useri=1=id=1). **F1** creată + configurată + preluată **prin interfață**
+(`frontend_test/proba_f1_etape12.py`): etapa 2 (vector micro/TVA-lunar → D300/D394/D112/D100/D406) + etapa 1
+(Σdebit=Σcredit=17000, plan 185, parteneri 2, stoc 5000, 3 salariați) — toți invarianții verificați în DB
+(tenant_049). Fișier de așteptări: `frontend_test/asteptari_f1.md`. **Următorul front: F1 etapele 3-11**
+(documente primare → declarații, regula cascadei), apoi F2-F7. OBS etapa 4: salariu în `salariu_istoric`,
+`salariati.salariu_brut`=0 — de verificat la stat de plată. R2/C5/GARZI cat.1 rămân închise (mai jos).
 
 **Runda 2 a fost redeschisă țintit pe cele trei restanțe TVA rămase (A9/A11/A12). Toate sunt acum închise, four-way.**
 - **A11 — ÎNCHIS** (`eb3d6123`): D300 aplică exigibilitatea IC art.284 alin.(2) (ca D390),

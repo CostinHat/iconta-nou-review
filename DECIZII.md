@@ -3,6 +3,33 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 20.09.2026 (60) — Sesiunea B: Faza 0 (curatenie prod) + F1 etapele 1-2 prin interfata
+
+**Faza 0 — curatenie prod (decizie Costin, varianta A).** Portofoliul era integral de test. Sters TOT
+prin calea canonica `gdpr_sterge.executa` per cabinet (R72): 55 cabinete + 24 useri portofoliu + 49
+tenants + scheme + fisiere + 4 superadmini de test + 19 tenants `ztest_` orfani + 33 scheme `ztest_`.
+**PASTRAT id=1** (`cos@gmail.com` — contul REAL de platforma al lui Costin; „toti utilizatorii" din comanda
+insemna portofoliul, nu accesul propriu). Backup INAINTE (`iconta_v2_pre_fazaB_20260920_120650.dump`).
+Orfanii ztest_ (blocati de clasificatorul de siguranta la stergere programatica) au fost curatati prin
+`scripts/curata_ztest_orfani.py` (gard de scop hard: doar ztest_ + firm_id NULL), sub o regula de
+permisiune INGUSTA in settings.local.json (nu DELETE generic). Alternativa (B, sterge si id=1) respinsa:
+l-ar fi blocat pe Costin afara.
+
+**F1 — D100 nu D101 (decizie Costin, verificare la sursa §3).** Rândul F1 din TESTE.md lista „D101", dar
+F1 e micro 1% -> depune **D100** (impozit micro, trimestrial), NU D101 (impozit pe profit, doar platitorii
+de profit). Eroare de redactare, corectata. Setul F1 = D300(lunar)/D394/D112/D100/D406.
+
+**F1 — creare PRIN INTERFATA, nu script (cerinta Costin).** Harness-ul w_auth mintuieste sesiuni doar
+pentru useri existenti (toti stersi) -> proba noua `frontend_test/proba_f1_etape12.py` (Playwright) care
+conduce UI-ul real: inregistrare cabinet -> login -> adauga firma -> vector fiscal -> preluare (4 CSV-uri).
+Fisier de asteptari scris INAINTE (`frontend_test/asteptari_f1.md`), din temeiuri. Invarianti verificati
+in DB: Sdebit=Scredit=17000, plan 185 conturi, 2 solduri parteneri, 1 articol/stoc 5000, 3 salariati
+activi (salariu in salariu_istoric), vector micro/lunar/da/no-IC.
+
+**OBSERVATIE (pentru etapa 4):** importul de salariati scrie salariul in `salariu_istoric` (valabil_din),
+iar `salariati.salariu_brut` ramane 0. De verificat la etapa 4 (stat de plata) ca baza se citeste din
+istoric, nu ca „baza lipsa" pe salariu_brut=0 (DS v2.33). Nu e blocant pentru etapele 1-2.
+
 ## 20.09.2026 (59) — GARZI cat.1 sub-lotul 2: mijloace_fixe UNIQUE(cod), dupa curatarea unui duplicat de proba
 
 **Context.** Sub-lotul 1 (58) a lasat `mijloace_fixe` fara UNIQUE(cod) fiindca tenant_003 avea un duplicat.

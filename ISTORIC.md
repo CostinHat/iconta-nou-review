@@ -1,3 +1,24 @@
+## 20.09.2026 — SESIUNEA B: Faza 0 (curățenie prod) + F1 etapele 1-2 prin interfață
+
+**Pentru un contabil:** portofoliul de test a fost șters complet (clean slate), păstrând doar contul de
+platformă al lui Costin. Apoi prima firmă de test (F1) a fost creată și configurată EXACT ca de un
+contabil care intră prima dată — prin ecranele reale, nu prin script: înregistrare cabinet, adăugare
+firmă, vector fiscal, preluarea soldurilor/partenerilor/stocului/salariaților.
+
+**Ce s-a făcut (tehnic).** Sesiunea B (testare pe flux), Faza 0 + Faza 1 F1 etapele 1-2 (DECIZII 60).
+- **Faza 0:** backup + ștergerea a 55 cabinete (gdpr_sterge canonic) + 4 superadmini test + 19 tenants
+  `ztest_` orfani + 33 scheme (`scripts/curata_ztest_orfani.py`, gard de scop, permisiune îngustă).
+  Rezultat: cabinete=0, tenants=0, scheme=0, useri=1 (id=1 păstrat), referință/sistem intacte.
+- **F1 etapa 2 (config):** `frontend_test/proba_f1_etape12.py` (Playwright, UI real): înregistrare cabinet
+  → login → adaugă F1 (SRL, CUI RO401002001) → Date firmă → vector fiscal (micro, TVA lunar, fără IC).
+- **F1 etapa 1 (preluare):** upload prin interfață a 4 CSV-uri (solduri, parteneri, articole/stoc,
+  salariați). **Invarianți verificați în DB (tenant_049):** Σdebit=Σcredit=**17.000** (ECHILIBRAT),
+  plan 185 conturi (auto-completat), 2 solduri parteneri, 1 articol / stoc 5.000, **3 salariați activi**
+  (salariu în salariu_istoric de la 2026-01-01), vector = D300/D394/D112/**D100**/D406.
+- **Fișier de așteptări** scris ÎNAINTE (`frontend_test/asteptari_f1.md`), din temeiuri; D101→D100 corectat.
+- Observație pentru etapa 4: salariu_brut=0 pe rândul salariat, salariul e în istoric — de verificat la
+  stat de plată. Vezi DECIZII (60).
+
 ## 20.09.2026 — GARZI cat.1 sub-lotul 2: mijloace_fixe UNIQUE(cod) (după curățare duplicat proba tenant_003)
 
 **Pentru un contabil:** un mijloc fix nu se mai poate dubla pe același cod de inventar la reimport — codul

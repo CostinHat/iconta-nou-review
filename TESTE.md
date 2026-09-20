@@ -45,7 +45,25 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
-- fir: **GARZI cat.1 (Intrare date) — NOT NULL pe coloanele de bani + cheie naturala unica pe tabelele de import** (20.09.2026, comanda „deschide firul §2.1"). LIPSA din GARZI.md linia 69-70: „gard care cere NOT NULL pe fiecare coloana de bani si cheie naturala unica pe fiecare tabel de import. Idempotenta importurilor nu e verificata mecanic." C5 a acoperit DOAR extras_import; asta e clasa generala.
+- fir: **SESIUNEA B — Faza 0 (curatenie prod) + Faza 1 F1** (20.09.2026, comanda „deschide firul Sesiunea B §2.1").
+  Plan in TESTE.md „SESIUNEA B" (linia 776+): Faza 0 = stergerea portofoliului de test; Faza 1 = cele 7 firme prin interfata, F1 primul.
+- ultim: **BACKUP complet prod** (~/backups_iconta/iconta_v2_pre_fazaB_20260920_120650.dump, 13MB, custom format). Inventar: 55 cabinete / 49 tenants / 20 scheme tenant / 29 useri (24 portofoliu atasati de cabinet + 5 superadmin STANDALONE, din care id=1 cos@gmail.com = contul REAL al lui Costin, 4 test).
+- ultim: **FAZA 0 INCHISA COMPLET (20.09)**: 55 cabinete sterse (gdpr_sterge.executa, canonic; 5 cu curatare FK prealabila migrare_status/raportari/declaratii_coada) + 4 superadmini test + 19 tenants ztest_ orfani + 33 scheme ztest_ (script `scripts/curata_ztest_orfani.py`, gard de scop, regula de permisiune ingusta in settings.local.json). Rezultat: cabinete=0, tenants=0, scheme tenant_/ztest_=0, useri=1 (id=1 cos@gmail.com PASTRAT), referinta/sistem intacte (cor_ocupatii 4422, curs_bnr 6253). Backup: iconta_v2_pre_fazaB_20260920_120650.dump. Site 200. (login id=1 = de confirmat de Costin cu parola lui.)
+- ultim: **F1 pornit (20.09)**: fisier asteptari scris (`frontend_test/asteptari_f1.md`, CUI/CNP cu cifra de control verificata; set declaratii D300/D394/D112/D100/D406 — D101 corectat la D100, decizie Costin). Fluxul de intrare reverse-engineered + proba `frontend_test/proba_f1_etape12.py`: **register cabinet nou -> login -> adauga firma F1 PRIN INTERFATA** = FUNCTIONAL. F1 creata: tenant 105779 „F1 Comert Stoc SRL", cui 401002001, schema tenant_049, cabinet 48765.
+- ultim: **F1 ETAPELE 1-2 GATA (20.09) prin interfata** (`frontend_test/proba_f1_etape12.py`). Etapa 2:
+  vector fiscal micro/TVA-lunar/fara-IC -> set D300/D394/D112/D100/D406. Etapa 1 (upload CSV): Sdebit=Scredit
+  =17000 (ECHILIBRAT), plan 185 conturi, 2 solduri parteneri, 1 articol/stoc 5000, 3 salariati activi
+  (salariu in salariu_istoric). Toti invariantii verificati in DB (tenant_049). Fisier asteptari scris inainte.
+- urmator: **F1 etapele 3-11** (documente primare, salarizare, contabilizare, ..., declaratii), regula cascadei.
+  OBS etapa 4: salariu_brut=0 pe salariat, salariul e in salariu_istoric — de verificat stat de plata. STARE = F1 etapele 1-2 inchise
+- pasi Faza 0:
+  1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
+  2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).
+  3. verifica ramase intacte: tabele referinta/sistem (cor_ocupatii, curs_bnr_zilnic, firma_tip, migrare_status, spv_token, api_chei, cron_batai), schema, id=1.
+- pasi Faza 1 F1:
+  4. scrie fisierul de asteptari F1 (SRL, TVA lunar, micro 1%, comert stoc, 3 salariati) din temeiurile Sesiunea A, INAINTE de a rula.
+  5. creeaza F1 prin INTERFATA (nu script) — etapele 1-2 (migrare/preluare + configurare firma); raport §2.2 separat inainte de a continua (regula cascadei).
+- fir: **GARZI cat.1 (Intrare date) — NOT NULL pe coloanele de bani + cheie naturala unica pe tabelele de import** (20.09.2026, comanda „deschide firul §2.1"). **INCHIS 20.09** (sub-lot 1+2, four-way 12da4b86). LIPSA din GARZI.md linia 69-70: „gard care cere NOT NULL pe fiecare coloana de bani si cheie naturala unica pe fiecare tabel de import. Idempotenta importurilor nu e verificata mecanic." C5 a acoperit DOAR extras_import; asta e clasa generala.
 - ultim: **SUB-LOTUL 1 GATA (20.09)**: NOT NULL pe 13 coloane de bani (cat A+B; 3 excluse la poarta: pret_unitar/salariu_brut/registre_art321.valoare - legitim nullable) + UNIQUE natural pe 8 tabele
   de import curate (efactura_primite/id_mesaj_anaf, solduri_initiale/cont, solduri_parteneri/(cont,cui),
   asociati/cnp, clienti+furnizori/cui, state_plata/(salariat_id,luna,exemplar), articole/barcode).
@@ -780,13 +798,14 @@ Cu discount-urile, banda efectivă coboară spre **~10–16 zile**.
 | Fază | Stare | Când |
 |---|---|---|
 | Faza 0 — decuplarea suitei de firmele persistente | închisă | 29.07 |
-| Faza 1 — cele 7 firme (F1–F7) pe flux | neîncepută | |
+| Faza 0b — curățenie prod (portofoliu test șters, clean slate) | **închisă** | **20.09** |
+| Faza 1 — cele 7 firme (F1–F7) pe flux | **în lucru (F1)** | 20.09 |
 
 Etapele fluxului (Faza 1), `√ DD.MM` = etapa are teste cap-coadă pe o firmă:
 | Etapă | Stare |
 |---|---|
-| 1. Migrare / preluare | |
-| 2. Configurare firmă | |
+| 1. Migrare / preluare | **F1 √ 20.09** (Σdebit=Σcredit=17000, plan 185, parteneri 2, stoc 5000, 3 salariați) |
+| 2. Configurare firmă | **F1 √ 20.09** (vector micro/TVA-lunar/fără-IC → D300/D394/D112/D100/D406) |
 | 3. Intrare documente primare | |
 | 4. Salarizare | |
 | 5. Contabilizare | |
@@ -832,7 +851,7 @@ comportament diferit:
 
 | ID | Formă | TVA | Impozit | Ce testează UNIC |
 |---|---|---|---|---|
-| **F1** | SRL | lunar | micro 1% | comerț cu stoc, 3 salariați, descărcare de gestiune, D300 lunar, D394, D112, D101, D406 |
+| **F1** | SRL | lunar | micro 1% | comerț cu stoc, 3 salariați, descărcare de gestiune, D300 lunar, D394, D112, **D100** (micro; NU D101 — corectat 20.09), D406 |
 | **F2** | SRL | trimestrial | profit 16% | D300 **trimestrial**, D100, amortizare, mijloace fixe, registru de casă |
 | **F3** | SRL | neplătitor + **art. 317** | micro 3% | **D301** (achiziții IC + servicii UE tip 5), **D390**, taxare inversă |
 | **F4** | SRL | **TVA la încasare** | micro | exigibilitate la încasare — logică complet separată |

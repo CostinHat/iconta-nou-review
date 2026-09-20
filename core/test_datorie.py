@@ -144,9 +144,11 @@ def test_d205_d390_nu_pot_recadea_in_SARIRE():
 # nu scrie si nu emite singura corectia).
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: staleness pe continutul Sesiunii B nu se poate verifica mecanic pana nu exista teste N3 (cap-coada pe firma). Etapele Fazei 1 sunt neincepute si nu se mapeaza pe fisiere, deci nu exista pe ce compara 'marcat done vs realitate'. Cade singur cand apar testele N3.")
+# [INCHISA 20.09.2026] Faza 1 a inceput: F1 etapele 1-2 au bifa (√ 20.09 in TESTE.md) + proba cap-coada
+# `frontend_test/proba_f1_etape12.py` (register->firma->vector->preluare prin interfata, invarianti
+# verificati in DB: Sdebit=Scredit, plan, parteneri, stoc, 3 salariati). Datoria „nu exista teste N3" e
+# stinsa. Markerul xfail(strict) scos; asertiunea ramane ca gard: Sesiunea B are progres urmarit mecanic.
 def test_datorie_staleness_sesiune_b_content():
-    # Se aprinde (xpass -> strict pica) cand prima etapa a Fazei 1 primeste bifa = are teste N3 cap-coada.
     b = agenda.stare_sesiune_b()
     assert b is not None and b["etape_facute"] > 0
 

@@ -75,3 +75,6 @@ venv/
 # scripts/pachet_lot.py la inchiderea fiecarui lot. Se refac oricand din aceleasi intrari, deci
 # nu se versioneaza — un ZIP in repo ar fi o a doua copie a unei stari pe care git o tine deja.
 pachete_loturi/
+
+# Capturi de proba F1 (Sesiunea B) — regenerate la fiecare rulare, nu se urmaresc
+frontend_test/f1_*.png
