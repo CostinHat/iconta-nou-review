@@ -71,8 +71,13 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   ETAPA 3 INCHISA (D1 emisa + D2 primita SPV + D3 banca). Finding D2 (SPV↔stoc) documentat in DECIZII (restanta, marcaj D406/bilant).
 - OBS etapa 1 (de verificat): Marfa A a migrat cu cont_stoc=302/cont_cheltuiala=601 (materiale), nu 371/607 (marfa) -
   CSV fara coloana cont_stoc -> default 302; descarcarea D1 iese 601=302. De revizitat la D406/bilant (clasificare marfa vs materiale).
-- urmator: **F1 etapa 4 (salarizare)**. OBS: salariu_brut=0 pe salariat, salariul in salariu_istoric (DS v2.33) —
-  verifica stat de plata ca baza se citeste din istoric, nu ca baza lipsa. STARE = NEINCEPUT
+- ultim: **F1 etapa 4 (salarizare) GATA (20.09)** (`frontend_test/proba_f1_etapa4.py` + asteptari_f1_etapa4.md):
+  stat de plata citeste baza din salariu_istoric (baza_lipsa=False, NU salariati.salariu_brut=0 - observatia DS v2.33 handled).
+  Contare stat: 641=421 13900 (brut), 421=4315 3475 (CAS), 421=4316 1390 (CASS), 421=444 688 (impozit), 646=436 313 (CAM).
+- CORECTIE DATE TEST (20.09): salariile initiale 4000 erau SUB salariul minim 2026 (4325, HG 146/2026) - gardul
+  ReconciliereD112 a refuzat corect contarea (nu bug). Corectate la 4500/5000/4400 (salariu_istoric + salariati_f1.csv).
+- urmator: **F1 etapa 5+** (conform planului Sesiunea B, regula cascadei). OBS D112 (ulterior): salariati.cor gol pe toti 3 -
+  COR obligatoriu la D112, de completat inainte. STARE = NEINCEPUT
 - pasi Faza 0:
   1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
   2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).

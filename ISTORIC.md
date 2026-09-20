@@ -640,3 +640,12 @@ deductibila de stoc. Decizia despre reconciliere/legare = a lui Costin (nedeschi
 consemnat ca restanță în DECIZII (marcaj D406/bilanț). Decizie Costin: cascada continuă.
 **Observație etapa 1 (de verificat la D406/bilanț):** Marfa A a migrat cu cont_stoc=302/cont_cheltuiala=601
 (materiale), nu 371/607 (mărfuri) — CSV fără coloană cont_stoc → default 302; descărcarea D1 iese 601=302.
+
+**Etapa 4 (salarizare) prin interfață.** `frontend_test/proba_f1_etapa4.py` + `asteptari_f1_etapa4.md`.
+Statul de plată citește baza din `salariu_istoric` (baza_lipsa=False), NU din `salariati.salariu_brut=0`
+(observația DS v2.33 — handled de `stat_plata_api.py:47-54`). Contare stat (sursa='salarii'): 641=421 13.900
+(brut total), 421=4315 3.475 (CAS), 421=4316 1.390 (CASS), 421=444 688 (impozit reținut, rotunjit per salariat
+215+269+204), 646=436 313 (CAM 2,25%). **CORECȚIE DE DATE DE TEST:** salariile inițiale (4.000) erau SUB salariul
+minim 2026 = 4.325 (HG 146/2026, verificat la sursă `common.salariu_minim_luna`); gardul `ReconciliereD112` a
+REFUZAT corect contarea ("date probabil corupte") — nu bug, test-data. Corectate la 4.500/5.000/4.400 în
+`salariu_istoric` (tenant_049) + `salariati_f1.csv`. OBS: `salariati.cor` gol pe toți 3 — obligatoriu la D112.
