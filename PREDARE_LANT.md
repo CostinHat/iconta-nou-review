@@ -4,10 +4,15 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-20**, după **SESIUNEA B — Faza 0 + F1 etapele 1-2**. Închise azi, la cereri
-  țintite ale lui Costin: R2 (A9/A11/A12), **C5**, **GARZI cat.1** (1+2), **Sesiunea B Faza 0** (curățenie prod)
-  + **F1 etapele 1-2** (prin interfață). *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
-- **pe commit**: `12da4b86` (ultimul four-way publicat: GARZI cat.1 sub-lot 2). *Sesiunea B (Faza 0 = date, F1 = fișiere de probă) se publică ACUM peste acest commit; four-way-ul exact e în raportul §11.*
+- **ultima rescriere**: **2026-09-21**, după **SESIUNEA B — F1 etapele 3-8 COMPLETE + reparat finding SPV↔stoc**.
+  Închise: R2/C5/GARZI cat.1/Faza 0/F1 etapele 1-2 (mai devreme) + **F1 etapele 3-8 complet** (toate cele 5
+  declarații D300/D394/D112/D100/D406 DUK-valid). Reparate pe parcurs: bug LIVE **NIR-GV** (cotă R29 per-linie)
+  + **finding SPV↔stoc** (recepția facturii de marfă mișcă și fișa; decizie Costin opțiunea 1). *Rescriere
+  țintită: antet + „primul lucru"; restul păstrat.*
+- **pe commit**: `ee77d253` (ultimul four-way publicat: F1 etapa 5). *Etapele 6-8 + reparația reconcilierii +
+  predarea se publică ACUM peste acest commit (coadă de commit-uri gate ~36min fiecare); four-way în §11.*
+- **URMĂTORUL FRONT**: **F1 etapa 9 (depunere)** → 10 (ieșiri externe) → 11 (transversal); apoi F2-F7.
+  Etapa 9 (depunere la ANAF/SPV) e probabil [EXTERN] pt o firmă de test — de investigat ce se poate proba local.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -19,15 +24,25 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B în lucru — Faza 0 + F1 etapele 1-2 GATA; frontul deschis = F1 etapele 3-11, apoi F2-F7**
+## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1 etapele 3-8 COMPLETE (toate 5 declarații DUK-valid); finding SPV↔stoc REPARAT; front deschis = F1 etapa 9-11, apoi F2-F7**
 
-**Sesiunea B (testare pe flux, TESTE.md „SESIUNEA B"):** Faza 0 (curățenie prod) ÎNCHISĂ; prod = clean slate
-(cabinete=0, tenants=0, useri=1=id=1). **F1** creată + configurată + preluată **prin interfață**
-(`frontend_test/proba_f1_etape12.py`): etapa 2 (vector micro/TVA-lunar → D300/D394/D112/D100/D406) + etapa 1
-(Σdebit=Σcredit=17000, plan 185, parteneri 2, stoc 5000, 3 salariați) — toți invarianții verificați în DB
-(tenant_049). Fișier de așteptări: `frontend_test/asteptari_f1.md`. **Următorul front: F1 etapele 3-11**
-(documente primare → declarații, regula cascadei), apoi F2-F7. OBS etapa 4: salariu în `salariu_istoric`,
-`salariati.salariu_brut`=0 — de verificat la stat de plată. R2/C5/GARZI cat.1 rămân închise (mai jos).
+**Sesiunea B (testare pe flux, TESTE.md „SESIUNEA B"), F1 (tenant_049), prin interfață:**
+- **Etapele 1-8 ÎNCHISE** cap-coadă: migrare/config (1-2); documente primare (3: D1 emisă + D2 primită SPV +
+  D3 bancă → 4111/401 sold 0); salarizare (4); contabilizare (5: 6 note validate, balanță Σ=25106); sfârșit de
+  lună (6: sept închisă); verificări interne (7: reconciliere VERDE); **declarații-generare (8): D300/D394/D112/
+  D100/D406 toate DUK-valid.** Probe: `frontend_test/proba_f1_etapa[3-8]*.py`.
+- **FINDING SPV↔stoc REPARAT (21.09, decizie Costin opțiunea 1).** `factura_primita_valideaza` →
+  `stocuri_cv_api.intrare_din_factura`: recepția unei facturi de marfă (cont de stoc) creează ȘI cantitatea în
+  fișa de magazie (legată prin factura_id, cantitate-doar → fără dublă notă). Gard
+  `core/test_reconciliere_factura_stoc.py` (5 probe, mutație, probă end-to-end). Temei OMFP 1802/2014.
+  **F1 curățat (campania B):** articol 302→371/607, nota D1 601=302→607=371, cantitatea D2 (20/1000) →
+  **RECONCILIAT: GL 371 = fișă = 5500, 110 buc.** Reparat și bug LIVE NIR-GV (cotă R29 per-linie).
+- **URMĂTORUL FRONT: F1 etapa 9 (depunere)** → 10 (ieșiri externe) → 11 (transversal); apoi F2-F7.
+  Atenție: depunerea la ANAF/SPV pt firmă de test e probabil [EXTERN] — de investigat ce se probează local
+  (mecanismul de depunere/coadă, nu trimiterea reală).
+- **Date de test corectate în tenant_049:** salarii ≥ minim 4325 (4500/5000/4400); COR (522102/331302/432101);
+  articol Marfa A pe 371/607.
+- R2/C5/GARZI cat.1/Faza 0 rămân închise (mai jos).
 
 **Runda 2 a fost redeschisă țintit pe cele trei restanțe TVA rămase (A9/A11/A12). Toate sunt acum închise, four-way.**
 - **A11 — ÎNCHIS** (`eb3d6123`): D300 aplică exigibilitatea IC art.284 alin.(2) (ca D390),

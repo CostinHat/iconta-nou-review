@@ -15499,3 +15499,36 @@ document, două efecte). Temeiul contabil (jurnal de cumpărări ca bază D300) 
 
 **Probă/urmă:** `frontend_test/proba_f1_etapa3_primita.py` + `asteptari_f1_etapa3.md` (FINDING D2);
 naratiune în ISTORIC.md 20.09.
+
+---
+
+## 21.09.2026 — REPARAT finding SPV↔stoc: recepția facturii de marfă mișcă și fișa de magazie (decizie Costin: opțiunea 1)
+
+**PIVOT peste restanța din 20.09** (care documenta finding-ul ca „de revizitat înainte de D406"). Costin,
+21.09: *„D406: opțiunea 1. Repari reconcilierea SPV↔stoc (temeiul contabil și mecanismul concret rămân la
+alegerea ta) înainte de a genera D406/bilanț."* Deci finding-ul NU mai e restanță — e reparat.
+
+**Mecanismul ales (dintre trei):** la validarea unei facturi PRIMITE contate pe un cont de STOC
+(`CONTURI_FOND_EXACT`), se creează ȘI intrarea cantitativă în fișa de magazie din liniile facturii, legată prin
+`factura_id` (`stocuri_cv_api.intrare_din_factura`, apelată din `uc_tenants.factura_primita_valideaza`). O
+singură recepție = notă contabilă (din factură) + cantitate (fișa). Cantitate-DOAR → nota NU se dublează.
+
+**Alternative respinse:** (b) D300 să citească jurnalul de cumpărări în loc de `facturi` — refactor uriaș al
+segmentării D300 (directie/țară/cotă/taxare inversă/IC/pro-rata), risc mare, respins; (c) NIR/CV-intrare să
+creeze `directie='primita'` — ar dubla nota cu factura SPV. Opțiunea aleasă e minimală și fără dublă-contare
+fiindcă `cv_intrare` e cantitate-doar prin design (docstring: „nota de intrare vine din NIR/factură").
+
+**Temei:** OMFP 1802/2014 — recepția mărfii e un act economic unic; evidența cantitativ-valorică (fișa de
+magazie) trebuie să concorde cu contabilitatea sintetică (contul 371). INTERPRETARE CU TEMEI: normele nu
+tranșează explicit legarea automată factură↔fișă în era e-Factură; argument = concordanța obligatorie GL↔fișă,
+alternativă respinsă = două documente nelegate (care produc divergența măsurată). De reconfirmat dacă apare o
+normă care tranșează.
+
+**Probă:** end-to-end `factura_primita_valideaza(cont=371)` → miscari_stoc 20/1000 (factura_id legat) + note
+371=401 1000 / 4426=401 210 (o singură notă). Gard `core/test_reconciliere_factura_stoc.py` (5 probe, mutație
+3 roșii). Norma trăiește în test + GARZI.md.
+
+**Rămâne per-firmă (date vechi):** F1 are cont 302 (materiale) în loc de 371 (marfă) din migrare fără cont_stoc,
+și D2 intrat înainte de fix — curățate în campania B (cont 302→371, nota D1, intrarea D2) pentru un D406/bilanț
+coerent. Observat: defaultul de migrare pentru articole fără cont_stoc e 302, dar `cv_intrare` folosește 371 —
+inconsecvență de default (de urmărit separat, nu blochează).

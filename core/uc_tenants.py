@@ -5220,8 +5220,18 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
                                unde="factura #%s" % fid_final,
                                regula="nota automată se scrie doar când toate intrările ei sunt "
                                       "cunoscute")}
+        # [reconciliere factura->stoc, 21.09.2026] RECEPȚIA CANTITATIVĂ. Dacă factura primită e contată pe
+        # un cont de STOC (371/301/302/303/213), se creează ȘI intrarea în fișa de magazie din liniile
+        # facturii — o singură recepție = notă contabilă (mai sus, din factură) + cantitate (aici).
+        # `intrare_din_factura` e cantitate-DOAR (fără a doua notă) și idempotentă pe factura_id, deci nu
+        # dublează contabilitatea. Fără asta, 371-contabil urca dar fișa nu se mișca (divergență GL↔fișă,
+        # finding SPV↔stoc, DECIZII 20.09). OMFP 1802/2014: recepția mărfii e un act unic.
+        stoc = None
+        if fid_final and cont and any(cont.startswith(p) for p in _cf.CONTURI_FOND_EXACT):
+            from core import stocuri_cv_api as _cv
+            stoc = _cv.intrare_din_factura(conn, schema, fid_final, cont, f.get("data_emitere"))
         conn.commit()
-    return {"stare": "validata", "factura_id": fid_final, "contare": contare}
+    return {"stare": "validata", "factura_id": fid_final, "contare": contare, "stoc": stoc}
 
 
 

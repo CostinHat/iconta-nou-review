@@ -655,3 +655,36 @@ REFUZAT corect contarea ("date probabil corupte") — nu bug, test-data. Corecta
 `#fa-jurnal` (patru-ochi pe rol admin_firma, R55) → **6 validata, 0 ciornă**. Balanță echilibrată
 **Σdebit=Σcredit=25.106** (solduri inițiale 17.000 + note validate); fișa 5121 populată din notele validate
 (ciornele nu apăreau — „fișa se face din note VALIDATE"). Etapele 3-5 = fluxul date→jurnal complet și verificat.
+
+**Etapele 6-8 (F1, prin interfață/generatoare).**
+- **Etapa 6 (Sfârșit de lună):** luna septembrie ÎNCHISĂ prin `#fac-inchide` (`facturi/perioada/confirma`,
+  confirmat=True). Pentru F1 (comerț micro): amortizare N/A (fără mijloace fixe), CMP descărcat per-factură.
+- **Etapa 7 (Verificări interne):** Control fiscal (`#fa-control`) se randează; verdict = **roșu DOAR din
+  declarații nedepuse** (28 lipsă, corect pre-etapa 8), **reconciliere_surse VERDE**, fără corupție de date.
+- **Etapa 8 (Declarații — generare, parțial):** D300/D394/D112/D100 generate pe fluxul F1 și validate pe
+  **DUK = toate 'valid'**. D300 TVA plată 0 (colectat 210/deductibil 210); D394 1 livrare+1 achiziție; D112
+  impozit 688/CAS 3475/CASS 1390/CAM 313 (total control 5866); D100 micro 10 (1% × venit 1000, totalPlata_A
+  20 = checksum R11b). Precondiții completate ca date de test: COR (522102/331302/432101). Fals-alarmă
+  investigată și închisă: totalPlata_A=20 la D100 e checksum de structură (2×suma), nu bug (d100.py:181).
+- **D406 (SAF-T) = STOP:** finding SPV↔stoc (achizițiile de stoc nu ajung la D300/nu mișcă cantitatea) —
+  marcaj de revizitare obligatorie înainte de D406/bilanț (DECIZII). Decizie Costin înainte de a genera D406.
+
+## 21.09.2026 — REPARAT finding SPV↔stoc (decizie Costin opțiunea 1); F1 reconciliat; etapa 8 completă (D406 valid)
+
+**Campania A (cod + gard).** `factura_primita_valideaza` (uc_tenants) apelează acum
+`stocuri_cv_api.intrare_din_factura` când factura primită e contată pe un cont de STOC (`CONTURI_FOND_EXACT`
+371/301/302/303/213): o singură recepție = notă contabilă (din factură: 371=401, 4426=401 → D300) + cantitate
+în fișa de magazie (legată prin `factura_id`). `intrare_din_factura` e cantitate-DOAR (nota vine din factură →
+nu se dublează) + idempotentă + potrivește articolul pe denumire. Temei OMFP 1802/2014 (recepția = act unic;
+concordanța GL↔fișă). Gard `core/test_reconciliere_factura_stoc.py` (5 probe; mutație = golirea intrării → 3
+roșii; probă end-to-end pe schemă efemeră: validare cont 371 → miscari_stoc 20/1000 + note 371=401/4426=401).
+Alternative respinse: D300 din jurnal (refactor uriaș), NIR creează primită (dublă notă) — vezi DECIZII.
+
+**Campania B (curățare date F1).** F1 avea o inconsistență de cont: opening GL 371=5000, dar articolul migrat pe
+302 (materiale) — CSV fără cont_stoc → default 302; descărcarea D1 ieșise 601=302. Curățat la 371 (comerț marfă):
+articol 302→371/607, nota D1 601=302→607=371, cantitatea D2 intrată (20/1000 prin `intrare_din_factura`).
+**RECONCILIAT: GL 371 = fișă 371 = 5.500, cantitate 110 buc.** Observat (de urmărit separat): defaultul de
+migrare pt articole fără cont_stoc e 302, dar `cv_intrare` folosește 371 — inconsecvență de default.
+
+**Etapa 8 COMPLETĂ.** D300/D394/D112/D100/**D406** toate DUK-valid pe F1 reconciliat (D406 SAF-T 96KB, valid).
+Cascada reia: etapa 9 (depunere) → 10 (ieșiri externe) → 11 (transversal); apoi F2-F7.

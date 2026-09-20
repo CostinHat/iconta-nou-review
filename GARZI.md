@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**615 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**616 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 584
+### `core/` — 585
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9283,6 +9283,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_reaprindere.py` — GARD: o restanță al cărei DECLANȘATOR s-a produs nu poate rămâne nereluată.
 - `core/test_reconciliere.py` — —
 - `core/test_reconciliere_d100_wiring.py` — core/test_reconciliere_d100_wiring.py - GARD end-to-end pentru reconcilierea D100 pe semafor
+- `core/test_reconciliere_factura_stoc.py` — GARD (reconciliere factură->stoc, 21.09.2026): validarea unei facturi PRIMITE de marfă creează ȘI
 - `core/test_reconciliere_vie.py` — META-GARD (LANT legislatie TURA 4, 10.08.2026): NICIO reconciliere sursa-vs-declaratie nu moare tacit.
 - `core/test_reevaluare_registru.py` — R59 — reevaluarea ajunge pe registrul care conduce amortizarea, SI in declaratie.
 - `core/test_refuz_generator_422.py` — GARD (D6, 20.08.2026): un generator care REFUZĂ motivat nu are voie să ajungă la contabil ca 500 gol.
@@ -9678,3 +9679,26 @@ tăcut rămâne, dar PE LINIE.
 **Limită declarată:** clasa „motor multi-linie cu gardă pe cotă globală, deși cota e per-linie" are
 o singură instanță (`nir_gv`); celelalte ~24 de raise-uri „Cota de TVA nu s-a dat" sunt funcții pe
 operațiune unică (cotă scalară) — R29 corect, neatinse.
+
+
+---
+
+# `core/test_reconciliere_factura_stoc.py` — recepția facturii de marfă mișcă ȘI fișa de magazie
+
+*(21.09.2026, Sesiunea B — finding SPV↔stoc, reparat)* Validarea unei facturi PRIMITE de marfă crea nota
+contabilă (371=401, 4426=401 → D300) dar **nu** mișca fișa de magazie (`miscari_stoc`). Rezultat: 371-contabil
+urca, fișa nu → **divergență GL↔fișă**, iar D406/SAF-T și bilanțul ar fi ieșit incoerente. Simetric, o achiziție
+intrată doar pe stoc (NIR/CV) nu ajungea în D300 (care citește doar `facturi`).
+
+**Reparat:** `factura_primita_valideaza` (uc_tenants) apelează `stocuri_cv_api.intrare_din_factura` când factura
+e contată pe un cont de STOC (`CONTURI_FOND_EXACT` 371/301/302/303/213) — o singură recepție = notă (din factură)
++ cantitate (fișa). `intrare_din_factura` e **cantitate-DOAR** (nota vine din factură → NU se dublează) și
+**idempotentă** pe `factura_id`; potrivește articolul pe denumire (altfel îl creează).
+
+**Gardul (5 probe):** intrarea mișcă fișa cu valoarea notei; idempotență; potrivire articol (fără duplicat);
+hook-ul structural (`intrare_din_factura` + `CONTURI_FOND_EXACT` în validare). Mutație (golirea intrării) = 3
+roșii. Probă end-to-end: `factura_primita_valideaza(cont=371)` → miscari_stoc 20/1000 + note 371=401/4426=401.
+
+**Limită declarată:** potrivirea articolului e pe denumire exactă (case-insensitive); denumiri diferite pt același
+bun → articole separate (calitate de date, nu corectitudine). Reconcilierea GL↔fișă pe date VECHI (dinainte de
+fix) rămâne responsabilitatea curățării per-firmă (ex. F1: cont 302→371 + intrarea D2, campania B).

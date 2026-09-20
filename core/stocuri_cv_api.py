@@ -50,7 +50,7 @@ def fisa(conn, schema, articol_id):
                       for l in linii]}
 
 
-def intrare(conn, schema, corp):
+def intrare(conn, schema, corp, factura_id=None):
     """corp: {articol_id | denumire+um+cont_stoc+cont_cheltuiala, data, cantitate,
     pret_unitar, document?}. Nota de intrare vine din NIR/factură — aici doar mișcarea."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -67,12 +67,48 @@ def intrare(conn, schema, corp):
             return {"eroare": "cantitate/preț invalide"}
         val = (cant * pret).quantize(Decimal("0.01"))
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
-                        (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie)
-                        VALUES (%s,%s,'intrare',%s,%s,%s,%s,%s) RETURNING id""",
+                        (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie, factura_id)
+                        VALUES (%s,%s,'intrare',%s,%s,%s,%s,%s,%s) RETURNING id""",
                     (aid, corp["data"], cant, pret, val, corp.get("document"),
-                     corp.get("locatie") or None))
+                     corp.get("locatie") or None, factura_id))
         mid = cur.fetchone()["id"]
     return {"id": mid, "articol_id": aid, "valoare": str(val)}
+
+
+def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuiala=None):
+    """[reconciliere factura->stoc] Recepția CANTITATIVĂ a unei facturi PRIMITE de marfă: creează intrarea
+    în fișa de magazie (miscari_stoc) din liniile facturii, legată prin `factura_id`. Cantitate-DOAR — nota
+    contabilă (371=401, 4426=401) vine deja din factură (contare_facturi), deci NU se dublează. O singură
+    recepție = notă (din factură) + cantitate (aici). Fără asta, 371-contabil urcă dar fișa nu se mișcă
+    (divergență GL↔fișă). OMFP 1802/2014: recepția mărfii e un act unic; evidența cantitativ-valorică
+    concordă cu contabilitatea sintetică.
+    Idempotent pe `factura_id` (o a doua chemare nu creează a doua intrare). Potrivește articolul pe
+    denumire (case-insensitive); dacă nu există, îl creează (ca `intrare`)."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT 1 FROM {schema}.miscari_stoc WHERE factura_id=%s AND tip='intrare' LIMIT 1",
+                    (factura_id,))
+        if cur.fetchone():
+            return {"stare": "deja_intrat", "factura_id": factura_id, "linii": 0}
+        cur.execute(f"""SELECT descriere, cantitate, pret_unitar FROM {schema}.factura_linii
+                        WHERE factura_id=%s ORDER BY id""", (factura_id,))
+        brute = []
+        for l in cur.fetchall():
+            den = (l["descriere"] or "").strip()
+            cant = Decimal(str(l["cantitate"] or 0))
+            pret = Decimal(str(l["pret_unitar"] or 0))
+            if not den or cant <= 0:
+                continue
+            cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s) LIMIT 1", (den,))
+            row = cur.fetchone()
+            brute.append((row["id"] if row else None, den, cant, pret))
+    n = 0
+    for aid, den, cant, pret in brute:
+        intrare(conn, schema, {"articol_id": aid, "denumire": den, "cantitate": str(cant),
+                               "pret_unitar": str(pret), "cont_stoc": cont_stoc,
+                               "cont_cheltuiala": cont_cheltuiala, "data": str(data),
+                               "document": "factură primită #%s" % factura_id}, factura_id=factura_id)
+        n += 1
+    return {"stare": "intrat", "factura_id": factura_id, "linii": n}
 
 
 def iesire(conn, schema, corp, factura_id=None):

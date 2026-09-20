@@ -1,2 +1,2 @@
-denumire,um,cantitate,pret unitar
-Marfa A,buc,100,50
+denumire,um,cantitate,pret unitar,cont_stoc,cont_cheltuiala
+Marfa A,buc,100,50,371,607

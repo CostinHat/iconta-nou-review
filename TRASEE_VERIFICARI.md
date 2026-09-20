@@ -729,7 +729,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
 
-*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie factura_linii (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`*
+*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie factura_linii (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
 
 - [x] cine validează e consemnat, și e diferit de cine a importat dacă patru ochi e activ și posibil
 - factura creată poartă legătura către ciorna din care a ieșit — lanțul nu se rupe

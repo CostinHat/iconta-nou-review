@@ -79,9 +79,21 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 - ultim: **F1 etapa 5 (Contabilizare) GATA (20.09)** (`frontend_test/proba_f1_etapa5.py` + asteptari_f1_etapa5.md):
   toate 6 note ciorna validate prin jurnal (#fa-jurnal, patru-ochi rol admin_firma) -> 6 validata, 0 ciorna.
   Balanta echilibrata Σdebit=Σcredit=25106 (solduri initiale + note validate); fisa 5121 populata (ciornele nu apareau).
-- urmator: **F1 etapa 6 (Sfarsit de luna)** apoi 7-11. OBS: pt F1 (comert micro, fara mijloace fixe) etapa 6 e subtire -
-  amortizare N/A, CMP descarcat per-factura; inchiderea lunii optionala (poate_confirma=True, blocaj=None).
-  OBS D112 (etapa 8): salariati.cor gol pe toti 3 - obligatoriu, de completat. STARE = NEINCEPUT
+- ultim: **F1 etapa 6 (Sfarsit de luna) GATA (20.09)** (proba_f1_etapa6.py): luna septembrie INCHISA prin
+  #fac-inchide (confirmat=True). Amortizare N/A (fara mijloace fixe); CMP descarcat per-factura.
+- ultim: **F1 etapa 7 (Verificari interne) GATA (20.09)** (proba_f1_etapa7.py): Control fiscal se randeaza;
+  verdict = rosu DOAR din declaratii nedepuse (28 lipsa, corect pre-etapa 8), reconciliere_surse VERDE, fara coruptie.
+- ultim: **F1 etapa 8 (Declaratii-generare) PARTIAL GATA (20.09)** (proba_f1_etapa8.py): D300/D394/D112/D100
+  generate pe fluxul F1 + validate pe DUK = toate 'valid'. D300 TVA plata 0; D394 1 livrare+1 achizitie;
+  D112 impozit 688/CAS 3475/CASS 1390/CAM 313; D100 micro 10 (1% x venit 1000). Precond: COR completat (522102/331302/432101).
+- ultim: **REPARAT finding SPV↔stoc (21.09, decizie Costin optiunea 1)**: `factura_primita_valideaza` ->
+  `stocuri_cv_api.intrare_din_factura` (cont de stoc -> creeaza si cantitatea in fisa, legata factura_id,
+  cantitate-doar). Gard `core/test_reconciliere_factura_stoc.py` (5 probe, mutatie 3 rosii, proba end-to-end
+  miscari_stoc 20/1000 + note 371=401/4426=401). Temei OMFP 1802/2014 (receptie = act unic).
+- ultim: **F1 CURATAT (campania B)**: articol Marfa A 302->371/607 (comert marfa = opening 371), nota D1 601=302->607=371,
+  cantitatea D2 intrata (20/1000). RECONCILIAT: GL 371 = fisa 371 = 5500, cantitate 110 buc.
+- ultim: **F1 etapa 8 COMPLETA (21.09)**: D300/D394/D112/D100/**D406** toate DUK-valid pe F1 reconciliat.
+- urmator: **F1 etapa 9 (Declaratii - depunere)** apoi 10 (iesiri externe), 11 (transversal); apoi F2-F7. STARE = NEINCEPUT
 - pasi Faza 0:
   1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
   2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).
@@ -835,9 +847,9 @@ Etapele fluxului (Faza 1), `√ DD.MM` = etapa are teste cap-coadă pe o firmă:
 | 3. Intrare documente primare | **F1 √ 20.09** (D1 emisă 1210 + D2 primită SPV 1210 + D3 bancă; D300 TVA plată 0; finding SPV↔stoc = restanță) |
 | 4. Salarizare | **F1 √ 20.09** (stat din istoric 4500/5000/4400; contare 641=421 13900; corectat date sub salariul minim 4325) |
 | 5. Contabilizare | **F1 √ 20.09** (6 note ciornă→validate; balanță Σ=25106; fișe populate) |
-| 6. Sfârșit de lună | |
-| 7. Verificări interne | |
-| 8. Declarații — generare | |
+| 6. Sfârșit de lună | **F1 √ 20.09** (luna sept închisă; amortizare N/A, CMP per-factură) |
+| 7. Verificări interne | **F1 √ 20.09** (control fiscal: reconciliere VERDE; roșu doar din declarații nedepuse) |
+| 8. Declarații — generare | **F1 √ 21.09** (D300/D394/D112/D100/D406 toate DUK-valid; finding SPV↔stoc REPARAT + F1 reconciliat GL=fișă 5500) |
 | 9. Declarații — depunere | |
 | 10. Ieșiri externe | |
 | 11. Transversal | |
