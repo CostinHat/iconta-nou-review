@@ -632,3 +632,11 @@ R9=1000/210 colectat (D1) + R22=1000/210 deductibil (D2) → TVA de plată = 0**
 deși 371-contabil urcă la 5.500 → **divergență 1.000** între cartea mare și fișa de magazie. SPV=D300+valoare;
 cantitatea=separat prin NIR/CV, care ar DUBLA nota 371/4426. Nicio cale non-SPV nu alimentează D300 cu
 deductibila de stoc. Decizia despre reconciliere/legare = a lui Costin (nedeschis campanie de reparație).
+
+**D3 (extras bancar) prin interfață — ETAPA 3 ÎNCHISĂ.** `frontend_test/proba_f1_etapa3_banca.py` +
+`extras_f1.csv`: import extras (2 linii) → contare. Note: 5121=4111 1.210 (încasare client 410001005) +
+401=5121 1.210 (plată furnizor 420002008). Banca ÎNCHIDE soldurile: **4111 sold 0, 401 sold 0** (verificat
+în DB). Etapa 3 = D1 emisă + D2 primită (SPV) + D3 bancă, toate prin interfață. Finding D2 (SPV↔stoc)
+consemnat ca restanță în DECIZII (marcaj D406/bilanț). Decizie Costin: cascada continuă.
+**Observație etapa 1 (de verificat la D406/bilanț):** Marfa A a migrat cu cont_stoc=302/cont_cheltuiala=601
+(materiale), nu 371/607 (mărfuri) — CSV fără coloană cont_stoc → default 302; descărcarea D1 iese 601=302.

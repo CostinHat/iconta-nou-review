@@ -66,9 +66,13 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 - FINDING D2 (masurat, NU reparat - decizie Costin): SPV NU misca stocul CANTITATIV (ramane 90 buc), desi
   371-contabil urca la 5500 -> divergenta 1000 carte mare vs fisa magazie. Nicio cale non-SPV nu alimenteaza
   D300 cu deductibila de stoc. Reconcilierea/legarea = decizie Costin.
-- urmator: **F1 etapa 3 D3 (extras bancar)** apoi etapa 4 (salarizare). Regula cascadei: D1+D2 OK (D300 corect),
-  finding D2 nu rupe declaratia. OBS etapa 4: salariu_brut=0, salariul in salariu_istoric — verifica stat de plata.
-  STARE = D3 NEINCEPUT (asteapta decizia Costin pe finding D2 inainte de a continua cascada?)
+- ultim: **F1 etapa 3 D3 (extras bancar) GATA (20.09)** (`frontend_test/proba_f1_etapa3_banca.py` + extras_f1.csv):
+  import extras (5121=4111 1210 incasare + 401=5121 1210 plata) -> banca INCHIDE soldurile: 4111 sold 0, 401 sold 0.
+  ETAPA 3 INCHISA (D1 emisa + D2 primita SPV + D3 banca). Finding D2 (SPV↔stoc) documentat in DECIZII (restanta, marcaj D406/bilant).
+- OBS etapa 1 (de verificat): Marfa A a migrat cu cont_stoc=302/cont_cheltuiala=601 (materiale), nu 371/607 (marfa) -
+  CSV fara coloana cont_stoc -> default 302; descarcarea D1 iese 601=302. De revizitat la D406/bilant (clasificare marfa vs materiale).
+- urmator: **F1 etapa 4 (salarizare)**. OBS: salariu_brut=0 pe salariat, salariul in salariu_istoric (DS v2.33) —
+  verifica stat de plata ca baza se citeste din istoric, nu ca baza lipsa. STARE = NEINCEPUT
 - pasi Faza 0:
   1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
   2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).

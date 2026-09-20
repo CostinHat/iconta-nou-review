@@ -15467,3 +15467,35 @@ pe tot NIR-ul, contra R29 (cote diferite pe linii diferite).
 **Probă:** `nir_gv([{...,"cota_tva":21}])` (fără global) → `tva_deductibila=21.00`, note 4426=401
 210.00 pe adauga_nir/schema efemeră; înainte: `eroare="Cota de TVA nu s-a dat"`. Norma trăiește în
 `core/test_stocuri.py` (3 garduri) — vezi GARZI.md.
+
+---
+
+## 20.09.2026 — RESTANȚĂ URMĂRITĂ: achizițiile de stoc și D300 sunt două documente nereconciliate (Sesiunea B, F1 etapa 3 D2)
+
+**NU se repară acum. Decizie de a documenta ca restanță, nu de a deschide campanie** (Costin, 20.09).
+
+**Ce am măsurat (proba concretă, F1 etapa 3 D2, tenant_049):** o factură primită de marfă intră în
+sistem DOAR prin SPV (`facturi_primita_valideaza` → `contare_facturi.genereaza_note`), care creează
+`facturi(directie='primita')` + notele **371=401 1.000 / 4426=401 210** → alimentează D300. Măsurat prin
+calea reală (efactura_primite inserat + validat prin UI, cont 371): **D300 sept. R9=1.000/210 colectat
+(D1) + R22=1.000/210 deductibil (D2) → TVA de plată = 0.** DAR validarea SPV **NU** atinge `miscari_stoc`:
+cantitatea rămâne 90 buc (din D1), deși 371-contabil urcă la 5.500 → **divergență 1.000** carte-mare vs
+fișă-de-magazie. Simetric, calea de stoc (NIR-GV / CV-intrare) scrie propriile note 371/4426 în jurnal dar
+**nu** creează `directie='primita'`, iar D300 citește deductibila DOAR din `facturi` (`repo_d300.select_facturi_2/4`)
+→ o achiziție intrată doar pe stoc **lipsește din D300**.
+
+**De ce nu rupe nimic ACUM:** pe fluxul testat (achiziție via SPV), D1+D2 dau **D300 corect** (TVA de plată
+= 0). Declarația care pleacă la ANAF e corectă. Riscul e la **integritatea stoc↔contabilitate** și la
+**dubla-contare** dacă contabilul intră aceeași achiziție și prin SPV și prin NIR.
+
+**⚠️ DE REVIZITAT OBLIGATORIU înainte de testarea D406/SAF-T și a bilanțului în Sesiunea B.** Acolo
+divergența 371-contabil vs fișă-de-magazie și lipsa reconcilierii SPV↔stoc pot produce cifre greșite
+(SAF-T stocuri, active din bilanț). Fără reconcilierea acestui punct, acele etape nu se pot declara închise.
+
+**Alternative de reparație (pentru decizia separată, NU acum):** (a) NIR/CV-intrare să creeze și
+`directie='primita'` (risc dublă-contare cu SPV); (b) D300 să citească deductibila din jurnalul de
+cumpărări (rulaj 4426 validat), nu doar din `facturi`; (c) legare/reconciliere explicită SPV↔NIR (un
+document, două efecte). Temeiul contabil (jurnal de cumpărări ca bază D300) se stabilește la acea decizie.
+
+**Probă/urmă:** `frontend_test/proba_f1_etapa3_primita.py` + `asteptari_f1_etapa3.md` (FINDING D2);
+naratiune în ISTORIC.md 20.09.
