@@ -52,8 +52,11 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   Corectii la sursa: produse exclus (fara camp de cod), articole=barcode, solduri_parteneri=(cont,cui).
   `core/migrare_intrare_date_garduri.py` + tenant_template (20 scheme + test). Gard-ratchet
   `core/test_intrare_date_garduri.py` (6, + mutatie pe template -> RED). Whitelist: 7 coloane legitim nullable.
-- urmator: **SUB-LOTUL 2** — `mijloace_fixe` UNIQUE(cod): intai se ARATA duplicatul din tenant_003 (ce randuri,
-  ce difera), fara a alege care ramane; apoi curatare + UNIQUE(cod). STARE = SUB-LOT 1 gata (se publica), SUB-LOT 2 urmeaza
+- ultim: **SUB-LOTUL 2 GATA (20.09)**: sters 8 randuri de proba NEC-SOF din tenant_003 (decizia a, zero FK,
+  reziduu E2-F) + UNIQUE(cod) pe mijloace_fixe (20 scheme + tenant_template) + scos din whitelist ratchet
+  (mutatie: scos UNIQUE din template -> ratchet RED). DECIZII 59.
+- urmator: **INCHIS** — GARZI cat.1 acoperit (sub-lot 1+2). Ramane doar `produse` fara cheie (fara camp de cod),
+  in whitelist cu motiv = decizie de schema deschisa. STARE = INCHIS (ambele sub-loturi publicate)
 - fir: **C5 — import extras bancar neidempotent** (20.09.2026, comanda „deschide firul C5 §2.1"). **INCHIS 20.09** (four-way c1e9cc69).
   Restanta C5 din RAPORT_AUDIT_INDEPENDENT_2026-09-17.md: reimportul aceluiasi extras (dublu-click /
   raspuns pierdut dupa commit) insereaza toate liniile a doua oara -> `extras_linii` dublate ->

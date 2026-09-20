@@ -1,3 +1,15 @@
+## 20.09.2026 — GARZI cat.1 sub-lotul 2: mijloace_fixe UNIQUE(cod) (după curățare duplicat proba tenant_003)
+
+**Pentru un contabil:** un mijloc fix nu se mai poate dubla pe același cod de inventar la reimport — codul
+e unic. Înainte, un import repetat putea crea același activ de mai multe ori.
+
+**Ce s-a făcut (tehnic).** GARZI cat.1 sub-lotul 2 (decizia Costin 20.09, DECIZII 59). tenant_003 avea 8
+rânduri `NEC-SOF` identice (reziduu din rulări repetate ale testului E2-F, zero FK) — șterse (varianta a,
+niciunul activ real). Apoi `UNIQUE(cod)` pe `mijloace_fixe` (migrare pe 20 scheme + tenant_template),
+`mijloace_fixe` scos din whitelist-ul ratchet `core/test_intrare_date_garduri.py` (mutație: scos UNIQUE
+din template → ratchet RED). Rămâne `produse` singurul tabel de import fără cheie (fără câmp de cod,
+decizie de schemă deschisă). Vezi DECIZII (59), GARZI cat.1.
+
 ## 20.09.2026 — GARZI cat.1 sub-lotul 1: NOT NULL pe bani + chei naturale UNIQUE pe import
 
 **Pentru un contabil:** două clase de greșeli tăcute devin acum imposibile la nivelul bazei. (1) O sumă

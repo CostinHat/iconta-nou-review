@@ -46,6 +46,7 @@ UNIQUE = [
     ("furnizori", "furnizori_cui_uniq", "cui"),
     ("state_plata", "state_plata_sal_luna_ex_uniq", "salariat_id, luna, exemplar"),
     ("articole", "articole_barcode_uniq", "barcode"),
+    ("mijloace_fixe", "mijloace_fixe_cod_uniq", "cod"),  # sub-lotul 2, dupa curatarea duplicatului tenant_003
 ]
 
 

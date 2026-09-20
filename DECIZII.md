@@ -3,6 +3,25 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 20.09.2026 (59) — GARZI cat.1 sub-lotul 2: mijloace_fixe UNIQUE(cod), dupa curatarea unui duplicat de proba
+
+**Context.** Sub-lotul 1 (58) a lasat `mijloace_fixe` fara UNIQUE(cod) fiindca tenant_003 avea un duplicat.
+
+**Ce era.** tenant_003.mijloace_fixe avea 8 randuri cu `cod='NEC-SOF'`, TOATE identice (denumire
+„PROBA-E2-F licenta software", valoare 1000, cont 208/2808), diferind DOAR prin `creat_la` — reziduu din
+8 rulari repetate ale testului E2-F. Zero FK catre mijloace_fixe (stergere curata). Niciun activ real.
+
+**DECIZIE (Costin, 20.09): varianta (a)** — sterge toate cele 8 randuri de proba (niciunul reprezinta un
+activ real), apoi UNIQUE(cod) pe mijloace_fixe (migrare 20 scheme + tenant_template), scoate mijloace_fixe
+din whitelist-ul ratchet. Nu am ales eu care ramane (cerinta lui Costin) — le-am aratat, el a decis (a).
+
+**TEMEI.** N/A — integritate tehnica. Curatarea e de date de PROBA pe firma de test tenant_003, nu date reale.
+
+**ALTERNATIVA RESPINSA (b).** Pastreaza un rand (ex. id=2) + sterge 7 — inutil, toate 8 sunt proba identica.
+
+**LIMITA.** `produse` ramane singurul tabel de import fara cheie naturala (fara camp de cod), in
+whitelist cu motiv — decizie de schema deschisa (adaugare coloana cod), separata.
+
 ## 20.09.2026 (58) — GARZI cat.1 sub-lotul 1: NOT NULL pe bani + chei naturale UNIQUE pe import
 
 **Ce era gresit.** GARZI cat.1 (Intrare date), LIPSA linia 69-70: nicio garda mecanica pe „NOT NULL pe

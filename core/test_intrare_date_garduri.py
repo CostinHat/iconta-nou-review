@@ -51,7 +51,6 @@ IMPORT_TABLES = ("efactura_primite", "extras_import", "solduri_initiale", "soldu
 # Tabele de import DECLARATE fara cheie naturala, cu motiv (whitelist ratchet).
 FARA_CHEIE_OK = {
     "produse": "fara camp de cod (nici cod, nici barcode) — decizie de schema deschisa",
-    "mijloace_fixe": "sub-lotul 2 — duplicat real de cod in tenant_003, dupa curatare primeste UNIQUE(cod)",
 }
 
 

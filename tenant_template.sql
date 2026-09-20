@@ -2642,3 +2642,4 @@ ALTER TABLE TENANT_PLACEHOLDER.clienti ADD CONSTRAINT clienti_cui_uniq UNIQUE (c
 ALTER TABLE TENANT_PLACEHOLDER.furnizori ADD CONSTRAINT furnizori_cui_uniq UNIQUE (cui);
 ALTER TABLE TENANT_PLACEHOLDER.state_plata ADD CONSTRAINT state_plata_sal_luna_ex_uniq UNIQUE (salariat_id, luna, exemplar);
 ALTER TABLE TENANT_PLACEHOLDER.articole ADD CONSTRAINT articole_barcode_uniq UNIQUE (barcode);
+ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ADD CONSTRAINT mijloace_fixe_cod_uniq UNIQUE (cod);

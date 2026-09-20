@@ -71,11 +71,12 @@ cotă TVA inexistentă la data documentului; semn inversat.
   naturală nedeclarat PICĂ. Constrângeri livrate (`core/migrare_intrare_date_garduri.py` + tenant_template):
   NOT NULL pe 13 coloane de bani (cat. A+B); UNIQUE natural pe efactura_primite(id_mesaj_anaf),
   solduri_initiale(cont), solduri_parteneri(cont,cui), asociati(cnp), clienti(cui), furnizori(cui),
-  state_plata(salariat_id,luna,exemplar), articole(barcode). Whitelist declarat: 7 coloane legitim
-  nullable (curs valutar pe RON, venituri_6_luni).
-- LIPSĂ (sub-lotul 2): `mijloace_fixe` UNIQUE(cod) — blocat pe un duplicat real de cod în tenant_003,
-  de curățat întâi. `produse` — fără câmp de cod (nici cod, nici barcode), decizie de schemă deschisă.
-  Ambele în whitelist-ul gardului, cu motiv.
+  state_plata(salariat_id,luna,exemplar), articole(barcode), **mijloace_fixe(cod)** (sub-lotul 2, 20.09,
+  după curățarea a 8 rânduri de proba din tenant_003). Whitelist declarat: 10 coloane legitim nullable
+  (curs valutar pe RON, venituri_6_luni, + 3 excluse la poartă: miscari_stoc.pret_unitar,
+  salariati.salariu_brut, registre_art321.valoare — au căi de INSERT cu NULL legitim).
+- LIPSĂ: `produse` — singurul tabel de import fără cheie naturală (fără câmp de cod, nici barcode);
+  în whitelist-ul gardului cu motiv, decizie de schemă deschisă (adăugare coloană cod).
 
 ### 2. Graniță cod–bază
 **Eșec:** query pe coloană/tabel inexistent; drift între schema unui tenant și template.
