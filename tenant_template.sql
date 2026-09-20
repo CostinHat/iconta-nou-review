@@ -2610,3 +2610,35 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registre_art321 (
     creat_la               timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT registre_art321_ordine_unica UNIQUE (fel, nr_ordine)
 );
+
+
+--
+-- [GARZI cat.1, 20.09.2026] Intrare date, sub-lotul 1: NOT NULL pe coloanele de bani (categoriile A+B)
+-- + chei naturale UNIQUE pe tabelele de import CURATE. Sursa unica a DDL-ului = core/migrare_intrare_date_garduri.py
+-- (aceleasi coloane/constrangeri, aplicate pe tenantii existenti). In PostgreSQL UNIQUE trateaza NULL ca
+-- distinct => unic pe non-NULL, NULL-uri nelimitate (PF fara CUI, articol fara barcode). EXCLUSE (whitelist,
+-- vezi core/test_intrare_date_garduri.py): produse (fara camp de cod), mijloace_fixe (sub-lotul 2), si
+-- coloanele legitim nullable (curs valutar pe RON, venituri_6_luni).
+--
+ALTER TABLE TENANT_PLACEHOLDER.bonuri ALTER COLUMN total SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.bonuri ALTER COLUMN tva_11 SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.bonuri ALTER COLUMN tva_21 SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN baza SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN brut_ang SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN brut_fnuass SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN cas SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN cass SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN impozit SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN net SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.d301_operatiuni ALTER COLUMN tva SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.plan_conturi ALTER COLUMN sold_creditor SET NOT NULL;
+ALTER TABLE TENANT_PLACEHOLDER.plan_conturi ALTER COLUMN sold_debitor SET NOT NULL;
+
+ALTER TABLE TENANT_PLACEHOLDER.efactura_primite ADD CONSTRAINT efactura_primite_msg_uniq UNIQUE (id_mesaj_anaf);
+ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale ADD CONSTRAINT solduri_initiale_cont_uniq UNIQUE (cont);
+ALTER TABLE TENANT_PLACEHOLDER.solduri_parteneri ADD CONSTRAINT solduri_parteneri_cont_cui_uniq UNIQUE (cont, cui);
+ALTER TABLE TENANT_PLACEHOLDER.asociati ADD CONSTRAINT asociati_cnp_uniq UNIQUE (cnp);
+ALTER TABLE TENANT_PLACEHOLDER.clienti ADD CONSTRAINT clienti_cui_uniq UNIQUE (cui);
+ALTER TABLE TENANT_PLACEHOLDER.furnizori ADD CONSTRAINT furnizori_cui_uniq UNIQUE (cui);
+ALTER TABLE TENANT_PLACEHOLDER.state_plata ADD CONSTRAINT state_plata_sal_luna_ex_uniq UNIQUE (salariat_id, luna, exemplar);
+ALTER TABLE TENANT_PLACEHOLDER.articole ADD CONSTRAINT articole_barcode_uniq UNIQUE (barcode);

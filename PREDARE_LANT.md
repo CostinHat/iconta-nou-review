@@ -4,10 +4,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-20**, după închiderea **C5** (import extras bancar idempotent). Toate
-  cele trei restanțe TVA R2 (A9/A11/A12) sunt ÎNCHISE, iar **C5** (restanță C din audit) e închisă în
-  aceeași zi, la cererea țintită a lui Costin. *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
-- **pe commit**: `6cbd20bb` (ultimul four-way publicat înainte de C5: A12b + predare). *C5 se publică ACUM, peste acest commit; predarea reflectă starea de DUPĂ C5, iar four-way-ul exact al lui C5 e în raportul §11.*
+- **ultima rescriere**: **2026-09-20**, după **GARZI cat.1 sub-lotul 1** (NOT NULL pe bani + chei naturale
+  UNIQUE pe import). Închise azi, la cereri țintite ale lui Costin: restanțele TVA R2 (A9/A11/A12), **C5**
+  (import extras idempotent), **GARZI cat.1 sub-lotul 1**. *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
+- **pe commit**: `c1e9cc69` (ultimul four-way publicat: C5). *GARZI cat.1 sub-lotul 1 se publică ACUM, peste acest commit; predarea reflectă starea de DUPĂ, iar four-way-ul exact e în raportul §11.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -19,7 +19,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **toate cele trei restanțe TVA (A9/A11/A12) sunt ÎNCHISE; agenda e goală**
+## PRIMUL LUCRU DE ȘTIUT: **R2 + C5 + GARZI cat.1 sub-lotul 1 ÎNCHISE; frontul deschis = GARZI cat.1 sub-lotul 2 (mijloace_fixe)**
 
 **Runda 2 a fost redeschisă țintit pe cele trei restanțe TVA rămase (A9/A11/A12). Toate sunt acum închise, four-way.**
 - **A11 — ÎNCHIS** (`eb3d6123`): D300 aplică exigibilitatea IC art.284 alin.(2) (ca D390),
@@ -32,10 +32,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   destinația (taxabil/scutit/mixt) per linie pe ecranul de validare SPV (`facturi_ecran.primitaDetaliu`),
   default taxabil. DS cap.28 + gard verificator `CLASIF_SELECT`.
 
-**`core.agenda.urmator_cluster()` întoarce `[null, 0, 0]` — nu mai există cluster în agendă.** Lanțul de
-execuție autonomă s-a încheiat: R2 e complet. Dacă deschizi documentul fără comandă: **nu e nimic în
-așteptare în agendă**; lanțul e în AȘTEPTAREA FOLOSIRII / a unei direcții noi de la Costin — v. **0Z**.
-Datoria rămasă (nu piste de execuție autonomă) e mai jos, „Ce a rămas deschis".
+**`core.agenda.urmator_cluster()` întoarce `[null, 0, 0]` — nu mai există cluster în agendă** (lucrările de
+azi vin din cereri țintite ale lui Costin, nu din lanțul autonom). **Frontul deschis, explicit: GARZI cat.1
+sub-lotul 2** — `mijloace_fixe` UNIQUE(cod), BLOCAT pe un duplicat real de cod în **tenant_003** (de arătat
+întâi — ce rânduri, ce diferă — fără a alege care rămâne; apoi curățare + UNIQUE(cod)). `produse` rămâne fără
+cheie (fără câmp de cod, decizie de schemă). Ambele sunt în whitelist-ul gardului `core/test_intrare_date_garduri.py`,
+cu motiv. Dacă deschizi documentul fără comandă: sub-lotul 2 e ce așteaptă. Restul datoriei — mai jos, „Ce a rămas deschis".
 
 **Lanțul, întreg, cu commitul de închidere al fiecărei etape.** *Se scrie ca tabel fiindcă întrebarea
 „unde s-a oprit ce" a fost pusă de trei ori, iar răspunsul era împrăștiat prin patru rapoarte.*
@@ -57,7 +59,8 @@ Datoria rămasă (nu piste de execuție autonomă) e mai jos, „Ce a rămas des
 | **cele două cerințe ale lui Costin** | tăria `CERTA` cu limita în constatare (R115) · refuzul reevaluării (R192) | `fd7e40d4` |
 | **runda a doua — audit independent** (18.09) | A1 conversia în lei (tot lanțul + reconcilieri) · B1–B4 apartenența pe obiect · A2–A5 · A6 cotă dividend după distribuire · A7/A8-micro/A8-profit · C1–C3 · A10 import e-Factura · E-nota contare mixtă · **D1–D10 scanerele care mint, clichete de la cifra reală (SUBSET 0→10, NICAIERI 3→21)** + gardă-mutație D4 · §0 parțial | `0dc088db`…`5ff1b8ba` |
 | **R2 — cele trei restanțe TVA** (19–20.09) | **A11** D300 exigibilitate IC pe art.284 (sursă unică `d390.EXIG_IC`) · **A9** D394 op tip AI + `tvaDedAI` din facturi AI achitate (art.297 alin.2; freeze `furnizor_tva_incasare` din ANAF) · **A12** pro-rata TVA doar pe achiziții MIXTE, clasificate per linie (`factura_linii.destinatie_tva`, art.300 alin.5) + **A12b** selectul de clasificare per linie pe ecranul de validare SPV (DS cap.28) | `eb3d6123` · `b27460e4`+`b2459f22` · `c5e4b747`+`eee3c1fd` |
-| **C5 — import extras bancar idempotent** (20.09) | tabel `extras_import` (UNIQUE pe hash de fișier) + `repo_banca.inregistreaza_import` (ON CONFLICT DO NOTHING, race-safe); reimportul aceluiași extras nu mai dublează liniile → mesaj „extras deja importat: N linii". Varianta A (DECIZII 56) | acest commit |
+| **C5 — import extras bancar idempotent** (20.09) | tabel `extras_import` (UNIQUE pe hash de fișier) + `repo_banca.inregistreaza_import` (ON CONFLICT DO NOTHING, race-safe); reimportul aceluiași extras nu mai dublează liniile → mesaj „extras deja importat: N linii". Varianta A (DECIZII 56) | `c1e9cc69` |
+| **GARZI cat.1 sub-lotul 1** (20.09) | NOT NULL pe 13 coloane de bani (cat. A+B; 3 excluse la poartă = legitim nullable) + UNIQUE natural pe 8 tabele de import curate (efactura_primite/id_mesaj_anaf, solduri_initiale/cont, solduri_parteneri/(cont,cui), asociați/cnp, clienți+furnizori/cui, state_plata, articole/barcode); gard-ratchet `test_intrare_date_garduri`. Corecții la sursă: produse exclus, articole=barcode, solduri_parteneri=(cont,cui). DECIZII 58 | acest commit |
 
 **Ce a rămas deschis, și e scris ca datorie cu clichet, nu ca pas:** rutele care scriu fără probă în
 suită · modulele cu amestec OBSERVAT, toate ACTE, care au voie să-și dețină tranzacția · `logrotate`
@@ -264,7 +267,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **874** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **875** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

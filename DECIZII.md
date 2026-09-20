@@ -3,6 +3,48 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 20.09.2026 (58) — GARZI cat.1 sub-lotul 1: NOT NULL pe bani + chei naturale UNIQUE pe import
+
+**Ce era gresit.** GARZI cat.1 (Intrare date), LIPSA linia 69-70: nicio garda mecanica pe „NOT NULL pe
+coloanele de bani" si „cheie naturala unica pe tabelele de import". Camp lipsa -> NULL -> 0 tacut;
+reimport -> dublare (clasa C5, dar generalizata). C5 acoperise doar `extras_import`.
+
+**TEMEI.** N/A — integritate tehnica (nu regula fiscala). Principiu conex CLAUDE.md §8 (date nealterate).
+
+**DECIZIE (Costin, 20.09): sub-lotul 1**, cu trei corectii ridicate la sursa INAINTE de cod (§2.2.2 pct.6):
+- **NOT NULL** pe 13 coloane de bani: cat.(A) 0 NULL-uri reale (bonuri.total) + cat.(B) `default 0`
+  (bonuri.tva_11/21, concedii_medicale x7, d301.tva, plan_conturi.sold_*). Cat.(C) LEGITIM nullable
+  raman in whitelist declarat.
+- **CORECTIE LA POARTA (nonconformitate, CICLUL):** 3 candidate NOT NULL au fost EXCLUSE, descoperite la
+  poarta (nu in date): `miscari_stoc.pret_unitar` (miscarea poarta `valoare`, nu pret unitar — iesirea/
+  inventarul insereaza fara pret), `salariati.salariu_brut` (baza poate fi LEGITIM lipsa -> semnalata),
+  `registre_art321.valoare` (lit. f/bunuri_primite NU cere valoare — NOT NULL ar bloca o inscriere legala).
+  LECTIA: „0 NULL in date" NU e destul — codul insereaza NULL pe cai neexercitate de seed. Verificarea
+  corecta e pe CAILE DE INSERT din cod, nu doar pe datele existente. Cele 3 -> whitelist NULLABLE_OK.
+  Rollback aplicat pe prod+test (constrangerile fusesera deja aplicate inainte de poarta). GENERALIZARE:
+  restul 13 verificate pe caile de INSERT (bonuri.total mereu furnizat; cat B default 0 acopera omiterea).
+- **UNIQUE natural** pe tabelele de import CURATE: efactura_primite(id_mesaj_anaf), solduri_initiale(cont),
+  asociati(cnp), clienti(cui), furnizori(cui), state_plata(salariat_id,luna,exemplar).
+- **Corectia 1**: `produse` EXCLUS — n-are camp de cod (nici cod, nici barcode); whitelist, decizie de
+  schema deschisa.
+- **Corectia 2**: `articole` = UNIQUE(**barcode**) partial non-NULL (n-are `cod`; barcode e campul de cod).
+  In PostgreSQL UNIQUE trateaza NULL ca distinct -> unic pe non-NULL, NULL-uri nelimitate (fara index partial).
+- **Corectia 3**: `solduri_parteneri` = UNIQUE(**cont, cui**), nu (cont) singur — un cont de control
+  poarta legitim mai multi parteneri; (cont) singur ar fi over-dedup (capcana C5).
+- **GARD**: `core/test_intrare_date_garduri.py` (ratchet pe schema efemera din template) — coloana de bani
+  nullable nedeclarata / tabel de import fara cheie nedeclarat PICA; whitelist-uri verificate anti-stale;
+  functional + mutatie (constrangerea chiar respinge dup/NULL).
+
+**data_referinta**: verificat la sursa ca e NULL peste tot (un singur set de solduri per cont) -> cheia
+NU include data_referinta.
+
+**ALTERNATIVE RESPINSE.** Index partial `WHERE cui IS NOT NULL` — inutil, UNIQUE-ul PG da deja semantica
+(NULL distinct). `denumire` ca cheie la articole/produse — slaba (nume se repeta), respinsa la propunere.
+
+**LIMITA.** Sub-lotul 2 (mijloace_fixe) separat, dupa curatarea duplicatului din tenant_003. `produse`
+ramane fara cheie pana la o decizie de schema (camp de cod). Idempotenta pe fisier ramane la nivelul C5
+(extras_import); asta e idempotenta pe CHEIE naturala a entitatii.
+
 ## 20.09.2026 (57) — Proba meta-gardului `test_perimetrul_nu_e_toata_suita`: d112 -> capacitate_api
 
 **Ce era gresit.** Meta-gardul care apara unealta de derivare a perimetrului de teste (`poarta_scurta`)

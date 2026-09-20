@@ -1,3 +1,20 @@
+## 20.09.2026 — GARZI cat.1 sub-lotul 1: NOT NULL pe bani + chei naturale UNIQUE pe import
+
+**Pentru un contabil:** două clase de greșeli tăcute devin acum imposibile la nivelul bazei. (1) O sumă
+lipsă nu mai poate deveni NULL → 0 nevăzut: coloanele de bani sunt NOT NULL. (2) Datele-cheie importate
+(furnizori/clienți pe CUI, asociați pe CNP, solduri pe cont, facturi SPV pe mesaj, articole pe cod de bare,
+state de plată pe salariat×lună) nu se mai pot dubla la reimport — au cheie unică. Excepțiile firești
+(cursul valutar pe o factură în lei, un client persoană fizică fără CUI) rămân permise, declarat.
+
+**Ce s-a făcut (tehnic).** GARZI cat.1 (Intrare date), LIPSA linia 69-70. Sub-lotul 1 (decizia Costin 20.09,
+DECIZII 58): NOT NULL pe 13 coloane de bani (cat. A cu 0 NULL + cat. B cu default 0; 3 candidate excluse la poartă — vezi mai jos); UNIQUE natural pe 8
+tabele de import curate — cu trei corecții ridicate la sursă (produse exclus, fără câmp de cod; articole pe
+`barcode` nu `cod`; solduri_parteneri pe `(cont, cui)` nu `(cont)`). `core/migrare_intrare_date_garduri.py`
++ tenant_template (aplicat pe 20 scheme reale + baza de test). Gard-ratchet `core/test_intrare_date_garduri.py`
+(6 teste: coloană de bani nullable nedeclarată / tabel de import fără cheie nedeclarat PICĂ; whitelist-uri
+anti-stale; funcțional UniqueViolation/NotNullViolation; mutație pe template → RED). Sub-lotul 2 (mijloace_fixe)
+separat, după curățarea unui duplicat real de cod în tenant_003. Vezi DECIZII (58), GARZI cat.1.
+
 ## 20.09.2026 — C5: import extras bancar idempotent (tabel `extras_import`, hash de fișier)
 
 **Pentru un contabil:** dacă reimporți din greșeală același extras bancar (dublu-click, sau conexiunea

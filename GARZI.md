@@ -66,8 +66,16 @@ cotă TVA inexistentă la data documentului; semn inversat.
   6 transformau `(200)` în 0.0 tăcut). `numar_fiscal()` pentru valori care intră în
   declarații: absența e legitimă, invalidul e eroare.
 - ACOPERIT: F184 conformitate cotă TVA la dată; F185 coliziune CUI; audit de preluare firmă.
-- LIPSĂ: gard care cere NOT NULL pe fiecare coloană de bani și cheie naturală unică pe
-  fiecare tabel de import. Idempotența importurilor nu e verificată mecanic.
+- ACOPERIT (sub-lotul 1, 20.09): `core/test_intrare_date_garduri.py` — RATCHET pe schema-referință
+  (efemeră din template): o coloană de bani nullable nedeclarată PICĂ; un tabel de import fără cheie
+  naturală nedeclarat PICĂ. Constrângeri livrate (`core/migrare_intrare_date_garduri.py` + tenant_template):
+  NOT NULL pe 13 coloane de bani (cat. A+B); UNIQUE natural pe efactura_primite(id_mesaj_anaf),
+  solduri_initiale(cont), solduri_parteneri(cont,cui), asociati(cnp), clienti(cui), furnizori(cui),
+  state_plata(salariat_id,luna,exemplar), articole(barcode). Whitelist declarat: 7 coloane legitim
+  nullable (curs valutar pe RON, venituri_6_luni).
+- LIPSĂ (sub-lotul 2): `mijloace_fixe` UNIQUE(cod) — blocat pe un duplicat real de cod în tenant_003,
+  de curățat întâi. `produse` — fără câmp de cod (nici cod, nici barcode), decizie de schemă deschisă.
+  Ambele în whitelist-ul gardului, cu motiv.
 
 ### 2. Graniță cod–bază
 **Eșec:** query pe coloană/tabel inexistent; drift între schema unui tenant și template.
@@ -8784,9 +8792,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**614 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**615 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 583
+### `core/` — 584
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9167,6 +9175,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_inlocuire_afirmata.py` — GARD [YY/METODA §28, 28.08.2026]: o inlocuire de text intr-un document AFIRMA ca a gasit potrivirea.
 - `core/test_instrumente_roadmap.py` — [metoda-ca-poarta] GARD: INSTRUMENTE_ROADMAP.md nu minte — un instrument marcat CONSTRUIT trebuie sa
 - `core/test_interpretare.py` — GARDĂ: o interpretare e un OBIECT declarabil, cu variantele obligatorii. (P11, 22.08.2026)
+- `core/test_intrare_date_garduri.py` — GARZI cat.1 (Intrare date) — RATCHET: idempotenta importurilor + banii nu ajung NULL, verificate MECANIC.
 - `core/test_inventar_a.py` — Inventar A generat PARTIAL din common.COTE + overlay separat pentru judecatile umane.
 - `core/test_inventar_randuri_dinamice.py` — GARD cap.24 regula 2 — inventar (sectiuneaCV), re-rulat IN POARTA prin chromium headless.
 - `core/test_izolare_api_key.py` — core/test_izolare_api_key.py — GARD de izolare pe CHEIE API (namespace /api/v1/firme/{tenant_id}).

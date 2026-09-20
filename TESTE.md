@@ -45,7 +45,16 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
-- fir: **C5 — import extras bancar neidempotent** (20.09.2026, comanda „deschide firul C5 §2.1").
+- fir: **GARZI cat.1 (Intrare date) — NOT NULL pe coloanele de bani + cheie naturala unica pe tabelele de import** (20.09.2026, comanda „deschide firul §2.1"). LIPSA din GARZI.md linia 69-70: „gard care cere NOT NULL pe fiecare coloana de bani si cheie naturala unica pe fiecare tabel de import. Idempotenta importurilor nu e verificata mecanic." C5 a acoperit DOAR extras_import; asta e clasa generala.
+- ultim: **SUB-LOTUL 1 GATA (20.09)**: NOT NULL pe 13 coloane de bani (cat A+B; 3 excluse la poarta: pret_unitar/salariu_brut/registre_art321.valoare - legitim nullable) + UNIQUE natural pe 8 tabele
+  de import curate (efactura_primite/id_mesaj_anaf, solduri_initiale/cont, solduri_parteneri/(cont,cui),
+  asociati/cnp, clienti+furnizori/cui, state_plata/(salariat_id,luna,exemplar), articole/barcode).
+  Corectii la sursa: produse exclus (fara camp de cod), articole=barcode, solduri_parteneri=(cont,cui).
+  `core/migrare_intrare_date_garduri.py` + tenant_template (20 scheme + test). Gard-ratchet
+  `core/test_intrare_date_garduri.py` (6, + mutatie pe template -> RED). Whitelist: 7 coloane legitim nullable.
+- urmator: **SUB-LOTUL 2** — `mijloace_fixe` UNIQUE(cod): intai se ARATA duplicatul din tenant_003 (ce randuri,
+  ce difera), fara a alege care ramane; apoi curatare + UNIQUE(cod). STARE = SUB-LOT 1 gata (se publica), SUB-LOT 2 urmeaza
+- fir: **C5 — import extras bancar neidempotent** (20.09.2026, comanda „deschide firul C5 §2.1"). **INCHIS 20.09** (four-way c1e9cc69).
   Restanta C5 din RAPORT_AUDIT_INDEPENDENT_2026-09-17.md: reimportul aceluiasi extras (dublu-click /
   raspuns pierdut dupa commit) insereaza toate liniile a doua oara -> `extras_linii` dublate ->
   contarile pe 5121 dublate. Comanda cere PROPUNERE (§2.2.2 „ce cer inapoi"), NU implementare.
