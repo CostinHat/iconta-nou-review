@@ -1,8 +1,8 @@
 ---
 title: Locul prestării serviciilor în 2026: regulile B2B și B2C (art. 278 Cod fiscal)
-description: La B2B locul prestării e sediul beneficiarului, la B2C cel al prestatorului. De acolo rezultă cine datorează taxa și în ce țară.
+description: La B2B locul prestării este, de regulă, sediul beneficiarului. Pentru serviciile primite din UE, beneficiarul român înregistrat normal în scopuri de TVA aplică taxarea inversă și verifică obligațiile D300 și D390.
 published: 2026-08-15
-modified: 2026-08-15
+modified: 2026-09-20
 ---
 
 # Locul prestării serviciilor în 2026: regulile B2B și B2C (art. 278 Cod fiscal)
@@ -54,6 +54,29 @@ Un consultant român care prestează pentru o firmă din Germania: locul e Germa
 Același consultant pentru o persoană fizică din Germania: locul e România, cu TVA românesc.
 
 Același consultant, dar serviciul privește o clădire din Austria: locul e Austria, indiferent cine e beneficiarul.
+
+## Dacă firma română primește un serviciu de la un furnizor din UE
+
+Pentru un serviciu care intră în regula generală B2B, primit de o persoană impozabilă stabilită în România de la un prestator stabilit în alt stat membru:
+
+1. verifică mai întâi dacă serviciul nu intră într-o excepție de la art. 278 alin. (3)-(7);
+2. verifică identitatea furnizorului și codul său de TVA în VIES;
+3. locul prestării este în România, potrivit art. 278 alin. (2);
+4. beneficiarul român este persoana obligată la plata taxei, potrivit art. 307 alin. (2);
+5. dacă beneficiarul este înregistrat normal în scopuri de TVA conform art. 316, evidențiază TVA prin taxare inversă în decontul D300; dreptul de deducere există numai în măsura în care sunt îndeplinite condițiile legale;
+6. declară achiziția de servicii în D390 cu tipul operațiunii **S**, pentru luna în care intervine exigibilitatea, până la data de 25 a lunii următoare.
+
+D390 nu se depune pentru orice serviciu cumpărat de peste graniță. Codul S privește serviciile de la art. 278 alin. (2), primite de la un prestator stabilit în Uniunea Europeană și pentru care beneficiarul român datorează taxa conform art. 307 alin. (2). Serviciile supuse unei reguli speciale de localizare trebuie analizate separat.
+
+### Exemplu scurt
+
+O societate română înregistrată normal în scopuri de TVA cumpără consultanță de la o societate din Germania. Ambele acționează ca persoane impozabile, serviciul nu intră într-o excepție, iar factura este emisă fără TVA germană. Locul prestării este România; beneficiarul aplică taxarea inversă, include operațiunea în D300 și o declară în D390 cu cod S.
+
+### Surse oficiale pentru această operațiune
+
+- [ANAF — formularul și documentația D390](https://static.anaf.ro/static/10/Anaf/Declaratii_R/390.html)
+- [OPANAF nr. 705/2020 — instrucțiunile D390](https://static.anaf.ro/static/10/Anaf/legislatie/OPANAF_705_2020.pdf)
+- [Portal Legislativ — OPANAF nr. 174/2026, formularul D300](https://legislatie.just.ro/Public/DetaliiDocument/307258)
 
 ## Legături
 
