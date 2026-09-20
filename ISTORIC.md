@@ -649,3 +649,9 @@ Statul de plată citește baza din `salariu_istoric` (baza_lipsa=False), NU din 
 minim 2026 = 4.325 (HG 146/2026, verificat la sursă `common.salariu_minim_luna`); gardul `ReconciliereD112` a
 REFUZAT corect contarea ("date probabil corupte") — nu bug, test-data. Corectate la 4.500/5.000/4.400 în
 `salariu_istoric` (tenant_049) + `salariati_f1.csv`. OBS: `salariati.cor` gol pe toți 3 — obligatoriu la D112.
+
+**Etapa 5 (Contabilizare / validare jurnal) prin interfață.** `frontend_test/proba_f1_etapa5.py` +
+`asteptari_f1_etapa5.md`. Toate cele 6 note ciornă (facturi 2, stocuri 1, banca 2, salarii 1) validate prin
+`#fa-jurnal` (patru-ochi pe rol admin_firma, R55) → **6 validata, 0 ciornă**. Balanță echilibrată
+**Σdebit=Σcredit=25.106** (solduri inițiale 17.000 + note validate); fișa 5121 populată din notele validate
+(ciornele nu apăreau — „fișa se face din note VALIDATE"). Etapele 3-5 = fluxul date→jurnal complet și verificat.

@@ -76,8 +76,12 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   Contare stat: 641=421 13900 (brut), 421=4315 3475 (CAS), 421=4316 1390 (CASS), 421=444 688 (impozit), 646=436 313 (CAM).
 - CORECTIE DATE TEST (20.09): salariile initiale 4000 erau SUB salariul minim 2026 (4325, HG 146/2026) - gardul
   ReconciliereD112 a refuzat corect contarea (nu bug). Corectate la 4500/5000/4400 (salariu_istoric + salariati_f1.csv).
-- urmator: **F1 etapa 5+** (conform planului Sesiunea B, regula cascadei). OBS D112 (ulterior): salariati.cor gol pe toti 3 -
-  COR obligatoriu la D112, de completat inainte. STARE = NEINCEPUT
+- ultim: **F1 etapa 5 (Contabilizare) GATA (20.09)** (`frontend_test/proba_f1_etapa5.py` + asteptari_f1_etapa5.md):
+  toate 6 note ciorna validate prin jurnal (#fa-jurnal, patru-ochi rol admin_firma) -> 6 validata, 0 ciorna.
+  Balanta echilibrata Σdebit=Σcredit=25106 (solduri initiale + note validate); fisa 5121 populata (ciornele nu apareau).
+- urmator: **F1 etapa 6 (Sfarsit de luna)** apoi 7-11. OBS: pt F1 (comert micro, fara mijloace fixe) etapa 6 e subtire -
+  amortizare N/A, CMP descarcat per-factura; inchiderea lunii optionala (poate_confirma=True, blocaj=None).
+  OBS D112 (etapa 8): salariati.cor gol pe toti 3 - obligatoriu, de completat. STARE = NEINCEPUT
 - pasi Faza 0:
   1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
   2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).
@@ -828,9 +832,9 @@ Etapele fluxului (Faza 1), `√ DD.MM` = etapa are teste cap-coadă pe o firmă:
 |---|---|
 | 1. Migrare / preluare | **F1 √ 20.09** (Σdebit=Σcredit=17000, plan 185, parteneri 2, stoc 5000, 3 salariați) |
 | 2. Configurare firmă | **F1 √ 20.09** (vector micro/TVA-lunar/fără-IC → D300/D394/D112/D100/D406) |
-| 3. Intrare documente primare | |
-| 4. Salarizare | |
-| 5. Contabilizare | |
+| 3. Intrare documente primare | **F1 √ 20.09** (D1 emisă 1210 + D2 primită SPV 1210 + D3 bancă; D300 TVA plată 0; finding SPV↔stoc = restanță) |
+| 4. Salarizare | **F1 √ 20.09** (stat din istoric 4500/5000/4400; contare 641=421 13900; corectat date sub salariul minim 4325) |
+| 5. Contabilizare | **F1 √ 20.09** (6 note ciornă→validate; balanță Σ=25106; fișe populate) |
 | 6. Sfârșit de lună | |
 | 7. Verificări interne | |
 | 8. Declarații — generare | |
