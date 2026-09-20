@@ -20,3 +20,26 @@ def readuce_linia_de_extras(cur, schema, id_):
                             WHERE id=%s AND status='ignorat' RETURNING id""",
                 (id_,))
     return cur.fetchone()
+
+
+def inregistreaza_import(cur, schema, fisier_hash, fisier_nume, nr_linii):
+    """[C5] Inregistreaza un import de extras si intoarce id-ul NUMAI daca e nou.
+
+    Cheia UNIQUE pe `fisier_hash` e gardul de idempotenta: `ON CONFLICT DO NOTHING RETURNING id`
+    intoarce un rand DOAR la primul import al fisierului. La reimport (dublu-click / raspuns pierdut)
+    conflictul face INSERT-ul un no-op si RETURNING nu da nimic -> apelantul stie sa NU insereze
+    liniile. E race-safe: constrangerea UNIQUE arbitreaza chiar cursa a doua cereri concurente, nu un
+    SELECT-apoi-INSERT verificat separat. `DO NOTHING` (nu suprascriere): randul existent nu se atinge.
+    """
+    cur.execute(f"""INSERT INTO {schema}.extras_import (fisier_hash, fisier_nume, nr_linii)
+                    VALUES (%s,%s,%s) ON CONFLICT (fisier_hash) DO NOTHING RETURNING id""",
+                (fisier_hash, (fisier_nume or "")[:255], nr_linii))
+    r = cur.fetchone()
+    return r[0] if r else None
+
+
+def import_existent_nr_linii(cur, schema, fisier_hash):
+    """[C5] Cate linii avea importul deja existent cu acest hash (pentru mesajul de reimport)."""
+    cur.execute(f"SELECT nr_linii FROM {schema}.extras_import WHERE fisier_hash=%s", (fisier_hash,))
+    r = cur.fetchone()
+    return r[0] if r else None

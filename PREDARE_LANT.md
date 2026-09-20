@@ -4,9 +4,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-20**, după închiderea **A12b** (ultima restanță audit R2). Toate cele
-  trei restanțe TVA (A9/A11/A12) sunt ÎNCHISE. *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
-- **pe commit**: `eee3c1fd` (A12b, ultimul publicat four-way: HEAD = origin/main = public/main = backup/lant-2026-09-20 = proces viu). *Predarea se scrie ÎNAINTE de commitul care o poartă; excepția: A12b a fost publicat, iar predarea reflectă starea de DUPĂ.*
+- **ultima rescriere**: **2026-09-20**, după închiderea **C5** (import extras bancar idempotent). Toate
+  cele trei restanțe TVA R2 (A9/A11/A12) sunt ÎNCHISE, iar **C5** (restanță C din audit) e închisă în
+  aceeași zi, la cererea țintită a lui Costin. *Rescriere țintită: antet + „primul lucru" + tabelul lanțului; restul păstrat.*
+- **pe commit**: `6cbd20bb` (ultimul four-way publicat înainte de C5: A12b + predare). *C5 se publică ACUM, peste acest commit; predarea reflectă starea de DUPĂ C5, iar four-way-ul exact al lui C5 e în raportul §11.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -56,6 +57,7 @@ Datoria rămasă (nu piste de execuție autonomă) e mai jos, „Ce a rămas des
 | **cele două cerințe ale lui Costin** | tăria `CERTA` cu limita în constatare (R115) · refuzul reevaluării (R192) | `fd7e40d4` |
 | **runda a doua — audit independent** (18.09) | A1 conversia în lei (tot lanțul + reconcilieri) · B1–B4 apartenența pe obiect · A2–A5 · A6 cotă dividend după distribuire · A7/A8-micro/A8-profit · C1–C3 · A10 import e-Factura · E-nota contare mixtă · **D1–D10 scanerele care mint, clichete de la cifra reală (SUBSET 0→10, NICAIERI 3→21)** + gardă-mutație D4 · §0 parțial | `0dc088db`…`5ff1b8ba` |
 | **R2 — cele trei restanțe TVA** (19–20.09) | **A11** D300 exigibilitate IC pe art.284 (sursă unică `d390.EXIG_IC`) · **A9** D394 op tip AI + `tvaDedAI` din facturi AI achitate (art.297 alin.2; freeze `furnizor_tva_incasare` din ANAF) · **A12** pro-rata TVA doar pe achiziții MIXTE, clasificate per linie (`factura_linii.destinatie_tva`, art.300 alin.5) + **A12b** selectul de clasificare per linie pe ecranul de validare SPV (DS cap.28) | `eb3d6123` · `b27460e4`+`b2459f22` · `c5e4b747`+`eee3c1fd` |
+| **C5 — import extras bancar idempotent** (20.09) | tabel `extras_import` (UNIQUE pe hash de fișier) + `repo_banca.inregistreaza_import` (ON CONFLICT DO NOTHING, race-safe); reimportul aceluiași extras nu mai dublează liniile → mesaj „extras deja importat: N linii". Varianta A (DECIZII 56) | acest commit |
 
 **Ce a rămas deschis, și e scris ca datorie cu clichet, nu ca pas:** rutele care scriu fără probă în
 suită · modulele cu amestec OBSERVAT, toate ACTE, care au voie să-și dețină tranzacția · `logrotate`
@@ -262,7 +264,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **873** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **874** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

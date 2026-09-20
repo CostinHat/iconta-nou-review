@@ -45,7 +45,22 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
-- fir: **RESTANTE RUNDA 2 — A9 / A11 / A12** (19.09.2026, comanda „deschide firul A9/A11/A12 §2.1").
+- fir: **C5 — import extras bancar neidempotent** (20.09.2026, comanda „deschide firul C5 §2.1").
+  Restanta C5 din RAPORT_AUDIT_INDEPENDENT_2026-09-17.md: reimportul aceluiasi extras (dublu-click /
+  raspuns pierdut dupa commit) insereaza toate liniile a doua oara -> `extras_linii` dublate ->
+  contarile pe 5121 dublate. Comanda cere PROPUNERE (§2.2.2 „ce cer inapoi"), NU implementare.
+- ultim: **CONFIRMAT la sursa + functional (20.09)** ca C5 e inca real: `reconciliere_api.importa_extras`
+  (core/reconciliere_api.py:57-101) face INSERT simplu pe `extras_linii` fara cheie de dedup/ON CONFLICT;
+  `extras_linii` are DOAR PK pe id (tenant_template.sql:1436). Proba: 2 importuri identice a 2 tranzactii
+  -> 4 randuri (asteptat 2), grupuri duplicate confirmate pe schema efemera.
+- urmator: **IMPLEMENTAT (decizia Costin 20.09: varianta A, tabel nou, mesaj vizibil).** STARE = GATA (se publica)
+- pasi (facuti):
+  1. `core/migrare_extras_import.py` + tenant_template: tabel `extras_import` cu UNIQUE(fisier_hash); aplicat pe 20 scheme reale + baza de test (OWNER best-effort pe test).
+  2. `repo_banca.inregistreaza_import` (INSERT ON CONFLICT DO NOTHING RETURNING id, race-safe) + `import_existent_nr_linii`.
+  3. `reconciliere_api.importa_extras(...,continut)` — hash de fisier; reimport -> `{"deja_importat":True,"nr_linii":N,"linii":[]}` fara insert; `banca_rec_import` trece `continut`.
+  4. `firme.js`: mesaj vizibil „Extras deja importat: N linii" (nu no-op tacit).
+  5. Garduri `core/test_c5_extras_idempotent.py` (4): reimport nu dubleaza; fisier diferit se importa; doua tranzactii reale identice in acelasi fisier -> ambele pastrate (fara over-dedup); fara continut = comportament vechi. Mutatie: gard dezactivat -> reimport dubleaza -> RED.
+- fir: **RESTANTE RUNDA 2 — A9 / A11 / A12** (19.09.2026, comanda „deschide firul A9/A11/A12 §2.1"). **INCHIS 20.09** (four-way 6cbd20bb).
   Cele trei restante DESCHISE ale Rundei 2 pe TVA (audit RAPORT_AUDIT_INDEPENDENT_2026-09-17.md).
   Comanda cere PROPUNERE (§2.2.2 „ce cer inapoi"), nu implementare — pasii sunt scrisi, temeiul
   verificat la sursa, dar NU se atinge codul pana la decizia lui Costin. Faptele din comanda

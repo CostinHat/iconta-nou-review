@@ -107,9 +107,19 @@ def test_commiturile_reale_de_azi_ar_fi_cerut_poarta_completa():
 def test_perimetrul_nu_e_toata_suita():
     """Un perimetru care ia aproape tot nu deriva nimic, imbraca «ruleaza tot» in alt nume
     (PLAN_LUCRU, regula 5, prima forma esuata). Se cere sa ramana sub jumatate din fisierele de
-    test, pe cazul cel mai larg dintre cele doua de acceptanta."""
+    test, pe cazul cel mai larg dintre cele doua de acceptanta.
+
+    [C5, 20.09.2026, decizia lui Costin] Proba a fost `core/d112.py` pana azi — o ALEGERE PROASTA:
+    d112 e transitiv central prin `tenant_provisioning` (`tenant_provisioning -> firma_rezumat ->
+    vector_fiscal_api -> firma_profil_api --import LOCAL--> d112`, iar unealta numara si importurile
+    locale ca muchii). Deci „perimetrul lui d112" ≈ „toate testele DB" si creste cu 1 la fiecare test
+    DB nou -> se apropia de ½ prin simpla crestere a suitei (a atins-o exact la 278/556 cand s-a
+    adaugat un test de reconciliere bancara, fara nicio legatura cu d112). Proba noua = `capacitate_api`,
+    VERIFICAT ca fiind efectiv periferic: NU e in inchiderea de import a lui `tenant_provisioning`, deci
+    perimetrul lui NU creste cu testele DB; ramane la ~47/556 (marja mare, stabila). Vezi DECIZII (57)."""
     toate = [f for f in os.listdir(os.path.join(_RAD, "core"))
              if f.startswith("test_") and f.endswith(".py")]
-    teste, _ = P.perimetru(["core/d112.py"])
+    teste, _ = P.perimetru(["core/capacitate_api.py"])
+    assert teste, "perimetrul probei e GOL — anti-vacuu: proba nu mai e importata de niciun test"
     assert len(teste) < len(toate) / 2, "%d din %d fisiere — prea larg ca sa fie o derivare" % (
         len(teste), len(toate))

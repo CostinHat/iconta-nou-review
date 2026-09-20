@@ -340,6 +340,26 @@ ALTER TABLE TENANT_PLACEHOLDER.extras_linii ALTER COLUMN id ADD GENERATED ALWAYS
 
 
 --
+-- Name: extras_import; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
+-- [C5] Registrul importurilor de extras bancar: un rand per FISIER importat (hash de continut),
+-- cheia UNIQUE pe hash face reimportul aceluiasi extras un no-op de INSERT (idempotenta, decizia
+-- Costin 20.09 varianta A). Sursa unica a DDL-ului = core/migrare_extras_import.py.
+--
+
+CREATE TABLE TENANT_PLACEHOLDER.extras_import (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    fisier_hash text NOT NULL,
+    fisier_nume character varying(255),
+    nr_linii integer NOT NULL DEFAULT 0,
+    creat_la timestamp with time zone NOT NULL DEFAULT now(),
+    CONSTRAINT extras_import_hash_uniq UNIQUE (fisier_hash)
+);
+
+
+ALTER TABLE TENANT_PLACEHOLDER.extras_import OWNER TO iconta_user;
+
+
+--
 -- Name: factura_linii; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
 --
 

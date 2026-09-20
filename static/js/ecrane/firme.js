@@ -3052,7 +3052,12 @@ async function ecranBanca(corp, nav, t) {
       // [R131] prin `api.postForm`, care e deja instrumentat: refuzul serverului (format
       // necunoscut, fisier ilizibil) ajunge la om cu motivul lui, nu ca „Nu am putut citi".
       const r = await api.postForm(`/tenants/${t.id}/banca/reconciliere/import`, fd);
-      zonaMesaj.innerHTML = `<p class="pf-intro"><b>${(r.linii || []).length}</b> linii importate și potrivite.</p>`;
+      // [C5] reimport al aceluiasi fisier -> serverul nu dubleaza; se anunta explicit, nu tacut.
+      if (r.deja_importat) {
+        arataMesaj(zonaMesaj, `Extras deja importat: ${r.nr_linii} linii. Nu s-a adăugat nimic.`, "avert");
+      } else {
+        zonaMesaj.innerHTML = `<p class="pf-intro"><b>${(r.linii || []).length}</b> linii importate și potrivite.</p>`;
+      }
       incarca();
     } catch (e) { arataMesaj(zonaMesaj, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
     ev.target.value = "";

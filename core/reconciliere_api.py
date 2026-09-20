@@ -54,8 +54,17 @@ def facturi_deschise(conn, schema):
         return rez
 
 
-def importa_extras(conn, schema, tranzactii, fisier=""):
-    """Persistă liniile de extras + rulează matching-ul. Întoarce liniile cu rezultat."""
+def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
+    """Persistă liniile de extras + rulează matching-ul. Întoarce {"linii": [...]} cu rezultat.
+
+    [C5] IDEMPOTENȚĂ LA NIVEL DE FIȘIER (decizia Costin 20.09, varianta A): dacă se dă `continut`,
+    hash-ul lui e cheia din `extras_import`. La reimportul aceluiași fișier (dublu-click / răspuns
+    pierdut după commit) `inregistreaza_import` întoarce None (conflict pe cheia UNIQUE) și NU se
+    inserează nicio linie — se întoarce `{"deja_importat": True, "nr_linii": N, "linii": []}`, iar ruta
+    afișează „extras deja importat: N linii". Fără `continut` (apel programatic), comportamentul vechi.
+    """
+    import hashlib
+    from core import repo_banca
     facturi = facturi_deschise(conn, schema)
     linii = [{"suma": Decimal(str(abs(t.get("suma", 0)))),
               "tip": "incasare" if t.get("suma", 0) > 0 else "plata",
@@ -64,6 +73,13 @@ def importa_extras(conn, schema, tranzactii, fisier=""):
     rezultate = _m.potriveste_extras(linii, facturi)
     out = []
     with conn.cursor() as cur:
+        if continut is not None:
+            h = hashlib.sha256(continut if isinstance(continut, bytes)
+                               else str(continut).encode("utf-8")).hexdigest()
+            if repo_banca.inregistreaza_import(cur, schema, h, fisier, len(tranzactii)) is None:
+                # reimport al aceluiasi fisier -> nicio linie noua (idempotent, race-safe pe UNIQUE)
+                n = repo_banca.import_existent_nr_linii(cur, schema, h)
+                return {"deja_importat": True, "nr_linii": n, "linii": []}
         for t, ln, rez in zip(tranzactii, linii, rezultate):
             # [P8] `rez` E DEJA o afirmatie tipata (potriveste_linie); se duce mai departe intreaga,
             # nu se re-extrage `motiv` - altfel ar exista doua surse ale aceluiasi text.
@@ -98,7 +114,7 @@ def importa_extras(conn, schema, tranzactii, fisier=""):
             out.append({"id": cur.fetchone()[0], "data": str(ln["data"]),
                         "descriere": ln["descriere"], "suma": str(ln["suma"]),
                         "tip": ln["tip"], "cui": ln["cui"], "status": status, **aloc})
-    return out
+    return {"linii": out}
 
 
 def lista(conn, schema, status=None):

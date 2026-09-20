@@ -3,6 +3,60 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 20.09.2026 (57) — Proba meta-gardului `test_perimetrul_nu_e_toata_suita`: d112 -> capacitate_api
+
+**Ce era gresit.** Meta-gardul care apara unealta de derivare a perimetrului de teste (`poarta_scurta`)
+cerea ca perimetrul unui modul-PROBA sa ramana sub ½ din suita — dovada ca unealta chiar DERIVA, nu
+ruleaza tot deghizat. Proba era `d112`. Dar d112 e o proba PROASTA: e transitiv central prin
+`tenant_provisioning` (lantul `tenant_provisioning -> firma_rezumat -> vector_fiscal_api ->
+firma_profil_api --import LOCAL--> d112`, iar unealta numara si importurile locale ca muchii). Deci
+„perimetrul lui d112" ≈ „toate testele DB" si CRESTE cu 1 la fiecare test DB nou adaugat. A atins exact
+½ (278/556) cand s-a adaugat `test_c5_extras_idempotent.py` (reconciliere bancara, fara nicio legatura
+cu d112) — un fals-rosu produs de simpla crestere a suitei, nu de un perimetru cu adevarat prea larg.
+
+**TEMEI.** N/A — integritate de tooling (nu regula fiscala).
+
+**DECIZIE (Costin, 20.09): optiunea 1 — schimba PROBA, pastreaza gardul TARE (< ½ strict).** Proba noua
+= `capacitate_api`, VERIFICAT ca efectiv periferic: NU e in inchiderea de import a lui
+`tenant_provisioning` (deci perimetrul lui nu creste cu testele DB), incerte=0 (derivarea inchide),
+perimetru ~47/556 (8.5%) — marja mare si stabila. Adaugat si un assert anti-vacuu explicit (perimetrul
+probei nu are voie sa fie GOL), ca gardul sa nu treaca degeaba daca proba iese din uz.
+
+**ALTERNATIVE RESPINSE.** (2) Relaxarea pragului la d112 (< 0.6·total) — ar fi slabit gardul pentru un
+motiv care nu era al gardului, ci al probei. (3) Decuplarea `firma_profil_api` de d112 (import CAEN mutat)
+— corecta arhitectural dar scop mai mare (atinge o cale fiscala cu testele ei), amanata ca datorie daca
+apare nevoia; nu era necesara pentru a face gardul corect.
+
+**LIMITA.** Orice proba unica poate imbatrani daca modulul ei devine central sau iese din uz; de-aia
+assert-ul anti-vacuu + nota din docstring cer reverificarea periferalitatii la o eventuala schimbare.
+
+## 20.09.2026 (56) — C5: import extras bancar idempotent pe HASH DE FISIER (tabel `extras_import`)
+
+**Ce era gresit.** `reconciliere_api.importa_extras` insera liniile fara cheie de dedup; `extras_linii`
+avea doar PK pe id. Reimportul aceluiasi extras (dublu-click / raspuns pierdut dupa commit) dubla toate
+liniile -> contarile pe 5121 dublate. C5 din auditul independent 2026-09-17. Confirmat la sursa + functional
+(20.09): 2 importuri identice a 2 tranzactii -> 4 randuri.
+
+**TEMEI.** N/A — integritate tehnica, nu regula fiscala. Principiu conex: CLAUDE.md §8 (datele se duc
+NEALTERATE de la introducere la declaratie; dublarea e alterare).
+
+**DECIZIE (Costin, 20.09): varianta A — idempotenta la nivel de FISIER, pe hash de continut.**
+Tabel NOU `extras_import` (nu coloana pe extras_linii), cu UNIQUE pe `fisier_hash`. La reimportul
+aceluiasi fisier, `inregistreaza_import` (INSERT ... ON CONFLICT DO NOTHING RETURNING id) intoarce None
+-> nu se insereaza nicio linie -> ruta afiseaza mesaj VIZIBIL „extras deja importat: N linii" (nu no-op
+tacit). Race-safe: constrangerea UNIQUE arbitreaza cursa dublu-click, nu un SELECT-apoi-INSERT.
+
+**ALTERNATIVE RESPINSE.**
+- Cheie de continut per linie `(data,suma,descriere)` UNIQUE: over-dedup — arunca tacit doua tranzactii
+  REALE identice in acelasi extras (ex. doua comisioane egale in aceeasi zi). De aia cheia e pe FISIER.
+- Coloana `fisier_hash` pe extras_linii (in loc de tabel dedicat): registrul importurilor e o entitate
+  proprie (un import = un fisier, N linii); Costin a cerut explicit tabel nou.
+- No-op tacit la reimport: respins de Costin — omul trebuie sa afle ca nu s-a adaugat nimic.
+
+**LIMITA.** Idempotenta e pe fisier IDENTIC (acelasi hash). Doua exporturi ale aceluiasi extras cu
+continut diferit (ordine/format schimbat de banca) NU se recunosc ca acelasi -> dedup pe suprapunere de
+perioada e alt subiect, in afara C5. Fara `continut` (apel programatic) gardul nu se aplica (comportament vechi).
+
 ## 19.09.2026 (55) — A12b: destinatia TVA se CLASIFICA per linie pe ecranul de VALIDARE SPV, nu pe un formular nou
 
 **Context.** A12 (54) a adaugat coloana `factura_linii.destinatie_tva` si logica D300. Ramanea calea prin

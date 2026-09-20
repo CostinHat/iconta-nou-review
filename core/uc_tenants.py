@@ -4858,7 +4858,9 @@ def banca_rec_import(tenant_id, continut, nume_fisier, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
-        return _uc_comun._raspuns({"linii": _rec.importa_extras(conn, schema, tranzactii, nume_fisier or "")})
+        # [C5] `continut` -> hash de fisier -> idempotenta la reimport (extras_import). Raspunsul poarta
+        # {"linii":[...]} sau {"deja_importat":True,"nr_linii":N,"linii":[]} pentru mesajul vizibil.
+        return _uc_comun._raspuns(_rec.importa_extras(conn, schema, tranzactii, nume_fisier or "", continut))
 
 
 

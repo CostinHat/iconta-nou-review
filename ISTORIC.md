@@ -1,3 +1,23 @@
+## 20.09.2026 — C5: import extras bancar idempotent (tabel `extras_import`, hash de fișier)
+
+**Pentru un contabil:** dacă reimporți din greșeală același extras bancar (dublu-click, sau conexiunea
+a picat după ce serverul salvase deja), aplicația nu mai adaugă liniile a doua oară — îți spune „extras
+deja importat: N linii" și nu dublează nimic. Înainte, un reimport dubla toate liniile → notele pe 5121
+se dublau. Două tranzacții reale identice în același extras (ex. două comisioane egale în aceeași zi)
+rămân amândouă — dedup-ul e pe FIȘIER, nu pe conținutul liniei.
+
+**Ce s-a făcut (tehnic).** Restanța **C5** din auditul independent 2026-09-17, confirmată la sursă +
+funcțional (2 importuri identice → 4 rânduri). Decizia Costin (20.09, varianta A): idempotență la nivel
+de fișier, pe hash de conținut. (1) Tabel nou `extras_import` (`core/migrare_extras_import.py` +
+tenant_template; aplicat pe cele 20 de scheme reale + baza de test) cu `UNIQUE(fisier_hash)`. (2)
+`repo_banca.inregistreaza_import` (INSERT ON CONFLICT DO NOTHING RETURNING id — race-safe pe cursa
+dublu-click) + `import_existent_nr_linii`. (3) `reconciliere_api.importa_extras` primește `continut`,
+hash-uiește, și la reimport întoarce `{"deja_importat": True, "nr_linii": N, "linii": []}` fără să
+insereze. (4) Frontend `firme.js`: mesaj vizibil „Extras deja importat: N linii" (nu no-op tăcut). Notă:
+`conteaza` bloca deja dubla-contare a aceleiași linii — dublarea notelor venea EXCLUSIV din rândurile
+duplicate, deci idempotența la import e fix-ul rădăcină. Garduri `core/test_c5_extras_idempotent.py` (4,
+end-to-end pe schemă efemeră; mutație = gard dezactivat → reimport dublează → RED). Vezi DECIZII (56).
+
 ## 19.09.2026 — A12b (UI, A12 ÎNCHIS): clasificare destinație TVA per linie pe ecranul de validare SPV
 
 **Pentru un contabil:** la validarea unei facturi primite din SPV (e-Factura), fiecare linie importată

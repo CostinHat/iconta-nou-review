@@ -1373,7 +1373,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `banca`, `banca_parser`, `cronometru`, `reconciliere_api`, `repo_banca`, `uc_comun`
 
-**Scrie in:** `extras_linii` (INSERT/UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT)
+**Scrie in:** `extras_import` (INSERT) · `extras_linii` (INSERT/UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT)
 
 **Stari puse:** `contat`, `ignorat`, `nou`
 
