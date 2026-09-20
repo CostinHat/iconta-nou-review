@@ -9652,3 +9652,29 @@ a ieșit din inventar. Se adaugă un câmp `reparat`, cu ce anume s-a schimbat.
 caractere, **ȘI** cere ca locul să fie chiar dispărut. A doua probă e cea care contează: fără ea,
 eticheta ar putea scuti un verdict viu — adică exact felul de scutire pe care registrul există ca s-o
 facă imposibilă.
+
+
+---
+
+# `core/test_stocuri.py` — cota NIR se validează PE LINIE, nu pe un param global
+
+*(20.09.2026, Sesiunea B — F1 etapa 3)* `nir_gv` avea o gardă R29 (`if cota_tva_implicita is None:
+raise "Cota de TVA nu s-a dat"`) pe param-ul **global**, deși cota vine **per linie** (bucla o citește
+cu `l.get("cota_tva")`). Apelantul unic — `stocuri_api.adauga_nir` — trimite cota pe fiecare linie și
+NU pasează niciodată `cota_tva_implicita`. Rezultat: garda se declanșa NECONDITIONAT → **orice NIR
+pica prin UI** (422 „Cota de TVA nu s-a dat" deși fiecare linie avea 21%). Bug LIVE, prins de testul
+de flux (nu de suită).
+
+**Blindspot-ul de suită:** toate testele vechi apelau `nir_gv([...], 21)` — cu cota globală ca al
+2-lea argument pozițional — deci garda veche nu se declanșa niciodată în teste, în timp ce apelantul
+real (fără global) o declanșa mereu. Verde în suită, rupt în producție.
+
+**Gardul (3 probe):** `test_nir_cota_per_linie_fara_implicit_global`,
+`test_nir_cote_diferite_per_linie_fara_global`, `test_nir_linie_fara_cota_ridica_fara_global` —
+apelează `nir_gv` EXACT ca producția (fără al 2-lea argument), deci prind reapariția. RED-proof
+(mutație = reintroducerea gărzii globale): 2 probe roșii. R29 se păstrează — interdicția defaultului
+tăcut rămâne, dar PE LINIE.
+
+**Limită declarată:** clasa „motor multi-linie cu gardă pe cotă globală, deși cota e per-linie" are
+o singură instanță (`nir_gv`); celelalte ~24 de raise-uri „Cota de TVA nu s-a dat" sunt funcții pe
+operațiune unică (cotă scalară) — R29 corect, neatinse.

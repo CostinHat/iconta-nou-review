@@ -15443,3 +15443,27 @@ cotă inexistentă), fără să bată rata legitimă de la granița anilor.
 reconcilierea dă zero divergențe. PICĂ pe codul de dinainte (16.000 / divergență) și TRECE după (10.000).
 Pentru scenariile cu plată în anul distribuirii (sau plată fără credit 457 înregistrat), FIFO cade pe
 rata anului plății — comportamentul vechi rămâne (testele `test_d205` rămân verzi neschimbate la cifră).
+
+---
+
+## 20.09.2026 — Cota NIR: gardă R29 PE LINIE, nu pe param global (Sesiunea B, F1 etapa 3)
+
+**Context.** Testul de flux F1 a lovit un 422 la salvarea oricărui NIR: „Cota de TVA nu s-a dat", deși
+fiecare linie avea cota 21%. Cauza: `nir_gv` verifica R29 pe `cota_tva_implicita` (param global,
+opțional), pe care apelantul real (`stocuri_api.adauga_nir`) nu-l pasează niciodată — cota vine PE
+LINIE.
+
+**Decizie.** Garda R29 se mută în bucla per-linie: fiecare linie își rezolvă cota (proprie, cu fallback
+opțional la `cota_tva_implicita`), iar STOP-ul fără default tăcut se aplică per linie. `cota_tva_implicita`
+rămâne fallback OPȚIONAL (o cotă pentru tot NIR-ul), nu obligatoriu.
+
+**Temei.** N/A fiscal — R29 (cotă fără valoare implicită, disciplină de cod). Nicio valoare fiscală nu
+se schimbă; cotele (21/11) rămân CF art.291. Reparație de contradicție internă între contractul
+apelantului (per-linie) și garda motorului (globală).
+
+**Alternativă respinsă:** a pasa `cota_tva_implicita` din `adauga_nir` — ar reintroduce o cotă globală
+pe tot NIR-ul, contra R29 (cote diferite pe linii diferite).
+
+**Probă:** `nir_gv([{...,"cota_tva":21}])` (fără global) → `tva_deductibila=21.00`, note 4426=401
+210.00 pe adauga_nir/schema efemeră; înainte: `eroare="Cota de TVA nu s-a dat"`. Norma trăiește în
+`core/test_stocuri.py` (3 garduri) — vezi GARZI.md.

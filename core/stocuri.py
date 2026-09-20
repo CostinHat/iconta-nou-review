@@ -45,8 +45,14 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
       371 = 378   (adaos, recalculat dupa capitalizare)
       371 = 4428  (TVA neexigibila)
     371 final = valoarea la pret de vanzare cu TVA."""
-    if cota_tva_implicita is None:
-        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
+    # [R29 per-linie, reparat] Garda cotei se aplica PE LINIE (vezi bucla de mai jos), NU pe param-ul
+    # global. Pana la reparatie garda de aici ridica NECONDITIONAT cand globalul lipsea - dar apelantul
+    # unic (`stocuri_api.adauga_nir`) trimite cota PER LINIE si NU paseaza niciodata param-ul global,
+    # deci garda veche rupea ORICE NIR (422 "Cota de TVA nu s-a dat" desi fiecare linie avea cota 21).
+    # R29 cere cota explicita, nu o cota GLOBALA: cota poate diferi de la o linie la alta. Deci se
+    # pastreaza interdictia de default tacit, dar la nivel de linie (gardata de test_stocuri.py, nu de
+    # test_cota_fara_default.py care testeaza param-ul de nivel-functie). Param-ul global ramane
+    # fallback OPTIONAL (o singura cota pentru tot NIR-ul), nu obligatoriu.
     transport = _q(transport); taxe = _q(taxe)
     if transport < 0 or taxe < 0:
         raise ValueError("transport/taxe negative")
@@ -76,7 +82,12 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
     linii_out = []
     for l, cost_baza, land in zip(linii, baze, reparti):
         cant = _d(l["cantitate"])
-        cota = _d(l.get("cota_tva", cota_tva_implicita))
+        _cota_raw = l.get("cota_tva")
+        if _cota_raw is None:
+            _cota_raw = cota_tva_implicita                # fallback optional (o cota pentru tot NIR-ul)
+        if _cota_raw is None:                             # [R29] nicio cota declarata pe aceasta linie -> STOP, fara default tacit
+            raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
+        cota = _d(_cota_raw)
         cost = _q(cost_baza + land)                     # cost de achizitie cu accesoriu
         vanz = _q(cant * _d(l["pret_vanzare"]))
         if vanz < cost:

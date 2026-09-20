@@ -54,8 +54,21 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   vector fiscal micro/TVA-lunar/fara-IC -> set D300/D394/D112/D100/D406. Etapa 1 (upload CSV): Sdebit=Scredit
   =17000 (ECHILIBRAT), plan 185 conturi, 2 solduri parteneri, 1 articol/stoc 5000, 3 salariati activi
   (salariu in salariu_istoric). Toti invariantii verificati in DB (tenant_049). Fisier asteptari scris inainte.
-- urmator: **F1 etapele 3-11** (documente primare, salarizare, contabilizare, ..., declaratii), regula cascadei.
-  OBS etapa 4: salariu_brut=0 pe salariat, salariul e in salariu_istoric — de verificat stat de plata. STARE = F1 etapele 1-2 inchise
+- ultim: **F1 etapa 3 D1 (factura EMISA) GATA (20.09)** prin interfata (`frontend_test/proba_f1_etapa3.py`):
+  10 buc Marfa A x100 = 1210 (TVA 210), descarcare gestiune (F172 DA) -> iesire 10 buc/500 CMP, stoc 90/4500.
+- ultim: **NECONFORMITATE NIR-GV reparata (20.09)**: `nir_gv` (core/stocuri.py) verifica R29 pe cota GLOBALA,
+  dar apelantul real trimite cota PER LINIE -> orice NIR pica (422). Reparat (garda per-linie), gard in
+  `core/test_stocuri.py` (3 probe: test_nir_cota_per_linie_fara_implicit_global / _cote_diferite_per_linie_fara_global
+  / _linie_fara_cota_ridica_fara_global), mutatie 2 rosii, proba adauga_nir pe schema efemera (4426=401 210). √ 20.09
+- ultim: **F1 etapa 3 D2 (factura PRIMITA) MASURAT prin SPV (20.09)** (`frontend_test/proba_f1_etapa3_primita.py`
+  + scratchpad/insert_spv_d2.py): factura primita 1210/210 prin #fac-primite -> cont 371 -> Validează.
+  Note 371=401 1000 + 4426=401 210. D300 sept.: colectat 210 (D1) + deductibil 210 (D2) -> TVA de plata = 0.
+- FINDING D2 (masurat, NU reparat - decizie Costin): SPV NU misca stocul CANTITATIV (ramane 90 buc), desi
+  371-contabil urca la 5500 -> divergenta 1000 carte mare vs fisa magazie. Nicio cale non-SPV nu alimenteaza
+  D300 cu deductibila de stoc. Reconcilierea/legarea = decizie Costin.
+- urmator: **F1 etapa 3 D3 (extras bancar)** apoi etapa 4 (salarizare). Regula cascadei: D1+D2 OK (D300 corect),
+  finding D2 nu rupe declaratia. OBS etapa 4: salariu_brut=0, salariul in salariu_istoric — verifica stat de plata.
+  STARE = D3 NEINCEPUT (asteapta decizia Costin pe finding D2 inainte de a continua cascada?)
 - pasi Faza 0:
   1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
   2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).

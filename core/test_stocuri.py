@@ -43,6 +43,31 @@ def test_nir_cantitate_zero():
         nir_gv([{"denumire": "x", "cantitate": 0,
                  "pret_achizitie": "1", "pret_vanzare": "2"}], 21)
 
+# --- [R29 GARD] cota PER LINIE, fara `cota_tva_implicita` global ---
+# Contractul REAL al apelantului unic (stocuri_api.adauga_nir): cota vine pe fiecare linie, iar
+# `cota_tva_implicita` NU se paseaza niciodata. Pana la reparatie (bug prins in Sesiunea B, F1 etapa 3)
+# garda globala `if cota_tva_implicita is None: raise` se declansa NECONDITIONAT -> ORICE NIR pica prin
+# UI ("Cota de TVA nu s-a dat" desi fiecare linie avea cota). Toate testele vechi pasau `..., 21)`
+# (implicit global) -> blindspot: verde in suita, rupt in productie. Aici, EXACT ca in productie:
+# NIMENI nu paseaza al 2-lea argument.
+def test_nir_cota_per_linie_fara_implicit_global():
+    r = nir_gv([{"denumire": "x", "cantitate": 1,
+                 "pret_achizitie": "100", "pret_vanzare": "181.50", "cota_tva": 21}])   # fara global
+    assert r["tva_deductibila"] == D("21.00")
+    assert ("4426", "401", D("21.00")) in [(n["debit"], n["credit"], n["suma"]) for n in r["note"]]
+
+def test_nir_cote_diferite_per_linie_fara_global():
+    # cote diferite pe linii diferite, fara cota globala: 100*21% + 2*11% = 21.00 + 0.22
+    r = nir_gv([{"denumire": "a", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "181.50", "cota_tva": 21},
+                {"denumire": "paine", "cantitate": 1, "pret_achizitie": "2", "pret_vanzare": "3.33", "cota_tva": 11}])
+    assert r["tva_deductibila"] == D("21.22")
+
+def test_nir_linie_fara_cota_ridica_fara_global():
+    # [R29] o linie FARA cota si fara implicit global -> STOP, fara default tacit (interdictia se pastreaza,
+    # dar PE LINIE, nu pe un param global)
+    with pytest.raises(ValueError, match="Cota de TVA nu s-a dat"):
+        nir_gv([{"denumire": "x", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "181.50"}])
+
 # --- landed cost (F139): transport + taxe capitalizate in costul de achizitie ---
 def test_landed_repartizare_si_adaos():
     # 2 linii egale (cost 100 fiecare), transport 10 + taxe 10 = 20 accesoriu

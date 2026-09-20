@@ -600,3 +600,35 @@ interzice planului să declare P7 închisă peste el**.
 verificator **TOTAL 0**.
 
 **P7 RĂMÂNE DESCHISĂ.** *Zero pe toate detectoarele nu e zero pe fază.*
+
+---
+
+## 20.09.2026 — Sesiunea B, F1 etapa 3: D1 (factură emisă) + bug NIR-GV prins și reparat
+
+**F1 etapa 3, D1 (factură emisă) prin interfață.** `frontend_test/proba_f1_etapa3.py`: emitere factură
+10 buc Marfa A × 100 = 1.000 + 21% 210 = 1.210, cu descărcare de gestiune (poarta F172 „pleacă marfa
+acum?" → DA). Verificat în DB (tenant_049): factură total 1.210/TVA 210 client 410001005; linie 10×100@21%;
+miscari_stoc ieșire 10 buc/500 (CMP 50); stoc rămas 90 buc/4.500. Cota vine prin AI (`potriveste_cota`,
+round-trip ~3.4s) — proba veche eșuase pe un `python -c` în shell care NU încărca `api_keys.env`; serviciul
+viu ÎL are, deci AI e disponibil (diagnostic corectat la sursă).
+
+**Neconformitate prinsă (CICLUL): NIR-GV rupt.** La D2 (achiziție prin NIR) → 422 „Cota de TVA nu s-a
+dat" pe orice NIR, deși fiecare linie avea cota. Cauză: `nir_gv` (core/stocuri.py) verifica R29 pe
+`cota_tva_implicita` global, pe care apelantul real nu-l pasează (cota e per-linie).
+- GENERALIZARE: clasa „motor multi-linie cu gardă pe cotă globală" — o singură instanță (`nir_gv`);
+  celelalte ~24 raise-uri sunt funcții pe operațiune unică (cotă scalară), R29 corect, neatinse.
+- CORECTARE: garda mutată în bucla per-linie (R29 păstrat, fără default tăcut).
+- GARD: 3 probe în `core/test_stocuri.py` care apelează `nir_gv` EXACT ca producția (fără global);
+  mutație = reintroducerea gărzii globale → 2 roșii. Blindspot vechi: testele apelau `nir_gv([...], 21)`.
+- PROBĂ funcțională (schemă efemeră, ROLLBACK): `adauga_nir` → id=1, eroare=None, note 371=401 1000 /
+  4426=401 210 / 371=378 1000 / 371=4428 420.
+
+**D2 (factură primită) MĂSURAT prin calea reală SPV (decizie Costin: investighează+măsoară, nu repara).**
+Factura primită vine DOAR prin SPV (nu există intrare manuală, corect RO e-Factură). Test: inserat
+efactura_primite (simulare livrare SPV, XML UBL) + validat prin UI (#fac-primite → cont 371 → Validează).
+Rezultat: factură directie='primita' 1210/210, note 371=401 1000 + 4426=401 210, **D300 sept.:
+R9=1000/210 colectat (D1) + R22=1000/210 deductibil (D2) → TVA de plată = 0**. Deductibila SPV AJUNGE în D300.
+**FINDING confirmat (NU reparat):** validarea SPV NU mișcă stocul CANTITATIV — cantitatea rămâne 90 buc,
+deși 371-contabil urcă la 5.500 → **divergență 1.000** între cartea mare și fișa de magazie. SPV=D300+valoare;
+cantitatea=separat prin NIR/CV, care ar DUBLA nota 371/4426. Nicio cale non-SPV nu alimentează D300 cu
+deductibila de stoc. Decizia despre reconciliere/legare = a lui Costin (nedeschis campanie de reparație).
