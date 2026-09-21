@@ -49,7 +49,14 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim: importat `index_titluri_ghid.csv` (8.713 titluri) ca listă de bază, git-track + reader `core/ghid_titluri.py`.
   - ultim: **poarta `core/ghid_poarta.py` LIVRATĂ** (commit bb2264f6, four-way) — 2a citări în corpus + 2b F-ID LIVE+sursă+back-link; CLI blochează exit≠0. Gard `core/test_ghid_poarta.py`.
   - ultim: **extractor citări REPARAT** (urmare listei de acte lipsă) — 3 clase de fals-pozitiv (ordin comun `nr1/nr2` an imposibil; cuvânt comun „lege" peste paragraf; `re.I` strica clasa negată) + 1 fals-negativ (HG scrisă) → punte tempered token + plauzibilitate an; 5 teste `test_CALIBRARE_*` noi. Corectat: 44/202 ghiduri citează 47 acte neaduse (cifra buggy era 46/51). DECIZII 62.
-  - urmator: **livrat lista de acte lipsă (raport)** → pasul 3 (redactarea), autorizat de comandă după livrare. STARE = IN LUCRU (redactare).
+  - ultim: **livrat lista de acte lipsă + evaluare corpus urcat** (import_fiscalos/active, 71 poziții); 47 acte lipsă, 6 acoperite de corpus.
+  - urmator: **IMPORT corpus (decizie Costin: TOT)** — `scripts/import_corpus_fiscal.py` idempotent: 48 acte identity-establishable → anaf_surse/<tip>_<nr>_<an>.html (bytes oficiali sources/<source_SHA256>.html) + .sha256 + PROVENIENTA ADUS (motiv structurat: official_source/accessed_at/POSITION_ID/V4_EVIDENCE); 17 deja prezente (skip); 6 ordine comune nr1/nr2/an (raportate, nu importate). Recalibrez test_identitate_acte. STARE = IN LUCRU.
+  - apoi: pasul 3 (redactarea) după four-way verde al importului.
+  - pasi import:
+    1. `scripts/import_corpus_fiscal.py`: copie sources/<source_SHA256>.html (rol BASE/CUTOFF_VERSION) → anaf_surse/<tip>_<nr>_<an>.html + sidecar .sha256; abort pe coliziune byte-identică sau nume.
+    2. PROVENIENTA.json: +48 intrări ADUS cu motiv structurat.
+    3. test_identitate_acte: recalibrare acoperire (clichet fara_titlu neschimbat — toate 48 au titlu).
+    4. suită verde + verificator 0 + re-măsurare acte lipsă → commit four-way.
   - pasi:
     1. `index_titluri_ghid.csv` git-track + `core/ghid_titluri.py::incarca()` (reader listă de bază).
     2. `core/ghid_poarta.py`: extractor citări → identitate act (tip,nr,an) + aliasuri (CF=Legea 227/2015, CPF=Legea 207/2015); index corpus din nume-fișier (toleranță `hg714`/`hg_714`) filtrat prin `scan_provenienta`; `verifica_citari`, `verifica_functionalitati`, `verifica_ghid` + CLI (exit≠0 = blocaj).

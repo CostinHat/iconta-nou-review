@@ -788,3 +788,17 @@ nu se livrează o listă știut-greșită) + reparație pe clasă (CICLUL DE NEC
 5 teste `test_CALIBRARE_*` noi (fiecare pe cazul real). Numere corectate: **44/202 ghiduri** citează
 **47 acte distincte** neaduse în corpus (SUPERSEDĂ 46/51 din intrarea anterioară — DECIZII 62). Suita
 verde, verificator 0.
+
+## 21.09.2026 — Import corpus FISCAL urcat în anaf_surse (decizie Costin: TOT)
+
+Costin a urcat `import_fiscalos/active` (71 poziții, OPIS 15.09, content-addressed + proveniență bogată:
+official_source, accessed_at, source_SHA256, V4_EVIDENCE). Decizie: import TOT, bytes oficiali → anaf_surse.
+
+Executat cu `scripts/import_corpus_fiscal.py` (idempotent, fail-closed): 48 acte importate (material principal
+BASE/CUTOFF_VERSION → anaf_surse/<tip>_<nr>_<an>.html + .sha256 + PROVENIENTA ADUS cu motiv structurat),
+17 deja prezente (skip), 6 ordine comune nr1/nr2/an raportate (identitate mecanic nestabilibilă). Detaliu:
+DECIZII 63.
+
+Efect: corpus_acte 122→170 identități; acte lipsă (grandfathering) 47→41, ghiduri afectate 44→42; cele 6
+acte suprapuse acoperite. Recalibrat test_identitate_acte: acoperire 52%→60% (188/311), clichet fara_titlu
+neschimbat (123 — toate cele 48 au titlu). Garduri corpus/identitate verzi, verificator 0.

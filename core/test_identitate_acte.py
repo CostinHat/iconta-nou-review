@@ -24,7 +24,8 @@ Aia e o citire, nu o potrivire. (Instanța: `hg_1094_2025` avea titlul potrivit 
 era la descărcare, în ce act s-a cerut — gardul ăsta n-ar fi prins-o.)
 
 Nici fișierele fără bloc de titlu — structuri, extrase, note — nu se pot verifica; se numără, iar
-numărul e pinat, ca acoperirea să nu scadă tăcut. **Acoperirea de azi: 130 din 251 (52%).**
+numărul e pinat, ca acoperirea să nu scadă tăcut. **Acoperirea de azi: 188 din 311 (60%)** (după
+importul corpusului FISCAL, 21.09.2026: +48 acte, toate cu titlu verificabil; era 130/251 la 24.08).
 Deci gardul vede jumătate din corpusul cu nume de act — și asta se scrie, nu se presupune.
 """
 import hashlib
@@ -48,8 +49,10 @@ ANTET = 6000
 # Numărul poate fi scris cu separator de mii: „nr. 1.094". Fără asta, tiparul taie la prima cifră.
 NR = r"[0-9][0-9.]*"
 
-# Fișiere fără bloc de titlu verificabil. MĂSURAT 24.08.2026, nu estimat: din **251** de
-# fișiere cu nume de act, **130 au titlu verificabil (52%)** și 121 nu — 39 `.pdf` fără frate
+# Fișiere fără bloc de titlu verificabil. MĂSURAT (recalibrat 21.09.2026 după importul FISCAL): din
+# **311** fișiere cu nume de act, **188 au titlu verificabil (60%)** și 123 nu. Cele +48 acte importate
+# au toate titlu (cu-titlu 130->188, total 251->311), deci fara_titlu rămâne 123. Breakdown 24.08 (121
+# fără titlu): 39 `.pdf` fără frate
 # `.txt`, 57 `.txt` de extras, 25 `.html` care sunt structuri sau note, nu acte cu antet.
 # Clichet: nu poate CREȘTE. Dacă scade, se coboară — altfel acoperirea reală se pierde.
 #

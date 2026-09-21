@@ -1,0 +1,1236 @@
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title>ORDIN                 90 14/01/2016 - Portal Legislativ</title>
+    <link href="/Content/css?v=iKXncnEnzeZrcZDXQ4gyEFYtrgIhK9GqKaiZ1xjeUOQ1" rel="stylesheet"/>
+
+    <link href="/Content/themes/base/css?v=7T_tuS9RP8sQe2HxerJdL6STYU-qCHtjrExyjsSiYcQ1" rel="stylesheet"/>
+
+    <meta name="keywords" content="ORDIN                 90 14/01/2016 - Portal Legislativ">
+    <meta name="description" content="ORDIN                 90 14/01/2016 - Portal Legislativ">
+    <meta name="title" content="ORDIN                 90 14/01/2016 - Portal Legislativ">
+    <link href="/Content/bootstrap-datepicker.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="/Content/Images/Site/temanoua/favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="/Content/public.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="/bundles/modernizr?v=qVODBytEBVVePTNtSFXgRX0NCEjh9U_Oj8ePaSiRcGg1"></script>
+
+    <script src="/bundles/jquery?v=UgyEMAYOuSB9Bb6HcOEVHpd6fIIp54yF086SRNVcdIY1"></script>
+
+    <script src="/bundles/jqueryui?v=O4Awnx3xYnFLmC1TAsxXigS8kLERW18heIHqD0bRSTE1"></script>
+
+    <script src="/bundles/bootstrap?v=WyYa2dIFje-38fhrXc_sQiaOB-lu9j8r45bVIBgtqrw1"></script>
+
+    <script type="text/javascript" language="JavaScript">
+        var backColor = '#f0ffff';
+        var actColor = 'white';
+        var brdColor = 'black';
+        function marcheaza(id_ttl, id) {
+            /*id.style.backgroundColor=backColor;
+            id_ttl.style.cursor='pointer';
+            id.style.borderColor=brdColor;
+            id.style.borderStyle='dashed';*/
+        }
+        function demarcheaza(id_ttl, id) {
+            /*id.style.backgroundColor='transparent';
+            id_ttl.style.cursor='default';
+            id.style.borderColor=actColor;
+            id.style.borderStyle='dotted';*/
+        }
+        function plusMinus(id1, id2) {
+            if (id1.style.display == 'none') {
+                id1.style.display = 'inline';
+                id2.style.display = 'none';
+            }
+            else {
+                id1.style.display = 'none';
+                id2.style.display = 'inline';
+            }
+        }
+        function setCursor(id, tipCursor) {
+            id.style.cursor = tipCursor;
+        }
+    </script>
+    <script>
+        function pozitioneaza(id) {
+            var id_nou = id.substring(0, id.length - 4);
+           //document.getElementById('toTop').click();
+            $("#toTop").trigger("click");
+ 
+        }
+ 
+
+    </script>
+
+
+
+</head>
+
+<body data-spy="scroll" data-target="#affix-nav" data-twttr-rendered="true">
+    <a name="top"></a>
+
+
+    <div id="toTop" class="toggle-menu menu-left"><a class="toggle-menu menu-left"><img src="/Content/Images/Site/temanoua/butonmeniu.png" alt="logo" /></a> </div>
+    <div id="masterwrapper page-content">
+        <div id="header_wrapper" class="navbar navbar-default">
+            <!--navbar-fixed-top-->
+            <header>
+                <div id="header">
+                    <div class="header_top">
+                        <div class="banner">
+                            <div class="row">
+                                <img class="img-responsive center-block pozawidth" id="logoportal" src="/Content/Images/Site/header_logo.png" style="width:85%;" alt="logo" />
+                            </div>
+                        </div>
+                        <div class="row margin0" id="textlogo">
+                            <center>
+                                <h4 class="reducerespatiu logo">Portal Legislativ</h4>
+
+                            </center>
+                            <!-- <div style="float:right; position:relative; right:0; margin-top:-23px;">
+                                <a data-toggle="modal" data-target="#mesajBetaModal" style="cursor:pointer;">
+                                    <img width="50" src="/Content/Images/Site/versiunebeta.png" alt="Versiune Beta 2.0" />
+                                </a>
+                            </div>-->
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="menu_wrapper navbar navbar-inverse" role="navigation" id="slide-nav">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <a id="btnNavbar" class="navbar-toggle">
+                                    <span class="sr-only">Meniu</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </a>
+
+                            </div>
+                            <div id="slidemenu" style="cursor:pointer;">
+                                <div id="menu" onclick="pozitioneaza('')">
+                                    <a style=" cursor:pointer;" onclick="pozitioneaza('')">
+                                        <h3>Meniu</h3>
+                                    </a>
+                                    <ul></ul>
+                                    <ul class="mainmenu">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+             
+                                    </ul>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </header>
+            <div class="meniunu">
+                <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left">
+                    <h3 style="padding-left:65px; margin-top:-5px;">Meniu</h3>
+                    <div id="meniutitlu"></div>
+                    <div id="meniupaginastart">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+              <br />
+                        Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+                        conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+                        rezultatele cautarilor venind direct de la sursa.
+                    </div>
+                    <script>
+                        if (window.location.href.indexOf('DetaliiDocument') != -1) {
+                            $('#meniupaginastart').hide();
+                        }
+                        else {
+                            $('#meniupaginastart').show();
+                        }
+                    </script>
+                </nav>
+            </div>
+        </div>
+ 
+        <div id="page_content" style="margin-top:-15px;">
+            <div id="page_wrapper">
+                <div class="articole_wrapper">
+                    
+
+
+<style>
+    #masterwrapper, #page_content, #page_wrapper {
+        background-color: white;
+        background: white;
+    }
+
+    #document_info {
+        font-size: 15px;
+    }
+
+    #fisaact {
+        font-size: 14px;
+    }
+
+    .seincarca {
+        position: fixed;
+        z-index: 1100;
+        left: 45%;
+        /*	margin-top: -500px;*/
+        top: 45%;
+        height: 100px;
+        background-color: #ffffff;
+        -moz-box-shadow: 5px 5px 5px #400;
+        -webkit-box-shadow: 5px 5px 5px #400;
+        box-shadow: 5px 5px 5px #400;
+        border: 1px solid #dadada;
+        -moz-border-radius: 15px;
+        -webkit-border-radius: 15px;
+        -khtml-border-radius: 15px;
+        border-radius: 15px;
+    }
+
+    .cbsloader {
+        background-image: url(~/../../../Content/Images/Site/bar-circle.gif);
+        background-repeat: no-repeat;
+    }
+
+    #modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('~/../../../Content/Images/Site/tint20.png') 0 0 repeat;
+        background: rgba(0,0,0,0.2);
+    }
+    #sidebar  {
+        &.affix;
+
+    {
+        top: 10px;
+        bottom: auto;
+    }
+
+    &.affix-top {
+        position: absolute;
+        top: 20px;
+    }
+
+    &.affix-bottom {
+        position: relative;
+        top: auto;
+        bottom: auto;
+    }
+
+    }
+
+</style>
+ <script>
+
+     function imgSIZE() {
+         $("#infoactinfoact img").one("load", function() {
+             try {
+                 var theImage = new Image();
+                 theImage.src = $(this).attr("src");
+                 var imgW = theImage.width;
+                 var imgH = theImage.height;
+                 // console.log($(this).attr("src") + "   - " + imgW + ", " + imgH);
+
+                 
+                 $(this).css("max-width", "100%");
+                 $(this).css("width", imgW+"px");
+                 
+             }
+             catch(e) {
+                 // console.log("horror> "+e);
+             }
+         });
+     }
+
+ </script>
+
+<div class="container bs-docs-container"  data-target="#sidebar">
+
+    <div class="row" id="textdocumentleg">
+        <div class="col-md-3" id="meniu">
+            <div class="bs-docs-sidebar affix-top meniuaffix" id="sidebar">
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+                        <h1>Cuprins</h1>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="loaderDiv" class="seincarca" style="display: none; text-align: center; width: auto !important; height: auto !important; padding: 40px;">
+                    <div id="modal"></div>
+                    <progress max="100">
+                        <div class="cbsloader">
+                            <div style="color:#333; margin-top:-40px; margin-left:130px;">
+                            </div>
+                            <br>
+                            <div style="color:#333; margin-left:49px; margin-top:-5px;">
+                                <b>Se încarcă, vă rugăm asteptati.</b><br><br>
+                            </div>
+                        </div>
+                    </progress>
+                </div>
+                <div class="details_navigation">
+
+                    <input type="hidden" id="id_act" name="id_act" value="297222" />
+                    <div class="nav_header expanded" data-target="FormeAct" style="margin-left:-10px; font-weight: bold !important;">
+                            <span class="trigger plus">+</span>
+                             <b><span>Forme act</span></b>
+                    </div>
+                    <div class="nav_content expanded" data-target="FormeAct" style="margin-left: -10px;">
+                            <div class="forme_act">
+<input checked="checked" id="Formaconsolidata" name="FormeAct" onchange="SchimbareFormaAct();" type="radio" value="1" /><label for="Formaconsolidata">Forma consolidata</label>                                        <div class="forme_act_chk">
+                                            
+                                            
+                                        </div>
+                                            <div>
+                                                <div id="label_forme_actz" onclick="toggle_istoric_forme_actz()" style="cursor: pointer; margin-left: -5px; margin-top: 5px;">&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidări</div>
+                                                <div id="istoric_fa" class="nav_content expanded" style="display: none; margin-left: -8px;">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 13.05.2025' style='color:red;text-decoration:none;cursor:default'>13.05.2025</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 19.11.2020' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/232296'>19.11.2020</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 22.07.2019' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/216294'>22.07.2019</a><br/>
+                                                </div>
+                                            </div>
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+<input id="Formadebaza" name="FormeAct" onchange="incarcaFormaDeBaza(175182);" type="radio" value="3" /><label for="Formadebaza">Forma de baza</label>                            </div>
+                    </div>
+
+                    <div id="label_fisaact" class="nav_header" onclick="toggle_fisaact()" style="margin-left:-10px !important; margin-top:10px;">
+                        <span id="label_fisaact_plus_minus" style="cursor:pointer">+</span>
+                        <span style="cursor: pointer; font-weight: bold; color: #3c3636; ">Fișă act</span>
+                    </div>
+
+                    <div id="content_fisaact" class="nav_content" style="display: none;">
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="1" id="Actiunisuferite" name="Actiunisuferite" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Actiunisuferite" type="hidden" value="false" />
+                                <label for="Actiunisuferite">Actiuni suferite</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="2" id="ActiuniInduse" name="ActiuniInduse" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="ActiuniInduse" type="hidden" value="false" />
+                                <label for="ActiuniInduse">Actiuni Induse</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="3" id="Referape" name="Referape" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referape" type="hidden" value="false" />
+                                <label for="Referape">Refera pe</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="4" id="Referitde" name="Referitde" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referitde" type="hidden" value="false" />
+                                <label for="Referitde">Referit de</label>
+                            </div>
+                    </div>
+
+                </div>
+                <p style="padding-top: 10px; font-variant: small-caps; border-bottom: 3px solid #BB3A3A; color: #112F5D; font-size: 18px; font-family: EB Garamond !important; ">Cuprinsul Actului</p>
+                <ul class="nav bs-docs-sidenav" style=" margin-top:5px;">
+
+                    pentru aprobarea conținutului cererii de acordare a eșalonării la plată și a documentelor justificative anexate acesteia, precum și a Procedurii de aplicare a acordării eșalonării la plată de către organul fiscal central<li><a href="#id_artA14_ttl" onclick="&#xA;        pozitioneaza('id_artA14_ttl')&#xA;      ">Articolul 1</a></li><li><a href="#id_artA19_ttl" onclick="&#xA;        pozitioneaza('id_artA19_ttl')&#xA;      ">Articolul 2</a></li><li><a href="#id_artA22_ttl" onclick="&#xA;        pozitioneaza('id_artA22_ttl')&#xA;      ">Articolul 3</a></li><li><a href="#id_artA25_ttl" onclick="&#xA;        pozitioneaza('id_artA25_ttl')&#xA;      ">Articolul 4</a></li>Președintele Agenției Naționale de Administrare Fiscală,Gelu-Ștefan Diaconu<li><a href="#id_anxA32_ttl" onclick="&#xA;        pozitioneaza('id_anxA32_ttl')&#xA;      ">Anexa nr. 1</a><ul class="nav submeniu">CONȚINUTUL CERERIIde acordare a eșalonării la plată și documentelejustificative anexate acesteia<li><a href="#id_artA37_ttl" onclick="&#xA;        pozitioneaza('id_artA37_ttl')&#xA;      ">Articolul 1</a></li><li><a href="#id_artA52_ttl" onclick="&#xA;        pozitioneaza('id_artA52_ttl')&#xA;      ">Articolul 2</a></li><li><a href="#id_artA79491882_ttl" onclick="&#xA;        pozitioneaza('id_artA79491882_ttl')&#xA;      ">Articolul 3</a></li><li><a href="#id_anxA99933868_ttl" onclick="&#xA;        pozitioneaza('id_anxA99933868_ttl')&#xA;      ">Anexă</a></li></ul></li><li><a href="#id_anxA72_ttl" onclick="&#xA;        pozitioneaza('id_anxA72_ttl')&#xA;      ">Anexa nr. 2</a></li>
+
+                </ul>
+                <a class="back-to-top" onclick="pozitioneaza('')" href="#top">
+                    Reveniti in topul paginii
+                </a>
+                <div style="text-align:center;">
+                    
+
+                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G3LTN3PQ3TV3O30L7FI0ZTB7RNV>
+                        <span class="glyphicon glyphicon-print"></span> Forma printabilă
+                    </a>
+                </div>
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+
+
+
+        <div class="col-md-8" role="main" id="infoactinfoact">
+            <div class="bs-docs-section">
+                <div class="main_details">
+                    
+                    <div class="document_info" id="document_info">
+                        <div id="forme_act_container" data-id="FormeAct" data-state="loaded">
+                                    <div id="div_Formaconsolidata" class="content_forma_act" data-state="loaded">
+                                        
+                                        <span class="S_DEN">ORDIN nr. 90 din 14 ianuarie 2016</span><span class="S_HDR">pentru aprobarea conținutului cererii de acordare a eșalonării la plată și a documentelor justificative anexate acesteia, precum și a Procedurii de aplicare a acordării eșalonării la plată de către organul fiscal central</span><table cellspacing="0px" cellpadding="0px" class="S_EMT"><tr valign="baseline"><td width="75px"><span class="S_EMT_TTL">EMITENT</span></td><td><span class="S_EMT_BDY"><li>AGENȚIA NAȚIONALĂ DE ADMINISTRARE FISCALĂ</li></span></td></tr></table><span class="S_PUB"><span class="S_PUB_TTL">Publicat în 
+			</span><span class="S_PUB_BDY">MONITORUL OFICIAL nr. 45 din 20 ianuarie 2016</span></span><span id="fisaact"><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='actiuni_suferite'></span><br/><span style='display:none;border:1px solid;height:180px;overflow:auto' id='actiuni_induse'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='refera_pe'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='referit_de'></span><br/><!----></span><span class="S_NTA" style="display: block; color:black;" id="id_ntaA99934033"><span class="S_NTA_TTL" id="id_ntaA99934033_ttl" onMouseOver="marcheaza(id_ntaA99934033_ttl,id_ntaA99934033)" onMouseOut="demarcheaza(id_ntaA99934033_ttl,id_ntaA99934033)" onMouseDown="plusMinus(id_ntaA99934033_scurt,id_ntaA99934033_lung)">
+						Notă </span><span style="display: none" class="S_NTA_SHORT" id="id_ntaA99934033_scurt">...
+			</span><span id="id_ntaA99934033_lung"><br /><span class="S_NTA_PAR" style="display: block; color:black;"><A href="~/../../../Public/DetaliiDocumentAfis/297962#A356">Articolul IV din ORDINUL nr. 597 din 29 aprilie 2025</A>, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025 prevede:<span class="S_PAR" style="display: block; color:black;" id="id_parA99934029">Articolul IV<span class="S_PAR" style="display: block; color:black;" id="id_parA99934030">(1) Cererile de acordare a eșalonării la plată depuse în temeiul <A href="~/../../../Public/DetaliiDocumentAfis/295429">titlului VII capitolul IV</A> "Înlesniri la plată" și <A href="~/../../../Public/DetaliiDocumentAfis/295429">capitolul IV^1</A> "Eșalonare la plată, în formă simplificată, pentru obligațiile fiscale administrate de organul fiscal central" din <A href="~/../../../Public/DetaliiDocumentAfis/295429">Legea nr. 207/2015 privind Codul de procedură fiscală</A>, cu modificările și completările ulterioare, care sunt nesoluționate la data intrării în vigoare a <A href="~/../../../Public/DetaliiDocumentAfis/266651">Ordonanței de urgență a Guvernului nr. 20/2023</A> pentru modificarea și completarea <A href="~/../../../Public/DetaliiDocumentAfis/295429">Legii nr. 207/2015 privind Codul de procedură fiscală</A>, precum și pentru modificarea <A href="~/../../../Public/DetaliiDocumentAfis/284215">Ordonanței Guvernului nr. 6/2019</A> privind instituirea unor facilități fiscale, se soluționează potrivit legislației în vigoare la data depunerii cererii!<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA99934031">(2) Obligațiile fiscale prevăzute la <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 184 alin. (6) lit. f)</A> sau <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 209^1 alin. (6) lit. h)</A> - <A href="~/../../../Public/DetaliiDocumentAfis/295429">j)</A>, după caz, din <A href="~/../../../Public/DetaliiDocumentAfis/295429">Legea nr. 207/2015 privind Codul de procedură fiscală</A>, cu modificările și completările ulterioare, stabilite de organul fiscal prin decizie, cu termene de plată după data comunicării deciziei de eșalonare la plată, se achită în termenul prevăzut la <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 194 alin. (1) lit. b)</A> sau <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 209^4 alin. (1) lit. b)</A>, după caz, din aceeași lege.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA99934032">(3) Pentru cererile de modificare a eșalonării la plată, depuse după data intrării în vigoare a <A href="~/../../../Public/DetaliiDocumentAfis/266651">Ordonanței de urgență a Guvernului nr. 20/2023</A> pentru modificarea și completarea <A href="~/../../../Public/DetaliiDocumentAfis/295429">Legii nr. 207/2015 privind Codul de procedură fiscală</A>, precum și pentru modificarea <A href="~/../../../Public/DetaliiDocumentAfis/284215">Ordonanței Guvernului nr. 6/2019</A> privind instituirea unor facilități fiscale, obligațiile fiscale de natura celor prevăzute la <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 184 alin. (6) lit. f)</A> sau <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 209^1 alin. (6) lit. h)-j)</A>, după caz, din <A href="~/../../../Public/DetaliiDocumentAfis/295429">Legea nr. 207/2015 privind Codul de procedură fiscală</A>, cu modificările și completările ulterioare, nu se includ în eșalonare în cazul soluționării cererii potrivit <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 195</A> sau <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 209^5</A>, după caz, din aceeași lege, cu păstrarea celor rămase nestinse din eșalonarea deja aprobată, acestea rămânând condiție de achitare la termenele stabilite potrivit <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 194 alin. (1)</A> sau <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 209^4 alin. (1)</A>, după caz, din aceeași lege.<!----></span><!----></span></span></span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA11">Având în vedere prevederile <A href="~/../../../Public/DetaliiDocumentAfis/215844#A1895">art. 187 alin. (2)</A>, ale <A href="~/../../../Public/DetaliiDocumentAfis/215844#A2124">art. 209</A> și ale <A href="~/../../../Public/DetaliiDocumentAfis/170007#A3484">art. 352 alin. (8) din Legea nr. 207/2015</A> privind Codul de procedură fiscală, cu modificările și completările ulterioare,<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA12">în temeiul prevederilor <A href="~/../../../Public/DetaliiDocumentAfis/150246#A236">art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013</A> privind organizarea și funcționarea Agenției Naționale de Administrare Fiscală, cu modificările și completările ulterioare,<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA13">președintele Agenției Naționale de Administrare Fiscală emite următorul ordin:<!----></span><span class="S_ART" style="display: block; color:black;" id="id_artA14" name="id_artA14"><span class="TAG_COLLAPSED" id="id_cllpsdA14" onMouseOver="marcheaza(id_cllpsdA14,id_artA14)" onMouseOut="demarcheaza(id_cllpsdA14,id_artA14)" onMouseDown="plusMinus(id_artA14_bdy,id_cllpsdA14)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA14_ttl" onMouseOver="marcheaza(id_artA14_ttl,id_artA14)" onMouseOut="demarcheaza(id_artA14_ttl,id_artA14)" onMouseDown="plusMinus(id_artA14_bdy,id_cllpsdA14)">Articolul 1</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA14_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA16"><span class="S_ALN_TTL" id="id_litA16_ttl" onMouseOver="marcheaza(id_litA16_ttl,id_litA16)" onMouseOut="demarcheaza(id_litA16_ttl,id_litA16)" onMouseDown="plusMinus(id_litA16_short,id_litA16_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA16_bdy">Se aprobă conținutul cererii de acordare a eșalonării la plată și documentele justificative anexate acesteia, prevăzute în <span class="S_LGI">anexa nr. 1</span>.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA17"><span class="S_ALN_TTL" id="id_litA17_ttl" onMouseOver="marcheaza(id_litA17_ttl,id_litA17)" onMouseOut="demarcheaza(id_litA17_ttl,id_litA17)" onMouseDown="plusMinus(id_litA17_short,id_litA17_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA17_bdy">Se aprobă Procedura de aplicare a acordării eșalonării la plată de către organul fiscal central, prevăzută în <A href="~/../../../Public/DetaliiDocumentAfis/297223">anexa nr. 2</A>.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA18"><span class="S_ALN_TTL" id="id_litA18_ttl" onMouseOver="marcheaza(id_litA18_ttl,id_litA18)" onMouseOut="demarcheaza(id_litA18_ttl,id_litA18)" onMouseDown="plusMinus(id_litA18_short,id_litA18_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA18_bdy"><span class="S_LGI">Anexele nr. 1</span> și <A href="~/../../../Public/DetaliiDocumentAfis/297223">2</A> fac parte integrantă din prezentul ordin.</span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA19" name="id_artA19"><span class="TAG_COLLAPSED" id="id_cllpsdA19" onMouseOver="marcheaza(id_cllpsdA19,id_artA19)" onMouseOut="demarcheaza(id_cllpsdA19,id_artA19)" onMouseDown="plusMinus(id_artA19_bdy,id_cllpsdA19)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA19_ttl" onMouseOver="marcheaza(id_artA19_ttl,id_artA19)" onMouseOut="demarcheaza(id_artA19_ttl,id_artA19)" onMouseDown="plusMinus(id_artA19_bdy,id_cllpsdA19)">Articolul 2</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA19_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA21">Prevederile prezentului ordin se aplică și pentru obligațiile fiscale pentru care au fost acordate eșalonări la plată până la data intrării în vigoare a acestuia.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA22" name="id_artA22"><span class="TAG_COLLAPSED" id="id_cllpsdA22" onMouseOver="marcheaza(id_cllpsdA22,id_artA22)" onMouseOut="demarcheaza(id_cllpsdA22,id_artA22)" onMouseDown="plusMinus(id_artA22_bdy,id_cllpsdA22)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA22_ttl" onMouseOver="marcheaza(id_artA22_ttl,id_artA22)" onMouseOut="demarcheaza(id_artA22_ttl,id_artA22)" onMouseDown="plusMinus(id_artA22_bdy,id_cllpsdA22)">Articolul 3</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA22_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA24">Direcția generală de reglementare a colectării creanțelor bugetare, Direcția generală de planificare, monitorizare și sinteză, Direcția generală de administrare a marilor contribuabili, Direcția generală de tehnologia informației, direcțiile generale regionale ale finanțelor publice, precum și organele fiscale centrale din subordinea acestora vor duce la îndeplinire prevederile prezentului ordin.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA25" name="id_artA25"><span class="TAG_COLLAPSED" id="id_cllpsdA25" onMouseOver="marcheaza(id_cllpsdA25,id_artA25)" onMouseOut="demarcheaza(id_cllpsdA25,id_artA25)" onMouseDown="plusMinus(id_artA25_bdy,id_cllpsdA25)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA25_ttl" onMouseOver="marcheaza(id_artA25_ttl,id_artA25)" onMouseOut="demarcheaza(id_artA25_ttl,id_artA25)" onMouseDown="plusMinus(id_artA25_bdy,id_cllpsdA25)">Articolul 4</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA25_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA27">Prezentul ordin se publică în Monitorul Oficial al României, Partea I<!----></span></span></span><span class="S_SMN"><br /><span class="S_SMN_PAR">Președintele Agenției Naționale de Administrare Fiscală,<!----></span><br /><span class="S_SMN_PAR">Gelu-Ștefan Diaconu<!----></span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA30">București, 14 ianuarie 2016.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA31">Nr. 90.<!----></span><span class="S_ANX" style="display: block; color:black;" id="id_anxA32" name="id_anxA32"><span class="TAG_COLLAPSED" id="id_cllpsdA32" onMouseOver="marcheaza(id_cllpsdA32,id_anxA32)" onMouseOut="demarcheaza(id_cllpsdA32,id_anxA32)" onMouseDown="plusMinus(id_anxA32_bdy,id_cllpsdA32)">
+				 + 
+			</span><span class="S_ANX_TTL" id="id_anxA32_ttl" onMouseOver="marcheaza(id_anxA32_ttl,id_anxA32)" onMouseOut="demarcheaza(id_anxA32_ttl,id_anxA32)" onMouseDown="plusMinus(id_anxA32_bdy,id_cllpsdA32)">Anexa nr. 1<!----></span><span class="S_ANX_DEN"><!----></span><span class="S_ANX_BDY" id="id_anxA32_bdy"><span class="A_ELEMENT_CENTER"><br /><span class="A_PAR">CONȚINUTUL CERERII<!----></span><br /><span class="A_PAR">de acordare a eșalonării la plată și documentele<!----></span><br /><span class="A_PAR">justificative anexate acesteia<!----></span><!----></span><span class="S_ART" style="display: block; color:black;" id="id_artA37" name="id_artA37"><span class="TAG_COLLAPSED" id="id_cllpsdA37" onMouseOver="marcheaza(id_cllpsdA37,id_artA37)" onMouseOut="demarcheaza(id_cllpsdA37,id_artA37)" onMouseDown="plusMinus(id_artA37_bdy,id_cllpsdA37)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA37_ttl" onMouseOver="marcheaza(id_artA37_ttl,id_artA37)" onMouseOut="demarcheaza(id_artA37_ttl,id_artA37)" onMouseDown="plusMinus(id_artA37_bdy,id_cllpsdA37)">Articolul 1</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA37_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA39">Dispoziții privind cererea de acordare a eșalonării la plată<!----></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA75124957"><span class="S_ALN_TTL" id="id_litA75124957_ttl" onMouseOver="marcheaza(id_litA75124957_ttl,id_litA75124957)" onMouseOut="demarcheaza(id_litA75124957_ttl,id_litA75124957)" onMouseDown="plusMinus(id_litA75124957_short,id_litA75124957_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA75124957_bdy"> Eșalonările la plată a obligațiilor fiscale se solicită de către debitor în baza unei cereri, al cărei model este prevăzut în anexă, depusă la registratura organului fiscal competent, prevăzut la <A href="~/../../../Public/DetaliiDocumentAfis/215844">art. 30,</A><A href="~/../../../Public/DetaliiDocumentAfis/215844">33,</A><A href="~/../../../Public/DetaliiDocumentAfis/215844">35</A> sau <A href="~/../../../Public/DetaliiDocumentAfis/215844">40, după caz, din Legea nr. 207/2015 privind Codul de procedură fiscală</A>, cu modificările și completările ulterioare, denumită în continuare <A href="~/../../../Public/DetaliiDocumentAfis/215844">lege</A>, sau comunicate prin poștă, cu confirmare de primire.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA18573343">
+			(la 22-07-2019, 
+			Alineatul (1) din Articolul 1 , Anexa 1  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/216201">Punctul 1, Articolul I din ORDINUL nr. 1.960 din 9 iulie 2019, publicat în MONITORUL OFICIAL nr. 600 din 22 iulie 2019</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA41"><span class="S_ALN_TTL" id="id_litA41_ttl" onMouseOver="marcheaza(id_litA41_ttl,id_litA41)" onMouseOut="demarcheaza(id_litA41_ttl,id_litA41)" onMouseDown="plusMinus(id_litA41_short,id_litA41_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA41_bdy">Pentru debitorii care au înființate sedii secundare înregistrate fiscal, potrivit legii, cererea de acordare a eșalonărilor la plată se depune de către debitor, atât pentru obligațiile fiscale datorate de acesta, cât și pentru cele ale sediilor sale secundare. Cererea se depune la organul fiscal competent pentru administrarea obligațiilor fiscale ale debitorului și se analizează raportat la totalul obligațiilor debitorului și ale sediilor sale secundare.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933835"><span class="S_ALN_TTL" id="id_litA99933835_ttl" onMouseOver="marcheaza(id_litA99933835_ttl,id_litA99933835)" onMouseOut="demarcheaza(id_litA99933835_ttl,id_litA99933835)" onMouseDown="plusMinus(id_litA99933835_short,id_litA99933835_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA99933835_bdy">Cererea de acordare a eșalonărilor la plată ale obligațiilor fiscale va cuprinde următoarele elemente:<span class="S_LIT" style="display: block; color:blue;" id="id_litA99933836"><span class="S_LIT_TTL" id="id_litA99933836_ttl" onMouseOver="marcheaza(id_litA99933836_ttl,id_litA99933836)" onMouseOut="demarcheaza(id_litA99933836_ttl,id_litA99933836)" onMouseDown="plusMinus(id_litA99933836_short,id_litA99933836_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA99933836_bdy">datele de identificare a debitorului: denumirea/numele și prenumele acestuia, a/ale reprezentantului legal/reprezentantului fiscal/împuternicitului, dacă este cazul, domiciliul fiscal, codul de identificare fiscală, numărul de telefon/fax al acestora, adresa de e-mail, precum și datele de identificare pentru sediile secundare înregistrate fiscal, potrivit legii;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933836_short" onMouseOver="marcheaza(id_litA99933836_short,id_litA99933836)" onMouseOut="demarcheaza(id_litA99933836_short,id_litA99933836)" onMouseDown="plusMinus(id_litA99933836_short,id_litA99933836_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933837"><span class="S_LIT_TTL" id="id_litA99933837_ttl" onMouseOver="marcheaza(id_litA99933837_ttl,id_litA99933837)" onMouseOut="demarcheaza(id_litA99933837_ttl,id_litA99933837)" onMouseDown="plusMinus(id_litA99933837_short,id_litA99933837_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA99933837_bdy">perioada pentru care se solicită eșalonarea la plată, exprimată în luni;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933837_short" onMouseOver="marcheaza(id_litA99933837_short,id_litA99933837)" onMouseOut="demarcheaza(id_litA99933837_short,id_litA99933837)" onMouseDown="plusMinus(id_litA99933837_short,id_litA99933837_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933838"><span class="S_LIT_TTL" id="id_litA99933838_ttl" onMouseOver="marcheaza(id_litA99933838_ttl,id_litA99933838)" onMouseOut="demarcheaza(id_litA99933838_ttl,id_litA99933838)" onMouseDown="plusMinus(id_litA99933838_short,id_litA99933838_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA99933838_bdy">justificarea stării de dificultate generate de lipsa temporară de disponibilități bănești și cauzele acesteia;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933838_short" onMouseOver="marcheaza(id_litA99933838_short,id_litA99933838)" onMouseOut="demarcheaza(id_litA99933838_short,id_litA99933838)" onMouseDown="plusMinus(id_litA99933838_short,id_litA99933838_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933839"><span class="S_LIT_TTL" id="id_litA99933839_ttl" onMouseOver="marcheaza(id_litA99933839_ttl,id_litA99933839)" onMouseOut="demarcheaza(id_litA99933839_ttl,id_litA99933839)" onMouseDown="plusMinus(id_litA99933839_short,id_litA99933839_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA99933839_bdy">data și semnătura debitorului/reprezentantului legal/reprezentantului fiscal/împuternicitului.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933839_short" onMouseOver="marcheaza(id_litA99933839_short,id_litA99933839)" onMouseOut="demarcheaza(id_litA99933839_short,id_litA99933839)" onMouseDown="plusMinus(id_litA99933839_short,id_litA99933839_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933840">
+			(la 13-05-2025, 
+			Alineatul (3) , Articolul 1 , Anexa nr. 1  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 1. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933841"><span class="S_ALN_TTL" id="id_litA99933841_ttl" onMouseOver="marcheaza(id_litA99933841_ttl,id_litA99933841)" onMouseOut="demarcheaza(id_litA99933841_ttl,id_litA99933841)" onMouseDown="plusMinus(id_litA99933841_short,id_litA99933841_bdy)">(4)<!----></span> <span class="S_ALN_BDY" id="id_litA99933841_bdy">Cererea de acordare a eșalonării la plată, depusă în condițiile <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 206 din lege</A>, trebuie să conțină elementele prevăzute la <span class="S_LGI">alin. (3) lit. a)</span> și <span class="S_LGI">b)</span>, precum și precizarea expresă că se solicită eșalonarea la plată cu încadrarea în categoria debitorilor cu risc fiscal mic sau invocarea temeiului legal, respectiv <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 206 din lege</A>.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933842">
+			(la 13-05-2025, 
+			Alineatul (4) , Articolul 1 , Anexa nr. 1  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 1. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA51"><span class="S_ALN_TTL" id="id_litA51_ttl" onMouseOver="marcheaza(id_litA51_ttl,id_litA51)" onMouseOut="demarcheaza(id_litA51_ttl,id_litA51)" onMouseDown="plusMinus(id_litA51_short,id_litA51_bdy)">(5)<!----></span> <span class="S_ALN_BDY" id="id_litA51_bdy">În cazul solicitării unei eșalonări în temeiul <A href="~/../../../Public/DetaliiDocumentAfis/295429#A2101">art. 206 alin. (5) din lege</A>, cererea trebuie depusă anterior împlinirii scadenței sau termenului de plată prevăzute la art. 154 și 156 din lege, după caz.</span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA52" name="id_artA52"><span class="TAG_COLLAPSED" id="id_cllpsdA52" onMouseOver="marcheaza(id_cllpsdA52,id_artA52)" onMouseOut="demarcheaza(id_cllpsdA52,id_artA52)" onMouseDown="plusMinus(id_artA52_bdy,id_cllpsdA52)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA52_ttl" onMouseOver="marcheaza(id_artA52_ttl,id_artA52)" onMouseOut="demarcheaza(id_artA52_ttl,id_artA52)" onMouseDown="plusMinus(id_artA52_bdy,id_cllpsdA52)">Articolul 2</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA52_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA54">Documente justificative anexate cererii de acordare a eșalonării la plată<!----></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933845"><span class="S_ALN_TTL" id="id_litA99933845_ttl" onMouseOver="marcheaza(id_litA99933845_ttl,id_litA99933845)" onMouseOut="demarcheaza(id_litA99933845_ttl,id_litA99933845)" onMouseDown="plusMinus(id_litA99933845_short,id_litA99933845_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA99933845_bdy">Abrogat.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933846">
+			(la 13-05-2025, 
+			Alineatul (1) , Articolul 2 , Anexa nr. 1  a fost abrogat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 2. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933847"><span class="S_ALN_TTL" id="id_litA99933847_ttl" onMouseOver="marcheaza(id_litA99933847_ttl,id_litA99933847)" onMouseOut="demarcheaza(id_litA99933847_ttl,id_litA99933847)" onMouseDown="plusMinus(id_litA99933847_short,id_litA99933847_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA99933847_bdy">În cazul debitorilor, alții decât persoanele fizice, la cererea de acordare a eșalonărilor la plată ale obligațiilor fiscale se anexează și următoarele documente:<span class="S_LIT" style="display: block; color:blue;" id="id_litA99933848"><span class="S_LIT_TTL" id="id_litA99933848_ttl" onMouseOver="marcheaza(id_litA99933848_ttl,id_litA99933848)" onMouseOut="demarcheaza(id_litA99933848_ttl,id_litA99933848)" onMouseDown="plusMinus(id_litA99933848_short,id_litA99933848_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA99933848_bdy">copia ultimei balanțe de verificare sau registrul-jurnal de încasări și plăți, după caz;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933848_short" onMouseOver="marcheaza(id_litA99933848_short,id_litA99933848)" onMouseOut="demarcheaza(id_litA99933848_short,id_litA99933848)" onMouseDown="plusMinus(id_litA99933848_short,id_litA99933848_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933849"><span class="S_LIT_TTL" id="id_litA99933849_ttl" onMouseOver="marcheaza(id_litA99933849_ttl,id_litA99933849)" onMouseOut="demarcheaza(id_litA99933849_ttl,id_litA99933849)" onMouseDown="plusMinus(id_litA99933849_short,id_litA99933849_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA99933849_bdy">programul de restructurare sau de redresare financiară semnat de reprezentantul legal al debitorului, care va conține și capacitatea financiară de plată, respectiv argumentarea posibilității plăților pe perioada solicitată la eșalonare.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933849_short" onMouseOver="marcheaza(id_litA99933849_short,id_litA99933849)" onMouseOut="demarcheaza(id_litA99933849_short,id_litA99933849)" onMouseDown="plusMinus(id_litA99933849_short,id_litA99933849_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933850">
+			(la 13-05-2025, 
+			Alineatul (2) , Articolul 2 , Anexa nr. 1  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 3. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933851"><span class="S_ALN_TTL" id="id_litA99933851_ttl" onMouseOver="marcheaza(id_litA99933851_ttl,id_litA99933851)" onMouseOut="demarcheaza(id_litA99933851_ttl,id_litA99933851)" onMouseDown="plusMinus(id_litA99933851_short,id_litA99933851_bdy)">(2^1)<!----></span> <span class="S_ALN_BDY" id="id_litA99933851_bdy">La cererea de acordare a eșalonărilor la plată ale obligațiilor fiscale nu se anexează documentul prevăzut la <span class="S_LGI">alin. (2) lit. b)</span> în cazul:<span class="S_LIT" style="display: block; color:blue;" id="id_litA99933852"><span class="S_LIT_TTL" id="id_litA99933852_ttl" onMouseOver="marcheaza(id_litA99933852_ttl,id_litA99933852)" onMouseOut="demarcheaza(id_litA99933852_ttl,id_litA99933852)" onMouseDown="plusMinus(id_litA99933852_short,id_litA99933852_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA99933852_bdy">debitorilor care nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933852_short" onMouseOver="marcheaza(id_litA99933852_short,id_litA99933852)" onMouseOut="demarcheaza(id_litA99933852_short,id_litA99933852)" onMouseDown="plusMinus(id_litA99933852_short,id_litA99933852_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933853"><span class="S_LIT_TTL" id="id_litA99933853_ttl" onMouseOver="marcheaza(id_litA99933853_ttl,id_litA99933853)" onMouseOut="demarcheaza(id_litA99933853_ttl,id_litA99933853)" onMouseDown="plusMinus(id_litA99933853_short,id_litA99933853_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA99933853_bdy">debitorilor care constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933853_short" onMouseOver="marcheaza(id_litA99933853_short,id_litA99933853)" onMouseOut="demarcheaza(id_litA99933853_short,id_litA99933853)" onMouseDown="plusMinus(id_litA99933853_short,id_litA99933853_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933854"><span class="S_LIT_TTL" id="id_litA99933854_ttl" onMouseOver="marcheaza(id_litA99933854_ttl,id_litA99933854)" onMouseOut="demarcheaza(id_litA99933854_ttl,id_litA99933854)" onMouseDown="plusMinus(id_litA99933854_short,id_litA99933854_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA99933854_bdy">debitorilor cu risc fiscal mic.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933854_short" onMouseOver="marcheaza(id_litA99933854_short,id_litA99933854)" onMouseOut="demarcheaza(id_litA99933854_short,id_litA99933854)" onMouseDown="plusMinus(id_litA99933854_short,id_litA99933854_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933855">
+			(la 13-05-2025, 
+			Alineatul (2^1) , Articolul 2 , Anexa nr. 1  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 3. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA25110542"><span class="S_ALN_TTL" id="id_litA25110542_ttl" onMouseOver="marcheaza(id_litA25110542_ttl,id_litA25110542)" onMouseOut="demarcheaza(id_litA25110542_ttl,id_litA25110542)" onMouseDown="plusMinus(id_litA25110542_short,id_litA25110542_bdy)">(2^2)<!----></span> <span class="S_ALN_BDY" id="id_litA25110542_bdy">Prin excepție de la prevederile <span class="S_LGI">alin. (2)</span>, documentele prevăzute la <span class="S_LGI">lit. a)</span> și <span class="S_LGI">c)</span>, precum și situația privind indicatorii orientativi nu se anexează de către debitorii care nu au obligația să organizeze și să conducă evidențe contabile potrivit legislației naționale. În acest caz, debitorul menționează în cerere cauzele care au condus la situația de dificultate generată de lipsa temporară de disponibilități bănești.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA18578021">
+			(la 22-07-2019, 
+			Articolul 2  din  Anexa nr. 1  a fost completat de <A href="~/../../../Public/DetaliiDocumentAfis/216201">Punctul 3, Articolul I din ORDINUL nr. 1.960 din 9 iulie 2019, publicat în MONITORUL OFICIAL nr. 600 din 22 iulie 2019</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933856"><span class="S_ALN_TTL" id="id_litA99933856_ttl" onMouseOver="marcheaza(id_litA99933856_ttl,id_litA99933856)" onMouseOut="demarcheaza(id_litA99933856_ttl,id_litA99933856)" onMouseDown="plusMinus(id_litA99933856_short,id_litA99933856_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA99933856_bdy">Abrogat.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933857">
+			(la 13-05-2025, 
+			Alineatul (3) , Articolul 2 , Anexa nr. 1  a fost abrogat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 4. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933858"><span class="S_ALN_TTL" id="id_litA99933858_ttl" onMouseOver="marcheaza(id_litA99933858_ttl,id_litA99933858)" onMouseOut="demarcheaza(id_litA99933858_ttl,id_litA99933858)" onMouseDown="plusMinus(id_litA99933858_short,id_litA99933858_bdy)">(4)<!----></span> <span class="S_ALN_BDY" id="id_litA99933858_bdy">Abrogat.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933859">
+			(la 13-05-2025, 
+			Alineatul (4) , Articolul 2 , Anexa nr. 1  a fost abrogat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 4. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933860"><span class="S_ALN_TTL" id="id_litA99933860_ttl" onMouseOver="marcheaza(id_litA99933860_ttl,id_litA99933860)" onMouseOut="demarcheaza(id_litA99933860_ttl,id_litA99933860)" onMouseDown="plusMinus(id_litA99933860_short,id_litA99933860_bdy)">(5)<!----></span> <span class="S_ALN_BDY" id="id_litA99933860_bdy">Abrogat.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933861">
+			(la 13-05-2025, 
+			Alineatul (5) , Articolul 2 , Anexa nr. 1  a fost abrogat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 4. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA34657446"><span class="S_ALN_TTL" id="id_litA34657446_ttl" onMouseOver="marcheaza(id_litA34657446_ttl,id_litA34657446)" onMouseOut="demarcheaza(id_litA34657446_ttl,id_litA34657446)" onMouseDown="plusMinus(id_litA34657446_short,id_litA34657446_bdy)">(6)<!----></span> <span class="S_ALN_BDY" id="id_litA34657446_bdy"> În cazul cererilor depuse în condițiile <A href="~/../../../Public/DetaliiDocumentAfis/215844">art. 206 din lege</A>, persoanele juridice și persoanele fizice anexează și următoarele documente:<span class="S_LIT" style="display: block; color:blue;" id="id_litA99933862"><span class="S_LIT_TTL" id="id_litA99933862_ttl" onMouseOver="marcheaza(id_litA99933862_ttl,id_litA99933862)" onMouseOut="demarcheaza(id_litA99933862_ttl,id_litA99933862)" onMouseDown="plusMinus(id_litA99933862_short,id_litA99933862_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA99933862_bdy">declarația pe propria răspundere a debitorului sau a reprezentantului său legal din care să rezulte că acesta nu se află în inactivitate temporară înscrisă în registre ținute de instanțe judecătorești;<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933863">
+			(la 13-05-2025, 
+			Litera a) , Alineatul (6) , Articolul 2 , Anexa nr. 1  a fost modificată de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 5. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933862_short" onMouseOver="marcheaza(id_litA99933862_short,id_litA99933862)" onMouseOut="demarcheaza(id_litA99933862_short,id_litA99933862)" onMouseDown="plusMinus(id_litA99933862_short,id_litA99933862_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA30374654"><span class="S_LIT_TTL" id="id_litA30374654_ttl" onMouseOver="marcheaza(id_litA30374654_ttl,id_litA30374654)" onMouseOut="demarcheaza(id_litA30374654_ttl,id_litA30374654)" onMouseDown="plusMinus(id_litA30374654_short,id_litA30374654_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA30374654_bdy">propunere de grafic de eșalonare cuprinzând cuantumul ratelor de eșalonare, care trebuie să respecte prevederile art. 7 alin. (13^1) lit. c) din anexa nr. 2 la ordin. Depunerea acestui document este opțională.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA30374654_short" onMouseOver="marcheaza(id_litA30374654_short,id_litA30374654)" onMouseOut="demarcheaza(id_litA30374654_short,id_litA30374654)" onMouseDown="plusMinus(id_litA30374654_short,id_litA30374654_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA18578023">
+			(la 22-07-2019, 
+			Alineatul (6) din Articolul 2 , Anexa nr. 1  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/216201">Punctul 4, Articolul I din ORDINUL nr. 1.960 din 9 iulie 2019, publicat în MONITORUL OFICIAL nr. 600 din 22 iulie 2019</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933864"><span class="S_ALN_TTL" id="id_litA99933864_ttl" onMouseOver="marcheaza(id_litA99933864_ttl,id_litA99933864)" onMouseOut="demarcheaza(id_litA99933864_ttl,id_litA99933864)" onMouseDown="plusMinus(id_litA99933864_short,id_litA99933864_bdy)">(7)<!----></span> <span class="S_ALN_BDY" id="id_litA99933864_bdy">În cazul debitorilor care nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege ori au constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată, precum și al celor care desfășoară activități cu caracter sezonier, care doresc să plătească ratele de eșalonare diferențiat, acestea trebuie să respecte prevederile <A href="~/../../../Public/DetaliiDocumentAfis/297223#A67500594">art. 7 alin. (13^1) lit. a)</A> și <A href="~/../../../Public/DetaliiDocumentAfis/297223#A99995071">b) din anexa nr. 2 la ordin</A>.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933865">
+			(la 13-05-2025, 
+			Alineatul (7) , Articolul 2 , Anexa nr. 1  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 6. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA99933866"><span class="S_ALN_TTL" id="id_litA99933866_ttl" onMouseOver="marcheaza(id_litA99933866_ttl,id_litA99933866)" onMouseOut="demarcheaza(id_litA99933866_ttl,id_litA99933866)" onMouseDown="plusMinus(id_litA99933866_short,id_litA99933866_bdy)">(8)<!----></span> <span class="S_ALN_BDY" id="id_litA99933866_bdy">În situația în care organul fiscal nu are informații în bazele de date proprii, debitorii prezintă documente sau informații relevante în susținerea cererii.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99933867">
+			(la 13-05-2025, 
+			Articolul 2 , Anexa nr. 1  a fost completat de <A href="~/../../../Public/DetaliiDocumentAfis/297962">Punctul 7. , Articolul I  din ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span></span></span></span></span><span class="S_ART" style="display: block; color:blue;" id="id_artA79491882" name="id_artA79491882"><span class="TAG_COLLAPSED" id="id_cllpsdA79491882" onMouseOver="marcheaza(id_cllpsdA79491882,id_artA79491882)" onMouseOut="demarcheaza(id_cllpsdA79491882,id_artA79491882)" onMouseDown="plusMinus(id_artA79491882_bdy,id_cllpsdA79491882)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA79491882_ttl" onMouseOver="marcheaza(id_artA79491882_ttl,id_artA79491882)" onMouseOut="demarcheaza(id_artA79491882_ttl,id_artA79491882)" onMouseDown="plusMinus(id_artA79491882_bdy,id_cllpsdA79491882)">Articolul 3</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA79491882_bdy"><span class="S_PAR" style="display: block; color:blue;" id="id_parA83113611">Dispoziții finale<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA65481825"><span class="S_LGI">Anexa</span> face parte integrantă din prezenta anexă.<!----></span><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA18578025">
+			(la 22-07-2019, 
+			Anexa nr. 1  a fost completată de <A href="~/../../../Public/DetaliiDocumentAfis/216201">Punctul 6, Articolul I din ORDINUL nr. 1.960 din 9 iulie 2019, publicat în MONITORUL OFICIAL nr. 600 din 22 iulie 2019</A>
+			)
+	</span></span></span><span class="S_ANX" style="display: block; color:blue;" id="id_anxA99933868" name="id_anxA99933868"><span class="TAG_COLLAPSED" id="id_cllpsdA99933868" onMouseOver="marcheaza(id_cllpsdA99933868,id_anxA99933868)" onMouseOut="demarcheaza(id_cllpsdA99933868,id_anxA99933868)" onMouseDown="plusMinus(id_anxA99933868_bdy,id_cllpsdA99933868)">
+				 + 
+			</span><span class="S_ANX_TTL" id="id_anxA99933868_ttl" onMouseOver="marcheaza(id_anxA99933868_ttl,id_anxA99933868)" onMouseOut="demarcheaza(id_anxA99933868_ttl,id_anxA99933868)" onMouseDown="plusMinus(id_anxA99933868_bdy,id_cllpsdA99933868)">Anexă<!----></span><span class="S_ANX_DEN"><!----></span><span class="S_ANX_BDY" id="id_anxA99933868_bdy"><span class="S_PRE" style="font-size:;display: block; color:black;"><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934027"><!----></span><!----></span><span class="A_ELEMENT_CENTER"><br /><span class="A_PAR">                                        CERERE<!----></span><br /><span class="A_PAR">                               de acordare a eșalonării la plată<!----></span><!----></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933873"><span class="S_LIT_TTL" id="id_litA99933873_ttl" onMouseOver="marcheaza(id_litA99933873_ttl,id_litA99933873)" onMouseOut="demarcheaza(id_litA99933873_ttl,id_litA99933873)" onMouseDown="plusMinus(id_litA99933873_short,id_litA99933873_bdy)">A.<!----></span> <span class="S_LIT_BDY" id="id_litA99933873_bdy">Date de identificare ale debitorului<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933874">    Cod de identificare fiscala ....................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933875">    Denumirea/numele și prenumele ..................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933876">    Domiciliu fiscal: județ/sector ............, localitatea, .........., strada ..........., număr .........., bloc ............., scara ..........., apartament ........<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933877">    Telefon ........... Fax ............. E-mail<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933878">    Cod de identificare fiscală pentru sediile secundare<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933879">    ..........................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933880">    ..........................<!----></span><!----></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933873_short" onMouseOver="marcheaza(id_litA99933873_short,id_litA99933873)" onMouseOut="demarcheaza(id_litA99933873_short,id_litA99933873)" onMouseDown="plusMinus(id_litA99933873_short,id_litA99933873_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933881"><span class="S_LIT_TTL" id="id_litA99933881_ttl" onMouseOver="marcheaza(id_litA99933881_ttl,id_litA99933881)" onMouseOut="demarcheaza(id_litA99933881_ttl,id_litA99933881)" onMouseDown="plusMinus(id_litA99933881_short,id_litA99933881_bdy)">B.<!----></span> <span class="S_LIT_BDY" id="id_litA99933881_bdy">Datele de identificare a împuternicitului/reprezentantului legal/reprezentantului fiscal<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933882">    Denumirea/Numele și prenumele ..................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933883">    Adresa: ........................................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933884">    Codul de identificare fiscală ..................<!----></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933881_short" onMouseOver="marcheaza(id_litA99933881_short,id_litA99933881)" onMouseOut="demarcheaza(id_litA99933881_short,id_litA99933881)" onMouseDown="plusMinus(id_litA99933881_short,id_litA99933881_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933885"><span class="S_LIT_TTL" id="id_litA99933885_ttl" onMouseOver="marcheaza(id_litA99933885_ttl,id_litA99933885)" onMouseOut="demarcheaza(id_litA99933885_ttl,id_litA99933885)" onMouseDown="plusMinus(id_litA99933885_short,id_litA99933885_bdy)">C.<!----></span> <span class="S_LIT_BDY" id="id_litA99933885_bdy">Obiectul cererii<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933886">În temeiul prevederilor Titlului VII, Cap.IV "Înlesniri la plată" din <A href="~/../../../Public/DetaliiDocumentAfis/295429">Legea nr.207/2015 privind Codul de procedură fiscală</A>, cu modificările și completările ulterioare, denumită în continuare <A href="~/../../../Public/DetaliiDocumentAfis/295429">Cod de procedură fiscală</A>, și ale <A href="~/../../../Public/DetaliiDocumentAfis/232296">Ordinului președintelui Agenției Naționale de Administrare Fiscală nr.90/2016</A> pentru aprobarea conținutului cererii de acordare a eșalonării la plată și a documentelor justificative anexate acesteia, precum și a Procedurii de aplicare a acordării eșalonării la plată de către organul fiscal central, cu modificările și completările ulterioare, solicit*1:<table style="display: block; color:blue;"><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933890"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933892">eșalonare la plată a obligațiilor fiscale principale și accesorii, pe o perioadă de luni*2, conform art. 184 alin. (1) și art. 186 alin. (4) lit. ……. din Codul de procedură fiscală<!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933895"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933897">eșalonare la plată a obligațiilor fiscale, pe o perioadă de…… luni*3, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 184 alin. (1)</A> și <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 186 alin. (4) lit. c) din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933900"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933902">eșalonare la plată a obligațiilor fiscale , pe o perioadă de ……. Luni*4, amânare la plată în vederea anulării penalităților de întârziere, inclusiv 50% din majorări de întârziere, precum și amânarea la plată în vederea reducerii penalităților de nedeclarare, conform art. 184 alin. (1) și <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 208 din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933905"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933907">eșalonare la plată pe o perioadă de................................ luni*5, amânare la plată în vederea anulării penalităților de întârziere, inclusiv a unui procent de 50% din dobânzi, precum și amânarea la plată în vederea reducerii penalităților de nedeclarare, pentru debitorii cu risc fiscal mic, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 206 din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933910"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933912">modificare a deciziei de eșalonare la plată și/sau a deciziei de amânare la plată a penalităților de întârziere și a penalităților de nedeclarare, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 195, alin. (1)</A> sau <A href="~/../../../Public/DetaliiDocumentAfis/295429">(4) din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933915"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933917">modificare a deciziei de eșalonare la plată și/sau a deciziei de amânare la plată a penalităților de întârziere și a penalităților de nedeclarare, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 195, alin. (11) din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933920"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933922">modificare a deciziei de eșalonare la plată și/sau a deciziei de amânare la plată a penalităților de întârziere și a penalităților de nedeclarare, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 195, alin. (11^1) din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933925"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933927">modificare a deciziei de eșalonare la plată și/sau a deciziei de amânare la plată a penalităților de întârziere și a penalităților de nedeclarare, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 194 alin. (1) lit. h)</A> și <A href="~/../../../Public/DetaliiDocumentAfis/295429">i) din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933930"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933932">modificare a deciziei de eșalonare la plată și emiterea deciziei de amânare la plată a penalităților de întârziere și a penalităților de nedeclarare, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 195 alin. (8^2) din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933935"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933937">menținere a valabilității eșalonării la plată și/sau a amânării la plată a penalităților de întârziere și a penalităților de nedeclarare, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 200 din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933940"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933942">retragerea cererii de acordare/modificare/menținere a eșalonării la plată, conform prevederilor <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 188 din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933945"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933947">înlocuirea sau redimensionarea garanției, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 193 alin. (18) din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933950"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933952">renunțarea la eșalonarea la plata, conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art.196 din Codul de procedură fiscală</A><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933955"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933957">suspendarea condițiilor de menținere a valabilității eșalonării la plată, conform <A href="~/../../../Public/DetaliiDocumentAfis/249399">art. IV din Ordonanța Guvernului nr. 11/2021</A> pentru modificarea și completarea <A href="~/../../../Public/DetaliiDocumentAfis/295429">Legii nr.207/2015 privind Codul de procedură fiscală</A> și reglementarea unor măsuri fiscale<!----></span></td></tr></table><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933958">    *1 se bifează una din situațiile descrise.<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933959">    *2 se menționează numărul de luni pentru care se dorește eșalonarea la plată, care poate fi de cel mult 6 luni, cu indicarea <span class="S_LGI">lit. a)</span> sau b) prevăzute la art. 186 alin. (4), în funcție de garanțiile ce pot fi constituite;<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933960"> *3 se menționează numărul de luni pentru care se dorește eșalonarea la plată, care poate fi de cel mult 60 luni conform <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 186 alin. (4) lit. c) din Codul de procedură fiscală</A>, dacă constituie garanții a căror valoare este mai mare de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată, dar insuficiente față de cuantumul garanțiilor prevăzute la <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 193 alin. (13)</A> - <A href="~/../../../Public/DetaliiDocumentAfis/295429">(15) din Codul de procedură fiscală</A>.<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933961"> *4 se menționează numărul de luni pentru care se dorește eșalonarea la plată, care poate fi de până la 60 luni, cu garanții suficiente care sa acopere valoarea prevăzută la <A href="~/../../../Public/DetaliiDocumentAfis/295429">art. 193 alin. (13)</A> - <A href="~/../../../Public/DetaliiDocumentAfis/295429">(15) din Codul de procedură fiscală</A>.<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933962">    *5 se menționează numărul de luni pentru care se dorește eșalonarea la plată, care poate fi de până la 12 luni.<!----></span><!----></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933885_short" onMouseOver="marcheaza(id_litA99933885_short,id_litA99933885)" onMouseOut="demarcheaza(id_litA99933885_short,id_litA99933885)" onMouseDown="plusMinus(id_litA99933885_short,id_litA99933885_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933963"><span class="S_LIT_TTL" id="id_litA99933963_ttl" onMouseOver="marcheaza(id_litA99933963_ttl,id_litA99933963)" onMouseOut="demarcheaza(id_litA99933963_ttl,id_litA99933963)" onMouseDown="plusMinus(id_litA99933963_short,id_litA99933963_bdy)">D.<!----></span> <span class="S_LIT_BDY" id="id_litA99933963_bdy">[ ] Solicit plata diferențiată a ratelor, întrucât:<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933964">    [ ] desfășor activitate cu caracter sezonier,<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933965">    [ ] nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege ori care constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată,<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933966">    [ ] mă încadrez în categoria debitorilor cu risc fiscal mic,<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933967">    iar perioada în care pot avea venituri care să asigure plata ratelor este următoarea ..................*6.<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933968">    *6 Numărul de luni în care debitorul poate plăti rate mai mici este:<span class="S_LIT" style="display: block; color:blue;" id="id_litA99933969"><span class="S_LIT_TTL" id="id_litA99933969_ttl" onMouseOver="marcheaza(id_litA99933969_ttl,id_litA99933969)" onMouseOut="demarcheaza(id_litA99933969_ttl,id_litA99933969)" onMouseDown="plusMinus(id_litA99933969_short,id_litA99933969_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA99933969_bdy">de maxim 6 luni într-un an calendaristic sau, după caz, fracție de an, în cazul debitorilor care desfășoară activități cu caracter sezonier;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933969_short" onMouseOver="marcheaza(id_litA99933969_short,id_litA99933969)" onMouseOut="demarcheaza(id_litA99933969_short,id_litA99933969)" onMouseDown="plusMinus(id_litA99933969_short,id_litA99933969_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933970"><span class="S_LIT_TTL" id="id_litA99933970_ttl" onMouseOver="marcheaza(id_litA99933970_ttl,id_litA99933970)" onMouseOut="demarcheaza(id_litA99933970_ttl,id_litA99933970)" onMouseDown="plusMinus(id_litA99933970_short,id_litA99933970_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA99933970_bdy">de maxim 3 luni, în cazul debitorilor care nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege ori care constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933970_short" onMouseOver="marcheaza(id_litA99933970_short,id_litA99933970)" onMouseOut="demarcheaza(id_litA99933970_short,id_litA99933970)" onMouseDown="plusMinus(id_litA99933970_short,id_litA99933970_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933971"><span class="S_LIT_TTL" id="id_litA99933971_ttl" onMouseOver="marcheaza(id_litA99933971_ttl,id_litA99933971)" onMouseOut="demarcheaza(id_litA99933971_ttl,id_litA99933971)" onMouseDown="plusMinus(id_litA99933971_short,id_litA99933971_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA99933971_bdy">de maxim 6 luni, în cazul debitorilor cu risc fiscal mic.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933971_short" onMouseOver="marcheaza(id_litA99933971_short,id_litA99933971)" onMouseOut="demarcheaza(id_litA99933971_short,id_litA99933971)" onMouseDown="plusMinus(id_litA99933971_short,id_litA99933971_bdy)"> ... </span></span><!----></span><!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933972">    Rata de eșalonare din perioada în care nu am capacitate financiară de plată va fi de .............%*7.<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933973">    *7 Procentul nu poate fi mai mic de:<span class="S_LIT" style="display: block; color:blue;" id="id_litA99933974"><span class="S_LIT_TTL" id="id_litA99933974_ttl" onMouseOver="marcheaza(id_litA99933974_ttl,id_litA99933974)" onMouseOut="demarcheaza(id_litA99933974_ttl,id_litA99933974)" onMouseDown="plusMinus(id_litA99933974_short,id_litA99933974_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA99933974_bdy">10% din cuantumul ratei de eșalonare la plată stabilită potrivit prevederilor art.7 alin.(13) din Anexa nr. 2 la Ordinul președintelui Agenției Naționale de Administrare Fiscală nr. 90/2016 pentru aprobarea conținutului cererii de acordare a eșalonării la plată și a documentelor justificative anexate acesteia, precum și a Procedurii de aplicare a acordării eșalonării la plată de către organul fiscal central, în cazul debitorilor care desfășoară activități cu caracter sezonier;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933974_short" onMouseOver="marcheaza(id_litA99933974_short,id_litA99933974)" onMouseOut="demarcheaza(id_litA99933974_short,id_litA99933974)" onMouseDown="plusMinus(id_litA99933974_short,id_litA99933974_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933975"><span class="S_LIT_TTL" id="id_litA99933975_ttl" onMouseOver="marcheaza(id_litA99933975_ttl,id_litA99933975)" onMouseOut="demarcheaza(id_litA99933975_ttl,id_litA99933975)" onMouseDown="plusMinus(id_litA99933975_short,id_litA99933975_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA99933975_bdy">10% din cuantumul obligațiilor fiscale eșalonate la plată, în cazul debitorilor care nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege ori care constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată și al debitorilor cu risc fiscal mic.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933975_short" onMouseOver="marcheaza(id_litA99933975_short,id_litA99933975)" onMouseOut="demarcheaza(id_litA99933975_short,id_litA99933975)" onMouseDown="plusMinus(id_litA99933975_short,id_litA99933975_bdy)"> ... </span></span><!----></span><!----></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933963_short" onMouseOver="marcheaza(id_litA99933963_short,id_litA99933963)" onMouseOut="demarcheaza(id_litA99933963_short,id_litA99933963)" onMouseDown="plusMinus(id_litA99933963_short,id_litA99933963_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933976"><span class="S_LIT_TTL" id="id_litA99933976_ttl" onMouseOver="marcheaza(id_litA99933976_ttl,id_litA99933976)" onMouseOut="demarcheaza(id_litA99933976_ttl,id_litA99933976)" onMouseDown="plusMinus(id_litA99933976_short,id_litA99933976_bdy)">E.<!----></span> <span class="S_LIT_BDY" id="id_litA99933976_bdy">Justificarea și cauzele stării de dificultate generată de lipsa temporară de disponibilități bănești, sunt următoarele:<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933977">    .....................................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933978">    .....................................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933979">    .....................................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933980">    .....................................<!----></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933976_short" onMouseOver="marcheaza(id_litA99933976_short,id_litA99933976)" onMouseOut="demarcheaza(id_litA99933976_short,id_litA99933976)" onMouseDown="plusMinus(id_litA99933976_short,id_litA99933976_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933981"><span class="S_LIT_TTL" id="id_litA99933981_ttl" onMouseOver="marcheaza(id_litA99933981_ttl,id_litA99933981)" onMouseOut="demarcheaza(id_litA99933981_ttl,id_litA99933981)" onMouseDown="plusMinus(id_litA99933981_short,id_litA99933981_bdy)">F.<!----></span> <span class="S_LIT_BDY" id="id_litA99933981_bdy">[ ] Declar pe propria răspundere cunoscând prevederile <A href="~/../../../Public/DetaliiDocumentAfis/294579">art. 326 din Codul penal</A>, că nu voi înstrăina sau greva de sarcini bunurile pe care le dețin și care nu au fost sechestrate de organul fiscal, în perioada cuprinsă între data ieșirii din procedura insolvenței și data soluționării cererii de acordare a eșalonării la plată de către organul fiscal.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933981_short" onMouseOver="marcheaza(id_litA99933981_short,id_litA99933981)" onMouseOut="demarcheaza(id_litA99933981_short,id_litA99933981)" onMouseDown="plusMinus(id_litA99933981_short,id_litA99933981_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933982"><span class="S_LIT_TTL" id="id_litA99933982_ttl" onMouseOver="marcheaza(id_litA99933982_ttl,id_litA99933982)" onMouseOut="demarcheaza(id_litA99933982_ttl,id_litA99933982)" onMouseDown="plusMinus(id_litA99933982_short,id_litA99933982_bdy)">G.<!----></span> <span class="S_LIT_BDY" id="id_litA99933982_bdy">La prezenta cerere anexez, după caz, următoarele documente:<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933983">    [ ] - copia ultimei balanțe de verificare sau registrul-jurnal de încasări și plăți*8;<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933984">    *8 nu se anexează de către debitorii persoane fizice, precum și cei care nu au obligația să organizeze și să conducă evidențe contabile potrivit legislației naționale.<!----></span><!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933985">    [ ] - programul de restructurare sau de redresare financiară semnat de reprezentantul legal al debitorului, care va conține și argumentarea posibilității plăților pe perioada solicitată la eșalonare*9;<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933986">    *9 nu se anexează de către:<span class="S_LIT" style="display: block; color:blue;" id="id_litA99933987"><span class="S_LIT_TTL" id="id_litA99933987_ttl" onMouseOver="marcheaza(id_litA99933987_ttl,id_litA99933987)" onMouseOut="demarcheaza(id_litA99933987_ttl,id_litA99933987)" onMouseDown="plusMinus(id_litA99933987_short,id_litA99933987_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA99933987_bdy">debitorii care nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933987_short" onMouseOver="marcheaza(id_litA99933987_short,id_litA99933987)" onMouseOut="demarcheaza(id_litA99933987_short,id_litA99933987)" onMouseDown="plusMinus(id_litA99933987_short,id_litA99933987_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933988"><span class="S_LIT_TTL" id="id_litA99933988_ttl" onMouseOver="marcheaza(id_litA99933988_ttl,id_litA99933988)" onMouseOut="demarcheaza(id_litA99933988_ttl,id_litA99933988)" onMouseDown="plusMinus(id_litA99933988_short,id_litA99933988_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA99933988_bdy">debitorii care constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933988_short" onMouseOver="marcheaza(id_litA99933988_short,id_litA99933988)" onMouseOut="demarcheaza(id_litA99933988_short,id_litA99933988)" onMouseDown="plusMinus(id_litA99933988_short,id_litA99933988_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933989"><span class="S_LIT_TTL" id="id_litA99933989_ttl" onMouseOver="marcheaza(id_litA99933989_ttl,id_litA99933989)" onMouseOut="demarcheaza(id_litA99933989_ttl,id_litA99933989)" onMouseDown="plusMinus(id_litA99933989_short,id_litA99933989_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA99933989_bdy">debitorii cu risc fiscal mic.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933989_short" onMouseOver="marcheaza(id_litA99933989_short,id_litA99933989)" onMouseOut="demarcheaza(id_litA99933989_short,id_litA99933989)" onMouseDown="plusMinus(id_litA99933989_short,id_litA99933989_bdy)"> ... </span></span><!----></span><!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933990">    [ ] - declarația pe propria răspundere din care rezultă că nu mă aflu în inactivitate temporară înscrisă în registre ținute de instanțe judecătorești*10;<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933991">    *10 se anexează de către debitorii cu risc fiscal mic<!----></span><!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933992">    [ ] - documente sau informații relevante în susținerea cererii,<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933993">respectiv: ....................................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933994">    ...........................................<!----></span><!----></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933982_short" onMouseOver="marcheaza(id_litA99933982_short,id_litA99933982)" onMouseOut="demarcheaza(id_litA99933982_short,id_litA99933982)" onMouseDown="plusMinus(id_litA99933982_short,id_litA99933982_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA99933995"><span class="S_LIT_TTL" id="id_litA99933995_ttl" onMouseOver="marcheaza(id_litA99933995_ttl,id_litA99933995)" onMouseOut="demarcheaza(id_litA99933995_ttl,id_litA99933995)" onMouseDown="plusMinus(id_litA99933995_short,id_litA99933995_bdy)">H.<!----></span> <span class="S_LIT_BDY" id="id_litA99933995_bdy">Capacitatea financiară de plată*11<span class="S_PAR" style="display: block; color:blue;" id="id_parA99933996">    ...........................................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933997">    ...........................................<!----></span><span class="S_PAR" style="display: block; color:blue;" id="id_parA99933998">*11 se menționează capacitatea financiară de plată numai de către debitorii care nu dețin bunuri în proprietate pentru a constitui garanțiile prevăzute de lege ori care constituite garanții într-un cuantum mai mic de 50% față de cuantumul obligațiilor fiscale restante ce fac obiectul înlesnirilor la plată<!----></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA99933995_short" onMouseOver="marcheaza(id_litA99933995_short,id_litA99933995)" onMouseOut="demarcheaza(id_litA99933995_short,id_litA99933995)" onMouseDown="plusMinus(id_litA99933995_short,id_litA99933995_bdy)"> ... </span></span><table style="display: block; color:blue;"><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934002">Numele<!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934004"><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934007">Prenumele<!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934009"><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934012">Calitatea<!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934014"><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934017"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934019"><!----></span></td></tr><tr><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934022"><!----></span></td><td style="border: 1px solid black;white-space:pre" colspan="" align="" rowspan=""><span class="S_PAR" style="display: block; color:blue;" id="id_parA99934024">Semnătura<!----></span></td></tr></table><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA99934025">
+			(la 13-05-2025, 
+			Anexa nr. 1 a fost modificată de <A href="~/../../../Public/DetaliiDocumentAfis/298044">Anexa nr. 1  din ANEXELE din 29 aprilie 2025 aprobate prin ORDINUL nr. 597 din 29 aprilie 2025, publicat în MONITORUL OFICIAL nr. 439 din 13 mai 2025</A>
+			)
+	</span><!----></span><!----></span><!----></span><!----></span><span class="S_ANX" style="display: block; color:black;" id="id_anxA72" name="id_anxA72"><span class="TAG_COLLAPSED" id="id_cllpsdA72" onMouseOver="marcheaza(id_cllpsdA72,id_anxA72)" onMouseOut="demarcheaza(id_cllpsdA72,id_anxA72)" onMouseDown="plusMinus(id_anxA72_bdy,id_cllpsdA72)">
+				 + 
+			</span><span class="S_ANX_TTL" id="id_anxA72_ttl" onMouseOver="marcheaza(id_anxA72_ttl,id_anxA72)" onMouseOut="demarcheaza(id_anxA72_ttl,id_anxA72)" onMouseDown="plusMinus(id_anxA72_bdy,id_cllpsdA72)">Anexa nr. 2<!----></span><span class="S_ANX_DEN"><!----></span><span class="S_ANX_BDY" id="id_anxA72_bdy"><span class="S_PAR"><span class="S_REF"><A href="~/../../../Public/DetaliiDocumentAfis/297223">PROCEDURĂ<span class="S_PAR" style="display: block; color:black;" id="id_parA2689">de aplicare a acordării eșalonării la plată de către organul fiscal central<!----></span></A></span></span><!----></span><!----></span>
+                                    </div>
+                                    <div id="div_Formerepublicate" class="content_forma_act" style="display: none" data-state="empty"></div>
+                                    <div id="div_Formadebaza" class="content_forma_act" style="display: none" data-state="empty"></div>
+
+
+                        </div>
+
+                        <div id="fisa_act_container" style="display: none" data-id="FisaAct" data-state="empty">
+                                <div id="div_Actiunisuferite" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_ActiuniInduse" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referape" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referitde" class="content_fisa_act" data-state="empty">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+ 
+<script type="text/javascript">
+    if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+        $("#meniu").css("float", "left");
+        $("#meniu").css("width", "20%");
+        $(".affix-top").css("position", "fixed");
+        $(".affix-top").css("top", "20px");
+        $(".affix-bottom").css("top", "20px");
+        $("#infoactinfoact").css("float", "right");
+        $("#infoactinfoact").css("width", "79%");
+        //var naturalWidth = img.naturalWidth;
+        //var imagini = document.getElementsByTagName("img");
+        //for (i=0;i<imagini.length;i++)
+        //{
+         //   alert(imagini[i].naturalWidth);
+         //   imagini[i].setAttribute("style","max-width:"+imagini[i].naturalWidth+"px");
+       // }
+       //////$("#infoactinfoact img").css("max-width", +"px");
+        /////alert($("#infoactinfoact img").width);
+        $("#infoactinfoact img").css("width", "auto");
+         
+        
+ 
+    }
+    var sbarHeight = null;
+
+    $(function () {
+
+        if (document.getElementsByClassName("alert")[0])
+            document.getElementsByClassName("alert")[0].style.visibility = 'hidden';
+
+        document.getElementById("Actiunisuferite").checked = false;
+        document.getElementById("ActiuniInduse").checked = false;
+        document.getElementById("Referape").checked = false;
+        document.getElementById("Referitde").checked = false;
+
+        //alert(document.getElementById("header_wrapper").offsetHeight);
+        //alert(screen.height);
+
+        var inaltime_meniu_stanga = screen.height - document.getElementById("header_wrapper").offsetHeight;
+        //alert(inaltime_meniu_stanga);
+        //  document.getElementById("meniu_stanga").style.maxHeight = inaltime_meniu_stanga + "px";
+
+        if (window.location.href.indexOf("forma_de_baza") != -1) {
+            document.getElementById("Formadebaza").style.disabled = true;
+            document.getElementById("Formadebaza").nextSibling.style.disabled = true;
+        }
+
+        if (window.location.href.indexOf("isFormaDeBaza") != -1) {
+            if (document.getElementById('istoric_fa'))
+                document.getElementById('istoric_fa').style.display = 'none'
+            document.getElementById("Formadebaza").checked = true;
+        }
+
+        if (window.location.href.indexOf("#A") != -1) {
+            var id_elem = window.location.href.split("#")[1];
+            window.scrollTo(id_elem.offsetHeight, 0);
+        }
+        else
+            window.scrollTo(0, 0);
+
+        //alert(document.getElementById('menu'));
+
+        //afisare/ascundere radio buttons (forme consolidate, forme republicate, forma de baza)
+
+        if (window.innerWidth < 1010) {
+            document.getElementById('sidebar').id = 'sidebar1';
+            document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar1'));
+            document.getElementById('sidebar1').style.display = 'block';
+        }
+
+        $('a[href*=#]:not([href=#])').click(function () {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+        && location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - 0 //offsets for fixed header
+                    }, 50);
+                    return false;
+                }
+            }
+        });
+        //Executed on page load with URL containing an anchor tag.
+        if ($(location.href.split("#")[1])) {
+            var target = $('#' + location.href.split("#")[1]);
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top - 0 //offset height of header here too.
+                }, 50);
+                return false;
+            }
+        }
+        /*
+        $("#sidebar").affix({
+            offset: {
+                top: $("header").outerHeight(true),
+                bottom: $("footer").outerHeight(true)+10
+            }
+        });
+        */
+        //alert(inaltimediv);
+        //document.getElementsByClassName('meniuaffix')[0].style.maxHeight = inaltimediv + "px";
+      $(window).resize(function () {
+            doResizeMenu();
+        });
+        
+        // scroll pe meniu la incarcare pagina (onload jQuery)
+      doResizeMenu();
+      imgSIZE(); // redim poze
+
+      // inaltime initiala sidebar
+      if ($("#sidebar").html())
+          sbarHeight = $("#sidebar").height();
+      else
+          sbarHeight = $("#sidebar1").height();
+        
+      $(window).scroll(function () {
+          if (isScrolledIntoView($(".footer_logo"))) {
+              $("#sidebar").height(sbarHeight - 200);
+          }
+          else {
+              $("#sidebar").height(sbarHeight);
+          }
+      });
+
+      var _tipact = 2;
+        //alert(_tipact);
+        if ((_tipact == 3 || _tipact == 2) && window.location.href.indexOf('isFormaDeBaza') == -1)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }        
+        else
+        {
+            //republicare
+            if (_tipact == 4)
+            {
+                if (document.getElementById('Formerepublicate'))
+                {
+                    document.getElementById('Formerepublicate').checked = true;
+                }
+                else if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+            }
+            else
+                if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+        }
+        //republicata (fortez forma de baza)
+        if (_tipact == 5)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }
+
+    }); // onload jQuery END
+
+    function doResizeMenu() {
+        var proc = 65;
+        var wh = window.innerHeight;
+        var dy = Math.floor(proc*wh/100);
+        var inaltimediv = window.innerHeight;
+        //var inaltimediv = window.innerHeight - $('#header_footer').height() - 400; // $("#footer_wrapper").height();
+        var inaltimediv1 = window.innerHeight - $('#header_wrapper').height();
+        
+        $("#sidebar").height(dy);
+        $("#sidebar1").height(inaltimediv1);
+    }
+
+    function AfiseazaTextModificat(e) {
+        // console.log($(e).prop("checked"));
+    }
+    function toggle_cuprins() {
+        if (document.getElementById('tree_cuprins_act').style.display != 'none')
+            document.getElementById('tree_cuprins_act').style.display = 'none'
+        else
+            document.getElementById('tree_cuprins_act').style.display = 'block';
+    }
+
+    function toggle_fisaact() {
+        if (document.getElementById('content_fisaact').style.display != 'none') {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '+';
+            document.getElementById('content_fisaact').style.display = 'none'
+        }
+        else {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '&#8212;&#160;';
+            document.getElementById('content_fisaact').style.display = 'block';
+        }
+    }
+
+    function toggle_istoric_forme_actz() {
+        if (document.getElementById('istoric_fa').style.display != 'none') {
+            document.getElementById('istoric_fa').style.display = 'none';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidari";
+        }
+        else {
+            document.getElementById('istoric_fa').style.display = 'block';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;&#8212;&nbsp;istoric consolidari";
+        }
+    }
+    function scroll_to_fa() {
+        if (document.getElementById('fa_selectata'))
+            document.getElementById('meniu_stanga').scrollTop = document.getElementById('fa_selectata').offsetTop;
+    }
+    function ArataFisaAct(elem) {
+        //alert(elem.id);
+        if (elem.id == 'Actiunisuferite')
+        {
+            if (document.getElementById('actiuni_suferite').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniSuferite", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_suferite').style.height = '30px';
+                    document.getElementById('actiuni_suferite').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_suferite').style.display == 'none')
+                document.getElementById('actiuni_suferite').style.display = 'block';            
+            else
+                document.getElementById('actiuni_suferite').style.display = 'none';
+            
+        }
+
+        if (elem.id == 'ActiuniInduse')
+        {
+            if (document.getElementById('actiuni_induse').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniInduse", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_induse').style.height = '30px';
+                    document.getElementById('actiuni_induse').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_induse').style.display == 'none')
+                document.getElementById('actiuni_induse').style.display = 'block';
+            else
+                document.getElementById('actiuni_induse').style.display = 'none';
+        }
+
+        if (elem.id == 'Referape')
+        {
+            if (document.getElementById('refera_pe').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referaPe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('refera_pe').style.height = '30px';
+                    document.getElementById('refera_pe').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('refera_pe').style.display == 'none')
+                document.getElementById('refera_pe').style.display = 'block';
+            else
+                document.getElementById('refera_pe').style.display = 'none';
+        }
+
+        if (elem.id == 'Referitde')
+        {
+            if (document.getElementById('referit_de').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referitDe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('referit_de').style.height = '30px';
+                    document.getElementById('referit_de').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('referit_de').style.display == 'none')
+                document.getElementById('referit_de').style.display = 'block';
+            else
+                document.getElementById('referit_de').style.display = 'none';
+        }
+        window.scrollTo(0, 0);
+
+    }
+    function alege_articol(tip, select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+        var id_elem = '';
+
+        if (tip == 1)
+            id = "actiuni_suferite";
+        else if (tip == 2)
+            id = "actiuni_induse";
+        else if (tip == 3)
+            id = "refera_pe";
+        else
+            id = "referit_de";
+
+        var linii_tabel = document.getElementById(id).childNodes[4].childNodes[0].childNodes;
+
+        if (element_selectat == 'Toate sectiunile')
+            for (i = 0; i < linii_tabel.length; i++) {
+                linii_tabel[i].style.display = 'table-row';
+            }
+        else {
+            linii_tabel[0].style.display = 'table-row';
+            for (i = 1; i < linii_tabel.length; i++) {
+                var element_gasit = linii_tabel[i].childNodes[0].innerHTML;
+                if (element_selectat != element_gasit)
+                    linii_tabel[i].style.display = 'none';
+                else
+                    linii_tabel[i].style.display = 'table-row';
+            }
+        }
+    }
+
+    function alege_articol_ref(select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+
+        $("#loaderDiv").show();
+        $.post("/Public/getReferitDe", { contor: document.getElementById('id_act').value, element: element_selectat }, function (result) {
+            if (result.acte.indexOf('Nu exist') != -1)
+                document.getElementById('referit_de').style.height = '30px';
+            document.getElementById('referit_de').innerHTML = result.acte;
+            $("#loaderDiv").hide();
+        });
+
+    }
+
+    function incarcaFormaDeBaza(contor) {
+        $.post("/Public/DetaliiDocument/175182", { isFormaDeBaza: true }, function (result) {
+            window.location.href = result.Url;
+        });
+    }
+    function myFunction() {
+        var latime = window.innerWidth;
+        if (latime < 1010) {
+            if (document.getElementById('sidebar')) {
+                document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar'));
+                document.getElementById('sidebar').style.display = 'block';
+                // $("#sidebar").hide(); // display : none
+                // $("#sidebar").show(); // display : default
+                document.getElementById('sidebar').id = 'sidebar1';
+            }
+        }
+        else {
+            if (document.getElementById('sidebar1')) {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar1'), document.getElementById('infoact'));
+                document.getElementById('sidebar1').style.display = 'block';
+                document.getElementById('sidebar1').id = 'sidebar';
+                setTimeout(function () { $("#sidebar").height(sbarHeight); }, 1000);
+                
+            }
+            else {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar'), document.getElementById('infoact'));
+                document.getElementById('sidebar').style.display = 'block';
+                //document.getElementById('sidebar').id = 'sidebar';
+            }
+        }
+    }
+    //document.getElementById('menu').appendChild(document.getElementById('sidebar'));
+    //document.getElementById('sidebar').style.display = 'inline';
+    //document.getElementById('sidebar').style.zIndex = '999';
+    window.onresize = myFunction;
+
+    function isScrolledIntoView(elem) {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+
+        var elemTop = $(elem).offset().top;
+        var elemBottom = elemTop + $(elem).height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+    $(document).ready(function () {
+        doResizeMenu();
+    });
+    $(window).resize(function () {
+        doResizeMenu();
+    });
+</script>
+                </div>
+                <div class="clear"></div>
+
+            </div>
+            <div class="clear"></div>
+ 
+        </div>
+        <footer>
+            <div id="footer_wrapper">
+                <div class="footer_wrapper_inner bs-docs-footer">
+                    <div class="footer_inner">
+                        <div class="footer_logo"></div>
+                        <ul class="top_menu">
+                            <li class="floatnone" style="margin-left: -70px;">
+                                <center>
+                                    <div style="max-width:1024px;">
+                                        <br /><img src="/Content/Images/Site/justitie_logo.png" style="max-width:90px; position:relative; z-index:9999; width:100%; margin-top:-35px;" align="left" alt="logo" />
+                                        <p style="text-transform:none;">Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.</p>
+                                        <br />
+                                        <center><p style="text-transform:none;">Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați <a onmouseover="this.style.color = '#386897'" onmouseout="    this.style.color = '#ffffff'" style="color: #ffffff; font-weight:bold;" href="http://www.fonduri-ue.ro">www.fonduri-ue.ro</a>.</p></center>
+                                    </div>
+                                </center>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="footer_bottom">
+                    <div class="footer_inner">
+                        <div class="copyright left">
+                            Copyright &copy; 2026 - Ministerul Justiției. Toate drepturile rezervate. - <a href="/Public/Termeni">Termeni și Condiții</a>
+                            <div id="meniufooter">
+
+                            </div>
+                        </div>
+                        <div class="copyright right">        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Acasa">
+
+    &nbsp;&#124;&nbsp;Acasă
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/NLEX">
+
+    &nbsp;&#124;&nbsp;Despre Proiect
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Functionalitati">
+
+    &nbsp;&#124;&nbsp;Facilități Oferite 
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/LegaturiUtile">
+
+    &nbsp;&#124;&nbsp;Legături Utile
+
+</a>
+        </li>
+
+
+</div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.toggle-menu').jPushMenu();
+
+                $('ul.mainmenu li.dropdown').hover(function () {
+                    $(this).find('a.main_link').addClass('active');
+                    $(this).find('.level2_menu').show();
+                    $('li.dropdown_2').hover(function () {
+                        $(this).find('a.second_link').addClass('second_active');
+                        $(this).find('.level3_menu').show();
+
+                    }, function () {
+                        $(this).find('a.second_link').removeClass('second_active');
+                        $('.level3_menu').hide();
+                    });
+
+                }, function () {
+                    $(this).find('a.main_link').removeClass('active');
+                    $('.level2_menu').hide();
+                });
+    
+                if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+
+                    $('#mesajIe8Modal').modal('show');
+
+                }
+            });
+            //
+
+
+
+            $(document).ready(function () {
+
+
+                //stick in the fixed 100% height behind the navbar but don't wrap it
+                $('#slide-nav.navbar-inverse').after($('<div class="inverse" id="navbar-height-col"></div>'));
+
+                $('#slide-nav.navbar-default').after($('<div id="navbar-height-col"></div>'));
+
+                // Enter your ids or classes
+                var toggler = '.navbar-toggle';
+                var pagewrapper = '#page-content';
+                var navigationwrapper = '.navbar-header';
+                var menuwidth = '100%'; // the menu inside the slide menu itself
+                var slidewidth = '60%';
+                var menuneg = '-100%';
+                var slideneg = '-60%';
+
+
+                $("#slide-nav").on("click", toggler, function (e) {
+
+                    var selected = $(this).hasClass('slide-active');
+
+                    $('#slidemenu').stop().animate({
+                        left: selected ? menuneg : '0px'
+                    });
+
+                    $('#navbar-height-col').stop().animate({
+                        left: selected ? slideneg : '0px'
+                    });
+
+                    $(pagewrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+                    $(navigationwrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+
+                    $(this).toggleClass('slide-active', !selected);
+                    $('#slidemenu').toggleClass('slide-active');
+
+
+                    $('#page-content, .navbar, body, .navbar-header').toggleClass('slide-active');
+
+
+                });
+
+
+                var selected = '#slidemenu, #page-content, body, .navbar, .navbar-header';
+
+
+                $(window).on("resize", function () {
+
+                    if ($(window).width() > 1010 && $('.navbar-toggle').is(':hidden')) {
+                        $(selected).removeClass('slide-active');
+                    }
+
+
+                });
+
+
+            });
+        </script>
+        
+    </div>
+    <script>
+
+        function replaceScript() {
+            var toReplace = '<a href="javascript:;">Proiect</a>';
+            var replaceWith = '';
+            document.body.innerHTML = document.body.innerHTML.replace(toReplace, replaceWith);
+        }
+        replaceScript();
+
+        if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+            $("#toTop").hide();
+            $(".meniunu").hide();
+            $(".icon-bar").hide();
+            $("#btnNavbar").hide();
+            $(".navbar-header").hide();
+            $("body").css("min-width", "600px");
+
+        }
+
+       /* if (navigator.appName.indexOf("Netscape") != -1) {
+            $("#page_wrapper").css("transform", "scale(0.8)");
+            alert(0);
+            $("#page_wrapper").css("transform-origin", "50% 0% ");
+        }*/
+    </script>
+    
+    <!-- BETA Mesaj -->
+    <div class="modal fade" id="mesajBetaModal" tabindex="-1" role="dialog" aria-labelledby="mesajBetaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Versiune Beta</center></div>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        A fost lansata versiunea Beta a Portalului Legislativ<br /><br /><br />
+                    Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect.</center>  
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- IE8 Mesaj -->
+    <div class="modal fade" id="mesajIe8Modal" tabindex="-1" role="dialog" aria-labelledby="mesajIe8ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect!</center></div>
+                </div>
+                <div class="modal-body">
+                    <div style="width:100%;">
+                        <div style="width:50%; float:left; text-transform:uppercase;">
+                            <span style="font-size:18px; font-weight:bold; text-transform:none;">Ce browser sa aleg?</span>
+                            <br /><br /><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/chrome.jpg" align="left" width="69" style="padding-right:10px;" /><b>Google Chrome</b><br />
+                                <br /><a href="http://www.google.com/chrome" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/firefox.jpg" align="left" width="69" style="padding-right:10px;" /><b>Mozilla Firefox</b><br />
+                                <br /><a href="https://www.mozilla.org/en-US/firefox/all/?q=romania" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/ie.jpg" align="left" width="69" style="padding-right:10px;" /><b>Internet Explorer</b><br />
+                                <br />
+                                <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/safari.jpg" align="left" width="69" style="padding-right:10px;" /><b>Apple Safari</b><br />
+                                <br /><a href="http://www.apple.com/safari/" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div>
+                        </div>
+                        <div style="width:50%; float:left;">
+                            <span style="font-size:18px; font-weight:bold;">De ce sa actualizez browserul?</span>
+                            <br /><br /><br />
+                            Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+                            <br /><br />
+                            Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+                            <br /><br /><br />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

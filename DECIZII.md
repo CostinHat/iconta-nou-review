@@ -3,6 +3,37 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 21.09.2026 (63) — Import corpus FISCAL urcat în anaf_surse (decizie Costin: TOT)
+
+**Context.** Costin a urcat `import_fiscalos/active` (71 poziții normative, OPIS înghețat 15.09.2026,
+content-addressed pe SHA256 + manifest + proveniență bogată). Decizie: import TOT în anaf_surse, bytes
+oficiali (`sources/<source_SHA256>.html`, NU documentul canonic adaptat), clasa ADUS cu motiv structurat.
+
+**Executat** (`scripts/import_corpus_fiscal.py`, idempotent, auditabil): din 71 poziții —
+- **48 importate**: materialul principal (rol BASE/CUTOFF_VERSION) → `anaf_surse/<tip>_<nr>_<an>.html`
+  + `.sha256` sidecar + intrare PROVENIENTA ADUS cu `official_source`/`accessed_at`/`POSITION_ID`/
+  `V4_EVIDENCE` (proveniența verificabilă păstrată; corpusul urcat rămâne registrul-sursă bogat, PROVENIENTA
+  TRIMITE la el prin POSITION_ID — regula sursei unice);
+- **17 deja prezente** (aceeași identitate/nume) — NEimportate, fără dublură;
+- **6 ordine comune** `nr1/nr2(/…)/an` (FISC-012/013/046/050/052/055) — identitatea (tip,nr,an) nu se
+  stabilește mecanic → RAPORTATE, nu importate, nu blochează lotul (decizie Costin).
+
+**Garduri respectate (fail-closed în script):** hash copiat == `source_SHA256`; abort pe byte-identic cu un
+fișier existent (test_niciun_act_nu_e_in_corpus_de_doua_ori). Toate 48 au titlu care confirmă nr/an →
+`test_identitate_acte` verde. Clasa ADUS + `.sha256` → `test_provenienta` verde (fără NEDECLARAT/orfani).
+
+**Efect:** corpus_acte 122→170 identități; acte lipsă (grandfathering) 47→41; ghiduri afectate 44→42.
+Cele 6 acte suprapuse (OUG 28/1999, HG 479/2003, ORDIN 1699/2021, 1757/2019, 802/2022, 1090/2022) acoperite.
+
+**Recalibrare** (cerută): `test_identitate_acte` acoperire 130/251 (52%) → 188/311 (60%); `CLICHET_FARA_TITLU`
+rămâne 123 (cele 48 au toate titlu, deci fara_titlu neschimbat).
+
+**TEMEI.** N/A — tooling/corpus. Actele importate SUNT temeiuri (acte oficiale), dar importul e operațiune de corpus.
+
+**Limite declarate:** importat DOAR materialul principal per act (anexele INTEGRAL_ANNEX + facsimilele rămân
+în `import_fiscalos`, referite prin POSITION_ID); `import_fiscalos/` NEcomis (staging-ul urcat de Costin) —
+bytes-ii oficiali sunt acum în anaf_surse (comiși, amprentați), deci lanțul de proveniență e în repo.
+
 ## 21.09.2026 (62) — Reparație extractor citări (SUPERSEDĂ măsurătoarea „46/51" din (61))
 
 **Context.** La extragerea listei de acte lipsă din cele 46 de ghiduri grandfathered (comandă Costin),

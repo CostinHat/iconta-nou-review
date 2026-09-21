@@ -83,7 +83,12 @@ FARA_FIRMA = ("core/auth_api.py", "core/email_util.py", "core/notificari.py", "c
               # modificat si cat de des trebuie recitit —, nu despre datele unei firme. `motiv` de
               # acolo spune de ce nu s-a putut clasifica un articol, nu ce s-a constatat la o firma.
               # Regula din DESIGN_SYSTEM cap.25 e despre afirmatiile privind DATELE FIRMEI.
-              "core/reverificare.py")
+              "core/reverificare.py",
+              # 21.09.2026: importer de CORPUS. `motiv` de acolo intra intr-o inregistrare
+              # PROVENIENTA.json si spune DE UNDE vine un act oficial (POSITION_ID, sursa), nu ce s-a
+              # constatat la o firma. Aceeasi clasa ca reverificare.py si ca exemptarea `registru_`:
+              # un registru DESCRIE, nu produce afirmatii despre datele firmei (DESIGN_SYSTEM cap.25).
+              "scripts/import_corpus_fiscal.py")
 
 
 def clasa(fisier, functie, chei):

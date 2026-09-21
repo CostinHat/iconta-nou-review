@@ -129,6 +129,390 @@
     "opanaf_3562_2024.html": {
       "clasa": "ADUS",
       "motiv": "ORDIN nr. 3.562 din 28 iunie 2024 pentru aprobarea Procedurii privind redirectionarea impozitului pe profit pentru sponsorizari (MO 643/5.07.2024). TITLU VERIFICAT in continut. Forma consolidata de pe portal, adusa 24.08.2026. REVERIFICARE: inaintea fiecarei perioade de raportare in care se foloseste (ordin care aproba o procedura/structura)"
+    },
+    "legea_241_2005.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-004), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/282210",
+      "accessed_at": "2026-09-17T03:45:50.944551+00:00",
+      "POSITION_ID": "FISC-004",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-004"
+    },
+    "oug_28_1999.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-005), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/306813",
+      "accessed_at": "2026-09-17T04:06:23.865863+00:00",
+      "POSITION_ID": "FISC-005",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-005"
+    },
+    "hg_479_2003.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-006), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/43674",
+      "accessed_at": "2026-09-17T03:33:17.698658+00:00",
+      "POSITION_ID": "FISC-006",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-006"
+    },
+    "oug_193_2002.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-008), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/304522",
+      "accessed_at": "2026-09-17T04:42:09.200618+00:00",
+      "POSITION_ID": "FISC-008",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-008"
+    },
+    "ordin_3391_2017.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-011), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/195472",
+      "accessed_at": "2026-09-17T03:33:19.452034+00:00",
+      "POSITION_ID": "FISC-011",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-011"
+    },
+    "ordin_2736_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-014), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/305848",
+      "accessed_at": "2026-09-17T03:33:20.656176+00:00",
+      "POSITION_ID": "FISC-014",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-014"
+    },
+    "ordin_3738_2024.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-016), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/285515",
+      "accessed_at": "2026-09-17T04:42:39.201753+00:00",
+      "POSITION_ID": "FISC-016",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-016"
+    },
+    "ordin_396_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-017), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/296042",
+      "accessed_at": "2026-09-17T03:33:22.499962+00:00",
+      "POSITION_ID": "FISC-017",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-017"
+    },
+    "ordin_3780_2017.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-018), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/196288",
+      "accessed_at": "2026-09-17T03:33:22.828531+00:00",
+      "POSITION_ID": "FISC-018",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-018"
+    },
+    "ordin_188_2018.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-022), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/197537",
+      "accessed_at": "2026-09-17T03:33:25.093678+00:00",
+      "POSITION_ID": "FISC-022",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-022"
+    },
+    "ordin_1699_2021.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-023), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/314128",
+      "accessed_at": "2026-09-17T04:07:08.867320+00:00",
+      "POSITION_ID": "FISC-023",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-023"
+    },
+    "ordin_2430_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-024), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/303981",
+      "accessed_at": "2026-09-17T03:33:26.234127+00:00",
+      "POSITION_ID": "FISC-024",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-024"
+    },
+    "ordin_63_2017.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-025), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/291655",
+      "accessed_at": "2026-09-17T04:07:23.867689+00:00",
+      "POSITION_ID": "FISC-025",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-025"
+    },
+    "ordin_878_2022.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-026), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/254993",
+      "accessed_at": "2026-09-17T03:33:27.305043+00:00",
+      "POSITION_ID": "FISC-026",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-026"
+    },
+    "ordin_90_2016.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-027), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/175182",
+      "accessed_at": "2026-09-17T03:33:27.668964+00:00",
+      "POSITION_ID": "FISC-027",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-027"
+    },
+    "ordin_1767_2021.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-028), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/298647",
+      "accessed_at": "2026-09-17T04:04:47.965474+00:00",
+      "POSITION_ID": "FISC-028",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-028"
+    },
+    "ordin_1757_2019.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-029), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/215678",
+      "accessed_at": "2026-09-17T03:33:29.451755+00:00",
+      "POSITION_ID": "FISC-029",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-029"
+    },
+    "ordin_1517_2017.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-030), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/189547",
+      "accessed_at": "2026-09-17T03:33:29.811333+00:00",
+      "POSITION_ID": "FISC-030",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-030"
+    },
+    "ordin_187_2018.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-031), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/197174",
+      "accessed_at": "2026-09-17T03:33:30.855095+00:00",
+      "POSITION_ID": "FISC-031",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-031"
+    },
+    "ordin_2594_2015.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-032), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/171984",
+      "accessed_at": "2026-09-17T03:33:31.302902+00:00",
+      "POSITION_ID": "FISC-032",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-032"
+    },
+    "ordin_2117_2018.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-033), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/269319",
+      "accessed_at": "2026-09-17T04:07:38.867996+00:00",
+      "POSITION_ID": "FISC-033",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-033"
+    },
+    "ordin_3708_2015.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-034), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/174347",
+      "accessed_at": "2026-09-17T03:33:32.194491+00:00",
+      "POSITION_ID": "FISC-034",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-034"
+    },
+    "ordin_3846_2015.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-035), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/174706",
+      "accessed_at": "2026-09-17T03:44:22.901636+00:00",
+      "POSITION_ID": "FISC-035",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-035"
+    },
+    "ordin_3845_2015.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-036), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/174717",
+      "accessed_at": "2026-09-17T03:44:25.102248+00:00",
+      "POSITION_ID": "FISC-036",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-036"
+    },
+    "ordin_3792_2024.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-037), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/286607",
+      "accessed_at": "2026-09-17T04:43:39.203475+00:00",
+      "POSITION_ID": "FISC-037",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-037"
+    },
+    "ordin_2547_2019.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-039), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/289478",
+      "accessed_at": "2026-09-17T04:07:53.869321+00:00",
+      "POSITION_ID": "FISC-039",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-039"
+    },
+    "ordin_1094_2016.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-040), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/177051",
+      "accessed_at": "2026-09-17T03:44:33.904261+00:00",
+      "POSITION_ID": "FISC-040",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-040"
+    },
+    "ordin_3711_2015.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-041), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/174332",
+      "accessed_at": "2026-09-17T03:44:36.104617+00:00",
+      "POSITION_ID": "FISC-041",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-041"
+    },
+    "ordin_5521_2024.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-042), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/288695",
+      "accessed_at": "2026-09-17T03:44:38.315430+00:00",
+      "POSITION_ID": "FISC-042",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-042"
+    },
+    "ordin_4156_2017.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-043), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/269719",
+      "accessed_at": "2026-09-17T04:08:08.869886+00:00",
+      "POSITION_ID": "FISC-043",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-043"
+    },
+    "ordin_435_2021.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-044), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/240150",
+      "accessed_at": "2026-09-17T03:44:42.716097+00:00",
+      "POSITION_ID": "FISC-044",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-044"
+    },
+    "ordin_1366_2021.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-048), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/261199",
+      "accessed_at": "2026-09-17T03:44:49.326988+00:00",
+      "POSITION_ID": "FISC-048",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-048"
+    },
+    "ordin_802_2022.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-051), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/254608",
+      "accessed_at": "2026-09-17T03:44:51.527318+00:00",
+      "POSITION_ID": "FISC-051",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-051"
+    },
+    "ordin_3775_2024.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-054), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/285907",
+      "accessed_at": "2026-09-17T03:44:58.128572+00:00",
+      "POSITION_ID": "FISC-054",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-054"
+    },
+    "ordin_1090_2022.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-057), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/256457",
+      "accessed_at": "2026-09-17T03:45:02.529225+00:00",
+      "POSITION_ID": "FISC-057",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-057"
+    },
+    "ordin_382_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-058), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/295690",
+      "accessed_at": "2026-09-17T03:45:04.729306+00:00",
+      "POSITION_ID": "FISC-058",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-058"
+    },
+    "ordin_1029_2020.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-059), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/298636",
+      "accessed_at": "2026-09-17T00:22:22.002622+00:00",
+      "POSITION_ID": "FISC-059",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-059"
+    },
+    "ordin_1946_2023.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-060), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/277014",
+      "accessed_at": "2026-09-17T00:22:22.404873+00:00",
+      "POSITION_ID": "FISC-060",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-060"
+    },
+    "ordin_1996_2023.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-061), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/277645",
+      "accessed_at": "2026-09-17T00:22:22.727527+00:00",
+      "POSITION_ID": "FISC-061",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-061"
+    },
+    "ordin_2026_2023.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-062), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/277486",
+      "accessed_at": "2026-09-17T03:45:06.929575+00:00",
+      "POSITION_ID": "FISC-062",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-062"
+    },
+    "ordin_608_2026.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-063), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/FormaPrintabila/00000G0I7QFH9TODP3F117X16IOUNGQL",
+      "accessed_at": "2026-09-17T00:22:23.551639+00:00",
+      "POSITION_ID": "FISC-063",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-063"
+    },
+    "ordin_352_2022.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-064), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/309245",
+      "accessed_at": "2026-09-17T03:45:09.129954+00:00",
+      "POSITION_ID": "FISC-064",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-064"
+    },
+    "ordin_3357_2017.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-065), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/195031",
+      "accessed_at": "2026-09-17T00:22:23.782894+00:00",
+      "POSITION_ID": "FISC-065",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-065"
+    },
+    "ordin_1760_2018.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-066), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/203290",
+      "accessed_at": "2026-09-17T03:45:11.330417+00:00",
+      "POSITION_ID": "FISC-066",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-066"
+    },
+    "ordin_1099_2016.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-067), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/180514",
+      "accessed_at": "2026-09-17T03:45:13.530901+00:00",
+      "POSITION_ID": "FISC-067",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-067"
+    },
+    "oug_68_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-T02), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/305009",
+      "accessed_at": "2026-09-17T03:45:17.932835+00:00",
+      "POSITION_ID": "FISC-T02",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-T02"
+    },
+    "ordin_161_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-T03), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/294288",
+      "accessed_at": "2026-09-17T03:45:20.133315+00:00",
+      "POSITION_ID": "FISC-T03",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-T03"
+    },
+    "oug_116_2023.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din corpusul FISCAL (FISC-T04), materialul principal; bytes oficiali legislatie.just.ro",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/277398",
+      "accessed_at": "2026-09-17T03:43:02.638267+00:00",
+      "POSITION_ID": "FISC-T04",
+      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-T04"
     }
   },
   "goale_cunoscute": {
