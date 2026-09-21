@@ -1148,6 +1148,7 @@ class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     pret_unitar: float = 0
     cota_tva: Optional[float] = None  # None -> potrivire automata (nomenclator/AI)
     articol_id: Optional[int] = None  # [punte_stoc_v1] F172: leaga linia de stoc (CV); None = serviciu
+    cont_venit: Optional[str] = None  # [DECIZII 64] cont de venit explicit pe linie: escape cand clasificarea nu poate decide si emiterea s-ar bloca
 
 class EmitereIn(BaseModel):
     tip: str = "factura"  # factura|proforma|aviz

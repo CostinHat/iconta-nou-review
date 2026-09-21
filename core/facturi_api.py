@@ -634,15 +634,9 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
     Intoarce liniile cu cota + cont_venit completate."""
     from core import produse_api, cote_tva
     from core import facturi as _fc
-    # contul de venit implicit al firmei = fallback cand clasificarea liniei nu reuseste
-    cv_firma = None
-    try:
-        with conn.cursor() as _cur:
-            _cur.execute("SELECT cont_venit_implicit FROM firma_profil LIMIT 1")
-            _row = _cur.fetchone()
-            cv_firma = (_row[0] if _row else None) or None
-    except Exception:
-        cv_firma = None
+    # [22.09.2026, DECIZII 64] contul de venit NU mai cade tacit pe default-ul firmei:
+    # se clasifica determinist din denumire (nivel 1), apoi AI (nivel 2), apoi se BLOCHEAZA
+    # (nivel 3) - simetric cu blocajul de cota TVA. Fallback-ul tacit cv_firma a fost SCOS.
     out = []
     for l in linii:
         linie = dict(l)
@@ -658,19 +652,28 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
                                  "stabili cota. Declara cota explicit pe linie."
                                  % (linie.get("descriere") or "",))
             linie["cota_tva"] = r["cota_tva"]
-        # cont de venit pe linie: pastreaza ce a pus contabilul; altfel clasifica din denumire.
-        # Best-effort: daca AI indisponibil/nedeterminat NU blocheaza (spre deosebire de cota) ->
-        # cade pe cont_venit_implicit al firmei; daca nici acela nu e setat lasa None (contabilizarea decide).
+        # cont de venit pe linie: pastreaza ce a pus contabilul (escape explicit); altfel:
         if not str(linie.get("cont_venit") or "").strip():
-            cont = None
-            try:
-                rez = cote_tva.potriveste_cota(linie.get("descriere", ""), platitor_tva=platitor_tva)
-                tip = rez.get("tip") if rez.get("ok") else None
-                if tip:
-                    cont = _fc.VENIT.get(tip)
-            except Exception:
-                cont = None
-            linie["cont_venit"] = cont or cv_firma
+            # nivel 1: regula DETERMINISTA pe cuvinte-cheie (marfa->707/produse->701/servicii->704,
+            # OMFP 1802/2014). Nu depinde de AI, deci o factura de servicii NU mai primeste tacit 707.
+            tip = _fc.tip_din_denumire(linie.get("descriere", ""))
+            cont = _fc.VENIT.get(tip) if tip else None
+            # nivel 2: AI, cand e disponibil, pentru denumiri fara cuvant-cheie clar
+            if cont is None:
+                try:
+                    rez = cote_tva.potriveste_cota(linie.get("descriere", ""), platitor_tva=platitor_tva)
+                    tip = rez.get("tip") if rez.get("ok") else None
+                    if tip:
+                        cont = _fc.VENIT.get(tip)
+                except Exception:
+                    cont = None
+            # nivel 3: BLOCARE (simetric cu blocajul de cota TVA), NU cadere tacuta pe default.
+            if cont is None:
+                raise ValueError(
+                    "cont de venit nedeterminat pentru %r: denumirea nu se incadreaza clar "
+                    "(marfa/produse/servicii) si AI e indisponibil/nedeterminat. Declara "
+                    "cont_venit explicit pe linie." % (linie.get("descriere") or "",))
+            linie["cont_venit"] = cont
         out.append(linie)
     return out
 

@@ -117,7 +117,7 @@ def test_nu_se_inchide_peste_documente_in_asteptare(conn):
 def test_o_factura_noua_redeschide_luna(conn):
     """Regula 2, miezul. Fără ea, închiderea ar fi o afirmație despre date care s-au schimbat."""
     _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
-    _fa.emite_factura(conn, [{"descriere": "consultanță", "cantitate": 1, "pret_unitar": 100,
+    _fa.emite_factura(conn, [{"descriere": "consultanță", "cont_venit": "704", "cantitate": 1, "pret_unitar": 100,
                               "cota_tva": 21}],
                       tert_nume="CLIENT SRL", tert_cui="14399840",
                       data_emitere="2026-06-20", moneda="RON", platitor_tva=True)
@@ -137,7 +137,7 @@ def test_stergerea_unei_facturi_redeschide_luna(conn):
     from core import contare_facturi as _cf
     from core import jurnal_api as _ja
     import pytest as _pt
-    r = _fa.emite_factura(conn, [{"descriere": "x", "cantitate": 1, "pret_unitar": 50, "cota_tva": 21}],
+    r = _fa.emite_factura(conn, [{"descriere": "x", "cont_venit": "707", "cantitate": 1, "pret_unitar": 50, "cota_tva": 21}],
                           tert_nume="CLIENT SRL", tert_cui="14399840",
                           data_emitere="2026-06-20", moneda="RON", platitor_tva=True)
     _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
@@ -156,7 +156,7 @@ def test_stornarea_redeschide_luna(conn):
     """Stornarea e calea prin care se CORECTEAZĂ o factură emisă (nu există editare de sume). Trece
     prin `creeaza_factura`, deci cade sub aceeași regulă — verificat, nu presupus: era gata să scriu
     în predare că editarea nu e acoperită, când de fapt editarea nu există."""
-    r = _fa.emite_factura(conn, [{"descriere": "x", "cantitate": 1, "pret_unitar": 80, "cota_tva": 21}],
+    r = _fa.emite_factura(conn, [{"descriere": "x", "cont_venit": "707", "cantitate": 1, "pret_unitar": 80, "cota_tva": 21}],
                           tert_nume="CLIENT SRL", tert_cui="14399840",
                           data_emitere=date.today().isoformat(), moneda="RON", platitor_tva=True)
     azi = date.today()
@@ -169,7 +169,7 @@ def test_stornarea_redeschide_luna(conn):
 def test_factura_din_alta_luna_nu_redeschide(conn):
     """Contra-direcția: dacă orice factură ar redeschide orice lună, închiderea n-ar ține niciodată."""
     _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
-    _fa.emite_factura(conn, [{"descriere": "x", "cantitate": 1, "pret_unitar": 50, "cota_tva": 21}],
+    _fa.emite_factura(conn, [{"descriere": "x", "cont_venit": "707", "cantitate": 1, "pret_unitar": 50, "cota_tva": 21}],
                       tert_nume="CLIENT SRL", tert_cui="14399840",
                       data_emitere="2026-07-03", moneda="RON", platitor_tva=True)
     assert _per.e_confirmat(conn, SCHEMA, 2026, 6, "facturi")["confirmat"] is True

@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**617 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**618 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 586
+### `core/` — 587
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8922,6 +8922,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_constante_nesursate.py` — CLICHET (20.08.2026): clasa constantelor fiscale nesursate din PRODUCȚIE nu mai crește.
 - `core/test_consumatori_temei.py` — GARD [06.09.2026, R171]: graful „cine consumă valoarea" pentru temeiurile din afara registrului.
 - `core/test_cont_din_corp_normalizat.py` — core/test_cont_din_corp_normalizat.py — un cont luat din CORPUL CERERII trece prin strip().
+- `core/test_cont_venit_determinist.py` — GARD: contul de venit pe linia de factura se stabileste DETERMINIST (fara AI); cand nu
 - `core/test_cont_venit_linie.py` — core/test_cont_venit_linie.py — #11: contul de venit stabilit PE LINIE de factura.
 - `core/test_contare_automata.py` — GARDA contării automate a facturii — blocurile DDD (cheia), EEE (emisă), FFF (primită).
 - `core/test_contract_ecran_ruta.py` — GARD: contractul ECRAN ↔ RUTĂ nu se rupe tăcut.

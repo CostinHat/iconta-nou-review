@@ -3,6 +3,35 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 22.09.2026 (64) — Cont de venit pe linie: determinist + blocare, nu default tacit
+
+**Context.** `_potriveste_linii` (emitere factura) facea `linie["cont_venit"] = cont or cv_firma`,
+iar `cont` venea NUMAI din AI (`cote_tva.potriveste_cota`). Fara cheie AI, o factura de SERVICII
+primea tacit 707 (marfa) in loc de 704 (servicii, OMFP 1802/2014) - cifra valid-dar-falsa in nota
+contabila si mai departe in declaratii. Nici calea "editabil de contabil" nu era accesibila la
+emitere (`LinieEmitereIn` nu avea campul).
+
+**Decizie (Costin, 22.09.2026).** Contul de venit al liniei se stabileste in trei niveluri:
+1. **regula determinista pe cuvinte-cheie** (`facturi.tip_din_denumire`: marfa->707, produse->701,
+   servicii/prestari->704, reziduale->703), independenta de AI;
+2. **AI** (`potriveste_cota`), cand e disponibil, pentru denumiri fara cuvant-cheie clar;
+3. **BLOCAREA emiterii** cand niciunul nu poate decide - simetric cu blocajul de cota TVA -,
+   NU caderea tacuta pe default-ul firmei. Escape: `cont_venit` explicit pe linie (camp nou in
+   `LinieEmitereIn`), ca la cota.
+
+**Temei.** OMFP 1802/2014 (planul de conturi: 701/703/704/707). Alegerea nu e o valoare fiscala
+noua, ci clasificarea contabila a venitului dupa natura liniei.
+
+**Gard.** `core/test_cont_venit_determinist.py`: clasificare determinista fara AI, servicii->704 fara
+AI (nu default), nepotrivire fara AI -> BLOCHEAZA (nu default tacit), cont explicit ocoleste blocarea.
+Mutatia care il face rosu: repunerea lui `or cv_firma`.
+
+**Limita declarata (GENERALIZARE).** Aceeasi clasa (cadere tacuta pe default) exista si la
+CONTABILIZARE (`contare_facturi.py:355`: `cvi = cont_venit_implicit or "707"` + COALESCE pe
+cont_venit NULL). Acolo NU se blocheaza: ar rupe contabilizarea facturilor LEGACY emise inainte de
+aceasta reparatie (cu cont_venit NULL). Post-reparatie, emiterea seteaza mereu cont_venit (sau
+blocheaza), deci fallback-ul de la contare se aplica doar datelor vechi. Ramane reziduu documentat.
+
 ## 21.09.2026 (63) — Import corpus FISCAL urcat în anaf_surse (decizie Costin: TOT)
 
 **Context.** Costin a urcat `import_fiscalos/active` (71 poziții normative, OPIS înghețat 15.09.2026,

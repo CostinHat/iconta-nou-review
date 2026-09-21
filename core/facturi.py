@@ -32,6 +32,28 @@ ACHIZITIE = {        # tip -> cont (factură primită)
 }
 
 
+_RADACINI_VENIT = (            # radacina in denumire -> tip (OMFP 1802/2014)
+    ("marf", "marfa"),         # marfa (bunuri spre revanzare) -> 707
+    ("produs", "produse"),     # produse finite -> 701
+    ("servici", "servicii"),   # servicii/prestari -> 704
+    ("prestar", "servicii"),
+    ("rezidual", "reziduale"), # produse reziduale -> 703
+)
+
+
+def tip_din_denumire(denumire):
+    """Clasifica DETERMINIST contul de venit din denumirea liniei, fara AI.
+    Intoarce o cheie din VENIT (marfa/produse/servicii/reziduale) sau None cand
+    denumirea nu se incadreaza CLAR: zero potriviri, SAU mai multe tipuri deodata
+    (ex. "Produs marfa" = produse+marfa) = ambiguu. None inseamna "nu pot decide",
+    nu un default (apelantul incearca AI, apoi blocheaza)."""
+    import unicodedata
+    t = "".join(c for c in unicodedata.normalize("NFKD", (denumire or "").lower())
+                if not unicodedata.combining(c))
+    gasite = {tip for rad, tip in _RADACINI_VENIT if rad in t}
+    return gasite.pop() if len(gasite) == 1 else None
+
+
 def _nota(debit, credit, suma, temei=None):
     n = {"debit": debit, "credit": credit, "suma": _q(suma),
          "modul": MODUL, "reguli": REGULI}
