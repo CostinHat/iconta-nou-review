@@ -4,15 +4,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-21**, după **SESIUNEA B — F1 complet (1-8) + reparat finding SPV↔stoc + F2 pornit (1-3)**.
-  Închise: F1 etapele 1-8 (toate 5 declarații DUK-valid) + reparat finding SPV↔stoc (recepția marfă mișcă fișa) +
-  bug NIR-GV. **F2 (SRL profit/TVA-trimestrial/mijloc-fix) etapele 1-3 gata.** *Rescriere țintită: antet + „primul lucru".*
+- **ultima rescriere**: **2026-09-21**, după **SESIUNEA B — F1 și F2 COMPLETE (1-8) + reparat finding SPV↔stoc**.
+  Închise: F1 1-8 + F2 1-8 (ambele cu declarații DUK-valid) + reparat finding SPV↔stoc + bug NIR-GV. F2 a adăugat
+  acoperire: profit 16%, TVA trimestrial, amortizare/mijloc fix, registru casă. *Rescriere țintită: antet + „primul lucru".*
 - **pe commit**: `49bb7ce7` (ultimul four-way: F1 6-8 + reconciliere). *F2 etapele 1-2 (`boadvk2jg`) + etapa 3 se
   publică peste el (coadă gate ~36min); four-way exact în §11 al rapoartelor.*
-- **URMĂTORUL FRONT**: **F2 etapa 4** (salarizare = N/A, 0 salariați → de sărit explicit) → 5 (contabilizare) →
-  **6 (amortizare MF-001: nota 6811=2813 200/lună — F2 e prima firmă cu mijloc fix)** → 7 → 8 (D300-trim/D100/
-  D101/D394/D406). Apoi F3-F7. **F1 etapele 9-11 rămân front deschis** (depunere reală = [EXTERN], certificat SPV).
-  Etapa 9 (depunere la ANAF/SPV) e probabil [EXTERN] pt o firmă de test — de investigat ce se poate proba local.
+- **URMĂTORUL FRONT**: **F3** (SRL, neplătitor+art.317, micro 3% — D301/D390/taxare inversă) → F4-F7.
+  **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -24,16 +22,21 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1 complet (1-8) + finding SPV↔stoc REPARAT; F2 pornit (1-3); FRONT ACTIV = F2 etapa 4→8, apoi F3-F7**
+## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1 și F2 COMPLETE (etapele 1-8); FRONT ACTIV = F3, apoi F4-F7**
 
-**FRONT ACTIV — F2** (SRL, TVA trimestrial, profit 16%, mijloc fix/amortizare, fără salariați; tenant_050, Cabinet A):
-- **Etapele 1-3 gata** (prin interfață): migrare/config (vector profit/TVA-trimestrial; sold Σ=17000; mijloc fix
-  MF-001 utilaj 12000/60l liniar); documente primare (factură serviciu 6050/TVA 1050 fără F172; 2 op casă, sold 5311=500).
-  Probe: `frontend_test/proba_f2_etape12.py`, `proba_f2_etapa3.py` + `asteptari_f2*.md` + `solduri_f2.csv`/`mijloace_f2.csv`.
-- **DE CONTINUAT: F2 etapa 4** (salarizare = **N/A**, 0 salariați → se sare EXPLICIT în raport) → 5 (contabilizare:
-  validare note jurnal) → **6 (amortizare: MF-001 → nota 6811=2813 = 12000/60 = 200/lună — F2 e PRIMA firmă cu mijloc
-  fix; la F1 etapa 6 a fost N/A)** → 7 (control fiscal) → 8 (D300 **trimestrial**/D100/D101/D394/D406, DUK-valid).
-- CUI F2 RO403000015 (cifra de control verificată). Emit serviciu = opțiunea „fără articol"; casă = #fa-casa → #c-adauga.
+**FRONT ACTIV — F3** (SRL, **neplătitor TVA + art.317**, **micro 3%**; Cabinet A): testează UNIC **D301** (achiziții IC +
+servicii UE tip 5), **D390**, **taxare inversă**. De pornit ca F2: login (Cabinet A există) → adaugă F3 → vector
+(micro 3% / neplătitor+art.317 / cu operațiuni IC) → migrare (sold echilibrat) → etapele 3-8. Scrie asteptari_f3.md
+ÎNAINTE (CUI cu cifra de control verificată). Model probe: `proba_f2_etape12.py`/`proba_f2_etapa3.py` (adaptate).
+
+**F2 (tenant_050) — COMPLET etapele 1-8** (SRL, TVA trimestrial, profit 16%, mijloc fix/amortizare, registru casă):
+- 1-2 migrare/config (vector profit/TVA-trimestrial; sold Σ=17000; MF-001 utilaj 12000/60l/rezidual 0). 3 documente
+  (factură serviciu 6050/TVA 1050; 2 op casă, sold 5311=500). 4 N/A (0 salariați). 5 contabilizare (3 note validate).
+  **6 amortizare (6811=2813 200/lună)**. 7 control fiscal. 8 declarații D300-T3(TVA plată 1050)/D394/D100-T3(cod 103
+  profit 768)/D406 — DUK-valid. Probe `frontend_test/proba_f2_etapa*.py`. D101 (profit anual) = la închiderea anului.
+- **Lecție F2:** câmpul „rezidual" (mijloace fixe import) = valoare reziduală FINALĂ (salvage), nu „neamortizat";
+  `d406_active.amortizare_luna` folosește amortizabil = valoare − rezidual (CF art.28). Pusesem rezidual=10000 → 33.33
+  în loc de 200; corectat rezidual=0. (Eticheta din import e ambiguă — de clarificat, calculul e corect.)
 
 **F1 (tenant_049) — ÎNCHIS (etapele 1-8), front 9-11 rămas deschis:**
 - **Etapele 1-8 ÎNCHISE** cap-coadă: migrare/config (1-2); documente primare (3: D1 emisă + D2 primită SPV +

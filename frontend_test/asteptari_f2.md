@@ -14,14 +14,16 @@ D300 **trimestrial**, D100 (profit), **amortizare + mijloace fixe**, **registru 
 | cont | debit | credit | ce |
 |---|---|---|---|
 | 2131 | 12.000 | | Echipamente (utilaj) |
-| 2813 | | 2.000 | Amortizare cumulată utilaj (10 luni × 200) |
+| 2813 | | 2.200 | Amortizare cumulată utilaj (11 luni × 200, Feb–Dec 2025) |
 | 5121 | 5.000 | | Bancă |
 | 1012 | | 200 | Capital |
-| 117 | | 14.800 | Rezultat reportat |
+| 117 | | 14.600 | Rezultat reportat |
 | **Σ** | **17.000** | **17.000** | ECHILIBRAT |
 
-**Mijloc fix (1):** utilaj, cod MF-001, valoare 12.000, cont 2131/amortizare 2813, DNF 60 luni (5 ani),
-metoda liniară, PIF 2025-01-15. **Amortizare lunară = 12.000/60 = 200 lei** (verificat la etapa 6).
+**Mijloc fix (1):** utilaj, cod MF-001, valoare 12.000, **valoare reziduală (salvage) = 0**, cont 2131/amortizare
+2813, DNF 60 luni (5 ani), metoda liniară, PIF 2025-01-15. **Amortizabil = valoare − rezidual = 12.000;
+amortizare lunară = 12.000/60 = 200 lei** (verificat la etapa 6). NOTĂ: câmpul „rezidual" din import = valoarea
+reziduală finală (salvage, standard CF art.28: amortizabil = cost − reziduală), NU „valoare rămasă de amortizat".
 
 ## Invarianți etapa 1-2 (DB tenant F2)
 | ce | valoare |

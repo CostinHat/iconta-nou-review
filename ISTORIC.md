@@ -704,5 +704,15 @@ față de F1: D300 trimestrial, profit 16% (D100/D101), amortizare + mijloace fi
 **F2 etapa 3 (documente primare) prin interfață.** `frontend_test/proba_f2_etapa3.py` + `asteptari_f2_etapa3.md`.
 Factură serviciu emisă 5.000 + 21% = **6.050** (fără articol → fără poarta F172, corect pentru serviciu; cotă
 21% via AI). Registru de casă (F2 unic): 2 operațiuni — ridicare bancă 1.000 (5311=581) + plată furnizor 500
-(401=5311) → **sold casă 5311 = 500**. Verificat DB tenant_050. Următor: etapa 4 (salarizare N/A, 0 salariați),
-5 (contabilizare), **6 (amortizare MF-001: 6811=2813 200/lună — nu mai e N/A ca la F1)**, 7, 8 (declarații).
+(401=5311) → **sold casă 5311 = 500**. Verificat DB tenant_050.
+
+**F2 etapele 4-8 (COMPLET 1-8).** 4 salarizare = **N/A** (0 salariați, sărit explicit). 5 contabilizare: 3 note
+ciornă → validate. **6 amortizare (F2 unic):** MF-001 → nota 6811=2813 **200/lună** (12.000/60). **CORECȚIE DE DATE
+DE TEST:** inițial amortizarea a ieșit **33,33** fiindcă pusesem rezidual=10.000 (confuzie); `amortizare_luna`
+(d406_active.py:408) folosește `amortizabil = valoare − rezidual`, deci rezidual = valoarea reziduală FINALĂ
+(salvage, standard CF art.28), nu „neamortizat". Corectat rezidual→0 (amortizabil 12.000 → 200/lună), opening
+2813→2.200. Observație: eticheta „valoare rămasă (rezidual)" din import poate induce în eroare (de clarificat,
+nu blochează — calculul e standard-corect). 7 control fiscal renderează. **8 declarații:** D300-T3 (TVA de plată
+1.050), D394, D100-T3 (**cod 103 PROFIT**, impozit **768** = 16% × profit 4.800 = venit 5.000 − amortizare 200),
+D406 — toate **DUK-valid**. D101 (profit anual) = la închiderea anului. **F2 acoperă: profit 16%, TVA trimestrial,
+amortizare/mijloc fix, registru de casă.** Următor: F3 (neplătitor+art.317, micro 3%, D301/D390/taxare inversă).
