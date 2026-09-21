@@ -750,3 +750,24 @@ prin cele două reparații de cod publicate (four-way, procesul viu le rulează)
 
 Restul zilei (F1/F2/F3 etape, generări de declarații DUK-valid, corecții de date de test) = validare internă a
 fluxului, **fără efect asupra datelor reale**. Detaliile per etapă/reparație sunt în intrările de mai sus din 21.09.
+
+## 21.09.2026 — Poarta de producție ghiduri (pasul 2), fir paralel Sesiunii B
+
+Comandă Costin (lista producție ghiduri, pasul 2): import `index_titluri_ghid.csv` (8.713 titluri indexate) ca
+listă de bază + poarta de verificare pre-publicare cu două controale obligatorii care blochează publicarea
+oricărui ghid nou. Fir PARALEL — agenda (`urmator_cluster`) rămâne pe F3. Detaliul deciziilor: DECIZII (61); gardul:
+GARZI (21.09, poartă conținut public).
+
+**Livrat.** `core/ghid_titluri.py` (reader canonic al listei de bază); `core/ghid_poarta.py` (extractor citări cu
+AMBELE forme reale — slash `OUG 89/2025` și dată `OUG nr. 89 din 23 decembrie 2025`; index corpus prin
+`scan_provenienta`, alias CF/CPF = Legea 227/2015 și Legea 207/2015, toleranță `hg714`/`hg_714`; verificare F-ID
+LIVE + «Sursa cod» pe disc + back-link `ghid_slug`; CLI care blochează cu exit≠0); `core/test_ghid_poarta.py`
+(calibrare + ratchet legacy, mutații probate); `ghid/_legacy_pre_poarta.txt` (baseline 202, clichet — grandfathering).
+
+**Defect prins la self-review și reparat pe clasă (CICLUL DE NECONFORMITATE):** forma „OUG nr. 89 din 23 decembrie
+2025" era ratată la extracție (ziua „23" bloca ajungerea la an) → citări scrise doar așa nu erau verificate.
+Reparat pe ambele forme, apărat cu `test_CALIBRARE_forma_cu_data_e_extrasa`.
+
+**Măsurat pe corpusul real:** 122 identități de act în corpus; 46/202 ghiduri legacy citează acte încă neaduse
+în corpus (grandfathered, declarat). Efect vizibil pentru contabil: NICIUNUL (tooling intern; niciun ghid nou
+produs încă). Raport §2.2 + oprire înainte de redactarea propriu-zisă (pasul 3), conform comenzii.

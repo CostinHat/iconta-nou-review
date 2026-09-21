@@ -45,6 +45,15 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **PRODUCȚIE GHIDURI — poarta de verificare pre-publicare** (21.09.2026, comandă Costin „lista producție ghiduri, pasul 2"). FIR PARALEL cu Sesiunea B (redirecționare explicită, §7). Agenda (`urmator_cluster`) rămâne pe F3.
+  - ultim: importat `index_titluri_ghid.csv` (8.713 titluri) ca listă de bază, git-track + reader `core/ghid_titluri.py`.
+  - ultim: **poarta `core/ghid_poarta.py` LIVRATĂ** — 2a citări în corpus (anaf_surse/PROVENIENTA) + 2b F-ID LIVE+sursă+back-link; CLI blochează exit≠0. Gard `core/test_ghid_poarta.py` (11 teste: calibrare + ratchet legacy 202-clichet, 3 mutații probate). Defect recall (forma „din <dată>") prins la self-review + reparat pe clasă.
+  - urmator: **raport §2.2 + OPRIRE** înainte de redactarea propriu-zisă (pasul 3) — validarea porții de către Costin. STARE = BLOCAT: aștept validare Costin.
+  - pasi:
+    1. `index_titluri_ghid.csv` git-track + `core/ghid_titluri.py::incarca()` (reader listă de bază).
+    2. `core/ghid_poarta.py`: extractor citări → identitate act (tip,nr,an) + aliasuri (CF=Legea 227/2015, CPF=Legea 207/2015); index corpus din nume-fișier (toleranță `hg714`/`hg_714`) filtrat prin `scan_provenienta`; `verifica_citari`, `verifica_functionalitati`, `verifica_ghid` + CLI (exit≠0 = blocaj).
+    3. `core/test_ghid_poarta.py`: calibrare (citare reală trece / act fabricat pică / F LIVE trece / F PLANIFICAT/inexistent pică) + ratchet legacy (`ghid/_legacy_pre_poarta.txt`) + mutație.
+    4. suită verde + verificator 0 + raport §2.2.
 - fir: **SESIUNEA B — Faza 0 (curatenie prod) + Faza 1 F1** (20.09.2026, comanda „deschide firul Sesiunea B §2.1").
   Plan in TESTE.md „SESIUNEA B" (linia 776+): Faza 0 = stergerea portofoliului de test; Faza 1 = cele 7 firme prin interfata, F1 primul.
 - ultim: **BACKUP complet prod** (~/backups_iconta/iconta_v2_pre_fazaB_20260920_120650.dump, 13MB, custom format). Inventar: 55 cabinete / 49 tenants / 20 scheme tenant / 29 useri (24 portofoliu atasati de cabinet + 5 superadmin STANDALONE, din care id=1 cos@gmail.com = contul REAL al lui Costin, 4 test).

@@ -3,6 +3,44 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 21.09.2026 (61) — Poarta de verificare pre-publicare a ghidurilor (producție ghiduri, pasul 2)
+
+**Context.** Comandă Costin (lista producție ghiduri): din `index_titluri_ghid.csv` (8.713 titluri indexate)
+se produc ghiduri; înainte de publicarea oricărui ghid NOU, două controale obligatorii care BLOCHEAZĂ
+publicarea. Redactarea rămâne integral a mea (fără GPT/Gemini); legarea titlu↔funcționalitate se face per
+pagină, pe cod real. Fir PARALEL cu Sesiunea B — agenda (`urmator_cluster`) rămâne pe F3.
+
+**Stocarea listei de bază (decizie proprie, §2.3 pct.2 — tooling/structură).** `index_titluri_ghid.csv` rămâne
+în rădăcina repo, git-track, cu reader canonic `core/ghid_titluri.py` (nu re-parsez CSV cu presupuneri de coloane).
+
+**Ce înseamnă „citarea există în corpus" (2a).** Corpusul = `anaf_surse/` (367 fișiere de conținut), apartenența
+guvernată de PROVENIENTA.json — reutilizez `scan_provenienta.clasifica` (exclud NEDECLARAT + goale). Poarta
+extrage citările din draft (`<TIP> <nr>/<an>` ȘI `<TIP> nr. N din <dată> <an>`) + codurile pe articol (Codul
+fiscal = Legea 227/2015, Codul de procedură fiscală = Legea 207/2015) și cere ca ACTUL să existe ca fișier în
+corpus. Aliniere măsurată la sursă: `cf_2015*` = Codul fiscal (nume de cod, nu `legea_227_2015`); toleranță la
+naming inconsistent (`hg714` vs `hg_714`). **Alternativă respinsă:** potrivire pură pe nume-fișier — ar fi
+respins fals cele 41 de citări reale de Cod fiscal (măsurat). **Limită declarată:** verifică prezența ACTULUI,
+nu că textul citat apare verbatim în sursă (limită moștenită de la scan_provenienta / identitate_acte); un cod
+citat DOAR pe nume, altul decât CF/CPF, fără nr/an, nu e extras.
+
+**Cum se verifică pretenția de funcționalitate (2b).** Proza liberă din „Ce face iConta" nu e verificabilă
+mecanic. Mecanizarea: ghidul DECLARĂ în frontmatter `functionalitate: F0xx` (F-ID din FUNCTIONALITATI.csv);
+poarta cere (i) F-ID există, (ii) Stare începe cu „LIVE", (iii) «Sursa cod» trimite la ≥1 fișier existent,
+(iv) back-link — slug-ul ghidului apare în `ghid_slug` al F-ID-ului. **Reutilizează coloana `ghid_slug`
+existentă** (nu inventez legătură paralelă). **Limită declarată:** face imposibilă pretenția despre o funcție
+inexistentă/nelivrată/nelegată, NU o afirmație de detaliu greșită despre una reală.
+
+**Grandfathering + gard (pasul 4 al CICLULUI DE NECONFORMITATE).** Ghidurile scrise înainte de poartă (202)
+sunt înghețate în `ghid/_legacy_pre_poarta.txt` (clichet 202, nu poate crește). Orice ghid non-legacy TREBUIE
+să poarte `poarta: v1` ȘI să treacă ambele controale — gard `core/test_ghid_poarta.py`. Ghid nou fără marcaj
+sau roșu → testul pică. **Măsurat:** 46/202 ghiduri legacy citează acte încă neaduse în corpus (grandfathered,
+declarat — aducerea acelor acte e efort separat, parțial extern).
+
+**TEMEI.** N/A — tooling. Poarta APLICĂ regula fiscală „temei la sursă" (§3, REGULA DE AUR), nu introduce una nouă.
+
+**Oprire cerută de comandă (§2.2.2 pct.5).** Raport §2.2 la finalul construcției porții, ÎNAINTE de redactarea
+propriu-zisă (pasul 3). Redactarea nu începe fără validarea porții de către Costin.
+
 ## 20.09.2026 (60) — Sesiunea B: Faza 0 (curatenie prod) + F1 etapele 1-2 prin interfata
 
 **Faza 0 — curatenie prod (decizie Costin, varianta A).** Portofoliul era integral de test. Sters TOT

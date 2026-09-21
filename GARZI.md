@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**616 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**617 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 585
+### `core/` — 586
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9153,6 +9153,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_garzi_tacere_ui.py` — core/test_garzi_tacere_ui.py — GARDURI STATICE anti tacere-la-esec + info-leak in UI (JS).
 - `core/test_gazda_productie.py` — core/test_gazda_productie.py — o verificare care loveste ALT domeniu nu e o verificare.
 - `core/test_get_fara_scriere.py` — GARD (20.08.2026): o rută GET nu scrie în starea de business. GET trebuie să fie SAFE (RFC 9110 §9.2.1).
+- `core/test_ghid_poarta.py` — GARD — poarta de verificare pre-publicare a ghidurilor (core/ghid_poarta.py).
 - `core/test_ghiduri_servite.py` — Gard: ghid/ e SURSA UNICA a paginilor publice de ghid.
 - `core/test_golden_xsd.py` — GARD completitudine golden-XSD: fiecare XSD de declaratie din corpus (anaf_surse/*.xsd +
 - `core/test_graf_clustere_proprietar.py` — GARD (R19): o funcție partajată între clustere NU e proprietatea niciunuia.
@@ -9702,3 +9703,15 @@ roșii. Probă end-to-end: `factura_primita_valideaza(cont=371)` → miscari_sto
 **Limită declarată:** potrivirea articolului e pe denumire exactă (case-insensitive); denumiri diferite pt același
 bun → articole separate (calitate de date, nu corectitudine). Reconcilierea GL↔fișă pe date VECHI (dinainte de
 fix) rămâne responsabilitatea curățării per-firmă (ex. F1: cont 302→371 + intrarea D2, campania B).
+
+## 21.09.2026 — Poarta de conținut public: citare fără sursă + pretenție de funcționalitate neacoperită (producție ghiduri)
+
+CLASĂ NOUĂ de eșec: integritatea **conținutului public** (ghidurile `/ghid`), distinctă de cele 11 categorii
+fiscale de mai sus (care privesc corectitudinea sistemului contabil, nu textul citit de public). Un ghid publicat
+poate (a) cita un act pe care nu-l avem la sursă, sau (b) pretinde o funcționalitate iConta inexistentă/nelivrată.
+Ambele = fals față de cititor. Cerut de Costin (producția de ghiduri, pasul 2). Detaliul deciziei: DECIZII (61).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+| poarta citări (2a) | core/ghid_poarta.py::verifica_citari + core/test_ghid_poarta.py | un ghid nou care citează un act absent din corpus (anaf_surse, guvernat de PROVENIENTA.json) trece publicarea | golirea `verifica_citari` → `test_CALIBRARE_act_fabricat_pica` roșu | nu verifică textul citat verbatim, doar prezența actului; cod pe nume ≠ CF/CPF fără nr/an nu-i extras |
+| poarta funcționalități (2b) | core/ghid_poarta.py::verifica_functionalitati + test | un ghid nou care pretinde un F-ID inexistent / non-LIVE / fără «Sursa cod» pe disc / fără back-link `ghid_slug` | F-ID inexistent/non-LIVE/backlink lipsă → probele CALIBRARE roșii | verifică legătura declarată (F-ID), nu proza liberă din „Ce face iConta" |
+| ratchet legacy | core/test_ghid_poarta.py::test_ghiduri_noi_poarta_verde + ghid/_legacy_pre_poarta.txt (clichet 202) | adăugarea unui ghid nou fără `poarta: v1` sau care nu trece poarta | ghid nou fără `poarta:` → `test_ghiduri_noi_poarta_verde` roșu (probat 21.09) | 202 ghiduri legacy grandfathered; 46 dintre ele citează acte încă neaduse în corpus (măsurat) |
