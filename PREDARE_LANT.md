@@ -23,6 +23,11 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 ---
 ## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1 și F2 COMPLETE (etapele 1-8); FRONT ACTIV = F3, apoi F4-F7**
 
+**STARE LA /CLEAR (21.09.2026, HEAD `85a30919`, four-way închis, tree curat):** F1 + F2 complete cap-coadă (declarații
+DUK-valid); F3 etapele 1-2 gata, etapa 3 mapată (mai jos); reparate azi: finding SPV↔stoc + bug NIR-GV. Reia de la
+**F3 etapa 3** (operațiuni D301 → auto-D390). O sesiune nouă citește: acest fișier → CLAUDE.md §2.2/§2.3 → ARHITECT.md
+„FORMA COMENZII", apoi pornește F3 etapa 3. Ritual de început (§5): `pwd; hostname; git log --oneline -1` + `core.agenda`.
+
 **FRONT ACTIV — F3** (SRL, **neplătitor TVA + art.317**, **micro 1%** [2026, NU 3% — OUG 89/2025 a abrogat 3%,
 decizie Costin 21.09]; tenant_051, Cabinet A). Testează UNIC **D301** (achiziții IC + servicii UE), **D390**, **taxare inversă**.
 - **Etapele 1-2 GATA** (07372bae): vector micro/neplătitor(platitor_tva=false)/IC(true)/art.317(true); sold Σ=5000; 0 salariați.

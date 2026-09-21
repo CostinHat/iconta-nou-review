@@ -730,3 +730,23 @@ platitor_tva=false / operatiuni_ic=true / inreg_art317=true. Sold Σdebit=Σcred
 stoc/mijloace fixe). Set declarații: **D301** (achiziții IC + servicii UE, la neplătitor art.317), **D390**
 (recapitulativ), D100 (micro), D406. NU D300 (neplătitor), NU D112 (0 salariați), NU D394 (plătitori). Ce
 testează F3 unic: taxare inversă IC/servicii UE → D301/D390. Următor: etapa 3 (documente IC).
+
+## 21.09.2026 — ÎNCHIDERE ZI (efect pentru contabil)
+
+Ziua a fost în cea mai mare parte **testare pe flux (Sesiunea B)** — firmele de test F1/F2/F3 (tenant_049/050/051),
+care NU ating datele niciunui contabil real. DAR ziua **A schimbat două lucruri vizibile pentru un contabil real**,
+prin cele două reparații de cod publicate (four-way, procesul viu le rulează):
+
+1. **Salvarea unui NIR funcționează din nou.** Înainte, orice notă de intrare-recepție pica la salvare cu
+   422 „Cota de TVA nu s-a dat", deși cota era completată pe fiecare linie (bug NIR-GV — garda R29 verifica o cotă
+   globală pe care apelantul n-o pasa). Acum se salvează normal. (commit 3dbeb987→817d0c70, gard test_stocuri.py.)
+
+2. **Validarea unei facturi PRIMITE de marfă mișcă acum și fișa de magazie.** Înainte, validarea unei facturi de
+   marfă (cont de stoc) urca soldul contabil (371) dar NU mișca cantitatea din gestiune → divergență tăcută între
+   cartea mare și fișa de magazie (contabilul trebuia să facă manual o intrare separată, iar dacă uita, D406/bilanțul
+   ieșeau incoerente). Acum, o singură validare face ambele: nota contabilă (din factură) + cantitatea în fișă
+   (legată de factură, fără dublă notă). (finding SPV↔stoc reparat, decizie Costin opțiunea 1, commit 49bb7ce7,
+   gard core/test_reconciliere_factura_stoc.py; temei OMFP 1802/2014.)
+
+Restul zilei (F1/F2/F3 etape, generări de declarații DUK-valid, corecții de date de test) = validare internă a
+fluxului, **fără efect asupra datelor reale**. Detaliile per etapă/reparație sunt în intrările de mai sus din 21.09.
