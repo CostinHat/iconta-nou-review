@@ -355,7 +355,7 @@ Note contabile pentru credit, dobândă lunară, rate, garanții extrabilanțier
 - Garanțiile neînregistrate extrabilanțier (8051).
 ## Reguli fiscale
 OMFP 1802/2014 pct. 360-364 (credite, dobânzi, garanții)."
-Curs valutar BNR,"Preia și aplică cursul BNR pentru facturile în valută, cu regula legală a cursului corect pe data operațiunii și conversia TVA.",F025,transversal,Emitere / operatiuni valutare,core/curs_bnr.py,art. 290(2) CF,LIVE,pytest,,"## Ce face
+Curs valutar BNR,"Preia și aplică cursul BNR pentru facturile în valută, cu regula legală a cursului corect pe data operațiunii și conversia TVA.",F025,transversal,Emitere / operatiuni valutare,core/curs_bnr.py,art. 290(2) CF,LIVE,pytest,curs-valutar-factura-valuta,"## Ce face
 Preia cursul BNR și îl aplică facturilor în valută, folosind cursul corect la data operațiunii și convertind TVA în lei.
 ## Când se folosește
 La emiterea sau înregistrarea facturilor exprimate în valută.

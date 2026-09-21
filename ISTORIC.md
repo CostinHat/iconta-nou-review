@@ -802,3 +802,19 @@ DECIZII 63.
 Efect: corpus_acte 122→170 identități; acte lipsă (grandfathering) 47→41, ghiduri afectate 44→42; cele 6
 acte suprapuse acoperite. Recalibrat test_identitate_acte: acoperire 52%→60% (188/311), clichet fara_titlu
 neschimbat (123 — toate cele 48 au titlu). Garduri corpus/identitate verzi, verificator 0.
+
+## 21.09.2026 — Pasul 3 pornit: primul ghid produs sub poartă
+
+După aterizarea four-way a importului (8a5c01d1), am trecut la redactare (pasul 3, autorizat de Costin).
+Primul ghid: `ghid/curs-valutar-factura-valuta.md` — „Ce curs valutar folosești pentru o factură în valută".
+Temei verificat VERBATIM la sursă (nu din memorie): CF art. 290 alin. (2) (cf_2015 în corpus) + Normele
+HG 1/2016 pct. 35 alin. (1) (hg_1_2016 în corpus). Funcționalitate legată: F025 „Curs valutar BNR"
+(core/curs_bnr.py, LIVE — docstring-ul codului confirmă aceeași regulă), cu back-link F025.ghid_slug.
+
+Frontmatter contract (DECIZII 61): `poarta: v1` + `functionalitate: F025`. Poartă VERDE (2a citări în
+corpus + 2b F-ID LIVE+sursă+back-link), servit (test_ghiduri_servite), verificator 0. Am evitat citarea
+art. 319 (TVA în lei pe factură) fiindcă textul lui nu s-a putut pin verbatim din corpus (apărea doar în
+cuprins) — REGULA DE AUR: nu se citează text neverificat.
+
+Oprire pentru DECIZIE DE PRODUS: volumul și prioritatea redactării (care din ~8.500 titluri neproduse,
+câte per rundă) — alegere de scop care schimbă ce ajunge la public, deci a lui Costin (§2.3 pct.2).

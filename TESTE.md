@@ -51,7 +51,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim: **extractor citări REPARAT** (urmare listei de acte lipsă) — 3 clase de fals-pozitiv (ordin comun `nr1/nr2` an imposibil; cuvânt comun „lege" peste paragraf; `re.I` strica clasa negată) + 1 fals-negativ (HG scrisă) → punte tempered token + plauzibilitate an; 5 teste `test_CALIBRARE_*` noi. Corectat: 44/202 ghiduri citează 47 acte neaduse (cifra buggy era 46/51). DECIZII 62.
   - ultim: **livrat lista de acte lipsă + evaluare corpus urcat** (import_fiscalos/active, 71 poziții); 47 acte lipsă, 6 acoperite de corpus.
   - urmator: **IMPORT corpus (decizie Costin: TOT)** — `scripts/import_corpus_fiscal.py` idempotent: 48 acte identity-establishable → anaf_surse/<tip>_<nr>_<an>.html (bytes oficiali sources/<source_SHA256>.html) + .sha256 + PROVENIENTA ADUS (motiv structurat: official_source/accessed_at/POSITION_ID/V4_EVIDENCE); 17 deja prezente (skip); 6 ordine comune nr1/nr2/an (raportate, nu importate). Recalibrez test_identitate_acte. STARE = IN LUCRU.
-  - apoi: pasul 3 (redactarea) după four-way verde al importului.
+  - ultim: **IMPORT aterizat four-way** (8a5c01d1): 48 acte, corpus 122→170, acte lipsă 47→41.
+  - ultim: **PASUL 3 pornit — primul ghid produs sub poartă**: `ghid/curs-valutar-factura-valuta.md` (F025, poarta:v1), temei CF art. 290 alin.(2) + HG 1/2016 pct.35 (verificate verbatim la sursă), poartă VERDE, servit, back-link F025.ghid_slug. Dovadă de flux end-to-end.
+  - urmator: **decizie de produs — volumul/prioritatea redactării** (care din ~8.500 titluri neproduse, câte per rundă). Oprire pentru Costin. STARE = BLOCAT: aștept direcția pe volum.
   - pasi import:
     1. `scripts/import_corpus_fiscal.py`: copie sources/<source_SHA256>.html (rol BASE/CUTOFF_VERSION) → anaf_surse/<tip>_<nr>_<an>.html + sidecar .sha256; abort pe coliziune byte-identică sau nume.
     2. PROVENIENTA.json: +48 intrări ADUS cu motiv structurat.
