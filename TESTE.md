@@ -106,8 +106,10 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   (MF-001 6811=2813 200/lună = 12000/60; **corectat date test: rezidual 10000→0** — câmpul rezidual = valoare
   reziduală finală/salvage, nu neamortizat; amortizare_luna d406_active.py:408 amortizabil=valoare−rezidual);
   7 control fiscal; 8 declarații D300-T3/D394/D100-T3(cod 103 profit 768)/D406 toate DUK-valid. **F2 COMPLET 1-8.**
-- urmator: **F3** (SRL, neplătitor + art.317, micro 3% — D301 achiziții IC + servicii UE tip 5, D390, taxare inversă);
-  apoi F4-F7. F2 D101 (profit anual) = la închiderea anului. STARE = NEINCEPUT
+- fir: **SESIUNEA B — F3 (SRL, neplătitor+art.317, micro 1% [2026], operațiuni IC)** (21.09, decizie Costin: micro 1% nu 3%).
+- ultim: **F3 etapele 1-2 GATA (21.09)** (`proba_f3_etape12.py` + asteptari_f3.md + solduri_f3.csv). Tenant tenant_051.
+  Vector micro/neplătitor+art.317/cu-IC; sold Σ=5000; 0 salariați. Set declarații: D301/D390/D100/D406 (NU D300 neplătitor, NU D394).
+- urmator: **F3 etapa 3** (documente primare: achiziție IC + servicii UE tip 5 → taxare inversă, sursă D301/D390) apoi 4-8. STARE = NEINCEPUT
 - pasi Faza 0:
   1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
   2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).
@@ -856,8 +858,8 @@ Cu discount-urile, banda efectivă coboară spre **~10–16 zile**.
 Etapele fluxului (Faza 1), `√ DD.MM` = etapa are teste cap-coadă pe o firmă:
 | Etapă | Stare |
 |---|---|
-| 1. Migrare / preluare | **F1 √ 20.09** (Σdebit=Σcredit=17000, plan 185, parteneri 2, stoc 5000, 3 salariați) · **F2 √ 21.09** (Σ=17000, mijloc fix MF-001 12000/60l liniar, fără salariați) |
-| 2. Configurare firmă | **F1 √ 20.09** (vector micro/TVA-lunar/fără-IC → D300/D394/D112/D100/D406) · **F2 √ 21.09** (vector profit/TVA-trimestrial/fără-IC) |
+| 1. Migrare / preluare | **F1 √ 20.09** (Σ=17000, stoc, 3 salariați) · **F2 √ 21.09** (Σ=17000, mijloc fix) · **F3 √ 21.09** (Σ=5000, simplu, fără salariați) |
+| 2. Configurare firmă | **F1 √ 20.09** (micro/TVA-lunar/fără-IC) · **F2 √ 21.09** (profit/TVA-trimestrial) · **F3 √ 21.09** (micro/NEPLĂTITOR+art.317/cu-IC → D301/D390/D100/D406)** |
 | 3. Intrare documente primare | **F1 √ 20.09** (D1 emisă 1210 + D2 primită SPV 1210 + D3 bancă; D300 TVA plată 0; finding SPV↔stoc = restanță) · **F2 √ 21.09** (factură serviciu 6050/TVA 1050 fără F172; 2 op casă, sold 5311=500) |
 | 4. Salarizare | **F1 √ 20.09** (stat din istoric; contare 641=421 13900) · **F2 √ 21.09** (N/A — 0 salariați, sărit explicit) |
 | 5. Contabilizare | **F1 √ 20.09** (6 note→validate; balanță Σ=25106) · **F2 √ 21.09** (3 note→validate) |

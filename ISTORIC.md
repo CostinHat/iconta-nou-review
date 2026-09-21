@@ -716,3 +716,17 @@ nu blochează — calculul e standard-corect). 7 control fiscal renderează. **8
 1.050), D394, D100-T3 (**cod 103 PROFIT**, impozit **768** = 16% × profit 4.800 = venit 5.000 − amortizare 200),
 D406 — toate **DUK-valid**. D101 (profit anual) = la închiderea anului. **F2 acoperă: profit 16%, TVA trimestrial,
 amortizare/mijloc fix, registru de casă.** Următor: F3 (neplătitor+art.317, micro 3%, D301/D390/taxare inversă).
+
+## 21.09.2026 — Sesiunea B: F3 pornit (etapele 1-2); cotă micro corectată 3%→1% (2026)
+
+Decizie Costin: F3 = **micro 1%** (nu 3%). Verificat la sursă (REGULA DE AUR): `common.py:650` `impozit_micro`=1%
+unic din 2023; temeiul citat — **OUG 89/2025 (MO 1203/24.12.2025) art.I pct.5 a ABROGAT cota 3% (alin.1^1)** de
+la 01.01.2026, pct.4 păstrează 1% unic; pe 2026 nu mai există split 1%/3% nici pragul 60.000 EUR (verificat
+05.08.2026, validat Costin). Planul Sesiunea B scria „F3 micro 3%" (din legea veche) — obsolet pe 2026.
+
+**F3 (SRL, neplătitor TVA + art.317, micro 1%, operațiuni IC, fără salariați) — etapele 1-2 prin interfață**
+(`proba_f3_etape12.py` + `asteptari_f3.md` + `solduri_f3.csv`). Tenant tenant_051, Cabinet A. Vector: micro /
+platitor_tva=false / operatiuni_ic=true / inreg_art317=true. Sold Σdebit=Σcredit=5.000 (simplu — F3 nu are
+stoc/mijloace fixe). Set declarații: **D301** (achiziții IC + servicii UE, la neplătitor art.317), **D390**
+(recapitulativ), D100 (micro), D406. NU D300 (neplătitor), NU D112 (0 salariați), NU D394 (plătitori). Ce
+testează F3 unic: taxare inversă IC/servicii UE → D301/D390. Următor: etapa 3 (documente IC).
