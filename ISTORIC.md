@@ -688,3 +688,15 @@ migrare pt articole fără cont_stoc e 302, dar `cv_intrare` folosește 371 — 
 
 **Etapa 8 COMPLETĂ.** D300/D394/D112/D100/**D406** toate DUK-valid pe F1 reconciliat (D406 SAF-T 96KB, valid).
 Cascada reia: etapa 9 (depunere) → 10 (ieșiri externe) → 11 (transversal); apoi F2-F7.
+
+## 21.09.2026 — Sesiunea B: F1 1-8 declarat suficient (9-11 front deschis); F2 pornit (etapele 1-2)
+
+Decizie Costin: F1 (etapele 1-8) suficient acoperit; etapele 9-11 rămân front deschis în PREDARE_LANT.md
+(depunerea reală la ANAF/SPV e [EXTERN] — blocant certificat mTLS). Trecere la **F2**, același regim (§2.2/etapă).
+
+**F2 (SRL, TVA trimestrial, profit 16%, mijloc fix/amortizare, fără salariați) — etapele 1-2 prin interfață**
+(`frontend_test/proba_f2_etape12.py` + `asteptari_f2.md` + `solduri_f2.csv` + `mijloace_f2.csv`). Cabinet A
+(existent din F1) → login → adaugă F2 → vector **profit/TVA-trimestrial/fără-IC** → import solduri + mijloc fix.
+Verificat în DB (tenant_050): Σdebit=Σcredit=**17.000**; mijloc fix MF-001 (utilaj 12.000, rezidual 10.000, 60
+luni, liniar, 2131/2813, PIF 2025-01-15); vector (profit, TVA t, trimestrial); 0 salariați. Ce testează F2 unic
+față de F1: D300 trimestrial, profit 16% (D100/D101), amortizare + mijloace fixe (etapa 6 nu mai e N/A), registru casă.
