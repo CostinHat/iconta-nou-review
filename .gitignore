@@ -77,4 +77,4 @@ venv/
 pachete_loturi/
 
 # Capturi de proba F1 (Sesiunea B) — regenerate la fiecare rulare, nu se urmaresc
-frontend_test/f1_*.png
+frontend_test/f[0-9]_*.png

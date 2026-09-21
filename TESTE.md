@@ -99,7 +99,11 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 - ultim: **F2 etapele 1-2 GATA (21.09) prin interfata** (`frontend_test/proba_f2_etape12.py` + asteptari_f2.md +
   solduri_f2.csv + mijloace_f2.csv). Cabinet A (existent). Tenant 105780 / schema tenant_050. Vector: profit/TVA-trimestrial/fara-IC.
   Sold Σdebit=Σcredit=17000; mijloc fix MF-001 (utilaj 12000, rezidual 10000, 60 luni, liniar, 2131/2813, PIF 2025-01-15); 0 salariati.
-- urmator: **F2 etapa 3** (documente primare) apoi 4-8, regula cascadei. ATENTIE etapa 6: amortizare NU mai e N/A (are mijloc fix -> nota 6811=2813 200/luna). STARE = NEINCEPUT
+- ultim: **F2 etapa 3 GATA (21.09)** (`frontend_test/proba_f2_etapa3.py` + asteptari_f2_etapa3.md): factură serviciu
+  emisă 6050/TVA 1050 (fără articol → fără poartă F172); 2 operațiuni registru de casă (ridicare bancă 1000 + plată
+  furnizor 500) → sold 5311=500. Verificat DB tenant_050.
+- urmator: **F2 etapa 4** (salarizare = N/A, 0 salariați → de sărit explicit) apoi 5 (contabilizare), **6 (amortizare
+  MF-001: nota 6811=2813 200/lună — NU mai e N/A)**, 7, 8 (D300-trim/D100/D101/D394/D406). STARE = NEINCEPUT
 - pasi Faza 0:
   1. gdpr_sterge.executa(cabinet_id, confirmare=nume, user_id=1) pentru toate cele 55 cabinete -> tenant_stergere (13 tabele tenant_id + DROP SCHEMA + fisiere disc), + users/audit_log/user_tenants/tenants/accounting_firms.
   2. sterge cei 4 superadmin de TEST (6250 prisma-cont.test, 71259 p3.local, 71477/71483 invalid); PASTREAZA id=1 (cos@gmail.com, platforma reala).
@@ -850,7 +854,7 @@ Etapele fluxului (Faza 1), `√ DD.MM` = etapa are teste cap-coadă pe o firmă:
 |---|---|
 | 1. Migrare / preluare | **F1 √ 20.09** (Σdebit=Σcredit=17000, plan 185, parteneri 2, stoc 5000, 3 salariați) · **F2 √ 21.09** (Σ=17000, mijloc fix MF-001 12000/60l liniar, fără salariați) |
 | 2. Configurare firmă | **F1 √ 20.09** (vector micro/TVA-lunar/fără-IC → D300/D394/D112/D100/D406) · **F2 √ 21.09** (vector profit/TVA-trimestrial/fără-IC) |
-| 3. Intrare documente primare | **F1 √ 20.09** (D1 emisă 1210 + D2 primită SPV 1210 + D3 bancă; D300 TVA plată 0; finding SPV↔stoc = restanță) |
+| 3. Intrare documente primare | **F1 √ 20.09** (D1 emisă 1210 + D2 primită SPV 1210 + D3 bancă; D300 TVA plată 0; finding SPV↔stoc = restanță) · **F2 √ 21.09** (factură serviciu 6050/TVA 1050 fără F172; 2 op casă, sold 5311=500) |
 | 4. Salarizare | **F1 √ 20.09** (stat din istoric 4500/5000/4400; contare 641=421 13900; corectat date sub salariul minim 4325) |
 | 5. Contabilizare | **F1 √ 20.09** (6 note ciornă→validate; balanță Σ=25106; fișe populate) |
 | 6. Sfârșit de lună | **F1 √ 20.09** (luna sept închisă; amortizare N/A, CMP per-factură) |

@@ -700,3 +700,9 @@ Decizie Costin: F1 (etapele 1-8) suficient acoperit; etapele 9-11 rămân front 
 Verificat în DB (tenant_050): Σdebit=Σcredit=**17.000**; mijloc fix MF-001 (utilaj 12.000, rezidual 10.000, 60
 luni, liniar, 2131/2813, PIF 2025-01-15); vector (profit, TVA t, trimestrial); 0 salariați. Ce testează F2 unic
 față de F1: D300 trimestrial, profit 16% (D100/D101), amortizare + mijloace fixe (etapa 6 nu mai e N/A), registru casă.
+
+**F2 etapa 3 (documente primare) prin interfață.** `frontend_test/proba_f2_etapa3.py` + `asteptari_f2_etapa3.md`.
+Factură serviciu emisă 5.000 + 21% = **6.050** (fără articol → fără poarta F172, corect pentru serviciu; cotă
+21% via AI). Registru de casă (F2 unic): 2 operațiuni — ridicare bancă 1.000 (5311=581) + plată furnizor 500
+(401=5311) → **sold casă 5311 = 500**. Verificat DB tenant_050. Următor: etapa 4 (salarizare N/A, 0 salariați),
+5 (contabilizare), **6 (amortizare MF-001: 6811=2813 200/lună — nu mai e N/A ca la F1)**, 7, 8 (declarații).
