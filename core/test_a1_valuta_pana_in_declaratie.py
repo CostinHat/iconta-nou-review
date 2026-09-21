@@ -4,7 +4,7 @@
 Constatarea A1: o factură în EUR intra în D300/D394 și în nota contabilă (4111/4427) cu sumele ÎN
 VALUTĂ. Aici emitem o factură de 1.000 EUR la curs 5 prin ruta reală și verificăm, pas cu pas:
   1. răspunsul rutei poartă `total_lei=6050`, `tva_lei=1050` (nu 1210/210);
-  2. NOTA automată e în LEI: 4111=707 pe 5000, 4111=4427 pe 1050 (nu 1000/210);
+  2. NOTA automată e în LEI: 4111=704 pe 5000, 4111=4427 pe 1050 (nu 1000/210);
   3. D300 rd.9: R9_1=5000, R9_2=1050;
   4. D394: bazaL/tvaL = 5000/1050.
 
@@ -160,13 +160,22 @@ def test_factura_eur_raspunsul_rutei_e_in_lei(firma):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_factura_eur_nota_e_in_lei(firma):
+def test_factura_eur_nota_e_in_lei(firma, monkeypatch):
+    # Probă DETERMINISTĂ, independentă de cheia AI: contul de venit al liniei se deduce
+    # din denumire NUMAI prin AI (cote_tva.potriveste_cota); fără cheie cade pe default-ul
+    # firmei (707). Stubăm clasificatorul pe rezultatul corect pentru "Servicii" (704,
+    # OMFP 1802/2014). Lipsa unei reguli deterministe non-AI = restanță de decizie (v. raport),
+    # nu se repară aici.
+    from core import cote_tva as _ct
+    monkeypatch.setattr(_ct, "potriveste_cota", lambda denumire, platitor_tva=True: {
+        "ok": True, "cota": 21, "tip": "servicii", "categorie": "standard",
+        "justificare": "stub test", "incredere": "mare", "sursa": "regula"})
     cl = _client()
     fid = _emite_eur(cl, firma).json()["factura_id"]
     note = _nota_factura(firma, fid)
     assert note, "factura EUR n-a produs nicio notă"
-    # 4111 = 707 pe baza (5000 lei), 4111 = 4427 pe TVA (1050 lei) — NU 1000/210 (valuta).
-    baza = [s for (d, c, s) in note if c == "707" and d == "4111"]
+    # 4111 = 704 pe baza (5000 lei; serviciu, OMFP 1802/2014), 4111 = 4427 pe TVA (1050 lei) — NU 1000/210 (valuta).
+    baza = [s for (d, c, s) in note if c == "704" and d == "4111"]
     tvac = [s for (d, c, s) in note if c == "4427" and d == "4111"]
     assert baza and float(baza[0]) == 5000.0, "baza notei = %r (asteptat 5000 lei); nota=%r" % (baza, note)
     assert tvac and float(tvac[0]) == 1050.0, "TVA notei = %r (asteptat 1050 lei); nota=%r" % (tvac, note)
