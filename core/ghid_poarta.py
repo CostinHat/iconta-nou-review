@@ -52,15 +52,27 @@ _TIP_FAMILIE = {
     "omfp": "ordin", "omf": "ordin", "opanaf": "ordin", "ordin": "ordin", "ordinul": "ordin",
 }
 
-# TIP-ul din citare, cu forme cu/fără puncte. Numărul poate avea separator de mii (1.802).
-# DOUĂ forme reale, prinse separat (o singură regexă rata forma cu dată, fiindcă ziua „din 23…" e
-# tot cifre și bloca ajungerea la an):
-#   · slash:  „OUG 89/2025", „Legea 141/2025"
-#   · dată:   „OUG nr. 89 din 23 decembrie 2025", „Legea nr. 141 din 2025"
-_TIP = r"(OUG|O\.U\.G|OG|O\.G|HG|H\.G|OMFP|OMF|OPANAF|Ordinul|Ordin|Legea|Lege|Hot[ăa]r[âa]rea)"
-_CIT_SLASH = re.compile(r"\b" + _TIP + r"\b[^0-9]{0,25}?(\d[\d.]*)\s*/\s*(\d{4})", re.I)
+# TIP-ul din citare — case-SENSITIVE dinadins (NU re.I): re.I ar face `[^A-Z]` să excludă toate
+# literele (footgun), iar formele-cuvânt minuscule ("lege", "ordinul") sunt substantive comune care
+# prind numărul actului URMĂTOR peste paragraf (dovedit 21.09: „…lege.\n\nOMFP nr. 2861/2009" ->
+# fals „Legea 2861/2009"). Abrevierile sunt majuscule; formele-cuvânt, Title-case.
+_TIP_ALT = r"OUG|O\.U\.G|OG|O\.G|HG|H\.G|OMFP|OMF|OPANAF|Ordinul|Ordin|Legea|Hot[ăa]r[âa]rea"
+_TIP = r"(" + _TIP_ALT + r")"                 # capturant (TIP-ul citării)
+_TIP_NC = r"(?:" + _TIP_ALT + r")"            # non-capturant (pt. lookahead-ul din punte)
+# Puntea dintre TIP și număr — TEMPERED TOKEN: orice caracter non-cifră/non-newline care NU începe alt
+# TIP. Deci NU poate traversa într-un alt act („…Legea … OMFP 89/2025" nu leagă „Legea" de 89), dar
+# acceptă calificative legitime, inclusiv Title-case („Hotărârea Guvernului nr.", „Legea contabilității
+# nr. 82/1991"). Case-sensitive (v. nota TIP): „lege." minuscul nu e TIP, deci nu prinde nimic.
+_PUNTE = r"(?:(?!" + _TIP_NC + r")[^0-9\n]){0,25}?"
+# DOUĂ forme reale: slash („OUG 89/2025") și dată („OUG nr. 89 din 23 decembrie 2025").
+_CIT_SLASH = re.compile(r"\b" + _TIP + r"\b" + _PUNTE + r"(\d[\d.]*)\s*/\s*(\d{4})")
 _CIT_DIN = re.compile(
-    r"\b" + _TIP + r"\b\s*(?:nr\.?\s*)?(\d[\d.]*)\s+din\s+(?:\d{1,2}\s+[^\d]+?\s+)?(\d{4})", re.I)
+    r"\b" + _TIP + r"\b[ \t]*(?:nr\.?[ \t]*)?(\d[\d.]*)\s+din\s+(?:\d{1,2}\s+[a-zăâîșț]+\s+)?(\d{4})")
+
+# Anul unei citări plauzibil ca an de act normativ românesc. Un „an" în afara intervalului = misparse
+# (al doilea număr al unui ordin comun `nr1/nr2`, un număr de Monitor Oficial etc.), NU un act — nu se
+# fabrică o identitate greșită. Dovedit 21.09: „Ordinul comun nr. 1826/2372" -> an 2372 imposibil.
+_AN_MIN, _AN_MAX = 1900, 2035
 
 # Coduri citate pe articol, fără nr/an. Fiecare -> actul-suport (familie, nr, an) care trebuie în corpus.
 _COD_ALIAS = {
@@ -134,7 +146,10 @@ def citari(text):
             fam = _TIP_FAMILIE.get(m.group(1).lower().replace(".", ""))
             if not fam:
                 continue
-            act = (fam, _norm_nr(m.group(2)), m.group(3))
+            an = m.group(3)
+            if not (_AN_MIN <= int(an) <= _AN_MAX):   # al doilea nr al unui ordin comun, nr de MO...
+                continue
+            act = (fam, _norm_nr(m.group(2)), an)
             vazut.setdefault(act, m.group(0).strip())
     for m in _COD_RE.finditer(text):
         act = _COD_ALIAS[m.group(0).lower()]

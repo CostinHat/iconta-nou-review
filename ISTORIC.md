@@ -771,3 +771,20 @@ Reparat pe ambele forme, apărat cu `test_CALIBRARE_forma_cu_data_e_extrasa`.
 **Măsurat pe corpusul real:** 122 identități de act în corpus; 46/202 ghiduri legacy citează acte încă neaduse
 în corpus (grandfathered, declarat). Efect vizibil pentru contabil: NICIUNUL (tooling intern; niciun ghid nou
 produs încă). Raport §2.2 + oprire înainte de redactarea propriu-zisă (pasul 3), conform comenzii.
+
+## 21.09.2026 — Reparație extractor citări ghiduri (urmare a listei de acte lipsă)
+
+La comanda „extrage lista actelor lipsă din cele 46 ghiduri grandfathered", extracția a scos ani
+imposibili (Ordin 417/1204, 1826/2372, 1337/1268) și o misclasificare (OMFP 2861/2009 → „Legea") —
+fals-pozitivi în extractorul livrat mai devreme azi. OPRIRE înainte de livrarea listei (REGULA DE AUR:
+nu se livrează o listă știut-greșită) + reparație pe clasă (CICLUL DE NECONFORMITATE):
+
+- ordin comun `nr1/nr2` → gard de plauzibilitate an (1900–2035); un an imposibil nu devine act;
+- cuvânt comun „lege" prinzând actul următor peste paragraf → TIP case-sensitive + punte tempered token
+  `(?!TIP)` (fără `re.I`, care strica clasa negată; fără forma-cuvânt „Lege");
+- fals-negativ „Hotărârea Guvernului nr. 1/2016" (calificativ Title-case) → puntea îl acceptă fără a
+  traversa alt act.
+
+5 teste `test_CALIBRARE_*` noi (fiecare pe cazul real). Numere corectate: **44/202 ghiduri** citează
+**47 acte distincte** neaduse în corpus (SUPERSEDĂ 46/51 din intrarea anterioară — DECIZII 62). Suita
+verde, verificator 0.

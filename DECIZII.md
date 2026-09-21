@@ -3,6 +3,31 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 21.09.2026 (62) — Reparație extractor citări (SUPERSEDĂ măsurătoarea „46/51" din (61))
+
+**Context.** La extragerea listei de acte lipsă din cele 46 de ghiduri grandfathered (comandă Costin),
+au apărut ani imposibili (`Ordin 417/1204`, `1826/2372`, `1337/1268`) și o misclasificare
+(`OMFP nr. 2861/2009` tagat „Legea"). Semn de fals-pozitiv în extractorul livrat în (61) — deci
+poarta ar fi blocat fals un ghid nou. OPRIRE + reparație pe clasă (CICLUL DE NECONFORMITATE).
+
+**Trei clase reparate:**
+1. **Ordin comun `nr1/nr2`** (ex. „Ordinul comun nr. 1826/2372"): al doilea număr e alt nr de ordin,
+   nu an. Gard: `_AN_MIN.._AN_MAX` (1900–2035) — un an implauzibil NU devine act.
+2. **Cuvânt comun „lege"** (ex. „…lege.\n\n**OMFP nr. 2861/2009**"): substantivul comun prindea
+   numărul actului URMĂTOR peste paragraf. Fix: TIP case-SENSITIVE (scos „Lege"/„lege" formă-cuvânt;
+   `re.I` scos — făcea `[^A-Z]` să excludă toate literele) + punte cu **tempered token** `(?!TIP)` care
+   nu traversează în alt act și nu trece newline.
+3. **Fals-negativ „Hotărârea Guvernului nr. 1/2016"** (formă scrisă cu calificativ Title-case): puntea
+   tempered acceptă „Guvernului", dar tot nu traversează alt act.
+
+**Numere corectate (SUPERSEDĂ (61)):** din 202 ghiduri legacy, **44** citează **47** acte distincte
+încă neaduse în corpus (măsurat 21.09 cu extractorul reparat — final). Cifrele „46/51" din (61) erau
+umflate de fantome (ordine comune, cuvântul „lege"); numărul real, după eliminarea lor ȘI recuperarea
+formei scrise „Hotărârea Guvernului", e 44/47.
+
+**Gard:** 5 teste `test_CALIBRARE_*` noi în `core/test_ghid_poarta.py`, fiecare pe cazul real care a
+produs defectul. **TEMEI.** N/A — tooling.
+
 ## 21.09.2026 (61) — Poarta de verificare pre-publicare a ghidurilor (producție ghiduri, pasul 2)
 
 **Context.** Comandă Costin (lista producție ghiduri): din `index_titluri_ghid.csv` (8.713 titluri indexate)

@@ -46,8 +46,8 @@ def test_CALIBRARE_act_real_din_corpus_trece():
 
 def test_CALIBRARE_act_fabricat_pica():
     ac = gp.corpus_acte()
-    lipsa = gp.verifica_citari("Potrivit OUG 9999/2099, se aplică regula X.", ac)
-    assert any(a == ("oug", "9999", "2099") for _t, a in lipsa), \
+    lipsa = gp.verifica_citari("Potrivit OUG 9999/2019, se aplică regula X.", ac)
+    assert any(a == ("oug", "9999", "2019") for _t, a in lipsa), \
         "un act inexistent în corpus a trecut — poarta 2a nu blochează"
 
 
@@ -56,6 +56,36 @@ def test_CALIBRARE_forma_cu_data_e_extrasa():
     ajungerea la an), deci o citare scrisă doar așa nu era verificată. Ambele forme se extrag."""
     assert ("oug", "89", "2025") in [a for _t, a in gp.citari("prin OUG nr. 89 din 23 decembrie 2025")]
     assert ("hg", "146", "2026") in [a for _t, a in gp.citari("HG nr. 146 din 3 martie 2026")]
+
+
+def test_CALIBRARE_ordin_comun_nu_fabrica_act_cu_an_imposibil():
+    """Regresie 21.09: «Ordinul comun nr. 1826/2372» are al doilea număr = alt nr de ordin, nu an.
+    Un an imposibil (2372) NU devine act — altfel poarta ar bloca fals și lista de acte-lipsă ar
+    conține fantome."""
+    acte = [a for _t, a in gp.citari("Ordinul comun nr. 1826/2372 privind riscul; și 417/1204.")]
+    assert all(1900 <= int(an) <= 2035 for _f, _nr, an in acte), \
+        "un «an» imposibil a fost extras ca act: %r" % acte
+
+
+def test_CALIBRARE_cuvant_comun_lege_nu_prinde_actul_urmator():
+    """Regresie 21.09: «…lege.\\n\\n**OMFP nr. 2861/2009**» prindea «Legea 2861/2009» (fals) și
+    înghițea OMFP-ul real. Cuvântul comun nu e TIP; actul real (OMFP) se extrage corect."""
+    acte = [a for _t, a in gp.citari("reglementat prin lege.\n\n**OMFP nr. 2861/2009** pentru")]
+    assert ("ordin", "2861", "2009") in acte
+    assert ("legea", "2861", "2009") not in acte
+
+
+def test_CALIBRARE_hotararea_guvernului_scrisa_e_extrasa():
+    """Regresie 21.09: forma scrisă «Hotărârea Guvernului nr. 1/2016» (calificativ Title-case) nu
+    trebuie ratată — puntea acceptă «Guvernului», dar tot nu traversează în alt act."""
+    assert ("hg", "1", "2016") in [a for _t, a in gp.citari("Hotărârea Guvernului nr. 1/2016 pentru norme")]
+
+
+def test_CALIBRARE_puntea_nu_traverseaza_in_alt_act():
+    """«Legea 141/2025 și OMFP 1802/2014» — două acte, fiecare cu numărul LUI; puntea nu leagă
+    «Legea» de numărul lui OMFP."""
+    acte = [a for _t, a in gp.citari("prin Legea 141/2025 și OMFP 1802/2014")]
+    assert ("legea", "141", "2025") in acte and ("ordin", "1802", "2014") in acte
 
 
 def test_CALIBRARE_cod_fiscal_pe_articol_e_recunoscut():

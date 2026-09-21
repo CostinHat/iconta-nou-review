@@ -47,8 +47,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 ## În lucru acum
 - fir: **PRODUCȚIE GHIDURI — poarta de verificare pre-publicare** (21.09.2026, comandă Costin „lista producție ghiduri, pasul 2"). FIR PARALEL cu Sesiunea B (redirecționare explicită, §7). Agenda (`urmator_cluster`) rămâne pe F3.
   - ultim: importat `index_titluri_ghid.csv` (8.713 titluri) ca listă de bază, git-track + reader `core/ghid_titluri.py`.
-  - ultim: **poarta `core/ghid_poarta.py` LIVRATĂ** — 2a citări în corpus (anaf_surse/PROVENIENTA) + 2b F-ID LIVE+sursă+back-link; CLI blochează exit≠0. Gard `core/test_ghid_poarta.py` (11 teste: calibrare + ratchet legacy 202-clichet, 3 mutații probate). Defect recall (forma „din <dată>") prins la self-review + reparat pe clasă.
-  - urmator: **raport §2.2 + OPRIRE** înainte de redactarea propriu-zisă (pasul 3) — validarea porții de către Costin. STARE = BLOCAT: aștept validare Costin.
+  - ultim: **poarta `core/ghid_poarta.py` LIVRATĂ** (commit bb2264f6, four-way) — 2a citări în corpus + 2b F-ID LIVE+sursă+back-link; CLI blochează exit≠0. Gard `core/test_ghid_poarta.py`.
+  - ultim: **extractor citări REPARAT** (urmare listei de acte lipsă) — 3 clase de fals-pozitiv (ordin comun `nr1/nr2` an imposibil; cuvânt comun „lege" peste paragraf; `re.I` strica clasa negată) + 1 fals-negativ (HG scrisă) → punte tempered token + plauzibilitate an; 5 teste `test_CALIBRARE_*` noi. Corectat: 44/202 ghiduri citează 47 acte neaduse (cifra buggy era 46/51). DECIZII 62.
+  - urmator: **livrat lista de acte lipsă (raport)** → pasul 3 (redactarea), autorizat de comandă după livrare. STARE = IN LUCRU (redactare).
   - pasi:
     1. `index_titluri_ghid.csv` git-track + `core/ghid_titluri.py::incarca()` (reader listă de bază).
     2. `core/ghid_poarta.py`: extractor citări → identitate act (tip,nr,an) + aliasuri (CF=Legea 227/2015, CPF=Legea 207/2015); index corpus din nume-fișier (toleranță `hg714`/`hg_714`) filtrat prin `scan_provenienta`; `verifica_citari`, `verifica_functionalitati`, `verifica_ghid` + CLI (exit≠0 = blocaj).
