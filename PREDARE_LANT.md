@@ -4,12 +4,11 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-21**, după **SESIUNEA B — F1 și F2 COMPLETE (1-8) + reparat finding SPV↔stoc**.
-  Închise: F1 1-8 + F2 1-8 (ambele cu declarații DUK-valid) + reparat finding SPV↔stoc + bug NIR-GV. F2 a adăugat
-  acoperire: profit 16%, TVA trimestrial, amortizare/mijloc fix, registru casă. *Rescriere țintită: antet + „primul lucru".*
-- **pe commit**: `49bb7ce7` (ultimul four-way: F1 6-8 + reconciliere). *F2 etapele 1-2 (`boadvk2jg`) + etapa 3 se
-  publică peste el (coadă gate ~36min); four-way exact în §11 al rapoartelor.*
-- **URMĂTORUL FRONT**: **F3** (SRL, neplătitor+art.317, micro 3% — D301/D390/taxare inversă) → F4-F7.
+- **ultima rescriere**: **2026-09-21**, după **SESIUNEA B — F1 și F2 COMPLETE (1-8) + reparat finding SPV↔stoc; F3 pornit (1-2)**.
+  Închise: F1 1-8 + F2 1-8 (declarații DUK-valid) + reparat finding SPV↔stoc + bug NIR-GV; corectat cota micro 3%→1% (2026).
+  **F3 (neplătitor+art.317, micro 1%, IC) etapele 1-2 gata.** *Rescriere țintită: antet + „primul lucru".*
+- **pe commit**: `07372bae` (ultimul four-way: F3 etapele 1-2). *Handoff-ul F3 etapa 3 se publică ACUM peste el.*
+- **URMĂTORUL FRONT**: **F3 etapa 3** (operațiuni D301 → D301/D390/taxare inversă — mecanism mapat mai jos) → 4-8 → F4-F7.
   **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
@@ -24,10 +23,20 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 ---
 ## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1 și F2 COMPLETE (etapele 1-8); FRONT ACTIV = F3, apoi F4-F7**
 
-**FRONT ACTIV — F3** (SRL, **neplătitor TVA + art.317**, **micro 3%**; Cabinet A): testează UNIC **D301** (achiziții IC +
-servicii UE tip 5), **D390**, **taxare inversă**. De pornit ca F2: login (Cabinet A există) → adaugă F3 → vector
-(micro 3% / neplătitor+art.317 / cu operațiuni IC) → migrare (sold echilibrat) → etapele 3-8. Scrie asteptari_f3.md
-ÎNAINTE (CUI cu cifra de control verificată). Model probe: `proba_f2_etape12.py`/`proba_f2_etapa3.py` (adaptate).
+**FRONT ACTIV — F3** (SRL, **neplătitor TVA + art.317**, **micro 1%** [2026, NU 3% — OUG 89/2025 a abrogat 3%,
+decizie Costin 21.09]; tenant_051, Cabinet A). Testează UNIC **D301** (achiziții IC + servicii UE), **D390**, **taxare inversă**.
+- **Etapele 1-2 GATA** (07372bae): vector micro/neplătitor(platitor_tva=false)/IC(true)/art.317(true); sold Σ=5000; 0 salariați.
+  Probe: `proba_f3_etape12.py` + `asteptari_f3.md` + `solduri_f3.csv`.
+- **DE CONTINUAT — etapa 3 (MECANISM MAPAT):** documentele IC ale lui F3 se intră ca **operațiuni D301**, NU facturi
+  primite (F3 e neplătitor). Ecran: Declarații → D301 → grila de operațiuni (`randeazaOperatiuniD301`, declaratii.js).
+  Formular: `#d301-tip` (**1**=achiziții IC bunuri, **5**=achiziții servicii IC), `#d301-nrdoc`, `#d301-datadoc`,
+  `#d301-valuta`, `#d301-val`, `#d301-curs`, `#d301-cota`, `#d301-partener_tara` (ex. DE), `#d301-partener_cod`,
+  `#d301-partener_den` → `#d301-add`. **Completarea furnizorului UE (țară+cod) → apare AUTOMAT în D390** (bunuri
+  tip 1/3→cod A; servicii tip 5→cod S). O intrare = D301 + D390 (declaratii.js:436).
+- **Plan F3:** etapa 3 = 2 operațiuni D301 (1 achiziție IC bunuri tip 1 + 1 serviciu UE tip 5, cu furnizor UE);
+  4 N/A (0 salariați); 5 contabilizare (taxare inversă 4426=4427); 6 N/A (fără mijloace fixe); 7 control fiscal;
+  8 generează **D301/D390/D100/D406** + DUK. Scrie asteptari_f3_etapa3.md ÎNAINTE (regula bazei nule).
+- Model probe: `proba_f2_etapa*.py` (adaptate). CUI F3 RO404000013.
 
 **F2 (tenant_050) — COMPLET etapele 1-8** (SRL, TVA trimestrial, profit 16%, mijloc fix/amortizare, registru casă):
 - 1-2 migrare/config (vector profit/TVA-trimestrial; sold Σ=17000; MF-001 utilaj 12000/60l/rezidual 0). 3 documente
