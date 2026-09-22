@@ -4,11 +4,14 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-21**, după **SESIUNEA B — F1 și F2 COMPLETE (1-8) + reparat finding SPV↔stoc; F3 pornit (1-2)**.
-  Închise: F1 1-8 + F2 1-8 (declarații DUK-valid) + reparat finding SPV↔stoc + bug NIR-GV; corectat cota micro 3%→1% (2026).
-  **F3 (neplătitor+art.317, micro 1%, IC) etapele 1-2 gata.** *Rescriere țintită: antet + „primul lucru".*
-- **pe commit**: `07372bae` (ultimul four-way: F3 etapele 1-2). *Handoff-ul F3 etapa 3 se publică ACUM peste el.*
-- **URMĂTORUL FRONT**: **F3 etapa 3** (operațiuni D301 → D301/D390/taxare inversă — mecanism mapat mai jos) → 4-8 → F4-F7.
+- **ultima rescriere**: **2026-09-22**, după **SESIUNEA B — F1-F5 COMPLETE (cap-coadă) + 300 ghiduri prin poarta v1**.
+  Închise: F1-F2 (1-8); F3 (1-8: IC unificat pe `achizitie-ic` + 3 bug-uri de flux reparate); F4 (PFA sistem real,
+  D212 live: venit_net 70000 → impozit 5085, total datorat 24235); F5 (SRL salariați, D112 DUK-valid + REGES structural [EXTERN]).
+  300 ghiduri live (297 batch + 3 acte aduse la sursă: OUG 25/2018, OG 11/2022). *Rescriere țintită: antet + „primul lucru" + eticheta F3.*
+- **pe commit**: `361db59c` (ultimul four-way). *Handoff-ul task 2 se publică peste el.*
+- **URMĂTORUL FRONT (task 2 — sesiune PROASPĂTĂ; decizie Costin: miza fiscală D212 cere focus de la început, nu de la commit-ul 14)**:
+  **UI pentru cele 10 declarații D2xx PFA → LIVE**, începând cu **D212 + D200** (proof-of-pattern complet), apoi restul 8;
+  **apoi F6** (SRL plătitor TVA la încasare) **+ F7** (regim special marjă second-hand).
   **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
@@ -21,14 +24,23 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1 și F2 COMPLETE (etapele 1-8); FRONT ACTIV = F3, apoi F4-F7**
+## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1-F5 COMPLETE; URMĂTORUL = task 2 (UI declarații D2xx PFA), apoi F6/F7**
 
-**STARE LA /CLEAR (21.09.2026, HEAD `85a30919`, four-way închis, tree curat):** F1 + F2 complete cap-coadă (declarații
-DUK-valid); F3 etapele 1-2 gata, etapa 3 mapată (mai jos); reparate azi: finding SPV↔stoc + bug NIR-GV. Reia de la
-**F3 etapa 3** (operațiuni D301 → auto-D390). O sesiune nouă citește: acest fișier → CLAUDE.md §2.2/§2.3 → ARHITECT.md
-„FORMA COMENZII", apoi pornește F3 etapa 3. Ritual de început (§5): `pwd; hostname; git log --oneline -1` + `core.agenda`.
+**STARE LA /CLEAR (22.09.2026, HEAD `361db59c`, four-way închis, tree curat):** F1-F5 complete cap-coadă (declarații
+DUK-valid; F4=PFA D212 live, F5=SRL salariați D112 + REGES structural [EXTERN]). 300 ghiduri live prin poarta v1.
+**URMĂTORUL = TASK 2 (sesiune proaspătă, decizie Costin): construiește UI pentru cele 10 declarații D2xx PFA → LIVE.**
+Motiv: sunt promise pe pagina publică de funcționalități, dar sunt `declaratii_api._DOAR_API` (API-only, fără ecran în
+selector), iar `test_live_accesibil` INTERZICE Stare LIVE pentru ce nu e în selector. Motoarele sunt gata + DUK-testate +
+confirmate pe F4 (D212 live). TIPARUL (ca la d207/d107/d177), per declarație: (a) formular manual în
+`static/js/ecrane/declaratii.js` (`S.dXXX` + `randeazaFormulardXXX` + `_dXXXManual()` → `body.manual`); (b) scoate tipul
+din `_DOAR_API` (core/declaratii_api.py) → intră în `tipuri()`/selector; (c) Stare→LIVE + `functionalitate`/`ghid_slug`
+back-link în FUNCTIONALITATI.csv; (d) gard structural + validare DUK pe F4 (tenant_052). **Începe cu D212 + D200** (cele
+mai folosite; D212 = cel mai complex — `_CAMPURI` cap11/12/14/oblig_estimat/oblig_realizat, zeci de câmpuri), validează
+tiparul complet pe astea două, apoi restul 8 într-o singură trecere. Cele 10: D200/201/204/208/216/212 + D220/221/223/230.
+(D213/D214 rămân AMÂNATE — entitate specială, nu PFA.) **Apoi F6 + F7.** O sesiune nouă citește: acest fișier →
+CLAUDE.md §2.2/§2.3 → ARHITECT.md „FORMA COMENZII". Ritual de început (§5): `pwd; hostname; git log --oneline -1` + `core.agenda`.
 
-**FRONT ACTIV — F3** (SRL, **neplătitor TVA + art.317**, **micro 1%** [2026, NU 3% — OUG 89/2025 a abrogat 3%,
+**F3 — ÎNCHIS (etapele 1-8)** · istoric mecanism IC (SRL, **neplătitor TVA + art.317**, **micro 1%** [2026, NU 3% — OUG 89/2025 a abrogat 3%,
 decizie Costin 21.09]; tenant_051, Cabinet A). Testează UNIC **D301** (achiziții IC + servicii UE), **D390**, **taxare inversă**.
 - **Etapele 1-2 GATA** (07372bae): vector micro/neplătitor(platitor_tva=false)/IC(true)/art.317(true); sold Σ=5000; 0 salariați.
   Probe: `proba_f3_etape12.py` + `asteptari_f3.md` + `solduri_f3.csv`.
