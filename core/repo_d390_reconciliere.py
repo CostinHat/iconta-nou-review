@@ -36,4 +36,5 @@ def select(cur, schema):
 
 def select_s_3(cur, schema, an, luna):
     cur.execute("SELECT tip, val_valuta, curs, partener_tara, partener_cod, partener_den "
-                "FROM {s}.d301_operatiuni WHERE an=%s AND luna=%s".format(s=schema), (an, luna))
+                "FROM {s}.d301_operatiuni WHERE an=%s AND luna=%s AND factura_id IS NULL"
+                .format(s=schema), (an, luna))  # [DECIZII 66] op legata -> D390 din factura

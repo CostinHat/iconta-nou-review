@@ -53,3 +53,20 @@ la un plătitor, aceeași operațiune trebuie să dea `4426=4427`.*
   se rezolvă aici; proba trebuie să aleagă o singură cale și s-o declare.
 - **Temei:** micro 1% CF art.51; art.317 (înregistrare IC); taxare inversă CF art.307/331; D301 art.324;
   D390 art.325; nedeductibilitate CF art.297. Cifrele din generatoare + DUK, confirmate la rulare.
+
+
+## REZULTAT (rulat pe fluxul UNIFICAT achizitie-ic, DECIZII 66 — proba_f3_etapa3.py)
+
+Golul de flux de mai sus (dubla numarare D390) a fost REZOLVAT prin unificare (DECIZII 66):
+achizitie-ic e intrarea UNICA (factura + nota + D390 + operatiune D301 legata). Rulat pe tenant_051:
+
+- **Intrare unica** (2 achizitii): DE-A-001 bunuri 5000 (tva 1050), DE-B-001 servicii 2500 (tva 525).
+- **Nota payer-aware, CONFIRMATA** (neplatitor -> TVA in cost, NU 4426=4427):
+  `371 = 401 · 5000` + `371 = 446 · 1050` (marfa); `628 = 401 · 2500` + `628 = 446 · 525` (serviciu).
+- **Operatiuni D301 legate**: op tip 1 baza 5000 factura_id=1; op tip 5 baza 2500 factura_id=2.
+- **D390 = 2 linii** (cod A 5000 + cod S 2500), fiecare O DATA — fara dubla numarare (inclusiv a doua
+  cale de reconciliere, dupa fix-ul select_s_3).
+- **DUK: D301 valid · D390 valid · D406 valid.**
+- **D100: refuza corect "pe zero"** — F3 nu are venituri (cont 70x = 0) in perioada, deci micro 1% =
+  0, nimic de declarat. NU e defect: e consecinta corecta a lipsei de venituri (asteptarea "impozit
+  micro pe baza proprie" era gresita — micro se aplica pe VENITURI, nu pe achizitii).
