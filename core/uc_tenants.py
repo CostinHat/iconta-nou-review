@@ -3131,7 +3131,10 @@ def achizitie_ic(tenant_id, corp, ctx):
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
-        descr = (corp.get("descriere") or "AIC") + f" - {tip}, taxare inversa 4426=4427"
+        with conn.cursor() as _curp:
+            _benef_platitor = bool((repo_firma_profil.platitor_tva(_curp, schema) or [True])[0])
+        _linii_ti, _ment_ti = _ic.note_taxare_inversa(cont, val, tva, _benef_platitor)
+        descr = (corp.get("descriere") or "AIC") + f" - {tip}, {_ment_ti}"
         with conn.cursor() as cur:
             tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor UE) = sursa citita de D390. Factura UE fara TVA RON
@@ -3151,7 +3154,7 @@ def achizitie_ic(tenant_id, corp, ctx):
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge, NU cea standard
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
-            for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
+            for d, c, s in _linii_ti:
                 repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
     return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)}

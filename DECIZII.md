@@ -3,6 +3,36 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 22.09.2026 (65) — Contabilizarea IC (taxare inversa) constienta de platitor (F3 etapa 3)
+
+**Context (constatare Sesiunea B, F3).** `achizitie_ic` (uc_tenants) contabiliza orice achizitie
+intracomunitara cu `4426 = 4427` HARDCODAT, iar `intracomunitar.tva_taxare_inversa` documenta
+"4426=4427 pentru orice situatie". Pentru un NEPLATITOR inregistrat doar art.317 (ex. F3, micro),
+TVA pe achizitia IC e DATORATA (D301) dar NEDEDUCTIBILA (deducerea cere art.316 + drept de
+deducere, CF art.297). Nota `4426=4427` deducea un TVA nedeductibil -> cifra valid-dar-falsa.
+
+**Decizie (Costin, 22.09.2026).** Neplatitor art.317 IC -> TVA nedeductibila intra in COSTUL
+bunului/serviciului (acelasi cont cu principalul), 446 = TVA de plata; oglindeste modul "cost"
+deja existent la `import_extracomunitar` (uc_tenants:3235). Platitor -> ramane 4426=4427.
+
+**Reparatie.** `core/intracomunitar.note_taxare_inversa(cont, val, tva, beneficiar_platitor)`
+intoarce liniile + mentiunea, payer-aware; `achizitie_ic` citeste platitorul din profil si o
+foloseste (in loc de liniile hardcodate). Temei: CF art.297 (drept de deducere), art.317, art.324.
+
+**Gard.** `core/test_ic_note_platitor.py` (platitor->4426=4427; neplatitor->cost pe cont+446, NU
+4426=4427). Mutatia care il face rosu: helperul intoarce mereu 4426=4427.
+
+**GENERALIZARE.** Singurul apelant al `tva_taxare_inversa` e `achizitie_ic` (IC). `achizitie_taxare_
+inversa` (art.331 INTERN) cere prin lege ambii parteneri platitori (`_ti.se_aplica`), deci 4426=4427
+e corect acolo. `import_extracomunitar` avea deja modul "cost". Clasa (contabilizare neconstienta
+de platitor) exista DOAR pe IC -> reparata.
+
+**CLARIFICARE cale de nota D301 IC (a doua intrebare).** Doua cai separate: (a) `d301-operatiuni`
+(grila D301) -> alimenteaza D301 + D390, dar NU creeaza nota; (b) `achizitie-ic` -> creeaza factura
+primita + nota + alimenteaza D390 (din factura), dar NU alimenteaza D301. Folosite IMPREUNA dubleaza
+D390 (d390.py:415 semnaleaza, nu blocheaza). Pentru neplatitor nicio cale unica nu da si D301 si nota
+corecta -> GOL de flux, ramane restanta de proiectat (nu se rezolva in acest commit).
+
 ## 22.09.2026 (64) — Cont de venit pe linie: determinist + blocare, nu default tacit
 
 **Context.** `_potriveste_linii` (emitere factura) facea `linie["cont_venit"] = cont or cv_firma`,

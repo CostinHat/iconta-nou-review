@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**618 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**619 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 587
+### `core/` — 588
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9164,6 +9164,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_harta_ecrane.py` — [Regula 13 PERIMETRU + #3 din roadmap] GARD: harta ecranelor nu crește TĂCUT. Fiecare ecran de firmă
 - `core/test_harta_temei.py` — GARD (R5, 20.08.2026): în harta casetelor, temeiul legal nu se amestecă cu regula de produs.
 - `core/test_heartbeat.py` — Gard: heartbeat pentru joburile de fundal — jobul care NU porneste deloc.
+- `core/test_ic_note_platitor.py` — GARD: nota de taxare inversa pentru achizitia intracomunitara e CONSTIENTA de platitor.
 - `core/test_identitate.py` — Gard pe validatorul de identitate PARTAJAT (core/identitate.py, LANT legislatie TURA 3, 10.08.2026).
 - `core/test_identitate_acte.py` — GARD — un act din corpus e ACTUL pe care îl spune numele lui, și e adus o singură dată.
 - `core/test_import_backend_corect.py` — GARD lot1 corectitudine import: preview↔salvare aliniate pe validarea reala + fara default tacit.

@@ -1841,7 +1841,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
+*ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_firma_profil`, `stocuri_cv_api`*
 
 - [x] taxarea inversă: TVA-ul se înregistrează simultan deductibil și colectat, iar cele două se anulează în decont
 - cursul e cel de la data exigibilității, cerut din registru — nu introdus liber

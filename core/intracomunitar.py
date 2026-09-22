@@ -60,6 +60,21 @@ def tva_taxare_inversa(baza, cota=None):
                          "o stornare, nu o valoare negativă.")
     return (b * Decimal(str(cota)) / 100).quantize(B, rounding=ROUND_HALF_UP)
 
+def note_taxare_inversa(cont, val, tva, beneficiar_platitor):
+    """Liniile notei pentru o achizitie intracomunitara (taxare inversa), CONSTIENTE de platitor.
+    - platitor de TVA (art.316): TVA simultan colectata SI deductibila -> 4426 = 4427 (net zero).
+    - NEplatitor (inregistrat doar art.317): TVA datorata (D301) dar NEDEDUCTIBILA (deducerea cere
+      art.316 + drept de deducere, CF art.297) -> intra in COSTUL bunului/serviciului (acelasi cont
+      cu principalul), 446 = TVA de plata catre stat. Oglindeste modul "cost" de la extracomunitar.
+    Intoarce (linii, mentiune). Fara valoare implicita de platitor: apelantul o citeste din profil."""
+    val = Decimal(str(val)); tva = Decimal(str(tva))
+    baza = (cont, "401", val)
+    if beneficiar_platitor:
+        return [baza, ("4426", "4427", tva)], "taxare inversa 4426=4427 (deductibila, art.297)"
+    return [baza, (cont, "446", tva)], ("neplatitor art.317 - TVA nedeductibila in costul "
+                                        "achizitiei (CF art.297: deducerea cere art.316)")
+
+
 def valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport):
     """Livrare IC scutita (art. 294 al. 2 lit. a): cod TVA valid din alt SM
     + dovada transportului. Altfel -> regim normal cu TVA."""

@@ -196,7 +196,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #   prin repository, nu executand el UPDATE-ul (P7). SQL-ul (UPDATE factura_linii) sta in
     #   repo_facturi, nu in use-case. *Clichetul urca fiindca aplicatia face un pas in plus
     #   (clasificarea liniilor), nu fiindca s-a pierdut ceva.*
-    assert _apeluri_catre_repository() == 267
+    # [DECIZII 65, 22.09.2026] 267 -> 268, cu apelul numit:
+    #   repo_firma_profil.platitor_tva in achizitie_ic — contabilizarea IC (taxare inversa) devine
+    #   constienta de platitor (neplatitor art.317 -> TVA in costul achizitiei, nu 4426=4427). Use-case-ul
+    #   citeste statutul prin repository, nu executand el SELECT-ul (P7). *Clichetul urca fiindca aplicatia
+    #   verifica un pas in plus (statutul de platitor), nu fiindca s-a pierdut ceva.*
+    assert _apeluri_catre_repository() == 268
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

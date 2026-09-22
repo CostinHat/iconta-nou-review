@@ -82,6 +82,10 @@ BASELINE = {
     "stare_partajata.py": 4,
     "curs_bnr.py": 2,
     "intrastat.py": 1,
+    # [DECIZII 65, 22.09.2026] `verifica_vies(timeout=15)` — timeout de retea (tehnic, nu fiscal).
+    # intracomunitar.py a intrat in scanul fiscal cand a capatat codurile de cont payer-aware
+    # (note_taxare_inversa). Aceeasi clasa cu TTL-urile/ferestrele operationale deja in clichet.
+    "intracomunitar.py": 1,
     "uc_tenants.py": 1,
     # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.
