@@ -2631,6 +2631,10 @@ ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN cass SET NOT NULL;
 ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN impozit SET NOT NULL;
 ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale ALTER COLUMN net SET NOT NULL;
 ALTER TABLE TENANT_PLACEHOLDER.d301_operatiuni ALTER COLUMN tva SET NOT NULL;
+-- [DECIZII 66] factura_id: operatiunea D301 scrisa de achizitie_ic poarta id-ul facturii;
+-- D390-din-op filtreaza factura_id IS NULL (achizitia legata intra in D390 din factura).
+-- Mirror core/migrare_d301_op_factura.py.
+ALTER TABLE TENANT_PLACEHOLDER.d301_operatiuni ADD COLUMN IF NOT EXISTS factura_id integer;
 ALTER TABLE TENANT_PLACEHOLDER.plan_conturi ALTER COLUMN sold_creditor SET NOT NULL;
 ALTER TABLE TENANT_PLACEHOLDER.plan_conturi ALTER COLUMN sold_debitor SET NOT NULL;
 

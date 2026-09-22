@@ -3088,6 +3088,7 @@ def achizitie_ic(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/achizitie-ic`; docstringul ei a ramas in stratul HTTP."""
     from decimal import Decimal
     from core import intracomunitar as _ic
+    from core import repo_d301_operatiuni_api as _repo_d301
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -3156,6 +3157,13 @@ def achizitie_ic(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
             for d, c, s in _linii_ti:
                 repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
+            # [DECIZII 66] intrare UNICA: aceeasi achizitie scrie SI operatiunea D301 (pentru D301),
+            # legata de factura -> D390 o ia din factura (op-ul legat e sarit), fara dubla numarare.
+            _a, _l, _z = corp["data"].split("-")
+            _repo_d301.insert_d301_operatiuni(
+                cur, schema, int(_a), int(_l), 1 if corp.get("tip") == "bunuri" else 5,
+                numar, "%s.%s.%s" % (_z, _l, _a), val, "RON", 1, tva,
+                tara_furnizor, cod_tva_furnizor, furnizor_nume or "", None, factura_id=fid)
         conn.commit()
     return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)}
 

@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**619 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**620 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 588
+### `core/` — 589
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9018,6 +9018,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d301_data_doc.py` — GARD: D301 data_doc emis in formatul OFICIAL ANAF ZZ.LL.AAAA (anaf_surse/d301_struct_anaf.txt poz.35, C(10)).
 - `core/test_d301_nr_doc_c20.py` — TURA 3 / T6: nr_doc > C(20) passthrough NETRUNCHIAT nicaieri (leak pur). DUK NU impune lungimea,
 - `core/test_d301_op_cere_neplatitor.py` — GARD (audit tenant_006): ecranul D301 (adauga operatiune -> d301_operatiuni) NU accepta operatiuni
+- `core/test_d301_op_unificat.py` — GARD: intrarea UNICA a achizitiei IC (achizitie-ic, DECIZII 66) nu dubleaza D390.
 - `core/test_d301_pers_inreg.py` — Gard pers_inreg (D301) — neconformitate: pers_inreg era hardcodat literal "1".
 - `core/test_d301_reconciliere.py` — core/test_d301_reconciliere.py — gardul A DOUA CALE D301 (10.08.2026).
 - `core/test_d301_rollup.py` — Regresie D301: serviciile intracomunitare (tip 5 = sectiunea 4.1) se preiau DIN sectiunea 4.

@@ -23,12 +23,12 @@ def select_firma_profil(cur, schema):
     return cur.fetchone()
 
 
-def insert_d301_operatiuni(cur, schema, an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, partener_tara, partener_cod, partener_den, temei_307):
+def insert_d301_operatiuni(cur, schema, an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, partener_tara, partener_cod, partener_den, temei_307, factura_id=None):
     cur.execute(f"""INSERT INTO {schema}.d301_operatiuni
                 (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
-                 partener_tara, partener_cod, partener_den, temei_307)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""", (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
-                     partener_tara, partener_cod, partener_den, temei_307))
+                 partener_tara, partener_cod, partener_den, temei_307, factura_id)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""", (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
+                     partener_tara, partener_cod, partener_den, temei_307, factura_id))
     return cur.fetchone()
 
 

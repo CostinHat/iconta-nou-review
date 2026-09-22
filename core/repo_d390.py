@@ -67,7 +67,8 @@ def select_2(cur, schema):
 
 def select_d301_operatiuni_2(cur, schema, an, luna):
     cur.execute(f"SELECT tip, val_valuta, curs, partener_tara, partener_cod, partener_den "
-                f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+                f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s AND factura_id IS NULL "
+                f"ORDER BY id", (an, luna))  # [DECIZII 66] op legata de factura -> D390 din factura
 
 
 def select_3(cur, schema):
@@ -77,7 +78,8 @@ def select_3(cur, schema):
 
 def select_d301_operatiuni_3(cur, schema, an, luna):
     cur.execute(f"SELECT tip, nr_doc, partener_tara, partener_cod, partener_den, temei_307 "
-                f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+                f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s AND factura_id IS NULL "
+                f"ORDER BY id", (an, luna))  # [DECIZII 66] op legata -> nu e exclusa, e in D390 din factura
 
 
 def select_4(cur, schema):

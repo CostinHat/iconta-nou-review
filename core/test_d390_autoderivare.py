@@ -42,7 +42,7 @@ def schema_d301():
                       'nr_doc text, data_doc text, tip_valuta text DEFAULT \'EUR\', tva numeric DEFAULT 0, '
                       'val_valuta numeric, curs numeric, partener_tara varchar(2) DEFAULT \'\', '
                       'partener_cod varchar(20) DEFAULT \'\', partener_den text DEFAULT \'\', '
-                      'temei_307 text)' % SCH)
+                      'temei_307 text, factura_id int)' % SCH)
     try:
         yield db
     finally:

@@ -3,6 +3,23 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 22.09.2026 (66) — achizitie-ic = intrarea UNICA pentru achizitii IC (F3 etapa 3)
+
+**Context.** Doua cai scriau achizitii IC: `d301-operatiuni` (D301+D390, fara nota) si
+`achizitie-ic` (factura+nota+D390, fara D301). Folosite pe aceeasi operatiune -> D390 dublu
+(d390.py:415 doar semnala). Pentru un neplatitor nicio cale nu dadea si D301 si nota corecta.
+
+**Decizie (Costin, 22.09.2026), varianta (a).** `achizitie-ic` devine intrarea UNICA: dintr-o
+singura introducere scrie factura + nota (payer-aware, DECIZII 65) + operatiunea D301
+corespunzatoare, LEGATA de factura (`d301_operatiuni.factura_id`). D390 ia achizitia din FACTURA
+(calea D390-din-op — `repo_d390.select_d301_operatiuni_2/_3` — filtreaza `factura_id IS NULL`),
+iar D301 o ia din operatiune (`calcul_d301` citeste toate op-urile). FARA dubla numarare in D390.
+Operatiunile introduse MANUAL pe ecranul D301 (fara factura) raman cu factura_id=NULL si
+alimenteaza D390 ca pana acum. Cele doua ecrane nu se mai folosesc impreuna pe aceeasi operatiune.
+
+**Schema.** `core/migrare_d301_op_factura.py` (ADD COLUMN factura_id, idempotent) + mirror in
+tenant_template.sql. Gard: `core/test_d301_op_unificat.py`.
+
 ## 22.09.2026 (65) — Contabilizarea IC (taxare inversa) constienta de platitor (F3 etapa 3)
 
 **Context (constatare Sesiunea B, F3).** `achizitie_ic` (uc_tenants) contabiliza orice achizitie
