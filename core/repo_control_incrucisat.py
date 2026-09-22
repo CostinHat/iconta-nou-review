@@ -168,7 +168,7 @@ def select_firma_profil(cur, schema):
 def select_inregistrari_6(cur, schema, data_de, data_pana):
     cur.execute(f"""
                     SELECT f.id, f.numar, f.directie, f.total, f.tva, f.tert_nume, f.data_emitere,
-                           c.cui AS c_cui, f.tert_cui,
+                           c.cui AS c_cui, f.tert_cui, f.axa_ic,
                            EXISTS (SELECT 1 FROM {schema}.inregistrari i
                                    WHERE i.factura_id = f.id AND i.status = 'validata') AS contabilizata,
                            EXISTS (SELECT 1 FROM {schema}.inregistrari ic

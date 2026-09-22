@@ -757,6 +757,11 @@ def facturi_ic(conn, schema, data_de, data_pana):
             tara = m.group(1)
             if tara == "RO" or tara not in TARI_UE:
                 continue
+            # [F3 etapa 7] doar BUNURI IC: D390 cod A e bunuri, serviciile IC (cod S, manual)
+            # sunt NEVERIFICATE aici (limita declarata). axa_ic='servicii' se exclude; bunuri +
+            # legacy NULL raman - altfel o factura de servicii IC umfla comparatia de bunuri.
+            if (r.get("axa_ic") or "").strip().lower() == "servicii":
+                continue
             if r["directie"] in out:
                 out[r["directie"]].append(dict(r))
     return out
