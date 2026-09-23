@@ -318,7 +318,7 @@ DECLARATII = {
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d104", "d110", "d220", "d221", "d223", "d230",
-                       "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
+                       "d393", "d395", "d397", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
                        "d101g", "d169", "d398", "d399", "d403", "d407", "d212"))
@@ -429,6 +429,15 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("beneficiari"):
             erori.append("D207 nu are ce genera: adaugă în formular cel puțin un beneficiar nerezident căruia "
                          "i-ai plătit venituri cu reținere la sursă (dividende, dobânzi, redevențe etc.).")
+
+    # d200 (venituri realizate din Romania, persoane fizice, MANUALA anuala): cere manual.sectiuni.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu sectiuni -> aici cade doar apelul API gol).
+    # Regulile pe categorie (venit_brut/chelt vs castig/pierdere, den_orgJN/cif_orgJN) le da d200.erori_generare.
+    if tip == "d200":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("sectiuni"):
+            erori.append("D200 nu are ce genera: adaugă în formular cel puțin o secțiune de venit "
+                         "(categoria de venit realizat + sumele).")
 
     # d104 (distribuire venituri asocieri, MANUALA trimestriala): cere trim + manual.asociati
     if tip == "d104":
