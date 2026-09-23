@@ -4,11 +4,11 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-23**, după **D212 în selector: comis `6a6be4ca`, LIVE (increment: identitate + fișă RIP)**.
-  Închise anterior: D200 LIVE (`ad548790`); F1-F5 cap-coadă + 300 ghiduri live. **Azi:** D200 (formular manual venituri PF)
-  + D212 (formular identitate PF + fișa RIP afișată; generează cazul minim DUK-valid), amândouă LIVE, four-way închis.
-  *Pentru un contabil: Declarațiile 200 și 212 sunt acum în selector. Vezi ISTORIC 23.09.*
-- **pe commit**: `6a6be4ca` (D212 comis + four-way închis: origin = public = backup = proces viu, 2/2 procese pe HEAD).
+- **ultima rescriere**: **2026-09-23**, după **două corecții fiscale de producție (IMCA 0,5% 2026 + câștig lichidare 10%)**,
+  comise `28bb92ad`. Anterior azi: D200 + D212 în selector (LIVE); D200/D212 UI (Task 2). **Corecțiile fiscale:** IMCA era
+  1% fix → 0,5% pentru 2026 (OUG 89/2025); câștigul din lichidare folosea greșit cota dividendelor (16%) → 10% fix
+  (CF art.97 alin.5). Verificate la sursă, cerute de Costin. *Pentru un contabil: D101/lichidare nu mai suprataxează.*
+- **pe commit**: `28bb92ad` (corecții fiscale + four-way închis: origin = public = backup = proces viu, 2/2 procese pe HEAD).
 - **URMĂTORUL FRONT: restul 8 D2xx** (D201/D204/D208/D216/D220/D221/D223/D230), SAU **D212 full-populat** (cap11/oblig_realizat
   din fișa RIP — R&D DUK necartografiat, v. „primul lucru"), apoi **F6** (TVA la încasare) **+ F7** (marjă second-hand).
   **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).

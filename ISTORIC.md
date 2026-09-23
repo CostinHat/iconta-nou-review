@@ -1,3 +1,28 @@
+## 23.09.2026 (târziu) — **două corecții fiscale de producție** (IMCA 0,5% 2026 + câștig lichidare 10%), comise `28bb92ad`
+
+**Pentru un contabil:** două cote greșite în calculul automat, care puteau umfla declarații D101 / note de lichidare
+reale, sunt corectate. Cerute de Costin, verificate la sursă înainte (Cod fiscal consolidat + ghiduri).
+
+1. **IMCA** (`core/d101.py`): cota era **1% fix**. OUG 89/2025 (MO 1203/24.12.2025) reduce cota IMCA de la 1% la
+   **0,5% pentru anul fiscal 2026** (CF art.18^1; aplicare până la 31.12.2026). Acum versionată pe an
+   (`_VARIANTE_COTA_IMCA`, Temei inline, tiparul `_VARIANTE_SCADENTA`): 1% până în 2025, 0,5% din 2026. Efect:
+   P47 pentru 2026 se înjumătățește (272M bază: 2.720.000 → 1.360.000).
+2. **Câștig din lichidare** (`core/lichidare.py`): impozitul pe câștigul din lichidare la asociat **PF** folosea
+   **greșit cota dividendelor** (art.97 alin.7, 16% din 2026). Temeiul corect e **CF art.97 alin.(5): cotă FIXĂ
+   10%**, impozit final — articol și cotă DISTINCTE de dividende; alin.(5) e neschimbat de Legea 141/2025 (care
+   a modificat alin.7=dividende). Verificat verbatim în codul consolidat (linia 9458) + ghidul de lichidare
+   (care documenta chiar el bug-ul). Efect: `partaj` reține 10% (nu 16%) — corectată o suprataxare de 60% din 2026.
+
+**Lecția (scrisă în [[doc-sync-cascada-la-schimbari-cod]]): o schimbare de cotă fiscală are o rază largă de
+doc-sync.** Poarta a respins de DOUĂ ori (7 apoi 2 gărzi) — fiecare o gardă de sincronizare a registrelor de
+temeiuri. Cea mai instructivă: **un articol CF NEMODIFICAT (art.97 alin.5) nu intră curat în `common.COTE`** —
+G1 (COTE+MO cere url) și convenția interdicției 50 (articol CF cere url ≠ codul fiscal) intră în conflict fiindcă
+nu există act modificator de citat. Soluția: cota ținută **inline** în modul (`_VARIANTE_...` cu Temei inline),
+ca IMCA. COTE rămâne pentru cote cu istoric de acte modificatoare (dividendele: L141/OUG156/OG16).
+
+Ghidul `calcul-venit-lichidare-societate.md` adus la zi: claimul „aplicația calculează cu cota dividendelor" →
+„aplică 10%"; rămâne consemnată limitarea PF/PJ (art.23 lit.j — asociatul PJ cu deținere nu e distins).
+
 ## 23.09.2026 (seara) — **D212 în selector** (a doua declarație D2xx din Task 2, increment, comisă `6a6be4ca`)
 
 **Pentru un contabil:** Declarația unică (D212) e acum în selectorul de declarații: se completează identitatea PF
