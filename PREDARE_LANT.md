@@ -4,13 +4,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-23**, după **Task 2 — D200 ÎNCHIS: comis `ad548790`, LIVE, four-way închis**.
-  Închise anterior: F1-F5 cap-coadă + 300 ghiduri live. **Azi:** D200 UI complet (formular + backend + gard + DUK-valid pe
-  F4), scan vizual verde pe 8011/iconta_test (ui_hash 58efd82c, 0 violări), **poarta verde (6423 passed)**, four-way închis.
-  *Pentru un contabil: Declarația 200 (venituri PF) e acum disponibilă în selector. Vezi ISTORIC 23.09.*
-- **pe commit**: `ad548790` (D200 comis + four-way închis: origin = public = backup = proces viu, 2/2 procese pe HEAD).
-- **URMĂTORUL FRONT: D212** (cea mai complexă declarație; pași în „primul lucru"), apoi
-  **restul 8 D2xx** (D201/D204/D208/D216/D220/D221/D223/D230), apoi **F6** (TVA la încasare) **+ F7** (marjă second-hand).
+- **ultima rescriere**: **2026-09-23**, după **D212 în selector: comis `6a6be4ca`, LIVE (increment: identitate + fișă RIP)**.
+  Închise anterior: D200 LIVE (`ad548790`); F1-F5 cap-coadă + 300 ghiduri live. **Azi:** D200 (formular manual venituri PF)
+  + D212 (formular identitate PF + fișa RIP afișată; generează cazul minim DUK-valid), amândouă LIVE, four-way închis.
+  *Pentru un contabil: Declarațiile 200 și 212 sunt acum în selector. Vezi ISTORIC 23.09.*
+- **pe commit**: `6a6be4ca` (D212 comis + four-way închis: origin = public = backup = proces viu, 2/2 procese pe HEAD).
+- **URMĂTORUL FRONT: restul 8 D2xx** (D201/D204/D208/D216/D220/D221/D223/D230), SAU **D212 full-populat** (cap11/oblig_realizat
+  din fișa RIP — R&D DUK necartografiat, v. „primul lucru"), apoi **F6** (TVA la încasare) **+ F7** (marjă second-hand).
   **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
@@ -23,27 +23,29 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **D200 LIVE (`ad548790`); URMĂTORUL FRONT e D212 (cea mai complexă declarație)**
+## PRIMUL LUCRU DE ȘTIUT: **D200 + D212 în selector (LIVE); URMĂTORUL FRONT = restul D2xx sau D212 full-populat**
 
-**STARE (23.09.2026, HEAD `ad548790`, tree curat pe D200):** D200 (venituri PF) e comis și **LIVE** — apare în selectorul
-de declarații; contabilul o poate genera. Task 2 (UI declarații D2xx PFA) continuă cu **D212** — Declarația unică, cea mai
-complexă (NS v11, root `<d212>`).
+**STARE (23.09.2026, HEAD `6a6be4ca`, tree curat):** D200 (venituri PF) și D212 (Declarația unică) sunt comise și **LIVE** —
+apar în selectorul de declarații. D212 e un **increment** (decizie Costin): identitate PF + fișa RIP afișată informativ +
+generare a cazului minim DUK-valid. Popularea capitolelor D212 (cap11/oblig_realizat) rămâne backlog R&D — v. mai jos.
 
-**CUM E FĂCUT D200 (tiparul de replicat — „proof-of-pattern"):** backend = scos din `_DOAR_API` (intră în selector) + bloc
-`valideaza_cerere` cu mesaj de contabil; frontend `static/js/ecrane/declaratii.js` = formular-listă (model d207): stare
-`S.d200` în memorie, `_d200Manual()` (construiește `body.manual`), `randeazaFormularD200()` (identitate + secțiuni pe
-categorie + câmpuri condiționate pe categorie); gard structural `core/test_d200_formular.py` (ElementTree, nu „șir" in xml);
-probă F4 `frontend_test/proba_d200_f4.py`.
+**CUM E FĂCUT (tiparul „proof-of-pattern", identic D200 și D212):** backend = scos din `_DOAR_API` (intră în selector) + bloc
+`valideaza_cerere` cu mesaj de contabil; frontend `static/js/ecrane/declaratii.js` = stare `S.d2xx` în memorie, `_d2xxManual()`
+(construiește `body.manual`), `randeazaFormularD2xx()`; gard structural `core/test_d2xx_formular.py` (ElementTree, nu „șir" in
+xml); probă F4 `frontend_test/proba_d2xx_f4.py`; rând FUNCTIONALITATI.csv → LIVE (regula 9: în selector ⇒ LIVE; flip-ul poate
+duce declarația în `login.js` GRUPE_FUNC → `genereaza_grupe_functii.py --scrie`, apoi versioneaza + re-scan).
 
-**D212 — ce cere (verificat la sursă, nu ghicit):** declarație MANUALĂ (`d212.genereaza(conn, schema, Perioada(an),
-manual)`; `pull` întoarce `{}` — firma n-are registru de PF). Cazul minim DUK-valid (identitate `cif`+`nume_c`+`adresa_c` +
-toate bifele 0; `totalPlata_A` = suma cifrelor CNP când nu-i nimic de plată) e **deja implementat și probat** în motor.
-Formularul corect **trage fișa RIP** (`GET /tenants/{id}/rip/d212/{an}` → `rip_api.fisa_d212`:
-venit_brut/venit_net/`cas`/`cass`/impozit, **DOAR anii verificați 2025/2026** — `d212_engine.ANI_VERIFICATI`) și mapează în
-**cap11** (venit_brut, chelt_deduc, venit_net_anual, impozit11) + **oblig_realizat** (~90 câmpuri: cas_baza, cas_datorat,
-cass_baza, cass_datorat, dif_de_plata…). **Valorile vin din fișă (motorul de plafoane verificat la sursă); structura o
-arbitrează DUK — NU se ghicesc valori/câmpuri.** Scrie așteptări ÎNAINTE (regula bazei nule). Probă F4 (tenant_052 are date
-RIP). Apoi **restul 8 D2xx**, apoi **F6 + F7**.
+**D212 — CE E FĂCUT:** formular identitate (`S.d212` = cif/nume_c/adresa_c/d_rec) + buton „Trage fișa RIP" (`GET
+/tenants/{id}/rip/d212/{an}` → afișează venit_net/CAS/CASS/impozit informativ) + generează cazul minim DUK-valid (identitate +
+bife 0; `totalPlata_A` = suma cifrelor CNP). Probat: DUK `valid` pe F4 (tenant_052). Gard `core/test_d212_formular.py`, probă
+`frontend_test/proba_d212_f4.py`, ajutor „?" = F030 (Motor D212).
+
+**D212 — CE RĂMÂNE (full-populat, R&D DUK NECARTOGRAFIAT):** popularea `cap11` (sistem real) + `oblig_realizat` (CAS/CASS) din
+fișa RIP. Motorul (`core/d212.py`) e **extensibil** — `build_xml` emite din `manual[cap]` ∩ `_CAMPURI[cap]`; doar UI-ul
+furnizează dict-ul. Primele constrângeri DUK, probate (`/tmp/duk_probe_d212.py`): cazul identitate = **valid**; `cap11`
+populat → **`categ_venit '1' nu se află în listă`** (nomenclatorul cap11 ≠ D200, nu-i în `anaf_surse`, doar în bytecode-ul
+`D212Validator.jar`); cu obligații → **R4** cere `totalPlata_A` = suma sumelor „de plată" (câmpurile „de plată" + maparea
+bifă↔capitol de cartografiat). Extragere din bytecode / probe DUK iterative. Apoi **restul 8 D2xx**, apoi **F6 + F7**.
 
 **SCANUL VIZUAL — cum se rulează (REZOLVAT 23.09; contează la FIECARE editare de JS):** o editare de JS mută `ui_hash()`
 GLOBAL, deci pică **TREI** gărzi de prospețime, fiecare cu artefactul ei — `test_acoperire_vizuala`

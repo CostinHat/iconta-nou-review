@@ -1,3 +1,29 @@
+## 23.09.2026 (seara) — **D212 în selector** (a doua declarație D2xx din Task 2, increment, comisă `6a6be4ca`)
+
+**Pentru un contabil:** Declarația unică (D212) e acum în selectorul de declarații: se completează identitatea PF
+(CNP/nume/adresă), se poate „trage fișa RIP" (venit net + CAS/CASS + impozit din registrul de încasări/plăți, informativ),
+și se generează declarația de identificare. Producția a trecut de la `ad548790` la `6a6be4ca`.
+
+**Ce s-a făcut (tehnic).** Task 2, a doua declarație: **D212** (increment, decizie Costin — NU full-populat). Pe tiparul D200:
+`d212` scos din `_DOAR_API`; formular `S.d212` (identitate) + `_d212Manual()` + `randeazaFormularD212()` (identitate +
+„Trage fișa RIP" afișată informativ); generează cazul minim DUK-valid (identitate + bife 0; `totalPlata_A` = suma cifrelor
+CNP, DUK regula R4).
+- **DUK `valid` pe F4** (tenant_052): `frontend_test/proba_d212_f4.py` — gol refuzat, identitate → DUK valid; fișa RIP citită (0 pe F4, fără operațiuni RIP).
+- **Gard** `core/test_d212_formular.py` (4 teste structurale, ElementTree). FUNCTIONALITATI.csv: F246 AMANAT → LIVE. Ajutor „?" = F030 (Motor D212).
+- **Poarta verde: 6429 passed**, verificator TOTAL 0, four-way închis (`6a6be4ca`).
+
+**Trei respingeri de poartă, fiecare o cascadă doc-sync** (poarta a avut dreptate de fiecare dată):
+1. `ui_hash` GLOBAL → 3 probe stale (`test_asistent_arbore` + `test_declaratii_50`, nu doar scanul vizual) → re-rulat toate 3.
+2. `test_live_accesibil` (regula 9): declarație în selector ⇒ rândul CSV trebuie LIVE → F246 flip-uit. Plus `test_temeiuri`:
+   „regula R4" în `core/*.py` cere prefixul canonic „DUK regula".
+3. Verificator GRUPE_FUNC: flip-ul LIVE a dus D212 în grupele publice (`login.js`) → `genereaza_grupe_functii.py --scrie`
+   (Fiscalitate 32→33, total 152) → versioneaza (`app.js` ?v=) → **al treilea re-scan** al celor 3 probe.
+*Lecția: un flip AMANAT→LIVE nu e o schimbare de o linie — cascadează prin selector, grupe publice (login.js), ?v= și cele 3
+artefacte ui_hash. Scris acum în PREDARE „primul lucru".*
+
+**D212 full-populat (cap11/oblig_realizat din fișa RIP) rămâne backlog R&D DUK necartografiat** (categ_venit cap11 ≠ D200 -
+doar în bytecode-ul validatorului; R4 cu obligații; ~90 câmpuri) — v. PREDARE „primul lucru" + `/tmp/duk_probe_d212.py`.
+
 ## 23.09.2026 — **D200 e LIVE** (prima declarație D2xx PFA din Task 2, comisă `ad548790`)
 
 **Pentru un contabil:** Declarația 200 (veniturile realizate din România de persoane fizice) e acum **disponibilă** în
