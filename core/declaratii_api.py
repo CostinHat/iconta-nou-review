@@ -318,7 +318,7 @@ DECLARATII = {
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d104", "d110", "d220", "d221", "d223", "d230",
-                       "d393", "d395", "d397", "d201", "d204", "d208", "d216", "d120", "d600",
+                       "d393", "d395", "d397", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
                        "d101g", "d169", "d398", "d399", "d403", "d407"))
@@ -449,6 +449,15 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not (m.get("nume_c") and m.get("adresa_c") and m.get("cif")):
             erori.append("D212 nu are ce genera: completează în formular datele de identificare ale "
                          "persoanei fizice (CNP, nume și adresă).")
+
+    # d201 (venituri realizate din strainatate, persoane fizice, MANUALA anuala): cere identitate + sectiuni.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu identitatea + sectiuni -> aici cade doar apelul API gol).
+    # Regulile pe sectiune (pereche tara/categorie unica, imp2 doar la categ=14, categ=23 net-only) le da d201.erori_generare.
+    if tip == "d201":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not (m.get("nume_c") and m.get("cif_c")) or not m.get("sectiuni"):
+            erori.append("D201 nu are ce genera: completează identitatea persoanei fizice (CNP, nume) și adaugă "
+                         "cel puțin o secțiune de venit (o pereche țară + categorie de venit).")
 
     # d104 (distribuire venituri asocieri, MANUALA trimestriala): cere trim + manual.asociati
     if tip == "d104":

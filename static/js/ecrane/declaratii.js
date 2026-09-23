@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -63,6 +63,9 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // (pull din registru; venitul/CAS/CASS/impozit — informativ). Increment: genereaza cazul minim
     // DUK-valid (identitate); popularea cap11/oblig_realizat din fisa = pas urmator. In memorie, ca d200.
     d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, fisa: null, fisa_eroare: "" },
+    // [formular_manual_d201] venituri din strainatate PF: identitate (CNP/nume/initiala tata/prenume) +
+    // sectiuni pe (tara, categorie) - venit_B/chlt_D/imp1/imp2/pierdere; venit_N calculat. In memorie, ca d200.
+    d201: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", d_rec: 0, sectiuni: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -213,6 +216,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d207") body.manual = _d207Manual();              // [formular_manual_d207] beneficiarii nerezidenti din memorie
   if (S.tip === "d200") body.manual = _d200Manual();              // [formular_manual_d200] sectiunile de venit din memorie
   if (S.tip === "d212") body.manual = _d212Manual();              // [formular_manual_d212] identitatea PF din memorie
+  if (S.tip === "d201") body.manual = _d201Manual();              // [formular_manual_d201] identitate + sectiuni strainatate
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -235,6 +239,7 @@ async function pas2(corp, nav) {
       ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
     ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
+    ${S.tip === "d201" ? '<div id="dec-d201-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -248,6 +253,7 @@ async function pas2(corp, nav) {
     if (S.tip === "d207") randeazaFormularD207(corp, nav);
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
   if (S.tip === "d212") randeazaFormularD212(corp, nav);
+  if (S.tip === "d201") randeazaFormularD201(corp, nav);
     return;
   }
 
@@ -289,6 +295,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
     ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
+    ${S.tip === "d201" ? '<div id="dec-d201-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -331,6 +338,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d207") randeazaFormularD207(corp, nav);
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
   if (S.tip === "d212") randeazaFormularD212(corp, nav);
+  if (S.tip === "d201") randeazaFormularD201(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -1166,6 +1174,126 @@ function randeazaFormularD200(corp, nav) {
     salveazaAntet();
     if (!(S.d200.sectiuni || []).length) {
       eroareCamp(zona, "d200-categ", "Adaugă cel puțin o secțiune de venit (butonul + adaugă). D200 nu se depune fără venituri.");
+      return;
+    }
+    pas2(corp, nav);
+  });
+}
+
+// tip==="d201" (venituri din strainatate PF, anuala). Formular-LISTA de sectiuni pe (tara, categorie de
+// venit), model d200: identitate (CNP/nume/initiala tata/prenume) + cate o sectiune per pereche. Valorile
+// numerice vin de la contabil (aplicatia n-are registrul veniturilor externe); venit_N = venit_B - chlt_D
+// calculat; DUK + d201.erori_generare arbitreaza. Reguli: categ=23 = doar venit net (venit_B/chlt_D=0);
+// imp2 (impozit salarii) doar la categ=14; perechea (tara, categorie) unica. Sume in LEI intregi.
+function _d201EsteSalarii(c) { return String(c) === "14"; }
+function _d201NetOnly(c) { return String(c) === "23"; }
+
+function _d201Manual() {
+  const d = S.d201 || {};
+  return {
+    cif_c: (d.cif_c || "").replace(/\s+/g, ""),
+    nume_c: (d.nume_c || "").trim(),
+    initiala_c: (d.initiala_c || "").trim(),
+    prenume_c: (d.prenume_c || "").trim(),
+    d_rec: d.d_rec ? 1 : 0,
+    sectiuni: (d.sectiuni || []).map((s) => ({
+      categ_venit: s.categ_venit, statul: s.statul,
+      venit_B: s.venit_B || 0, chlt_D: s.chlt_D || 0, venit_N: s.venit_N || 0,
+      imp1: s.imp1 || 0, imp2: s.imp2 || 0,
+    })),
+  };
+}
+
+function randeazaFormularD201(corp, nav) {
+  const zona = corp.querySelector("#dec-d201-form");
+  if (!zona) return;
+  const d = S.d201;
+  const sec = d.sectiuni || [];
+  let totalNet = 0, totalImp = 0;
+  const grila = sec.length
+    ? sec.map((s, i) => {
+        const c = String(s.categ_venit);
+        const vn = _d201NetOnly(c) ? Math.round(_n(s.venit_N) || 0)
+          : Math.max(0, Math.round(_n(s.venit_B) || 0) - Math.round(_n(s.chlt_D) || 0));
+        const im = Math.round(_n(s.imp1) || 0) + Math.round(_n(s.imp2) || 0);
+        totalNet += vn; totalImp += im;
+        return '<div class="dec-man-rand"><span class="dec-recl-desc">categ. ' + esc(c) + " · țara " + esc(String(s.statul)) +
+          " · venit net " + bani(vn) + (im > 0 ? (" · impozit " + bani(im)) : "") + " lei</span>" +
+          '<button class="btn-link dec-d201-del" data-idx="' + i + '">șterge</button></div>';
+      }).join("")
+    : '<div class="stare-goala stare-goala--inline">Nicio secțiune. D201 declară veniturile din străinătate pe perechi (țară, categorie de venit) — adaugă mai jos fiecare pereche.</div>';
+  zona.innerHTML = '<details class="dec-xml" open><summary>Contribuabil + secțiuni de venit din străinătate (' + sec.length + ")</summary>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">CNP contribuabil <span class="oblig">*</span></span><input id="d201-cnp" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d201-nume" type="text" class="camp-input" value="' + esc(d.nume_c || "") + '"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Inițiala tată <span class="oblig">*</span></span><input id="d201-init" type="text" maxlength="1" class="camp-input" value="' + esc(d.initiala_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Prenume <span class="oblig">*</span></span><input id="d201-pren" type="text" class="camp-input" value="' + esc(d.prenume_c || "") + '"></label>' +
+      '<label class="set-bifa"><input id="d201-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '> <span>Rectificativă</span></label>' +
+    "</div>" + grila +
+    '<div class="camp-eticheta" style="margin:12px 0 4px">Adaugă secțiune (o pereche țară + categorie):</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Categorie venit <span class="oblig">*</span></span><input id="d201-categ" type="number" step="1" min="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Țară (cod numeric) <span class="oblig">*</span></span><input id="d201-tara" type="number" step="1" min="1" class="camp-input"></label>' +
+      '<label class="camp d201-vb" style="width:140px"><span class="camp-eticheta">Venit brut (lei)</span><input id="d201-vb" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp d201-vb" style="width:140px"><span class="camp-eticheta">Cheltuieli (lei)</span><input id="d201-ch" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp d201-vn" style="width:140px"><span class="camp-eticheta">Venit net (lei)</span><input id="d201-vn" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit străinătate (lei)</span><input id="d201-imp1" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp d201-imp2" style="width:140px"><span class="camp-eticheta">Impozit salarii (lei)</span><input id="d201-imp2" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d201-add">+ adaugă</button>' +
+    "</div>" +
+    '<p class="camp-ajutor" id="d201-nota" style="margin:4px 0 0">Coduri oficiale ANAF (D201). Țara = cod ISO-3166 numeric (ex. Germania 276, Franța 250, Italia 380, Austria 40, Spania 724). Categorie 23 = doar venit net; categorie 14 (salarii) = admite impozit pe salarii.</p>' +
+    '<div id="d201-msg"></div>' +
+    '<p class="camp-ajutor" id="d201-totaluri" style="margin-top:8px">' + sec.length + " secțiune(i) · venit net total: <b>" + totalNet + "</b> lei · impozit total: <b>" + totalImp + "</b> lei — creditul fiscal extern îl stabilește ANAF, nu se fabrică aici.</p>" +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d201-regen">Regenerează D201</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveazaAntet = () => {
+    S.d201.cif_c = gv("#d201-cnp").value.trim();
+    S.d201.nume_c = gv("#d201-nume").value.trim();
+    S.d201.initiala_c = gv("#d201-init").value.trim();
+    S.d201.prenume_c = gv("#d201-pren").value.trim();
+    S.d201.d_rec = gv("#d201-rec").checked ? 1 : 0;
+  };
+  ["#d201-cnp", "#d201-nume", "#d201-init", "#d201-pren"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  gv("#d201-rec").addEventListener("change", salveazaAntet);
+  const reflCateg = () => {
+    const c = gv("#d201-categ").value, net = _d201NetOnly(c), sal = _d201EsteSalarii(c);
+    zona.querySelectorAll(".d201-vb").forEach((e) => { e.style.display = net ? "none" : ""; });
+    zona.querySelectorAll(".d201-vn").forEach((e) => { e.style.display = net ? "" : "none"; });
+    zona.querySelectorAll(".d201-imp2").forEach((e) => { e.style.display = sal ? "" : "none"; });
+  };
+  gv("#d201-categ").addEventListener("change", reflCateg);
+  reflCateg();
+  zona.querySelectorAll(".dec-d201-del").forEach((b) => b.addEventListener("click", () => {
+    S.d201.sectiuni.splice(parseInt(b.dataset.idx), 1); randeazaFormularD201(corp, nav);
+  }));
+  gv("#d201-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const c = gv("#d201-categ").value.trim(), tara = gv("#d201-tara").value.trim();
+    const err = [];
+    if (!c) err.push(["d201-categ", "Completează categoria de venit."]);
+    if (!tara) err.push(["d201-tara", "Completează codul de țară (ISO-3166 numeric)."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    const net = _d201NetOnly(c), sal = _d201EsteSalarii(c);
+    const s = { categ_venit: parseInt(c, 10), statul: parseInt(tara, 10),
+      imp1: Math.round(_n(gv("#d201-imp1").value) || 0) };
+    if (net) {
+      s.venit_N = Math.round(_n(gv("#d201-vn").value) || 0); s.venit_B = 0; s.chlt_D = 0;
+    } else {
+      s.venit_B = Math.round(_n(gv("#d201-vb").value) || 0);
+      s.chlt_D = Math.round(_n(gv("#d201-ch").value) || 0);
+    }
+    if (sal) s.imp2 = Math.round(_n(gv("#d201-imp2").value) || 0);
+    salveazaAntet();
+    S.d201.sectiuni.push(s);
+    randeazaFormularD201(corp, nav);
+  });
+  gv("#d201-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveazaAntet();
+    if (!(S.d201.sectiuni || []).length) {
+      eroareCamp(zona, "d201-categ", "Adaugă cel puțin o secțiune de venit (butonul + adaugă). D201 nu se depune fără venituri.");
       return;
     }
     pas2(corp, nav);
