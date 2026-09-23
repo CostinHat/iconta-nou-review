@@ -4,14 +4,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-22**, după **SESIUNEA B — F1-F5 COMPLETE (cap-coadă) + 300 ghiduri prin poarta v1**.
-  Închise: F1-F2 (1-8); F3 (1-8: IC unificat pe `achizitie-ic` + 3 bug-uri de flux reparate); F4 (PFA sistem real,
-  D212 live: venit_net 70000 → impozit 5085, total datorat 24235); F5 (SRL salariați, D112 DUK-valid + REGES structural [EXTERN]).
-  300 ghiduri live (297 batch + 3 acte aduse la sursă: OUG 25/2018, OG 11/2022). *Rescriere țintită: antet + „primul lucru" + eticheta F3.*
-- **pe commit**: `361db59c` (ultimul four-way). *Handoff-ul task 2 se publică peste el.*
-- **URMĂTORUL FRONT (task 2 — sesiune PROASPĂTĂ; decizie Costin: miza fiscală D212 cere focus de la început, nu de la commit-ul 14)**:
-  **UI pentru cele 10 declarații D2xx PFA → LIVE**, începând cu **D212 + D200** (proof-of-pattern complet), apoi restul 8;
-  **apoi F6** (SRL plătitor TVA la încasare) **+ F7** (regim special marjă second-hand).
+- **ultima rescriere**: **2026-09-23**, după **Task 2 — D200 ÎNCHIS: comis `ad548790`, LIVE, four-way închis**.
+  Închise anterior: F1-F5 cap-coadă + 300 ghiduri live. **Azi:** D200 UI complet (formular + backend + gard + DUK-valid pe
+  F4), scan vizual verde pe 8011/iconta_test (ui_hash 58efd82c, 0 violări), **poarta verde (6423 passed)**, four-way închis.
+  *Pentru un contabil: Declarația 200 (venituri PF) e acum disponibilă în selector. Vezi ISTORIC 23.09.*
+- **pe commit**: `ad548790` (D200 comis + four-way închis: origin = public = backup = proces viu, 2/2 procese pe HEAD).
+- **URMĂTORUL FRONT: D212** (cea mai complexă declarație; pași în „primul lucru"), apoi
+  **restul 8 D2xx** (D201/D204/D208/D216/D220/D221/D223/D230), apoi **F6** (TVA la încasare) **+ F7** (marjă second-hand).
   **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
@@ -24,21 +23,40 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **SESIUNEA B — F1-F5 COMPLETE; URMĂTORUL = task 2 (UI declarații D2xx PFA), apoi F6/F7**
+## PRIMUL LUCRU DE ȘTIUT: **D200 LIVE (`ad548790`); URMĂTORUL FRONT e D212 (cea mai complexă declarație)**
 
-**STARE LA /CLEAR (22.09.2026, HEAD `361db59c`, four-way închis, tree curat):** F1-F5 complete cap-coadă (declarații
-DUK-valid; F4=PFA D212 live, F5=SRL salariați D112 + REGES structural [EXTERN]). 300 ghiduri live prin poarta v1.
-**URMĂTORUL = TASK 2 (sesiune proaspătă, decizie Costin): construiește UI pentru cele 10 declarații D2xx PFA → LIVE.**
-Motiv: sunt promise pe pagina publică de funcționalități, dar sunt `declaratii_api._DOAR_API` (API-only, fără ecran în
-selector), iar `test_live_accesibil` INTERZICE Stare LIVE pentru ce nu e în selector. Motoarele sunt gata + DUK-testate +
-confirmate pe F4 (D212 live). TIPARUL (ca la d207/d107/d177), per declarație: (a) formular manual în
-`static/js/ecrane/declaratii.js` (`S.dXXX` + `randeazaFormulardXXX` + `_dXXXManual()` → `body.manual`); (b) scoate tipul
-din `_DOAR_API` (core/declaratii_api.py) → intră în `tipuri()`/selector; (c) Stare→LIVE + `functionalitate`/`ghid_slug`
-back-link în FUNCTIONALITATI.csv; (d) gard structural + validare DUK pe F4 (tenant_052). **Începe cu D212 + D200** (cele
-mai folosite; D212 = cel mai complex — `_CAMPURI` cap11/12/14/oblig_estimat/oblig_realizat, zeci de câmpuri), validează
-tiparul complet pe astea două, apoi restul 8 într-o singură trecere. Cele 10: D200/201/204/208/216/212 + D220/221/223/230.
-(D213/D214 rămân AMÂNATE — entitate specială, nu PFA.) **Apoi F6 + F7.** O sesiune nouă citește: acest fișier →
-CLAUDE.md §2.2/§2.3 → ARHITECT.md „FORMA COMENZII". Ritual de început (§5): `pwd; hostname; git log --oneline -1` + `core.agenda`.
+**STARE (23.09.2026, HEAD `ad548790`, tree curat pe D200):** D200 (venituri PF) e comis și **LIVE** — apare în selectorul
+de declarații; contabilul o poate genera. Task 2 (UI declarații D2xx PFA) continuă cu **D212** — Declarația unică, cea mai
+complexă (NS v11, root `<d212>`).
+
+**CUM E FĂCUT D200 (tiparul de replicat — „proof-of-pattern"):** backend = scos din `_DOAR_API` (intră în selector) + bloc
+`valideaza_cerere` cu mesaj de contabil; frontend `static/js/ecrane/declaratii.js` = formular-listă (model d207): stare
+`S.d200` în memorie, `_d200Manual()` (construiește `body.manual`), `randeazaFormularD200()` (identitate + secțiuni pe
+categorie + câmpuri condiționate pe categorie); gard structural `core/test_d200_formular.py` (ElementTree, nu „șir" in xml);
+probă F4 `frontend_test/proba_d200_f4.py`.
+
+**D212 — ce cere (verificat la sursă, nu ghicit):** declarație MANUALĂ (`d212.genereaza(conn, schema, Perioada(an),
+manual)`; `pull` întoarce `{}` — firma n-are registru de PF). Cazul minim DUK-valid (identitate `cif`+`nume_c`+`adresa_c` +
+toate bifele 0; `totalPlata_A` = suma cifrelor CNP când nu-i nimic de plată) e **deja implementat și probat** în motor.
+Formularul corect **trage fișa RIP** (`GET /tenants/{id}/rip/d212/{an}` → `rip_api.fisa_d212`:
+venit_brut/venit_net/`cas`/`cass`/impozit, **DOAR anii verificați 2025/2026** — `d212_engine.ANI_VERIFICATI`) și mapează în
+**cap11** (venit_brut, chelt_deduc, venit_net_anual, impozit11) + **oblig_realizat** (~90 câmpuri: cas_baza, cas_datorat,
+cass_baza, cass_datorat, dif_de_plata…). **Valorile vin din fișă (motorul de plafoane verificat la sursă); structura o
+arbitrează DUK — NU se ghicesc valori/câmpuri.** Scrie așteptări ÎNAINTE (regula bazei nule). Probă F4 (tenant_052 are date
+RIP). Apoi **restul 8 D2xx**, apoi **F6 + F7**.
+
+**SCANUL VIZUAL — cum se rulează (REZOLVAT 23.09; contează la FIECARE editare de JS):** o editare de JS mută `ui_hash()`
+GLOBAL, deci pică **TREI** gărzi de prospețime, fiecare cu artefactul ei — `test_acoperire_vizuala`
+(`acoperire_vizuala.json`), `test_asistent_arbore` (`proba_r175_arbore_asistent.json`), `test_declaratii_50`
+(`proba_decl50.json`). Se re-rulează pe **8011/iconta_test** (NU 8010/prod: conturile de test patron/fir-intrare nu-s în
+prod; NU 8011 cu doar `test.env`: n-are `JWT_SECRET`). Rețeta, ca script cu trap: `set -a; . ~/.iconta/test.env;
+. ~/.iconta/api_keys.env; set +a; unset BREVO_API_KEY; export PYTHONPATH=$PWD PROBA_BAZA=http://127.0.0.1:8011` →
+`publica_static.py --din-arbore` (prod 8010 expus temporar) → pornește `uvicorn main:app --port 8011` (așteaptă 200) →
+`interactiune_scan.py` + `proba_r175_arbore_asistent.py` + `proba_decl50.py` → `curata_proba_ecrane.py` →
+`publica_static.py` (republică HEAD) → **kill 8011 pe PID** (nu `pkill -f` — își omoară shell-ul ssh). Cele trei artefacte
+se comit cu lucrul. *Poarta rulează pe iconta_test, deci scanul TREBUIE să vadă acolo conturile.*
+
+O sesiune nouă citește: acest fișier → CLAUDE.md §2.2/§2.3 → ARHITECT.md „FORMA COMENZII". Ritual de început (§5): `pwd; hostname; git log --oneline -1` + `core.agenda`.
 
 **F3 — ÎNCHIS (etapele 1-8)** · istoric mecanism IC (SRL, **neplătitor TVA + art.317**, **micro 1%** [2026, NU 3% — OUG 89/2025 a abrogat 3%,
 decizie Costin 21.09]; tenant_051, Cabinet A). Testează UNIC **D301** (achiziții IC + servicii UE), **D390**, **taxare inversă**.

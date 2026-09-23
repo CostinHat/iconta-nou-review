@@ -1,3 +1,31 @@
+## 23.09.2026 — **D200 e LIVE** (prima declarație D2xx PFA din Task 2, comisă `ad548790`)
+
+**Pentru un contabil:** Declarația 200 (veniturile realizate din România de persoane fizice) e acum **disponibilă** în
+selectorul de declarații — se poate completa (identitate + secțiuni pe categorie de venit) și genera. Producția a trecut
+de la `4641e568` la `ad548790` (four-way închis).
+
+**Ce s-a făcut (tehnic).** Task 2 (UI pentru declarațiile D2xx PFA), prima declarație: **D200**. Comis `ad548790`, LIVE.
+- **Formular manual** în `static/js/ecrane/declaratii.js`: identitate PF (nume + prenume **separat** — validatorul
+  respinge `prenume_c` vid) + secțiuni pe categorie de venit. Nomenclatorul `categ_venit` (1,2,3,4,5,7,9,10,13,14) adus
+  de la **sursa oficială ANAF** (`structura_D200`), nu ghicit — validatorul acceptă doar codul numeric. Reguli pe
+  categorie: 14=câștig/pierdere, 13=jocuri de noroc (cere organizator).
+- **Backend:** d200 scos din `_DOAR_API` (intră în selectorul de declarații) + bloc de validare (gol → mesaj de contabil).
+- **DUK-valid pe F4** (tenant_052): `frontend_test/proba_d200_f4.py` — apel gol refuzat, generat (venit net 70000), DUK `valid`.
+- **Gard** `core/test_d200_formular.py` (6 teste structurale, ElementTree) + cascada doc-sync (pagina publică, GARZI.md, `?v=`).
+- **Poarta verde: 6423 passed**, four-way închis (origin=public=backup=proces viu, 2/2 procese pe `ad548790`).
+
+**Trei lecții din închidere (merită păstrate).**
+- **Calea scanului vizual, rezolvată (decizie Costin).** Scanul nu putea rula pe 8010/prod: conturile de test
+  (`patron@prisma-cont.test`, `fir-intrare@prisma-cont.test`) NU există în producție (`patron` face `w_auth` să pice la
+  import; `fir-intrare` din `fe_test.env` dă 401 pe prod). Nici 8011 cu doar `test.env` (n-are `JWT_SECRET`). Soluția:
+  **8011 pe iconta_test cu `test.env` (DB) + `api_keys.env` (JWT)** — mediul nativ al scanului (conturi + JWT). Rețeta e în
+  PREDARE_LANT.md „primul lucru".
+- **`ui_hash()` e GLOBAL** — o editare de JS face stale **trei** artefacte de probă, nu unul: `acoperire_vizuala.json`,
+  `proba_decl50.json`, `proba_r175_arbore_asistent.json`. Prima poartă a picat pe ultimele două (`test_asistent_arbore`,
+  `test_declaratii_50`) fiindcă re-rulasem doar scanul vizual. Reparat re-rulând toate trei pe 8011.
+- **Operațional (prod curat acum):** o publicare din arbore pe prod (restaurată la HEAD prin trap) + un `pkill -f` (evitat
+  acum: kill pe PID). Prod verificat: static=`ad548790`, 8010=200.
+
 ## 20.09.2026 — SESIUNEA B: Faza 0 (curățenie prod) + F1 etapele 1-2 prin interfață
 
 **Pentru un contabil:** portofoliul de test a fost șters complet (clean slate), păstrând doar contul de
