@@ -4,12 +4,14 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-23**, după **două corecții fiscale de producție (IMCA 0,5% 2026 + câștig lichidare 10%)**,
-  comise `28bb92ad`. Anterior azi: D200 + D212 în selector (LIVE); D200/D212 UI (Task 2). **Corecțiile fiscale:** IMCA era
-  1% fix → 0,5% pentru 2026 (OUG 89/2025); câștigul din lichidare folosea greșit cota dividendelor (16%) → 10% fix
-  (CF art.97 alin.5). Verificate la sursă, cerute de Costin. *Pentru un contabil: D101/lichidare nu mai suprataxează.*
-- **pe commit**: `28bb92ad` (corecții fiscale + four-way închis: origin = public = backup = proces viu, 2/2 procese pe HEAD).
-- **URMĂTORUL FRONT: restul 8 D2xx** (D201/D204/D208/D216/D220/D221/D223/D230), SAU **D212 full-populat** (cap11/oblig_realizat
+- **ultima rescriere**: **2026-09-23**, după **D201 în selector: comis `c7f94f22`, LIVE (a treia D2xx din Task 2)**.
+  Anterior azi: D200 + D212 în selector; corecțiile fiscale IMCA 0,5%/2026 + câștig lichidare 10% (`28bb92ad`). **D201:**
+  formular identitate PF + secțiuni pe (țară, categorie) — coduri introduse de contabil (categ_venit + țări ISO numerice
+  sunt în bytecode-ul validatorului), DUK-valid. *Pentru un contabil: Declarația 201 (venituri din străinătate) e în selector.*
+- **pe commit**: `c7f94f22` (D201 comis; four-way închis MANUAL după un push GitHub eșuat tranzitoriu «Internal Server Error»
+  — origin/main + backup re-împinse; toate brațele = HEAD. *Lecție: un push automat poate eșua pe eroare de server GitHub;
+  se reîncearcă `git push origin HEAD:main` + `HEAD:backup/lant-<zi>`, R176.*).
+- **URMĂTORUL FRONT: restul 7 D2xx** (D204/D208/D216/D220/D221/D223/D230), SAU **D212 full-populat** (cap11/oblig_realizat
   din fișa RIP — R&D DUK necartografiat, v. „primul lucru"), apoi **F6** (TVA la încasare) **+ F7** (marjă second-hand).
   **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**

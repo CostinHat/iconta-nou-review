@@ -1,3 +1,23 @@
+## 23.09.2026 (noapte) — **D201 în selector** (a treia declarație D2xx din Task 2, comisă `c7f94f22`)
+
+**Pentru un contabil:** Declarația 201 (veniturile realizate din străinătate de persoane fizice) e acum în selectorul
+de declarații: identitate PF (CNP/nume/inițiala tatălui/prenume) + secțiuni pe pereche (țară, categorie de venit), cu
+venit brut/cheltuieli/impozit plătit în străinătate. Producția a trecut de la `28bb92ad` la `c7f94f22`.
+
+**Ce s-a făcut (tehnic).** Task 2, a treia declarație: **D201** (pe tiparul D200). `d201` scos din `_DOAR_API`;
+formular-listă în `declaratii.js` (`S.d201`, `_d201Manual()`, `randeazaFormularD201()`) cu identitate + secțiuni; câmpuri
+condiționate pe categorie (categ=23 = doar venit net; categ=14 = admite impozit pe salarii, imp2). venit_N = venit_B −
+chlt_D calculat.
+- **Increment (ca D212):** categ_venit + codurile de țară ISO-3166 numerice trăiesc în bytecode-ul validatorului, nu în
+  corpus — deci contabilul introduce codurile (cu text ajutor: Germania 276, Franța 250…), nu dropdown din nomenclator.
+- **DUK-valid pe F4:** `proba_d201_f4.py` (categ=3, țara=276, venit 1000 → `valid`). Gard `core/test_d201_formular.py`
+  (5 teste structurale: R33 imp2/categ14, R30 venit_N). FUNCTIONALITATI.csv: F222 AMÂNAT → LIVE. Ajutor „?" = F222.
+- **Poarta verde: 6436 passed**, verificator TOTAL 0. Cascada doc-sync (login.js grupe Fiscalitate 33→34, ?v=, 3 artefacte).
+
+**Un incident operațional:** push-ul automat pe origin/main + backup a eșuat pe o eroare de server GitHub («Internal
+Server Error», tranzitorie); public/main + prod erau OK. Rezolvat manual (`git push origin HEAD:main` + `HEAD:backup/...`),
+four-way închis complet. *Lecție (R176): un braț four-way poate rămâne deschis dintr-un hopa GitHub, nu doar dintr-un bug.*
+
 ## 23.09.2026 (târziu) — **două corecții fiscale de producție** (IMCA 0,5% 2026 + câștig lichidare 10%), comise `28bb92ad`
 
 **Pentru un contabil:** două cote greșite în calculul automat, care puteau umfla declarații D101 / note de lichidare
