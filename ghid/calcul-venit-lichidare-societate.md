@@ -1,8 +1,8 @@
 ---
 title: Cum se calculează venitul din lichidarea unei societăți?
-description: Câștigul impozabil la partaj este rezervele plus profiturile (capitalul social restituit e neimpozabil), iar legea cere o cotă fixă de 10% pentru asociați persoane fizice — nu cota dividendelor; iConta.eu calculează însă impozitul cu cota de dividende, ceea ce înseamnă o suprataxare atunci când cota de dividende depășește 10%.
+description: Câștigul impozabil la partaj este rezervele plus profiturile (capitalul social restituit e neimpozabil), iar legea cere o cotă fixă de 10% pentru asociați persoane fizice — nu cota dividendelor (art.97 alin.5 Cod fiscal); iConta.eu aplică cota corectă de 10%, dar nu distinge încă asociatul persoană fizică de cel juridic.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-09-23
 poarta: v1
 ---
 
@@ -55,10 +55,10 @@ Pentru un **asociat persoană juridică**, regimul poate fi complet diferit: dac
 
 ## Ce face iConta.eu
 
-Funcția de partaj din motorul de lichidare al aplicației calculează corect baza impozabilă — câștigul impozabil este rezervele plus profiturile, capitalul social fiind exclus. **Dar cota de impozit aplicată acestui câștig este preluată din același registru folosit și pentru dividendele obișnuite** (cota din CF art.97 alin.7): 16% începând cu 2026, 10% în 2025, 8% în 2023-2024, 5% în 2016-2022 — **nu cota fixă de 10% cerută de art.97 alin.(5)** pentru asociați persoane fizice la câștigul din lichidare.
+Funcția de partaj din motorul de lichidare al aplicației calculează corect baza impozabilă — câștigul impozabil este rezervele plus profiturile, capitalul social fiind exclus. Din 23.09.2026, aplicația aplică și **cota corectă: 10% fix (CF art.97 alin.5)** pentru câștigul din lichidare la asociați persoane fizice — distinctă de cota dividendelor (art.97 alin.7, 16% din 2026), care nu se mai folosește aici. Interfața afișează explicit cota folosită la fiecare notă de partaj generată.
 
-Practic, începând cu 2026, aplicația reține 16% în loc de 10% din câștigul impozabil la partaj — o suprataxare de 60% față de suma legal datorată. Interfața afișează explicit cota folosită la fiecare notă de partaj generată, așa că diferența poate fi observată dacă se verifică valoarea, dar aplicația nu semnalează eroarea și nu oferă opțiunea cotei corecte de 10%. În plus, aplicația nu distinge tipul asociatului (persoană fizică sau juridică) — cota se aplică uniform, ceea ce înseamnă că nici regimul de neimpozitare pentru asociați-PJ care îndeplinesc condiția de deținere din art.23 lit.j) nu este luat în calcul.
+Rămâne o limitare: aplicația nu distinge tipul asociatului (persoană fizică sau juridică) — cota de 10% se aplică uniform. Pentru asociați-PJ care îndeplinesc condiția de deținere din art.23 lit.j), regimul de neimpozitare a câștigului din lichidare nu este luat în calcul.
 
-Până la corectarea acestei discrepanțe, orice notă de partaj generată de aplicație pentru un asociat persoană fizică trebuie verificată și, dacă e cazul, recalculată manual cu cota corectă de 10%.
+Pentru un asociat persoană juridică ce ar putea beneficia de neimpozitare (art.23 lit.j), nota de partaj generată trebuie verificată și, dacă e cazul, ajustată. Pentru asociați persoane fizice, cota de 10% aplicată automat e cea corectă.
 
 [iConta.eu](/)

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""PAS 0 versionare formule: impozitul pe dividende (regim dividende + lichidare) = COTE period-aware,
-nu petic 'if ref>=2026 else 10'. 16% de la 01.01.2026 (Legea 141/2025), 10% inainte (REDARE, neverificat
-la sursa pentru pre-2026 - vezi comentariul COTE)."""
+"""PAS 0 versionare formule: cotele = COTE period-aware, nu petic 'if ref>=2026 else 10'.
+DIVIDENDE (art.97 alin.7): 16% de la 01.01.2026 (Legea 141/2025), 10% in 2025, 8% pre-2025.
+LICHIDARE (art.97 alin.5) e DISTINCTA: cota FIXA 10%, impozit final, NU regimul dividendelor -
+corectat 23.09.2026 (aplicatia folosea gresit cota dividendelor pentru castigul din lichidare)."""
 from datetime import date
 
 from core import common as c, decontari_asociati as da, lichidare as li
@@ -15,11 +16,13 @@ def test_impozit_dividend_period_aware_din_cote():
 
 
 def test_cota_dividend_si_lichidare_sursa_din_cote():
-    """Ambele functii (decontari_asociati + lichidare) intorc procentul din common.COTE, nu literal."""
+    """Ambele functii intorc procentul din common.COTE, nu literal. DIVIDENDELE (decontari_asociati)
+    urmeaza art.97 alin.7 (16%/10%); LICHIDAREA (lichidare) e cota FIXA 10% (art.97 alin.5), DISTINCTA."""
     assert int(da.cota_dividend(date(2026, 6, 1))) == 16
     assert int(da.cota_dividend(date(2025, 6, 1))) == 10
-    assert int(li._cota_dividend(date(2026, 6, 1))) == 16
-    assert int(li._cota_dividend(date(2024, 6, 1))) == 8
+    # lichidare = 10% FIX (art.97 alin.5), pe orice an - NU cota dividendelor (16% din 2026)
+    assert int(li._cota_lichidare(date(2026, 6, 1))) == 10
+    assert int(li._cota_lichidare(date(2024, 6, 1))) == 10
 
 
 def test_peticul_if_pe_data_a_disparut():

@@ -193,11 +193,14 @@ def test_cota_profit_16pct_din_cota_cu_temei():
 # ============================================================
 def test_imca_formula_1pct_din_vt_vs_i_a():
     from core.d101 import impozit_minim_cifra_afaceri as imca
-    # art.18^1 alin.(3): IMCA = 1% x (VT - Vs - I - A)
-    assert imca(100_000_000, 20_000_000, 5_000_000, 3_000_000) == 720_000   # 1% x 72.000.000
-    assert imca(300_000_000, 20_000_000, 5_000_000, 3_000_000) == 2_720_000  # 1% x 272.000.000
+    # art.18^1 alin.(3): IMCA = 1% x (VT - Vs - I - A) pana in anul fiscal 2025
+    assert imca(100_000_000, 20_000_000, 5_000_000, 3_000_000, 2025) == 720_000    # 1% x 72.000.000
+    assert imca(300_000_000, 20_000_000, 5_000_000, 3_000_000, 2025) == 2_720_000   # 1% x 272.000.000
+    # OUG 89/2025: 0,5% pentru anul fiscal 2026
+    assert imca(100_000_000, 20_000_000, 5_000_000, 3_000_000, 2026) == 360_000     # 0,5% x 72.000.000
+    assert imca(300_000_000, 20_000_000, 5_000_000, 3_000_000, 2026) == 1_360_000   # 0,5% x 272.000.000
     # art.18^1 alin.(4): valoare negativa -> impozit minim zero
-    assert imca(10_000_000, 8_000_000, 3_000_000, 1_000_000) == 0            # 1% x (-2.000.000) -> 0
+    assert imca(10_000_000, 8_000_000, 3_000_000, 1_000_000, 2026) == 0             # (-2.000.000) -> 0
 
 
 def test_datoreaza_imca_prag_50mil_euro():
@@ -210,13 +213,14 @@ def test_datoreaza_imca_prag_50mil_euro():
 def test_imca_wiring_p47_si_comparatie_p48():
     from core.d101 import calcul_d101
     # firma cu impozit pe profit (comparatie) MIC si IMCA MARE -> P48 = P482 (nivelul IMCA).
-    # imca: VT=300M, Vs=20M, I=5M, A=3M, curs=5 -> eligibil (56M euro); IMCA = 1% x 272M = 2.720.000.
+    # imca: VT=300M, Vs=20M, I=5M, A=3M, curs=5 -> eligibil (56M euro); an 2026 -> cota 0,5% (OUG 89/2025):
+    # IMCA = 0,5% x 272M = 1.360.000.
     res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P46": 1_000_000},
                       imca={"vt": 300_000_000, "vs": 20_000_000, "i": 5_000_000, "a": 3_000_000, "curs": 5})
-    assert res.P["P47"] == 2_720_000                 # P47 computat din formula
-    # P46 (1.000.000) < P47 (2.720.000) -> se plateste la nivelul IMCA (P482)
-    assert res.P["P482"] == 2_720_000
-    assert res.P["P48"] == 2_720_000
+    assert res.P["P47"] == 1_360_000                 # P47 computat din formula (0,5% pt 2026)
+    # P46 (1.000.000) < P47 (1.360.000) -> se plateste la nivelul IMCA (P482)
+    assert res.P["P482"] == 1_360_000
+    assert res.P["P48"] == 1_360_000
 
 
 def test_imca_sub_prag_p47_zero():
@@ -229,10 +233,10 @@ def test_imca_sub_prag_p47_zero():
 
 @pytest.mark.skipif(not _duk.poate_valida("d101"), reason="DUK d101 indisponibil")
 def test_imca_d101_duk_valid():
-    # D101 cu IMCA (P47 computat = 2.720.000; P48 = P482 = nivelul IMCA) trece DUKIntegrator.
+    # D101 cu IMCA (an 2026 -> 0,5%: P47 computat = 1.360.000; P48 = P482 = nivelul IMCA) trece DUKIntegrator.
     res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P46": 1_000_000},
                       imca={"vt": 300_000_000, "vs": 20_000_000, "i": 5_000_000, "a": 3_000_000, "curs": 5})
-    assert res.P["P47"] == 2_720_000 and res.P["P48"] == 2_720_000
+    assert res.P["P47"] == 1_360_000 and res.P["P48"] == 1_360_000
     xml = build_xml(res)
     r = _duk.valideaza(xml, "d101", an=2026)
     assert r["stare"] == "valid", "d101+IMCA respins de DUK: %s" % (str(r.get("erori") or ""))[:200]

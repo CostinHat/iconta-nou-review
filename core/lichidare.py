@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Lichidare/radiere societate - motor PUR (OMFP 897/2015 + L31/1990 art. 227+
-+ L85/2014; impozit pe castigul din lichidare = regim dividende, 16% din 2026).
++ L85/2014; impozit pe castigul din lichidare la asociat PF = 10% FIX, impozit final,
+CF art.97 alin.(5) - NU regimul dividendelor, care e alin.(7), 16% din 2026).
 Etape dupa aprobarea lichidarii:
 1. valorificare active: vanzare 461 = 7583 + 4427, descarcare 6583 + 28xx = 21x,
    stocuri 4111 = 707 + 4427 si 607 = 371; incasare creante; plata datorii;
@@ -8,22 +9,33 @@ Etape dupa aprobarea lichidarii:
 3. PARTAJ (dupa bilantul de lichidare):
    - restituire capital social: 1012 = 456 (neimpozabil la asociat);
    - rezerve/profituri: 106x/117x/121 = 456 - CASTIG impozabil la asociat
-     cu cota de dividend (16% din 2026): 456 = 446;
+     cu cota de lichidare (10% FIX, art.97 alin.5): 456 = 446;
    - rezerva legala 1061 dedusa fiscal se impoziteaza si la firma (16% profit);
    - plata neta: 456 = 5121."""
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 
+from core.common import alege_varianta as _av, Temei as _Tm
+
 B = Decimal("0.01")
+
+# Cota impozit pe castigul din lichidare la asociat PF, versionata pe data (tiparul _VARIANTE_SCADENTA din
+# d101): Temei INLINE -> sursat pt scanul de constante. 10% FIX, impozit final, CF art.97 alin.(5) - DISTINCT
+# de dividende (alin.7, 16% din 2026). Alineatul (5) neschimbat din Legea 227/2015 (fara nota de modificare in
+# codul consolidat). Verificat: anaf_surse/cod_fiscal_227_2015_consolidat art.97 alin.5 + ghid calcul-venit-lichidare-societate.md.
+_VARIANTE_COTA_LICHIDARE = [
+    ("2016-01-01", Decimal("0.10"), _Tm("Legea", 227, 2015, art="97", alin="5", nivel_sursa="MO", de_cine="Code/Costin", verificat_la="2026-09-23")),
+]
 
 def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)
 
-def _cota_dividend(la_data=None):
-    """Cota impozit pe castigul din lichidare = regim dividende (PROCENT), period-aware din common.COTE.
-    Peticul 16/10 mutat in registru (PAS 0 versionare)."""
-    from core import common as _c
-    return _c.cota("impozit_dividend", la_data)[0] * 100
+def _cota_lichidare(la_data=None):
+    """Cota impozit pe castigul din lichidare la asociat PF = 10% FIX, impozit final (CF art.97 alin.5,
+    PROCENT). NU e regimul dividendelor (alin.7, 16% din 2026) - articol si cota DISTINCTE. Alineatul (5)
+    e neschimbat din Legea 227/2015. Versionata pe data din _VARIANTE_COTA_LICHIDARE (Temei inline;
+    alege_varianta trateaza intern la_data=None -> data curenta, deci fara date.today() explicit aici)."""
+    return _av(_VARIANTE_COTA_LICHIDARE, la_data)[0] * 100
 
 def nota_vanzare_activ(pret, valoare_bruta, amortizare_cumulata,
                        cont_imobilizare="2131", cont_amortizare="2813", cota_tva=None):
@@ -45,11 +57,11 @@ def nota_vanzare_activ(pret, valoare_bruta, amortizare_cumulata,
 
 def partaj(capital_social, rezerve=0, profituri=0, la_data=None):
     """Partajul final: capitalul = neimpozabil; rezerve+profituri = castig
-    impozabil cu cota de dividend. Returneaza liniile + impozitul."""
+    impozabil cu cota de lichidare (10% fix, CF art.97 alin.5). Returneaza liniile + impozitul."""
     cs, rz, pf = _d(capital_social), _d(rezerve), _d(profituri)
     if cs < 0 or rz < 0 or pf < 0 or (cs + rz + pf) <= 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
-    cota = _cota_dividend(la_data)
+    cota = _cota_lichidare(la_data)
     castig = rz + pf
     impozit = (castig * cota / 100).quantize(B, rounding=ROUND_HALF_UP)
     linii = []

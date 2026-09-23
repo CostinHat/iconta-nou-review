@@ -64,12 +64,24 @@ def datoreaza_imca(vt, vs, curs_eur):
     return (cifra_afaceri_lei / c) > PRAG_IMCA_EUR
 
 
-def impozit_minim_cifra_afaceri(vt, vs, i, a):
-    """IMCA = 1% x (VT - Vs - I - A); daca formula da valoare negativa -> 0 (art.18^1 alin.(3)-(4)).
-    VT=venituri totale; Vs=venituri care se scad (alin.3); I=investitii; A=amortizarea acestora.
-    TEMEI: CF art.18^1 alin.(3)-(4). VERDE (verbatim anaf_surse/)."""
+# Cota IMCA, versionata pe anul fiscal (tiparul cota() pe cod, ca _VARIANTE_SCADENTA): Temei INLINE pe fiecare
+# valoare -> sursat pt scanul de constante. 1% de la anul fiscal 2024 (Legea 296/2023 introduce art.18^1);
+# 0,5% pentru anul fiscal 2026 (OUG 89/2025, MO 1203/24.12.2025 - reducerea de la 1% la 0,5%; aplicare pana la
+# 31.12.2026). Verificat la sursa: anaf_surse/cod_fiscal_227_2015_consolidat.txt art.18^1 + ghid imca-2026-cota-05-la-suta.md.
+_VARIANTE_COTA_IMCA = [
+    ("2024-01-01", Decimal("0.01"), _Tm("Legea", 296, 2023, art="18^1", alin="3", nivel_sursa="MO", de_cine="Code/Costin", verificat_la="2026-09-23")),
+    ("2026-01-01", Decimal("0.005"), _Tm("OUG", 89, 2025, art="18^1", alin="3", nivel_sursa="MO", de_cine="Code/Costin", verificat_la="2026-09-23")),
+]
+
+
+def impozit_minim_cifra_afaceri(vt, vs, i, a, an):
+    """IMCA = cota x (VT - Vs - I - A); daca formula da valoare negativa -> 0 (art.18^1 alin.(3)-(4)).
+    COTA e versionata pe anul fiscal (_VARIANTE_COTA_IMCA): 1% pana in 2025 (art.18^1 alin.3), 0,5% pentru
+    anul fiscal 2026 (OUG 89/2025, MO 1203/24.12.2025). VT=venituri totale; Vs=venituri care se scad (alin.3);
+    I=investitii; A=amortizarea acestora. TEMEI: CF art.18^1 alin.(3)-(4) + OUG 89/2025."""
     baza = Decimal(str(vt)) - Decimal(str(vs)) - Decimal(str(i)) - Decimal(str(a))
-    imca = Decimal("0.01") * baza
+    cota, _ = _av(_VARIANTE_COTA_IMCA, _date_v(int(an), 1, 1))   # 1% / 0,5% (2026), versionata pe an
+    imca = cota * baza
     return _i(imca) if imca > 0 else 0
 
 
@@ -317,11 +329,12 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
     P["P44"] = g("P44"); P["P45"] = g("P45")
     P["P46"] = g("P46"); P["P47"] = g("P47")
     # [IMCA art.18^1] daca se dau componentele (imca={vt,vs,i,a,curs}), P47 se COMPUTA din formula
-    # 1% x (VT-Vs-I-A) cand firma e sub prag (>50 mil euro); altfel P47=0. Fara componente -> P47 ramane input.
+    # cota x (VT-Vs-I-A) cand firma e peste prag (>50 mil euro); altfel P47=0. Fara componente -> P47 ramane
+    # input. Cota depinde de anul fiscal: 1% (alin.3), 0,5% pentru 2026 (OUG 89/2025) - v. impozit_minim_cifra_afaceri.
     if imca is not None:
         if datoreaza_imca(imca.get("vt", 0), imca.get("vs", 0), imca.get("curs", 0)):
             P["P47"] = impozit_minim_cifra_afaceri(imca.get("vt", 0), imca.get("vs", 0),
-                                                   imca.get("i", 0), imca.get("a", 0))
+                                                   imca.get("i", 0), imca.get("a", 0), an)
         else:
             P["P47"] = 0
     # --- Impozit datorat (rd.48) ---

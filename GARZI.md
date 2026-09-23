@@ -9176,7 +9176,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_import_migrare_valideaza.py` — Gard COMPORTAMENTAL (unit) pentru clasa 'importul accepta orice fisier si declara succes'
 - `core/test_import_motiv_vizibil.py` — [Regula 6 + Regula 14] GARD: motivul de refuz din preview-ul de IMPORT e VIZIBIL, nu doar in `title`.
 - `core/test_importuri_nefolosite.py` — CLICHET pe importurile nefolosite (F401). Nu blochează codul existent; oprește creșterea.
-- `core/test_impozit_dividend.py` — PAS 0 versionare formule: impozitul pe dividende (regim dividende + lichidare) = COTE period-aware,
+- `core/test_impozit_dividend.py` — PAS 0 versionare formule: cotele = COTE period-aware, nu petic 'if ref>=2026 else 10'.
 - `core/test_inchidere_luna.py` — ACTUL DE ÎNCHIDERE a lunii pe domeniul `facturi` (21.08.2026) — DESIGN_SYSTEM cap.23.
 - `core/test_infra_vizuala.py` — GARDĂ: infrastructura de testare vizuală (frontend_test/vizual) nu poate dispărea tăcut.
 - `core/test_inlocuire_afirmata.py` — GARD [YY/METODA §28, 28.08.2026]: o inlocuire de text intr-un document AFIRMA ca a gasit potrivirea.
