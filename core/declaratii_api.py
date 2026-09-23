@@ -321,7 +321,7 @@ _DOAR_API = frozenset(("d104", "d110", "d220", "d221", "d223", "d230",
                        "d393", "d395", "d397", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
-                       "d101g", "d169", "d398", "d399", "d403", "d407", "d212"))
+                       "d101g", "d169", "d398", "d399", "d403", "d407"))
 
 
 def tipuri():
@@ -438,6 +438,17 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("sectiuni"):
             erori.append("D200 nu are ce genera: adaugă în formular cel puțin o secțiune de venit "
                          "(categoria de venit realizat + sumele).")
+
+    # d212 (Declaratia unica, persoane fizice, MANUALA anuala): cere identitate (cif/nume_c/adresa_c).
+    # Increment "proof-of-pattern": formularul strange identitatea si AFISEAZA fisa RIP; genereaza cazul
+    # minim DUK-valid (identitate + bife 0). Capitolele populate (cap11/oblig_realizat) = pas urmator.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu identitatea -> aici cade doar apelul API gol).
+    # Regulile pe camp (CNP valid, nerezident) le da d212.erori_generare.
+    if tip == "d212":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not (m.get("nume_c") and m.get("adresa_c") and m.get("cif")):
+            erori.append("D212 nu are ce genera: completează în formular datele de identificare ale "
+                         "persoanei fizice (CNP, nume și adresă).")
 
     # d104 (distribuire venituri asocieri, MANUALA trimestriala): cere trim + manual.asociati
     if tip == "d104":

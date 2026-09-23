@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -59,6 +59,10 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d207: { beneficiari: [], d_rec: 0 },
     // [formular_manual_d200] identitate PF + sectiuni pe categorie de venit (in memorie, pt body.manual, ca d207).
     d200: { cif_i: "", nume_c: "", prenume_c: "", adresa_i: "", cont_c: "", sectiuni: [], d_rec: 0 },
+    // [formular_manual_d212] Declaratia unica PF: identitate (cif=CNP/nume/adresa) + fisa RIP AFISATA
+    // (pull din registru; venitul/CAS/CASS/impozit — informativ). Increment: genereaza cazul minim
+    // DUK-valid (identitate); popularea cap11/oblig_realizat din fisa = pas urmator. In memorie, ca d200.
+    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, fisa: null, fisa_eroare: "" },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -208,6 +212,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d177") body.manual = _d177Manual();              // [formular_manual_d177] redirectionarea din memorie
   if (S.tip === "d207") body.manual = _d207Manual();              // [formular_manual_d207] beneficiarii nerezidenti din memorie
   if (S.tip === "d200") body.manual = _d200Manual();              // [formular_manual_d200] sectiunile de venit din memorie
+  if (S.tip === "d212") body.manual = _d212Manual();              // [formular_manual_d212] identitatea PF din memorie
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -229,6 +234,7 @@ async function pas2(corp, nav) {
       ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
       ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
+    ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -241,6 +247,7 @@ async function pas2(corp, nav) {
     if (S.tip === "d177") randeazaFormularD177(corp, nav);
     if (S.tip === "d207") randeazaFormularD207(corp, nav);
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
+  if (S.tip === "d212") randeazaFormularD212(corp, nav);
     return;
   }
 
@@ -281,6 +288,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
     ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
+    ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -322,6 +330,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d177") randeazaFormularD177(corp, nav);
   if (S.tip === "d207") randeazaFormularD207(corp, nav);
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
+  if (S.tip === "d212") randeazaFormularD212(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -1157,6 +1166,87 @@ function randeazaFormularD200(corp, nav) {
     salveazaAntet();
     if (!(S.d200.sectiuni || []).length) {
       eroareCamp(zona, "d200-categ", "Adaugă cel puțin o secțiune de venit (butonul + adaugă). D200 nu se depune fără venituri.");
+      return;
+    }
+    pas2(corp, nav);
+  });
+}
+
+// tip==="d212" (Declaratia unica, persoane fizice, anuala). Increment "proof-of-pattern": formularul
+// strange IDENTITATEA (CNP/nume/adresa) si AFISEAZA fisa RIP (venit net + CAS/CASS + impozit din
+// registrul de incasari/plati, ruta /rip/d212/{an}, informativ). Genereaza cazul MINIM DUK-valid
+// (identitate + bife 0; totalPlata_A = suma cifrelor CNP). Popularea cap11/oblig_realizat din fisa =
+// pas urmator (cifrele NU intra inca in XML). Valorile din memorie (S.d212), persista intre randari.
+function _d212Manual() {
+  const d = S.d212 || {};
+  return {
+    cif: (d.cif || "").replace(/\s+/g, ""),
+    nume_c: (d.nume_c || "").trim(),
+    adresa_c: (d.adresa_c || "").trim(),
+    d_rec: d.d_rec ? 1 : 0,
+  };
+}
+
+function randeazaFormularD212(corp, nav) {
+  const zona = corp.querySelector("#dec-d212-form");
+  if (!zona) return;
+  const d = S.d212;
+  const f = d.fisa;
+  let blocFisa;
+  if (d.fisa_eroare) {
+    blocFisa = '<div class="caseta-info"><div class="ci-mesaj">Fișa RIP nu s-a putut încărca: ' + esc(d.fisa_eroare) + "</div></div>";
+  } else if (f) {
+    const casNota = f.cas && !f.cas.obligatoriu ? " (neobligatoriu — sub 12 salarii minime)" : "";
+    const cassNota = f.cass && !f.cass.obligatoriu ? " (neobligatoriu — sub 6 salarii minime)" : "";
+    blocFisa = '<div class="caseta-info">' +
+      '<div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Fișa RIP ' + esc(String(f.an || S.an)) + " (informativ — din registrul de încasări/plăți)</div>" +
+      '<div class="ecran-nota">Venit brut: <b>' + bani(f.venit_brut || 0) + "</b> · Cheltuieli deductibile: <b>" + bani(f.cheltuieli_deductibile || 0) + "</b> · Venit net: <b>" + bani(f.venit_net || 0) + "</b> lei<br>" +
+      "CAS: <b>" + bani((f.cas || {}).cas || 0) + "</b> lei" + casNota + " · CASS: <b>" + bani((f.cass || {}).cass || 0) + "</b> lei" + cassNota + "<br>" +
+      "Bază impozit: <b>" + bani(f.baza_impozit || 0) + "</b> · Impozit: <b>" + bani(f.impozit || 0) + "</b> lei</div>" +
+      (f.avertisment ? '<div class="ecran-nota" style="margin-top:4px">' + esc(f.avertisment) + "</div>" : "") +
+      '<div class="ecran-nota" style="margin-top:6px">Cifrele vin din registrul firmei și sunt afișate ca reper. Popularea capitolelor de venit și contribuții în declarație e pasul următor; deocamdată se generează declarația de identificare.</div>' +
+      "</div>";
+  } else {
+    blocFisa = '<div class="stare-goala stare-goala--inline">Apasă „Trage fișa RIP" ca să vezi venitul net și contribuțiile calculate din registrul de încasări/plăți al firmei, pentru anul ales.</div>';
+  }
+  zona.innerHTML = '<details class="dec-xml" open><summary>Declarația unică — persoană fizică (identificare + fișa RIP)</summary>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:180px"><span class="camp-eticheta">CNP contribuabil <span class="oblig">*</span></span><input id="d212-cnp" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Nume și prenume <span class="oblig">*</span></span><input id="d212-nume" type="text" class="camp-input" value="' + esc(d.nume_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 260px"><span class="camp-eticheta">Adresa <span class="oblig">*</span></span><input id="d212-adr" type="text" class="camp-input" value="' + esc(d.adresa_c || "") + '"></label>' +
+      '<label class="set-bifa"><input id="d212-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '> <span>Rectificativă</span></label>' +
+    "</div>" +
+    '<p style="margin:4px 0 8px"><button class="buton-secundar" id="d212-fisa">Trage fișa RIP ' + esc(String(S.an)) + "</button></p>" +
+    blocFisa +
+    '<p style="margin-top:10px"><button class="buton-primar" id="d212-regen">Regenerează D212</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveazaAntet = () => {
+    S.d212.cif = gv("#d212-cnp").value.trim();
+    S.d212.nume_c = gv("#d212-nume").value.trim();
+    S.d212.adresa_c = gv("#d212-adr").value.trim();
+    S.d212.d_rec = gv("#d212-rec").checked ? 1 : 0;
+  };
+  ["#d212-cnp", "#d212-nume", "#d212-adr"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  gv("#d212-rec").addEventListener("change", salveazaAntet);
+  gv("#d212-fisa").addEventListener("click", async () => {
+    salveazaAntet();
+    S.d212.fisa = null; S.d212.fisa_eroare = "";
+    try {
+      const r = await api.get(`/tenants/${S.tenant_id}/rip/d212/${S.an}`);
+      if (r && r.eroare) S.d212.fisa_eroare = r.eroare;
+      else S.d212.fisa = r;
+    } catch (e) {
+      S.d212.fisa_eroare = (e && e.mesaj) || "eroare la încărcarea fișei";
+    }
+    randeazaFormularD212(corp, nav);
+  });
+  gv("#d212-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveazaAntet();
+    if (!S.d212.cif || !S.d212.nume_c || !S.d212.adresa_c) {
+      eroareCamp(zona, "d212-cnp", "Completează CNP, nume și adresă — D212 nu se poate genera fără identificarea persoanei fizice.");
       return;
     }
     pas2(corp, nav);
