@@ -317,7 +317,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d110", "d220", "d221", "d223",
+_DOAR_API = frozenset(("d104", "d110", "d220", "d221",
                        "d393", "d395", "d397", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -502,11 +502,14 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("cif") or not m.get("activitati"):
             erori.append("d221 cere `manual.cif` (CNP) + `manual.activitati` (activități agricole)")
 
-    # d223 (venituri estimate asocieri, MANUALA anuala): cere manual.activitate + asociati
+    # d223 (venituri estimate asocieri fara personalitate juridica, MANUALA anuala): activitate + asociati.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (categ/forma_org/det_venit, judet numeric, Sigma cota=100, CNP 13) le da d223.erori_generare.
     if tip == "d223":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("activitate") or not m.get("asociati"):
-            erori.append("d223 cere `manual.activitate` + `manual.asociati` (asocierea + asociații)")
+            erori.append("D223 nu are ce genera: completează asocierea și responsabilul, activitatea (categorie, "
+                         "CAEN, județ, venit estimat) și cel puțin un asociat (cotele însumând 100).")
 
     # d230 (redirectionare 3,5% din impozit catre ONG, PF, MANUALA anuala): cere identitate + entitate.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
