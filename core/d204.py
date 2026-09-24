@@ -234,14 +234,16 @@ def erori_generare(prof, manual):
             er.append("%s: det_ven_net=1 cere cod CAEN." % et)
         if not act["judet"]:
             er.append("%s: lipsă județ." % et)
+        elif not act["judet"].isdigit():
+            er.append("%s: județul trebuie cod numeric ANAF (ex. Cluj=12, București=40)." % et)
         if act["judet"].upper() in _JUDET_BUC and not act["sector"]:
             er.append("%s: pentru Municipiul București este obligatoriu sectorul." % et)
         if act["judet"].upper() not in _JUDET_BUC and act["sector"]:
             er.append("%s: sectorul se completează doar pentru Municipiul București." % et)
         if not str(act["sediu"] or "").strip():
             er.append("%s: lipsă sediu." % et)
-        if bool(act["nr_contr"]) != bool(act["data_contr"]):
-            er.append("%s: nr_contr și data_contr trebuie completate impreuna." % et)
+        if not act["nr_contr"] or not act["data_contr"]:
+            er.append("%s: numărul și data contractului de asociere sunt obligatorii (le cere validatorul)." % et)
         if not act["asociati"]:
             er.append("%s: cel puțin un asociat." % et)
         cifuri = []

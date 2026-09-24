@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**624 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**625 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 593
+### `core/` — 594
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8981,6 +8981,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d1_import_integritate.py` — core/test_d1_import_integritate.py — GARD: importul de salariati BLOCHEAZA CNP invalid, NU sare tacut.
 - `core/test_d200_formular.py` — [Regula 4 + Regula 6 + METODA §23] GARDA: formularul D200 gol NU produce declaratie; regulile pe
 - `core/test_d201_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D201 gol NU produce declaratie; identitatea + sectiunile +
+- `core/test_d204_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D204 gol NU produce declaratie; asocierea + reprezentantul +
 - `core/test_d205.py` — Teste gardian pentru D205 - REFACUT A DOUA OARA 16.07.2026.
 - `core/test_d205_cifr_obligatoriu.py` — Gard D205: campurile OBLIGATORII pe beneficiar (cifR, den1) nu pot fi emise vide.
 - `core/test_d205_cnp_checksum.py` — Gard D205 c1 (TEMA T1, CATALOG_INVALIDITATE.md): CNP beneficiar pre-validat pe CIFRA DE
