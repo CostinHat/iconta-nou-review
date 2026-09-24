@@ -317,7 +317,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d110", "d220",
+_DOAR_API = frozenset(("d220",
                        "d393", "d395", "d397", "d120",
                        "d106", "d108", "d130", "d318",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -532,11 +532,14 @@ def valideaza_cerere(tip, body, per_efectiv=None):
             erori.append("D107 nu are ce genera: adaugă în formular cel puțin un beneficiar al "
                          "sponsorizării, mecenatului sau bursei.")
 
-    # d110 (regularizare impozit retinut la sursa, MANUALA lunara): cere manual.obligatii
+    # d110 (regularizare/restituire impozit retinut la sursa, MANUALA lunara): cel putin o obligatie.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Identitatea platitorului vine din firma_profil; regulile pe camp (cod_oblig, sume, d_temei) le da d110.erori_generare.
     if tip == "d110":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("obligatii"):
-            erori.append("d110 cere `manual.obligatii` (obligații de regularizat: cod_oblig/suma_dat/suma_rest)")
+            erori.append("D110 nu are ce genera: adaugă cel puțin o obligație (cod obligație + impozit datorat "
+                         "și impozit reținut) de regularizat; pentru restituire alege tipul „cerere de restituire” + IBAN.")
 
     # d220 (venit estimat PF, MANUALA anuala): cere manual.cif (CNP) + manual.activitate
     if tip == "d220":

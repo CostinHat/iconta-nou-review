@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -86,6 +86,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d104: { declarant_nume: "", declarant_prenume: "", declarant_functie: "", asociere: { cui: "", den: "", adresa: "" }, d_rec: 0, profit_pierd: "", asociati: [] },
     // [formular_manual_d114] CAM (situatii ne-D112): antet declarant + lista contracte (lucratori). In memorie, ca d200.
     d114: { cif_declarant: "", den_declarant: "", adresa_declarant: "", functia_intocmit: "", den_intocmit: "", d_rec: 0, contracte: [] },
+    // [formular_manual_d110] regularizare impozit retinut la sursa: d_temei + IBAN/banca + lista obligatii. Identitatea din firma_profil. In memorie, ca d200.
+    d110: { d_temei: 0, d_rec: 0, iban: "", banca: "", obligatii: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -247,6 +249,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d600") body.manual = _d600Manual();              // [formular_manual_d600] identitate PF + optiune CAS + baza lunara
   if (S.tip === "d104") body.manual = _d104Manual();              // [formular_manual_d104] declarant + asociere + profit + asociati
   if (S.tip === "d114") body.manual = _d114Manual();              // [formular_manual_d114] declarant + contracte (CAM)
+  if (S.tip === "d110") body.manual = _d110Manual();              // [formular_manual_d110] d_temei + IBAN/banca + obligatii
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -280,6 +283,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d600" ? '<div id="dec-d600-form"></div>' : ""}
     ${S.tip === "d104" ? '<div id="dec-d104-form"></div>' : ""}
     ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
+    ${S.tip === "d110" ? '<div id="dec-d110-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -304,6 +308,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d600") randeazaFormularD600(corp, nav);
   if (S.tip === "d104") randeazaFormularD104(corp, nav);
   if (S.tip === "d114") randeazaFormularD114(corp, nav);
+  if (S.tip === "d110") randeazaFormularD110(corp, nav);
     return;
   }
 
@@ -356,6 +361,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d600" ? '<div id="dec-d600-form"></div>' : ""}
     ${S.tip === "d104" ? '<div id="dec-d104-form"></div>' : ""}
     ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
+    ${S.tip === "d110" ? '<div id="dec-d110-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -409,6 +415,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d600") randeazaFormularD600(corp, nav);
   if (S.tip === "d104") randeazaFormularD104(corp, nav);
   if (S.tip === "d114") randeazaFormularD114(corp, nav);
+  if (S.tip === "d110") randeazaFormularD110(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -2486,6 +2493,91 @@ function randeazaFormularD114(corp, nav) {
     curataEroriCamp(zona);
     salveaza();
     if (!(S.d114.contracte || []).length) { eroareCamp(zona, "d114-lcui", "Adaugă cel puțin un lucrător."); return; }
+    pas2(corp, nav);
+  });
+}
+
+const _D110_CODURI = ["602","604","605","606","607","608","611","619","621","622","623","625","626","627","628","629","631","632","633","634","635","636","637","638","639","640","641","642","690"];
+
+function _d110Manual() {
+  const d = S.d110 || {};
+  return {
+    d_temei: d.d_temei ? 1 : 0, d_rec: d.d_rec ? 1 : 0,
+    iban: (d.iban || "").replace(/\s+/g, "").toUpperCase(), banca: (d.banca || "").trim(),
+    obligatii: (d.obligatii || []).map((o) => ({ cod_oblig: String(o.cod_oblig || ""),
+      suma_dat: Math.round(_n(o.suma_dat) || 0), suma_rest: Math.round(_n(o.suma_rest) || 0) })),
+  };
+}
+
+function randeazaFormularD110(corp, nav) {
+  const zona = corp.querySelector("#dec-d110-form");
+  if (!zona) return;
+  const d = S.d110;
+  const rest = !!d.d_temei;
+  const obl = d.obligatii || [];
+  let sPlata = 0, sRest = 0;
+  obl.forEach((o) => { const sd = Math.round(_n(o.suma_dat) || 0), sr = Math.round(_n(o.suma_rest) || 0);
+    if (sd >= sr) sPlata += sd - sr; else sRest += sr - sd; });
+  const optCod = _D110_CODURI.map((c) => '<option value="' + c + '">' + c + "</option>").join("");
+  const grila = obl.length
+    ? obl.map((o, i) => { const sd = Math.round(_n(o.suma_dat) || 0), sr = Math.round(_n(o.suma_rest) || 0);
+        const dp = sd >= sr ? sd - sr : 0, dr = sd < sr ? sr - sd : 0;
+        return '<div class="dec-man-rand"><span class="dec-recl-desc">cod ' + esc(String(o.cod_oblig)) + " · datorat " + bani(sd) + " · reținut " + bani(sr) +
+          (dp > 0 ? (" · de plată " + bani(dp)) : "") + (dr > 0 ? (" · de restituit " + bani(dr)) : "") + " lei</span>" +
+          '<button class="btn-link dec-d110-del" data-idx="' + i + '">șterge</button></div>'; }).join("")
+    : '<div class="stare-goala stare-goala--inline">Nicio obligație. Adaugă codul obligației + impozitul datorat și cel reținut.</div>';
+  const incoerent = (rest && sRest === 0) || (!rest && sRest > 0);
+  zona.innerHTML = '<details class="dec-xml" open><summary>Regularizare impozit reținut la sursă (' + obl.length + " obligații)</summary>" +
+    '<p class="camp-ajutor" style="margin:2px 0 8px">Identitatea plătitorului (denumire, CUI, adresă, declarant) se preia din profilul firmei.</p>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:260px"><span class="camp-eticheta">Tip <span class="oblig">*</span></span><select id="d110-temei" class="camp-input"><option value="0"' + (rest ? "" : " selected") + ">Regularizare (fără restituire)</option><option value=\"1\"" + (rest ? " selected" : "") + ">Cerere de restituire</option></select></label>" +
+      '<label class="set-bifa"><input id="d110-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '> <span>Rectificativă</span></label>' +
+    "</div>" +
+    (rest ?
+      '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+        '<label class="camp" style="width:260px"><span class="camp-eticheta">IBAN (restituire) <span class="oblig">*</span></span><input id="d110-iban" type="text" class="camp-input" value="' + esc(d.iban || "") + '"></label>' +
+        '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Bancă <span class="oblig">*</span></span><input id="d110-banca" type="text" class="camp-input" value="' + esc(d.banca || "") + '"></label>' +
+      "</div>" : "") +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Obligații (impozit reținut la sursă)</div>' +
+    grila +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Cod obligație</span><select id="d110-cod" class="camp-input">' + optCod + "</select></label>" +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit datorat</span><input id="d110-dat" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit reținut</span><input id="d110-rest" type="number" step="1" min="1" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d110-add">+ obligație</button>' +
+    "</div>" +
+    '<div id="d110-msg"></div>' +
+    '<p class="camp-ajutor" style="margin-top:8px">Σ de plată: <b>' + sPlata + "</b> · Σ de restituit: <b>" + sRest + "</b> lei. " +
+      (incoerent ? (rest ? "(cerere de restituire dar nicio diferență de restituit)" : "(există diferențe de restituit — alege „Cerere de restituire\" + IBAN)") : "") + "</p>" +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d110-regen">Regenerează D110</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    S.d110.d_temei = gv("#d110-temei").value === "1" ? 1 : 0;
+    S.d110.d_rec = gv("#d110-rec").checked ? 1 : 0;
+    const ib = gv("#d110-iban"), bc = gv("#d110-banca");
+    if (ib) S.d110.iban = ib.value.replace(/\s+/g, "").toUpperCase();
+    if (bc) S.d110.banca = bc.value.trim();
+  };
+  gv("#d110-temei").addEventListener("change", () => { salveaza(); randeazaFormularD110(corp, nav); });
+  gv("#d110-rec").addEventListener("change", salveaza);
+  const ib0 = gv("#d110-iban"); if (ib0) ib0.addEventListener("change", salveaza);
+  const bc0 = gv("#d110-banca"); if (bc0) bc0.addEventListener("change", salveaza);
+  zona.querySelectorAll(".dec-d110-del").forEach((b) => b.addEventListener("click", () => { S.d110.obligatii.splice(parseInt(b.dataset.idx), 1); randeazaFormularD110(corp, nav); }));
+  gv("#d110-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const sr = Math.round(_n(gv("#d110-rest").value) || 0);
+    if (sr <= 0) { eroareCamp(zona, "d110-rest", "Impozitul reținut trebuie > 0."); return; }
+    salveaza();
+    S.d110.obligatii = S.d110.obligatii || [];
+    S.d110.obligatii.push({ cod_oblig: gv("#d110-cod").value, suma_dat: Math.round(_n(gv("#d110-dat").value) || 0), suma_rest: sr });
+    randeazaFormularD110(corp, nav);
+  });
+  gv("#d110-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    if (!(S.d110.obligatii || []).length) { eroareCamp(zona, "d110-rest", "Adaugă cel puțin o obligație."); return; }
     pas2(corp, nav);
   });
 }

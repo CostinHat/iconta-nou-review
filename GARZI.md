@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**633 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**634 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 602
+### `core/` — 603
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8965,6 +8965,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d107.py` — Teste D107 (informativa beneficiari sponsorizari / mecenat / burse private).
 - `core/test_d107_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D107 gol NU produce declaratie.
 - `core/test_d110.py` — Teste D110 (regularizare/restituire impozit pe venit retinut la sursa).
+- `core/test_d110_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D110 gol NU produce declaratie; obligatiile (cod + sume) +
 - `core/test_d112.py` — Teste gardian pentru D112 - reparat 16.07.2026 dupa testul agregat pe toate 9
 - `core/test_d112_asiguratd_zerobase.py` — [d112 asiguratD zero-base] Un certificat de concediu medical caruia ii lipseste un camp
 - `core/test_d112_avantaje.py` — Sectiunea 8.3 avantaje D112 (C4): bilete de valoare defalcate pe tip (E3_10/72/74/75 + E3_60).
