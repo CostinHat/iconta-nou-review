@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -80,6 +80,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d221: { nume_declar: "", prenume_declar: "", functie_declar: "TITULAR", cif: "", nume_a: "", adresa_a: "", forma_org: "1", d_rec: 0, nr_contr: "", data_contr: "", activitate: { judet: "", localitate: "", optiune: "0" }, produse: [], asociati: [] },
     // [formular_manual_d603] exceptare CASS (PF): identitate + categorie + stat asigurare + perioada. In memorie, ca d200.
     d603: { numeContrib: "", cif: "", taraContrib: "RO", judetContrib: "", exceptare: "2", statAsigurare: "", dataInceput: "", dataSfarsit: "", dataExceptare: "", documente: "" },
+    // [formular_manual_d600] baza CAS/CASS estimata (PF): identitate + optiune CAS + baza lunara (12 luni). In memorie, ca d200.
+    d600: { nume_c: "", initiala_c: "", prenume_c: "", cif_c: "", adresa_c: "", cont_c: "", d_rec: 0, cas_opt: false, baza_lunara: "" },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -238,6 +240,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d208") body.manual = _d208Manual();              // [formular_manual_d208] notar + tranzactie/imobil + beneficiari + parti
   if (S.tip === "d221") body.manual = _d221Manual();              // [formular_manual_d221] contribuabil + activitate agricola + produse
   if (S.tip === "d603") body.manual = _d603Manual();              // [formular_manual_d603] exceptare CASS (identitate + categorie + stat + perioada)
+  if (S.tip === "d600") body.manual = _d600Manual();              // [formular_manual_d600] identitate PF + optiune CAS + baza lunara
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -268,6 +271,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d208" ? '<div id="dec-d208-form"></div>' : ""}
     ${S.tip === "d221" ? '<div id="dec-d221-form"></div>' : ""}
     ${S.tip === "d603" ? '<div id="dec-d603-form"></div>' : ""}
+    ${S.tip === "d600" ? '<div id="dec-d600-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -289,6 +293,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d208") randeazaFormularD208(corp, nav);
   if (S.tip === "d221") randeazaFormularD221(corp, nav);
   if (S.tip === "d603") randeazaFormularD603(corp, nav);
+  if (S.tip === "d600") randeazaFormularD600(corp, nav);
     return;
   }
 
@@ -338,6 +343,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d208" ? '<div id="dec-d208-form"></div>' : ""}
     ${S.tip === "d221" ? '<div id="dec-d221-form"></div>' : ""}
     ${S.tip === "d603" ? '<div id="dec-d603-form"></div>' : ""}
+    ${S.tip === "d600" ? '<div id="dec-d600-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -388,6 +394,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d208") randeazaFormularD208(corp, nav);
   if (S.tip === "d221") randeazaFormularD221(corp, nav);
   if (S.tip === "d603") randeazaFormularD603(corp, nav);
+  if (S.tip === "d600") randeazaFormularD600(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -2202,6 +2209,77 @@ function randeazaFormularD603(corp, nav) {
     else if (S.d603.statAsigurare === "RO") err.push(["d603-stat", "Statul de asigurare trebuie diferit de RO."]);
     if (!S.d603.dataInceput || !S.d603.dataSfarsit || !S.d603.dataExceptare) err.push(["d603-di", "Completează cele trei date."]);
     if (!S.d603.documente) err.push(["d603-doc", "Completează documentele justificative."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    pas2(corp, nav);
+  });
+}
+
+function _d600Manual() {
+  const d = S.d600 || {};
+  const m = {
+    nume_c: (d.nume_c || "").trim(), initiala_c: (d.initiala_c || "").trim(), prenume_c: (d.prenume_c || "").trim(),
+    cif_c: (d.cif_c || "").replace(/\s+/g, ""), adresa_c: (d.adresa_c || "").trim(),
+    cont_c: (d.cont_c || "").replace(/\s+/g, "").toUpperCase(), d_rec: d.d_rec ? 1 : 0,
+  };
+  if (d.cas_opt) {
+    m.cas_opt = 1;
+    const b = Math.round(_n(d.baza_lunara) || 0);
+    for (let i = 1; i <= 12; i++) m["baza" + i] = b;
+  }
+  return m;
+}
+
+function randeazaFormularD600(corp, nav) {
+  const zona = corp.querySelector("#dec-d600-form");
+  if (!zona) return;
+  const d = S.d600;
+  const cas = !!d.cas_opt;
+  const baza = Math.round(_n(d.baza_lunara) || 0);
+  zona.innerHTML = '<details class="dec-xml" open><summary>Bază CAS/CASS estimată — persoană fizică</summary>' +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">CNP <span class="oblig">*</span></span><input id="d600-cnp" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d600-nume" type="text" class="camp-input" value="' + esc(d.nume_c || "") + '"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Inițiala tată <span class="oblig">*</span></span><input id="d600-init" type="text" maxlength="1" class="camp-input" value="' + esc(d.initiala_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Prenume <span class="oblig">*</span></span><input id="d600-pren" type="text" class="camp-input" value="' + esc(d.prenume_c || "") + '"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 260px"><span class="camp-eticheta">Adresă <span class="oblig">*</span></span><input id="d600-adr" type="text" class="camp-input" value="' + esc(d.adresa_c || "") + '"></label>' +
+      '<label class="camp" style="width:240px"><span class="camp-eticheta">IBAN (opțional)</span><input id="d600-cont" type="text" class="camp-input" value="' + esc(d.cont_c || "") + '"></label>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Contribuția de asigurări sociale (CAS)</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
+      '<label class="set-bifa"><input id="d600-cas" type="checkbox" ' + (cas ? "checked" : "") + '> <span>Datorez CAS (estimare)</span></label>' +
+      (cas ? '<label class="camp" style="width:200px"><span class="camp-eticheta">Bază lunară estimată <span class="oblig">*</span></span><input id="d600-baza" type="number" step="1" min="0" class="camp-input" value="' + esc(String(baza || "")) + '"></label>' : "") +
+    "</div>" +
+    '<p class="camp-ajutor" style="margin:6px 0 0">' + (cas ? ("Baza lunară se aplică pentru toate cele 12 luni (trebuie ≥ salariul minim brut). CAS estimat = opțiune + 12 baze.") : "Bifează dacă datorezi CAS și introdu baza lunară estimată. (CASS pe categorii = increment ulterior.)") + "</p>" +
+    '<div id="d600-msg"></div>' +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d600-regen">Regenerează D600</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    S.d600.cif_c = gv("#d600-cnp").value.trim();
+    S.d600.nume_c = gv("#d600-nume").value.trim();
+    S.d600.initiala_c = gv("#d600-init").value.trim();
+    S.d600.prenume_c = gv("#d600-pren").value.trim();
+    S.d600.adresa_c = gv("#d600-adr").value.trim();
+    S.d600.cont_c = gv("#d600-cont").value.replace(/\s+/g, "").toUpperCase();
+    S.d600.cas_opt = gv("#d600-cas").checked;
+    const bz = gv("#d600-baza"); if (bz) S.d600.baza_lunara = _n(bz.value) || 0;
+  };
+  ["#d600-cnp", "#d600-nume", "#d600-init", "#d600-pren", "#d600-adr", "#d600-cont"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  gv("#d600-cas").addEventListener("change", () => { salveaza(); randeazaFormularD600(corp, nav); });
+  const bz0 = gv("#d600-baza"); if (bz0) bz0.addEventListener("change", salveaza);
+  gv("#d600-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    const err = [];
+    if (!/^\d{13}$/.test(S.d600.cif_c)) err.push(["d600-cnp", "CNP-ul trebuie să aibă 13 cifre."]);
+    if (!S.d600.nume_c) err.push(["d600-nume", "Completează numele."]);
+    if (!S.d600.adresa_c) err.push(["d600-adr", "Completează adresa."]);
+    if (!S.d600.cas_opt) err.push(["d600-cas", "Bifează cel puțin CAS (declarația trebuie să aibă o contribuție)."]);
+    else if ((_n(S.d600.baza_lunara) || 0) <= 0) err.push(["d600-baza", "Completează baza lunară estimată."]);
     if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
     pas2(corp, nav);
   });

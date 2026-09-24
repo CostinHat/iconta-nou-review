@@ -318,7 +318,7 @@ DECLARATII = {
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d104", "d110", "d220",
-                       "d393", "d395", "d397", "d120", "d600",
+                       "d393", "d395", "d397", "d120",
                        "d106", "d108", "d114", "d130", "d318",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
                        "d101g", "d169", "d398", "d399", "d403", "d407"))
@@ -495,6 +495,15 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("numeContrib") or not m.get("statAsigurare") or not m.get("exceptare"):
             erori.append("D603 nu are ce genera: completează persoana fizică (CNP, nume), categoria de "
                          "exceptare, statul de asigurare (diferit de RO) și perioada de exceptare.")
+
+    # d600 (baza CAS/CASS estimata, PF, MANUALA anuala): identitate + cel putin o componenta (totalPlata_A>0).
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (CNP, R42 totalPlata_A>0, exclusivitate CASS, baze >= salariu minim) le da d600.erori_generare.
+    if tip == "d600":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("nume_c") or not m.get("cif_c"):
+            erori.append("D600 nu are ce genera: completează datele persoanei fizice (CNP, nume, adresă) și "
+                         "bifează contribuția datorată (CAS) cu baza lunară estimată.")
 
     # d104 (distribuire venituri asocieri, MANUALA trimestriala): cere trim + manual.asociati
     if tip == "d104":
