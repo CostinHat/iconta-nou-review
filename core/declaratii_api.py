@@ -317,7 +317,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d110", "d220", "d221", "d223", "d230",
+_DOAR_API = frozenset(("d104", "d110", "d220", "d221", "d223",
                        "d393", "d395", "d397", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -498,10 +498,14 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("activitate") or not m.get("asociati"):
             erori.append("d223 cere `manual.activitate` + `manual.asociati` (asocierea + asociații)")
 
-    # d230 (redirectionare 3,5%, MANUALA): cere `manual` (contribuabil + beneficiar ONG)
+    # d230 (redirectionare 3,5% din impozit catre ONG, PF, MANUALA anuala): cere identitate + entitate.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (CNP valid, IBAN, procent<=3.5, valabilitate 1/2) le da d230.erori_generare.
     if tip == "d230":
-        if not isinstance(body.get("manual"), dict) or not body.get("manual"):
-            erori.append("d230 cere `manual` (nume_c/cif_c contribuabil + den/cif/cont_entitate ONG)")
+        m = body.get("manual")
+        if not isinstance(m, dict) or not (m.get("nume_c") and m.get("cif_c") and m.get("den_entitate")):
+            erori.append("D230 nu are ce genera: completează datele persoanei fizice (CNP, nume) și "
+                         "entitatea nonprofit beneficiară (denumire, CIF, IBAN) către care redirecționezi 3,5%.")
 
     # d307 (ajustare TVA, MANUALA lunara): cere manual.operatiuni. Mesaj de CONTABIL (formularul manual din
     # UI trimite mereu operatiuni -> aici cade doar apelul API gol). Detaliile pe operatiune le da d307.genereaza.

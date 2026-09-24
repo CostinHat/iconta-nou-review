@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**623 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**624 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 592
+### `core/` — 593
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9000,6 +9000,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d221.py` — Teste D221 (venituri din activitati agricole impuse pe norme de venit - persoane fizice/asocieri).
 - `core/test_d223.py` — Teste D223 (venituri estimate pentru asocieri fara personalitate juridica / transparenta fiscala).
 - `core/test_d230.py` — Teste D230 (redirectionare pana la 3,5% din impozit catre ONG).
+- `core/test_d230_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D230 gol NU produce declaratie; identitatea PF + entitatea ONG
 - `core/test_d300.py` — Teste gardian pentru D300 — lantul de calcul R27->R42 lipsea complet.
 - `core/test_d300_b1_rutare.py` — Gard B1-B4 (15.08.2026): comportamentele NOI ale remedierii D300 nu aveau test de
 - `core/test_d300_d394_paritate.py` — Gard de PARITATE d300 <-> d394 pe TVA pe cota. Ambele se depun la ANAF pe aceeasi luna.

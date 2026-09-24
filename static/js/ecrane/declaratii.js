@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -66,6 +66,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [formular_manual_d201] venituri din strainatate PF: identitate (CNP/nume/initiala tata/prenume) +
     // sectiuni pe (tara, categorie) - venit_B/chlt_D/imp1/imp2/pierdere; venit_N calculat. In memorie, ca d200.
     d201: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", d_rec: 0, sectiuni: [] },
+    // [formular_manual_d230] redirectionare 3,5% catre ONG (PF): identitate + entitate beneficiara. In memorie, ca d200.
+    d230: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", adresa_c: "", telefon_c: "", email_c: "", den_entitate: "", cif_entitate: "", cont_entitate: "", suma_entitate: "", procent: "", valabilitate_distribuire: 1 },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -217,6 +219,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d200") body.manual = _d200Manual();              // [formular_manual_d200] sectiunile de venit din memorie
   if (S.tip === "d212") body.manual = _d212Manual();              // [formular_manual_d212] identitatea PF din memorie
   if (S.tip === "d201") body.manual = _d201Manual();              // [formular_manual_d201] identitate + sectiuni strainatate
+  if (S.tip === "d230") body.manual = _d230Manual();              // [formular_manual_d230] identitate PF + entitate ONG
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -240,6 +243,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
     ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
     ${S.tip === "d201" ? '<div id="dec-d201-form"></div>' : ""}
+    ${S.tip === "d230" ? '<div id="dec-d230-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -254,6 +258,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
   if (S.tip === "d212") randeazaFormularD212(corp, nav);
   if (S.tip === "d201") randeazaFormularD201(corp, nav);
+  if (S.tip === "d230") randeazaFormularD230(corp, nav);
     return;
   }
 
@@ -296,6 +301,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
     ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
     ${S.tip === "d201" ? '<div id="dec-d201-form"></div>' : ""}
+    ${S.tip === "d230" ? '<div id="dec-d230-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -339,6 +345,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
   if (S.tip === "d212") randeazaFormularD212(corp, nav);
   if (S.tip === "d201") randeazaFormularD201(corp, nav);
+  if (S.tip === "d230") randeazaFormularD230(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -1296,6 +1303,91 @@ function randeazaFormularD201(corp, nav) {
       eroareCamp(zona, "d201-categ", "Adaugă cel puțin o secțiune de venit (butonul + adaugă). D201 nu se depune fără venituri.");
       return;
     }
+    pas2(corp, nav);
+  });
+}
+
+function _d230Manual() {
+  const d = S.d230 || {};
+  return {
+    nume_c: (d.nume_c || "").trim(),
+    initiala_c: (d.initiala_c || "").trim(),
+    prenume_c: (d.prenume_c || "").trim(),
+    cif_c: (d.cif_c || "").replace(/\s+/g, ""),
+    adresa_c: (d.adresa_c || "").trim(),
+    telefon_c: (d.telefon_c || "").trim(),
+    email_c: (d.email_c || "").trim(),
+    den_entitate: (d.den_entitate || "").trim(),
+    cif_entitate: (d.cif_entitate || "").replace(/\s+/g, ""),
+    cont_entitate: (d.cont_entitate || "").replace(/\s+/g, "").toUpperCase(),
+    suma_entitate: (String(d.suma_entitate || "")).replace(/\s+/g, ""),
+    procent: String(d.procent || "").trim(),
+    valabilitate_distribuire: parseInt(d.valabilitate_distribuire, 10) === 2 ? 2 : 1,
+  };
+}
+
+function randeazaFormularD230(corp, nav) {
+  const zona = corp.querySelector("#dec-d230-form");
+  if (!zona) return;
+  const d = S.d230;
+  const valab2 = parseInt(d.valabilitate_distribuire, 10) === 2;
+  zona.innerHTML = '<details class="dec-xml" open><summary>Contribuabil + entitate beneficiară (redirecționare 3,5%)</summary>' +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Persoana fizică (contribuabilul care redirecționează)</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">CNP <span class="oblig">*</span></span><input id="d230-cnp" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d230-nume" type="text" class="camp-input" value="' + esc(d.nume_c || "") + '"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Inițiala tată</span><input id="d230-init" type="text" maxlength="1" class="camp-input" value="' + esc(d.initiala_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Prenume <span class="oblig">*</span></span><input id="d230-pren" type="text" class="camp-input" value="' + esc(d.prenume_c || "") + '"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 260px"><span class="camp-eticheta">Adresă</span><input id="d230-adr" type="text" class="camp-input" value="' + esc(d.adresa_c || "") + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Telefon</span><input id="d230-tel" type="text" maxlength="15" class="camp-input" value="' + esc(d.telefon_c || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Email</span><input id="d230-email" type="text" class="camp-input" value="' + esc(d.email_c || "") + '"></label>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Entitatea nonprofit / unitatea de cult beneficiară</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Denumire entitate <span class="oblig">*</span></span><input id="d230-den" type="text" class="camp-input" value="' + esc(d.den_entitate || "") + '"></label>' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">CIF entitate <span class="oblig">*</span></span><input id="d230-cif" type="text" class="camp-input" value="' + esc(d.cif_entitate || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 240px"><span class="camp-eticheta">IBAN entitate <span class="oblig">*</span></span><input id="d230-iban" type="text" class="camp-input" value="' + esc(d.cont_entitate || "") + '"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Sumă (lei, opțional)</span><input id="d230-suma" type="number" step="1" min="0" class="camp-input" value="' + esc(String(d.suma_entitate || "")) + '"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Procent (max 3,5)</span><input id="d230-proc" type="number" step="0.1" min="0" max="3.5" class="camp-input" value="' + esc(String(d.procent || "")) + '"></label>' +
+      '<label class="camp" style="width:180px"><span class="camp-eticheta">Valabilitate <span class="oblig">*</span></span><select id="d230-valab" class="camp-input"><option value="1"' + (valab2 ? "" : " selected") + '>Un an</option><option value="2"' + (valab2 ? " selected" : "") + '>Doi ani</option></select></label>' +
+    "</div>" +
+    '<p class="camp-ajutor" style="margin:6px 0 0">Sumă goală = ANAF determină cuantumul (până la 3,5% din impozit). Termen: 25 mai a anului următor.</p>' +
+    '<div id="d230-msg"></div>' +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d230-regen">Regenerează D230</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    S.d230.cif_c = gv("#d230-cnp").value.trim();
+    S.d230.nume_c = gv("#d230-nume").value.trim();
+    S.d230.initiala_c = gv("#d230-init").value.trim();
+    S.d230.prenume_c = gv("#d230-pren").value.trim();
+    S.d230.adresa_c = gv("#d230-adr").value.trim();
+    S.d230.telefon_c = gv("#d230-tel").value.trim();
+    S.d230.email_c = gv("#d230-email").value.trim();
+    S.d230.den_entitate = gv("#d230-den").value.trim();
+    S.d230.cif_entitate = gv("#d230-cif").value.trim();
+    S.d230.cont_entitate = gv("#d230-iban").value.replace(/\s+/g, "").toUpperCase();
+    S.d230.suma_entitate = gv("#d230-suma").value.trim();
+    S.d230.procent = gv("#d230-proc").value.trim();
+    S.d230.valabilitate_distribuire = parseInt(gv("#d230-valab").value, 10) === 2 ? 2 : 1;
+  };
+  ["#d230-cnp", "#d230-nume", "#d230-init", "#d230-pren", "#d230-adr", "#d230-tel", "#d230-email", "#d230-den", "#d230-cif", "#d230-iban", "#d230-suma", "#d230-proc", "#d230-valab"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  gv("#d230-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    const err = [];
+    if (!S.d230.cif_c) err.push(["d230-cnp", "Completează CNP-ul contribuabilului."]);
+    if (!S.d230.nume_c) err.push(["d230-nume", "Completează numele."]);
+    if (!S.d230.prenume_c) err.push(["d230-pren", "Completează prenumele."]);
+    if (!S.d230.den_entitate) err.push(["d230-den", "Completează denumirea entității beneficiare."]);
+    if (!S.d230.cif_entitate) err.push(["d230-cif", "Completează CIF-ul entității."]);
+    if (!S.d230.cont_entitate) err.push(["d230-iban", "Completează IBAN-ul entității beneficiare."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
     pas2(corp, nav);
   });
 }
