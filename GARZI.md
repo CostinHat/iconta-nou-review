@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**632 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**633 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 601
+### `core/` — 602
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8977,6 +8977,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d112_mesaje_afisate.py` — GARD d112_mesaje_afisate: mesajele de business ridicate cu `raise ValueError(...)` din d112.py
 - `core/test_d112_nume_dataang.py` — [catalog D112 1.8/1.9] numeAsig gol + data_angajare NULL refuzate PRE-DUK.
 - `core/test_d112_reconciliere.py` — core/test_d112_reconciliere.py — gardul A DOUA CALE D112 (05.08.2026, campanie pas 3/6).
+- `core/test_d114_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D114 gol NU produce declaratie; declarantul + cel putin un
 - `core/test_d177.py` — Teste D177 (redirectionare impozit pe profit catre entitati nonprofit).
 - `core/test_d177_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D177 gol NU produce declaratie.
 - `core/test_d1_import_integritate.py` — core/test_d1_import_integritate.py — GARD: importul de salariati BLOCHEAZA CNP invalid, NU sare tacut.

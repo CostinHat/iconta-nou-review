@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -84,6 +84,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d600: { nume_c: "", initiala_c: "", prenume_c: "", cif_c: "", adresa_c: "", cont_c: "", d_rec: 0, cas_opt: false, baza_lunara: "" },
     // [formular_manual_d104] distribuire venituri asociere f.PJ: declarant + asociere + profit + asociati. In memorie, ca d200.
     d104: { declarant_nume: "", declarant_prenume: "", declarant_functie: "", asociere: { cui: "", den: "", adresa: "" }, d_rec: 0, profit_pierd: "", asociati: [] },
+    // [formular_manual_d114] CAM (situatii ne-D112): antet declarant + lista contracte (lucratori). In memorie, ca d200.
+    d114: { cif_declarant: "", den_declarant: "", adresa_declarant: "", functia_intocmit: "", den_intocmit: "", d_rec: 0, contracte: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -244,6 +246,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d603") body.manual = _d603Manual();              // [formular_manual_d603] exceptare CASS (identitate + categorie + stat + perioada)
   if (S.tip === "d600") body.manual = _d600Manual();              // [formular_manual_d600] identitate PF + optiune CAS + baza lunara
   if (S.tip === "d104") body.manual = _d104Manual();              // [formular_manual_d104] declarant + asociere + profit + asociati
+  if (S.tip === "d114") body.manual = _d114Manual();              // [formular_manual_d114] declarant + contracte (CAM)
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -276,6 +279,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d603" ? '<div id="dec-d603-form"></div>' : ""}
     ${S.tip === "d600" ? '<div id="dec-d600-form"></div>' : ""}
     ${S.tip === "d104" ? '<div id="dec-d104-form"></div>' : ""}
+    ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -299,6 +303,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d603") randeazaFormularD603(corp, nav);
   if (S.tip === "d600") randeazaFormularD600(corp, nav);
   if (S.tip === "d104") randeazaFormularD104(corp, nav);
+  if (S.tip === "d114") randeazaFormularD114(corp, nav);
     return;
   }
 
@@ -350,6 +355,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d603" ? '<div id="dec-d603-form"></div>' : ""}
     ${S.tip === "d600" ? '<div id="dec-d600-form"></div>' : ""}
     ${S.tip === "d104" ? '<div id="dec-d104-form"></div>' : ""}
+    ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -402,6 +408,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d603") randeazaFormularD603(corp, nav);
   if (S.tip === "d600") randeazaFormularD600(corp, nav);
   if (S.tip === "d104") randeazaFormularD104(corp, nav);
+  if (S.tip === "d114") randeazaFormularD114(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -2385,6 +2392,100 @@ function randeazaFormularD104(corp, nav) {
     curataEroriCamp(zona);
     salveaza();
     if (!(S.d104.asociati || []).length) { eroareCamp(zona, "d104-sden", "Adaugă cel puțin un asociat."); return; }
+    pas2(corp, nav);
+  });
+}
+
+function _d114Manual() {
+  const d = S.d114 || {};
+  return {
+    cif_declarant: (d.cif_declarant || "").replace(/\s+/g, ""), den_declarant: (d.den_declarant || "").trim(),
+    adresa_declarant: (d.adresa_declarant || "").trim(), functia_intocmit: (d.functia_intocmit || "").trim(),
+    den_intocmit: (d.den_intocmit || "").trim(), d_rec: d.d_rec ? "1" : "0",
+    contracte: (d.contracte || []).map((c) => {
+      const v = Math.round(_n(c.venit_lucrator) || 0);
+      return { cui_lucrator: (c.cui_lucrator || "").replace(/\s+/g, ""), den_lucrator: (c.den_lucrator || "").trim(),
+        nui_lucrator: (c.nui_lucrator || "").trim(), nr_contract: (c.nr_contract || "").trim(),
+        data_contract: (c.data_contract || "").trim(), venit_lucrator: v, contributie_lucrator: Math.round(v / 100) };
+    }),
+  };
+}
+
+function randeazaFormularD114(corp, nav) {
+  const zona = corp.querySelector("#dec-d114-form");
+  if (!zona) return;
+  const d = S.d114;
+  const ct = d.contracte || [];
+  let tVen = 0, tCam = 0;
+  ct.forEach((c) => { const v = Math.round(_n(c.venit_lucrator) || 0); tVen += v; tCam += Math.round(v / 100); });
+  const grila = ct.length
+    ? ct.map((c, i) => { const v = Math.round(_n(c.venit_lucrator) || 0);
+        return '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(c.den_lucrator || "(lucrător)") + " · CUI/CNP " + esc(c.cui_lucrator || "?") +
+          " · venit " + bani(v) + " · CAM (1%) " + bani(Math.round(v / 100)) + " lei</span>" +
+          '<button class="btn-link dec-d114-del" data-idx="' + i + '">șterge</button></div>'; }).join("")
+    : '<div class="stare-goala stare-goala--inline">Niciun lucrător. Adaugă contractele pentru care se datorează CAM (dar nu se declară prin D112).</div>';
+  zona.innerHTML = '<details class="dec-xml" open><summary>CAM — contribuția asiguratorie pentru muncă (situații ne-D112, ' + ct.length + " lucrători)</summary>" +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Declarantul (angajatorul)</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">CIF declarant <span class="oblig">*</span></span><input id="d114-cif" type="text" maxlength="10" class="camp-input" value="' + esc(d.cif_declarant || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire <span class="oblig">*</span></span><input id="d114-den" type="text" class="camp-input" value="' + esc(d.den_declarant || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Adresă <span class="oblig">*</span></span><input id="d114-adr" type="text" class="camp-input" value="' + esc(d.adresa_declarant || "") + '"></label>' +
+      '<label class="set-bifa"><input id="d114-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '> <span>Rectificativă</span></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 180px"><span class="camp-eticheta">Întocmit de (nume) <span class="oblig">*</span></span><input id="d114-inume" type="text" class="camp-input" value="' + esc(d.den_intocmit || "") + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Funcția <span class="oblig">*</span></span><input id="d114-ifunc" type="text" class="camp-input" value="' + esc(d.functia_intocmit || "") + '"></label>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Contracte / lucrători (CAM = 1% din venit)</div>' +
+    grila +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">CUI/CNP lucrător</span><input id="d114-lcui" type="text" maxlength="13" class="camp-input"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume lucrător</span><input id="d114-lden" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">NUI</span><input id="d114-lnui" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:120px"><span class="camp-eticheta">Nr. contract</span><input id="d114-lnr" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Dată contract</span><input id="d114-ldata" type="text" class="camp-input" placeholder="zz.ll.aaaa"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Venit (bază)</span><input id="d114-lven" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d114-add">+ lucrător</button>' +
+    "</div>" +
+    '<div id="d114-msg"></div>' +
+    '<p class="camp-ajutor" style="margin-top:8px">Σ venit: <b>' + tVen + "</b> · Σ CAM (1%): <b>" + tCam + "</b> lei. Contribuția se calculează automat = 1% din venit (regula validatorului). Perioada lunară din selectorul de sus.</p>" +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d114-regen">Regenerează D114</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    S.d114.cif_declarant = gv("#d114-cif").value.trim();
+    S.d114.den_declarant = gv("#d114-den").value.trim();
+    S.d114.adresa_declarant = gv("#d114-adr").value.trim();
+    S.d114.den_intocmit = gv("#d114-inume").value.trim();
+    S.d114.functia_intocmit = gv("#d114-ifunc").value.trim();
+    S.d114.d_rec = gv("#d114-rec").checked ? 1 : 0;
+  };
+  ["#d114-cif", "#d114-den", "#d114-adr", "#d114-inume", "#d114-ifunc"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  gv("#d114-rec").addEventListener("change", salveaza);
+  zona.querySelectorAll(".dec-d114-del").forEach((b) => b.addEventListener("click", () => { S.d114.contracte.splice(parseInt(b.dataset.idx), 1); randeazaFormularD114(corp, nav); }));
+  gv("#d114-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const cui = gv("#d114-lcui").value.trim(), den = gv("#d114-lden").value.trim();
+    const nui = gv("#d114-lnui").value.trim(), nr = gv("#d114-lnr").value.trim();
+    const data = gv("#d114-ldata").value.trim(), ven = Math.round(_n(gv("#d114-lven").value) || 0);
+    const err = [];
+    if (!cui) err.push(["d114-lcui", "Completează CUI/CNP-ul lucrătorului."]);
+    if (!den) err.push(["d114-lden", "Completează numele."]);
+    if (!nui) err.push(["d114-lnui", "Completează NUI-ul."]);
+    if (!nr) err.push(["d114-lnr", "Completează numărul contractului."]);
+    if (!data) err.push(["d114-ldata", "Completează data contractului (zz.ll.aaaa)."]);
+    if (ven <= 0) err.push(["d114-lven", "Venitul trebuie > 0."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    salveaza();
+    S.d114.contracte = S.d114.contracte || [];
+    S.d114.contracte.push({ cui_lucrator: cui, den_lucrator: den, nui_lucrator: nui, nr_contract: nr, data_contract: data, venit_lucrator: ven, contributie_lucrator: Math.round(ven / 100) });
+    randeazaFormularD114(corp, nav);
+  });
+  gv("#d114-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    if (!(S.d114.contracte || []).length) { eroareCamp(zona, "d114-lcui", "Adaugă cel puțin un lucrător."); return; }
     pas2(corp, nav);
   });
 }

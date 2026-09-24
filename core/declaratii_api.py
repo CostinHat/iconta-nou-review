@@ -319,7 +319,7 @@ DECLARATII = {
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d110", "d220",
                        "d393", "d395", "d397", "d120",
-                       "d106", "d108", "d114", "d130", "d318",
+                       "d106", "d108", "d130", "d318",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
                        "d101g", "d169", "d398", "d399", "d403", "d407"))
 
@@ -504,6 +504,15 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("nume_c") or not m.get("cif_c"):
             erori.append("D600 nu are ce genera: completează datele persoanei fizice (CNP, nume, adresă) și "
                          "bifează contribuția datorată (CAS) cu baza lunară estimată.")
+
+    # d114 (CAM pentru situatii ne-D112, MANUALA lunara): declarant + cel putin un contract (lucrator).
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (cui_lucrator, venit/contributie > 0, campuri obligatorii) le da d114.erori_generare.
+    if tip == "d114":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("cif_declarant") or not m.get("contracte"):
+            erori.append("D114 nu are ce genera: completează declarantul (CIF, denumire, adresă) și adaugă "
+                         "cel puțin un lucrator (contract) cu venitul și contribuția CAM.")
 
     # d104 (distribuire venituri asocieri f.PJ, MANUALA trimestriala): declarant + asociere + asociati + profit_pierd.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
