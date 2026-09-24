@@ -124,13 +124,21 @@ def _asociere(prof, manual):
             "adresa": a.get("adresa") or prof.get("adresa")}
 
 
+def _declarant(prof, manual):
+    """Declarantul (reprezentantul): din manual daca e dat, altfel din firma_profil (pull)."""
+    return {"nume": manual.get("declarant_nume") or prof.get("declarant_nume"),
+            "prenume": manual.get("declarant_prenume") or prof.get("declarant_prenume"),
+            "functie": manual.get("declarant_functie") or prof.get("declarant_functie")}
+
+
 def erori_generare(prof, luna, manual):
     er = []
     if luna not in _LUNI_VALIDE:
         er.append("D104: luna de raportare %r invalidă (trim -> 3/6/9/12)." % luna)
-    for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
-        if not str(prof.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
+    _d = _declarant(prof, manual)
+    for k, et in (("nume", "declarant_nume"), ("prenume", "declarant_prenume"), ("functie", "declarant_functie")):
+        if not str(_d.get(k) or "").strip():
+            er.append("LIPSĂ %s (declarant obligatoriu)." % et)
     aso = _asociere(prof, manual)
     if not _cif(aso.get("cui")):
         er.append("CUI asociere lipsă/invalid (manual.asociere.cui sau firma_profil).")
@@ -168,13 +176,14 @@ def erori_generare(prof, luna, manual):
 
 def build_xml(prof, an, luna, manual, calc):
     aso = _asociere(prof, manual)
+    _d = _declarant(prof, manual)
     a = []
     a.append('luna="%d"' % int(luna))
     a.append('an="%d"' % int(an))
     a.append('d_rec="%d"' % int(manual.get("d_rec") or 0))
-    a.append('nume_declar="%s"' % _esc(prof.get("declarant_nume"), 75))
-    a.append('prenume_declar="%s"' % _esc(prof.get("declarant_prenume"), 75))
-    a.append('functie_declar="%s"' % _esc(prof.get("declarant_functie"), 50))
+    a.append('nume_declar="%s"' % _esc(_d.get("nume"), 75))
+    a.append('prenume_declar="%s"' % _esc(_d.get("prenume"), 75))
+    a.append('functie_declar="%s"' % _esc(_d.get("functie"), 50))
     a.append('cui="%s"' % _cif(aso.get("cui")))
     a.append('den="%s"' % _esc(aso.get("den"), 200))
     a.append('adresa="%s"' % _esc(aso.get("adresa"), 1000))

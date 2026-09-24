@@ -317,7 +317,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d110", "d220",
+_DOAR_API = frozenset(("d110", "d220",
                        "d393", "d395", "d397", "d120",
                        "d106", "d108", "d114", "d130", "d318",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -505,11 +505,14 @@ def valideaza_cerere(tip, body, per_efectiv=None):
             erori.append("D600 nu are ce genera: completează datele persoanei fizice (CNP, nume, adresă) și "
                          "bifează contribuția datorată (CAS) cu baza lunară estimată.")
 
-    # d104 (distribuire venituri asocieri, MANUALA trimestriala): cere trim + manual.asociati
+    # d104 (distribuire venituri asocieri f.PJ, MANUALA trimestriala): declarant + asociere + asociati + profit_pierd.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (cota, CUI, cif1 unic, totaluri) le da d104.erori_generare.
     if tip == "d104":
         m = body.get("manual")
-        if not isinstance(m, dict) or not m.get("asociati"):
-            erori.append("d104 cere `manual.asociati` (asociații asocierii) + `manual.profit_pierd`")
+        if not isinstance(m, dict) or not m.get("asociati") or m.get("profit_pierd") is None:
+            erori.append("D104 nu are ce genera: completează asocierea și profitul/pierderea, apoi adaugă "
+                         "asociații cu cota și sumele (venit, cheltuieli, impozit) de distribuit.")
 
     # d107 (informativa sponsorizari/mecenat/burse, MANUALA anuala): cere manual.beneficiari. Mesaj de CONTABIL
     # (formularul manual din UI trimite mereu beneficiari -> aici cade doar apelul API gol). Detaliile pe

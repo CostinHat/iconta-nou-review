@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**631 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**632 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 600
+### `core/` — 601
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8961,6 +8961,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d101_sponsorizare_075.py` — GARD D101 (16.08.2026, campanie rețeta D300, pas 6/8) — sponsorizare: limita 0.75% cifra de afaceri.
 - `core/test_d101_valori_pre_duk.py` — GARD (TURA 3, 10.08.2026): D101 surfaceaza PRE-DUK, cu motiv EXACT, valorile fiscale invalide
 - `core/test_d104.py` — Teste D104 (distribuire intre asociati a veniturilor/cheltuielilor - asocieri fara personalitate juridica).
+- `core/test_d104_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D104 gol NU produce declaratie; declarantul + asocierea +
 - `core/test_d107.py` — Teste D107 (informativa beneficiari sponsorizari / mecenat / burse private).
 - `core/test_d107_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D107 gol NU produce declaratie.
 - `core/test_d110.py` — Teste D110 (regularizare/restituire impozit pe venit retinut la sursa).
