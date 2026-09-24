@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -72,6 +72,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d204: { d_rec: 0, asociere: { den: "", cif: "", adresa: "" }, reprezentant: { nume: "", cif: "", adresa: "", telefon: "", email: "" }, activitate: { categ_venit: 1, caen: "", judet: "", sector: "", sediu: "", nr_contr: "", data_contr: "", venit3: "", chelt3: "" }, asociati: [] },
     // [formular_manual_d223] venituri estimate asociere f.PJ: declarant + asociere + responsabil + activitate + asociati. In memorie, ca d200.
     d223: { declarant_nume: "", declarant_prenume: "", declarant_functie: "", d_rec1: 0, d_rec: 0, asociere: { nume: "", cif: "", adresa: "", telefon: "", email: "" }, responsabil: { den_r: "", cif_r: "", adresa_r: "" }, activitate: { categ_venit: "1", forma_org: "2", det_venit: "1", caen: "", judet: "", localitate: "", sector: "", sediu: "", nr_contr: "", data_contr: "", venit_brut: "", cheltuieli: "" }, asociati: [] },
+    // [formular_manual_d216] impozit special bunuri de valoare mare: antet + liste imobile/mobile. In memorie, ca d200.
+    d216: { nume: "", cif: "", domiciliuFiscal: "", nume_intocmit: "", functia_intocmit: "", d_rec: 0, nume_imputernicit: "", cif_imputernicit: "", imobile: [], mobile: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -226,6 +228,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d230") body.manual = _d230Manual();              // [formular_manual_d230] identitate PF + entitate ONG
   if (S.tip === "d204") body.manual = _d204Manual();              // [formular_manual_d204] asociere + reprezentant + activitate + asociati
   if (S.tip === "d223") body.manual = _d223Manual();              // [formular_manual_d223] asociere estimat + responsabil + activitate + asociati
+  if (S.tip === "d216") body.manual = _d216Manual();              // [formular_manual_d216] antet + liste bunuri imobile/mobile
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -252,6 +255,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d230" ? '<div id="dec-d230-form"></div>' : ""}
     ${S.tip === "d204" ? '<div id="dec-d204-form"></div>' : ""}
     ${S.tip === "d223" ? '<div id="dec-d223-form"></div>' : ""}
+    ${S.tip === "d216" ? '<div id="dec-d216-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -269,6 +273,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d230") randeazaFormularD230(corp, nav);
   if (S.tip === "d204") randeazaFormularD204(corp, nav);
   if (S.tip === "d223") randeazaFormularD223(corp, nav);
+  if (S.tip === "d216") randeazaFormularD216(corp, nav);
     return;
   }
 
@@ -314,6 +319,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d230" ? '<div id="dec-d230-form"></div>' : ""}
     ${S.tip === "d204" ? '<div id="dec-d204-form"></div>' : ""}
     ${S.tip === "d223" ? '<div id="dec-d223-form"></div>' : ""}
+    ${S.tip === "d216" ? '<div id="dec-d216-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -360,6 +366,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d230") randeazaFormularD230(corp, nav);
   if (S.tip === "d204") randeazaFormularD204(corp, nav);
   if (S.tip === "d223") randeazaFormularD223(corp, nav);
+  if (S.tip === "d216") randeazaFormularD216(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -1677,6 +1684,145 @@ function randeazaFormularD223(corp, nav) {
     curataEroriCamp(zona);
     salveaza();
     if (!(S.d223.asociati || []).length) { eroareCamp(zona, "d223-scnp", "Adaugă cel puțin un asociat înainte de a genera D223."); return; }
+    pas2(corp, nav);
+  });
+}
+
+function _d216Round(x) { return x >= 0 ? Math.floor(x + 0.5) : -Math.floor(-x + 0.5); }
+function _d216ImpImob(b) {
+  const v = Math.round(_n(b.valoare_impozabila_imobil) || 0), p = Math.round(_n(b.plafon_imobil) || 0), c = _n(b.cota) || 0;
+  const baza = _d216Round((v - p) * c / 100);
+  return { baza: baza, imp: _d216Round(baza * 0.3 / 100) };
+}
+function _d216ImpMob(b) {
+  const v = Math.round(_n(b.valoare_impozabila_mobil) || 0), p = Math.round(_n(b.plafon_mobil) || 0);
+  const baza = v - p;
+  return { baza: baza, imp: _d216Round(baza * 0.3 / 100) };
+}
+
+function _d216Manual() {
+  const d = S.d216 || {};
+  return {
+    nume: (d.nume || "").trim(), cif: (d.cif || "").replace(/\s+/g, ""), domiciliuFiscal: (d.domiciliuFiscal || "").trim(),
+    nume_intocmit: (d.nume_intocmit || "").trim(), functia_intocmit: (d.functia_intocmit || "").trim(), d_rec: d.d_rec ? 1 : 0,
+    nume_imputernicit: (d.nume_imputernicit || "").trim(), cif_imputernicit: (d.cif_imputernicit || "").replace(/\s+/g, ""),
+    imobile: (d.imobile || []).map((b) => ({ judet_imobil: (b.judet_imobil || "").trim(), cod_judet_imobil: (b.cod_judet_imobil || "").trim(),
+      localitate_imobil: (b.localitate_imobil || "").trim(), cod_localitate_imobil: (b.cod_localitate_imobil || "").trim(),
+      strada_imobil: (b.strada_imobil || "").trim(), cod_strada_imobil: (b.cod_strada_imobil || "").trim(),
+      nr_strada: (b.nr_strada || "").trim(), nr_cadastral: (b.nr_cadastral || "").trim(),
+      valoare_impozabila_imobil: Math.round(_n(b.valoare_impozabila_imobil) || 0), cota: _n(b.cota) || 0, plafon_imobil: Math.round(_n(b.plafon_imobil) || 0) })),
+    mobile: (d.mobile || []).map((b) => ({ an_detinere: parseInt(b.an_detinere, 10) || 0, niv: parseInt(b.niv, 10) || 0,
+      valoare_impozabila_mobil: Math.round(_n(b.valoare_impozabila_mobil) || 0), plafon_mobil: Math.round(_n(b.plafon_mobil) || 0) })),
+  };
+}
+
+function randeazaFormularD216(corp, nav) {
+  const zona = corp.querySelector("#dec-d216-form");
+  if (!zona) return;
+  const d = S.d216;
+  const imob = d.imobile || [], mob = d.mobile || [];
+  let tImob = 0, tMob = 0;
+  const grilaI = imob.length
+    ? imob.map((b, i) => { const r = _d216ImpImob(b); tImob += r.imp;
+        return '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(b.localitate_imobil || "(imobil)") + " · " + esc(b.nr_cadastral || "") +
+          " · valoare " + bani(Math.round(_n(b.valoare_impozabila_imobil) || 0)) + " · plafon " + bani(Math.round(_n(b.plafon_imobil) || 0)) + " · impozit " + bani(r.imp) + " lei</span>" +
+          '<button class="btn-link dec-d216-deli" data-idx="' + i + '">șterge</button></div>'; }).join("")
+    : '<div class="stare-goala stare-goala--inline">Niciun bun imobil.</div>';
+  const grilaM = mob.length
+    ? mob.map((b, i) => { const r = _d216ImpMob(b); tMob += r.imp;
+        return '<div class="dec-man-rand"><span class="dec-recl-desc">Autovehicul/mobil an ' + esc(String(b.an_detinere || "")) + " · niv " + esc(String(b.niv || "")) +
+          " · valoare " + bani(Math.round(_n(b.valoare_impozabila_mobil) || 0)) + " · impozit " + bani(r.imp) + " lei</span>" +
+          '<button class="btn-link dec-d216-delm" data-idx="' + i + '">șterge</button></div>'; }).join("")
+    : '<div class="stare-goala stare-goala--inline">Niciun bun mobil.</div>';
+  zona.innerHTML = '<details class="dec-xml" open><summary>Impozit special pe bunuri de valoare mare (' + imob.length + " imobile · " + mob.length + " mobile)</summary>" +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d216-nume" type="text" class="camp-input" value="' + esc(d.nume || "") + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">CNP/CUI <span class="oblig">*</span></span><input id="d216-cif" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 240px"><span class="camp-eticheta">Domiciliu fiscal <span class="oblig">*</span></span><input id="d216-dom" type="text" class="camp-input" value="' + esc(d.domiciliuFiscal || "") + '"></label>' +
+      '<label class="set-bifa"><input id="d216-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '> <span>Rectificativă</span></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 180px"><span class="camp-eticheta">Întocmit de (nume) <span class="oblig">*</span></span><input id="d216-inume" type="text" class="camp-input" value="' + esc(d.nume_intocmit || "") + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Funcția <span class="oblig">*</span></span><input id="d216-ifunc" type="text" class="camp-input" value="' + esc(d.functia_intocmit || "") + '"></label>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Bunuri imobile rezidențiale (valoare peste plafon)</div>' +
+    grilaI +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Județ</span><input id="d216-ijud" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:90px"><span class="camp-eticheta">Cod jud</span><input id="d216-icjud" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Localitate</span><input id="d216-iloc" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:90px"><span class="camp-eticheta">Cod loc</span><input id="d216-icloc" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Stradă</span><input id="d216-istr" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:90px"><span class="camp-eticheta">Cod str</span><input id="d216-icstr" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:120px"><span class="camp-eticheta">Nr. cadastral</span><input id="d216-icad" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:140px"><span class="camp-eticheta">Valoare impozabilă</span><input id="d216-ival" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:100px"><span class="camp-eticheta">Cotă %</span><input id="d216-icota" type="number" step="0.0001" min="0" max="100" class="camp-input" value="0.3"></label>' +
+      '<label class="camp" style="width:140px"><span class="camp-eticheta">Plafon</span><input id="d216-iplaf" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d216-addi">+ imobil</button>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:12px 0 4px">Bunuri mobile de valoare mare (autovehicule etc.)</div>' +
+    grilaM +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:120px"><span class="camp-eticheta">An deținere</span><input id="d216-man" type="number" step="1" min="1900" class="camp-input"></label>' +
+      '<label class="camp" style="width:100px"><span class="camp-eticheta">Niv</span><input id="d216-mniv" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Valoare impozabilă</span><input id="d216-mval" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:140px"><span class="camp-eticheta">Plafon</span><input id="d216-mplaf" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d216-addm">+ mobil</button>' +
+    "</div>" +
+    '<div id="d216-msg"></div>' +
+    '<p class="camp-ajutor" style="margin-top:8px">Impozit imobile: <b>' + tImob + "</b> · impozit mobile: <b>" + tMob + "</b> lei (calculat cu rata validatorului 0,3%). Valoarea impozabilă trebuie să depășească plafonul.</p>" +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d216-regen">Regenerează D216</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveazaAntet = () => {
+    S.d216.nume = gv("#d216-nume").value.trim();
+    S.d216.cif = gv("#d216-cif").value.trim();
+    S.d216.domiciliuFiscal = gv("#d216-dom").value.trim();
+    S.d216.nume_intocmit = gv("#d216-inume").value.trim();
+    S.d216.functia_intocmit = gv("#d216-ifunc").value.trim();
+    S.d216.d_rec = gv("#d216-rec").checked ? 1 : 0;
+  };
+  ["#d216-nume", "#d216-cif", "#d216-dom", "#d216-inume", "#d216-ifunc"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  gv("#d216-rec").addEventListener("change", salveazaAntet);
+  zona.querySelectorAll(".dec-d216-deli").forEach((b) => b.addEventListener("click", () => { S.d216.imobile.splice(parseInt(b.dataset.idx), 1); randeazaFormularD216(corp, nav); }));
+  zona.querySelectorAll(".dec-d216-delm").forEach((b) => b.addEventListener("click", () => { S.d216.mobile.splice(parseInt(b.dataset.idx), 1); randeazaFormularD216(corp, nav); }));
+  gv("#d216-addi").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const val = Math.round(_n(gv("#d216-ival").value) || 0), plaf = Math.round(_n(gv("#d216-iplaf").value) || 0);
+    const err = [];
+    if (!gv("#d216-iloc").value.trim()) err.push(["d216-iloc", "Completează localitatea."]);
+    if (!gv("#d216-icad").value.trim()) err.push(["d216-icad", "Completează numărul cadastral."]);
+    if (val <= 0) err.push(["d216-ival", "Valoarea impozabilă trebuie > 0."]);
+    if (val <= plaf) err.push(["d216-ival", "Valoarea impozabilă trebuie să depășească plafonul."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    salveazaAntet();
+    S.d216.imobile = S.d216.imobile || [];
+    S.d216.imobile.push({ judet_imobil: gv("#d216-ijud").value.trim(), cod_judet_imobil: gv("#d216-icjud").value.trim(),
+      localitate_imobil: gv("#d216-iloc").value.trim(), cod_localitate_imobil: gv("#d216-icloc").value.trim(),
+      strada_imobil: gv("#d216-istr").value.trim(), cod_strada_imobil: gv("#d216-icstr").value.trim(),
+      nr_cadastral: gv("#d216-icad").value.trim(), valoare_impozabila_imobil: val, cota: _n(gv("#d216-icota").value) || 0, plafon_imobil: plaf });
+    randeazaFormularD216(corp, nav);
+  });
+  gv("#d216-addm").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const val = Math.round(_n(gv("#d216-mval").value) || 0), plaf = Math.round(_n(gv("#d216-mplaf").value) || 0);
+    const err = [];
+    if ((parseInt(gv("#d216-man").value, 10) || 0) <= 0) err.push(["d216-man", "Completează anul de deținere."]);
+    if (val <= 0) err.push(["d216-mval", "Valoarea impozabilă trebuie > 0."]);
+    if (val <= plaf) err.push(["d216-mval", "Valoarea impozabilă trebuie să depășească plafonul."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    salveazaAntet();
+    S.d216.mobile = S.d216.mobile || [];
+    S.d216.mobile.push({ an_detinere: parseInt(gv("#d216-man").value, 10) || 0, niv: parseInt(gv("#d216-mniv").value, 10) || 0,
+      valoare_impozabila_mobil: val, plafon_mobil: plaf });
+    randeazaFormularD216(corp, nav);
+  });
+  gv("#d216-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveazaAntet();
+    if (!(S.d216.imobile || []).length && !(S.d216.mobile || []).length) { eroareCamp(zona, "d216-iloc", "Adaugă cel puțin un bun (imobil sau mobil)."); return; }
     pas2(corp, nav);
   });
 }

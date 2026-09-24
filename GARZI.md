@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**626 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**627 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 595
+### `core/` — 596
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8997,6 +8997,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
+- `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
 - `core/test_d220.py` — Teste D220 (venit estimat / norma de venit - persoane fizice).
 - `core/test_d221.py` — Teste D221 (venituri din activitati agricole impuse pe norme de venit - persoane fizice/asocieri).
 - `core/test_d223.py` — Teste D223 (venituri estimate pentru asocieri fara personalitate juridica / transparenta fiscala).
