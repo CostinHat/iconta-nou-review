@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -74,6 +74,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d223: { declarant_nume: "", declarant_prenume: "", declarant_functie: "", d_rec1: 0, d_rec: 0, asociere: { nume: "", cif: "", adresa: "", telefon: "", email: "" }, responsabil: { den_r: "", cif_r: "", adresa_r: "" }, activitate: { categ_venit: "1", forma_org: "2", det_venit: "1", caen: "", judet: "", localitate: "", sector: "", sediu: "", nr_contr: "", data_contr: "", venit_brut: "", cheltuieli: "" }, asociati: [] },
     // [formular_manual_d216] impozit special bunuri de valoare mare: antet + liste imobile/mobile. In memorie, ca d200.
     d216: { nume: "", cif: "", domiciliuFiscal: "", nume_intocmit: "", functia_intocmit: "", d_rec: 0, nume_imputernicit: "", cif_imputernicit: "", imobile: [], mobile: [] },
+    // [formular_manual_d208] transfer proprietati imobiliare (notari): antet + tranzactie/imobil + beneficiari + parti. In memorie, ca d200.
+    d208: { nume: "", cif: "", domiciliu: "", nume_intocmit: "", functia_intocmit: "", dRec: 0, nr_act_notarial: "", mod_transfer: "1", taxa_notar: "", imobil: { judet: "", localitate: "", codSIRUTA: "", nr_cadastral: "", tip_imobil: "teren", val_tranzactie_imobil: "", val_piata_imobil: "" }, beneficiari: [], parti: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -229,6 +231,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d204") body.manual = _d204Manual();              // [formular_manual_d204] asociere + reprezentant + activitate + asociati
   if (S.tip === "d223") body.manual = _d223Manual();              // [formular_manual_d223] asociere estimat + responsabil + activitate + asociati
   if (S.tip === "d216") body.manual = _d216Manual();              // [formular_manual_d216] antet + liste bunuri imobile/mobile
+  if (S.tip === "d208") body.manual = _d208Manual();              // [formular_manual_d208] notar + tranzactie/imobil + beneficiari + parti
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -256,6 +259,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d204" ? '<div id="dec-d204-form"></div>' : ""}
     ${S.tip === "d223" ? '<div id="dec-d223-form"></div>' : ""}
     ${S.tip === "d216" ? '<div id="dec-d216-form"></div>' : ""}
+    ${S.tip === "d208" ? '<div id="dec-d208-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -274,6 +278,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d204") randeazaFormularD204(corp, nav);
   if (S.tip === "d223") randeazaFormularD223(corp, nav);
   if (S.tip === "d216") randeazaFormularD216(corp, nav);
+  if (S.tip === "d208") randeazaFormularD208(corp, nav);
     return;
   }
 
@@ -320,6 +325,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d204" ? '<div id="dec-d204-form"></div>' : ""}
     ${S.tip === "d223" ? '<div id="dec-d223-form"></div>' : ""}
     ${S.tip === "d216" ? '<div id="dec-d216-form"></div>' : ""}
+    ${S.tip === "d208" ? '<div id="dec-d208-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -367,6 +373,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d204") randeazaFormularD204(corp, nav);
   if (S.tip === "d223") randeazaFormularD223(corp, nav);
   if (S.tip === "d216") randeazaFormularD216(corp, nav);
+  if (S.tip === "d208") randeazaFormularD208(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -1823,6 +1830,152 @@ function randeazaFormularD216(corp, nav) {
     curataEroriCamp(zona);
     salveazaAntet();
     if (!(S.d216.imobile || []).length && !(S.d216.mobile || []).length) { eroareCamp(zona, "d216-iloc", "Adaugă cel puțin un bun (imobil sau mobil)."); return; }
+    pas2(corp, nav);
+  });
+}
+
+function _d208Manual() {
+  const d = S.d208 || {};
+  const im = d.imobil || {};
+  return {
+    nume: (d.nume || "").trim(), cif: (d.cif || "").replace(/\s+/g, ""), domiciliu: (d.domiciliu || "").trim(),
+    nume_intocmit: (d.nume_intocmit || "").trim(), functia_intocmit: (d.functia_intocmit || "").trim(), dRec: d.dRec ? "1" : "0",
+    nr_act_notarial: (d.nr_act_notarial || "").trim(), mod_transfer: String(d.mod_transfer || "1"), taxa_notar: Math.round(_n(d.taxa_notar) || 0),
+    imobile: [{
+      judet: (im.judet || "").trim(), localitate: (im.localitate || "").trim(), codSIRUTA: (im.codSIRUTA || "").replace(/\s+/g, ""),
+      nr_cadastral: (im.nr_cadastral || "").trim(), tip_imobil: String(im.tip_imobil || "teren"),
+      val_tranzactie_imobil: Math.round(_n(im.val_tranzactie_imobil) || 0),
+      val_piata_imobil: Math.round(_n(im.val_piata_imobil || im.val_tranzactie_imobil) || 0),
+      beneficiari: (d.beneficiari || []).map((b) => ({ cui: (b.cui || "").replace(/\s+/g, ""), nume: (b.nume || "").trim(), cota: _n(b.cota) || 0,
+        cotaImpozit: parseInt(b.cotaImpozit, 10) || 0, baza_calcul: Math.round(_n(b.baza_calcul) || 0), impozit: Math.round(_n(b.impozit) || 0), impozit_scutit: Math.round(_n(b.impozit_scutit) || 0) })),
+      parti: (d.parti || []).map((p) => ({ cui: (p.cui || "").replace(/\s+/g, ""), nume: (p.nume || "").trim(), cota: _n(p.cota) || 0 })),
+    }],
+  };
+}
+
+function randeazaFormularD208(corp, nav) {
+  const zona = corp.querySelector("#dec-d208-form");
+  if (!zona) return;
+  const d = S.d208;
+  const im = d.imobil || {};
+  const ben = d.beneficiari || [], par = d.parti || [];
+  let sBen = 0, sPar = 0, tImp = 0;
+  ben.forEach((b) => { sBen += _n(b.cota) || 0; tImp += Math.round(_n(b.impozit) || 0); });
+  par.forEach((p) => { sPar += _n(p.cota) || 0; });
+  const okBen = ben.length && Math.abs(sBen - 100) < 0.005, okPar = par.length && Math.abs(sPar - 100) < 0.005;
+  const optJud = _D204_JUDETE.map((p) => '<option value="' + p[0] + '"' + (String(im.judet) === p[0] ? " selected" : "") + ">" + esc(p[1]) + "</option>").join("");
+  const optTip = (v, lbl) => '<option value="' + v + '"' + (String(im.tip_imobil || "teren") === v ? " selected" : "") + ">" + lbl + "</option>";
+  const grilaB = ben.length
+    ? ben.map((b, i) => '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(b.nume || "(beneficiar)") + " · CUI " + esc(b.cui || "?") +
+        " · cotă " + esc(String(b.cota || 0)) + "% · cotăImpozit " + esc(String(b.cotaImpozit || 0)) + " · impozit " + bani(Math.round(_n(b.impozit) || 0)) + " lei</span>" +
+        '<button class="btn-link dec-d208-delb" data-idx="' + i + '">șterge</button></div>').join("")
+    : '<div class="stare-goala stare-goala--inline">Niciun beneficiar (obligatoriu; cotele însumează 100).</div>';
+  const grilaP = par.length
+    ? par.map((p, i) => '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(p.nume || "(parte)") + " · CUI " + esc(p.cui || "?") + " · cotă " + esc(String(p.cota || 0)) + "%</span>" +
+        '<button class="btn-link dec-d208-delp" data-idx="' + i + '">șterge</button></div>').join("")
+    : '<div class="stare-goala stare-goala--inline">Nicio altă parte contractantă (obligatoriu; cotele însumează 100).</div>';
+  zona.innerHTML = '<details class="dec-xml" open><summary>Transfer proprietăți imobiliare — declarație notarială (' + ben.length + " beneficiari · " + par.length + " părți)</summary>" +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Biroul notarial</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 240px"><span class="camp-eticheta">Denumire birou notarial <span class="oblig">*</span></span><input id="d208-nume" type="text" class="camp-input" value="' + esc(d.nume || "") + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">CIF <span class="oblig">*</span></span><input id="d208-cif" type="text" maxlength="10" class="camp-input" value="' + esc(d.cif || "") + '"></label>' +
+      '<label class="camp" style="flex:1 1 240px"><span class="camp-eticheta">Domiciliu fiscal <span class="oblig">*</span></span><input id="d208-dom" type="text" class="camp-input" value="' + esc(d.domiciliu || "") + '"></label>' +
+      '<label class="set-bifa"><input id="d208-rec" type="checkbox" ' + (d.dRec && String(d.dRec) !== "0" ? "checked" : "") + '> <span>Rectificativă</span></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 180px"><span class="camp-eticheta">Întocmit de (nume) <span class="oblig">*</span></span><input id="d208-inume" type="text" class="camp-input" value="' + esc(d.nume_intocmit || "") + '"></label>' +
+      '<label class="camp" style="width:180px"><span class="camp-eticheta">Funcția <span class="oblig">*</span></span><input id="d208-ifunc" type="text" class="camp-input" value="' + esc(d.functia_intocmit || "") + '"></label>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Tranzacția și imobilul</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Nr. act notarial <span class="oblig">*</span></span><input id="d208-act" type="text" class="camp-input" value="' + esc(d.nr_act_notarial || "") + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Taxă notar</span><input id="d208-taxa" type="number" step="1" min="0" class="camp-input" value="' + esc(String(d.taxa_notar || "")) + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Județ <span class="oblig">*</span></span><select id="d208-jud" class="camp-input"><option value="">— alege —</option>' + optJud + "</select></label>" +
+      '<label class="camp" style="flex:1 1 180px"><span class="camp-eticheta">Localitate <span class="oblig">*</span></span><input id="d208-loc" type="text" class="camp-input" value="' + esc(im.localitate || "") + '"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Cod SIRUTA <span class="oblig">*</span></span><input id="d208-sir" type="text" class="camp-input" value="' + esc(im.codSIRUTA || "") + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Nr. cadastral <span class="oblig">*</span></span><input id="d208-cad" type="text" class="camp-input" value="' + esc(im.nr_cadastral || "") + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Tip imobil</span><select id="d208-tip" class="camp-input">' + optTip("teren", "Teren") + optTip("cladire", "Clădire") + optTip("unitate", "Unitate") + "</select></label>" +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Valoare tranzacție</span><input id="d208-valt" type="number" step="1" min="0" class="camp-input" value="' + esc(String(im.val_tranzactie_imobil || "")) + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Valoare piață</span><input id="d208-valp" type="number" step="1" min="0" class="camp-input" value="' + esc(String(im.val_piata_imobil || "")) + '"></label>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Beneficiari (dobânditori) — cotele însumează 100</div>' +
+    grilaB +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">CUI/CNP</span><input id="d208-bcui" type="text" maxlength="13" class="camp-input"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume</span><input id="d208-bnume" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:90px"><span class="camp-eticheta">Cotă %</span><input id="d208-bcota" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
+      '<label class="camp" style="width:120px"><span class="camp-eticheta">Cotă impozit</span><select id="d208-bci" class="camp-input"><option value="0">0</option><option value="1">1</option><option value="3" selected>3</option></select></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Bază calcul</span><input id="d208-bbaza" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:120px"><span class="camp-eticheta">Impozit</span><input id="d208-bimp" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:120px"><span class="camp-eticheta">Impozit scutit</span><input id="d208-bsc" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d208-addb">+ beneficiar</button>' +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:12px 0 4px">Celelalte părți contractante (înstrăinători) — cotele însumează 100</div>' +
+    grilaP +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">CUI/CNP</span><input id="d208-pcui" type="text" maxlength="13" class="camp-input"></label>' +
+      '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume</span><input id="d208-pnume" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:90px"><span class="camp-eticheta">Cotă %</span><input id="d208-pcota" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d208-addp">+ parte</button>' +
+    "</div>" +
+    '<div id="d208-msg"></div>' +
+    '<p class="camp-ajutor" style="margin-top:8px">Σ cote beneficiari: <b>' + (Math.round(sBen * 100) / 100) + "</b>% " + (okBen ? "✓" : "(trebuie 100)") +
+      " · Σ cote părți: <b>" + (Math.round(sPar * 100) / 100) + "</b>% " + (okPar ? "✓" : "(trebuie 100)") + " · impozit total: <b>" + tImp + "</b> lei</p>" +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d208-regen">Regenerează D208</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    S.d208.nume = gv("#d208-nume").value.trim();
+    S.d208.cif = gv("#d208-cif").value.trim();
+    S.d208.domiciliu = gv("#d208-dom").value.trim();
+    S.d208.dRec = gv("#d208-rec").checked ? "1" : "0";
+    S.d208.nume_intocmit = gv("#d208-inume").value.trim();
+    S.d208.functia_intocmit = gv("#d208-ifunc").value.trim();
+    S.d208.nr_act_notarial = gv("#d208-act").value.trim();
+    S.d208.taxa_notar = _n(gv("#d208-taxa").value) || 0;
+    S.d208.imobil = { judet: gv("#d208-jud").value, localitate: gv("#d208-loc").value.trim(), codSIRUTA: gv("#d208-sir").value.trim(),
+      nr_cadastral: gv("#d208-cad").value.trim(), tip_imobil: gv("#d208-tip").value,
+      val_tranzactie_imobil: _n(gv("#d208-valt").value) || 0, val_piata_imobil: _n(gv("#d208-valp").value) || 0 };
+  };
+  ["#d208-nume", "#d208-cif", "#d208-dom", "#d208-inume", "#d208-ifunc", "#d208-act", "#d208-taxa", "#d208-jud", "#d208-loc", "#d208-sir", "#d208-cad", "#d208-tip", "#d208-valt", "#d208-valp"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  gv("#d208-rec").addEventListener("change", salveaza);
+  zona.querySelectorAll(".dec-d208-delb").forEach((b) => b.addEventListener("click", () => { S.d208.beneficiari.splice(parseInt(b.dataset.idx), 1); randeazaFormularD208(corp, nav); }));
+  zona.querySelectorAll(".dec-d208-delp").forEach((b) => b.addEventListener("click", () => { S.d208.parti.splice(parseInt(b.dataset.idx), 1); randeazaFormularD208(corp, nav); }));
+  gv("#d208-addb").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const cui = gv("#d208-bcui").value.trim(), nume = gv("#d208-bnume").value.trim(), cota = gv("#d208-bcota").value.trim();
+    const err = [];
+    if (!cui) err.push(["d208-bcui", "Completează CUI/CNP-ul beneficiarului."]);
+    if (!nume) err.push(["d208-bnume", "Completează numele."]);
+    if (!cota) err.push(["d208-bcota", "Completează cota."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    salveaza();
+    S.d208.beneficiari = S.d208.beneficiari || [];
+    S.d208.beneficiari.push({ cui: cui, nume: nume, cota: _n(cota) || 0, cotaImpozit: parseInt(gv("#d208-bci").value, 10) || 0,
+      baza_calcul: Math.round(_n(gv("#d208-bbaza").value) || 0), impozit: Math.round(_n(gv("#d208-bimp").value) || 0), impozit_scutit: Math.round(_n(gv("#d208-bsc").value) || 0) });
+    randeazaFormularD208(corp, nav);
+  });
+  gv("#d208-addp").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const cui = gv("#d208-pcui").value.trim(), nume = gv("#d208-pnume").value.trim(), cota = gv("#d208-pcota").value.trim();
+    const err = [];
+    if (!cui) err.push(["d208-pcui", "Completează CUI/CNP-ul părții."]);
+    if (!nume) err.push(["d208-pnume", "Completează numele."]);
+    if (!cota) err.push(["d208-pcota", "Completează cota."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    salveaza();
+    S.d208.parti = S.d208.parti || [];
+    S.d208.parti.push({ cui: cui, nume: nume, cota: _n(cota) || 0 });
+    randeazaFormularD208(corp, nav);
+  });
+  gv("#d208-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    if (!(S.d208.beneficiari || []).length) { eroareCamp(zona, "d208-bcui", "Adaugă cel puțin un beneficiar."); return; }
+    if (!(S.d208.parti || []).length) { eroareCamp(zona, "d208-pcui", "Adaugă cel puțin o parte contractantă."); return; }
     pas2(corp, nav);
   });
 }

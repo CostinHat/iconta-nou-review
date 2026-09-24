@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**627 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**628 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 596
+### `core/` — 597
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8994,6 +8994,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d205_rezid_derivat.py` — Gard D205: Rezid (2.Rezident/Nerezident) DERIVAT din identitate, nu hardcodat "1".
 - `core/test_d207.py` — Teste D207 (informativa impozit retinut la sursa - beneficiari nerezidenti).
 - `core/test_d207_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D207 gol NU produce declaratie.
+- `core/test_d208_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D208 gol NU produce declaratie; biroul notarial + o tranzactie
 - `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA

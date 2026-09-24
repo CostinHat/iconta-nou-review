@@ -318,7 +318,7 @@ DECLARATII = {
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d104", "d110", "d220", "d221",
-                       "d393", "d395", "d397", "d208", "d120", "d600",
+                       "d393", "d395", "d397", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
                        "d101g", "d169", "d398", "d399", "d403", "d407"))
@@ -477,6 +477,15 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("nume") or not (m.get("imobile") or m.get("mobile")):
             erori.append("D216 nu are ce genera: completează datele contribuabilului și adaugă cel puțin "
                          "un bun (imobil rezidențial sau mobil) de valoare mare, cu valoarea impozabilă și plafonul.")
+
+    # d208 (transfer proprietati imobiliare - notari, MANUALA semestriala): antet + tranzactie cu imobil.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (Sigma cote=100, cotaImpozit in {0,1,3}) le da d208.erori_generare.
+    if tip == "d208":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("nume") or not (m.get("tranzactii") or m.get("imobile")):
+            erori.append("D208 nu are ce genera: completează biroul notarial și adaugă cel puțin o tranzacție "
+                         "cu un imobil, beneficiarii (cote însumând 100) și celelalte părți contractante.")
 
     # d104 (distribuire venituri asocieri, MANUALA trimestriala): cere trim + manual.asociati
     if tip == "d104":
