@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**629 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**630 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 598
+### `core/` — 599
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9082,6 +9082,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d406_supplierid.py` — GARD D406 SupplierID (10.08.2026): SupplierID/CustomerID pe factura NU poate fi "0".
 - `core/test_d406_taxcode_nota.py` — GARD D406 TaxCode nota contabila (10.08.2026): pe liniile din GeneralLedgerEntries
 - `core/test_d4_mutatie_prinsa.py` — [D4, 18.09.2026] GARDA-MUTAȚIE PERMANENTĂ. O rută nouă care dublează `facturi.total`, numită doar
+- `core/test_d603_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D603 gol NU produce declaratie; identitatea + categoria de
 - `core/test_d710.py` — Teste gardian pentru D710 (Declaratie rectificativa - corectie D100).
 - `core/test_d710_cod131_132.py` — GARD TURA 3 — D710 C5: cod_oblig 131/132 cer Data_I (data incheierii exercitiului financiar) pe care
 - `core/test_d710_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D710 gol NU produce declaratie.

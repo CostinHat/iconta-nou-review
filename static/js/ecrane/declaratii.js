@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -78,6 +78,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d208: { nume: "", cif: "", domiciliu: "", nume_intocmit: "", functia_intocmit: "", dRec: 0, nr_act_notarial: "", mod_transfer: "1", taxa_notar: "", imobil: { judet: "", localitate: "", codSIRUTA: "", nr_cadastral: "", tip_imobil: "teren", val_tranzactie_imobil: "", val_piata_imobil: "" }, beneficiari: [], parti: [] },
     // [formular_manual_d221] venituri agricole pe norme: declarant + contribuabil + activitate + produse (+ asociati la forma_org=2). In memorie, ca d200.
     d221: { nume_declar: "", prenume_declar: "", functie_declar: "TITULAR", cif: "", nume_a: "", adresa_a: "", forma_org: "1", d_rec: 0, nr_contr: "", data_contr: "", activitate: { judet: "", localitate: "", optiune: "0" }, produse: [], asociati: [] },
+    // [formular_manual_d603] exceptare CASS (PF): identitate + categorie + stat asigurare + perioada. In memorie, ca d200.
+    d603: { numeContrib: "", cif: "", taraContrib: "RO", judetContrib: "", exceptare: "2", statAsigurare: "", dataInceput: "", dataSfarsit: "", dataExceptare: "", documente: "" },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -235,6 +237,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d216") body.manual = _d216Manual();              // [formular_manual_d216] antet + liste bunuri imobile/mobile
   if (S.tip === "d208") body.manual = _d208Manual();              // [formular_manual_d208] notar + tranzactie/imobil + beneficiari + parti
   if (S.tip === "d221") body.manual = _d221Manual();              // [formular_manual_d221] contribuabil + activitate agricola + produse
+  if (S.tip === "d603") body.manual = _d603Manual();              // [formular_manual_d603] exceptare CASS (identitate + categorie + stat + perioada)
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -264,6 +267,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d216" ? '<div id="dec-d216-form"></div>' : ""}
     ${S.tip === "d208" ? '<div id="dec-d208-form"></div>' : ""}
     ${S.tip === "d221" ? '<div id="dec-d221-form"></div>' : ""}
+    ${S.tip === "d603" ? '<div id="dec-d603-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -284,6 +288,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d216") randeazaFormularD216(corp, nav);
   if (S.tip === "d208") randeazaFormularD208(corp, nav);
   if (S.tip === "d221") randeazaFormularD221(corp, nav);
+  if (S.tip === "d603") randeazaFormularD603(corp, nav);
     return;
   }
 
@@ -332,6 +337,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d216" ? '<div id="dec-d216-form"></div>' : ""}
     ${S.tip === "d208" ? '<div id="dec-d208-form"></div>' : ""}
     ${S.tip === "d221" ? '<div id="dec-d221-form"></div>' : ""}
+    ${S.tip === "d603" ? '<div id="dec-d603-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -381,6 +387,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d216") randeazaFormularD216(corp, nav);
   if (S.tip === "d208") randeazaFormularD208(corp, nav);
   if (S.tip === "d221") randeazaFormularD221(corp, nav);
+  if (S.tip === "d603") randeazaFormularD603(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -2118,6 +2125,84 @@ function randeazaFormularD221(corp, nav) {
     salveaza();
     if (!(S.d221.produse || []).length) { eroareCamp(zona, "d221-pcod", "Adaugă cel puțin un produs agricol."); return; }
     if (String(S.d221.forma_org) === "2" && (S.d221.asociati || []).length < 2) { eroareCamp(zona, "d221-acnp", "Forma asociere cere minim 2 asociați."); return; }
+    pas2(corp, nav);
+  });
+}
+
+const _D603_JUDETE = [["AB","Alba"],["AR","Arad"],["AG","Argeș"],["BC","Bacău"],["BH","Bihor"],["BN","Bistrița-Năsăud"],["BT","Botoșani"],["BV","Brașov"],["BR","Brăila"],["BZ","Buzău"],["CS","Caraș-Severin"],["CL","Călărași"],["CJ","Cluj"],["CT","Constanța"],["CV","Covasna"],["DB","Dâmbovița"],["DJ","Dolj"],["GL","Galați"],["GR","Giurgiu"],["GJ","Gorj"],["HR","Harghita"],["HD","Hunedoara"],["IL","Ialomița"],["IS","Iași"],["IF","Ilfov"],["MM","Maramureș"],["MH","Mehedinți"],["MS","Mureș"],["NT","Neamț"],["OT","Olt"],["PH","Prahova"],["SM","Satu Mare"],["SJ","Sălaj"],["SB","Sibiu"],["SV","Suceava"],["TR","Teleorman"],["TM","Timiș"],["TL","Tulcea"],["VS","Vaslui"],["VL","Vâlcea"],["VN","Vrancea"],["B","București"]];
+
+function _d603Manual() {
+  const d = S.d603 || {};
+  return {
+    numeContrib: (d.numeContrib || "").trim(), cif: (d.cif || "").replace(/\s+/g, ""),
+    taraContrib: (d.taraContrib || "RO").trim().toUpperCase(), judetContrib: (d.judetContrib || "").trim().toUpperCase(),
+    exceptare: parseInt(d.exceptare, 10) || 2, statAsigurare: (d.statAsigurare || "").trim().toUpperCase(),
+    dataInceput: (d.dataInceput || "").trim(), dataSfarsit: (d.dataSfarsit || "").trim(), dataExceptare: (d.dataExceptare || "").trim(),
+    documente: (d.documente || "").trim(), imputernicit: 0,
+  };
+}
+
+function randeazaFormularD603(corp, nav) {
+  const zona = corp.querySelector("#dec-d603-form");
+  if (!zona) return;
+  const d = S.d603;
+  const roTara = String(d.taraContrib || "RO").toUpperCase() === "RO";
+  const optJud = _D603_JUDETE.map((p) => '<option value="' + p[0] + '"' + (String(d.judetContrib).toUpperCase() === p[0] ? " selected" : "") + ">" + esc(p[1]) + "</option>").join("");
+  const optExc = (v) => '<option value="' + v + '"' + (String(d.exceptare || "2") === v ? " selected" : "") + ">" + v + "</option>";
+  zona.innerHTML = '<details class="dec-xml" open><summary>Exceptare de la plata CASS — declarație pe propria răspundere</summary>' +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Persoana fizică</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Nume și prenume <span class="oblig">*</span></span><input id="d603-nume" type="text" class="camp-input" value="' + esc(d.numeContrib || "") + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">CNP <span class="oblig">*</span></span><input id="d603-cif" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif || "") + '"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Țară <span class="oblig">*</span></span><input id="d603-tara" type="text" maxlength="2" class="camp-input" value="' + esc(d.taraContrib || "RO") + '"></label>' +
+      (roTara ? '<label class="camp" style="width:180px"><span class="camp-eticheta">Județ <span class="oblig">*</span></span><select id="d603-jud" class="camp-input"><option value="">— alege —</option>' + optJud + "</select></label>" : "") +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Exceptarea</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">Categorie exceptare <span class="oblig">*</span></span><select id="d603-exc" class="camp-input">' + optExc("2") + optExc("3") + optExc("4") + "</select></label>" +
+      '<label class="camp" style="width:180px"><span class="camp-eticheta">Stat de asigurare <span class="oblig">*</span></span><input id="d603-stat" type="text" maxlength="2" class="camp-input" value="' + esc(d.statAsigurare || "") + '" placeholder="ex. DE"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data început <span class="oblig">*</span></span><input id="d603-di" type="date" class="camp-input" value="' + esc(_d204DataISO(d.dataInceput)) + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data sfârșit <span class="oblig">*</span></span><input id="d603-ds" type="date" class="camp-input" value="' + esc(_d204DataISO(d.dataSfarsit)) + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data exceptării <span class="oblig">*</span></span><input id="d603-de" type="date" class="camp-input" value="' + esc(_d204DataISO(d.dataExceptare)) + '"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
+      '<label class="camp" style="flex:1 1 320px"><span class="camp-eticheta">Documente justificative <span class="oblig">*</span></span><input id="d603-doc" type="text" class="camp-input" value="' + esc(d.documente || "") + '"></label>' +
+    "</div>" +
+    '<p class="camp-ajutor" style="margin:6px 0 0">Statul de asigurare trebuie să fie diferit de RO (ești asigurat în alt stat). D603 nu conține sume — doar perioada și categoria exceptării.</p>' +
+    '<div id="d603-msg"></div>' +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d603-regen">Regenerează D603</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    S.d603.numeContrib = gv("#d603-nume").value.trim();
+    S.d603.cif = gv("#d603-cif").value.trim();
+    S.d603.taraContrib = gv("#d603-tara").value.trim().toUpperCase();
+    const jud = gv("#d603-jud"); S.d603.judetContrib = jud ? jud.value : "";
+    S.d603.exceptare = gv("#d603-exc").value;
+    S.d603.statAsigurare = gv("#d603-stat").value.trim().toUpperCase();
+    S.d603.dataInceput = gv("#d603-di").value;
+    S.d603.dataSfarsit = gv("#d603-ds").value;
+    S.d603.dataExceptare = gv("#d603-de").value;
+    S.d603.documente = gv("#d603-doc").value.trim();
+  };
+  ["#d603-nume", "#d603-cif", "#d603-exc", "#d603-stat", "#d603-di", "#d603-ds", "#d603-de", "#d603-doc"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  gv("#d603-tara").addEventListener("change", () => { salveaza(); randeazaFormularD603(corp, nav); });
+  const jud0 = gv("#d603-jud"); if (jud0) jud0.addEventListener("change", salveaza);
+  gv("#d603-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    const err = [];
+    if (!S.d603.numeContrib) err.push(["d603-nume", "Completează numele."]);
+    if (!/^\d{13}$/.test(S.d603.cif)) err.push(["d603-cif", "CNP-ul trebuie să aibă 13 cifre."]);
+    if (String(S.d603.taraContrib) === "RO" && !S.d603.judetContrib) err.push(["d603-jud", "Alege județul."]);
+    if (!S.d603.statAsigurare) err.push(["d603-stat", "Completează statul de asigurare."]);
+    else if (S.d603.statAsigurare === "RO") err.push(["d603-stat", "Statul de asigurare trebuie diferit de RO."]);
+    if (!S.d603.dataInceput || !S.d603.dataSfarsit || !S.d603.dataExceptare) err.push(["d603-di", "Completează cele trei date."]);
+    if (!S.d603.documente) err.push(["d603-doc", "Completează documentele justificative."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
     pas2(corp, nav);
   });
 }
