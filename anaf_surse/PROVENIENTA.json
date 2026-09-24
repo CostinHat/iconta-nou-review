@@ -579,6 +579,24 @@
       "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 46 din 2025)",
       "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/302378",
       "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "legea_85_2014.html": {
+      "clasa": "ADUS_ADNOTAT",
+      "motiv": "act oficial adus manual de Costin din browser (just.ro), bytes oficiali; peste care am adaugat un antet propriu cu titlul actului (nr 85 din 2014) pentru verificabilitate in fereastra garzii. titlu confirmat verbatim in corpul documentului (poz ~10896, dupa preambulul de navigatie al portalului). Amprenta pineaza versiunea noastra adnotata.",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/159286",
+      "accessed_at": "2026-09-24T08:02:51.734903+00:00"
+    },
+    "legea_98_2016.html": {
+      "clasa": "ADUS_ADNOTAT",
+      "motiv": "act oficial adus manual de Costin din browser (just.ro), bytes oficiali; peste care am adaugat un antet propriu cu titlul actului (nr 98 din 2016) pentru verificabilitate in fereastra garzii. titlu confirmat verbatim in corpul documentului (poz ~9933, dupa preambulul de navigatie al portalului). Amprenta pineaza versiunea noastra adnotata.",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/178667",
+      "accessed_at": "2026-09-24T08:02:51.734903+00:00"
+    },
+    "legea_287_2009.html": {
+      "clasa": "ADUS_ADNOTAT",
+      "motiv": "act oficial adus manual de Costin din browser (just.ro), bytes oficiali; peste care am adaugat un antet propriu cu titlul actului (nr 287 din 2009) pentru verificabilitate in fereastra garzii. documentul e forma REPUBLICATA cu titlu propriu 'CODUL CIVIL din 17 iulie 2009'; antetul de mai sus e identificarea noastra a legii de adoptare (Legea 287/2009 = Codul civil), nu un citat verbatim din acest fisier. Amprenta pineaza versiunea noastra adnotata.",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/130143",
+      "accessed_at": "2026-09-24T08:02:51.734903+00:00"
     }
   },
   "goale_cunoscute": {
