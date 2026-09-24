@@ -317,7 +317,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d110", "d220", "d221",
+_DOAR_API = frozenset(("d104", "d110", "d220",
                        "d393", "d395", "d397", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -514,11 +514,14 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("cif") or not m.get("activitate"):
             erori.append("d220 cere `manual.cif` (CNP) + `manual.activitate` (venit estimat PF)")
 
-    # d221 (venituri agricole pe norme, MANUALA anuala): cere manual.cif + activitati
+    # d221 (venituri agricole pe norme de venit, MANUALA anuala): contribuabil + activitati agricole.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (judet, localitate unica, codp unic, forma_org, cote asociati) le da d221.erori_generare.
     if tip == "d221":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("cif") or not m.get("activitati"):
-            erori.append("d221 cere `manual.cif` (CNP) + `manual.activitati` (activități agricole)")
+            erori.append("D221 nu are ce genera: completează contribuabilul (CNP, nume, adresă) și adaugă cel "
+                         "puțin o activitate agricolă (județ, localitate) cu produsele ei (cod produs + suprafață/nr. capete).")
 
     # d223 (venituri estimate asocieri fara personalitate juridica, MANUALA anuala): activitate + asociati.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).

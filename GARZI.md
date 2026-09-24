@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**628 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**629 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 597
+### `core/` — 598
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9001,6 +9001,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
 - `core/test_d220.py` — Teste D220 (venit estimat / norma de venit - persoane fizice).
 - `core/test_d221.py` — Teste D221 (venituri din activitati agricole impuse pe norme de venit - persoane fizice/asocieri).
+- `core/test_d221_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D221 gol NU produce declaratie; contribuabilul + activitatile
 - `core/test_d223.py` — Teste D223 (venituri estimate pentru asocieri fara personalitate juridica / transparenta fiscala).
 - `core/test_d223_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D223 gol NU produce declaratie; asocierea + responsabilul +
 - `core/test_d230.py` — Teste D230 (redirectionare pana la 3,5% din impozit catre ONG).
