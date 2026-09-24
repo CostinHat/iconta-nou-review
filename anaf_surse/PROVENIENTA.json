@@ -513,6 +513,72 @@
       "accessed_at": "2026-09-17T03:43:02.638267+00:00",
       "POSITION_ID": "FISC-T04",
       "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-T04"
+    },
+    "hg_867_2015.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 867 din 2015)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/172757",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "hg_905_2017.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 905 din 2017)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/195770",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "legea_230_2007.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 230 din 2007)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/83753",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "legea_72_2013.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 72 din 2013)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/146555",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "og_13_2011.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 13 din 2011)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/131085",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "og_22_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 22 din 2025)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/301801",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "opanaf_6073_2024.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 6073 din 2024)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/286640",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "opanaf_649_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 649 din 2025)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/298087",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "ordin_2229_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 2229 din 2025)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/302640",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "oug_153_2020.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 153 din 2020)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/230106",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+    },
+    "oug_46_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 46 din 2025)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/302378",
+      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
     }
   },
   "goale_cunoscute": {
