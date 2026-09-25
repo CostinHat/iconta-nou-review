@@ -8,7 +8,7 @@ poarta: v1
 
 # Sancțiuni pentru nedepunerea declarației de mențiuni ONRC
 
-Atenție la formulare: „declarația de mențiuni" circulă în două registre diferite — cea depusă la Oficiul Registrului Comerțului (ONRC), pentru modificări ale actului constitutiv/datelor firmei în registrul comerțului, și cea depusă la organul fiscal (ANAF), pentru modificări ale datelor de înregistrare fiscală. Sursele verificate aici nu conțin textul Legii nr. 26/1990 (registrul comerțului) cu sancțiunile specifice ONRC, așa că acest ghid redirecționează onest spre sancțiunea reală, verificată, din Codul de procedură fiscală — cea mai apropiată prevedere disponibilă, dar despre mențiunile fiscale, nu despre cele de la ONRC.
+Atenție la formulare: „declarația de mențiuni" circulă în două registre diferite — cea depusă la Oficiul Registrului Comerțului (ONRC), pentru modificări ale actului constitutiv/datelor firmei în registrul comerțului, și cea depusă la organul fiscal (ANAF), pentru modificări ale datelor de înregistrare fiscală. Regimul registrului comerțului nu mai e dat de Legea nr. 26/1990 — aceasta a fost abrogată prin Legea nr. 265/2022 (art. 140 alin. (1) lit. a)), care reglementează acum înregistrarea în registrul comerțului. Sursele verificate aici nu conțin o sancțiune ONRC distinctă pentru nedepunerea unei declarații de mențiuni, așa că acest ghid redirecționează onest spre sancțiunea reală, verificată, din Codul de procedură fiscală — cea mai apropiată prevedere disponibilă, dar despre mențiunile fiscale, nu despre cele de la ONRC.
 
 ## Temeiul legal
 

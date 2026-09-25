@@ -8,7 +8,7 @@ poarta: v1
 
 # Ce fac dacă am tratat greșit indemnizația administratorului?
 
-Cea mai frecventă formă a acestei greșeli e tratarea indemnizației de mandat exact ca pe un salariu de la un contract individual de muncă: cu CAM reținută și, eventual, deja raportată în D112 ca angajat cu CIM. Corecția presupune două lucruri separate: reface calculul și nota contabilă, apoi verifici ce s-a declarat deja.
+Cea mai frecventă formă a acestei greșeli e tratarea indemnizației de mandat exact ca pe un salariu de la un contract individual de muncă: prin contul 641 și, eventual, deja raportată în D112 ca angajat cu CIM (tip asigurat 1, în loc de tip 6). Corecția presupune două lucruri separate: reface calculul și nota contabilă, apoi verifici ce s-a declarat deja.
 
 ## Temeiul legal
 
@@ -20,10 +20,10 @@ Cea mai frecventă formă a acestei greșeli e tratarea indemnizației de mandat
 
 ## Pașii de corecție
 
-1. **Stornezi nota greșită.** Dacă indemnizația a fost trecută prin 641 (cheltuieli cu salariile) cu CAM reținută, storniezi întreaga notă.
-2. **Reintroduci corect, ca mandat.** Recalculezi cu CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM, și înregistrezi prin 621, nu 641.
+1. **Stornezi nota greșită.** Dacă indemnizația a fost trecută prin 641 (cheltuieli cu salariile), storniezi întreaga notă.
+2. **Reintroduci corect, ca mandat.** Recalculezi cu CAS 25% + CASS 10% + impozit 10% pe rest și înregistrezi prin 621, nu 641. Atenție: CAM (2,25%) se datorează și pentru remunerația administratorului de mandat (art. 220^4 alin. (1) lit. d) din Codul fiscal), deci nu se elimină la recalcul.
 3. **Verifici ce ai declarat deja la stat.** Dacă indemnizația greșit tratată a fost deja inclusă într-o declarație D112 ca salariat cu contract individual de muncă (tip asigurat 1), acea declarație trebuie rectificată — administratorul de mandat corespunde unui tip de asigurat diferit (tip 6, „Administratori ai SC/CN/SN/RA, membri CA/CS/CC", conform structurii oficiale D112).
-4. **Verifici diferența de contribuții plătite în plus sau în minus** față de calculul corect (CAM plătită în plus, eventual CAS/CASS calculate pe altă bază) și regularizezi cu bugetul de stat.
+4. **Verifici diferența de contribuții plătite în plus sau în minus** față de calculul corect (eventual CAS/CASS calculate pe altă bază; CAM rămâne datorată, nu e plătită „în plus") și regularizezi cu bugetul de stat.
 
 ## Ce se greșește în practică
 

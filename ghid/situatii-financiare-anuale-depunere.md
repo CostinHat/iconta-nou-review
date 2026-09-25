@@ -19,8 +19,9 @@ Se depune și dacă firma **n-a avut nicio activitate**. În acest caz se depune
 
 Termenele curg de la încheierea exercițiului financiar:
 
-- **150 de zile** pentru societăți comerciale, societăți cooperatiste, regii autonome și celelalte persoane juridice
-- **120 de zile** pentru celelalte persoane prevăzute la art. 1, altele decât cele de mai sus
+- **31 mai** (a exercițiului financiar următor) pentru societățile reglementate de Legea nr. 31/1990, societățile/companiile naționale, regiile autonome, institutele naționale de cercetare-dezvoltare și subunitățile din România ale persoanelor juridice străine
+- **30 aprilie** pentru celelalte persoane juridice
+- **150 de zile / 120 de zile** de la încheierea exercițiului financiar rămân aplicabile *doar* entităților care au optat pentru un exercițiu financiar diferit de anul calendaristic (art. 36 alin. (1^2)-(1^3))
 - **60 de zile** pentru declarația de inactivitate, pentru firmele care n-au desfășurat activitate de la înființare până la sfârșitul exercițiului
 
 Pentru un exercițiu care coincide cu anul calendaristic, termenul de 150 de zile cade de regulă la sfârșitul lunii mai.
@@ -36,7 +37,7 @@ Categoria determină formatul: microentitățile depun un set redus, entitățil
 ::: ghid-temei
 **Legea contabilității nr. 82/1991, art. 36:** termenele de depunere a situațiilor financiare anuale la unitățile teritoriale ale Ministerului Finanțelor.
 
-**Art. 28 alin. (13) din Legea nr. 82/1991:** situațiile financiare anuale sunt semnate de persoanele care le întocmesc, iar acestea trebuie să aibă calitatea prevăzută de lege — director economic, contabil-șef sau altă persoană împuternicită cu conducerea contabilității, ori persoane fizice sau juridice autorizate potrivit legii, membre CECCAR.
+**Art. 28 alin. (10)-(11) din Legea nr. 82/1991:** situațiile financiare anuale se semnează de către reprezentantul legal, precum și de către directorul economic, contabilul-șef sau altă persoană împuternicită să îndeplinească această funcție (alin. (10)); ele pot fi întocmite și semnate și de persoane fizice sau juridice autorizate potrivit legii, membre CECCAR (alin. (11)). **Art. 28 alin. (13):** situațiile financiare anuale se semnează *și de către administratorul sau persoana care are obligația gestionării entității* — obligație pe care ghidul nu o menționa.
 
 **OMFP nr. 1802/2014** pentru aprobarea Reglementărilor contabile privind situațiile financiare anuale individuale și situațiile financiare anuale consolidate — criteriile de mărime și formatul situațiilor.
 :::

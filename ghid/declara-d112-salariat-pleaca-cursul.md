@@ -8,7 +8,7 @@ poarta: v1
 
 # Cum se declară în D112 un salariat care pleacă în cursul lunii?
 
-Când contractul individual de muncă încetează în cursul lunii, plafonul minim la care se raportează contribuțiile sociale (art. 146 alin. (5^1) Cod fiscal) nu se aplică la nivelul întregului salariu minim pe economie, ci proporțional cu zilele în care contractul a fost activ.
+Când contractul individual de muncă încetează în cursul lunii, plafonul minim la care se raportează contribuțiile sociale (art. 146 alin. (5^6) Cod fiscal, aplicabil CASS prin art. 168 alin. (6^1); vechiul alin. (5^1) a fost abrogat de la 01.01.2020) nu se aplică la nivelul întregului salariu minim pe economie, ci proporțional cu zilele în care contractul a fost activ.
 
 ## Temeiul legal
 

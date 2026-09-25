@@ -1,6 +1,6 @@
 ---
 title: Contractul de mandat al administratorului: contribuții și impozit
-description: Remunerația administratorului e venit asimilat salariilor, cu impozit 10%, CAS 25%, CASS 10% și CAM 2,25%, declarată în D112; sub salariul minim se aplică podeaua bazei de calcul, iar mandatul neremunerat nu produce obligații fiscale (art. 76 alin. 2 lit. b) din Codul fiscal).
+description: Remunerația administratorului e venit asimilat salariilor, cu impozit 10%, CAS 25%, CASS 10% și CAM 2,25%, declarată în D112; podeaua bazei de calcul la salariul minim se aplică doar contractelor individuale de muncă, nu mandatului, iar mandatul neremunerat nu produce obligații fiscale (art. 76 alin. 2 lit. o) din Codul fiscal).
 published: 2026-08-19
 modified: 2026-08-19
 ---
@@ -13,7 +13,7 @@ Veniturile din contractul de mandat sunt **asimilate salariilor** din punct de v
 
 ## Regimul fiscal
 
-Remunerația administratorului e venit asimilat salariilor, conform art. 76 alin. 2 lit. b) din Codul fiscal.
+Remunerația administratorului e venit asimilat salariilor, conform art. 76 alin. 2 lit. o) din Codul fiscal (lit. f) pentru directorii cu contract de mandat).
 
 Se datorează:
 
@@ -36,13 +36,13 @@ Condiția: absența remunerației trebuie să rezulte din actul constitutiv sau 
 
 Punctul care produce cele mai multe erori.
 
-Regula bazei minime de calcul, prevăzută la art. 146 alin. 5^6 și art. 168 alin. 6^1 din Codul fiscal, se aplică **veniturilor din salarii și asimilate salariilor**.
+Regula bazei minime de calcul, prevăzută la art. 146 alin. 5^6 și art. 168 alin. 6^1 din Codul fiscal, se aplică **doar veniturilor obținute în baza unui contract individual de muncă** (cu normă întreagă sau cu timp parțial), nu și veniturilor asimilate salariilor.
 
-Pentru contractele de mandat cu remunerație sub salariul minim brut, se aplică aceeași logică: baza de calcul pentru CAS și CASS nu poate fi mai mică decât salariul minim, iar diferența e suportată de plătitor.
+Pentru contractele de mandat această podea **nu se aplică**: art. 146 alin. 5^6 o limitează expres la contribuția datorată de persoanele care obțin venituri „în baza unui contract individual de muncă cu normă întreagă sau cu timp parțial”, iar remunerația administratorului cu mandat este venit asimilat salariilor, nu venit dintr-un contract individual de muncă.
 
-Consecința practică: un administrator remunerat cu 1.000 de lei generează contribuții calculate la 4.325 de lei — de peste patru ori baza reală.
+Consecința practică: pentru un administrator remunerat cu 1.000 de lei, CAS și CASS se calculează la remunerația efectivă de 1.000 de lei, nu la nivelul salariului minim.
 
-Multe firme aleg, din acest motiv, fie mandat neremunerat, fie remunerație cel puțin la nivelul salariului minim.
+Multe firme aleg totuși mandatul neremunerat, pentru a nu genera deloc obligații de contribuții.
 
 ## Excepția pentru cumul
 
@@ -107,13 +107,13 @@ Prima de asigurare e deductibilă, fiind aferentă activității.
 ## Temeiul legal
 
 - Legea nr. 31/1990 privind societățile, art. 72 și următoarele — mandatul administratorului;
-- Codul fiscal, art. 76 alin. 2 lit. b) — remunerația administratorului ca venit asimilat salariilor;
+- Codul fiscal, art. 76 alin. 2 lit. o) — remunerația administratorului ca venit asimilat salariilor (lit. f) pentru directorii cu contract de mandat);
 - art. 146 alin. 5^6 și art. 168 alin. 6^1 — baza minimă de calcul pentru contribuții;
 - art. 25 alin. 4 lit. d) — cheltuieli în favoarea asociaților, nedeductibile;
 - Codul civil, art. 2009 și următoarele — contractul de mandat.
 
 ## De reținut
 
-Mandatul neremunerat nu produce nicio obligație fiscală. Cel remunerat produce toate contribuțiile, plus **podeaua la salariul minim** dacă remunerația e mai mică.
+Mandatul neremunerat nu produce nicio obligație fiscală. Cel remunerat produce toate contribuțiile (impozit 10%, CAS 25%, CASS 10% și CAM 2,25%), dar **fără podeaua la salariul minim** — aceasta privește doar contractele individuale de muncă.
 
 Iar plata către administrator fără temei statutar nu e doar nedeductibilă — poate fi reîncadrată ca distribuire către asociat, cu regimul fiscal aferent.

@@ -1,6 +1,6 @@
 ---
 title: "Cum declar un retur intracomunitar în D390?"
-description: "D390 are un cod dedicat de 'retur bunuri' doar pentru regimul stocurilor la dispoziția clientului; pentru o livrare intracomunitară obișnuită returnată, corecția se face prin declarație rectificativă."
+description: "D390 are un cod dedicat de 'retur bunuri' doar pentru regimul stocurilor la dispoziția clientului; pentru o livrare intracomunitară obișnuită returnată, ajustarea se declară în luna în care regularizarea a fost comunicată clientului, nu prin rectificarea perioadei inițiale."
 published: 2026-09-26
 modified: 2026-09-26
 poarta: v1
@@ -25,13 +25,13 @@ Declarația recapitulativă 390 VIES are un mecanism explicit de „retur bunuri
 Din aceste texte rezultă două situații distincte, tratate diferit în D390:
 
 - **Regimul stocurilor la dispoziția clientului** (art. 270^1 din Codul fiscal — bunuri transferate într-un alt stat membru și puse la dispoziția unui client cunoscut, fără transfer imediat al dreptului de proprietate): dacă bunurile sunt returnate în România înainte de a fi efectiv vândute clientului respectiv, se completează secțiunea III litera B a formularului, cu motivul „1 – retur bunuri".
-- **Livrare sau achiziție intracomunitară obișnuită** (secțiunea I/II a declarației, bunuri vândute/cumpărate efectiv, nu doar puse la dispoziție): dacă bunurile sunt returnate ulterior facturării, nu există un cod special de „retur" — corectarea se face prin **declarație rectificativă** pentru perioada în care a fost declarată operațiunea inițială, reducând suma raportată, la fel ca orice altă corectare de date declarate eronat.
+- **Livrare sau achiziție intracomunitară obișnuită** (secțiunea I/II a declarației, bunuri vândute/cumpărate efectiv, nu doar puse la dispoziție): dacă bunurile sunt returnate ulterior facturării, nu există un cod special de „retur”. Returul este o **ajustare a bazei** (Codul fiscal art. 287) care, potrivit instrucțiunilor D390, „se declară pentru luna calendaristică în care intervine exigibilitatea taxei, conform art. 282 alin. (9) din Codul fiscal, respectiv în luna calendaristică în care regularizarea a fost comunicată clientului” — deci în luna regularizării, nu prin rectificarea perioadei inițiale. Declarația rectificativă se folosește doar pentru date declarate eronat.
 - Instrucțiunile precizează explicit că simpla corectare a unor date declarate greșit NU se tratează ca „modificare a informațiilor furnizate" (mecanismul cu cod 1/2), ci ca rectificare obișnuită a declarației.
 
 ## Ce se greșește în practică
 
 - Se caută codul „1 – retur bunuri" pentru orice retur intracomunitar, deși el există doar pentru secțiunea specială privind stocurile la dispoziția clientului.
-- Se raportează returul unei livrări/achiziții intracomunitare obișnuite prin ajustarea facturii curente, fără a depune o declarație rectificativă pentru perioada în care fusese declarată inițial operațiunea.
+- Se raportează returul unei livrări/achiziții intracomunitare obișnuite prin declarație rectificativă pentru perioada inițială, deși ajustarea se declară în luna calendaristică în care regularizarea a fost comunicată clientului (instrucțiunile D390, Codul fiscal art. 282 alin. (9)).
 - Se confundă termenul de 12 luni prevăzut la art. 270^1 alin. (4) din Codul fiscal pentru returul bunurilor din regimul stocurilor la dispoziția clientului cu un termen general aplicabil oricărui retur intracomunitar.
 - Se omite emiterea facturii de stornare/credit note aferente returului, deși aceasta este documentul justificativ pe baza căruia se corectează atât evidența TVA internă, cât și declarația 390.
 

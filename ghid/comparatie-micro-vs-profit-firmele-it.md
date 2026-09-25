@@ -22,7 +22,7 @@ O firmă din IT nu are, la această dată, un regim fiscal special doar pentru c
 
 Condițiile pentru a fi (și a rămâne) microîntreprindere sunt cumulative, verificate la 31 decembrie a anului precedent — art. 47 alin. (1) din Codul fiscal:
 
-- venituri anuale care nu depășesc echivalentul a 100.000 euro (lit. c, prag coborât de la 250.000 euro prin OUG 8/2026, aplicabil de la 1 ianuarie 2026);
+- venituri anuale care nu depășesc echivalentul a 100.000 euro (lit. c) — pragul de 100.000 euro de la 1 ianuarie 2026 a fost stabilit prin OUG 156/2024 (art. 54 alin. (3) din Codul fiscal), nu prin OUG 8/2026, care doar a reformulat art. 47 alin. (1) lit. c) și alin. (1^1));
 - capitalul social deținut de alte persoane decât statul și unitățile administrativ-teritoriale (lit. d);
 - firma nu e în dizolvare urmată de lichidare (lit. e);
 - are cel puțin un salariat, cu excepții limitate (lit. g);

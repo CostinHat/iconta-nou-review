@@ -8,7 +8,7 @@ poarta: v1
 
 # Greșeli la contractele de mandat: contribuții omise
 
-Pentru că mandatul de administrator sau de cenzor nu e un raport de muncă, apare des o confuzie inversă față de cea obișnuită: dacă nu e „salariu", unii presupun că nu se datorează nicio contribuție socială. E o greșeală — CAS și CASS rămân datorate, doar CAM lipsește.
+Pentru că mandatul de administrator sau de cenzor nu e un raport de muncă, apare des o confuzie inversă față de cea obișnuită: dacă nu e „salariu", unii presupun că nu se datorează nicio contribuție socială. E o greșeală — CAS și CASS rămân datorate. Iar CAM (contribuția asiguratorie pentru muncă) NU lipsește automat: pentru administratori și pentru directorii cu contract de mandat, remunerația intră în baza CAM (art. 220^4 alin. (1) lit. d) și e) din Codul fiscal); doar pentru cenzori CAM nu se datorează.
 
 ## Temeiul legal
 
@@ -28,11 +28,11 @@ Pentru administratorul cu contract de mandat, temeiul corespunzător e **art. 76
 
 ## Ce nu se datorează, corect
 
-Singura contribuție care nu se datorează la mandat/cenzor e **CAM** (contribuția asiguratorie pentru muncă) — pentru că această contribuție e legată de existența unui raport de muncă, absent la mandat. Omiterea CAM e corectă; omiterea CAS sau CASS nu este.
+CAM (contribuția asiguratorie pentru muncă) se datorează diferit, după tipul mandatului: pentru **administratori** (tip asigurat 6) și pentru **directorii cu contract de mandat** (tip 3.4), remunerația e inclusă expres în baza CAM — art. 220^4 alin. (1) lit. d) și e) din Codul fiscal, confirmat de Nomenclatorul „Tip asigurat” din OPANAF 605/2026 (D112), unde aceste tipuri au CAM = Da. Doar pentru **cenzori** (tip asigurat 4) CAM nu se datorează. Așadar, la mandatul de administrator omiterea CAM este greșită; e corectă doar la cenzor. CAS și CASS rămân datorate în toate cazurile.
 
 ## Ce se greșește în practică
 
-- Se tratează integral remunerația de mandat/cenzor ca „fără contribuții", omițând atât CAM (corect) cât și CAS/CASS (greșit).
+- Se tratează integral remunerația de mandat/cenzor ca „fără contribuții”, omițând CAS/CASS (întotdeauna greșit) și CAM — omiterea CAM fiind greșită la administrator și la directorul cu contract de mandat, corectă doar la cenzor.
 - Se citează greșit temeiul pentru administrator — lit. g) în loc de lit. o) — ceea ce poate duce la aplicarea, din confuzie, a regulilor de la altă categorie de venit.
 
 ## Ce face iConta.eu

@@ -19,7 +19,7 @@ Impozitul pe veniturile microîntreprinderilor se calculează pe bază trimestri
 
 Practic, reconcilierea pornește de la rulajul creditor al conturilor de venituri (clasa 7) din balanța de verificare pe trimestrul respectiv și îl ajustează astfel:
 
-- se **scad** veniturile enumerate la art. 53 alin. (1) lit. a)-e) — printre altele, veniturile din producția de imobilizări, din subvenții și din anumite provizioane/ajustări reluate — pentru că acestea nu intră în baza impozabilă micro, deși apar în rulajul contabil de venituri;
+- se **scad** veniturile enumerate la art. 53 alin. (1) — printre altele, veniturile din producția de imobilizări, din subvenții și din anumite provizioane/ajustări reluate (lit. a)-e)), precum și **valoarea reducerilor comerciale acordate ulterior facturării, înregistrate în contul „709" (lit. j))** — pentru că acestea nu intră în baza impozabilă micro, deși apar în rulajul contabil de venituri;
 - rezultatul trebuie să corespundă exact cu baza declarată în D100 pentru trimestrul verificat;
 - orice diferență nereconciliată e fie o eroare de înregistrare contabilă (o notă validată greșit, o dublare), fie o omisiune a uneia dintre excepțiile legale de mai sus.
 

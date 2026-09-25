@@ -8,7 +8,7 @@ poarta: v1
 
 # Sistemul de impozit pe profit trimestrial: cum se aplică în 2026
 
-„Impozit pe profit trimestrial" acoperă, de fapt, două mecanisme diferite din Codul fiscal: plăți anticipate trimestriale calculate pe baza impozitului anului precedent (regula generală) și impozit calculat trimestrial pe profitul contabil efectiv (regula pentru firmele nou-înființate, cu pierdere fiscală anterioară, ieșite din inactivitate temporară sau foste micro). Confuzia dintre cele două produce cele mai multe greșeli de calcul.
+„Impozit pe profit trimestrial" acoperă, de fapt, două mecanisme diferite din Codul fiscal: impozitul calculat și plătit trimestrial pe profitul efectiv (regula generală, art. 41 alin. (1)) și plățile anticipate trimestriale calculate ca 1/4 din impozitul anului precedent (doar pentru firmele care au *optat* pentru sistemul anual de declarare și plată, art. 41 alin. (2) și (8)). Confuzia dintre cele două produce cele mai multe greșeli de calcul.
 
 ## Temeiul legal
 
@@ -19,8 +19,8 @@ poarta: v1
 
 Cele două regimuri, pentru 2026:
 
-- **Regula generală** (alin. (8)): firmele „stabile" (fără niciuna dintre situațiile de mai jos) calculează plata anticipată trimestrială ca **1/4 din impozitul pe profit al anului precedent**, actualizat cu indicele prețurilor de consum, cu termen 25 a lunii următoare trimestrului (25 decembrie pentru trimestrul IV).
-- **Regula pe profitul efectiv** (alin. (1), aplicabilă prin trimitere de la alin. (6)): firmele nou-înființate, cele cu pierdere fiscală sau fără impozit datorat în anul precedent, cele ieșite din inactivitate temporară și fostele plătitoare de impozit micro calculează și plătesc impozitul **trimestrial, pe profitul contabil efectiv** al fiecărui trimestru, nu pe baza anului precedent.
+- **Regula generală — impozit trimestrial pe profitul efectiv** (alin. (1)): majoritatea contribuabililor calculează și plătesc impozitul **trimestrial, pe profitul efectiv** al fiecărui trimestru, cu definitivare anuală. Firmele nou-înființate, cele cu pierdere fiscală sau fără impozit datorat în anul precedent, cele ieșite din inactivitate temporară și fostele plătitoare de impozit micro sunt obligate să aplice acest sistem (alin. (6)) — nu pot opta pentru plățile anticipate pe baza anului precedent. Din 2026, prin excepție, plata anticipată pentru trimestrul I se calculează pe profitul contabil efectiv al perioadei (alin. (10^1), introdus prin OUG 8/2026).
+- **Sistemul anual cu plăți anticipate** (alin. (2) și (8)): firmele care au *optat* pentru acest sistem calculează plata anticipată trimestrială ca **1/4 din impozitul pe profit al anului precedent**, actualizat cu indicele prețurilor de consum, cu termen 25 a lunii următoare trimestrului (25 decembrie pentru trimestrul IV). Aceasta e o opțiune, nu regula generală.
 - O firmă ex-micro care trece la profit în 2026, de exemplu, intră direct în regula de la lit. d) — calculează impozitul pe profitul trimestrial real, nu pe o estimare bazată pe impozitul din anul în care era la micro (care oricum era alt tip de impozit, pe venituri, nu pe profit).
 
 ## Ce se greșește în practică

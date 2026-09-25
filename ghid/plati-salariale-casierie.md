@@ -14,8 +14,8 @@ Da. Plata salariului în numerar, prin casierie, rămâne regula implicită în 
 
 ::: ghid-temei
 „(1) Salariul se plătește în bani cel puțin o dată pe lună, la data stabilită în contractul individual de muncă, în contractul colectiv de muncă aplicabil sau în regulamentul intern, după caz.
-(2) Plata salariului se poate efectua prin virament într-un cont bancar, în cazul în care această modalitate este prevăzută în contractul colectiv de muncă aplicabil."
-— Legea 53/2003 (Codul muncii), art. 161 alin. (1) și (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+(2) Plata salariului se poate efectua prin virament într-un cont bancar.”
+— Legea 53/2003 (Codul muncii, republicată), art. 166 alin. (1) și (2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
 
 „Plafoanele-limită prevăzute de prezentul capitol nu se aplică de către persoanele prevăzute la art. 1 alin. (1), pentru următoarele operațiuni: [...]
 d) retragerea de numerar din conturi deschise la instituțiile de credit sau la instituțiile care prestează servicii de plată și care sunt autorizate de Banca Națională a României pentru plata salariilor și a altor drepturi de personal prevăzute de lege și pentru alte operațiuni de plăți efectuate către persoanele fizice."
@@ -24,9 +24,9 @@ d) retragerea de numerar din conturi deschise la instituțiile de credit sau la 
 
 Cele două texte, citite împreună, confirmă practica:
 
-- Codul muncii tratează plata „în bani" (numerar) ca modalitate implicită, la art. 161 alin. (1) — plata prin virament bancar devine posibilă doar dacă e prevăzută explicit în contractul colectiv de muncă aplicabil, conform alin. (2). Fără o astfel de prevedere, angajatorul poate plăti salariul prin casierie.
+- Codul muncii tratează plata „în bani" (numerar) ca modalitate implicită, la art. 166 alin. (1) — plata prin virament bancar este o modalitate permisă (alin. (2)), forma republicată nemaicondiționând-o de o prevedere în contractul colectiv de muncă aplicabil. Angajatorul poate, așadar, plăti salariul și prin casierie.
 - Legea 70/2015, care limitează în general plățile în numerar, exceptează explicit, la art. 5 lit. d), retragerea de numerar din cont pentru plata salariilor de la plafoanele-limită ale capitolului — retragerea și, prin extensie, plata efectivă a salariilor și a altor drepturi de personal către persoane fizice nu sunt supuse plafoanelor de numerar aplicabile altor operațiuni.
-- Concluzia practică: un angajator poate în continuare plăti salariile prin casierie, în numerar, cu condiția ca banii să provină dintr-o retragere bancară destinată acestui scop și ca dovada plății (statul de plată semnat, conform art. 163 Codul muncii) să existe.
+- Concluzia practică: un angajator poate în continuare plăti salariile prin casierie, în numerar, cu condiția ca banii să provină dintr-o retragere bancară destinată acestui scop și ca dovada plății (statul de plată semnat, conform art. 168 Codul muncii) să existe.
 
 ## Ce se greșește în practică
 

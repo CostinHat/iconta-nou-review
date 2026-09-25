@@ -17,7 +17,7 @@ poarta: v1
 — Codul fiscal, art.28 alin.(2) lit.b
 :::
 
-Un activ intră în categoria mijloacelor fixe amortizabile dacă valoarea de la intrare e egală sau peste pragul legal — 5.000 lei de la 25.02.2026 (anterior 2.500 lei). Registrul urmărește pentru fiecare activ: codul, denumirea, valoarea, contul de imobilizare, contul de amortizare, metoda, data punerii în funcțiune și starea (activ/casat).
+Un activ intră în categoria mijloacelor fixe amortizabile dacă valoarea de la intrare e egală sau peste pragul legal — 5.000 lei pentru tot anul fiscal 2026 (aplicabil, conform OUG 8/2026 art. 10 alin. (2), începând cu anul fiscal 2026 — deci și achizițiilor din 1 ianuarie–24 februarie 2026; pragul de 2.500 lei rămâne relevant doar pentru achizițiile de până la 31.12.2025). Registrul urmărește pentru fiecare activ: codul, denumirea, valoarea, contul de imobilizare, contul de amortizare, metoda, data punerii în funcțiune și starea (activ/casat).
 
 ## Ce se greșește în practică
 

@@ -1,6 +1,6 @@
 ---
 title: Ce taxe se plătesc pentru indemnizația administratorului?
-description: CAS 25%, CASS 10% și impozit 10% pe ce rămâne — dar fără contribuția asiguratorie pentru muncă, pentru că mandatul de administrator nu e un raport de muncă.
+description: CAS 25%, CASS 10% și impozit 10% pe ce rămâne, plus contribuția asiguratorie pentru muncă (CAM 2,25%) datorată de societate — remunerația administratorului e inclusă în baza CAM prin art. 220^4 alin. (1) lit. d) din Codul fiscal.
 published: 2026-09-25
 modified: 2026-09-25
 poarta: v1
@@ -8,7 +8,7 @@ poarta: v1
 
 # Ce taxe se plătesc pentru indemnizația administratorului?
 
-Indemnizația plătită administratorului cu contract de mandat e un venit asimilat salariilor, dar cu o compoziție de taxe diferită de cea a unui salariat clasic: CAS și CASS se rețin, impozitul pe venit la fel, dar contribuția asiguratorie pentru muncă (CAM) nu se datorează, pentru că administratorul de mandat nu are un raport de muncă.
+Indemnizația plătită administratorului cu contract de mandat e un venit asimilat salariilor: se rețin CAS, CASS și impozit pe venit, iar societatea datorează și contribuția asiguratorie pentru muncă (CAM), pentru că remunerația administratorului e inclusă expres în baza de calcul a CAM (Codul fiscal art. 220^4 alin. (1) lit. d)).
 
 ## Temeiul legal
 
@@ -25,12 +25,12 @@ Din indemnizația brută se calculează, în această ordine:
 2. **CASS 10%** pe brut.
 3. **Impozit pe venit 10%** pe baza rămasă (brut − CAS − CASS).
 
-**Nu se datorează CAM** (contribuția asiguratorie pentru muncă) — motivul e că CAM se aplică veniturilor din raporturi de muncă, iar contractul de mandat al administratorului nu e un raport de muncă în sensul Codului muncii, ci unul de natură civilă/comercială, guvernat de Legea 31/1990 și de Codul civil.
+**Se datorează și CAM** (contribuția asiguratorie pentru muncă, 2,25%) — o contribuție a societății, nu reținută din indemnizație. Codul fiscal art. 220^4 alin. (1) lit. d) include expres în baza de calcul a CAM „remunerația administratorilor societăților, companiilor/societăților naționale și regiilor autonome, desemnați/numiți în condițiile legii", iar lit. e) remunerația directorilor cu contract de mandat. Faptul că mandatul nu e un raport de muncă în sensul Codului muncii nu îl scoate din baza CAM, pentru că legea îl enumeră distinct.
 
 ## Ce se greșește în practică
 
 - **Se citează art. 76 alin. (2) lit. g) drept temei** pentru remunerația administratorului — lit. g) e despre președintele asociației de proprietari (Legea 230/2007), nu despre administratorul unei societăți. Temeiul corect pentru administrator e **lit. o)**.
-- **Se aplică CAM** peste CAS/CASS/impozit, ca la un salariat clasic — administratorul de mandat nu are raport de muncă, deci CAM nu se datorează.
+- **Se omite CAM** pe motiv că administratorul de mandat nu are raport de muncă — greșit: remunerația administratorilor și a directorilor cu contract de mandat e inclusă expres în baza CAM (art. 220^4 alin. (1) lit. d) și e)).
 - **Se confundă administratorul cu mandat cu cenzorul** — deși calculul (CAS+CASS+impozit, fără CAM) e identic ca structură, temeiul fiscal e diferit: lit. o) pentru administrator, **lit. i)** pentru cenzor.
 
 ## Ce face iConta.eu

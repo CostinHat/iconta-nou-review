@@ -8,7 +8,7 @@ poarta: v1
 
 # Împuternicirea pentru depunerea documentelor la ONRC
 
-Precizare de temei, înainte de conținut: cadrul procedural actual, detaliat, al depunerii documentelor la Oficiul Național al Registrului Comerțului (formularele de împuternicire, cerințele de autentificare, procedura online) e reglementat prin Legea 265/2022 privind registrul comerțului — act care **nu se regăsește printre sursele verificate local**. Ce putem confirma cu temei e principiul general din Legea 31/1990: reprezentarea printr-un împuternicit e admisă explicit chiar la actul fondator al firmei, cererea de înmatriculare.
+Precizare de temei, înainte de conținut: cadrul procedural actual, detaliat, al depunerii documentelor la Oficiul Național al Registrului Comerțului (formularele de împuternicire, cerințele de autentificare, procedura online) e reglementat prin Legea 265/2022 privind registrul comerțului — act care **se regăsește în sursele verificate local** (anaf_surse/legea_265_2022.html). Aceasta prevede expres că cererile se pot depune prin mandatar cu procură specială sau generală **autentică** ori de avocat, cu **împuternicire avocațială** (art. 79 alin. (1), art. 81 alin. (1) și art. 3 alin. (1) lit. e)). Se confirmă totodată principiul general din Legea 31/1990: reprezentarea printr-un împuternicit e admisă explicit chiar la actul fondator al firmei, cererea de înmatriculare.
 
 ## Temeiul legal
 
@@ -22,7 +22,7 @@ Ce se poate confirma din acest text:
 
 - **Reprezentarea printr-un împuternicit e permisă explicit** pentru cererea de înmatriculare — legea nu impune ca fondatorii sau administratorii să se prezinte personal.
 - **Răspunderea rămâne a fondatorilor/administratorilor**, nu a împuternicitului — dacă cererea nu e depusă în termenul de 15 zile, răspunderea solidară pentru prejudiciu revine celor care aveau obligația legală, nu persoanei împuternicite să acționeze în numele lor.
-- Pentru **modificările ulterioare** ale firmei (sediu, obiect de activitate, administratori), principiul reprezentării printr-un împuternicit continuă să se aplice în practica curentă la registrul comerțului, dar forma exactă a documentului de împuternicire (procură specială, autentificare notarială sau nu, formulare specifice) ține de Legea 265/2022 și de normele metodologice ale ONRC — verificarea concretă a formei corecte se face direct pe procedura ONRC în vigoare, nu pe baza acestui ghid.
+- Pentru **modificările ulterioare** ale firmei (sediu, obiect de activitate, administratori), principiul reprezentării printr-un împuternicit continuă să se aplice în practica curentă la registrul comerțului, dar forma exactă a documentului de împuternicire (procură specială, autentificare notarială sau nu, formulare specifice) ține de Legea 265/2022 și de normele metodologice ale ONRC — care cer, ca regulă, procură specială sau generală autentică ori împuternicire avocațială (art. 79 alin. (1), art. 81 alin. (1) din Legea 265/2022); detaliile de formular se verifică pe procedura ONRC în vigoare.
 
 ## Ce se greșește în practică
 

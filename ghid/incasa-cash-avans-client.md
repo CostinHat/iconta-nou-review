@@ -14,7 +14,7 @@ Da, dar plafonul depinde de **cine e clientul** — o firmă/PFA sau o persoană
 
 Potrivit **art. 3 alin. (1) lit. a) din Legea nr. 70/2015**, încasările de la persoanele prevăzute la art. 1 alin. (1) al legii (persoane juridice, PFA, întreprinderi individuale/familiale, liber profesioniști) se pot efectua în numerar în limita unui **plafon zilnic de 5.000 lei de la o persoană**.
 
-Important: **art. 3 alin. (4)** clarifică explicit că avansurile intră în acest calcul: „La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d)" — regula se aplică simetric și pentru încasarea unui avans de la un client firmă/PFA, în cadrul aceluiași plafon de 5.000 lei/zi.
+Important: **art. 3 alin. (4)** clarifică explicit că avansurile intră în acest calcul: „La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la alin. (1) lit. c) sau d)" — acest alineat (4) se referă însă exclusiv la avansurile spre decontare acordate propriilor angajați pentru plăți, nu la avansurile comerciale încasate de la clienți. Încasarea unui avans de la un client firmă/PFA se supune oricum plafonului general de încasări de 5.000 lei/zi de la o persoană, prevăzut la art. 3 alin. (1) lit. a).
 
 ### Client persoană fizică — plafon 10.000 lei/zi
 

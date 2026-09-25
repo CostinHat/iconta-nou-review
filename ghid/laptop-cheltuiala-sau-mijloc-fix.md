@@ -24,7 +24,7 @@ Un laptop de 3.000 lei și unul de 8.000 lei nu se contează la fel, deși ambel
 
 Un bun e mijloc fix amortizabil doar dacă îndeplinește **simultan** ambele condiții de mai sus:
 
-- valoarea de intrare este **≥ 5.000 lei** (prag valabil de la 25.02.2026 — până atunci pragul era 2.500 lei, stabilit prin HG 276/2013);
+- valoarea de intrare este **≥ 5.000 lei** (prag valabil pentru tot anul fiscal 2026, aplicabil începând cu anul fiscal 2026 conform OUG 8/2026 art. 10 alin. (2); pentru achizițiile de până la 31.12.2025 pragul era 2.500 lei, stabilit prin HG 276/2013);
 - durata normală de utilizare depășește **1 an**.
 
 Pentru un laptop, asta înseamnă:
@@ -32,7 +32,7 @@ Pentru un laptop, asta înseamnă:
 - **sub 5.000 lei** SAU cu durată de utilizare estimată sub 1 an → **obiect de inventar**, cont **303**, indiferent de preț;
 - **≥ 5.000 lei** ȘI durată peste 1 an → **mijloc fix**, cont **214 „Mobilier, aparatură birotică..."**, se amortizează pe durata normală de funcționare, prin una din metodele permise pentru echipamente/aparatură (liniară sau degresivă).
 
-Data care contează pentru încadrare e data intrării în patrimoniu (punerea în funcțiune/recepția), nu data facturii sau data plății. Pentru un laptop achiziționat înainte de 25.02.2026, pragul aplicabil la acea dată era 2.500 lei — schimbarea de prag nu retroactivează achizițiile deja făcute.
+Data care contează pentru încadrare e data intrării în patrimoniu (punerea în funcțiune/recepția), nu data facturii sau data plății. Pragul de 5.000 lei se aplică pentru întreg anul fiscal 2026 (OUG 8/2026 art. 10 alin. (2): prevederile „se aplică începând cu anul fiscal 2026"), deci și pentru laptopurile achiziționate între 1 ianuarie și 24 februarie 2026. Pragul de 2.500 lei rămâne relevant doar pentru achizițiile de până la 31.12.2025.
 
 ## Un exemplu
 

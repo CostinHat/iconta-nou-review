@@ -30,9 +30,9 @@ Pentru aceste categorii, dacă utilizarea e efectiv exclusivă pentru activitate
 
 ### Cum se demonstrează utilizarea exclusivă
 
-Legea nu impune un formular unic, dar demonstrarea utilizării exclusiv profesionale, necesară pentru deducerea integrală, se face prin:
+Pentru deducerea integrală, normele metodologice cer obligatoriu întocmirea unei foi de parcurs cu un conținut minim: potrivit HG 1/2016, Norme Titlul VII, pct. 68 alin. (2), „orice persoană impozabilă trebuie să dețină documentele prevăzute de lege pentru deducerea taxei și să întocmească foaia de parcurs care trebuie să conțină cel puțin următoarele informații: categoria de vehicul utilizat, scopul și locul deplasării, kilometrii parcurși, norma proprie de consum carburant pe kilometru parcurs". Foaia de parcurs nu e, deci, o simplă opțiune, ci o cerință. Ea se completează cu:
 
-- foaie de parcurs sau sistem GPS care înregistrează traseele, cu scop de deplasare menționat;
+- un sistem GPS care înregistrează traseele, ca suport suplimentar pentru datele din foaia de parcurs;
 - politică internă scrisă privind utilizarea vehiculelor, care exclude explicit folosirea personală;
 - corelarea traseelor cu activitatea firmei (vizite la clienți, furnizori, șantiere, după caz).
 

@@ -1,6 +1,6 @@
 ---
 title: Cum se distribuie banii rămași către asociați la lichidare?
-description: Distribuirea sumelor rămase după plata datoriilor firmei ține de procedura de lichidare, nu de decontările curente cu asociații — dar folosește aceeași cotă de impozit ca dividendul.
+description: Distribuirea sumelor rămase după plata datoriilor firmei ține de procedura de lichidare, nu de decontările curente cu asociații — iar venitul din lichidare se impune cu 10% (impozit final, art. 97 alin. (5) Cod fiscal), nu cu cota dividendelor.
 published: 2026-09-24
 modified: 2026-09-24
 poarta: v1
@@ -17,7 +17,7 @@ Această întrebare ține, strict, de procedura de **lichidare/radiere a societ�
 — Legea 31/1990, art. 67 alin. (1)
 :::
 
-La lichidare, sumele rămase după stingerea tuturor datoriilor firmei (inclusiv către bugetul de stat) se împart între asociați proporțional cu cota de participare la capitalul social — aceeași logică de proporționalitate din art. 67 alin. (1), aplicată însă activului net rămas, nu profitului curent. Partea din acest activ net care depășește capitalul social vărsat inițial de fiecare asociat e, în esență, tratată similar unui dividend și impozitată cu aceeași cotă (16% din 2026, conform Legii 141/2025). Procedura propriu-zisă de lichidare este reglementată separat, prin OMFP 897/2015 și Legea 31/1990 (dispozițiile despre dizolvare/lichidare), respectiv Legea 85/2014 dacă lichidarea are loc în cadrul unei proceduri de insolvență — texte care nu au fost citate verbatim în dosarul care stă la baza acestui ghid și trebuie verificate separat, la nevoie.
+La lichidare, sumele rămase după stingerea tuturor datoriilor firmei (inclusiv către bugetul de stat) se împart între asociați proporțional cu cota de participare la capitalul social — aceeași logică de proporționalitate din art. 67 alin. (1), aplicată însă activului net rămas, nu profitului curent. Partea din acest activ net care depășește capitalul social vărsat inițial de fiecare asociat (venitul din lichidare) se impune, potrivit art. 97 alin. (5) din Codul fiscal, cu o cotă de **10%**, impozit final — nu cu cota dividendelor. Legea 141/2025 a majorat la 16% doar cota dividendelor (art. 97 alin. (7)), nu și venitul din lichidare de la alin. (5). Procedura propriu-zisă de lichidare este reglementată separat, prin OMFP 897/2015 și Legea 31/1990 (dispozițiile despre dizolvare/lichidare), respectiv Legea 85/2014 dacă lichidarea are loc în cadrul unei proceduri de insolvență — texte care nu au fost citate verbatim în dosarul care stă la baza acestui ghid și trebuie verificate separat, la nevoie.
 
 ## Ce se greșește în practică
 
@@ -27,6 +27,6 @@ La lichidare, sumele rămase după stingerea tuturor datoriilor firmei (inclusiv
 
 ## Ce face iConta.eu
 
-Distribuirea la lichidare este acoperită de o funcționalitate separată de „Decontări asociați" — cea de **lichidare/radiere societate** — care calculează partajul folosind capitalul social, rezervele și profitul nedistribuit (`1012 = 456`, `106x/1171 = 456`), aplică impozitul pe partea asimilată dividendului cu aceeași cotă valabilă la data operațiunii (`456 = 446`) și înregistrează plata netă către asociați (`456 = 5121`). Funcționalitatea „Decontări asociați" descrisă în acest ghid rămâne relevantă doar înainte de lichidare, pentru soldurile de dividende și împrumuturi care trebuie stinse anterior partajului final.
+Distribuirea la lichidare este acoperită de o funcționalitate separată de „Decontări asociați" — cea de **lichidare/radiere societate** — care calculează partajul folosind capitalul social, rezervele și profitul nedistribuit (`1012 = 456`, `106x/1171 = 456`), aplică impozitul pe venitul din lichidare cu cota de 10% prevăzută la art. 97 alin. (5) din Codul fiscal (`456 = 446`) și înregistrează plata netă către asociați (`456 = 5121`). Funcționalitatea „Decontări asociați" descrisă în acest ghid rămâne relevantă doar înainte de lichidare, pentru soldurile de dividende și împrumuturi care trebuie stinse anterior partajului final.
 
 [iConta.eu](/)

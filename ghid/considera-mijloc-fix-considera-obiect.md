@@ -20,7 +20,7 @@ Distincția dintre mijloc fix și obiect de inventar nu ține de cât de „impo
 Cele trei condiții, desfăcute:
 
 - **a) Destinația** — bunul trebuie folosit efectiv în activitatea entității (producție, livrare, servicii, închiriere către terți) sau administrativ, nu deținut fără scop.
-- **b) Valoarea** — la data intrării în patrimoniu, valoarea fiscală trebuie să fie **cel puțin egală** cu pragul legal. Pragul e **5.000 lei din 25.02.2026** (modificat prin OUG 8/2026 art. 6 pct. 7), anterior fiind **2.500 lei** (HG 276/2013).
+- **b) Valoarea** — la data intrării în patrimoniu, valoarea fiscală trebuie să fie **cel puțin egală** cu pragul legal. Pragul e **5.000 lei, aplicabil pentru tot anul fiscal 2026** — deci inclusiv achizițiilor din 1 ianuarie–24 februarie 2026 (OUG 8/2026 art. 6 pct. 7 coroborat cu art. 10 alin. (2): „Prevederile art. 6 pct. 1-14 se aplică începând cu anul fiscal 2026"); pragul de **2.500 lei** se aplica doar intrărilor de până la 31.12.2025.
 - **c) Durata** — durata normală de utilizare trebuie să fie **mai mare de un an**. Un bun cu durată sub un an nu e mijloc fix **indiferent de cât de scump e**.
 
 Un bun care nu îndeplinește oricare dintre cele trei condiții — cel mai adesea pentru că valoarea e sub prag sau durata e sub un an — e tratat contabil ca **obiect de inventar**: nu se amortizează, ci se trece integral pe cheltuială la darea în folosință (cont 603), cu o evidență extracontabilă separată (contul 8035) până la scoaterea din uz.
@@ -28,7 +28,7 @@ Un bun care nu îndeplinește oricare dintre cele trei condiții — cel mai ade
 ## Ce se greșește în practică
 
 - Se verifică doar valoarea (condiția b) și se ignoră complet condiția duratei (c) — un bun scump, dar cu durată de utilizare sub un an, nu e mijloc fix, oricât ar costa.
-- Se aplică pragul vechi de 2.500 lei după 25.02.2026, sau invers, pragul nou pentru achiziții făcute înainte de această dată.
+- Se aplică pragul vechi de 2.500 lei pentru achiziții din anul fiscal 2026, deși pragul de 5.000 lei se aplică pentru tot anul 2026 (inclusiv 1 ianuarie–24 februarie); ori invers, se aplică pragul nou pentru intrări de până la 31.12.2025.
 - Se presupune că „obiect de inventar" înseamnă automat „bun ieftin sau mărunt" — de fapt criteriul legal e strict cumulativ, nu o apreciere subiectivă.
 - Se uită regimul tranzitoriu: mijloacele fixe deja existente la 31.12.2025 cu valoare între 2.500 și 5.000 lei **nu se reclasifică** drept obiecte de inventar — ele continuă să se amortizeze pe durata rămasă (Codul fiscal art. 45 alin. 21^3).
 

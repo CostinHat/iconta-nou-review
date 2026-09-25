@@ -21,9 +21,9 @@ Două precizări care schimbă calculul:
 
 **Se cumulează cu întreprinderile legate.** Plafonul nu se verifică doar la nivelul firmei, ci pe baza veniturilor persoanei juridice române **cumulate cu veniturile întreprinderilor legate** cu aceasta.
 
-**Se iau doar elementele din baza impozabilă** prevăzută la art. 53 din Codul fiscal.
+**Se iau în calcul veniturile care constituie cifra de afaceri** definită potrivit reglementărilor contabile aplicabile (art. 47 alin. (1^1) și art. 54 alin. (1) din Codul fiscal), nu baza impozabilă de la art. 53.
 
-Prin OUG nr. 8/2026, veniturile din vânzarea de active sau terenuri nu mai intră în calculul plafonului, în condițiile prevăzute de ordonanță.
+Prin OUG nr. 8/2026, la verificarea plafonului în cursul anului (art. 52 alin. (1)) se adaugă la cifra de afaceri și veniturile din transferul mijloacelor fixe/terenurilor, atunci când firma transferă mai mult de un activ din aceeași subgrupă din Catalogul mijloacelor fixe, respectiv mai mult de un teren.
 
 ## 2. Capitalul social deținut de persoane
 
@@ -39,9 +39,9 @@ Prin salariat se înțelege persoana angajată cu **contract individual de munc�
 
 Se acceptă și contracte cu timp parțial care însumate echivalează o normă întreagă, ori un administrator remunerat prin contract de mandat, în condițiile legii.
 
-Pentru firmele nou-înființate, condiția trebuie îndeplinită în termen de 30 de zile inclusiv de la data înregistrării mențiunii în Registrul Comerțului.
+Pentru firmele nou-înființate, condiția trebuie îndeplinită în termen de 90 de zile inclusiv de la data înregistrării persoanei juridice (art. 48 alin. (3) din Codul fiscal). Termenul de 30 de zile de la data înregistrării mențiunii în Registrul Comerțului privește reluarea activității după inactivitate temporară (art. 48 alin. (3^2)).
 
-Prin OUG nr. 8/2026, firma nu pierde regimul dacă angajatul are o suspendare de maximum 30 de zile pe an.
+Prin OUG nr. 8/2026, firma nu pierde regimul dacă perioada de suspendare a raportului de muncă este mai mică de 30 de zile și situația este înregistrată pentru prima dată în anul fiscal respectiv (art. 48 alin. (3^1)).
 
 ## 5. Regula unei singure microîntreprinderi
 

@@ -32,7 +32,7 @@ Din sursele verificate pentru acest ghid nu rezultă o normă care să afirme ex
 
 - Se presupune că radierea e un proces pur administrativ, fără nicio verificare fiscală prealabilă — practic, obținerea certificatului de atestare fiscală cerut la finalizarea lichidării presupune o evaluare a situației firmei la organul fiscal.
 - Se depune declarația de radiere fără să se fi lămurit toate obligațiile fiscale restante, presupunând că radierea „șterge" automat datoriile — art. 90 alin. (4) (neinclus mai sus) prevede că un cod fiscal retras poate fi reutilizat de succesori pentru obligațiile din perioada anterioară, deci datoriile nu dispar odată cu radierea.
-- Se confundă radierea înregistrării fiscale (art. 90 CPF) cu radierea din registrul comerțului (proces separat, guvernat de Legea 31/1990 și Legea 26/1990) — sunt două proceduri distincte, chiar dacă strâns legate una de cealaltă.
+- Se confundă radierea înregistrării fiscale (art. 90 CPF) cu radierea din registrul comerțului (proces separat, guvernat de Legea 31/1990 și Legea 265/2022, care a abrogat Legea 26/1990) — sunt două proceduri distincte, chiar dacă strâns legate una de cealaltă.
 
 ## Ce face iConta.eu
 

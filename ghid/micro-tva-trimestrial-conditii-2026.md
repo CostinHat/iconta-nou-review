@@ -22,7 +22,7 @@ Ce rezultă concret pentru 2026:
 - Perioada fiscală de TVA (lună sau trimestru) depinde exclusiv de cifra de afaceri realizată în anul calendaristic precedent, nu de statutul de microîntreprindere. O firmă poate fi la impozit pe profit și, în același timp, să declare TVA trimestrial, dacă se încadrează în plafonul de 100.000 euro.
 - Firma care se înregistrează în scopuri de TVA în cursul anului declară, la înregistrare, cifra de afaceri estimată pe perioada rămasă din an (art. 322 alin. (3)) — dacă nu depășește plafonul recalculat, va depune deconturi trimestriale chiar din anul înregistrării.
 - Excepția importantă: chiar dacă cifra de afaceri nu depășește plafonul, firma care a efectuat achiziții intracomunitare de bunuri în anul precedent nu poate aplica trimestrul — trece automat la perioadă fiscală lunară.
-- Firma care depășește plafonul de 100.000 euro în cursul anului trece la perioadă fiscală lunară începând cu prima lună a trimestrului următor celui în care a fost depășit plafonul.
+- Depășirea plafonului de 100.000 euro în cursul anului NU schimbă perioada fiscală în anul respectiv — perioada (lună sau trimestru) se stabilește pe baza cifrei de afaceri din anul calendaristic precedent (art. 322 alin. (2)). Dacă cifra de afaceri a anului curent depășește plafonul, trecerea la perioadă lunară operează abia din anul următor (art. 322 alin. (5)). Singura trecere la perioadă lunară în cursul anului rezultă din efectuarea unei achiziții intracomunitare de bunuri (art. 322 alin. (7)).
 
 ## Ce se greșește în practică
 

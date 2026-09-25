@@ -24,7 +24,7 @@ i) a depus în termen situațiile financiare anuale, dacă are această obligaț
 — Legea nr. 227/2015 (Codul fiscal), art. 47 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt)
 :::
 
-- Pragul de venituri e **100.000 euro**, valabil din 25.02.2026 (modificat prin OUG 8/2026) — un prag general, care se aplică la fel unei agenții de publicitate ca oricărei alte firme.
+- Pragul de venituri e **100.000 euro**, aplicabil începând cu 1 ianuarie 2026 (art. 54 alin. (3): „echivalentul în lei a 100.000 euro începând cu 1 ianuarie 2026"); OUG 8/2026 a reformulat doar redactarea lit. c) privind cursul de schimb, nu a introdus plafonul — un prag general, care se aplică la fel unei agenții de publicitate ca oricărei alte firme.
 - Condiția asociatului unic (lit. h) contează mai ales la grupurile de firme: dacă aceiași acționari (peste 25%) controlează mai multe societăți, doar UNA singură poate aplica regimul micro.
 - Condiția salariatului (lit. g) e obligatorie, cu excepția prevăzută la art. 48 alin. (3).
 - Legea exclude explicit anumite domenii de la regimul micro — la art. 47 alin. (3): bancar, asigurări/reasigurări/piață de capital, jocuri de noroc, explorare-exploatare petrol și gaze. **Publicitatea nu se regăsește în această listă**, deci nu are nicio restricție specială.
@@ -32,7 +32,7 @@ i) a depus în termen situațiile financiare anuale, dacă are această obligaț
 ## Ce se greșește în practică
 
 - Se caută o excepție sau un prag special pentru publicitate — nu există; regula de la art. 47 e generală, iar publicitatea nu apare deloc în lista de excluderi de la alin. (3) (spre deosebire de bancar, asigurări, jocuri de noroc, petrol și gaze).
-- Se folosește un prag vechi (ex. 500.000 euro sau alte valori din ani anteriori) în loc de plafonul actual de 100.000 euro, aplicabil din 25.02.2026.
+- Se folosește un prag vechi (ex. 500.000 euro sau alte valori din ani anteriori) în loc de plafonul actual de 100.000 euro, aplicabil de la 1 ianuarie 2026.
 - La verificarea pragului de venituri, se ignoră regula de cumul cu firmele „legate" (art. 47 alin. (1^1)) — dacă agenția are acționari care controlează și alte firme cu peste 25% din capital, veniturile se cumulează la verificarea plafonului.
 - Se confundă „microîntreprindere" (regim de impozit pe venit, Titlul III CF) cu „categoria de mărime micro" din contabilitate (Legea 82/1991, pe active/cifră de afaceri/salariați) — sunt două noțiuni complet diferite, cu praguri și scopuri diferite.
 

@@ -24,7 +24,7 @@ Art. 52 alin. (5) precizează metoda de verificare: limita se verifică pe baza 
 
 Exemplu: firma are venituri cumulate de 85.000 euro la 30 iunie, iar în luna august (trimestrul III) veniturile cumulate depășesc 100.000 euro. Firma:
 
-- rămâne micro pentru trimestrele I și II, cu impozit de 1% sau 3% pe veniturile din acea perioadă, după caz;
+- rămâne micro pentru trimestrele I și II, cu impozit de 1% pe veniturile din acea perioadă (cota de 3% a fost abrogată de la 01.01.2026 — Codul fiscal art. 51 alin. (1));
 - devine plătitoare de impozit pe profit **de la 1 iulie**, adică de la începutul trimestrului III (trimestrul în care s-a produs depășirea), nu doar din ziua exactă a depășirii.
 
 Calculul și plata impozitului pe profit pentru trimestrul respectiv se fac luând în calcul veniturile și cheltuielile realizate începând cu acel trimestru (art. 52 alin. (6)).

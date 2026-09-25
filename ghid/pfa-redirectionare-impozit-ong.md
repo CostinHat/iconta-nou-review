@@ -95,7 +95,7 @@ Formularul în format PDF inteligent validează automat formatul CNP-ului și fa
 
 ## Temeiul legal
 
-- Codul fiscal, art. 123¹ — destinația sumei reprezentând până la 3,5% din impozitul anual datorat;
+- Codul fiscal, art. 123¹ alin. (1) — dreptul de a dispune de până la 3,5% din impozit privește, în forma în vigoare, **doar impozitul pe venituri din salarii și asimilate** (stabilit potrivit art. 78 alin. (6) și art. 82 alin. (6)); pentru veniturile din activități independente (PFA în sistem real) acest drept a fost aplicabil **numai veniturilor realizate în anul 2023** (art. 133 alin. (28), coroborat cu abrogarea art. 68¹ alin. (7) prin OUG 115/2023);
 - Ordinul ANAF nr. 103/2025 — procedura de stabilire a sumei și formularul 230, publicat în Monitorul Oficial la 28 ianuarie 2025;
 - Registrul entităților/unităților de cult pentru care se acordă deduceri fiscale, publicat de ANAF.
 

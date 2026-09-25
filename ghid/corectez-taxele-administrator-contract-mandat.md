@@ -8,7 +8,7 @@ poarta: v1
 
 # Cum corectez taxele unui administrator cu contract de mandat?
 
-Dacă indemnizația unui administrator cu contract de mandat a fost taxată greșit, cauza cea mai frecventă e aplicarea regulilor de la un salariat clasic (CIM), în loc de regulile specifice mandatului: CAS 25% + CASS 10% + impozit 10%, fără contribuția asiguratorie pentru muncă (CAM).
+Dacă indemnizația unui administrator cu contract de mandat a fost taxată greșit, cauza cea mai frecventă e citarea greșită a temeiului legal sau calculul greșit al bazei impozitului. Remunerația administratorului/directorului cu contract de mandat este venit asimilat salariilor și se datorează CAS 25%, CASS 10%, impozit 10% și CAM 2,25% (în sarcina societății) — CAM se datorează, potrivit art. 220^4 alin. (1) lit. d) și e) din Codul fiscal.
 
 ## Temeiul legal
 
@@ -20,14 +20,14 @@ Dacă indemnizația unui administrator cu contract de mandat a fost taxată gre�
 
 ## Cum verifici și corectezi
 
-1. **Verifici dacă s-a aplicat CAM din greșeală.** Administratorul cu mandat nu are raport de muncă, deci CAM nu se datorează — dacă a fost reținută, se stornează și se recalculează netul.
+1. **Verifici dacă CAM a fost calculată.** Remunerația administratorului/directorului cu contract de mandat intră în baza CAM (art. 220^4 alin. (1) lit. d) și e) din Codul fiscal), deci CAM 2,25% se datorează — dacă a fost omisă, se adaugă și se corectează.
 2. **Verifici baza de calcul a impozitului.** Impozitul de 10% se aplică pe (brut − CAS − CASS), în această ordine — nu pe brutul integral și nu doar pe brut minus CAS.
 3. **Verifici temeiul legal citat în documentele interne.** Dacă a fost citat art. 76 alin. (2) lit. g) din Codul fiscal, e o citare greșită — lit. g) privește președintele asociației de proprietari, nu administratorul unei societăți. Temeiul corect e **lit. o)**.
-4. **Recalculezi cu funcția de mandat** (CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM) și refaci nota contabilă corectă, prin contul 621, nu 641.
+4. **Recalculezi cu funcția de mandat** (CAS 25% + CASS 10% + impozit 10% pe rest, plus CAM 2,25% în sarcina societății) și refaci nota contabilă corectă, prin contul 621, nu 641.
 
 ## Ce se greșește în practică
 
-- Aplicarea CAM la indemnizația de mandat, prin analogie cu salariul clasic.
+- Omiterea CAM la indemnizația de mandat, presupunând greșit că nu se datorează — CAM se aplică remunerației administratorilor și directorilor cu contract de mandat.
 - Citarea art. 76 alin. (2) lit. g) în locul lit. o) — o greșeală întâlnită și în documentația internă, nu doar în practica de birou.
 - Recalcularea doar a impozitului, fără verificarea și a CAS/CASS, deși toate trei depind de aceeași bază brută.
 

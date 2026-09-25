@@ -19,7 +19,7 @@ Cele mai multe imprimante de birou costă mult sub pragul legal, ceea ce le face
 
 Ce înseamnă în cazul unei imprimante:
 
-- **Sub prag, aproape mereu obiect de inventar.** O imprimantă de birou obișnuită, de câteva sute sau chiar 1.000-2.000 lei, e clar sub pragul de 5.000 lei (sau de 2.500 lei, pentru achiziții anterioare 25.02.2026) — deci nu poate fi mijloc fix, condiția de valoare nefiind îndeplinită.
+- **Sub prag, aproape mereu obiect de inventar.** O imprimantă de birou obișnuită, de câteva sute sau chiar 1.000-2.000 lei, e clar sub pragul de 5.000 lei (prag aplicabil întregului an fiscal 2026, potrivit OUG 8/2026 art. 10 alin. (2); pragul vechi de 2.500 lei privește doar achizițiile de până la 31.12.2025) — deci nu poate fi mijloc fix, condiția de valoare nefiind îndeplinită.
 - **Peste prag, se verifică și durata.** O imprimantă industrială sau multifuncțională de mare capacitate, care depășește pragul valoric, trebuie să aibă și o durată normală de utilizare mai mare de un an ca să fie mijloc fix — cele două condiții se aplică împreună, nu una în locul celeilalte.
 - **Data facturii, nu data punerii în funcțiune, stabilește pragul aplicabil.** O imprimantă comandată în februarie 2026 și livrată în martie folosește pragul valabil la data la care a intrat efectiv în patrimoniu, nu data la care a fost pornită prima dată.
 

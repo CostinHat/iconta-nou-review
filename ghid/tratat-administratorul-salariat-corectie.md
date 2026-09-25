@@ -8,7 +8,7 @@ poarta: v1
 
 # Am tratat administratorul ca salariat: corecție
 
-Când un administrator cu contract de mandat e introdus în aplicație ca angajat obișnuit — pe fluxul de salarizare clasic, cu contract individual de muncă — greșeala nu e doar contabilă. Ea afectează contribuția reținută (CAM, care nu se datorează), contul folosit (641 în loc de 621) și, dacă declarația a fost deja depusă, tipul de asigurat raportat la stat.
+Când un administrator cu contract de mandat e introdus în aplicație ca angajat obișnuit — pe fluxul de salarizare clasic, cu contract individual de muncă — greșeala nu e doar contabilă. Ea afectează contul folosit (641 în loc de 621) și, dacă declarația a fost deja depusă, tipul de asigurat raportat la stat — dar nu CAM: contribuția asiguratorie pentru muncă se datorează și pentru remunerația administratorului (art. 220^4 alin. (1) lit. d)), deci nu se stornează.
 
 ## Temeiul legal
 
@@ -21,13 +21,13 @@ Când un administrator cu contract de mandat e introdus în aplicație ca angaja
 ## Ce corectezi, pas cu pas
 
 1. **Scoți administratorul din fluxul de salarizare clasică** și îl reintroduci prin ecranul dedicat contractelor speciale, cu tipul „mandat".
-2. **Stornezi CAM reținută** — nu se datorează la mandat.
+2. **Nu stornezi CAM** — contribuția asiguratorie pentru muncă se datorează și pentru remunerația administratorului de mandat (art. 220^4 alin. (1) lit. d) din Codul fiscal include expres această remunerație în baza CAM).
 3. **Muți cheltuiala din 641 în 621** — nu mai e cheltuială cu salariile din raport de muncă.
 4. **Verifici dacă indemnizația a fost deja raportată în D112** ca angajat cu CIM (tip asigurat 1). Structura oficială D112 are o categorie distinctă pentru administratori — tip asigurat 6 — diferită de tip 1 (salariat clasic). Dacă declarația a fost deja depusă greșit, rectificarea ei e un pas separat, în afara notei contabile.
 
 ## Ce se greșește în practică
 
-- Se corectează doar taxele reținute lunar (se oprește CAM), dar administratorul rămâne, structural, introdus ca „salariat" în sistemul de evidență a personalului.
+- Se oprește greșit CAM la corectare, deși CAM se datorează pentru remunerația administratorului; problema reală e că administratorul rămâne, structural, introdus ca „salariat" în sistemul de evidență a personalului.
 - Se presupune că schimbarea tipului de contract în aplicație regenerează automat declarațiile deja depuse — nu e cazul, o declarație deja transmisă la ANAF se rectifică separat.
 - Se ignoră diferența de temei legal (lit. o) pentru administrator, nu lit. g) sau regulile CIM), ceea ce poate duce la aplicarea altor plafoane sau exceptări nepotrivite.
 

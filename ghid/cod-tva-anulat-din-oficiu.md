@@ -7,7 +7,7 @@ modified: 2026-08-19
 
 # Cod de TVA anulat din oficiu: ce faci în ziua următoare
 
-Anularea codului de TVA din oficiu produce efecte de la data comunicării deciziei, iar consecințele încep imediat. Ce se face în primele zile decide cât costă.
+Anularea codului de TVA din oficiu produce efecte de la data prevăzută la art. 316 alin. (11) pentru fiecare caz — de la data declarării ca inactiv (lit. a)), din prima zi a lunii următoare termenului de depunere al ultimului decont (lit. d), e)), respectiv de la data comunicării deciziei doar la lit. c) și h) (art. 316 alin. (15)). Ce se face în primele zile decide cât costă.
 
 Situațiile în care ANAF anulează codul sunt la **art. 316 alin. 11** din Codul fiscal.
 
@@ -16,7 +16,6 @@ Situațiile în care ANAF anulează codul sunt la **art. 316 alin. 11** din Codu
 Principalele cauze:
 
 - **declararea în inactivitate fiscală**;
-- **inactivitatea temporară** înscrisă la registrul comerțului;
 - **nedepunerea deconturilor de TVA** pe o perioadă determinată — șase luni consecutive sau două trimestre consecutive, după perioada fiscală;
 - **deconturi depuse pe zero**, fără achiziții și livrări, timp de șase luni sau două trimestre consecutive;
 - **riscul fiscal ridicat**, constatat în urma analizei;
@@ -29,7 +28,7 @@ Ultimele două se aplică frecvent la firmele noi sau la cele cu schimbări de s
 
 **1. Citește decizia și identifică motivul exact.** Fiecare cauză are propria cale de remediere. Decizia se comunică prin SPV, iar termenul de contestație — 45 de zile — curge de la comunicare.
 
-**2. Oprește emiterea de facturi cu TVA.** De la data anulării, firma nu mai are dreptul să colecteze taxa. Facturile emise în continuare cu TVA sunt neconforme, iar taxa înscrisă se datorează oricum la buget, conform art. 11 alin. 6, fără drept de deducere pentru beneficiar.
+**2. Oprește emiterea de facturi cu TVA către clienți.** De la data anulării, firma nu mai are drept de deducere. Totuși, pentru anularea conform art. 316 alin. (11) lit. c)-e) și h), firma rămâne obligată la plata TVA colectate pentru operațiunile taxabile efectuate în perioada respectivă (art. 11 alin. 8); după reînregistrare, emite facturi în care înscrie distinct TVA colectată aferentă acelei perioade. Taxa înscrisă pe facturi se datorează oricum la buget, iar beneficiarul nu are drept de deducere (art. 11 alin. 6).
 
 **3. Calculează ajustările datorate.** Aici e pierderea cea mare, și cea mai puțin anticipată.
 
@@ -37,7 +36,7 @@ Ultimele două se aplică frecvent la firmele noi sau la cele cu schimbări de s
 
 Anularea codului declanșează obligația de ajustare a TVA deduse pentru:
 
-**Stocurile existente** — art. 304. Se ajustează integral taxa dedusă pentru bunurile aflate în stoc la data anulării.
+**Stocurile existente** — pentru anularea din oficiu conform art. 316 alin. (11) lit. a)-e) și h), NU se ajustează taxa dedusă pentru bunurile de natura stocurilor, serviciile neutilizate și activele corporale fixe în curs de execuție (HG 1/2016, normele Titlului VII); în schimb, firma rămâne obligată la plata TVA colectate pentru operațiunile taxabile din perioada respectivă (art. 11 alin. (8)).
 
 **Bunurile de capital aflate în perioada de ajustare** — art. 305. Pentru fiecare bun, se ajustează proporțional cu anii rămași: până la 20 de ani la imobile, 5 ani la celelalte.
 

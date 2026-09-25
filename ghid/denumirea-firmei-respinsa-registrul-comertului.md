@@ -8,7 +8,7 @@ poarta: v1
 
 # Ce fac dacă denumirea firmei este respinsă la Registrul Comerțului?
 
-Procedura tehnică de verificare a disponibilității unei denumiri de firmă (similitudine cu denumiri deja existente, cerințe de unicitate) e reglementată prin Legea nr. 26/1990 privind registrul comerțului — un act pe care nu l-am găsit în sursele verificate pentru acest ghid, așa că nu cităm din el. Ce putem confirma din Legea societăților nr. 31/1990, prezentă în corpus, este cerința de bază: denumirea nu e un detaliu opțional, ci un element obligatoriu al actului constitutiv, fără de care societatea nu poate fi legal constituită.
+Procedura de verificare a disponibilității și de rezervare a unei denumiri de firmă (deosebirea față de firmele existente, caracterul distinctiv) e reglementată de Legea nr. 265/2022 privind registrul comerțului, art. 48-51 — Legea nr. 26/1990 a fost abrogată prin art. 140 alin. (1) lit. a) din Legea nr. 265/2022. Ambele acte, împreună cu Legea societăților nr. 31/1990, se află în corpus. Cerința de bază din Legea nr. 31/1990: denumirea nu e un detaliu opțional, ci un element obligatoriu al actului constitutiv, fără de care societatea nu poate fi legal constituită.
 
 ## Temeiul legal
 
@@ -17,7 +17,7 @@ Procedura tehnică de verificare a disponibilității unei denumiri de firmă (s
 — Legea nr. 31/1990 privind societățile, art. 7 lit. b) (sursă: anaf_surse/legea_31_1990_societatile.txt)
 :::
 
-Notă onestă: acest citat confirmă doar că denumirea trebuie inclusă în actul constitutiv, nu detaliază motivele de respingere ori procedura de rezervare/verificare a disponibilității denumirii la Oficiul Registrului Comerțului (ONRC) — acestea sunt reglementate de Legea nr. 26/1990, care nu se regăsește în sursele consultate. Aplicăm, așadar, principiul general disponibil, nu un articol specific respingerii:
+Motivele de respingere și procedura de rezervare/verificare a disponibilității denumirii la Oficiul Registrului Comerțului (ONRC) sunt reglementate de Legea nr. 265/2022, art. 48-51: firma trebuie să se deosebească de cele existente (art. 49), să fie disponibilă și să aibă caracter distinctiv (art. 50 alin. (3)-(4)), iar dovada de rezervare e valabilă o lună (art. 50 alin. (6)):
 
 - Fără o denumire validă, actul constitutiv e incomplet, iar înmatricularea nu poate fi finalizată — de aceea verificarea denumirii (identitate/similitudine cu firme deja înregistrate) se face, în practică, **înainte** de depunerea dosarului de înființare, prin rezervarea denumirii la ONRC.
 - Dacă denumirea rezervată sau propusă este respinsă (de regulă pentru identitate ori similitudine cu o firmă existentă, ori pentru că nu respectă cerințele de formă — includerea formei juridice, absența unor termeni restricționați etc.), soluția practică este alegerea unei alte denumiri și repetarea rezervării, nu contestarea în fața instanței a unei simple respingeri administrative de disponibilitate.

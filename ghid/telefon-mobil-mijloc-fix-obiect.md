@@ -20,7 +20,7 @@ Nu contează ce fel de bun e — telefon, laptop, mobilier — ci **valoarea lui
 Cele trei condiții sunt **cumulative** — trebuie îndeplinite toate deodată pentru ca bunul să fie mijloc fix:
 
 - **Destinație de utilizare** economică (administrativă, de producție, de închiriere) — un telefon mobil folosit de un angajat pentru activitatea firmei se încadrează aici fără discuție.
-- **Valoare la intrare ≥ 5.000 lei** — prag actualizat de OUG 8/2026 (art. 6 pct. 7), în vigoare din 25.02.2026 pentru anul fiscal 2026; anterior acestei date, pragul era de 2.500 lei (HG 276/2013). Un telefon cumpărat sub acest prag **nu** e mijloc fix, indiferent de durata lui reală de folosire.
+- **Valoare la intrare ≥ 5.000 lei** — prag introdus prin OUG 8/2026 (art. 6 pct. 7) și aplicabil pentru întreg anul fiscal 2026, adică inclusiv achizițiilor din 01.01–24.02.2026 (OUG 8/2026 art. 10 alin. (2): „Prevederile art. 6 pct. 1-14 se aplică începând cu anul fiscal 2026"). Pragul de 2.500 lei rămâne relevant doar pentru bunurile intrate până la 31.12.2025. Un telefon cumpărat sub acest prag **nu** e mijloc fix, indiferent de durata lui reală de folosire.
 - **Durată normală de utilizare > 1 an** — dacă bunul e destinat unei utilizări scurte, sub un an, nu e mijloc fix nici dacă valoarea depășește pragul.
 
 Dacă oricare din cele trei condiții lipsește — de regulă, la telefoane, condiția de valoare — bunul se înregistrează ca **obiect de inventar**: costul lui trece integral pe cheltuială la darea în folosință, nu se amortizează în timp.
@@ -29,7 +29,7 @@ Notă de tranziție: mijloacele fixe aflate deja în evidență la 31.12.2025, c
 
 ## Ce se greșește în practică
 
-- Se folosește vechiul prag de 2.500 lei pentru achiziții din 2026, ignorând majorarea la 5.000 lei intrată în vigoare din 25.02.2026.
+- Se folosește vechiul prag de 2.500 lei pentru achiziții din 2026, ignorând majorarea la 5.000 lei aplicabilă pentru tot anul fiscal 2026 (inclusiv pentru achizițiile din 01.01–24.02.2026).
 - Se reclasifică retroactiv mijloacele fixe existente la 31.12.2025 cu valoare între 2.500 și 5.000 lei — legea spune explicit că acestea NU se reclasifică, ci continuă amortizarea pe durata rămasă.
 - Se aplică pragul valoric fără verificarea celorlalte două condiții (destinație economică și durată > 1 an) — toate trei trebuie îndeplinite simultan.
 

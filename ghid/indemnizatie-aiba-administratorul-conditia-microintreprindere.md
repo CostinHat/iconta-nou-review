@@ -8,7 +8,7 @@ poarta: v1
 
 # Ce indemnizație trebuie să aibă administratorul pentru condiția de microîntreprindere?
 
-Una dintre condițiile cumulative pentru statutul de microîntreprindere e existența a cel puțin unui salariat. Codul fiscal nu leagă direct această condiție de o indemnizație minimă a administratorului, ci de existența raportului de muncă — administratorul remunerat printr-un contract de mandat nu e, prin el însuși, „salariat" în sensul acestei condiții, decât dacă și în măsura în care are simultan un contract individual de muncă.
+Una dintre condițiile cumulative pentru statutul de microîntreprindere e existența a cel puțin unui salariat. Codul fiscal nu leagă direct această condiție de o indemnizație minimă a administratorului, ci de existența raportului de muncă — administratorul remunerat printr-un contract de mandat sau de administrare îndeplinește el însuși condiția de „cel puțin un salariat", fără a fi nevoie de un contract individual de muncă separat, dacă remunerația lui e cel puțin la nivelul salariului de bază minim brut pe țară garantat în plată (Codul fiscal, art. 51 alin. (4) lit. b)).
 
 ## Temeiul legal
 
@@ -26,7 +26,7 @@ Ce rezultă de aici pentru administrator și condiția de salariat:
 
 ## Ce se greșește în practică
 
-- Se presupune că remunerarea administratorului printr-un contract de mandat, oricât de mare, îndeplinește condiția de „cel puțin un salariat" — condiția cere explicit un raport de muncă, nu orice formă de remunerare a conducerii.
+- Se presupune că doar un contract individual de muncă îndeplinește condiția de „cel puțin un salariat" — de fapt și un contract de mandat sau de administrare o îndeplinește, dacă remunerația e cel puțin la nivelul salariului de bază minim brut pe țară garantat în plată (art. 51 alin. (4) lit. b)).
 - Se ignoră termenul de 30 de zile pentru angajarea unui înlocuitor atunci când singurul salariat pleacă, riscând astfel trecerea automată la impozit pe profit din trimestrul următor.
 - Se confundă excepția de la art. 48 alin. (3) cu regula generală, aplicând-o unor situații care nu se încadrează în ea.
 

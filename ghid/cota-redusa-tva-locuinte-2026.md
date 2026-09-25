@@ -20,7 +20,7 @@ Articolul 291 alin. (3) Abrogat."
 
 - Alineatul (3) al art. 291 — temeiul vechii scheme populare de reducere (5%, apoi 9%) pentru achiziția unei singure locuințe sub un plafon valoric, de către persoane fizice — este **abrogat integral** de la 01.08.2025.
 - Ce a rămas la cotă redusă (11%, de la aceeași dată) sub „locuințe" este **strict** categoria de la lit. l): clădiri destinate cămine de bătrâni și pensionari, case de copii și centre de recuperare/reabilitare pentru minori cu handicap — adică locuințe „ca parte a politicii sociale", nu locuințe obișnuite.
-- O locuință obișnuită (apartament, casă) cumpărată de o persoană fizică sau juridică, fără să se încadreze la categoria socială de mai sus, este supusă în 2026 cotei **standard de 21%** (art. 291 alin. (1)) — nu mai există niciun temei de reducere generală pentru ea.
+- O locuință obișnuită (apartament, casă) cumpărată de o persoană fizică, fără să se încadreze la categoria socială de mai sus, este supusă ca regulă cotei **standard de 21%** (art. 291 alin. (1)). Există însă un **regim tranzitoriu**: livrarea unei singure locuințe către o persoană fizică beneficiază de cotă redusă de **9%** dacă livrarea are loc până la 31 iulie 2026, locuința are maximum 120 mp și o valoare de cel mult 600.000 lei (exclusiv TVA), iar cumpărătorul a încheiat până la 1 august 2025 un act juridic cu plată în avans pentru acea locuință (Legea nr. 141/2025, art. III alin. (1)-(4), sursă: anaf_surse/legea_141_2025.txt).
 
 ## Ce se greșește în practică
 

@@ -1,6 +1,6 @@
 ---
 title: Zilele libere pentru evenimente familiale deosebite — cum se plătesc
-description: Dreptul la zile libere plătite pentru evenimente familiale deosebite, potrivit art. 147 din Codul muncii — cine stabilește lista evenimentelor și numărul de zile, și cum se calculează plata.
+description: Dreptul la zile libere plătite pentru evenimente familiale deosebite, potrivit art. 152 din Codul muncii republicat — cine stabilește lista evenimentelor și numărul de zile, și cum se calculează plata.
 published: 2026-09-24
 modified: 2026-09-24
 poarta: v1
@@ -8,7 +8,7 @@ poarta: v1
 
 # Zilele libere pentru evenimente familiale deosebite — cum se plătesc
 
-Codul muncii (Legea nr. 53/2003), art. 147 alin. (1): "În cazul unor evenimente familiale deosebite, salariații au dreptul la zile libere plătite, care nu se includ în durata concediului de odihnă."
+Codul muncii (Legea nr. 53/2003, republicată), art. 152 alin. (1): "În cazul unor evenimente familiale deosebite, salariații au dreptul la zile libere plătite, care nu se includ în durata concediului de odihnă."
 
 ### Cine stabilește ce e „eveniment familial deosebit" și câte zile
 
@@ -23,8 +23,8 @@ Nu mai există, din 2011, un contract colectiv de muncă unic la nivel național
 
 ### Cum se plătesc
 
-Legea nu prevede un mecanism de calcul separat pentru aceste zile libere — ele sunt, prin chiar textul art. 147, "zile libere **plătite**", deci salariatul primește remunerația obișnuită pentru zilele respective, ca și cum ar fi lucrat, fără a se consuma din concediul de odihnă anual (alin. (1) exclude expres includerea lor în durata concediului de odihnă). Baza de calcul urmează, în absența unei prevederi speciale în CCM/regulament, principiul general al plății pentru zile nelucrate asimilate perioadei de lucru normal.
+Legea nu prevede un mecanism de calcul separat pentru aceste zile libere — ele sunt, prin chiar textul art. 152, "zile libere **plătite**", deci salariatul primește remunerația obișnuită pentru zilele respective, ca și cum ar fi lucrat, fără a se consuma din concediul de odihnă anual (alin. (1) exclude expres includerea lor în durata concediului de odihnă). Baza de calcul urmează, în absența unei prevederi speciale în CCM/regulament, principiul general al plății pentru zile nelucrate asimilate perioadei de lucru normal.
 
 ### De reținut pentru angajator
 
-Fără o reglementare proprie (CCM sau regulament intern), dreptul prevăzut la art. 147 alin. (1) rămâne teoretic neconcretizat în privința listei de evenimente și a numărului de zile — motiv pentru care regulamentul intern trebuie să conțină explicit această listă, nu doar să trimită generic la Codul muncii. Absența unei liste concrete în regulamentul intern e o lacună de conformitate, nu o scutire de la acordarea dreptului.
+Fără o reglementare proprie (CCM sau regulament intern), dreptul prevăzut la art. 152 alin. (1) rămâne teoretic neconcretizat în privința listei de evenimente și a numărului de zile — motiv pentru care regulamentul intern trebuie să conțină explicit această listă, nu doar să trimită generic la Codul muncii. Absența unei liste concrete în regulamentul intern e o lacună de conformitate, nu o scutire de la acordarea dreptului.

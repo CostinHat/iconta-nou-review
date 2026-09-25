@@ -20,8 +20,8 @@ Trecerea de la microîntreprindere la impozit pe profit nu e opțională odată 
 Mecanismul trecerii la profit:
 
 - Depășirea plafonului se verifică în cursul anului, nu doar la 31 decembrie: dacă veniturile cumulate de la începutul anului trec de 100.000 euro, firma devine plătitoare de impozit pe profit **începând cu trimestrul** în care a avut loc depășirea, pentru întreaga perioadă rămasă din an (nu retroactiv pentru trimestrele deja închise ca micro).
-- Pentru perioada anterioară depășirii, firma rămâne micro și depune D100 pentru acele trimestre; pentru perioada de la depășire încolo, calculul se face în sistemul impozitului pe profit, cu declarația privind impozitul pe profit aferentă perioadei respective, depusă până la 25 martie a anului fiscal următor.
-- Cursul de schimb pentru verificarea plafonului nu e cel de la data fiecărei facturi, ci cel valabil la închiderea exercițiului financiar — pentru verificarea depășirii în cursul anului se folosește cursul BNR din ziua în care se constată depășirea, conform normelor metodologice.
+- Pentru perioada anterioară depășirii, firma rămâne micro și depune D100 pentru acele trimestre; pentru perioada de la depășire încolo, calculul se face în sistemul impozitului pe profit, cu declarația privind impozitul pe profit aferentă perioadei respective, depusă până la 25 iunie inclusiv a anului următor (Codul fiscal art. 42, astfel cum a fost modificat prin OUG 8/2026, aplicabil începând cu anul fiscal 2026).
+- Cursul de schimb pentru verificarea plafonului nu e cel de la data fiecărei facturi și nici cel din ziua depășirii, ci cursul valabil la închiderea exercițiului financiar precedent (Codul fiscal art. 52 alin. (5): verificarea se face pe baza veniturilor cumulate de la începutul anului fiscal, la cursul de la închiderea exercițiului financiar precedent).
 - Modificarea regimului fiscal trebuie reflectată și în vectorul fiscal al firmei la ANAF (declarația de mențiuni 700), nu doar în evidența internă — vezi ghidul dedicat modificării vectorului fiscal.
 
 ## Ce se greșește în practică

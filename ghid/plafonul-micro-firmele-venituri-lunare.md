@@ -20,7 +20,7 @@ O firmă cu venituri sezoniere sau inegale de la o lună la alta se întreabă a
 - Condiția de venituri pentru încadrarea ca microîntreprindere se verifică o singură dată pe an, **la 31 decembrie a anului fiscal precedent**, prin cumularea veniturilor întregului an — nu se recalculează lunar.
 - Plafonul aplicabil pentru verificarea din 2026 este **100.000 euro**, echivalentul în lei calculat la cursul de schimb valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile — nu la cursul zilei fiecărei încasări.
 - O lună cu venituri foarte mari, urmată de luni slabe, **nu scoate firma din regimul micro în cursul anului** — depășirea plafonului anual, constatată la sfârșitul anului sau în cursul anului conform regulilor de trecere pe parcurs, e cea care schimbă regimul, nu fluctuația lunară.
-- Dacă firma depășește plafonul anual **în cursul anului curent**, Codul fiscal are reguli separate de trecere obligatorie la impozit pe profit începând cu trimestrul depășirii — diferite de verificarea condiției de la 31 decembrie a anului precedent.
+- Dacă firma depășește plafonul de 100.000 euro **în cursul anului curent** — verificat pe baza veniturilor înregistrate *cumulat de la începutul anului fiscal* (art. 52 alin. (1) și (5)) — datorează impozit pe profit începând cu trimestrul în care s-a depășit limita; aceasta e o regulă separată de verificarea condiției de încadrare de la 31 decembrie a anului precedent (art. 47).
 
 ## Ce se greșește în practică
 

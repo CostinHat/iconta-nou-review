@@ -26,7 +26,7 @@ Impozitul de 1% pe veniturile microîntreprinderii și contribuțiile sociale da
 
 - Se presupune că, fiind firmă la impozit micro, „nu mai e nevoie de calcule de salarizare" pentru administrator — CAS/CASS-ul administratorului remunerat se datorează indiferent de regimul de impozitare al firmei.
 - Se calculează impozitul pe venit al administratorului la suma brută integrală, fără să se scadă întâi CAS și CASS din bază.
-- Se confundă administratorul remunerat prin contract de mandat cu salariatul cu CIM și se aplică din greșeală contribuția asiguratorie pentru muncă (CAM), care nu se datorează în lipsa unui raport de muncă propriu-zis.
+- Se confundă administratorul remunerat prin contract de mandat cu salariatul cu CIM însă CAM (contribuția asiguratorie pentru muncă, 2,25%) se datorează de societate în ambele cazuri: remunerația administratorului cu mandat e venit asimilat salariilor (art. 76 alin. (2) lit. o)) și intră în baza CAM (art. 220^2 alin. (1) coroborat cu art. 220^4 alin. (1) lit. d)).
 - Se omite depunerea D112 pentru veniturile administratorului, pe motiv că „nu are salariu, are doar dividende" — remunerația de mandat e distinctă de dividende și se declară separat.
 
 ## Ce face iConta.eu

@@ -16,7 +16,7 @@ D394 e declarația prin care ANAF verifică dacă doi parteneri de afaceri spun 
 
 Ordinul de bază: **OPANAF 3769/2015**. Structura curentă a tipurilor de operațiune provine din **OPANAF 77/2022** (Monitorul Oficial nr. 95 din 31 ianuarie 2022). Formularul a fost actualizat prin **OPANAF 2194/2025**, care a adăugat cotele de **21%** și **11%**, aplicabile de la 1 august 2025.
 
-Declarația se depune pe **aceeași perioadă fiscală ca decontul de TVA** — lunar, trimestrial, semestrial sau anual, după cum e încadrată firma — până la data de 25 a lunii următoare încheierii perioadei.
+Declarația se depune pe **aceeași perioadă fiscală ca decontul de TVA** — lunar, trimestrial, semestrial sau anual, după cum e încadrată firma — până la data de 30 inclusiv a lunii următoare încheierii perioadei (pentru luna ianuarie, până la 28/29 februarie).
 :::
 
 ## Regula concretă

@@ -633,6 +633,24 @@
       "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), bytes oficiali; TITLU VERIFICAT in continut (nr 39 din 2015)",
       "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/170982",
       "accessed_at": "2026-09-25T10:57:38.844857+00:00"
+    },
+    "legea_53_2003_codul_muncii.html": {
+      "clasa": "ADUS",
+      "motiv": "Codul muncii - Legea 53/2003 REPUBLICATA, forma consolidata in vigoare (numerotare republicata: art.81 demisie, art.164 salariu minim, art.169 retineri); bytes oficiali; TITLU VERIFICAT in continut",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/128647",
+      "accessed_at": "2026-09-25T14:47:46.318100+00:00"
+    },
+    "legea_70_2015_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), forma consolidata in vigoare, bytes oficiali; TITLU VERIFICAT in continut (nr 70 din 2015)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/209207",
+      "accessed_at": "2026-09-25T14:45:30.640390+00:00"
+    },
+    "oug_120_2021.html": {
+      "clasa": "ADUS",
+      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), forma consolidata in vigoare (RO e-Factura), bytes oficiali; TITLU VERIFICAT in continut (nr 120 din 2021)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/269543",
+      "accessed_at": "2026-09-25T14:45:30.640390+00:00"
     }
   },
   "goale_cunoscute": {

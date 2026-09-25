@@ -23,7 +23,7 @@ Textul citat spune, explicit, că regimul obișnuit de AIC (achiziție intracomu
 ## Ce se greșește în practică
 
 - Se tratează o mașină nouă la fel ca orice altă achiziție intracomunitară obișnuită (taxare inversă, formularul standard de AIC) — regimul e diferit, tocmai pentru că legea o exclude explicit din categoria AIC „obișnuită”.
-- Se presupune că plafonul de 10.000 euro sau statutul de plătitor de TVA al cumpărătorului contează la mijloacele de transport noi — conform excluderii citate, regula standard de AIC nu li se aplică deloc.
+- Se presupune că plafonul de 10.000 euro sau statutul de plătitor de TVA al cumpărătorului contează la mijloacele de transport noi — de fapt achiziția intracomunitară a unui mijloc de transport nou este operațiune impozabilă efectuată de orice persoană (art. 268 alin. (3) lit. b)), indiferent de plafon sau de statutul cumpărătorului; nu li se aplică doar regula plafonului/statutului de la lit. a). Cumpărătorul înregistrat conform art. 316 aplică taxarea inversă în decontul normal, iar persoana neînregistrată depune decontul special (formularul 301) și plătește TVA înainte de înmatriculare (art. 324).
 
 ## Ce face iConta.eu
 

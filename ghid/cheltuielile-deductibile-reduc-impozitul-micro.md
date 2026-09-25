@@ -20,7 +20,7 @@ La impozitul pe profit, logica e simplă: mai multe cheltuieli deductibile înse
 - Toate corecțiile permise la art. 53 alin. (1) sunt scăderi de **venituri** (stocuri, servicii în curs, subvenții, diferențe de curs valutar, despăgubiri de asigurare etc.) — niciuna nu e o „cheltuială deductibilă" în sensul folosit la impozitul pe profit.
 - Practic, o firmă micro cu cheltuieli mari și marjă mică plătește impozit tot pe venitul brut încasat/facturat, nu pe profitul rămas după cheltuieli.
 - Chiriile, salariile, utilitățile, amortizarea sau alte cheltuieli curente **nu reduc** baza impozabilă a impozitului micro, oricât de reale și de justificate ar fi din punct de vedere economic.
-- Singurele „reduceri" reale la impozitul micro sunt câteva credite fiscale exprese prevăzute de legi speciale (de exemplu sponsorizarea, în anumite condiții), care se scad **din impozitul calculat**, nu din baza impozabilă.
+- La impozitul micro nu se mai scad astfel de credite fiscale din impozitul calculat: ultimul an fiscal în care sumele reprezentând sponsorizări (și cele pentru achiziția de aparate de marcat electronice fiscale, rămase de reportat) s-au scăzut din impozitul pe veniturile microîntreprinderilor a fost anul fiscal 2023 (art. 56 alin. (2^5); alin. (1^1) privind scăderea sponsorizării a fost abrogat prin OUG 115/2023). Din 2024, sponsorizarea nu mai reduce impozitul micro.
 
 ## Ce se greșește în practică
 

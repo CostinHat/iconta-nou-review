@@ -19,8 +19,8 @@ Răspunsul scurt: **depinde**, și niciodată nu depinde de faptul că e vorba d
 
 Aplicat la un laptop:
 
-- **Valoarea contează, nu tipul de bun.** Pragul e **5.000 lei de la 25.02.2026** (anterior 2.500 lei, conform HG 276/2013). Un laptop cumpărat sub acest prag, la data achiziției, nu poate fi mijloc fix — indiferent de brand sau performanță.
-- **Data achiziției fixează pragul aplicabil.** Un laptop de 4.800 lei cumpărat pe 20 februarie 2026 folosește pragul vechi (2.500 lei) și e mijloc fix; același laptop cumpărat pe 1 martie 2026 folosește pragul nou (5.000 lei) și e obiect de inventar.
+- **Valoarea contează, nu tipul de bun.** Pragul e **5.000 lei pentru tot anul fiscal 2026** (aplicabil începând cu anul fiscal 2026, conform OUG 8/2026 art. 10 alin. (2); pentru achizițiile de până la 31.12.2025 era 2.500 lei, conform HG 276/2013). Un laptop cumpărat sub acest prag, la data achiziției, nu poate fi mijloc fix — indiferent de brand sau performanță.
+- **Data achiziției fixează pragul aplicabil.** Un laptop de 4.800 lei este obiect de inventar indiferent dacă e cumpărat pe 20 februarie sau pe 1 martie 2026 — pragul de 5.000 lei se aplică pentru tot anul fiscal 2026 (OUG 8/2026 art. 10 alin. (2)), iar 4.800 lei e sub prag. Pragul de 2.500 lei ar fi contat doar pentru o achiziție de până la 31.12.2025.
 - **Durata de utilizare e o condiție separată, nu doar valoarea.** Chiar și un laptop scump, de peste 5.000 lei, nu e mijloc fix dacă durata lui normală de utilizare estimată e sub un an — de exemplu, un echipament destinat unui proiect cu durată contractuală limitată.
 - **Mijloacele fixe existente deja în evidență nu se reclasifică** la schimbarea pragului: un laptop înregistrat ca mijloc fix la 3.200 lei, existent la 31.12.2025, continuă amortizarea pe durata rămasă, chiar dacă valoarea lui ar fi acum sub noul prag.
 

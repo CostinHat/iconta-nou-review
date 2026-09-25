@@ -8,13 +8,13 @@ poarta: v1
 
 # Cum se plătește salariul în numerar în 2026
 
-Contrar unei presupuneri răspândite, plata salariului în numerar rămâne, prin lege, **regula implicită** — nu excepția. Virarea salariului într-un cont bancar este posibilă doar dacă este prevăzută expres în contractul colectiv de muncă aplicabil, iar plata în numerar a salariilor nu intră sub incidența plafoanelor generale de casă din Legea 70/2015.
+Contrar unei presupuneri răspândite, plata salariului în numerar rămâne, prin lege, **regula implicită** — nu excepția. Virarea salariului într-un cont bancar este oricând posibilă (art. 166 alin. (2) nu o mai condiționează de o prevedere în contractul colectiv de muncă aplicabil), iar plata în numerar a salariilor nu intră sub incidența plafoanelor generale de casă din Legea 70/2015.
 
 ## Temeiul legal
 
 ::: ghid-temei
-„Articolul 161 (1) Salariul se plăteşte în bani cel puţin o dată pe luna, la data stabilită în contractul individual de muncă, în contractul colectiv de muncă aplicabil sau în regulamentul intern, după caz. [...] (2) Plata salariului se poate efectua prin virament într-un cont bancar, în cazul în care aceasta modalitate este prevăzută în contractul colectiv de muncă aplicabil."
-— Legea nr. 53/2003, Codul muncii, art. 161 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
+„Articolul 166 (1) Salariul se plătește în bani cel puțin o dată pe lună, la data stabilită în contractul individual de muncă, în contractul colectiv de muncă aplicabil sau în regulamentul intern, după caz. (2) Plata salariului se poate efectua prin virament într-un cont bancar.”
+— Legea nr. 53/2003, Codul muncii (republicată), art. 166 alin. (1)-(2) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
 
 „retragerea de numerar din conturi deschise la instituțiile de credit sau la instituțiile care prestează servicii de plată și care sunt autorizate de Banca Națională a României pentru plata salariilor și a altor drepturi de personal prevăzute de lege și pentru alte operațiuni de plăți efectuate către persoanele fizice;"
 — Legea nr. 70/2015, art. 5 lit. d) (sursă: anaf_surse/legea_70_2015_consolidat.txt)

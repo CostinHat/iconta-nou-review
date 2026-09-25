@@ -17,14 +17,14 @@ Cheltuiala cu un curs sau un stagiu de formare profesională plătit de firmă n
 — Codul fiscal, art. 25 alin. (1) (sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt:2523-2526)
 
 „În cazul în care participarea la cursurile sau stagiile de formare profesională este initiata de angajator, toate cheltuielile ocazionate de aceasta participare sunt suportate de către acesta."
-— Legea 53/2003 (Codul muncii), art. 194 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt:2174-2176)
+— Legea 53/2003 (Codul muncii, formă republicată), art. 197 alin. (1) (sursă: anaf_surse/legea_53_2003_codul_muncii.txt)
 :::
 
 Legătura dintre cele două texte e directă:
 
 - Codul fiscal declară deductibile nu doar cheltuielile generice legate de activitate, ci și pe cele **„reglementate prin acte normative în vigoare"** — iar Codul muncii, printr-o normă explicită, reglementează obligația angajatorului de a suporta costul cursurilor pe care el însuși le inițiază.
 - Când inițiativa participării la curs vine de la angajator, cheltuiala nu mai e opțională — e o obligație legală, ceea ce o încadrează clar în sfera art.25 alin.(1).
-- Când inițiativa vine de la salariat (art.196 Codul muncii), angajatorul decide dacă suportă costul integral, parțial sau deloc — regimul fiscal al cheltuielii depinde, în acest caz, de decizia angajatorului de a o suporta ca parte a relației de muncă.
+- Când inițiativa vine de la salariat (art. 199 Codul muncii), angajatorul decide dacă suportă costul integral, parțial sau deloc — regimul fiscal al cheltuielii depinde, în acest caz, de decizia angajatorului de a o suporta ca parte a relației de muncă.
 
 ## Ce se greșește în practică
 

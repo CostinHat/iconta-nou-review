@@ -8,13 +8,13 @@ poarta: v1
 
 # Cum aleg codurile CAEN pentru un PFA?
 
-Alegerea codurilor CAEN la înființarea unei PFA (codul principal de activitate și, opțional, coduri secundare) e o procedură administrativă legată de înregistrarea la registrul comerțului, reglementată în principal prin actul normativ care guvernează persoanele fizice autorizate — un text pe care nu l-am găsit în sursele verificate pentru acest ghid.
+Alegerea codurilor CAEN la înființarea unei PFA (codul principal de activitate și, opțional, coduri secundare) e o procedură administrativă legată de înregistrarea la registrul comerțului, reglementată în principal prin OUG nr. 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale. Potrivit art. 16 alin. (1) din acest act, o PFA poate avea în obiectul de activitate cel mult 5 clase de activități prevăzute de codul CAEN.
 
 ## Temeiul legal
 
 ::: ghid-temei
-Nu am identificat, în sursele din anaf_surse/ verificate pentru acest ghid, actul normativ care reglementează explicit procedura de alegere și înregistrare a codurilor CAEN pentru o persoană fizică autorizată. Regimul general de constituire prin asociere e reglementat pentru societăți de Legea nr. 31/1990, dar aceasta nu se aplică persoanelor fizice autorizate, care funcționează sub un regim juridic distinct.
-— nicio sursă confirmată în anaf_surse/ pentru acest subiect specific
+„Articolul 16 (1) PFA poate avea în obiectul de activitate cel mult 5 clase de activități prevăzute de codul CAEN."
+— OUG nr. 44/2008 privind desfășurarea activităților economice de către persoanele fizice autorizate, întreprinderile individuale și întreprinderile familiale, art. 16 alin. (1) (sursă: anaf_surse/oug_44_2008.html)
 :::
 
 Redirecționăm onest, fără să inventăm un citat: pentru alegerea propriu-zisă a codurilor CAEN, referința tehnică folosită în practică e Clasificarea activităților din economia națională (CAEN), actualizată periodic, iar procedura de înregistrare a acestora la Registrul Comerțului ține de actul normativ specific autorizării PFA — un temei pe care nu l-am putut confirma dintr-o sursă din setul disponibil pentru acest ghid. Recomandăm verificarea directă la sursa oficială (Oficiul Național al Registrului Comerțului) înainte de a considera orice explicație ca fiind temei legal complet.

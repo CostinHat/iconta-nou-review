@@ -25,7 +25,7 @@ Odată depășit plafonul de 10.000 euro (sau dacă firma optează voluntar pent
 La achiziția care depășește plafonul (sau pentru care s-a optat), firma cu cod special:
 
 - înregistrează factura furnizorului extern la valoarea de achiziție: 371/301/… = 401;
-- autolichidează TVA prin taxare inversă: 4426 = 4427, la cota aplicabilă bunurilor respective — TVA colectată nu se poate deduce, pentru că firma nu are drept de deducere (nu e plătitoare normală de TVA), deci suma rămâne efectiv o cheltuială/obligație de plată către bugetul de stat, nu doar o mișcare neutră între 4426 și 4427;
+- autolichidează TVA prin taxare inversă: colectează TVA (4427) la cota aplicabilă bunurilor respective, dar NU o poate deduce, pentru că firma nu are drept de deducere (nu e plătitoare normală de TVA). De aceea nu se folosește contul 4426 (TVA deductibilă); taxa nerecuperabilă se include în costul de achiziție al bunurilor (de exemplu 371 = 4427), potrivit reglementărilor contabile (OMFP 1802/2014, care includ taxele nerecuperabile în costul de achiziție), fiind o obligație efectivă de plată către bugetul de stat, nu o mișcare neutră între 4426 și 4427;
 - declară operațiunea prin decontul special de TVA prevăzut pentru persoanele neînregistrate normal (nu prin decontul de TVA obișnuit, formularul 300).
 
 ### Practic

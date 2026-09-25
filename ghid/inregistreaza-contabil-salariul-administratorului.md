@@ -29,7 +29,7 @@ Vorbim aici despre indemnizația unui administrator cu contract de mandat — nu
 ## Ce se greșește în practică
 
 - **Indemnizația e trecută prin contul 641**, ca la un salariat clasic — corect e 621, pentru că mandatul de administrator nu e raport de muncă.
-- **Se adaugă CAM** la cele trei rețineri de mai sus — CAM nu se datorează pentru administratorul cu mandat.
+- **Se omite CAM** — contribuția asiguratorie pentru muncă (2,25%) se datorează de societate și pentru remunerația administratorului cu contract de mandat, fiind venit asimilat salariilor (art. 76 alin. (2) lit. o)) inclus în baza CAM (art. 220^2 alin. (1) coroborat cu art. 220^4 alin. (1) lit. d)). CAM e cheltuială a angajatorului (cont 646 = 436), nu o reținere din indemnizația administratorului.
 - **Nota e generată o singură dată pe an**, la fel ca la o remunerație ocazională — dacă indemnizația e lunară, fiecare lună are propria notă completă, cu propriile rețineri.
 
 ## Ce face iConta.eu

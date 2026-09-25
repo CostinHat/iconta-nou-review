@@ -21,14 +21,14 @@ La înființarea unei firme, administratorul desemnat prin actul constitutiv e l
 ## Ce trebuie stabilit de la înființare
 
 - **Nivelul indemnizației** — legea nu impune un nivel minim al remunerației de mandat, spre deosebire, de exemplu, de zilieri, unde există un prag orar minim legal explicit (Legea 52/2011). Remunerația administratorului se stabilește liber, prin actul constitutiv sau prin hotărârea adunării generale.
-- **Taxele datorate, de la prima plată**: CAS 25% + CASS 10% + impozit pe venit 10% pe rest, fără contribuția asiguratorie pentru muncă (CAM) — pentru că mandatul nu e raport de muncă.
+- **Taxele datorate, de la prima plată**: CAS 25% + CASS 10% + impozit pe venit 10% pe rest, plus contribuția asiguratorie pentru muncă (CAM 2,25%), datorată de societate — remunerația administratorului cu contract de mandat/administrare e venit asimilat salariilor (art. 76 alin. (2) lit. o)) și intră în baza CAM (art. 220^2 alin. (1) coroborat cu art. 220^4 alin. (1) lit. d)).
 - **Contul contabil folosit** — indemnizația trece prin 621 (cheltuieli cu colaboratorii), nu prin 641.
 
 ## Ce se greșește în practică
 
 - Se presupune, la o firmă nou-înființată, că administratorul unic (mai ales dacă e și asociat unic) „nu are voie" sau „nu trebuie" să fie remunerat, și se amână orice discuție despre taxe — decizia de remunerare rămâne opțională, dar dacă există plată, taxele de mai sus se aplică de la prima sumă.
 - Se stabilește o indemnizație fixă „la nivelul salariului minim", din prudență, fără să existe de fapt o obligație legală în acest sens pentru contractul de mandat.
-- Se tratează administratorul, din start, ca angajat cu CIM, pentru „simplitate" — ceea ce adaugă greșit CAM și schimbă temeiul legal aplicabil.
+- Se tratează administratorul, din start, ca angajat cu CIM, pentru „simplitate" — ceea ce schimbă temeiul legal aplicabil (CIM în loc de mandat); CAM însă se datorează în ambele cazuri.
 
 ## Ce face iConta.eu
 

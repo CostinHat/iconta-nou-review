@@ -1,6 +1,6 @@
 ---
 title: Cum se declară impozitul micro trimestrial?
-description: Impozitul micro se declară prin D100 până pe 25 ale lunii următoare fiecărui trimestru, cu excepția trimestrului IV, pentru care termenul este 25 iunie anul următor, nu 25 ianuarie.
+description: Impozitul micro se declară prin D100 până pe 25 ale lunii următoare fiecărui trimestru, inclusiv trimestrul IV (25 ianuarie anul următor). Excepția de 25 iunie, provenită din OUG 153/2020, s-a aplicat doar până în anul de raportare 2025 inclusiv.
 published: 2026-09-22
 modified: 2026-09-22
 poarta: v1
@@ -35,16 +35,16 @@ Declararea impozitului micro urmează regula generală „25 a lunii următoare"
 
 ## Termenele, trimestru cu trimestru
 
-Pentru trimestrele I-III, termenul e cel general: 25 a lunii următoare încheierii trimestrului (25 aprilie, 25 iulie, 25 octombrie). Pentru **trimestrul IV, excepția se aplică**: declarația se depune până la **25 iunie anul următor**, nu 25 ianuarie cum ar rezulta din aplicarea mecanică a regulii generale.
+Pentru toate cele patru trimestre se aplică regula generală din Codul fiscal art. 56 alin. (1): 25 a lunii următoare încheierii trimestrului (25 aprilie, 25 iulie, 25 octombrie, iar pentru **trimestrul IV 25 ianuarie anul următor**). Excepția de 25 iunie a existat doar pe perioada de aplicare a OUG 153/2020 (anii de raportare 2021-2025) și nu se mai aplică pentru trimestrul IV 2026.
 
-O notă tehnică mai veche din structura ANAF limitează formal această excepție „până în anul de raportare 2025 inclusiv", dar norma consolidată curentă (OPANAF 587/2016, forma actualizată în 2026) păstrează neschimbată regula celor 25 iunie, fără limită de an, iar validatorul oficial de declarații respinge orice altă dată pentru trimestrul IV al impozitului micro. Practic, excepția rămâne valabilă și pentru anii următori.
+Structura oficială ANAF a D100 limitează explicit această excepție „până în anul de raportare 2025 inclusiv”, iar temeiul ei — art. I din OUG 153/2020 — s-a aplicat doar în perioada 2021-2025. Începând cu trimestrul IV 2026 se revine la regula generală de 25 ianuarie anul următor (Codul fiscal art. 56 alin. (1)); nu mai există temei pentru termenul de 25 iunie.
 
 **Atenție la afișajul din aplicație pentru trimestrul IV:** dacă lista de termene/scadențe din semafor arată pentru trimestrul IV data de 25 ianuarie anul următor, acea dată nu corespunde regulii corecte (25 iunie) — verificați întotdeauna data de scadență din declarația D100 generată efectiv, nu doar afișajul din lista de obligații, pentru trimestrul IV.
 
 ## Ce se greșește în practică
 
-- Se aplică regula generică „25 a lunii următoare" și pentru trimestrul IV, rezultând termenul greșit de 25 ianuarie, în loc de 25 iunie.
-- Se citește nota tehnică veche „excepție valabilă până în 2025 inclusiv" ca fiind încă în vigoare și se presupune (greșit) că din 2026 excepția nu se mai aplică.
+- Se presupune că excepția de 25 iunie (valabilă doar până în anul de raportare 2025) se mai aplică și pentru trimestrul IV 2026 sau ulterior, deși temeiul ei (OUG 153/2020) a expirat.
+- Se completează manual termenul de 25 iunie pentru trimestrul IV 2026, în locul termenului corect de 25 ianuarie anul următor.
 - Se depune declarația pe bază zero (fără venituri în trimestru), deși structura oficială nu permite un XML fără nicio obligație pozitivă.
 - Se confundă cota (obligatorie doar pentru cod 121) cu alte câmpuri ale declarației, completând-o greșit pentru alte obligații.
 
