@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -90,6 +90,12 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d110: { d_temei: 0, d_rec: 0, iban: "", banca: "", obligatii: [] },
     // [formular_manual_d398] OSS TVA: regim + identitate + linii-supply pe stat de consum (grupate pe MS). In memorie, ca d200.
     d398: { moes_voes_imp: "1", name: "", vat_id_no: "", e_int: 0, currency: "EUR", d_rec: 0, linii: [] },
+    // [formular_manual_d318] rambursare TVA din alt stat UE (Directiva 2008/9/CE): perioada + solicitant +
+    // cont de rambursare + activitate NACE + facturi (achizitie/import) cu furnizor UE. In memorie, ca d200.
+    d318: { an: "", annual: 1, luna_inceput: 1, luna_sfarsit: 12, refunding_country: "DE", cui: "", d_rec: 0,
+            reference_number: "", iban: "", bic: "", owner_name: "", owner_type: "A", currency: "EUR",
+            declarant: "", functie: "", sol_denumire: "", sol_strada: "", sol_email: "", sol_cod: "",
+            act_nace: "", act_desc: "", facturi: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -253,6 +259,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d114") body.manual = _d114Manual();              // [formular_manual_d114] declarant + contracte (CAM)
   if (S.tip === "d110") body.manual = _d110Manual();              // [formular_manual_d110] d_temei + IBAN/banca + obligatii
   if (S.tip === "d398") body.manual = _d398Manual();              // [formular_manual_d398] OSS: regim + linii pe stat de consum
+  if (S.tip === "d318") body.manual = _d318Manual();              // [formular_manual_d318] rambursare TVA alt stat UE: perioada + solicitant + facturi
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -288,6 +295,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
     ${S.tip === "d110" ? '<div id="dec-d110-form"></div>' : ""}
     ${S.tip === "d398" ? '<div id="dec-d398-form"></div>' : ""}
+    ${S.tip === "d318" ? '<div id="dec-d318-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -314,6 +322,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d114") randeazaFormularD114(corp, nav);
   if (S.tip === "d110") randeazaFormularD110(corp, nav);
   if (S.tip === "d398") randeazaFormularD398(corp, nav);
+  if (S.tip === "d318") randeazaFormularD318(corp, nav);
     return;
   }
 
@@ -368,6 +377,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
     ${S.tip === "d110" ? '<div id="dec-d110-form"></div>' : ""}
     ${S.tip === "d398" ? '<div id="dec-d398-form"></div>' : ""}
+    ${S.tip === "d318" ? '<div id="dec-d318-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -423,6 +433,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d114") randeazaFormularD114(corp, nav);
   if (S.tip === "d110") randeazaFormularD110(corp, nav);
   if (S.tip === "d398") randeazaFormularD398(corp, nav);
+  if (S.tip === "d318") randeazaFormularD318(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -2689,6 +2700,194 @@ function randeazaFormularD398(corp, nav) {
     curataEroriCamp(zona);
     salveaza();
     if (!(S.d398.linii || []).length) { eroareCamp(zona, "d398-stat", "Adaugă cel puțin o livrare."); return; }
+    pas2(corp, nav);
+  });
+}
+
+// [formular_manual_d318] D318 (rambursare TVA achitata in alt stat membru UE, Directiva 2008/9/CE, MANUALA /
+// la cerere): perioada de rambursare (implicit anuala 1 ian - 31 dec), solicitantul RO + IBAN-ul contului de
+// rambursare, activitatea (cod NACE) si facturile de achizitie/import din statul de rambursare (furnizor UE +
+// baza + TVA deductibila ceruta). amount = suma TVA deductibila (o calculeaza backendul). Valorile persista in
+// S.d318 intre randari. Lista tarilor UE de rambursare (GB scos din 01.03.2021):
+const _D318_TARI_UE = ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT",
+  "LV", "LT", "LU", "MT", "NL", "PL", "PT", "SK", "SI", "ES", "SE"];
+
+function _d318Manual() {
+  const d = S.d318 || {};
+  const annual = d.annual ? 1 : 0;
+  const li = annual ? 1 : (parseInt(d.luna_inceput, 10) || 1);
+  const ls = annual ? 12 : (parseInt(d.luna_sfarsit, 10) || 12);
+  const achizitii = [], importuri = [];
+  (d.facturi || []).forEach((f) => {
+    const linie = {
+      reference_number: (f.reference_number || "").trim(),
+      issuing_date: (f.issuing_date || "").trim(),
+      taxable_amount: _n(f.taxable_amount) || 0,
+      vat_amount: _n(f.vat_amount) || 0,
+      deductible_vat: _n(f.deductible_vat) || 0,
+      currency: (d.currency || "EUR").toUpperCase(),
+      furnizor: {
+        denumire: (f.fz_denumire || "").trim(), strada: (f.fz_strada || "").trim(),
+        tara: (f.fz_tara || d.refunding_country || "").toUpperCase(),
+        vat_id: (f.fz_vat || "").replace(/\s+/g, "").toUpperCase(),
+      },
+      bunuri: f.cod_bun ? [{ code: String(f.cod_bun).trim() }] : [],
+    };
+    if (String(f.fel) === "import") importuri.push(linie); else achizitii.push(linie);
+  });
+  const m = {
+    an: parseInt(d.an, 10) || S.an, luna_inceput: li, luna_sfarsit: ls, annual: annual,
+    cui: (d.cui || "").replace(/\s+/g, ""), d_rec: d.d_rec ? 1 : 0,
+    refunding_country: (d.refunding_country || "").toUpperCase(), currency: (d.currency || "EUR").toUpperCase(),
+    iban: (d.iban || "").replace(/\s+/g, "").toUpperCase(), bic: (d.bic || "").replace(/\s+/g, "").toUpperCase(),
+    owner_name: (d.owner_name || "").trim(), owner_type: (d.owner_type || "A"),
+    declarant: (d.declarant || "").trim(), functie: (d.functie || "").trim(),
+    solicitant: {
+      denumire: (d.sol_denumire || "").trim(), strada: (d.sol_strada || "").trim(),
+      email: (d.sol_email || "").trim(), cod_postal: (d.sol_cod || "").trim(),
+    },
+    activitati: (d.act_nace || "").trim() ? [{ activitate: (d.act_nace || "").trim(), descriere: (d.act_desc || "").trim() }] : [],
+    achizitii: achizitii, importuri: importuri,
+  };
+  if (d.d_rec && (d.reference_number || "").trim()) m.reference_number = d.reference_number.trim();
+  return m;
+}
+
+function randeazaFormularD318(corp, nav) {
+  const zona = corp.querySelector("#dec-d318-form");
+  if (!zona) return;
+  const d = S.d318;
+  const annual = d.annual ? 1 : 0;
+  const facturi = d.facturi || [];
+  let totalDed = 0;
+  facturi.forEach((f) => { totalDed += _n(f.deductible_vat) || 0; });
+  const optTara = (sel) => _D318_TARI_UE.map((x) => '<option value="' + x + '"' + (String(sel || "").toUpperCase() === x ? " selected" : "") + ">" + x + "</option>").join("");
+  const grila = facturi.length
+    ? facturi.map((f, i) => '<div class="dec-man-rand"><span class="dec-recl-desc">' +
+        (String(f.fel) === "import" ? "import" : "achiziție") + " · " + esc(f.reference_number || "?") + " · " + esc(f.issuing_date || "?") +
+        " · " + esc(f.fz_denumire || "?") + " (" + esc((f.fz_tara || d.refunding_country || "?").toUpperCase()) + ")" +
+        " · bază " + esc(String(f.taxable_amount || 0)) + " · TVA ded. " + esc(String(f.deductible_vat || 0)) + "</span>" +
+        '<button class="btn-link dec-d318-del" data-idx="' + i + '">șterge</button></div>').join("")
+    : '<div class="stare-goala stare-goala--inline">Nicio factură. Adaugă cel puțin o factură de achiziție sau de import din statul de rambursare.</div>';
+  const inp = (id, lbl, val, w, extra) => '<label class="camp" style="width:' + w + '"><span class="camp-eticheta">' + lbl + '</span><input id="' + id + '" ' + (extra || 'type="text"') + ' class="camp-input" value="' + esc(val || "") + '"></label>';
+  zona.innerHTML = '<details class="dec-xml" open><summary>Rambursare TVA din alt stat UE (' + facturi.length + " facturi)</summary>" +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Perioada de rambursare și solicitantul</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
+      inp("d318-an", "An rambursare <span class=\"oblig\">*</span>", d.an || "", "120px", 'type="number" min="2010" max="2099"') +
+      '<label class="set-bifa"><input id="d318-annual" type="checkbox" ' + (annual ? "checked" : "") + '> <span>Cerere anuală (1 ian – 31 dec)</span></label>' +
+      (annual ? "" :
+        '<label class="camp" style="width:110px"><span class="camp-eticheta">Luna început</span><input id="d318-li" type="number" min="1" max="12" class="camp-input" value="' + esc(String(d.luna_inceput || 1)) + '"></label>' +
+        '<label class="camp" style="width:110px"><span class="camp-eticheta">Luna sfârșit</span><input id="d318-ls" type="number" min="1" max="12" class="camp-input" value="' + esc(String(d.luna_sfarsit || 12)) + '"></label>') +
+      '<label class="camp" style="width:140px"><span class="camp-eticheta">Stat rambursare <span class="oblig">*</span></span><select id="d318-tara" class="camp-input">' + optTara(d.refunding_country) + "</select></label>" +
+      inp("d318-cui", "CUI solicitant <span class=\"oblig\">*</span>", d.cui, "150px") +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
+      '<label class="camp" style="width:180px"><span class="camp-eticheta">Tip cerere</span><select id="d318-drec" class="camp-input"><option value="0"' + (d.d_rec ? "" : " selected") + ">inițială</option><option value=\"1\"" + (d.d_rec ? " selected" : "") + ">rectificativă</option></select></label>" +
+      (d.d_rec ? inp("d318-ref", "Nr. referință (RO…) <span class=\"oblig\">*</span>", d.reference_number, "200px") : "") +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:6px 0 4px">Contul de rambursare</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
+      inp("d318-iban", "IBAN <span class=\"oblig\">*</span>", d.iban, "260px") +
+      inp("d318-bic", "BIC/SWIFT <span class=\"oblig\">*</span>", d.bic, "150px") +
+      inp("d318-owner", "Titular cont <span class=\"oblig\">*</span>", d.owner_name, "200px") +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Tip titular</span><select id="d318-ownt" class="camp-input"><option value="A"' + (d.owner_type === "R" ? "" : " selected") + ">A — solicitant</option><option value=\"R\"" + (d.owner_type === "R" ? " selected" : "") + ">R — reprezentant</option></select></label>" +
+      inp("d318-cur", "Monedă", d.currency || "EUR", "100px", 'type="text" maxlength="3"') +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:6px 0 4px">Identitatea solicitantului</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
+      inp("d318-soldenumire", "Denumire <span class=\"oblig\">*</span>", d.sol_denumire, "220px") +
+      inp("d318-solstrada", "Adresă <span class=\"oblig\">*</span>", d.sol_strada, "260px") +
+      inp("d318-solemail", "Email <span class=\"oblig\">*</span>", d.sol_email, "220px") +
+      inp("d318-solcod", "Cod poștal", d.sol_cod, "120px") +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:6px 0 4px">Declarant și activitatea</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
+      inp("d318-declarant", "Declarant <span class=\"oblig\">*</span>", d.declarant, "200px") +
+      inp("d318-functie", "Funcție <span class=\"oblig\">*</span>", d.functie, "180px") +
+      inp("d318-nace", "Cod activitate NACE <span class=\"oblig\">*</span>", d.act_nace, "170px") +
+      inp("d318-actdesc", "Descriere activitate", d.act_desc, "260px") +
+    "</div>" +
+    '<div class="camp-eticheta" style="margin:8px 0 4px">Facturi (achiziții / importuri din statul de rambursare)</div>' +
+    grila +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Fel</span><select id="d318-fel" class="camp-input"><option value="achizitie">achiziție</option><option value="import">import</option></select></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Nr. factură</span><input id="d318-fnr" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Data (dd.mm.aaaa)</span><input id="d318-fdata" type="text" class="camp-input" placeholder="15.06.' + esc(String(d.an || "")) + '"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Bază</span><input id="d318-fbaza" type="number" step="0.01" class="camp-input"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">TVA</span><input id="d318-ftva" type="number" step="0.01" class="camp-input"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">TVA deductibil</span><input id="d318-fded" type="number" step="0.01" class="camp-input"></label>' +
+      '<label class="camp" style="width:180px"><span class="camp-eticheta">Furnizor</span><input id="d318-ffz" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:200px"><span class="camp-eticheta">Adresă furnizor</span><input id="d318-ffzstr" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Țară furnizor</span><select id="d318-ffztara" class="camp-input">' + optTara(d.refunding_country) + "</select></label>" +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Cod TVA furnizor</span><input id="d318-ffzvat" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:120px"><span class="camp-eticheta">Cod bun/serv.</span><input id="d318-fcod" type="text" class="camp-input" placeholder="1–10"></label>' +
+      '<button class="buton-secundar" id="d318-add">+ factură</button>' +
+    "</div>" +
+    '<div id="d318-msg"></div>' +
+    '<p class="camp-ajutor" style="margin-top:8px">Total TVA deductibil cerut la rambursare: <b>' + totalDed.toFixed(2) + "</b> " + esc(d.currency || "EUR") +
+      ". Codul bunului/serviciului (1–10) e o clasificare a statului de rambursare. Reprezentant, pro-rata și copii de documente = increment ulterior.</p>" +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d318-regen">Regenerează D318</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    d.an = gv("#d318-an").value.trim();
+    const ann = gv("#d318-annual"); d.annual = ann && ann.checked ? 1 : 0;
+    const li = gv("#d318-li"), ls = gv("#d318-ls");
+    if (li) d.luna_inceput = parseInt(li.value, 10) || 1;
+    if (ls) d.luna_sfarsit = parseInt(ls.value, 10) || 12;
+    d.refunding_country = gv("#d318-tara").value;
+    d.cui = gv("#d318-cui").value.replace(/\s+/g, "");
+    d.d_rec = gv("#d318-drec").value === "1" ? 1 : 0;
+    const ref = gv("#d318-ref"); if (ref) d.reference_number = ref.value.trim();
+    d.iban = gv("#d318-iban").value.replace(/\s+/g, "").toUpperCase();
+    d.bic = gv("#d318-bic").value.replace(/\s+/g, "").toUpperCase();
+    d.owner_name = gv("#d318-owner").value.trim();
+    d.owner_type = gv("#d318-ownt").value;
+    d.currency = (gv("#d318-cur").value.trim() || "EUR").toUpperCase();
+    d.sol_denumire = gv("#d318-soldenumire").value.trim();
+    d.sol_strada = gv("#d318-solstrada").value.trim();
+    d.sol_email = gv("#d318-solemail").value.trim();
+    d.sol_cod = gv("#d318-solcod").value.trim();
+    d.declarant = gv("#d318-declarant").value.trim();
+    d.functie = gv("#d318-functie").value.trim();
+    d.act_nace = gv("#d318-nace").value.trim();
+    d.act_desc = gv("#d318-actdesc").value.trim();
+  };
+  gv("#d318-annual").addEventListener("change", () => { salveaza(); randeazaFormularD318(corp, nav); });
+  gv("#d318-drec").addEventListener("change", () => { salveaza(); randeazaFormularD318(corp, nav); });
+  ["#d318-an", "#d318-tara", "#d318-cui", "#d318-iban", "#d318-bic", "#d318-owner", "#d318-ownt", "#d318-cur",
+   "#d318-soldenumire", "#d318-solstrada", "#d318-solemail", "#d318-solcod", "#d318-declarant", "#d318-functie",
+   "#d318-nace", "#d318-actdesc"].forEach((id) => { const el = gv(id); if (el) el.addEventListener("change", salveaza); });
+  ["#d318-li", "#d318-ls", "#d318-ref"].forEach((id) => { const el = gv(id); if (el) el.addEventListener("change", salveaza); });
+  zona.querySelectorAll(".dec-d318-del").forEach((b) => b.addEventListener("click", () => { d.facturi.splice(parseInt(b.dataset.idx), 1); randeazaFormularD318(corp, nav); }));
+  gv("#d318-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    const nr = gv("#d318-fnr").value.trim(), data = gv("#d318-fdata").value.trim();
+    const baza = _n(gv("#d318-fbaza").value) || 0, tva = _n(gv("#d318-ftva").value) || 0, ded = _n(gv("#d318-fded").value) || 0;
+    const fz = gv("#d318-ffz").value.trim(), fzstr = gv("#d318-ffzstr").value.trim();
+    const err = [];
+    if (!nr) err.push(["d318-fnr", "Numărul facturii e obligatoriu."]);
+    if (!/^\d{2}\.\d{2}\.\d{4}$/.test(data)) err.push(["d318-fdata", "Data facturii: dd.mm.aaaa (ex. 15.06.2025)."]);
+    if (!(baza > 0)) err.push(["d318-fbaza", "Baza impozabilă trebuie > 0."]);
+    if (Math.abs(tva) > Math.abs(baza)) err.push(["d318-ftva", "TVA nu poate depăși baza."]);
+    if (!fz) err.push(["d318-ffz", "Denumirea furnizorului e obligatorie."]);
+    if (!fzstr) err.push(["d318-ffzstr", "Adresa furnizorului e obligatorie."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    d.facturi = d.facturi || [];
+    d.facturi.push({
+      fel: gv("#d318-fel").value, reference_number: nr, issuing_date: data,
+      taxable_amount: baza, vat_amount: tva, deductible_vat: ded,
+      fz_denumire: fz, fz_strada: fzstr, fz_tara: gv("#d318-ffztara").value,
+      fz_vat: gv("#d318-ffzvat").value.trim(), cod_bun: gv("#d318-fcod").value.trim(),
+    });
+    randeazaFormularD318(corp, nav);
+  });
+  gv("#d318-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    if (!(d.facturi || []).length) { eroareCamp(zona, "d318-fnr", "Adaugă cel puțin o factură."); return; }
     pas2(corp, nav);
   });
 }

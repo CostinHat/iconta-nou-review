@@ -319,7 +319,7 @@ DECLARATII = {
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d220",
                        "d393", "d395", "d397", "d120",
-                       "d106", "d108", "d130", "d318",
+                       "d106", "d108", "d130",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
                        "d101g", "d169", "d399", "d403", "d407"))
 
@@ -513,6 +513,18 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("cif_declarant") or not m.get("contracte"):
             erori.append("D114 nu are ce genera: completează declarantul (CIF, denumire, adresă) și adaugă "
                          "cel puțin un lucrator (contract) cu venitul și contribuția CAM.")
+
+    # d318 (rambursare TVA din alt stat membru UE - Directiva 2008/9/CE, MANUALA / la cerere): perioada +
+    # solicitant + IBAN de rambursare + activitate NACE + cel putin o factura de achizitie sau de import.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (annual R5, referenceNumber R9, semne/vatAmount pe factura R50/R80) le da d318.erori_generare.
+    if tip == "d318":
+        m = body.get("manual")
+        _ach = (m or {}).get("achizitii") or (m or {}).get("importuri") if isinstance(m, dict) else None
+        if not isinstance(m, dict) or not m.get("cui") or not m.get("iban") or not _ach:
+            erori.append("D318 nu are ce genera: completează perioada de rambursare, CUI-ul solicitantului, "
+                         "IBAN-ul contului de rambursare și adaugă cel puțin o factură de achiziție sau de "
+                         "import din statul de rambursare (furnizor UE, bază impozabilă și TVA deductibilă).")
 
     # d398 (OSS - TVA regimuri speciale UE/non-UE/import, MANUALA trimestriala): regim + identitate + livrari.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).

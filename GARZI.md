@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**635 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**636 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 604
+### `core/` — 605
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9042,6 +9042,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d307_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D307 gol NU produce declaratie.
 - `core/test_d311.py` — Teste D311 (TVA in situatii speciale dupa anularea codului de TVA).
 - `core/test_d311_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D311 gol NU produce declaratie.
+- `core/test_d318_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D318 gol NU produce declaratie; perioada + solicitantul +
 - `core/test_d390.py` — Teste gardian pentru D390 — modulul n-avea niciunul.
 - `core/test_d390_art317.py` — #4 (plimbare vizuala 14.08.2026): verdictul D390 la neplatitorul cu operatiuni IC era permanent-fals
 - `core/test_d390_autoderivare.py` — [Regula 5 + Regula 10 + Regula 6] GARDA: auto-derivarea d301_operatiuni -> D390 (cod A/S).
