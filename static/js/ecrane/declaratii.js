@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -88,6 +88,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d114: { cif_declarant: "", den_declarant: "", adresa_declarant: "", functia_intocmit: "", den_intocmit: "", d_rec: 0, contracte: [] },
     // [formular_manual_d110] regularizare impozit retinut la sursa: d_temei + IBAN/banca + lista obligatii. Identitatea din firma_profil. In memorie, ca d200.
     d110: { d_temei: 0, d_rec: 0, iban: "", banca: "", obligatii: [] },
+    // [formular_manual_d398] OSS TVA: regim + identitate + linii-supply pe stat de consum (grupate pe MS). In memorie, ca d200.
+    d398: { moes_voes_imp: "1", name: "", vat_id_no: "", e_int: 0, currency: "EUR", d_rec: 0, linii: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -250,6 +252,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d104") body.manual = _d104Manual();              // [formular_manual_d104] declarant + asociere + profit + asociati
   if (S.tip === "d114") body.manual = _d114Manual();              // [formular_manual_d114] declarant + contracte (CAM)
   if (S.tip === "d110") body.manual = _d110Manual();              // [formular_manual_d110] d_temei + IBAN/banca + obligatii
+  if (S.tip === "d398") body.manual = _d398Manual();              // [formular_manual_d398] OSS: regim + linii pe stat de consum
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -284,6 +287,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d104" ? '<div id="dec-d104-form"></div>' : ""}
     ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
     ${S.tip === "d110" ? '<div id="dec-d110-form"></div>' : ""}
+    ${S.tip === "d398" ? '<div id="dec-d398-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -309,6 +313,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d104") randeazaFormularD104(corp, nav);
   if (S.tip === "d114") randeazaFormularD114(corp, nav);
   if (S.tip === "d110") randeazaFormularD110(corp, nav);
+  if (S.tip === "d398") randeazaFormularD398(corp, nav);
     return;
   }
 
@@ -362,6 +367,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d104" ? '<div id="dec-d104-form"></div>' : ""}
     ${S.tip === "d114" ? '<div id="dec-d114-form"></div>' : ""}
     ${S.tip === "d110" ? '<div id="dec-d110-form"></div>' : ""}
+    ${S.tip === "d398" ? '<div id="dec-d398-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -416,6 +422,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d104") randeazaFormularD104(corp, nav);
   if (S.tip === "d114") randeazaFormularD114(corp, nav);
   if (S.tip === "d110") randeazaFormularD110(corp, nav);
+  if (S.tip === "d398") randeazaFormularD398(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -2578,6 +2585,110 @@ function randeazaFormularD110(corp, nav) {
     curataEroriCamp(zona);
     salveaza();
     if (!(S.d110.obligatii || []).length) { eroareCamp(zona, "d110-rest", "Adaugă cel puțin o obligație."); return; }
+    pas2(corp, nav);
+  });
+}
+
+const _D398_TRIM = [["01.01", "31.03"], ["01.04", "30.06"], ["01.07", "30.09"], ["01.10", "31.12"]];
+
+function _d398Manual() {
+  const d = S.d398 || {};
+  const trim = Number(S.trim) || 1;
+  const an = S.an;
+  const q = _D398_TRIM[trim - 1];
+  const moes = parseInt(d.moes_voes_imp, 10) || 1;
+  const byState = {};
+  (d.linii || []).forEach((l) => {
+    const st = (l.mscon_state || "").toUpperCase();
+    (byState[st] = byState[st] || []).push({
+      supply_type: parseInt(l.supply_type, 10) || 1, trade_type: parseInt(l.trade_type, 10) || 1,
+      vat_rate_type: parseInt(l.vat_rate_type, 10) || 1, vat_rate: _n(l.vat_rate) || 0,
+      taxable_amount: _n(l.taxable_amount) || 0, vat_id_no_msest: (l.vat_id_no_msest || "").replace(/\s+/g, "").toUpperCase() });
+  });
+  const ms = Object.keys(byState).map((st) => ({ mscon_state: st, supplies: byState[st] }));
+  const m = {
+    moes_voes_imp: moes, name: (d.name || "").trim(), vat_id_no: (d.vat_id_no || "").replace(/\s+/g, "").toUpperCase(),
+    an_r: an, luna_r: trim * 3, period_start_date: q[0] + "." + an, period_end_date: q[1] + "." + an,
+    d_rec: d.d_rec ? 1 : 0, currency: (d.currency || "EUR").toUpperCase(), ms: ms,
+  };
+  if (moes === 1) m.e_int = d.e_int ? 1 : 0;
+  return m;
+}
+
+function randeazaFormularD398(corp, nav) {
+  const zona = corp.querySelector("#dec-d398-form");
+  if (!zona) return;
+  const d = S.d398;
+  const moes = parseInt(d.moes_voes_imp, 10) || 1;
+  const linii = d.linii || [];
+  let gt = 0;
+  linii.forEach((l) => { gt += Math.round((_n(l.taxable_amount) || 0) * (_n(l.vat_rate) || 0)) / 100; });
+  const optRegim = (v, lbl) => '<option value="' + v + '"' + (String(d.moes_voes_imp) === v ? " selected" : "") + ">" + lbl + "</option>";
+  const grila = linii.length
+    ? linii.map((l, i) => { const va = Math.round((_n(l.taxable_amount) || 0) * (_n(l.vat_rate) || 0)) / 100;
+        return '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc((l.mscon_state || "?").toUpperCase()) + " · " +
+          (String(l.supply_type) === "2" ? "servicii" : "bunuri") + " · " + (String(l.trade_type) === "2" ? "msest" : "msid") +
+          " · cotă " + esc(String(l.vat_rate || 0)) + "% · bază " + esc(String(l.taxable_amount || 0)) + " · TVA " + va.toFixed(2) + "</span>" +
+          '<button class="btn-link dec-d398-del" data-idx="' + i + '">șterge</button></div>'; }).join("")
+    : '<div class="stare-goala stare-goala--inline">Nicio livrare. Adaugă pe fiecare stat de consum livrările (bunuri/servicii) cu cota și baza.</div>';
+  zona.innerHTML = '<details class="dec-xml" open><summary>OSS — TVA regimuri speciale (' + linii.length + " livrări)</summary>" +
+    '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul și regimul</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="camp" style="width:230px"><span class="camp-eticheta">Regim special <span class="oblig">*</span></span><select id="d398-moes" class="camp-input">' + optRegim("1", "1 — UE (bunuri+servicii)") + optRegim("2", "2 — non-UE (servicii)") + optRegim("3", "3 — import (bunuri)") + "</select></label>" +
+      '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire <span class="oblig">*</span></span><input id="d398-name" type="text" class="camp-input" value="' + esc(d.name || "") + '"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Cod TVA <span class="oblig">*</span></span><input id="d398-vat" type="text" class="camp-input" value="' + esc(d.vat_id_no || "") + '"></label>' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Monedă</span><input id="d398-cur" type="text" maxlength="3" class="camp-input" value="' + esc(d.currency || "EUR") + '"></label>' +
+      (moes === 1 ? '<label class="set-bifa"><input id="d398-eint" type="checkbox" ' + (d.e_int ? "checked" : "") + '> <span>Stabiliri fixe (e_int)</span></label>' : "") +
+    "</div>" +
+    '<p class="camp-ajutor" style="margin:2px 0 8px">Perioada de raportare (trimestrul) se ia din selectorul de sus. TVA-ul se calculează automat = bază × cotă / 100 (per stat de consum).</p>' +
+    grila +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
+      '<label class="camp" style="width:110px"><span class="camp-eticheta">Stat consum</span><input id="d398-stat" type="text" maxlength="2" class="camp-input" placeholder="ex. DE"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Tip</span><select id="d398-sup" class="camp-input"><option value="1">bunuri</option><option value="2">servicii</option></select></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Comerț</span><select id="d398-trade" class="camp-input"><option value="1">msid (din RO)</option><option value="2">msest (stabilire)</option></select></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Tip cotă</span><select id="d398-vrt" class="camp-input"><option value="1">standard</option><option value="2">redusă</option></select></label>' +
+      '<label class="camp" style="width:100px"><span class="camp-eticheta">Cotă %</span><input id="d398-rate" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Bază impozabilă</span><input id="d398-baza" type="number" step="0.01" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">Cod TVA stabilire (msest)</span><input id="d398-vatmsest" type="text" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d398-add">+ livrare</button>' +
+    "</div>" +
+    '<div id="d398-msg"></div>' +
+    '<p class="camp-ajutor" style="margin-top:8px">Total TVA datorat: <b>' + gt.toFixed(2) + "</b> " + esc(d.currency || "EUR") + ". msest (stabilire fixă) doar în regim UE; bunuri interzise în non-UE, servicii interzise în import.</p>" +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d398-regen">Regenerează D398</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  "</details>";
+  const gv = (id) => zona.querySelector(id);
+  const salveaza = () => {
+    S.d398.moes_voes_imp = gv("#d398-moes").value;
+    S.d398.name = gv("#d398-name").value.trim();
+    S.d398.vat_id_no = gv("#d398-vat").value.replace(/\s+/g, "").toUpperCase();
+    S.d398.currency = (gv("#d398-cur").value.trim() || "EUR").toUpperCase();
+    const ei = gv("#d398-eint"); if (ei) S.d398.e_int = ei.checked ? 1 : 0;
+  };
+  gv("#d398-moes").addEventListener("change", () => { salveaza(); randeazaFormularD398(corp, nav); });
+  ["#d398-name", "#d398-vat", "#d398-cur"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  const ei0 = gv("#d398-eint"); if (ei0) ei0.addEventListener("change", salveaza);
+  zona.querySelectorAll(".dec-d398-del").forEach((b) => b.addEventListener("click", () => { S.d398.linii.splice(parseInt(b.dataset.idx), 1); randeazaFormularD398(corp, nav); }));
+  gv("#d398-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const stat = gv("#d398-stat").value.trim().toUpperCase(), rate = _n(gv("#d398-rate").value) || 0, baza = _n(gv("#d398-baza").value) || 0;
+    const tt = gv("#d398-trade").value, msest = gv("#d398-vatmsest").value.trim();
+    const err = [];
+    if (!/^[A-Z]{2}$/.test(stat)) err.push(["d398-stat", "Statul de consum: cod de 2 litere (ex. DE)."]);
+    if (!(rate > 0 && rate <= 100)) err.push(["d398-rate", "Cota trebuie în (0, 100]."]);
+    if (baza <= 0) err.push(["d398-baza", "Baza impozabilă trebuie > 0."]);
+    if (tt === "2" && !msest) err.push(["d398-vatmsest", "La msest (stabilire) codul TVA de stabilire e obligatoriu."]);
+    if (err.length) { err.forEach((x) => eroareCamp(zona, x[0], x[1])); return; }
+    salveaza();
+    S.d398.linii = S.d398.linii || [];
+    S.d398.linii.push({ mscon_state: stat, supply_type: gv("#d398-sup").value, trade_type: tt,
+      vat_rate_type: gv("#d398-vrt").value, vat_rate: rate, taxable_amount: baza, vat_id_no_msest: tt === "2" ? msest : "" });
+    randeazaFormularD398(corp, nav);
+  });
+  gv("#d398-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveaza();
+    if (!(S.d398.linii || []).length) { eroareCamp(zona, "d398-stat", "Adaugă cel puțin o livrare."); return; }
     pas2(corp, nav);
   });
 }

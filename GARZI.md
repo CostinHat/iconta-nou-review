@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**634 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**635 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 603
+### `core/` — 604
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9066,6 +9066,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d394_reconciliere.py` — core/test_d394_reconciliere.py — gardul A DOUA CALE D394 (05.08.2026, campanie pas 2/6).
 - `core/test_d394_trimestrial_perioada.py` — GARD (audit tenant_003, misdiagnostic 'D394 perioada septembrie + cifre necorespunzatoare'):
 - `core/test_d394_v_taxare_inversa_cota0.py` — GARD D394 - V (livrare cu taxare inversa) trebuie emis cu cota 0 (10.08.2026).
+- `core/test_d398_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D398 gol NU produce declaratie; regimul + identitatea + livrarile
 - `core/test_d402.py` — Teste D402 (declaratie informativa DAC1 - venituri salariale/asimilate platite in Romania
 - `core/test_d406.py` — —
 - `core/test_d406_accounttype_wired.py` — GARD D406 AccountType cablat in genereaza (T2, CATALOG_INVALIDITATE.md; 10.08.2026).

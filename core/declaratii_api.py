@@ -321,7 +321,7 @@ _DOAR_API = frozenset(("d220",
                        "d393", "d395", "d397", "d120",
                        "d106", "d108", "d130", "d318",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
-                       "d101g", "d169", "d398", "d399", "d403", "d407"))
+                       "d101g", "d169", "d399", "d403", "d407"))
 
 
 def tipuri():
@@ -513,6 +513,15 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("cif_declarant") or not m.get("contracte"):
             erori.append("D114 nu are ce genera: completează declarantul (CIF, denumire, adresă) și adaugă "
                          "cel puțin un lucrator (contract) cu venitul și contribuția CAM.")
+
+    # d398 (OSS - TVA regimuri speciale UE/non-UE/import, MANUALA trimestriala): regim + identitate + livrari.
+    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # Regulile pe camp (regim, cod TVA, state, supply_type/trade_type, cote) le da d398.erori_generare.
+    if tip == "d398":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("name") or not m.get("vat_id_no") or not m.get("ms"):
+            erori.append("D398 nu are ce genera: completează regimul, denumirea și codul de TVA, apoi adaugă "
+                         "pentru fiecare stat de consum livrările (bunuri/servicii) cu cota și baza impozabilă.")
 
     # d104 (distribuire venituri asocieri f.PJ, MANUALA trimestriala): declarant + asociere + asociati + profit_pierd.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
