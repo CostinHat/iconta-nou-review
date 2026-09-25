@@ -22,7 +22,7 @@ import datetime
 from core import obiecte_inventar as _oi
 
 # PRAGUL NU MAI E SCRIS AICI (01.09.2026, R108). Era `PLAFON_MF_2026 = 5000.0` — un literal FARA
-# DATA, deci avertismentul iesea gresit pentru bunurile intrate inainte de 25.02.2026, cand pragul
+# DATA, deci avertismentul iesea gresit pentru bunurile intrate inainte de 01.01.2026, cand pragul
 # era 2.500. Se cere acum de la singura poarta, `obiecte_inventar.prag_mf(la_data)`, care citeste
 # registrul.
 

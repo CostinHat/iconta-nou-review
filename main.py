@@ -5883,7 +5883,7 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
 @app.post("/tenants/{tenant_id}/nota-obiect-inventar")
 def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?,
-    descriere?}. Achizitia verifica pragul MF (5000 din 25.02.2026, OUG 8/2026)
+    descriere?}. Achizitia verifica pragul MF (5000 din anul fiscal 2026, OUG 8/2026 art.10 alin.2)
     si refuza daca valoarea e peste prag (foloseste fluxul de mijloace fixe)."""
     try:
         return _uc_tenants.nota_obiect_inventar(tenant_id, corp, ctx)

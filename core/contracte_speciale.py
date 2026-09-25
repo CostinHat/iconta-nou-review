@@ -69,15 +69,21 @@ def calcul_zilier(brut, la_data=None):
     fn, _ = c.alege_varianta(_VARIANTE_CALCUL_ZILIER, la_data or _dt.today())
     return fn(brut)
 
-def calcul_mandat(brut):
-    """Cenzor / administrator cu contract de mandat remunerat."""
+def calcul_mandat(brut, cu_cam=False):
+    """Cenzor (cu_cam=False) / administrator sau director cu contract de mandat (cu_cam=True).
+
+    CAM 2,25% (CF art.220^3 alin.(1)) se datorează de SOCIETATE pentru remunerația administratorilor
+    (CF art.220^4 alin.(1) lit.d) și a directorilor cu contract de mandat (lit.e) — cenzorii NU sunt în
+    baza CAM. CAM e contribuție a angajatorului (cont 646=436), NU se reține din remunerație, deci nu
+    schimbă netul."""
     b = _d(brut)
     if b <= 0:
         raise ValueError("Salariul brut trebuie să fie un număr pozitiv.")
     cas = _p(b, 25)
     cass = _p(b, 10)
     impozit = _p(b - cas - cass, 10)
-    return {"brut": b, "cas": cas, "cass": cass,
+    cam = _p(b, Decimal("2.25")) if cu_cam else Decimal("0.00")
+    return {"brut": b, "cas": cas, "cass": cass, "cam": cam,
             "impozit": impozit, "net": b - cas - cass - impozit}
 
 def remuneratie_minima_zilier(salariu_minim, ore=8, ore_luna=Decimal("165.33")):
@@ -104,7 +110,7 @@ def nota(brut, fel="zilier", sursa="casa", la_data=None):
         rez = calcul_zilier(brut, _ld)
         cont_ch = "641"
     elif fel in ("cenzor", "mandat"):
-        rez = calcul_mandat(brut)   # fara varianta datata azi; cand va avea una, primeste `_ld`
+        rez = calcul_mandat(brut, cu_cam=(fel == "mandat"))   # administrator/director cu mandat -> CAM 2,25%; cenzor -> fara
         cont_ch = "621"
     else:
         raise ValueError(nomenclator_cerut("fel", "zilier|cenzor|mandat"))
@@ -114,4 +120,6 @@ def nota(brut, fel="zilier", sursa="casa", la_data=None):
         linii.append(("421", "4316", rez["cass"]))
     linii.append(("421", "444", rez["impozit"]))
     linii.append(("421", cont_bani, rez["net"]))
+    if rez.get("cam", 0) > 0:
+        linii.append(("646", "436", rez["cam"]))
     return {"linii": linii, **rez}

@@ -5,12 +5,12 @@ import pytest
 from core import obiecte_inventar as m
 
 def test_prag():
-    assert m.prag_mf(date(2026, 2, 24)) == Decimal("2500")
-    assert m.prag_mf(date(2026, 2, 25)) == Decimal("5000")
+    assert m.prag_mf(date(2025, 12, 31)) == Decimal("2500")
+    assert m.prag_mf(date(2026, 1, 1)) == Decimal("5000")
 
 def test_e_oi():
     assert m.e_obiect_inventar(4500, date(2026, 7, 1))
-    assert not m.e_obiect_inventar(4500, date(2026, 1, 15))
+    assert m.e_obiect_inventar(4500, date(2026, 1, 15))  # prag 5000 pe tot anul fiscal 2026 -> 4500 = obiect inventar (bug reparat: era mijloc fix cu pragul vechi 2500)
     assert m.e_obiect_inventar(9000, durata_sub_1_an=True)
 
 def test_achizitie():

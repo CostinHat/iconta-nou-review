@@ -3,8 +3,8 @@
 
 **Cum arăta.** Aceeași valoare stătea în trei locuri, cu trei adevăruri diferite:
 
-  `COTE["plafon_mijloc_fix"]`      canonic   data **01.01.2026 — greșită**   citit de **nimeni**
-  `obiecte_inventar.PRAG_NOU`      copie     data 25.02.2026, corectă        citit
+  `COTE["plafon_mijloc_fix"]`      canonic   data **01.01.2026 — corectă (v. jos)**   citit de **nimeni**
+  `obiecte_inventar.PRAG_NOU`      copie     data 25.02.2026 (crezută corectă) citit
   `mijloace_fixe_import_api`       copie     **fără dată**                   citit, la avertisment
 
 *O lege aplicată în trei locuri produce, la următoarea modificare, cifra validă și falsă: două se
@@ -20,6 +20,8 @@ canonicului **era** greșită, exact așa.
 
 **CE NU FACE, declarat:** nu verifică dacă pragul e *corect* — asta o fac citirea la sursă și
 `test_vigoare_articole_registru`. Verifică doar că e **unul singur**.
+
+**CORECTIE 25.09.2026 (bug de dată):** data corectă a pragului de 5.000 lei e **01.01.2026** (anul fiscal 2026, OUG 8/2026 art. 10 alin. (2): «art. 6 pct. 1-14 se aplică începând cu anul fiscal 2026»), NU 25.02.2026. Consolidarea R108 adoptase 25.02.2026 (data modificării textului art. 28 din CF), confundând-o cu data aplicării. Registrul a fost întors la 01.01.2026 și testele de graniță de mai jos actualizate.
 """
 import ast
 import datetime
@@ -114,16 +116,16 @@ def test_pragul_se_schimba_la_DATA_din_lege():
     fiscal spune `(la 25-02-2026, Litera b), Alineatul (2), Articolul 28 ...)`. Un prag fără dată —
     forma dinainte din modulul de import — dădea 5.000 și pentru bunurile intrate în ianuarie."""
     from decimal import Decimal
-    assert oi.prag_mf(datetime.date(2026, 2, 24)) == Decimal("2500")
-    assert oi.prag_mf(datetime.date(2026, 2, 25)) == Decimal("5000")
+    assert oi.prag_mf(datetime.date(2025, 12, 31)) == Decimal("2500")
+    assert oi.prag_mf(datetime.date(2026, 1, 1)) == Decimal("5000")
     assert oi.prag_mf(datetime.date(2026, 2, 26)) == Decimal("5000")
 
 
 def test_CALIBRARE_incadrarea_se_schimba_cu_pragul():
-    """Direcția care contează pentru contabil: un bun de 3.000 lei e mijloc fix înainte de 25.02.2026
-    și obiect de inventar după. Dacă asta nu se schimbă, pragul nu e folosit nicăieri."""
-    assert oi.e_obiect_inventar(3000, datetime.date(2026, 2, 24)) is False
-    assert oi.e_obiect_inventar(3000, datetime.date(2026, 2, 25)) is True
+    """Direcția care contează pentru contabil: un bun de 3.000 lei e mijloc fix înainte de 01.01.2026
+    și obiect de inventar după (anul fiscal 2026). Dacă asta nu se schimbă, pragul nu e folosit nicăieri."""
+    assert oi.e_obiect_inventar(3000, datetime.date(2025, 12, 31)) is False
+    assert oi.e_obiect_inventar(3000, datetime.date(2026, 1, 1)) is True
 
 
 # ── NECUNOSCUTUL SE POATE NUMI ─────────────────────────────────────────────────────────────────

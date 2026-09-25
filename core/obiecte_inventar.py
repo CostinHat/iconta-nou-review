@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Obiecte de inventar (303) - motor PUR (OMFP 1802/2014).
-Prag mijloc fix: 5.000 lei din 25.02.2026 (OUG 8/2026 art. 28(2)b; anterior
+Prag mijloc fix: 5.000 lei din anul fiscal 2026 = 01.01.2026 (OUG 8/2026 art. 28(2)b, aplicabil prin art. 10(2); anterior
 2.500 lei HG 276/2013). MF existente la 31.12.2025 cu valoare 2.500-5.000 se
 amortizeaza pe durata ramasa (art. 45(21^3)) - NU se reclasifica.
 Sub prag sau durata <1 an -> obiect de inventar:

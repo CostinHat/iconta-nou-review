@@ -260,14 +260,14 @@ def test_mf_prag_amortizabil_5000_art28():
 
     CITIT DIN REGISTRU (01.09.2026, R108). Forma dinainte importa `PLAFON_MF_2026` din modulul de
     import — un literal duplicat, fara data. Testul confirma acum valoarea LA O DATA: pragul e 5.000
-    de la 25.02.2026 si 2.500 inainte, iar un test fara data n-ar fi putut deosebi cele doua.
+    de la 01.01.2026 (anul fiscal 2026, OUG 8/2026 art.10 alin.2) si 2.500 inainte, iar un test fara data n-ar fi putut deosebi cele doua.
     """
     import datetime
     from decimal import Decimal
 
     from core.obiecte_inventar import prag_mf
-    assert prag_mf(datetime.date(2026, 2, 25)) == Decimal("5000")
-    assert prag_mf(datetime.date(2026, 2, 24)) == Decimal("2500")
+    assert prag_mf(datetime.date(2026, 1, 1)) == Decimal("5000")
+    assert prag_mf(datetime.date(2025, 12, 31)) == Decimal("2500")
 
 
 
