@@ -4,16 +4,19 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-23**, după **D201 în selector: comis `c7f94f22`, LIVE (a treia D2xx din Task 2)**.
-  Anterior azi: D200 + D212 în selector; corecțiile fiscale IMCA 0,5%/2026 + câștig lichidare 10% (`28bb92ad`). **D201:**
-  formular identitate PF + secțiuni pe (țară, categorie) — coduri introduse de contabil (categ_venit + țări ISO numerice
-  sunt în bytecode-ul validatorului), DUK-valid. *Pentru un contabil: Declarația 201 (venituri din străinătate) e în selector.*
-- **pe commit**: `c7f94f22` (D201 comis; four-way închis MANUAL după un push GitHub eșuat tranzitoriu «Internal Server Error»
-  — origin/main + backup re-împinse; toate brațele = HEAD. *Lecție: un push automat poate eșua pe eroare de server GitHub;
-  se reîncearcă `git push origin HEAD:main` + `HEAD:backup/lant-<zi>`, R176.*).
-- **URMĂTORUL FRONT: restul 7 D2xx** (D204/D208/D216/D220/D221/D223/D230), SAU **D212 full-populat** (cap11/oblig_realizat
-  din fișa RIP — R&D DUK necartografiat, v. „primul lucru"), apoi **F6** (TVA la încasare) **+ F7** (marjă second-hand).
-  **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV mTLS); F2 D101 (profit anual, la închidere).
+- **ultima rescriere**: **2026-09-25**, după **frontul-7 de formulare UI închis (D603→D600→D104→D114→D110→D398→D318), ultima comisă `453af646`, LIVE**.
+  Anterior (24-25.09): restul D2xx în selector (D230/D204/D223/D216/D208/D221 + D220 documentată-acoperită-de-D212), apoi cele
+  7 din frontul-7. Tiparul „proof-of-pattern" identic, câte un commit + four-way fiecare. **D318** (rambursare TVA din alt stat
+  UE, Directiva 2008/9/CE) e cea mai adânc-nested: perioadă anuală + solicitant + cont de rambursare (IBAN/BIC) + activitate
+  NACE + facturi de achiziție/import cu furnizor UE, DUK-valid din prima. *Pentru un contabil: cererea de rambursare a TVA
+  plătită în alt stat UE (D318) și restul declarațiilor de persoane fizice/asocieri au acum formular în selector — 20 în total.*
+- **pe commit**: `453af646` (D318 comis; four-way închis AUTOMAT: HEAD = origin/main = public/main = backup/lant-2026-09-25 =
+  procesul viu, 2 din 2). Livrare: `/home/costin/livrari/front7_declaratii_453af646.zip`.
+- **URMĂTORUL FRONT:** niciun front pornit — v. **0Z** (starea e „în așteptarea folosirii aplicației"). Backlog: declarațiile
+  rămase `_DOAR_API` (entități speciale — BNR/instituții financiare/autorități + cele care cer registre pe care aplicația nu le
+  ține); **D212 full-populat** (cap11/oblig_realizat din fișa RIP — R&D DUK necartografiat, v. „primul lucru"), apoi **F6** (TVA
+  la încasare) **+ F7** (marjă second-hand). **Fronturi deschise:** F1 etapele 9-11 (depunere reală = [EXTERN], certificat SPV
+  mTLS); F2 D101 (profit anual, la închidere).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: antetul, „unde a ajuns lanțul", starea, restanțele și „dacă
   continui de aici" sunt **rescrise**. Tabelul cifrelor invalidate, capcanele, operaționalul, „ce
@@ -25,11 +28,15 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   „unde suntem", derivat cu `scripts/raport_b.py` · restanțele, cu `scripts/scan_ramas.py`.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **D200 + D212 în selector (LIVE); URMĂTORUL FRONT = restul D2xx sau D212 full-populat**
+## PRIMUL LUCRU DE ȘTIUT: **20 de declarații cu formular UI în selector (LIVE); niciun front pornit — starea e „în așteptarea folosirii", v. 0Z**
 
-**STARE (23.09.2026, HEAD `6a6be4ca`, tree curat):** D200 (venituri PF) și D212 (Declarația unică) sunt comise și **LIVE** —
-apar în selectorul de declarații. D212 e un **increment** (decizie Costin): identitate PF + fișa RIP afișată informativ +
-generare a cazului minim DUK-valid. Popularea capitolelor D212 (cap11/oblig_realizat) rămâne backlog R&D — v. mai jos.
+**STARE (25.09.2026, HEAD `453af646`, tree curat):** 20 de declarații au formular manual în selector (**LIVE**). Cele 13
+dinainte + frontul-7 de acum: **D603** (exceptare CASS) · **D600** (bază CAS/CASS estimată) · **D104** (distribuire venituri/
+cheltuieli între asociați) · **D114** (CAM, ne-D112) · **D110** (regularizare/restituire impozit reținut la sursă) · **D398**
+(OSS — TVA regimuri speciale) · **D318** (rambursare TVA din alt stat UE). Toate 7 după tiparul „proof-of-pattern" identic,
+câte un commit + four-way. Livrare ZIP: `/home/costin/livrari/front7_declaratii_453af646.zip`. Durate MĂSURATE (nu estimate)
+în `_artefacte_masurare/front7_durate.tsv` din ZIP — poarta+four-way domină fiecare commit (~37 min); restul (patch/gardă/
+probă/cascadă) = zeci–mii de ms. D212 rămâne **increment** (cap11/oblig_realizat = backlog R&D — v. mai jos).
 
 **CUM E FĂCUT (tiparul „proof-of-pattern", identic D200 și D212):** backend = scos din `_DOAR_API` (intră în selector) + bloc
 `valideaza_cerere` cu mesaj de contabil; frontend `static/js/ecrane/declaratii.js` = stare `S.d2xx` în memorie, `_d2xxManual()`
@@ -343,11 +350,11 @@ completă, fără excepție.**
 ---
 ## STAREA LA PREDARE
 
-**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** Ultima, pe `5ff1b8ba`:
+**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** Ultima, pe `453af646`:
 
 ```
-6315 passed, 7 skipped, 10 xfailed in 2106.88s (0:35:06)
-verificator:  TOTAL scanat 210 = ACCEPTAT 209 + GRI 0 + ROSU 0 + EXCLUS 1
+6542 passed, 7 skipped, 9 xfailed in 2188.60s (0:36:28)
+verificator:  TOTAL scanat 218 = ACCEPTAT 217 + GRI 0 + ROSU 0 + EXCLUS 1
               TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
 TOTAL: 0 candidate
 ```

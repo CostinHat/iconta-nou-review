@@ -1,3 +1,45 @@
+## 25.09.2026 — **frontul-7 de formulare UI închis**: încă 6 declarații în selector (D318 le închide), comis `453af646`
+
+**Pentru un contabil.** Ziua a schimbat ceva concret: **încă șase declarații** au acum formular de completat direct în
+aplicație, în selectorul de declarații (înainte se puteau doar prin API, nu de la ecran):
+- **D600** — baza estimată pentru CAS/CASS (persoane fizice care își estimează venitul);
+- **D104** — distribuirea veniturilor/cheltuielilor între asociați (asocieri fără personalitate juridică);
+- **D114** — CAM (contribuția asiguratorie pentru muncă), cazul care nu trece prin D112;
+- **D110** — regularizarea/restituirea impozitului reținut la sursă (cu IBAN pentru restituire);
+- **D398** — OSS, TVA la regimuri speciale UE/non-UE/import (livrări pe fiecare stat de consum);
+- **D318** — **cererea de rambursare a TVA plătită în alt stat membru UE** (Directiva 2008/9/CE): perioada de rambursare
+  (implicit tot anul), contul de rambursare (IBAN/BIC), activitatea (cod NACE) și facturile de achiziție/import din statul
+  respectiv, cu furnizorul UE.
+
+Împreună cu **D603** (exceptare CASS), livrată în noaptea de 24.09, acestea sunt cele **7 declarații ale frontului**.
+Cu cele 13 dinainte, sunt acum **20 de declarații cu formular** în aplicație. Fiecare a fost probată cu validatorul oficial
+ANAF (DUKIntegrator) și dă „valid". Producția a trecut la `453af646`.
+
+*Context (24.09, în git, nescris încă aici):* în aceeași zi cu D603 au intrat în selector și restul declarațiilor D2xx
+(D230 redirecționare 3,5% · D204/D223 asocieri · D216 impozit bunuri de valoare mare · D208 transfer imobiliare · D221
+venituri agricole), plus D220 documentată ca acoperită de D212; și cele 14 acte lipsă din corpus (deblocând ghidurile).
+
+**Ce s-a făcut (tehnic).** Cele 7 declarații, în ordinea cerută de Costin (D603→D600→D104→D114→D110→D398→D318), pe
+**tiparul „proof-of-pattern" identic** cu frontul D2xx: backend = scos din `_DOAR_API` (intră în selector) + bloc
+`valideaza_cerere` cu mesaj de contabil; frontend `declaratii.js` = stare `S.dXXX`, `_dXXXManual()`, `randeazaFormularDXXX()`;
+gard structural `core/test_dXXX_formular.py` (ElementTree, nu „șir" in xml); probă F4 `frontend_test/proba_dXXX_f4.py` (DUK
+„valid"); rând FUNCTIONALITATI.csv → LIVE; cascadă doc-sync (login.js GRUPE_FUNC, `?v=`, 3 artefacte ui_hash, GARZI.md).
+Câte un commit + four-way fiecare — D603 `cc1027f8`, D600 `b24c6287`, D104 `940a72ef`, D114 `5eea2150`, D110 `a25fb9b4`,
+D398 `df371a83`, **D318 `453af646`** (închiderea).
+
+- **Constrângeri DUK per declarație, documentate ca increment (nu ascunse):** D603 folosește coduri de județ auto (2 litere,
+  ex. CJ), nu numerice; D600 acceptă doar `cas_opt=1` + baze lunare (intervalele libere sunt respinse); D114 restricționează
+  luna (luna=6 validă); D318 = cea mai adânc-nested (D318 > Applicant + BusinessDescription + PurchaseInformation > EuSupplier
+  + GoodsDescriptionP), DUK-valid din prima probă.
+- **Cerința „fără estimări de durată":** fiecare operație a fost MĂSURATĂ în ms (`_artefacte_masurare/front7_durate.tsv` din
+  ZIP). Lecția vizibilă: munca de fond (patch/gardă/probă/cascadă) e de ordinul zecilor–miilor de ms, iar **poarta+four-way
+  domină fiecare commit cu ~37 min** — costul frontului e poarta, nu construcția.
+- **Livrare:** `/home/costin/livrari/front7_declaratii_453af646.zip` (634 KB, 39 fișiere) — cod + GARZI.md +
+  FUNCTIONALITATI.csv + artefacte ui_hash + `front7_durate.tsv` + `_livrare/{COMMITURI,DIFFSTAT,FISIERE_SCHIMBATE}`.
+- **O reparație pe parcurs:** primul regen GARZI.md la D318 dublase markerii `INVENTAR-GARZI` (`redare_md()` include markerii;
+  înlocuirea corectă e tot blocul START..STOP). Prinsă de `test_garzi_inventar` la sweep, refăcută, verde.
+- **Poarta verde** la fiecare din cele 7; la D318: **6542 passed**, verificator TOTAL 0, four-way 2/2.
+
 ## 23.09.2026 (noapte) — **D201 în selector** (a treia declarație D2xx din Task 2, comisă `c7f94f22`)
 
 **Pentru un contabil:** Declarația 201 (veniturile realizate din străinătate de persoane fizice) e acum în selectorul
