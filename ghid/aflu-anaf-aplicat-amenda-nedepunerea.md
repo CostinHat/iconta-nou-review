@@ -1,6 +1,6 @@
 ---
 title: Cum aflu dacă ANAF mi-a aplicat amendă pentru nedepunerea unei declarații?
-description: Amenda pentru nedepunerea declarației se aplică prin proces-verbal de contravenție, care trebuie comunicat firmei în cel mult două luni (OG nr. 2/2001, art. 25 alin. (2)); de la comunicare curg 15 zile pentru plata a jumătate din minim și 15 zile pentru plângere.
+description: Amenda pentru nedepunerea declarației se aplică prin proces-verbal de contravenție, care trebuie comunicat firmei în cel mult două luni (OG nr. 2/2001, art. 25 alin. (2)); de la comunicare curg 15 zile pentru a face plângere (plata a jumătate din minim nu se aplică amenzilor fiscale).
 published: 2026-09-25
 modified: 2026-09-25
 poarta: v1
@@ -33,15 +33,15 @@ Comunicarea trebuie făcută în cel mult două luni de la aplicarea sancțiunii
 ### După ce găsești procesul-verbal
 
 - Procesul-verbal „este titlu de creanță și înștiințare de plată" (OG nr. 2/2001, art. 25 alin. (3)).
-- Poți achita, în cel mult 15 zile de la înmânare sau comunicare, jumătate din minimul amenzii (art. 28 alin. (1)).
+- Pentru amenda fiscală pentru nedepunerea unei declarații NU se poate achita jumătate din minim în 15 zile: prin derogare de la art. 28 alin. (1) din OG nr. 2/2001, contravenienții sancționați în baza Codului de procedură fiscală (Legea nr. 207/2015) nu beneficiază de această posibilitate (Legea nr. 296/2023, art. LVIII).
 - Împotriva lui poți face plângere în 15 zile de la înmânare sau comunicare (art. 31 alin. (1)), la judecătoria locului faptei sau a sediului firmei (art. 32 alin. (1)).
 - Dacă nu îl ataci în termen, procesul-verbal devine titlu executoriu (art. 37).
 
-**Exemplu.** Un SRL mic, care nu e contribuabil mijlociu sau mare, nu a depus o declarație. Procesul-verbal îi aplică o amendă de 700 lei și e comunicat pe 3 martie. Dacă firma plătește până pe 18 martie, achită 250 lei, adică jumătate din minimul de 500 lei, nu 700 lei.
+**Exemplu.** Un SRL mic, care nu e contribuabil mijlociu sau mare, nu a depus o declarație. Procesul-verbal îi aplică o amendă de 700 lei și e comunicat pe 3 martie. Fiind o contravenție din Codul de procedură fiscală, firma nu poate achita jumătate din minim: datorează amenda de 700 lei ca atare (Legea nr. 296/2023, art. LVIII).
 
 ### De reținut
 
 - Amenda se aplică prin proces-verbal comunicat firmei. Verifică SPV, poșta recomandată și afișările la sediu.
-- Termenul de 15 zile pentru plata a jumătate din minim și termenul de 15 zile pentru plângere curg de la comunicare.
+- Termenul de 15 zile pentru plângere curge de la comunicare; plata a jumătate din minim NU se aplică amenzilor fiscale (Legea nr. 296/2023, art. LVIII).
 - Un proces-verbal necomunicat în două luni de la aplicarea sancțiunii nu mai poate fi executat.
 - Dreptul de a aplica amenda fiscală se prescrie în 5 ani de la faptă, nu în 6 luni, ca în regimul general.

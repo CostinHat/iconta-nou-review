@@ -8,7 +8,7 @@ poarta: v1
 
 # Se cumulează veniturile PFA cu investițiile pentru CASS?
 
-Nu într-o bază unică de calcul — Codul fiscal tratează veniturile din activități independente (PFA) și veniturile din investiții (printre altele) în două articole separate, fiecare cu propriul plafon de 6/12/24 salarii minime brute. Există însă o legătură între ele: dacă plafonul minim a fost deja atins pe o categorie, nu se mai datorează CASS suplimentar din cealaltă.
+Nu într-o bază unică de calcul — Codul fiscal tratează veniturile din activități independente (PFA) și veniturile din investiții (printre altele) în două articole separate, cu reguli de plafonare distincte: pentru PFA, baza CASS este venitul net anual, plafonat la 72 de salarii minime brute (art. 170 alin. (1)), cu contribuția datorată la minimum 6 salarii minime brute (art. 174 alin. (6)); tranșele de 6/12/24 salarii minime se aplică doar veniturilor din investiții și celorlalte surse de la art. 155 alin. (1) lit. c)-h). Există însă o legătură între ele: dacă plafonul minim a fost deja atins pe o categorie, nu se mai datorează CASS suplimentar din cealaltă.
 
 ## Temeiul legal
 
@@ -27,7 +27,7 @@ Ce arată, structural, cele două articole:
 
 - Se adună mecanic venitul net din PFA cu venitul din investiții într-o singură sumă, pentru a verifica pragul de 6/12/24 salarii minime — de fapt sunt baze separate, cu reguli proprii de încadrare pe tranșe.
 - Se plătește CASS de două ori pentru același prag minim, o dată din PFA și o dată din investiții, fără să se verifice excepția de la art. 174 alin. (7) care poate elimina diferența datorată pe una din categorii.
-- Se ignoră faptul că fiecare bază (PFA, respectiv investiții/alte surse) are propriile tranșe de încadrare (6/12/24 salarii minime), calculate distinct la finalul anului, prin Declarația unică.
+- Se aplică greșit tranșele de 6/12/24 salarii minime și veniturilor din PFA — acele tranșe se aplică doar veniturilor de la art. 155 alin. (1) lit. c)-h) (investiții, chirii, alte surse); pentru PFA baza este venitul net anual plafonat la 72 de salarii minime, cu contribuția datorată la minimum 6 salarii minime (art. 170 alin. (1), art. 174 alin. (6)), calculată la finalul anului prin Declarația unică.
 
 ## Ce face iConta.eu
 

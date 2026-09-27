@@ -27,7 +27,7 @@ Nu. De la 1 ianuarie 2025, comercianții trebuie să transmită prin sistemul RO
 - Se presupune că orice vânzare către persoane fizice trebuie raportată separat prin RO e-Factura, inclusiv cele documentate cu bon fiscal — deși legea exceptează explicit bonurile fiscale care îndeplinesc condițiile facturii simplificate.
 - Se emit facturi (nu bonuri fiscale) pentru vânzări către persoane fizice și se omite transmiterea lor prin RO e-Factura, crezând că regula B2C s-ar aplica doar operatorilor cu casă de marcat.
 - Se confundă transmiterea automată a datelor de la casele de marcat electronice fiscale către ANAF (prin jurnalul electronic, sub OUG 28/1999) cu sistemul RO e-Factura — sunt două canale de raportare diferite, iar excepția de la e-Factura nu înseamnă că bonul fiscal scapă de orice raportare către autorități.
-- Se ignoră faptul că excepția e condiționată de încadrarea bonului fiscal în plafonul facturii simplificate — peste acel plafon, documentul emis nu mai poate fi doar un bon fiscal, ci trebuie să fie o factură completă, supusă regulilor obișnuite de transmitere.
+- Se ignoră faptul că excepția de la transmiterea în RO e-Factura e condiționată de încadrarea bonului fiscal în condițiile facturii simplificate; dar aceasta NU înseamnă că peste plafon bonul „devine" obligatoriu factură — pentru vânzările cu amănuntul către populație bonul fiscal rămâne suficient indiferent de valoare, iar factura se emite doar la cererea clientului (Codul fiscal, art. 319 alin. (10) lit. a); OUG 28/1999, art. 1 alin. (2)). Plafonul facturii simplificate (art. 319 alin. (12)) privește doar calificarea bonului drept factură simplificată, relevantă în relația cu persoane impozabile.
 
 ## Ce face iConta.eu
 

@@ -8,7 +8,7 @@ poarta: v1
 
 # Cheltuieli cu chiria plătită unei persoane fizice: obligații fiscale
 
-Când o firmă plătește chirie unei persoane fizice (nu unei alte firme), regulile sunt diferite față de o chirie plătită unei persoane juridice: nu se aplică TVA, nu se reține impozit la sursă de către firmă, iar obligația de a declara venitul revine integral proprietarului.
+Când o firmă plătește chirie unei persoane fizice (nu unei alte firme), regulile sunt diferite față de o chirie plătită unei persoane juridice: nu se aplică TVA, dar firma plătitoare (persoană juridică ce conduce evidență contabilă) are obligația de a calcula, reține, declara și vira impozitul pe venit la fiecare plată, potrivit art. 84^1 din Codul fiscal.
 
 ## Temeiul legal
 
@@ -25,17 +25,17 @@ Când o firmă plătește chirie unei persoane fizice (nu unei alte firme), regu
 
 Practic, obligațiile se împart astfel:
 
-- **Proprietarul persoană fizică** — trebuie să înregistreze contractul de închiriere la organul fiscal în 30 de zile, să declare venitul din chirie prin Declarația Unică și să plătească impozit de 10% pe venitul net anual (venitul brut, cu deducerea cotei forfetare de cheltuieli sau, după caz, a cheltuielilor efective, conform regulilor din art. 83-85), plus contribuțiile sociale (CAS/CASS) dacă e cazul, în funcție de plafoanele aplicabile.
-- **Firma chiriașă** — înregistrează contabil cheltuiala cu chiria (612 = 462) fără TVA, pentru că o persoană fizică neînregistrată în scopuri de TVA nu emite factură cu TVA. Firma nu are obligația de a reține impozit la sursă pentru chiria plătită unei persoane fizice — proprietarul își declară și își plătește singur impozitul prin Declarația Unică.
+- **Proprietarul persoană fizică** — înregistrează contractul de închiriere la organul fiscal în 30 de zile. Pentru chiria plătită în bani de o firmă, impozitul de 10% este reținut la sursă de plătitor și reprezintă impozit final, deci proprietarul nu îl mai declară prin Declarația Unică; obligația de a stabili singur venitul net și impozitul prin Declarația Unică rămâne doar pentru chiria plătită exclusiv în natură sau pentru garanția folosită drept chirie (art. 84^1 alin. (8)). Contribuția de sănătate (CASS) se stabilește separat prin Declarația Unică, dacă se depășesc plafoanele aplicabile.
+- **Firma chiriașă** — înregistrează contabil cheltuiala cu chiria fără TVA, pentru că o persoană fizică neînregistrată în scopuri de TVA nu emite factură cu TVA. Firma are însă obligația ca, la fiecare plată, să stabilească venitul net (venitul brut minus cota forfetară de 20%), să rețină impozitul de 10%, să îl declare și să îl vireze la bugetul de stat până pe 25 ale lunii următoare — impozit final (art. 84^1 alin. (3)-(6) din Codul fiscal). Nota contabilă reflectă chiria brută, impozitul reținut (contul 446) și suma netă plătită proprietarului.
 
 ## Ce se greșește în practică
 
-- Se aplică, din obișnuință, o reținere la sursă de impozit pe chirie de către firma chiriașă, ca și cum ar fi vorba de venituri salariale sau de drepturi de autor — la cedarea folosinței bunurilor, legea nu prevede reținere la sursă de către plătitorul persoană juridică.
+- Se omite reținerea la sursă a impozitului de 10% de către firma chiriașă, în credința greșită că proprietarul persoană fizică își declară singur venitul — din 2024, plătitorul persoană juridică ce conduce evidență contabilă are obligația de a calcula, reține, declara și vira impozitul (art. 84^1 alin. (3)-(6) din Codul fiscal).
 - Se omite verificarea înregistrării contractului de închiriere la organul fiscal, o obligație a proprietarului, dar care poate afecta deductibilitatea cheltuielii la firma chiriașă dacă apar controale.
 - Se confundă chiria plătită unei persoane fizice cu comodatul (folosința gratuită) — la comodat nu există chirie de plătit, iar evidența se ține extracontabil, în conturi în afara bilanțului.
 
 ## Ce face iConta.eu
 
-iConta.eu generează nota contabilă corectă pentru chiria plătită unei persoane fizice — 612 = 462, fără TVA și fără reținere la sursă — pe baza regulii din Codul fiscal conform căreia proprietarul persoană fizică își declară singur venitul prin Declarația Unică. Modulul dedicat (comodat și chirii) tratează separat comodatul (evidență extracontabilă 8038/891) de chiria propriu-zisă. La data acestui ghid, aplicația nu are o funcție care să urmărească pentru firmă înregistrarea contractului de închiriere la organul fiscal sau declararea de către proprietar — acestea rămân obligații și verificări ale proprietarului persoană fizică, în afara evidenței contabile a firmei chiriașe.
+iConta.eu generează nota contabilă pentru chiria plătită unei persoane fizice fără TVA, cu reținerea la sursă a impozitului de 10% pe venitul net (venitul brut minus cota forfetară de 20%), pe baza regulii din Codul fiscal (art. 84^1 alin. (3)-(6)) conform căreia plătitorul persoană juridică ce conduce evidență contabilă calculează, reține, declară și virează impozitul, ca impozit final. Modulul dedicat (comodat și chirii) tratează separat comodatul (evidență extracontabilă 8038/891) de chiria propriu-zisă. La data acestui ghid, aplicația nu are o funcție care să urmărească pentru firmă înregistrarea contractului de închiriere la organul fiscal sau declararea de către proprietar — acestea rămân obligații și verificări ale proprietarului persoană fizică, în afara evidenței contabile a firmei chiriașe.
 
 [iConta.eu](/)

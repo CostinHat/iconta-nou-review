@@ -23,7 +23,7 @@ Un activ „în curs de execuție" (o clădire încă în construcție, un utila
 Ce rezultă din cele două texte, combinate:
 
 - Condiția de la art. 28 alin. (2) lit. a) — activul trebuie să fie „**deținut și utilizat**" — nu e îndeplinită cât timp construcția sau montajul nu sunt finalizate; o imobilizare în curs de execuție nu e, din punct de vedere fiscal, un mijloc fix amortizabil.
-- Cheltuielile cu materialele, manopera, proiectarea etc. legate de activul în construcție **se capitalizează** în contul de imobilizări în curs (231/233, potrivit reglementărilor contabile), nu se trec direct pe cheltuieli deductibile ale exercițiului — indiferent cât timp durează execuția.
+- Cheltuielile cu materialele, manopera, proiectarea etc. legate de activul în construcție **se capitalizează** în contul de imobilizări corporale în curs de execuție (231, potrivit reglementărilor contabile), nu se trec direct pe cheltuieli deductibile ale exercițiului — indiferent cât timp durează execuția.
 - Deducerea fiscală a acestor costuri se produce abia **după punerea în funcțiune**, prin amortizare, conform regulilor obișnuite ale art. 28 — durata normală de utilizare și metoda de amortizare se stabilesc atunci, nu în timpul execuției.
 - Norma contabilă (OMFP 1802/2014) confirmă că imobilizările în curs de execuție rămân, totuși, obiect al inventarierii și evaluării anuale — ele există în contabilitate ca activ, chiar dacă nu generează încă deducere fiscală prin amortizare.
 
@@ -35,6 +35,6 @@ Ce rezultă din cele două texte, combinate:
 
 ## Ce face iConta.eu
 
-Modulul de amortizare a mijloacelor fixe din iConta.eu (`core/d406_active.py`) calculează amortizarea fiscală începând de la data punerii în funcțiune a unui activ, în conformitate cu art. 28 — aplicația nu tratează costurile capitalizate în imobilizări în curs de execuție ca deductibile înainte de acel moment. Evidența separată a imobilizărilor în curs (conturile 231/233) și transferul lor la mijloace fixe finalizate rămân introduceri contabile pe care contabilul le face în aplicație, la momentul recepției/punerii în funcțiune.
+Modulul de amortizare a mijloacelor fixe din iConta.eu (`core/d406_active.py`) calculează amortizarea fiscală începând de la data punerii în funcțiune a unui activ, în conformitate cu art. 28 — aplicația nu tratează costurile capitalizate în imobilizări în curs de execuție ca deductibile înainte de acel moment. Evidența separată a imobilizărilor în curs (contul 231) și transferul lor la mijloace fixe finalizate rămân introduceri contabile pe care contabilul le face în aplicație, la momentul recepției/punerii în funcțiune.
 
 [iConta.eu](/)

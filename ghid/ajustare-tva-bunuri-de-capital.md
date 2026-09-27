@@ -69,12 +69,12 @@ Suma se înscrie în decontul perioadei în care intervine evenimentul.
 
 ## Ce nu declanșează ajustare
 
-Art. 305 alin. 4 lit. c) prevede excepțiile la încetarea existenței bunului:
+Art. 305 alin. 4 lit. d) prevede excepțiile la încetarea existenței bunului:
 
 - bunurile **distruse sau pierdute**, în condiții dovedite corespunzător;
 - **furtul**, dovedit legal;
 - **casarea** activelor corporale fixe, în condițiile legii;
-- transferul în cadrul unei operațiuni de **transfer de active**, în condițiile art. 270 alin. 7.
+- transferul în cadrul unei operațiuni de **transfer de active**, în condițiile art. 270 alin. 8.
 
 Ca și la casarea stocurilor, ce contează e proba.
 

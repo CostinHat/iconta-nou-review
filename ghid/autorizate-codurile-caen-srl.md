@@ -8,7 +8,7 @@ poarta: v1
 
 # Trebuie autorizate toate codurile CAEN ale unui SRL?
 
-Autorizarea propriu-zisă a fiecărui cod CAEN (sanitar, PSI, mediu) e o chestiune de drept al societăților, reglementată la Registrul Comerțului, nu de legislația fiscală. Dar fiscal, chiar și un cod CAEN secundar — nu doar cel principal — poate schimba radical cota de impozit a unei microîntreprinderi.
+Autorizarea propriu-zisă a fiecărui cod CAEN (sanitar, PSI, mediu) e o chestiune de drept al societăților, reglementată la Registrul Comerțului, nu de legislația fiscală. Până la 31.12.2025, chiar și un cod CAEN secundar — nu doar cel principal — putea schimba cota de impozit a microîntreprinderii (cota majorată de 3% pentru anumite coduri CAEN). Începând cu 01.01.2026, această diferențiere a fost eliminată: art. 51 alin. (1) din Codul fiscal prevede o cotă unică de 1%, iar alineatele care reglementau cota de 3% și pragul de 60.000 euro — (1^1), (4^1), (4^2) și (4^3) — au fost abrogate prin OUG nr. 89/2025.
 
 ## Temeiul legal
 

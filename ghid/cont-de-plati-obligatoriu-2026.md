@@ -23,7 +23,7 @@ Măsura **nu interzice** conturile deschise în străinătate. Impune doar exist
 
 **Firmele existente la 1 ianuarie 2026** trebuiau să aibă contul activ de la acea dată.
 
-**Firmele înființate după 1 ianuarie 2026** au termen de la data înmatriculării pentru deschiderea contului. Verificați forma finală a textului aplicabil, întrucât în piață circulă interpretări diferite privind durata acestui termen.
+**Firmele înființate după 1 ianuarie 2026** au la dispoziție un termen de maximum 60 de zile lucrătoare de la data înființării pentru deschiderea contului (Legea nr. 70/2015, art. 1 alin. (1^2), introdus prin Legea nr. 239/2025).
 
 Recomandarea practică pentru firmele noi: deschiderea contului imediat după înmatriculare, ca parte din pachetul de operațiuni de început, nu ca sarcină separată.
 
@@ -52,7 +52,7 @@ Iar o firmă declarată inactivă fiscal:
 - intră în cazierul fiscal;
 - se dizolvă dacă nu se reactivează în termen de 1 an.
 
-Deci lipsa unui cont bancar nu produce o amendă. Produce, în lanț, riscul de dizolvare.
+Deci lipsa contului de plăți produce, pe de o parte, o amendă de la 3.000 la 10.000 lei (Legea nr. 70/2015, art. 12 alin. (4), introdus prin Legea nr. 239/2025), iar pe de altă parte, în lanț, riscul de dizolvare.
 
 ## PFA, II, IF
 
@@ -91,6 +91,6 @@ Pentru fiecare, întrebarea nu e dacă se plătește o amendă, ci dacă firma r
 
 ## De reținut
 
-Obligația pare administrativă și minoră. Sancțiunea ei nu e o amendă, ci intrarea pe lista contribuabililor inactivi — cu anularea codului de TVA și, în lipsa reactivării, dizolvarea după un an.
+Obligația pare administrativă și minoră. Sancțiunea ei nu se rezumă la amenda de la 3.000 la 10.000 lei, ci merge până la intrarea pe lista contribuabililor inactivi — cu anularea codului de TVA și, în lipsa reactivării, dizolvarea după un an.
 
 Verificarea durează câteva minute pe client și e cel mai bun raport între efort și risc evitat din tot pachetul de măsuri pentru 2026.

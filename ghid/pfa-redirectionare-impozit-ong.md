@@ -1,106 +1,49 @@
 ---
-title: PFA: cum redirecționezi impozitul către un ONG (nu prin formularul 230)
-description: Un PFA în sistem real redirecționează până la 3,5% din impozitul anual către un ONG din Declarația Unică (D212), nu prin formularul 230, rezervat veniturilor din salarii; termenul e 25 mai, iar entitatea trebuie să figureze activ în registrul ANAF (art. 123¹ din Codul fiscal).
+title: "PFA: se mai poate redirecționa 3,5% din impozit către un ONG?"
+description: "Din impozitul pe veniturile din activități independente, PFA nu mai poate redirecționa 3,5% către ONG-uri începând cu veniturile din 2024; Codul fiscal art. 123^1 alin. (1) permite redirecționarea doar din impozitul pe salarii, iar art. 133 alin. (28) păstrează vechiul regim numai pentru veniturile din 2023."
 published: 2026-08-19
-modified: 2026-08-19
+modified: 2026-09-25
 ---
 
-# PFA: cum redirecționezi impozitul către un ONG (nu prin formularul 230)
+# PFA: se mai poate redirecționa 3,5% din impozit către un ONG?
 
-Dacă ai PFA în sistem real, **nu completezi formularul 230**. Redirecționarea se face din **Declarația Unică (D212)**, într-o secțiune dedicată.
+Nu, nu din impozitul datorat pentru activitatea PFA. În forma în vigoare, Codul fiscal art. 123^1 alin. (1) permite redirecționarea a până la 3,5% doar din impozitul stabilit potrivit art. 78 alin. (6) și art. 82 alin. (6), adică din impozitul pe veniturile din **salarii și asimilate salariilor**. Declarația unică nu mai are un temei legal pentru redirecționarea impozitului pe venitul din activități independente. Dacă titularul PFA are și salariu, poate redirecționa din impozitul pe salariu, pe căile prevăzute la art. 123^1.
 
-E cea mai frecventă confuzie pe acest subiect, iar consecința e reală: un PFA care depune 230 primește respingere, iar termenul trece.
+### Ce s-a schimbat și de când
 
-## De ce s-a schimbat
+Până la 31 decembrie 2023, dreptul exista și pentru impozitul anual stabilit în Declarația unică, inclusiv pentru veniturile din activități independente, și se exercita chiar din declarație (art. 123 alin. (3) și (4)). OUG 115/2023 a schimbat regimul începând cu 1 ianuarie 2024:
 
-Din 2024, sfera formularului 230 s-a restrâns. Pot să-l depună **numai contribuabilii care realizează venituri din salarii și asimilate salariilor**.
+- art. 123 alin. (3) și (4) sunt abrogate;
+- art. 123^1 alin. (1) a fost rescris și trimite numai la art. 78 alin. (6) și art. 82 alin. (6).
 
-Persoanele cu venituri din activități independente, chirii, investiții sau activități agricole redirecționează prin Declarația Unică.
+Regimul vechi a mai funcționat o singură dată. Potrivit art. 133 alin. (28), vechile prevederi „se aplică pentru redirecționarea impozitului pe venit aferent veniturilor realizate în anul 2023”. Opțiunea s-a exercitat în Declarația unică depusă în 2024.
 
-## Cine ce depune
+**Consecință:** pentru veniturile din 2024, 2025 și 2026, impozitul pe venitul net din activitatea PFA (art. 123 alin. (1), cota de 10%) nu poate fi redirecționat. Nici art. 123 alin. (3) nu mai poate fi invocat, pentru că este abrogat.
 
-| Tipul venitului | Formular |
-|---|---|
-| Salarii și asimilate | **D230** |
-| PFA, PFI, profesii liberale în sistem real | **D212** |
-| Chirii declarate prin Declarația Unică | **D212** |
-| Investiții — bursă, dividende, crypto | **D212** |
-| Activități agricole | **D212** |
+### Ce poate face un titular de PFA care are și salariu
 
-**Situația mixtă:** dacă în 2025 ai avut și salariu, și PFA activ, poți depune **ambele** — D230 pentru partea salarială, D212 pentru cea din activitatea independentă.
+Pentru impozitul pe salarii, art. 123^1 prevede trei variante:
 
-## Cât se poate redirecționa
+1. **Cerere la organul fiscal** (formularul 230), depusă până la termenul din art. 122 alin. (3), adică **25 mai** al anului următor, „sub sancțiunea decăderii” (art. 123^1 alin. (3)). Organul fiscal calculează și plătește suma. Cererea poate fi făcută pentru aceiași beneficiari pe cel mult **2 ani**, cu posibilitate de reînnoire.
+2. **Cerere depusă la entitatea beneficiară**, care o centralizează și o transmite electronic la ANAF până la același termen (art. 123^1 alin. (3^1)).
+3. **Reținere la sursă prin angajator**, cu acordul acestuia, pe bază de înscris, pentru cel mult 2 ani fiscali consecutivi (art. 123^1 alin. (6) și (7)). Pentru aceeași perioadă și sursă de venit nu se mai poate exercita și opțiunea prin cerere (alin. (8)).
 
-Până la **3,5%** din impozitul anual datorat.
+**Exemplu:** un contribuabil are în 2025 salariu, cu impozit anual de 3.000 lei, și PFA în sistem real, cu impozit de 5.000 lei. Poate redirecționa cel mult 3,5% × 3.000 = **105 lei**, prin cererea 230 depusă până la 25 mai 2026. Pentru cei 5.000 lei datorați din PFA nu există opțiune de redirecționare.
 
-Suma nu costă nimic în plus: face parte din impozitul deja datorat statului. Dacă nu o redirecționezi, rămâne la buget.
+### Condiția pentru beneficiar
 
-Opțiunea se poate exercita pentru **una sau mai multe entități**, cu respectarea plafonului total de 3,5%.
+Entitatea nonprofit sau unitatea de cult primește suma doar dacă, la momentul plății, figurează în Registrul entităților/unităților de cult pentru care se acordă deduceri fiscale (art. 123^1 alin. (2)). Angajatorul care plătește prin reținere la sursă verifică registrul și refuză plata dacă entitatea nu figurează în el (alin. (9) și (10)).
 
-## Termenul
+### Pașii contabilului
 
-**25 mai** al anului următor celui pentru care se face redirecționarea.
+1. Stabilește dacă clientul PFA a avut în anul respectiv și venituri din salarii.
+2. Dacă a avut doar venituri din PFA, spune-i clar că nu există redirecționare pentru veniturile din 2024 încoace și nu completa nicio secțiune de redirecționare în Declarația unică.
+3. Dacă a avut și salariu, alege varianta: cerere 230, cerere prin entitate sau reținere prin angajator.
+4. Verifică în registru dacă entitatea este înscrisă, înainte de depunere.
 
-Pentru veniturile din 2025, termenul a fost 25 mai 2026. Depunerile ulterioare nu se iau în considerare pentru anul fiscal respectiv — sistemul le respinge automat.
+### De reținut
 
-## Condiția care anulează totul
-
-Entitatea beneficiară trebuie să figureze **activ în Registrul entităților/unităților de cult** pentru care se acordă deduceri fiscale, la momentul plății.
-
-Registrul e public, pe site-ul ANAF. Dacă organizația nu e înregistrată sau nu e activă fiscal, cererea se respinge, iar suma rămâne la buget.
-
-Verificarea durează un minut și e singura care contează cu adevărat.
-
-## Ce se completează
-
-Pentru fiecare beneficiar:
-
-- **codul de identificare fiscală** al entității;
-- **contul IBAN**;
-- **suma sau procentul** redirecționat.
-
-La bursele private se completează doar dacă susții direct o persoană fizică, în baza unui contract de bursă avizat.
-
-## Opțiunea pe doi ani
-
-Contribuabilul poate opta ca redirecționarea să fie valabilă pentru o perioadă de **doi ani consecutivi**, fără a mai depune formularul în al doilea an.
-
-Utilă pentru cine susține constant aceeași organizație. Se bifează la depunere.
-
-## Când primește ONG-ul banii
-
-Sumele se virează de organul fiscal în termen de **90 de zile de la data depunerii cererii**, dar nu mai târziu de 90 de zile de la expirarea termenului legal de exercitare a opțiunii.
-
-## Greșelile care invalidează
-
-**CNP sau CIF greșit** — o singură cifră invalidează formularul.
-
-**Adresa** — se completează domiciliul fiscal din buletin, nu adresa unde locuiești cu chirie, dacă nu ai viză de flotant.
-
-**Semnătura lipsă**, la depunerea pe hârtie.
-
-**Termenul depășit** — 25 mai e limită fermă.
-
-Formularul în format PDF inteligent validează automat formatul CNP-ului și face calculele, ceea ce elimină o parte din erori.
-
-## Ce face contabilul unui PFA
-
-**Verifică registrul** ANAF pentru entitatea aleasă de client, înainte de completare.
-
-**Completează secțiunea din D212**, nu un formular separat.
-
-**Explică termenul** — 25 mai, aceeași dată cu depunerea Declarației Unice.
-
-**Verifică dacă clientul a avut și salariu** în anul respectiv; dacă da, poate redirecționa și din acea parte, prin D230.
-
-## Temeiul legal
-
-- Codul fiscal, art. 123¹ alin. (1) — dreptul de a dispune de până la 3,5% din impozit privește, în forma în vigoare, **doar impozitul pe venituri din salarii și asimilate** (stabilit potrivit art. 78 alin. (6) și art. 82 alin. (6)); pentru veniturile din activități independente (PFA în sistem real) acest drept a fost aplicabil **numai veniturilor realizate în anul 2023** (art. 133 alin. (28), coroborat cu abrogarea art. 68¹ alin. (7) prin OUG 115/2023);
-- Ordinul ANAF nr. 103/2025 — procedura de stabilire a sumei și formularul 230, publicat în Monitorul Oficial la 28 ianuarie 2025;
-- Registrul entităților/unităților de cult pentru care se acordă deduceri fiscale, publicat de ANAF.
-
-## De reținut
-
-Formularul 230 e doar pentru salarii. PFA-ul redirecționează din Declarația Unică, în aceeași depunere pe care o face oricum până la 25 mai.
-
-Iar singurul lucru care poate strica totul e o entitate care nu figurează în registrul ANAF. Verificarea se face înainte, nu după.
+- Codul fiscal art. 123^1 alin. (1): redirecționarea de 3,5% se face doar din impozitul pe salarii.
+- Art. 123 alin. (3) și (4) sunt abrogate de la 1 ianuarie 2024.
+- Veniturile PFA din 2023 au fost ultimele pentru care s-a putut redirecționa din Declarația unică (art. 133 alin. (28)).
+- Termenul pentru cererea privind salariile este 25 mai, sub sancțiunea decăderii.

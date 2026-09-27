@@ -20,7 +20,7 @@ Transformarea unei societăți cu răspundere limitată în societate pe acțiun
 Pe lângă cerința de decizie prin adunarea generală extraordinară, transformarea în SA presupune îndeplinirea condiției specifice de capital a noii forme:
 
 - Decizia de schimbare a formei juridice se ia **exclusiv de adunarea generală extraordinară** a asociaților, cu cvorumul și majoritatea cerute de actul constitutiv/lege pentru acest tip de hotărâre.
-- Societatea pe acțiuni are un **capital social minim de 90.000 lei** (art. 10 alin. (1) din Legea 31/1990) — mult peste minimul de 200 de lei valabil pentru SRL. Fără atingerea acestui prag, transformarea nu poate fi înregistrată.
+- Societatea pe acțiuni are un **capital social minim de 90.000 lei** (art. 10 alin. (1) din Legea 31/1990) — mult peste capitalul social minim al SRL, care este de 500 lei pentru SRL nou-înființat, respectiv 5.000 lei pentru SRL cu cifră de afaceri netă peste 400.000 lei (Legea nr. 239/2025, art. VI alin. (1)-(2)). Fără atingerea acestui prag, transformarea nu poate fi înregistrată.
 - Fiind o schimbare de formă și nu o dizolvare urmată de o nouă înființare, regimul fiscal de neutralitate prevăzut pentru fuziuni și divizări (art. 32 din Codul fiscal) nici nu este necesar aici — societatea își continuă existența, cu același CUI, fără să se producă un transfer de patrimoniu către o entitate nouă.
 - Modificarea se înregistrează la Registrul Comerțului, iar actul constitutiv trebuie adaptat regulilor specifice formei SA (organe de conducere, structura acționariatului etc.).
 

@@ -23,7 +23,7 @@ Codul de procedură fiscală (Legea nr. 207/2015), art. 336 alin. (1) lit. b), s
 - **de la 500 la 1.000 lei** pentru persoanele juridice care nu sunt contribuabili mijlocii sau mari, precum și pentru persoanele fizice;
 - **de la 1.000 la 5.000 lei** pentru contribuabilii mijlocii și mari.
 
-Ordonanța Guvernului nr. 2/2001, art. 28 alin. (1), permite plata a **jumătate din minimul amenzii** în cel mult 15 zile de la înmânarea sau comunicarea procesului-verbal. Pentru o firmă mică, asta înseamnă 250 lei.
+Prin derogare de la art. 28 alin. (1) din Ordonanța Guvernului nr. 2/2001, Legea nr. 296/2023, art. LVIII, prevede că cei sancționați în baza Codului de procedură fiscală **nu beneficiază** de posibilitatea achitării, în 15 zile de la înmânarea sau comunicarea procesului-verbal, a jumătate din minimul amenzii. Amenda pentru depunerea cu întârziere a D301 se plătește integral, minimul fiind de 500 lei pentru o firmă mică.
 
 ### Accesoriile pentru TVA plătită târziu
 
@@ -38,7 +38,7 @@ Accesoriile se stabilesc prin decizie a organului fiscal (art. 173 alin. (5)).
 
 - dobânzi: 2.100 × 0,02% × 30 = 12,60 lei;
 - penalități de întârziere: 2.100 × 0,01% × 30 = 6,30 lei;
-- în plus, amendă posibilă între 500 și 1.000 lei, cu varianta de plată a 250 lei în 15 zile.
+- în plus, amendă posibilă între 500 și 1.000 lei, fără varianta plății a jumătate din minim în 15 zile (Legea nr. 296/2023, art. LVIII).
 
 La sume mici, costul real al întârzierii vine din amendă.
 
@@ -50,7 +50,7 @@ Penalitatea de nedeclarare de 0,08% pe zi (art. 181 alin. (1)) se aplică doar o
 
 1. Depune D301 cât mai repede, înainte de orice notificare sau control.
 2. Plătește TVA odată cu depunerea, ca să oprești curgerea dobânzilor și penalităților.
-3. Dacă primești proces-verbal de contravenție, plătește jumătate din minim în 15 zile.
+3. Dacă primești proces-verbal de contravenție, reține că pentru contravențiile din Codul de procedură fiscală nu se poate achita jumătate din minim în 15 zile (Legea nr. 296/2023, art. LVIII); amenda se plătește integral.
 4. Verifică lunar achizițiile de servicii din străinătate.
 
 ### De reținut

@@ -8,7 +8,7 @@ poarta: v1
 
 # Cum se contestă o amendă fiscală de la ANAF
 
-Trebuie făcută întâi o distincție, pentru că răspunsul depinde de ea: dacă e vorba despre o **decizie de impunere** (obligații fiscale suplimentare stabilite în urma unui control) sau un alt **act administrativ fiscal**, calea e contestația reglementată de Codul de procedură fiscală, descrisă mai jos. Dacă e vorba, strict, despre o **amendă contravențională** aplicată printr-un proces-verbal de constatare a contravenției, procedura de contestare urmează regimul juridic general al contravențiilor (Ordonanța Guvernului nr. 2/2001) — act care nu se regăsește în sursele fiscale verificate aici, așa că nu putem cita termenele lui exacte fără riscul unei citări inventate.
+Trebuie făcută întâi o distincție, pentru că răspunsul depinde de ea: dacă e vorba despre o **decizie de impunere** (obligații fiscale suplimentare stabilite în urma unui control) sau un alt **act administrativ fiscal**, calea e contestația reglementată de Codul de procedură fiscală, descrisă mai jos. Dacă e vorba, strict, despre o **amendă contravențională** aplicată printr-un proces-verbal de constatare a contravenției, procedura de contestare urmează regimul juridic general al contravențiilor (Ordonanța Guvernului nr. 2/2001) — act aflat în sursele verificate aici, care prevede plângere la judecătorie în termen de 15 zile de la înmânarea sau comunicarea procesului-verbal (OG 2/2001, art. 31 alin. (1) și art. 32 alin. (1)).
 
 ## Temeiul legal
 
@@ -27,7 +27,7 @@ Ce e sigur, pentru actele administrativ-fiscale (deciziile de impunere, deciziil
 - Contestația e o **cale administrativă**, care nu blochează dreptul la acțiune în instanță al celui care se consideră lezat — după soluționarea ei pe cale administrativă (sau după expirarea termenului legal de soluționare), calea judiciară rămâne deschisă.
 - Contestația se depune, de regulă, chiar la organul fiscal emitent al actului atacat, care întocmește dosarul și îl înaintează, în cel mult 5 zile, organului de soluționare competent.
 
-Pentru **amenzile contravenționale** propriu-zise (aplicate, de exemplu, pentru încălcarea plafoanelor de numerar sau alte contravenții constatate de inspectori), Codul de procedură fiscală nu e actul relevant — regimul juridic al contravențiilor e reglementat de Ordonanța Guvernului nr. 2/2001, care nu se regăsește în sursele verificate aici, deci nu putem cita termenul exact de plângere fără riscul unei inexactități.
+Pentru **amenzile contravenționale** propriu-zise (aplicate, de exemplu, pentru încălcarea plafoanelor de numerar sau alte contravenții constatate de inspectori), Codul de procedură fiscală nu e actul relevant — regimul juridic al contravențiilor e reglementat de Ordonanța Guvernului nr. 2/2001, care se regăsește în sursele verificate aici: plângerea se depune la judecătorie în termen de 15 zile de la înmânarea sau comunicarea procesului-verbal (art. 31 alin. (1) și art. 32 alin. (1)).
 
 ## Ce se greșește în practică
 

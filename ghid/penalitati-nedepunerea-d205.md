@@ -25,7 +25,7 @@ D205 e o declarație informativă, depusă de plătitorii de venituri pentru a r
 ## Ce se greșește în practică
 
 - Se presupune că D205, fiind "doar informativă" și fără sumă de plată asociată direct, nu atrage sancțiuni — art. 336 nu face această distincție, sancționând orice nerespectare a obligațiilor de declarare prevăzute de lege.
-- Se depune declarația cu întârziere fără să se solicite reducerea amenzii prin plata în termenul legal de 15 zile de la comunicarea procesului-verbal (jumătate din minimul amenzii), acolo unde procedura contravențională generală o permite.
+- Se presupune că amenda poate fi redusă la jumătate din minim prin plata în 15 zile de la comunicarea procesului-verbal — în realitate, pentru contravențiile din Codul de procedură fiscală (art. 336), Legea nr. 296/2023, art. LVIII, exclude expres această posibilitate, iar amenda se plătește integral.
 - Se confundă regimul sancționator al D205 cu cel al declarațiilor recapitulative de TVA (art. 337), care are alte cuantumuri de amendă — sunt fapte contravenționale distincte, cu texte de lege diferite.
 
 ## Ce face iConta.eu

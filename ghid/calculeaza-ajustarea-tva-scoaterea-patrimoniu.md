@@ -8,7 +8,7 @@ poarta: v1
 
 # Cum se calculează ajustarea TVA la scoaterea din patrimoniu
 
-Când un mijloc fix pentru care s-a dedus TVA la achiziție este casat sau scos din patrimoniu înainte de finalul perioadei de ajustare, firma nu păstrează automat toată taxa dedusă inițial — legea cere restituirea proporțională a TVA aferente perioadei rămase neconsumate.
+Când un mijloc fix pentru care s-a dedus TVA la achiziție este scos din patrimoniu înainte de finalul perioadei de ajustare, firma nu păstrează întotdeauna toată taxa dedusă inițial — pentru unele situații legea cere ajustarea (restituirea) TVA aferente perioadei rămase. Casarea propriu-zisă face însă excepție: art. 305 alin. (4) lit. d) pct. 4 o exclude expres de la ajustare.
 
 ## Temeiul legal
 
@@ -22,13 +22,13 @@ Când un mijloc fix pentru care s-a dedus TVA la achiziție este casat sau scos 
 Mecanismul de calcul care rezultă din text:
 
 - **Perioada de ajustare depinde de tipul bunului**: 5 ani pentru bunuri de capital mobile (echipamente, utilaje, mijloace de transport), 20 de ani pentru bunuri imobile (construcții, achiziții/transformări/modernizări de clădiri).
-- **Casarea declanșează ajustare integrală pentru perioada rămasă**, nu proporțională pe an — spre deosebire de ajustarea „o cincime/o douăzecime pe an" din alte situații (schimbare de destinație, pro rata), la casare se ajustează dintr-o dată toată taxa aferentă anilor rămași din perioada de ajustare, inclusiv anul curent.
+- **Casarea unui bun de capital este EXCEPTATĂ de la ajustare** — art. 305 alin. (4) lit. d) pct. 4 enumeră casarea printre excepțiile de la ajustarea taxei la încetarea existenței bunului, deci casarea în condițiile legii NU generează obligația de restituire a TVA deduse. Ajustarea integrală, dintr-o dată, pentru toți anii rămași din perioada de ajustare (alin. (5) lit. d)) se aplică celorlalte situații de la alin. (4) lit. d) care NU sunt exceptate — de exemplu, o scoatere din patrimoniu care nu e nici livrare taxabilă, nici casare, nici pierdere/distrugere/furt dovedit.
 - **Excepțiile care NU declanșează ajustare**: bunul face obiectul unei livrări impozabile (inclusiv livrare către sine, pentru care taxa e deja colectată), bunul e pierdut/distrus/furat cu dovadă corespunzătoare (pentru furt, act al organelor judiciare), sau intră sub incidența art. 270 alin. (8) — situații care, în esență, arată că bunul rămâne în sfera economică taxabilă sau că pierderea nu e imputabilă firmei.
 - **Momentul ajustării e evenimentul, nu sfârșitul anului** — ajustarea se face în perioada fiscală în care are loc efectiv casarea, nu se amână la regularizarea de final de an.
 
 ## Ce se greșește în practică
 
-- Se aplică regula generală de ajustare „o cincime/o douăzecime pe an" și la casare, deși alin. (5) lit. d) cere ajustarea integrală, dintr-o dată, pentru toți anii rămași din perioada de ajustare, nu eșalonat.
+- Se ajustează TVA la casarea unui bun de capital, deși art. 305 alin. (4) lit. d) pct. 4 enumeră casarea printre excepțiile de la ajustare — casarea în condițiile legii nu generează obligație de ajustare.
 - Se ajustează TVA la casarea unui bun distrus dintr-un incendiu sau furat, fără să se verifice întâi dacă situația se încadrează în excepțiile de la alin. (4) lit. d) pct. 2 — pierderea documentată corespunzător (acte ale organelor judiciare, în cazul furtului) scutește de ajustare.
 - Se confundă perioada de ajustare a unui echipament (5 ani) cu cea a unei clădiri (20 de ani), aplicând greșit numărul de ani rămași la calculul sumei de restituit.
 - Se amână înregistrarea ajustării până la finalul anului fiscal, deși obligația ia naștere în perioada fiscală în care are loc efectiv casarea.

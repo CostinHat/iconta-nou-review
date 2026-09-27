@@ -8,7 +8,7 @@ poarta: v1
 
 # Când pot da ANAF în judecată pentru o amendă
 
-Contribuabilul nu poate merge direct la instanță împotriva unei amenzi sau a unui act administrativ fiscal — legea impune mai întâi o etapă administrativă obligatorie, contestația la organul fiscal. Abia după ce această etapă e epuizată (sau tăcerea administrației se prelungește nejustificat) se deschide calea instanței de contencios administrativ.
+Răspunsul depinde de tipul actului. Împotriva unei amenzi contravenționale aplicate prin proces-verbal, contribuabilul se adresează direct judecătoriei, prin plângere depusă în 15 zile de la înmânarea sau comunicarea procesului-verbal, fără o procedură administrativă prealabilă (OG 2/2001, art. 31-32; Codul de procedură fiscală art. 339 alin. (2)). În schimb, împotriva unui act administrativ fiscal (de exemplu, o decizie de impunere), legea impune mai întâi contestația la organul fiscal, iar abia după soluționarea ei se deschide calea instanței de contencios administrativ.
 
 ## Temeiul legal
 
@@ -21,7 +21,7 @@ ART. 281 Comunicarea deciziei și calea de atac"
 
 Practic, calea are două trepte obligatorii:
 
-- **Contestația administrativă**, depusă la organul fiscal emitent, e condiția prealabilă pentru orice atac ulterior — fără ea, o acțiune directă în instanță e respinsă ca prematură.
+- **Contestația administrativă**, depusă la organul fiscal emitent, e condiția prealabilă pentru atacarea unui act administrativ fiscal (decizie de impunere etc.) — fără ea, acțiunea directă în instanță împotriva unui astfel de act e respinsă ca prematură. Ea nu se aplică însă amenzilor contravenționale, care se atacă direct la judecătorie prin plângere, în 15 zile.
 - **Calea de atac în instanță** se deschide abia după soluționarea contestației (art. 281), la instanța de contencios administrativ competentă, potrivit Legii contenciosului administrativ nr. 554/2004, la care Codul de procedură fiscală face trimitere explicit în mai multe articole (de exemplu, art. 213 alin. (13), pentru măsurile asigurătorii).
 - Excepția: pentru anumite acte (de exemplu, măsurile asigurătorii de la art. 213), legea permite atacarea directă în instanță, „fără a fi necesară parcurgerea procedurii prealabile" — dar aceasta e o excepție explicit prevăzută, nu regula generală pentru amenzi.
 
@@ -29,7 +29,7 @@ Practic, calea are două trepte obligatorii:
 
 - Se sare peste contestația administrativă și se depune direct acțiune în instanță — instanța o respinge ca prematură, iar termenul de atac se poate pierde între timp.
 - Se confundă termenul de contestație administrativă (care curge de la comunicarea actului) cu termenul de atac în instanță (care curge de la comunicarea deciziei de soluționare a contestației) — sunt două termene diferite, cu puncte de plecare diferite.
-- Se presupune că orice act ANAF poate fi atacat direct în instanță, ca la măsurile asigurătorii — de fapt aceasta e o excepție explicită din lege, nu regula generală aplicabilă amenzilor contravenționale sau deciziilor de impunere.
+- Se presupune că regula e aceeași pentru orice act ANAF — de fapt ea diferă: deciziile de impunere cer mai întâi contestația administrativă, în timp ce amenzile contravenționale se atacă direct la judecătorie, prin plângere în 15 zile (OG 2/2001, art. 31-32).
 
 ## Ce face iConta.eu
 

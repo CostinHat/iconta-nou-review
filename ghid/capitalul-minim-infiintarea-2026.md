@@ -8,7 +8,7 @@ poarta: v1
 
 # Capitalul minim la înființarea unei SA 2026
 
-Spre deosebire de SRL, unde legea nu impune un plafon minim general, societatea pe acțiuni (SA) are un capital social minim stabilit expres de Legea 31/1990 — și acest prag nu este fix „pentru totdeauna", ci poate fi ajustat periodic de Guvern, pentru a reflecta rata de schimb.
+Spre deosebire de SRL, unde capitalul social minim este de 500 lei la înființare (respectiv 5.000 lei dacă cifra de afaceri netă depășește 400.000 lei — Legea nr. 239/2025, art. VI), societatea pe acțiuni (SA) are un capital social minim mai mare, stabilit expres de Legea 31/1990 — și acest prag nu este fix „pentru totdeauna", ci poate fi ajustat periodic de Guvern, pentru a reflecta rata de schimb.
 
 ## Temeiul legal
 
@@ -26,7 +26,7 @@ Din text rezultă atât valoarea actuală, cât și mecanismul de actualizare:
 
 ## Ce se greșește în practică
 
-- Se presupune că plafonul de 90.000 lei este identic cu cel aplicabil unei SRL, deși Legea 31/1990 nu impune, pentru SRL, un capital social minim general (spre deosebire de SA/societatea în comandită pe acțiuni).
+- Se presupune că plafonul de 90.000 lei este identic cu cel aplicabil unei SRL, deși capitalul social minim al unei SRL este mult mai mic — 500 lei la înființare, respectiv 5.000 lei peste 400.000 lei cifră de afaceri netă (Legea nr. 239/2025, art. VI).
 - Se ignoră posibilitatea unei actualizări periodice a pragului, tratând suma din textul legii ca fiind definitivă, deși legea prevede expres mecanismul de ajustare la fiecare 2 ani, în funcție de curs.
 - Se confundă capitalul social minim (pragul legal de înființare) cu capitalul social necesar activității firmei — o SA poate avea nevoie de resurse mult mai mari decât minimul legal pentru a funcționa, dar acesta rămâne doar pragul de conformitate juridică.
 
