@@ -18,7 +18,7 @@ Contabilitatea financiară (partidă dublă, situații financiare) este obligato
 — Legea contabilității nr. 82/1991, art. 1 alin. (6)
 :::
 
-Textul spune două lucruri importante: obligația există „după caz" (nu automat, pentru orice firmă), iar forma ei se lasă pe seama unor „reglementări elaborate în acest sens" — reglementări distincte de OMFP 1802/2014, care guvernează situațiile financiare și contabilitatea financiară, nu pe cea de gestiune. Nu există un ordin în vigoare, verificat, care să impună o structură anume (centre de cost, bugete, perioade) pentru contabilitatea de gestiune. Concluzia practică: cum se organizează ea este o decizie managerială, motivată de nevoia de a controla costurile — nu o cerință de conformare cu un format legal.
+Textul spune două lucruri importante: obligația există „după caz" (nu automat, pentru orice firmă), iar forma ei se lasă pe seama unor „reglementări elaborate în acest sens" — reglementări care lasă forma la latitudinea entității. Chiar OMFP 1802/2014 se ocupă, de altfel, de contabilitatea de gestiune: pune la dispoziție în planul de conturi clasa 9 „Conturi de gestiune", a cărei utilizare este însă opțională — „Pentru organizarea contabilității de gestiune, nu este obligatorie utilizarea conturilor din clasa 9 «Conturi de gestiune»" (pct. 593 alin. (4); nota *25 la clasa 9). Prin urmare, nu există un act normativ care să impună o structură anume (centre de cost, bugete, perioade) pentru contabilitatea de gestiune, dar nu e corect nici să se spună că reglementările contabile o ignoră complet. Concluzia practică: cum se organizează ea este o decizie managerială, motivată de nevoia de a controla costurile — nu o cerință de conformare cu un format legal.
 
 ## Ce se greșește în practică
 

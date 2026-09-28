@@ -20,7 +20,7 @@ Practic, D205 rămâne obligatorie mai ales pentru: dividende plătite, dobânzi
 
 ### D107 — declarația informativă privind beneficiarii sponsorizărilor/mecenatului
 
-Temei: art. 42 alin. (3) din Codul fiscal. Contribuabilii care au efectuat cheltuieli de sponsorizare, mecenat sau cheltuieli de protocol/social (art. 25 alin. (4) lit. ț) din Codul fiscal) au obligația de a depune o declarație informativă privind beneficiarii acestor sume, aferentă anului în care au fost înregistrate cheltuielile, cu **același termen** ca declarația anuală de impozit pe profit (art. 42 alin. (1)-(2)). Formularul e D107, iar structura lui e stabilită prin ordin al președintelui ANAF.
+Temei: art. 42 alin. (3) din Codul fiscal. Contribuabilii care au efectuat cheltuieli de sponsorizare sau mecenat, precum și cheltuieli privind bunurile, mijloacele financiare și serviciile acordate UNICEF și altor organizații internaționale care își desfășoară activitatea potrivit unor acorduri speciale la care România este parte (art. 25 alin. (4) lit. ț) din Codul fiscal) au obligația de a depune o declarație informativă privind beneficiarii acestor sume, aferentă anului în care au fost înregistrate cheltuielile, cu **același termen** ca declarația anuală de impozit pe profit (art. 42 alin. (1)-(2)). Formularul e D107, iar structura lui e stabilită prin ordin al președintelui ANAF.
 
 Firmele plătitoare de impozit pe profit care nu au făcut nicio sponsorizare în anul respectiv nu au obligația depunerii — declarația e legată direct de existența cheltuielilor de sponsorizare/mecenat.
 

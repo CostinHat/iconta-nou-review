@@ -9,7 +9,7 @@ modified: 2026-08-19
 
 Pentru clădirile deținute de persoane juridice, cota de impozit se aplică asupra valorii impozabile stabilite după reguli care depind de **vechimea raportului de evaluare**.
 
-Dacă raportul lipsește sau e mai vechi de 5 ani, cota devine **5%**, aplicată asupra valorii din evidența contabilă.
+Dacă valoarea impozabilă nu a fost actualizată în ultimii 5 ani, cota poate deveni **5%** — dar numai cu condiția ca proprietarul să fi fost notificat de organul fiscal despre posibilitatea depunerii raportului de evaluare, notificare comunicată până la 31 octombrie a anului curent (art. 460 alin. (8)). Fără această notificare, impozitul se calculează cu cota normală (0,2%–1,3% la clădirile nerezidențiale), nu cu 5%.
 
 Iar diferența față de cota normală — între 0,2% și 1,3% la clădirile nerezidențiale — e de câteva ori mai mare.
 
@@ -29,7 +29,7 @@ Impozitul pe clădiri se calculează pe baza situației existente la **31 decemb
 
 Raportul de evaluare trebuie să existe la acea dată, iar valoarea rezultată se declară la organul fiscal local.
 
-Un raport întocmit în ianuarie nu produce efect pentru anul în curs. Efectul apare din anul următor.
+Ce contează pentru anul în curs nu este ca raportul să existe fizic la 31 decembrie, ci ca el să fie **depus la organul fiscal local până la primul termen de plată din anul de referință** (art. 460 alin. (6)). Un raport întocmit în ianuarie și depus până la acel termen (31 martie — art. 462) produce efect chiar pentru anul în curs; doar raportul depus după primul termen de plată produce efecte de la 1 ianuarie a anului fiscal următor.
 
 ## Ce se declară și când
 

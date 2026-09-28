@@ -18,7 +18,7 @@ Nu. Codul unic de înregistrare (CUI) rămâne același atunci când firma își
 :::
 
 - Orice persoană sau entitate subiect al unui raport juridic fiscal primește un cod de identificare fiscală o singură dată, la înregistrarea fiscală (art. 82 alin. (1) CPF) — legea nu prevede o re-atribuire a codului la schimbarea domiciliului fiscal.
-- Ce se schimbă efectiv la mutarea sediului social în alt județ e **competența teritorială** — administrarea firmei trece la noul organ fiscal, de la data schimbării domiciliului fiscal (art. 36 alin. (1) CPF).
+- Ce se schimbă efectiv la mutarea sediului social în alt județ e **competența teritorială** — administrarea firmei trece la noul organ fiscal. Când sediul social este și domiciliu fiscal, mutarea lui atrage modificarea de drept a domiciliului fiscal (art. 32 alin. (5) CPF), iar prin excepție de la regula generală din alin. (1), competența teritorială trece la noul organ fiscal nu de la data schimbării, ci de la împlinirea termenului de 15 zile lucrătoare pentru transferul dosarului fiscal (art. 36 alin. (4) coroborat cu art. 32 alin. (5) CPF).
 - Dacă la data mutării e în derulare o procedură de administrare fiscală (cu excepția executării silite), organul fiscal care a început-o rămâne competent s-o finalizeze (art. 36 alin. (3) CPF) — schimbarea de competență nu e retroactivă pentru procedurile deja pornite.
 - Societatea își păstrează, de altfel, personalitatea juridică neschimbată la mutarea sediului — aceasta a fost dobândită o singură dată, la înmatriculare (Legea 31/1990, art. 41 alin. (1)).
 

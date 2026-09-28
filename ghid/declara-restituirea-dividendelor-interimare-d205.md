@@ -16,7 +16,7 @@ Dacă dividendele interimare distribuite în cursul anului depășesc dividendul
 **Legea 31/1990, art. 67 alin. (2^2)**: „În cazul în care asociații sau acționarii datorează restituiri de dividende, în urma regularizării [...] acestea se achită societății în termen de 60 de zile de la data aprobării situațiilor financiare anuale."
 :::
 
-Când interimarul plătit e mai mare decât dividendul anual aprobat, regularizarea generează, pe lângă compensarea normală (457=463), o notă suplimentară pentru excesul de restituit: firma primește banii înapoi de la asociat, iar suma respectivă se înregistrează direct între bancă și contul de decontări cu asociatul (nu prin contul 457, pe care se calculează automat D205).
+Când interimarul plătit e mai mare decât dividendul anual aprobat, regularizarea generează, pe lângă compensarea normală (457=463), o notă suplimentară pentru excesul de restituit: firma primește banii înapoi de la asociat, iar suma respectivă se înregistrează în creditul contului 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului financiar» (512 = 463, sau 531 = 463 la restituirea în numerar) — nu prin contul 457, pe care se calculează automat D205.
 
 Aceasta e diferența importantă: restituirea excesului nu trece prin contul 457, deci nu reduce automat, în calculul declarației, suma deja declarată ca dividend distribuit/plătit pentru acel asociat. Corectarea trebuie tratată separat de contabil, la nivelul declarației, pentru anul în care regularizarea s-a produs.
 
@@ -28,6 +28,6 @@ Aceasta e diferența importantă: restituirea excesului nu trece prin contul 457
 
 ## Ce face iConta.eu
 
-Motorul de decontări asociați din iConta.eu generează automat nota de restituire a excesului de dividend interimar (banca firmei, în corespondență cu contul de decontări cu asociatul), inclusiv în cazul testat explicit al unei restituiri parțiale. Declarația D205 se calculează automat din mișcările contului 457 — pentru că restituirea excesului nu trece prin acest cont, corectarea sumei deja declarate pentru asociatul respectiv rămâne o intervenție pe care contabilul trebuie s-o facă manual, la nivelul declarației aferente anului regularizării.
+Motorul de decontări asociați din iConta.eu generează automat nota de restituire a excesului de dividend interimar (512/531 = 463, banca sau casa firmei în corespondență cu contul 463 al dividendelor repartizate în cursul exercițiului), inclusiv în cazul testat explicit al unei restituiri parțiale. Declarația D205 se calculează automat din mișcările contului 457 — pentru că restituirea excesului nu trece prin acest cont, corectarea sumei deja declarate pentru asociatul respectiv rămâne o intervenție pe care contabilul trebuie s-o facă manual, la nivelul declarației aferente anului regularizării.
 
 [iConta.eu](/)

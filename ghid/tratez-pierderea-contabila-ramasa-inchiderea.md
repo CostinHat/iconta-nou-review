@@ -23,7 +23,7 @@ Ce nu spune explicit acest text (și nici alte surse verificate pentru acest ghi
 
 ## Ce se greșește în practică
 
-O greșeală este să se presupună că pierderea „dispare" automat la radierea firmei, fără nicio consecință pentru asociați — de fapt, ea reduce direct (sau anulează) suma pe care asociații o mai pot primi la partaj, pentru că partajul se calculează din ce rămâne efectiv în patrimoniu, nu din ce ar fi trebuit să rămână fără pierdere. O a doua greșeală este să se sară peste ordinea de acoperire din pct. 423 — de exemplu, reducerea capitalului social înainte de a epuiza rezervele și primele de capital, fără aprobarea corespunzătoare a adunării generale pentru fiecare pas.
+O greșeală este să se presupună că pierderea „dispare" automat la radierea firmei, fără nicio consecință pentru asociați — de fapt, ea reduce direct (sau anulează) suma pe care asociații o mai pot primi la partaj, pentru că partajul se calculează din ce rămâne efectiv în patrimoniu, nu din ce ar fi trebuit să rămână fără pierdere. O a doua greșeală este să se creadă că ordinea surselor de acoperire ar fi fixă și impusă de lege — de pildă, că reducerea capitalului social înainte de epuizarea rezervelor și a primelor de capital ar fi interzisă. În lipsa unor prevederi legale exprese, ordinea surselor din care se acoperă pierderea contabilă este la latitudinea adunării generale a acționarilor sau asociaților, respectiv a consiliului de administrație (OMFP 1802/2014, pct. 423 alin. (2)); ce rămâne obligatoriu este aprobarea adunării generale pentru fiecare operațiune.
 
 ## Ce face iConta.eu
 

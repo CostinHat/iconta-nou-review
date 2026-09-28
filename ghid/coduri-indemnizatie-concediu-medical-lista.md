@@ -40,7 +40,7 @@ Din 2025, prin modificarea art. 17 din OUG 158/2005 adusă de **Legea 141/2025**
 
 - 55% pentru certificatele eliberate pentru o perioadă de până la 7 zile;
 - 65% pentru 8–14 zile;
-- 75% pentru 15 zile și peste.
+- 75% pentru o perioadă de peste 15 zile.
 
 Procentul se aplică pe episod, nu pe certificat. Un episod compus din mai multe certificate „în continuare" cumulează zilele.
 

@@ -20,7 +20,7 @@ Monografia rămâne aceeași ca structură ca în anii anteriori, doar cota de i
 
 - **Dividend anual (final)**: repartizare din profit — 1171 = 457 (brut); impozit reținut — 457 = 446 (16% din brut); plata netă — 457 = 5121.
 - **Dividend interimar (trimestrial)**: 463 = 456 (brut); impozit — 456 = 446 (16%); plata netă — 456 = 5121.
-- **Regularizare la final de an**: 1171 = 457 (dividend anual aprobat), compensare cu interimarul — 457 = 463; dacă interimarul distribuit depășește dividendul anual aprobat, excesul se restituie de la asociat — 5121 = 456, în termen de 60 de zile de la aprobarea situațiilor financiare anuale (Legea 31/1990, art. 67 alin. 2^2).
+- **Regularizare la final de an**: 1171 = 457 (dividend anual aprobat), compensare cu interimarul — 457 = 463; dacă interimarul distribuit depășește dividendul anual aprobat, excesul se restituie de la asociat — 5121 = 463 (sau 5311 = 463 la restituirea în numerar; după compensarea 457 = 463, excesul rămâne sold debitor în contul 463, iar restituirea încasată se înregistrează în creditul lui — OMFP 3067/2018 art. I pct. 3, funcțiunea contului 463), în termen de 60 de zile de la aprobarea situațiilor financiare anuale (Legea 31/1990, art. 67 alin. 2^2).
 
 Nou pentru 2026: societățile care distribuie trimestrial dividende nu pot acorda împrumuturi asociaților până la regularizarea diferențelor rezultate din distribuirea din cursul anului (art. 67 alin. 2^3, introdus de Legea 239/2025, în vigoare din 18.12.2025). Restricția privește împrumuturile acordate **de firmă asociatului**, nu invers — un asociat poate în continuare credita firma fără nicio legătură cu acest alineat.
 

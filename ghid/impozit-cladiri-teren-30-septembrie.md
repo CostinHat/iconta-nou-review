@@ -61,7 +61,7 @@ Pentru clădirile deținute de persoane juridice, valoarea impozabilă e valoare
 - valoarea finală a lucrărilor, pentru clădirile noi;
 - valoarea din actul de dobândire, pentru cele dobândite recent.
 
-**Consecința nedepunerii raportului:** cota devine **5%**, aplicată asupra valorii din evidența contabilă. E o creștere de mai multe ori față de cota normală.
+**Consecința neactualizării valorii în ultimii 5 ani:** cota poate deveni **5%**, aplicată asupra valorii din evidența contabilă — dar numai dacă proprietarul a fost notificat de organul fiscal local (prin spațiul privat virtual sau prin poștă) până la 31 octombrie a anului anterior. În lipsa notificării comunicate până la acea dată, impozitul se calculează cu cota obișnuită din art. 460 alin. (1) sau (2). Când se aplică, e o creștere de mai multe ori față de cota normală.
 
 Verificarea vechimii raportului de evaluare, pe fiecare clădire, e una dintre cele mai rentabile în tot calendarul fiscal.
 
@@ -75,7 +75,7 @@ Procentul e mai mare decât dobânda ANAF, iar accesoriile sunt nedeductibile.
 
 **Toate imobilele deținute** — inclusiv cele nefolosite, terenurile achiziționate și uitate, punctele de lucru închise dar neradiate.
 
-**Vechimea raportului de evaluare** — dacă depășește 5 ani, cota sare la 5%.
+**Vechimea raportului de evaluare** — dacă valoarea impozabilă nu a fost actualizată în ultimii 5 ani, cota poate ajunge la 5%, însă doar dacă organul fiscal local a notificat proprietarul până la 31 octombrie a anului anterior; altfel rămâne cota obișnuită.
 
 **Destinația declarată** față de utilizarea reală. O clădire declarată rezidențială dar folosită ca birou e o neconformitate care se descoperă la control.
 
@@ -96,4 +96,4 @@ Procentul e mai mare decât dobânda ANAF, iar accesoriile sunt nedeductibile.
 
 30 septembrie e a doua rată, la valoarea integrală — bonificația s-a pierdut în martie.
 
-Iar verificarea care merită făcută acum, înainte de plată, e alta: **vechimea raportului de evaluare** pe fiecare clădire deținută de firmă. Peste 5 ani, cota devine 5% și diferența se plătește retroactiv.
+Iar verificarea care merită făcută acum, înainte de plată, e alta: **vechimea raportului de evaluare** pe fiecare clădire deținută de firmă. Peste 5 ani fără actualizare, cota poate ajunge la 5% — dar numai dacă organul fiscal local a notificat proprietarul până la 31 octombrie a anului anterior.

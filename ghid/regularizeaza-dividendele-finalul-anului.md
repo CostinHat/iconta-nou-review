@@ -22,10 +22,10 @@ Când suma distribuită interimar depășește dividendul anual aprobat, diferen
 
 ## Ce se greșește în practică
 
-Cea mai frecventă greșeală e tratarea regularizării ca o simplă corecție a sumei distribuite, fără a înregistra separat compensarea (457=463) și, dacă e cazul, restituirea de exces (5121=456). A doua greșeală e ignorarea termenului de 60 de zile pentru restituire — după acest termen intervine dobânda penalizatoare, nu doar o simplă întârziere administrativă.
+Cea mai frecventă greșeală e tratarea regularizării ca o simplă corecție a sumei distribuite, fără a înregistra separat compensarea (457=463) și, dacă e cazul, restituirea de exces (5121=463, sau 5311=463 la restituirea în numerar — funcțiunea contului 463, OMFP 3067/2018 art. I pct. 3). A doua greșeală e ignorarea termenului de 60 de zile pentru restituire — după acest termen intervine dobânda penalizatoare, nu doar o simplă întârziere administrativă.
 
 ## Ce face iConta.eu
 
-iConta generează nota de regularizare pornind de la totalul dividendelor interimare distribuite și dividendul anual aprobat: 1171=457 pentru dividendul anual, apoi compensarea cu interimarul deja distribuit (457=463), în limita minimului dintre cele două sume. Dacă interimarul depășește dividendul anual aprobat, aplicația calculează excesul de restituit și generează linia 5121=456, cu mențiunea celor 60 de zile din lege. De exemplu, pentru 150.000 lei distribuiți interimar și 140.000 lei dividend anual aprobat, nota rezultată include o restituire de 10.000 lei pe 5121=456 — exact cazul testat în aplicație.
+iConta generează nota de regularizare pornind de la totalul dividendelor interimare distribuite și dividendul anual aprobat: 1171=457 pentru dividendul anual, apoi compensarea cu interimarul deja distribuit (457=463), în limita minimului dintre cele două sume. Dacă interimarul depășește dividendul anual aprobat, aplicația calculează excesul de restituit și generează linia 5121=463 (sau 5311=463 la restituirea în numerar), cu mențiunea celor 60 de zile din lege. De exemplu, pentru 150.000 lei distribuiți interimar și 140.000 lei dividend anual aprobat, nota rezultată include o restituire de 10.000 lei pe 5121=463 — exact cazul testat în aplicație.
 
 [iConta.eu](/)

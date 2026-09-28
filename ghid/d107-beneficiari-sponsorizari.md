@@ -11,7 +11,7 @@ Firma care a acordat sponsorizări, mecenat sau burse private nu se oprește la 
 
 ## Cine depune
 
-Depune orice firmă care a acordat astfel de sume în cursul anului, indiferent dacă plătește impozit pe profit sau impozit pe veniturile microîntreprinderilor. Cele două regimuri se marchează diferit în declarație, dar obligația de raportare e aceeași.
+Depune contribuabilul plătitor de impozit pe profit care a acordat astfel de sume în cursul anului, inclusiv în cazul în care datorează impozit pe profit la nivelul impozitului minim pe cifra de afaceri (OPANAF 355/2024). Microîntreprinderile nu depun D107 — după 2023 nu mai scad sponsorizările din impozitul pe veniturile microîntreprinderilor (art. 56 alin. (2^5) din Codul fiscal, ultimul an fiscal în care se scădeau fiind 2023).
 
 Firma care nu a acordat nimic nu depune.
 

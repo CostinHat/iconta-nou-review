@@ -27,7 +27,7 @@ O subvenție primită pentru acoperirea unor cheltuieli curente — nu pentru cu
 — Legea 227/2015, art. 53 alin. (1) lit. d)
 :::
 
-Mecanismul contabil: dreptul de a primi subvenția se înregistrează `445 = 741` (analitic 7411-7419, după natura cheltuielii compensate), iar încasarea `5121 = 445`. Dacă o parte din subvenție trebuie restituită, restituirea se înregistrează `741` sau `658 = 5121`, după caz.
+Mecanismul contabil: dreptul de a primi subvenția se înregistrează `445 = 741` (analitic 7411-7419, după natura cheltuielii compensate), iar încasarea `5121 = 445`. Dacă o parte din subvenție trebuie restituită, restituirea se face prin reducerea veniturilor amânate — `472 = 5121` (sau `472 = 462` pentru suma de restituit) — dacă acestea există; în lipsa lor, sau pentru surplusul care depășește venitul amânat, restituirea se recunoaște imediat ca o cheltuială, `658 = 5121` (OMFP 1802/2014, pct. 404 alin. (2)-(3); funcțiunea contului 472). Nu se debitează venitul din subvenție (741).
 
 Fiscal:
 - **Microîntreprindere**: venitul din subvenție se scade integral din baza impozabilă (art. 53 alin. (1) lit. d) din Codul fiscal).

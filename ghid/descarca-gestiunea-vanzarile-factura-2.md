@@ -26,7 +26,7 @@ Simetric, ieșirea din gestiune (descărcarea) urmează aceeași logică: de reg
 — OMFP 1802/2014 (reglementări contabile), pct. 284 alin. (2) lit. c) (sursă: anaf_surse/omfp_1802_2014_reglementari_consolidat.txt)
 :::
 
-Practic: dacă factura s-a emis dar bunul nu a plecat fizic din depozit, descărcarea de gestiune contabilă nu se face pe simpla factură — bunul rămâne în gestiune (evidențiat distinct). Invers, dacă bunul a fost livrat dar factura nu a sosit/nu a fost emisă încă, descărcarea se face pe baza documentelor de livrare, nu se așteaptă factura.
+Practic: momentul descărcării urmează transferul proprietății, nu plecarea fizică a bunului. Dacă proprietatea a fost transferată — de exemplu la vânzările cu condiția de livrare „ex-work", când bunurile ies din stocul vânzătorului din momentul punerii lor la dispoziția cumpărătorului — bunurile vândute și nelivrate se scot din stoc ca ieșiri din entitate, nemaifiind considerate proprietatea acesteia: se înregistrează distinct în gestiune, iar în contabilitate în conturi în afara bilanțului, chiar dacă nu au plecat încă fizic. Invers, dacă bunul a fost livrat dar factura nu a sosit/nu a fost emisă încă, descărcarea se face pe baza documentelor de livrare, nu se așteaptă factura.
 
 ### Condiția de fond: interzicerea operațiunilor neînregistrate
 
