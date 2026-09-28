@@ -27,9 +27,17 @@ def test_regularizare_normala():
     assert r["exces_de_restituit"] == Decimal("0.00")
 
 def test_regularizare_exces():
+    # GARD [28.09.2026]: restituirea excesului de dividende interimare crediteaza contul 463
+    # (OMFP 3067/2018: creditul 463 = «sumele incasate reprezentand restituiri de dividende ... (512, 531)»),
+    # NU contul 456 (dividende de plata, deja soldat). MUTATIE: 463->456 face aserția sa pice.
     r = m.nota_regularizare_interimar(150000, 140000)
     assert ("457", "463", Decimal("140000.00")) in r["linii"]
-    assert ("5121", "456", Decimal("10000.00")) in r["linii"]
+    assert ("5121", "463", Decimal("10000.00")) in r["linii"]
+    assert not any(d == "5121" and c == "456" for d, c, _ in r["linii"]), "restituirea NU se crediteaza in 456"
+    # invariant: 463 debitat la distribuire (1x50000... aici 150000) se inchide prin creditele 463
+    # (compensare 457=463 + restituire 5121=463); creditul total = interimarul distribuit
+    credit_463 = sum(v for d, c, v in r["linii"] if c == "463")
+    assert credit_463 == Decimal("150000.00"), "creditul total 463 (compensare + restituire) inchide interimarul"
 
 def test_imprumut():
     assert m.nota_imprumut_asociat(20000)["linii"] == [("5121", "4551", Decimal("20000.00"))]

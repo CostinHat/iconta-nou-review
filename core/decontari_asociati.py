@@ -6,7 +6,7 @@ distribuiri incepand cu 01.01.2026 (Legea 141/2025; 10% anterior).
 - dividende ANUALE: 1171=457 brut; impozit 457=446; plata net 457=5121;
 - dividende INTERIMARE: 463=456 brut; impozit 456=446; plata net 456=5121;
   regularizare dupa aprobarea situatiilor anuale: 1171=457 + 457=463;
-  exces (interimar > anual): restituire de la asociat 5121=456;
+  exces (interimar > anual): restituire de la asociat 5121=463 (credit 463, OMFP 3067/2018);
 - imprumut DE LA asociat (4551): primire 5121=4551; restituire 4551=5121;
   dobanda 666=4551 + impozit 10% pe venitul din dobanda PF retinut 4551=446."""
 from decimal import Decimal, ROUND_HALF_UP
@@ -48,7 +48,7 @@ def nota_dividend(brut, la_data=None, interimar=False, cu_plata=True):
 
 def nota_regularizare_interimar(total_interimar, dividend_anual_aprobat):
     """Dupa aprobarea situatiilor anuale: 1171=457 anual + compensare 457=463;
-    daca interimar > anual, excesul se restituie: restituire 5121=456."""
+    daca interimar > anual, excesul se restituie: restituire 5121=463 (credit 463, OMFP 3067/2018)."""
     ti, da = _d(total_interimar), _d(dividend_anual_aprobat)
     if ti <= 0 or da < 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
@@ -58,7 +58,7 @@ def nota_regularizare_interimar(total_interimar, dividend_anual_aprobat):
         linii.append(("457", "463", compensat))
     exces = ti - da
     if exces > 0:
-        linii.append(("5121", "456", exces))  # restituire de la asociat (60 zile)
+        linii.append(("5121", "463", exces))  # restituire exces de la asociat: credit 463 (OMFP 3067/2018: sumele incasate reprezentand restituiri de dividende, 512/531)
     return {"linii": linii, "compensat": compensat,
             "exces_de_restituit": exces if exces > 0 else Decimal("0.00")}
 

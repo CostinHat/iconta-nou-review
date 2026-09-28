@@ -1,108 +1,49 @@
 ---
-title: Reevaluarea clădirilor înainte de 31 decembrie: de ce contează termenul
-description: Fără un raport de evaluare din ultimii 5 ani, existent la 31 decembrie, cota de impozit pe clădirile persoanelor juridice devine 5%, față de 0,2%–1,3% la cele nerezidențiale (art. 460 din Codul fiscal).
+title: "Reevaluarea clădirilor firmei: până când se depune raportul și când se aplică cota de 5%"
+description: Raportul de evaluare depus la organul fiscal local până la primul termen de plată (31 martie) produce efecte chiar în anul de referință, iar cota de 5% se aplică doar dacă proprietarul a fost notificat până la 31 octombrie (Codul fiscal art. 460 alin. (6) și (8)).
 published: 2026-08-19
-modified: 2026-08-19
+modified: 2026-09-28
 ---
 
-# Reevaluarea clădirilor înainte de 31 decembrie: de ce contează termenul
+# Reevaluarea clădirilor firmei: până când se depune raportul și când se aplică cota de 5%
 
-Pentru clădirile deținute de persoane juridice, cota de impozit se aplică asupra valorii impozabile stabilite după reguli care depind de **vechimea raportului de evaluare**.
+Pentru clădirile deținute de persoane juridice, raportul de evaluare nu trebuie să existe la 31 decembrie. Contează data la care e **depus la organul fiscal local**: dacă ajunge până la primul termen de plată din anul de referință (31 martie), produce efecte chiar pentru acel an. Iar cota de 5% nu e automată: se aplică numai dacă firma a fost notificată de organul fiscal până la 31 octombrie a anului anterior.
 
-Dacă valoarea impozabilă nu a fost actualizată în ultimii 5 ani, cota poate deveni **5%** — dar numai cu condiția ca proprietarul să fi fost notificat de organul fiscal despre posibilitatea depunerii raportului de evaluare, notificare comunicată până la 31 octombrie a anului curent (art. 460 alin. (8)). Fără această notificare, impozitul se calculează cu cota normală (0,2%–1,3% la clădirile nerezidențiale), nu cu 5%.
+## Termenul real: primul termen de plată
 
-Iar diferența față de cota normală — între 0,2% și 1,3% la clădirile nerezidențiale — e de câteva ori mai mare.
+Codul fiscal art. 460 alin. (6) prevede că valoarea impozabilă se actualizează o dată la 5 ani pe baza unui raport de evaluare întocmit de un evaluator autorizat, „depus la organul fiscal local până la primul termen de plată din anul de referință. În situația depunerii raportului de evaluare după primul termen de plată din anul de referință acesta produce efecte începând cu data de 1 ianuarie a anului fiscal următor."
 
-## Regula celor 5 ani
+Primul termen de plată este **31 martie** — impozitul pe clădiri se plătește în două rate egale, până la 31 martie și 30 septembrie inclusiv (Codul fiscal art. 462 alin. (1)).
 
-Valoarea impozabilă a clădirii deținute de o persoană juridică e:
+Deci un raport întocmit în ianuarie și depus până la 31 martie produce efecte pentru anul în curs; unul depus pe 1 aprilie, abia de la 1 ianuarie a anului următor.
 
-- **valoarea rezultată dintr-un raport de evaluare** întocmit de un evaluator autorizat, în ultimii 5 ani anteriori anului de referință;
-- **valoarea finală a lucrărilor de construcție**, pentru clădirile noi, construite în cursul anului fiscal anterior;
-- **valoarea din actul prin care s-a transferat dreptul de proprietate**, pentru clădirile dobândite în anul anterior.
+## De unde vine confuzia cu 31 decembrie
 
-Deci un raport din 2021 acoperă impozitul pentru 2022, 2023, 2024, 2025 și 2026. Din 2027, dacă nu se reevaluează, cota sare la 5%.
+Art. 460 alin. (5) definește valoarea impozabilă drept „valoarea de la 31 decembrie a anului anterior". Data fixează momentul valorii, nu termenul raportului — acela e în alin. (6).
 
-## De ce 31 decembrie
+## Cota de 5%: numai cu notificare până la 31 octombrie
 
-Impozitul pe clădiri se calculează pe baza situației existente la **31 decembrie a anului anterior**.
+Potrivit art. 460 alin. (8), dacă proprietarul nu a actualizat valoarea impozabilă în ultimii 5 ani anteriori anului de referință, cota este de 5%, „cu condiția ca proprietarul clădirii să fi fost notificat de către organul fiscal competent despre posibilitatea depunerii raportului de evaluare". Notificarea se comunică prin spațiul privat virtual sau prin poștă, iar termenul este **31 octombrie a anului curent pentru impozitul datorat începând cu anul următor**.
 
-Raportul de evaluare trebuie să existe la acea dată, iar valoarea rezultată se declară la organul fiscal local.
+Dacă notificarea nu e comunicată până la această dată, impozitul se calculează cu cota obișnuită din alin. (1) sau (2). Pentru clădirile nerezidențiale, cota obișnuită e între 0,2% și 1,3%, stabilită prin hotărâre a consiliului local (art. 460 alin. (2) și (10)).
 
-Ce contează pentru anul în curs nu este ca raportul să existe fizic la 31 decembrie, ci ca el să fie **depus la organul fiscal local până la primul termen de plată din anul de referință** (art. 460 alin. (6)). Un raport întocmit în ianuarie și depus până la acel termen (31 martie — art. 462) produce efect chiar pentru anul în curs; doar raportul depus după primul termen de plată produce efecte de la 1 ianuarie a anului fiscal următor.
+Atenție pentru 2027: alin. (1) al art. 460 (clădirile rezidențiale ale persoanelor juridice) se abrogă de la 1 ianuarie 2027, potrivit Legii 239/2025.
 
-## Ce se declară și când
+## Exemplu
 
-Declarația se depune la compartimentul de impozite și taxe locale al unității administrativ-teritoriale unde se află clădirea.
+O clădire nerezidențială cu valoarea impozabilă de 1.000.000 lei, ultima actualizare în 2021, cota locală 1%.
 
-Termenul obișnuit pentru declararea valorii rezultate din reevaluare e până la **31 martie** a anului pentru care se datorează impozitul, dar practica locală poate cere depunerea mai devreme. Se verifică la primăria competentă.
+- Pentru 2027, anii 2022–2026 nu conțin nicio actualizare. Dacă firma a primit notificarea până la 31 octombrie 2026, cota ar fi 5%: **50.000 lei**. Fără notificare comunicată la termen: 1%, adică **10.000 lei**.
+- Dacă firma depune un raport nou până la 31 martie 2027, valoarea se actualizează pentru 2027 (alin. (6)), iar impozitul se calculează la cota locală asupra noii valori.
+- Depus în mai 2027, produce efecte de la 1 ianuarie 2028.
 
-Se depune raportul de evaluare, în copie, împreună cu declarația.
+## Reevaluarea contabilă e altceva
 
-## Cine poate întocmi raportul
-
-Un **evaluator autorizat**, membru ANEVAR, cu specializarea corespunzătoare tipului de bun.
-
-Raportul trebuie întocmit conform standardelor de evaluare în vigoare la data respectivă, iar valoarea determinată e cea de piață sau, după caz, cea justă.
-
-Un raport întocmit de o persoană neautorizată nu produce efecte fiscale.
-
-## Reevaluarea contabilă și cea fiscală
-
-Distincția care produce confuzie.
-
-**Reevaluarea contabilă** e o opțiune de politică contabilă, prevăzută de OMFP nr. 1802/2014. Firma poate alege să evalueze imobilizările la valoarea justă, cu regularitate suficientă. Diferența din reevaluare se înregistrează în capitalurile proprii, la rezerva din reevaluare.
-
-**Reevaluarea pentru impozitul local** e o obligație de fapt, dacă firma vrea să evite cota de 5%.
-
-Cele două pot coincide — același raport poate servi ambelor scopuri — dar nu sunt același lucru. O firmă care nu aplică reevaluarea în contabilitate poate totuși să comande un raport doar pentru impozitul local.
-
-## Efectele reevaluării contabile
-
-**Creșterea de valoare** se înregistrează la rezerva din reevaluare, în capitaluri, nu la venituri.
-
-**Amortizarea** se recalculează pe noua valoare, din anul următor.
-
-**Rezerva din reevaluare** devine impozabilă pe măsura amortizării sau la scoaterea din funcțiune, conform art. 26 alin. 5 și 6 din Codul fiscal — o capcană care apare la vânzarea clădirii, ani mai târziu.
-
-**Descreșterea de valoare** se înregistrează ca cheltuială, în limita rezervei existente pentru același activ; peste această limită, direct pe cheltuieli.
-
-## Calculul care decide dacă merită
-
-Costul unui raport de evaluare pentru o clădire obișnuită e de ordinul câtorva mii de lei, valabil 5 ani.
-
-Diferența de impozit, la o clădire nerezidențială cu valoarea contabilă de 1.000.000 de lei:
-
-**Cu raport, la cota de 1%:** 10.000 lei pe an.
-**Fără raport, la cota de 5%:** 50.000 lei pe an.
-
-Diferența de 40.000 de lei pe an face costul raportului nesemnificativ.
-
-Calculul se schimbă la clădiri de valoare mică, unde diferența poate să nu justifice cheltuiala — dar rar.
-
-## Ce verifică un contabil acum
-
-**Data ultimului raport**, pentru fiecare clădire deținută. Dacă e din 2021, 2026 e ultimul an acoperit.
-
-**Toate clădirile**, inclusiv cele nefolosite, punctele de lucru închise și construcțiile anexe declarate separat.
-
-**Clădirile dobândite** în cursul anului — valoarea din actul de dobândire ține loc de raport pentru primul an.
-
-**Destinația declarată** — rezidențial, nerezidențial sau mixt, fiindcă schimbă cota.
-
-**Corelarea cu evidența contabilă** — valoarea din raport devine bază de impozitare, iar dacă se aplică și reevaluarea contabilă, se modifică și amortizarea.
-
-## Temeiul legal
-
-- Codul fiscal, art. 460 — cotele de impozit pe clădiri și cota de 5% în lipsa raportului de evaluare actualizat;
-- art. 461 — declararea clădirilor și termenele;
-- art. 462 — termenele de plată;
-- OMFP nr. 1802/2014 — tratamentul contabil al reevaluării imobilizărilor corporale;
-- Codul fiscal, art. 26 alin. 5 și 6 — regimul fiscal al rezervei din reevaluare;
-- standardele de evaluare ANEVAR.
+Reevaluarea în contabilitate e o opțiune: entitățile „pot proceda la reevaluarea imobilizărilor corporale" (OMFP 1802/2014, pct. 99), cu creșterea înregistrată la rezerva din reevaluare (pct. 111). Rezerva se impozitează concomitent cu deducerea amortizării fiscale sau la scoaterea din gestiune (Codul fiscal art. 26 alin. (6)). Același raport poate servi ambelor scopuri, dar pentru impozitul local contează doar depunerea lui la organul fiscal local.
 
 ## De reținut
 
-Verificarea care merită făcută în noiembrie, nu în martie: **câți ani are raportul de evaluare pe fiecare clădire.**
-
-Peste 5 ani, cota devine 5%, iar diferența depășește de multe ori costul unui raport nou. Iar raportul trebuie să existe la 31 decembrie, nu în primăvară.
+- Raportul depus până la 31 martie produce efecte în anul de referință; cel depus ulterior, de la 1 ianuarie a anului următor (art. 460 alin. (6)).
+- Cota de 5% cere notificare comunicată până la 31 octombrie; fără ea se aplică cota obișnuită (art. 460 alin. (8)).
+- 31 decembrie e data la care se raportează valoarea, nu termenul raportului.
+- Verificați anual, pe fiecare clădire, anul ultimei actualizări și dacă a sosit notificarea în SPV sau prin poștă.

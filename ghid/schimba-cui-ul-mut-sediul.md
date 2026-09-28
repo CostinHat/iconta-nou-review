@@ -1,35 +1,43 @@
 ---
 title: "Se schimbă CUI-ul dacă mut sediul firmei în alt județ?"
-description: "De ce mutarea sediului social nu afectează codul unic de înregistrare, ci doar organul fiscal competent."
+description: "Mutarea sediului social nu schimbă codul unic de înregistrare; se schimbă organul fiscal competent, iar competența trece la noul organ fiscal abia la împlinirea termenului de 15 zile lucrătoare de transfer al dosarului fiscal (Legea 207/2015, art. 36 alin. (4) și art. 32 alin. (5))."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-09-28
 poarta: v1
 ---
 
 # Se schimbă CUI-ul dacă mut sediul firmei în alt județ?
 
-Nu. Codul unic de înregistrare (CUI) rămâne același atunci când firma își mută sediul social în alt județ — ceea ce se schimbă e organul fiscal competent să administreze firma, nu identitatea ei fiscală.
+Nu. Codul unic de înregistrare rămâne același atunci când firma își mută sediul social în alt județ. Se schimbă organul fiscal central competent — iar competența nu trece la noul organ fiscal din ziua mutării, ci la împlinirea termenului de 15 zile lucrătoare prevăzut pentru transferul dosarului fiscal.
 
 ## Temeiul legal
 
 ::: ghid-temei
-„în cazul în care se schimbă domiciliul fiscal, potrivit legii, competența teritorială trece la noul organ fiscal central de la data schimbării domiciliului fiscal."
-— Legea 207/2015 (Codul de procedură fiscală), art. 36 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
+„Prin excepție de la prevederile alin. (1), în cazul în care se modifică domiciliul fiscal potrivit art. 32 alin. (5), competența teritorială trece la noul organ fiscal central de la data împlinirii termenului prevăzut la acest alineat."
+— Legea 207/2015 (Codul de procedură fiscală), art. 36 alin. (4) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
 :::
 
-- Orice persoană sau entitate subiect al unui raport juridic fiscal primește un cod de identificare fiscală o singură dată, la înregistrarea fiscală (art. 82 alin. (1) CPF) — legea nu prevede o re-atribuire a codului la schimbarea domiciliului fiscal.
-- Ce se schimbă efectiv la mutarea sediului social în alt județ e **competența teritorială** — administrarea firmei trece la noul organ fiscal. Când sediul social este și domiciliu fiscal, mutarea lui atrage modificarea de drept a domiciliului fiscal (art. 32 alin. (5) CPF), iar prin excepție de la regula generală din alin. (1), competența teritorială trece la noul organ fiscal nu de la data schimbării, ci de la împlinirea termenului de 15 zile lucrătoare pentru transferul dosarului fiscal (art. 36 alin. (4) coroborat cu art. 32 alin. (5) CPF).
-- Dacă la data mutării e în derulare o procedură de administrare fiscală (cu excepția executării silite), organul fiscal care a început-o rămâne competent s-o finalizeze (art. 36 alin. (3) CPF) — schimbarea de competență nu e retroactivă pentru procedurile deja pornite.
-- Societatea își păstrează, de altfel, personalitatea juridică neschimbată la mutarea sediului — aceasta a fost dobândită o singură dată, la înmatriculare (Legea 31/1990, art. 41 alin. (1)).
+- Pentru firmele înregistrate la registrul comerțului, codul de identificare fiscală este codul unic de înregistrare atribuit potrivit legii speciale (Legea 207/2015, art. 82 alin. (1) lit. b)). Codul de procedură fiscală nu leagă acest cod de adresa sediului și nu prevede atribuirea unui cod nou la mutarea lui.
+- Pentru persoanele juridice, domiciliul fiscal este sediul social sau locul unde se exercită efectiv conducerea afacerilor, dacă acesta diferă de sediul declarat (art. 31 alin. (1) lit. c)).
+- Când sediul social este și domiciliu fiscal, mutarea lui modifică de drept domiciliul fiscal, fără cerere separată. Vechiul organ fiscal transferă dosarul fiscal către cel nou „în termen de 15 zile lucrătoare de la data înscrierii în registrele în care, potrivit legii, se înregistrează modificările privind sediul social/domiciliul" (art. 32 alin. (5)).
+- Regula generală din art. 36 alin. (1) — competența trece „de la data schimbării domiciliului fiscal" — **nu se aplică în acest caz**. Alin. (4) o înlătură expres: competența trece la împlinirea celor 15 zile lucrătoare.
+- Dacă la data mutării e în derulare o procedură de administrare, cu excepția executării silite, organul fiscal care a început-o rămâne competent s-o finalizeze (art. 36 alin. (3)).
+- Personalitatea juridică nu se schimbă nici ea: societatea este persoană juridică de la data înmatriculării în registrul comerțului (Legea 31/1990, art. 41 alin. (1)).
+
+## Exemplu de calcul al termenului
+
+Mențiunea privind noul sediu e înscrisă la registrul comerțului luni, 5 octombrie 2026. De la această dată curg 15 zile lucrătoare — aproximativ trei săptămâni calendaristice, deci până spre sfârșitul lunii octombrie. Modul exact de calcul al termenului urmează regula generală din Legea 207/2015, art. 75. Până la împlinirea lui, competent rămâne organul fiscal central de la vechiul sediu; de la acea dată, competența trece la cel de la noul sediu.
 
 ## Ce se greșește în practică
 
-- Se crede că mutarea sediului social în alt județ presupune o nouă înregistrare fiscală, cu un CUI nou — de fapt e vorba de o schimbare de domiciliu fiscal, care mută doar competența teritorială, nu identitatea fiscală a firmei.
-- Se continuă emiterea facturilor sau depunerea declarațiilor la vechiul organ fiscal după data schimbării domiciliului fiscal — competența trece la noul organ fiscal de la acea dată, ceea ce poate afecta unde se adresează corespondența și cererile firmei.
-- Se confundă mutarea sediului social (mențiune la registrul comerțului + declarație de mențiuni fiscale) cu o reorganizare a firmei — schimbarea de sediu nu implică vreo modificare a formei juridice sau a personalității juridice.
+- Se crede că mutarea sediului presupune o nouă înregistrare fiscală, cu CUI nou. Nu: se schimbă doar domiciliul fiscal și, prin el, competența teritorială.
+- Se consideră că noul organ fiscal devine competent chiar în ziua înscrierii mutării. Pentru sediul social care e și domiciliu fiscal, competența trece abia la împlinirea termenului de 15 zile lucrătoare (art. 36 alin. (4) coroborat cu art. 32 alin. (5)). În acest interval, organul fiscal competent rămâne cel vechi.
+- Se presupune că o inspecție sau o altă procedură începută înainte de mutare se mută automat la noul organ fiscal. Rămâne la cel care a început-o, cu excepția executării silite (art. 36 alin. (3)).
+- Se confundă mutarea sediului cu o reorganizare. Schimbarea sediului nu modifică forma juridică și nici personalitatea juridică a societății.
 
-## Ce face iConta.eu
+## De reținut
 
-Validarea CUI la ANAF din iConta.eu interoghează serviciul oficial ANAF pentru un CUI dat și întoarce datele curente ale firmei (denumire, statut de plătitor TVA, cod CAEN, stare) — funcția e strict de interogare, folosită la verificarea partenerilor sau la propria firmă, nu de gestiune a schimbărilor de sediu. Aplicația **nu are o funcție dedicată de actualizare a domiciliului fiscal la ANAF** sau de gestiune a mențiunilor de sediu la registrul comerțului — acestea rămân proceduri externe aplicației, pe care contabilul le urmărește separat.
-
-[iConta.eu](/)
+- CUI-ul nu se schimbă la mutarea sediului în alt județ.
+- Mutarea sediului social care e și domiciliu fiscal schimbă de drept domiciliul fiscal, fără cerere separată (art. 32 alin. (5)).
+- Competența trece la noul organ fiscal la împlinirea celor 15 zile lucrătoare de la înscrierea mutării, nu din ziua mutării (art. 36 alin. (4)).
+- Procedurile de administrare deja începute, cu excepția executării silite, se finalizează la vechiul organ fiscal (art. 36 alin. (3)).
