@@ -75,6 +75,23 @@ _TITLURI_NUMARATE = re.compile(r"(?im)^\s*\+?\s*Articol(?:ul)?\s+[\dIVXLC]")
 # se implementează. Rămâne consemnată în `CONFORMITATE.md`, R171.
 _PUNCTE_NUMARATE = re.compile(r"(?:^|[\s(])\d{1,3}(?:\^\d+)?\.\s*[-–]\s")
 
+# P13-corpus (29.09.2026): forma consolidata NOUA a just.ro numeroteaza punctele de norma ca
+# `N. (1) ...` (numar, punct, spatiu, sub-alineat `(1)`), NU `N. - `. Vechea forma ingusta declara
+# CIOT toate Normele CF re-aduse (HG 1/2016 etc.). Adaugam o a doua forma, LINE-ANCHORED si cu
+# paranteza-cifra dupa punct — mai ingusta decat forma `N. Text` respinsa la R171: o citare inline
+# (`... art. 3. (2) ...`) NU sta la inceput de linie, deci nu se numara. Calibrat pe tot corpusul:
+# d101/d112/legea_207 (enumerari/citari in proza) raman 0; 0 schimbari de stare CIOT pe corpusul
+# existent (uniune pura); castigul apare doar la .txt-urile re-generate din .html consolidat nou.
+_PUNCTE_PAREN = re.compile(r"(?im)^\s*\+?\s*\d{1,3}(?:\^\d+)?\.\s*\(\d")
+
+
+def _urm_punct(corp, pos):
+    """Inceputul urmatorului marcaj de punct (oricare forma) dupa `pos`, sau None."""
+    a = _PUNCTE_NUMARATE.search(corp, pos)
+    b = _PUNCTE_PAREN.search(corp, pos)
+    st = [m.start() for m in (a, b) if m]
+    return min(st) if st else None
+
 #: Formele de citare pe care le înțelege `fragment`, dincolo de numărul simplu de articol.
 _CITARE_PUNCT = re.compile(r"^\s*(?:pct\.?|punctul)\s*(\d{1,3}(?:\^\d+)?)\s*$", re.I)
 _CITARE_ANEXA = re.compile(r"^\s*anexa\s*(?:nr\.?\s*)?(\d{1,2})\s*$", re.I)
@@ -112,7 +129,8 @@ def titluri(t):
     Punctele s-au adăugat la R171: un act care numerotează puncte nu e un ciot, e un act cu altă
     numerotare. Se numără numai forma îngustă `9. - `; motivul e în blocul de sus, cu cifrele.
     """
-    return len(_TITLURI_NUMARATE.findall(t)) + len(_PUNCTE_NUMARATE.findall(t))
+    return (len(_TITLURI_NUMARATE.findall(t)) + len(_PUNCTE_NUMARATE.findall(t))
+            + len(_PUNCTE_PAREN.findall(t)))
 
 
 def e_ciot(t):
@@ -126,12 +144,12 @@ def fragment_punct(corp, n):
     consolidare. Cuprinsul actului nu intră în socoteală, fiindcă `corp_util` taie tot ce e înainte
     de «Forma printabilă» — aceeași apărare care ține și pentru articole.
     """
-    tip = re.compile(r"(?:^|[\s(])%s\.\s*[-–]\s" % re.escape(str(n)))
+    tip = re.compile(r"(?:(?:^|[\s(])%s\.\s*[-–]\s)|(?im:^\s*%s\.\s*\(\d)" % (re.escape(str(n)), re.escape(str(n))))
     m = tip.search(corp)
     if m is None:
         return None
-    urm = _PUNCTE_NUMARATE.search(corp, m.end())
-    return re.sub(r"\s+", " ", corp[m.end():urm.start() if urm else len(corp)]).strip()
+    urm = _urm_punct(corp, m.end())
+    return re.sub(r"\s+", " ", corp[m.end():urm if urm is not None else len(corp)]).strip()
 
 
 def fragment_anexa(corp, n):

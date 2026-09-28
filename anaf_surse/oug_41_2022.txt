@@ -1,299 +1,471 @@
-                 Ordonanţă de urgenţă Nr. 41/2022 din 8 aprilie 2022
- pentru instituirea Sistemului naţional privind monitorizarea transporturilor rutiere
-    de bunuri cu risc fiscal ridicat RO e-Transport şi de abrogare a art. XXVIII din
-   Ordonanţa de urgenţă a Guvernului nr. 130/2021 privind unele măsuri fiscal-
- bugetare, prorogarea unor termene, precum şi pentru modificarea şi completarea
-                                  unor acte normative
+ORD DE URGENTA (A) 41 08/04/2022 - Portal Legislativ 
 
+ Portal Legislativ
 
-Având în vedere necesitatea implementării şi operaţionalizării unui sistem informatic de
-monitorizare a transporturilor de bunuri, prin interconectare cu sistemele actuale
-deţinute de Ministerul Finanţelor (RO e-Factura şi Trafic control), în scopul creşterii
-gradului de colectare a impozitelor şi taxelor datorate bugetului de stat, precum şi de
-prevenire şi combatere a comerţului ilicit de bunuri,
-luând în considerare necesitatea instituirii unor măsuri urgente pentru întărirea
-capacităţii de urmărire şi colectare a sumelor datorate bugetului de stat în cazul
-transporturilor de bunuri cu risc fiscal ridicat,
-ţinând cont de faptul că reglementarea sistemului informatic de monitorizare a
-transporturilor de bunuri în România reprezintă un obiectiv strategic în ecuaţia
-momentului, generat de schimbările paradigmei economice în conjunctura pandemică
-internaţională şi nevoia realizării unor pârghii de anticipare şi reglare a mecanismelor
-economice şi a politicilor fiscal-bugetare,
-întrucât combaterea fraudei în domeniul comerţului de bunuri cu risc fiscal ridicat
-reprezintă una dintre liniile prioritare de acţiune la nivelul Agenţiei Naţionale de
-Administrare Fiscală, cazuistica a demonstrat că prejudiciile cauzate bugetului general
-al statului sunt semnificative şi, în multe cazuri, TVA rămâne nerecuperată.
-În vederea reducerii decalajului fiscal rezultat din evaziunea şi frauda fiscală şi a
-impactului negativ al acestora asupra nivelului încasărilor la bugetul general consolidat
-al statului,
-luând în considerare asigurarea unor condiţii de concurenţă şi echitate fiscală în rândul
-tuturor contribuabililor şi pentru combaterea creşterii inegalităţilor, în special prin
-raportare la contribuabilii de bună-credinţă, care se conformează regulilor fiscale,
-în vederea reducerii evaziunii şi fraudei fiscale din domeniul comercializării bunurilor cu
-risc fiscal ridicat, cu impact asupra dezvoltării sociale în ansamblu, în special prin
-creşterea resurselor bugetului general consolidat al statului, cu influenţă directă asupra
-finanţării cheltuielilor de interes public şi a nivelului investiţiilor publice,
-întrucât neadoptarea în regim de urgenţă a unor măsuri pentru monitorizarea circulaţiei
-bunurilor şi valorificarea în mod operativ a datelor şi informaţiilor obţinute generează
-un risc crescut de proliferare a fenomenelor de fraudă şi evaziune fiscală, cu consecinţă
-directă asupra încasărilor bugetare, cu impact direct asupra deficitului bugetar, mai ales
-în actualul context pandemic şi geopolitic,
-în considerarea faptului că aceste elemente vizează interesul general public şi constituie
-situaţii de urgenţă şi extraordinare a căror reglementare nu poate fi amânată,
-în temeiul art. 115 alin. (4) din Constituţia României, republicată,
+-->
 
-Guvernul României adoptă prezenta ordonanţă de urgenţă.
+ Meniu 
 
-ART. 1
-Se instituie Sistemul naţional privind monitorizarea transporturilor rutiere de bunuri cu
-risc fiscal ridicat, denumit în continuare Sistemul RO e-Transport.
-ART. 2
-În sensul prezentei ordonanţei de urgenţă, termenii şi expresiile de mai jos au
-următoarele semnificaţii:
-1. transport rutier de bunuri - activitatea de transport de mărfuri reglementată prin
-Ordonanţa Guvernului nr. 27/2011 privind transporturile rutiere, cu modificările şi
-completările ulterioare;
-2. transport de bunuri cu risc fiscal ridicat - transportul rutier la nivel naţional al
-bunurilor stabilite ca fiind din categoria celor cu risc fiscal ridicat prin ordin al
-preşedintelui Agenţiei Naţionale de Administrare Fiscală;
-3. operator de transport rutier - orice întreprindere definită potrivit art. 3 pct. 19 din
-Ordonanţa Guvernului nr. 27/2011, cu modificările şi completările ulterioare, care
-asigură transportul de bunuri din categoria celor cu risc fiscal ridicat;
-4. organizatorul transportului - operatorul economic care încheie comanda de transport
-direct cu operatorul de transport rutier sau operatorul economic care preia comanda de
-la expeditor şi o transmite operatorului de transport rutier;
-5. partida de bunuri - denumirea generică dată unui lot sau mai multor loturi de bunuri
-transportate cu acelaşi mijloc de transport care provin de la unul sau mai mulţi furnizori
-şi care au ca destinaţie unul sau mai mulţi beneficiari;
-6. vehicul de transport - vehiculul utilizat pentru transportul, livrarea, mutarea,
-deplasarea sau orice alte activităţi similare ale bunurilor din categoria celor cu risc
-fiscal ridicat către unul sau mai multe locuri de descărcare, stabilit prin ordin comun al
-preşedintelui Agenţiei Naţionale de Administrare Fiscală şi al preşedintelui Autorităţii
-Vamale Române;
-7. loc de încărcare - locul în care bunurile sunt încărcate în vehiculul de transport;
-8. loc de descărcare - locul în care bunurile sunt descărcate din vehiculul de transport;
-9. transport pe teritoriul naţional al bunurilor cu risc fiscal ridicat:
-a) transportul bunurilor provenite din achiziţii intracomunitare de la punctul rutier de
-trecere a frontierei la intrarea în România până la locul de descărcare situat pe
-teritoriul naţional;
-b) transportul bunurilor care fac obiectul livrărilor intracomunitare de la locul de
-încărcare situat pe teritoriul naţional până la punctul rutier de trecere a frontierei la
-ieşirea din România;
-c) transportul bunurilor provenite din import de la locul de import şi până la locul de
-descărcare situat pe teritoriul naţional;
-d) transportul bunurilor care fac obiectul exportului de la locul de încărcare situat pe
-teritoriul naţional până la biroul vamal de export situat pe teritoriul naţional;
-e) transportul bunurilor aparţinând unor operatori economici diferiţi între două locaţii
-situate pe teritoriul naţional de la locul de încărcare până la locul de descărcare;
-f) transportul bunurilor aparţinând aceluiaşi operator economic între două locaţii situate
-pe teritoriul naţional de la locul de încărcare până la locul de descărcare;
-g) transportul bunurilor care fac obiectul tranzacţiilor intracomunitare aflate în tranzit
-pe teritoriul României, de la punctul rutier de trecere a frontierei la intrarea în România
-până la locul de descărcare spre depozitare sau pentru formarea unui nou transport pe
-teritoriul naţional din una sau mai multe partide de bunuri;
-h) transportul bunurilor care fac obiectul tranzacţiilor intracomunitare aflate în tranzit
-pe teritoriul României, de la locul de încărcare pe teritoriul naţional, după depozitare
-sau formarea unui nou transport din una sau mai multe partide de bunuri, până la
-punctul rutier de trecere a frontierei la ieşirea din România;
-10. data declarată pentru începerea transportului - data la care vehiculul de transport
-încărcat urmează să intre pe teritoriul României printr-un punct rutier de trecere a
-frontierei sau de la locul de import sau data la care vehiculul de transport încărcat
-urmează să fie pus în mişcare şi să circule între două locaţii situate pe teritoriul naţional
-sau între o locaţie situată pe teritoriul României şi un punct rutier de trecere a
-frontierei la ieşirea din România;
-11. cod UIT - codul unic generat de Sistemul RO e-Transport prin intermediul căruia se
-identifică bunurile aferente fiecărei relaţii comerciale care face obiectul transportului
-de bunuri cu risc fiscal ridicat;
-12. identificarea prin cod UIT - deţinerea codului UIT pe tot timpul transportului de
-către operatorul de transport rutier, în format fizic sau electronic, împreună cu
-documentul care însoţeşte transportul bunurilor cu risc fiscal ridicat.
-ART. 3
-Sistemul RO e-Transport reprezintă ansamblul de principii, reguli şi aplicaţii informatice
-având drept scop monitorizarea transporturilor de bunuri cu risc fiscal ridicat pe
-teritoriul naţional, care permite autorităţilor competente determinarea potenţialelor
-puncte de deturnare din sau în lanţul de aprovizionare, pe baza codului UIT. Sistemul
-este gestionat de către Ministerul Finanţelor prin Agenţia Naţională de Administrare
-Fiscală şi Centrul Naţional pentru Informaţii Financiare.
-ART. 4
-(1) Sistemul RO e-Transport include:
-a) module informatice de gestiune a transporturilor de bunuri prin care sunt înregistrate
-datele referitoare la expeditor şi beneficiar, denumirea, caracteristicile, cantităţile şi
-contravaloarea bunurilor transportate, locurile de încărcare şi descărcare, detalii cu
-privire la mijlocul de transport utilizat, precum şi codul UIT generat;
-b) elemente de interconectare cu alte sisteme de monitorizare: camere de luat vederi,
-instrumente sau dispozitive pentru determinarea cantităţilor de produse transportate,
-precum şi orice alte dispozitive specifice de monitorizare a traficului rutier;
-c) componente software pentru analiza integrată a datelor.
-(2) Sistemul RO e-Transport utilizează date şi informaţii deţinute la nivelul instituţiilor
-sau autorităţilor publice, precum şi al structurilor subordonate sau coordonate de către
-acestea, care sunt necesare îndeplinirii scopului prevăzut de prezenta ordonanţă de
-urgenţă.
-(3) Autorităţile sau instituţiile publice care, direct sau prin intermediul structurilor
-subordonate sau coordonate, deţin orice fel de date sau informaţii necesare îndeplinirii
-scopului prevăzut la art. 3 au obligaţia de a le pune la dispoziţie gratuit Agenţiei
-Naţionale de Administrare Fiscală, pe bază de protocol încheiat în acest sens.
-(4) Sistemul RO e-Transport se interconectează cu celelalte sisteme informatice
-existente la nivelul Ministerului Finanţelor, Agenţiei Naţionale de Administrare Fiscală
-sau Autorităţii Vamale Române.
-(5) Pe măsura dezvoltării sistemelor informatice, Sistemul RO e-Transport se poate
-interconecta cu alte sisteme de monitorizare şi control.
-(6) Pentru realizarea atribuţiilor specifice prevăzute în actele normative, autorităţile
-sau instituţiile publice pot avea acces la datele şi informaţiile din Sistemul RO e-
-Transport, pe bază de protocol încheiat în acest sens cu Agenţia Naţională de
-Administrare Fiscală.
-ART. 5
-Ministerul Finanţelor, prin Agenţia Naţională de Administrare Fiscală şi Autoritatea
-Vamală Română, monitorizează transporturile de bunuri cu risc fiscal ridicat pe teritoriul
-naţional prin intermediul Sistemului RO e-Transport.
-ART. 6
-(1) Resursele financiare şi materiale necesare înfiinţării, funcţionării, dezvoltării,
-implementării şi mentenanţei Sistemului RO e-Transport se asigură de către Ministerul
-Finanţelor din bugetul propriu, prin Centrul Naţional pentru Informaţii Financiare.
-(2) Personalul de specialitate necesar înfiinţării, funcţionării, dezvoltării, implementării
-şi mentenanţei Sistemului RO e-Transport se asigură de Ministerul Finanţelor în limita
-posturilor aprobate pentru Agenţia Naţională de Administrare Fiscală, Autoritatea
-Vamală Română şi Centrul Naţional pentru Informaţii Financiare.
-(3) Autorităţile şi instituţiile publice prevăzute la art. 4 alin. (3) asigură din bugetele
-proprii resursele necesare furnizării datelor şi informaţiilor deţinute către Agenţia
-Naţională de Administrare Fiscală şi interconectarea cu Sistemul RO e-Transport.
-ART. 7
-Începând cu data intrării în vigoare a prezentei ordonanţe de urgenţă, Centrul Naţional
-pentru Informaţii Financiare din cadrul Ministerului Finanţelor pune la dispoziţia
-utilizatorilor, în mod gratuit, modulele informatice prevăzute la art. 4 alin. (1) lit. a), în
-vederea obţinerii codului UIT.
-ART. 8
-(1) Obligaţia declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1)
-lit. a) referitoare la transportul bunurilor cu risc fiscal ridicat revine următorilor
-utilizatori:
-a) destinatarului înscris în declaraţia vamală de import, respectiv expeditorului înscris în
-declaraţia vamală de export, în cazul bunurilor cu risc fiscal ridicat care fac obiectul
-operaţiunilor de import sau export, după caz;
-b) beneficiarului din România, în cazul achiziţiilor intracomunitare de bunuri cu risc
-fiscal ridicat;
-c) furnizorului din România, în cazul tranzacţiilor interne sau al livrărilor
-intracomunitare de bunuri cu risc fiscal ridicat, după caz;
-d) depozitarului, în cazul bunurilor cu risc fiscal ridicat care fac obiectul tranzacţiilor
-intracomunitare aflate în tranzit, atât pentru bunurile descărcate pe teritoriul României
-spre depozitare sau pentru formarea unui nou transport din una sau mai multe partide
-de bunuri, cât şi pentru bunurile încărcate după depozitare sau după formarea unui nou
-transport pe teritoriul naţional din una sau mai multe partide de bunuri.
-(2) Utilizatorii prevăzuţi la alin. (1) sunt obligaţi să pună la dispoziţia operatorului de
-transport rutier codul UIT aferent bunurilor transportate, direct sau prin intermediul
-organizatorului transportului, după caz, până cel târziu la prezentarea vehiculului în
-punctul rutier de trecere a frontierei la intrarea în România sau la locul de import,
-respectiv la punerea efectivă în mişcare a vehiculului, după caz. Codul UIT este înscris în
-mod obligatoriu pe documentul de transport, lizibil şi fără ştersături sau adăugări.
-(3) Prin intermediul Sistemului RO e-Transport se notifică informaţii către părţile
-implicate în transportul pe teritoriul naţional al bunurilor cu risc fiscal ridicat.
-ART. 9
-(1) Utilizatorii prevăzuţi la art. 8 alin. (1) declară în sistemul RO e-Transport, prin
-opţiune, datele referitoare la transporturile de bunuri cu risc fiscal ridicat începând cu
-data intrării în vigoare a prezentei ordonanţe de urgenţă.
-(2) Începând cu data de 1 iulie 2022, utilizatorii prevăzuţi la art. 8 alin. (1) sunt obligaţi
-să declare în Sistemul RO e-Transport datele referitoare la transporturile de bunuri cu
-risc fiscal ridicat, astfel încât să poată fi identificate prin codul UIT.
-ART. 10
-Conducătorul vehiculului de transport este obligat să prezinte, la solicitarea organelor
-competente din cadrul Agenţiei Naţionale de Administrare Fiscală sau al Autorităţii
-Vamale Române, documentele care însoţesc transportul de bunuri cu risc fiscal ridicat.
-ART. 11
-(1) Pentru generarea codului UIT, utilizatorii prevăzuţi la art. 8 alin. (1) pot declara în
-Sistemul RO e-Transport datele referitoare la transporturile de bunuri cu risc fiscal
-ridicat, cu maximum 3 zile calendaristice înainte de data declarată pentru începerea
-transportului, dar până la prezentarea în punctul rutier de trecere a frontierei la
-intrarea în România sau la locul de import, respectiv punerea efectivă în mişcare a
-vehiculului, după caz.
-(2) Termenul de valabilitate a codului UIT este de 5 zile calendaristice, începând cu data
-declarată pentru începerea transportului. Utilizarea de către operatorul de transport
-rutier a codului UIT peste termenul de valabilitate a acestuia este interzisă.
-(3) Este interzisă modificarea datelor înregistrate în Sistemul RO e-Transport referitoare
-la transporturile de bunuri după prezentarea în punctul rutier de trecere a frontierei la
-intrarea în România sau la locul de import, respectiv după punerea efectivă în mişcare a
-vehiculului, după caz.
-(4) Este interzisă descărcarea pe teritoriul României a bunurilor care fac obiectul
-tranzacţiilor intracomunitare aflate în tranzit, cu excepţia celor care fac obiectul
-depozitării sau formării unui nou transport din una sau mai multe partide de bunuri.
-ART. 12
-În cazul în care sunt transportate atât bunuri cu risc fiscal ridicat, cât şi alte bunuri care
-nu fac parte din categoria celor cu risc fiscal ridicat stabilite în acest sens prin ordin al
-preşedintelui Agenţiei Naţionale de Administrare Fiscală, utilizatorii prevăzuţi la art. 8
-alin. (1) au obligaţia să declare în Sistemul RO e-Transport datele aferente
-transporturilor pentru toate bunurile transportate, iar codul UIT sau codurile UIT
-însoţesc documentul de transport aferent acestora.
-ART. 13
-(1) Următoarele fapte constituie contravenţii, dacă nu sunt săvârşite în astfel de condiţii
-încât, potrivit legii penale, să fie considerate infracţiuni:
-a) nerespectarea prevederilor art. 9 alin. (2), art. 11 alin. (2) şi (4);
-b) declararea în Sistemul RO e-Transport a unor cantităţi diferite de cele care fac
-obiectul transportului de bunuri;
-c) nerespectarea prevederilor art. 8 alin. (2), art. 11 alin. (3) şi art. 12;
-d) nerespectarea de către conducătorul vehiculului de transport a prevederilor art. 10.
-(2) Contravenţiile prevăzute la alin. (1) lit. a) şi b) se sancţionează cu amendă de la
-10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de
-lei la 100.000 de lei în cazul persoanelor juridice, precum şi confiscarea contravalorii
-bunurilor nedeclarate.
-(3) Contravenţiile prevăzute la alin. (1) lit. c) se sancţionează cu amendă de la 10.000
-de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la
-100.000 de lei în cazul persoanelor juridice.
-(4) Contravenţiile prevăzute la alin. (1) lit. d) se sancţionează cu amendă de la 5.000 de
-lei la 10.000 de lei.
-ART. 14
-(1) Constatarea şi aplicarea sancţiunilor se fac de către persoanele împuternicite din
-cadrul Agenţiei Naţionale de Administrare Fiscală sau al Autorităţii Vamale Române.
-(2) Contravenţiilor prevăzute la art. 13 le sunt aplicabile dispoziţiile Ordonanţei
-Guvernului nr. 2/2001 privind regimul juridic al contravenţiilor, aprobată cu modificări şi
-completări prin Legea nr. 180/2002, cu modificările şi completările ulterioare.
-ART. 15
-(1) Procedura de aplicare a prezentei ordonanţe de urgenţă şi categoriile de vehicule
-rutiere utilizate pentru transportul bunurilor cu risc fiscal ridicat care fac obiectul
-monitorizării se stabilesc prin ordin comun al preşedintelui Agenţiei Naţionale de
-Administrare Fiscală şi al Autorităţii Vamale Române, în termen de 30 de zile de la data
-intrării în vigoare a prezentei ordonanţe de urgenţă.
-(2) Prin ordin al preşedintelui Agenţiei Naţionale de Administrare Fiscală emis în termen
-de 15 zile de la data intrării în vigoare a prezentei ordonanţe de urgenţă se stabilesc
-bunurile cu risc fiscal ridicat transportate rutier care fac obiectul monitorizării prin
-Sistemul RO e-Transport.
-ART. 16
-Fac excepţie de la prevederile prezentei ordonanţe de urgenţă transporturile de bunuri
-destinate misiunilor diplomatice şi oficiilor consulare, precum şi organizaţiilor
-internaţionale, forţelor armate ale statelor membre NATO, Uniunii Europene, statelor
-membre ale Parteneriatului pentru Pace sau statelor cu care România a încheiat acorduri
-în domeniu sau ca urmare a executării contractelor clasificate potrivit legii sau a
-executării contractelor de achiziţie publică care necesită impunerea, potrivit
-dispoziţiilor legale, a unor măsuri speciale de securitate pentru protejarea unor interese
-esenţiale de securitate ale statului.
-ART. 17
-(1) Prevederile prezentei ordonanţe de urgenţă nu aduc atingere legislaţiei privind
-protecţia datelor cu caracter personal.
-(2) Datele şi informaţiile cu caracter personal obţinute în Sistemul RO e-Transport pot fi
-folosite exclusiv în acest scop sau în scopuri compatibile cu acesta, cu respectarea
-legislaţiei privind protecţia datelor cu caracter personal.
-(3) Modalităţile de publicare, în scopul asigurării transparenţei şi tragerii la răspundere,
-a datelor cu caracter personal care au fost colectate în cadrul Sistemului RO e-Transport
-trebuie să fie în concordanţă cu scopul publicării şi protecţiei sferei private.
-(4) Ministerul Finanţelor, prin Agenţia Naţională de Administrare Fiscală, asigură
-managementul datelor şi informaţiilor existente în Sistemul RO e-Transport, cu
-respectarea prevederilor art. 11 din Legea nr. 207/2015 privind Codul de procedură
-fiscală, cu modificările şi completările ulterioare.
-ART. 18
-Prevederile art. 13 şi 14 intră în vigoare la data de 1 iulie 2022.
-ART. 19
-La data intrării în vigoare a prezentei ordonanţe de urgenţă se abrogă art. XXVIII din
-Ordonanţa de urgenţă a Guvernului nr. 130/2021 privind unele măsuri fiscal-bugetare,
-prorogarea unor termene, precum şi pentru modificarea şi completarea unor acte
-normative, publicată în Monitorul Oficial al României, Partea I, nr. 1202 din 18
-decembrie 2021.
+ Meniu
 
-PRIM-MINISTRU
-NICOLAE-IONEL CIUCĂ
+ Acasă
 
-Contrasemnează:
-Ministrul finanţelor,
-Adrian Câciu
+ Despre Proiect
 
-p. Ministrul apărării naţionale,
-Simona Cojocaru,
-secretar de stat
+ Facilități Oferite 
 
-Bucureşti, 8 aprilie 2022.
-Nr. 41.
+ Legături Utile
+
+ GDPR 
+
+ Meniu
+
+ Acasă
+
+ Despre Proiect
+
+ Facilități Oferite 
+
+ Legături Utile
+
+ GDPR 
+
+ Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+ conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+ rezultatele cautarilor venind direct de la sursa.
+
+ Cuprins
+
+ Se încarcă, vă rugăm asteptati. 
+
+ + 
+ Forme act 
+
+ Forma consolidata 
+
+ + istoric consolidări
+
+ 24.04.2025 
+ 21.11.2024 
+ 11.11.2024 
+ 01.07.2024 
+ 30.04.2024 
+ 15.12.2023 
+ 23.07.2023 
+ 30.09.2022 
+ 01.07.2022 
+
+ Forma de baza 
+
+ + 
+ Fișă act 
+
+ Actiuni suferite 
+
+ Actiuni Induse 
+
+ Refera pe 
+
+ Referit de 
+
+ Cuprinsul Actului
+
+ pentru instituirea Sistemului național privind monitorizarea transporturilor rutiere de bunuri RO e-Transport și de abrogare a art. XXVIII din Ordonanța de urgență a Guvernului nr. 130/2021 privind unele măsuri fiscal-bugetare, prorogarea unor termene, precum și pentru modificarea și completarea unor acte normative Articolul 1 
+ Articolul 2 
+ Articolul 3 
+ Articolul 4 
+ Articolul 5 
+ Articolul 6 
+ Articolul 7 
+ Articolul 8 
+ Articolul 8^1 
+ Articolul 8^2 
+ Articolul 8^3 
+ Articolul 9 
+ Articolul 10 
+ Articolul 11 
+ Articolul 12 
+ Articolul 13 
+ Articolul 13^1 
+ Articolul 14 
+ Articolul 15 
+ Articolul 16 
+ Articolul 17 
+ Articolul 18 
+ Articolul 19 
+PRIM-MINISTRUNICOLAE-IONEL CIUCĂContrasemnează:Ministrul finanțelor,Adrian Câciup. Ministrul apărării naționale,Simona Cojocaru,secretar de stat
+
+ Reveniti in topul paginii
+
+ Forma printabilă
+
+ ORDONANȚĂ DE URGENȚĂ nr. 41 din 8 aprilie 2022 pentru instituirea Sistemului național privind monitorizarea transporturilor rutiere de bunuri RO e-Transport și de abrogare a art. XXVIII din Ordonanța de urgență a Guvernului nr. 130/2021 privind unele măsuri fiscal-bugetare, prorogarea unor termene, precum și pentru modificarea și completarea unor acte normative EMITENT GUVERNUL ROMÂNIEI
+
+ Publicat în 
+ MONITORUL OFICIAL nr. 356 din 11 aprilie 2022 
+
+ (la 15-12-2023, 
+ Titlul actului normativ a fost modificat de Punctul 1., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ Având în vedere necesitatea implementării și operaționalizării unui sistem informatic de monitorizare a transporturilor de bunuri, prin interconectare cu sistemele actuale deținute de Ministerul Finanțelor (RO e-Factura și Trafic control), în scopul creșterii gradului de colectare a impozitelor și taxelor datorate bugetului de stat, precum și de prevenire și combatere a comerțului ilicit de bunuri, luând în considerare necesitatea instituirii unor măsuri urgente pentru întărirea capacității de urmărire și colectare a sumelor datorate bugetului de stat în cazul transporturilor de bunuri cu risc fiscal ridicat, ținând cont de faptul că reglementarea sistemului informatic de monitorizare a transporturilor de bunuri în România reprezintă un obiectiv strategic în ecuația momentului, generat de schimbările paradigmei economice în conjunctura pandemică internațională și nevoia realizării unor pârghii de anticipare și reglare a mecanismelor economice și a politicilor fiscal-bugetare, întrucât combaterea fraudei în domeniul comerțului de bunuri cu risc fiscal ridicat reprezintă una dintre liniile prioritare de acțiune la nivelul Agenției Naționale de Administrare Fiscală, cazuistica a demonstrat că prejudiciile cauzate bugetului general al statului sunt semnificative și, în multe cazuri, TVA rămâne nerecuperată. În vederea reducerii decalajului fiscal rezultat din evaziunea și frauda fiscală și a impactului negativ al acestora asupra nivelului încasărilor la bugetul general consolidat al statului, luând în considerare asigurarea unor condiții de concurență și echitate fiscală în rândul tuturor contribuabililor și pentru combaterea creșterii inegalităților, în special prin raportare la contribuabilii de bună-credință, care se conformează regulilor fiscale, în vederea reducerii evaziunii și fraudei fiscale din domeniul comercializării bunurilor cu risc fiscal ridicat, cu impact asupra dezvoltării sociale în ansamblu, în special prin creșterea resurselor bugetului general consolidat al statului, cu influență directă asupra finanțării cheltuielilor de interes public și a nivelului investițiilor publice, întrucât neadoptarea în regim de urgență a unor măsuri pentru monitorizarea circulației bunurilor și valorificarea în mod operativ a datelor și informațiilor obținute generează un risc crescut de proliferare a fenomenelor de fraudă și evaziune fiscală, cu consecință directă asupra încasărilor bugetare, cu impact direct asupra deficitului bugetar, mai ales în actualul context pandemic și geopolitic, în considerarea faptului că aceste elemente vizează interesul general public și constituie situații de urgență și extraordinare a căror reglementare nu poate fi amânată, în temeiul art. 115 alin. (4) din Constituția României, republicată , Guvernul României adoptă prezenta ordonanță de urgență. 
+ + 
+ Articolul 1 (1) Se instituie Sistemul național privind monitorizarea transporturilor rutiere de bunuri, denumit în continuare Sistemul RO e-Transport. (2) Prin Sistemul RO e-Transport sunt monitorizate transporturile rutiere pe teritoriul național ale bunurilor cu risc fiscal ridicat și transporturile rutiere internaționale de bunuri. 
+ (la 15-12-2023, 
+ Articolul 1 a fost modificat de Punctul 2., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 2 În sensul prezentei ordonanței de urgență, termenii și expresiile de mai jos au următoarele semnificații: 1. transport rutier de bunuri - activitatea de transport de mărfuri reglementată prin Ordonanța Guvernului nr. 27/2011 privind transporturile rutiere, cu modificările și completările ulterioare; ... 1^1. teritoriul național - teritoriul de stat al României; 
+ (la 15-12-2023, 
+ Articolul 2 a fost completat de Punctul 3., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 1^2. teritoriul unui stat membru - teritoriul unui stat membru al Uniunii Europene, altul decât România; 
+ (la 15-12-2023, 
+ Articolul 2 a fost completat de Punctul 3., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 1^3. teritoriul unei țări terțe - teritoriul unei țări care nu este membră a Uniunii Europene; 
+ (la 15-12-2023, 
+ Articolul 2 a fost completat de Punctul 3., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 2. transportul rutier pe teritoriul național al bunurilor cu risc fiscal ridicat - transportul rutier pe drumurile publice, având punct de plecare și punct de sosire pe teritoriul României, al bunurilor stabilite ca fiind din categoria celor cu risc fiscal ridicat prin ordin al președintelui Agenției Naționale de Administrare Fiscală, indiferent de modul de organizare a transportului; 
+ (la 15-12-2023, 
+ Punctul 2., Articolul 2 a fost modificat de Punctul 4., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 2^1. transportul rutier internațional de bunuri - activitatea de transport reglementată la articolul 2 punctul 2 din Regulamentul (CE) nr. 1.072/2009 al Parlamentului European și al Consiliului din 21 octombrie 2009 privind normele comune pentru accesul la piața transportului rutier internațional de mărfuri (reformare); 
+ (la 15-12-2023, 
+ Articolul 2 a fost completat de Punctul 5., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 3. operator de transport rutier - orice întreprindere definită potrivit art. 3 pct. 19 din Ordonanța Guvernului nr. 27/2011 , cu modificările și completările ulterioare, care realizează transporturile de bunuri; 
+ (la 15-12-2023, 
+ Punctul 3., Articolul 2 a fost modificat de Punctul 6., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 4. organizatorul transportului - operatorul economic care încheie comanda de transport direct cu operatorul de transport rutier sau operatorul economic care preia comanda de la expeditor și o transmite operatorului de transport rutier, precum și operatorul economic sau persoana fizică care transportă bunurile în nume propriu; 
+ (la 30-09-2022, 
+ Punctul 4. din Articolul 2 a fost modificat de Punctul 1, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... 5. partida de bunuri - denumirea generică dată unui ansamblu indivizibil de bunuri, care are același loc de încărcare și de descărcare, un singur utilizator dintre cei prevăzuți la art. 8 alin. (1) și un singur destinatar final și este transportat cu un mijloc de transport ce poate fi schimbat pe parcursul deplasării de la locul de încărcare la locul de descărcare; 
+ (la 30-09-2022, 
+ Punctul 5. din Articolul 2 a fost modificat de Punctul 1, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... 6. vehicul de transport - vehiculul utilizat pentru transportul, livrarea, mutarea, deplasarea bunurilor sau orice alte activități similare, către unul sau mai multe locuri de descărcare, stabilit prin ordin comun al președintelui Agenției Naționale de Administrare Fiscală și al președintelui Autorității Vamale Române; 
+ (la 15-12-2023, 
+ Punctul 6., Articolul 2 a fost modificat de Punctul 7., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 7. loc de încărcare - locul inițial în care bunurile sunt încărcate în vehiculul de transport; 
+ (la 30-09-2022, 
+ Punctul 7. din Articolul 2 a fost modificat de Punctul 1, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... 8. loc de descărcare - locul în care bunurile sunt descărcate din vehiculul de transport la beneficiarii sau destinatarii acestora; 
+ (la 30-09-2022, 
+ Punctul 8. din Articolul 2 a fost modificat de Punctul 1, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... 9. transport care face obiectul monitorizării pe teritoriul național: 
+ (la 15-12-2023, 
+ Partea introductivă a Punctului 9., Articolul 2 a fost modificată de Punctul 8., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... a) transportul bunurilor provenite din achiziții intracomunitare de la punctul rutier de trecere a frontierei la intrarea în România până la locul de descărcare situat pe teritoriul național; ... b) transportul bunurilor care fac obiectul livrărilor intracomunitare de la locul de încărcare situat pe teritoriul național până la punctul rutier de trecere a frontierei la ieșirea din România; ... c) transportul bunurilor provenite din import de la locul de import și până la locul de descărcare situat pe teritoriul național; ... d) transportul bunurilor care fac obiectul exportului de la locul de încărcare situat pe teritoriul național până la biroul vamal de export situat pe teritoriul național sau până la punctul rutier de trecere a frontierei, după caz; 
+ (la 30-09-2022, 
+ Litera d) din Punctul 9. , Articolul 2 a fost modificată de Punctul 2, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... e) transportul bunurilor cu risc fiscal ridicat aparținând unor operatori economici diferiți între două locații situate pe teritoriul național de la locul de încărcare până la locul de descărcare; 
+ (la 15-12-2023, 
+ Litera e), Punctul 9., Articolul 2 a fost modificată de Punctul 9., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... f) transportul bunurilor cu risc fiscal ridicat reprezentând transferul între gestiunile unui operator economic între locul de încărcare și locul de descărcare, situate pe teritoriul național; 
+ (la 15-12-2023, 
+ Litera f), Punctul 9., Articolul 2 a fost modificată de Punctul 9., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... g) transportul bunurilor care fac obiectul tranzacțiilor intracomunitare aflate în tranzit pe teritoriul României, de la punctul rutier de trecere a frontierei la intrarea în România până la locul de descărcare spre depozitare sau pentru formarea unui nou transport pe teritoriul național; 
+ (la 30-09-2022, 
+ Litera g) din Punctul 9. , Articolul 2 a fost modificată de Punctul 2, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... h) transportul bunurilor care fac obiectul tranzacțiilor intracomunitare aflate în tranzit pe teritoriul României, de la locul de încărcare pe teritoriul național, după depozitare sau formarea unui nou transport, până la punctul rutier de trecere a frontierei la ieșirea din România; 
+ (la 30-09-2022, 
+ Litera h) din Punctul 9. , Articolul 2 a fost modificată de Punctul 2, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... i) transportul pe teritoriul național al bunurilor cu risc fiscal ridicat returnate, care nu au făcut obiectul recepției, între operatori economici diferiți sau între un operator economic și o persoană fizică; 
+ (la 15-12-2023, 
+ Litera i), Punctul 9., Articolul 2 a fost modificată de Punctul 9., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... j) transportul pe teritoriul național al bunurilor în cadrul unor operațiuni comerciale reprezentând un nontransfer și transportul bunurilor reprezentând stocuri la dispoziția clientului conform art. 270 alin. (12) lit. f) și art. 270^1 din Legea nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare; 
+ (la 30-09-2022, 
+ Punctul 9. din Articolul 2 a fost completat de Punctul 3, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... 10. data declarată pentru începerea transportului - data la care vehiculul de transport încărcat urmează să intre pe teritoriul României printr-un punct rutier de trecere a frontierei sau de la locul de import sau data la care vehiculul de transport încărcat urmează să fie pus în mișcare de pe teritoriul național; 
+ (la 30-09-2022, 
+ Punctul 10. din Articolul 2 a fost modificat de Punctul 4, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... 11. cod UIT - codul unic generat de Sistemul RO eTransport prin intermediul căruia se identifică datele aferente unei partide de bunuri; 
+ (la 30-09-2022, 
+ Punctul 11. din Articolul 2 a fost modificat de Punctul 4, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... 12. identificarea prin cod UIT - deținerea și prezentarea codului UIT pe timpul transportului de către operatorul de transport rutier sau operatorul economic care transportă cu vehicule care îi aparțin bunuri în nume propriu, în format fizic sau electronic, împreună cu documentul care însoțește transportul bunurilor. 
+ (la 15-12-2023, 
+ Punctul 12., Articolul 2 a fost modificat de Punctul 10., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... 
+ + 
+ Articolul 3 Sistemul RO e-Transport reprezintă ansamblul de principii, reguli și aplicații informatice având drept scop monitorizarea pe teritoriul național a transporturilor prevăzute la art. 1 alin. (2) , care permite autorităților competente determinarea potențialelor puncte de deturnare din sau în lanțul de aprovizionare, pe baza codului UIT. Sistemul este gestionat de către Ministerul Finanțelor prin Agenția Națională de Administrare Fiscală și Centrul Național pentru Informații Financiare. 
+ (la 15-12-2023, 
+ Articolul 3 a fost modificat de Punctul 11., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 4 (1) Sistemul RO e-Transport include: a) module informatice de gestiune a transporturilor de bunuri prin care sunt înregistrate datele referitoare la expeditor și beneficiar, denumirea, caracteristicile, cantitățile și contravaloarea bunurilor transportate, locurile de încărcare și descărcare, detalii cu privire la mijlocul de transport utilizat, precum și codul UIT generat; ... a^1) module informatice puse gratuit la dispoziția operatorului de transport de către Centrul Național pentru Informații Financiare din cadrul Ministerului Finanțelor, pentru a furniza informații cu privire la poziționarea vehiculului de transport prin utilizarea dispozitivelor de tip terminal de telecomunicații; 
+ (la 15-12-2023, 
+ Alineatul (1), Articolul 4 a fost completat de Punctul 12., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... b) elemente de interconectare cu alte sisteme de monitorizare deținute și/sau utilizate de instituțiile sau autoritățile publice, direct sau prin intermediul structurilor sau entităților subordonate sau coordonate: camere de luat vederi, instrumente sau dispozitive pentru determinarea cantităților de produse transportate, precum și orice alte dispozitive specifice de monitorizare a traficului rutier; 
+ (la 30-09-2022, 
+ Litera b) din Alineatul (1) , Articolul 4 a fost modificată de Punctul 5, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... b^1) dispozitive care transmit date de poziționare a vehiculului de transport și dispozitive de tip terminal de telecomunicații care utilizează tehnologii de poziționare și transmisie de date prin satelit, pe care sunt instalate modulele informatice prevăzute la art. 4 lit. a) și a^1) utilizate pentru monitorizarea traseului de transport al bunurilor; 
+ (la 15-12-2023, 
+ Alineatul (1), Articolul 4 a fost completat de Punctul 13., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ ... c) componente software pentru analiza integrată a datelor. ... (2) Sistemul RO e-Transport utilizează date și informații deținute la nivelul instituțiilor sau autorităților publice, precum și al structurilor subordonate sau coordonate de către acestea, care sunt necesare îndeplinirii scopului prevăzut de prezenta ordonanță de urgență. (3) Autoritățile sau instituțiile publice care, direct sau prin intermediul structurilor subordonate sau coordonate, dețin orice fel de date sau informații necesare îndeplinirii scopului prevăzut la art. 3 au obligația de a le pune la dispoziție gratuit Agenției Naționale de Administrare Fiscală, pe bază de protocol încheiat în acest sens. (4) Sistemul RO e-Transport se interconectează cu celelalte sisteme informatice existente la nivelul Ministerului Finanțelor, Agenției Naționale de Administrare Fiscală sau Autorității Vamale Române. (5) Pe măsura dezvoltării sistemelor informatice, Sistemul RO e-Transport se poate interconecta cu alte sisteme de monitorizare și control. (6) Pentru realizarea atribuțiilor specifice prevăzute în actele normative, autoritățile sau instituțiile publice pot avea acces la datele și informațiile din Sistemul RO e-Transport, pe bază de protocol încheiat în acest sens cu Agenția Națională de Administrare Fiscală. (7) Informațiile cu privire la încheierea protocoalelor dintre autoritățile sau instituțiile publice și Agenția Națională de Administrare Fiscală, prevăzute la alin. (3) și (6) , vor fi publicate pe site-ul instituțiilor sau autorităților respective și pe site-ul Agenției Naționale de Administrare Fiscală. 
+ (la 30-09-2022, 
+ Articolul 4 a fost completat de Punctul 6, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+
+ + 
+ Articolul 5 Ministerul Finanțelor, prin Agenția Națională de Administrare Fiscală și Autoritatea Vamală Română, monitorizează transporturile de bunuri prevăzute la art. 1 alin. (2) pe teritoriul național prin intermediul Sistemului RO e-Transport. 
+ (la 15-12-2023, 
+ Articolul 5 a fost modificat de Punctul 14., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 6 (1) Resursele financiare și materiale necesare înființării, funcționării, dezvoltării, implementării și mentenanței Sistemului RO e-Transport se asigură de către Ministerul Finanțelor din bugetul propriu, prin Centrul Național pentru Informații Financiare. (2) Personalul de specialitate necesar înființării, funcționării, dezvoltării, implementării și mentenanței Sistemului RO eTransport se asigură de Ministerul Finanțelor în limita posturilor aprobate pentru Agenția Națională de Administrare Fiscală, Autoritatea Vamală Română și Centrul Național pentru Informații Financiare. (3) Autoritățile și instituțiile publice prevăzute la art. 4 alin. (3) asigură din bugetele proprii resursele necesare furnizării datelor și informațiilor deținute către Agenția Națională de Administrare Fiscală și interconectarea cu Sistemul RO e-Transport. 
+ + 
+ Articolul 7 Centrul Național pentru Informații Financiare din cadrul Ministerului Finanțelor pune la dispoziția utilizatorilor, în mod gratuit, modulele informatice prevăzute la art. 4 alin. (1) lit. a) și a^1) în vederea obținerii codului UIT, respectiv la art. 4 alin. (1) lit. b^1) pentru monitorizarea traseului de transport al bunurilor. 
+ (la 15-12-2023, 
+ Articolul 7 a fost modificat de Punctul 15., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 8 (1) Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul bunurilor cu risc fiscal ridicat revine următorilor utilizatori: a) destinatarului înscris în declarația vamală de import, respectiv expeditorului înscris în declarația vamală de export, în cazul bunurilor cu risc fiscal ridicat care fac obiectul operațiunilor de import sau export, după caz; ... b) beneficiarului din România, în cazul achizițiilor intracomunitare de bunuri cu risc fiscal ridicat; ... c) furnizorului din România, în cazul tranzacțiilor interne sau al livrărilor intracomunitare de bunuri cu risc fiscal ridicat, după caz; ... d) depozitarului, în cazul bunurilor cu risc fiscal ridicat care fac obiectul tranzacțiilor intracomunitare aflate în tranzit, atât pentru bunurile descărcate pe teritoriul României spre depozitare sau pentru formarea unui nou transport din una sau mai multe partide de bunuri, cât și pentru bunurile încărcate după depozitare sau după formarea unui nou transport pe teritoriul național din una sau mai multe partide de bunuri. ... e) operatorului economic, pentru bunurile cu risc fiscal ridicat deținute și transportate între locul de încărcare și locul de descărcare, situate pe teritoriul național; 
+ (la 30-09-2022, 
+ Alineatul (1) din Articolul 8 a fost completat de Punctul 7, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... f) prestatorului de servicii din România în cazul unor operațiuni comerciale reprezentând un nontransfer atât pentru bunurile descărcate pe teritoriul României pentru prestarea de servicii, cât și pentru bunurile rezultate reexpediate în statul partenerului comercial; 
+ (la 30-09-2022, 
+ Alineatul (1) din Articolul 8 a fost completat de Punctul 7, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... g) beneficiarului din România în cazul unor operațiuni comerciale reprezentând un nontransfer atât pentru bunurile expediate din România pentru prestarea de servicii într-un stat membru al Uniunii Europene, cât și pentru bunurile rezultate reexpediate în România; 
+ (la 30-09-2022, 
+ Alineatul (1) din Articolul 8 a fost completat de Punctul 7, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... h) clientului din România în cazul unor operațiuni comerciale ce se subscriu regimului de stocuri la dispoziția clientului în situația în care România este statul membru către care au fost expediate sau transportate bunurile, atât pentru bunurile descărcate pe teritoriul României, cât și pentru bunurile livrate într-un stadiu ulterior după sosire, către altă persoană impozabilă din România sau în cazul în care bunurile respective sunt returnate în statul membru din care au fost expediate sau transportate inițial; 
+ (la 30-09-2022, 
+ Alineatul (1) din Articolul 8 a fost completat de Punctul 7, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... i) furnizorului din România în cazul unor operațiuni comerciale ce se subscriu regimului de stocuri la dispoziția clientului în situația în care România este statul membru din care au fost expediate sau transportate bunurile, atât pentru bunurile expediate din România, cât și în cazul în care bunurile respective sunt returnate în România. 
+ (la 30-09-2022, 
+ Alineatul (1) din Articolul 8 a fost completat de Punctul 7, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ ... (1^1) Prin excepție de la prevederile art. 11 alin. (3) , organizatorul transportului sau operatorul de transport, după caz, are obligația să actualizeze, în perioada de valabilitate a codului UIT, informațiile privind identificarea vehiculului de transport rutier ori de câte ori acestea se modifică, înainte de repunerea în mișcare. 
+ (la 30-09-2022, 
+ Articolul 8 a fost completat de Punctul 8, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ (1^2) În situația în care, la prezentarea în punctul rutier de trecere a frontierei la intrarea în România, la locul de import, la punerea în mișcare a vehiculului de transport încărcat cu bunuri cu risc fiscal ridicat sau pe parcursul desfășurării transportului, Sistemul RO e-Transport nu este funcțional, obligația de declarare prevăzută la alin. (1) , respectiv de actualizare prevăzută la alin. (1^1) se suspendă până la repunerea în funcțiune a sistemului. 
+ (la 15-12-2023, 
+ Alineatul (1^2), Articolul 8 a fost modificat de Punctul 16., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ (1^3) Pentru situațiile prevăzute la alin. (1^2) , obligațiile prevăzute la alin. (1) și/sau la alin. (1^1) se îndeplinesc până la sfârșitul următoarei zile lucrătoare repunerii în funcțiune a sistemului, inclusiv pentru transporturile încheiate. 
+ (la 30-09-2022, 
+ Articolul 8 a fost completat de Punctul 8, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ (1^4) Perioadele de nefuncționare a Sistemului RO eTransport vor fi publicate pe paginile de internet ale Agenției Naționale de Administrare Fiscală și Ministerului Finanțelor. 
+ (la 30-09-2022, 
+ Articolul 8 a fost completat de Punctul 8, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ (2) Utilizatorii prevăzuți la alin. (1) sunt obligați să pună la dispoziția operatorului de transport rutier codul UIT aferent bunurilor transportate, direct sau prin intermediul organizatorului transportului, după caz, până cel târziu la prezentarea vehiculului în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv la punerea efectivă în mișcare a vehiculului, după caz. 
+ (la 30-09-2022, 
+ Alineatul (2) din Articolul 8 a fost modificat de Punctul 9, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ (3) Prin intermediul Sistemului RO e-Transport se notifică informații către părțile implicate în transportul pe teritoriul național al bunurilor cu risc fiscal ridicat. 
+ + 
+ Articolul 8^1 Obligația declarării în Sistemul RO e-Transport a datelor prevăzute la art. 4 alin. (1) lit. a) referitoare la transportul internațional de bunuri revine următorilor utilizatori: a) destinatarului înscris în declarația vamală de import, respectiv expeditorului înscris în declarația vamală de export, în cazul bunurilor care fac obiectul operațiunilor de import sau export, după caz; ... b) beneficiarului din România, în cazul achizițiilor intracomunitare de bunuri; ... c) furnizorului din România, în cazul livrărilor intracomunitare de bunuri; ... d) depozitarului, în cazul bunurilor care fac obiectul tranzacțiilor intracomunitare aflate în tranzit, atât pentru bunurile descărcate pe teritoriul României spre depozitare sau pentru formarea unui nou transport din una sau mai multe partide de bunuri, cât și pentru bunurile încărcate după depozitare sau după formarea unui nou transport pe teritoriul național din una sau mai multe partide de bunuri. ... e) prestatorului de servicii din România, în cazul unor operațiuni comerciale reprezentând un nontransfer atât pentru bunurile descărcate pe teritoriul României pentru prestarea de servicii, cât și pentru bunurile rezultate reexpediate în statul partenerului comercial; 
+ (la 30-04-2024, 
+ Articolul 8^1 a fost completat de Punctul 1. , Articolul II din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024, publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024 
+ )
+ ... f) beneficiarului din România, în cazul unor operațiuni comerciale reprezentând un nontransfer atât pentru bunurile expediate din România pentru prestarea de servicii într-un stat membru al Uniunii Europene, cât și pentru bunurile rezultate reexpediate în România; 
+ (la 30-04-2024, 
+ Articolul 8^1 a fost completat de Punctul 1. , Articolul II din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024, publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024 
+ )
+ ... g) clientului din România, în cazul unor operațiuni comerciale ce se subscriu regimului de stocuri la dispoziția clientului în situația în care România este statul membru către care au fost expediate sau transportate bunurile atât pentru bunurile descărcate pe teritoriul României, cât și pentru bunurile livrate într-un stadiu ulterior după sosire, către altă persoană impozabilă din România sau în cazul în care bunurile respective sunt returnate în statul membru din care au fost expediate sau transportate inițial; 
+ (la 30-04-2024, 
+ Articolul 8^1 a fost completat de Punctul 1. , Articolul II din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024, publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024 
+ )
+ ... h) furnizorului din România, în cazul unor operațiuni comerciale ce se subscriu regimului de stocuri la dispoziția clientului în situația în care România este statul membru din care au fost expediate sau transportate bunurile atât pentru bunurile expediate din România, cât și în cazul în care bunurile respective sunt returnate în România. 
+ (la 30-04-2024, 
+ Articolul 8^1 a fost completat de Punctul 1. , Articolul II din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024, publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024 
+ )
+ ... 
+ (la 15-12-2023, 
+ Actul a fost completat de Punctul 17., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 8^2 (1) Operatorul de transport rutier este obligat să asigure transferul datelor curente de poziționare a vehiculului de transport, care fac obiectul declarației, pe toată durata traseului de transport al bunurilor care fac obiectul monitorizării prin Sistemul RO e-Transport. (2) Operatorul de transport rutier este obligat să echipeze vehiculele de transport cu dispozitive de tip terminal de telecomunicații care utilizează tehnologii de poziționare și transmisie de date prin satelit menționate la art. 4 alin. (1) lit. b^1) . (3) Prevederile alin. (2) nu se aplică în cazul în care datele de poziționare ale vehiculului de transport sunt transferate de dispozitivele acestuia. (4) Operatorul de transport rutier este obligat să pună la dispoziția conducătorului auto codul UIT primit conform prevederilor art. 8 alin. (2) . 
+ (la 15-12-2023, 
+ Actul a fost completat de Punctul 17., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 8^3 În cazul unui transport de bunuri prevăzut la art. 1 alin. (2) conducătorul vehiculului de transport are obligația să pornească dispozitivul de poziționare înainte de începerea transportului pe teritoriul național, respectiv să oprească dispozitivul de poziționare numai după livrarea bunurilor la locul de livrare declarat pe teritoriul național sau după părăsirea teritoriului național. 
+ (la 15-12-2023, 
+ Actul a fost completat de Punctul 17., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 9 (1) Utilizatorii prevăzuți la art. 8 alin. (1) declară în sistemul RO e-Transport, prin opțiune, datele referitoare la transporturile de bunuri cu risc fiscal ridicat începând cu data intrării în vigoare a prezentei ordonanțe de urgență. (2) Începând cu data de 1 iulie 2022, utilizatorii prevăzuți la art. 8 alin. (1) sunt obligați să declare în Sistemul RO eTransport datele referitoare la transporturile de bunuri cu risc fiscal ridicat, astfel încât să poată fi identificate prin codul UIT. (3) Utilizatorii prevăzuți la art. 8^1 sunt obligați să declare în Sistemul RO e-Transport datele referitoare la transporturile internaționale de bunuri, astfel încât să poată fi identificate prin codul UIT. 
+ (la 15-12-2023, 
+ Articolul 9 a fost completat de Punctul 18., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ + 
+ Articolul 10 (1) Conducătorul vehiculului de transport este obligat să prezinte, la solicitarea organelor competente din cadrul Agenției Naționale de Administrare Fiscală ori din cadrul Autorității Vamale Române, respectiv la solicitarea ofițerilor și agenților de poliție din cadrul Poliției Române, documentele care însoțesc transportul de bunuri care fac obiectul monitorizării prin sistemul RO e-Transport împreună cu codul UIT pus la dispoziție conform prevederilor art. 8^2 alin. (4) . 
+ (la 15-12-2023, 
+ Alineatul (1), Articolul 10 a fost modificat de Punctul 19., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ (2) Pentru punerea în aplicare a prevederilor prezentei ordonanțe de urgență, precum și în scopul prevenirii, descoperirii, cercetării, urmăririi penale și combaterii infracțiunilor, Ministerul Finanțelor prin Agenția Națională de Administrare Fiscală asigură accesul informatic direct al Poliției Române la Sistemul RO e-Transport. Aspectele tehnice pentru asigurarea accesului direct se stabilesc în comun între Agenția Națională de Administrare Fiscală și Inspectoratul General al Poliției Române, în condițiile Legii nr. 363/2018 privind protecția persoanelor fizice referitor la prelucrarea datelor cu caracter personal de către autoritățile competente în scopul prevenirii, descoperirii, cercetării, urmăririi penale și combaterii infracțiunilor sau al executării pedepselor, măsurilor educative și de siguranță, precum și privind libera circulație a acestor date. 
+ (la 30-09-2022, 
+ Articolul 10 a fost modificat de Punctul 10, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+
+ + 
+ Articolul 11 (1) Pentru generarea codului UIT, utilizatorii prevăzuți la art. 8 alin. (1) și la art. 8^1 pot declara în Sistemul RO e-Transport datele referitoare la transporturile de bunuri, cu maximum 3 zile calendaristice înainte de data declarată pentru începerea transportului, dar până la prezentarea în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv punerea efectivă în mișcare a vehiculului, după caz. 
+ (la 15-12-2023, 
+ Alineatul (1), Articolul 11 a fost modificat de Punctul 20., Articolul LXXIV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+ (2) Termenul de valabilitate a codului UIT este de 5 zile calendaristice, respectiv de 15 zile calendaristice în cazul achizițiilor intracomunitare de bunuri, precum și în cazul operațiunilor comerciale prevăzute la art. 2 pct. 9 lit. g) și j) , începând cu data declarată pentru începerea transportului. Utilizarea de către operatorul de transport rutier a codului UIT peste termenul de valabilitate a acestuia este interzisă. 
+ (la 30-09-2022, 
+ Alineatul (2) din Articolul 11 a fost modificat de Punctul 11, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ (3) Este interzisă modificarea datelor înregistrate în Sistemul RO e-Transport referitoare la transporturile de bunuri după prezentarea în punctul rutier de trecere a frontierei la intrarea în România sau la locul de import, respectiv după punerea efectivă în mișcare a vehiculului pe drumurile publice, după caz. 
+ (la 30-09-2022, 
+ Alineatul (3) din Articolul 11 a fost modificat de Punctul 11, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ (4) Este interzisă descărcarea pe teritoriul României a bunurilor care fac obiectul tranzacțiilor intracomunitare aflate în tranzit, cu excepția celor care fac obiectul depozitării sau formării unui nou transport din una sau mai multe partide de bunuri. 
+ + 
+ Articolul 12 (1) În cazul în care în cadrul unei partide de bunuri sunt transportate atât bunuri cu risc fiscal ridicat, cât și alte bunuri care nu fac parte din categoria celor cu risc fiscal ridicat stabilite în acest sens prin ordin al președintelui Agenției Naționale de Administrare Fiscală, utilizatorii prevăzuți la art. 8 alin. (1) au obligația să declare în Sistemul RO e-Transport datele aferente transporturilor pentru toate bunurile transportate în cadrul unei partide de bunuri. (2) În cazul în care din documentele deținute de către utilizatorii prevăzuți la art. 8 alin. (1) lit. d) nu rezultă încadrarea bunurilor transportate în una dintre categoriile de bunuri prevăzute la alin. (1) , aceștia au obligația declarării în Sistemul RO e-Transport a datelor aferente transporturilor pentru toate bunurile transportate în cadrul unei partide de bunuri. 
+ (la 30-09-2022, 
+ Articolul 12 a fost modificat de Punctul 12, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+
+ + 
+ Articolul 13 Abrogat. 
+ (la 01-07-2024, 
+ Articolul 13 a fost abrogat de Alineatul (2) , Articolul LXXV , Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ Notă ...
+
+ Conform Punctului 2., Articolul II din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024 , publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024, la articolul 13, după alineatul (2) se introduce un nou alineat, alin. (2^1), cu următorul cuprins: 
+ (2^1) Prin excepție de la prevederile alin. (2) , pentru contravenția prevăzută la alin. (1) lit. a) , în ceea ce privește nerespectarea prevederilor art. 9 alin. (2) , sancțiunea complementară a confiscării nu se aplică în cazul constatărilor rezultate din verificări ulterioare încheierii transportului rutier de bunuri, când acestea au fost înregistrate în documentele justificative care stau la baza înregistrărilor contabile, precum și în contabilitatea utilizatorilor, după caz, în perioada la care se referă operațiunile respective. 
+ + 
+ Articolul 13^1 (1) Următoarele fapte constituie contravenții, dacă nu sunt săvârșite în astfel de condiții încât, potrivit legii penale, să fie considerate infracțiuni: a) nerespectarea prevederilor art. 9 alin. (2) și (3) , art. 11 alin. (2) și (4) ; ... b) declararea în Sistemul RO e-Transport a unor cantități diferite de cele care fac obiectul transportului de bunuri; ... c) nerespectarea prevederilor art. 8 alin. (1^1) , (1^3) și (2) , art. 11 alin. (3) și art. 12 ; ... d) nerespectarea de către conducătorul vehiculului de transport a prevederilor art. 8^3 și art. 10 alin. (1) ; ... e) nerespectarea de către operatorul de transport a prevederilor art. 8^2 . ... (2) Contravențiile prevăzute la alin. (1) lit. a) și b) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice, precum și confiscarea contravalorii bunurilor nedeclarate. (2^1) Prin excepție de la prevederile alin. (2) , pentru contravenția prevăzută la alin. (1) lit. a) , în ceea ce privește nerespectarea prevederilor art. 9 alin. (2) și (3) , sancțiunea complementară a confiscării nu se aplică în cazul constatărilor rezultate din verificări ulterioare încheierii transportului rutier de bunuri, când acestea au fost înregistrate în documentele justificative care stau la baza înregistrărilor contabile, precum și în contabilitatea utilizatorilor, după caz, în perioada la care se referă operațiunile respective. 
+ (la 01-07-2024, 
+ Articolul 13^1 a fost completat de Punctul 3. , Articolul II din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024, publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024 
+ )
+ (3) Contravențiile prevăzute la alin. (1) lit. c) și e) se sancționează cu amendă de la 10.000 de lei la 50.000 de lei în cazul persoanelor fizice sau cu amendă de la 20.000 de lei la 100.000 de lei în cazul persoanelor juridice. (4) Contravențiile prevăzute la alin. (1) lit. d) se sancționează cu amendă de la 5.000 de lei la 10.000 de lei. 
+ (la 01-07-2024, 
+ Actul a fost completat de Punctul 21. , Articolul LXXIV , Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023, publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023 
+ )
+
+ Notă ...
+
+ Conform Alineatului (1^1) al Articolului LXXV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023 , publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023, asfel cum a fost introdus de Articolul I din ORDONANȚA DE URGENȚĂ nr. 87 din 28 iunie 2024 , publicată în MONITORUL OFICIAL nr. 608 din 28 iunie 2024, prin excepție de la prevederile alin. (1) , pentru utilizatorii prevăzuți la art. 8^1 din Ordonanța de urgență a Guvernului nr. 41/2022 , cu modificările și completările ulterioare, care au statutul de operator economic autorizat potrivit prevederilor art. 38 din Regulamentul (UE) nr. 952/2013 al Parlamentului European și al Consiliului din 9 octombrie 2013 de stabilire a Codului vamal al Uniunii (reformare) la data realizării transportului internațional de bunuri, prevederile art. LXXIV pct. 21 intră în vigoare la data de 1 ianuarie 2025 și se aplică pentru faptele săvârșite și constatate începând cu această dată. 
+ Notă ...
+
+ Conform Alineatului (1) al Articolului LXXV, Capitolul III din ORDONANȚA DE URGENȚĂ nr. 115 din 14 decembrie 2023 , publicată în MONITORUL OFICIAL nr. 1139 din 15 decembrie 2023, asfel cum a fost modificat de Articolul III din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024 , publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024. prevederile art. LXXIV pct. 21 intră în vigoare la data de 1 iulie 2024 și se aplică pentru faptele săvârșite și constatate începând cu această dată. 
+ + 
+ Articolul 14 (1) Constatarea și aplicarea sancțiunilor se fac de către persoanele împuternicite din cadrul Agenției Naționale de Administrare Fiscală, Autorității Vamale Române, precum și de către ofițerii și agenții de poliție din cadrul Poliției Române. 
+ (la 30-09-2022, 
+ Alineatul (1) din Articolul 14 a fost modificat de Punctul 14, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+ (2) Contravențiilor prevăzute la art. 13 le sunt aplicabile dispozițiile Ordonanței Guvernului nr. 2/2001 privind regimul juridic al contravențiilor, aprobată cu modificări și completări prin Legea nr. 180/2002 , cu modificările și completările ulterioare. 
+ Notă ...
+
+ Articolul LVIII, Secțiunea a 2-a, Capitolul IV din LEGEA nr. 296 din 26 octombrie 2023 , publicată în MONITORUL OFICIAL nr. 977 din 27 octombrie 2023 prevede: Articolul LVIII Prin derogare de la prevederile art. 16 alin. (1) și art. 28 alin. (1) din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor, aprobată cu modificări și completări prin Legea nr. 180/2002 , cu modificările și completările ulterioare, și ale art. 22 alin. (2) din Legea nr. 203/2018 privind măsuri de eficientizare a achitării amenzilor contravenționale, cu modificările și completările ulterioare, contravenienții sancționați în baza prevederilor prezentului capitol, secțiunea 1 și secțiunea a 2-a , art. LVII și LXV , ale Legii contabilității nr. 82/1991, republicată , cu modificările și completările ulterioare, ale Legii nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar și pentru modificarea și completarea Ordonanței de urgență a Guvernului nr. 193/2002 privind introducerea sistemelor moderne de plată, cu modificările și completările ulterioare, ale Ordonanței de urgență a Guvernului nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, republicată, cu modificările și completările ulterioare, ale Legii nr. 207/2015 privind Codul de procedură fiscală , cu modificările și completările ulterioare, a Legii nr. 227/2015 privind Codul fiscal , cu modificările și completările ulterioare, și ale Ordonanței de urgență a Guvernului nr. 41/2022 pentru instituirea Sistemului național privind monitorizarea transporturilor rutiere de bunuri cu risc fiscal ridicat RO e-Transport și de abrogare a art. XXVIII din Ordonanța de urgență a Guvernului nr. 130/2021 privind unele măsuri fiscal-bugetare, prorogarea unor termene, precum și pentru modificarea și completarea unor acte normative, cu modificările și completările ulterioare, nu beneficiază de posibilitatea achitării, în termen de 15 zile de la data înmânării sau comunicării procesului-verbal, a jumătate din minimul amenzii prevăzute de actul normativ. 
+ + 
+ Articolul 15 (1) Procedura de aplicare a prezentei ordonanțe de urgență și categoriile de vehicule rutiere utilizate pentru transportul bunurilor cu risc fiscal ridicat care fac obiectul monitorizării se stabilesc prin ordin comun al președintelui Agenției Naționale de Administrare Fiscală și al Autorității Vamale Române, în termen de 30 de zile de la data intrării în vigoare a prezentei ordonanțe de urgență. (2) Prin ordin al președintelui Agenției Naționale de Administrare Fiscală emis în termen de 15 zile de la data intrării în vigoare a prezentei ordonanțe de urgență se stabilesc bunurile cu risc fiscal ridicat transportate rutier care fac obiectul monitorizării prin Sistemul RO e-Transport. 
+ + 
+ Articolul 16 Fac excepție de la prevederile prezentei ordonanțe de urgență următoarele transporturi: a) transporturile de bunuri destinate misiunilor diplomatice și oficiilor consulare, precum și organizațiilor internaționale, forțelor armate ale statelor membre NATO, Uniunii Europene, statelor membre ale Parteneriatului pentru Pace sau statelor cu care România a încheiat acorduri în domeniu sau ca urmare a executării contractelor clasificate potrivit legii sau a executării contractelor de achiziție publică ce necesită impunerea, potrivit dispozițiilor legale, a unor măsuri speciale de securitate pentru protejarea unor interese esențiale de securitate ale statului; ... b) transportul produselor accizabile care circulă în regim suspensiv de accize sau cu accize plătite în statul membru de expediție, potrivit titlului VIII „Accize și alte taxe speciale“ din Legea nr. 227/2015 , cu modificările și completările ulterioare, respectiv prin utilizarea sistemului de control al mișcărilor cu produse accizabile, denumit EMCS, pentru emiterea documentului administrativ electronic e-DA sau a documentului administrativ electronic simplificat e-DAS; ... c) transportul bunurilor de către prestatorii de servicii poștale în colete poștale, definite conform prevederilor art. 2 pct. 16 din Ordonanța de urgență a Guvernului nr. 13/2013 privind serviciile poștale, aprobată cu modificări și completări prin Legea nr. 187/2013 , cu modificările și completările ulterioare. ... 
+ (la 30-04-2024, 
+ Articolul 16 a fost modificat de Punctul 4. , Articolul II din ORDONANȚA DE URGENȚĂ nr. 43 din 30 aprilie 2024, publicată în MONITORUL OFICIAL nr. 409 din 30 aprilie 2024 
+ )
+
+ + 
+ Articolul 17 (1) Prevederile prezentei ordonanțe de urgență nu aduc atingere legislației privind protecția datelor cu caracter personal. (2) Datele și informațiile cu caracter personal obținute în Sistemul RO e-Transport pot fi folosite exclusiv în acest scop sau în scopuri compatibile cu acesta, cu respectarea legislației privind protecția datelor cu caracter personal. (3) Modalitățile de publicare, în scopul asigurării transparenței și tragerii la răspundere, a datelor cu caracter personal care au fost colectate în cadrul Sistemului RO eTransport trebuie să fie în concordanță cu scopul publicării și protecției sferei private. (4) Ministerul Finanțelor, prin Agenția Națională de Administrare Fiscală, asigură managementul datelor și informațiilor existente în Sistemul RO e-Transport, cu respectarea prevederilor art. 11 din Legea nr. 207/2015 privind Codul de procedură fiscală , cu modificările și completările ulterioare. 
+ + 
+ Articolul 18 Prevederile art. 13 și 14 intră în vigoare la data de 1 ianuarie 2023. 
+ (la 30-09-2022, 
+ Articolul 18 a fost modificat de Punctul 15, Articolul I din ORDONANȚA DE URGENȚĂ nr. 132 din 29 septembrie 2022, publicată în MONITORUL OFICIAL nr. 957 din 30 septembrie 2022 
+ )
+
+ + 
+ Articolul 19 La data intrării în vigoare a prezentei ordonanțe de urgență se abrogă art. XXVIII din Ordonanța de urgență a Guvernului nr. 130/2021 privind unele măsuri fiscal-bugetare, prorogarea unor termene, precum și pentru modificarea și completarea unor acte normative, publicată în Monitorul Oficial al României, Partea I, nr. 1202 din 18 decembrie 2021. 
+ PRIM-MINISTRU 
+ NICOLAE-IONEL CIUCĂ 
+ Contrasemnează: 
+ Ministrul finanțelor, 
+ Adrian Câciu 
+ p. Ministrul apărării naționale, 
+ Simona Cojocaru, 
+ secretar de stat București, 8 aprilie 2022. Nr. 41. ---- 
+
+ Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.
+
+ Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați www.fonduri-ue.ro .
+
+ Copyright © 2026 - Ministerul Justiției. Toate drepturile rezervate. - Termeni și Condiții 
+
+ | Acasă
+
+ | Despre Proiect
+
+ | Facilități Oferite 
+
+ | Legături Utile
+
+ × Inchide 
+
+ Versiune Beta 
+
+ A fost lansata versiunea Beta a Portalului Legislativ
+
+ Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect. 
+
+ Inchide mesajul de atentionare 
+
+ × Inchide 
+
+ Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect! 
+
+ Ce browser sa aleg? 
+
+ Google Chrome 
+
+ Descarca Browser 
+
+ Mozilla Firefox 
+
+ Descarca Browser 
+
+ Internet Explorer 
+
+ Descarca Browser 
+
+ Apple Safari 
+
+ Descarca Browser 
+
+ De ce sa actualizez browserul? 
+
+ Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+
+ Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+
+ Inchide mesajul de atentionare
