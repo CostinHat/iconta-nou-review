@@ -48,8 +48,8 @@ import { api } from "./api.js?v=1dccbc985b";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1]
 import { ecranLogin } from "./ecrane/login.js?v=f923a7effc";
 import { creeazaNavigator } from "./navigator.js?v=31ee34a3ed";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=86367a025f";
-import { desktopAsistent } from "./ecrane/asistent.js?v=914996f692";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=d2da48a1f6";
+import { desktopAsistent } from "./ecrane/asistent.js?v=c43b17e6dc";
 import { desktopPortal } from "./ecrane/portal.js?v=0c0ffb532b";
 import { desktopAdmin } from "./ecrane/admin.js?v=7c33bbe96d"; // [p37_admin_desktop]
 

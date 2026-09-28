@@ -12,7 +12,7 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=1dccbc985b";
-import { semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
+import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaControl } from "./control.js?v=d09ca9ab5a";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
@@ -171,7 +171,8 @@ async function actualizeazaControlAsi(grila) {
     zona.innerHTML = semaforCard([
       { n: s.rosu, cls: "pct-rosu", txt: "cu restanță" },
       { n: s.galben, cls: "pct-galben", txt: "de urmărit" },
-    ], "Toate firmele la zi");
+      { n: s.gri, cls: "pct-gri", txt: s.gri === 1 ? "firmă nu se poate verifica" : "firme nu se pot verifica" },
+    ], "Toate firmele la zi", s.verde);
   } catch {}
 }
 

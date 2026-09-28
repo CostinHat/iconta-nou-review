@@ -15,6 +15,11 @@ LIMITA, DECLARATĂ (interdicția 76 — calibrare pe propriul mod de eșec): gar
 formă**, nu pe **clasă**. Nu vede a patra apariție într-un fișier nou, și nu vede o rescriere care
 păstrează sensul dar schimbă textul. Ce l-ar închide e un scan pe tot `static/js/`, care nu există încă
 — până atunci cifra „3" e un plafon inferior.
+
+[P13b, 28.09.2026] ACEASTA LIMITA E INCHISA: scanul pe tot `static/js` exista acum
+(`scripts/scan_p13_eticheta_verdict.py::scaneaza_verdict_pozitiv`), gardat de
+`test_niciun_verdict_pozitiv_din_contoare_sau_fallback` de mai jos. Clasa „verdict pozitiv
+ales din contoare/fallback" e prinsa MECANIC, nu doar pe fisier+forma.
 """
 import os
 import re
@@ -94,12 +99,47 @@ def test_fratii_deja_corecti_raman_corecti():
         "capacitate.js: fratele conditionat `de_validat` a disparut"
 
 
-def test_verdele_din_semafor_card_ramane_derivat():
-    """`semafor.js` are un verde LEGITIM: apare doar când toate numărătorile sunt zero, adică după ce
-    s-a comparat ceva. Gardul nu trebuie să-l confunde cu clasa reparată — dacă i-ar cere scoaterea,
-    ar cere scoaterea unui verde corect."""
+def test_verdele_din_semafor_card_atarna_de_verde_explicit():
+    """[P13b, 28.09.2026 — RECLASIFICARE arhitect] Forma veche a acestui test afirma ca verdele din
+    `semafor.js` e LEGITIM „cand toate numaratorile sunt zero" (`if (!active.length)`). Arhitectul a
+    rasturnat presupunerea: rosu=galben=0 NU inseamna verificat — ignora `sumar.gri` (firme al caror
+    rezumat lipseste/e invechit, produs de uc_control_fiscal) si trateaza un sumar ABSENT (`{}`) ca
+    verde. Asta e 27+31 cu stare falsa activa. Clasa corecta: pozitivul apare DOAR dintr-un `verde`
+    explicit primit de la backend; altfel „nu se poate verifica"."""
     t = _citeste("semafor.js", minim=400)
     assert "const active = perechi.filter" in t, \
-        "semafor.js: verdele nu mai e conditionat de numaratori — a devenit scris"
-    assert "if (!active.length)" in t, \
-        "semafor.js: conditia care face verdele derivat a disparut"
+        "semafor.js: numaratorile negative nu mai sunt filtrate — forma s-a rupt"
+    assert re.search(r"if\s*\(\s*\(verde\s*\|\|\s*0\)\s*>\s*0\s*&&\s*mesajOk\s*\)", t), \
+        "semafor.js: verdele pozitiv nu mai e gardat pe `verde` explicit — poate reaparea pe zero/absenta"
+    assert "nu se poate verifica" in t, \
+        "semafor.js: ramura de absenta (\"nu se poate verifica\") a disparut — absenta ar redeveni verde"
+    assert not re.search(r"if\s*\(!active\.length\)\s*\{\s*return[^\n]*pct-verde", t), \
+        "semafor.js: verdele reapare direct pe `!active.length` — clasa reparata a regresat"
+
+
+# ── P13b: gard pe CLASA (scan pe tot static/js), inchide limita declarata in antet ──
+import sys as _sys  # noqa: E402
+_sys.path.insert(0, os.path.join(RAD, "scripts"))
+import scan_p13_eticheta_verdict as _scan  # noqa: E402
+
+
+def test_niciun_verdict_pozitiv_din_contoare_sau_fallback():
+    """[P13b] Clasa: in tot `static/js`, un TEXT-VERDICT pozitiv (la zi / fara probleme / in regula)
+    apare DOAR gardat de o stare pozitiva explicita (`=== \"verde\"` / camp `verde`/`ok`), niciodata
+    din absenta rosului/galbenului, din zero sau dintr-un fallback. Scanul deriva mecanic; BAD = gol."""
+    bad, _good = _scan.scaneaza_verdict_pozitiv()
+    assert bad == [], "verdict pozitiv ales din contoare/fallback (P13b):\n" + "\n".join(
+        "  %s:%d  %s" % (f, i, s) for f, i, s in bad)
+
+
+def test_ANTI_VACUU_scanul_vede_cazul_derivat_corect():
+    """Anti-vacuu (interdictia 76): daca detectorul n-ar parsa nimic, BAD ar fi gol degeaba. Dovada ca
+    vede: `control.js` deriva „totul la zi" corect din `f.stare === \"verde\"` — trebuie in GOOD.
+    Calibrare NEGATIVA ceruta explicit de arhitect (scanul NU trebuie sa prinda control.js)."""
+    bad, good = _scan.scaneaza_verdict_pozitiv()
+    good_ctrl = [s for f, i, s in good if f.endswith("control.js")]
+    assert good_ctrl, "scanul nu vede control.js in GOOD - detector vacuu (nu parseaza nimic)"
+    assert any(_scan.POZ_CAMP.search(s) for s in good_ctrl), \
+        "scanul nu vede cazul derivat corect din control.js — detector vacuu"
+    assert not any(f.endswith("control.js") for f, i, _s in bad), \
+        "scanul a prins gresit control.js in BAD — calibrarea negativa a cazut"
