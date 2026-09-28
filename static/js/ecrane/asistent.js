@@ -11,10 +11,11 @@
 // si poarta citeau doua liste. Un arbore scris separat de carduri ar fi fost a treia.
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
+import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=1dccbc985b";
 import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaControl } from "./control.js?v=d09ca9ab5a";
+import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=decc4f494a";
 import { randeazaListaFirme } from "./firme.js?v=3528dca1a3";
@@ -172,7 +173,7 @@ async function actualizeazaControlAsi(grila) {
       { n: s.rosu, cls: "pct-rosu", txt: "cu restanță" },
       { n: s.galben, cls: "pct-galben", txt: "de urmărit" },
       { n: s.gri, cls: "pct-gri", txt: s.gri === 1 ? "firmă nu se poate verifica" : "firme nu se pot verifica" },
-    ], "Toate firmele la zi", s.verde);
+    ], VERDICT_POZITIV.firme_toate, s.verde);
   } catch {}
 }
 

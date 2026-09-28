@@ -134,12 +134,11 @@ def test_niciun_verdict_pozitiv_din_contoare_sau_fallback():
 
 def test_ANTI_VACUU_scanul_vede_cazul_derivat_corect():
     """Anti-vacuu (interdictia 76): daca detectorul n-ar parsa nimic, BAD ar fi gol degeaba. Dovada ca
-    vede: `control.js` deriva „totul la zi" corect din `f.stare === \"verde\"` — trebuie in GOOD.
-    Calibrare NEGATIVA ceruta explicit de arhitect (scanul NU trebuie sa prinda control.js)."""
+    vede: firme.js deriva verdictul din flag-ul EXPLICIT `ok` -> trebuie in GOOD, niciodata in BAD.
+    (Ancora era control.js:47 „totul la zi" pana in P13c; atunci textul a fost centralizat in verdict.js
+    si nu mai e literal in control.js, deci scanul nu-l mai clasifica acolo.)"""
     bad, good = _scan.scaneaza_verdict_pozitiv()
-    good_ctrl = [s for f, i, s in good if f.endswith("control.js")]
-    assert good_ctrl, "scanul nu vede control.js in GOOD - detector vacuu (nu parseaza nimic)"
-    assert any(_scan.POZ_CAMP.search(s) for s in good_ctrl), \
-        "scanul nu vede cazul derivat corect din control.js — detector vacuu"
-    assert not any(f.endswith("control.js") for f, i, _s in bad), \
-        "scanul a prins gresit control.js in BAD — calibrarea negativa a cazut"
+    good_firme = [s for f, i, s in good if f.endswith("firme.js")]
+    assert good_firme, "scanul nu vede firme.js in GOOD - detector vacuu (nu parseaza nimic)"
+    assert not any(f.endswith("firme.js") for f, i, _s in bad), \
+        "scanul a prins gresit firme.js in BAD - calibrarea negativa (verdict din flag ok) a cazut"

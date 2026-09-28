@@ -48,9 +48,9 @@ import { api } from "./api.js?v=1dccbc985b";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1]
 import { ecranLogin } from "./ecrane/login.js?v=f923a7effc";
 import { creeazaNavigator } from "./navigator.js?v=31ee34a3ed";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=d2da48a1f6";
-import { desktopAsistent } from "./ecrane/asistent.js?v=c43b17e6dc";
-import { desktopPortal } from "./ecrane/portal.js?v=0c0ffb532b";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=34bff60158";
+import { desktopAsistent } from "./ecrane/asistent.js?v=e40f303005";
+import { desktopPortal } from "./ecrane/portal.js?v=99ad4fe154";
 import { desktopAdmin } from "./ecrane/admin.js?v=7c33bbe96d"; // [p37_admin_desktop]
 
 const radacina = document.getElementById("app");

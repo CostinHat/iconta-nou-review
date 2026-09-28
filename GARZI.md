@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**639 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**640 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 607
+### `core/` — 608
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9390,6 +9390,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_verde_derivat.py` — Verdele de semafor se DERIVĂ; unde nu se poate deriva, semaforul LIPSEȘTE.
 - `core/test_verde_peste_necunoscut.py` — GARD [R35/XX3, 28.08.2026]: un verdict nu poate fi VERDE peste un necunoscut pe care il are in mana.
 - `core/test_verdict_persistat.py` — GARD — verdictul de validare se păstrează, și un verdict stătut nu ține locul unuia proaspăt.
+- `core/test_verdict_punct_unic.py` — GARD [P13c, 28.09.2026, interdictiile 27+31]: verdictul din stare are UN SINGUR punct in frontend.
 - `core/test_verdict_stare.py` — —
 - `core/test_verificator_al_treilea_rezultat.py` — GARD [31.08.2026, cerut de Costin]: verificatorul de neconformități nu mai afirmă absența când
 - `core/test_verificator_izolare.py` — GARDĂ PESTE VERIFICATOR: analizorul lui de izolare clasifică corect rute known-good / known-bad.

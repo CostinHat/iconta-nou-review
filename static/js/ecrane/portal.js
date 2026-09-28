@@ -1,5 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
+import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=1dccbc985b";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaFacturi } from "./facturi_ecran.js?v=6320ad1c9d";  // [p116_facturi_modul]
@@ -218,13 +219,20 @@ async function actualizeazaStatusAcasa(continut) {
     return;
   }
 
-  let clasa = "pa-verde", titlu = "Totul e la zi", sub = "Nicio declarație restantă. Contabilul tău are situația sub control.";
+  let clasa, titlu, sub;
   if (d.stare === "rosu") {
     clasa = "pa-rosu"; titlu = `${restante.length} ${restante.length === 1 ? "declarație trebuie depusă" : "declarații trebuie depuse"}`;
     sub = "Contabilul tău se ocupă.";
   } else if (d.stare === "galben") {
     clasa = "pa-galben"; titlu = `${urmarit.length} ${urmarit.length === 1 ? "termen apropiat" : "termene apropiate"}`;
     sub = "Scadențe în perioada următoare.";
+  } else {
+    // [P13c] verdictul din stare, din PUNCTUL UNIC (verdict.js): verde EXPLICIT -> pozitiv; stare
+    // absentă (null) sau necunoscută -> gri, „nu se poate verifica" (niciodată verde din oficiu).
+    const v = verdictDinStare(d.stare, "portal");
+    clasa = v.pozitiv ? "pa-verde" : "pa-neutru";
+    titlu = v.titlu;
+    sub = v.pozitiv ? "Nicio declarație restantă. Contabilul tău are situația sub control." : "Situația nu a putut fi verificată la ANAF. Contabilul tău o clarifică.";
   }
 
   const linii = [...restante, ...urmarit];

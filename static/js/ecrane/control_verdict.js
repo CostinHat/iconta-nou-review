@@ -5,6 +5,7 @@
 // unele ecrane (cazul DANTE 24.07: cele 4 rosii pe salarii nu apareau pe cardul din fisa).
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
+import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=1dccbc985b";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
@@ -234,7 +235,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const gata = d.stare === "verde" ? `
     <div class="mig-gata" style="padding:30px 0">
       <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#1d9e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
-      <div class="mig-gata-titlu">Totul depus la zi</div>
+      <div class="mig-gata-titlu">${VERDICT_POZITIV.control_depus}</div>
     </div>` : "";
 
   const audit = `

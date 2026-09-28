@@ -2,8 +2,9 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
+import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, esc } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=f019079e5a";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -44,7 +45,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
     const col = CULORI[f.stare] || CULORI.gri;
     let detaliu = f.stare === "rosu" ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}`
       : f.stare === "galben" ? `${f.urmarit} de urmărit`
-      : f.stare === "verde" ? "totul la zi"
+      : f.stare === "verde" ? VERDICT_POZITIV.control_firma
       : `${f.neclar || 0} declarați${(f.neclar || 0) === 1 ? "e nu se poate verifica" : "i nu se pot verifica"}`;
     if ((f.contabil || []).length) detaliu += " · " + f.contabil.map((c) => (c && c.eticheta) || c).join(" · ");
     const rand = document.createElement("button");
