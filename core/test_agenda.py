@@ -390,7 +390,11 @@ def test_cote_cluster_leaga_deducere_de_salariu_minim():
 # (pe 22.08, cu o coliziune in plus, sarise la 35). Graful reparat e mai MARE - 40 de clustere
 # cu cote in loc de 30, 120 de muchii in loc de 88 - si totusi stale-urile SCAD, fiindca acum
 # sunt cele reale. Baseline-ul coboara 14 -> 11 si ramane clichet.
-STALE_BAZA_BASELINE = 11
+# RE-VERIFICAT COMPLET 28.09.2026 (cerut de Costin): toate cele 11 bife stale reverificate la sursa
+# oficiala - plafon_facilitate_salariu_minim 4.600 lei sem.2 2026 (OUG 89/2025), tichet_masa_plafon 45 lei
+# (Legea 201/2025), impozit_dividend 16% de la 2026 (Legea 141/2025) - TOATE CORECTE, fara fix de cod;
+# bifele reinnoite (√ 28.09) in TESTE.md. Baseline 11 -> 0: devine PRAG (orice bifa pe baza schimbata BLOCHEAZA).
+STALE_BAZA_BASELINE = 0
 
 
 def test_bifele_nu_stau_pe_o_baza_schimbata():

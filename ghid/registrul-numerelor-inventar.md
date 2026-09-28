@@ -1,37 +1,60 @@
 ---
 title: "Cum se ține registrul numerelor de inventar?"
-description: "Ce e Registrul-inventar (cod 14-1-2), cum se completează pe baza inventarierii faptice și la ce momente e obligatoriu, potrivit Legii contabilității și OMFP 2634/2015."
+description: "Registrul numerelor de inventar (cod 14-2-1) servește la atribuirea unui număr de inventar fiecărui mijloc fix la intrarea în entitate. Mijloacele fixe se înscriu cronologic, iar numărul atribuit se trece pe toate documentele mijlocului fix, potrivit OMFP 2634/2015, anexa 2."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-09-27
 poarta: v1
 ---
 
 # Cum se ține registrul numerelor de inventar?
 
-Registrul-inventar e unul dintre cele trei registre de contabilitate obligatorii, alături de Registrul-jurnal și Cartea mare. Spre deosebire de celelalte două, nu se completează din rulaje contabile, ci pe baza inventarierii faptice — numărării reale a bunurilor.
+Registrul numerelor de inventar (cod 14-2-1) se folosește pentru a atribui numere de inventar mijloacelor fixe (imobilizărilor corporale), ca acestea să poată fi identificate. Fiecare mijloc fix primește un număr la intrarea în entitate, iar mijloacele fixe se înscriu în registru în ordine cronologică. Numărul atribuit se trece apoi pe toate documentele care privesc acel mijloc fix.
 
-## Temeiul legal
+Acesta este alt registru decât Registrul-inventar (cod 14-1-2). Registrul-inventar este registru contabil obligatoriu și cuprinde rezultatele inventarierii tuturor activelor, datoriilor și capitalurilor proprii.
 
-::: ghid-temei
-„Registrele de contabilitate obligatorii sunt: Registrul-jurnal, Registrul-inventar și Cartea mare. Întocmirea, editarea și păstrarea registrelor de contabilitate se efectuează conform normelor elaborate de Ministerul Finanțelor Publice."
-— Legea 82/1991 (Legea contabilității), art. 20 (sursă: anaf_surse/legea_82_1991_consolidat.txt)
-:::
+### Ce spune norma
 
-Conținutul și modul de completare sunt detaliate în normele de aplicare:
+OMFP 2634/2015, anexa 2 (normele specifice de utilizare a documentelor financiar-contabile), grupa a II-a „Mijloace fixe”, prevede că:
+- registrul este „utilizat pentru atribuirea numerelor de inventar mijloacelor fixe (imobilizărilor corporale) existente în entitate, în vederea identificării lor”;
+- în registru „se înregistrează cronologic mijloacele fixe intrate în entitate”;
+- fiecare mijloc fix care este obiect de evidență primește un număr de inventar „în momentul intrării în entitate (cu excepția celor luate cu chirie)”;
+- numerotarea se face, de regulă, în ordinea succesivă a numerelor și/sau pe grupe de mijloace fixe;
+- numărul de inventar „urmează să fie trecut în toate documentele care privesc mijlocul fix respectiv”;
+- modul de numerotare și modul de imprimare a numărului pe bun se stabilesc prin proceduri proprii ale entității.
 
-- „Registrul-inventar (cod 14-1-2) este un document contabil obligatoriu în care se înregistrează elementele de natura activelor, datoriilor și capitalurilor proprii, grupate în funcție de natura lor, inventariate de entitate, potrivit legii. Registrul-inventar se completează pe baza inventarierii faptice a fiecărui cont de activ și de pasiv." (OMFP 2634/2015, Anexa 1, pct. 46)
-- Elementele înscrise în registru „au la bază listele de inventariere sau alte documente care justifică natura acestor elemente existente la sfârșitul exercițiului financiar" — deci nu se completează din soldurile contabile, ci din constatarea fizică.
-- Dacă inventarierea are loc în cursul anului, în registru se înregistrează soldurile de la data inventarierii, la care se adaugă intrările și se scad ieșirile până la închiderea exercițiului financiar.
-- Numerotarea paginilor registrului se face în ordine crescătoare, iar volumele se numerotează în ordinea completării lor — regulă comună tuturor registrelor de contabilitate.
+### Unul sau mai multe registre
 
-## Ce se greșește în practică
+Norma permite atât un registru pentru fiecare grupă de mijloace fixe, cât și un registru comun pentru mai multe grupe. Alegerea depinde de numărul mijloacelor fixe existente și al celor care urmează să intre în entitate. Grupele corespund categoriilor contabile de imobilizări corporale sau grupelor din Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe, aprobat prin HG 2139/2004.
 
-- Se completează coloana valorii de inventar cu aceeași sumă ca valoarea contabilă din balanță, fără o inventariere faptică reală — registrul iese „perfect", fără nicio diferență, ceea ce arată exact ca o inventariere bine făcută, dar de fapt reflectă o inventariere care nu a avut loc.
-- Se confundă Registrul-inventar cu evidența analitică a mijloacelor fixe (fișele sau numerele de inventar individuale ale activelor) — cele două sunt instrumente diferite, chiar dacă termenul „inventar" apare în amândouă.
-- Se completează registrul o singură dată, la înființare, și nu se actualizează la închiderea fiecărui exercițiu financiar sau la încetarea activității, deși norma cere completarea lui la aceste momente.
+### Ce coloane are
 
-## Ce face iConta.eu
+Modelul din OMFP 2634/2015, anexa 3, are cinci coloane:
+1. Nr. de inventar;
+2. Codul de clasificare;
+3. Denumirea mijlocului fix și caracteristici tehnice;
+4. Locul unde se află;
+5. Alte mențiuni.
 
-La data acestui ghid, iConta.eu **generează efectiv Registrul-inventar (cod 14-1-2)**, la cele trei momente prevăzute de normă: începutul activității, sfârșitul exercițiului financiar și încetarea activității. Aplicația derivă automat valoarea contabilă din balanță, dar **nu completează niciodată automat valoarea de inventar** — aceasta trebuie introdusă de contabil pe baza listelor de inventariere și a proceselor-verbale reale, tocmai pentru a evita riscul unui registru „perfect pe hârtie" care ar masca o inventariere nefăcută.
+Potrivit OMFP 2634/2015, art. 4 alin. (2), fiecare entitate poate adapta modelele documentelor financiar-contabile după necesități.
 
-[iConta.eu](/)
+### Exemplu
+
+O firmă cumpără în martie un autoturism și un server. Ultimul număr folosit în registru este 000124.
+- Autoturismul primește numărul 000125. În registru se trec codul de clasificare din catalog, denumirea și caracteristicile (marcă, serie de șasiu), locul (sediul social) și, la „Alte mențiuni”, factura de achiziție.
+- Serverul primește numărul 000126, cu locul „camera tehnică, etaj 1”.
+
+Cele două numere se trec apoi în fișa mijlocului fix (cod 14-2-2) și în bonurile de mișcare. Dacă un mijloc fix este scos din funcțiune, numărul de inventar se trece la capitolul II, coloana „Denumirea”, din procesul-verbal de scoatere din funcțiune (cod 14-2-3/aA).
+
+Un echipament închiriat nu primește număr în registrul firmei care îl folosește, pentru că norma exceptează mijloacele fixe luate cu chirie.
+
+### Pași practici pentru contabil
+
+1. Stabiliți printr-o procedură internă formatul numărului, dacă numerotarea se face pe grupe și cum se marchează fizic bunul.
+2. Atribuiți numărul la data intrării, nu la punerea în funcțiune sau la inventarierea anuală.
+3. Verificați că numărul apare pe fișa mijlocului fix și pe documentele de mișcare, casare sau vânzare.
+
+### De reținut
+- Registrul numerelor de inventar (14-2-1) identifică mijloacele fixe. Registrul-inventar (14-1-2) cuprinde rezultatele inventarierii.
+- Numărul se atribuie la intrarea în entitate, cronologic, cu excepția mijloacelor fixe luate cu chirie.
+- Numărul de inventar se trece pe toate documentele privind mijlocul fix.
+- Formatul numerotării și marcarea fizică se stabilesc prin proceduri proprii.
