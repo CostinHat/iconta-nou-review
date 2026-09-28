@@ -74,6 +74,27 @@ STARI = {
 
 IMPLICITA = "emisa"
 
+#: Eticheta de AFISARE per stare - SURSA UNICA (interdictia 31: eticheta se deriva din stare, nu o alege
+#: cine randeaza). Ecranele NU-si mai scriu propria harta: `core/test_eticheta_status_factura.py` confrunta
+#: STATUS_ETICHETA din facturi_ecran.js cu aceasta lista, in AMBELE directii (stare fara eticheta / eticheta
+#: fara stare). Cheile trebuie sa acopere exact STARI.
+ETICHETE = {
+    "emisa": "emisă",
+    "importata": "importată",
+    "de_recunoscut": "de recunoscut",
+    "de_preluat": "de preluat",
+    "ciorna": "ciornă",
+    "descarcata": "descărcată",
+    "anulata": "anulată",
+    "stornata": "stornată",
+}
+
+
+def eticheta(stare):
+    """Eticheta de afisare a unei stari de factura (SURSA UNICA). KeyError pe o stare necunoscuta -
+    o stare fara eticheta e chiar interdictia 31; nu se defalteaza pe tokenul brut."""
+    return ETICHETE[stare]
+
 
 def declarabile():
     """Stările care INTRĂ în declarații. Ordonate, ca SQL-ul generat să fie stabil."""

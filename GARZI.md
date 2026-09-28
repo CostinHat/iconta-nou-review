@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**637 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**639 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 606
+### `core/` — 607
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9136,6 +9136,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_emitere_randuri_dinamice.py` — GARD cap.24 batch 3b — randuri dinamice emitere factura, re-rulate IN POARTA prin chromium headless.
 - `core/test_esec_trimitere_email.py` — GARD [R73, 27.08.2026]: un eșec de trimitere a emailului nu se mai poate stinge tăcut.
 - `core/test_eticheta_conturi_ecran.py` — Eticheta din ECRAN și conturile din BACKEND nu pot diverge tăcut.
+- `core/test_eticheta_status_factura.py` — GARD [28.09.2026, P13 / interdictia 31]: eticheta de status factura se DERIVA din stare, nu o alege
 - `core/test_etransport_randuri_dinamice.py` — GARD cap.24 batch 3a — randuri dinamice e-Transport, re-rulate in POARTA prin chromium headless.
 - `core/test_etransport_send.py` — Teste core/etransport_send.py (F121) — pe MOCK, niciodata pe ANAF real.
 - `core/test_eu_parola.py` — `POST /eu/schimba-parola` — a doua suprafață de autentificare fără probă din lista auditului.
@@ -9404,7 +9405,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 31
+### `scripts/` — 32
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -9423,6 +9424,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `scripts/scan_lanturi_declaratie.py` — ETAPA 2 — CARE unitate alimentează CARE declarație, derivat din cod.
 - `scripts/scan_lista3.py` — scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana.
 - `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
+- `scripts/scan_p13_eticheta_verdict.py` — Perimetru P13 (interdictiile 27 verdict-ca-fraza si 31 eticheta-nederivata-din-stare), derivat MECANIC.
 - `scripts/scan_p7_straturi.py` — P7 — cele TREI verificari mecanice ale separarii pe straturi, derivate din cod.
 - `scripts/scan_predare_cifre.py` — Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat.
 - `scripts/scan_r97_livrat_tacut.py` — CÂT DE MARE E CLASA „RUTA LIVREAZĂ, ECRANUL TACE" — măsurarea lui R97, 29.08.2026.

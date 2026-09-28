@@ -473,7 +473,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const dir = dirEticheta(f.directie);
   const partener = f.tert_nume ? `${esc(f.tert_nume)}${f.tert_cui ? " \u00b7 CUI " + esc(f.tert_cui) : ""}` : "";
-  const STATUS_ETICHETA = { de_preluat: "de preluat", emisa: "emis\u0103", anulata: "anulat\u0103", platita: "pl\u0103tit\u0103" };
+  // STATUS_ETICHETA - sincronizat 1:1 cu core/nomenclator_status_factura.ETICHETE (interdictia 31).
+  // Garda core/test_eticheta_status_factura.py pica la orice divergenta (stare fara eticheta / eticheta fara stare).
+  const STATUS_ETICHETA = { emisa: "emis\u0103", importata: "importat\u0103", de_recunoscut: "de recunoscut", de_preluat: "de preluat", ciorna: "ciorn\u0103", descarcata: "desc\u0103rcat\u0103", anulata: "anulat\u0103", stornata: "stornat\u0103" };
   const statusTxt = f.storno_din_id ? "storno" : (f.contabilizata ? "contabilizat\u0103" : (STATUS_ETICHETA[f.status] || f.status || ""));
 
   corp.innerHTML = `
