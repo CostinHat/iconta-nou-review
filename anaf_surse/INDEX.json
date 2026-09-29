@@ -69,9 +69,7 @@
     "PORTAL_IDS.json": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "PROVENIENTA.json": {
       "exista": true,
@@ -572,9 +570,7 @@
     "gen_index.py": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg518_1995_diurna_externa.txt": {
       "exista": true,
@@ -735,7 +731,9 @@
     "hg_1_2016_norme_cod_fiscal.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.html": {
       "exista": true,
@@ -811,6 +809,16 @@
       "acopera": []
     },
     "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_479_2003.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_479_2003.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -893,6 +901,26 @@
       "tip_forma": null,
       "acopera": []
     },
+    "hg_867_2015.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_867_2015.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_905_2017.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_905_2017.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "impozit_dividende_istoric_cote.txt": {
       "exista": true,
       "tip_forma": null,
@@ -913,6 +941,27 @@
       "tip_forma": null,
       "acopera": []
     },
+    "legea_114_1996_locuinte_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "legea_114_1996_locuinte_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "legea_114_1996_locuinte_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
     "legea_125_2006_rambursarea_ratelor_capital_cota_parte.html": {
       "exista": true,
       "tip_forma": null,
@@ -924,6 +973,16 @@
       "acopera": []
     },
     "legea_125_2006_rambursarea_ratelor_capital_cota_parte.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_129_2019.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_129_2019.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -1104,6 +1163,48 @@
       "tip_forma": null,
       "acopera": []
     },
+    "legea_180_2002_aprobare_og_2_2001_contraventii_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "initiala"
+    },
+    "legea_180_2002_aprobare_og_2_2001_contraventii_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "legea_180_2002_aprobare_og_2_2001_contraventii_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "legea_196_2018_asociatii_proprietari_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "legea_196_2018_asociatii_proprietari_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "legea_196_2018_asociatii_proprietari_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
     "legea_1_2020.html": {
       "exista": true,
       "tip_forma": "consolidat_la_zi",
@@ -1162,6 +1263,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "legea_230_2007.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_230_2007.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html": {
       "exista": true,
       "tip_forma": null,
@@ -1177,20 +1288,59 @@
       "tip_forma": null,
       "acopera": []
     },
-    "legea_273_2006_fin_publice_locale.pdf": {
+    "legea_241_2005.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata",
-      "nota": "consolidare 2018, nu la zi"
+      "acopera": []
     },
-    "legea_273_2006_fin_publice_locale.pdf.sha256": {
+    "legea_241_2005.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_265_2022.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_265_2022.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_26_1990.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_26_1990.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_273_2006_fin_publice_locale.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_273_2006_fin_publice_locale.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
     },
     "legea_273_2006_fin_publice_locale.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "legea_287_2009.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_287_2009.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -1261,7 +1411,9 @@
     "legea_319_2006_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
     },
     "legea_31_1990_modif_L222_2023.pdf": {
       "exista": true,
@@ -1336,7 +1488,9 @@
     "legea_346_2002_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
     },
     "legea_358_2015_aprobarea.html": {
       "exista": true,
@@ -1431,7 +1585,9 @@
     "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "legea_53_2003_codul_muncii.html": {
       "exista": true,
@@ -1486,6 +1642,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "legea_72_2013.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_72_2013.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "legea_82_1991_consolidat.html": {
       "exista": true,
       "tip_forma": "consolidat_la_zi",
@@ -1536,6 +1702,46 @@
       "tip_forma": null,
       "acopera": []
     },
+    "legea_85_2014.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_85_2014.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_98_2016.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_98_2016.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_11_2022.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_11_2022.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_13_2011.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_13_2011.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "og_16_2022_consolidat.html": {
       "exista": true,
       "tip_forma": "forma_la_data",
@@ -1559,6 +1765,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "og_22_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_22_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "og_26_2000_asociatii_fundatii.html": {
       "exista": true,
       "tip_forma": null,
@@ -1570,6 +1786,26 @@
       "acopera": []
     },
     "og_26_2000_asociatii_fundatii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_2_2001.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_2_2001.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_39_2015.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "og_39_2015.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2329,6 +2565,26 @@
       "tip_forma": null,
       "acopera": []
     },
+    "opanaf_6073_2024.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_6073_2024.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_649_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_649_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "opanaf_705_2020_d390.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -2404,6 +2660,66 @@
       "tip_forma": null,
       "acopera": []
     },
+    "ordin_1029_2020.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1029_2020.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1090_2022.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1090_2022.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1094_2016.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1094_2016.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1099_2016.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1099_2016.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1366_2021.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1366_2021.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1517_2017.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1517_2017.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "ordin_1574_3246_2025_cultural.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -2422,44 +2738,32 @@
     "ordin_1604_2025_intrastat.html": {
       "exista": true,
       "tip_forma": "consolidat_la_zi",
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1604_2025_intrastat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1604_2025_intrastat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1604_2025_intrastat.txt.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1604_2025_intrastat_mo.pdf": {
       "exista": true,
       "tip_forma": "forma_la_data",
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1604_2025_intrastat_mo.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1604_2025_intrastat_mo.txt": {
       "exista": true,
@@ -2472,16 +2776,112 @@
           "nivel_sursa": "MO",
           "temei": "Ordin 1604/2025 art.1"
         }
-      ],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      ]
     },
     "ordin_1604_2025_intrastat_mo.txt.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
+    },
+    "ordin_161_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_161_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1699_2021.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1699_2021.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1757_2019.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1757_2019.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1760_2018.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1760_2018.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1767_2021.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1767_2021.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_187_2018.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_187_2018.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_188_2018.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_188_2018.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1946_2023.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1946_2023.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1996_2023.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1996_2023.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2026_2023.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2026_2023.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
     },
     "ordin_2066_2025.html": {
       "exista": true,
@@ -2489,6 +2889,96 @@
       "acopera": []
     },
     "ordin_2066_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2117_2018.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2117_2018.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2229_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2229_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2430_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2430_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2547_2019.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2547_2019.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2594_2015.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2594_2015.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2736_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_2736_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3357_2017.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3357_2017.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3391_2017.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3391_2017.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_352_2022.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_352_2022.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2523,6 +3013,126 @@
       "tip_forma": null,
       "acopera": []
     },
+    "ordin_3708_2015.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3708_2015.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3711_2015.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3711_2015.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3738_2024.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3738_2024.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3775_2024.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3775_2024.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3780_2017.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3780_2017.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3792_2024.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3792_2024.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_382_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_382_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3845_2015.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3845_2015.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3846_2015.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_3846_2015.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_396_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_396_2025.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_4156_2017.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_4156_2017.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_435_2021.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_435_2021.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "ordin_506_1030_2026_norme_oug158.html": {
       "exista": true,
       "tip_forma": null,
@@ -2534,6 +3144,66 @@
       "acopera": []
     },
     "ordin_506_1030_2026_norme_oug158.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_5521_2024.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_5521_2024.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_608_2026.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_608_2026.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_63_2017.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_63_2017.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_802_2022.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_802_2022.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_878_2022.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_878_2022.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_90_2016.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_90_2016.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2557,6 +3227,26 @@
       "acopera": []
     },
     "oug_115_2023_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_116_2023.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_116_2023.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_120_2021.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_120_2021.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2587,6 +3277,16 @@
       "acopera": []
     },
     "oug_138_2024.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_153_2020.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_153_2020.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2659,6 +3359,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "oug_193_2002.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_193_2002.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "oug_200_2008_modificarea_completarea.html": {
       "exista": true,
       "tip_forma": null,
@@ -2694,6 +3404,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "oug_25_2018.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_25_2018.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "oug_25_2018.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -2724,6 +3444,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "oug_28_1999.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_28_1999.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "oug_34_2024_consolidat.html": {
       "exista": true,
       "tip_forma": null,
@@ -2739,17 +3469,39 @@
       "tip_forma": null,
       "acopera": []
     },
-    "oug_41_2022.pdf": {
+    "oug_41_2022.html": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
     },
-    "oug_41_2022.pdf.sha256": {
+    "oug_41_2022.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
     },
     "oug_41_2022.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "oug_44_2008.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_44_2008.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_46_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_46_2025.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2773,6 +3525,16 @@
       "acopera": []
     },
     "oug_50_2015_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_68_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_68_2025.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -2888,7 +3650,7 @@
       "acopera": [
         {
           "cota": "plafon_mijloc_fix",
-          "data_in": "2026-02-25",
+          "data_in": "2026-01-01",
           "valoare": "5000",
           "nivel_sursa": "MO",
           "temei": "OUG 8/2026 art.28"
