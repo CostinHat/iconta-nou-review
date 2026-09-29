@@ -6,7 +6,9 @@
 (pasul 3) și rapoartele să nu re-parseze CSV-ul cu presupuneri despre coloane.
 
 Coloane (verificat la sursă 21.09.2026): id, titlu, categorie, status, functionalitate_iconta,
-posibil_duplicat_sens.
+posibil_duplicat_sens, slug_publicat.
+
+[29.09.2026] Coloana slug_publicat + statusul publicat: un titlu cu ghid LIVE (potrivire pe titlu EXACT sau NORMALIZAT - fara diacritice, punctuatie, anul 2026) trece pe status=publicat, cu slug-ul ghidului in slug_publicat. Cazurile doar asemanatoare raman candidat (nemarcate).
 
 Nu produce ghiduri și nu leagă titlu↔funcționalitate — legarea se face PER PAGINĂ la redactare,
 verificată pe cod real (poarta din core/ghid_poarta.py). Aici e strict inventarul de intrare.
@@ -18,7 +20,7 @@ import os
 RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CALE = os.path.join(RADACINA, "index_titluri_ghid.csv")
 
-COLOANE = ("id", "titlu", "categorie", "status", "functionalitate_iconta", "posibil_duplicat_sens")
+COLOANE = ("id", "titlu", "categorie", "status", "functionalitate_iconta", "posibil_duplicat_sens", "slug_publicat")
 
 
 def incarca(cale=None):
