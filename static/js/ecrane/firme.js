@@ -7,7 +7,7 @@ import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 *
 import { randeazaFacturi } from "./facturi_ecran.js?v=6320ad1c9d";
 import { ecranRip } from "./rip_ecran.js?v=2a75ab957d";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=01442b1818";
-import { ecranEtransport } from "./etransport_ecran.js?v=c57761fc62";
+import { ecranEtransport } from "./etransport_ecran.js?v=2062674928";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=a5c7c91eb0";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=621722f4c2";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic verdict control fiscal (DS cap.20)
@@ -865,6 +865,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("data_nastere", "Data nașterii (pentru deducerea tinerilor sub 26 de ani)", "data")}
       ${camp("copii_scolarizati", "Copii ≤ 18 ani înscriși în învățământ (deducere 100 lei/copil)", "numar", { pas: "1" })}
       ${camp("declaratie_copii", "Declarația părintelui pentru copii (art.77) — fără ea deducerea nu se acordă", "checkbox")}
+      <div class="camp"><label class="set-bifa"><input type="checkbox" id="sn-functie_baza" checked> <span>Funcția de bază la acest angajator (fără ea nu se acordă deducerea personală — CF art. 77 alin. (1))</span></label></div>
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
       ${campCorLookup("sn", true)}
       ${camp("iban", "IBAN (cont salariu pe card)", "text")}
@@ -895,6 +896,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
         data_nastere: corp.querySelector("#sn-data_nastere").value || null,
         copii_scolarizati: Number(corp.querySelector("#sn-copii_scolarizati").value) || 0,
         declaratie_copii: corp.querySelector("#sn-declaratie_copii").checked,
+        functie_baza: corp.querySelector("#sn-functie_baza").checked,
         tip_norma: corp.querySelector("#sn-tip_norma").value,
         ore_zi: Number(corp.querySelector("#sn-ore_zi").value) || null,
         data_angajare: corp.querySelector("#sn-data_angajare").value || null,
@@ -948,6 +950,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       iban: corp.querySelector("#sn-iban").value.trim().replace(/\s/g, "").toUpperCase() || null,  // [F134]
       tichet_masa_valoare: corp.querySelector("#sn-tichet_masa_valoare").value ? Number(corp.querySelector("#sn-tichet_masa_valoare").value) : 0,  // [F133]
       scutit_contrib_minim: corp.querySelector("#sn-scutit_contrib_minim").checked,
+      functie_baza: corp.querySelector("#sn-functie_baza").checked,  // [3c · CF art.77(1)] deducerea doar la functia de baza
     };
     try {
       await api.post(`/tenants/${t.id}/salariati`, corpReq);

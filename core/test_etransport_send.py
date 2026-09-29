@@ -74,7 +74,7 @@ def test_fereastra_in_termen_national():
     azi = date(2026, 7, 18)
     f = et.fereastra_uit(azi, intracom=False, acum=azi)   # transport azi, national
     assert f["poate_trimite"] and f["zile_valabilitate"] == 5
-    assert f["uit_valabil_pana"] == azi + timedelta(days=5)
+    assert f["uit_valabil_pana"] == azi + timedelta(days=4)
 
 
 def test_fereastra_intracom_15_zile():
@@ -146,4 +146,23 @@ def test_trimite_prod_incarcat_scrie_uit_si_valabilitate(schema, monkeypatch):
             cur.execute(f"SELECT stare, uit, uit_valabil_pana, index_incarcare "
                         f"FROM {schema}.etransport_trimiteri WHERE id=%s", (r["trimitere_id"],))
             row = cur.fetchone()
-    assert row[0] == "incarcat" and row[1] == "ABC12345" and row[2] == azi + timedelta(days=5)
+    assert row[0] == "incarcat" and row[1] == "ABC12345" and row[2] == azi + timedelta(days=4)  # [3h art.11(2)] X+(N-1)
+
+
+def test_3h_uit_ziua_plus_4_nu_plus_5():
+    X = date(2026, 7, 18)
+    f = et.fereastra_uit(X, intracom=False, acum=X)
+    assert f["uit_valabil_pana"] == X + timedelta(days=4)  # OUG 41/2022 art.11(2): 5 zile incepand cu X -> X+4
+
+
+def test_3h_uit_intracom_ziua_plus_14():
+    X = date(2026, 7, 18)
+    f = et.fereastra_uit(X, intracom=True, acum=X)
+    assert f["uit_valabil_pana"] == X + timedelta(days=14)
+
+
+def test_3h_uit_15_zile_litg_litj():
+    # OUG 41/2022 art.11(2)+art.2 pct.9: 15 zile pt cod 10 (lit.a), 60 (lit.g), 80 (lit.j)
+    assert et.uit_15_zile("10") and et.uit_15_zile("60") and et.uit_15_zile("80")
+    for cod in ("20", "30", "40", "50", "70"):
+        assert not et.uit_15_zile(cod)

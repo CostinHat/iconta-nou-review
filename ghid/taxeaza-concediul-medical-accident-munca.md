@@ -1,6 +1,6 @@
 ---
 title: Cum se taxează concediul medical pentru accident de muncă?
-description: Indemnizația pentru incapacitate temporară de muncă în urma unui accident de muncă reprezintă 80% din media veniturilor salariale brute din ultimele 6 luni (art. 33 Legea nr. 346/2002) — primele 3 zile se suportă de angajator, iar din a 4-a zi din contribuția de asigurare pentru accidente de muncă (art. 34), pe durată de maximum 180 de zile într-un an (art. 35).
+description: Indemnizația pentru incapacitate temporară de muncă în urma unui accident de muncă reprezintă 80% din media veniturilor salariale brute din ultimele 6 luni (art. 33 Legea nr. 346/2002) — primele 3 zile se suportă de angajator, iar din a 4-a zi din contribuția de asigurare pentru accidente de muncă (art. 34), pe durată de maximum 183 de zile într-un an (art. 35).
 published: 2026-09-24
 modified: 2026-09-24
 poarta: v1
@@ -29,7 +29,7 @@ Deci, spre deosebire de concediul medical obișnuit (unde regulile de suportare 
 
 ### Durata maximă
 
-Potrivit **art. 35 din Legea nr. 346/2002**, durata de acordare a indemnizației e de **180 de zile într-un interval de un an**, socotită din prima zi de concediu medical. **Art. 36** permite, în situații temeinic motivate de posibilitatea recuperării medicale și profesionale, prelungirea peste 180 de zile, la propunerea medicului curant, cu decizia finală aparținând medicului asigurătorului (continuarea programului recuperator, reluarea activității sau propunerea de pensionare de invaliditate).
+Potrivit **art. 35 din Legea nr. 346/2002**, durata de acordare a indemnizației e de **183 de zile într-un interval de un an**, socotită din prima zi de concediu medical. **Art. 36** permite, în situații temeinic motivate de posibilitatea recuperării medicale și profesionale, prelungirea peste 183 de zile, la propunerea medicului curant, cu decizia finală aparținând medicului asigurătorului (continuarea programului recuperator, reluarea activității sau propunerea de pensionare de invaliditate).
 
 ### Vizarea certificatului medical — obligație specifică a angajatorului
 

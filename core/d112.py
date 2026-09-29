@@ -699,7 +699,8 @@ def _d112_genereaza(prof, salariati, an, luna):
 # in loc sa declare zero.
 _COLOANE_SALARIAT = ("id", "nume", "prenume", "cnp", "data_angajare", "salariu_brut",
                      "ore_zi", "judet_casa", "part_time", "persoane_intretinere",
-                     "scutit_contrib_minim", "motiv_exceptare", "tichet_masa_valoare", "data_incetare")
+                     "scutit_contrib_minim", "motiv_exceptare", "tichet_masa_valoare", "data_incetare",
+                     "functie_baza")
 
 
 def pull(conn, schema, an, luna):
@@ -756,6 +757,7 @@ def pull(conn, schema, an, luna):
             "ore_zi": s.get("ore_zi") or 8,
             "judet_casa": s.get("judet"),
             "part_time": bool(s.get("part_time")),
+            "functie_baza": bool(s.get("functie_baza", True)),   # [3c] CF art.77(1)
             "persoane_intretinere": s.get("persoane_intretinere") or 0,
             "data_nastere": s.get("data_nastere"),                       # [deducere suplimentara] tineri <26
             "copii_scolarizati": s.get("copii_scolarizati") or 0,        # [deducere suplimentara] 100 lei/copil
@@ -824,6 +826,7 @@ def pull(conn, schema, an, luna):
         _cum_a = float(_ben.total_an(conn, schema, s["id"], an, "vacanta", pana_luna=luna - 1) or 0) if luna > 1 else 0.0
         _exces_van = _ben.exces_vacanta_luna(_cum_c, _cum_a, _plaf_van)
         r = _sz.calcul_salariu(brut_lucrat,
+                               functie_baza=bool(s.get("functie_baza", True)),   # [3c] CF art.77(1)
                                persoane=s.get("persoane_intretinere") or 0,
                                la_data=ref,
                                norma_intreaga=not s.get("part_time"),

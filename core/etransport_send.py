@@ -46,6 +46,18 @@ def etransport_base(mediu="test"):
 # ============================================================
 #  GARDA DE TIMP UIT — PURA (fara DB/retea)
 # ============================================================
+# [OUG 41/2022 art.11(2)] UIT valabil 15 zile (nu 5): achizitii intracom (cod 10, art.2 pct.9 lit.a),
+# tranzactie intracom in tranzit-intrare (cod 60, lit.g), nontransfer / stocuri la dispozitia clientului
+# (cod 80, lit.j). Restul = 5 zile.
+COD_UIT_15_ZILE = ("10", "60", "80")
+
+
+def uit_15_zile(cod_tip_operatiune):
+    """True daca operatiunea are UIT valabil 15 zile (art.11(2) OUG 41/2022): achizitii
+    intracomunitare + operatiunile de la art.2 pct.9 lit.g) si lit.j)."""
+    return str(cod_tip_operatiune) in COD_UIT_15_ZILE
+
+
 def fereastra_uit(data_transport, intracom=False, acum=None):
     """
     Verdictul ferestrei legale UIT (ARHITECTURA_SPV.md), pur. data_transport = date sau 'YYYY-MM-DD'.
@@ -56,7 +68,9 @@ def fereastra_uit(data_transport, intracom=False, acum=None):
     dt = data_transport if isinstance(data_transport, date) else \
         datetime.strptime(str(data_transport)[:10], "%Y-%m-%d").date()
     zile_val = 15 if intracom else 5
-    valabil_pana = dt + timedelta(days=zile_val)
+    # [OUG 41/2022 art.11(2)] "N zile calendaristice ... INCEPAND CU data declarata": ziua transportului
+    # e ziua 1, deci ultima zi valabila = X+(N-1) (5 zile = X..X+4; 15 = X..X+14).
+    valabil_pana = dt + timedelta(days=zile_val - 1)
     prea_devreme = (dt - acum).days > 3
     expirat = acum > valabil_pana
     poate_trimite = not prea_devreme and not expirat

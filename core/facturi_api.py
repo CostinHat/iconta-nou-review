@@ -195,7 +195,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
                     tert_platitor_tva=None, tert_tara="RO", tip_operatiune="normal",
                     furnizor_tva_incasare=False, tert_pf=False, tip="factura", axa_ic=None,
-                    curs=None, data_curs=None, curs_sursa=None):
+                    curs=None, data_curs=None, curs_sursa=None, cota_la_data=None):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
@@ -224,7 +224,13 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     # contabilizată (4427 = 99 lei), și un al doilea document cu un număr deja folosit.
     _d_emitere = _data_ceruta("data emiterii", data_emitere)
     _data_ceruta("data scadenței", data_scadenta)
-    _rea = _cota_necunoscuta(linii, _d_emitere)
+    # [3i · CF art. 282 alin. (9)] la evenimentele art. 287 (storno, reducere de pret) taxa e
+    # exigibila la data evenimentului (data_emitere = azi), dar COTELE APLICABILE sunt aceleasi
+    # ca ale operatiunii de baza. cota_la_data muta DOAR verificarea cotei pe data operatiunii de
+    # baza; exigibilitatea (data_emitere) ramane azi. Fara ea, storno-ul unei facturi de 19%
+    # (emisa inainte de 01.08.2025) verifica 19% contra cotelor de azi {0,11,21} si o respinge.
+    _cota_ref = _data_ceruta("data cotei de baza", cota_la_data) if cota_la_data else _d_emitere
+    _rea = _cota_necunoscuta(linii, _cota_ref)
     if _rea is not None and (directie == "emisa" or (tert_tara or "RO").strip().upper() == "RO"):
         # Numai pe ce ține de legea română: pe o factură PRIMITĂ dintr-un alt stat, cota lui e
         # legitimă și n-avem de unde ști lista lui. Limita e declarată, nu ascunsă.
@@ -864,7 +870,8 @@ def storneaza(conn, factura_id):
                         axa_ic=orig.get("axa_ic"),
                         tip_operatiune=(orig.get("tip_operatiune") or "normal"),
                         tert_platitor_tva=orig.get("tert_platitor_tva"),
-                        data_faptului_generator=orig.get("data_faptului_generator"))
+                        data_faptului_generator=orig.get("data_faptului_generator"),
+                        cota_la_data=orig.get("data_emitere"))  # [3i] cota validata pe data operatiunii de baza (art.282(9))
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s, storno_din_id = %s WHERE id = %s",
                     (serie, factura_id, r["factura_id"]))

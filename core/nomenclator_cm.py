@@ -36,32 +36,32 @@ _T_NUMIT = ("d112_struct_anaf.txt: cod NUMIT explicit în regulile D_9 (S101.1 /
 # îmbătrânească din două motive deodată.
 CODURI = {
     "01": {"eticheta": "Boală obișnuită", "temei": _T_INTERVAL},
-    "02": {"eticheta": "Accident de muncă", "temei": _T_INTERVAL},
-    "03": {"eticheta": "Accident în afara muncii", "temei": _T_INTERVAL},
-    "04": {"eticheta": "Boală profesională", "temei": _T_INTERVAL},
-    "05": {"eticheta": "Boală infectocontagioasă grupa A", "temei": _T_INTERVAL},
+    "02": {"eticheta": "Accident în timpul deplasării la/de la locul de muncă – neconfirmat de casa de pensii", "temei": _T_INTERVAL},
+    "03": {"eticheta": "Accident de muncă – neconfirmat de casa de pensii", "temei": _T_INTERVAL},
+    "04": {"eticheta": "Boală profesională – neconfirmat de casa de pensii", "temei": _T_INTERVAL},
+    "05": {"eticheta": "Boală infecto-contagioasă din grupa A", "temei": _T_INTERVAL},
     "06": {"eticheta": "Urgență medico-chirurgicală", "temei": _T_INTERVAL},
     "07": {"eticheta": "Carantină", "temei": _T_INTERVAL},
-    "08": {"eticheta": "Maternitate", "temei": _T_INTERVAL},
-    "09": {"eticheta": "Îngrijire copil bolnav", "temei": _T_INTERVAL},
-    "10": {"eticheta": "Reducere timp de muncă cu 1/4 (art. 19)", "temei": _T_INTERVAL},
-    "11": {"eticheta": "Trecere temporară în altă muncă", "temei": _T_INTERVAL},
+    "08": {"eticheta": "Sarcină și lehuzie", "temei": _T_INTERVAL},
+    "09": {"eticheta": "Îngrijire copil bolnav în vârstă de până la 7 ani sau copil cu handicap", "temei": _T_INTERVAL},
+    "10": {"eticheta": "Reducerea cu 1/4 a duratei normale de lucru", "temei": _T_INTERVAL},
+    "11": {"eticheta": "Trecerea temporară în altă muncă", "temei": _T_INTERVAL},
     "12": {"eticheta": "Tuberculoză", "temei": _T_INTERVAL},
-    "13": {"eticheta": "Boli cardiovasculare", "temei": _T_INTERVAL},
-    "14": {"eticheta": "Neoplazii / SIDA", "temei": _T_INTERVAL},
+    "13": {"eticheta": "Boală cardio-vasculară", "temei": _T_INTERVAL},
+    "14": {"eticheta": "Cancer, HIV, SIDA", "temei": _T_INTERVAL},
     "15": {"eticheta": "Risc maternal", "temei": _T_INTERVAL},
-    "16": {"eticheta": "Boală infectocontagioasă", "temei": _T_INTERVAL},
-    "17": {"eticheta": "Reducere cu 1/4 (oncologic)", "temei": _T_INTERVAL},
+    "16": {"eticheta": "Unele tipuri de arsuri", "temei": _T_INTERVAL},
+    "17": {"eticheta": "Îngrijirea pacientului cu afecțiuni oncologice", "temei": _T_INTERVAL},
     # Formularea ANAF, verbatim, stă AICI și nu în câmpul `temei`: `temei` e text afișabil, iar
     # citatul e ASCII („daca", „Daca") fiindcă așa e scris în document. A-l diacritiza ar falsifica
     # citatul; a-l lăsa în câmp ar sparge garda de diacritice. Deci referința e în câmp, litera e în
     # comentariu:
     #   51 -> «D_9=51 daca D_5>=30.10.2020»
     #   91, 92 -> «Daca D_9 = (08,09,91,92,10,15,17) atunci D_20=0»
-    "51": {"eticheta": "Izolare", "temei": _T_NUMIT + " — regula pe D_9=51 (data acordării)"},
-    "91": {"eticheta": "Îngrijire copil bolnav (situație specială)",
+    "51": {"eticheta": "Boală infectocontagioasă pentru care se instituie măsura izolării", "temei": _T_NUMIT + " — regula pe D_9=51 (data acordării)"},
+    "91": {"eticheta": "Îngrijire copil bolnav cu afecțiuni grave, în vârstă de până la 16 ani",
            "temei": _T_NUMIT + " — regula D_20=0 pentru D_9 din (08,09,91,92,10,15,17)"},
-    "92": {"eticheta": "Îngrijire copil cu handicap (situație specială)",
+    "92": {"eticheta": "Supravegherea și îngrijirea copilului în vârstă de până la 18 ani, pentru care s-a dispus măsura carantinei sau a izolării",
            "temei": _T_NUMIT + " — regula D_20=0 pentru D_9 din (08,09,91,92,10,15,17)"},
 }
 

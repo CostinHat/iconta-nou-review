@@ -579,6 +579,14 @@ def _ca_data(x):
 # ============================================================
 # fiecare valoare: (valabil_din, valoare, temei)
 COTE = {
+    # [3d] Chirii platite unei PERSOANE FIZICE de un platitor PJ (cedarea folosintei, CF art.84^1):
+    # venit net = brut - cheltuiala forfetara 20% (alin.3); impozit final 10% retinut la sursa (alin.5).
+    "chirie_pf_forfait": [
+        (date(2026, 1, 1), Decimal("0.20"), Temei("CF", art="84^1", alin="3", data_in="2026-01-01", verificat_la="2026-09-29", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei de 20% asupra acestuia", lant_acte="CF art.84^1 alin.(3) cedarea folosintei catre platitor PJ; forma data de Legea 239/2025 de la 01.01.2026")),
+    ],
+    "chirie_pf_impozit": [
+        (date(2026, 1, 1), Decimal("0.10"), Temei("CF", art="84^1", alin="5", data_in="2026-01-01", verificat_la="2026-09-29", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="Impozitul se calculează prin aplicarea cotei de 10% asupra venitului net și se reține la sursă", lant_acte="CF art.84^1 alin.(5) impozit final retinut la sursa; forma data de Legea 239/2025 de la 01.01.2026")),
+    ],
     # data_out NU se scrie aici - se DERIVA din succesor (_deriva_data_out): valoarea CURENTA (cea mai
     # recenta) ramane in vigoare (data_out None), predecesorul primeste ziua dinaintea succesorului.
     # verificat_la/de_cine = cand/de cine confirmata la sursa (semnal de deriva = vechimea confirmarii).

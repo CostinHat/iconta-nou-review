@@ -21,6 +21,8 @@ from core.common import COTE, cote_neconfirmate
 # o valoare noua fara eticheta ar produce un mesaj sarac; o eticheta ramasa fara cheie = drift.
 ETICHETE = {
     "impozit_micro": "Cota impozit micro (1%)",
+    "chirie_pf_forfait": "Cota cheltuieli forfetare chirie PF (20%, CF art.84^1 alin.3)",
+    "chirie_pf_impozit": "Cota impozit chirie PF retinut la sursa (10%, CF art.84^1 alin.5)",
     "impozit_profit": "Cota impozit pe profit (16%)",
     "tva_standard": "Cota standard TVA",
     "tva_redusa": "Cota redusa TVA",

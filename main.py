@@ -1076,6 +1076,7 @@ class SalariatIn(BaseModel):
     cor: Optional[str] = None
     tichet_masa_valoare: Optional[float] = None  # [F133]
     iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
+    functie_baza: bool = True  # [3c · CF art.77(1)] deducerea personala doar la functia de baza
 
 class SalariatEdit(BaseModel):
     nume: Optional[str] = None
@@ -1097,6 +1098,7 @@ class SalariatEdit(BaseModel):
     cor: Optional[str] = None
     tichet_masa_valoare: Optional[float] = None  # [F133]
     iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
+    functie_baza: Optional[bool] = None  # [3c · CF art.77(1)]
 
 class MigrareValideazaIn(BaseModel):
     cui_uri: list[str]
@@ -5533,6 +5535,7 @@ class PrapastieIn(BaseModel):
     ore_zi: Optional[float] = None
     data_angajare: Optional[str] = None
     scutit_contrib_minim: bool = False
+    functie_baza: bool = True  # [3c · CF art.77(1)] preview-ul de net onoreaza functia de baza
 
 
 @app.post("/tenants/{tenant_id}/prapastie-salariu")

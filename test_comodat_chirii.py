@@ -13,9 +13,16 @@ def test_chirie_pj():
     assert ("4426", "401", Decimal("630.00")) in r["linii"]
 
 def test_chirie_pf():
-    r = m.nota_chirie_platita(3000, proprietar="pf", cota_tva=21)
-    assert r["linii"] == [("612", "462", Decimal("3000.00"))]
-    assert "Declaratia Unica" in r["nota"]
+    # [3d · CF art. 84^1] PF, platitor PJ -> retinere la sursa 10% pe venitul NET (net = brut - 20%).
+    # Portofoliu: chirie 1000 -> net 800 -> retinere 80 -> de plata PF 920. MUTATIE: scoate linia
+    # 462=446 din nota_chirie_platita -> asertia pica.
+    r = m.nota_chirie_platita(1000, proprietar="pf")
+    assert ("612", "462", Decimal("1000.00")) in r["linii"]
+    assert ("462", "446", Decimal("80.00")) in r["linii"]
+    assert r["venit_net"] == Decimal("800.00")
+    assert r["retinere_sursa"] == Decimal("80.00")
+    assert r["de_plata_pf"] == Decimal("920.00")
+    assert "84^1" in r["nota"]
 
 def test_chirie_incasata():
     r = m.nota_chirie_incasata(3000, cota_tva=21)

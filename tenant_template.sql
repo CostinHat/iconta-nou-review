@@ -1226,6 +1226,7 @@ CREATE TABLE TENANT_PLACEHOLDER.salariati (
     ore_zi numeric DEFAULT 8,
     salariu_brut numeric DEFAULT 0,
     persoane_intretinere integer DEFAULT 0,
+    functie_baza boolean NOT NULL DEFAULT true,        -- [3c] CF art.77(1): deducerea personala se acorda NUMAI la locul unde e functia de baza
     data_nastere date,                                 -- [deducere suplimentara] tineri <26 (CF art.77 alin.10a)
     copii_scolarizati integer NOT NULL DEFAULT 0,      -- [deducere suplimentara] copii <=18 in invatamant (100 lei/copil)
     declaratie_copii boolean NOT NULL DEFAULT false,   -- [deducere suplimentara] declaratia parintelui (art.77 alin.12-13)

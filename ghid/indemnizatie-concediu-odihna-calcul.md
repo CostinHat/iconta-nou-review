@@ -61,9 +61,9 @@ E o obligație, nu o recomandare. Plata odată cu salariul lunii următoare, cum
 
 ## Regimul fiscal
 
-Indemnizația de concediu de odihnă e venit de natură salarială. Se impozitează și intră în baza contribuțiilor ca orice element salarial, în luna în care e plătită.
+Indemnizația de concediu de odihnă e venit de natură salarială: se impozitează și intră în baza contribuțiilor ca orice element salarial.
 
-Apartenența la lună urmează regula generală de la salarii: contează luna plății, nu luna în care s-a efectuat concediul. Un concediu efectuat la sfârșitul unei luni, cu indemnizația plătită înainte, aparține lunii plății — cu efect direct asupra D112.
+Spre deosebire de regula generală a lunii plății, indemnizația de concediu de odihnă **se defalcă pe lunile la care se referă** și se impune cumulat cu veniturile realizate în acele luni, folosind cotele de contribuții din lunile respective (**HG 1/2016, titlul IV, pct. 14 alin. (11)**). Un concediu care se întinde pe două luni se împarte între ele, chiar dacă a fost plătit integral într-una singură — cu efect direct asupra D112.
 
 ## Reportarea
 

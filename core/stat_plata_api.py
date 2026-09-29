@@ -19,7 +19,7 @@ def stat_plata(conn, schema, an, luna):
         cur.execute(f"""
             SELECT id, nume, prenume, cnp, salariu_brut, persoane_intretinere, part_time, ore_zi,
                    tichet_masa_valoare, iban, cor, data_angajare, data_incetare,
-                   data_nastere, copii_scolarizati, declaratie_copii
+                   data_nastere, copii_scolarizati, declaratie_copii, functie_baza
             FROM {schema}.salariati
             WHERE (data_incetare IS NULL OR data_incetare >= %s)
               AND (data_angajare IS NULL OR data_angajare < (%s::date + INTERVAL '1 month'))
@@ -50,7 +50,7 @@ def stat_plata(conn, schema, an, luna):
     _pontaj_confirmat = _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]
     _cs_sal = conn.cursor()
     for (sid, nume, prenume, cnp, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
-         data_nastere, copii_scolarizati, declaratie_copii) in randuri:
+         data_nastere, copii_scolarizati, declaratie_copii, functie_baza) in randuri:
         brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
         _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, sid, an, luna, data_ang, data_inc)
         _fac_prorata = (_zlm / _zll) if _zll else 0.0  # lit.a): zile ACTIVE si LA MINIM
@@ -80,6 +80,7 @@ def stat_plata(conn, schema, an, luna):
         _cum_a3 = float(_ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna - 1) or 0) if luna > 1 else 0.0
         _exces_v3 = _ben.exces_vacanta_luna(_cum_c3, _cum_a3, plafon_vac_an)
         calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
+                                         functie_baza=bool(functie_baza),   # [3c] CF art.77(1): deducere NUMAI la functia de baza
                                          norma_intreaga=not part_time,
                                          venit_brut_total=float(brut or 0),
                                          data_angajare=data_ang,

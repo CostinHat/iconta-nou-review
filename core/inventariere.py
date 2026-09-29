@@ -84,12 +84,11 @@ def nota_minus(valoare, cont_stoc="371", imputabil=False,
     linii = [(c, str(cont_stoc), v)]
     if imputabil:
         vi = _d(valoare_imputare if valoare_imputare is not None else v)
-        tva = (vi * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
         cont_crt = "4282" if vinovat == "salariat" else "461"
         linii.append((cont_crt, "7581", vi))
-        if tva > 0:
-            linii.append((cont_crt, "4427", tva))
-    elif not asigurat_sau_distrus:
+        # [3e · HG 1/2016 tit.VII pct.78(6)a) / pct.79(10)] suma imputata NU e in sfera TVA -> fara 4427.
+    if not asigurat_sau_distrus:
+        # ajustarea TVA DEDUSE pe bunul lipsa din gestiune (art. 304), pe COSTUL bunului (v), nu pe imputare.
         tva = (v * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
         if tva > 0:
             linii.append(("635", "4426", tva))  # ajustare art. 304

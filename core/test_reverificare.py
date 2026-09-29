@@ -73,7 +73,10 @@ from core import reverificare as R  # noqa: E402
 #: care nu consemneaza nicio modificare, 8 temeiuri fara articol, 5 cioturi. Alta tema, alta restanta.
 DISTRIBUTIE = {
     ("VOLATIL", "DEPUS"): 13,
-    ("VOLATIL", "CALCULAT"): 7,
+    # 7 -> 9 la 29.09.2026 (lot18, 3d): cele doua cote CF art.84^1 (forfait 20% alin.(3) +
+    # impozit 10% alin.(5), chirii platite unei PF de un platitor PJ) au intrat in COTE si sunt
+    # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
+    ("VOLATIL", "CALCULAT"): 9,
     ("STABIL", "DEPUS"): 7,
     ("STABIL", "CALCULAT"): 10,
     ("MISCATOR", "CALCULAT"): 5,

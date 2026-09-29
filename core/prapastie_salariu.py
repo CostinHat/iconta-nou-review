@@ -23,7 +23,7 @@ CE ÎNTOARCE, și ce NU:
   - `cod`           — când nu se aplică: de ce, dintr-un vocabular ÎNCHIS. Textul îl compune
                       ecranul.
 
-NU e o estimare de fluturaș și n-o înlocuiește: `functie_baza=True`, o singură funcție de bază,
+NU e o estimare de fluturaș și n-o înlocuiește: o singură funcție de bază (după bifă),
 fără concedii, fără corecții. Se cheamă în momentul angajării, cu ce s-a completat pe ecran.
 
 `brut_egal` se caută, nu se rezolvă analitic: formula are praguri și rotunjiri, iar o formulă
@@ -53,7 +53,7 @@ def _net(brut, el, la_data):
         sub_26=_s.sub_26_la(el.get("data_nastere"), la_data) if el.get("data_nastere") else False,
         copii_scoala=el.get("copii_scolarizati") or 0,
         declaratie_copii=bool(el.get("declaratie_copii")),
-        functie_baza=True,
+        functie_baza=bool(el.get("functie_baza", True)),  # [3c · CF art.77(1)] din bifa formularului
         la_data=la_data,
         norma_intreaga=(el.get("tip_norma") or "intreaga") == "intreaga",
         exceptat_suprataxare=bool(el.get("scutit_contrib_minim")),

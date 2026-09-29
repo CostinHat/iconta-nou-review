@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**640 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**643 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 608
+### `core/` — 611
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8826,6 +8826,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/scan_valori_afisate.py` — Valori FISCALE scrise literal in TEXTUL AFISAT de ecrane.
 - `core/test_11_deducere_copii_gard.py` — GARD #11: deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) NU se acorda tacit — art.77 alin.(12)-(13)
 - `core/test_12_salariu_minim_luna.py` — GARD #12: CF art.77 alin.(3) teza finala — cand in aceeasi luna se aplica mai multe valori ale
+- `core/test_3c_functie_baza.py` — GARD [3c, CF art.77 alin.(1)]: deducerea personala se acorda NUMAI la functia de baza.
+- `core/test_3i_storno_cota.py` — GARD [3i, CF art. 282 alin. (9)]: storno-ul unei facturi cu cota 19% (emisa inainte de 01.08.2025)
 - `core/test_a10_efactura_baza_linie.py` — [A10, 18.09.2026] Import e-Factura: baza liniei = `LineExtensionAmount` (netul UBL după
 - `core/test_a11y_contrast_tokens.py` — core/test_a11y_contrast_tokens.py — GARD: token-urile de culoare trec contrastul WCAG AA (4.5:1).
 - `core/test_a11y_landmarks.py` — [Regula 6 + Regula 13] GARD LANDMARKS app-wide (18.08.2026).
@@ -9232,6 +9234,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_nir_randuri_dinamice.py` — GARD cap.24 — randuri dinamice NIR (ecranStocuri), re-rulate IN POARTA prin chromium headless.
 - `core/test_niveluri_feedback.py` — GARD P0 (07.09.2026) — cele patru niveluri de feedback nu pot deveni o scurtătură nesigură.
 - `core/test_nomenclatoare_ancorate.py` — GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
+- `core/test_nomenclator_cm_eticheta_oficiala.py` — GARD [3b]: etichetele Nomenclatorului 9 din core/nomenclator_cm.py == lista OFICIALA ANAF.
 - `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
 - `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
 - `core/test_note_explicative_micro.py` — GARDĂ: ce datorează o microentitate la notele explicative — și de ce NU e „nimic".

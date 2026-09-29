@@ -26,6 +26,7 @@ MODIFICARI = {
     ("CF", "28"): datetime.date(2026, 2, 25),
     ("CF", "51"): datetime.date(2026, 1, 1),
     ("CF", "78"): datetime.date(2021, 2, 26),
+    ("CF", "84^1"): datetime.date(2026, 1, 1),  # [3d] masurat la sursa 29.09.2026: forma din Legea 239/2025, alin.(3)/(5) in vigoare de la 01.01.2026
     ("CF", "97"): datetime.date(2018, 1, 1),
     ("CF", "138"): None,
     ("CF", "156"): None,

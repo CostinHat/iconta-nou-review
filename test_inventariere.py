@@ -22,11 +22,13 @@ def test_minus_neimputabil_distrus():
     assert len(r["linii"]) == 1
 
 def test_minus_imputabil_salariat():
+    # [3e · HG 1/2016 tit.VII pct.78(6)a)] suma imputata NU e in sfera TVA (fara 4427); ajustarea
+    # TVA DEDUSE pe COST ramane (635=4426, 210 = 1000*21%). MUTATIE: re-adauga 4427 + elif -> rosu.
     r = m.nota_minus(1000, imputabil=True, valoare_imputare=1200, cota_tva=21)
     assert ("607", "371", Decimal("1000.00")) in r["linii"]
     assert ("4282", "7581", Decimal("1200.00")) in r["linii"]
-    assert ("4282", "4427", Decimal("252.00")) in r["linii"]
-    assert not any(l[0] == "635" for l in r["linii"])
+    assert not any(l[1] == "4427" for l in r["linii"]), "4427 pe imputare interzis (pct.78(6)a)"
+    assert ("635", "4426", Decimal("210.00")) in r["linii"]
 
 def test_minus_imputabil_tert():
     r = m.nota_minus(1000, imputabil=True, vinovat="tert", cota_tva=21)

@@ -15,7 +15,7 @@ comisionar, prestare in nume propriu) + practica ANAF.
   practica simpla: primire % (605 + 4426) = 401 pentru partea proprie,
   461 = 401 partea de refacturat; emitere 4111 = 708 + 4427."""
 from decimal import Decimal, ROUND_HALF_UP
-from core.common import nomenclator_cerut
+from core.common import nomenclator_cerut, cota
 
 B = Decimal("0.01")
 
@@ -36,17 +36,31 @@ def nota_comodat(valoare, moment="primire"):
         return {"linii": [("891", "8038", v)]}
     raise ValueError(nomenclator_cerut("moment", "primire|restituire"))
 
-def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj"):
-    """PJ: 612=401+4426; PF: 612=462 fara TVA (PF declara prin Declaratia Unica)."""
-    if cota_tva is None:
+def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj", la_data=None):
+    """PJ: 612=401+4426. PF (CF art. 84^1): 612=462 fara TVA, apoi platitorul PJ retine la sursa
+    10% din venitul NET (net = brut - 20% cota forfetara): 462=446."""
+    # [3d] Pentru PJ (regim normal) cota lipsa e un refuz de FOND (fara default fiscal tacit); pentru
+    # PF nu exista TVA, deci cota nu se cere. Refuzul de cota ramane INAINTEA validarii de forma.
+    if proprietar != "pf" and cota_tva is None:
         raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     c = _d(chirie)
     if c <= 0:
         raise ValueError("chirie invalida")
     if proprietar == "pf":
-        return {"linii": [("612", "462", c)],
-                "nota": "chirie PF: fara TVA, fara retinere - proprietarul "
-                        "declara prin Declaratia Unica"}
+        # [3d · CF art. 84^1 alin. (3),(4),(5)] venit net = brut - 20% cota forfetara; platitorul PJ
+        # calculeaza si RETINE la sursa 10% pe venitul net, la momentul platii (impozit final).
+        # [3d · CF art.84^1 alin.(3)] «se stabileste la fiecare plata»: cota de la data platii (implicit azi).
+        forfait = cota("chirie_pf_forfait", la_data)[0]   # cheltuieli forfetare 20%
+        impozit = cota("chirie_pf_impozit", la_data)[0]   # impozit final 10% retinut la sursa
+        venit_net = (c - c * forfait).quantize(B, rounding=ROUND_HALF_UP)
+        retinere = (venit_net * impozit).quantize(B, rounding=ROUND_HALF_UP)
+        linii = [("612", "462", c)]
+        if retinere > 0:
+            linii.append(("462", "446", retinere))
+        return {"linii": linii, "venit_brut": c, "venit_net": venit_net,
+                "retinere_sursa": retinere, "de_plata_pf": c - retinere,
+                "nota": "chirie PF: fara TVA; platitorul PJ retine la sursa 10% din venitul net "
+                        "(net = brut - 20% cota forfetara), impozit final - CF art. 84^1"}
     tva = _tva(c, cota_tva)
     linii = [("612", "401", c)]
     if tva > 0:

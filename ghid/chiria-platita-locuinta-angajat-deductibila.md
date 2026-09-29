@@ -32,7 +32,7 @@ Firma închiriază de la un terț un apartament pentru un inginer venit din alt 
 
 ### Dacă locuința este a firmei
 
-Dacă firma pune la dispoziție o locuință de serviciu proprie, în loc să plătească chirie, se aplică o limită: cheltuielile de funcționare, întreținere și reparații sunt deductibile în limita suprafețelor construite prevăzute de legea locuinței (art. 25 alin. (3) lit. j)). Normele stabilesc calculul: raportul dintre suprafața construită prevăzută de lege, majorată cu 10%, și suprafața construită totală a locuinței (HG 1/2016, pct. 15 alin. (2)). Amortizarea locuinței urmează regulile de la art. 28.
+Dacă firma pune la dispoziție o locuință de serviciu proprie, în loc să plătească chirie, se aplică o limită: cheltuielile de funcționare, întreținere și reparații sunt deductibile în limita suprafețelor construite prevăzute de legea locuinței (art. 25 alin. (3) lit. j)). Deductibilitatea e în limita corespunzătoare suprafețelor construite prevăzute de Legea locuinței nr. 114/1996, republicată (art. 25 alin. (3) lit. j)). Majorarea de 10% a suprafeței, care exista în normă, a fost eliminată din art. 25 alin. (3) lit. j) începând cu 01.01.2024 — nu se mai aplică. Amortizarea locuinței urmează regulile de la art. 28.
 
 ### Pași practici pentru contabil
 

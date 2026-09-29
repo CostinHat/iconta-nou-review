@@ -1,6 +1,6 @@
 ---
 title: Cod de TVA anulat din oficiu: ce faci în ziua următoare
-description: Anularea codului produce efecte de la data comunicării deciziei: firma nu mai colectează TVA, iar costul real e ajustarea TVA deduse pentru stocuri și pentru bunurile de capital aflate în perioada de ajustare de 5 sau 20 de ani (art. 316 alin. 11 din Codul fiscal).
+description: Anularea codului produce efecte diferit după caz — de la declararea ca inactiv, din prima zi a lunii următoare termenului ultimului decont, ori doar de la comunicarea deciziei (la lit. c) și h)), potrivit art. 316 alin. (11) și (15) din Codul fiscal; costul real e ajustarea TVA deduse pentru stocuri și pentru bunurile de capital aflate în perioada de ajustare de 5 sau 20 de ani.
 published: 2026-08-19
 modified: 2026-08-19
 ---

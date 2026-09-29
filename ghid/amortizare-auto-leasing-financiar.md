@@ -20,6 +20,8 @@ Răspunde regula, nu contractul semnat cu „leasing" în titlu: la **leasingul 
 **Pct. 216 alin. (1)**: la leasingul financiar, locatorul recunoaște bunurile date în leasing drept **creanțe imobilizate**, nu ca imobilizări proprii — el nu mai amortizează, pentru că bunul nu mai e, contabil, al lui.
 
 **Pct. 321**: datoriile de leasing financiar în valută se înregistrează la cursul BNR de la **data acordării finanțării** (nu la fiecare rată), cu reevaluare lunară a soldului rămas.
+
+**Asigurarea refacturată la cost.** Când locatorul asigură el însuși bunul și refacturează prima la cost, suma nu intră în baza de impozitare TVA a operațiunii de leasing — e o sumă achitată în numele și în contul utilizatorului, decontată acestuia (**Codul fiscal art. 286 alin. (4) lit. e)**). Nu se adaugă la baza ratei de leasing și nu se retaxează.
 :::
 
 ## Monografia la locatar, leasing financiar

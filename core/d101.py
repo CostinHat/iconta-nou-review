@@ -245,7 +245,7 @@ def _scadenta(an):
 
 
 def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103", imca=None, rezerva=None,
-                cifra_afaceri=None):
+                cifra_afaceri=None, profit_art18=None):
     """Reconstruit 01.08.2026 pe FORMULARUL OFICIAL (OPANAF 206/2025, D101_A600 v10,
     anaf_surse/d101_struct_anaf.txt). `intrari` = dict cu campurile P de intrare (P1,P2,P4,P5 din
     contabilitate + ajustari fiscale din manual). Numerotarea inventata anterioara (p11=impozit) a
@@ -312,10 +312,16 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
         P["P40"] = 0
     P["P40a"] = -P["P38a"] if P["P38a"] < 0 else 0
     # --- Impozit pe profit (rd.41) ---
-    P["P411"] = _i(Decimal(P["P40"]) * cota / 100)     # 16% pe profitul impozabil
-    P["P412"] = g("P412")                               # 5% baruri de noapte etc.
+    P["P412"] = g("P412")                               # 5% baruri de noapte etc. (art.18)
     if d_grup:
         P["P412"] = 0
+    # [3f] rd.41.1 = 16% DOAR pe profitul care se impune cu 16%; profitul activitatilor art.18
+    # (baruri/cluburi de noapte, discoteci, cazinouri) se impoziteaza 5% pe venituri la rd.41.2 -
+    # impozit MINIM, NU cumulat cu 16% (CF art.18). Fara scaderea profitului art.18 din baza de 16%,
+    # profitul barului ar fi impozitat SI cu 16% SI cu 5% = dubla impunere.
+    _p40_art18 = _i(profit_art18 or 0)
+    _p40_art18 = 0 if _p40_art18 < 0 else min(_p40_art18, P["P40"])
+    P["P411"] = _i(Decimal(P["P40"] - _p40_art18) * cota / 100)   # 16% pe profitul care se impune cu 16%
     P["P41"] = P["P411"] + P["P412"]                   # P41=P411+P412  [R41]
     # --- Credit fiscal, sponsorizare, reduceri (rd.42-45) ---
     P["P421"] = g("P421")
@@ -495,6 +501,7 @@ def genereaza(conn, schema, perioada, manual=None):
     # (=1%% x (VT-Vs-I-A)) trebuie furnizat explicit; il CEREM, NU il omitem tacit (ar subevalua impozitul
     # unei firme mari). TEMEI: CF art.18^1 alin.(1).
     ca_prec = manual.pop("ca_an_precedent_eur", None)
+    profit_art18 = manual.pop("profit_art18", None)   # [3f] profit impozabil aferent activitatilor art.18 (5% la P412) -> se scade din baza de 16%
     if ca_prec not in (None, "") and Decimal(str(ca_prec)) > PRAG_IMCA_EUR and "P47" not in manual:
         raise ValueError(
             "D101 IMCA (art.18^1 alin.1): cifra de afaceri an precedent %s EUR > 50.000.000 -> IMCA "
@@ -508,7 +515,7 @@ def genereaza(conn, schema, perioada, manual=None):
                "P4": r.get("ven_fin", 0), "P5": r.get("chelt_fin", 0)}
     intrari.update(manual)   # ajustarile fiscale ale contabilului completeaza/suprascriu baza
     res = calcul_d101(prof, perioada.an, intrari, cota=cota, d_grup=d_grup, cod_obligatie=cod_obligatie,
-                      cifra_afaceri=r.get("cifra_afaceri", 0),
+                      cifra_afaceri=r.get("cifra_afaceri", 0), profit_art18=profit_art18,
                       rezerva={"capital": r.get("capital", 0),
                                "rezerva_existenta": r.get("rezerva_existenta", 0),
                                "chelt_impozit": r.get("chelt_impozit", 0)})

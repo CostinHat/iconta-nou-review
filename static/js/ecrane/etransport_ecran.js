@@ -12,7 +12,7 @@ function _fereastraUit(dataTransport, intracom) {
   const dt = new Date(dataTransport + "T00:00:00");
   const zi = 86400000;
   const zileVal = intracom ? 15 : 5;
-  const valabilPana = new Date(dt.getTime() + zileVal * zi);
+  const valabilPana = new Date(dt.getTime() + (zileVal - 1) * zi);   // [OUG 41/2022 art.11(2)] ziua transportului = ziua 1 -> ultima zi valabila = X+(N-1)
   const zilePanaTransport = Math.round((dt - azi) / zi);
   const zileRamase = Math.round((valabilPana - azi) / zi);
   const preaDevreme = zilePanaTransport > 3;
@@ -178,7 +178,7 @@ export async function ecranEtransport(corp, nav, t) {
     const updateFereastra = () => {
       const zf = corp.querySelector("#et-fereastra");
       const btn = corp.querySelector("#et-trimite");
-      const f = _fereastraUit(v("t-data"), v("et-tip") === "10");
+      const f = _fereastraUit(v("t-data"), ["10", "60", "80"].includes(v("et-tip")));
       const cul = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" }[f.semafor];
       zf.innerHTML = `<span class="fd-stare" style="color:${cul}">Fereastră UIT: ${esc(f.mesaj)}</span>`;
       btn.disabled = !f.ok;
@@ -205,7 +205,7 @@ export async function ecranEtransport(corp, nav, t) {
 
     corp.querySelector("#et-trimite").addEventListener("click", () => {
       const zona = corp.querySelector("#et-mesaj");
-      const f = _fereastraUit(v("t-data"), v("et-tip") === "10");
+      const f = _fereastraUit(v("t-data"), ["10", "60", "80"].includes(v("et-tip")));
       if (!f.ok) { arataMesaj(zona, f.mesaj, "avert"); return; }   // poarta de timp (backend re-verifica)
       confirmaCaseta(zona, `Trimiți notificarea UIT în SPV? Se validează întâi pe TEST. ${f.mesaj}`, async () => {
         curataEroriCamp(corp);

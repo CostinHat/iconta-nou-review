@@ -599,7 +599,7 @@ def factura_creeaza(tenant_id, date, ctx):
     from core import anaf_api as _anaf
     _fti = date.furnizor_tva_incasare
     if date.directie == "primita" and str(date.tert_cui or "").strip():
-        _fti = _anaf.furnizor_incasare_freeze(date.tert_cui, fallback=bool(date.furnizor_tva_incasare))
+        _fti = _anaf.furnizor_incasare_freeze(date.tert_cui, fallback=bool(date.furnizor_tva_incasare), data=date.data_emitere)  # [3j] statutul la data emiterii
     try:
         with db.get_conn(schema) as conn:
             r = facturi_api.creeaza_factura(
@@ -2501,7 +2501,7 @@ def etransport_trimite(tenant_id, corp, ctx):
     data_transport = (corp.get("transport") or {}).get("data")
     if not data_transport:
         raise _erori.DateInvalide("data transport lipsă")
-    intracom = str(corp.get("cod_tip_operatiune")) == "10"   # AIC = achizitie intracomunitara -> UIT 15 zile
+    intracom = _es.uit_15_zile(str(corp.get("cod_tip_operatiune")))   # [3h · OUG 41/2022 art.11(2)] 15 zile: cod 10 (lit.a), 60 (lit.g), 80 (lit.j)
     mediu = os.environ.get("ETRANSPORT_MEDIU", os.environ.get("EFACTURA_MEDIU", "prod"))
     return _es.trimite(schema, principal, cui, xml, data_transport, intracom=intracom,
                        mediu=mediu, ref=corp.get("ref"))

@@ -1,58 +1,52 @@
 ---
-title: Registrul de evidență a zilierilor: completarea zilnică și extrasul lunar trimis la ITM până pe 5
-description: Beneficiarul completează Registrul de evidență a zilierilor zilnic, înainte de începerea activității, și trimite lunar, până la data de 5, un extras cu înregistrările lunii precedente la inspectoratul teritorial de muncă de la sediu (Legea nr. 52/2011, art. 5 alin. (2) și art. 8 alin. (1)-(2)).
+title: Registrul electronic de evidență a zilierilor: transmiterea zilnică la ITM înainte de începerea lucrului
+description: Din 20 decembrie 2019, Registrul electronic de evidență a zilierilor este singura modalitate de transmitere a datelor; beneficiarul îl completează și îl transmite inspectoratului teritorial de muncă zilnic, înainte de începerea activității de către fiecare zilier (Legea nr. 52/2011, art. 4^1, art. 5 alin. (2) lit. a) și b)).
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-09-29
 poarta: v1
 ---
 
-# Registrul de evidență a zilierilor: completarea zilnică și extrasul lunar trimis la ITM până pe 5
+# Registrul electronic de evidență a zilierilor: transmiterea zilnică la ITM înainte de începerea lucrului
 
-Registrul de evidență a zilierilor se completează zilnic, în fiecare zi în care firma lucrează cu zilieri, înainte ca aceștia să înceapă lucrul. Până la data de 5 a lunii următoare, beneficiarul trimite un extras cu înregistrările lunii precedente la inspectoratul teritorial de muncă (ITM) în a cărui rază își are sediul. Sunt două obligații distincte, iar fiecare poate fi verificată separat la control.
+Evidența zilierilor nu se mai ține pe hârtie și nu se mai depune printr-un extras lunar la inspectoratul teritorial de muncă (ITM). Din 20 decembrie 2019, singura modalitate de transmitere a datelor este Registrul electronic de evidență a zilierilor, pe care beneficiarul îl completează și îl transmite ITM-ului zilnic, înainte de începerea activității de către fiecare persoană. Cine raportează încă după vechiul regim de hârtie cu extras lunar până pe 5 se referă la o formă a legii care nu mai este în vigoare.
 
-### Ce este Registrul și unde se ține
+### Registrul este electronic și este singura modalitate de transmitere
 
-Legea nr. 52/2011, art. 1 alin. (1) lit. c), definește Registrul drept „registru cu regim special, întocmit de către beneficiar pentru a ţine evidenţa zilnică a zilierilor”. Potrivit art. 5 alin. (2) lit. a), beneficiarul trebuie să înființeze Registrul după modelul din anexa nr. 1 la lege. Registrul se păstrează la sediu și/sau la punctele de lucru, după caz. Beneficiarul trebuie să îl prezinte organelor de control (lit. c)).
+Legea nr. 52/2011, art. 4^1, prevede că „la data de 20 decembrie 2019 se înființează Registrul electronic de evidență a zilierilor, ca singura modalitate de transmitere a datelor privind evidența zilierilor”. Sistemul informatic aferent este pus la dispoziție de Inspecția Muncii, iar metodologia de întocmire și transmitere, precum și înregistrările care se efectuează, se stabilesc prin ordin al ministrului muncii.
 
-### Completarea zilnică
+Prin urmare, modelul de registru pe hârtie (fostul „registru cu regim special” după anexa nr. 1) și extrasul lunar depus la ITM până la data de 5 nu mai reprezintă regimul aplicabil. Obligația actuală, potrivit art. 5 alin. (2) lit. a), este ca beneficiarul „să înființeze, să completeze și să transmită Registrul electronic de evidență a zilierilor conform metodologiei și modelului stabilite prin ordinul ministrului muncii”.
 
-Art. 5 alin. (2) lit. b) cere completarea Registrului „înainte de începerea activităţii”, conform instrucțiunilor din anexa nr. 2. Art. 8 alin. (1) stabilește că toți zilierii se înscriu în ordine cronologică, iar Registrul „se întocmeşte zilnic, exceptând perioadele în care nu se apelează la serviciile zilierilor”. Excepție: la păşunatul sezonier al ovinelor, bovinelor și cabalinelor, Registrul se întocmește săptămânal (art. 8 alin. (1^1)).
+### Transmiterea zilnică, înainte de începerea activității
 
-Pe fiecare rând se completează, potrivit anexei nr. 2:
+Art. 5 alin. (2) lit. b) cere beneficiarului „să transmită Registrul electronic de evidență a zilierilor inspectoratului teritorial de muncă, zilnic, înainte de începerea activității de către fiecare persoană care urmează să se afle într-un raport de muncă” în calitate de zilier. Nu mai există, așadar, două termene distincte (completare zilnică plus extras lunar): transmiterea electronică zilnică, făcută înainte de începerea lucrului, este chiar modalitatea prin care datele ajung la ITM.
+
+Art. 8 alin. (1) stabilește că toți zilierii se înregistrează în Registrul electronic în ordine cronologică. Pentru activitățile sezoniere din agricultură, silvicultură, pășunatul sezonier al bovinelor și cabalinelor, grădinile botanice și cercetarea-dezvoltarea din domeniul agricol, art. 8 alin. (2) prevede reguli specifice de înregistrare.
+
+### Ce se înregistrează pentru fiecare zilier
+
+Conform metodologiei aprobate prin ordinul ministrului muncii, pentru fiecare zi de lucru se înregistrează:
 - data zilei de lucru, numele zilierului, actul de identitate și CNP-ul;
-- semnătura zilnică a zilierului, înainte de începerea lucrului, prin care declară pe propria răspundere că starea sănătății îi permite activitatea;
-- semnătura după instruirea privind securitatea și sănătatea în muncă;
 - activitatea din CAEN și locul executării (fermă, grădină etc.);
-- numărul de ore lucrate, remunerația brută convenită și remunerația netă plătită;
-- semnătura zilierului pentru primirea banilor, semnătura și ștampila beneficiarului;
-- acordul părinților, pentru minori.
+- numărul de ore lucrate, remunerația brută convenită și remunerația netă plătită.
 
-Semnătura zilierului în Registru este și dovada plății remunerației (art. 11 alin. (3)).
-
-### Extrasul lunar către ITM
-
-Art. 8 alin. (2): beneficiarul înaintează lunar, „până cel târziu la data de 5 a fiecărei luni”, către ITM „unde îşi are sediul”, un extras al Registrului „conţinând înregistrările din luna precedentă”. Extrasul se poate transmite și electronic.
-
-Trei precizări practice:
-- competent este ITM-ul de la **sediu**, chiar dacă zilierii au lucrat la un punct de lucru din alt județ;
-- extrasul acoperă doar luna precedentă, nu tot Registrul;
-- o lună în care nu s-a lucrat cu zilieri nu generează înregistrări, pentru că Registrul nu se întocmește în acele perioade.
+Plata remunerației se dovedește potrivit art. 11 din lege; instruirea privind securitatea și sănătatea în muncă și, pentru minori, acordul părinților rămân obligații ale beneficiarului, verificabile la control.
 
 ### Exemplu
 
-Un SRL cu sediul în Ilfov folosește în august 2026 patru zilieri la un punct de lucru din Prahova, 10 zile fiecare. Rezultă 40 de rânduri, fiecare completat înainte de începerea lucrului. Până la 5 septembrie 2026, firma trimite extrasul cu cele 40 de înregistrări din august la ITM Ilfov, nu la ITM Prahova.
+Un SRL cu sediul în Ilfov folosește în august 2026 patru zilieri la un punct de lucru din Prahova, 10 zile fiecare. În fiecare dintre cele 10 zile, înainte ca zilierii să înceapă lucrul, firma transmite electronic Registrul către ITM. Nu mai există un extras separat trimis până la 5 septembrie: datele au ajuns deja la ITM prin transmiterea electronică zilnică din luna august.
 
 ### Sancțiunea
 
-Art. 14 alin. (1) lit. b) sancționează cu amendă de 6.000 lei încălcarea art. 8 alin. (1) și (2), deci lipsa completării zilnice și netrimiterea extrasului. Aceeași amendă vizează și încălcarea art. 5 alin. (2) lit. a)-d). Constatarea o fac inspectorii de muncă (art. 15 alin. (1)).
+Încălcarea obligațiilor de la art. 5 alin. (2) lit. a)-d), inclusiv neînființarea, necompletarea sau netransmiterea zilnică a Registrului electronic, se sancționează cu amendă potrivit art. 14 alin. (1) lit. b) din Legea nr. 52/2011. Constatarea contravențiilor o fac inspectorii de muncă (art. 15).
 
 ### Pași practici pentru contabil
 
-1. Verifică dacă beneficiarul are Registrul înființat după modelul din anexa nr. 1 și unde este păstrat.
-2. La închiderea lunii, preia din Registru orele și remunerațiile pentru calculul obligațiilor fiscale.
-3. Transmite extrasul lunii precedente până pe 5 la ITM-ul de la sediu și păstrează dovada.
+1. Verifică dacă beneficiarul are acces la Registrul electronic (portalul Inspecției Muncii) și cine îl completează.
+2. Asigură-te că transmiterea se face zilnic, înainte de începerea activității fiecărui zilier, nu la sfârșitul zilei sau al lunii.
+3. La închiderea lunii, preia din Registrul electronic orele și remunerațiile pentru calculul obligațiilor fiscale.
 
 ### De reținut
-- Registrul se completează zilnic, înainte de începerea activității (Legea nr. 52/2011, art. 5 alin. (2) lit. b), art. 8 alin. (1)).
-- Extrasul cu înregistrările lunii precedente ajunge la ITM-ul de la sediu până la data de 5 (art. 8 alin. (2)).
-- Nerespectarea art. 8 alin. (1)-(2) se sancționează cu amendă de 6.000 lei (art. 14 alin. (1) lit. b)).
+- Din 20 decembrie 2019, Registrul electronic este singura modalitate de transmitere a datelor despre zilieri (Legea nr. 52/2011, art. 4^1).
+- Beneficiarul transmite Registrul electronic la ITM zilnic, înainte de începerea activității de către fiecare zilier (art. 5 alin. (2) lit. b)).
+- Regimul de hârtie cu extras lunar depus până pe 5 nu mai este aplicabil.
+- Încălcarea art. 5 alin. (2) lit. a)-d) se sancționează potrivit art. 14 alin. (1) lit. b).

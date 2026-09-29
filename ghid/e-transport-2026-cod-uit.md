@@ -44,7 +44,7 @@ Dacă transportul e anulat, returnat sau finalizat doar parțial, se generează 
 
 **Ordinul nr. 1337/1268/2024** — Procedura de utilizare și funcționare a sistemului RO e-Transport.
 
-**Art. 13 din OUG nr. 41/2022** — sancțiunile contravenționale.
+**Art. 13^1 din OUG nr. 41/2022** — sancțiunile contravenționale, inclusiv pentru netransmiterea datelor de poziționare (GPS) aferente obligațiilor din art. 8^1. Sancțiunile GPS se aplică din 1 ianuarie 2026, după încheierea perioadei de grație.
 
 **OUG nr. 129/2024**, în vigoare din 21 noiembrie 2024 — confiscarea devine progresivă, calculată pe o fereastră de 12 luni de la prima abatere.
 :::

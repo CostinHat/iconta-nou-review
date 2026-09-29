@@ -17,6 +17,8 @@ Un punct de lucru obișnuit funcționează sub codul fiscal al firmei-mamă. Dar
 — Legea 207/2015 (Codul de procedură fiscală), art. 81^1 alin. (1) (sursă: anaf_surse/legea_207_2015_consolidat.txt)
 :::
 
+Regula de bază a înregistrării vine din **Legea nr. 273/2006, art. 32 alin. (7)** (în forma actualizată în 2025): *orice entitate, cu sau fără personalitate juridică, organizată la altă adresă decât sediul social, cu cel puțin o persoană care realizează venituri din salarii, are obligația să se înregistreze fiscal ca plătitoare de salarii în termen de 30 de zile*. Criteriul nu e „punctul de lucru" în sine, ci prezența a cel puțin unui salariat la o adresă diferită de sediul social.
+
 Ce înseamnă asta pentru un punct de lucru concret:
 
 - **Regula generală**: un punct de lucru simplu, fără personal plătit de acolo direct sau fără organizare distinctă ca plătitor de salarii, nu are nevoie de cod fiscal propriu — operează sub CUI-ul firmei.

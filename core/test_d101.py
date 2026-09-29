@@ -293,3 +293,20 @@ def test_rezerva_legala_deductibila_auto_art26_1_a():
     # override MANUAL respectat (contabilul poate forta P13)
     resm = calcul_d101(prof, 2026, dict(ir, P13=9000), rezerva={"capital": 200000, "rezerva_existenta": 0, "chelt_impozit": 50000})
     assert resm.P["P13"] == 9000, resm.P.get("P13")
+
+
+def test_3f_art18_nu_dubleaza_impozitul():
+    # [3f · CF art.18] Profitul unei firme de tip bar/club de noapte/discoteca/cazinou impozitat cu 5%
+    # pe venituri (rd.41.2, P412) NU se mai impoziteaza SI cu 16% (rd.41.1, P411). Portofoliu:
+    # P1=200000 P2=150000 -> P40=50000 (tot din activitatea art.18); venituri bar -> 5% = 10000 (P412).
+    # CORECT: P411 = 16% x (50000-50000) = 0 ; P41 = 0 + 10000 = 10000. BUGAT: P411=8000, P41=18000.
+    res = calcul_d101(_prof(), 2026, {"P1": 200000, "P2": 150000, "P412": 10000}, profit_art18=50000)
+    assert res.P["P40"] == 50000
+    assert res.P.get("P411", 0) == 0, "16% NU se aplica profitului deja impozitat cu 5% (art.18)"
+    assert res.P["P41"] == 10000, "P41 = doar 5% (10000), fara dubla impunere de 8000"
+
+
+def test_3f_fara_art18_neschimbat():
+    # anti-regresie: firma fara activitati art.18 -> rd.41.1 = 16% x P40 intreg (neschimbat).
+    res = calcul_d101(_prof(), 2026, {"P1": 200000, "P2": 150000})
+    assert res.P["P40"] == 50000 and res.P["P411"] == 8000

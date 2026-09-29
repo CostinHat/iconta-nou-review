@@ -27,7 +27,7 @@ Temei: art. 3 din Legea nr. 52/2011.
 
 **Plata pentru cel puțin 8 ore.** Chiar dacă părțile convin un număr mai mic de ore, plata se face pentru echivalentul a cel puțin 8 ore de muncă. E regula ignorată cel mai des la o activitate de câteva ore.
 
-**Maximum 90 de zile cumulate** pentru același beneficiar, pe durata unui an calendaristic.
+**Maximum 90 de zile cumulate** pentru același beneficiar, pe durata unui an calendaristic (**art. 4 alin. (4) din Legea nr. 52/2011**; 180 de zile pentru activitățile sezoniere din grădinile botanice universitare).
 
 În plus, beneficiarul nu poate utiliza zilieri pentru activități în beneficiul unui terț.
 
