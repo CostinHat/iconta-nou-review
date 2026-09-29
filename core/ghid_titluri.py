@@ -8,7 +8,7 @@
 Coloane (verificat la sursă 21.09.2026): id, titlu, categorie, status, functionalitate_iconta,
 posibil_duplicat_sens, slug_publicat.
 
-[29.09.2026] Coloana slug_publicat + statusul publicat: un titlu cu ghid LIVE (potrivire pe titlu EXACT sau NORMALIZAT - fara diacritice, punctuatie, anul 2026) trece pe status=publicat, cu slug-ul ghidului in slug_publicat. Cazurile doar asemanatoare raman candidat (nemarcate).
+[29.09.2026] Coloana slug_publicat + statusul publicat: un titlu cu ghid LIVE (potrivire pe titlu EXACT sau NORMALIZAT - fara diacritice, punctuatie, anul 2026) trece pe status=publicat, cu slug-ul ghidului in slug_publicat. Cazurile doar asemanatoare raman candidat (nemarcate). [29.09.2026] Statusul asemanator + coloana slug_asemanator: titlurile doar ASEMANATOARE cu un ghid live (nu identice dupa normalizare) se marcheaza status=asemanator, cu slug-ul celui mai apropiat ghid in slug_asemanator. Ca si publicat, statusul asemanator se EXCLUDE din orice lista de titluri de propus (v. de_propus()).
 
 Nu produce ghiduri și nu leagă titlu↔funcționalitate — legarea se face PER PAGINĂ la redactare,
 verificată pe cod real (poarta din core/ghid_poarta.py). Aici e strict inventarul de intrare.
@@ -20,7 +20,7 @@ import os
 RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CALE = os.path.join(RADACINA, "index_titluri_ghid.csv")
 
-COLOANE = ("id", "titlu", "categorie", "status", "functionalitate_iconta", "posibil_duplicat_sens", "slug_publicat")
+COLOANE = ("id", "titlu", "categorie", "status", "functionalitate_iconta", "posibil_duplicat_sens", "slug_publicat", "slug_asemanator")
 
 
 def incarca(cale=None):
@@ -28,6 +28,15 @@ def incarca(cale=None):
     p = cale or CALE
     with io.open(p, encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f))
+
+
+STATUSURI_EXCLUSE_PROPUNERE = ("publicat", "asemanator")
+
+
+def de_propus(cale=None):
+    """[dict] titlurile inca de propus: status == 'candidat'. Exclude publicat si asemanator
+    (au deja un ghid live, identic sau apropiat)."""
+    return [r for r in incarca(cale) if r.get("status") == "candidat"]
 
 
 def categorii(cale=None):
