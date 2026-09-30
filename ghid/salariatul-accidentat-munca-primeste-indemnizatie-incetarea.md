@@ -35,7 +35,7 @@ Ce înseamnă concret:
 - **Serviciile continuă și ele.** Art. 14 vorbește despre „prestațiile și serviciile de asigurare". Pe lângă indemnizație, se mențin și serviciile medicale și de recuperare din asigurarea de accidente de muncă.
 
 ::: ghid-exemplu
-Un salariat al SC Exemplu SRL, cu contract pe durată determinată până la 30 aprilie, se accidentează în muncă la 10 aprilie. Accidentul e cercetat și înregistrat, iar concediul medical continuă și în mai. Pentru zilele din aprilie, SC Exemplu SRL calculează și plătește indemnizația. Primele 3 zile de incapacitate le suportă firma (art. 34), iar restul îl recuperează de la casa teritorială de pensii. După expirarea contractului, indemnizația pentru perioada rămasă a episodului o plătește casa teritorială de pensii (art. 19 alin. (12)), nu SC Exemplu SRL.
+Un salariat al SC Exemplu SRL, cu contract pe durată determinată până la 30 aprilie, se accidentează în muncă la 10 aprilie. Accidentul e cercetat și înregistrat, iar concediul medical continuă și în mai. Pentru zilele din aprilie, SC Exemplu SRL calculează și plătește indemnizația. Primele 3 zile de incapacitate le suportă firma (art. 34). Cât timp casa de pensii nu a confirmat caracterul de muncă al accidentului (codurile 02/03/04 sunt „neconfirmat de casa de pensii”, grupa G1), indemnizația se plătește în regimul concediului medical obișnuit (OUG 158/2005); după confirmare, firma recuperează diferențele de la casa teritorială de pensii (art. 19 alin. (7), art. 33 alin. (5)). După expirarea contractului, indemnizația pentru perioada rămasă a episodului o plătește casa teritorială de pensii (art. 19 alin. (12)), nu SC Exemplu SRL.
 :::
 
 ## Ce se greșește în practică

@@ -8,7 +8,7 @@ poarta: v1
 
 # Cine suportă primele 3 zile de concediu medical pentru accident de muncă?
 
-Angajatorul. Indemnizația pentru incapacitate temporară de muncă după un accident de muncă sau o boală profesională se suportă în **primele 3 zile de incapacitate de către angajator**. Din **a 4-a zi**, se suportă din sumele prevăzute pentru asigurarea la accidente de muncă și boli profesionale din bugetul asigurărilor sociale de stat. Angajatorul plătește salariatului întreaga indemnizație, dar recuperează de la casa teritorială de pensii doar partea de la a 4-a zi încolo.
+Angajatorul. Indemnizația pentru incapacitate temporară de muncă după un accident de muncă sau o boală profesională se suportă în **primele 3 zile de incapacitate de către angajator**. Din **a 4-a zi**, se suportă din sumele prevăzute pentru asigurarea la accidente de muncă și boli profesionale din bugetul asigurărilor sociale de stat. Angajatorul plătește salariatului întreaga indemnizație, dar recuperează de la casa teritorială de pensii doar partea de la a 4-a zi încolo. Recuperarea privește diferențele și e posibilă abia după ce casa de pensii confirmă caracterul de muncă al accidentului (art. 19 alin. (7), art. 33 alin. (5)); până la confirmare, indemnizația se plătește în regimul concediului medical obișnuit (OUG 158/2005).
 
 Regula e diferită de cea a concediului medical obișnuit, care are propriile reguli de suportare în OUG 158/2005 și se recuperează din alt fond. Împărțirea greșită se vede direct la recuperare.
 

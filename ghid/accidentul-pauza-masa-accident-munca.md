@@ -10,7 +10,7 @@ poarta: v1
 
 Da, în anumite condiții. Legea asimilează accidentului de muncă accidentul suferit în timpul **pauzelor regulamentare**, dacă s-a produs în **locuri organizate de angajator** ori în timpul și pe **traseul normal** spre și de la aceste locuri. Un salariat care se accidentează în cantina firmei sau pe drumul obișnuit dintre birou și spațiul de masă amenajat de angajator este în această situație.
 
-Contează pentru că încadrarea ca accident de muncă schimbă regimul concediului medical. Indemnizația are alt temei (Legea 346/2002), alt cuantum și altă sursă de plată decât boala obișnuită.
+Contează pentru că încadrarea ca accident de muncă schimbă regimul concediului medical. Indemnizația are alt temei (Legea 346/2002), alt cuantum și altă sursă de plată decât boala obișnuită — însă numai după ce casa de pensii confirmă caracterul de muncă al accidentului. Până la confirmare, se plătește în regimul concediului medical obișnuit (OUG 158/2005), iar diferențele se recuperează de la casa de pensii după confirmare (art. 19 alin. (7), art. 33 alin. (5)).
 
 ## Temeiul legal
 

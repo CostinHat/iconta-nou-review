@@ -28,13 +28,13 @@ Ce înseamnă concret:
 
 - **O singură indemnizație.** Art. 37 alin. (3) nu împarte indemnizația între angajatori și nici nu permite două plăți. Se achită o dată.
 - **Baza de calcul se ia de la un singur angajator.** Media pe 6 luni se face din veniturile realizate „la angajator", explicit „fără a lua în calcul veniturile obținute și la alți angajatori" (art. 19 alin. (1)). Salariul de la al doilea loc de muncă nu intră în bază.
-- **Cuantumul** rămâne cel general: 80% din media veniturilor salariale brute din ultimele 6 luni (art. 33 alin. (1)), respectiv 100% pentru urgențele medico-chirurgicale (art. 33 alin. (3)).
+- **Cuantumul** rămâne cel general: 80% din media veniturilor salariale brute din ultimele 6 luni (art. 33 alin. (1)), respectiv 100% pentru urgențele medico-chirurgicale (art. 33 alin. (3)). Acest cuantum special se stabilește după confirmarea caracterului de muncă al accidentului; până la confirmare, indemnizația se plătește în regimul obișnuit (OUG 158/2005), iar diferențele se recuperează de la casa de pensii după confirmare (art. 19 alin. (7), art. 33 alin. (5)).
 - **Care angajator plătește.** Textul nu îl numește expres. Legătura firească e cu angajatorul la care s-a produs și s-a cercetat accidentul (procesul-verbal de cercetare stă la baza drepturilor, art. 53 lit. a)). Dacă situația nu e clară, se lămurește cu casa teritorială de pensii înainte de plată, nu după.
 
 ::: ghid-exemplu
 Salariatul lucrează cu normă întreagă la SC Exemplu SRL (media brută pe 6 luni: 6.000 lei) și cu jumătate de normă la SC Alfa SRL (media: 2.000 lei). Se accidentează în muncă la SC Exemplu SRL.
 
-Baza de calcul se stabilește din veniturile de la angajatorul care plătește: 6.000 lei. Veniturile de la SC Alfa SRL nu se adaugă. La 80%, indemnizația se raportează la 4.800 lei pe lună și se plătește o singură dată. SC Alfa SRL nu calculează o a doua indemnizație de accident de muncă pentru același accident.
+Baza de calcul se stabilește din veniturile de la angajatorul care plătește: 6.000 lei. Veniturile de la SC Alfa SRL nu se adaugă. La 80% (cuantumul de după confirmare), indemnizația se raportează la 4.800 lei pe lună și se plătește o singură dată. SC Alfa SRL nu calculează o a doua indemnizație de accident de muncă pentru același accident.
 :::
 
 ## Ce se greșește în practică

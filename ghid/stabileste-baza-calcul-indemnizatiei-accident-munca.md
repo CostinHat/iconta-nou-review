@@ -33,7 +33,7 @@ Pașii calculului:
 1. **Veniturile care intră în bază.** Se iau veniturile brute din salarii sau asimilate salariilor, în sensul Codului fiscal, realizate la acest angajator.
 2. **Perioada.** Se iau ultimele 6 luni anterioare lunii pentru care se acordă concediul. Dacă stagiul e mai scurt, se face media lunilor realizate. Sub o lună de stagiu, se ia câștigul brut din prima lună de activitate.
 3. **Media zilnică.** Baza lunară se împarte la numărul de zile lucrătoare din luna în care se acordă concediul (alin. 4).
-4. **Cuantumul.** Se aplică procentul: regula generală e 80% (art. 33 alin. (1)). Pentru urgențele medico-chirurgicale și pentru arsurile grave de la art. 36^1 procentul e 100%.
+4. **Cuantumul.** Se aplică procentul: regula generală e 80% (art. 33 alin. (1)). Pentru urgențele medico-chirurgicale și pentru arsurile grave de la art. 36^1 procentul e 100%. Acest cuantum special din Legea 346/2002 se aplică însă abia după confirmarea caracterului de muncă al accidentului de către casa de pensii (codurile 02/03/04 = „neconfirmat de casa de pensii”, G1); până la confirmare indemnizația se plătește în regimul concediului medical obișnuit (OUG 158/2005), iar după confirmare se recuperează diferențele de la casa teritorială de pensii (art. 19 alin. (7), art. 33 alin. (5)).
 5. **Zilele plătite.** Media zilnică și procentul se aplică la zilele de concediu. La stabilirea lor se au în vedere sărbătorile legale și programul de lucru (alin. 5).
 
 Casa teritorială de pensii verifică baza de calcul (alin. 9). Calculul greșit se vede, așadar, la recuperare.
@@ -41,7 +41,7 @@ Casa teritorială de pensii verifică baza de calcul (alin. 9). Calculul greșit
 ::: ghid-exemplu
 Un salariat al SC Exemplu SRL a avut în ultimele 6 luni un venit brut de 6.000 lei pe lună, numai la această firmă. Baza de calcul este 6.000 lei. Accidentul de muncă are loc într-o lună cu 21 de zile lucrătoare, iar concediul acoperă 10 zile lucrătoare.
 
-Media zilnică: 6.000 / 21 = 285,71 lei. Indemnizația la 80%: 285,71 × 80% × 10 = 2.285,71 lei, rotunjit după regulile aplicate de casa de pensii. Veniturile salariatului de la o a doua firmă nu se adaugă la cei 6.000 lei.
+Media zilnică: 6.000 / 21 = 285,71 lei. Indemnizația recalculată după confirmare, la 80%: 285,71 × 80% × 10 = 2.285,71 lei, rotunjit după regulile aplicate de casa de pensii. Veniturile salariatului de la o a doua firmă nu se adaugă la cei 6.000 lei.
 :::
 
 ## Ce se greșește în practică

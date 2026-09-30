@@ -28,7 +28,7 @@ Condițiile, pe rând:
 - **Cuantumul e de 100%** din media veniturilor din salarii sau asimilate salariilor. Baza de calcul se stabilește după art. 19.
 - **Durata e până la vindecare.** Alin. (2) înlătură expres plafonul de 183 de zile (art. 35) și limita prelungirii de 90 de zile (art. 36 alin. (3)).
 
-Restul regulilor rămân aceleași. Primele 3 zile de incapacitate le suportă angajatorul (art. 34), iar restul se recuperează de la casa teritorială de pensii după confirmarea accidentului (art. 19 alin. (6) și (7)).
+Restul regulilor rămân aceleași. Primele 3 zile de incapacitate le suportă angajatorul (art. 34). Cuantumul special (100%) și recuperarea privesc situația de după confirmarea caracterului de muncă al accidentului de către casa de pensii; până la confirmare, indemnizația se plătește în regimul concediului medical obișnuit (OUG 158/2005), iar după confirmare se recuperează diferențele de la casa teritorială de pensii (art. 19 alin. (6) și (7), art. 33 alin. (5)).
 
 ::: ghid-exemplu
 Un salariat al SC Exemplu SRL suferă la locul de muncă arsuri de gradul III pe mâini. Accidentul e înregistrat ca accident de muncă. Baza de calcul este 6.000 lei, iar luna are 21 de zile lucrătoare.

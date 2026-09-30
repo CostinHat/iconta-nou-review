@@ -29,7 +29,7 @@ Pentru cabinet, asta înseamnă că un accident de muncă poate genera, pe lâng
 
 Ce înseamnă concret:
 
-- **Asigurarea plătește prima.** Indemnizația de incapacitate reprezintă 80% din media veniturilor brute din ultimele 6 luni (Legea 346/2002, art. 33 alin. (1)). Primele 3 zile le suportă angajatorul, iar de la a 4-a zi se plătește din asigurarea pentru accidente de muncă.
+- **Asigurarea plătește prima.** După confirmarea caracterului de muncă al accidentului, indemnizația de incapacitate reprezintă 80% din media veniturilor brute din ultimele 6 luni (Legea 346/2002, art. 33 alin. (1)); primele 3 zile le suportă angajatorul (art. 34), iar diferențele de la a 4-a zi se recuperează de la casa de pensii (art. 19 alin. (7), art. 33 alin. (5)). Până la confirmare, indemnizația se plătește în regimul concediului medical obișnuit (OUG 158/2005).
 - **Diferența neacoperită:** partea de venit pierdut care nu e acoperită, cheltuielile medicale suplimentare, daunele morale. Pentru acestea poate interveni răspunderea civilă a angajatorului.
 - **Victima trebuie să dovedească prejudiciul** neacoperit („se face dovada", art. 4 alin. (2)). Cuantumul se stabilește prin înțelegere sau prin instanță, după regulile dreptului civil.
 - **Răspunderea nu se înlătură prin contract** și nici prin externalizarea serviciului SSM (Legea 319/2006, art. 6 alin. (2)).

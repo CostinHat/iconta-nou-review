@@ -33,14 +33,14 @@ Ce înseamnă concret:
 - **Fără stagiu minim.** Calitatea de asigurat și dreptul la prestații încep la data încheierii CIM (art. 9 alin. (2) și art. 12).
 - **Baza pentru stagiu sub 6 luni** este media câștigurilor brute lunare efectiv realizate (art. 19 alin. (2)).
 - **Baza pentru stagiu sub o lună** este câștigul lunar brut din prima lună de activitate (art. 19 alin. (3)).
-- **Cuantumul** rămâne 80% din bază, sau 100% pentru urgențele medico-chirurgicale (art. 33).
+- **Cuantumul** rămâne 80% din bază, sau 100% pentru urgențele medico-chirurgicale (art. 33). Cuantumul special se aplică după confirmarea caracterului de muncă al accidentului; până atunci, indemnizația se plătește în regimul obișnuit (OUG 158/2005), iar diferențele se recuperează de la casa de pensii după confirmare (art. 19 alin. (7), art. 33 alin. (5)).
 - **Condiția reală** nu e stagiul, ci confirmarea caracterului de muncă al accidentului, prin procesul-verbal de cercetare (art. 53 lit. a)).
 - **Contrast cu boala obișnuită.** Concediul medical pentru boală obișnuită, din regimul OUG 158/2005, are propriile condiții de stagiu. Acestea nu se aplică accidentului de muncă.
 
 ::: ghid-exemplu
 SC Exemplu SRL angajează un muncitor pe 1 martie, cu un salariu brut de 5.000 lei. Acesta se accidentează în muncă pe 20 martie, iar accidentul este confirmat.
 
-Stagiul e mai mic de o lună, așa că baza de calcul este câștigul lunar brut din prima lună de activitate: 5.000 lei. Indemnizația la 80% se raportează la 4.000 lei pe lună și se plătește proporțional cu zilele lucrătoare de concediu medical. Lipsa stagiului nu îl lasă pe salariat fără indemnizație.
+Stagiul e mai mic de o lună, așa că baza de calcul este câștigul lunar brut din prima lună de activitate: 5.000 lei. Indemnizația la 80% (cuantumul de după confirmare) se raportează la 4.000 lei pe lună și se plătește proporțional cu zilele lucrătoare de concediu medical. Lipsa stagiului nu îl lasă pe salariat fără indemnizație.
 :::
 
 ## Ce se greșește în practică

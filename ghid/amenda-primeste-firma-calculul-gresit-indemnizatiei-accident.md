@@ -44,7 +44,7 @@ Amenda nu înlocuiește corectarea. Suma calculată greșit se regularizează se
 ## Ce se greșește în practică
 
 - Baza de calcul e făcută din veniturile de la toți angajatorii, nu doar de la angajatorul care plătește, cum cere art. 19 alin. (1).
-- Se aplică procentul greșit: 100% în loc de 80%, în afara urgențelor medico-chirurgicale.
+- Se aplică procentul greșit: la cuantumul de după confirmare, 100% în loc de 80%, în afara urgențelor medico-chirurgicale. (Până la confirmarea caracterului de muncă al accidentului, indemnizația se plătește în regimul obișnuit, OUG 158/2005, iar diferențele se recuperează după confirmare — art. 19 alin. (7), art. 33 alin. (5).)
 - Plata indemnizației e amânată până după recuperarea sumei de la casa de pensii, ceea ce poate fi calificat drept refuz de plată.
 - Se ratează termenul de 15 zile pentru plata a jumătate din minim sau pentru plângere.
 

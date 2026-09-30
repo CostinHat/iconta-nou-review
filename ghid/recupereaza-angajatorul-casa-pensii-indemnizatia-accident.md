@@ -24,8 +24,8 @@ Diferența față de concediul medical obișnuit e sursa banilor. Indemnizația 
 
 Pașii, în practică:
 
-1. **Calculul și plata.** Angajatorul calculează indemnizația: media veniturilor pe 6 luni (art. 19 alin. (1)), cu procentul de 80% (art. 33 alin. (1)) sau 100% în cazurile speciale. O plătește salariatului odată cu salariul.
-2. **Ce nu se recuperează.** Primele 3 zile de incapacitate sunt suportate de angajator (art. 34). Se recuperează indemnizația începând cu a 4-a zi.
+1. **Calculul și plata.** Angajatorul calculează și plătește indemnizația salariatului odată cu salariul. Până la confirmarea caracterului de muncă al accidentului de către casa de pensii, plata se face în regimul concediului medical obișnuit (OUG 158/2005); cuantumul special de 80% (art. 33 alin. (1)) sau 100% și recuperarea privesc diferențele stabilite după confirmare.
+2. **Ce se recuperează.** Primele 3 zile de incapacitate sunt suportate de angajator (art. 34) și nu se recuperează. De la a 4-a zi, după confirmare, se recuperează diferențele dintre indemnizația recalculată după Legea 346/2002 și cea plătită inițial în regim obișnuit (art. 33 alin. (5)).
 3. **Confirmarea.** Recuperarea se poate face numai după confirmarea caracterului de muncă al accidentului sau după declararea bolii profesionale (art. 19 alin. (7)).
 4. **Dosarul.** La casa teritorială de pensii din raza sediului social se depun exemplarul 2 al certificatului de concediu medical și actele justificative.
 5. **Verificarea.** Casa teritorială de pensii verifică baza de calcul (art. 19 alin. (9)), iar pe baza verificării restituie suma.

@@ -26,13 +26,13 @@ Ce înseamnă concret:
 
 - **Se aplică mai multor tipuri de contracte.** Pe lângă contractul individual de muncă pe durată determinată, regula acoperă contractul de administrare sau de management, funcția publică exercitată pe termen și mandatele din funcții elective sau numite.
 - **Dreptul trebuie să se fi născut înainte de expirare.** Accidentul și incapacitatea temporară de muncă au început cât timp contractul era în vigoare.
-- **Există o linie de separare la data expirării.** Până la acea dată, angajatorul plătește indemnizația: suportă primele 3 zile (art. 34) și recuperează restul de la casa teritorială de pensii (art. 19 alin. (6)). După expirare, plătește direct casa teritorială de pensii.
+- **Există o linie de separare la data expirării.** Până la acea dată, angajatorul plătește indemnizația (în regimul concediului medical obișnuit, OUG 158/2005, cât timp accidentul nu e confirmat de casa de pensii): suportă primele 3 zile (art. 34), iar după confirmarea caracterului de muncă recuperează diferențele de la casa teritorială de pensii (art. 19 alin. (6) și (7), art. 33 alin. (5)). După expirare, plătește direct casa teritorială de pensii.
 - **Dreptul se menține după încetare.** Art. 14 alin. (1) păstrează dreptul la prestații și după încetarea raporturilor de muncă, pentru accidentele declarate în condițiile legii.
 
 ::: ghid-exemplu
 SC Exemplu SRL are un salariat cu contract până la 31 mai. Salariatul se accidentează în muncă la 20 mai, iar concediul medical ține până la 20 iunie.
 
-- 20–31 mai: SC Exemplu SRL calculează indemnizația (80% din baza de calcul), suportă primele 3 zile de incapacitate și recuperează restul de la casa teritorială de pensii.
+- 20–31 mai: SC Exemplu SRL plătește indemnizația (în regim obișnuit până la confirmare; 80% din baza de calcul după confirmare), suportă primele 3 zile de incapacitate și, după confirmare, recuperează diferențele de la casa teritorială de pensii.
 - 1–20 iunie: contractul a expirat, deci indemnizația o plătește casa teritorială de pensii. SC Exemplu SRL nu o mai include în statul de plată și în D112 pe iunie.
 :::
 

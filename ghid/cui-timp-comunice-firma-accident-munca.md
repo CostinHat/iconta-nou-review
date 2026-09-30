@@ -10,7 +10,7 @@ poarta: v1
 
 Termenul este **„de îndată"**. Legea nu dă un număr de zile. Destinatarii sunt trei: inspectoratul teritorial de muncă (ITM) pentru orice eveniment, asigurătorul pentru accidente de muncă pentru evenimentele urmate de incapacitate temporară, invaliditate sau deces și, după caz, organele de urmărire penală.
 
-Pentru cabinet, comunicarea către asigurător contează direct. Indemnizația de concediu medical pentru accident de muncă se suportă, din a patra zi, din asigurarea pentru accidente de muncă, iar dosarul pornește de la comunicarea evenimentului.
+Pentru cabinet, comunicarea către asigurător contează direct. Indemnizația de concediu medical pentru accident de muncă se suportă, din a patra zi, din asigurarea pentru accidente de muncă — dar recuperarea diferențelor de la casa de pensii e posibilă abia după confirmarea caracterului de muncă al accidentului (art. 19 alin. (7)); până atunci se plătește în regimul concediului medical obișnuit (OUG 158/2005). Dosarul pornește de la comunicarea evenimentului.
 
 ## Temeiul legal
 
