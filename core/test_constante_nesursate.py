@@ -91,7 +91,7 @@ BASELINE = {
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.
     "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1,
     "beneficii_api.py": 1, "casa.py": 6, "cashflow.py": 2, "common.py": 8,
-    "contracte_speciale.py": 5, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
+    "contracte_speciale.py": 3, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
     "cor_api.py": 2, "d101.py": 6, "d101g.py": 1, "d108.py": 1, "d169.py": 1, "d169n.py": 1,
     "d205.py": 0, "d212_engine.py": 11, "d216.py": 1, "d394.py": 2, "d401.py": 2, "d402.py": 3,
     "d403.py": 5, "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2,

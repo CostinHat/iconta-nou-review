@@ -17,11 +17,6 @@ def test_mandat():
     assert c["impozit"] == Decimal("325.00")
     assert c["net"] == Decimal("2925.00")
 
-def test_remuneratie_minima():
-    r = m.remuneratie_minima_zilier(4050)
-    assert r["orar_minim"] == Decimal("24.50")
-    assert r["zi_minima"] == Decimal("196.00")
-
 def test_nota_zilier():
     r = m.nota(2500, "zilier")
     assert ("641", "421", Decimal("2500.00")) in r["linii"]

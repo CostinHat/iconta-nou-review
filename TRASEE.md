@@ -1280,7 +1280,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal
 
-**Clasa:** MECANIC · **rute:** 34 (din care schimba date: 26) · **refuzuri explicite:** 188
+**Clasa:** MECANIC · **rute:** 34 (din care schimba date: 26) · **refuzuri explicite:** 187
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 23 din 26.**
 

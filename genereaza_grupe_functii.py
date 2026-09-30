@@ -35,7 +35,8 @@ EXPLICIT = {"F164": "Control fiscal", "F108": "Cabinet si portal client", "F002"
     # [modal_la_zi 11.08] functii LIVE vizibile in UI, mutate din EXCLUDE in lista publica:
     "F083": "Cabinet si portal client",   # sinteza zilnica pe email (card + email)
     "F113": "Cabinet si portal client",   # PWA (aplicatie instalabila pe mobil)
-    "F199": "Cabinet si portal client"}
+    "F199": "Cabinet si portal client",
+    "F253": "Fiscalitate"}  # [curatenie lot18] achizitie de la neinregistrat (D394 op. N, regim TVA special)
 # cross-check-urile fiscale -> Control fiscal (NU Fiscalitate, desi numele incepe cu declaratia)
 CROSS = {"F162", "F163", "F169", "F180", "F184"}
 # EXCLUSE: infrastructura invizibila utilizatorului + variante superadmin + pagina insasi + cont gratuit inchis

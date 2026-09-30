@@ -12,7 +12,8 @@ def test_exemplu_oficial_recalculat_21():
 
 def test_marja_negativa():
     r = m.vanzare_marja(1000, 1200, 21)
-    assert r["tva"] == Decimal("0.00") and "reporteaza" in r["nota"]
+    # [1a] marja negativa -> TVA 0, FARA report (metoda pe fiecare livrare, norme pct.86)
+    assert r["tva"] == Decimal("0.00") and "reporteaza" not in r["nota"]
 
 def test_pret_invalid():
     with pytest.raises(ValueError):

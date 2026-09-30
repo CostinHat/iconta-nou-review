@@ -8,7 +8,7 @@ Conturi salarii (OMFP 1802):
   646 = 436 (CAM angajator) ; 421 = 5121 (plata net)
 """
 from __future__ import annotations
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_DOWN
 from math import ceil
 
 from core import common as c
@@ -254,6 +254,9 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     baza_imp = baza_contrib - cas - cass - _dec(ded["total"])
     if baza_imp < 0:
         baza_imp = Decimal(0)
+    # [1c · CF art.64, HG 1/2016 tit.IV pct.4] baza de calcul a impozitului se stabileste prin
+    # rotunjire la leu: fractiunile <= 50 bani se neglijeaza, > 50 bani se majoreaza (ROUND_HALF_DOWN).
+    baza_imp = baza_imp.quantize(Decimal("1"), rounding=ROUND_HALF_DOWN)
 
     # [F133] TICHETE DE MASA: CASS 10% + impozit 10% pe valoarea nominala; FARA CAS, FARA CAM,
     # FARA deducere personala (aceea e pe salariu). Contributia (CASS) e deductibila din baza
@@ -281,6 +284,8 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     if baza_imp_tichete < 0:
         baza_imp_tichete = Decimal(0)
     baza_imp_tichete += tichete_cult + tichete_cresa  # cultural + cresa: fara cass de dedus -> nominal INTEGRAL
+    # [1c · CF art.64, HG 1/2016 tit.IV pct.4] baza impozitului pe tichete se rotunjeste la leu.
+    baza_imp_tichete = baza_imp_tichete.quantize(Decimal("1"), rounding=ROUND_HALF_DOWN)
     impozit_tichete = baza_imp_tichete * cota_imp
 
     # impozitul returnat = TOTAL (salariu + tichete), ca sa fie corect pt net/monografie/D112

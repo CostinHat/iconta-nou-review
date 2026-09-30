@@ -86,14 +86,6 @@ def calcul_mandat(brut, cu_cam=False):
     return {"brut": b, "cas": cas, "cass": cass, "cam": cam,
             "impozit": impozit, "net": b - cas - cass - impozit}
 
-def remuneratie_minima_zilier(salariu_minim, ore=8, ore_luna=Decimal("165.33")):
-    """Remuneratia zilnica minima = salariul minim orar x ore."""
-    sm = _d(salariu_minim)
-    if sm <= 0 or ore <= 0:
-        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
-    orar = (sm / Decimal(str(ore_luna))).quantize(B, rounding=ROUND_HALF_UP)
-    return {"orar_minim": orar, "zi_minima": (orar * ore).quantize(B)}
-
 def nota(brut, fel="zilier", sursa="casa", la_data=None):
     """Nota completa: cheltuiala + retineri + plata net.
 

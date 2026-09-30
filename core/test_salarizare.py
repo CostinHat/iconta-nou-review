@@ -20,10 +20,11 @@ def test_brut_6000_fara_dependenti_sem2():
     assert r["cass"] == Decimal("600.00")
     # [A7, 17.09.2026] treapta ceil (nu floor): brut 6000 = sm+1675 -> banda sm+1651…sm+1700 = treapta
     # 34, deci pct = 20% - 34x0,5% = 3% -> 0,03x4325 = 129,75 (nu 33 trepte / 3,5% / 151,38, care era
-    # bug-ul A7). Lantul se recalculeaza: impozit 10% pe baza cu ded nerotunjita, apoi net.
+    # bug-ul A7). Deducerea NU se rotunjeste (129.75). [1c] Baza impozitului SE rotunjeste la leu
+    # (CF art.64, HG tit.IV pct.4): impozit = baza_rotunjita x 10%, apoi net.
     assert r["deducere"]["total"] == Decimal("129.75")
-    assert r["impozit"] == Decimal("377.03")
-    assert r["net"] == Decimal("3522.98")
+    assert r["impozit"] == Decimal("377.00")
+    assert r["net"] == Decimal("3523.00")
     assert r["cam"] == Decimal("135.00")
     assert r["cost_angajator"] == Decimal("6135.00")
 
@@ -33,7 +34,7 @@ def test_minim_4325_are_facilitate_sem2():
     assert r["facilitate"] == Decimal("200.00")
     assert r["cas"] == Decimal("1031.25")
     assert r["cass"] == Decimal("412.50")
-    assert r["net"] == Decimal("2699.63")               # FIX3: ded de baza 865 (nerotunjit), nu 870
+    assert r["net"] == Decimal("2699.65")               # [1c] baza impozitului rotunjita la leu (CF art.64, HG tit.IV pct.4)
 
 
 def test_peste_plafon_deducere_zero():

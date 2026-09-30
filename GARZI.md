@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**643 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**644 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 611
+### `core/` — 612
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8944,6 +8944,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_cronometru_inert.py` — core/test_cronometru_inert.py — instrumentarea nu se vede în producție.
 - `core/test_cui_cnp_test_valid.py` — [Date de test — CUI/CNP verificate] GARD: un CUI/CNP folosit ca date de test VALIDE (`cui=`/`cnp="..."`)
 - `core/test_curatenie.py` — GARD [03.09.2026]: ocolirea de curatenie se deschide din INDEX, si numai pentru curatenie.
+- `core/test_curatenie_lot18.py` — GARZI [curatenie lot18]: reparatiile 1a (vanzare marja la pret vanzare), 1b (diferente curs 768/668
 - `core/test_d100.py` — Teste gardian pentru D100 - modulul a fost REFACUT complet 16.07.2026.
 - `core/test_d100_cota.py` — d100: rata default micro(1%)/profit(16%) vine din cota (impozit_micro/impozit_profit), NU din literalul
 - `core/test_d100_cui_checksum.py` — Gard T1 (CATALOG_INVALIDITATE.md, D100 #7/#11/#19): CUI-ul firmei trebuie validat de app

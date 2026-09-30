@@ -505,7 +505,7 @@ def genereaza(conn, schema, perioada, manual=None):
     if ca_prec not in (None, "") and Decimal(str(ca_prec)) > PRAG_IMCA_EUR and "P47" not in manual:
         raise ValueError(
             "D101 IMCA (art.18^1 alin.1): cifra de afaceri an precedent %s EUR > 50.000.000 -> IMCA "
-            "datorată, dar P47 (=1%% x (VT-Vs-I-A)) nu e furnizat. Declara P47 în date_extra (VT/Vs/I/A "
+            "datorată, dar P47 (=cota IMCA × (VT-Vs-I-A); 0,5%% în 2026, 1%% până în 2025) nu e furnizat. Declara P47 în date_extra (VT/Vs/I/A "
             "nu se derivă automat din balanță) sau folosește calcul_d101(imca=...)." % ca_prec)
     prof, r = pull(conn, schema, perioada)
     erori = erori_generare(prof)

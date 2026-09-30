@@ -48,7 +48,8 @@ def plafon_credit(cifra_afaceri, impozit_profit, la_data=None):
 
 
 def _credit_sponsorizare_2018(cifra_afaceri, impozit_profit, sponsorizari_efectuate,
-                        tip_impozit="profit", beneficiar_in_registru=True, la_data=None):
+                        tip_impozit="profit", beneficiar_in_registru=True, la_data=None,
+                        beneficiar_institutie_publica=False):
     """Creditul fiscal utilizabil + suma redirectionabila prin D177."""
     if tip_impozit == "micro":
         # Micro-sponsorizare: credit = 20%% din impozitul micro (CF fostul art.56 alin.1^1),
@@ -63,7 +64,7 @@ def _credit_sponsorizare_2018(cifra_afaceri, impozit_profit, sponsorizari_efectu
                     "nota": "micro: credit de sponsorizare valabil DOAR 01.04.2019-31.12.2023 "
                             "(art.56 alin.1^1, abrogat OUG 115/2023) - in rest doar cheltuiala"}
         plafon_m = _d(_d(impozit_profit) * Decimal("0.20"))
-        if not beneficiar_in_registru:
+        if not beneficiar_institutie_publica and not beneficiar_in_registru:
             return {"credit": Decimal("0.00"), "redirectionabil_d177": Decimal("0.00"), "plafon": plafon_m,
                     "nota": "micro: beneficiar NEINSCRIS in Registrul entitatilor la data contractului "
                             "(art.25 alin.4^1) - fara credit fiscal"}
@@ -72,7 +73,9 @@ def _credit_sponsorizare_2018(cifra_afaceri, impozit_profit, sponsorizari_efectu
         return {"credit": credit_m, "redirectionabil_d177": plafon_m - credit_m, "plafon": plafon_m,
                 "nota": "micro: credit 20%% din impozitul micro (art.56 alin.1^1), rest redirectionabil "
                         "6 luni; valabil 2019-2023"}
-    if not beneficiar_in_registru:
+    # [1e · CF art.25(4)i] conditia Registrului se aplica DOAR entitatilor persoane juridice fara scop
+    # lucrativ, inclusiv unitati de cult - NU institutiilor publice, care primesc creditul fara inscriere.
+    if not beneficiar_institutie_publica and not beneficiar_in_registru:
         return {"credit": Decimal("0.00"), "redirectionabil_d177": Decimal("0.00"),
                 "plafon": plafon_credit(cifra_afaceri, impozit_profit, la_data=la_data)["plafon"],
                 "nota": "beneficiar NEINSCRIS in Registrul entitatilor la data "
@@ -96,14 +99,16 @@ _VARIANTE_CREDIT_SPONSORIZARE = [
 
 
 def credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate,
-                        tip_impozit="profit", beneficiar_in_registru=True, la_data=None):
+                        tip_impozit="profit", beneficiar_in_registru=True, la_data=None,
+                        beneficiar_institutie_publica=False):
     """Creditul fiscal de sponsorizare + redirectionabil D177, DISPECER pe la_data.
     TEMEI: CF art.25 alin.(4) lit.i (credit sponsorizare); OUG 115/2023 (micro: facilitate eliminata);
     Ordin ANAF 3562/2024 (D177). nivel_sursa: REDARE. Versionata in timp: o schimbare de regula (ex.
     eliminarea facilitatii micro) -> varianta datata noua, nu 'if data' - trecutul ramane calculabil."""
     from datetime import date as _dt
     fn, _ = c.alege_varianta(_VARIANTE_CREDIT_SPONSORIZARE, la_data or _dt.today())
-    return fn(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit, beneficiar_in_registru, la_data)
+    return fn(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit, beneficiar_in_registru, la_data,
+              beneficiar_institutie_publica=beneficiar_institutie_publica)
 
 def nota_sponsorizare(suma, mod="contract"):
     """6582 = 401 (contract, plata ulterioara) | 5121 (plata directa)."""

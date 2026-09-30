@@ -2621,9 +2621,12 @@ def vanzare_marja(tenant_id, corp, ctx):
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312)")[:200])[0]
-            linii = [("4111", "707", Decimal(str(corp["pret_cumparare"])))]
-            if r["marja_neta"] > 0:
-                linii.append(("4111", "707", r["marja_neta"]))
+            # [1a · CF art.312, norme pct.86] Nota se face la PRETUL DE VANZARE (ce datoreaza clientul),
+            # nu la pretul de cumparare. 707 = pret_vanzare - TVA pe marja; 4427 = TVA (0 la marja
+            # negativa, FARA report - metoda pe fiecare livrare, pct.86).
+            _pv = Decimal(str(corp["pret_vanzare"]))
+            linii = []
+            linii.append(("4111", "707", _pv - r["tva"]))
             if r["tva"] > 0:
                 linii.append(("4111", "4427", r["tva"]))
             for d, c, s in linii:
@@ -3377,7 +3380,8 @@ def reevaluare_valuta(tenant_id, corp, ctx):
                 except _cb.CursIndisponibil as _ci:
                     raise _erori.Conflict(str(_ci))
                 r = _dc.reevaluare_sold(s["valoare_valuta"], s["curs_evidenta"],
-                                        curs_bnr, s["tip"], str(s["cont"]))
+                                        curs_bnr, s["tip"], str(s["cont"]),
+                                        in_lei_cu_clauza=bool(s.get("in_lei_cu_clauza")))
                 if r:
                     linii.append(r["linie"])
                     detalii.append({"cont": s["cont"], "curs_bnr": str(curs_bnr),
@@ -5268,7 +5272,8 @@ def decontare_valuta(tenant_id, corp, ctx):
             r = _dc.nota_decontare(corp["valoare_valuta"], corp["curs_evidenta"],
                                    curs_dec, corp["tip"],
                                     _cv.cere_cont(conn, schema, corp.get("cont_tert"), "cont_tert"),
-                                   _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca", "5124"))
+                                   _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca", "5124"),
+                                   in_lei_cu_clauza=bool(corp.get("in_lei_cu_clauza")))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         d = r["diferenta"]
