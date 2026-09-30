@@ -19,7 +19,7 @@ Cine caută unde să scrie impozitul caută degeaba — nu există câmp pentru 
 
 Persoane fizice care desfășoară activități agricole individual, sau asocieri fără personalitate juridică prin persoana desemnată.
 
-Ca și în cazul D220, pentru depunerile curente se folosește **Declarația Unică (D212)**. Formularul se păstrează pentru situații istorice.
+Ca și în cazul D220, D221 se folosește doar pentru veniturile anilor până în 2024 inclusiv. Pentru veniturile din 2025 încoace, veniturile agricole pe normă de venit se declară prin **Declarația Unică (D212)**, potrivit **art. 107 alin. (2) din Codul fiscal** în forma în vigoare de la 1 ianuarie 2025. Formularul D221 se păstrează pentru situațiile istorice (venituri până în 2024).
 
 ## Ce se declară
 

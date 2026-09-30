@@ -34,7 +34,7 @@ def _asociere():
 
 def test_d221_structura_fixa():
     """totalPlata_A=0 mereu; aj_soc=0; luna=12; activitati INAINTE de asociati (ordine XSD)."""
-    xml = d221.build_xml({}, 2025, _asociere())
+    xml = d221.build_xml({}, 2024, _asociere())
     assert 'totalPlata_A="0"' in xml and 'aj_soc="0"' in xml and 'luna="12"' in xml
     assert xml.index("<activitati") < xml.index("<asociati")     # ordine XSD
 
@@ -43,28 +43,45 @@ def test_d221_erori():
     prof = {"declarant_nume": "P", "declarant_prenume": "I", "declarant_functie": "T"}
     # forma_org=2 fara asociati
     m = dict(_asociere(), asociati=[])
-    assert any("2 asociati" in e or "asociat" in e for e in d221.erori_generare(prof, 2025, m))
+    assert any("2 asociati" in e or "asociat" in e for e in d221.erori_generare(prof, 2024, m))
     # cote != 100
     m2 = dict(_asociere())
     m2 = {**m2, "asociati": [{"nume_d": "A", "cif_d": "2850312400073", "dom_d": "X", "cota_d": 60},
                              {"nume_d": "B", "cif_d": "1800101400016", "dom_d": "Y", "cota_d": 30}]}
-    assert any("100" in e for e in d221.erori_generare(prof, 2025, m2))
+    assert any("100" in e for e in d221.erori_generare(prof, 2024, m2))
     # cif_d nu are 13 cifre
     m3 = {**_asociere(), "asociati": [{"nume_d": "A", "cif_d": "123", "dom_d": "X", "cota_d": 50},
                                       {"nume_d": "B", "cif_d": "1800101400016", "dom_d": "Y", "cota_d": 50}]}
-    assert any("13 cifre" in e for e in d221.erori_generare(prof, 2025, m3))
+    assert any("13 cifre" in e for e in d221.erori_generare(prof, 2024, m3))
     # individual cu asociati
     m4 = dict(_individual(), asociati=[{"nume_d": "A", "cif_d": "2850312400073", "dom_d": "X", "cota_d": 100}])
-    assert any("individual" in e for e in d221.erori_generare(prof, 2025, m4))
+    assert any("individual" in e for e in d221.erori_generare(prof, 2024, m4))
     # fara activitati
-    assert any("activitate" in e for e in d221.erori_generare(prof, 2025, dict(_individual(), activitati=[])))
+    assert any("activitate" in e for e in d221.erori_generare(prof, 2024, dict(_individual(), activitati=[])))
 
 
 @pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D221 nu e instalat in DUK.")
 def test_d221_valid_pe_validatorul_oficial():
     from core import duk
-    x1, _ = d221.genereaza(_P(), "s", Perioada(2025), _individual())
-    assert duk.valideaza(x1, "d221", an=2025, luna=12)["stare"] == "valid"
-    x2, _ = d221.genereaza(_P(), "s", Perioada(2025), _asociere())
-    rez = duk.valideaza(x2, "d221", an=2025, luna=12)
+    x1, _ = d221.genereaza(_P(), "s", Perioada(2024), _individual())
+    assert duk.valideaza(x1, "d221", an=2024, luna=12)["stare"] == "valid"
+    x2, _ = d221.genereaza(_P(), "s", Perioada(2024), _asociere())
+    rez = duk.valideaza(x2, "d221", an=2024, luna=12)
     assert rez["stare"] == "valid", rez.get("erori")
+
+
+def test_1d_an_2025_refuza_generarea():
+    # [CF art.107(2), forma 01.01.2025] D221 refuza anii >=2025 (venitul se declara in D212). conn=None:
+    # poarta de an cade INAINTE de pull. MUTATIE: revert `if an >= 2025` -> 2025 nu mai refuza -> rosu.
+    import re as _re
+    with pytest.raises(ValueError) as e:
+        d221.genereaza(None, None, Perioada(2025), _individual())
+    assert _re.search(r"2024", str(e.value)) and _re.search(r"D212", str(e.value))
+
+
+def test_1d_an_2024_trece_poarta_de_an():
+    # anul 2024 TRECE de poarta de an -> esueaza mai departe (pull pe conn=None), dar NU cu mesajul de an.
+    import re as _re
+    with pytest.raises(Exception) as e:
+        d221.genereaza(None, None, Perioada(2024), _individual())
+    assert not _re.search(r"D212", str(e.value)), "2024 nu trebuie refuzat de poarta de an"

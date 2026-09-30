@@ -230,6 +230,15 @@ def build_xml(prof, an, manual):
 def genereaza(conn, schema, perioada, manual=None):
     manual = dict(manual or {})
     an = int(perioada.an)
+    # [1d · CF art. 107 alin. (2), forma OUG 128/2024 in vigoare de la 01.01.2025] veniturile agricole
+    # pe norma de venit din 2025 incolo se declara prin Declaratia unica (D212), nu prin D221. D221 se
+    # genereaza DOAR pentru veniturile anilor pana in 2024 inclusiv.
+    if an >= 2025:
+        raise ValueError(
+            "D221 se generează doar pentru veniturile anilor până în 2024 inclusiv. Din 2025, veniturile "
+            "agricole pe normă de venit se declară în Declarația unică (D212), potrivit art. 107 alin. (2) "
+            "din Codul fiscal în forma în vigoare de la 1 ianuarie 2025, iar capitolul respectiv din D212 "
+            "nu e încă generat de aplicație.")
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, an, manual)
     if er:

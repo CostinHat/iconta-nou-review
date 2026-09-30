@@ -36,19 +36,19 @@ def test_d221_nu_e_doar_api():
 
 def test_d221_cerere_goala_refuza_la_api():
     """Bloc validare API: fara cif/activitati -> erori; cerere valida -> lista goala."""
-    goala = declaratii_api.valideaza_cerere("d221", {"tenant_id": 1, "an": 2025})
-    valida = declaratii_api.valideaza_cerere("d221", {"tenant_id": 1, "an": 2025, "manual": _m()})
+    goala = declaratii_api.valideaza_cerere("d221", {"tenant_id": 1, "an": 2024})
+    valida = declaratii_api.valideaza_cerere("d221", {"tenant_id": 1, "an": 2024, "manual": _m()})
     assert goala and valida == []
 
 
 def test_d221_baza_valida_fara_erori():
     """Anti-vacuu: _m() (individual, declarant in manual) e valid -> erori_generare goala."""
-    assert d221.erori_generare({}, 2025, _m()) == []
+    assert d221.erori_generare({}, 2024, _m()) == []
 
 
 def test_d221_structural():
     """Regresie STRUCTURALA: <declaratie221>/<activitati>/<produse>; totalPlata_A=0; ordine activitati->asociati."""
-    xml = d221.build_xml({}, 2025, _m())
+    xml = d221.build_xml({}, 2024, _m())
     root = ET.fromstring(xml)
     assert root.tag == _NS + "declaratie221"
     assert root.get("forma_org") == "1" and root.get("totalPlata_A") == "0" and root.get("aj_soc") == "0"
@@ -66,9 +66,9 @@ def test_d221_codp_duplicat_refuza():
     """codp duplicat in aceeasi activitate -> erori_generare ne-gol (delta minim)."""
     act = [{"judet": "12", "localitate": "Comuna Test", "optiune": "0",
             "produse": [{"codp": "101", "prod1": 5}, {"codp": "101", "prod1": 3}]}]
-    assert d221.erori_generare({}, 2025, _m(activitati=act))
+    assert d221.erori_generare({}, 2024, _m(activitati=act))
 
 
 def test_d221_asociere_fara_asociati_refuza():
     """forma_org=2 fara cei 2 asociati -> erori_generare ne-gol."""
-    assert d221.erori_generare({}, 2025, _m(forma_org="2", nr_contr="1", data_contr="01.01.2020"))
+    assert d221.erori_generare({}, 2024, _m(forma_org="2", nr_contr="1", data_contr="01.01.2020"))

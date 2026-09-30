@@ -15,7 +15,7 @@ from core import db as _dbm  # noqa: E402
 from core import declaratii_api as da, duk, d221  # noqa: E402
 from core.common import Perioada  # noqa: E402
 
-AN = 2025
+AN = 2024  # [1d] D221 doar pt venituri <=2024 (din 2025 -> D212)
 M = {
     "nume_declar": "POPESCU", "prenume_declar": "ION", "functie_declar": "TITULAR",
     "cif": "1850715400015", "nume_a": "Popescu Ion", "adresa_a": "Comuna Test, jud. Cluj",
