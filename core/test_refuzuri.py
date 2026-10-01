@@ -65,6 +65,7 @@ BASELINE = {
     "core/bacsis.py": 2,
     "core/casa.py": 3,
     "core/taxare_inversa.py": 3,
+    "core/d212.py": 4,   # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,

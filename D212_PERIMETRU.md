@@ -57,8 +57,23 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 
 ## 4. Planul pe etape (următoarele)
 - **Etapa 2** — venit real cap-coadă: RIP→engine→emitter cap11→XML→DUK, lanț-probă pe portofoliu
-  (invalid→valid), gardă+mutație pe sume.
+  (invalid→valid), gardă+mutație pe sume. **FĂCUTĂ 02.10.2026** — v. §5.
 - **Etapa 3** — normă de venit (incl. agricol art.107(2)) în engine + emitter cap12, lanț-probă.
 - **Etapa 4** — CAS/CASS în oblig_realizat (cablare + probă), inițială/rectificativă.
 - **Etapa 5** — formular manual pentru categoriile fără date (regula 0 DESIGN_SYSTEM).
 - **Etapa finală** — alinierea F246 + mesajul din d221.py + ghidurile care spun „D212 doar identificare".
+
+## 5. Etapa 2 — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
+- **Validatorul în vigoare (v9 / Parameters_v7)**: `validateCap11` e goală — cap11 se validează doar structural.
+  `categ_venit` ∈ {1016, 1003, 1015, 1006, 1009, 1010, 1011, 1012, 1021–1024}; `det_ven_net` [1,2]; `forma_org` [1,3];
+  sume întregi [0, 10^15); niciun atribut cap11 obligatoriu.
+- **Semnificația codurilor** (D212Pdf.jar, Pdf_v8, URL din `anaf_surse/versiuni.xml`): 1016 = activități independente,
+  1003 = drepturi de proprietate intelectuală, 1015/1006 = cedarea folosinței / scop turistic, 1009–1011 = agricol /
+  silvicultură / piscicultură, 1012 = transfer titluri, 1021–1024 = alte surse (art.114 CF); `det_ven_net` 1 = sistem
+  real, 2 = cote forfetare; `forma_org` 1/2/3 = individual / asociere / transparență fiscală.
+- **R4** (citit integral): pentru CNP, `totalPlata_A` = suma celor 13 cifre, MEREU (nu suma de plată). Corectat în emitter.
+- **Rândurile** (instrucțiuni pct.3.5.11): rd.6 = min(rd.5, 70% × rd.3) (CF art.118 alin.(4)); rd.8 și rd.9 nu se
+  completează la venit net — impozitul e în secțiunea 4 a capitolului I (`oblig_realizat`, **Etapa 4**).
+- **Construit**: `d212.cap11_sistem_real`, `d212.cap11_din_rip`, `genereaza(manual.din_rip)`, ecranul (bifa RIP + pierdere
+  reportată + CAEN). Gărzi `core/test_d212_cap11.py`; probe `frontend_test/proba_d212_etapa2.py`, `proba_d212_formular_ui.py`.
+- **În afara Etapei 2**: asocieri (§3.5.12), cote forfetare, normă (Etapa 3), impozit/CAS/CASS (Etapa 4).

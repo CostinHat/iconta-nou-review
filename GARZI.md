@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**647 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**649 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 615
+### `core/` — 617
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9002,6 +9002,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d207_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D207 gol NU produce declaratie.
 - `core/test_d208_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D208 gol NU produce declaratie; biroul notarial + o tranzactie
 - `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
+- `core/test_d212_cap11.py` — D212 Etapa 2 — venit în sistem real cap-coadă: registrul RIP -> cap11 -> XML -> DUK (01.10.2026).
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
 - `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
@@ -9355,6 +9356,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_secrete_jwt.py` — Teste securitate JWT — default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile).
 - `core/test_selector_vector.py` — S1 + #2 (plimbare 14.08.2026): selectorul de declaratii respecta vectorul TVA si periodicitatea firmei.
 - `core/test_separa_cui.py` — [Regula 4 + Regula 14.4] GARD: intrarile care nu-s CUI NU dispar in tacere la validarea la ANAF.
+- `core/test_set_bifa_nu_se_striveste.py` — GARD: căsuța unei bife cu etichetă (`.set-bifa`, DS v2.11) nu se strivește sub dimensiunea ei (02.10.2026).
 - `core/test_simetrie_denumire.py` — GARD [R81, DECIS 28.08.2026]: denumirea unei firme se scrie în AMÂNDOUĂ locurile sau în niciunul.
 - `core/test_smoke_duk.py` — SMOKE-SWEEP DUK (01.08.2026) — gardul care lipsea: fiecare declaratie generata cu date
 - `core/test_solduri_api.py` — Teste gardian pentru solduri_api (partea PURA).
@@ -9798,3 +9800,16 @@ abia după un click. Clasa în `static/js`: 2 apariții (`firme.js` cresa-copii,
 |---|---|---|---|---|
 | input fără title-only (structural) | core/test_input_fara_title_only.py | un `<input>` în orice șablon din `static/js` cu `title` și fără `aria-label`/`aria-labelledby` — inclusiv în zone care apar după click | scos aria-label de pe fr-zi → roșu cu fișier:linie | nu vede input-uri create cu `createElement` (azi 0) |
 | proba zonei de creșă | frontend_test/proba_cresa_eticheta.py (+ .json) | — (probă, nu gard): deschide zona, citește eticheta, axe desktop + telefon | — | rulează doar cu app viu pe 8011 |
+
+## 02.10.2026 — D212 Etapa 2: subsecțiunea I.1.1 din registrul RIP, pe rânduri, cu R4 corect
+
+Categoria **4. Ieșire către autorități** (XML respins la DUK) și **3. Calcul fiscal** (compensarea pierderii). Detaliul: DECIZII 02.10.2026.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| rândurile cap11 (pct.3.5.11) | core/test_d212_cap11.py (venit net / pierdere / zero / negative) | rd.3 la egalitate, rd.4 fără pierdere, impozit11 completat la venit net, impozit11 lipsă la pierdere | `vb > cd` → `>=` → roșu; scos `impozit11 = 0` → 2 roșii | doar activitate individuală, sistem real |
+| compensarea 70% (CF art.118 alin.4) | test_pierderea_reportata_se_compenseaza_in_limita_70 + constanta ancorată `d212.PROCENT_COMPENSARE_PIERDERE` | altă limită decât 70% | 70 → 80 → 3 roșii (inclusiv valoarea-în-citat din test_fiscalos_s2) | — |
+| R4 = suma cifrelor CNP | test_R4_totalPlata_A_e_MEREU_suma_cifrelor_CNP + DUK | totalPlata_A = suma de plată la un CNP (respins de DUK) | forma veche → 4 roșii, inclusiv verdictul DUK real | nerezident: neverificat |
+| nomenclatorul cap11 | test_categoria_in_afara_nomenclatorului_e_refuzata + test_xml_cap11_si_bifa111 + test_DUK_valid_pe_cap11_generat | un cod `categ_venit` ghicit; cap11 fără `bifa111` | cod 1016→1 → 5 roșii; scos bifa111 → 2 roșii | — |
+| lanțul RIP → cap11 | test_lant_RIP_cap11_din_operatiunile_VALIDATE (schemă efemeră) | ciorne / cheltuieli limitate intrate în venit | — (acoperit de mutațiile de mai sus pe aceleași valori) | — |
+| căsuța `.set-bifa` nu se strivește | core/test_set_bifa_nu_se_striveste.py | o etichetă lungă care comprimă căsuța sub 16px | scos flex-shrink:0 → roșu | 16px < 24px AA dacă se măsoară căsuța singură — decizie de produs |

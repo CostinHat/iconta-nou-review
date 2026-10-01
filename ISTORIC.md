@@ -992,3 +992,15 @@ corpus (cea din 15.09 arhivată), iar plafonul tichetelor de creșă nu mai e bl
 ordinelor de indexare reproduse verbatim în ea — 640, 660, 670, 710, 740 și, de azi, 770 lei pe copil. Plafonul se
 ia pe luna beneficiului (înainte se lua pe ziua de azi). Ecranul statului de plată nu mai afirmă „indexare
 neconfirmată — blocată". Dinainte de aprilie 2024 și după martie 2027 rămâne baza legală de 450, cu motivul spus.
+
+## 02.10.2026 — D212 Etapa 2: venitul din registrul PFA ajunge în Declarația unică, validat de ANAF local
+
+Am citit întâi tot ce decide forma: validatorul oficial (în pachetul în vigoare, capitolul de venit se verifică doar
+structural, iar categoriile acceptate sunt coduri de tip 1016), generatorul PDF oficial (care spune că 1016 înseamnă
+„activități independente" — informația lipsea din tot corpusul și din validator) și instrucțiunile de completare,
+rând cu rând. Două surprize: impozitul NU se scrie în acest capitol când există venit net (se calculează în altă
+secțiune — Etapa 4), iar regula de control R4 cere mereu suma cifrelor CNP, nu suma de plată cum credea emitter-ul —
+o declarație cu obligații ar fi fost respinsă; reparat. Pe ecranul D212, contabilul bifează „Include venitul din
+registrul RIP", poate declara pierderea reportată (compensată în limita a 70%, Codul fiscal art.118) și CAEN-ul; pe
+firma F4, XML-ul iese cu venitul real și trece validatorul. Pe drum: bifele cu etichete lungi se striveau pe telefon
+— reparat global.

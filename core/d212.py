@@ -16,8 +16,10 @@ pentru anul de raportare 2025 a fost CITITA din bytecode si PROBATA camp cu camp
     [2025,2100]), bifa_succesor, anulare_litA, anulare_litB, bifa_conformare, bifa111, bifa112,
     bifa113, bifa121, bifa122, bifa131, bifa132, bifa14, bifa15, nerezident + identificare
     (cif, nume_c, adresa_c). bifa16/bifa18 optionale.
-  - DUK regula R4: totalPlata_A (suma de control) = suma sumelor 'de plata'; cand nu exista nimic
-    de plata (0), egaleaza suma cifrelor CNP (marcaj de control nenul). Probat: CNP ...1144 => 25.
+  - DUK regula R4 (ValidatorCode.validateD212, citita INTEGRAL 01.10.2026): daca `cif` are 13 cifre
+    (CNP), totalPlata_A == suma celor 13 cifre — MEREU, indiferent de sumele de plata (forma veche a acestui
+    docstring, „suma sumelor de plata", era gresita: o declaratie cu obligatii ar fi picat la R4).
+    Probat: CNP ...1144 => 25; 21580 (suma obligatiilor) => R4.
 
 CAZUL PRINCIPAL ACOPERIT + PROBAT DUK VALID: declaratie de identificare (fara obligatii de plata
 - nula / rectificativa / doar identificare), cu toate bifele pe 0. Este cazul MINIM care trece
@@ -43,6 +45,8 @@ DENUMIRE_OFICIALA = 'Declarația unică privind impozitul pe venit și contribu�
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re
+
+from core.common import Temei as _Tm, ancoreaza as _anc, temei_ancorat as _temei_anc
 
 NS = "mfp:anaf:dgti:d212:declaratie:v11"
 
@@ -105,6 +109,79 @@ _CAMPURI = {
         "dif_de_restituit", "oblimpozit_real_bonif", "oblcas_real_bonif", "oblcass_real_bonif"},
 }
 
+# ── CAP11 (subsectiunea I.1.1 — venituri din Romania, sistem real / cote forfetare) ──────────────────
+# Nomenclatoarele NU sunt in anaf_surse; sunt in artefactele OFICIALE ANAF (URL-uri din anaf_surse/versiuni.xml,
+# D212_40): lista ACCEPTATA = D212Validator.jar, parameters/Parameters_v7._listaCateg_venit (pachetul v9, in
+# vigoare pt 2025); SEMNIFICATIA = D212Pdf.jar, d212/Pdf_v8 (casuta `categ_venit_N` se bifeaza cand codul
+# == valoarea; eticheta tiparita langa ea). Verificat 01.10.2026.
+CATEG_VENIT_CAP11 = {
+    1016: "1. Activități independente", 1003: "2. Drepturi de proprietate intelectuală",
+    1015: "3. Cedarea folosinței bunurilor (altele decât cele de la pct.4)",
+    1006: "4. Cedarea folosinței bunurilor, în scop turistic", 1009: "5. Activități agricole",
+    1010: "6. Silvicultură", 1011: "7. Piscicultură",
+    1012: "8. Transferul titlurilor de valoare și orice alte operațiuni cu instrumente financiare",
+    1021: "9. Alte surse (art.114 CF)", 1022: "9. Alte surse (art.114 CF)",
+    1023: "9. Alte surse (art.114 CF)", 1024: "9. Alte surse (art.114 CF)",
+}
+CATEG_ACTIVITATI_INDEPENDENTE = 1016
+DET_VEN_NET_SISTEM_REAL = 1          # Pdf_v8: det_ven_net_1 = „1. Sistem real", _2 = „2. Cote forfetare"
+FORMA_ORG_INDIVIDUAL = 1             # Pdf_v8: forma_org_1/2/3 = Individual / Asociere / Transparenta fiscala
+
+#: Pierderea reportata se compenseaza in limita a 70% din venitul net anual (rd.6 din §3.5.11). Procent intreg.
+PROCENT_COMPENSARE_PIERDERE = _anc("d212.PROCENT_COMPENSARE_PIERDERE", Decimal("70"), _Tm(
+    "CF", art="118", alin="4", data_in="2024-01-01", verificat_la="2026-10-01", de_cine="Code/D212-E2",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat=("se reportează și se compensează de către contribuabil în limita a 70% din veniturile nete "
+                "anuale, obținute din aceeași sursă de venit în următorii 5 ani fiscali consecutivi"),
+    lant_acte="alin.(4) modificat de OUG 115/2023 art.LIII pct.70 (de la 01.01.2024); aplicat de instrucțiunile "
+              "D212 (OPANAF 2736/2025) pct.3.5.11 rd.6"))
+TEMEI_COMPENSARE_PIERDERE = _temei_anc("d212.PROCENT_COMPENSARE_PIERDERE")
+#: Randurile cap11 pt activitate individuala in sistem real.
+TEMEI_RANDURI_CAP11 = _Tm(
+    "OPANAF", 2736, 2025, data_in="2026-01-01", verificat_la="2026-10-01", de_cine="Code/D212-E2",
+    nivel_sursa="MO", url="anaf_surse/instructiuni_d212_2736_2025.txt",
+    text_citat=("Rd.3 \"Venit net anual\" - se înscrie suma reprezentând diferența dintre venitul brut (rd. 1) și "
+                "cheltuielile aferente deductibile (rd.2)"),
+    lant_acte="instrucțiuni de completare formular 212, pct.3.5.11 (rd.1-rd.9); rd.8 și rd.9 (pentru venit net) nu se "
+              "completează — impozitul se stabilește în secțiunea 4 a capitolului I")
+
+
+def cap11_sistem_real(venit_brut, chelt_deduc, pierdere_precedenta=0, caen=None):
+    """Subsectiunea I.1.1 pt activitate INDIVIDUALA in sistem real, rand cu rand dupa instructiunile
+    D212 (OPANAF 2736/2025 pct.3.5.11). Sume in lei intregi (half-up).
+
+      rd.1 venit_brut · rd.2 chelt_deduc
+      rd.3 venit_net_anual = rd.1 - rd.2 — NUMAI daca venitul brut > cheltuielile
+      rd.4 pierdere        = rd.2 - rd.1 — NUMAI daca cheltuielile > venitul brut
+      rd.5 pierdere_precedenta (reportata din anii precedenti, data de contabil)
+      rd.6 pierdere_compensata = min(rd.5, 70% x rd.3) — NUMAI cand exista venit net (CF art.118 alin.(4))
+      rd.7 venit_recalculat = rd.3 - rd.6
+      rd.8 venit_redus     — „rubrica nu se completeaza"
+      rd.9 impozit11       = 0 la pierdere sau venit net zero; altfel „nu se completeaza"
+    """
+    vb, cd, pp = _lei(venit_brut), _lei(chelt_deduc), _lei(pierdere_precedenta)
+    if vb < 0 or cd < 0 or pp < 0:
+        raise ValueError("Venitul brut, cheltuielile și pierderea reportată nu pot fi negative.")
+    c = {"categ_venit": CATEG_ACTIVITATI_INDEPENDENTE, "det_ven_net": DET_VEN_NET_SISTEM_REAL,
+         "forma_org": FORMA_ORG_INDIVIDUAL, "venit_brut": vb, "chelt_deduc": cd}
+    if caen:
+        c["caen"] = str(caen).strip()
+    if pp:
+        c["pierdere_precedenta"] = pp
+    if vb > cd:
+        net = vb - cd
+        comp = min(pp, _lei(Decimal(net) * PROCENT_COMPENSARE_PIERDERE / 100))
+        c["venit_net_anual"] = net
+        if pp:
+            c["pierdere_compensata"] = comp
+        c["venit_recalculat"] = net - comp
+    else:
+        if cd > vb:
+            c["pierdere"] = cd - vb
+        c["impozit11"] = 0
+    return c
+
+
 # Flag-uri (bife) de pe radacina, implicit 0, suprascriabile din `manual`.
 _BIFE = ["bifa_succesor", "anulare_litA", "anulare_litB", "bifa_conformare", "bifa111",
          "bifa112", "bifa113", "bifa121", "bifa122", "bifa131", "bifa132", "bifa14", "bifa15"]
@@ -145,17 +222,18 @@ def _suma_cifre_cnp(cnp):
 
 
 def calcul_d212(manual):
-    """totalPlata_A = suma de control (DUK regula R4).
+    """totalPlata_A = suma de control (DUK regula R4, ValidatorCode.validateD212).
 
-    = suma sumelor 'de plata' furnizate (manual['sume_de_plata'] = lista de valori lei) rotunjite;
-    daca suma e 0 (nimic de plata), = suma cifrelor CNP (marcaj de control nenul, cerut de R4).
-    Apelantul poate impune direct manual['totalPlata_A'] (cand a calculat el suma de control)."""
+    Pt `cif` de 13 cifre (CNP): suma celor 13 cifre, MEREU — R4 nu priveste sumele de plata, iar un
+    `totalPlata_A` impus din afara care difera e respins de validator, deci nu se accepta.
+    Pt `cif` care nu e CNP (nerezident cu cod strain), R4 nu se aplica; ramane suma sumelor de plata
+    (`manual['sume_de_plata']`) sau valoarea impusa — NEVERIFICAT pe validator (nerezidentul nu e in perimetru)."""
+    cnp = _cif(manual.get("cif"))
+    if len(cnp) == 13:
+        return {"totalPlata_A": _suma_cifre_cnp(cnp)}
     if manual.get("totalPlata_A") not in (None, ""):
         return {"totalPlata_A": _lei(manual.get("totalPlata_A"))}
-    s = sum(_lei(v) for v in (manual.get("sume_de_plata") or []))
-    if s == 0:
-        s = _suma_cifre_cnp(manual.get("cif"))
-    return {"totalPlata_A": s}
+    return {"totalPlata_A": sum(_lei(v) for v in (manual.get("sume_de_plata") or []))}
 
 
 def pull(conn, schema, perioada):
@@ -179,6 +257,15 @@ def erori_generare(prof, manual):
     an = int(manual.get("an_r") or getattr(prof, "an", 0) or 0)
     if an and an < 2025:
         er.append("an_r %d sub anul minim acceptat de validator (2025)." % an)
+    cap11 = manual.get("cap11")
+    if cap11:
+        try:
+            cv = int(cap11.get("categ_venit"))
+        except (TypeError, ValueError):
+            cv = None
+        if cv not in CATEG_VENIT_CAP11:
+            er.append("Capitol cap11: categoria de venit %r nu e în nomenclatorul D212 (%s)."
+                      % (cap11.get("categ_venit"), ", ".join(str(k) for k in sorted(CATEG_VENIT_CAP11))))
     for nume in _COPII:
         cap = manual.get(nume)
         if cap:
@@ -254,9 +341,31 @@ class Rezultat212:
     avertismente: list = field(default_factory=list)
 
 
+def cap11_din_rip(conn, schema, an, pierdere_precedenta=0, caen=None):
+    """Lantul RIP -> cap11: venitul brut si cheltuielile deductibile din operatiunile VALIDATE ale
+    registrului (rip_api.fisa_d212, aceeasi sursa ca fisa afisata pe ecran). Refuza anii cu plafoane
+    neverificate (refuzul fisei) si avertizeaza despre ce nu intra in calcul."""
+    from core import rip_api
+    f = rip_api.fisa_d212(conn, schema, an)
+    if f.get("eroare"):
+        raise ValueError("D212: fișa RIP nu se poate trage — " + f["eroare"])
+    return cap11_sistem_real(f["venit_brut"], f["cheltuieli_deductibile"], pierdere_precedenta, caen), \
+        f.get("avertisment")
+
+
 def genereaza(conn, schema, perioada, manual=None):
     manual = dict(manual or {})
     an = int(getattr(perioada, "an", None) or manual.get("an_r"))
+    avert = []
+    if manual.get("din_rip") and not manual.get("cap11"):
+        if conn is None:
+            raise ValueError("D212: venitul din registrul RIP cere firma (conexiunea lipsește).")
+        manual["cap11"], a = cap11_din_rip(conn, schema, an, manual.get("pierdere_precedenta") or 0,
+                                           manual.get("caen"))
+        if a:
+            avert.append(a)
+    if manual.get("cap11"):
+        manual["bifa111"] = "1"      # subsectiunea I.1.1 completata (R7 cere si reciproca)
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)
     if er:
@@ -264,4 +373,4 @@ def genereaza(conn, schema, perioada, manual=None):
     calc = calcul_d212(manual)
     xml = build_xml(prof, an, None, manual, calc)
     capitole = [n for n in _COPII if manual.get(n)]
-    return xml, Rezultat212(an=an, total_plata_a=calc["totalPlata_A"], capitole=capitole)
+    return xml, Rezultat212(an=an, total_plata_a=calc["totalPlata_A"], capitole=capitole, avertismente=avert)

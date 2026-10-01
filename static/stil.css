@@ -1478,7 +1478,9 @@ html, body {
   font-size: var(--text-mic); color: var(--ardezie);
   padding: 5px 0; cursor: pointer;
 }
-.set-bifa input { width: 16px; height: 16px; cursor: pointer; }
+/* flex-shrink:0 — o eticheta lunga care se rupe pe doua randuri NU are voie sa strivesca casuta sub 16px
+   (masurat 02.10.2026: 13px pe telefon la bifa D212 „Include venitul din registrul RIP"). */
+.set-bifa input { width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
 
 
 /* [p52_edu] */

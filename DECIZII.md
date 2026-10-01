@@ -15819,3 +15819,42 @@ motivul „nicio indexare documentată").
 există (DS v2.42: title-only pierdut pe touch → `aria-label`); lipsea gardul pentru zonele care apar după click.
 2 apariții în `static/js` (creșă, facturi recurente fr-zi) reparate; gard structural `core/test_input_fara_title_only.py`
 (nu e regulă nouă de UI, deci nu cere intrare nouă în DS/verificator — păzește una existentă).
+
+---
+
+## 02.10.2026 — D212 Etapa 2: venitul în sistem real din registrul RIP intră în subsecțiunea I.1.1, cap-coadă
+
+**Sursele, citite integral înainte de cod.** (1) Validatorul în vigoare (`D212Validator.jar`, pachet v9 / Parameters_v7):
+`validateCap11` e GOALĂ — cap11 se validează doar structural; `categ_venit` ∈ {1016, 1003, 1015, 1006, 1009, 1010, 1011,
+1012, 1021–1024}; `det_ven_net` ∈ [1,2], `forma_org` ∈ [1,3]; sumele întregi în [0, 10^15); niciun atribut cap11
+obligatoriu. (2) Semnificația codurilor NU e în validator: e în generatorul PDF oficial (`D212Pdf.jar`, Pdf_v8, URL din
+`anaf_surse/versiuni.xml`), unde căsuța `categ_venit_1` („1. Activități independente") se bifează când codul ==
+„1016"; `det_ven_net_1` = „Sistem real", `forma_org_1` = „Individual". (3) Instrucțiunile de completare (OPANAF
+2736/2025, pct.3.5.11): rd.3 venit net doar dacă venitul > cheltuieli; rd.4 pierdere doar invers; rd.6 = pierderea
+compensată în limita a 70% din rd.3 (**CF art.118 alin.(4)**, verbatim); rd.7 = rd.3 − rd.6; **rd.8 și rd.9 „nu se
+completează"** când există venit net (impozitul se stabilește în secțiunea 4 a capitolului I — Etapa 4); rd.9 = 0 la
+pierdere sau venit net zero.
+
+**Ce s-a făcut.** `d212.cap11_sistem_real` (rândurile 1–9, activitate individuală), `d212.cap11_din_rip` (fișa RIP din
+operațiunile VALIDATE — aceeași sursă ca fișa afișată), `genereaza` cu `manual.din_rip` (+ `bifa111=1`, subsecțiunea
+completată); ecranul D212: bifa „Include venitul din registrul RIP", pierderea reportată, CAEN (validare pe câmp).
+
+**Defect găsit la citirea integrală a lui R4.** `calcul_d212` punea în `totalPlata_A` suma sumelor de plată când exista
+vreuna; bytecode-ul R4 cere, pentru `cif` de 13 cifre, **mereu** suma cifrelor CNP. Orice D212 cu obligații de plată ar fi
+picat la DUK (proba R&D anterioară o arăta: 21580 respins, 25 cerut — iar predarea o interpretase invers). Reparat;
+pentru nerezident (fără CNP) R4 nu se aplică — rămâne logica veche, NEVERIFICATĂ pe validator, în afara perimetrului.
+
+**Găsit pe drum (UI, clasă globală).** `.set-bifa input` (stil.css) n-avea `flex-shrink:0`: o etichetă lungă strivea căsuța
+(13px în loc de 16px pe telefon). Reparat în regula globală + gard `core/test_set_bifa_nu_se_striveste.py`. Rămâne o
+întrebare de produs (v. limite): căsuța de 16px e sub 24px (AA) dacă se măsoară singură; ținta reală e eticheta.
+
+**Alternative respinse:** a calcula impozitul în cap11 (`impozit11`) pentru venit net pozitiv — instrucțiunile spun
+explicit că rubrica nu se completează; a păstra `categ_venit` din memorie/ghicit („1" din proba R&D) — validatorul îl
+respinge, iar semnificația se ia doar din artefactul oficial.
+
+**Limite.** Doar activitate INDIVIDUALĂ în sistem real (asocierile §3.5.12, cotele forfetare, norma — Etapa 3); cheltuielile
+„limitate" din RIP nu intră (avertisment, ca la fișă); pierderea reportată o declară contabilul (iConta nu ține istoricul
+pierderilor pe ani); impozitul/CAS/CASS = Etapa 4. F4 are operațiuni RIP doar în 2026 → proba cap-coadă e pe venitul 2026
+(an în `ANI_VERIFICATI`), iar cazul 2025 e probat pe schema efemeră.
+
+**Norma trăiește în:** `core/d212.py` (nomenclator + `cap11_sistem_real` + R4), `core/test_d212_cap11.py`, `D212_PERIMETRU.md`.

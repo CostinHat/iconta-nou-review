@@ -62,7 +62,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [formular_manual_d212] Declaratia unica PF: identitate (cif=CNP/nume/adresa) + fisa RIP AFISATA
     // (pull din registru; venitul/CAS/CASS/impozit — informativ). Increment: genereaza cazul minim
     // DUK-valid (identitate); popularea cap11/oblig_realizat din fisa = pas urmator. In memorie, ca d200.
-    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, fisa: null, fisa_eroare: "" },
+    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", fisa: null, fisa_eroare: "" },
     // [formular_manual_d201] venituri din strainatate PF: identitate (CNP/nume/initiala tata/prenume) +
     // sectiuni pe (tara, categorie) - venit_B/chlt_D/imp1/imp2/pierdere; venit_N calculat. In memorie, ca d200.
     d201: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", d_rec: 0, sectiuni: [] },
@@ -2895,16 +2895,23 @@ function randeazaFormularD318(corp, nav) {
 // tip==="d212" (Declaratia unica, persoane fizice, anuala). Increment "proof-of-pattern": formularul
 // strange IDENTITATEA (CNP/nume/adresa) si AFISEAZA fisa RIP (venit net + CAS/CASS + impozit din
 // registrul de incasari/plati, ruta /rip/d212/{an}, informativ). Genereaza cazul MINIM DUK-valid
-// (identitate + bife 0; totalPlata_A = suma cifrelor CNP). Popularea cap11/oblig_realizat din fisa =
-// pas urmator (cifrele NU intra inca in XML). Valorile din memorie (S.d212), persista intre randari.
+// (identitate + bife 0; totalPlata_A = suma cifrelor CNP). [D212 Etapa 2] Cu bifa „Include venitul din
+// registrul RIP", serverul completeaza subsectiunea I.1.1 (sistem real) din registru (din_rip); impozitul si
+// CAS/CASS (sectiunea 4 + contributii) = etapa urmatoare. Valorile din memorie (S.d212), persista intre randari.
 function _d212Manual() {
   const d = S.d212 || {};
-  return {
+  const m = {
     cif: (d.cif || "").replace(/\s+/g, ""),
     nume_c: (d.nume_c || "").trim(),
     adresa_c: (d.adresa_c || "").trim(),
     d_rec: d.d_rec ? 1 : 0,
   };
+  if (d.din_rip) {
+    m.din_rip = true;
+    m.pierdere_precedenta = Number(d.pierdere_precedenta || 0);
+    if ((d.caen || "").trim()) m.caen = d.caen.trim();
+  }
+  return m;
 }
 
 function randeazaFormularD212(corp, nav) {
@@ -2924,7 +2931,7 @@ function randeazaFormularD212(corp, nav) {
       "CAS: <b>" + bani((f.cas || {}).cas || 0) + "</b> lei" + casNota + " · CASS: <b>" + bani((f.cass || {}).cass || 0) + "</b> lei" + cassNota + "<br>" +
       "Bază impozit: <b>" + bani(f.baza_impozit || 0) + "</b> · Impozit: <b>" + bani(f.impozit || 0) + "</b> lei</div>" +
       (f.avertisment ? '<div class="ecran-nota" style="margin-top:4px">' + esc(f.avertisment) + "</div>" : "") +
-      '<div class="ecran-nota" style="margin-top:6px">Cifrele vin din registrul firmei și sunt afișate ca reper. Popularea capitolelor de venit și contribuții în declarație e pasul următor; deocamdată se generează declarația de identificare.</div>' +
+      '<div class="ecran-nota" style="margin-top:6px">Cifrele vin din registrul firmei. Cu „Include venitul din registrul RIP", venitul brut, cheltuielile și venitul net intră în subsecțiunea I.1.1 (sistem real); impozitul și CAS/CASS se completează în etapa următoare.</div>' +
       "</div>";
   } else {
     blocFisa = '<div class="stare-goala stare-goala--inline">Apasă „Trage fișa RIP" ca să vezi venitul net și contribuțiile calculate din registrul de încasări/plăți al firmei, pentru anul ales.</div>';
@@ -2935,6 +2942,11 @@ function randeazaFormularD212(corp, nav) {
       '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Nume și prenume <span class="oblig">*</span></span><input id="d212-nume" type="text" class="camp-input" value="' + esc(d.nume_c || "") + '"></label>' +
       '<label class="camp" style="flex:1 1 260px"><span class="camp-eticheta">Adresa <span class="oblig">*</span></span><input id="d212-adr" type="text" class="camp-input" value="' + esc(d.adresa_c || "") + '"></label>' +
       '<label class="set-bifa"><input id="d212-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '> <span>Rectificativă</span></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
+      '<label class="set-bifa"><input id="d212-rip" type="checkbox" ' + (d.din_rip ? "checked" : "") + '> <span>Include venitul din registrul RIP (subsecțiunea I.1.1, sistem real)</span></label>' +
+      '<label class="camp" style="width:240px"><span class="camp-eticheta">Pierderi fiscale reportate din anii precedenți (lei)</span><input id="d212-pp" type="number" min="0" step="1" class="camp-input" value="' + esc(String(d.pierdere_precedenta || "")) + '"></label>' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Cod CAEN</span><input id="d212-caen" type="text" maxlength="4" class="camp-input" value="' + esc(d.caen || "") + '"></label>' +
     "</div>" +
     '<p style="margin:4px 0 8px"><button class="buton-secundar" id="d212-fisa">Trage fișa RIP ' + esc(String(S.an)) + "</button></p>" +
     blocFisa +
@@ -2947,9 +2959,12 @@ function randeazaFormularD212(corp, nav) {
     S.d212.nume_c = gv("#d212-nume").value.trim();
     S.d212.adresa_c = gv("#d212-adr").value.trim();
     S.d212.d_rec = gv("#d212-rec").checked ? 1 : 0;
+    S.d212.din_rip = gv("#d212-rip").checked ? 1 : 0;
+    S.d212.pierdere_precedenta = gv("#d212-pp").value.trim();
+    S.d212.caen = gv("#d212-caen").value.trim();
   };
-  ["#d212-cnp", "#d212-nume", "#d212-adr"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
-  gv("#d212-rec").addEventListener("change", salveazaAntet);
+  ["#d212-cnp", "#d212-nume", "#d212-adr", "#d212-pp", "#d212-caen"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  ["#d212-rec", "#d212-rip"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
   gv("#d212-fisa").addEventListener("click", async () => {
     salveazaAntet();
     S.d212.fisa = null; S.d212.fisa_eroare = "";
@@ -2967,6 +2982,14 @@ function randeazaFormularD212(corp, nav) {
     salveazaAntet();
     if (!S.d212.cif || !S.d212.nume_c || !S.d212.adresa_c) {
       eroareCamp(zona, "d212-cnp", "Completează CNP, nume și adresă — D212 nu se poate genera fără identificarea persoanei fizice.");
+      return;
+    }
+    if (S.d212.din_rip && S.d212.pierdere_precedenta !== "" && !(Number(S.d212.pierdere_precedenta) >= 0)) {
+      eroareCamp(zona, "d212-pp", "Pierderea reportată se scrie în lei, ca număr pozitiv (sau lasă câmpul gol dacă nu există).");
+      return;
+    }
+    if (S.d212.din_rip && S.d212.caen && !/^\d{4}$/.test(S.d212.caen)) {
+      eroareCamp(zona, "d212-caen", "Codul CAEN are 4 cifre (ex. 6201).");
       return;
     }
     pas2(corp, nav);

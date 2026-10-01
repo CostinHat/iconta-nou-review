@@ -80,7 +80,8 @@ from core import reverificare as R  # noqa: E402
 #: NECUNOSCUT/NECUNOSCUT +1 = +2 (d394.COTE: OPANAF fara articol; PRAG_BRENT_USD: OUG 24/2026 in forma oficiala
 #: nu consemneaza nicio modificare) −1 (intrarea veche `TEMEI_CAND_SE_DATOREAZA`, acum acelasi obiect cu Brent).
 DISTRIBUTIE = {
-    ("VOLATIL", "DEPUS"): 14,
+    # 14 -> 15 la 02.10.2026 (D212 Etapa 2): CF art.118 alin.(4) - compensarea pierderii in limita a 70%.
+    ("VOLATIL", "DEPUS"): 15,
     # 7 -> 9 la 29.09.2026 (lot18, 3d): cele doua cote CF art.84^1 (forfait 20% alin.(3) +
     # impozit 10% alin.(5), chirii platite unei PF de un platitor PJ) au intrat in COTE si sunt
     # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
@@ -109,7 +110,8 @@ DISTRIBUTIE = {
     # NECUNOSCUT: valorile astea nu ajung intr-un modul de declaratie, deci nimeni nu le consuma.
     # *Localizatorul de articol a rezolvat jumatatea lui; cealalta jumatate cere graful de
     # consumatori, nu instrumentul de articol.* Consemnat in R171.
-    ("NECUNOSCUT", "NECUNOSCUT"): 24,
+    # 24 -> 25 la 02.10.2026 (D212 Etapa 2): OPANAF 2736/2025 (instructiunile D212) - temei fara articol.
+    ("NECUNOSCUT", "NECUNOSCUT"): 25,
 }
 
 _AZI = datetime.date(2026, 8, 31)

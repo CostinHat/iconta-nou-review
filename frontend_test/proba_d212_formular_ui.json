@@ -1,0 +1,23 @@
+{
+ "campuri_noi": true,
+ "eroare_caen": "Codul CAEN are 4 cifre (ex. 6201).",
+ "xml_are_cap11": true,
+ "bifa111": true,
+ "duk_text": "DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF.",
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil": {
+  "revarsare_x": false,
+  "tinte_sub_24": [],
+  "casute_sub_24_masurate_singure": [
+   "d212-rec 16px",
+   "d212-rip 16px"
+  ]
+ }
+}

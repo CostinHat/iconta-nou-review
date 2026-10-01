@@ -440,8 +440,8 @@ def valideaza_cerere(tip, body, per_efectiv=None):
                          "(categoria de venit realizat + sumele).")
 
     # d212 (Declaratia unica, persoane fizice, MANUALA anuala): cere identitate (cif/nume_c/adresa_c).
-    # Increment "proof-of-pattern": formularul strange identitatea si AFISEAZA fisa RIP; genereaza cazul
-    # minim DUK-valid (identitate + bife 0). Capitolele populate (cap11/oblig_realizat) = pas urmator.
+    # Formularul strange identitatea; cu `din_rip` serverul completeaza subsectiunea I.1.1 (cap11, sistem
+    # real) din registrul RIP (D212 Etapa 2, d212.cap11_din_rip). oblig_realizat (impozit/CAS/CASS) = Etapa 4.
     # Mesaj de CONTABIL (formularul din UI trimite mereu identitatea -> aici cade doar apelul API gol).
     # Regulile pe camp (CNP valid, nerezident) le da d212.erori_generare.
     if tip == "d212":

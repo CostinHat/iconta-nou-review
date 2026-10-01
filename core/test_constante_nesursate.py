@@ -427,6 +427,7 @@ def test_ANTIVACUU_largirea_chiar_a_adus_module():
 BOTEZ_BASELINE = {
     ("d201.py", "_CATEG_SALARII"): "cod de categorie de venit salarial (nomenclator ANAF)",
     ("d204.py", "_CATEG_VENIT"): "coduri de categorie de venit — nomenclator, nu cote",
+    ("d212.py", "CATEG_VENIT_CAP11"): "coduri categ_venit ale subsectiunii I.1.1 (D212Validator Parameters_v7 + D212Pdf Pdf_v8) — nomenclator, nu cote (02.10.2026, D212 Etapa 2)",
     ("d204.py", "act['categ_venit']"): "comparație cu codul de categorie, nu cu o valoare",
     ("d301_operatiuni_api.py", "TIPURI_ETICHETE"): "coduri de tip de operațiune",
     ("d402.py", "_TIP_VENIT"): "cod de tip de venit (nomenclator D402)",

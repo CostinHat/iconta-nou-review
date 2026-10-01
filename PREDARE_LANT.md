@@ -1,20 +1,22 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Pachet FiscalOS §1–§3 comis (63df9bde); tichetele de creșă pe ferestre datate (commitul care poartă predarea); urmează D212 Etapa 2** (01.10.2026)
+# PREDARE LANȚ — **Pachet FiscalOS §1–§3 (63df9bde) + tichete de creșă (94c7b21a) + D212 Etapa 2 (commitul care poartă predarea); urmează D212 Etapa 3** (02.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-01**, la commitul **tichetelor de creșă** (neconformitate găsită la verificarea §1
-  FiscalOS). *Pentru un contabil: de azi poate acorda tichete de creșă de 770 lei/copil (ordinul MO 830/30.09.2026);
-  plafonul se verifică pe luna beneficiului, cu toate indexările din aprilie 2024 încoace.*
-- **pe commit**: `63df9bde` (Pachet FiscalOS §1–§3, four-way închis: HEAD = origin/main = public/main =
-  backup/lant-2026-10-01 = 2/2 procese). Commitul creșei se citește din `git log -1`. Livrare ZIP pachet:
-  `/home/costin/ghid_incoming/iconta_pachet_fiscalos_rezultat.zip`.
-- **URMĂTORUL FRONT:** **D212 Etapa 2** (cap11/oblig_realizat din fișa RIP — v. „D212 — CE RĂMÂNE" mai jos;
-  perimetrul în `D212_PERIMETRU.md`; validatorul în vigoare J13.0.1).
+- **ultima rescriere**: **2026-10-02**, la commitul **D212 Etapa 2**. *Pentru un contabil: pe D212, bifa „Include
+  venitul din registrul RIP" pune venitul brut, cheltuielile și venitul net (cu pierderea reportată compensată în limita
+  a 70%) în subsecțiunea I.1.1; XML-ul trece validatorul ANAF local. Impozitul și CAS/CASS vin în Etapa 4.*
+- **pe commit**: `94c7b21a` (tichete de creșă, four-way închis: HEAD = origin/main = public/main =
+  backup/lant-2026-10-02 = 2/2 procese). Commitul Etapei 2 se citește din `git log -1`. Pachetul FiscalOS: `63df9bde`,
+  ZIP `/home/costin/ghid_incoming/iconta_pachet_fiscalos_rezultat.zip`.
+- **URMĂTORUL FRONT:** **D212 Etapa 3** — normă de venit (inclusiv agricol, CF art.107 alin.(2)) în motor + emitter
+  cap12 (`D212_PERIMETRU.md` §4 și §5 — ce s-a aflat la sursă despre validator/PDF/R4). Apoi Etapa 4 (impozit/CAS/CASS în
+  `oblig_realizat`, secțiunea 4 a capitolului I).
+- **Decizie deschisă pentru Costin:** căsuțele `.set-bifa` au 16px — sub 24px (WCAG 2.5.8 AA) dacă se măsoară căsuța
+  singură; ținta reală e eticheta (≥ 24). Mărirea globală e o schimbare vizuală pe toate ecranele.
 - **Fronturi deschise, neschimbate:** F1 etapele 9-11 (depunere reală = [EXTERN]); F2 D101 (la închiderea anului);
-  Pachet FiscalOS §4 (D394 Î1/Î2 — nu era în comanda de azi); plafonul de creșă pentru luni < 04.2024 rămâne pe
-  baza 450 (ordinele 2023 nu sunt în forma în vigoare — DECIZII 01.10).
+  Pachet FiscalOS §4 (D394 Î1/Î2); plafonul de creșă pentru luni < 04.2024 pe baza 450 (DECIZII 01.10).
 - **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09, DECIZII 21.09) — nu se comite.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: titlul și antetul sunt **rescrise**; restul documentului (inclusiv „PRIMUL
@@ -368,8 +370,8 @@ vorbă, e o consecință.*
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **71** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **868** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77** | **75** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **867** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
