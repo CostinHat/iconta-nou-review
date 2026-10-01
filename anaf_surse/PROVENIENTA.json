@@ -651,6 +651,14 @@
       "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), forma consolidata in vigoare (RO e-Factura), bytes oficiali; TITLU VERIFICAT in continut (nr 120 din 2021)",
       "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/269543",
       "accessed_at": "2026-09-25T14:45:30.640390+00:00"
+    },
+    "opanaf_2736_2025_d212.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras pdftotext din OPANAF 2736/2025 (model+continut formular 212 Declaratia unica), publicat ANAF static.anaf.ro/.../OPANAF_2736_2025.pdf; text integral, fara interventie"
+    },
+    "instructiuni_d212_2736_2025.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras pdftotext din Instructiuni_D212_2736_2025.pdf (instructiuni de completare formular 212), publicat ANAF static.anaf.ro/.../formulare; text integral, fara interventie"
     }
   },
   "goale_cunoscute": {

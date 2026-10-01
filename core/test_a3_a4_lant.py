@@ -17,8 +17,12 @@ from core import auth_api, declaratii_api
 from core import db as _db
 
 SCH = "ztest_a3a4"
-AN, LUNA = 2026, 9
-ZI = "2026-09-05"
+# [fix fragilitate de data] perioada = luna CURENTA (nu 2026-09 hardcodat): storno-ul foloseste data
+# de azi, deci la rollover de luna un storno de luna trecuta cadea in alta perioada decat livrarea.
+from datetime import date as _date
+_AZI = _date.today()
+AN, LUNA = _AZI.year, _AZI.month
+ZI = _AZI.replace(day=1).isoformat()
 
 
 class _ConnProxy:
