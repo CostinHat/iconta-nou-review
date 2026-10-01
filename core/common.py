@@ -390,15 +390,21 @@ CODURI = {
     "PLAFON_INCASARE_PJ": (
         "Încasare {gasit} lei de la persoana juridică {partener} > {asteptat} lei/zi.",
         "Legea 70/2015 art. 3 alin. (1) lit. a)"),
+    "PLAFON_INCASARE_PJ_CC": (
+        "Încasare {gasit} lei de la {partener} (magazin cash and carry) > {asteptat} lei/zi.",
+        "Legea 70/2015 art. 3 alin. (1) lit. b)"),
     "PLAFON_PLATA_PJ": (
         "Plată {gasit} lei către persoana juridică {partener} > {asteptat} lei/zi.",
         "Legea 70/2015 art. 3 alin. (1) lit. c)"),
     "PLAFON_PLATA_PJ_TOTAL": (
         "Total plăți către persoane juridice {gasit} lei în ziua {zi} > {asteptat} lei.",
         "Legea 70/2015 art. 3 alin. (1) lit. c)"),
+    "PLAFON_PLATA_CC_TOTAL": (
+        "Total plăți către magazine cash and carry {gasit} lei în ziua {zi} > {asteptat} lei.",
+        "Legea 70/2015 art. 3 alin. (1) lit. d)"),
     "PLAFON_PF": (
         "Operațiune {gasit} lei cu persoana fizică {partener} > {asteptat} lei.",
-        "Legea 70/2015 art. 3 — operațiuni cu persoane fizice"),
+        "Legea 70/2015 art. 4 alin. (1)"),
     "PLAFON_AVANS": (
         "Avans spre decontare {gasit} lei pentru {partener} > {asteptat} lei/zi.",
         "Legea 70/2015 art. 3 alin. (1) lit. e) (OUG 115/2023)"),
@@ -574,6 +580,34 @@ def _ca_data(x):
     return date.fromisoformat(str(x))
 
 
+#: Constante fiscale de MODUL ancorate pe temei: "<modul>.<NUME>" -> (valoare, Temei). Pachet FiscalOS §2
+#: (01.10.2026). DE CE NU in COTE: valorile astea nu au istoric versionat in cod (un plafon de casa, un prag
+#: de taxare inversa), iar mutarea lor in registru ar schimba tipul la fiecare consumator. Le lipsea doar
+#: TEMEIUL ca obiect - asa ca scan_constante le numara nesursate, iar scan_citate nu le putea verifica
+#: verbatim. `ancoreaza` le da obiectul fara sa le schimbe valoarea sau tipul.
+CONSTANTE_ANCORATE = {}
+
+
+def ancoreaza(nume, valoare, temei):
+    """Intoarce `valoare` NESCHIMBATA si o inregistreaza in CONSTANTE_ANCORATE cu temeiul ei.
+
+    Forma de folosire (temeiul SCRIS IN ACEEASI EXPRESIE, ca scanerele AST sa-l vada ca stramos al
+    literalului): `PLAFON_PF = c.ancoreaza("casa.PLAFON_PF", Decimal("10000"), c.Temei(...))`.
+    Un nume deja ancorat cu alta valoare = doua surse de adevar -> refuz (fail-loud), nu suprascriere."""
+    if not isinstance(temei, Temei):
+        raise TypeError("ancoreaza(%s): temeiul trebuie sa fie Temei, nu %s" % (nume, type(temei).__name__))
+    vechi = CONSTANTE_ANCORATE.get(nume)
+    if vechi is not None and vechi[0] != valoare:
+        raise ValueError("ancoreaza(%s): deja ancorata cu %r, acum %r" % (nume, vechi[0], valoare))
+    CONSTANTE_ANCORATE[nume] = (valoare, temei)
+    return valoare
+
+
+def temei_ancorat(nume):
+    """Temeiul unei constante ancorate (KeyError daca nu e ancorata - nu se inventeaza)."""
+    return CONSTANTE_ANCORATE[nume][1]
+
+
 # ============================================================
 #  COTE / PLAFOANE CU VALABILITATE — codul știe nu doar CÂT, ci DIN CÂND
 # ============================================================
@@ -591,11 +625,11 @@ COTE = {
     # recenta) ramane in vigoare (data_out None), predecesorul primeste ziua dinaintea succesorului.
     # verificat_la/de_cine = cand/de cine confirmata la sursa (semnal de deriva = vechimea confirmarii).
     "tva_standard": [
-        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-08-07", de_cine="Code/Costin", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (modifica art.291 alin.1 CF): cota standard TVA 21%", lant_acte="Legea 141/2025 modifica art.291 CF; cota 19% (Legea 227/2015) abrogata la 31.07.2025", nivel_sursa="MO")),
+        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/Costin", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (modifica art.291 alin.1 CF): cota standard TVA 21%", lant_acte="Legea 141/2025 modifica art.291 CF; cota 19% (Legea 227/2015) abrogata la 31.07.2025", nivel_sursa="MO")),
         (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, art="291", alin="1", data_in="2017-01-01", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cf_2015_forma_initiala.html", text_citat="art.291 alin.(1) lit.b): 19% incepand cu data de 1 ianuarie 2017 (forma initiala Legea 227/2015, MO 688/2015)")),
     ],
     "tva_redusa": [
-        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-08-07", de_cine="Code/Costin", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (art.291 alin.2 CF): Cota redusa de 11% se aplica asupra bazei de impozitare", nivel_sursa="MO")),
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (art.291 alin.2 CF): Cota redusa de 11% se aplica asupra bazei de impozitare", nivel_sursa="MO")),
     ],
     # Cotele reduse ISTORICE 9% si 5%, coexistente pana la 31.07.2025, comasate in 11% de Legea 141/2025
     # (decizia lui Costin 03.08: doua chei separate, fiecare cu temeiul ei). Intrarea de la 01.08.2025 (0.11)
@@ -604,12 +638,16 @@ COTE = {
     # efect 01.08.2025). DATA DE INCEPUT: NEDOCUMENTATA in codul fiscal consolidat (nota istorica de introducere nu
     # e pastrata); ancorata la 2017-01-01 = inceputul erei standard 19% (in toata acea era reducerile erau 9%/5%).
     # INTERPRETARE CU TEMEI (§3): de reconfirmat la MO pentru perioade < 2017; pana atunci cota() refuza (fail-loud).
+    # [FiscalOS §2 task4] ETICHETA: cheia pastreaza istoricul cotei reduse de 9% (CF art.291 alin.2 lit.a-n,
+    # 2016-07.2025). De la 01.08.2025 cota de 9% a fost COMASATA in cota redusa UNICA de 11% (Legea 141/2025):
+    # valoarea CURENTA a acestei chei e 0.11 (identica cu tva_redusa), iar 0.09 e ISTORIC (data_out 31.07.2025,
+    # exclus de la reconfirmare). Nu e o cota "9% curenta".
     "tva_redusa_9": [
-        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (art.291 alin.2 CF): cota redusa unica de 11% (comaseaza fostele operatiuni de 9%)", lant_acte="Legea 141/2025 pct.42 comaseaza cota redusa de 9% (CF art.291 alin.2) in 11% de la 01.08.2025")),
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (art.291 alin.2 CF): cota redusa unica de 11% (comaseaza fostele operatiuni de 9%)", lant_acte="Legea 141/2025 pct.42 comaseaza cota redusa de 9% (CF art.291 alin.2) in 11% de la 01.08.2025")),
         (date(2016, 1, 1), Decimal("0.09"), Temei("Legea", 227, 2015, art="291", alin="2", data_in="2016-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/cf_art291_2016_forma_initiala.txt", text_citat="cota redusa de 9% pt operatiunile CF art.291 alin.(2) lit.a-n (medicamente, alimente, apa/canalizare, irigatii, ingrasaminte/pesticide, carti/manuale/ziare, acces cultural, lemn de foc, energie termica, locuinte sociale, cazare, restaurant/catering)", lant_acte="cota 9% in vigoare de la 01.01.2016 (Legea 227/2015, MO 688/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt). Comasata in 11% de Legea 141/2025 de la 01.08.2025. Nota: apa/ingrasaminte (g/h) adaugate de Legea 175/2018 din 01.01.2019")),
     ],
     "tva_redusa_5": [
-        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="3", data_in="2025-08-01", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Legea 141/2025 pct.42: CF art.291 alin.(2) lit.g) manuale/carti/ziare + lit.h) acces cultural (castele/muzee/monumente) = cota redusa 11%. NOTA (rationament): locuintele sociale (fost alin.3 lit.c) NU apar in lista alin.2 -> trec la 21% standard; categoria 5% s-a SPLIT.", lant_acte="Legea 141/2025 pct.43 abroga alin.3 (5%); carti/cultural->11% (alin.2 g/h), locuinte sociale->21% standard, de la 01.08.2025")),
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Legea 141/2025 pct.42: CF art.291 alin.(2) lit.g) manuale/carti/ziare + lit.h) acces cultural (castele/muzee/monumente) = cota redusa 11%. NOTA (rationament): locuintele sociale (fost alin.3 lit.c) NU apar in lista alin.2 -> trec la 21% standard; categoria 5% s-a SPLIT.", lant_acte="Legea 141/2025 pct.43 abroga alin.3 (5%); carti/cultural->11% (alin.2 g/h), locuinte sociale->21% standard, de la 01.08.2025")),
         (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="291", alin="3", data_in="2016-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/cf_art291_2016_forma_initiala.txt", text_citat="cota redusa de 5% CF art.291 alin.(3) (locuinte sociale sub 600.000 lei lit.c pct.3, carti, acces evenimente culturale/sportive)", lant_acte="cota 5% ca alin.(3) art.291 in vigoare de la 01.01.2016 (Legea 227/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt): carti/manuale (a), acces cultural (b), locuinte sociale (c). Locuinte la 5% au continuitate din vechiul cod (OUG 200/2008). Abrogata de Legea 141/2025 de la 01.08.2025")),
     ],
     # impozit pe DIVIDENDE, CF art.97 alin.(7). (Castigul din LICHIDARE e SEPARAT - art.97 alin.5, 10% fix -
@@ -620,9 +658,9 @@ COTE = {
     # 10% era pe 2024-01-01 (gresit: 2024=8%) si a fost aruncat in loc sa fie mutat la 2025. Sursa bate memoria:
     # OUG 156/2024 art.LXIV+LXV (dividende 10% de la 01.01.2025) + d205_struct_anaf.txt:6 "8%/2024, 10%/2025, 16%/2026".
     "impozit_dividend": [
-        (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, art="97", alin="7", data_in="2026-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.1 (art.43 alin.2 CF): impozit pe dividende cota 16% asupra dividendului brut", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 8% la 16%, dividende distribuite de la 01.01.2026")),
+        (date(2026, 1, 1), Decimal("0.16"), Temei("CF", art="97", alin="7", data_in="2026-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="Veniturile sub formă de dividende, inclusiv câștigul obținut ca urmare a deținerii de titluri de participare definite de legislația în materie la organisme de plasament colectiv, se impozitează cu o cotă de 16% din suma acestora, impozitul fiind final.", lant_acte="CF art.97 alin.(7) = dividende catre PERSOANE FIZICE - consumatorii cotei in iConta sunt D205 si decontari_asociati (beneficiari PF). Forma 16% din Legea 141/2025 art.II pct.1, pt dividende distribuite de la 01.01.2026. ACEEASI cota 16% pt dividende catre PJ romana la CF art.43 alin.(2) (Impozitul pe dividende se stabileste prin aplicarea unei cote de impozit de 16% asupra dividendului brut platit unei persoane juridice romane) - temei paralel, nu al acestei chei")),
         (date(2025, 1, 1), Decimal("0.10"), Temei("OUG", 156, 2024, art="97", alin="7", data_in="2025-01-01", verificat_la="2026-08-16", de_cine="Code+campanie-D300", nivel_sursa="MO", url="anaf_surse/oug_156_2024.txt", text_citat="Veniturile sub forma de dividende se impoziteaza cu o cota de 10%% din suma acestora, impozitul fiind final (art.LXIV pct.1); Art.LXV: intra in vigoare la 1 ianuarie 2025", lant_acte="OUG 156/2024 majoreaza cota de la 8%% la 10%%, dividende distribuite de la 01.01.2025; confirmat de d205_struct_anaf.txt:6; ramas pana la Legea 141/2025 (16%% de la 2026)")),
-        (date(2023, 1, 1), Decimal("0.08"), Temei("OG", 16, 2022, art="97", alin="7", data_in="2023-01-01", verificat_la="2026-08-09", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/og_16_2022_consolidat.html", text_citat="OG 16/2022 modifica art.43 alin.(2) CF: Impozitul pe dividende se stabileste prin aplicarea unei cote de impozit de 8% asupra dividendului brut platit unei persoane juridice romane", lant_acte="OG 16/2022 (MO 716/15.07.2022) majoreaza cota de la 5% la 8%, dividende distribuite de la 01.01.2023; aprobata prin Legea 370/2022")),
+        (date(2023, 1, 1), Decimal("0.08"), Temei("OG", 16, 2022, art="97", alin="7", data_in="2023-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/og_16_2022_consolidat.html", text_citat="OG 16/2022 pct.44 modifica art.97 alin.(7) CF: Veniturile sub formă de dividende, inclusiv câștigul obținut ca urmare a deținerii de titluri de participare definite de legislația în materie la organisme de plasament colectiv se impozitează cu o cotă de 8% din suma acestora, impozitul fiind final", lant_acte="OG 16/2022 (MO 716/15.07.2022) majoreaza cota de la 5% la 8%, dividende distribuite de la 01.01.2023 (pct.44 art.97 alin.7 PF; pct.3 art.43 alin.2 PJ - acelasi 8%); aprobata prin Legea 370/2022")),
         (date(2016, 1, 1), Decimal("0.05"), Temei("OUG", 50, 2015, art="97", alin="8", data_in="2016-01-01", verificat_la="2026-08-09", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/oug_50_2015_consolidat.html", text_citat="OUG 50/2015 (introduce art.97 alin.8 CF): Cota de impozit de 5% se aplica asupra veniturilor din dividende distribuite incepand cu data de 1 ianuarie 2016", lant_acte="OUG 50/2015 (MO 817/2015) accelereaza data 5% din Legea 227/2015 (era 2017) la 01.01.2016; aprobata prin Legea 358/2015")),
     ],
     # plafon TVA la incasare (fost petic 3-tier plafon_la). OUG 8/2026: 5M de la 03.2026, 5.5M de la 2027.
@@ -657,7 +695,7 @@ COTE = {
     # impozit micro (1% standard) / profit (16%) - rata DEFAULT (contabilul o poate da explicit prin manual).
     # Mutate din literalele hardcodate din d100 (dependenta ascunsa V2) -> vizibile in graf.
     "impozit_micro": [
-        (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.51 alin.(1): Cota de impozit pe veniturile microintreprinderilor este de 1%", lant_acte="cota micro 1% (CF art.51 alin.1). OUG 89/2025 (MO 1203/24.12.2025) art.I pct.4 pastreaza 1% ca forma UNICA de la 01.01.2026 + pct.5 abroga alin.(1^1)=cota 3%; pe 2026 nu mai exista split 1%/3% si nici pragul 60.000 EUR. Confirmat la sursa 05.08.2026 (validat Costin)")),
+        (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="Cota de impozit pe veniturile microîntreprinderilor este de 1%.", lant_acte="ANCORAT pe forma art.51 alin.(1) IN VIGOARE DIN 01.01.2026 (modificat de Punctul 4, Articolul I din OUG 89/2025, MO 1203/24.12.2025): 1% forma UNICA, fara split 1%/3% si fara pragul 60.000 EUR. Cota de 1% aplicabila de la 01.01.2023 (data_in), confirmata pe forma consolidata adusa la 01.10.2026")),
     ],
     "impozit_profit": [
         (date(2018, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.17: Cota de impozit pe profit care se aplica asupra profitului impozabil este de 16%")),
@@ -669,7 +707,7 @@ COTE = {
         (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.156: Cota de contributie de asigurari sociale de sanatate este de 10%")),
     ],
     "impozit_venit": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.64 alin.(1): Cota de impozit este de 10% (aplicata la venituri din salarii, art.78)")),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", alin="2", lit="a", data_in="2018-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.78 alin.(2) lit.a): la locul unde se află funcția de bază, prin aplicarea cotei de 10% asupra bazei de calcul determinată ca diferență între venitul net din salarii calculat prin deducerea din venitul brut", lant_acte="consumatorii cotei sunt salariile (salarizare, D112) -> temeiul SPECIFIC e art.78 alin.(2) lit.a); cota GENERALA de 10% e art.64 alin.(1) (forma OUG 79/2017, de la 01.01.2018). Citatul vechi era din art.64 pe un Temei art.78 fara alineat - aliniat 01.10.2026")),
     ],
     "cam": [
         (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^3", alin="1", data_in="2018-01-01", verificat_la="2026-08-16", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.220^3 alin.(1): Cota contributiei asiguratorii pentru munca este de 2,25%")),

@@ -8,14 +8,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no" />
-    <title>LEGE           (R)    26 05/11/1990 - Portal Legislativ</title>
+    <title>LEGE                  26 05/11/1990 - Portal Legislativ</title>
     <link href="/Content/css?v=iKXncnEnzeZrcZDXQ4gyEFYtrgIhK9GqKaiZ1xjeUOQ1" rel="stylesheet"/>
 
     <link href="/Content/themes/base/css?v=7T_tuS9RP8sQe2HxerJdL6STYU-qCHtjrExyjsSiYcQ1" rel="stylesheet"/>
 
-    <meta name="keywords" content="LEGE           (R)    26 05/11/1990 - Portal Legislativ">
-    <meta name="description" content="LEGE           (R)    26 05/11/1990 - Portal Legislativ">
-    <meta name="title" content="LEGE           (R)    26 05/11/1990 - Portal Legislativ">
+    <meta name="keywords" content="LEGE                  26 05/11/1990 - Portal Legislativ">
+    <meta name="description" content="LEGE                  26 05/11/1990 - Portal Legislativ">
+    <meta name="title" content="LEGE                  26 05/11/1990 - Portal Legislativ">
     <link href="/Content/bootstrap-datepicker.css" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="/Content/Images/Site/temanoua/favicon.ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -416,7 +416,7 @@
                 <div style="text-align:center;">
                     
 
-                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G0E2UYE0PMWPA30O6YPGXSKES2A>
+                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G3O7P3XLPWYQUX0HPHNJ2OHAGA1>
                         <span class="glyphicon glyphicon-print"></span> Forma printabilă
                     </a>
                 </div>
@@ -1098,7 +1098,7 @@
           }
       });
 
-      var _tipact = 3;
+      var _tipact = 2;
         //alert(_tipact);
         if ((_tipact == 3 || _tipact == 2) && window.location.href.indexOf('isFormaDeBaza') == -1)
         {
@@ -1311,7 +1311,7 @@
     }
 
     function incarcaFormaDeBaza(contor) {
-        $.post("/Public/DetaliiDocument/785", { isFormaDeBaza: true }, function (result) {
+        $.post("/Public/DetaliiDocument/783", { isFormaDeBaza: true }, function (result) {
             window.location.href = result.Url;
         });
     }

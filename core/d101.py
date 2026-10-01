@@ -34,6 +34,7 @@ from __future__ import annotations
 DENUMIRE_OFICIALA = 'Declarație privind impozitul pe profit'
 
 from core.common import text_anaf as _t, alege_varianta as _av, Temei as _Tm, LIMITE_TEXT_ANAF as _LIM  # +versionare +limite text
+from core.common import ancoreaza as _anc
 from core.identitate import valideaza_cui as _valideaza_cui  # T1 (10.08.2026): checksum CUI firma, sursa canonica (read-only)
 from datetime import date as _date_v
 from dataclasses import dataclass, field
@@ -43,7 +44,9 @@ from core import repo_d101 as _repo
 
 NS = "mfp:anaf:dgti:d101:declaratie:v10"
 
-COTA_STANDARD = Decimal("16")
+COTA_STANDARD = _anc("d101.COTA_STANDARD", Decimal("16"), _Tm(
+    "CF", art="17", data_in="2016-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."))
 
 # ============================================================
 #  IMCA - impozit minim pe cifra de afaceri (CF art.18^1). Verificat VERBATIM la sursa:
@@ -51,7 +54,10 @@ COTA_STANDARD = Decimal("16")
 #  si primite ca intrari (I=investitii, A=amortizarea acestora). d101 avea deja comparatia P46/P47/P48
 #  (alin.5); aici se ADAUGA CALCULUL IMCA (P47) + eligibilitatea, care lipseau (graf_temei: obligatie noua).
 # ============================================================
-PRAG_IMCA_EUR = Decimal("50000000")   # art.18^1 alin.(1): cifra de afaceri > 50.000.000 euro
+PRAG_IMCA_EUR = _anc("d101.PRAG_IMCA_EUR", Decimal("50000000"), _Tm(   # cifra de afaceri an precedent
+    "CF", art="18^1", alin="1", data_in="2024-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="care înregistrează în anul precedent o cifră de afaceri de peste 50.000.000 euro",
+    lant_acte="art.18^1 introdus de Legea 296/2023 art.III pct.2; alin.(17): se aplică până la 31.12.2026 inclusiv"))
 
 
 def datoreaza_imca(vt, vs, curs_eur):
@@ -70,7 +76,10 @@ def datoreaza_imca(vt, vs, curs_eur):
 # 31.12.2026). Verificat la sursa: anaf_surse/cod_fiscal_227_2015_consolidat.txt art.18^1 + ghid imca-2026-cota-05-la-suta.md.
 _VARIANTE_COTA_IMCA = [
     ("2024-01-01", Decimal("0.01"), _Tm("Legea", 296, 2023, art="18^1", alin="3", nivel_sursa="MO", de_cine="Code/Costin", verificat_la="2026-09-23")),
-    ("2026-01-01", Decimal("0.005"), _Tm("OUG", 89, 2025, art="18^1", alin="3", nivel_sursa="MO", de_cine="Code/Costin", verificat_la="2026-09-23")),
+    ("2026-01-01", Decimal("0.005"), _Tm("OUG", 89, 2025, art="18^1", alin="16", nivel_sursa="MO", de_cine="Code/FiscalOS", verificat_la="2026-10-01")),
+    # [FiscalOS §3] art.18^1 alin.(17): IMCA se aplica PANA LA 31.12.2026 inclusiv (sau ultima zi a
+    # anului fiscal modificat care se incheie in 2027); de la 2027 INCETEAZA (cota 0), nu continua implicit.
+    ("2027-01-01", Decimal("0"), _Tm("OUG", 89, 2025, art="18^1", alin="17", nivel_sursa="MO", de_cine="Code/FiscalOS", verificat_la="2026-10-01")),
 ]
 
 

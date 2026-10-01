@@ -45,6 +45,22 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **PACHET FISCALOS §1–§3** (01.10.2026, comanda Costin „termină §2; închidere commit §1+§2+§3; apoi D212 Etapa 2"; sursa `~/ghid_incoming/PACHET_FISCALOS_ICONTA.md` + `verif_temeiuri.json`). Reluat după întrerupere: §1 și §3 erau în arbore, necomise; §2 parțial (4 rânduri COTE).
+  - ultim: §1 VERIFICAT (nu refăcut): 81 fișiere cu SHA256 consistent; 53/55 HTML byte-identice cu MANIFEST FiscalOS; OUG 24/2026 adusă separat; HG 1045/2018 pe consolidarea 15.09 (cea din 30.09 → commitul următor, v. mai jos).
+  - ultim: §2 TERMINAT: `common.ancoreaza` + 17 constante ancorate verbatim (18 aprobate + PLAFON_SOLD_ZI_CC + PRAG_BRENT_USD, al cărui RESPINS cădea pe corpus); 7 valori reconfirmate (alertă goală); dividende pe CF art.97 alin.(7); impozit_venit pe CF art.78 alin.(2) lit.a); tva_redusa_5 de pe alineatul abrogat pe alin.(2); cod PLAFON_INCASARE_PJ_CC. Gard `core/test_fiscalos_s2.py` (mutație 10/10 roșii) + §3 `core/test_fiscalos_s3.py` (4/4 roșii).
+  - urmator: commit §1+§2+§3 + four-way + mirror + ZIP `/home/costin/ghid_incoming/iconta_pachet_fiscalos_rezultat.zip`. IN LUCRU
+  - pasi:
+    1. `core/common.py`: `ancoreaza`/`temei_ancorat`/`CONSTANTE_ANCORATE`; COTE: dividende art.97(7) 2026+2023, impozit_venit art.78(2)a, tva_redusa_9/_5 reconfirmate (tva_redusa_5 alin 2), cod PLAFON_INCASARE_PJ_CC.
+    2. module: bacsis, casa (7 plafoane), cote_tva, d101 (cota + IMCA), d101g, d394.COTE, salarizare (+2000), taxare_inversa (22.500), d100_pozitia_116 (Brent) → `ancoreaza(..., Temei(...))`.
+    3. `core/expirare_cote.py`: etichetele 9%/5% (istoric, nu se reconfirmă).
+    4. gărzi: `core/test_fiscalos_s2.py` nou; recalibrări `test_constante_nesursate`, `test_citate_verbatim` (32→52), `scan_constante` (c.Temei, PROZA_RESPINSA), `consumatori_temei` (calea CONSTANTE_ANCORATE + alias valoare).
+    5. registre + poarta completă + commit + four-way + ZIP.
+- fir: **TICHETE DE CREȘĂ — ferestre datate de indexare** (01.10.2026, NECONFORMITATE găsită la verificarea §1: consolidarea HG 1045/2018 din 30.09.2026 reproduce Ordinul 1.255/1.187/2026, MO 830/30.09.2026 — 770 lei/copil din oct. 2026 — și tot istoricul 640→740; iConta plafonează la 450). NEINCEPUT
+  - pasi:
+    1. `anaf_surse/hg_1045_2018_norme_consolidat.html` (+.txt, .sha256, PROVENIENTA) → forma 314229 (consolidare 30.09.2026), veche arhivată.
+    2. `core/common.py::plafon_cresa`: `_FERESTRE_CRESA` (apr.2024 → mar.2027) din notele verbatim; în afara ferestrelor → baza 450 cu motiv (comportamentul de azi).
+    3. `core/beneficii_api.seteaza`: plafonul pe luna beneficiului (`date(an, luna, 1)`), nu pe azi; mesajul de blocare fără „GRI”.
+    4. `core/test_tichet_cresa.py`: ferestrele pe ambele margini + luna beneficiului; mutație; registre; commit four-way.
 - fir: **PRODUCȚIE GHIDURI — poarta de verificare pre-publicare** (21.09.2026, comandă Costin „lista producție ghiduri, pasul 2"). FIR PARALEL cu Sesiunea B (redirecționare explicită, §7). Agenda (`urmator_cluster`) rămâne pe F3.
   - ultim: importat `index_titluri_ghid.csv` (8.713 titluri) ca listă de bază, git-track + reader `core/ghid_titluri.py`.
   - ultim: **poarta `core/ghid_poarta.py` LIVRATĂ** (commit bb2264f6, four-way) — 2a citări în corpus + 2b F-ID LIVE+sursă+back-link; CLI blochează exit≠0. Gard `core/test_ghid_poarta.py`.

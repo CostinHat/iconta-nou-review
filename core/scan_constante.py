@@ -119,9 +119,7 @@ def _valoarea_e_in(txt, val):
 # au fost PRIVITE in sursa si respinse; raman in C. Cheia e (fisier, valoare), iar gardul cere ca
 # fiecare intrare sa fie in continuare un candidat - altfel intrarea a imbatranit si se scoate.
 PROZA_RESPINSA = {
-    ("d101g.py", "16"): 'cota de impozit pe profit; proza vecina spune „rd.16 diferenta de '
-                        'recuperat” si „rd.61 cercetare-dezvoltare 16% (OUG 115/2024)” - alt 16. '
-                        'Geamana ei, d101.py:40, e in C: aceeasi constanta nu poate avea doua clase.',
+    # ("d101g.py", "16") SCOASA 01.10.2026: cota e acum ancorata pe CF art.17 (clasa A, Pachet FiscalOS §2).
     ("salarizare.py", "12"): 'plafonul de 12 salarii minime la concediu medical; proza vecina spune '
                              '„PNS 12/13/14” - coduri de exceptie, nu plafonul.',
 }
@@ -201,7 +199,8 @@ def scan(f, src):
             fn = n.func
             if isinstance(fn, ast.Name) and fn.id == "len":
                 ex.update(id(p) for p in ast.walk(n))
-            if isinstance(fn, ast.Name) and fn.id in ("Temei", "_Tm", "date", "datetime"):
+            if (isinstance(fn, ast.Name) and fn.id in ("Temei", "_Tm", "date", "datetime")
+                    or isinstance(fn, ast.Attribute) and fn.attr == "Temei"):   # si `c.Temei(...)` (01.10.2026)
                 ex.update(id(p) for p in ast.walk(n))          # argumentele citarii nu sunt valori
         if isinstance(n, ast.BinOp) and isinstance(n.op, ast.Mod) and lit(n.right):
             ex.add(id(n.right))

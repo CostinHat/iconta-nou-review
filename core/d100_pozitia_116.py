@@ -27,7 +27,7 @@ nu depinde doar de *cine e firma*, ci de un **preț de piață** — un fapt pe 
 pentru care nu are nicio sursă. Chiar dacă mâine ar apărea o firmă purtătoare, calculul ar rămâne
 neconstruibil fără cotația Brent. **Se scrie, ca să nu fie descoperit ca surpriză.**
 """
-from core.common import Temei
+from core.common import Temei, ancoreaza, temei_ancorat
 
 MODUL = "d100_pozitia_116"
 
@@ -57,13 +57,19 @@ TEMEI_CINE_DATOREAZA = Temei(
                 "afiliate, prelucreaza acest titei si obtin venituri din comercializarea "
                 "produselor energetice"))
 
-TEMEI_CAND_SE_DATOREAZA = Temei(
+#: Pragul de care atârnă obligația, ca DATĂ, nu ca număr într-o propoziție: o gardă întreabă
+#: `PRAG_BRENT_USD == 70`, nu dacă apare șirul „70 USD" undeva. Ancorat pe temei (Pachet FiscalOS §2,
+#: 01.10.2026): respins în pachet DOAR fiindcă OUG 24/2026 era atomizată stricat în corpus; §1 a adus
+#: forma oficială just.ro, iar citatul de mai jos e verbatim în ea. Temeiul „când se datorează" e
+#: ACELAȘI obiect - o singură sursă, nu două copii.
+PRAG_BRENT_USD = ancoreaza("d100_pozitia_116.PRAG_BRENT_USD", 70, Temei(
     "OUG", 24, 2026, art="2", alin="2",
-    data_in="2026-04-03", verificat_la="2026-08-31", de_cine="Code/Costin", nivel_sursa="MO",
+    data_in="2026-04-03", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO",
     url="anaf_surse/oug_24_2026_contributie_solidaritate.txt",
     text_citat=("Contributia de solidaritate prevazuta la alin. (1) se datoreaza exclusiv pentru "
                 "lunile in care pretul mediu lunar al titeiului sortiment/clasa Brent depaseste "
-                "nivelul de 70 USD/baril"))
+                "nivelul de 70 USD/baril")))
+TEMEI_CAND_SE_DATOREAZA = temei_ancorat("d100_pozitia_116.PRAG_BRENT_USD")
 
 #: Codurile de motiv. Nomenclator INCHIS — garda asertează pe COD, nu pe cuvinte din propoziție.
 #: A treia oară în trei zile când o probă căuta un cuvânt într-un mesaj; de fiecare dată reparația
@@ -103,10 +109,6 @@ def poate_datora(profil):
             "petrolier», pe care aplicația nu-l cunoaște" % caen)
     return False, "caen_in_afara", "CAEN %s nu indică activitate de țiței/produse energetice" % caen
 
-
-#: Pragul de care atârnă obligația, ca DATĂ, nu ca număr într-o propoziție: o gardă întreabă
-#: `PRAG_BRENT_USD == 70`, nu dacă apare șirul „70 USD" undeva.
-PRAG_BRENT_USD = 70
 
 
 def constatare(profil):

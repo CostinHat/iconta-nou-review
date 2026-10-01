@@ -15702,3 +15702,79 @@ normă care tranșează.
 și D2 intrat înainte de fix — curățate în campania B (cont 302→371, nota D1, intrarea D2) pentru un D406/bilanț
 coerent. Observat: defaultul de migrare pentru articole fără cont_stoc e 302, dar `cv_intrare` folosește 371 —
 inconsecvență de default (de urmărit separat, nu blochează).
+
+---
+
+## 01.10.2026 — Pachet FiscalOS §1–§3 aplicat: corpus oficial, constante ancorate pe temei, 4 defecte de cod
+
+**Sursa comenzii:** `~/ghid_incoming/PACHET_FISCALOS_ICONTA.md` (aprobat de Costin) + `verif_temeiuri.json`
+(verificarea independentă a arhitectului: 9 APROB / 9 CORECTEAZĂ / 1 RESPINGE). Sesiunea a fost întreruptă
+după §1 și §3 (necomise); §2 terminat și totul comis împreună.
+
+**§1 — corpus.** 54 de acte stricate (structură atomizată greșit) înlocuite cu forma consolidată oficială
+legislatie.just.ro din `~/fiscalos/surse_oficiale/` (53 byte-identice cu `MANIFEST.json`, verificat SHA256);
+formele vechi arhivate în `anaf_surse/_inlocuite_fiscalos_2026-10-01/` (nu șterse). OUG 24/2026 adusă separat
+(DetaliiDocumentAfis/309088) — lipsea din aducerea FiscalOS. OPANAF 3769/2015 rămâne forma din corpus (cea
+oficială e mai săracă, fără anexe). PROVENIENTA.json: fiecare act `ADUS` cu id_portal, consolidare și SHA.
+
+**§2 — MECANISMUL: `common.ancoreaza(nume, valoare, Temei(...))`.** Întoarce valoarea NESCHIMBATĂ (tip, identitate)
+și o înregistrează în `common.CONSTANTE_ANCORATE`; temeiul stă scris în ACEEAȘI expresie, ca scanerele AST
+(`scan_constante`, inventarul FiscalOS) să-l vadă ca strămoș al literalului. Alternative respinse: (a) mutarea în
+`COTE` — schimbă tipul la fiecare consumator și cere istoric versionat pe care valorile astea nu-l au; (b)
+`X, TEMEI_X = valoare, Temei(...)` — ținta-tuplu iese din inventarul FiscalOS (nici sursat, nici nesursat:
+invizibilă); (c) `TEMEI_X = Temei(...)` separat — literalul rămâne nesursat pentru mașină. Refuză o a doua
+ancorare cu altă valoare (două surse de adevăr) și un temei care nu e obiect `Temei`.
+
+**§2 — cele 18 temeiuri aprobate** sunt ancorate exact pe actul/articolul/litera din verificare, fiecare citat
+regăsit VERBATIM în forma adusă la §1 (nu luat din pachet). Plus, în afara listei, aceeași clasă închisă:
+- `casa.PLAFON_SOLD_ZI_CC` (500.000 lei) → Legea 70/2015 art.4^2 alin.(1) — al 7-lea plafon de casă, nesursat;
+- `casa.PLAFON_PLATA_CC_TOTAL` (nou din §3) → art.3 alin.(1) lit.d);
+- `d100_pozitia_116.PRAG_BRENT_USD` (70) → OUG 24/2026 art.2 alin.(2). **RESPINS în pachet numai pentru că
+  actul era ilizibil în corpus** („vezi §1"); §1 l-a adus, citatul e verbatim, deci motivul respingerii nu mai
+  există. `TEMEI_CAND_SE_DATOREAZA` devine ACELAȘI obiect (`temei_ancorat`), nu o a doua copie.
+`data_in` per constantă = nota de modificare din forma consolidată (art.3 alin.(1) Legea 70: 11.11.2023;
+art.4/4^2: 15.12.2023; CF art.77: 01.01.2023; art.18^1: 01.01.2024; art.331 alin.(7): 03.01.2016) — nu o dată
+comună ghicită. Bacșișul: Legea 376/2022 **art.I pct.1** (verificarea scria art.II).
+
+**§2 — cele 4 sarcini din COTE.**
+1. *Reconfirmarea celor 7 valori din alertă* (tva_standard, tva_redusa, tva_redusa_9, tva_redusa_5,
+   impozit_dividend, impozit_micro, impozit_venit): fiecare reconfirmată la sursă pe 01.10.2026; alerta e goală.
+2. *Dividende, art.97/art.43 aliniat.* HEAD avea `Temei(art=97)` cu citat din art.43 (PJ). Consumatorii cotei sunt
+   D205 și `decontari_asociati` — beneficiari PERSOANE FIZICE → temeiul cheii e **CF art.97 alin.(7)** (verbatim
+   16%); art.43 alin.(2) (PJ, tot 16%) e temei paralel, notat în `lant_acte`. Aceeași nealiniere și pe rândul 2023
+   (OG 16/2022): citatul trece pe pct.44 (art.97 alin.7, 8%).
+3. *Micro 1%* ancorat pe forma art.51 alin.(1) în vigoare din 01.01.2026 (OUG 89/2025 art.I pct.4), verbatim.
+4. *Eticheta „9% istoric”*: cheile tva_redusa_9/_5 au azi valoarea 11% (comasare); 9%/5% sunt istoric (data_out
+   31.07.2025), nu se reconfirmă — eticheta alertei o spune explicit.
+
+**Clasă descoperită la §2: „articolul declarat ≠ articolul din propriul citat”** (măsurată pe toate Temei-urile
+din core cu localizator „art.N …:”): 3 apariții — dividende 2026, dividende 2023, `impozit_venit` (Temei art.78
+fără alineat, citat din art.64). La `impozit_venit`, alinierea s-a făcut pe articolul SPECIFIC consumatorului
+(salarii: **CF art.78 alin.(2) lit.a)** „prin aplicarea cotei de 10%”), nu pe cota generală art.64 alin.(1) —
+alternativă respinsă: art.64 ar fi mutat valoarea pe un articol STABIL (prag 6 luni) deși salariile depind de
+art.78, VOLATIL (prag 1 lună). Încă o apariție a clasei înrudite „temei pe alineat greșit”: `tva_redusa_5` (11%
+din 01.08.2025) avea `alin="3"` — alineatul **abrogat** de Legea 141/2025 pct.43; corect alin.(2) lit.g)-h).
+
+**§3 — 4 defecte reparate** (verificate la sursă): avansul spre decontare intră în plafonul total zilnic (art.3
+alin.4); plata către cash&carry are doar plafonul total 10.000/zi (lit.d), fără 5.000/persoană; IMCA 0,5% e alin.(16)
+și ÎNCETEAZĂ după 31.12.2026 (alin.17); mesajul PLAFON_PF citează art.4 alin.(1). Plus nota colaterală din
+verificare: la firma cash&carry mesajul de încasare cita lit.a) deși se aplica lit.b) → cod nou
+`PLAFON_INCASARE_PJ_CC`.
+
+**§4 (D394 Î1/Î2) și §5 (R-CONT-412/432)** — neatinse: §4 nu era în comanda de azi (comanda: §1–§3); §5 e închis
+fără acțiune în pachet.
+
+**Limita față de interdicția 1 (CONFORMITATE: „valoare fiscală scrisă în afara registrului”).** Ancorarea dă
+temeiul, NU mută valoarea în registru — iar patru constante DUBLEAZĂ o cheie din COTE: `d101/d101g.COTA_STANDARD`
+(= `impozit_profit`), `cote_tva.COTA_STANDARD/REDUSA` (= `tva_standard`/`tva_redusa`). Mutarea lor în registru e
+campania deja urmărită a interdicției 1 / R26 (consumatori cu tip procent-întreg, prompt AI, valori implicite în
+25 de funcții) — nu scopul §2. Până atunci, divergența e făcută imposibilă: `test_s2_geamana_din_registru_nu_diverge`
+cere procentul de modul == valoarea curentă a cheii, pe același articol.
+
+**Limite.** Valorile ancorate NU sunt versionate în timp (spre deosebire de COTE): o schimbare legislativă se
+vede prin `scan_citate` (citatul încetează să fie verbatim după actualizarea corpusului) și prin FiscalOS
+(DIFERĂ), nu prin `cota(nume, data)`. Gardul „valoarea e în propriul citat” verifică FORMA legii a valorii, nu că
+alineatul e cel corect pentru folosire — aia o verifică pinul pe temeiul aprobat.
+
+**Norma trăiește în:** `core/test_fiscalos_s2.py`, `core/test_fiscalos_s3.py`, `core/common.py::ancoreaza`;
+gărzile în GARZI.md (01.10.2026).

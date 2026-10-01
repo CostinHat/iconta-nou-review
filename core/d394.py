@@ -37,6 +37,7 @@ DENUMIRE_OFICIALA = 'Declarație informativă privind livrările/prestările și
 from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
 from core.common import cheie_manual
+from core.common import Temei as _Tm, ancoreaza as _anc
 from core.common import perioada_tva_tip as _ptv, fereastra_tva as _fer  # [fix trim 06.08.2026]
 from core import sume_lei as _sl  # [A1] conversia in lei, sursa unica
 # [LANT legislatie TURA 3, 10.08.2026] SURSA CANONICA de validare a identitatii fiscale (T1/T3 din
@@ -79,9 +80,16 @@ P_NONUE = 4       # nestabilita in RO, in afara UE
 # recunoscut -> CUI RO gresit tastat, NU partener strain. Vezi clasifica_partener + calcul_d394 (blocaj).
 P_INVALID = -1
 
-# cote acceptate: doc. 2020 zice (0,5,9,19,20,24); validatorul v5 are si 21 si 11
-# (OPANAF 2194/2025, TVA 21% si 11% de la 01.08.2025). Validatorul castiga.
-COTE = (0, 5, 9, 11, 19, 20, 21, 24)
+# cote ACCEPTATE in XML (nu cota aplicata unei operatiuni): instructiunile D394 in vigoare (OPANAF 2194/2025,
+# anexa 2, cartusul I pct.4.1) enumera 24/21/20/19/11/9/5 - inclusiv cotele istorice, pt corectii pe perioade
+# anterioare. Validatorul v5 le are pe toate. 0 = doar pt tipurile din TIP_COTA_ZERO (pct. 217).
+COTE = _anc("d394.COTE", (0, 5, 9, 11, 19, 20, 21, 24), _Tm(
+    "OPANAF", 2194, 2025, data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO",
+    url="anaf_surse/opanaf_2194_2025_d394.txt",
+    text_citat=("4.1. valoarea totală a TVA deductibilă aferentă facturilor achitate în perioada de raportare, "
+                "indiferent de data în care acestea au fost primite de la persoane impozabile care aplică sistemul "
+                "de TVA la încasare defalcată pe fiecare cotă de TVA (24%, 21%, 20%, 19%, 11%, 9%, 5%)"),
+    lant_acte="anexa nr.2 (instructiuni de completare D394), cartusul I pct.4.1; art.III: de la operatiunile din 01.08.2025"))
 # cota=0 permisa DOAR pentru aceste tipuri (pct. 217)
 TIP_COTA_ZERO = ("LS", "AS", "N", "V")
 

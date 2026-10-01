@@ -62,10 +62,14 @@ from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re
 from core import repo_d101g as _repo
+from core.common import Temei as _Tm, ancoreaza as _anc
 
 NS = "mfp:anaf:dgti:d101g:declaratie:v2"
 
-COTA_STANDARD = Decimal("16")            # cota standard impozit pe profit (override prin manual["cota"])
+# cota standard impozit pe profit (override prin manual["cota"])
+COTA_STANDARD = _anc("d101g.COTA_STANDARD", Decimal("16"), _Tm(
+    "CF", art="17", data_in="2016-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."))
 _COD_OBLIGATIE_DEFAULT = "103"           # cod obligatie bugetara impozit pe profit (poz.3-5 din nr_evid)
 _COD_BUG_DEFAULT = "5503XXXXXX"          # cod bugetar impozit pe profit (X-uri literale, ca la D101)
 _NEDIGIT = re.compile(r"\D")

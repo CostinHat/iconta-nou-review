@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**644 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**646 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 612
+### `core/` — 614
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9158,6 +9158,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.
 - `core/test_firma_rezumat.py` — GARD P2 (08.09.2026, remediat) — modelul de citire al portofoliului.
 - `core/test_fisa_cont.py` — GARD: Fișa de cont pentru operațiuni diverse produce ce cere norma, nu o balanță deghizată.
+- `core/test_fiscalos_s2.py` — GARZI [Pachet FiscalOS §2, 01.10.2026]: temeiurile constantelor fara temei + cele 4 sarcini din common.COTE.
+- `core/test_fiscalos_s3.py` — GARZI [Pachet FiscalOS §3]: defecte de cod verificate la sursa (Legea 70/2015, CF art.18^1).
 - `core/test_fixturi_shared_period.py` — [Verificare funcțională reală] GARD: o fixtură de test care scrie într-un tabel PARTAJAT period-keyed
 - `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.
 - `core/test_fluturas_egal_stat.py` — GARDĂ: fluturașul TIPĂREȘTE statul, nu îl recalculează. (21.08.2026)
@@ -9743,3 +9745,35 @@ Ambele = fals față de cititor. Cerut de Costin (producția de ghiduri, pasul 2
 | poarta funcționalități (2b) | core/ghid_poarta.py::verifica_functionalitati + test | un ghid nou care pretinde un F-ID inexistent / non-LIVE / fără «Sursa cod» pe disc / fără back-link `ghid_slug` | F-ID inexistent/non-LIVE/backlink lipsă → probele CALIBRARE roșii | verifică legătura declarată (F-ID), nu proza liberă din „Ce face iConta" |
 | ratchet legacy | core/test_ghid_poarta.py::test_ghiduri_noi_poarta_verde + ghid/_legacy_pre_poarta.txt (clichet 202) | adăugarea unui ghid nou fără `poarta: v1` sau care nu trece poarta | ghid nou fără `poarta:` → `test_ghiduri_noi_poarta_verde` roșu (probat 21.09) | 202 ghiduri legacy grandfathered; 42 dintre ele citează 41 acte distincte încă neaduse în corpus (măsurat 21.09 DUPĂ importul corpusului FISCAL: 48 acte aduse, 6 din cele lipsă acoperite; era 44/47) |
 | extractor citări robust | core/ghid_poarta.py (`_PUNTE` tempered token, `_AN_MIN.._AN_MAX`) + calibrare | (i) ordin comun `nr1/nr2` → an imposibil devine act fantomă; (ii) cuvânt comun „lege" prinde actul următor peste paragraf; (iii) formă scrisă „Hotărârea Guvernului nr." ratată | cele 5 teste `test_CALIBRARE_*` (ordin comun / cuvânt comun / HG scrisă / punte / an fabricat) — probate roșu prin construcția cazului | verifică prezența ACTULUI, nu textul verbatim; genitiv „Legii" fără nr. adiacent și ordin comun `nr1/nr2/an` nu-s identificabile pe (tip,nr,an) |
+
+## 01.10.2026 — Pachet FiscalOS §2+§3: constantele de modul poartă temeiul ca obiect; articolul declarat = cel citat
+
+Categoria **3. Calcul fiscal** (valoare fără temei verificabil mecanic) și **9. Onestitatea testelor** (calibrările
+scanerelor). 17 constante de modul care aveau temei doar în proză sau deloc (plafoanele Legii 70/2015, cotele de
+TVA întregi, cota de profit, pragul IMCA, pragul de taxare inversă 22.500, deducerea +2.000, bacșișul, lista de
+cote D394, pragul Brent) poartă acum un obiect `Temei` prin `common.ancoreaza`, cu citat verbatim în forma
+consolidată adusă la §1. Detaliul deciziei: DECIZII 01.10.2026.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| pin pe temeiul aprobat | core/test_fiscalos_s2.py::test_s2_constanta_ancorata_pe_temeiul_aprobat | o constantă din pachet ancorată pe alt act/articol/literă decât cel aprobat, sau cu citat care nu mai e verbatim în corpus | lit „b”→„a” la PLAFON_INCASARE_PJ_CC → `('3','1','a') == ('3','1','b')` roșu | pinul e pe lista de 17; o constantă NOUĂ e acoperită doar de gardul generic de mai jos |
+| valoarea în propriul citat (generic) | core/test_fiscalos_s2.py::test_s2_valoarea_e_in_propriul_citat | o constantă ancorată (oricare, și una viitoare) a cărei valoare nu apare în forma legii („10.000 lei”, „16%”) în citatul ei | PLAFON_PF 10000→15000 → „valoarea nu apare în citatul temeiului” | verifică forma valorii, nu că alineatul e cel potrivit folosirii |
+| alertă goală la predare | core/test_fiscalos_s2.py::test_s2_alerta_de_reconfirmare_e_goala_la_predare | ca una din cele 7 reconfirmări să fie pierdută | impozit_venit verificat_la → 2026-08-07 → `['impozit_venit'] == []` roșu | e fixată pe 01.10.2026; nu urmărește reconfirmările viitoare (aia e treaba alertei) |
+| sarcinile COTE | core/test_fiscalos_s2.py::test_s2_sarcinile_cote | dividendele 2026 pe art.43 (PJ) în loc de art.97 alin.(7); 9%/5% pe alineatul abrogat (291 alin.3); micro fără ancora OUG 89/2025 | tva_redusa_5 alin 2→3 → roșu; dividende art.97→43 → roșu | — |
+| articol declarat = localizatorul citatului (CLASĂ) | core/test_fiscalos_s2.py::test_s2_articolul_declarat_e_cel_din_localizatorul_citatului | un `Temei(art=N)` cu citat „art.M …:” (M≠N), pe TOATE Temei-urile din core | localizator impozit_venit „art.78…” → „art.64…” → roșu, cu calea | vede doar citatele cu localizator „art.N …:” sub 90 de caractere; parafrazele fără localizator nu |
+| mesajul casei = litera plafonului aplicat | core/test_fiscalos_s2.py::test_s2_mesajul_de_casa_citeaza_litera_plafonului_aplicat | ca la firma cash&carry mesajul să citeze lit.a) când se aplică lit.b); orice mesaj de plafon de casă care citează alt articol/literă decât temeiul constantei aplicate | cod_inc_pj forțat la PLAFON_INCASARE_PJ → roșu | 6 scenarii; plafonul de sold (`PLAFON_SOLD_CASA`) citează art.4^2 general, fără alineat |
+| ancorarea refuză două surse | core/test_fiscalos_s2.py::test_s2_ancoreaza_refuza_doua_surse_si_temei_neobiect | același nume ancorat de două ori cu valori diferite; un temei-șir în loc de obiect | scos refuzul → „DID NOT RAISE ValueError” | — |
+| gemenii din registru nu diverg | core/test_fiscalos_s2.py::test_s2_geamana_din_registru_nu_diverge | ca d101/d101g.COTA_STANDARD sau cote_tva.COTA_STANDARD/REDUSA să difere de cheia COTE pe care o dublează (valoare sau articol) | cote_tva.COTA_REDUSA 11→9 → roșu | nu elimină dublura (interdicția 1 / R26), doar divergența |
+| §3 (4 defecte) | core/test_fiscalos_s3.py | avans în afara plafonului total; limită 5.000/persoană la cash&carry; IMCA continuat în 2027; PLAFON_PF pe art.3 | fiecare revertare → roșu (4/4, output în raportul din 01.10) | — |
+| graful de consumatori urmează constantele ancorate | core/consumatori_temei.py (`CONSTANTE_ANCORATE.<modul>.<NUME>` + alias pe valoare neinternată) + core/test_consumatori_temei.py | un temei ancorat cu frecvență citibilă și consecință NECUNOSCUTĂ (fără prag de reverificare) | scoasă calea → 12 orfane; scos aliasul pe valoare → PRAG_ELECTRONICE orfan | alias pe valoare doar pt tipuri neinternate (Decimal/tuplu); un `int` ancorat se urmărește doar pe nume |
+
+**Clichete mutate:** `test_constante_nesursate.BASELINE` coborât (casa 6→0, d101 6→5, d101g 1→0, salarizare
+18→17); `test_citate_verbatim.VERBATIM_BASELINE` ridicat 32→52. Calibrările scanerului de constante (clasa E, clasa
+C) mutate pe exemple ACTUALE (d108 18.000, beneficii 300; d101 0,0075), pentru că exemplele vechi au trecut în A
+— plus direcția nouă „ancorarea e A”. `PROZA_RESPINSA` fără d101g `16`. `scan_constante` exclude acum și
+argumentele lui `c.Temei(...)` (formă cu atribut) ca citări — înainte numărate ca valori A.
+
+**Efect lateral măsurat (01.10.2026), clichetul 77 (refuzuri fără temei):** 61→70 în „module care citează legea”, umbra
+879→868. Nu sunt refuzuri noi: modulele care au primit acum un `Temei` (bacsis, cote_tva, taxare_inversa, d101g,
+d394, casa…) au intrat în domeniul `scan_refuzuri.datorie()`, iar refuzurile lor de dinainte au trecut din umbră
+în datorie — exact drumul pe care clichetul îl vrea vizibil. Blocul CLICHETE-VII din PREDARE_LANT.md regenerat.

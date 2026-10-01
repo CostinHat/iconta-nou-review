@@ -26,7 +26,11 @@ _PCT_DEDUCERE_BAZA = {
 }
 PCT_TINERI = Decimal("0.15")                # +15% × salariu minim, tineri <26
 DEDUCERE_COPIL_SCOALA = Decimal("100")      # +100 lei/copil la școală
-PRAG_VENIT_DEDUCERE = Decimal("2000")       # plafon = salariu_minim + 2000
+PRAG_VENIT_DEDUCERE = c.ancoreaza("salarizare.PRAG_VENIT_DEDUCERE", Decimal("2000"), c.Temei(  # plafon = salariu_minim + 2000
+    "CF", art="77", alin="3", data_in="2023-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat=("Deducerea personală de bază se acordă pentru persoanele fizice care au un venit lunar brut de "
+                "până la 2.000 de lei peste nivelul salariului de bază minim brut pe țară garantat în plată"),
+    lant_acte="forma OG 16/2022 art.I pct.40 (art.IX: de la 01.01.2023)"))
 
 
 def _nota(debit, credit, suma, temei=None):

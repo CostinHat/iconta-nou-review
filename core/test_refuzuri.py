@@ -56,9 +56,17 @@ from scripts import scan_refuzuri as s
 #: `registre_art321.py` (2) și `registru_inventar.py` (1) au primit temeiul care ÎNCHIDE
 #: nomenclatorul — `TEMEI_FELURI` și `TEMEI_MOMENTE`, altele decât cele care spun ce *conține*
 #: fiecare registru. Cele două fișiere au ieșit din baseline, nu au rămas cu plafon liber.
+# 01.10.2026 (Pachet FiscalOS §2): +3 fișiere INTRATE ÎN DOMENIU, nu refuzuri noi — bacsis/casa/taxare_inversa au
+# primit un `Temei` (common.ancoreaza), deci „citează legea", iar refuzurile lor de dinainte trec din umbră aici.
+# Toate opt sunt de FORMĂ (sumă <= 0, tip/categorie necunoscută, cotă nedată); cele normative din taxare_inversa
+# (art.331 alin.1/6/7) poartă temeiul în proză. common 14->15 = `ancoreaza` (eroare de programare: două surse de
+# adevăr / temei-șir). contracte_speciale 5->4 = coborâre STATĂ găsită acum (cod mort scos în lot18, 30.09).
 BASELINE = {
-    "core/common.py": 14,
-    "core/contracte_speciale.py": 5,
+    "core/bacsis.py": 2,
+    "core/casa.py": 3,
+    "core/taxare_inversa.py": 3,
+    "core/common.py": 15,
+    "core/contracte_speciale.py": 4,
     "core/d406.py": 6,
     "core/deconturi.py": 4,
     "core/salarizare.py": 4,

@@ -256,7 +256,9 @@ def test_conventia_articolelor_de_COD_FISCAL_e_aplicata():
     perechi = [(t["act"], str(t["art"]), t.get("dupa_conventie"), t["stare"])
                for t in _inv() if str(t["art"]) in S.ART_DE_COD_FISCAL]
     assert perechi, "[anti-vacuu] niciun temei cu articol de Cod fiscal — domeniul s-a rupt"
-    literale = [(a, r, s) for a, r, dc, s in perechi if not dc]
+    # Un temei al carui act ESTE Codul fiscal (`Temei("CF", art=...)`) nu are ce converti: se cauta
+    # direct in CF. Convenția priveste actele MODIFICATOARE (01.10.2026: cote_tva/dividende ancorate pe CF).
+    literale = [(a, r, s) for a, r, dc, s in perechi if not dc and not str(a).startswith("CF ")]
     assert not literale, (
         "perechi de Cod fiscal căutate LITERAL, în actul care doar le-a modificat: %s. Convenția e "
         "declarată la interdicția 50; un instrument care n-o cunoaște raportează defecte de date "

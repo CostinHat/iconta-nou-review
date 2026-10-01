@@ -10,9 +10,15 @@
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 from core.pdf_util import bani
+from core.common import Temei, ancoreaza
 
 B = Decimal("0.01")
-PRAG_ELECTRONICE = Decimal("22500")
+PRAG_ELECTRONICE = ancoreaza("taxare_inversa.PRAG_ELECTRONICE", Decimal("22500"), Temei(
+    "CF", art="331", alin="7", data_in="2016-01-03", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat=("Pentru livrarea bunurilor prevăzute la alin. (2) lit. i)-k) se aplică taxarea inversă numai dacă "
+                "valoarea bunurilor livrate, exclusiv TVA, înscrise într-o factură, este mai mare sau egală cu "
+                "22.500 lei."),
+    lant_acte="alin.(7) introdus de Legea 358/2015 (OUG 50/2015 pct.36^3); lit.i)-k) aplicabile pana la 31.12.2026 (alin.6)"))
 EXPIRA_2026 = date(2026, 12, 31)
 
 CATEGORII = {

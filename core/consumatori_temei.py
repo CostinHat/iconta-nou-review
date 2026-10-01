@@ -108,10 +108,24 @@ def _modul_si_atribut(cale):
     parti = str(cale or "").split(".")
     if len(parti) < 2:
         return None
+    # `common.CONSTANTE_ANCORATE` (Pachet FiscalOS §2, 01.10.2026): cheia e „<modul>.<NUME>", deci calea e
+    # `CONSTANTE_ANCORATE.casa.PLAFON_PF[1]` — temeiul unei constante de MODUL, citit prin numele constantei.
+    if parti[0] == "CONSTANTE_ANCORATE" and len(parti) >= 3:
+        parti = parti[1:]
     modul, atribut = parti[0], parti[1].split("[")[0]
     if not modul or not atribut or modul == "COTE":
         return None
     return modul + ".py", atribut
+
+
+def _valoare_ancorata(cale):
+    """Valoarea din `common.CONSTANTE_ANCORATE` pt o cale `CONSTANTE_ANCORATE.<modul>.<NUME>[1]`, altfel None."""
+    parti = str(cale or "").split(".")
+    if len(parti) < 3 or parti[0] != "CONSTANTE_ANCORATE":
+        return None
+    from core import common
+    r = common.CONSTANTE_ANCORATE.get("%s.%s" % (parti[1], parti[2].split("[")[0]))
+    return r[0] if r else None
 
 
 def _contine(valoare, tinta, adancime=0):
@@ -157,6 +171,13 @@ def consumatori(cale, temei=None, radacina=None):
     fisier, atribut = ma
     h = harta_cititori(radacina)
     nume = {atribut} | (nume_legate(fisier, temei) if temei is not None else set())
+    # Constanta ancorata poate fi citita si printr-o structura de modul care tine ACELASI obiect (ex.
+    # `taxare_inversa.CATEGORII[..]["prag"] is PRAG_ELECTRONICE`). Prin identitate, ca la temei - dar numai
+    # pt tipuri NEINTERNATE: un `int` mic (21, 70) e acelasi obiect cu orice alt 21 din modul, deci ar
+    # inventa cititori. Acolo ramane doar numele constantei (sub-aproximare, in directia declarata).
+    val = _valoare_ancorata(cale)
+    if val is not None and not isinstance(val, (int, str, bool)):
+        nume |= nume_legate(fisier, val)
     directi = set()
     for n in nume:
         directi |= h.get((fisier, n), set())

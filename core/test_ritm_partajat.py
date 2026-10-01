@@ -82,7 +82,9 @@ def stari_de_ritm_in_proces(surse=None):
             if n.value.keys:
                 continue
             for t in n.targets:
-                if isinstance(t, ast.Name) and re.search(r"rate|ritm", t.id, re.I):
+                # COMPONENTA de nume (`*_rate`, `_ritm_*`), nu subsir: „CONSTANTE_ANCORATE" conține „RATE"
+                # si a fost raportat ca stare de ritm (01.10.2026) — la fel ar fi „GENERATE", „SEPARATE".
+                if isinstance(t, ast.Name) and re.search(r"(?:^|_)(?:rate|ritm)(?:_|$)", t.id, re.I):
                     out.append((rel, n.lineno, "dicționar de modul `%s = {}`" % t.id))
         for x in ast.walk(arb):
             if not isinstance(x, ast.Call) or not x.args:
@@ -116,6 +118,15 @@ def test_CALIBRARE_detectorul_vede_amandoua_formele():
 
     bun = [("zt_bun.py", 'def f(request):\n    _rate_limit_email("magic_link", request)\n')]
     assert not stari_de_ritm_in_proces(bun), "forma CORECTĂ e raportată ca defect"
+
+
+def test_CALIBRARE_numele_e_pe_COMPONENTA_nu_pe_subsir():
+    """01.10.2026: `CONSTANTE_ANCORATE = {}` (registru de import, nu ritm) era raportat fiindcă conține
+    subșirul «RATE». Ambele direcții: componenta `_rate`/`_ritm` se vede, subșirul dintr-un cuvânt nu."""
+    for nume in ("_login_rate", "RATE_IP", "_ritm_cereri", "rate"):
+        assert stari_de_ritm_in_proces([("zt.py", "%s = {}\n" % nume)]), "%s trebuia văzut" % nume
+    for nume in ("CONSTANTE_ANCORATE", "_GENERATE", "SEPARATE_X", "_ritmic"):
+        assert not stari_de_ritm_in_proces([("zt.py", "%s = {}\n" % nume)]), "%s e fals pozitiv" % nume
 
 
 # ============================================================

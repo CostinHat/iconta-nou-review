@@ -86,6 +86,12 @@ TABEL = {
         "publicat si de disc, nu de cerere."),
 
     # ---------------------------------------------------------------- RESURSE DE PROCES
+    ("core.common", "CONSTANTE_ANCORATE"): V(
+        ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
+        "Registrul constantelor de modul ancorate pe temei (Pachet FiscalOS §2, 01.10.2026). Se umple "
+        "DOAR la importul modulelor, din literali scrisi in cod — identic in fiecare proces, nicio "
+        "cerere nu scrie in el (`ancoreaza` refuza o a doua valoare pt acelasi nume). Doua procese "
+        "nu pot diverge; o repornire il reconstruieste din cod."),
     ("core.db", "_pool"): V(
         ABD, "resursa", "PLAN_HARDENING.md:707 — cerinta priveste starea BUSINESS",
         "Un pool de conexiuni e o resursa a procesului prin definitie; nu poarta nicio decizie de "

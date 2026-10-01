@@ -71,15 +71,23 @@ from core import reverificare as R  # noqa: E402
 #:   `MISCATOR/NECUNOSCUT`  2 -> 0  (MISCATOR/CALCULAT)
 #: Cele 23 ramase in `NECUNOSCUT/NECUNOSCUT` sunt blocate pe CEALALTA axa — frecventa: 10 documente
 #: care nu consemneaza nicio modificare, 8 temeiuri fara articol, 5 cioturi. Alta tema, alta restanta.
+#: MUTATA 01.10.2026 (Pachet FiscalOS §2): +16 temeiuri NOI in inventar, nu valori schimbate — 17 constante de
+#: modul ancorate cu `common.ancoreaza` + `bacsis.TEMEI_BACSIS_ALTE_SURSE`, minus doua deduplicate (d101g.COTA
+#: = acelasi CF art.17 + acelasi citat ca d101; PRAG_BRENT_USD = ACELASI obiect cu TEMEI_CAND_SE_DATOREAZA).
+#: Socoteala MASURATA (R.inventar, nu dedusa): VOLATIL/CALCULAT +7 (Legea 70/2015 art.3 alin.1 lit.a/b/c/c/d +
+#: CF art.291 alin.1/2), VOLATIL/DEPUS +1 (CF art.18^1 alin.1), STABIL/CALCULAT +3 (bacsis x2, CF art.331 alin.7),
+#: STABIL/DEPUS +2 (CF art.17, CF art.77 alin.3), MISCATOR/CALCULAT +2 (Legea 70/2015 art.4, art.4^2),
+#: NECUNOSCUT/NECUNOSCUT +1 = +2 (d394.COTE: OPANAF fara articol; PRAG_BRENT_USD: OUG 24/2026 in forma oficiala
+#: nu consemneaza nicio modificare) −1 (intrarea veche `TEMEI_CAND_SE_DATOREAZA`, acum acelasi obiect cu Brent).
 DISTRIBUTIE = {
-    ("VOLATIL", "DEPUS"): 13,
+    ("VOLATIL", "DEPUS"): 14,
     # 7 -> 9 la 29.09.2026 (lot18, 3d): cele doua cote CF art.84^1 (forfait 20% alin.(3) +
     # impozit 10% alin.(5), chirii platite unei PF de un platitor PJ) au intrat in COTE si sunt
     # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
-    ("VOLATIL", "CALCULAT"): 9,
-    ("STABIL", "DEPUS"): 7,
-    ("STABIL", "CALCULAT"): 10,
-    ("MISCATOR", "CALCULAT"): 5,
+    ("VOLATIL", "CALCULAT"): 16,
+    ("STABIL", "DEPUS"): 9,
+    ("STABIL", "CALCULAT"): 13,
+    ("MISCATOR", "CALCULAT"): 7,
     # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
     # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma
@@ -100,7 +108,7 @@ DISTRIBUTIE = {
     # NECUNOSCUT: valorile astea nu ajung intr-un modul de declaratie, deci nimeni nu le consuma.
     # *Localizatorul de articol a rezolvat jumatatea lui; cealalta jumatate cere graful de
     # consumatori, nu instrumentul de articol.* Consemnat in R171.
-    ("NECUNOSCUT", "NECUNOSCUT"): 23,
+    ("NECUNOSCUT", "NECUNOSCUT"): 24,
 }
 
 _AZI = datetime.date(2026, 8, 31)
@@ -220,7 +228,10 @@ def test_ANTI_VACUU_si_distributia_pinata():
 #: *primesc un prag pentru prima oară*, nu *verificate mai rar decât azi*.
 #: Cele 10 de azi sunt toate `STABIL/CALCULAT`, iar 12 e chiar căsuța din tabelul lui Costin.
 #: Dacă numărul crește, cade testul — și atunci e o decizie de cadență, care se scrie.
-PRIMESC_PRAG_PESTE_PODEA = 10
+#: 10 -> 13 la 01.10.2026 (Pachet FiscalOS §2): bacsis.COTA_IMPOZIT (CF art.64 alin.1 lit.h), bacsis.TEMEI_BACSIS_
+#: ALTE_SURSE (OUG 28/1999 art.2^3) si taxare_inversa.PRAG_ELECTRONICE (CF art.331 alin.7) — STABIL/CALCULAT, 12 luni.
+#: Nu verificate mai rar: pana azi n-aveau niciun Temei, deci nicio cadenta.
+PRIMESC_PRAG_PESTE_PODEA = 13
 
 
 def test_nicio_valoare_nu_devine_verificata_MAI_RAR():

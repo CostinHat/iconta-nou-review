@@ -33,7 +33,11 @@ from core import scan_citate
 # (parafrază cu localizator), exact cazul descris în antetul scanerului.
 #: 26 → **32** la 06.09.2026: cele șase citări ale lui OMFP 3254/2017, extrase din corpus și
 #: verificate verbatim ÎNAINTE de a fi scrise în modul (scriptul refuza să scrie altfel).
-VERBATIM_BASELINE = 32
+#: 32 → **52** la 01.10.2026 (Pachet FiscalOS §2): 17 constante de modul ancorate cu `common.ancoreaza`
+#: (Legea 70/2015, CF art.17/18^1/64/77/291/331, OPANAF 2194/2025, OUG 24/2026) + OUG 28/1999 art.2^3 +
+#: rândurile din COTE rescrise verbatim (dividende art.97 alin.7 pt 2026 și 2023, impozit_venit art.78).
+#: Fiecare citat a fost căutat în forma consolidată adusă la §1 ÎNAINTE de a fi scris.
+VERBATIM_BASELINE = 52
 
 
 @pytest.fixture(scope="module")

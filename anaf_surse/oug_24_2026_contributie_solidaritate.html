@@ -404,7 +404,7 @@
                 <div style="text-align:center;">
                     
 
-                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G2SVFMBMPTPGNX38BQTFQFTEYR5>
+                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G3H30VJ7D3MYYS15EZ2GRXC1HGY>
                         <span class="glyphicon glyphicon-print"></span> Forma printabilă
                     </a>
                 </div>
@@ -813,7 +813,7 @@
     }
 
     function incarcaFormaDeBaza(contor) {
-        $.post("/Public/DetaliiDocument/309088", { isFormaDeBaza: true }, function (result) {
+        $.post("/Public/DetaliiDocument", { isFormaDeBaza: true }, function (result) {
             window.location.href = result.Url;
         });
     }

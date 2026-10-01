@@ -92,7 +92,7 @@
     },
     "hg_1074_2021.html": {
       "clasa": "ADUS",
-      "motiv": "copie nemodificata de pe portalul legislativ, HG 1074/2021; adusa pentru ghidurile care o citeaza. Text integral, fara interventie"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 247209, consolidare 18.08.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 0ac7bafc0d1477e5."
     },
     "hg_145_2026.html": {
       "clasa": "ADUS",
@@ -100,11 +100,11 @@
     },
     "hg_518_1995.html": {
       "clasa": "ADUS",
-      "motiv": "copie nemodificata, HG 518/1995 (diurna externa); adusa pentru cele doua ghiduri de diurna care o citeaza. Text integral"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 7037, consolidare 14.10.2024), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 7333cc04b44a361a."
     },
     "legea_226_2023.html": {
       "clasa": "ADUS",
-      "motiv": "copie nemodificata, Legea 226/2023; adusa pentru ghid/tollro-strr-31-august-2026. Text integral"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 272230, consolidare 08.08.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial b857632d35837cea."
     },
     "ordin_2066_2025.html": {
       "clasa": "ADUS",
@@ -112,11 +112,11 @@
     },
     "hg_1094_2025.html": {
       "clasa": "ADUS",
-      "motiv": "HOTARARE nr. 1.094 din 11 decembrie 2025 (MO 1162/15.12.2025) - schema de ajutor de stat pentru compensarea partiala a accizei la motorina. TITLU VERIFICAT in continut, nu doar in numele fisierului. Forma consolidata de pe portalul legislativ, adusa 24.08.2026. REVERIFICARE: trimestrial (poarta valori curente - cuantumul compensarii)"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 305236, consolidare 03.09.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial f61343fffedee5a3."
     },
     "legea_1_2020.html": {
       "clasa": "ADUS",
-      "motiv": "LEGE nr. 1 din 6 ianuarie 2020 privind pensiile ocupationale (MO 10/8.01.2020). TITLU VERIFICAT: numarul 1 se repeta intre ani, iar obiectul confirma actul cerut de ghid/d112-pensie-ocupationala-legea-1-2020. Forma consolidata de pe portal, adusa 24.08.2026. REVERIFICARE: semestrial (act de fond)"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 221917, consolidare 16.01.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 2de598a7b474c1c5."
     },
     "legea_161_2026.html": {
       "clasa": "ADUS",
@@ -132,19 +132,11 @@
     },
     "legea_241_2005.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-004), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/282210",
-      "accessed_at": "2026-09-17T03:45:50.944551+00:00",
-      "POSITION_ID": "FISC-004",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-004"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 63590, consolidare 16.05.2024), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 1a1e66735d804247."
     },
     "oug_28_1999.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-005), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/306813",
-      "accessed_at": "2026-09-17T04:06:23.865863+00:00",
-      "POSITION_ID": "FISC-005",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-005"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 17431, consolidare 02.02.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 922c950d1c9ae81a."
     },
     "hg_479_2003.html": {
       "clasa": "ADUS",
@@ -236,11 +228,7 @@
     },
     "ordin_878_2022.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-026), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/254993",
-      "accessed_at": "2026-09-17T03:33:27.305043+00:00",
-      "POSITION_ID": "FISC-026",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-026"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 267018, consolidare 09.05.2023), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 6a92fd7d6d1db939."
     },
     "ordin_90_2016.html": {
       "clasa": "ADUS",
@@ -284,11 +272,7 @@
     },
     "ordin_2594_2015.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-032), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/171984",
-      "accessed_at": "2026-09-17T03:33:31.302902+00:00",
-      "POSITION_ID": "FISC-032",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-032"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 269686, consolidare 28.12.2023), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial ebf2758ff1066d08."
     },
     "ordin_2117_2018.html": {
       "clasa": "ADUS",
@@ -308,19 +292,11 @@
     },
     "ordin_3846_2015.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-035), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/174706",
-      "accessed_at": "2026-09-17T03:44:22.901636+00:00",
-      "POSITION_ID": "FISC-035",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-035"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 174706, consolidare 27.11.2017), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 58b4f515e2f17aa9."
     },
     "ordin_3845_2015.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-036), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/174717",
-      "accessed_at": "2026-09-17T03:44:25.102248+00:00",
-      "POSITION_ID": "FISC-036",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-036"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 174717, consolidare 13.05.2022), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 01ad7f9ad0bbd712."
     },
     "ordin_3792_2024.html": {
       "clasa": "ADUS",
@@ -484,11 +460,7 @@
     },
     "ordin_1099_2016.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-067), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/180514",
-      "accessed_at": "2026-09-17T03:45:13.530901+00:00",
-      "POSITION_ID": "FISC-067",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-067"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 180514, consolidare None), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 9197f6502c488aed."
     },
     "oug_68_2025.html": {
       "clasa": "ADUS",
@@ -508,41 +480,27 @@
     },
     "oug_116_2023.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din corpusul FISCAL (FISC-T04), materialul principal; bytes oficiali legislatie.just.ro",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/277398",
-      "accessed_at": "2026-09-17T03:43:02.638267+00:00",
-      "POSITION_ID": "FISC-T04",
-      "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-T04"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 277398, consolidare 18.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 549365a1262d9e9a."
     },
     "hg_867_2015.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 867 din 2015)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/172757",
-      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 172757, consolidare 07.12.2022), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial b514a4e18206bb33."
     },
     "hg_905_2017.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 905 din 2017)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/195770",
-      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 195770, consolidare 24.08.2018), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial a5bff94aecd27c85."
     },
     "legea_230_2007.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 230 din 2007)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/83753",
-      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 83753, consolidare 22.04.2017), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial fe2cb606dda04d37."
     },
     "legea_72_2013.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 72 din 2013)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/146555",
-      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 146555, consolidare 01.02.2016), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial d740d9c93f931dc5."
     },
     "og_13_2011.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus manual de Costin din browser (portal legislativ), bytes oficiali; TITLU VERIFICAT in continut (nr 13 din 2011)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/131085",
-      "accessed_at": "2026-09-24T07:24:07.509315+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 131085, consolidare 07.08.2024), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 65539ba5660da800."
     },
     "og_22_2025.html": {
       "clasa": "ADUS",
@@ -581,76 +539,52 @@
       "accessed_at": "2026-09-24T07:24:07.509315+00:00"
     },
     "legea_85_2014.html": {
-      "clasa": "ADUS_ADNOTAT",
-      "motiv": "act oficial adus manual de Costin din browser (just.ro), bytes oficiali; peste care am adaugat un antet propriu cu titlul actului (nr 85 din 2014) pentru verificabilitate in fereastra garzii. titlu confirmat verbatim in corpul documentului (poz ~10896, dupa preambulul de navigatie al portalului). Amprenta pineaza versiunea noastra adnotata.",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/159286",
-      "accessed_at": "2026-09-24T08:02:51.734903+00:00"
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 159286, consolidare 18.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 71dce113a8b2e896."
     },
     "legea_98_2016.html": {
-      "clasa": "ADUS_ADNOTAT",
-      "motiv": "act oficial adus manual de Costin din browser (just.ro), bytes oficiali; peste care am adaugat un antet propriu cu titlul actului (nr 98 din 2016) pentru verificabilitate in fereastra garzii. titlu confirmat verbatim in corpul documentului (poz ~9933, dupa preambulul de navigatie al portalului). Amprenta pineaza versiunea noastra adnotata.",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/178667",
-      "accessed_at": "2026-09-24T08:02:51.734903+00:00"
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 178667, consolidare 17.11.2024), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 8470d71aab8c4632."
     },
     "legea_287_2009.html": {
-      "clasa": "ADUS_ADNOTAT",
-      "motiv": "act oficial adus manual de Costin din browser (just.ro), bytes oficiali; peste care am adaugat un antet propriu cu titlul actului (nr 287 din 2009) pentru verificabilitate in fereastra garzii. documentul e forma REPUBLICATA cu titlu propriu 'CODUL CIVIL din 17 iulie 2009'; antetul de mai sus e identificarea noastra a legii de adoptare (Legea 287/2009 = Codul civil), nu un citat verbatim din acest fisier. Amprenta pineaza versiunea noastra adnotata.",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/130143",
-      "accessed_at": "2026-09-24T08:02:51.734903+00:00"
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 309285, consolidare 03.05.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 5342e9bd3868b291."
     },
     "oug_44_2008.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), bytes oficiali; TITLU VERIFICAT in continut (nr 44 din 2008)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/91808",
-      "accessed_at": "2026-09-25T10:57:38.844857+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 91808, consolidare 26.11.2022), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial b6c78fc921da207c."
     },
     "legea_265_2022.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), bytes oficiali; TITLU VERIFICAT in continut (nr 265 din 2022)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/257835",
-      "accessed_at": "2026-09-25T10:57:38.844857+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 257835, consolidare 12.09.2024), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial cfd529f7a4a05ec4."
     },
     "legea_26_1990.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), bytes oficiali; TITLU VERIFICAT in continut (nr 26 din 1990)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/785",
-      "accessed_at": "2026-09-25T10:57:38.844857+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 783, consolidare 26.09.2020), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial fdc8f04010061fb8."
     },
     "legea_129_2019.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), bytes oficiali; TITLU VERIFICAT in continut (nr 129 din 2019)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/216157",
-      "accessed_at": "2026-09-25T10:57:38.844857+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 216157, consolidare 19.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 77177abb3264cbb8."
     },
     "og_2_2001.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), bytes oficiali; TITLU VERIFICAT in continut (nr 2 din 2001)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/29779",
-      "accessed_at": "2026-09-25T10:57:38.844857+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 29779, consolidare 27.03.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 998984f6df5b7032."
     },
     "og_39_2015.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), bytes oficiali; TITLU VERIFICAT in continut (nr 39 din 2015)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/170982",
-      "accessed_at": "2026-09-25T10:57:38.844857+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 170982, consolidare 08.11.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 036a813bfaf7af5b."
     },
     "legea_53_2003_codul_muncii.html": {
       "clasa": "ADUS",
-      "motiv": "Codul muncii - Legea 53/2003 REPUBLICATA, forma consolidata in vigoare (numerotare republicata: art.81 demisie, art.164 salariu minim, art.169 retineri); bytes oficiali; TITLU VERIFICAT in continut",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/128647",
-      "accessed_at": "2026-09-25T14:47:46.318100+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 309240, consolidare 27.04.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 73c8251e946ca58e."
     },
     "legea_70_2015_consolidat.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), forma consolidata in vigoare, bytes oficiali; TITLU VERIFICAT in continut (nr 70 din 2015)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/209207",
-      "accessed_at": "2026-09-25T14:45:30.640390+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 167088, consolidare 01.01.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 661b016484f74b52."
     },
     "oug_120_2021.html": {
       "clasa": "ADUS",
-      "motiv": "act oficial adus din portalul legislativ (legislatie.just.ro), forma consolidata in vigoare (RO e-Factura), bytes oficiali; TITLU VERIFICAT in continut (nr 120 din 2021)",
-      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/269543",
-      "accessed_at": "2026-09-25T14:45:30.640390+00:00"
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 247243, consolidare 01.06.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 68975f8441c77192."
     },
     "opanaf_2736_2025_d212.txt": {
       "clasa": "ADUS",
@@ -659,6 +593,214 @@
     "instructiuni_d212_2736_2025.txt": {
       "clasa": "ADUS",
       "motiv": "extras pdftotext din Instructiuni_D212_2736_2025.pdf (instructiuni de completare formular 212), publicat ANAF static.anaf.ro/.../formulare; text integral, fara interventie"
+    },
+    "cod_fiscal_227_2015_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 312601, consolidare 08.08.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 2393786755c97dc5."
+    },
+    "cod_fiscal_227_2015_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din cod_fiscal_227_2015_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_70_2015_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_70_2015_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_207_2015_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 312603, consolidare 08.08.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 44e0c401e6b66ac9."
+    },
+    "legea_207_2015_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_207_2015_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "hg_1_2016_norme_cod_fiscal.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 307847, consolidare 31.03.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 114e36ac8c52dae4."
+    },
+    "hg_1_2016_norme_cod_fiscal.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din hg_1_2016_norme_cod_fiscal.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "omfp_1802_2014.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 303279, consolidare 19.11.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 8e1cc194188b2789."
+    },
+    "omfp_1802_2014.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din omfp_1802_2014.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "hg_1045_2018_norme_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 314143, consolidare 15.09.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 764463fd8d91f804."
+    },
+    "hg_1045_2018_norme_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din hg_1045_2018_norme_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "hg_295_2025_reges_online_registru_salariati.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 295995, consolidare 19.09.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 0637cf8223df5172."
+    },
+    "hg_295_2025_reges_online_registru_salariati.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din hg_295_2025_reges_online_registru_salariati.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_136_2020_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 227953, consolidare 24.10.2023), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 45a79f0dddf8edd9."
+    },
+    "legea_136_2020_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_136_2020_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_141_2025_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 300022, consolidare 31.08.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 4ae949dc4bbc1acf."
+    },
+    "legea_141_2025_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_141_2025_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_165_2018_anaf.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 202623, consolidare 01.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 09dbf02f6fe1eec4."
+    },
+    "legea_165_2018_anaf.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_165_2018_anaf.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 305208, consolidare 09.03.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 48d70d883fd4dec3."
+    },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_296_2020_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 235513, consolidare 01.01.2022), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 57e3bf1605979264."
+    },
+    "legea_296_2020_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_296_2020_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 275745, consolidare 25.02.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 99b984791ba22c6e."
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 210007, consolidare None), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial bab72dc7f962e4c4."
+    },
+    "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_31_1990_societatile.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 798, consolidare 18.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial efa3a9fa0e8a01a2."
+    },
+    "legea_31_1990_societatile.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_31_1990_societatile.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_346_2002_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 36905, consolidare 11.11.2024), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 4041185843dd5a15."
+    },
+    "legea_346_2002_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_346_2002_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 77815, consolidare 31.08.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial fd3c3f78521be1bc."
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_448_2006_protectia_persoanelor_cu_handicap.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_53_2003_codul_muncii.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_53_2003_codul_muncii.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_82_1991_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 1576, consolidare 04.02.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial d8d36b17040795f4."
+    },
+    "legea_82_1991_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din legea_82_1991_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 196396, consolidare None), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial c3811be8247e86fa."
+    },
+    "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "oms_15_2018_norme.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 311827, consolidare 24.07.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial e06310a4469c2c4e."
+    },
+    "oms_15_2018_norme.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din oms_15_2018_norme.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "oug_115_2023_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 277404, consolidare 21.02.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial b7332cb7436fc675."
+    },
+    "oug_115_2023_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din oug_115_2023_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "oug_120_2021.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din oug_120_2021.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "oug_158_2005_consolidat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 66305, consolidare 01.07.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial e02a77a739eb98eb."
+    },
+    "oug_158_2005_consolidat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din oug_158_2005_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 284214, consolidare 09.03.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial f996dc86fb7f9d74."
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din oug_70_2024_ro_etva_decont_precompletat.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "oug_89_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 305817, consolidare 16.08.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 0e09476ca7542da3."
+    },
+    "oug_89_2025.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din oug_89_2025.html (forma oficiala), regenerat la 2026-10-01"
+    },
+    "legea_134_2010_codul_de_procedura_civila.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 304485, consolidare 14.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 06b91110ca2dc7b4."
+    },
+    "oug_24_2026_contributie_solidaritate.html": {
+      "clasa": "ADUS",
+      "motiv": "forma oficiala OUG 24/2026 (ORD DE URGENTA 24 03/04/2026) de pe legislatie.just.ro DetaliiDocumentAfis/309088, adusa de sesiunea iConta la 01.10.2026; a inlocuit ciotul (semnaturi in loc de articole)"
+    },
+    "oug_24_2026_contributie_solidaritate.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras articol_in_act.text din oug_24_2026_contributie_solidaritate.html (forma oficiala), 01.10.2026"
     }
   },
   "goale_cunoscute": {

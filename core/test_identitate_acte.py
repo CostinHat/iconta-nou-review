@@ -66,7 +66,11 @@ NR = r"[0-9][0-9.]*"
 # fișier cu antet de Monitor Oficial — al meu. Un tipar calibrat pe unicul exemplar care l-a cerut
 # n-ar dovedi nimic despre acoperire (METODA §22). Rămâne clasă declarată, de reparat când există
 # pe ce o măsura.
-CLICHET_FARA_TITLU = 123
+# 123 -> 128 la 01.10.2026 (Pachet FiscalOS §1): 54 acte inlocuite cu formele consolidate oficiale
+# just.ro; 5 au titlul intr-o structura pe care _titlu_din n-o extrage (legile ca "LEGE 70 02/04/2015"
+# fara "nr./din"; normele/reglementarile/procedurile poarta tip de CONTINUT, nu de act). rele=0 (niciun
+# act fals - titlurile EXISTA, doar nu in forma ceruta de parser). Acoperire, nu defect.
+CLICHET_FARA_TITLU = 128
 
 
 def _text(cale):

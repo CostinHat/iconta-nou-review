@@ -959,3 +959,28 @@ cuprins) — REGULA DE AUR: nu se citează text neverificat.
 
 Oprire pentru DECIZIE DE PRODUS: volumul și prioritatea redactării (care din ~8.500 titluri neproduse,
 câte per rundă) — alegere de scop care schimbă ce ajunge la public, deci a lui Costin (§2.3 pct.2).
+
+## 01.10.2026 — Pachet FiscalOS §1–§3 comis (reluare după întrerupere)
+
+Sesiunea anterioară s-a închis la repornirea terminalului cu §1 (corpus) și §3 (4 defecte) aplicate dar necomise
+și §2 pe jumătate. Am verificat ce era făcut (fără să refac): cele 54 de acte înlocuite au SHA256 consistent și 53
+sunt byte-identice cu formele oficiale din manifestul FiscalOS; OUG 24/2026 adusă separat; patru rânduri din COTE
+deja atinse.
+
+§2 terminat. În loc să mut constantele în registrul COTE (ar fi schimbat tipul la fiecare consumator), le-am dat
+temeiul ca OBIECT prin `common.ancoreaza(...)` — valoarea rămâne aceeași, iar scanerele (`scan_constante`,
+`scan_citate`, inventarul FiscalOS) le văd ca sursate. Toate cele 18 temeiuri aprobate + încă două din aceeași
+clasă (plafonul de sold 500.000 la cash&carry și pragul Brent de 70 USD, respins în pachet doar pentru că OUG
+24/2026 era ilizibilă — §1 a rezolvat-o). Fiecare citat a fost căutat verbatim în forma nouă; fiecare `data_in`
+citit din nota de modificare a actului.
+
+Pe drum, o clasă nouă: temeiul declarat pe un articol, citatul din altul. Trei apariții (dividendele 2026 și
+2023 pe art.97 cu text din art.43; impozitul pe salarii pe art.78 cu text din art.64), plus un temei curent pe un
+alineat abrogat (cota redusă de 5% → 11% pe art.291 alin.3, abrogat). Toate reparate, iar clasa are gard pe toate
+temeiurile din core. Și nota colaterală a arhitectului: la o firmă cash&carry mesajul de încasare cita lit.a) deși
+plafonul aplicat era lit.b) — acum are cod propriu.
+
+Verificând §1 am găsit că FiscalOS adusese azi o consolidare mai nouă a HG 1045/2018 (30.09.2026) decât cea din
+corpus: reproduce ordinele din MO 830/30.09.2026 — tichet de masă 45 lei (iConta are deja 45) și **tichete de
+creșă 770 lei de la 1 octombrie**, plus tot istoricul indexărilor din 2024. iConta plafonează creșa la 450 (decizia
+din 04.08, condiționată de obținerea ordinelor). Deschis ca fir separat, commitul următor.

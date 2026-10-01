@@ -87,18 +87,22 @@ BASELINE = {
     # (note_taxare_inversa). Aceeasi clasa cu TTL-urile/ferestrele operationale deja in clichet.
     "intracomunitar.py": 1,
     "uc_tenants.py": 1,
+    # COBORAT 01.10.2026 (Pachet FiscalOS §2): constantele ancorate cu `common.ancoreaza(..., Temei(...))`
+    # - casa 6->0 (7 plafoane Legea 70/2015, inclusiv PLAFON_PLATA_CC_TOTAL nou din §3), d101 6->5 (COTA_STANDARD,
+    # CF art.17), d101g 1->0, salarizare 18->17 (PRAG_VENIT_DEDUCERE, CF art.77 alin.3). Clasa E (temei in proza)
+    # a coborat si ea: bacsis/cote_tva/taxare_inversa/d101.PRAG_IMCA/d394.COTE/d100.PRAG_BRENT -> A.
     # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.
     "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1,
-    "beneficii_api.py": 1, "casa.py": 6, "cashflow.py": 2, "common.py": 8,
+    "beneficii_api.py": 1, "casa.py": 0, "cashflow.py": 2, "common.py": 8,
     "contracte_speciale.py": 3, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
-    "cor_api.py": 2, "d101.py": 6, "d101g.py": 1, "d108.py": 1, "d169.py": 1, "d169n.py": 1,
+    "cor_api.py": 2, "d101.py": 5, "d101g.py": 0, "d108.py": 1, "d169.py": 1, "d169n.py": 1,
     "d205.py": 0, "d212_engine.py": 11, "d216.py": 1, "d394.py": 2, "d401.py": 2, "d402.py": 3,
     "d403.py": 5, "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2,
     "decontari_asociati.py": 1, "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1,
     "factura_pdf.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2,
     "ong.py": 2, "produse_api.py": 0, "provizioane.py": 1, "salariati_api.py": 1,
-    "salariati_import_api.py": 2, "salarizare.py": 18, "scadentar.py": 2, "scadente.py": 3,
+    "salariati_import_api.py": 2, "salarizare.py": 17, "scadentar.py": 2, "scadente.py": 3,
     "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "termene_api.py": 1,
     "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1
 }
@@ -180,8 +184,14 @@ def test_calibrare_vede_temeiul_din_proza(inv):
     citează art. 291 CF (Legea 141/2025) chiar lângă valoare, iar verificatorul are modulul pe
     `_TVA_EXCLUSE` fiindcă el e cel care reproduce legea. Raportată ca nesursată, ar fi trimis pe
     cineva să „repare" un caz bun — și ar fi stricat structura injectată în promptul AI."""
-    assert _clasa(inv, "cote_tva.py", "21") == "E"
-    assert _clasa(inv, "cote_tva.py", "11") == "E"
+    # 01.10.2026 (Pachet FiscalOS §2): cote_tva.COTA_STANDARD/REDUSA au trecut din E in A (ancorate cu obiect
+    # `Temei`) - exact drumul E -> A pe care antetul scanerului il cere. Exemplul de E se muta pe o valoare
+    # care e INCA sursata doar in proza: d108.IMPOZIT_ANUAL (comentariul „CF Titlul VI: 18.000 lei" de pe rand).
+    assert _clasa(inv, "d108.py", "18000") == "E"
+    assert _clasa(inv, "beneficii_api.py", "300") == "E"
+    # si direcția noua: ancorarea prin `common.ancoreaza(..., Temei(...))` e vazuta ca SURSAT (A), nu ca proza
+    assert _clasa(inv, "cote_tva.py", "21") == "A"
+    assert _clasa(inv, "casa.py", "500000") == "A"
 
 
 def test_proza_nu_inghite_nesursatul(inv):
@@ -191,7 +201,10 @@ def test_proza_nu_inghite_nesursatul(inv):
     De-aia proza cere VALOAREA, iar antetul guvernează doar constantele modulului."""
     assert _clasa(inv, "scadente.py", "25", "H2") == "C", "ziua 25 din _ZIUA a fugit în E"
     assert _clasa(inv, "d216.py", "0.3") == "C", "cota în float din d216 a fugit în E"
-    assert _clasa(inv, "d101.py", "16") == "C", "cota de impozit pe profit a fugit în E"
+    # 01.10.2026: cota de profit d101.py `16` e acum A (ancorata pe CF art.17) - nu mai poate fi exemplul.
+    # Exemplul de C intr-un modul cu antet plin de citari: plafonul de sponsorizare 0,75% din d101.
+    assert _clasa(inv, "d101.py", "16") == "A", "cota de impozit pe profit a pierdut ancorarea"
+    assert _clasa(inv, "d101.py", "0.0075") == "C", "plafonul 0,75% din d101 a fugit în E"
     assert sum(1 for h in inv if h["cls"] == "C" and h["f"] == "d212_engine.py") >= 11, \
         "aserțiunile cu valori din modulul de PRODUCȚIE d212_engine au fugit în E"
 

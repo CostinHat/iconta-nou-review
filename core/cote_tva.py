@@ -16,8 +16,19 @@ referinta, iar EXCEPTII_21 marcheaza produsele care par sa fie in lista redusa
 dar raman la 21% (alcool, bauturi NC 2202, alimente cu zahar >10g, suplimente).
 """
 
-COTA_STANDARD = 21
-COTA_REDUSA = 11
+from core.common import Temei, ancoreaza
+
+# [FiscalOS §2] CF art.291, forma Legii 141/2025 art.II pct.42 (in vigoare 01.08.2025). Procente intregi.
+COTA_STANDARD = ancoreaza("cote_tva.COTA_STANDARD", 21, Temei(
+    "CF", art="291", alin="1", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat=("Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt "
+                "scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%."),
+    lant_acte="Legea 141/2025 art.II pct.42"))
+COTA_REDUSA = ancoreaza("cote_tva.COTA_REDUSA", 11, Temei(
+    "CF", art="291", alin="2", data_in="2025-08-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat=("Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii "
+                "și/sau livrări de bunuri"),
+    lant_acte="Legea 141/2025 art.II pct.42 (comaseaza 9% si 5% in 11%; alin.(3) abrogat de pct.43)"))
 
 # Categoriile la care se aplica cota redusa de 11% (art. 291 alin. 2, lit. a-n)
 # Fiecare intrare: cheie interna + descriere (asa cum apare in lege) + exemple.
