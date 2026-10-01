@@ -984,3 +984,11 @@ Verificând §1 am găsit că FiscalOS adusese azi o consolidare mai nouă a HG 
 corpus: reproduce ordinele din MO 830/30.09.2026 — tichet de masă 45 lei (iConta are deja 45) și **tichete de
 creșă 770 lei de la 1 octombrie**, plus tot istoricul indexărilor din 2024. iConta plafonează creșa la 450 (decizia
 din 04.08, condiționată de obținerea ordinelor). Deschis ca fir separat, commitul următor.
+
+## 01.10.2026 — Tichetele de creșă: plafonul urmează ordinele de indexare (770 lei din octombrie)
+
+Neconformitatea găsită la verificarea §1, tratată imediat. Forma oficială a HG 1045/2018 din 30.09.2026 a intrat în
+corpus (cea din 15.09 arhivată), iar plafonul tichetelor de creșă nu mai e blocat la 450: urmează ferestrele
+ordinelor de indexare reproduse verbatim în ea — 640, 660, 670, 710, 740 și, de azi, 770 lei pe copil. Plafonul se
+ia pe luna beneficiului (înainte se lua pe ziua de azi). Ecranul statului de plată nu mai afirmă „indexare
+neconfirmată — blocată". Dinainte de aprilie 2024 și după martie 2027 rămâne baza legală de 450, cu motivul spus.

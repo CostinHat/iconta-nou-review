@@ -632,11 +632,11 @@
     },
     "hg_1045_2018_norme_consolidat.html": {
       "clasa": "ADUS",
-      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 314143, consolidare 15.09.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 764463fd8d91f804."
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 314229, consolidare 30.09.2026), adusa de FiscalOS (urmarire 01.10.2026); a inlocuit forma 314143 (15.09.2026), arhivata in _inlocuite_fiscalos_2026-10-01/ cu sufixul __forma314143_15.09.2026. Noua: notele art.33 reproduc Ordinul 1.254/1.188/2026 (tichet masa 45 lei) si 1.255/1.187/2026 (tichete cresa 770 lei), MO 830/30.09.2026. SHA oficial 789a36108aea5cd1."
     },
     "hg_1045_2018_norme_consolidat.txt": {
       "clasa": "ADUS",
-      "motiv": "extras articol_in_act.text din hg_1045_2018_norme_consolidat.html (forma oficiala), regenerat la 2026-10-01"
+      "motiv": "extras articol_in_act.text din hg_1045_2018_norme_consolidat.html (forma oficiala 314229), regenerat la 2026-10-01"
     },
     "hg_295_2025_reges_online_registru_salariati.html": {
       "clasa": "ADUS",

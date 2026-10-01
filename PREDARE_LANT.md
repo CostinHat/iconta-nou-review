@@ -1,25 +1,20 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Pachet FiscalOS §1–§3 comis; urmează tichetele de creșă (neconformitate găsită la §1), apoi D212 Etapa 2** (01.10.2026)
+# PREDARE LANȚ — **Pachet FiscalOS §1–§3 comis (63df9bde); tichetele de creșă pe ferestre datate (commitul care poartă predarea); urmează D212 Etapa 2** (01.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-01**, la închiderea **Pachetului FiscalOS §1–§3** (commitul care poartă această
-  predare). Sursa comenzii: `~/ghid_incoming/PACHET_FISCALOS_ICONTA.md` + `verif_temeiuri.json`. *Pentru un
-  contabil: plafoanele de casă, cotele de TVA/profit, pragul de taxare inversă și deducerea personală au acum temeiul
-  verificat mecanic la sursă; la o firmă cash&carry mesajul de încasare citează litera corectă (lit.b); IMCA nu mai
-  continuă în 2027.*
-- **pe commit**: `663fb906` (HEAD de intrare, D212 etapa 1). Four-way-ul commitului FiscalOS se citește din
-  `git log -1` + `versiune.stare()` — nu se scrie aici înainte să existe. Livrare ZIP:
+- **ultima rescriere**: **2026-10-01**, la commitul **tichetelor de creșă** (neconformitate găsită la verificarea §1
+  FiscalOS). *Pentru un contabil: de azi poate acorda tichete de creșă de 770 lei/copil (ordinul MO 830/30.09.2026);
+  plafonul se verifică pe luna beneficiului, cu toate indexările din aprilie 2024 încoace.*
+- **pe commit**: `63df9bde` (Pachet FiscalOS §1–§3, four-way închis: HEAD = origin/main = public/main =
+  backup/lant-2026-10-01 = 2/2 procese). Commitul creșei se citește din `git log -1`. Livrare ZIP pachet:
   `/home/costin/ghid_incoming/iconta_pachet_fiscalos_rezultat.zip`.
-- **URMĂTORUL FRONT (în ordine):** (1) **TICHETE DE CREȘĂ — ferestre datate** (fir în TESTE.md „În lucru acum",
-  pașii scriși): consolidarea HG 1045/2018 din 30.09.2026 reproduce verbatim ordinele de indexare 640→770 lei
-  (Ordin 1.255/1.187/2026, MO 830/30.09.2026: **770 lei/copil din 01.10.2026**); iConta plafonează la 450 (decizia
-  04.08, condiționată exact de obținerea ordinelor) și ecranul de stat de plată spune „indexare GRI — blocată".
-  Atinge un ecran → scanurile vizuale (rețeta mai jos, „SCANUL VIZUAL"). (2) **D212 Etapa 2** (cap11/oblig_realizat
-  din fișa RIP — v. „D212 — CE RĂMÂNE" mai jos; perimetrul în `D212_PERIMETRU.md`).
+- **URMĂTORUL FRONT:** **D212 Etapa 2** (cap11/oblig_realizat din fișa RIP — v. „D212 — CE RĂMÂNE" mai jos;
+  perimetrul în `D212_PERIMETRU.md`; validatorul în vigoare J13.0.1).
 - **Fronturi deschise, neschimbate:** F1 etapele 9-11 (depunere reală = [EXTERN]); F2 D101 (la închiderea anului);
-  Pachet FiscalOS §4 (D394 Î1/Î2 — nu era în comanda de azi).
+  Pachet FiscalOS §4 (D394 Î1/Î2 — nu era în comanda de azi); plafonul de creșă pentru luni < 04.2024 rămâne pe
+  baza 450 (ordinele 2023 nu sunt în forma în vigoare — DECIZII 01.10).
 - **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09, DECIZII 21.09) — nu se comite.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: titlul și antetul sunt **rescrise**; restul documentului (inclusiv „PRIMUL
@@ -373,9 +368,9 @@ vorbă, e o consecință.*
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **70** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77** | **71** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **868** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

@@ -86,7 +86,8 @@ DISTRIBUTIE = {
     # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
     ("VOLATIL", "CALCULAT"): 16,
     ("STABIL", "DEPUS"): 9,
-    ("STABIL", "CALCULAT"): 13,
+    # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
+    ("STABIL", "CALCULAT"): 14,
     ("MISCATOR", "CALCULAT"): 7,
     # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
@@ -231,7 +232,8 @@ def test_ANTI_VACUU_si_distributia_pinata():
 #: 10 -> 13 la 01.10.2026 (Pachet FiscalOS §2): bacsis.COTA_IMPOZIT (CF art.64 alin.1 lit.h), bacsis.TEMEI_BACSIS_
 #: ALTE_SURSE (OUG 28/1999 art.2^3) si taxare_inversa.PRAG_ELECTRONICE (CF art.331 alin.7) — STABIL/CALCULAT, 12 luni.
 #: Nu verificate mai rar: pana azi n-aveau niciun Temei, deci nicio cadenta.
-PRIMESC_PRAG_PESTE_PODEA = 13
+#: 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA (Legea 165/2018 art.19 alin.(1)), STABIL/CALCULAT.
+PRIMESC_PRAG_PESTE_PODEA = 14
 
 
 def test_nicio_valoare_nu_devine_verificata_MAI_RAR():

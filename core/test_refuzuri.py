@@ -65,7 +65,7 @@ BASELINE = {
     "core/bacsis.py": 2,
     "core/casa.py": 3,
     "core/taxare_inversa.py": 3,
-    "core/common.py": 15,
+    "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,
     "core/deconturi.py": 4,

@@ -1029,7 +1029,7 @@ export function formSablon(corp, nav, tenantId, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Emitere</div>
-      <input class="camp-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" title="Ziua din lun\u0103 la care se emite">
+      <input class="camp-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" aria-label="Ziua din lun\u0103 la care se emite" title="Ziua din lun\u0103 la care se emite">
       <select class="camp-input" id="fr-moneda">
         <option value="RON">RON</option>
         <option value="EUR">EUR</option>

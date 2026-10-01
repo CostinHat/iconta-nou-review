@@ -844,23 +844,81 @@ def plafon_cultural(la_data, ocazional=False):
 # ============================================================
 #  TICHETE DE CRESA — Legea 165/2018 art.19. Baza legala: 450 lei/luna/COPIL (art.19(1)); valoare nominala
 #  10/multiplu/max 100 (art.19(2)). Tratament fiscal = ca tichetul cultural (impozit 10%, FARA CAS/CASS/CAM:
-#  cresa e in CF art.142 lit.r + exceptata din CASS art.157(2) care lasa doar masa+vacanta). Valoarea se
-#  INDEXEAZA semestrial prin ordine MF/MMSS - NEconfirmate la sursa primara (verdict 17 GRI: ordinul 368/179/
-#  2026 = 740 lei doar din surse secundare, mmuncii HTTP 503) -> se aplica BAZA confirmata 450/copil,
-#  grant-urile care depind de indexarea neconfirmata (>450/copil) sunt blocate (GARD).
+#  cresa e in CF art.142 lit.r + exceptata din CASS art.157(2) care lasa doar masa+vacanta). Suma lunara se
+#  INDEXEAZA semestrial prin ordin comun MF/MMSS (Normele HG 1045/2018 art.33).
+#
+#  FERESTRELE (01.10.2026 — PIVOT peste blocajul din 04.08, DECIZII 01.10.2026). Forma consolidata OFICIALA a HG
+#  1045/2018 (legislatie.just.ro, forma 314229, consolidare 30.09.2026 = anaf_surse/hg_1045_2018_norme_consolidat.html)
+#  reproduce VERBATIM, sub art.33, art.1 si art.2 ale fiecarui ordin de indexare, cu numarul MO — exact conditia de
+#  deblocare scrisa pe 04.08 („ordin obtinut la MO + fereastra datata"). Art.1: „Pentru semestrul I/II ..., incepand
+#  cu luna aprilie/octombrie ..., valoarea sumei lunare ... este de N lei"; art.2: „se aplica si pentru primele 2 luni
+#  ale semestrului [urmator], respectiv august si septembrie / februarie si martie" -> ferestre CONTIGUE apr–sep /
+#  oct–mar. In afara lor (inainte de apr.2024; dupa mar.2027 pana la ordinul urmator) -> baza legala 450, cu motivul
+#  spus (cap conservator, ca inainte). Ultima valoare NU se prelungeste tacit peste fereastra ei.
 # ============================================================
+_ART33 = (", stabilită potrivit prevederilor art. 33 din Normele metodologice de aplicare a Legii nr. 165/2018 "
+          "privind acordarea biletelor de valoare, aprobate prin Hotărârea Guvernului nr. 1.045/2018 , cu "
+          "modificările ulterioare, este de ")
+
+
+def _citat_cresa(sem, luna, an, valoare):
+    """Art.1 al ordinului de indexare, VERBATIM din forma consolidata a HG 1045/2018 (gardat: citatul trebuie
+    sa se regaseasca in document - test_ferestrele_cresa_contigue_si_citate_verbatim)."""
+    return ("Pentru semestrul %s al anului %d, începând cu luna %s %d, valoarea sumei lunare care se acordă sub "
+            "formă de tichete de creșă%s%s lei" % (sem, an, luna, an, _ART33, valoare))   # cifra din lege, nu suma UI
+
+
+_HG1045_CRESA = dict(art="1", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO",
+                     url="anaf_surse/hg_1045_2018_norme_consolidat.html")
+
+# (start, end_inclusiv, valoare/luna/copil, Temei) — cronologic, contigue. Temeiul = art.1 al ordinului;
+# extinderea (art.2) e in lant_acte.
+_FERESTRE_CRESA = [
+    (date(2024, 4, 1), date(2024, 9, 30), Decimal("640"), Temei(
+        "Ordin", "497/660", 2024, text_citat=_citat_cresa("I", "aprilie", 2024, 640), **_HG1045_CRESA,
+        lant_acte="MO 268/28.03.2024; art.2: se aplică și pentru august 2024 și septembrie 2024")),
+    (date(2024, 10, 1), date(2025, 3, 31), Decimal("660"), Temei(
+        "Ordin", "5339/2025", 2024, text_citat=_citat_cresa("II", "octombrie", 2024, 660), **_HG1045_CRESA,
+        lant_acte="MO 975/27.09.2024; art.2: se aplică și pentru februarie 2025 și martie 2025")),
+    (date(2025, 4, 1), date(2025, 9, 30), Decimal("670"), Temei(
+        "Ordin", "486/287", 2025, text_citat=_citat_cresa("I", "aprilie", 2025, 670), **_HG1045_CRESA,
+        lant_acte="MO 275/28.03.2025; art.2: se aplică și pentru august 2025 și septembrie 2025")),
+    (date(2025, 10, 1), date(2026, 3, 31), Decimal("710"), Temei(
+        "Ordin", "1602/2007", 2025, text_citat=_citat_cresa("II", "octombrie", 2025, 710), **_HG1045_CRESA,
+        lant_acte="MO 899/01.10.2025; art.2: se aplică și pentru februarie 2026 și martie 2026")),
+    (date(2026, 4, 1), date(2026, 9, 30), Decimal("740"), Temei(
+        "Ordin", "368/179", 2026, text_citat=_citat_cresa("I", "aprilie", 2026, 740), **_HG1045_CRESA,
+        lant_acte="MO 249/31.03.2026; art.2: se aplică și pentru august 2026 și septembrie 2026")),
+    (date(2026, 10, 1), date(2027, 3, 31), Decimal("770"), Temei(
+        "Ordin", "1255/1187", 2026, text_citat=_citat_cresa("II", "octombrie", 2026, 770), **_HG1045_CRESA,
+        lant_acte="MO 830/30.09.2026; art.2: se aplică și pentru februarie 2027 și martie 2027")),
+]
+# baza legala, inainte de indexare (si cap-ul in afara ferestrelor documentate)
+PLAFON_CRESA_BAZA = ancoreaza("common.PLAFON_CRESA_BAZA", Decimal("450"), Temei(
+    "Legea", 165, 2018, art="19", alin="1", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO",
+    url="anaf_surse/legea_165_2018_consolidat.txt",
+    text_citat=("Nivelul maxim al sumelor acordate sub forma tichetelor de creșă nu poate depăși suma de 450 de lei "
+                "pentru o lună, pentru fiecare copil aflat la creșă.")))
+
+
 def plafon_cresa(la_data, nr_copii=1):
-    """Plafonul maxim lunar al tichetelor de cresa: (Decimal, sursa). = 450 * nr_copii (L165 art.19(1), baza
-    confirmata). Indexarea (740 lei S1 2026, Ordin MF/MMSS 368/179/2026, MO 249/31.03.2026) e CONFIRMATA la EMITENT
-    (mmuncii.gov.ro) si prin MO-referinta din surse multiple (04.08.2026), DAR: textul operativ al ordinului NU s-a
-    obtinut (primar strict), functia nu are inca mecanism de ferestre datate (ca plafon_cultural), iar valorile
-    intermediare (ex. 710) nu-s cercetate -> indexarea RAMANE NEaplicata (cap conservator la baza 450). Se
-    deblocheaza cand: (a) se obtine textul ordinului 368/179/2026 la MO + (b) se adauga un mecanism de ferestre
-    _FERESTRE_CRESA cu istoricul complet. Vezi DECIZII 04.08."""
+    """Plafonul maxim lunar al tichetelor de cresa pentru LUNA la_data: (Decimal, sursa) = valoare x nr_copii.
+
+    `la_data` e OBLIGATORIU (luna beneficiului, nu azi): plafonul se schimba de doua ori pe an, deci un apel fara
+    data ar valida o luna veche pe valoarea de azi (interdictia 3). Fereastra datata -> valoarea indexata a
+    ordinului; in afara ferestrelor -> baza 450, cu motivul spus."""
+    if la_data is None:
+        raise ValueError("Plafonul tichetelor de creșă depinde de lună (se indexează semestrial): "
+                         "dă luna beneficiului.")
+    d = _ca_data(la_data)
     n = int(nr_copii) if nr_copii else 1
     if n < 1:
         n = 1
-    return Decimal("450") * n, "Legea 165/2018 art.19(1) - baza 450/luna/copil (indexare GRI verdict 17, neaplicata)"
+    for start, end, val, t in _FERESTRE_CRESA:
+        if start <= d <= end:
+            return val * n, "%s (%s), HG 1045/2018 art.33" % (t, t.lant_acte.split(";")[0])
+    return PLAFON_CRESA_BAZA * n, ("Legea 165/2018 art.19 alin.(1) - baza 450 lei/lună/copil: nicio indexare "
+                                   "documentată în corpus pentru %s" % d.strftime("%m.%Y"))
 
 
 PRAG_VOLATIL_LUNI = 18  # Corpus (2) garda 3: fereastra +/- fata de azi in care o valoare curenta e "recenta"

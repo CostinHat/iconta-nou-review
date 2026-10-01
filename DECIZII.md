@@ -15778,3 +15778,44 @@ alineatul e cel corect pentru folosire — aia o verifică pinul pe temeiul apro
 
 **Norma trăiește în:** `core/test_fiscalos_s2.py`, `core/test_fiscalos_s3.py`, `core/common.py::ancoreaza`;
 gărzile în GARZI.md (01.10.2026).
+
+---
+
+## 01.10.2026 — PIVOT: tichetele de creșă au plafon pe ferestre datate (supersedează blocajul „indexare GRI, cap 450" din 02/04.08.2026)
+
+**Ce supersedează, explicit:** intrarea „tichete cresa | salarizare" (02.08.2026) și blocajul consemnat atunci —
+„valoarea indexată a plafonului de creșă (>450/copil, ex. 740 din 2026) — neconfirmată la primar. Se deblochează
+când un ordin MF/MMSS e obținut la MO și adăugat în plafon_cresa (fereastră datată). Până atunci, cap conservator la
+baza 450/copil." Intermediar a fost cap-ul de 450 (corect ca prudență cât timp sursa lipsea); final sunt ferestrele.
+
+**De ce acum.** La verificarea §1 din Pachetul FiscalOS: FiscalOS adusese pe 01.10 consolidarea HG 1045/2018 din
+**30.09.2026** (forma 314229), mai nouă decât cea din corpus (15.09). Sub art.33 din Norme, forma oficială reproduce
+**verbatim** art.1 și art.2 ale fiecărui ordin comun de indexare, cu MO: 497/660/2024 (640), 5.339/2.025/2024 (660),
+486/287/2025 (670), 1.602/2.007/2025 (710), 368/179/2026 (740), **1.255/1.187/2026, MO 830/30.09.2026 (770 lei din
+octombrie 2026)**. Exact condiția de deblocare scrisă în august. Fără reparație, de azi un contabil care acordă 770
+lei (legal) era blocat cu mesajul „indexare neconfirmată (GRI)".
+
+**Ce s-a făcut.** `common.plafon_cresa(la_data, nr_copii)`: `_FERESTRE_CRESA` contigue apr–sep / oct–mar
+(art.1 = „începând cu luna aprilie/octombrie"; art.2 = „se aplică și pentru primele 2 luni ale semestrului
+următor"), fiecare cu temeiul ei (art.1 al ordinului, citat verbatim). `la_data` devine OBLIGATORIU: plafonul se
+schimbă de două ori pe an, iar `beneficii_api.seteaza` îl lua pe AZI (`plafon_cresa(None)`), nu pe luna
+beneficiului — un grant pe septembrie s-ar fi validat azi pe 770 (instanță a interdicției 3, reparată odată cu
+clasa). Ecranul stat de plată nu mai scrie o valoare fiscală (450/740) și nici „GRI — blocată": spune temeiul și că
+plafonul lunii se verifică la salvare.
+
+**Alternative respinse:** (a) cheie în `COTE` — registrul derivă `data_out` din succesor, deci 770 ar continua
+tăcut după martie 2027; aici ultima fereastră se ÎNCHIDE pe data din art.2, iar după ea se cade pe baza legală, cu
+motiv (tiparul `_FERESTRE_CULTURAL`, refolosit, nu paralel); (b) a păstra 450 până la un PDF al MO — portalul
+legislatie.just.ro e sursa oficială folosită pentru tot corpusul (nivel MO), iar textul ordinului e reprodus integral.
+
+**Limite.** Lunile dinainte de aprilie 2024 rămân pe baza 450: forma în vigoare nu mai reproduce ordinele din 2023
+(ghidul public citează 620 lei din oct.2023 dintr-o altă formă) — un contabil care ar înregistra beneficii pe 2023
+e blocat peste 450, ca înainte. După 31.03.2027 se cade pe 450 până se adaugă ordinul următor (semnal: blocarea, cu
+motivul „nicio indexare documentată").
+
+**Norma trăiește în:** `core/common.py` (`_FERESTRE_CRESA`, `plafon_cresa`), `core/test_tichet_cresa.py`.
+
+**Găsit pe drum (clasă de UI):** proba zonei de creșă a arătat câmpul „nr. copii" cu sens doar prin `title`. Regula
+există (DS v2.42: title-only pierdut pe touch → `aria-label`); lipsea gardul pentru zonele care apar după click.
+2 apariții în `static/js` (creșă, facturi recurente fr-zi) reparate; gard structural `core/test_input_fara_title_only.py`
+(nu e regulă nouă de UI, deci nu cere intrare nouă în DS/verificator — păzește una existentă).

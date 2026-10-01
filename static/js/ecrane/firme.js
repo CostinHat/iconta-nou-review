@@ -4,7 +4,7 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=1dccbc985b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=6320ad1c9d";
+import { randeazaFacturi } from "./facturi_ecran.js?v=8f18740e04";
 import { ecranRip } from "./rip_ecran.js?v=2a75ab957d";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=01442b1818";
 import { ecranEtransport } from "./etransport_ecran.js?v=2062674928";
@@ -1354,17 +1354,17 @@ async function ecranSalariati(corp, nav, t) {
         } catch (e) { arataMesaj(corp.querySelector("#cadou-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
-    // [tichete de cresa] Legea 165/2018 art.19: lunar, per copil; plafon 450/copil (indexare GRI blocata backend).
+    // [tichete de cresa] Legea 165/2018 art.19: lunar, per copil; plafonul lunii il verifica serverul (indexat semestrial).
     const zonaCresa = corp.querySelector("#sp-cresa-zona");
     corp.querySelectorAll("[data-cresa]").forEach((b) => b.addEventListener("click", () => {
       const sid = b.dataset.cresa;
       zonaCresa.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Tichete de creșă · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
-        <input type="number" min="1" step="1" id="cresa-copii" class="camp-input" placeholder="1" style="width:120px" title="nr. copii la creșă (implicit 1)">
+        <input type="number" min="1" step="1" id="cresa-copii" class="camp-input" placeholder="1" style="width:120px" aria-label="Număr de copii la creșă (implicit 1)" title="nr. copii la creșă (implicit 1)">
         <input type="number" step="10" min="0" id="cresa-input" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
         <button class="buton-primar" id="cresa-save">Salvează</button>
         <button class="buton-secundar" id="cresa-cancel">Renunță</button></div>
-        <div class="camp-eticheta" style="color:var(--gri)">450 lei/lună/copil (Legea 165/2018 art.19); valoare multiplu de 10. Indexarea peste bază (ex. 740) e neconfirmată la sursă (GRI) — blocată.</div>
+        <div class="camp-eticheta" style="color:var(--gri)">Plafon lunar pe copil: Legea 165/2018 art.19, indexat semestrial prin ordin (HG 1045/2018 art.33) — se verifică la salvare pe luna aleasă; valoare multiplu de 10.</div>
         <div id="cresa-msg"></div>`;
       corp.querySelector("#cresa-input").focus();
       corp.querySelector("#cresa-cancel").addEventListener("click", () => { zonaCresa.innerHTML = ""; });

@@ -190,7 +190,7 @@ că intrarea a fost înghițită**.
   MO 249/31.03.2026) e CONFIRMATA la EMITENT (mmuncii.gov.ro) + MO-referinta (04.08.2026), dar NEAPLICATA: textul
   operativ al ordinului neobtinut + plafon_cresa n-are mecanism de ferestre datate (ca plafon_cultural) + valorile
   intermediare (710) necercetate. Cap conservator 450, BLOCAT motivat in beneficii_api.seteaza
-  (test_cresa_seteaza_peste_plafon_*), NU se aplica 740 tacit (era GRI verdict 17).
+  (test_cresa_seteaza_peste_plafon_*), NU se aplica 740 tacit (era GRI verdict 17). [citare-istorica: test inlocuit 01.10.2026 de test_cresa_seteaza_pe_LUNA_beneficiului — plafonul pe ferestre datate]
   Divergenta CASS vs etalon (cresa fara CASS, art.157(2)) prinsa de registru + test_cresa_in_registru_fara_cass.
 - ACOPERIT (02.08.2026): **IMCA - impozit minim pe cifra de afaceri** (CF art.18^1) in d101. Formula
   1% x (VT-Vs-I-A) (negativ -> 0) + prag 50 mil euro + wiring P47 + comparatie P48. GARD prin teste de VALOARE
@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**646 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**647 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 614
+### `core/` — 615
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9200,6 +9200,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_inchidere_luna.py` — ACTUL DE ÎNCHIDERE a lunii pe domeniul `facturi` (21.08.2026) — DESIGN_SYSTEM cap.23.
 - `core/test_infra_vizuala.py` — GARDĂ: infrastructura de testare vizuală (frontend_test/vizual) nu poate dispărea tăcut.
 - `core/test_inlocuire_afirmata.py` — GARD [YY/METODA §28, 28.08.2026]: o inlocuire de text intr-un document AFIRMA ca a gasit potrivirea.
+- `core/test_input_fara_title_only.py` — GARD: niciun <input> din ecrane nu-și spune sensul DOAR prin `title` (01.10.2026).
 - `core/test_instrumente_roadmap.py` — [metoda-ca-poarta] GARD: INSTRUMENTE_ROADMAP.md nu minte — un instrument marcat CONSTRUIT trebuie sa
 - `core/test_interpretare.py` — GARDĂ: o interpretare e un OBIECT declarabil, cu variantele obligatorii. (P11, 22.08.2026)
 - `core/test_intrare_date_garduri.py` — GARZI cat.1 (Intrare date) — RATCHET: idempotenta importurilor + banii nu ajung NULL, verificate MECANIC.
@@ -9777,3 +9778,23 @@ argumentele lui `c.Temei(...)` (formă cu atribut) ca citări — înainte numă
 879→868. Nu sunt refuzuri noi: modulele care au primit acum un `Temei` (bacsis, cote_tva, taxare_inversa, d101g,
 d394, casa…) au intrat în domeniul `scan_refuzuri.datorie()`, iar refuzurile lor de dinainte au trecut din umbră
 în datorie — exact drumul pe care clichetul îl vrea vizibil. Blocul CLICHETE-VII din PREDARE_LANT.md regenerat.
+
+## 01.10.2026 — Plafonul tichetelor de creșă pe ferestre datate, pe luna beneficiului
+
+Categoria **3. Calcul fiscal** (valoare datată aplicată pe altă perioadă) + interdicția 3 (calcul care citește data
+curentă). Detaliul: DECIZII 01.10.2026 (PIVOT peste blocajul din 02.08).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| fereastra pe margini | core/test_tichet_cresa.py::test_plafon_cresa_pe_fereastra (12 zile-limită) | un plafon greșit la granița unei ferestre; ultima valoare prelungită tăcut peste art.2 al ordinului | scoasă fereastra oct.2026 → 3 roșii; end 2027-03-31→2027-12-31 → roșu pe 01.04.2027 | lunile < 04.2024 pe baza 450 (ordinele 2023 nu sunt în forma în vigoare) |
+| ferestre contigue + citat verbatim | core/test_tichet_cresa.py::test_ferestrele_cresa_contigue_si_citate_verbatim | o gaură/suprapunere între ferestre; un temei de fereastră care nu mai e verbatim în HG 1045/2018 sau nu poartă valoarea | citatul 740→750 → roșu | verifică textul art.1, nu și art.2 (extinderea e în `lant_acte`) |
+| plafon pe LUNA beneficiului | core/test_tichet_cresa.py::test_cresa_seteaza_pe_LUNA_beneficiului + test_plafon_cresa_cere_luna | validarea unui beneficiu pe plafonul de azi; apel fără lună | `plafon_cresa(date.today())` în seteaza → 2 roșii | — |
+
+**Și, găsit de proba zonei de creșă (01.10.2026), categoria 11. Interfață:** câmpul „nr. copii" își spunea sensul
+doar prin `title` (invizibil pe touch; DS v2.42 cere `aria-label`). Scanul de interacțiune nu-l vedea: zona apare
+abia după un click. Clasa în `static/js`: 2 apariții (`firme.js` cresa-copii, `facturi_ecran.js` fr-zi), reparate.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| input fără title-only (structural) | core/test_input_fara_title_only.py | un `<input>` în orice șablon din `static/js` cu `title` și fără `aria-label`/`aria-labelledby` — inclusiv în zone care apar după click | scos aria-label de pe fr-zi → roșu cu fișier:linie | nu vede input-uri create cu `createElement` (azi 0) |
+| proba zonei de creșă | frontend_test/proba_cresa_eticheta.py (+ .json) | — (probă, nu gard): deschide zona, citește eticheta, axe desktop + telefon | — | rulează doar cu app viu pe 8011 |

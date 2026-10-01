@@ -47,7 +47,8 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
     if v < 0:
         return {"eroare": "valoarea nu poate fi negativă"}
     if tip == "cresa" and v > 0:
-        # [GARD] plafon 450/luna/copil (L165 art.19(1) baza confirmata; indexare GRI verdict 17 neaplicata)
+        # [GARD] plafon lunar/copil pe LUNA beneficiului: L165 art.19(1) indexat semestrial (HG 1045/2018 art.33,
+        # ferestrele din common.plafon_cresa); in afara ferestrelor, baza 450.
         # + valoare nominala multiplu de 10 (art.19(2)). nr_copii pt validare (default 1; nepersistat).
         from core import common as _cm2
         try:
@@ -56,12 +57,13 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
             _nr = 1
         if _nr < 1:
             _nr = 1
-        _plafc, _sursac = _cm2.plafon_cresa(None, nr_copii=_nr)
+        import datetime as _dtcr
+        _plafc, _sursac = _cm2.plafon_cresa(_dtcr.date(int(an), int(luna), 1), nr_copii=_nr)
         if v % 10 != 0:
             return {"eroare": "valoarea tichetului de cresa = multiplu de 10 lei (Legea 165/2018 art.19(2))"}
         if v > _plafc:
-            return {"eroare": "valoarea %s depășește plafonul %s lei/lună pentru %d copil(i) (%s). Indexarea peste "
-                    "bază (ex. 740) e neconfirmată la sursa primară (GRI) - blocată." % (v, _plafc, _nr, _sursac)}
+            return {"eroare": "valoarea %s depășește plafonul de %s lei pentru %d copil(i) în %02d.%s (%s)."
+                    % (v, _plafc, _nr, int(luna), an, _sursac)}
     if tip == "cultural" and v > 0:
         # [GARD] plafon semestrial indexat (verdict 16). Fereastra GRI (oct.2025-mar.2026) sau semestru
         # fara ordin confirmat -> BLOCAT motivat, NU se calculeaza tacit cu 240/470. + valoare nominala
