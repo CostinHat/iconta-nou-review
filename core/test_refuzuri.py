@@ -65,7 +65,11 @@ BASELINE = {
     "core/bacsis.py": 2,
     "core/casa.py": 3,
     "core/taxare_inversa.py": 3,
-    "core/d212.py": 4,   # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
+    # 4 -> 10 la 02.10.2026 (D212 Etapa 3, cap12_norma): +5 refuzuri de FORMA, fiecare marcat langa el — data nevalida,
+    # incetare inaintea inceperii, zile de intrerupere/scutire in afara perioadei, zile scutite peste zilele de activitate,
+    # forma de organizare in afara [1,2]; plus invelisul care numeste activitatea (temeiul e in mesajul interior). Refuzul
+    # normativ (data in afara anului) poarta OPANAF 2736/2025 rd.3/rd.4 in text.
+    "core/d212.py": 10,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,

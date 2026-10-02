@@ -107,3 +107,15 @@ def test_orice_temei_cu_frecventa_citibila_are_un_consumator():
         "temeiuri cu frecvență citibilă și consecință NECUNOSCUTĂ: %s.\n"
         "Ori nimic din cod nu le citește (atunci e o urmă de intenție — consemneaz-o), ori graful "
         "din `core/consumatori_temei.py` nu le vede (atunci lipsește un drum)." % orfane)
+
+
+def test_valoarea_ancorata_se_citeste_si_cand_modulul_nu_e_inca_importat():
+    """02.10.2026: `_valoare_ancorata` citea `common.CONSTANTE_ANCORATE` fără să importe modulul, iar registrul se umple
+    la import — o constantă reală (`d212.ZILE_AN_NORMA`) ieșea None tăcut când nimeni nu importase `core.d212`.
+    Interpretor PROASPĂT: în suita completă alt test importă modulul și ascunde golul."""
+    import subprocess
+    cod = ("from core import consumatori_temei as ct\n"
+           "print(repr(ct._valoare_ancorata('CONSTANTE_ANCORATE.d212.ZILE_AN_NORMA[1]')))\n"
+           "print(repr(ct._valoare_ancorata('CONSTANTE_ANCORATE.nu_exista.X[1]')))\n")
+    r = subprocess.run([sys.executable, "-c", cod], cwd=_RAD, capture_output=True, text=True, timeout=120)
+    assert r.stdout.split() == ["365", "None"], r.stderr[-500:]

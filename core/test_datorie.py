@@ -317,3 +317,12 @@ def test_datorie_d300_exigibilitate_tva_la_incasare():
 def test_datorie_d394_op2_incasari_amef_din_rapoarte_z():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "d394 emite op2 i1 din rapoartele z" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, raises=ValueError, reason="DATORIE [EXTERN] 02.10.2026 (D212 Etapa 3): venitul din activitati agricole impus pe NORMA (Subsectiunea a 4-a, CF art.107 alin.(2)) nu are loc in structura validatorului ANAF instalat - D212Validator.jar v9 (J13.0.1) e formularul pentru veniturile 2024: niciun atribut agricol, fara bifa114. d212.genereaza refuza numit (nu emite pe alta subsectiune, nu sare tacut). Se inchide cand ANAF publica validatorul pentru OPANAF 2736/2025 si generatorul emite subsectiunea agricola, DUK valid.")
+def test_datorie_d212_venit_agricol_pe_norma():
+    from core import d212, duk
+    from core.common import Perioada
+    xml, _ = d212.genereaza(None, None, Perioada(an=2025), {"cif": "1800101221144", "nume_c": "POPESCU ION",
+                                                         "adresa_c": "Bucuresti", "agricol": [{"norma": 5000}]})
+    assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"

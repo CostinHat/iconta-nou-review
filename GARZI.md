@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**654 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**657 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 622
+### `core/` — 625
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9005,6 +9005,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d208_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D208 gol NU produce declaratie; biroul notarial + o tranzactie
 - `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
 - `core/test_d212_cap11.py` — D212 Etapa 2 — venit în sistem real cap-coadă: registrul RIP -> cap11 -> XML -> DUK (01.10.2026).
+- `core/test_d212_cap12.py` — D212 Etapa 3 — venit din activități independente pe NORMĂ DE VENIT: datele contabilului -> cap12 -> XML -> DUK.
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
 - `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
@@ -9185,6 +9186,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_ghiduri_servite.py` — Gard: ghid/ e SURSA UNICA a paginilor publice de ghid.
 - `core/test_golden_xsd.py` — GARD completitudine golden-XSD: fiecare XSD de declaratie din corpus (anaf_surse/*.xsd +
 - `core/test_graf_clustere_proprietar.py` — GARD (R19): o funcție partajată între clustere NU e proprietatea niciunuia.
+- `core/test_graf_importuri.py` — GARD — importurile din `core` se citesc din arborele de sintaxă, nu cu regex pe un rând (02.10.2026).
 - `core/test_graf_temei.py` — Graful de dependente fiscale extras din cod (core/graf_temei.py, Modelul de temei 01.08 pct.3).
 - `core/test_granite_cota.py` — Granite API — cota TVA lipsa = intrare INCOMPLETA -> eroare, nu default 21 ghicit.
 - `core/test_harta_casete.py` — GARD — COMPARATORUL. Confruntă ce s-a randat cu ce spune harta că trebuie randat.
@@ -9224,6 +9226,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_live_accesibil.py` — [#6 plimbare 14.08.2026 / regula 9] Garda: o declaratie e LIVE DOAR daca e accesibila in selectorul UI
 - `core/test_login_proba_metoda.py` — GARD "gaura de metoda" (09.08.2026, cerut de Costin): a PROBA un cont = prin calea de autentificare
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
+- `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
 - `core/test_masti.py` — Garda: nicio masca TACUTA peste un query.
 - `core/test_matrice_control_fiscal.py` — Matrice de stari pe control fiscal - PURA, aserții pe FORMĂ (nu valori). NU testeaza UI, NU repara.
@@ -9837,3 +9840,22 @@ temeiuri incomplet sub amprente corecte). Detaliul: DECIZII 02.10.2026 (șase in
 | brut pe prezență | core/test_salariu_proratare.py (14 teste, D112 DUK) | brut întreg la angajare/încetare/CFP/mărire în lună; B1_sal1 ≠ contractual; zile = toată luna; suspendări ignorate | 4 mutații motor + 3 pe ruta PUT → toate roșii | suspendarea plătită parțial (art.53) |
 | neplătitor fără TVA | core/test_neplatitor_tva_emitere.py (6 teste) | 21% propus/acceptat la neplătitor; cota din catalog readusă; „TVA 0%” pe PDF | 4 mutații (rută, gardă, completare, PDF) → câte un roșu | e-Factura neplătitor (categoria O) — limită v1 preexistentă |
 | D205 pe cesiuni | core/test_d205_cesiune.py (5 teste, DUK) | dividendul de dinainte de cesiune dat cesionarului; importul care pierde structura veche; replica de derivare din verificarea încrucișată | structura curentă mereu → roșu; import fără arhivare → 2 roșii; tranșa pe data plății → roșu | convenția contrară a părților (art.67 alin.(6) teza a doua) rămâne manuală |
+
+## 02.10.2026 — D212 Etapa 3: subsecțiunea I.1.2 (normă de venit), pe rânduri; cheile ecranului citite de generator; graful citește importurile din AST
+
+Categoriile **3. Calcul fiscal** (proratarea normei, zilele scutite, cota), **4. Ieșire către autorități** (cap12 repetabil,
+bifa112), **1. Intrare date** (o dată trimisă de ecran care dispare tăcut) și **9. Onestitatea testelor** (bife marcate stale pe dependențe false în graf).
+Detaliul: DECIZII 02.10.2026 (cinci intrări).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| rd.9 proratat la 365 de zile | core/test_d212_cap12.py::test_perioada_partiala_se_raporteaza_la_365_de_zile (+ an bisect) | norma întreagă pe o activitate de jumătate de an; proratarea care crește norma în anul bisect | `net = baza` → 5 roșii | — |
+| rd.9.1 cu zilele scutite | test_zilele_scutite_reduc_venitul_impozabil_rd_9_1 | impozitul pe rd.9 în loc de rd.9.1 | impozit pe rd.9 → 2 roșii | interpretarea zi-normă (DECIZII) |
+| cota 10% (CF art.69^2 alin.1) | constanta ancorată `d212.COTA_IMPOZIT_NORMA` + testele de calcul | altă cotă decât 10% | 10 → 16 → 8 roșii | — |
+| cap12 repetabil + bifa112 (R8) | test_xml_o_sectiune_cap12_pe_activitate_si_bifa112 + test_DUK_valid_pe_cap12_generat | o singură secțiune pentru mai multe activități; cap12 fără bifa112 | scos bifa112 → roșu | — |
+| refuzuri de coerență | test_date_incoerente_refuzate (8 cazuri) + test_eroarea_numeste_activitatea | date în afara anului, încetare înaintea începerii, zile scutite peste zilele de activitate, forma în afara [1,2] | — | — |
+| agricol pe normă [EXTERN] | test_datorie.py::test_datorie_d212_venit_agricol_pe_norma (xfail strict) + test_venitul_agricol_pe_norma_refuzat_nu_tacut | emiterea agricolului pe altă subsecțiune sau sărirea lui tăcută | — (strict: pică singură când generatorul emite DUK valid) | până la validatorul ANAF pentru OPANAF 2736/2025 |
+| cheile ecranului citite de generator | core/test_manual_chei_consumate.py | o cheie trimisă de `_dXXXManual()` (sau de rândurile D710) pe care `core/dXXX.py` nu o cunoaște — pierdere tăcută, DUK valid | `"zile_intrerupere"` redenumit în d212 → roșu; familia `baza<n>` scoasă din d600 → roșu; `"suma_dat_c"` redenumit în d710 → roșu | prezența numelui în modul, nu citirea lui din `manual` |
+| importurile citite din AST (garda bifelor, cat.9) | core/test_graf_importuri.py | un import `from core.X import (` pe mai multe rânduri nevăzut de graf → bife marcate stale fals (sau dependențe reale pierdute); un al doilea cititor de importuri `core` cu regex | cititorul vechi restaurat → 3 roșii + test_agenda roșu; regex adăugat în scan_axa_garzi → roșu | un cititor scris fără `\s` (split pe text) nu e prins |
+| ajutorul nu neagă ecranul | core/test_registru_functionalitati.py::test_ajutorul_nu_neaga_ecranul_unei_declaratii_din_selector | ajutorul unei declarații din selector (`declaratii_api.tipuri()`) care spune „Stare amânată … nu o produci din interfață” | CSV-ul de dinainte restaurat → roșu pe 10 rânduri (F221 … F246) | trei formulări numite; o altă negare scrisă altfel nu e prinsă |
+| registrul ancorat, independent de ordinea importurilor | core/test_fiscalos_s2.py::test_s2_fiecare_modul_care_ancoreaza_e_in_registru + core/test_consumatori_temei.py::test_valoarea_ancorata_se_citeste_si_cand_modulul_nu_e_inca_importat | o constantă ancorată scoasă din verificarea „valoarea e în citat" fiindcă modulul ei nu fusese importat; o căutare în registru care dă `None` tăcut | ZILE 365→366 izolat → roșu; d212 scos din derivare → roșu; import scos → roșu | modulele care ancorează altfel decât prin numele `ancoreaza` |

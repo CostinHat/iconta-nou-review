@@ -4,7 +4,7 @@
 D212 - declaratia unica privind impozitul pe venit si contributiile sociale datorate de
 persoanele fizice (PFA/II/IF/venituri diverse). Generator MANUAL (core/d212.py, root <d212>,
 ns mfp:anaf:dgti:d212:declaratie:v11, OPANAF - vezi anaf_surse/D212_IstoriaVersiunilor.txt).
-Cazul minim = identificarea (cif/nume/adresa); capitolele (cap11 realizat, cap12 estimat,
+Cazul minim = identificarea (cif/nume/adresa); capitolele (cap11 realizat, cap12 realizat pe norma de venit,
 cap14, obligatii, coasigurat) sunt extensibile prin manual. totalPlata_A se calculeaza.
 Probat DUK valid pe calea standard core.duk.valideaza (retry DecValidation nou).
 """

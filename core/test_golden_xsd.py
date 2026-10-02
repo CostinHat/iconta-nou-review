@@ -9,6 +9,8 @@ import re
 import glob
 import pytest
 
+from core.graf_temei import importuri_core
+
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # XSD stem (declaratie) -> modul generator in core/. Nemapate = eroare (forteaza inregistrarea).
@@ -45,8 +47,8 @@ def test_fiecare_xsd_are_generator_si_test_care_il_exercita():
         gasit = False
         for tf in glob.glob(os.path.join(_RAD, "core", "test_*.py")):
             txt = open(tf, encoding="utf-8").read()
-            importa = ("from core import %s" % mod) in txt or ("core.%s" % mod) in txt \
-                or re.search(r"\bimport %s\b" % re.escape(mod), txt)
+            alias, nume = importuri_core(txt)   # din arborele de sintaxă: și importurile în paranteze
+            importa = (mod + ".py") in set(alias.values()) | {m for m, _ in nume.values()}
             if importa and _GEN_TOKEN.search(txt):
                 gasit = True
                 break

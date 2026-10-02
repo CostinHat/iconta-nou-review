@@ -43,6 +43,7 @@ erori_generare, build_xml, genereaza(conn, schema, perioada, manual=None). conn=
 #: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
 DENUMIRE_OFICIALA = 'Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice'
 from dataclasses import dataclass, field
+import datetime as _dt
 from decimal import Decimal, ROUND_HALF_UP
 import re
 
@@ -182,6 +183,121 @@ def cap11_sistem_real(venit_brut, chelt_deduc, pierdere_precedenta=0, caen=None)
     return c
 
 
+# ── CAP12 (Subsectiunea a 2-a lit.A — activitati independente impuse pe baza de NORME DE VENIT) ────────────────
+# [D212 Etapa 3, 02.10.2026] Atributele = clasa Cap12 din D212Validator.jar v9 (15, toate optionale, element REPETABIL —
+# „Se completează câte o secțiune pentru fiecare activitate și loc de desfășurare a activității”, instructiuni pct.19.1
+# A2). validateCap12 e goala; R8: bifa112=1 => cap12 exista. Corespondenta cu randurile (D212Pdf Pdf_v8): real_norma_venit
+# = rd.7, real_ajustare = rd.8, real_venit_net_anual = rd.9, real_venit_impozit = rd.9.1, real_impozit = impozitul anual.
+#: Cota impozitului pe norma de venit (procent intreg).
+COTA_IMPOZIT_NORMA = _anc("d212.COTA_IMPOZIT_NORMA", Decimal("10"), _Tm(
+    "CF", art="69^2", alin="1", data_in="2025-01-01", verificat_la="2026-10-02", de_cine="Code/D212-E3",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="prin aplicarea cotei de 10% asupra normei anuale de venit ajustate",
+    lant_acte="art.69^2 introdus de OUG 128/2024 (veniturile din 2025): impozitul anual se stabilește pe baza Declarației "
+              "unice; aplicat de instrucțiunile D212 (OPANAF 2736/2025) pct.19.1 lit.C rd.2 (10% asupra totalului)"))
+#: Numitorul proratarii normei pe perioada de activitate (zile), indiferent de anul bisect.
+ZILE_AN_NORMA = _anc("d212.ZILE_AN_NORMA", 365, _Tm(
+    "OPANAF", 2736, 2025, data_in="2026-01-01", verificat_la="2026-10-02", de_cine="Code/D212-E3",
+    nivel_sursa="MO", url="anaf_surse/ordin_2736_2025__anexa_306268.html",
+    text_citat="la 365 de zile, iar rezultatul se înmulțește cu numărul zilelor de activitate",
+    lant_acte="instrucțiuni formular 212, Subsecțiunea a 2-a lit.A rd.9; CF art.69 alin.(5): „norma de venit aferentă "
+              "acelei activități se reduce proporțional” pentru perioadele mai mici decât anul calendaristic"))
+FORME_ORG_NORMA = {1: "Individual", 2: "Asociere fără personalitate juridică"}   # validator: interval [1,2]
+
+
+def _dmy(d):
+    """Data în formatul XML ANAF (dd.MM.yyyy), aritmetic — ca la d108/d177 (nu e afișare, e câmp de structură)."""
+    return "%02d.%02d.%04d" % (d.day, d.month, d.year)
+
+
+def _data(v, camp):
+    """Data din formular (AAAA-LL-ZZ sau ZZ.LL.AAAA) -> date; None daca lipseste."""
+    if v in (None, ""):
+        return None
+    t = str(v).strip()
+    for fmt in ("%Y-%m-%d", "%d.%m.%Y"):
+        try:
+            return _dt.datetime.strptime(t[:10], fmt).date()
+        except ValueError:
+            continue
+    raise ValueError("D212 normă: %s %r nu e o dată (AAAA-LL-ZZ)." % (camp, v))   # refuz de FORMĂ — fără temei legal
+
+
+def cap12_norma(a, an):
+    """O secțiune cap12 (o activitate, un loc) din datele contabilului, rând cu rând după instrucțiunile D212 (OPANAF
+    2736/2025, Subsecțiunea a 2-a lit.A). Sume în lei întregi (half-up).
+
+      rd.7 real_norma_venit   = norma anuală publicată de DGRFP pentru locul activității (dată de contabil)
+      rd.8 real_ajustare      = norma ajustată cu coeficienții de corecție (dată de contabil, opțional)
+      rd.9 real_venit_net_anual = rd.8 (dacă e completat) altfel rd.7; la început/încetare/întrerupere în an:
+                                 „raportarea … la 365 de zile, iar rezultatul se înmulțește cu numărul zilelor de activitate”
+      rd.9.1 real_venit_impozit = rd.9 redus proporțional cu zilele scutite (handicap grav/accentuat). INTERPRETARE CU
+                                 TEMEI: aceeași zi-normă (normă / 365) ca la rd.9 — zilele scutite ies din zilele de activitate;
+                                 alternativă respinsă: o a doua proporție peste rd.9 (numitor diferit pe aceeași secțiune).
+      real_impozit            = 10% × rd.9.1 (CF art.69^2 alin.(1))
+    `a`: {norma, norma_ajustata?, data_incep?, data_sf?, zile_intrerupere?, nr_zile_scutite?, forma_org?, caen?,
+          sediu?, nr_doc_autoriz?, data_doc_autoriz?, data_susp?}."""
+    an = int(an)
+    norma = _lei(a.get("norma"))
+    if norma <= 0:
+        raise ValueError("D212 normă: norma anuală de venit (rd.7) lipsește — se ia din lista DGRFP pentru locul activității.")
+    ajust = _lei(a.get("norma_ajustata")) if a.get("norma_ajustata") not in (None, "") else None
+    if ajust is not None and ajust < 0:
+        raise ValueError("D212 normă: norma ajustată (rd.8) nu poate fi negativă.")
+    baza = ajust if ajust is not None else norma
+    inc, sf = _data(a.get("data_incep"), "data începerii"), _data(a.get("data_sf"), "data încetării")
+    ian1, dec31 = _dt.date(an, 1, 1), _dt.date(an, 12, 31)
+    for d, camp in ((inc, "data începerii"), (sf, "data încetării")):
+        if d is not None and not (ian1 <= d <= dec31):
+            raise ValueError("D212 normă: %s (%s) nu e în anul %d — se completează numai dacă evenimentul e în anul de "
+                             "impunere (OPANAF 2736/2025, instrucțiuni rd.3/rd.4: „numai dacă evenimentele respective se produc în "
+                             "cursul anului”)." % (camp, d, an))
+    start, end = inc or ian1, sf or dec31
+    if end < start:
+        raise ValueError("D212 normă: data încetării e înaintea datei începerii.")   # refuz de FORMĂ (coerența datelor)
+    intrerupere = int(a.get("zile_intrerupere") or 0)
+    scutite = int(a.get("nr_zile_scutite") or 0)
+    zile_contract = (end - start).days + 1
+    if intrerupere < 0 or scutite < 0 or intrerupere > zile_contract:   # refuz de FORMĂ: numere de zile în afara perioadei
+        raise ValueError("D212 normă: zilele de întrerupere/scutire trebuie să fie între 0 și zilele de activitate (%d)."
+                         % zile_contract)
+    zile_act = zile_contract - intrerupere
+    if scutite > zile_act:   # refuz de FORMĂ: rd.6 nu poate depăși zilele de activitate pe care le reduce
+        raise ValueError("D212 normă: zilele scutite (%d) depășesc zilele de activitate (%d)." % (scutite, zile_act))
+    an_intreg = inc is None and sf is None and intrerupere == 0
+    zi = Decimal(baza) / Decimal(ZILE_AN_NORMA)
+    # an întreg -> rd.9 = norma (lit.a); altfel norma/365 × zilele de activitate (lit.b/c), cel mult norma (an bisect)
+    net = baza if an_intreg else min(baza, _lei(zi * zile_act))
+    if not scutite:
+        impozabil = net
+    elif an_intreg:
+        impozabil = _lei(Decimal(baza) - zi * scutite)
+    else:
+        impozabil = _lei(zi * (zile_act - scutite))
+    forma = int(a.get("forma_org") or 1)
+    if forma not in FORME_ORG_NORMA:   # refuz de FORMĂ: valoarea în afara intervalului validatorului [1,2]
+        raise ValueError("D212 normă: forma de organizare %r — 1 individual, 2 asociere." % a.get("forma_org"))
+    c = {"norma_forma_org": forma, "real_norma_venit": norma, "real_venit_net_anual": net,
+         "real_venit_impozit": impozabil,
+         "real_impozit": _lei(Decimal(impozabil) * COTA_IMPOZIT_NORMA / 100)}
+    if ajust is not None:
+        c["real_ajustare"] = ajust
+    if scutite:
+        c["norma_nr_zile_scutite"] = scutite
+    for k, kx in (("caen", "norma_caen"), ("sediu", "norma_descriere_sediu_bun"), ("nr_doc_autoriz", "norma_nr_doc_autoriz")):
+        if str(a.get(k) or "").strip():
+            c[kx] = str(a[k]).strip()
+    for k, kx in (("data_doc_autoriz", "norma_data_doc_autoriz"), ("data_susp", "norma_data_susp")):
+        d = _data(a.get(k), k)
+        if d:
+            c[kx] = _dmy(d)
+    if inc:
+        c["norma_data_incep"] = _dmy(inc)
+    if sf:
+        c["norma_data_sf"] = _dmy(sf)
+    return c
+
+
 # Flag-uri (bife) de pe radacina, implicit 0, suprascriabile din `manual`.
 _BIFE = ["bifa_succesor", "anulare_litA", "anulare_litB", "bifa_conformare", "bifa111",
          "bifa112", "bifa113", "bifa121", "bifa122", "bifa131", "bifa132", "bifa14", "bifa15"]
@@ -267,13 +383,21 @@ def erori_generare(prof, manual):
             er.append("Capitol cap11: categoria de venit %r nu e în nomenclatorul D212 (%s)."
                       % (cap11.get("categ_venit"), ", ".join(str(k) for k in sorted(CATEG_VENIT_CAP11))))
     for nume in _COPII:
-        cap = manual.get(nume)
-        if cap:
+        for cap in _sectiuni(manual.get(nume)):
             straine = set(cap) - _CAMPURI[nume]
             if straine:
                 er.append("Capitol %s: câmpuri necunoscute (respinse de validator): %s"
                           % (nume, ", ".join(sorted(straine))))
+    if isinstance(manual.get("cap11"), list):
+        er.append("Capitol cap11: o singură secțiune (validatorul o primește o dată).")
     return er
+
+
+def _sectiuni(cap):
+    """Un capitol poate fi o secțiune (dict) sau, la cap12, o listă de secțiuni (o activitate / un loc fiecare)."""
+    if not cap:
+        return []
+    return list(cap) if isinstance(cap, (list, tuple)) else [cap]
 
 
 def _attr(nume, val, lim=None):
@@ -323,11 +447,9 @@ def build_xml(prof, an, luna, manual, calc=None):
     # elemente-copil (capitole), emise cand sunt furnizate in manual
     copii = []
     for nume in _COPII:
-        cap = manual.get(nume)
-        if not cap:
-            continue
-        a = [_attr(k, cap[k]) for k in _CAMPURI[nume] if k in cap and cap[k] is not None]
-        copii.append("  <%s %s/>" % (nume, " ".join(a)))
+        for cap in _sectiuni(manual.get(nume)):
+            a = [_attr(k, cap[k]) for k in sorted(_CAMPURI[nume]) if k in cap and cap[k] is not None]
+            copii.append("  <%s %s/>" % (nume, " ".join(a)))
     corp = ("\n" + "\n".join(copii) + "\n") if copii else ""
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<d212 xmlns="%s" %s>%s</d212>\n' % (NS, " ".join(h), corp))
@@ -366,6 +488,24 @@ def genereaza(conn, schema, perioada, manual=None):
             avert.append(a)
     if manual.get("cap11"):
         manual["bifa111"] = "1"      # subsectiunea I.1.1 completata (R7 cere si reciproca)
+    if manual.get("agricol"):
+        # [D212 Etapa 3] Subsecțiunea a 4-a (activități agricole pe normă, CF art.107 alin.(2)) NU are loc în structura
+        # validatorului instalat (J13.0.1 = formularul pentru veniturile 2024: niciun atribut agricol, fără bifa114).
+        # Nu se emite pe altă subsecțiune și nu se sare tăcut.
+        raise ValueError("D212: venitul agricol pe normă (Subsecțiunea a 4-a, CF art.107 alin.(2)) nu se poate încă emite — "
+                         "validatorul ANAF instalat (J13.0.1) e al formularului pentru veniturile 2024 și nu are câmpurile "
+                         "agricole; ANAF n-a publicat validatorul pentru OPANAF 2736/2025. Se declară pe formularul ANAF.")
+    if manual.get("norma"):
+        # [D212 Etapa 3] activitățile pe normă (Subsecțiunea a 2-a lit.A): o secțiune cap12 pe activitate / loc
+        cap12 = []
+        for i, x in enumerate(_sectiuni(manual["norma"]), 1):
+            try:
+                cap12.append(cap12_norma(x, an))
+            except ValueError as e:      # numește activitatea vinovată (temeiul, unde există, e în mesajul interior)
+                raise ValueError("Activitatea %d — %s" % (i, e)) from None
+        manual["cap12"] = cap12
+    if manual.get("cap12"):
+        manual["bifa112"] = "1"      # R8: bifa112=1 => cap12 exista (și subsecțiunea se declară completată)
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)
     if er:

@@ -88,7 +88,8 @@ DISTRIBUTIE = {
     # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
     ("VOLATIL", "CALCULAT"): 16,
     # 9 -> 10 la 02.10.2026 (lot 19 pct.4a, D216): Legea 296/2023 art.III - cota 0,3% a impozitului special (2024-2025).
-    ("STABIL", "DEPUS"): 10,
+    # 10 -> 11 la 02.10.2026 (D212 Etapa 3): CF art.69^2 alin.(1) - cota 10% a impozitului pe norma de venit.
+    ("STABIL", "DEPUS"): 11,
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
     ("STABIL", "CALCULAT"): 14,
     ("MISCATOR", "CALCULAT"): 7,
@@ -113,7 +114,9 @@ DISTRIBUTIE = {
     # *Localizatorul de articol a rezolvat jumatatea lui; cealalta jumatate cere graful de
     # consumatori, nu instrumentul de articol.* Consemnat in R171.
     # 24 -> 25 la 02.10.2026 (D212 Etapa 2): OPANAF 2736/2025 (instructiunile D212) - temei fara articol.
-    ("NECUNOSCUT", "NECUNOSCUT"): 25,
+    # 25 -> 26 la 02.10.2026 (D212 Etapa 3): OPANAF 2736/2025 (instructiunile D212, rd.9 subsectiunea I.1.2) -
+    # numitorul de 365 de zile al proratarii normei; anexa numeroteaza puncte, nu articole -> frecventa necitibila.
+    ("NECUNOSCUT", "NECUNOSCUT"): 26,
 }
 
 _AZI = datetime.date(2026, 8, 31)

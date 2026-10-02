@@ -23,6 +23,20 @@ import pytest
 from core import (bacsis, casa, common, cote_tva, d100_pozitia_116, d101, d101g, d394, expirare_cote,
                   salarizare, scan_citate, taxare_inversa)
 
+# Registrul `common.CONSTANTE_ANCORATE` se umple la IMPORT. Parametrizarea generică de mai jos îl citește la colectare, deci
+# un modul neimportat aici își scotea constantele din verificare când testul rula singur (d212 — Etapa 2 și 3 — lipsea din
+# lista de sus; în suita completă îl importa alt test, ascunzând golul). Modulele se derivă din cod, nu se enumeră.
+import glob as _glob  # noqa: E402
+import importlib as _importlib  # noqa: E402
+import os as _os  # noqa: E402
+
+_ANCORATOARE = sorted(
+    _os.path.basename(f)[:-3] for f in _glob.glob(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "*.py"))
+    if not _os.path.basename(f).startswith("test_") and _os.path.basename(f) != "common.py"
+    and re.search(r"\bancoreaza\b", open(f, encoding="utf-8").read()))
+for _m in _ANCORATOARE:
+    _importlib.import_module("core." + _m)
+
 # nume -> (modul, valoare, (tip, nr, an, art, alin, lit)) - temeiul APROBAT in verif_temeiuri.json, re-verificat.
 APROBATE = {
     # CF art.64 alin.(1) lit.h) + OUG 28/1999 art.2^3 alin.(10) (al doilea, ca TEMEI_BACSIS_ALTE_SURSE)
@@ -69,13 +83,14 @@ def test_s2_constanta_ancorata_pe_temeiul_aprobat(nume):
 
 
 def _forme_legale(v):
-    """Cum scrie legea valoarea: 10.000 / 16% / 0,5%. Lista de forme, nu o singura - legea scrie "10.000 lei"
+    """Cum scrie legea valoarea: 10.000 / 16% / 0,5% / 365 de zile. Lista de forme, nu o singura - legea scrie "10.000 lei"
     la plafoane si "16%" la cote; ambele sunt valoarea, niciuna nu e alta."""
     d = Decimal(str(v))
     intreg = "{:,}".format(int(d)).replace(",", ".") if d == d.to_integral() else None
     forme = [str(d).replace(".", ",") + "%"]
     if intreg:
-        forme += [intreg + "%", intreg + " lei", intreg + " euro", intreg + " USD", intreg + " de lei"]
+        forme += [intreg + "%", intreg + " lei", intreg + " euro", intreg + " USD", intreg + " de lei",
+                  intreg + " de zile", intreg + " zile"]   # un numar de zile (d212.ZILE_AN_NORMA: „la 365 de zile”)
     return forme
 
 
@@ -188,3 +203,9 @@ def test_s2_geamana_din_registru_nu_diverge(nume, cheie):
     vc, tc = common.cota(cheie, date(2026, 10, 1))
     assert Decimal(str(v)) / 100 == vc, "%s=%s, dar COTE[%s]=%s" % (nume, v, cheie, vc)
     assert (t.art, t.alin) == (tc.art, tc.alin), "%s pe %s, COTE[%s] pe %s" % (nume, t, cheie, tc)
+
+
+def test_s2_fiecare_modul_care_ancoreaza_e_in_registru():
+    # gardul de mai sus nu are voie să depindă de ordinea în care alte teste importă modulele
+    prefixe = {k.split(".", 1)[0] for k in common.CONSTANTE_ANCORATE}
+    assert _ANCORATOARE.count("d212") == 1 and set(_ANCORATOARE) <= prefixe, set(_ANCORATOARE) - prefixe

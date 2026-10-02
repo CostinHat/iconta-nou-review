@@ -252,3 +252,20 @@ def test_fiecare_declaratie_produsa_are_duk_si_generator():
         except Exception as e:
             fara_gen.append("%s(import:%s)" % (t, e))
     assert not fara_gen, "tipuri din dispecer fara generator genereaza(): %s" % fara_gen
+
+
+# [02.10.2026, D212 Etapa 3] Ajutorul contextual nu are voie să spună că o declarație din SELECTOR nu se poate produce din
+# interfață. Măsurat azi: 10 declarații LIVE din selector (D114, D200, D201, D204, D212, D216, D318, D398, D600, D603)
+# purtau încă textul de la 14.08 („Stare amânată … încă nu o produci din interfață”), rămas după ce au intrat în selector
+# (23–25.09) — contabilul citea că declarația nu există, deși butonul era pe ecran. Sursa adevărului: `tipuri()`.
+_FRAZE_FARA_ECRAN = ("Stare amânată", "nu o produci din interfață", "nu are încă ecran")
+
+
+def test_ajutorul_nu_neaga_ecranul_unei_declaratii_din_selector():
+    from core.declaratii_api import tipuri
+    selector = set(tipuri())
+    h = _randuri()[0]
+    i_nume, i_aj, i_id = h.index("Functionalitate"), h.index("ajutor"), h.index("ID")
+    false_ = [(r[i_id], _cod_declaratie(r[i_nume])) for r in _randuri()[1:]
+              if _cod_declaratie(r[i_nume]) in selector and any(f in r[i_aj] for f in _FRAZE_FARA_ECRAN)]
+    assert not false_, "ajutor care neagă ecranul unei declarații din selector: %s" % false_

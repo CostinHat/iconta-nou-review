@@ -31,8 +31,8 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
   (`calculeaza_d212`/`calculeaza_cas`/`calculeaza_cass`, plafoane pe anul venitului), alimentat din RIP
   (`core/rip_api.py`, registrul de inventar/venituri PFA). GOL: cablarea completă RIP→engine→emitter→XML.
 - **2b. Venit pe normă de venit, inclusiv agricol (CF art. 107 alin. (2))** — care înlocuiește D221 de la
-  veniturile 2025. GOL: normă NU e în `d212_engine` (de construit); emitter-ul (`d212.py` cap12) acceptă deja
-  valori de normă.
+  veniturile 2025. **Construit 02.10.2026 (Etapa 3, §6)**: `d212.cap12_norma` + lista de pe ecran; agricolul pe normă
+  rămâne refuzat numit până la validatorul ANAF pentru OPANAF 2736/2025 ([EXTERN]).
 - **2c. CAS și CASS datorate** — EXISTENT în `d212_engine` (art. 148-149 / 154-170, praguri 12/24 sm CAS,
   6/60 sm CASS). GOL: cablarea în emitter (oblig_realizat) + probă pe lanț.
 - **2d. Depunere inițială și rectificativă** — emitter-ul are bifele; GOL: fluxul explicit + proba.
@@ -58,10 +58,11 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 ## 4. Planul pe etape (următoarele)
 - **Etapa 2** — venit real cap-coadă: RIP→engine→emitter cap11→XML→DUK, lanț-probă pe portofoliu
   (invalid→valid), gardă+mutație pe sume. **FĂCUTĂ 02.10.2026** — v. §5.
-- **Etapa 3** — normă de venit (incl. agricol art.107(2)) în engine + emitter cap12, lanț-probă.
+- **Etapa 3** — normă de venit (incl. agricol art.107(2)) în engine + emitter cap12, lanț-probă. **FĂCUTĂ 02.10.2026**
+  (calculul în emitter, `d212.cap12_norma`, nu în engine — DECIZII 02.10) — v. §6. Agricolul: [EXTERN], fără loc în validator.
 - **Etapa 4** — CAS/CASS în oblig_realizat (cablare + probă), inițială/rectificativă.
 - **Etapa 5** — formular manual pentru categoriile fără date (regula 0 DESIGN_SYSTEM).
-- **Etapa finală** — alinierea F246 + mesajul din d221.py + ghidurile care spun „D212 doar identificare".
+- **Etapa finală** — ~~alinierea F246~~ (făcută 02.10 în Etapa 3) + mesajul din d221.py + ghidurile care spun „D212 doar identificare".
 
 ## 5. Etapa 2 — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
 - **Validatorul în vigoare (v9 / Parameters_v7)**: `validateCap11` e goală — cap11 se validează doar structural.
@@ -77,3 +78,21 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 - **Construit**: `d212.cap11_sistem_real`, `d212.cap11_din_rip`, `genereaza(manual.din_rip)`, ecranul (bifa RIP + pierdere
   reportată + CAEN). Gărzi `core/test_d212_cap11.py`; probe `frontend_test/proba_d212_etapa2.py`, `proba_d212_formular_ui.py`.
 - **În afara Etapei 2**: asocieri (§3.5.12), cote forfetare, normă (Etapa 3), impozit/CAS/CASS (Etapa 4).
+
+## 6. Etapa 3 — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
+- **Validatorul în vigoare (v9 / J13.0.1)**: clasa `Cap12` = 15 atribute, TOATE opționale (`norma_forma_org` [1,2], `norma_caen`,
+  `norma_descriere_sediu_bun`, `norma_nr_doc_autoriz`, `norma_data_doc_autoriz`, `norma_data_incep`, `norma_data_sf`,
+  `norma_data_susp`, `norma_nr_zile_scutite`, `real_norma_venit`, `real_ajustare`, `real_venit_net_anual`,
+  `real_venit_impozit`, `real_impozit` + forma); element REPETABIL; `validateCap12` goală; R8: bifa112=1 ⇒ cap12 există.
+  cap12 e Subsecțiunea a 2-a lit.A a capitolului I (venit REALIZAT pe normă), nu „estimat" (eticheta veche din lot 6, corectată).
+- **Rândurile** (OPANAF 2736/2025, Subsec.2 lit.A): rd.9 = rd.7 sau rd.8; la început/încetare/întrerupere „raportarea … la 365
+  de zile, iar rezultatul se înmulțește cu numărul zilelor de activitate"; rd.9.1 = rd.9 redus cu zilele scutite; impozit 10%
+  (CF art.69^2 alin.(1)).
+- **Construit**: `d212.cap12_norma`, `genereaza(manual.norma)` (o secțiune pe activitate, eroarea numește activitatea),
+  `bifa112`, ecranul (lista „Venit pe normă de venit", DS cap.24). Gărzi `core/test_d212_cap12.py`,
+  `core/test_manual_chei_consumate.py`; probe `frontend_test/proba_d212_etapa3.py` (F4, cod vechi vs nou),
+  `frontend_test/proba_d212_norma_ui.py` (ecran, pe 8011).
+- **Agricolul pe normă (Subsecțiunea a 4-a, CF art.107 alin.(2))**: fără loc în structura instalată (niciun atribut agricol,
+  fără bifa114) → refuz numit + datorie strictă [EXTERN] `test_datorie_d212_venit_agricol_pe_norma`.
+- **În afara Etapei 3**: repartizarea venitului din asociere (contabilul dă norma atribuibilă), impozit/CAS/CASS în
+  `oblig_realizat` (Etapa 4).

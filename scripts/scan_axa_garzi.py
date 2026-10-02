@@ -48,19 +48,15 @@ def introducere(rel):
 
 
 def module_importate(cale):
+    """Modulele din core/ importate de fișier — din arborele de sintaxă (`graf_temei.importuri_core`), deci și
+    importurile în paranteze pe mai multe rânduri."""
+    from core.graf_temei import importuri_core
     try:
         src = open(cale, encoding="utf-8", errors="replace").read()
     except OSError:
         return set()
-    m = set(re.findall(r"^\s*from\s+core\s+import\s+([\w, ]+)", src, re.M))
-    out = set()
-    for buc in m:
-        for x in buc.split(","):
-            x = x.strip().split(" as ")[0].strip()
-            if re.match(r"^\w+$", x):
-                out.add(x)
-    out |= set(re.findall(r"^\s*from\s+core\.(\w+)\s+import", src, re.M))
-    return out
+    alias, nume = importuri_core(src)
+    return {m[:-3] for m in alias.values()} | {m[:-3] for m, _ in nume.values()}
 
 
 def reparatii_modul(modul, inainte_de):

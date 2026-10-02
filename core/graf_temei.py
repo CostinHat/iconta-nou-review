@@ -24,7 +24,6 @@ LIMITE DECLARATE:
 """
 import ast
 import pathlib
-import re
 
 _RAD = pathlib.Path(__file__).resolve().parent.parent
 
@@ -100,7 +99,7 @@ def _construieste_graf(radacina=None):
     _pe_nume = {}
     for _k in cunoscute:
         _pe_nume.setdefault(nume_scurt(_k), []).append(_k)
-    _imp = {fn: _importuri(s) for fn, s in surse.items()}
+    _imp = {fn: importuri_core(s) for fn, s in surse.items()}
     # registre de variante la nivel de modul: (fisier, nume_var) -> {functii referite in valoare}
     modvar = {}
     for fname, tree in trees.items():
@@ -182,10 +181,6 @@ if __name__ == "__main__":
 #  Reziduul se numara: `statistici_rezolvare()`.
 # =================================================================================================
 
-_IMPORT_MOD = re.compile(r"^\s*from\s+core\s+import\s+(.+)$", re.M)
-_IMPORT_MOD2 = re.compile(r"^\s*import\s+core\.(\w+)\s+as\s+(\w+)\s*$", re.M)
-_IMPORT_FN = re.compile(r"^\s*from\s+core\.(\w+)\s+import\s+(.+)$", re.M)
-
 _NEREZOLVATE = {}
 
 
@@ -201,33 +196,35 @@ def fisier_din(k):
     return k.split("::", 1)[0] if "::" in k else ""
 
 
-def _importuri(src):
-    """(alias -> fisier_modul, nume_importat -> fisier_modul) pentru importurile din `core`."""
+def importuri_core(src):
+    """(alias -> fisier_modul, nume_importat -> (fisier_modul, nume_original)) pentru importurile din `core`.
+
+    Citite din ARBORELE de sintaxă, nu din text: `from core.d394 import (\n … build_xml …\n)` e un singur nod
+    ImportFrom, oricâte rânduri ar avea. Forma veche (regex pe un rând) nu vedea importurile în paranteze, iar apelul
+    rămas nerezolvat cădea pe rezolvarea pe NUME — `build_xml` din test_d394 ajungea la toate cele 49 de `build_xml`
+    din core/, deci trei bife D394 au părut „pe o bază schimbată” când s-a schimbat cota D216 (02.10.2026).
+    Formele: `from core import m [as a]`, `import core.m as a`, `from core.m import f [as g]` (oriunde în fișier,
+    inclusiv în funcții). Un fișier care nu se parsează nu are importuri cunoscute ({}, {})."""
     alias, nume = {}, {}
-    for m in _IMPORT_MOD.finditer(src):
-        for buc in m.group(1).split(","):
-            buc = buc.strip().rstrip("\\").strip()
-            if not buc:
-                continue
-            p = buc.split(" as ")
-            mod = p[0].strip()
-            al = p[-1].strip() if len(p) > 1 else mod
-            if re.match(r"^\w+$", mod) and re.match(r"^\w+$", al):
-                alias[al] = mod + ".py"
-    for m in _IMPORT_MOD2.finditer(src):
-        alias[m.group(2)] = m.group(1) + ".py"
-    for m in _IMPORT_FN.finditer(src):
-        mod = m.group(1) + ".py"
-        for buc in m.group(2).split(","):
-            buc = buc.strip().rstrip("\\").strip().strip("()")
-            if not buc:
-                continue
-            p = buc.split(" as ")
-            orig = p[0].strip()
-            al = p[-1].strip() if len(p) > 1 else orig
-            if re.match(r"^\w+$", orig) and re.match(r"^\w+$", al):
-                nume[al] = (mod, orig)
+    try:
+        tree = ast.parse(src)
+    except SyntaxError:
+        return alias, nume
+    for n in ast.walk(tree):
+        if isinstance(n, ast.ImportFrom) and n.level == 0 and n.module:
+            if n.module == "core":
+                for a in n.names:
+                    alias[a.asname or a.name] = a.name + ".py"
+            elif n.module.startswith("core.") and n.module.count(".") == 1:
+                mod = n.module.split(".", 1)[1] + ".py"
+                for a in n.names:
+                    nume[a.asname or a.name] = (mod, a.name)
+        elif isinstance(n, ast.Import):
+            for a in n.names:
+                if a.asname and a.name.startswith("core.") and a.name.count(".") == 1:
+                    alias[a.asname] = a.name.split(".", 1)[1] + ".py"
     return alias, nume
+
 
 
 def _rezolva(call, fisier, chei, pe_nume, alias, importate):
@@ -281,7 +278,7 @@ def apeluri_din(relpath, func, radacina=None):
         tree = ast.parse(src)
     except (OSError, SyntaxError):
         return set()
-    alias, importate = _importuri(src)
+    alias, importate = importuri_core(src)
     fisier = pathlib.Path(relpath).name
     for node in ast.walk(tree):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == func:

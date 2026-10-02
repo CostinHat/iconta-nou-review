@@ -43,6 +43,7 @@ Costin (`reverificare.PRAGURI`), pe perechea (frecvență, consecință) — iar
     o citire.
 """
 import ast
+import importlib
 import io
 import os
 import pathlib
@@ -124,6 +125,11 @@ def _valoare_ancorata(cale):
     if len(parti) < 3 or parti[0] != "CONSTANTE_ANCORATE":
         return None
     from core import common
+    try:
+        # registrul se umple la IMPORTUL modulului: fără import, o constantă reală ieșea None tăcut
+        importlib.import_module("core." + parti[1])
+    except ImportError:
+        return None
     r = common.CONSTANTE_ANCORATE.get("%s.%s" % (parti[1], parti[2].split("[")[0]))
     return r[0] if r else None
 
@@ -149,7 +155,6 @@ def nume_legate(modul, temei):
     raportat pe primul, în timp ce codul îl citește pe al doilea. *O sub-aproximare arată exact ca o
     absență*, iar aici absența ar fi devenit `NECUNOSCUT` pe o valoare cu patru cititori.
     """
-    import importlib
     try:
         m = importlib.import_module("core." + modul[:-3])
     except Exception:  # noqa: BLE001

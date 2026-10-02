@@ -1,0 +1,34 @@
+{
+ "eroare_norma": "Completează norma anuală de venit (în lei) — cea din lista direcției regionale pentru locul activității.",
+ "randuri_dupa_refuz": 0,
+ "randuri_dupa_doua": 2,
+ "randuri_dupa_stergere": 1,
+ "identitate_pastrata": true,
+ "sectiuni_cap12": 2,
+ "bifa112": true,
+ "impozite": [
+  "3000",
+  "1078"
+ ],
+ "duk_text": "DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF.",
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ]
+}

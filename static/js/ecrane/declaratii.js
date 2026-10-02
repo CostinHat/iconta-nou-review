@@ -62,7 +62,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [formular_manual_d212] Declaratia unica PF: identitate (cif=CNP/nume/adresa) + fisa RIP AFISATA
     // (pull din registru; venitul/CAS/CASS/impozit — informativ). Increment: genereaza cazul minim
     // DUK-valid (identitate); popularea cap11/oblig_realizat din fisa = pas urmator. In memorie, ca d200.
-    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", fisa: null, fisa_eroare: "" },
+    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", fisa: null, fisa_eroare: "", norma: [] },
     // [formular_manual_d201] venituri din strainatate PF: identitate (CNP/nume/initiala tata/prenume) +
     // sectiuni pe (tara, categorie) - venit_B/chlt_D/imp1/imp2/pierdere; venit_N calculat. In memorie, ca d200.
     d201: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", d_rec: 0, sectiuni: [] },
@@ -2898,6 +2898,8 @@ function randeazaFormularD318(corp, nav) {
 // (identitate + bife 0; totalPlata_A = suma cifrelor CNP). [D212 Etapa 2] Cu bifa „Include venitul din
 // registrul RIP", serverul completeaza subsectiunea I.1.1 (sistem real) din registru (din_rip); impozitul si
 // CAS/CASS (sectiunea 4 + contributii) = etapa urmatoare. Valorile din memorie (S.d212), persista intre randari.
+// [D212 Etapa 3] Activitatile pe norma de venit (Subsectiunea a 2-a lit.A, cap12): lista de randuri (DS cap.24) —
+// contabilul da norma DGRFP si datele activitatii; venitul net, cel impozabil si impozitul le calculeaza serverul.
 function _d212Manual() {
   const d = S.d212 || {};
   const m = {
@@ -2911,8 +2913,16 @@ function _d212Manual() {
     m.pierdere_precedenta = Number(d.pierdere_precedenta || 0);
     if ((d.caen || "").trim()) m.caen = d.caen.trim();
   }
+  if ((d.norma || []).length) {
+    m.norma = d.norma.map((a) => ({
+      caen: a.caen, sediu: a.sediu, nr_doc_autoriz: a.nr_doc_autoriz, data_doc_autoriz: a.data_doc_autoriz,
+      forma_org: a.forma_org, norma: a.norma, norma_ajustata: a.norma_ajustata, data_incep: a.data_incep,
+      data_sf: a.data_sf, zile_intrerupere: a.zile_intrerupere, nr_zile_scutite: a.nr_zile_scutite }));
+  }
   return m;
 }
+
+const _D212_FORMA_ORG = [["1", "individual"], ["2", "asociere fără personalitate juridică"]];
 
 function randeazaFormularD212(corp, nav) {
   const zona = corp.querySelector("#dec-d212-form");
@@ -2936,6 +2946,37 @@ function randeazaFormularD212(corp, nav) {
   } else {
     blocFisa = '<div class="stare-goala stare-goala--inline">Apasă „Trage fișa RIP" ca să vezi venitul net și contribuțiile calculate din registrul de încasări/plăți al firmei, pentru anul ales.</div>';
   }
+  const norme = d.norma || [];
+  const randuriNorma = norme.length
+    ? norme.map((a, i) => '<div class="dec-man-rand">' +
+        '<span class="dec-recl-desc">Activitatea ' + (i + 1) + (a.caen ? " · CAEN " + esc(a.caen) : "") +
+        (a.sediu ? " · " + esc(a.sediu) : "") + " · normă " + bani(_n(a.norma)) + " lei" +
+        (a.norma_ajustata !== "" && a.norma_ajustata != null ? " · ajustată " + bani(_n(a.norma_ajustata)) + " lei" : "") +
+        (a.data_incep ? " · început " + esc(a.data_incep) : "") + (a.data_sf ? " · încetare " + esc(a.data_sf) : "") +
+        (Number(a.zile_intrerupere) ? " · " + esc(String(a.zile_intrerupere)) + " zile întrerupere" : "") +
+        (Number(a.nr_zile_scutite) ? " · " + esc(String(a.nr_zile_scutite)) + " zile scutite" : "") + "</span>" +
+        '<button class="buton-sters d212-n-del" data-idx="' + i + '" aria-label="Șterge activitatea ' + (i + 1) + '">Șterge</button></div>').join("")
+    : '<div class="stare-goala stare-goala--inline">Nicio activitate pe normă. Dacă persoana a avut venituri impuse pe normă de venit, adaugă fiecare activitate (fiecare loc) mai jos.</div>';
+  const optForma = _D212_FORMA_ORG.map((o) => '<option value="' + o[0] + '">' + esc(o[1]) + "</option>").join("");
+  const blocNorma = '<div class="camp-eticheta" style="margin:14px 0 4px">Venit pe normă de venit — activități independente (subsecțiunea I.1.2)</div>' +
+    randuriNorma +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Cod CAEN</span><input id="d212-n-caen" type="text" maxlength="4" class="camp-input"></label>' +
+      '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Sediul / locul activității</span><input id="d212-n-sediu" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Nr. document autorizare</span><input id="d212-n-doc" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data documentului</span><input id="d212-n-docdata" type="date" class="camp-input"></label>' +
+      '<label class="camp" style="width:220px"><span class="camp-eticheta">Forma de organizare</span><select id="d212-n-forma" class="camp-input">' + optForma + "</select></label>" +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
+      '<label class="camp" style="width:190px"><span class="camp-eticheta">Norma anuală de venit (lei) <span class="oblig">*</span></span><input id="d212-n-norma" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:190px"><span class="camp-eticheta">Norma ajustată (lei)</span><input id="d212-n-ajust" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data începerii (în an)</span><input id="d212-n-inc" type="date" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data încetării (în an)</span><input id="d212-n-sf" type="date" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile de întrerupere</span><input id="d212-n-intr" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile scutite</span><input id="d212-n-scut" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d212-n-add">+ adaugă activitatea</button>' +
+    "</div>" +
+    '<p class="camp-ajutor" style="margin:4px 0 0">Norma e cea publicată de direcția regională pentru locul activității; norma ajustată, dacă s-au aplicat coeficienți de corecție. Data începerii/încetării și zilele de întrerupere se completează doar când activitatea n-a durat tot anul — venitul net se calculează proporțional, pe 365 de zile; impozitul e 10% din venitul impozabil. Zilele scutite = zilele în care persoana a fost scutită de impozit (handicap grav sau accentuat).</p>';
   zona.innerHTML = '<details class="dec-xml" open><summary>Declarația unică — persoană fizică (identificare + fișa RIP)</summary>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="width:180px"><span class="camp-eticheta">CNP contribuabil <span class="oblig">*</span></span><input id="d212-cnp" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif || "") + '"></label>' +
@@ -2950,6 +2991,7 @@ function randeazaFormularD212(corp, nav) {
     "</div>" +
     '<p style="margin:4px 0 8px"><button class="buton-secundar" id="d212-fisa">Trage fișa RIP ' + esc(String(S.an)) + "</button></p>" +
     blocFisa +
+    blocNorma +
     '<p style="margin-top:10px"><button class="buton-primar" id="d212-regen">Regenerează D212</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
@@ -2965,6 +3007,27 @@ function randeazaFormularD212(corp, nav) {
   };
   ["#d212-cnp", "#d212-nume", "#d212-adr", "#d212-pp", "#d212-caen"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
   ["#d212-rec", "#d212-rip"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  zona.querySelectorAll(".d212-n-del").forEach((b) => b.addEventListener("click", () => {
+    salveazaAntet();
+    S.d212.norma.splice(parseInt(b.dataset.idx, 10), 1);
+    randeazaFormularD212(corp, nav);
+  }));
+  gv("#d212-n-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveazaAntet();
+    const norma = gv("#d212-n-norma").value.trim();
+    if (!(Number(norma) > 0)) {
+      eroareCamp(zona, "d212-n-norma", "Completează norma anuală de venit (în lei) — cea din lista direcției regionale pentru locul activității.");
+      return;
+    }
+    S.d212.norma = S.d212.norma || [];
+    S.d212.norma.push({ caen: gv("#d212-n-caen").value.trim(), sediu: gv("#d212-n-sediu").value.trim(),
+      nr_doc_autoriz: gv("#d212-n-doc").value.trim(), data_doc_autoriz: gv("#d212-n-docdata").value,
+      forma_org: gv("#d212-n-forma").value, norma: norma, norma_ajustata: gv("#d212-n-ajust").value.trim(),
+      data_incep: gv("#d212-n-inc").value, data_sf: gv("#d212-n-sf").value,
+      zile_intrerupere: gv("#d212-n-intr").value.trim(), nr_zile_scutite: gv("#d212-n-scut").value.trim() });
+    randeazaFormularD212(corp, nav);
+  });
   gv("#d212-fisa").addEventListener("click", async () => {
     salveazaAntet();
     S.d212.fisa = null; S.d212.fisa_eroare = "";

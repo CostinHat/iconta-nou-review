@@ -16027,3 +16027,104 @@ fără dată = corectură (comportamentul vechi). Refuz: dată în viitor, dată
 stă în modulul NEUTRU `dividende_curs` (FIFO plată→distribuire existent, A6); generatorul, verificarea încrucișată (care avea o
 REPLICĂ a derivării — acum consumă `d205.pull_beneficiari`) și calea a doua (SQL propriu) o folosesc. Fără istoric → exact
 cifrele de dinainte (total × cotă).
+
+---
+
+## 02.10.2026 — D212 Etapa 3: venitul pe normă de venit (cap12) se calculează din datele contabilului, rând cu rând
+
+**Temei.** CF art.69^2 alin.(1) — impozitul anual se stabilește „prin aplicarea cotei de 10% asupra normei anuale de venit
+ajustate"; CF art.69 alin.(5) — pe perioade mai mici decât anul calendaristic „norma de venit aferentă acelei activități se reduce
+proporțional"; instrucțiunile formularului 212 (OPANAF 2736/2025, Subsecțiunea a 2-a lit.A), rd.9 — „prin raportarea … la 365 de
+zile, iar rezultatul se înmulțește cu numărul zilelor de activitate", rd.9.1 lit.a) — rd.9 „redusă proporțional cu numărul de zile
+calendaristice … pentru care venitul este scutit". Structura: D212Validator.jar v9 (J13.0.1), clasa `Cap12` — 15 atribute
+opționale, element repetabil („câte o secțiune pentru fiecare activitate și loc"), `validateCap12` goală; R8: bifa112=1 ⇒ cap12.
+
+**Decizii.** (1) Calculul stă în `d212.cap12_norma` (lângă `cap11_sistem_real` din Etapa 2), NU în `d212_engine` — motorul e al
+sistemului real (RIP), iar norma nu are evidență în aplicație: o dă contabilul, din lista DGRFP. Planul din `D212_PERIMETRU.md` §4
+spunea „în engine"; s-a ales emitter-ul ca să nu existe două locuri pentru rândurile aceleiași declarații. (2) An întreg → rd.9 =
+norma (ajustată, dacă e dată); perioadă parțială → norma / 365 × zile de activitate, plafonat la normă (în anul bisect 366/365 ar
+crește-o, iar legea spune „se reduce"). (3) INTERPRETARE CU TEMEI la rd.9.1: zilele scutite folosesc ACEEAȘI zi-normă (normă /
+365) ca rd.9 — ies din zilele de activitate. Alternativă respinsă: o a doua proporție peste rd.9 (zile scutite / zile de
+activitate), care ar da alt numitor pe aceeași secțiune. De reconfirmat dacă apare o normă care transează. (4) Ecranul: lista
+„Venit pe normă de venit" pe formularul D212 (DS cap.24 — adăugare, ștergere pe rând, re-randare din model); refuzurile de
+coerență (date în afara anului, încetare înaintea începerii, zile scutite peste zilele de activitate, forma de organizare în
+afara [1,2]) le dă serverul și numesc activitatea. (5) Venitul agricol pe normă (Subsecțiunea a 4-a, CF art.107 alin.(2)) se
+REFUZĂ numit: validatorul instalat n-are niciun atribut agricol — datorie strictă [EXTERN] în `test_datorie.py`.
+
+**Corectură de etichetă.** Intrarea „Lot 6 — D212" (mai sus în acest registru) numește cap12 „estimat, cap.II". E greșit: în
+structura J13.0.1, cap12 e Subsecțiunea a 2-a lit.A a capitolului I — venit REALIZAT pe normă (corespondența D212Pdf: rd.7–9.1 +
+impozitul). Intrarea veche rămâne cum e (append-only); antetul `core/test_declaratii_lot6_duk.py` s-a corectat.
+
+**Limite.** Asocierile (Subsecțiunea a 2-a, forma 2) se emit cu forma de organizare, dar venitul atribuibil asociatului îl dă
+contabilul ca normă — repartizarea din contractul de asociere nu se calculează. Pierderile din fenomene meteorologice (art.107
+alin.(5)) — agricole, deci în afara structurii instalate.
+
+---
+
+## 02.10.2026 — Gard: cheia trimisă de ecranul Declarații în `manual` trebuie citită de generator
+
+**Temei.** N/A — clasă de defect (pierdere tăcută de date). Instanța: `manual.norma` era ignorat de `d212.genereaza` pe codul
+vechi — proba pe F4 (2 activități) a dat bifa112=0, 0 secțiuni cap12, impozit pe normă 0 lei în loc de 4078, cu DUK „valid"
+(cap12 e opțional, deci validatorul nu poate observa lipsa).
+
+**Decizie.** `core/test_manual_chei_consumate.py` citește fiecare `_dXXXManual()` din `static/js/ecrane/declaratii.js` (21 de
+tipuri) plus lista D710 (`body.obligatii`, rândurile din `S.d710_obligatii.push`) și cere ca fiecare cheie produsă — inclusiv cele
+din rândurile listelor și familiile numerotate (`baza<n>`) — să apară ca șir în `core/dXXX.py`. Alternativă respinsă: un dict
+care înregistrează cheile citite la rulare — `dict(manual)` (copia din majoritatea generatoarelor) ocolește `__getitem__`, deci ar
+da fals pozitive. `common.cheie_manual` (refuz pe cheie necunoscută) rămâne pe generatoarele care îl au; gardul acoperă calea
+reală de producție pe toate. Măsurat azi: 0 chei necitite. **Limită:** prezența numelui în modul, nu citirea lui din `manual`.
+
+---
+
+## 02.10.2026 — Graful de temeiuri citește importurile din arborele de sintaxă; bifele D394 NU stăteau pe cota D216
+
+**Temei.** N/A — tooling (corectitudinea gărzii anti-stale a bifelor, GARZI cat.9).
+
+**Constatare.** După commitul lotului 19 (78e85cda), `test_agenda::test_bifele_nu_stau_pe_o_baza_schimbata` a devenit roșu pe
+`main`: trei bife D394 (`tipuri operatiune (pct.215)`, `rezumat1 campuri complete`, `totalPlata_A (R17)`, √ 04.08) „stăteau" pe
+`impozit_special_valoare_mare`, schimbată în COTE. Garda citește data COMMITULUI, deci înainte de commit era verde (lecția
+„commit întâi, apoi poarta", CLAUDE.md „Mecanica porții"). Dependența era FALSĂ: `graf_temei._importuri` citea importurile cu
+regex pe un rând, `from core.d394 import (` pe mai multe rânduri nu era văzut, iar `build_xml(...)` din test_d394 se rezolva pe
+NUME la toate cele 49 de `build_xml` — inclusiv `d216.py::build_xml`, care din lotul 19 trece prin `cota()`.
+
+**Decizie.** Nu se „reverifică" și nu se re-ancorează bifele (nu depind de D216 — reancorarea ar fi ascuns defectul grafului).
+Se repară CLASA: `graf_temei.importuri_core` (AST) — cititorul unic; `scripts/scan_axa_garzi.module_importate` și
+`core/test_golden_xsd.py` (aceeași clasă: regex pe un rând / subșir) îl folosesc. Gard `core/test_graf_importuri.py`: importul în
+paranteze e văzut, apelul din test_d394 ajunge doar la `d394.py::build_xml`, și niciun șir din core/ sau scripts/ nu mai descrie
+un regex `from\s+core` / `import\s+core`. Măsurat: 26 de fișiere au importuri în paranteze (inclusiv `uc_tenants`, `uc_comun`,
+`declaratii_api`, `facturi_api`); cei 15 consumatori ai grafului rămân verzi (99 de teste), garda bifelor revine la 0.
+Alternativă respinsă: ridicarea baseline-ului `STALE_BAZA_BASELINE` 0 → 3 (ar fi legitimat trei fals-pozitive).
+**Limită:** rezolvarea pe nume rămâne pentru apelurile care chiar nu se pot lega de un import (`_f`, `get` locale).
+
+---
+
+## 02.10.2026 — Ajutorul a 10 declarații din selector spunea că nu se pot produce din interfață
+
+**Temei.** N/A — conținut afișat contabilului (corectitudinea registrului FUNCTIONALITATI.csv).
+
+**Constatare.** Corectând ajutorul F246 (D212), am căutat textul în tot registrul: D114, D200, D201, D204, D212, D216, D318,
+D398, D600, D603 — toate LIVE și în selector din 23–25.09 — purtau încă „Stare amânată: … Deci încă nu o produci din interfață”
+(textul de la 14.08, scris când erau doar în dispecerul intern). D208 fusese corectată atunci; celelalte nu.
+**Decizie.** „Cum ajungi la ea” = traseul real (ecran principal → firma → Declarații → „Tip declarație” → Continuă → formular →
+„Regenerează Dxxx”), verificat pe `declaratii.js`/`firme.js`. Rândurile AMANAT (în `_DOAR_API`) își păstrează textul — e adevărat
+pentru ele. Gard `test_ajutorul_nu_neaga_ecranul_unei_declaratii_din_selector` (sursa: `declaratii_api.tipuri()`). La D212 s-au
+rescris și „De completat”/„De reținut” pe ce face ecranul azi (RIP, normă; impozit/CAS/CASS — etapele următoare).
+**Limită:** gardul prinde trei formulări numite, nu orice negare.
+
+---
+
+## 02.10.2026 — Registrul constantelor ancorate se citește numai după importul modulului (două locuri)
+
+**Temei.** N/A — tooling (onestitatea gărzilor pe constantele ancorate).
+
+**Constatare.** Poarta commitului D212 Etapa 3 a picat pe `test_fiscalos_s2::test_s2_valoarea_e_in_propriul_citat
+[d212.ZILE_AN_NORMA]` (lista de forme legale nu știa „365 de zile"). Proba prin mutație (365 → 366) rulată izolat a TRECUT: testul
+parametrizează pe `common.CONSTANTE_ANCORATE`, care se umple la import, iar `d212` nu era în importurile testului — constantele
+d212 (și `PROCENT_COMPENSARE_PIERDERE` din Etapa 2) se verificau doar când alt test importa întâmplător modulul. Aceeași clasă în
+`consumatori_temei._valoare_ancorata`: citea registrul fără import → `None` tăcut pentru o constantă reală (măsurat: `None` înainte,
+`365` după).
+
+**Decizie.** (1) `test_fiscalos_s2` derivă din cod modulele care cheamă `ancoreaza` și le importă înainte de colectare; gard
+`test_s2_fiecare_modul_care_ancoreaza_e_in_registru`. (2) `_valoare_ancorata` importă `core.<modul>` înainte de citire; test în
+interpretor proaspăt. (3) `_forme_legale` primește forma „N de zile" / „N zile". Mutații: 366 izolat → roșu; `d212` scos din
+derivare → roșu; importul scos din `_valoare_ancorata` → roșu (`['None', 'None']`).

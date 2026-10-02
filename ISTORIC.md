@@ -1050,3 +1050,24 @@ facsimilele formularelor: 130 de documente aduse, cu proveniența și amprenta l
 
 **Ce rămâne de decis:** D394 nu preia încă rapoartele Z în secțiunea de încasări prin casa de marcat (cere date pe care
 ruta tastată nu le culege).
+
+## 02.10.2026 — D212 Etapa 3: venitul pe normă de venit intră în Declarația unică
+
+**Ce se schimbă pentru un contabil:**
+- **Pe formularul D212 apare lista „Venit pe normă de venit".** Pentru fiecare activitate (fiecare loc) se trec norma
+  publicată de direcția regională, norma ajustată dacă e cazul, datele de început/încetare și zilele de întrerupere sau
+  de scutire. Aplicația calculează venitul net (proporțional pe 365 de zile când activitatea n-a durat tot anul), venitul
+  impozabil și impozitul de 10%, și le pune în subsecțiunea I.1.2 a declarației — câte o secțiune pe activitate.
+  Proba pe firma PFA de test: două activități → impozit pe normă 4078 lei, declarație validă la ANAF local; înainte,
+  aceleași date dispăreau din declarație fără niciun semn.
+- **Venitul agricol pe normă** nu se poate încă genera: validatorul ANAF instalat e al formularului pentru veniturile
+  2024 și nu are câmpurile agricole. Aplicația refuză cu explicația, nu îl pune în altă parte.
+- **Explicațiile a zece declarații nu mai spun că declarația lipsește din aplicație.** D114, D200, D201, D204, D212, D216,
+  D318, D398, D600 și D603 sunt în lista de declarații a firmei de la sfârșitul lui septembrie, dar textul de ajutor încă
+  spunea „încă nu o produci din interfață”. Acum arată drumul real până la ea.
+
+**Pe dedesubt.** Două gărzi noi de clasă: orice câmp pe care ecranul Declarații îl trimite trebuie să fie citit de
+generatorul declarației (altfel o dată introdusă s-ar putea pierde tăcut, cu declarația tot „validă"); și graful care
+leagă testele de valorile fiscale citește acum importurile corect — trei verificări D394 păreau, fals, afectate de
+schimbarea cotei D216 de azi. La poartă a mai ieșit o slăbiciune de același fel: verificarea „valoarea fiscală apare în textul legii” sărea
+peste constantele D212 când rula singură — acum își încarcă singură toate modulele.
