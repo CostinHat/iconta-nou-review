@@ -40,7 +40,10 @@ from core import scan_citate
 #: 52 → **57** la 02.10.2026: HEAD avea deja 55 (în toleranță); +2 = cele două rânduri COTE
 #: `impozit_special_valoare_mare` (CF art.500^2 lit.a) 0,9% și Legea 296/2023 art.III 0,3%), căutate verbatim în corpus
 #: înainte de scriere. Diferența măsurată HEAD→arbore: 2 noi, 0 pierdute.
-VERBATIM_BASELINE = 57
+#: 57 → **63** la 02.10.2026 (D212 Etapa 5): 63 măsurate în arbore; +4 = constantele de modul `d212.COTA_FORFETARA_DPI`
+#: (CF art.72^1 alin.(1)), `COTA_FORFETARA_CEDARE` (art.84 alin.(3)), `COTA_IMPOZIT_VENIT` (art.64 alin.(1)),
+#: `PROCENT_COMPENSARE_INVESTITII` (art.119 alin.(2)) — căutate verbatim în forma consolidată înainte de scriere.
+VERBATIM_BASELINE = 63
 
 
 @pytest.fixture(scope="module")

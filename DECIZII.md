@@ -16261,3 +16261,45 @@ evidență (factura din bon nu are notă, deci nu apare neîncasată); D406 list
 comerciale pe client o arată (e o factură către acel client).
 **Rămas deschis (decizie):** exporturile SAGA / WinMentor trimit factura ca „ieșire” — programul extern ar înregistra
 vânzarea a doua oară dacă înregistrează și Z-ul; v. raportul.
+
+---
+
+## 02.10.2026 — D212 Etapa 5: veniturile fără date în aplicație (I.1.1 pe categorii), CAS cu DPI, CASS 2.2 pe trepte, Secțiunea 5
+
+**Constatare (verificată la sursă înainte de cod).** (1) Validatorul instalat (J13.0.1) nu are reguli încrucișate pe `cap11` și
+primește secțiunea REPETAT — probat pe DUK: două, apoi șase secțiuni = `valid`. Refuzul din `d212.erori_generare` („o singură
+secțiune (validatorul o primește o dată)”) era o presupunere neprobată care bloca orice persoană cu mai mult de o sursă; scos.
+(2) Codurile 1021–1024 („alte surse”) sunt tipărite pe litere în D212Pdf.jar Pdf_v5/v6: 1021 = art.114 alin.(2) lit.k^1, 1022 =
+lit.l, 1023 = lit.m, 1024 = celelalte (Pdf_v8 le bifează pe toate în căsuța 9). (3) Codul fiscal consolidat: de la veniturile
+2026, Legea 239/2025 art.XII pct.7–14 schimbă cedarea folosinței (art.83–87, inclusiv închirierea pe termen scurt) și alte
+surse (art.114–116); instrucțiunile 2736/2025 sunt ale veniturilor 2025.
+
+**Decizie.** Contabilul introduce DATELE sursei (venit brut, cheltuieli reale, câștigul net, venitul impozabil); aplicația
+calculează rândurile după instrucțiunile D212 (OPANAF 2736/2025) Subsecțiunea 1 pct.4–9: DPI pe cote forfetare 40% (CF art.72^1
+alin.(1); moștenitori/drept de suită fără cotă, alin.(2)) sau în sistem real (impozitul în Secțiunea 5); cedarea folosinței 20%
+(CF art.84 alin.(3)); închirierea în scop turistic în sistem real, pierderea definitivă (pct.5.7.3); agricole în sistem real cu
+compensarea 70% (CF art.118 alin.(4)); investiții pe câștigul net cu compensarea 70% (CF art.119 alin.(2)); alte surse pe venitul
+impozabil; impozitul 10% (CF art.64 alin.(1); art.116 alin.(2)). Venitul pentru CAS cuprinde și DPI (CF art.148 alin.(3)), deci
+și numitorul ponderii din 4.1/5.1. CASS pe categoriile art.155 alin.(1) lit.c)–h) — Subsecțiunea 2.2, pe treptele 6/12/24 salarii
+minime (CF art.170 alin.(2)–(4)), cu dividendele/dobânzile nete și venitul din asocieri cu PJ date de contabil (n-au secțiune
+I.1.1, dar intră în treaptă — art.170 alin.(4) lit.b, d). Când CASS 2.2 se datorează, diferența până la 6 salarii minime din 2.1
+nu se mai cere (CF art.174 alin.(7) lit.b) — rezultă din date, nu din alegere. Sumarul I.7 rd.1 = Σ rd.9 din I.1.1 + normele +
+I.4 rd.6 + I.5 rd.5 (pct.56.1).
+
+**INTERPRETARE CU TEMEI.** Scutirea pentru handicap (CF art.60 pct.1 lit.a, a^1, d; normele HG 1/2016 la art.69 alin.(11): venitul
+„se reduce ... proporțional cu numărul de zile calendaristice pentru care venitul este scutit”) se raportează la zilele
+calendaristice ale ANULUI (365/366). Alternativă respinsă: 365 fix — aceea e regula proprie normei (rd.9 „la 365 de zile”). De
+reconfirmat dacă apare o normă care transează. Se aplică la rd.8 (DPI forfetar, agricole), I.4 rd.5 (activități independente)
+și I.5 rd.4 (DPI în sistem real).
+
+**Alternative respinse.** (1) CASS 2.2 într-un pas separat de categorii: o D212 cu chirii și fără CASS 2.2 ar fi o declarație
+GREȘITĂ, nu una incompletă — pasul nu se poate tăia acolo (CLAUDE.md §2 „un pas lasă aplicația funcțională”). (2) Regulile 2025
+aplicate și veniturilor 2026: Legea 239/2025 le schimbă tocmai pe categoriile astea, iar formularul pentru 2026 nu există —
+refuz numit, ca la agricolul pe normă. (3) Câmpuri de cheltuieli la cote forfetare: cheltuiala o stabilește cota, nu contabilul
+— câmpul plin se refuză, ca să nu existe două surse.
+
+**Limită.** [EXTERN] CASS reținută la 2.2 mai mare decât cea datorată: formularul validatorului n-are rândul „diferența în minus”
+(pct.52.1.11) — refuz numit. [EXTERN] Dobânzile pentru obligațiuni pe piețe externe (pct.8, de la 01.08.2025) n-au căsuță în
+formularul instalat — categoria nu e oferită. Rămân pentru pasul următor: cap14 (venituri din străinătate, Secțiunea 2) și
+Capitolul II (CASS opțională pe anul curent). Norma rezultată trăiește în `core/d212.py` (`cap11_categorie`, `oblig_realizat`) și
+`core/d212_engine.calculeaza_cass_alte_venituri`; gardată de `core/test_d212_categorii.py`.

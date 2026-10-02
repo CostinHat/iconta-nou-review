@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**662 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**663 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 630
+### `core/` — 631
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9008,6 +9008,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d212_cap11.py` — D212 Etapa 2 — venit în sistem real cap-coadă: registrul RIP -> cap11 -> XML -> DUK (01.10.2026).
 - `core/test_d212_cap12.py` — D212 Etapa 3 — venit din activități independente pe NORMĂ DE VENIT: datele contabilului -> cap12 -> XML -> DUK.
 - `core/test_d212_cass_minim.py` — GARD — CASS din activități independente sub 6 salarii minime NU e „opțională” (neconformitate reparată 02.10.2026).
+- `core/test_d212_categorii.py` — D212 Etapa 5 — veniturile fără date în aplicație (Subsecțiunea I.1.1 pe categorii), CAS cu DPI, CASS 2.2 pe trepte,
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
 - `core/test_d212_oblig_realizat.py` — D212 Etapa 4 — CAS, CASS, impozitul în sistem real și sumarul (oblig_realizat), din venitul declarat (02.10.2026).
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
@@ -9913,3 +9914,18 @@ ori). Detaliul: DECIZII 02.10.2026 („DECIZIE Costin: factura emisă pe baza bo
 | D394 op1 da, op2 minus | test_d394_factura_in_op1_iar_op2_fara_suma_ei + test_d394_factura_din_bon_fara_raport_z_e_refuzata_numit | Î1 cu încasările facturate; scădere dintr-o lună fără raport Z | scăderea scoasă → 2 roșii | nrBF rămâne numărul bonurilor emise (interpretare, DECIZII) |
 | storno + stoc | test_storno_ul_mosteneste_marca + test_factura_din_bon_nu_descarca_stocul | storno care scade o vânzare nenumărată; a doua descărcare de gestiune | marca necopiată → roșu; poarta scoasă → roșu | — |
 | sursă unică | test_definitia_sta_intr_un_singur_loc | predicatul „din bon” scris de mână în alt modul | predicat local în repo_control_incrucisat → roșu | prinde forma `bon_fiscal_nr IS [NOT] NULL` / `is None` |
+
+## 02.10.2026 — D212 Etapa 5: veniturile fără date în aplicație (I.1.1 pe categorii), CAS cu DPI, CASS 2.2
+
+Categoriile **3. Calcul fiscal** (cote forfetare, compensări, trepte CASS, pondere CAS cu DPI) și **4. Ieșire către
+autorități** (venituri introduse care dispăreau tăcut din declarație — DUK valid; refuzul neprobat „o singură secțiune”).
+Detaliul: DECIZII 02.10.2026 („D212 Etapa 5 …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| rândurile pe categorii | core/test_d212_categorii.py (DPI, chirie, turistic, agricol, investiții, alte surse ×4) | cotă forfetară greșită; report de pierdere la turistic; scutire pe chirie; compensare peste 70% | cota DPI = 20% → roșu; reportul turistic permis → roșu; scutirea pe orice categorie → roșu | regulile sunt ale veniturilor 2025 (2026 refuzat numit) |
+| CAS cu DPI, CASS 2.2, excepția 2.1 | test_cas_include_venitul_din_dpi + test_cass_22_pe_trepte + test_exceptia_minim_cass_rezulta_din_2_2 | CAS fără DPI (art.148 alin.(3)); treaptă greșită la prag; diferența până la 6 sm cerută deși 2.2 o acoperă | CAS fără DPI → roșu; `>=` → `>` la treaptă → roșu; excepția scoasă → roșu | dividendele/dobânzile și asocierile cu PJ sunt date de contabil |
+| sumarul I.7 + Secțiunea 5 | test_cass_22_in_declaratie + test_sectiunea_5_dpi_in_sistem_real + test_sectiunea_4_redusa_pentru_handicap | impozitul din I.1.1 lipsă din sumar; DPI real fără CAS deductibilă | impozit11 scos din sumar → roșu | reducerea pe zile = INTERPRETARE (DECIZII) |
+| secțiuni repetate valide | test_sectiunile_repetate_valide_pe_duk (DUK) | refuzul „o singură secțiune” reintrodus | refuzul pus înapoi → roșu | — |
+| ecran = server | test_categoriile_ecranului_sunt_cele_din_server + test_alte_surse_coduri_din_formularul_oficial | o categorie pe ecran pe care serverul o refuză; litera greșită pe 1021–1023 | eticheta 1021 mutată pe lit.l → roșu | — |
+| zilele scutite | test_redus_handicap_pe_zilele_anului | 365 fix în an bisect | 365 fix → roșu | — |

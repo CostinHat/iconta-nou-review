@@ -1,0 +1,79 @@
+{
+ "campuri": {
+  "1003": [
+   "d212-v-brut",
+   "d212-v-caen",
+   "d212-v-cat",
+   "d212-v-chelt",
+   "d212-v-det",
+   "d212-v-doc",
+   "d212-v-docdata",
+   "d212-v-faracota",
+   "d212-v-forma",
+   "d212-v-inc",
+   "d212-v-pp",
+   "d212-v-scut",
+   "d212-v-sediu",
+   "d212-v-sf"
+  ],
+  "1015": [
+   "d212-v-brut",
+   "d212-v-cat",
+   "d212-v-doc",
+   "d212-v-docdata",
+   "d212-v-inc",
+   "d212-v-sediu",
+   "d212-v-sf"
+  ],
+  "1012": [
+   "d212-v-castig",
+   "d212-v-cat",
+   "d212-v-pp"
+  ],
+  "1024": [
+   "d212-v-cat",
+   "d212-v-vimp"
+  ]
+ },
+ "randuri_dupa_trei": 3,
+ "randuri_dupa_stergere": 2,
+ "identitate_pastrata": true,
+ "sectiuni_cap11": [
+  "1003",
+  "1015",
+  "1024"
+ ],
+ "impozite": [
+  "1800",
+  "1920",
+  "300"
+ ],
+ "cass22": {
+  "bifa_cass_real": "2",
+  "cass_total_ven": "50200",
+  "cass_baza": "48600",
+  "cass_datorat": "4860",
+  "dif_de_plata": "8880"
+ },
+ "duk_text": "DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF.",
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ]
+}

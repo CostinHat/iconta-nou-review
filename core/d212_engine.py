@@ -126,6 +126,24 @@ def calculeaza_cass(venit_net: float, plafoane: PlafoaneD212, optiune_cass: bool
     return _r(True, baza, baza)
 
 
+#: Treptele bazei CASS pentru veniturile art.155 alin.(1) lit.c)-h) (DPI, asocieri cu PJ, cedarea folosinței, investiții,
+#: agricole, alte surse), în salarii minime: CF art.170 alin.(3) lit.a)-c) — „nivelul a 6 salarii minime brute pe țară, în
+#: cazul veniturilor realizate cuprinse între 6 salarii minime brute pe țară inclusiv și 12 salarii minime brute pe țară”,
+#: 12 sm între 12 și 24, 24 sm de la 24. Sub 6 sm nu se datorează (alin.(2)). Bifa din formular = indicele treptei (1/2/3).
+TREPTE_CASS_ALTE_VENITURI_SM = (6, 12, 24)
+
+
+def calculeaza_cass_alte_venituri(venit_cumulat: float, plafoane: PlafoaneD212) -> dict:
+    """CASS pentru veniturile din art.155 alin.(1) lit.c)-h), Subsecțiunea 2.2 a Secțiunii 3 din D212 (CF art.170 alin.(2)-(4)):
+    baza = treapta (6/12/24 salarii minime) în care cade venitul cumulat; sub 6 salarii minime nu se datorează."""
+    treapta = 0
+    for i, sm in enumerate(TREPTE_CASS_ALTE_VENITURI_SM, 1):
+        if venit_cumulat >= sm * plafoane.salariu_minim:
+            treapta = i
+    baza = TREPTE_CASS_ALTE_VENITURI_SM[treapta - 1] * plafoane.salariu_minim if treapta else 0
+    return {"treapta": treapta, "baza": baza, "cass": float(_common._q(baza * plafoane.cass_cota))}
+
+
 def calculeaza_d212(
     venit_brut: float,
     cheltuieli_deductibile: float,

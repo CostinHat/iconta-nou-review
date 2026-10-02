@@ -1120,3 +1120,21 @@ fost reparat.
   casa de marcat ale lunii. Proba pe firma de test: o factură de 121 lei dintr-un bon deja în Z — înainte D300 avea 2.100 / 441
   și evidența 441 lei TVA colectat; acum 2.000 / 420, D394 cu încasările prin casă 1.089 în loc de 1.210, ambele declarații
   valide la ANAF local.
+
+## 02.10.2026 — D212 Etapa 5: Declarația unică primește și celelalte venituri ale persoanei
+
+**Ce se schimbă pentru un contabil:**
+- **Pe formularul D212 apare lista „Alte venituri ale persoanei”**: drepturi de autor (pe cote forfetare sau în sistem real),
+  chirii, închirierea camerelor în scop turistic, activități agricole/silvicultură/piscicultură în sistem real, câștiguri din
+  investiții și venituri din alte surse — câte o sursă pe rând. Se arată doar câmpurile categoriei alese; cheltuielile
+  forfetare (40% / 20%), compensarea pierderilor (70%) și impozitul de 10% le calculează aplicația. Până azi asemenea venituri
+  nu aveau unde intra: declarația ieșea fără ele, iar validatorul ANAF o accepta.
+- **CASS pe aceste venituri se calculează pe trepte** (6, 12 sau 24 salarii minime), cu dividendele, dobânzile și venitul din
+  asocieri cu persoane juridice scrise lângă excepția CASS. Dacă CASS pe aceste venituri se datorează, diferența până la 6
+  salarii minime la activitatea independentă nu se mai cere. **CAS ține cont și de drepturile de autor.**
+- **Zilele de scutire pentru handicap** se pot trece la venitul din registrul RIP și la drepturile de autor/agricole.
+- Proba pe firma PFA de test (veniturile 2025): drepturi de autor 30.000, o chirie de 24.000, agricol 50.000/30.000 cu
+  pierdere reportată, câștig din investiții 8.000, alte surse 3.000 și dividende nete 10.000 — impozit 5.760, CASS 4.860
+  (treapta 12 salarii minime pe 78.200 lei), de plată 10.620, declarație validă la ANAF local.
+- Regulile pe categorii sunt cele pentru **veniturile 2025**; pentru 2026 legea s-a schimbat (Legea 239/2025), iar ANAF n-a
+  publicat formularul — aplicația refuză cu explicația.

@@ -69,7 +69,14 @@ BASELINE = {
     # incetare inaintea inceperii, zile de intrerupere/scutire in afara perioadei, zile scutite peste zilele de activitate,
     # forma de organizare in afara [1,2]; plus invelisul care numeste activitatea (temeiul e in mesajul interior). Refuzul
     # normativ (data in afara anului) poarta OPANAF 2736/2025 rd.3/rd.4 in text.
-    "core/d212.py": 10,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
+    # 10 -> 24 la 02.10.2026 (D212 Etapa 5, cap11_categorie / oblig_realizat): +14 refuzuri de FORMA, fiecare marcat langa
+    # el — categorie in afara listei de pe ecran, sume negative (x3: categorie, alte_cass, plus zile in afara anului x2),
+    # determinare in afara [1,2], forma de organizare in afara [1,2], pierdere reportata la cote forfetare, sume ale
+    # organismelor peste venitul brut, cheltuieli date la cote forfetare, venit brut dat la investitii / alte surse, venit
+    # impozabil lipsa; plus invelisul care numeste venitul (temeiul e in mesajul interior). Refuzurile normative noi poarta
+    # temeiul in text: anul 2026 (Legea 239/2025), scutirea pe chirii (CF art.60), reportul la turistic (pct.5.7.3), o singura
+    # sectiune DPI (pct.4.4), CASS 2.2 retinuta peste datorata (pct.52.1.11).
+    "core/d212.py": 24,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,

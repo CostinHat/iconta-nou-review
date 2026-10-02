@@ -63,7 +63,8 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
   (calculul în emitter, `d212.cap12_norma`, nu în engine — DECIZII 02.10) — v. §6. Agricolul: [EXTERN], fără loc în validator.
 - **Etapa 4** — CAS/CASS în oblig_realizat (cablare + probă), inițială/rectificativă. **FĂCUTĂ 02.10.2026** — v. §7 (opțiunea
   CAS sub 12 sm: [EXTERN]).
-- **Etapa 5** — formular manual pentru categoriile fără date (regula 0 DESIGN_SYSTEM).
+- **Etapa 5** — formular manual pentru categoriile fără date (regula 0 DESIGN_SYSTEM). **5a FĂCUTĂ 02.10.2026** (I.1.1 pe
+  categorii, CAS cu DPI, CASS 2.2, Secțiunea 5) — v. §8; rămâne 5c (cap14, venituri din străinătate).
 - **Etapa finală** — ~~alinierea F246~~ (făcută 02.10 în Etapa 3) + mesajul din d221.py + ghidurile care spun „D212 doar identificare".
 
 ## 5. Etapa 2 — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
@@ -112,3 +113,18 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 - **[EXTERN]:** opțiunea CAS sub 12 sm (lit.B) — fără căsuță în formularul instalat; refuz numit + datorie strictă.
 - **În afara Etapei 4**: reținerile la sursă, bonificația (Secțiunea 8), drepturile de proprietate intelectuală și celelalte
   categorii fără date (Etapa 5), Capitolul II (CASS opțională pe anul curent).
+
+## 8. Etapa 5 (5a) — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
+- **Validatorul (J13.0.1)**: `cap11` fără reguli încrucișate, secțiune REPETABILĂ (probat DUK: șase secțiuni = valid); refuzul
+  vechi „o singură secțiune” era neprobat — scos. Codurile alte surse: 1021 lit.k^1, 1022 lit.l, 1023 lit.m, 1024 celelalte
+  (D212Pdf Pdf_v5/v6). Atribute: I.3.2.2 `bifa_cass_real` 1/2/3, `cass_ven_dpi/asc/cfb/inv/asp/alt`, `cass_total_ven`,
+  `cass_baza`, `cass_datorat`, `cass_retinut`, `cass_dif_plus`; I.5 `real_*_dpi` + bifa15; I.7.3 rd.4 `oblcass_real_difPlus_dpi`.
+- **Construit**: `d212.cap11_categorie` (DPI forfetar/real, cedarea folosinței, turistic, agricole, investiții, alte surse),
+  `oblig_realizat` cu CAS pe DPI, Secțiunea 5, CASS 2.2 pe trepte (`d212_engine.calculeaza_cass_alte_venituri`), excepția 2.1
+  din date, sumarul complet; scutirea pentru handicap pe zile (INTERPRETARE, DECIZII 02.10); lista „Alte venituri” pe ecran.
+  Gardă `core/test_d212_categorii.py`; probă `frontend_test/proba_d212_etapa5.py` (F4, cod vechi vs nou).
+- **Doar veniturile 2025**: de la veniturile 2026, Legea 239/2025 art.XII pct.7–14 schimbă cedarea folosinței și alte surse;
+  formularul pentru 2026 nu e publicat -> refuz numit.
+- **[EXTERN]**: CASS 2.2 reținută peste cea datorată (fără rând „în minus” în formular); dobânzile pentru obligațiuni pe piețe
+  externe (pct.8) — fără căsuță în formularul instalat.
+- **Rămâne (5c)**: cap14 — veniturile din străinătate (Secțiunea 2) și includerea lor în CAS/CASS.

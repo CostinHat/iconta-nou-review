@@ -62,7 +62,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [formular_manual_d212] Declaratia unica PF: identitate (cif=CNP/nume/adresa) + fisa RIP AFISATA
     // (pull din registru; venitul/CAS/CASS/impozit — informativ). Increment: genereaza cazul minim
     // DUK-valid (identitate); popularea cap11/oblig_realizat din fisa = pas urmator. In memorie, ca d200.
-    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", fisa: null, fisa_eroare: "", norma: [], exceptie_minim_cass: "" },
+    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", nr_zile_scutite_rip: "", fisa: null, fisa_eroare: "", norma: [], venituri: [], alte_cass: {}, exceptie_minim_cass: "" },
     // [formular_manual_d201] venituri din strainatate PF: identitate (CNP/nume/initiala tata/prenume) +
     // sectiuni pe (tara, categorie) - venit_B/chlt_D/imp1/imp2/pierdere; venit_N calculat. In memorie, ca d200.
     d201: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", d_rec: 0, sectiuni: [] },
@@ -2912,6 +2912,7 @@ function _d212Manual() {
     m.din_rip = true;
     m.pierdere_precedenta = Number(d.pierdere_precedenta || 0);
     if ((d.caen || "").trim()) m.caen = d.caen.trim();
+    if (Number(d.nr_zile_scutite_rip) > 0) m.nr_zile_scutite_rip = Number(d.nr_zile_scutite_rip);
   }
   // [D212 Etapa 4] CAS/CASS și impozitul (oblig_realizat) le calculează serverul; de aici vin doar cele două alegeri
   // pe care evidența nu le poate ști: excepția de la baza minimă CASS (CF art.174 alin.(7)-(8)). Opțiunea CAS sub 12 sm
@@ -2923,8 +2924,42 @@ function _d212Manual() {
       forma_org: a.forma_org, norma: a.norma, norma_ajustata: a.norma_ajustata, data_incep: a.data_incep,
       data_sf: a.data_sf, zile_intrerupere: a.zile_intrerupere, nr_zile_scutite: a.nr_zile_scutite }));
   }
+  // [D212 Etapa 5] veniturile fără date în aplicație (Subsecțiunea I.1.1 pe categorii): rândurile le calculează serverul
+  if ((d.venituri || []).length) m.venituri = d.venituri.map((v) => Object.assign({}, v));
+  const ac = d.alte_cass || {};
+  const alte = {};
+  ["asociere_pj", "dividende_dobanzi", "cass_retinuta"].forEach((k) => { if (Number(ac[k]) > 0) alte[k] = Number(ac[k]); });
+  if (Object.keys(alte).length) m.alte_cass = alte;
   return m;
 }
+
+// Categoriile introduse de contabil — codurile = `d212.CATEG_MANUALE` (gardate de test_d212_categorii); 1021-1024 =
+// alte surse pe literele art.114 alin.(2) (D212Pdf Pdf_v5/v6).
+const _D212_CATEG = [
+  ["1003", "Drepturi de proprietate intelectuală"],
+  ["1015", "Cedarea folosinței bunurilor (chirii)"],
+  ["1006", "Închirierea în scop turistic a camerelor din locuința proprie"],
+  ["1009", "Activități agricole (sistem real)"],
+  ["1010", "Silvicultură (sistem real)"],
+  ["1011", "Piscicultură (sistem real)"],
+  ["1012", "Transferul titlurilor de valoare și alte operațiuni cu instrumente financiare"],
+  ["1021", "Alte surse — art.114 alin.(2) lit.k^1 (creanțe ANRP)"],
+  ["1022", "Alte surse — art.114 alin.(2) lit.l (cesiuni de creanță)"],
+  ["1023", "Alte surse — art.114 alin.(2) lit.m (monedă virtuală)"],
+  ["1024", "Alte surse — celelalte venituri din alte surse"],
+];
+// Ce câmpuri cere fiecare categorie (instrucțiunile D212, Subsecțiunea 1 pct.4-9); restul se ascund.
+const _D212_AGR = ["1009", "1010", "1011"];
+const _D212_ALTE = ["1021", "1022", "1023", "1024"];
+const _D212_CAMP_CAT = {
+  "d212-v-det": ["1003"], "d212-v-faracota": ["1003"], "d212-v-forma": ["1003"].concat(_D212_AGR),
+  "d212-v-caen": ["1003"].concat(_D212_AGR), "d212-v-scut": ["1003"].concat(_D212_AGR),
+  "d212-v-sediu": ["1003", "1015", "1006"].concat(_D212_AGR), "d212-v-doc": ["1003", "1015", "1006"].concat(_D212_AGR),
+  "d212-v-docdata": ["1003", "1015", "1006"].concat(_D212_AGR), "d212-v-inc": ["1003", "1015", "1006"].concat(_D212_AGR),
+  "d212-v-sf": ["1003", "1015", "1006"].concat(_D212_AGR), "d212-v-brut": ["1003", "1015", "1006"].concat(_D212_AGR),
+  "d212-v-chelt": ["1003", "1006"].concat(_D212_AGR), "d212-v-pp": ["1003", "1012"].concat(_D212_AGR),
+  "d212-v-castig": ["1012"], "d212-v-vimp": _D212_ALTE,
+};
 
 // Excepțiile de la baza minimă CASS — cheile = `d212_engine.EXCEPTII_MINIM_CASS` (gardate de test_d212_oblig_realizat)
 const _D212_EXCEPTII_CASS = [
@@ -2975,10 +3010,15 @@ function randeazaFormularD212(corp, nav) {
     : '<div class="stare-goala stare-goala--inline">Nicio activitate pe normă. Dacă persoana a avut venituri impuse pe normă de venit, adaugă fiecare activitate (fiecare loc) mai jos.</div>';
   const optForma = _D212_FORMA_ORG.map((o) => '<option value="' + o[0] + '">' + esc(o[1]) + "</option>").join("");
   const optExc = _D212_EXCEPTII_CASS.map((o) => '<option value="' + o[0] + '"' + ((d.exceptie_minim_cass || "") === o[0] ? " selected" : "") + ">" + esc(o[1]) + "</option>").join("");
+  const ac = d.alte_cass || {};
   const blocContributii = '<div class="camp-eticheta" style="margin:14px 0 4px">Contribuții și impozit (secțiunile 3, 4 și 7 — calculate din veniturile de mai sus)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
       '<label class="camp" style="flex:1 1 320px"><span class="camp-eticheta">Excepție de la baza minimă CASS (venit sub 6 salarii minime)</span><select id="d212-exccass" class="camp-input">' + optExc + "</select></label>" +
-    "</div>";
+      '<label class="camp" style="width:230px"><span class="camp-eticheta">Venit distribuit din asocieri cu persoane juridice (lei)</span><input id="d212-c-asc" type="number" min="0" step="1" class="camp-input" value="' + esc(String(ac.asociere_pj || "")) + '"></label>' +
+      '<label class="camp" style="width:230px"><span class="camp-eticheta">Dividende și dobânzi încasate, nete de impozit (lei)</span><input id="d212-c-div" type="number" min="0" step="1" class="camp-input" value="' + esc(String(ac.dividende_dobanzi || "")) + '"></label>' +
+      '<label class="camp" style="width:230px"><span class="camp-eticheta">CASS reținută de plătitori pe aceste venituri (lei)</span><input id="d212-c-ret" type="number" min="0" step="1" class="camp-input" value="' + esc(String(ac.cass_retinuta || "")) + '"></label>' +
+    "</div>" +
+    '<p class="camp-ajutor" style="margin:4px 0 0">CASS pe drepturile de proprietate intelectuală, chirii, investiții, activități agricole și alte surse se datorează pe trepte: baza e 6, 12 sau 24 de salarii minime, după cât au însumat aceste venituri (sub 6 salarii minime nu se datorează). Dividendele, dobânzile și venitul din asocieri cu persoane juridice nu au secțiune proprie în declarație, dar intră în calculul treptei — de aceea se scriu aici.</p>';
   const blocNorma = '<div class="camp-eticheta" style="margin:14px 0 4px">Venit pe normă de venit — activități independente (subsecțiunea I.1.2)</div>' +
     randuriNorma +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
@@ -2998,6 +3038,47 @@ function randeazaFormularD212(corp, nav) {
       '<button class="buton-secundar" id="d212-n-add">+ adaugă activitatea</button>' +
     "</div>" +
     '<p class="camp-ajutor" style="margin:4px 0 0">Norma e cea publicată de direcția regională pentru locul activității; norma ajustată, dacă s-au aplicat coeficienți de corecție. Data începerii/încetării și zilele de întrerupere se completează doar când activitatea n-a durat tot anul — venitul net se calculează proporțional, pe 365 de zile; impozitul e 10% din venitul impozabil. Zilele scutite = zilele în care persoana a fost scutită de impozit (handicap grav sau accentuat).</p>';
+  const etCat = (c) => ((_D212_CATEG.find((o) => o[0] === String(c)) || [])[1]) || String(c);
+  const venituri = d.venituri || [];
+  const randuriVenit = venituri.length
+    ? venituri.map((v, i) => '<div class="dec-man-rand">' +
+        '<span class="dec-recl-desc">Venitul ' + (i + 1) + " · " + esc(etCat(v.categ_venit)) +
+        (String(v.categ_venit) === "1003" ? (String(v.det_ven_net) === "1" ? " · sistem real" : " · cote forfetare") : "") +
+        (v.venit_brut !== "" && v.venit_brut != null ? " · venit brut " + bani(_n(v.venit_brut)) + " lei" : "") +
+        (v.chelt_deduc !== "" && v.chelt_deduc != null ? " · cheltuieli " + bani(_n(v.chelt_deduc)) + " lei" : "") +
+        (v.castig_net !== "" && v.castig_net != null ? " · câștig net " + bani(_n(v.castig_net)) + " lei" : "") +
+        (v.venit_impozabil !== "" && v.venit_impozabil != null ? " · venit impozabil " + bani(_n(v.venit_impozabil)) + " lei" : "") +
+        (Number(v.pierdere_precedenta) ? " · pierderi reportate " + bani(_n(v.pierdere_precedenta)) + " lei" : "") +
+        (v.sediu ? " · " + esc(v.sediu) : "") + (Number(v.nr_zile_scutite) ? " · " + esc(String(v.nr_zile_scutite)) + " zile scutite" : "") + "</span>" +
+        '<button class="buton-sters d212-v-del" data-idx="' + i + '" aria-label="Șterge venitul ' + (i + 1) + '">Șterge</button></div>').join("")
+    : '<div class="stare-goala stare-goala--inline">Niciun alt venit. Dacă persoana a avut și venituri din drepturi de autor, chirii, investiții, activități agricole sau alte surse, adaugă fiecare sursă mai jos.</div>';
+  const optCat = _D212_CATEG.map((o) => '<option value="' + o[0] + '">' + esc(o[1]) + "</option>").join("");
+  const blocVenituri = '<div class="camp-eticheta" style="margin:14px 0 4px">Alte venituri ale persoanei — din România (subsecțiunea I.1.1, câte o sursă)</div>' +
+    randuriVenit +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
+      '<label class="camp" style="flex:1 1 320px"><span class="camp-eticheta">Categoria de venit <span class="oblig">*</span></span><select id="d212-v-cat" class="camp-input">' + optCat + "</select></label>" +
+      '<label class="camp" style="width:220px"><span class="camp-eticheta">Determinarea venitului net</span><select id="d212-v-det" class="camp-input"><option value="2">cote forfetare de cheltuieli</option><option value="1">sistem real (contabilitate)</option></select></label>' +
+      '<label class="set-bifa"><input id="d212-v-faracota" type="checkbox"> <span>Moștenitor / drept de suită — fără cota forfetară</span></label>' +
+      '<label class="camp" style="width:220px"><span class="camp-eticheta">Forma de organizare</span><select id="d212-v-forma" class="camp-input">' + optForma + "</select></label>" +
+      '<label class="camp" style="width:130px"><span class="camp-eticheta">Cod CAEN</span><input id="d212-v-caen" type="text" maxlength="4" class="camp-input"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
+      '<label class="camp" style="flex:1 1 260px"><span class="camp-eticheta">Sediul / bunul (adresa, nr. de înmatriculare etc.)</span><input id="d212-v-sediu" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Nr. contract / document</span><input id="d212-v-doc" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data contractului / documentului</span><input id="d212-v-docdata" type="date" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data începerii (în an)</span><input id="d212-v-inc" type="date" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data încetării (în an)</span><input id="d212-v-sf" type="date" class="camp-input"></label>' +
+    "</div>" +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Venit brut (lei)</span><input id="d212-v-brut" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:200px"><span class="camp-eticheta">Cheltuieli deductibile (lei)</span><input id="d212-v-chelt" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:200px"><span class="camp-eticheta">Pierderi reportate din anii precedenți (lei)</span><input id="d212-v-pp" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:200px"><span class="camp-eticheta">Câștig net anual (pierderea cu minus)</span><input id="d212-v-castig" type="number" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Venit impozabil (lei)</span><input id="d212-v-vimp" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile scutite (handicap)</span><input id="d212-v-scut" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d212-v-add">+ adaugă venitul</button>' +
+    "</div>" +
+    '<p class="camp-ajutor" style="margin:4px 0 0">Se arată doar câmpurile categoriei alese. Cheltuielile la cote forfetare le calculează aplicația (40% la drepturile de autor, 20% la chirii) — se scriu doar în sistem real sau, la moștenitori și dreptul de suită, sumele cuvenite organismelor de gestiune colectivă. La investiții se scrie câștigul net al anului, iar la alte surse venitul impozabil. Impozitul (10%) și CASS se calculează la generare. Regulile sunt cele pentru veniturile 2025.</p>';
   zona.innerHTML = '<details class="dec-xml" open><summary>Declarația unică — persoană fizică (identificare + fișa RIP)</summary>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="width:180px"><span class="camp-eticheta">CNP contribuabil <span class="oblig">*</span></span><input id="d212-cnp" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif || "") + '"></label>' +
@@ -3009,10 +3090,12 @@ function randeazaFormularD212(corp, nav) {
       '<label class="set-bifa"><input id="d212-rip" type="checkbox" ' + (d.din_rip ? "checked" : "") + '> <span>Include venitul din registrul RIP (subsecțiunea I.1.1, sistem real)</span></label>' +
       '<label class="camp" style="width:240px"><span class="camp-eticheta">Pierderi fiscale reportate din anii precedenți (lei)</span><input id="d212-pp" type="number" min="0" step="1" class="camp-input" value="' + esc(String(d.pierdere_precedenta || "")) + '"></label>' +
       '<label class="camp" style="width:130px"><span class="camp-eticheta">Cod CAEN</span><input id="d212-caen" type="text" maxlength="4" class="camp-input" value="' + esc(d.caen || "") + '"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile scutite (handicap)</span><input id="d212-scut" type="number" min="0" step="1" class="camp-input" value="' + esc(String(d.nr_zile_scutite_rip || "")) + '"></label>' +
     "</div>" +
     '<p style="margin:4px 0 8px"><button class="buton-secundar" id="d212-fisa">Trage fișa RIP ' + esc(String(S.an)) + "</button></p>" +
     blocFisa +
     blocNorma +
+    blocVenituri +
     blocContributii +
     '<p style="margin-top:10px"><button class="buton-primar" id="d212-regen">Regenerează D212</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
@@ -3027,8 +3110,46 @@ function randeazaFormularD212(corp, nav) {
     S.d212.pierdere_precedenta = gv("#d212-pp").value.trim();
     S.d212.caen = gv("#d212-caen").value.trim();
     S.d212.exceptie_minim_cass = gv("#d212-exccass").value;
+    S.d212.nr_zile_scutite_rip = gv("#d212-scut").value.trim();
+    S.d212.alte_cass = { asociere_pj: gv("#d212-c-asc").value.trim(), dividende_dobanzi: gv("#d212-c-div").value.trim(),
+      cass_retinuta: gv("#d212-c-ret").value.trim() };
   };
-  ["#d212-cnp", "#d212-nume", "#d212-adr", "#d212-pp", "#d212-caen"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  ["#d212-cnp", "#d212-nume", "#d212-adr", "#d212-pp", "#d212-caen", "#d212-scut", "#d212-c-asc", "#d212-c-div", "#d212-c-ret"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  // câmpurile categoriei alese (restul ascunse — nu se trimit)
+  const arataCampuriVenit = () => {
+    const cat = gv("#d212-v-cat").value;
+    Object.keys(_D212_CAMP_CAT).forEach((id) => {
+      const el = gv("#" + id);
+      const camp = el && el.closest("label");
+      if (camp) camp.style.display = _D212_CAMP_CAT[id].includes(cat) ? "" : "none";   // .camp are display:flex — `hidden` n-ar ascunde
+    });
+  };
+  gv("#d212-v-cat").addEventListener("change", arataCampuriVenit);
+  arataCampuriVenit();
+  zona.querySelectorAll(".d212-v-del").forEach((b) => b.addEventListener("click", () => {
+    salveazaAntet();
+    S.d212.venituri.splice(parseInt(b.dataset.idx, 10), 1);
+    randeazaFormularD212(corp, nav);
+  }));
+  gv("#d212-v-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    salveazaAntet();
+    const cat = gv("#d212-v-cat").value;
+    const v = { categ_venit: cat };
+    const ia = { "d212-v-det": "det_ven_net", "d212-v-forma": "forma_org", "d212-v-caen": "caen", "d212-v-sediu": "sediu",
+      "d212-v-doc": "nr_doc", "d212-v-docdata": "data_doc", "d212-v-inc": "data_incep", "d212-v-sf": "data_sf",
+      "d212-v-brut": "venit_brut", "d212-v-chelt": "chelt_deduc", "d212-v-pp": "pierdere_precedenta",
+      "d212-v-castig": "castig_net", "d212-v-vimp": "venit_impozabil", "d212-v-scut": "nr_zile_scutite" };
+    Object.keys(ia).forEach((id) => {
+      if (!_D212_CAMP_CAT[id].includes(cat)) return;
+      const val = gv("#" + id).value.trim();
+      if (val !== "") v[ia[id]] = val;
+    });
+    if (_D212_CAMP_CAT["d212-v-faracota"].includes(cat) && gv("#d212-v-faracota").checked) v.fara_cota_forfetara = true;
+    S.d212.venituri = S.d212.venituri || [];
+    S.d212.venituri.push(v);
+    randeazaFormularD212(corp, nav);
+  });
   ["#d212-rec", "#d212-rip", "#d212-exccass"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
   zona.querySelectorAll(".d212-n-del").forEach((b) => b.addEventListener("click", () => {
     salveazaAntet();

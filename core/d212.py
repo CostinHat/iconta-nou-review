@@ -43,6 +43,7 @@ erori_generare, build_xml, genereaza(conn, schema, perioada, manual=None). conn=
 #: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
 DENUMIRE_OFICIALA = 'Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice'
 from dataclasses import dataclass, field
+import calendar
 import datetime as _dt
 from decimal import Decimal, ROUND_HALF_UP
 import re
@@ -150,7 +151,7 @@ TEMEI_RANDURI_CAP11 = _Tm(
               "completează — impozitul se stabilește în secțiunea 4 a capitolului I")
 
 
-def cap11_sistem_real(venit_brut, chelt_deduc, pierdere_precedenta=0, caen=None):
+def cap11_sistem_real(venit_brut, chelt_deduc, pierdere_precedenta=0, caen=None, nr_zile_scutite=0):
     """Subsectiunea I.1.1 pt activitate INDIVIDUALA in sistem real, rand cu rand dupa instructiunile
     D212 (OPANAF 2736/2025 pct.3.5.11). Sume in lei intregi (half-up).
 
@@ -170,6 +171,12 @@ def cap11_sistem_real(venit_brut, chelt_deduc, pierdere_precedenta=0, caen=None)
          "forma_org": FORMA_ORG_INDIVIDUAL, "venit_brut": vb, "chelt_deduc": cd}
     if caen:
         c["caen"] = str(caen).strip()
+    scut = int(nr_zile_scutite or 0)
+    if not 0 <= scut <= 366:   # refuz de FORMĂ: număr de zile în afara anului
+        raise ValueError("Zilele scutite trebuie să fie între 0 și numărul de zile ale anului.")
+    if scut:
+        # rd.A.9 (instrucțiuni pct.3.5.6); venitul redus se calculează în Secțiunea 4 rd.5 (oblig_realizat)
+        c["nr_zile_scutite"] = scut
     if pp:
         c["pierdere_precedenta"] = pp
     if vb > cd:
@@ -208,6 +215,213 @@ ZILE_AN_NORMA = _anc("d212.ZILE_AN_NORMA", 365, _Tm(
 FORME_ORG_NORMA = {1: "Individual", 2: "Asociere fără personalitate juridică"}   # validator: interval [1,2]
 
 
+# ── CAP11 PE CATEGORII (Subsecțiunea I.1.1 pentru veniturile fără date în aplicație) ─────────────────────────────────
+# [D212 Etapa 5, 02.10.2026] Contabilul dă datele sursei (venitul brut, cheltuielile reale, câștigul net, venitul
+# impozabil); rândurile le calculează aplicația, după instrucțiunile D212 (OPANAF 2736/2025) Subsecțiunea 1 pct.4-9.
+# Secțiunea cap11 se REPETĂ în validatorul instalat (J13.0.1, fără reguli încrucișate pe cap11; probat pe DUK 02.10.2026:
+# două secțiuni = valid), câte una pe sursă de venit. Corespondența cod -> literă la alte surse (1021 lit.k^1, 1022 lit.l,
+# 1023 lit.m, 1024 celelalte) e tipărită în D212Pdf.jar Pdf_v5/Pdf_v6 („Alte surse, venituri prevazute la art.114 alin.(2)
+# lit.k1) din Codul fiscal" ...); Pdf_v8 le bifează pe toate în căsuța 9.
+#: Anii de venit cu regulile pe categorii verificate la sursă: instrucțiunile 2736/2025 sunt pentru veniturile 2025; de la
+#: veniturile 2026, Legea 239/2025 art.XII pct.7-14 schimbă cedarea folosinței (CF art.83-87) și alte surse (art.114-116),
+#: iar formularul pentru veniturile 2026 nu e publicat. Un an se adaugă DUPĂ verificarea lui, nu înainte.
+ANI_CATEGORII = (2025,)
+#: Cota forfetară de cheltuieli la drepturile de proprietate intelectuală (procent întreg).
+COTA_FORFETARA_DPI = _anc("d212.COTA_FORFETARA_DPI", Decimal("40"), _Tm(
+    "CF", art="72^1", alin="1", data_in="2018-03-23", verificat_la="2026-10-02", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="prin scăderea din venitul brut a cheltuielilor determinate prin aplicarea cotei de 40% asupra venitului brut",
+    lant_acte="art.72^1 introdus de OUG 18/2018; aplicat de instrucțiunile D212 (OPANAF 2736/2025) pct.4.5.9 rd.2"))
+#: Cota forfetară de cheltuieli la cedarea folosinței bunurilor (procent întreg).
+COTA_FORFETARA_CEDARE = _anc("d212.COTA_FORFETARA_CEDARE", Decimal("20"), _Tm(
+    "CF", art="84", alin="3", data_in="2024-01-01", verificat_la="2026-10-02", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="se stabilește prin deducerea din venitul brut a cheltuielilor determinate prin aplicarea cotei de 20% asupra venitului brut",
+    lant_acte="cota de 20% din OUG 115/2023 art.LIII (veniturile 2024+); alin.(3) reformulat de Legea 239/2025 art.XII pct.8 "
+              "(veniturile 2026), cota neschimbată; aplicat de instrucțiunile D212 (OPANAF 2736/2025) pct.5.6.6 rd.2"))
+#: Cota de impozit pe venitul fiecărei surse din fiecare categorie (procent întreg).
+COTA_IMPOZIT_VENIT = _anc("d212.COTA_IMPOZIT_VENIT", Decimal("10"), _Tm(
+    "CF", art="64", alin="1", data_in="2018-01-01", verificat_la="2026-10-02", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie",
+    lant_acte="lit.a^1) DPI, c) cedarea folosinței, d) investiții, f) agricole, h) alte surse; la alte surse și art.116 alin.(2) "
+              "(„prin aplicarea cotei de 10%”); aplicat de instrucțiunile D212 (OPANAF 2736/2025) pct.4-9, rd.9"))
+#: Pierderea netă din investiții se recuperează din câștigul net, în limita a 70% (procent întreg) — normă proprie, alta
+#: decât art.118 alin.(4) (activitățile), aceeași cifră.
+PROCENT_COMPENSARE_INVESTITII = _anc("d212.PROCENT_COMPENSARE_INVESTITII", Decimal("70"), _Tm(
+    "CF", art="119", alin="2", data_in="2024-01-01", verificat_la="2026-10-02", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="se recuperează în limita a 70% din câștigurile nete anuale obținute în următorii 5 ani fiscali consecutivi",
+    lant_acte="alin.(2) modificat de OUG 115/2023 art.LIII pct.71; aplicat de instrucțiunile D212 (OPANAF 2736/2025) pct.7.3.2 rd.6"))
+
+CATEG_DPI, CATEG_CEDARE, CATEG_TURISTIC, CATEG_INVESTITII = 1003, 1015, 1006, 1012
+CATEG_AGRICOLE = (1009, 1010, 1011)
+CATEG_ALTE_SURSE = (1021, 1022, 1023, 1024)
+DET_VEN_NET_FORFETAR = 2
+#: Categoriile pentru care persoana cu handicap grav sau accentuat e scutită de impozit (CF art.60 pct.1 lit.a), a^1), d)).
+CATEG_SCUTIRE_HANDICAP = (CATEG_ACTIVITATI_INDEPENDENTE, CATEG_DPI) + CATEG_AGRICOLE
+#: Categoriile introduse de contabil pe ecran (activitățile independente vin din registrul RIP).
+CATEG_MANUALE = (CATEG_DPI, CATEG_CEDARE, CATEG_TURISTIC) + CATEG_AGRICOLE + (CATEG_INVESTITII,) + CATEG_ALTE_SURSE
+
+
+def _procent(suma, cota):
+    return _lei(Decimal(suma) * cota / 100)
+
+
+def redus_handicap(valoare, zile_scutite, an):
+    """Venitul impozabil redus pentru persoana cu handicap grav sau accentuat (cap11 rd.8, I.4 rd.5, I.5 rd.4).
+
+    Temei: CF art.60 pct.1 (scutirea) + normele HG 1/2016 la art.69, alin.(11): venitul net „se reduce, de către
+    contribuabil, proporțional cu numărul de zile calendaristice pentru care venitul este scutit”. INTERPRETARE CU TEMEI:
+    proporția se raportează la zilele calendaristice ale ANULUI (365/366) — textul spune „zile calendaristice” și nu fixează
+    numitorul; alternativă respinsă: 365 fix (aceea e regula proprie normei, rd.9 „la 365 de zile”). De reconfirmat dacă
+    apare o normă care transează."""
+    zile = 366 if calendar.isleap(int(an)) else 365
+    return _lei(Decimal(valoare) * (zile - int(zile_scutite)) / zile)
+
+
+def cap11_categorie(a, an):
+    """O secțiune I.1.1 pentru o categorie fără date în aplicație, rând cu rând (instrucțiunile D212, Subsecțiunea 1):
+
+      DPI 1003, cote forfetare (pct.4.5.9): rd.2 = 40% x rd.1 (moștenitori / drept de suită, pct.4.5.10: sumele cuvenite
+          organismelor de gestiune, fără cotă); rd.7 = rd.3; rd.8 redus (handicap); rd.9 = 10% x rd.7 (sau rd.8)
+      DPI 1003, sistem real (pct.4.5.7): rd.1-rd.7 ca la activitățile independente; rd.9 = 0 la pierdere, altfel
+          „nu se completează” — impozitul se stabilește în Secțiunea 5
+      cedarea folosinței 1015 (pct.5.6.6): rd.2 = 20% x rd.1; rd.7 = rd.3; rd.9 = 10% x rd.7
+      închiriere în scop turistic 1006 (pct.5.7.3): sistem real, pierderea e definitivă (fără rd.5/rd.6); rd.9 = 10% x rd.7
+      agricole 1009-1011 (pct.6.6.10): sistem real, compensare 70%; rd.8 redus; rd.9 = 10% x rd.7 (sau rd.8), 0 la pierdere
+      investiții 1012 (pct.7.3.2): rd.3 câștig / rd.4 pierdere netă, rd.6 = min(rd.5, 70% x rd.3); rd.9 = 10% x rd.7
+      alte surse 1021-1024 (pct.9.2.2): rd.7 venitul impozabil, rd.9 = 10% x rd.7
+    `a`: {categ_venit, det_ven_net? (DPI: 1 real / 2 forfetar), venit_brut?, chelt_deduc?, pierdere_precedenta?,
+          castig_net? (1012, negativ = pierdere), venit_impozabil? (alte surse), fara_cota_forfetara? (DPI), forma_org?,
+          caen?, sediu?, nr_doc?, data_doc?, data_incep?, data_sf?, nr_zile_scutite?}. Sume în lei întregi (half-up)."""
+    an = int(an)
+    try:
+        cat = int(a.get("categ_venit"))
+    except (TypeError, ValueError):
+        cat = None
+    if cat not in CATEG_MANUALE:   # refuz de FORMĂ: codul în afara listei de pe ecran
+        raise ValueError("D212: categoria de venit %r nu se introduce aici (activitățile independente vin din registrul RIP); "
+                         "categoriile: %s." % (a.get("categ_venit"), ", ".join(str(c) for c in CATEG_MANUALE)))
+    if an not in ANI_CATEGORII:
+        raise ValueError("D212: %s — regulile pe categorii sunt verificate pentru veniturile %s (instrucțiunile OPANAF 2736/2025); "
+                         "pentru %d, Legea 239/2025 art.XII schimbă cedarea folosinței (CF art.83-87) și alte surse (art.114-116), "
+                         "iar ANAF n-a publicat formularul. Se declară pe formularul ANAF."
+                         % (CATEG_VENIT_CAP11[cat], "/".join(map(str, ANI_CATEGORII)), an))
+    eticheta = CATEG_VENIT_CAP11[cat]
+    vb, cd, pp = _lei(a.get("venit_brut")), _lei(a.get("chelt_deduc")), _lei(a.get("pierdere_precedenta"))
+    if vb < 0 or cd < 0 or pp < 0:   # refuz de FORMĂ: sume negative
+        raise ValueError("D212 %s: venitul brut, cheltuielile și pierderea reportată nu pot fi negative." % eticheta)
+    scut = int(a.get("nr_zile_scutite") or 0)
+    if scut and cat not in CATEG_SCUTIRE_HANDICAP:
+        raise ValueError("D212 %s: zilele scutite nu se aplică — scutirea pentru handicap grav sau accentuat (CF art.60 pct.1) "
+                         "privește activitățile independente, drepturile de proprietate intelectuală și activitățile agricole."
+                         % eticheta)
+    if not 0 <= scut <= 366:   # refuz de FORMĂ: număr de zile în afara anului
+        raise ValueError("D212 %s: zilele scutite trebuie să fie între 0 și numărul de zile ale anului." % eticheta)
+    if cat == CATEG_DPI:
+        det = int(a.get("det_ven_net") or DET_VEN_NET_FORFETAR)
+        if det not in (DET_VEN_NET_SISTEM_REAL, DET_VEN_NET_FORFETAR):   # refuz de FORMĂ: validatorul are două căsuțe
+            raise ValueError("D212 %s: determinarea venitului net %r — 1 sistem real, 2 cote forfetare." % (eticheta, det))
+    elif cat == CATEG_CEDARE:
+        det = DET_VEN_NET_FORFETAR                      # pct.5.6.2 „se bifează căsuța cote forfetare de cheltuieli”
+    elif cat == CATEG_TURISTIC or cat in CATEG_AGRICOLE:
+        det = DET_VEN_NET_SISTEM_REAL                   # pct.5.7.2 / 6.6.2 „se bifează căsuța sistem real”
+    else:
+        det = None                                      # investiții, alte surse: rd.2 nu se completează (pct.7.3, 9.2)
+    c = {"categ_venit": cat}
+    if det:
+        c["det_ven_net"] = det
+    if cat == CATEG_DPI or cat in CATEG_AGRICOLE:
+        forma = int(a.get("forma_org") or FORMA_ORG_INDIVIDUAL)
+        if forma not in FORME_ORG_NORMA:   # refuz de FORMĂ: pct.4.5.3 / 6.6.3 au două căsuțe
+            raise ValueError("D212 %s: forma de organizare %r — 1 individual, 2 asociere." % (eticheta, a.get("forma_org")))
+        c["forma_org"] = forma
+    for k, kx in (("caen", "caen"), ("sediu", "descriere_sediu_bun"), ("nr_doc", "nr_doc_autoriz")):
+        if str(a.get(k) or "").strip():
+            c[kx] = str(a[k]).strip()
+    ian1, dec31 = _dt.date(an, 1, 1), _dt.date(an, 12, 31)
+    for k, kx, camp in (("data_doc", "data_doc_autoriz", "data documentului"), ("data_incep", "data_incep", "data începerii"),
+                        ("data_sf", "data_sf", "data încetării")):
+        d = _data(a.get(k), camp)
+        if d is None:
+            continue
+        if kx != "data_doc_autoriz" and not ian1 <= d <= dec31:
+            raise ValueError("D212 %s: %s (%s) nu e în anul %d — rubrica se completează numai dacă evenimentul se produce în "
+                             "cursul anului (OPANAF 2736/2025, instrucțiuni rd.8/rd.9)." % (eticheta, camp, d, an))
+        c[kx] = _dmy(d)
+    if scut:
+        c["nr_zile_scutite"] = scut
+
+    if det == DET_VEN_NET_FORFETAR:
+        if pp:   # refuz de FORMĂ: la cote forfetare nu există rd.5 (pct.4.5.9 / 5.6.6 enumeră rd.1, 2, 3, 7, 9)
+            raise ValueError("D212 %s: la cote forfetare nu se reportează pierderi." % eticheta)
+        if cat == CATEG_DPI and a.get("fara_cota_forfetara"):
+            if cd > vb:   # refuz de FORMĂ: sumele cuvenite organismelor de gestiune nu pot depăși venitul brut
+                raise ValueError("D212 %s: sumele cuvenite organismelor de gestiune colectivă depășesc venitul brut." % eticheta)
+            ded = cd          # pct.4.5.10 / CF art.72^1 alin.(2): „fără aplicarea cotei forfetare de cheltuieli”
+        else:
+            if cd:   # refuz de FORMĂ: cheltuielile la cote forfetare le stabilește cota, nu contabilul
+                raise ValueError("D212 %s: la cote forfetare cheltuielile se calculează din venitul brut; câmpul se lasă gol."
+                                 % eticheta)
+            ded = _procent(vb, COTA_FORFETARA_DPI if cat == CATEG_DPI else COTA_FORFETARA_CEDARE)
+        net = vb - ded
+        c.update(venit_brut=vb, chelt_deduc=ded, venit_net_anual=net, venit_recalculat=net)
+        baza = net
+        if scut:
+            c["venit_redus"] = baza = redus_handicap(net, scut, an)
+        c["impozit11"] = _procent(baza, COTA_IMPOZIT_VENIT)
+    elif det == DET_VEN_NET_SISTEM_REAL:
+        if cat == CATEG_TURISTIC and pp:
+            raise ValueError("D212 %s: pierderea din închirierea în scop turistic „reprezintă pierdere definitivă” (OPANAF "
+                             "2736/2025, instrucțiuni pct.5.7.3) — nu se reportează." % eticheta)
+        c.update(venit_brut=vb, chelt_deduc=cd)
+        if pp:
+            c["pierdere_precedenta"] = pp
+        if vb > cd:
+            net = vb - cd
+            comp = min(pp, _procent(net, PROCENT_COMPENSARE_PIERDERE))
+            c["venit_net_anual"] = net
+            if pp:
+                c["pierdere_compensata"] = comp
+            c["venit_recalculat"] = net - comp
+            if cat != CATEG_DPI:      # DPI în sistem real: rd.8/rd.9 nu se completează, impozitul e în Secțiunea 5 (pct.4.5.7)
+                baza = net - comp
+                if scut:
+                    c["venit_redus"] = baza = redus_handicap(baza, scut, an)
+                c["impozit11"] = _procent(baza, COTA_IMPOZIT_VENIT)
+        else:
+            if cd > vb:
+                c["pierdere"] = cd - vb
+            c["impozit11"] = 0
+    elif cat == CATEG_INVESTITII:
+        if vb or cd:   # refuz de FORMĂ: pct.7.3.2 începe de la rd.3 (câștigul net), rd.1/rd.2 nu există
+            raise ValueError("D212 %s: se introduce câștigul net anual (pierderea, cu minus), nu venitul brut și cheltuielile."
+                             % eticheta)
+        cn = _lei(a.get("castig_net"))
+        if pp:
+            c["pierdere_precedenta"] = pp
+        if cn > 0:
+            comp = min(pp, _procent(cn, PROCENT_COMPENSARE_INVESTITII))
+            c["venit_net_anual"] = cn
+            if pp:
+                c["pierdere_compensata"] = comp
+            c["venit_recalculat"] = cn - comp
+            c["impozit11"] = _procent(cn - comp, COTA_IMPOZIT_VENIT)
+        else:
+            if cn < 0:
+                c["pierdere"] = -cn
+            c["impozit11"] = 0
+    else:
+        if vb or cd or pp:   # refuz de FORMĂ: pct.9.2.2 cere doar rd.7 (venitul impozabil) și rd.9
+            raise ValueError("D212 %s: se introduce venitul impozabil (rd.7), nu venitul brut, cheltuielile sau pierderi." % eticheta)
+        vi = _lei(a.get("venit_impozabil"))
+        if vi <= 0:   # refuz de FORMĂ: secțiune fără venit
+            raise ValueError("D212 %s: venitul impozabil lipsește." % eticheta)
+        c.update(venit_recalculat=vi, impozit11=_procent(vi, COTA_IMPOZIT_VENIT))
+    return c
+
+
 
 # ── OBLIG_REALIZAT (Secțiunile 3, 4 și 7 ale cap.I — CAS, CASS, impozitul în sistem real, sumarul) ──────────────
 # [D212 Etapa 4, 02.10.2026] Atributele = clasa Oblig_realizat din D212Validator.jar v9 (fără reguli încrucișate, doar
@@ -220,35 +434,88 @@ def _pondere(parte, total):
     return "%.4f" % (Decimal(parte) / Decimal(total)) if total else "0.0000"
 
 
-def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None):
-    """Secțiunile 3, 4 și 7 din venitul declarat în cap11 (sistem real) și cap12 (normă). Întoarce (secțiune, bife).
+def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None, alte_cass=None):
+    """Secțiunile 3, 4, 5 și 7 din venitul declarat în cap11 (o secțiune pe sursă) și cap12 (normă). Întoarce (secțiune, bife).
 
-    Venitul pentru încadrarea CAS/CASS (I.3.1 rd.1 / I.3.2.1 rd.1) = venitul net din sistem real (cap11 rd.3; pierderea
-    nu se ia — instrucțiuni pct.49.1.2.4) + normele (cap12 rd.9) — CF art.148 alin.(3) / art.170 alin.(1)."""
+    Venitul pentru încadrarea CAS (I.3.1 rd.1, I.4.1/I.5.1 rd.2) = venitul net din activități independente (cap11 rd.3;
+    pierderea nu se ia — instrucțiuni pct.49.1.2.4) + normele (cap12 rd.9) + venitul net din drepturi de proprietate
+    intelectuală — CF art.148 alin.(3). Venitul pentru CASS 2.1 (I.3.2.1 rd.1) = fără DPI — art.170 alin.(1). DPI, cedarea
+    folosinței, investițiile, agricolele și alte surse merg la CASS 2.2, pe trepte — art.170 alin.(2)-(4).
+    `alte_cass`: {asociere_pj, dividende_dobanzi, cass_retinuta} — venituri art.155 alin.(1) lit.c)-h) fără secțiune I.1.1
+    (impuse la sursă: venitul distribuit din asocieri cu PJ, dividendele/dobânzile nete) și CASS reținută de plătitori
+    (art.174^1), date de contabil."""
     from core import d212_engine as _e
     if int(an) not in _e.ANI_VERIFICATI:
         raise ValueError("D212: contribuțiile se calculează doar pentru anii cu plafoane verificate la sursă (%s); pragurile "
                          "din Codul fiscal art.148 și art.170 se raportează la salariul minim al anului — pentru %s verifică-l întâi."
                          % ("/".join(map(str, _e.ANI_VERIFICATI)), an))
     p = _e.plafoane_an(int(an))
-    net_real = _lei((cap11 or {}).get("venit_net_anual") or 0)
-    recalc = _lei((cap11 or {}).get("venit_recalculat") or 0)
+    secs = _sectiuni(cap11)
+
+    def _cat(s):
+        return int(s.get("categ_venit") or 0)
+
+    def _suma(categorii, camp, filtru=lambda s: True):
+        return sum(_lei(s.get(camp) or 0) for s in secs if _cat(s) in categorii and filtru(s))
+
+    def _scutite(categorii):
+        return max((int(s.get("nr_zile_scutite") or 0) for s in secs if _cat(s) in categorii), default=0)
+
+    ai = (CATEG_ACTIVITATI_INDEPENDENTE,)
+    net_real, recalc = _suma(ai, "venit_net_anual"), _suma(ai, "venit_recalculat")
+    real_dpi = lambda s: int(s.get("det_ven_net") or 0) == DET_VEN_NET_SISTEM_REAL   # noqa: E731
+    dpi_net = _suma((CATEG_DPI,), "venit_net_anual")
+    dpi_real_net = _suma((CATEG_DPI,), "venit_net_anual", real_dpi)
+    dpi_recalc = _suma((CATEG_DPI,), "venit_recalculat", real_dpi)
     norme = sum(_lei(c.get("real_venit_net_anual") or 0) for c in _sectiuni(cap12))
-    total = net_real + norme
+    total = net_real + norme                 # art.170 alin.(1): CASS 2.1
+    total_cas = total + dpi_net              # art.148 alin.(3): CAS
     o, bife = {}, {}
-    if optiune_cas and total < p.cas_prag_min_sm * p.salariu_minim:
+    if optiune_cas and total_cas < p.cas_prag_min_sm * p.salariu_minim:
         # instrucțiuni pct.46.2 lit.B „sub plafonul minim și optez” — formularul validatorului instalat (J13.0.1, Pdf_v8)
         # are doar căsuțele A1 (12-24 sm) și A2 (>= 24 sm); emiterea opțiunii pe A1 ar declara un venit pe care nu-l are
         raise ValueError("D212: opțiunea pentru CAS sub 12 salarii minime (OPANAF 2736/2025, instrucțiuni pct.46.2, lit.B) nu are "
                          "căsuță în formularul validatorului ANAF instalat (J13.0.1, formularul pentru veniturile 2024); se declară "
                          "pe formularul ANAF.")
-    cas = _e.calculeaza_cas(float(total), p, optiune_cas)
+    cas = _e.calculeaza_cas(float(total_cas), p, optiune_cas)
     cas_d = _lei(cas["cas"])
     if cas_d:
         # rd.1-rd.5 (instrucțiuni pct.46.3-46.7); căsuța: A1 între 12 și 24 sm, A2 de la 24 sm (pct.46.1)
-        o.update(bifa_cas_real=2 if total >= p.cas_prag_max_sm * p.salariu_minim else 1, cas_total_ven=total,
+        o.update(bifa_cas_real=2 if total_cas >= p.cas_prag_max_sm * p.salariu_minim else 1, cas_total_ven=total_cas,
                  cas_baza=_lei(cas["baza"]), cas_datorat=cas_d, cas_dif_plus=cas_d)
         bife["bifa131"] = "1"
+    # CASS 2.2 (pct.52.1): venitul cumulat pe categoriile lit.c)-h) -> treapta 6/12/24 sm (CF art.170 alin.(3)-(4))
+    x = alte_cass or {}
+    asc, divd, ret22 = _lei(x.get("asociere_pj")), _lei(x.get("dividende_dobanzi")), _lei(x.get("cass_retinuta"))
+    if asc < 0 or divd < 0 or ret22 < 0:   # refuz de FORMĂ: sume negative
+        raise ValueError("D212: veniturile pentru CASS și CASS reținută nu pot fi negative.")
+    ven22 = {"cass_ven_dpi": dpi_net, "cass_ven_asc": asc,
+             "cass_ven_cfb": _suma((CATEG_CEDARE, CATEG_TURISTIC), "venit_net_anual"),
+             "cass_ven_inv": _suma((CATEG_INVESTITII,), "venit_net_anual") + divd,
+             "cass_ven_asp": _suma(CATEG_AGRICOLE, "venit_net_anual"),
+             "cass_ven_alt": _suma(CATEG_ALTE_SURSE, "venit_recalculat")}
+    total22 = sum(ven22.values())
+    c22 = _e.calculeaza_cass_alte_venituri(float(total22), p)
+    cass22 = _lei(c22["cass"])
+    if ret22 > cass22:
+        from core import pdf_util
+        raise ValueError("D212: CASS reținută de plătitori (%s lei) depășește CASS datorată pe veniturile din DPI, cedarea folosinței, "
+                         "investiții, agricole și alte surse (%s lei); formularul validatorului ANAF instalat (J13.0.1) n-are la "
+                         "subsecțiunea 2.2 rândul „diferența stabilită în minus” (OPANAF 2736/2025, instrucțiuni pct.52.1.11). Se "
+                         "declară pe formularul ANAF." % (pdf_util.bani(ret22), pdf_util.bani(cass22)))
+    dif22 = cass22 - ret22
+    if cass22:
+        # căsuța = treapta (pct.52.1.1-52.1.3); rd.1 tabelul pe categorii; rd.2 baza; rd.3 CASS; rd.4 reținută; rd.5 în plus
+        o.update({k: v for k, v in ven22.items() if v})
+        o.update(bifa_cass_datorat_dpi=1, bifa_cass_real=c22["treapta"], cass_total_ven=total22, cass_baza=_lei(c22["baza"]),
+                 cass_datorat=cass22, cass_dif_plus=dif22)
+        if ret22:
+            o["cass_retinut"] = ret22
+        bife["bifa132"] = "1"
+        if exceptie_minim_cass is None:
+            # CF art.174 alin.(7) lit.b): diferența până la 6 sm din 2.1 nu se datorează când veniturile lit.c)-h) poartă CASS
+            # „la un nivel cel puțin egal cu 6 salarii minime brute pe țară” — rezultă din datele de mai sus, nu din alegere
+            exceptie_minim_cass = "venituri_c_h"
     cass = _e.calculeaza_cass(float(total), p, False, exceptie_minim_cass)
     cass_d = _lei(cass["cass"])
     if cass_d:
@@ -256,16 +523,17 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
         o.update(bifa_cass_datorat_ai=1, cass_total_ven_ai=total, baza_cass_datorat_ai=_lei(cass["baza"]),
                  cass_datorat_ai=cass_d, cass_dif_plus_ai=cass_d)
         bife["bifa132"] = "1"
-    impozit = sum(_lei(c.get("real_impozit") or 0) for c in _sectiuni(cap12))
+    # impozitul stabilit direct în I.1.1 (rd.9 al fiecărei secțiuni) și pe norme (pct.56.1 rd.1, prima și a doua liniuță)
+    impozit = sum(_lei(s.get("impozit11") or 0) for s in secs) + sum(_lei(c.get("real_impozit") or 0) for c in _sectiuni(cap12))
     if net_real:
-        # I.4.1: CAS deductibilă = pondere sistem real x CAS datorată (CF art.118 alin.(2^2))
-        cas_ded = _lei(Decimal(cas_d) * net_real / total) if total else 0
+        # I.4.1: CAS deductibilă = pondere sistem real (în venitul art.148) x CAS datorată (CF art.118 alin.(2^2))
+        cas_ded = _lei(Decimal(cas_d) * net_real / total_cas) if total_cas else 0
         # I.4.2: CASS deductibilă = pondere x CASS datorată, sau x CASS calculată pe venit sub 6 sm (rd.5, art.174 alin.(1))
         sub_minim = cass["diferenta_minim"] > 0
         baza_ded = _lei(cass["cass_pe_venit"]) if sub_minim else cass_d
         cass_ded = _lei(Decimal(baza_ded) * net_real / total) if total else 0
-        o.update(real_cas_venit_net_ai=net_real, real_cas_total_ven_ai=total, real_cas_pondere_ai=_pondere(net_real, total),
-                 real_cas_datorata_ai=cas_d, real_cas_deductibila_ai=cas_ded,
+        o.update(real_cas_venit_net_ai=net_real, real_cas_total_ven_ai=total_cas,
+                 real_cas_pondere_ai=_pondere(net_real, total_cas), real_cas_datorata_ai=cas_d, real_cas_deductibila_ai=cas_ded,
                  real_cass_venit_net_ai=net_real, real_cass_total_ven_ai=total,
                  real_cass_pondere_ai=_pondere(net_real, total), real_cass_datorata_ai=cass_d,
                  real_cass_deductibila_ai=cass_ded)
@@ -274,17 +542,40 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
         # I.4 rd.1-rd.6: deducerile nu pot depăși venitul net recalculat (pct.53 rd.4)
         ded_cas, ded_cass = min(cas_ded, recalc), min(cass_ded, max(0, recalc - min(cas_ded, recalc)))
         impozabil = recalc - ded_cas - ded_cass
+        o.update(real_venit_net_recalculat_ai=recalc, real_venit_net_impozabil_ai=impozabil)
+        scut = _scutite(ai)
+        if scut:
+            # rd.5 „redus proporțional cu numărul de zile calendaristice pentru care venitul este scutit” (pct.53)
+            o["real_venit_net_impozabil_redus_ai"] = impozabil = redus_handicap(impozabil, scut, an)
         # cota din motor (aceeași sursă ca fișa RIP): CF art.64 alin.(1) lit.a) „Cota de impozit este de 10%”
         imp_real = _lei(Decimal(impozabil) * Decimal(str(p.impozit_cota)))
         # rd.2/rd.3 (contribuțiile deductibile) n-au atribut propriu în XML: sunt rd.5 din I.4.1 / rd.6 din I.4.2
-        o.update(real_venit_net_recalculat_ai=recalc, real_venit_net_impozabil_ai=impozabil,
-                 real_impozit_datorat_ai=imp_real)
+        o["real_impozit_datorat_ai"] = imp_real
         bife["bifa14"] = "1"
         impozit += imp_real
-    # I.7 sumarul (pct.56): impozitul (I.4 rd.6 + normele), CAS și CASS stabilite în plus, diferența de plată
+    if dpi_real_net:
+        # Secțiunea 5 (pct.54): DPI în sistem real; 5.1 CAS deductibilă = pondere DPI (în venitul art.148) x CAS datorată
+        # (CF art.118 alin.(2^1)); rd.2 nu poate depăși venitul net recalculat
+        cas_ded_dpi = _lei(Decimal(cas_d) * dpi_real_net / total_cas) if total_cas else 0
+        ded = min(cas_ded_dpi, dpi_recalc)
+        impozabil_dpi = dpi_recalc - ded
+        o.update(real_cas_venit_net_dpi=dpi_real_net, real_cas_total_ven_dpi=total_cas,
+                 real_cas_pondere_dpi=_pondere(dpi_real_net, total_cas), real_cas_datorata_dpi=cas_d,
+                 real_cas_deductibila_dpi=cas_ded_dpi, real_venit_net_recalculat_dpi=dpi_recalc, real_cas_dpi=ded,
+                 real_venit_net_impozabil_dpi=impozabil_dpi)
+        scut = _scutite((CATEG_DPI,))
+        if scut:
+            o["real_venit_net_impozabil_redus_dpi"] = impozabil_dpi = redus_handicap(impozabil_dpi, scut, an)
+        imp_dpi = _procent(impozabil_dpi, COTA_IMPOZIT_VENIT)
+        o["real_impozit_datorat_dpi"] = imp_dpi
+        bife["bifa15"] = "1"
+        impozit += imp_dpi
+    # I.7 sumarul (pct.56): impozitul, CAS, CASS 2.1 și 2.2 stabilite în plus, diferența de plată
     o.update(oblimpoz_real_total=impozit, oblimpoz_real_dif_deplata=impozit, oblcas_real_difPlus=cas_d,
-             oblcass_real_difPlus_ai=cass_d, impozit_venit_plus=impozit, cas_plus=cas_d, cass_plus=cass_d,
-             dif_de_plata=impozit + cas_d + cass_d)
+             oblcass_real_difPlus_ai=cass_d, impozit_venit_plus=impozit, cas_plus=cas_d, cass_plus=cass_d + dif22,
+             dif_de_plata=impozit + cas_d + cass_d + dif22)
+    if dif22:
+        o["oblcass_real_difPlus_dpi"] = dif22
     return o, bife
 
 
@@ -456,8 +747,8 @@ def erori_generare(prof, manual):
     an = int(manual.get("an_r") or getattr(prof, "an", 0) or 0)
     if an and an < 2025:
         er.append("an_r %d sub anul minim acceptat de validator (2025)." % an)
-    cap11 = manual.get("cap11")
-    if cap11:
+    dpi = 0
+    for cap11 in _sectiuni(manual.get("cap11")):
         try:
             cv = int(cap11.get("categ_venit"))
         except (TypeError, ValueError):
@@ -465,19 +756,22 @@ def erori_generare(prof, manual):
         if cv not in CATEG_VENIT_CAP11:
             er.append("Capitol cap11: categoria de venit %r nu e în nomenclatorul D212 (%s)."
                       % (cap11.get("categ_venit"), ", ".join(str(k) for k in sorted(CATEG_VENIT_CAP11))))
+        dpi += cv == CATEG_DPI
+    if dpi > 1:
+        er.append("Drepturile de proprietate intelectuală se declară într-o singură secțiune, oricâți plătitori ar fi (OPANAF "
+                  "2736/2025, instrucțiuni pct.4.4: „completează o singură subsecțiune în declarație”).")
     for nume in _COPII:
         for cap in _sectiuni(manual.get(nume)):
             straine = set(cap) - _CAMPURI[nume]
             if straine:
                 er.append("Capitol %s: câmpuri necunoscute (respinse de validator): %s"
                           % (nume, ", ".join(sorted(straine))))
-    if isinstance(manual.get("cap11"), list):
-        er.append("Capitol cap11: o singură secțiune (validatorul o primește o dată).")
     return er
 
 
 def _sectiuni(cap):
-    """Un capitol poate fi o secțiune (dict) sau, la cap12, o listă de secțiuni (o activitate / un loc fiecare)."""
+    """Un capitol poate fi o secțiune (dict) sau o listă de secțiuni (cap11: o sursă de venit fiecare; cap12: o activitate /
+    un loc fiecare)."""
     if not cap:
         return []
     return list(cap) if isinstance(cap, (list, tuple)) else [cap]
@@ -546,7 +840,7 @@ class Rezultat212:
     avertismente: list = field(default_factory=list)
 
 
-def cap11_din_rip(conn, schema, an, pierdere_precedenta=0, caen=None):
+def cap11_din_rip(conn, schema, an, pierdere_precedenta=0, caen=None, nr_zile_scutite=0):
     """Lantul RIP -> cap11: venitul brut si cheltuielile deductibile din operatiunile VALIDATE ale
     registrului (rip_api.fisa_d212, aceeasi sursa ca fisa afisata pe ecran). Refuza anii cu plafoane
     neverificate (refuzul fisei) si avertizeaza despre ce nu intra in calcul."""
@@ -554,7 +848,7 @@ def cap11_din_rip(conn, schema, an, pierdere_precedenta=0, caen=None):
     f = rip_api.fisa_d212(conn, schema, an)
     if f.get("eroare"):
         raise ValueError("D212: fișa RIP nu se poate trage — " + f["eroare"])
-    return cap11_sistem_real(f["venit_brut"], f["cheltuieli_deductibile"], pierdere_precedenta, caen), \
+    return cap11_sistem_real(f["venit_brut"], f["cheltuieli_deductibile"], pierdere_precedenta, caen, nr_zile_scutite), \
         f.get("avertisment")
 
 
@@ -566,9 +860,18 @@ def genereaza(conn, schema, perioada, manual=None):
         if conn is None:
             raise ValueError("D212: venitul din registrul RIP cere firma (conexiunea lipsește).")
         manual["cap11"], a = cap11_din_rip(conn, schema, an, manual.get("pierdere_precedenta") or 0,
-                                           manual.get("caen"))
+                                           manual.get("caen"), manual.get("nr_zile_scutite_rip") or 0)
         if a:
             avert.append(a)
+    if manual.get("venituri"):
+        # [D212 Etapa 5] categoriile fără date în aplicație: câte o secțiune I.1.1 pe sursă, lângă cea din registrul RIP
+        sectiuni = _sectiuni(manual.get("cap11"))
+        for i, x in enumerate(_sectiuni(manual["venituri"]), 1):
+            try:
+                sectiuni.append(cap11_categorie(x, an))
+            except ValueError as e:      # numește venitul vinovat (temeiul, unde există, e în mesajul interior)
+                raise ValueError("Venitul %d — %s" % (i, e)) from None
+        manual["cap11"] = sectiuni
     if manual.get("cap11"):
         manual["bifa111"] = "1"      # subsectiunea I.1.1 completata (R7 cere si reciproca)
     if manual.get("agricol"):
@@ -589,10 +892,12 @@ def genereaza(conn, schema, perioada, manual=None):
         manual["cap12"] = cap12
     if manual.get("cap12"):
         manual["bifa112"] = "1"      # R8: bifa112=1 => cap12 exista (și subsecțiunea se declară completată)
-    if (manual.get("cap11") or manual.get("cap12")) and not manual.get("oblig_realizat"):
-        # [D212 Etapa 4] CAS, CASS, impozitul în sistem real și sumarul, din veniturile declarate mai sus
+    alte_cass = {k: v for k, v in (manual.get("alte_cass") or {}).items() if v not in (None, "", 0, "0")}
+    if (manual.get("cap11") or manual.get("cap12") or alte_cass) and not manual.get("oblig_realizat"):
+        # [D212 Etapa 4-5] CAS, CASS (2.1 și 2.2), impozitul în sistem real și sumarul, din veniturile declarate mai sus
         manual["oblig_realizat"], bife = oblig_realizat(manual.get("cap11"), manual.get("cap12"), an,
-                                                        bool(manual.get("optiune_cas")), manual.get("exceptie_minim_cass") or None)
+                                                        bool(manual.get("optiune_cas")), manual.get("exceptie_minim_cass") or None,
+                                                        alte_cass)
         manual.update(bife)
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)

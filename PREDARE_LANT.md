@@ -1,17 +1,23 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Factura din bon fiscal numărată o dată (decizia A); D212 Etapa 4 închisă; urmează D212 Etapa 5 (categoriile fără date)** (02.10.2026)
+# PREDARE LANȚ — **D212 Etapa 5a livrată (celelalte venituri din România, CASS 2.2, Secțiunea 5); urmează 5c (cap14, venituri din străinătate)** (02.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **factura din bon fiscal** (commitul care poartă această
-  predare; hash-ul lui e în raport și în `git log`).
-- **pe commit**: `d5b2ee07` — ultimul four-way închis înainte de rescriere (02.10.2026 20:37: HEAD = origin/main = public/main =
-  backup/lant-2026-10-02 = procesul viu (2 din 2) = d5b2ee07, D212 Etapa 4).
-- **ÎN LUCRU ACUM:** nimic deschis — firul D212 Etapa 3 e ÎNCHIS în TESTE.md „În lucru acum”.
-- **URMĂTORUL FRONT:** D212 Etapa 5 — formular manual pentru categoriile fără date în aplicație (chirii, investiții,
-  drepturi de proprietate intelectuală, alte surse, cap14), cu CASS pe treptele art.170 alin.(2)-(3); apoi etapa finală
-  (mesajul din `d221.py`, ghidurile care spun „D212 doar identificare”). Etapa 4 (oblig_realizat) e închisă — `D212_PERIMETRU.md` §7.
+- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **D212 Etapa 5a** (commitul care poartă această predare;
+  hash-ul lui e în raport și în `git log`).
+- **pe commit**: `eba64f37` — ultimul four-way închis înainte de rescriere (02.10.2026 22:50: HEAD = origin/main = public/main =
+  backup/lant-2026-10-02 = procesul viu (2 din 2) = eba64f37, factura din bon fiscal).
+- **ÎN LUCRU ACUM:** firul **D212 Etapa 5** în TESTE.md „În lucru acum” — pașii 5a-1…5a-5 livrați în commitul care poartă
+  predarea (I.1.1 pe categorii, CAS cu DPI, CASS 2.2 pe trepte, Secțiunea 5, lista „Alte venituri” pe ecran); rămâne 5c.
+- **URMĂTORUL FRONT:** D212 **5c** — cap14 (Secțiunea 2, venituri din străinătate): o secțiune pe țară și sursă, credit fiscal
+  plafonat la impozitul român (instrucțiuni pct.39.6.10), metoda scutirii -> rd.8 = 0, `str_categ_venit` din nomenclatorul
+  validatorului, veniturile din străinătate în CAS/CASS (pct.46.3, 52.1.4). Instrucțiunile cap14 sunt citite (chars
+  169907–192758 din textul instrucțiunilor). Apoi etapa finală (mesajul din `d221.py`, ghidurile „D212 doar identificare”).
+  Detaliul 5a: `D212_PERIMETRU.md` §8.
+- **[EXTERN] nou (Etapa 5a):** CASS 2.2 reținută peste cea datorată — formularul instalat n-are rândul „diferența în minus”
+  (refuz numit); dobânzile pentru obligațiuni pe piețe externe (instrucțiuni pct.8) n-au căsuță — categoria nu e oferită;
+  categoriile pentru veniturile 2026 — Legea 239/2025 schimbă regulile, formularul ANAF nepublicat (refuz numit).
 - **[EXTERN] nou (Etapa 4):** opțiunea CAS sub 12 sm (lit.B) n-are căsuță în formularul validatorului instalat (Pdf_v8: doar A1/A2);
   refuz numit + `core/test_datorie.py::test_datorie_d212_optiune_cas_sub_12_sm`.
 - **D212 — BLOCAJ [EXTERN] aflat la sursă pe 02.10:** validatorul instalat (J13.0.1, pachet v9) e al formularului PENTRU
@@ -437,7 +443,7 @@ vorbă, e o consecință.*
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **81** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77** | **95** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **880** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |

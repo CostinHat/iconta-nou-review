@@ -82,14 +82,18 @@ from core import reverificare as R  # noqa: E402
 DISTRIBUTIE = {
     # 14 -> 15 la 02.10.2026 (D212 Etapa 2): CF art.118 alin.(4) - compensarea pierderii in limita a 70%.
     # 15 -> 16 la 02.10.2026 (lot 19 pct.4a, D216): CF art.500^2 lit.a) - cota 0,9% a impozitului special din 2026.
-    ("VOLATIL", "DEPUS"): 16,
+    # 16 -> 18 la 02.10.2026 (D212 Etapa 5): CF art.84 alin.(3) - cota forfetara 20% la cedarea folosintei; CF art.119
+    # alin.(2) - compensarea pierderii din investitii in limita a 70%. Masurat cu R.inventar: ambele VOLATIL, prag 1 luna.
+    ("VOLATIL", "DEPUS"): 18,
     # 7 -> 9 la 29.09.2026 (lot18, 3d): cele doua cote CF art.84^1 (forfait 20% alin.(3) +
     # impozit 10% alin.(5), chirii platite unei PF de un platitor PJ) au intrat in COTE si sunt
     # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
     ("VOLATIL", "CALCULAT"): 16,
     # 9 -> 10 la 02.10.2026 (lot 19 pct.4a, D216): Legea 296/2023 art.III - cota 0,3% a impozitului special (2024-2025).
     # 10 -> 11 la 02.10.2026 (D212 Etapa 3): CF art.69^2 alin.(1) - cota 10% a impozitului pe norma de venit.
-    ("STABIL", "DEPUS"): 11,
+    # 11 -> 13 la 02.10.2026 (D212 Etapa 5): CF art.72^1 alin.(1) - cota forfetara 40% la drepturile de proprietate
+    # intelectuala; CF art.64 alin.(1) - cota 10% pe venitul fiecarei surse. Masurat cu R.inventar: STABIL, prag 6 luni.
+    ("STABIL", "DEPUS"): 13,
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
     ("STABIL", "CALCULAT"): 14,
     ("MISCATOR", "CALCULAT"): 7,
