@@ -1,14 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D212 Etapa 3 închisă: venitul pe normă (cap12) cap-coadă + două gărzi de clasă; urmează D212 Etapa 4 (impozit/CAS/CASS în `oblig_realizat`)** (02.10.2026)
+# PREDARE LANȚ — **D394 op2 Î1 din rapoartele Z închis (decizia B); D212 Etapa 3 închisă; urmează D212 Etapa 4 (impozit/CAS/CASS în `oblig_realizat`)** (02.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-02** (seara), în commitul **D212 Etapa 3** (commitul care poartă această predare; hash-ul lui
-  e în raport și în `git log` — o predare nu-și poate cita propriul hash).
-- **pe commit**: `78e85cda` — ultimul four-way închis înainte de rescriere (02.10.2026 11:07: HEAD = origin/main = public/main =
-  backup/lant-2026-10-02 = procesul viu (2 din 2) = 78e85cda). Commitul de predare intermediar (`PREDARE_LANT.md` + `TESTE.md`
-  după lot 19) a fost RESPINS de poartă (2 roșii, v. mai jos) și a intrat în commitul D212 Etapa 3.
+- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **D394 op2 Î1** (commitul care poartă această predare; hash-ul
+  lui e în raport și în `git log`).
+- **pe commit**: `8dcb07de` — ultimul four-way închis înainte de rescriere (02.10.2026 15:08: HEAD = origin/main = public/main =
+  backup/lant-2026-10-02 = procesul viu (2 din 2) = 8dcb07de, D212 Etapa 3).
 - **ÎN LUCRU ACUM:** nimic deschis — firul D212 Etapa 3 e ÎNCHIS în TESTE.md „În lucru acum”.
 - **URMĂTORUL FRONT:** D212 Etapa 4 — impozitul (sistem real + normă) și CAS/CASS în `oblig_realizat` (secțiunea 4 a cap.I),
   pe plafoanele din `d212_engine`; apoi Etapa 5 (formular manual pentru categoriile fără date) și etapa finală (mesajul din
@@ -18,8 +17,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   nu există bifa114). Generatorul REFUZĂ numit; datorie strictă `core/test_datorie.py::test_datorie_d212_venit_agricol_pe_norma`.
   Ce trebuie · de la cine · ce blochează: validatorul D212 pentru OPANAF 2736/2025 · ANAF (versiuni.xml) · emiterea agricolului.
 - **DECIZII CARE AȘTEAPTĂ PE COSTIN:**
-  1. D394 secțiunea `op2` tip i1 (încasări AMEF) din rapoartele Z: doar din importul AMEF, sau câmpuri noi (nr. bonuri /
-     nr. aparate) pe ruta tastată „Raport Z”? Datorie strictă: `core/test_datorie.py::test_datorie_d394_op2_incasari_amef_din_rapoarte_z`.
+  1. D394 Î1 — încasările „pentru care s-au emis facturi” se exclud (OPANAF 2194/2025, lit.G). Aplicația nu leagă azi o factură
+     emisă de bonul din care provine (`bonuri` = bonurile PRIMITE), deci totalul Z intră integral în op2, iar factura și în op1.
+     Varianta A: o marcă „emisă din bon fiscal” pe factura emisă, scăzută din op2 pe lună. Varianta B: contabilul corectează
+     manual. Blochează: exactitatea Î1 la firmele care emit facturi din bonuri.
+- **ÎNCHIS 02.10 (decizia B):** D394 op2 Î1 — ruta tastată cere nr. bonuri, ambele rute scriu `rapoarte_z_amef`, D394 citește o
+  singură sursă, refuz numit pe raportul incomplet; datoria strictă scoasă. DECIZII 02.10, GARZI „D394 op2 Î1”.
 - **Fronturi deschise, neschimbate:** F1 etapele 9-11 (depunere reală = [EXTERN]); F2 D101 (la închiderea anului);
   Pachet FiscalOS §4 (D394 Î1/Î2); plafonul de creșă pentru luni < 04.2024 rămâne pe baza 450 (DECIZII 01.10).
 - **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09, DECIZII 21.09) — nu se comite, nu se șterge.
@@ -419,8 +422,8 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **81** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **872** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **874** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

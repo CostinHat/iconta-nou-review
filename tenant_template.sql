@@ -2661,6 +2661,15 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_z_cote (
     CONSTRAINT rapoarte_z_cote_nota_cota_uniq UNIQUE (inregistrare_id, cota)
 );
 
+-- [D394 op2 I1, decizia Costin 02.10.2026, varianta B] Casa (NUI) si numarul de bonuri ale raportului Z, un rand pe
+-- raport, scris de AMBELE rute (import AMEF + ruta tastata). D394 lit.G: nr. de AMEF (case distincte pe luna) +
+-- nr. bonuri fiscale. Mirror core/raport_z.py (_SQL_TABEL_AMEF).
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_z_amef (
+    inregistrare_id integer PRIMARY KEY REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE,
+    nui text NOT NULL CHECK (btrim(nui) <> ''),
+    nr_bonuri integer NOT NULL CHECK (nr_bonuri > 0)
+);
+
 -- [lot 19 pct.4c, 02.10.2026] Perioadele de suspendare FARA drepturi salariale (CFP / suspendare, Codul muncii
 -- art.49 alin.(2), art.54, art.153). Statul de plata si D112 proratau brutul doar la CM. Mirror
 -- core/migrare_suspendari_contract.py.

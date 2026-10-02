@@ -1,0 +1,24 @@
+{
+ "eroare_bonuri": "Trece numărul de bonuri fiscale de pe raportul Z — intră în D394.",
+ "cereri_la_server": 0,
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ]
+}

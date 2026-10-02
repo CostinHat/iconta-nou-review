@@ -48,7 +48,7 @@ from core import uc_comun as _uc_comun
 from core import db, auth_api, tenant_provisioning, facturi_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core.mesaje import (EMAIL_INVALID, EMAIL_EXISTA,
                          CUI_FIRMA_LIPSA,
-                         MESAJ_Z_FARA_CHEIE,
+                         MESAJ_Z_FARA_CHEIE, MESAJ_Z_FARA_BONURI, MESAJ_AMEF_FARA_BONURI,
                               FARA_DREPT_VALIDARE)
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
 import psycopg2 as _psycopg2
@@ -4661,6 +4661,9 @@ def horeca_import_amef(tenant_id, continut, ctx):
         raise _erori.DateInvalide(f"fisier AMEF invalid: {e}")
     if not rz["data"]:
         raise _erori.DateInvalide("nu am putut extrage data din idR")
+    if not rz.get("nr_bonuri") or rz["nr_bonuri"] <= 0:
+        # D394 lit.G (OPANAF 2194/2025 pct.14): numărul de bonuri al lunii — un Z fără el n-are ce declara
+        raise _erori.DateInvalide(MESAJ_AMEF_FARA_BONURI)
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -4701,6 +4704,8 @@ def horeca_import_amef(tenant_id, continut, ctx):
                 if cota["valoare"] or cota["tva"]:
                     repo_contabilitate.adauga_z_cota(cur, schema, iid, D(str(cota["cota"])),
                                                      cota["valoare"] - cota["tva"], cota["tva"])
+            # [D394 op2 Î1, decizia B] casa + bonurile, în ACELAȘI rând ca la ruta tastată (o singură sursă pt D394)
+            repo_contabilitate.adauga_z_amef(cur, schema, iid, rz["nui"], rz["nr_bonuri"])
         conn.commit()
     return {"inregistrare_id": iid, "status": "ciorna", "data": rz["data"],
             "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
@@ -4721,6 +4726,8 @@ def horeca_raport_z(tenant_id, rz, ctx):
         nr_raport = (rz.nr_raport or "").strip()
         if not nui or not nr_raport:
             raise _erori.CerereGresita(MESAJ_Z_FARA_CHEIE)
+        if not rz.nr_bonuri or rz.nr_bonuri <= 0:
+            raise _erori.CerereGresita(MESAJ_Z_FARA_BONURI)
         numar = "Z-%s-%s" % (nui, nr_raport)
         total = D(str(rz.total_11)) + D(str(rz.total_21))
         if total <= 0:
@@ -4754,6 +4761,8 @@ def horeca_raport_z(tenant_id, rz, ctx):
             for _c, _b, _t in ((c_red, baza11, tva11), (c_std, baza21, tva21)):
                 if _b or _t:
                     repo_contabilitate.adauga_z_cota(cur, schema, iid, _c, _b, _t)
+            # [D394 op2 Î1, decizia B] casa + bonurile, în ACELAȘI rând ca la importul AMEF (o singură sursă pt D394)
+            repo_contabilitate.adauga_z_amef(cur, schema, iid, nui, int(rz.nr_bonuri))
     return {"ok": True, "nota_id": iid,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}

@@ -3389,7 +3389,7 @@ async function ecranRaportZ(corp, nav, t) {
   const azi = new Date().toISOString().slice(0, 10);
   corp.innerHTML = `
     <h2 class="pf-titlu">Raport Z</h2>
-    <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori.</p>
+    <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori. Numărul de bonuri fiscale e tot pe raportul Z și intră în D394.</p>
     <p><label class="buton-secundar" style="cursor:pointer">Import fi\u0219ier AMEF (p7b/XML)
       <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
     <div id="z-amef-msg"></div>
@@ -3402,6 +3402,7 @@ async function ecranRaportZ(corp, nav, t) {
       <label class="camp"><span class="camp-eticheta">Total 21% (alcool, sucuri)</span><input type="number" step="0.01" id="z-21" class="camp-input" placeholder="0,00"></label>
       <label class="camp"><span class="camp-eticheta">Numerar</span><input type="number" step="0.01" id="z-num" class="camp-input" placeholder="0,00"></label>
       <label class="camp"><span class="camp-eticheta">Card</span><input type="number" step="0.01" id="z-card" class="camp-input" placeholder="0,00"></label>
+      <label class="camp"><span class="camp-eticheta">Nr. bonuri fiscale</span><input type="number" min="1" step="1" id="z-bonuri" class="camp-input" placeholder="0"></label>
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
     <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza">Genereaz\u0103 not\u0103</button></p>`;
@@ -3423,12 +3424,20 @@ async function ecranRaportZ(corp, nav, t) {
     corp.querySelector("#z-salveaza").addEventListener("click", async () => {
     const v = (id) => parseFloat(corp.querySelector(id).value) || 0;
     const zona = corp.querySelector("#z-rezultat");
+    curataEroriCamp(corp);
+    const nrBonuri = parseInt(corp.querySelector("#z-bonuri").value, 10) || 0;
+    if (nrBonuri <= 0) {
+      // [D394 op2 Î1, decizia B] UX preventiv; refuzul autoritar e pe server (MESAJ_Z_FARA_BONURI)
+      eroareCamp(corp, "z-bonuri", "Trece numărul de bonuri fiscale de pe raportul Z — intră în D394.");
+      return;
+    }
     try {
       const r = await api.post(`/tenants/${t.id}/horeca/raport-z`, {
         data: corp.querySelector("#z-data").value,
         // [R61] cheia de unicitate a raportului Z: casa de marcat + numarul raportului
         nui: corp.querySelector("#z-nui").value.trim(),
         nr_raport: corp.querySelector("#z-nr").value.trim(),
+        nr_bonuri: nrBonuri,
         total_11: v("#z-11"), total_21: v("#z-21"),
         numerar: v("#z-num"), card: v("#z-card"),
       });

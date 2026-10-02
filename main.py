@@ -3181,6 +3181,8 @@ class RaportZ(BaseModel):
     # Aceeasi cheie ca la `import-amef`, ca notele tastate si cele importate sa se vada.
     nui: str = ""
     nr_raport: str = ""
+    # [D394 op2 Î1, decizia B 02.10.2026] numărul de bonuri fiscale de pe Z (D394 lit.G, OPANAF 2194/2025 pct.14)
+    nr_bonuri: int = 0
     total_11: float = 0
     total_21: float = 0
     numerar: float = 0

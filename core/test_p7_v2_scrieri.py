@@ -206,7 +206,10 @@ def test_numarul_de_instructiuni_se_conserva():
     #   scrisă în aceeași tranzacție cu nota, ca D300 rd.9/10 s-o poată citi (nota 707/4427 n-o poartă);
     #   repo_salariati.suspendari_salariat (salariat_actualizeaza) — setul vechi de suspendări, ca poarta de
     #   perioadă să se aplice lunilor ATINSE de schimbare. Nu mută SQL din altă parte: pași NOI ai aplicației.
-    assert _apeluri_catre_repository() == 271
+    # [D394 op2 Î1, decizia B, 02.10.2026] 271 -> 273, cu apelurile numite:
+    #   repo_contabilitate.adauga_z_amef ×2 (horeca_import_amef, horeca_raport_z) — casa și numărul de bonuri ale
+    #   raportului Z, în același rând pe ambele rute, ca D394 op2 Î1 să citească o singură sursă. Pași NOI.
+    assert _apeluri_catre_repository() == 273
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

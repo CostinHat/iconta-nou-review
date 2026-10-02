@@ -45,6 +45,15 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **D394 op2 Î1 din rapoartele Z — decizia B** (02.10.2026, decizia Costin „D394 op2 i1: varianta B …”; DECIZII 02.10). ÎNCHIS
+  - ultim: pașii 1–5 livrați (commitul D394 op2, hash în ISTORIC 02.10.2026): `rapoarte_z_amef` scris de ambele rute, câmpul „Nr. bonuri fiscale” pe ecran, op2 Î1 pe lună + rezumat2 + a doua cale, refuz numit; datoria `test_datorie_d394_op2_incasari_amef_din_rapoarte_z` scoasă; proba F1 (vechi: 0 secțiuni op2 / nou: 2 case, 255 bonuri, 1795 lei, DUK valid). [citare-istorica: datoria scoasă 02.10.2026, închisă de core/test_d394_op2_rapoarte_z.py]
+  - urmator: — (fir închis). STARE = ÎNCHIS
+  - pasi:
+    1. `core/raport_z.py`: tabela `rapoarte_z_amef` (inregistrare_id PK/FK cascade, nui NOT NULL, nr_bonuri > 0) în `migreaza`/`verifica` + `tenant_template.sql` + registrele de tabelă (control fiscal, ISTORIC_TENANTI, DEPENDENTE_P2, trasee).
+    2. `core/repo_contabilitate.adauga_z_amef`; `uc_tenants.horeca_import_amef` scrie (nui, nr_bonuri din fișier); `horeca_raport_z` cere `nr_bonuri > 0` (refuz numit) și scrie; `main.RaportZ.nr_bonuri`; ecranul Raport Z (`firme.js`): câmpul „Nr. bonuri fiscale” la capătul grilei.
+    3. `core/repo_d394.select_rapoarte_z` + `d394.pull` (rapoartele Z validate, pe lună); `calcul_d394`: op2 Î1 pe lună (nrAMEF = case distincte, nrBF = Σ bonuri, total, baze/TVA pe cote), rezumat2 `baza/tva_incasari_i1`, informatii `nr_BF_i1`/`incasari_i1`; refuz numit pe raport fără rând AMEF / fără cote / cotă fără câmp op2; `build_xml` emite op2.
+    4. teste (calcul, XML structural, DUK, refuzuri, rutele) + mutații; scoaterea datoriei `test_datorie_d394_op2_incasari_amef_din_rapoarte_z`; probă pe portofoliu (F1) invalid→valid cu DUK; scan vizual pe ecranul Raport Z; registre; commit four-way. [citare-istorica: datoria scoasă 02.10.2026, închisă de core/test_d394_op2_rapoarte_z.py]
+    5. [adăugat pe drum, 02.10 — generalizarea pe a doua cale, ca la D300 în lotul 19] `core/d394_reconciliere._incasari_independent`: SQL propriu pe tabelele Z, rotunjit pe lună, confruntă `nr_BF_i1`/`incasari_i1`/`*_incasari_i1`.
 - fir: **D212 ETAPA 3 — venit pe normă (cap12, Subsecțiunea a 2-a lit.A) cap-coadă** (02.10.2026, comanda Costin lot 19 pct.5 „Apoi D212 Etapa 3"; planul în `D212_PERIMETRU.md` §4; sursele în PREDARE „ce s-a aflat la sursă"). ÎNCHIS
   - ultim: pașii 1–9 livrați (commitul D212 Etapa 3, hash în ISTORIC 02.10.2026): `d212.cap12_norma` + cap12 repetabil + bifa112, lista de pe ecran, refuzul agricol + datorie strictă [EXTERN], teste+mutații, proba F4 (vechi: impozit pe normă 0 lei / nou: 4078, DUK valid), gărzile de clasă de la pașii 6–9.
   - urmator: — (fir închis). Etapa 4 (CAS/CASS în oblig_realizat) — `D212_PERIMETRU.md` §4. STARE = ÎNCHIS

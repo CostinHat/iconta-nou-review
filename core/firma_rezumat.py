@@ -165,7 +165,9 @@ _T_CONTROL_FISCAL = (
     "miscari_stoc", "perioada_confirmata", "plan_conturi", "pontaj", "salariati",
     "salariu_istoric", "solduri_initiale",
     # [lot 19, 02.10.2026] D300 citeste defalcarea rapoartelor Z; D112/statul citesc suspendarile contractului
-    "rapoarte_z_cote", "suspendari_contract")
+    "rapoarte_z_cote", "suspendari_contract",
+    # [D394 op2 Î1, decizia B, 02.10.2026] D394 citeste casa si bonurile rapoartelor Z
+    "rapoarte_z_amef")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite

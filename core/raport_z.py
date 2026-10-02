@@ -65,10 +65,29 @@ def sql_tabel_cote(schema):
     return _SQL_TABEL_COTE % {"schema": schema}
 
 
+#: [D394 op2 Î1, decizia Costin 02.10.2026, varianta B] CASA și NUMĂRUL DE BONURI ale raportului Z — un rând pe
+#: raport, scris la fel de AMBELE rute (importul AMEF le citește din fișier, ruta tastată le cere contabilului; sunt
+#: tipărite pe Z). D394 citește de aici, nu din rută: lit.G a anexei D394 (OPANAF 2194/2025) cere „Nr. de AMEF” —
+#: „numărul aparatelor de marcat electronice fiscale ce sunt utilizate în fiecare lună” (casele DISTINCTE) — și
+#: „Nr. bonuri fiscale” — „numărul total al bonurilor fiscale emise în fiecare lună”. Înainte, importul punea
+#: numărul de bonuri doar în textul descrierii, iar ruta tastată nu-l cerea deloc.
+NUME_TABEL_AMEF = "rapoarte_z_amef"
+_SQL_TABEL_AMEF = (
+    'CREATE TABLE IF NOT EXISTS "%(schema)s".rapoarte_z_amef ('
+    ' inregistrare_id integer PRIMARY KEY REFERENCES "%(schema)s".inregistrari(id) ON DELETE CASCADE,'
+    " nui text NOT NULL CHECK (btrim(nui) <> ''),"
+    " nr_bonuri integer NOT NULL CHECK (nr_bonuri > 0))")
+
+
+def sql_tabel_amef(schema):
+    return _SQL_TABEL_AMEF % {"schema": schema}
+
+
 def aplica_tabel_cote(conn, schema):
-    """Creează tabela defalcării pe cote. Idempotent (`IF NOT EXISTS`)."""
+    """Creează tabelele raportului Z (defalcarea pe cote + casa și bonurile). Idempotent (`IF NOT EXISTS`)."""
     with conn.cursor() as cur:
         cur.execute(sql_tabel_cote(schema))
+        cur.execute(sql_tabel_amef(schema))
 
 
 def _log():
@@ -166,14 +185,15 @@ def verifica(conn, doar_active=True):
             cur.execute("SELECT 1 FROM pg_indexes WHERE schemaname = %s AND indexname = %s",
                         (schema, NUME_INDEX))
             are_index = bool(cur.fetchone())
-            cur.execute("SELECT to_regclass(%s)", ('%s.%s' % (schema, NUME_TABEL_COTE),))
-            if are_index and cur.fetchone()[0] is not None:
+            cur.execute("SELECT to_regclass(%s), to_regclass(%s)", ('%s.%s' % (schema, NUME_TABEL_COTE),
+                                                                    '%s.%s' % (schema, NUME_TABEL_AMEF)))
+            if are_index and all(x is not None for x in cur.fetchone()):
                 avute += 1
             else:
                 lipsa.append({"tenant_id": tid, "schema": schema})
     return {"ok": not lipsa, "lipsa": lipsa,
-            "detaliu": "index `%s` + tabela `%s` prezente pe %d firme, lipsă pe %d"
-                       % (NUME_INDEX, NUME_TABEL_COTE, avute, len(lipsa))}
+            "detaliu": "index `%s` + tabelele `%s`, `%s` prezente pe %d firme, lipsă pe %d"
+                       % (NUME_INDEX, NUME_TABEL_COTE, NUME_TABEL_AMEF, avute, len(lipsa))}
 
 
 #: promisiunea pe care mesajul de eșec TREBUIE s-o poarte. Constantă, nu literal repetat: e o

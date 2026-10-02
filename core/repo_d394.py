@@ -20,6 +20,19 @@ from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
 from core.nomenclator_status_factura import clauza_sql as _status_declarabil  # [A3] filtru de STATUS
 
 
+def select_rapoarte_z(cur, surse, inceput, sfarsit):
+    """[D394 op2 Î1, decizia B 02.10.2026] Rapoartele Z VALIDATE din fereastră: casa + bonurile (`rapoarte_z_amef`) și
+    defalcarea pe cote (`rapoarte_z_cote`) — aceleași tabele pe ambele rute (import AMEF / tastat). LEFT JOIN: un raport
+    fără rândul AMEF sau fără cote iese cu NULL, ca apelantul să-l NUMEASCĂ, nu să-l sară."""
+    cur.execute("SELECT i.id AS id, i.numar AS numar, i.data AS data, a.nui AS nui, a.nr_bonuri AS nr_bonuri, "
+                "z.cota AS cota, z.baza AS baza, z.tva AS tva "
+                "FROM inregistrari i LEFT JOIN rapoarte_z_amef a ON a.inregistrare_id = i.id "
+                "LEFT JOIN rapoarte_z_cote z ON z.inregistrare_id = i.id "
+                "WHERE i.status = 'validata' AND i.sursa = ANY(%s) AND i.data >= %s AND i.data < %s "
+                "ORDER BY i.data, i.id, z.cota", (list(surse), inceput, sfarsit))
+    return cur.fetchall()
+
+
 def select_facturi(cur, inceput, sfarsit):
     # [A3, 17.09.2026] D394 filtra doar TIPUL (proforma/aviz), NU statusul: o factura `anulata` sau
     # `stornata` intra in D394 cu baza/TVA — desi D300 le exclude. Consecinta masurata de audit: op1

@@ -204,6 +204,12 @@ def adauga_z_cota(cur, schema, inregistrare_id, cota, baza, tva):
                     VALUES (%s, %s, %s, %s)""", (inregistrare_id, cota, baza, tva))
 
 
+def adauga_z_amef(cur, schema, inregistrare_id, nui, nr_bonuri):
+    """[D394 op2 Î1, decizia B] Casa (NUI) și numărul de bonuri ale raportului Z — același rând pe ambele rute."""
+    cur.execute(f"""INSERT INTO {schema}.rapoarte_z_amef (inregistrare_id, nui, nr_bonuri)
+                    VALUES (%s, %s, %s)""", (inregistrare_id, nui, nr_bonuri))
+
+
 def adauga_linie_3(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
     cur.execute(f"""
                     INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)

@@ -16128,3 +16128,37 @@ d212 (și `PROCENT_COMPENSARE_PIERDERE` din Etapa 2) se verificau doar când alt
 `test_s2_fiecare_modul_care_ancoreaza_e_in_registru`. (2) `_valoare_ancorata` importă `core.<modul>` înainte de citire; test în
 interpretor proaspăt. (3) `_forme_legale` primește forma „N de zile" / „N zile". Mutații: 366 izolat → roșu; `d212` scos din
 derivare → roșu; importul scos din `_valoare_ancorata` → roșu (`['None', 'None']`).
+
+---
+
+## 02.10.2026 — DECIZIE Costin: D394 op2 Î1 din rapoartele Z, varianta B (câmpuri pe ruta tastată, o singură sursă)
+
+**Decizia, verbatim:** „Ruta tastată a raportului Z primește câmpurile nr. bonuri și nr. AMEF (sunt tipărite pe raportul Z,
+contabilul le are), scrise în aceeași înregistrare ca la import; D394 citește o singură sursă indiferent de rută. Un raport Z
+tastat fără aceste câmpuri face D394 să refuze cu mesaj numit (ce lipsește, pe ce raport), nu să emită zero."
+Închide `test_datorie_d394_op2_incasari_amef_din_rapoarte_z`.
+
+**Temei.** OPANAF 2194/2025 (anexa D394, lit. G): „Î1 - încasări lunare prin intermediul aparatelor de marcat electronice
+fiscale, cu excepţia celor pentru care s-au emis facturi"; „nr. de AMEF - se va completa numărul aparatelor de marcat electronice
+fiscale ce sunt utilizate în fiecare lună din perioada de raportare"; pct.14 „Nr. bonuri fiscale - se înscrie numărul total al
+bonurilor fiscale emise în fiecare lună"; pct.15–17 (total încasări, bază și TVA pe cote). Structura: D394Validator.jar v5, clasa
+`Op2` (tip_op2, luna, nrAMEF, nrBF, total, baza21/20/19/11/9/5, TVA21/20/19/11/9/5); reguli: Î1 ⇒ nrAMEF > 0 și nrBF > 0;
+(luna, tip_op2) unic; total ≥ Σbaze; rezumat2 trebuie să existe pentru cota agregată.
+
+**Alternativă respinsă (varianta A):** op2 numai din importul AMEF — rapoartele tastate ar fi rămas în afara D394.
+
+**Cum se aplică (decizii de construcție).** (1) „Nr. AMEF" de pe raportul Z = identificatorul casei (NUI / seria fiscală), câmp
+deja obligatoriu pe ruta tastată (`nui`); D394 `nrAMEF` = numărul de case DISTINCTE din lună (instrucțiunea: „numărul
+aparatelor … utilizate în fiecare lună"), nu un număr cerut contabilului. (2) Ambele rute scriu același rând
+`rapoarte_z_amef` (inregistrare_id, nui, nr_bonuri > 0); D394 citește doar tabelele Z (`rapoarte_z_amef` + `rapoarte_z_cote`),
+nu ruta. (3) Ruta tastată refuză un raport fără nr. bonuri; D394 refuză numit un raport Z validat din perioadă fără rândul AMEF
+sau fără defalcare pe cote.
+
+**Completare la decizia D394 op2 Î1 (aceeași zi, după validatorul instalat).** Trei reguli aflate pe D394Validator v5 la
+implementare, nescrise în anexă: (1) rubricile tuturor cotelor op2 (baza/TVA 21, 20, 19, 11, 9, 5) sunt OBLIGATORII
+(„atributul trebuie sa existe”), iar fiecare cere o secțiune rezumat2 a cotei ei (DUK R246–R255) — deci cu op2 prezent
+rezumat2 apare pe toate cele șase cote, cu zero unde nu sunt încasări; (2) DUK R84.1: rezumat2 prezent ⇒ op_efectuate = 1
+(încasările prin casa de marcat sunt operațiuni efectuate); (3) încasările la cota 0% intră în „Total încasări” (pct.15) și
+produc doar ATENȚIONAREA R246 (total ≠ Σbaze+ΣTVA), neblocantă. **Limită:** instrucțiunea exclude din Î1 încasările „pentru
+care s-au emis facturi”; aplicația nu leagă azi bonul de factura emisă din el, deci totalul Z intră integral — contabilul
+care emite facturi din bonuri le vede în op1 și în op2.

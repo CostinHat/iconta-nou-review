@@ -59,6 +59,13 @@ PERECHI_ADAUGATE = {
         "B1 (17.09.2026, audit A1): apartenenta pe OBIECT verificata devreme — elementul e al "
         "cabinetului apelant? Altfel 404, fara sa atinga `declaratii_depuse` al altei firme. In BAZA "
         "aproba/respinge/depune lucrau pe orice `coada_id`, doar cu dreptul apelantului verificat."),
+    ("horeca_raport_z", "MESAJ_Z_FARA_BONURI"): (
+        "D394 op2 Î1, decizia Costin B (02.10.2026): ruta tastată a raportului Z cere numărul de bonuri fiscale "
+        "(OPANAF 2194/2025, anexa D394 lit.G, pct.14) — fără el D394 n-ar avea ce declara pe lună; refuz de contabil "
+        "(400), nu violarea CHECK-ului din bază."),
+    ("horeca_import_amef", "MESAJ_AMEF_FARA_BONURI"): (
+        "D394 op2 Î1, decizia Costin B (02.10.2026): un fișier AMEF fără `nrB` nu poate scrie rândul `rapoarte_z_amef` "
+        "(nr_bonuri > 0); refuz numit (422), nu un rând care ar opri D394 mai târziu."),
 }
 
 

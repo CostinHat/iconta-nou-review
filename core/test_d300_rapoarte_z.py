@@ -67,6 +67,7 @@ class _Z:
     data = "2026-07-10"
     nui = "8000000002"
     nr_raport = "0007"
+    nr_bonuri = 42          # [D394 op2 Î1, decizia B] obligatoriu pe ruta tastată
     total_11 = 111.0
     total_21 = 1210.0
     numerar = 1321.0

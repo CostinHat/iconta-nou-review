@@ -1071,3 +1071,14 @@ generatorul declarației (altfel o dată introdusă s-ar putea pierde tăcut, cu
 leagă testele de valorile fiscale citește acum importurile corect — trei verificări D394 păreau, fals, afectate de
 schimbarea cotei D216 de azi. La poartă a mai ieșit o slăbiciune de același fel: verificarea „valoarea fiscală apare în textul legii” sărea
 peste constantele D212 când rula singură — acum își încarcă singură toate modulele.
+
+## 02.10.2026 — D394 preia încasările prin casa de marcat din rapoartele Z
+
+**Ce se schimbă pentru un contabil:**
+- **Ecranul Raport Z are câmpul „Nr. bonuri fiscale”** (e tipărit pe raport). Fără el raportul nu se salvează; la importul
+  fișierului AMEF numărul se ia din fișier.
+- **D394 completează secțiunea încasărilor prin casa de marcat (Î1)**, câte o linie pe lună: câte case de marcat s-au
+  folosit, câte bonuri, totalul încasărilor și baza/TVA pe cote. Până azi secțiunea rămânea goală, deși încasările erau în
+  evidență. Proba pe firma de test: două case, 255 de bonuri, 1795 lei — declarație validă la ANAF local.
+- **Un raport Z fără casă sau bonuri oprește D394 cu numele raportului** — nu se declară zero. Azi nu există niciunul
+  (în producție nu era înregistrat niciun raport Z, iar ambele căi le scriu de acum înainte).

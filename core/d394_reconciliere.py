@@ -172,6 +172,60 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
     return {cota: {k: _q(v) for k, v in r.items()} for cota, r in acc.items()}
 
 
+def _incasari_independent(conn, inceput, sfarsit):
+    """[D394 op2 Î1, decizia B 02.10.2026] A doua cale pentru încasările prin casa de marcat: SQL PROPRIU pe tabelele
+    raportului Z (`rapoarte_z_amef` + `rapoarte_z_cote`), agregat pe LUNĂ în bază și rotunjit pe lună (ca rubricile op2,
+    lei întregi), apoi însumat pe perioadă. Doar rapoartele complete — cele incomplete opresc generatorul înainte.
+    Întoarce {"nr_BF_i1", "incasari_i1", "cote": {cota: (baza, tva)}}."""
+    from core.raport_z import SURSE as _SURSE_Z
+    _surse = ", ".join("'%s'" % x for x in _SURSE_Z)
+    q = ("WITH zc AS (SELECT i.id, date_trunc('month', i.data) AS luna FROM inregistrari i "
+         "  JOIN rapoarte_z_amef a ON a.inregistrare_id = i.id "
+         "  WHERE i.status = 'validata' AND i.sursa IN (" + _surse + ") AND i.data >= %s AND i.data < %s "
+         "    AND EXISTS (SELECT 1 FROM rapoarte_z_cote z0 WHERE z0.inregistrare_id = i.id)) "
+         "SELECT zc.luna, z.cota, SUM(z.baza), SUM(z.tva), "
+         "  (SELECT SUM(a2.nr_bonuri) FROM zc zc2 JOIN rapoarte_z_amef a2 ON a2.inregistrare_id = zc2.id "
+         "    WHERE zc2.luna = zc.luna) "
+         "FROM zc JOIN rapoarte_z_cote z ON z.inregistrare_id = zc.id "
+         "GROUP BY zc.luna, z.cota ORDER BY 1, 2")
+    with conn.cursor() as cur:
+        rows = _repo.sql(cur, q, inceput, sfarsit)
+    luni = {}
+    for luna, cota, baza, tva, bonuri in rows:
+        m = luni.setdefault(luna, {"bonuri": int(bonuri or 0), "total": Decimal(0), "cote": {}})
+        m["total"] += Decimal(baza) + Decimal(tva)
+        c = int(Decimal(cota))
+        if c:
+            m["cote"][c] = (Decimal(baza), Decimal(tva))
+    out = {"nr_BF_i1": 0, "incasari_i1": 0, "cote": {}}
+    for m in luni.values():
+        out["nr_BF_i1"] += m["bonuri"]
+        out["incasari_i1"] += _q(m["total"])
+        for c, (b, t) in m["cote"].items():
+            ob, ot = out["cote"].get(c, (0, 0))
+            out["cote"][c] = (ob + _q(b), ot + _q(t))
+    return out
+
+
+def _confrunta_incasari(res, cale2):
+    """op2 Î1 al generatorului (informatii + rezumat2 *_incasari_i1) vs recalculul din tabelele Z."""
+    div = []
+    for camp in ("nr_BF_i1", "incasari_i1"):
+        g, v = int(res.informatii.get(camp, 0) or 0), int(cale2[camp])
+        if g != v:
+            div.append({"cota": 0, "camp": camp, "eticheta": "încasări AMEF", "generator": g, "cale2": v,
+                        "diferenta": g - v})
+    for cota in sorted(set(res.rezumat2) | set(cale2["cote"])):
+        gen = res.rezumat2.get(cota, {})
+        b2, t2 = cale2["cote"].get(cota, (0, 0))
+        for camp, v in (("baza_incasari_i1", b2), ("tva_incasari_i1", t2)):
+            g = int(gen.get(camp, 0) or 0)
+            if g != int(v):
+                div.append({"cota": cota, "camp": camp, "eticheta": "încasări AMEF", "generator": g,
+                            "cale2": int(v), "diferenta": g - int(v)})
+    return div
+
+
 def _confrunta(rezumat2, cale2):
     """Confrunta rezumat2 al generatorului cu recalculul. Intoarce lista divergentelor."""
     div = []
@@ -205,6 +259,7 @@ def reconciliaza(conn, perioada, res, manual=None):
     _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))
     cale2 = _agrega_independent(conn, perioada, _inc, _sf)
     div = _confrunta(res.rezumat2, cale2)
+    div += _confrunta_incasari(res, _incasari_independent(conn, _inc, _sf))
     return {"acoperit": True, "neacoperit": None, "divergente": div}
 
 

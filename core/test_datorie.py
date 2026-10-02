@@ -311,14 +311,6 @@ def test_datorie_d300_exigibilitate_tva_la_incasare():
     assert "d300 aplica exigibilitatea tva la incasare pentru firme pe regim" in dz.lower()
 
 
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 02.10.2026 (lot 19 pct.4b, generalizarea clasei 'raportul Z nu ajunge in declaratie'): D300 citeste acum defalcarea pe cote a rapoartelor Z (rapoarte_z_cote), dar D394 tine inca pe 0 sectiunea op2 tip i1 (incasari prin AMEF: nrAMEF, nrBF, total, baza/TVA pe cota) si rezumat2 baza_incasari_i1/tva_incasari_i1 (structura d394_struct_anaf.txt campurile 105-106; d394.py REZ2_GOL 'pana se construiesc'). Ruta tastata Raport Z nu culege nr. bonuri si nr. AMEF -> completarea cere o DECIZIE de produs (campuri noi pe ruta tastata sau op2 doar din importul AMEF). Se inchide cand D394 emite op2 i1 din rapoartele Z, DUK valid, consemnat in DECIZII.md.")
-def test_datorie_d394_op2_incasari_amef_din_rapoarte_z():
-    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
-    assert "d394 emite op2 i1 din rapoartele z" in dz.lower()
-
-
 @pytest.mark.xfail(strict=True, raises=ValueError, reason="DATORIE [EXTERN] 02.10.2026 (D212 Etapa 3): venitul din activitati agricole impus pe NORMA (Subsectiunea a 4-a, CF art.107 alin.(2)) nu are loc in structura validatorului ANAF instalat - D212Validator.jar v9 (J13.0.1) e formularul pentru veniturile 2024: niciun atribut agricol, fara bifa114. d212.genereaza refuza numit (nu emite pe alta subsectiune, nu sare tacut). Se inchide cand ANAF publica validatorul pentru OPANAF 2736/2025 si generatorul emite subsectiunea agricola, DUK valid.")
 def test_datorie_d212_venit_agricol_pe_norma():
     from core import d212, duk

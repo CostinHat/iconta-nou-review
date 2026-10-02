@@ -117,6 +117,11 @@ MESAJ_EMAIL_TOKEN_INVALID = ("Linkul de confirmare e expirat sau a fost deja fol
 MESAJ_EMAIL_DE_CONFIRMAT = ("Ți-am trimis un link de confirmare pe adresa nouă. Adresa se schimbă abia după ce îl deschizi — până atunci intri tot cu cea veche.")
 MESAJ_Z_FARA_CHEIE = ("NUI-ul casei de marcat și numărul raportului Z sunt obligatorii — ele fac "
                       "raportul unic. Le găsești pe bonul de raport Z tipărit, în antet.")
+# [D394 op2 Î1, decizia B 02.10.2026] D394 lit.G cere numărul de bonuri fiscale emise în lună (OPANAF 2194/2025 pct.14)
+MESAJ_Z_FARA_BONURI = ("Numărul de bonuri fiscale e obligatoriu — e tipărit pe raportul Z și intră în D394 "
+                       "(încasările prin casa de marcat, pe lună). Trece numărul de bonuri de pe raport.")
+MESAJ_AMEF_FARA_BONURI = ("fișierul AMEF nu poartă numărul de bonuri fiscale (atributul nrB al raportului Z) — fără el "
+                          "raportul nu poate intra în D394; verifică exportul casei de marcat")
 
 
 # --- G3: garduri de rol/acces (403) — explicit: ce drept lipsește + cine îl acordă ---

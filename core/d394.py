@@ -424,7 +424,60 @@ class Rezultat:
     # fiindca fara ea confruntarea n-ar sti ca nu vede tot — v. regula "unde nu poti stabili ca vezi
     # tot, spui gri".
     manuale_fara_factura: int = 0
+    # [D394 op2 Î1, decizia B] o secțiune op2 pe lună (tip_op2=I1) + rapoartele Z care NU pot intra (numite)
+    op2: list = field(default_factory=list)
+    z_incomplete: list = field(default_factory=list)
     avertismente: list = field(default_factory=list)
+
+
+#: [D394 op2 Î1] NOMENCLATORUL rubricilor `op2` (D394Validator v5, clasa Op2: baza21/20/19/11/9/5, TVA21/…/5) —
+#: cota -> sufixul numelui de atribut. Nu sunt cote aplicate: cotele vin din rapoartele Z (COTE la data raportului).
+OP2_RUBRICI_NOMENCL = {21: "21", 20: "20", 19: "19", 11: "11", 9: "9", 5: "5"}
+
+
+def _op2_din_rapoarte_z(rapoarte):
+    """Rapoartele Z -> secțiunile op2 Î1, una pe lună (OPANAF 2194/2025, anexa D394 lit.G + instrucțiunile pct.13–17):
+    nrAMEF = „numărul aparatelor de marcat electronice fiscale ce sunt utilizate în fiecare lună” (case DISTINCTE),
+    nrBF = „numărul total al bonurilor fiscale emise în fiecare lună”, total = încasările lunii (valoarea cu TVA a
+    tuturor cotelor, inclusiv 0%), baze/TVA pe cote. Sume în lei întregi, rotunjite o dată pe lună (half-up).
+    Întoarce (op2, incomplete): un raport fără casă/bonuri, fără defalcare pe cote sau cu o cotă fără rubrică în op2 NU
+    intră — se numește (decizia Costin 02.10: „refuz cu mesaj numit … nu să emită zero”)."""
+    luni, incomplete = {}, []
+    for z in rapoarte:
+        lipsa = []
+        if not z.get("nui") or not z.get("nr_bonuri"):
+            lipsa.append("NUI-ul casei și numărul de bonuri fiscale")
+        if not z.get("cote"):
+            lipsa.append("defalcarea pe cote de TVA")
+        straine = sorted({int(Decimal(str(c))) for c, b, t in z.get("cote") or []
+                          if Decimal(str(c)) and int(Decimal(str(c))) not in OP2_RUBRICI_NOMENCL})
+        if straine:
+            lipsa.append("rubrica op2 pentru cota %s%%" % "/".join(map(str, straine)))
+        if lipsa:
+            incomplete.append({"numar": z.get("numar"), "data": str(z.get("data")), "lipsa": lipsa})
+            continue
+        luna = int(str(z["data"])[5:7])
+        m = luni.setdefault(luna, {"case": set(), "nrBF": 0, "total": Decimal(0),
+                                   "baza": {c: Decimal(0) for c in OP2_RUBRICI_NOMENCL},
+                                   "tva": {c: Decimal(0) for c in OP2_RUBRICI_NOMENCL}})
+        m["case"].add(str(z["nui"]).strip())
+        m["nrBF"] += int(z["nr_bonuri"])
+        for c, b, t in z["cote"]:
+            b, t = _d(b), _d(t)
+            m["total"] += b + t
+            ci = int(Decimal(str(c)))
+            if ci in OP2_RUBRICI_NOMENCL:
+                m["baza"][ci] += b
+                m["tva"][ci] += t
+    op2 = []
+    for luna in sorted(luni):
+        m = luni[luna]
+        o = {"tip_op2": "I1", "luna": luna, "nrAMEF": len(m["case"]), "nrBF": m["nrBF"], "total": _int(m["total"])}
+        for c, camp in OP2_RUBRICI_NOMENCL.items():
+            o["baza" + camp] = _int(m["baza"][c])
+            o["TVA" + camp] = _int(m["tva"][c])
+        op2.append(o)
+    return op2, incomplete
 
 
 def calcul_d394(prof, perioada, date, manual=None):
@@ -743,12 +796,27 @@ def calcul_d394(prof, perioada, date, manual=None):
             inf["tvaDed%d" % c] = 0
             inf["tvaCol%d" % c] = 0
 
+    # [D394 op2 Î1, decizia B 02.10.2026] încasările prin casa de marcat, pe lună, din rapoartele Z (o singură sursă).
+    op2, z_incomplete = _op2_din_rapoarte_z(date.get("rapoarte_z") or [])
+    for o in op2:
+        for c, camp in OP2_RUBRICI_NOMENCL.items():
+            # DUK regulile R246–R255: fiecare rubrică op2 (obligatorie, deci prezentă și la 0) se agregă într-un
+            # rezumat2 al cotei ei — „Nu exista sectiune Rezumat2 pentru cota = X pentru agregarea valorilor din Op2”
+            r = rez2.setdefault(c, dict(REZ2_GOL))
+            r["baza_incasari_i1"] += o["baza" + camp]
+            r["tva_incasari_i1"] += o["TVA" + camp]
+    inf["nr_BF_i1"] = sum(o["nrBF"] for o in op2)
+    inf["incasari_i1"] = sum(o["total"] for o in op2)
+
     # pct. 17 / validator: totalPlata_A = Suma(informatii.nrCui<i>) + Suma(rezumat2.baza[L+A+AI])
     total_plata = (inf["nrCui1"] + inf["nrCui2"] + inf["nrCui3"] + inf["nrCui4"]
                    + sum(_int(r["bazaL"]) + _int(r["bazaA"]) + _int(r["bazaAI"])
                          for r in rez2.values()))
 
-    op_efectuate = 1 if op1 else 0
+    # D394Validator v5 (mesaj din jar, verificat pe DUK 02.10.2026): „daca atributul op_efectuate = 0 atunci sectiunea
+    # Rezumat2 nu trebuie sa apara” — op2 aduce
+    # rezumat2 (încasările Î1 pe cotă), deci încasările prin casa de marcat sunt operațiuni efectuate
+    op_efectuate = 1 if (op1 or op2) else 0
     inf["efectuat"] = 0 if op1 else 1   # pct. 191: "nu a efectuat livrari..."
 
     op1_int = {k: [v[0], _int(v[1]), _int(v[2])] for k, v in op1.items()}
@@ -824,7 +892,8 @@ def calcul_d394(prof, perioada, date, manual=None):
     res = Rezultat(an=an, luna=luna, prof=prof, op1=op1_int, rezumat1=rez1_int,
                    rezumat2=rez2_int, op11=op11, detaliu=detaliu, serii=serii,
                    informatii=inf, total_plata_a=total_plata, op_efectuate=op_efectuate,
-                   facturi_incluse=incluse_int, manuale_fara_factura=manuale_fara_factura)
+                   facturi_incluse=incluse_int, manuale_fara_factura=manuale_fara_factura,
+                   op2=op2, z_incomplete=z_incomplete)
     res.avertismente = avert
     if intracom:
         res.avertismente.append(
@@ -981,6 +1050,13 @@ def build_xml(res):
             a11 += ' tvaPR="%d"' % o11["tvaPR"]
         A.append('    <op11%s/>' % a11)
         A.append('  </op1>')
+    # [D394 op2 Î1] după op1 (structD394 pct.240: <op2> 0-24 apariții, ultima secțiune); rubricile Î1 toate prezente
+    for o in res.op2:
+        at = ' tip_op2="%s" luna="%d" nrAMEF="%d" nrBF="%d" total="%d"' % (
+            o["tip_op2"], o["luna"], o["nrAMEF"], o["nrBF"], o["total"])
+        # rubricile tuturor cotelor sunt OBLIGATORII („atributul trebuie sa existe”, D394Validator v5)
+        at += "".join(' baza%s="%d" TVA%s="%d"' % (c, o["baza" + c], c, o["TVA" + c]) for c in OP2_RUBRICI_NOMENCL.values())
+        A.append('  <op2%s/>' % at)
     A.append('</declaratie394>')
     return "\n".join(A)
 
@@ -1043,6 +1119,7 @@ def pull(conn, schema, perioada):
         # partener: de pe FACTURA (tert_*), in ambele directii. Vezi decizia de mai jos.
         # proformele nu se raporteaza (nu sunt facturi fiscale).
         rows = _repo.select_facturi(cur, inceput, sfarsit)
+        rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit)
     facturi = []
     for r in rows:
         # [DECIZIA lui Costin, 15.09.2026 — DECIZII 47] Identitatea partenerului se citeste de pe
@@ -1108,9 +1185,22 @@ def pull(conn, schema, perioada):
             facturi.append(dict(comun, cota=cota, baza=baza,
                                 tva=(baza * Decimal(cota) / Decimal(100)
                                      if bool(r["ti"]) and r["directie"] == "primita" else tva)))
-    return prof, {"facturi": facturi, "serii": serii_emise(conn, schema, inceput, sfarsit),
+    return prof, {"facturi": facturi, "rapoarte_z": rapoarte_z, "serii": serii_emise(conn, schema, inceput, sfarsit),
                   "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit),
                   "tva_ded_ai": _tva_ded_ai_platite(conn, inceput, sfarsit)}
+
+
+def _pull_rapoarte_z(cur, inceput, sfarsit):
+    """[D394 op2 Î1, decizia B] Rapoartele Z validate din perioadă, unul pe raport: {id, numar, data, nui, nr_bonuri,
+    cote: [(cota, baza, tva)]}. `nui`/`nr_bonuri` None = raportul n-are rândul AMEF (îl numește `calcul_d394`)."""
+    from core.raport_z import SURSE as _SURSE_Z
+    out = {}
+    for r in _repo.select_rapoarte_z(cur, _SURSE_Z, inceput, sfarsit):
+        z = out.setdefault(r["id"], {"id": r["id"], "numar": r["numar"], "data": r["data"], "nui": r["nui"],
+                                     "nr_bonuri": r["nr_bonuri"], "cote": []})
+        if r["cota"] is not None:
+            z["cote"].append((r["cota"], r["baza"], r["tva"]))
+    return list(out.values())
 
 
 def _tva_ded_ai_platite(conn, inceput, sfarsit):
@@ -1199,6 +1289,16 @@ def genereaza(conn, schema, perioada, manual=None):
     if _er:
         raise ValueError("D394 nu se poate genera: " + " ".join(_er))
     res = calcul_d394(prof, perioada, date, manual)
+    if res.z_incomplete:
+        # [D394 op2 Î1, decizia Costin 02.10] refuz NUMIT, nu op2 pe zero: ce lipsește, pe ce raport
+        _e = ValueError("D394 nu se poate genera: încasările prin casa de marcat (secțiunea Î1) cer, pentru fiecare "
+                         "raport Z validat din perioadă, NUI-ul casei, numărul de bonuri fiscale și defalcarea pe "
+                         "cote. Lipsesc: " + "; ".join("raportul %s din %s — %s" % (z["numar"], z["data"],
+                                                                                  ", ".join(z["lipsa"]))
+                                                    for z in res.z_incomplete) + ".")
+        # motivul ca DATĂ (cod + rapoartele), ca refuzul să se poată verifica fără a citi fraza
+        _e.cod, _e.rapoarte = "D394_Z_INCOMPLET", [z["numar"] for z in res.z_incomplete]
+        raise _e
     # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 2/6): reconciliere pe totalurile
     # rezumat2 dintr-un recalcul INDEPENDENT al liniilor brute. Divergenta = HARD-BLOCK care
     # numeste ambele valori; NU repara tacit (tipar DECIZII 05.08). Vezi core/d394_reconciliere.py.
