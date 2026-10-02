@@ -1171,6 +1171,9 @@ class EmitereIn(BaseModel):
     pleaca_marfa: Optional[bool] = None  # [punte_stoc_v1] F172 poarta: DA descarca gestiunea, NU doar fiscal
     tert_tara: str = "RO"               # [B1 D300] cod ISO 2 litere partener (emise IC/export)
     tip_operatiune: str = "normal"      # [B1 D300] normal|avans|regularizare_avans (avans exigibil la emitere)
+    # [decizia A 02.10.2026] factura emisă pe baza bonului fiscal (HG 1/2016 pct.97 alin.(1): „conform bon fiscal nr./data”)
+    bon_fiscal_nr: Optional[str] = None
+    bon_fiscal_data: Optional[str] = None
 
 class NumerotareIn(BaseModel):
     serie: Optional[str] = None

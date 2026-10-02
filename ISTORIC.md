@@ -1110,3 +1110,13 @@ fost reparat.
   puțin 6 salarii minime).
 - **Opțiunea de a plăti CAS sub 12 salarii minime nu se poate încă declara din aplicație**: formularul validatorului ANAF
   instalat nu are căsuța ei. Aplicația refuză cu explicația.
+
+## 02.10.2026 — Factura cerută de client pentru un bon fiscal nu mai dublează vânzarea
+
+**Ce se schimbă pentru un contabil:**
+- **Pe ecranul de emitere apar câmpurile „Emisă pe baza bonului fiscal: nr. bon / data”.** Factura primește mențiunea
+  „conform bon fiscal nr./data”, iar vânzarea se numără o singură dată — rămâne în raportul Z: factura nu mai intră în D300,
+  nu mai primește notă de vânzare, nu mai descarcă stocul; în D394 apare la client, iar suma ei se scade din încasările prin
+  casa de marcat ale lunii. Proba pe firma de test: o factură de 121 lei dintr-un bon deja în Z — înainte D300 avea 2.100 / 441
+  și evidența 441 lei TVA colectat; acum 2.000 / 420, D394 cu încasările prin casă 1.089 în loc de 1.210, ambele declarații
+  valide la ANAF local.

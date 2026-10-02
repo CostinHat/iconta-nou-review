@@ -12,6 +12,8 @@ nu construieste `HTTPException`. *Hotarele tranzactiei raman ale apelantului —
 redeschide aici.*
 """
 
+from core import facturi as _fc   # [decizia A 02.10] definiția „factură din bon fiscal”
+
 def select_inregistrari_linii(cur, schema, data_de, data_pana, conturi):
     cur.execute(f"""
                     SELECT l.cont_debit AS cont, SUM(l.suma) AS s, 'debit' AS sens
@@ -113,6 +115,7 @@ def select_inregistrari_3(cur, schema, inceput, sfarsit):
                                    WHERE ic.factura_id = f.id AND ic.status = 'ciorna') AS are_ciorna
                     FROM {schema}.facturi f
                     WHERE f.data_emitere >= %s AND f.data_emitere < %s
+                      AND {_fc.clauza_nu_din_bon("f")}   -- [decizia A 02.10] factura din bon nu are notă de vânzare, prin definiție
                       AND NOT EXISTS (
                             SELECT 1 FROM {schema}.inregistrari i
                             LEFT JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id

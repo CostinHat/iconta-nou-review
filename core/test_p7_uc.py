@@ -63,6 +63,9 @@ PERECHI_ADAUGATE = {
         "D394 op2 Î1, decizia Costin B (02.10.2026): ruta tastată a raportului Z cere numărul de bonuri fiscale "
         "(OPANAF 2194/2025, anexa D394 lit.G, pct.14) — fără el D394 n-ar avea ce declara pe lună; refuz de contabil "
         "(400), nu violarea CHECK-ului din bază."),
+    ("facturi_emite", "MESAJ_FACTURA_BON_STOC"): (
+        "Decizia Costin A (02.10.2026): factura emisă pe baza bonului fiscal nu e o vânzare nouă — marfa a ieșit cu bonul "
+        "(raportul Z), deci a doua descărcare de gestiune se refuză (422), cu ieșirea numită („NU — doar fiscal”)."),
     ("horeca_import_amef", "MESAJ_AMEF_FARA_BONURI"): (
         "D394 op2 Î1, decizia Costin B (02.10.2026): un fișier AMEF fără `nrB` nu poate scrie rândul `rapoarte_z_amef` "
         "(nr_bonuri > 0); refuz numit (422), nu un rând care ar opri D394 mai târziu."),

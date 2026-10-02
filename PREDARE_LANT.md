@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D212 Etapa 4 închisă (CAS, CASS, impozit, sumar); CASS sub 6 sm reparată; D394 op2 Î1 închis; urmează D212 Etapa 5 (categoriile fără date)** (02.10.2026)
+# PREDARE LANȚ — **Factura din bon fiscal numărată o dată (decizia A); D212 Etapa 4 închisă; urmează D212 Etapa 5 (categoriile fără date)** (02.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **D212 Etapa 4** (commitul care poartă această predare; hash-ul
-  lui e în raport și în `git log`).
-- **pe commit**: `47770511` — ultimul four-way închis înainte de rescriere (02.10.2026 19:23: HEAD = origin/main = public/main =
-  backup/lant-2026-10-02 = procesul viu (2 din 2) = 47770511, CASS sub 6 sm).
+- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **factura din bon fiscal** (commitul care poartă această
+  predare; hash-ul lui e în raport și în `git log`).
+- **pe commit**: `d5b2ee07` — ultimul four-way închis înainte de rescriere (02.10.2026 20:37: HEAD = origin/main = public/main =
+  backup/lant-2026-10-02 = procesul viu (2 din 2) = d5b2ee07, D212 Etapa 4).
 - **ÎN LUCRU ACUM:** nimic deschis — firul D212 Etapa 3 e ÎNCHIS în TESTE.md „În lucru acum”.
 - **URMĂTORUL FRONT:** D212 Etapa 5 — formular manual pentru categoriile fără date în aplicație (chirii, investiții,
   drepturi de proprietate intelectuală, alte surse, cap14), cu CASS pe treptele art.170 alin.(2)-(3); apoi etapa finală
@@ -19,10 +19,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   nu există bifa114). Generatorul REFUZĂ numit; datorie strictă `core/test_datorie.py::test_datorie_d212_venit_agricol_pe_norma`.
   Ce trebuie · de la cine · ce blochează: validatorul D212 pentru OPANAF 2736/2025 · ANAF (versiuni.xml) · emiterea agricolului.
 - **DECIZII CARE AȘTEAPTĂ PE COSTIN:**
-  1. D394 Î1 — încasările „pentru care s-au emis facturi” se exclud (OPANAF 2194/2025, lit.G). Aplicația nu leagă azi o factură
-     emisă de bonul din care provine (`bonuri` = bonurile PRIMITE), deci totalul Z intră integral în op2, iar factura și în op1.
-     Varianta A: o marcă „emisă din bon fiscal” pe factura emisă, scăzută din op2 pe lună. Varianta B: contabilul corectează
-     manual. Blochează: exactitatea Î1 la firmele care emit facturi din bonuri.
+  1. Exporturile SAGA / WinMentor ale facturilor emise: o factură „emisă pe baza bonului fiscal” pleacă azi ca orice ieșire, iar
+     programul extern ar înregistra vânzarea a doua oară dacă înregistrează și raportul Z. Varianta A: factura din bon nu se
+     exportă ca ieșire. Varianta B: se exportă cu mențiunea „conform bon fiscal” (formatul SAGA nu e verificat aici pentru un
+     câmp dedicat). Blochează: corectitudinea evidenței ținute în SAGA/WinMentor pentru firmele care facturează din bonuri.
+- **ÎNCHIS 02.10 (decizia A):** factura emisă pe baza bonului fiscal — marca „conform bon fiscal nr./data” (HG 1/2016 pct.97
+  alin.(1)), definiția unică `core/facturi.py`, D300 / D394 / contare / stoc / storno; DECIZII 02.10, GARZI „Factura emisă pe baza
+  bonului fiscal”.
 - **ÎNCHIS 02.10 (decizia B):** D394 op2 Î1 — ruta tastată cere nr. bonuri, ambele rute scriu `rapoarte_z_amef`, D394 citește o
   singură sursă, refuz numit pe raportul incomplet; datoria strictă scoasă. DECIZII 02.10, GARZI „D394 op2 Î1”.
 - **Fronturi deschise, neschimbate:** F1 etapele 9-11 (depunere reală = [EXTERN]); F2 D101 (la închiderea anului);
@@ -435,7 +438,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **81** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **875** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **880** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

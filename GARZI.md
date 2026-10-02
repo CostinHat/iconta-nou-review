@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**661 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**662 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 629
+### `core/` — 630
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9159,6 +9159,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_expirare_cote_de_baza.py` — Gard: modelul de temei pe data_out (Modelul de temei 01.08, pct.1+2).
 - `core/test_export_cota.py` — Export/PDF: linie fara cota TVA = intrare INCOMPLETA -> eroare, NU cota 0 (scutit) ghicita.
 - `core/test_export_winmentor.py` — Teste F187 — export WinMENTOR. Verificare contra spec-ului OFICIAL (Facturi clienti.pdf Rev.1.2 +
+- `core/test_factura_bon_fiscal.py` — GARD — factura emisă pe baza bonului fiscal se numără O SINGURĂ DATĂ (decizia Costin A, 02.10.2026).
 - `core/test_facturi_recurente_randuri_dinamice.py` — GARD cap.24 — randuri dinamice facturi RECURENTE (sablon), re-rulate IN POARTA prin chromium headless.
 - `core/test_faptul_bate_vectorul.py` — GARD (21.08.2026): FAPTUL BATE VECTORUL în selectorul de declarații, iar „lună închisă" nu mai
 - `core/test_fara_probe_imagine.py` — GARDĂ (03.09.2026): **un fișier imagine nu mai intră în repo ca probă vizuală**, și **niciun cod
@@ -9897,3 +9898,18 @@ obligații — DUK valid; atribute cu nume interne). Detaliul: DECIZII 02.10.202
 | atribute = nume XML ale validatorului | core/test_d212_campuri_validator.py (6 capitole + calibrare) | un atribut cu numele câmpului intern (respins de DUK abia la prima emitere) | `real_cas_deduc_ai` pus înapoi în set → roșu | extragere pe șiruri delimitate din constant pool |
 | excepțiile CASS ecran = motor | test_cheile_exceptiilor_din_ecran_sunt_ale_motorului | o cheie de excepție pe ecran pe care motorul o refuză (sau invers) | — (egalitate de seturi) | — |
 | opțiunea CAS [EXTERN] | test_datorie.py::test_datorie_d212_optiune_cas_sub_12_sm (xfail strict) | — | — | până la validatorul pentru OPANAF 2736/2025 |
+
+## 02.10.2026 — Factura emisă pe baza bonului fiscal: o singură numărare (decizia Costin A)
+
+Categoriile **3. Calcul fiscal** (D300/D394 dublate), **4. Ieșire către autorități** (D300 rd.9/10 și D394 op2 supradeclarate,
+DUK valid) și **2. Graniță cod–bază** (venitul și TVA dublate în evidență prin contarea automată; stocul descărcat de două
+ori). Detaliul: DECIZII 02.10.2026 („DECIZIE Costin: factura emisă pe baza bonului fiscal …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| marca validată | core/test_factura_bon_fiscal.py::test_marca_cere_numarul_si_data_doar_pe_factura_emisa | marcă pe jumătate; bon după factură; marcă pe o factură primită | — (refuzuri) | — |
+| fără notă de vânzare | test_factura_din_bon_nu_primeste_nota_de_vanzare | `4111 = 707 + 4427` peste nota Z | refuzul scos din contabilizeaza → roșu | — |
+| D300 o singură dată | test_d300_numara_vanzarea_o_singura_data | factura din bon adunată la Z în rd.9/10 | excluderea scoasă din repo_d300 → roșu | — |
+| D394 op1 da, op2 minus | test_d394_factura_in_op1_iar_op2_fara_suma_ei + test_d394_factura_din_bon_fara_raport_z_e_refuzata_numit | Î1 cu încasările facturate; scădere dintr-o lună fără raport Z | scăderea scoasă → 2 roșii | nrBF rămâne numărul bonurilor emise (interpretare, DECIZII) |
+| storno + stoc | test_storno_ul_mosteneste_marca + test_factura_din_bon_nu_descarca_stocul | storno care scade o vânzare nenumărată; a doua descărcare de gestiune | marca necopiată → roșu; poarta scoasă → roșu | — |
+| sursă unică | test_definitia_sta_intr_un_singur_loc | predicatul „din bon” scris de mână în alt modul | predicat local în repo_control_incrucisat → roșu | prinde forma `bon_fiscal_nr IS [NOT] NULL` / `is None` |

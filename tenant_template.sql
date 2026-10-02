@@ -2560,6 +2560,11 @@ ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS cont_venit
 -- [R130, 04.09.2026] cine si cand a introdus cursul de mana; v. core/migrare_curs_manual_urma.py
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS curs_manual_de text;
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS curs_manual_la timestamptz;
+-- [decizia Costin A, 02.10.2026] factura emisă pe baza bonului fiscal (HG 1/2016 pct.97 alin.(1): „conform bon fiscal
+-- nr./data”) — nu se mai numără a doua oară (D300, D394 op2, contare). Mirror core/migrare_factura_bon_fiscal.py.
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS bon_fiscal_nr text;
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS bon_fiscal_data date;
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD CONSTRAINT facturi_bon_fiscal_complet CHECK ((bon_fiscal_nr IS NULL) = (bon_fiscal_data IS NULL) AND (bon_fiscal_nr IS NULL OR btrim(bon_fiscal_nr) <> ''));
 
 -- [14-1-2] Registrul-inventar, al doilea registru obligatoriu (Legea 82/1991 art. 20).
 -- Continutul: OMFP 2634/2015 Anexa 2 — sase coloane. `valoare_inventar` e NOT NULL si nu are

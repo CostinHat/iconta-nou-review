@@ -13,6 +13,7 @@ redeschide aici.*
 """
 
 from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
+from core.facturi import clauza_nu_din_bon as _nu_din_bon   # [decizia A 02.10] definiția unică
 
 
 def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
@@ -31,6 +32,7 @@ def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
                 "AND COALESCE(f.taxare_inversa, false) = false "  # art.282(6)/297(3): taxare inversa = regim general, nu la incasare
                 "AND " + _STATUS_FINAL + " "  # [B1] doar facturi contabilizabile
                 "AND " + _doc_fiscal("f") + " "   # [DECIZII 46] proforma/avizul nu sunt documente fiscale
+                "AND " + _nu_din_bon("f") + " "   # [decizia A 02.10] factura din bon: vânzarea e în raportul Z
                 "AND i.data >= %s AND i.data < %s "
                 "AND ((f.directie = 'emisa' AND l.cont_credit = '4111') "
                 "  OR (f.directie = 'primita' AND l.cont_debit = '401')) "
@@ -120,6 +122,9 @@ def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
                 # [DECIZII 46, 15.09.2026] Proforma NU e document fiscal: TVA-ul nu e exigibil pe ea.
                 # Aici se rupea — filtrul era pe dată și pe status, iar proforma are status declarabil.
                 "AND " + _doc_fiscal("f") + " "
+                # [decizia A 02.10] factura emisă pe baza bonului fiscal: vânzarea e deja în raportul Z (rd.9/10 din
+                # rapoarte_z_cote) — numărată o singură dată; definiția în core.facturi
+                "AND " + _nu_din_bon("f") + " "
                 "ORDER BY f.id", (inceput, sfarsit))
     return cur.fetchall()
 
@@ -127,6 +132,6 @@ def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
 def select_facturi_5(cur, _nsf, _inc, _sf):
     # [DECIZII 46] Si numaratoarea de diagnostic: o proforma nu e un document „de contabilizat".
     cur.execute("SELECT count(*) FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
-                "AND " + _nsf.clauza_sql(None) + " AND " + _doc_fiscal(None),
+                "AND " + _nsf.clauza_sql(None) + " AND " + _doc_fiscal(None) + " AND " + _nu_din_bon(None),
                 (_inc.isoformat(), _sf.isoformat()))
     return cur.fetchone()

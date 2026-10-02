@@ -435,7 +435,7 @@ class Rezultat:
 OP2_RUBRICI_NOMENCL = {21: "21", 20: "20", 19: "19", 11: "11", 9: "9", 5: "5"}
 
 
-def _op2_din_rapoarte_z(rapoarte):
+def _op2_din_rapoarte_z(rapoarte, din_bon=()):
     """Rapoartele Z -> secțiunile op2 Î1, una pe lună (OPANAF 2194/2025, anexa D394 lit.G + instrucțiunile pct.13–17):
     nrAMEF = „numărul aparatelor de marcat electronice fiscale ce sunt utilizate în fiecare lună” (case DISTINCTE),
     nrBF = „numărul total al bonurilor fiscale emise în fiecare lună”, total = încasările lunii (valoarea cu TVA a
@@ -469,6 +469,27 @@ def _op2_din_rapoarte_z(rapoarte):
             if ci in OP2_RUBRICI_NOMENCL:
                 m["baza"][ci] += b
                 m["tva"][ci] += t
+    # [decizia A 02.10] Î1 = încasările prin AMEF „cu excepția celor pentru care s-au emis facturi” (OPANAF 2194/2025
+    # lit.G): suma facturii emise pe baza bonului se scade din luna bonului; factura rămâne în op1 (are partener).
+    # nrBF rămâne numărul bonurilor emise (pct.14: „numărul total al bonurilor fiscale emise în fiecare lună”).
+    for f in din_bon:
+        luna = int(str(f["data"])[5:7])
+        if f.get("fara_curs") or luna not in luni:
+            incomplete.append({"numar": f["numar"], "data": str(f["data"]),
+                               "lipsa": ["factura emisă pe baza bonului %s nu are %s" % (
+                                   f["bon"], "cursul în lei" if f.get("fara_curs")
+                                   else "un raport Z validat în luna bonului din care să se scadă")]})
+            continue
+        m = luni[luna]
+        for ci, (b, t) in f["cote"].items():
+            m["total"] -= b + t
+            if ci in m["baza"]:
+                m["baza"][ci] -= b
+                m["tva"][ci] -= t
+    for luna, m in luni.items():
+        if m["total"] < 0 or any(v < 0 for v in m["baza"].values()):
+            incomplete.append({"numar": "luna %02d" % luna, "data": "",
+                               "lipsa": ["facturile emise pe baza bonurilor depășesc încasările din rapoartele Z ale lunii"]})
     op2 = []
     for luna in sorted(luni):
         m = luni[luna]
@@ -797,7 +818,7 @@ def calcul_d394(prof, perioada, date, manual=None):
             inf["tvaCol%d" % c] = 0
 
     # [D394 op2 Î1, decizia B 02.10.2026] încasările prin casa de marcat, pe lună, din rapoartele Z (o singură sursă).
-    op2, z_incomplete = _op2_din_rapoarte_z(date.get("rapoarte_z") or [])
+    op2, z_incomplete = _op2_din_rapoarte_z(date.get("rapoarte_z") or [], date.get("facturi_din_bon") or [])
     for o in op2:
         for c, camp in OP2_RUBRICI_NOMENCL.items():
             # DUK regulile R246–R255: fiecare rubrică op2 (obligatorie, deci prezentă și la 0) se agregă într-un
@@ -1120,6 +1141,7 @@ def pull(conn, schema, perioada):
         # proformele nu se raporteaza (nu sunt facturi fiscale).
         rows = _repo.select_facturi(cur, inceput, sfarsit)
         rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit)
+        din_bon = _pull_facturi_din_bon(cur, inceput, sfarsit)
     facturi = []
     for r in rows:
         # [DECIZIA lui Costin, 15.09.2026 — DECIZII 47] Identitatea partenerului se citeste de pe
@@ -1185,7 +1207,8 @@ def pull(conn, schema, perioada):
             facturi.append(dict(comun, cota=cota, baza=baza,
                                 tva=(baza * Decimal(cota) / Decimal(100)
                                      if bool(r["ti"]) and r["directie"] == "primita" else tva)))
-    return prof, {"facturi": facturi, "rapoarte_z": rapoarte_z, "serii": serii_emise(conn, schema, inceput, sfarsit),
+    return prof, {"facturi": facturi, "rapoarte_z": rapoarte_z, "facturi_din_bon": din_bon,
+                  "serii": serii_emise(conn, schema, inceput, sfarsit),
                   "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit),
                   "tva_ded_ai": _tva_ded_ai_platite(conn, inceput, sfarsit)}
 
@@ -1200,6 +1223,26 @@ def _pull_rapoarte_z(cur, inceput, sfarsit):
                                      "nr_bonuri": r["nr_bonuri"], "cote": []})
         if r["cota"] is not None:
             z["cote"].append((r["cota"], r["baza"], r["tva"]))
+    return list(out.values())
+
+
+def _pull_facturi_din_bon(cur, inceput, sfarsit):
+    """[decizia A 02.10] Facturile emise pe baza unui bon fiscal: {numar, bon, data, cote: {cota: (baza, tva)}} în lei."""
+    out = {}
+    for r in _repo.select_facturi_din_bon(cur, inceput, sfarsit):
+        f = out.setdefault(r["id"], {"numar": r["numar"], "bon": r["bon_fiscal_nr"], "data": r["bon_fiscal_data"],
+                                     "cote": {}})
+        try:
+            curs = _sl.curs_factura(r)
+        except _sl.LipsaCurs:
+            curs = None
+        if curs is None or r["cota"] is None:
+            f["fara_curs"] = True
+            continue
+        c = int(Decimal(str(r["cota"])))
+        b = _d(r["baza"]) * curs
+        ob, ot = f["cote"].get(c, (Decimal(0), Decimal(0)))
+        f["cote"][c] = (ob + b, ot + b * Decimal(c) / Decimal(100))
     return list(out.values())
 
 
@@ -1292,10 +1335,10 @@ def genereaza(conn, schema, perioada, manual=None):
     if res.z_incomplete:
         # [D394 op2 Î1, decizia Costin 02.10] refuz NUMIT, nu op2 pe zero: ce lipsește, pe ce raport
         _e = ValueError("D394 nu se poate genera: încasările prin casa de marcat (secțiunea Î1) cer, pentru fiecare "
-                         "raport Z validat din perioadă, NUI-ul casei, numărul de bonuri fiscale și defalcarea pe "
-                         "cote. Lipsesc: " + "; ".join("raportul %s din %s — %s" % (z["numar"], z["data"],
-                                                                                  ", ".join(z["lipsa"]))
-                                                    for z in res.z_incomplete) + ".")
+                        "raport Z validat din perioadă, NUI-ul casei, numărul de bonuri fiscale și defalcarea pe cote, "
+                        "iar facturile emise pe baza bonurilor trebuie să se poată scădea dintr-un raport Z al lunii lor. "
+                        "Lipsesc: " + "; ".join("%s%s — %s" % (z["numar"], (" din " + z["data"]) if z["data"] else "",
+                                                               ", ".join(z["lipsa"])) for z in res.z_incomplete) + ".")
         # motivul ca DATĂ (cod + rapoartele), ca refuzul să se poată verifica fără a citi fraza
         _e.cod, _e.rapoarte = "D394_Z_INCOMPLET", [z["numar"] for z in res.z_incomplete]
         raise _e

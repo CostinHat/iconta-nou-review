@@ -48,7 +48,7 @@ from core import uc_comun as _uc_comun
 from core import db, auth_api, tenant_provisioning, facturi_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core.mesaje import (EMAIL_INVALID, EMAIL_EXISTA,
                          CUI_FIRMA_LIPSA,
-                         MESAJ_Z_FARA_CHEIE, MESAJ_Z_FARA_BONURI, MESAJ_AMEF_FARA_BONURI,
+                         MESAJ_Z_FARA_CHEIE, MESAJ_Z_FARA_BONURI, MESAJ_AMEF_FARA_BONURI, MESAJ_FACTURA_BON_STOC,
                               FARA_DREPT_VALIDARE)
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
 import psycopg2 as _psycopg2
@@ -4539,8 +4539,12 @@ def facturi_emite(tenant_id, date, ctx):
         raise _erori.DateInvalide("Denumirea beneficiarului e obligatorie pe factură. Completeaz-o înainte de emitere.")
     with db.get_conn(schema) as conn:
         are_stoc = any(l.get("articol_id") for l in linii)
-        # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc
-        poarta_ceruta = (date.tip == "factura") and are_stoc
+        din_bon = bool((date.bon_fiscal_nr or "").strip())
+        if din_bon and date.pleaca_marfa is True:
+            # [decizia A 02.10] marfa a plecat cu bonul fiscal (raportul Z): a doua descărcare ar scoate-o de două ori din stoc
+            raise _erori.DateInvalide(MESAJ_FACTURA_BON_STOC)
+        # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc; nu și la factura din bon (fără descărcare)
+        poarta_ceruta = (date.tip == "factura") and are_stoc and not din_bon
         if poarta_ceruta and date.pleaca_marfa is None:
             raise _erori.DateInvalide("Raspunde la poarta: pleaca marfa acum? (DA descarca gestiunea / NU doar fiscal)")
         platitor = _uc_comun._platitor_tva_firma(conn)
@@ -4552,6 +4556,7 @@ def facturi_emite(tenant_id, date, ctx):
                 platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip,
                 tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
                 data_curs_manual=date.data_curs_manual,
+                bon_fiscal_nr=date.bon_fiscal_nr, bon_fiscal_data=date.bon_fiscal_data,
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])

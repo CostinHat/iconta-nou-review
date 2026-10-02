@@ -16223,3 +16223,41 @@ de atribute scris de mână) nu există în alte generatoare (căutat: `_CAMPURI
 **Limite.** Fără reținerile la sursă (CAS/CASS reținute de plătitor, plăți anticipate) — PFA în sistem real/normă nu le
 are; fără bonificație (Secțiunea 8, doar dacă legea bugetului o prevede); fără drepturi de proprietate intelectuală
 (Etapa 5).
+
+---
+
+## 02.10.2026 — DECIZIE Costin: factura emisă pe baza bonului fiscal — varianta A (marcă structurată, o singură numărare)
+
+**Decizia, verbatim:** „Factura primește marca structurată «emisă pe baza bonului fiscal» (cu nr. bonului și nr. AMEF, dacă
+sursa le cere; verifică temeiul în corpus). Factura marcată nu se mai numără a doua oară: aceeași regulă se aplică în D394 și
+în D300 (vânzarea e deja în raportul Z), dintr-o singură sursă. Verifică dacă D300 numără azi de două ori asemenea facturi;
+dacă da, e aceeași reparație.”
+
+**Temei.** HG 1/2016 pct.97 alin.(1) (Normele Codului fiscal): „Pe facturile emise și achitate pe bază de bonuri fiscale emise
+conform Ordonanței de urgență a Guvernului nr. 28/1999 … nu este necesară menționarea bunurilor livrate sau a serviciilor
+prestate, fiind suficientă mențiunea «conform bon fiscal nr./data»” — sursa cere NUMĂRUL și DATA bonului, nu numărul AMEF.
+HG 479/2003 (anexa) art.2: la solicitare, utilizatorii eliberează „și factură … la data eliberării bonului fiscal”. OPANAF
+2194/2025, anexa D394 lit.G: Î1 = încasările prin AMEF „cu excepția celor pentru care s-au emis facturi”.
+
+**Constatare (verificată în cod înainte de reparație).** Factura emisă nu are azi nicio legătură cu bonul: D300 citește și
+facturile emise, și rapoartele Z — o vânzare facturată din bon intră de două ori în rd.9/10; D394 o numără în op1 (corect,
+factura are partener) ȘI în op2 Î1 (greșit); contarea automată scrie la emitere `4111 = 707 + 4427` peste `5311 = 707` /
+`707 = 4427` din Z — venitul și TVA colectat dublate în evidență. Aceeași clasă în patru locuri.
+
+**Cum se aplică.** Marca = `bon_fiscal_nr` + `bon_fiscal_data` pe factura EMISĂ (amândouă sau niciuna); definiția „factură din
+bon” stă într-un singur loc, consumat de: D300 (factura nu intră — vânzarea e în Z), D394 (factura rămâne în op1; suma ei se
+scade din op2 Î1 pe luna bonului), contarea (nicio notă de vânzare nouă), căile a doua D300/D394. PDF-ul poartă mențiunea
+„conform bon fiscal nr./data”. Alternativă respinsă: numărul AMEF pe factură (sursa nu-l cere).
+
+**Completare la decizia „factura emisă pe baza bonului fiscal” (aceeași zi, la implementare).** (1) Aceeași clasă în încă
+două locuri, reparate în același pas: poarta „pleacă marfa?” (o factură din bon nu mai descarcă gestiunea — marfa a ieșit cu
+bonul) și lista „facturi necontate” din verificarea încrucișată (factura din bon n-are notă prin definiție). (2) Storno-ul
+moștenește marca: el corectează un document care nu s-a numărat ca vânzare. (3) INTERPRETARE CU TEMEI: în D394 op2 se scad
+sumele (total, baze, TVA), dar `nrBF` rămâne „numărul total al bonurilor fiscale emise în fiecare lună” (pct.14) — bonul a
+fost emis; alternativa respinsă (scăderea bonului din nrBF) nu are text care s-o ceară. De reconfirmat dacă apare o
+precizare ANAF. (4) Factura din bon dintr-o lună fără raport Z validat oprește D394 cu numele facturii (nu se scade din
+nimic, nu op2 negativ). (5) Curate (citite): reconcilierea plăților și portalul clientului lucrează pe soldul `4111` din
+evidență (factura din bon nu are notă, deci nu apare neîncasată); D406 listează factura ca document (corect); rapoartele
+comerciale pe client o arată (e o factură către acel client).
+**Rămas deschis (decizie):** exporturile SAGA / WinMentor trimit factura ca „ieșire” — programul extern ar înregistra
+vânzarea a doua oară dacă înregistrează și Z-ul; v. raportul.

@@ -73,7 +73,7 @@ class RefuzContare(Exception):
     (clichetul 50 / METODA §23).
 
     Felurile: `INEXISTENTA` · `NU_E_DOCUMENT_FISCAL` · `LUNA_INCHISA` · `FARA_COTA` ·
-    `TVA_LA_INCASARE_MANUAL` · `POSIBILA_DUBLARE`.
+    `TVA_LA_INCASARE_MANUAL` · `POSIBILA_DUBLARE` · `EMISA_DIN_BON` (factura din bon: vânzarea e în nota Z).
     """
 
     def __init__(self, cod, mesaj, detalii=None):
@@ -472,6 +472,12 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     if (f.get("tip") or "factura") != "factura":
         raise RefuzContare("NU_E_DOCUMENT_FISCAL",
                            "proforma/avizul nu se contabilizează (nu e document fiscal)")
+    if _fc.e_din_bon_fiscal(f):
+        # [decizia A 02.10] vânzarea e deja în nota raportului Z (5311 = 707, 707 = 4427): o notă 4111 = 707 + 4427 ar
+        # dubla venitul și TVA colectat. Factura e documentul cerut de client (HG 479/2003 anexa art.2), nu un fapt nou.
+        raise RefuzContare("EMISA_DIN_BON",
+                           "factura e emisă pe baza bonului fiscal %s — vânzarea e deja înregistrată din raportul Z, "
+                           "deci nu primește o a doua notă de vânzare" % _fc.mentiune_bon(f))
 
     # [A3, 17.09.2026] O factură ANULATĂ / STORNATĂ nu primește notă: e un document VOID, iar nota
     # ar afirma un fapt economic care nu există. Până azi `_conteaza_la_creare` nu se uita la status,

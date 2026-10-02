@@ -18,6 +18,7 @@ def select_firma_profil(cur):
 
 from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
 from core.nomenclator_status_factura import clauza_sql as _status_declarabil  # [A3] filtru de STATUS
+from core import facturi as _fc   # [decizia A 02.10] definiția „factură din bon fiscal”
 
 
 def select_rapoarte_z(cur, surse, inceput, sfarsit):
@@ -30,6 +31,21 @@ def select_rapoarte_z(cur, surse, inceput, sfarsit):
                 "LEFT JOIN rapoarte_z_cote z ON z.inregistrare_id = i.id "
                 "WHERE i.status = 'validata' AND i.sursa = ANY(%s) AND i.data >= %s AND i.data < %s "
                 "ORDER BY i.data, i.id, z.cota", (list(surse), inceput, sfarsit))
+    return cur.fetchall()
+
+
+def select_facturi_din_bon(cur, inceput, sfarsit):
+    """[decizia A 02.10.2026] Facturile EMISE pe baza unui bon fiscal din fereastră (pe DATA BONULUI — luna raportului Z din
+    care se scad), cu liniile pe cotă. Aceleași filtre de status/document ca `select_facturi`; storno-ul (care moștenește
+    marca) vine cu linii negative și adaugă suma înapoi în Î1."""
+    cur.execute("SELECT f.id AS id, f.numar AS numar, f.bon_fiscal_nr AS bon_fiscal_nr, f.bon_fiscal_data AS bon_fiscal_data, "
+                "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "
+                "f.total AS total, f.tva AS tva, l.cota_tva AS cota, ROUND(l.cantitate * l.pret_unitar, 2) AS baza "
+                "FROM facturi f JOIN factura_linii l ON l.factura_id = f.id "
+                "WHERE " + _fc.clauza_din_bon("f") + " "
+                "AND f.bon_fiscal_data >= %s AND f.bon_fiscal_data < %s "
+                "AND " + _status_declarabil("f") + " AND " + _doc_fiscal("f") + " ORDER BY f.id, l.id",
+                (inceput, sfarsit))
     return cur.fetchall()
 
 

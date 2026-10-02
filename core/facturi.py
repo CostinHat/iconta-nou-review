@@ -32,6 +32,33 @@ ACHIZITIE = {        # tip -> cont (factură primită)
 }
 
 
+# ── FACTURA EMISĂ PE BAZA BONULUI FISCAL (decizia Costin A, 02.10.2026) ──────────────────────────────────────────
+# HG 1/2016 pct.97 alin.(1): „Pe facturile emise și achitate pe bază de bonuri fiscale … fiind suficientă mențiunea
+# «conform bon fiscal nr./data»”. Vânzarea e deja în raportul Z al zilei bonului, deci factura NU e o vânzare nouă: nu
+# intră în D300, nu se mai scrie notă de vânzare, nu descarcă stocul, iar în D394 rămâne în op1 (are partener) dar suma ei
+# se scade din op2 Î1 („cu excepția celor pentru care s-au emis facturi”, OPANAF 2194/2025 lit.G). DEFINIȚIA E AICI, o dată.
+def e_din_bon_fiscal(f):
+    """Factura (dict cu `directie`, `bon_fiscal_nr`) e emisă pe baza unui bon fiscal."""
+    return (f.get("directie") or "emisa") == "emisa" and bool(str(f.get("bon_fiscal_nr") or "").strip())
+
+
+def clauza_nu_din_bon(alias="f"):
+    """Predicatul SQL al aceleiași definiții, pentru repository-urile care numără vânzările (D300 și calea a doua)."""
+    return ("%s.bon_fiscal_nr IS NULL" % alias) if alias else "bon_fiscal_nr IS NULL"
+
+
+def clauza_din_bon(alias="f"):
+    """Predicatul SQL complementar: factura EMISĂ și marcată (D394 op2 Î1 o scade din luna bonului)."""
+    a = (alias + ".") if alias else ""
+    return "%sdirectie = 'emisa' AND %sbon_fiscal_nr IS NOT NULL" % (a, a)
+
+
+def mentiune_bon(f):
+    """Mențiunea de pe factură (HG 1/2016 pct.97 alin.(1)): „conform bon fiscal nr./data”."""
+    from core.pdf_util import data_ro
+    return "conform bon fiscal nr. %s/%s" % (str(f.get("bon_fiscal_nr")).strip(), data_ro(f.get("bon_fiscal_data")))
+
+
 _RADACINI_VENIT = (            # radacina in denumire -> tip (OMFP 1802/2014)
     ("marf", "marfa"),         # marfa (bunuri spre revanzare) -> 707
     ("produs", "produse"),     # produse finite -> 701

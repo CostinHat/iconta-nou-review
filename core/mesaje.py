@@ -120,6 +120,9 @@ MESAJ_Z_FARA_CHEIE = ("NUI-ul casei de marcat și numărul raportului Z sunt obl
 # [D394 op2 Î1, decizia B 02.10.2026] D394 lit.G cere numărul de bonuri fiscale emise în lună (OPANAF 2194/2025 pct.14)
 MESAJ_Z_FARA_BONURI = ("Numărul de bonuri fiscale e obligatoriu — e tipărit pe raportul Z și intră în D394 "
                        "(încasările prin casa de marcat, pe lună). Trece numărul de bonuri de pe raport.")
+# [decizia A 02.10.2026] factura emisă pe baza bonului fiscal: marfa a ieșit cu bonul (raportul Z), nu se descarcă a doua oară
+MESAJ_FACTURA_BON_STOC = ("Factura emisă pe baza bonului fiscal nu mai descarcă gestiunea: marfa a ieșit deja cu bonul. "
+                          "Alege «NU — doar fiscal».")
 MESAJ_AMEF_FARA_BONURI = ("fișierul AMEF nu poartă numărul de bonuri fiscale (atributul nrB al raportului Z) — fără el "
                           "raportul nu poate intra în D394; verifică exportul casei de marcat")
 

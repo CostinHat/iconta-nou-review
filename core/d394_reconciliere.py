@@ -49,6 +49,7 @@ import re
 from decimal import Decimal, ROUND_HALF_UP
 from core import repo_d394_reconciliere as _repo
 from core import nomenclator_status_factura as _nsf394
+from core import facturi as _fc   # [decizia A 02.10] definiția „factură din bon fiscal”
 
 _NEDIGIT = re.compile(r"\D")
 
@@ -197,6 +198,24 @@ def _incasari_independent(conn, inceput, sfarsit):
         c = int(Decimal(cota))
         if c:
             m["cote"][c] = (Decimal(baza), Decimal(tva))
+    # [decizia A 02.10] facturile emise pe baza bonurilor se scad din luna bonului (Î1 „cu excepția celor pentru care s-au
+    # emis facturi”) — SQL propriu, pe data bonului; doar facturi declarabile, documente fiscale (RON: baza = cant x preț)
+    qf = ("SELECT date_trunc('month', f.bon_fiscal_data) AS luna, l.cota_tva AS cota, "
+          "SUM(ROUND(l.cantitate * l.pret_unitar, 2)) AS baza "
+          "FROM facturi f JOIN factura_linii l ON l.factura_id = f.id "
+          "WHERE " + _fc.clauza_din_bon("f") + " "
+          "AND f.bon_fiscal_data >= %s AND f.bon_fiscal_data < %s "
+          "AND " + _nsf394.clauza_sql("f") + " AND " + _nsf394.clauza_tip_document("f") + " "
+          "GROUP BY 1, 2")
+    with conn.cursor() as cur:
+        for luna, cota, baza in _repo.sql(cur, qf, inceput, sfarsit):
+            m = luni.setdefault(luna, {"bonuri": 0, "total": Decimal(0), "cote": {}})
+            c, b = int(Decimal(cota)), Decimal(baza)
+            t = b * c / Decimal(100)
+            m["total"] -= b + t
+            if c:
+                ob, ot = m["cote"].get(c, (Decimal(0), Decimal(0)))
+                m["cote"][c] = (ob - b, ot - t)
     out = {"nr_BF_i1": 0, "incasari_i1": 0, "cote": {}}
     for m in luni.values():
         out["nr_BF_i1"] += m["bonuri"]

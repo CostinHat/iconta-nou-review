@@ -240,6 +240,11 @@ def genereaza_pdf(profil, factura):
     if neplatitor:
         el.append(Spacer(1, 8))
         el.append(Paragraph(MENTIUNE_NEPLATITOR, st_cell))
+    from core import facturi as _fc
+    if _fc.e_din_bon_fiscal(factura):
+        # [decizia A 02.10] HG 1/2016 pct.97 alin.(1): „fiind suficientă mențiunea «conform bon fiscal nr./data»”
+        el.append(Spacer(1, 8))
+        el.append(Paragraph(_fc.mentiune_bon(factura), st_cell))
 
     # ---- BLOC VALUTA (art. 319) ----
     if este_valuta and factura.get("tva_lei") is not None:

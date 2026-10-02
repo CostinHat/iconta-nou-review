@@ -195,7 +195,8 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
                     tert_platitor_tva=None, tert_tara="RO", tip_operatiune="normal",
                     furnizor_tva_incasare=False, tert_pf=False, tip="factura", axa_ic=None,
-                    curs=None, data_curs=None, curs_sursa=None, cota_la_data=None):
+                    curs=None, data_curs=None, curs_sursa=None, cota_la_data=None,
+                    bon_fiscal_nr=None, bon_fiscal_data=None):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
@@ -219,6 +220,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                              % (_l.get("descriere") or "",))
     if directie not in DIRECTII:
         raise ValueError("Direcția facturii trebuie să fie 'emisă' sau 'primită'.")
+    _bon_nr, _bon_data = _marca_bon(directie, tip, bon_fiscal_nr, bon_fiscal_data, data_emitere)
     # [probare invalid lot 2, 03.09.2026] Cele trei refuzuri de mai jos au înlocuit, în ordine:
     # un `500` pe o dată inexistentă în calendar, o factură cu cota de TVA 99% acceptată ȘI
     # contabilizată (4427 = 99 lei), și un al doilea document cu un număr deja folosit.
@@ -339,14 +341,15 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
             "tert_tara, tip_operatiune, furnizor_tva_incasare, tip, axa_ic, "
-            "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa) "  # [A1] lei la INSERT
+            "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, "  # [A1] lei la INSERT
+            "bon_fiscal_nr, bon_fiscal_data) "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
             "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-            "%s,%s,%s,%s,%s) RETURNING id",
+            "%s,%s,%s,%s,%s,%s,%s) RETURNING id",
             (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
              status, moneda, directie, tert_nume, tert_cui, tert_adresa,
              categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
              tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v, axa_v,
-             _curs_v, _tva_lei_v, _total_lei_v, _dcurs_v, _sursa_v))
+             _curs_v, _tva_lei_v, _total_lei_v, _dcurs_v, _sursa_v, _bon_nr, _bon_data))
         factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(
@@ -360,6 +363,26 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
            "total": float(t["total"]), "tva": float(t["tva"])}
     out["contare"] = _conteaza_la_creare(conn, factura_id, directie, tip_v)
     return out
+
+
+def _marca_bon(directie, tip, bon_nr, bon_data, data_emitere):
+    """Marca „emisă pe baza bonului fiscal” (HG 1/2016 pct.97 alin.(1): „conform bon fiscal nr./data”): numărul ȘI data
+    bonului, doar pe o FACTURĂ EMISĂ, cu bonul cel târziu în ziua facturii (HG 479/2003 anexa art.2: factura se eliberează
+    „la data eliberării bonului fiscal”). Întoarce (nr, data) sau (None, None)."""
+    nr = str(bon_nr or "").strip()
+    if not nr and not bon_data:
+        return None, None
+    if not nr or not bon_data:
+        raise ValueError("Factura emisă pe baza bonului fiscal cere și numărul, și data bonului (HG 1/2016 pct.97 "
+                         "alin.(1): mențiunea „conform bon fiscal nr./data”).")
+    if directie != "emisa" or (tip or "factura") != "factura":
+        raise ValueError("Marca „emisă pe baza bonului fiscal” se pune doar pe o factură emisă.")
+    d_bon = _data_ceruta("data bonului fiscal", bon_data)
+    import datetime as _dt
+    d_fact = _data_ceruta("data emiterii", data_emitere) if data_emitere else _dt.date.today()
+    if d_bon > d_fact:
+        raise ValueError("Bonul fiscal (%s) nu poate fi după factura emisă pe baza lui (%s)." % (d_bon, d_fact))
+    return nr, d_bon
 
 
 def _conteaza_la_creare(conn, factura_id, directie, tip):
@@ -400,6 +423,10 @@ def _conteaza_la_creare(conn, factura_id, directie, tip):
         with _cf.cursor_dict(conn) as cur:
             return _cf.contabilizeaza(cur, "", factura_id, automat=True)
     except _cf.RefuzContare as e:
+        if e.cod == "EMISA_DIN_BON":
+            # nu e o neconformitate: factura din bon nu e un fapt economic nou (decizia A 02.10)
+            return {"stare": "neaplicabil", "afirmatie": _af.afirmatie(
+                "absenta_observatie", e.cod, e.mesaj, surse_consultate=["facturi.bon_fiscal_nr"])}
         return {"stare": "refuzata", "cod": e.cod, "detalii": e.detalii,
                 "afirmatie": _af.afirmatie(
                     "neconformitate", e.cod, e.mesaj,
@@ -469,6 +496,7 @@ def detalii_factura(conn, factura_id):
             "taxare_inversa, categorie_331, axa_ic, tert_platitor_tva, data_faptului_generator, "  # [A4] clasificarea storno-ului
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
             "link_plata, platita_la, plata_confirmata_de, "  # [R43] marca de simulare
+            "bon_fiscal_nr, bon_fiscal_data, "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
             "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
             "EXISTS(SELECT 1 FROM inregistrari i WHERE i.factura_id = facturi.id) AS contabilizata "
             "FROM facturi WHERE id = %s",
@@ -710,7 +738,8 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                   data_emitere=None, data_scadenta=None, moneda="RON",
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
                   tert_tara="RO", tip_operatiune="normal", tert_pf=False,
-                  data_curs_manual=None, curs_manual_de=None, axa_ic=None):
+                  data_curs_manual=None, curs_manual_de=None, axa_ic=None,
+                  bon_fiscal_nr=None, bon_fiscal_data=None):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -816,7 +845,8 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                         # [A1] cursul emiterii intra ÎN creare, deci nota automată e în lei. RON→None
                         # (creeaza pune cursul 1); valută→cursul calculat mai sus.
                         curs=(None if (moneda or "RON").upper() == "RON" else _curs),
-                        data_curs=_dcurs, curs_sursa=_sursa)
+                        data_curs=_dcurs, curs_sursa=_sursa,
+                        bon_fiscal_nr=bon_fiscal_nr, bon_fiscal_data=bon_fiscal_data)   # [decizia A 02.10]
     _fid = r["factura_id"]
     # setez seria pe factura. [C1] contorul a fost DEJA incrementat atomic de `_rezerva_numar` la
     # inceput — nu se mai incrementeaza aici (dublul increment ar sari numere).
@@ -893,6 +923,9 @@ def storneaza(conn, factura_id):
                         tip_operatiune=(orig.get("tip_operatiune") or "normal"),
                         tert_platitor_tva=orig.get("tert_platitor_tva"),
                         data_faptului_generator=orig.get("data_faptului_generator"),
+                        # [decizia A 02.10] storno-ul unei facturi emise pe baza bonului fiscal nu e nici el o vânzare:
+                        # moștenește marca, altfel ar scădea din D300 / evidență o vânzare care n-a fost numărată
+                        bon_fiscal_nr=orig.get("bon_fiscal_nr"), bon_fiscal_data=orig.get("bon_fiscal_data"),
                         cota_la_data=orig.get("data_emitere"))  # [3i] cota validata pe data operatiunii de baza (art.282(9))
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s, storno_din_id = %s WHERE id = %s",

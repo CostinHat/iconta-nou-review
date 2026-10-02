@@ -194,6 +194,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <option value="avans">Avans încasat</option>
         <option value="regularizare_avans">Regularizare avans</option>
       </select>
+      <label class="camp-eticheta" for="em-bon-nr">Emisă pe baza bonului fiscal — nr. bon (dacă e cazul)</label>
+      <input class="camp-input" id="em-bon-nr" type="text" maxlength="30" placeholder="ex. 0042">
+      <label class="camp-eticheta" for="em-bon-data">Data bonului fiscal</label>
+      <input class="camp-input" id="em-bon-data" type="date">
+      <p class="camp-ajutor">Pentru o factură cerută de client pentru un bon deja emis: vânzarea e în raportul Z, deci factura nu se mai numără a doua oară (D300, D394, evidență, stoc). Pe factură apare „conform bon fiscal nr./data”.</p>
     </div>
     <div class="em-actiuni">
       <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">
@@ -448,6 +453,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       moneda: monedaSel,
       tert_tara: (corp.querySelector("#em-tara") || {}).value || "RO",              // [B1 D300]
       tip_operatiune: (corp.querySelector("#em-tipop") || {}).value || "normal",    // [B1 D300]
+      // [decizia A 02.10] factura emisă pe baza bonului fiscal (HG 1/2016 pct.97 alin.(1)); validarea e pe server
+      bon_fiscal_nr: ((corp.querySelector("#em-bon-nr") || {}).value || "").trim() || null,
+      bon_fiscal_data: (corp.querySelector("#em-bon-data") || {}).value || null,
     };
     if (cursManual != null) payload.curs_manual = cursManual;
     if (pleacaMarfaCurent !== null) payload.pleaca_marfa = pleacaMarfaCurent;  // [punte_stoc_v1] raspuns poarta
@@ -515,7 +523,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   function porniEmitere() {
     const tip = (corp.querySelector("#em-tip") || {}).value || "factura";
     const cuArticole = linii.filter((l) => l && l.articol_id).length;
-    if (cuArticole && tip === "factura") {
+    // [decizia A 02.10] factura din bon nu descarcă gestiunea (marfa a ieșit cu bonul) -> fără poartă
+    const dinBon = !!((corp.querySelector("#em-bon-nr") || {}).value || "").trim();
+    if (cuArticole && tip === "factura" && !dinBon) {
       const rez = corp.querySelector("#em-rezultat");
       rez.className = "em-rezultat";
       rez.innerHTML = `

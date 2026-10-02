@@ -1,0 +1,65 @@
+{
+ "campuri": [
+  {
+   "id": "em-bon-nr",
+   "exista": true,
+   "eticheta": "Emisă pe baza bonului fiscal — nr. bon (dacă e cazul)"
+  },
+  {
+   "id": "em-bon-data",
+   "exista": true,
+   "eticheta": "Data bonului fiscal"
+  }
+ ],
+ "cerere": {
+  "bon_fiscal_nr": "0042",
+  "bon_fiscal_data": "2026-09-10"
+ },
+ "poarta_stoc_afisata": false,
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [
+    {
+     "tag": "span",
+     "cls": "em-l-cota",
+     "title": "Cota TVA",
+     "vizibil": "—"
+    },
+    {
+     "tag": "button",
+     "cls": "buton-sters em-l-sterge",
+     "title": "Șterge",
+     "vizibil": "×"
+    }
+   ],
+   "extra": []
+  }
+ ],
+ "mobil": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [
+    {
+     "tag": "span",
+     "cls": "em-l-cota",
+     "title": "Cota TVA",
+     "vizibil": "—"
+    },
+    {
+     "tag": "button",
+     "cls": "buton-sters em-l-sterge",
+     "title": "Șterge",
+     "vizibil": "×"
+    }
+   ],
+   "extra": []
+  }
+ ]
+}

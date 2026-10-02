@@ -39,6 +39,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca
 """
 
 from core import nomenclator_status_factura as _nsf
+from core import facturi as _fc   # [decizia A 02.10] definiția „factură din bon fiscal”
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 from core import repo_d300_reconciliere as _repo
@@ -89,6 +90,8 @@ def _agrega_independent(conn, inceput, sfarsit):
          # depune D300. *Cand o decizie se aplica "pe toate drumurile", drumurile se NUMARA.*
          "AND " + _nsf.clauza_tip_document("f") + " "
          "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "  # [B1] deducere amanata la plata, in afara reconcilierii pe emitere (limita)
+         # [decizia A 02.10] al șaselea cititor: factura din bon nu e o vânzare nouă (e în raportul Z) — aceeași definiție
+         "AND " + _fc.clauza_nu_din_bon("f") + " "
          "ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         rows = _repo.sql(cur, q, inceput, sfarsit)

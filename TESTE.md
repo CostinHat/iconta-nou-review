@@ -45,6 +45,17 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **Factura emisă pe baza bonului fiscal — decizia A** (02.10.2026, decizia Costin; DECIZII 02.10). ÎNCHIS
+  - ultim: pașii 1–6 livrați (commitul „factura din bon”, hash în ISTORIC 02.10.2026): marca pe factură, definiția unică în core/facturi.py, D300 + calea a doua, D394 op2 + calea a doua, contarea, stocul, storno-ul, PDF-ul, ecranul; proba F1 (vechi: D300 2100/441, op2 1210 / nou: 2000/420, op2 1089; DUK D300 și D394 valide).
+  - urmator: — (fir închis). D212 Etapa 5. STARE = ÎNCHIS
+  - pasi:
+    1. `core/migrare_factura_bon_fiscal.py` (coloanele `bon_fiscal_nr` text, `bon_fiscal_data` date, CHECK amândouă-sau-niciuna) + `tenant_template.sql`; aplicată pe bazele de test și producție.
+    2. `core/facturi.py`: definiția unică `e_din_bon_fiscal(f)`; `facturi_api.creeaza_factura` primește și validează marca (doar emisă; data bonului ≤ data facturii); PDF: mențiunea HG 1/2016 pct.97 alin.(1).
+    3. `contare_facturi.contabilizeaza`: factura din bon nu primește notă de vânzare (motiv numit).
+    4. D300 (`repo_d300` / `d300.pull` + `d300_reconciliere`): factura din bon nu intră; D394: op1 neschimbat, op2 Î1 minus suma facturilor din bon pe luna bonului (+ calea a doua `d394_reconciliere`).
+    5. ecranul de emitere (`emitere_ecran.js`): câmpurile „Emisă pe baza bonului fiscal: nr. / data” la capătul formularului.
+    6. teste + mutații; probă pe portofoliu (F1: bon în Z, apoi factură din același bon — o singură dată în D300 și D394, DUK valid); scanuri vizuale; registre; commit four-way. Apoi D212 Etapa 5.
+    7. [adăugat pe drum, 02.10 — generalizarea clasei „aceeași vânzare numărată de două ori”] poarta de stoc (`uc_tenants.facturi_emite` + `emitere_ecran.js`) și lista „facturi necontate” (`repo_control_incrucisat.select_inregistrari_3`) aplică aceeași definiție; storno-ul moștenește marca.
 - fir: **D212 ETAPA 4 — CAS, CASS, impozitul în sistem real și sumarul (oblig_realizat)** (02.10.2026, „Poți trece la următorul pas din listă”; `D212_PERIMETRU.md` §4). ÎNCHIS
   - ultim: pașii 1–5 livrați (commitul D212 Etapa 4, hash în ISTORIC 02.10.2026): oblig_realizat pe rânduri, `_CAMPURI` pe numele XML + gard pe jar, opțiunea CAS refuzată [EXTERN], lista de excepții CASS pe ecran; proba F4 (vechi: fără oblig_realizat / nou: CAS 24.300, CASS 10.000, impozit 7.599, de plată 41.899, DUK valid).
   - urmator: — (fir închis). D212 Etapa 5. STARE = ÎNCHIS
