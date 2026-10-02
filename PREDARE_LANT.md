@@ -1,38 +1,50 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Pachet FiscalOS §1–§3 (63df9bde) + tichete de creșă (94c7b21a) + D212 Etapa 2 (commitul care poartă predarea); urmează D212 Etapa 3** (02.10.2026)
+# PREDARE LANȚ — **trei commituri pe 01–02.10: Pachet FiscalOS §1–§3, tichete de creșă, D212 Etapa 2; urmează D212 Etapa 3** (02.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-02**, la commitul **D212 Etapa 2**. *Pentru un contabil: pe D212, bifa „Include
-  venitul din registrul RIP" pune venitul brut, cheltuielile și venitul net (cu pierderea reportată compensată în limita
-  a 70%) în subsecțiunea I.1.1; XML-ul trece validatorul ANAF local. Impozitul și CAS/CASS vin în Etapa 4.*
-- **pe commit**: `94c7b21a` (tichete de creșă, four-way închis: HEAD = origin/main = public/main =
-  backup/lant-2026-10-02 = 2/2 procese). Commitul Etapei 2 se citește din `git log -1`. Pachetul FiscalOS: `63df9bde`,
-  ZIP `/home/costin/ghid_incoming/iconta_pachet_fiscalos_rezultat.zip`.
-- **URMĂTORUL FRONT:** **D212 Etapa 3** — normă de venit (inclusiv agricol, CF art.107 alin.(2)) în motor + emitter
-  cap12 (`D212_PERIMETRU.md` §4 și §5 — ce s-a aflat la sursă despre validator/PDF/R4). Apoi Etapa 4 (impozit/CAS/CASS în
-  `oblig_realizat`, secțiunea 4 a capitolului I).
-- **Decizie deschisă pentru Costin:** căsuțele `.set-bifa` au 16px — sub 24px (WCAG 2.5.8 AA) dacă se măsoară căsuța
-  singură; ținta reală e eticheta (≥ 24). Mărirea globală e o schimbare vizuală pe toate ecranele.
+- **ultima rescriere**: **2026-10-02**, după închiderea **D212 Etapa 2** (commit de documentare care poartă această predare).
+- **pe commit**: `1cdba188` — ultima execuție de cod, four-way închis automat la 02.10.2026 03:32:
+  **HEAD = origin/main = public/main = backup/lant-2026-10-02 = procesul viu (2 din 2) = 1cdba188**, start proces
+  03:32:17 > commit 02:50:10. Lanțul zilei: `63df9bde` (FiscalOS §1–§3) → `94c7b21a` (tichete de creșă) → `1cdba188`
+  (D212 Etapa 2). ZIP pachet FiscalOS: `/home/costin/ghid_incoming/iconta_pachet_fiscalos_rezultat.zip`.
+- **ÎN LUCRU ACUM:** nimic. Tree curat (în afară de `import_fiscalos/`, v. mai jos).
+- **URMĂTORUL FRONT:** **D212 Etapa 3** — venit pe normă (inclusiv agricol, CF art.107 alin.(2)) în motor + emitter
+  `cap12`. Ce s-a aflat deja la sursă despre validator, PDF și R4 e în `D212_PERIMETRU.md` §5 — se citește întâi.
+  Apoi Etapa 4: impozit/CAS/CASS în `oblig_realizat` (secțiunea 4 a capitolului I).
+- **DECIZII CARE AȘTEAPTĂ PE COSTIN** (nu blochează Etapa 3):
+  1. căsuțele `.set-bifa` au 16px — sub 24px (WCAG 2.5.8 AA) dacă se măsoară căsuța singură; ținta reală e eticheta
+     (≥ 24). Mărirea globală schimbă vizual toate ecranele.
+  2. prioritatea mutării în `COTE` a 4 constante-gemene (`d101/d101g.COTA_STANDARD`, `cote_tva.COTA_STANDARD/REDUSA`) —
+     interdicția 1 / R26; divergența lor e deja imposibilă prin gard.
 - **Fronturi deschise, neschimbate:** F1 etapele 9-11 (depunere reală = [EXTERN]); F2 D101 (la închiderea anului);
-  Pachet FiscalOS §4 (D394 Î1/Î2); plafonul de creșă pentru luni < 04.2024 pe baza 450 (DECIZII 01.10).
-- **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09, DECIZII 21.09) — nu se comite.
+  Pachet FiscalOS §4 (D394 Î1/Î2 — nu era în comandă); plafonul de creșă pentru luni < 04.2024 rămâne pe baza 450
+  (ordinele 2023 nu sunt în forma în vigoare a HG 1045/2018 — DECIZII 01.10).
+- **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09, DECIZII 21.09) — nu se comite, nu se șterge.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **CE E RESCRIS ȘI CE E PĂSTRAT**: titlul și antetul sunt **rescrise**; restul documentului (inclusiv „PRIMUL
-  LUCRU DE ȘTIUT" cu starea D212/F1-F3, capcanele, operaționalul, rețeta scanului vizual) e **păstrat** neatins —
-  fronturile lui nu s-au mișcat azi în afară de cele numite mai sus.
+- **CE E RESCRIS ȘI CE E PĂSTRAT**: rescrise — titlul, antetul, starea din capul „PRIMUL LUCRU DE ȘTIUT", paragrafele D212
+  (cele vechi spuneau că R4 cere suma de plată și că nomenclatorul cap11 e necunoscut — ambele dovedite greșite pe 02.10)
+  și o lecție nouă în rețeta scanului vizual. Păstrate neatinse: F1–F3, capcanele, operaționalul, cifrele invalidate.
 
 ---
-## PRIMUL LUCRU DE ȘTIUT: **20 de declarații cu formular UI în selector (LIVE); niciun front pornit — starea e „în așteptarea folosirii", v. 0Z**
+## PRIMUL LUCRU DE ȘTIUT: **lanțul e pe D212 (Declarația unică) — Etapa 2 făcută, Etapa 3 urmează**
 
-**STARE (25.09.2026, HEAD `453af646`, tree curat):** 20 de declarații au formular manual în selector (**LIVE**). Cele 13
-dinainte + frontul-7 de acum: **D603** (exceptare CASS) · **D600** (bază CAS/CASS estimată) · **D104** (distribuire venituri/
-cheltuieli între asociați) · **D114** (CAM, ne-D112) · **D110** (regularizare/restituire impozit reținut la sursă) · **D398**
-(OSS — TVA regimuri speciale) · **D318** (rambursare TVA din alt stat UE). Toate 7 după tiparul „proof-of-pattern" identic,
-câte un commit + four-way. Livrare ZIP: `/home/costin/livrari/front7_declaratii_453af646.zip`. Durate MĂSURATE (nu estimate)
-în `_artefacte_masurare/front7_durate.tsv` din ZIP — poarta+four-way domină fiecare commit (~37 min); restul (patch/gardă/
-probă/cascadă) = zeci–mii de ms. D212 rămâne **increment** (cap11/oblig_realizat = backlog R&D — v. mai jos).
+**STARE (02.10.2026, HEAD `1cdba188`, tree curat):** 20 de declarații au formular în selector (LIVE, neschimbat din 25.09).
+Pe 01–02.10 au intrat trei lucruri, fiecare cu four-way:
+- **Pachet FiscalOS §1–§3** (`63df9bde`): 54 de acte din corpus înlocuite cu forma consolidată oficială (vechile în
+  `anaf_surse/_inlocuite_fiscalos_2026-10-01/`); 17 constante de modul ancorate pe temei verbatim prin `common.ancoreaza`;
+  7 valori fiscale reconfirmate; 4 defecte de cod (casă: avansuri, cash&carry; IMCA 2027; citarea PLAFON_PF).
+- **Tichete de creșă** (`94c7b21a`): plafonul pe ferestrele ordinelor de indexare (640→770 lei), pe luna beneficiului;
+  HG 1045/2018 în forma din 30.09.2026.
+- **D212 Etapa 2** (`1cdba188`): subsecțiunea I.1.1 (cap11) din registrul RIP, DUK valid; R4 reparat.
+
+**CE E DE ȘTIUT ÎNAINTE DE ORICE COMMIT (măsurat pe 01–02.10, 4 respingeri la poartă, ~41 min fiecare):** rulează înainte
+gărzile care urmăresc ce ai atins, nu doar testele tale: `test_agenda` (o bifă se mută DUPĂ ce testele citate sunt în
+HEAD), `test_constante_nesursate` (orice literal fiscal nou în afara unui `Temei(...)`), `test_refuzuri` (un modul care
+primește un `Temei` intră în domeniul „citează legea"), `test_reverificare` (temeiuri noi mută distribuția),
+`test_diacritice_afisate`, `test_importuri_nefolosite`, `test_temeiuri` (regulă DUK citată fără „DUK regula"),
+`verificator_conformitate.py`, și — după miezul nopții — data din antetul CONFORMITATE.md.
 
 **CUM E FĂCUT (tiparul „proof-of-pattern", identic D200 și D212):** backend = scos din `_DOAR_API` (intră în selector) + bloc
 `valideaza_cerere` cu mesaj de contabil; frontend `static/js/ecrane/declaratii.js` = stare `S.d2xx` în memorie, `_d2xxManual()`
@@ -40,17 +52,20 @@ probă/cascadă) = zeci–mii de ms. D212 rămâne **increment** (cap11/oblig_re
 xml); probă F4 `frontend_test/proba_d2xx_f4.py`; rând FUNCTIONALITATI.csv → LIVE (regula 9: în selector ⇒ LIVE; flip-ul poate
 duce declarația în `login.js` GRUPE_FUNC → `genereaza_grupe_functii.py --scrie`, apoi versioneaza + re-scan).
 
-**D212 — CE E FĂCUT:** formular identitate (`S.d212` = cif/nume_c/adresa_c/d_rec) + buton „Trage fișa RIP" (`GET
-/tenants/{id}/rip/d212/{an}` → afișează venit_net/CAS/CASS/impozit informativ) + generează cazul minim DUK-valid (identitate +
-bife 0; `totalPlata_A` = suma cifrelor CNP). Probat: DUK `valid` pe F4 (tenant_052). Gard `core/test_d212_formular.py`, probă
-`frontend_test/proba_d212_f4.py`, ajutor „?" = F030 (Motor D212).
+**D212 — CE E FĂCUT (Etapele 1–2):** formular identitate + „Trage fișa RIP" + bifa **„Include venitul din registrul RIP"**,
+pierderea reportată, CAEN. Cu bifa, `d212.genereaza(manual.din_rip)` → `cap11_din_rip` → `cap11_sistem_real` (rândurile
+1–9 din instrucțiunile OPANAF 2736/2025 pct.3.5.11; compensarea pierderii în limita a 70%, CF art.118 alin.(4)) + `bifa111=1`.
+Probat pe F4 (tenant_052, venit 2026 — singurul an cu operațiuni RIP): DUK valid. Gărzi `core/test_d212_cap11.py`; probe
+`frontend_test/proba_d212_etapa2.py` (backend, F4) și `frontend_test/proba_d212_formular_ui.py` (ecran, pe 8011).
 
-**D212 — CE RĂMÂNE (full-populat, R&D DUK NECARTOGRAFIAT):** popularea `cap11` (sistem real) + `oblig_realizat` (CAS/CASS) din
-fișa RIP. Motorul (`core/d212.py`) e **extensibil** — `build_xml` emite din `manual[cap]` ∩ `_CAMPURI[cap]`; doar UI-ul
-furnizează dict-ul. Primele constrângeri DUK, probate (`/tmp/duk_probe_d212.py`): cazul identitate = **valid**; `cap11`
-populat → **`categ_venit '1' nu se află în listă`** (nomenclatorul cap11 ≠ D200, nu-i în `anaf_surse`, doar în bytecode-ul
-`D212Validator.jar`); cu obligații → **R4** cere `totalPlata_A` = suma sumelor „de plată" (câmpurile „de plată" + maparea
-bifă↔capitol de cartografiat). Extragere din bytecode / probe DUK iterative. Apoi **restul 8 D2xx**, apoi **F6 + F7**.
+**D212 — CE S-A AFLAT LA SURSĂ (nu se mai caută):** în pachetul de validare în vigoare (v9), `validateCap11` e goală;
+`categ_venit` ∈ {1016, 1003, 1015, 1006, 1009–1012, 1021–1024}; **semnificația codurilor e în `D212Pdf.jar` (Pdf_v8)**, nu în
+validator — 1016 = activități independente; `det_ven_net` 1 = sistem real; `forma_org` 1/2/3. **R4: pentru CNP,
+`totalPlata_A` = suma celor 13 cifre, MEREU.** Detaliul complet: `D212_PERIMETRU.md` §5.
+
+**D212 — CE RĂMÂNE:** Etapa 3 (normă de venit, inclusiv agricol, `cap12`), Etapa 4 (impozit/CAS/CASS în `oblig_realizat` —
+impozitul NU se scrie în cap11 la venit net, ci în secțiunea 4), Etapa 5 (formular manual pentru categoriile fără date),
+etapa finală (F246, mesajul din `d221.py`, ghidurile). Asocierile (§3.5.12) și cotele forfetare nu sunt încă tratate.
 
 **SCANUL VIZUAL — cum se rulează (REZOLVAT 23.09; contează la FIECARE editare de JS):** o editare de JS mută `ui_hash()`
 GLOBAL, deci pică **TREI** gărzi de prospețime, fiecare cu artefactul ei — `test_acoperire_vizuala`
@@ -61,7 +76,9 @@ prod; NU 8011 cu doar `test.env`: n-are `JWT_SECRET`). Rețeta, ca script cu tra
 `publica_static.py --din-arbore` (prod 8010 expus temporar) → pornește `uvicorn main:app --port 8011` (așteaptă 200) →
 `interactiune_scan.py` + `proba_r175_arbore_asistent.py` + `proba_decl50.py` → `curata_proba_ecrane.py` →
 `publica_static.py` (republică HEAD) → **kill 8011 pe PID** (nu `pkill -f` — își omoară shell-ul ssh). Cele trei artefacte
-se comit cu lucrul. *Poarta rulează pe iconta_test, deci scanul TREBUIE să vadă acolo conturile.*
+se comit cu lucrul. *Poarta rulează pe iconta_test, deci scanul TREBUIE să vadă acolo conturile.* **Pentru `axe_scan.py` și `mobil_scan.py`,
+`PYTHONPATH` trebuie să conțină și `frontend_test` și `frontend_test/vizual`** (importă `w_auth`; fără, ies cu
+`ModuleNotFoundError` — măsurat 01.10). Rețeta completă cu trap, folosită pe 01–02.10: `export PYTHONPATH=$PWD:$PWD/frontend_test:$PWD/frontend_test/vizual`.
 
 O sesiune nouă citește: acest fișier → CLAUDE.md §2.2/§2.3 → ARHITECT.md „FORMA COMENZII". Ritual de început (§5): `pwd; hostname; git log --oneline -1` + `core.agenda`.
 

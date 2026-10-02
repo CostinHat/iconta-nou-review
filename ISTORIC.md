@@ -1004,3 +1004,22 @@ o declarație cu obligații ar fi fost respinsă; reparat. Pe ecranul D212, cont
 registrul RIP", poate declara pierderea reportată (compensată în limita a 70%, Codul fiscal art.118) și CAEN-ul; pe
 firma F4, XML-ul iese cu venitul real și trece validatorul. Pe drum: bifele cu etichete lungi se striveau pe telefon
 — reparat global.
+
+## 02.10.2026 — Ziua, pentru un contabil
+
+Ce s-a schimbat azi în aplicația pe care o folosește un contabil (amândouă au ajuns în producție în noaptea de 1 spre 2
+octombrie):
+
+- **Tichetele de creșă pot fi acordate la valoarea legală de azi: 770 lei pe lună pentru fiecare copil.** Până acum
+  aplicația oprea orice sumă peste 450 lei și spunea că indexarea „nu e confirmată". Acum plafonul urmează ordinele de
+  indexare publicate în Monitorul Oficial (640, 660, 670, 710, 740 și, din octombrie 2026, 770 lei) și se verifică pe
+  luna pentru care se acordă tichetul, nu pe ziua în care îl introduci. Impozitul de 10% se calculează pe suma întreagă,
+  fără CASS, ca înainte.
+- **Declarația unică (D212) pentru un PFA în sistem real se poate completa cu venitul din registrul de încasări și
+  plăți.** Pe ecranul D212 bifezi „Include venitul din registrul RIP", treci, dacă e cazul, pierderea reportată din anii
+  trecuți și codul CAEN, iar declarația iese cu venitul brut, cheltuielile deductibile și venitul net completate și
+  trece validatorul oficial ANAF. Pierderea reportată se scade în limita a 70% din venitul net, cum cere Codul fiscal.
+  **Ce nu face încă:** impozitul și contribuțiile (CAS/CASS) nu sunt încă scrise în declarație — le completezi tu
+  până la etapa următoare; nici venitul pe normă, nici asocierile.
+
+Restul zilei (verificări, gărzi, registre) nu schimbă nimic din ce vede sau depune un contabil.
