@@ -1138,3 +1138,18 @@ fost reparat.
   (treapta 12 salarii minime pe 78.200 lei), de plată 10.620, declarație validă la ANAF local.
 - Regulile pe categorii sunt cele pentru **veniturile 2025**; pentru 2026 legea s-a schimbat (Legea 239/2025), iar ANAF n-a
   publicat formularul — aplicația refuză cu explicația.
+
+## 03.10.2026 — D212 Etapa 5c-1: veniturile din străinătate în Declarația unică
+
+**Ce se schimbă pentru un contabil:**
+- **Pe formularul D212 apare lista „Venituri din străinătate”**: câte o țară și o sursă — activități independente, drepturi de
+  autor, chirii, agricole, titluri, dobânzi, dividende, alte venituri, lichidare, salarii plătite din România pentru munca din
+  străinătate. Se alege metoda de evitare a dublei impuneri; impozitul în România se calculează cu cota categoriei, iar
+  impozitul plătit acolo se scade cel mult până la impozitul român (metoda creditului) sau impozitul e zero (metoda scutirii).
+- **Veniturile din străinătate intră în CAS și CASS**, afară de cazul în care persoana e asigurată în alt stat — atunci se bifează
+  „Fără CAS/CASS în România”.
+- Proba pe firma PFA de test (veniturile 2025): Germania 80.000/20.000 cu 4.000 plătit acolo, drepturi de autor din Austria
+  20.000 cu 2.000 plătit, chirie în Franța pe metoda scutirii, dividende din SUA 10.000 — de plată în România 2.000 impozit,
+  CAS 12.150, CASS 8.430, total 22.580, declarație validă la ANAF local. Înainte, lista nu exista și declarația ieșea fără
+  aceste venituri.
+- Premiile, jocurile de noroc, pensiile, transferul proprietăților și moștenirea din străinătate nu sunt încă în listă (pasul următor).

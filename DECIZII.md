@@ -16303,3 +16303,40 @@ refuz numit, ca la agricolul pe normă. (3) Câmpuri de cheltuieli la cote forfe
 formularul instalat — categoria nu e oferită. Rămân pentru pasul următor: cap14 (venituri din străinătate, Secțiunea 2) și
 Capitolul II (CASS opțională pe anul curent). Norma rezultată trăiește în `core/d212.py` (`cap11_categorie`, `oblig_realizat`) și
 `core/d212_engine.calculeaza_cass_alte_venituri`; gardată de `core/test_d212_categorii.py`.
+
+---
+
+## 03.10.2026 — D212 Etapa 5c-1: veniturile din străinătate (cap14), creditul fiscal, contribuțiile pe veniturile din străinătate
+
+**Constatare (la sursă înainte de cod).** Validatorul (J13.0.1) primește `cap14` repetat, fără reguli încrucișate; țara =
+`_nomenclatorTari` din Parameters_v7 (ISO alfa-2, Grecia = EL, Kosovo = XK, fără România). Codurile categoriilor = D212Pdf
+Pdf_v8 (`str_categ_venit_1…18`; 2027/2003 refolosesc etichetele 1./2. din I.1.1 — constant pool deduplicat). CF art.130
+alin.(2): baza „după regulile proprii fiecărei categorii”; art.131 alin.(4): creditul „nu poate fi mai mare decât partea de
+impozit pe venit datorat în România”, „pentru fiecare țară și pe fiecare natură de venit”.
+
+**Decizie.** O secțiune pe țară și sursă (instrucțiuni pct.32). În 5c-1, 12 categorii ale căror reguli sunt deja verificate în
+aplicație: activități independente / agricole în sistem real (compensare 70%, CF art.118 alin.(5)), DPI (40% sau real),
+cedarea folosinței (20%), titluri (câștigul net, 70% pe țară — CF art.119 alin.(4)), dobânzi și alte venituri (10% pe sumă,
+CF art.64 alin.(1)), dividende (cota anului din `common.cota("impozit_dividend")` — 10% pe 2025), lichidare (CF art.97
+alin.(5), `lichidare._cota_lichidare`), salarii plătite din România (venitul bază de calcul din documentul angajatorului,
+pct.39.6.3; CF art.78 alin.(2)). rd.8 = 0 la metoda scutirii și la venitul scutit prin acord (pct.39.6.8); creditul doar la
+metoda creditului. Veniturile din străinătate intră în CAS (pct.46.3) și CASS 2.2 (pct.52.1.4); rd.11 în I.7 rd.1 (pct.56.1).
+
+**INTERPRETĂRI CU TEMEI.** (1) Activitatea independentă din străinătate intră și în CASS 2.1: art.170 alin.(1) cumulează
+„venitul net anual realizat” fără limită teritorială, iar pct.46.3/52.1.4 o spun explicit pentru celelalte două baze;
+alternativă respinsă: 2.1 doar pe România (bază CASS mai mică decât baza CAS pe același venit). (2) Dobânzile și dividendele
+din străinătate intră în treapta CASS „diminuate cu impozitul reținut” (art.170 alin.(4) lit.d) = minus impozitul plătit acolo
+și diferența plătită în România; alternativă respinsă: doar impozitul străin. De reconfirmat dacă apare o normă care transează.
+
+**Contribuțiile pe veniturile din străinătate — alegerea contabilului.** Instrucțiunile cer includerea lor „cu respectarea
+legislației europene aplicabile în domeniul securității sociale, precum și a acordurilor”: o persoană asigurată în alt stat nu
+datorează CAS/CASS în România pe acel venit. Evidența nu știe asta — de aceea bifa „Fără CAS/CASS în România (asigurat în alt
+stat)” pe fiecare venit (ca excepțiile CASS, art.174 alin.(7)-(8)); impozitul rămâne.
+
+**Alternative respinse.** Toate cele 18 categorii deodată: premiile, jocurile de noroc, pensiile (art.130 alin.(2^1), de la
+08.2025), transferul proprietăților și moștenirea au baze și cote proprii care cer citire separată — 5c-2. O cotă unică de
+10% pentru toate: dividendele și lichidarea au articole proprii (și cote diferite din 2026).
+
+**Limită.** Doar veniturile 2025 (Legea 239/2025 și Legea 141/2025 schimbă cote și baze din 2026; formularul nepublicat —
+refuz numit). Cota lichidării și cea generală sunt amândouă 10% pe 2025 — o mutare între ele nu se poate proba pe 2025
+(declarat în GARZI). Norma trăiește în `core/d212.py` (`cap14_sectiune`, `oblig_realizat`); gardată de `core/test_d212_cap14.py`.

@@ -1,0 +1,93 @@
+{
+ "eroare_tara": "Scrie codul țării din două litere (ex. DE pentru Germania, AT pentru Austria; Grecia = EL).",
+ "campuri": {
+  "2027": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-chelt",
+   "d212-s-faracontrib",
+   "d212-s-inc",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-pp",
+   "d212-s-sf",
+   "d212-s-tara"
+  ],
+  "2003": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-chelt",
+   "d212-s-det",
+   "d212-s-faracontrib",
+   "d212-s-inc",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-pp",
+   "d212-s-sf",
+   "d212-s-tara"
+  ],
+  "2012": [
+   "d212-s-castig",
+   "d212-s-cat",
+   "d212-s-faracontrib",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-pp",
+   "d212-s-tara"
+  ],
+  "2018": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-faracontrib",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-tara"
+  ],
+  "2016": [
+   "d212-s-baza",
+   "d212-s-cat",
+   "d212-s-faracontrib",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-tara"
+  ]
+ },
+ "randuri_dupa_trei": 3,
+ "randuri_dupa_stergere": 2,
+ "identitate_pastrata": true,
+ "sectiuni_cap14": [
+  "2027",
+  "2004",
+  "2012"
+ ],
+ "bifa121": true,
+ "credite": [
+  "4000"
+ ],
+ "de_plata": [
+  "2000",
+  "0",
+  "180"
+ ],
+ "duk_text": "DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF.",
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ]
+}

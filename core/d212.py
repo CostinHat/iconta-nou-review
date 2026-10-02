@@ -423,6 +423,136 @@ def cap11_categorie(a, an):
 
 
 
+# ── CAP14 (Secțiunea a 2-a, Subsecțiunea 1 — veniturile realizate din străinătate) ───────────────────────────────────
+# [D212 Etapa 5c, 03.10.2026] O secțiune pe țară și pe sursă de venit (instrucțiuni pct.32), rândurile după pct.39.6;
+# CF art.130 alin.(2): baza „după regulile proprii fiecărei categorii de venit”; art.131: creditul fiscal pe fiecare țară
+# și natură de venit, „dar nu poate fi mai mare decât partea de impozit pe venit datorat în România”.
+#: Codurile de țară acceptate de validator (D212Validator.jar, Parameters_v7._nomenclatorTari; ISO 3166-1 alfa-2, Grecia
+#: = EL, Kosovo = XK; România lipsește — venitul e din străinătate). Confruntat cu jar-ul de core/test_d212_cap14.py.
+TARI_STRAINATATE = tuple("AF AX AL DZ AS AD AO AI AQ AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BO BQ BA BW BV BR IO BN BG BF BI KH CM CA CV KY CF TD CL CN CX CC CO KM CG CD CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE ET FK FO FJ FI FR GF PF TF GA GM GE DE GH GI EL GL GD GP GU GT GG GN GW GY HT HM VA HN HK HU IS IN ID IR IQ IE IM IL IT JM JP JE JO KZ KE KI KP KR KW KG LA LV LB LS LR LY LI LT LU MO MK MG MW MY MV ML MT MH MQ MR MU YT MX FM MD MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU NF MP NO OM PK PW PS PA PG PY PE PH PN PL PT PR QA RE RU RW BL SH KN LC MF PM VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA GS SS ES LK SD SR SJ SZ SE CH SY TW TJ TZ TH TL TG TK TO TT TN TR TM TC TV UG UA AE GB US UM UY UZ VU VE VN VG VI WF EH YE ZM ZW XK".split())
+#: Categoriile din străinătate (D212Pdf Pdf_v8: str_categ_venit_N; 2027/2003 refolosesc etichetele 1./2. din I.1.1 —
+#: constant pool deduplicat). Cheia: (eticheta, regula bazei).
+CATEG_STRAINATATE = {
+    2027: ("Activități independente", "real"),
+    2003: ("Drepturi de proprietate intelectuală", "dpi"),
+    2004: ("Cedarea folosinței bunurilor", "cedare"),
+    2009: ("Activități agricole", "real"), 2010: ("Silvicultură", "real"), 2011: ("Piscicultură", "real"),
+    2012: ("Transferul titlurilor de valoare și alte operațiuni cu instrumente financiare", "castig"),
+    2017: ("Dobânzi", "brut"), 2018: ("Dividende", "brut"), 2014: ("Alte venituri", "brut"),
+    2028: ("Lichidarea unei persoane juridice", "lichidare"),
+    2016: ("Salarii plătite din România pentru activitatea desfășurată în străinătate", "salariu"),
+}
+#: Metoda de evitare a dublei impuneri (Pdf_v8 dubla_impunere_1/_2/_4; rd.3 și rd.4 din lit.A).
+DUBLA_CREDIT, DUBLA_SCUTIRE, DUBLA_ACORD = 1, 2, 4
+
+
+def _cota_strainatate(cat, an):
+    """Cota impozitului român pe categoria din străinătate (CF art.130 alin.(2): cotele categoriei)."""
+    from core import common as _c, lichidare as _lq
+    if cat == 2018:
+        return _c.cota("impozit_dividend", _dt.date(an, 1, 1))[0] * 100          # CF art.97 alin.(7) pe anul venitului
+    if cat == 2016:
+        return _c.cota("impozit_venit", _dt.date(an, 1, 1))[0] * 100             # CF art.78 alin.(2) lit.a)
+    if cat == 2028:
+        return _lq._cota_lichidare(_dt.date(an, 12, 31))                          # CF art.97 alin.(5)
+    return COTA_IMPOZIT_VENIT                                                    # CF art.64 alin.(1)
+
+
+def cap14_sectiune(a, an):
+    """O secțiune cap14 (o țară, o sursă), rând cu rând după instrucțiunile D212 pct.39.6:
+
+      rd.1 brut · rd.2 cheltuieli/alte sume deductibile — după regula categoriei: sistem real (dat), DPI 40% sau real,
+          cedarea folosinței 20%, lichidare (aportul, dat); dobânzi/dividende/alte venituri: fără deduceri
+      rd.3 net / câștig net (titluri: câștigul anual dat; salarii: venitul bază de calcul din documentul angajatorului)
+      rd.4 pierdere · rd.5 pierderi reportate · rd.6 = min(rd.5, 70% x rd.3) (CF art.118 alin.(5), art.119 alin.(4):
+          aceeași natură și sursă, pe fiecare țară) · rd.7 = rd.3 - rd.6
+      rd.8 impozit în România = cota categoriei x rd.7; zero la metoda scutirii, la venit scutit prin acord, la pierdere
+      rd.9 impozit plătit în străinătate · rd.10 credit = min(rd.9, rd.8) — doar la metoda creditului (CF art.131 alin.(4))
+      rd.11 = rd.8 - rd.10 (zero dacă creditul acoperă impozitul)
+    `a`: {tara, categ_venit, dubla_impunere?, venit_brut?, chelt_deduc?, det_ven_net? (DPI), castig_net? (titluri),
+          venit_baza? (salarii), pierdere_precedenta?, impozit_platit?, data_incep?, data_sf?}."""
+    an = int(an)
+    try:
+        cat = int(a.get("categ_venit"))
+    except (TypeError, ValueError):
+        cat = None
+    if cat not in CATEG_STRAINATATE:   # refuz de FORMĂ: codul în afara listei de pe ecran
+        raise ValueError("D212 străinătate: categoria %r nu e în lista de pe ecran (%s)."
+                         % (a.get("categ_venit"), ", ".join(str(c) for c in CATEG_STRAINATATE)))
+    eticheta, regula = CATEG_STRAINATATE[cat]
+    if an not in ANI_CATEGORII:
+        raise ValueError("D212 străinătate: %s — regulile sunt verificate pentru veniturile %s (instrucțiunile OPANAF 2736/2025); "
+                         "pentru %d, Legea 239/2025 și Legea 141/2025 schimbă cote și baze, iar ANAF n-a publicat formularul. Se "
+                         "declară pe formularul ANAF." % (eticheta, "/".join(map(str, ANI_CATEGORII)), an))
+    tara = str(a.get("tara") or "").strip().upper()
+    if tara not in TARI_STRAINATATE:   # refuz de FORMĂ: nomenclatorul de țări al validatorului
+        raise ValueError("D212 străinătate: țara %r nu e în nomenclatorul ANAF (cod din două litere, ex. DE, AT; Grecia = EL)."
+                         % a.get("tara"))
+    metoda = int(a.get("dubla_impunere") or 0)
+    if metoda not in (0, DUBLA_CREDIT, DUBLA_SCUTIRE, DUBLA_ACORD):   # refuz de FORMĂ: trei căsuțe în formular
+        raise ValueError("D212 străinătate: metoda %r — 1 creditul fiscal, 2 scutirea, 4 venit scutit prin acord internațional."
+                         % a.get("dubla_impunere"))
+    vb, cd, pp, platit = (_lei(a.get(k)) for k in ("venit_brut", "chelt_deduc", "pierdere_precedenta", "impozit_platit"))
+    if min(vb, cd, pp, platit) < 0:   # refuz de FORMĂ: sume negative
+        raise ValueError("D212 străinătate %s: sumele nu pot fi negative (pierderea la titluri se scrie la câștigul net)." % eticheta)
+    forfetar = regula == "cedare" or (regula == "dpi" and int(a.get("det_ven_net") or DET_VEN_NET_FORFETAR) == DET_VEN_NET_FORFETAR)
+    c = {"str_stat_realiz_v": tara, "str_categ_venit": cat}
+    if metoda:
+        c["dubla_impunere"] = metoda
+    ian1, dec31 = _dt.date(an, 1, 1), _dt.date(an, 12, 31)
+    for k, kx, camp in (("data_incep", "str_data_incep", "data începerii"), ("data_sf", "str_data_sf", "data încetării")):
+        d = _data(a.get(k), camp)
+        if d is None:
+            continue
+        if not ian1 <= d <= dec31:
+            raise ValueError("D212 străinătate %s: %s (%s) nu e în anul %d — rubrica se completează numai dacă evenimentul se "
+                             "produce în cursul anului (OPANAF 2736/2025, instrucțiuni pct.39.5)." % (eticheta, camp, d, an))
+        c[kx] = _dmy(d)
+    if regula in ("castig", "salariu"):
+        if vb or cd:   # refuz de FORMĂ: pct.39.6.3 — la titluri câștigul anual, la salarii venitul bază de calcul
+            raise ValueError("D212 străinătate %s: se scrie %s, nu venitul brut și cheltuielile." % (
+                eticheta, "câștigul net anual (pierderea cu minus)" if regula == "castig" else "venitul bază de calcul din documentul angajatorului"))
+        net = _lei(a.get("castig_net" if regula == "castig" else "venit_baza"))
+        if regula == "salariu" and net < 0:   # refuz de FORMĂ: venitul bază de calcul nu e negativ
+            raise ValueError("D212 străinătate %s: venitul bază de calcul nu poate fi negativ." % eticheta)
+    else:
+        if regula in ("brut",) and cd:   # refuz de FORMĂ: dobânzile, dividendele, alte venituri — impozit pe sumă
+            raise ValueError("D212 străinătate %s: impozitul se aplică asupra sumei încasate; cheltuielile nu se scriu." % eticheta)
+        if forfetar:
+            if cd:   # refuz de FORMĂ: la cote forfetare cheltuiala o stabilește cota
+                raise ValueError("D212 străinătate %s: la cote forfetare cheltuielile se calculează din venitul brut; câmpul se "
+                                 "lasă gol." % eticheta)
+            cd = _procent(vb, COTA_FORFETARA_CEDARE if regula == "cedare" else COTA_FORFETARA_DPI)   # CF art.84 alin.(3) / 72^1
+        c.update(str_venit_brut=vb, str_chelt_deduc=cd)
+        net = vb - cd
+    if pp and (forfetar or regula in ("brut", "salariu", "lichidare")):
+        raise ValueError("D212 străinătate %s: pierderile se reportează doar la activități în sistem real și la titluri "
+                         "(CF art.118 alin.(5), art.119 alin.(4))." % eticheta)
+    if pp:
+        c["str_pierdere_precedenta"] = pp
+    cota = _cota_strainatate(cat, an)
+    if net > 0:
+        procent = PROCENT_COMPENSARE_INVESTITII if regula == "castig" else PROCENT_COMPENSARE_PIERDERE
+        comp = min(pp, _procent(net, procent))
+        c["str_venit_net_anual"] = net
+        if pp:
+            c["str_pierdere_compensata"] = comp
+        c["str_venit_recalculat"] = net - comp
+        datorat = 0 if metoda in (DUBLA_SCUTIRE, DUBLA_ACORD) else _procent(net - comp, cota)
+    else:
+        if net < 0:
+            c["str_pierdere_anuala"] = -net
+        datorat = 0
+    c["str_impozit_datorat_Ro"] = datorat
+    if platit:
+        c["str_impozit_platit"] = platit
+    credit = min(platit, datorat) if metoda == DUBLA_CREDIT else 0
+    if credit:
+        c["str_credit_fiscal"] = credit
+    c["str_dif_impozit_datorat"] = datorat - credit
+    return c
+
+
 # ── OBLIG_REALIZAT (Secțiunile 3, 4 și 7 ale cap.I — CAS, CASS, impozitul în sistem real, sumarul) ──────────────
 # [D212 Etapa 4, 02.10.2026] Atributele = clasa Oblig_realizat din D212Validator.jar v9 (fără reguli încrucișate, doar
 # intervale); corespondența atribut -> rând = D212Pdf.jar Pdf_v8 (formularul validatorului): I.3.1 CAS rd.1-5, I.3.2.1
@@ -434,7 +564,8 @@ def _pondere(parte, total):
     return "%.4f" % (Decimal(parte) / Decimal(total)) if total else "0.0000"
 
 
-def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None, alte_cass=None):
+def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None, alte_cass=None, cap14=None,
+                   cap14_contributii=None):
     """Secțiunile 3, 4, 5 și 7 din venitul declarat în cap11 (o secțiune pe sursă) și cap12 (normă). Întoarce (secțiune, bife).
 
     Venitul pentru încadrarea CAS (I.3.1 rd.1, I.4.1/I.5.1 rd.2) = venitul net din activități independente (cap11 rd.3;
@@ -443,7 +574,15 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
     folosinței, investițiile, agricolele și alte surse merg la CASS 2.2, pe trepte — art.170 alin.(2)-(4).
     `alte_cass`: {asociere_pj, dividende_dobanzi, cass_retinuta} — venituri art.155 alin.(1) lit.c)-h) fără secțiune I.1.1
     (impuse la sursă: venitul distribuit din asocieri cu PJ, dividendele/dobânzile nete) și CASS reținută de plătitori
-    (art.174^1), date de contabil."""
+    (art.174^1), date de contabil.
+    `cap14` (veniturile din străinătate): intră în CAS (instrucțiuni pct.46.3, „din România și din afara României”), în CASS
+    2.2 (pct.52.1.4) și — INTERPRETARE CU TEMEI — activitățile independente din străinătate în CASS 2.1: art.170 alin.(1)
+    cumulează „venitul net anual realizat” fără limită teritorială, iar pct.46.3/52.1.4 o spun explicit pentru celelalte
+    două baze; alternativă respinsă: 2.1 doar pe venitul din România (ar crea o bază mai mică decât cea a CAS pe același
+    venit). Impozitul din cap14 rd.11 intră în I.7 rd.1 (pct.56.1, a cincea liniuță).
+    `cap14_contributii`: secțiunile cap14 care intră în CAS/CASS (implicit toate). Instrucțiunile pct.46.3/52.1.4 le cer
+    „cu respectarea legislației europene aplicabile în domeniul securității sociale, precum și a acordurilor” — dacă
+    persoana e asigurată în alt stat, venitul nu poartă contribuții în România; asta o știe contabilul, nu evidența."""
     from core import d212_engine as _e
     if int(an) not in _e.ANI_VERIFICATI:
         raise ValueError("D212: contribuțiile se calculează doar pentru anii cu plafoane verificate la sursă (%s); pragurile "
@@ -461,6 +600,12 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
     def _scutite(categorii):
         return max((int(s.get("nr_zile_scutite") or 0) for s in secs if _cat(s) in categorii), default=0)
 
+    str_secs = _sectiuni(cap14)
+    str_contrib = str_secs if cap14_contributii is None else _sectiuni(cap14_contributii)
+
+    def _str(categorii, camp):
+        return sum(_lei(s.get(camp) or 0) for s in str_contrib if int(s.get("str_categ_venit") or 0) in categorii)
+
     ai = (CATEG_ACTIVITATI_INDEPENDENTE,)
     net_real, recalc = _suma(ai, "venit_net_anual"), _suma(ai, "venit_recalculat")
     real_dpi = lambda s: int(s.get("det_ven_net") or 0) == DET_VEN_NET_SISTEM_REAL   # noqa: E731
@@ -468,8 +613,9 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
     dpi_real_net = _suma((CATEG_DPI,), "venit_net_anual", real_dpi)
     dpi_recalc = _suma((CATEG_DPI,), "venit_recalculat", real_dpi)
     norme = sum(_lei(c.get("real_venit_net_anual") or 0) for c in _sectiuni(cap12))
-    total = net_real + norme                 # art.170 alin.(1): CASS 2.1
-    total_cas = total + dpi_net              # art.148 alin.(3): CAS
+    str_ai, str_dpi = _str((2027,), "str_venit_net_anual"), _str((2003,), "str_venit_net_anual")
+    total = net_real + norme + str_ai                  # art.170 alin.(1): CASS 2.1 (cu străinătatea, v. docstring)
+    total_cas = total + dpi_net + str_dpi              # art.148 alin.(3) + pct.46.3: CAS
     o, bife = {}, {}
     if optiune_cas and total_cas < p.cas_prag_min_sm * p.salariu_minim:
         # instrucțiuni pct.46.2 lit.B „sub plafonul minim și optez” — formularul validatorului instalat (J13.0.1, Pdf_v8)
@@ -489,11 +635,17 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
     asc, divd, ret22 = _lei(x.get("asociere_pj")), _lei(x.get("dividende_dobanzi")), _lei(x.get("cass_retinuta"))
     if asc < 0 or divd < 0 or ret22 < 0:   # refuz de FORMĂ: sume negative
         raise ValueError("D212: veniturile pentru CASS și CASS reținută nu pot fi negative.")
-    ven22 = {"cass_ven_dpi": dpi_net, "cass_ven_asc": asc,
-             "cass_ven_cfb": _suma((CATEG_CEDARE, CATEG_TURISTIC), "venit_net_anual"),
-             "cass_ven_inv": _suma((CATEG_INVESTITII,), "venit_net_anual") + divd,
-             "cass_ven_asp": _suma(CATEG_AGRICOLE, "venit_net_anual"),
-             "cass_ven_alt": _suma(CATEG_ALTE_SURSE, "venit_recalculat")}
+    # din străinătate (pct.52.1.4): dobânzile și dividendele „diminuate cu impozitul reținut” (art.170 alin.(4) lit.d) —
+    # INTERPRETARE CU TEMEI: impozitul aferent = cel plătit în străinătate + diferența datorată în România (rd.9 + rd.11);
+    # alternativă respinsă: doar impozitul străin (ar lăsa în bază un impozit pe care persoana îl plătește)
+    str_div = sum(_lei(s.get("str_venit_brut") or 0) - _lei(s.get("str_impozit_platit") or 0) - _lei(s.get("str_dif_impozit_datorat") or 0)
+                  for s in str_contrib if int(s.get("str_categ_venit") or 0) in (2017, 2018))
+    ven22 = {"cass_ven_dpi": dpi_net + str_dpi, "cass_ven_asc": asc,
+             "cass_ven_cfb": _suma((CATEG_CEDARE, CATEG_TURISTIC), "venit_net_anual") + _str((2004,), "str_venit_net_anual"),
+             "cass_ven_inv": _suma((CATEG_INVESTITII,), "venit_net_anual") + divd + _str((2012, 2028), "str_venit_net_anual")
+             + max(0, str_div),
+             "cass_ven_asp": _suma(CATEG_AGRICOLE, "venit_net_anual") + _str((2009, 2010, 2011), "str_venit_net_anual"),
+             "cass_ven_alt": _suma(CATEG_ALTE_SURSE, "venit_recalculat") + _str((2014,), "str_venit_net_anual")}
     total22 = sum(ven22.values())
     c22 = _e.calculeaza_cass_alte_venituri(float(total22), p)
     cass22 = _lei(c22["cass"])
@@ -524,7 +676,8 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
                  cass_datorat_ai=cass_d, cass_dif_plus_ai=cass_d)
         bife["bifa132"] = "1"
     # impozitul stabilit direct în I.1.1 (rd.9 al fiecărei secțiuni) și pe norme (pct.56.1 rd.1, prima și a doua liniuță)
-    impozit = sum(_lei(s.get("impozit11") or 0) for s in secs) + sum(_lei(c.get("real_impozit") or 0) for c in _sectiuni(cap12))
+    impozit = sum(_lei(s.get("impozit11") or 0) for s in secs) + sum(_lei(c.get("real_impozit") or 0) for c in _sectiuni(cap12)) \
+        + sum(_lei(s.get("str_dif_impozit_datorat") or 0) for s in str_secs)
     if net_real:
         # I.4.1: CAS deductibilă = pondere sistem real (în venitul art.148) x CAS datorată (CF art.118 alin.(2^2))
         cas_ded = _lei(Decimal(cas_d) * net_real / total_cas) if total_cas else 0
@@ -872,6 +1025,20 @@ def genereaza(conn, schema, perioada, manual=None):
             except ValueError as e:      # numește venitul vinovat (temeiul, unde există, e în mesajul interior)
                 raise ValueError("Venitul %d — %s" % (i, e)) from None
         manual["cap11"] = sectiuni
+    if manual.get("strainatate"):
+        # [D212 Etapa 5c] veniturile din străinătate: câte o secțiune cap14 pe țară și sursă (instrucțiuni pct.32)
+        cap14, contrib = [], []
+        for i, x in enumerate(_sectiuni(manual["strainatate"]), 1):
+            try:
+                sec = cap14_sectiune(x, an)
+            except ValueError as e:      # numește venitul vinovat (temeiul, unde există, e în mesajul interior)
+                raise ValueError("Venitul din străinătate %d — %s" % (i, e)) from None
+            cap14.append(sec)
+            if not x.get("fara_contributii"):   # asigurat în alt stat (legislația europeană / acord) -> fără CAS/CASS aici
+                contrib.append(sec)
+        manual["cap14"], manual["_cap14_contributii"] = cap14, contrib
+    if manual.get("cap14"):
+        manual["bifa121"] = "1"      # R10: bifa121=1 => cap14 există
     if manual.get("cap11"):
         manual["bifa111"] = "1"      # subsectiunea I.1.1 completata (R7 cere si reciproca)
     if manual.get("agricol"):
@@ -893,11 +1060,11 @@ def genereaza(conn, schema, perioada, manual=None):
     if manual.get("cap12"):
         manual["bifa112"] = "1"      # R8: bifa112=1 => cap12 exista (și subsecțiunea se declară completată)
     alte_cass = {k: v for k, v in (manual.get("alte_cass") or {}).items() if v not in (None, "", 0, "0")}
-    if (manual.get("cap11") or manual.get("cap12") or alte_cass) and not manual.get("oblig_realizat"):
+    if (manual.get("cap11") or manual.get("cap12") or manual.get("cap14") or alte_cass) and not manual.get("oblig_realizat"):
         # [D212 Etapa 4-5] CAS, CASS (2.1 și 2.2), impozitul în sistem real și sumarul, din veniturile declarate mai sus
         manual["oblig_realizat"], bife = oblig_realizat(manual.get("cap11"), manual.get("cap12"), an,
                                                         bool(manual.get("optiune_cas")), manual.get("exceptie_minim_cass") or None,
-                                                        alte_cass)
+                                                        alte_cass, manual.get("cap14"), manual.get("_cap14_contributii"))
         manual.update(bife)
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)

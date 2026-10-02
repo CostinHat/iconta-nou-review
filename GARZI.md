@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**663 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**664 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 631
+### `core/` — 632
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9007,6 +9007,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d212_campuri_validator.py` — GARD — atributele pe care `d212.py` le poate emite sunt NUMELE XML ale validatorului instalat (02.10.2026).
 - `core/test_d212_cap11.py` — D212 Etapa 2 — venit în sistem real cap-coadă: registrul RIP -> cap11 -> XML -> DUK (01.10.2026).
 - `core/test_d212_cap12.py` — D212 Etapa 3 — venit din activități independente pe NORMĂ DE VENIT: datele contabilului -> cap12 -> XML -> DUK.
+- `core/test_d212_cap14.py` — D212 Etapa 5c — veniturile din străinătate (Secțiunea 2, Subsecțiunea 1, cap14): o secțiune pe țară și sursă, rândurile
 - `core/test_d212_cass_minim.py` — GARD — CASS din activități independente sub 6 salarii minime NU e „opțională” (neconformitate reparată 02.10.2026).
 - `core/test_d212_categorii.py` — D212 Etapa 5 — veniturile fără date în aplicație (Subsecțiunea I.1.1 pe categorii), CAS cu DPI, CASS 2.2 pe trepte,
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
@@ -9929,3 +9930,17 @@ Detaliul: DECIZII 02.10.2026 („D212 Etapa 5 …”).
 | secțiuni repetate valide | test_sectiunile_repetate_valide_pe_duk (DUK) | refuzul „o singură secțiune” reintrodus | refuzul pus înapoi → roșu | — |
 | ecran = server | test_categoriile_ecranului_sunt_cele_din_server + test_alte_surse_coduri_din_formularul_oficial | o categorie pe ecran pe care serverul o refuză; litera greșită pe 1021–1023 | eticheta 1021 mutată pe lit.l → roșu | — |
 | zilele scutite | test_redus_handicap_pe_zilele_anului | 365 fix în an bisect | 365 fix → roșu | — |
+
+## 03.10.2026 — D212 Etapa 5c-1: veniturile din străinătate (cap14)
+
+Categoriile **3. Calcul fiscal** (credit fiscal, metoda scutirii, cote pe categorie, contribuții pe veniturile din
+străinătate) și **4. Ieșire către autorități** (venituri din străinătate pierdute tăcut — DUK valid). Detaliul: DECIZII
+03.10.2026 („D212 Etapa 5c-1 …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| credit plafonat / scutire / fără convenție | core/test_d212_cap14.py (3 teste) | credit peste impozitul român; impozit pe venit scutit; credit fără convenție | credit neplafonat → roșu; scutirea fără zero → roșu; credit fără convenție → roșu | — |
+| bazele pe categorie | test_titluri_compensare_pe_tara + test_salarii_pe_venitul_baza_de_calcul + test_dividendele_cu_cota_anului + test_lichidare_cu_cota_proprie | salarii impozitate pe brut; compensare peste 70% | salarii pe brut → roșu | lichidare vs cota generală: amândouă 10% pe 2025, nediscriminabil |
+| străinătatea în CAS/CASS/I.7 | test_strainatatea_in_cas_cass_si_sumar + test_asigurat_in_alt_stat_fara_contributii | venit din străinătate scăpat din CAS sau din sumar; contribuții pe un asigurat în alt stat | fără străinătate în CAS → roșu; rd.11 scos din sumar → roșu; bifa ignorată → roșu | — |
+| nomenclatorul de țări = jar | test_nomenclatorul_de_tari_e_al_validatorului | „GR” acceptat (validatorul cere EL), România acceptată | EL → GR în listă → roșu | citire pe șiruri din constant pool |
+| ecran = server | test_categoriile_ecranului_sunt_cele_din_server (cap14) | categorie pe ecran refuzată de server; câmp în hartă fără id | — (egalitate de seturi) | — |

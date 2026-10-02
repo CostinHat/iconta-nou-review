@@ -64,7 +64,8 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 - **Etapa 4** — CAS/CASS în oblig_realizat (cablare + probă), inițială/rectificativă. **FĂCUTĂ 02.10.2026** — v. §7 (opțiunea
   CAS sub 12 sm: [EXTERN]).
 - **Etapa 5** — formular manual pentru categoriile fără date (regula 0 DESIGN_SYSTEM). **5a FĂCUTĂ 02.10.2026** (I.1.1 pe
-  categorii, CAS cu DPI, CASS 2.2, Secțiunea 5) — v. §8; rămâne 5c (cap14, venituri din străinătate).
+  categorii, CAS cu DPI, CASS 2.2, Secțiunea 5) — v. §8; **5c-1 FĂCUTĂ 03.10.2026** (cap14, 12 categorii) — v. §9; rămâne 5c-2
+  (premii, jocuri de noroc, pensii, transferul proprietăților, moștenire, remunerații administratori).
 - **Etapa finală** — ~~alinierea F246~~ (făcută 02.10 în Etapa 3) + mesajul din d221.py + ghidurile care spun „D212 doar identificare".
 
 ## 5. Etapa 2 — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
@@ -128,3 +129,14 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 - **[EXTERN]**: CASS 2.2 reținută peste cea datorată (fără rând „în minus” în formular); dobânzile pentru obligațiuni pe piețe
   externe (pct.8) — fără căsuță în formularul instalat.
 - **Rămâne (5c)**: cap14 — veniturile din străinătate (Secțiunea 2) și includerea lor în CAS/CASS.
+
+## 9. Etapa 5c-1 — veniturile din străinătate (03.10.2026)
+- **Validatorul**: `cap14` repetabil, fără reguli încrucișate; țara din `Parameters_v7._nomenclatorTari` (ISO alfa-2, Grecia = EL,
+  fără România) — `d212.TARI_STRAINATATE`, confruntat cu jar-ul; codurile categoriilor din D212Pdf Pdf_v8; `dubla_impunere`
+  1 credit / 2 scutire / 4 acord internațional.
+- **Construit**: `d212.cap14_sectiune` (12 categorii: activități, DPI, cedare, agricole, titluri, dobânzi, dividende, alte venituri,
+  lichidare, salarii plătite din România), credit plafonat (CF art.131 alin.(4)), cap14 în CAS / CASS 2.1 (INTERPRETARE) / CASS 2.2
+  și rd.11 în I.7; bifa „fără CAS/CASS în România (asigurat în alt stat)”; lista „Venituri din străinătate” pe ecran. Gardă
+  `core/test_d212_cap14.py`; probe `frontend_test/proba_d212_etapa5c.py` (F4) și `proba_d212_strainatate_ui.py`.
+- **Rămâne (5c-2)**: premii 2025, jocuri de noroc 2013, pensii 2020 (CF art.130 alin.(2^1)), transferul proprietăților 2029/2030,
+  moștenire 2024, remunerații administratori 2015 + I.2.2 (`str_cas_*`, `str_cass_*`).

@@ -76,7 +76,12 @@ BASELINE = {
     # impozabil lipsa; plus invelisul care numeste venitul (temeiul e in mesajul interior). Refuzurile normative noi poarta
     # temeiul in text: anul 2026 (Legea 239/2025), scutirea pe chirii (CF art.60), reportul la turistic (pct.5.7.3), o singura
     # sectiune DPI (pct.4.4), CASS 2.2 retinuta peste datorata (pct.52.1.11).
-    "core/d212.py": 24,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
+    # 24 -> 33 la 03.10.2026 (D212 Etapa 5c-1, cap14_sectiune): +9 refuzuri de FORMA, marcate langa ele — categorie in afara
+    # listei, tara in afara nomenclatorului validatorului, metoda in afara celor trei casute, sume negative, venit brut dat la
+    # titluri/salarii, venit baza negativ, cheltuieli la dobanzi/dividende, cheltuieli la cote forfetare; plus invelisul care
+    # numeste venitul din strainatate. Normativele poarta temeiul in text: anul 2026 (Legea 239/2025, Legea 141/2025),
+    # reportul pierderii (CF art.118 alin.(5), art.119 alin.(4)), datele in afara anului (pct.39.5).
+    "core/d212.py": 33,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,
