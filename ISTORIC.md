@@ -1082,3 +1082,16 @@ peste constantele D212 când rula singură — acum își încarcă singură toa
   evidență. Proba pe firma de test: două case, 255 de bonuri, 1795 lei — declarație validă la ANAF local.
 - **Un raport Z fără casă sau bonuri oprește D394 cu numele raportului** — nu se declară zero. Azi nu există niciunul
   (în producție nu era înregistrat niciun raport Z, iar ambele căi le scriu de acum înainte).
+
+## 02.10.2026 — CASS pentru PFA cu venit mic: aplicația spunea că nu se datorează
+
+**Ce se schimbă pentru un contabil:**
+- **Fișa D212 (ecranele Încasări/plăți și D212) nu mai spune „neobligatoriu — sub 6 salarii minime” la CASS.** Pentru un
+  PFA cu venit net pozitiv sub 6 salarii minime (24.300 lei), CASS se calculează la baza minimă — 2.430 lei pe an —, iar
+  fișa arată separat diferența până la baza minimă și suma care rămâne dacă persoana are salarii, pensii sau alte venituri
+  cu CASS de cel puțin 6 salarii minime (atunci se datorează doar 10% din venitul real). Exemplu: venit net 20.000 lei —
+  înainte CASS 0 și impozit 2.000; acum CASS 2.430 și impozit 1.800 (diferența de 430 lei nu se scade din impozit).
+- **Cinci ghiduri publicate despre CASS au fost corectate** — trei spuneau că sub 6 salarii minime plata e opțională.
+
+Găsit citind instrucțiunile Declarației unice pentru etapa următoare; un ghid consemna defectul din septembrie, fără să fi
+fost reparat.

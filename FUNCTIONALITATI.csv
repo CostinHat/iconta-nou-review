@@ -450,7 +450,7 @@ XML D205 validat, cu impozitul pe dividende per asociat.
 - Beneficiar nerezident -> se declară pe D207, nu pe D205 (aplicația refuză nerezidentul la generare).
 ## Reguli fiscale
 Codul fiscal art. 97. Cota pe an (8/10/16% după perioada). Termen: ultima zi a lunii februarie."
-Motor D212 (PFA/II/IF),"Calcul sistem real partidă simplă: venit net, CAS și CASS pe plafoane (6/12/24 salarii minime), pentru Fișa D212 din registrul de încasări/plăți.",F030,firma,RIP > Fisa D212,core/d212_engine.py,"CF art. 148-149, 154, 170",LIVE,pytest,,"## Ce face
+Motor D212 (PFA/II/IF),"Calcul sistem real partidă simplă: venit net, CAS pe trepte (12/24 salarii minime, art.148), CASS liniară pe venitul net cu baza minimă de 6 salarii minime (art.174 alin.(6); diferența arătată separat, nedeductibilă la impozit — art.118 alin.(2) lit.b; excepțiile alin.(7)–(8)) și plafon 60/72 salarii minime, pentru Fișa D212 din registrul de încasări/plăți.",F030,firma,RIP > Fisa D212,core/d212_engine.py,"CF art. 148-149, 154, 170",LIVE,pytest,,"## Ce face
 Calculează în sistem real, partidă simplă: venitul net (venituri încasate minus cheltuieli deductibile) și contribuțiile CAS și CASS pe plafoanele de salarii minime, pentru Fișa din Declarația unică D212, pornind de la registrul de încasări și plăți.
 ## Când se folosește
 Pentru persoane fizice care obțin venituri din activități independente (PFA, II, IF) impuse în sistem real.

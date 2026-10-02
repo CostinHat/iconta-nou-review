@@ -5,11 +5,11 @@ import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULOR
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=8f18740e04";
-import { ecranRip } from "./rip_ecran.js?v=2a75ab957d";
+import { ecranRip } from "./rip_ecran.js?v=8d78a2aad3";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=01442b1818";
 import { ecranEtransport } from "./etransport_ecran.js?v=2062674928";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=1e5f799f85";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=3bbf30241a";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=1f2335897a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=5616e025cb";  // [wc_extras_v1]

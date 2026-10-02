@@ -45,6 +45,15 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **NECONFORMITATE CASS sub 6 salarii minime (d212_engine)** (02.10.2026, găsită citind instrucțiunile D212 pentru Etapa 4; CICLUL DE NECONFORMITATE: Etapa 4 suspendată până la gard). ÎNCHIS
+  - ultim: pașii 1–4 livrați (commitul CASS minim, hash în ISTORIC 02.10.2026): motor reparat, ecranele RIP/D212 afișează diferența și suma cu excepție, 5 ghiduri corectate, gard `core/test_d212_cass_minim.py` (3 mutații roșii), proba F4 (vechi: CASS 0, impozit 2.000 / nou: CASS 2.430 din care 430 nedeductibilă, impozit 1.800), proba UI pe ecranul RIP (răspuns interceptat al motorului).
+  - urmator: — (fir închis). Reluare D212 Etapa 4 (`oblig_realizat`). STARE = ÎNCHIS
+  - pasi:
+    1. `core/d212_engine.calculeaza_cass`: 0 < venit < 6 sm -> baza 6 sm (art.174 alin.(6)), `cass_pe_venit` + `diferenta_minim` separate, `exceptie_minim` din `EXCEPTII_MINIM_CASS` (alin.(7)–(8)); `calculeaza_d212` deduce doar `cass_pe_venit` (art.118 alin.(2) lit.b).
+    2. ecranele RIP (`rip_ecran.js`) și D212 (`declaratii.js`): nota „neobligatoriu — sub 6 salarii minime” înlocuită cu diferența și suma cu excepție.
+    3. ghidurile `datoreaza-pfa-cass-2026`, `calculeaza-cass-pfa-ul-venit`, `baza-calcul-cass-pfa-2026`, `pfa-in-sistem-real-plateste-cas`, `la-ce-baza-se-aplica-impozitul-pe-venit-pentru-pfa-in-sistem-real` corectate.
+    4. gard `core/test_d212_cass_minim.py` + mutații; probă F4 (`frontend_test/proba_cass_minim.py`, cod vechi vs nou); scanuri vizuale (RIP, declarații); registre; commit four-way. Apoi D212 Etapa 4.
+    5. [adăugat la poartă, 02.10] `test_d212.py` din RĂDĂCINA repo-ului fixa presupunerea veche (`test_cass_sub_6sm_neobligatoriu`, `test_d212_venit_mic_doar_impozit`) — căutarea clasei acoperise `core/` și `frontend_test/`, nu și testele din rădăcină; corectate pe temei (art.174 alin.(6), art.118 alin.(2) lit.b) și redenumite. [citare-istorica: testele redenumite 02.10.2026 în test_cass_sub_6sm_baza_minima / test_d212_venit_mic_cass_minim_si_impozit]
 - fir: **D394 op2 Î1 din rapoartele Z — decizia B** (02.10.2026, decizia Costin „D394 op2 i1: varianta B …”; DECIZII 02.10). ÎNCHIS
   - ultim: pașii 1–5 livrați (commitul D394 op2, hash în ISTORIC 02.10.2026): `rapoarte_z_amef` scris de ambele rute, câmpul „Nr. bonuri fiscale” pe ecran, op2 Î1 pe lună + rezumat2 + a doua cale, refuz numit; datoria `test_datorie_d394_op2_incasari_amef_din_rapoarte_z` scoasă; proba F1 (vechi: 0 secțiuni op2 / nou: 2 case, 255 bonuri, 1795 lei, DUK valid). [citare-istorica: datoria scoasă 02.10.2026, închisă de core/test_d394_op2_rapoarte_z.py]
   - urmator: — (fir închis). STARE = ÎNCHIS

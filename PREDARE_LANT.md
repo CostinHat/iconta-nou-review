@@ -1,16 +1,17 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D394 op2 Î1 din rapoartele Z închis (decizia B); D212 Etapa 3 închisă; urmează D212 Etapa 4 (impozit/CAS/CASS în `oblig_realizat`)** (02.10.2026)
+# PREDARE LANȚ — **CASS sub 6 salarii minime reparată (neconformitate); D394 op2 Î1 închis (decizia B); urmează D212 Etapa 4 (impozit/CAS/CASS în `oblig_realizat`)** (02.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **D394 op2 Î1** (commitul care poartă această predare; hash-ul
+- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **CASS minim** (commitul care poartă această predare; hash-ul
   lui e în raport și în `git log`).
-- **pe commit**: `8dcb07de` — ultimul four-way închis înainte de rescriere (02.10.2026 15:08: HEAD = origin/main = public/main =
-  backup/lant-2026-10-02 = procesul viu (2 din 2) = 8dcb07de, D212 Etapa 3).
+- **pe commit**: `c3d5d185` — ultimul four-way închis înainte de rescriere (02.10.2026 17:14: HEAD = origin/main = public/main =
+  backup/lant-2026-10-02 = procesul viu (2 din 2) = c3d5d185, D394 op2 Î1).
 - **ÎN LUCRU ACUM:** nimic deschis — firul D212 Etapa 3 e ÎNCHIS în TESTE.md „În lucru acum”.
 - **URMĂTORUL FRONT:** D212 Etapa 4 — impozitul (sistem real + normă) și CAS/CASS în `oblig_realizat` (secțiunea 4 a cap.I),
-  pe plafoanele din `d212_engine`; apoi Etapa 5 (formular manual pentru categoriile fără date) și etapa finală (mesajul din
+  pe `d212_engine` (reparat azi la CASS sub 6 sm). Maparea atribut -> rând, extrasă din `D212Pdf.jar` (Pdf_v8) și din
+  instrucțiunile 2736/2025 (Secțiunile 3, 4, 7), e scrisă mai jos la „D212 — CE S-A AFLAT LA SURSĂ”; apoi Etapa 5 (formular manual pentru categoriile fără date) și etapa finală (mesajul din
   `d221.py`, ghidurile).
 - **D212 — BLOCAJ [EXTERN] aflat la sursă pe 02.10:** validatorul instalat (J13.0.1, pachet v9) e al formularului PENTRU
   VENITURILE 2024. **Subsecțiunea a 4-a (agricol pe normă, CF art.107 alin.(2)) nu are niciun loc în XML** (0 atribute agricole,
@@ -84,6 +85,17 @@ pierderea reportată, CAEN. Cu bifa, `d212.genereaza(manual.din_rip)` → `cap11
 1–9 din instrucțiunile OPANAF 2736/2025 pct.3.5.11; compensarea pierderii în limita a 70%, CF art.118 alin.(4)) + `bifa111=1`.
 Probat pe F4 (tenant_052, venit 2026 — singurul an cu operațiuni RIP): DUK valid. Gărzi `core/test_d212_cap11.py`; probe
 `frontend_test/proba_d212_etapa2.py` (backend, F4) și `frontend_test/proba_d212_formular_ui.py` (ecran, pe 8011).
+
+**D212 — CE S-A AFLAT LA SURSĂ PENTRU ETAPA 4 (02.10, citit integral):** `Oblig_realizat` (v9) n-are reguli încrucișate — doar
+intervale. Corespondența (Pdf_v8 = formularul validatorului): I.3.1 CAS `cas_total_ven`/`cas_baza`/`cas_datorat`/`cas_retinut_platitor`/
+`cas_dif_plus` (rd.1–5) + `bifa_cas_real`; I.3.2.1 CASS `cass_total_ven_ai`/`baza_cass_datorat_ai`/`cass_datorat_ai`/
+`cass_ret_plat_alin6_ai`/`cass_dif_plus_ai`/`cass_dif_minus6_ai`/`cass_ret_plat_alin7_ai`/`cass_dif_minus8_ai` + `bifa_cass_datorat_ai`
+(numerotarea 2024 diferă de 2025 — corespondență pe înțeles); I.4 `real_venit_net_recalculat_ai`/`real_cas_deduc_ai`/
+`real_cass_deductibil_ai`/`real_venit_net_impozabil_ai`/`real_venit_net_imp_redus_ai`/`real_impozit_datorat_ai`; I.4.1
+`real_cas_venit_net_ai`/`real_cas_total_ven_ai`/`real_cas_pondere_ai`/`real_cas_datorata_ai`/`real_cas_deductibila_ai`; I.4.2
+`real_cass_venit_net_ai`/`real_cass_total_ven_ai`/`real_cass_pondere_ai`/`real_cass_datorata_ai`/`real_cass_calculata_ai`/
+`real_cass_deductibila_ai`; I.7 `oblimpoz_real_total`/`oblimpoz_real_dif_deplata`, `oblcas_real_difPlus`, `oblcass_real_difPlus_ai`,
+`impozit_venit_plus`/`cas_plus`/`cass_plus`/`dif_de_plata`. Pondere = valoare reală (format de verificat pe DUK).
 
 **D212 — CE S-A AFLAT LA SURSĂ (nu se mai caută):** [02.10, pentru Etapa 3] `cap12` = Subsecțiunea a 2-a lit.A (activități independente pe normă), 15 atribute opționale (`norma_forma_org`, `norma_caen`, `norma_descriere_sediu_bun`, `norma_nr_doc_autoriz`, `norma_data_doc_autoriz`, `norma_data_incep`, `norma_data_sf`, `norma_data_susp` — DATĂ, deși formularul 2736 cere nr. de zile —, `norma_nr_zile_scutite`, `real_norma_venit` = rd.7, `real_ajustare` = rd.8, `real_venit_net_anual` = rd.9, `real_venit_impozit` = rd.9.1, `real_impozit` = 10%), repetabil, `validateCap12` goală, R8: bifa112=1 ⇒ cap12 există. Agricolul pe normă: fără loc în XML (v. antet). În pachetul de validare în vigoare (v9), `validateCap11` e goală;
 `categ_venit` ∈ {1016, 1003, 1015, 1006, 1009–1012, 1021–1024}; **semnificația codurilor e în `D212Pdf.jar` (Pdf_v8)**, nu în
@@ -422,7 +434,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **81** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **874** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **875** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

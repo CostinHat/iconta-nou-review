@@ -146,7 +146,7 @@ export async function ecranRip(corp, nav, t) {
             <div class="pf-frand-sub">
               Venit brut: <b>${d.venit_brut}</b> \u00b7 Cheltuieli deductibile: <b>${d.cheltuieli_deductibile}</b> \u00b7 Venit net: <b>${d.venit_net}</b><br>
               CAS (25%): <b>${d.cas.cas}</b> lei${d.cas.obligatoriu ? "" : " (neobligatoriu - sub 12 salarii minime)"} \u00b7 baza ${d.cas.baza}<br>
-              CASS (10%): <b>${d.cass.cass}</b> lei${d.cass.obligatoriu ? "" : " (neobligatoriu - sub 6 salarii minime)"} \u00b7 baza ${d.cass.baza}<br>
+              CASS (10%): <b>${d.cass.cass}</b> lei \u00b7 baza ${d.cass.baza}${d.cass.diferenta_minim > 0 ? ` (din care ${bani(d.cass.diferenta_minim)} lei diferen\u021ba p\u00e2n\u0103 la baza minim\u0103 de 6 salarii minime \u2014 nu se datoreaz\u0103 dac\u0103 persoana are salarii, pensii sau alte venituri cu CASS de cel pu\u021bin 6 salarii minime; atunci CASS = ${bani(d.cass.cass_pe_venit)} lei)` : ""}<br>
               Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
               <b class="tip-total">Total datorat: ${bani(d.total_datorat)} lei</b>
               ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:var(--galben)">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}

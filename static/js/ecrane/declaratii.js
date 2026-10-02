@@ -2934,7 +2934,10 @@ function randeazaFormularD212(corp, nav) {
     blocFisa = '<div class="caseta-info"><div class="ci-mesaj">Fișa RIP nu s-a putut încărca: ' + esc(d.fisa_eroare) + "</div></div>";
   } else if (f) {
     const casNota = f.cas && !f.cas.obligatoriu ? " (neobligatoriu — sub 12 salarii minime)" : "";
-    const cassNota = f.cass && !f.cass.obligatoriu ? " (neobligatoriu — sub 6 salarii minime)" : "";
+    // CF art.174 alin.(6): sub 6 salarii minime se datorează diferența până la baza minimă, afară de excepțiile alin.(7)-(8)
+    const cassNota = f.cass && f.cass.diferenta_minim > 0
+      ? " (din care " + bani(f.cass.diferenta_minim) + " lei diferența până la baza minimă de 6 salarii minime — nu se datorează dacă persoana are salarii, pensii sau alte venituri cu CASS de cel puțin 6 salarii minime; atunci CASS = " + bani(f.cass.cass_pe_venit) + " lei)"
+      : "";
     blocFisa = '<div class="caseta-info">' +
       '<div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Fișa RIP ' + esc(String(f.an || S.an)) + " (informativ — din registrul de încasări/plăți)</div>" +
       '<div class="ecran-nota">Venit brut: <b>' + bani(f.venit_brut || 0) + "</b> · Cheltuieli deductibile: <b>" + bani(f.cheltuieli_deductibile || 0) + "</b> · Venit net: <b>" + bani(f.venit_net || 0) + "</b> lei<br>" +

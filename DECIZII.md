@@ -16162,3 +16162,32 @@ rezumat2 apare pe toate cele șase cote, cu zero unde nu sunt încasări; (2) DU
 produc doar ATENȚIONAREA R246 (total ≠ Σbaze+ΣTVA), neblocantă. **Limită:** instrucțiunea exclude din Î1 încasările „pentru
 care s-au emis facturi”; aplicația nu leagă azi bonul de factura emisă din el, deci totalul Z intră integral — contabilul
 care emite facturi din bonuri le vede în op1 și în op2.
+
+---
+
+## 02.10.2026 — NECONFORMITATE: CASS din activități independente sub 6 salarii minime era „neobligatorie” în aplicație
+
+**Temei.** CF art.170 alin.(1): CASS „la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net
+anual realizat” (fără prag de intrare); CF art.174 alin.(6): sub baza de 6 salarii minime „persoanele fizice datorează
+contribuția …, respectiv o diferență de contribuție … până la nivelul celei corespunzătoare bazei de calcul egale cu 6
+salarii minime brute pe țară”; alin.(7)–(8): diferența nu se datorează pentru salarii ≥ 6 sm, venituri lit.c)-h) cu CASS
+≥ 6 sm, pensii, exceptați art.154 alin.(1) lit.a,b,e,f sau opțiune art.180 în anul precedent; CF art.118 alin.(2) lit.b):
+la impozit se deduc CAS și CASS „cu excepția diferenței de contribuție de asigurări sociale de sănătate prevăzută la art.
+174 alin. (6)”. Instrucțiunile D212 (OPANAF 2736/2025) pct.48 lit.c: pierdere / venit net zero -> CASS nu se datorează.
+
+**Constatare.** Citind instrucțiunile pentru D212 Etapa 4, `d212_engine.calculeaza_cass` întorcea pentru 0 < venit net <
+6 sm „obligatoriu=False, CASS 0”; fișa RIP (ecranele RIP și D212) afișa „neobligatoriu — sub 6 salarii minime”. Proba pe
+F4 (venit net 20.000 lei, 2025): CASS 0 și impozit 2.000 în loc de CASS 2.430 (din care 430 diferență nedeductibilă) și
+impozit 1.800. Trei ghiduri publicate repetau afirmația („sub acest prag, plata rămâne opțională”), unul derivând-o explicit
+din motor („structura confirmată de motorul de calcul al aplicației”), iar ghidul `pfa-in-sistem-real-plateste-cas`
+consemna defectul motorului din septembrie fără ca nimeni să-l repare — exact tiparul „notat, nereparat” pe care ciclul îl
+interzice.
+
+**Decizie.** (1) `calculeaza_cass`: venit ≤ 0 -> 0 (opțiunea -> baza minimă); 0 < venit < 6 sm -> baza 6 sm, cu
+`cass_pe_venit` (deductibilă) și `diferenta_minim` separate; parametrul `exceptie_minim` (set închis
+`EXCEPTII_MINIM_CASS`, din alin.(7)–(8)) scoate diferența; peste 6 sm neschimbat. (2) `calculeaza_d212` deduce doar
+`cass_pe_venit`. (3) Fișa afișează diferența și suma cu excepție (aplicația nu vede veniturile din alte surse — excepția o
+stabilește contabilul; parametrul de rută vine cu Etapa 4). (4) Cele 5 ghiduri corectate. Alternativă respinsă: o bifă
+„asigurat din altă sursă” implicit activă (ar fi ascuns iar diferența, adică defectul).
+**Limită.** Excepția nu are încă intrare pe ecran (fișa arată ambele sume); intră odată cu secțiunea CASS din D212 (Etapa 4).
+**La poartă:** `test_d212.py` din rădăcina repo-ului avea două teste care fixau CASS 0 sub 6 sm (scrise 16.07 „din Codul fiscal”, dar pe presupunere); corectate pe temei. Căutarea unei clase acoperă și testele din rădăcină.

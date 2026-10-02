@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**658 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**659 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 626
+### `core/` — 627
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9006,6 +9006,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
 - `core/test_d212_cap11.py` — D212 Etapa 2 — venit în sistem real cap-coadă: registrul RIP -> cap11 -> XML -> DUK (01.10.2026).
 - `core/test_d212_cap12.py` — D212 Etapa 3 — venit din activități independente pe NORMĂ DE VENIT: datele contabilului -> cap12 -> XML -> DUK.
+- `core/test_d212_cass_minim.py` — GARD — CASS din activități independente sub 6 salarii minime NU e „opțională” (neconformitate reparată 02.10.2026).
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
 - `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
@@ -9873,3 +9874,12 @@ distincte, bonuri și încasări pe lună). Detaliul: DECIZII 02.10.2026 („DEC
 | o singură sursă, ambele rute | test_ambele_rute_scriu_acelasi_rand_amef + test_importul_fara_nrB_e_refuzat + test_ruta_tastata_refuza_raportul_fara_numar_de_bonuri | o rută care nu scrie casa/bonurile; un raport tastat fără bonuri | importul fără rând AMEF → 2 roșii; poarta tastată scoasă → roșu | — |
 | refuz numit, nu zero | test_raport_z_validat_fara_rand_amef_face_d394_sa_refuze_numit (cod `D394_Z_INCOMPLET` + rapoartele) | un raport Z validat fără casă/bonuri/cote care ar lăsa op2 pe zero tăcut | refuzul scos din `genereaza` → roșu | — |
 | a doua cale pe încasări | test_a_doua_cale_recalculeaza_incasarile_din_tabelele_z (`d394_reconciliere._incasari_independent`, SQL propriu) | o agregare greșită a nr_BF_i1 / incasari_i1 / *_incasari_i1 care trece de generare | confruntarea scoasă → roșu | aceeași rotunjire pe lună în ambele căi (altfel divergențe false pe trimestru) |
+
+## 02.10.2026 — CASS sub 6 salarii minime: baza minimă (CF art.174 alin.(6)), diferența nedeductibilă (art.118)
+
+Categoriile **3. Calcul fiscal** (CASS și impozitul PFA) și **11. Interfață** (fișa afișa „neobligatoriu”); plus conținutul public (5 ghiduri care afirmau opționalitatea).
+Detaliul: DECIZII 02.10.2026 („NECONFORMITATE: CASS … sub 6 salarii minime”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| baza minimă CASS | core/test_d212_cass_minim.py (10 teste) | CASS 0 pe un venit net pozitiv sub 6 sm; excepțiile ignorate; o excepție inventată; diferența dedusă la impozit | forma veche -> 7 roșii; diferența dedusă -> roșu; excepțiile ignorate -> 5 roșii | excepția nu are încă intrare pe ecran (Etapa 4) |

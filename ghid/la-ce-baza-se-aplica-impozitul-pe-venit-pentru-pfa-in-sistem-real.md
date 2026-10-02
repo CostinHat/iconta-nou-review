@@ -2,7 +2,7 @@
 title: La ce bază se aplică impozitul pe venit pentru PFA în sistem real?
 description: Impozitul de 10% nu se aplică pe tot venitul net, ci pe venitul net rămas după scăderea CAS și CASS datorate — dacă CASS e calculată greșit (de exemplu omisă), baza impozabilă iese artificial mai mare.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-02
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ O greșeală frecventă e să se calculeze impozitul de 10% direct pe venitul ne
 ## Formula corectă
 
 ```
-baza impozabilă = venit net − CAS datorată − CASS datorată  (minim 0)
+baza impozabilă = venit net − CAS datorată − CASS datorată fără diferența de la art. 174 alin. (6)  (minim 0)
 impozit = baza impozabilă × 10%
 ```
 
@@ -44,6 +44,6 @@ Dacă PFA nu e singura sursă de venit independent a persoanei (de exemplu mai a
 
 ## Ce face iConta.eu
 
-`core/d212_engine.py`, funcția `calculeaza_d212`, calculează baza impozabilă exact ca `venit_net − cas − cass` (minim 0), conform art. 118 alin. (2) lit. b). Important de reținut: dacă venitul net e pozitiv, dar sub 6 salarii minime, motorul curent calculează CASS ca opțională (0 lei, dacă nu se bifează manual opțiunea) — vezi ghidul despre obligativitatea CASS pentru detalii. Acest comportament nu reflectă corect regula legală pentru PFA (unde CASS e obligatorie la orice venit net pozitiv), iar consecința directă e că baza impozabilă calculată automat poate ieși mai mare decât ar trebui dacă CASS reală datorată nu e introdusă manual. Proporționalizarea CAS/CASS pentru surse cumulate (art. 118 alin. (2^2)-(2^3)) nu e automatizată — motorul presupune că venitul net al PFA e singura sursă la plafon.
+`core/d212_engine.py`, funcția `calculeaza_d212`, calculează baza impozabilă ca venitul net minus CAS și minus CASS pe venitul real (minim 0), conform art. 118 alin. (2) lit. b): când venitul net e sub 6 salarii minime, CASS datorată e la baza minimă, dar diferența până la baza minimă nu se scade din baza impozabilă. Proporționalizarea CAS/CASS pentru surse cumulate (art. 118 alin. (2^2)-(2^3)) nu e automatizată — motorul presupune că venitul net al PFA e singura sursă la plafon.
 
 [iConta.eu](/)

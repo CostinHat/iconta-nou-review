@@ -1,0 +1,45 @@
+{
+ "cass_din_ruta": {
+  "obligatoriu": false,
+  "baza": 0.0,
+  "cass": 0.0,
+  "cass_pe_venit": 0.0,
+  "diferenta_minim": 0.0,
+  "exceptie_minim": null
+ },
+ "note_date_reale": {
+  "veche": false,
+  "diferenta": false
+ },
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "cass_20000": {
+  "obligatoriu": true,
+  "baza": 24300.0,
+  "cass": 2430.0,
+  "cass_pe_venit": 2000.0,
+  "diferenta_minim": 430.0,
+  "exceptie_minim": null
+ },
+ "note_20000": {
+  "veche": false,
+  "diferenta": true
+ },
+ "mobil": {
+  "revarsare_x": false
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ]
+}

@@ -1,39 +1,46 @@
 ---
 title: "Cum se calculează CASS dacă PFA-ul are venit mic?"
-description: Sub 6 salarii minime anual (24.300 lei în 2026), CASS nu e obligatoriu pentru un PFA — dar dacă se optează pentru plată, baza de calcul folosită e tot 6 salarii minime, nu venitul real, mai mic.
+description: Sub 6 salarii minime anual (24.300 lei), CASS pentru un PFA se calculează la baza minimă de 6 salarii minime (2.430 lei/an) — afară de cazul în care persoana are salarii, pensii sau alte venituri cu CASS de cel puțin 6 salarii minime.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-02
 poarta: v1
 ---
 
 # Cum se calculează CASS dacă PFA-ul are venit mic?
 
-Când venitul net anual al unui PFA e sub pragul minim, legea nu obligă la plata CASS — dar asta nu înseamnă automat „zero contribuție", dacă persoana alege totuși să contribuie.
+Când venitul net anual al unui PFA e pozitiv, dar sub 6 salarii minime, CASS **nu devine opțională**: legea urcă baza de calcul la nivelul minim de 6 salarii minime.
 
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 170 alin. (1) Cod fiscal (Legea 227/2015), modificat de Legea 239/2025 art. XII pct. 19:** *„Persoanele fizice care în anul fiscal pentru care se depune declarația prevăzută la art. 122 au realizat venituri din cele prevăzute la art. 155 alin. (1) lit. b), din una sau mai multe surse, datorează contribuția de asigurări sociale de sănătate la o bază anuală de calcul egală cu suma rezultată prin cumularea venitului net anual realizat/brut sau normei anuale de venit ..., care nu poate fi mai mare decât cea corespunzătoare unei baze anuale de calcul egale cu nivelul de 72 de salarii minime brute pe țară."*
+**Art. 174 alin. (6) Cod fiscal (Legea 227/2015):** *„În situația în care baza de calcul prevăzută la art. 170 alin. (1), cumulată din una sau mai multe surse de venit din cele prevăzute la art. 155 alin. (1) lit. b), ... este mai mică decât cea corespunzătoare unei baze de calcul egale cu nivelul de 6 salarii minime brute pe țară, persoanele fizice datorează contribuția de asigurări sociale de sănătate, respectiv o diferență de contribuție de asigurări sociale de sănătate, după caz, până la nivelul celei corespunzătoare bazei de calcul egale cu 6 salarii minime brute pe țară."*
+
+**Art. 174 alin. (7) Cod fiscal:** diferența nu se datorează dacă persoana a realizat salarii de cel puțin 6 salarii minime, venituri din art. 155 alin. (1) lit. c)-h) cu CASS de cel puțin 6 salarii minime, sau venituri din pensii.
+
+**Art. 118 alin. (2) lit. b) Cod fiscal:** la impozit se deduc CAS și CASS datorate, *„cu excepția diferenței de contribuție de asigurări sociale de sănătate prevăzută la art. 174 alin. (6)”*.
 :::
 
-## Ce înseamnă „venit mic" pentru CASS
+## Calculul, pas cu pas
 
-Pragul de referință e 6 salarii minime brute pe țară anual — cu reperul de 4.050 lei (salariul minim la 1 ianuarie, valabil pentru veniturile 2025 și 2026), asta înseamnă **24.300 lei**.
+Cu reperul de 4.050 lei (salariul minim la 1 ianuarie, pentru veniturile 2025 și 2026), 6 salarii minime = **24.300 lei**:
 
-- **Dacă venitul net anual e sub 24.300 lei**, PFA-ul nu datorează CASS obligatoriu.
-- **Poate opta totuși pentru plată** — de exemplu pentru a rămâne asigurat în sistemul public de sănătate. În acest caz, baza de calcul folosită nu e venitul real, mai mic, ci **6 salarii minime (24.300 lei)**, fixă, indiferent cât de mic e venitul efectiv.
-- CASS-ul datorat, dacă se optează, e 10% din 24.300 lei = 2.430 lei/an, nu 10% din venitul real.
+1. **CASS pe venitul real:** 10% din venitul net.
+2. **Diferența până la baza minimă:** 10% × 24.300 lei = 2.430 lei, minus CASS de la pasul 1.
+3. **CASS datorată = 2.430 lei**, sau doar suma de la pasul 1 dacă se aplică o excepție din art. 174 alin. (7).
+4. **La impozit** se deduce doar CASS de la pasul 1, nu și diferența.
 
-Practic, „venit mic" înseamnă fie zero obligație (dacă nu se optează), fie o contribuție calculată pe o bază minimă fixă, mai mare decât venitul efectiv (dacă se optează).
+::: ghid-exemplu
+Un PFA cu venit net de 20.000 lei: CASS pe venit 2.000 lei, diferență până la baza minimă 430 lei, CASS datorată 2.430 lei. Baza impozitului: 20.000 − 2.000 = 18.000 lei, impozit 1.800 lei (CAS nu se datorează, venitul fiind sub 12 salarii minime). Dacă persoana are și un salariu de cel puțin 6 salarii minime, CASS datorată e doar 2.000 lei.
+:::
 
 ## Ce se greșește în practică
 
-- **Se presupune că, dacă se optează pentru plată, CASS se calculează pe venitul real, mai mic decât 6 salarii minime** — greșit; baza folosită la opțiune e minimul de 6 salarii minime, nu venitul efectiv.
-- **Se confundă „neobligatoriu" cu „nu se poate plăti"** — persoana poate opta oricând pentru plata CASS, chiar sub prag, dacă vrea să rămână asigurată.
-- **Se aplică pragul CAS (12 salarii minime) în loc de pragul CASS (6 salarii minime)** — cele două contribuții au praguri de intrare diferite.
+- **Se consideră CASS opțională sub 6 salarii minime** — e opțională doar la pierdere sau venit net zero (art. 180) și la veniturile din art. 155 alin. (1) lit. c)-h), nu la activitatea independentă cu venit pozitiv.
+- **Se deduce la impozit toată CASS de 2.430 lei** — diferența până la baza minimă nu se deduce.
+- **Se omite verificarea celorlalte venituri ale persoanei** (salariu, pensie), care scot diferența.
 
 ## Ce face iConta.eu
 
-Fișa D212 (RIP > Fișa D212) semnalează explicit, pe ecran, mențiunea „neobligatoriu — sub 6 salarii minime" atunci când venitul net calculat din registrul de încasări și plăți e sub acest prag. Calculul folosește reperul salariului minim de la 1 ianuarie al anului de venit, preluat automat de la server.
+Fișa D212 (RIP > Fișa D212) calculează CASS din venitul net al registrului de încasări și plăți: sub 6 salarii minime, la baza minimă, cu diferența până la 6 salarii minime arătată separat și cu suma care rămâne dacă se aplică o excepție din art. 174 alin. (7). La impozit deduce doar CASS pe venitul real. Reperul salariului minim e cel de la 1 ianuarie al anului de venit, preluat automat de la server.
 
 [iConta.eu](/)
