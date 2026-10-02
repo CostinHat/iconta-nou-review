@@ -95,7 +95,19 @@ PROBE_PINATE = {
     "frontend_test/w_divergenta_vie.png",
 }
 
-ADMISE = PROBE_PINATE | set(PRODUS) | set(DATE_INCARCATE)
+#: **FACSIMILE OFICIALE ÎN CORPUS** (lot 19, 02.10.2026) — formularele unui act publicate ca IMAGINE pe portal
+#: (`anaf_surse/<act>__facsimil_<…>.jpg`), aduse cu bytes oficiali. Nu sunt probe vizuale și nu sunt capturi: sunt
+#: text de lege. Admise prin REGULĂ, nu prin listă: numele de material + declarația ADUS în PROVENIENTA; identitatea
+#: (amprenta = a unui document al acelui act din manifest) o păzește `core/test_corpus_continut.py`.
+def _facsimile_corpus():
+    import json
+    prov = json.load(io.open(os.path.join(RAD, "anaf_surse", "PROVENIENTA.json"), encoding="utf-8"))["fisiere"]
+    return {"anaf_surse/" + f for f, v in prov.items()
+            if "__facsimil_" in f and isinstance(v, dict) and v.get("clasa") == "ADUS"}
+
+
+FACSIMILE_CORPUS = _facsimile_corpus()
+ADMISE = PROBE_PINATE | set(PRODUS) | set(DATE_INCARCATE) | FACSIMILE_CORPUS
 
 #: Module care compară/diferențiază imagini. **Prezența unui import de-astea E mecanismul**, oricum
 #: s-ar numi funcția care îl folosește — de-aia garda se uită la import, nu la nume de funcție.

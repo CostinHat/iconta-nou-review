@@ -1,5 +1,5 @@
 {
- "ui_hash": "aaf31b64c439b575",
+ "ui_hash": "92c39ea32493f1d4",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -99,7 +99,7 @@
   "stat_plata": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 39,
+    "vazute": 41,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -386,6 +386,25 @@
    "apasare": {
     "vazute": 4,
     "apasate": 1,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "import_asociati": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },

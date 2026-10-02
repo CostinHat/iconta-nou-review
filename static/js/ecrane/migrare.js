@@ -1182,6 +1182,9 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
       <span>Nume</span><span>CNP/CUI</span><span>Tip</span><span>Cotă %</span>
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
+    <label class="camp" style="max-width:320px;margin:10px 0"><span class="camp-eticheta">Data cesiunii (dacă structura nouă o înlocuiește pe una anterioară)</span>
+      <input type="date" id="mig-asoc-cesiune" class="camp-input">
+      <span class="camp-ajutor">Data transmiterii părților sociale (din actul de cesiune / înregistrarea la ONRC). Dividendele distribuite înainte rămân ale vechilor asociați (Legea 31/1990 art.67 alin.(6)). Gol = corectezi structura actuală.</span></label>
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-asoc">Salvează asociații</button>
   `;
@@ -1209,8 +1212,10 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
     eroare.textContent = "";
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
-      await api.post(`/tenants/${firma.tenant_id}/asociati-import`, { randuri });
-      _migMesaj = `${randuri.length} asociați salvați.`; nav.inapoiPas();
+      const data_cesiune = corp.querySelector("#mig-asoc-cesiune").value || null;
+      const rez = await api.post(`/tenants/${firma.tenant_id}/asociati-import`, { randuri, data_cesiune });
+      _migMesaj = `${randuri.length} asociați salvați.` + (rez && rez.arhivati ? ` Structura anterioară (${rez.arhivati} asociați) rămâne valabilă până la ${dataRo(data_cesiune)} exclusiv, pentru dividendele distribuite înainte.` : "");
+      nav.inapoiPas();
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează asociații";

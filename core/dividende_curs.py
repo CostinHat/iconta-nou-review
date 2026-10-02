@@ -59,3 +59,66 @@ def impozit_ponderat(miscari, an, rate_fn):
                 # inconsistentă): se impozitează la rata anului plății, nu se pierde.
                 imp += rest * Decimal(str(rate_fn(d)))
     return imp, platit_an, distribuit_an
+
+
+def structura_la(curenta, istoric):
+    """[02.10.2026, pct.4e] Funcția `data -> [(cnp, nume, cota)]`: structura asociaților valabilă la o dată.
+    `curenta` = [(nume, cnp, cota)] din `asociati`; `istoric` = [(cnp, nume, cota, valabil_pana_la)] din
+    `asociati_istoric`. La data d se ia cea mai VECHE structură arhivată cu valabil_pana_la >= d; dacă nu există, cea
+    curentă. Fără istoric -> mereu cea curentă (comportamentul de dinainte, pe firmele fără cesiuni)."""
+    pe_data = {}
+    for cnp, nume, cota, pana in istoric or ():
+        pe_data.setdefault(pana, []).append((str(cnp or ""), nume, Decimal(str(cota))))
+    praguri = sorted(pe_data)
+    cur = [(str(c or ""), n, Decimal(str(q))) for n, c, q in (curenta or ()) if Decimal(str(q)) > 0]
+
+    def la(d):
+        for p in praguri:
+            if d <= p:
+                return pe_data[p]
+        return cur
+    return la
+
+
+def atribuie_pe_asociati(miscari, an, rate_fn, structura):
+    """[lot 19 pct.4e] Ca `impozit_ponderat`, dar PE ASOCIAT: fiecare tranșă plătită în anul `an` se împarte după
+    structura de la DATA DISTRIBUIRII ei (Legea 31/1990 art.67 alin.(2): „proporțional cu cota de participare”;
+    alin.(6): „Dividendele care se cuvin după data transmiterii acțiunilor aparțin cesionarului”), iar distribuirile
+    anului după structura de la data lor. `structura(d) -> [(cnp, nume, cota)]` (vezi `structura_la`).
+    Întoarce {cnp: {"nume", "platit", "impozit", "distribuit"}} (Decimal, nerotunjite — rotunjirea e a apelantului).
+    O structură unică pe tot registrul dă exact `total × cotă` (aceeași cifră ca înainte)."""
+    out = {}
+
+    def adauga(cheie, d, suma):
+        for cnp, nume, cota in structura(d):
+            r = out.setdefault(cnp, {"nume": nume, "platit": Decimal(0), "impozit": Decimal(0), "distribuit": Decimal(0)})
+            r[cheie] += suma * cota / Decimal(100)
+
+    coada = []
+    for m in miscari:
+        d = m["data"]
+        dist = Decimal(str(m.get("distribuit") or 0))
+        plat = Decimal(str(m.get("platit") or 0))
+        if dist > 0:
+            coada.append([d, dist])
+            if d.year == an:
+                adauga("distribuit", d, dist)
+        if plat > 0:
+            rest = plat
+            while rest > 0 and coada:
+                dd, ramas = coada[0]
+                ia = rest if rest < ramas else ramas
+                if d.year == an:
+                    adauga("platit", dd, ia)
+                    adauga("impozit", dd, ia * Decimal(str(rate_fn(dd))))
+                ramas -= ia
+                rest -= ia
+                if ramas <= 0:
+                    coada.pop(0)
+                else:
+                    coada[0][1] = ramas
+            if rest > 0 and d.year == an:
+                # plată fără distribuire deschisă: data plății decide și rata, și structura (ca `impozit_ponderat`)
+                adauga("platit", d, rest)
+                adauga("impozit", d, rest * Decimal(str(rate_fn(d))))
+    return out

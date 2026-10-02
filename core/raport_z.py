@@ -42,6 +42,35 @@ _SQL_INDEX = (
     "WHERE sursa IN (%(surse)s) AND numar IS NOT NULL")
 
 
+#: [lot 19 pct.4b, 02.10.2026] DEFALCAREA PE COTE a raportului Z — baza și TVA pe fiecare cotă, așa cum le
+#: dă casa de marcat (AMEF `coteZ`) sau contabilul (ruta tastată). Nota contabilă (707/4427) NU le poate purta:
+#: TVA-ul ajunge acolo ca o sumă pe nota întreagă, fără cotă, deci D300 nu le avea de unde lua — decontul se
+#: construia numai din facturi, iar TVA-ul colectat pe bon fiscal lipsea din rd.9/10. Temei: CF art.282
+#: alin.(1) („Exigibilitatea taxei intervine la data la care are loc faptul generator”) + instrucțiunile D300
+#: (OPANAF 174/2026) rd.9/10: „informațiile preluate din jurnalul de vânzări pentru operațiuni a căror
+#: exigibilitate intervine în perioada de raportare”. Tabela trăiește lângă index: aceeași buclă o instalează pe
+#: toate firmele, aceeași verificare o citește din catalog, același refuz de pornire o apără.
+NUME_TABEL_COTE = "rapoarte_z_cote"
+_SQL_TABEL_COTE = (
+    'CREATE TABLE IF NOT EXISTS "%(schema)s".rapoarte_z_cote ('
+    " id serial PRIMARY KEY,"
+    ' inregistrare_id integer NOT NULL REFERENCES "%(schema)s".inregistrari(id) ON DELETE CASCADE,'
+    " cota numeric(5,2) NOT NULL,"
+    " baza numeric(15,2) NOT NULL,"
+    " tva numeric(15,2) NOT NULL,"
+    " CONSTRAINT rapoarte_z_cote_nota_cota_uniq UNIQUE (inregistrare_id, cota))")
+
+
+def sql_tabel_cote(schema):
+    return _SQL_TABEL_COTE % {"schema": schema}
+
+
+def aplica_tabel_cote(conn, schema):
+    """Creează tabela defalcării pe cote. Idempotent (`IF NOT EXISTS`)."""
+    with conn.cursor() as cur:
+        cur.execute(sql_tabel_cote(schema))
+
+
 def _log():
     return logging.getLogger("iconta")
 
@@ -99,6 +128,7 @@ def migreaza(conn, doar_active=True):
                     raport["sarite"] += 1
                     continue
             aplica_index(conn, schema)
+            aplica_tabel_cote(conn, schema)
             with conn.cursor() as cur:
                 cur.execute("RELEASE SAVEPOINT z_unic_tenant")
             raport["firme"] += 1
@@ -135,13 +165,15 @@ def verifica(conn, doar_active=True):
                 continue
             cur.execute("SELECT 1 FROM pg_indexes WHERE schemaname = %s AND indexname = %s",
                         (schema, NUME_INDEX))
-            if cur.fetchone():
+            are_index = bool(cur.fetchone())
+            cur.execute("SELECT to_regclass(%s)", ('%s.%s' % (schema, NUME_TABEL_COTE),))
+            if are_index and cur.fetchone()[0] is not None:
                 avute += 1
             else:
                 lipsa.append({"tenant_id": tid, "schema": schema})
     return {"ok": not lipsa, "lipsa": lipsa,
-            "detaliu": "index `%s` prezent pe %d firme, lipsă pe %d"
-                       % (NUME_INDEX, avute, len(lipsa))}
+            "detaliu": "index `%s` + tabela `%s` prezente pe %d firme, lipsă pe %d"
+                       % (NUME_INDEX, NUME_TABEL_COTE, avute, len(lipsa))}
 
 
 #: promisiunea pe care mesajul de eșec TREBUIE s-o poarte. Constantă, nu literal repetat: e o

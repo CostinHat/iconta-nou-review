@@ -26,6 +26,8 @@ TIP_FORMA = {
     "legea_1_2020.html": "consolidat_la_zi",
     "hg_1094_2025.html": "consolidat_la_zi",
     "cod_fiscal_227_2015_consolidat.html": "consolidat_la_zi",
+    # 02.10.2026 (D216, impozit special 0,3% 2024-2025): actul MODIFICATOR, cu textul introdus la data lui -> forma la data.
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html": "forma_la_data",
     "legea_141_2025_consolidat.html": "consolidat_la_zi",
     "cf_art291_2016_forma_initiala.txt": "forma_la_data",
     "hg_1506_2024_salariu_minim.html": "forma_la_data",

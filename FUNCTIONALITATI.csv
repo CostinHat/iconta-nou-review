@@ -66,7 +66,7 @@ Gestionează actorii de cabinet (asistenții): lista cu roluri, permisiuni și f
 O găsești în zona de administrare a cabinetului, unde adaugi asistenți, le dai acces la firme și le urmărești calitatea muncii.
 ## De reținut
 Modul patru-ochi impune verificarea unei a doua persoane; educația pe erori pornește de la greșelile reale ale fiecărui actor."
-Import asociați (migrare),"Citește .xlsx/.csv cu nume/CNP-CUI/cota %, mapare flexibilă, validare CNP, coerență cotelor (100%), import per firmă pentru D205.",F007,firma,Migrare / Import date,core/asociati_import_api.py,,LIVE,,,"## Ce face
+Import asociați (migrare),"Citește .xlsx/.csv cu nume/CNP-CUI/cota %, mapare flexibilă, validare CNP, coerență cotelor (100%), import per firmă pentru D205. Data cesiunii (opțional, 02.10.2026): structura înlocuită se păstrează pentru dividendele distribuite înainte.",F007,firma,Migrare / Import date,core/asociati_import_api.py,Legea 31/1990 art.67 alin.(6),LIVE,,,"## Ce face
 Importă asociații dintr-un fișier .xlsx sau .csv (nume, CNP/CUI, cotă %), cu mapare flexibilă a coloanelor. Validează CNP-ul și verifică coerența cotelor (să însumeze 100%), pe fiecare firmă, pentru declarația D205.
 ## Unde apare / Cum se folosește
 Se folosește la migrare, în pasul de import al asociaților pentru o firmă. Încarci fișierul, potrivești coloanele și confirmi importul.
@@ -431,7 +431,7 @@ XML D112 validat, cu contribuțiile și impozitul pe salarii, pe fiecare asigura
 - CNP invalid sau salariat cu brut sub minim pe norma întreagă -> generarea refuză (date suspecte).
 ## Reguli fiscale
 Codul fiscal titlul V (contribuții sociale). Termen 25 ale lunii următoare. Baza minimă part-time (art. specific), facilități per domeniu."
-Declarația D205 + distribuire dividende,"Impozit reținut la sursă (dividende): beneficiari cu cota pe an (8/10/16%), împărțire automată a dividendului brut pe asociați după cote, XML validat.",F029,firma,Declaratii (tab D205 + asociati),core/d205.py,CF art. 97,LIVE,DUKIntegrator + ANAF,impozit-dividende-2026,"## Ce face
+Declarația D205 + distribuire dividende,"Impozit reținut la sursă (dividende): beneficiari cu cota pe an (8/10/16%), împărțire automată a dividendului pe asociați după cotele de la DATA DISTRIBUIRII (istoricul cesiunilor, 02.10.2026), XML validat.",F029,firma,Declaratii (tab D205 + asociati),core/d205.py,CF art. 97; Legea 31/1990 art.67 alin.(2) și (6),LIVE,DUKIntegrator + ANAF,impozit-dividende-2026,"## Ce face
 Declarația D205 - impozitul reținut la sursă pe dividende, cu împărțirea automată a dividendului brut pe asociați după cotele de participare. Aplicația calculează impozitul pe cota anului și generează XML-ul validat.
 ## Când se folosește
 Anual, până la ultima zi a lunii februarie a anului următor, pentru dividendele distribuite.
@@ -1223,7 +1223,7 @@ Note pentru sponsorizare + creditul fiscal aplicabil (în limita legală).
 - Beneficiar neînscris în registru (micro) -> fără credit.
 ## Reguli fiscale
 Codul fiscal (sponsorizare: limita creditului fiscal - profit 0,75%% CA și max 20%% impozit; micro 20%% impozit)."
-Stat de plată + fluturași,"Statul de plată lunar per firmă: toți salariații prin motorul de salarizare (brut -> contribuții -> net, cu deduceri, facilități, CM), plus fluturașii PDF individuali per salariat (pdf_util, identitate DS cap.7). Alimentează D112 și plata salariilor.",F087,firma,Salariati,core/stat_plata_api.py,,LIVE,vizual + parte din D112 DUK,salariu-minim-2026,"## Ce face
+Stat de plată + fluturași,"Statul de plată lunar per firmă: toți salariații prin motorul de salarizare (brut -> contribuții -> net, cu deduceri, facilități, CM), plus fluturașii PDF individuali per salariat (pdf_util, identitate DS cap.7). Alimentează D112 și plata salariilor. Brutul se proratează pe prezența în contract (02.10.2026): angajare/încetare în lună, concediu fără plată / suspendare (butonul „Suspendare / CFP” de pe salariat) și schimbarea salariului în lună — zile lucrătoare active, același calcul în stat, D112 și contare.",F087,firma,Salariati,core/stat_plata_api.py,"Codul muncii art.49 alin.(2), art.54, art.159 alin.(1), art.160 alin.(2); CF art.146 alin.(5^6)",LIVE,vizual + parte din D112 DUK,salariu-minim-2026,"## Ce face
 Calculează statul de plată lunar per firmă: trece toți salariații prin motorul de salarizare (brut -> contribuții -> net, cu deduceri, facilități și concedii medicale) și generează fluturașii PDF individuali. Alimentează D112 și plata salariilor.
 ## Când se folosește
 Lunar, la salarizare, de către contabilul de salarizare.

@@ -201,7 +201,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #   constienta de platitor (neplatitor art.317 -> TVA in costul achizitiei, nu 4426=4427). Use-case-ul
     #   citeste statutul prin repository, nu executand el SELECT-ul (P7). *Clichetul urca fiindca aplicatia
     #   verifica un pas in plus (statutul de platitor), nu fiindca s-a pierdut ceva.*
-    assert _apeluri_catre_repository() == 268
+    # [lot 19, 02.10.2026] 268 -> 271, cu apelurile numite:
+    #   repo_contabilitate.adauga_z_cota ×2 (horeca_import_amef, horeca_raport_z) — defalcarea raportului Z pe cote,
+    #   scrisă în aceeași tranzacție cu nota, ca D300 rd.9/10 s-o poată citi (nota 707/4427 n-o poartă);
+    #   repo_salariati.suspendari_salariat (salariat_actualizeaza) — setul vechi de suspendări, ca poarta de
+    #   perioadă să se aplice lunilor ATINSE de schimbare. Nu mută SQL din altă parte: pași NOI ai aplicației.
+    assert _apeluri_catre_repository() == 271
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

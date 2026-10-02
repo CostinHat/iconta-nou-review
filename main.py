@@ -32,7 +32,7 @@ from core import instante as _instante
 # de acolo. Scoase de o curatenie automata, sase firme au ajuns cu `control_fiscal` in stare de
 # EROARE. „Nefolosit aici" nu inseamna „nefolosit" intr-un modul care e citit din afara.
 from core.common import pastila_firma, stare_din_nivel  # noqa: F401
-from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, observare as _obs
+from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, observare as _obs
 # [P7 · V1] Repository-urile de citire: SQL-ul rutelor a plecat acolo.
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
 from core import cronometru as _crono   # [P5] segmentele unei cereri; INERT fara ICONTA_CRONOMETRU
@@ -1099,6 +1099,9 @@ class SalariatEdit(BaseModel):
     tichet_masa_valoare: Optional[float] = None  # [F133]
     iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
     functie_baza: Optional[bool] = None  # [3c · CF art.77(1)]
+    # [lot 19 pct.4c] lista COMPLETĂ a suspendărilor fără drepturi salariale (CFP / suspendare) — înlocuiește setul
+    # existent; [{data_inceput, data_sfarsit, tip: "cfp"|"suspendare", temei?}]. Absentă = neatinsă.
+    suspendari: Optional[list] = None
 
 class MigrareValideazaIn(BaseModel):
     cui_uri: list[str]
@@ -1125,7 +1128,8 @@ class VectorIn(BaseModel):  # [p82_vector]
 
 class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]
     denumire: str
-    platitor_tva: bool = True
+    # [lot 19 pct.4d] `platitor_tva` NU mai vine din corp (implicit True -> 21% propus unui neplatitor): ruta il citeste
+    # din profilul firmei. Un camp trimis de un client vechi e ignorat de pydantic.
 
 class ProdusCreeazaIn(BaseModel):
     denumire: str
@@ -1214,6 +1218,9 @@ class AsociatRand(BaseModel):
     cnp_motiv: str = "ok"
 class AsociatiImportIn(BaseModel):
     randuri: list[AsociatRand]
+    # [lot 19 pct.4e] data de la care noua structura e valabila (cesiune): cea veche se arhiveaza pentru D205
+    # (Legea 31/1990 art.67 alin.(6)). Absenta = corectura a structurii curente.
+    data_cesiune: Optional[str] = None
 class MijlocFixRand(BaseModel):
     cod: str = ""
     denumire: str = ""
@@ -2357,9 +2364,11 @@ def produse_lista(tenant_id: int, ctx=Depends(cere_context)):
 
 @app.post("/tenants/{tenant_id}/produse/potriveste")
 def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cere_context)):
-    # preview cota (AI), fara salvare - pentru UI la scrierea denumirii
-    _schema_sau_404(ctx, tenant_id)  # doar verific accesul
-    return produse_api.potriveste(date.denumire, platitor_tva=date.platitor_tva)
+    # preview cota (AI), fara salvare - pentru UI la scrierea denumirii; statutul TVA din profilul firmei
+    try:
+        return _uc_tenants.produse_potriveste(tenant_id, date.denumire, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/produse")
 def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_cabinet)):

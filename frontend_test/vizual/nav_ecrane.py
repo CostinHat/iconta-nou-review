@@ -29,6 +29,18 @@ def ecran_import_mijloace_fixe(pg):
     _import_strat(pg, "Mijloace fixe")
 
 
+def ecran_import_asociati(pg):
+    """[lot 19 pct.4e] Previzualizarea importului de asociati (camp nou: data cesiunii). Fisierul se doar CITESTE
+    (`/asociati-import/incarca` nu salveaza nimic) - ecranul atins e previzualizarea, nu caseta de incarcare.
+    CNP-ul din fisier are cifra de control verificata (algoritmul din CLAUDE.md)."""
+    deschide_firma(pg)
+    _import_strat(pg, "Asocia")
+    pg.set_input_files("#mig-file", files=[{"name": "asociati.csv", "mimeType": "text/csv",
+                                             "buffer": "nume,cnp/cui,cota %\nASOCIAT A,1900101410011,100\n".encode()}])
+    pg.wait_for_selector("#mig-salveaza-asoc", timeout=14000)
+    pg.wait_for_timeout(800)
+
+
 def ecran_vector_fiscal(pg):
     deschide_firma(pg)
     _import_strat(pg, "Vector fiscal")
@@ -231,6 +243,8 @@ ECRANE = [
     ("magazin", ecran_magazin),
     ("pachete", ecran_pachete),
     ("recomanda", ecran_recomanda),
+    # [LOTUL 19, 02.10.2026] previzualizarea importului de asociati: lotul i-a ATINS JS-ul (data cesiunii, D205)
+    ("import_asociati", ecran_import_asociati),
 ]
 
 

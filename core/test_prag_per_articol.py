@@ -146,7 +146,9 @@ def test_volumul_in_plus_e_CEL_MASURAT():
     actul modificator le masca. Cadența lunară pentru ele e confirmată de Costin (01.09.2026)."""
     d = _plus_luni(datetime.date.today(), 1)
     plus = _alerte(d, _prag_pentru) - _alerte(d)
-    assert plus == {"impozit_dividend", "impozit_micro", "impozit_venit",
+    # [lot 19, 02.10.2026] +impozit_special_valoare_mare: CF art.500^2 (VOLATIL/DEPUS, D216), intrat in COTE cu
+    # confirmarea de azi — peste o luna intra in alerta ca celelalte cote volatile.
+    assert plus == {"impozit_dividend", "impozit_micro", "impozit_venit", "impozit_special_valoare_mare",
                     "tva_standard", "tva_redusa", "tva_redusa_9", "tva_redusa_5"}, (
         "volumul în plus s-a mutat: %s. Dacă e intenționat (o confirmare reînnoită, o clasificare "
         "schimbată), pinează noua mulțime." % sorted(plus))

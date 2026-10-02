@@ -12,6 +12,7 @@ pe acea valoare cand istoricul e gol (bridge). In 2b scrierile trec pe istoric s
 retrage din tabel. NU adauga citiri fiscale noi pe salariati.salariu_brut.
 """
 from datetime import date, timedelta
+from decimal import Decimal, ROUND_HALF_UP
 import calendar
 
 from core import scadente as _scad
@@ -53,30 +54,95 @@ def salariu_curent(cur, schema, salariat_id, azi=None):
     return salariu_la(cur, schema, salariat_id, azi or date.today())
 
 
-def zile_la_minim(cur, schema, salariat_id, an, luna, data_angajare=None, data_incetare=None):
-    """(zile_la_minim, zile_lucratoare_luna) — zilele lucratoare din luna in care contractul e ACTIV
-    SI salariul e EXACT la nivelul minim al zilei (alin.4 lit.a). Baza proratarii facilitatii."""
-    def _pd(v):
-        if v is None:
-            return None
-        if isinstance(v, date):
-            return v
-        try:
-            return date.fromisoformat(str(v)[:10])
-        except (ValueError, TypeError):
-            return None
-    zl = _scad.zile_lucratoare_luna(an, luna)
+def _pd(v):
+    if v is None:
+        return None
+    if isinstance(v, date):
+        return v
+    try:
+        return date.fromisoformat(str(v)[:10])
+    except (ValueError, TypeError):
+        return None
+
+
+def suspendari_luna(cur, schema, salariat_id, an, luna):
+    """[lot 19 pct.4c] Perioadele de suspendare FĂRĂ drepturi salariale (CFP / suspendare) care ating luna, ca
+    `[(inceput, sfarsit, tip)]` tăiate la lună. Codul muncii art.49 alin.(2): suspendarea suspendă „plata drepturilor
+    de natură salarială”; art.54: CFP = suspendare prin acordul părților."""
+    prima = date(an, luna, 1)
+    ultima = date(an, luna, calendar.monthrange(an, luna)[1])
+    cur.execute("SELECT data_inceput, data_sfarsit, tip FROM %s WHERE salariat_id=%%s AND data_inceput <= %%s "
+                "AND data_sfarsit >= %%s ORDER BY data_inceput" % _t(schema, "suspendari_contract"),
+                (salariat_id, ultima, prima))
+    out = []
+    for r in cur.fetchall():
+        a, b, tip = (r["data_inceput"], r["data_sfarsit"], r["tip"]) if isinstance(r, dict) else r
+        out.append((max(a, prima), min(b, ultima), tip))
+    return out
+
+
+def _fereastra(an, luna, data_angajare, data_incetare):
     prima = date(an, luna, 1)
     ultima = date(an, luna, calendar.monthrange(an, luna)[1])
     da, di = _pd(data_angajare), _pd(data_incetare)
-    start = da if (da is not None and da > prima) else prima
-    end = di if (di is not None and di < ultima) else ultima
+    return (da if (da is not None and da > prima) else prima), (di if (di is not None and di < ultima) else ultima)
+
+
+def _suspendata(d, suspendari):
+    return any(a <= d <= b for a, b, *_ in (suspendari or ()))
+
+
+def zile_active(an, luna, data_angajare=None, data_incetare=None, suspendari=()):
+    """[lot 19 pct.4c] Zilele LUCRĂTOARE (fără sărbători, OUG 158/2005 art.10 — același calendar ca proratarea CM) din
+    luna în care contractul e în vigoare (după angajare, până la încetare) și NEsuspendat. Codul muncii art.159
+    alin.(1): salariul e contraprestația muncii depuse în baza contractului; art.49 alin.(2): pe suspendare nu se plătește."""
+    start, end = _fereastra(an, luna, data_angajare, data_incetare)
+    out, d = [], start
+    while d <= end:
+        if _scad.e_zi_lucratoare(d) and not _suspendata(d, suspendari):
+            out.append(d)
+        d += timedelta(days=1)
+    return out
+
+
+def zile_suspendate(an, luna, data_angajare=None, data_incetare=None, suspendari=()):
+    """Zilele lucrătoare din contract căzute pe o suspendare (D112 `B1_7` = ore suspendate)."""
+    start, end = _fereastra(an, luna, data_angajare, data_incetare)
     n, d = 0, start
     while d <= end:
-        if _scad.e_zi_lucratoare(d):
-            sal = salariu_la(cur, schema, salariat_id, d)
-            sm, _ = cota("salariu_minim", d)
-            if sal is not None and _dec(sal) == _dec(sm):
-                n += 1
+        if _scad.e_zi_lucratoare(d) and _suspendata(d, suspendari):
+            n += 1
         d += timedelta(days=1)
+    return n
+
+
+def brut_cuvenit(cur, schema, salariat_id, an, luna, data_angajare=None, data_incetare=None, suspendari=()):
+    """[lot 19 pct.4c] Brutul cuvenit pentru prezența în contract din lună: Σ (salariul de bază al ZILEI) / zile
+    lucrătoare ale lunii, peste zilele active. INTERPRETARE CU TEMEI: Codul muncii art.160 alin.(2) — salariul de bază
+    remunerează munca „pe parcursul unei luni calendaristice”, deci o zi lucrătoare valorează salariul lunii / zilele
+    lucrătoare ale lunii (același numitor ca proratarea CM și facilitatea); art.159 alin.(1) — zilele fără contract
+    sau suspendate (art.49 alin.(2)) nu se plătesc; la o schimbare de salariu în lună fiecare zi poartă salariul ei
+    (salariu_istoric). Alternativă respinsă: zile calendaristice (alt numitor decât CM și facilitatea — două proratări
+    diferite pe același fluturaș). De reconfirmat dacă apare o normă care tranșează metoda. Lună întreagă, fără
+    schimbare și fără suspendare -> exact salariul lunii (zl × S / zl). Rotunjire aritmetică la bani."""
+    zl = _scad.zile_lucratoare_luna(an, luna)
+    zile = zile_active(an, luna, data_angajare, data_incetare, suspendari)
+    if not zl or not zile:
+        return Decimal("0.00")
+    total = sum((_dec(salariu_la(cur, schema, salariat_id, d) or 0) for d in zile), Decimal(0))
+    return (total / Decimal(zl)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
+def zile_la_minim(cur, schema, salariat_id, an, luna, data_angajare=None, data_incetare=None, suspendari=()):
+    """(zile_la_minim, zile_lucratoare_luna) — zilele lucratoare din luna in care contractul e ACTIV (nesuspendat)
+    SI salariul e EXACT la nivelul minim al zilei (alin.4 lit.a). Baza proratarii facilitatii. [lot 19] Zilele de
+    suspendare ies: OUG 156/2024 art.LXVI alin.(4) lit.c) — suma „se diminuează în funcție de … fracția din lună
+    pentru care se determină veniturile din salarii”."""
+    zl = _scad.zile_lucratoare_luna(an, luna)
+    n = 0
+    for d in zile_active(an, luna, data_angajare, data_incetare, suspendari):
+        sal = salariu_la(cur, schema, salariat_id, d)
+        sm, _ = cota("salariu_minim", d)
+        if sal is not None and _dec(sal) == _dec(sm):
+            n += 1
     return n, zl

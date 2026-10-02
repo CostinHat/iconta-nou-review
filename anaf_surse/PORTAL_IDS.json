@@ -86,6 +86,11 @@
       "text_integral": false,
       "titluri_articol": 0,
       "nota": "ciot: pagina servita are 5.416 caractere si NU contine pragul de 1.000.000 lei. Actul EXISTA si e amprentat (titlul «ORDIN 1604 27/10/2025» confirma citarea din antetul core/intrastat.py), dar valoarea ramane neconfruntata la sursa - R110."
+    },
+    "Legea 296/2023": {
+      "id": 275745,
+      "text_integral": true,
+      "nota": "02.10.2026: id_portal din PROVENIENTA (forma consolidata adusa de FiscalOS); citat de COTE impozit_special_valoare_mare (0,3% 2024-2025)"
     }
   }
 }

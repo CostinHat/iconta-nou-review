@@ -61,6 +61,11 @@ def _logo_flowable(logo_uri, latime_mm=32):
         return None
 
 
+#: [lot 19 pct.4d] Trimiterea la scutire pe factura unui emitent neplătitor de TVA (CF art.319 alin.(20) lit.l)).
+MENTIUNE_NEPLATITOR = ("Scutit de TVA — regim special de scutire pentru întreprinderile mici, "
+                       "art. 310 din Codul fiscal (Legea nr. 227/2015).")
+
+
 def genereaza_pdf(profil, factura):
     """profil, factura = dict-uri. Intoarce bytes (PDF)."""
     _init_fonturi()
@@ -162,7 +167,12 @@ def genereaza_pdf(profil, factura):
 
     # ---- TABEL LINII ----
     linii = factura.get("linii") or []
-    cap = ["Denumire", "Cant", "UM", "Pre\u021b", "Cot\u0103", "Valoare"]
+    # [lot 19 pct.4d, 02.10.2026] Emitent NEplătitor de TVA (regim special de scutire): documentul nu menționează taxa —
+    # CF art.310 alin.(10) lit.b) („nu are voie să menționeze taxa pe factură sau pe alt document”) — dar poartă
+    # trimiterea la scutire — CF art.319 alin.(20) lit.l) („trimiterea la dispozițiile aplicabile din prezentul titlu …
+    # din care să rezulte că livrarea … face obiectul unei scutiri”). Profil fără statut = plătitor (fără default tăcut).
+    neplatitor = (factura.get("directie") in ("emisa", "iesire")) and (profil or {}).get("platitor_tva") is False
+    cap = ["Denumire", "Cant", "UM", "Pre\u021b"] + ([] if neplatitor else ["Cot\u0103"]) + ["Valoare"]
     date_tab = [[Paragraph(f"<b>{c}</b>", ParagraphStyle(
         "th", parent=st_cell, textColor=colors.white, fontName=font_b))
         for c in cap]]
@@ -186,10 +196,11 @@ def genereaza_pdf(profil, factura):
             Paragraph(f"{cant:,.3f}".rstrip("0").rstrip(".").replace(",", "."), st_cell),
             Paragraph(str(l.get("um") or "buc"), st_cell),
             Paragraph(_bani(pret), st_cell),
-            Paragraph(f"{cota:.2f}".rstrip("0").rstrip(".") + "%", st_cell),
+        ] + ([] if neplatitor else [Paragraph(f"{cota:.2f}".rstrip("0").rstrip(".") + "%", st_cell)]) + [
             Paragraph(_bani(baza, mon), ParagraphStyle("rval", parent=st_cell, alignment=TA_RIGHT)),
         ])
-    tabel = Table(date_tab, colWidths=[60 * mm, 22 * mm, 14 * mm, 26 * mm, 18 * mm, 34 * mm])
+    tabel = Table(date_tab, colWidths=([78 * mm, 22 * mm, 14 * mm, 26 * mm, 34 * mm] if neplatitor else
+                                       [60 * mm, 22 * mm, 14 * mm, 26 * mm, 18 * mm, 34 * mm]))
     tabel.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), ac),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
@@ -205,7 +216,7 @@ def genereaza_pdf(profil, factura):
 
     # ---- TOTALURI defalcate pe cote ----
     tot_rows = []
-    for cota in sorted(peCota.keys(), reverse=True):
+    for cota in ([] if neplatitor else sorted(peCota.keys(), reverse=True)):
         b, t = peCota[cota]
         tot_rows.append(["Baz\u0103 %g%%" % cota, _bani(b, mon)])
         tot_rows.append(["TVA %g%%" % cota, _bani(t, mon)])
@@ -226,6 +237,9 @@ def genereaza_pdf(profil, factura):
         ("FONTSIZE", (0, n_last), (-1, n_last), 11),
     ]))
     el.append(tot_tab)
+    if neplatitor:
+        el.append(Spacer(1, 8))
+        el.append(Paragraph(MENTIUNE_NEPLATITOR, st_cell))
 
     # ---- BLOC VALUTA (art. 319) ----
     if este_valuta and factura.get("tva_lei") is not None:
@@ -236,7 +250,9 @@ def genereaza_pdf(profil, factura):
         vb = [
             [Paragraph("<b>Conversie in lei (art. 319 Cod fiscal)</b>",
                        ParagraphStyle("vt", parent=st_cell, fontName=font_b))],
+        ] + ([] if neplatitor else [
             [Paragraph("TVA \u00een lei: <b>%s</b>" % _bani(factura.get("tva_lei"), "lei"), st_cell)],
+        ]) + [
             [Paragraph("Total \u00een lei: %s" % _bani(factura.get("total_lei"), "lei"), st_cell)],
             [Paragraph("%s %s - %s" % (sursa, curs_s, _data_ro(factura.get("data_curs"))),
                        ParagraphStyle("vs", parent=st_cell, fontSize=8,

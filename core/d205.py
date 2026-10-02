@@ -340,6 +340,46 @@ def pull(conn, schema, perioada):
     return prof, asoc, total_distribuit, total_platit, impozit_ponderat
 
 
+def pull_beneficiari(conn, schema, perioada):
+    """[lot 19 pct.4e, 02.10.2026] (prof, beneficiari) — beneficiarii AUTOMAȚI ai D205, SURSA UNICĂ (generatorul și
+    `control_incrucisat` o consumă; înainte derivarea era copiată în ambele). Fiecare tranșă plătită în an se împarte
+    după structura asociaților de la DATA DISTRIBUIRII ei, nu după cotele de azi: Legea 31/1990 art.67 alin.(2) —
+    „Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat”; alin.(6) —
+    „Dividendele care se cuvin după data transmiterii acțiunilor aparțin cesionarului”. Structurile anterioare vin din
+    `asociati_istoric` (cesiuni înregistrate cu data lor); fără istoric, rezultatul e cel de dinainte (total × cotă).
+    Impozitul rămâne pe rata de la data distribuirii (A6, art.VII Legea 141/2025)."""
+    import psycopg2.extras as _E
+    from core import common as _c
+    from core import dividende_curs as _dc
+    prof, asoc, total_distribuit, total_platit, _imp = pull(conn, schema, perioada)
+    if total_platit <= 0:
+        return prof, []
+    _inc, _sf = perioada.interval()
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        istoric = _repo.select_asociati_istoric(cur)
+        miscari = _repo.select_457_miscari(cur, _sf)
+    if not asoc and not istoric:
+        return prof, []
+    struct = _dc.structura_la([(a["nume"], a.get("cnp"), a["cota"]) for a in asoc],
+                              [(r["cnp"], r["nume"], r["cota"], r["valabil_pana_la"]) for r in istoric])
+    pe = _dc.atribuie_pe_asociati(miscari, perioada.an, lambda d: _c.cota("impozit_dividend", d)[0], struct)
+    ordine = [str(a.get("cnp") or "") for a in asoc]
+    ordine += sorted((k for k in pe if k not in ordine), key=lambda k: str(pe[k]["nume"] or ""))
+    beneficiari = []
+    for cnp in ordine:
+        r = pe.get(cnp)
+        if not r:
+            continue
+        platit = _i(r["platit"])
+        if platit > 0:
+            # baza1/imp1 pe dividendul PLĂTIT (impozitul se reține la plată); divid_D >= divid_P mereu (un dividend
+            # distribuit într-un an anterior și plătit acum e integral plătit) — regula de dinainte, neschimbată.
+            beneficiari.append({"categ": "1.a", "nume": r["nume"], "cif": cnp, "baza": platit,
+                                "imp": _i(r["impozit"]), "castig": 0, "pierdere": 0,
+                                "divid_d": max(_i(r["distribuit"]), platit), "divid_p": platit, "tip_plata": "2"})
+    return prof, beneficiari
+
+
 def genereaza(conn, schema, perioada, manual=None):
     """D205 anual (contract uniform A1). `manual` cu cheia 'beneficiari' suprascrie lista calculata
     automat din dividendele asociatilor (cota din tabelul `asociati`, sume din notele VALIDATE pe
@@ -347,7 +387,7 @@ def genereaza(conn, schema, perioada, manual=None):
     PERIOD-AWARE - cota("impozit_dividend"): 10% pana in 2025, 16% de la 01.01.2026 (Legea
     141/2025, CF art.97). Foloseste perioada.an."""
     manual = cheie_manual(manual, "beneficiari")
-    prof, asoc, total_distribuit, total_platit, impozit_ponderat = pull(conn, schema, perioada)
+    prof, beneficiari_auto = pull_beneficiari(conn, schema, perioada)
 
     erori = erori_generare(prof)
     if erori:
@@ -355,31 +395,7 @@ def genereaza(conn, schema, perioada, manual=None):
 
     beneficiari = manual.get("beneficiari")
     if beneficiari is None:
-        beneficiari = []
-        if total_platit > 0 and asoc:
-            for a in asoc:
-                platit = _i(Decimal(total_platit) * Decimal(str(a["cota"])) / Decimal(100))
-                distribuit = _i(Decimal(total_distribuit) * Decimal(str(a["cota"])) / Decimal(100))
-                if platit > 0:
-                    # [A6, 18.09.2026] impozit pe dividende după DATA DISTRIBUIRII (creditul 457), nu după
-                    # 31.12 al anului declarației: 8% (2023-2024), 10% (2025, OUG 156/2024), 16% de la
-                    # 01.01.2026 (Legea 141/2025 art.VII, CF art.97). Un dividend distribuit în 2025 și
-                    # plătit în 2026 rămâne 10% (art.VII alin.2, fără recalculare). `impozit_ponderat` e
-                    # impozitul firm-wide ponderat pe rata fiecărei distribuiri (atribuire FIFO în
-                    # `dividende_curs`); partea asociatului = ponderat × cota. baza1/imp1 pe dividendul
-                    # PLĂTIT (impozitul se reține la plată; aliniat cu calea 2 de reconciliere).
-                    impozit = _i(Decimal(str(impozit_ponderat)) * Decimal(str(a["cota"])) / Decimal(100))
-                    # divid_D = dividend DISTRIBUIT (Σ credit 457 x cota); divid_P = dividend
-                    # PLATIT (Σ debit 457 x cota). Regula fully-paid documentata: divid_D >=
-                    # divid_P mereu (nu poti plati cumulat mai mult decat s-a distribuit); daca
-                    # fereastra anului nu contine creditul de distribuire (distribuit intr-un an
-                    # anterior), distribuit=0 < platit => divid_D = platit (integral platit).
-                    divid_d = max(distribuit, platit)
-                    beneficiari.append({"categ": "1.a", "nume": a["nume"],
-                                        "cif": a.get("cnp") or "", "baza": platit,
-                                        "imp": impozit, "castig": 0, "pierdere": 0,
-                                        "divid_d": divid_d, "divid_p": platit,
-                                        "tip_plata": "2"})
+        beneficiari = beneficiari_auto
 
     res = calcul_d205(prof, perioada.an, beneficiari)
     # POARTA A DOUA CALE (gard continut, 05.08.2026, pas 6/6): recalcul INDEPENDENT al bazei/

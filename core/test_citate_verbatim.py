@@ -37,7 +37,10 @@ from core import scan_citate
 #: (Legea 70/2015, CF art.17/18^1/64/77/291/331, OPANAF 2194/2025, OUG 24/2026) + OUG 28/1999 art.2^3 +
 #: rândurile din COTE rescrise verbatim (dividende art.97 alin.7 pt 2026 și 2023, impozit_venit art.78).
 #: Fiecare citat a fost căutat în forma consolidată adusă la §1 ÎNAINTE de a fi scris.
-VERBATIM_BASELINE = 52
+#: 52 → **57** la 02.10.2026: HEAD avea deja 55 (în toleranță); +2 = cele două rânduri COTE
+#: `impozit_special_valoare_mare` (CF art.500^2 lit.a) 0,9% și Legea 296/2023 art.III 0,3%), căutate verbatim în corpus
+#: înainte de scriere. Diferența măsurată HEAD→arbore: 2 noi, 0 pierdute.
+VERBATIM_BASELINE = 57
 
 
 @pytest.fixture(scope="module")

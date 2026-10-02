@@ -1336,17 +1336,9 @@ def _thunk_d205(conn, schema, an, luna):
     # 141/2025). Replica derivarea din d205.genereaza: impozitul per asociat = ponderat x cota, NU
     # single-rate 31.12 (altfel thunk-ul ar diverge FALS de reconcilierea FIFO pe un dividend distribuit
     # in anul anterior si platit acum).
-    prof, asoc, total_distribuit, total_platit, impozit_ponderat = _g.pull(conn, schema, per)
-    beneficiari = []   # replica derivarii automate din d205.genereaza (fara poarta)
-    if total_platit > 0 and asoc:
-        for a in asoc:
-            platit = _g._i(Decimal(str(total_platit)) * Decimal(str(a["cota"])) / Decimal(100))
-            distribuit = _g._i(Decimal(str(total_distribuit)) * Decimal(str(a["cota"])) / Decimal(100))
-            if platit > 0:
-                impozit = _g._i(Decimal(str(impozit_ponderat)) * Decimal(str(a["cota"])) / Decimal(100))
-                beneficiari.append({"categ": "1.a", "nume": a["nume"], "cif": a.get("cnp") or "",
-                                    "baza": platit, "imp": impozit, "castig": 0, "pierdere": 0,
-                                    "divid_d": max(distribuit, platit), "divid_p": platit, "tip_plata": "2"})
+    # [lot 19 pct.4e] derivarea beneficiarilor din SURSA UNICĂ a generatorului (`d205.pull_beneficiari`), nu o replică:
+    # replica de aici împărțea după cotele actuale și ar fi divergit FALS de generator pe orice firmă cu o cesiune.
+    prof, beneficiari = _g.pull_beneficiari(conn, schema, per)
     if not beneficiari:
         raise _SkipSubiect("D205 fara dividende platite (cont 457) - nimic de reconciliat.")
     res = _g.calcul_d205(prof, per.an, beneficiari)

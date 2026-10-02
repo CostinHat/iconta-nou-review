@@ -1335,6 +1335,24 @@ try:
 except Exception as _e_sp:
     rap["scroll_public"].append(("verificator", 0, "EROARE", "gard scroll_public: " + str(_e_sp)))
 
+# --- TINTA BIFEI (DS cap.2, decizia Costin 02.10.2026 — DECIZII „Căsuțele .set-bifa rămân de 16px"): căsuța
+#     are 16px, ținta de clic e ETICHETA `<label class="set-bifa">`, care trebuie să rămână >= 24px (WCAG 2.5.8 AA).
+#     Premisa deciziei se ține prin `min-height` pe regula globală; fără ea, o micșorare de padding/font coboară
+#     ținta sub prag fără să se aprindă nimic. Mutația care o probează: scoate `min-height` din `.set-bifa` (sau
+#     pune 20px) -> lista nevidă -> TOTAL > 0 -> poarta roșie.
+rap["tinta_bifa"] = []
+try:
+    _css_tb = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+    _mtb = re.search(r"(?m)^\.set-bifa\s*\{([^}]*)\}", _css_tb)
+    _mh = re.search(r"min-height\s*:\s*(\d+)px", _mtb.group(1)) if _mtb else None
+    if not _mtb:
+        rap["tinta_bifa"].append(("static/stil.css", 0, "set-bifa", "regula globala .set-bifa negasita (DS cap.2)"))
+    elif not _mh or int(_mh.group(1)) < 24:
+        rap["tinta_bifa"].append(("static/stil.css", 0, "set-bifa",
+            ".set-bifa fara min-height >= 24px: tinta de clic (eticheta) poate cobori sub 24px (DS cap.2, WCAG 2.5.8)"))
+except Exception as _e_tb:
+    rap["tinta_bifa"].append(("verificator", 0, "EROARE", "gard tinta_bifa: " + str(_e_tb)))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

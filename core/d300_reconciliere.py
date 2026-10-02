@@ -134,7 +134,20 @@ def _agrega_independent(conn, inceput, sfarsit):
             if ci in tinta:
                 tinta[ci] += baza
 
-    col = {c: (_q(colb[c]), _q(colb[c] * Decimal(c) / Decimal(100))) for c in colb}
+    # [lot 19 pct.4b, 02.10.2026] Livrările cu bon fiscal (rapoarte Z validate) — SQL PROPRIU, nu `d300._pull_rapoarte_z`.
+    # TVA-ul lor se ia din defalcarea raportului (cum îl dă casa de marcat), nu se recalculează din bază: e TVA-ul
+    # legal al bonurilor. Sursele Z se re-declară aici (nu se importă), ca la `_COLECTAT`: duplicarea e deliberată.
+    zb = {c: Decimal(0) for c in colb}
+    zt = {c: Decimal(0) for c in colb}
+    qz = ("SELECT z.cota AS cota, z.baza AS baza, z.tva AS tva FROM inregistrari i "
+          "JOIN rapoarte_z_cote z ON z.inregistrare_id = i.id "
+          "WHERE i.status = 'validata' AND i.sursa IN ('horeca_z', 'amef') AND i.data >= %s AND i.data < %s")
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        for r in _repo.sql(cur, qz, inceput, sfarsit):
+            ci = int(Decimal(str(r["cota"])))   # cota Z e procent intreg (21/11/9) - nu e rotunjire de suma
+            if ci in zb:
+                zb[ci] += Decimal(str(r["baza"])); zt[ci] += Decimal(str(r["tva"]))
+    col = {c: (_q(colb[c] + zb[c]), _q(colb[c] * Decimal(c) / Decimal(100) + zt[c])) for c in colb}
     ded = {c: (_q(dedb[c]), _q(dedb[c] * Decimal(c) / Decimal(100))) for c in dedb}
     return col, ded
 

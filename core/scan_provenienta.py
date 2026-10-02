@@ -36,7 +36,9 @@ RADACINA = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORPUS = os.path.join(RADACINA, "anaf_surse")
 NUME_DECLARATII = "PROVENIENTA.json"
 
-EXTENSII = (".html", ".txt", ".pdf", ".xsd")
+# ".jpg" (02.10.2026, lot 19 pct.3): facsimilele formularelor (`<act>__facsimil_<…>.jpg`) sunt material al actului,
+# aduse cu bytes oficiali — întrebarea interdicției 52 („s-a schimbat după aducere?”) li se aplică la fel.
+EXTENSII = (".html", ".txt", ".pdf", ".xsd", ".jpg")
 SURSE_POSIBILE = (".pdf", ".html", ".xsd", ".zip")
 PRAG_GOL = 2  # un fisier de 1 octet e o linie goala, nu un act
 

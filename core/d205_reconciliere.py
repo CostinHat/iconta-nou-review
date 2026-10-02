@@ -37,19 +37,21 @@ def _q(x):
 
 
 def _dividende_independent(conn, an):
-    """Total dividende (Σ cont debit 457, note VALIDATE, anul) + asociatii cu cota>0 + impozitul PONDERAT
-    pe rata fiecarei distribuiri (A6, art.VII Legea 141/2025) - SQL PROPRIU + atribuire FIFO independenta."""
+    """[lot 19 pct.4e] Partea fiecărui asociat (bază plătită + impozit) — SQL PROPRIU (457, asociați, istoricul
+    cesiunilor) + atribuirea din modulul NEUTRU `dividende_curs` (aceeași regulă ca generatorul, recitită independent
+    din registru): fiecare tranșă plătită, după structura de la data distribuirii ei (Legea 31/1990 art.67 alin.(2) și
+    (6)), impozitul pe rata de la data distribuirii (A6). {cnp: (nume, baza_int, impozit_int)}."""
     from core import common as _c
     from core import dividende_curs as _dc
-    inc, sf = date(an, 1, 1).isoformat(), date(an + 1, 1, 1).isoformat()
+    sf = date(an + 1, 1, 1).isoformat()
     with conn.cursor() as cur:
-        total_div = _q(_repo.select_inregistrari_linii(cur, inc, sf)[0] or 0)
         asoc = _repo.select_asociati(cur)
+        istoric = _repo.select_asociati_istoric(cur)
         randuri = _repo.select_457_miscari(cur, sf)
     miscari = [{"data": r[0], "distribuit": r[1], "platit": r[2]} for r in randuri]
-    imp_pond, _pl, _di = _dc.impozit_ponderat(
-        miscari, an, lambda d: _c.cota("impozit_dividend", d)[0])
-    return total_div, asoc, imp_pond
+    struct = _dc.structura_la(list(asoc), list(istoric))
+    pe = _dc.atribuie_pe_asociati(miscari, an, lambda d: _c.cota("impozit_dividend", d)[0], struct)
+    return {cnp: (r["nume"], _q(r["platit"]), _q(r["impozit"])) for cnp, r in pe.items()}
 
 
 def _consistenta_interna(perioada, res):
@@ -95,16 +97,12 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
                     "aplica; verificata DOAR consistenta interna "
                     "imp1=round(cota dividendului x baza1).", perioada.an)}
     an = perioada.an
-    total_div, asoc, imp_pond = _dividende_independent(conn, an)
+    parti = _dividende_independent(conn, an)
     gen = {str(b.cif): b for b in res.beneficiari}
     divergente = []
-    for nume, cnp, cota in asoc:
-        parte = _q(Decimal(total_div) * Decimal(str(cota)) / Decimal(100))
+    for cnp, (nume, parte, imp) in parti.items():
         if parte <= 0:
             continue
-        # [A6] impozitul căii 2 = ponderat pe rata fiecărei distribuiri (FIFO), × cota asociatului -
-        # ACEEAȘI regulă ca generatorul, dar recalculată INDEPENDENT din registru (nu single-rate 31.12).
-        imp = _q(Decimal(str(imp_pond)) * Decimal(str(cota)) / Decimal(100))
         b = gen.get(str(cnp or ""))
         if b is None:
             divergente.append({"beneficiar": cnp or nume, "camp": "beneficiar LIPSA din declaratie",

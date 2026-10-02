@@ -2648,3 +2648,43 @@ ALTER TABLE TENANT_PLACEHOLDER.furnizori ADD CONSTRAINT furnizori_cui_uniq UNIQU
 ALTER TABLE TENANT_PLACEHOLDER.state_plata ADD CONSTRAINT state_plata_sal_luna_ex_uniq UNIQUE (salariat_id, luna, exemplar);
 ALTER TABLE TENANT_PLACEHOLDER.articole ADD CONSTRAINT articole_barcode_uniq UNIQUE (barcode);
 ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ADD CONSTRAINT mijloace_fixe_cod_uniq UNIQUE (cod);
+
+-- [lot 19 pct.4b, 02.10.2026] Defalcarea raportului Z pe cote (baza + TVA pe fiecare cota), scrisa de
+-- ambele cai de import (AMEF `coteZ` / ruta tastata) in aceeasi tranzactie cu nota; D300 rd.9/10 o citeste.
+-- Nota contabila (707/4427) poarta un singur TVA, fara cota. Mirror core/raport_z.py (_SQL_TABEL_COTE).
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_z_cote (
+    id serial PRIMARY KEY,
+    inregistrare_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE,
+    cota numeric(5,2) NOT NULL,
+    baza numeric(15,2) NOT NULL,
+    tva numeric(15,2) NOT NULL,
+    CONSTRAINT rapoarte_z_cote_nota_cota_uniq UNIQUE (inregistrare_id, cota)
+);
+
+-- [lot 19 pct.4c, 02.10.2026] Perioadele de suspendare FARA drepturi salariale (CFP / suspendare, Codul muncii
+-- art.49 alin.(2), art.54, art.153). Statul de plata si D112 proratau brutul doar la CM. Mirror
+-- core/migrare_suspendari_contract.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.suspendari_contract (
+    id serial PRIMARY KEY,
+    salariat_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.salariati(id) ON DELETE CASCADE,
+    data_inceput date NOT NULL,
+    data_sfarsit date NOT NULL,
+    tip text NOT NULL CONSTRAINT suspendari_contract_tip CHECK (tip IN ('cfp', 'suspendare')),
+    temei text,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT suspendari_contract_interval CHECK (data_sfarsit >= data_inceput),
+    CONSTRAINT suspendari_contract_uniq UNIQUE (salariat_id, data_inceput)
+);
+
+-- [lot 19 pct.4e, 02.10.2026] Structurile ANTERIOARE ale asociatilor (cote), valabile pana la o data - D205 imparte
+-- fiecare dividend dupa structura de la data distribuirii (Legea 31/1990 art.67 alin.(2) si (6)).
+-- Mirror core/migrare_asociati_istoric.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.asociati_istoric (
+    id serial PRIMARY KEY,
+    cnp text NOT NULL,
+    nume text,
+    cota numeric NOT NULL,
+    valabil_pana_la date NOT NULL,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT asociati_istoric_uniq UNIQUE (valabil_pana_la, cnp)
+);

@@ -159,9 +159,14 @@ def verifica_randuri(randuri):
     return er
 
 
-def importa(conn, randuri):
-    """DELETE + INSERT per firma. Intoarce {importati}.
-    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+def importa(conn, randuri, data_cesiune=None):
+    """DELETE + INSERT per firma. Intoarce {importati, arhivati}.
+    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri).
+
+    [lot 19 pct.4e, 02.10.2026] `data_cesiune` (opțional): data de la care NOUA structură e valabilă (transmiterea
+    părților sociale). Structura curentă se ARHIVEAZĂ în `asociati_istoric`, valabilă până în ziua dinainte — ca D205 să
+    împartă dividendele distribuite înainte după vechile cote: Legea 31/1990 art.67 alin.(6) „Dividendele care se cuvin
+    după data transmiterii acțiunilor aparțin cesionarului”. Fără dată = corectură a structurii curente (ca înainte)."""
     # [probare invalid, 03.09.2026 — aceeasi clasa ca importul de istoric] UN IMPORT GOL
     # STERGEA TOT, IN TACERE. Lista vida trecea de verificare (n-are ce respinge), ajungea la
     # `DELETE FROM asociati` de mai jos, si raspundea ca un import reusit cu zero randuri. Un fisier gol,
@@ -176,6 +181,27 @@ def importa(conn, randuri):
         raise ValueError("%d probleme: %s. Asociații și cotele lor intră în D205 "
                          "(dividende) - cotele trebuie să dea exact 100%%."
                          % (len(er), "; ".join(x["mesaj"] for x in er[:6])))
+    arhivati = 0
+    if data_cesiune:
+        import datetime as _dt
+        try:
+            dc = _dt.date.fromisoformat(str(data_cesiune)[:10])
+        except ValueError:
+            raise ValueError("data cesiunii %r nu e o dată (AAAA-LL-ZZ)." % data_cesiune)
+        if dc > _dt.date.today():
+            raise ValueError("data cesiunii (%s) e în viitor: o transmitere se înregistrează după ce a avut loc." % dc)
+        pana = dc - _dt.timedelta(days=1)
+        with conn.cursor() as cur:
+            cur.execute("SELECT max(valabil_pana_la) FROM asociati_istoric")
+            ultima = cur.fetchone()[0]
+            if ultima is not None and pana <= ultima:
+                raise ValueError("data cesiunii (%s) trebuie să fie după ultima cesiune înregistrată (structura "
+                                 "anterioară e valabilă până la %s)." % (dc, ultima))
+            cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0")
+            for nume, cnp, cota in cur.fetchall():
+                cur.execute("INSERT INTO asociati_istoric (cnp, nume, cota, valabil_pana_la) VALUES (%s,%s,%s,%s)",
+                            (cnp or "", nume, cota, pana))
+                arhivati += 1
     with conn.cursor() as cur:
         cur.execute("DELETE FROM asociati")
         n = 0
@@ -184,4 +210,4 @@ def importa(conn, randuri):
                 "INSERT INTO asociati (nume, cnp, cota) VALUES (%s,%s,%s)",
                 (r["nume"], r.get("cnp", ""), r.get("cota", 0)))
             n += 1
-    return {"importati": n}
+    return {"importati": n, "arhivati": arhivati}

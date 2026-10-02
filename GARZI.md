@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**649 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**654 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 617
+### `core/` — 622
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8936,6 +8936,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_cor.py` — Teste gardian pentru F137 (nomenclator COR).
 - `core/test_core_fara_main.py` — E6 — `core/` nu mai depinde de stratul HTTP. `CORE_IMPORTA_MAIN = 0`.
 - `core/test_corpus_amprenta.py` — GARDĂ: amprentele corpusului se verifică, nu doar se scriu. (22.08.2026)
+- `core/test_corpus_continut.py` — GARD — un act din corpus e ÎNTREG: înlocuirea nu pierde articole, iar documentele lui de pe portal sunt toate aici.
 - `core/test_corpus_surse.py` — Corpus (2): cele TREI garzi peste registrul de temeiuri COTE + manifestul anaf_surse/INDEX.json.
 - `core/test_cota_efect.py` — GOLDEN pe EFECT: ce cifră iese pe căile reparate la R26, nu ce cotă a intrat.
 - `core/test_cota_fara_default.py` — GARD (R26): nicio funcție fiscală nu are cotă implicită, iar REFUZUL chiar se produce.
@@ -8989,6 +8990,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d201_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D201 gol NU produce declaratie; identitatea + sectiunile +
 - `core/test_d204_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D204 gol NU produce declaratie; asocierea + reprezentantul +
 - `core/test_d205.py` — Teste gardian pentru D205 - REFACUT A DOUA OARA 16.07.2026.
+- `core/test_d205_cesiune.py` — GARD — D205 împarte dividendele după cotele de la DATA DISTRIBUIRII, nu după cotele de azi (lot 19 pct.4e, 02.10.2026).
 - `core/test_d205_cifr_obligatoriu.py` — Gard D205: campurile OBLIGATORII pe beneficiar (cifR, den1) nu pot fi emise vide.
 - `core/test_d205_cnp_checksum.py` — Gard D205 c1 (TEMA T1, CATALOG_INVALIDITATE.md): CNP beneficiar pre-validat pe CIFRA DE
 - `core/test_d205_cnp_duplicat.py` — Gard D205 c3 (TEMA T1, CATALOG_INVALIDITATE.md): (tip_venit1+cifR) UNIC per declaratie.
@@ -9021,6 +9023,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d300_forfait_agricol.py` — core/test_d300_forfait_agricol.py — gard TVA ORFAN din antet la achizitii primite
 - `core/test_d300_profil_identitate.py` — TURA 3 / T1: erori_generare verifica pana acum doar NON-GOL pentru cui/caen/pro_rata.
 - `core/test_d300_r25_r12.py` — TURA 4 (CR-5/T8): oglinda rd.12 <-> rd.25 la taxare inversa PRIMITA (masuri de simplificare).
+- `core/test_d300_rapoarte_z.py` — GARD — TVA-ul colectat din rapoartele Z intră în decontul D300 (lot 19 pct.4b, 02.10.2026).
 - `core/test_d300_reconciliere.py` — core/test_d300_reconciliere.py — gardul A DOUA CALE D300 (05.08.2026).
 - `core/test_d300_taxare_inversa_beneficiar.py` — Gard Task2 (10.08.2026): achizitiile cu taxare inversa PRIMITA nu mai dispar tacit din D300.
 - `core/test_d300_valideaza_wired.py` — TURA 3 / T2: valideaza(res) era COD MORT. genereaza() chema doar erori_generare(prof),
@@ -9236,6 +9239,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_module_nelegate.py` — CLICHET — module de producție din `core/` pe care nu le cheamă nimeni în afara testelor.
 - `core/test_monitor_fiscal.py` — —
 - `core/test_mutant_zero.py` — core/test_mutant_zero.py — GARD C5 (rest): mutant-zero pe generatoare.
+- `core/test_neplatitor_tva_emitere.py` — GARD — factura emisă de o firmă NEplătitoare de TVA nu poartă taxa (lot 19 pct.4d, 02.10.2026).
 - `core/test_nir_randuri_dinamice.py` — GARD cap.24 — randuri dinamice NIR (ecranStocuri), re-rulate IN POARTA prin chromium headless.
 - `core/test_niveluri_feedback.py` — GARD P0 (07.09.2026) — cele patru niveluri de feedback nu pot deveni o scurtătură nesigură.
 - `core/test_nomenclatoare_ancorate.py` — GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
@@ -9346,6 +9350,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_salariati_blocaj_vizibil.py` — core/test_salariati_blocaj_vizibil.py — GARD: pe Stat de plata, butoanele dezactivate SEPA
 - `core/test_salariati_import_iban.py` — core/test_salariati_import_iban.py — GARD: importul de salariati (stratul 4 migrare) aduce IBAN
 - `core/test_salarii_contare.py` — Teste gardian pentru salarii_contare (partea pura).
+- `core/test_salariu_proratare.py` — GARD — brutul se proratează pe prezența în contract: angajare/încetare în lună, CFP/suspendare, schimbare de salariu
 - `core/test_salariu_scrieri.py` — Teste PASUL 2b: scrierile salariului trec pe salariu_istoric (SURSA UNICA); citirile pe curent.
 - `core/test_salarizare.py` — Teste gardian pentru core/salarizare.py.
 - `core/test_scadente.py` — Teste pentru scadentarul per declaratie (core/scadente.py), sursa unica de termene.
@@ -9813,3 +9818,22 @@ Categoria **4. Ieșire către autorități** (XML respins la DUK) și **3. Calcu
 | nomenclatorul cap11 | test_categoria_in_afara_nomenclatorului_e_refuzata + test_xml_cap11_si_bifa111 + test_DUK_valid_pe_cap11_generat | un cod `categ_venit` ghicit; cap11 fără `bifa111` | cod 1016→1 → 5 roșii; scos bifa111 → 2 roșii | — |
 | lanțul RIP → cap11 | test_lant_RIP_cap11_din_operatiunile_VALIDATE (schemă efemeră) | ciorne / cheltuieli limitate intrate în venit | — (acoperit de mutațiile de mai sus pe aceleași valori) | — |
 | căsuța `.set-bifa` nu se strivește | core/test_set_bifa_nu_se_striveste.py | o etichetă lungă care comprimă căsuța sub 16px | scos flex-shrink:0 → roșu | 16px < 24px AA dacă se măsoară căsuța singură — decizie de produs |
+
+## 02.10.2026 — Lot 19: corpus întreg, D216 pe anul declarat, Z în D300, brut pe prezență, neplătitor fără TVA, D205 pe cesiuni
+
+Categoriile **4. Ieșire către autorități** (D216/D300/D112/D205 cu cifre greșite sau respinse), **3. Calcul fiscal** (cota pe an,
+proratarea brutului, împărțirea dividendelor), **1. Intrare date** (suspendări, cesiuni), **8. Integritate cod** (corpusul de
+temeiuri incomplet sub amprente corecte). Detaliul: DECIZII 02.10.2026 (șase intrări).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| corpus pe articol | core/test_corpus_continut.py::test_nicio_forma_inlocuita_nu_pierde_articole | o înlocuire din `_inlocuite_*` care pierde articole/anexe (comparat pe conținut, nu pe octeți) | procedura copiată peste ordinul 2594 → 13 unități PIERDUTE, roșu | o înlocuire nearhivată și nedeclarată nu are cu ce fi comparată |
+| documentele actului | core/test_corpus_continut.py::test_actele_din_manifest_au_toate_documentele | un act din manifestul FiscalOS cu anexa/baza/facsimilul lipsă din corpus | anexa OPANAF 2736/2025 mutată din corpus → roșu (FISC-014) | actele din afara manifestului |
+| identitatea materialelor | core/test_corpus_continut.py::test_materialele_poarta_amprenta_actului_lor | un `<act>__anexa_<id>` care nu e un document al acelui act | — (verificat pe 130 de documente; procedurile 2594/878 pe id declarat) | identitatea pe id declarat e mai slabă decât pe amprentă |
+| înlocuire declarată = arhivată | core/test_corpus_continut.py::test_inlocuirea_declarata_are_arhiva | „a înlocuit forma veche" în PROVENIENTA fără forma veche pe disc | (a prins 4 motive false la prima rulare) | — |
+| ținta bifei ≥ 24px | verificator_conformitate.py TINTA_BIFA | `.set-bifa` fără `min-height` ≥ 24px | min-height 20px → TOTAL 1 | căsuța fără etichetă (excepția DS cap.2) |
+| D216 cota pe an | core/test_d216_formular.py::test_d216_cota_impozitului_pe_anul_fiscal_2026_e_0_9_la_suta + test_d216_cota_pe_ani_si_refuz_inainte_de_impozit | 0,3% aplicat pe 2026; o cotă inventată înainte de 2024 | COTE 2026 → 0.003: 2 roșii | plafoanele rămân introduse de contabil |
+| Z în D300 | core/test_d300_rapoarte_z.py (5 teste, ambele rute reale) | TVA-ul din Z absent din rd.9/10; o notă Z validată fără defalcare sărită tăcut | pull fără Z → roșu (și poarta a doua cale); cale2 fără Z → roșu; ruta fără defalcare → refuz | D394 op2 i1 — datorie strictă `test_datorie_d394_op2_incasari_amef_din_rapoarte_z` |
+| brut pe prezență | core/test_salariu_proratare.py (14 teste, D112 DUK) | brut întreg la angajare/încetare/CFP/mărire în lună; B1_sal1 ≠ contractual; zile = toată luna; suspendări ignorate | 4 mutații motor + 3 pe ruta PUT → toate roșii | suspendarea plătită parțial (art.53) |
+| neplătitor fără TVA | core/test_neplatitor_tva_emitere.py (6 teste) | 21% propus/acceptat la neplătitor; cota din catalog readusă; „TVA 0%” pe PDF | 4 mutații (rută, gardă, completare, PDF) → câte un roșu | e-Factura neplătitor (categoria O) — limită v1 preexistentă |
+| D205 pe cesiuni | core/test_d205_cesiune.py (5 teste, DUK) | dividendul de dinainte de cesiune dat cesionarului; importul care pierde structura veche; replica de derivare din verificarea încrucișată | structura curentă mereu → roșu; import fără arhivare → 2 roșii; tranșa pe data plății → roșu | convenția contrară a părților (art.67 alin.(6) teza a doua) rămâne manuală |

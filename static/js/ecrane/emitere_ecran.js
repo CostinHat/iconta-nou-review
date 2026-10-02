@@ -32,6 +32,7 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
     if (!opt.client) {
       try { opt.articole = (await api.get(`/tenants/${tenantId}/stocuri/articole`)).articole || []; } catch { opt.articole = []; }
     }
+    opt.tvaProfil = tvaProfil;   // [lot 19 pct.4d] neplatitor -> liniile nu poarta TVA (CF art.310 alin.(10) lit.b))
     formularEmitere(corp, nav, tenantId, num, opt);
   }
 }
@@ -163,7 +164,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Produse și servicii</div>
-      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea; răspunderea corectitudinii cotei îți aparține)</span></div>
+      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea; răspunderea corectitudinii cotei îți aparține)"}</span></div>
       <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie">+ Adaugă linie</button>
@@ -260,6 +261,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       clearTimeout(timer);
       const d = l.descriere;
       if (d.length < 3) { setCota(l, "—"); recalc(); return; }
+      // [lot 19 pct.4d] neplatitor: cota e 0 prin lege, nu o propunere — fara apel de potrivire (care ar fi dat 21)
+      if (opt.tvaProfil === false) { l.cota_tva = 0; setCota(l, "0%", 0); recalc(); return; }
       setCota(l, "…");
       timer = setTimeout(async () => {
         try {

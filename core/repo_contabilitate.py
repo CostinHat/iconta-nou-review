@@ -198,6 +198,12 @@ def nota_horeca_z_validata(cur, schema, data_, numar, descriere):
     return cur.fetchone()
 
 
+def adauga_z_cota(cur, schema, inregistrare_id, cota, baza, tva):
+    """[lot 19 pct.4b] Defalcarea raportului Z pe o cotă (baza + TVA), în aceeași tranzacție cu nota."""
+    cur.execute(f"""INSERT INTO {schema}.rapoarte_z_cote (inregistrare_id, cota, baza, tva)
+                    VALUES (%s, %s, %s, %s)""", (inregistrare_id, cota, baza, tva))
+
+
 def adauga_linie_3(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
     cur.execute(f"""
                     INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)

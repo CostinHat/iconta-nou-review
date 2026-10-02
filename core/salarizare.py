@@ -147,7 +147,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=()):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -210,9 +210,13 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         # contractul a fost activ o fractiune (angajare dupa prima zi SAU incetare inainte de ultima).
         _start = _da if (_da is not None and _da > _prima) else _prima
         _end = _di if (_di is not None and _di < _ultima) else _ultima
-        if _start > _prima or _end < _ultima:
+        if _start > _prima or _end < _ultima or suspendari:
+            # [lot 19 pct.4c] zilele SUSPENDATE (CFP / suspendare fără drepturi) nu sunt zile „în care contractul a fost
+            # activ” — CF art.146 alin.(5^6): minimul se ia „corespunzător numărului zilelor lucrătoare din lună în care
+            # contractul a fost activ”; Codul muncii art.49 alin.(2): suspendarea oprește prestarea muncii și plata.
+            from core import salariu_istoric as _si
             _zl = _scad.zile_lucratoare_luna(la_data.year, la_data.month)
-            _za = _scad.zile_lucratoare_interval(_start, _end)
+            _za = len(_si.zile_active(la_data.year, la_data.month, _da, _di, suspendari))
             if _zl:
                 _prorata = _dec(_za) / _dec(_zl)
     if facilitate_prorata is not None:
@@ -322,7 +326,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # Alternativa A (sm intreg proratat, apoi 300 intreg) e mai putin fidela literei. De reconfirmat la o
     # norma/ghid ANAF explicit.
     # DIFERENTA DE TEMEI: pragul (alin.5) se prorateaza prin INTERPRETARE; facilitatea (alin.4 lit.b) prin
-    # TEXT EXPLICIT. INCETAREA ramane nemodelata (data_incetare lipseste - vezi test_datorie).
+    # TEXT EXPLICIT. [lot 19, 02.10.2026] Incetarea (data_incetare) si suspendarile (CFP/suspendare) intra in _prorata de mai sus.
     baza_podea = (sm - facilitate_val) * _prorata
     cas_suprataxa = Decimal(0)
     cass_suprataxa = Decimal(0)
@@ -375,7 +379,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=()):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -390,7 +394,8 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               tichet_valoare=tichet_valoare, tichet_zile=tichet_zile, tichet_vacanta=tichet_vacanta,
               data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
               tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
-              tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil, declaratie_copii=declaratie_copii)
+              tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil, declaratie_copii=declaratie_copii,
+              suspendari=suspendari)
 
 
 # ============================================================

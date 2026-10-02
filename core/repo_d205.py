@@ -24,6 +24,12 @@ def select_asociati(cur):
     return cur.fetchall()
 
 
+def select_asociati_istoric(cur):
+    """[lot 19 pct.4e] Structurile anterioare ale asociaților (cesiuni), cu data până la care au fost valabile."""
+    cur.execute("SELECT cnp, nume, cota, valabil_pana_la FROM asociati_istoric ORDER BY valabil_pana_la, cnp")
+    return cur.fetchall()
+
+
 def select_inregistrari_linii(cur, _inc, _sf):
     cur.execute("SELECT "
                 "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '457%%' THEN l.suma ELSE 0 END),0) AS distribuit, "

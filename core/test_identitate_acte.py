@@ -24,7 +24,7 @@ Aia e o citire, nu o potrivire. (Instanța: `hg_1094_2025` avea titlul potrivit 
 era la descărcare, în ce act s-a cerut — gardul ăsta n-ar fi prins-o.)
 
 Nici fișierele fără bloc de titlu — structuri, extrase, note — nu se pot verifica; se numără, iar
-numărul e pinat, ca acoperirea să nu scadă tăcut. **Acoperirea de azi: 188 din 311 (60%)** (după
+numărul e pinat, ca acoperirea să nu scadă tăcut. **Acoperirea de azi: 226 din 353 (64%)** (02.10.2026, după aducerea documentelor-material ale actelor; anexele/facsimilele au gardul lor, v. MATERIAL_FARA_TITLU). Înainte: **188 din 311 (60%)** (după
 importul corpusului FISCAL, 21.09.2026: +48 acte, toate cu titlu verificabil; era 130/251 la 24.08).
 Deci gardul vede jumătate din corpusul cu nume de act — și asta se scrie, nu se presupune.
 """
@@ -70,7 +70,10 @@ NR = r"[0-9][0-9.]*"
 # just.ro; 5 au titlul intr-o structura pe care _titlu_din n-o extrage (legile ca "LEGE 70 02/04/2015"
 # fara "nr./din"; normele/reglementarile/procedurile poarta tip de CONTINUT, nu de act). rele=0 (niciun
 # act fals - titlurile EXISTA, doar nu in forma ceruta de parser). Acoperire, nu defect.
-CLICHET_FARA_TITLU = 128
+# 128 -> 127 la 02.10.2026 (lot 19 pct.3): ordin_2594_2015.html / ordin_878_2022.html redevin ORDINUL (titlu verificabil,
+# -2; procedura poartă acum `__anexa_<id>`, în afara domeniului — v. MATERIAL_FARA_TITLU); +1 legea_207_2015__baza_170005
+# (pagina de lege a portalului, titlul ca „LEGE 207 20/07/2015”, aceeași clasă ca legile de la 01.10). 226 din 353 cu titlu.
+CLICHET_FARA_TITLU = 127
 
 
 def _text(cale):
@@ -86,11 +89,19 @@ def _text(cale):
     return re.sub(r"\s+", " ", t)[:ANTET]
 
 
+# Documentele-MATERIAL ale unui act publicat pe portal în mai multe documente (02.10.2026, lot 19 pct.3):
+# `<act>__anexa_<id>` / `__istoric_<id>` poartă titlul anexei („PROCEDURĂ din 5 octombrie 2015 …”, fără număr), iar
+# `__facsimil_<…>.jpg` e o imagine. Pe ele verificarea NUMĂR+AN de aici nu are ce citi. Identitatea lor e dovedită mai
+# tare în `core/test_corpus_continut.py`: amprenta fișierului == `source_SHA256` al materialului din manifestul
+# corpusului FISCAL pentru actul cu același `opis_identity`. `__baza_<id>` (ordinul însuși) RĂMÂNE aici — are titlu.
+MATERIAL_FARA_TITLU = re.compile(r"__(anexa|istoric|facsimil)_")
+
+
 def _acte():
     """(fisier, tip, nr, an) pentru fișierele al căror NUME codifică un act."""
     out = []
     for f in sorted(os.listdir(SURSE)):
-        if f.endswith((".sha256", ".json")):
+        if f.endswith((".sha256", ".json")) or MATERIAL_FARA_TITLU.search(f):
             continue
         m = NUME.match(f)
         if m and os.path.isfile(os.path.join(SURSE, f)):

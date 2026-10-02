@@ -25,6 +25,12 @@ def select_asociati(cur):
     return cur.fetchall()
 
 
+def select_asociati_istoric(cur):
+    """[lot 19 pct.4e] SQL PROPRIU al căii 2: structurile anterioare ale asociaților (nu importă repo-ul generatorului)."""
+    cur.execute("SELECT cnp, nume, cota, valabil_pana_la FROM asociati_istoric ORDER BY valabil_pana_la, cnp")
+    return cur.fetchall()
+
+
 def select_457_miscari(cur, sf):
     """[A6] Mișcările 457 pe NOTĂ (credit=distribuire, debit=plată) cu DATA, din tot registrul până la
     `sf` (exclusiv), ordonate cronologic — recalcul INDEPENDENT pentru atribuirea FIFO plată->distribuire

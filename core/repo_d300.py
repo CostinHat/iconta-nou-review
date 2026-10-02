@@ -78,6 +78,16 @@ def select_facturi_3(cur, fids):
                 "WHERE f.id = ANY(%s)", (fids,))
 
 
+def select_rapoarte_z(cur, surse, inceput, sfarsit):
+    """[lot 19 pct.4b] Rapoartele Z VALIDATE din fereastra, cu defalcarea lor pe cote. LEFT JOIN: un raport fără
+    defalcare iese cu cota NULL — apelantul îl numește (nu îl sare tăcut)."""
+    cur.execute("SELECT i.id AS id, i.numar AS numar, i.data AS data, z.cota AS cota, z.baza AS baza, z.tva AS tva "
+                "FROM inregistrari i LEFT JOIN rapoarte_z_cote z ON z.inregistrare_id = i.id "
+                "WHERE i.status = 'validata' AND i.sursa = ANY(%s) AND i.data >= %s AND i.data < %s "
+                "ORDER BY i.id, z.cota", (list(surse), inceput, sfarsit))
+    return cur.fetchall()
+
+
 def select_firma_profil(cur):
     cur.execute("SELECT nume, cui, adresa, oras, judet, caen, banca, iban, tip_decont, pro_rata, "
                 "COALESCE(tva_la_incasare, false) AS tva_la_incasare, "

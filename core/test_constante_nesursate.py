@@ -97,7 +97,7 @@ BASELINE = {
     "beneficii_api.py": 1, "casa.py": 0, "cashflow.py": 2, "common.py": 8,
     "contracte_speciale.py": 3, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
     "cor_api.py": 2, "d101.py": 5, "d101g.py": 0, "d108.py": 1, "d169.py": 1, "d169n.py": 1,
-    "d205.py": 0, "d212_engine.py": 11, "d216.py": 1, "d394.py": 2, "d401.py": 2, "d402.py": 3,
+    "d205.py": 0, "d212_engine.py": 11, "d216.py": 0, "d394.py": 2, "d401.py": 2, "d402.py": 3,
     "d403.py": 5, "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2,
     "decontari_asociati.py": 1, "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1,
     "factura_pdf.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2,
@@ -200,7 +200,10 @@ def test_proza_nu_inghite_nesursatul(inv):
     fi mutat 100 din 126 în E, inclusiv aserțiunile din `d212_engine` și cota în float din `d216`.
     De-aia proza cere VALOAREA, iar antetul guvernează doar constantele modulului."""
     assert _clasa(inv, "scadente.py", "25", "H2") == "C", "ziua 25 din _ZIUA a fugit în E"
-    assert _clasa(inv, "d216.py", "0.3") == "C", "cota în float din d216 a fugit în E"
+    # 02.10.2026 (lot 19 pct.4a): d216.COTA_IMPOZIT = 0.3 NU mai există — cota impozitului special vine din COTE
+    # (`impozit_special_valoare_mare`, CF art.500^2: 0,3% 2024-2025, 0,9% din 2026). Datoria s-a stins, deci exemplul
+    # devine o interdicție: literalul nu are voie să reapară în modul (nici ca C, nici „sursat” din proză).
+    assert _clasa(inv, "d216.py", "0.3") is None, "cota impozitului special a reapărut ca literal în d216"
     # 01.10.2026: cota de profit d101.py `16` e acum A (ancorata pe CF art.17) - nu mai poate fi exemplul.
     # Exemplul de C intr-un modul cu antet plin de citari: plafonul de sponsorizare 0,75% din d101.
     assert _clasa(inv, "d101.py", "16") == "A", "cota de impozit pe profit a pierdut ancorarea"

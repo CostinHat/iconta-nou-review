@@ -81,12 +81,14 @@ from core import reverificare as R  # noqa: E402
 #: nu consemneaza nicio modificare) −1 (intrarea veche `TEMEI_CAND_SE_DATOREAZA`, acum acelasi obiect cu Brent).
 DISTRIBUTIE = {
     # 14 -> 15 la 02.10.2026 (D212 Etapa 2): CF art.118 alin.(4) - compensarea pierderii in limita a 70%.
-    ("VOLATIL", "DEPUS"): 15,
+    # 15 -> 16 la 02.10.2026 (lot 19 pct.4a, D216): CF art.500^2 lit.a) - cota 0,9% a impozitului special din 2026.
+    ("VOLATIL", "DEPUS"): 16,
     # 7 -> 9 la 29.09.2026 (lot18, 3d): cele doua cote CF art.84^1 (forfait 20% alin.(3) +
     # impozit 10% alin.(5), chirii platite unei PF de un platitor PJ) au intrat in COTE si sunt
     # consumate prin cota() in comodat_chirii.nota_chirie_platita -> consecinta CALCULAT.
     ("VOLATIL", "CALCULAT"): 16,
-    ("STABIL", "DEPUS"): 9,
+    # 9 -> 10 la 02.10.2026 (lot 19 pct.4a, D216): Legea 296/2023 art.III - cota 0,3% a impozitului special (2024-2025).
+    ("STABIL", "DEPUS"): 10,
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
     ("STABIL", "CALCULAT"): 14,
     ("MISCATOR", "CALCULAT"): 7,

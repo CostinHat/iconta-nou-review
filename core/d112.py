@@ -346,7 +346,7 @@ def _d112_genereaza(prof, salariati, an, luna):
             bazac = _d112int(s.get("brut_lucrat", s.get("brut"))) + _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0)) - facil
             if bazac < 0:
                 bazac = 0
-            zile = nzl - zile_cm
+            zile = int(s.get("zile_active", nzl)) - zile_cm   # [lot 19] zilele din contract, nu toată luna
             if zile < 0:
                 zile = 0
             # [d112_cm_suma_din_media_v1, 10.08.2026] Indemnizatia CM (D_20/D_21 = brut angajator/FNUASS)
@@ -524,7 +524,7 @@ def _d112_genereaza(prof, salariati, an, luna):
                               _d112esc("RM" if _cod_c == "15" else (x.get("diagnostic") or "999"))))  # [cod15] D_23="RM" (risc maternal)
             c1_12 += cm_base
         else:
-            zile = nzl
+            zile = int(s.get("zile_active", nzl))   # [lot 19] B1_15/B2_2/B4_1 = zilele lucrate în contract
         # [F133] adauga tichetele uniform (dupa ambele ramuri): CASS + impozit pe tichete,
         # baza CASS include nominalul; baza CAS (b4base) NU se atinge (tichetele n-au CAS).
         cass += cass_tichete
@@ -567,9 +567,13 @@ def _d112_genereaza(prof, salariati, an, luna):
                  'casaSn="%s" asigCI="1" asigSO="1" asigExc="%d"%s Timp_E3="%d">'
                  % (idx, _d112esc(s.get("cnp")), _d112esc(_t(s.get("nume"), _LIM["d112"]["numeAsig"])), _d112esc(_t(s.get("prenume"), _LIM["d112"]["prenAsig"])),   # C(75)
                     _d112esc(dataang), casa_sn, asigexc, _mx, imp))
-        a.append('    <asiguratB1 B1_1="1" B1_2="0" B1_3="N" B1_4="%d" B1_5="%d" B1_6="%d" '
+        # [lot 19 pct.4c] B1_sal1 = salariul de bază din CONTRACT (câmpul 29a); B1_sal2 = venitul brut REALIZAT (29b);
+        # B1_7 = „Ore suspendate/libere în lună” (câmpul 35) — CFP/suspendare, emis doar când există.
+        _b1_sal1 = _d112int(s.get("brut_contractual", s.get("brut")))
+        _b1_7 = int(s.get("zile_suspendate") or 0) * ore
+        a.append('    <asiguratB1 B1_1="1" B1_2="0" B1_3="N" B1_4="%d" B1_5="%d" B1_6="%d"%s '
                  'B1_10="%d" B1_15="%d" B1_sal1="%d" B1_sal2="%d"/>'
-                 % (ore, bazac, ore_lucr, brut, zile, brut, brut))
+                 % (ore, bazac, ore_lucr, (' B1_7="%d"' % _b1_7) if _b1_7 else "", brut, zile, _b1_sal1, brut))
         a.append('    <asiguratB2 B2_2="%d" B2_5="%d" B2_5P="%d"/>' % (zile, bazac, b4_7p))  # d112_b4p_v3
         a.extend(_b3)
         a.append('    <asiguratB4 B4_1="%d" B4_3="%d" B4_5="%d" B4_6="%d" B4_7="%d" B4_8="%d" B4_14="%d" '
@@ -808,17 +812,24 @@ def pull(conn, schema, an, luna):
     _cs_sal = conn.cursor()
     for s in salariati:
         _sal_luna = float(_si.salariu_la(_cs_sal, schema, s["id"], _ultima_luna) or 0)
-        _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, s["id"], an, luna, s.get("data_angajare"), s.get("data_incetare"))
+        # [lot 19 pct.4c] prezența în contract (angajare/încetare, CFP/suspendare, schimbare de salariu) — ACEEAȘI
+        # funcție ca statul de plată (salariu_istoric), ca fluturașul și D112 să nu poată diverge.
+        _susp = _si.suspendari_luna(_cs_sal, schema, s["id"], an, luna)
+        _za = len(_si.zile_active(an, luna, s.get("data_angajare"), s.get("data_incetare"), _susp))
+        _zs = _si.zile_suspendate(an, luna, s.get("data_angajare"), s.get("data_incetare"), _susp)
+        _brut_cuv = float(_si.brut_cuvenit(_cs_sal, schema, s["id"], an, luna, s.get("data_angajare"),
+                                           s.get("data_incetare"), _susp))
+        _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, s["id"], an, luna, s.get("data_angajare"), s.get("data_incetare"), _susp)
         _fac_prorata = (_zlm / _zll) if _zll else 0.0  # lit.a): fractia de zile ACTIVE si LA MINIM
         brut_int = _sal_luna
         zile_cm_s = int(s.get("zile_cm") or 0)
-        brut_lucrat = (brut_int * max(nzl - zile_cm_s, 0) / nzl) if (nzl and zile_cm_s) else brut_int
+        brut_lucrat = (_brut_cuv * max(_za - zile_cm_s, 0) / _za if _za else 0.0) if zile_cm_s else _brut_cuv
         # [D2 02.08] tichete pe zile EFECTIV lucrate (HG 1045/2018 art.10(3)): nzl - CM - CO/deleg/absente/invoire (pontaj)
         # [D2/cap.23] tichetele cer pontaj CONFIRMAT
         if float(s.get("tichet_masa_valoare") or 0) > 0 and not _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]:
             raise _per.PerioadaNeconfirmata("Tichetele de masa (D112)", an, luna, "pontaj", "HG 1045/2018 art.10(3)")
         _fara_t = _pontaj.zile_fara_tichet(conn, schema, s["id"], an, luna) if float(s.get("tichet_masa_valoare") or 0) > 0 else 0
-        tichet_zile = max(nzl - zile_cm_s - _fara_t, 0)
+        tichet_zile = max(_za - zile_cm_s - _fara_t, 0)   # [lot 19] pe zilele ACTIVE ale contractului
         # [D3 02.08] exces tichete vacanta peste plafonul ANUAL (6 sm) -> venit salarial in brut (cumulat an)
         _vac_l = float(s.get("tichet_vacanta") or 0)
         _plaf_van = 6.0 * float(sm)
@@ -843,13 +854,24 @@ def pull(conn, schema, an, luna):
                                cadou_taxabil=float(cadou_tax.get(s["id"], 0) or 0),
                                sub_26=_sz.sub_26_la(s.get("data_nastere"), ref),   # [deducere suplimentara]
                                copii_scoala=(int(s.get("copii_scolarizati") or 0) if s.get("declaratie_copii") else 0),
-                               declaratie_copii=bool(s.get("declaratie_copii")))
+                               declaratie_copii=bool(s.get("declaratie_copii")),
+                               suspendari=_susp)
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
+        # [lot 19 pct.4c] ce consumă generatorul + contarea: zilele active, cele suspendate (B1_7), suspendările
+        # (aceeași prorata a pragului în contare), fracția facilitații (contarea n-o recalcula — a doua cifră).
+        s["zile_active"] = _za
+        s["zile_suspendate"] = _zs
+        s["suspendari"] = _susp
+        s["facilitate_prorata"] = _fac_prorata
+        s["brut_contractual"] = brut_int   # B1_sal1 = salariul de bază din CONTRACT (structura D112, câmpul 29a)
         # [fix salariu-la-data 06.08.2026] brutul DECLARAT (B4_3/B1_sal1) si baza non-CM = salariul LUNII
         # (date-aware _sal_luna=brut_int), NU salariati.salariu_brut (contractual CURENT, stale). Migrarea 29.07
         # mutase doar CONTRIBUTIILE pe date-aware; brutul/baza ramasesera stale -> B4_7 vs B4_8 divergente
         # (DUK S74d) pt orice salariat cu schimbare de salariu in an. Consumat de d112.build + salarii_contare.
-        s["brut"] = brut_int
+        # [lot 19 pct.4c] brutul REALIZAT pentru prezența în contract (= salariul lunii pe lună întreagă fără schimbări).
+        # Structura D112: B1_sal2 = „venitul brut din salarii … REALIZAT în baza contractului”; B1_sal1 (contractual) e
+        # `brut_contractual` de mai sus. Înainte, o angajare pe 16 declara toată luna (B1_sal2, B2_5, B4_7, E1_1).
+        s["brut"] = _brut_cuv
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
@@ -905,8 +927,10 @@ def pull(conn, schema, an, luna):
         # part-time supra-taxare (art. 146(5^6)/168(6^1) CF, structura D112 v7):
         # part_time = ROUND(prag_pt * zile_lucrate / NZL); daca 0 < baza < part_time
         # -> B4_*P la prag, diferenta pe angajator. Exceptati: scutit+motiv 1-5.
-        zile_lucr = max(nzl - int(s.get("zile_cm") or 0), 0)
-        baza = _sal_luna  # [tranzitie] date-aware, nu salariati.salariu_brut
+        # [lot 19 pct.4c] CF art.146 alin.(5^6): „corespunzător numărului zilelor lucrătoare din lună în care contractul
+        # a fost ACTIV” -> zilele active (fără angajare/încetare/suspendare), iar baza = brutul realizat pe ele.
+        zile_lucr = max(_za - int(s.get("zile_cm") or 0), 0)
+        baza = _brut_cuv
         scutit = bool(s.get("scutit_pt"))
         prag_zile = _d112int(prag_pt * zile_lucr / nzl) if nzl else 0  # A91b: aritmetic, nu bancar
         if not scutit and 0 < baza < prag_zile:

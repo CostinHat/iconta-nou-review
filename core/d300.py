@@ -142,6 +142,7 @@ class Rezultat:
     avertismente: list = field(default_factory=list)
     note_rezultat: list = field(default_factory=list)   # fapte neutre despre rezultat (fara actiune)
     nula_asumata: bool = False   # [B1 zero_base] decont nul ASUMAT explicit (nicio valoare declarata)
+    z_fara_cote: list = field(default_factory=list)   # [lot 19 pct.4b] rapoarte Z validate fără defalcare -> refuz
 
 
 def _segmente(f):
@@ -272,7 +273,23 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     orphan_ded = Decimal(0)
     fara_curs = []                       # [A1] facturi in valuta fara curs -> EXCLUSE din decont, SEMNALAT (nu se ghiceste 1)
     from core import sume_lei as _sl
+    z_fara_cote = []                     # [lot 19 pct.4b] rapoarte Z validate fără defalcare pe cote -> genereaza REFUZĂ
     for f in facturi:
+        if f.get("raport_z"):
+            # [lot 19 pct.4b] livrare cu bon fiscal (raport Z), pe cotă: aceleași rânduri ca livrarea facturată.
+            if f.get("fara_cote"):
+                z_fara_cote.append(f.get("numar") or f.get("id"))
+                continue
+            _cz = Decimal(str(f["cota"]))
+            ci = int(_cz) if _cz == _cz.to_integral_value() else None
+            baza, tva = Decimal(str(f["baza"])), Decimal(str(f["tva"]))
+            if ci in col:
+                col[ci][0] += baza; col[ci][1] += tva
+            elif ci == 0:
+                zero_livr.append(baza)
+            else:   # cotă taxabilă fără rând colectat auto: semnalată ca la facturi, nu pierdută tăcut
+                drop_l_tax_b += baza; drop_l_tax_t += tva; drop_l_tax_n += 1
+            continue
         # [A1, 17.09.2026] O factura in valuta fara `curs_bnr` nu se poate exprima in lei. Nu intra
         # tacit ca lei (asta e chiar greseala A1) si nici nu opreste tot decontul: se EXCLUDE si se
         # semnaleaza. Facturile RON / cu curs trec neatinse (curs_factura -> 1 / cursul lor).
@@ -675,6 +692,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         R["R26_1"] = _r26
 
     res = Rezultat(an=an, luna=luna, prof=prof)
+    res.z_fara_cote = z_fara_cote
     res.R = R
     res.tva_de_plata = de_plata
     res.tva_de_recuperat = de_recuperat
@@ -1068,6 +1086,26 @@ def _pull_furnizor_incasare(cur, inceput, sfarsit):
     return out
 
 
+def _pull_rapoarte_z(cur, inceput, sfarsit):
+    """[lot 19 pct.4b, 02.10.2026] Livrările cu bon fiscal: rapoartele Z validate din perioadă, pe cote. Intră în
+    rd.9/10/11 ca orice livrare taxabilă — CF art.282 alin.(1): exigibilitatea la faptul generator; instrucțiunile
+    D300 (OPANAF 174/2026) rd.9/10: „informațiile preluate din jurnalul de vânzări pentru operațiuni a căror
+    exigibilitate intervine în perioada de raportare”. Înainte decontul se construia NUMAI din facturi, iar TVA-ul
+    din Z (creditat în 4427) lipsea din decont. Intrările poartă `raport_z=True`; `calcul_d300` le tratează primele.
+    Valabil și pe TVA la încasare: bonul e încasat pe loc (HG 1/2016 pct.101 alin.(4): bonurile fiscale se
+    înscriu în jurnal „potrivit informațiilor din rapoartele fiscale de închidere zilnică”)."""
+    from core.raport_z import SURSE as _SURSE_Z
+    out, fara = [], {}
+    for r in _repo.select_rapoarte_z(cur, _SURSE_Z, inceput, sfarsit):
+        if r["cota"] is None:
+            fara[r["id"]] = r["numar"]
+            continue
+        out.append({"raport_z": True, "id": r["id"], "numar": r["numar"], "cota": r["cota"],
+                    "baza": r["baza"], "tva": r["tva"]})
+    out += [{"raport_z": True, "fara_cote": True, "id": i, "numar": n} for i, n in fara.items()]
+    return out
+
+
 def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -1083,9 +1121,11 @@ def pull(conn, schema, perioada):
             # nu pe emitere. Vezi _pull_incasare. EXCEPTIE: taxarea inversa e exigibila la faptul
             # generator (art.282 alin.6 CF), nu la incasare - _pull_incasare o EXCLUDE; o aducem pe
             # calea de emitere (_pull_taxare_inversa) ca sa NU dispara tacit (rd.13 / rd.12+rd.25).
-            return prof, _pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
+            return prof, (_pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
+                          + _pull_rapoarte_z(cur, inceput, sfarsit))
         rows = _repo.select_facturi_4(cur, _STATUS_FINAL, _exig_d300(), inceput, sfarsit)  # [A11] IC pe art.284
         deferred = _pull_furnizor_incasare(cur, inceput, sfarsit)
+        rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit)
     fmap = {}
     for r in rows:
         _exig = r.get("exig")
@@ -1124,7 +1164,7 @@ def pull(conn, schema, perioada):
             # [A12] destinatia TVA per linie (art.300) calatoreste in segment pentru pro-rata/scutit
             f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"],
                                r.get("destinatie_tva") or "taxabil"))
-    return prof, list(fmap.values()) + deferred
+    return prof, list(fmap.values()) + deferred + rapoarte_z
 
 
 def _incarca_reclasificari(conn, schema, prof, perioada):
@@ -1173,6 +1213,12 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
     #    (contabilul nu mai primeste eroarea bruta a validatorului la upload);
     #  - marja +-1% pe rand pe cota -> DUK doar atentioneaza => avertisment, nu blocaj.
     _blocante = _blocante_pre_duk(res)
+    if res.z_fara_cote:
+        # [lot 19 pct.4b] un raport Z validat al cărui TVA nu se știe pe cote nu poate intra în rd.9/10 — și nici nu se
+        # sare tăcut (ar fi exact defectul reparat). Se numește, iar remediul e al contabilului.
+        _blocante.append("Rapoarte Z validate în perioadă fără defalcare pe cote (bază + TVA pe cotă): %s. TVA-ul lor "
+                         "nu se poate declara pe rândurile 9/10. Reintrodu raportul Z (import AMEF sau ruta "
+                         "Raport Z), ca defalcarea să fie înregistrată." % ", ".join(str(x) for x in res.z_fara_cote))
     if _blocante:
         raise ValueError("D300 nu se poate genera: " + " ".join(_blocante))
     res.avertismente.extend(_avertismente_marja(res))

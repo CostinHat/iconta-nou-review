@@ -101,7 +101,8 @@ def citeste_profil(conn):
         cur.execute(
             "SELECT nume, cui, reg_com, adresa, oras, judet, cod_postal, "
             "iban, banca, email, telefon, logo, "
-            "font_factura, culoare_factura, serie_factura, urmator_numar_factura "
+            "font_factura, culoare_factura, serie_factura, urmator_numar_factura, "
+            "platitor_tva "   # [lot 19 pct.4d] factura unui neplatitor nu mentioneaza taxa (CF art.310 alin.(10) lit.b))
             "FROM firma_profil LIMIT 1")
         r = cur.fetchone()
     return dict(r) if r else {}

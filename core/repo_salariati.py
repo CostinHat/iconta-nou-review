@@ -81,3 +81,37 @@ def scrie_raspunsul_reges(cur, raspuns, referinta_salariat, referinta_contract, 
                                    referinta_contract=COALESCE(%s::uuid, referinta_contract)
                                WHERE message_id=%s::uuid AND tenant_id=%s""",
                 (raspuns, referinta_salariat, referinta_contract, message_id, tenant_id))
+
+
+# [lot 19 pct.4c, 02.10.2026] Suspendările contractului (CFP / suspendare fără drepturi salariale). Context: search_path
+# pe schema firmei (ca restul fișierului). Cursorul e al apelantului; nu se comite aici.
+def suspendari_salariat(cur, salariat_id):
+    cur.execute("SELECT id, data_inceput, data_sfarsit, tip, temei FROM suspendari_contract "
+                "WHERE salariat_id=%s ORDER BY data_inceput", (salariat_id,))
+    return cur.fetchall()
+
+
+def suspendari_firma(cur):
+    cur.execute("SELECT salariat_id, data_inceput, data_sfarsit, tip, temei FROM suspendari_contract "
+                "ORDER BY salariat_id, data_inceput")
+    return cur.fetchall()
+
+
+def inlocuieste_suspendari(cur, salariat_id, lista):
+    cur.execute("DELETE FROM suspendari_contract WHERE salariat_id=%s", (salariat_id,))
+    for a, b, tip, temei in lista:
+        cur.execute("INSERT INTO suspendari_contract (salariat_id, data_inceput, data_sfarsit, tip, temei) "
+                    "VALUES (%s, %s, %s, %s, %s)", (salariat_id, a, b, tip, temei))
+
+
+def contract_salariat(cur, salariat_id):
+    cur.execute("SELECT data_angajare, data_incetare FROM salariati WHERE id=%s", (salariat_id,))
+    return cur.fetchone()
+
+
+def concedii_medicale_suprapuse(cur, salariat_id, inceput, sfarsit):
+    cur.execute("SELECT data_inceput, data_sfarsit FROM concedii_medicale WHERE salariat_id=%s "
+                "AND data_inceput IS NOT NULL AND data_sfarsit IS NOT NULL "
+                "AND data_inceput <= %s AND data_sfarsit >= %s ORDER BY data_inceput",
+                (salariat_id, sfarsit, inceput))
+    return cur.fetchall()

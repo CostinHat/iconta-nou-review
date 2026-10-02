@@ -36,6 +36,15 @@ def select_4(cur, schema, luna_inc):
     return cur.fetchall()
 
 
+def select_luna_partiala(cur, schema, luna_inc, luna_sf):
+    """[lot 19 pct.4c] Salariații cu luna NEÎNTREAGĂ pe alte axe decât angajarea/încetarea: o schimbare de salariu în
+    cursul lunii (salariu_istoric.valabil_din după prima zi) sau o suspendare (CFP / suspendare) care atinge luna."""
+    cur.execute("SELECT salariat_id FROM %s.salariu_istoric WHERE valabil_din > %%s AND valabil_din <= %%s "
+                "UNION SELECT salariat_id FROM %s.suspendari_contract WHERE data_inceput <= %%s AND data_sfarsit >= %%s"
+                % (schema, schema), (luna_inc, luna_sf, luna_sf, luna_inc))
+    return cur.fetchall()
+
+
 def select_5(cur, schema, an, luna):
     cur.execute("SELECT DISTINCT salariat_id FROM %s.concedii_medicale WHERE an=%%s AND luna=%%s"
                 % schema, (an, luna))

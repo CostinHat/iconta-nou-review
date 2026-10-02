@@ -280,7 +280,7 @@ def asociati_import_salveaza(tenant_id, date, ctx):
     randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn(schema) as conn:
         try:
-            return asociati_import_api.importa(conn, randuri)
+            return asociati_import_api.importa(conn, randuri, data_cesiune=getattr(date, "data_cesiune", None))
         except ValueError as e:  # randuri invalide -> 422 cu mesaj
             raise _erori.DateInvalide(str(e))
 
@@ -728,8 +728,22 @@ def salariat_actualizeaza(tenant_id, salariat_id, date, ctx):
             with conn.cursor() as cur:
                 if not repo_salariati.salariatul_exista(cur, salariat_id):
                     raise _erori.Inexistent("salariat inexistent")
-            return salariati_api.actualizeaza_salariat(conn, salariat_id,
-                                                       _golite=golite, **date.model_dump())
+            rez = salariati_api.actualizeaza_salariat(conn, salariat_id,
+                                                      _golite=golite, **date.model_dump())
+            if trimise.get("suspendari") is not None:
+                # [lot 19 pct.4c] CFP / suspendare -> statul de plată și D112 proratează brutul (Codul muncii art.49
+                # alin.(2)). Lunile atinse de o schimbare trec prin aceeași poartă de perioadă ca orice înregistrare.
+                noi = salariati_api.valideaza_suspendari(conn, salariat_id, trimise["suspendari"])
+                with conn.cursor() as cur:
+                    vechi = [tuple(r)[1:5] for r in repo_salariati.suspendari_salariat(cur, salariat_id)]
+                for a, b, *_ in set(vechi) ^ set(noi):
+                    y, m = a.year, a.month
+                    while (y, m) <= (b.year, b.month):
+                        _uc_comun._cere_luna_deschisa(conn, schema, "%04d-%02d-01" % (y, m))
+                        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+                salariati_api.seteaza_suspendari(conn, salariat_id, noi)
+                rez = dict(rez, suspendari=len(noi))
+            return rez
     except ValueError as e:
         _ec = getattr(e, "erori_campuri", None)  # [G10] contract {detail, erori_campuri}
         raise _erori.DateInvalide({"mesaj": str(e), "erori_campuri": _ec} if _ec else str(e))
@@ -760,6 +774,16 @@ def salariat_sterge(tenant_id, salariat_id, ctx):
     if not r["ok"] and r.get("cod") == "ARE_CONCEDII":
         raise _erori.Conflict(r["mesaj"])
     return r
+
+
+def produse_potriveste(tenant_id, denumire, ctx):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/produse/potriveste`. [lot 19 pct.4d] Statutul de plătitor TVA
+    se citește din profilul firmei, nu din cerere: cererea fără câmp primea implicit True, deci un neplătitor primea
+    propus 21% (CF art.310 alin.(10) lit.b): neplătitorul „nu are voie să menționeze taxa pe factură”)."""
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        platitor = _uc_comun._platitor_tva_firma(conn)
+    return produse_api.potriveste(denumire, platitor_tva=platitor)
 
 
 def cm_lista(tenant_id, salariat_id, an, ctx):
@@ -4671,6 +4695,12 @@ def horeca_import_amef(tenant_id, continut, ctx):
                     linii.append(("707", "4427", cota["tva"]))
             for deb, cred, suma in linii:
                 repo_contabilitate.adauga_linie_4(cur, schema, iid, deb, cred, suma)
+            # [lot 19 pct.4b] defalcarea pe cote, cum o dă casa (OPANAF 146/2018 sect. II.7 `coteZ`: valOp = valoarea
+            # operațiunilor cu TVA, tva = TVA-ul cotei) -> D300 rd.9/10 o citește de aici (nota n-o poate purta).
+            for cota in rz["cote"]:
+                if cota["valoare"] or cota["tva"]:
+                    repo_contabilitate.adauga_z_cota(cur, schema, iid, D(str(cota["cota"])),
+                                                     cota["valoare"] - cota["tva"], cota["tva"])
         conn.commit()
     return {"inregistrare_id": iid, "status": "ciorna", "data": rz["data"],
             "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
@@ -4697,9 +4727,16 @@ def horeca_raport_z(tenant_id, rz, ctx):
             raise _erori.CerereGresita("totalul pe cote trebuie să fie pozitiv")
         if abs(float(total) - (rz.numerar + rz.card)) > 0.01:
             raise _erori.CerereGresita("numerar + card trebuie să fie egal cu totalul pe cote")
-        # suta marita: TVA = total * cota / (100 + cota)
-        tva11 = (D(str(rz.total_11)) * 11 / 111).quantize(D("0.01"))
-        tva21 = (D(str(rz.total_21)) * 21 / 121).quantize(D("0.01"))
+        # suta marita: TVA = total * cota / (100 + cota). [lot 19 pct.4b] Cotele din COTE la data raportului (CF art.291
+        # alin.(1)-(2): standard / redusă), nu 11 și 21 scrise aici; rotunjirea ARITMETICĂ (ROUND_HALF_UP) — un
+        # `quantize` fără `rounding` e bancar (half-even) și dă alt TVA pe ,005 exact (CLAUDE.md „Rotunjire fiscală”).
+        from decimal import ROUND_HALF_UP as _RHU
+        from datetime import date as _date
+        _dz = _date.fromisoformat(str(rz.data)[:10])
+        c_red = _common.cota("tva_redusa", _dz)[0] * 100
+        c_std = _common.cota("tva_standard", _dz)[0] * 100
+        tva11 = (D(str(rz.total_11)) * c_red / (100 + c_red)).quantize(D("0.01"), rounding=_RHU)
+        tva21 = (D(str(rz.total_21)) * c_std / (100 + c_std)).quantize(D("0.01"), rounding=_RHU)
         baza11 = D(str(rz.total_11)) - tva11
         baza21 = D(str(rz.total_21)) - tva21
         with conn.cursor() as cur:
@@ -4713,6 +4750,10 @@ def horeca_raport_z(tenant_id, rz, ctx):
             if tva_total: linii.append(("707", "4427", float(tva_total)))
             for deb, cre, suma in linii:
                 repo_contabilitate.adauga_linie_3(cur, schema, iid, deb, cre, suma)
+            # [lot 19 pct.4b] defalcarea pe cote -> D300 rd.9/10 (nota contabilă poartă un singur TVA, fără cotă)
+            for _c, _b, _t in ((c_red, baza11, tva11), (c_std, baza21, tva21)):
+                if _b or _t:
+                    repo_contabilitate.adauga_z_cota(cur, schema, iid, _c, _b, _t)
     return {"ok": True, "nota_id": iid,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}

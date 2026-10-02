@@ -15858,3 +15858,172 @@ pierderilor pe ani); impozitul/CAS/CASS = Etapa 4. F4 are operațiuni RIP doar �
 (an în `ANI_VERIFICATI`), iar cazul 2025 e probat pe schema efemeră.
 
 **Norma trăiește în:** `core/d212.py` (nomenclator + `cap11_sistem_real` + R4), `core/test_d212_cap11.py`, `D212_PERIMETRU.md`.
+
+---
+
+## 02.10.2026 — Căsuțele `.set-bifa` rămân de 16px: ținta de clic e eticheta, care trece pragul de 24px
+
+**Întrebarea (ridicată la D212 Etapa 2, 02.10).** Căsuța unei bife `.set-bifa` are 16×16px — sub 24px (WCAG 2.2, criteriul
+2.5.8 „Target Size (Minimum)", AA) dacă se măsoară căsuța singură.
+
+**Decizie (Costin, 02.10.2026, verbatim):** „Bifele de 16px rămân așa: ținta de clic e eticheta, care trece pragul de
+24px; mărirea ar schimba vizual toate ecranele fără câștig."
+
+**Temeiul tehnic.** Structura canonică (DESIGN_SYSTEM cap.2, v2.11) e `<label class="set-bifa"><input type="checkbox">
+<span>Text</span></label>`: un clic oriunde pe `<label>` comută căsuța, deci ținta de atingere este eticheta întreagă,
+nu cele 16px ale căsuței. Măsurat pe regula globală (`static/stil.css`): `--text-mic` 15px × line-height 1.35 + padding
+5px sus/jos ≈ 30px înălțime pe un rând.
+
+**Ce face premisa imposibil de erodat (nu doar adevărată azi):** `.set-bifa` primește `min-height: 24px` (no-op vizual la
+30px, dar o viitoare micșorare a padding-ului sau a fontului nu mai poate coborî ținta sub prag), iar verificatorul de
+conformitate refuză o regulă `.set-bifa` fără `min-height` ≥ 24px. Norma: DESIGN_SYSTEM cap.2 (Checkbox cu etichetă).
+
+**Alternativă respinsă:** căsuța de 24px peste tot — schimbă vizual toate ecranele cu bife, fără câștig de accesibilitate
+(ținta reală e deja ≥ 24px). **Limită:** o căsuță FĂRĂ etichetă (bifă singură în tabel, excepția din DS cap.2) nu are
+eticheta-țintă; acolo pragul se judecă separat (nu e acoperit de decizia asta).
+
+---
+
+## 02.10.2026 — Cele 4 constante care dublează chei din `COTE` intră în registru doar când modulul lor e atins oricum
+
+**Întrebarea (Pachet FiscalOS §2, 01.10).** `d101.COTA_STANDARD`, `d101g.COTA_STANDARD`, `cote_tva.COTA_STANDARD`,
+`cote_tva.COTA_REDUSA` sunt ancorate cu temei (`common.ancoreaza`), dar dublează o cheie din `COTE` (`impozit_profit`,
+`tva_standard`, `tva_redusa`) — interdicția 1 / R26 (o valoare fiscală scrisă într-un singur loc).
+
+**Decizie (Costin, 02.10.2026, verbatim):** „Cele 4 constante care dublează chei din COTE se mută în registru doar când
+modulul lor e atins oricum, nu ca pas separat; până atunci gardul de divergență rămâne."
+
+**Ce ține între timp:** `core/test_fiscalos_s2.py::test_s2_geamana_din_registru_nu_diverge` — procentul de modul ==
+valoarea CURENTĂ a cheii din `COTE` și ambele pe același articol; o divergență pică poarta (mutație probată 01.10:
+`COTA_REDUSA` 11→9 roșu). **Regula de execuție:** o comandă care atinge `core/d101.py`, `core/d101g.py` sau
+`core/cote_tva.py` mută constanta respectivă în consumul lui `common.cota(...)` în ACELAȘI pas și scoate rândul ei din
+parametrizarea gardului.
+
+**Alternativă respinsă:** campanie separată acum — patru module fiscale atinse fără altă cauză, cu risc de regresie pe
+D101/TVA, pentru o divergență deja imposibilă prin gard. **Limită:** gardul compară cu valoarea CURENTĂ (la 01.10.2026);
+la o schimbare legislativă viitoare a cotei, constanta de modul trebuie mutată atunci (gardul pică și o cere).
+
+---
+
+## 02.10.2026 — Corpus: un act e ÎNTREG — ordinul și documentele lui de pe portal (regresia FiscalOS §1 la OPANAF 2594/2015 și 878/2022)
+
+**Constatarea (verificată la sursă, nu preluată din comandă).** Forma veche arhivată a OPANAF 2594/2015 e byte-identică cu
+materialul BASE din manifestul FiscalOS (`sources/fbe92f…`, portal 171984); forma nouă e documentul-ANEXĂ (portal 269686,
+procedura) — 10/10 articole și 4/4 anexe ale ordinului lipseau. La 878/2022 la fel (BASE 254993 vs anexa 267018; 13 articole
++ 7 anexe). Comparația pe articol peste TOATE cele 82 de perechi formă veche/nouă din `_inlocuite_fiscalos_2026-10-01`
+(`core/corpus_continut.py`): pierderi reale de articole DOAR la cele două ordine; 7 unități din fișierele `.txt` lipsă în forma
+nouă sunt note editoriale ale portalului (citări din alte acte: OUG 180/2020 art.IV, OUG 90/2025 art.III, OUG 115/2023
+art.LXXI), un rând de cuprins și subsolul paginii — declarate una câte una în `core/test_corpus_continut.py::EXCEPTII`, fiecare
+cu motivul VERIFICAT (unde textul citat trăiește în alt act din corpus, gardul o probează).
+
+**Generalizarea pe clasă („act publicat pe portal în mai multe documente, din care corpusul are doar o parte").** Manifestul
+FiscalOS listează pe act materialele BASE/CUTOFF_VERSION, INTEGRAL_ANNEX/ANNEX, FACSIMILE/ASSET. Confruntat pe id de portal,
+amprentă și CONȚINUT (articolele documentului deja acoperite de fișierele actului = nu se aduce a doua oară): 41 de acte aveau
+documente lipsă (31 cu text — ordin, anexă integrală sau bază —, 10 doar facsimile), pe lângă 2594/878 — inclusiv anexa integrală a OPANAF 2736/2025 (formularul și instrucțiunile D212), ordinele D101/D300/D301
+prezente doar ca extrase de structură, facsimilele formularelor. Aduse 130 de documente (43 html + 87 imagini) prin
+`scripts/import_corpus_fiscal.py --materiale` (bytes oficiali, SHA verificat față de manifest, scriere validată integral
+înainte de prima scriere — o primă rulare a lăsat 78 de orfani la un abort pe două facsimile byte-identice ale portalului).
+
+**Decizii.** (1) `ordin_2594_2015.html`/`ordin_878_2022.html` redevin ORDINUL; procedura poartă `__anexa_<id>`. Numele fișierului
+e numele pe care îl citează oamenii. (2) Facsimilele se aduc și ele: sunt formularele actului (alternativa respinsă — „doar
+text" — ar fi lăsat formularul publicat ca imagine în afara corpusului). (3) Patru intrări PROVENIENTA afirmau „a înlocuit forma
+stricată" pentru html-uri care nu existau înainte (OMFP 1802/2014, Legea 165/2018, OMS 15/2018 — exista doar `.txt`; Legea
+134/2010 — nimic): corectate; gardul cere acum ca orice înlocuire declarată să aibă forma veche arhivată.
+
+**Gardul:** `core/test_corpus_continut.py` (articole pe toate perechile, documentele actelor din manifest, amprenta materialelor,
+calibrare pe regresia reală). **Limite:** o înlocuire nearhivată și nedeclarată nu are cu ce fi comparată; un act din afara
+manifestului FiscalOS nu are listă de documente.
+
+---
+
+## 02.10.2026 — D216: cota impozitului special pe ANUL declarat, din registrul `COTE`
+
+**Temei.** CF art.500^2 lit.a)-b), forma din 01.01.2026: „prin aplicarea unei cote de 0,9% asupra diferenței …"
+(Legea 239/2025 art.XII pct.51; intrare în vigoare: art.XIII alin.(1) lit.a) — „pct. … 51 și 52 intră în vigoare la data de 1
+ianuarie 2026"); 0,3% pentru 2024–2025 (Legea 296/2023 art.III pct.65). CF art.500^3 alin.(1): impozitul e „datorat pentru
+întregul an fiscal" → cota de la 01.01 a anului. **Proba la arbitru:** același XML cu 0,3% e valid pe 2025 și respins pe 2026
+(DUK regula R29/R37 „ROUND(baza * 0.9 / 100)").
+
+**Ce era greșit în raționamentul vechi:** `COTA_IMPOZIT = 0.3` era declarată „constantă a validatorului, actul nu e în corpus" —
+actul era în corpus, iar validatorul avea ambele formule. **Alternativă respinsă:** constantă de modul ancorată (`ancoreaza`)
+— cota are istoric, deci locul ei e `COTE` (interdicția 1). **Limită:** plafoanele (2.500.000 / 375.000) rămân introduse de
+contabil.
+
+---
+
+## 02.10.2026 — Rapoartele Z intră în D300 printr-o defalcare pe cote STRUCTURATĂ (`rapoarte_z_cote`)
+
+**Temei.** CF art.282 alin.(1) — „Exigibilitatea taxei intervine la data la care are loc faptul generator."; instrucțiunile
+D300 (OPANAF 174/2026) rd.9/10 — „informațiile preluate din jurnalul de vânzări pentru operațiuni a căror exigibilitate
+intervine în perioada de raportare … cota de 21%" (respectiv 11%); HG 1/2016 pct.101 alin.(4) — bonurile fiscale se înscriu
+în jurnal „potrivit informațiilor din rapoartele fiscale de închidere zilnică".
+
+**Decizie.** O tabelă `rapoarte_z_cote` (notă + cotă + bază + TVA), scrisă de ambele căi de import în aceeași tranzacție cu nota;
+instalată de mecanismul existent `raport_z.migreaza` (aceeași buclă și același refuz de pornire ca indexul de unicitate). D300
+(generator, verificarea încrucișată prin `pull`, calea a doua cu SQL propriu) o citește pe notele VALIDATE. O notă Z validată
+fără defalcare se REFUZĂ, numită (nu se sare tăcut). Ruta tastată ia cotele din `COTE` la data raportului și rotunjește
+ROUND_HALF_UP (înainte: 11/21 scrise în cod și `quantize` bancar implicit).
+**Alternative respinse:** deducerea cotei din nota contabilă (707/4427 poartă un singur TVA pe notă, fără cotă — imposibil);
+pseudo-facturi în `facturi` (ar fi intrat în D394 ca facturi și în toate raportările de facturi). **Producția:** 0 note Z pe
+cele 5 firme (măsurat), deci fără migrare de date. **D394** (secțiunea `op2` i1 „încasări prin AMEF") — aceeași clasă, NEreparată:
+ruta tastată nu culege nr. bonuri / nr. AMEF → decizie de produs, datorie strictă în `test_datorie.py`.
+
+---
+
+## 02.10.2026 — Brutul se proratează pe prezența în contract; suspendările se înregistrează pe rândul statului de plată
+
+**Temei.** Codul muncii art.159 alin.(1) („Salariul reprezintă contraprestația muncii depuse de salariat în baza contractului
+individual de muncă"), art.160 alin.(2) (salariul de bază — munca „pe parcursul unei luni calendaristice"), art.49 alin.(2)
+(suspendarea suspendă „plata drepturilor de natură salarială"), art.54 + art.153 (CFP = suspendare prin acord); CF art.146
+alin.(5^6) (minimul CAS „corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ"); OUG 156/2024
+art.LXVI alin.(4) lit.c) (facilitatea „se diminuează în funcție de … fracția din lună pentru care se determină veniturile").
+
+**INTERPRETARE CU TEMEI (metoda).** O zi lucrătoare = salariul lunii / zilele lucrătoare ale lunii (același numitor ca proratarea
+CM, facilitatea și pragul); la o schimbare de salariu, fiecare zi poartă salariul ei. Alternativă respinsă: zile calendaristice
+(alt numitor pe același fluturaș). De reconfirmat dacă apare o normă care tranșează metoda. Lună întreagă fără schimbări →
+exact salariul (comportamentul vechi, probat pe suita existentă: 268 de teste salarii/D112 neschimbate).
+
+**D112 (structura oficială, câmpurile 29a/29b/35/39).** `B1_sal1` = salariul din CONTRACT; `B1_sal2`, `B2_5`, `B4_7`, `E1_1` =
+realizat; `B1_15`/`B2_2`/`B4_1` = zilele active; `B1_7` = orele suspendate. Testul din 16.08 care citea cadoul din `B1_sal1`
+(câmpul contractual) a fost mutat pe `B1_sal2` (motivul lui real — consistența cu contribuțiile — rămâne păzit).
+
+**Decizii de construcție.** (1) Suspendările stau într-o tabelă nouă `suspendari_contract` (cfp / suspendare fără drepturi), NU
+în pontaj — pontajul e informativ prin decizie (F135), iar a-l face să alimenteze salariul ar fi răsturnat-o. (2) Intrarea: un
+buton „Suspendare / CFP" la capătul rândului salariatului din statul de plată + ruta existentă `PUT /salariati/{id}` cu lista
+completă (fără rute noi). Refuzuri: tip necunoscut, interval inversat sau în afara contractului, suprapuneri, suprapunere cu un
+CM, lună închisă. (3) Calea a doua D112 sare, legitim și numit, lunile cu schimbare de salariu sau suspendare (ca angajarea/
+încetarea). **Limite:** suspendările plătite parțial (art.53, întrerupere temporară 75%) nu se modelează; un CM și un CFP pe
+aceeași zi sunt refuzate, nu reconciliate.
+
+---
+
+## 02.10.2026 — Emitentul neplătitor de TVA: factura nu poartă taxa — refuz la emitere, nu corectare tăcută
+
+**Temei.** CF art.310 alin.(10) lit.b) — persoana în regim special de scutire „nu are voie să menționeze taxa pe factură sau pe
+alt document"; CF art.319 alin.(20) lit.l) — la o scutire, „trimiterea la dispozițiile aplicabile din prezentul titlu … sau orice
+altă mențiune din care să rezulte că livrarea … face obiectul unei scutiri".
+
+**Decizii.** (1) `/produse/potriveste` citește statutul din PROFIL (câmpul din corp, implicit True, dispare). (2) `creeaza_factura`
+— punctul unic al tuturor emiterilor — REFUZĂ o linie cu cotă ≠ 0 la emitentul neplătitor, cu temeiul; completarea automată dă 0
+(nu cota din catalog). Alternativă respinsă: forțarea tăcută la 0 (ar schimba un document fără ca omul să știe de ce). (3) PDF-ul
+neplătitorului nu mai tipărește coloana „Cotă" și rândurile „TVA x%", dar poartă mențiunea „Scutit de TVA — regim special de
+scutire pentru întreprinderile mici, art. 310 din Codul fiscal". **Limită (preexistentă, scrisă în `efactura_send.py`):**
+trimiterea e-Factura pentru neplătitor (categoria O) nu e tratată în v1.
+
+---
+
+## 02.10.2026 — D205: dividendul aparține structurii de la DATA DISTRIBUIRII; cesiunile se înregistrează cu data lor
+
+**Temei.** Legea 31/1990 art.67 alin.(2) — „Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul
+social vărsat"; alin.(6) — „Dividendele care se cuvin după data transmiterii acțiunilor aparțin cesionarului, în afară de cazul în
+care părțile au convenit altfel." INTERPRETARE CU TEMEI: dividendul „se cuvine" la distribuire (creditul 457) — deci o tranșă
+plătită după cesiune, dintr-o distribuire de dinainte, rămâne a cedentului. Alternativă respinsă: data plății (ar da cesionarului
+un dividend cuvenit cedentului). Clauza „în afară de cazul în care părțile au convenit altfel" — neacoperită automat (rămâne
+`manual.beneficiari`).
+
+**Decizii.** (1) `asociati` rămâne structura curentă; `asociati_istoric` (cnp, nume, cotă, valabil_pana_la) păstrează structurile
+înlocuite. (2) Importul asociaților primește, opțional, data cesiunii: structura curentă se arhivează până în ziua dinainte;
+fără dată = corectură (comportamentul vechi). Refuz: dată în viitor, dată înaintea ultimei cesiuni. (3) Atribuirea pe asociat
+stă în modulul NEUTRU `dividende_curs` (FIFO plată→distribuire existent, A6); generatorul, verificarea încrucișată (care avea o
+REPLICĂ a derivării — acum consumă `d205.pull_beneficiari`) și calea a doua (SQL propriu) o folosesc. Fără istoric → exact
+cifrele de dinainte (total × cotă).

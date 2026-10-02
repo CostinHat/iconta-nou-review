@@ -22,14 +22,19 @@ Reguli citite din validator si PROBATE pe DUK (D216Validator.jar):
   - impozit_imobile = suma tuturor impozit_imobil; impozit_mobile = suma tuturor impozit_mobil.
   - d_rec=0 => valoare_impozabila_imobil > plafon_imobil; valoare_impozabila_mobil > plafon_mobil.
   - R28.1: baza_imobil = (valoare_impozabila_imobil - plafon_imobil) * cota / 100.
-  - impozit_imobil = ROUND(baza_imobil * COTA_IMPOZIT / 100).
-  - R36.1: baza_mobil = valoare_impozabila_mobil - plafon_mobil; impozit_mobil = ROUND(baza_mobil * COTA_IMPOZIT / 100).
+  - impozit_imobil = ROUND(baza_imobil * cota_impozit); R36.1: baza_mobil = valoare_impozabila_mobil - plafon_mobil;
+    impozit_mobil = ROUND(baza_mobil * cota_impozit). Validatorul are AMBELE formule (DUK regula R29 / R37):
+    „ROUND(baza * 0.3 / 100)” și „ROUND(baza * 0.9 / 100)”, alese după an — probat 02.10.2026: același XML cu 0,3%
+    e valid pe 2025 și respins pe 2026.
   - cod_judet_imobil in lista codurilor de judet (1..52); 0 < cota <= 100; niv in interval intreg.
 
-CRITIC: actul (Legea 296/2023) NU este in corpus. NU se hardcodeaza cota si nici plafoanele -
-valorile impozabile, cota si plafoanele sunt introduse de contabil in `manual`. COTA_IMPOZIT (rata
-ROUND din formula de impozit) este o CONSTANTA de calcul a VALIDATORULUI (nu a actului), impusa de
-aritmetica lui - documentata, nu ghicita. Totalurile de antet = sumele/regulile aritmetice ale listelor.
+COTA IMPOZITULUI SPECIAL (02.10.2026, comanda Costin, pct.4a): vine din registrul `COTE`, cheia
+`impozit_special_valoare_mare`, pe ANUL declarat — CF art.500^2 lit.a)-b): 0,3% pentru 2024-2025 (Legea 296/2023
+art.III pct.65), 0,9% din 01.01.2026 (Legea 239/2025 art.XII pct.51, în vigoare conform art.XIII alin.(1) lit.a)).
+Impozitul e datorat pentru întregul an fiscal (CF art.500^3 alin.(1)) -> cota la 01.01 a anului. Înainte, un
+`COTA_IMPOZIT = 0.3` fix (crezut „constantă a validatorului”, cu actul declarat absent din corpus) dădea pentru 2026
+o treime din impozit. Valorile impozabile, cota-parte de proprietate și plafoanele rămân introduse de contabil în
+`manual`. Totalurile de antet = sumele/regulile aritmetice ale listelor.
 d_rec="0" implicit (declaratie initiala).
 
 Contract dXXX: pull/erori_generare/calcul_d216/build_xml/genereaza(conn, schema, perioada, manual).
@@ -40,16 +45,26 @@ Contract dXXX: pull/erori_generare/calcul_d216/build_xml/genereaza(conn, schema,
 #: denumirea deja consemnata in modul; NU o re-verificare la ANAF.
 DENUMIRE_OFICIALA = 'Declarație privind impozitul special pe bunurile imobile și mobile de valoare mare'
 from dataclasses import dataclass, field
+from datetime import date
 import re
 from decimal import Decimal, ROUND_HALF_UP
+
+from core import common
 
 NS = "mfp:anaf:dgti:d216:declaratie:v1"
 _NEDIGIT = re.compile(r"\D")
 _Q = chr(34)
 
-# Rata din formula de impozit a VALIDATORULUI (ROUND(baza * COTA_IMPOZIT / 100)). Constanta de calcul
-# a lui D216Validator.jar (probata pe DUK), NU o valoare din act - actul nu e in corpus.
-COTA_IMPOZIT = 0.3
+
+def cota_impozit(an):
+    """Cota impozitului special pentru anul fiscal `an` (fracție: 0.003 / 0.009), din `COTE`. Ridică pentru un an
+    dinaintea impozitului (2024): nu există cotă de aplicat — nu se inventează una."""
+    return common.cota("impozit_special_valoare_mare", date(int(an), 1, 1))[0]
+
+
+def _impozit(baza, cota):
+    """ROUND(baza * cota) aritmetic (ROUND_HALF_UP), ca formula validatorului."""
+    return int((Decimal(baza) * cota).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
 def _cif(x):
@@ -91,23 +106,21 @@ def _round(x):
     return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
 
 
-def _calc_imobil(b):
-    """baza_imobil = (val - plafon)*cota/100 (R28.1); impozit_imobil = ROUND(baza * COTA_IMPOZIT/100)."""
+def _calc_imobil(b, an):
+    """baza_imobil = (val - plafon)*cota/100 (R28.1); impozit_imobil = ROUND(baza * cota_impozit(an))."""
     val = _int(b.get("valoare_impozabila_imobil"))
     plafon = _int(b.get("plafon_imobil"))
     cota = _cota(b.get("cota"))
     baza = _round((val - plafon) * cota / 100.0)
-    imp = _round(baza * COTA_IMPOZIT / 100.0)
-    return baza, imp
+    return baza, _impozit(baza, cota_impozit(an))
 
 
-def _calc_mobil(b):
-    """baza_mobil = val - plafon (R36.1); impozit_mobil = ROUND(baza * COTA_IMPOZIT/100)."""
+def _calc_mobil(b, an):
+    """baza_mobil = val - plafon (R36.1); impozit_mobil = ROUND(baza * cota_impozit(an))."""
     val = _int(b.get("valoare_impozabila_mobil"))
     plafon = _int(b.get("plafon_mobil"))
     baza = val - plafon
-    imp = _round(baza * COTA_IMPOZIT / 100.0)
-    return baza, imp
+    return baza, _impozit(baza, cota_impozit(an))
 
 
 @dataclass
@@ -122,14 +135,14 @@ class Rezultat216:
     avertismente: list = field(default_factory=list)
 
 
-def calcul_d216(manual):
-    """Totaluri antet = regulile aritmetice ale listelor.
+def calcul_d216(manual, an):
+    """Totaluri antet = regulile aritmetice ale listelor; impozitul pe cota anului fiscal `an`.
     impozit_imobile = suma impozitelor pe bunuri imobile; impozit_mobile = suma impozit_mobil;
     totalPlata_A = suma cifrelor din cif (R4, regula de control a validatorului)."""
     imob = manual.get("imobile") or []
     mob = manual.get("mobile") or []
-    ti = sum(_calc_imobil(b)[1] for b in imob)
-    tm = sum(_calc_mobil(b)[1] for b in mob)
+    ti = sum(_calc_imobil(b, an)[1] for b in imob)
+    tm = sum(_calc_mobil(b, an)[1] for b in mob)
     return {"impozit_imobile": ti, "impozit_mobile": tm, "totalPlata_A": _suma_cifre(manual.get("cif"))}
 
 
@@ -184,7 +197,7 @@ def erori_generare(prof, manual):
 def build_xml(prof, an, luna, manual):
     imob = manual.get("imobile") or []
     mob = manual.get("mobile") or []
-    tot = calcul_d216(manual)
+    tot = calcul_d216(manual, an)
     d_rec = _int(manual.get("d_rec"))
 
     def at(name, value):
@@ -208,7 +221,7 @@ def build_xml(prof, an, luna, manual):
         h.append(at("cif_imputernicit", _cif(manual.get("cif_imputernicit"))))
     rows = []
     for b in imob:
-        baza, imp = _calc_imobil(b)
+        baza, imp = _calc_imobil(b, an)
         a = [
             at("judet_imobil", _esc(b.get("judet_imobil"), 60)),
             at("cod_judet_imobil", _cif(b.get("cod_judet_imobil"))),
@@ -227,7 +240,7 @@ def build_xml(prof, an, luna, manual):
             a.insert(6, at("nr_strada", _esc(b.get("nr_strada"), 40)))
         rows.append("  <bun_imobil " + " ".join(a) + "/>")
     for b in mob:
-        baza, imp = _calc_mobil(b)
+        baza, imp = _calc_mobil(b, an)
         a = [
             at("an_detinere", str(_int(b.get("an_detinere")))),
             at("niv", str(_int(b.get("niv")))),
@@ -250,7 +263,7 @@ def genereaza(conn, schema, perioada, manual=None):
     er = erori_generare(prof, manual)
     if er:
         raise ValueError("D216 nu se poate genera: " + " ".join(er))
-    tot = calcul_d216(manual)
+    tot = calcul_d216(manual, an)
     xml = build_xml(prof, an, luna, manual)
     res = Rezultat216(an=an, luna=luna, impozit_imobile=tot["impozit_imobile"],
                       impozit_mobile=tot["impozit_mobile"], total_plata_a=tot["totalPlata_A"],

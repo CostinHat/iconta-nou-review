@@ -1023,3 +1023,30 @@ octombrie):
   până la etapa următoare; nici venitul pe normă, nici asocierile.
 
 Restul zilei (verificări, gărzi, registre) nu schimbă nimic din ce vede sau depune un contabil.
+
+## 02.10.2026 — Lot 19: două decizii consemnate, corpusul de legi readus întreg, cinci defecte fiscale reparate
+
+**Deciziile lui Costin, scrise.** Bifele rămân de 16px (ținta de clic e eticheta — acum garantată ≥ 24px prin regula
+globală și verificator); cele patru constante care dublează chei din registrul de cote intră în registru doar când modulul
+lor e atins oricum.
+
+**Corpusul de legi.** La înlocuirea cu formele oficiale de ieri, două ordine ANAF (cazierul fiscal și e-Popriri) rămăseseră
+doar cu procedura din anexă — articolele ordinelor lipseau. Comparând pe articol toate cele 82 de forme înlocuite, alte
+pierderi reale nu există (doar note editoriale ale portalului, numite una câte una). Dar căutând clasa, am găsit 41 de acte
+cărora le lipseau documente publicate separat pe portal — inclusiv anexa cu formularul și instrucțiunile D212 — plus
+facsimilele formularelor: 130 de documente aduse, cu proveniența și amprenta lor.
+
+**Ce se schimbă pentru un contabil:**
+- **D216 pe 2026** se calculează cu 0,9% (era 0,3% — validatorul ANAF respingea declarația).
+- **D300 include TVA-ul din rapoartele Z** (casa de marcat, import sau tastat), pe cote, la rândurile 9 și 10. Până azi
+  decontul vedea doar facturile, iar TVA-ul încasat pe bon rămânea în 4427 și lipsea din declarație.
+- **Statul de plată și D112 calculează brutul pe zilele din contract**: angajare sau plecare în cursul lunii, concediu
+  fără plată sau suspendare (buton nou „Suspendare / CFP" pe salariat) și mărire de salariu în cursul lunii. În D112,
+  salariul din contract și venitul realizat stau acum în câmpurile lor, iar orele de CFP în câmpul de ore suspendate.
+- **O firmă neplătitoare de TVA nu mai primește 21% propus pe factură** și nu poate emite o factură cu TVA; PDF-ul ei nu
+  mai tipărește „TVA 0%", ci mențiunea de scutire (art. 310 Cod fiscal).
+- **D205 împarte dividendele după asociații de la data distribuirii.** La importul asociaților se poate trece data
+  cesiunii: structura veche se păstrează pentru dividendele distribuite înainte.
+
+**Ce rămâne de decis:** D394 nu preia încă rapoartele Z în secțiunea de încasări prin casa de marcat (cere date pe care
+ruta tastată nu le culege).

@@ -697,6 +697,14 @@ COTE = {
     "impozit_micro": [
         (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-10-01", de_cine="Code/FiscalOS", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="Cota de impozit pe veniturile microîntreprinderilor este de 1%.", lant_acte="ANCORAT pe forma art.51 alin.(1) IN VIGOARE DIN 01.01.2026 (modificat de Punctul 4, Articolul I din OUG 89/2025, MO 1203/24.12.2025): 1% forma UNICA, fara split 1%/3% si fara pragul 60.000 EUR. Cota de 1% aplicabila de la 01.01.2023 (data_in), confirmata pe forma consolidata adusa la 01.10.2026")),
     ],
+    # Impozitul special pe bunurile imobile și mobile de valoare mare (D216). Datorat pentru ÎNTREGUL an fiscal (CF
+    # art.500^3 alin.(1)) -> consumatorul cere cota la 01.01 a anului declarat. Aceeași cotă pentru clădiri (lit.a) și
+    # autoturisme (lit.b). Adăugat 02.10.2026 (lot 19 pct.4a): d216.COTA_IMPOZIT = 0.3 fix producea pentru 2026 o
+    # treime din impozit, iar DUK respingea (R29/R37: „ROUND(baza * 0.9 / 100)”).
+    "impozit_special_valoare_mare": [
+        (date(2026, 1, 1), Decimal("0.009"), Temei("CF", art="500^2", lit="a", data_in="2026-01-01", verificat_la="2026-10-02", de_cine="Code", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="prin aplicarea unei cote de 0,9% asupra diferenței dintre valoarea impozabilă a clădirii comunicată de către organul fiscal local și plafonul de 2.500.000 lei", lant_acte="lit.a) (clădiri) și lit.b) (autoturisme: „prin aplicarea unei cote de 0,9% asupra diferenței dintre valoarea de achiziție și plafonul de 375.000 lei”) modificate de Legea 239/2025 art.XII pct.51; în vigoare la 01.01.2026 conform Legea 239/2025 art.XIII alin.(1) lit.a) („prevederile pct. … 51 și 52 intră în vigoare la data de 1 ianuarie 2026”)")),
+        (date(2024, 1, 1), Decimal("0.003"), Temei("Legea", 296, 2023, art="III", data_in="2024-01-01", verificat_la="2026-10-02", de_cine="Code", nivel_sursa="MO", url="anaf_surse/legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html", text_citat="prin aplicarea unei cote de 0,3% asupra diferenței dintre valoarea impozabilă a clădirii comunicată de către organul fiscal local prin decizia de impunere și plafonul de 2.500.000 lei", lant_acte="Legea 296/2023 art.III pct.65 introduce Titlul X^1 (art.500^1-500^3) în Codul fiscal, de la 01.01.2024 (nota portalului din forma consolidată a CF); lit.b) autoturisme tot 0,3%")),
+    ],
     "impozit_profit": [
         (date(2018, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.17: Cota de impozit pe profit care se aplica asupra profitului impozabil este de 16%")),
     ],

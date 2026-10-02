@@ -169,12 +169,16 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             (s.get("brut_lucrat") if s.get("brut_lucrat") is not None else s.get("brut")) or 0,
             persoane=s.get("persoane_intretinere") or 0, la_data=ref,
             norma_intreaga=not s.get("part_time"),
-            venit_brut_total=float(s.get("brut") or 0),
+            venit_brut_total=float(s.get("brut_contractual", s.get("brut")) or 0),   # [lot 19] contractual, ca pull
             sub_26=_sz.sub_26_la(s.get("data_nastere"), ref),   # [deducere suplimentara] coerenta contare<->D112
             copii_scoala=(int(s.get("copii_scolarizati") or 0) if s.get("declaratie_copii") else 0),
             declaratie_copii=bool(s.get("declaratie_copii")),
             data_angajare=s.get("data_angajare"),
             data_incetare=s.get("data_incetare"),
+            # [lot 19 pct.4c] aceeași prezență ca D112: suspendările (prorata pragului CF art.146 alin.(5^6)) și fracția
+            # facilitații calculată o dată de pull (fără ea contarea folosea forma clasică — a doua cifră, clasa R34).
+            suspendari=s.get("suspendari") or (),
+            facilitate_prorata=s.get("facilitate_prorata"),
             # [R86/RR1] TICHETELE. Fara ele, `tichete_nominal` iesea 0 si linia 642=5328 nu se
             # producea deloc — o cheltuiala reala care nu intra in evidenta. Valorile vin din
             # `pull`, care le-a calculat o data (zile din pontaj, exces peste plafonul anual);

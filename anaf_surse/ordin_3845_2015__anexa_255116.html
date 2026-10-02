@@ -1,0 +1,1156 @@
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title>PROCEDURA      (A)       30/12/2015 - Portal Legislativ</title>
+    <link href="/Content/css?v=iKXncnEnzeZrcZDXQ4gyEFYtrgIhK9GqKaiZ1xjeUOQ1" rel="stylesheet"/>
+
+    <link href="/Content/themes/base/css?v=7T_tuS9RP8sQe2HxerJdL6STYU-qCHtjrExyjsSiYcQ1" rel="stylesheet"/>
+
+    <meta name="keywords" content="PROCEDURA      (A)       30/12/2015 - Portal Legislativ">
+    <meta name="description" content="PROCEDURA      (A)       30/12/2015 - Portal Legislativ">
+    <meta name="title" content="PROCEDURA      (A)       30/12/2015 - Portal Legislativ">
+    <link href="/Content/bootstrap-datepicker.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="/Content/Images/Site/temanoua/favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="/Content/public.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="/bundles/modernizr?v=qVODBytEBVVePTNtSFXgRX0NCEjh9U_Oj8ePaSiRcGg1"></script>
+
+    <script src="/bundles/jquery?v=UgyEMAYOuSB9Bb6HcOEVHpd6fIIp54yF086SRNVcdIY1"></script>
+
+    <script src="/bundles/jqueryui?v=O4Awnx3xYnFLmC1TAsxXigS8kLERW18heIHqD0bRSTE1"></script>
+
+    <script src="/bundles/bootstrap?v=WyYa2dIFje-38fhrXc_sQiaOB-lu9j8r45bVIBgtqrw1"></script>
+
+    <script type="text/javascript" language="JavaScript">
+        var backColor = '#f0ffff';
+        var actColor = 'white';
+        var brdColor = 'black';
+        function marcheaza(id_ttl, id) {
+            /*id.style.backgroundColor=backColor;
+            id_ttl.style.cursor='pointer';
+            id.style.borderColor=brdColor;
+            id.style.borderStyle='dashed';*/
+        }
+        function demarcheaza(id_ttl, id) {
+            /*id.style.backgroundColor='transparent';
+            id_ttl.style.cursor='default';
+            id.style.borderColor=actColor;
+            id.style.borderStyle='dotted';*/
+        }
+        function plusMinus(id1, id2) {
+            if (id1.style.display == 'none') {
+                id1.style.display = 'inline';
+                id2.style.display = 'none';
+            }
+            else {
+                id1.style.display = 'none';
+                id2.style.display = 'inline';
+            }
+        }
+        function setCursor(id, tipCursor) {
+            id.style.cursor = tipCursor;
+        }
+    </script>
+    <script>
+        function pozitioneaza(id) {
+            var id_nou = id.substring(0, id.length - 4);
+           //document.getElementById('toTop').click();
+            $("#toTop").trigger("click");
+ 
+        }
+ 
+
+    </script>
+
+
+
+</head>
+
+<body data-spy="scroll" data-target="#affix-nav" data-twttr-rendered="true">
+    <a name="top"></a>
+
+
+    <div id="toTop" class="toggle-menu menu-left"><a class="toggle-menu menu-left"><img src="/Content/Images/Site/temanoua/butonmeniu.png" alt="logo" /></a> </div>
+    <div id="masterwrapper page-content">
+        <div id="header_wrapper" class="navbar navbar-default">
+            <!--navbar-fixed-top-->
+            <header>
+                <div id="header">
+                    <div class="header_top">
+                        <div class="banner">
+                            <div class="row">
+                                <img class="img-responsive center-block pozawidth" id="logoportal" src="/Content/Images/Site/header_logo.png" style="width:85%;" alt="logo" />
+                            </div>
+                        </div>
+                        <div class="row margin0" id="textlogo">
+                            <center>
+                                <h4 class="reducerespatiu logo">Portal Legislativ</h4>
+
+                            </center>
+                            <!-- <div style="float:right; position:relative; right:0; margin-top:-23px;">
+                                <a data-toggle="modal" data-target="#mesajBetaModal" style="cursor:pointer;">
+                                    <img width="50" src="/Content/Images/Site/versiunebeta.png" alt="Versiune Beta 2.0" />
+                                </a>
+                            </div>-->
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="menu_wrapper navbar navbar-inverse" role="navigation" id="slide-nav">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <a id="btnNavbar" class="navbar-toggle">
+                                    <span class="sr-only">Meniu</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </a>
+
+                            </div>
+                            <div id="slidemenu" style="cursor:pointer;">
+                                <div id="menu" onclick="pozitioneaza('')">
+                                    <a style=" cursor:pointer;" onclick="pozitioneaza('')">
+                                        <h3>Meniu</h3>
+                                    </a>
+                                    <ul></ul>
+                                    <ul class="mainmenu">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+             
+                                    </ul>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </header>
+            <div class="meniunu">
+                <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left">
+                    <h3 style="padding-left:65px; margin-top:-5px;">Meniu</h3>
+                    <div id="meniutitlu"></div>
+                    <div id="meniupaginastart">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+              <br />
+                        Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+                        conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+                        rezultatele cautarilor venind direct de la sursa.
+                    </div>
+                    <script>
+                        if (window.location.href.indexOf('DetaliiDocument') != -1) {
+                            $('#meniupaginastart').hide();
+                        }
+                        else {
+                            $('#meniupaginastart').show();
+                        }
+                    </script>
+                </nav>
+            </div>
+        </div>
+ 
+        <div id="page_content" style="margin-top:-15px;">
+            <div id="page_wrapper">
+                <div class="articole_wrapper">
+                    
+
+
+<style>
+    #masterwrapper, #page_content, #page_wrapper {
+        background-color: white;
+        background: white;
+    }
+
+    #document_info {
+        font-size: 15px;
+    }
+
+    #fisaact {
+        font-size: 14px;
+    }
+
+    .seincarca {
+        position: fixed;
+        z-index: 1100;
+        left: 45%;
+        /*	margin-top: -500px;*/
+        top: 45%;
+        height: 100px;
+        background-color: #ffffff;
+        -moz-box-shadow: 5px 5px 5px #400;
+        -webkit-box-shadow: 5px 5px 5px #400;
+        box-shadow: 5px 5px 5px #400;
+        border: 1px solid #dadada;
+        -moz-border-radius: 15px;
+        -webkit-border-radius: 15px;
+        -khtml-border-radius: 15px;
+        border-radius: 15px;
+    }
+
+    .cbsloader {
+        background-image: url(~/../../../Content/Images/Site/bar-circle.gif);
+        background-repeat: no-repeat;
+    }
+
+    #modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('~/../../../Content/Images/Site/tint20.png') 0 0 repeat;
+        background: rgba(0,0,0,0.2);
+    }
+    #sidebar  {
+        &.affix;
+
+    {
+        top: 10px;
+        bottom: auto;
+    }
+
+    &.affix-top {
+        position: absolute;
+        top: 20px;
+    }
+
+    &.affix-bottom {
+        position: relative;
+        top: auto;
+        bottom: auto;
+    }
+
+    }
+
+</style>
+ <script>
+
+     function imgSIZE() {
+         $("#infoactinfoact img").one("load", function() {
+             try {
+                 var theImage = new Image();
+                 theImage.src = $(this).attr("src");
+                 var imgW = theImage.width;
+                 var imgH = theImage.height;
+                 // console.log($(this).attr("src") + "   - " + imgW + ", " + imgH);
+
+                 
+                 $(this).css("max-width", "100%");
+                 $(this).css("width", imgW+"px");
+                 
+             }
+             catch(e) {
+                 // console.log("horror> "+e);
+             }
+         });
+     }
+
+ </script>
+
+<div class="container bs-docs-container"  data-target="#sidebar">
+
+    <div class="row" id="textdocumentleg">
+        <div class="col-md-3" id="meniu">
+            <div class="bs-docs-sidebar affix-top meniuaffix" id="sidebar">
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+                        <h1>Cuprins</h1>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="loaderDiv" class="seincarca" style="display: none; text-align: center; width: auto !important; height: auto !important; padding: 40px;">
+                    <div id="modal"></div>
+                    <progress max="100">
+                        <div class="cbsloader">
+                            <div style="color:#333; margin-top:-40px; margin-left:130px;">
+                            </div>
+                            <br>
+                            <div style="color:#333; margin-left:49px; margin-top:-5px;">
+                                <b>Se încarcă, vă rugăm asteptati.</b><br><br>
+                            </div>
+                        </div>
+                    </progress>
+                </div>
+                <div class="details_navigation">
+
+                    <input type="hidden" id="id_act" name="id_act" value="255116" />
+                    <div class="nav_header expanded" data-target="FormeAct" style="margin-left:-10px; font-weight: bold !important;">
+                            <span class="trigger plus">+</span>
+                             <b><span>Forme act</span></b>
+                    </div>
+                    <div class="nav_content expanded" data-target="FormeAct" style="margin-left: -10px;">
+                            <div class="forme_act">
+<input checked="checked" id="Formaconsolidata" name="FormeAct" onchange="SchimbareFormaAct();" type="radio" value="1" /><label for="Formaconsolidata">Forma consolidata</label>                                        <div class="forme_act_chk">
+                                            
+                                            
+                                        </div>
+                                            <div>
+                                                <div id="label_forme_actz" onclick="toggle_istoric_forme_actz()" style="cursor: pointer; margin-left: -5px; margin-top: 5px;">&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidări</div>
+                                                <div id="istoric_fa" class="nav_content expanded" style="display: none; margin-left: -8px;">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 13.05.2022' id='fa_selectata' style='color:red;text-decoration:none;cursor:default'>13.05.2022</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 03.10.2017' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/193468'>03.10.2017</a><br/>
+                                                </div>
+                                            </div>
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+<input id="Formadebaza" name="FormeAct" onchange="incarcaFormaDeBaza(174719);" type="radio" value="3" /><label for="Formadebaza">Forma de baza</label>                            </div>
+                    </div>
+
+                    <div id="label_fisaact" class="nav_header" onclick="toggle_fisaact()" style="margin-left:-10px !important; margin-top:10px;">
+                        <span id="label_fisaact_plus_minus" style="cursor:pointer">+</span>
+                        <span style="cursor: pointer; font-weight: bold; color: #3c3636; ">Fișă act</span>
+                    </div>
+
+                    <div id="content_fisaact" class="nav_content" style="display: none;">
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="1" id="Actiunisuferite" name="Actiunisuferite" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Actiunisuferite" type="hidden" value="false" />
+                                <label for="Actiunisuferite">Actiuni suferite</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="2" id="ActiuniInduse" name="ActiuniInduse" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="ActiuniInduse" type="hidden" value="false" />
+                                <label for="ActiuniInduse">Actiuni Induse</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="3" id="Referape" name="Referape" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referape" type="hidden" value="false" />
+                                <label for="Referape">Refera pe</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="4" id="Referitde" name="Referitde" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referitde" type="hidden" value="false" />
+                                <label for="Referitde">Referit de</label>
+                            </div>
+                    </div>
+
+                </div>
+                <p style="padding-top: 10px; font-variant: small-caps; border-bottom: 3px solid #BB3A3A; color: #112F5D; font-size: 18px; font-family: EB Garamond !important; ">Cuprinsul Actului</p>
+                <ul class="nav bs-docs-sidenav" style=" margin-top:5px;">
+
+                    de înregistrare/modificare a domiciliului fiscal în cazul contribuabililor care sunt supuși înregistrării la organele fiscale - Anexa nr. 2I. Dispoziții generale1. Prezenta procedură se aplică contribuabililor care, potrivit legii, au obligația înregistrării la organul fiscal și care au obligația înregistrării/modificării domiciliului fiscal, potrivit legii. ... 2. În sensul prezentei proceduri contribuabilii sunt: ...  ... II. Înregistrarea/Modificarea domiciliului fiscal pentru contribuabilii de la pct. 2 lit. a)-c)3. Competența de administrare a contribuabililor prevăzuți la pct. 2 lit. a)-c) revine, până la finalizarea procedurii de înregistrare/modificare a domiciliului fiscal, organului fiscal de la ultimul domiciliu fiscal. ... 4.  ... 5.  ... 6. La primirea dosarului fiscal, organul fiscal în a cărui rază teritorială urmează să se stabilească domiciliul fiscal emite, în termen de maximum două zile lucrătoare, Decizia de înregistrare/modificare a domiciliului fiscal, potrivit modelului prevăzut în anexa nr. 5a) la ordin. ... 7.  ... 8.  ... 9. La data înregistrării în registrul contribuabililor, noul organ fiscal emite certificatul de înregistrare fiscală/certificatul de înregistrare în scopuri de TVA, având înscris noul domiciliu fiscal. ... 10. După primirea Deciziei de înregistrare/modificare a domiciliului fiscal, contribuabilul se prezintă la organul fiscal în a cărui rază teritorială se află noul domiciliu fiscal, predă, în vederea anulării, vechiul certificat de înregistrare fiscală/certificat de înregistrare în scopuri de TVA și îl ridică pe cel nou. ...  ... III. Înregistrarea/Modificarea domiciliului fiscal pentru contribuabilii de la pct. 2 lit. d)11. Organul fiscal competent pentru aplicarea procedurii de înregistrare/modificare a domiciliului fiscal în cazul contribuabililor prevăzuți la pct. 2 lit. d) este organul fiscal în a cărui rază teritorială se află domiciliul fiscal al persoanei fizice, stabilit potrivit dispozițiilor art. 31 alin. (1) lit. a) din Codul de procedură fiscală. ... 12. Pentru înregistrarea/modificarea domiciliului fiscal, contribuabilii prevăzuți la pct. 2 lit. d) depun la organul fiscal în a cărui rază teritorială se află domiciliul fiscal al persoanei fizice, stabilit potrivit dispozițiilor art. 31 alin. (1) lit. a) din Codul de procedură fiscală, formularul 070 „Declarație de înregistrare fiscală/Declarație de mențiuni/Declarație de radiere pentru persoanele fizice care desfășoară activități economice în mod independent sau exercită profesii libere“, având completată secțiunea A „Date privind înregistrarea/modificarea domiciliului fiscal“, însoțit de documente doveditoare ale informațiilor înscrise în acesta. Copiile de pe documente se certifică pe fiecare pagină de contribuabil/plătitor pentru conformitate cu originalul. ... 13. Solicitarea de înregistrare/modificare a domiciliului fiscal, după caz, se soluționează prin emiterea Deciziei de înregistrare/modificare a domiciliului fiscal, în termen de 15 zile lucrătoare de la data depunerii formularului 070. ... 14.  ... 15. Înregistrarea în registrul contribuabililor a noului domiciliu fiscal se operează cu data comunicării deciziei.  ... 16. La data înregistrării în registrul contribuabililor a noului domiciliu fiscal, organul fiscal competent emite și certificatul de înregistrare fiscală/certificatul de înregistrare în scopuri de TVA, având înscris noul domiciliu fiscal. ... 17. După primirea Deciziei de înregistrare/modificare a domiciliului fiscal, contribuabilul se prezintă la organul fiscal competent, predă, în vederea anulării, vechiul certificat de înregistrare fiscală/certificat de înregistrare în scopuri de TVA și îl ridică pe cel nou. ...  ... IV. Dispoziții finale18. Dosarul solicitării de înregistrare/modificare a domiciliului fiscal se arhivează la dosarul fiscal al contribuabilului și cuprinde: ... 19. Dacă pe parcursul derulării procedurii contribuabilul se radiază, compartimentul de specialitate sistează procedura în derulare. În acest sens se întocmește un referat motivat, care se arhivează la dosarul fiscal al contribuabilului.  ...  ... 
+
+                </ul>
+                <a class="back-to-top" onclick="pozitioneaza('')" href="#top">
+                    Reveniti in topul paginii
+                </a>
+                <div style="text-align:center;">
+                    
+
+                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G0MNNOLVJEB22E34A3HTQ6C0Q3E>
+                        <span class="glyphicon glyphicon-print"></span> Forma printabilă
+                    </a>
+                </div>
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+
+
+
+        <div class="col-md-8" role="main" id="infoactinfoact">
+            <div class="bs-docs-section">
+                <div class="main_details">
+                    
+                    <div class="document_info" id="document_info">
+                        <div id="forme_act_container" data-id="FormeAct" data-state="loaded">
+                                    <div id="div_Formaconsolidata" class="content_forma_act" data-state="loaded">
+                                        
+                                        <span class="S_DEN">PROCEDURĂ din 30 decembrie 2015</span><span class="S_HDR">de înregistrare/modificare a domiciliului fiscal în cazul contribuabililor care sunt supuși înregistrării la organele fiscale - Anexa nr. 2</span><table cellspacing="0px" cellpadding="0px" class="S_EMT"><tr valign="baseline"><td width="75px"><span class="S_EMT_TTL">EMITENT</span></td><td><span class="S_EMT_BDY"><li>AGENȚIA NAȚIONALĂ DE ADMINISTRARE FISCALĂ</li></span></td></tr></table><span class="S_PUB"><span class="S_PUB_TTL">Publicat în 
+			</span><span class="S_PUB_BDY">MONITORUL OFICIAL nr. 15 din 8 ianuarie 2016</span></span><span id="fisaact"><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='actiuni_suferite'></span><br/><span style='display:none;border:1px solid;height:180px;overflow:auto' id='actiuni_induse'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='refera_pe'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='referit_de'></span><br/><!----></span><span class="S_NTA" style="display: block; color:black;" id="id_ntaA60569218"><span class="S_NTA_TTL" id="id_ntaA60569218_ttl" onMouseOver="marcheaza(id_ntaA60569218_ttl,id_ntaA60569218)" onMouseOut="demarcheaza(id_ntaA60569218_ttl,id_ntaA60569218)" onMouseDown="plusMinus(id_ntaA60569218_scurt,id_ntaA60569218_lung)">
+						Notă </span><span style="display: none" class="S_NTA_SHORT" id="id_ntaA60569218_scurt">...
+			</span><span id="id_ntaA60569218_lung"><br /><span class="S_NTA_PAR" style="display: block; color:black;">Aprobată prin <A href="~/../../../Public/DetaliiDocumentAfis/174717">ORDINUL nr. 3.845 din 30 decembrie 2015</A>, publicat în Monitorul Oficial nr. 15 din 8 ianuarie 2016.</span></span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA30211666"><span class="S_PCT_TTL" id="id_pctA30211666_ttl" onMouseOver="marcheaza(id_pctA30211666_ttl,id_pctA30211666)" onMouseOut="demarcheaza(id_pctA30211666_ttl,id_pctA30211666)" onMouseDown="plusMinus(id_pctA30211666_short,id_pctA30211666_bdy)">I.<!----></span> <span class="S_PCT_BDY" id="id_pctA30211666_bdy">Dispoziții generale<span class="S_PCT" style="display: block; color:blue;" id="id_pctA782673"><span class="S_PCT_TTL" id="id_pctA782673_ttl" onMouseOver="marcheaza(id_pctA782673_ttl,id_pctA782673)" onMouseOut="demarcheaza(id_pctA782673_ttl,id_pctA782673)" onMouseDown="plusMinus(id_pctA782673_short,id_pctA782673_bdy)">1.<!----></span> <span class="S_PCT_BDY" id="id_pctA782673_bdy">Prezenta procedură se aplică contribuabililor care, potrivit legii, au obligația înregistrării la organul fiscal și care au obligația înregistrării/modificării domiciliului fiscal, potrivit legii.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA782673_short" onMouseOver="marcheaza(id_pctA782673_short,id_pctA782673)" onMouseOut="demarcheaza(id_pctA782673_short,id_pctA782673)" onMouseDown="plusMinus(id_pctA782673_short,id_pctA782673_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA38073377"><span class="S_PCT_TTL" id="id_pctA38073377_ttl" onMouseOver="marcheaza(id_pctA38073377_ttl,id_pctA38073377)" onMouseOut="demarcheaza(id_pctA38073377_ttl,id_pctA38073377)" onMouseDown="plusMinus(id_pctA38073377_short,id_pctA38073377_bdy)">2.<!----></span> <span class="S_PCT_BDY" id="id_pctA38073377_bdy">În sensul prezentei proceduri contribuabilii sunt:<span class="S_LIT" style="display: block; color:blue;" id="id_litA33222512"><span class="S_LIT_TTL" id="id_litA33222512_ttl" onMouseOver="marcheaza(id_litA33222512_ttl,id_litA33222512)" onMouseOut="demarcheaza(id_litA33222512_ttl,id_litA33222512)" onMouseDown="plusMinus(id_litA33222512_short,id_litA33222512_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA33222512_bdy">persoanele juridice, asocierile și alte entități fără personalitate juridică;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA33222512_short" onMouseOver="marcheaza(id_litA33222512_short,id_litA33222512)" onMouseOut="demarcheaza(id_litA33222512_short,id_litA33222512)" onMouseDown="plusMinus(id_litA33222512_short,id_litA33222512_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA42269599"><span class="S_LIT_TTL" id="id_litA42269599_ttl" onMouseOver="marcheaza(id_litA42269599_ttl,id_litA42269599)" onMouseOut="demarcheaza(id_litA42269599_ttl,id_litA42269599)" onMouseDown="plusMinus(id_litA42269599_short,id_litA42269599_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA42269599_bdy">persoanele juridice străine care au locul de exercitare a conducerii efective în România;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA42269599_short" onMouseOver="marcheaza(id_litA42269599_short,id_litA42269599)" onMouseOut="demarcheaza(id_litA42269599_short,id_litA42269599)" onMouseDown="plusMinus(id_litA42269599_short,id_litA42269599_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA60856530"><span class="S_LIT_TTL" id="id_litA60856530_ttl" onMouseOver="marcheaza(id_litA60856530_ttl,id_litA60856530)" onMouseOut="demarcheaza(id_litA60856530_ttl,id_litA60856530)" onMouseDown="plusMinus(id_litA60856530_short,id_litA60856530_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA60856530_bdy">instituțiile publice;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA60856530_short" onMouseOver="marcheaza(id_litA60856530_short,id_litA60856530)" onMouseOut="demarcheaza(id_litA60856530_short,id_litA60856530)" onMouseDown="plusMinus(id_litA60856530_short,id_litA60856530_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA47173153"><span class="S_LIT_TTL" id="id_litA47173153_ttl" onMouseOver="marcheaza(id_litA47173153_ttl,id_litA47173153)" onMouseOut="demarcheaza(id_litA47173153_ttl,id_litA47173153)" onMouseDown="plusMinus(id_litA47173153_short,id_litA47173153_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA47173153_bdy">persoanele fizice care desfășoară activități economice sau exercită profesii libere, reglementate de legi speciale.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA47173153_short" onMouseOver="marcheaza(id_litA47173153_short,id_litA47173153)" onMouseOut="demarcheaza(id_litA47173153_short,id_litA47173153)" onMouseDown="plusMinus(id_litA47173153_short,id_litA47173153_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA38073377_short" onMouseOver="marcheaza(id_pctA38073377_short,id_pctA38073377)" onMouseOut="demarcheaza(id_pctA38073377_short,id_pctA38073377)" onMouseDown="plusMinus(id_pctA38073377_short,id_pctA38073377_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA30211666_short" onMouseOver="marcheaza(id_pctA30211666_short,id_pctA30211666)" onMouseOut="demarcheaza(id_pctA30211666_short,id_pctA30211666)" onMouseDown="plusMinus(id_pctA30211666_short,id_pctA30211666_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA76807311"><span class="S_PCT_TTL" id="id_pctA76807311_ttl" onMouseOver="marcheaza(id_pctA76807311_ttl,id_pctA76807311)" onMouseOut="demarcheaza(id_pctA76807311_ttl,id_pctA76807311)" onMouseDown="plusMinus(id_pctA76807311_short,id_pctA76807311_bdy)">II.<!----></span> <span class="S_PCT_BDY" id="id_pctA76807311_bdy">Înregistrarea/Modificarea domiciliului fiscal pentru contribuabilii de la <span class="S_LGI">pct. 2 lit. a)-c)</span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA71619494"><span class="S_PCT_TTL" id="id_pctA71619494_ttl" onMouseOver="marcheaza(id_pctA71619494_ttl,id_pctA71619494)" onMouseOut="demarcheaza(id_pctA71619494_ttl,id_pctA71619494)" onMouseDown="plusMinus(id_pctA71619494_short,id_pctA71619494_bdy)">3.<!----></span> <span class="S_PCT_BDY" id="id_pctA71619494_bdy">Competența de administrare a contribuabililor prevăzuți la <span class="S_LGI">pct. 2 lit. a)-c)</span> revine, până la finalizarea procedurii de înregistrare/modificare a domiciliului fiscal, organului fiscal de la ultimul domiciliu fiscal.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA71619494_short" onMouseOver="marcheaza(id_pctA71619494_short,id_pctA71619494)" onMouseOut="demarcheaza(id_pctA71619494_short,id_pctA71619494)" onMouseDown="plusMinus(id_pctA71619494_short,id_pctA71619494_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA11331523"><span class="S_PCT_TTL" id="id_pctA11331523_ttl" onMouseOver="marcheaza(id_pctA11331523_ttl,id_pctA11331523)" onMouseOut="demarcheaza(id_pctA11331523_ttl,id_pctA11331523)" onMouseDown="plusMinus(id_pctA11331523_short,id_pctA11331523_bdy)">4.<!----></span> <span class="S_PCT_BDY" id="id_pctA11331523_bdy"><span class="S_ALN" style="display: block; color:blue;" id="id_litA14492151"><span class="S_ALN_TTL" id="id_litA14492151_ttl" onMouseOver="marcheaza(id_litA14492151_ttl,id_litA14492151)" onMouseOut="demarcheaza(id_litA14492151_ttl,id_litA14492151)" onMouseDown="plusMinus(id_litA14492151_short,id_litA14492151_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA14492151_bdy">Pentru înregistrarea/modificarea domiciliului fiscal, contribuabilii prevăzuți la <span class="S_LGI">pct. 2 lit. a)-c)</span> depun la organul fiscal în a cărui rază teritorială urmează a se stabili domiciliul fiscal formularul 010 „Declarație de înregistrare fiscală/Declarație de mențiuni/Declarație de radiere pentru persoane juridice, asocieri și alte entități fără personalitate juridică“, formularul 016 „Declarație de înregistrare fiscală/Declarație de mențiuni/ Declarație de radiere pentru persoanele juridice străine care au locul de exercitare a conducerii efective în România“ sau formularul 040 „Declarație de înregistrare fiscală/Declarație de mențiuni/Declarație de radiere pentru instituțiile publice“, după caz, având completată secțiunea A „Date privind înregistrarea/ modificarea domiciliului fiscal“, însoțit de documente doveditoare ale informațiilor înscrise în acestea. Copiile de pe documente se certifică pe fiecare pagină de contribuabil/plătitor pentru conformitate cu originalul.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA32374293"><span class="S_ALN_TTL" id="id_litA32374293_ttl" onMouseOver="marcheaza(id_litA32374293_ttl,id_litA32374293)" onMouseOut="demarcheaza(id_litA32374293_ttl,id_litA32374293)" onMouseDown="plusMinus(id_litA32374293_short,id_litA32374293_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA32374293_bdy"> Solicitarea de înregistrare/modificare a domiciliului fiscal se soluționează în termen de 15 zile lucrătoare de la data depunerii formularului 010, 016 sau 040, după caz, prin emiterea deciziei de înregistrare/modificare a domiciliului fiscal, care se comunică contribuabilului/plătitorului.</span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA11331523_short" onMouseOver="marcheaza(id_pctA11331523_short,id_pctA11331523)" onMouseOut="demarcheaza(id_pctA11331523_short,id_pctA11331523)" onMouseDown="plusMinus(id_pctA11331523_short,id_pctA11331523_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA12523810"><span class="S_PCT_TTL" id="id_pctA12523810_ttl" onMouseOver="marcheaza(id_pctA12523810_ttl,id_pctA12523810)" onMouseOut="demarcheaza(id_pctA12523810_ttl,id_pctA12523810)" onMouseDown="plusMinus(id_pctA12523810_short,id_pctA12523810_bdy)">5.<!----></span> <span class="S_PCT_BDY" id="id_pctA12523810_bdy"><span class="S_ALN" style="display: block; color:blue;" id="id_litA43519935"><span class="S_ALN_TTL" id="id_litA43519935_ttl" onMouseOver="marcheaza(id_litA43519935_ttl,id_litA43519935)" onMouseOut="demarcheaza(id_litA43519935_ttl,id_litA43519935)" onMouseDown="plusMinus(id_litA43519935_short,id_litA43519935_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA43519935_bdy">Formularul 010, 016 sau 040, după caz, se transmite, în maximum 3 zile lucrătoare de la înregistrare, prin scrisoare recomandată cu confirmare de primire, de către organul fiscal prevăzut la <span class="S_LGI">pct. 4 alin. (1)</span> către organul fiscal în a cărui rază teritorială contribuabilul are ultimul domiciliu fiscal, în vederea întocmirii formalităților de transfer al dosarului fiscal.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA5898737"><span class="S_ALN_TTL" id="id_litA5898737_ttl" onMouseOver="marcheaza(id_litA5898737_ttl,id_litA5898737)" onMouseOut="demarcheaza(id_litA5898737_ttl,id_litA5898737)" onMouseDown="plusMinus(id_litA5898737_short,id_litA5898737_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA5898737_bdy"> Dosarul fiscal se transmite în termen de cel mult 10 zile de la primirea formularului 010, 016 sau 040, după caz, și va fi însoțit de un exemplar al certificatului de atestare fiscală, precum și de fișa de evidență pe plătitor.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA58281245"><span class="S_ALN_TTL" id="id_litA58281245_ttl" onMouseOver="marcheaza(id_litA58281245_ttl,id_litA58281245)" onMouseOut="demarcheaza(id_litA58281245_ttl,id_litA58281245)" onMouseDown="plusMinus(id_litA58281245_short,id_litA58281245_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA58281245_bdy"> Un exemplar al certificatului de atestare fiscală se comunică și contribuabilului de către organul fiscal emitent.</span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA12523810_short" onMouseOver="marcheaza(id_pctA12523810_short,id_pctA12523810)" onMouseOut="demarcheaza(id_pctA12523810_short,id_pctA12523810)" onMouseDown="plusMinus(id_pctA12523810_short,id_pctA12523810_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA35363975"><span class="S_PCT_TTL" id="id_pctA35363975_ttl" onMouseOver="marcheaza(id_pctA35363975_ttl,id_pctA35363975)" onMouseOut="demarcheaza(id_pctA35363975_ttl,id_pctA35363975)" onMouseDown="plusMinus(id_pctA35363975_short,id_pctA35363975_bdy)">6.<!----></span> <span class="S_PCT_BDY" id="id_pctA35363975_bdy">La primirea dosarului fiscal, organul fiscal în a cărui rază teritorială urmează să se stabilească domiciliul fiscal emite, în termen de maximum două zile lucrătoare, Decizia de înregistrare/modificare a domiciliului fiscal, potrivit modelului prevăzut în anexa nr. 5a) la ordin.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA35363975_short" onMouseOver="marcheaza(id_pctA35363975_short,id_pctA35363975)" onMouseOut="demarcheaza(id_pctA35363975_short,id_pctA35363975)" onMouseDown="plusMinus(id_pctA35363975_short,id_pctA35363975_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA34679814"><span class="S_PCT_TTL" id="id_pctA34679814_ttl" onMouseOver="marcheaza(id_pctA34679814_ttl,id_pctA34679814)" onMouseOut="demarcheaza(id_pctA34679814_ttl,id_pctA34679814)" onMouseDown="plusMinus(id_pctA34679814_short,id_pctA34679814_bdy)">7.<!----></span> <span class="S_PCT_BDY" id="id_pctA34679814_bdy"><span class="S_ALN" style="display: block; color:blue;" id="id_litA35871782"><span class="S_ALN_TTL" id="id_litA35871782_ttl" onMouseOver="marcheaza(id_litA35871782_ttl,id_litA35871782)" onMouseOut="demarcheaza(id_litA35871782_ttl,id_litA35871782)" onMouseDown="plusMinus(id_litA35871782_short,id_litA35871782_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA35871782_bdy">Decizia de înregistrare/modificare a domiciliului fiscal se întocmește în 3 exemplare, se vizează de conducătorul compartimentului cu atribuții în domeniul gestionării registrului contribuabililor și se aprobă de conducătorul organului fiscal.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA95848750"><span class="S_ALN_TTL" id="id_litA95848750_ttl" onMouseOver="marcheaza(id_litA95848750_ttl,id_litA95848750)" onMouseOut="demarcheaza(id_litA95848750_ttl,id_litA95848750)" onMouseDown="plusMinus(id_litA95848750_short,id_litA95848750_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA95848750_bdy"> Exemplarul Deciziei de înregistrare/modificare a domiciliului fiscal care se arhivează la dosarul fiscal al contribuabilului se semnează de către persoanele implicate potrivit competențelor stabilite prin Regulamentul de organizare și funcționare al direcțiilor generale regionale ale finanțelor publice București, Iași, Galați, Ploiești, Craiova, Timișoara, Cluj-Napoca, Brașov (aparat propriu și unități subordonate), precum și al Direcției generale de administrare a marilor contribuabili și prin prezenta procedură.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA74920869"><span class="S_ALN_TTL" id="id_litA74920869_ttl" onMouseOver="marcheaza(id_litA74920869_ttl,id_litA74920869)" onMouseOut="demarcheaza(id_litA74920869_ttl,id_litA74920869)" onMouseDown="plusMinus(id_litA74920869_short,id_litA74920869_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA74920869_bdy"> Un exemplar al deciziei se comunică contribuabilului, potrivit <A href="~/../../../Public/DetaliiDocumentAfis/251975">art. 47 din Codul de procedură fiscală</A>.</span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA34679814_short" onMouseOver="marcheaza(id_pctA34679814_short,id_pctA34679814)" onMouseOut="demarcheaza(id_pctA34679814_short,id_pctA34679814)" onMouseDown="plusMinus(id_pctA34679814_short,id_pctA34679814_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA45505993"><span class="S_PCT_TTL" id="id_pctA45505993_ttl" onMouseOver="marcheaza(id_pctA45505993_ttl,id_pctA45505993)" onMouseOut="demarcheaza(id_pctA45505993_ttl,id_pctA45505993)" onMouseDown="plusMinus(id_pctA45505993_short,id_pctA45505993_bdy)">8.<!----></span> <span class="S_PCT_BDY" id="id_pctA45505993_bdy"><span class="S_ALN" style="display: block; color:blue;" id="id_litA46601591"><span class="S_ALN_TTL" id="id_litA46601591_ttl" onMouseOver="marcheaza(id_litA46601591_ttl,id_litA46601591)" onMouseOut="demarcheaza(id_litA46601591_ttl,id_litA46601591)" onMouseDown="plusMinus(id_litA46601591_short,id_litA46601591_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA46601591_bdy">De la data comunicării deciziei, competența pentru administrarea contribuabilului revine organului fiscal de la noul domiciliu fiscal.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA26218493"><span class="S_ALN_TTL" id="id_litA26218493_ttl" onMouseOver="marcheaza(id_litA26218493_ttl,id_litA26218493)" onMouseOut="demarcheaza(id_litA26218493_ttl,id_litA26218493)" onMouseDown="plusMinus(id_litA26218493_short,id_litA26218493_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA26218493_bdy"> Un exemplar al Deciziei de înregistrare/modificare a domiciliului fiscal se transmite, însoțit de o copie a documentului care atestă data comunicării deciziei, organului fiscal de la fostul domiciliu fiscal.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA17772722"><span class="S_ALN_TTL" id="id_litA17772722_ttl" onMouseOver="marcheaza(id_litA17772722_ttl,id_litA17772722)" onMouseOut="demarcheaza(id_litA17772722_ttl,id_litA17772722)" onMouseDown="plusMinus(id_litA17772722_short,id_litA17772722_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA17772722_bdy"> Înregistrarea în registrul contribuabililor de la noul organ fiscal, precum și scoaterea din registrul contribuabililor de la vechiul organ fiscal se operează cu data comunicării deciziei.</span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA45505993_short" onMouseOver="marcheaza(id_pctA45505993_short,id_pctA45505993)" onMouseOut="demarcheaza(id_pctA45505993_short,id_pctA45505993)" onMouseDown="plusMinus(id_pctA45505993_short,id_pctA45505993_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA32950710"><span class="S_PCT_TTL" id="id_pctA32950710_ttl" onMouseOver="marcheaza(id_pctA32950710_ttl,id_pctA32950710)" onMouseOut="demarcheaza(id_pctA32950710_ttl,id_pctA32950710)" onMouseDown="plusMinus(id_pctA32950710_short,id_pctA32950710_bdy)">9.<!----></span> <span class="S_PCT_BDY" id="id_pctA32950710_bdy">La data înregistrării în registrul contribuabililor, noul organ fiscal emite certificatul de înregistrare fiscală/certificatul de înregistrare în scopuri de TVA, având înscris noul domiciliu fiscal.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA32950710_short" onMouseOver="marcheaza(id_pctA32950710_short,id_pctA32950710)" onMouseOut="demarcheaza(id_pctA32950710_short,id_pctA32950710)" onMouseDown="plusMinus(id_pctA32950710_short,id_pctA32950710_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA68808868"><span class="S_PCT_TTL" id="id_pctA68808868_ttl" onMouseOver="marcheaza(id_pctA68808868_ttl,id_pctA68808868)" onMouseOut="demarcheaza(id_pctA68808868_ttl,id_pctA68808868)" onMouseDown="plusMinus(id_pctA68808868_short,id_pctA68808868_bdy)">10.<!----></span> <span class="S_PCT_BDY" id="id_pctA68808868_bdy">După primirea Deciziei de înregistrare/modificare a domiciliului fiscal, contribuabilul se prezintă la organul fiscal în a cărui rază teritorială se află noul domiciliu fiscal, predă, în vederea anulării, vechiul certificat de înregistrare fiscală/certificat de înregistrare în scopuri de TVA și îl ridică pe cel nou.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA68808868_short" onMouseOver="marcheaza(id_pctA68808868_short,id_pctA68808868)" onMouseOut="demarcheaza(id_pctA68808868_short,id_pctA68808868)" onMouseDown="plusMinus(id_pctA68808868_short,id_pctA68808868_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA76807311_short" onMouseOver="marcheaza(id_pctA76807311_short,id_pctA76807311)" onMouseOut="demarcheaza(id_pctA76807311_short,id_pctA76807311)" onMouseDown="plusMinus(id_pctA76807311_short,id_pctA76807311_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA26593801"><span class="S_PCT_TTL" id="id_pctA26593801_ttl" onMouseOver="marcheaza(id_pctA26593801_ttl,id_pctA26593801)" onMouseOut="demarcheaza(id_pctA26593801_ttl,id_pctA26593801)" onMouseDown="plusMinus(id_pctA26593801_short,id_pctA26593801_bdy)">III.<!----></span> <span class="S_PCT_BDY" id="id_pctA26593801_bdy">Înregistrarea/Modificarea domiciliului fiscal pentru contribuabilii de la <span class="S_LGI">pct. 2 lit. d)</span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA41698205"><span class="S_PCT_TTL" id="id_pctA41698205_ttl" onMouseOver="marcheaza(id_pctA41698205_ttl,id_pctA41698205)" onMouseOut="demarcheaza(id_pctA41698205_ttl,id_pctA41698205)" onMouseDown="plusMinus(id_pctA41698205_short,id_pctA41698205_bdy)">11.<!----></span> <span class="S_PCT_BDY" id="id_pctA41698205_bdy">Organul fiscal competent pentru aplicarea procedurii de înregistrare/modificare a domiciliului fiscal în cazul contribuabililor prevăzuți la <span class="S_LGI">pct. 2 lit. d)</span> este organul fiscal în a cărui rază teritorială se află domiciliul fiscal al persoanei fizice, stabilit potrivit dispozițiilor <A href="~/../../../Public/DetaliiDocumentAfis/251975">art. 31 alin. (1) lit. a) din Codul de procedură fiscală.</A></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA41698205_short" onMouseOver="marcheaza(id_pctA41698205_short,id_pctA41698205)" onMouseOut="demarcheaza(id_pctA41698205_short,id_pctA41698205)" onMouseDown="plusMinus(id_pctA41698205_short,id_pctA41698205_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA39182097"><span class="S_PCT_TTL" id="id_pctA39182097_ttl" onMouseOver="marcheaza(id_pctA39182097_ttl,id_pctA39182097)" onMouseOut="demarcheaza(id_pctA39182097_ttl,id_pctA39182097)" onMouseDown="plusMinus(id_pctA39182097_short,id_pctA39182097_bdy)">12.<!----></span> <span class="S_PCT_BDY" id="id_pctA39182097_bdy">Pentru înregistrarea/modificarea domiciliului fiscal, contribuabilii prevăzuți la <span class="S_LGI">pct. 2 lit. d)</span> depun la organul fiscal în a cărui rază teritorială se află domiciliul fiscal al persoanei fizice, stabilit potrivit dispozițiilor <A href="~/../../../Public/DetaliiDocumentAfis/251975">art. 31 alin. (1) lit. a) din Codul de procedură fiscală</A>, formularul 070 „Declarație de înregistrare fiscală/Declarație de mențiuni/Declarație de radiere pentru persoanele fizice care desfășoară activități economice în mod independent sau exercită profesii libere“, având completată secțiunea A „Date privind înregistrarea/modificarea domiciliului fiscal“, însoțit de documente doveditoare ale informațiilor înscrise în acesta. Copiile de pe documente se certifică pe fiecare pagină de contribuabil/plătitor pentru conformitate cu originalul.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA39182097_short" onMouseOver="marcheaza(id_pctA39182097_short,id_pctA39182097)" onMouseOut="demarcheaza(id_pctA39182097_short,id_pctA39182097)" onMouseDown="plusMinus(id_pctA39182097_short,id_pctA39182097_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA13688414"><span class="S_PCT_TTL" id="id_pctA13688414_ttl" onMouseOver="marcheaza(id_pctA13688414_ttl,id_pctA13688414)" onMouseOut="demarcheaza(id_pctA13688414_ttl,id_pctA13688414)" onMouseDown="plusMinus(id_pctA13688414_short,id_pctA13688414_bdy)">13.<!----></span> <span class="S_PCT_BDY" id="id_pctA13688414_bdy">Solicitarea de înregistrare/modificare a domiciliului fiscal, după caz, se soluționează prin emiterea Deciziei de înregistrare/modificare a domiciliului fiscal, în termen de 15 zile lucrătoare de la data depunerii formularului 070.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA13688414_short" onMouseOver="marcheaza(id_pctA13688414_short,id_pctA13688414)" onMouseOut="demarcheaza(id_pctA13688414_short,id_pctA13688414)" onMouseDown="plusMinus(id_pctA13688414_short,id_pctA13688414_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA62833884"><span class="S_PCT_TTL" id="id_pctA62833884_ttl" onMouseOver="marcheaza(id_pctA62833884_ttl,id_pctA62833884)" onMouseOut="demarcheaza(id_pctA62833884_ttl,id_pctA62833884)" onMouseDown="plusMinus(id_pctA62833884_short,id_pctA62833884_bdy)">14.<!----></span> <span class="S_PCT_BDY" id="id_pctA62833884_bdy"><span class="S_ALN" style="display: block; color:blue;" id="id_litA12753261"><span class="S_ALN_TTL" id="id_litA12753261_ttl" onMouseOver="marcheaza(id_litA12753261_ttl,id_litA12753261)" onMouseOut="demarcheaza(id_litA12753261_ttl,id_litA12753261)" onMouseDown="plusMinus(id_litA12753261_short,id_litA12753261_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA12753261_bdy">Decizia de înregistrare/modificare a domiciliului fiscal se întocmește în 2 exemplare, potrivit modelului prevăzut în anexa nr. 5a) la ordin, se vizează de conducătorul compartimentului cu atribuții în domeniul gestionării registrului contribuabililor și se aprobă de conducătorul organului fiscal.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA42158998"><span class="S_ALN_TTL" id="id_litA42158998_ttl" onMouseOver="marcheaza(id_litA42158998_ttl,id_litA42158998)" onMouseOut="demarcheaza(id_litA42158998_ttl,id_litA42158998)" onMouseDown="plusMinus(id_litA42158998_short,id_litA42158998_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA42158998_bdy">Prevederile <span class="S_LGI">pct. 7 alin. (2)</span> și <span class="S_LGI">(3)</span> din prezenta procedură se aplică în mod corespunzător. </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA62833884_short" onMouseOver="marcheaza(id_pctA62833884_short,id_pctA62833884)" onMouseOut="demarcheaza(id_pctA62833884_short,id_pctA62833884)" onMouseDown="plusMinus(id_pctA62833884_short,id_pctA62833884_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA68033331"><span class="S_PCT_TTL" id="id_pctA68033331_ttl" onMouseOver="marcheaza(id_pctA68033331_ttl,id_pctA68033331)" onMouseOut="demarcheaza(id_pctA68033331_ttl,id_pctA68033331)" onMouseDown="plusMinus(id_pctA68033331_short,id_pctA68033331_bdy)">15.<!----></span> <span class="S_PCT_BDY" id="id_pctA68033331_bdy">Înregistrarea în registrul contribuabililor a noului domiciliu fiscal se operează cu data comunicării deciziei. </span><span style="display:none" class="S_PCT_SHORT" id="id_pctA68033331_short" onMouseOver="marcheaza(id_pctA68033331_short,id_pctA68033331)" onMouseOut="demarcheaza(id_pctA68033331_short,id_pctA68033331)" onMouseDown="plusMinus(id_pctA68033331_short,id_pctA68033331_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA47041910"><span class="S_PCT_TTL" id="id_pctA47041910_ttl" onMouseOver="marcheaza(id_pctA47041910_ttl,id_pctA47041910)" onMouseOut="demarcheaza(id_pctA47041910_ttl,id_pctA47041910)" onMouseDown="plusMinus(id_pctA47041910_short,id_pctA47041910_bdy)">16.<!----></span> <span class="S_PCT_BDY" id="id_pctA47041910_bdy">La data înregistrării în registrul contribuabililor a noului domiciliu fiscal, organul fiscal competent emite și certificatul de înregistrare fiscală/certificatul de înregistrare în scopuri de TVA, având înscris noul domiciliu fiscal.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA47041910_short" onMouseOver="marcheaza(id_pctA47041910_short,id_pctA47041910)" onMouseOut="demarcheaza(id_pctA47041910_short,id_pctA47041910)" onMouseDown="plusMinus(id_pctA47041910_short,id_pctA47041910_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA40621581"><span class="S_PCT_TTL" id="id_pctA40621581_ttl" onMouseOver="marcheaza(id_pctA40621581_ttl,id_pctA40621581)" onMouseOut="demarcheaza(id_pctA40621581_ttl,id_pctA40621581)" onMouseDown="plusMinus(id_pctA40621581_short,id_pctA40621581_bdy)">17.<!----></span> <span class="S_PCT_BDY" id="id_pctA40621581_bdy">După primirea Deciziei de înregistrare/modificare a domiciliului fiscal, contribuabilul se prezintă la organul fiscal competent, predă, în vederea anulării, vechiul certificat de înregistrare fiscală/certificat de înregistrare în scopuri de TVA și îl ridică pe cel nou.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA40621581_short" onMouseOver="marcheaza(id_pctA40621581_short,id_pctA40621581)" onMouseOut="demarcheaza(id_pctA40621581_short,id_pctA40621581)" onMouseDown="plusMinus(id_pctA40621581_short,id_pctA40621581_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA26593801_short" onMouseOver="marcheaza(id_pctA26593801_short,id_pctA26593801)" onMouseOut="demarcheaza(id_pctA26593801_short,id_pctA26593801)" onMouseDown="plusMinus(id_pctA26593801_short,id_pctA26593801_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA93560174"><span class="S_PCT_TTL" id="id_pctA93560174_ttl" onMouseOver="marcheaza(id_pctA93560174_ttl,id_pctA93560174)" onMouseOut="demarcheaza(id_pctA93560174_ttl,id_pctA93560174)" onMouseDown="plusMinus(id_pctA93560174_short,id_pctA93560174_bdy)">IV.<!----></span> <span class="S_PCT_BDY" id="id_pctA93560174_bdy">Dispoziții finale<span class="S_PCT" style="display: block; color:blue;" id="id_pctA62305603"><span class="S_PCT_TTL" id="id_pctA62305603_ttl" onMouseOver="marcheaza(id_pctA62305603_ttl,id_pctA62305603)" onMouseOut="demarcheaza(id_pctA62305603_ttl,id_pctA62305603)" onMouseDown="plusMinus(id_pctA62305603_short,id_pctA62305603_bdy)">18.<!----></span> <span class="S_PCT_BDY" id="id_pctA62305603_bdy">Dosarul solicitării de înregistrare/modificare a domiciliului fiscal se arhivează la dosarul fiscal al contribuabilului și cuprinde:<span class="S_LIT" style="display: block; color:blue;" id="id_litA6771878"><span class="S_LIT_TTL" id="id_litA6771878_ttl" onMouseOver="marcheaza(id_litA6771878_ttl,id_litA6771878)" onMouseOut="demarcheaza(id_litA6771878_ttl,id_litA6771878)" onMouseDown="plusMinus(id_litA6771878_short,id_litA6771878_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA6771878_bdy">formularul 010 „Declarație de înregistrare fiscală/ Declarație de mențiuni/Declarație de radiere pentru persoanele juridice, asocieri și alte entități fără personalitate juridică“ pentru contribuabilii prevăzuți la <span class="S_LGI">pct. 2 lit. a)</span>, formularul 016 „Declarație de înregistrare fiscală/Declarație de mențiuni/Declarație de radiere pentru persoanele juridice străine care au locul de exercitare a conducerii efective în România“ pentru contribuabilii prevăzuți la <span class="S_LGI">pct. 2 lit. b)</span>, formularul 040 „Declarație de înregistrare fiscală/Declarație de mențiuni/Declarație de radiere pentru instituțiile publice“ pentru contribuabilii prevăzuți la <span class="S_LGI">pct. 2 lit. c)</span> sau formularul 070 „Declarație de înregistrare fiscală/Declarație de mențiuni/Declarație de radiere pentru persoanele fizice care desfășoară activități economice în mod independent sau exercită profesii libere“ pentru contribuabilii prevăzuți la <span class="S_LGI">pct. 2 lit. d)</span>, după caz;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA6771878_short" onMouseOver="marcheaza(id_litA6771878_short,id_litA6771878)" onMouseOut="demarcheaza(id_litA6771878_short,id_litA6771878)" onMouseDown="plusMinus(id_litA6771878_short,id_litA6771878_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA53976301"><span class="S_LIT_TTL" id="id_litA53976301_ttl" onMouseOver="marcheaza(id_litA53976301_ttl,id_litA53976301)" onMouseOut="demarcheaza(id_litA53976301_ttl,id_litA53976301)" onMouseDown="plusMinus(id_litA53976301_short,id_litA53976301_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA53976301_bdy">documentația depusă de contribuabil;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA53976301_short" onMouseOver="marcheaza(id_litA53976301_short,id_litA53976301)" onMouseOut="demarcheaza(id_litA53976301_short,id_litA53976301)" onMouseDown="plusMinus(id_litA53976301_short,id_litA53976301_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA15262549"><span class="S_LIT_TTL" id="id_litA15262549_ttl" onMouseOver="marcheaza(id_litA15262549_ttl,id_litA15262549)" onMouseOut="demarcheaza(id_litA15262549_ttl,id_litA15262549)" onMouseDown="plusMinus(id_litA15262549_short,id_litA15262549_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA15262549_bdy">Decizia de înregistrare/modificare a domiciliului fiscal;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA15262549_short" onMouseOver="marcheaza(id_litA15262549_short,id_litA15262549)" onMouseOut="demarcheaza(id_litA15262549_short,id_litA15262549)" onMouseDown="plusMinus(id_litA15262549_short,id_litA15262549_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA75531573"><span class="S_LIT_TTL" id="id_litA75531573_ttl" onMouseOver="marcheaza(id_litA75531573_ttl,id_litA75531573)" onMouseOut="demarcheaza(id_litA75531573_ttl,id_litA75531573)" onMouseDown="plusMinus(id_litA75531573_short,id_litA75531573_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA75531573_bdy">certificatul de înregistrare fiscală anulat;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA75531573_short" onMouseOver="marcheaza(id_litA75531573_short,id_litA75531573)" onMouseOut="demarcheaza(id_litA75531573_short,id_litA75531573)" onMouseDown="plusMinus(id_litA75531573_short,id_litA75531573_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA98790940"><span class="S_LIT_TTL" id="id_litA98790940_ttl" onMouseOver="marcheaza(id_litA98790940_ttl,id_litA98790940)" onMouseOut="demarcheaza(id_litA98790940_ttl,id_litA98790940)" onMouseDown="plusMinus(id_litA98790940_short,id_litA98790940_bdy)">e)<!----></span> <span class="S_LIT_BDY" id="id_litA98790940_bdy">copia certificatului de înregistrare fiscală eliberat;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA98790940_short" onMouseOver="marcheaza(id_litA98790940_short,id_litA98790940)" onMouseOut="demarcheaza(id_litA98790940_short,id_litA98790940)" onMouseDown="plusMinus(id_litA98790940_short,id_litA98790940_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA39368132"><span class="S_LIT_TTL" id="id_litA39368132_ttl" onMouseOver="marcheaza(id_litA39368132_ttl,id_litA39368132)" onMouseOut="demarcheaza(id_litA39368132_ttl,id_litA39368132)" onMouseDown="plusMinus(id_litA39368132_short,id_litA39368132_bdy)">f)<!----></span> <span class="S_LIT_BDY" id="id_litA39368132_bdy">orice alte documente emise sau primite în cadrul derulării procedurii.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA39368132_short" onMouseOver="marcheaza(id_litA39368132_short,id_litA39368132)" onMouseOut="demarcheaza(id_litA39368132_short,id_litA39368132)" onMouseDown="plusMinus(id_litA39368132_short,id_litA39368132_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA62305603_short" onMouseOver="marcheaza(id_pctA62305603_short,id_pctA62305603)" onMouseOut="demarcheaza(id_pctA62305603_short,id_pctA62305603)" onMouseDown="plusMinus(id_pctA62305603_short,id_pctA62305603_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA23632987"><span class="S_PCT_TTL" id="id_pctA23632987_ttl" onMouseOver="marcheaza(id_pctA23632987_ttl,id_pctA23632987)" onMouseOut="demarcheaza(id_pctA23632987_ttl,id_pctA23632987)" onMouseDown="plusMinus(id_pctA23632987_short,id_pctA23632987_bdy)">19.<!----></span> <span class="S_PCT_BDY" id="id_pctA23632987_bdy">Dacă pe parcursul derulării procedurii contribuabilul se radiază, compartimentul de specialitate sistează procedura în derulare. În acest sens se întocmește un referat motivat, care se arhivează la dosarul fiscal al contribuabilului. </span><span style="display:none" class="S_PCT_SHORT" id="id_pctA23632987_short" onMouseOver="marcheaza(id_pctA23632987_short,id_pctA23632987)" onMouseOut="demarcheaza(id_pctA23632987_short,id_pctA23632987)" onMouseDown="plusMinus(id_pctA23632987_short,id_pctA23632987_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA93560174_short" onMouseOver="marcheaza(id_pctA93560174_short,id_pctA93560174)" onMouseOut="demarcheaza(id_pctA93560174_short,id_pctA93560174)" onMouseDown="plusMinus(id_pctA93560174_short,id_pctA93560174_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA26345414">
+			(la 13-05-2022, 
+			Procedura a fost modificată de <A href="~/../../../Public/DetaliiDocumentAfis/255411">Punctul 4, Articolul I din ORDINUL nr. 776 din 20 aprilie 2022, publicat în MONITORUL OFICIAL nr. 477 din 13 mai 2022</A>
+			)
+	</span>
+                                    </div>
+                                    <div id="div_Formerepublicate" class="content_forma_act" style="display: none" data-state="empty"></div>
+                                    <div id="div_Formadebaza" class="content_forma_act" style="display: none" data-state="empty"></div>
+
+
+                        </div>
+
+                        <div id="fisa_act_container" style="display: none" data-id="FisaAct" data-state="empty">
+                                <div id="div_Actiunisuferite" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_ActiuniInduse" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referape" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referitde" class="content_fisa_act" data-state="empty">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+ 
+<script type="text/javascript">
+    if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+        $("#meniu").css("float", "left");
+        $("#meniu").css("width", "20%");
+        $(".affix-top").css("position", "fixed");
+        $(".affix-top").css("top", "20px");
+        $(".affix-bottom").css("top", "20px");
+        $("#infoactinfoact").css("float", "right");
+        $("#infoactinfoact").css("width", "79%");
+        //var naturalWidth = img.naturalWidth;
+        //var imagini = document.getElementsByTagName("img");
+        //for (i=0;i<imagini.length;i++)
+        //{
+         //   alert(imagini[i].naturalWidth);
+         //   imagini[i].setAttribute("style","max-width:"+imagini[i].naturalWidth+"px");
+       // }
+       //////$("#infoactinfoact img").css("max-width", +"px");
+        /////alert($("#infoactinfoact img").width);
+        $("#infoactinfoact img").css("width", "auto");
+         
+        
+ 
+    }
+    var sbarHeight = null;
+
+    $(function () {
+
+        if (document.getElementsByClassName("alert")[0])
+            document.getElementsByClassName("alert")[0].style.visibility = 'hidden';
+
+        document.getElementById("Actiunisuferite").checked = false;
+        document.getElementById("ActiuniInduse").checked = false;
+        document.getElementById("Referape").checked = false;
+        document.getElementById("Referitde").checked = false;
+
+        //alert(document.getElementById("header_wrapper").offsetHeight);
+        //alert(screen.height);
+
+        var inaltime_meniu_stanga = screen.height - document.getElementById("header_wrapper").offsetHeight;
+        //alert(inaltime_meniu_stanga);
+        //  document.getElementById("meniu_stanga").style.maxHeight = inaltime_meniu_stanga + "px";
+
+        if (window.location.href.indexOf("forma_de_baza") != -1) {
+            document.getElementById("Formadebaza").style.disabled = true;
+            document.getElementById("Formadebaza").nextSibling.style.disabled = true;
+        }
+
+        if (window.location.href.indexOf("isFormaDeBaza") != -1) {
+            if (document.getElementById('istoric_fa'))
+                document.getElementById('istoric_fa').style.display = 'none'
+            document.getElementById("Formadebaza").checked = true;
+        }
+
+        if (window.location.href.indexOf("#A") != -1) {
+            var id_elem = window.location.href.split("#")[1];
+            window.scrollTo(id_elem.offsetHeight, 0);
+        }
+        else
+            window.scrollTo(0, 0);
+
+        //alert(document.getElementById('menu'));
+
+        //afisare/ascundere radio buttons (forme consolidate, forme republicate, forma de baza)
+
+        if (window.innerWidth < 1010) {
+            document.getElementById('sidebar').id = 'sidebar1';
+            document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar1'));
+            document.getElementById('sidebar1').style.display = 'block';
+        }
+
+        $('a[href*=#]:not([href=#])').click(function () {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+        && location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - 0 //offsets for fixed header
+                    }, 50);
+                    return false;
+                }
+            }
+        });
+        //Executed on page load with URL containing an anchor tag.
+        if ($(location.href.split("#")[1])) {
+            var target = $('#' + location.href.split("#")[1]);
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top - 0 //offset height of header here too.
+                }, 50);
+                return false;
+            }
+        }
+        /*
+        $("#sidebar").affix({
+            offset: {
+                top: $("header").outerHeight(true),
+                bottom: $("footer").outerHeight(true)+10
+            }
+        });
+        */
+        //alert(inaltimediv);
+        //document.getElementsByClassName('meniuaffix')[0].style.maxHeight = inaltimediv + "px";
+      $(window).resize(function () {
+            doResizeMenu();
+        });
+        
+        // scroll pe meniu la incarcare pagina (onload jQuery)
+      doResizeMenu();
+      imgSIZE(); // redim poze
+
+      // inaltime initiala sidebar
+      if ($("#sidebar").html())
+          sbarHeight = $("#sidebar").height();
+      else
+          sbarHeight = $("#sidebar1").height();
+        
+      $(window).scroll(function () {
+          if (isScrolledIntoView($(".footer_logo"))) {
+              $("#sidebar").height(sbarHeight - 200);
+          }
+          else {
+              $("#sidebar").height(sbarHeight);
+          }
+      });
+
+      var _tipact = 3;
+        //alert(_tipact);
+        if ((_tipact == 3 || _tipact == 2) && window.location.href.indexOf('isFormaDeBaza') == -1)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }        
+        else
+        {
+            //republicare
+            if (_tipact == 4)
+            {
+                if (document.getElementById('Formerepublicate'))
+                {
+                    document.getElementById('Formerepublicate').checked = true;
+                }
+                else if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+            }
+            else
+                if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+        }
+        //republicata (fortez forma de baza)
+        if (_tipact == 5)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }
+
+    }); // onload jQuery END
+
+    function doResizeMenu() {
+        var proc = 65;
+        var wh = window.innerHeight;
+        var dy = Math.floor(proc*wh/100);
+        var inaltimediv = window.innerHeight;
+        //var inaltimediv = window.innerHeight - $('#header_footer').height() - 400; // $("#footer_wrapper").height();
+        var inaltimediv1 = window.innerHeight - $('#header_wrapper').height();
+        
+        $("#sidebar").height(dy);
+        $("#sidebar1").height(inaltimediv1);
+    }
+
+    function AfiseazaTextModificat(e) {
+        // console.log($(e).prop("checked"));
+    }
+    function toggle_cuprins() {
+        if (document.getElementById('tree_cuprins_act').style.display != 'none')
+            document.getElementById('tree_cuprins_act').style.display = 'none'
+        else
+            document.getElementById('tree_cuprins_act').style.display = 'block';
+    }
+
+    function toggle_fisaact() {
+        if (document.getElementById('content_fisaact').style.display != 'none') {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '+';
+            document.getElementById('content_fisaact').style.display = 'none'
+        }
+        else {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '&#8212;&#160;';
+            document.getElementById('content_fisaact').style.display = 'block';
+        }
+    }
+
+    function toggle_istoric_forme_actz() {
+        if (document.getElementById('istoric_fa').style.display != 'none') {
+            document.getElementById('istoric_fa').style.display = 'none';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidari";
+        }
+        else {
+            document.getElementById('istoric_fa').style.display = 'block';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;&#8212;&nbsp;istoric consolidari";
+        }
+    }
+    function scroll_to_fa() {
+        if (document.getElementById('fa_selectata'))
+            document.getElementById('meniu_stanga').scrollTop = document.getElementById('fa_selectata').offsetTop;
+    }
+    function ArataFisaAct(elem) {
+        //alert(elem.id);
+        if (elem.id == 'Actiunisuferite')
+        {
+            if (document.getElementById('actiuni_suferite').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniSuferite", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_suferite').style.height = '30px';
+                    document.getElementById('actiuni_suferite').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_suferite').style.display == 'none')
+                document.getElementById('actiuni_suferite').style.display = 'block';            
+            else
+                document.getElementById('actiuni_suferite').style.display = 'none';
+            
+        }
+
+        if (elem.id == 'ActiuniInduse')
+        {
+            if (document.getElementById('actiuni_induse').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniInduse", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_induse').style.height = '30px';
+                    document.getElementById('actiuni_induse').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_induse').style.display == 'none')
+                document.getElementById('actiuni_induse').style.display = 'block';
+            else
+                document.getElementById('actiuni_induse').style.display = 'none';
+        }
+
+        if (elem.id == 'Referape')
+        {
+            if (document.getElementById('refera_pe').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referaPe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('refera_pe').style.height = '30px';
+                    document.getElementById('refera_pe').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('refera_pe').style.display == 'none')
+                document.getElementById('refera_pe').style.display = 'block';
+            else
+                document.getElementById('refera_pe').style.display = 'none';
+        }
+
+        if (elem.id == 'Referitde')
+        {
+            if (document.getElementById('referit_de').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referitDe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('referit_de').style.height = '30px';
+                    document.getElementById('referit_de').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('referit_de').style.display == 'none')
+                document.getElementById('referit_de').style.display = 'block';
+            else
+                document.getElementById('referit_de').style.display = 'none';
+        }
+        window.scrollTo(0, 0);
+
+    }
+    function alege_articol(tip, select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+        var id_elem = '';
+
+        if (tip == 1)
+            id = "actiuni_suferite";
+        else if (tip == 2)
+            id = "actiuni_induse";
+        else if (tip == 3)
+            id = "refera_pe";
+        else
+            id = "referit_de";
+
+        var linii_tabel = document.getElementById(id).childNodes[4].childNodes[0].childNodes;
+
+        if (element_selectat == 'Toate sectiunile')
+            for (i = 0; i < linii_tabel.length; i++) {
+                linii_tabel[i].style.display = 'table-row';
+            }
+        else {
+            linii_tabel[0].style.display = 'table-row';
+            for (i = 1; i < linii_tabel.length; i++) {
+                var element_gasit = linii_tabel[i].childNodes[0].innerHTML;
+                if (element_selectat != element_gasit)
+                    linii_tabel[i].style.display = 'none';
+                else
+                    linii_tabel[i].style.display = 'table-row';
+            }
+        }
+    }
+
+    function alege_articol_ref(select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+
+        $("#loaderDiv").show();
+        $.post("/Public/getReferitDe", { contor: document.getElementById('id_act').value, element: element_selectat }, function (result) {
+            if (result.acte.indexOf('Nu exist') != -1)
+                document.getElementById('referit_de').style.height = '30px';
+            document.getElementById('referit_de').innerHTML = result.acte;
+            $("#loaderDiv").hide();
+        });
+
+    }
+
+    function incarcaFormaDeBaza(contor) {
+        $.post("/Public/DetaliiDocument/255116", { isFormaDeBaza: true }, function (result) {
+            window.location.href = result.Url;
+        });
+    }
+    function myFunction() {
+        var latime = window.innerWidth;
+        if (latime < 1010) {
+            if (document.getElementById('sidebar')) {
+                document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar'));
+                document.getElementById('sidebar').style.display = 'block';
+                // $("#sidebar").hide(); // display : none
+                // $("#sidebar").show(); // display : default
+                document.getElementById('sidebar').id = 'sidebar1';
+            }
+        }
+        else {
+            if (document.getElementById('sidebar1')) {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar1'), document.getElementById('infoact'));
+                document.getElementById('sidebar1').style.display = 'block';
+                document.getElementById('sidebar1').id = 'sidebar';
+                setTimeout(function () { $("#sidebar").height(sbarHeight); }, 1000);
+                
+            }
+            else {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar'), document.getElementById('infoact'));
+                document.getElementById('sidebar').style.display = 'block';
+                //document.getElementById('sidebar').id = 'sidebar';
+            }
+        }
+    }
+    //document.getElementById('menu').appendChild(document.getElementById('sidebar'));
+    //document.getElementById('sidebar').style.display = 'inline';
+    //document.getElementById('sidebar').style.zIndex = '999';
+    window.onresize = myFunction;
+
+    function isScrolledIntoView(elem) {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+
+        var elemTop = $(elem).offset().top;
+        var elemBottom = elemTop + $(elem).height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+    $(document).ready(function () {
+        doResizeMenu();
+    });
+    $(window).resize(function () {
+        doResizeMenu();
+    });
+</script>
+                </div>
+                <div class="clear"></div>
+
+            </div>
+            <div class="clear"></div>
+ 
+        </div>
+        <footer>
+            <div id="footer_wrapper">
+                <div class="footer_wrapper_inner bs-docs-footer">
+                    <div class="footer_inner">
+                        <div class="footer_logo"></div>
+                        <ul class="top_menu">
+                            <li class="floatnone" style="margin-left: -70px;">
+                                <center>
+                                    <div style="max-width:1024px;">
+                                        <br /><img src="/Content/Images/Site/justitie_logo.png" style="max-width:90px; position:relative; z-index:9999; width:100%; margin-top:-35px;" align="left" alt="logo" />
+                                        <p style="text-transform:none;">Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.</p>
+                                        <br />
+                                        <center><p style="text-transform:none;">Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați <a onmouseover="this.style.color = '#386897'" onmouseout="    this.style.color = '#ffffff'" style="color: #ffffff; font-weight:bold;" href="http://www.fonduri-ue.ro">www.fonduri-ue.ro</a>.</p></center>
+                                    </div>
+                                </center>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="footer_bottom">
+                    <div class="footer_inner">
+                        <div class="copyright left">
+                            Copyright &copy; 2026 - Ministerul Justiției. Toate drepturile rezervate. - <a href="/Public/Termeni">Termeni și Condiții</a>
+                            <div id="meniufooter">
+
+                            </div>
+                        </div>
+                        <div class="copyright right">        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Acasa">
+
+    &nbsp;&#124;&nbsp;Acasă
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/NLEX">
+
+    &nbsp;&#124;&nbsp;Despre Proiect
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Functionalitati">
+
+    &nbsp;&#124;&nbsp;Facilități Oferite 
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/LegaturiUtile">
+
+    &nbsp;&#124;&nbsp;Legături Utile
+
+</a>
+        </li>
+
+
+</div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.toggle-menu').jPushMenu();
+
+                $('ul.mainmenu li.dropdown').hover(function () {
+                    $(this).find('a.main_link').addClass('active');
+                    $(this).find('.level2_menu').show();
+                    $('li.dropdown_2').hover(function () {
+                        $(this).find('a.second_link').addClass('second_active');
+                        $(this).find('.level3_menu').show();
+
+                    }, function () {
+                        $(this).find('a.second_link').removeClass('second_active');
+                        $('.level3_menu').hide();
+                    });
+
+                }, function () {
+                    $(this).find('a.main_link').removeClass('active');
+                    $('.level2_menu').hide();
+                });
+    
+                if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+
+                    $('#mesajIe8Modal').modal('show');
+
+                }
+            });
+            //
+
+
+
+            $(document).ready(function () {
+
+
+                //stick in the fixed 100% height behind the navbar but don't wrap it
+                $('#slide-nav.navbar-inverse').after($('<div class="inverse" id="navbar-height-col"></div>'));
+
+                $('#slide-nav.navbar-default').after($('<div id="navbar-height-col"></div>'));
+
+                // Enter your ids or classes
+                var toggler = '.navbar-toggle';
+                var pagewrapper = '#page-content';
+                var navigationwrapper = '.navbar-header';
+                var menuwidth = '100%'; // the menu inside the slide menu itself
+                var slidewidth = '60%';
+                var menuneg = '-100%';
+                var slideneg = '-60%';
+
+
+                $("#slide-nav").on("click", toggler, function (e) {
+
+                    var selected = $(this).hasClass('slide-active');
+
+                    $('#slidemenu').stop().animate({
+                        left: selected ? menuneg : '0px'
+                    });
+
+                    $('#navbar-height-col').stop().animate({
+                        left: selected ? slideneg : '0px'
+                    });
+
+                    $(pagewrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+                    $(navigationwrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+
+                    $(this).toggleClass('slide-active', !selected);
+                    $('#slidemenu').toggleClass('slide-active');
+
+
+                    $('#page-content, .navbar, body, .navbar-header').toggleClass('slide-active');
+
+
+                });
+
+
+                var selected = '#slidemenu, #page-content, body, .navbar, .navbar-header';
+
+
+                $(window).on("resize", function () {
+
+                    if ($(window).width() > 1010 && $('.navbar-toggle').is(':hidden')) {
+                        $(selected).removeClass('slide-active');
+                    }
+
+
+                });
+
+
+            });
+        </script>
+        
+    </div>
+    <script>
+
+        function replaceScript() {
+            var toReplace = '<a href="javascript:;">Proiect</a>';
+            var replaceWith = '';
+            document.body.innerHTML = document.body.innerHTML.replace(toReplace, replaceWith);
+        }
+        replaceScript();
+
+        if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+            $("#toTop").hide();
+            $(".meniunu").hide();
+            $(".icon-bar").hide();
+            $("#btnNavbar").hide();
+            $(".navbar-header").hide();
+            $("body").css("min-width", "600px");
+
+        }
+
+       /* if (navigator.appName.indexOf("Netscape") != -1) {
+            $("#page_wrapper").css("transform", "scale(0.8)");
+            alert(0);
+            $("#page_wrapper").css("transform-origin", "50% 0% ");
+        }*/
+    </script>
+    
+    <!-- BETA Mesaj -->
+    <div class="modal fade" id="mesajBetaModal" tabindex="-1" role="dialog" aria-labelledby="mesajBetaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Versiune Beta</center></div>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        A fost lansata versiunea Beta a Portalului Legislativ<br /><br /><br />
+                    Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect.</center>  
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- IE8 Mesaj -->
+    <div class="modal fade" id="mesajIe8Modal" tabindex="-1" role="dialog" aria-labelledby="mesajIe8ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect!</center></div>
+                </div>
+                <div class="modal-body">
+                    <div style="width:100%;">
+                        <div style="width:50%; float:left; text-transform:uppercase;">
+                            <span style="font-size:18px; font-weight:bold; text-transform:none;">Ce browser sa aleg?</span>
+                            <br /><br /><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/chrome.jpg" align="left" width="69" style="padding-right:10px;" /><b>Google Chrome</b><br />
+                                <br /><a href="http://www.google.com/chrome" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/firefox.jpg" align="left" width="69" style="padding-right:10px;" /><b>Mozilla Firefox</b><br />
+                                <br /><a href="https://www.mozilla.org/en-US/firefox/all/?q=romania" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/ie.jpg" align="left" width="69" style="padding-right:10px;" /><b>Internet Explorer</b><br />
+                                <br />
+                                <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/safari.jpg" align="left" width="69" style="padding-right:10px;" /><b>Apple Safari</b><br />
+                                <br /><a href="http://www.apple.com/safari/" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div>
+                        </div>
+                        <div style="width:50%; float:left;">
+                            <span style="font-size:18px; font-weight:bold;">De ce sa actualizez browserul?</span>
+                            <br /><br /><br />
+                            Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+                            <br /><br />
+                            Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+                            <br /><br /><br />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

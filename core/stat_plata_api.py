@@ -33,6 +33,14 @@ def stat_plata(conn, schema, an, luna):
             FROM {schema}.concedii_medicale WHERE an = %s AND luna = %s GROUP BY salariat_id
         """, (an, luna))
         cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3])} for r in cur.fetchall()}
+    # [lot 19 pct.4c] suspendările (CFP / suspendare) ale fiecărui salariat — afișate și editate din rândul statului
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT salariat_id, data_inceput, data_sfarsit, tip, temei FROM {schema}.suspendari_contract "
+                    f"ORDER BY salariat_id, data_inceput")
+        susp_toate = {}
+        for _sid, _a, _b, _tip, _tm in cur.fetchall():
+            susp_toate.setdefault(_sid, []).append({"data_inceput": _a.isoformat(), "data_sfarsit": _b.isoformat(),
+                                                    "tip": _tip, "temei": _tm or ""})
     # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
     vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
     cult_luna = _ben.lista_luna(conn, schema, an, luna, "cultural")  # [tichete culturale]
@@ -52,7 +60,12 @@ def stat_plata(conn, schema, an, luna):
     for (sid, nume, prenume, cnp, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
          data_nastere, copii_scolarizati, declaratie_copii, functie_baza) in randuri:
         brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
-        _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, sid, an, luna, data_ang, data_inc)
+        # [lot 19 pct.4c] prezența în contract în lună: angajare/încetare, CFP/suspendare, schimbare de salariu.
+        # Codul muncii art.159 alin.(1) + art.49 alin.(2); brutul cuvenit = Σ salariul zilei / zile lucrătoare.
+        _susp = _si.suspendari_luna(_cs_sal, schema, sid, an, luna)
+        _za = len(_si.zile_active(an, luna, data_ang, data_inc, _susp))
+        _brut_cuv = float(_si.brut_cuvenit(_cs_sal, schema, sid, an, luna, data_ang, data_inc, _susp))
+        _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, sid, an, luna, data_ang, data_inc, _susp)
         _fac_prorata = (_zlm / _zll) if _zll else 0.0  # lit.a): zile ACTIVE si LA MINIM
         c_cm = cm.get(sid)
         # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
@@ -67,11 +80,14 @@ def stat_plata(conn, schema, an, luna):
         _pontaj_neconf = float(tichet_val or 0) > 0 and not _pontaj_confirmat
         _tichet_val = 0.0 if _pontaj_neconf else float(tichet_val or 0)
         _fara_tichet = _pontaj.zile_fara_tichet(conn, schema, sid, an, luna) if _tichet_val > 0 else 0
-        tichet_zile = max(zile_luna - cm_zile - _fara_tichet, 0)
+        # [lot 19 pct.4c] tichetele pe zilele ACTIVE ale contractului (nu pe toată luna): HG 1045/2018 art.10(3)
+        tichet_zile = max(_za - cm_zile - _fara_tichet, 0)
+        # CM pe zile din contract: brutul cuvenit (prezența) minus zilele de CM la salariul mediu zilnic al prezenței.
+        # Lună întreagă fără schimbare: _brut_cuv = brut și _za = zile_luna -> exact formula de dinainte.
         if cm_zile > 0:
-            brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna
+            brut_lucrat = (_brut_cuv * max(_za - cm_zile, 0) / _za) if _za else 0.0
         else:
-            brut_lucrat = float(brut or 0)
+            brut_lucrat = _brut_cuv
         vac = vac_luna.get(sid, 0)  # [F133 Faza 2a] tichete vacanta acordate in luna
         cult = cult_luna.get(sid, 0)  # [tichete culturale] acordate in luna (lunar + ocazional)
         cresa = cresa_luna.get(sid, 0)  # [tichete de cresa] acordate in luna
@@ -93,7 +109,8 @@ def stat_plata(conn, schema, an, luna):
                                          tichet_cresa=float(cresa or 0),
                                          sub_26=salarizare.sub_26_la(data_nastere, ref),   # [deducere suplimentara]
                                          copii_scoala=(int(copii_scolarizati or 0) if declaratie_copii else 0),
-                                         declaratie_copii=bool(declaratie_copii))
+                                         declaratie_copii=bool(declaratie_copii),
+                                         suspendari=_susp)
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -106,6 +123,9 @@ def stat_plata(conn, schema, an, luna):
             "tip_norma": ("partiala" if part_time else "intreaga"),
             "data_angajare": data_ang.isoformat() if data_ang else None, "ore_zi": ore_zi,
             "brut": float(calc["brut"]), "cas": float(calc["cas"]),
+            # [lot 19 pct.4c] transparența proratării: salariul din contract și zilele lucrătoare active din lună
+            "brut_contractual": float(brut or 0), "zile_active": _za,
+            "suspendari": susp_toate.get(sid, []),
             "cass": float(calc["cass"]), "impozit": float(calc["impozit"]),
             "deducere": float(calc["deducere"]["total"]),
             # [deducere_desfacuta 22.08.2026] componentele, ca fluturasul sa poata NUMI

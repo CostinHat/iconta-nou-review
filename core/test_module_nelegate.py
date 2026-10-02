@@ -23,6 +23,12 @@ from core import scan_module_nelegate as scan
 
 # Fiecare intrare poartă DE CE e aici. O intrare fără motiv ar face clichetul o listă de tolerat.
 PIN = {
+    # [lot 19, 02.10.2026] comparatorul pe articol al corpusului: apelantii lui sunt GARDUL
+    # (core/test_corpus_continut.py) si scriptul de aducere a documentelor (scripts/import_corpus_fiscal.py) —
+    # amandoi in afara domeniului „productie” al scanului. Nu e cod mort: e instrumentul care probeaza ca un act din
+    # corpus e intreg. Se scoate din PIN cand un modul din core/ il cheama (ex. o verificare la pornire).
+    "core/corpus_continut.py":
+        "comparator pe articol al corpusului; apelanti: core/test_corpus_continut.py si scripts/import_corpus_fiscal.py",
     # [R68, 11.09.2026] INSTRUMENT DE DIAGNOSTIC, legat din afara domeniului scanului.
     # Apelantul lui e `conftest.py` (radacina), care il monteaza cand `ICONTA_SONDA_SCRIERI=1` —
     # iar scanul citeste `core/` si `main.py`, nu radacina. Nu e cod mort si nu e nelegat: e

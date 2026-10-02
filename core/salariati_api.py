@@ -254,6 +254,69 @@ def detalii_salariat(conn, salariat_id):
 # ============================================================
 #  EDITARE (doar câmpurile trimise, validate)
 # ============================================================
+def _refuz_suspendare(cod, mesaj):
+    """[lot 19 pct.4c] Refuzul unei suspendări: mesajul pentru om + `cod` (motivul, ca dată — gărzile asertează pe el)."""
+    e = _eroare_campuri([("suspendari", mesaj)])
+    e.cod = cod
+    return e
+
+
+TIPURI_SUSPENDARE = {"cfp": "Concediu fără plată (Codul muncii art.54, art.153)",
+                     "suspendare": "Suspendare fără drepturi salariale (Codul muncii art.49 alin.(2))"}
+
+
+def valideaza_suspendari(conn, salariat_id, lista):
+    """[lot 19 pct.4c] Lista de suspendări a salariatului, validată ÎNAINTE de scriere. Întoarce
+    `[(inceput, sfarsit, tip, temei)]` sau ridică cu câmpul numit. Refuză: tip necunoscut, dată lipsă/invalidă, sfârșit
+    înaintea începutului, interval în afara contractului (art.49: se suspendă un contract EXISTENT), suprapuneri între
+    ele, suprapunere cu un concediu medical (aceeași zi nu poate fi și CM, și CFP — ar scădea de două ori din brut)."""
+    from datetime import date as _dm
+    from core import repo_salariati as _rs
+    if not isinstance(lista, list):
+        raise _refuz_suspendare("nu_e_lista", "Lista de suspendări trebuie să fie o listă.")
+    with conn.cursor() as cur:
+        contract = _rs.contract_salariat(cur, salariat_id)
+    da, di = (contract or (None, None))[:2]
+    out = []
+    for i, x in enumerate(lista, 1):
+        x = x if isinstance(x, dict) else {}
+        tip = str(x.get("tip") or "").strip()
+        if tip not in TIPURI_SUSPENDARE:
+            raise _refuz_suspendare("tip_necunoscut", "Suspendarea %d: tipul trebuie să fie „cfp” sau „suspendare”." % i)
+        try:
+            a = _dm.fromisoformat(str(x.get("data_inceput") or "")[:10])
+            b = _dm.fromisoformat(str(x.get("data_sfarsit") or "")[:10])
+        except ValueError:
+            raise _refuz_suspendare("data_lipsa", "Suspendarea %d: data de început și data de sfârșit sunt "
+                                                  "obligatorii (AAAA-LL-ZZ)." % i)
+        if b < a:
+            raise _refuz_suspendare("interval_inversat", "Suspendarea %d: sfârșitul (%s) e înaintea începutului (%s)." % (i, b, a))
+        if da and a < da:
+            raise _refuz_suspendare("inainte_de_angajare", "Suspendarea %d începe pe %s, înainte de angajare (%s): se "
+                                    "suspendă doar un contract în vigoare (Codul muncii art.49)." % (i, a, da))
+        if di and b > di:
+            raise _refuz_suspendare("dupa_incetare", "Suspendarea %d se termină pe %s, după încetarea contractului (%s)."
+                                    % (i, b, di))
+        out.append((a, b, tip, (str(x.get("temei") or "").strip() or None)))
+    out.sort()
+    for (a1, b1, _t1, _), (a2, b2, _t2, _) in zip(out, out[1:]):
+        if a2 <= b1:
+            raise _refuz_suspendare("suprapunere", "Suspendările %s–%s și %s–%s se suprapun." % (a1, b1, a2, b2))
+    with conn.cursor() as cur:
+        for a, b, _t, _ in out:
+            cm = _rs.concedii_medicale_suprapuse(cur, salariat_id, a, b)
+            if cm:
+                raise _refuz_suspendare("suprapunere_cm", "Suspendarea %s–%s se suprapune cu concediul medical %s–%s: "
+                                        "aceeași zi nu poate fi și CM, și suspendare." % (a, b, cm[0][0], cm[0][1]))
+    return out
+
+
+def seteaza_suspendari(conn, salariat_id, lista_validata):
+    from core import repo_salariati as _rs
+    with conn.cursor() as cur:
+        _rs.inlocuieste_suspendari(cur, salariat_id, lista_validata)
+
+
 def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):
     """Editează câmpurile date (validate). salariu_brut e o SCHIMBARE DE SALARIU -> intrare NOUĂ în
     salariu_istoric la valabil_din (implicit azi), nu UPDATE pe salariati (PASUL 2b, sursă unică).

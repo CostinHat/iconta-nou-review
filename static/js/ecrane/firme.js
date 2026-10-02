@@ -8,7 +8,7 @@ import { randeazaFacturi } from "./facturi_ecran.js?v=8f18740e04";
 import { ecranRip } from "./rip_ecran.js?v=2a75ab957d";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=01442b1818";
 import { ecranEtransport } from "./etransport_ecran.js?v=2062674928";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=a5c7c91eb0";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=1e5f799f85";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=ee0e72294a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
@@ -1155,6 +1155,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
           <button class="buton-secundar" data-date="${s.id}" data-dnume="${esc(s.nume_ed || "")}" data-dpren="${esc(s.prenume_ed || "")}" data-dcnp="${esc(s.cnp || "")}" data-dang="${esc(s.data_angajare || "")}" data-dnorma="${esc(s.tip_norma || "")}" data-dorezi="${esc(s.ore_zi == null ? "" : String(s.ore_zi))}">Corectează datele</button>
+          <button class="buton-secundar" data-susp="${s.id}" data-nume="${esc(s.nume)}">${(s.suspendari || []).length ? `Suspendări (${s.suspendari.length})` : "Suspendare / CFP"}</button>
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -1179,6 +1180,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-incet-zona"></div>
       <div id="sp-salariu-zona"></div>
       <div id="sp-date-zona"></div>
+      <div id="sp-susp-zona"></div>
       ${!areIban ? `<div class="caseta-info"><span class="ci-mesaj">Fișierul de plată pe card (SEPA) e indisponibil: niciun salariat nu are IBAN completat. Adaugă IBAN-ul cu butonul „IBAN ⚠" de pe salariat.</span></div>` : ""}
       ${!regesOk ? `<div class="caseta-info"><span class="ci-mesaj">„Răspunsuri REGES" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES".</span></div>` : ""}
       ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
@@ -1526,6 +1528,67 @@ async function ecranSalariati(corp, nav, t) {
           zonaDate.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
+    }));
+    // [lot 19 pct.4c] Suspendari FARA drepturi salariale (CFP / suspendare) - Codul muncii art.49 alin.(2), art.54, art.153.
+    // Statul de plata si D112 proratizeaza brutul pe zilele lucratoare active. DS cap.24: lista se RE-RANDEAZA din model,
+    // fiecare rand se poate sterge (.buton-sters), id-uri {prefix}{i}-{camp}; validarea e a backendului. DS cap.1: zona
+    // toggle -> .buton-activ + inchide zonele-frate; actiune asincrona -> buton dezactivat + "Se salvează…". DS cap.27:
+    // actul se incheie cu o confirmare care numeste salariatul si consecinta.
+    const zonaSusp = corp.querySelector("#sp-susp-zona");
+    const TIP_SUSP = { cfp: "Concediu fără plată", suspendare: "Suspendare fără drepturi salariale" };
+    corp.querySelectorAll("[data-susp]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.susp;
+      const sal = stat.find((x) => String(x.id) === String(sid)) || {};
+      const model = (sal.suspendari || []).map((x) => ({ ...x }));
+      corp.querySelectorAll("[id^='sp-'][id$='-zona']").forEach((z) => { if (z !== zonaSusp) z.innerHTML = ""; });
+      corp.querySelectorAll("[data-susp]").forEach((x) => x.classList.remove("buton-activ"));
+      b.classList.add("buton-activ");
+      const inchide = () => { zonaSusp.innerHTML = ""; b.classList.remove("buton-activ"); };
+      const citeste = () => model.forEach((x, i) => {
+        x.data_inceput = zonaSusp.querySelector(`#susp${i}-inceput`).value;
+        x.data_sfarsit = zonaSusp.querySelector(`#susp${i}-sfarsit`).value;
+        x.tip = zonaSusp.querySelector(`#susp${i}-tip`).value;
+        x.temei = zonaSusp.querySelector(`#susp${i}-temei`).value.trim();
+      });
+      const randeaza = () => {
+        const lista = model.length
+          ? model.map((x, i) => `<div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:6px 0">
+              <label class="camp"><span class="camp-eticheta">De la<span class="oblig">*</span></span><input type="date" id="susp${i}-inceput" class="camp-input" value="${esc(x.data_inceput || "")}"></label>
+              <label class="camp"><span class="camp-eticheta">Până la<span class="oblig">*</span></span><input type="date" id="susp${i}-sfarsit" class="camp-input" value="${esc(x.data_sfarsit || "")}"></label>
+              <label class="camp"><span class="camp-eticheta">Tip<span class="oblig">*</span></span><select id="susp${i}-tip" class="camp-input">${Object.entries(TIP_SUSP).map(([k, v]) => `<option value="${k}" ${(x.tip || "cfp") === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+              <label class="camp"><span class="camp-eticheta">Act / temei</span><input id="susp${i}-temei" class="camp-input" value="${esc(x.temei || "")}"></label>
+              <button class="buton-sters buton-mic" data-susp-sterge="${i}">Șterge</button></div>`).join("")
+          : `<div class="stare-goala stare-goala--inline">Nicio suspendare înregistrată: luna se plătește pe toate zilele din contract. Dacă salariatul a avut concediu fără plată sau contract suspendat, adaugă perioada cu „+ Adaugă”.</div>`;
+        zonaSusp.innerHTML = `<div style="margin:10px 0;padding:12px;border:1px solid var(--linie);border-radius:var(--raza)">
+          <div class="camp-eticheta" style="font-weight:600;margin-bottom:6px">Suspendări contract · ${esc(b.dataset.nume)}</div>
+          <span class="camp-ajutor">Concediul fără plată și suspendarea fără drepturi salariale scad brutul pe zilele lucrătoare din interval (Codul muncii art.49 alin.(2)) — în statul de plată și în D112. Perioada se ia din actul de suspendare / cererea aprobată.</span>
+          <div id="susp-lista">${lista}</div>
+          <p style="margin-top:8px"><button class="buton-secundar" id="susp-adauga">+ Adaugă</button>
+            <button class="buton-primar" id="susp-save" style="margin-left:6px">Salvează</button>
+            <button class="buton-secundar" id="susp-cancel" style="margin-left:6px">Renunță</button></p>
+          <div id="susp-msg"></div></div>`;
+        zonaSusp.querySelectorAll("[data-susp-sterge]").forEach((x) => x.addEventListener("click", () => {
+          citeste(); model.splice(Number(x.dataset.suspSterge), 1); randeaza();
+        }));
+        zonaSusp.querySelector("#susp-adauga").addEventListener("click", () => {
+          citeste(); model.push({ data_inceput: "", data_sfarsit: "", tip: "cfp", temei: "" }); randeaza();
+        });
+        zonaSusp.querySelector("#susp-cancel").addEventListener("click", inchide);
+        zonaSusp.querySelector("#susp-save").addEventListener("click", async (ev) => {
+          citeste();
+          const btn = ev.currentTarget;
+          btn.disabled = true; btn.textContent = "Se salvează…";
+          try {
+            await api.put(`/tenants/${t.id}/salariati/${sid}`, { suspendari: model });
+            await deseneaza();
+            arataMesaj(corp.querySelector("#sp-susp-zona"), `Suspendările lui ${b.dataset.nume} au fost salvate (${model.length}). Statul de plată și D112 calculează brutul pe zilele active din contract.`, "ok");
+          } catch (e) {
+            btn.disabled = false; btn.textContent = "Salvează";
+            arataMesaj(zonaSusp.querySelector("#susp-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare");
+          }
+        });
+      };
+      randeaza();
     }));
     // [F137] cod ocupatie COR: lookup din nomenclator, editabil pe rand (necesar REGES)
     const zonaCor = corp.querySelector("#sp-cor-zona");

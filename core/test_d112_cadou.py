@@ -121,8 +121,9 @@ def test_fara_cadou_niciun_E3_73(conn):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_cadou_creste_brutul_declarat(conn):
-    """Cadou taxabil intra in BRUTUL DECLARAT (B1_sal1) - venit salarial, consistent cu contributiile
-    (altfel DUK S74 respinge). Brut cu cadou 400 = brut fara cadou + 400."""
+    """Cadou taxabil intra in BRUTUL DECLARAT REALIZAT (B1_sal2) - venit salarial, consistent cu contributiile
+    (altfel DUK S74 respinge). Brut cu cadou 400 = brut fara cadou + 400. [lot 19, 02.10.2026] Pana azi B1_sal1 si
+    B1_sal2 purtau aceeasi valoare, iar testul o citea din B1_sal1; structura D112 le desparte (vezi asertiile)."""
     import re
     with conn.cursor() as cur:
         _setup(cur, [])
@@ -132,9 +133,15 @@ def test_cadou_creste_brutul_declarat(conn):
         _setup(cur, [("altul", 400)])
     conn.commit()
     x1, _ = d112.genereaza(conn, _SCHEMA, 2026, 6)
-    b0 = int(re.search(r'B1_sal1="(\d+)"', x0).group(1))
-    b1 = int(re.search(r'B1_sal1="(\d+)"', x1).group(1))
-    assert b1 == b0 + 400, "brutul declarat B1_sal1 trebuie sa creasca cu cadoul taxabil (400): %d vs %d" % (b1, b0)
+    b0 = int(re.search(r'B1_sal2="(\d+)"', x0).group(1))
+    b1 = int(re.search(r'B1_sal2="(\d+)"', x1).group(1))
+    # structura D112 (anaf_surse/d112_struct_anaf.txt) câmp 29b B1_sal2: „Venitul brut din salarii și asimilate salariului
+    # realizat în baza contractului individual de muncă” -> cadoul taxabil (venit asimilat) îl crește
+    assert b1 == b0 + 400, "brutul REALIZAT B1_sal2 trebuie sa creasca cu cadoul taxabil (400): %d vs %d" % (b1, b0)
+    # câmp 29a B1_sal1: „Salariul de bază lunar brut prevăzut în contractul individual de muncă” -> NU se schimbă
+    s0 = int(re.search(r'B1_sal1="(\d+)"', x0).group(1))
+    s1 = int(re.search(r'B1_sal1="(\d+)"', x1).group(1))
+    assert s1 == s0, "salariul de baza din contract (B1_sal1) nu depinde de cadou: %d vs %d" % (s1, s0)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

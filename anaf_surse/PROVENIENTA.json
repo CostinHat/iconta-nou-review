@@ -226,10 +226,6 @@
       "POSITION_ID": "FISC-025",
       "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-025"
     },
-    "ordin_878_2022.html": {
-      "clasa": "ADUS",
-      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 267018, consolidare 09.05.2023), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 6a92fd7d6d1db939."
-    },
     "ordin_90_2016.html": {
       "clasa": "ADUS",
       "motiv": "act oficial adus din corpusul FISCAL (FISC-027), materialul principal; bytes oficiali legislatie.just.ro",
@@ -269,10 +265,6 @@
       "accessed_at": "2026-09-17T03:33:30.855095+00:00",
       "POSITION_ID": "FISC-031",
       "V4_EVIDENCE": "research/OPIS-FISCAL-2026-09-15/PHASE-3-INVENTORY-EXISTING/V4/REACQUISITION-VERIFICATION.json#FISC-031"
-    },
-    "ordin_2594_2015.html": {
-      "clasa": "ADUS",
-      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 269686, consolidare 28.12.2023), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial ebf2758ff1066d08."
     },
     "ordin_2117_2018.html": {
       "clasa": "ADUS",
@@ -624,7 +616,7 @@
     },
     "omfp_1802_2014.html": {
       "clasa": "ADUS",
-      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 303279, consolidare 19.11.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 8e1cc194188b2789."
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 303279, consolidare 19.11.2025), adusa de FiscalOS; adusa la 2026-10-01 ca forma html NOUA; inainte actul exista in corpus doar ca .txt, stricat (veche in _inlocuite_fiscalos_2026-10-01/omfp_1802_2014.txt) — corectat 02.10.2026: motivul vechi spunea ca a inlocuit o forma html care nu exista. SHA oficial 8e1cc194188b2789."
     },
     "omfp_1802_2014.txt": {
       "clasa": "ADUS",
@@ -664,7 +656,7 @@
     },
     "legea_165_2018_anaf.html": {
       "clasa": "ADUS",
-      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 202623, consolidare 01.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 09dbf02f6fe1eec4."
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 202623, consolidare 01.12.2025), adusa de FiscalOS; adusa la 2026-10-01 ca forma html NOUA; inainte actul exista in corpus doar ca .txt, stricat (veche in _inlocuite_fiscalos_2026-10-01/legea_165_2018_anaf.txt) — corectat 02.10.2026: motivul vechi spunea ca a inlocuit o forma html care nu exista. SHA oficial 09dbf02f6fe1eec4."
     },
     "legea_165_2018_anaf.txt": {
       "clasa": "ADUS",
@@ -748,7 +740,7 @@
     },
     "oms_15_2018_norme.html": {
       "clasa": "ADUS",
-      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 311827, consolidare 24.07.2026), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial e06310a4469c2c4e."
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 311827, consolidare 24.07.2026), adusa de FiscalOS; adusa la 2026-10-01 ca forma html NOUA; inainte actul exista in corpus doar ca .txt, stricat (veche in _inlocuite_fiscalos_2026-10-01/oms_15_2018_norme.txt) — corectat 02.10.2026: motivul vechi spunea ca a inlocuit o forma html care nu exista. SHA oficial e06310a4469c2c4e."
     },
     "oms_15_2018_norme.txt": {
       "clasa": "ADUS",
@@ -792,7 +784,7 @@
     },
     "legea_134_2010_codul_de_procedura_civila.html": {
       "clasa": "ADUS",
-      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 304485, consolidare 14.12.2025), adusa de FiscalOS; a inlocuit forma stricata din corpus la 2026-10-01 (veche in _inlocuite_fiscalos_2026-10-01/). SHA oficial 06b91110ca2dc7b4."
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 304485, consolidare 14.12.2025), adusa de FiscalOS; adusa NOU la 2026-10-01 (actul nu exista anterior in corpus, nici html nici txt) — corectat 02.10.2026: motivul vechi spunea ca a inlocuit o forma stricata. SHA oficial 06b91110ca2dc7b4."
     },
     "oug_24_2026_contributie_solidaritate.html": {
       "clasa": "ADUS",
@@ -801,6 +793,938 @@
     "oug_24_2026_contributie_solidaritate.txt": {
       "clasa": "ADUS",
       "motiv": "extras articol_in_act.text din oug_24_2026_contributie_solidaritate.html (forma oficiala), 01.10.2026"
+    },
+    "ordin_2594_2015__anexa_269686.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 269686, consolidare 28.12.2023), adusa de FiscalOS; documentul-ANEXA (procedura) al ordinului, publicat separat pe portal; la 2026-10-01 pusese, gresit, procedura in locul ordinului (regresie reparata 02.10.2026: ordinul e in ordin_2594_2015.html). SHA oficial ebf2758ff1066d08."
+    },
+    "ordin_2594_2015.html": {
+      "clasa": "ADUS",
+      "motiv": "ordinul propriu-zis (articolele, formularele, anexele publicate in documentul de baza), forma consolidata oficiala legislatie.just.ro (id_portal 171984, consolidare 28.12.2023) = materialul BASE din corpusul FISCAL (FISC-032), bytes identici cu sources/fbe92f0b604dbacaeb5ae0b75f9ef7ffbcb035494e839e256d315529ee5ffe50.html (SHA verificat 02.10.2026); readus 02.10.2026 dupa ce Pachetul FiscalOS §1 il inlocuise cu procedura-anexa (10/10 respectiv 13/13 articole lipsa). Procedura: ordin_2594_2015__anexa_269686.html.",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/171984",
+      "accessed_at": "2026-09-17T03:33:31.302902+00:00",
+      "POSITION_ID": "FISC-032"
+    },
+    "ordin_878_2022__anexa_267018.html": {
+      "clasa": "ADUS",
+      "motiv": "forma consolidata oficiala legislatie.just.ro (id_portal 267018, consolidare 09.05.2023), adusa de FiscalOS; documentul-ANEXA (procedura) al ordinului, publicat separat pe portal; la 2026-10-01 pusese, gresit, procedura in locul ordinului (regresie reparata 02.10.2026: ordinul e in ordin_878_2022.html). SHA oficial 6a92fd7d6d1db939."
+    },
+    "ordin_878_2022.html": {
+      "clasa": "ADUS",
+      "motiv": "ordinul propriu-zis (articolele, formularele, anexele publicate in documentul de baza), forma consolidata oficiala legislatie.just.ro (id_portal 254993, consolidare 09.05.2023) = materialul BASE din corpusul FISCAL (FISC-026), bytes identici cu sources/2aa3091bc070b579e87676b910b701df508047f5e7b395a08153cd08ae3eb0fa.html (SHA verificat 02.10.2026); readus 02.10.2026 dupa ce Pachetul FiscalOS §1 il inlocuise cu procedura-anexa (10/10 respectiv 13/13 articole lipsa). Procedura: ordin_878_2022__anexa_267018.html.",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/254993",
+      "accessed_at": "2026-09-17T03:33:27.305043+00:00",
+      "POSITION_ID": "FISC-026"
+    },
+    "ordin_3845_2015__anexa_255114.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/255114",
+      "accessed_at": "2026-09-17T04:22:38.960746+00:00",
+      "POSITION_ID": "FISC-036"
+    },
+    "ordin_3845_2015__anexa_255115.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/255115",
+      "accessed_at": "2026-09-17T04:22:53.961224+00:00",
+      "POSITION_ID": "FISC-036"
+    },
+    "ordin_3845_2015__anexa_255116.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/255116",
+      "accessed_at": "2026-09-17T04:23:08.961300+00:00",
+      "POSITION_ID": "FISC-036"
+    },
+    "ordin_3845_2015__anexa_255435.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/255435",
+      "accessed_at": "2026-09-17T04:23:23.961921+00:00",
+      "POSITION_ID": "FISC-036"
+    },
+    "ordin_3845_2015__anexa_255117.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/255117",
+      "accessed_at": "2026-09-17T04:23:38.961998+00:00",
+      "POSITION_ID": "FISC-036"
+    },
+    "ordin_3845_2015__anexa_255118.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/255118",
+      "accessed_at": "2026-09-17T04:23:53.962412+00:00",
+      "POSITION_ID": "FISC-036"
+    },
+    "ordin_3792_2024__anexa_286608.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3792/2024 din corpusul FISCAL (FISC-037), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/286608",
+      "accessed_at": "2026-09-17T04:24:53.964222+00:00",
+      "POSITION_ID": "FISC-037"
+    },
+    "ordin_3562_2024__facsimil_311666_A156.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3562/2024 din corpusul FISCAL (FISC-038), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/311666_A156.jpg",
+      "accessed_at": "2026-09-17T04:25:23.965004+00:00",
+      "POSITION_ID": "FISC-038"
+    },
+    "ordin_3562_2024__facsimil_311666_A1000.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3562/2024 din corpusul FISCAL (FISC-038), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/311666_A1000.jpg",
+      "accessed_at": "2026-09-17T04:25:38.965697+00:00",
+      "POSITION_ID": "FISC-038"
+    },
+    "ordin_3562_2024__anexa_311667.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3562/2024 din corpusul FISCAL (FISC-038), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/311667",
+      "accessed_at": "2026-09-17T04:25:08.964511+00:00",
+      "POSITION_ID": "FISC-038"
+    },
+    "ordin_2547_2019__anexa_289479.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 2547/2019 din corpusul FISCAL (FISC-039), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/289479",
+      "accessed_at": "2026-09-17T04:43:54.207375+00:00",
+      "POSITION_ID": "FISC-039"
+    },
+    "ordin_5521_2024__anexa_289615.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 5521/2024 din corpusul FISCAL (FISC-042), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/289615",
+      "accessed_at": "2026-09-17T04:25:53.966136+00:00",
+      "POSITION_ID": "FISC-042"
+    },
+    "ordin_4156_2017__facsimil_269719_A287.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A287.jpg",
+      "accessed_at": "2026-09-17T04:45:54.209689+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A289.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A289.jpg",
+      "accessed_at": "2026-09-17T04:46:09.209926+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A99538300.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A99538300.jpg",
+      "accessed_at": "2026-09-17T04:47:24.215869+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A99538301.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A99538301.jpg",
+      "accessed_at": "2026-09-17T04:47:39.215707+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A295.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A295.jpg",
+      "accessed_at": "2026-09-17T04:46:24.210263+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A298.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A298.jpg",
+      "accessed_at": "2026-09-17T04:46:39.210473+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A99538306.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A99538306.jpg",
+      "accessed_at": "2026-09-17T04:47:54.216238+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A99538307.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A99538307.jpg",
+      "accessed_at": "2026-09-17T04:48:09.216588+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A99538308.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A99538308.jpg",
+      "accessed_at": "2026-09-17T04:48:24.217006+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A882.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A882.jpg",
+      "accessed_at": "2026-09-17T04:46:54.211445+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_4156_2017__facsimil_269719_A928.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 4156/2017 din corpusul FISCAL (FISC-043), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/269719_A928.jpg",
+      "accessed_at": "2026-09-17T04:47:09.211902+00:00",
+      "POSITION_ID": "FISC-043"
+    },
+    "ordin_435_2021__anexa_240151.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 435/2021 din corpusul FISCAL (FISC-044), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/240151",
+      "accessed_at": "2026-09-17T04:26:08.966347+00:00",
+      "POSITION_ID": "FISC-044"
+    },
+    "ordin_146_2018__baza_197217.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (BASE) al actului ORDIN 146/2018 din corpusul FISCAL (FISC-045), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/197217",
+      "accessed_at": "2026-09-17T03:44:44.916362+00:00",
+      "POSITION_ID": "FISC-045"
+    },
+    "ordin_3775_2024__facsimil_307865_A670.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3775/2024 din corpusul FISCAL (FISC-054), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307865_A670.jpg",
+      "accessed_at": "2026-09-17T04:26:38.969232+00:00",
+      "POSITION_ID": "FISC-054"
+    },
+    "ordin_3775_2024__facsimil_307865_A671.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3775/2024 din corpusul FISCAL (FISC-054), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307865_A671.jpg",
+      "accessed_at": "2026-09-17T04:26:53.969625+00:00",
+      "POSITION_ID": "FISC-054"
+    },
+    "ordin_3775_2024__facsimil_307865_A672.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3775/2024 din corpusul FISCAL (FISC-054), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307865_A672.jpg",
+      "accessed_at": "2026-09-17T04:27:08.970028+00:00",
+      "POSITION_ID": "FISC-054"
+    },
+    "ordin_3775_2024__facsimil_307865_A673.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3775/2024 din corpusul FISCAL (FISC-054), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307865_A673.jpg",
+      "accessed_at": "2026-09-17T04:27:23.970281+00:00",
+      "POSITION_ID": "FISC-054"
+    },
+    "ordin_1783_2021__baza_248326.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (BASE) al actului ORDIN 1783/2021 din corpusul FISCAL (FISC-056), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/248326",
+      "accessed_at": "2026-09-17T00:22:21.650412+00:00",
+      "POSITION_ID": "FISC-056"
+    },
+    "ordin_1783_2021__facsimil_296117_A67.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (ASSET) al actului ORDIN 1783/2021 din corpusul FISCAL (FISC-056), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/296117_A67.jpg",
+      "accessed_at": "2026-09-17T00:27:31.567757+00:00",
+      "POSITION_ID": "FISC-056"
+    },
+    "ordin_1783_2021__facsimil_296117_A205.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (ASSET) al actului ORDIN 1783/2021 din corpusul FISCAL (FISC-056), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/296117_A205.jpg",
+      "accessed_at": "2026-09-17T00:27:31.637229+00:00",
+      "POSITION_ID": "FISC-056"
+    },
+    "ordin_1783_2021__facsimil_296117_A208.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (ASSET) al actului ORDIN 1783/2021 din corpusul FISCAL (FISC-056), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/296117_A208.jpg",
+      "accessed_at": "2026-09-17T00:27:31.669240+00:00",
+      "POSITION_ID": "FISC-056"
+    },
+    "ordin_1090_2022__anexa_256458.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 1090/2022 din corpusul FISCAL (FISC-057), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/256458",
+      "accessed_at": "2026-09-17T04:27:53.971594+00:00",
+      "POSITION_ID": "FISC-057"
+    },
+    "ordin_382_2025__facsimil_295690_A382.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 382/2025 din corpusul FISCAL (FISC-058), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/295690_A382.jpg",
+      "accessed_at": "2026-09-17T04:28:08.971827+00:00",
+      "POSITION_ID": "FISC-058"
+    },
+    "ordin_382_2025__facsimil_295690_A384.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 382/2025 din corpusul FISCAL (FISC-058), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/295690_A384.jpg",
+      "accessed_at": "2026-09-17T04:28:23.971978+00:00",
+      "POSITION_ID": "FISC-058"
+    },
+    "ordin_1946_2023__anexa_277015.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (ANNEX) al actului ORDIN 1946/2023 din corpusul FISCAL (FISC-060), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/277015",
+      "accessed_at": "2026-09-17T00:26:38.349495+00:00",
+      "POSITION_ID": "FISC-060"
+    },
+    "ordin_1946_2023__anexa_277016.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (ANNEX) al actului ORDIN 1946/2023 din corpusul FISCAL (FISC-060), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/277016",
+      "accessed_at": "2026-09-17T00:26:38.847077+00:00",
+      "POSITION_ID": "FISC-060"
+    },
+    "ordin_1946_2023__facsimil_277014_A138.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (ASSET) al actului ORDIN 1946/2023 din corpusul FISCAL (FISC-060), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/277014_A138.jpg",
+      "accessed_at": "2026-09-17T00:27:31.966044+00:00",
+      "POSITION_ID": "FISC-060"
+    },
+    "ordin_2026_2023__facsimil_277486_A387.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 2026/2023 din corpusul FISCAL (FISC-062), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/277486_A387.jpg",
+      "accessed_at": "2026-09-17T04:28:38.972374+00:00",
+      "POSITION_ID": "FISC-062"
+    },
+    "ordin_608_2026__anexa_310982.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (ANNEX) al actului ORDIN 608/2026 din corpusul FISCAL (FISC-063), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/310982",
+      "accessed_at": "2026-09-17T00:26:39.125298+00:00",
+      "POSITION_ID": "FISC-063"
+    },
+    "ordin_608_2026__anexa_310983.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (ANNEX) al actului ORDIN 608/2026 din corpusul FISCAL (FISC-063), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/310983",
+      "accessed_at": "2026-09-17T00:26:39.312804+00:00",
+      "POSITION_ID": "FISC-063"
+    },
+    "ordin_608_2026__istoric_310981.html": {
+      "clasa": "ADUS",
+      "motiv": "material istoric (BASE_HISTORY_VIEW) al actului ORDIN 608/2026 din corpusul FISCAL (FISC-063), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/310981",
+      "accessed_at": "2026-09-17T00:29:05.863167+00:00",
+      "POSITION_ID": "FISC-063"
+    },
+    "ordin_352_2022__facsimil_309245_A16598.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 352/2022 din corpusul FISCAL (FISC-064), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309245_A16598.jpg",
+      "accessed_at": "2026-09-17T04:29:08.973943+00:00",
+      "POSITION_ID": "FISC-064"
+    },
+    "ordin_352_2022__facsimil_309245_A16614.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 352/2022 din corpusul FISCAL (FISC-064), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309245_A16614.jpg",
+      "accessed_at": "2026-09-17T04:29:23.974143+00:00",
+      "POSITION_ID": "FISC-064"
+    },
+    "ordin_352_2022__facsimil_309245_A1651.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 352/2022 din corpusul FISCAL (FISC-064), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309245_A1651.jpg",
+      "accessed_at": "2026-09-17T04:29:38.974648+00:00",
+      "POSITION_ID": "FISC-064"
+    },
+    "ordin_352_2022__facsimil_309245_A1664.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 352/2022 din corpusul FISCAL (FISC-064), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309245_A1664.jpg",
+      "accessed_at": "2026-09-17T04:29:53.975113+00:00",
+      "POSITION_ID": "FISC-064"
+    },
+    "ordin_352_2022__facsimil_309245_A1666.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 352/2022 din corpusul FISCAL (FISC-064), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309245_A1666.jpg",
+      "accessed_at": "2026-09-17T04:30:08.975286+00:00",
+      "POSITION_ID": "FISC-064"
+    },
+    "ordin_352_2022__facsimil_309245_A1680.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 352/2022 din corpusul FISCAL (FISC-064), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309245_A1680.jpg",
+      "accessed_at": "2026-09-17T04:30:23.975457+00:00",
+      "POSITION_ID": "FISC-064"
+    },
+    "ordin_352_2022__anexa_309246.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 352/2022 din corpusul FISCAL (FISC-064), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/309246",
+      "accessed_at": "2026-09-17T04:28:53.972751+00:00",
+      "POSITION_ID": "FISC-064"
+    },
+    "ordin_161_2025__facsimil_294288_A317.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 161/2025 din corpusul FISCAL (FISC-T03), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/294288_A317.jpg",
+      "accessed_at": "2026-09-17T04:30:38.975568+00:00",
+      "POSITION_ID": "FISC-T03"
+    },
+    "ordin_161_2025__facsimil_294288_A319.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 161/2025 din corpusul FISCAL (FISC-T03), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/294288_A319.jpg",
+      "accessed_at": "2026-09-17T04:30:53.976026+00:00",
+      "POSITION_ID": "FISC-T03"
+    },
+    "hg_1_2016__baza_307846.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (CUTOFF_VERSION) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/307846",
+      "accessed_at": "2026-09-17T03:45:48.744001+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "hg_1_2016__facsimil_307847_A99949030.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307847_A99949030.jpg",
+      "accessed_at": "2026-09-16T03:53:24.841512+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "hg_1_2016__facsimil_307847_A99949040.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307847_A99949040.jpg",
+      "accessed_at": "2026-09-16T03:53:24.874816+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "hg_1_2016__facsimil_307847_A690.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307847_A690.jpg",
+      "accessed_at": "2026-09-16T03:53:24.895350+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "hg_1_2016__facsimil_307847_A99948092.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307847_A99948092.jpg",
+      "accessed_at": "2026-09-16T03:53:24.907725+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "hg_1_2016__facsimil_307847_A99948093.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307847_A99948093.jpg",
+      "accessed_at": "2026-09-16T03:53:24.929692+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "hg_1_2016__facsimil_307847_A99948098.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307847_A99948098.jpg",
+      "accessed_at": "2026-09-16T03:53:24.941705+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "hg_1_2016__facsimil_307847_A99948099.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 1/2016 din corpusul FISCAL (FISC-002), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/307847_A99948099.jpg",
+      "accessed_at": "2026-09-16T03:53:24.943621+00:00",
+      "POSITION_ID": "FISC-002"
+    },
+    "legea_207_2015__baza_170005.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (BASE) al actului LEGE 207/2015 din corpusul FISCAL (FISC-003), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/170005",
+      "accessed_at": "2026-09-17T00:22:19.945807+00:00",
+      "POSITION_ID": "FISC-003"
+    },
+    "hg_479_2003__anexa_266909.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului HG 479/2003 din corpusul FISCAL (FISC-006), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/266909",
+      "accessed_at": "2026-09-17T04:08:53.871027+00:00",
+      "POSITION_ID": "FISC-006"
+    },
+    "hg_479_2003__facsimil_266909_A406.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 479/2003 din corpusul FISCAL (FISC-006), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/266909_A406.jpg",
+      "accessed_at": "2026-09-17T04:44:54.208672+00:00",
+      "POSITION_ID": "FISC-006"
+    },
+    "hg_479_2003__facsimil_266909_A408.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 479/2003 din corpusul FISCAL (FISC-006), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/266909_A408.jpg",
+      "accessed_at": "2026-09-17T04:45:09.209171+00:00",
+      "POSITION_ID": "FISC-006"
+    },
+    "hg_479_2003__facsimil_266909_A1413_.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului HG 479/2003 din corpusul FISCAL (FISC-006), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/266909_A1413_.jpg",
+      "accessed_at": "2026-09-17T04:44:39.208134+00:00",
+      "POSITION_ID": "FISC-006"
+    },
+    "ordin_587_2016__facsimil_314130_A99547848.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 587/2016 din corpusul FISCAL (FISC-009), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/314130_A99547848.jpg",
+      "accessed_at": "2026-09-17T04:45:24.209361+00:00",
+      "POSITION_ID": "FISC-009"
+    },
+    "ordin_206_2025__baza_294776.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (BASE) al actului ORDIN 206/2025 din corpusul FISCAL (FISC-010), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/294776",
+      "accessed_at": "2026-09-17T03:33:19.432349+00:00",
+      "POSITION_ID": "FISC-010"
+    },
+    "ordin_206_2025__facsimil_294776_A25.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 206/2025 din corpusul FISCAL (FISC-010), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/294776_A25.jpg",
+      "accessed_at": "2026-09-17T04:09:08.871391+00:00",
+      "POSITION_ID": "FISC-010"
+    },
+    "ordin_206_2025__facsimil_294776_A27.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 206/2025 din corpusul FISCAL (FISC-010), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/294776_A27.jpg",
+      "accessed_at": "2026-09-17T04:09:23.871918+00:00",
+      "POSITION_ID": "FISC-010"
+    },
+    "ordin_206_2025__facsimil_294776_A28.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 206/2025 din corpusul FISCAL (FISC-010), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/294776_A28.jpg",
+      "accessed_at": "2026-09-17T04:09:38.872249+00:00",
+      "POSITION_ID": "FISC-010"
+    },
+    "ordin_206_2025__facsimil_294776_A176.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 206/2025 din corpusul FISCAL (FISC-010), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/294776_A176.jpg",
+      "accessed_at": "2026-09-17T04:09:53.872549+00:00",
+      "POSITION_ID": "FISC-010"
+    },
+    "ordin_206_2025__facsimil_294776_A178.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 206/2025 din corpusul FISCAL (FISC-010), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/294776_A178.jpg",
+      "accessed_at": "2026-09-17T04:10:08.873010+00:00",
+      "POSITION_ID": "FISC-010"
+    },
+    "ordin_3391_2017__facsimil_195804_A179.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3391/2017 din corpusul FISCAL (FISC-011), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/195804_A179.jpg",
+      "accessed_at": "2026-09-17T04:10:23.877651+00:00",
+      "POSITION_ID": "FISC-011"
+    },
+    "ordin_2736_2025__anexa_306268.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 2736/2025 din corpusul FISCAL (FISC-014), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/306268",
+      "accessed_at": "2026-09-17T04:10:53.878463+00:00",
+      "POSITION_ID": "FISC-014"
+    },
+    "ordin_216_2023__baza_265344.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (CUTOFF_VERSION) al actului ORDIN 216/2023 din corpusul FISCAL (FISC-015), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/265344",
+      "accessed_at": "2026-09-17T04:42:24.201367+00:00",
+      "POSITION_ID": "FISC-015"
+    },
+    "ordin_216_2023__facsimil_265344_A208.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 216/2023 din corpusul FISCAL (FISC-015), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/265344_A208.jpg",
+      "accessed_at": "2026-09-17T04:11:23.904783+00:00",
+      "POSITION_ID": "FISC-015"
+    },
+    "ordin_216_2023__facsimil_265344_A210.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 216/2023 din corpusul FISCAL (FISC-015), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/265344_A210.jpg",
+      "accessed_at": "2026-09-17T04:11:38.904988+00:00",
+      "POSITION_ID": "FISC-015"
+    },
+    "ordin_216_2023__facsimil_265344_A263.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 216/2023 din corpusul FISCAL (FISC-015), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/265344_A263.jpg",
+      "accessed_at": "2026-09-17T04:11:53.905760+00:00",
+      "POSITION_ID": "FISC-015"
+    },
+    "ordin_216_2023__facsimil_265344_A361.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 216/2023 din corpusul FISCAL (FISC-015), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/265344_A361.jpg",
+      "accessed_at": "2026-09-17T04:12:08.905882+00:00",
+      "POSITION_ID": "FISC-015"
+    },
+    "ordin_216_2023__anexa_265345.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 216/2023 din corpusul FISCAL (FISC-015), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/265345",
+      "accessed_at": "2026-09-17T04:11:08.897125+00:00",
+      "POSITION_ID": "FISC-015"
+    },
+    "ordin_3738_2024__facsimil_312591_A1665.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3738/2024 din corpusul FISCAL (FISC-016), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/312591_A1665.jpg",
+      "accessed_at": "2026-09-17T04:52:31.813469+00:00",
+      "POSITION_ID": "FISC-016"
+    },
+    "ordin_3738_2024__facsimil_312591_A1666.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3738/2024 din corpusul FISCAL (FISC-016), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/312591_A1666.jpg",
+      "accessed_at": "2026-09-17T04:52:46.813835+00:00",
+      "POSITION_ID": "FISC-016"
+    },
+    "ordin_3738_2024__anexa_312592.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3738/2024 din corpusul FISCAL (FISC-016), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/312592",
+      "accessed_at": "2026-09-17T04:52:16.812756+00:00",
+      "POSITION_ID": "FISC-016"
+    },
+    "ordin_396_2025__facsimil_296042_A25.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 396/2025 din corpusul FISCAL (FISC-017), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/296042_A25.jpg",
+      "accessed_at": "2026-09-17T04:13:08.929105+00:00",
+      "POSITION_ID": "FISC-017"
+    },
+    "ordin_396_2025__facsimil_296042_A27.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 396/2025 din corpusul FISCAL (FISC-017), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/296042_A27.jpg",
+      "accessed_at": "2026-09-17T04:13:23.929540+00:00",
+      "POSITION_ID": "FISC-017"
+    },
+    "ordin_3780_2017__facsimil_309210_A348.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A348.jpg",
+      "accessed_at": "2026-09-17T04:13:38.929944+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A350.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A350.jpg",
+      "accessed_at": "2026-09-17T04:13:53.931983+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A354.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A354.jpg",
+      "accessed_at": "2026-09-17T04:14:08.932604+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A526.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A526.jpg",
+      "accessed_at": "2026-09-17T04:14:23.933103+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A528.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A528.jpg",
+      "accessed_at": "2026-09-17T04:14:38.933859+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A529.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A529.jpg",
+      "accessed_at": "2026-09-17T04:14:53.934357+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A530.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A530.jpg",
+      "accessed_at": "2026-09-17T04:15:08.935184+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A774.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A774.jpg",
+      "accessed_at": "2026-09-17T04:15:23.935306+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A810.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A810.jpg",
+      "accessed_at": "2026-09-17T04:15:38.935990+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A812.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A812.jpg",
+      "accessed_at": "2026-09-17T04:15:53.937147+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A92114851.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A92114851.jpg",
+      "accessed_at": "2026-09-17T04:16:08.937846+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A92114852.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A92114852.jpg",
+      "accessed_at": "2026-09-17T04:16:23.938298+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A943.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A943.jpg",
+      "accessed_at": "2026-09-17T04:16:38.938801+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A945.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A945.jpg",
+      "accessed_at": "2026-09-17T04:16:53.940184+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A946.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A946.jpg",
+      "accessed_at": "2026-09-17T04:17:08.941147+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A948.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A948.jpg",
+      "accessed_at": "2026-09-17T04:17:23.941626+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A951.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A951.jpg",
+      "accessed_at": "2026-09-17T04:17:38.941977+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A953.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A953.jpg",
+      "accessed_at": "2026-09-17T04:17:53.942691+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_3780_2017__facsimil_309210_A958.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3780/2017 din corpusul FISCAL (FISC-018), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/309210_A958.jpg",
+      "accessed_at": "2026-09-17T04:18:08.943450+00:00",
+      "POSITION_ID": "FISC-018"
+    },
+    "ordin_174_2026__baza_307258.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (BASE) al actului ORDIN 174/2026 din corpusul FISCAL (FISC-019), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/307258",
+      "accessed_at": "2026-09-17T03:33:23.123058+00:00",
+      "POSITION_ID": "FISC-019"
+    },
+    "ordin_592_2016__baza_280976.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (BASE) al actului ORDIN 592/2016 din corpusul FISCAL (FISC-020), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/280976",
+      "accessed_at": "2026-09-17T03:33:23.485800+00:00",
+      "POSITION_ID": "FISC-020"
+    },
+    "ordin_793_2016__baza_176136.html": {
+      "clasa": "ADUS",
+      "motiv": "material baza (BASE) al actului ORDIN 793/2016 din corpusul FISCAL (FISC-021), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/176136",
+      "accessed_at": "2026-09-17T03:33:24.572901+00:00",
+      "POSITION_ID": "FISC-021"
+    },
+    "ordin_188_2018__facsimil_280980_A310.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 188/2018 din corpusul FISCAL (FISC-022), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/280980_A310.jpg",
+      "accessed_at": "2026-09-17T04:18:23.943750+00:00",
+      "POSITION_ID": "FISC-022"
+    },
+    "ordin_1699_2021__anexa_314129.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 1699/2021 din corpusul FISCAL (FISC-023), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/314129",
+      "accessed_at": "2026-09-17T04:42:54.202085+00:00",
+      "POSITION_ID": "FISC-023"
+    },
+    "ordin_1699_2021__facsimil_314129_A100032858.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 1699/2021 din corpusul FISCAL (FISC-023), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/314129_A100032858.jpg",
+      "accessed_at": "2026-09-17T04:53:01.814385+00:00",
+      "POSITION_ID": "FISC-023"
+    },
+    "ordin_1699_2021__facsimil_314129_A100032859.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 1699/2021 din corpusul FISCAL (FISC-023), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/314129_A100032859.jpg",
+      "accessed_at": "2026-09-17T04:53:16.814838+00:00",
+      "POSITION_ID": "FISC-023"
+    },
+    "ordin_1699_2021__facsimil_314129_A100032860.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 1699/2021 din corpusul FISCAL (FISC-023), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/314129_A100032860.jpg",
+      "accessed_at": "2026-09-17T04:53:31.815297+00:00",
+      "POSITION_ID": "FISC-023"
+    },
+    "ordin_2430_2025__anexa_303982.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 2430/2025 din corpusul FISCAL (FISC-024), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/303982",
+      "accessed_at": "2026-09-17T04:18:38.944061+00:00",
+      "POSITION_ID": "FISC-024"
+    },
+    "ordin_63_2017__anexa_291656.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 63/2017 din corpusul FISCAL (FISC-025), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/291656",
+      "accessed_at": "2026-09-17T04:43:09.202457+00:00",
+      "POSITION_ID": "FISC-025"
+    },
+    "ordin_90_2016__anexa_297223.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 90/2016 din corpusul FISCAL (FISC-027), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/297223",
+      "accessed_at": "2026-09-17T04:19:08.951423+00:00",
+      "POSITION_ID": "FISC-027"
+    },
+    "ordin_1767_2021__anexa_298648.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 1767/2021 din corpusul FISCAL (FISC-028), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/298648",
+      "accessed_at": "2026-09-17T04:43:24.202805+00:00",
+      "POSITION_ID": "FISC-028"
+    },
+    "ordin_1757_2019__anexa_313738.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 1757/2019 din corpusul FISCAL (FISC-029), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/313738",
+      "accessed_at": "2026-09-17T04:19:23.951594+00:00",
+      "POSITION_ID": "FISC-029"
+    },
+    "ordin_1517_2017__anexa_189548.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 1517/2017 din corpusul FISCAL (FISC-030), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/189548",
+      "accessed_at": "2026-09-17T04:19:38.952713+00:00",
+      "POSITION_ID": "FISC-030"
+    },
+    "ordin_187_2018__anexa_197175.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 187/2018 din corpusul FISCAL (FISC-031), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/197175",
+      "accessed_at": "2026-09-17T04:19:53.955325+00:00",
+      "POSITION_ID": "FISC-031"
+    },
+    "ordin_3846_2015__facsimil_194830_A381.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/194830_A381.jpg",
+      "accessed_at": "2026-09-17T04:21:23.958900+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__facsimil_194830_A398.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/194830_A398.jpg",
+      "accessed_at": "2026-09-17T04:21:38.959059+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__facsimil_194830_A428.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/194830_A428.jpg",
+      "accessed_at": "2026-09-17T04:21:53.959393+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__facsimil_194830_A450.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/194830_A450.jpg",
+      "accessed_at": "2026-09-17T04:22:08.959918+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__facsimil_194830_A473.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/194830_A473.jpg",
+      "accessed_at": "2026-09-17T04:22:23.960287+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__anexa_194831.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/194831",
+      "accessed_at": "2026-09-17T04:20:23.956165+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__anexa_194832.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/194832",
+      "accessed_at": "2026-09-17T04:20:38.956755+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__anexa_194833.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/194833",
+      "accessed_at": "2026-09-17T04:20:53.958142+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3846_2015__anexa_174710.html": {
+      "clasa": "ADUS",
+      "motiv": "material anexa (INTEGRAL_ANNEX) al actului ORDIN 3846/2015 din corpusul FISCAL (FISC-035), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/Public/DetaliiDocument/174710",
+      "accessed_at": "2026-09-17T04:21:08.958379+00:00",
+      "POSITION_ID": "FISC-035"
+    },
+    "ordin_3845_2015__facsimil_255113_A321.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/255113_A321.jpg",
+      "accessed_at": "2026-09-17T04:24:08.962941+00:00",
+      "POSITION_ID": "FISC-036"
+    },
+    "ordin_3845_2015__facsimil_255113_A347.jpg": {
+      "clasa": "ADUS",
+      "motiv": "material facsimil (FACSIMILE) al actului ORDIN 3845/2015 din corpusul FISCAL (FISC-036), document separat pe portal; bytes oficiali legislatie.just.ro; adus 02.10.2026 (act incomplet in corpus, lot 19 pct.3)",
+      "official_source": "https://legislatie.just.ro/ImaginiDinActe/255113_A347.jpg",
+      "accessed_at": "2026-09-17T04:24:23.963081+00:00",
+      "POSITION_ID": "FISC-036"
     }
   },
   "goale_cunoscute": {

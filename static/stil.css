@@ -726,7 +726,7 @@ html, body {
 .mig-cap-sal span:nth-child(4) { text-align: right; }
 .mig-rand-sal .mig-sold-val { text-align: right; }
 .mig-sold-cnp { font-variant-numeric: tabular-nums; }
-.mig-cnp-ok { color: #15803d; }
+.mig-cnp-ok { color: var(--verde-inchis); }  /* [a11y lot 19] #15803d pica axe color-contrast pe randul de previzualizare (DS: verdele care trece 4.5:1) */
 .mig-cnp-no { color: #c0392b; font-weight: 600; }
 .mig-motiv { font-size: var(--text-mic); font-weight: 400; color: #a3231c; }  /* [a11y] motivul de refuz VIZIBIL (nu title-only, pierdut pe touch) */
 .mig-sold-cor, .mig-sold-norma { color: #44516b; font-size: var(--text-mic); }
@@ -1473,10 +1473,12 @@ html, body {
 
 
 /* [p49_setari_bife] */
+/* min-height:24px — tinta de clic e ETICHETA (casuta ramane 16px): WCAG 2.5.8 AA, decizia Costin 02.10.2026
+   (DECIZII „Căsuțele .set-bifa rămân de 16px"); pe un rand eticheta are ~30px, deci no-op vizual azi. */
 .set-bifa {
   display: flex; align-items: center; gap: 8px;
   font-size: var(--text-mic); color: var(--ardezie);
-  padding: 5px 0; cursor: pointer;
+  padding: 5px 0; cursor: pointer; min-height: 24px;
 }
 /* flex-shrink:0 — o eticheta lunga care se rupe pe doua randuri NU are voie sa strivesca casuta sub 16px
    (masurat 02.10.2026: 13px pe telefon la bifa D212 „Include venitul din registrul RIP"). */

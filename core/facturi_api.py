@@ -241,6 +241,24 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             % (_l.get("descriere") or "", _c, _d_emitere.isoformat() if _d_emitere else "azi",
                ", ".join("%s%%" % _f for _f in sorted(_permise)),
                "; ".join(sorted({str(_t) for _t in _temeiuri}))))
+    if directie == "emisa" and any(Decimal(str(_l.get("cota_tva"))) != 0 for _l in linii):
+        # [lot 19 pct.4d, 02.10.2026] Emitentul NEplătitor de TVA nu poate purta taxa pe factură: CF art.310 alin.(10)
+        # lit.b) — persoana care aplică regimul special de scutire „nu are voie să menționeze taxa pe factură sau pe alt
+        # document”. Punctul e unic (toate emiterile trec pe aici), deci garda acoperă emiterea, storno-ul și transformarea
+        # proformei. Profil fără statut (NULL) = plătitor, ca `uc_comun._platitor_tva_firma` (fără default tăcut nou).
+        with conn.cursor() as _cur:
+            _cur.execute("SELECT platitor_tva FROM firma_profil WHERE id = 1")
+            _pf = _cur.fetchone()
+        if _pf is not None and _pf[0] is False:
+            _l = next(_l for _l in linii if Decimal(str(_l.get("cota_tva"))) != 0)
+            _e = ValueError(
+                "Firma nu e plătitoare de TVA, deci factura nu poate purta TVA: linia %r are cota %s%%. "
+                "Cota pe liniile unui neplătitor e 0 (CF art.310 alin.(10) lit.b): persoana în regim special de "
+                "scutire „nu are voie să menționeze taxa pe factură sau pe alt document”)."
+                % (_l.get("descriere") or "", _l.get("cota_tva")))
+            # motivul ca DATĂ (cod + temei + linia), ca refuzul să se poată verifica fără a citi fraza
+            _e.cod, _e.temei, _e.linie = "EMITENT_NEPLATITOR_TVA", "CF art.310 alin.(10) lit.b)", _l.get("descriere")
+            raise _e
     if directie == "emisa" and numar:
         with conn.cursor() as _cur:
             _cur.execute("SELECT id FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1",
@@ -646,6 +664,10 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
     out = []
     for l in linii:
         linie = dict(l)
+        if linie.get("cota_tva") is None and not platitor_tva:
+            # [lot 19 pct.4d] emitent neplătitor: cota e 0 prin lege (CF art.310 alin.(10) lit.b)), nu cea din catalog —
+            # un produs salvat cândva cu 21% ar fi readus TVA-ul pe o factură care n-are voie să-l poarte.
+            linie["cota_tva"] = 0
         if linie.get("cota_tva") is None:
             # creeaza() cauta in nomenclator, altfel AI + salveaza; nu dubleaza
             r = produse_api.creeaza(conn, linie.get("descriere", ""),

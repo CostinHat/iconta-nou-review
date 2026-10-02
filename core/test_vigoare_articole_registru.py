@@ -28,6 +28,9 @@ MODIFICARI = {
     ("CF", "78"): datetime.date(2021, 2, 26),
     ("CF", "84^1"): datetime.date(2026, 1, 1),  # [3d] masurat la sursa 29.09.2026: forma din Legea 239/2025, alin.(3)/(5) in vigoare de la 01.01.2026
     ("CF", "97"): datetime.date(2018, 1, 1),
+    # [lot 19, 02.10.2026] masurate la sursa cu scripts/vigoare_articol.py pe formele din corpus:
+    ("CF", "500^2"): datetime.date(2026, 1, 1),        # lit.a)-b) modificate de Legea 239/2025 pct.51, in vigoare 01.01.2026
+    ("Legea 296/2023", "III"): None,                     # actul modificator: articolul fara marcaj de modificare
     ("CF", "138"): None,
     ("CF", "156"): None,
     ("CF", "220^3"): None,

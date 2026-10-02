@@ -128,6 +128,9 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         rows = _repo.select_4(cur, schema, luna_inc)
         cm_ids = {r["salariat_id"] for r in _repo.select_5(cur, schema, an, luna)}
+        # [lot 19 pct.4c] luna neîntreagă pe salariu/suspendare -> brutul generatorului e proratat pe zile (salariu_istoric),
+        # aici nu se re-derivă proratarea: skip LEGITIM (complexitate), ca luna parțială pe angajare/încetare.
+        partiala_ids = {r["salariat_id"] for r in _repo.select_luna_partiala(cur, schema, luna_inc, luna_sf)}
         ben_ids = set()
         try:
             ben_ids = {r["salariat_id"] for r in _repo.select_6(cur, schema, an, luna)}
@@ -161,8 +164,8 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             if sid in cm_ids or sid in ben_ids:
                 sarite.append(sid); continue
             da, di = r["data_angajare"], r["data_incetare"]
-            if (da and da > luna_inc) or (di and di < luna_sf):
-                sarite.append(sid); continue   # luna nu e intreaga -> proratare -> afara
+            if (da and da > luna_inc) or (di and di < luna_sf) or sid in partiala_ids:
+                sarite.append(sid); continue   # luna nu e intreaga (angajare/incetare/schimbare salariu/suspendare) -> proratare -> afara
             # --- SUB-CAZ 1c-PT (05.08): PART-TIME suprataxare art.146 alin.(5^6) ---
             if este_pt:
                 if are_tichete_masa:
