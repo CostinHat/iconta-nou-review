@@ -1095,3 +1095,18 @@ peste constantele D212 când rula singură — acum își încarcă singură toa
 
 Găsit citind instrucțiunile Declarației unice pentru etapa următoare; un ghid consemna defectul din septembrie, fără să fi
 fost reparat.
+
+## 02.10.2026 — D212 Etapa 4: Declarația unică include acum contribuțiile și impozitul
+
+**Ce se schimbă pentru un contabil:**
+- **D212 generată din aplicație conține CAS, CASS, impozitul și suma de plată.** Până azi declarația purta veniturile
+  (din registrul PFA și de pe normă), dar secțiunile cu contribuțiile, impozitul în sistem real și sumarul obligațiilor
+  lipseau — iar validatorul ANAF o accepta așa. Acum se calculează din aceleași venituri, pe rândurile formularului: CAS pe
+  treptele de 12/24 salarii minime, CASS pe venitul cumulat (cu baza minimă de 6 salarii minime), contribuțiile
+  deductibile împărțite pe ponderea venitului din sistem real, impozitul de 10% și totalul de plată. Proba pe firma PFA de
+  test (venit net 70.000 lei din registru + o normă de 30.000): CAS 24.300, CASS 10.000, impozit 7.599, de plată 41.899
+  lei, declarație validă la ANAF local.
+- **Pe formularul D212 se poate alege excepția de la baza minimă CASS** (salarii, pensii sau alte venituri cu CASS de cel
+  puțin 6 salarii minime).
+- **Opțiunea de a plăti CAS sub 12 salarii minime nu se poate încă declara din aplicație**: formularul validatorului ANAF
+  instalat nu are căsuța ei. Aplicația refuză cu explicația.

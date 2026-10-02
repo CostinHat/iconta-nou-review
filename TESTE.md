@@ -45,6 +45,15 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **D212 ETAPA 4 — CAS, CASS, impozitul în sistem real și sumarul (oblig_realizat)** (02.10.2026, „Poți trece la următorul pas din listă”; `D212_PERIMETRU.md` §4). ÎNCHIS
+  - ultim: pașii 1–5 livrați (commitul D212 Etapa 4, hash în ISTORIC 02.10.2026): oblig_realizat pe rânduri, `_CAMPURI` pe numele XML + gard pe jar, opțiunea CAS refuzată [EXTERN], lista de excepții CASS pe ecran; proba F4 (vechi: fără oblig_realizat / nou: CAS 24.300, CASS 10.000, impozit 7.599, de plată 41.899, DUK valid).
+  - urmator: — (fir închis). D212 Etapa 5. STARE = ÎNCHIS
+  - pasi:
+    1. `core/d212.oblig_realizat(cap11, cap12, an, optiune_cas, exceptie_minim_cass)`: I.3.1 CAS, I.3.2.1 CASS (din `d212_engine`), I.4 + 4.1/4.2 (pondere, deducerile plafonate la venitul recalculat, impozit cu cota din motor), I.7.1–I.7.4; bifa131/132/14; `genereaza` îl calculează când există cap11/cap12.
+    2. `d212._CAMPURI`: numele XML reale ale validatorului (7 atribute `oblig_realizat` + `reg` la cap11 erau nume interne) + gard `core/test_d212_campuri_validator.py` (confruntare cu jar-ul).
+    3. opțiunea CAS sub 12 sm (lit.B) — refuz numit [EXTERN] + datorie strictă `test_datorie_d212_optiune_cas_sub_12_sm`.
+    4. ecranul D212: lista „Excepție de la baza minimă CASS” (chei = `EXCEPTII_MINIM_CASS`, confruntate de test); textele „etapa următoare” scoase.
+    5. teste `core/test_d212_oblig_realizat.py` + mutații; `test_d212_cap12` (capitolele includ acum `oblig_realizat`); proba F4 (`frontend_test/proba_d212_etapa4.py`) și proba UI (`frontend_test/proba_d212_contributii_ui.py`); scanuri vizuale; registre; commit four-way.
 - fir: **NECONFORMITATE CASS sub 6 salarii minime (d212_engine)** (02.10.2026, găsită citind instrucțiunile D212 pentru Etapa 4; CICLUL DE NECONFORMITATE: Etapa 4 suspendată până la gard). ÎNCHIS
   - ultim: pașii 1–4 livrați (commitul CASS minim, hash în ISTORIC 02.10.2026): motor reparat, ecranele RIP/D212 afișează diferența și suma cu excepție, 5 ghiduri corectate, gard `core/test_d212_cass_minim.py` (3 mutații roșii), proba F4 (vechi: CASS 0, impozit 2.000 / nou: CASS 2.430 din care 430 nedeductibilă, impozit 1.800), proba UI pe ecranul RIP (răspuns interceptat al motorului).
   - urmator: — (fir închis). Reluare D212 Etapa 4 (`oblig_realizat`). STARE = ÎNCHIS

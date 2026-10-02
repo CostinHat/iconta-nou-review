@@ -99,7 +99,8 @@ def test_xml_o_sectiune_cap12_pe_activitate_si_bifa112():
     xml, r = d212.genereaza(None, None, Perioada(an=AN), dict(ID, norma=NORME))
     rad = _rad(xml)
     secs = rad.findall(NSX + "cap12")
-    assert rad.get("bifa112") == "1" and r.capitole == ["cap12"] and len(secs) == 2
+    # [Etapa 4] venitul declarat aduce și secțiunile 3/4/7 (oblig_realizat)
+    assert rad.get("bifa112") == "1" and r.capitole == ["oblig_realizat", "cap12"] and len(secs) == 2
     assert (secs[0].get("norma_caen"), secs[0].get("norma_data_doc_autoriz"), secs[0].get("real_impozit")) == \
         ("9602", "04.05.2020", "3000")
     assert (secs[1].get("norma_forma_org"), secs[1].get("norma_data_incep"), secs[1].get("real_venit_net_anual"),

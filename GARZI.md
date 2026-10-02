@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**659 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**661 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 627
+### `core/` — 629
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9004,10 +9004,12 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d207_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D207 gol NU produce declaratie.
 - `core/test_d208_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D208 gol NU produce declaratie; biroul notarial + o tranzactie
 - `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
+- `core/test_d212_campuri_validator.py` — GARD — atributele pe care `d212.py` le poate emite sunt NUMELE XML ale validatorului instalat (02.10.2026).
 - `core/test_d212_cap11.py` — D212 Etapa 2 — venit în sistem real cap-coadă: registrul RIP -> cap11 -> XML -> DUK (01.10.2026).
 - `core/test_d212_cap12.py` — D212 Etapa 3 — venit din activități independente pe NORMĂ DE VENIT: datele contabilului -> cap12 -> XML -> DUK.
 - `core/test_d212_cass_minim.py` — GARD — CASS din activități independente sub 6 salarii minime NU e „opțională” (neconformitate reparată 02.10.2026).
 - `core/test_d212_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D212 (increment proof-of-pattern) - identitatea PF
+- `core/test_d212_oblig_realizat.py` — D212 Etapa 4 — CAS, CASS, impozitul în sistem real și sumarul (oblig_realizat), din venitul declarat (02.10.2026).
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
 - `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
 - `core/test_d220.py` — Teste D220 (venit estimat / norma de venit - persoane fizice).
@@ -9883,3 +9885,15 @@ Detaliul: DECIZII 02.10.2026 („NECONFORMITATE: CASS … sub 6 salarii minime�
 | gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
 |---|---|---|---|---|
 | baza minimă CASS | core/test_d212_cass_minim.py (10 teste) | CASS 0 pe un venit net pozitiv sub 6 sm; excepțiile ignorate; o excepție inventată; diferența dedusă la impozit | forma veche -> 7 roșii; diferența dedusă -> roșu; excepțiile ignorate -> 5 roșii | excepția nu are încă intrare pe ecran (Etapa 4) |
+
+## 02.10.2026 — D212 Etapa 4: oblig_realizat (CAS, CASS, impozit, sumar) + atributele confruntate cu jar-ul
+
+Categoriile **3. Calcul fiscal** (contribuții, pondere, impozit) și **4. Ieșire către autorități** (declarația fără
+obligații — DUK valid; atribute cu nume interne). Detaliul: DECIZII 02.10.2026 („D212 Etapa 4 …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| oblig_realizat din venit | core/test_d212_oblig_realizat.py (12 teste, DUK ×4) | venit declarat fără CAS/CASS/impozit (DUK nu observă); deducere fără pondere; CASS deductibilă cu diferența până la 6 sm; opțiunea CAS emisă pe A1 | fără oblig_realizat → 7 roșii (DUK rămâne verde!); fără pondere → roșu; diferența dedusă → roșu; opțiunea pe A1 → roșu | reținerile la sursă și bonificația nu se calculează |
+| atribute = nume XML ale validatorului | core/test_d212_campuri_validator.py (6 capitole + calibrare) | un atribut cu numele câmpului intern (respins de DUK abia la prima emitere) | `real_cas_deduc_ai` pus înapoi în set → roșu | extragere pe șiruri delimitate din constant pool |
+| excepțiile CASS ecran = motor | test_cheile_exceptiilor_din_ecran_sunt_ale_motorului | o cheie de excepție pe ecran pe care motorul o refuză (sau invers) | — (egalitate de seturi) | — |
+| opțiunea CAS [EXTERN] | test_datorie.py::test_datorie_d212_optiune_cas_sub_12_sm (xfail strict) | — | — | până la validatorul pentru OPANAF 2736/2025 |

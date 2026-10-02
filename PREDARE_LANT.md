@@ -1,18 +1,19 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **CASS sub 6 salarii minime reparată (neconformitate); D394 op2 Î1 închis (decizia B); urmează D212 Etapa 4 (impozit/CAS/CASS în `oblig_realizat`)** (02.10.2026)
+# PREDARE LANȚ — **D212 Etapa 4 închisă (CAS, CASS, impozit, sumar); CASS sub 6 sm reparată; D394 op2 Î1 închis; urmează D212 Etapa 5 (categoriile fără date)** (02.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **CASS minim** (commitul care poartă această predare; hash-ul
+- **ultima rescriere**: **2026-10-02** (noaptea), în commitul **D212 Etapa 4** (commitul care poartă această predare; hash-ul
   lui e în raport și în `git log`).
-- **pe commit**: `c3d5d185` — ultimul four-way închis înainte de rescriere (02.10.2026 17:14: HEAD = origin/main = public/main =
-  backup/lant-2026-10-02 = procesul viu (2 din 2) = c3d5d185, D394 op2 Î1).
+- **pe commit**: `47770511` — ultimul four-way închis înainte de rescriere (02.10.2026 19:23: HEAD = origin/main = public/main =
+  backup/lant-2026-10-02 = procesul viu (2 din 2) = 47770511, CASS sub 6 sm).
 - **ÎN LUCRU ACUM:** nimic deschis — firul D212 Etapa 3 e ÎNCHIS în TESTE.md „În lucru acum”.
-- **URMĂTORUL FRONT:** D212 Etapa 4 — impozitul (sistem real + normă) și CAS/CASS în `oblig_realizat` (secțiunea 4 a cap.I),
-  pe `d212_engine` (reparat azi la CASS sub 6 sm). Maparea atribut -> rând, extrasă din `D212Pdf.jar` (Pdf_v8) și din
-  instrucțiunile 2736/2025 (Secțiunile 3, 4, 7), e scrisă mai jos la „D212 — CE S-A AFLAT LA SURSĂ”; apoi Etapa 5 (formular manual pentru categoriile fără date) și etapa finală (mesajul din
-  `d221.py`, ghidurile).
+- **URMĂTORUL FRONT:** D212 Etapa 5 — formular manual pentru categoriile fără date în aplicație (chirii, investiții,
+  drepturi de proprietate intelectuală, alte surse, cap14), cu CASS pe treptele art.170 alin.(2)-(3); apoi etapa finală
+  (mesajul din `d221.py`, ghidurile care spun „D212 doar identificare”). Etapa 4 (oblig_realizat) e închisă — `D212_PERIMETRU.md` §7.
+- **[EXTERN] nou (Etapa 4):** opțiunea CAS sub 12 sm (lit.B) n-are căsuță în formularul validatorului instalat (Pdf_v8: doar A1/A2);
+  refuz numit + `core/test_datorie.py::test_datorie_d212_optiune_cas_sub_12_sm`.
 - **D212 — BLOCAJ [EXTERN] aflat la sursă pe 02.10:** validatorul instalat (J13.0.1, pachet v9) e al formularului PENTRU
   VENITURILE 2024. **Subsecțiunea a 4-a (agricol pe normă, CF art.107 alin.(2)) nu are niciun loc în XML** (0 atribute agricole,
   nu există bifa114). Generatorul REFUZĂ numit; datorie strictă `core/test_datorie.py::test_datorie_d212_venit_agricol_pe_norma`.

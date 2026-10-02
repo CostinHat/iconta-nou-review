@@ -16191,3 +16191,35 @@ stabilește contabilul; parametrul de rută vine cu Etapa 4). (4) Cele 5 ghiduri
 „asigurat din altă sursă” implicit activă (ar fi ascuns iar diferența, adică defectul).
 **Limită.** Excepția nu are încă intrare pe ecran (fișa arată ambele sume); intră odată cu secțiunea CASS din D212 (Etapa 4).
 **La poartă:** `test_d212.py` din rădăcina repo-ului avea două teste care fixau CASS 0 sub 6 sm (scrise 16.07 „din Codul fiscal”, dar pe presupunere); corectate pe temei. Căutarea unei clase acoperă și testele din rădăcină.
+
+---
+
+## 02.10.2026 — D212 Etapa 4: CAS, CASS, impozitul în sistem real și sumarul (oblig_realizat) din venitul declarat
+
+**Temei.** Instrucțiunile D212 (OPANAF 2736/2025) Secțiunea a 3-a (CAS pct.46.1–46.7: rd.1 venitul cumulat, rd.2 baza
+12/24 sm, rd.3 25%, rd.5 diferența în plus; CASS pct.49.1.1–49.1.7), Secțiunea a 4-a (rd.1 venitul net recalculat, rd.4
+„din care se deduc” CAS și CASS deductibile — care „nu poate depăși nivelul venitului net anual recalculat”, rd.6 10%;
+4.1/4.2 ponderea venitului din sistem real în venitul cumulat), Secțiunea a 7-a (sumarul). Codul fiscal: art.148 (CAS),
+art.170 alin.(1) + art.174 alin.(6) (CASS), art.118 alin.(2) lit.b) și alin.(2^2) (deductibilitate pe pondere, fără
+diferența de la art.174 alin.(6)), art.64 alin.(1) („Cota de impozit este de 10%”). Structura: D212Validator.jar v9,
+clasa Oblig_realizat (fără reguli încrucișate); atribut -> rând: D212Pdf.jar Pdf_v8.
+
+**Decizii.** (1) `d212.oblig_realizat` calculează din cap11 (rd.3 net, rd.7 recalculat) + cap12 (rd.9 norme, impozitul
+pe normă); CAS/CASS și cota impozitului vin din `d212_engine` (aceeași sursă ca fișa RIP, nu o a doua formulă). Venitul
+de încadrare = net real (pierderea nu se ia, pct.49.1.2.4) + norme. (2) Deducerile la impozit = pondere × contribuția;
+sub 6 sm, pondere × CASS pe venit (I.4.2 rd.5), nu × CASS la baza minimă. (3) Ponderea se emite cu 4 zecimale (validatorul
+o citește real; nicio regulă), iar suma deductibilă se calculează pe raportul exact, nu pe ponderea rotunjită. (4) I.4
+rd.2/rd.3 n-au atribut XML propriu — sunt `real_cas_deductibila_ai` / `real_cass_deductibila_ai` din 4.1/4.2. (5) Bifele
+bifa131 / bifa132 / bifa14 se pun când secțiunea are conținut. (6) Ecranul: o listă „Excepție de la baza minimă CASS”
+(art.174 alin.(7)-(8)); cheile JS = `EXCEPTII_MINIM_CASS`, confruntate de test.
+**Refuzat numit [EXTERN]:** opțiunea CAS sub 12 sm (lit.B) — formularul validatorului (2024) are doar A1/A2; declarată
+pe A1 ar fi falsă. Datorie strictă `test_datorie_d212_optiune_cas_sub_12_sm`.
+
+**Neconformitate găsită pe drum (clasa reparată în același pas).** `d212._CAMPURI` purta pe 7 atribute `oblig_realizat`
+și pe `reg` (cap11) numele CÂMPURILOR INTERNE ale validatorului, nu numele XML (`cass_ret_plat_alin6_ai` în loc de
+`cass_retinut_platitor_alin6_ai`; `real_cas_deduc_ai` nu există deloc ca atribut). Prima emitere a dat DUK „atribut
+necunoscut”. Corectat; gard `core/test_d212_campuri_validator.py` confruntă fiecare set cu jar-ul instalat. Tiparul (set
+de atribute scris de mână) nu există în alte generatoare (căutat: `_CAMPURI` / `_ATRIBUTE` în `core/d*.py`).
+**Limite.** Fără reținerile la sursă (CAS/CASS reținute de plătitor, plăți anticipate) — PFA în sistem real/normă nu le
+are; fără bonificație (Secțiunea 8, doar dacă legea bugetului o prevede); fără drepturi de proprietate intelectuală
+(Etapa 5).

@@ -62,7 +62,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [formular_manual_d212] Declaratia unica PF: identitate (cif=CNP/nume/adresa) + fisa RIP AFISATA
     // (pull din registru; venitul/CAS/CASS/impozit — informativ). Increment: genereaza cazul minim
     // DUK-valid (identitate); popularea cap11/oblig_realizat din fisa = pas urmator. In memorie, ca d200.
-    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", fisa: null, fisa_eroare: "", norma: [] },
+    d212: { cif: "", nume_c: "", adresa_c: "", d_rec: 0, din_rip: 0, pierdere_precedenta: "", caen: "", fisa: null, fisa_eroare: "", norma: [], exceptie_minim_cass: "" },
     // [formular_manual_d201] venituri din strainatate PF: identitate (CNP/nume/initiala tata/prenume) +
     // sectiuni pe (tara, categorie) - venit_B/chlt_D/imp1/imp2/pierdere; venit_N calculat. In memorie, ca d200.
     d201: { cif_c: "", nume_c: "", initiala_c: "", prenume_c: "", d_rec: 0, sectiuni: [] },
@@ -2897,7 +2897,7 @@ function randeazaFormularD318(corp, nav) {
 // registrul de incasari/plati, ruta /rip/d212/{an}, informativ). Genereaza cazul MINIM DUK-valid
 // (identitate + bife 0; totalPlata_A = suma cifrelor CNP). [D212 Etapa 2] Cu bifa „Include venitul din
 // registrul RIP", serverul completeaza subsectiunea I.1.1 (sistem real) din registru (din_rip); impozitul si
-// CAS/CASS (sectiunea 4 + contributii) = etapa urmatoare. Valorile din memorie (S.d212), persista intre randari.
+// CAS/CASS si impozitul (oblig_realizat, sectiunile 3/4/7) le calculeaza serverul [D212 Etapa 4]. Valorile din memorie (S.d212).
 // [D212 Etapa 3] Activitatile pe norma de venit (Subsectiunea a 2-a lit.A, cap12): lista de randuri (DS cap.24) —
 // contabilul da norma DGRFP si datele activitatii; venitul net, cel impozabil si impozitul le calculeaza serverul.
 function _d212Manual() {
@@ -2913,6 +2913,10 @@ function _d212Manual() {
     m.pierdere_precedenta = Number(d.pierdere_precedenta || 0);
     if ((d.caen || "").trim()) m.caen = d.caen.trim();
   }
+  // [D212 Etapa 4] CAS/CASS și impozitul (oblig_realizat) le calculează serverul; de aici vin doar cele două alegeri
+  // pe care evidența nu le poate ști: excepția de la baza minimă CASS (CF art.174 alin.(7)-(8)). Opțiunea CAS sub 12 sm
+  // n-are căsuță în formularul validatorului instalat -> refuz pe server, deci nu se oferă aici.
+  if (d.exceptie_minim_cass) m.exceptie_minim_cass = d.exceptie_minim_cass;
   if ((d.norma || []).length) {
     m.norma = d.norma.map((a) => ({
       caen: a.caen, sediu: a.sediu, nr_doc_autoriz: a.nr_doc_autoriz, data_doc_autoriz: a.data_doc_autoriz,
@@ -2922,6 +2926,15 @@ function _d212Manual() {
   return m;
 }
 
+// Excepțiile de la baza minimă CASS — cheile = `d212_engine.EXCEPTII_MINIM_CASS` (gardate de test_d212_oblig_realizat)
+const _D212_EXCEPTII_CASS = [
+  ["", "nicio excepție — CASS cel puțin la baza de 6 salarii minime"],
+  ["salarii", "are salarii de cel puțin 6 salarii minime (art.174 alin.(7) lit.a)"],
+  ["venituri_c_h", "are alte venituri (chirii, investiții etc.) cu CASS de cel puțin 6 salarii minime (alin.(7) lit.b)"],
+  ["pensii", "are venituri din pensii (alin.(7) lit.c)"],
+  ["exceptat_art154", "a fost exceptat de la CASS în anul precedent (art.154; alin.(8) lit.a)"],
+  ["optiune_art180", "a optat pentru CASS în anul precedent (art.180; alin.(8) lit.b)"],
+];
 const _D212_FORMA_ORG = [["1", "individual"], ["2", "asociere fără personalitate juridică"]];
 
 function randeazaFormularD212(corp, nav) {
@@ -2944,7 +2957,7 @@ function randeazaFormularD212(corp, nav) {
       "CAS: <b>" + bani((f.cas || {}).cas || 0) + "</b> lei" + casNota + " · CASS: <b>" + bani((f.cass || {}).cass || 0) + "</b> lei" + cassNota + "<br>" +
       "Bază impozit: <b>" + bani(f.baza_impozit || 0) + "</b> · Impozit: <b>" + bani(f.impozit || 0) + "</b> lei</div>" +
       (f.avertisment ? '<div class="ecran-nota" style="margin-top:4px">' + esc(f.avertisment) + "</div>" : "") +
-      '<div class="ecran-nota" style="margin-top:6px">Cifrele vin din registrul firmei. Cu „Include venitul din registrul RIP", venitul brut, cheltuielile și venitul net intră în subsecțiunea I.1.1 (sistem real); impozitul și CAS/CASS se completează în etapa următoare.</div>' +
+      '<div class="ecran-nota" style="margin-top:6px">Cifrele vin din registrul firmei. Cu „Include venitul din registrul RIP", venitul brut, cheltuielile și venitul net intră în subsecțiunea I.1.1 (sistem real); CAS, CASS și impozitul se calculează la generare, în secțiunile 3, 4 și 7.</div>' +
       "</div>";
   } else {
     blocFisa = '<div class="stare-goala stare-goala--inline">Apasă „Trage fișa RIP" ca să vezi venitul net și contribuțiile calculate din registrul de încasări/plăți al firmei, pentru anul ales.</div>';
@@ -2961,6 +2974,11 @@ function randeazaFormularD212(corp, nav) {
         '<button class="buton-sters d212-n-del" data-idx="' + i + '" aria-label="Șterge activitatea ' + (i + 1) + '">Șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Nicio activitate pe normă. Dacă persoana a avut venituri impuse pe normă de venit, adaugă fiecare activitate (fiecare loc) mai jos.</div>';
   const optForma = _D212_FORMA_ORG.map((o) => '<option value="' + o[0] + '">' + esc(o[1]) + "</option>").join("");
+  const optExc = _D212_EXCEPTII_CASS.map((o) => '<option value="' + o[0] + '"' + ((d.exceptie_minim_cass || "") === o[0] ? " selected" : "") + ">" + esc(o[1]) + "</option>").join("");
+  const blocContributii = '<div class="camp-eticheta" style="margin:14px 0 4px">Contribuții și impozit (secțiunile 3, 4 și 7 — calculate din veniturile de mai sus)</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
+      '<label class="camp" style="flex:1 1 320px"><span class="camp-eticheta">Excepție de la baza minimă CASS (venit sub 6 salarii minime)</span><select id="d212-exccass" class="camp-input">' + optExc + "</select></label>" +
+    "</div>";
   const blocNorma = '<div class="camp-eticheta" style="margin:14px 0 4px">Venit pe normă de venit — activități independente (subsecțiunea I.1.2)</div>' +
     randuriNorma +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
@@ -2995,6 +3013,7 @@ function randeazaFormularD212(corp, nav) {
     '<p style="margin:4px 0 8px"><button class="buton-secundar" id="d212-fisa">Trage fișa RIP ' + esc(String(S.an)) + "</button></p>" +
     blocFisa +
     blocNorma +
+    blocContributii +
     '<p style="margin-top:10px"><button class="buton-primar" id="d212-regen">Regenerează D212</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
@@ -3007,9 +3026,10 @@ function randeazaFormularD212(corp, nav) {
     S.d212.din_rip = gv("#d212-rip").checked ? 1 : 0;
     S.d212.pierdere_precedenta = gv("#d212-pp").value.trim();
     S.d212.caen = gv("#d212-caen").value.trim();
+    S.d212.exceptie_minim_cass = gv("#d212-exccass").value;
   };
   ["#d212-cnp", "#d212-nume", "#d212-adr", "#d212-pp", "#d212-caen"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
-  ["#d212-rec", "#d212-rip"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
+  ["#d212-rec", "#d212-rip", "#d212-exccass"].forEach((id) => gv(id).addEventListener("change", salveazaAntet));
   zona.querySelectorAll(".d212-n-del").forEach((b) => b.addEventListener("click", () => {
     salveazaAntet();
     S.d212.norma.splice(parseInt(b.dataset.idx, 10), 1);

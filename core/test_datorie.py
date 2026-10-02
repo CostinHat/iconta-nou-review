@@ -318,3 +318,13 @@ def test_datorie_d212_venit_agricol_pe_norma():
     xml, _ = d212.genereaza(None, None, Perioada(an=2025), {"cif": "1800101221144", "nume_c": "POPESCU ION",
                                                          "adresa_c": "Bucuresti", "agricol": [{"norma": 5000}]})
     assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"
+
+
+@pytest.mark.xfail(strict=True, raises=ValueError, reason="DATORIE [EXTERN] 02.10.2026 (D212 Etapa 4): opțiunea pentru CAS sub 12 salarii minime (instrucțiunile OPANAF 2736/2025 pct.46.2, lit.B „Am realizat venituri sub plafonul minim și optez pentru plata CAS”) nu are căsuță în formularul validatorului ANAF instalat (J13.0.1 = formularul pentru veniturile 2024: D212Pdf Pdf_v8 are doar bifa_cas_real_1 (12-24 sm) și bifa_cas_real_2 (>= 24 sm)). d212.oblig_realizat refuză numit, în loc s-o declare pe A1. Se închide când ANAF publică validatorul pentru OPANAF 2736/2025 și generatorul emite opțiunea, DUK valid.")
+def test_datorie_d212_optiune_cas_sub_12_sm():
+    from core import d212, duk
+    from core.common import Perioada
+    xml, _ = d212.genereaza(None, None, Perioada(an=2025), {"cif": "1800101221144", "nume_c": "POPESCU ION",
+                                                         "adresa_c": "Bucuresti", "optiune_cas": 1,
+                                                         "cap11": d212.cap11_sistem_real(30000, 10000)})
+    assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"

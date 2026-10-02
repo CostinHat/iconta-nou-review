@@ -1,0 +1,42 @@
+{
+ "optiuni_exceptie": [
+  "",
+  "salarii",
+  "venituri_c_h",
+  "pensii",
+  "exceptat_art154",
+  "optiune_art180"
+ ],
+ "fara_exceptie": {
+  "baza_cass_datorat_ai": "24300",
+  "cass_datorat_ai": "2430",
+  "oblimpoz_real_total": "2000",
+  "dif_de_plata": "4430"
+ },
+ "cu_exceptie_salarii": {
+  "baza_cass_datorat_ai": "20000",
+  "cass_datorat_ai": "2000",
+  "dif_de_plata": "4000"
+ },
+ "duk_text": "DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF.",
+ "axe_desktop": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ]
+}

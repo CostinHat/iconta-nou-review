@@ -64,7 +64,7 @@ _COPII = ["oblig_realizat", "oblig_estimat", "cap11", "cap12", "cap14", "coasigu
 # Referinta campurilor pe element (numele de atribut XML = numele campului fara '_' din bytecode).
 # Emitem DOAR chei din aceste seturi (o cheie necunoscuta e respinsa de validator ca atribut strain).
 _CAMPURI = {
-    "cap11": {"scutire", "reg", "categ_venit", "det_ven_net", "forma_org", "mod_forma_org",
+    "cap11": {"scutire", "categ_venit", "det_ven_net", "forma_org", "mod_forma_org",
               "caen", "descriere_sediu_bun", "nr_doc_autoriz", "data_doc_autoriz",
               "data_incep", "data_sf", "nr_zile_scutite", "venit_brut", "chelt_deduc",
               "venit_net_anual", "pierdere", "pierdere_precedenta", "pierdere_compensata",
@@ -82,24 +82,27 @@ _CAMPURI = {
                       "bifa_optiune_coasigurat", "totalCassDatorat", "totalCassDatoratCoasigurat"},
     "coasigurat": {"tipCoasigurat", "numeCoasigurat", "cnpCoasigurat", "bazaCassCoasigurat",
                    "cassDatoratCoasigurat"},
-    # oblig_realizat: ~90 campuri CAS/CASS/impozit. Set larg; valorile vin gata calculate din manual.
+    # oblig_realizat: numele ATRIBUTELOR XML din D212Validator.jar v9, clasa Oblig_realizat — nu numele câmpurilor interne
+    # (`_cass_ret_plat_alin6_ai` se citește din `cass_retinut_platitor_alin6_ai`; I.4 rd.2/rd.3 n-au atribut propriu, ele
+    # sunt `real_cas_deductibila_ai` / `real_cass_deductibila_ai` din I.4.1/I.4.2). Confruntat cu jar-ul de
+    # core/test_d212_campuri_validator.py (corectat 02.10.2026: 7 nume interne aici + `reg` la cap11).
     "oblig_realizat": {
         "real_camere_inchiriere", "real_venit_inchiriere", "real_impozit_inchiriere",
         "str_cas_baza", "str_cas_datorat", "str_cass_baza", "str_cass_datorat",
         "bifa_cas_real", "cas_total_ven", "cas_baza", "cas_datorat", "cas_retinut_platitor",
         "cas_dif_plus", "bifa_cass_datorat_ai", "bifa_cass_datorat_dpi", "cass_total_ven_ai",
-        "baza_cass_datorat_ai", "cass_datorat_ai", "cass_ret_plat_alin6_ai", "cass_dif_plus_ai",
-        "cass_dif_minus6_ai", "cass_ret_plat_alin7_ai", "cass_dif_minus8_ai", "bifa_cass_real",
+        "baza_cass_datorat_ai", "cass_datorat_ai", "cass_retinut_platitor_alin6_ai", "cass_dif_plus_ai",
+        "cass_dif_minus6_ai", "cass_retinut_platitor_alin7_ai", "cass_dif_minus8_ai", "bifa_cass_real",
         "cass_ven_dpi", "cass_ven_asc", "cass_ven_cfb", "cass_ven_inv", "cass_ven_asp",
         "cass_ven_alt", "cass_total_ven", "cass_baza", "cass_datorat", "cass_retinut",
-        "cass_dif_plus", "real_venit_net_recalculat_ai", "real_cas_deduc_ai",
-        "real_cass_deductibil_ai", "real_venit_net_impozabil_ai", "real_venit_net_imp_redus_ai",
+        "cass_dif_plus", "real_venit_net_recalculat_ai",
+        "real_venit_net_impozabil_ai", "real_venit_net_impozabil_redus_ai",
         "real_impozit_datorat_ai", "real_cas_venit_net_ai", "real_cas_total_ven_ai",
         "real_cas_pondere_ai", "real_cas_datorata_ai", "real_cas_deductibila_ai",
         "real_cass_venit_net_ai", "real_cass_total_ven_ai", "real_cass_pondere_ai",
         "real_cass_datorata_ai", "real_cass_calculata_ai", "real_cass_deductibila_ai",
-        "real_venit_net_recalc_dpi", "real_cas_dpi", "real_venit_net_impozabil_dpi",
-        "real_venit_net_imp_redus_dpi", "real_impozit_datorat_dpi", "real_cas_venit_net_dpi",
+        "real_venit_net_recalculat_dpi", "real_cas_dpi", "real_venit_net_impozabil_dpi",
+        "real_venit_net_impozabil_redus_dpi", "real_impozit_datorat_dpi", "real_cas_venit_net_dpi",
         "real_cas_total_ven_dpi", "real_cas_pondere_dpi", "real_cas_datorata_dpi",
         "real_cas_deductibila_dpi", "real_diferenta_CASS", "real_impozit_diferenta_CASS",
         "oblimpoz_real_total", "oblimpoz_real_anticipat", "oblimpoz_real_dif_deplata",
@@ -203,6 +206,86 @@ ZILE_AN_NORMA = _anc("d212.ZILE_AN_NORMA", 365, _Tm(
     lant_acte="instrucțiuni formular 212, Subsecțiunea a 2-a lit.A rd.9; CF art.69 alin.(5): „norma de venit aferentă "
               "acelei activități se reduce proporțional” pentru perioadele mai mici decât anul calendaristic"))
 FORME_ORG_NORMA = {1: "Individual", 2: "Asociere fără personalitate juridică"}   # validator: interval [1,2]
+
+
+
+# ── OBLIG_REALIZAT (Secțiunile 3, 4 și 7 ale cap.I — CAS, CASS, impozitul în sistem real, sumarul) ──────────────
+# [D212 Etapa 4, 02.10.2026] Atributele = clasa Oblig_realizat din D212Validator.jar v9 (fără reguli încrucișate, doar
+# intervale); corespondența atribut -> rând = D212Pdf.jar Pdf_v8 (formularul validatorului): I.3.1 CAS rd.1-5, I.3.2.1
+# CASS rd.1-5, I.4 rd.1-6 + I.4.1/I.4.2 (contribuțiile deductibile pe pondere, CF art.118 alin.(2^2)/(2^3)), I.7.1-I.7.4.
+# Rândurile urmează instrucțiunile D212 (OPANAF 2736/2025) Secțiunile 3, 4 și 7; CAS și CASS vin din `d212_engine`
+# (aceeași sursă ca fișa RIP), nu dintr-o a doua formulă.
+def _pondere(parte, total):
+    """Ponderea (rd.1/rd.2) cu 4 zecimale, ca text (validatorul o citește ca valoare reală)."""
+    return "%.4f" % (Decimal(parte) / Decimal(total)) if total else "0.0000"
+
+
+def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None):
+    """Secțiunile 3, 4 și 7 din venitul declarat în cap11 (sistem real) și cap12 (normă). Întoarce (secțiune, bife).
+
+    Venitul pentru încadrarea CAS/CASS (I.3.1 rd.1 / I.3.2.1 rd.1) = venitul net din sistem real (cap11 rd.3; pierderea
+    nu se ia — instrucțiuni pct.49.1.2.4) + normele (cap12 rd.9) — CF art.148 alin.(3) / art.170 alin.(1)."""
+    from core import d212_engine as _e
+    if int(an) not in _e.ANI_VERIFICATI:
+        raise ValueError("D212: contribuțiile se calculează doar pentru anii cu plafoane verificate la sursă (%s); pragurile "
+                         "din Codul fiscal art.148 și art.170 se raportează la salariul minim al anului — pentru %s verifică-l întâi."
+                         % ("/".join(map(str, _e.ANI_VERIFICATI)), an))
+    p = _e.plafoane_an(int(an))
+    net_real = _lei((cap11 or {}).get("venit_net_anual") or 0)
+    recalc = _lei((cap11 or {}).get("venit_recalculat") or 0)
+    norme = sum(_lei(c.get("real_venit_net_anual") or 0) for c in _sectiuni(cap12))
+    total = net_real + norme
+    o, bife = {}, {}
+    if optiune_cas and total < p.cas_prag_min_sm * p.salariu_minim:
+        # instrucțiuni pct.46.2 lit.B „sub plafonul minim și optez” — formularul validatorului instalat (J13.0.1, Pdf_v8)
+        # are doar căsuțele A1 (12-24 sm) și A2 (>= 24 sm); emiterea opțiunii pe A1 ar declara un venit pe care nu-l are
+        raise ValueError("D212: opțiunea pentru CAS sub 12 salarii minime (OPANAF 2736/2025, instrucțiuni pct.46.2, lit.B) nu are "
+                         "căsuță în formularul validatorului ANAF instalat (J13.0.1, formularul pentru veniturile 2024); se declară "
+                         "pe formularul ANAF.")
+    cas = _e.calculeaza_cas(float(total), p, optiune_cas)
+    cas_d = _lei(cas["cas"])
+    if cas_d:
+        # rd.1-rd.5 (instrucțiuni pct.46.3-46.7); căsuța: A1 între 12 și 24 sm, A2 de la 24 sm (pct.46.1)
+        o.update(bifa_cas_real=2 if total >= p.cas_prag_max_sm * p.salariu_minim else 1, cas_total_ven=total,
+                 cas_baza=_lei(cas["baza"]), cas_datorat=cas_d, cas_dif_plus=cas_d)
+        bife["bifa131"] = "1"
+    cass = _e.calculeaza_cass(float(total), p, False, exceptie_minim_cass)
+    cass_d = _lei(cass["cass"])
+    if cass_d:
+        # rd.1-rd.3 + diferența în plus (pct.49.1.1-49.1.7; nu există CASS reținută la sursă pe activități independente)
+        o.update(bifa_cass_datorat_ai=1, cass_total_ven_ai=total, baza_cass_datorat_ai=_lei(cass["baza"]),
+                 cass_datorat_ai=cass_d, cass_dif_plus_ai=cass_d)
+        bife["bifa132"] = "1"
+    impozit = sum(_lei(c.get("real_impozit") or 0) for c in _sectiuni(cap12))
+    if net_real:
+        # I.4.1: CAS deductibilă = pondere sistem real x CAS datorată (CF art.118 alin.(2^2))
+        cas_ded = _lei(Decimal(cas_d) * net_real / total) if total else 0
+        # I.4.2: CASS deductibilă = pondere x CASS datorată, sau x CASS calculată pe venit sub 6 sm (rd.5, art.174 alin.(1))
+        sub_minim = cass["diferenta_minim"] > 0
+        baza_ded = _lei(cass["cass_pe_venit"]) if sub_minim else cass_d
+        cass_ded = _lei(Decimal(baza_ded) * net_real / total) if total else 0
+        o.update(real_cas_venit_net_ai=net_real, real_cas_total_ven_ai=total, real_cas_pondere_ai=_pondere(net_real, total),
+                 real_cas_datorata_ai=cas_d, real_cas_deductibila_ai=cas_ded,
+                 real_cass_venit_net_ai=net_real, real_cass_total_ven_ai=total,
+                 real_cass_pondere_ai=_pondere(net_real, total), real_cass_datorata_ai=cass_d,
+                 real_cass_deductibila_ai=cass_ded)
+        if sub_minim:
+            o["real_cass_calculata_ai"] = baza_ded
+        # I.4 rd.1-rd.6: deducerile nu pot depăși venitul net recalculat (pct.53 rd.4)
+        ded_cas, ded_cass = min(cas_ded, recalc), min(cass_ded, max(0, recalc - min(cas_ded, recalc)))
+        impozabil = recalc - ded_cas - ded_cass
+        # cota din motor (aceeași sursă ca fișa RIP): CF art.64 alin.(1) lit.a) „Cota de impozit este de 10%”
+        imp_real = _lei(Decimal(impozabil) * Decimal(str(p.impozit_cota)))
+        # rd.2/rd.3 (contribuțiile deductibile) n-au atribut propriu în XML: sunt rd.5 din I.4.1 / rd.6 din I.4.2
+        o.update(real_venit_net_recalculat_ai=recalc, real_venit_net_impozabil_ai=impozabil,
+                 real_impozit_datorat_ai=imp_real)
+        bife["bifa14"] = "1"
+        impozit += imp_real
+    # I.7 sumarul (pct.56): impozitul (I.4 rd.6 + normele), CAS și CASS stabilite în plus, diferența de plată
+    o.update(oblimpoz_real_total=impozit, oblimpoz_real_dif_deplata=impozit, oblcas_real_difPlus=cas_d,
+             oblcass_real_difPlus_ai=cass_d, impozit_venit_plus=impozit, cas_plus=cas_d, cass_plus=cass_d,
+             dif_de_plata=impozit + cas_d + cass_d)
+    return o, bife
 
 
 def _dmy(d):
@@ -506,6 +589,11 @@ def genereaza(conn, schema, perioada, manual=None):
         manual["cap12"] = cap12
     if manual.get("cap12"):
         manual["bifa112"] = "1"      # R8: bifa112=1 => cap12 exista (și subsecțiunea se declară completată)
+    if (manual.get("cap11") or manual.get("cap12")) and not manual.get("oblig_realizat"):
+        # [D212 Etapa 4] CAS, CASS, impozitul în sistem real și sumarul, din veniturile declarate mai sus
+        manual["oblig_realizat"], bife = oblig_realizat(manual.get("cap11"), manual.get("cap12"), an,
+                                                        bool(manual.get("optiune_cas")), manual.get("exceptie_minim_cass") or None)
+        manual.update(bife)
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)
     if er:

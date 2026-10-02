@@ -34,7 +34,8 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
   veniturile 2025. **Construit 02.10.2026 (Etapa 3, §6)**: `d212.cap12_norma` + lista de pe ecran; agricolul pe normă
   rămâne refuzat numit până la validatorul ANAF pentru OPANAF 2736/2025 ([EXTERN]).
 - **2c. CAS și CASS datorate** — EXISTENT în `d212_engine` (art. 148-149 / 154-170, praguri 12/24 sm CAS,
-  6/60 sm CASS). GOL: cablarea în emitter (oblig_realizat) + probă pe lanț.
+  6/60 sm CASS). **Cablat 02.10.2026 (Etapa 4, §7)**: `d212.oblig_realizat` + probă F4; CASS sub 6 sm reparată
+  (baza minimă, art.174 alin.(6)).
 - **2d. Depunere inițială și rectificativă** — emitter-ul are bifele; GOL: fluxul explicit + proba.
 - **Categoriile fără date în aplicație** (ex. chirii neținute în app, investiții, alte surse, venituri din
   străinătate cap14) — se introduc de contabil într-un **formular manual**, după tiparul formularelor
@@ -60,7 +61,8 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
   (invalid→valid), gardă+mutație pe sume. **FĂCUTĂ 02.10.2026** — v. §5.
 - **Etapa 3** — normă de venit (incl. agricol art.107(2)) în engine + emitter cap12, lanț-probă. **FĂCUTĂ 02.10.2026**
   (calculul în emitter, `d212.cap12_norma`, nu în engine — DECIZII 02.10) — v. §6. Agricolul: [EXTERN], fără loc în validator.
-- **Etapa 4** — CAS/CASS în oblig_realizat (cablare + probă), inițială/rectificativă.
+- **Etapa 4** — CAS/CASS în oblig_realizat (cablare + probă), inițială/rectificativă. **FĂCUTĂ 02.10.2026** — v. §7 (opțiunea
+  CAS sub 12 sm: [EXTERN]).
 - **Etapa 5** — formular manual pentru categoriile fără date (regula 0 DESIGN_SYSTEM).
 - **Etapa finală** — ~~alinierea F246~~ (făcută 02.10 în Etapa 3) + mesajul din d221.py + ghidurile care spun „D212 doar identificare".
 
@@ -96,3 +98,17 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
   fără bifa114) → refuz numit + datorie strictă [EXTERN] `test_datorie_d212_venit_agricol_pe_norma`.
 - **În afara Etapei 3**: repartizarea venitului din asociere (contabilul dă norma atribuibilă), impozit/CAS/CASS în
   `oblig_realizat` (Etapa 4).
+
+## 7. Etapa 4 — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
+- **Validatorul în vigoare (v9)**: `Oblig_realizat` fără reguli încrucișate (doar intervale); numele XML ale atributelor diferă
+  pe alocuri de numele câmpurilor interne (`cass_retinut_platitor_alin6_ai` vs `_cass_ret_plat_alin6_ai`) — seturile din
+  `d212._CAMPURI` sunt acum confruntate cu jar-ul (`core/test_d212_campuri_validator.py`).
+- **Atribut -> rând** (D212Pdf Pdf_v8): I.3.1 CAS rd.1–5 + `bifa_cas_real` (doar A1 12–24 sm / A2 ≥ 24 sm); I.3.2.1 CASS
+  rd.1–5; I.4 rd.1, rd.4, rd.6 (rd.2/rd.3 = rd.5 din 4.1 / rd.6 din 4.2); 4.1 / 4.2 cu ponderea; I.7.1–I.7.4.
+- **Construit**: `d212.oblig_realizat` (din cap11 + cap12, CAS/CASS și cota impozitului din `d212_engine`), bifa131/132/14,
+  lista „Excepție de la baza minimă CASS” pe ecran. Gărzi `core/test_d212_oblig_realizat.py`, `core/test_d212_campuri_validator.py`;
+  probă `frontend_test/proba_d212_etapa4.py` (F4, cod vechi vs nou).
+- **Neconformitate reparată înainte (același front):** CASS sub 6 sm — baza minimă (CF art.174 alin.(6)), v. DECIZII 02.10.
+- **[EXTERN]:** opțiunea CAS sub 12 sm (lit.B) — fără căsuță în formularul instalat; refuz numit + datorie strictă.
+- **În afara Etapei 4**: reținerile la sursă, bonificația (Secțiunea 8), drepturile de proprietate intelectuală și celelalte
+  categorii fără date (Etapa 5), Capitolul II (CASS opțională pe anul curent).
