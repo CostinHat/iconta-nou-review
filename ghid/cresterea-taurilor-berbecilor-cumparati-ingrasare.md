@@ -2,7 +2,7 @@
 title: "Creșterea taurilor sau berbecilor cumpărați pentru îngrășare se impozitează pe normă de venit?"
 description: "Nu. Masculii de taurine, bubaline, ovine și caprine cumpărați pentru creștere și valorificare nu intră în norma de venit: venitul se impozitează în sistem real."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -49,6 +49,6 @@ Vacile și taurul de reproducție rămân pe normă. Pentru tăurași, venitul n
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor de calcul pentru sistemul real în partidă simplă, pentru PFA, II și IF. Motorul calculează venitul net din registrul de încasări și plăți și CAS și CASS pe plafoane. Pentru declarația unică D212 există și un generator manual, deocamdată pentru partea de identificare a contribuabilului (validată pe validatorul ANAF); capitolul cu venitul realizat nu se completează încă automat. Aplicația nu decide încadrarea animalelor între normă și sistem real: aceasta rămâne a contabilului, pe baza documentelor de achiziție.
+iConta.eu are un motor de calcul pentru sistemul real în partidă simplă, pentru PFA, II și IF. Motorul calculează venitul net din registrul de încasări și plăți și CAS și CASS pe plafoane. Declarația unică D212 se generează din aplicație: venitul în sistem real se preia din registru, iar activitățile agricole în sistem real se adaugă în lista „Alte venituri”, cu impozitul și contribuțiile calculate; agricolul pe normă de venit nu se poate încă genera (validatorul ANAF instalat n-are câmpurile). Aplicația nu decide încadrarea animalelor între normă și sistem real: aceasta rămâne a contabilului, pe baza documentelor de achiziție.
 
 [iConta.eu](/)

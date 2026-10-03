@@ -2,7 +2,7 @@
 title: "Ce se întâmplă cu norma de venit dacă PFA-ul adaugă o activitate care nu este în nomenclator?"
 description: "PFA-ul trece în sistem real pentru toate veniturile, de la data completării obiectului de activitate; venitul anual se compune din fracțiunea de normă plus venitul net din evidență."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -50,6 +50,6 @@ PFA Exemplu are în 2026 o activitate din nomenclator, cu o normă anuală de 50
 
 ## Ce face iConta.eu
 
-Pentru partea în sistem real, iConta.eu are Registrul de încasări și plăți în partidă simplă, cu operațiunile pe lună și categoria de deductibilitate. Pe baza lui, motorul D212 calculează venitul net, CAS și CASS. Fracțiunea de normă pentru perioada anterioară nu se calculează automat. Contabilul o stabilește și o adaugă la venitul net din registru, în Declarația unică.
+Pentru partea în sistem real, iConta.eu are Registrul de încasări și plăți în partidă simplă, cu operațiunile pe lună și categoria de deductibilitate. Pe baza lui, motorul D212 calculează venitul net, CAS și CASS. Pentru perioada anterioară, pe normă, contabilul adaugă activitatea în lista „Venit pe normă de venit” a Declarației unice, cu data încetării; declarația calculează fracțiunea de normă proporțional cu zilele de activitate și o cumulează cu venitul net din registru.
 
 [iConta.eu](/)

@@ -1,8 +1,8 @@
 ---
 title: "Ce se întâmplă dacă PFA-ul în sistem real are pierdere?"
-description: "PFA-ul cu pierdere fiscală în sistem real nu datorează impozit pe venit, dar poate reporta pierderea pe 5 ani, în limita a 70% din veniturile nete viitoare din aceeași sursă; motorul D212 al iConta.eu calculează doar anul curent, fără reportare."
+description: "PFA-ul cu pierdere fiscală în sistem real nu datorează impozit pe venit, dar poate reporta pierderea pe 5 ani, în limita a 70% din veniturile nete viitoare din aceeași sursă; D212 din iConta.eu compensează pierderea reportată scrisă de contabil (în limita de 70%), fără să țină evidența pierderilor pe ani."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Din aceste texte rezultă mecanismul complet:
 
 Motorul de calcul D212 (`core/d212_engine.py`) implementează exact regula de bază: venitul net rezultă din venitul brut minus cheltuielile deductibile din registrul de încasări și plăți validat, iar dacă rezultatul e negativ, e limitat (clampat) la zero pentru calculul CAS, CASS și impozitului anului respectiv — nu apare niciodată un venit net negativ în fișa de calcul.
 
-**Motorul nu ține însă evidența pierderii reportabile de la un an la altul** — nu există în cod niciun mecanism care să rețină pierderea unui an și să o scadă automat, în limita de 70%, din venitul net al anilor următori. Fișa D212 din iConta.eu calculează fiecare an fiscal independent, pe baza registrului de încasări și plăți al acelui an. Dacă ai avut pierdere într-un an anterior și vrei să o reportezi, calculul reducerii aplicabile (70% din venitul net al anului curent, cronologic pe vechimea pierderilor) rămâne, la acest moment, o urmărire manuală a contabilului.
+**Aplicația nu ține însă evidența pierderii reportabile de la un an la altul** — Fișa D212 calculează fiecare an fiscal independent, pe baza registrului de încasări și plăți al acelui an. În formularul D212, contabilul scrie pierderile fiscale reportate din anii precedenți, iar declarația le compensează în limita a 70% din venitul net al anului (art. 118 alin. (4)) și calculează venitul net recalculat; ordinea pe vechimea pierderilor și expirarea după 5 ani rămân urmărite de contabil.
 
 [iConta.eu](/)

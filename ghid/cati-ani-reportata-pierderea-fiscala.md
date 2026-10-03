@@ -2,7 +2,7 @@
 title: "Câți ani poate fi reportată pierderea fiscală a unui PFA?"
 description: "Termenul legal de reportare a pierderii fiscale înregistrate de o persoană fizică autorizată care conduce contabilitate în sistem real, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Regula, pe scurt, pentru un PFA cu contabilitate în sistem real:
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul de Registru de evidență fiscală pentru persoane fizice (venit brut, cheltuieli deductibile, venit net/pierdere netă pe fiecare sursă de venit, conform art. 68 din Codul fiscal), plus calculul CAS/CASS pentru Declarația unică. Reportarea propriu-zisă a pierderii fiscale în limita de 70%, pe 5 ani fiscali consecutivi, potrivit art. 118 alin. (4), nu este automatizată în aplicație — calculul reportării rămâne, la acest moment, în sarcina titularului sau a consultantului fiscal.
+iConta.eu are un modul de Registru de evidență fiscală pentru persoane fizice (venit brut, cheltuieli deductibile, venit net/pierdere netă pe fiecare sursă de venit, conform art. 68 din Codul fiscal), plus calculul CAS/CASS pentru Declarația unică. În Declarația unică (D212) din aplicație, contabilul scrie pierderile reportate din anii precedenți, iar aplicația calculează pierderea compensată în limita de 70% din venitul net anual (art. 118 alin. (4)) și venitul net recalculat. Evidența pierderilor pe ani (care pierdere expiră când, în cei 5 ani) nu e ținută de aplicație — rămâne în sarcina titularului sau a consultantului fiscal.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Se cumulează veniturile PFA cu investițiile pentru CASS?"
 description: "Veniturile din activități independente (PFA) și cele din investiții au baze de calcul CASS distincte, dar plafonul minim atins pe o categorie poate elimina obligația suplimentară pe cealaltă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce arată, structural, cele două articole:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul dedicat de calcul al CASS pentru persoane fizice care cumulează venituri din mai multe categorii (PFA, investiții, chirii) — aplicația oferă evidența contabilă a PFA (venituri, cheltuieli), dar stabilirea bazei de calcul CASS conform art. 170 și 174, inclusiv verificarea excepției de la alin. (7), rămâne o analiză realizată de contabil, de regulă la completarea Declarației unice.
+Declarația unică (D212) din iConta.eu calculează CASS pe cumulurile cerute de lege: pe activitatea independentă (art. 170 alin. (1), cu baza minimă din art. 174 alin. (6)) și, separat, pe celelalte categorii — investiții, chirii, alte surse — pe trepte de 6, 12 sau 24 de salarii minime (art. 170 alin. (2)-(4)); când aceste venituri poartă CASS de cel puțin 6 salarii minime, aplicația nu mai cere diferența până la baza minimă la activitatea independentă (art. 174 alin. (7) lit. b)). Sumele (dividende și dobânzi nete, venitul din chirii etc.) le introduce contabilul.
 
 [iConta.eu](/)

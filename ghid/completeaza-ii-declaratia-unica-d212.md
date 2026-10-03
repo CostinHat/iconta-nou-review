@@ -2,7 +2,7 @@
 title: "Cum completează o II Declarația Unică D212?"
 description: "O întreprindere individuală completează D212 la fel ca un PFA — categoria de venit, modul de stabilire (sistem real sau normă) și forma de organizare se declară pe capitolul corespunzător."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,8 +33,8 @@ Contribuțiile aferente (CAS și CASS) se declară separat, la capitolul `oblig_
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) e o declarație **manuală**: aplicația nu are registru de persoane fizice, deci venitul brut, cheltuielile deductibile sau norma de venit pentru o II se introduc direct în declarație, prin dict-ul `manual` transmis generatorului. Structura respectă întocmai câmpurile validate de ANAF (D212Validator), inclusiv `norma_forma_org` pentru declararea corectă a formei de organizare la capitolul de normă de venit.
+Generatorul D212 al iConta.eu (`core/d212.py`) pornește de la datele contabilului: venitul în sistem real se preia din registrul de încasări și plăți al II, norma de venit se introduce (cea publicată de direcția regională), iar aplicația calculează rândurile, contribuțiile și impozitul. Structura respectă întocmai câmpurile validate de ANAF (D212Validator), inclusiv `norma_forma_org` pentru declararea corectă a formei de organizare la capitolul de normă de venit.
 
-Pentru contribuabilii la sistem real, `core/rip_api.py` (funcția `fisa_d212`) calculează automat CAS, CASS și impozitul pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți (OMFP 170/2015) ținut în aplicație — dar doar pentru veniturile anilor 2025 și 2026, singurii pentru care plafoanele sunt verificate la sursă. Pentru normă de venit, aplicația nu calculează automat baza — valoarea normei se introduce manual, conform nomenclatorului DGRFP.
+Pentru contribuabilii la sistem real, `core/rip_api.py` (funcția `fisa_d212`) calculează automat CAS, CASS și impozitul pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți (OMFP 170/2015) ținut în aplicație — dar doar pentru veniturile anilor 2025 și 2026, singurii pentru care plafoanele sunt verificate la sursă. Pentru normă de venit, valoarea normei se introduce, conform listei direcției regionale; venitul net, impozitul și contribuțiile pe normă le calculează declarația.
 
 [iConta.eu](/)

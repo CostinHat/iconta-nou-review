@@ -2,7 +2,7 @@
 title: "D205 și declarația unică pentru persoanele fizice"
 description: "Impozitul pe dividende reținut la sursă este final, ceea ce înseamnă că un asociat persoană fizică nu mai raportează separat acest venit prin Declarația unică."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Consecința directă a caracterului „final" al impozitului:
 
 ## Ce face iConta.eu
 
-Pentru firmă, iConta.eu generează Declarația D205 direct din evidența plăților de dividende (`core/d205.py`), pe fiecare asociat, cu impozitul calculat conform cotei aplicabile la data distribuirii. Aplicația **nu se ocupă de Declarația unică a persoanei fizice** — aceasta este o declarație separată, a contribuabilului individual, în afara sferei de evidență contabilă a firmei pe care o administrează iConta.eu.
+Pentru firmă, iConta.eu generează Declarația D205 direct din evidența plăților de dividende (`core/d205.py`), pe fiecare asociat, cu impozitul calculat conform cotei aplicabile la data distribuirii. Declarația unică a persoanei fizice e o declarație separată, a contribuabilului: aplicația o poate genera (Declarații → D212), cu dividendele nete scrise de contabil pentru treapta CASS, dar nu o leagă automat de D205.
 
 [iConta.eu](/)

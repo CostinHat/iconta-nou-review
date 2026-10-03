@@ -328,3 +328,23 @@ def test_datorie_d212_optiune_cas_sub_12_sm():
                                                          "adresa_c": "Bucuresti", "optiune_cas": 1,
                                                          "cap11": d212.cap11_sistem_real(30000, 10000)})
     assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"
+
+
+@pytest.mark.xfail(strict=True, raises=ValueError, reason="DATORIE [EXTERN] 03.10.2026 (D212 Etapa 5c-2b): CASS pe pensiile din străinătate datorată în România (de la veniturile lunii august 2025, CF art.155 alin.(1) lit.a^2) se declară în Subsecțiunea a 3-a a Secțiunii 2 (instrucțiunile OPANAF 2736/2025 pct.41), pe care formularul validatorului ANAF instalat (J13.0.1, D212Pdf Pdf_v8) n-o are. d212.cap14_sectiune refuză numit. Se închide când ANAF publică validatorul pentru OPANAF 2736/2025 și generatorul emite secțiunea, DUK valid.")
+def test_datorie_d212_cass_pensii_strainatate():
+    from core import d212, duk
+    from core.common import Perioada
+    xml, _ = d212.genereaza(None, None, Perioada(an=2025), {"cif": "1800101221144", "nume_c": "POPESCU ION", "adresa_c": "Bucuresti",
+                                                         "strainatate": [{"tara": "DE", "categ_venit": 2020, "venit_brut": 60000,
+                                                                          "nr_luni": 12, "luni_cass_ro": 5}]})
+    assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"
+
+
+@pytest.mark.xfail(strict=True, raises=ValueError, reason="DATORIE [EXTERN] 03.10.2026 (D212 Etapa 5a): CASS reținută de plătitori pe veniturile art.155 alin.(1) lit.c)-h) mai mare decât CASS datorată dă „diferența stabilită în minus” (instrucțiunile OPANAF 2736/2025 pct.52.1.11), dar formularul validatorului instalat (J13.0.1) n-are rândul la Subsecțiunea 2.2. d212.oblig_realizat refuză numit. Se închide când validatorul pentru OPANAF 2736/2025 are rândul și generatorul îl emite, DUK valid.")
+def test_datorie_d212_cass22_retinuta_peste_datorata():
+    from core import d212, duk
+    from core.common import Perioada
+    xml, _ = d212.genereaza(None, None, Perioada(an=2025), {"cif": "1800101221144", "nume_c": "POPESCU ION", "adresa_c": "Bucuresti",
+                                                         "venituri": [{"categ_venit": 1015, "venit_brut": 40000}],
+                                                         "alte_cass": {"cass_retinuta": 3000}})
+    assert duk.valideaza(xml, "d212", an=2025, luna=12, timeout=120).get("stare") == "valid"

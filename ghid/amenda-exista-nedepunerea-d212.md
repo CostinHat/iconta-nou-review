@@ -2,7 +2,7 @@
 title: "Ce amendă există pentru nedepunerea D212?"
 description: "Nedepunerea la termen a D212 se sancționează contravențional cu amendă de la 50 la 500 lei, aplicabilă și asocierilor fără personalitate juridică la nivelul amenzii pentru persoane fizice."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce trebuie reținut din text:
 
 ## Ce face iConta.eu
 
-D212 e o declarație manuală în iConta.eu (`core/d212.py`) — aplicația nu calculează și nu afișează amenda contravențională pentru nedepunere, care se stabilește de organul fiscal, nu de contribuabil. Motorul de calcul (`core/d212_engine.py`) produce corect CAS, CASS și impozitul datorat, indiferent de momentul depunerii, dar rămâne în sarcina contabilului să urmărească termenul legal și riscul contravențional asociat unei depuneri tardive.
+D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația nu calculează și nu afișează amenda contravențională pentru nedepunere, care se stabilește de organul fiscal, nu de contribuabil. Motorul de calcul (`core/d212_engine.py`) produce corect CAS, CASS și impozitul datorat, indiferent de momentul depunerii, dar rămâne în sarcina contabilului să urmărească termenul legal și riscul contravențional asociat unei depuneri tardive.
 
 [iConta.eu](/)

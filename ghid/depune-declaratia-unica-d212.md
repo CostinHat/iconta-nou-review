@@ -2,7 +2,7 @@
 title: "Unde se depune Declarația Unică D212?"
 description: "D212 se depune la organul fiscal competent, de regulă prin mijloace electronice de transmitere la distanță — data validării, nu a trimiterii, contează ca dată de depunere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce contează de reținut din text:
 
 ## Ce face iConta.eu
 
-D212 e o declarație manuală în iConta.eu (`core/d212.py`), care generează fișierul XML conform structurii validate de ANAF (D212Validator), pregătit pentru depunere. Aplicația nu are integrare directă cu portalul ANAF pentru transmiterea automată a D212 — depunerea efectivă, prin Spațiul Privat Virtual sau alt canal electronic, rămâne un pas separat, făcut de contabil sau contribuabil în afara aplicației.
+D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`): aplicația produce fișierul XML conform structurii validate de ANAF (D212Validator), pregătit pentru depunere. Aplicația nu are integrare directă cu portalul ANAF pentru transmiterea automată a D212 — depunerea efectivă, prin Spațiul Privat Virtual sau alt canal electronic, rămâne un pas separat, făcut de contabil sau contribuabil în afara aplicației.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce fac dacă ANAF a înregistrat greșit obligațiile din D212?"
 description: "O eroare de redactare, omisiune sau mențiune greșită dintr-un act al organului fiscal se corectează prin cerere de îndreptare a erorii materiale, nu prin contestație pe fond."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce distincție contează aici:
 
 ## Ce face iConta.eu
 
-D212 e o declarație manuală în iConta.eu (`core/d212.py`), care generează declarația conform structurii validate de ANAF, dar aplicația nu are vizibilitate asupra modului în care ANAF procesează sau înregistrează ulterior datele în sistemele proprii. Aplicația nu ține evidența discrepanțelor dintre declarația transmisă și obligațiile efectiv înregistrate de ANAF — compararea celor două rămâne o verificare manuală, iar formularea cererii de îndreptare a erorii materiale se face direct către organul fiscal, în afara aplicației.
+D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`), conform structurii validate de ANAF, dar aplicația nu are vizibilitate asupra modului în care ANAF procesează sau înregistrează ulterior datele în sistemele proprii. Aplicația nu ține evidența discrepanțelor dintre declarația transmisă și obligațiile efectiv înregistrate de ANAF — compararea celor două rămâne o verificare manuală, iar formularea cererii de îndreptare a erorii materiale se face direct către organul fiscal, în afara aplicației.
 
 [iConta.eu](/)

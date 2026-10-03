@@ -2,7 +2,7 @@
 title: "Cum se aplică coeficienții de corecție la norma de venit a unui PFA?"
 description: "Contribuabilul ajustează singur, în Declarația unică, norma publicată, cu coeficienții direcției regionale; dacă are mai mulți coeficienți în același sens, îl ia pe cel mai mare."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -55,6 +55,6 @@ PFA Exemplu are în 2026 o normă publicată de 50.000 lei. Coeficienții public
 
 ## Ce face iConta.eu
 
-iConta.eu nu preia normele de venit și coeficienții publicați de direcțiile regionale și nu calculează norma ajustată. Declarația unică (D212) are în aplicație structura capitolului pentru norma de venit, inclusiv câmpurile pentru normă și ajustare. Valorile se introduc gata calculate de contabil, iar aplicația validează pe validatorul oficial ANAF cazul de identificare al declarației.
+iConta.eu nu preia normele de venit și coeficienții publicați de direcțiile regionale și nu calculează norma ajustată. În Declarația unică (D212) din aplicație, contabilul introduce norma publicată și norma ajustată cu coeficienții; aplicația calculează venitul net (proporțional cu perioada de activitate, când activitatea n-a durat tot anul), impozitul de 10% și contribuțiile, și verifică declarația pe validatorul oficial ANAF rulat local.
 
 [iConta.eu](/)

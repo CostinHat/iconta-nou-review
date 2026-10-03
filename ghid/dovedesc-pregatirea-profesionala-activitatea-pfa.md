@@ -2,7 +2,7 @@
 title: "Cum dovedesc pregătirea profesională pentru activitatea unui PFA?"
 description: "Procedura de dovadă a calificării la înregistrarea unui PFA e reglementată de OUG 44/2008, un act care nu se regăsește în sursele fiscale ale acestui ghid — dar Codul fiscal folosește apartenența la o profesie reglementată drept unul dintre criteriile care disting o activitate independentă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Această definiție nu e procedura de înființare — e criteriul pe care fiscu
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de dovadă a pregătirii profesionale la înregistrarea unui PFA — aceasta ține de OUG 44/2008 și de registrul comerțului, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din `core/registru_evidenta_fiscala.py`, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), care ține evidența anuală a venitului brut și a cheltuielilor deductibile pe fiecare sursă de venit, precum și generarea manuală a declarației D212 (`core/d212.py`), pe baza datelor introduse de contabil.
+La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de dovadă a pregătirii profesionale la înregistrarea unui PFA — aceasta ține de OUG 44/2008 și de registrul comerțului, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din `core/registru_evidenta_fiscala.py`, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), care ține evidența anuală a venitului brut și a cheltuielilor deductibile pe fiecare sursă de venit, precum și generarea declarației D212 (`core/d212.py`) din datele introduse de contabil, cu contribuțiile și impozitul calculate.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum verific obligațiile din D212 în SPV?"
 description: "Spațiul Privat Virtual (SPV) e canalul oficial prin care ANAF comunică situația fiscală proprie a contribuabilului, inclusiv obligațiile rezultate din D212 — accesarea lui e opțională, dar exclude alte moduri de comunicare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce înseamnă practic pentru verificarea obligațiilor din D212:
 
 ## Ce face iConta.eu
 
-D212 e o declarație manuală în iConta.eu (`core/d212.py`) — aplicația generează fișierul declarației conform structurii validate de ANAF, dar nu are integrare cu Spațiul Privat Virtual și nu preia automat situația obligațiilor înregistrate de ANAF. Verificarea obligațiilor rezultate din D212 se face separat, direct în SPV, în afara aplicației.
+D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația produce fișierul declarației conform structurii validate de ANAF, dar nu are integrare cu Spațiul Privat Virtual și nu preia automat situația obligațiilor înregistrate de ANAF. Verificarea obligațiilor rezultate din D212 se face separat, direct în SPV, în afara aplicației.
 
 [iConta.eu](/)

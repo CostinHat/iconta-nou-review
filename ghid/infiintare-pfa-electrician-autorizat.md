@@ -2,7 +2,7 @@
 title: "Înființare PFA pentru un electrician autorizat"
 description: "Procedura de înființare la registrul comerțului ține de OUG 44/2008, un act care nu se regăsește în sursele fiscale ale acestui ghid — dar Codul fiscal stabilește deja regimul fiscal pe care activitatea de electrician îl are, ca activitate independentă, o dată PFA-ul înființat."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ O activitate de electrician autorizat (montaj, întreținere, reparații instala
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de înființare a PFA la registrul comerțului — aceasta ține de OUG 44/2008, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat și activ fiscal: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din `core/registru_evidenta_fiscala.py`, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), pentru evidența anuală a venitului brut și a cheltuielilor deductibile pe sursă de venit, și generarea manuală a declarației D212 (`core/d212.py`), pe baza datelor furnizate de contabil.
+La data acestui ghid, iConta.eu **nu documentează și nu automatizează** procedura de înființare a PFA la registrul comerțului — aceasta ține de OUG 44/2008, în afara sursei de temeiuri fiscale a aplicației. Ce e deja acoperit, o dată PFA-ul înființat și activ fiscal: **Registrul de evidență fiscală pentru persoane fizice** (varianta „venituri_pf" din `core/registru_evidenta_fiscala.py`, cu temei la CF art. 68 alin. (8)-(9) și OMFP 3254/2017), pentru evidența anuală a venitului brut și a cheltuielilor deductibile pe sursă de venit, și generarea declarației D212 (`core/d212.py`) din datele furnizate de contabil, cu contribuțiile și impozitul calculate.
 
 [iConta.eu](/)

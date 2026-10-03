@@ -114,9 +114,21 @@ def test_scutirea_doar_pe_categoriile_din_art60():
         _cat(categ_venit=1015, venit_brut=1000, nr_zile_scutite=10)
 
 
-def test_activitatile_independente_nu_se_introduc_manual():
-    with pytest.raises(ValueError, match="registrul RIP"):
-        _cat(categ_venit=1016, venit_brut=1000)
+def test_activitate_independenta_din_afara_registrului_se_cumuleaza():
+    """A doua activitate independentă (altă firmă / altă formă de exercitare în același an) se adaugă manual și se
+    cumulează cu cea din registru — CF art.148 alin.(3) (CAS) și art.170 alin.(1) (CASS) cer cumularea."""
+    m = _cat(categ_venit=1016, venit_brut=50000, chelt_deduc=20000, caen="6201")
+    # rândurile sistemului real (pct.3.5.11); rd.9 nu se completează la venit net — impozitul e în Secțiunea 4
+    assert (m["det_ven_net"], m["venit_net_anual"], m["venit_recalculat"]) == (1, 30000, 30000) and "impozit11" not in m
+    rip = d212.cap11_sistem_real(60000, 30000)                               # 30.000 din registru
+    o, _ = d212.oblig_realizat([rip], None, 2025)
+    assert "cas_datorat" not in o                                            # 30.000 < 12 sm
+    o, _ = d212.oblig_realizat([rip, m], None, 2025)
+    # cumulat 60.000 >= 12 sm (48.600) -> CAS pe 12 sm; CASS 2.1 pe 60.000; Secțiunea 4 pe ambele venituri
+    assert (o["cas_total_ven"], o["cas_datorat"], o["cass_total_ven_ai"], o["real_venit_net_recalculat_ai"]) == \
+        (60000, 12150, 60000, 60000)
+    # anii activităților independente urmează calea din registru (plafoane verificate 2025/2026), nu ANI_CATEGORII
+    assert d212.cap11_categorie({"categ_venit": 1016, "venit_brut": 1000}, 2026)["venit_net_anual"] == 1000
 
 
 def test_cas_include_venitul_din_dpi():

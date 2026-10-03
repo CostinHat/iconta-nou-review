@@ -2,7 +2,7 @@
 title: "Cum aleg între normă de venit și sistem real la înființarea PFA?"
 description: "PFA-ul poate fi impus pe bază de normă anuală de venit sau poate opta pentru sistemul real — dar dacă veniturile depășesc 25.000 euro/an, trecerea la sistemul real devine obligatorie din anul următor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce presupune, concret, alegerea:
 
 ## Ce face iConta.eu
 
-Registrul de încasări și plăți (partidă simplă) este funcționalitate live în iConta.eu, pentru PFA/II/IF care țin contabilitate în sistem real — cu import de ciorne din bancă și din casă, plus Fișa D212, care calculează venitul net, CAS și CASS pe plafoanele legale. Pentru un PFA impus pe **normă de venit**, aplicația nu are un flux dedicat: la acest regim, contribuabilul completează doar partea de venituri, fără evidență contabilă de cheltuieli, iar norma de venit e stabilită de autoritatea fiscală, nu calculată de aplicație. Verificarea nomenclatorului de activități cu normă de venit și a pragului de 25.000 euro pentru trecerea obligatorie la sistemul real rămân, la data acestui ghid, verificări făcute de contribuabil sau de contabilul lui.
+Registrul de încasări și plăți (partidă simplă) este funcționalitate live în iConta.eu, pentru PFA/II/IF care țin contabilitate în sistem real — cu import de ciorne din bancă și din casă, plus Fișa D212, care calculează venitul net, CAS și CASS pe plafoanele legale. Pentru un PFA impus pe **normă de venit** nu e nevoie de evidența cheltuielilor: norma e stabilită de direcția regională a finanțelor publice, nu de aplicație. În Declarația unică (D212) din aplicație, contabilul introduce norma (și norma ajustată, dacă s-au aplicat coeficienți), iar aplicația calculează venitul net proporțional cu perioada de activitate, impozitul de 10% și contribuțiile. Verificarea nomenclatorului de activități cu normă de venit și a pragului de 25.000 euro pentru trecerea obligatorie la sistemul real rămân, la data acestui ghid, verificări făcute de contribuabil sau de contabilul lui.
 
 [iConta.eu](/)

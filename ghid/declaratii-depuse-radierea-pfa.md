@@ -2,7 +2,7 @@
 title: "Ce declarații trebuie depuse după radierea unui PFA?"
 description: "Termenul legal de depunere a declarației de radiere a înregistrării fiscale și obligația de a declara veniturile realizate până la încetarea activității."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce presupune, practic, radierea unui PFA:
 
 ## Ce face iConta.eu
 
-iConta.eu oferă și evidența în partidă simplă pentru PFA (calcul impozit pe venit, CAS, CASS, generarea declarațiilor D220/D212). La data acestui ghid, aplicația nu generează și nu depune declarația de radiere a înregistrării fiscale — acest formular, precum și Declarația unică pentru veniturile realizate până la încetarea activității, rămân în sarcina titularului sau a consultantului fiscal, prin mijloace separate de aplicație.
+iConta.eu oferă și evidența în partidă simplă pentru PFA (calcul impozit pe venit, CAS, CASS, generarea declarațiilor D220/D212). La data acestui ghid, aplicația nu generează și nu depune declarația de radiere a înregistrării fiscale — acest formular rămâne în sarcina titularului sau a consultantului fiscal. Declarația unică pentru veniturile realizate până la încetarea activității se generează din aplicație (Declarații → D212), cu venitul din registrul de încasări și plăți; depunerea ei rămâne a contabilului.
 
 [iConta.eu](/)

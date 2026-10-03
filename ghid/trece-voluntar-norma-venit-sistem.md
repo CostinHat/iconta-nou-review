@@ -2,7 +2,7 @@
 title: "Pot trece voluntar de la normă de venit la sistem real?"
 description: "Da. Codul fiscal dă explicit dreptul de opțiune pentru sistem real oricărui contribuabil impus pe bază de norme de venit, chiar dacă nu a depășit niciun plafon obligatoriu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce înseamnă concret dreptul de opțiune:
 
 iConta.eu **nu calculează automat** dacă trecerea voluntară la sistem real e avantajoasă (nu compară norma de venit cu venitul net real estimat) și nu depune sau urmărește opțiunea în numele contribuabilului — decizia și depunerea rămân manuale.
 
-Aplicația poate genera Declarația unică (D212) fie cu capitolul de normă de venit, fie cu cel de sistem real, pe baza sumelor deja calculate și introduse manual de contabil — dar nu calculează ea însăși care variantă e mai avantajoasă.
+Aplicația poate genera Declarația unică (D212) fie cu capitolul de normă de venit (din norma introdusă), fie cu cel de sistem real (din registru), calculând impozitul și contribuțiile — dar nu compară ea însăși care variantă e mai avantajoasă.
 
 [iConta.eu](/)

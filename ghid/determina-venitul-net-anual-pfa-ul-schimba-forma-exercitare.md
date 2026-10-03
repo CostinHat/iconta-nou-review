@@ -2,7 +2,7 @@
 title: "Cum se determină venitul net anual dacă PFA-ul își schimbă forma de exercitare în cursul anului?"
 description: "Se calculează separat venitul net sau pierderea pe fiecare perioadă și formă de organizare, apoi se însumează rezultatele în venitul net anual declarat în declarația unică."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -53,6 +53,6 @@ Venit net anual 2026: 40.000 − 8.000 = 32.000 lei, înscris în declarația un
 
 ## Ce face iConta.eu
 
-Pentru activitățile în partidă simplă, iConta.eu ține registrul de încasări și plăți pe fiecare firmă configurată și calculează venitul net în Fișa D212. Declarația unică se generează din formularul D212. Aplicația nu leagă automat două forme de exercitare consecutive din același an. Contabilul însumează rezultatele perioadelor și înscrie venitul net anual în declarație.
+Pentru activitățile în partidă simplă, iConta.eu ține registrul de încasări și plăți pe fiecare firmă configurată și calculează venitul net în Fișa D212. Declarația unică se generează din formularul D212. Aplicația nu leagă automat două forme de exercitare consecutive din același an: D212 se generează din firma uneia dintre forme, iar perioada celeilalte se adaugă în lista „Alte venituri”, la categoria „Activități independente (sistem real, din afara registrului)”, cu venitul brut și cheltuielile ei; declarația însumează și calculează contribuțiile pe venitul anual.
 
 [iConta.eu](/)

@@ -66,7 +66,7 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 - **Etapa 5** — formular manual pentru categoriile fără date (regula 0 DESIGN_SYSTEM). **5a FĂCUTĂ 02.10.2026** (I.1.1 pe
   categorii, CAS cu DPI, CASS 2.2, Secțiunea 5) — v. §8; **5c-1 FĂCUTĂ 03.10.2026** (cap14, 12 categorii) — v. §9; rămâne 5c-2
   (premii, jocuri de noroc, pensii, transferul proprietăților, moștenire, remunerații administratori).
-- **Etapa finală** — ~~alinierea F246~~ (făcută 02.10 în Etapa 3) + mesajul din d221.py + ghidurile care spun „D212 doar identificare".
+- **Etapa finală** — ~~alinierea F246~~ (făcută 02.10 în Etapa 3) + mesajul din d221.py + ghidurile care spun „D212 doar identificare". **FĂCUTĂ 03.10.2026** — v. §10.
 
 ## 5. Etapa 2 — ce s-a aflat la sursă și ce s-a construit (02.10.2026)
 - **Validatorul în vigoare (v9 / Parameters_v7)**: `validateCap11` e goală — cap11 se validează doar structural.
@@ -143,3 +143,14 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
 - **5c-2b FĂCUTĂ 03.10.2026**: pensii 2020 (3.000 lei x luni — Legea 244/2024, forma din MO, în corpus), remunerații administratori 2015 + Secțiunea
   2.2 (`str_cas_*`, `str_cass_*`). **[EXTERN]**: CASS pe pensiile din străinătate (Subsecțiunea a 3-a, pct.41) — lipsește din formularul
   instalat, refuz numit. Etapa 5 completă; rămâne etapa finală (mesajul din `d221.py`, ghidurile „D212 doar identificare”).
+
+## 10. Etapa finală (03.10.2026)
+- Antetul `core/d212.py` rescris pe starea reală (ce calculează, ce refuză numit); mesajul `d221.py` pentru 2025+ cu motivul
+  ([EXTERN] validatorul fără câmpurile agricole pe normă).
+- 166 de paragrafe despre D212 în 125 de ghiduri citite; 65 de ghiduri corectate (afirmațiile negative devenite false);
+  gard `core/test_ghid_d212_afirmatii.py` pe formele retrase.
+- Gol de cod găsit pe drum și reparat: categoria 1016 „din afara registrului” în lista „Alte venituri” (a doua activitate /
+  forma anterioară din același an), cumulată pentru CAS/CASS.
+- **D212 închisă** pe veniturile 2025 (și 2026 pe calea din registru și normă); ce rămâne e [EXTERN] (validatorul ANAF pentru
+  OPANAF 2736/2025: agricol pe normă, opțiunea CAS lit.B, CASS pe pensiile din străinătate) sau Capitolul II (CASS opțională pe
+  anul curent, oblig_estimat) — nefăcut, neplanificat în etapele de aici.

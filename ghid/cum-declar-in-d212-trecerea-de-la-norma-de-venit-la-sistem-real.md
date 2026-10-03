@@ -1,8 +1,8 @@
 ---
 title: Cum declar în D212 trecerea de la normă de venit la sistem real?
-description: Trecerea la sistem real se declară completând capitolul de sistem real din D212 cu venitul net calculat efectiv din contabilitate, iar dacă anul anterior a fost pe normă de venit, norma minimă legală rămâne de 12 salarii minime brute pe țară — dar calculul normei de venit nu e automatizat în aplicație.
+description: Trecerea la sistem real se declară completând capitolul de sistem real din D212 cu venitul net calculat efectiv din contabilitate, iar dacă anul anterior a fost pe normă de venit, norma minimă legală rămâne de 12 salarii minime brute pe țară — iar norma pentru perioada de dinainte o introduce contabilul (aplicația calculează din ea venitul net și impozitul).
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Trecerea de la normă de venit la sistem real înseamnă că, pentru anul de ven
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/d212_engine.py`) calculează **exclusiv sistemul real** — nu conține nicio funcție pentru calculul normei de venit. Structura XML pentru capitolul de normă de venit (capitolul 12 din D212, câmpuri precum `real_norma_venit`, `real_venit_net_anual`) există în generatorul de declarație (`core/d212.py`), dar fără o funcție de calcul asociată în motor — dacă un an anterior a fost pe normă de venit, acele valori trebuie introduse manual, calculate separat conform art. 69. Pentru anul curent de tranziție la sistem real, aplicația completează automat capitolul de sistem real pe baza încasărilor și plăților validate din contabilitate.
+Fișa D212 (`core/d212_engine.py`) calculează sistemul real. Capitolul de normă de venit (capitolul 12 din D212) se calculează în generatorul declarației (`core/d212.py`): contabilul introduce norma și datele de început/încetare, iar aplicația calculează venitul net proporțional cu zilele de activitate și impozitul (art. 69 și 69^2) — așa se pot declara în același an și perioada pe normă, și cea în sistem real. Pentru anul curent de tranziție la sistem real, aplicația completează automat capitolul de sistem real pe baza încasărilor și plăților validate din contabilitate.
 
 [iConta.eu](/)

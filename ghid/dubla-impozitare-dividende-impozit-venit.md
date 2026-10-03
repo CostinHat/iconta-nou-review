@@ -2,7 +2,7 @@
 title: "Dubla impozitare dividende: impozit pe venit și CASS"
 description: Nu e, strict vorbind, o dublă impozitare — sunt două obligații fiscale diferite, cu debitori diferiți, pe același venit din dividende. Ce acoperă D205 și ce nu acoperă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Acest text acoperă exclusiv **impozitul pe venit** din dividende — reținut d
 
 ## Ce face iConta.eu
 
-Funcționalitatea F029/D205 din iConta.eu gestionează exclusiv impozitul pe dividende reținut la sursă de societatea plătitoare — calculat pe dividendul plătit, la cota valabilă la data distribuirii, și declarat prin D205. Aplicația nu calculează, nu urmărește și nu avertizează cu privire la o eventuală obligație de CASS a beneficiarului persoană fizică pe veniturile din dividende — aceasta rămâne, integral, în sarcina beneficiarului, prin propria lui declarație. Dacă sunteți beneficiar de dividende și vreți să știți dacă intrați sub incidența CASS, verificați separat, cu un consultant fiscal, regimul aplicabil cumulului dumneavoastră de venituri.
+Funcționalitatea F029/D205 din iConta.eu gestionează exclusiv impozitul pe dividende reținut la sursă de societatea plătitoare — calculat pe dividendul plătit, la cota valabilă la data distribuirii, și declarat prin D205. D205 nu calculează CASS-ul beneficiarului persoană fizică pe dividende: acesta se stabilește prin propria lui Declarație unică (D212), pe care aplicația o poate genera — contabilul scrie dividendele nete încasate, iar declarația stabilește treapta CASS (6, 12 sau 24 de salarii minime) împreună cu celelalte venituri de aceeași natură. Dacă sunteți beneficiar de dividende și vreți să știți dacă intrați sub incidența CASS, verificați separat, cu un consultant fiscal, regimul aplicabil cumulului dumneavoastră de venituri.
 
 [iConta.eu](/)

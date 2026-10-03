@@ -2,7 +2,7 @@
 title: "Cum plătesc CASS pentru PFA?"
 description: "CASS datorată de un PFA se calculează prin D212, cu aceleași termen și condiții ca impozitul pe venit — declarația și plata se fac până la 25 mai a anului următor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Ce rezultă din trimiterea la titlul IV:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` (funcția `calculeaza_cass`) calculează CASS liniar pe venitul net, cu pragul minim opțional de 6 salarii minime brute și plafonul maxim de 72 de salarii minime brute pentru veniturile din 2026 (60 pentru 2025), citite din registrul de cote al aplicației, nu hardcodate. Funcția `fisa_d212` (`core/rip_api.py`) produce calculul complet — CASS, CAS și impozit — pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți, pentru un PFA la sistem real, doar pentru anii 2025 și 2026.
+Motorul `core/d212_engine.py` (funcția `calculeaza_cass`) calculează CASS liniar pe venitul net, cu baza minimă de 6 salarii minime brute (art. 174 alin. (6), cu excepțiile de la alin. (7)-(8)) și plafonul maxim de 72 de salarii minime brute pentru veniturile din 2026 (60 pentru 2025), citite din registrul de cote al aplicației, nu hardcodate. Funcția `fisa_d212` (`core/rip_api.py`) produce calculul complet — CASS, CAS și impozit — pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți, pentru un PFA la sistem real, doar pentru anii 2025 și 2026.
 
 Aplicația nu emite instrucțiuni de plată sau nu inițiază transferul sumei către bugetul de stat — calculul se oprește la fișa de calcul, iar plata efectivă se face separat, prin canalele obișnuite (ghiseul.ro, ordin de plată).
 

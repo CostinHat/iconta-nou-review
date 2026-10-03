@@ -67,7 +67,7 @@ def main():
             pg.fill(sel, v)
             pg.dispatch_event(sel, "change")
         r["campuri"] = {}
-        for cat in ("1003", "1015", "1012", "1024"):
+        for cat in ("1016", "1003", "1015", "1012", "1024"):
             pg.select_option("#d212-v-cat", cat)
             pg.dispatch_event("#d212-v-cat", "change")
             r["campuri"][cat] = _vizibile(pg)

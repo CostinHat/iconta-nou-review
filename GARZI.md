@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**664 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**665 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 632
+### `core/` — 633
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9189,6 +9189,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_garzi_tacere_ui.py` — core/test_garzi_tacere_ui.py — GARDURI STATICE anti tacere-la-esec + info-leak in UI (JS).
 - `core/test_gazda_productie.py` — core/test_gazda_productie.py — o verificare care loveste ALT domeniu nu e o verificare.
 - `core/test_get_fara_scriere.py` — GARD (20.08.2026): o rută GET nu scrie în starea de business. GET trebuie să fie SAFE (RFC 9110 §9.2.1).
+- `core/test_ghid_d212_afirmatii.py` — GARD — afirmațiile RETRASE despre D212 nu mai pot apărea în ghiduri și în ajutorul F246.
 - `core/test_ghid_poarta.py` — GARD — poarta de verificare pre-publicare a ghidurilor (core/ghid_poarta.py).
 - `core/test_ghiduri_servite.py` — Gard: ghid/ e SURSA UNICA a paginilor publice de ghid.
 - `core/test_golden_xsd.py` — GARD completitudine golden-XSD: fiecare XSD de declaratie din corpus (anaf_surse/*.xsd +
@@ -9966,4 +9967,16 @@ Categoriile **3. Calcul fiscal** (suma neimpozabilă pe luni, contribuțiile sc�
 | pensie pe luni | core/test_d212_cap14.py::test_pensie_cu_suma_neimpozabila_pe_luni | suma neimpozabilă scăzută o singură dată | 3.000 o dată → roșu | — |
 | CASS pe pensie [EXTERN] | test_pensie_cu_cass_in_romania_refuzata_numit | o pensie cu CASS în România emisă fără secțiunea CASS | refuzul scos → roșu | până la validatorul cu Subsecțiunea a 3-a |
 | remunerație + Secțiunea 2.2 | test_remuneratia_administratorului_si_sectiunea_2_2 + test_pensii_si_remuneratii_valide_pe_duk | impozit pe brut fără contribuții; CAS/CASS pe asiguratul în alt stat; Secțiunea 2.2 scăpată din plată | fără contribuții deduse → roșu; asiguratul în 2.2 → roșu; 2.2 scos din diferența de plată → roșu | — |
+
+## 03.10.2026 — D212 etapa finală: afirmațiile retrase despre D212; activitatea independentă din afara registrului
+
+Categoria **7. Documentație / ajutor** (afirmații negative devenite false după livrare — `ghid_poarta` vede doar afirmațiile
+pozitive) și **3. Calcul fiscal** (a doua activitate independentă fără loc în formular → CAS/CASS pe o bază prea mică).
+Detaliul: DECIZII 03.10.2026 („D212 etapa finală …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| afirmațiile retrase | core/test_ghid_d212_afirmatii.py (16 forme + calibrare în ambele direcții) | „D212 e o declarație manuală”, „doar identificare”, „exclusiv sistemul real”, „pragul minim opțional” etc. reapărute în ghiduri / ajutorul F246 | fraza retrasă repusă în ghidul de chirii → roșu | prinde formele, nu orice parafrază nouă |
+| activitate din afara registrului | core/test_d212_categorii.py::test_activitate_independenta_din_afara_registrului_se_cumuleaza | a doua activitate fără loc în formular; impozit în I.1.1 în loc de Secțiunea 4 | 1016 scos din listă → roșu; impozit11 pe 1016 → roșu | — |
+| [EXTERN] D212 Etapa 5 ca datorii stricte | core/test_datorie.py::test_datorie_d212_cass_pensii_strainatate + test_datorie_d212_cass22_retinuta_peste_datorata (xfail strict) | ca refuzul să rămână uitat când ANAF publică validatorul: testul trece și pică „XPASS” | — (xfail strict) | dobânzile pentru obligațiuni pe piețe externe (pct.8) n-au cod în validatorul instalat — neexprimabile ca test, consemnate aici |
 

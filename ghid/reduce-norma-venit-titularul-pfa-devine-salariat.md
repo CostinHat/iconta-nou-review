@@ -2,7 +2,7 @@
 title: "De când se reduce norma de venit pentru titularul de PFA care devine salariat?"
 description: "Corecția normei de venit pentru calitatea de salariat se aplică începând cu luna următoare încheierii contractului individual de muncă, nu de la 1 ianuarie și nici din luna angajării."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -50,6 +50,6 @@ PFA Exemplu are în 2026 o normă anuală de 50.000 lei. Titularul se angajează
 
 ## Ce face iConta.eu
 
-iConta.eu nu calculează automat norma de venit și nici reducerea ei pe luni pentru titularul care devine salariat. Coeficienții publicați de direcțiile regionale nu sunt preluați în aplicație. Generatorul Declarației unice (D212) are câmpurile capitolului pentru norma de venit și ajustarea ei, dar valorile se introduc gata calculate de contabil.
+iConta.eu nu calculează automat norma de venit și nici reducerea ei pe luni pentru titularul care devine salariat. Coeficienții publicați de direcțiile regionale nu sunt preluați în aplicație. În Declarația unică (D212), contabilul introduce norma și norma ajustată (cu reducerea stabilită de el); din ele, declarația calculează venitul net, impozitul și contribuțiile.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum declar în D212 dacă am PFA și venituri din străinătate?"
 description: "Veniturile din străinătate se declară separat, pe capitolul dedicat al D212, cu regulile proprii fiecărei categorii de venit și, dacă e cazul, cu creditul fiscal extern aferent convenției de evitare a dublei impuneri."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,8 +32,8 @@ Ce rezultă pentru completarea D212:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) susține capitolul dedicat veniturilor din străinătate (`cap14`), cu câmpurile oficiale pentru venit brut, cheltuieli deductibile, impozit datorat în România, impozit plătit în străinătate și creditul fiscal aferent (`str_impozit_datorat_Ro`, `str_impozit_platit`, `str_credit_fiscal`). Declarația fiind manuală, toate aceste valori — inclusiv dovada impozitului plătit în străinătate și calculul creditului fiscal — se introduc direct, fără nicio derivare automată.
+Generatorul D212 al iConta.eu (`core/d212.py`) susține capitolul dedicat veniturilor din străinătate (`cap14`), cu câmpurile oficiale pentru venit brut, cheltuieli deductibile, impozit datorat în România, impozit plătit în străinătate și creditul fiscal aferent (`str_impozit_datorat_Ro`, `str_impozit_platit`, `str_credit_fiscal`). Contabilul introduce țara, categoria, metoda de evitare a dublei impuneri, sumele în lei și impozitul plătit acolo (dovada lui o păstrează contribuabilul); aplicația calculează impozitul datorat în România cu cota categoriei, creditul fiscal — cel mult cât impozitul român — și diferența de plată.
 
-Aplicația nu verifică dacă România are convenție de evitare a dublei impuneri cu statul respectiv și nu calculează automat creditul fiscal extern — acestea rămân verificări și calcule făcute de contabil, în afara motorului D212.
+Aplicația nu verifică dacă România are convenție de evitare a dublei impuneri cu statul respectiv și ce metodă prevede — contabilul alege metoda (creditul fiscal sau scutirea), iar aplicația aplică regula metodei alese.
 
 [iConta.eu](/)

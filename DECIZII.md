@@ -16393,3 +16393,29 @@ impozitul ar fi corect, dar obligația CASS ar lipsi din declarație (declarați
 **Limită.** Pensiile private/facultative cu documente privind contribuțiile nete (art.130 alin.(2^2)) urmează regula generală a
 pensiilor de aici — dacă există documentele, baza e alta; contabilul le declară pe formularul ANAF. Norma: `core/d212.py`
 (`PENSIE_NEIMPOZABIL_LUNAR`, `cap14_sectiune`, `oblig_realizat` — Secțiunea 2.2); gardată de `core/test_d212_cap14.py`.
+
+---
+
+## 03.10.2026 — D212 etapa finală: textele despre D212 aliniate cu codul; activitatea independentă din afara registrului
+
+**Constatare.** După Etapele 2–5, 65 de ghiduri spuneau încă despre D212 lucruri pe care codul nu le mai face sau le face
+altfel: „D212 e o declarație manuală, toate datele (CAS, CASS, impozit) se introduc”, „generatorul produce doar partea de
+identificare”, „motorul calculează exclusiv sistemul real / nu calculează norma”, „nu are modul pentru chirii / CASS pe trepte”,
+„nu calculează creditul fiscal”, „pragul minim opțional de 6 salarii” (fals de la reparația CASS cu baza minimă), „aplicația nu
+se ocupă de Declarația unică”. Antetul `core/d212.py` spunea „emite doar cazul minim de identificare”; mesajul din `d221.py`
+spunea „capitolul nu e încă generat” fără motiv.
+
+**Decizie.** (1) Corectare pe clasă: fiecare paragraf despre D212 în aplicație (166 citite, în 125 de ghiduri) confruntat cu
+codul; afirmațiile negative devenite false rescrise, limitele reale păstrate (SPV, recipisă, amenzi, cumulul între firme,
+evidența pierderilor pe ani, opțiunea CAS sub 12 sm, agricolul pe normă, CASS pe pensiile din străinătate, Capitolul II). (2)
+Gard `core/test_ghid_d212_afirmatii.py` pe formele retrase (cu calibrare în ambele direcții). (3) **Golul de cod găsit pe
+drum** — trei ghiduri recomandau „înscrie venitul net al celei de-a doua activități în declarație”, iar formularul nu avea
+unde: activitățile independente veneau doar din registrul firmei curente. Categoria 1016 („Activități independente — sistem
+real, din afara registrului”) intră în lista „Alte venituri”, cu regulile căii din registru (rândurile sistemului real,
+impozitul în Secțiunea 4, anii plafoanelor verificate) și se cumulează pentru CAS/CASS (CF art.148 alin.(3), art.170
+alin.(1)) — sfatul din ghiduri devine executabil.
+
+**Alternativă respinsă.** Ștergerea frazei din ghiduri în loc de reparația formularului: ar fi lăsat contabilul fără cale de
+a declara corect o a doua activitate (CAS/CASS pe o bază mai mică decât cea legală).
+
+**Limită.** Garda prinde FORMELE retrase, nu orice parafrază nouă; lista se extinde odată cu clasele retrase.

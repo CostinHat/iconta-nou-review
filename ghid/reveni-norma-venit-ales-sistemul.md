@@ -2,7 +2,7 @@
 title: "Pot reveni la normă de venit după ce am ales sistemul real?"
 description: "Da, dar numai după expirarea perioadei obligatorii de 2 ani fiscali consecutivi de sistem real, prin cerere explicită în Declarația unică — altfel opțiunea se prelungește automat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce trebuie reținut din formularea legii:
 
 iConta.eu **nu calculează și nu urmărește automat** momentul la care expiră perioada obligatorie de 2 ani și la care se poate cere revenirea la normă de venit — acest calendar rămâne o responsabilitate manuală a contabilului.
 
-Aplicația oferă totuși infrastructura pentru ambele regimuri în Declarația unică (D212): capitolul de sistem real și cel de normă de venit sunt secțiuni separate, populate manual, folosite corect în funcție de decizia luată de contribuabil pentru anul respectiv.
+Aplicația oferă totuși infrastructura pentru ambele regimuri în Declarația unică (D212): capitolul de sistem real (din registrul de încasări și plăți) și cel de normă de venit (din norma introdusă de contabil) sunt secțiuni separate, completate în funcție de decizia luată de contribuabil pentru anul respectiv.
 
 [iConta.eu](/)

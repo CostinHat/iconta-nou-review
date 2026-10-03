@@ -2,7 +2,7 @@
 title: "Când depun ultima Declarație Unică după închiderea PFA?"
 description: "Declarația unică se depune și pentru anul în care activitatea independentă încetează, cu același termen general: 25 mai inclusiv a anului următor celui de realizare a veniturilor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce rezultă pentru ultima Declarație Unică a unei PFA închise:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține evidența contabilă a activității PFA (facturi, venituri, cheltuieli) pe toată durata funcționării, dar nu generează automat Declarația unică — pregătirea și depunerea acestei declarații, inclusiv pentru anul în care activitatea a încetat, rămân un proces manual, realizat de contribuabil sau de contabil, pe baza datelor din evidența ținută în aplicație.
+La data acestui ghid, iConta.eu ține evidența contabilă a activității PFA pe toată durata funcționării și generează Declarația unică (Declarații → D212), inclusiv pentru anul în care activitatea a încetat: venitul se preia din registrul de încasări și plăți, iar contribuțiile și impozitul se calculează. Verificarea datelor și depunerea rămân ale contabilului sau ale contribuabilului.
 
 [iConta.eu](/)

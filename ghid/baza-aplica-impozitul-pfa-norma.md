@@ -2,7 +2,7 @@
 title: "La ce bază se aplică impozitul pentru PFA la normă de venit?"
 description: "Impozitul de 10% se aplică direct pe norma anuală de venit ajustată (eventual redusă proporțional) — fără nicio deducere de CAS sau CASS din bază, spre deosebire de sistemul real."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Ce compune baza impozabilă:
 
 Motorul `core/d212_engine.py` (funcția `calculeaza_d212`) implementează regula sistemului real (art. 118 alin. (2) lit. b) CF) — venit net, apoi CAS și CASS, apoi impozitul de 10% pe rest — pentru venitul net rezultat din venit brut minus cheltuieli deductibile înregistrate în Registrul-jurnal de încasări și plăți (`core/rip_api.py`, `fisa_d212`). Acest motor nu se aplică și normei de venit, unde formula legală e alta (art. 69^2 alin. (1): 10% direct pe norma ajustată, fără deducere de CAS/CASS).
 
-Pentru normă de venit, aplicația nu calculează automat baza impozabilă: norma anuală, ajustarea cu coeficienți și reducerea proporțională pentru activitate parțială se introduc manual în declarație. Registrul de evidență fiscală (`core/registru_evidenta_fiscala.py`, OMFP 3254/2017) susține corect regula specifică — la normă de venit nu se înscriu cheltuieli deductibile — dar nu calculează impozitul propriu-zis.
+Pentru normă de venit, norma anuală și ajustarea cu coeficienți le introduce contabilul în Declarația unică (D212); reducerea proporțională pentru activitate parțială (datele de început/încetare, zilele de întrerupere) și impozitul de 10% le calculează aplicația. Registrul de evidență fiscală (`core/registru_evidenta_fiscala.py`, OMFP 3254/2017) susține corect regula specifică — la normă de venit nu se înscriu cheltuieli deductibile — dar nu calculează impozitul propriu-zis.
 
 [iConta.eu](/)

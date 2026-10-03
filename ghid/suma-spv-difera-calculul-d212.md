@@ -2,7 +2,7 @@
 title: "De ce suma din SPV diferă de calculul meu din D212?"
 description: "De ce contribuția de asigurări sociale (CAS) afișată de ANAF în SPV poate fi diferită de calculul propriu al contribuabilului, din cauza cumulării tuturor veniturilor supuse contribuției."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ De ce apar diferențe, concret:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează CAS/CASS pentru o PFA în sistem real doar pe baza operațiunilor introduse și validate în aplicație, prin `core/rip_api.py` (funcția `fisa_d212`) — adică pentru activitatea evidențiată în acea instanță a aplicației. Aplicația nu are acces la veniturile din alte surse ale aceleiași persoane fizice (alte PFA-uri, drepturi de autor, contracte de activitate sportivă etc.) și nu cumulează automat, la nivel de persoană, toate veniturile relevante pentru plafonul de la art. 148 alin. (3) — de aceea, dacă un contribuabil are mai multe surse de venit, calculul din iConta.eu trebuie completat manual cu celelalte venituri, pentru a corespunde cu ce va afișa ANAF în SPV.
+La data acestui ghid, iConta.eu calculează CAS/CASS pentru o PFA în sistem real doar pe baza operațiunilor introduse și validate în aplicație, prin `core/rip_api.py` (funcția `fisa_d212`) — adică pentru activitatea evidențiată în acea instanță a aplicației. Aplicația nu are acces singură la veniturile din alte surse ale aceleiași persoane fizice (alte PFA-uri, drepturi de autor etc.). Declarația unică (D212) le poate însă cumula pentru plafonul de la art. 148 alin. (3): contabilul le adaugă în formular (o altă activitate independentă, drepturile de autor), iar CAS și CASS se calculează pe total — fără ele, cifra din aplicație nu va corespunde cu ce afișează ANAF în SPV.
 
 [iConta.eu](/)

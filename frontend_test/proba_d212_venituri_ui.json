@@ -1,5 +1,19 @@
 {
  "campuri": {
+  "1016": [
+   "d212-v-brut",
+   "d212-v-caen",
+   "d212-v-cat",
+   "d212-v-chelt",
+   "d212-v-doc",
+   "d212-v-docdata",
+   "d212-v-forma",
+   "d212-v-inc",
+   "d212-v-pp",
+   "d212-v-scut",
+   "d212-v-sediu",
+   "d212-v-sf"
+  ],
   "1003": [
    "d212-v-brut",
    "d212-v-caen",

@@ -2,7 +2,7 @@
 title: "Cum declar în D212 dacă am două activități independente?"
 description: Veniturile din mai multe activități independente se cumulează într-o singură bază de calcul CAS și într-o singură bază de calcul CASS — nu se calculează separat, pe fiecare activitate.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Practic:
 
 ## Ce face iConta.eu
 
-Fișa D212 (RIP > Fișa D212) din aplicație calculează cifrele pe baza registrului de încasări și plăți al unei singure activități/tenant. Dacă ai două activități independente înregistrate separat în aplicație (doi „tenanți" distincți), aplicația **nu cumulează automat** veniturile nete ale celor două fișe într-o singură bază CAS/CASS — cumularea cerută de art. 148 alin. (1) și art. 170 alin. (1) rămâne, în acest caz, un pas manual: se calculează separat fiecare fișă, apoi contabilul adună venitul net al ambelor și recalculează CAS/CASS pe suma totală, înainte de completarea Declarației unice. Pașii concreți de completare în ecranul curent de D212 nu fac parte din acest ghid — aplicația a primit modificări recente la acest ecran, care nu au fost încă verificate separat.
+Fișa D212 (RIP > Fișa D212) din aplicație calculează cifrele pe baza registrului de încasări și plăți al unei singure activități/tenant. Dacă ai două activități independente înregistrate separat în aplicație (doi „tenanți" distincți), aplicația **nu cumulează automat** veniturile nete ale celor două fișe într-o singură bază CAS/CASS — pentru cumularea cerută de art. 148 alin. (1) și art. 170 alin. (1), D212 se generează din firma uneia dintre activități (venitul din registrul ei), iar a doua activitate se adaugă în lista „Alte venituri” a formularului, la categoria „Activități independente (sistem real, din afara registrului)”, cu venitul brut și cheltuielile din fișa ei — declarația calculează CAS și CASS pe suma totală. Pașii concreți de completare în ecranul curent de D212 nu fac parte din acest ghid — aplicația a primit modificări recente la acest ecran, care nu au fost încă verificate separat.
 
 [iConta.eu](/)

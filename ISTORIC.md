@@ -1178,3 +1178,14 @@ fost reparat.
 - Proba pe firma PFA de test: o pensie din Germania de 60.000 lei (12 luni, 1.000 plătiți acolo), o remunerație din Austria de
   40.000 lei și una din Franța de 20.000 lei pentru un asigurat acolo — impozit 5.600, CAS 10.000, CASS 4.000, total 19.600 lei,
   declarație validă la ANAF local.
+
+## 03.10.2026 — D212 etapa finală: ghidurile spun ce face aplicația azi; a doua activitate independentă se poate declara
+
+**Ce se schimbă pentru un contabil:**
+- **Ghidurile despre Declarația unică nu mai spun că D212 „se completează manual”, „produce doar identificarea” sau că
+  aplicația „nu calculează” norma, CASS pe chirii/dividende ori creditul fiscal din străinătate** — 65 de ghiduri corectate,
+  cu limitele reale păstrate (fără depunere în SPV, fără evidența pierderilor pe ani, fără opțiunea CAS sub 12 salarii minime,
+  fără agricolul pe normă și fără CASS pe pensiile din străinătate până la formularul ANAF nou).
+- **În lista „Alte venituri” a formularului D212 apare „Activități independente (sistem real, din afara registrului)”**: o a
+  doua activitate ținută în altă firmă din aplicație, sau perioada unei forme de exercitare anterioare din același an, se
+  adaugă cu venitul brut și cheltuielile ei, iar CAS și CASS se calculează pe venitul total, cum cere legea.

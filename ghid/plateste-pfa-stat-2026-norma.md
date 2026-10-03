@@ -2,7 +2,7 @@
 title: "Cât plătește un PFA la stat în 2026 dacă este la normă de venit?"
 description: "Cele trei obligații posibile ale unui PFA la normă de venit — impozit, CAS și CASS — și pragurile de la care CAS/CASS devin obligatorii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Cele trei obligații posibile:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează **D212** (declarația unică), cu secțiuni pentru capitolul de venit realizat pe bază de normă (cap. 12), inclusiv câmpurile aferente contribuțiilor sociale. Verificarea pragurilor de la art. 148 și art. 170 — dacă CAS și CASS sunt efectiv datorate în funcție de nivelul cumulat al veniturilor din anul respectiv — rămâne o evaluare pe care utilizatorul sau contabilul trebuie s-o facă înainte de completarea declarației.
+La data acestui ghid, iConta.eu generează **D212** (declarația unică), cu secțiuni pentru capitolul de venit realizat pe bază de normă (cap. 12), inclusiv câmpurile aferente contribuțiilor sociale. Declarația verifică pragurile de la art. 148 și art. 170 pe nivelul cumulat al veniturilor pe care le primește (norma, venitul din registru, celelalte venituri introduse în formular); veniturile persoanei din afara aplicației le adaugă contabilul.
 
 [iConta.eu](/)

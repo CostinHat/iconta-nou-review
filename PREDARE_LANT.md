@@ -1,17 +1,21 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D212 Etapa 5 închisă (5a, 5c-1, 5c-2a, 5c-2b); urmează etapa finală D212** (03.10.2026)
+# PREDARE LANȚ — **D212 închisă (Etapa 5 + etapa finală); urmează F3 etapa 3 (documente primare: achiziție IC + servicii UE tip 5)** (03.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-03** (dimineața), în commitul **D212 Etapa 5c-2b** (commitul care poartă această predare;
+- **ultima rescriere**: **2026-10-03** (dimineața), în commitul **D212 etapa finală** (commitul care poartă această predare;
   hash-ul lui e în raport și în `git log`).
-- **pe commit**: `e8d94562` — ultimul four-way închis înainte de rescriere (03.10.2026 04:58: HEAD = origin/main = public/main =
-  backup/lant-2026-10-03 = procesul viu (2 din 2) = e8d94562, D212 Etapa 5c-2a).
-- **ÎN LUCRU ACUM:** nimic deschis — firul **D212 Etapa 5** e ÎNCHIS în TESTE.md (5a 337f6227, 5c-1 2dfed3c3, 5c-2a e8d94562, 5c-2b în
-  commitul care poartă predarea).
-- **URMĂTORUL FRONT:** etapa finală D212 — mesajul din `d221.py` (D221 înlocuită de D212 de la veniturile 2025) și ghidurile care spun
-  „D212 doar identificare” (de căutat cu grep în ghiduri și în FUNCTIONALITATI). Detaliul: `D212_PERIMETRU.md` §4, §8–§9.
+- **pe commit**: `d4887c67` — ultimul four-way închis înainte de rescriere (03.10.2026 06:58: HEAD = origin/main = public/main =
+  backup/lant-2026-10-03 = procesul viu (2 din 2) = d4887c67, D212 Etapa 5c-2b).
+- **ÎN LUCRU ACUM:** nimic deschis — firul **D212 etapa finală** e ÎNCHIS în TESTE.md (antetul d212.py, mesajul d221.py, 65 de
+  ghiduri corectate + gard pe formele retrase, categoria 1016 „din afara registrului”). **D212 e închisă**: ce rămâne e [EXTERN]
+  (validatorul pentru OPANAF 2736/2025) sau Capitolul II (CASS opțională pe anul curent) — nefăcut, neplanificat.
+- **URMĂTORUL FRONT (din agendă, `core.agenda`):** **F3 etapa 3** — documente primare: achiziție intracomunitară + servicii UE tip 5
+  → taxare inversă, sursă D301/D390; apoi F3 etapele 4–8. STARE = NEÎNCEPUT.
+- **[EXTERN] D212 — datorii stricte (core/test_datorie.py):** agricol pe normă, opțiunea CAS lit.B, CASS pe pensiile din străinătate,
+  CASS 2.2 reținută peste datorată — toate se închid odată cu validatorul ANAF pentru OPANAF 2736/2025. Dobânzile pentru obligațiuni pe
+  piețe externe (pct.8) n-au cod în validatorul instalat → nu se pot exprima ca test; consemnate în GARZI.
 - **[EXTERN] nou (Etapa 5c-2b):** CASS pe pensiile din străinătate datorată în România (de la 08.2025, Subsecțiunea a 3-a a Secțiunii 2,
   instrucțiuni pct.41) — formularul validatorului instalat n-o are; refuz numit. Ce trebuie · de la cine · ce blochează: validatorul D212
   pentru OPANAF 2736/2025 · ANAF · emiterea CASS pe pensiile din străinătate.

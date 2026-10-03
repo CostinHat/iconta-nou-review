@@ -2,7 +2,7 @@
 title: "Care este calendarul fiscal pentru un PFA în 2026?"
 description: "Termenul general de depunere a Declarației unice privind impozitul pe venit și contribuțiile sociale, aplicabil unui PFA în 2026, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Reperele centrale ale calendarului unui PFA:
 
 ## Ce face iConta.eu
 
-iConta.eu este construit pentru contabilitatea firmelor (SRL/SA) și nu gestionează Declarația unică sau Registrul de evidență fiscală specific PFA-urilor — calendarul fiscal al unui PFA rămâne urmărit separat, de titular sau de consultantul fiscal.
+iConta.eu ține pentru PFA registrul de încasări și plăți și generează Declarația unică (D212), dar nu urmărește încă scadențele PFA într-un calendar — calendarul fiscal al unui PFA rămâne urmărit de titular sau de consultantul fiscal.
 
 [iConta.eu](/)

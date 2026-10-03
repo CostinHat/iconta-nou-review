@@ -2,7 +2,7 @@
 title: "Un instructor auto poate avea PFA la normă de venit?"
 description: "Instructorul auto PFA nu e profesie liberală reglementată prin lege specială, deci nu e exclus automat de la normă de venit — depinde de nomenclatorul CAEN publicat anual de Ministerul Finanțelor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Ce contează practic pentru un instructor auto PFA:
 
 ## Ce face iConta.eu
 
-iConta.eu **nu verifică automat** dacă activitatea de instructor auto e inclusă în nomenclatorul de normă de venit și nu calculează reducerea proporțională a normei pentru perioade de suspendare — aceste calcule rămân manuale, pe baza normelor publicate și a perioadei reale de activitate.
+iConta.eu **nu verifică automat** dacă activitatea de instructor auto e inclusă în nomenclatorul de normă de venit. În Declarația unică (D212), contabilul introduce norma publicată și zilele de întrerupere (sau datele de început/încetare), iar aplicația calculează reducerea proporțională a normei pe zile și impozitul.
 
 Aplicația oferă **Registrul de evidență fiscală pentru persoane fizice**, în care fiecare sursă de venit se înscrie anual, pe categorie, ca document justificativ pentru declarația depusă.
 

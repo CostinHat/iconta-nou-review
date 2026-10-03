@@ -2,7 +2,7 @@
 title: "Greșeli specifice PFA în 2026"
 description: "Pragurile de 12 și 24 de salarii minime brute pe țară din Codul fiscal, care decid dacă un PFA datorează CAS și la ce bază de calcul, și greșelile frecvente în aplicarea lor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Din text rezultă mecanismul pe care majoritatea greșelilor îl ratează:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației un modul dedicat de verificare automată a încadrării unui PFA în pragurile de 12/24 de salarii minime pentru CAS, conform art. 148. Aplicația oferă evidența contabilă generală a veniturilor și cheltuielilor PFA; calculul pragurilor de CAS pentru Declarația unică rămâne, la acest stadiu, o verificare pe care contabilul trebuie s-o facă separat, cumulând manual toate sursele de venit independent ale persoanei.
+Declarația unică (D212) din aplicație încadrează automat venitul în pragurile de 12/24 de salarii minime pentru CAS (art. 148), cumulând ce i se dă: venitul din registrul de încasări și plăți, normele de venit, celelalte activități independente și drepturile de autor introduse în formular, inclusiv cele din străinătate. Ce nu știe singură sunt sursele persoanei din afara aplicației — pe acelea contabilul trebuie să le adauge în formular.
 
 [iConta.eu](/)

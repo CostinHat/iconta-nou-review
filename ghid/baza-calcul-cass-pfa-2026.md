@@ -2,7 +2,7 @@
 title: "Care este baza de calcul pentru CASS la PFA în 2026?"
 description: "Baza CASS pentru 2026 e venitul net cumulat din activități independente, fără trepte intermediare, plafonat la 72 de salarii minime brute pe țară (291.600 lei, la reperul de 4.050 lei)."
 published: 2026-09-26
-modified: 2026-10-02
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce compune concret baza, pentru veniturile din 2026:
 
 Motorul `core/d212_engine.py` calculează baza CASS conform acestei formule pentru veniturile din 2026: liniar pe venitul net, cu baza minimă de 6 salarii minime brute (diferența arătată separat, cu varianta pentru excepțiile din art. 174 alin. (7)) și plafon maxim de 72 de salarii minime brute (291.600 lei, la reperul de 4.050 lei verificat la sursă din registrul de cote al aplicației). Calculul e disponibil prin `fisa_d212` (`core/rip_api.py`), pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți ținută în aplicație.
 
-Aplicația nu cumulează automat baza CASS din surse de venit aflate în afara Registrului-jurnal de încasări și plăți (de exemplu, drepturi de proprietate intelectuală declarate separat) — cumularea manuală a tuturor surselor rămâne responsabilitatea contabilului.
+Fișa nu cumulează sursele din afara Registrului-jurnal de încasări și plăți; Declarația unică (D212) le cumulează însă, dacă sunt introduse în formular (de exemplu, drepturile de proprietate intelectuală sau o altă activitate independentă), calculând CASS pe fiecare cumul cerut de lege. Ce sursă există, o știe și o introduce contabilul.
 
 [iConta.eu](/)

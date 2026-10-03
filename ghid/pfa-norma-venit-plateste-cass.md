@@ -2,7 +2,7 @@
 title: "PFA la normă de venit plătește CASS?"
 description: "Baza de calcul a contribuției de asigurări sociale de sănătate pentru persoanele fizice autorizate care își determină venitul pe bază de normă de venit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Da — un PFA care își determină venitul anual pe bază de normă de venit da
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un capitol dedicat normei de venit în modulul de Declarație Unică (D212), alături de veniturile din sistem real — inclusiv câmpurile pentru contribuțiile CAS/CASS aferente (baza de calcul, diferențe, bonificații). Calculul propriu-zis al normei de venit și al bazei CASS asociate se face pe baza valorilor introduse de contabil pentru fiecare capitol, aplicația asamblând și validând structura declarației, nu recalculând independent normele stabilite de autorități.
+La data acestui ghid, iConta.eu are un capitol dedicat normei de venit în modulul de Declarație Unică (D212), alături de veniturile din sistem real — inclusiv câmpurile pentru contribuțiile CAS/CASS aferente (baza de calcul, diferențe, bonificații). Norma o introduce contabilul (cea stabilită de direcția regională — aplicația nu o recalculează); din ea, declarația calculează venitul net, impozitul și CASS pe venitul cumulat, și validează declarația pe validatorul ANAF.
 
 [iConta.eu](/)

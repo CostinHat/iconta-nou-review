@@ -2,7 +2,7 @@
 title: "Cum se calculează CASS dacă PFA-ul are venit mare?"
 description: Peste plafonul de 72 salarii minime (291.600 lei pentru veniturile 2026), CASS nu mai crește odată cu venitul — baza de calcul rămâne fixă la plafon, oricât de mare ar fi venitul net real.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Important: acest plafon liniar (60/72 sm) e specific veniturilor din activităț
 
 ## Ce face iConta.eu
 
-Fișa D212 (RIP > Fișa D212) aplică automat plafonul corect în funcție de anul de venit cerut — 60 salarii minime pentru 2025, 72 salarii minime pentru 2026 — preluat de la server, nu hardcodat pe ecran. Calculul e limitat, intenționat, la anii de venit 2025 și 2026, pentru care plafoanele au fost verificate la sursă. Aplicația **nu calculează** CASS-ul datorat pe alte categorii de venit (de exemplu dividende); pentru un PFA care are și astfel de venituri, acel calcul separat rămâne manual, în afara acestei fișe.
+Fișa D212 (RIP > Fișa D212) aplică automat plafonul corect în funcție de anul de venit cerut — 60 salarii minime pentru 2025, 72 salarii minime pentru 2026 — preluat de la server, nu hardcodat pe ecran. Calculul e limitat, intenționat, la anii de venit 2025 și 2026, pentru care plafoanele au fost verificate la sursă. Fișa calculează doar CASS pe activitatea independentă. CASS pe celelalte categorii de venit (dividende, chirii, investiții, alte surse) se calculează în Declarația unică (D212) din aplicație, pe trepte de 6, 12 sau 24 de salarii minime, din sumele introduse acolo.
 
 [iConta.eu](/)

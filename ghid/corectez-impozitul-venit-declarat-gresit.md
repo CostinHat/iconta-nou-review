@@ -2,7 +2,7 @@
 title: "Cum corectez impozitul pe venit declarat greșit în D212?"
 description: "Impozitul pe venit din D212 se recalculează pe venitul net impozabil corect (după deducerea CAS și CASS datorate) și se corectează prin declarație rectificativă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Ce trebuie verificat la recalculare:
 
 Motorul `core/d212_engine.py` (funcția `calculeaza_d212`) calculează impozitul exact în ordinea cerută de lege pentru **sistem real** (art. 118 alin. (2) lit. b) CF): venit net, apoi CAS și CASS pe bazele lor proprii, apoi impozitul de 10% pe venitul net rămas după scăderea celor două contribuții — nu pe venitul net brut. Calculul e disponibil integral prin `fisa_d212` (`core/rip_api.py`) pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți, doar pentru veniturile anilor 2025 și 2026.
 
-Pentru venituri din normă de venit sau din alte surse (chirii, străinătate), unde D212 e completată manual, corecția impozitului rămâne un calcul făcut de contabil, în afara motorului automat — motorul de sistem real nu se aplică normei de venit, a cărei formulă legală (art. 69^2 alin. (1) CF) e diferită.
+Pentru venituri din normă de venit sau din alte surse (chirii, străinătate), Declarația unică (D212) din aplicație calculează și ea impozitul, după regula fiecărei categorii — la normă, 10% asupra normei ajustate (art. 69^2 alin. (1) CF); corecția înseamnă regenerarea declarației, ca rectificativă, cu datele corecte.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce fac dacă am depus D212 după termen?"
 description: "Nedepunerea la termen a D212 e contravenție (amendă 50-500 lei), iar ANAF poate stabili din oficiu obligațiile prin estimare — depunerea imediată, chiar tardivă, limitează ambele riscuri."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Pașii recomandați odată ce termenul a fost depășit:
 
 ## Ce face iConta.eu
 
-D212 e o declarație manuală în iConta.eu (`core/d212.py`) — aplicația nu urmărește calendarul de scadență și nu semnalează contribuabilului că termenul de 25 mai a fost depășit. Motorul de calcul (`core/d212_engine.py`, `core/rip_api.py`) poate produce oricând fișa de calcul CAS/CASS/impozit pentru veniturile anilor verificați (2025, 2026), inclusiv pentru o depunere tardivă, dar nu calculează dobânzile sau penalitățile de întârziere aferente plății cu întârziere — acestea rămân în sarcina evidenței fiscale ținute de contabil.
+D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația nu urmărește calendarul de scadență și nu semnalează contribuabilului că termenul de 25 mai a fost depășit. Motorul de calcul (`core/d212_engine.py`, `core/rip_api.py`) poate produce oricând fișa de calcul CAS/CASS/impozit pentru veniturile anilor verificați (2025, 2026), inclusiv pentru o depunere tardivă, dar nu calculează dobânzile sau penalitățile de întârziere aferente plății cu întârziere — acestea rămân în sarcina evidenței fiscale ținute de contabil.
 
 [iConta.eu](/)

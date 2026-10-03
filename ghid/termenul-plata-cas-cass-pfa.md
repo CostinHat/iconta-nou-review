@@ -2,7 +2,7 @@
 title: "Termenul pentru plata CAS și CASS de către PFA în 2026"
 description: "Data limită pentru declararea și plata contribuțiilor sociale datorate de PFA pentru veniturile din activități independente, prin Declarația unică."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce rezultă concret pentru un PFA, pentru anul fiscal 2026:
 
 ## Ce face iConta.eu
 
-iConta.eu oferă evidența contabilă a veniturilor și cheltuielilor PFA pe parcursul anului, din care rezultă venitul net, și are un modul dedicat pentru Declarația unică: `core/d212_engine.py` calculează CAS (25%, cu plafonare 12/24 salarii minime) și CASS (10%, cu plafonare 6/60, respectiv 6/72 salarii minime pentru veniturile din 2026, conform Legii 239/2025), iar `core/d212.py` generează formularul D212 (XML), structura fiind confirmată pe validatorul oficial ANAF. Ce **nu automatizează** aplicația: preluarea automată a valorilor calculate în evidența PFA-ului direct în D212 — generatorul primește venitul, cheltuielile deductibile și opțiunile de CAS/CASS ca date furnizate explicit (`manual`), nu le preia singur din registrele contabile — și nici depunerea efectivă a declarației la ANAF, care rămâne, la acest moment, în sarcina contabilului.
+iConta.eu oferă evidența contabilă a veniturilor și cheltuielilor PFA pe parcursul anului, din care rezultă venitul net, și are un modul dedicat pentru Declarația unică: `core/d212_engine.py` calculează CAS (25%, cu plafonare 12/24 salarii minime) și CASS (10%, cu plafonare 6/60, respectiv 6/72 salarii minime pentru veniturile din 2026, conform Legii 239/2025), iar `core/d212.py` generează formularul D212 (XML), structura fiind confirmată pe validatorul oficial ANAF. Venitul din registrul de încasări și plăți se preia în D212 la generare (bifa „Include venitul din registrul RIP”), iar contribuțiile și impozitul se calculează. Ce **nu automatizează** aplicația: depunerea efectivă a declarației la ANAF, care rămâne, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

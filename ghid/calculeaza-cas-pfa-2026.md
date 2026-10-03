@@ -2,7 +2,7 @@
 title: "Cum se calculează CAS pentru PFA în 2026?"
 description: CAS pentru PFA în sistem real e 25% aplicat pe o bază în trepte (12 sau 24 salarii minime), nu pe venitul net efectiv, iar obligația apare doar de la 12 salarii minime cumulate anual în sus.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ CAS-ul datorat rezultă din 25% aplicat asupra bazei corespunzătoare treptei, n
 
 ## Ce face iConta.eu
 
-Fișa D212 din aplicație (RIP > Fișa D212) calculează automat venitul net, apoi CAS-ul pe treapta corectă (12 sau 24 salarii minime, cu reperul de 4.050 lei pentru veniturile 2025 și 2026), afișând explicit mențiunea „neobligatoriu — sub 12 salarii minime" când e cazul. Sursa cifrelor e registrul de încasări și plăți, numai operațiunile validate — ciornele nevalidate nu intră în calcul. Calculul e un instrument de referință: completarea efectivă a Declarației unice (D212) rămâne un pas separat, în care contabilul introduce sumele calculate.
+Fișa D212 din aplicație (RIP > Fișa D212) calculează automat venitul net, apoi CAS-ul pe treapta corectă (12 sau 24 salarii minime, cu reperul de 4.050 lei pentru veniturile 2025 și 2026), afișând explicit mențiunea „neobligatoriu — sub 12 salarii minime" când e cazul. Sursa cifrelor e registrul de încasări și plăți, numai operațiunile validate — ciornele nevalidate nu intră în calcul. Declarația unică (D212) preia aceleași cifre din registru la generare (bifa „Include venitul din registrul RIP”) și calculează CAS în secțiunea ei; fișa rămâne vederea de control.
 
 [iConta.eu](/)

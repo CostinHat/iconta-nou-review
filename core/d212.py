@@ -1,41 +1,37 @@
 """core/d212.py - D212: Declaratia unica privind impozitul pe venit si contributiile sociale
-datorate de persoanele fizice (cea mai complexa declaratie ANAF; ns v11, pachet validator v9).
+datorate de persoanele fizice (ns v11, pachet validator v9 = J13.0.1).
 
-Declaratie MANUALA (persoana fizica): aplicatia nu are registru de persoane fizice, nici
-veniturile/contributiile lor. Toate datele vin din dict-ul `manual`. Firma (conn/schema) NU
-contine sursa - `pull` intoarce {} (contractul dXXX cere metoda).
+CE FACE (03.10.2026, dupa D212 Etapele 2-5): contabilul da DATELE persoanei fizice (identitate, venitul din registrul
+RIP al firmei PFA/II/IF, normele de venit, celelalte venituri din Romania, veniturile din strainatate, cele cateva alegeri
+pe care evidenta nu le poate sti — exceptia de la baza minima CASS, asiguratul in alt stat); generatorul CALCULEAZA
+randurile dupa instructiunile OPANAF 2736/2025 si Codul fiscal, cu temeiul pe constantele ancorate:
+  - cap11 (Subsectiunea I.1.1), cate o sectiune pe sursa: activitati independente din RIP (`cap11_din_rip`) si categoriile
+    fara date in aplicatie (`cap11_categorie`: DPI, cedarea folosintei, turistic, agricole, investitii, alte surse);
+  - cap12 (Subsectiunea I.1.2), cate o sectiune pe activitate/loc: venitul pe norma (`cap12_norma`);
+  - cap14 (Sectiunea 2), cate o sectiune pe tara si sursa: veniturile din strainatate (`cap14_sectiune`), creditul fiscal
+    plafonat (CF art.131 alin.(4)), metoda scutirii;
+  - oblig_realizat (Sectiunile 3, 4, 5, 7 si Sectiunea 2 Subsectiunea a 2-a): CAS si CASS (2.1 si 2.2 pe trepte, din
+    `d212_engine`), impozitul in sistem real si pe DPI cu contributiile deductibile pe pondere, sumarul de plata.
+  - totalPlata_A = suma cifrelor CNP (DUK regula R4, ValidatorCode.validateD212 citita integral 01.10.2026).
+Apelantul poate trimite si sectiuni gata calculate (chei `cap11`/`cap12`/`cap14`/`oblig_realizat` in `manual`) — se emit
+asa cum sunt, verificate doar pe numele atributelor (`_CAMPURI`, confruntat cu jar-ul de test_d212_campuri_validator).
 
-SURSA STRUCTURII = VALIDATORUL OFICIAL ANAF (arbitrul), D212Validator.jar. Structura in vigoare
-pentru anul de raportare 2025 a fost CITITA din bytecode si PROBATA camp cu camp pe DUKIntegrator:
-  - Radacina reala = element <d212> (NU <declaratie>; acela era ns:v1, invechit). Namespace v11.
-  - Selectia versiunii (d212validator/Validator._dateVersionTable): randul
-    '2025-01 J13.0.1 9 7 2025-01-15' => pachet validator v9 + Parameters_v7 => namespace v11.
-  - Copii (elemente lowercase): cap11, cap12, cap14, oblig_realizat, oblig_estimat, coasigurat.
-  - Atribute OBLIGATORII pe radacina (flag mandatory=1 in checkTag), probate ca lipsa/necesare:
-    d_rec, rectif1, rectif2, totalPlata_A, luna_r(=12 fix, interval [12,12]), an_r(interval
-    [2025,2100]), bifa_succesor, anulare_litA, anulare_litB, bifa_conformare, bifa111, bifa112,
-    bifa113, bifa121, bifa122, bifa131, bifa132, bifa14, bifa15, nerezident + identificare
-    (cif, nume_c, adresa_c). bifa16/bifa18 optionale.
-  - DUK regula R4 (ValidatorCode.validateD212, citita INTEGRAL 01.10.2026): daca `cif` are 13 cifre
-    (CNP), totalPlata_A == suma celor 13 cifre — MEREU, indiferent de sumele de plata (forma veche a acestui
-    docstring, „suma sumelor de plata", era gresita: o declaratie cu obligatii ar fi picat la R4).
-    Probat: CNP ...1144 => 25; 21580 (suma obligatiilor) => R4.
+CE REFUZA NUMIT (nu emite pe jumatate): agricolul pe norma (Subsectiunea a 4-a — validatorul instalat n-are campurile),
+optiunea CAS sub 12 sm (lit.B — fara casuta), CASS pe pensiile din strainatate (Subsectiunea a 3-a a Sectiunii 2 — lipsa),
+CASS 2.2 retinuta peste cea datorata (fara rand „in minus”), categoriile pentru veniturile 2026 (Legea 239/2025 si
+141/2025 schimba regulile; formularul ANAF nepublicat). Detaliul si temeiurile: D212_PERIMETRU.md §5-§9, DECIZII.
 
-CAZUL PRINCIPAL ACOPERIT + PROBAT DUK VALID: declaratie de identificare (fara obligatii de plata
-- nula / rectificativa / doar identificare), cu toate bifele pe 0. Este cazul MINIM care trece
-validatorul si nucleul garantat-VALID al generatorului.
-
-EXTENSIBIL (structura mapata integral din bytecode, se emite din `manual` cand e furnizata):
-capitolele de venit realizat (cap11 sistem real, cap12 norma de venit, cap14 strainatate) si
-contributiile (oblig_realizat CAS/CASS, oblig_estimat, coasigurat). Pentru un capitol POPULAT,
-apelantul furnizeaza valorile deja calculate (venituri, baze, impozit, CAS, CASS) intr-un sub-dict
-per element; generatorul le emite ca atribute si NU recalculeaza cotele/plafoanele (interzis sa
-hardcodam cote de impozit/CAS/CASS). Regulile de consistenta interne (impozit=venit*cota, baze la
-plafon, R-uri CAS/CASS) raman in sarcina datelor de intrare - vezi field-reference in `_CAMPURI`.
+SURSA STRUCTURII = VALIDATORUL OFICIAL ANAF (arbitrul), D212Validator.jar:
+  - Radacina = element <d212> (NU <declaratie>; acela era ns:v1, invechit). Namespace v11; selectia versiunii
+    (d212validator/Validator._dateVersionTable): '2025-01 J13.0.1 9 7 2025-01-15' => pachet v9 + Parameters_v7.
+  - Copii (elemente lowercase): cap11, cap12, cap14, oblig_realizat, oblig_estimat, coasigurat — cap11/cap12/cap14 se
+    repeta (probat pe DUK). Atribute OBLIGATORII pe radacina: d_rec, rectif1, rectif2, totalPlata_A, luna_r (=12),
+    an_r ([2025,2100]), bifele (bifa_succesor ... bifa15), nerezident + identificare (cif, nume_c, adresa_c).
+  - Cazul minim (doar identificare, bifele pe 0) ramane valid — e ce iese cand nu se da niciun venit.
 
 Contract dXXX: NS, _cif/_cnp_valid/_esc, calcul_d212, pull(conn,schema,perioada)->{},
 erori_generare, build_xml, genereaza(conn, schema, perioada, manual=None). conn=None este acceptat
-(pull nu atinge baza).
+(pull nu atinge baza; venitul din RIP cere conexiunea).
 """
 
 #: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
@@ -260,8 +256,11 @@ CATEG_ALTE_SURSE = (1021, 1022, 1023, 1024)
 DET_VEN_NET_FORFETAR = 2
 #: Categoriile pentru care persoana cu handicap grav sau accentuat e scutită de impozit (CF art.60 pct.1 lit.a), a^1), d)).
 CATEG_SCUTIRE_HANDICAP = (CATEG_ACTIVITATI_INDEPENDENTE, CATEG_DPI) + CATEG_AGRICOLE
-#: Categoriile introduse de contabil pe ecran (activitățile independente vin din registrul RIP).
-CATEG_MANUALE = (CATEG_DPI, CATEG_CEDARE, CATEG_TURISTIC) + CATEG_AGRICOLE + (CATEG_INVESTITII,) + CATEG_ALTE_SURSE
+#: Categoriile introduse de contabil pe ecran. Activitățile independente vin de regulă din registrul RIP al firmei; cele din
+#: afara registrului (a doua activitate, ținută în altă firmă, sau perioada unei forme de exercitare anterioare din același an)
+#: se adaugă aici, ca să se cumuleze pentru CAS/CASS (CF art.148 alin.(3), art.170 alin.(1)).
+CATEG_MANUALE = (CATEG_ACTIVITATI_INDEPENDENTE, CATEG_DPI, CATEG_CEDARE, CATEG_TURISTIC) + CATEG_AGRICOLE + (CATEG_INVESTITII,) \
+    + CATEG_ALTE_SURSE
 
 
 def _procent(suma, cota):
@@ -301,9 +300,10 @@ def cap11_categorie(a, an):
     except (TypeError, ValueError):
         cat = None
     if cat not in CATEG_MANUALE:   # refuz de FORMĂ: codul în afara listei de pe ecran
-        raise ValueError("D212: categoria de venit %r nu se introduce aici (activitățile independente vin din registrul RIP); "
-                         "categoriile: %s." % (a.get("categ_venit"), ", ".join(str(c) for c in CATEG_MANUALE)))
-    if an not in ANI_CATEGORII:
+        raise ValueError("D212: categoria de venit %r nu e în lista de pe ecran (%s)."
+                         % (a.get("categ_venit"), ", ".join(str(c) for c in CATEG_MANUALE)))
+    # activitățile independente urmează regulile căii din registrul RIP (anii verificați în oblig_realizat), nu ANI_CATEGORII
+    if an not in ANI_CATEGORII and cat != CATEG_ACTIVITATI_INDEPENDENTE:
         raise ValueError("D212: %s — regulile pe categorii sunt verificate pentru veniturile %s (instrucțiunile OPANAF 2736/2025); "
                          "pentru %d, Legea 239/2025 art.XII schimbă cedarea folosinței (CF art.83-87) și alte surse (art.114-116), "
                          "iar ANAF n-a publicat formularul. Se declară pe formularul ANAF."
@@ -325,14 +325,14 @@ def cap11_categorie(a, an):
             raise ValueError("D212 %s: determinarea venitului net %r — 1 sistem real, 2 cote forfetare." % (eticheta, det))
     elif cat == CATEG_CEDARE:
         det = DET_VEN_NET_FORFETAR                      # pct.5.6.2 „se bifează căsuța cote forfetare de cheltuieli”
-    elif cat == CATEG_TURISTIC or cat in CATEG_AGRICOLE:
-        det = DET_VEN_NET_SISTEM_REAL                   # pct.5.7.2 / 6.6.2 „se bifează căsuța sistem real”
+    elif cat in (CATEG_TURISTIC, CATEG_ACTIVITATI_INDEPENDENTE) or cat in CATEG_AGRICOLE:
+        det = DET_VEN_NET_SISTEM_REAL                   # pct.3.5.2 / 5.7.2 / 6.6.2 „se bifează căsuța sistem real”
     else:
         det = None                                      # investiții, alte surse: rd.2 nu se completează (pct.7.3, 9.2)
     c = {"categ_venit": cat}
     if det:
         c["det_ven_net"] = det
-    if cat == CATEG_DPI or cat in CATEG_AGRICOLE:
+    if cat in (CATEG_DPI, CATEG_ACTIVITATI_INDEPENDENTE) or cat in CATEG_AGRICOLE:
         forma = int(a.get("forma_org") or FORMA_ORG_INDIVIDUAL)
         if forma not in FORME_ORG_NORMA:   # refuz de FORMĂ: pct.4.5.3 / 6.6.3 au două căsuțe
             raise ValueError("D212 %s: forma de organizare %r — 1 individual, 2 asociere." % (eticheta, a.get("forma_org")))
@@ -385,7 +385,9 @@ def cap11_categorie(a, an):
             if pp:
                 c["pierdere_compensata"] = comp
             c["venit_recalculat"] = net - comp
-            if cat != CATEG_DPI:      # DPI în sistem real: rd.8/rd.9 nu se completează, impozitul e în Secțiunea 5 (pct.4.5.7)
+            if cat not in (CATEG_DPI, CATEG_ACTIVITATI_INDEPENDENTE):
+                # DPI / activități independente în sistem real: rd.8/rd.9 nu se completează — impozitul e în Secțiunea 5 / 4
+                # (pct.4.5.7 / 3.5.11)
                 baza = net - comp
                 if scut:
                     c["venit_redus"] = baza = redus_handicap(baza, scut, an)

@@ -2,7 +2,7 @@
 title: "Cum se cumulează veniturile pentru stabilirea CAS și CASS?"
 description: "CAS cumulează doar activități independente și drepturi de proprietate intelectuală; CASS cumulează, separat, aceleași venituri (liniar) și, pe altă categorie, veniturile pasive (pe trepte)."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Cum funcționează, pe cele două contribuții:
 
 Motorul `core/d212_engine.py` calculează corect CAS și CASS pentru un singur venit net dat ca parametru — funcțiile `calculeaza_cas` și `calculeaza_cass` aplică regulile de prag și plafonare exact cum le cere legea, pentru categoria „activități independente". Cumularea venitului dintr-o singură sursă evidențiată în Registrul-jurnal de încasări și plăți (`core/rip_api.py`, `fisa_d212`) e automată în interiorul acelei surse.
 
-Aplicația nu cumulează automat venituri din surse diferite (de exemplu, o normă de venit plus drepturi de autor plus chirii ale aceleiași persoane) și nu separă automat cumulul CAS de cele două cumuluri CASS (activități independente vs. venituri pasive) — verificarea și cumularea manuală, pe categoriile corecte, rămân în sarcina contabilului.
+Declarația unică (D212) din aplicație cumulează veniturile introduse din surse diferite (de exemplu, o normă de venit plus drepturi de autor plus chirii ale aceleiași persoane) și le separă pe cumulurile legii: CAS pe activități independente și drepturi de autor (art. 148), CASS pe activități independente (art. 170 alin. (1)) și CASS pe celelalte venituri, pe trepte (art. 170 alin. (2)-(4)). Ce surse are persoana o știe contabilul — el le introduce.
 
 [iConta.eu](/)

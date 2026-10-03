@@ -2,7 +2,7 @@
 title: "Cum declar în D212 dacă am PFA și profesie liberală?"
 description: PFA și profesia liberală sunt amândouă activități independente în sensul legii — veniturile lor nete se cumulează într-o singură bază de calcul CAS și CASS, nu se tratează ca surse separate.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Nu există, pentru CAS/CASS, un tratament diferit între „venit din PFA" și �
 
 ## Ce face iConta.eu
 
-Fișa D212 (RIP > Fișa D212) calculează cifrele pe baza registrului de încasări și plăți al unei singure activități/tenant. Dacă PFA-ul și profesia liberală sunt înregistrate separat în aplicație (ca doi „tenanți" distincți), aplicația **nu cumulează automat** cele două fișe într-o singură bază CAS/CASS — cumularea impusă de art. 148 alin. (1) și art. 170 alin. (1) rămâne un pas manual: se calculează separat fiecare fișă, apoi contabilul adună venitul net din ambele și recalculează CAS/CASS pe suma totală, înainte de completarea Declarației unice. Pașii concreți din ecranul curent de completare D212 nu fac parte din acest ghid — ecranul a primit modificări recente, neverificate separat.
+Fișa D212 (RIP > Fișa D212) calculează cifrele pe baza registrului de încasări și plăți al unei singure activități/tenant. Dacă PFA-ul și profesia liberală sunt înregistrate separat în aplicație (ca doi „tenanți" distincți), aplicația **nu cumulează automat** cele două fișe într-o singură bază CAS/CASS — pentru cumularea impusă de art. 148 alin. (1) și art. 170 alin. (1), D212 se generează din firma uneia dintre activități, iar cealaltă se adaugă în lista „Alte venituri” a formularului, la categoria „Activități independente (sistem real, din afara registrului)”, cu venitul brut și cheltuielile din fișa ei — declarația calculează CAS și CASS pe suma totală. Pașii concreți din ecranul curent de completare D212 nu fac parte din acest ghid — ecranul a primit modificări recente, neverificate separat.
 
 [iConta.eu](/)

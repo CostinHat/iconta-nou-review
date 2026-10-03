@@ -2,7 +2,7 @@
 title: "Plafonul CASS pentru dividende în 2026"
 description: "Cum se calculează plafonul de venit care declanșează obligația de plată a CASS pentru dividende, prin cumulare cu celelalte venituri pasive ale persoanei fizice."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Mecanismul de calcul, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, motorul de calcul D212 al iConta.eu (`core/d212_engine.py`) calculează CASS pentru veniturile din activități independente (PFA în sistem real), cu plafonul liniar de 72 de salarii minime aplicabil veniturilor 2026, conform art. 170 alin. (1) din Codul fiscal. Codul modulului notează explicit că veniturile pasive — chirii, dividende, dobânzi — „rămân pe trepte 6/12/24 sm" și nu sunt calculate de acest motor: cumularea dividendelor cu celelalte venituri pasive ale persoanei fizice, pentru verificarea plafonului CASS de la art. 170 alin. (2)-(4), rămâne o determinare manuală, realizată de contabil.
+La data acestui ghid, motorul de calcul D212 al iConta.eu (`core/d212_engine.py`) calculează CASS pentru veniturile din activități independente (PFA în sistem real), cu plafonul liniar de 72 de salarii minime aplicabil veniturilor 2026, conform art. 170 alin. (1) din Codul fiscal. Pentru dividende, dobânzi, chirii și celelalte venituri de aceeași natură, Declarația unică (D212) din aplicație calculează CASS pe trepte de 6, 12 sau 24 de salarii minime (art. 170 alin. (2)-(4)), cumulându-le din sumele introduse de contabil (dividendele și dobânzile nete de impozit).
 
 [iConta.eu](/)

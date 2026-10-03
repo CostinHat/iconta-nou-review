@@ -2,7 +2,7 @@
 title: "Cum se calculează impozitul unui PFA în sistem real în 2026?"
 description: Impozitul pe venitul unui PFA în sistem real e 10%, dar nu se aplică pe venitul brut, nici pe venitul net — se aplică pe venitul net rămas după scăderea CAS și CASS deja calculate.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ordinea contează: dacă s-ar aplica 10% direct pe venitul net, fără să se sc
 
 ## Ce face iConta.eu
 
-Fișa D212 (RIP > Fișa D212) parcurge exact acest lanț: preia venitul brut și cheltuielile deductibile din operațiunile validate ale registrului de încasări și plăți, calculează venitul net, apoi CAS și CASS pe bazele lor specifice, și abia apoi impozitul de 10% pe venitul net rămas după scăderea celor două contribuții. Cheltuielile limitate sunt raportate separat, cu avertisment explicit, pentru că partea lor deductibilă o stabilește contabilul. Fișa produce cifrele de referință — completarea efectivă a Declarației unice rămâne un pas separat.
+Fișa D212 (RIP > Fișa D212) parcurge exact acest lanț: preia venitul brut și cheltuielile deductibile din operațiunile validate ale registrului de încasări și plăți, calculează venitul net, apoi CAS și CASS pe bazele lor specifice, și abia apoi impozitul de 10% pe venitul net rămas după scăderea celor două contribuții. Cheltuielile limitate sunt raportate separat, cu avertisment explicit, pentru că partea lor deductibilă o stabilește contabilul. Fișa produce cifrele de referință; Declarația unică (D212) le preia din registru la generare și calculează aceleași rânduri.
 
 [iConta.eu](/)

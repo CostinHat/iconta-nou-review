@@ -2,7 +2,7 @@
 title: "PFA la normă de venit plătește CAS?"
 description: "CAS e obligatorie doar dacă norma de venit (cumulată cu alte venituri din activități independente și drepturi de autor) atinge 12 salarii minime brute pe țară — sub acest prag, e opțională."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,8 +32,8 @@ Ce contează pentru un PFA la normă de venit:
 
 ## Ce face iConta.eu
 
-Motorul `core/d212_engine.py` (funcția `calculeaza_cas`) aplică corect pragul de 12 salarii minime brute și plafonarea pe trepte (12-24 sm), cu reperul de salariu minim citit din registrul de cote pentru anul de venit. Calculul automat, prin `fisa_d212` (`core/rip_api.py`), pornește însă de la venitul net rezultat din Registrul-jurnal de încasări și plăți — deci acoperă sistemul real, nu norma de venit.
+Motorul `core/d212_engine.py` (funcția `calculeaza_cas`) aplică corect pragul de 12 salarii minime brute și plafonarea pe trepte (12-24 sm), cu reperul de salariu minim citit din registrul de cote pentru anul de venit. Fișa `fisa_d212` (`core/rip_api.py`) pornește de la venitul net din Registrul-jurnal de încasări și plăți — deci acoperă sistemul real; pentru norma de venit, CAS se calculează în Declarația unică (D212), pe norma introdusă acolo.
 
-Pentru un PFA la normă de venit, aplicația nu calculează automat dacă norma (ajustată) atinge pragul de 12 salarii minime brute și nu cumulează automat norma cu alte venituri din activități independente ale aceleiași persoane — verificarea rămâne manuală.
+Pentru un PFA la normă de venit, Declarația unică (D212) din aplicație verifică pragul de 12 salarii minime brute pe norma (ajustată) cumulată cu celelalte venituri din activități independente și drepturi de autor introduse în formular; sursele persoanei din afara aplicației le adaugă contabilul.
 
 [iConta.eu](/)

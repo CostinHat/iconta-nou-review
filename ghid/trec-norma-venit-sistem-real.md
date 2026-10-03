@@ -2,7 +2,7 @@
 title: "Cum trec de la normă de venit la sistem real în 2026?"
 description: "Trecerea se face prin opțiune exprimată în Declarația unică, obligatorie pentru minimum 2 ani fiscali consecutivi, depusă până la termenul legal de depunere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Pașii, așa cum rezultă din text:
 
 iConta.eu **nu depune automat** opțiunea pentru sistem real și nu urmărește termenul legal de depunere a Declarației unice — aceste pași rămân sub controlul contabilului, care completează manual formularul oficial.
 
-Modulul care generează Declarația unică (D212) în aplicație are secțiuni separate pentru cele două regimuri — capitolul de sistem real și capitolul de normă de venit — populate manual, cu datele deja calculate de contabil; aplicația **nu recalculează** cotele sau bazele de impozitare, doar emite structura XML pentru depunere.
+Modulul care generează Declarația unică (D212) în aplicație are secțiuni separate pentru cele două regimuri: capitolul de sistem real (din registrul de încasări și plăți) și capitolul de normă de venit (din norma introdusă, cu datele de început și încetare) — aplicația calculează venitul net, impozitul și contribuțiile pe fiecare și pe total, apoi emite XML-ul pentru depunere.
 
 [iConta.eu](/)

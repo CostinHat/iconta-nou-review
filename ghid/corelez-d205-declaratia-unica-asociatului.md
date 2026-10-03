@@ -2,7 +2,7 @@
 title: "Cum corelez D205 cu declarația unică a asociatului"
 description: "Legătura dintre D205 (declarația firmei care plătește dividende) și Declarația unică (D212) depusă de asociatul persoană fizică pentru CASS — ce raportează fiecare și de ce nu se suprapun automat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă practic această legătură:
 
 ## Ce face iConta.eu
 
-iConta.eu generează D205 pentru firmă, cu calculul impozitului pe dividende pe fiecare distribuire și plată (atribuire FIFO pe data distribuirii, ca impozitul să se aplice la cota corectă). Aplicația poate genera și D212, dar **declarația unică e o declarație manuală**: iConta nu ține un registru de persoane fizice și nu le cunoaște veniturile totale din investiții din alte surse, așa că nu poate stabili singură dacă asociatul a depășit plafonul CASS — valorile (venituri, baze, CASS deja calculat) trebuie introduse de utilizator în formularul D212. Corelarea între suma din D205 și baza CASS declarată în D212 rămâne o verificare manuală a contabilului sau a asociatului.
+iConta.eu generează D205 pentru firmă, cu calculul impozitului pe dividende pe fiecare distribuire și plată (atribuire FIFO pe data distribuirii, ca impozitul să se aplice la cota corectă). Aplicația poate genera și D212, dar nu cunoaște singură veniturile totale ale asociatului ca persoană fizică (din alte firme sau investiții): în formularul D212 contabilul scrie dividendele nete încasate și celelalte venituri, iar aplicația stabilește treapta CASS (6, 12 sau 24 de salarii minime) și contribuția. Corelarea între suma din D205 și baza CASS declarată în D212 rămâne o verificare manuală a contabilului sau a asociatului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Persoanele fizice cu activitate economică: obligații"
 description: "Când o persoană fizică autorizată sau cu venituri din activități independente datorează contribuția de asigurări sociale (CAS) și de sănătate (CASS), în funcție de pragurile din Codul fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Mecanismul de bază, pentru o PFA sau altă persoană cu activitate independent�
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă un registru-jurnal de încasări și plăți pentru persoane fizice autorizate care conduc contabilitate în partidă simplă, în regim de venit net real (`core/rip_api.py`, conform OMFP 170/2015), din care se pot calcula veniturile realizate. Aplicația **nu verifică automat** încadrarea în pragurile de 12, respectiv 6 salarii minime brute pentru CAS și CASS și nu depune Declarația unică — cumularea veniturilor din toate sursele și evaluarea obligației de contribuție rămân responsabilitatea contabilului sau a persoanei fizice autorizate.
+La data acestui ghid, iConta.eu oferă un registru-jurnal de încasări și plăți pentru persoane fizice autorizate care conduc contabilitate în partidă simplă, în regim de venit net real (`core/rip_api.py`, conform OMFP 170/2015), din care se pot calcula veniturile realizate. Declarația unică (D212) generată din aplicație încadrează venitul în pragurile de 12, respectiv 6 salarii minime brute pentru CAS și CASS, pe veniturile pe care le primește (din registru și din formular); aplicația nu depune declarația și nu cunoaște singură sursele persoanei din afara ei — pe acelea le adaugă contabilul sau persoana fizică autorizată.
 
 [iConta.eu](/)

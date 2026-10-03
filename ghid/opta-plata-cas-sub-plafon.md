@@ -2,7 +2,7 @@
 title: "Pot opta pentru plata CAS dacă sunt sub plafon?"
 description: "Da — sub pragul de 12 salarii minime brute, CAS nu e obligatorie, dar contribuabilul poate opta pentru plata ei, la un venit ales de minimum 12 salarii minime brute, prin D212."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce presupune concret opțiunea:
 
 Motorul `core/d212_engine.py` (funcția `calculeaza_cas`) acceptă parametrul `optiune_cas`: dacă venitul net e sub pragul de 12 salarii minime brute, dar contribuabilul optează explicit, funcția calculează CAS pe baza minimă de 12 salarii minime brute, exact cum cere legea. Opțiunea e disponibilă și în fișa de calcul automată (`fisa_d212`, `core/rip_api.py`) pentru contribuabilii la sistem real, pentru veniturile anilor 2025 și 2026.
 
-Aplicația nu decide ea însăși dacă opțiunea e avantajoasă și nici nu completează automat exercitarea opțiunii în declarația D212 — parametrul se activează manual, la cererea contribuabilului.
+Aplicația nu decide ea însăși dacă opțiunea e avantajoasă. În Declarația unică (D212), opțiunea pentru CAS sub 12 salarii minime nu se poate încă emite din aplicație: formularul validatorului ANAF instalat n-are căsuța ei (lit. B), iar aplicația refuză cu explicația — opțiunea se declară pe formularul ANAF.
 
 [iConta.eu](/)

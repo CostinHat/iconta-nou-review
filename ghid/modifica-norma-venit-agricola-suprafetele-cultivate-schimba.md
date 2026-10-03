@@ -2,7 +2,7 @@
 title: "Se modifică norma de venit agricolă dacă suprafețele cultivate se schimbă după 15 martie?"
 description: "Nu. Codul fiscal în vigoare spune că schimbarea suprafețelor sau a efectivelor în cursul anului nu recalculează norma anuală de venit. Excepția sunt pierderile din calamități."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -51,6 +51,6 @@ Dacă în schimb o grindină ar fi distrus 40% din cultura de cereale, iar comis
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un modul dedicat veniturilor agricole pe norme de venit. Aplicația nu calculează norma și nu aplică reducerea pentru calamități. Pentru declarația unică D212, aplicația are un generator manual al XML-ului, în care contabilul introduce valorile deja calculate. Încadrarea suprafețelor și a efectivelor și calculul venitului pe normă rămân în sarcina contabilului.
+iConta.eu nu are un modul dedicat veniturilor agricole pe norme de venit. Aplicația nu calculează norma și nu aplică reducerea pentru calamități. Capitolul D212 pentru veniturile agricole pe normă nu se poate încă genera din aplicație: validatorul ANAF instalat (formularul pentru veniturile 2024) n-are câmpurile lui, iar aplicația refuză cu explicația — capitolul se completează pe formularul ANAF. Încadrarea suprafețelor și a efectivelor și calculul venitului pe normă rămân în sarcina contabilului.
 
 [iConta.eu](/)

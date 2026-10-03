@@ -1,8 +1,8 @@
 ---
 title: "Cum corectez norma de venit declarată greșit în D212?"
-description: "Corectarea normei de venit din D212 se face printr-o declarație rectificativă, oricând pe perioada de prescripție; iConta.eu nu calculează azi norma de venit, motorul propriu acoperă doar PFA/II/IF în sistem real."
+description: "Corectarea normei de venit din D212 se face printr-o declarație rectificativă, oricând pe perioada de prescripție; norma o stabilește direcția regională, nu aplicația; din norma introdusă, D212 din iConta.eu calculează venitul net, impozitul și contribuțiile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -30,8 +30,8 @@ Aplicat la norma de venit: dacă ai declarat greșit norma de venit (de exemplu 
 
 ## Ce face iConta.eu
 
-Motorul de calcul D212 din iConta.eu (`core/d212_engine.py`) acoperă exclusiv **PFA/II/IF în sistem real** (partida simplă) — calculează venitul net ca diferență între venitul brut și cheltuielile deductibile din registrul de încasări și plăți, plus CAS/CASS/impozitul aferent. **Norma de venit nu are niciun calcul propriu în acest motor** — câmpurile din declarația D212 pentru norma de venit (`cap12`, cu subcâmpurile ei) se completează manual, direct în declarație, la fel ca restul datelor din generatorul separat al formularului (`core/d212.py`), care nu recalculează nimic, ci preia valorile așa cum sunt introduse.
+Fișa D212 din iConta.eu (`core/rip_api.py`, motorul `core/d212_engine.py`) acoperă **PFA/II/IF în sistem real** (partida simplă) — venitul net din registrul de încasări și plăți, plus CAS/CASS/impozitul aferent. Pentru norma de venit, calculul e în generatorul declarației (`core/d212.py`, capitolul `cap12`): contabilul introduce norma publicată și, dacă e cazul, norma ajustată, iar aplicația calculează venitul net (proporțional cu zilele de activitate), venitul impozabil, impozitul de 10% și contribuțiile.
 
-Practic, dacă declari pe bază de normă de venit, iConta.eu nu îți verifică sau recalculează cifra — corecția unei norme greșit introduse înseamnă corectarea manuală a câmpului respectiv și redepunerea declarației rectificative, conform mecanismului general de mai sus.
+Practic, iConta.eu nu verifică dacă norma introdusă e cea corectă pentru activitate și localitate — o normă greșită se corectează în formularul D212, iar aplicația recalculează venitul net, impozitul și contribuțiile; urmează depunerea declarației rectificative, conform mecanismului general de mai sus.
 
 [iConta.eu](/)

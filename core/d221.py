@@ -237,8 +237,9 @@ def genereaza(conn, schema, perioada, manual=None):
         raise ValueError(
             "D221 se generează doar pentru veniturile anilor până în 2024 inclusiv. Din 2025, veniturile "
             "agricole pe normă de venit se declară în Declarația unică (D212), potrivit art. 107 alin. (2) "
-            "din Codul fiscal în forma în vigoare de la 1 ianuarie 2025, iar capitolul respectiv din D212 "
-            "nu e încă generat de aplicație.")
+            "din Codul fiscal în forma în vigoare de la 1 ianuarie 2025. Validatorul ANAF instalat pentru D212 (J13.0.1, "
+            "formularul pentru veniturile 2024) nu are încă câmpurile acestui capitol, iar ANAF n-a publicat validatorul pentru "
+            "OPANAF 2736/2025 — până atunci capitolul se completează pe formularul ANAF.")
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, an, manual)
     if er:

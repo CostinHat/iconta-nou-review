@@ -2,7 +2,7 @@
 title: "Cum completez D212 pentru PFA la normă de venit?"
 description: "La normă de venit se declară norma anuală (eventual ajustată), nu venitul brut și cheltuielile — iar CAS și CASS se calculează pe norma respectivă, nu pe un venit net dedus din contabilitate."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -35,8 +35,8 @@ Ce rezultă practic pentru completarea D212 la capitolul de normă de venit:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu (`core/d212.py`) emite capitolul dedicat normei de venit (`cap12`) cu câmpurile oficiale — `real_norma_venit`, `real_ajustare`, `real_venit_net_anual`, `real_impozit` — dar declarația e **manuală**: valoarea normei, ajustarea și rezultatul se introduc direct, nu se preiau din vreo evidență ținută în aplicație.
+Generatorul D212 al iConta.eu (`core/d212.py`) emite capitolul dedicat normei de venit (`cap12`) cu câmpurile oficiale — `real_norma_venit`, `real_ajustare`, `real_venit_net_anual`, `real_impozit` — contabilul introduce norma și, dacă e cazul, norma ajustată (nu se preiau dintr-o evidență), iar venitul net, venitul impozabil și impozitul de 10% le calculează aplicația.
 
-Registrul de evidență fiscală pentru persoane fizice din iConta.eu (`core/registru_evidenta_fiscala.py`, conform OMFP 3254/2017) susține corect regula specifică normei de venit: la `mod_venit_net = 3` (normă de venit), aplicația **refuză** înregistrarea dacă se introduce o valoare la cheltuieli deductibile, exact potrivit art. 1 alin. (2) din ordin. Calculul automat CAS/CASS din `core/rip_api.py` (`fisa_d212`) e construit însă pentru sistem real (venit brut minus cheltuieli din Registrul-jurnal de încasări și plăți) și nu acoperă norma de venit — pentru PFA la normă, CAS și CASS se calculează manual, pe norma declarată.
+Registrul de evidență fiscală pentru persoane fizice din iConta.eu (`core/registru_evidenta_fiscala.py`, conform OMFP 3254/2017) susține corect regula specifică normei de venit: la `mod_venit_net = 3` (normă de venit), aplicația **refuză** înregistrarea dacă se introduce o valoare la cheltuieli deductibile, exact potrivit art. 1 alin. (2) din ordin. Fișa D212 din `core/rip_api.py` (`fisa_d212`) e construită pentru sistem real; pentru PFA la normă, CAS și CASS se calculează în Declarația unică (D212), pe norma declarată acolo.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Impozitul pe profit în declarația unică pentru PFA"
 description: "De ce nu există «impozit pe profit» pentru PFA — persoanele fizice autorizate plătesc impozit pe venit, prin Declarația Unică, conform Titlului IV din Codul fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Diferența e structurală, nu doar terminologică: art. 13 (Titlul II) enumeră 
 
 ## Ce face iConta.eu
 
-iConta.eu generează declarația D212 (Declarația Unică) ca declarație manuală — aplicația nu ține un registru automat al veniturilor/cheltuielilor/contribuțiilor persoanelor fizice, ci preia datele introduse manual de utilizator pentru fiecare capitol relevant (venituri realizate, venituri estimate, contribuții sociale). Structura D212 folosită e cea validată direct pe validatorul oficial ANAF, pentru anul de raportare curent. Pentru PFA-urile care aplică norma de venit, aplicația are un registru de evidență fiscală dedicat (modul „norma de venit"), care completează doar partea de venituri, fără cheltuieli — conform regulii legale pentru acest regim. Aplicația nu calculează și nu raportează niciodată „impozit pe profit" pentru o PFA, exact pentru că legea nu prevede o astfel de obligație.
+iConta.eu generează declarația D212 (Declarația Unică) din datele persoanei fizice: venitul din registrul de încasări și plăți al PFA și veniturile introduse în formular pentru fiecare capitol al venitului realizat; contribuțiile sociale și impozitul le calculează aplicația. Capitolul II (venitul estimat pentru anul curent) nu se completează încă din aplicație. Structura D212 folosită e cea validată direct pe validatorul oficial ANAF, pentru anul de raportare curent. Pentru PFA-urile care aplică norma de venit, aplicația are un registru de evidență fiscală dedicat (modul „norma de venit"), care completează doar partea de venituri, fără cheltuieli — conform regulii legale pentru acest regim. Aplicația nu calculează și nu raportează niciodată „impozit pe profit" pentru o PFA, exact pentru că legea nu prevede o astfel de obligație.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce trebuie declarat când trec de la normă de venit la sistem real?"
 description: "Opțiunea se declară prin completarea capitolului de sistem real din Declarația unică, în termenul legal, iar de la data trecerii se completează integral registrul de evidență fiscală, cu venituri și cheltuieli."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Ce trebuie făcut concret, din momentul opțiunii:
 
 ## Ce face iConta.eu
 
-iConta.eu **nu completează automat** Declarația unică la trecerea la sistem real și nu migrează automat înregistrările existente din regimul de normă de venit — trecerea rămâne o operațiune manuală a contabilului.
+iConta.eu **nu migrează automat** înregistrările din regimul de normă de venit. Pentru anul trecerii, Declarația unică poate primi și venitul din registrul de încasări și plăți (perioada în sistem real), și norma pentru perioada pe normă, cu data încetării — aplicația proratează norma pe zile; încadrarea perioadelor rămâne a contabilului.
 
 Ce oferă aplicația concret: în **Registrul de evidență fiscală pentru persoane fizice**, regimul de sistem real deblochează câmpul de cheltuieli deductibile (blocat la normă de venit) și cere completarea lui pentru fiecare înregistrare — validare mecanică, aplicată direct în cod.
 

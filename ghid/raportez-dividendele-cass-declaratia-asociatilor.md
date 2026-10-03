@@ -2,7 +2,7 @@
 title: "Cum raportez dividendele pentru CASS în declarația asociaților"
 description: "Cum se încadrează dividendele încasate de un asociat persoană fizică în plafoanele CASS (6/12/24 salarii minime brute) și cum se raportează prin Declarația unică."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Mecanismul de raportare, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează automat plafonul CASS** al unui asociat persoană fizică: aplicația nu are un registru al persoanelor fizice și nici vizibilitate asupra veniturilor din investiții realizate de acesta din alte surse (alte firme, conturi bancare, brokeri). Generatorul de D212 emite formularul pe baza valorilor introduse manual — venituri, baze de calcul, CASS — fără să recalculeze cotele sau plafoanele; asociatul (sau contabilul lui) trebuie să facă însumarea și încadrarea pe cele trei praguri înainte de completare. Ceea ce iConta.eu oferă cert este dividendul brut plătit, calculat corect prin D205, ca punct de plecare pentru acest calcul.
+La data acestui ghid, iConta.eu nu are vizibilitate asupra veniturilor din investiții realizate de asociat din alte surse (alte firme, conturi bancare, brokeri). În formularul D212, contabilul scrie dividendele și dobânzile nete încasate de asociat (și celelalte venituri de aceeași natură), iar declarația le însumează și le încadrează pe treptele de 6, 12 sau 24 de salarii minime, calculând CASS. Ceea ce iConta.eu oferă cert este dividendul brut plătit, calculat corect prin D205, ca punct de plecare pentru acest calcul.
 
 [iConta.eu](/)

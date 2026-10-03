@@ -2,7 +2,7 @@
 title: Cum completez D212 pentru întreprindere individuală?
 description: Întreprinderea individuală (II) se declară exact ca un PFA — venit net în sistem real, CAS peste 12 salarii minime, CASS conform art. 170, impozit 10% — pentru că din punct de vedere fiscal II se încadrează la aceeași categorie de venit, activități independente.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Anul de venit contează: structura de plafoane (salariul minim de referință, p
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`core/d212_engine.py`) tratează II identic cu PFA: ia venitul brut din încasările validate legate de activitate și cheltuielile deductibile din plățile validate, calculează venitul net, apoi CAS, CASS și impozitul pe cele 10% cotă. Generatorul XML (`core/d212.py`) populează capitolul 11 (sistem real) cu aceste cifre; capitolul 12 (normă de venit) rămâne cu structura definită în XML, dar fără o funcție de calcul dedicată în motor — nu se completează automat pentru normă de venit. Motorul acceptă doar venituri din 2025 sau 2026; pentru orice alt an, verifică manual sursele oficiale înainte de a declara.
+Motorul de calcul (`core/d212_engine.py`) tratează II identic cu PFA: ia venitul brut din încasările validate legate de activitate și cheltuielile deductibile din plățile validate, calculează venitul net, apoi CAS, CASS și impozitul pe cele 10% cotă. Generatorul XML (`core/d212.py`) populează capitolul 11 (sistem real) cu aceste cifre; capitolul 12 (normă de venit) se completează din norma introdusă de contabil — venitul net, impozitul și contribuțiile le calculează generatorul. Motorul acceptă doar venituri din 2025 sau 2026; pentru orice alt an, verifică manual sursele oficiale înainte de a declara.
 
 [iConta.eu](/)

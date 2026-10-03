@@ -2,7 +2,7 @@
 title: "Care este termenul pentru Declarația Unică D212 în 2026?"
 description: "Termenul general e 25 mai a anului următor realizării veniturilor. Pentru veniturile anului 2025, termenul e 25 mai 2026, cu bonificație de 3% dacă declarația și plata se fac până la 15 aprilie 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce înseamnă concret pentru 2026:
 
 ## Ce face iConta.eu
 
-D212 e o declarație manuală în iConta.eu (`core/d212.py`) — aplicația nu urmărește automat calendarul de scadență și nu emite notificări proprii pentru termenul de 25 mai sau pentru fereastra de bonificație de 15 aprilie. Motorul de calcul (`core/d212_engine.py`, `core/rip_api.py`) determină corect CAS, CASS și impozitul pe baza plafoanelor verificate pentru veniturile 2025 și 2026, dar decizia de a depune până la 15 aprilie pentru bonificație sau calculul valorii bonificației rămân în sarcina contabilului.
+D212 se generează în iConta.eu din datele introduse de contabil (`core/d212.py`) — aplicația nu urmărește automat calendarul de scadență și nu emite notificări proprii pentru termenul de 25 mai sau pentru fereastra de bonificație de 15 aprilie. Motorul de calcul (`core/d212_engine.py`, `core/rip_api.py`) determină corect CAS, CASS și impozitul pe baza plafoanelor verificate pentru veniturile 2025 și 2026, dar decizia de a depune până la 15 aprilie pentru bonificație sau calculul valorii bonificației rămân în sarcina contabilului.
 
 [iConta.eu](/)

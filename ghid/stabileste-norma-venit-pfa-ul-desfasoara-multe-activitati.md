@@ -2,7 +2,7 @@
 title: "Cum se stabilește norma de venit când PFA-ul desfășoară mai multe activități din nomenclator?"
 description: "Venitul net anual se obține adunând normele de venit ale fiecărei activități, fiecare corectată cu coeficienții ei; din 2026, fiecare normă are ca minim 12 salarii minime brute."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -53,6 +53,6 @@ Dacă pentru activitatea B ar exista un coeficient de reducere de 20%, norma B c
 
 ## Ce face iConta.eu
 
-iConta.eu nu preia normele de venit publicate de direcțiile regionale și nu calculează suma normelor corectate. Nici capitolul pentru norma de venit din Declarația unică (D212) nu se completează încă din aplicație, așa că stabilirea și declararea normelor rămân în sarcina contabilului. Pentru PFA-urile în sistem real, Registrul de încasări și plăți și motorul D212 calculează venitul net, CAS și CASS.
+iConta.eu nu preia normele de venit publicate de direcțiile regionale. În Declarația unică (D212), contabilul introduce fiecare activitate și fiecare loc, cu norma (corectată) lui, iar declarația le însumează, calculează impozitul pe fiecare și contribuțiile pe total; stabilirea normelor corecte rămâne în sarcina contabilului. Pentru PFA-urile în sistem real, Registrul de încasări și plăți și motorul D212 calculează venitul net, CAS și CASS.
 
 [iConta.eu](/)

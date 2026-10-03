@@ -2,7 +2,7 @@
 title: "Pot opta pentru CASS dacă PFA-ul nu realizează venituri?"
 description: "Situația PFA-ului cu pierdere fiscală sau venit net zero, care nu datorează obligatoriu CASS, dar poate opta pentru plata contribuției pentru a rămâne asigurat în sistemul de sănătate."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce înseamnă practic pentru un PFA fără venituri sau cu pierdere:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează automat** obligația sau opțiunea de plată a CASS pentru PFA, pe baza rezultatului fiscal anual. Aplicația ține evidența veniturilor și cheltuielilor declarate de PFA, dar decizia privind exercitarea opțiunii de la art. 180 alin. (1), atunci când venitul net e zero sau negativ, rămâne responsabilitatea titularului sau a contabilului, la completarea declarației unice.
+La data acestui ghid, Declarația unică (D212) din iConta.eu calculează CASS datorată pe rezultatul fiscal anual al PFA (inclusiv baza minimă de 6 salarii minime). Opțiunea de la art. 180 alin. (1), atunci când venitul net e zero sau negativ, nu se completează încă din aplicație (capitolul II al declarației) — decizia și declararea ei rămân ale titularului sau ale contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Înființare II cu un singur membru: când e potrivit"
 description: "Ce distinge, fiscal, o întreprindere individuală de o persoană fizică autorizată, și unde se oprește granița informației confirmate din sursele consultate pentru acest ghid."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Notă onestă: distincția juridică propriu-zisă dintre PFA și întreprindere
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un registru dedicat** persoanelor fizice, PFA-urilor sau întreprinderilor individuale — nu am găsit în cod o asemenea evidență. Aplicația generează declarația unică (D212) pe baza datelor introduse manual de contabil (`core/d212.py`), indiferent dacă venitul provine de la o PFA sau o întreprindere individuală — motorul de calcul e agnostic la forma juridică, tratând ambele ca surse de venituri din activități independente. Decizia privind forma de organizare potrivită rămâne una juridică și antreprenorială, în afara evidenței contabile oferite de aplicație.
+La data acestui ghid, iConta.eu ține pentru PFA, II și IF registrul de încasări și plăți (partidă simplă) și generează declarația unică (D212) din el și din datele introduse de contabil (`core/d212.py`), indiferent dacă venitul provine de la o PFA sau o întreprindere individuală — calculul e același pentru ambele, ca venituri din activități independente. Decizia privind forma de organizare potrivită rămâne una juridică și antreprenorială, în afara evidenței contabile oferite de aplicație.
 
 [iConta.eu](/)

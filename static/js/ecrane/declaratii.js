@@ -2938,6 +2938,7 @@ function _d212Manual() {
 // Categoriile introduse de contabil — codurile = `d212.CATEG_MANUALE` (gardate de test_d212_categorii); 1021-1024 =
 // alte surse pe literele art.114 alin.(2) (D212Pdf Pdf_v5/v6).
 const _D212_CATEG = [
+  ["1016", "Activități independente (sistem real, din afara registrului)"],
   ["1003", "Drepturi de proprietate intelectuală"],
   ["1015", "Cedarea folosinței bunurilor (chirii)"],
   ["1006", "Închirierea în scop turistic a camerelor din locuința proprie"],
@@ -2974,16 +2975,17 @@ const _D212_CAMP_STR = {
   "d212-s-luni": ["2020"], "d212-s-lunicass": ["2020"],
   "d212-s-inc": _D212_STR_REAL.concat(["2003", "2004"]), "d212-s-sf": _D212_STR_REAL.concat(["2003", "2004"]),
 };
-// Ce câmpuri cere fiecare categorie (instrucțiunile D212, Subsecțiunea 1 pct.4-9); restul se ascund.
-const _D212_AGR = ["1009", "1010", "1011"];
+// Ce câmpuri cere fiecare categorie (instrucțiunile D212, Subsecțiunea 1 pct.3-9); restul se ascund. 1016 = activitate
+// independentă în sistem real din afara registrului (a doua activitate, altă formă de exercitare în același an).
+const _D212_SISTEM_REAL = ["1016", "1009", "1010", "1011"];
 const _D212_ALTE = ["1021", "1022", "1023", "1024"];
 const _D212_CAMP_CAT = {
-  "d212-v-det": ["1003"], "d212-v-faracota": ["1003"], "d212-v-forma": ["1003"].concat(_D212_AGR),
-  "d212-v-caen": ["1003"].concat(_D212_AGR), "d212-v-scut": ["1003"].concat(_D212_AGR),
-  "d212-v-sediu": ["1003", "1015", "1006"].concat(_D212_AGR), "d212-v-doc": ["1003", "1015", "1006"].concat(_D212_AGR),
-  "d212-v-docdata": ["1003", "1015", "1006"].concat(_D212_AGR), "d212-v-inc": ["1003", "1015", "1006"].concat(_D212_AGR),
-  "d212-v-sf": ["1003", "1015", "1006"].concat(_D212_AGR), "d212-v-brut": ["1003", "1015", "1006"].concat(_D212_AGR),
-  "d212-v-chelt": ["1003", "1006"].concat(_D212_AGR), "d212-v-pp": ["1003", "1012"].concat(_D212_AGR),
+  "d212-v-det": ["1003"], "d212-v-faracota": ["1003"], "d212-v-forma": ["1003"].concat(_D212_SISTEM_REAL),
+  "d212-v-caen": ["1003"].concat(_D212_SISTEM_REAL), "d212-v-scut": ["1003"].concat(_D212_SISTEM_REAL),
+  "d212-v-sediu": ["1003", "1015", "1006"].concat(_D212_SISTEM_REAL), "d212-v-doc": ["1003", "1015", "1006"].concat(_D212_SISTEM_REAL),
+  "d212-v-docdata": ["1003", "1015", "1006"].concat(_D212_SISTEM_REAL), "d212-v-inc": ["1003", "1015", "1006"].concat(_D212_SISTEM_REAL),
+  "d212-v-sf": ["1003", "1015", "1006"].concat(_D212_SISTEM_REAL), "d212-v-brut": ["1003", "1015", "1006"].concat(_D212_SISTEM_REAL),
+  "d212-v-chelt": ["1003", "1006"].concat(_D212_SISTEM_REAL), "d212-v-pp": ["1003", "1012"].concat(_D212_SISTEM_REAL),
   "d212-v-castig": ["1012"], "d212-v-vimp": _D212_ALTE,
 };
 
@@ -3077,7 +3079,7 @@ function randeazaFormularD212(corp, nav) {
         (Number(v.pierdere_precedenta) ? " · pierderi reportate " + bani(_n(v.pierdere_precedenta)) + " lei" : "") +
         (v.sediu ? " · " + esc(v.sediu) : "") + (Number(v.nr_zile_scutite) ? " · " + esc(String(v.nr_zile_scutite)) + " zile scutite" : "") + "</span>" +
         '<button class="buton-sters d212-v-del" data-idx="' + i + '" aria-label="Șterge venitul ' + (i + 1) + '">Șterge</button></div>').join("")
-    : '<div class="stare-goala stare-goala--inline">Niciun alt venit. Dacă persoana a avut și venituri din drepturi de autor, chirii, investiții, activități agricole sau alte surse, adaugă fiecare sursă mai jos.</div>';
+    : '<div class="stare-goala stare-goala--inline">Niciun alt venit. Dacă persoana a avut și venituri din drepturi de autor, chirii, investiții, activități agricole, alte surse sau o altă activitate independentă ținută în afara registrului acestei firme, adaugă fiecare sursă mai jos.</div>';
   const optCat = _D212_CATEG.map((o) => '<option value="' + o[0] + '">' + esc(o[1]) + "</option>").join("");
   const blocVenituri = '<div class="camp-eticheta" style="margin:14px 0 4px">Alte venituri ale persoanei — din România (subsecțiunea I.1.1, câte o sursă)</div>' +
     randuriVenit +

@@ -2,7 +2,7 @@
 title: "Vânzarea unui mijloc fix amortizat în sistem real majorează norma de venit a PFA-ului?"
 description: "Da. Dacă PFA-ul trecut la normă de venit vinde un bun amortizat cât a fost impus în sistem real, venitul din vânzare majorează norma, proporțional cu valoarea amortizată atunci."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Normele nu dau o formulă de calcul. O lectură a textului este ca venitul din v
 
 ## Ce face iConta.eu
 
-Pentru PFA, iConta.eu are Registrul de încasări și plăți și motorul de calcul pentru sistemul real: venit net, CAS și CASS pentru Fișa D212. Aplicația nu calculează norma de venit și nici majorarea ei la vânzarea unui bun amortizat anterior. Suma majorată se stabilește de contabil și se trece în Declarația unică. Generatorul D212 din aplicație produce deocamdată doar partea de identificare, validată pe validatorul oficial ANAF; capitolul de venit pe normă nu se completează încă din ecran.
+Pentru PFA, iConta.eu are Registrul de încasări și plăți și motorul de calcul pentru sistemul real: venit net, CAS și CASS pentru Fișa D212. Aplicația nu calculează norma de venit și nici majorarea ei la vânzarea unui bun amortizat anterior. Suma majorată se stabilește de contabil și se trece în Declarația unică, la norma ajustată a activității (lista „Venit pe normă de venit”); declarația calculează din ea venitul net, impozitul și contribuțiile și se verifică pe validatorul oficial ANAF.
 
 [iConta.eu](/)
