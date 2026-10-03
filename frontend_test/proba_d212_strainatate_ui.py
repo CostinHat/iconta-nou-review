@@ -72,7 +72,7 @@ def main():
         r["eroare_tara"] = pg.evaluate("""() => { const e = document.querySelector('.msg-eroare[data-camp="d212-s-tara"]');
                                               return e ? e.innerText : ''; }""")
         r["campuri"] = {}
-        for cat in ("2027", "2003", "2012", "2018", "2016", "2025", "2013", "2029"):
+        for cat in ("2027", "2003", "2012", "2018", "2016", "2025", "2013", "2029", "2020", "2015"):
             pg.select_option("#d212-s-cat", cat)
             pg.dispatch_event("#d212-s-cat", "change")
             r["campuri"][cat] = _vizibile(pg)

@@ -28,6 +28,9 @@ TIP_FORMA = {
     "cod_fiscal_227_2015_consolidat.html": "consolidat_la_zi",
     # 02.10.2026 (D216, impozit special 0,3% 2024-2025): actul MODIFICATOR, cu textul introdus la data lui -> forma la data.
     "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html": "forma_la_data",
+    # 03.10.2026 (D212 Etapa 5c-2b, pensii din strainatate): actul MODIFICATOR, forma din MO (legislatie.just.ro 288109) —
+    # dovada ca suma lunara neimpozabila de 3.000 lei se aplica de la veniturile lunii octombrie 2024 (art.II).
+    "legea_244_2024.html": "forma_la_data",
     "legea_141_2025_consolidat.html": "consolidat_la_zi",
     "cf_art291_2016_forma_initiala.txt": "forma_la_data",
     "hg_1506_2024_salariu_minim.html": "forma_la_data",

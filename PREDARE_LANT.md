@@ -1,20 +1,20 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D212 Etapa 5c-2a livrată (premii, jocuri de noroc, transfer, moștenire din străinătate); urmează 5c-2b (pensii, administratori)** (03.10.2026)
+# PREDARE LANȚ — **D212 Etapa 5 închisă (5a, 5c-1, 5c-2a, 5c-2b); urmează etapa finală D212** (03.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-03** (dimineața), în commitul **D212 Etapa 5c-2a** (commitul care poartă această predare;
+- **ultima rescriere**: **2026-10-03** (dimineața), în commitul **D212 Etapa 5c-2b** (commitul care poartă această predare;
   hash-ul lui e în raport și în `git log`).
-- **pe commit**: `2dfed3c3` — ultimul four-way închis înainte de rescriere (03.10.2026 03:30: HEAD = origin/main = public/main =
-  backup/lant-2026-10-03 = procesul viu (2 din 2) = 2dfed3c3, D212 Etapa 5c-1).
-- **ÎN LUCRU ACUM:** firul **D212 Etapa 5** în TESTE.md „În lucru acum” — 5a (337f6227), 5c-1 (2dfed3c3) și 5c-2a (commitul care poartă
-  predarea: premii, jocuri de noroc cu baremul datei plății, transfer 3%/1%, moștenire 1%) livrate.
-- **URMĂTORUL FRONT:** D212 **5c-2b** — pensiile din străinătate 2020 (CF art.130 alin.(2^1): brutul anual minus suma lunară
-  neimpozabilă art.100 alin.(1) și CASS; forma s-a schimbat de la 01.08.2025 — de citit ambele forme la sursă) și remunerațiile
-  administratorilor 2015 + I.2.2 (`str_cas_baza/datorat`, `str_cass_baza/datorat`, CF art.139^1 / 157^2). De verificat dacă
-  formularul instalat are secțiunea CASS pe pensiile din străinătate (I.2.3; Pdf_v8 nu pare s-o aibă -> posibil [EXTERN]).
-  Apoi etapa finală (mesajul din `d221.py`, ghidurile „D212 doar identificare”). Detaliul: `D212_PERIMETRU.md` §8–§9.
+- **pe commit**: `e8d94562` — ultimul four-way închis înainte de rescriere (03.10.2026 04:58: HEAD = origin/main = public/main =
+  backup/lant-2026-10-03 = procesul viu (2 din 2) = e8d94562, D212 Etapa 5c-2a).
+- **ÎN LUCRU ACUM:** nimic deschis — firul **D212 Etapa 5** e ÎNCHIS în TESTE.md (5a 337f6227, 5c-1 2dfed3c3, 5c-2a e8d94562, 5c-2b în
+  commitul care poartă predarea).
+- **URMĂTORUL FRONT:** etapa finală D212 — mesajul din `d221.py` (D221 înlocuită de D212 de la veniturile 2025) și ghidurile care spun
+  „D212 doar identificare” (de căutat cu grep în ghiduri și în FUNCTIONALITATI). Detaliul: `D212_PERIMETRU.md` §4, §8–§9.
+- **[EXTERN] nou (Etapa 5c-2b):** CASS pe pensiile din străinătate datorată în România (de la 08.2025, Subsecțiunea a 3-a a Secțiunii 2,
+  instrucțiuni pct.41) — formularul validatorului instalat n-o are; refuz numit. Ce trebuie · de la cine · ce blochează: validatorul D212
+  pentru OPANAF 2736/2025 · ANAF · emiterea CASS pe pensiile din străinătate.
 - **[EXTERN] nou (Etapa 5a):** CASS 2.2 reținută peste cea datorată — formularul instalat n-are rândul „diferența în minus”
   (refuz numit); dobânzile pentru obligațiuni pe piețe externe (instrucțiuni pct.8) n-au căsuță — categoria nu e oferită;
   categoriile pentru veniturile 2026 — Legea 239/2025 schimbă regulile, formularul ANAF nepublicat (refuz numit).
@@ -443,7 +443,7 @@ vorbă, e o consecință.*
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **106** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **880** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |

@@ -84,7 +84,10 @@ BASELINE = {
     # 33 -> 35 la 03.10.2026 (D212 Etapa 5c-2a): +2 refuzuri de FORMA, marcate langa ele — cheltuieli date la premii/jocuri/
     # transfer/mostenire (deducerea o stabileste legea), felul jocului lipsa. Normativul nou (data platii lipsa / in afara
     # anului) poarta temeiul in text (CF art.110 alin.(2), cele doua forme datate ale baremului).
-    "core/d212.py": 35,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
+    # 35 -> 38 la 03.10.2026 (D212 Etapa 5c-2b): +3 refuzuri de FORMA, marcate langa ele — cheltuieli date la pensie, numarul
+    # lunilor cu pensie lipsa, contributii date la remuneratie fara bifa de asigurat in alt stat. Normativul nou (CASS pe pensie
+    # in Romania, fara sectiune in formular) poarta temeiul in text (CF art.155 alin.(1) lit.a^2, instructiuni pct.41).
+    "core/d212.py": 38,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,

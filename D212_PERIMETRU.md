@@ -140,4 +140,6 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
   `core/test_d212_cap14.py`; probe `frontend_test/proba_d212_etapa5c.py` (F4) și `proba_d212_strainatate_ui.py`.
 - **5c-2a FĂCUTĂ 03.10.2026**: premii 2025, jocuri de noroc 2013 (barem pe data plății: OG 16/2022 până la 31.07.2025, Legea
   141/2025 de la 01.08.2025), transferul proprietăților 2029/2030, moștenire 2024 — DECIZII 03.10.
-- **Rămâne (5c-2b)**: pensii 2020 (CF art.130 alin.(2^1)), remunerații administratori 2015 + I.2.2 (`str_cas_*`, `str_cass_*`).
+- **5c-2b FĂCUTĂ 03.10.2026**: pensii 2020 (3.000 lei x luni — Legea 244/2024, forma din MO, în corpus), remunerații administratori 2015 + Secțiunea
+  2.2 (`str_cas_*`, `str_cass_*`). **[EXTERN]**: CASS pe pensiile din străinătate (Subsecțiunea a 3-a, pct.41) — lipsește din formularul
+  instalat, refuz numit. Etapa 5 completă; rămâne etapa finală (mesajul din `d221.py`, ghidurile „D212 doar identificare”).

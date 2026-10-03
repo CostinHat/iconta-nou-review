@@ -207,3 +207,55 @@ def test_categoriile_5c2a_nu_intra_in_cass():
     o, _ = d212.oblig_realizat(None, None, 2025, cap14=S)
     # CF art.170 alin.(4): premiile și transferul proprietăților nu sunt în categoriile art.155 alin.(1) lit.c)-h)
     assert "cass_datorat" not in o and o["oblimpoz_real_total"] == 4940 + 9000
+
+
+# ── 5c-2b: pensii, remunerații ale administratorilor (+ Secțiunea 2 Subsecțiunea a 2-a) ─────────────────────────────────
+def test_pensie_cu_suma_neimpozabila_pe_luni():
+    c = _s(tara="DE", categ_venit=2020, venit_brut=60000, nr_luni=12, dubla_impunere=1, impozit_platit=1000)
+    # CF art.130 alin.(2^1): brutul anual minus suma lunară neimpozabilă art.100 alin.(1) (3.000 lei — Legea 244/2024 art.II,
+    # de la veniturile lunii octombrie 2024) „calculate la nivelul anului”; cota art.64 alin.(1)
+    assert (c["str_chelt_deduc"], c["str_venit_net_anual"], c["str_impozit_datorat_Ro"], c["str_dif_impozit_datorat"]) == \
+        (36000, 24000, 2400, 1400)
+    p = _s(tara="DE", categ_venit=2020, venit_brut=10000, nr_luni=6)
+    assert p["str_chelt_deduc"] == 10000 and "str_venit_net_anual" not in p
+
+
+def test_pensie_cu_cass_in_romania_refuzata_numit():
+    # instrucțiuni pct.41: CASS pe pensiile din străinătate (de la veniturile lunii august 2025) se declară în Subsecțiunea a 3-a
+    # a Secțiunii 2, pe care formularul instalat n-o are -> refuz numit; asiguratul în alt stat trece
+    with pytest.raises(ValueError, match="Subsecțiunea a 3-a"):
+        _s(tara="DE", categ_venit=2020, venit_brut=60000, nr_luni=12, luni_cass_ro=5)
+    assert _s(tara="DE", categ_venit=2020, venit_brut=60000, nr_luni=12, luni_cass_ro=5,
+              fara_contributii=True)["str_impozit_datorat_Ro"] == 2400
+    with pytest.raises(ValueError, match="numărul lunilor"):
+        _s(tara="DE", categ_venit=2020, venit_brut=60000)
+
+
+def test_remuneratia_administratorului_si_sectiunea_2_2():
+    c = _s(tara="AT", categ_venit=2015, venit_brut=40000)
+    # CF art.78 alin.(2) lit.b): 10% pe brut minus contribuțiile datorate în România — CAS 25% (art.138 lit.a, art.139^1) +
+    # CASS 10% (art.156, art.157^2) pe câștigul brut
+    assert (c["str_chelt_deduc"], c["str_venit_net_anual"], c["str_impozit_datorat_Ro"]) == (14000, 26000, 2600)
+    a = _s(tara="FR", categ_venit=2015, venit_brut=20000, fara_contributii=True, chelt_deduc=4000)
+    assert (a["str_chelt_deduc"], a["str_impozit_datorat_Ro"]) == (4000, 1600)        # contribuțiile plătite în străinătate
+    with pytest.raises(ValueError, match="se calculează"):
+        _s(tara="AT", categ_venit=2015, venit_brut=40000, chelt_deduc=1000)
+    S = [c, a]
+    o, b = d212.oblig_realizat(None, None, 2025, cap14=S, cap14_contributii=[c])
+    # instrucțiuni pct.40 + pct.56.2 rd.2 / 56.3 rd.5: baza = câștigul brut (fără asiguratul în alt stat)
+    assert (o["str_cas_baza"], o["str_cas_datorat"], o["str_cass_datorat"], o["oblcas_real_str"], o["oblcass_real_str"]) == \
+        (40000, 10000, 4000, 10000, 4000)
+    assert (o["cas_plus"], o["cass_plus"], o["dif_de_plata"], b["bifa122"]) == (10000, 4000, 4200 + 14000, "1")
+
+
+def test_pensii_si_remuneratii_valide_pe_duk():
+    from core import duk
+    S = [{"tara": "DE", "categ_venit": 2020, "venit_brut": 60000, "nr_luni": 12, "dubla_impunere": 1, "impozit_platit": 1000},
+         {"tara": "AT", "categ_venit": 2015, "venit_brut": 40000},
+         {"tara": "FR", "categ_venit": 2015, "venit_brut": 20000, "fara_contributii": True, "chelt_deduc": 4000}]
+    x, _ = d212.genereaza(None, None, Perioada(2025), dict(ID, strainatate=S))
+    rad = ET.fromstring(x.split("?>", 1)[1])
+    o = rad.find("{%s}oblig_realizat" % d212.NS).attrib
+    assert (rad.get("bifa122"), o.get("str_cas_baza"), o.get("dif_de_plata")) == ("1", "40000", "19600")
+    rez = duk.valideaza(x, "d212", an=2025, luna=12, timeout=180)
+    assert rez["stare"] == "valid", rez.get("erori")

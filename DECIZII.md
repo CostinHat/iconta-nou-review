@@ -16364,3 +16364,32 @@ aplică pe fiecare). Aceste categorii nu intră în CASS (nu sunt în art.155 al
 **Limită.** Valoarea minimă din studiile notariale (art.111 alin.(4^1)) nu se aplică unei proprietăți din străinătate — baza e
 valoarea declarată de contabil. Rămân pentru 5c-2b pensiile și remunerațiile administratorilor (cu I.2.2). Norma: `core/d212.py`
 (`impozit_joc`, `_VARIANTE_BAREM_JOCURI`, constantele ancorate art.110/111); gardată de `core/test_d212_cap14.py`.
+
+---
+
+## 03.10.2026 — D212 Etapa 5c-2b: pensiile și remunerațiile de administrator din străinătate; Secțiunea 2 Subsecțiunea a 2-a
+
+**Temei (la sursă).** Pensiile din străinătate: CF art.130 alin.(2^1) — cota art.64 alin.(1) „asupra venitului brut anual
+diminuat cu suma lunară neimpozabilă prevăzută la art. 100 alin. (1)” (forma OUG 138/2024, de la 2025) și, de la 01.08.2025
+(Legea 141/2025 art.II pct.10), „și, după caz, contribuția de asigurări sociale de sănătate datorată”. Suma lunară: 3.000 lei
+de la veniturile lunii octombrie 2024 — Legea 244/2024 art.I–II (ADUSĂ în corpus azi: `anaf_surse/legea_244_2024.html`,
+forma din MO nr. 899/05.09.2024 de pe legislatie.just.ro — PDF-ul ANAF n-avea blocul de titlu cerut de `test_identitate_acte`), păstrată de Legea 141/2025. Remunerațiile de administrator/cenzor/similare din străinătate: CAS și
+CASS pe „câștigul brut realizat” (CF art.139^1, art.157^2, cotele art.138 lit.a 25% și art.156 10%), Secțiunea 2
+Subsecțiunea a 2-a (instrucțiuni pct.40), I.7.2 rd.2 și I.7.3 rd.5; impozitul — art.78 alin.(2) lit.b): 10% pe brut minus
+contribuțiile „datorate potrivit legii în România sau în conformitate cu instrumentele juridice internaționale”.
+
+**Decizie.** Pensia: brutul anual și numărul lunilor; suma neimpozabilă = 3.000 x luni (cel mult brutul). Remunerația: CAS și
+CASS se calculează și se scad din bază; pentru un asigurat în alt stat (bifa „Fără CAS/CASS în România”) contribuțiile plătite
+acolo le scrie contabilul, iar Secțiunea 2.2 nu se completează.
+
+**[EXTERN].** CASS pe pensiile din străinătate datorată în România (de la veniturile lunii august 2025, CF art.155 alin.(1)
+lit.a^2, instrucțiuni pct.41) se declară în Subsecțiunea a 3-a a Secțiunii 2 — formularul validatorului instalat (J13.0.1,
+Pdf_v8) n-o are. Când contabilul indică luni august–decembrie cu CASS în România, generatorul refuză numit; pentru asiguratul
+în alt stat, pensia se declară (impozitul nu depinde de CASS atunci).
+
+**Alternativă respinsă.** Deducerea CASS calculată de aplicație din pensie fără să poată fi declarată în secțiunea ei —
+impozitul ar fi corect, dar obligația CASS ar lipsi din declarație (declarație incompletă care pare completă).
+
+**Limită.** Pensiile private/facultative cu documente privind contribuțiile nete (art.130 alin.(2^2)) urmează regula generală a
+pensiilor de aici — dacă există documentele, baza e alta; contabilul le declară pe formularul ANAF. Norma: `core/d212.py`
+(`PENSIE_NEIMPOZABIL_LUNAR`, `cap14_sectiune`, `oblig_realizat` — Secțiunea 2.2); gardată de `core/test_d212_cap14.py`.

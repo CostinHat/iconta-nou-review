@@ -93,7 +93,9 @@ DISTRIBUTIE = {
     # 10 -> 11 la 02.10.2026 (D212 Etapa 3): CF art.69^2 alin.(1) - cota 10% a impozitului pe norma de venit.
     # 11 -> 13 la 02.10.2026 (D212 Etapa 5): CF art.72^1 alin.(1) - cota forfetara 40% la drepturile de proprietate
     # intelectuala; CF art.64 alin.(1) - cota 10% pe venitul fiecarei surse. Masurat cu R.inventar: STABIL, prag 6 luni.
-    ("STABIL", "DEPUS"): 13,
+    # 13 -> 14 la 03.10.2026 (D212 Etapa 5c-2b): CF art.100 alin.(1) - suma neimpozabila lunara din pensie (3.000 lei).
+    # Masurat cu R.inventar: STABIL, prag 6 luni.
+    ("STABIL", "DEPUS"): 14,
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
     ("STABIL", "CALCULAT"): 14,
     ("MISCATOR", "CALCULAT"): 7,

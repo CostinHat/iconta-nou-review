@@ -46,7 +46,9 @@ from core import scan_citate
 #: 63 → **69** la 03.10.2026 (D212 Etapa 5c-2a): +6 = `d212.PREMIU_NEIMPOZABIL` (CF art.110 alin.(4) lit.a), `COTA_PREMII`
 #: (art.110 alin.(1)), `COTA_TRANSFER_PANA_3_ANI` / `_PESTE_3_ANI` (art.111 alin.(1) lit.a/b), `COTA_MOSTENIRE` (art.111
 #: alin.(3)), `PLAFON_JOCURI_NEIMPOZABIL` (art.110 alin.(4) lit.b) — căutate verbatim în forma consolidată înainte de scriere.
-VERBATIM_BASELINE = 69
+#: 69 → **70** la 03.10.2026 (D212 Etapa 5c-2b): +1 = `d212.PENSIE_NEIMPOZABIL_LUNAR` (CF art.100 alin.(1), 3.000 lei), căutat
+#: verbatim în forma consolidată; perioada octombrie 2024 – iulie 2025 dovedită de Legea 244/2024 (adusă în corpus).
+VERBATIM_BASELINE = 70
 
 
 @pytest.fixture(scope="module")

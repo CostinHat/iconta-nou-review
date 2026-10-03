@@ -1164,3 +1164,17 @@ fost reparat.
 - Proba pe firma PFA de test: un premiu de 5.000 lei, un câștig la cazinou de 100.000 lei în martie (5.000 plătiți acolo), un alt
   câștig de 20.000 lei în septembrie, o vânzare de 300.000 lei sub 3 ani (6.000 plătiți acolo) și o moștenire de 500.000 lei —
   impozit de plată în România 19.140 lei, fără CASS, declarație validă la ANAF local.
+
+## 03.10.2026 — D212 Etapa 5c-2b: pensii și remunerații de administrator din străinătate
+
+**Ce se schimbă pentru un contabil:**
+- **Lista „Venituri din străinătate” primește pensiile și remunerațiile de administrator, membru în consiliul de administrație,
+  cenzor și similare.** La pensii se scriu brutul anului și numărul lunilor — suma neimpozabilă de 3.000 lei pe lună se scade
+  singură. La remunerații, CAS (25%) și CASS (10%) datorate în România se calculează pe câștigul brut, intră în secțiunea lor și
+  în totalul de plată, iar impozitul se calculează după scăderea lor; pentru un asigurat în alt stat se scriu contribuțiile
+  plătite acolo.
+- **CASS pe pensia din străinătate datorată în România (de la august 2025) nu se poate încă declara din aplicație**: formularul
+  ANAF instalat n-are secțiunea; aplicația refuză cu explicația.
+- Proba pe firma PFA de test: o pensie din Germania de 60.000 lei (12 luni, 1.000 plătiți acolo), o remunerație din Austria de
+  40.000 lei și una din Franța de 20.000 lei pentru un asigurat acolo — impozit 5.600, CAS 10.000, CASS 4.000, total 19.600 lei,
+  declarație validă la ANAF local.

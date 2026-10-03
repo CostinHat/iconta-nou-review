@@ -446,7 +446,20 @@ CATEG_STRAINATATE = {
     2029: ("Transferul proprietăților imobiliare deținute cel mult 3 ani", "transfer"),
     2030: ("Transferul proprietăților imobiliare deținute mai mult de 3 ani", "transfer"),
     2024: ("Transferul proprietăților imobiliare cu titlu de moștenire", "mostenire"),
+    # [5c-2b] pensiile (CF art.130 alin.(2^1)) și remunerațiile administratorilor (art.76 alin.(2), art.78 alin.(2) lit.b)
+    2020: ("Pensii", "pensie"),
+    2015: ("Remunerații ale membrilor consiliului de administrație, administratorilor, cenzorilor și venituri similare", "remuneratie"),
 }
+#: Suma neimpozabilă lunară din pensie (lei): 3.000 de la veniturile lunii octombrie 2024 (Legea 244/2024 art.II), păstrată de
+#: Legea 141/2025 (art.100 rescris de la 01.08.2025, cu deducerea CASS în plus) — deci aceeași pe tot anul 2025.
+PENSIE_NEIMPOZABIL_LUNAR = _anc("d212.PENSIE_NEIMPOZABIL_LUNAR", 3000, _Tm(
+    "CF", art="100", alin="1", data_in="2024-10-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="sumei neimpozabile lunare de 3.000 lei",
+    lant_acte="Legea 244/2024 art.I (alin.(1) cu 3.000 lei) și art.II („se aplică începând cu veniturile aferente lunii octombrie "
+              "2024”) — anaf_surse/legea_244_2024.html (MO nr. 899/05.09.2024); Legea 141/2025 art.II pct.7 rescrie art.100 de la "
+              "01.08.2025 cu aceeași sumă; "
+              "art.130 alin.(2^1): pentru pensiile din străinătate suma se calculează „la nivelul anului”"))
 #: Suma neimpozabilă pe fiecare premiu (lei) și cota pe venitul net din premiu (procent întreg).
 PREMIU_NEIMPOZABIL = _anc("d212.PREMIU_NEIMPOZABIL", 600, _Tm(
     "CF", art="110", alin="4", lit="a", data_in="2018-01-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
@@ -518,6 +531,10 @@ def impozit_joc(brut, data_plata, tip):
     if tip == "cazinou":
         return PLAFON_JOCURI_NEIMPOZABIL, _lei(imp - b3)
     return 0, _lei(imp)
+#: Grupările de coduri cap14 pe care le citesc contribuțiile (nomenclatorul de mai sus, nu valori fiscale).
+CATEG_STR_INDEPENDENTE, CATEG_STR_DPI, CATEG_STR_CEDARE, CATEG_STR_ALTE = 2027, 2003, 2004, 2014
+CATEG_STR_AGRICOLE, CATEG_STR_INVESTITII, CATEG_STR_DOBANZI_DIVIDENDE = (2009, 2010, 2011), (2012, 2028), (2017, 2018)
+CATEG_STR_REMUNERATIE = 2015
 #: Metoda de evitare a dublei impuneri (Pdf_v8 dubla_impunere_1/_2/_4; rd.3 și rd.4 din lit.A).
 DUBLA_CREDIT, DUBLA_SCUTIRE, DUBLA_ACORD = 1, 2, 4
 
@@ -527,8 +544,8 @@ def _cota_strainatate(cat, an):
     from core import common as _c, lichidare as _lq
     if cat == 2018:
         return _c.cota("impozit_dividend", _dt.date(an, 1, 1))[0] * 100          # CF art.97 alin.(7) pe anul venitului
-    if cat == 2016:
-        return _c.cota("impozit_venit", _dt.date(an, 1, 1))[0] * 100             # CF art.78 alin.(2) lit.a)
+    if cat in (2016, 2015):
+        return _c.cota("impozit_venit", _dt.date(an, 1, 1))[0] * 100             # CF art.78 alin.(2) (lit.a / lit.b)
     if cat == 2028:
         return _lq._cota_lichidare(_dt.date(an, 12, 31))                          # CF art.97 alin.(5)
     if cat == 2025:
@@ -591,7 +608,31 @@ def cap14_sectiune(a, an):
                              "produce în cursul anului (OPANAF 2736/2025, instrucțiuni pct.39.5)." % (eticheta, camp, d, an))
         c[kx] = _dmy(d)
     joc_imp = None
-    if regula in ("premiu", "joc", "transfer", "mostenire"):
+    if regula == "pensie":
+        if cd:   # refuz de FORMĂ: suma neimpozabilă o stabilește legea
+            raise ValueError("D212 străinătate %s: suma neimpozabilă se calculează; câmpul de cheltuieli se lasă gol." % eticheta)
+        luni = int(a.get("nr_luni") or 0)
+        if not 1 <= luni <= 12:   # refuz de FORMĂ: lunile de pensie în an
+            raise ValueError("D212 străinătate %s: numărul lunilor cu pensie în an (1-12) e obligatoriu." % eticheta)
+        if int(a.get("luni_cass_ro") or 0) and not a.get("fara_contributii"):
+            raise ValueError("D212 străinătate %s: CASS datorată în România pe pensia din străinătate (de la veniturile lunii august "
+                             "2025, CF art.155 alin.(1) lit.a^2) se declară în Subsecțiunea a 3-a a Secțiunii 2 (instrucțiuni pct.41), "
+                             "pe care formularul validatorului ANAF instalat (J13.0.1) n-o are. Se declară pe formularul ANAF." % eticheta)
+        cd = min(vb, PENSIE_NEIMPOZABIL_LUNAR * luni)          # CF art.130 alin.(2^1) + art.100 alin.(1), la nivelul anului
+        c.update(str_venit_brut=vb, str_chelt_deduc=cd)
+        net = vb - cd
+    elif regula == "remuneratie":
+        if a.get("fara_contributii"):
+            pass   # asigurat în alt stat: contribuțiile plătite acolo (date de contabil) se scad — CF art.78 alin.(2) lit.b)
+        elif cd:   # refuz de FORMĂ: CAS/CASS datorate în România se calculează (Secțiunea 2 Subsecțiunea a 2-a)
+            raise ValueError("D212 străinătate %s: CAS și CASS datorate în România se calculează; câmpul de contribuții se "
+                             "completează doar pentru un asigurat în alt stat (contribuțiile plătite acolo)." % eticheta)
+        else:
+            from core import common as _c
+            cd = (_procent(vb, _c.cota("cas", ian1)[0] * 100) + _procent(vb, _c.cota("cass", ian1)[0] * 100))
+        c.update(str_venit_brut=vb, str_chelt_deduc=cd)
+        net = vb - cd
+    elif regula in ("premiu", "joc", "transfer", "mostenire"):
         if cd:   # refuz de FORMĂ: deducerea o stabilește legea (suma neimpozabilă / plafonul), nu contabilul
             raise ValueError("D212 străinătate %s: suma neimpozabilă se calculează; câmpul de cheltuieli se lasă gol." % eticheta)
         if regula == "premiu":
@@ -624,7 +665,7 @@ def cap14_sectiune(a, an):
             cd = _procent(vb, COTA_FORFETARA_CEDARE if regula == "cedare" else COTA_FORFETARA_DPI)   # CF art.84 alin.(3) / 72^1
         c.update(str_venit_brut=vb, str_chelt_deduc=cd)
         net = vb - cd
-    if pp and (forfetar or regula in ("brut", "salariu", "lichidare", "premiu", "joc", "transfer", "mostenire")):
+    if pp and (forfetar or regula in ("brut", "salariu", "lichidare", "premiu", "joc", "transfer", "mostenire", "pensie", "remuneratie")):
         raise ValueError("D212 străinătate %s: pierderile se reportează doar la activități în sistem real și la titluri "
                          "(CF art.118 alin.(5), art.119 alin.(4))." % eticheta)
     if pp:
@@ -712,7 +753,7 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
     dpi_real_net = _suma((CATEG_DPI,), "venit_net_anual", real_dpi)
     dpi_recalc = _suma((CATEG_DPI,), "venit_recalculat", real_dpi)
     norme = sum(_lei(c.get("real_venit_net_anual") or 0) for c in _sectiuni(cap12))
-    str_ai, str_dpi = _str((2027,), "str_venit_net_anual"), _str((2003,), "str_venit_net_anual")
+    str_ai, str_dpi = _str((CATEG_STR_INDEPENDENTE,), "str_venit_net_anual"), _str((CATEG_STR_DPI,), "str_venit_net_anual")
     total = net_real + norme + str_ai                  # art.170 alin.(1): CASS 2.1 (cu străinătatea, v. docstring)
     total_cas = total + dpi_net + str_dpi              # art.148 alin.(3) + pct.46.3: CAS
     o, bife = {}, {}
@@ -738,13 +779,13 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
     # INTERPRETARE CU TEMEI: impozitul aferent = cel plătit în străinătate + diferența datorată în România (rd.9 + rd.11);
     # alternativă respinsă: doar impozitul străin (ar lăsa în bază un impozit pe care persoana îl plătește)
     str_div = sum(_lei(s.get("str_venit_brut") or 0) - _lei(s.get("str_impozit_platit") or 0) - _lei(s.get("str_dif_impozit_datorat") or 0)
-                  for s in str_contrib if int(s.get("str_categ_venit") or 0) in (2017, 2018))
+                  for s in str_contrib if int(s.get("str_categ_venit") or 0) in CATEG_STR_DOBANZI_DIVIDENDE)
     ven22 = {"cass_ven_dpi": dpi_net + str_dpi, "cass_ven_asc": asc,
-             "cass_ven_cfb": _suma((CATEG_CEDARE, CATEG_TURISTIC), "venit_net_anual") + _str((2004,), "str_venit_net_anual"),
-             "cass_ven_inv": _suma((CATEG_INVESTITII,), "venit_net_anual") + divd + _str((2012, 2028), "str_venit_net_anual")
+             "cass_ven_cfb": _suma((CATEG_CEDARE, CATEG_TURISTIC), "venit_net_anual") + _str((CATEG_STR_CEDARE,), "str_venit_net_anual"),
+             "cass_ven_inv": _suma((CATEG_INVESTITII,), "venit_net_anual") + divd + _str(CATEG_STR_INVESTITII, "str_venit_net_anual")
              + max(0, str_div),
-             "cass_ven_asp": _suma(CATEG_AGRICOLE, "venit_net_anual") + _str((2009, 2010, 2011), "str_venit_net_anual"),
-             "cass_ven_alt": _suma(CATEG_ALTE_SURSE, "venit_recalculat") + _str((2014,), "str_venit_net_anual")}
+             "cass_ven_asp": _suma(CATEG_AGRICOLE, "venit_net_anual") + _str(CATEG_STR_AGRICOLE, "str_venit_net_anual"),
+             "cass_ven_alt": _suma(CATEG_ALTE_SURSE, "venit_recalculat") + _str((CATEG_STR_ALTE,), "str_venit_net_anual")}
     total22 = sum(ven22.values())
     c22 = _e.calculeaza_cass_alte_venituri(float(total22), p)
     cass22 = _lei(c22["cass"])
@@ -822,10 +863,21 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
         o["real_impozit_datorat_dpi"] = imp_dpi
         bife["bifa15"] = "1"
         impozit += imp_dpi
+    # Secțiunea 2 Subsecțiunea a 2-a (pct.40): remunerațiile din străinătate — CAS 25% și CASS 10% pe câștigul brut (CF art.139^1,
+    # art.157^2), afară de asigurații în alt stat (cap14_contributii); I.7.2 rd.2 și I.7.3 rd.5
+    from core import common as _c
+    ian = _dt.date(int(an), 1, 1)
+    baza_str = _str((CATEG_STR_REMUNERATIE,), "str_venit_brut")
+    cas_str = _procent(baza_str, _c.cota("cas", ian)[0] * 100) if baza_str else 0
+    cass_str = _procent(baza_str, _c.cota("cass", ian)[0] * 100) if baza_str else 0
+    if baza_str:
+        o.update(str_cas_baza=baza_str, str_cas_datorat=cas_str, str_cass_baza=baza_str, str_cass_datorat=cass_str,
+                 oblcas_real_str=cas_str, oblcass_real_str=cass_str)
+        bife["bifa122"] = "1"
     # I.7 sumarul (pct.56): impozitul, CAS, CASS 2.1 și 2.2 stabilite în plus, diferența de plată
     o.update(oblimpoz_real_total=impozit, oblimpoz_real_dif_deplata=impozit, oblcas_real_difPlus=cas_d,
-             oblcass_real_difPlus_ai=cass_d, impozit_venit_plus=impozit, cas_plus=cas_d, cass_plus=cass_d + dif22,
-             dif_de_plata=impozit + cas_d + cass_d + dif22)
+             oblcass_real_difPlus_ai=cass_d, impozit_venit_plus=impozit, cas_plus=cas_d + cas_str,
+             cass_plus=cass_d + dif22 + cass_str, dif_de_plata=impozit + cas_d + cass_d + dif22 + cas_str + cass_str)
     if dif22:
         o["oblcass_real_difPlus_dpi"] = dif22
     return o, bife

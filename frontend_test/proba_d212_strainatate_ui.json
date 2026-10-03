@@ -76,6 +76,25 @@
    "d212-s-metoda",
    "d212-s-platit",
    "d212-s-tara"
+  ],
+  "2020": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-faracontrib",
+   "d212-s-luni",
+   "d212-s-lunicass",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-tara"
+  ],
+  "2015": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-chelt",
+   "d212-s-faracontrib",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-tara"
   ]
  },
  "randuri_dupa_trei": 3,

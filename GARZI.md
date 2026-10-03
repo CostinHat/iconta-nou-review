@@ -9956,3 +9956,14 @@ Categoria **3. Calcul fiscal** (barem pe data plății, sume neimpozabile, cote 
 | refuzuri | test_jocul_cere_data_platii_si_felul | joc fără dată a plății sau fără felul jocului | — | — |
 | în afara CASS | test_categoriile_5c2a_nu_intra_in_cass | premii/transfer adunate la treapta CASS | — | — |
 
+## 03.10.2026 — D212 Etapa 5c-2b: pensii și remunerații de administrator din străinătate (+ Secțiunea 2.2)
+
+Categoriile **3. Calcul fiscal** (suma neimpozabilă pe luni, contribuțiile scăzute din bază) și **4. Ieșire către autorități**
+(CAS/CASS pe remunerații în secțiunea lor; CASS pe pensie fără secțiune — refuz numit). Detaliul: DECIZII 03.10.2026.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| pensie pe luni | core/test_d212_cap14.py::test_pensie_cu_suma_neimpozabila_pe_luni | suma neimpozabilă scăzută o singură dată | 3.000 o dată → roșu | — |
+| CASS pe pensie [EXTERN] | test_pensie_cu_cass_in_romania_refuzata_numit | o pensie cu CASS în România emisă fără secțiunea CASS | refuzul scos → roșu | până la validatorul cu Subsecțiunea a 3-a |
+| remunerație + Secțiunea 2.2 | test_remuneratia_administratorului_si_sectiunea_2_2 + test_pensii_si_remuneratii_valide_pe_duk | impozit pe brut fără contribuții; CAS/CASS pe asiguratul în alt stat; Secțiunea 2.2 scăpată din plată | fără contribuții deduse → roșu; asiguratul în 2.2 → roșu; 2.2 scos din diferența de plată → roșu | — |
+
