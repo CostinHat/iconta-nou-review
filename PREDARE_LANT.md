@@ -1,18 +1,24 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D212 închisă (Etapa 5 + etapa finală); urmează F3 etapa 3 (documente primare: achiziție IC + servicii UE tip 5)** (03.10.2026)
+# PREDARE LANȚ — **D212 închisă (Etapa 5 + etapa finală); agenda reparată; urmează Contract uniform A1 — d112** (03.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-03** (dimineața), în commitul **D212 etapa finală** (commitul care poartă această predare;
+- **ultima rescriere**: **2026-10-03** (dimineața), în commitul **agenda — firele închise / blocate** (commitul care poartă această predare;
   hash-ul lui e în raport și în `git log`).
-- **pe commit**: `d4887c67` — ultimul four-way închis înainte de rescriere (03.10.2026 06:58: HEAD = origin/main = public/main =
-  backup/lant-2026-10-03 = procesul viu (2 din 2) = d4887c67, D212 Etapa 5c-2b).
+- **pe commit**: `36b6698e` — ultimul four-way închis înainte de rescriere (03.10.2026 08:14: HEAD = origin/main = public/main =
+  backup/lant-2026-10-03 = procesul viu (2 din 2) = 36b6698e, D212 etapa finală).
 - **ÎN LUCRU ACUM:** nimic deschis — firul **D212 etapa finală** e ÎNCHIS în TESTE.md (antetul d212.py, mesajul d221.py, 65 de
   ghiduri corectate + gard pe formele retrase, categoria 1016 „din afara registrului”). **D212 e închisă**: ce rămâne e [EXTERN]
   (validatorul pentru OPANAF 2736/2025) sau Capitolul II (CASS opțională pe anul curent) — nefăcut, neplanificat.
-- **URMĂTORUL FRONT (din agendă, `core.agenda`):** **F3 etapa 3** — documente primare: achiziție intracomunitară + servicii UE tip 5
-  → taxare inversă, sursă D301/D390; apoi F3 etapele 4–8. STARE = NEÎNCEPUT.
+- **URMĂTORUL FRONT (din agendă, `core.agenda` — cititorul reparat 03.10):** **Contract uniform A1 — `d112`** (fir deschis din 31.07,
+  TESTE.md): `d112.py` are `pull` + `erori_generare`, dar calculul și XML-ul stau împletite în `_d112_genereaza` (~250 de linii) —
+  lipsesc `calcul_d112` + `build_xml` din contractul {pull, erori_generare, calcul, build_xml, genereaza}. După el, în aceeași ordine:
+  „2b-coloană” (DROP `salariati.salariu_brut`, istoricul salarial devine singura sursă). **CORECTURĂ:** predarea de dimineață
+  (commitul 36b6698e) dădea „F3 etapa 3” — copiat din agenda care citea un „urmator” rămas în urmă; F3 e închis din 21.09.
+- **Pachet FiscalOS §4 (D394):** Î1 livrat 02.10; **Î2** („încasări din activități exceptate de la obligația utilizării AMEF”,
+  OPANAF 2194/2025 anexa D394) nu e produs — front deschis, neplanificat; sursa datelor (ce înregistrează contabilul pentru astfel
+  de încasări) cere o decizie de produs înainte de cod.
 - **[EXTERN] D212 — datorii stricte (core/test_datorie.py):** agricol pe normă, opțiunea CAS lit.B, CASS pe pensiile din străinătate,
   CASS 2.2 reținută peste datorată — toate se închid odată cu validatorul ANAF pentru OPANAF 2736/2025. Dobânzile pentru obligațiuni pe
   piețe externe (pct.8) n-au cod în validatorul instalat → nu se pot exprima ca test; consemnate în GARZI.

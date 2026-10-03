@@ -108,11 +108,40 @@ def stare_sesiune_b():
     return {"faza": faza, "stare": stare_faza, "etape_facute": facute, "etape_total": len(et)}
 
 
+#: Un fir e ÎNCHIS dacă antetul lui sau rândul „urmator” o spune (formele folosite în TESTE.md, cu și fără diacritice).
+_INCHIS = re.compile(r"\b(ÎNCHIS|INCHIS|ÎNCHISĂ|GATA|REZOLVAT)\b|\(fir închis", re.I)
+#: Un fir BLOCAT (decizie de produs, [EXTERN], consemnat fără acțiune) rămâne deschis, dar nu e pasul următor.
+_BLOCAT = re.compile(r"\bBLOCAT\b|\[EXTERN\]|\bEXTERN[AĂ]?\b|\bCONSEMNAT[AĂ]?\b", re.I)
+
+
+def fire_in_lucru(txt):
+    """[(antet, urmator)] pentru firele din secțiunea „## În lucru acum” a TESTE.md, în ordine — ambele forme de scriere
+    (`- urmator:` la margine și `  - urmator:` indentat sub fir)."""
+    if "## În lucru acum" not in txt:
+        return []
+    sect = txt[txt.index("## În lucru acum"):]
+    urm = re.search(r"^## ", sect[3:], re.MULTILINE)
+    sect = sect[:urm.start() + 3] if urm else sect
+    out = []
+    for bloc in re.split(r"^- fir:", sect, flags=re.MULTILINE)[1:]:
+        antet = bloc.split("\n", 1)[0].strip()
+        # starea curentă = ULTIMUL „urmator” al firului (firele vechi adaugă perechi ultim/urmator cronologic)
+        ms = re.findall(r"^\s*- urmator:\s*(.+)$", bloc, re.MULTILINE)
+        out.append((antet, ms[-1].strip() if ms else ""))
+    return out
+
+
 def urmatorul_pas():
+    """Primul fir din „În lucru acum” care NU e închis (nici în antet, nici în „urmator”). Corectat 03.10.2026: cititorul
+    vechi lua primul `- urmator:` la margine din tot fișierul — sărea firele scrise indentat și întorcea un fir livrat de mult
+    (F3 etapa 3), deci agenda propunea un pas deja făcut."""
     txt = _text(_TESTE) or ""
-    m = re.search(r"^- urmator:\s*(.+)$", txt, re.MULTILINE)
-    if m:
-        return m.group(1).strip()
+    fire = fire_in_lucru(txt)
+    for antet, urm in fire:
+        if not (_INCHIS.search(antet) or _INCHIS.search(urm) or _BLOCAT.search(urm)):
+            return urm or antet
+    if fire:
+        return "nimic acționabil în „În lucru acum” — firele rămase sunt blocate (decizie / [EXTERN]); v. PREDARE_LANT.md"
     a = stare_sesiune_a()
     if a:
         neverif = [x["modul"] for x in a[2] if not x["verificat"]]

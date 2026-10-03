@@ -1189,3 +1189,11 @@ fost reparat.
 - **În lista „Alte venituri” a formularului D212 apare „Activități independente (sistem real, din afara registrului)”**: o a
   doua activitate ținută în altă firmă din aplicație, sau perioada unei forme de exercitare anterioare din același an, se
   adaugă cu venitul brut și cheltuielile ei, iar CAS și CASS se calculează pe venitul total, cum cere legea.
+
+## 03.10.2026 — Agenda nu mai propune pași deja făcuți
+
+**Ce se schimbă (intern, fără efect pe ecranele contabilului):** agenda campaniei arăta ca „pas următor” o etapă a firmei de
+test F3 terminată pe 21.09 — citea un rând vechi de stare. Cititorul se uită acum doar la firele în lucru și sare peste cele
+închise sau blocate; șapte fire livrate au primit închiderea, cu commitul care o dovedește. Pasul următor real: refacerea
+generatorului D112 pe contractul comun al declarațiilor (calculul separat de XML). Tot azi, o notă internă despre D394 spunea
+că încasările prin casa de marcat (Î1) nu se declară — se declară de ieri; corectată.

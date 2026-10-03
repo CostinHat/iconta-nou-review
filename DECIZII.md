@@ -16419,3 +16419,27 @@ alin.(1)) — sfatul din ghiduri devine executabil.
 a declara corect o a doua activitate (CAS/CASS pe o bază mai mică decât cea legală).
 
 **Limită.** Garda prinde FORMELE retrase, nu orice parafrază nouă; lista se extinde odată cu clasele retrase.
+
+---
+
+## 03.10.2026 — NECONFORMITATE: agenda propunea un pas livrat (F3 etapa 3); firele închise / blocate în „În lucru acum”
+
+**Constatare.** După închiderea D212, `core.agenda` dădea ca „URMATORUL PAS” „F3 etapa 3 … NEINCEPUT”. Git arată F3 livrat
+pe 21.09 (97030ae2, ae876415 — etapa 3; 78d2e46e — etapa 7; 4641e568 — „F1-F5 complete”), iar PREDARE îl dădea deja „ÎNCHIS
+etapele 1-8”. Cauza: `urmatorul_pas` lua primul rând `- urmator:` scris la margine din tot TESTE.md; firele noi se scriu
+indentat (sărite), iar primul rând la margine era „urmator”-ul rămas în urmă al F3. Predarea din commitul 36b6698e a copiat
+pasul fără verificare în git — corectată aici.
+
+**Clasă (căutată în toată secțiunea „În lucru acum”).** Fire livrate cu starea rămasă deschisă: D212 Etapa 2 (1cdba188),
+Pachet FiscalOS §1–§3 (63df9bde), tichete de creșă (94c7b21a), F2 (ed3054e3), F3, Supervizor/R118 (main.py:419, 02.09),
+SWEEP DUK (D101 rezolvat 03.08). Închise azi, fiecare cu dovada citată pe rând. F1 = etapele 1–8 gata, 9–11 BLOCAT [EXTERN].
+Aceeași clasă în cod: `nomenclatoare.py` (dezacordul D394) spunea că iConta nu produce Î1 — fals de la 02.10; corectat, cu Î2
+definit la sursă (OPANAF 2194/2025 anexa D394: „încasări lunare efectuate din activităţi exceptate de la obligaţia utilizării
+aparatelor de marcat electronice”).
+
+**Decizie.** `urmatorul_pas` citește doar „## În lucru acum”, ambele forme, ULTIMUL „urmator” al firului, sare firele închise
+(ÎNCHIS/GATA/REZOLVAT/„(fir închis”) și pe cele blocate (BLOCAT/[EXTERN]/CONSEMNAT); dacă nu rămâne nimic acționabil, o spune.
+Gard `core/test_agenda_urmator.py`. Pasul următor real: „Contract uniform A1 — d112” (fir deschis din 31.07).
+
+**Limită.** Garda vede ce scrie în TESTE.md; un fir livrat necomplet închis rămâne invizibil — închiderea firului la livrare
+(cu commitul citat) rămâne disciplina CLAUDE.md §2.1.

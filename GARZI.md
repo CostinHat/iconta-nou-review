@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**665 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**666 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 633
+### `core/` — 634
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8850,6 +8850,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_afirmatii.py` — GARD (P3, 21.08.2026): o afirmație despre datele firmei își declară FELUL și poartă câmpurile
 - `core/test_afirmatii_tipate.py` — CLICHET: afirmațiile despre datele firmei nu mai pot fi proză. (P8, 21.08.2026)
 - `core/test_agenda.py` — Garda anti-stale a agendei: pica daca TESTE.md a ramas in urma codului. Diferenta fata de DE_FACUT.md
+- `core/test_agenda_urmator.py` — GARD — „URMATORUL PAS” din agendă nu poate propune un fir ÎNCHIS sau BLOCAT și vede ambele forme de scriere.
 - `core/test_ai_incredere.py` — —
 - `core/test_ajutor_periodicitate_tva.py` — GARD [06.09.2026, cerut de Costin]: aceeași alegere, pusă în două ecrane, poartă ACELAȘI criteriu.
 - `core/test_ajutor_prelogin_fallback.py` — GARD ajutor_prelogin: handlerul global al semnului "?" nu depinde DOAR de _navGlobal (shell
@@ -9979,4 +9980,13 @@ Detaliul: DECIZII 03.10.2026 („D212 etapa finală …”).
 | afirmațiile retrase | core/test_ghid_d212_afirmatii.py (16 forme + calibrare în ambele direcții) | „D212 e o declarație manuală”, „doar identificare”, „exclusiv sistemul real”, „pragul minim opțional” etc. reapărute în ghiduri / ajutorul F246 | fraza retrasă repusă în ghidul de chirii → roșu | prinde formele, nu orice parafrază nouă |
 | activitate din afara registrului | core/test_d212_categorii.py::test_activitate_independenta_din_afara_registrului_se_cumuleaza | a doua activitate fără loc în formular; impozit în I.1.1 în loc de Secțiunea 4 | 1016 scos din listă → roșu; impozit11 pe 1016 → roșu | — |
 | [EXTERN] D212 Etapa 5 ca datorii stricte | core/test_datorie.py::test_datorie_d212_cass_pensii_strainatate + test_datorie_d212_cass22_retinuta_peste_datorata (xfail strict) | ca refuzul să rămână uitat când ANAF publică validatorul: testul trece și pică „XPASS” | — (xfail strict) | dobânzile pentru obligațiuni pe piețe externe (pct.8) n-au cod în validatorul instalat — neexprimabile ca test, consemnate aici |
+
+## 03.10.2026 — Agenda: „URMATORUL PAS” nu mai propune un fir închis sau blocat
+
+Categoria **8. Proces / registre** (starea derivată din registre propunea un pas livrat). Detaliul: DECIZII 03.10.2026
+(„NECONFORMITATE: agenda propunea un pas livrat …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| cititorul pasului următor | core/test_agenda_urmator.py (4 teste, caz construit + TESTE.md real) | pasul unui fir închis/blocat ales ca următor; firele scrise indentat ignorate; primul „urmator” în loc de ultimul | cititorul vechi repus → roșu („pasul B1” în loc de „pasul C2”) | nu vede un fir livrat al cărui „urmator” n-a fost închis — disciplina CLAUDE.md §2.1 |
 

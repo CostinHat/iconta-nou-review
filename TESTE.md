@@ -45,6 +45,9 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **NECONFORMITATE — agenda propunea un pas livrat (F3 etapa 3); firele închise / blocate** (03.10.2026, găsită la trecerea la pasul următor după D212; CICLUL DE NECONFORMITATE). ÎNCHIS
+  - ultim: cititorul `core.agenda.urmatorul_pas` reparat (secțiunea „În lucru acum”, ambele forme, ultimul „urmator”, sare închise/blocate) + gard `core/test_agenda_urmator.py`; 7 fire livrate închise cu commitul citat; F1 marcat BLOCAT [EXTERN]; dezacordul D394 din `nomenclatoare.py` corectat (Î1 produs, Î2 definit la sursă); PREDARE corectată.
+  - urmator: — (fir închis; pasul următor din agendă: Contract uniform A1 — d112). STARE = ÎNCHIS
 - fir: **D212 ETAPA FINALĂ — textele care descriu D212 aliniate cu ce face aplicația** (03.10.2026, următorul pas din listă după Etapa 5; `D212_PERIMETRU.md` §4). ÎNCHIS
   - ultim: pașii 1–5 livrați (commitul „D212 etapa finală”, hash în ISTORIC 03.10.2026): antetul d212.py, mesajul d221.py, 166 de paragrafe citite / 65 de ghiduri corectate, gard pe formele retrase; pe drum, golul de cod reparat — categoria 1016 „din afara registrului” (a doua activitate) cumulată pentru CAS/CASS.
   - urmator: — (fir închis; D212 închisă — rămâne [EXTERN] și Capitolul II). STARE = ÎNCHIS
@@ -141,6 +144,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     1. `core/d212.py`: nomenclator CATEG_VENIT_CAP11 + `cap11_sistem_real` (rd.1–rd.9) + R4 + `cap11_din_rip` + `genereaza(din_rip)`.
     2. `static/js/ecrane/declaratii.js`: bifa „Include venitul din registrul RIP", pierdere reportată, CAEN.
     3. teste + mutație + probă F4 + probă UI + scanuri vizuale; registre; commit.
+  - urmator: — (fir închis 03.10.2026, verificat în git: 1cdba188 „D212 Etapa 2”, four-way). STARE = ÎNCHIS
 - fir: **PACHET FISCALOS §1–§3** (01.10.2026, comanda Costin „termină §2; închidere commit §1+§2+§3; apoi D212 Etapa 2"; sursa `~/ghid_incoming/PACHET_FISCALOS_ICONTA.md` + `verif_temeiuri.json`). Reluat după întrerupere: §1 și §3 erau în arbore, necomise; §2 parțial (4 rânduri COTE).
   - ultim: §1 VERIFICAT (nu refăcut): 81 fișiere cu SHA256 consistent; 53/55 HTML byte-identice cu MANIFEST FiscalOS; OUG 24/2026 adusă separat; HG 1045/2018 pe consolidarea 15.09 (cea din 30.09 → commitul următor, v. mai jos).
   - ultim: §2 TERMINAT: `common.ancoreaza` + 17 constante ancorate verbatim (18 aprobate + PLAFON_SOLD_ZI_CC + PRAG_BRENT_USD, al cărui RESPINS cădea pe corpus); 7 valori reconfirmate (alertă goală); dividende pe CF art.97 alin.(7); impozit_venit pe CF art.78 alin.(2) lit.a); tva_redusa_5 de pe alineatul abrogat pe alin.(2); cod PLAFON_INCASARE_PJ_CC. Gard `core/test_fiscalos_s2.py` (mutație 10/10 roșii) + §3 `core/test_fiscalos_s3.py` (4/4 roșii).
@@ -151,6 +155,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     3. `core/expirare_cote.py`: etichetele 9%/5% (istoric, nu se reconfirmă).
     4. gărzi: `core/test_fiscalos_s2.py` nou; recalibrări `test_constante_nesursate`, `test_citate_verbatim` (32→52), `scan_constante` (c.Temei, PROZA_RESPINSA), `consumatori_temei` (calea CONSTANTE_ANCORATE + alias valoare).
     5. registre + poarta completă + commit + four-way + ZIP.
+  - urmator: — (fir închis 03.10.2026, verificat în git: 63df9bde „Pachet FiscalOS §1-§3”). §4 (D394 Î1/Î2): Î1 livrat 02.10 (c3d5d185 + eba64f37); Î2 rămâne în PREDARE. STARE = ÎNCHIS
 - fir: **TICHETE DE CREȘĂ — ferestre datate de indexare** (01.10.2026, NECONFORMITATE găsită la verificarea §1: consolidarea HG 1045/2018 din 30.09.2026 reproduce Ordinul 1.255/1.187/2026, MO 830/30.09.2026 — 770 lei/copil din oct. 2026 — și tot istoricul 640→740; iConta plafonează la 450). IN LUCRU
   - ultim: pașii 1–4 aplicați: corpus HG 1045/2018 forma 314229; `_FERESTRE_CRESA` (6 ferestre, citate verbatim); `beneficii_api` pe luna beneficiului; eticheta ecranului fără valoare fiscală; teste pe margini + mutație 4/4. Probă pe iconta_test: sep.2026 770 → blocat (740), oct.2026 770 → ok, impozit +77.
   - urmator: scanuri vizuale (stat de plată) + commit four-way. Apoi D212 Etapa 2.
@@ -159,6 +164,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     2. `core/common.py::plafon_cresa`: `_FERESTRE_CRESA` (apr.2024 → mar.2027) din notele verbatim; în afara ferestrelor → baza 450 cu motiv (comportamentul de azi).
     3. `core/beneficii_api.seteaza`: plafonul pe luna beneficiului (`date(an, luna, 1)`), nu pe azi; mesajul de blocare fără „GRI”.
     4. `core/test_tichet_cresa.py`: ferestrele pe ambele margini + luna beneficiului; mutație; registre; commit four-way.
+  - urmator: — (fir închis 03.10.2026, verificat în git: 94c7b21a „Tichete de creșă: plafonul pe ferestrele ordinelor de indexare”). STARE = ÎNCHIS
 - fir: **PRODUCȚIE GHIDURI — poarta de verificare pre-publicare** (21.09.2026, comandă Costin „lista producție ghiduri, pasul 2"). FIR PARALEL cu Sesiunea B (redirecționare explicită, §7). Agenda (`urmator_cluster`) rămâne pe F3.
   - ultim: importat `index_titluri_ghid.csv` (8.713 titluri) ca listă de bază, git-track + reader `core/ghid_titluri.py`.
   - ultim: **poarta `core/ghid_poarta.py` LIVRATĂ** (commit bb2264f6, four-way) — 2a citări în corpus + 2b F-ID LIVE+sursă+back-link; CLI blochează exit≠0. Gard `core/test_ghid_poarta.py`.
@@ -228,6 +234,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 - ultim: **F1 etapa 8 COMPLETA (21.09)**: D300/D394/D112/D100/**D406** toate DUK-valid pe F1 reconciliat.
 - **F1 etapele 9-11 = FRONT DESCHIS** (decizie Costin 21.09: F1 1-8 suficient acoperit; 9-11 de revenit ulterior).
   Etapa 9 depunere reala la ANAF/SPV = [EXTERN] (blocant certificat mTLS, ARHITECTURA_SPV).
+- urmator: F1 etapele 1–8 GATA (proba_f1_etapa8, 21.09); etapele 9–11 (depunere reală, ieșiri externe) = BLOCAT [EXTERN] — accesul SPV (v. ARHITECTURA_SPV.md). STARE = BLOCAT [EXTERN]
 - fir: **SESIUNEA B — F2 (SRL, TVA trimestrial, profit 16%, mijloc fix/amortizare, fara salariati)** (21.09, decizie Costin „treci la F2").
 - ultim: **F2 etapele 1-2 GATA (21.09) prin interfata** (`frontend_test/proba_f2_etape12.py` + asteptari_f2.md +
   solduri_f2.csv + mijloace_f2.csv). Cabinet A (existent). Tenant 105780 / schema tenant_050. Vector: profit/TVA-trimestrial/fara-IC.
@@ -239,6 +246,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   (MF-001 6811=2813 200/lună = 12000/60; **corectat date test: rezidual 10000→0** — câmpul rezidual = valoare
   reziduală finală/salvage, nu neamortizat; amortizare_luna d406_active.py:408 amortizabil=valoare−rezidual);
   7 control fiscal; 8 declarații D300-T3/D394/D100-T3(cod 103 profit 768)/D406 toate DUK-valid. **F2 COMPLET 1-8.**
+- urmator: — (fir închis 03.10.2026, verificat în git: ed3054e3 „Sesiunea B F2 etapele 4-8 (COMPLET 1-8)”). STARE = ÎNCHIS
 - fir: **SESIUNEA B — F3 (SRL, neplătitor+art.317, micro 1% [2026], operațiuni IC)** (21.09, decizie Costin: micro 1% nu 3%).
 - ultim: **F3 etapele 1-2 GATA (21.09)** (`proba_f3_etape12.py` + asteptari_f3.md + solduri_f3.csv). Tenant tenant_051.
   Vector micro/neplătitor+art.317/cu-IC; sold Σ=5000; 0 salariați. Set declarații: D301/D390/D100/D406 (NU D300 neplătitor, NU D394).
@@ -250,6 +258,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 - pasi Faza 1 F1:
   4. scrie fisierul de asteptari F1 (SRL, TVA lunar, micro 1%, comert stoc, 3 salariati) din temeiurile Sesiunea A, INAINTE de a rula.
   5. creeaza F1 prin INTERFATA (nu script) — etapele 1-2 (migrare/preluare + configurare firma); raport §2.2 separat inainte de a continua (regula cascadei).
+- urmator: — (fir închis 03.10.2026, verificat în git: 97030ae2 + ae876415 „F3 etapa 3”, 78d2e46e „F3 etapa 7”, 4641e568 „F1-F5 complete”; PREDARE îl dădea ÎNCHIS etapele 1-8 — acest „urmator” rămăsese în urmă și agenda îl propunea ca pas următor). STARE = ÎNCHIS
 - fir: **GARZI cat.1 (Intrare date) — NOT NULL pe coloanele de bani + cheie naturala unica pe tabelele de import** (20.09.2026, comanda „deschide firul §2.1"). **INCHIS 20.09** (sub-lot 1+2, four-way 12da4b86). LIPSA din GARZI.md linia 69-70: „gard care cere NOT NULL pe fiecare coloana de bani si cheie naturala unica pe fiecare tabel de import. Idempotenta importurilor nu e verificata mecanic." C5 a acoperit DOAR extras_import; asta e clasa generala.
 - ultim: **SUB-LOTUL 1 GATA (20.09)**: NOT NULL pe 13 coloane de bani (cat A+B; 3 excluse la poarta: pret_unitar/salariu_brut/registre_art321.valoare - legitim nullable) + UNIQUE natural pe 8 tabele
   de import curate (efactura_primite/id_mesaj_anaf, solduri_initiale/cont, solduri_parteneri/(cont,cui),
@@ -365,6 +374,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   propriu, cu poarta vizuala trecuta. Iesit din `test_module_nelegate.PIN`.
 - urmator: **R118** (fisierele statice n-au poarta intre scriere si productie) ramane CONSEMNATA,
   nelucrata. NEINCEPUT
+- urmator: — (fir închis 03.10.2026, verificat în cod: R118 rezolvat — main.py:419 „[R118, 02.09.2026] CE SE SERVEȘTE NU MAI E CE E ÎN LUCRU”, static servit din directorul publicat pe commit). STARE = ÎNCHIS
 - fir: **PERECHI ORIZONTALE PE SURSE INDEPENDENTE** (02.09.2026). Costin: *„perechea de azi nu o
   face, si tu ai scris de ce"* — D390 si D300 vin din aceleasi facturi. Cinci candidati dati de el,
   fiecare cu identitatea VERIFICATA LA SURSA inainte de constructie; ce nu se confirma se consemneaza
@@ -544,8 +554,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
   3. [GATA 01.08] d406 reparat (fix cale plan_oficial -> anaf_surse/); gard test_d406.test_plan_oficial_citeste_nomenclatorul.
   4. [GATA 01.08] gard smoke-sweep DUK permanent: core/test_smoke_duk.py.
   STARE = BLOCAT: sweep+gard+d406 reparat; ramane d101 (reconstructie) - cere greenlight temei
-
-
+- urmator: — (fir închis 03.10.2026: reconstrucția rămasă, D101, e REZOLVATĂ 03.08.2026 — firul următor „REZOLVAT 03.08.2026 - D101 RECONSTRUIT si DUK-VALID”). STARE = ÎNCHIS
 - fir: REZOLVAT 03.08.2026 - D101 RECONSTRUIT si DUK-VALID. Clusterul structura-P1-P53|d101 bifat 03.08 (test_d101_reconstructie_proba_duk_valid + test_imca_d101_duk_valid TREC azi). Blocul de mai jos e ISTORIC (starea pre-reconstructie 31.07: D101 respins de DUK, nu poate fi depusa) - pastrat ca traseu, NU mai e valabil. test_datorie_d101_build_xml_respins_de_duk a fost SCOS la reconstructie. [citare-istorica: scos la reconstructia D101 03.08]
 - ultim: descoperit la C2 - DUK respinge 'sectiune necunoscuta (P1)' (P-values ca elemente <P1>) + cod_bug=5503XXXXXX placeholder literal. Consemnat test_datorie_d101_build_xml_respins_de_duk. [citare-istorica: scos la reconstructia D101 03.08]
 - urmator: INVESTIGARE (metoda D1xx CLAUDE.md): extrag structura reala din D101Validator.jar (ultima versiune, constant pool), gasesc forma corecta P/cod_bug, construiesc XML minim valid pe DUK (o corectie/runda), PROPUN cu temei -> Costin valideaza -> implementez. IN LUCRU.

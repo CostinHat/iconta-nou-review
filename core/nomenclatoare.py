@@ -173,12 +173,13 @@ def _dez(cheie, ce, consecinta):
 
 _dez(("d394", "TIPURI"),
      ce="Norma scrie tipul cu diacritică — AÎ; structura tehnică și XML-ul îl scriu ASCII, AI. "
-        "Al doilea, de acoperire: norma enumeră și Î1/Î2 (încasări prin aparate de marcat fiscale), "
-        "pe care iConta nu le produce încă.",
+        "Al doilea, de acoperire: norma enumeră și Î1/Î2 (încasări prin aparate de marcat fiscale); iConta produce "
+        "Î1 (din rapoartele Z, de la 02.10.2026), nu și Î2.",
      consecinta="Pe transliterare, niciuna practică — arbitrul cere forma ASCII, deci abaterea de la "
                 "litera normei e impusă, nu aleasă; se consemnează ca să nu fie confundată cu o "
-                "citire greșită a ordinului. Pe Î1/Î2: o firmă cu aparat de marcat nu poate depune "
-                "D394 complet prin iConta — absență declarată în d394.py, nu vocabular redus tăcut.")
+                "citire greșită a ordinului. Pe Î2 (OPANAF 2194/2025 anexa D394: „încasări lunare efectuate din activităţi "
+                "exceptate de la obligaţia utilizării aparatelor de marcat electronice”): o firmă cu astfel de încasări nu "
+                "poate depune D394 complet prin iConta — absență declarată în d394.py, nu vocabular redus tăcut.")
 
 _dez(("d390", "TARI_UE"),
      ce="Norma NU enumeră țările: trimite la codul care a emis codul de TVA, adică la prefixul de TVA "
