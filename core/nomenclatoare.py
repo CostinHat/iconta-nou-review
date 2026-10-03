@@ -157,6 +157,41 @@ ANCORE_NORMA = {
             masurat_la=date(2026, 8, 4),
         ),
     ),
+
+    # [lot 19 defectul 10, 03.10.2026] Coloanele rândurilor D300: formularul din OPANAF 174/2026 are rândurile, dar
+    # extragerea din corpus a pierdut grila „Valoare / TVA” pe rând — norma NU se poate citi ca listă închisă.
+    ("d300", "RANDURI_FARA_COL1"): Ancora(
+        norma=Temei(
+            "OPANAF", 174, 2026, nivel_sursa="MO", data_in="2026-01-01",
+            url="anaf_surse/opanaf_174_2026_d300.txt",
+            verificat_la="2026-10-03", de_cine="Code",
+            text_citat="34 Ajustări conform pro-rata/ajustări de taxă",
+        ),
+        enumerare=None,
+        deschis=True,
+        constrangere=Constrangere(
+            instrument="DUKIntegrator D300 (structura v12)",
+            valori=("R29", "R31", "R35", "R36", "R38", "R39", "R43", "R44"),
+            proba="test_coloanele_inexistente_sunt_respinse_de_duk",
+            masurat_la=date(2026, 10, 3),
+        ),
+    ),
+    ("d300", "RANDURI_FARA_COL2"): Ancora(
+        norma=Temei(
+            "OPANAF", 174, 2026, nivel_sursa="MO", data_in="2026-01-01",
+            url="anaf_surse/opanaf_174_2026_d300.txt",
+            verificat_la="2026-10-03", de_cine="Code",
+            text_citat="Achiziţii de bunuri şi servicii scutite de taxă sau neimpozabile, din care:",
+        ),
+        enumerare=None,
+        deschis=True,
+        constrangere=Constrangere(
+            instrument="DUKIntegrator D300 (structura v12)",
+            valori=("R1", "R2", "R3", "R4", "R13", "R14", "R15", "R26"),
+            proba="test_coloanele_inexistente_sunt_respinse_de_duk",
+            masurat_la=date(2026, 10, 3),
+        ),
+    ),
 }
 
 # Clichetul pe câte nomenclatoare probate n-au încă ancoră de normă stă în GARDĂ
@@ -199,3 +234,14 @@ _dez(("d301", "VALUTE"),
                 "poate repara în cod — se poate doar numi. Cazul invers, care a produs regula de "
                 "clasă: codul avea 19 (structura tehnică 2013) și respingea HRK, pe care arbitrul îl "
                 "accepta — cod mai strict decât ambele niveluri de deasupra lui.")
+
+_DEZ_D300 = ("Formularul 300 din OPANAF 174/2026 are pe fiecare rând coloanele „Valoare” și „TVA”, dar textul din corpus "
+             "nu păstrează grila — din normă nu se poate citi pe rând ce coloană există. Setul vine de la ARBITRU: "
+             "structura ANAF v12 (Rn_1 / Rn_2 inexistent) și DUK, care respinge fiecare coloană absentă ca „atribut "
+             "necunoscut” (probat pe fiecare rând).")
+_DEZ_D300_CONSECINTA = ("O sumă pe o coloană pe care structura n-o are nu se poate declara: rândul manual e refuzat la "
+                        "introducere (d300_manual_api.adauga) și la calcul (calcul_d300), cu numele coloanei — altfel "
+                        "decontul întreg ar fi respins la DUK. Dacă ANAF adaugă o coloană, setul se schimbă la noua "
+                        "structură și proba DUK pică întâi.")
+_dez(("d300", "RANDURI_FARA_COL1"), ce=_DEZ_D300, consecinta=_DEZ_D300_CONSECINTA)
+_dez(("d300", "RANDURI_FARA_COL2"), ce=_DEZ_D300, consecinta=_DEZ_D300_CONSECINTA)

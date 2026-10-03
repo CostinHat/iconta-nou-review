@@ -59,13 +59,14 @@ def pregateste_mf_plus(corp):
     pif = data_pif if hasattr(data_pif, "year") else _date.fromisoformat(str(data_pif))
     cont_imo = (str(corp.get("cont_imobilizare") or "").strip() or "2131")
     metoda = _d406a._norm_metoda(corp.get("metoda") or "liniara")
-    _d406a._verifica_categorie({"cod": corp.get("cod"), "cont_imobilizare": cont_imo}, metoda, pif)
+    dcd = bool(corp.get("destinatie_cd"))   # bifa citita de apelant prin _uc_comun.bifa (lot 19 d11)
+    _d406a._verifica_categorie({"cod": corp.get("cod"), "cont_imobilizare": cont_imo, "destinatie_cd": dcd}, metoda, pif)
     return {"cod": corp.get("cod") or "MF-PLUS",
             "denumire": (corp.get("denumire") or corp.get("descriere") or "Mijloc fix (plus inventar)")[:200],
             "cont_imobilizare": cont_imo,
             "cont_amortizare": (str(corp.get("cont_amortizare") or "").strip() or "2813"),
             "valoare": v, "rezidual": _d(corp.get("rezidual") or 0),
-            "dnf_luni": dnf, "data_pif": pif, "metoda": metoda}
+            "dnf_luni": dnf, "data_pif": pif, "metoda": metoda, "destinatie_cd": dcd}
 
 
 def nota_minus(valoare, cont_stoc="371", imputabil=False,

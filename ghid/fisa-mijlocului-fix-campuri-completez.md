@@ -2,7 +2,7 @@
 title: "Fișa mijlocului fix: ce câmpuri completez"
 description: "Câmpurile pe care le urmărește iConta.eu pentru fiecare mijloc fix — cod, valoare, conturi, metodă, dată PIF, durată — și ce se întâmplă dacă unele lipsesc."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Se lasă necompletat contul de imobilizare ("categorie neclasificată"), ceea ce
 
 ## Ce face iConta.eu
 
-La import (CSV/XLSX) sau introducere, câmpurile urmărite pentru un mijloc fix sunt: cod, denumire, cont de imobilizare, cont de amortizare, valoare, valoare reziduală și durata normală de funcționare (în luni). Aplicația blochează la import un cod lipsă sau duplicat, o durată ≤0, o valoare ≤0 sau un rezidual mai mare decât valoarea de intrare; pentru un cont de imobilizare lipsă, afișează doar un avertisment informativ, nu blocant.
+La import (CSV/XLSX) sau introducere, câmpurile urmărite pentru un mijloc fix sunt: cod, denumire, cont de imobilizare, cont de amortizare, valoare, valoare reziduală și durata normală de funcționare (în luni). Aplicația blochează la import un cod lipsă sau duplicat, o durată ≤0, o valoare ≤0 sau un rezidual mai mare decât valoarea de intrare; pentru un cont de imobilizare lipsă, afișează doar un avertisment informativ, nu blocant. Valoarea reziduală se citește doar dintr-o coloană numită „rezidual”/„reziduală”; o coloană „valoare rămasă” din exportul altui program e doar o verificare, cu avertisment dacă nu se leagă cu amortizarea calculată.
 
 [iConta.eu](/)

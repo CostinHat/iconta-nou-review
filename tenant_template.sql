@@ -671,7 +671,8 @@ CREATE TABLE TENANT_PLACEHOLDER.mijloace_fixe (
     data_pif date,
     metoda text DEFAULT 'liniara'::text,
     activ boolean DEFAULT true,
-    creat_la timestamp with time zone DEFAULT now() NOT NULL
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    destinatie_cd boolean NOT NULL DEFAULT false   -- [lot 19 d11] CF art.20 alin.(1) lit.b): accelerata si pt aparatura C&D
 );
 
 
@@ -2240,6 +2241,13 @@ ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_amana
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS tip_firma character varying(4) NOT NULL DEFAULT 'srl';
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil DROP CONSTRAINT IF EXISTS tip_firma_valid;
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD CONSTRAINT tip_firma_valid CHECK (tip_firma IN ('srl', 'pfa'));
+
+-- [lot 19 d12] mirror al core/migrare_capital_social.py: Legea 31/1990 art.74 alin.(3) — capitalul social pe factura
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS forma_juridica character varying(4);
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS capital_subscris numeric(18,2);
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS capital_varsat numeric(18,2);
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil DROP CONSTRAINT IF EXISTS forma_juridica_valida;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD CONSTRAINT forma_juridica_valida CHECK (forma_juridica IS NULL OR forma_juridica IN ('SRL', 'SA', 'SCA', 'SNC', 'SCS', 'ALTA'));
 
 -- [F143 centre_cost, Faza 1] mirror al 02_ddl_centre_cost.sql: firmele NOI trebuie sa aiba
 -- tabelul + coloana. Dimensiune management accounting intern (centru de cost pe linia de nota).

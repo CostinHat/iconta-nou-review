@@ -1,61 +1,37 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D212 închisă; agenda reparată; lanțul oprit — 5 decizii cerute (nimic acționabil fără ele)** (03.10.2026)
+# PREDARE LANȚ — **Lotul 19 publicat (punctul 1 din 4); urmează D394 Î2, exportul SAGA/WinMentor, coloana 2b** (03.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-03** (dimineața), în commitul **agenda — greenlight / 2b blocat** (commitul care poartă această predare;
-  hash-ul lui e în raport și în `git log`).
-- **pe commit**: `9b9696ae` — ultimul four-way închis înainte de rescriere (03.10.2026: HEAD = origin/main = public/main =
-  backup/lant-2026-10-03 = procesul viu (2 din 2) = 9b9696ae, agenda — firele închise / blocate).
-- **ÎN LUCRU ACUM:** nimic deschis — firul **D212 etapa finală** e ÎNCHIS în TESTE.md (antetul d212.py, mesajul d221.py, 65 de
-  ghiduri corectate + gard pe formele retrase, categoria 1016 „din afara registrului”). **D212 e închisă**: ce rămâne e [EXTERN]
-  (validatorul pentru OPANAF 2736/2025) sau Capitolul II (CASS opțională pe anul curent) — nefăcut, neplanificat.
-- **URMĂTORUL FRONT:** **niciunul acționabil fără decizie** — `core.agenda` (cititorul reparat 03.10, commitul 9b9696ae + cel care
-  poartă predarea) spune „nimic acționabil”; firele rămase așteaptă DECIZII ale lui Costin:
-  1. **Exporturile SAGA / WinMentor pentru facturile din bon** (A: nu se exportă ca vânzare; B: se exportă cu mențiunea „din bon”).
-  2. **D394 Î2** (încasări din activități exceptate de la AMEF — OPANAF 2194/2025): de unde vin datele (ce înregistrează contabilul).
-  3. **Contract uniform A1 — d112** (refactor opțional, „cere greenlight”: calculul separat de XML în `_d112_genereaza`).
-  4. **2b-coloană** (DROP `salariati.salariu_brut` + migrare pe tenanții reali — schimbare de schemă).
-  5. **Producția de ghiduri** — volumul / prioritatea redactării (fir blocat din 21.09).
-  [EXTERN]: F1 etapele 9–11 (depunere reală, SPV); D212 — validatorul ANAF pentru OPANAF 2736/2025.
-  **CORECTURĂ:** predarea din commitul 36b6698e dădea „F3 etapa 3” — copiat din agenda care citea un „urmator” rămas în urmă; F3 e
-  închis din 21.09.
-- **Pachet FiscalOS §4 (D394):** Î1 livrat 02.10; **Î2** („încasări din activități exceptate de la obligația utilizării AMEF”,
-  OPANAF 2194/2025 anexa D394) nu e produs — front deschis, neplanificat; sursa datelor (ce înregistrează contabilul pentru astfel
-  de încasări) cere o decizie de produs înainte de cod.
-- **[EXTERN] D212 — datorii stricte (core/test_datorie.py):** agricol pe normă, opțiunea CAS lit.B, CASS pe pensiile din străinătate,
-  CASS 2.2 reținută peste datorată — toate se închid odată cu validatorul ANAF pentru OPANAF 2736/2025. Dobânzile pentru obligațiuni pe
-  piețe externe (pct.8) n-au cod în validatorul instalat → nu se pot exprima ca test; consemnate în GARZI.
-- **[EXTERN] nou (Etapa 5c-2b):** CASS pe pensiile din străinătate datorată în România (de la 08.2025, Subsecțiunea a 3-a a Secțiunii 2,
-  instrucțiuni pct.41) — formularul validatorului instalat n-o are; refuz numit. Ce trebuie · de la cine · ce blochează: validatorul D212
-  pentru OPANAF 2736/2025 · ANAF · emiterea CASS pe pensiile din străinătate.
-- **[EXTERN] nou (Etapa 5a):** CASS 2.2 reținută peste cea datorată — formularul instalat n-are rândul „diferența în minus”
-  (refuz numit); dobânzile pentru obligațiuni pe piețe externe (instrucțiuni pct.8) n-au căsuță — categoria nu e oferită;
-  categoriile pentru veniturile 2026 — Legea 239/2025 schimbă regulile, formularul ANAF nepublicat (refuz numit).
-- **[EXTERN] nou (Etapa 4):** opțiunea CAS sub 12 sm (lit.B) n-are căsuță în formularul validatorului instalat (Pdf_v8: doar A1/A2);
-  refuz numit + `core/test_datorie.py::test_datorie_d212_optiune_cas_sub_12_sm`.
-- **D212 — BLOCAJ [EXTERN] aflat la sursă pe 02.10:** validatorul instalat (J13.0.1, pachet v9) e al formularului PENTRU
-  VENITURILE 2024. **Subsecțiunea a 4-a (agricol pe normă, CF art.107 alin.(2)) nu are niciun loc în XML** (0 atribute agricole,
-  nu există bifa114). Generatorul REFUZĂ numit; datorie strictă `core/test_datorie.py::test_datorie_d212_venit_agricol_pe_norma`.
-  Ce trebuie · de la cine · ce blochează: validatorul D212 pentru OPANAF 2736/2025 · ANAF (versiuni.xml) · emiterea agricolului.
-- **DECIZII CARE AȘTEAPTĂ PE COSTIN:**
-  1. Exporturile SAGA / WinMentor ale facturilor emise: o factură „emisă pe baza bonului fiscal” pleacă azi ca orice ieșire, iar
-     programul extern ar înregistra vânzarea a doua oară dacă înregistrează și raportul Z. Varianta A: factura din bon nu se
-     exportă ca ieșire. Varianta B: se exportă cu mențiunea „conform bon fiscal” (formatul SAGA nu e verificat aici pentru un
-     câmp dedicat). Blochează: corectitudinea evidenței ținute în SAGA/WinMentor pentru firmele care facturează din bonuri.
-- **ÎNCHIS 02.10 (decizia A):** factura emisă pe baza bonului fiscal — marca „conform bon fiscal nr./data” (HG 1/2016 pct.97
-  alin.(1)), definiția unică `core/facturi.py`, D300 / D394 / contare / stoc / storno; DECIZII 02.10, GARZI „Factura emisă pe baza
-  bonului fiscal”.
-- **ÎNCHIS 02.10 (decizia B):** D394 op2 Î1 — ruta tastată cere nr. bonuri, ambele rute scriu `rapoarte_z_amef`, D394 citește o
-  singură sursă, refuz numit pe raportul incomplet; datoria strictă scoasă. DECIZII 02.10, GARZI „D394 op2 Î1”.
-- **Fronturi deschise, neschimbate:** F1 etapele 9-11 (depunere reală = [EXTERN]); F2 D101 (la închiderea anului);
-  Pachet FiscalOS §4 (D394 Î1/Î2); plafonul de creșă pentru luni < 04.2024 rămâne pe baza 450 (DECIZII 01.10).
-- **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09, DECIZII 21.09) — nu se comite, nu se șterge.
+- **ultima rescriere**: **2026-10-03** (după-amiaza), în commitul **Lot 19: publicare** (commitul care poartă această predare; hash-ul
+  lui e în raport și în `git log`).
+- **pe commit**: `a6655c85` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-03 =
+  procesul viu = a6655c85, agenda — greenlight / 2b blocat).
+- **ÎN LUCRU ACUM:** nimic deschis — firul **LOT 19** e ÎNCHIS în TESTE.md: defectele 6–13 reparate (11 și 12 după deciziile lui Costin
+  din 03.10), clasa formularelor Operațiuni (opțiuni imposibile, `bool("false")`), 20 de ghiduri live corectate, 433 publicate, 441 de
+  rânduri în index. Migrări aplicate pe ambele baze (backup înainte pe producție: `~/backup_pre_destinatie_cd_20261003_1139.sql.gz`,
+  `~/backup_pre_capital_social_20261003_1146.sql.gz`).
+- **URMĂTORUL FRONT (comanda Costin 03.10, ordinea dată):** `core.agenda.urmatorul_pas()` → **punctul 2, D394 Î2**: întâi textul integral
+  al HG 479/2003 în corpus (acum doar antetul) și lista activităților exceptate verificată pe el; bifa „activitate exceptată de la AMEF”
+  pe profil (cu activitatea); încasările din chitanțe + registrul de casă; firmă scutită cu încasări neclasificate → D394 refuză numit.
+  Apoi **punctul 3** (exportul SAGA/WinMentor al facturilor din bon: marca „din bon” dacă formatul are câmp, altfel fișier separat în
+  afara importului de vânzări — formatele verificate la sursă) și **punctul 4** (DROP `salariati.salariu_brut` după dovada că nimic n-o
+  citește, backup, migrare pe toți tenanții). Fiecare: gard, mutație, probă invalid→valid, commit separat, ZIP în ghid_incoming.
+- **ATENȚIE (efect al lotului 19, decizia 12):** o societate fără formă juridică / capital în Date firmă NU mai emite facturi (refuz numit,
+  trimitere la Date firmă). Probele care emit pe F1–F5 își completează profilul ÎN TRANZACȚIA anulată (v.
+  `frontend_test/proba_lot19_d12_capital_social.py`); testele noi care emit pe schemă efemeră pun `forma_juridica='SRL'`, `capital_subscris=200`.
+- **Decizii în vigoare (Costin 03.10):** D112 contract uniform A1 — „nu acum; doar când D112 e atins oricum” (fir BLOCAT în TESTE);
+  ghidurile — metoda arhitectului (Claude redactează și verifică, Costin aprobă titlurile, Code publică).
+- **[EXTERN] neschimbate:** F1 etapele 9–11 (depunere reală, SPV); D212 — validatorul ANAF pentru OPANAF 2736/2025 (agricol pe normă,
+  opțiunea CAS lit.B, CASS pe pensiile din străinătate, CASS 2.2 reținută peste datorată — datorii stricte în core/test_datorie.py).
+- **Lotul 19, rămase de știut:** ghidul „amenzile-primite-punct-lucru-apar-cazierul-fiscal” (GH-09299, `candidat`) a fost scos din lot fiindcă
+  art. 4 din OPANAF 2594/2015 lipsea din corpus; ordinul e acum readus (78e85cda) — titlul poate fi redactat într-un lot următor.
+  Golurile de corpus din RAPORT_LOT19.md (anexele ordinelor; HG 479/2003) rămân, HG 479 intră la punctul 2.
+- **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09) — nu se comite, nu se șterge.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **CE E RESCRIS ȘI CE E PĂSTRAT**: rescrise — titlul, antetul, starea și „CE RĂMÂNE” din „PRIMUL LUCRU DE ȘTIUT”, plus
-  lecția porții din commitul de predare respins. Păstrate neatinse: rețeta scanului vizual, F1–F3, capcanele, operaționalul,
-  cifrele invalidate.
+- **CE E RESCRIS ȘI CE E PĂSTRAT**: rescrise — titlul și antetul. Păstrate neatinse: „PRIMUL LUCRU DE ȘTIUT” și restul (rețeta scanului
+  vizual, F1–F3, capcanele, operaționalul).
 
 ---
 ## PRIMUL LUCRU DE ȘTIUT: **D212 Etapa 3 închisă; lanțul e pe D212 Etapa 4 (impozit/CAS/CASS în `oblig_realizat`)**
@@ -459,8 +435,8 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **880** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **891** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

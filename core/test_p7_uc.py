@@ -66,9 +66,39 @@ PERECHI_ADAUGATE = {
     ("facturi_emite", "MESAJ_FACTURA_BON_STOC"): (
         "Decizia Costin A (02.10.2026): factura emisă pe baza bonului fiscal nu e o vânzare nouă — marfa a ieșit cu bonul "
         "(raportul Z), deci a doua descărcare de gestiune se refuză (422), cu ieșirea numită („NU — doar fiscal”)."),
+    ("facturi_emite", "_cs.detaliu(e)"): (
+        "Lot 19 defectul 12, decizia Costin (03.10.2026): factura unei societăți fără forma juridică / capitalul social "
+        "din Date firmă se refuză la emitere (Legea 31/1990 art.74 alin.(3)), STRUCTURAT (422): ce lipsește, temeiul, "
+        "ecranul spre care trimite — caseta păstrează factura tastată."),
+    ("achizitie_taxare_inversa", "str(e)"): (
+        "Lot 19 defectul 13 (03.10.2026): bifa „furnizor plătitor de TVA” se citește prin `_uc_comun.bifa`; o valoare care "
+        "nu e da/nu e refuzată (422), nu ghicită — înainte orice șir era „plătitor”."),
+    ("centre_cost_activ", "str(e)"): (
+        "Lot 19 defectul 13 (03.10.2026): `activ` se citește prin `_uc_comun.bifa`; „false” trimis ca text nu mai "
+        "activează centrul (bool(\"false\") era True) — o valoare care nu e da/nu e refuzată (422)."),
     ("horeca_import_amef", "MESAJ_AMEF_FARA_BONURI"): (
         "D394 op2 Î1, decizia Costin B (02.10.2026): un fișier AMEF fără `nrB` nu poate scrie rândul `rapoarte_z_amef` "
         "(nr_bonuri > 0); refuz numit (422), nu un rând care ar opri D394 mai târziu."),
+}
+
+
+#: [lot 19 defectul 13, 03.10.2026] Functiile in care `bool(corp.get(x))` a devenit `_uc_comun.bifa(corp, x)`:
+#: ecranul trimite selecturile ca TEXT („true”/„false”), iar `bool("false")` e True — imputabil „Nu” devenea imputabil,
+#: furnizor neplatitor -> taxare inversa, agricultor neinscris -> compensare deductibila. (credit pe apel, extra, motiv)
+_BOOL_GET = {"bool": 1, "get": 1}
+BIFA_INLOCUIRI = {
+    "centre_cost_activ": (_BOOL_GET, {}, "activ"),
+    "export_extracomunitar": (_BOOL_GET, {}, "dovada_export"),
+    "import_extracomunitar": (_BOOL_GET, {}, "certificat_amanare"),
+    "nota_asociati": ({"bool": 1}, {}, "interimar: select „0”/„1”"),
+    "nota_inventariere": (_BOOL_GET, {}, "imputabil, asigurat_sau_distrus, destinatie_cd"),
+    "nota_obiect_inventar": (_BOOL_GET, {}, "durata_sub_1_an"),
+    "nota_perisabilitati": (_BOOL_GET, {}, "degradare_dovedita_distrusa"),
+    "nota_provizion_ep": (_BOOL_GET, {}, "garantata, afiliata, faliment"),
+    "vanzare_ic": ({"bool": 1}, {}, "dovada_transport"),
+    "achizitie_taxare_inversa": ({"get": 1, "strip": 1, "lower": 1}, {"get": 1},
+                                 "furnizor_platitor_tva; al doilea `corp.get` (sirul trimis la se_aplica) inlocuit "
+                                 "de verdictul ANAF/bifa `_tert_pl`"),
 }
 
 
@@ -358,10 +388,15 @@ def confrunta(vechi_src, nou_src, uc, harta):
 
 
 def _forme_mesaj(msg_repr):
-    """Cele doua forme sub care un mesaj declarat poate aparea in cod: constanta NUMITA
-    (`FARA_DREPT_PREGATIRE`) sau literal (`"Element de coadă..."`). Se potriveste oricare."""
-    return {ast.dump(ast.Name(id=msg_repr, ctx=ast.Load())),
-            ast.dump(ast.Constant(value=msg_repr))}
+    """Formele sub care un mesaj declarat poate aparea in cod: constanta NUMITA (`FARA_DREPT_PREGATIRE`),
+    literal (`"Element de coadă..."`) sau — [lot 19, 03.10.2026] — EXPRESIA scrisa ca atare (`str(e)`,
+    `_cs.detaliu(e)`): un refuz care poarta mesajul exceptiei nu are nici nume, nici literal."""
+    forme = {ast.dump(ast.Name(id=msg_repr, ctx=ast.Load())), ast.dump(ast.Constant(value=msg_repr))}
+    try:
+        forme.add(ast.dump(ast.parse(msg_repr, mode="eval").body))
+    except SyntaxError:
+        pass
+    return forme
 
 
 def _fara_abateri(nume, ramase_v, ramase_n):
@@ -487,12 +522,32 @@ def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
         for (_fn, _vechi), (_nou, _m) in APELURI_INLOCUITE.items():
             if _fn == nume and acum.get(_nou):
                 acum[_vechi] = acum.get(_vechi, 0) + acum[_nou]
+        # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
+        # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
+        # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.
+        if nume in BIFA_INLOCUIRI:
+            _per_apel, _extra, _m = BIFA_INLOCUIRI[nume]
+            for k, v in _per_apel.items():
+                acum[k] = acum.get(k, 0) + v * acum.get("bifa", 0)
+            for k, v in _extra.items():
+                acum[k] = acum.get(k, 0) + v
         lipsa = {k: inainte[k] - acum.get(k, 0) for k in inainte if inainte[k] > acum.get(k, 0)}
         if lipsa:
             dif.append("%s: apeluri pierdute %s" % (nume, lipsa))
     assert confruntate >= 300, "doar %d funcții confruntate — universul s-a golit" % confruntate
     assert not dif, ("apeluri care nu se mai fac, în %d funcții:\n    %s"
                      % (len(dif), "\n    ".join(dif[:10])))
+
+
+def test_BIFA_INLOCUIRI_chiar_cheama_bifa():
+    """Anti-vacuu: o functie declarata in BIFA_INLOCUIRI cheama efectiv `_uc_comun.bifa` (altfel creditul ar scuza
+    apeluri chiar pierdute)."""
+    src = io.open(os.path.join(RAD, "core", "uc_tenants.py"), encoding="utf-8").read()
+    arb = ast.parse(src)
+    fn = {n.name: n for n in arb.body if isinstance(n, ast.FunctionDef)}
+    lipsa = [n for n in BIFA_INLOCUIRI if n not in fn or not any(
+        isinstance(x, ast.Call) and getattr(x.func, "attr", None) == "bifa" for x in ast.walk(fn[n]))]
+    assert lipsa == [], lipsa
 
 
 def test_DECORATORII_rutelor_sunt_NEATINSI():

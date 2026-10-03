@@ -452,7 +452,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie dividend|regularizare|imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar, dividend_anual}; imprumut{suma, f — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, operatie dividend|regularizare|restituire_dividend|imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar, dividend_anua — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] distincția între aport, împrumut și retragere e obligatorie: au tratamente fiscale diferite
 - retragerea de bani fără temei e chiar cazul din ghidul „bani din firmă fără temei" — verifică dacă ruta o permite fără să semnaleze
@@ -1630,7 +1630,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T22 — Mijlocul fix și amortizarea
 
-*clasa MECANIC · 3 rute · 2 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 4 rute · 3 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/mijloace-fixe`*
 
@@ -1644,6 +1644,16 @@ faptica, pe baza listelor de inventariere.
 - un mijloc fix complet amortizat nu mai produce amortizare
 - amortizarea contabilă și cea fiscală pot diferi — verifică dacă se disting, sau se calculează una singură
 - **scrie `validata` direct**, deci a primit rol azi. Verifică că nu se poate rula de două ori pe aceeași lună
+
+### `PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd`
+
+*garda `cere_cabinet` · **fara rol** · scrie in mijloace_fixe*
+
+*ce face: corp: {destinatie_cd: da/nu} — scrie mijloace_fixe (UPDATE) — prin `repo_mijloace_fixe`*
+
+- [x] cu bifa = da, un echipament pe alt cont decât 2131 se poate amortiza accelerat (CF art.20 alin.(1) lit.b)); D406 Assets îl declară cu `DepreciationMethod` accelerata — probat prin HTTP în `core/test_rute_stoc_pana_in_declaratie.py::test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets` (fără bifă: 422)
+- bifa nu deschide accelerata la construcții, terenuri, animale/plantații (nu sunt „aparatură și echipamente”) — `core/test_mf_destinatie_cd.py`
+- **fără rol**: schimbă metoda permisă, deci baza amortizării fiscale (D101) — de verificat dacă bifa cere `admin_firma`, ca reevaluarea la validare
 
 ### `POST /tenants/{tenant_id}/reevaluare-imobilizare`
 

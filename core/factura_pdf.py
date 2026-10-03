@@ -105,6 +105,11 @@ def genereaza_pdf(profil, factura):
     if profil.get("reg_com"):
         det += " · " + profil["reg_com"]
     firma_txt.append(Paragraph(det, st_mic))
+    # [lot 19 d12] Legea 31/1990 art.74 alin.(3): capitalul social (SRL) / subscris și vărsat (SA, SCA)
+    from core import capital_social as _cs
+    _cap = _cs.text_factura(profil) if not _cs.lipsa(profil) else None
+    if _cap:
+        firma_txt.append(Paragraph(_cap, st_mic))
     if adr:
         firma_txt.append(Paragraph(adr, st_mic))
     if profil.get("iban"):

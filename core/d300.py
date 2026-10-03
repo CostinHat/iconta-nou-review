@@ -73,6 +73,19 @@ def _exig_d300():
 # staging DESI calea de emitere a aplicatiei il produce — 4 facturi emise, 3.052,00 lei TVA colectata,
 # nu intrau in decont. Vezi decizia de interpretare din antetul nomenclatorului.
 from core import nomenclator_status_factura as _nsf
+
+# Coloanele fiecarui rand de intrare, din structura ANAF (anaf_surse/d300_struct_anaf.txt: Rn_1 / Rn_2 inexistent).
+# Un rand manual pe o coloana care nu exista ajungea in XML ca atribut necunoscut — DUK: „eroare atribut: R29_1:
+# atribut necunoscut” (probat 03.10.2026). Sursa UNICA: d300_manual_api le importa de aici. Gardate pe structura de
+# core/test_d300_r31_manual.py.
+RANDURI_FARA_COL1 = frozenset({"R29", "R31", "R35", "R36", "R38", "R39", "R43", "R44"})   # doar TVA (col.2)
+RANDURI_FARA_COL2 = frozenset({"R1", "R2", "R3", "R4", "R13", "R14", "R15", "R26"})       # doar baza (col.1)
+# R31 (rd.34 „Ajustări conform pro-rata / ajustări de taxă”) e ADITIV: componenta calculata din pro-rata
+# provizorie + ce introduce contabilul (ajustarea pentru bunuri de capital, CF art.305; ajustarea anuala pe pro-rata
+# definitiva). OPANAF 174/2026, instructiuni rd.34: „diferenţele de taxă pe valoarea adăugată rezultate ca urmare a
+# ajustării anuale pe bază de pro rata definitivă ... precum şi diferenţele de taxă pe valoarea adăugată rezultate ca
+# urmare a ajustării taxei deductibile, cu semnul plus sau minus, după caz.” [Lot 19 defect 10, 03.10.2026]
+RANDURI_ADITIVE = frozenset({"R31"})
 from core import repo_d300 as _repo
 _STATUS_FINAL = _nsf.clauza_sql("f")
 
@@ -190,6 +203,12 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     """
     manual = manual or {}
     _bad = [k for k in manual if not str(k).startswith("R")]
+    # FORMĂ — coloana inexistenta in structura ANAF (v. RANDURI_FARA_COL1/2): refuz vizibil, nu XML invalid
+    _col = sorted(k for k in manual if manual[k] and (
+        (k.endswith("_1") and k[:-2] in RANDURI_FARA_COL1) or (k.endswith("_2") and k[:-2] in RANDURI_FARA_COL2)))
+    if _col:
+        raise ValueError("D300: coloane care nu există în structura ANAF pentru rândurile lor: %s (col.1 = bază, "
+                         "col.2 = TVA)." % _col)
     if _bad:
         raise ValueError("D300: chei 'manual' necunoscute (așteptate Rxx_y): %s" % sorted(_bad))
     an, luna = perioada.an, perioada.luna
@@ -581,6 +600,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     for k, v in manual.items():
         if k.startswith(("R18_", "R19_", "R20_", "R21_", "R23_", "R25_", "R26_",
                          "R29_", "R30_",  # ajustari/regularizari deductibila: R29 restituiri cumparatori straini, R30 regularizari taxa dedusa (feed R32)
+                         "R31_",  # ajustari de taxa (art.305 bunuri de capital, pro-rata definitiva) - ADITIV la pro-rata calculata
                          "R35_", "R36_",  # regularizari rezultat: R35 sold reportat neachitat, R36 diferente inspectie fiscala (feed R37)
                          "R38_", "R39_",  # rezultat: R38 sold negativ reportat (fara rambursare), R39 diferente negative inspectie (feed R40)
                          "R43_", "R44_",  # ajustari deductibila incluse in totalul R27
@@ -630,7 +650,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     _pr = prof.get("pro_rata")
     pro_rata = 100.0 if _pr is None or (isinstance(_pr, str) and not _pr.strip()) \
         else float(numar_fiscal(_pr, "pro_rata"))
-    r31_2 = 0
+    r31_2 = R.pop("R31_2", 0)   # partea introdusa de contabil (RANDURI_ADITIVE); pro-rata provizorie se adauga
     if pro_rata < 100:
         # [A12 art.300 alin.3/5/11] pro-rata se aplica DOAR pe achizitiile MIXTE (ded_mixt_t), NU pe tot
         # deductibilul: art.300 alin.3 - achizitiile destinate EXCLUSIV operatiunilor cu drept se deduc
@@ -639,7 +659,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         # se agrega pe cota si pierd destinatia liniei -> mixt nu se poate izola; pe acel regim baza ramane
         # r28_2 (comportament anterior), semnalat in avertismente.
         _baza_prorata = r28_2 if tvai else ded_mixt_t
-        r31_2 = _int(Decimal(str(_baza_prorata)) * Decimal(str(100 - pro_rata)) / Decimal(100) * -1)
+        r31_2 += _int(Decimal(str(_baza_prorata)) * Decimal(str(100 - pro_rata)) / Decimal(100) * -1)
     if r31_2:
         R["R31_2"] = r31_2
 

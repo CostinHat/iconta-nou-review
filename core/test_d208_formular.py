@@ -49,7 +49,7 @@ def test_d208_nu_e_doar_api():
 def test_d208_cerere_goala_refuza_la_api():
     """Bloc validare API: fara nume/tranzactii -> erori; cerere valida -> lista goala."""
     goala = declaratii_api.valideaza_cerere("d208", {"tenant_id": 1, "an": 2026})
-    valida = declaratii_api.valideaza_cerere("d208", {"tenant_id": 1, "an": 2026, "manual": _m()})
+    valida = declaratii_api.valideaza_cerere("d208", {"tenant_id": 1, "an": 2026, "luna": 3, "manual": _m()})
     assert goala and valida == []
 
 

@@ -66,5 +66,15 @@ def test_plati_estimate_scadente():
     from core.cashflow import plati_estimate
     p = plati_estimate({"fiscale": 1500, "salarii_nete": 3000}, 1000, azi=AZI, saptamani=8)
     assert p[0]["suma"] == 3000 and p[0]["data_scadenta"] == "2026-07-06"
-    assert p[1]["suma"] == 1500 and p[1]["data_scadenta"] == "2026-07-25"
+    # 25.07.2026 e sambata -> termenul e luni 27 (scadente.termen_legal), nu sambata
+    assert p[1]["suma"] == 1500 and p[1]["data_scadenta"] == "2026-07-27"
     assert any(x["suma"] == 1000 for x in p)
+
+
+def test_plati_estimate_decembrie_pe_21():
+    from core.cashflow import plati_estimate
+    # CPF art.155 alin.(2): ce se împlinește la 25 decembrie „se declară până la data de 21 decembrie”
+    p = plati_estimate({"fiscale": 1500}, 0, azi=datetime.date(2026, 12, 10))
+    assert p[0]["data_scadenta"] == "2026-12-21"
+    p = plati_estimate({"fiscale": 1500}, 0, azi=datetime.date(2026, 12, 22))
+    assert p[0]["data_scadenta"] == "2027-01-25"

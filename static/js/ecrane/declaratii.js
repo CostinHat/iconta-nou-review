@@ -3496,17 +3496,17 @@ async function randeazaManualD300(corp, nav) {
   const grila = randuri.length
     ? randuri.map((o) => `<div class="dec-man-rand">
         <span class="dec-recl-desc" title="${esc(o.eticheta)}">${esc(o.rand)} · ${esc(o.eticheta)}</span>
-        <span class="dec-recl-suma">${bani(o.baza)} bază${o.cu_tva ? " · " + bani(o.tva) + " TVA" : ""} (lei)${o.descriere ? " · " + esc(o.descriere) : ""}</span>
+        <span class="dec-recl-suma">${o.cu_baza === false ? "" : bani(o.baza) + " bază"}${o.cu_tva ? (o.cu_baza === false ? "" : " · ") + bani(o.tva) + " TVA" : ""} (lei)${o.descriere ? " · " + esc(o.descriere) : ""}</span>
         <button class="btn-link dec-d300-del" data-id="${o.id}">șterge</button></div>`).join("")
     : `<div class="stare-goala stare-goala--inline">Niciun rând manual pe ${etPerioada()}. Rândurile pe care generatorul le derivă din facturi apar automat în decont; aici introduci doar ce nu se derivă (scutiri, regularizări, ajustări).</div>`;
-  const optiuni = disp.map((r) => `<option value="${esc(r.cod)}" data-cutva="${r.cu_tva ? 1 : 0}">${esc(r.cod)} — ${esc(r.eticheta)}</option>`).join("");
+  const optiuni = disp.map((r) => `<option value="${esc(r.cod)}" data-cutva="${r.cu_tva ? 1 : 0}" data-cubaza="${r.cu_baza === false ? 0 : 1}">${esc(r.cod)} — ${esc(r.eticheta)}</option>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Rânduri manuale D300 — introducere (${randuri.length})</summary>
     ${grila}
     ${disp.length ? `<div class="camp-eticheta" style="margin:10px 0 4px">Adaugă rând:</div>
     <div class="dec-man-form">
       <label class="camp" style="width:440px"><span class="camp-eticheta">Rând <span class="oblig">*</span></span>
         <select id="d300-rand" class="camp-input">${optiuni}</select></label>
-      <label class="camp" style="width:130px"><span class="camp-eticheta">Bază (lei) <span class="oblig">*</span></span><input id="d300-baza" type="number" step="1" class="camp-input"></label>
+      <label class="camp" style="width:130px" id="d300-baza-wrap"><span class="camp-eticheta">Bază (lei) <span class="oblig">*</span></span><input id="d300-baza" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:130px" id="d300-tva-wrap"><span class="camp-eticheta">TVA (lei)</span><input id="d300-tva" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:220px"><span class="camp-eticheta">Descriere</span><input id="d300-descriere" class="camp-input"></label>
       <button class="buton-secundar" id="d300-add">+ adaugă</button>
@@ -3522,6 +3522,10 @@ async function randeazaManualD300(corp, nav) {
     const cuTva = !!(o && o.dataset.cutva === "1");
     const w = gv("#d300-tva-wrap"); if (w) w.style.display = cuTva ? "" : "none";
     if (!cuTva) { const t = gv("#d300-tva"); if (t) t.value = ""; }
+    // rândurile fără col.1 (R29, R31, R35…): baza nu există în structura ANAF -> câmpul dispare
+    const cuBaza = !(o && o.dataset.cubaza === "0");
+    const wb = gv("#d300-baza-wrap"); if (wb) wb.style.display = cuBaza ? "" : "none";
+    if (!cuBaza) { const t = gv("#d300-baza"); if (t) t.value = ""; }
   }
   if (gv("#d300-rand")) { gv("#d300-rand").addEventListener("change", sincTva); sincTva(); }
   zona.querySelectorAll(".dec-d300-del").forEach((b) => b.addEventListener("click", async () => {

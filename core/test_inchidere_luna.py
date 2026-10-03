@@ -62,6 +62,7 @@ def conn():
                 # firmă care nu există în portofoliu.*
                 cur.execute("INSERT INTO firma_profil (id, nume, cui, urmator_numar_factura) "
                             "VALUES (1, %s, %s, 1)", ("FIRMA TEST INCHIDERE SRL", "14399840"))
+                cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200 WHERE id = 1")  # L31/1990 art.74 alin.(3): fără capital, factura nu se emite (lot 19 d12)
             yield c
         finally:
             c.rollback()

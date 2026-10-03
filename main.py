@@ -5910,9 +5910,10 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 @app.post("/tenants/{tenant_id}/nota-asociati")
 def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    """corp: {data, operatie dividend|regularizare|imprumut, descriere?, +
+    """corp: {data, operatie dividend|regularizare|restituire_dividend|imprumut, descriere?, +
     dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar,
-    dividend_anual}; imprumut{suma, fel primire|restituire, dobanda?}}."""
+    dividend_anual, impozit_interimar (cerut cand interimar > anual)}; restituire_dividend{suma_restituita};
+    imprumut{suma, fel primire|restituire, dobanda?}}."""
     try:
         return _uc_tenants.nota_asociati(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -6023,6 +6024,16 @@ def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
     Sursa unica pentru ID-ul cerut de casare/reevaluare (pana acum netastabil - niciun ecran)."""
     try:
         return _uc_tenants.tenant_mijloace_fixe(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.put("/tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd")
+def mijloc_fix_destinatie_cd(tenant_id: int, mijloc_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {destinatie_cd: da/nu}. [lot 19 d11] Bifa «Destinat C&D» (CF art.20 alin.(1) lit.b)): permite
+    amortizarea accelerata a aparaturii si echipamentelor de cercetare-dezvoltare din orice cont."""
+    try:
+        return _uc_tenants.mijloc_fix_destinatie_cd(tenant_id, mijloc_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

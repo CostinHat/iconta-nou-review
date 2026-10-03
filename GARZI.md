@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**666 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**673 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 634
+### `core/` — 641
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8894,6 +8894,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_cai_fisiere_date.py` — GARD CLASA "cale de fisier construita relativ la radacina" (01.08.2026).
 - `core/test_cale_a_doua.py` — GARD (20.08.2026): a doua cale nu poate fi mutată peste prima în tăcere.
 - `core/test_camp_blocant.py` — GARDĂ [R93, 30.08.2026]: un câmp declarat OBLIGATORIU trebuie să OPREASCĂ generatorul, nu să
+- `core/test_capital_social.py` — GARD — capitalul social pe factură (lot 19, defectul 12, 03.10.2026).
 - `core/test_capturi_numite.py` — GARD [HH, 28.08.2026]: o captură comisă fără proprietar în registru pică poarta.
 - `core/test_cartea_mare.py` — GARD — Cartea mare ajunge la om, și fișa își poartă temeiul de completitudine.
 - `core/test_cashflow.py` — —
@@ -9030,6 +9031,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d300_forfait_agricol.py` — core/test_d300_forfait_agricol.py — gard TVA ORFAN din antet la achizitii primite
 - `core/test_d300_profil_identitate.py` — TURA 3 / T1: erori_generare verifica pana acum doar NON-GOL pentru cui/caen/pro_rata.
 - `core/test_d300_r25_r12.py` — TURA 4 (CR-5/T8): oglinda rd.12 <-> rd.25 la taxare inversa PRIMITA (masuri de simplificare).
+- `core/test_d300_r31_manual.py` — GARD — D300 rd.34 (R31_2) acceptă ajustările introduse de contabil, iar rândurile manuale nu pot purta o coloană
 - `core/test_d300_rapoarte_z.py` — GARD — TVA-ul colectat din rapoartele Z intră în decontul D300 (lot 19 pct.4b, 02.10.2026).
 - `core/test_d300_reconciliere.py` — core/test_d300_reconciliere.py — gardul A DOUA CALE D300 (05.08.2026).
 - `core/test_d300_taxare_inversa_beneficiar.py` — Gard Task2 (10.08.2026): achizitiile cu taxare inversa PRIMITA nu mai dispar tacit din D300.
@@ -9134,6 +9136,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_descarcare_muta.py` — [R131, 04.09.2026] GARD: o descarcare care esueaza spune DE CE.
 - `core/test_diacritice_afisate.py` — core/test_diacritice_afisate.py — GARD DE DIACRITICE PE TEXTUL AFIȘAT (#4, criteriul lui Costin).
 - `core/test_dialog_nativ_frontend.py` — GARD (09.08.2026): dialoguri native alert()/prompt()/confirm() INTERZISE in TOT frontendul (DS cap.5:
+- `core/test_dividende_interimare.py` — GARD — regularizarea dividendelor interimare (lot 19, defectul 9, 03.10.2026).
 - `core/test_document_fara_administrator.py` — GARD [R66 (c), 26.08.2026]: un document care tipărește numele administratorului nu se produce
 - `core/test_document_ref_necunoscut.py` — GARD — un `0` care nu poate fi altceva decât `0` nu susține nicio cauză afirmată.
 - `core/test_ds_verificator.py` — GARDĂ [R103, 30.08.2026]: legătura `DESIGN_SYSTEM.md` → `verificator_conformitate.py` nu mai
@@ -9177,6 +9180,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.
 - `core/test_fluturas_egal_stat.py` — GARDĂ: fluturașul TIPĂREȘTE statul, nu îl recalculează. (21.08.2026)
 - `core/test_fluturas_eticheta.py` — O eticheta de pe fluturas nu are voie sa numeasca un lucru si sa arate altul.
+- `core/test_formulare_operatiuni_campuri.py` — GARD — nicio opțiune a unui formular din ecranul Operațiuni nu poate fi imposibil de trimis cu succes
 - `core/test_four_way_cardinalitate.py` — Bratul four-way nu se poate inchide pe o multime INCOMPLETA.
 - `core/test_frecventa_document_care_raspunde.py` — GARD [01.09.2026, R111]: frecvența nu se citește dintr-un document care nu poate răspunde.
 - `core/test_front_e_editare_identitate.py` — core/test_front_e_editare_identitate.py — GARD Front E: identitatea/contractul salariatului
@@ -9244,10 +9248,12 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_mesaje_generare_fara_camp_intern.py` — GARD (F5/Regula 14.4): mesajele de VALIDARE ale generatoarelor de declaratii (functiile
 - `core/test_mesaje_valueerror_publicat.py` — GARD (D7/D8/D9, 20.08.2026): mesajele `ValueError` PUBLICATE contabilului sunt în limba lui.
 - `core/test_metoda_vie.py` — GARD (20.08.2026): METODA_VERIFICARE.md nu descrie o lume care nu mai există.
+- `core/test_mf_destinatie_cd.py` — GARD — amortizarea accelerată a aparaturii de cercetare-dezvoltare din orice cont (lot 19, defectul 11, 03.10.2026).
 - `core/test_migrare_cnp_ingrijit.py` — core/test_migrare_cnp_ingrijit.py — gard: fiecare schema de TENANT are coloana cnp_ingrijit (D_8/D_8a).
 - `core/test_migrare_ignorate_vizibil.py` — [Regula 6 + Regula 14.4] GARD: intrarile ignorate la validarea CUI (strat firme) ajung VIZIBIL pe ecran.
 - `core/test_migrare_program_national_cm.py` — core/test_migrare_program_national_cm.py — gard: fiecare schema de tenant are concedii_medicale.program_national (D_9a).
 - `core/test_mijloace_fixe_import_categorie.py` — Import mijloace fixe: cont de imobilizare lipsă NU se mai completează tacit cu 2131.
+- `core/test_mijloace_fixe_import_rezidual.py` — GARD — importul de mijloace fixe nu mai pune valoarea RĂMASĂ în `rezidual` (lot 19, defectul 6, 03.10.2026).
 - `core/test_module_nelegate.py` — CLICHET — module de producție din `core/` pe care nu le cheamă nimeni în afara testelor.
 - `core/test_monitor_fiscal.py` — —
 - `core/test_mutant_zero.py` — core/test_mutant_zero.py — GARD C5 (rest): mutant-zero pe generatoare.
@@ -9289,6 +9295,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_perimetru_firma_declarat.py` — core/test_perimetru_firma_declarat.py — GARD: perimetrul declarat al unei firme nu poate ramane
 - `core/test_perioada.py` — Perioada confirmata (DESIGN_SYSTEM cap.23): ciclul CONFIRMAT/NECONFIRMAT + blocajul motivat.
 - `core/test_perioada_indisponibila.py` — Blocaj MOTIVAT pentru cote de regula cu data_in tarzie (01.08.2026). O cota ceruta de un calcul pentru
+- `core/test_periodicitate_declaratii.py` — GARD — periodicitatea declarațiilor: D208 lunară, „semestrial” cere luna explicit, iar selectorul nu primește o
 - `core/test_plan_conturi_no_upsert.py` — [Regula 4 + Regula 14.4] GARD: adaugarea MANUALA de cont in plan NU suprascrie tacut un simbol existent.
 - `core/test_plan_form_fieldmark.py` — [Regula 14.4 pct.4] GARD: formularul 'Adauga cont' (plan_conturi) semnaleaza obligativitatea INAINTE de
 - `core/test_plata_izolare.py` — GARD [06.09.2026, decizia lui Costin]: calea de plată online e ÎNCHISĂ și nu se redeschide tăcut.
@@ -9990,3 +9997,21 @@ Categoria **8. Proces / registre** (starea derivată din registre propunea un pa
 |---|---|---|---|---|
 | cititorul pasului următor | core/test_agenda_urmator.py (4 teste, caz construit + TESTE.md real) | pasul unui fir închis/blocat ales ca următor; firele scrise indentat ignorate; primul „urmator” în loc de ultimul | cititorul vechi repus → roșu („pasul B1” în loc de „pasul C2”) | nu vede un fir livrat al cărui „urmator” n-a fost închis — disciplina CLAUDE.md §2.1 |
 
+
+## 03.10.2026 — Lot 19: defectele 6–13 (import MF, 21 decembrie, D208 lunar, dividende interimare, D300 rd.34, C&D, capital social, formularele Operațiuni)
+
+Categoriile **3. Calcul fiscal** (amortizare, termene, D300, dividende), **5. Intrare → declarație** (formulare care nu pot
+trimite ce cere ruta; bife citite greșit) și **7. Documentație** (ghiduri live). Detaliul: DECIZII 03.10.2026 („Lot 19 —
+defectele 6–13 …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| rezidual ≠ rămas la import | core/test_mijloace_fixe_import_rezidual.py (5) | coloana „rămas/neamortizat” citită drept rezidual; rezidual = valoare fără coloană; „valoare rămasă” luată drept valoare de intrare | `else valoare` repus → 5 roșii; „ramas” în cheile rezidualului → 3 roșii; avertismentul oprit → roșu; excluderea coloanelor scoasă → roșu | toleranța avertismentului = o rată lunară + 1 leu (data exportului nu e cunoscută) |
+| 21 decembrie | core/test_scadente.py (3 noi), core/test_cashflow.py | termenul obligațiilor cu scadența 25 decembrie mutat înainte (28.12) în loc de 21.12 / ultima zi lucrătoare dinainte | excepția oprită → roșu (scadente + cashflow); mutarea înapoi inversată → roșu; cashflow fără sursa unică → roșu | XML-ul păstrează scadența nominală 25 (DUK R15.6 / R25 o cer) — nu e gardat ca „21” |
+| periodicitatea declarațiilor | core/test_periodicitate_declaratii.py (5) | D208 semestrială; „semestrial” fără lună acceptat și completat cu 12; un tip din selector cu periodicitate fără ramură în ecran | D208 → semestrial: 3 roșii; `or 12` repus: roșu; validarea semestrială oprită: roșu | — |
+| dividende interimare | core/test_dividende_interimare.py (7) | încasare fabricată la regularizare (5121=463 la brut); impozitul excesului cu cota zilei; „Salariul brut”; interimar imposibil din ecran | linia 5121 repusă → roșu; cota 16% în loc de reținerea efectivă → 2 roșii; mesajul vechi → roșu; `bool()` pe select → roșu | — |
+| D300 rd.34 + coloanele structurii | core/test_d300_r31_manual.py (6, unul pe DUK) | ajustarea art.305 fără loc în decont; ajustarea înlocuind pro-rata în loc să se adune; atribut inexistent (R29_1) în XML | R31 scos din allow-list → 2 roșii; `+=` → `=` → roșu; garda coloanelor oprită → roșu; R29 scos din setul fără col.1 → 2 roșii | — |
+| formularele Operațiuni — opțiuni imposibile | core/test_formulare_operatiuni_campuri.py (14) | o opțiune a unui select pentru care ruta cere un câmp (`corp["x"]`, `cota_ceruta`, `cere_cont` fără implicit) absent sau marcat opțional pe formular | `suma` scoasă de la garanție → roșu; câmp de la reluare scos → roșu | vede `corp["x"]` și cele două ajutoare, nu dispecere prin dicționare; 6 excepții motivate în `EXCEPTII` |
+| bifele citite prin `bifa` | același fișier (`test_bifele_se_citesc_doar_prin_bifa` + 12 parametri) | `bool("false")` = True: imputabil „Nu” → imputabil, furnizor neplătitor → taxare inversă, agricultor neînscris → compensare deductibilă | „false” scos din parser → roșu; `corp.get("furnizor_platitor_tva")` repus → roșu | selecturile da/nu numai din ecranul Operațiuni (singurele „true”/„false” din static/js, verificat) |
+| C&D — accelerata pe orice cont | core/test_mf_destinatie_cd.py (8) | aparatura C&D pe 2132 refuzată la accelerată; bifa deschizând construcții/animale/terenuri; un cititor al registrului fără `destinatie_cd` | regula oprită → 2 roșii; regula fără categorie → roșu; coloana scoasă dintr-un SELECT → roșu; importul fără coloană → roșu | — |
+| capitalul social pe factură | core/test_capital_social.py (16, două pe schemă efemeră) | factura unui SRL/SA/SCA emisă fără capital (sau fără formă juridică); PFA oprit; PDF fără capital | PFA neexceptat → 2 roșii; SA tratat ca SRL → 2 roșii; forma lipsă acceptată → roșu; refuzul oprit → roșu; PDF fără rând → roșu | „păstrează factura” e gardat structural (caseta scrie doar în zona de rezultat), nu printr-un browser |

@@ -322,6 +322,40 @@ def test_REEVALUAREA_ajunge_pe_registru_SI_in_rulaj_dupa_validare(lume):
     assert _rulaj(lume, "105")["credit"] == Decimal("400.00")
 
 
+# ─────────────────────────── mijloace-fixe/{id}/destinatie-cd ───────────────────────────
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets(lume):
+    """`PUT /tenants/{id}/mijloace-fixe/{mijloc_id}/destinatie-cd` (lot 19, defectul 11) — apasata PRIN HTTP, pana in
+    cifra declaratiei: sectiunea Assets din D406 (`/d406-active`, din `repo_mijloace_fixe.active_pentru_d406`).
+
+    CF art.20 alin.(1) lit.b): „aplicarea metodei de amortizare accelerată și în cazul aparaturii și echipamentelor
+    destinate activităților de cercetare-dezvoltare”. Un echipament pe 2132 cu metoda accelerata: fara bifa, D406
+    refuza activul (CF art.28 alin.(5) lit.c) — 422); cu bifa, il declara cu `DepreciationMethod` accelerata."""
+    import xml.etree.ElementTree as ET
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".mijloace_fixe (cod, denumire, cont_imobilizare, cont_amortizare, valoare, '
+                    "rezidual, dnf_luni, data_pif, metoda) VALUES ('MF-CD','Spectrometru C&D','2132','2813',60000,0,"
+                    "60,%%s,'accelerata') RETURNING id" % SCH, ("%d-01-15" % AN,))
+        cd = cur.fetchone()[0]
+    cl = _client()
+    inainte = cl.get("/tenants/%d/d406-active?an=%d" % (lume["tid"], AN), headers=_H(lume))
+    assert inainte.status_code == 422, (inainte.status_code, inainte.text[:200])
+    r = cl.put("/tenants/%d/mijloace-fixe/%d/destinatie-cd" % (lume["tid"], cd), json={"destinatie_cd": True},
+               headers=_H(lume))
+    assert r.status_code == 200 and r.json()["destinatie_cd"] is True, r.text[:200]
+    dupa = cl.get("/tenants/%d/d406-active?an=%d" % (lume["tid"], AN), headers=_H(lume))
+    assert dupa.status_code == 200, dupa.text[:300]
+    # fragmentul SAF-T foloseste prefixul nsSAFT nedeclarat (se lipeste in fisierul complet) -> radacina care il declara
+    rad = ET.fromstring('<r xmlns:nsSAFT="urn:saft">%s</r>' % dupa.text)
+    ns = {"n": "urn:saft"}
+    active = {a.findtext("n:AssetID", namespaces=ns): a for a in rad.iter() if a.tag.endswith("}Asset")}
+    activ = active.get("MF-CD")
+    assert activ is not None, sorted(active)
+    metode = [e.text for e in activ.iter() if e.tag.endswith("}DepreciationMethod")]
+    assert metode and set(metode) == {"accelerata"}, metode
+
+
 # ─────────────────────────── anti-vacuu pe lumea insasi ───────────────────────────
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

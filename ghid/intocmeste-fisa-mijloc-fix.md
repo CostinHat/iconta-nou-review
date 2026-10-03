@@ -2,7 +2,7 @@
 title: "Cum se întocmește fișa unui mijloc fix?"
 description: "Câmpurile obligatorii și cele opționale pe care le cere iConta.eu la introducerea unui mijloc fix nou, și validările aplicate la import."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Se completează codul duplicat, o valoare reziduală mai mare decât valoarea de
 
 ## Ce face iConta.eu
 
-La import (CSV/XLSX), aplicația blochează: cod lipsă sau duplicat, durată ≤0, valoare ≤0, rezidual mai mare decât valoarea de intrare. Avertizează, dar nu blochează: valoare sub pragul de încadrare ca mijloc fix la data PIF, sau cont de imobilizare lipsă — în acest ultim caz, activul rămâne cu "categorie neclasificată", ceea ce permite doar metodele liniară/degresivă, urmând ca accelerata/superaccelerata să fie refuzate la calcul până se completează contul.
+La import (CSV/XLSX), aplicația blochează: cod lipsă sau duplicat, durată ≤0, valoare ≤0, rezidual mai mare decât valoarea de intrare. Valoarea reziduală se citește doar dintr-o coloană numită „rezidual”/„reziduală” (lipsa ei înseamnă 0); o coloană „valoare rămasă” nu devine rezidual, ci se compară cu valoarea rămasă calculată din data PIF, durată și metodă. Avertizează, dar nu blochează: valoare sub pragul de încadrare ca mijloc fix la data PIF, o valoare rămasă din fișier care diferă de calcul cu mai mult de o rată lunară, sau cont de imobilizare lipsă — în acest ultim caz, activul rămâne cu "categorie neclasificată", ceea ce permite doar metodele liniară/degresivă, urmând ca accelerata/superaccelerata să fie refuzate la calcul până se completează contul.
 
 [iConta.eu](/)

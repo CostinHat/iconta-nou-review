@@ -1318,11 +1318,11 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · mijloace fixe încărcate</p>
     <div class="mig-sold-rezumat">
-      <b>${randuri.length}</b> mijloace · valoare <b>${bani(date.total_valoare)}</b> · rămas <b>${bani(date.total_rezidual)}</b>
+      <b>${randuri.length}</b> mijloace · valoare <b>${bani(date.total_valoare)}</b> · rezidual <b>${bani(date.total_rezidual)}</b>
     </div>
     <div class="mig-coer">${banda}</div>
     <div class="mig-sold-cap mig-cap-mf">
-      <span>Cod</span><span>Denumire</span><span>Valoare</span><span>Rămas</span><span>Durată</span><span>Metodă</span>
+      <span>Cod</span><span>Denumire</span><span>Valoare</span><span>Rezidual</span><span>Durată</span><span>Metodă</span>
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>

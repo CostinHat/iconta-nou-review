@@ -34,7 +34,7 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TIPURI = ["d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394", "d406"]
 
 # Instalat 21.08.2026: D300, D301, D390 sursate verbatim. Se RIDICĂ pe măsură ce se sursează restul.
-SURSATE_BASELINE = 3
+SURSATE_BASELINE = 4   # +1 03.10.2026: D208 (CF art.113, lot 19 defect 8)
 
 
 def _norm(s):

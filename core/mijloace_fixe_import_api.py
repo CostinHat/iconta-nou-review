@@ -2,14 +2,26 @@
 core/mijloace_fixe_import_api.py — import mijloace fixe (stratul 6 migrare) per firma.
 
 Citeste un registru de mijloace fixe (.xlsx/.csv) cu: cod, denumire, valoare intrare,
-valoare ramasa (rezidual), durata (luni), data PIF, metoda, conturi.
+valoare reziduala, durata (luni), data PIF, metoda, conturi; optional valoarea ramasa (neamortizata).
 Importa in tabelul existent `mijloace_fixe` (DELETE + INSERT per firma).
 
 Verificari informative (nu blocante):
 - rezidual <= valoare (altfel eroare de date)
 - valoare >= 5000 lei (plafon 2026 OUG 8/2026); sub plafon = avertisment
   (mijloacele existente la 31.12.2025 raman amortizabile pe durata ramasa - regula tranzitorie)
-Amortizarea cumulata = valoare - rezidual (afisata informativ).
+Amortizarea cumulata = cea calculata de MOTOR (d406_active.amortizat_la_data) din valoare, data PIF,
+durata si metoda — NU valoare minus coloana „ramas" din fisier.
+
+[Lot 19 defect 6, 03.10.2026] REZIDUAL NU E „RAMAS". Coloana „ramas / neamortizat" (valoarea contabila
+neta la data exportului) se citea in `rezidual`, iar motorul trateaza `rezidual` ca valoare NEAMORTIZABILA
+(amortizabil = valoare - rezidual) — deci un activ preluat la jumatatea duratei nu se mai amortiza in partea
+ramasa, iar un fisier fara coloana primea rezidual = valoare (zero amortizare, pe toata durata). Temei:
+OMFP 1802/2014 pct.139 alin.(2): „Amortizarea valorii activelor imobilizate cu durate limitate de utilizare
+economica reprezinta alocarea sistematica a valorii amortizabile a unui activ pe intreaga durata de utilizare
+economica. Valoarea amortizabila este reprezentata de cost sau de alta valoare care substituie costul".
+Acum: `rezidual` vine DOAR dintr-o coloana numita „rezidual/reziduala" (lipsa = 0); coloana „ramas" e o
+VERIFICARE — daca difera de valoarea ramasa calculata de motor la data importului cu mai mult de o rata
+lunara, randul primeste avertisment (nu blocheaza: amortizarea se calculeaza din PIF, durata, metoda).
 
 """
 # [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
@@ -27,8 +39,10 @@ from core import obiecte_inventar as _oi
 # registrul.
 
 
-def _gaseste_col(antet, *chei):
+def _gaseste_col(antet, *chei, exclus=()):
     for i, h in enumerate(antet):
+        if i in exclus:
+            continue
         hl = str(h).strip().lower()
         for k in chei:
             if k in hl:
@@ -101,13 +115,17 @@ def extrage(continut, nume_fisier=""):
     antet = [str(x) for x in randuri[0]]
     i_cod = _gaseste_col(antet, "cod", "inventar", "nr")
     i_den = _gaseste_col(antet, "denumire", "nume", "mijloc")
-    i_val = _gaseste_col(antet, "valoare", "intrare", "achizitie", "achiziție")
-    i_rez = _gaseste_col(antet, "rezidual", "ramas", "rămas", "neamortizat", "ramasa")
+    # rezidual si ramas se identifica INTAI, ca „valoare reziduala" / „valoare ramasa" sa nu fie luate drept
+    # valoarea de intrare cand stau inaintea ei in antet
+    i_rez = _gaseste_col(antet, "rezidual", "reziduală")
+    i_ram = _gaseste_col(antet, "ramas", "rămas", "neamortizat", exclus=(i_rez,))
+    i_val = _gaseste_col(antet, "valoare", "intrare", "achizitie", "achiziție", exclus=(i_rez, i_ram))
     i_dur = _gaseste_col(antet, "durata", "durată", "luni", "dnf")
     i_pif = _gaseste_col(antet, "pif", "punere", "functiune", "funcțiune", "data")
     i_met = _gaseste_col(antet, "metoda", "metodă", "amortizare")
     i_cimo = _gaseste_col(antet, "cont imob", "cont_imob", "imobilizare")
     i_camo = _gaseste_col(antet, "cont amort", "cont_amort", "amortizare cont")
+    i_cd = _gaseste_col(antet, "cercetare", "c&d", "destinat cd", "destinatie cd", "destinatie_cd")   # [lot 19 d11]
     if i_den < 0:
         raise ValueError("nu găsesc coloana denumire mijloc fix - fișier nerecunoscut")
 
@@ -120,13 +138,12 @@ def extrage(continut, nume_fisier=""):
         if not den:
             continue
         valoare = _numar(cel(i_val))
-        rezidual = _numar(cel(i_rez)) if i_rez >= 0 else valoare
+        rezidual = _numar(cel(i_rez)) if i_rez >= 0 else 0.0   # lipsa coloanei = 0, NU valoare (defect 6)
         durata = _intreg(cel(i_dur))
         # durata in ani -> luni daca pare ani (< 60 si fisierul zice "ani")
         if 0 < durata <= 50 and "an" in (antet[i_dur].lower() if 0 <= i_dur < len(antet) else ""):
             durata *= 12
 
-        amortizat = round(valoare - rezidual, 2)
         avertismente = []
         if rezidual > valoare + 0.01:
             avertismente.append("rezidual > valoare")
@@ -156,21 +173,61 @@ def extrage(continut, nume_fisier=""):
                                 "(CF art.28 alin.5 lit.c): doar liniar/degresiv; "
                                 "accelerat/superaccelerat vor fi refuzate la D406 până se completează contul")
 
+        dcd = _da_nu(cel(i_cd)) if i_cd >= 0 else False
+        if dcd is None:
+            avertismente.append("coloana C&D are valoarea %r — se acceptă da/nu; activul intră fără destinația C&D" % cel(i_cd))
+            dcd = False
+        amortizat, ramas = _la_zi(valoare, rezidual, durata, _pif, _normalizeaza_metoda(cel(i_met)), cel(i_cimo), dcd)
+        if i_ram >= 0 and cel(i_ram) != "" and ramas is not None:
+            ramas_fisier = _numar(cel(i_ram))
+            rata = (valoare - rezidual) / durata
+            if abs(ramas_fisier - ramas) > rata + 1:
+                avertismente.append(
+                    "valoarea rămasă din fișier (%.2f) diferă de cea calculată la %s din data PIF, durată și "
+                    "metodă (%.2f) — amortizarea continuă din calcul, nu din coloana rămas; verifică cele trei"
+                    % (ramas_fisier, datetime.date.today().isoformat(), ramas))
+
         out.append({
             "cod": cel(i_cod) or f"MF{idx:03d}",
             "denumire": den,
             "valoare": valoare,
             "rezidual": rezidual,
-            "amortizat": amortizat,
+            "amortizat": amortizat,           # la zi, din motor (None daca motorul nu poate calcula randul)
+            "ramas": ramas,
             "dnf_luni": durata,
             "data_pif": _data(r[i_pif]) if (0 <= i_pif < len(r)) else None,
             "metoda": _normalizeaza_metoda(cel(i_met)),
             "cont_imobilizare": cel(i_cimo),   # NU se completeaza tacit cu 2131 (categoria permisiva); gol -> lit.c
             "cont_amortizare": cel(i_camo) or "2813",
+            "destinatie_cd": dcd,               # CF art.20 alin.(1) lit.b): accelerata si pt aparatura C&D
             "avertismente": avertismente,
             "ok": len(avertismente) == 0,
         })
     return out
+
+
+def _da_nu(v):
+    """„da”/„nu” dintr-o celulă de import (da/nu, x, 1/0, true/false); gol = nu; altceva = None (avertisment)."""
+    s = str(v or "").strip().lower()
+    if s in ("", "nu", "0", "false", "n", "-"):
+        return False
+    if s in ("da", "x", "1", "true", "d"):
+        return True
+    return None
+
+
+def _la_zi(valoare, rezidual, durata, pif, metoda, cont_imob, destinatie_cd=False):
+    """(amortizat, ramas) la data de azi, din motorul unic — sau (None, None) cand randul nu se poate calcula
+    (durata/valoare lipsa, metoda nepermisa pe categorie); motivul e deja in avertismentele randului."""
+    from core import d406_active
+    try:
+        r = d406_active.amortizat_la_data({"valoare": valoare, "rezidual": rezidual, "dnf_luni": durata,
+                                           "data_pif": pif, "metoda": metoda, "cont_imobilizare": cont_imob,
+                                           "destinatie_cd": destinatie_cd},
+                                          datetime.date.today())
+    except ValueError:
+        return None, None
+    return float(r["amortizat"]), float(r["ramas"])
 
 
 def rezumat(conn):
@@ -211,7 +268,7 @@ def verifica_randuri(randuri):
                                "%s: valoare de intrare %s" % (den, val)))
         elif rez > val + 0.01:
             er.append(respinge("mijloc fix", i, "rezidual_peste_intrare",
-                               "%s: valoarea rămasă (%s) depășește valoarea de intrare (%s)"
+                               "%s: valoarea reziduală (%s) depășește valoarea de intrare (%s)"
                                % (den, rez, val)))
     return er
 
@@ -240,11 +297,11 @@ def importa(conn, randuri):
             cur.execute("""
                 INSERT INTO mijloace_fixe
                   (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual,
-                   dnf_luni, data_pif, metoda, activ)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true)
+                   dnf_luni, data_pif, metoda, activ, destinatie_cd)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s)
             """, (r["cod"], r["denumire"], r.get("cont_imobilizare") or "",   # fara default 2131; gol = neclasificat -> lit.c la calc_asset
                   r.get("cont_amortizare", "2813"), r.get("valoare", 0),
                   r.get("rezidual", 0), r.get("dnf_luni", 0),
-                  r.get("data_pif"), r.get("metoda", "liniara")))
+                  r.get("data_pif"), r.get("metoda", "liniara"), bool(r.get("destinatie_cd"))))
             n += 1
     return {"importati": n}

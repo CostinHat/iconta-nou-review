@@ -1,0 +1,75 @@
+{
+ "buton_inainte": "C&D: nu",
+ "buton_dupa": "C&D: da",
+ "axe_registru": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "rezultat": "⚠ Factura nu s-a emis: în Date firmă lipsește forma juridică a firmei — de ea depinde ce capital social trebuie trecut pe factură (Legea 31/1990 art. 74 alin. (3): la SRL capitalul social, la SA și SCA capitalul subscris și cel vărsat). Completează forma și capitalul în Date firmă și apasă din nou «Emite» — factura rămâne așa cum ai scris-o.\n        \n          Deschide Date firmă",
+ "buton_date_firma": 1,
+ "pastrat": {
+  "denumire": "Consultanta contabila",
+  "nume": "DANTE INTERNATIONAL SA",
+  "cui": "14399840",
+  "pret": "100"
+ },
+ "axe_refuz": [
+  [],
+  {
+   "strict": [],
+   "glif": [
+    {
+     "tag": "button",
+     "cls": "buton-sters em-l-sterge",
+     "title": "Șterge",
+     "vizibil": "×"
+    }
+   ],
+   "extra": [
+    {
+     "tag": "span",
+     "cls": "em-l-cota cota-21",
+     "title": "Cota TVA",
+     "vizibil": "21%"
+    }
+   ]
+  }
+ ],
+ "date_firma_capital": 3,
+ "axe_date_firma": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil_registru": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil_registru": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil_date_firma": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil_date_firma": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ]
+}

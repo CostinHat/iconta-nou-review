@@ -440,7 +440,7 @@ def test_d300_rotunjeste_aritmetic_nu_bancar():
 def test_ajustari_regularizari_deductibila_se_declara():
     facturi = [{"directie": "primita", "total": 1210, "tva": 210}]   # R28 dedusa = 210
     res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi,
-                      {"R29_1": 100, "R29_2": 21, "R30_1": 500, "R30_2": 50})
+                      {"R29_2": 21, "R30_1": 500, "R30_2": 50})   # R29 n-are col.1 (struct ANAF; lot 19 defect 10)
     assert res.R["R29_2"] == 21    # restituiri cumparatori straini declarate
     assert res.R["R30_2"] == 50    # regularizari taxa dedusa declarate
     assert res.R["R32_2"] == 281   # total dedusa = 210 (R28) + 21 (R29) + 50 (R30)

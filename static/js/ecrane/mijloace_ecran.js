@@ -39,12 +39,13 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
             <button class="buton-secundar" data-caseaza="${m.id}">Casează</button>
             <input type="number" step="0.01" class="camp-input" style="max-width:130px" id="mf-reeval-${m.id}" placeholder="valoare justă" aria-label="Valoare justă ${esc(m.denumire || "")}">
             <button class="buton-secundar" data-reeval="${m.id}">Reevaluează</button>
+            <button class="buton-secundar" data-cd="${m.id}" data-cd-val="${m.destinatie_cd ? 1 : 0}">C&amp;D: ${m.destinatie_cd ? "da" : "nu"}</button>
           </div>` : "—"}</td>
       </tr>`).join("");
 
     corp.innerHTML = `
       <h2 class="pf-titlu">Mijloace fixe</h2>
-      <p class="pf-intro">Registrul activelor firmei: valoare, amortizat la zi (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), rămas. Casarea și reevaluarea generează note contabile drept <b>ciornă</b> — se validează din Registru jurnal.</p>
+      <p class="pf-intro">Registrul activelor firmei: valoare, amortizat la zi (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), rămas. Casarea și reevaluarea generează note contabile drept <b>ciornă</b> — se validează din Registru jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>
       <div id="mf-mesaj"></div>
       ${lista.length ? `
       <div style="overflow-x:auto">
@@ -75,6 +76,17 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
             arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu am putut casa mijlocul fix.", "eroare");
           }
         }, { textOk: "Casează" });
+    }));
+
+    // [lot 19 d11] bifa «Destinat C&D» — CF art. 20 alin. (1) lit. b)
+    corp.querySelectorAll("[data-cd]").forEach((b) => b.addEventListener("click", async () => {
+      try {
+        await api.put(`/tenants/${tenantId}/mijloace-fixe/${b.dataset.cd}/destinatie-cd`,
+          { destinatie_cd: b.dataset.cdVal !== "1" });
+        await incarca();
+      } catch (e) {
+        arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu am putut schimba destinația C&D.", "eroare");
+      }
     }));
 
     corp.querySelectorAll("[data-reeval]").forEach((b) => b.addEventListener("click", async () => {

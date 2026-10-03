@@ -163,8 +163,11 @@ def _d204(conn, schema, b):   # venit asocieri fara personalitate juridica (anua
     return d204.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
 
 
-def _d208(conn, schema, b):   # transfer proprietati imobiliare - notari (semestriala)
-    return d208.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
+def _d208(conn, schema, b):   # transfer proprietati imobiliare - notari (LUNARA, CF art.113)
+    # [Lot 19 defect 8, 03.10.2026] Era „semestriala” cu `luna or 12`: ecranul nu trimitea luna, deci orice D208
+    # iesea pe decembrie. CF art.113 (forma din 01.01.2024, OUG 115/2023): notarii depun „lunar, până la data de
+    # 25 inclusiv a lunii următoare celei în care a avut loc autentificarea”. Luna o cere valideaza_cerere.
+    return d208.genereaza(conn, schema, Perioada(b["an"], luna=int(b["luna"])), b.get("manual") or {})
 
 
 def _d216(conn, schema, b):   # impozit special bunuri de valoare mare (anuala)
@@ -248,7 +251,8 @@ def _d403(conn, schema, b):   # informativa asigurari de viata - DAC2/CRS (anual
 
 
 def _d407(conn, schema, b):   # informativa institutii financiare raportoare (semestriala)
-    return d407.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
+    # luna 6 sau 12 o cere valideaza_cerere (ramura „semestrial”); fara `or 12` tacut — semestrul I iesea pe decembrie
+    return d407.genereaza(conn, schema, Perioada(b["an"], luna=int(b["luna"])), b.get("manual") or {})
 
 
 def _d212(conn, schema, b):   # declaratia unica (PFA/II/IF - venituri persoane fizice), anuala
@@ -287,7 +291,7 @@ DECLARATII = {
     "d200": ("anual",       _d200),
     "d201": ("anual",       _d201),
     "d204": ("anual",       _d204),
-    "d208": ("semestrial",  _d208),
+    "d208": ("lunar",       _d208),
     "d216": ("anual",       _d216),
     "d120": ("anual",       _d120),
     "d600": ("anual",       _d600),
@@ -410,6 +414,12 @@ def valideaza_cerere(tip, body, per_efectiv=None):
                              % (tip, _pft.norma(tip, "trimestrial") or ""))
             elif trim_trimis is None:
                 erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
+    elif per == "semestrial":
+        # [Lot 19 defect 8] „semestrial” n-avea ramura: cererea fara luna trecea, iar adaptorul punea 12 in tacere.
+        # FORMĂ — DUK regula RLuna (D407): luna de raportare e 6 sau 12.
+        if body.get("luna") not in (6, 12):
+            erori.append("declarația %s e semestrială: trimite luna 6 (semestrul I) sau 12 (semestrul II); "
+                         "am primit %r" % (tip, body.get("luna")))
     # 'anual' nu cere nimic în plus față de an
 
     # d177 (redirectionare impozit profit -> ONG/cult, MANUALA anuala): cere manual.beneficiari. Mesaj de

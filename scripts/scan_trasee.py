@@ -144,7 +144,7 @@ TRASEE = [
      [r"^/tenants/\{\}/retete(/|$)", r"^/tenants/\{\}/produse"],
      ["retete", "retete_linii", "produse"]),
     ("T22", "Mijlocul fix și amortizarea",
-     [r"^/tenants/\{\}/mijloace-fixe$", r"^/tenants/\{\}/amortizare",
+     [r"^/tenants/\{\}/mijloace-fixe$", r"^/tenants/\{\}/mijloace-fixe/\{\}/destinatie-cd", r"^/tenants/\{\}/amortizare",
       r"^/tenants/\{\}/reevaluare-imobilizare"],
      ["mijloace_fixe"]),
     ("T23", "Bonul de la client — portalul și decontul",

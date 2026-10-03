@@ -9,7 +9,14 @@ Verificat la sursa oficială (calendar ANAF 2026):
   trimestrial (D100/D300/...)   -> 25 (sau 30/ultima zi) ale lunii următoare trim.
   D205                          -> ultima zi februarie an următor
   D101                          -> 25 iunie an următor (OUG 153/2020 art.I alin.(13) lit.a pt 2021-2025; OUG 8/2026 art.6 pct.12 -> art.42(1) CF pt 2026+)
-Toate se mută la prima zi lucrătoare dacă pică în weekend/sărbătoare legală.
+Toate se mută la prima zi lucrătoare dacă pică în weekend/sărbătoare legală — CU O EXCEPȚIE: ce cade nominal
+pe 25 decembrie (obligațiile lunii noiembrie) e scadent pe 21 decembrie, iar dacă 21 e nelucrătoare, în ultima zi
+lucrătoare DINAINTE (CPF art.155 alin.(2), v. TEMEI_21_DECEMBRIE). Termenul se mută ÎNAPOI, nu înainte.
+
+ATENȚIE — termenul legal NU e atributul `scadenta` din XML. Validatorul ANAF cere în declarație scadența
+NOMINALĂ (25.12): DUK regula R15.6 (D100) și DUK regula R25 (D300, nr_evid) resping 21.12 — probat 03.10.2026.
+Generatorii (d100/d110/d114/d300/d301/d710) își păstrează ziua 25; aici se calculează data până la care
+contabilul trebuie să depună și să plătească (calendar, semafor, coadă, control fiscal, cashflow).
 
 Sărbătorile sunt într-un dict EDITABIL per an (Paște/Rusalii variază anual).
 """
@@ -62,6 +69,9 @@ TEMEI_TERMEN = {
              "până la data de 25 inclusiv a lunii următoare celei în care ia naștere exigibilitatea"),
     "d390": ("OPANAF 705/2020", "anaf_surse/opanaf_705_2020_d390.txt",
              "se depune lunar, până la data de 25 inclusiv a lunii următoare unei luni calendaristice"),
+    "d208": ("CF art.113", "anaf_surse/cod_fiscal_227_2015_consolidat.html",
+             "au obligația să depună lunar, până la data de 25 inclusiv a lunii următoare celei în care a avut loc "
+             "autentificarea actelor privind transferul proprietăților imobiliare"),
 }
 # NESURSATE ÎNCĂ (clichetul le numără): d100, d101, d112, d205, d394, d406. Unde se caută, ca
 # următorul să nu reia de la zero: d112 → CF art. 147; d100 → CF art. 56 (micro) și art. 41 (plăți
@@ -69,6 +79,14 @@ TEMEI_TERMEN = {
 # actualizat prin 2194/2025; d406 → OPANAF 1783/2021 Anexa 4. ATENȚIE la consolidat: are întâi un
 # CUPRINS cu aceleași marcaje „Articolul N", deci numărul se derivă mergând ÎNAPOI de la fraza găsită,
 # nu căutând titlul articolului.
+
+# [Lot 19 defect 7, 03.10.2026] Aplicația arăta 28.12.2026 pentru obligațiile lui noiembrie (25 și 26 decembrie
+# sărbători, 27 duminică -> mutare ÎNAINTE). Legea cere 21 decembrie, mutat ÎNAPOI.
+TEMEI_21_DECEMBRIE = ("CPF art.155 alin.(2)", "anaf_surse/legea_207_2015_consolidat.txt",
+                      "scadența și/sau termenul de declarare se împlinesc la 25 decembrie, sunt scadente și/sau se "
+                      "declară până la data de 21 decembrie. În situația în care data de 21 decembrie, este zi "
+                      "nelucrătoare, creanțele fiscale sunt scadente și/sau se declară până în ultima zi lucrătoare "
+                      "anterioară datei de 21 decembrie")
 
 # ziua nominală a scadenței per tip (în luna următoare perioadei)
 _ZIUA = {"d394": 30}          # restul: 25 ; d406: ultima zi (tratat separat)
@@ -185,10 +203,33 @@ def _data_nominala(tip, an, luna=None, trim=None):
     return date(an_s, luna_s, zi)
 
 
-def scadenta_data(tip, an, luna=None, trim=None):
-    """Scadența ca obiect date (mutată la zi lucrătoare). Pură."""
-    nominala = _data_nominala(tip, an, luna=luna, trim=trim)
+def ultima_zi_lucratoare_pana_la(d):
+    """Ultima zi lucrătoare ≤ d. Pură."""
+    while not e_zi_lucratoare(d):
+        d -= timedelta(days=1)
+    return d
+
+
+def termen_legal(nominala):
+    """Data până la care se declară/plătește o obligație cu scadența nominală `nominala`: prima zi lucrătoare
+    ≥ nominala, cu excepția lui 25 decembrie -> 21 decembrie sau ultima zi lucrătoare dinainte (CPF art.155
+    alin.(2), TEMEI_21_DECEMBRIE). Pură."""
+    if (nominala.month, nominala.day) == (12, 25):
+        return ultima_zi_lucratoare_pana_la(date(nominala.year, 12, 21))
     return urmatoarea_zi_lucratoare(nominala)
+
+
+def scadenta_data(tip, an, luna=None, trim=None):
+    """Scadența legală ca obiect date (v. termen_legal). Pură."""
+    return termen_legal(_data_nominala(tip, an, luna=luna, trim=trim))
+
+
+def urmatorul_termen_lunar(azi):
+    """Primul termen legal >= azi al obligațiilor lunare (TVA lunar, contribuții) — pe ziua sursată a D300 (CF art.323
+    alin.(1), TEMEI_TERMEN). Pentru prognoze (cashflow), nu pentru o declarație anume. Pură."""
+    an, luna = (azi.year, azi.month - 1) if azi.month > 1 else (azi.year - 1, 12)
+    t = scadenta_data("d300", an, luna=luna)
+    return t if azi <= t else scadenta_data("d300", azi.year, luna=azi.month)
 
 
 def scadenta(tip, an, luna=None, trim=None):

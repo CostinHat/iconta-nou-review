@@ -159,6 +159,7 @@ def mediu():
                         "platitor_tva,tip_decont,serie_factura,urmator_numar_factura) "
                         "VALUES (1,'ZTEST P4 SRL','14399840','Str 1','Buc','B','6202',true,'L',"
                         "'P4',100)")
+            cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200 WHERE id = 1")  # L31/1990 art.74 alin.(3): fără capital, factura nu se emite (lot 19 d12)
             cur.execute("SET search_path TO public")
             cur.execute("INSERT INTO public.tenants (schema_name,nume,cui,accounting_firm_id,activ)"
                         " VALUES (%s,'ZTEST P4 SRL','14399840',%s,true) RETURNING id",

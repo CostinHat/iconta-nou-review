@@ -261,6 +261,19 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             # motivul ca DATĂ (cod + temei + linia), ca refuzul să se poată verifica fără a citi fraza
             _e.cod, _e.temei, _e.linie = "EMITENT_NEPLATITOR_TVA", "CF art.310 alin.(10) lit.b)", _l.get("descriere")
             raise _e
+    if directie == "emisa":
+        # [Lot 19 defect 12, 03.10.2026] Legea 31/1990 art.74 alin.(3): factura unui SRL menționează capitalul social, a
+        # unui SA/SCA capitalul subscris și cel vărsat. Punct UNIC (orice emitere trece pe aici: ecranul, storno,
+        # proforma transformată, bonul). Decizia lui Costin: refuz, cu ce lipsește și trimitere la Date firmă.
+        from core import capital_social as _cs
+        with conn.cursor() as _cur:
+            _cur.execute("SELECT tip_firma, forma_juridica, capital_subscris, capital_varsat FROM firma_profil WHERE id = 1")
+            _r = _cur.fetchone()
+        if _r is not None:
+            _lips = _cs.lipsa({"tip_firma": _r[0], "forma_juridica": _r[1], "capital_subscris": _r[2],
+                               "capital_varsat": _r[3]})
+            if _lips:
+                raise _cs.refuz(_lips)
     if directie == "emisa" and numar:
         with conn.cursor() as _cur:
             _cur.execute("SELECT id FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1",

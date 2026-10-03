@@ -8,6 +8,7 @@
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
+import { randeazaDateFirma } from "./date_firma.js?v=651c354a8d";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -479,13 +480,33 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     } catch (e) {
       const det = e && e.mesaj;
       const cursIndisp = e && e.cod === 409 && det && typeof det === "object" && det.cod === "CURS_INDISPONIBIL";
+      const capLipsa = e && e.detaliu && e.detaliu.cod === "CAPITAL_SOCIAL_LIPSA";
       if (cursIndisp) {
         arataCursIndisponibil(det);
+      } else if (capLipsa) {
+        arataCapitalLipsa(e.detaliu);
       } else {
         plaseazaErori(rez2, e);
       }
       if (btn) { btn.disabled = false; btn.textContent = "Emite factură"; }
     }
+  }
+
+  // [lot 19 d12] Refuzul pentru capitalul social lipsă (Legea 31/1990 art. 74 alin. (3)): formularul rămâne cum l-a
+  // scris omul; butonul deschide Date firmă, iar la întoarcere „Emite” trimite aceeași factură.
+  function arataCapitalLipsa(det) {
+    const rez = corp.querySelector("#em-rezultat");
+    rez.className = "em-rezultat";
+    rez.innerHTML = `
+      <div class="em-curs-box">
+        <div class="em-curs-titlu">⚠ ${esc(det.mesaj || "")}</div>
+        <div class="em-curs-actiuni">
+          <button class="buton-primar" id="em-deschide-date-firma">Deschide Date firmă</button>
+        </div>
+      </div>`;
+    rez.querySelector("#em-deschide-date-firma").addEventListener("click", () => {
+      nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId));
+    });
   }
 
   function arataCursIndisponibil(det) {

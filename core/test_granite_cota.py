@@ -100,6 +100,7 @@ def conn_schema():
                     "platitor_tva, tip_decont) VALUES "
                     "(1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202',true,'L') "
                     "ON CONFLICT (id) DO UPDATE SET nume=EXCLUDED.nume")
+                cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200 WHERE id = 1")  # L31/1990 art.74 alin.(3): fără capital, factura nu se emite (lot 19 d12)
             yield conn
         finally:
             conn.rollback()
@@ -158,6 +159,7 @@ def conn_schema_d300():
                     "VALUES (1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','BCR',"
                     "'RO49RNCB0000000000000001','a@b.ro','0700000000','real',true,'L','Pop','Ion','administrator') "
                     "ON CONFLICT (id) DO UPDATE SET banca=EXCLUDED.banca, iban=EXCLUDED.iban")
+                cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200 WHERE id = 1")  # L31/1990 art.74 alin.(3): fără capital, factura nu se emite (lot 19 d12)
             yield conn
         finally:
             conn.rollback()

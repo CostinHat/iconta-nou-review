@@ -16448,3 +16448,85 @@ Gard `core/test_agenda_urmator.py`. Pasul următor real: „Contract uniform A1 
 firul „Contract uniform A1 — d112” scrie „NEINCEPUT - cere greenlight” și „REFACTOR OPTIONAL … nu blochează nimic fiscal”.
 Firul „2b-coloană” (DROP `salariati.salariu_brut` + migrare pe tenanții reali) e schimbare de schemă — BLOCAT pe decizie
 (CLAUDE.md §2.3 pct.2/5). Rezultat: agenda spune „nimic acționabil”; lanțul se oprește cu cinci decizii cerute (PREDARE_LANT.md).
+
+---
+
+## 03.10.2026 — DECIZII Costin pe cele 5 puncte din PREDARE_LANT.md (lanțul oprit după D212)
+
+**Verbatim:**
+1. „Export SAGA/WinMentor, facturi emise pe baza bonului: nu A (factura ar dispărea din evidența externă). Se exportă cu marca
+   «din bon», dacă formatul de import al programului are câmp pentru asta; dacă nu, într-un fișier separat, în afara importului
+   de vânzări. Verifică formatele la sursă. Nicio factură pierdută, nicio vânzare dublată.”
+2. „D394 Î2: bifa «activitate exceptată de la AMEF» pe profilul firmei (cu activitatea); încasările vin din chitanțe și registrul
+   de casă existente. Firmă marcată scutită cu încasări neclasificate → D394 refuză cu mesaj numit, nu emite zero. Întâi adu în
+   corpus textul integral al HG 479/2003 (acum doar antetul) și verifică pe el lista activităților exceptate.”
+3. „D112 contract uniform A1: nu acum; se face doar când D112 e atins oricum.”
+4. „2b-coloană: da. Ștergi salariati.salariu_brut după ce dovedești că nimic nu o mai citește, cu migrare pe toți tenanții (toate
+   datele sunt de test) și backup înainte.”
+5. „Ghiduri: producția rămâne pe metoda arhitectului (Claude redactează și verifică, Costin aprobă titlurile, tu publici). Pasul
+   tău e publicarea lotului 19.”
+**Ordinea:** (1) lotul 19 — defectele 6–13 (fiecare verificat întâi la sursă; cele infirmate raportate cu dovada), cele 13 ghiduri
+live cu erori, secțiunile „Ce face iConta.eu” pentru defectele reparate (inclusiv cele 5 din 78e85cda), verificatorul re-rulat
+pe corpusul curent, registrul în `index_titluri_ghid.csv`, publicare; (2) D394 Î2; (3) exportul SAGA/WinMentor; (4) coloana 2b.
+Fiecare cu gardă, mutație, probă pe portofoliu (invalid apoi valid), commit separat cu poartă completă, four-way și mirror, ZIP
+la `/home/costin/ghid_incoming/` (`iconta_lot19_publicat.zip`, `iconta_d394_i2.zip`, `iconta_export_din_bon.zip`,
+`iconta_2b_coloana.zip`).
+
+**Cum se aplică.** Firul „Contract uniform A1 — d112” rămâne BLOCAT cu motivul nou („se face doar când D112 e atins oricum”);
+firul 2b trece din BLOCAT în ordinea de lucru (punctul 4); firul producției de ghiduri: metoda arhitectului, Code publică.
+
+## 03.10.2026 — Lot 19 — defectele 6–13: verificate la sursă, reparate; deciziile Costin pentru 11 și 12
+
+**Context.** Punctul 1 din comanda de azi: defectele 6–13 din RAPORT_LOT19.md, fiecare verificat întâi la sursă. Toate opt
+CONFIRMATE (niciunul infirmat). Două (11, 12) cereau schemă nouă → întrebare, răspunsul lui Costin mai jos.
+
+**Deciziile lui Costin (03.10.2026, verbatim):**
+- Defectul 11: *„Coloană + bifă”* — `mijloace_fixe.destinatie_cd` (boolean, implicit false), migrare pe toți tenanții cu
+  backup înainte; bifa pe fișa MF și coloană opțională la import; cu bifa = da, accelerata e permisă pe orice cont.
+- Defectul 12: *„Câmp pe profil, refuz”*, completat: *„La defectul 12, refuzul trebuie să păstreze factura tastată (nu se
+  pierde nimic), să spună în termenii contabilului ce lipsește, să trimită direct la Date firmă și să citeze L31/1990
+  art. 74 alin. (3). Pentru PFA/II/IF nu se cere.”*
+
+**Ce s-a decis la implementare (în interiorul deciziilor, cu temei):**
+1. **D6 — import MF.** `rezidual` doar dintr-o coloană numită „rezidual/reziduală”, altfel 0; coloana „rămas/neamortizat”
+   = verificare (avertisment peste o rată lunară + 1 leu). Temei: OMFP 1802/2014 pct.139 alin.(2) („Valoarea amortizabilă
+   este reprezentată de cost”). Respins: o coloană nouă „valoare netă la preluare” (schemă, fără temei care s-o ceară —
+   amortizarea se reconstituie din PIF, durată, metodă).
+2. **D7 — 21 decembrie.** Termenul LEGAL (calendar, semafor, coadă, cashflow) = CPF art.155 alin.(2): 21 decembrie, mutat
+   ÎNAPOI pe ultima zi lucrătoare. Atributul `scadenta` / nr. de evidență din XML rămâne NOMINAL (25): DUK regula R15.6
+   (D100) și DUK regula R25 (D300) resping 21.12 — probat. Două noțiuni, nu una.
+3. **D8 — D208 lunară** (CF art.113, din 01.01.2024). „semestrial” primește ramură în validare (luna 6/12 explicită, DUK
+   regula RLuna la D407); `or 12` tăcut eliminat din ambele adaptoare. Ramura „semestrial” în ecran NU s-a scris (niciun
+   tip din selector n-o mai are) — în loc, gard: selectorul nu primește o periodicitate fără ramură.
+4. **D9 — dividende interimare.** Regularizarea nu mai conține încasări; restituirea se înregistrează la încasare, cu suma
+   încasată (5121=463, funcțiunea contului 463 din OMFP 3067/2018). Impozitul excesului = proporțional din impozitul
+   EFECTIV reținut (nu cota zilei). **INTERPRETARE CU TEMEI:** impozitul de recuperat rămâne în debitul 463 până îl
+   restituie bugetul (CPF art.170^1), închis tot cu 5121=463. Respins: 446=463 — funcțiunea lui 446 nu are corespondența.
+   De reconfirmat dacă apare o normă care tranșează creanța asupra bugetului.
+5. **D10 — D300 rd.34 (R31_2) ADITIV**: pro-rata calculată + ajustarea introdusă (art.305, pro-rata definitivă) —
+   instrucțiunile OPANAF 174/2026 rd.34 le pun pe amândouă acolo. Coloanele permise pe rând = structura ANAF
+   (`RANDURI_FARA_COL1/2`, sursă unică în d300.py).
+6. **D11 — C&D**: bifa deschide accelerata numai la `alt_mijloc_fix` (aparatură și echipamente); nu la construcții,
+   terenuri, animale/plantații (art.20 alin.(1) lit.b) vorbește de „aparatură și echipamente”). UI: buton „C&D: da/nu” la
+   capătul rândului din registru (fără clasă nouă), select la plusul de inventar, coloană „cercetare” la import.
+7. **D12 — forma juridică pe profil (adăugată de executor, în interiorul deciziei).** `tip_firma` are doar „srl” (umbrelă:
+   SRL, SA, ONG, SNC...) și „pfa”; fără formă, art.74 alin.(3) nu se poate aplica: un ONG/SNC ar fi fost oprit fără temei,
+   un SA n-ar fi fost obligat la capitalul vărsat. Forme: SRL (capital social), SA/SCA (subscris + vărsat), SNC/SCS/altă
+   entitate (nimic). Forma necompletată la o persoană juridică = refuz cu cererea formei (nu se ghicește din denumire —
+   respins). Refuzul în `creeaza_factura` pe direcția „emisă” (punct UNIC: ecran, storno, proformă transformată, bon) —
+   respinsă poarta pe fiecare rută (ar rata una — clasa reparată azi la 13). Proforma (ofertă, art.74 alin.(1)) e oprită
+   la fel. **Consecință vizibilă:** firmele din portofoliu fără formă/capital în Date firmă nu mai pot emite facturi până
+   le completează. Testele care emit își completează profilul (SRL, 200 lei).
+8. **D13 — clasa „opțiune imposibilă din ecran”**: lărgită de la „Garanție” la tot ecranul Operațiuni (gard generic);
+   reparate: credite (restanță, garanție + fel/acțiune), subvenții (reluare), ONG (scutire, cu afișarea calculului — nu
+   „notă generată”), cota lipsă în 5 formulare de la commitul 86cdc0b2, cota marcată opțional în 9. Clasa înrudită
+   `bool("false")` = True: parser unic `_uc_comun.bifa` (12 citiri înlocuite; taxarea inversă primește verdictul ANAF,
+   nu șirul). Excepții motivate în gard (casare cu ID obligatoriu, turism normal/intermediar, agricultor, sponsorizare,
+   SGR virare).
+9. **Ghiduri live**: `scutire-tva-intreprinderi-mici-ue` citea Ordinul ANAF 2.509/2025 (absent din corpus — poarta roșie
+   pe un ghid LIVE): trimiterile scoase, înlocuite cu CF art.310^1 alin.(18). Alternativă neaplicată: ordinul adus în
+   corpus (rămâne posibilă). `primeste-punct-lucru-cod-fiscal`: OG 6/2026 / Legea 245/2025 scoase ca acte citate (nu sunt
+   în corpus decât ca note de consolidare); articolul inexistent „art. 81^1” → art. 85^1.
+
+**Limite.** `registru_inventar` (rip_api) recalculează MF liniar, separat de motor — cunoscut, neatins aici. D12 nu acoperă
+comenzile/ofertele emise în afara aplicației.

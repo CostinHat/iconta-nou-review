@@ -209,7 +209,7 @@ def schema():
                       'PRIMARY KEY, cod text, denumire text NOT NULL, cont_imobilizare text, '
                       'cont_amortizare text, valoare numeric NOT NULL DEFAULT 0, rezidual numeric '
                       "DEFAULT 0, dnf_luni integer NOT NULL DEFAULT 12, data_pif date, metoda text "
-                      "DEFAULT 'liniara', activ boolean DEFAULT true, creat_la timestamptz DEFAULT now())" % SCH)
+                      "DEFAULT 'liniara', activ boolean DEFAULT true, destinatie_cd boolean NOT NULL DEFAULT false, creat_la timestamptz DEFAULT now())" % SCH)
         # Tabelul `reevaluari` se ia din MIGRARE, nu se rescrie aici: o a doua definitie a aceluiasi
         # DDL s-ar desparti tacut de prima, iar proba ar trece pe o schema care nu exista nicaieri.
         _mig.aplica(conn, SCH)
@@ -253,7 +253,9 @@ def test_LANT_ciorna_nu_misca_registrul_validarea_il_misca(schema):
     assert _valoarea(db, mid) == VALOARE, "registrul s-a miscat din CIORNA"
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            assert _rmf.active_pentru_d406(cur, SCH, 2026)[0][-1] == [], \
+            _r = _rmf.active_pentru_d406(cur, SCH, 2026)[0]
+            # pe NUME, nu pe pozitie: ultima coloana nu mai e `reevaluari` de cand registrul aduce si `destinatie_cd`
+            assert dict(zip([d[0] for d in cur.description], _r))["reevaluari"] == [], \
                 "o reevaluare neaplicata ajunge in motorul de amortizare"
 
     # (b) validarea o aplica

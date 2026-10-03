@@ -1199,3 +1199,29 @@ generatorului D112 pe contractul comun al declarațiilor (calculul separat de XM
 că încasările prin casa de marcat (Î1) nu se declară — se declară de ieri; corectată.
 - (completare, aceeași zi) Agenda citește și „cere greenlight” ca blocaj; după D212 nu mai rămâne niciun pas fără o decizie a lui
   Costin — cinci decizii sunt listate în predare.
+
+## 03.10.2026 — Lotul 19 publicat: 433 de ghiduri noi, 20 de ghiduri corectate, opt defecte reparate
+
+**Ce se schimbă pentru contabil:**
+- **Import mijloace fixe:** valoarea rămasă din registrul vechi nu mai devine „valoare reziduală”. Un activ preluat la
+  jumătatea duratei se amortiza doar pe jumătate, iar unul fără coloana de rezidual nu se amortiza deloc.
+- **Termenele lunii noiembrie:** apar pe 21 decembrie, nu pe 28 (calendar, semafor, lista de termene, prognoza de
+  trezorerie).
+- **D208 (notari):** se alege pe lună, nu pe semestru.
+- **Dividende interimare:** regularizarea nu mai înregistrează o încasare care n-a avut loc. Restituirea de la asociat
+  (netul) și impozitul recuperat de la buget se înregistrează la încasare. Dividendul interimar se poate alege acum și din
+  ecran.
+- **D300:** ajustarea pentru bunurile de capital (art. 305) intră la rândul 34. Rândurile manuale nu mai pot purta o
+  coloană pe care formularul ANAF n-o are.
+- **Mijloace fixe:** aparatura de cercetare-dezvoltare marcată „C&D” se poate amortiza accelerat din orice cont.
+- **Facturi:** factura unei societăți tipărește capitalul social (la SA și SCA, subscris și vărsat). Dacă în Date firmă
+  lipsesc forma juridică sau capitalul, factura nu se emite până se completează. Ecranul spune ce lipsește și trimite la
+  Date firmă, iar factura rămâne cum a fost scrisă. Firmele de test din portofoliu trebuie completate.
+- **Operațiuni speciale:** Garanția și Restanța la credite, Reluarea subvenției și Calculul scutirii ONG puteau fi trimise
+  din ecran, dar ruta le refuza mereu. Leasingul (rate), Minusul la inventar, Decontul de deplasare, Autofactura SGR și
+  Vânzarea activului la lichidare n-aveau câmp de cotă. Acum funcționează toate.
+- **Răspunsurile „Nu” din formulare erau citite ca „Da”:** imputabil, furnizor plătitor de TVA, agricultor în registru.
+  Taxarea inversă se aplica și cu un furnizor neplătitor.
+- **Ghiduri:** 433 de ghiduri noi publicate. Corectate 20 de ghiduri existente, între care: numerotarea veche din Codul
+  muncii, sporul de noapte de 25%, termenul de noiembrie al decontului, cazierul fiscal, punctul de lucru cu salariați,
+  scutirea pentru mici întreprinderi din alt stat UE și situațiile financiare (31 mai).

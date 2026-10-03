@@ -1,7 +1,9 @@
 """core/d208.py — D208: Declaratie informativa privind impozitul pe veniturile din
 transferul proprietatilor imobiliare din patrimoniul personal (depusa de NOTARI).
 
-Periodicitate SEMESTRIALA (luna de raportare 6 sau 12). D208 e INFORMATIVA: biroul
+Periodicitate LUNARA: CF art.113 (din 01.01.2024, OUG 115/2023) — notarii depun „lunar, până la data de 25
+inclusiv a lunii următoare celei în care a avut loc autentificarea”; validatorul accepta orice luna (probat pe
+DUK 03.10.2026: lunile 3, 6, 11 valide). Pana la lotul 19 (defect 8) era tratata semestrial. D208 e INFORMATIVA: biroul
 notarial raporteaza tranzactii deja incheiate cu sumele DEJA stabilite in acte. Modulul
 NU fabrica cote de impozit din act - valorile-frunza (valoare imobil, baza, impozit pe
 beneficiar) vin din `manual`; modulul doar le AGREGA (totalurile antetului = sumele din

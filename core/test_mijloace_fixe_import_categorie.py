@@ -57,6 +57,5 @@ def test_activ_neclasificat_permite_liniar():
     """Liniarul e permis pentru orice categorie -> un activ neclasificat NU e refuzat la liniar."""
     r = _dupa_db(extrage(_FARA_CONT, "mf.csv")[0])
     r["metoda"] = "liniara"
-    r["rezidual"] = 0                      # fisierul n-avea coloana rezidual (default = valoare)
     v = m.calc_asset(r, 2026)              # nu ridica -> liniarul e permis pentru categoria lit.c
     assert v["depr_period"] > 0

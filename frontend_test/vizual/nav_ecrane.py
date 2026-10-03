@@ -213,6 +213,7 @@ def ecran_recomanda(pg):
 
 def ecran_magazin(pg): _ecran_shell(pg, "fa-magazin")
 def ecran_raportz(pg): _ecran_shell(pg, "fa-raportz")
+def ecran_mijloace(pg): _ecran_shell(pg, "fa-mijloace")
 def ecran_pachete(pg): _card(pg, "pachete")
 
 
@@ -248,6 +249,8 @@ ECRANE = [
     ("import_asociati", ecran_import_asociati),
     # [D394 op2 Î1, 02.10.2026] «Raport Z»: decizia B i-a ATINS JS-ul (câmpul „Nr. bonuri fiscale”, refuz pe câmp)
     ("raportz", ecran_raportz),
+    # [LOT 19 d11, 03.10.2026] «Mijloace fixe»: butonul „C&D: da/nu” la capătul rândului i-a ATINS JS-ul
+    ("mijloace", ecran_mijloace),
 ]
 
 
@@ -271,7 +274,8 @@ _FA_CAMPANIE = [
     # [LOTUL 15] `fa-magazin` a trecut in `ECRANE`: lotul i-a atins JS-ul (R152).
     "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-marja",
     # [D394 op2 Î1, 02.10.2026] `fa-raportz` a trecut in `ECRANE`: decizia B i-a atins JS-ul.
-    "fa-mijloace", "fa-produse", "fa-regfiscal",
+    # [LOT 19 d11, 03.10.2026] `fa-mijloace` a trecut in `ECRANE`: bifa C&D i-a atins JS-ul.
+    "fa-produse", "fa-regfiscal",
     # [LOTUL 14] `fa-rip` a IESIT de aici: nu se randeaza pe firma acestei liste (SRL), deci
     # raporta „navigare esuata" la fiecare rulare. E probat de `rip_pfa` din ECRANE_CABINET,
     # pe firma de partida simpla — acolo unde cardul exista.

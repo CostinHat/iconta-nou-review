@@ -36,7 +36,8 @@ _REEV = """COALESCE((SELECT json_agg(json_build_object(
 def de_amortizat(cur, schema):
     cur.execute(f"""
                 SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni,
-                       data_pif, cont_imobilizare, metoda, {_REEV.format(p=schema + ".")} AS reevaluari
+                       data_pif, cont_imobilizare, metoda, {_REEV.format(p=schema + ".")} AS reevaluari,
+                       destinatie_cd
                 FROM {schema}.mijloace_fixe WHERE activ = true
             """)
     return cur.fetchall()
@@ -45,7 +46,7 @@ def de_amortizat(cur, schema):
 def active_pentru_d406(cur, schema, an):
     cur.execute(f"""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
                                    valoare, rezidual, dnf_luni, data_pif, metoda, activ,
-                                   {_REEV.format(p=schema + ".")} AS reevaluari
+                                   {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd
                             FROM {schema}.mijloace_fixe
                             WHERE data_pif IS NOT NULL
                               AND EXTRACT(YEAR FROM data_pif) <= %s
@@ -57,7 +58,7 @@ def active_pentru_d406(cur, schema, an):
 def pentru_reevaluare(cur, schema, mijloc_id):
     cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
                                            valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda,
-                                           {_REEV.format(p=schema + ".")} AS reevaluari
+                                           {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd
                                     FROM {schema}.mijloace_fixe WHERE id=%s AND activ=true""",
                 (mijloc_id,))
     return cur.fetchone()
@@ -66,7 +67,7 @@ def pentru_reevaluare(cur, schema, mijloc_id):
 def toate(cur):
     cur.execute(f"""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
                                   valoare, rezidual, dnf_luni, data_pif, metoda, activ,
-                                  {_REEV.format(p="")} AS reevaluari
+                                  {_REEV.format(p="")} AS reevaluari, destinatie_cd
                            FROM mijloace_fixe ORDER BY activ DESC, id""")
     return cur.fetchall()
 
@@ -74,7 +75,7 @@ def toate(cur):
 def pentru_inventariere(cur, schema, mijloc_id):
     cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
                                                valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda,
-                                               {_REEV.format(p=schema + ".")} AS reevaluari
+                                               {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd
                                         FROM {schema}.mijloace_fixe
                                         WHERE id=%s AND activ=true""",
                 (mijloc_id,))
@@ -107,10 +108,18 @@ def urca_valoarea(cur, schema, id_, valoare):
     cur.execute(f"UPDATE {schema}.mijloace_fixe SET valoare=%s WHERE id=%s", (valoare, id_))
 
 
-def adauga_cu_reevaluare(cur, schema, cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda):
+def adauga_cu_reevaluare(cur, schema, cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda, destinatie_cd=False):
     cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
                                 (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
-                                 rezidual, dnf_luni, data_pif, metoda, activ)
-                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true) RETURNING id""",
-                (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda))
+                                 rezidual, dnf_luni, data_pif, metoda, activ, destinatie_cd)
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s) RETURNING id""",
+                (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda,
+                 bool(destinatie_cd)))
+    return cur.fetchone()
+
+
+def seteaza_destinatie_cd(cur, schema, id_, destinatie_cd):
+    """[lot 19 d11] Bifa «Destinat C&D» (CF art.20 alin.(1) lit.b)). Intoarce id-ul sau None daca activul nu exista."""
+    cur.execute(f"UPDATE {schema}.mijloace_fixe SET destinatie_cd=%s WHERE id=%s AND activ=true RETURNING id",
+                (bool(destinatie_cd), id_))
     return cur.fetchone()

@@ -65,10 +65,12 @@ def plati_estimate(obligatii, medie_lunara, azi=None, saptamani=8):
     plati = []
     if obligatii.get("salarii_nete"):
         plati.append({"data_scadenta": azi.isoformat(), "suma": obligatii["salarii_nete"]})
-    urm25 = azi.replace(day=25) if azi.day <= 25 else \
-        (azi.replace(day=1) + datetime.timedelta(days=32)).replace(day=25)
+    # termenul obligațiilor lunare din sursa unică (scadente): mutat la zi lucrătoare, iar în decembrie pe 21 (CPF
+    # art.155 alin.(2)) — înainte, ziua era scrisă aici și cădea pe 25 decembrie (lot 19 defect 7)
+    from core import scadente
+    termen = scadente.urmatorul_termen_lunar(azi)
     if obligatii.get("fiscale"):
-        plati.append({"data_scadenta": urm25.isoformat(), "suma": obligatii["fiscale"]})
+        plati.append({"data_scadenta": termen.isoformat(), "suma": obligatii["fiscale"]})
     if medie_lunara > 0:
         d = azi
         for _ in range(max(1, saptamani // 4)):

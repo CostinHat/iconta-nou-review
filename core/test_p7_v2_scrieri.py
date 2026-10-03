@@ -209,7 +209,10 @@ def test_numarul_de_instructiuni_se_conserva():
     # [D394 op2 Î1, decizia B, 02.10.2026] 271 -> 273, cu apelurile numite:
     #   repo_contabilitate.adauga_z_amef ×2 (horeca_import_amef, horeca_raport_z) — casa și numărul de bonuri ale
     #   raportului Z, în același rând pe ambele rute, ca D394 op2 Î1 să citească o singură sursă. Pași NOI.
-    assert _apeluri_catre_repository() == 273
+    # [lot 19 defectul 11, 03.10.2026] 273 -> 274, cu apelul numit:
+    #   repo_mijloace_fixe.seteaza_destinatie_cd (mijloc_fix_destinatie_cd) — bifa „C&D” din registru (CF art.20 alin.(1)
+    #   lit.b)), ruta nouă PUT /mijloace-fixe/{id}/destinatie-cd. Pas NOU al aplicației, nu SQL mutat.
+    assert _apeluri_catre_repository() == 274
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

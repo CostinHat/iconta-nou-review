@@ -24,6 +24,33 @@ from core import repo_main as _repo
 from core import stare_partajata as _stare_part
 from core.mesaje import EMAIL_EXISTA, PERIOADA_INCHISA, MESAJ_CLIENT_ALT_CABINET, DOAR_ADMIN_CABINET, FARA_ACCES_TENANT
 from fastapi.encoders import jsonable_encoder as _jsonable_encoder
+
+_OBLIGATORIU = object()
+
+
+def bifa(corp, cheie, implicit=_OBLIGATORIU):
+    """Un DA/NU din corpul cererii. SINGURA cale de a citi o bifa (gardat de core/test_formulare_operatiuni_campuri.py).
+
+    [Lot 19 defect 13, clasa (b), 03.10.2026] Ecranul trimite selecturile ca TEXT — „true”/„false”, „1”/„0” — iar
+    `bool("false")` e True. Masurat: un minus la inventar marcat „Imputabil: Nu” se inregistra ca imputabil;
+    „Furnizor plătitor TVA: Nu” aplica totusi taxarea inversa; „Agricultor în registru: Nu” trecea de refuzul
+    compensatiei nedeductibile. Aici: bool, 0/1, „true”/„false”, „da”/„nu”; orice altceva e REFUZ, nu ghicit.
+    Fara `implicit`, campul e obligatoriu (KeyError -> „Lipsește câmpul”, ca un `corp[cheie]`)."""
+    if cheie not in corp or corp.get(cheie) in (None, ""):
+        if implicit is _OBLIGATORIU:
+            raise KeyError(cheie)
+        return implicit
+    v = corp.get(cheie)
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, (int, float)) and v in (0, 1):
+        return bool(v)
+    s = str(v).strip().lower()
+    if s in ("true", "1", "da"):
+        return True
+    if s in ("false", "0", "nu"):
+        return False
+    raise ValueError("Câmpul %s acceptă doar da sau nu; am primit %r." % (cheie, v))
 from fastapi.responses import JSONResponse as _JSONResponse
 import core.notificari_api as _notif
 from core import erori as _erori

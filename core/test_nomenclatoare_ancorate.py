@@ -47,6 +47,8 @@ ANCORE = {
     ("d394", "_TARI_UE"): "test_tip_partener_clasificare_pct216",
     ("d394", "_TARI_NONUE"): "test_tip_partener_clasificare_pct216",   # jumatatea non-UE a clasificarii pct.216 (sibling _TARI_UE)
     ("d406", "_UE_NON_RO"): "test_registration_number_partener_si_firma_proprie",
+    ("d300", "RANDURI_FARA_COL1"): "test_coloanele_inexistente_sunt_respinse_de_duk",   # lot 19 d10
+    ("d300", "RANDURI_FARA_COL2"): "test_coloanele_inexistente_sunt_respinse_de_duk",
 }
 
 

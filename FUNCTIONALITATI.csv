@@ -338,8 +338,8 @@ Cota de TVA atribuită produsului, cu justificare, valabilă pe perioada operaț
 Descriere vagă care duce la încadrare greșită; aplicarea cotei reduse fără îndeplinirea condițiilor (cod NC, tip de bun); ignorarea datei operațiunii când cotele se schimbă.
 ## Reguli fiscale
 Art. 291 Cod fiscal, modificat prin Legea 141/2025: de la 1 august 2025 cota standard este 21%, iar cota redusă 11% (art. 291 alin. 1 și 2). Pentru anumite livrări de locuințe se aplică tranzitoriu cota de 9% (art. III din Legea 141/2025)."
-Credite bancare și garanții,"Note pentru primirea creditului, dobânda angajată lunar, plata ratelor, restanțe și garanții (conturi 162/168/519x/8051).",F024,firma,Operatiuni speciale > Finantare,core/credite.py,OMFP 1802/2014 pct. 360-364,LIVE,pytest,,"## Ce face
-Note pentru credite bancare și garanții - primirea creditului, dobânda angajată lunar, plata ratelor, restanțe și garanții (conturi 162/168/519x/8051).
+Credite bancare și garanții,"Note pentru primirea creditului, dobânda angajată lunar, plata ratelor, restanțe și garanții (conturi 162/168/519x; garanții extrabilanțier 8011 acordate / 8021 primite).",F024,firma,Operatiuni speciale > Finantare,core/credite.py,OMFP 1802/2014 pct. 360-364,LIVE,pytest,,"## Ce face
+Note pentru credite bancare și garanții - primirea creditului, dobânda angajată lunar, plata ratelor, restanțe și garanții (conturi 162/168/519x; garanții extrabilanțier 8011 acordate / 8021 primite).
 ## Când se folosește
 Când firma ia un credit bancar sau constituie garanții.
 ## Ce trebuie pregătit înainte
@@ -352,7 +352,7 @@ Când firma ia un credit bancar sau constituie garanții.
 Note contabile pentru credit, dobândă lunară, rate, garanții extrabilanțiere.
 ## Greșeli frecvente
 - Dobânda neangajată lunar (doar la plată).
-- Garanțiile neînregistrate extrabilanțier (8051).
+- Garanțiile neînregistrate extrabilanțier (8011 acordate / 8021 primite).
 ## Reguli fiscale
 OMFP 1802/2014 pct. 360-364 (credite, dobânzi, garanții)."
 Curs valutar BNR,"Preia și aplică cursul BNR pentru facturile în valută, cu regula legală a cursului corect pe data operațiunii și conversia TVA.",F025,transversal,Emitere / operatiuni valutare,core/curs_bnr.py,art. 290(2) CF,LIVE,pytest,curs-valutar-factura-valuta,"## Ce face
@@ -2400,10 +2400,10 @@ Anual.
 Asocierea (denumire, CUI, adresa), reprezentantul, activitatea (categ_venit, CAEN, contract, venit brut și cheltuieli - net/pierdere se calculează) și asociații (cota %, venit și pierdere repartizate). Suma cotelor = 100; suma veniturilor repartizate = venitul net.
 ## Cum ajungi la ea
 Din ecranul principal → firma → Declarații → alegi D204 la „Tip declarație” și perioada → Continuă → completezi formularul de sub declarație → Regenerează D204. XML-ul generat e verificat cu validatorul oficial ANAF rulat local, iar rezultatul apare pe ecran înainte să-l descarci."
-Declarația D208 (transfer proprietăți imobiliare - notari),"D208 - declarație informativă semestrială a notarilor privind impozitul pe veniturile din transferul proprietăților imobiliare din patrimoniul personal. Generator MANUAL (core/d208.py): tranzacții -> imobile -> beneficiari (cote suma=100) + părți; totalurile și totalPlata_A se calculează. Structura din D208Validator.jar (rădăcina declarație208, ns declarație:v1); act nu e în corpus.",F224,firma,Declaratii,"core/d208.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",OPANAF (model D208); Cod fiscal art.111 (transfer proprietati imobiliare); structura din D208Validator.jar,"LIVE 24.09.2026 (formular manual in UI: transfer proprietati imobiliare - notari, semestriala - antet birou notarial (nume, CIF, domiciliu, intocmit) + o tranzactie (nr act notarial, taxa notar) + un imobil (judet numeric, localitate, cod SIRUTA, nr cadastral, tip teren/cladire/unitate, valori) + doua liste: beneficiari (CUI/CNP, cota, cotaImpozit 0/1/3, baza, impozit, scutit) si parti contractante (CUI/CNP, cota); Sigma cote=100 pe fiecare, verificate live; totalurile antetului agregate din liste; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid; multi-tranzactie/multi-imobil = increment viitor)","core/test_declaratii_lot2_duk.py + core/test_d208_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; Sigma cote=100, cotaImpozit, impozit agregat) + DUKIntegrator -v D208 'valid'",,"## Ce face
+Declarația D208 (transfer proprietăți imobiliare - notari),"D208 - declarație informativă lunară a notarilor (CF art. 113) privind impozitul pe veniturile din transferul proprietăților imobiliare din patrimoniul personal. Generator MANUAL (core/d208.py): tranzacții -> imobile -> beneficiari (cote suma=100) + părți; totalurile și totalPlata_A se calculează. Structura din D208Validator.jar (rădăcina declarație208, ns declarație:v1); act nu e în corpus.",F224,firma,Declaratii,"core/d208.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",OPANAF (model D208); Cod fiscal art.111 (transfer proprietati imobiliare); structura din D208Validator.jar,"LIVE 24.09.2026 (formular manual in UI: transfer proprietati imobiliare - notari, semestriala - antet birou notarial (nume, CIF, domiciliu, intocmit) + o tranzactie (nr act notarial, taxa notar) + un imobil (judet numeric, localitate, cod SIRUTA, nr cadastral, tip teren/cladire/unitate, valori) + doua liste: beneficiari (CUI/CNP, cota, cotaImpozit 0/1/3, baza, impozit, scutit) si parti contractante (CUI/CNP, cota); Sigma cote=100 pe fiecare, verificate live; totalurile antetului agregate din liste; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid; multi-tranzactie/multi-imobil = increment viitor)","core/test_declaratii_lot2_duk.py + core/test_d208_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; Sigma cote=100, cotaImpozit, impozit agregat) + DUKIntegrator -v D208 'valid'",,"## Ce face
 Generează D208 (transfer proprietăți imobiliare), depusă de birourile notariale.
 ## Când se depune
-Semestrial (luna 6 sau 12).
+Lunar, până pe 25 a lunii următoare autentificării (CF art. 113).
 ## De completat
 Notarul raportează tranzacții deja încheiate; sumele (valoare, baza, impozit) sunt cele din acte - aplicația le însumează, nu le recalculează. Ierarhie: tranzacție (act notarial) -> imobile -> beneficiari (vânzători, cote=100) + părți (cealaltă parte, cote=100).
 ## Cum ajungi la ea

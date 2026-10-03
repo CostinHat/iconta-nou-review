@@ -45,6 +45,24 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: **LOT 19 GHIDURI — publicare (punctul 1 din decizia Costin 03.10)** (`/home/costin/ghid_incoming/iconta_lot19_ghiduri.zip`, RAPORT_LOT19.md; DECIZII 03.10). ÎNCHIS
+  - ultim: livrat în commitul „Lot 19: publicare …” (hash în ISTORIC 03.10.2026): defectele 6–13 toate CONFIRMATE și reparate (11 și 12 după decizia lui Costin), clasa lui 13 lărgită pe tot ecranul Operațiuni, 20 de ghiduri live corectate, 18 secțiuni „Ce face iConta.eu” actualizate, verificatorul lotului `TOTAL 433 pica 0`, 433 de ghiduri publicate, 441 de rânduri în index.
+  - urmator: — (fir închis; următorul: punctul 2, D394 Î2). STARE = ÎNCHIS
+  - pasi (lista a CRESCUT pe drum — rescrisă aici după execuție, declarat în raport §7; pașii 1–6 sunt cei inițiali):
+    1. defectele 6–13, fiecare verificat la sursă, reparat cu gardă + mutație + probă pe portofoliu (invalid → valid).
+       1a. [+] D7: termenul legal separat de scadența nominală din XML (DUK R15.6/R25 cer 25.12) — `scadente.termen_legal`, cashflow pe sursa unică.
+       1b. [+] D8: și D407 (`or 12` tăcut, „semestrial” fără validare).
+       1c. [+] D10: coloanele permise pe rând din structura ANAF (R29_1 etc. respinse de DUK).
+       1d. [+] D11/D12: întrebare (schemă nouă) → deciziile lui Costin; migrări `migrare_destinatie_cd`, `migrare_capital_social` (backup înainte pe producție); forma juridică pe profil (în interiorul deciziei 12).
+       1e. [+] D13 lărgit la clasă: formularele Operațiuni (opțiuni imposibile, cota lipsă/opțională) + `bool("false")` (parser `_uc_comun.bifa`).
+    2. ghidurile LIVE cu erori: cele 15 din raport + [+] 5 găsite pe drum (`depun-d300-tva-lunar`, `termenele-declaratiile-tva-2026`, `regularizeaza-dividendele-finalul-anului`, `intocmeste-fisa-mijloc-fix`, `fisa-mijlocului-fix-campuri-completez`); FUNCTIONALITATI F224 (D208 lunar), F024 (conturile garanțiilor).
+    3. „Ce face iConta.eu” actualizat pentru defectele 1–12 (18 ghiduri ale lotului).
+    4. verificatorul re-rulat: 4 ghiduri cu citate din anexele OPANAF 2594/2015 și 878/2022 repuse pe fișierele-anexă → `TOTAL 433 pica 0`.
+    5. registrul în `index_titluri_ghid.csv`; cele 433 de ghiduri publicate (poarta ghidurilor verde pe toate).
+    6. scanuri vizuale, registre, commit cu poartă completă + four-way + mirror; ZIP `/home/costin/ghid_incoming/iconta_lot19_publicat.zip`.
+- fir: **D394 Î2 (punctul 2)** — HG 479/2003 integral în corpus întâi; bifa pe profil + încasări din chitanțe / registrul de casă; refuz numit pentru încasări neclasificate. NEINCEPUT (după punctul 1)
+- fir: **EXPORT SAGA/WinMentor — facturi din bon (punctul 3)** — formatele verificate la sursă; marca „din bon” sau fișier separat. NEINCEPUT (după punctul 2)
+- fir: **2b-COLOANĂ — DROP salariati.salariu_brut (punctul 4)** — dovadă că nimic n-o mai citește, backup, migrare pe toți tenanții. NEINCEPUT (după punctul 3)
 - fir: **NECONFORMITATE — agenda propunea un pas livrat (F3 etapa 3); firele închise / blocate** (03.10.2026, găsită la trecerea la pasul următor după D212; CICLUL DE NECONFORMITATE). ÎNCHIS
   - ultim: cititorul `core.agenda.urmatorul_pas` reparat (secțiunea „În lucru acum”, ambele forme, ultimul „urmator”, sare închise/blocate) + gard `core/test_agenda_urmator.py`; 7 fire livrate închise cu commitul citat; F1 marcat BLOCAT [EXTERN]; dezacordul D394 din `nomenclatoare.py` corectat (Î1 produs, Î2 definit la sursă); PREDARE corectată.
   - urmator: — (fir închis; pasul următor din agendă: Contract uniform A1 — d112). STARE = ÎNCHIS
@@ -572,7 +590,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Contract uniform A1 - conversia generatoarelor ramase la contractul {pull, erori_generare, calcul_dNNN, build_xml, genereaza(conn,schema,perioada,...)} (Sesiunea A - arhitectura). Baseline verificator CONTRACT 6, coboara cu 1 la fiecare modul convertit.
 - ultim: modul 7/10 d205 la contract (pull+genereaza(perioada); adaptor _d205; manual strict cheie_manual; DUK d205 valid; baseline 4->3). Convertite: d300,d301,d394,d710,d100,d101,d205. C (d100/d101/d205) GATA. DE DECIS (Costin): D101 build_xml respins de DUK (nu poate fi depusa) - campanie separata structura D101? Consemnat test_datorie_d101_build_xml_respins_de_duk. [citare-istorica: scos la reconstructia D101 03.08]
-- urmator: D1 - d112 (modul 8/10). RISC STRUCTURAL real (SCOPAT 31.07): d112 are DEJA pull+erori_generare; lipsesc calcul_d112+build_xml, ambele inghesuite in _d112_genereaza(prof,salariati,an,luna) ~250 linii unde calculul si XML-ul sunt IMPLETITE in aceeasi bucla per-salariat (fiecare <asigurat> emite XML imediat dupa ce-si calculeaza zecile de valori B1/B2/B3/B4/D/E1/E3 + part-time/CM/tichete; agregatele sum_imp/cas/cass/cam + C1/C2 se acumuleaza in bucla si intra in antet). Fara cusatura curata. Extragerea fidela cere Rezultat care poarta FIECARE valoare din XML (inclusiv randurile B3/D structurate) + proba golden-XML byte-identica pe fixturi ce ating toate ramurile. NEINCEPUT - cere greenlight (vezi DE DECIS).
+- urmator: D1 - d112 (modul 8/10). RISC STRUCTURAL real (SCOPAT 31.07): d112 are DEJA pull+erori_generare; lipsesc calcul_d112+build_xml, ambele inghesuite in _d112_genereaza(prof,salariati,an,luna) ~250 linii unde calculul si XML-ul sunt IMPLETITE in aceeasi bucla per-salariat (fiecare <asigurat> emite XML imediat dupa ce-si calculeaza zecile de valori B1/B2/B3/B4/D/E1/E3 + part-time/CM/tichete; agregatele sum_imp/cas/cass/cam + C1/C2 se acumuleaza in bucla si intra in antet). Fara cusatura curata. Extragerea fidela cere Rezultat care poarta FIECARE valoare din XML (inclusiv randurile B3/D structurate) + proba golden-XML byte-identica pe fixturi ce ating toate ramurile. NEINCEPUT - cere greenlight (vezi DE DECIS). — AMÂNAT prin decizia lui Costin 03.10.2026 (DECIZII 03.10, punctul 3: „nu acum; se face doar când D112 e atins oricum”). STARE = BLOCAT: se face numai împreună cu o schimbare care atinge D112
 - pasi:
   C1. [d100] pull(conn,schema,perioada)->(prof,venituri); genereaza(conn,schema,perioada,manual=None): cota din manual (cheie_manual(manual,"cota")), an=perioada.an, luna=perioada.trim*3, guard trim 1-4; adaptor _d100 -> Perioada(an,trim=), manual={"cota":..}. RED contract + mutatie + proba efemera. Baseline 6->5.
   C2. [d101] pull(conn,schema,perioada)->(prof,r{venituri,cheltuieli}); genereaza(perioada,manual); adaptor _d101 -> Perioada(an). Baseline 5->4.

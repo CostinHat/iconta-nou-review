@@ -2,7 +2,7 @@
 title: "Când depun D300 dacă am TVA lunar"
 description: Cu perioadă fiscală lunară, D300 se depune și se plătește până la data de 25 a lunii următoare celei pentru care se raportează TVA.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-03
 poarta: v1
 ---
 
@@ -21,17 +21,17 @@ Pentru un plătitor cu perioadă fiscală lunară, termenul e simplu: data de 25
 ## Termenul, cu exemple
 
 - **Luna ianuarie 2026** → D300 până la 25 februarie 2026.
-- **Luna iunie 2026** → D300 până la 25 iulie 2026.
-- **Luna noiembrie 2026** → D300 până la 25 decembrie 2026.
+- **Luna iunie 2026** → D300 până la 27 iulie 2026 (25 iulie e sâmbătă; termenul se prelungește până în prima zi lucrătoare — Codul de procedură fiscală art. 75 și Codul de procedură civilă art. 181 alin. (2)).
+- **Luna noiembrie 2026** → D300 până la 21 decembrie 2026 (Codul de procedură fiscală art. 155 alin. (2): termenul care s-ar împlini la 25 decembrie se împlinește la 21 decembrie).
 - **Luna decembrie 2026** → D300 până la 25 ianuarie 2027, după aceeași regulă generală.
 
-Notă: instrucțiunile OPANAF 174/2026 mai menționează, separat, și o dată de 21 decembrie (temei art. 155 alin. (2) Cod de procedură fiscală). Sursele verificate pentru acest ghid nu conțin contextul complet al acestei prevederi — nu e confirmat cărei declarații sau perioade i se aplică exact — așa că nu o prezentăm aici ca înlocuind termenul general de 25 ianuarie pentru decontul lunii decembrie. Dacă vă privește această dată, verificați-o punctual în instrucțiunile complete ale formularului sau cu organul fiscal.
+Notă: excepția de la 21 decembrie privește doar termenul care s-ar împlini la 25 decembrie, adică decontul lunii noiembrie; dacă 21 decembrie e zi nelucrătoare, termenul e ultima zi lucrătoare dinaintea ei (Codul de procedură fiscală art. 155 alin. (2), reluat în instrucțiunile OPANAF 174/2026). Decontul lunii decembrie urmează regula generală, 25 ianuarie.
 
 ## Ce se greșește în practică
 
 - **Se confundă „perioada fiscală lunară" cu depunerea în cursul aceleiași luni** — decontul se depune întotdeauna în luna următoare celei pentru care se raportează, nu în luna curentă.
 - **Se presupune un termen diferit pentru plată față de depunere** — pentru TVA, cele două coincid, la 25 a lunii următoare.
-- **Se aplică automat data de 21 decembrie din OPANAF 174/2026 la decontul lunar obișnuit**, fără verificarea contextului exact al acelei prevederi — sursele verificate pentru acest ghid nu confirmă că data respectivă înlocuiește termenul general.
+- **Se aplică termenul de 25 decembrie decontului lunii noiembrie**, deși el se depune până la 21 decembrie; sau, invers, data de 21 decembrie se aplică și decontului lunii decembrie, care se depune până la 25 ianuarie.
 
 ## Ce face iConta.eu
 

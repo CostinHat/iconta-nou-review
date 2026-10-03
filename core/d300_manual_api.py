@@ -30,18 +30,20 @@ nu rescris în JS. Fiecare etichetă e ancorată pe descrierea din structură (v
 """
 from core import afirmatii as _af  # [P8] statutul firmei e o afirmatie, nu un sir
 from core import repo_d300_manual_api as _repo
+from core.d300 import RANDURI_FARA_COL1, RANDURI_FARA_COL2, RANDURI_ADITIVE
 
 # Rândurile de INTRARE acceptate manual (fără col.2 sunt marcate în _FARA_TVA). Sursă:
 # d300.calcul_d300 allow-list (colectată + deductibilă). Ordinea = ordinea din formular.
 COLECTATA = ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8",
              "R12", "R13", "R14", "R15", "R16", "R64", "R65"]
-DEDUCTIBILA = ["R18", "R19", "R20", "R21", "R23", "R25", "R26", "R29", "R30",
+DEDUCTIBILA = ["R18", "R19", "R20", "R21", "R23", "R25", "R26", "R29", "R30", "R31",
                "R35", "R36", "R38", "R39", "R43", "R44", "R72", "R73", "R75"]
 ALLOW = COLECTATA + DEDUCTIBILA
 
-# Rânduri FĂRĂ coloana 2 (TVA) — doar bază/valoare (col.2 absentă în structura ANAF).
-# Sursă: d300_struct_anaf.txt (Rn_2 inexistent pentru aceste coduri).
-_FARA_TVA = {"R1", "R2", "R3", "R4", "R13", "R14", "R15", "R26"}
+# Rânduri FĂRĂ coloana 2 (TVA) / FĂRĂ coloana 1 (bază) — sursa unică e d300.RANDURI_FARA_COL2/COL1, citite din
+# d300_struct_anaf.txt (Rn_2 / Rn_1 inexistent).
+_FARA_TVA = RANDURI_FARA_COL2
+_FARA_BAZA = RANDURI_FARA_COL1
 
 # Etichete OFICIALE (diacritice). Sursă: OPANAF 174/2026 + d300_struct_anaf.txt (descriere per cod).
 ETICHETE = {
@@ -71,6 +73,7 @@ ETICHETE = {
     "R26": "Achiziții de bunuri și servicii scutite de taxă sau neimpozabile",
     "R29": "TVA efectiv restituită cumpărătorilor străini, inclusiv comisionul unităților autorizate",
     "R30": "Regularizări taxă dedusă",
+    "R31": "Ajustări conform pro-rata / ajustări de taxă (ex. ajustarea pentru bunuri de capital, art. 305 Cod fiscal)",
     "R35": "Soldul TVA de plată din decontul perioadei fiscale precedente, neachitat până la data depunerii decontului",
     "R36": "Diferențe de TVA de plată stabilite de organele fiscale prin decizie comunicată și neachitate până la data depunerii decontului",
     "R38": "Soldul sumei negative a TVA reportate din perioada precedentă pentru care nu s-a solicitat rambursarea",
@@ -114,10 +117,10 @@ def _disponibile(conn, schema, an, luna, deja):
     derivate = randuri_derivate(conn, schema, an, luna)
     out = []
     for cod in ALLOW:
-        if cod in derivate or cod in deja:
+        if (cod in derivate and cod not in RANDURI_ADITIVE) or cod in deja:
             continue
         out.append({"cod": cod, "eticheta": ETICHETE.get(cod, cod),
-                    "cu_tva": cod not in _FARA_TVA})
+                    "cu_tva": cod not in _FARA_TVA, "cu_baza": cod not in _FARA_BAZA})
     return out
 
 
@@ -134,7 +137,7 @@ def lista(conn, schema, an, luna):
                             "eticheta": ETICHETE.get(r["rand"], r["rand"]),
                             "baza": int(r["baza"] or 0), "tva": int(r["tva"] or 0),
                             "descriere": r["descriere"] or "",
-                            "cu_tva": r["rand"] not in _FARA_TVA})
+                            "cu_tva": r["rand"] not in _FARA_TVA, "cu_baza": r["rand"] not in _FARA_BAZA})
     return {"randuri": randuri,
             "randuri_disponibile": _disponibile(conn, schema, an, luna, deja)}
 
@@ -172,6 +175,9 @@ def adauga(conn, schema, an, luna, d):
         erori.append(("tva", "TVA (col. 2) trebuie să fie un număr întreg de lei."))
     if rand in _FARA_TVA and tva:
         erori.append(("tva", "Rândul %s nu are coloană de TVA — completează doar baza." % rand))
+    if rand in _FARA_BAZA and baza:
+        erori.append(("baza", "Rândul %s nu are coloană de bază — completează doar TVA (cu semn, dacă e ajustare "
+                              "în minus)." % rand))
     if baza is not None and tva is not None and not baza and not tva:
         erori.append(("baza", "Completează cel puțin o valoare (bază sau TVA) — un rând gol nu "
                               "apare în decont."))
@@ -181,7 +187,7 @@ def adauga(conn, schema, an, luna, d):
             derivate = randuri_derivate(conn, schema, an, luna)
         except Exception:  # noqa: BLE001 — derivarea nu trebuie să blocheze introducerea
             derivate = set()
-        if rand in derivate:
+        if rand in derivate and rand not in RANDURI_ADITIVE:
             erori.append(("rand", "Rândul %s e deja DERIVAT automat din facturile perioadei "
                                   "(dublă numărare interzisă). Corectează facturile sau alege alt "
                                   "rând." % rand))

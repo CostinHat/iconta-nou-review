@@ -79,6 +79,7 @@ def conn():
                            platitor_tva)
                            VALUES (1,'GARDA SRL','RO14399840','Str 1','Buc','B','e@x.ro','0722',
                                    '4690','P','I','ADMIN', true)""")
+            cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200 WHERE id = 1")  # L31/1990 art.74 alin.(3): fără capital, factura nu se emite (lot 19 d12)
         c.commit()
     with _db.get_conn(_SCH) as c:
         yield c

@@ -49,6 +49,7 @@ def _schema(cur, platitor):
                 "tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'MICA SRL','14399840',"
                 "'Str 1','Buc','B','6202','BCR','RO49RNCB0000000000000001','micro',%s,'L','Pop','Ion','administrator')",
                 (platitor,))
+    cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200 WHERE id = 1")  # L31/1990 art.74 alin.(3): fără capital, factura nu se emite (lot 19 d12)
 
 
 @pytest.fixture

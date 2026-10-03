@@ -15,9 +15,9 @@ def _chei(lista):
 
 # D1 + D4: termenul tine cont de sarbatori (delegat la scadente.py)
 def test_termen_sarbatoare_decembrie():
-    # 25.12.2026 = vineri SI Craciun; 26 = sambata SI a 2-a zi de Craciun; 27 = duminica
-    # -> prima zi lucratoare = luni 28
-    assert cf._termen(2026, 11) == date(2026, 12, 28)
+    # CPF art.155 alin.(2): ce se împlinește la 25 decembrie „se declară până la data de 21 decembrie” (luni 21.12.2026);
+    # înainte testul fixa mutarea ÎNAINTE (25 Crăciun, 26, 27 duminică -> 28) — lot 19 defectul 7
+    assert cf._termen(2026, 11) == date(2026, 12, 21)
 
 
 # D2: decembrie an-1 NU mai e invizibil (termen 25 ian an curent)

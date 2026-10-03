@@ -6,15 +6,15 @@ import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=8f18740e04";
 import { ecranRip } from "./rip_ecran.js?v=8d78a2aad3";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=01442b1818";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=324faeb983";
 import { ecranEtransport } from "./etransport_ecran.js?v=2062674928";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=1e5f799f85";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=9a53d064aa";  // [decl_firma_v1]
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=aca60d83f9";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=0a9c1e6175";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=5616e025cb";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=1759e85a94";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=651c354a8d";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=fbcab83a27";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {

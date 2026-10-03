@@ -916,12 +916,13 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
             mf = repo_mijloace_fixe.de_amortizat(cur, schema)
         from core import d406_active as _d406
         linii = []
-        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met, reev in mf:
+        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met, reev, dcd in mf:
             if not pif or not dnf:
                 continue
             mf_d = {"cod": den, "denumire": den, "cont_imobilizare": cont_imob,
                     "cont_amortizare": cont_am, "valoare": val, "rezidual": rez,
-                    "dnf_luni": dnf, "data_pif": pif, "metoda": met, "reevaluari": reev}
+                    "dnf_luni": dnf, "data_pif": pif, "metoda": met, "reevaluari": reev,
+                    "destinatie_cd": dcd}
             try:
                 rata = _d406.amortizare_luna(mf_d, an, luna)   # metoda reala (CF art.28), nu liniar
             except ValueError as e:
@@ -1855,7 +1856,11 @@ def centre_cost_activ(tenant_id, centru_id, corp, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
-        r = _cc.seteaza_activ(conn, schema, centru_id, bool(corp.get("activ", True)))
+        try:
+            activ = _uc_comun.bifa(corp, "activ", True)
+        except ValueError as e:
+            raise _erori.DateInvalide(str(e))
+        r = _cc.seteaza_activ(conn, schema, centru_id, activ)
         if r is None:
             raise _erori.Inexistent("centru inexistent")
         return r
@@ -2761,7 +2766,7 @@ def achizitie_agricultor(tenant_id, corp, ctx):
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
-            r = _m.achizitie_de_la_agricultor(corp["valoare"], corp["agricultor_in_registru"])
+            r = _m.achizitie_de_la_agricultor(corp["valoare"], _uc_comun.bifa(corp, "agricultor_in_registru"))
             # [R54] confruntarea cu planul firmei inlocuieste verificarea de PREZENTA:
             # `cere_cont` refuza si absenta, si contul care nu exista in plan, si spune CE
             # cont si UNDE se creeaza. Doua verificari suprapuse ar fi doua locuri.
@@ -3060,7 +3065,10 @@ def achizitie_taxare_inversa(tenant_id, corp, ctx):
     # dinainte îl cerea din interiorul tranzacției, deci ținea o conexiune din pool peste un apel
     # cu termen de 20 s. `platitor_tva_freeze` e best-effort: ANAF jos → fallback, nu excepție.
     furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
-    _furn_pl = str(corp.get("furnizor_platitor_tva", True)).strip().lower() not in ("false", "nu", "0")
+    try:
+        _furn_pl = _uc_comun.bifa(corp, "furnizor_platitor_tva", True)
+    except ValueError as e:
+        raise _erori.DateInvalide(str(e))
     _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=_furn_pl) if furnizor_cui else _furn_pl
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -3074,7 +3082,7 @@ def achizitie_taxare_inversa(tenant_id, corp, ctx):
         try:
             categorie = str(corp["categorie"])
             ok, mentiune = _ti.se_aplica(categorie, corp["valoare"],
-                                         corp.get("furnizor_platitor_tva", True),
+                                         _tert_pl,   # verdictul ANAF / bifa citita corect — nu sirul „false” (adevarat)
                                          beneficiar_tva,
                                          _date.fromisoformat(corp["data"]))
             cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
@@ -3265,7 +3273,7 @@ def import_extracomunitar(tenant_id, corp, ctx):
                                   corp.get("procent_taxa_vamala", 0),
                                   corp.get("accize", 0), corp.get("accesorii", 0),
                                   _common.cota_ceruta(corp),
-                                  bool(corp.get("certificat_amanare")), platitor)
+                                  _uc_comun.bifa(corp, "certificat_amanare", False), platitor)
             cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
             val = Decimal(str(corp["valoare_vamala"]))
         except (ValueError, KeyError) as e:
@@ -3303,7 +3311,7 @@ def export_extracomunitar(tenant_id, corp, ctx):
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             ok, ment = _ie.valideaza_export(corp.get("tara_client"),
-                                            bool(corp.get("dovada_export")))
+                                            _uc_comun.bifa(corp, "dovada_export", False))
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
                 # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
@@ -3688,12 +3696,12 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
                     # [R147] „inexistent/inactiv" lasa omul sa ghiceasca pe care din doua.
                     raise _erori.Inexistent("Mijlocul fix ales nu există în registrul "
                                                  "firmei sau a fost casat. Alege-l din listă.")
-                den, ci, ca, val, rez, dnf, pif, met, reev = mf
+                den, ci, ca, val, rez, dnf, pif, met, reev, dcd = mf
                 ref = _date.fromisoformat(corp["data"])
                 from core import d406_active as _d406
                 mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
                         "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
-                        "metoda": met, "reevaluari": reev}
+                        "metoda": met, "reevaluari": reev, "destinatie_cd": dcd}
                 amortizare = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                 _cere_amortizarea_inregistrata(conn, schema, ca, ref, amortizare, den)
                 r = _rv.nota_reevaluare(val, amortizare, corp["valoare_justa"], ci, ca,
@@ -3752,8 +3760,8 @@ def nota_provizion_ep(tenant_id, corp, ctx):
             if fel == "creanta":
                 r = _pv.nota_ajustare_creanta(corp["suma"], act)
                 pct, temei = _pv.deductibilitate_creanta(
-                    corp.get("zile_depasire", 0), bool(corp.get("garantata")),
-                    bool(corp.get("afiliata")), bool(corp.get("faliment")))
+                    corp.get("zile_depasire", 0), _uc_comun.bifa(corp, "garantata", False),
+                    _uc_comun.bifa(corp, "afiliata", False), _uc_comun.bifa(corp, "faliment", False))
                 info = {"deductibil_procent": pct, "temei": temei}
                 d0 = f"Ajustare creanta ({act}) - deductibil {pct}%"
             elif fel == "provizion":
@@ -3825,7 +3833,7 @@ def nota_obiect_inventar(tenant_id, corp, ctx):
             if op == "achizitie":
                 ref = _date.fromisoformat(corp["data"])
                 if not _oi.e_obiect_inventar(corp["valoare"], ref,
-                                             bool(corp.get("durata_sub_1_an"))):
+                                             _uc_comun.bifa(corp, "durata_sub_1_an", False)):
                     raise ValueError(f"valoarea depaseste pragul MF de "
                                      f"{bani(_oi.prag_mf(ref), 'lei')} (OUG 8/2026) - "
                                      "inregistreaza ca mijloc fix")
@@ -3863,24 +3871,30 @@ def nota_asociati(tenant_id, corp, ctx):
         info = {}
         try:
             if op == "dividend":
+                interimar = _uc_comun.bifa(corp, "interimar", False)   # select „0”/„1”: bool("0") ar fi True
                 r = _da.nota_dividend(corp["brut"], _date.fromisoformat(corp["data"]),
-                                      bool(corp.get("interimar")),
+                                      interimar,
                                       corp.get("cu_plata", True))
                 info = {"impozit": str(r["impozit"]), "net": str(r["net"]),
                         "cota": r["cota"]}
-                d0 = f"Dividende {'interimare' if corp.get('interimar') else 'anuale'} "                      f"brut {corp['brut']}, impozit {r['cota']}%"
+                d0 = f"Dividende {'interimare' if interimar else 'anuale'} "                      f"brut {corp['brut']}, impozit {r['cota']}%"
             elif op == "regularizare":
                 r = _da.nota_regularizare_interimar(corp["total_interimar"],
-                                                    corp["dividend_anual"])
-                info = {"exces_de_restituit": str(r["exces_de_restituit"])}
+                                                    corp["dividend_anual"], corp.get("impozit_interimar"))
+                info = {"exces_de_restituit": str(r["exces_de_restituit"]),
+                        "impozit_de_recuperat": str(r["impozit_de_recuperat"]),
+                        "net_de_restituit": str(r["net_de_restituit"])}
                 d0 = "Regularizare dividende interimare (457=463, OMFP 3067/2018)"
+            elif op == "restituire_dividend":
+                r = _da.nota_restituire_dividend(corp.get("suma_restituita"))
+                d0 = "Restituire dividende interimare încasată (5121=463, OMFP 3067/2018)"
             elif op == "imprumut":
                 r = _da.nota_imprumut_asociat(corp.get("suma", 0),
                                               corp.get("fel", "primire"),
                                               corp.get("dobanda", 0))
                 d0 = f"Imprumut asociat 4551 ({corp.get('fel','primire')})"
             else:
-                raise ValueError(nomenclator_cerut("operatie", "dividend|regularizare|imprumut"))
+                raise ValueError(nomenclator_cerut("operatie", "dividend|regularizare|restituire_dividend|imprumut"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0)
@@ -4141,7 +4155,7 @@ def nota_perisabilitati(tenant_id, corp, ctx):
             r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
                            corp["pierdere_constatata"], _common.cota_ceruta(corp),
                            _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
-                           bool(corp.get("degradare_dovedita_distrusa")))
+                           _uc_comun.bifa(corp, "degradare_dovedita_distrusa", False))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or
@@ -4195,13 +4209,13 @@ def tenant_mijloace_fixe(tenant_id, ctx):
         with conn.cursor() as cur:
             rows = repo_mijloace_fixe.toate(cur)
     from core import d406_active as _d406
-    for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ, reev) in rows:
+    for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ, reev, dcd) in rows:
         val = Decimal(str(val or 0)); rez = Decimal(str(rez or 0))
         amortizat = ramas = eroare = None
         if activ:
             mf_d = {"cod": cod, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
                     "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
-                    "metoda": met, "reevaluari": reev}
+                    "metoda": met, "reevaluari": reev, "destinatie_cd": dcd}
             try:
                 r = _d406.amortizat_la_data(mf_d, azi)   # metoda reala (CF art.28), nu liniar
                 amortizat = str(r["amortizat"]); ramas = str(r["ramas"])
@@ -4211,9 +4225,26 @@ def tenant_mijloace_fixe(tenant_id, ctx):
                     "cont_imobilizare": ci, "cont_amortizare": ca,
                     "valoare": str(val), "rezidual": str(rez),
                     "dnf_luni": dnf, "data_pif": str(pif) if pif else None,
-                    "metoda": met, "activ": bool(activ),
+                    "metoda": met, "activ": bool(activ), "destinatie_cd": bool(dcd),
                     "amortizat": amortizat, "ramas": ramas, "eroare": eroare})
     return {"mijloace": out}
+
+
+def mijloc_fix_destinatie_cd(tenant_id, mijloc_id, corp, ctx):
+    """[lot 19 d11] Bifa «Destinat C&D» pe un activ din registru (CF art.20 alin.(1) lit.b), art.20^1 alin.(8)): cu
+    ea, accelerata e permisa si pe conturile din afara lui 2131 (d406_active._metode_permise)."""
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    try:
+        valoare = _uc_comun.bifa(corp, "destinatie_cd")
+    except (ValueError, KeyError) as e:
+        raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            r = repo_mijloace_fixe.seteaza_destinatie_cd(cur, schema, mijloc_id, valoare)
+        if not r:
+            raise _erori.Inexistent("Mijlocul fix ales nu există în registrul firmei sau a fost casat.")
+        conn.commit()
+    return {"id": mijloc_id, "destinatie_cd": valoare}
 
 
 def nota_inventariere(tenant_id, corp, ctx):
@@ -4234,17 +4265,17 @@ def nota_inventariere(tenant_id, corp, ctx):
             elif op == "plus_mf":
                 # [ruptura mijloc-fix post-migrare 14.08.2026] valideaza (art.28 alin.5/8^1) SI inscrie
                 # activul in registrul mijloace_fixe (nu doar nota 21x=4754) -> ajunge la amortizare/D406.
-                mf_reg = _iv.pregateste_mf_plus(corp)
+                mf_reg = _iv.pregateste_mf_plus(dict(corp, destinatie_cd=_uc_comun.bifa(corp, "destinatie_cd", False)))
                 r = _iv.nota_plus_mf(corp["valoare"], mf_reg["cont_imobilizare"])
                 d0 = "Plus la inventar mijloace fixe (21x=4754)"
             elif op == "minus":
                 r = _iv.nota_minus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
-                                   bool(corp.get("imputabil")),
+                                   _uc_comun.bifa(corp, "imputabil", False),
                                    corp.get("valoare_imputare"),
                                    corp.get("vinovat", "salariat"),
                                    _common.cota_ceruta(corp),
-                                   bool(corp.get("asigurat_sau_distrus")))
-                d0 = "Minus la inventar" + (" imputabil" if corp.get("imputabil") else
+                                   _uc_comun.bifa(corp, "asigurat_sau_distrus", False))
+                d0 = "Minus la inventar" + (" imputabil" if _uc_comun.bifa(corp, "imputabil", False) else
                                             " neimputabil")
             elif op == "casare":
                 if corp.get("mijloc_fix_id"):
@@ -4255,12 +4286,12 @@ def nota_inventariere(tenant_id, corp, ctx):
                         # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
                         raise _erori.Inexistent("Mijlocul fix ales nu există în registrul "
                                                      "firmei sau a fost casat. Alege-l din listă.")
-                    den, ci, ca, val, rez, dnf, pif, met, reev = mf
+                    den, ci, ca, val, rez, dnf, pif, met, reev, dcd = mf
                     ref = _date.fromisoformat(corp["data"])
                     from core import d406_active as _d406
                     mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
                             "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
-                            "metoda": met, "reevaluari": reev}
+                            "metoda": met, "reevaluari": reev, "destinatie_cd": dcd}
                     am = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                     r = _iv.nota_casare_mf(val, am, ci, ca)
                     d0 = f"Casare {den} (PV comisie, neamortizat {r['neamortizat']})"
@@ -4283,7 +4314,7 @@ def nota_inventariere(tenant_id, corp, ctx):
                 repo_mijloace_fixe.scoate_din_evidenta(cur, schema, mf_id)
             mf_nou_id = None
             if op == "plus_mf":
-                mf_nou_id = repo_mijloace_fixe.adauga_cu_reevaluare(cur, schema, mf_reg["cod"], mf_reg["denumire"], mf_reg["cont_imobilizare"], mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"], mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"])[0]
+                mf_nou_id = repo_mijloace_fixe.adauga_cu_reevaluare(cur, schema, mf_reg["cod"], mf_reg["denumire"], mf_reg["cont_imobilizare"], mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"], mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"], mf_reg["destinatie_cd"])[0]
         conn.commit()
     rez_out = {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
     if mf_nou_id:
@@ -4569,6 +4600,10 @@ def facturi_emite(tenant_id, date, ctx):
                     "%s — %s" % (x["eticheta"], x.get("mesaj") or "") for x in e.campuri),
                 "campuri": e.campuri})
         except ValueError as e:
+            if getattr(e, "cod", None) == "CAPITAL_SOCIAL_LIPSA":
+                # [lot 19 d12] refuz STRUCTURAT: ecranul păstrează factura și oferă butonul spre Date firmă
+                from core import capital_social as _cs
+                raise _erori.DateInvalide(_cs.detaliu(e))
             raise _erori.DateInvalide(str(e))
         # descarcare gestiune DOAR la poarta = DA, in ACEEASI tranzactie (atomic: emit + descarcare)
         if poarta_ceruta and date.pleaca_marfa is True and isinstance(r, dict) and r.get("factura_id"):
@@ -5328,7 +5363,7 @@ def decontare_valuta(tenant_id, corp, ctx):
                                    curs_dec, corp["tip"],
                                     _cv.cere_cont(conn, schema, corp.get("cont_tert"), "cont_tert"),
                                    _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca", "5124"),
-                                   in_lei_cu_clauza=bool(corp.get("in_lei_cu_clauza")))
+                                   in_lei_cu_clauza=_uc_comun.bifa(corp, "in_lei_cu_clauza", False))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         d = r["diferenta"]
@@ -5509,7 +5544,7 @@ def vanzare_ic(tenant_id, corp, ctx):
                 cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")
             else:
                 ok, ment = _ic.valideaza_lic(corp["cod_tva_client"], v["valid"],
-                                             bool(corp.get("dovada_transport")))
+                                             _uc_comun.bifa(corp, "dovada_transport", False))
                 cont_venit = _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "707")
                 cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")
             val = Decimal(str(corp["valoare"]))

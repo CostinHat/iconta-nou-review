@@ -153,8 +153,9 @@ def _categorie_activ(cont_imobilizare):
         return "terenuri"              # neamortizabil
     return "alt_mijloc_fix"            # lit.c, catch-ul legal: "oricarui altui mijloc fix amortizabil"
 
-def _metode_permise(categorie, pif):
-    """Setul de metode permise de lege pentru categorie (alin.5) + fereastra superaccelerata (alin.8^1)."""
+def _metode_permise(categorie, pif, destinatie_cd=False):
+    """Setul de metode permise de lege pentru categorie (alin.5) + fereastra superaccelerata (alin.8^1) + aparatura
+    si echipamentele destinate cercetarii-dezvoltarii (CF art.20 alin.(1) lit.b), art.20^1 alin.(8))."""
     if categorie == "terenuri":
         return set()                   # terenurile nu se amortizeaza
     if categorie == "constructii":
@@ -162,6 +163,11 @@ def _metode_permise(categorie, pif):
     permise = {"liniara", "degresiva"}  # lit.b si lit.c permit ambele
     if categorie == "echipamente_2_1":
         permise.add("accelerata")       # lit.b
+    # [Lot 19 defect 11, 03.10.2026] CF art.20 alin.(1) lit.b): „aplicarea metodei de amortizare accelerată și în cazul
+    # aparaturii și echipamentelor destinate activităților de cercetare-dezvoltare” — oricare ar fi contul (2132, 2133,
+    # 214...), daca activul e marcat C&D. Nu si constructii/terenuri/animale-plantatii: nu sunt „aparatură și echipamente”.
+    if destinatie_cd and categorie == "alt_mijloc_fix":
+        permise.add("accelerata")
     if categorie in ("echipamente_2_1", "animale_plantatii") and pif is not None and pif.year == 2026:
         permise.add("superaccelerata")  # alin.8^1: subgrupa 2.1/2.4, PIF in 2026
     return permise
@@ -170,9 +176,9 @@ def _verifica_categorie(mf, metoda, pif):
     """Refuza (ValueError) metoda pe care legea NU o permite pentru categoria activului."""
     cont = mf.get("cont_imobilizare")
     categorie = _categorie_activ(cont)
-    permise = _metode_permise(categorie, pif)
+    permise = _metode_permise(categorie, pif, bool(mf.get("destinatie_cd")))
     if metoda not in permise:
-        temei = "CF art.28 alin.5"
+        temei = "CF art.28 alin.5; aparatura C&D: CF art.20 alin.(1) lit.b) (bifa «Destinat C&D»)"
         if metoda == "superaccelerata":
             temei = ("CF art.28 alin.8^1 (OUG 8/2026): doar subgrupa 2.1 (echipamente) sau 2.4 "
                      "(animale/plantații), active NOI puse în funcțiune în 2026")

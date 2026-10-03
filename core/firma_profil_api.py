@@ -102,7 +102,8 @@ def citeste_profil(conn):
             "SELECT nume, cui, reg_com, adresa, oras, judet, cod_postal, "
             "iban, banca, email, telefon, logo, "
             "font_factura, culoare_factura, serie_factura, urmator_numar_factura, "
-            "platitor_tva "   # [lot 19 pct.4d] factura unui neplatitor nu mentioneaza taxa (CF art.310 alin.(10) lit.b))
+            "platitor_tva, "   # [lot 19 pct.4d] factura unui neplatitor nu mentioneaza taxa (CF art.310 alin.(10) lit.b))
+            "tip_firma, forma_juridica, capital_subscris, capital_varsat "   # [lot 19 d12] L31/1990 art.74 alin.(3)
             "FROM firma_profil LIMIT 1")
         r = cur.fetchone()
     return dict(r) if r else {}
@@ -159,6 +160,9 @@ def salveaza_model(conn, font=None, culoare=None, logo=None):
 # asta gasita in aceeasi zi, si singura care nu se putea scoate: primele doua aveau inlocuitor,
 # asta lasa un gol pe hartie. Decizia lui Costin: *„numele administratorului e un fapt al firmei,
 # ca denumirea si CUI-ul. Nu se derivă din nimic — cine tine evidenta nu e neaparat cine semneaza."*
+# [lot 19 d12] Legea 31/1990 art.74 alin.(3): forma juridica + capitalul de pe factura (v. core/capital_social.py)
+CAMPURI_CAPITAL = ("forma_juridica", "capital_subscris", "capital_varsat")
+
 CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
                    "cod_postal", "banca", "iban", "telefon", "email", "patron_nume",
                    "declarant_nume", "declarant_prenume", "declarant_functie")
@@ -325,14 +329,19 @@ def cere_administrator(conn, document):
 def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
-    coloane = list(CAMPURI_FISCALE) + ["cont_venit_implicit"]  # [F182] preferinta contabila, nu camp fiscal obligatoriu
+    coloane = list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]  # [F182]; [lot 19 d12]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
     prof = dict(r) if r else {}
     if not str(prof.get("cont_venit_implicit") or "").strip():
         prof["cont_venit_implicit"] = CONT_VENIT_IMPLICIT_DEFAULT  # coerent cu COALESCE-ul de la emitere
+    for k in ("capital_subscris", "capital_varsat"):
+        if prof.get(k) is not None:
+            prof[k] = str(prof[k])
+    from core import capital_social as _cs
     return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT,
+            "forme_juridice": [[k, v[0]] for k, v in _cs.FORME.items()],
             "blocaje": blocaje(conn, prof)}
 
 
@@ -343,6 +352,15 @@ def salveaza_date(conn, date, tenant_id=None):
     explicativ, nu doar refuz)."""
     curat = {k: (str(date.get(k)).strip() if date.get(k) is not None else None)
              for k in CAMPURI_FISCALE if k in (date or {})}
+    # [lot 19 d12] forma juridică + capitalul (L31/1990 art.74 alin.(3)): validate și scrise separat — numere, nu text
+    cap = {k: date.get(k) for k in CAMPURI_CAPITAL if k in (date or {})}
+    if cap:
+        from core import capital_social as _cs
+        _er = _cs.valideaza(cap)
+        if _er:
+            return {"ok": False, "camp": _er[0][0], "mesaj": _er[0][1]}
+    _val = {k: (None if cap[k] in (None, "") else
+                (str(cap[k]).strip().upper() if k == "forma_juridica" else _cs._suma(cap[k]))) for k in cap} if cap else {}
     # [R46] Doar câmpurile care DECID. Un telefon corectat pe o firmă cu ianuarie închis trebuie
     # să treacă mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
     decid = sorted(set(curat) & set(CAMPURI_CARE_DECID))
@@ -401,6 +419,10 @@ def salveaza_date(conn, date, tenant_id=None):
         except ValueError as e:
             conn.rollback()
             return {"ok": False, "camp": "nume", "mesaj": str(e)}
+    if _val:   # scris DUPĂ toate validările: un refuz mai jos/mai sus nu lasă capitalul scris pe jumătate
+        with conn.cursor() as _cur:
+            _cur.execute("UPDATE firma_profil SET %s WHERE id = 1" % ", ".join("%s = %%s" % k for k in _val),
+                         list(_val.values()))
     if not curat:
         return dict({"ok": True}, **citeste_date(conn))
     seturi = ", ".join("%s = %%s" % k for k in curat)

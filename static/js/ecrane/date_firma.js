@@ -50,6 +50,33 @@ const CAMPURI = [
   { k: "declarant_functie", e: "Func\u021bia declarantului", ob: true },
 ];
 
+// [lot 19 d12] Capitalul social pe factură — Legea 31/1990 art. 74 alin. (3): SRL -> capitalul social; SA/SCA ->
+// capitalul subscris și cel vărsat. Fără ele, factura unei societăți nu se emite (decizia lui Costin, 03.10.2026).
+function _blocCapital(d) {
+  const p = d.profil || {};
+  const forme = d.forme_juridice || [];
+  return `
+    <h2 class="pf-titlu" style="margin-top:26px">Capital social</h2>
+    <p class="pf-intro">Se tipărește pe facturi: la SRL capitalul social, la SA și SCA capitalul subscris și cel vărsat (Legea 31/1990 art. 74 alin. (3)). Fără el, factura unei societăți nu se emite.</p>
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Forma juridică<span class="oblig">*</span></span>
+        <select class="camp-input" id="df-forma_juridica"><option value="">— alege —</option>${forme.map(([k, t]) =>
+          `<option value="${esc(k)}"${k === p.forma_juridica ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
+      </label>
+      <label class="camp">
+        <span class="camp-eticheta">Capital social subscris (lei)</span>
+        <span class="camp-ajutor">Din actul constitutiv / certificatul constatator. La SRL, acesta e capitalul social.</span>
+        <input type="number" step="0.01" min="0" class="camp-input" id="df-capital_subscris" value="${esc(p.capital_subscris || "")}">
+      </label>
+      <label class="camp">
+        <span class="camp-eticheta">Capital social vărsat (lei)</span>
+        <span class="camp-ajutor">Obligatoriu la SA și SCA.</span>
+        <input type="number" step="0.01" min="0" class="camp-input" id="df-capital_varsat" value="${esc(p.capital_varsat || "")}">
+      </label>
+    </div>`;
+}
+
 function camp(c, val) {
   const ob = c.ob ? '<span class="oblig">*</span>' : "";
   const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
@@ -222,6 +249,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
           `<option value="${esc(k)}"${String(k) === String(d.profil.cont_venit_implicit) ? " selected" : ""}>${esc(k)} \u2014 ${esc(t)}</option>`).join("")}</select>
       </label>
     </div>
+    ${d.profil.tip_firma === "pfa" ? "" : _blocCapital(d)}
     <div id="df-msg"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="df-salveaza">Salveaz\u0103</button>
@@ -246,6 +274,12 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       date[c.k] = (corp.querySelector(`#df-${c.k}`).value || "").trim();
     }
     date.cont_venit_implicit = corp.querySelector("#df-cont_venit").value;  // [F182] preferinta contabila la emitere
+    // [lot 19 d12] forma juridică + capitalul (Legea 31/1990 art. 74 alin. (3)); lipsesc la PFA/II/IF
+    if (corp.querySelector("#df-forma_juridica")) {
+      date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
+      date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;
+      date.capital_varsat = (corp.querySelector("#df-capital_varsat").value || "").trim() || null;
+    }
     // validare preventiva in ecran: nu trimitem ca sa aflam de la server (DS cap.6)
     // [G10 cap.6 v2.30] validare preventiva CLIENT: colecteaza TOATE erorile de camp si le plaseaza fiecare
     // LANGA campul ei (eroareCamp), nu un mesaj generic sus si nu fail-fast. B (arataMesaj) ramane pentru

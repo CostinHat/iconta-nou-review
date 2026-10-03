@@ -2,7 +2,7 @@
 title: Contractul individual de muncă: elementele obligatorii și termenele de transmitere
 description: Ce trebuie să cuprindă contractul, termenele de transmitere în REGES-ONLINE pe categorii de date, perioada de probă și dosarul personal.
 published: 2026-08-15
-modified: 2026-08-15
+modified: 2026-10-03
 ---
 
 # Contractul individual de muncă: elementele obligatorii și termenele de transmitere
@@ -11,7 +11,7 @@ Un contract de muncă poate fi corect ca înțelegere între părți și neconfo
 
 ## Când se încheie și când începe munca
 
-Contractul individual de muncă se încheie în formă scrisă, în limba română, **anterior începerii activității**. Obligația de a-l încheia revine angajatorului.
+Contractul individual de muncă se încheie în formă scrisă, în limba română, **cel târziu în ziua anterioară începerii activității** de către salariat. Obligația de a-l încheia revine angajatorului.
 
 Ordinea nu e negociabilă: întâi contractul semnat și transmis în registru, apoi prima zi de muncă. Un salariat găsit la lucru fără contract înregistrat expune angajatorul la sancțiunea cea mai grea din Codul muncii — munca nedeclarată.
 
@@ -31,17 +31,16 @@ Contractul trebuie să cuprindă, în principal:
 - condițiile de acordare a preavizului și durata lui
 - salariul de bază, alte elemente constitutive ale veniturilor salariale, periodicitatea plății
 - durata normală a muncii, exprimată în ore pe zi și ore pe săptămână
-- indicarea contractului colectiv de muncă aplicabil
-- durata perioadei de probă
+- durata și condițiile perioadei de probă, dacă există
 
 Codul COR trebuie să existe și să fie valid. Un cod inventat sau desființat blochează transmiterea și, mai târziu, declarația D112.
 
 ::: ghid-temei
 **Legea nr. 53/2003 — Codul muncii**, republicată, cu modificările ulterioare.
 
-**Art. 16 alin. (1):** contractul individual de muncă se încheie în baza consimțământului părților, în formă scrisă, în limba română, anterior începerii activității. Obligația de încheiere în formă scrisă revine angajatorului.
+**Art. 16 alin. (1):** contractul individual de muncă se încheie în baza consimțământului părților, în formă scrisă, în limba română, cel târziu în ziua anterioară începerii activității de către salariat. Obligația de încheiere în formă scrisă revine angajatorului.
 
-**Art. 17 alin. (3):** elementele privind care angajatorul are obligația de informare a persoanei selectate în vederea angajării.
+**Art. 17 alin. (3)-(4):** elementele despre care angajatorul are obligația de informare a persoanei selectate în vederea angajării; ele se regăsesc și în contract, cu excepția celor de la lit. m), o) și p).
 
 **HG nr. 295/2025** privind registrul general de evidență a salariaților — REGES-ONLINE.
 :::
@@ -52,21 +51,21 @@ Transmiterea nu are un termen unic. Se schimbă după tipul informației, iar ai
 
 **Contractul nou** se transmite cel târziu în ziua anterioară începerii activității.
 
-**Modificările** elementelor contractului se transmit în termenul prevăzut pentru fiecare categorie de date — de regulă anterior datei de la care produc efecte.
+**Modificările** elementelor contractului se transmit în termenul prevăzut pentru fiecare categorie de date: funcția, tipul și durata contractului, locul de muncă și timpul de muncă — cel târziu în ziua anterioară producerii modificării; salariul, sporurile și adaosurile — în 20 de zile lucrătoare de la data modificării (HG 295/2025 art. 5 alin. (3)-(4)).
 
-**Încetarea contractului** se transmite în termen scurt de la data încetării.
+**Încetarea contractului** se transmite cel târziu la data încetării sau la data luării la cunoștință a evenimentului care a determinat încetarea (HG 295/2025 art. 5 alin. (1) lit. f)).
 
-**Suspendarea** se transmite atât la începerea, cât și la încetarea ei.
+**Suspendarea** se transmite cel târziu în ziua anterioară suspendării, respectiv încetării ei; pentru concediul medical, absențele nemotivate și forța majoră, în 3 zile lucrătoare (HG 295/2025 art. 5 alin. (1) lit. e)).
 
-Regula practică: orice schimbare care ar apărea altfel în statul de plată trebuie să existe mai întâi în registru.
+Regula practică: schimbările de funcție, durată, loc sau timp de muncă trebuie să existe în registru înainte să producă efecte; modificarea salariului are un termen de 20 de zile lucrătoare după producere.
 
 ## Perioada de probă
 
-Se stabilește la încheierea contractului și nu se poate prelungi ulterior. Durata maximă diferă după funcție — mai lungă pentru funcțiile de conducere decât pentru cele de execuție — și după tipul contractului.
+Se poate stabili la încheierea contractului (art. 31 alin. (1)). Durata maximă diferă după funcție — mai lungă pentru funcțiile de conducere decât pentru cele de execuție — și după tipul contractului.
 
-Pe durata perioadei de probă, contractul poate înceta printr-o notificare scrisă, fără preaviz și fără motivare, la inițiativa oricăreia dintre părți. După expirarea ei, regulile de încetare devin cele obișnuite.
+Pe durata sau la sfârșitul perioadei de probă, contractul poate înceta printr-o notificare scrisă, fără preaviz și fără motivare, la inițiativa oricăreia dintre părți. După expirarea ei, regulile de încetare devin cele obișnuite.
 
-O singură perioadă de probă se poate stabili pentru aceeași persoană, la același angajator, pe același post.
+Pe durata executării unui contract individual de muncă se poate stabili o singură perioadă de probă. Prin excepție, salariatul poate fi supus unei noi perioade de probă dacă debutează la același angajator într-o nouă funcție sau profesie ori urmează să lucreze într-un loc de muncă cu condiții grele, vătămătoare sau periculoase. Este interzisă o nouă perioadă de probă dacă, în termen de 12 luni, aceleași părți încheie un nou contract pentru aceeași funcție și cu aceleași atribuții (art. 32 alin. (1)-(2^1)).
 
 ## Dosarul personal
 

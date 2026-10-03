@@ -76,7 +76,7 @@ def schema():
                       'PRIMARY KEY, cod text, denumire text NOT NULL, cont_imobilizare text, '
                       'cont_amortizare text, valoare numeric NOT NULL DEFAULT 0, rezidual numeric '
                       "DEFAULT 0, dnf_luni integer NOT NULL DEFAULT 12, data_pif date, metoda text "
-                      "DEFAULT 'liniara', activ boolean DEFAULT true)" % SCH)
+                      "DEFAULT 'liniara', activ boolean DEFAULT true, destinatie_cd boolean NOT NULL DEFAULT false)" % SCH)
             c.execute('CREATE TABLE "%s".inregistrari (id integer GENERATED ALWAYS AS IDENTITY '
                       "PRIMARY KEY, data date NOT NULL, numar varchar(50), descriere text, "
                       "sursa text, status varchar(20) NOT NULL DEFAULT 'ciorna')" % SCH)
