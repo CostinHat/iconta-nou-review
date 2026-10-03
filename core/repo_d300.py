@@ -90,6 +90,14 @@ def select_rapoarte_z(cur, surse, inceput, sfarsit):
     return cur.fetchall()
 
 
+def select_chitante_cu_cota(cur, inceput, sfarsit):
+    """[D394 Î2] Chitanțele de VÂNZARE fără factură (cu cotă), neanulate, din fereastră — livrări taxabile pe cotă."""
+    cur.execute("SELECT id, serie, numar, data, suma, cota_tva FROM chitante "
+                "WHERE factura_id IS NULL AND cota_tva IS NOT NULL AND NOT anulata AND data >= %s AND data < %s "
+                "ORDER BY id", (inceput, sfarsit))
+    return cur.fetchall()
+
+
 def select_firma_profil(cur):
     cur.execute("SELECT nume, cui, adresa, oras, judet, caen, banca, iban, tip_decont, pro_rata, "
                 "COALESCE(tva_la_incasare, false) AS tva_la_incasare, "

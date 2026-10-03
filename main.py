@@ -3851,15 +3851,33 @@ class ChitantaEmite(BaseModel):
     data: str
     suma: float
     factura_id: Optional[int] = None
+    # [D394 Î2] chitanța de VÂNZARE fără factură (firmă exceptată de la AMEF): cota + clientul + ce reprezintă
+    cota_tva: Optional[float] = None
+    client_nume: Optional[str] = None
+    reprezentand: Optional[str] = None
 
 @app.post("/tenants/{tenant_id}/chitante")
 # [R42] „iese către un om" — chitanța (14-4-1) e document cu regim de numerotare.
 def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_rol("admin_firma"))):
     """Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar:
     numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api
-    (5311=4111, nota ciorna, verificare plafon Legea 70/2015)."""
+    (5311=4111, nota ciorna, verificare plafon Legea 70/2015). Fara factura, cu `cota_tva`, la firma exceptata de la
+    AMEF (OUG 28/1999 art.2): vanzare -> 5311 = cont venit + 5311 = 4427 (D394 Î2)."""
     try:
         return _uc_tenants.chitanta_emite(tenant_id, c, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+class ChitantaCota(BaseModel):
+    cota_tva: Optional[float] = None
+
+@app.put("/tenants/{tenant_id}/chitante/{chitanta_id}/cota")
+# [D394 Î2] scrie pe nota ciornă a chitanței (venit + 4427) — rol de firmă, ca emiterea.
+def chitanta_cota(tenant_id: int, chitanta_id: int, c: ChitantaCota, ctx=Depends(cere_rol("admin_firma"))):
+    """Stabileste cota de TVA a unei chitante fara factura emise inainte ca firma sa fie marcata exceptata de la AMEF
+    (OUG 28/1999 art.2): nota ciorna 5311=4111 devine 5311 = cont venit + 5311 = 4427, iar chitanta intra in D394 Î2."""
+    try:
+        return _uc_tenants.chitanta_cota(tenant_id, chitanta_id, c, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

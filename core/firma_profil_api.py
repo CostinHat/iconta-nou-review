@@ -162,6 +162,8 @@ def salveaza_model(conn, font=None, culoare=None, logo=None):
 # ca denumirea si CUI-ul. Nu se derivă din nimic — cine tine evidenta nu e neaparat cine semneaza."*
 # [lot 19 d12] Legea 31/1990 art.74 alin.(3): forma juridica + capitalul de pe factura (v. core/capital_social.py)
 CAMPURI_CAPITAL = ("forma_juridica", "capital_subscris", "capital_varsat")
+# [D394 Î2] activitatea exceptată de la AMEF (OUG 28/1999 art.2, v. core/activitati_amef.py)
+CAMPURI_AMEF = ("activitate_exceptata_amef", "activitate_amef")
 
 CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
                    "cod_postal", "banca", "iban", "telefon", "email", "patron_nume",
@@ -326,10 +328,16 @@ def cere_administrator(conn, document):
         raise ValueError(MESAJ_FARA_ADMINISTRATOR % document)
 
 
+def _activitati_amef():
+    from core.activitati_amef import ACTIVITATI
+    return ACTIVITATI
+
+
 def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
-    coloane = list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]  # [F182]; [lot 19 d12]
+    coloane = (list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]
+               + list(CAMPURI_AMEF))  # [F182]; [lot 19 d12]; [D394 Î2]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
@@ -342,6 +350,7 @@ def citeste_date(conn):
     from core import capital_social as _cs
     return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT,
             "forme_juridice": [[k, v[0]] for k, v in _cs.FORME.items()],
+            "activitati_amef": [[k, v] for k, v in _activitati_amef().items()],
             "blocaje": blocaje(conn, prof)}
 
 
@@ -361,6 +370,20 @@ def salveaza_date(conn, date, tenant_id=None):
             return {"ok": False, "camp": _er[0][0], "mesaj": _er[0][1]}
     _val = {k: (None if cap[k] in (None, "") else
                 (str(cap[k]).strip().upper() if k == "forma_juridica" else _cs._suma(cap[k]))) for k in cap} if cap else {}
+    # [D394 Î2] bifa „activitate exceptată de la AMEF” + litera din OUG 28/1999 art.2 (cerută când bifa e da)
+    if any(k in (date or {}) for k in CAMPURI_AMEF):
+        from core.uc_comun import bifa as _bifa
+        try:
+            exc = _bifa(date, "activitate_exceptata_amef", False)
+        except ValueError as e:
+            return {"ok": False, "camp": "activitate_exceptata_amef", "mesaj": str(e)}
+        lit = str(date.get("activitate_amef") or "").strip().lower() or None
+        if exc and lit not in _activitati_amef():
+            return {"ok": False, "camp": "activitate_amef",
+                    "mesaj": "Alege activitatea exceptată de la casa de marcat (OUG 28/1999 art.2) — fără ea, "
+                             "încasările fără bon nu au temei."}
+        _val["activitate_exceptata_amef"] = exc
+        _val["activitate_amef"] = lit if exc else None
     # [R46] Doar câmpurile care DECID. Un telefon corectat pe o firmă cu ianuarie închis trebuie
     # să treacă mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
     decid = sorted(set(curat) & set(CAMPURI_CARE_DECID))

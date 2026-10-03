@@ -16,8 +16,18 @@ CONTURI = {
     "ridicare_banca":   ("5311", "581"),
     "depunere_banca":   ("581",  "5311"),
     "avans_decontare":  ("542",  "5311"),
+    # [D394 Î2, 03.10.2026] vânzarea încasată pe chitanță fără factură, la firma exceptată de la AMEF (OUG 28/1999
+    # art.2): nota are DOUĂ rânduri — 5311 = cont venit (baza) și 5311 = 4427 (TVA) — date de `chitanta_emite` prin
+    # `linii`. Fără ele categoria e refuzată: nu se naște din dispoziția generică, unde n-ar avea cotă.
+    "vanzare_fara_factura": ("5311", None),
 }
-CATEGORII_INCASARE = {"incasare_client", "ridicare_banca"}
+CATEGORII_INCASARE = {"incasare_client", "ridicare_banca", "vanzare_fara_factura"}
+#: categoriile care se nasc DOAR dintr-un document propriu (cu `linii`), nu din dispoziția generică
+CATEGORII_CU_LINII = {"vanzare_fara_factura"}
+#: [D394 Î2] încasările CUNOSCUTE fără caracter de vânzare (decizia Costin 03.10: ridicare de numerar din bancă,
+#: împrumut, restituire — registrul are azi doar prima). Orice altă încasare fără chitanță, la o firmă exceptată de la
+#: AMEF, e semnalată la D394 (nu blochează).
+CATEGORII_FARA_VANZARE = {"ridicare_banca"}
 
 
 def _fara_decimal(x):
@@ -29,9 +39,10 @@ def _fara_decimal(x):
     return str(x) if isinstance(x, Decimal) or hasattr(x, "isoformat") else x
 
 
-def adauga(conn, schema, op):
-    """op: {data, categorie, suma, document?, partener?, cui?}.
-    Creează operațiunea + nota ciornă. Întoarce operațiunea + avertismente plafon."""
+def adauga(conn, schema, op, linii=None):
+    """op: {data, categorie, suma, document?, partener?, cui?}; `linii` = [(debit, credit, suma)] pentru categoriile
+    din `CATEGORII_CU_LINII` (suma lor = suma operațiunii). Creează operațiunea + nota ciornă. Întoarce operațiunea +
+    avertismente plafon."""
     # [lotul 6, 04.09.2026] `data="2026-02-31"` mergea neatinsa in `INSERT` si cadea in driver:
     # contabilul primea `500`. O zi care nu exista in calendar e o greseala de tastare.
     import datetime as _dt
@@ -49,29 +60,42 @@ def adauga(conn, schema, op):
     suma = Decimal(str(op.get("suma", 0)))
     if suma <= 0:
         return {"eroare": "suma trebuie să fie > 0"}
+    if (cat in CATEGORII_CU_LINII) != bool(linii):
+        return {"eroare": "Încasarea din vânzare fără factură se înregistrează din «Chitanță fără factură», cu cota "
+                          "de TVA — nu ca dispoziție de casă." if cat in CATEGORII_CU_LINII
+                else "Categoria %r are o singură notă, fără rânduri date de apelant." % cat}
+    if linii and sum(Decimal(str(l[2])) for l in linii) != suma:
+        return {"eroare": "Rândurile notei (%s) nu dau suma operațiunii (%s)." % (
+            sum(Decimal(str(l[2])) for l in linii), suma)}
     tip = "incasare" if cat in CATEGORII_INCASARE else "plata"
-    debit, credit = CONTURI[cat]
+    linii = [(d, c, Decimal(str(v))) for d, c, v in linii if Decimal(str(v))] if linii else [CONTURI[cat] + (suma,)]
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                         VALUES (%s,%s,'casa','ciorna') RETURNING id""",
                     (op["data"], (op.get("partener") or cat.replace("_", " "))[:200]))
         iid = cur.fetchone()["id"]
-        cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                        (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                    (iid, debit, credit, suma))
+        for debit, credit, v in linii:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                        (iid, debit, credit, v))
         cur.execute(f"""INSERT INTO {schema}.casa_operatiuni
                         (data, tip, categorie, document, partener, cui, suma, inregistrare_id)
                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
                     (op["data"], tip, cat, op.get("document"), op.get("partener"),
                      op.get("cui"), suma, iid))
         oid = cur.fetchone()["id"]
-    return {"id": oid, "inregistrare_id": iid, "nota": f"{debit}={credit}",
+    return {"id": oid, "inregistrare_id": iid, "nota": " + ".join("%s=%s" % (d, c) for d, c, _v in linii),
             "avertismente": verifica_plafon(conn, schema, op["data"])}
 
 
 def _operatiuni_luna(cur, schema, an, luna):
-    cur.execute(f"""SELECT * FROM {schema}.casa_operatiuni
-                    WHERE date_trunc('month', data) = %s ORDER BY data, id""",
+    # [D394 Î2] `chitanta_neclasificata`: chitanța fără factură și fără cotă legată de operațiune (de clasificat la o
+    # firmă exceptată de la AMEF — D394 o refuză numită până primește cota)
+    cur.execute(f"""SELECT o.*, (SELECT c.id FROM {schema}.chitante c WHERE c.casa_operatiune_id = o.id
+                           AND c.factura_id IS NULL AND c.cota_tva IS NULL AND NOT c.anulata LIMIT 1)
+                           AS chitanta_neclasificata
+                    FROM {schema}.casa_operatiuni o
+                    WHERE date_trunc('month', o.data) = %s ORDER BY o.data, o.id""",
                 (f"{an}-{luna:02d}-01",))
     return cur.fetchall()
 
@@ -94,7 +118,8 @@ def registru(conn, schema, an, luna, sold_initial=0):
                     "categorie": r["categorie"], "document": r["document"],
                     "partener": r["partener"], "cui": r["cui"],
                     "suma": str(r["suma"]), "sold": str(linie["sold"]),
-                    "inregistrare_id": r["inregistrare_id"]})
+                    "inregistrare_id": r["inregistrare_id"],
+                    "chitanta_neclasificata": r["chitanta_neclasificata"]})
     return {"operatiuni": out,
             "sold_final": str(_m.sold_final(ops, sold_initial)),
             "avertismente": _fara_decimal(_m.verifica_plafon(ops, sold_initial))}

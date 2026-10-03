@@ -13,7 +13,7 @@ import { declaratiiPerFirma } from "./declaratii.js?v=0a9c1e6175";  // [decl_fir
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=5616e025cb";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=651c354a8d";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=c4f9195844";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=fbcab83a27";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -2861,6 +2861,9 @@ async function ecranCasa(corp, nav, t) {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let reg = { operatiuni: [], sold_final: "0", avertismente: [] };
     try { reg = await api.get(`/tenants/${t.id}/casa/registru?an=${an}&luna=${luna}`); } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca registrul de casă.</p>`; return; }
+    // [D394 Î2] chitanța de vânzare fără factură — doar la firma marcată exceptată de la casa de marcat (Date firmă)
+    let exceptata = false;
+    try { exceptata = !!((await api.get(`/tenants/${t.id}/firma-profil/date`)).profil || {}).activitate_exceptata_amef; } catch { exceptata = false; }
     const ziAzi = new Date().toISOString().slice(0, 10);
     const _avertLinii = (reg.avertismente || []).map((a) =>
       `<div class="ca-mesaj">${esc(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + esc(a.temei) : ""}</div>`).join("");
@@ -2875,6 +2878,7 @@ async function ecranCasa(corp, nav, t) {
             <div class="pf-frand-sub">${esc(o.partener || "")}${o.document ? " \u00b7 doc " + esc(o.document) : ""} \u00b7 ${esc(o.categorie)}</div>
           </div>
           <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>
+          ${exceptata && o.chitanta_neclasificata ? `<select class="camp-input" id="c-cota-${o.chitanta_neclasificata}" aria-label="Cota TVA a chitan\u021bei" style="width:120px;margin-left:8px"><option value="">cota TVA</option>${[21, 11, 0].map((c) => `<option value="${c}">${c ? c + "%" : "0% (scutit)"}</option>`).join("")}</select><button class="buton-secundar" data-cota="${o.chitanta_neclasificata}" style="margin-left:6px">Stabile\u0219te cota</button>` : ""}
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Cas\u0103 ${semnAjutor("F015")}</h2>
@@ -2883,7 +2887,19 @@ async function ecranCasa(corp, nav, t) {
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
-      <p><button class="buton-secundar" id="c-toggle">+ Dispozi\u021bie nou\u0103</button></p>
+      <p><button class="buton-secundar" id="c-toggle">+ Dispozi\u021bie nou\u0103</button>${exceptata ? ' <button class="buton-secundar" id="c-chit-toggle">+ Chitan\u021b\u0103 f\u0103r\u0103 factur\u0103</button>' : ""}</p>
+      ${exceptata ? `<div id="c-chit-zona" hidden style="display:block;margin-bottom:14px">
+        <div class="pf-frand-nume" style="margin-bottom:8px">Chitanță fără factură — vânzare din activitatea exceptată de la casa de marcat</div>
+        <div class="form-rand" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+          <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="ch-data" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Suma încasată (cu TVA)</span><input type="number" step="0.01" id="ch-suma" class="camp-input" placeholder="0,00"></label>
+          <label class="camp"><span class="camp-eticheta">Cota TVA</span><select id="ch-cota" class="camp-input"><option value="">alege</option>${[21, 11, 0].map((c) => `<option value="${c}">${c ? c + "%" : "0% (scutit)"}</option>`).join("")}</select></label>
+          <label class="camp"><span class="camp-eticheta">Client</span><input type="text" id="ch-client" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Reprezentând</span><input type="text" id="ch-repr" class="camp-input"></label>
+        </div>
+        <p style="margin-top:10px"><button class="buton-primar" id="ch-emite">Emite chitanța</button></p>
+        <div id="ch-mesaj"></div>
+      </div>` : ""}
       <div id="c-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispoziție nouă</div>
         <div class="form-rand" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
@@ -2916,6 +2932,30 @@ async function ecranCasa(corp, nav, t) {
       });
     };
     _tg("#c-toggle", "#c-zona");
+    _tg("#c-chit-toggle", "#c-chit-zona");
+    const bChit = corp.querySelector("#ch-emite");
+    if (bChit) bChit.addEventListener("click", async () => {
+      const zonaM = corp.querySelector("#ch-mesaj");
+      curataEroriCamp(corp);
+      const data = corp.querySelector("#ch-data").value;
+      const suma = parseFloat(corp.querySelector("#ch-suma").value);
+      const cota = corp.querySelector("#ch-cota").value;
+      let lipsa = false;
+      if (!data) { eroareCamp(corp, "ch-data", "Completează data chitanței."); lipsa = true; }
+      if (!(suma > 0)) { eroareCamp(corp, "ch-suma", "Suma trebuie să fie un număr mai mare ca 0."); lipsa = true; }
+      if (cota === "") { eroareCamp(corp, "ch-cota", "Alege cota de TVA (0% dacă activitatea e scutită)."); lipsa = true; }
+      if (lipsa) return;
+      try {
+        const r = await api.post(`/tenants/${t.id}/chitante`, {
+          data, suma, cota_tva: Number(cota),
+          client_nume: corp.querySelector("#ch-client").value || null,
+          reprezentand: corp.querySelector("#ch-repr").value || null,
+        });
+        const av = (r.avertismente || []).length;
+        mesajSucces = `Chitanța ${esc(r.serie)}-${esc(String(r.numar))} a fost emisă; nota ${esc(r.nota || "")} e ciornă.${av ? ` ${av} avertisment(e) de plafon.` : ""}`;
+        deseneaza();
+      } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
+    });
     corp.querySelector("#c-cui-verif").addEventListener("click", async () => {  /* verificare_anaf_casa_v1 */
       const cui = corp.querySelector("#c-cui").value.trim();
       const stare = corp.querySelector("#c-cui-stare");
@@ -2971,6 +3011,21 @@ async function ecranCasa(corp, nav, t) {
         deseneaza();
       } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
     });
+    // [D394 Î2] chitanța fără factură și fără cotă (emisă înainte de marcarea exceptării): D394 o refuză numită până aici
+    corp.querySelectorAll("[data-cota]").forEach((b) => b.addEventListener("click", async () => {
+      const id = b.dataset.cota;
+      curataEroriCamp(corp);
+      b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+      const v = corp.querySelector(`#c-cota-${id}`).value;
+      if (v === "") { eroareCamp(corp, `c-cota-${id}`, "Alege cota de TVA (0% dacă activitatea e scutită)."); return; }
+      try {
+        const r = await api.put(`/tenants/${t.id}/chitante/${id}/cota`, { cota_tva: Number(v) });
+        mesajSucces = `Cota ${esc(String(r.cota_tva))}% stabilită; nota chitanței e acum ${esc(r.nota || "")} (ciornă).`;
+        deseneaza();
+      } catch (e) {
+        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + esc(e.mesaj || "eroare") + '</span>');
+      }
+    }));
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, "Ștergi operațiunea și ciorna legată?", async () => {  // audit_cab_lot2_v1
       try { await api.del(`/tenants/${t.id}/casa/operatiuni/${b.dataset.del}`); deseneaza(); }

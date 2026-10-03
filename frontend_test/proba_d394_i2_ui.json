@@ -1,0 +1,49 @@
+{
+ "df_exceptata": "1",
+ "df_activitate": "i",
+ "df_activitate_vizibila": true,
+ "axe_date_firma": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "buton_chitanta": 1,
+ "fara_cota_invalid": "true",
+ "mesaj_emitere": "Chitanța CH-1 a fost emisă; nota 5311=707 + 5311=4427 e ciornă.",
+ "axe_casa": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "buton_cota": 1,
+ "cota_goala_invalid": "true",
+ "mesaj_cota": "Cota 21% stabilită; nota chitanței e acum 5311=707 + 5311=4427 (ciornă).",
+ "buton_cota_dupa": 0,
+ "axe_casa_dupa_cota": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "mobil_casa": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil_casa": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "profil_restaurat": true
+}

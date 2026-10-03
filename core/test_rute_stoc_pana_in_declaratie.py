@@ -356,6 +356,45 @@ def test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets(lume):
     assert metode and set(metode) == {"accelerata"}, metode
 
 
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_CHITANTA_FARA_COTA_clasificata_prin_HTTP_ajunge_in_D394_I2(lume):
+    """`POST /tenants/{id}/chitante` + `PUT /tenants/{id}/chitante/{chitanta_id}/cota` (D394 Î2, deciziile Costin
+    03.10.2026) — PRIN HTTP, până în cifra declarației: op2 Î2 din D394 (`d394.genereaza`, chitanțele din `chitante`).
+
+    OUG 28/1999 art.1 alin.(1) / art.2; OPANAF 2194/2025 anexa 2 lit.G pct.15–17. O chitanță fără factură emisă cât
+    firma nu era marcată exceptată e o încasare de creanță (5311=4111); după marcare, D394 o refuză numită până primește
+    cota; cota se stabilește prin ruta nouă, iar nota ciornă devine 5311 = venit + 5311 = 4427."""
+    import xml.etree.ElementTree as ET
+    from core import d394
+    from core.common import Perioada
+    cl = _client()
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".firma_profil (id, nume, cui, adresa, oras, judet, caen, telefon, banca, iban, '
+                    "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare, declarant_nume, declarant_prenume, "
+                    "declarant_functie) VALUES (1,'TENANT RUTE STOC','14399840','Str Test 1','Bucuresti','B','4322',"
+                    "'0722000000','BCR','RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR') "
+                    "ON CONFLICT (id) DO NOTHING" % SCH)
+    r = cl.post("/tenants/%d/chitante" % lume["tid"], json={"data": ZI, "suma": 242}, headers=_H(lume))
+    assert r.status_code == 200, r.text[:300]
+    cid = r.json()["chitanta_id"]
+    refuz = cl.post("/tenants/%d/chitante" % lume["tid"], json={"data": ZI, "suma": 121, "cota_tva": 21}, headers=_H(lume))
+    assert (refuz.status_code, refuz.json()["detail"]["cod"]) == (400, "CHITANTA_VANZARE_FARA_EXCEPTARE_AMEF")
+    with lume["conn"].cursor() as cur:
+        cur.execute('UPDATE "%s".firma_profil SET activitate_exceptata_amef = true, activitate_amef = \'i\'' % SCH)
+        cur.execute('SET search_path TO "%s", public' % SCH)   # generatorul citește necalificat
+    with pytest.raises(ValueError):          # neclasificată -> refuz numit
+        d394.genereaza(_ConnProxy(lume["conn"]), SCH, Perioada(AN, luna=LUNA))
+    r = cl.put("/tenants/%d/chitante/%d/cota" % (lume["tid"], cid), json={"cota_tva": 21}, headers=_H(lume))
+    assert (r.status_code, r.json().get("nota")) == (200, "5311=707 + 5311=4427"), r.text[:300]
+    with lume["conn"].cursor() as cur:
+        cur.execute('SET search_path TO "%s", public' % SCH)
+    xml, _res = d394.genereaza(_ConnProxy(lume["conn"]), SCH, Perioada(AN, luna=LUNA))
+    ns = "{%s}" % d394.NS
+    (o,) = [dict(e.attrib) for e in ET.fromstring(xml.split("?>", 1)[1]).iter(ns + "op2")]
+    # 242 lei la 21%: baza 200, TVA 42 (suta mărită)
+    assert (o["tip_op2"], o["total"], o["baza21"], o["TVA21"]) == ("I2", "242", "200", "42")
+
+
 # ─────────────────────────── anti-vacuu pe lumea insasi ───────────────────────────
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

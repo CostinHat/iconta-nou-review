@@ -1422,7 +1422,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T18 — Chitanța și încasarea
 
-*clasa MECANIC · 3 rute · 1 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 4 rute · 2 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/public/plata/{ref}`, `/tenants/{tenant_id}/chitante`, `/tenants/{tenant_id}/chitante/{chitanta_id}/pdf`*
 
@@ -1447,12 +1447,23 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in chitante, facturi*
 
-*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT) · factura_linii (UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
+*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT/UPDATE) · factura_linii (UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `firma_profil_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
 
 - [x] chitanța se păstrează cu numărul exemplarului, momentul, autorul, amprenta
 - **numerotarea nu are goluri și nu se reia** — o chitanță anulată își păstrează numărul
 - suma chitanței nu depășește soldul neîncasat al facturii la care se leagă
 - dacă nu se leagă de nicio factură, se spune la ce se leagă
+
+### `PUT /tenants/{tenant_id}/chitante/{chitanta_id}/cota`
+
+*garda `cere_rol` · rol:admin_firma · scrie in casa_operatiuni, chitante, inregistrari_linii*
+
+*ce face: Stabileste cota de TVA a unei chitante fara factura emise inainte ca firma sa fie marcata exceptata de la AMEF (OUG 28/1999 art.2): nota ciorna 5311=4111 devine 5311 = co — scrie casa_operatiuni (UPDATE) · chitante (UPDATE) · inregistrari_linii (DELETE/INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · bonuri (DELETE/INSERT/UPDATE) · extras_linii (UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) — prin `firma_profil_api`, `jurnal_api`, `repo_casa`, `repo_firma_profil`*
+
+- [x] doar chitanța fără factură, fără cotă, a firmei marcate exceptate de la AMEF — altfel refuz structurat (cod + temei)
+- [x] cota e una în vigoare la data chitanței și cu rubrică în op2 D394 (sau 0)
+- [x] o notă validată nu se rescrie (se stornează) — refuz numit; o chitanță deja clasificată nu se reclasifică
+- [x] nota ciornă devine 5311 = cont venit (baza) + 5311 = 4427 (TVA), din aceeași defalcare cu D300 și D394
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata`
 
@@ -1683,7 +1694,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in bonuri*
 
-*ce face: Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc — scrie bonuri (DELETE/INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): chitante (INSERT) — prin `repo_casa`*
+*ce face: Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc — scrie bonuri (DELETE/INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (UPDATE) · chitante (INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `repo_casa`*
 
 - [x] clientul poate încărca doar pe firma lui — verificat pe context, nu pe rol
 - bonul intră ca **nevalidat**; clientul nu produce evidență
@@ -1693,7 +1704,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in bonuri*
 
-*ce face: Clientul reface poza -> draftul (status='extras') si pozele lui se sterg. — scrie bonuri (DELETE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): chitante (INSERT) — prin `repo_casa`*
+*ce face: Clientul reface poza -> draftul (status='extras') si pozele lui se sterg. — scrie bonuri (DELETE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (UPDATE) · chitante (INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `repo_casa`*
 
 - [x] clientul poate șterge doar bonuri **neaprobate** — unul aprobat a devenit evidență
 - ștergerea nu lasă în urmă imaginea orfană, sau o lasă și se spune
@@ -1703,7 +1714,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in bonuri*
 
-*ce face: Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil. — scrie bonuri (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): chitante (INSERT) — prin `repo_casa`*
+*ce face: Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil. — scrie bonuri (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (UPDATE) · chitante (INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `repo_casa`*
 
 - [x] confirmarea clientului nu e aprobare — bonul rămâne de validat de cabinet
 - verifică ce poate schimba clientul la confirmare: dacă poate modifica sumele, cabinetul trebuie să vadă ce a modificat
@@ -1712,7 +1723,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in bonuri, inregistrari, inregistrari_linii*
 
-*ce face: scrie bonuri (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · chitante (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_casa`, `repo_contabilitate`*
+*ce face: scrie bonuri (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE/UPDATE) · chitante (INSERT/UPDATE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_casa`, `repo_contabilitate`*
 
 - [x] aprobarea produce evidență — de aceea a primit rol azi
 - bonul aprobat poartă legătura către imaginea din care a ieșit
@@ -1723,7 +1734,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in bonuri, facturi*
 
-*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (INSERT) · factura_linii (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`*
+*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT/UPDATE) · chitante (INSERT/UPDATE) · factura_linii (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`*
 
 - [x] stingerea produce **o singură** operațiune de casă; o a doua apăsare nu produce a doua plată
 - suma stinsă nu depășește soldul neplătit al bonului

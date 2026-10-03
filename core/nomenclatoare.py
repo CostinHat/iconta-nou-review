@@ -110,8 +110,8 @@ ANCORE_NORMA = {
                       "Codul cita forma 77/2022; vocabularul e identic, citarea era la o formă depășită.",
             text_citat='Coloana "Tip L/A/LS/AS/AÎ/V/C/N/Î1/Î2"',
         ),
-        # Norma scrie AÎ; formatul XML scrie AI. Î1/Î2 sunt secțiunile de încasări prin AMEF -
-        # neconstruite încă în iConta, declarat explicit în d394.py, nu omis tăcut.
+        # Norma scrie AÎ; formatul XML scrie AI. Î1/Î2 sunt secțiunile op2 (tip_op2), nu tipuri de op1 —
+        # produse de d394.py: Î1 din rapoartele Z (02.10.2026), Î2 din chitanțele fără factură (03.10.2026).
         enumerare=("L", "A", "LS", "AS", "AI", "V", "C", "N"),
         constrangere=Constrangere(
             instrument="DUKIntegrator D394 (versiune curentă)",
@@ -208,13 +208,13 @@ def _dez(cheie, ce, consecinta):
 
 _dez(("d394", "TIPURI"),
      ce="Norma scrie tipul cu diacritică — AÎ; structura tehnică și XML-ul îl scriu ASCII, AI. "
-        "Al doilea, de acoperire: norma enumeră și Î1/Î2 (încasări prin aparate de marcat fiscale); iConta produce "
-        "Î1 (din rapoartele Z, de la 02.10.2026), nu și Î2.",
+        "Al doilea, de structură: norma enumeră în aceeași coloană și Î1/Î2, care în XML nu sunt tipuri de op1, ci "
+        "secțiunile op2 (`tip_op2`); iConta le produce pe amândouă — Î1 din rapoartele Z (02.10.2026), Î2 din "
+        "chitanțele fără factură ale firmei exceptate de la AMEF (03.10.2026).",
      consecinta="Pe transliterare, niciuna practică — arbitrul cere forma ASCII, deci abaterea de la "
                 "litera normei e impusă, nu aleasă; se consemnează ca să nu fie confundată cu o "
-                "citire greșită a ordinului. Pe Î2 (OPANAF 2194/2025 anexa D394: „încasări lunare efectuate din activităţi "
-                "exceptate de la obligaţia utilizării aparatelor de marcat electronice”): o firmă cu astfel de încasări nu "
-                "poate depune D394 complet prin iConta — absență declarată în d394.py, nu vocabular redus tăcut.")
+                "citire greșită a ordinului. Î1/Î2 lipsesc din `enumerare` fiindcă nu sunt valori ale lui op1.tip, ci ale "
+                "lui op2.tip_op2 (D394Validator v5) — secțiune separată, produsă și ea.")
 
 _dez(("d390", "TARI_UE"),
      ce="Norma NU enumeră țările: trimite la codul care a emis codul de TVA, adică la prefixul de TVA "

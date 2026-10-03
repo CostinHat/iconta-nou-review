@@ -173,6 +173,13 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
     return {cota: {k: _q(v) for k, v in r.items()} for cota, r in acc.items()}
 
 
+def _total_luna(m):
+    """Totalul op2 al unei luni, pe aceeași DEFINIȚIE ca generatorul (DUK R246: total = Σ rubrici), calculat aici:
+    cotele cu rubrică rotunjite fiecare la leu + restul (cota 0) rotunjit."""
+    rub = sum(b + t for b, t in m["cote"].values())
+    return sum(_q(b) + _q(t) for b, t in m["cote"].values()) + _q(m["total"] - rub)
+
+
 def _incasari_independent(conn, inceput, sfarsit):
     """[D394 op2 Î1, decizia B 02.10.2026] A doua cale pentru încasările prin casa de marcat: SQL PROPRIU pe tabelele
     raportului Z (`rapoarte_z_amef` + `rapoarte_z_cote`), agregat pe LUNĂ în bază și rotunjit pe lună (ca rubricile op2,
@@ -219,11 +226,56 @@ def _incasari_independent(conn, inceput, sfarsit):
     out = {"nr_BF_i1": 0, "incasari_i1": 0, "cote": {}}
     for m in luni.values():
         out["nr_BF_i1"] += m["bonuri"]
-        out["incasari_i1"] += _q(m["total"])
+        out["incasari_i1"] += _total_luna(m)
         for c, (b, t) in m["cote"].items():
             ob, ot = out["cote"].get(c, (0, 0))
             out["cote"][c] = (ob + _q(b), ot + _q(t))
     return out
+
+
+def _incasari_i2_independent(conn, inceput, sfarsit):
+    """[D394 Î2, 03.10.2026] A doua cale pentru încasările din activitățile exceptate de la AMEF: SQL PROPRIU pe
+    `chitante` (fără factură, neanulate, cu cotă), suta mărită în Postgres, agregat pe LUNĂ și rotunjit pe lună (ca op2).
+    Chitanțele fără cotă opresc generatorul înainte (firmă exceptată) sau nu sunt vânzări (celelalte).
+    Întoarce {"incasari_i2", "cote": {cota: (baza, tva)}}."""
+    q = ("SELECT date_trunc('month', data) AS luna, cota_tva, SUM(suma), "
+         "SUM(ROUND(suma * cota_tva / (100 + cota_tva), 2)) FROM chitante "
+         "WHERE factura_id IS NULL AND cota_tva IS NOT NULL AND NOT anulata AND data >= %s AND data < %s "
+         "GROUP BY 1, 2 ORDER BY 1, 2")
+    with conn.cursor() as cur:
+        rows = _repo.sql(cur, q, inceput, sfarsit)
+    luni = {}
+    for luna, cota, suma, tva in rows:
+        m = luni.setdefault(luna, {"total": Decimal(0), "cote": {}})
+        m["total"] += Decimal(suma)
+        c = int(Decimal(cota))
+        if c:
+            m["cote"][c] = (Decimal(suma) - Decimal(tva), Decimal(tva))
+    out = {"incasari_i2": 0, "cote": {}}
+    for m in luni.values():
+        out["incasari_i2"] += _total_luna(m)
+        for c, (b, t) in m["cote"].items():
+            ob, ot = out["cote"].get(c, (0, 0))
+            out["cote"][c] = (ob + _q(b), ot + _q(t))
+    return out
+
+
+def _confrunta_incasari_i2(res, cale2):
+    """op2 Î2 al generatorului (informatii.incasari_i2 + rezumat2 *_incasari_i2) vs recalculul din `chitante`."""
+    div = []
+    g, v = int(res.informatii.get("incasari_i2", 0) or 0), int(cale2["incasari_i2"])
+    if g != v:
+        div.append({"cota": 0, "camp": "incasari_i2", "eticheta": "încasări exceptate AMEF", "generator": g,
+                    "cale2": v, "diferenta": g - v})
+    for cota in sorted(set(res.rezumat2) | set(cale2["cote"])):
+        gen = res.rezumat2.get(cota, {})
+        b2, t2 = cale2["cote"].get(cota, (0, 0))
+        for camp, val in (("baza_incasari_i2", b2), ("tva_incasari_i2", t2)):
+            g = int(gen.get(camp, 0) or 0)
+            if g != int(val):
+                div.append({"cota": cota, "camp": camp, "eticheta": "încasări exceptate AMEF", "generator": g,
+                            "cale2": int(val), "diferenta": g - int(val)})
+    return div
 
 
 def _confrunta_incasari(res, cale2):
@@ -279,6 +331,7 @@ def reconciliaza(conn, perioada, res, manual=None):
     cale2 = _agrega_independent(conn, perioada, _inc, _sf)
     div = _confrunta(res.rezumat2, cale2)
     div += _confrunta_incasari(res, _incasari_independent(conn, _inc, _sf))
+    div += _confrunta_incasari_i2(res, _incasari_i2_independent(conn, _inc, _sf))
     return {"acoperit": True, "neacoperit": None, "divergente": div}
 
 

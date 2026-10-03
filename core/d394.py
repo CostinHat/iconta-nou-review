@@ -43,7 +43,7 @@ from core import sume_lei as _sl  # [A1] conversia in lei, sursa unica
 # [LANT legislatie TURA 3, 10.08.2026] SURSA CANONICA de validare a identitatii fiscale (T1/T3 din
 # CATALOG_INVALIDITATE.md). Import READ-ONLY, modul LEAF (fara db) - fara risc de import circular.
 from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif
-_COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
+_COLOANE_PROFIL = ("nume", "cui", "adresa", "caen", "activitate_exceptata_amef")   # minimul citit de aici
 
 import re
 from dataclasses import dataclass, field
@@ -67,8 +67,9 @@ NS = "mfp:anaf:dgti:d394:declaratie:v5"
 # in cod pana azi. Vocabularul e identic in ambele forme ("Tip L/A/LS/AS/AI/V/C/N/I1/I2"), deci
 # eliminarea lui ASI - decisa in 08.2026 pe autoritatea validatorului - e sustinuta de NORMA. Nimeni nu
 # verificase; validatorul inchisese discutia.
-# Doua dezacorduri consemnate in core/nomenclatoare.py: norma scrie AI cu diacritica, iar I1/I2
-# (incasari prin aparate de marcat) sunt in norma dar neconstruite in iConta.
+# Dezacord consemnat in core/nomenclatoare.py: norma scrie AI cu diacritica. I1/I2 nu sunt tipuri de op1, ci
+# sectiunile op2 (tip_op2): I1 din rapoartele Z (02.10.2026), I2 din chitantele fara factura ale firmei exceptate de la
+# AMEF (03.10.2026) — vezi _op2_din_rapoarte_z / _op2_din_chitante.
 TIPURI = ("A", "L", "C", "V", "AI", "LS", "AS", "N")
 
 # tip_partener (pct. 216/36)
@@ -427,12 +428,24 @@ class Rezultat:
     # [D394 op2 Î1, decizia B] o secțiune op2 pe lună (tip_op2=I1) + rapoartele Z care NU pot intra (numite)
     op2: list = field(default_factory=list)
     z_incomplete: list = field(default_factory=list)
+    # [D394 Î2, decizia Costin 03.10] chitanțele fără factură și fără cotă ale firmei exceptate (refuz NUMIT)
+    i2_neclasificate: list = field(default_factory=list)
+    # [D394 Î2] încasările din casă fără chitanță la firma exceptată — semnal (și în avertismente), nu blocaj
+    casa_nelegate: list = field(default_factory=list)
     avertismente: list = field(default_factory=list)
 
 
 #: [D394 op2 Î1] NOMENCLATORUL rubricilor `op2` (D394Validator v5, clasa Op2: baza21/20/19/11/9/5, TVA21/…/5) —
 #: cota -> sufixul numelui de atribut. Nu sunt cote aplicate: cotele vin din rapoartele Z (COTE la data raportului).
 OP2_RUBRICI_NOMENCL = {21: "21", 20: "20", 19: "19", 11: "11", 9: "9", 5: "5"}
+
+
+def _total_op2(m):
+    """Totalul lunii în lei întregi = rubricile de cotă ROTUNJITE + restul (încasările la 0%, fără rubrică) rotunjit.
+    DUK R246 (atenționare): „total <> baza21 + … + TVA5” — un total rotunjit separat de rubrici diferă de suma lor cu
+    1 leu pe rotunjiri (1100,41 + 231,09 + 300 + 33 = 1664,50 -> total 1665, rubricile 1664) și atenționa fals."""
+    rub = sum(m["baza"][c] + m["tva"][c] for c in OP2_RUBRICI_NOMENCL)
+    return sum(_int(m["baza"][c]) + _int(m["tva"][c]) for c in OP2_RUBRICI_NOMENCL) + _int(m["total"] - rub)
 
 
 def _op2_din_rapoarte_z(rapoarte, din_bon=()):
@@ -493,12 +506,44 @@ def _op2_din_rapoarte_z(rapoarte, din_bon=()):
     op2 = []
     for luna in sorted(luni):
         m = luni[luna]
-        o = {"tip_op2": "I1", "luna": luna, "nrAMEF": len(m["case"]), "nrBF": m["nrBF"], "total": _int(m["total"])}
+        o = {"tip_op2": "I1", "luna": luna, "nrAMEF": len(m["case"]), "nrBF": m["nrBF"], "total": _total_op2(m)}
         for c, camp in OP2_RUBRICI_NOMENCL.items():
             o["baza" + camp] = _int(m["baza"][c])
             o["TVA" + camp] = _int(m["tva"][c])
         op2.append(o)
     return op2, incomplete
+
+
+def _op2_din_chitante(chitante):
+    """[D394 Î2, decizia Costin 03.10.2026 „cotă pe chitanță”] Chitanțele fără factură ale firmei exceptate de la AMEF
+    -> secțiunile op2 Î2, una pe lună (OPANAF 2194/2025 anexa 2 pct.13, 15–17): total = încasările lunii, baze/TVA pe
+    cote — defalcarea chitanței e `activitati_amef.defalcare` (aceeași cu nota contabilă și cu D300), însumată pe lună și
+    rotunjită o dată (lei întregi, half-up). Fără nrAMEF/nrBF: D394Validator v5 („daca tip_op2 = 'I2' atunci nrAMEF /
+    nrBF nu trebuie sa fie completat”). Întoarce (op2, neclasificate): chitanța fără cotă NU intră — se numește."""
+    from core.activitati_amef import defalcare
+    luni, neclasificate = {}, []
+    for ch in chitante:
+        if ch.get("cota_tva") is None:
+            neclasificate.append({"numar": "%s-%s" % (ch["serie"], ch["numar"]), "data": str(ch["data"])})
+            continue
+        luna = int(str(ch["data"])[5:7])
+        m = luni.setdefault(luna, {"total": Decimal(0), "baza": {c: Decimal(0) for c in OP2_RUBRICI_NOMENCL},
+                                   "tva": {c: Decimal(0) for c in OP2_RUBRICI_NOMENCL}})
+        ci = int(Decimal(str(ch["cota_tva"])))
+        b, t = defalcare(ch["suma"], ci)
+        m["total"] += b + t
+        if ci in OP2_RUBRICI_NOMENCL:      # cota 0 (scutit) intră doar în total; alta nu se poate emite (cote_permise)
+            m["baza"][ci] += b
+            m["tva"][ci] += t
+    op2 = []
+    for luna in sorted(luni):
+        m = luni[luna]
+        o = {"tip_op2": "I2", "luna": luna, "total": _total_op2(m)}
+        for c, camp in OP2_RUBRICI_NOMENCL.items():
+            o["baza" + camp] = _int(m["baza"][c])
+            o["TVA" + camp] = _int(m["tva"][c])
+        op2.append(o)
+    return op2, neclasificate
 
 
 def calcul_d394(prof, perioada, date, manual=None):
@@ -819,15 +864,28 @@ def calcul_d394(prof, perioada, date, manual=None):
 
     # [D394 op2 Î1, decizia B 02.10.2026] încasările prin casa de marcat, pe lună, din rapoartele Z (o singură sursă).
     op2, z_incomplete = _op2_din_rapoarte_z(date.get("rapoarte_z") or [], date.get("facturi_din_bon") or [])
+    # [D394 Î2, decizia Costin 03.10] încasările din activitățile exceptate de la AMEF, din chitanțele fără factură
+    op2_i2, i2_neclasificate = _op2_din_chitante(date.get("chitante_i2") or [])
+    op2 += op2_i2
     for o in op2:
+        sufix = o["tip_op2"].lower()   # i1 / i2 — rubricile rezumat2 baza_incasari_<tip> / tva_incasari_<tip>
         for c, camp in OP2_RUBRICI_NOMENCL.items():
             # DUK regulile R246–R255: fiecare rubrică op2 (obligatorie, deci prezentă și la 0) se agregă într-un
             # rezumat2 al cotei ei — „Nu exista sectiune Rezumat2 pentru cota = X pentru agregarea valorilor din Op2”
             r = rez2.setdefault(c, dict(REZ2_GOL))
-            r["baza_incasari_i1"] += o["baza" + camp]
-            r["tva_incasari_i1"] += o["TVA" + camp]
-    inf["nr_BF_i1"] = sum(o["nrBF"] for o in op2)
-    inf["incasari_i1"] = sum(o["total"] for o in op2)
+            r["baza_incasari_" + sufix] += o["baza" + camp]
+            r["tva_incasari_" + sufix] += o["TVA" + camp]
+    inf["nr_BF_i1"] = sum(o["nrBF"] for o in op2 if o["tip_op2"] == "I1")
+    inf["incasari_i1"] = sum(o["total"] for o in op2 if o["tip_op2"] == "I1")
+    inf["incasari_i2"] = sum(o["total"] for o in op2 if o["tip_op2"] == "I2")
+    for o in date.get("casa_nelegate") or []:
+        # [D394 Î2, decizia Costin 03.10] semnal NUMIT, nu blocaj: la firma exceptată, o încasare fără chitanță (deci fără
+        # factură) și fără caracter cunoscut de non-vânzare poate fi o vânzare nedeclarată la Î2
+        avert.append("Încasare din registrul de casă fără chitanță și fără factură: %s, %s lei%s%s (%s). Firma e "
+                     "exceptată de la casa de marcat — dacă e o vânzare, emite pentru ea o chitanță fără factură, cu "
+                     "cota, ca să intre în D394 la încasările din activități exceptate (Î2)." % (
+                         o["data"], o["suma"], (", doc " + o["document"]) if o.get("document") else "",
+                         (", " + o["partener"]) if o.get("partener") else "", o["categorie"]))
 
     # pct. 17 / validator: totalPlata_A = Suma(informatii.nrCui<i>) + Suma(rezumat2.baza[L+A+AI])
     total_plata = (inf["nrCui1"] + inf["nrCui2"] + inf["nrCui3"] + inf["nrCui4"]
@@ -914,7 +972,10 @@ def calcul_d394(prof, perioada, date, manual=None):
                    rezumat2=rez2_int, op11=op11, detaliu=detaliu, serii=serii,
                    informatii=inf, total_plata_a=total_plata, op_efectuate=op_efectuate,
                    facturi_incluse=incluse_int, manuale_fara_factura=manuale_fara_factura,
-                   op2=op2, z_incomplete=z_incomplete)
+                   op2=op2, z_incomplete=z_incomplete, i2_neclasificate=i2_neclasificate,
+                   casa_nelegate=[{"id": o["id"], "data": str(o["data"]), "document": o.get("document"),
+                                   "suma": o["suma"], "categorie": o["categorie"]}
+                                  for o in date.get("casa_nelegate") or []])
     res.avertismente = avert
     if intracom:
         res.avertismente.append(
@@ -1073,8 +1134,10 @@ def build_xml(res):
         A.append('  </op1>')
     # [D394 op2 Î1] după op1 (structD394 pct.240: <op2> 0-24 apariții, ultima secțiune); rubricile Î1 toate prezente
     for o in res.op2:
-        at = ' tip_op2="%s" luna="%d" nrAMEF="%d" nrBF="%d" total="%d"' % (
-            o["tip_op2"], o["luna"], o["nrAMEF"], o["nrBF"], o["total"])
+        at = ' tip_op2="%s" luna="%d"' % (o["tip_op2"], o["luna"])
+        if o["tip_op2"] == "I1":   # Î2: nrAMEF/nrBF „nu trebuie sa fie completat” (D394Validator v5)
+            at += ' nrAMEF="%d" nrBF="%d"' % (o["nrAMEF"], o["nrBF"])
+        at += ' total="%d"' % o["total"]
         # rubricile tuturor cotelor sunt OBLIGATORII („atributul trebuie sa existe”, D394Validator v5)
         at += "".join(' baza%s="%d" TVA%s="%d"' % (c, o["baza" + c], c, o["TVA" + c]) for c in OP2_RUBRICI_NOMENCL.values())
         A.append('  <op2%s/>' % at)
@@ -1142,6 +1205,16 @@ def pull(conn, schema, perioada):
         rows = _repo.select_facturi(cur, inceput, sfarsit)
         rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit)
         din_bon = _pull_facturi_din_bon(cur, inceput, sfarsit)
+        # [D394 Î2, decizia Costin 03.10] chitanțele de vânzare (cu cotă) intră MEREU — o vânzare emisă rămâne vânzare
+        # și dacă exceptarea se scoate ulterior (aceeași regulă ca D300); cele fără cotă (refuz numit) și semnalul
+        # casei doar la firma marcată exceptată — la celelalte, chitanța fără cotă e o încasare de creanță (5311=4111)
+        exceptata = bool(prof.get("activitate_exceptata_amef"))
+        chitante_i2 = [dict(x) for x in _repo.select_chitante_fara_factura(cur, inceput, sfarsit)
+                       if exceptata or x["cota_tva"] is not None]
+        casa_nelegate = []
+        if exceptata:
+            from core.casa_api import CATEGORII_FARA_VANZARE as _FV
+            casa_nelegate = [dict(x) for x in _repo.select_casa_incasari_nelegate(cur, sorted(_FV), inceput, sfarsit)]
     facturi = []
     for r in rows:
         # [DECIZIA lui Costin, 15.09.2026 — DECIZII 47] Identitatea partenerului se citeste de pe
@@ -1208,6 +1281,7 @@ def pull(conn, schema, perioada):
                                 tva=(baza * Decimal(cota) / Decimal(100)
                                      if bool(r["ti"]) and r["directie"] == "primita" else tva)))
     return prof, {"facturi": facturi, "rapoarte_z": rapoarte_z, "facturi_din_bon": din_bon,
+                  "chitante_i2": chitante_i2, "casa_nelegate": casa_nelegate,
                   "serii": serii_emise(conn, schema, inceput, sfarsit),
                   "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit),
                   "tva_ded_ai": _tva_ded_ai_platite(conn, inceput, sfarsit)}
@@ -1341,6 +1415,16 @@ def genereaza(conn, schema, perioada, manual=None):
                                                                ", ".join(z["lipsa"])) for z in res.z_incomplete) + ".")
         # motivul ca DATĂ (cod + rapoartele), ca refuzul să se poată verifica fără a citi fraza
         _e.cod, _e.rapoarte = "D394_Z_INCOMPLET", [z["numar"] for z in res.z_incomplete]
+        raise _e
+    if res.i2_neclasificate:
+        # [D394 Î2, decizia Costin 03.10] firmă exceptată cu încasări neclasificate -> refuz NUMIT, nu Î2 pe zero
+        _e = ValueError("D394 nu se poate genera: firma e marcată exceptată de la casa de marcat, iar încasările din "
+                        "activitatea exceptată (secțiunea Î2) se declară pe cote de TVA. Chitanțele fără factură de mai "
+                        "jos nu au cota: " + "; ".join("%s din %s" % (x["numar"], x["data"])
+                                                        for x in res.i2_neclasificate)
+                        + ". Stabilește cota fiecăreia în Casă (chitanța rămâne aceeași, nota ei se reface pe venit și "
+                          "TVA) și generează din nou.")
+        _e.cod, _e.chitante = "D394_I2_NECLASIFICAT", [x["numar"] for x in res.i2_neclasificate]
         raise _e
     # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 2/6): reconciliere pe totalurile
     # rezumat2 dintr-un recalcul INDEPENDENT al liniilor brute. Divergenta = HARD-BLOCK care

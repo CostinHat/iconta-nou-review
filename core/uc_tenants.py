@@ -1375,8 +1375,39 @@ def chitanta_emite(tenant_id, c, ctx):
         raise _erori.CerereGresita("suma trebuie să fie > 0")
     client_nume = client_cui = reprezentand = None
     total_fact = None
+    cota = linii = None
     with db.get_conn() as conn:
         with conn.cursor() as cur:
+            if not c.factura_id:
+                # [D394 Î2, 03.10.2026] fără factură: cu cotă = VÂNZARE (numai la firma exceptată de la AMEF), fără
+                # cotă = încasare de creanță (5311=4111, ca până azi); la firma exceptată cota e obligatorie — o
+                # încasare neclasificată n-ar avea unde intra în D394 (decizia Costin: refuz numit, nu zero).
+                from core import activitati_amef as _amef
+                exceptata, cont_venit = (repo_firma_profil.amef_si_cont_venit(cur, schema)
+                                          or (False, _fp.CONT_VENIT_IMPLICIT_DEFAULT))
+                import datetime as _dt
+                try:
+                    _dc = _dt.date.fromisoformat(str(c.data)[:10])
+                except ValueError:
+                    raise _erori.CerereGresita("Data chitanței: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ."
+                                               % (c.data,))
+                try:
+                    if not exceptata and c.cota_tva is not None:
+                        raise _amef.refuz_vanzare_neexceptata()
+                    if exceptata and c.cota_tva is None:
+                        raise _amef.refuz_cota_lipsa()
+                    if exceptata:
+                        _permise = _amef.cote_permise(_dc)
+                        if c.cota_tva not in _permise:
+                            raise _amef.refuz_cota_nepermisa("%g" % c.cota_tva, _permise)
+                except ValueError as e:
+                    raise _erori.CerereGresita(_amef.detaliu(e))
+                if exceptata:
+                    cota = int(c.cota_tva)
+                    baza, tva = _amef.defalcare(c.suma, cota)
+                    linii = [("5311", cont_venit, baza), ("5311", "4427", tva)]
+                    client_nume = (c.client_nume or "").strip() or None
+                    reprezentand = (c.reprezentand or "").strip() or None
             if c.factura_id:
                 r = repo_facturi.factura_pentru_chitanta(cur, schema, c.factura_id)
                 if not r:
@@ -1392,17 +1423,58 @@ def chitanta_emite(tenant_id, c, ctx):
             rs = repo_firma_profil.seria_chitantei(cur, schema)
             serie = (rs[0] if rs else None) or "CH"
             nr = repo_casa.urmatorul_numar_chitanta(cur, schema, serie)[0]
-        rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "incasare_client",
+        rez = casa_api.adauga(conn, schema, {"data": c.data,
+                                             "categorie": "vanzare_fara_factura" if linii else "incasare_client",
                                              "suma": c.suma, "document": "%s-%s" % (serie, nr),
-                                             "partener": client_nume, "cui": client_cui})
+                                             "partener": client_nume, "cui": client_cui}, linii=linii)
         if rez.get("eroare"):
             raise _erori.CerereGresita(rez["eroare"])
         with conn.cursor() as cur:
-            cid = repo_casa.adauga_chitanta(cur, schema, serie, nr, c.data, c.factura_id, client_nume, client_cui, c.suma, reprezentand, rez["id"], rez["inregistrare_id"])[0]
+            cid = repo_casa.adauga_chitanta(cur, schema, serie, nr, c.data, c.factura_id, client_nume, client_cui, c.suma, reprezentand, rez["id"], rez["inregistrare_id"], cota)[0]
             if c.factura_id and total_fact is not None and c.suma >= total_fact - 0.005:
                 repo_facturi.marcheaza_platita(cur, schema, c.factura_id)
-    return {"ok": True, "chitanta_id": cid, "serie": serie, "numar": nr,
+    return {"ok": True, "chitanta_id": cid, "serie": serie, "numar": nr, "nota": rez.get("nota"),
             "avertismente": rez.get("avertismente") or []}
+
+
+def chitanta_cota(tenant_id, chitanta_id, c, ctx):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/chitante/{chitanta_id}/cota`; docstringul ei a ramas in
+    stratul HTTP. [D394 Î2] Chitanța fără factură și fără cotă a firmei exceptate devine vânzare."""
+    from core import activitati_amef as _amef
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            r = repo_casa.chitanta_de_clasificat(cur, schema, chitanta_id)
+            if not r:
+                raise _erori.Inexistent("chitanță inexistentă")
+            _id, data_, suma, factura_id, cota_veche, anulata, op_id, iid, status = r
+            exceptata, cont_venit = (repo_firma_profil.amef_si_cont_venit(cur, schema)
+                                          or (False, _fp.CONT_VENIT_IMPLICIT_DEFAULT))
+            try:
+                if not exceptata:
+                    raise _amef.refuz_vanzare_neexceptata()
+                if factura_id or anulata or cota_veche is not None:
+                    raise _amef.refuz_clasificare(
+                        "chitanța e a unei facturi." if factura_id else "chitanța e anulată." if anulata
+                        else "chitanța are deja cota %g%%." % cota_veche)
+                if not iid or status != "ciorna":
+                    raise _amef.refuz_clasificare(
+                        "nota chitanței e validată — anulează întâi validarea notei, apoi stabilește cota.")
+                if c.cota_tva is None:
+                    raise _amef.refuz_cota_lipsa()
+                _permise = _amef.cote_permise(data_)
+                if c.cota_tva not in _permise:
+                    raise _amef.refuz_cota_nepermisa("%g" % c.cota_tva, _permise)
+            except ValueError as e:
+                raise _erori.CerereGresita(_amef.detaliu(e))
+        _uc_comun._cere_luna_deschisa(conn, schema, data_)
+        cota = int(c.cota_tva)
+        baza, tva = _amef.defalcare(suma, cota)
+        linii = [("5311", cont_venit, baza), ("5311", "4427", tva)]
+        with conn.cursor() as cur:
+            repo_casa.clasifica_vanzare(cur, schema, chitanta_id, cota, iid, op_id, linii)
+    return {"ok": True, "chitanta_id": chitanta_id, "cota_tva": cota,
+            "nota": " + ".join("%s=%s" % (d, k) for d, k, v in linii if v)}
 
 
 def chitante_lista(tenant_id, factura_id, ctx):

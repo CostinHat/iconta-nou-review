@@ -107,10 +107,34 @@ def aproba_bonul_cu_documente(cur, schema, factura_id, casa_operatiune_id, inreg
                 (factura_id, casa_operatiune_id, inregistrare_id, comerciant, data_, total, id_))
 
 
-def adauga_chitanta(cur, schema, serie, numar, data_, factura_id, client_nume, client_cui, suma, reprezentand, casa_operatiune_id, inregistrare_id):
+def chitanta_de_clasificat(cur, schema, chitanta_id):
+    """[D394 Î2] Chitanța + starea notei ei: (id, data, suma, factura_id, cota_tva, anulata, casa_operatiune_id,
+    inregistrare_id, status_nota)."""
+    cur.execute(f"""SELECT c.id, c.data, c.suma, c.factura_id, c.cota_tva, c.anulata, c.casa_operatiune_id,
+                             c.inregistrare_id, i.status
+                      FROM {schema}.chitante c LEFT JOIN {schema}.inregistrari i ON i.id = c.inregistrare_id
+                      WHERE c.id = %s""", (chitanta_id,))
+    return cur.fetchone()
+
+
+def clasifica_vanzare(cur, schema, chitanta_id, cota, inregistrare_id, casa_operatiune_id, linii):
+    """[D394 Î2] Chitanța fără cotă devine vânzare: nota ciornă își schimbă rândurile (5311=4111 -> 5311 = venit +
+    5311 = 4427), operațiunea de casă trece la `vanzare_fara_factura`, chitanța primește cota. Aceeași tranzacție."""
+    cur.execute(f"DELETE FROM {schema}.inregistrari_linii WHERE inregistrare_id = %s", (inregistrare_id,))
+    for debit, credit, suma in linii:
+        if suma:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,%s,%s,%s)""", (inregistrare_id, debit, credit, suma))
+    cur.execute(f"UPDATE {schema}.casa_operatiuni SET categorie = 'vanzare_fara_factura' WHERE id = %s",
+                (casa_operatiune_id,))
+    cur.execute(f"UPDATE {schema}.chitante SET cota_tva = %s WHERE id = %s", (cota, chitanta_id))
+
+
+def adauga_chitanta(cur, schema, serie, numar, data_, factura_id, client_nume, client_cui, suma, reprezentand, casa_operatiune_id, inregistrare_id, cota_tva=None):
+    # [D394 Î2] cota_tva: doar pe chitanța de VÂNZARE fără factură (firmă exceptată de la AMEF); NULL = încasare de creanță
     cur.execute(f"""INSERT INTO {schema}.chitante
                             (serie, numar, data, factura_id, client_nume, client_cui, suma, reprezentand,
-                             casa_operatiune_id, inregistrare_id)
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                (serie, numar, data_, factura_id, client_nume, client_cui, suma, reprezentand, casa_operatiune_id, inregistrare_id))
+                             casa_operatiune_id, inregistrare_id, cota_tva)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                (serie, numar, data_, factura_id, client_nume, client_cui, suma, reprezentand, casa_operatiune_id, inregistrare_id, cota_tva))
     return cur.fetchone()

@@ -50,6 +50,30 @@ const CAMPURI = [
   { k: "declarant_functie", e: "Func\u021bia declarantului", ob: true },
 ];
 
+// [D394 Î2] Activitatea exceptată de la casa de marcat — OUG 28/1999 art. 2. Cu ea, chitanțele fără factură (cu cota
+// lor) intră în D394 la Î2; încasările din casă nelegate de o factură/chitanță se semnalează (decizia lui Costin, 03.10.2026).
+function _blocAmef(d) {
+  const p = d.profil || {};
+  const act = d.activitati_amef || [];
+  return `
+    <h2 class="pf-titlu" style="margin-top:26px">Casa de marcat</h2>
+    <p class="pf-intro">Firmele care încasează din activități exceptate de la casa de marcat (OUG 28/1999 art. 2) emit chitanțe fără factură; încasările lor se declară în D394, secțiunea Î2.</p>
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Activitate exceptată de la casa de marcat</span>
+        <select class="camp-input" id="df-activitate_exceptata_amef">
+          <option value="0"${p.activitate_exceptata_amef ? "" : " selected"}>Nu</option>
+          <option value="1"${p.activitate_exceptata_amef ? " selected" : ""}>Da</option>
+        </select>
+      </label>
+      <label class="camp" id="df-activitate_amef-camp"${p.activitate_exceptata_amef ? "" : ' style="display:none"'}>
+        <span class="camp-eticheta">Activitatea (OUG 28/1999 art. 2)<span class="oblig">*</span></span>
+        <select class="camp-input" id="df-activitate_amef"><option value="">— alege —</option>${act.map(([k, t]) =>
+          `<option value="${esc(k)}"${k === p.activitate_amef ? " selected" : ""}>${esc(k)}) ${esc(t)}</option>`).join("")}</select>
+      </label>
+    </div>`;
+}
+
 // [lot 19 d12] Capitalul social pe factură — Legea 31/1990 art. 74 alin. (3): SRL -> capitalul social; SA/SCA ->
 // capitalul subscris și cel vărsat. Fără ele, factura unei societăți nu se emite (decizia lui Costin, 03.10.2026).
 function _blocCapital(d) {
@@ -250,12 +274,18 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       </label>
     </div>
     ${d.profil.tip_firma === "pfa" ? "" : _blocCapital(d)}
+    ${_blocAmef(d)}
     <div id="df-msg"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="df-salveaza">Salveaz\u0103</button>
     </div>
   `;
 
+  // [D394 Î2] activitatea apare DOAR cu bifa „Da”
+  const _amefSel = corp.querySelector("#df-activitate_exceptata_amef");
+  if (_amefSel) _amefSel.addEventListener("change", () => {
+    corp.querySelector("#df-activitate_amef-camp").style.display = _amefSel.value === "1" ? "" : "none";
+  });
   // [tva_inceput] campul "Data inregistrarii TVA" apare DOAR la platitor; comuta live la schimbarea selectului.
   const _tvaSel = corp.querySelector("#vf-platitor_tva");
   const _tvaCamp = corp.querySelector("#vf-camp-tva_data_inceput");
@@ -275,6 +305,8 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     }
     date.cont_venit_implicit = corp.querySelector("#df-cont_venit").value;  // [F182] preferinta contabila la emitere
     // [lot 19 d12] forma juridică + capitalul (Legea 31/1990 art. 74 alin. (3)); lipsesc la PFA/II/IF
+    date.activitate_exceptata_amef = corp.querySelector("#df-activitate_exceptata_amef").value;   // [D394 Î2]
+    date.activitate_amef = corp.querySelector("#df-activitate_amef").value || null;
     if (corp.querySelector("#df-forma_juridica")) {
       date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
       date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;

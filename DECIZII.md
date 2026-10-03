@@ -16530,3 +16530,64 @@ CONFIRMATE (niciunul infirmat). Două (11, 12) cereau schemă nouă → întreba
 
 **Limite.** `registru_inventar` (rip_api) recalculează MF liniar, separat de motor — cunoscut, neatins aici. D12 nu acoperă
 comenzile/ofertele emise în afara aplicației.
+
+## 03.10.2026 — D394 Î2: de unde vin încasările din activitățile exceptate de la AMEF (decizia Costin)
+
+**Constatare la sursă (înaintea întrebării).** HG 479/2003 e în corpus integral (ordinul + normele metodologice), dar lista
+activităților exceptate de la AMEF NU e acolo — normele trimit la ordonanță: OUG 28/1999 art.2 („Se exceptează de la
+prevederile art. 1 alin. (1) încasările efectuate din următoarele activități: a) … s)”), lit.p abrogată. Instrucțiunile D394
+(OPANAF 2194/2025, lit.G pct.13–17) cer la Î2, pe lună: totalul încasărilor și baza + TVA pe cote, fără încasările facturate;
+validatorul D394 v5: `op2` tip I2 fără nrAMEF/nrBF, `rezumat2.baza_incasari_i2/tva_incasari_i2`, `informatii.incasari_i2`.
+Chitanțele și registrul de casă poartă doar totalul (fără cotă), iar registrul nu deosebește plata unei facturi de o vânzare.
+
+**Decizia lui Costin (verbatim):**
+- *„Cotă pe chitanță”* — Î2 = chitanțele fără factură, neanulate; coloană nouă `chitante.cota_tva`, aleasă la emitere
+  (obligatorie la firmele marcate exceptate); chitanță fără cotă = neclasificată -> D394 refuză numit; registrul de casă intră
+  doar prin chitanțele lui.
+- *„La D394 Î2, pe lângă varianta 1: la firmele marcate exceptate, o încasare din registrul de casă care nu e legată de o
+  factură, de o chitanță sau de o operațiune cunoscută fără caracter de vânzare (ridicare de numerar din bancă, împrumut,
+  restituire) se semnalează contabilului cu mesaj numit; nu blochează D394, dar nu trece neobservată.”*
+
+**Consecințe decise la implementare (executor, în interiorul deciziei):**
+1. Chitanța fără factură = vânzare fără factură: nota 5311 = venit (bază) + 5311 = 4427 (TVA), nu 5311 = 4111 (nu există
+   creanță). Respins: păstrarea 4111 (un sold de client fără factură, care nu se stinge niciodată).
+2. Încasările Î2 sunt livrări taxabile -> intră și în D300 pe cote (aceeași clasă ca rapoartele Z, lot 19 defectul 2).
+3. Chitanța fără factură la o firmă NEmarcată exceptată se refuză: vânzarea către populație fără factură se face cu bon
+   (OUG 28/1999 art.1 alin.(1)-(2)). Respins: acceptarea tăcută (încasarea ar lipsi din Î1 și Î2).
+4. „Împrumut” și „restituire” nu sunt azi categorii ale registrului de casă (singura încasare fără caracter de vânzare
+   cunoscută e `ridicare_banca`); când apar, intră în aceeași listă.
+
+
+## 03.10.2026 — D394 Î2: PIVOT pe consecința 3 + ce a mai decis implementarea
+
+**Supersedează EXPLICIT** consecința 3 din intrarea de mai sus („D394 Î2: de unde vin încasările …”): *„Chitanța fără factură
+la o firmă NEmarcată exceptată se refuză”*. Forma aceea ar fi rupt un flux existent fără temei: chitanța fără factură de azi e
+o **încasare de creanță** (5311=4111, ex. o factură de dinaintea migrării), iar OUG 28/1999 art.1 alin.(1) privește
+**vânzarea** încasată în numerar, nu stingerea unei creanțe. **Forma finală:** la firma neexceptată, chitanța fără factură
+fără cotă rămâne ce era (5311=4111); se refuză NUMIT doar cererea de chitanță **de vânzare** (cu cotă) — cod
+`CHITANTA_VANZARE_FARA_EXCEPTARE_AMEF`, temei OUG 28/1999 art.1 alin.(1). La firma exceptată, cota rămâne obligatorie (decizia
+lui Costin: „obligatorie la firmele marcate exceptate”). Lista din TESTE (pasul 3) a fost rescrisă înaintea execuției.
+
+**Consecințe decise la implementare (executor, în interiorul deciziei):**
+5. **Clasificarea chitanței fără cotă** — ruta `PUT /tenants/{id}/chitante/{chitanta_id}/cota` + «Stabilește cota» în Casă.
+   Fără ea, refuzul D394 pe chitanța neclasificată ar fi o fundătură: nu există rută de anulare sau de editare a chitanței.
+   Doar cât nota e ciornă (o notă validată se stornează, nu se rescrie — refuz numit); o chitanță deja clasificată nu se
+   reclasifică. Respins: refuzul fără ieșire.
+6. **Chitanțele cu cotă intră în D300 și D394 indiferent de bifa de azi** — o vânzare emisă rămâne vânzare și dacă exceptarea
+   se scoate ulterior. Bifa decide doar refuzul pe neclasificate și semnalul casei. Respins: filtrul pe bifă (scoaterea bifei
+   ar fi șters retroactiv vânzări din decont).
+7. **Cota 0% (activitate scutită) intră doar în totalul lunii** (pct.15 „totalul încasărilor”), fără rubrică (pct.16–17 au
+   doar 21/19/11/9/5) — DUK R246 dă atunci o atenționare neblocantă, ca la Î1.
+8. **Totalul op2 = rubricile rotunjite + restul (cota 0) rotunjit** — clasa Î1 + Î2, prinsă de DUK pe proba izolată: un total
+   rotunjit separat (1100,41 + 231,09 + 300 + 33 = 1664,50 → 1665) diferea cu 1 leu de rubricile rotunjite (1664) și R246
+   atenționa fals. Reparat în generator (`d394._total_op2`) ȘI în calea a doua (`d394_reconciliere._total_luna`), pe aceeași
+   definiție, calculată separat.
+9. **Defalcarea bază/TVA** — suta mărită, ROUND_HALF_UP, într-o singură funcție (`activitati_amef.defalcare`, peste
+   `tva_incasare.tva_din_incasare`) folosită de notă, D300 și D394. INTERPRETARE CU TEMEI: CF art.282 alin.(8) („fiecare
+   încasare … se consideră că include și taxa aferentă”) + procedeul sutei mărite din HG 1/2016; alternativa respinsă: cota
+   aplicată pe sumă (ar fi tratat încasarea drept bază). De reconfirmat dacă apare o normă care transează Î2. Calea a doua o
+   recalculează în SQL (ROUND pe numeric).
+
+**Limite.** Încasarea unei creanțe fără factură în aplicație, la o firmă exceptată, nu se mai poate emite fără cotă: factura
+se introduce întâi, iar chitanța se emite din ea. „Împrumut” și „restituire” nu sunt categorii ale registrului de casă (doar
+`ridicare_banca` e cunoscută fără caracter de vânzare) — când apar, intră în `casa_api.CATEGORII_FARA_VANZARE`.

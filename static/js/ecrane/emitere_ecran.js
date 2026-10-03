@@ -8,7 +8,7 @@
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
-import { randeazaDateFirma } from "./date_firma.js?v=651c354a8d";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
+import { randeazaDateFirma } from "./date_firma.js?v=c4f9195844";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());

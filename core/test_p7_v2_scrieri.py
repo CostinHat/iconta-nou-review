@@ -212,7 +212,11 @@ def test_numarul_de_instructiuni_se_conserva():
     # [lot 19 defectul 11, 03.10.2026] 273 -> 274, cu apelul numit:
     #   repo_mijloace_fixe.seteaza_destinatie_cd (mijloc_fix_destinatie_cd) — bifa „C&D” din registru (CF art.20 alin.(1)
     #   lit.b)), ruta nouă PUT /mijloace-fixe/{id}/destinatie-cd. Pas NOU al aplicației, nu SQL mutat.
-    assert _apeluri_catre_repository() == 274
+    # [D394 Î2, deciziile Costin 03.10.2026] 274 -> 278, cu apelurile numite:
+    #   repo_firma_profil.amef_si_cont_venit ×2 (chitanta_emite, chitanta_cota) — bifa de exceptare AMEF + contul de venit;
+    #   repo_casa.chitanta_de_clasificat + repo_casa.clasifica_vanzare (chitanta_cota) — ruta nouă PUT
+    #   /chitante/{id}/cota: chitanța fără cotă devine vânzare (nota ciornă pe venit + 4427). Pași NOI, nu SQL mutat.
+    assert _apeluri_catre_repository() == 278
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

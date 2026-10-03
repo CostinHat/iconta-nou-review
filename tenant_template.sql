@@ -2249,6 +2249,11 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS capital_var
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil DROP CONSTRAINT IF EXISTS forma_juridica_valida;
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD CONSTRAINT forma_juridica_valida CHECK (forma_juridica IS NULL OR forma_juridica IN ('SRL', 'SA', 'SCA', 'SNC', 'SCS', 'ALTA'));
 
+-- [D394 Î2] mirror al core/migrare_d394_i2.py: activitatea exceptată de la AMEF (OUG 28/1999 art.2) + cota pe chitanță
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS activitate_exceptata_amef boolean NOT NULL DEFAULT false;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS activitate_amef character varying(2);
+ALTER TABLE TENANT_PLACEHOLDER.chitante ADD COLUMN IF NOT EXISTS cota_tva numeric(5,2);
+
 -- [F143 centre_cost, Faza 1] mirror al 02_ddl_centre_cost.sql: firmele NOI trebuie sa aiba
 -- tabelul + coloana. Dimensiune management accounting intern (centru de cost pe linia de nota).
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.centre_cost (

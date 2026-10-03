@@ -1225,3 +1225,22 @@ că încasările prin casa de marcat (Î1) nu se declară — se declară de ier
 - **Ghiduri:** 433 de ghiduri noi publicate. Corectate 20 de ghiduri existente, între care: numerotarea veche din Codul
   muncii, sporul de noapte de 25%, termenul de noiembrie al decontului, cazierul fiscal, punctul de lucru cu salariați,
   scutirea pentru mici întreprinderi din alt stat UE și situațiile financiare (31 mai).
+
+## 03.10.2026 — D394 Î2: încasările din activitățile scutite de casa de marcat intră în D394 și în D300
+
+**Ce se schimbă pentru contabil:**
+- **Date firmă → Casa de marcat:** o firmă se poate marca „exceptată de la casa de marcat”, cu activitatea din OUG 28/1999
+  art. 2 (18 activități, din lista în vigoare; lit. p e abrogată). Lista activităților e în ordonanță, nu în HG 479/2003,
+  cum se presupunea.
+- **Casă → „+ Chitanță fără factură”** (doar la firma exceptată): se emite chitanța unei vânzări fără factură, cu cota de TVA
+  (0% dacă activitatea e scutită). Nota iese 5311 = venit + 5311 = 4427, nu 5311 = 4111.
+- **D394:** apare secțiunea **Î2** pe fiecare lună (total, bază și TVA pe cote, fără număr de case și bonuri). Dacă o
+  chitanță fără factură n-are cotă, D394 nu se generează și spune care chitanță e. Cota se stabilește din Casă
+  («Stabilește cota»), cât timp nota e ciornă. O încasare din casă fără chitanță (alta decât ridicarea de la bancă) apare
+  ca avertisment: nu blochează, dar se vede.
+- **D300:** TVA-ul acestor vânzări intră la rândurile 9/10. Până acum vânzarea fără factură a unei firme scutite de casa de
+  marcat nu ajungea în nicio declarație.
+- **Firmele neexceptate:** chitanța fără factură rămâne încasare de creanță (5311=4111), ca până acum. O chitanță de
+  vânzare (cu cotă) e refuzată: vânzarea fără factură se face cu bon fiscal.
+- **Totalul lunii din D394 (Î1 și Î2)** e acum suma rubricilor rotunjite. Validatorul ANAF dădea o atenționare falsă când
+  rotunjirea totalului diferea cu un leu.

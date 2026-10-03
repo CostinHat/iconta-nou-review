@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**673 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**674 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 641
+### `core/` — 642
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9074,6 +9074,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d394.py` — Teste gardian pentru d394 (functiile PURE).
 - `core/test_d394_codpr_cereale.py` — GARD D394 codPR cereale (10.08.2026) - SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.68-70:
 - `core/test_d394_cuip_checksum.py` — GARD neconformitate T1/G-c1 (CATALOG_INVALIDITATE.md): checksum-ul CUI/CIF al partenerului NU
+- `core/test_d394_i2.py` — GARD — D394 Î2: încasările din activitățile exceptate de la AMEF (deciziile Costin 03.10.2026).
 - `core/test_d394_manual_codpr.py` — GARD neconformitate: operatiune MANUALA C/V (art.331) trebuie sa emita op11(codPR).
 - `core/test_d394_nrfact_multicota.py` — GARD D394 (16.08.2026, campanie rețeta D300) — doua neconformitati reparate:
 - `core/test_d394_op1_fara_op11.py` — GARD neconformitate T4/G-bc1 + G-bc2 (CATALOG_INVALIDITATE.md): "avertizeaza-dar-emite-invalid".
@@ -10015,3 +10016,22 @@ defectele 6–13 …”).
 | bifele citite prin `bifa` | același fișier (`test_bifele_se_citesc_doar_prin_bifa` + 12 parametri) | `bool("false")` = True: imputabil „Nu” → imputabil, furnizor neplătitor → taxare inversă, agricultor neînscris → compensare deductibilă | „false” scos din parser → roșu; `corp.get("furnizor_platitor_tva")` repus → roșu | selecturile da/nu numai din ecranul Operațiuni (singurele „true”/„false” din static/js, verificat) |
 | C&D — accelerata pe orice cont | core/test_mf_destinatie_cd.py (8) | aparatura C&D pe 2132 refuzată la accelerată; bifa deschizând construcții/animale/terenuri; un cititor al registrului fără `destinatie_cd` | regula oprită → 2 roșii; regula fără categorie → roșu; coloana scoasă dintr-un SELECT → roșu; importul fără coloană → roșu | — |
 | capitalul social pe factură | core/test_capital_social.py (16, două pe schemă efemeră) | factura unui SRL/SA/SCA emisă fără capital (sau fără formă juridică); PFA oprit; PDF fără capital | PFA neexceptat → 2 roșii; SA tratat ca SRL → 2 roșii; forma lipsă acceptată → roșu; refuzul oprit → roșu; PDF fără rând → roșu | „păstrează factura” e gardat structural (caseta scrie doar în zona de rezultat), nu printr-un browser |
+
+## 03.10.2026 — D394 Î2: încasările din activitățile exceptate de la AMEF (deciziile Costin)
+
+Categoriile **4. Ieșire către autorități** (D394 fără secțiunea Î2; TVA-ul vânzărilor pe chitanță lipsă din D300), **1. Intrare
+date** (chitanța fără cotă; vânzarea fără factură la o firmă neexceptată) și **3. Calcul fiscal** (defalcarea bază/TVA, totalul
+lunii). Detaliul: DECIZII 03.10.2026 („D394 Î2: de unde vin încasările …” + PIVOT-ul ei).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| defalcarea — o funcție | core/test_d394_i2.py::test_defalcare_suta_marita (5 cazuri) | TVA-ul încasării calculat pe sumă (cota/100), rotunjire bancară | `s*c/100` → roșu (121 la 21% → 25,41) | interpretare cu temei (suta mărită), nu text explicit pentru Î2 |
+| op2 Î2 pe lună | test_o_sectiune_i2_pe_luna_fara_amef_si_bonuri + test_rezumat2_agrega_i2_separat_de_i1 + test_trimestrial_* + test_cota_zero_intra_doar_in_total | Î2 lipsă; Î2 agregat în *_incasari_i1; nrAMEF/nrBF pe Î2; o lună pierdută pe trimestru | sufixul fix „i1” → roșu | — |
+| structura validatorului | test_xml_i2_fara_nramef_nrbf + test_DUK_valid_cu_op2_i2 + test_DUK_respinge_nramef_pe_i2 | XML Î2 respins de DUK | nrAMEF scris și pe Î2 → roșu (și DUK: „nu trebuie sa fie completat”) | DUK local, versiunea instalată |
+| totalul = Σ rubrici (Î1 + Î2) | test_totalul_lunii_e_suma_rubricilor_rotunjite[I1,I2] + test_a_doua_cale_aplica_aceeasi_definitie_a_totalului | R246 fals la 1 leu; calea a doua pe altă definiție (blocaj fals) | `_int(m["total"])` → roșu; `_q(m["total"])` în calea a doua (Î1, Î2) → roșu | — |
+| refuz numit, nu zero | test_chitanta_fara_cota_blocheaza_d394_numit_pana_la_clasificare (cod `D394_I2_NECLASIFICAT` + chitanțele) | chitanța fără cotă a firmei exceptate trecută tăcut | refuzul scos din `genereaza` → roșu | — |
+| emiterea | test_firma_neexceptata_chitanta_de_creanta_ramane_dar_vanzarea_e_refuzata + test_firma_exceptata_vanzarea_merge_pe_venit_si_4427 + test_dispozitia_generica_nu_poate_naste_o_vanzare_fara_cota | vânzare fără factură la firma neexceptată; chitanță Î2 fără cotă / cu cotă nepermisă; nota pe 4111; categoria nouă din dispoziția generică | poarta neexceptată scoasă → roșu | — |
+| clasificarea | test_clasificarea_refuza_nota_validata (+ reclasificarea refuzată în testul de refuz) | rescrierea unei note validate; a doua clasificare | condiția „ciornă” scoasă → roșu | — |
+| semnalul casei | test_incasarea_din_casa_fara_chitanta_e_semnalata_ridicarea_nu + test_firma_neexceptata_nu_semnaleaza_si_nu_refuza + test_incasarea_din_casa_fara_chitanta_e_avertisment_numit | încasare fără chitanță netrecută în rezultat; ridicarea de la bancă semnalată | filtrul pe categorie scos → roșu (2 semnale) | doar `ridicare_banca` e cunoscută fără caracter de vânzare |
+| D300 + a doua cale | test_d300_include_vanzarile_pe_chitanta + test_a_doua_cale_recalculeaza_i2_din_chitante (+ `d300_reconciliere`, SQL propriu) | TVA-ul vânzărilor pe chitanță lipsă din decont; agregare Î2 greșită | `_pull_chitante_i2` scos → roșu (și blocajul celei de-a doua căi D300) | — |
+| HTTP până în declarație | core/test_rute_stoc_pana_in_declaratie.py::test_CHITANTA_FARA_COTA_clasificata_prin_HTTP_ajunge_in_D394_I2 | rutele noi (emitere cu cotă, PUT …/cota) neprobate prin HTTP | — (proba rutei; mutațiile pe cod sunt deasupra) | — |

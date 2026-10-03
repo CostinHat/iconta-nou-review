@@ -1,33 +1,34 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Lotul 19 publicat (punctul 1 din 4); urmează D394 Î2, exportul SAGA/WinMentor, coloana 2b** (03.10.2026)
+# PREDARE LANȚ — **D394 Î2 livrat (punctul 2 din 4); urmează exportul SAGA/WinMentor, apoi coloana 2b** (03.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-03** (după-amiaza), în commitul **Lot 19: publicare** (commitul care poartă această predare; hash-ul
-  lui e în raport și în `git log`).
-- **pe commit**: `a6655c85` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-03 =
-  procesul viu = a6655c85, agenda — greenlight / 2b blocat).
-- **ÎN LUCRU ACUM:** nimic deschis — firul **LOT 19** e ÎNCHIS în TESTE.md: defectele 6–13 reparate (11 și 12 după deciziile lui Costin
-  din 03.10), clasa formularelor Operațiuni (opțiuni imposibile, `bool("false")`), 20 de ghiduri live corectate, 433 publicate, 441 de
-  rânduri în index. Migrări aplicate pe ambele baze (backup înainte pe producție: `~/backup_pre_destinatie_cd_20261003_1139.sql.gz`,
-  `~/backup_pre_capital_social_20261003_1146.sql.gz`).
-- **URMĂTORUL FRONT (comanda Costin 03.10, ordinea dată):** `core.agenda.urmatorul_pas()` → **punctul 2, D394 Î2**: întâi textul integral
-  al HG 479/2003 în corpus (acum doar antetul) și lista activităților exceptate verificată pe el; bifa „activitate exceptată de la AMEF”
-  pe profil (cu activitatea); încasările din chitanțe + registrul de casă; firmă scutită cu încasări neclasificate → D394 refuză numit.
-  Apoi **punctul 3** (exportul SAGA/WinMentor al facturilor din bon: marca „din bon” dacă formatul are câmp, altfel fișier separat în
-  afara importului de vânzări — formatele verificate la sursă) și **punctul 4** (DROP `salariati.salariu_brut` după dovada că nimic n-o
-  citește, backup, migrare pe toți tenanții). Fiecare: gard, mutație, probă invalid→valid, commit separat, ZIP în ghid_incoming.
+- **ultima rescriere**: **2026-10-03** (seara), în commitul **D394 Î2** (commitul care poartă această predare; hash-ul lui e în
+  raport și în `git log`).
+- **pe commit**: `2798f8ce` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-03 =
+  procesul viu = 2798f8ce, Lot 19 publicat).
+- **ÎN LUCRU ACUM:** nimic deschis — firul **D394 Î2 (punctul 2)** e ÎNCHIS în TESTE.md: bifa „activitate exceptată de la AMEF” pe
+  profil (OUG 28/1999 art.2 — lista e în ordonanță, nu în HG 479/2003), chitanța de vânzare fără factură cu cotă (nota venit + 4427),
+  clasificarea chitanței fără cotă (`PUT /chitante/{id}/cota`), D394 op2 Î2 + refuzul `D394_I2_NECLASIFICAT` + semnalul casei, D300
+  rd.9/10, a doua cale pe Î2; clasa „totalul op2 ≠ Σ rubrici” (Î1 + Î2) reparată. Migrarea `core/migrare_d394_i2.py` aplicată pe ambele
+  baze (backup înainte pe producție: `~/backup_pre_d394_i2_20261003_1740.sql.gz`).
+- **URMĂTORUL FRONT (comanda Costin 03.10, ordinea dată):** **punctul 3** — exportul SAGA/WinMentor al facturilor emise pe baza bonului:
+  marca „din bon” dacă formatul de import are câmp pentru asta, altfel fișier separat în afara importului de vânzări; formatele
+  verificate la sursă; nicio factură pierdută, nicio vânzare dublată. Apoi **punctul 4** (DROP `salariati.salariu_brut` după dovada
+  că nimic n-o citește, backup, migrare pe toți tenanții). Fiecare: gard, mutație, probă invalid→valid, commit separat, ZIP în
+  ghid_incoming (`iconta_export_din_bon.zip`, `iconta_2b_coloana.zip`).
+- **ATENȚIE (efect D394 Î2):** la o firmă marcată exceptată, chitanța fără factură cere cota (o creanță fără factură în aplicație se
+  încasează după ce factura e introdusă); la o firmă neexceptată, chitanța cu cotă e refuzată. Probele care emit chitanțe pe F1 marchează
+  exceptarea ÎN TRANZACȚIA anulată (v. `frontend_test/proba_d394_i2.py`).
 - **ATENȚIE (efect al lotului 19, decizia 12):** o societate fără formă juridică / capital în Date firmă NU mai emite facturi (refuz numit,
   trimitere la Date firmă). Probele care emit pe F1–F5 își completează profilul ÎN TRANZACȚIA anulată (v.
   `frontend_test/proba_lot19_d12_capital_social.py`); testele noi care emit pe schemă efemeră pun `forma_juridica='SRL'`, `capital_subscris=200`.
 - **Decizii în vigoare (Costin 03.10):** D112 contract uniform A1 — „nu acum; doar când D112 e atins oricum” (fir BLOCAT în TESTE);
   ghidurile — metoda arhitectului (Claude redactează și verifică, Costin aprobă titlurile, Code publică).
+- **Decizie cerută, fără răspuns (din raportul lotului 19):** bifa „C&D” din registrul de mijloace fixe să ceară `admin_firma`?
 - **[EXTERN] neschimbate:** F1 etapele 9–11 (depunere reală, SPV); D212 — validatorul ANAF pentru OPANAF 2736/2025 (agricol pe normă,
   opțiunea CAS lit.B, CASS pe pensiile din străinătate, CASS 2.2 reținută peste datorată — datorii stricte în core/test_datorie.py).
-- **Lotul 19, rămase de știut:** ghidul „amenzile-primite-punct-lucru-apar-cazierul-fiscal” (GH-09299, `candidat`) a fost scos din lot fiindcă
-  art. 4 din OPANAF 2594/2015 lipsea din corpus; ordinul e acum readus (78e85cda) — titlul poate fi redactat într-un lot următor.
-  Golurile de corpus din RAPORT_LOT19.md (anexele ordinelor; HG 479/2003) rămân, HG 479 intră la punctul 2.
 - **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09) — nu se comite, nu se șterge.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **CE E RESCRIS ȘI CE E PĂSTRAT**: rescrise — titlul și antetul. Păstrate neatinse: „PRIMUL LUCRU DE ȘTIUT” și restul (rețeta scanului
@@ -435,7 +436,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **891** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **895** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

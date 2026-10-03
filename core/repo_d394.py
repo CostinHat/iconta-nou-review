@@ -34,6 +34,25 @@ def select_rapoarte_z(cur, surse, inceput, sfarsit):
     return cur.fetchall()
 
 
+def select_chitante_fara_factura(cur, inceput, sfarsit):
+    """[D394 Î2, decizia Costin 03.10.2026] Chitanțele fără factură, neanulate, din fereastră — cu cota (vânzare din
+    activitatea exceptată) sau fără (neclasificată, o numește apelantul)."""
+    cur.execute("SELECT id, serie, numar, data, suma, cota_tva FROM chitante "
+                "WHERE factura_id IS NULL AND NOT anulata AND data >= %s AND data < %s ORDER BY data, id",
+                (inceput, sfarsit))
+    return cur.fetchall()
+
+
+def select_casa_incasari_nelegate(cur, fara_vanzare, inceput, sfarsit):
+    """[D394 Î2, decizia Costin 03.10.2026] Încasările din registrul de casă fără chitanță (deci fără factură) și
+    fără o categorie cunoscută fără caracter de vânzare — semnal, nu blocaj."""
+    cur.execute("SELECT o.id, o.data, o.document, o.partener, o.suma, o.categorie FROM casa_operatiuni o "
+                "WHERE o.tip = 'incasare' AND NOT (o.categorie = ANY(%s)) AND o.data >= %s AND o.data < %s "
+                "AND NOT EXISTS (SELECT 1 FROM chitante c WHERE c.casa_operatiune_id = o.id AND NOT c.anulata) "
+                "ORDER BY o.data, o.id", (list(fara_vanzare), inceput, sfarsit))
+    return cur.fetchall()
+
+
 def select_facturi_din_bon(cur, inceput, sfarsit):
     """[decizia A 02.10.2026] Facturile EMISE pe baza unui bon fiscal din fereastră (pe DATA BONULUI — luna raportului Z din
     care se scad), cu liniile pe cotă. Aceleași filtre de status/document ca `select_facturi`; storno-ul (care moștenește

@@ -76,6 +76,13 @@ PERECHI_ADAUGATE = {
     ("centre_cost_activ", "str(e)"): (
         "Lot 19 defectul 13 (03.10.2026): `activ` se citește prin `_uc_comun.bifa`; „false” trimis ca text nu mai "
         "activează centrul (bool(\"false\") era True) — o valoare care nu e da/nu e refuzată (422)."),
+    ("chitanta_emite", "_amef.detaliu(e)"): (
+        "D394 Î2, deciziile Costin (03.10.2026): chitanța de VÂNZARE fără factură se emite doar la firma exceptată de la "
+        "AMEF (OUG 28/1999 art.1 alin.(1) / art.2), cu cota obligatorie și permisă la data ei — refuz STRUCTURAT (400: "
+        "cod + temei). Chitanța de creanță fără factură (firmă neexceptată, fără cotă) rămâne neatinsă."),
+    ("chitanta_emite", "'Data chitanței: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ.' % (c.data,)"): (
+        "D394 Î2 (03.10.2026): cotele permise depind de data chitanței, deci data se citește înainte — o zi care nu "
+        "există în calendar e refuz de contabil (400), cum o refuza deja `casa_api.adauga` mai târziu."),
     ("horeca_import_amef", "MESAJ_AMEF_FARA_BONURI"): (
         "D394 op2 Î1, decizia Costin B (02.10.2026): un fișier AMEF fără `nrB` nu poate scrie rândul `rapoarte_z_amef` "
         "(nr_bonuri > 0); refuz numit (422), nu un rând care ar opri D394 mai târziu."),

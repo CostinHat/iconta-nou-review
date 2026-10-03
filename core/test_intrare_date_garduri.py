@@ -41,6 +41,9 @@ NULLABLE_OK = {
     ("miscari_stoc", "pret_unitar"): "miscarea poarta `valoare` (total); pret unitar optional (iesire/inventar il lasa NULL)",
     ("salariati", "salariu_brut"): "baza poate fi LEGITIM lipsa -> semnalata, nu tacuta (GARZI cat.1)",
     ("registre_art321", "valoare"): "lit. f) (bunuri_primite) NU cere valoare — NOT NULL ar bloca o inscriere legala",
+    ("chitante", "cota_tva"): "D394 Î2 (03.10.2026): NULL = chitanta de creanta (factura / firma neexceptata) sau "
+                              "NECLASIFICATA — nu se citeste niciodata ca 0: D394 o refuza numit (D394_I2_NECLASIFICAT), "
+                              "D300/D394 citesc doar `cota_tva IS NOT NULL`; 0 e o valoare reala (activitate scutita)",
 }
 
 # Tabele de import (entitati, nu linii-copil): fiecare cere o cheie naturala UNIQUE.

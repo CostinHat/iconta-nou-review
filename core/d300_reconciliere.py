@@ -150,6 +150,17 @@ def _agrega_independent(conn, inceput, sfarsit):
             ci = int(Decimal(str(r["cota"])))   # cota Z e procent intreg (21/11/9) - nu e rotunjire de suma
             if ci in zb:
                 zb[ci] += Decimal(str(r["baza"])); zt[ci] += Decimal(str(r["tva"]))
+    # [D394 Î2, 03.10.2026] Vânzările pe chitanță fără factură (firmă exceptată de la AMEF) — SQL PROPRIU, nu
+    # `activitati_amef.defalcare`: suta mărită calculată în Postgres (ROUND pe numeric = jumătatea în sus pe pozitive).
+    qc = ("SELECT cota_tva AS cota, SUM(suma - ROUND(suma * cota_tva / (100 + cota_tva), 2)) AS baza, "
+          "SUM(ROUND(suma * cota_tva / (100 + cota_tva), 2)) AS tva FROM chitante "
+          "WHERE factura_id IS NULL AND cota_tva IS NOT NULL AND NOT anulata AND data >= %s AND data < %s "
+          "GROUP BY cota_tva")
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        for r in _repo.sql(cur, qc, inceput, sfarsit):
+            ci = int(Decimal(str(r["cota"])))   # cota chitanței e procent întreg (cote_permise)
+            if ci in zb:
+                zb[ci] += Decimal(str(r["baza"])); zt[ci] += Decimal(str(r["tva"]))
     col = {c: (_q(colb[c] + zb[c]), _q(colb[c] * Decimal(c) / Decimal(100) + zt[c])) for c in colb}
     ded = {c: (_q(dedb[c]), _q(dedb[c] * Decimal(c) / Decimal(100))) for c in dedb}
     return col, ded

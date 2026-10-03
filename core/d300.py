@@ -1126,6 +1126,20 @@ def _pull_rapoarte_z(cur, inceput, sfarsit):
     return out
 
 
+def _pull_chitante_i2(cur, inceput, sfarsit):
+    """[D394 Î2, 03.10.2026] Vânzările încasate pe chitanță fără factură (firmă exceptată de la AMEF, OUG 28/1999
+    art.2): livrări taxabile pe cotă, ca rapoartele Z — CF art.282 alin.(1), exigibilitatea la faptul generator; nota
+    lor creditează 4427. Defalcarea e `activitati_amef.defalcare`, aceeași cu nota și cu D394 Î2. Citite după cotă, NU
+    după bifa de pe profil: o chitanță de vânzare emisă rămâne livrare și dacă exceptarea se scoate ulterior."""
+    from core.activitati_amef import defalcare
+    out = []
+    for r in _repo.select_chitante_cu_cota(cur, inceput, sfarsit):
+        baza, tva = defalcare(r["suma"], r["cota_tva"])
+        out.append({"raport_z": True, "sursa": "chitanta", "id": r["id"], "numar": "%s-%s" % (r["serie"], r["numar"]),
+                    "cota": r["cota_tva"], "baza": baza, "tva": tva})
+    return out
+
+
 def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -1142,10 +1156,10 @@ def pull(conn, schema, perioada):
             # generator (art.282 alin.6 CF), nu la incasare - _pull_incasare o EXCLUDE; o aducem pe
             # calea de emitere (_pull_taxare_inversa) ca sa NU dispara tacit (rd.13 / rd.12+rd.25).
             return prof, (_pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
-                          + _pull_rapoarte_z(cur, inceput, sfarsit))
+                          + _pull_rapoarte_z(cur, inceput, sfarsit) + _pull_chitante_i2(cur, inceput, sfarsit))
         rows = _repo.select_facturi_4(cur, _STATUS_FINAL, _exig_d300(), inceput, sfarsit)  # [A11] IC pe art.284
         deferred = _pull_furnizor_incasare(cur, inceput, sfarsit)
-        rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit)
+        rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit) + _pull_chitante_i2(cur, inceput, sfarsit)
     fmap = {}
     for r in rows:
         _exig = r.get("exig")
