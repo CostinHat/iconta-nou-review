@@ -129,7 +129,7 @@ def lume(monkeypatch):
             yield _ConnProxy(conn)
 
         monkeypatch.setattr(_db, "get_conn", _fake)
-        yield {"tid": tid, "conn": conn, "aid": aid, "mfid": mfid, "schema": SCH,
+        yield {"tid": tid, "conn": conn, "aid": aid, "mfid": mfid, "schema": SCH, "uid": uid,
                "tok": auth_api.emite_token({"id": uid, "rol": "admin_firma",
                                             "accounting_firm_id": firm})}
     finally:
@@ -354,6 +354,11 @@ def test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets(lume):
     assert activ is not None, sorted(active)
     metode = [e.text for e in activ.iter() if e.tag.endswith("}DepreciationMethod")]
     assert metode and set(metode) == {"accelerata"}, metode
+    # [decizia Costin 04.10.2026] fără rol separat — schimbarea se jurnalizează: utilizatorul din token, data, veche -> nouă
+    with lume["conn"].cursor() as cur:
+        cur.execute('SELECT camp, valoare_veche, valoare_noua, user_id, la IS NOT NULL FROM "%s".mijloace_fixe_jurnal '
+                    "WHERE mijloc_id = %%s ORDER BY id" % SCH, (cd,))
+        assert cur.fetchall() == [("destinatie_cd", "false", "true", lume["uid"], True)]
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

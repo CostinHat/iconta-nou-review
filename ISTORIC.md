@@ -1258,3 +1258,11 @@ că încasările prin casa de marcat (Î1) nu se declară — se declară de ier
 - **Încasare:** factura din bon apare încasată de la emitere. Nu mai primește memento de scadență către client și nu mai
   oferă „Emite chitanță”.
 - Nicio factură nu lipsește din exporturi.
+
+## 04.10.2026 — Bifa „C&D” jurnalizată; schemele de test șterse din producție
+
+**Ce se schimbă pentru contabil:**
+- **Mijloace fixe → bifa „C&D”:** o poate pune oricine poate modifica fișa (fără drept separat). Fiecare schimbare rămâne
+  scrisă cu cine a făcut-o, când și din ce în ce (da/nu). Apăsarea pe aceeași valoare nu lasă urmă, fiindcă nu schimbă nimic.
+- **Baza de producție:** au fost șterse 8 scheme rămase de la teste mai vechi de 11.09 (cu backup). Nu erau firme; firmele
+  reale (5) sunt neatinse.

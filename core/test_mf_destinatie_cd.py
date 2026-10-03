@@ -88,3 +88,41 @@ def test_importul_citeste_coloana_cd():
                 b"MF2;Laptop;6000;36;2025-03-10;liniara;2132;poate\n", "m.csv")
     assert r[0]["destinatie_cd"] is True and r[0]["amortizat"] is not None   # accelerata calculata, nu refuzata
     assert r[1]["destinatie_cd"] is False and any("C&D" in a for a in r[1]["avertismente"])
+
+
+# ── [decizia Costin 04.10.2026] fiecare schimbare a bifei se jurnalizează: utilizator, dată, veche -> nouă ─────────────
+def _db_ok_jurnal():
+    try:
+        from core import db
+        db.init_pool()
+        with db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+@pytest.mark.skipif(not _db_ok_jurnal(), reason="DB indisponibil")
+def test_jurnalul_cd_doar_schimbarile_reale_in_ordine():
+    """O apăsare care nu schimbă nimic nu scrie rând (nu e o schimbare); două schimbări -> două rânduri, cu valoarea veche a
+    fiecăreia și utilizatorul care a făcut-o. MUTAȚIE: INSERT-ul jurnalului scos -> [] -> pică; condiția `veche != noua`
+    scoasă -> trei rânduri -> pică."""
+    from core import db, tenant_provisioning as _tp, repo_mijloace_fixe as _r
+    schema = "ztest_mf_jurnal_cd"
+    db.init_pool()
+    with db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % schema)
+                cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), schema))
+                cur.execute("INSERT INTO %s.mijloace_fixe (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, "
+                            "dnf_luni, data_pif, metoda) VALUES ('MF-J','Spectrometru','2132','2813',60000,0,60,'2026-01-15',"
+                            "'liniara') RETURNING id" % schema)
+                mid = cur.fetchone()[0]
+                assert _r.seteaza_destinatie_cd(cur, schema, mid, False, 7) == (mid, False)   # deja false: nimic de jurnalizat
+                assert _r.seteaza_destinatie_cd(cur, schema, mid, True, 7) == (mid, False)
+                assert _r.seteaza_destinatie_cd(cur, schema, mid, False, 9) == (mid, True)
+                assert _r.seteaza_destinatie_cd(cur, schema, 999999, True, 7) is None        # activ inexistent
+                cur.execute("SELECT camp, valoare_veche, valoare_noua, user_id FROM %s.mijloace_fixe_jurnal ORDER BY id" % schema)
+                assert cur.fetchall() == [("destinatie_cd", "false", "true", 7), ("destinatie_cd", "true", "false", 9)]
+        finally:
+            conn.rollback()

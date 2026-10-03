@@ -12,6 +12,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   formate au câmp, deci marca (SAGA `FacturaTip=f`, WinMentor `ClasificareSAFT=751` + InfoCM); generalizarea clasei a reparat și D406
   (TaxCode 310327, nota ANAF din nomenclatorul Livrări), e-Factura (751 + „Factura încasată cu bon fiscal”, Ghidul MF v2.9) și starea de
   încasare (factura din bon se naște încasată — fără notificare de scadență către client). Punctul 2 (D394 Î2) a intrat în `5de03649`.
+- **Deciziile Costin 04.10 (executate):** cele 8 scheme de test din producție șterse (backup `~/backup_scheme_test_prod_20261004_0048.sql.gz`);
+  bifa C&D — fără rol separat, fiecare schimbare jurnalizată în `mijloace_fixe_jurnal` (fir închis în TESTE).
 - **URMĂTORUL FRONT (comanda Costin 03.10, ordinea dată):** **punctul 4** — DROP `salariati.salariu_brut`, după dovada că nimic n-o
   mai citește (grep pe tot codul + SQL), cu backup înainte și migrare pe toți tenanții (toate datele sunt de test); ZIP
   `/home/costin/ghid_incoming/iconta_2b_coloana.zip`. Atenție: `core/test_intrare_date_garduri.py` are `("salariati", "salariu_brut")`
@@ -24,7 +26,6 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   `frontend_test/proba_lot19_d12_capital_social.py`); testele noi care emit pe schemă efemeră pun `forma_juridica='SRL'`, `capital_subscris=200`.
 - **Decizii în vigoare (Costin 03.10):** D112 contract uniform A1 — „nu acum; doar când D112 e atins oricum” (fir BLOCAT în TESTE);
   ghidurile — metoda arhitectului (Claude redactează și verifică, Costin aprobă titlurile, Code publică).
-- **Decizie cerută, fără răspuns (din raportul lotului 19):** bifa „C&D” din registrul de mijloace fixe să ceară `admin_firma`?
 - **[EXTERN] neschimbate:** F1 etapele 9–11 (depunere reală, SPV); D212 — validatorul ANAF pentru OPANAF 2736/2025 (agricol pe normă,
   opțiunea CAS lit.B, CASS pe pensiile din străinătate, CASS 2.2 reținută peste datorată — datorii stricte în core/test_datorie.py).
 - **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09) — nu se comite, nu se șterge.
@@ -434,7 +435,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **895** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **896** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

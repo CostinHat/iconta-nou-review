@@ -16638,3 +16638,32 @@ Pe drum, în aceeași funcție: WinMentor scria `ClasificareSAFT=380` și pe sto
 
 **Limite.** Importul real în SAGA și WinMentor (round-trip) nu e probat — niciun cabinet cu programele instalate. Marca
 `FacturaTip=f` și `ClasificareSAFT=751` urmează documentația producătorilor, nu un import efectiv.
+
+## 04.10.2026 — Schemele de test rămase în baza de producție, șterse (decizia Costin)
+
+**Constatare (03.10.2026, la inventarul punctului 4):** baza de PRODUCȚIE avea 8 scheme fără rând în `public.tenants`:
+`proba_dependente`, `test_d100_profit`, `test_d112_cadou`, `test_d112_ded_supl`, `test_d301_zero_ruptura`, `test_d390_nota1`,
+`test_ded_generalizare`, `test_ruptura_d301_factura` — reziduuri ale testelor care fac `commit` pe o schemă proprie, rulate pe
+DSN-ul de producție înainte de R68 (11.09.2026). De atunci `conftest.py` sursează `~/.iconta/test.env` și `core.mediu_test`
+refuză altfel: clasa e închisă de un gard, rămăseseră doar reziduurile.
+
+**Decizia lui Costin (verbatim):** *„Da, șterge cele 8 scheme de test, cu backup înainte.”*
+
+**Executat 04.10.2026:** backup `~/backup_scheme_test_prod_20261004_0048.sql.gz` (8 scheme, 359 de tabele = 2 + 7 × 51);
+verificat: 0 rânduri în `tenants`, 0 FK din alte scheme, singurele dependențe externe = tabelele TOAST proprii; `DROP SCHEMA
+… CASCADE` pe fiecare. Producția: 5 scheme = cei 5 tenanți. Site 200.
+
+## 04.10.2026 — Bifa „C&D”: fără rol separat; fiecare schimbare se jurnalizează (decizia Costin)
+
+**Decizia lui Costin (verbatim):** *„Decizie bifa C&D: fără rol separat. O poate seta oricine are drept de editare pe fișa
+mijlocului fix (aceeași permisiune ca restul fișei). Fiind un atribut cu efect fiscal (amortizarea accelerată), fiecare
+schimbare se jurnalizează: utilizator, dată, valoare veche → nouă.”*
+
+**Consecințe (executor):**
+1. Permisiunea rămâne `cere_cabinet` — garda cu care se modifică fișa după creare (plus/minus la inventar,
+   `nota_inventariere`); crearea (import, achiziție necorporală) cere `admin_firma`, dar e creare, nu editare.
+2. Jurnalul NU stă în `public.audit_log`: acela se șterge după 12 luni (`core/audit_retentie.py`, minimizare GDPR), iar un
+   atribut care schimbă amortizarea trebuie să se poată reconstitui cât trăiește activul. Tabel în schema firmei,
+   `mijloace_fixe_jurnal`, scris în ACEEAȘI tranzacție cu schimbarea (nicio schimbare fără rândul ei).
+3. Se jurnalizează doar o schimbare reală (valoare veche ≠ nouă); valoarea de la crearea fișei nu e o „schimbare”.
+4. Utilizatorul se reține prin `user_id` (fără copie de nume/email — minimizare); data și ora, cu fus orar.

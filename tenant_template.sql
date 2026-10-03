@@ -2715,3 +2715,15 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.asociati_istoric (
     creat_la timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT asociati_istoric_uniq UNIQUE (valabil_pana_la, cnp)
 );
+
+-- [decizia Costin 04.10.2026] jurnalul schimbărilor de pe fișa mijlocului fix (bifa C&D: utilizator, dată, veche -> nouă).
+-- Mirror core/migrare_mf_jurnal.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.mijloace_fixe_jurnal (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    mijloc_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.mijloace_fixe(id),
+    camp character varying(40) NOT NULL,
+    valoare_veche text,
+    valoare_noua text,
+    user_id integer,
+    la timestamp with time zone NOT NULL DEFAULT now()
+);

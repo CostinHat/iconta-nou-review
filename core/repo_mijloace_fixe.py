@@ -118,8 +118,17 @@ def adauga_cu_reevaluare(cur, schema, cod, denumire, cont_imobilizare, cont_amor
     return cur.fetchone()
 
 
-def seteaza_destinatie_cd(cur, schema, id_, destinatie_cd):
-    """[lot 19 d11] Bifa «Destinat C&D» (CF art.20 alin.(1) lit.b)). Intoarce id-ul sau None daca activul nu exista."""
-    cur.execute(f"UPDATE {schema}.mijloace_fixe SET destinatie_cd=%s WHERE id=%s AND activ=true RETURNING id",
-                (bool(destinatie_cd), id_))
-    return cur.fetchone()
+def seteaza_destinatie_cd(cur, schema, id_, destinatie_cd, user_id):
+    """[lot 19 d11] Bifa «Destinat C&D» (CF art.20 alin.(1) lit.b)). Intoarce (id, valoarea veche) sau None daca activul
+    nu exista. [decizia Costin 04.10.2026] Fiecare SCHIMBARE se jurnalizeaza (utilizator, data, veche -> noua) in ACEEASI
+    tranzactie — randul vechi se blocheaza (FOR UPDATE), ca doua apasari simultane sa nu scrie acelasi „veche”."""
+    cur.execute(f"SELECT destinatie_cd FROM {schema}.mijloace_fixe WHERE id=%s AND activ=true FOR UPDATE", (id_,))
+    r = cur.fetchone()
+    if r is None:
+        return None
+    veche, noua = bool(r[0]), bool(destinatie_cd)
+    if veche != noua:
+        cur.execute(f"UPDATE {schema}.mijloace_fixe SET destinatie_cd=%s WHERE id=%s", (noua, id_))
+        cur.execute(f"""INSERT INTO {schema}.mijloace_fixe_jurnal (mijloc_id, camp, valoare_veche, valoare_noua, user_id)
+                        VALUES (%s, 'destinatie_cd', %s, %s, %s)""", (id_, str(veche).lower(), str(noua).lower(), user_id))
+    return id_, veche

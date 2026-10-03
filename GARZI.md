@@ -10050,3 +10050,13 @@ plată pentru o factură încasată). Detaliul: DECIZII 03.10.2026 („Punctul 3
 | D406 310327 | ::test_d406_taxcode_310327_pe_factura_din_bon (+ DUK) | factura din bon raportată cu codul cotei; cod de linie absent din TaxTable | ramura scoasă -> roșu; TaxTable -> roșu | InvoiceType rămâne 380 (fără temei pentru 751 în SAF-T) |
 | încasată la emitere | ::test_factura_din_bon_se_naste_incasata_si_nu_primeste_notificare | memento de restanță trimis clientului pentru o factură plătită cu bon | `platita_la` None -> roșu | — |
 | nicio factură pierdută | ::test_nicio_factura_pierduta_in_exporturi | factura din bon omisă din export („varianta A” respinsă) | filtrul `bon_fiscal_nr IS NULL` în export -> roșu | — |
+
+## 04.10.2026 — Bifa „C&D”: fiecare schimbare jurnalizată (decizia Costin)
+
+Categoria **2. Trasabilitate / control intern** (un atribut cu efect fiscal — deschide amortizarea accelerată — se putea
+schimba fără urmă). Detaliul: DECIZII 04.10.2026 („Bifa «C&D»: fără rol separat …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| jurnal doar pe schimbare reală, în ordine | core/test_mf_destinatie_cd.py::test_jurnalul_cd_doar_schimbarile_reale_in_ordine | schimbare fără rând de jurnal; rând fără schimbare | INSERT scos -> `[] ==` roșu; condiția `veche != noua` scoasă -> roșu | valoarea de la crearea fișei nu e „schimbare” (decis) |
+| utilizatorul real, prin HTTP | core/test_rute_stoc_pana_in_declaratie.py::test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets | jurnal fără utilizator (uid pierdut între rută și repo) | `None` în loc de `ctx["uid"]` -> roșu | — |

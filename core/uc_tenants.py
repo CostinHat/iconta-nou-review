@@ -4312,11 +4312,12 @@ def mijloc_fix_destinatie_cd(tenant_id, mijloc_id, corp, ctx):
         raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            r = repo_mijloace_fixe.seteaza_destinatie_cd(cur, schema, mijloc_id, valoare)
+            # [decizia Costin 04.10.2026] fără rol separat (garda fișei, cere_cabinet); schimbarea se jurnalizează
+            r = repo_mijloace_fixe.seteaza_destinatie_cd(cur, schema, mijloc_id, valoare, ctx.get("uid"))
         if not r:
             raise _erori.Inexistent("Mijlocul fix ales nu există în registrul firmei sau a fost casat.")
         conn.commit()
-    return {"id": mijloc_id, "destinatie_cd": valoare}
+    return {"id": mijloc_id, "destinatie_cd": valoare, "schimbat": r[1] != valoare}
 
 
 def nota_inventariere(tenant_id, corp, ctx):
