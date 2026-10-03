@@ -24,6 +24,8 @@ TEXT = """# TESTE
   - urmator: pasul C2. STARE = IN LUCRU
 - fir: **D — scris la margine, mai jos**
 - urmator: pasul D1. STARE = NEINCEPUT
+- fir: **E — așteaptă greenlight**
+- urmator: refactor. NEINCEPUT - cere greenlight (vezi DE DECIS)
 ## Altă secțiune
 - urmator: rând din afara secțiunii. STARE = NEINCEPUT
 """
@@ -38,6 +40,12 @@ def test_sare_inchis_si_blocat_si_vede_forma_indentata(monkeypatch):
 def test_ultimul_urmator_al_firului_e_starea_lui():
     fire = dict(agenda.fire_in_lucru(TEXT))
     assert fire["**B — blocat pe decizie** (01.10)"].startswith("decizie de produs")
+
+
+def test_greenlight_e_blocaj():
+    fire = agenda.fire_in_lucru(TEXT)
+    e = [u for a, u in fire if a.startswith("**E")][0]
+    assert agenda._BLOCAT.search(e), "„cere greenlight” trebuie citit ca blocaj (decizie Costin), nu ca pas acționabil"
 
 
 def test_nimic_actionabil_e_spus_explicit(monkeypatch):

@@ -1197,3 +1197,5 @@ test F3 terminată pe 21.09 — citea un rând vechi de stare. Cititorul se uit�
 închise sau blocate; șapte fire livrate au primit închiderea, cu commitul care o dovedește. Pasul următor real: refacerea
 generatorului D112 pe contractul comun al declarațiilor (calculul separat de XML). Tot azi, o notă internă despre D394 spunea
 că încasările prin casa de marcat (Î1) nu se declară — se declară de ieri; corectată.
+- (completare, aceeași zi) Agenda citește și „cere greenlight” ca blocaj; după D212 nu mai rămâne niciun pas fără o decizie a lui
+  Costin — cinci decizii sunt listate în predare.

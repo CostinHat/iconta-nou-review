@@ -16443,3 +16443,8 @@ Gard `core/test_agenda_urmator.py`. Pasul următor real: „Contract uniform A1 
 
 **Limită.** Garda vede ce scrie în TESTE.md; un fir livrat necomplet închis rămâne invizibil — închiderea firului la livrare
 (cu commitul citat) rămâne disciplina CLAUDE.md §2.1.
+
+**Completare (aceeași zi, după commitul 9b9696ae).** Cititorul agendei recunoaște și „cere greenlight” / „DE DECIS” ca blocaj:
+firul „Contract uniform A1 — d112” scrie „NEINCEPUT - cere greenlight” și „REFACTOR OPTIONAL … nu blochează nimic fiscal”.
+Firul „2b-coloană” (DROP `salariati.salariu_brut` + migrare pe tenanții reali) e schimbare de schemă — BLOCAT pe decizie
+(CLAUDE.md §2.3 pct.2/5). Rezultat: agenda spune „nimic acționabil”; lanțul se oprește cu cinci decizii cerute (PREDARE_LANT.md).

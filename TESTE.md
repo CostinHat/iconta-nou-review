@@ -606,6 +606,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 - fir (în așteptare): Modelarea contractului în timp (Sesiunea A · salarizare)
 - ultim: 2b-scrieri comis — creare/editare/import scriu pe salariu_istoric, citiri pe salariu_curent (reparat si bug-ul activ din import, PASUL 1)
 - urmator: 2b-coloană — DROP salariati.salariu_brut din tabel + migrare, UI schimbare salariu (valabil_din), scoaterea bridge-ului salariu_la. NEÎNCEPUT.
+- urmator: 2b-coloană = BLOCAT pe decizie (03.10.2026): DROP de coloană + migrare pe tenanții reali = schimbare de schemă, criteriu de oprire CLAUDE.md §2.3 pct.2/5 — se ia la decizia lui Costin. STARE = BLOCAT
 
 ---
 

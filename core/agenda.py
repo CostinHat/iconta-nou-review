@@ -111,7 +111,7 @@ def stare_sesiune_b():
 #: Un fir e ÎNCHIS dacă antetul lui sau rândul „urmator” o spune (formele folosite în TESTE.md, cu și fără diacritice).
 _INCHIS = re.compile(r"\b(ÎNCHIS|INCHIS|ÎNCHISĂ|GATA|REZOLVAT)\b|\(fir închis", re.I)
 #: Un fir BLOCAT (decizie de produs, [EXTERN], consemnat fără acțiune) rămâne deschis, dar nu e pasul următor.
-_BLOCAT = re.compile(r"\bBLOCAT\b|\[EXTERN\]|\bEXTERN[AĂ]?\b|\bCONSEMNAT[AĂ]?\b", re.I)
+_BLOCAT = re.compile(r"\bBLOCAT\b|\[EXTERN\]|\bEXTERN[AĂ]?\b|\bCONSEMNAT[AĂ]?\b|cere greenlight|\bDE DECIS\b", re.I)
 
 
 def fire_in_lucru(txt):
