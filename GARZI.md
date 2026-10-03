@@ -9944,3 +9944,15 @@ străinătate) și **4. Ieșire către autorități** (venituri din străinătat
 | străinătatea în CAS/CASS/I.7 | test_strainatatea_in_cas_cass_si_sumar + test_asigurat_in_alt_stat_fara_contributii | venit din străinătate scăpat din CAS sau din sumar; contribuții pe un asigurat în alt stat | fără străinătate în CAS → roșu; rd.11 scos din sumar → roșu; bifa ignorată → roșu | — |
 | nomenclatorul de țări = jar | test_nomenclatorul_de_tari_e_al_validatorului | „GR” acceptat (validatorul cere EL), România acceptată | EL → GR în listă → roșu | citire pe șiruri din constant pool |
 | ecran = server | test_categoriile_ecranului_sunt_cele_din_server (cap14) | categorie pe ecran refuzată de server; câmp în hartă fără id | — (egalitate de seturi) | — |
+## 03.10.2026 — D212 Etapa 5c-2a: premii, jocuri de noroc, transferul proprietăților, moștenire (străinătate)
+
+Categoria **3. Calcul fiscal** (barem pe data plății, sume neimpozabile, cote art.110/111). Detaliul: DECIZII 03.10.2026
+(„D212 Etapa 5c-2a …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| baremul pe data plății | core/test_d212_cap14.py::test_jocuri_de_noroc_pe_baremul_datei_platii (8 cazuri) | baremul nou aplicat plăților de dinainte de 01.08.2025; cazinoul fără plafon sau fără scăderea bazei | barem nou pe plăți vechi → roșu; fără scădere → roșu; fără plafon → roșu | la cazinou, sub ambele forme impozitul = 40% x depășirea (aceeași cifră) |
+| premii / transfer / moștenire | test_premiu_fara_suma_neimpozabila + test_transfer_si_mostenire | premiu fără cei 600 lei; cote 3%/1% inversate; moștenire pe 3% | neimpozabil 0 → roșu; cote inversate → roșu; moștenire 3% → roșu | — |
+| refuzuri | test_jocul_cere_data_platii_si_felul | joc fără dată a plății sau fără felul jocului | — | — |
+| în afara CASS | test_categoriile_5c2a_nu_intra_in_cass | premii/transfer adunate la treapta CASS | — | — |
+

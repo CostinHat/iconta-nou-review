@@ -2957,6 +2957,10 @@ const _D212_CATEG_STR = [
   ["2012", "Transferul titlurilor de valoare și alte operațiuni cu instrumente financiare"], ["2017", "Dobânzi"],
   ["2018", "Dividende"], ["2014", "Alte venituri"], ["2028", "Lichidarea unei persoane juridice"],
   ["2016", "Salarii plătite din România pentru activitatea desfășurată în străinătate"],
+  ["2025", "Premii (câte un rând pe premiu)"], ["2013", "Jocuri de noroc (câte un rând pe venit primit)"],
+  ["2029", "Transferul proprietăților imobiliare deținute cel mult 3 ani"],
+  ["2030", "Transferul proprietăților imobiliare deținute mai mult de 3 ani"],
+  ["2024", "Transferul proprietăților imobiliare cu titlu de moștenire"],
 ];
 // Câmpurile fiecărei categorii din străinătate (instrucțiunile D212 pct.39.6); restul se ascund.
 const _D212_STR_REAL = ["2027", "2009", "2010", "2011"];
@@ -2964,7 +2968,7 @@ const _D212_STR_TOATE = _D212_CATEG_STR.map((o) => o[0]);
 const _D212_CAMP_STR = {
   "d212-s-det": ["2003"], "d212-s-brut": _D212_STR_TOATE.filter((c) => c !== "2012" && c !== "2016"),
   "d212-s-chelt": _D212_STR_REAL.concat(["2003", "2028"]), "d212-s-pp": _D212_STR_REAL.concat(["2003", "2012"]),
-  "d212-s-castig": ["2012"], "d212-s-baza": ["2016"],
+  "d212-s-castig": ["2012"], "d212-s-baza": ["2016"], "d212-s-tipjoc": ["2013"], "d212-s-dataplata": ["2013"],
   "d212-s-inc": _D212_STR_REAL.concat(["2003", "2004"]), "d212-s-sf": _D212_STR_REAL.concat(["2003", "2004"]),
 };
 // Ce câmpuri cere fiecare categorie (instrucțiunile D212, Subsecțiunea 1 pct.4-9); restul se ascund.
@@ -3123,7 +3127,9 @@ function randeazaFormularD212(corp, nav) {
       '<label class="set-bifa"><input id="d212-s-faracontrib" type="checkbox"> <span>Fără CAS/CASS în România (asigurat în alt stat)</span></label>' +
     "</div>" +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:6px">' +
-      '<label class="camp" style="width:170px"><span class="camp-eticheta">Venit brut (lei)</span><input id="d212-s-brut" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:200px"><span class="camp-eticheta">Venit brut / valoarea tranzacției (lei)</span><input id="d212-s-brut" type="number" min="0" step="1" class="camp-input"></label>' +
+      '<label class="camp" style="width:240px"><span class="camp-eticheta">Felul jocului</span><select id="d212-s-tipjoc" class="camp-input"><option value="cazinou">cazinou, poker, slot-machine, lozuri</option><option value="altele">alte jocuri de noroc</option></select></label>' +
+      '<label class="camp" style="width:170px"><span class="camp-eticheta">Data plății</span><input id="d212-s-dataplata" type="date" class="camp-input"></label>' +
       '<label class="camp" style="width:200px"><span class="camp-eticheta">Cheltuieli / sume deductibile (lei)</span><input id="d212-s-chelt" type="number" min="0" step="1" class="camp-input"></label>' +
       '<label class="camp" style="width:200px"><span class="camp-eticheta">Câștig net anual (pierderea cu minus)</span><input id="d212-s-castig" type="number" step="1" class="camp-input"></label>' +
       '<label class="camp" style="width:200px"><span class="camp-eticheta">Venit bază de calcul (lei)</span><input id="d212-s-baza" type="number" min="0" step="1" class="camp-input"></label>' +
@@ -3133,7 +3139,7 @@ function randeazaFormularD212(corp, nav) {
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Data încetării (în an)</span><input id="d212-s-sf" type="date" class="camp-input"></label>' +
       '<button class="buton-secundar" id="d212-s-add">+ adaugă venitul din străinătate</button>' +
     "</div>" +
-    '<p class="camp-ajutor" style="margin:4px 0 0">Sumele se scriu în lei, la cursul mediu anual BNR al anului. Se arată doar câmpurile categoriei alese. Impozitul în România se calculează cu cota categoriei; la metoda creditului fiscal, impozitul plătit în străinătate se scade, dar cel mult până la impozitul român; la metoda scutirii sau la venitul scutit prin acord, impozitul în România e zero. Salariile plătite din România: venitul bază de calcul din documentul angajatorului. Veniturile din străinătate intră și în CAS și CASS, afară de cazul în care persoana e asigurată în alt stat (legislația europeană sau un acord de securitate socială) — atunci bifează „Fără CAS/CASS în România”. Regulile sunt cele pentru veniturile 2025.</p>';
+    '<p class="camp-ajutor" style="margin:4px 0 0">Sumele se scriu în lei, la cursul mediu anual BNR al anului. Se arată doar câmpurile categoriei alese. Impozitul în România se calculează cu cota categoriei; la metoda creditului fiscal, impozitul plătit în străinătate se scade, dar cel mult până la impozitul român; la metoda scutirii sau la venitul scutit prin acord, impozitul în România e zero. Salariile plătite din România: venitul bază de calcul din documentul angajatorului. Premiile: suma neimpozabilă de 600 lei pe premiu se scade singură. Jocurile de noroc: baremul se alege după data plății (altul de la 1 august 2025); la cazinouri, poker, slot-machine și lozuri primii 66.750 lei din fiecare plată nu se impozitează. Transferul unei proprietăți: valoarea tranzacției; moștenirea: valoarea masei succesorale, doar dacă succesiunea nu s-a finalizat în 2 ani. Veniturile din străinătate intră și în CAS și CASS, afară de cazul în care persoana e asigurată în alt stat (legislația europeană sau un acord de securitate socială) — atunci bifează „Fără CAS/CASS în România”. Regulile sunt cele pentru veniturile 2025.</p>';
   zona.innerHTML = '<details class="dec-xml" open><summary>Declarația unică — persoană fizică (identificare + fișa RIP)</summary>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="width:180px"><span class="camp-eticheta">CNP contribuabil <span class="oblig">*</span></span><input id="d212-cnp" type="text" maxlength="13" class="camp-input" value="' + esc(d.cif || "") + '"></label>' +
@@ -3210,7 +3216,7 @@ function randeazaFormularD212(corp, nav) {
     if (metoda) v.dubla_impunere = metoda;
     const ia = { "d212-s-det": "det_ven_net", "d212-s-brut": "venit_brut", "d212-s-chelt": "chelt_deduc",
       "d212-s-castig": "castig_net", "d212-s-baza": "venit_baza", "d212-s-pp": "pierdere_precedenta",
-      "d212-s-inc": "data_incep", "d212-s-sf": "data_sf" };
+      "d212-s-inc": "data_incep", "d212-s-sf": "data_sf", "d212-s-tipjoc": "tip_joc", "d212-s-dataplata": "data_plata" };
     Object.keys(ia).forEach((id) => {
       if (!_D212_CAMP_STR[id].includes(cat)) return;
       const val = gv("#" + id).value.trim();

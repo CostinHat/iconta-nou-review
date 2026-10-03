@@ -1153,3 +1153,14 @@ fost reparat.
   CAS 12.150, CASS 8.430, total 22.580, declarație validă la ANAF local. Înainte, lista nu exista și declarația ieșea fără
   aceste venituri.
 - Premiile, jocurile de noroc, pensiile, transferul proprietăților și moștenirea din străinătate nu sunt încă în listă (pasul următor).
+
+## 03.10.2026 — D212 Etapa 5c-2a: premii, jocuri de noroc, vânzări de proprietăți și moșteniri din străinătate
+
+**Ce se schimbă pentru un contabil:**
+- **Lista „Venituri din străinătate” primește premiile, jocurile de noroc, transferul proprietăților imobiliare și moștenirea.**
+  La premii suma neimpozabilă de 600 lei se scade singură (câte un rând pe premiu); la jocurile de noroc se alege felul jocului
+  și data plății — baremul se schimbă de la 1 august 2025, iar la cazinouri, poker, slot-machine și lozuri primii 66.750 lei din
+  fiecare plată nu se impozitează; vânzarea unei proprietăți: 3% (deținută cel mult 3 ani) sau 1%; moștenirea: 1%.
+- Proba pe firma PFA de test: un premiu de 5.000 lei, un câștig la cazinou de 100.000 lei în martie (5.000 plătiți acolo), un alt
+  câștig de 20.000 lei în septembrie, o vânzare de 300.000 lei sub 3 ani (6.000 plătiți acolo) și o moștenire de 500.000 lei —
+  impozit de plată în România 19.140 lei, fără CASS, declarație validă la ANAF local.

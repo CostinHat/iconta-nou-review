@@ -155,3 +155,55 @@ def test_asigurat_in_alt_stat_fara_contributii():
     # instrucțiuni pct.46.3 / 52.1.4: „cu respectarea legislației europene aplicabile în domeniul securității sociale” —
     # asigurat în alt stat -> fără CAS/CASS în România; impozitul rămâne (rd.11 = 2.000)
     assert (o.get("cas_datorat"), o.get("cass_datorat_ai"), o.get("oblimpoz_real_total")) == (None, None, "2000")
+
+
+# ── 5c-2a: premii, jocuri de noroc, transferul proprietăților, moștenire ───────────────────────────────────────────────
+def test_premiu_fara_suma_neimpozabila():
+    c = _s(tara="DE", categ_venit=2025, venit_brut=5000)
+    # CF art.110 alin.(4) lit.a): neimpozabil 600 lei „pentru fiecare premiu”; alin.(1): 10% pe venitul net
+    assert (c["str_chelt_deduc"], c["str_venit_net_anual"], c["str_impozit_datorat_Ro"]) == (600, 4400, 440)
+    assert "str_venit_net_anual" not in _s(tara="DE", categ_venit=2025, venit_brut=500)
+
+
+@pytest.mark.parametrize("data,tip,brut,neimpozabil,impozit", [
+    # OG 16/2022 pct.45 (plăți până la 31.07.2025): 3% / 300+20% / 11.650+40%; la cazinouri minus 11.650 peste 66.750
+    ("2025-03-10", "altele", 8000, 0, 240),
+    ("2025-03-10", "altele", 20000, 0, 2300),
+    ("2025-03-10", "cazinou", 60000, 60000, 0),
+    ("2025-03-10", "cazinou", 100000, 66750, 13300),
+    # Legea 141/2025 art.II pct.8 (plăți de la 01.08.2025): 4% / 400+20% / 11.750+40%
+    ("2025-08-01", "altele", 8000, 0, 320),
+    ("2025-09-10", "altele", 20000, 0, 2400),
+    ("2025-09-10", "altele", 100000, 0, 25050),
+    ("2025-09-10", "cazinou", 100000, 66750, 13300),
+])
+def test_jocuri_de_noroc_pe_baremul_datei_platii(data, tip, brut, neimpozabil, impozit):
+    import datetime
+    assert d212.impozit_joc(brut, datetime.date.fromisoformat(data), tip) == (neimpozabil, impozit)
+
+
+def test_jocul_cere_data_platii_si_felul():
+    with pytest.raises(ValueError, match="data plății"):
+        _s(tara="AT", categ_venit=2013, tip_joc="altele", venit_brut=1000)
+    with pytest.raises(ValueError, match="felul jocului"):
+        _s(tara="AT", categ_venit=2013, data_plata="2025-05-01", venit_brut=1000)
+    c = _s(tara="AT", categ_venit=2013, tip_joc="cazinou", data_plata="2025-03-10", venit_brut=100000, dubla_impunere=1,
+           impozit_platit=5000)
+    assert (c["str_chelt_deduc"], c["str_impozit_datorat_Ro"], c["str_credit_fiscal"], c["str_dif_impozit_datorat"]) == \
+        (66750, 13300, 5000, 8300)
+
+
+def test_transfer_si_mostenire():
+    # CF art.111 alin.(1) lit.a)/b): 3% deținute cel mult 3 ani, 1% peste 3 ani; alin.(3): 1% din masa succesorală
+    assert _s(tara="IT", categ_venit=2029, venit_brut=300000)["str_impozit_datorat_Ro"] == 9000
+    assert _s(tara="IT", categ_venit=2030, venit_brut=300000)["str_impozit_datorat_Ro"] == 3000
+    assert _s(tara="FR", categ_venit=2024, venit_brut=500000)["str_impozit_datorat_Ro"] == 5000
+    with pytest.raises(ValueError, match="se calculează"):
+        _s(tara="IT", categ_venit=2029, venit_brut=300000, chelt_deduc=1000)
+
+
+def test_categoriile_5c2a_nu_intra_in_cass():
+    S = [_s(tara="DE", categ_venit=2025, venit_brut=50000), _s(tara="IT", categ_venit=2030, venit_brut=900000)]
+    o, _ = d212.oblig_realizat(None, None, 2025, cap14=S)
+    # CF art.170 alin.(4): premiile și transferul proprietăților nu sunt în categoriile art.155 alin.(1) lit.c)-h)
+    assert "cass_datorat" not in o and o["oblimpoz_real_total"] == 4940 + 9000

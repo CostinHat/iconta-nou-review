@@ -50,6 +50,32 @@
    "d212-s-metoda",
    "d212-s-platit",
    "d212-s-tara"
+  ],
+  "2025": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-faracontrib",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-tara"
+  ],
+  "2013": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-dataplata",
+   "d212-s-faracontrib",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-tara",
+   "d212-s-tipjoc"
+  ],
+  "2029": [
+   "d212-s-brut",
+   "d212-s-cat",
+   "d212-s-faracontrib",
+   "d212-s-metoda",
+   "d212-s-platit",
+   "d212-s-tara"
   ]
  },
  "randuri_dupa_trei": 3,

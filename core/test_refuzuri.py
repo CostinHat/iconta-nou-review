@@ -81,7 +81,10 @@ BASELINE = {
     # titluri/salarii, venit baza negativ, cheltuieli la dobanzi/dividende, cheltuieli la cote forfetare; plus invelisul care
     # numeste venitul din strainatate. Normativele poarta temeiul in text: anul 2026 (Legea 239/2025, Legea 141/2025),
     # reportul pierderii (CF art.118 alin.(5), art.119 alin.(4)), datele in afara anului (pct.39.5).
-    "core/d212.py": 33,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
+    # 33 -> 35 la 03.10.2026 (D212 Etapa 5c-2a): +2 refuzuri de FORMA, marcate langa ele — cheltuieli date la premii/jocuri/
+    # transfer/mostenire (deducerea o stabileste legea), felul jocului lipsa. Normativul nou (data platii lipsa / in afara
+    # anului) poarta temeiul in text (CF art.110 alin.(2), cele doua forme datate ale baremului).
+    "core/d212.py": 35,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,

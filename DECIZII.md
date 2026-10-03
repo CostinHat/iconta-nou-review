@@ -16340,3 +16340,27 @@ stat)” pe fiecare venit (ca excepțiile CASS, art.174 alin.(7)-(8)); impozitul
 **Limită.** Doar veniturile 2025 (Legea 239/2025 și Legea 141/2025 schimbă cote și baze din 2026; formularul nepublicat —
 refuz numit). Cota lichidării și cea generală sunt amândouă 10% pe 2025 — o mutare între ele nu se poate proba pe 2025
 (declarat în GARZI). Norma trăiește în `core/d212.py` (`cap14_sectiune`, `oblig_realizat`); gardată de `core/test_d212_cap14.py`.
+
+---
+
+## 03.10.2026 — D212 Etapa 5c-2a: premii, jocuri de noroc, transferul proprietăților și moștenirea din străinătate
+
+**Temei (la sursă, în corpus).** CF art.109–110: premiile — venitul net = venitul minus suma neimpozabilă de 600 lei „pentru
+fiecare premiu”, cota 10% (art.110 alin.(1), (4) lit.a). Jocurile de noroc — barem pe fiecare venit brut (art.110 alin.(2));
+la cazinouri, poker, slot-machine și lozuri, neimpozabil 66.750 lei pe plată și, peste, baremul minus baza fixă a tranșei a
+treia (alin.(2^2), (4) lit.b). Baremul are DOUĂ forme pe 2025, după DATA PLĂȚII: OG 16/2022 art.I pct.45 (aplicabil plăților
+de la 01.08.2022, art.IX lit.c): 3% / 300 + 20% / 11.650 + 40%; Legea 141/2025 art.II pct.8 (plăți de la 01.08.2025, art.VII
+alin.(1) lit.b): 4% / 400 + 20% / 11.750 + 40%. Transferul proprietăților — 3% (deținute cel mult 3 ani) / 1% (peste 3 ani) pe
+valoarea tranzacției (art.111 alin.(1)); moștenirea — 1% din masa succesorală dacă succesiunea nu s-a finalizat în 2 ani
+(alin.(3)). Instrucțiunile D212 pct.39.6.1: la jocurile de noroc „câte o secțiune pentru fiecare venit brut primit”.
+
+**Decizie.** Patru reguli noi în `cap14_sectiune`; baremul ca formulă datată (`common.alege_varianta`, tiparul din
+`lichidare`), nu un „if data”; data plății e obligatorie la jocuri. Premiul: câte o secțiune pe premiu (suma neimpozabilă se
+aplică pe fiecare). Aceste categorii nu intră în CASS (nu sunt în art.155 alin.(1) lit.c)-h)).
+
+**Alternative respinse.** Un singur barem pe tot anul 2025 (ar greși plățile de dinainte sau de după 01.08.2025); câmp
+„număr de premii” cu o singură secțiune (suma neimpozabilă e pe premiu — o secțiune pe premiu o aplică fără înmulțire).
+
+**Limită.** Valoarea minimă din studiile notariale (art.111 alin.(4^1)) nu se aplică unei proprietăți din străinătate — baza e
+valoarea declarată de contabil. Rămân pentru 5c-2b pensiile și remunerațiile administratorilor (cu I.2.2). Norma: `core/d212.py`
+(`impozit_joc`, `_VARIANTE_BAREM_JOCURI`, constantele ancorate art.110/111); gardată de `core/test_d212_cap14.py`.

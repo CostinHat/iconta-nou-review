@@ -138,5 +138,6 @@ sunt de cote/plafoane (vin din CF, nu din structura validatorului). Dacă ANAF p
   lichidare, salarii plătite din România), credit plafonat (CF art.131 alin.(4)), cap14 în CAS / CASS 2.1 (INTERPRETARE) / CASS 2.2
   și rd.11 în I.7; bifa „fără CAS/CASS în România (asigurat în alt stat)”; lista „Venituri din străinătate” pe ecran. Gardă
   `core/test_d212_cap14.py`; probe `frontend_test/proba_d212_etapa5c.py` (F4) și `proba_d212_strainatate_ui.py`.
-- **Rămâne (5c-2)**: premii 2025, jocuri de noroc 2013, pensii 2020 (CF art.130 alin.(2^1)), transferul proprietăților 2029/2030,
-  moștenire 2024, remunerații administratori 2015 + I.2.2 (`str_cas_*`, `str_cass_*`).
+- **5c-2a FĂCUTĂ 03.10.2026**: premii 2025, jocuri de noroc 2013 (barem pe data plății: OG 16/2022 până la 31.07.2025, Legea
+  141/2025 de la 01.08.2025), transferul proprietăților 2029/2030, moștenire 2024 — DECIZII 03.10.
+- **Rămâne (5c-2b)**: pensii 2020 (CF art.130 alin.(2^1)), remunerații administratori 2015 + I.2.2 (`str_cas_*`, `str_cass_*`).

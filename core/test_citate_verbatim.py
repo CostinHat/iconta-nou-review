@@ -43,7 +43,10 @@ from core import scan_citate
 #: 57 → **63** la 02.10.2026 (D212 Etapa 5): 63 măsurate în arbore; +4 = constantele de modul `d212.COTA_FORFETARA_DPI`
 #: (CF art.72^1 alin.(1)), `COTA_FORFETARA_CEDARE` (art.84 alin.(3)), `COTA_IMPOZIT_VENIT` (art.64 alin.(1)),
 #: `PROCENT_COMPENSARE_INVESTITII` (art.119 alin.(2)) — căutate verbatim în forma consolidată înainte de scriere.
-VERBATIM_BASELINE = 63
+#: 63 → **69** la 03.10.2026 (D212 Etapa 5c-2a): +6 = `d212.PREMIU_NEIMPOZABIL` (CF art.110 alin.(4) lit.a), `COTA_PREMII`
+#: (art.110 alin.(1)), `COTA_TRANSFER_PANA_3_ANI` / `_PESTE_3_ANI` (art.111 alin.(1) lit.a/b), `COTA_MOSTENIRE` (art.111
+#: alin.(3)), `PLAFON_JOCURI_NEIMPOZABIL` (art.110 alin.(4) lit.b) — căutate verbatim în forma consolidată înainte de scriere.
+VERBATIM_BASELINE = 69
 
 
 @pytest.fixture(scope="module")

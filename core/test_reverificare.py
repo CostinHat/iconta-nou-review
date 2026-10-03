@@ -97,6 +97,10 @@ DISTRIBUTIE = {
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
     ("STABIL", "CALCULAT"): 14,
     ("MISCATOR", "CALCULAT"): 7,
+    # 0 -> 6 la 03.10.2026 (D212 Etapa 5c-2a), clasa noua: CF art.110 alin.(1) (premii 10%), alin.(4) lit.a (600 lei pe
+    # premiu), alin.(4) lit.b (66.750 lei la jocuri), art.111 alin.(1) lit.a/b (3% / 1% la transfer), alin.(3) (1% la
+    # mostenire). Masurat cu R.inventar: MISCATOR (art.110/111 modificate des, inclusiv Legea 141/2025), DEPUS, prag 3 luni.
+    ("MISCATOR", "DEPUS"): 6,
     # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
     # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma

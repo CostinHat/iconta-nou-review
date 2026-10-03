@@ -441,7 +441,83 @@ CATEG_STRAINATATE = {
     2017: ("Dobânzi", "brut"), 2018: ("Dividende", "brut"), 2014: ("Alte venituri", "brut"),
     2028: ("Lichidarea unei persoane juridice", "lichidare"),
     2016: ("Salarii plătite din România pentru activitatea desfășurată în străinătate", "salariu"),
+    # [5c-2a] categoriile cu bază și cotă proprii (CF art.108-111)
+    2025: ("Premii", "premiu"), 2013: ("Jocuri de noroc", "joc"),
+    2029: ("Transferul proprietăților imobiliare deținute cel mult 3 ani", "transfer"),
+    2030: ("Transferul proprietăților imobiliare deținute mai mult de 3 ani", "transfer"),
+    2024: ("Transferul proprietăților imobiliare cu titlu de moștenire", "mostenire"),
 }
+#: Suma neimpozabilă pe fiecare premiu (lei) și cota pe venitul net din premiu (procent întreg).
+PREMIU_NEIMPOZABIL = _anc("d212.PREMIU_NEIMPOZABIL", 600, _Tm(
+    "CF", art="110", alin="4", lit="a", data_in="2018-01-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="premii sub valoarea sumei neimpozabile stabilite în sumă de 600 lei",
+    lant_acte="art.109: venitul net din premii = venitul minus suma neimpozabilă; aplicat de instrucțiunile D212 pct.39.6.2"))
+COTA_PREMII = _anc("d212.COTA_PREMII", Decimal("10"), _Tm(
+    "CF", art="110", alin="1", data_in="2018-01-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="cu o cotă de 10% aplicată asupra venitului net realizat din fiecare premiu",
+    lant_acte="alin.(1) modificat de OUG 79/2017 pct.33 (de la 01.01.2018)"))
+#: Cotele impozitului la transferul proprietăților imobiliare (procent întreg, pe valoarea tranzacției / masei succesorale).
+COTA_TRANSFER_PANA_3_ANI = _anc("d212.COTA_TRANSFER_PANA_3_ANI", Decimal("3"), _Tm(
+    "CF", art="111", alin="1", lit="a", data_in="2023-01-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="3% pentru construcțiile de orice fel și terenurile aferente acestora",
+    lant_acte="alin.(1) modificat de OG 16/2022 pct.46 (de la 01.01.2023): deținute o perioadă de până la 3 ani inclusiv"))
+COTA_TRANSFER_PESTE_3_ANI = _anc("d212.COTA_TRANSFER_PESTE_3_ANI", Decimal("1"), _Tm(
+    "CF", art="111", alin="1", lit="b", data_in="2023-01-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="1% pentru imobilele descrise la lit. a) , deținute o perioadă mai mare de 3 ani",
+    lant_acte="alin.(1) modificat de OG 16/2022 pct.46 (de la 01.01.2023)"))
+COTA_MOSTENIRE = _anc("d212.COTA_MOSTENIRE", Decimal("1"), _Tm(
+    "CF", art="111", alin="3", data_in="2016-01-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="moștenitorii datorează un impozit de 1% calculat la valoarea masei succesorale",
+    lant_acte="doar dacă succesiunea nu e dezbătută și finalizată în 2 ani de la deces (alin.(3)); instrucțiunile D212 pct.39.2 lit.a)"))
+#: Plafonul neimpozabil pe fiecare venit brut din jocurile caracteristice cazinourilor, poker, slot-machine și lozuri (lei).
+PLAFON_JOCURI_NEIMPOZABIL = _anc("d212.PLAFON_JOCURI_NEIMPOZABIL", 66750, _Tm(
+    "CF", art="110", alin="4", lit="b", data_in="2022-08-01", verificat_la="2026-10-03", de_cine="Code/D212-E5",
+    nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+    text_citat="sub valoarea sumei neimpozabile de 66.750 lei",
+    lant_acte="pe fiecare venit brut primit; peste plafon se aplică baremul și se scade baza fixă a tranșei a treia (alin.(2^2))"))
+#: Baremul jocurilor de noroc, pe DATA PLĂȚII (o formulă datată, nu un „if data”): ((prag, procent, bază fixă) pe tranșe).
+_VARIANTE_BAREM_JOCURI = [
+    ("2022-08-01", ((10000, Decimal("3"), 0), (66750, Decimal("20"), 300), (None, Decimal("40"), 11650)), _Tm(
+        "OG", 16, 2022, art="I", data_in="2022-08-01", verificat_la="2026-10-03", de_cine="Code/D212-E5", nivel_sursa="MO",
+        url="anaf_surse/og_16_2022_consolidat.html",
+        text_citat=("până la 10.000 inclusiv 3% peste 10.000-66.750 inclusiv 300 + 20% pentru ceea ce depășește suma de 10.000 "
+                    "peste 66.750 11.650 + 40% pentru ceea ce depășește suma de 66.750"),
+        lant_acte="art.I pct.45 modifică CF art.110 alin.(2) și (2^2); art.IX lit.c): „se aplică veniturilor plătite începând cu "
+                  "1 august 2022”; în vigoare până la Legea 141/2025")),
+    ("2025-08-01", ((10000, Decimal("4"), 0), (66750, Decimal("20"), 400), (None, Decimal("40"), 11750)), _Tm(
+        "CF", art="110", alin="2", data_in="2025-08-01", verificat_la="2026-10-03", de_cine="Code/D212-E5", nivel_sursa="MO",
+        url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+        text_citat=("până la 10.000 inclusiv 4% peste 10.000-66.750 inclusiv 400 + 20% pentru ceea ce depășește suma de 10.000 "
+                    "peste 66.750 11.750 + 40% pentru ceea ce depășește suma de 66.750"),
+        lant_acte="forma din Legea 141/2025 art.II pct.8; art.VII alin.(1) lit.b): „pentru veniturile plătite începând cu data de "
+                  "1 august 2025”")),
+]
+TIPURI_JOC = {"cazinou": "cazinouri, poker, slot-machine, lozuri (art.110 alin.(2^2))", "altele": "alte jocuri de noroc"}
+
+
+def impozit_joc(brut, data_plata, tip):
+    """Impozitul pe un venit brut din jocuri de noroc (CF art.110 alin.(2), (2^2), (4) lit.b), cu baremul în vigoare la data
+    plății (`common.alege_varianta`). La cazinouri/poker/slot/lozuri: neimpozabil până la plafon, peste el baremul minus
+    baza fixă a tranșei a treia. Întoarce (suma neimpozabilă, impozit)."""
+    from core import common as _c
+    transe, _t = _c.alege_varianta(_VARIANTE_BAREM_JOCURI, data_plata)
+    (p1, c1, _b1), (p2, c2, b2), (_p3, c3, b3) = transe
+    if tip == "cazinou" and brut <= PLAFON_JOCURI_NEIMPOZABIL:
+        return brut, 0
+    if brut <= p1:
+        imp = Decimal(brut) * c1 / 100
+    elif brut <= p2:
+        imp = b2 + Decimal(brut - p1) * c2 / 100
+    else:
+        imp = b3 + Decimal(brut - p2) * c3 / 100
+    if tip == "cazinou":
+        return PLAFON_JOCURI_NEIMPOZABIL, _lei(imp - b3)
+    return 0, _lei(imp)
 #: Metoda de evitare a dublei impuneri (Pdf_v8 dubla_impunere_1/_2/_4; rd.3 și rd.4 din lit.A).
 DUBLA_CREDIT, DUBLA_SCUTIRE, DUBLA_ACORD = 1, 2, 4
 
@@ -455,6 +531,12 @@ def _cota_strainatate(cat, an):
         return _c.cota("impozit_venit", _dt.date(an, 1, 1))[0] * 100             # CF art.78 alin.(2) lit.a)
     if cat == 2028:
         return _lq._cota_lichidare(_dt.date(an, 12, 31))                          # CF art.97 alin.(5)
+    if cat == 2025:
+        return COTA_PREMII                                                       # CF art.110 alin.(1)
+    if cat in (2029, 2030):
+        return COTA_TRANSFER_PANA_3_ANI if cat == 2029 else COTA_TRANSFER_PESTE_3_ANI   # CF art.111 alin.(1)
+    if cat == 2024:
+        return COTA_MOSTENIRE                                                    # CF art.111 alin.(3)
     return COTA_IMPOZIT_VENIT                                                    # CF art.64 alin.(1)
 
 
@@ -508,7 +590,24 @@ def cap14_sectiune(a, an):
             raise ValueError("D212 străinătate %s: %s (%s) nu e în anul %d — rubrica se completează numai dacă evenimentul se "
                              "produce în cursul anului (OPANAF 2736/2025, instrucțiuni pct.39.5)." % (eticheta, camp, d, an))
         c[kx] = _dmy(d)
-    if regula in ("castig", "salariu"):
+    joc_imp = None
+    if regula in ("premiu", "joc", "transfer", "mostenire"):
+        if cd:   # refuz de FORMĂ: deducerea o stabilește legea (suma neimpozabilă / plafonul), nu contabilul
+            raise ValueError("D212 străinătate %s: suma neimpozabilă se calculează; câmpul de cheltuieli se lasă gol." % eticheta)
+        if regula == "premiu":
+            cd = min(vb, PREMIU_NEIMPOZABIL)                 # CF art.109 + art.110 alin.(4) lit.a), pe fiecare premiu
+        elif regula == "joc":
+            tip = str(a.get("tip_joc") or "")
+            if tip not in TIPURI_JOC:   # refuz de FORMĂ: două feluri, cu regimuri diferite
+                raise ValueError("D212 străinătate %s: alege felul jocului — %s." % (eticheta, " / ".join(TIPURI_JOC.values())))
+            dp = _data(a.get("data_plata"), "data plății")
+            if dp is None or not ian1 <= dp <= dec31:
+                raise ValueError("D212 străinătate %s: data plății (în anul %d) e obligatorie — baremul depinde de ea (CF art.110 "
+                                 "alin.(2): forma OG 16/2022 până la 31.07.2025, forma Legea 141/2025 de la 01.08.2025)." % (eticheta, an))
+            cd, joc_imp = impozit_joc(vb, dp, tip)
+        c.update(str_venit_brut=vb, str_chelt_deduc=cd)
+        net = vb - cd
+    elif regula in ("castig", "salariu"):
         if vb or cd:   # refuz de FORMĂ: pct.39.6.3 — la titluri câștigul anual, la salarii venitul bază de calcul
             raise ValueError("D212 străinătate %s: se scrie %s, nu venitul brut și cheltuielile." % (
                 eticheta, "câștigul net anual (pierderea cu minus)" if regula == "castig" else "venitul bază de calcul din documentul angajatorului"))
@@ -525,7 +624,7 @@ def cap14_sectiune(a, an):
             cd = _procent(vb, COTA_FORFETARA_CEDARE if regula == "cedare" else COTA_FORFETARA_DPI)   # CF art.84 alin.(3) / 72^1
         c.update(str_venit_brut=vb, str_chelt_deduc=cd)
         net = vb - cd
-    if pp and (forfetar or regula in ("brut", "salariu", "lichidare")):
+    if pp and (forfetar or regula in ("brut", "salariu", "lichidare", "premiu", "joc", "transfer", "mostenire")):
         raise ValueError("D212 străinătate %s: pierderile se reportează doar la activități în sistem real și la titluri "
                          "(CF art.118 alin.(5), art.119 alin.(4))." % eticheta)
     if pp:
@@ -538,7 +637,7 @@ def cap14_sectiune(a, an):
         if pp:
             c["str_pierdere_compensata"] = comp
         c["str_venit_recalculat"] = net - comp
-        datorat = 0 if metoda in (DUBLA_SCUTIRE, DUBLA_ACORD) else _procent(net - comp, cota)
+        datorat = 0 if metoda in (DUBLA_SCUTIRE, DUBLA_ACORD) else (joc_imp if joc_imp is not None else _procent(net - comp, cota))
     else:
         if net < 0:
             c["str_pierdere_anuala"] = -net
