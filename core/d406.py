@@ -624,6 +624,15 @@ TAXCODE_LIVRARI_PRE_2025_08 = {19: "310309", 9: "310310", 5: "310311", 0: "31031
 # granita codurilor TaxCode livrari (Legea 141/2025). Sub ea = codurile epocii, peste = cele noi.
 _TAXCODE_141_DIN = date(2025, 8, 1)
 
+# [punctul 3, 03.10.2026] FACTURA EMISA PE BAZA BONULUI FISCAL. Schema oficiala (d406_schema_anaf.xlsx, nota din
+# nomenclatorul Livrari, v4.1.9 05.04.2022): „In cazul in care pentru vanzarile efectuate de comerciati pe baza de bon
+# fiscal, se emit facturi la cererea clientului, la raportarea acestor facturi este relevant codul: 310327 - Livrări de
+# bunuri și prestări servicii pentru care este evidențiată suma taxei colectate”. In foaia Livrari codul n-are rand D300
+# (referinta scoasa in v4.1.9 — vanzarea e deja in raportul Z) si are TaxPercentage 0 („amalgamated in one value”).
+# Definitia „din bon”: core.facturi.e_din_bon_fiscal. Pana azi factura din bon iesea cu codul cotei (310344/310351...).
+TAXCODE_FACTURA_DIN_BON = CotaTVA("310327", Decimal("0"),
+                                  "Livrări pentru care este evidențiată suma taxei colectate (factură pe baza bonului fiscal)")
+
 # TaxCode pentru liniile de NOTA CONTABILA / PLATA fara TVA (banca, casa, creante,
 # venituri neimpozabile - TaxAmount 0.00). Nomenclatorul oficial (d406_schema_anaf.xlsx,
 # foaia 'TVA_NoteContabile', antet: 'NOMENCLATOR CODURI DE TAXA PENTRU RAPORTAREA
@@ -653,6 +662,15 @@ def _cota_livrari_in_tabela(cota, data_factura):
     return int(cota) in tabela
 
 
+def _cote_cu_folosite(cote, facturi_vanzare):
+    """TaxTable + 310327 când o factură din bon îl folosește (codul referit pe linie trebuie regăsit în TaxTable)."""
+    cod = TAXCODE_FACTURA_DIN_BON.cod
+    folosit = any(l.tva_cod == cod for f in (facturi_vanzare or []) for l in f.linii)
+    if folosit and all(c.cod != cod for c in cote):
+        return list(cote) + [TAXCODE_FACTURA_DIN_BON]
+    return cote
+
+
 def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
                  facturi_vanzare=None, facturi_cumparare=None, plati=None, cote_tva=None):
     res = Rezultat(an=an, luna=luna, prof=prof, conturi=conturi, clienti=clienti,
@@ -660,7 +678,7 @@ def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
                    facturi_vanzare=facturi_vanzare or [],
                    facturi_cumparare=facturi_cumparare or [],
                    plati=plati or [],
-                   cote_tva=cote_tva or COTE_TVA_STANDARD)
+                   cote_tva=_cote_cu_folosite(cote_tva or COTE_TVA_STANDARD, facturi_vanzare))
     res.avertismente.append("D406 v%s: %d conturi, %d clienți, %d furnizori, %d note, %d fact.vânz, %d fact.cump, %d plăți."
                             % (SAFT_VERSION, len(conturi), len(clienti), len(furnizori), len(res.note),
                                len(res.facturi_vanzare), len(res.facturi_cumparare), len(res.plati)))
@@ -1477,6 +1495,8 @@ def pull(conn, schema, an, luna):
                 # InvoiceType = COD SAFcodeType (Nom_Tipuri_facturi): 380 factura
                 # comerciala, 381 nota de credit (storno). Valoarea DB 'tip' NU e cod valid.
                 itype = "381" if r["storno_din_id"] else "380"
+                from core.facturi import e_din_bon_fiscal as _e_din_bon
+                din_bon = _e_din_bon(r)   # [punctul 3] -> TaxCode 310327 pe liniile ei
                 # SupplierID/CustomerID pe factura NU poate fi "0" (regula oficiala
                 # SD.P.22/SD.P.23): furnizorul/clientul de pe o factura are mereu
                 # identitate. Fara cod fiscal (PF) -> tipul 04 + cod intern (vezi
@@ -1498,7 +1518,9 @@ def pull(conn, schema, an, luna):
                     val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
                     tva_l = (val * cota_l / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
                     # TaxCode PE LINIE, dupa cota liniei si sensul operatiunii.
-                    if este_v:
+                    if din_bon:
+                        tcod_l = TAXCODE_FACTURA_DIN_BON.cod   # [punctul 3] nota nomenclatorului Livrari
+                    elif este_v:
                         tcod_l = _taxcode_livrari(cota_l, r["data_emitere"])
                         if not _cota_livrari_in_tabela(cota_l, r["data_emitere"]):
                             cote_necunoscute.append((r["numar"] or str(r["id"]), str(cota_l)))
@@ -1531,7 +1553,9 @@ def pull(conn, schema, an, luna):
                     # implicita, descriere care SPUNE ca detaliul lipseste (semnal in XML,
                     # nu mimare de detaliu real).
                     cota = (tva / net * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP) if net else Decimal(0)
-                    if este_v:
+                    if din_bon:
+                        tcod_l = TAXCODE_FACTURA_DIN_BON.cod
+                    elif este_v:
                         tcod_l = _taxcode_livrari(cota, r["data_emitere"])
                         if not _cota_livrari_in_tabela(cota, r["data_emitere"]):
                             cote_necunoscute.append((r["numar"] or str(r["id"]), str(cota)))

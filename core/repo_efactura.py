@@ -80,7 +80,8 @@ def marcheaza_primita_respinsa(cur, schema, motiv_respins, id_):
 def factura_pentru_ubl(cur, schema, factura_id):
     cur.execute(f"""SELECT id, numar, serie, data_emitere, data_scadenta, moneda,
                                tert_nume, tert_cui, tert_adresa, tert_oras, tert_judet,
-                               taxare_inversa, tip, storno_din_id, total, tva
+                               taxare_inversa, tip, storno_din_id, total, tva,
+                               directie, bon_fiscal_nr, bon_fiscal_data
                           FROM {schema}.facturi WHERE id = %s""", (int(factura_id),))
     return cur.fetchone()
 

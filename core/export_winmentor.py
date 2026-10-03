@@ -23,6 +23,14 @@ DEPENDENTA DE CONFIG (NU e self-contained ca SAGA - declarat explicit, DECIZII 1
   simbol_clasa/simbol_gestiune/cont_serviciu = constante setabile per cabinet, default servicii.
   Stoc complex cu gestiune = v2. Round-trip real (import in WinMentor) = pending cabinet real (ca proba SPV).
 
+[decizia Costin 03.10.2026, punctul 3] CLASIFICAREA facturii (sursa: „Facturi clienti.pdf” Rev.1.2 11.09.2024):
+`ClasificareSAFT` „Factura iniţială: 380 … Factura storno: 381 … Cu factura la bon: 751”; `CasaDeMarcat=D` „se
+completează în cazul facturilor de tip «InfoCM»”; `NumarBonuri` „numărul de bonuri pentru care s-a emis factura”.
+portal.winmentor.ro („Informatii importante despre declaratia 394”): facturile de client emise pe baza bonului de
+casă se operează cu „Info CM” pe „DA” („introdusa manual sau importata din alte programe”). Factura din bon NU se
+omite (ar disparea din evidenta externa) si nu e vanzare noua: se marcheaza. NumarBonuri=1: iConta tine un bon pe
+factura (`facturi.bon_fiscal_nr`, o valoare). Pana azi: 380 pe orice factura, si pe storno.
+
 MAPARE (decizii Costin 19.07): CodClient=CIF (tert_cui; cabinetul seteaza constanta "cod partener=cod
 fiscal"); TipTVA=0 (intern standard; regimuri speciale=v2); SerieCarnet=facturi.serie, NrDoc=facturi.numar
 (coloane existente); Localitate=gol; encoding Windows-1250 cu gard.
@@ -105,6 +113,19 @@ def _linii_valorizate(linii):
     return out
 
 
+#: [punctul 3] ClasificareSAFT („Facturi clienti.pdf” Rev.1.2): factura inițială / storno / cu factura la bon
+CLASIFICARE_INITIALA, CLASIFICARE_STORNO, CLASIFICARE_LA_BON = "380", "381", "751"
+
+
+def clasificare(factura):
+    """(ClasificareSAFT, e_din_bon) — o singură regulă. Factura din bon (și stornarea ei, care moștenește marca —
+    decizia A 02.10: nici ea nu e vânzare nouă) -> 751; storno obișnuit -> 381; altfel 380."""
+    from core.export_saga import _din_bon
+    if _din_bon(factura):
+        return CLASIFICARE_LA_BON, True
+    return (CLASIFICARE_STORNO if factura.get("storno_din_id") else CLASIFICARE_INITIALA), False
+
+
 def facturi_txt(firma, facturi, an, luna):
     """[InfoPachet] + o [Factura_N] + [Items_N] per factura. facturi = [(factura_dict, linii)].
     Intoarce STRING (encoding se face la scriere)."""
@@ -112,8 +133,12 @@ def facturi_txt(firma, facturi, an, luna):
          "Tipdocument=FACTURA IESIRE", "TotalFacturi=%d" % len(facturi)]
     for k, (f, linii) in enumerate(facturi, start=1):
         val = _linii_valorizate(linii)
+        cls, din_bon = clasificare(f)
         L.append("[Factura_%d]" % k)
         L.append("NrDoc=%s" % (f.get("numar") or ""))
+        if din_bon:
+            L.append("CasaDeMarcat=D")                            # factura de tip „InfoCM” (punctul 3)
+            L.append("NumarBonuri=1")                             # un bon pe factura (facturi.bon_fiscal_nr)
         L.append("SerieCarnet=%s" % (f.get("serie") or ""))
         L.append("Data=%s" % _d_ro(f.get("data_emitere")))
         L.append("Scadenta=%s" % _d_ro(f.get("data_scadenta")))
@@ -122,7 +147,7 @@ def facturi_txt(firma, facturi, an, luna):
         L.append("TVAINCASARE=%s" % ("D" if firma.get("tva_la_incasare") else "N"))
         L.append("TaxareInversa=%s" % ("D" if f.get("taxare_inversa") else "N"))
         L.append("TipTVA=0")                                       # intern standard (decizie #3)
-        L.append("ClasificareSAFT=380")                           # factura initiala
+        L.append("ClasificareSAFT=%s" % cls)                      # 380 / 381 storno / 751 cu factura la bon
         L.append("TotalArticole=%d" % len(val))
         L.append("Operat=N")
         L.append("[Items_%d]" % k)

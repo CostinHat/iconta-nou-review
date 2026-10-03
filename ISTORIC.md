@@ -1244,3 +1244,17 @@ că încasările prin casa de marcat (Î1) nu se declară — se declară de ier
   vânzare (cu cotă) e refuzată: vânzarea fără factură se face cu bon fiscal.
 - **Totalul lunii din D394 (Î1 și Î2)** e acum suma rubricilor rotunjite. Validatorul ANAF dădea o atenționare falsă când
   rotunjirea totalului diferea cu un leu.
+
+## 03.10.2026 — Factura emisă pe baza bonului fiscal: marcată în SAGA, WinMentor, D406 și e-Factura; încasată la emitere
+
+**Ce se schimbă pentru contabil:**
+- **Export SAGA:** factura emisă pe baza bonului intră cu tipul „f – factură cu bon fiscal”. Până acum SAGA o importa ca
+  vânzare nouă, peste raportul Z.
+- **Export WinMentor:** factura din bon intră ca „Info CM” (ClasificareSAFT 751, casa de marcat, un bon). Facturile storno
+  intră ca storno (381); până acum erau „factură inițială”.
+- **D406:** factura din bon se raportează cu codul de taxă 310327, cum cere nota ANAF pentru facturile emise pe baza bonului.
+- **e-Factura:** factura din bon pleacă la ANAF cu codul 751 („factură informativă”) și cu mențiunea „Factura încasată cu
+  bon fiscal”. Cu 380, vânzarea ar fi apărut la ANAF de două ori.
+- **Încasare:** factura din bon apare încasată de la emitere. Nu mai primește memento de scadență către client și nu mai
+  oferă „Emite chitanță”.
+- Nicio factură nu lipsește din exporturi.

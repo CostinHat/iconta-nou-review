@@ -14,7 +14,16 @@ Reguli SAGA critice:
 
 Cod structurat pe format (un generator per format) - SAGA-only acum; WinMentor/Ciel later.
 Read-only: citeste factura existenta, produce XML. Fara schema, fara UPDATE.
+
+[decizia Costin 03.10.2026, punctul 3] FACTURA EMISA PE BAZA BONULUI FISCAL se exporta MARCATA, nu omisa si nu ca
+vanzare noua (vanzarea e deja in raportul Z): `<FacturaTip>f</FacturaTip>`. Sursa: manual.sagasoft.ro topic-76
+„Import date” — `<FacturaTip>` „(Opţional. Tipul de document din Saga. …)”; topic-32 „Iesiri - lei” — tipul
+„f - factură cu bon fiscal”, care „determină modul de preluare al facturii în jurnale si declaraţii”. Fara tag =
+factura obisnuita (implicit SAGA). Definitia „din bon” e una singura: `core.facturi.e_din_bon_fiscal`.
 """
+
+#: [punctul 3] tipul de document SAGA pentru factura emisa pe baza bonului fiscal (topic-32 „Iesiri - lei”)
+SAGA_TIP_FACTURA_CU_BON = "f"
 from decimal import Decimal, ROUND_HALF_UP
 from xml.sax.saxutils import escape as _xesc
 
@@ -106,6 +115,7 @@ def xml_factura(firma, factura, linii):
         _t("FacturaScadenta", _d_ro(factura.get("data_scadenta"))) +
         _t("FacturaTaxareInversa", "Da" if factura.get("taxare_inversa") else "Nu") +
         _t("FacturaTVAIncasare", "Da" if firma.get("tva_la_incasare") else "Nu") +
+        (_t("FacturaTip", SAGA_TIP_FACTURA_CU_BON) if _din_bon(factura) else "") +
         _t("FacturaInformatiiSuplimentare", "") +
         _t("FacturaMoneda", factura.get("moneda") or "RON") +
         _t("FacturaCotaTVA", cota_antet) + _t("FacturaGreutate", "") +
@@ -119,6 +129,12 @@ def xml_factura(firma, factura, linii):
         "<Observatii>" + _t("txtObservatii", "") + _t("SoldClient", "") + "</Observatii>" +
         "</Factura>")
     return '<?xml version="1.0" encoding="UTF-8"?>\n<Facturi>' + corp + "</Facturi>"
+
+
+def _din_bon(factura):
+    """Factura emisă pe baza bonului fiscal — definiția unică din `core.facturi` (exportul citește doar emise)."""
+    from core.facturi import e_din_bon_fiscal
+    return e_din_bon_fiscal(dict(factura, directie="emisa"))
 
 
 # ---- acces DB (citeste factura reala din schema tenantului) ----
@@ -137,7 +153,8 @@ def date_factura(conn, schema, factura_id):
     with conn.cursor() as cur:
         # serie + tert_oras adaugate pentru export_winmentor (F187); SAGA (xml_factura) le ignora.
         cur.execute(f"""SELECT id, numar, data_emitere, data_scadenta, taxare_inversa, moneda,
-                        tert_nume, tert_cui, tert_adresa, directie, tip, serie, tert_oras
+                        tert_nume, tert_cui, tert_adresa, directie, tip, serie, tert_oras,
+                        bon_fiscal_nr, bon_fiscal_data, storno_din_id
                         FROM {schema}.facturi WHERE id=%s""", (factura_id,))
         f = cur.fetchone()
         if not f or f[9] != "emisa":
@@ -148,7 +165,9 @@ def date_factura(conn, schema, factura_id):
                   "pret_unitar": l[3], "cota_tva": l[4]} for l in cur.fetchall()]
     factura = {"id": f[0], "numar": f[1], "data_emitere": f[2], "data_scadenta": f[3],
                "taxare_inversa": f[4], "moneda": f[5], "tert_nume": f[6], "tert_cui": f[7],
-               "tert_adresa": f[8], "serie": f[11], "tert_oras": f[12]}
+               "tert_adresa": f[8], "serie": f[11], "tert_oras": f[12],
+               # [punctul 3] marca „din bon” (SAGA FacturaTip=f, WinMentor InfoCM) + storno (WinMentor 381)
+               "bon_fiscal_nr": f[13], "bon_fiscal_data": f[14], "storno_din_id": f[15]}
     return _firma(conn, schema), factura, linii
 
 

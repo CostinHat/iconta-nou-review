@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**674 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**675 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 642
+### `core/` — 643
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9165,6 +9165,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_expirare_cote.py` — Teste RAPORT INTERN de vechime a confirmarii (core/expirare_cote.py, Modelul de temei 01.08 pct.2).
 - `core/test_expirare_cote_de_baza.py` — Gard: modelul de temei pe data_out (Modelul de temei 01.08, pct.1+2).
 - `core/test_export_cota.py` — Export/PDF: linie fara cota TVA = intrare INCOMPLETA -> eroare, NU cota 0 (scutit) ghicita.
+- `core/test_export_din_bon.py` — GARD — factura emisă pe baza bonului fiscal, în toate ieșirile către terți (punctul 3, decizia Costin 03.10.2026).
 - `core/test_export_winmentor.py` — Teste F187 — export WinMENTOR. Verificare contra spec-ului OFICIAL (Facturi clienti.pdf Rev.1.2 +
 - `core/test_factura_bon_fiscal.py` — GARD — factura emisă pe baza bonului fiscal se numără O SINGURĂ DATĂ (decizia Costin A, 02.10.2026).
 - `core/test_facturi_recurente_randuri_dinamice.py` — GARD cap.24 — randuri dinamice facturi RECURENTE (sablon), re-rulate IN POARTA prin chromium headless.
@@ -10035,3 +10036,17 @@ lunii). Detaliul: DECIZII 03.10.2026 („D394 Î2: de unde vin încasările …�
 | semnalul casei | test_incasarea_din_casa_fara_chitanta_e_semnalata_ridicarea_nu + test_firma_neexceptata_nu_semnaleaza_si_nu_refuza + test_incasarea_din_casa_fara_chitanta_e_avertisment_numit | încasare fără chitanță netrecută în rezultat; ridicarea de la bancă semnalată | filtrul pe categorie scos → roșu (2 semnale) | doar `ridicare_banca` e cunoscută fără caracter de vânzare |
 | D300 + a doua cale | test_d300_include_vanzarile_pe_chitanta + test_a_doua_cale_recalculeaza_i2_din_chitante (+ `d300_reconciliere`, SQL propriu) | TVA-ul vânzărilor pe chitanță lipsă din decont; agregare Î2 greșită | `_pull_chitante_i2` scos → roșu (și blocajul celei de-a doua căi D300) | — |
 | HTTP până în declarație | core/test_rute_stoc_pana_in_declaratie.py::test_CHITANTA_FARA_COTA_clasificata_prin_HTTP_ajunge_in_D394_I2 | rutele noi (emitere cu cotă, PUT …/cota) neprobate prin HTTP | — (proba rutei; mutațiile pe cod sunt deasupra) | — |
+
+## 03.10.2026 — Punctul 3: factura emisă pe baza bonului fiscal în toate ieșirile către terți (decizia Costin)
+
+Categoria **4. Ieșire către autorități / terți** (aceeași vânzare transmisă a doua oară: export, D406, e-Factura; memento de
+plată pentru o factură încasată). Detaliul: DECIZII 03.10.2026 („Punctul 3: factura emisă pe baza bonului fiscal …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| SAGA FacturaTip | core/test_export_din_bon.py::test_saga_facturatip_doar_pe_factura_din_bon (3) | factura din bon exportată ca factură obișnuită; marca pusă pe o factură obișnuită | `_din_bon` scos -> roșu | round-trip în SAGA neprobat |
+| WinMentor clasificare | ::test_winmentor_clasificare (4) | 380 pe factura din bon sau pe storno; lipsa InfoCM | 380 fix -> roșu; InfoCM scos -> roșu | round-trip în WinMentor neprobat |
+| e-Factura 751 | ::test_efactura_751_si_mentiunea_pe_factura_din_bon (2) | factura din bon trimisă la ANAF cu 380 / fără mențiune | 380 fix -> roșu | validarea FACT1 e în probă (rețea), nu în suită |
+| D406 310327 | ::test_d406_taxcode_310327_pe_factura_din_bon (+ DUK) | factura din bon raportată cu codul cotei; cod de linie absent din TaxTable | ramura scoasă -> roșu; TaxTable -> roșu | InvoiceType rămâne 380 (fără temei pentru 751 în SAF-T) |
+| încasată la emitere | ::test_factura_din_bon_se_naste_incasata_si_nu_primeste_notificare | memento de restanță trimis clientului pentru o factură plătită cu bon | `platita_la` None -> roșu | — |
+| nicio factură pierdută | ::test_nicio_factura_pierduta_in_exporturi | factura din bon omisă din export („varianta A” respinsă) | filtrul `bon_fiscal_nr IS NULL` în export -> roșu | — |

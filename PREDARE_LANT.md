@@ -1,23 +1,21 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **D394 Î2 livrat (punctul 2 din 4); urmează exportul SAGA/WinMentor, apoi coloana 2b** (03.10.2026)
+# PREDARE LANȚ — **Punctul 3 livrat (factura din bon în exporturi, D406, e-Factura); urmează coloana 2b (punctul 4)** (03.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-03** (seara), în commitul **D394 Î2** (commitul care poartă această predare; hash-ul lui e în
+- **ultima rescriere**: **2026-10-03** (noaptea), în commitul **Punctul 3** (commitul care poartă această predare; hash-ul lui e în
   raport și în `git log`).
-- **pe commit**: `2798f8ce` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-03 =
-  procesul viu = 2798f8ce, Lot 19 publicat).
-- **ÎN LUCRU ACUM:** nimic deschis — firul **D394 Î2 (punctul 2)** e ÎNCHIS în TESTE.md: bifa „activitate exceptată de la AMEF” pe
-  profil (OUG 28/1999 art.2 — lista e în ordonanță, nu în HG 479/2003), chitanța de vânzare fără factură cu cotă (nota venit + 4427),
-  clasificarea chitanței fără cotă (`PUT /chitante/{id}/cota`), D394 op2 Î2 + refuzul `D394_I2_NECLASIFICAT` + semnalul casei, D300
-  rd.9/10, a doua cale pe Î2; clasa „totalul op2 ≠ Σ rubrici” (Î1 + Î2) reparată. Migrarea `core/migrare_d394_i2.py` aplicată pe ambele
-  baze (backup înainte pe producție: `~/backup_pre_d394_i2_20261003_1740.sql.gz`).
-- **URMĂTORUL FRONT (comanda Costin 03.10, ordinea dată):** **punctul 3** — exportul SAGA/WinMentor al facturilor emise pe baza bonului:
-  marca „din bon” dacă formatul de import are câmp pentru asta, altfel fișier separat în afara importului de vânzări; formatele
-  verificate la sursă; nicio factură pierdută, nicio vânzare dublată. Apoi **punctul 4** (DROP `salariati.salariu_brut` după dovada
-  că nimic n-o citește, backup, migrare pe toți tenanții). Fiecare: gard, mutație, probă invalid→valid, commit separat, ZIP în
-  ghid_incoming (`iconta_export_din_bon.zip`, `iconta_2b_coloana.zip`).
+- **pe commit**: `5de03649` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-03 =
+  procesul viu = 5de03649, D394 Î2 publicat).
+- **ÎN LUCRU ACUM:** nimic deschis — firul **EXPORT SAGA/WinMentor — facturi din bon (punctul 3)** e ÎNCHIS în TESTE.md: ambele
+  formate au câmp, deci marca (SAGA `FacturaTip=f`, WinMentor `ClasificareSAFT=751` + InfoCM); generalizarea clasei a reparat și D406
+  (TaxCode 310327, nota ANAF din nomenclatorul Livrări), e-Factura (751 + „Factura încasată cu bon fiscal”, Ghidul MF v2.9) și starea de
+  încasare (factura din bon se naște încasată — fără notificare de scadență către client). Punctul 2 (D394 Î2) a intrat în `5de03649`.
+- **URMĂTORUL FRONT (comanda Costin 03.10, ordinea dată):** **punctul 4** — DROP `salariati.salariu_brut`, după dovada că nimic n-o
+  mai citește (grep pe tot codul + SQL), cu backup înainte și migrare pe toți tenanții (toate datele sunt de test); ZIP
+  `/home/costin/ghid_incoming/iconta_2b_coloana.zip`. Atenție: `core/test_intrare_date_garduri.py` are `("salariati", "salariu_brut")`
+  în NULLABLE_OK — intrarea pleacă odată cu coloana.
 - **ATENȚIE (efect D394 Î2):** la o firmă marcată exceptată, chitanța fără factură cere cota (o creanță fără factură în aplicație se
   încasează după ce factura e introdusă); la o firmă neexceptată, chitanța cu cotă e refuzată. Probele care emit chitanțe pe F1 marchează
   exceptarea ÎN TRANZACȚIA anulată (v. `frontend_test/proba_d394_i2.py`).

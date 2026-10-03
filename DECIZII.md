@@ -16591,3 +16591,50 @@ lui Costin: „obligatorie la firmele marcate exceptate”). Lista din TESTE (pa
 **Limite.** Încasarea unei creanțe fără factură în aplicație, la o firmă exceptată, nu se mai poate emite fără cotă: factura
 se introduce întâi, iar chitanța se emite din ea. „Împrumut” și „restituire” nu sunt categorii ale registrului de casă (doar
 `ridicare_banca` e cunoscută fără caracter de vânzare) — când apar, intră în `casa_api.CATEGORII_FARA_VANZARE`.
+
+## 03.10.2026 — Punctul 3: factura emisă pe baza bonului fiscal în exporturi și în celelalte ieșiri către terți (decizia Costin)
+
+**Decizia lui Costin (verbatim):** *„Export SAGA/WinMentor, facturi emise pe baza bonului: nu A (factura ar dispărea din
+evidența externă). Se exportă cu marca «din bon», dacă formatul de import al programului are câmp pentru asta; dacă nu,
+într-un fișier separat, în afara importului de vânzări. Verifică formatele la sursă. Nicio factură pierdută, nicio vânzare
+dublată.”*
+
+**Sursele (verificate la sursă, aduse în corpus cu amprentă):** ambele formate AU câmp, deci **marca**, nu fișier separat.
+- SAGA — `anaf_surse/saga_manual_topic76_import_date.*`: `<FacturaTip>` „(Opţional. Tipul de document din Saga …)”;
+  `saga_manual_topic32_iesiri_lei.*`: „f - factură cu bon fiscal”, tipul care „determină modul de preluare al facturii în
+  jurnale si declaraţii”.
+- WinMentor — `anaf_surse/winmentor_facturi_clienti_rev1_2.*` (Rev.1.2, 11.09.2024): `ClasificareSAFT` „Factura storno: 381 …
+  Cu factura la bon: 751”; `CasaDeMarcat=D` „în cazul facturilor de tip «InfoCM»”; `NumarBonuri`.
+  `winmentor_portal_d394_infocm.txt`: facturile de client emise pe baza bonului se operează cu „Info CM” = „DA”
+  („introdusa manual sau importata din alte programe”).
+
+**CICLUL DE NECONFORMITATE — clasa „factura din bon tratată ca factură obișnuită în ieșirile către terți”.** Generalizarea a
+găsit alte trei ieșiri, reparate în același pas:
+1. **D406** — `d406_schema_anaf.xlsx`, nota din nomenclatorul Livrări (v4.1.9, 05.04.2022): „In cazul in care pentru
+   vanzarile efectuate de comerciati pe baza de bon fiscal, se emit facturi la cererea clientului, la raportarea acestor
+   facturi este relevant codul: 310327”. Codul nu era nicăieri în cod (`grep 310327 core/` = 0); factura din bon ieșea cu
+   codul cotei (310344). Acum 310327 pe liniile ei, adăugat în TaxTable când e folosit. DUK valid.
+2. **e-Factura** — Ministerul Finanțelor, „Ghid de utilizare a codurilor dedicate tipurilor de facturi … RO e-Factura” v2.9
+   (`anaf_surse/mf_ghid_coduri_facturi_efactura_v2_9.*`), pct.2.5: codul 751 pentru „Evidența livrărilor bazate pe bonuri
+   fiscale”, emis „în conformitate cu art. 319 alin. (10) lit a-c)” CF, cu mențiunea „Factura încasată cu bon fiscal ….”.
+   Era 380 fix — vânzarea ar fi ajuns la ANAF a doua oară. Acum 751 + BT-22; validatorul oficial FACT1: ok.
+3. **Starea de încasare** — HG 1/2016 pct.97 alin.(1): „facturile emise și achitate pe bază de bonuri fiscale”. Factura din
+   bon rămânea „neîncasată”: notificarea de scadență (emailul pleacă la CLIENTUL firmei) și scadențarul o tratau ca
+   restanță, iar ecranul oferea „Emite chitanță”. Acum se naște încasată, la data bonului. Fără migrare: 0 facturi din bon
+   în ambele baze (numărat).
+Pe drum, în aceeași funcție: WinMentor scria `ClasificareSAFT=380` și pe storno — acum 381 (sursa de mai sus; D406 scria deja
+381).
+
+**Interpretări (executor), cu argumentul:**
+- Stornarea unei facturi din bon (moștenește marca — decizia A 02.10) primește tot marca: 751 în WinMentor și în e-Factura,
+  `f` în SAGA, 310327 în D406. Argument: nici ea nu e vânzare (anulează un document informativ); cu 381/380 ar scădea o
+  vânzare pe care exportul nu o adăugase. Sursele nu transează explicit stornarea facturii din bon — de reconfirmat dacă
+  apare o normă.
+- D406 `InvoiceType` rămâne 380 pe factura din bon: nomenclatorul D406 definește 751 („Factură - informații în scopuri
+  contabile”), dar nota ANAF pentru facturile din bon cere doar TaxCode 310327; legătura 751 ↔ bon e a WinMentor și a
+  ghidului e-Factura, nu a SAF-T. Nu se construiește fără temei.
+- D406: linia facturii din bon păstrează procentul real (21%) și TVA-ul; în TaxTable, 310327 are procentul 0 al
+  nomenclatorului („amalgamated in one value”). DUK acceptă.
+
+**Limite.** Importul real în SAGA și WinMentor (round-trip) nu e probat — niciun cabinet cu programele instalate. Marca
+`FacturaTip=f` și `ClasificareSAFT=751` urmează documentația producătorilor, nu un import efectiv.

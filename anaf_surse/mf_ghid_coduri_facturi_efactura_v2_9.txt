@@ -1,0 +1,791 @@
+MINISTERUL FINANȚELOR
+
+
+
+
+Ghid de utilizare a codurilor dedicate tipurilor de facturi,
+a diverselor categorii de TVA, precum și a altor reguli, în
+   sistemul național privind factura electronică RO e-
+                          Factura
+
+Cuprins:
+
+1.     Introducere
+2.     Tipuri de facturi utilizate în RO e-Factura și codificări specifice ale acestora
+o             2.1. Codul 380: Factura (commercial invoice)
+o             2.2. Codul 381: Nota de creditare (Credit Note sau Credit Memo)
+o             2.3. Codul 384: Factura de corecție (Corrected Invoice)
+o             2.4. Codul 389: Autofactura (Self-billed Invoice)
+o             2.5. Codul 751: Factura informativă în scopuri contabile
+3.     Codurile de TVA utilizate în RO e-Factura
+4.     Dublarea facturilor în RO e-Factura
+5.     Reguli generale de completare a facturilor
+6.     Concluzii și recomandări
+
+
+
+1. Introducere
+
+Acest ghid prezintă tipurile de facturi utilizate în sistemul național de facturare electronică RO e-Factura.
+În plus, oferă detalii despre codurile de TVA și regulile aplicabile facturilor în format electronic, conform
+legislației din România.
+Rolul standardizării codurilor tipului facturii în sistemul RO e-Factura
+
+Codificarea tipurilor de factura are un rol esențial în cadrul RO e-Factura, deoarece:
+
+•       Asigură conformitatea cu legislația fiscală: Facturile emise trebuie să fie conforme cu legislația
+națională și standardele UE privind factura electronică, ajutând la reducerea erorilor.
+•       Facilitează procesul de audit și raportare: Având un format standardizat, facturile sunt ușor
+de auditat și de raportat autorităților fiscale, contribuind astfel la transparența proceselor financiare si un
+control financiar mai bun.
+•       Îmbunătățește eficiența contabilă: Emiterea și procesarea automată a facturilor standardizate,
+mai ușor de gestionat prin sisteme ERP și alte aplicații contabile, ceea ce duce la reducerea costurilor
+administrative și la optimizarea proceselor contabile, asigurând consistență și facilitând schimbul de
+informații între diferite părți implicate, indiferent de platforma utilizată.
+
+
+
+
+2. Tipuri de facturi utilizate în RO e-Factura și codificări specifice ale acestora
+
+Codul tipului de factură (BT-3) este un element obligatoriu conform specificațiilor tehnice RO-CIUS,
+care specifică tipul funcțional al facturii.
+
+Conform RO_CIUS, codul tipului de factură trebuie să fie asignat, utilizând lista standardizată UNTDID
+1001.
+
+În sistemul național RO e-Factura, facturile sunt codificate după cum urmează:
+
+•       Codul tipului facturii 380 - Factura (Commercial Invoice): Factura emisă pentru vânzări de
+bunuri și prestări de servicii.
+•       Codul tipului facturii 381 - Nota de creditare (Credit Note): Utilizată pentru corectarea unei
+facturi inițiale, de exemplu pentru returnări sau discounturi acordate ulterior.
+•       Codul tipului facturii 384 - Factura de corecție (Corrective Invoice): Factura emisă pentru
+corectarea unei facturi inițiale conform art.330 alin. 1 lit) b din Codul Fiscal.
+•       Codul tipului facturii 389 - Autofactura (Self-billed Invoice): Factura emisă în numele și în
+contul furnizorului de către cumpărător sau în situațiile de autofacturare.
+•       Codul tipului facturii 751 - Factura informativă în scopuri contabile (Invoice Information
+for Accounting Purposes): Factura utilizată în scopuri contabile.
+
+Aceste tipuri de facturi sunt folosite pentru a acoperi o gamă largă de situații comerciale, asigurând
+conformitatea cu legislația fiscală și o evidență corectă a tranzacțiilor.
+
+
+
+2.1. Codul tipului de factură 380: Factura (commercial invoice)
+
+•       Acesta este codul utilizat pentru factura standard (livrare de bunuri/prestare de servicii), precum
+și pentru facturile de stornare legate de o factură inițială. Facturile de stornare emise cu codul 380 se
+emit întotdeauna cu semnul minus (cu excepția elementului din factură: prețului net al articolului (BT-
+146), care se înregistrează întodeauna pozitiv). Ele trebuie să conțină referințe clare la factura inițială,
+incluzând elementele BT-25 („Referință factura precedentă”) și BT-26 („Data de emitere a facturii
+anterioare”).
+
+Este cel mai comun cod de facturare utilizat în cadrul sistemului național de facturare electronică RO e-
+Factura și îndeplinește roluri esențiale în evidența contabilă și fiscală a unei companii.
+
+
+
+Factura standard (Codul tipului de factură 380) este utilizată pentru:
+
+•       Documentarea tranzacțiilor comerciale: Se poate utiliza pentru a documenta tranzacția dintre
+furnizor și beneficiar, menționând cantitățile, prețurile, taxa pe valoare adăugată (TVA) și termenii de
+plată.
+•       Comunicarea termenilor tranzacției: Poate comunica date importante precum termenul de
+plată, ratele de discount, eventualele penalități pentru întârziere și informațiile de livrare.
+•       Obligațiile fiscale: Factura servește ca document de referință pentru înregistrarea operațiunilor
+economice, atât pentru furnizor, cât și pentru client.
+
+Structura și conținutul facturii (Codul tipului de factură 380)
+
+Structura de elemente de conținut ale unei facturi (codul tipului de factură 380) este definită de
+Standardul European SR EN 16931-1 ca o înșiruire de termeni operaționali (denumiți BT-nn) sau grupe
+de termeni operațonali (denumiți BG-nn).
+
+Conform Standardului European SR EN 16931-1 și a prevederilor art. 319 din Codul Fiscal, o factură
+trebuie să conțină câteva elemente esențiale.
+
+Redam, cu titlu de exemplificare, câteva din elementele de conținut obligatoriu ale unei facturi (cod 380)
+
+•       Datele de identificare ale vânzătorului și cumpărătorului: Nume, adresă, codul de înregistrare
+în scopuri de TVA sau codul de identificare fiscală, după caz, și alte informații relevante care să permită
+identificarea corectă a părților implicate.
+•       Numărul unic al facturii: Un identificator unic alocat de emitent pentru fiecare factură emisă,
+in conformitate cu art. 319 alin. (20) lit. a) din Codul fiscal, necesar pentru trasabilitate și evitarea
+duplicatelor
+•       Data emiterii facturii: Data la care factura este emisă.
+•       Descrierea bunurilor sau serviciilor furnizate: Informații detaliate despre produsele vândute
+sau serviciile prestate, incluzând cantitatea, unitatea de măsură și prețul unitar.
+•       Valoarea totală: Valoarea netă, cota de TVA aplicată și valoarea TVA, valoarea brută a facturii.
+•       Data la care au fost livrate bunurile/serviciile prestate sau data încasării unui avans: în
+măsura în care această dată este anterioară datei emiterii facturii;
+
+Regulile de emitere a facturii (Codul tipului de factură 380)
+
+Factura Cod 380 trebuie să fie emisă în conformitate cu următoarele reguli:
+
+•       Factură pentru livrarea bunurilor sau prestarea serviciilor: conform prevederilor Legii
+227/2015 privind Codul Fiscal, cu completările și modificările ulterioare,
+•       Factura de stornare: În cazul în care există erori într-o factura anterior emisă, se poate emite o
+factură de stornare integrală sau parțială. Factura de stornare a unei facturi inițiale (cod 380) se emite cu
+semnul minus (cu excepția elementului din factură: pret net al articolului (BT- 146), care va avea
+obligatoriu valoare pozitivă). Elementele facturii originale trebuie să fie clar referențiate (BT-25 -
+„Referință factura precedentă” și BT-26 - „Data de emitere a facturii anterioare”).
+
+În cazul în care se corectează o factură de stornare emisă anterior (cod 380, valori cu semnul minus),
+codul pentru tipul facturii va fi tot 380, dar valorile vor fi pozitive.
+
+•       Obligațiile privind TVA: Regimul TVA trebuie să fie corect aplicat și specificat, conform
+legislației în vigoare
+
+Exemple de utilizare la inițierea unei facturi cu Codul tipului de factură (BT-3) 380
+
+Exemplu de livrare inițială
+
+Să presupunem că o companie din România, vinde 12 kg de căpșuni unui client. În acest caz, compania
+va emite o factură folosind Codul 380 pentru a documenta tranzacția. Factura va include datele de
+identificare ale companiei și ale clientului, descrierea produselor vândute, cantitatea, prețul unitar,
+valoarea totală și TVA-ul aferent, etc.. De asemenea, pot fi furnizate instrucțiunile de plată și alte detalii
+relevante despre livrare.
+
+Exemplu de stornare parțială a unei facturi inițiale utilizând Codul tipului de factură (BT-3) 380
+
+Să presupunem că, după emiterea facturii inițiale pentru vânzarea a 12 kg de căpșuni, clientul
+returnează 5 kg de căpșuni din cauza unor neconformități calitative. Pentru a corecta tranzacția inițială,
+compania va emite o factură de stornare utilizând Codul 380 (cu valori negative la nivel de linie, cu
+excepția elementului din factură: preț net al articolului (BT- 146), care va avea obligatoriu valoare
+pozitivă).
+
+Factura de stornare va conține următoarele elemente:
+
+•       Referință la factura inițială: Factura de stornare va face referire la numărul facturii inițiale,
+pentru a asigura trasabilitatea tranzacției (BT-25 - „Referință factura precedentă”).
+•       Data facturii inițiale: Se va menționa data emiterii facturii inițiale (BT-26 - „Data de emitere a
+facturii anterioare”).
+•       Descrierea bunurilor returnate: Factura va specifica cantitatea produselor returnate, cu semnul
+minus („-5 kg de căpșuni”).
+•       Valoarea stornată: Valoarea celor 5 kg de căpșuni returnate va fi evidențiată cu semnul minus,
+inclusiv valoarea TVA aferentă. Excepție face prețul unitar (BT-146), care se prezintă pozitiv. Valoarea
+celor 5 kg de căpșuni va fi evidențiată cu semnul minus, inclusiv se va menționa in mod distinct valoarea
+TVA aferentă.
+
+Astfel, factura de stornare va ajusta valoarea totală a tranzacției și va credita clientul pentru suma
+corespunzătoare celor 5 kg de căpșuni returnate.
+
+
+
+Exemplu de stornare integrală a facturii inițiale, utilizând Codul tipului de factură (BT-3) 380
+
+Să presupunem că, după emiterea facturii inițiale pentru vânzarea a 12 kg de căpșuni, clientul decide
+să returneze întreaga cantitate de căpșuni din cauza unor neconformități calitative. În acest caz,
+compania va emite o factură de stornare pentru întreaga valoare a tranzacției, utilizând Codul 380 (cu
+valori negative la nivel de linie, cu excepția elementului din factură: preț net al articolului (BT- 146),
+care va avea obligatoriu valoare pozitivă).
+
+Factura de stornare integrală va include și următoarele informații:
+
+•       Referință la factura inițială: Factura de stornare va face referire la numărul facturii inițiale (BT-
+25 - „Referință factura precedentă”).
+•       Data facturii inițiale: Se va menționa data emiterii facturii inițiale (BT-26 - „Data de emitere a
+facturii anterioare”).
+•       Descrierea bunurilor returnate: Întreaga cantitate de căpșuni livrate (12 kg de căpșuni) vor fi
+specificate cu un semn minus (de exemplu, „-12 kg de căpșuni”).
+•       Valoarea stornată: Valoarea totală a cantității de căpșuni returnate va fi evidențiată cu semnul
+minus, inclusiv se va menționa, în mod distinct, valoarea TVA aferentă. Excepție face prețul unitar (BT-
+146), care se prezintă pozitiv.
+
+
+
+Exemplu de corectare a unei facturi de stornare emisă anterior greșit, utilizând Codul tipului de
+factură (BT-3) 380
+
+Să presupunem ca. după emiterea facturii inițiale pentru vânzarea a 12 kg de capșuni, clientul
+decide sa returneze o cantitate de 5 kg de capșuni din cauza unor neconformități calitative. în acest
+caz, compania va emite o factură de stornare pentru cantitatea de 5 kg de capșuni (utlizând
+Codul 380 și valori negative). Când se receptionează cantitatea returnată se constată ca are
+greutatea de doar 3 kg, clientul confirmând că aceasta este cantitatea corectă neconformă.
+În acest caz furnizorul emite o factura de corectare a facturii de stornare inițială, emisă cu cod
+380 și valori negative pentru cantitatea de 5 kg, utilizand pentru aceasta tot codul tipului de factură 380.
+
+Factura de corectare a facturii de stornare inițială va include și următoarele informații:
+
+•       Referință la factura de stornare inițială (pentru cele 5 kg): Factura de stornare va face referire
+la numărul facturii inițiale (BT-25 - „Referință factura precedentă”).
+•       Data facturii de stornare inițială: Se va menționa data emiterii facturii (BT-26 - ”Data
+•       de emitere a facturii anterioare”).
+•       Descrierea bunurilor: Cantitatea de căpșuni care trebuie corectată (2 kg de căpșuni) vor
+•       fi specificate cu un semn plus (de exemplu, „2 kg de căpșuni”).
+•       Valoarea corectată: Valoarea totală a cantității de căpșuni corectată va fi evidențiată cu semnul
+plus, inclusiv valoarea TVA aferentă
+
+Exemplu de ajustare a valorii inițial facturate, prin diferențe de preț (pozitive sau negative)
+
+Să presupunem că o companie din România, vinde produse în valoare totală 100.000 lei unui client pe
+parcursul unui an calendaristic. Conform contractului, pot fi facturate diferențe de preț +/- 1% din
+valorea facturată ințial în decursul acestei perioade.
+
+Astfel, evaluarea la final de perioadă arată nevoia de ajustare a bazei de impozitare a TVA cu o diferență
+calculată în sumă de 1.000 lei.
+Pentru această situație, compania poate emite o factură, folosind Codul tipului de factură 380, în care se
+va reflecta valoarea de 1.000 lei cu semn negativ sau pozitiv, după caz. Astfel, factura va corecta valoarea
+tranzacțiilor efectuate pe parcursul anului și furnizorul documentează restituirea / încasarea sumei ce
+reprezintă diferența de preț.
+
+2.2. Codul tipului de factură 381: Nota de creditare (Credit Note sau Credit Memo)
+
+•       Utilizat pentru notele de credit, acest document modifică o factură inițială și are același regim
+juridic ca o factură (cod 380 cu semn negativ). Nota de credit reflectă faptul că o anumită sumă a fost
+creditată în contul cumpărătorului.
+
+         Se pot ajusta astfel, de exemplu, greșeli de facturare, retururi de bunuri defecte sau se pot reflecta
+acordări de discounturi valorice, ulterioare livrărilor de marfă sau a oricărei situații prevăzute la art. 287,
+lit. a)-c) și e) din din Legea 227/2015 – Codul Fiscal.
+
+       La nivelul liniilor de factură pentru nota de credit (cod 381) se utilizează întotdeauna valori
+cu semnul plus (pentru corectarea unei note de credit anterior emisă se va proceda la emiterea
+unei facturi cu semne pozitive, utilizând codul tipului de factură 380).
+
+
+
+Nota de creditare (Codul 381) este utilizată pentru anumite situații, cum ar fi:
+
+•       Corectarea unei facturi anterioare: Când s-au făcut greșeli în factura inițială, cum ar fi erori
+de preț, cantitate sau calcule eronate de taxe sau deduceri suplimentare, nota de creditare permite
+corectarea acestor valori.
+•       Returnarea bunurilor: În cazul în care clientul returnează bunuri din diverse motive, nota de
+creditare reduce baza de impozitare a TVA a livrării inițiale și a taxei aferente.
+•       Aplicarea unui discount ulterior: Dacă după emiterea facturii inițiale se decide acordarea unui
+discount, acesta se poate reflecta printr-o notă de creditare.
+
+        Similar, pentru situațiile descrise anterior, se poate emite, în funcție de opțiunea contribuabilului
+o factură de stornare utilizând codul tipului facturii 380, având înscrise sumele cu minus.
+
+Structura și conținutul notei de creditare (Codul 381)
+
+Conform Standardului European de facturare electronica SR EN 16931-1, o notă de creditare trebuie să
+conțină cel puțin următoarele elemente:
+
+•       Datele de identificare ale vânzătorului și cumpărătorului: Nume, adresă, codul de înregistrare
+în scopuri de TVA sau codul de identificare fiscală, după caz, și alte informații relevante care să permită
+identificarea corectă a părților implicate.
+•       Numărul unic al notei de creditare: Un identificator unic alocat de emitent pentru fiecare notă
+de creditare emisă, in conformitate cu art. 319 alin. (20) lit. a) din Codul fiscal, necesar pentru
+trasabilitate și evitarea duplicatelor.
+•       Data emiterii notei de creditare: Data la care nota de creditare este emisă.
+•       Referință la factura inițială: Nota de creditare poate să includă referințe clare la factura inițială,
+incluzând numărul și data acesteia (BT-25 - „Referință factura precedentă” și BT-26 - „Data de emitere
+a facturii anterioare”).
+•       Descrierea bunurilor sau serviciilor pentru care se aplică creditarea: Informații detaliate
+despre produsele sau serviciile care sunt creditate, incluzând cantitatea, unitatea de măsură și valoarea
+unitară.
+•       Valoarea totală creditată: Valoarea netă, cota de TVA aplicată și valoarea TVA, după caz,
+valoarea totală creditată, toate prezentate cu semn pozitiv.
+
+Regulile de emitere a notei de creditare (Codul 381), pentru retur sau stornare
+
+Nota de creditare Cod 381 trebuie să fie emisă în conformitate cu următoarele reguli:
+
+•        Emiterea pentru corectarea facturilor inițiale: Nota de creditare trebuie emisă pentru a corecta
+erori sau pentru a ajusta valoarea unei facturi anterioare. Valoarea ajustată va fi întotdeauna prezentată
+cu semn pozitiv.
+•        Referință la factura inițială: Nota de creditare poate să conțină o referință clară la factura
+inițială, pentru a asigura trasabilitatea și evitarea confuziilor.
+
+
+
+Exemplu de utilizare a Codului tipului de factură (BT-3) 381
+
+Retur de marfă neconformă
+
+Să presupunem că o companie din România, vinde 12 kg de căpșuni unui client. După livrarea bunurilor,
+se constată că 2 kg de căpșuni au fost returnate din cauza unor neconformități calitative. Pentru a
+corecta factura inițială, compania emite o notă de creditare folosind Codul 381.
+
+Nota de creditare emisa in condiția unui retur de marfă neconformă va include, următoarele informații:
+
+•       Referință la factura inițială: Se va menționa numărul facturii inițiale pentru a asigura
+trasabilitatea (BT-25 - „Referință factura precedentă”). dupa caz.
+•       Data facturii inițiale: Se va specifica data emiterii facturii originale (BT-26 - „Data de emitere
+a facturii anterioare”), dupa caz.
+•       Descrierea bunurilor returnate: Se vor menționa cele 2 kg de căpșuni returnate de client, cu
+cantitatea specificată cu semn pozitiv („2 kg de căpșuni”).
+•       Valoarea creditată: Valoarea celor 2 kg de căpșuni returnate va fi evidențiată cu semn pozitiv,
+inclusiv se va menționa TVA-ul aferent.
+
+Acordare discount ulterior facturării inițiale
+
+Să presupunem că o companie din România, vinde produse in valoare totala 100.000 lei unui client.
+Conform contractului, pentru efectuarea de achiziți cu plata la 30 zile, este prevăzut a se acorda un
+discount în procent de 1% din valoarea facturată/incasată.
+
+Astfel, evaluarea la final de perioadă arată nevoia de acordare a unui discount calculat în sumă de 1 000
+lei. Pentru aceasta situație compania poate emite o nota de credit, folosind Codul 381, incluzând numărul
+și data acesteia (BT-25 - „Referință factura precedentă” și BT-26 - „Data de emitere a facturii
+anterioare”) sau alternativ pot fi utilizate elementele BT-73 – “Data de inceput a perioadei de facturare”
+si BT – 74 – “Data de sfarsit a perioadei de facturare”.
+Nota de creditare emisa pentru acordarea unui discount ulterior va include, următoarele
+informații:
+
+•       Referință la factura inițială: Se va menționa numărul facturii inițiale pentru a asigura
+trasabilitatea (BT-25 - „Referință factura precedentă”). dupa caz.
+•       Data facturii inițiale: Se va specifica data emiterii facturii originale (BT-26 - „Data de emitere
+a facturii anterioare”), după caz.
+•       Descrierea discountului acordat: Se va menționa valoarea reducerii acordate, specificată cu
+semn pozitiv.
+•       Valoarea creditată: Valoarea discountului va fi evidențiată cu semn pozitiv, inclusiv se va
+menționa în mod distinct TVA-ul aferent.
+
+Astfel, nota de creditare va ajusta valoarea inițială a tranzacției.
+
+
+
+Precizarea tehnică
+
+Nota de creditare (Codul tipului de factură 381) are un format al structurii sintactice a fișierului XML
+diferit față de alte tipuri de facturi.
+
+Formatul specific XML pentru nota de creditare include câmpuri și structuri distincte pentru a evidenția
+corectarea/ajustarea valorilor, referințele la facturile inițiale și alte detalii specifice necesare pentru a
+asigura conformitatea cu cerințele de facturare electronică și trasabilitatea operațiunii economice dintre
+parteneri.
+
+
+
+2.3. Codul tipului de factură 384: Factura de corecție (Corrective Invoice)
+
+•       este o factură nouă, emisă pentru a rectifica o factură inițială care conține erori sau pentru a face
+ajustări ulterioare tranzacției inițiale, conform art. 330 alin. (1) lit. b) din Legea 227/2015 privind Codul
+Fiscal.
+•       pentru corecție, alternativ, companiile pot opta să utilizeze codurile 380 sau 381.
+
+Structura și conținutul facturii de corecție (Codul tipului de factură 384)
+
+Conform RO e-Factura și legislației naționale, o factură de corecție trebuie să conțină cel putin
+următoarele elemente esențiale:
+
+•       Datele de identificare ale vânzătorului și cumpărătorului: Nume, adresă, codul de înregistrare
+în scopuri de TVA sau codul de identificare fiscală, după caz, și alte informații relevante care să permită
+identificarea corectă a părților implicate.
+    • Numărul unic al facturii corectate: Un identificator unic alocat de emitent pentru fiecare
+        factură corectată emisă, in conformitate cu art. 319 alin. (20) lit. a) din Codul fiscal, necesar
+        pentru trasabilitate și evitarea duplicatelor.
+•       Data emiterii facturii de corecție: Data emiterii facturii de corecție
+•       Referință la factura inițială: Factura de corecție include referințe clare la factura inițială,
+conform Codului Fiscal. Tehnic trebuie incluse numărul și data acesteia (BT-25 - „Referință factura
+precedentă” și BT-26 - „Data de emitere a facturii anterioare”).
+•       Descrierea corecțiilor: Informații detaliate privind ajustările de cantitate, prețuri, valoare netă
+și valoare TVA.
+•       Valoarea totală corectată: Valoarea netă, cota de TVA aplicată și valoarea TVA, toate
+reflectând ajustările efectuate.
+
+Regulile de emitere a facturii de corecție (Codul tipului de factură 384)
+
+Factura de corecție Cod 384 trebuie să fie emisă în conformitate cu următoarele reguli:
+
+•       Emiterea pentru corectarea facturilor: Factura de corecție se emite doar în cazul în care există
+erori după emiterea facturii inițiale.
+•       Referință obligatorie la factura inițială: Factura de corecție trebuie să conțină o referință clară
+la factura inițială pentru a asigura trasabilitatea și pentru a evidenția modificările efectuate.
+
+Exemplu de utilizare a Codului tipului de factură (BT-3) 384 sau a variantelor posibile pentru
+corecție conform art. 330 alin. 1 lit b) din Codul Fiscal
+
+Să presupunem că o companie din România, vinde un lot de laptopuri unui client. După emiterea facturii
+inițiale ce cuprinde doar valori pozitive, se constată că prețul unitar al laptopurilor a fost calculat greșit.
+
+Pentru a corecta astfel de erori, pot fi avute în vedere următoarele scenarii :
+
+1.       emite o nouă factură cu cod 384, în care cuprinde atât valori din factura inițială cu semn negativ
+și, concomitent, valori corecte cu semnul pozitiv,
+
+sau
+
+2.       emite o nouă factură cu cod 381 (nota de credit – valori pozitive) și, concomitent, emite o nouă
+factură cu cod 384 cu valori pozitive corecte
+
+sau
+
+3.      emite o nouă factură cu cod 380 (factura storno cu valori negative) și, concomitent, emite o nouă
+factură cu cod 384 cu valori pozitive corecte
+
+sau
+
+4.       emite o nouă factură cu cod 380 (factura storno cu valori negative) și, concomitent, emite o nouă
+factură cu cod 380 cu valori pozitive corecte
+
+sau
+
+5.      emite o nouă factură cu cod 381 (nota de credit – valori pozitive) și, concomitent, emite o nouă
+factură cu cod 380 cu valori pozitive corecte
+
+sau
+
+6.      emite o nouă factură cu cod 380, în care cuprinde atât valori din factura inițială cu semn negativ
+și, concomitent, valori corecte cu semnul pozitiv.
+Pentru a modifica sau completa detalii, descrieri sau elemente operaționale, poate fi utilizat oricare dintre
+scenariile de mai sus privind tipurile de facturi.
+
+În cazul în care sunt necesare corecții legate de identificatorul cumpărătorului (codul de înregistrare
+fiscală - BT-47 și codul de înregistrare în scop de TVA - BT-48) NU se pot utiliza scenariile 1 si
+respectiv 6 anterior mentionate.
+
+Este recomandat să se includă următoarele informații:
+
+•       Referință la factura inițială: Se va menționa numărul facturii inițiale pentru a asigura
+trasabilitatea (BT-25 - „Referință factura precedentă”). Sistemul permite introducerea mai multor
+referințe la factura/facturile inițiale.
+•       Data facturii inițiale: Se va specifica data emiterii facturii originale (BT-26 - „Data de emitere
+a facturii anterioare”).
+•       Descrierea corecțiilor: Se va detalia corecția efectuată, respectiv modificarea prețului unitar.
+•       Valoarea corectată: Valoarea totală, ajustată conform prețului corect, inclusiv se va menționa
+în mod distinct TVA-ul aferent, după caz.
+
+Astfel, factura corectată va reflecta modificarea efectuată și va permite păstrarea unei piste fiabile de
+audit.
+
+
+
+2.4. Codul tipului de factură 389: Autofactura (Self-billed Invoice)
+
+•      document utilizat pentru emiterea de facturi în numele și în contul furnizorului sau pentru
+emiterea unei autofacturi în cazul anumitor tipuri de operațiuni.
+
+Autofactura (Codul 389) este utilizată în următoarele situații:
+
+•       Emiterea de facturi în numele și în contul furnizorului: În cazul în care există un acord între
+furnizor și cumpărător, cumpărătorul poate emite facturi în numele furnizorului, pentru a simplifica
+procesul de facturare, însa este obligatorie înscrierea mențiunii "autofactura" (conform articolului 319
+alin. (18) și alin. (20) lit. k) din Codul Fiscal. Tehnic, informația este recomandat a fi înscrisă utilizând
+elementul „Comentariu în factură” (BT-22), în care, conform RO_CIUS, se trec orice mențiuni
+obligatoriu a fi înscrise în facturi potrivit legislației în vigoare, necuprinse în altă parte. Se vor specifica
+datele complete de identificare ale ambelor părți implicate în tranzacție.
+
+
+ATENTIE!!! Nu este permisă utilizarea codului tipului facturii 389 pentru emiterea de facturi în
+numele și în contul furnizorului, în lipsa unui acord prealabil prin care să se prevadă această
+procedură de facturare. Acord prealabil înseamnă un acord încheiat înainte de începerea emiterii
+de facturi de către client în numele și în contul furnizorului/prestatorului, potrivit prevederilor
+art. 319 alin. (18) din Codul fiscal, coroborat cu pct. 96 (1) lit. a) din Normlele Metodologice.
+
+
+•      Autofacturare pentru livrări/prestări către sine: Autofactura se emite atunci când o companie
+se consideră că livrează bunuri sau prestează servicii către sine, așa-numitele livrări și prestări asimilate,
+cum ar fi preluarea de bunuri/servicii sau folosirea de bunuri sau servicii de către persoana impozabilă
+sau o altă persoană, fără a avea legătură cu activitatea economică a persoanei impozabile (conform
+articolului 319 alin. (8) din Codul Fiscal). Compania va fi menționată atât ca furnizor, cât și ca
+cumpărător, specificând datele complete de identificare ale acesteia. Nu se aplică obligația de a menționa
+“Autofactura”, la nivelul documentului transmis.
+
+Structura și conținutul autofacturii (Codul tipului de factură 389)
+
+Conform Standardului European SR EN 16931-1, o autofactură trebuie să conțină, cel putin, următoarele
+elemente esențiale:
+
+•       Datele de identificare ale furnizorului și cumpărătorului: Nume, adresă, codul de înregistrare
+în scopuri de TVA sau codul de identificare fiscală, după caz, și alte informații relevante care să permită
+identificarea corectă a părților implicate.
+
+    •  Numărul unic al autofacturii: Un identificator unic alocat de emitent pentru fiecare autofactură
+       emisă, in conformitate cu art. 319 alin. (20) lit. a) din Codul fiscal, necesar pentru trasabilitate și
+       evitarea duplicatelor.
+•      Data emiterii autofacturii: Data la care autofactura este emisă.
+•      Descrierea bunurilor sau serviciilor: Detalii privind bunurile sau serviciile autofacturate,
+incluzând cantitatea, unitatea de măsură și prețul unitar.
+•      Valoarea totală: Valoarea netă, cota de TVA aplicată și valoarea TVA, dacă este cazul.
+•      Mențiunea „Autofactură”: se aplica doar dacă documentul trebuie să includă mențiunea
+„Autofactură” pentru a clarifica tipul de document, în conformitate cu legislația in vigoare.
+
+
+
+Regulile de emitere a autofacturii (Codul tipului de factură 389)
+
+•       Emiterea în cazurile prevăzute de lege: Autofactura trebuie să fie emisă în situațiile prevăzute
+de legislația fiscală.
+•       Referința la acordul de autofacturare: În situația în care autofactura este emisă ca urmare a
+unui acord prealabil între furnizor și cumpărător, care specifică această modalitate de facturare, tehnic,
+informația este recomandat a fi înscrisă utilizând elementul „Comentariu în factură” (BT-22), în care,
+conform RO_CIUS, se trec orice mențiuni obligatoriu a fi înscrise în facturi potrivit legislației în vigoare,
+necuprinse în altă parte.
+
+Precizare tehnică de utilizare a elementului comentariu în factură (BT-22) - în cadrul unui comentariu
+pot fi inserate mai multe mențiuni. Fiecare mențiune este recomandat să fie separată de o alta printr-un
+separator „#”.
+
+•       Termenul de emitere: Autofactura trebuie emisă cel târziu până la termenul limită stabilit de
+legislația fiscală în vigoare.
+
+Procedura tehnică specifică de transmitere a autofacturii emisă de client/beneficiar în numele și
+în contul furnizorului
+
+Pentru transmiterea unei facturi emise de client/beneficiar în numele și în contul furnizorului
+/prestatorului, utilizând în mod direct funcția disponibilă în cadrul SPV pentru acest scop, trebuie bifată
+opțiunea „autofactura = DA”, fapt ce face ca sistemul sa valideze dreptul de trimitere pe baza elementelor
+de identificare de la cumpărător.
+În situația transmiterii utilizând API, parametrul din request „autofactura” se completează doar în cazul
+în care se emite factura de către beneficiar în numele și în contul furnizorului, singura valoare acceptată
+pentru acest parametru este DA (detalii se regăsesc în documentele tehnice postate pe pagina de internet
+mfinante.ro)
+
+
+
+2.5. Codul tipului de factură 751: Factura informativă în scopuri contabile (Invoice Information
+for Accounting Purposes)
+
+•       Factura informativă în scop contabile este emisă în conformitate cu art. 319 alin. (10) lit a-c) și
+pentru situația prevăzută la art. 286 alin. (4) lit. e) din Legea 227/2015 privind Codul Fiscal, cu
+completările și modificările ulterioare, utilizând pentru sistemul național de facturare electronică RO e-
+Factura Codul 751. Este un document utilizat în scopuri contabile pentru a reflecta livrările pentru care
+există obligația de emitere a facturii la solicitarea beneficiarului, precum și pentru facturile de decontare
+a plăților efectuate în numele și în contul clientului.
+
+Factura informativă (Codul tipului de factură 751) este utilizată pentru:
+
+•       Evidența livrărilor bazate pe bonuri fiscale sau alte documente utilizate pentru situațiile în
+care emiterea facturii nu este obligatorie (ex. biletele de călătorie sau abonamentele de călătorie,
+accesul pe bază de bilet la: spectacole, muzee, cinematografe, evenimente sportive, târguri, expoziții,
+servicii parcare, etc.): Documentarea tranzacțiilor care au fost realizate și înregistrate prin astfel de
+documente și pentru care clientul solicita o factura.
+•       Facturile de decontare a plăților efectuate în numele și în contul clientului: În conformitate
+cu prevederile art. 10^3 din OUG 120/2021, pentru factura de decontare nu există obligație de
+transmitere în sistemul national de facturare electronica RO e-Factura ( în acest caz, baza de
+impozitare a TVA nu include această operațiune și se va utiliza codul categoriei TVA = E, iar la
+elementul „Motivului scutirii” (BT-120) se va înscrie „art.286, alin.4 lit.e din Codul Fiscal).
+
+Structura și conținutul facturii informative (Codul tipului de factură 751)
+
+Conform RO e-Factura, Standardului internațional de facturare electronica SR EN 16931-1 și legislației
+naționale, o factură informativă trebuie să conțină următoarele elemente esențiale:
+
+•       Datele de identificare ale furnizorului și cumpărătorului: Nume, adresă, codul de înregistrare
+în scopuri de TVA sau codul de identificare fiscală, după caz, și alte informații relevante care să permită
+identificarea corectă a părților implicate.
+    • Numărul unic al facturii informative: Un identificator unic alocat de emitent pentru fiecare
+        factură informativă emisă, in conformitate cu art. 319 alin. (20) lit. a) din Codul fiscal, necesar
+        pentru trasabilitate și pentru evitarea duplicatelor.
+•       Data emiterii facturii informative: Data la care factura informativă în scop contabil este emisă.
+•       Descrierea bunurilor sau serviciilor: Informații detaliate despre bunurile livrate sau serviciile
+care au fost prestate, incluzând cantitatea, unitatea de măsură și prețul unitar sau o referință la bonul
+fiscal anterior emis.
+•       Totalurile documentului: Oferă informații cu privire la valoarea totală netă a bunurilor sau
+serviciilor, valoarea totală a TVA (dacă este cazul), valoarea totală a documentului (inclusiv TVA),
+valoarea totală încasată în baza bonului/bonurilor fiscale (suma plătită).
+•       Mențiunii la nivelul „Facturii informative in scop contabil”: Documentul va include clar
+mențiunea privind documentele ce au stat la baza livrării anterioare (ex. „Factura încasată cu bon fiscal
+….” sau mențiuni privind emiterea documentului de decontare, pentru evidențierea sumelor achitate în
+numele și pe seama clientului, în conformitate cu prevederile art. 286, alin. 4, lit. e) din Codul Fiscal.
+
+Regulile de emitere a facturii informative (Codul tipului de factură 751)
+
+Factura informativă Cod 751 trebuie să fie emisă în conformitate cu următoarele reguli:
+
+    •   Date complete despre tranzacție: Factura informativă trebuie să conțină toate informațiile
+        relevante despre tranzacție, pentru a asigura o evidență clară și completă.
+•       Termenul de emitere: Factura informativă încasată cu bon fiscal, pentru care există obligația de
+transmitere , la solicitarea beneficiarului, în sistemul național de facturare electronică RO e-Factura , se
+emite la data eliberării bonului fiscal, conform prevederilor legale.
+
+Exemplu de utilizare a Codului tipului de factură (BT-3) 751
+
+Să presupunem că o companie din România, care deține un magazin de retail, realizează o vânzare de
+mici valori către un client final și emite un bon fiscal pentru această tranzacție. Clientul poate solicita
+o factură, iar vânzătorul este obligat să emită o factură ce va fi marcată corespunzător cu codul 751.
+
+
+
+
+3. Codurile categoriei de TVA utilizate în RO e-Factura
+
+•      facturile electronice emise prin RO e-Factura trebuie să respecte codurile și cotele de TVA
+prevăzute de legislația în vigoare.
+
+Codurile categoriilor principale de TVA utilizate în sistemul RO e-Factura:
+
+•       Categoria de TVA „S”: pentru operațiunile taxabile cu cota standard de TVA de 19%, respectiv
+cu cotele reduse de TVA de 9% sau 5%.
+•       Categoria de TVA „E”: pentru operațiuni scutite de la plata TVA, care nu sunt cuprinse în baza
+de impozitare a TVA sau în sfera de aplicare a TVA, conform clarificăriilor disponibile în secțiunea
+dedicată de pe site-ul www.anaf.ro.
+•       Categoria de TVA "AE": pentru operațiunile pentru care se aplică taxarea inversă, conform art.
+331 din Codul Fiscal.
+•       Categoria de TVA "O": pentru operațiuni efectuate de neplătitorii de TVA, conform Codului
+Fiscal.
+Regulile de completare a elementelor facturii se aplică în funcție de categoriile de TVA și trebuie să
+includă detalii despre motivele scutirii, dacă este cazul.
+
+Codurile TVA sunt elemente esențiale si obligatorii pentru completarea corectă a facturilor, în
+conformitate cu legislația românească și europeană, transpusă prin OUG 120/2021, privind
+administrarea, funcționarea și implementarea sistemului național privind factura electronică RO e-
+Factura și factura electronică în România, cu completări și modificări ulterioare.
+
+ Elementele obligatorii, pentru completarea corectă a detaliilor legate de TVA, în funcție de situație,
+sunt:
+
+         Codul categoriei de TVA al articolului facturat (BT-151);
+         Cota TVA pentru articolul facturat (BT-152);
+         Motivul scutirii de TVA (BT-120) sau Codul motivului scutirii de TVA (BT-121).
+
+3.1. Categoria de TVA "S"
+
+•      Descriere: Această categorie cuprinde operațiunile taxabile din punct de vedere TVA, cu cota
+standard de 19%, dar și operațiunile taxabile cu cote reduse de 9% și 5%.
+•      Utilizare: Se aplică la majoritatea tranzacțiilor comerciale care intră sub incidența TVA. Cota de
+TVA (BT-152) trebuie să fie mai mare decât 0.
+•      Elemente Obligatorii:
+o             BT-151: Categoria de TVA trebuie să fie „S”.
+o             BT-152: Cota de TVA trebuie să fie 19%, 9% sau 5%.
+o             BT-120 și BT-121: Nu se completează.
+
+3.2 Categoria de TVA "E"
+
+      • Descriere: Se utilizează pentru operațiuni scutite de TVA, indiferent dacă acestea sunt scutite cu
+        drept de deducere sau fără drept de deducere, sau pentru operațiuni care nu sunt cuprinse în baza
+        de impozitare a TVA (ex. penalități pentru nerespectarea obligațiilor contractuale, dobânzi
+        pentru plata cu întârziere) sau care nu sunt cuprinse în sfera de aplicare a TVA (ex. garanții SGR,
+        garanții de bună execuție GBE)
+•       Reguli de Completare: Cota de TVA (BT-152) trebuie să fie egală cu 0, iar elementele BT-120
+(motivul scutirii) sau BT-121 (codul motivului scutirii) trebuie completate corespunzător. De exemplu,
+se pot utiliza codurile VATEX-EU-132-1A pentru scutirile specificate de legislația UE.
+•       Elemente Obligatorii:
+o               BT-151: Categoria de TVA trebuie să fie „E”.
+o               BT-152: Cota de TVA trebuie să fie 0.
+o               BT-120: Motivul scutirii de TVA (ex. „Scutire conform art..X.. din Legea 227/2015”).
+
+sau
+
+o                BT-121: Codul motivului scutirii de TVA trebuie selectat din nomenclatorul VATEX.
+
+3.3 Categoria de TVA "AE"
+
+•      Descriere: Se aplică pentru operațiunile prevăzute de art. 331 din Legea 227/2015.
+•      Reguli de Completare: Cota de TVA (BT-152) este egală cu 0, iar elementele BT-120 sau BT-
+121 trebuie completate cu referințe legale specifice.
+•      Elemente Obligatorii:
+o             BT-151: Categoria de TVA trebuie să fie „AE”.
+o             BT-152: Cota de TVA trebuie să fie 0.
+o             BT-120: Motivul scutirii de TVA, completat manual cu prevederile legale relevante
+(mențiunea “taxare inversă”)
+
+sau
+
+o         BT-121: Codul motivului scutirii de TVA trebuie selectat din nomenclatorul VATEX
+(VATEX-EU-AE – taxare inversă).
+
+3.4 Codul categoriei de TVA "O"
+
+•       Descriere: Aceasta este utilizat exclusiv de către persoane impozabile neînregistrate în scopuri
+de TVA (neplătitor de TVA).
+•       Reguli de Completare: Elementele BT-120 sau BT-121 se afișează, iar elementul BT-121 va fi
+completat cu valoarea VATEX-EU-O. Alternativ, în conformitate cu prevederile legale, motivul scutirii
+poate înscris în elementul BT-22 (comentarii în factură).
+•       Elemente Obligatorii:
+o               BT-151: Categoria de TVA trebuie să fie „O”.
+o               BT-121: Codul motivului scutirii de TVA (VATEX-EU-O).
+
+sau
+
+o              BT-22: Comentarii în factură privind motivul scutirii.
+4. “Dublarea” facturilor în RO e-Factura
+
+Pentru a evita dublarea facturilor, trebuie să se respecte anumite reguli de completare a fișierelor XML.
+Orice modificare minoră, cum ar fi adăugarea unui spațiu sau punct, poate genera “dublarea” facturii în
+sistem, fără o posibilitate tehnică de anulare.
+
+În conformitate cu prevederile Codului Fiscal, articolul 330 alin. (1), lit. b), o factură transmisă
+cumpărătorului nu poate fi anulată. Alinierea sistemului electronic RO e-Factura la această
+reglementare este esențială pentru a asigura trasabilitatea și corectitudinea înregistrărilor contabile și
+fiscale.
+
+Astfel, orice corecție necesară trebuie realizată prin emiterea unei facturi storno/de corecție sau a unei
+note de credit, după caz, însă aceasta trebuie să conțină elementele obligatorii legate de factura inițială.
+Pe baza dialogului cu destinatarul (cumpărătorul), este permisă evidentierea indexului unic atribuit de
+sistemul național RO e-Factura, precum și data încărcării, ce vor fi încorporate în factura nou emisă,
+reversând astfel efectul “dublajului”.
+
+Tehnic, includerea în factura de stornare a indexului unic și a datei de încărcare a acestuia în sistemul
+național RO e-Factura, se poate face utilizând următoarele elemente:
+
+•       Referință la factura ce face obiectul stornării tehnice: Se va menționa numărul unic al
+indexului primit pentru factura inițială, cu scopul asigurării trasabilitătii (BT-25 - „Referință factura
+precedentă”).
+•       Data atribuirii indexului ce face obiectul stornarii tehnice: Se va specifica data atribuirii
+indexului de catre sistemul RO e-Factura (BT-26 - „Data de emitere a facturii anterioare”).
+•       Comentariu în factură (BT-22) : se va introduce textul „Storno tehnic a facturii .....(seria,
+numărul și data emiterii), cu index de încarcare ....... (se va menționa numărul indexului primit pentru
+factura/facturile inițiale)
+•       Numărul facturii (BT-1) : trebuie sa fie de forma număr inițial, la care se adaugă litera S (storno
+tehnic). Exemplu : factura inițială are seria TX nr. 623/08.11.2024. Factura de storno tehnic ce se va
+introduce în sistem va fi : TX623S din data emiterii.
+5 Reguli generale de completare a facturilor
+
+Constrângeri tehnice:
+•       factura trebuie să aibă un număr al Facturii (BT-1), acesta trebuie sa fie secvențial acordat,
+nefiind permisă editarea și transmiterea a doua facturi cu același număr, indiferent de codul tipului
+de factura utilizat.
+•       factura trebuie să aibă o dată de emitere a Facturii (BT-2).
+•       factura trebuie să aibă un cod al tipului de Factură (BT-3), acesta urmând să fie ales din codurile
+anterior prezentate, în funcție de nevoia de business.
+•       factura trebuie să aibă un cod al monedei Facturii (BT-5).
+Majoritar, pentru tranzactiile nationale se utilizeaza codul “RON” dar, prin excepție, în situația în care
+acesta are o valoare diferită de “RON’ (de ex. - EUR) este necesară completarea elementului BT-6 –
+codul monedei de contabilizare, cu respectarea următoarei reguli: “dacă este menţionat codul monedei
+de contabilizare a TVA (BT-6), atunci trebuie să se indice totalul TVA al facturii în moneda de
+contabilizare (BT-111)”.
+•       factura trebuie să aibă cel puţin o linie a Facturii (BG-25).
+•       data de exigibilitate a taxei pe valoarea adăugată (BT-7) şi codul datei de exigibilitate a taxei pe
+valoarea adăugată (BT-8) sunt reciproc exclusive.
+•       în cazul în care suma de plată (BT-115) este pozitivă, trebuie să se indice fie data scadenţei plăţii
+(BT-9), fie condiţiile de plată (BT-20).
+•       daca factura conţine o linie a facturii (BG-25) în care articolul este clasificat din perspectiva
+codului categoriei de TVA - “Nu face obiectul TVA”, aceasta trebuie să NU conţină identificatorul de
+TVA al Vânzătorului (BT-31), identificatorul de TVA al reprezentantului fiscal al Vânzătorului (BT-63)
+sau identificatorul de TVA al Cumpărătorului (BT-48).
+
+Recomandări legate de utilizarea elementelor operaționale, altele decât cele obligatorii
+
+În cadrul standardului internațional de facturare electronică SR EN 16931-1, sunt definite o serie de
+referințe, care să ajute părțile implicate într-o tranzacție să identifice mai ușor acea tranzacție în sistemele
+lor interne
+BT-10 - Referința cumpărătorului -
+Identificatorul este definit de către cumpărător (de exemplu ID al contactului, departamentul, ID al
+biroului, codul proiectului), dar este indicat de Vânzător în factură
+BT-11 – Referința proiectului
+Reprezintă identificarea proiectului la care se referă factura
+BT-12 – Referința contractului
+Reprezintă identificarea contractului în baza căruia se emite factura. Se recomandă ca identificatorul
+contractului să fie unic în contextul relațiilor comerciale specifice și pentru o perioadă de timp definită
+BT-13 – Referința comenzii
+Reprezintă un identificator al comenzii la care se referă, generat de către Cumpărător
+BT-15 – Referinţa avizului de recepţie
+Reprezintă un identificator al avizului de recepție la care se face referire
+BT-16 – Referința avizului de expediție (Număr aviz de însoțire marfa)
+Exemplu: aici se vor înscrie informațiile conform art. 347 din Legea 227/2015 privind Codul Fiscal, cu
+completările și modificările ulterioare, coroborat cu normele de aplicare a Codului Fiscal, TITLUL VIII
+- Accize și alte taxe speciale - SECȚIUNEA a 3-a - Obligațiile plătitorilor de accize - SUBSECȚIUNEA
+a 2-a - Documente fiscale – 7(1), 7(4)
+BT-22 – Comentariu în factură – informație nestructurată care e relevantă pentru factură dar nu
+obligatoriu. De exemplu motivul unei corecții, nota de cesiune, etc.
+
+Conform RO_CIUS: În Comentariu (BT-22) se trec orice mențiuni obligatoriu a fi înscrise în facturi
+potrivit legislației în vigoare, necuprinse în altă parte, inclusiv referitoare la cumpărător și/sau la factură
+în ansamblu, ca de exemplu: «trimitere la un document de plată ...»; «TVA la încasare»; «Regim special
+pentru agricultori ...»Codul de acciză al cumpărătorului ,.» etc. În cadrul unui comentariu pot fi inserate
+mai multe menţiuni. Fiecare mențiune este recomandat să fie separată de o alta printr-un separator „#”.
+
+Documente atașate
+
+În sistemul RO e-Factura, pot circula inclusiv documente atașate (ex. situații de lucrări, devize, contracte,
+comenzi, etc.), fiind permisă încorporarea unuia sau a mai multor documente în factură, însă valoarea
+tehnică a acestora nu poate depăși 3MB.
+
+
+
+
+6. Concluzii și recomandări
+
+Ghidul oferă o perspectivă asupra modului de utilizare a codurilor dedicate tipurilor de facturi, a
+diverselor categorii de TVA, precum și a altor reguli de utilizare.
+
+Respectarea constrângerilor tehnice impuse de standardul de facturare SR EN 16931-1 este esențială
+pentru validarea corectă a facturilor în sistemul electronic, evitând astfel erorile și dublările
+neintenționate.
+

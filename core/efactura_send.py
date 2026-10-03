@@ -31,7 +31,18 @@ LIMITE v1 (de confirmat pe TEST la pasul 2, NU ghicite aici):
     CityName = oras (daca vine) altfel adresa libera - fallback documentat, TEST confirma.
   - Doar factura standard cu TVA (categorii S/Z). taxare_inversa (AE), neplatitor TVA (O),
     storno/nota de credit (381) NU sunt tratate in v1 - se adauga dupa confirmare pe TEST.
+
+[punctul 3, 03.10.2026] FACTURA EMISA PE BAZA BONULUI FISCAL -> InvoiceTypeCode 751 + mentiunea in BT-22. Sursa:
+Ministerul Finantelor, „Ghid de utilizare a codurilor dedicate tipurilor de facturi … RO e-Factura” v2.9 (static.anaf.ro),
+pct.2.5: „Factura informativă în scop contabile este emisă în conformitate cu art. 319 alin. (10) lit a-c) … utilizând
+pentru sistemul național de facturare electronică RO e-Factura Codul 751”; folosita pentru „Evidența livrărilor bazate pe
+bonuri fiscale …”; „Documentul va include clar mențiunea privind documentele ce au stat la baza livrării anterioare (ex.
+«Factura încasată cu bon fiscal ….»”. Cu 380, vanzarea ar ajunge la ANAF a doua oara (o data prin casa de marcat).
+Definitia „din bon”: core.facturi.e_din_bon_fiscal. Pana azi: 380 pe orice factura.
 """
+
+#: [punctul 3] BT-3 pentru factura emisa pe baza bonului fiscal (Ghidul MF v2.9 pct.2.5) si pentru factura obisnuita
+INVOICE_TYPE_INFORMATIVA_BON, INVOICE_TYPE_FACTURA = "751", "380"
 import re
 import unicodedata
 from decimal import Decimal, ROUND_HALF_UP
@@ -208,7 +219,12 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('<cbc:IssueDate>%s</cbc:IssueDate>' % _e(factura.get("data_emitere")))
     if factura.get("data_scadenta"):
         P.append('<cbc:DueDate>%s</cbc:DueDate>' % _e(factura.get("data_scadenta")))
-    P.append('<cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>')
+    from core import facturi as _fc
+    din_bon = _fc.e_din_bon_fiscal(factura)
+    P.append('<cbc:InvoiceTypeCode>%s</cbc:InvoiceTypeCode>'
+             % (INVOICE_TYPE_INFORMATIVA_BON if din_bon else INVOICE_TYPE_FACTURA))
+    if din_bon:   # BT-22 (Ghidul MF v2.9 pct.2.5: mentiunea documentului care a stat la baza livrarii)
+        P.append('<cbc:Note>%s</cbc:Note>' % _e("Factura încasată cu bon fiscal — " + _fc.mentiune_bon(factura)))
     P.append('<cbc:DocumentCurrencyCode>%s</cbc:DocumentCurrencyCode>' % _e(moneda))
 
     # --- Furnizor (emitent) ---

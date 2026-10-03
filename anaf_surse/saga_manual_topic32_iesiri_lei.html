@@ -1,0 +1,266 @@
+    <!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all | index | follow">
+  <title>Iesiri - lei - Manual de utilizare Saga C.</title>
+<meta name="description" content="Ecranul permite introducerea vânzărilor în ţară.
+Poate fi utilizat şi la introducerea unor operaţii asimilate vânzărilor, conform tipurilor  ...">
+    <link rel="shortcut icon" href="/images/web/favicon.png">
+  <link type="text/css" href="../comun/css/style.css?version=1791048503" rel="stylesheet">
+  <link type="text/css" href="../comun/css/responsive.css?version=1791048503" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script>
+  <script src="../comun/js/core.js?version=1791048503"></script>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="display: none;">
+        <symbol id="facebookLogo" viewBox="0 0 24 24">
+          <path style="fill:#fff;"
+                d="M20.4,2.1H3.6C2.7,2.1,2,2.8,2,3.7v16.7c0,0.9,0.7,1.7,1.6,1.7h16.8c0.9,0,1.6-0.7,1.6-1.7V3.7 C22,2.8,21.3,2.1,20.4,2.1z 
+                  M15.4,8c-0.4-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.7,0.1-0.9,0.3c-0.2,0.2-0.3,0.5-0.3,1v0.7
+                  h2.2l-0.5,2.1 h-1.7v6.9h-2.7v-6.9H9.1V9.6h1.3V8.8c0-0.8,0.1-1.3,0.3-1.7c0.2-0.4,0.6-0.9,1.1-1.1
+                  c0.5-0.3,1.3-0.4,2-0.4c0.8,0,1.4,0.3,2.2,0.5 L15.4,8z">
+          </path>
+    	</symbol>
+        <symbol id="logoSmall" viewBox="0 0 48 48">
+    	    <path d="M34.3,11.7L18.9,27.5c-1.4,1.4-3.8,1.4-5.3,0l-1.6-1.6c-1.4-1.4-1.4-3.8,0-5.3
+            L27.5,5.1c1.4-1.4,3.8-1.4,5.2,0l1.6,1.6C35.8,8.1,35.8,10.3,34.3,11.7z" />
+
+        <path d="M36,27.5L20.6,42.9c-1.4,1.4-3.8,1.4-5.3,0l-1.4-1.6c-1.4-1.4-1.4-3.8,0-5.2
+            l15.5-15.5c1.4-1.4,3.8-1.4,5.3,0l1.6,1.6C37.5,23.6,37.5,26,36,27.5z" />
+        </symbol>
+    </svg>
+
+    <header class="header">
+      <nav class="navbar navbar-default">
+        <div class="navbar-header">
+        <a class="navbar-brand" href="index.php" title="Programe de contabilitate, salarii si evidenta de stocuri">
+        <img src="https://www.sagasoft.ro/images/logo.svg" class="logo" height="25" alt="Sagasoft Logo">
+        <svg role="img" aria-label="Logo" class="logoSmall"><use xlink:href="#logoSmall"></use></svg>
+        </a>
+        </div>
+        <div class="header-right">
+          <span class="copy-text">Copiat</span>
+          <div id="copy"><i class="fa fa-share-alt" aria-hidden="true"></i></div>
+            <form method="GET" action="search.php">
+  <input type="text" name="cauta" placeholder="Cauta in manual ...">
+  <button type="submit">Cautare</button>
+</form>
+        </div>
+      </nav>
+    </header>
+    <main>
+        <div class="sidebar">
+            <div class="sidebar-header">
+    <div class="ham">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+    </div>
+    <div class="sidebar-header-wrapper">
+        <div class="version">
+            <span class="title">Saga C.</span>
+        </div>
+                <a class="hmbtnindex" href="glosar-1-kw-1-letter-A.html">
+        <i class="fa fa-folder-open" aria-hidden="true"></i>
+        <span>Glosar</span>
+        </a>
+        <a class="hmbtntoc current" href="topic-1-introducere.html">
+        <i class="fa fa fa-list-ol" aria-hidden="true"></i>
+        <span>Content</span>
+        </a>
+            </div>
+</div>
+            <div class="sidebar-content"><ul><li class="child-0"><a href="topic-1-introducere.html" title="Introducere">Introducere</a></li><li class="child-0"><a href="topic-3-licente.html" title="Licente">Licente</a></li><li class="child-0"><a href="topic-5-consideratii-generale.html" title="Consideratii generale">Consideratii generale</a></li><li class="child-0"><a href="topic-8-configurare.html" title="Configurare">Configurare</a><ul><li class="child-1"><a href="topic-9-configurare-societati.html" title="Configurare societati">Configurare societati</a><ul><li class="child-2"><a href="topic-10-conturi-automate.html" title="Conturi automate">Conturi automate</a></li><li class="child-2"><a href="topic-11-setari-diverse.html" title="Setari diverse">Setari diverse</a></li><li class="child-2"><a href="topic-12-preluare-date-contabile.html" title="Preluare date contabile">Preluare date contabile</a></li><li class="child-2"><a href="topic-13-preluare-stocuri-initiale.html" title="Preluare stocuri initiale">Preluare stocuri initiale</a></li></ul></li><li class="child-1"><a href="topic-14-configurare-salarii.html" title="Configurare salarii">Configurare salarii</a></li><li class="child-1"><a href="topic-15-configurare-utilizatori.html" title="Configurare utilizatori">Configurare utilizatori</a></li></ul></li><li class="child-0"><a href="topic-16-nomenclatoare.html" title="Nomenclatoare">Nomenclatoare</a><ul><li class="child-1"><a href="topic-17-terti.html" title="Terti">Terti</a></li><li class="child-1"><a href="topic-18-agenti.html" title="Agenti">Agenti</a></li><li class="child-1"><a href="topic-19-plan-de-conturi.html" title="Plan de conturi">Plan de conturi</a></li><li class="child-1"><a href="topic-20-gestiuni.html" title="Gestiuni">Gestiuni</a></li><li class="child-1"><a href="topic-21-articole.html" title="Articole">Articole</a></li><li class="child-1"><a href="topic-22-tipuri-de-articole-servicii.html" title="Tipuri de articole-servicii">Tipuri de articole-servicii</a></li><li class="child-1"><a href="topic-23-grupe.html" title="Grupe">Grupe</a></li><li class="child-1"><a href="topic-24-filiale.html" title="Filiale">Filiale</a></li><li class="child-1"><a href="topic-25-salariati.html" title="Salariati">Salariati</a></li><li class="child-1"><a href="topic-273-reges.html" title="REGES">REGES</a></li></ul></li><li class="child-0"><a href="topic-26-operatii.html" title="Operatii">Operatii</a><ul><li class="child-1"><a href="topic-27-articole-contabile.html" title="Articole contabile">Articole contabile</a></li><li class="child-1"><a href="topic-28-intrari.html" title="Intrari">Intrari</a><ul><li class="child-2"><a href="topic-29-intrari---lei.html" title="Intrari - lei">Intrari - lei</a></li><li class="child-2"><a href="topic-30-intrari---valuta.html" title="Intrari - valuta">Intrari - valuta</a></li></ul></li><li class="child-1"><a href="topic-31-iesiri.html" title="Iesiri">Iesiri</a><ul><li class="child-2"><a href="topic-32-iesiri---lei.html" title="Iesiri - lei">Iesiri - lei</a></li><li class="child-2"><a href="topic-33-iesiri---valuta.html" title="Iesiri - valuta">Iesiri - valuta</a></li></ul></li><li class="child-1"><a href="topic-34-imobilizari.html" title="Imobilizari">Imobilizari</a></li><li class="child-1"><a href="topic-35-operatii-cu-stocuri.html" title="Operatii cu stocuri">Operatii cu stocuri</a><ul><li class="child-2"><a href="topic-36-transferuri.html" title="Transferuri">Transferuri</a></li><li class="child-2"><a href="topic-37-bonuri-de-consum.html" title="Bonuri de consum">Bonuri de consum</a></li><li class="child-2"><a href="topic-38-productie.html" title="Productie">Productie</a></li><li class="child-2"><a href="topic-39-inventariere.html" title="Inventariere">Inventariere</a></li><li class="child-2"><a href="topic-40-dare-in-folosinta-obiecte-de-inventar.html" title="Dare in folosinta obiecte de inventar">Dare in folosinta obiecte de inventar</a></li><li class="child-2"><a href="topic-41-dezmembrari.html" title="Dezmembrari">Dezmembrari</a></li><li class="child-2"><a href="topic-42-operatii-speciale.html" title="Operatii speciale">Operatii speciale</a></li><li class="child-2"><a href="topic-43-reglari-descarcare.html" title="Reglari descarcare">Reglari descarcare</a></li><li class="child-2"><a href="topic-44-schimbare-pret-de-vanzare-marfuri.html" title="Schimbare pret de vanzare marfuri">Schimbare pret de vanzare marfuri</a></li></ul></li><li class="child-1"><a href="topic-45-casa-banca-deconturi.html" title="Casa-Banca-Deconturi">Casa-Banca-Deconturi</a></li><li class="child-1"><a href="topic-46-cecuri,-bo-emise-primite.html" title="Cecuri, BO emise-primite">Cecuri, BO emise-primite</a></li><li class="child-1"><a href="topic-47-state-salarii.html" title="State salarii">State salarii</a></li><li class="child-1"><a href="topic-48-inchidere-luna.html" title="Inchidere luna">Inchidere luna</a></li><li class="child-1"><a href="topic-89-e-factura.html" title="e-Factura">e-Factura</a></li></ul></li><li class="child-0"><a href="topic-49-situatii.html" title="Situatii">Situatii</a><ul><li class="child-1"><a href="topic-50-contabile.html" title="Contabile">Contabile</a><ul><li class="child-2"><a href="topic-51-fisa-contului.html" title="Fisa contului">Fisa contului</a></li><li class="child-2"><a href="topic-52-balante.html" title="Balante">Balante</a></li><li class="child-2"><a href="topic-53-cartea-mare.html" title="Cartea Mare">Cartea Mare</a></li><li class="child-2"><a href="topic-54-jurnale-tva.html" title="Jurnale TVA">Jurnale TVA</a></li><li class="child-2"><a href="topic-55-registrul-jurnal.html" title="Registrul jurnal">Registrul jurnal</a></li><li class="child-2"><a href="topic-56-registrul-inventar.html" title="Registrul Inventar">Registrul Inventar</a></li><li class="child-2"><a href="topic-57-bilant.html" title="Bilant">Bilant</a></li><li class="child-2"><a href="topic-58-declaratia-406---saf-t.html" title="Declaratia 406 - SAF-T">Declaratia 406 - SAF-T</a></li></ul></li><li class="child-1"><a href="topic-59-comerciale.html" title="Comerciale">Comerciale</a><ul><li class="child-2"><a href="topic-60-situatii-clienti---furnizori.html" title="Situatii clienti - furnizori">Situatii clienti - furnizori</a></li><li class="child-2"><a href="topic-61-situatie-cecuri-bilete-la-ordin.html" title="Situatie cecuri-bilete la ordin">Situatie cecuri-bilete la ordin</a></li><li class="child-2"><a href="topic-62-fise-articole.html" title="Fise articole">Fise articole</a></li><li class="child-2"><a href="topic-63-situatie-aprovizionari.html" title="Situatie aprovizionari">Situatie aprovizionari</a></li><li class="child-2"><a href="topic-64-situatie-vanzari.html" title="Situatie vanzari">Situatie vanzari</a></li><li class="child-2"><a href="topic-65-situatie-consumuri.html" title="Situatie consumuri">Situatie consumuri</a></li><li class="child-2"><a href="topic-66-situatie-obiecte-inventar.html" title="Situatie obiecte inventar">Situatie obiecte inventar</a></li><li class="child-2"><a href="topic-67-situatie-productie.html" title="Situatie productie">Situatie productie</a></li><li class="child-2"><a href="topic-68-situatie-stocuri.html" title="Situatie stocuri">Situatie stocuri</a></li><li class="child-2"><a href="topic-69-raport-de-gestiune.html" title="Raport de gestiune">Raport de gestiune</a></li><li class="child-2"><a href="topic-269-situatie-ambalaje-sgr.html" title="Situatie ambalaje SGR">Situatie ambalaje SGR</a></li></ul></li></ul></li><li class="child-0"><a href="topic-70-diverse.html" title="Diverse">Diverse</a><ul><li class="child-1"><a href="topic-71-comenzi.html" title="Comenzi">Comenzi</a></li><li class="child-1"><a href="topic-72-situatie-comenzi.html" title="Situatie comenzi">Situatie comenzi</a></li><li class="child-1"><a href="topic-73-contracte.html" title="Contracte">Contracte</a></li><li class="child-1"><a href="topic-74-cheltuieli-venituri-in-avans.html" title="Cheltuieli-Venituri in avans">Cheltuieli-Venituri in avans</a></li><li class="child-1"><a href="topic-76-import-date.html" title="Import date">Import date</a></li><li class="child-1"><a href="topic-77-normare.html" title="Normare">Normare</a></li><li class="child-1"><a href="topic-78-diurne.html" title="Diurne">Diurne</a></li><li class="child-1"><a href="topic-79-situatii-manageriale.html" title="Situatii manageriale">Situatii manageriale</a></li><li class="child-1"><a href="topic-80-masini.html" title="Masini">Masini</a></li><li class="child-1"><a href="topic-81-e-transport.html" title="e-Transport">e-Transport</a></li><li class="child-1"><a href="topic-82-actionari.html" title="Actionari">Actionari</a></li><li class="child-1"><a href="topic-268-declaratia-intrastat.html" title="Declaratia intrastat">Declaratia intrastat</a></li><li class="child-1"><a href="topic-271-declaratia-205.html" title="Declaratia 205">Declaratia 205</a></li></ul></li><li class="child-0"><a href="topic-83-administrare.html" title="Administrare">Administrare</a><ul><li class="child-1"><a href="topic-84-intretinere-bd.html" title="Intretinere BD">Intretinere BD</a></li><li class="child-1"><a href="topic-85-numere-si-serii.html" title="Numere si serii">Numere si serii</a></li></ul></li><li class="child-0"><a href="topic-86-ajutor.html" title="Ajutor">Ajutor</a></li><li class="child-0"><a href="topic-87-utile.html" title="Utile">Utile</a><ul><li class="child-1"><a href="topic-88-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-90-preluare-solduri-tertilor.html" title="Preluare solduri tertilor">Preluare solduri tertilor</a></li><li class="child-1"><a href="topic-92-etichete.html" title="Etichete">Etichete</a></li><li class="child-1"><a href="topic-93-operare-cu-cod-de-bare.html" title="Operare cu cod de bare">Operare cu cod de bare</a></li><li class="child-1"><a href="topic-95-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-96-conectarea-la-casa-de-marcat.html" title="Conectarea la casa de marcat">Conectarea la casa de marcat</a></li><li class="child-1"><a href="topic-97-introducerea-raportului-fiscal-z.html" title="Introducerea raportului fiscal Z">Introducerea raportului fiscal Z</a></li><li class="child-1"><a href="topic-98-productie-pentru-ciclu-de-executie-mai-lung-de-o-luna.html" title="Productie pentru ciclu de executie mai lung de o luna">Productie pentru ciclu de executie mai lung de o luna</a></li><li class="child-1"><a href="topic-99-memento.html" title="Memento">Memento</a></li><li class="child-1"><a href="topic-270-evidentierea-ambalajelor-sgr.html" title="Evidentierea ambalajelor SGR">Evidentierea ambalajelor SGR</a></li><li class="child-1"><a href="topic-274-tratament-fiscal-al-intrarilor.html" title="Tratament fiscal al intrarilor">Tratament fiscal al intrarilor</a></li></ul></li></ul></div>        </div>
+
+    <div class="content" id="content">
+        <div class="content-head">
+                            <div class="title"><h1>Iesiri - lei</h1></div>
+                <div class="navigation"><div class="arrows">
+    <div class="toggleAccordion"><i class="fa fa-expand" aria-hidden="true"></i></div>
+    <div id="left"><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+    <div id="top"><i class="fa fa-arrow-up" aria-hidden="true"></i></div>
+    <div id="right"><i class="fa fa-arrow-right" aria-hidden="true"></i></div>
+</div>
+</div>
+            </div>
+            <div class="content-body">
+                <p>Ecranul permite introducerea vânzărilor în ţară.</p>
+<p>Poate fi utilizat şi la introducerea unor operaţii asimilate vânzărilor, conform tipurilor prezentate mai jos.</p>
+<p>Ecranul conţine două tabele (zone) pentru introducerea datelor:</p>
+<ul>
+<li>tabelul destinat datelor din antetul documentelor - în care se va înregistra tipul, data și numărul documentului, precum și datele clientului;</li>
+<li>tabelul destinat detaliilor documentelor - în care se vor înregistra articolele/serviciile vândute.</li>
+</ul>
+<p>Mai jos regăsiți informații detaliate.</p>
+<p>Înaintea operării ieșirilor, pentru evidența corectă a stocurilor, asigurați-vă că ați definit gestiunile în ecranul dedicat.</p>
+<p>Operaţiunile de adăugare, modificare şi ştergere sunt cele prezentate în capitolul <a title="Consideratii generale" href="topic-5-consideratii-generale.html" aria-invalid="true">Consideratii generale</a>.</p>
+<hr>
+<div class="accordion"><i class="fa fa-plus-square"></i>Tabelul aferent antetului</div>
+<div class="accordion-child hidden">
+<p>Semnificația coloanelor și modul de operare:</p>
+<ul>
+<li><strong>Tip</strong> - listă de selecţie de unde se poate alege tipul documentului de ieșire. Fiecare tip determină modul de preluare al facturii în jurnale si declaraţii, astfel:
+<ul>
+<li><strong>necompletat</strong> - factură. Este tipul selectat in mod implicit, util la introducerea facturilor de ieşire.</li>
+<li><strong>B</strong> - bon de casă.</li>
+<li><strong>A</strong> - aviz de însoţire.</li>
+<li><strong>C</strong> - bon de casă cu cod fiscal.</li>
+<li><strong>f</strong>- factură cu bon fiscal.</li>
+<li><strong>T</strong> - factură cu regim de taxare inversă.</li>
+<li><strong>e</strong> - exceptate de la utilizarea AMEF. Se folosește preponderent pentru tichete şi abonamente.</li>
+<li><strong>S</strong> - ieșire scutită cu drept de deducere.</li>
+<li><strong>D</strong>- scutit cu drept de deducere cf. art. 294 (5 lit. a. și b)- se vor prelua în Decontul de TVA la rândul 14.1.</li>
+<li><strong>d</strong>- scutit cu drept de deducere cf. art. 294 (5 lit. c. și d)- se vor prelua în Decontul de TVA la rândul 14.2.</li>
+<li><strong>U</strong> - servicii cf. art. 311 (agenţii de turism). Se folosește pentru înregistrarea unei facturi cu TVA la marja de profit, întrucât permite modificarea valorii TVA.</li>
+<li><strong>H</strong> - achiziții cf. art. 312 (second-hand). Se folosește pentru înregistrarea unei facturi cu TVA la marja de profit, întrucât permite modificarea valorii TVA.</li>
+<li><strong>n</strong> - operațiuni neimpozabile. Nu apar în jurnale și declarații.</li>
+<li><strong>M</strong> - factură simplificată. Se utilizează pentru introducerea documentelor ce reprezintă facturi simplificate.</li>
+<li><strong>L</strong> - factură emisă de client.</li>
+</ul>
+</li>
+<li><strong>Nr. doc.</strong> - numărul documentului de ieșire (al facturii, bonului fiscal, etc.). Se va adauga automat, în ordine crescătoare, pornind de la "1", poate fi completat manual sau se va prelua automat numerotarea în funcție de setările efectuate în ecranul <a title="Numere și serii" href="topic-85-numere-si-serii.html" aria-invalid="true">Numere și serii</a>.</li>
+<li><strong>Cod</strong> - codul clientului. La adăugarea unei ieșiri, clientul poate fi selectat după cod, denumire sau cod fiscal. Dacă se optează introducerea după denumire sau cod fiscal, câmpul Cod se va completa automat la alegerea clientului în câmpul următor.</li>
+<li><strong>Client</strong> - numele clientului. Dacă terțul este deja creat, la completarea numelui, acesta va fi selectat din listă. Dacă acesta nu există in nomenclator, pentru introducere se tastează numele complet, sau codul fiscal, urmat de tasta sau , iar programul va genera mesajul "Acest client nu este introdus. Îl adăugăm?". Confirmarea mesajului, va deschide ecranul "Clienți" unde va fi completată o poziție cu denumirea terțului, sau, in cazul in care s-a introdus codului fiscal, se va realiza preluarea automată a datelor (denumire, adresă, număr de înregistrare de la Registrul Comerțului) conform informațiilor disponibile la ANAF. Preluarea automată a datelor de pe platforma ANAF este posibilă doar dacă există o conexiune la internet.</li>
+<li><strong>TVA I</strong> - se bifează pentru facturile cu TVA la încasare. Această opțiune poate fi bifată automat, în funcție de setările efectuate în ecranul "Configurare societati".</li>
+<li><strong>Data</strong> - data documentului de ieșire. Aceasta va fi şi data articolului contabil generat.</li>
+<li><strong>Scadent</strong> - data scadenţei. Se va completa automat în funcţie de valoarea setată în nomenclatorul de clienți la câmpul "zile scadenţă" şi de setările efectuate în ecranul Configurare societăţi - <a title="Setari diverse" href="topic-11-setari-diverse.html" aria-invalid="true">Setari diverse</a>.</li>
+<li><strong>Nr. bonuri</strong> - apare dacă ați selectat tipul "B-bon de casă". Util pentru generarea corectă a D394.</li>
+<li><strong>Valoare, TVA, Total, Neachitat</strong> - aceste câmpuri nu pot fi accesate de către utilizator, vor fi calculate şi completate automat de către program, în funcţie de datele introduse în detaliile facturii.</li>
+<li><strong>Adaos</strong> - coloană vizibilă doar dacă utilizați modulul de stocuri. Va fi completată automat de program, în funcţie de datele din detaliile facturii.</li>
+<li><strong>Curs ref.</strong> - coloană vizibilă doar dacă utilizați modulul de stocuri. Se completează în situația în care au fost definite articole pentru care s-a bifat opțiunea "valută". Astfel, preţul de vânzare va fi calculat prin înmulţirea cursului valutar cu preţul de vânzare setat. Pentru a vizualiza cursul de referință pe factură, este necesar să bifați opțiunea "Tipărește cursul de referință", din panoul "Tipărire" - "Configurare formular".</li>
+<li><strong>ID incarcare SPV</strong>- se va completa automat ID aferent e-facturii, după transmiterea în SPV.</li>
+</ul>
+<p>Coloane vizibile doar după apăsarea butonului de extindere <img class="" src="/images/hmfile_hash_3b42b1c5.png" alt="Extindere lista">:</p>
+<ul>
+<li><strong>Data document</strong> - se folosește pentru înscrierea datei reale a facturii, în cazul în care se operează cu întârziere, pentru a fi cuprinsă în secțiunea de regularizări a declarației 300.</li>
+<li><strong>Agent</strong> - coloană vizibilă doar dacă ați activat modulul de stocuri. După configurarea acestora în ecranul "Agenti", vor putea fi selectați din lista derulantă. Mai multe informați regăsiți în sectiunea dedicată - <a title="Agenti" href="topic-18-agenti.html" aria-invalid="true">Agenti</a>.</li>
+<li><strong>Informații suplimentare</strong> - vor apărea și pe factura tipărită.</li>
+<li><strong>Cont debit accize, Cont credit accize, Accize</strong> - se introduc numai dacă se facturează accize.</li>
+</ul>
+<p>După introducerea și salvarea datelor din antetul documentelor de intrare, se poate trece la operarea detaliilor în tabelul din partea inferioară a ecranului.</p>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Tabelul aferent detaliilor</div>
+<div class="accordion-child hidden">
+<p>Semnificația coloanelor și modul de operare:</p>
+<ul>
+<li><strong>Tip</strong> - coloană vizibilă doar în versiunea completă. Permite selectarea tipului de articol din cele existente în ecranul <a title="Tipuri de articole/servicii" href="topic-22-tipuri-de-articole-servicii.html" aria-invalid="true">Tipuri de articole/servicii</a>. Dacă ieșirea se va contabiliza fără a se utiliza un articol, se va păstra tipul implicit "Nedefinit" ceea ce va permite introducerea manuală a explicaţiei şi a contului.</li>
+<li><strong>Gestiune</strong> - coloană vizibilă doar dacă utilizați modulul de stocuri și tipul este diferit de "Nedefinit". Permite selectarea unei gestiuni cantitativ - valorice, din cele definite în ecranul <a title="Gestiuni" href="topic-20-gestiuni.html" aria-invalid="true">Gestiuni</a>.</li>
+<li><strong>Denumire articol/serviciu</strong> - se completează manual denumirea bunurilor sau serviciilor achiziţionate dacă se folosește doar modulul de contabilitate sau se operează pe tipul "Nedefinit" în versiunea completă. Aceasta poate fi sugerată la tastarea unei litere sau grup de litere pentru a fi completată automat, dacă denumirea introdusă corespunde cu o inregistrare anterioară. Apăsarea tastei săgeată-jos va derula denumirea articolelor inregistrate pentru a facilita selectarea acestora. În cazul versiunii complete, dacă se alege un tip diferit de "Nedefinit", este obligatorie selectarea/crearea unui articol corespunzător tipului de articol ales.</li>
+<li><strong>Cod</strong> - coloană vizibilă doar în versiunea integrată, dacă tipul este diferit de "Nedefinit". După alegerea articolului se va completa automat și acest câmp sau din lista derulantă puteți selecta articolul dorit în funcție de codul acestuia.</li>
+<li><strong>UM</strong> - unitatea de măsură. Pentru gestiunile cantitativ - valorice, după selectarea articolului, se va completa automat cu unitatea de măsură definită pentru acesta în ecranul "Articole".</li>
+<li><strong>TVA %</strong> - cota de TVA înscrisă pe factură pentru bunul sau serviciul vândut. Dacă ați selectat un articol, se va completa automat cota de TVA definită pentru acesta în ecranul "Articole".</li>
+<li><strong>Cantitate</strong> - cantitatea vândută. Chiar dacă se referă la ieșiri de servicii, cantitatea nu trebuie să fie zero, altfel va fi generat un mesaj de eroare. Dacă se apasă tasta &lt;săgeată-sus&gt;, câmpul se majorează cu 1, iar la &lt;săgeată-jos&gt; cu -1. Poate fi utilizată și tasta “+” pentru a facilita calculul cantităţii într-un document.</li>
+<li><strong>Preţ unitar</strong> - preţul unitar de vânzare fără TVA. Acesta poate fi calculat de către program dacă se completează valoarea sau suma care reprezintă totalul, în câmpurile corespunzătoare. Dacă se efectuează vânzarea dintr-o gestiune cantitativă, după alegerea articolului, prețul de vânzare va fi preluat automat dacă a fost înregistrat anterior în ecranul "Articole". Dacă ați setat două prețuri de vânzare pentru articolul respectiv, în acest câmp se va putea alege prețul dorit din listă.</li>
+<li><strong>Preț unitar cu TVA</strong>- acestă coloană va fi afișată doar dacă se apasă butonul <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABMSURBVChTpY7BCQAwCAMdz2VdzA3ysvhoqVRtoY+DgBcJiYi9AMBIVe1GkJl5HfY8OT53hXRGVSg3Z4W/z5XoBLkTnXJzxpI9vADABgfUlwWRP44NAAAAAElFTkSuQmCC"> poziționat în câmpul preț unitar și permite introducerea prețului de vânzare unitar cu TVA, în funcție de care vor fi calculate și celelalte câmpuri.</li>
+<li><strong>Valoare</strong> - valoarea bunului sau serviciului vândut. Se calculează automat dacă sunt completate valorile in câmpurile "Cantitate" şi "Preţ unitar". De asemenea, este permisa adaugarea manuală, sau modificarea acesteia. Suma valorilor din această coloană va completa automat câmpul "Valoare" din antetul facturii.</li>
+<li><strong>Total</strong> - valoarea inclusiv TVA a bunurilor sau serviciilor aprovizionate.Se calculează automat dacă sunt completate valorile in câmpurile "Cantitate" şi "Preţ unitar". De asemenea, este permisă adaugarea manuală, sau modificarea acesteia. Suma valorilor din această coloană va completa automat câmpul "Total" din antetul facturii.</li>
+<li><strong>TVA</strong> - valoarea TVA facturată pentru bunurile sau serviciile vândute. Calculat automat pe baza datelor introduse anterior, dar poate fi şi introdus sau modificat de către utilizator. Suma valorilor din această coloană va completa câmpul TVA din antet.</li>
+<li><strong>Cont</strong> - se va introduce contul în care se va înregistra valoarea de vânzare a bunului sau serviciului vândut. Pentru mărfurilor ieșite dintr-o gestiune global - valorică, este necesar să completați contul analitic definit pentru aceasta. În cazul gestiunilor cantitativ - valorice se va prelua automat contul setat pentru tipul de articol ales.</li>
+<li><strong>Adaos</strong> - coloană vizibilă doar dacă utilizați modulul de stocuri. La evidența marfurilor cantitativ-valorice, se va calcula automat de către program, după adăugarea prețului de vânzare. Nu poate fi introdus sau modificat de către utilizator.</li>
+<li><strong>Informații suplimentare</strong> - datele introduse în acest câmp vor fi afișate sub denumirea articolului, în situația în care se tipărește. Astfel, se poate utiliza și în cazul în care se înregistrează un articol/serviciu ce are o denumire mai mare decât numărul de caractere permise în câmpul "Denumire".</li>
+<li><strong>Activitate</strong> - coloană vizibilă doar dacă au fost definite anterior activități/centre de profit în ecranul <a title="Grupe" href="topic-23-grupe.html" aria-invalid="true">Grupe</a>.</li>
+</ul>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Butoane funcționale</div>
+<div class="accordion-child hidden">
+<p>Butoanele cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea <a title="Consideratii generale" href="topic-5-consideratii-generale.html" aria-invalid="true">Consideratii generale</a>. Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:</p>
+<p><img class="" src="/images/hmfile_hash_b48cdeb4.png" alt="B filtrare">oferă acces la ecranul de filtrare a datelor din ecranul curent. Filtrarea presupune stabilirea unor parametri în funcţie de care programul va afişa în ecranul curent doar acele date care respectă parametrii specificaţi în ecranul de filtrare.   Procedura este utilă în cazurile în care se dorește validarea/devalidarea mai multor documente concomitent. Astfel, în cazul în care se efectuează o filtrare numai după documente devalidate, apasarea butonului "Validez" va provoca validarea tuturor documentelor filtrate. La fel, în cazul în care se efectuează o filtrare numai după documente validate, apasarea butonului "Devalidez" va provoca devalidarea tuturor documentelor filtrate.</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAVCAYAAABc6S4mAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACKSURBVEhLxdBhDoAgCIBRztmZuoqH8gbcoEabDQkRU+aPt9VGfBog4hXpCaSUQlSBnPNSwwE4Tpcy3w3ID/gSS5l3BeS7Rs6U52UBqcwPB0Y1A/JEf0PmDWaXEzNAZpaTbmBWM8B/j4Uv02wMAFSDGs9MN6CdmvAZy94bePBlmmZglU8gwhuIg9cNimtW2NQyJZ0AAAAASUVORK5CYII=">acest buton, poziționat în antetul ecranului, deschide programul dedicat importului de ieșiri din fișiere PDF (Uber, Bolt, Lime), CSV (Bolt, Bolt Food, Clever, Free Now, Shopify, Bringo, Booking, Amazon, Stripe), XLS (Bolt Food, BlackCab, Bringo, Yango, Emag, Tazz by Emag, Doraly Marketplace) și  fișiere P7B, P7M, P7S  generate de casa de marcat.</p>
+<p>Prin apăsarea "click dreapta" pe același buton se deschide ecranul de import ce permite importul din fișiere XLS, CSV, TXT, DBF sau XLSX. <br>Același buton, din tabelul inferior, permite importul articolelor și cantităților din fișiere XLS, CSV, TXT, DBF sau XLSX. După selectarea fișierului alegeți și câmpurile pentru import, din lista derulantă ce se deschide după selectarea câmpului "Nepreluat".</p>
+<p><img class="" src="/images/hmfile_hash_6cb3e2f7.png" alt="B import Ecommerce si extrase">deschide programul dedicat importului de facturi din platforme de eCommerce pentru Emag, MerchantPro, PrestaShop, WooCommerce. Datele de conectare specifice fiecarei platforme va pot fi comunicate de administratorul acesteia.</p>
+<p><img class="" src="/images/hmfile_hash_c61a4625.png" alt="B email">permite transmiterea automată prin e-mail a facturii selectate, dacă adresa de e-mail a fost completată pentru clientul respectiv în ecranul "Clienti" și există un client de e-mail configurat în calculator (Outlook, Thunderbird, etc.) sau au fost setate datele serverului de e-mail folosit (conform instrucțiunilor din secțiunea <a title="Intretinere BD" href="topic-84-intretinere-bd.html" aria-invalid="true">Intretinere BD</a>).</p>
+<p><img class="" src="/images/hmfile_hash_69892fbc.png" alt="B operare rapida">buton vizibil doar dacă utilizați modulul de stocuri, utilizat pentru <a title="operare rapida (cu coduri de bare)" href="topic-93-operare-cu-cod-de-bare.html" aria-invalid="true">operare rapida (cu coduri de bare)</a>.</p>
+<p><img class="" src="/images/hmfile_hash_c8ac235c.png" alt="B etransport">transmite informațiile din înregistrarea curentă în ecranul <a title="e-Transport" href="topic-81-e-transport.html" aria-invalid="true">e-Transport</a>.</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAYAAACJfM0wAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABcSURBVDhP7c5BCsAgDERRT9wz9aYpgSo6GWNTEDf5MBvRh0U2lXBrCpfrHhaNwgyK4gb2gPr7Oq8QjHl3z8J65o21hBGZDUu4ZWCNPVwNozDGoH6sT/CfEn4TeQBaHS1kb855vwAAAABJRU5ErkJggg==">vizibil după selectarea unei facturi transmise în e-factura, acest buton deschide directorul în care au fost salvate fișierele generate la transmiterea facturii.</p>
+<p><img class="" src="/images/hmfile_hash_a36d95fa.png" alt="B detalii">din antetul ecranului, deschide panoul ce cuprinde încasările asociate facturii selectate. Acestea se pot vizualiza folosind butonul <img class="" title="graphic" src="/images/bsalt.png" alt="graphic">. Același buton, din tabelul inferior, după selectarea unui articol, în gestiunea cantitativă, permite vizualizarea ultimelor 5 intrări în gestiunea aleasă, precum și a prețului de vânzare setat pentru articolul respectiv.</p>
+<p><img class="" src="/images/bdiscount.png" alt="Bdiscount">- buton de calcul şi introducere discounturi. La accesarea lui, se va deschide fereastra ce permite repartizarea discountului valoric sau procentual. Bifarea opţiunii “Discount financiar” sau “Reducere comercială” va genera o poziţie distinctă în cadrul ieșirii, folosind conturile specifice, 667 sau 709, după caz. Dacă discountul diminuează preţul de vânzare, trebuie debifate ambele opţiuni, “Discount financiar”, respectiv “Reducere comercială”.</p>
+<p><img class="" src="/images/hmfile_hash_01ae50fa.png" alt="B serii">buton vizibil doar în versiunea completă. Poate fi utilizat pentru introducerea seriilor articolelor (utile dacă se doreşte urmărirea seriilor produselor recepţionate, în special dacă se oferă garanţie). Funcția de căutare din partea de detalii poate fi utilizată și pentru identificarea seriilor, cu condiția ca acestea sa fie introduse exact.</p>
+<p><img class="" src="/images/hmfile_hash_f587657e.png" alt="B reglare stornare">butonul este afișat după introducerea unei facturi negative (se completează semnul "-" la cantitate) și va permite asocierea facturii pozitive corespunzătoare. În cazul facturilor negative cu TVA la încasare, reglarea stornării este obligatorie înaintea validării documentului.</p>
+<p><img class="" src="/images/hmfile_hash_fd39a79e.png" alt="B asociere aviz">butonul este vizibil la operarea unei facturi pentru același client, pentru are anterior s-a înregistrat și validat un aviz (tipul documentului ales în coloana "Tip" din antet este "A" - Aviz). Butonul permite asocierea informaţiilor operate prin avize cu cele din facturi, înainte de validarea documentului. La introducerea facturii nu trebuie introdusă nicio informaţie în tabelul de jos care conţine detaliile documentului, doar se apasă “Asociere aviz” și se bifează avizul (dacă este facturat integral) sau se completează cantitatea facturată.</p>
+<p><img class="" src="/images/hmfile_hash_8ea94bd1.png" alt="B tiparire bon fiscal">butonul este vizibil doar dacă anterior a fost selectată casa de marcat pentru tipărirea bonului. Vedeți și detaliile privind <a title="Conectarea la casa de marcat" href="topic-96-conectarea-la-casa-de-marcat.html" aria-invalid="true">conectarea la casa de marcat</a>.</p>
+<p>După efectuarea tuturor operațiilor ce țin de înregistrarea ieşirii, pot fi accesate butoanele funcționale poziționate în partea de jos a ecranului, și anume:</p>
+<p><img class="" src="/images/hmfile_hash_340402d9.png" alt="B validez">închide documentul curent, blocând accesul la funcţiile de modificare/ştergere a acestuia. La accesarea butonului, se va genera articolul contabil corespunzător.</p>
+<p><img class="" src="/images/hmfile_hash_651a457b.png" alt="B incasare">devine activ numai în urma validării documentului. Permite introducerea unei încasări integrale sau parţiale pentru documentul de ieșire selectat. De asemenea, se poate selecta contul dorit pentru înregistrarea încasării. Implicit contul va fi 5311, iar ulterior va fi preluat automat ultimul cont folosit pentru acel client.</p>
+<p>După înregistrarea încasării, automat se vor realiza următoarele acţiuni:</p>
+<p>- coloana "Neachitat" din tabelul antet va fi recalculată prin diminuarea valorii curente cu încasarea introdusă;</p>
+<p>- în Registrul de Casă sau Jurnalul de bancă se va genera o înregistrare de tipul 5xxx (5311, 5121, etc.) în funcţie de contul ales de utilizator pentru înregistrarea plăţii = 4111.xxxxx (analiticul definit pentru clientul curent).</p>
+<p><img class="" src="/images/hmfile_hash_eb0d54e9.png" alt="B stornez">generează un document de stornare a documentului de ieșire curent (selectat). Va rezulta o înregistrare devalidată, cu valorea negativa a documentului selectat. Datele vor putea fi modificate de utilizator.</p>
+<p><img class="" src="/images/hmfile_hash_2842fed3.png" alt="B garantie">buton vizibil doar în versiunea completă. Permite listarea unui document de garanţie pentru produsele selectate din factura de ieşire. Pentru listare, se completează numărul de certificat de garanţie, durata oferită pentru garanţie şi se bifează coloana "Ok" pentru articolele dorite. Utilizatorul poate modifica/introduce diverşi parametri în ecranul de setare a listării.</p>
+<p><img class="" src="/images/hmfile_hash_182b2a33.png" alt="B NC">afişează pe ecran nota contabilă generată la apăsarea butonului "Validare".</p>
+<p><img class="" src="/images/hmfile_hash_e8c644eb.png" alt="B tiparire all">generează documentul curent în formatul ales în pagina de tipărire. De asemnenea, pune la dispoziţie un ecran funcţional în care se poate configura modul de listare pe documentele tipărite.</p>
+<p>Puteti obţine un model de fişier XML cu date alegând opţiunea "Formular PDF" din lista situată în partea superioară a ecranului de tipărire. În folderul TEMP&#92;Facturi se va copia, pe lânga PDF, şi XML-ul aferent facturii.</p>
+<p>Din pagina "Mai multe" aveți posibilitatea de a adăuga un link de plată pe factură, prin euPlătesc.ro sau Netopia/MobilPay.</p>
+<p><img class="" src="/images/hmfile_hash_80f38c60.png" alt="B devalidez">redeschide documentul curent, redând accesul la funcţiile de modificare/ştergere a acestuia. Şterge nota contabilă generată la validarea documentului. În cazul în care s-a înregistrat plată pentru documentul care se devalidează, se va atenţiona asupra acestui fapt, programul propunând şi ştergerea acesteia.</p>
+</div>
+<hr>
+<p class="warning">Observații:</p>
+<hr>
+<ul>
+<li><em>Câmpul "Tip" va fi afișat pe fundal:</em>
+<ul>
+<li><em><span class="rosu">roșu</span> - dacă ați selectat o casă de marcat în ecranul "Configurare societăți" și nu ați tipărit bonul fiscal (doar pentru înregistrările de tip "B- bon de casă și C- bon de casă cu cod fiscal");</em></li>
+<li><em><span class="gri">gri</span> -dacă factura a fos transmisă în SPV prin ecranul e-Facturi.</em></li>
+<li><em><span class="albastru-deschis">albastru</span></em><em>-pentru facturile transmise prin e-mail.</em></li>
+</ul>
+</li>
+<li><em>Sunt considerate autofacturi ieșirile pentru care clientul ales are același cod fiscal cu cel completat în ecranul "Configurare societati".</em></li>
+<li><em>Pentru documentele nevalidate, nu se generează notă contabilă, astfel că nu vor fi luate în calcul de către program la generarea situaţiilor/rapoartelor.</em></li>
+<li><em>Facturile nevalidate, ca şi cele validate dar fara detalii, vor fi considerate anulate în D394.</em></li>
+<li><em>Butonul "Validare" va fi inactiv dacă la definirea clientului s-a modificat contul analitic al acestuia, utilizându-se conturi din clasa 5. În această situaţie, substituind contul 4111 cu unul din clasa 5 (5311 de exemplu), documentul este achitat direct, iar plata va fi reflectată şi în Registrul de casă sau Jurnalul de.bancă, după caz.</em></li>
+</ul>
+<hr>
+<p class="vezi"><strong>Vezi şi:</strong></p>
+<hr>
+<p class="grid--100 pull--left"><a title="Configurarea gestiunilor în Saga C" href="https://www.youtube.com/watch?v=d2r51Yv-_9o"><img src="https://i.ytimg.com/vi/d2r51Yv-_9o/maxresdefault.jpg" alt="" width="49%"></a><a title="Operarea intrărilor - ieșirilor în gestiune global valorică în Saga C" href="https://www.youtube.com/watch?v=F_4TMVPbt4w"><img src="https://i.ytimg.com/vi/F_4TMVPbt4w/maxresdefault.jpg" alt="" width="49%"></a></p>
+<p class="grid--100 pull--left"><a class="youtube-link" title="Generarea facturii proforme" href="https://www.youtube.com/watch?v=SsGojvpBGxM"><img src="https://i.ytimg.com/vi/SsGojvpBGxM/maxresdefault.jpg" alt="" width="49%"> <span><i class="fa fa-play-circle" aria-hidden="true"></i></span></a> <a class="youtube-link" title="Emiterea facturii în baza bonului fiscal în programele Saga" href="https://www.youtube.com/watch?v=kNNSdIY4R7o"><img src="https://i.ytimg.com/vi/kNNSdIY4R7o/maxresdefault.jpg" alt="" width="49%"><span><i class="fa fa-play-circle" aria-hidden="true"></i></span></a></p>
+<p class="grid--100 pull--left"><a title="Operarea bacșișului în Saga C" href="https://www.youtube.com/watch?v=ewCSeoS8_W4"> <img src="https://i.ytimg.com/vi/ewCSeoS8_W4/maxresdefault.jpg" alt="Instalarea programelor Saga" width="49%"></a> <a title="Operarea ieșirilor pentru bunuri second hand în programele Saga" href="https://www.youtube.com/watch?v=-3roA3OwbEk"> <img src="https://i.ytimg.com/vi/-3roA3OwbEk/maxresdefault.jpg" alt="Operarea ieșirilor pentru bunuri second hand în programele Saga" width="49%"></a></p>
+<p><a title="Saga Facturare pentru mobil" href="https://www.youtube.com/watch?v=TDCpBP-d6fU"> <img src="https://i.ytimg.com/vi/TDCpBP-d6fU/maxresdefault.jpg" alt="Instalarea programelor Saga" width="49%"></a> <a title="Conexiunea între MarketLine și programele Saga" href="https://www.youtube.com/watch?v=evxjKByE1BM"> <img src="https://i.ytimg.com/vi/evxjKByE1BM/maxresdefault.jpg" alt="Instalarea programelor Saga" width="49%"></a></p>
+<p><a title="Reglarea facturilor negative în programele Saga" href="https://www.youtube.com/watch?v=bNBsbs8EFqc"> <img src="https://i.ytimg.com/vi/bNBsbs8EFqc/maxresdefault.jpg" alt="" width="49%"></a></p>
+<hr>
+<p class="vezi"><strong>Citeste şi:</strong></p>
+<hr>
+<ul>
+<li><a title="Introducerea raportului fiscal Z" href="topic-97-introducerea-raportului-fiscal-z.html" aria-invalid="true">Introducerea raportului fiscal Z</a></li>
+<li><a title="Operare cu cod de bare" href="topic-93-operare-cu-cod-de-bare.html" aria-invalid="true">Operare cu cod de bare</a></li>
+<li><a title="Operare rapida din iesiri" href="topic-88-operare-rapida-din-iesiri.html" aria-invalid="true">Operare rapida din iesiri</a></li>
+<li><a title="Detalii despre conectarea la casa de marcat" href="topic-96-conectarea-la-casa-de-marcat.html" aria-invalid="true">Detalii despre conectarea la casa de marcat</a></li>
+<li><a title="e-Factura - informații privind transmiterea" href="topic-89-e-facturi.html" aria-invalid="true">e-Factura - informații privind transmiterea</a></li>
+<li><a title="e-Factura. e-Transport. Neclarități și unele clarificări." href="https://www.sagasoftware.ro/e-factura-e-transport-neclaritati-si-unele-clarificari/" target="_blank" rel="noopener" aria-invalid="true">e-Factura. e-Transport. Neclarități și unele clarificări.</a></li>
+<li><a title="e-Factura. Clarificari" href="https://www.sagasoftware.ro/e-factura-clarificari/" target="_blank" rel="noopener" aria-invalid="true">e-Factura. Clarificari</a></li>
+<li><a title="e-Factura, noi modificări." href="https://www.sagasoftware.ro/e-factura-noi-modificari/" target="_blank" rel="noopener" aria-invalid="true">e-Factura, noi modificări.</a></li>
+<li><a href="topic-270-evidentierea-ambalajelor-sgr.html" target="_blank" rel="noopener" aria-invalid="true">Evidențierea ambalajelor SGR</a></li>
+</ul>            </div>
+                </div>
+        <div id="myModal" class="modal hidden">
+        <div class="blanket hidden"></div>
+        <div class="modal-content">
+            <div class="close" id="closeModal"><span>&times;</span></div>
+            <iframe width="720" height="404" title="Tutorial video" name="contents" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+    </main>
+    <footer class="footer">
+	<div>SAGA Software © 2026</div>
+	<ul class="footer-menu">
+		<li><a href="//sagasoft.ro/index.php">Home</a></li>
+		<li><a href="//sagasoft.ro/linkuri.php">Linkuri</a></li>
+		<li><a href="//sagasoft.ro/tutoriale-video.php">Tutoriale</a></li>
+		<li><a href="http://www.sagasoftware.ro/" target="_blank">Blog</a></li>
+		<li><a href="http://forum.sagasoft.ro/index.php" target="_blank">Forum</a></li>
+		<li><a href="//sagasoft.ro/contact.php">Contact</a></li>
+		<li><a href="//sagasoft.ro/distributie.php">Distribuţie</a></li>
+		<li><a href="//sagasoft.ro/politica-confidentialitate.php">Politica de confidențialitate</a></li>
+		<li>
+		<a href="//www.facebook.com/pages/Saga-Software/128551477201741" target="_blank" title="Sagasoft pe Facebook">
+		<svg role="img" class="sg-logo"><use xlink:href="#facebookLogo"></use></svg>
+		</a>
+		</li>
+	</ul>
+</footer>
+</body>
+</html>

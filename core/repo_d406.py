@@ -72,7 +72,8 @@ def select_facturi_3(cur, di, ds):
     cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, "
                 "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
                 "moneda, curs_bnr, total_lei, tva_lei, "  # [A1] conversia in lei (SAF-T CurrencyCode=RON)
-                "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie "
+                "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie, "
+                "bon_fiscal_nr "   # [punctul 3] factura emisă pe baza bonului fiscal -> TaxCode 310327
                 "FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
                 "AND " + _doc_fiscal(None) + " AND " + _status_declarabil(None) + " "
                 "ORDER BY id", (di, ds))

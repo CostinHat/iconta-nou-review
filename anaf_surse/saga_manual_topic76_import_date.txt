@@ -1,0 +1,395 @@
+
+Import date - Manual de utilizare Saga C.
+Copiat
+Cautare
+Saga C.
+Glosar
+Content
+Introducere
+Licente
+Consideratii generale
+Configurare Configurare societati Conturi automate
+Setari diverse
+Preluare date contabile
+Preluare stocuri initiale
+Configurare salarii
+Configurare utilizatori
+Nomenclatoare Terti
+Agenti
+Plan de conturi
+Gestiuni
+Articole
+Tipuri de articole-servicii
+Grupe
+Filiale
+Salariati
+REGES
+Operatii Articole contabile
+Intrari Intrari - lei
+Intrari - valuta
+Iesiri Iesiri - lei
+Iesiri - valuta
+Imobilizari
+Operatii cu stocuri Transferuri
+Bonuri de consum
+Productie
+Inventariere
+Dare in folosinta obiecte de inventar
+Dezmembrari
+Operatii speciale
+Reglari descarcare
+Schimbare pret de vanzare marfuri
+Casa-Banca-Deconturi
+Cecuri, BO emise-primite
+State salarii
+Inchidere luna
+e-Factura
+Situatii Contabile Fisa contului
+Balante
+Cartea Mare
+Jurnale TVA
+Registrul jurnal
+Registrul Inventar
+Bilant
+Declaratia 406 - SAF-T
+Comerciale Situatii clienti - furnizori
+Situatie cecuri-bilete la ordin
+Fise articole
+Situatie aprovizionari
+Situatie vanzari
+Situatie consumuri
+Situatie obiecte inventar
+Situatie productie
+Situatie stocuri
+Raport de gestiune
+Situatie ambalaje SGR
+Diverse Comenzi
+Situatie comenzi
+Contracte
+Cheltuieli-Venituri in avans
+Import date
+Normare
+Diurne
+Situatii manageriale
+Masini
+e-Transport
+Actionari
+Declaratia intrastat
+Declaratia 205
+Administrare Intretinere BD
+Numere si serii
+Ajutor
+Utile Operare rapida din iesiri
+Preluare solduri tertilor
+Etichete
+Operare cu cod de bare
+Operare rapida din iesiri
+Conectarea la casa de marcat
+Introducerea raportului fiscal Z
+Productie pentru ciclu de executie mai lung de o luna
+Memento
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Import date
+Ecranul este destinat importului din fișiere XML generate din programe Saga sau din alte aplicații, care respectă structura prezentată mai jos.
+Observați: Importul din arhiva generată din Saga a fost eliminat. Operarea în aceeasi baza de date, de pe mai multe calculatoare, se va putea realiza prin sistemul client-server sau prin Saga WEB.
+Import date din fisiere XML
+Această pagină permite importul fișierelor de tip XML generate din programe Saga sau din alte aplicații, dar care respectă structura prezentată mai jos.
+Pentru efectuarea importului se va alege calea către fișierele ce urmează a fi importate. Tabelul afişat va fi populat cu pozițiile aferente fișierelor ce urmează a fi importate.
+Se va putea opta pentru modul de sincronizare, din câmpul dedicat. Dacă nu se completează această coloana, se importă toate pozițiile. Altfel, sincronizarea se realizează după campul selectat. De exemplu, dacă sincronizarea se face după "Nr.+data", se vor importa doar documentele cu număr şi dată care nu există deja în baza de date.
+De asemenea, se poate opta pentru actualizarea pozițiilor existente deja din nomenclatoare, conform cu informațiile din fișierul importat, prin bifarea câmpului corespunzător.
+Butoane funcționale:
+-  va efectua importul propriuzis.
+-  deschide tabelul în care vor fi afișate înregistrările ce urmează a fi importate.
+-  anulează importul. Pentru anularea importului de intrări şi ieşiri, validate grupat după import, trebuie ca acestea să fie devalidate în prealabil în ecranele de intrări sau ieşiri.
+-  în cazul intrărilor şi ieşirilor datele importate nu sunt validate. Pentru validarea automată se folosește acest buton. În acest caz, odată cu validarea se vor genera şi articolele contabile aferente intrărilor sau ieşirilor importate.
+Observații:
+Înainte de import, efectuați o salvare a bazei de date.
+Facturile în format XML se vor importa în ecranul "Intrari" când codul fiscal al firmei se regăsește la eticheta ClientCIF din XML și în ecranul"Ieșiri" când se găsește le eticheta FurnizorCIF. Articole se vor putea identifica după codul de bare sau codul propriu dacă acestea se regăsesc în XML. Altfel, liniile vor fi introduse pe tip "Nedefinit". Gestiunea completată va fi cea implicită.
+Dacă fișierele ce urmează a fi importate sunt arhivate, trebuie să le dezarhivaţi, programul căutând fişiere cu numele descris în secțiunea structura fisierelor acceptate pentru import, prezentată mai jos.
+Dacă introduceți o coloană numită „NR. DOC” în fișierul de import de articole contabile (regasiți mai jos structura aferentă), care să conțină numărul documentului plătit/încasat, programul va asocia plata facturii respective. Factura trebuie sa fie operată pe contul de terț din fișierul de import și să aibă suma neachitată mai mare sau egală cu suma plătită/ încasată. Dacă nu  aveti această coloană în fișierul de import, corelațiile dintre facturi și plăți/încasări este necesar să fie refăcute din ecranul Situație furnizori/clienți , butonul "Reglare...".
+Nomenclatoarele se importă exclusiv în functie de codul intern. De aceea, în toate locațiile implicate în transferul de date trebuie sa fie realizată aceeași configurație de coduri sau să nu existe suprapuneri (la acelasi cod - înregistrări diferite).
+Structura fișierelor de tip XML
+Facturi
+Numele fişierului trebuie să fie în formatul următor: F_<cod-fiscal>_<numar-factura>_<data-factura>.xml .
+Pentru a importa mai multe facturi concomitent, repetaţi secvenţa <Factura> .
+Dacă tag-ul <FurnizorCIF>  reprezinta codul fiscal al societăţii, factura se va importa în ecranul "Ieșiri". Altfel, importul se va efectua în ecranul "Intrări".
+Puteti obţine un model de XML cu date folosind tipărirea din ecranul "Ieșiri" și alegând opţiunea "Formular PDF" din lista situată în partea superioară a ecranului de tipărire. În folderul TEMP\Facturi se va copia, pe lânga PDF, și XML-ul aferent facturii.
+<Facturi>
+<Factura>
+<Antet>
+<FurnizorNume>
+<FurnizorCIF>
+<FurnizorNrRegCom>
+<FurnizorCapital>
+<FurnizorTara>
+<FurnizorLocalitate>
+<FurnizorJudet>
+<FurnizorAdresa>
+<FurnizorTelefon>
+<FurnizorMail>
+<FurnizorBanca>
+<FurnizorIBAN>
+<FurnizorInformatiiSuplimentare>
+<GUID_cod_client> (Opțional, codul din aplicația proprie pentru clientul din Saga.  Asocierea cu codul intern Saga se va salva în baza de date, pentru identificare ulterioară)
+<ClientNume>
+<ClientInformatiiSuplimentare>
+<ClientCIF>
+<ClientNrRegCom>
+<ClientJudet> (Se completează codul județului, doar pentru terții din România, de exemplu, AB-pentru județul Alba)
+<ClientTara> (Codul țării, de exemplu, FR- pentru Franța)
+<ClientLocalitate>
+<ClientAdresa>
+<ClientBanca>
+<ClientIBAN>
+<ClientTelefon>
+<ClientMail>
+<FacturaNumar>
+<FacturaData>
+<FacturaScadenta>
+<FacturaTaxareInversa> (Da/Nu)
+<FacturaTVAIncasare> (Da/Nu)
+<FacturaTip> (Opţional. Tipul de document din Saga. Ex: " " factură, "A" aviz, "B" bon de casa,"T" taxare inversă, "C" bon de casă cu cod fiscal)
+<FacturaInformatiiSuplimentare>
+<FacturaMoneda> (Opţional pentru RON)
+<FacturaGreutate>
+<FacturaAccize> (Optional, valoarea accizelor din factură)
+<FacturaIndexSPV> (ID-ul de încărcare al e-Facturilor în SPV)
+<FacturaIndexDescarcareSPV> (ID-ul recipisei e-Facturilor)
+<Cod> (Optional, codul de client sau furnizor din Saga)
+</Antet>
+<Detalii>
+<Continut>
+<Linie>
+<LinieNrCrt>
+<Gestiune> (Opțional. Doar pentru evidenta cantitativ-valorică. Codul de gestiune.)
+<Activitate> (Opţional)
+<Descriere>
+<CodArticolFurnizor> (Optional, doar pentru evidenta cantitativ-valorică. Reprezintă codul de produs pentru facturile de intrare)
+<CodArticolClient> (Opțional, doar pentru evidenta cantitativ-valorică. Reprezintă codul de produs pentru facturile de ieșire)
+<GUID_cod_articol> (Opțional, pentru evidenta cantitativ-valorică. Codul de produs din aplicația proprie. Asocierea cu codul de produs din Saga se salvează in baza de date, pentru identificare ulterioară)
+<CodBare> (Opţional)
+<InformatiiSuplimentare> (Opţional)
+<UM>
+<Cantitate>
+<Pret>
+<Valoare>
+<ProcTVA> (Opţional)
+<TVA>
+<Cont> (Opţional)
+<TipDeducere> (Opțional. Doar pentru importul facturilor de intrare. Tipul de deducere pentru TVA si cheltuială. Folosiți indicele "N50" pentru deductibilitate limitată la 50% sau "I" pentru nedeductibilitate integrală).
+<PretVanzare> (Opțional. Doar pentru importul facturilor de intrare. Reprezintă prețul de vânzare al produsului, pentru o gestiune evaluată la preț de vânzare)
+</Linie>
+.......
+<Linie>
+.......
+</Linie>
+</Continut>
+</Detalii>
+<FacturaID> sau <GUID_factura> (Opţional, ID unic, din aplicatia proprie, pentru identificarea încasării. Asocierea cu ID-ul unic din Saga se salvează în baza de date, pentru identificare ulterioară).
+</Factura>
+.......
+<Factura>
+.......
+</Factura>
+.......
+</Facturi>
+Comenzi
+Numele fişierului trebuie să fie în formatul următor: C_<cod-fiscal>_<numar-comandă>_<data-comandă>.xml .
+Pentru a importa mai multe comenzi concomitent, repetaţi secvenţa .
+Dacă tag-ul reprezintă codul fiscal al societăţii, comanda va fi de tip "Ieșire". Altfel, comanda va fi considerată de tip "Intrare".
+Puteti obţine un model de XML cu date folosind butonul "Generare XML" din ecranul "Comenzi", după poziționarea pe comandă de ieșire. În folderul TEMP\Comenzi se va genera XML-ul aferent comenzii.
+<Comenzi>
+<Comanda>
+<Antet>
+<FurnizorNume>
+<FurnizorCIF>
+<FurnizorNrRegCom>
+<FurnizorCapital>
+<FurnizorTara>
+<FurnizorLocalitate>
+<FurnizorJudet>
+<FurnizorAdresa>
+<FurnizorTelefon>
+<FurnizorMail>
+<FurnizorBanca>
+<FurnizorIBAN>
+<FurnizorInformatiiSuplimentare>
+<ClientNume>
+<ClientInformatiiSuplimentare>
+<ClientCIF>
+<ClientNrRegCom>
+<ClientJudet> (Se completează codul județului, doar pentru terții din România, de exemplu, AB- pentru județul Alba)
+<ClientTara> (Codul țării, de exemplu, FR- pentru Franța)
+<ClientLocalitate>
+<ClientAdresa>
+<ClientBanca>
+<ClientIBAN>
+<ClientTelefon>
+<ClientMail>
+<ComandaNumar>
+<ComandaData>
+<ComandaLivrare>
+<ComandaInformatiiSuplimentare>
+<ComandaMoneda> (Opţional pentru RON)
+<ComandaGreutate>
+<Cod> (Optional, codul de client sau furnizor din Saga)
+</Antet>
+<Detalii>
+<Continut>
+<Linie>
+<LinieNrCrt>
+<Gestiune> (Opțional. Doar pentru evidenta cantitativ-valorică. Codul de gestiune)
+<Activitate> (Opţional)
+<Descriere>
+<CodArticolFurnizor> (Optional. Reprezintă codul de produs pentru comenzi de intrare)
+<CodArticolClient> (Opțional. Reprezintă codul de produs pentru comenzi de ieșire)
+<CodBare>
+<InformatiiSuplimentare>
+<UM>
+<Cantitate>
+<Pret>
+<Valoare>
+<ProcTVA> (Opţional)
+<TVA>
+<PretVanzare>(Opțional. Doar pentru importul comenzilor de intrare. Reprezintă prețul de vânzare al produsului, pentru o gestiune evaluată la preț de vânzare)
+</Linie>
+.......
+<Linie>
+.......
+</Linie>
+</Continut>
+</Detalii>
+</Comanda>
+.......
+< Comanda>
+.......
+</ Comanda>
+.......
+</ Comenzi>
+Încasări
+Numele fişierului trebuie să fie în formatul următor: I_<data>.xml .
+Pentru a importa mai multe încasări concomitent, repetaţi secvenţa  .
+Fisierul XML de încasări se poate importa şi prin ecranele "Registru de casa" sau "Jurnal de banca". Această variantă permite asocierea încasărilor cu facturile corespunzătoare.
+<Incasari>
+<Linie>
+<Data>
+<Numar>
+<Suma>
+<Cont> (Cont de trezorerie din clasa 5)
+<ContClient> (Opţional)
+<Explicatie>
+<FacturaID> (Opţional - necesar pentru identificarea facturii încasate dacă aceasta a fost importată dintr-un XML)
+<FacturaNumar> (Opţional - permite identificarea facturii dupa număr)
+<CodFiscal> (Opţional)
+<Moneda> (Opţional)
+<\Linie>
+<Linie>
+......
+<\Linie>
+.......
+</Incasari>
+Plăți
+Numele fişierului trebuie să fie în formatul următor: P_<data>.xml .
+Pentru a importa mai multe plăţi concomitent, repetaţi secvenţa  .
+Fisierul XML de plăti se poate importa şi prin ecranele "Registru de casa" sau "Jurnal de banca". Această variantă permite asocierea plătilor cu facturile corespunzătoare.
+<Plati>
+<Linie>
+<Data>
+<Numar>
+<Suma>
+<Cont> (Cont de trezorerie din clasa 5)
+<ContFurnizor> (Opţional)
+<Explicatie>
+<FacturaID> (Opţional - necesar pentru identificarea facturii încasate dacă aceasta a fost importată dintr-un XML)
+<FacturaNumar> (Opţional)
+<CodFiscal> (Opţional)
+<Moneda> (Opţional)
+<\Linie>
+<Linie>
+......
+<\Linie>
+.......
+</ Plati>
+Furnizori
+Numele fişierului trebuie să fie în formatul următor: FUR_<data>.xml .
+Pentru a importa mai multi furnizori concomitent, repetaţi secvenţa <Linie>.
+<Furnizori>
+<Linie>
+<Cod>(opţional)
+<Denumire>
+<Cod_fiscal>
+<Tara> (simbolul tarii ex.pt Romania- RO)
+<Localitate>
+<Adresa>(opţional)
+<Cont_banca> (opţional)
+<Banca> (opţional)
+<Tel> (opţional)
+<Email> (opţional)
+<Informatii> (opţional informatii suplimentare)
+<Guid_cod> (opţional cod extern)
+<\Linie>
+<Linie>
+......
+<\Linie>
+.......
+</ Furnizori>
+Clienţi
+Numele fişierului trebuie să fie în formatul următor: CLI_<data>.xml .
+Pentru a importa mai multi clienți concomitent, repetaţi secvenţa <Linie>.
+<Clienti>
+<Linie>
+<Cod> (opţional)
+<Denumire>
+<Cod_fiscal>
+<Reg_com>
+<Tara> (simbolul tarii ex.pt Romania - RO)
+<Judet> (simbolul judetului)
+<Localitate>
+<Adresa> (opţional)
+<Cont_banca> (opţional)
+<Banca> (opţional)
+<Tel> (opţional nr. de telefon)
+<Email> (opţional)
+<Discount> (opţional procent discount implicit)
+<Informatii> (opţional informatii suplimentare)
+<Guid_cod> (opţional cod extern)
+<\Linie>
+<Linie>
+......
+<\Linie>
+.......
+</ Clienti>
+Articole
+Numele fişierului trebuie să fie în formatul următor: ART_<data>.xml .
+Pentru a importa mai multe articole concomitent, repetaţi secvenţa <Linie>.
+<Articole>
+<Linie>
+<Cod> (opţional)
+<Denumire>
+<Cod_NC>
+<Cod_CPV>
+<UM> (unitatea de măsură)
+<Tip> (codul sau denumirea corespunzatoare din ecranul Tipuri de articole/ servicii)
+<TVA> (procentul de TVA)
+<Pret> (opţional pretul de vanzare fără TVA)
+<Pret_TVA> (opţional pretul de vanzare cu TVA)
+<Cod_bare> (opţional codul de bare)
+<Informatii> (opţional informatii suplimentare)
+<Guid_cod> (opţional cod extern)
+<\Linie>
+<Linie>
+......
+<\Linie>
+.......
+</ Articole>
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

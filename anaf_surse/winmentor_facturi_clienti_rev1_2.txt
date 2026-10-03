@@ -1,0 +1,199 @@
+Structură import facturi clienți
+în WinMENTOR
+
+                 Parametrul din fișier                                       Explicații
+
+                      [InfoPachet]
+
+AnLucru=2022
+LunaLucru=2
+                                                                   sau AVIZ EXPEDITIE
+Tipdocument= FACTURA IESIRE
+
+TotalFacturi=2
+[Factura_1]
+NrDoc=17                                                           numărul facturii
+
+                                                         Valori posibile (se poate utiliza codul din
+                                                         SAF-T sau corespondenţa lui):
+
+                                                            • Factura iniţială:            380 sau 0
+
+ClasificareSAFT=                                            • Factura storno:              381 sau 1
+
+                                                            • Factura de corecţie:         384 sau 2
+                                                            • Autofactura:                 389 sau 3
+                                                            • Cu factura la bon:           751 sau 4
+                                                                   se completează în cazul facturilor
+CasaDeMarcat=D
+                                                                    de tip „InfoCM”
+NumarBonuri=                                                       Se completează cu numărul de
+                                                                    bonuri pentru care s-a emis
+                                                                    factura.
+SerieCarnet=AA
+MarcaAgent=10
+Data=12.02.2022
+                                                                   cod extern/intern/fiscal partener
+                                                                    se reglează prin constanta: „Cod
+CodClient=C000020                                                   pentru identificare PARTENER”
+                                                                    vezi constante generale > import
+                                                                    date din alte aplicații.
+Localitate=IASI
+                                                                   se completează numai dacă este
+TVAINCASARE=D
+                                                                    cazul
+IDDescarcare=2565252
+
+
+Clasificare: Public                      Rev.1.2 - 11.09.2024                                      1
+AutoFactura=N                                       D= Da; N= Nu
+
+FacturaSimplificata=N                               D= Da; N= Nu
+                                          unde x poate lua valorile :
+
+                                           1. Numerar
+                                           2. Ordin Plata
+                                           3. Cec
+                                           4. Bilet la Ordin
+                                           5. Compensare
+TipPlata=X                                 6. Majorari
+                                           7. Online
+                                           8. BO avalizat
+                                           9. Definit de comun acord
+                                          10. Instrument nedefinit
+                                          11. Voucher CARD
+                                          12. Voucher CEC
+
+EmisClient=D                                        D= Da; N= Nu
+
+EmisTert=N                                          D= Da; N= Nu
+
+Stornare=D                                          D= Da; N= Nu
+                                                  TipTVA:
+                                                 [0;1] – nedefinit;
+                                                 2 – locul livrarii/prestării în afara
+                                                 României;
+                                                 3 – intracomunitar scutit conform art.
+TipTVA=0
+                                                 294.2 (a/d);
+                                                 4 – idem(b/c);
+                                                 5 – regim special de scutire
+                                                 art.311CF;
+                                                 6 – idem 312CF.
+ANULAT=N*                                         D= Da; N= Nu
+                                                    N = factură obișnuită,
+TaxareInversa=N
+                                                    D = factură cu taxare inversă
+
+Majorari=12.45
+Observatii=hgdhgfhgfhgf
+                                          Se va completa numărului voucherului
+NrVoucher=
+                                          primit de la client.
+EFactObs=VOUCHER                          Se va completa cu textul VOUCHER;
+
+Locatie=SediuX
+Discount=2
+TotalArticole=2
+CNPDelegat=                               Daca se trece delegatul pe fisa partener,
+
+
+Clasificare: Public       Rev.1.2 - 11.09.2024                                       2
+                                                 se poate pune valoare si la import si se
+                                                 aduce automat delegatul
+
+Operat=D sau N
+ComandaEF=100
+ContractEF=100
+ProiectEF=100
+                                                        se pot defini mai multe scadențe
+[Scadente_1]                                            pentru o factură data_scadenta =
+                                                        valoare;majorari;tipplata
+                                                        unde:
+31.03.2022=10.9;10;2                                        10.9 este valoarea
+                                                            10 lei majorări
+                                                            TipPlata=2 (ordin plată)
+31.07.2022=                                              valoare la a doua scadență;
+                                                           majorare;
+[Items_1]
+
+Item_1=A0000013881;LEI;1;21850
+
+                                                           Pentru articolele de tip serviciu,
+                                                            se completează simbolul gestiunii
+Item_1_Ext=P8202;605
+                                                            și eventual simbolul contului,
+                                                            dacă se lucrează cu constanta
+                                                            „Modificare ct. servicii”.
+                                                           cod extern/intern articol    – se
+                                                            reglează prin: „Cod pentru
+                                                            identificare    ARTICOLE”     vezi
+                                                            constante generale > import date
+                                                            din alte aplicații;
+Item_2=A0000013880;BUC;1.5;23467;P8201
+                                                           denumire unitate de măsură din
+                                                            WinMENTOR;
+                                                           Cantitate;
+                                                           Preț;
+                                                           simbol gestiune livrare – numai
+                                                            pentru articole de tip stoc.
+Item_2_TVA=___________________
+                                                           _valoare TVA la nivel de linie
+[Factura_2]
+NrDoc=18
+Data=12.02.2022
+CodClient=C000020
+Scadenta=12.06.2022
+Majorari=
+
+Clasificare: Public              Rev.1.2 - 11.09.2024                                        3
+Observatii=
+TotalArticole=1
+Operat=D/N                                                         D= Da; N= Nu
+[Items_2]
+Item_1=A0000013881;LEI;1;-21850; P8202
+Item_1_StornoAvans=17;AA
+                                                                   Stornarea articolului de tip
+                                                                    serviciu de pe factura anterioară
+                                                                    (nr. factura 17, serie carnet AA)
+
+
+
+Observaţii:
+
+Opţiunea de import este în MENTOR> INTERNE> IMPORT DATE DIN ALTE
+APLICAŢIE > Facturi ieşire.
+
+În cazul utilizării de noi articole, se va utiliza fişierul „Articole.txt” pentru descrierea lor.
+
+Pentru utilizarea de gestiuni de livrare noi, se va utiliza fişierul „Gestiuni.txt” pentru
+descrierea lor.
+
+Pentru clienţi noi se va utiliza fişierul „Partner.txt”.
+
+La nivel de articol, se mai pot introduce şi următoarele informaţii, în ordinea enumerării
+lor şi separate prin „;” (dacă nu există unul dintre acestea trebuie pus „;;”):
+     Simbol gestiune;
+     Discount-ul utilizat la vânzare;
+     Preţ înregistrare (pentru articole „valorice”);
+     Observaţii articol;
+     Preţ achiziţie (pentru articole „valorice”).
+
+Pentru articole cu serii, se poate specifica şi seria pe o linie nouă cu acelaşi item şi
+terminaţia „_Serii”.
+
+La articolele cu serie pe bucată se validează ca numărul seriilor să corespundă cantităţii
+precizate (vezi exemplul de mai jos), iar pentru cele cu serie pe lot să fie specificată o
+serie pentru fiecare linie „item”.
+EX: Item_3=11127;Buc;2.00;49.47;DEP22;;;100
+Item_3_Serii=33333;44444
+
+Dacă se dorește ca livrarea să fie făcută de pe o linie de stoc cu un anume preț de
+achiziție, atunci linia cu articolul va arăta astfel:
+Item_1=45545;Buc;1.00;584;TZL;;;Obs linie;12;
+Explicațiile rămân aceleași ca mai sus, singura mențiune va fi că pe poziția 9 va fi prețul
+de achiziție de pe care se dorește livrarea. Modificarea este valabilă doar pentru marfa
+în depozit, adică fără adaos.
+
+Clasificare: Public                      Rev.1.2 - 11.09.2024                                       4
+

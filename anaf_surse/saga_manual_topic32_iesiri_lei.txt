@@ -1,0 +1,114 @@
+
+Iesiri - lei
+Ecranul permite introducerea vânzărilor în ţară.
+Poate fi utilizat şi la introducerea unor operaţii asimilate vânzărilor, conform tipurilor prezentate mai jos.
+Ecranul conţine două tabele (zone) pentru introducerea datelor:
+tabelul destinat datelor din antetul documentelor - în care se va înregistra tipul, data și numărul documentului, precum și datele clientului;
+tabelul destinat detaliilor documentelor - în care se vor înregistra articolele/serviciile vândute.
+Mai jos regăsiți informații detaliate.
+Înaintea operării ieșirilor, pentru evidența corectă a stocurilor, asigurați-vă că ați definit gestiunile în ecranul dedicat.
+Operaţiunile de adăugare, modificare şi ştergere sunt cele prezentate în capitolul  Consideratii generale .
+Tabelul aferent antetului
+Semnificația coloanelor și modul de operare:
+Tip - listă de selecţie de unde se poate alege tipul documentului de ieșire. Fiecare tip determină modul de preluare al facturii în jurnale si declaraţii, astfel:
+necompletat - factură. Este tipul selectat in mod implicit, util la introducerea facturilor de ieşire.
+B - bon de casă.
+A - aviz de însoţire.
+C - bon de casă cu cod fiscal.
+f - factură cu bon fiscal.
+T - factură cu regim de taxare inversă.
+e - exceptate de la utilizarea AMEF. Se folosește preponderent pentru tichete şi abonamente.
+S - ieșire scutită cu drept de deducere.
+D - scutit cu drept de deducere cf. art. 294 (5 lit. a. și b)- se vor prelua în Decontul de TVA la rândul 14.1.
+d - scutit cu drept de deducere cf. art. 294 (5 lit. c. și d)- se vor prelua în Decontul de TVA la rândul 14.2.
+U - servicii cf. art. 311 (agenţii de turism). Se folosește pentru înregistrarea unei facturi cu TVA la marja de profit, întrucât permite modificarea valorii TVA.
+H - achiziții cf. art. 312 (second-hand). Se folosește pentru înregistrarea unei facturi cu TVA la marja de profit, întrucât permite modificarea valorii TVA.
+n - operațiuni neimpozabile. Nu apar în jurnale și declarații.
+M - factură simplificată. Se utilizează pentru introducerea documentelor ce reprezintă facturi simplificate.
+L - factură emisă de client.
+Nr. doc. - numărul documentului de ieșire (al facturii, bonului fiscal, etc.). Se va adauga automat, în ordine crescătoare, pornind de la "1", poate fi completat manual sau se va prelua automat numerotarea în funcție de setările efectuate în ecranul Numere și serii .
+Cod - codul clientului. La adăugarea unei ieșiri, clientul poate fi selectat după cod, denumire sau cod fiscal. Dacă se optează introducerea după denumire sau cod fiscal, câmpul Cod se va completa automat la alegerea clientului în câmpul următor.
+Client - numele clientului. Dacă terțul este deja creat, la completarea numelui, acesta va fi selectat din listă. Dacă acesta nu există in nomenclator, pentru introducere se tastează numele complet, sau codul fiscal, urmat de tasta sau , iar programul va genera mesajul "Acest client nu este introdus. Îl adăugăm?". Confirmarea mesajului, va deschide ecranul "Clienți" unde va fi completată o poziție cu denumirea terțului, sau, in cazul in care s-a introdus codului fiscal, se va realiza preluarea automată a datelor (denumire, adresă, număr de înregistrare de la Registrul Comerțului) conform informațiilor disponibile la ANAF. Preluarea automată a datelor de pe platforma ANAF este posibilă doar dacă există o conexiune la internet.
+TVA I - se bifează pentru facturile cu TVA la încasare. Această opțiune poate fi bifată automat, în funcție de setările efectuate în ecranul "Configurare societati".
+Data - data documentului de ieșire. Aceasta va fi şi data articolului contabil generat.
+Scadent - data scadenţei. Se va completa automat în funcţie de valoarea setată în nomenclatorul de clienți la câmpul "zile scadenţă" şi de setările efectuate în ecranul Configurare societăţi - Setari diverse .
+Nr. bonuri - apare dacă ați selectat tipul "B-bon de casă". Util pentru generarea corectă a D394.
+Valoare, TVA, Total, Neachitat - aceste câmpuri nu pot fi accesate de către utilizator, vor fi calculate şi completate automat de către program, în funcţie de datele introduse în detaliile facturii.
+Adaos  - coloană vizibilă doar dacă utilizați modulul de stocuri. Va fi completată automat de program, în funcţie de datele din detaliile facturii.
+Curs ref. - coloană vizibilă doar dacă utilizați modulul de stocuri. Se completează în situația în care au fost definite articole pentru care s-a bifat opțiunea "valută". Astfel, preţul de vânzare va fi calculat prin înmulţirea cursului valutar cu preţul de vânzare setat. Pentru a vizualiza cursul de referință pe factură, este necesar să bifați opțiunea "Tipărește cursul de referință", din panoul "Tipărire" - "Configurare formular".
+ID incarcare SPV - se va completa automat ID aferent e-facturii, după transmiterea în SPV.
+Coloane vizibile doar după apăsarea butonului de extindere  :
+Data document - se folosește pentru înscrierea datei reale a facturii, în cazul în care se operează cu întârziere, pentru a fi cuprinsă în secțiunea de regularizări a declarației 300.
+Agent - coloană vizibilă doar dacă ați activat modulul de stocuri. După configurarea acestora în ecranul "Agenti", vor putea fi selectați din lista derulantă. Mai multe informați regăsiți în sectiunea dedicată - Agenti .
+Informații suplimentare - vor apărea și pe factura tipărită.
+Cont debit accize, Cont credit accize, Accize - se introduc numai dacă se facturează accize.
+După introducerea și salvarea datelor din antetul documentelor de intrare, se poate trece la operarea detaliilor în tabelul din partea inferioară a ecranului.
+Tabelul aferent detaliilor
+Semnificația coloanelor și modul de operare:
+Tip - coloană vizibilă doar în versiunea completă. Permite selectarea tipului de articol din cele existente în ecranul Tipuri de articole/servicii . Dacă ieșirea se va contabiliza fără a se utiliza un articol, se va păstra tipul implicit "Nedefinit" ceea ce va permite introducerea manuală a explicaţiei şi a contului.
+Gestiune - coloană vizibilă doar dacă utilizați modulul de stocuri și tipul este diferit de "Nedefinit". Permite selectarea unei gestiuni cantitativ - valorice, din cele definite în ecranul Gestiuni .
+Denumire articol/serviciu - se completează manual denumirea bunurilor sau serviciilor achiziţionate dacă se folosește doar modulul de contabilitate sau se operează pe tipul "Nedefinit" în versiunea completă. Aceasta poate fi sugerată la tastarea unei litere sau grup de litere pentru a fi completată automat, dacă denumirea introdusă corespunde cu o inregistrare anterioară. Apăsarea tastei săgeată-jos va derula denumirea articolelor inregistrate pentru a facilita selectarea acestora. În cazul versiunii complete, dacă se alege un tip diferit de "Nedefinit", este obligatorie selectarea/crearea unui articol corespunzător tipului de articol ales.
+Cod - coloană vizibilă doar în versiunea integrată, dacă tipul este diferit de "Nedefinit". După alegerea articolului se va completa automat și acest câmp sau din lista derulantă puteți selecta articolul dorit în funcție de codul acestuia.
+UM - unitatea de măsură. Pentru gestiunile cantitativ - valorice, după selectarea articolului, se va completa automat cu unitatea de măsură definită pentru acesta în ecranul "Articole".
+TVA % - cota de TVA înscrisă pe factură pentru bunul sau serviciul vândut. Dacă ați selectat un articol, se va completa automat cota de TVA definită pentru acesta în ecranul "Articole".
+Cantitate - cantitatea vândută. Chiar dacă se referă la ieșiri de servicii, cantitatea nu trebuie să fie zero, altfel va fi generat un mesaj de eroare. Dacă se apasă tasta <săgeată-sus>, câmpul se majorează cu 1, iar la <săgeată-jos> cu -1. Poate fi utilizată și tasta “+” pentru a facilita calculul cantităţii într-un document.
+Preţ unitar - preţul unitar de vânzare fără TVA. Acesta poate fi calculat de către program dacă se completează valoarea sau suma care reprezintă totalul, în câmpurile corespunzătoare. Dacă se efectuează vânzarea dintr-o gestiune cantitativă, după alegerea articolului, prețul de vânzare va fi preluat automat dacă a fost înregistrat anterior în ecranul "Articole". Dacă ați setat două prețuri de vânzare pentru articolul respectiv, în acest câmp se va putea alege prețul dorit din listă.
+Preț unitar cu TVA - acestă coloană va fi afișată doar dacă se apasă butonul  poziționat în câmpul preț unitar și permite introducerea prețului de vânzare unitar cu TVA, în funcție de care vor fi calculate și celelalte câmpuri.
+Valoare - valoarea bunului sau serviciului vândut. Se calculează automat dacă sunt completate valorile in câmpurile "Cantitate" şi "Preţ unitar". De asemenea, este permisa adaugarea manuală, sau modificarea acesteia. Suma valorilor din această coloană va completa automat câmpul "Valoare" din antetul facturii.
+Total - valoarea inclusiv TVA a bunurilor sau serviciilor aprovizionate.Se calculează automat dacă sunt completate valorile in câmpurile "Cantitate" şi "Preţ unitar". De asemenea, este permisă adaugarea manuală, sau modificarea acesteia. Suma valorilor din această coloană va completa automat câmpul "Total" din antetul facturii.
+TVA - valoarea TVA facturată pentru bunurile sau serviciile vândute. Calculat automat pe baza datelor introduse anterior, dar poate fi şi introdus sau modificat de către utilizator. Suma valorilor din această coloană va completa câmpul TVA din antet.
+Cont - se va introduce contul în care se va înregistra valoarea de vânzare a bunului sau serviciului vândut. Pentru mărfurilor ieșite dintr-o gestiune global - valorică, este necesar să completați contul analitic definit pentru aceasta. În cazul gestiunilor cantitativ - valorice se va prelua automat contul setat pentru tipul de articol ales.
+Adaos - coloană vizibilă doar dacă utilizați modulul de stocuri. La evidența marfurilor cantitativ-valorice, se va calcula automat de către program, după adăugarea prețului de vânzare. Nu poate fi introdus sau modificat de către utilizator.
+Informații suplimentare - datele introduse în acest câmp vor fi afișate sub denumirea articolului, în situația în care se tipărește. Astfel, se poate utiliza și în cazul în care se înregistrează un articol/serviciu ce are o denumire mai mare decât numărul de caractere permise în câmpul "Denumire".
+Activitate - coloană vizibilă doar dacă au fost definite anterior activități/centre de profit în ecranul Grupe .
+Butoane funcționale
+Butoanele cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea  Consideratii generale . Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:
+oferă acces la ecranul de filtrare a datelor din ecranul curent. Filtrarea presupune stabilirea unor parametri în funcţie de care programul va afişa în ecranul curent doar acele date care respectă parametrii specificaţi în ecranul de filtrare.   Procedura este utilă în cazurile în care se dorește validarea/devalidarea mai multor documente concomitent. Astfel, în cazul în care se efectuează o filtrare numai după documente devalidate, apasarea butonului "Validez" va provoca validarea tuturor documentelor filtrate. La fel, în cazul în care se efectuează o filtrare numai după documente validate, apasarea butonului "Devalidez" va provoca devalidarea tuturor documentelor filtrate.
+acest buton, poziționat în antetul ecranului, deschide programul dedicat importului de ieșiri din fișiere PDF (Uber, Bolt, Lime), CSV (Bolt, Bolt Food, Clever, Free Now, Shopify, Bringo, Booking, Amazon, Stripe), XLS (Bolt Food, BlackCab, Bringo, Yango, Emag, Tazz by Emag, Doraly Marketplace) și  fișiere P7B, P7M, P7S  generate de casa de marcat.
+Prin apăsarea "click dreapta" pe același buton se deschide ecranul de import ce permite importul din fișiere XLS, CSV, TXT, DBF sau XLSX.
+Același buton, din tabelul inferior, permite importul articolelor și cantităților din fișiere XLS, CSV, TXT, DBF sau XLSX. După selectarea fișierului alegeți și câmpurile pentru import, din lista derulantă ce se deschide după selectarea câmpului "Nepreluat".
+deschide programul dedicat importului de facturi din platforme de eCommerce pentru Emag, MerchantPro, PrestaShop, WooCommerce. Datele de conectare specifice fiecarei platforme va pot fi comunicate de administratorul acesteia.
+permite transmiterea automată prin e-mail a facturii selectate, dacă adresa de e-mail a fost completată pentru clientul respectiv în ecranul "Clienti" și există un client de e-mail configurat în calculator (Outlook, Thunderbird, etc.) sau au fost setate datele serverului de e-mail folosit (conform instrucțiunilor din secțiunea Intretinere BD ).
+buton vizibil doar dacă utilizați modulul de stocuri, utilizat pentru operare rapida (cu coduri de bare) .
+transmite informațiile din înregistrarea curentă în ecranul  e-Transport .
+vizibil după selectarea unei facturi transmise în e-factura, acest buton deschide directorul în care au fost salvate fișierele generate la transmiterea facturii.
+din antetul ecranului, deschide panoul ce cuprinde încasările asociate facturii selectate. Acestea se pot vizualiza folosind butonul  . Același buton, din tabelul inferior, după selectarea unui articol, în gestiunea cantitativă, permite vizualizarea ultimelor 5 intrări în gestiunea aleasă, precum și a prețului de vânzare setat pentru articolul respectiv.
+- buton de calcul şi introducere discounturi. La accesarea lui, se va deschide fereastra ce permite repartizarea discountului valoric sau procentual. Bifarea opţiunii “Discount financiar” sau “Reducere comercială” va genera o poziţie distinctă în cadrul ieșirii, folosind conturile specifice, 667 sau 709, după caz. Dacă discountul diminuează preţul de vânzare, trebuie debifate ambele opţiuni, “Discount financiar”, respectiv “Reducere comercială”.
+buton vizibil doar în versiunea completă. Poate fi utilizat pentru introducerea seriilor articolelor (utile dacă se doreşte urmărirea seriilor produselor recepţionate, în special dacă se oferă garanţie). Funcția de căutare din partea de detalii poate fi utilizată și pentru identificarea seriilor, cu condiția ca acestea sa fie introduse exact.
+butonul este afișat după introducerea unei facturi negative (se completează semnul "-" la cantitate) și va permite asocierea facturii pozitive corespunzătoare. În cazul facturilor negative cu TVA la încasare, reglarea stornării este obligatorie înaintea validării documentului.
+butonul este vizibil la operarea unei facturi pentru același client, pentru are anterior s-a înregistrat și validat un aviz (tipul documentului ales în coloana "Tip" din antet este "A" - Aviz). Butonul permite asocierea informaţiilor operate prin avize cu cele din facturi, înainte de validarea documentului. La introducerea facturii nu trebuie introdusă nicio informaţie în tabelul de jos care conţine detaliile documentului, doar se apasă “Asociere aviz” și se bifează avizul (dacă este facturat integral) sau se completează cantitatea facturată.
+butonul este vizibil doar dacă anterior a fost selectată casa de marcat pentru tipărirea bonului. Vedeți și detaliile privind conectarea la casa de marcat .
+După efectuarea tuturor operațiilor ce țin de înregistrarea ieşirii, pot fi accesate butoanele funcționale poziționate în partea de jos a ecranului, și anume:
+închide documentul curent, blocând accesul la funcţiile de modificare/ştergere a acestuia. La accesarea butonului, se va genera articolul contabil corespunzător.
+devine activ numai în urma validării documentului. Permite introducerea unei încasări integrale sau parţiale pentru documentul de ieșire selectat. De asemenea, se poate selecta contul dorit pentru înregistrarea încasării. Implicit contul va fi 5311, iar ulterior va fi preluat automat ultimul cont folosit pentru acel client.
+După înregistrarea încasării, automat se vor realiza următoarele acţiuni:
+- coloana "Neachitat" din tabelul antet va fi recalculată prin diminuarea valorii curente cu încasarea introdusă;
+- în Registrul de Casă sau Jurnalul de bancă se va genera o înregistrare de tipul 5xxx (5311, 5121, etc.) în funcţie de contul ales de utilizator pentru înregistrarea plăţii = 4111.xxxxx (analiticul definit pentru clientul curent).
+generează un document de stornare a documentului de ieșire curent (selectat). Va rezulta o înregistrare devalidată, cu valorea negativa a documentului selectat. Datele vor putea fi modificate de utilizator.
+buton vizibil doar în versiunea completă. Permite listarea unui document de garanţie pentru produsele selectate din factura de ieşire. Pentru listare, se completează numărul de certificat de garanţie, durata oferită pentru garanţie şi se bifează coloana "Ok" pentru articolele dorite. Utilizatorul poate modifica/introduce diverşi parametri în ecranul de setare a listării.
+afişează pe ecran nota contabilă generată la apăsarea butonului "Validare".
+generează documentul curent în formatul ales în pagina de tipărire. De asemnenea, pune la dispoziţie un ecran funcţional în care se poate configura modul de listare pe documentele tipărite.
+Puteti obţine un model de fişier XML cu date alegând opţiunea "Formular PDF" din lista situată în partea superioară a ecranului de tipărire. În folderul TEMP\Facturi se va copia, pe lânga PDF, şi XML-ul aferent facturii.
+Din pagina "Mai multe" aveți posibilitatea de a adăuga un link de plată pe factură, prin euPlătesc.ro sau Netopia/MobilPay.
+redeschide documentul curent, redând accesul la funcţiile de modificare/ştergere a acestuia. Şterge nota contabilă generată la validarea documentului. În cazul în care s-a înregistrat plată pentru documentul care se devalidează, se va atenţiona asupra acestui fapt, programul propunând şi ştergerea acesteia.
+Observații:
+Câmpul "Tip" va fi afișat pe fundal:
+roșu - dacă ați selectat o casă de marcat în ecranul "Configurare societăți" și nu ați tipărit bonul fiscal (doar pentru înregistrările de tip "B- bon de casă și C- bon de casă cu cod fiscal");
+gri -dacă factura a fos transmisă în SPV prin ecranul e-Facturi.
+albastru -pentru facturile transmise prin e-mail.
+Sunt considerate autofacturi ieșirile pentru care clientul ales are același cod fiscal cu cel completat în ecranul "Configurare societati".
+Pentru documentele nevalidate, nu se generează notă contabilă, astfel că nu vor fi luate în calcul de către program la generarea situaţiilor/rapoartelor.
+Facturile nevalidate, ca şi cele validate dar fara detalii, vor fi considerate anulate în D394.
+Butonul "Validare" va fi inactiv dacă la definirea clientului s-a modificat contul analitic al acestuia, utilizându-se conturi din clasa 5. În această situaţie, substituind contul 4111 cu unul din clasa 5 (5311 de exemplu), documentul este achitat direct, iar plata va fi reflectată şi în Registrul de casă sau Jurnalul de.bancă, după caz.
+Vezi şi:
+Citeste şi:
+Introducerea raportului fiscal Z
+Operare cu cod de bare
+Operare rapida din iesiri
+Detalii despre conectarea la casa de marcat
+e-Factura - informații privind transmiterea
+e-Factura. e-Transport. Neclarități și unele clarificări.
+e-Factura. Clarificari
+e-Factura, noi modificări.
+Evidențierea ambalajelor SGR
+×

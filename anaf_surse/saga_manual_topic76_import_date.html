@@ -1,0 +1,447 @@
+    <!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all | index | follow">
+  <title>Import date - Manual de utilizare Saga C.</title>
+<meta name="description" content="Ecranul este destinat importului din fișiere XML generate din programe Saga sau din alte aplicații, care respectă structura prezentată mai jos.
+O ...">
+    <link rel="shortcut icon" href="/images/web/favicon.png">
+  <link type="text/css" href="../comun/css/style.css?version=1791048457" rel="stylesheet">
+  <link type="text/css" href="../comun/css/responsive.css?version=1791048457" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script>
+  <script src="../comun/js/core.js?version=1791048457"></script>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="display: none;">
+        <symbol id="facebookLogo" viewBox="0 0 24 24">
+          <path style="fill:#fff;"
+                d="M20.4,2.1H3.6C2.7,2.1,2,2.8,2,3.7v16.7c0,0.9,0.7,1.7,1.6,1.7h16.8c0.9,0,1.6-0.7,1.6-1.7V3.7 C22,2.8,21.3,2.1,20.4,2.1z 
+                  M15.4,8c-0.4-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.7,0.1-0.9,0.3c-0.2,0.2-0.3,0.5-0.3,1v0.7
+                  h2.2l-0.5,2.1 h-1.7v6.9h-2.7v-6.9H9.1V9.6h1.3V8.8c0-0.8,0.1-1.3,0.3-1.7c0.2-0.4,0.6-0.9,1.1-1.1
+                  c0.5-0.3,1.3-0.4,2-0.4c0.8,0,1.4,0.3,2.2,0.5 L15.4,8z">
+          </path>
+    	</symbol>
+        <symbol id="logoSmall" viewBox="0 0 48 48">
+    	    <path d="M34.3,11.7L18.9,27.5c-1.4,1.4-3.8,1.4-5.3,0l-1.6-1.6c-1.4-1.4-1.4-3.8,0-5.3
+            L27.5,5.1c1.4-1.4,3.8-1.4,5.2,0l1.6,1.6C35.8,8.1,35.8,10.3,34.3,11.7z" />
+
+        <path d="M36,27.5L20.6,42.9c-1.4,1.4-3.8,1.4-5.3,0l-1.4-1.6c-1.4-1.4-1.4-3.8,0-5.2
+            l15.5-15.5c1.4-1.4,3.8-1.4,5.3,0l1.6,1.6C37.5,23.6,37.5,26,36,27.5z" />
+        </symbol>
+    </svg>
+
+    <header class="header">
+      <nav class="navbar navbar-default">
+        <div class="navbar-header">
+        <a class="navbar-brand" href="index.php" title="Programe de contabilitate, salarii si evidenta de stocuri">
+        <img src="https://www.sagasoft.ro/images/logo.svg" class="logo" height="25" alt="Sagasoft Logo">
+        <svg role="img" aria-label="Logo" class="logoSmall"><use xlink:href="#logoSmall"></use></svg>
+        </a>
+        </div>
+        <div class="header-right">
+          <span class="copy-text">Copiat</span>
+          <div id="copy"><i class="fa fa-share-alt" aria-hidden="true"></i></div>
+            <form method="GET" action="search.php">
+  <input type="text" name="cauta" placeholder="Cauta in manual ...">
+  <button type="submit">Cautare</button>
+</form>
+        </div>
+      </nav>
+    </header>
+    <main>
+        <div class="sidebar">
+            <div class="sidebar-header">
+    <div class="ham">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+    </div>
+    <div class="sidebar-header-wrapper">
+        <div class="version">
+            <span class="title">Saga C.</span>
+        </div>
+                <a class="hmbtnindex" href="glosar-1-kw-1-letter-A.html">
+        <i class="fa fa-folder-open" aria-hidden="true"></i>
+        <span>Glosar</span>
+        </a>
+        <a class="hmbtntoc current" href="topic-1-introducere.html">
+        <i class="fa fa fa-list-ol" aria-hidden="true"></i>
+        <span>Content</span>
+        </a>
+            </div>
+</div>
+            <div class="sidebar-content"><ul><li class="child-0"><a href="topic-1-introducere.html" title="Introducere">Introducere</a></li><li class="child-0"><a href="topic-3-licente.html" title="Licente">Licente</a></li><li class="child-0"><a href="topic-5-consideratii-generale.html" title="Consideratii generale">Consideratii generale</a></li><li class="child-0"><a href="topic-8-configurare.html" title="Configurare">Configurare</a><ul><li class="child-1"><a href="topic-9-configurare-societati.html" title="Configurare societati">Configurare societati</a><ul><li class="child-2"><a href="topic-10-conturi-automate.html" title="Conturi automate">Conturi automate</a></li><li class="child-2"><a href="topic-11-setari-diverse.html" title="Setari diverse">Setari diverse</a></li><li class="child-2"><a href="topic-12-preluare-date-contabile.html" title="Preluare date contabile">Preluare date contabile</a></li><li class="child-2"><a href="topic-13-preluare-stocuri-initiale.html" title="Preluare stocuri initiale">Preluare stocuri initiale</a></li></ul></li><li class="child-1"><a href="topic-14-configurare-salarii.html" title="Configurare salarii">Configurare salarii</a></li><li class="child-1"><a href="topic-15-configurare-utilizatori.html" title="Configurare utilizatori">Configurare utilizatori</a></li></ul></li><li class="child-0"><a href="topic-16-nomenclatoare.html" title="Nomenclatoare">Nomenclatoare</a><ul><li class="child-1"><a href="topic-17-terti.html" title="Terti">Terti</a></li><li class="child-1"><a href="topic-18-agenti.html" title="Agenti">Agenti</a></li><li class="child-1"><a href="topic-19-plan-de-conturi.html" title="Plan de conturi">Plan de conturi</a></li><li class="child-1"><a href="topic-20-gestiuni.html" title="Gestiuni">Gestiuni</a></li><li class="child-1"><a href="topic-21-articole.html" title="Articole">Articole</a></li><li class="child-1"><a href="topic-22-tipuri-de-articole-servicii.html" title="Tipuri de articole-servicii">Tipuri de articole-servicii</a></li><li class="child-1"><a href="topic-23-grupe.html" title="Grupe">Grupe</a></li><li class="child-1"><a href="topic-24-filiale.html" title="Filiale">Filiale</a></li><li class="child-1"><a href="topic-25-salariati.html" title="Salariati">Salariati</a></li><li class="child-1"><a href="topic-273-reges.html" title="REGES">REGES</a></li></ul></li><li class="child-0"><a href="topic-26-operatii.html" title="Operatii">Operatii</a><ul><li class="child-1"><a href="topic-27-articole-contabile.html" title="Articole contabile">Articole contabile</a></li><li class="child-1"><a href="topic-28-intrari.html" title="Intrari">Intrari</a><ul><li class="child-2"><a href="topic-29-intrari---lei.html" title="Intrari - lei">Intrari - lei</a></li><li class="child-2"><a href="topic-30-intrari---valuta.html" title="Intrari - valuta">Intrari - valuta</a></li></ul></li><li class="child-1"><a href="topic-31-iesiri.html" title="Iesiri">Iesiri</a><ul><li class="child-2"><a href="topic-32-iesiri---lei.html" title="Iesiri - lei">Iesiri - lei</a></li><li class="child-2"><a href="topic-33-iesiri---valuta.html" title="Iesiri - valuta">Iesiri - valuta</a></li></ul></li><li class="child-1"><a href="topic-34-imobilizari.html" title="Imobilizari">Imobilizari</a></li><li class="child-1"><a href="topic-35-operatii-cu-stocuri.html" title="Operatii cu stocuri">Operatii cu stocuri</a><ul><li class="child-2"><a href="topic-36-transferuri.html" title="Transferuri">Transferuri</a></li><li class="child-2"><a href="topic-37-bonuri-de-consum.html" title="Bonuri de consum">Bonuri de consum</a></li><li class="child-2"><a href="topic-38-productie.html" title="Productie">Productie</a></li><li class="child-2"><a href="topic-39-inventariere.html" title="Inventariere">Inventariere</a></li><li class="child-2"><a href="topic-40-dare-in-folosinta-obiecte-de-inventar.html" title="Dare in folosinta obiecte de inventar">Dare in folosinta obiecte de inventar</a></li><li class="child-2"><a href="topic-41-dezmembrari.html" title="Dezmembrari">Dezmembrari</a></li><li class="child-2"><a href="topic-42-operatii-speciale.html" title="Operatii speciale">Operatii speciale</a></li><li class="child-2"><a href="topic-43-reglari-descarcare.html" title="Reglari descarcare">Reglari descarcare</a></li><li class="child-2"><a href="topic-44-schimbare-pret-de-vanzare-marfuri.html" title="Schimbare pret de vanzare marfuri">Schimbare pret de vanzare marfuri</a></li></ul></li><li class="child-1"><a href="topic-45-casa-banca-deconturi.html" title="Casa-Banca-Deconturi">Casa-Banca-Deconturi</a></li><li class="child-1"><a href="topic-46-cecuri,-bo-emise-primite.html" title="Cecuri, BO emise-primite">Cecuri, BO emise-primite</a></li><li class="child-1"><a href="topic-47-state-salarii.html" title="State salarii">State salarii</a></li><li class="child-1"><a href="topic-48-inchidere-luna.html" title="Inchidere luna">Inchidere luna</a></li><li class="child-1"><a href="topic-89-e-factura.html" title="e-Factura">e-Factura</a></li></ul></li><li class="child-0"><a href="topic-49-situatii.html" title="Situatii">Situatii</a><ul><li class="child-1"><a href="topic-50-contabile.html" title="Contabile">Contabile</a><ul><li class="child-2"><a href="topic-51-fisa-contului.html" title="Fisa contului">Fisa contului</a></li><li class="child-2"><a href="topic-52-balante.html" title="Balante">Balante</a></li><li class="child-2"><a href="topic-53-cartea-mare.html" title="Cartea Mare">Cartea Mare</a></li><li class="child-2"><a href="topic-54-jurnale-tva.html" title="Jurnale TVA">Jurnale TVA</a></li><li class="child-2"><a href="topic-55-registrul-jurnal.html" title="Registrul jurnal">Registrul jurnal</a></li><li class="child-2"><a href="topic-56-registrul-inventar.html" title="Registrul Inventar">Registrul Inventar</a></li><li class="child-2"><a href="topic-57-bilant.html" title="Bilant">Bilant</a></li><li class="child-2"><a href="topic-58-declaratia-406---saf-t.html" title="Declaratia 406 - SAF-T">Declaratia 406 - SAF-T</a></li></ul></li><li class="child-1"><a href="topic-59-comerciale.html" title="Comerciale">Comerciale</a><ul><li class="child-2"><a href="topic-60-situatii-clienti---furnizori.html" title="Situatii clienti - furnizori">Situatii clienti - furnizori</a></li><li class="child-2"><a href="topic-61-situatie-cecuri-bilete-la-ordin.html" title="Situatie cecuri-bilete la ordin">Situatie cecuri-bilete la ordin</a></li><li class="child-2"><a href="topic-62-fise-articole.html" title="Fise articole">Fise articole</a></li><li class="child-2"><a href="topic-63-situatie-aprovizionari.html" title="Situatie aprovizionari">Situatie aprovizionari</a></li><li class="child-2"><a href="topic-64-situatie-vanzari.html" title="Situatie vanzari">Situatie vanzari</a></li><li class="child-2"><a href="topic-65-situatie-consumuri.html" title="Situatie consumuri">Situatie consumuri</a></li><li class="child-2"><a href="topic-66-situatie-obiecte-inventar.html" title="Situatie obiecte inventar">Situatie obiecte inventar</a></li><li class="child-2"><a href="topic-67-situatie-productie.html" title="Situatie productie">Situatie productie</a></li><li class="child-2"><a href="topic-68-situatie-stocuri.html" title="Situatie stocuri">Situatie stocuri</a></li><li class="child-2"><a href="topic-69-raport-de-gestiune.html" title="Raport de gestiune">Raport de gestiune</a></li><li class="child-2"><a href="topic-269-situatie-ambalaje-sgr.html" title="Situatie ambalaje SGR">Situatie ambalaje SGR</a></li></ul></li></ul></li><li class="child-0"><a href="topic-70-diverse.html" title="Diverse">Diverse</a><ul><li class="child-1"><a href="topic-71-comenzi.html" title="Comenzi">Comenzi</a></li><li class="child-1"><a href="topic-72-situatie-comenzi.html" title="Situatie comenzi">Situatie comenzi</a></li><li class="child-1"><a href="topic-73-contracte.html" title="Contracte">Contracte</a></li><li class="child-1"><a href="topic-74-cheltuieli-venituri-in-avans.html" title="Cheltuieli-Venituri in avans">Cheltuieli-Venituri in avans</a></li><li class="child-1"><a href="topic-76-import-date.html" title="Import date">Import date</a></li><li class="child-1"><a href="topic-77-normare.html" title="Normare">Normare</a></li><li class="child-1"><a href="topic-78-diurne.html" title="Diurne">Diurne</a></li><li class="child-1"><a href="topic-79-situatii-manageriale.html" title="Situatii manageriale">Situatii manageriale</a></li><li class="child-1"><a href="topic-80-masini.html" title="Masini">Masini</a></li><li class="child-1"><a href="topic-81-e-transport.html" title="e-Transport">e-Transport</a></li><li class="child-1"><a href="topic-82-actionari.html" title="Actionari">Actionari</a></li><li class="child-1"><a href="topic-268-declaratia-intrastat.html" title="Declaratia intrastat">Declaratia intrastat</a></li><li class="child-1"><a href="topic-271-declaratia-205.html" title="Declaratia 205">Declaratia 205</a></li></ul></li><li class="child-0"><a href="topic-83-administrare.html" title="Administrare">Administrare</a><ul><li class="child-1"><a href="topic-84-intretinere-bd.html" title="Intretinere BD">Intretinere BD</a></li><li class="child-1"><a href="topic-85-numere-si-serii.html" title="Numere si serii">Numere si serii</a></li></ul></li><li class="child-0"><a href="topic-86-ajutor.html" title="Ajutor">Ajutor</a></li><li class="child-0"><a href="topic-87-utile.html" title="Utile">Utile</a><ul><li class="child-1"><a href="topic-88-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-90-preluare-solduri-tertilor.html" title="Preluare solduri tertilor">Preluare solduri tertilor</a></li><li class="child-1"><a href="topic-92-etichete.html" title="Etichete">Etichete</a></li><li class="child-1"><a href="topic-93-operare-cu-cod-de-bare.html" title="Operare cu cod de bare">Operare cu cod de bare</a></li><li class="child-1"><a href="topic-95-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-96-conectarea-la-casa-de-marcat.html" title="Conectarea la casa de marcat">Conectarea la casa de marcat</a></li><li class="child-1"><a href="topic-97-introducerea-raportului-fiscal-z.html" title="Introducerea raportului fiscal Z">Introducerea raportului fiscal Z</a></li><li class="child-1"><a href="topic-98-productie-pentru-ciclu-de-executie-mai-lung-de-o-luna.html" title="Productie pentru ciclu de executie mai lung de o luna">Productie pentru ciclu de executie mai lung de o luna</a></li><li class="child-1"><a href="topic-99-memento.html" title="Memento">Memento</a></li><li class="child-1"><a href="topic-270-evidentierea-ambalajelor-sgr.html" title="Evidentierea ambalajelor SGR">Evidentierea ambalajelor SGR</a></li><li class="child-1"><a href="topic-274-tratament-fiscal-al-intrarilor.html" title="Tratament fiscal al intrarilor">Tratament fiscal al intrarilor</a></li></ul></li></ul></div>        </div>
+
+    <div class="content" id="content">
+        <div class="content-head">
+                            <div class="title"><h1>Import date</h1></div>
+                <div class="navigation"><div class="arrows">
+    <div class="toggleAccordion"><i class="fa fa-expand" aria-hidden="true"></i></div>
+    <div id="left"><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+    <div id="top"><i class="fa fa-arrow-up" aria-hidden="true"></i></div>
+    <div id="right"><i class="fa fa-arrow-right" aria-hidden="true"></i></div>
+</div>
+</div>
+            </div>
+            <div class="content-body">
+                <p>Ecranul este destinat importului din fișiere XML generate din programe Saga sau din alte aplicații, care respectă structura prezentată mai jos.</p>
+<p class="warning"><strong>Observați: </strong><strong><em>Importul din arhiva generată din Saga a fost eliminat. Operarea în aceeasi baza de date, de pe mai multe calculatoare, se va putea realiza prin sistemul client-server sau prin Saga WEB.</em></strong></p>
+<hr>
+<div class="accordion"><i class="fa fa-plus-square"></i>Import date din fisiere XML</div>
+<div class="accordion-child hidden">
+<p>Această pagină permite importul fișierelor de tip XML generate din programe Saga sau din alte aplicații, dar care respectă structura prezentată mai jos.</p>
+<p>Pentru efectuarea importului se va alege calea către fișierele ce urmează a fi importate. Tabelul afişat va fi populat cu pozițiile aferente fișierelor ce urmează a fi importate.</p>
+<p>Se va putea opta pentru modul de sincronizare, din câmpul dedicat. Dacă nu se completează această coloana, se importă toate pozițiile. Altfel, sincronizarea se realizează după campul selectat. De exemplu, dacă sincronizarea se face după "Nr.+data", se vor importa doar documentele cu număr şi dată care nu există deja în baza de date.</p>
+<p>De asemenea, se poate opta pentru actualizarea pozițiilor existente deja din nomenclatoare, conform cu informațiile din fișierul importat, prin bifarea câmpului corespunzător.</p>
+<p><strong>Butoane funcționale:</strong></p>
+<p><img src="/images/hmfile_hash_73479372.png" alt="Import 2">-  va efectua importul propriuzis.</p>
+<p><img src="/images/hmfile_hash_471320aa.png" alt="Import 3">-  deschide tabelul în care vor fi afișate înregistrările ce urmează a fi importate.</p>
+<p><img src="/images/hmfile_hash_faa11d09.png" alt="Import 4">-  anulează importul. Pentru anularea importului de intrări şi ieşiri, validate grupat după import, trebuie ca acestea să fie devalidate în prealabil în ecranele de intrări sau ieşiri.<br><img src="/images/hmfile_hash_029344d2.png" alt="Import 5">-  în cazul intrărilor şi ieşirilor datele importate nu sunt validate. Pentru validarea automată se folosește acest buton. În acest caz, odată cu validarea se vor genera şi articolele contabile aferente intrărilor sau ieşirilor importate.</p>
+<p class="warning"><strong>Observații:</strong></p>
+<ul>
+<li><strong><em>Înainte de import, efectuați o salvare a bazei de date.</em></strong></li>
+<li><strong><em>Facturile în format XML se vor importa în ecranul "Intrari" când codul fiscal al firmei se regăsește la eticheta ClientCIF din XML și în ecranul"Ieșiri" când se găsește le eticheta FurnizorCIF. Articole se vor putea identifica după codul de bare sau codul propriu dacă acestea se regăsesc în XML. Altfel, liniile vor fi introduse pe tip "Nedefinit". Gestiunea completată va fi cea implicită.</em></strong></li>
+<li><em>Dacă fișierele ce urmează a fi importate sunt arhivate, trebuie să le dezarhivaţi, programul căutând fişiere cu numele descris în secțiunea structura fisierelor acceptate pentru import, prezentată mai jos.</em></li>
+<li><em>Dacă introduceți o coloană numită „NR. DOC” în fișierul de import de articole contabile (regasiți mai jos structura aferentă), care să conțină numărul documentului plătit/încasat, programul va asocia plata facturii respective. Factura trebuie sa fie operată pe contul de terț din fișierul de import și să aibă suma neachitată mai mare sau egală cu suma plătită/ încasată. Dacă nu  aveti această coloană în fișierul de import, corelațiile dintre facturi și plăți/încasări este necesar să fie refăcute din ecranul <a title="Situație furnizori/clienți" href="topic-60-situatii-clienti---furnizori.html" aria-invalid="true">Situație furnizori/clienți</a>, butonul "Reglare...".</em></li>
+<li><em>Nomenclatoarele se importă exclusiv în functie de codul intern. De aceea, în toate locațiile implicate în transferul de date trebuie sa fie realizată aceeași configurație de coduri sau să nu existe suprapuneri (la acelasi cod - înregistrări diferite).</em></li>
+</ul>
+</div>
+<div class="accordion active"><i class="fa fa-minus-square"></i>Structura fișierelor de tip XML</div>
+<div class="accordion-child">
+<div class="accordion"><i class="fa fa-plus-square"></i>Facturi</div>
+<div class="accordion-child hidden">
+<p>Numele fişierului trebuie să fie în formatul următor: <strong>F_&lt;cod-fiscal&gt;_&lt;numar-factura&gt;_&lt;data-factura&gt;.xml</strong>.</p>
+<p>Pentru a importa mai multe facturi concomitent, repetaţi secvenţa &lt;Factura&gt;<span>.</span></p>
+<p>Dacă tag-ul <span>&lt;FurnizorCIF&gt; </span>reprezinta codul fiscal al societăţii, factura se va importa în ecranul "Ieșiri". Altfel, importul se va efectua în ecranul "Intrări".</p>
+<p>Puteti obţine un model de XML cu date folosind tipărirea din ecranul "Ieșiri" și alegând opţiunea "Formular PDF" din lista situată în partea superioară a ecranului de tipărire. În folderul TEMP&#92;Facturi se va copia, pe lânga PDF, și XML-ul aferent facturii.</p>
+<div class="cod">
+<p>&lt;Facturi&gt;</p>
+<p style="padding-left: 40px;">&lt;Factura&gt;</p>
+<p style="padding-left: 80px;">&lt;Antet&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorNume&gt;  </p>
+<p style="padding-left: 120px;">&lt;FurnizorCIF&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorNrRegCom&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorCapital&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorTara&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorLocalitate&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorJudet&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorAdresa&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorTelefon&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorMail&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorBanca&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorIBAN&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorInformatiiSuplimentare&gt;</p>
+<p style="padding-left: 120px;">&lt;GUID_cod_client&gt; (Opțional, codul din aplicația proprie pentru clientul din Saga.  Asocierea cu codul intern Saga se va salva în baza de date, pentru identificare ulterioară)</p>
+<p style="padding-left: 120px;">&lt;ClientNume&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientInformatiiSuplimentare&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientCIF&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientNrRegCom&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientJudet&gt; (Se completează codul județului, doar pentru terții din România, de exemplu, AB-pentru județul Alba)</p>
+<p style="padding-left: 120px;">&lt;ClientTara&gt; (Codul țării, de exemplu, FR- pentru Franța)</p>
+<p style="padding-left: 120px;">&lt;ClientLocalitate&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientAdresa&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientBanca&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientIBAN&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientTelefon&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientMail&gt;</p>
+<p style="padding-left: 120px;">&lt;FacturaNumar&gt;</p>
+<p style="padding-left: 120px;">&lt;FacturaData&gt;</p>
+<p style="padding-left: 120px;">&lt;FacturaScadenta&gt;</p>
+<p style="padding-left: 120px;">&lt;FacturaTaxareInversa&gt; (Da/Nu)</p>
+<p style="padding-left: 120px;">&lt;FacturaTVAIncasare&gt; (Da/Nu)</p>
+<p style="padding-left: 120px;">&lt;FacturaTip&gt; (Opţional. Tipul de document din Saga. Ex: " " factură, "A" aviz, "B" bon de casa,"T" taxare inversă, "C" bon de casă cu cod fiscal)</p>
+<p style="padding-left: 120px;">&lt;FacturaInformatiiSuplimentare&gt;</p>
+<p style="padding-left: 120px;">&lt;FacturaMoneda&gt; (Opţional pentru RON)</p>
+<p style="padding-left: 120px;">&lt;FacturaGreutate&gt;</p>
+<p style="padding-left: 120px;">&lt;FacturaAccize&gt; (Optional, valoarea accizelor din factură)</p>
+<p style="padding-left: 120px;">&lt;FacturaIndexSPV&gt; (ID-ul de încărcare al e-Facturilor în SPV)</p>
+<p style="padding-left: 120px;">&lt;FacturaIndexDescarcareSPV&gt; (ID-ul recipisei e-Facturilor)</p>
+<p style="padding-left: 120px;">&lt;Cod&gt; (Optional, codul de client sau furnizor din Saga)</p>
+<p style="padding-left: 80px;">&lt;/Antet&gt;</p>
+<p style="padding-left: 80px;">&lt;Detalii&gt;</p>
+<p style="padding-left: 120px;">&lt;Continut&gt;</p>
+<p style="padding-left: 160px;">&lt;Linie&gt;</p>
+<p style="padding-left: 200px;">&lt;LinieNrCrt&gt;</p>
+<p style="padding-left: 200px;">&lt;Gestiune&gt; (Opțional. Doar pentru evidenta cantitativ-valorică. Codul de gestiune.)</p>
+<p style="padding-left: 200px;">&lt;Activitate&gt; (Opţional)</p>
+<p style="padding-left: 200px;">&lt;Descriere&gt;</p>
+<p style="padding-left: 200px;">&lt;CodArticolFurnizor&gt; (Optional, doar pentru evidenta cantitativ-valorică. Reprezintă codul de produs pentru facturile de intrare)</p>
+<p style="padding-left: 200px;">&lt;CodArticolClient&gt; (Opțional, doar pentru evidenta cantitativ-valorică. Reprezintă codul de produs pentru facturile de ieșire)</p>
+<p style="padding-left: 200px;">&lt;GUID_cod_articol&gt; (Opțional, pentru evidenta cantitativ-valorică. Codul de produs din aplicația proprie. Asocierea cu codul de produs din Saga se salvează in baza de date, pentru identificare ulterioară)</p>
+<p style="padding-left: 200px;">&lt;CodBare&gt; (Opţional)</p>
+<p style="padding-left: 200px;">&lt;InformatiiSuplimentare&gt; (Opţional)</p>
+<p style="padding-left: 200px;">&lt;UM&gt;</p>
+<p style="padding-left: 200px;">&lt;Cantitate&gt;</p>
+<p style="padding-left: 200px;">&lt;Pret&gt;</p>
+<p style="padding-left: 200px;">&lt;Valoare&gt;</p>
+<p style="padding-left: 200px;">&lt;ProcTVA&gt; (Opţional)</p>
+<p style="padding-left: 200px;">&lt;TVA&gt;</p>
+<p style="padding-left: 200px;">&lt;Cont&gt; (Opţional)</p>
+<p style="padding-left: 200px;">&lt;TipDeducere&gt; (Opțional. Doar pentru importul facturilor de intrare. Tipul de deducere pentru TVA si cheltuială. Folosiți indicele "N50" pentru deductibilitate limitată la 50% sau "I" pentru nedeductibilitate integrală).</p>
+<p style="padding-left: 200px;">&lt;PretVanzare&gt; (Opțional. Doar pentru importul facturilor de intrare. Reprezintă prețul de vânzare al produsului, pentru o gestiune evaluată la preț de vânzare)</p>
+<p style="padding-left: 200px;">&lt;/Linie&gt;</p>
+<p style="padding-left: 200px;">.......</p>
+<p style="padding-left: 200px;">&lt;Linie&gt;</p>
+<p style="padding-left: 200px;">.......</p>
+<p style="padding-left: 200px;">&lt;/Linie&gt;</p>
+<p style="padding-left: 160px;">&lt;/Continut&gt;</p>
+<p style="padding-left: 120px;">&lt;/Detalii&gt;</p>
+<p style="padding-left: 120px;">&lt;FacturaID&gt; sau &lt;GUID_factura&gt; (Opţional, ID unic, din aplicatia proprie, pentru identificarea încasării. Asocierea cu ID-ul unic din Saga se salvează în baza de date, pentru identificare ulterioară).</p>
+<p style="padding-left: 80px;">&lt;/Factura&gt;</p>
+<p>.......</p>
+<p>&lt;Factura&gt;</p>
+<p>.......</p>
+<p>&lt;/Factura&gt;</p>
+<p>.......</p>
+<p>&lt;/Facturi&gt;</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Comenzi</div>
+<div class="accordion-child hidden">
+<p>Numele fişierului trebuie să fie în formatul următor: <strong>C_&lt;cod-fiscal&gt;_&lt;numar-comandă&gt;_&lt;data-comandă&gt;.xml</strong>.</p>
+<p>Pentru a importa mai multe comenzi concomitent, repetaţi secvenţa .</p>
+<p>Dacă tag-ul reprezintă codul fiscal al societăţii, comanda va fi de tip "Ieșire". Altfel, comanda va fi considerată de tip "Intrare".</p>
+<p>Puteti obţine un model de XML cu date folosind butonul "Generare XML" din ecranul "Comenzi", după poziționarea pe comandă de ieșire. În folderul TEMP&#92;Comenzi se va genera XML-ul aferent comenzii.</p>
+<div class="cod">
+<p>&lt;Comenzi&gt;</p>
+<p style="padding-left: 40px;">&lt;Comanda&gt;</p>
+<p style="padding-left: 80px;">&lt;Antet&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorNume&gt;  </p>
+<p style="padding-left: 120px;">&lt;FurnizorCIF&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorNrRegCom&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorCapital&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorTara&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorLocalitate&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorJudet&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorAdresa&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorTelefon&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorMail&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorBanca&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorIBAN&gt;</p>
+<p style="padding-left: 120px;">&lt;FurnizorInformatiiSuplimentare&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientNume&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientInformatiiSuplimentare&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientCIF&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientNrRegCom&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientJudet&gt; (Se completează codul județului, doar pentru terții din România, de exemplu, AB- pentru județul Alba)</p>
+<p style="padding-left: 120px;">&lt;ClientTara&gt; (Codul țării, de exemplu, FR- pentru Franța)</p>
+<p style="padding-left: 120px;">&lt;ClientLocalitate&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientAdresa&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientBanca&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientIBAN&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientTelefon&gt;</p>
+<p style="padding-left: 120px;">&lt;ClientMail&gt;</p>
+<p style="padding-left: 120px;">&lt;ComandaNumar&gt;</p>
+<p style="padding-left: 120px;">&lt;ComandaData&gt;</p>
+<p style="padding-left: 120px;">&lt;ComandaLivrare&gt;</p>
+<p style="padding-left: 120px;">&lt;ComandaInformatiiSuplimentare&gt;</p>
+<p style="padding-left: 120px;">&lt;ComandaMoneda&gt; (Opţional pentru RON)</p>
+<p style="padding-left: 120px;">&lt;ComandaGreutate&gt;</p>
+<p style="padding-left: 120px;">&lt;Cod&gt; (Optional, codul de client sau furnizor din Saga)</p>
+<p style="padding-left: 80px;">&lt;/Antet&gt;</p>
+<p style="padding-left: 80px;">&lt;Detalii&gt;</p>
+<p style="padding-left: 120px;">&lt;Continut&gt;</p>
+<p style="padding-left: 160px;">&lt;Linie&gt;</p>
+<p style="padding-left: 160px;">&lt;LinieNrCrt&gt;</p>
+<p style="padding-left: 160px;">&lt;Gestiune&gt; (Opțional. Doar pentru evidenta cantitativ-valorică. Codul de gestiune)</p>
+<p style="padding-left: 160px;">&lt;Activitate&gt; (Opţional)</p>
+<p style="padding-left: 160px;">&lt;Descriere&gt;</p>
+<p style="padding-left: 160px;">&lt;CodArticolFurnizor&gt; (Optional. Reprezintă codul de produs pentru comenzi de intrare)</p>
+<p style="padding-left: 160px;">&lt;CodArticolClient&gt; (Opțional. Reprezintă codul de produs pentru comenzi de ieșire)</p>
+<p style="padding-left: 160px;">&lt;CodBare&gt;</p>
+<p style="padding-left: 160px;">&lt;InformatiiSuplimentare&gt;</p>
+<p style="padding-left: 160px;">&lt;UM&gt;</p>
+<p style="padding-left: 160px;">&lt;Cantitate&gt;</p>
+<p style="padding-left: 160px;">&lt;Pret&gt;</p>
+<p style="padding-left: 160px;">&lt;Valoare&gt;</p>
+<p style="padding-left: 160px;">&lt;ProcTVA&gt; (Opţional)</p>
+<p style="padding-left: 160px;">&lt;TVA&gt;</p>
+<p style="padding-left: 160px;">&lt;PretVanzare&gt;(Opțional. Doar pentru importul comenzilor de intrare. Reprezintă prețul de vânzare al produsului, pentru o gestiune evaluată la preț de vânzare)</p>
+<p style="padding-left: 120px;">&lt;/Linie&gt;</p>
+<p style="padding-left: 120px;">.......</p>
+<p style="padding-left: 120px;">&lt;Linie&gt;</p>
+<p style="padding-left: 120px;">.......</p>
+<p style="padding-left: 120px;">&lt;/Linie&gt;</p>
+<p style="padding-left: 80px;">&lt;/Continut&gt;</p>
+<p style="padding-left: 40px;">&lt;/Detalii&gt;</p>
+<p>&lt;/Comanda&gt;</p>
+<p>.......</p>
+<p>&lt; Comanda&gt;</p>
+<p>.......</p>
+<p>&lt;/ Comanda&gt;</p>
+<p>.......</p>
+<p>&lt;/ Comenzi&gt;</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Încasări</div>
+<div class="accordion-child hidden">
+<p>Numele fişierului trebuie să fie în formatul următor: <strong>I_&lt;data&gt;.xml</strong>.</p>
+<p>Pentru a importa mai multe încasări concomitent, repetaţi secvenţa  .</p>
+<p>Fisierul XML de încasări se poate importa şi prin ecranele "Registru de casa" sau "Jurnal de banca". Această variantă permite asocierea încasărilor cu facturile corespunzătoare.</p>
+<div class="cod">
+<p>&lt;Incasari&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 80px;">&lt;Data&gt;      </p>
+<p style="padding-left: 80px;">&lt;Numar&gt;</p>
+<p style="padding-left: 80px;">&lt;Suma&gt;</p>
+<p style="padding-left: 80px;">&lt;Cont&gt; (Cont de trezorerie din clasa 5)</p>
+<p style="padding-left: 80px;">&lt;ContClient&gt; (Opţional)</p>
+<p style="padding-left: 80px;">&lt;Explicatie&gt;</p>
+<p style="padding-left: 80px;">&lt;FacturaID&gt; (Opţional - necesar pentru identificarea facturii încasate dacă aceasta a fost importată dintr-un XML)</p>
+<p style="padding-left: 80px;">&lt;FacturaNumar&gt; (Opţional - permite identificarea facturii dupa număr)</p>
+<p style="padding-left: 80px;">&lt;CodFiscal&gt; (Opţional)</p>
+<p style="padding-left: 80px;">&lt;Moneda&gt; (Opţional)</p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 40px;">......      </p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">.......</p>
+<p>&lt;/Incasari&gt;</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Plăți</div>
+<div class="accordion-child hidden">
+<p>Numele fişierului trebuie să fie în formatul următor: <strong>P_&lt;data&gt;.xml</strong>.</p>
+<p>Pentru a importa mai multe plăţi concomitent, repetaţi secvenţa  .</p>
+<p>Fisierul XML de plăti se poate importa şi prin ecranele "Registru de casa" sau "Jurnal de banca". Această variantă permite asocierea plătilor cu facturile corespunzătoare.</p>
+<div class="cod">
+<p>&lt;Plati&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 80px;">&lt;Data&gt;</p>
+<p style="padding-left: 80px;">&lt;Numar&gt;</p>
+<p style="padding-left: 80px;">&lt;Suma&gt;</p>
+<p style="padding-left: 80px;">&lt;Cont&gt; (Cont de trezorerie din clasa 5)</p>
+<p style="padding-left: 80px;">&lt;ContFurnizor&gt; (Opţional)</p>
+<p style="padding-left: 80px;">&lt;Explicatie&gt;</p>
+<p style="padding-left: 80px;">&lt;FacturaID&gt; (Opţional - necesar pentru identificarea facturii încasate dacă aceasta a fost importată dintr-un XML)</p>
+<p style="padding-left: 80px;">&lt;FacturaNumar&gt; (Opţional)</p>
+<p style="padding-left: 80px;">&lt;CodFiscal&gt; (Opţional)</p>
+<p style="padding-left: 80px;">&lt;Moneda&gt; (Opţional)</p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 40px;">......      </p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">.......</p>
+<p>&lt;/ Plati&gt;</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Furnizori</div>
+<div class="accordion-child hidden">
+<p>Numele fişierului trebuie să fie în formatul următor: <strong>FUR_&lt;data&gt;.xml</strong>.</p>
+<p>Pentru a importa mai multi furnizori concomitent, repetaţi secvenţa &lt;Linie&gt;.</p>
+<div class="cod">
+<p>&lt;Furnizori&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 80px;">&lt;Cod&gt;(opţional)</p>
+<p style="padding-left: 80px;">&lt;Denumire&gt;</p>
+<p style="padding-left: 80px;">&lt;Cod_fiscal&gt;</p>
+<p style="padding-left: 80px;">&lt;Tara&gt; (simbolul tarii ex.pt Romania- RO)</p>
+<p style="padding-left: 80px;">&lt;Localitate&gt;</p>
+<p style="padding-left: 80px;">&lt;Adresa&gt;(opţional)</p>
+<p style="padding-left: 80px;">&lt;Cont_banca&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Banca&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Tel&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Email&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Informatii&gt; (opţional informatii suplimentare)</p>
+<p style="padding-left: 80px;">&lt;Guid_cod&gt; (opţional cod extern)</p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 40px;">......      </p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">.......</p>
+<p>&lt;/ Furnizori&gt;</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Clienţi</div>
+<div class="accordion-child hidden">
+<p>Numele fişierului trebuie să fie în formatul următor: <strong>CLI_&lt;data&gt;.xml</strong>.</p>
+<p>Pentru a importa mai multi clienți concomitent, repetaţi secvenţa &lt;Linie&gt;.</p>
+<div class="cod">
+<p>&lt;Clienti&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 80px;">&lt;Cod&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Denumire&gt;</p>
+<p style="padding-left: 80px;">&lt;Cod_fiscal&gt;</p>
+<p style="padding-left: 80px;">&lt;Reg_com&gt;</p>
+<p style="padding-left: 80px;">&lt;Tara&gt; (simbolul tarii ex.pt Romania - RO)</p>
+<p style="padding-left: 80px;">&lt;Judet&gt; (simbolul judetului)</p>
+<p style="padding-left: 80px;">&lt;Localitate&gt;</p>
+<p style="padding-left: 80px;">&lt;Adresa&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Cont_banca&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Banca&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Tel&gt; (opţional nr. de telefon)</p>
+<p style="padding-left: 80px;">&lt;Email&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Discount&gt; (opţional procent discount implicit)</p>
+<p style="padding-left: 80px;">&lt;Informatii&gt; (opţional informatii suplimentare)</p>
+<p style="padding-left: 80px;">&lt;Guid_cod&gt; (opţional cod extern)</p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 40px;">......      </p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">.......</p>
+<p>&lt;/ Clienti&gt;</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Articole</div>
+<div class="accordion-child hidden">
+<p>Numele fişierului trebuie să fie în formatul următor: <strong>ART_&lt;data&gt;.xml</strong>.</p>
+<p>Pentru a importa mai multe articole concomitent, repetaţi secvenţa &lt;Linie&gt;.</p>
+<div class="cod">
+<p>&lt;Articole&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 80px;">&lt;Cod&gt; (opţional)</p>
+<p style="padding-left: 80px;">&lt;Denumire&gt;</p>
+<p style="padding-left: 80px;">&lt;Cod_NC&gt;</p>
+<p style="padding-left: 80px;">&lt;Cod_CPV&gt;</p>
+<p style="padding-left: 80px;">&lt;UM&gt; (unitatea de măsură)</p>
+<p style="padding-left: 80px;">&lt;Tip&gt; (codul sau denumirea corespunzatoare din ecranul Tipuri de articole/ servicii)</p>
+<p style="padding-left: 80px;">&lt;TVA&gt; (procentul de TVA)</p>
+<p style="padding-left: 80px;">&lt;Pret&gt; (opţional pretul de vanzare fără TVA)</p>
+<p style="padding-left: 80px;">&lt;Pret_TVA&gt; (opţional pretul de vanzare cu TVA)</p>
+<p style="padding-left: 80px;">&lt;Cod_bare&gt; (opţional codul de bare)</p>
+<p style="padding-left: 80px;">&lt;Informatii&gt; (opţional informatii suplimentare)</p>
+<p style="padding-left: 80px;">&lt;Guid_cod&gt; (opţional cod extern)</p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">&lt;Linie&gt;</p>
+<p style="padding-left: 40px;">......      </p>
+<p style="padding-left: 40px;">&lt;&#92;Linie&gt;</p>
+<p style="padding-left: 40px;">.......</p>
+<p>&lt;/ Articole&gt;</p>
+</div>
+</div>
+</div>
+<p> </p>            </div>
+                </div>
+        <div id="myModal" class="modal hidden">
+        <div class="blanket hidden"></div>
+        <div class="modal-content">
+            <div class="close" id="closeModal"><span>&times;</span></div>
+            <iframe width="720" height="404" title="Tutorial video" name="contents" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+    </main>
+    <footer class="footer">
+	<div>SAGA Software © 2026</div>
+	<ul class="footer-menu">
+		<li><a href="//sagasoft.ro/index.php">Home</a></li>
+		<li><a href="//sagasoft.ro/linkuri.php">Linkuri</a></li>
+		<li><a href="//sagasoft.ro/tutoriale-video.php">Tutoriale</a></li>
+		<li><a href="http://www.sagasoftware.ro/" target="_blank">Blog</a></li>
+		<li><a href="http://forum.sagasoft.ro/index.php" target="_blank">Forum</a></li>
+		<li><a href="//sagasoft.ro/contact.php">Contact</a></li>
+		<li><a href="//sagasoft.ro/distributie.php">Distribuţie</a></li>
+		<li><a href="//sagasoft.ro/politica-confidentialitate.php">Politica de confidențialitate</a></li>
+		<li>
+		<a href="//www.facebook.com/pages/Saga-Software/128551477201741" target="_blank" title="Sagasoft pe Facebook">
+		<svg role="img" class="sg-logo"><use xlink:href="#facebookLogo"></use></svg>
+		</a>
+		</li>
+	</ul>
+</footer>
+</body>
+</html>

@@ -355,14 +355,19 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
             "tert_tara, tip_operatiune, furnizor_tva_incasare, tip, axa_ic, "
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, "  # [A1] lei la INSERT
-            "bon_fiscal_nr, bon_fiscal_data) "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
+            "bon_fiscal_nr, bon_fiscal_data, "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
+            # [punctul 3, 03.10.2026] … și ÎNCASATĂ: HG 1/2016 pct.97 alin.(1) „facturile emise și achitate pe bază de bonuri
+            # fiscale”. Fără asta rămânea „neîncasată”: notificarea de scadență (emailul pleacă la CLIENT) o trata ca
+            # restanță, scadențarul la fel, iar ecranul oferea „Emite chitanță” — încasare dublă.
+            "platita_la) "
             "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-            "%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            "%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
             (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
              status, moneda, directie, tert_nume, tert_cui, tert_adresa,
              categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
              tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v, axa_v,
-             _curs_v, _tva_lei_v, _total_lei_v, _dcurs_v, _sursa_v, _bon_nr, _bon_data))
+             _curs_v, _tva_lei_v, _total_lei_v, _dcurs_v, _sursa_v, _bon_nr, _bon_data,
+             _bon_data if _bon_nr else None))
         factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(
