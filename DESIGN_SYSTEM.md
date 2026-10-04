@@ -135,7 +135,9 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Acțiunea refuzată rolului nu se afișează (v2.64, `data-actiune` + `drepturi.js`, decizia Costin 04.10.2026).** Un element
   care declanșează o scriere poartă `data-actiune="METODĂ /cale"` (șablonul rutei din `main.py`); `drepturi.js` îl ascunde (`.drept-refuzat`) dacă
   serverul o refuză utilizatorului (`GET /eu/drepturi`). Un câmp care afișează și o valoare poartă `data-actiune-camp`
-  și se dezactivează în loc să dispară. Gard: `core/test_drepturi_ui.py`.
+  și se dezactivează în loc să dispară. Un buton care DESCHIDE formularul unei acțiuni („+ …”, „Adaugă…”, „Emite…”) poartă
+  acțiunea formularului, sau `data-fara-actiune="<motiv>"` (rând în formular, navigare, portalul clientului). Gard:
+  `core/test_drepturi_ui.py` + verificator `ACTIUNE_REFUZATA_NEMARCATA`.
 
 ## 10. Escape și securitate
 

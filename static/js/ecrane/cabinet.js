@@ -7,19 +7,19 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arat
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=7183cc3172";
-import { randeazaMigrare } from "./migrare.js?v=4ceabfee02";
+import { randeazaListaFirme } from "./firme.js?v=75997a1941";
+import { randeazaMigrare } from "./migrare.js?v=c017b073d6";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=70bc686f76"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=631da515ab"; // [p34_raporteaza]
+import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=ea735524af"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=151165bd7b";
 import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=b2f7f80c49";
-import { randeazaCapacitate } from "./capacitate.js?v=079f12d5d2"; // [p71_capacitate]
+import { randeazaAsistenti } from "./asistenti.js?v=aa121ed198";
+import { randeazaCapacitate } from "./capacitate.js?v=5393ea8719"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=673e868a29"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)

@@ -1355,5 +1355,8 @@ stil de eroare, 4 dintre ele ca HTML neescapat); (6) aceeași numărătoare gre�
   Răspunsul propriu-zis depinde de conexiunea REGES a firmei — neprobat aici, cere credențiale ITM reale.
 - **Anunțul** „Mesaj de la iConta.eu” are X; închiderea înseamnă „am citit”.
 
+- **Asistentul fără drepturi** nu mai vede nici butoanele care deschid formulare de lucru („+ Notă nouă”, „+ NIR nou”,
+  „+ Salariat nou” …): s-au văzut pe producție după prima publicare (contul Anei) și s-au reparat în commitul următor.
+
 **Atenție la contul Ana (producție):** în bază are toate trei bifele pe „nu” (invitația veche nu dădea „Poate pregăti”). Cu
 regula nouă vede firmele F1, F2, dar nu poate lucra pe ele până nu i se bifează „Poate pregăti” din Asistenți.

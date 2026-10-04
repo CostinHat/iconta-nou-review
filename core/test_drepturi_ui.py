@@ -178,3 +178,16 @@ def test_CALIBRARE_legarea_pe_element():
     t2 = ('<button id="b">x</button>\nq.querySelector("#b").addEventListener("click", () => f());\n'
           'return 1;\n}\nasync function alta() {\n  if (x) {\n    await api.post(`/c`, {});\n  }\n}\n')
     assert S.element_al_apelului(t2, t2.index("api.post")) is None, "apel din ALTĂ funcție legat de handlerul de deasupra"
+
+
+def test_butoanele_de_intrare_in_formular_isi_declara_actiunea():
+    """Clasa găsită pe producție (04.10.2026): Ana, fără niciun drept, vedea „+ Notă nouă” — butonul nu cheamă nicio
+    rută (deschide editorul), deci treptele de mai sus nu-l văd, iar salvarea ascunsă lăsa un formular fără ieșire.
+    Orice buton de intrare („+ …”, „Adaugă…”, „Emite…”) poartă acțiunea formularului sau motivul pentru care nu e una."""
+    rele = S.butoane_creare_nemarcate()
+    assert not rele, "butoane de intrare fără data-actiune / data-fara-actiune (%d): %s" % (len(rele), rele)
+    # anti-vacuu: instrumentul vede butoanele marcate (altfel lista goală ar fi adevărată despre o lume pe care n-o vede)
+    import glob
+    marcate = sum(len(S._BUTON_CREARE.findall(io.open(f, encoding="utf-8").read()))
+                  for f in glob.glob(os.path.join(RAD, "static", "js", "**", "*.js"), recursive=True))
+    assert marcate >= 50, "instrumentul vede doar %d butoane de intrare — s-a stricat?" % marcate

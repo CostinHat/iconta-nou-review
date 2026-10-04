@@ -3,7 +3,7 @@
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
 import { api, esc } from "../api.js?v=91e1c0701a";
-import { randeazaAsistenti } from "./asistenti.js?v=b2f7f80c49";
+import { randeazaAsistenti } from "./asistenti.js?v=aa121ed198";
 import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] */
 
 function celulaCifra(valoare, eticheta, accent) {
@@ -41,7 +41,7 @@ export async function randeazaCapacitate(corp, nav) {
           <p>Într-o echipă care crește, munca nu se împarte singură în mod egal.</p>
           <p>Unii duc trei firme, alții șapte — și afli abia când cineva cedează în perioada de declarații. Capacitate îți arată cine cât duce, unde e presiune și unde e loc, ca s-o echilibrezi din vreme, nu în criză.</p>
           <p>Semnalul are sens de la 5 persoane care lucrează declarații în sus. Momentan sunt ${asistenti.length}, inclusiv administratorul dacă are competențe — până atunci, îi vezi pe toți dintr-o privire.</p>
-          <p><button type="button" class="buton-secundar" id="cap-adauga-asistenti">Adaugă asistenți</button></p>
+          <p><button type="button" class="buton-secundar" id="cap-adauga-asistenti" data-actiune="POST /asistenti">Adaugă asistenți</button></p>
         </div>
       </div>`;
     corp.querySelector("#cap-adauga-asistenti").addEventListener("click",

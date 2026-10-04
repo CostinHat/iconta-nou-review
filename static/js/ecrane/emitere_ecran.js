@@ -168,7 +168,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea; răspunderea corectitudinii cotei îți aparține)"}</span></div>
       <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
       <div class="em-linii" id="em-linii"></div>
-      <button class="buton-secundar em-buton-sec" id="em-add-linie">+ Adaugă linie</button>
+      <button class="buton-secundar em-buton-sec" id="em-add-linie" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaugă linie</button>
     </div>
 
     <div class="em-total" id="em-total"></div>
@@ -528,7 +528,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <div class="em-curs-manual">
           <label for="em-curs-val">Curs ${det.moneda} → RON pentru ${dataRo(det.data)}</label>
           <input type="number" step="0.0001" id="em-curs-val" placeholder="ex. 5.2438" class="camp-input">
-          <button class="buton-primar" id="em-curs-ok">Emite cu acest curs</button>
+          <button class="buton-primar" id="em-curs-ok" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite cu acest curs</button>
           <div class="em-curs-avertisment">Introdu cursul BNR valabil pentru data facturii. Răspunderea corectitudinii îți revine.</div>
         </div>`;
       zona.querySelector("#em-curs-ok").addEventListener("click", () => {

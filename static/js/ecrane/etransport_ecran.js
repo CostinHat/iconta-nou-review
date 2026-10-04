@@ -139,7 +139,7 @@ export async function ecranEtransport(corp, nav, t) {
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Bunuri transportate</div>
         <div id="et-bunuri"></div>
-        <p><button type="button" class="buton-secundar" id="et-plus-bun">+ Bun</button></p>
+        <p><button type="button" class="buton-secundar" id="et-plus-bun" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Bun</button></p>
         <div class="pf-frand-nume" style="margin:12px 0 6px">Partener comercial</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
           ${inp("p-cod_tara", "Cod țară *", "text", "RO")}

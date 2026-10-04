@@ -55,7 +55,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       <h2 class="pf-titlu">Concedii medicale</h2>
       <p class="pf-sub">Salariat: <strong>${esc(numeSal)}</strong></p>
       <p class="pf-intro">Certificatele de concediu medical ale salariatului. Prima zi din fiecare certificat nu se pl\u0103te\u0219te (OUG 91/2025, p\u00e2n\u0103 la 31.12.2027).
-        <button class="buton-primar" id="cm-nou" style="margin-left:12px">+ Certificat nou</button></p>
+        <button class="buton-primar" id="cm-nou" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii" style="margin-left:12px">+ Certificat nou</button></p>
       <div id="cm-form-zona"></div>
       <div class="pf-lista">${randuriLista}</div>`;
 

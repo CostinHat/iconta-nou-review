@@ -4,15 +4,15 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=91e1c0701a";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=9abee2d1d1";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=9bfaf4bc1e";
-import { ecranRip } from "./rip_ecran.js?v=ef48a7a5ce";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=ec6930c33a";
-import { ecranEtransport } from "./etransport_ecran.js?v=58ee666db5";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=4ceabfee02";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=71cdb0acd1";  // [decl_firma_v1]
+import { fluxConcediu } from "./flux_concediu.js?v=4205d3e8b0";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=e48f2dc100";
+import { ecranRip } from "./rip_ecran.js?v=e132d99126";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=661e54e70c";
+import { ecranEtransport } from "./etransport_ecran.js?v=b6e1aa3fc7";
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=c017b073d6";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=a077931f55";  // [produse_firma_v1]
+import { randeazaProduse } from "./produse_ecran.js?v=0d0a622ecb";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=95ea959e00";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b7b794c09f";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=c641579c0e";  // [ecran_mf_v1]
@@ -1165,10 +1165,10 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}">Concediu</button>
           <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}">Adeverință</button>
           <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}">Pontaj</button>
-          <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
-          <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
-          <button class="buton-secundar" data-cult="${s.id}" data-nume="${esc(s.nume)}">+ cultural</button>
-          <button class="buton-secundar" data-cresa="${s.id}" data-nume="${esc(s.nume)}">+ creșă</button>
+          <button class="buton-secundar" data-vac="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
+          <button class="buton-secundar" data-cadou="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-nume="${esc(s.nume)}">+ cadou</button>
+          <button class="buton-secundar" data-cult="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-nume="${esc(s.nume)}">+ cultural</button>
+          <button class="buton-secundar" data-cresa="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-nume="${esc(s.nume)}">+ creșă</button>
           <button class="buton-secundar" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" data-salariu="${s.id}" data-val="${s.salariu_baza || 0}" data-nume="${esc(s.nume)}">Salariu</button>
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
@@ -1184,7 +1184,7 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
         <button class="buton-secundar" id="sp-reges-poll" data-actiune="POST /tenants/{tenant_id}/reges-poll"${regesOk ? "" : " disabled"}>R\u0103spunsuri REGES</button>
-        <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button>
+        <button class="buton-primar" id="sp-salariat-nou" data-actiune="POST /tenants/{tenant_id}/salariati" style="margin-left:12px">+ Salariat nou</button>
         <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : " disabled"}>Fișier plată card (SEPA)</button>
         <button class="buton-secundar" id="sp-contare" data-actiune="POST /tenants/{tenant_id}/salarii-contare/propunere">Contabilizează statul</button></p>
       <div id="sp-contare-zona"></div>
@@ -1606,7 +1606,7 @@ async function ecranSalariati(corp, nav, t) {
           <div class="camp-eticheta" style="font-weight:600;margin-bottom:6px">Suspendări contract · ${esc(b.dataset.nume)}</div>
           <span class="camp-ajutor">Concediul fără plată și suspendarea fără drepturi salariale scad brutul pe zilele lucrătoare din interval (Codul muncii art.49 alin.(2)) — în statul de plată și în D112. Perioada se ia din actul de suspendare / cererea aprobată.</span>
           <div id="susp-lista">${lista}</div>
-          <p style="margin-top:8px"><button class="buton-secundar" id="susp-adauga">+ Adaugă</button>
+          <p style="margin-top:8px"><button class="buton-secundar" id="susp-adauga" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaugă</button>
             <button class="buton-primar" id="susp-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" style="margin-left:6px">Salvează</button>
             <button class="buton-secundar" id="susp-cancel" style="margin-left:6px">Renunță</button></p>
           <div id="susp-msg"></div></div>`;
@@ -1746,7 +1746,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
           <label class="camp"><span class="camp-eticheta">Denumire</span><input class="camp-input" id="rt-den" placeholder="ex. Meniu zilei"></label>
           <label class="camp"><span class="camp-eticheta">Pre\u021b f\u0103r\u0103 TVA</span><input class="camp-input" type="number" step="0.01" id="rt-pret" style="width:110px"></label>
-          <button class="buton-secundar" id="rt-plus">+ ingredient</button>
+          <button class="buton-secundar" id="rt-plus" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ ingredient</button>
           <button class="buton-primar" id="rt-salveaza" data-actiune="POST /tenants/{tenant_id}/retete">Salveaz\u0103 re\u021beta</button>
         </div>
         <div id="rt-ingrediente"></div>
@@ -1990,7 +1990,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
             <input type="text" id="im-scan" class="camp-input" placeholder="scanează codul sau caută denumirea" aria-label="Scanează cod sau caută" style="flex:1;min-width:180px">
             <input type="number" step="0.001" id="im-cant" class="camp-input" placeholder="cant. (1)" aria-label="Cantitate numărată" style="width:100px">
-            <button class="buton-primar" id="im-add">Adaugă la numărătoare</button>
+            <button class="buton-primar" id="im-add" data-fara-actiune="numărătoarea se ține în memorie; finalizarea inventarului poartă acțiunea">Adaugă la numărătoare</button>
           </div>
           <div id="im-hint" class="camp-eticheta" style="margin-top:4px"></div>
           <div class="pf-lista" style="margin-top:8px">${randList() || '<div class="stare-goala">Nimic numărat încă.</div>'}</div>
@@ -2778,7 +2778,7 @@ export async function ecranStocuri(corp, nav, t) {
         <button class="buton-secundar" id="s-next">luna \u2192</button>
         <button class="buton-primar" id="s-desc" data-actiune="POST /tenants/{tenant_id}/stocuri/descarcare" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
       <div id="s-mesaj"></div>
-      <p><button class="buton-secundar" id="sn-toggle">+ NIR nou</button></p>
+      <p><button class="buton-secundar" id="sn-toggle" data-actiune="POST /tenants/{tenant_id}/stocuri/nir">+ NIR nou</button></p>
       <div id="sn-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
@@ -2797,7 +2797,7 @@ export async function ecranStocuri(corp, nav, t) {
           <input type="number" step="0.01" id="sn-taxe" class="camp-input" placeholder="taxe" aria-label="Taxe" style="width:110px">
           <input type="text" id="sn-cont-taxe" class="camp-input" value="446" aria-label="Cont credit taxe" style="width:120px">
         </div>
-        <p><button class="buton-secundar" id="sn-plus">+ articol</button>
+        <p><button class="buton-secundar" id="sn-plus" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ articol</button>
            <button class="buton-primar" id="sn-salveaza" data-actiune="POST /tenants/{tenant_id}/stocuri/nir" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
       </div>
       <div id="cv-zona"></div>
@@ -2930,7 +2930,7 @@ async function ecranCasa(corp, nav, t) {
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
-      <p><button class="buton-secundar" id="c-toggle">+ Dispozi\u021bie nou\u0103</button>${exceptata ? ' <button class="buton-secundar" id="c-chit-toggle">+ Chitan\u021b\u0103 f\u0103r\u0103 factur\u0103</button>' : ""}</p>
+      <p><button class="buton-secundar" id="c-toggle" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni">+ Dispozi\u021bie nou\u0103</button>${exceptata ? ' <button class="buton-secundar" id="c-chit-toggle" data-actiune="POST /tenants/{tenant_id}/chitante">+ Chitan\u021b\u0103 f\u0103r\u0103 factur\u0103</button>' : ""}</p>
       ${exceptata ? `<div id="c-chit-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Chitanță fără factură — vânzare din activitatea exceptată de la casa de marcat</div>
         <div class="form-rand" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
@@ -3623,7 +3623,7 @@ async function ecranJurnal(corp, nav, t) {
             <select class="camp-input je-centru" aria-label="Centru de cost" style="width:140px">${optCentru(l.centru_cost_id)}</select>
             <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
-        <p><button class="buton-secundar" id="je-plus">+ linie</button></p>
+        <p><button class="buton-secundar" id="je-plus" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ linie</button></p>
         <p style="margin-top:10px">
           <button class="buton-primar" id="je-salveaza" data-actiune="POST /tenants/{tenant_id}/jurnal|PUT /tenants/{tenant_id}/jurnal/{nota_id}">Salveaz\u0103</button>
           <button class="buton-secundar" id="je-renunta" style="margin-left:6px">Renun\u021b\u0103</button>
@@ -3651,7 +3651,7 @@ async function ecranJurnal(corp, nav, t) {
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
         <button class="buton-primar" id="j-amort" data-actiune="POST /tenants/{tenant_id}/amortizare" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
-        <button class="buton-secundar" id="j-nota-noua" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
+        <button class="buton-secundar" id="j-nota-noua" data-actiune="POST /tenants/{tenant_id}/jurnal" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
         <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button>${semnAjutor("F118")}</p>
       <div id="j-mesaj"></div>
       <div class="pf-lista">${randuri}</div>${totalizare}`;
@@ -3923,7 +3923,7 @@ async function ecranBonuri(corp, nav, t) {
       <h2 class="pf-titlu">Bonuri și chitanțe ${semnAjutor("F017")}</h2>
       <p class="pf-intro">Documente pozate de clienți sau adăugate de tine. Alege unul ca să-l verifici și să-l contezi.</p>
       <div style="margin:0 0 12px">
-        <button class="buton-secundar" id="bc-adauga">Adaugă document (pozează / încarcă)</button>
+        <button class="buton-secundar" id="bc-adauga" data-fara-actiune="documentul intră ca ciornă prin /portal/bon (rută comună clientului și cabinetului); certificarea poartă acțiunea">Adaugă document (pozează / încarcă)</button>
         <input type="file" id="bc-fisier" accept="image/*" multiple hidden>
         <span class="msg-eroare" id="bc-msg" style="margin-left:8px"></span>
       </div>
@@ -4468,7 +4468,7 @@ async function ecranContracte(corp, nav, t) {
       <h2 class="pf-titlu">Contracte</h2>
       <p class="pf-intro">Șabloane proprii cu marcaje {{...}}; generarea completează datele partenerului și scoate PDF.</p>
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 12px">' + mesajSucces + '</p>' : ""}
-      <p><button class="buton-primar" id="c-nou">+ Șablon nou</button></p>
+      <p><button class="buton-primar" id="c-nou" data-actiune="POST /tenants/{tenant_id}/contracte/sabloane">+ Șablon nou</button></p>
       <div class="pf-lista">${sabloane.length
         ? sabloane.map(rand).join("")
         : '<div class="stare-goala">Niciun șablon de contract încă. Creează primul cu „+ Șablon nou".</div>'}</div>

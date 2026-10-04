@@ -705,6 +705,11 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
         SQL în `core/drepturi.py` (-> `repo_utilizatori.permisiuni`, citirea existentă); regula DS fără ancoră pe primul rând și
         fără gardian în verificator (-> ACTIUNE_REFUZATA_NEMARCATA); ancora `cere_rol("admin_firma")` rămasă doar în proză
         (`test_inchidere_luna` -> garda citită pe structură); un pin pe calea pontajului făcea ruta să pară „probată” (scos).
+    [+] 10d. DUPĂ commitul 63c04a95, la proba pe producție (contul Anei, fără bife): butoanele de INTRARE într-un formular
+        („+ Notă nouă”, „+ NIR nou”, „+ Salariat nou” … 53) nu cheamă nicio rută, deci gărzile nu le vedeau — Ana deschidea editoare
+        pe care nu le putea salva -> fiecare poartă acțiunea formularului sau `data-fara-actiune="<motiv>"`; gard
+        `test_butoanele_de_intrare_in_formular_isi_declara_actiunea` + verificator; faza „fără drepturi” în probă. Tot atunci:
+        proba nu mai pornea pe producție (axe importat la încărcare) -> import leneș. Commit separat.
     [+] 10b. contrast insuficient la numerele grupelor din ghid (`.ans-grupa-nr`, axe color-contrast) -> `--gri`.
   - pasi:
     1. server: `core/drepturi.py` (nivelurile PREGATI/VALIDA/DEPUNE/ADMIN + mesajele în termenii contabilului) și `cere_drept(nivel)` în `main.py` — clientul refuzat; administratorul trece (ca azi); asistentul: bifa citită LIVE din `public.users` + firma ALOCATĂ (`user_tenants`), refuz 403 numit. Clasificarea tuturor rutelor de scriere (+ GET-urile rezervate) după decizie; gărzile vechi (`cere_rol("admin_firma")`, `cere_rol("admin_firma","angajat")`, `cere_cabinet`/`cere_context` pe rutele de firmă) înlocuite pe rutele clasificate.

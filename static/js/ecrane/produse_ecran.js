@@ -27,7 +27,7 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
     
     <div class="pr-cap">
       <h2 class="pf-titlu">Produse \u0219i servicii</h2>
-      <button class="buton-primar pr-add" id="pr-add">+ Adaug\u0103 produs</button>
+      <button class="buton-primar pr-add" id="pr-add" data-actiune="POST /tenants/{tenant_id}/produse">+ Adaug\u0103 produs</button>
     </div>
     <p class="pf-intro">Scrii denumirea, iar sistemul potrive\u0219te automat cota de TVA corect\u0103 din legisla\u021bie. O po\u021bi corecta oric\u00e2nd.</p>
     <input id="pr-cauta" class="camp-input" placeholder="Caut\u0103 produs..." aria-label="Caut\u0103 produs" style="margin-bottom:8px">

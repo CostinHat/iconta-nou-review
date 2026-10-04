@@ -3,7 +3,7 @@
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=91e1c0701a";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaFacturi } from "./facturi_ecran.js?v=9bfaf4bc1e";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=e48f2dc100";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -113,7 +113,7 @@ async function ecranAccesCont(corp, nav) {
       ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-schimba-email" style="margin-bottom:24px">Schimbă adresa de email</button>' : '<p class="ecran-nota" style="margin:0 0 24px">Doar titularul contului poate schimba acest email.</p>'}
       <h3 style="margin:0 0 8px">Alte persoane cu acces</h3>
       <div id="ac-lista-suplimentar" style="margin-bottom:16px"></div>
-      ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-adauga-acces">Adaugă acces altor persoane</button>' : ""}
+      ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-adauga-acces" data-fara-actiune="portalul clientului: nu e acțiune de cabinet">Adaugă acces altor persoane</button>' : ""}
     `;
     const lista = corp.querySelector("#ac-lista-suplimentar");
     lista.innerHTML = (d.suplimentare || []).map((c) => `

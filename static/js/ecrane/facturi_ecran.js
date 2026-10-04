@@ -5,7 +5,7 @@
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide } from "../api.js?v=91e1c0701a";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaEmitere } from "./emitere_ecran.js?v=25b0064aa1";
+import { randeazaEmitere } from "./emitere_ecran.js?v=3124d2a07b";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -37,7 +37,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="firme-optiune-titlu">Scaden\u021bar</div>
         <div class="firme-optiune-desc">Facturi ne\u00eencasate: restante \u0219i care scad cur\u00e2nd</div>
       </button>
-      <button class="firme-optiune" id="fac-emite">
+      <button class="firme-optiune" id="fac-emite" data-actiune="POST /tenants/{tenant_id}/facturi/emite">
         <div class="firme-optiune-icon accent-verde">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         </div>
@@ -493,7 +493,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
              decizie — incasarea se face prin transfer bancar, confirmat din extras. Eticheta
              «platita prin SIMULARE» de mai sus RAMANE: nicio factura n-o poarta azi, dar daca
              vreuna ar purta-o vreodata, nu are voie sa treaca drept incasare obisnuita. -->
-        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta" data-actiune="POST /tenants/{tenant_id}/chitante">Emite chitan\u021b\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura") ? '<button class="buton-secundar em-buton-sec" id="fd-saga">Export SAGA</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec" id="fd-spv" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv">Trimite în SPV</button>' : ""}
         ${f.transformat_in_id ? `<button class="btn-link" id="fd-vezi-transformata">transformat\u0103 \u00een ${esc(f.transformat_in_numar || "factur\u0103")}</button>` : ""}
@@ -979,7 +979,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
     <h2 class="pf-titlu">Facturi recurente ${semnAjutor("F047")}</h2>
     <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista zebra-lista">${corpuri}</div>
-    <button class="buton-primar" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;
+    <button class="buton-primar" id="fr-add" data-actiune="POST /tenants/{tenant_id}/facturi-recurente" style="margin-top:12px">+ \u0218ablon nou</button>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   corp.querySelector("#fr-add").addEventListener("click", () => nav.mergi("\u0218ablon nou", (c) => formSablon(c, nav, tenantId, opt)));  // faza_b_traseu_v1
 
@@ -1024,7 +1024,7 @@ export function formSablon(corp, nav, tenantId, opt) {
       <div class="em-eticheta">Produse \u0219i servicii</div>
       <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 cot\u0103 TVA</div>
       <div class="em-linii" id="fr-linii"></div>
-      <button class="buton-secundar em-buton-sec" id="fr-add-linie">+ Adaug\u0103 linie</button>
+      <button class="buton-secundar em-buton-sec" id="fr-add-linie" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaug\u0103 linie</button>
     </div>
 
     <div class="em-sectiune">

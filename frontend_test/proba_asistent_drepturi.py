@@ -29,10 +29,13 @@ from playwright.sync_api import sync_playwright  # noqa: E402
 from core import auth_api, db  # noqa: E402
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "vizual"))
-import axe_scan  # noqa: E402  (axe-core vandorizat; aceeași unealtă ca infrastructura vizuală)
 
 
 def _axe(pg):
+    # Import LENEȘ: `axe_scan` importă `w_auth`, care la încărcare construiește sesiunea lui `patron@prisma-cont.test`
+    # — inexistent în producție. Importat sus, proba n-ar mai porni pe producție (faza „înainte”, contul Anei), adică
+    # exact ce promite antetul. Faza care rulează axe merge pe baza de test, unde contul există.
+    import axe_scan  # noqa: E402  (axe-core vandorizat; aceeași unealtă ca infrastructura vizuală)
     viol, _t = axe_scan.scaneaza(pg)
     return {"violari": len(viol), "reguli": sorted({v.get("id") for v in viol})}
 
@@ -175,7 +178,7 @@ def _vizibil(pg, sel):
     return pg.eval_on_selector_all(sel, "els => els.filter(e => e.offsetParent !== null).length")
 
 
-def dupa_asistent(pw, baza, asistent, iesire):
+def dupa_asistent(pw, baza, asistent, iesire, eticheta="pregatire"):
     """Asistent DOAR cu «Poate pregăti» (ca Ana): ce vede în listă, ce primește la POST /tenants, ce vede în firmă."""
     r = {}
     b, pg, cereri, erori = _pagina(pw, _sesiune(asistent))
@@ -187,7 +190,7 @@ def dupa_asistent(pw, baza, asistent, iesire):
     r["in_dom_scoate"] = pg.eval_on_selector_all(".firme-rand-scoate", "els => els.length")
     r["vizibil_firme_scoase"] = _vizibil(pg, "#firme-vezi-scoase")   # istoricul scoaterilor = al cabinetului întreg
     r["vizibil_nota_scoate"] = pg.evaluate("() => document.body.innerText.includes('Butonul Scoate')")
-    pg.screenshot(path=iesire + "_1_lista_firme.png", full_page=True)
+    pg.screenshot(path=iesire + "_1_lista_firme_%s.png" % eticheta, full_page=True)
     r["axe_lista_firme"] = _axe(pg)
     # refuzul serverului, citit din pagină (butonul nu mai există, deci se cere direct, cum ar face un clic vechi)
     r["post_tenants"] = pg.evaluate("""async () => {
@@ -201,27 +204,35 @@ def dupa_asistent(pw, baza, asistent, iesire):
     pg.wait_for_selector("#fa-jurnal", timeout=15000)
     pg.wait_for_timeout(500)
     pg.click("#fa-jurnal")
-    pg.wait_for_selector("#j-nota-noua", timeout=15000)
+    pg.wait_for_selector("#j-prev", timeout=15000)   # „+ Notă nouă” poate fi ascuns (asistent fără drepturi)
     pg.wait_for_timeout(1200)
     r["jurnal"] = {"nota_noua_vizibil": _vizibil(pg, "#j-nota-noua"),
                    "valideaza_vizibile": _vizibil(pg, "[data-val]"), "valideaza_in_dom": pg.eval_on_selector_all("[data-val]", "e => e.length"),
                    "bloc_luna_in_dom": pg.eval_on_selector_all("#j-lock", "e => e.length"),
                    "amortizare_vizibil": _vizibil(pg, "#j-amort"),
                    "sterge_vizibile": _vizibil(pg, "[data-del]")}
-    pg.screenshot(path=iesire + "_5_jurnal.png", full_page=True)
+    pg.screenshot(path=iesire + "_5_jurnal_%s.png" % eticheta, full_page=True)
     pg.click(".nav-sageata.nav-inapoi")
     pg.wait_for_selector("#fa-datefirma", timeout=15000)
     pg.click("#fa-datefirma")
-    pg.wait_for_selector("#df-salveaza", timeout=15000)
+    pg.wait_for_selector("#df-nume-portofoliu", timeout=15000)
     pg.wait_for_timeout(600)
     r["date_firma"] = {"salveaza_vizibil": _vizibil(pg, "#df-salveaza"),
                        "nume_portofoliu_dezactivat": pg.eval_on_selector("#df-nume-portofoliu", "e => e.disabled")}
     pg.click(".nav-sageata.nav-inapoi")
     pg.wait_for_selector("#fa-import", timeout=15000)
     pg.click("#fa-import")
-    pg.wait_for_selector(".mig-frand, .stare-goala", timeout=15000)
+    pg.wait_for_selector("#mig-pasi, .stare-goala", timeout=15000)
     pg.wait_for_timeout(600)
+    r["import_mesaj_fara_drept"] = pg.eval_on_selector_all("#mig-fara-drept", "e => e.map(x => x.textContent.trim())")
     r["import_pasi_vizibili"] = pg.eval_on_selector_all(".mig-frand", "els => els.filter(e => e.offsetParent !== null).map(e => e.querySelector('.mig-frand-nume').textContent)")
+    pg.click(".nav-sageata.nav-inapoi")
+    pg.wait_for_selector("#fa-operatiuni", timeout=15000)
+    pg.click("#fa-operatiuni")
+    pg.wait_for_selector(".fereastra-corp h2", timeout=15000)
+    pg.wait_for_timeout(600)
+    r["operatiuni_vizibile"] = pg.eval_on_selector_all("[data-op]", "e => e.filter(x => x.offsetParent !== null).length")
+    r["operatiuni_mesaj"] = pg.eval_on_selector_all(".fereastra-corp .ecran-nota", "e => e.map(x => x.textContent.trim()).filter(t => t.includes('Poate pregăti'))")
     r["cereri_scriere"] = cereri
     r["erori_consola"] = erori
     b.close()
@@ -327,11 +338,20 @@ def main():
     ap.add_argument("--asistent", required=True)
     ap.add_argument("--admin", required=True)
     ap.add_argument("--iesire", required=True)
-    ap.add_argument("--faza", choices=("inainte", "dupa"), default="inainte")
+    ap.add_argument("--faza", choices=("inainte", "dupa", "fara-drepturi"), default="inainte")
     ap.add_argument("--asistent-fara-firme", default=None)
     ap.add_argument("--email-alt-rol", default=None)
     a = ap.parse_args()
     baza_iesire = os.path.splitext(a.iesire)[0]
+    if a.faza == "fara-drepturi":
+        # asistent CU firme alocate, FĂRĂ nicio bifă (cazul Anei din producție): vede firmele, nu vede nicio acțiune
+        with sync_playwright() as pw:
+            rez = {"baza": a.baza, "faza": "fara-drepturi",
+                   "asistent_fara_drepturi": dupa_asistent(pw, a.baza, a.asistent, baza_iesire, "fara_drepturi")}
+        with open(a.iesire, "w", encoding="utf-8") as f:
+            json.dump(rez, f, ensure_ascii=False, indent=1)
+        print(json.dumps(rez, ensure_ascii=False, indent=1))
+        return
     if a.faza == "dupa":
         with sync_playwright() as pw:
             rez = {"baza": a.baza, "faza": "dupa",

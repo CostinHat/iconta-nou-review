@@ -1387,6 +1387,9 @@ try:
     for _rel, _ln, _act, _tag in _sdu.masoara_pe_element()["gresite"]:
         rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
             "elementul legat de apelul %s nu poarta data-actiune: %s" % (_act, _tag[:60])))
+    for _rel, _ln, _et in _sdu.butoane_creare_nemarcate():
+        rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
+            "buton de intrare intr-un formular (%s) fara data-actiune / data-fara-actiune" % _et))
 except Exception as _e_ar:
     rap["actiune_refuzata_nemarcata"].append(("verificator", 0, "EROARE", "gard actiune_refuzata_nemarcata: " + str(_e_ar)))
 

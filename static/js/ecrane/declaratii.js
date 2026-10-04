@@ -622,7 +622,7 @@ function randeazaFormularD710(corp, nav) {
       <label class="camp" style="width:160px"><span class="camp-eticheta">Suma declarată inițial <span class="oblig">*</span></span><input id="d710-i" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Suma corectă <span class="oblig">*</span></span><input id="d710-c" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:120px" id="d710-cota-wrap"><span class="camp-eticheta">Cotă micro (%) <span class="oblig">*</span></span><input id="d710-cota" type="number" step="0.01" class="camp-input" placeholder="1"></label>
-      <button class="buton-secundar" id="d710-add">+ adaugă</button>
+      <button class="buton-secundar" id="d710-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>
     </div>
     <div id="d710-msg"></div>
     <p style="margin-top:8px"><button class="buton-primar" id="d710-regen">Regenerează D710</button>
@@ -817,7 +817,7 @@ function randeazaFormularD307(corp, nav) {
       <label class="camp" style="width:150px"><span class="camp-eticheta">CUI operator <span class="oblig">*</span></span><input id="d307-cod" type="text" class="camp-input"></label>
       <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire operator <span class="oblig">*</span></span><input id="d307-den" type="text" class="camp-input"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">TVA (lei) <span class="oblig">*</span></span><input id="d307-tva" type="number" step="1" class="camp-input"></label>
-      <button class="buton-secundar" id="d307-add">+ adaugă</button>
+      <button class="buton-secundar" id="d307-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>
     </div>
     <div id="d307-msg"></div>
     <p class="camp-ajutor" style="margin-top:8px">Total ajustare TVA: <b>${bani(total)} lei</b> — se calculează automat din operațiunile de mai sus.</p>
@@ -914,7 +914,7 @@ function randeazaFormularD107(corp, nav) {
       <label class="camp" style="width:130px"><span class="camp-eticheta">Suma acordată (lei)</span><input id="d107-val1" type="number" step="1" min="0" class="camp-input"></label>
       <label class="camp" style="width:130px"><span class="camp-eticheta">Suma reportată (lei)</span><input id="d107-val2" type="number" step="1" min="0" class="camp-input"></label>
       <label class="camp" style="width:130px"><span class="camp-eticheta">Suma dedusă (lei)</span><input id="d107-val3" type="number" step="1" min="0" class="camp-input"></label>
-      <button class="buton-secundar" id="d107-add">+ adaugă</button>
+      <button class="buton-secundar" id="d107-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>
     </div>
     <div id="d107-msg"></div>
     <details class="dec-xml" style="margin-top:10px"><summary>Anexă — beneficiari neindividualizați (rar)</summary>
@@ -929,7 +929,7 @@ function randeazaFormularD107(corp, nav) {
           <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire / nume <span class="oblig">*</span></span><input id="d107-ni-den" type="text" class="camp-input"></label>
           <label class="camp" style="width:150px"><span class="camp-eticheta">CUI / CNP <span class="oblig">*</span></span><input id="d107-ni-cif" type="text" class="camp-input"></label>
           <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Adresă <span class="oblig">*</span></span><input id="d107-ni-adr" type="text" class="camp-input"></label>
-          <button class="buton-secundar" id="d107-ni-add">+ adaugă</button>
+          <button class="buton-secundar" id="d107-ni-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>
         </div>` : ""}
       <div id="d107-ni-msg"></div>
     </details>
@@ -1057,7 +1057,7 @@ function randeazaFormularD177(corp, nav) {
       <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Adresa beneficiar</span><input id="d177-adr" type="text" class="camp-input"></label>
       <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
         <input id="d177-acord" type="checkbox"><span class="camp-eticheta" style="margin:0">Sunt de acord cu informarea beneficiarului</span></label>
-      <button class="buton-secundar" id="d177-add">+ adaugă</button>
+      <button class="buton-secundar" id="d177-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>
     </div>
     <div id="d177-msg"></div>
     <p class="camp-ajutor" id="d177-totaluri" style="margin-top:8px">Alocat beneficiarilor: <b>${bani(totB)}</b> din <b>${bani(srest)}</b> lei rămași · nealocat: <b>${bani(ramas)}</b> lei. Suma de control a declarației este 0 (D177 e informativă).</p>
@@ -1206,7 +1206,7 @@ function randeazaFormularD200(corp, nav) {
       '<label class="camp d200-cg" style="width:150px"><span class="camp-eticheta">Pierdere (lei)</span><input id="d200-pd" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp d200-org" style="flex:1 1 220px"><span class="camp-eticheta">Denumire organizator</span><input id="d200-den" type="text" class="camp-input"></label>' +
       '<label class="camp d200-org" style="width:160px"><span class="camp-eticheta">CUI organizator</span><input id="d200-cifo" type="text" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d200-add">+ adaugă</button>' +
+      '<button class="buton-secundar" id="d200-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>' +
     '</div>' +
     '<p class="camp-ajutor" id="d200-nota" style="margin:4px 0 0"></p>' +
     '<div id="d200-msg"></div>' +
@@ -1334,7 +1334,7 @@ function randeazaFormularD201(corp, nav) {
       '<label class="camp d201-vn" style="width:140px"><span class="camp-eticheta">Venit net (lei)</span><input id="d201-vn" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit străinătate (lei)</span><input id="d201-imp1" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp d201-imp2" style="width:140px"><span class="camp-eticheta">Impozit salarii (lei)</span><input id="d201-imp2" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d201-add">+ adaugă</button>' +
+      '<button class="buton-secundar" id="d201-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>' +
     "</div>" +
     '<p class="camp-ajutor" id="d201-nota" style="margin:4px 0 0">Coduri oficiale ANAF (D201). Țara = cod ISO-3166 numeric (ex. Germania 276, Franța 250, Italia 380, Austria 40, Spania 724). Categorie 23 = doar venit net; categorie 14 (salarii) = admite impozit pe salarii.</p>' +
     '<div id="d201-msg"></div>' +
@@ -1565,7 +1565,7 @@ function randeazaFormularD204(corp, nav) {
       '<label class="camp" style="width:110px"><span class="camp-eticheta">Cotă % <span class="oblig">*</span></span><input id="d204-acota" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Venit repartizat</span><input id="d204-avenit" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Pierdere repartizată</span><input id="d204-apierd" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d204-add">+ adaugă</button>' +
+      '<button class="buton-secundar" id="d204-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>' +
     "</div>" +
     '<div id="d204-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ cote: <b>' + (Math.round(sCota * 100) / 100) + "</b>% " + (okCota ? "✓" : "(trebuie 100)") +
@@ -1704,7 +1704,7 @@ function randeazaFormularD223(corp, nav) {
       '<label class="camp" style="flex:1 1 160px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d223-snume" type="text" class="camp-input"></label>' +
       '<label class="camp" style="width:110px"><span class="camp-eticheta">Cotă % <span class="oblig">*</span></span><input id="d223-scota" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
       '<label class="camp" style="flex:1 1 180px"><span class="camp-eticheta">Domiciliu</span><input id="d223-sdom" type="text" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d223-add">+ adaugă</button>' +
+      '<button class="buton-secundar" id="d223-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>' +
     "</div>" +
     '<div id="d223-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ cote: <b>' + (Math.round(sCota * 100) / 100) + "</b>% " + (okCota ? "✓" : "(trebuie 100)") + "</p>" +
@@ -1826,7 +1826,7 @@ function randeazaFormularD216(corp, nav) {
       '<label class="camp" style="width:140px"><span class="camp-eticheta">Valoare impozabilă</span><input id="d216-ival" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:100px"><span class="camp-eticheta">Cotă %</span><input id="d216-icota" type="number" step="0.0001" min="0" max="100" class="camp-input" value="0.3"></label>' +
       '<label class="camp" style="width:140px"><span class="camp-eticheta">Plafon</span><input id="d216-iplaf" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d216-addi">+ imobil</button>' +
+      '<button class="buton-secundar" id="d216-addi" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ imobil</button>' +
     "</div>" +
     '<div class="camp-eticheta" style="margin:12px 0 4px">Bunuri mobile de valoare mare (autovehicule etc.)</div>' +
     grilaM +
@@ -1835,7 +1835,7 @@ function randeazaFormularD216(corp, nav) {
       '<label class="camp" style="width:100px"><span class="camp-eticheta">Niv</span><input id="d216-mniv" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Valoare impozabilă</span><input id="d216-mval" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:140px"><span class="camp-eticheta">Plafon</span><input id="d216-mplaf" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d216-addm">+ mobil</button>' +
+      '<button class="buton-secundar" id="d216-addm" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ mobil</button>' +
     "</div>" +
     '<div id="d216-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Impozit imobile: <b>' + tImob + "</b> · impozit mobile: <b>" + tMob + "</b> lei (calculat cu rata validatorului 0,3%). Valoarea impozabilă trebuie să depășească plafonul.</p>" +
@@ -1970,7 +1970,7 @@ function randeazaFormularD208(corp, nav) {
       '<label class="camp" style="width:130px"><span class="camp-eticheta">Bază calcul</span><input id="d208-bbaza" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Impozit</span><input id="d208-bimp" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Impozit scutit</span><input id="d208-bsc" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d208-addb">+ beneficiar</button>' +
+      '<button class="buton-secundar" id="d208-addb" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ beneficiar</button>' +
     "</div>" +
     '<div class="camp-eticheta" style="margin:12px 0 4px">Celelalte părți contractante (înstrăinători) — cotele însumează 100</div>' +
     grilaP +
@@ -1978,7 +1978,7 @@ function randeazaFormularD208(corp, nav) {
       '<label class="camp" style="width:160px"><span class="camp-eticheta">CUI/CNP</span><input id="d208-pcui" type="text" maxlength="13" class="camp-input"></label>' +
       '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume</span><input id="d208-pnume" type="text" class="camp-input"></label>' +
       '<label class="camp" style="width:90px"><span class="camp-eticheta">Cotă %</span><input id="d208-pcota" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d208-addp">+ parte</button>' +
+      '<button class="buton-secundar" id="d208-addp" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ parte</button>' +
     "</div>" +
     '<div id="d208-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ cote beneficiari: <b>' + (Math.round(sBen * 100) / 100) + "</b>% " + (okBen ? "✓" : "(trebuie 100)") +
@@ -2105,7 +2105,7 @@ function randeazaFormularD221(corp, nav) {
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:6px">' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Cod produs</span><input id="d221-pcod" type="text" maxlength="3" class="camp-input"></label>' +
       '<label class="camp" style="width:200px"><span class="camp-eticheta">Suprafață (ha) / nr. capete</span><input id="d221-pval" type="number" step="0.01" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d221-addp">+ produs</button>' +
+      '<button class="buton-secundar" id="d221-addp" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ produs</button>' +
     "</div>" +
     (forma === "2" ?
       '<div class="camp-eticheta" style="margin:12px 0 4px">Asociați (minim 2; cotele însumează 100)</div>' + grilaA +
@@ -2114,7 +2114,7 @@ function randeazaFormularD221(corp, nav) {
         '<label class="camp" style="flex:1 1 140px"><span class="camp-eticheta">Nume</span><input id="d221-anume" type="text" class="camp-input"></label>' +
         '<label class="camp" style="flex:1 1 140px"><span class="camp-eticheta">Domiciliu</span><input id="d221-adom" type="text" class="camp-input"></label>' +
         '<label class="camp" style="width:90px"><span class="camp-eticheta">Cotă %</span><input id="d221-acota" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
-        '<button class="buton-secundar" id="d221-adda">+ asociat</button>' +
+        '<button class="buton-secundar" id="d221-adda" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ asociat</button>' +
       "</div>" +
       '<p class="camp-ajutor" style="margin-top:6px">Σ cote asociați: <b>' + (Math.round(sCota * 100) / 100) + "</b>% " + (okCota ? "✓" : "(trebuie 100)") + "</p>"
       : "") +
@@ -2378,7 +2378,7 @@ function randeazaFormularD104(corp, nav) {
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Cheltuieli</span><input id="d104-sch" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Impozit datorat</span><input id="d104-simpd" type="number" step="1" min="0" class="camp-input"></label>' +
       (defin ? '<label class="camp" style="width:120px"><span class="camp-eticheta">Impozit declarat</span><input id="d104-simpr" type="number" step="1" min="0" class="camp-input"></label>' : "") +
-      '<button class="buton-secundar" id="d104-add">+ asociat</button>' +
+      '<button class="buton-secundar" id="d104-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ asociat</button>' +
     "</div>" +
     '<div id="d104-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ venit: <b>' + tVen + "</b> · Σ cheltuieli: <b>" + tCh + "</b> · Σ impozit datorat: <b>" + tImp + "</b> lei. " + (defin ? "Definitivare (trim 4 -> luna 12): se completează și impozitul declarat." : "Trimestrial cumulat: impozitul declarat se completează doar la definitivare.") + "</p>" +
@@ -2470,7 +2470,7 @@ function randeazaFormularD114(corp, nav) {
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Nr. contract</span><input id="d114-lnr" type="text" class="camp-input"></label>' +
       '<label class="camp" style="width:130px"><span class="camp-eticheta">Dată contract</span><input id="d114-ldata" type="text" class="camp-input" placeholder="zz.ll.aaaa"></label>' +
       '<label class="camp" style="width:130px"><span class="camp-eticheta">Venit (bază)</span><input id="d114-lven" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d114-add">+ lucrător</button>' +
+      '<button class="buton-secundar" id="d114-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ lucrător</button>' +
     "</div>" +
     '<div id="d114-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ venit: <b>' + tVen + "</b> · Σ CAM (1%): <b>" + tCam + "</b> lei. Contribuția se calculează automat = 1% din venit (regula validatorului). Perioada lunară din selectorul de sus.</p>" +
@@ -2562,7 +2562,7 @@ function randeazaFormularD110(corp, nav) {
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Cod obligație</span><select id="d110-cod" class="camp-input">' + optCod + "</select></label>" +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit datorat</span><input id="d110-dat" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit reținut</span><input id="d110-rest" type="number" step="1" min="1" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d110-add">+ obligație</button>' +
+      '<button class="buton-secundar" id="d110-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ obligație</button>' +
     "</div>" +
     '<div id="d110-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Σ de plată: <b>' + sPlata + "</b> · Σ de restituit: <b>" + sRest + "</b> lei. " +
@@ -2661,7 +2661,7 @@ function randeazaFormularD398(corp, nav) {
       '<label class="camp" style="width:100px"><span class="camp-eticheta">Cotă %</span><input id="d398-rate" type="number" step="0.01" min="0" max="100" class="camp-input"></label>' +
       '<label class="camp" style="width:130px"><span class="camp-eticheta">Bază impozabilă</span><input id="d398-baza" type="number" step="0.01" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:160px"><span class="camp-eticheta">Cod TVA stabilire (msest)</span><input id="d398-vatmsest" type="text" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d398-add">+ livrare</button>' +
+      '<button class="buton-secundar" id="d398-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ livrare</button>' +
     "</div>" +
     '<div id="d398-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Total TVA datorat: <b>' + gt.toFixed(2) + "</b> " + esc(d.currency || "EUR") + ". msest (stabilire fixă) doar în regim UE; bunuri interzise în non-UE, servicii interzise în import.</p>" +
@@ -2821,7 +2821,7 @@ function randeazaFormularD318(corp, nav) {
       '<label class="camp" style="width:110px"><span class="camp-eticheta">Țară furnizor</span><select id="d318-ffztara" class="camp-input">' + optTara(d.refunding_country) + "</select></label>" +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Cod TVA furnizor</span><input id="d318-ffzvat" type="text" class="camp-input"></label>' +
       '<label class="camp" style="width:120px"><span class="camp-eticheta">Cod bun/serv.</span><input id="d318-fcod" type="text" class="camp-input" placeholder="1–10"></label>' +
-      '<button class="buton-secundar" id="d318-add">+ factură</button>' +
+      '<button class="buton-secundar" id="d318-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ factură</button>' +
     "</div>" +
     '<div id="d318-msg"></div>' +
     '<p class="camp-ajutor" style="margin-top:8px">Total TVA deductibil cerut la rambursare: <b>' + totalDed.toFixed(2) + "</b> " + esc(d.currency || "EUR") +
@@ -3063,7 +3063,7 @@ function randeazaFormularD212(corp, nav) {
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Data încetării (în an)</span><input id="d212-n-sf" type="date" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile de întrerupere</span><input id="d212-n-intr" type="number" min="0" step="1" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile scutite</span><input id="d212-n-scut" type="number" min="0" step="1" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d212-n-add">+ adaugă activitatea</button>' +
+      '<button class="buton-secundar" id="d212-n-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă activitatea</button>' +
     "</div>" +
     '<p class="camp-ajutor" style="margin:4px 0 0">Norma e cea publicată de direcția regională pentru locul activității; norma ajustată, dacă s-au aplicat coeficienți de corecție. Data începerii/încetării și zilele de întrerupere se completează doar când activitatea n-a durat tot anul — venitul net se calculează proporțional, pe 365 de zile; impozitul e 10% din venitul impozabil. Zilele scutite = zilele în care persoana a fost scutită de impozit (handicap grav sau accentuat).</p>';
   const etCat = (c) => ((_D212_CATEG.find((o) => o[0] === String(c)) || [])[1]) || String(c);
@@ -3104,7 +3104,7 @@ function randeazaFormularD212(corp, nav) {
       '<label class="camp" style="width:200px"><span class="camp-eticheta">Câștig net anual (pierderea cu minus)</span><input id="d212-v-castig" type="number" step="1" class="camp-input"></label>' +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Venit impozabil (lei)</span><input id="d212-v-vimp" type="number" min="0" step="1" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Zile scutite (handicap)</span><input id="d212-v-scut" type="number" min="0" step="1" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d212-v-add">+ adaugă venitul</button>' +
+      '<button class="buton-secundar" id="d212-v-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă venitul</button>' +
     "</div>" +
     '<p class="camp-ajutor" style="margin:4px 0 0">Se arată doar câmpurile categoriei alese. Cheltuielile la cote forfetare le calculează aplicația (40% la drepturile de autor, 20% la chirii) — se scriu doar în sistem real sau, la moștenitori și dreptul de suită, sumele cuvenite organismelor de gestiune colectivă. La investiții se scrie câștigul net al anului, iar la alte surse venitul impozabil. Impozitul (10%) și CASS se calculează la generare. Regulile sunt cele pentru veniturile 2025.</p>';
   const etStr = (c) => ((_D212_CATEG_STR.find((o) => o[0] === String(c)) || [])[1]) || String(c);
@@ -3144,7 +3144,7 @@ function randeazaFormularD212(corp, nav) {
       '<label class="camp" style="width:200px"><span class="camp-eticheta">Impozit plătit în străinătate (lei)</span><input id="d212-s-platit" type="number" min="0" step="1" class="camp-input"></label>' +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Data începerii (în an)</span><input id="d212-s-inc" type="date" class="camp-input"></label>' +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Data încetării (în an)</span><input id="d212-s-sf" type="date" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d212-s-add">+ adaugă venitul din străinătate</button>' +
+      '<button class="buton-secundar" id="d212-s-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă venitul din străinătate</button>' +
     "</div>" +
     '<p class="camp-ajutor" style="margin:4px 0 0">Sumele se scriu în lei, la cursul mediu anual BNR al anului. Se arată doar câmpurile categoriei alese. Impozitul în România se calculează cu cota categoriei; la metoda creditului fiscal, impozitul plătit în străinătate se scade, dar cel mult până la impozitul român; la metoda scutirii sau la venitul scutit prin acord, impozitul în România e zero. Salariile plătite din România: venitul bază de calcul din documentul angajatorului. Premiile: suma neimpozabilă de 600 lei pe premiu se scade singură. Jocurile de noroc: baremul se alege după data plății (altul de la 1 august 2025); la cazinouri, poker, slot-machine și lozuri primii 66.750 lei din fiecare plată nu se impozitează. Pensiile: venitul brut al anului și numărul lunilor cu pensie — suma neimpozabilă de 3.000 lei pe lună se scade singură; dacă de la august 2025 persoana datorează CASS în România pe pensie, aplicația refuză (formularul ANAF instalat n-are încă secțiunea). Remunerațiile de administrator, cenzor și similare: CAS și CASS datorate în România se calculează; pentru un asigurat în alt stat se bifează „Fără CAS/CASS în România” și se scriu la contribuții cele plătite acolo. Transferul unei proprietăți: valoarea tranzacției; moștenirea: valoarea masei succesorale, doar dacă succesiunea nu s-a finalizat în 2 ani. Veniturile din străinătate intră și în CAS și CASS, afară de cazul în care persoana e asigurată în alt stat (legislația europeană sau un acord de securitate socială) — atunci bifează „Fără CAS/CASS în România”. Regulile sunt cele pentru veniturile 2025.</p>';
   zona.innerHTML = '<details class="dec-xml" open><summary>Declarația unică — persoană fizică (identificare + fișa RIP)</summary>' +
@@ -3426,7 +3426,7 @@ function randeazaFormularD207(corp, nav) {
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Bază / venit brut (lei)</span><input id="d207-baza" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit reținut (lei)</span><input id="d207-imp" type="number" step="1" min="0" class="camp-input"></label>' +
       '<label class="camp" style="width:190px"><span class="camp-eticheta">Impozit suportat de plătitor (lei)</span><input id="d207-imps" type="number" step="1" min="0" class="camp-input"></label>' +
-      '<button class="buton-secundar" id="d207-add">+ adaugă</button>' +
+      '<button class="buton-secundar" id="d207-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>' +
     '</div>' +
     '<p class="camp-ajutor" id="d207-scutit-nota" style="margin:4px 0 0"></p>' +
     '<div id="d207-msg"></div>' +
@@ -3631,7 +3631,7 @@ async function pas3(corp, nav) {
       <div class="dec-gata-sub"><b>${S.tip.toUpperCase()}</b> · ${etPerioada()} a fost trimisă seniorului pentru validare.</div>
     </div>
     <div class="dec-bara">
-      <button class="buton-secundar" id="dec-alta">+ Altă declarație</button>
+      <button class="buton-secundar" id="dec-alta" data-fara-actiune="navigare: alt tip de declarație">+ Altă declarație</button>
       <button class="buton-primar" id="dec-gata-ok">Gata</button>
     </div>
   `;

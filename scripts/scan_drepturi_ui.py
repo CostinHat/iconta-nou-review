@@ -277,6 +277,28 @@ def masoara_pe_element():
     return {"gresite": gresite, "nelegate": nelegate}
 
 
+# ── BUTOANELE DE INTRARE într-un formular („+ Notă nouă”, „Adaugă…”, „Emite…”) ─────────────────────────────────────
+# Nu cheamă singure nicio rută (deschid formularul; salvarea e cea marcată), deci treptele de mai sus nu le văd. Găsit
+# pe producție: Ana, fără niciun drept, vedea „+ Notă nouă” — un editor pe care nu-l putea salva. Regula: butonul de
+# intrare poartă acțiunea formularului la care duce (`data-actiune`), sau spune de ce nu e o acțiune
+# (`data-fara-actiune="<motiv>"`: rând în formular, navigare, portalul clientului).
+# CE NU VEDE: butoanele construite cu `createElement` (eticheta pusă prin `textContent`).
+# eticheta poate sta direct după `<button>` SAU într-un element-titlu interior (opțiunile de meniu `firme-optiune`, cu
+# iconiță înainte): „Emite factură” e tot o intrare într-un formular de lucru
+_BUTON_CREARE = re.compile(r"<button([^>]*)>(?:\s*|(?:(?!</button>).){0,900}?-titlu\">\s*)((?:\+|Adaug|Emite)[^<]{0,60})", re.S)
+
+
+def butoane_creare_nemarcate():
+    out = []
+    for f in sorted(glob.glob(os.path.join(JS, "**", "*.js"), recursive=True)):
+        txt = io.open(f, encoding="utf-8").read()
+        for mt in _BUTON_CREARE.finditer(txt):
+            if "data-actiune" in mt.group(1) or "data-fara-actiune" in mt.group(1):
+                continue
+            out.append((os.path.relpath(f, RAD), txt.count("\n", 0, mt.start()) + 1, mt.group(2).strip()[:40]))
+    return out
+
+
 if __name__ == "__main__":
     r = masoara()
     print("legate (declarate):", len(r["legate"]))

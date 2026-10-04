@@ -22,7 +22,7 @@ export async function randeazaRaporteaza(corp, nav) {
       <p class="ecran-nota" style="margin:0 0 8px">Opțional: atașează capturi de ecran — cu butonul de mai jos sau lipite direct cu Ctrl+V.</p>
       <div class="rap-actiuni" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button class="buton-primar" id="rap-trimite">Trimite sesizarea</button>
-        <button class="buton-secundar" id="rap-add-poza" type="button">Adaugă captură</button>
+        <button class="buton-secundar" id="rap-add-poza" data-fara-actiune="captură într-o sesizare către iConta.eu — orice cont" type="button">Adaugă captură</button>
         <input type="file" id="rap-file" accept="image/png,image/jpeg,image/webp" multiple style="display:none">
       </div>
       <div id="rap-msg"></div>
