@@ -313,7 +313,7 @@ export function ecranLogin(radacina) {
         if (!er) return;
         const lbl = document.createElement("label");
         lbl.className = "camp";
-        lbl.innerHTML = '<span class="camp-eticheta">Cod acces</span><input type="text" class="camp-input" id="login-cod" autocomplete="off" placeholder="doar \u00een perioada de testare">';
+        lbl.innerHTML = '<span class="camp-eticheta">Cod acces</span><input aria-label="Cod acces" type="text" class="camp-input" id="login-cod" autocomplete="off" placeholder="doar \u00een perioada de testare">';
         er.parentNode.insertBefore(lbl, er);
       }
     }).catch((e) => { console.warn("[beta_gate] /public/config indisponibil - campul de cod beta nu apare", e); });  // prefetch optional: nu e o actiune a userului; daca beta e activ, respingerea login-ului aduce mesajul real

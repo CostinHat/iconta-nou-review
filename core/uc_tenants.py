@@ -728,8 +728,22 @@ def salariat_actualizeaza(tenant_id, salariat_id, date, ctx):
             with conn.cursor() as cur:
                 if not repo_salariati.salariatul_exista(cur, salariat_id):
                     raise _erori.Inexistent("salariat inexistent")
-            rez = salariati_api.actualizeaza_salariat(conn, salariat_id,
-                                                      _golite=golite, **date.model_dump())
+            corp = date.model_dump()
+            if corp.get("salariu_brut") is not None:
+                # [salariul în timp, decizia Costin 04.10.2026] data validată ÎNAINTE de scriere; fiecare lună atinsă
+                # de schimbare (de la data ei până la următoarea intrare din istoric / azi) trece prin poarta de
+                # perioadă — o lună închisă nu se rescrie pe ușa salariului.
+                import datetime as _dtm
+                d, ultima = salariati_api.valideaza_schimbare_salariu(
+                    conn, salariat_id, corp["salariu_brut"], corp.get("valabil_din"), corp.get("inlocuieste") is True,   # bool deja (SalariatEdit, pydantic)
+                    corp.get("data_angajare"), corp.get("data_incetare"))
+                capat = min(ultima or _dtm.date.today(), _dtm.date.today())
+                y, m = d.year, d.month
+                while (y, m) <= (capat.year, capat.month):
+                    _uc_comun._cere_luna_deschisa(conn, schema, "%04d-%02d-01" % (y, m))
+                    y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+                corp["valabil_din"] = d.isoformat()
+            rez = salariati_api.actualizeaza_salariat(conn, salariat_id, _golite=golite, **corp)
             if trimise.get("suspendari") is not None:
                 # [lot 19 pct.4c] CFP / suspendare -> statul de plată și D112 proratează brutul (Codul muncii art.49
                 # alin.(2)). Lunile atinse de o schimbare trec prin aceeași poartă de perioadă ca orice înregistrare.
@@ -746,6 +760,9 @@ def salariat_actualizeaza(tenant_id, salariat_id, date, ctx):
             return rez
     except ValueError as e:
         _ec = getattr(e, "erori_campuri", None)  # [G10] contract {detail, erori_campuri}
+        if getattr(e, "cod", None) == salariati_api.COD_DATA_OCUPATA:
+            # [salariul în timp] refuz STRUCTURAT: ecranul arată intrarea existentă și oferă înlocuirea explicită
+            raise _erori.DateInvalide({"mesaj": str(e), "erori_campuri": _ec, "cod": e.cod, "existent": e.existent})
         raise _erori.DateInvalide({"mesaj": str(e), "erori_campuri": _ec} if _ec else str(e))
 
 

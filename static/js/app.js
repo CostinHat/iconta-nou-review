@@ -46,12 +46,12 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 import { sesiune } from "./sesiune.js?v=5d142951c9";
 import { api } from "./api.js?v=1dccbc985b";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=880cf5609e";
+import { ecranLogin } from "./ecrane/login.js?v=3f4b6927f3";
 import { creeazaNavigator } from "./navigator.js?v=31ee34a3ed";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=34bff60158";
 import { desktopAsistent } from "./ecrane/asistent.js?v=e40f303005";
-import { desktopPortal } from "./ecrane/portal.js?v=99ad4fe154";
-import { desktopAdmin } from "./ecrane/admin.js?v=7c33bbe96d"; // [p37_admin_desktop]
+import { desktopPortal } from "./ecrane/portal.js?v=b97c2efba1";
+import { desktopAdmin } from "./ecrane/admin.js?v=3c3242bb50"; // [p37_admin_desktop]
 
 const radacina = document.getElementById("app");
 
@@ -62,11 +62,11 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
         <h2 style="margin:0 0 6px">Activare cont</h2>
         <p class="ecran-nota" style="margin:0 0 16px">Seteaz\u0103-\u021bi parola pentru portalul iConta.eu.</p>
         <div class="camp" style="margin-bottom:12px">
-          <label class="camp-eticheta">Parol\u0103 nou\u0103 (minim 8 caractere)</label>
+          <label for="act-p1" class="camp-eticheta">Parol\u0103 nou\u0103 (minim 8 caractere)</label>
           <input class="camp-input" type="password" id="act-p1">
         </div>
         <div class="camp" style="margin-bottom:16px">
-          <label class="camp-eticheta">Repet\u0103 parola</label>
+          <label for="act-p2" class="camp-eticheta">Repet\u0103 parola</label>
           <input class="camp-input" type="password" id="act-p2">
         </div>
         <p class="ecran-nota" id="act-msg" style="margin:0 0 10px"></p>
@@ -96,11 +96,11 @@ function ecranResetParola(tok) {  /* [reset_parola_v1] setare parola noua din li
         <h2 style="margin:0 0 6px">Parolă nouă</h2>
         <p class="ecran-nota" style="margin:0 0 16px">Setează o parolă nouă pentru contul tău iConta.eu.</p>
         <div class="camp" style="margin-bottom:12px">
-          <label class="camp-eticheta">Parolă nouă (minim 8 caractere)</label>
+          <label for="rst-p1" class="camp-eticheta">Parolă nouă (minim 8 caractere)</label>
           <input class="camp-input" type="password" id="rst-p1">
         </div>
         <div class="camp" style="margin-bottom:16px">
-          <label class="camp-eticheta">Repetă parola</label>
+          <label for="rst-p2" class="camp-eticheta">Repetă parola</label>
           <input class="camp-input" type="password" id="rst-p2">
         </div>
         <p class="ecran-nota" id="rst-msg" style="margin:0 0 10px"></p>

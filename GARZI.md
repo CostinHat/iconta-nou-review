@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**677 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**680 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 644
+### `core/` — 646
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9157,6 +9157,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_esec_trimitere_email.py` — GARD [R73, 27.08.2026]: un eșec de trimitere a emailului nu se mai poate stinge tăcut.
 - `core/test_eticheta_conturi_ecran.py` — Eticheta din ECRAN și conturile din BACKEND nu pot diverge tăcut.
 - `core/test_eticheta_status_factura.py` — GARD [28.09.2026, P13 / interdictia 31]: eticheta de status factura se DERIVA din stare, nu o alege
+- `core/test_etichete_campuri.py` — GARD — niciun câmp de formular fără etichetă accesibilă (clasa găsită 04.10.2026).
 - `core/test_etransport_randuri_dinamice.py` — GARD cap.24 batch 3a — randuri dinamice e-Transport, re-rulate in POARTA prin chromium headless.
 - `core/test_etransport_send.py` — Teste core/etransport_send.py (F121) — pe MOCK, niciodata pe ANAF real.
 - `core/test_eu_parola.py` — `POST /eu/schimba-parola` — a doua suprafață de autentificare fără probă din lista auditului.
@@ -9372,6 +9373,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_salariati_blocaj_vizibil.py` — core/test_salariati_blocaj_vizibil.py — GARD: pe Stat de plata, butoanele dezactivate SEPA
 - `core/test_salariati_import_iban.py` — core/test_salariati_import_iban.py — GARD: importul de salariati (stratul 4 migrare) aduce IBAN
 - `core/test_salarii_contare.py` — Teste gardian pentru salarii_contare (partea pura).
+- `core/test_salariu_in_timp.py` — GARD — schimbarea salariului cu dată de la care se aplică (decizia Costin 04.10.2026).
 - `core/test_salariu_proratare.py` — GARD — brutul se proratează pe prezența în contract: angajare/încetare în lună, CFP/suspendare, schimbare de salariu
 - `core/test_salariu_scrieri.py` — Teste PASUL 2b: scrierile salariului trec pe salariu_istoric (SURSA UNICA); citirile pe curent.
 - `core/test_salarizare.py` — Teste gardian pentru core/salarizare.py.
@@ -9442,7 +9444,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 33
+### `scripts/` — 34
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -9454,6 +9456,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
 - `scripts/scan_dependente.py` — scripts/scan_dependente.py — CE CITEȘTE, de fapt, fiecare aspect al modelului de citire.
 - `scripts/scan_ds_verificator.py` — RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026.
+- `scripts/scan_etichete_campuri.py` — scripts/scan_etichete_campuri.py — câmpuri de formular fără etichetă accesibilă (gardul `core/test_etichete_campuri.py`).
 - `scripts/scan_forme_punct.py` — scripts/scan_forme_punct.py — CÂT DE LARG prinde un tipar de punct, pe TOT corpusul.
 - `scripts/scan_functionalitati.py` — scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
@@ -10073,3 +10076,17 @@ Detaliul: DECIZII 04.10.2026 („Punctul 4: coloana `salariati.salariu_brut` ret
 | niciun SQL pe coloana retrasă | core/test_2b_coloana.py::test_niciun_sql_nu_mai_numeste_coloana (scaner `scripts/scan_salariu_coloana.py`: expresia SQL întreagă, inclusiv tabela dată ca argument) + anti-vacuu | o citire/scriere nouă pe `salariati.salariu_brut`; puntea readusă | coloana readusă în SELECT-ul statului de plată -> roșu; puntea readusă în `salariu_la` -> roșu | prima formă citea doar constantele — f-string-urile și `% _t(...)` treceau (M1/M2 supraviețuiseră, reparat) |
 | template fără coloană | ::test_template_fara_coloana | coloana readusă pentru tenanții noi | coloana în CREATE TABLE -> roșu | — |
 | migrarea mută salariul înainte de DROP | ::test_migrarea_muta_salariul_in_istoric_apoi_scoate_coloana | DROP fără backfill (salariat fără istoric rămas fără salariu); dată inventată | backfill scos -> `[None, 7000, None]` roșu | — |
+
+## 04.10.2026 — Salariul în timp: schimbarea salariului cu dată de la care se aplică (decizia Costin)
+
+Categoriile **1. Intrare date** (zi inexistentă, dată fără contract, rescriere tăcută la o dată existentă) și **6. Perioadă
+închisă** (o schimbare de salariu rescria retroactiv luni declarate). Detaliul: DECIZII 04.10.2026 („Salariul în timp …”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| dată invalidă / înainte de angajare -> refuz pe câmp | core/test_salariu_in_timp.py::test_data_invalida_sau_inainte_de_angajare_e_refuzata_pe_camp (2) | zi inexistentă în driver (500); salariu înainte de contract | verificarea zilei / a angajării scoasă -> roșu | — |
+| dată suprapusă -> refuz cu intrarea existentă; înlocuire doar explicită | ::test_data_suprapusa_e_refuzata_cu_intrarea_existenta_si_se_inlocuieste_doar_explicit | UPSERT tăcut peste salariul de la aceeași dată | verificarea scoasă -> roșu | — |
+| luna închisă atinsă de schimbare | ::test_luna_inchisa_atinsa_de_schimbare_nu_se_rescrie | o schimbare datată ÎNAINTEA unei luni închise care o rescrie | poarta doar pe luna datei -> roșu | lunile viitoare nu se închid, deci capătul e azi |
+| două fracțiuni în stat și D112 | ::test_marirea_pe_15_doua_fractiuni_in_stat_si_d112_duk_valid (+ DUK) | pierderea proratării (salariul de la sfârșitul lunii pe toată luna) | — (proratarea e a lotului 19; aici e proba cap-coadă) | — |
+| istoricul vizibil | ::test_detaliile_salariatului_arata_istoricul | ecran fără datele ocupate | `istoric_salariu` scos -> roșu | — |
+| câmpuri fără etichetă accesibilă (toată aplicația) | core/test_etichete_campuri.py (instrument `scripts/scan_etichete_campuri.py`) + anti-vacuu | un `<input>/<select>/<textarea>` cu eticheta într-un `<span>` sau într-un `<label>` vecin nelegat (cititorul de ecran nu-i spune numele) | `aria-label` scos de pe `#salariu-data` -> roșu | static, pe șabloane: un câmp construit dinamic cu `document.createElement` nu e văzut |

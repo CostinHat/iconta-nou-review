@@ -4,7 +4,7 @@
 
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js?v=1dccbc985b";
-import { randeazaAdminRaportari } from "./admin_raportari.js?v=03ca483a18";
+import { randeazaAdminRaportari } from "./admin_raportari.js?v=7231675652";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=db921cefb0";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=aa317fad50";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=eb0ee9388f";
@@ -115,7 +115,7 @@ async function randeazaAdminAnunturi(corp, nav) {
     c.innerHTML = `
       <h2 class="pf-titlu">Cabinete destinatare</h2>
       <p class="mig-intro">Bifeaz\u0103 destinatarii. Nimic bifat = anun\u021bul merge la to\u021bi.</p>
-      <input type="text" class="camp-input" id="sel-cauta" placeholder="caut\u0103" style="max-width:340px;margin-bottom:10px">
+      <input aria-label="Caută" type="text" class="camp-input" id="sel-cauta" placeholder="caut\u0103" style="max-width:340px;margin-bottom:10px">
       <div class="pf-lista zebra-lista" id="an-sel-lista">
         ${cabinete.map((x, i) => `<label class="pf-frand set-bifa sel-rand" data-zebra="${i % 2}" style="cursor:pointer;display:flex;align-items:center;gap:12px"><input type="checkbox" class="sel-bifa" value="${x.id}" ${idsCur && idsCur.includes(x.id) ? "checked" : ""} style="flex-shrink:0">
           <div class="pf-frand-text" style="flex:1;text-align:left"><div class="pf-frand-nume">${esc(x.nume || "")}</div></div>
@@ -138,9 +138,9 @@ async function randeazaAdminAnunturi(corp, nav) {
     c.innerHTML = `
       <h2 class="pf-titlu">Mesaj</h2>
       <p class="mig-intro">C\u0103tre: <b>${esc(rezumat())}</b></p>
-      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Mesaj<span class="oblig">*</span></label>
+      <div class="camp" style="margin-bottom:10px"><label for="an-mesaj" class="camp-eticheta">Mesaj<span class="oblig">*</span></label>
         <textarea class="camp-input" id="an-mesaj" rows="4" style="resize:vertical;min-height:90px"></textarea></div>
-      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Afi\u0219are de la data (op\u021bional \u2014 gol = imediat)</label>
+      <div class="camp" style="margin-bottom:10px"><label for="an-data" class="camp-eticheta">Afi\u0219are de la data (op\u021bional \u2014 gol = imediat)</label>
         <input type="date" class="camp-input" id="an-data"></div>
       <button class="buton-primar" id="an-trimite">Trimite</button>
       <p id="an-msg" style="margin-top:8px"></p>`;

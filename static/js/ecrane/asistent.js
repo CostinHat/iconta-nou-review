@@ -17,12 +17,12 @@ import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=decc4f494a";
-import { randeazaListaFirme } from "./firme.js?v=55d130617c";
+import { randeazaValidat } from "./validat.js?v=d0e6120b59";
+import { randeazaListaFirme } from "./firme.js?v=d0e8410685";
 import { randeazaRecomanda } from "./recomanda.js?v=16ee976c05"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=56eccd0e11"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=0a9c1e6175"; // [p44_declaratii]
+import { randeazaRaporteaza } from "./raporteaza.js?v=631da515ab"; // [p34_raporteaza]
+import { randeazaPachete } from "./pachete.js?v=4153a7aef3"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=0048641b50"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=f4a7f55d61"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {

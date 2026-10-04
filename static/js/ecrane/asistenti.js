@@ -39,9 +39,9 @@ export async function randeazaAsistenti(corp, nav) {
     <div id="asi-banner"></div>
     <button class="buton-primar" id="asi-adauga" style="margin:6px 0 14px">Adaug\u0103 asistent</button>
     <div id="asi-adauga-form" hidden style="margin-bottom:14px">
-      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Email asistent<span class="oblig">*</span></label>
+      <div class="camp" style="margin-bottom:10px"><label for="asi-email" class="camp-eticheta">Email asistent<span class="oblig">*</span></label>
         <input class="camp-input" id="asi-email" type="email" placeholder="asistent@cabinet.ro" autocomplete="off"></div>
-      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Nume (op\u021bional)</label>
+      <div class="camp" style="margin-bottom:10px"><label for="asi-nume" class="camp-eticheta">Nume (op\u021bional)</label>
         <input class="camp-input" id="asi-nume" autocomplete="off"></div>
       <label class="set-bifa" style="margin-bottom:10px"><input type="checkbox" id="asi-valida"> <span>Poate valida (Nivel 2)</span></label>
       <button class="buton-primar" id="asi-trimite">Trimite invita\u021bia</button>
@@ -319,7 +319,7 @@ function _asiRandeazaFereastra(d, c) {
   const perioada = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
       <span class="tip-desc">Perioada:</span>
-      <select class="camp-input" data-per style="width:auto;">
+      <select class="camp-input" data-per aria-label="Perioada" style="width:auto;">
         <option value="tot">Tot</option>
         <option value="azi">Azi</option>
         <option value="luna">Luna curenta</option>

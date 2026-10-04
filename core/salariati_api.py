@@ -247,6 +247,9 @@ def detalii_salariat(conn, salariat_id):
         if r:
             r = dict(r)
             r["salariu_brut"] = _si.salariu_la(cur, None, salariat_id, _dm.today())  # [2b] curent din istoric
+            # [salariul în timp] istoricul vizibil în ecranul de schimbare (ce date sunt deja ocupate)
+            r["istoric_salariu"] = [{"valabil_din": v.isoformat(), "salariu_brut": float(s)}
+                                    for v, s in _si.intrari(cur, None, salariat_id)]
     return _db_spre_api(r) if r else None
 
 
@@ -314,6 +317,61 @@ def seteaza_suspendari(conn, salariat_id, lista_validata):
     from core import repo_salariati as _rs
     with conn.cursor() as cur:
         _rs.inlocuieste_suspendari(cur, salariat_id, lista_validata)
+
+
+COD_DATA_OCUPATA = "SALARIU_DATA_OCUPATA"
+
+
+def _ro(d):
+    from core.pdf_util import data_ro   # formatarea unică a datei pentru om
+    return data_ro(d)
+
+
+def valideaza_schimbare_salariu(conn, salariat_id, salariu_brut, valabil_din, inlocuieste=False,
+                                data_angajare=None, data_incetare=None):
+    """[salariul în timp, decizia Costin 04.10.2026] Verifică o schimbare de salariu ÎNAINTE de scriere și întoarce
+    (data, ultima_zi_atinsa): data e ziua de la care se aplică, ultima_zi_atinsa = ziua dinaintea următoarei intrări din
+    istoric (sau None: schimbarea ține până la o nouă schimbare) — apelantul trece lunile atinse prin poarta de perioadă.
+
+    Refuzuri NUMITE, ca erori pe câmpul `valabil_din` (ecranul le pune lângă câmp, valorile tastate rămân):
+      * nu e o dată din calendar;
+      * e înainte de angajare sau după încetare (salariul unei zile fără contract n-are unde intra);
+      * există deja o intrare în istoric la aceeași dată — „suprapusă”: refuz cu intrarea existentă (cod
+        SALARIU_DATA_OCUPATA), afară de cazul în care apelantul cere EXPLICIT înlocuirea (`inlocuieste`).
+    `data_angajare` / `data_incetare` = valorile trimise în aceeași cerere (au prioritate față de cele din bază)."""
+    import datetime as _dt
+    from core import salariu_istoric as _si
+    try:
+        d = _dt.date.fromisoformat(str(valabil_din)[:10]) if valabil_din else _dt.date.today()
+    except ValueError:
+        raise _eroare_campuri([("valabil_din", "Data de la care se aplică salariul (%r) nu e o dată din calendar. "
+                                               "Alege ziua din câmpul „de la”." % (valabil_din,))])
+    with conn.cursor() as cur:
+        cur.execute("SELECT data_angajare, data_incetare FROM salariati WHERE id = %s", (salariat_id,))
+        r = cur.fetchone()
+        da = _dt.date.fromisoformat(str(data_angajare)[:10]) if data_angajare else (r[0] if r else None)
+        di = _dt.date.fromisoformat(str(data_incetare)[:10]) if data_incetare else (r[1] if r else None)
+        if da and d < da:
+            raise _eroare_campuri([("valabil_din", "Salariul nu se poate aplica de la %s: contractul începe pe %s. Alege o "
+                                                   "dată de la angajare încolo." % (_ro(d), _ro(da)))])
+        if di and d > di:
+            raise _eroare_campuri([("valabil_din", "Salariul nu se poate aplica de la %s: contractul a încetat pe %s."
+                                                   % (_ro(d), _ro(di)))])
+        istoric = _si.intrari(cur, None, salariat_id)
+    existent = next((s for v, s in istoric if v == d), None)
+    if existent is not None and not inlocuieste:
+        e = _eroare_campuri([("valabil_din", "Există deja un salariu de la %s: %s lei. Alege altă dată pentru o schimbare "
+                                             "nouă sau înlocuiește explicit salariul de la această dată."
+                              % (_ro(d), _fmt_lei(existent)))])
+        e.cod, e.existent = COD_DATA_OCUPATA, {"valabil_din": d.isoformat(), "salariu_brut": float(existent),
+                                               "salariu_nou": float(salariu_brut)}
+        raise e
+    urm = next((v for v, _s in istoric if v > d), None)
+    return d, (urm - _dt.timedelta(days=1)) if urm else None
+
+
+def _fmt_lei(v):
+    return "{:,.2f}".format(float(v)).replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):

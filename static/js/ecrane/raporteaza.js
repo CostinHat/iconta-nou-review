@@ -150,7 +150,7 @@ export async function randeazaRaporteaza(corp, nav) {
         <div class="rap-fir-corp" style="display:none">
           <div class="rap-mesaje">${mesaje}</div>
           <div class="rap-replica">
-            <textarea class="rap-replica-text camp-input" rows="2" style="overflow:hidden;resize:none" placeholder="Adaugă un mesaj..."></textarea>
+            <textarea aria-label="Mesaj nou" class="rap-replica-text camp-input" rows="2" style="overflow:hidden;resize:none" placeholder="Adaugă un mesaj..."></textarea>
             <button class="buton-primar rap-replica-btn">Trimite</button>
           </div>
         </div>

@@ -37,15 +37,15 @@ export async function ecranMagazin(corp, nav, tenantId) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Configurare magazin</h2>
       <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">URL magazin</label>
+        <label for="wc-url" class="camp-eticheta">URL magazin</label>
         <input class="camp-input" id="wc-url" placeholder="https://magazin.ro" autocomplete="off" autofocus>
       </div>
       <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">Consumer Key</label>
+        <label for="wc-ck" class="camp-eticheta">Consumer Key</label>
         <input class="camp-input" id="wc-ck" placeholder="ck_..." autocomplete="off">
       </div>
       <div class="camp" style="margin-bottom:14px">
-        <label class="camp-eticheta">Consumer Secret</label>
+        <label for="wc-cs" class="camp-eticheta">Consumer Secret</label>
         <input class="camp-input" id="wc-cs" placeholder="cs_..." type="password" autocomplete="off">
       </div>
       <button class="buton-primar" id="wc-salveaza">Salvează</button>

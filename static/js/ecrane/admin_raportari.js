@@ -172,7 +172,7 @@ async function deschideSesizare(corp, nav, id) {
     </div>
     <div class="rap-mesaje" id="rap-mesaje"></div>
     <div class="rap-compose">
-      <textarea id="rap-text" class="rap-text" placeholder="Scrie răspunsul…" rows="3"></textarea>
+      <textarea aria-label="Răspunsul tău" id="rap-text" class="rap-text" placeholder="Scrie răspunsul…" rows="3"></textarea>
       <div class="rap-compose-bara">
         <label class="rap-atas"><input type="file" id="rap-img" accept="image/*" hidden><span>Atașează imagine</span></label>
         <button class="buton-primar rap-trimite" id="rap-trimite">Trimite</button>

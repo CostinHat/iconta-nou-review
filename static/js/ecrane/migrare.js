@@ -144,7 +144,7 @@ function pasInput(corp, nav) {
   corp.innerHTML = `
     <p class="mig-intro">Încarcă-ți tot portofoliul în iConta.eu. Verificăm fiecare CUI direct la ANAF și completăm automat denumirea și datele firmei.</p>
     <div class="mig-eticheta">Lipește CUI-urile firmelor (unul pe linie)</div>
-    <textarea id="mig-text" class="mig-textarea" placeholder="14837428&#10;1590082&#10;RO14399840"></textarea>
+    <textarea aria-label="Codurile fiscale ale firmelor, câte unul pe rând" id="mig-text" class="mig-textarea" placeholder="14837428&#10;1590082&#10;RO14399840"></textarea>
     <div class="mig-sau"><span></span>sau<span></span></div>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
@@ -303,7 +303,7 @@ function randeazaDecizie(corp, nav, strat, sumarHTML, intrebare) {
     </div>
     <div id="mig-nota-zona" style="display:none;">
       <div class="mig-nota-et">Ce mai ai de adus? <span>(obligatoriu)</span></div>
-      <textarea id="mig-nota" class="mig-textarea" style="height:64px" placeholder="Ex: aștept balanțele de la 2 clienți"></textarea>
+      <textarea aria-label="Notă despre preluare" id="mig-nota" class="mig-textarea" style="height:64px" placeholder="Ex: aștept balanțele de la 2 clienți"></textarea>
     </div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza" disabled>Salvează</button>

@@ -1558,7 +1558,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T15 — Salariatul — angajare, contract, adeverință, REGES
 
-**Clasa:** MANUAL · **rute:** 17 (din care schimba date: 12) · **refuzuri explicite:** 49
+**Clasa:** MANUAL · **rute:** 17 (din care schimba date: 12) · **refuzuri explicite:** 50
 
 **Cine:** rol cerut: `admin_firma`, `angajat`. **Rute care schimba date fara nicio verificare de rol: 3 din 12.**
 

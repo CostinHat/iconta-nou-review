@@ -101,7 +101,7 @@ function formularAdauga(corp, tenantId, reincarca) {
       <div class="pr-form-rand pr-form-detalii">
         <input class="camp-input pr-mic" id="pr-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b">
         <input class="camp-input pr-mic" id="pr-um" placeholder="UM (buc)" aria-label="Unitate de m\u0103sur\u0103" value="buc">
-        <select class="camp-input pr-mic" id="pr-cota">
+        <select class="camp-input pr-mic" id="pr-cota" aria-label="Cota TVA">
           <option value="">cot\u0103 (auto)</option>
           <option value="21">21%</option>
           <option value="11">11%</option>

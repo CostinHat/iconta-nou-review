@@ -16696,3 +16696,48 @@ citește, cu migrare pe toți tenanții (toate datele sunt de test) și backup �
 **Limite.** Salariul dinaintea datei angajării nu mai e „cunoscut” (puntea îl dădea pentru orice dată): niciun calcul nu-l
 cere pe o lună fără contract — de aceea nu e o pierdere. UI-ul de schimbare a salariului cu dată de la care se aplică
 (`valabil_din`) e altă bucată a firului „Modelarea contractului în timp” (TESTE), nu acest punct.
+
+## 04.10.2026 — Salariul în timp: schimbarea salariului cu dată de la care se aplică (decizia Costin)
+
+**Decizia lui Costin (verbatim):** *„Firul «Modelarea contractului în timp»: da. Ecranul de schimbare a salariului cu dată de
+la care se aplică (scrie în salariu_istoric; statul de plată proratizează deja mărirea în cursul lunii). Refuz numit pentru
+dată invalidă sau suprapusă; nicio pierdere a ce s-a tastat. Probă cap-coadă: schimbare pe 15 ale lunii → statul de plată și
+D112 cu cele două fracțiuni, DUK valid.”* Și: *„D112 contract uniform A1 rămâne «nu acum».”*
+
+**Constatare (înaintea codului):** ecranul exista (zona „Salariu de bază · de la” din statul de plată) și păstra deja valorile
+la eroare; lipsea validarea datei în backend — zi inexistentă -> driver; înainte de angajare / după încetare -> acceptat; lună
+închisă -> rescrisă retroactiv; dată deja în istoric -> rescrisă TĂCUT (UPSERT).
+
+**Consecințe (executor):**
+1. „Suprapusă” = există deja o intrare la aceeași dată. Refuz numit (`SALARIU_DATA_OCUPATA`, cu intrarea existentă); înlocuirea
+   ei se face numai la cerere explicită (`inlocuieste`, butonul „Înlocuiește salariul de la …”) — corecția unei greșeli de
+   tastare rămâne posibilă, dar nu se mai întâmplă din neatenție. Respins: refuz fără ieșire (fundătură).
+2. O schimbare de salariu atinge toate lunile de la data ei până la următoarea intrare din istoric (sau până azi): fiecare
+   lună atinsă trece prin poarta de perioadă — o lună închisă (declarată) nu se rescrie pe ușa salariului.
+3. Data nu poate fi înainte de angajare sau după încetare (salariul unei zile fără contract n-are unde intra).
+
+## 04.10.2026 — D112 contract uniform A1: condiția de execuție (decizia Costin)
+
+**Decizia lui Costin (verbatim):** *„D112 A1: scrie condiția în fir (TESTE.md: «se execută la prima modificare reală a
+core/d112.py, în același commit») și pune un comentariu la începutul core/d112.py care trimite la fir. Fără gardă sau
+instrument nou pentru asta.”*
+
+**Executat:** condiția e în firul „Contract uniform A1” (pasul D1) din TESTE.md; docstring-ul modulului `core/d112.py` trimite
+la fir. Fără gard (decizia Costin) — rămâne disciplină: cine modifică `core/d112.py` citește întâi capul modulului.
+**Notă:** punctul 4 (04.10, `7c7a71ff`) a atins `core/d112.py` (coloana retrasă din `_COLOANE_SALARIAT` și din dict) ÎNAINTE
+de această decizie; condiția se aplică de acum înainte.
+
+## 04.10.2026 — CICLUL DE NECONFORMITATE: câmpuri de formular fără etichetă accesibilă (găsit la proba UI a salariului)
+
+**Constatare:** axe, pe zona „Salariu de bază · de la” deschisă, a raportat „Form elements must have labels” (critical) pe
+`#salariu-input` și `#salariu-data`: eticheta vizibilă era un `<span>`. Scanările generice nu o văzuseră — deschid ecranele,
+nu zonele inline și dialogurile.
+**Generalizare:** scanare statică pe toate șabloanele (`static/js/**`): 54 de câmpuri în 17 fișiere — etichetă în `<span>` sau
+`<label class="camp-eticheta">` VECIN, fără `for` și fără să învelească câmpul (vizual etichetat, pentru cititorul de ecran
+anonim).
+**Corectare:** `for="<id>"` pe eticheta vecină (31), altfel `aria-label` cu textul etichetei vizibile; unde singurul text era un
+placeholder de exemplu („14837428 1590082 …”, „email1@exemplu.ro …”), eticheta s-a scris de mână. Helperii care randează
+câmpul în interiorul unui `<label>` (`date_firma.campVector`, D311) au primit și ei `aria-label` cu același text, ca gardul
+să nu aibă excepții.
+**Gard:** `core/test_etichete_campuri.py` (static, cu anti-vacuu); limita: câmpurile create cu `document.createElement`.
+WCAG 2.1 1.3.1 / 4.1.2.

@@ -154,7 +154,7 @@ function campVector(c, val) {
   let control;
   if (c.tip === "data") {
     // [tva_inceput] input calendaristic (ISO 'YYYY-MM-DD'); valoarea vine pre-populata din /vector.
-    control = `<input type="date" class="camp-input" id="vf-${c.k}" value="${esc(val || "")}">`;
+    control = `<input type="date" class="camp-input" id="vf-${c.k}" aria-label="${esc(c.e)}" value="${esc(val || "")}">`;
   } else {
     const v = val === true ? "da" : val === false ? "nu" : (val || "");
     // [alege] valoare lipsa pe select obligatoriu -> placeholder "— alege —" AFISAT (selected), dar
@@ -163,7 +163,7 @@ function campVector(c, val) {
       ? `<option value="" selected disabled hidden>— alege —</option>` : "";
     const opts = c.opt.map(([k, t]) =>
       `<option value="${esc(k)}"${String(k) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("");
-    control = `<select class="camp-input" id="vf-${c.k}">${ph}${opts}</select>`;
+    control = `<select class="camp-input" id="vf-${c.k}" aria-label="${esc(c.e)}">${ph}${opts}</select>`;
   }
   return `
     <label class="camp" id="vf-camp-${c.k}">

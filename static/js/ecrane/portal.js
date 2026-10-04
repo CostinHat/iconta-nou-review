@@ -3,7 +3,7 @@
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=1dccbc985b";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaFacturi } from "./facturi_ecran.js?v=8f18740e04";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=4fca5fc4b1";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -141,7 +141,7 @@ async function ecranAccesCont(corp, nav) {
     const p = d.principal || {};
     corp.innerHTML = `
       <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">Adresa nouă de email<span class="oblig">*</span></label>
+        <label for="ac-email-nou-val" class="camp-eticheta">Adresa nouă de email<span class="oblig">*</span></label>
         <input class="camp-input" id="ac-email-nou-val" value="${p.email || ""}" autofocus>
       </div>
       <p class="ecran-nota" style="margin:0 0 14px">Data viitoare când te loghezi, vei primi linkul la această adresă. <b>Pachetul lunar nu urmează schimbarea</b> — el pleacă la adresa firmei, pe care o schimbă contabilul.</p>
@@ -169,7 +169,7 @@ async function ecranAccesCont(corp, nav) {
     nav.setInapoi(randeazaEcran);
     corp.innerHTML = `
       <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">Email de invitat</label>
+        <label for="ac-email-nou" class="camp-eticheta">Email de invitat</label>
         <input class="camp-input" id="ac-email-nou" placeholder="persoana@exemplu.ro" autofocus>
       </div>
       <p class="ecran-nota" style="margin:0 0 14px">Persoana primește un link de logare, fără parolă.</p>
@@ -336,7 +336,7 @@ async function randeazaSolicitari(corp, nav) {
     <p class="pf-intro">Cere ceva contabilului tău.</p>
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
-      <textarea id="sol-input" placeholder="Scrie un mesaj..." rows="3"></textarea>
+      <textarea aria-label="Mesajul tău" id="sol-input" placeholder="Scrie un mesaj..." rows="3"></textarea>
       <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
       <div class="msg-eroare" id="sol-msg"></div>
     </div>
@@ -426,7 +426,7 @@ async function ecranRecomanda(corp, nav) {
       <button type="button" id="rec-vezi-mesaj" class="buton-secundar">Vezi mesajul</button>
       <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid var(--linie);border-radius:var(--raza);padding:16px;background:var(--fundal)">${previewHtml}</div>
     </div>
-    <textarea id="rec-emails" placeholder="email1@exemplu.ro, email2@exemplu.ro" rows="4"
+    <textarea aria-label="Adresele de email ale destinatarilor, separate prin virgulă" id="rec-emails" placeholder="email1@exemplu.ro, email2@exemplu.ro" rows="4"
       style="width:100%;padding:10px;border-radius:var(--raza);border:1px solid var(--linie);font-family:inherit"></textarea>
     <p class="ecran-nota">Separă mai multe adrese prin virgulă. Maxim 10.</p>
     <button class="buton-primar" id="rec-trimite-btn" style="margin-top:14px">Trimite recomandarea</button>

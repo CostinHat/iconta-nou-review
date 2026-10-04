@@ -4,16 +4,16 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=1dccbc985b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=8f18740e04";
+import { randeazaFacturi } from "./facturi_ecran.js?v=4fca5fc4b1";
 import { ecranRip } from "./rip_ecran.js?v=8d78a2aad3";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=324faeb983";
 import { ecranEtransport } from "./etransport_ecran.js?v=2062674928";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=aca60d83f9";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=0a9c1e6175";  // [decl_firma_v1]
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=8572bda0d6";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=0048641b50";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
-import { ecranMagazin } from "./woo_ecran.js?v=5616e025cb";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=c4f9195844";  // [date_firma_v1]
+import { randeazaProduse } from "./produse_ecran.js?v=c56cb2e04b";  // [produse_firma_v1]
+import { ecranMagazin } from "./woo_ecran.js?v=cc37dd8df6";  // [wc_extras_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=d8849f0fa1";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=fbcab83a27";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -43,16 +43,16 @@ export function randeazaListaFirme(container, nav, inapoi) {
     nav.deschide("Adaugă firmă", (corp) => {  /* firma_noua_v1 */
       corp.innerHTML = `
         <div class="camp" style="margin-bottom:14px">
-          <label class="camp-eticheta">CUI</label>
+          <label for="fn-cui" class="camp-eticheta">CUI</label>
           <input class="camp-input" id="fn-cui" placeholder="RO12345678 sau 12345678" autocomplete="off">
           <p class="ecran-nota" id="fn-cui-info" style="margin:6px 0 0"></p>
         </div>
         <div class="camp" style="margin-bottom:14px">
-          <label class="camp-eticheta">Denumire firmă</label>
+          <label for="fn-nume" class="camp-eticheta">Denumire firmă</label>
           <input class="camp-input" id="fn-nume" placeholder="Se completează automat de la ANAF">
         </div>
         <div class="camp" style="margin-bottom:14px">
-          <label class="camp-eticheta">Tip firmă</label>
+          <label for="fn-tip" class="camp-eticheta">Tip firmă</label>
           <select class="camp-input" id="fn-tip">
             <option value="srl" selected>SRL / SA (partidă dublă)</option>
             <option value="pfa">PFA / II / IF / profesii liberale (partidă simplă)</option>
@@ -60,7 +60,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
           <p class="camp-ajutor">Tipul <strong>nu se mai poate schimba</strong> după creare: determină sistemul contabil (partidă dublă sau simplă) și, odată introduse date, acestea nu pot fi mutate în celălalt regim. Verifică înainte de a continua.</p>
         </div>
         <div class="camp" style="margin-bottom:14px">
-          <label class="camp-eticheta">Email client (primește automat acces la portal)</label>
+          <label for="fn-email" class="camp-eticheta">Email client (primește automat acces la portal)</label>
           <input class="camp-input" id="fn-email" type="email" placeholder="Opțional: emailul patronului — primește acces în portal" autocomplete="off">
         </div>
         <button class="buton-primar" id="fn-salveaza" disabled>Adaugă firma</button>
@@ -671,7 +671,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     <p class="pf-intro">Mesaje de la firma-client.</p>
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
-      <textarea id="sol-input" placeholder="Scrie un răspuns..." rows="3"></textarea>
+      <textarea aria-label="Răspunsul tău" id="sol-input" placeholder="Scrie un răspuns..." rows="3"></textarea>
       <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
     </div>
   `;
@@ -1317,7 +1317,7 @@ async function ecranSalariati(corp, nav, t) {
       const sid = b.dataset.vac;
       zonaVac.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Tichete vacanță · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
-        <input type="number" step="0.01" min="0" id="vac-input" class="camp-input" value="${b.dataset.val}" style="width:150px">
+        <input type="number" step="0.01" min="0" id="vac-input" aria-label="Valoarea tichetelor de vacanță (lei)" class="camp-input" value="${b.dataset.val}" style="width:150px">
         <button class="buton-primar" id="vac-save">Salvează</button>
         <button class="buton-secundar" id="vac-cancel">Renunță</button></div>
         <div id="vac-msg"></div>`;
@@ -1339,8 +1339,8 @@ async function ecranSalariati(corp, nav, t) {
                           ["1iunie", "1 Iunie"], ["altul", "alt eveniment (taxabil)"]];
       zonaCadou.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Tichete cadou · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
-        <select id="cadou-ev" class="camp-input" style="width:200px">${evenimente.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select>
-        <input type="number" step="0.01" min="0" id="cadou-input" class="camp-input" placeholder="valoare (lei)" style="width:150px">
+        <select id="cadou-ev" aria-label="Evenimentul tichetelor cadou" class="camp-input" style="width:200px">${evenimente.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select>
+        <input type="number" step="0.01" min="0" id="cadou-input" aria-label="Valoarea tichetelor cadou (lei)" class="camp-input" placeholder="valoare (lei)" style="width:150px">
         <button class="buton-primar" id="cadou-save">Salvează</button>
         <button class="buton-secundar" id="cadou-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Neimpozabil ≤ 300 lei/eveniment pentru evenimente legale; peste 300 sau alt eveniment = semnalat ca taxabil.</div>
@@ -1363,7 +1363,7 @@ async function ecranSalariati(corp, nav, t) {
       zonaCresa.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Tichete de creșă · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
         <input type="number" min="1" step="1" id="cresa-copii" class="camp-input" placeholder="1" style="width:120px" aria-label="Număr de copii la creșă (implicit 1)" title="nr. copii la creșă (implicit 1)">
-        <input type="number" step="10" min="0" id="cresa-input" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
+        <input type="number" step="10" min="0" id="cresa-input" aria-label="Valoarea tichetelor de creșă (lei)" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
         <button class="buton-primar" id="cresa-save">Salvează</button>
         <button class="buton-secundar" id="cresa-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Plafon lunar pe copil: Legea 165/2018 art.19, indexat semestrial prin ordin (HG 1045/2018 art.33) — se verifică la salvare pe luna aleasă; valoare multiplu de 10.</div>
@@ -1386,8 +1386,8 @@ async function ecranSalariati(corp, nav, t) {
       const sid = b.dataset.cult;
       zonaCult.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Tichete culturale · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
-        <select id="cult-tip" class="camp-input" style="width:180px"><option value="">lunar</option><option value="ocazional">ocazional (eveniment)</option></select>
-        <input type="number" step="10" min="0" id="cult-input" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
+        <select id="cult-tip" aria-label="Felul tichetelor culturale" class="camp-input" style="width:180px"><option value="">lunar</option><option value="ocazional">ocazional (eveniment)</option></select>
+        <input type="number" step="10" min="0" id="cult-input" aria-label="Valoarea tichetelor culturale (lei)" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
         <button class="buton-primar" id="cult-save">Salvează</button>
         <button class="buton-secundar" id="cult-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Valoare nominală multiplu de 10 lei (Legea 165/2018 art.22); plafon lunar/eveniment indexat semestrial. Lunile din fereastra neconfirmată la sursă (oct.2025–mar.2026) sunt blocate.</div>
@@ -1409,7 +1409,7 @@ async function ecranSalariati(corp, nav, t) {
       const sid = b.dataset.iban;
       zonaIban.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">IBAN salariu · ${esc(b.dataset.nume)}:</span>
-        <input type="text" id="iban-input" class="camp-input" value="${esc(b.dataset.val)}" placeholder="RO.. cont pe card" style="width:280px">
+        <input type="text" id="iban-input" aria-label="IBAN-ul contului de salariu" class="camp-input" value="${esc(b.dataset.val)}" placeholder="RO.. cont pe card" style="width:280px">
         <button class="buton-primar" id="iban-save">Salvează</button>
         <button class="buton-secundar" id="iban-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">IBAN românesc (RO + 22 caractere); gol = fără plată pe card.</div>
@@ -1435,14 +1435,46 @@ async function ecranSalariati(corp, nav, t) {
       const azi = new Date().toISOString().slice(0, 10);
       zonaSalariu.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Salariu de bază · ${esc(b.dataset.nume)}:</span>
-        <input type="number" min="0" step="0.01" id="salariu-input" class="camp-input" value="${esc(b.dataset.val)}" style="width:140px">
+        <input type="number" min="0" step="0.01" id="salariu-input" aria-label="Salariul de bază brut lunar (lei)" class="camp-input" value="${esc(b.dataset.val)}" style="width:140px">
         <span class="camp-eticheta">de la:</span>
-        <input type="date" id="salariu-data" class="camp-input" value="${azi}" style="width:160px">
+        <input type="date" id="salariu-data" aria-label="Data de la care se aplică salariul" class="camp-input" value="${azi}" style="width:160px">
         <button class="buton-primar" id="salariu-save">Salvează</button>
         <button class="buton-secundar" id="salariu-cancel">Renunță</button></div>
-        <div class="camp-eticheta" style="color:var(--gri)">Salariul de bază brut lunar (lei), din contractul de muncă (mai mare ca 0). „De la" = data de când e valabil: o mărire creează o intrare nouă în istoric; o corecție pune data angajării.</div>
-        <div id="salariu-msg"></div>`;
+        <div class="camp-eticheta" style="color:var(--gri)">Salariul de bază brut lunar (lei), din contractul de muncă (mai mare ca 0). „De la" = data de când se aplică: o mărire creează o intrare nouă în istoric, iar statul de plată împarte luna pe zile între salariul vechi și cel nou.</div>
+        <div id="salariu-msg"></div>
+        <div id="salariu-istoric" class="camp-eticheta" style="margin-top:6px"></div>`;
       corp.querySelector("#salariu-input").focus();
+      // [salariul în timp, decizia Costin 04.10.2026] istoricul vizibil: ce date sunt deja ocupate
+      api.get(`/tenants/${t.id}/salariati/${sid}`).then((d) => {
+        const ist = (d && d.istoric_salariu) || [];
+        const z = corp.querySelector("#salariu-istoric");
+        if (z && ist.length) z.textContent = "Istoric: " + ist.map((x) => `de la ${dataRo(x.valabil_din)} — ${bani(x.salariu_brut)} lei`).join(" · ");
+      }).catch(() => {});
+      const trimite = async (inlocuieste) => {
+        const val = Number(corp.querySelector("#salariu-input").value);
+        const valabil_din = corp.querySelector("#salariu-data").value || null;
+        const zonaM = corp.querySelector("#salariu-msg");
+        curataEroriCamp(corp);
+        zonaM.innerHTML = "";
+        let lipsa = false;
+        if (!(val > 0)) { eroareCamp(corp, "salariu-input", "Salariul de bază trebuie să fie mai mare ca 0."); lipsa = true; }
+        if (!valabil_din) { eroareCamp(corp, "salariu-data", "Alege data de la care se aplică salariul."); lipsa = true; }
+        if (lipsa) return;
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, { salariu_brut: val, valabil_din, inlocuieste: !!inlocuieste });
+          zonaSalariu.innerHTML = ""; deseneaza();
+        } catch (e) {
+          // refuzul stă lângă câmpul vinovat; ce s-a tastat rămâne în casete (zona nu se redesenează)
+          const eris = (e && e.erori_campuri) || [];
+          eris.forEach((x) => eroareCamp(corp, x.camp === "valabil_din" ? "salariu-data" : "salariu-input", x.mesaj));
+          if (!eris.length) arataMesaj(zonaM, (e && e.mesaj) || "Eroare la salvare.", "eroare");
+          const ex = e && e.detaliu && e.detaliu.cod === "SALARIU_DATA_OCUPATA" ? e.detaliu.existent : null;
+          if (ex) {
+            zonaM.innerHTML = `<button class="buton-secundar" id="salariu-inlocuieste">Înlocuiește salariul de la ${esc(dataRo(ex.valabil_din))} (${esc(bani(ex.salariu_brut))} → ${esc(bani(ex.salariu_nou))} lei)</button>`;
+            corp.querySelector("#salariu-inlocuieste").addEventListener("click", () => trimite(true));
+          }
+        }
+      };
       // [R28, decizia lui Costin 24.08.2026 - varianta 3: NIMIC] Aici se afisa „Net estimat: X lei"
       // si un avertisment cu doua cifre de net, calculate prin /salariu-efect. S-au SCOS, nu s-au
       // corectat. Motivul e masurat, nu de gust: ruta chema calcul_salariu(brut, la_data) - deci
@@ -1452,21 +1484,13 @@ async function ecranSalariati(corp, nav, t) {
       // NU putea coincide cu fluturasul de peste o luna. La angajare se negociaza BRUTUL; netul si
       // costul angajatorului se calculeaza dupa salvare, cu toate elementele.
       corp.querySelector("#salariu-cancel").addEventListener("click", () => { zonaSalariu.innerHTML = ""; });
-      corp.querySelector("#salariu-save").addEventListener("click", async () => {
-        const val = Number(corp.querySelector("#salariu-input").value);
-        const valabil_din = corp.querySelector("#salariu-data").value || null;
-        if (!(val > 0)) { arataMesaj(corp.querySelector("#salariu-msg"), "Salariul de bază trebuie să fie mai mare ca 0.", "eroare"); return; }
-        try {
-          await api.put(`/tenants/${t.id}/salariati/${sid}`, { salariu_brut: val, valabil_din });
-          zonaSalariu.innerHTML = ""; deseneaza();
-        } catch (e) { arataMesaj(corp.querySelector("#salariu-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
-      });
+      corp.querySelector("#salariu-save").addEventListener("click", () => trimite(false));
     }));
     corp.querySelectorAll("[data-incet]").forEach((b) => b.addEventListener("click", () => {
       const sid = b.dataset.incet;
       zonaIncet.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Data încetării contractului · ${esc(b.dataset.nume)}:</span>
-        <input type="date" id="incet-input" class="camp-input" value="${esc(b.dataset.val)}" style="width:180px">
+        <input type="date" id="incet-input" aria-label="Data încetării contractului" class="camp-input" value="${esc(b.dataset.val)}" style="width:180px">
         <button class="buton-primar" id="incet-save">Salvează</button>
         <button class="buton-secundar" id="incet-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Gol = contract activ. La plecare NU se șterge salariatul — se completează data încetării (istoricul susține declarațiile depuse).</div>
@@ -1614,7 +1638,7 @@ async function ecranSalariati(corp, nav, t) {
       const sid = parseInt(b.dataset.reges);
       zonaReges.innerHTML = `<div style="display:block;margin:10px 0;max-width:520px">
         <div class="camp"><span class="camp-eticheta">Adresa salariatului<span class="oblig">*</span></span>
-          <input type="text" id="rg-adresa" class="camp-input" placeholder="strada, nr, localitate, judet">
+          <input type="text" id="rg-adresa" aria-label="Adresa salariatului" class="camp-input" placeholder="strada, nr, localitate, judet">
           <span class="camp-ajutor">Obligatorie pentru transmiterea in REGES.</span></div>
         <p style="margin-top:10px"><button class="buton-primar" id="rg-trimite">Trimite \u00een REGES</button>
           <button class="btn-link" id="rg-renunta" style="margin-left:10px">Renun\u021b\u0103</button></p>
@@ -1885,11 +1909,11 @@ export async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-card">
         <div class="pf-frand-nume" style="margin-bottom:6px">Transfer între locații (fără notă contabilă, CMP global)</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-          <select id="tr-art" class="camp-input" style="min-width:200px">${optArts}</select>
+          <select id="tr-art" aria-label="Articolul transferat" class="camp-input" style="min-width:200px">${optArts}</select>
           <input type="text" id="tr-din" class="camp-input" placeholder="din locație" aria-label="Din locație" list="cv-loc-list" style="width:130px">
           <input type="text" id="tr-in" class="camp-input" placeholder="în locație" aria-label="În locație" list="cv-loc-list" style="width:130px">
           <input type="number" step="0.001" id="tr-cant" class="camp-input" placeholder="cant." aria-label="Cantitate" style="width:90px">
-          <input type="date" id="tr-data" class="camp-input">
+          <input type="date" id="tr-data" aria-label="Data transferului" class="camp-input">
           <button class="buton-primar" id="tr-ok">Transferă</button>
         </div>
       </div>`;
@@ -1909,10 +1933,10 @@ export async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-card">
         <div class="pf-frand-nume" style="margin-bottom:6px">Reclasificare tip produs (ex. materie primă 301 → marfă 371)</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-          <select id="rc-art" class="camp-input" style="min-width:200px">${optArts}</select>
+          <select id="rc-art" aria-label="Articolul reclasificat" class="camp-input" style="min-width:200px">${optArts}</select>
           <input type="text" id="rc-cont" class="camp-input" placeholder="cont stoc nou (ex. 371)" aria-label="Cont stoc nou" style="width:150px">
           <input type="text" id="rc-chelt" class="camp-input" placeholder="cont cheltuială nou (ex. 607)" aria-label="Cont cheltuială nou" style="width:170px">
-          <input type="date" id="rc-data" class="camp-input">
+          <input type="date" id="rc-data" aria-label="Data reclasificării" class="camp-input">
           <button class="buton-primar" id="rc-ok">Reclasifică</button>
         </div>
         <div class="camp-eticheta" style="margin-top:4px">Emite notă ciornă de reclasificare a soldului (cont nou = cont vechi) la CMP curent. Cantitatea nu se modifică.</div>
@@ -3576,7 +3600,7 @@ async function ecranJurnal(corp, nav, t) {
             <input type="text" class="camp-input je-deb" placeholder="debit" aria-label="Cont debit" value="${esc(l.debit)}" style="width:90px">
             <span style="align-self:center">=</span>
             <input type="text" class="camp-input je-cre" placeholder="credit" aria-label="Cont credit" value="${esc(l.credit)}" style="width:90px">
-            <input type="number" step="0.01" class="camp-input je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
+            <input type="number" step="0.01" class="camp-input je-sum" aria-label="Suma" value="${l.suma.toFixed(2)}" style="width:120px">
             <select class="camp-input je-centru" aria-label="Centru de cost" style="width:140px">${optCentru(l.centru_cost_id)}</select>
             <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
@@ -3937,8 +3961,8 @@ async function ecranBonuri(corp, nav, t) {
         ? `<div id="d-cand" style="margin-top:12px"><p class="ecran-nota">Caut facturi de potrivit...</p></div>`
         : `<div style="margin-top:8px"><div class="camp-eticheta">Denumire \u00b7 valoare \u00b7 cont</div>${(b.articole || []).map((a, j) => `
             <div class="grila-doc" style="grid-template-columns:2fr 1fr 1fr;margin-top:4px">
-              <input class="camp-input" id="d-den-${j}" value="${esc(a.denumire || "")}" readonly>
-              <input class="camp-input" type="number" step="0.01" id="d-val-${j}" value="${Number(a.valoare || 0).toFixed(2)}">
+              <input class="camp-input" id="d-den-${j}" aria-label="Denumire articol" value="${esc(a.denumire || "")}" readonly>
+              <input class="camp-input" type="number" step="0.01" id="d-val-${j}" aria-label="Valoare articol" value="${Number(a.valoare || 0).toFixed(2)}">
               <input class="camp-input" id="d-cont-${j}" value="${a.cont_propus || ""}" placeholder="cont" aria-label="Cont propus">
             </div>`).join("")}</div>`}
       <div style="margin-top:14px">
@@ -4358,11 +4382,11 @@ async function ecranRegistratura(corp, nav, t) {
           <input type="date" class="camp-input" id="rg-data" aria-label="Data inregistrare" style="max-width:200px" value="${new Date().toISOString().slice(0, 10)}">
         </div>
         <div class="camp" style="margin-bottom:8px">
-          <label class="camp-eticheta">Descriere <span class="oblig">*</span></label>
+          <label for="rg-desc" class="camp-eticheta">Descriere <span class="oblig">*</span></label>
           <input type="text" class="camp-input" id="rg-desc" placeholder="Ex. Factură furnizor X, adeverință salariat Y" autocomplete="off">
         </div>
         <div class="camp" style="margin-bottom:10px">
-          <label class="camp-eticheta">Partener</label>
+          <label for="rg-part" class="camp-eticheta">Partener</label>
           <input type="text" class="camp-input" id="rg-part" placeholder="opțional" autocomplete="off">
         </div>
         <button class="buton-primar" id="rg-add">Înregistrează</button>
@@ -4445,13 +4469,13 @@ async function ecranContracte(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">${sablon ? "Editează șablon" : "Șablon nou"}</h2>
       <div class="camp" style="margin-bottom:8px">
-        <label class="camp-eticheta">Nume <span class="oblig">*</span></label>
+        <label for="c-nume" class="camp-eticheta">Nume <span class="oblig">*</span></label>
         <input type="text" class="camp-input" id="c-nume" style="max-width:360px" value="${sablon ? esc(sablon.nume) : ""}" autocomplete="off">
       </div>
       <p class="camp-eticheta" style="margin:8px 0 4px">Marcaje disponibile:</p>
       <div style="margin-bottom:8px">${chips}</div>
       <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">Text contract <span class="oblig">*</span></label>
+        <label for="c-continut" class="camp-eticheta">Text contract <span class="oblig">*</span></label>
         <textarea class="camp-input" id="c-continut" rows="16" style="width:100%">${sablon ? esc(sablon.continut) : ""}</textarea>
       </div>
       <button class="buton-primar" id="c-salveaza">Salvează</button>
@@ -4481,7 +4505,7 @@ async function ecranContracte(corp, nav, t) {
       <h2 class="pf-titlu">Generează contract</h2>
       <p class="pf-intro">Șablon: ${esc(sablon.nume)}</p>
       <div class="camp" style="margin-bottom:8px">
-        <label class="camp-eticheta">Partener (client)</label>
+        <label for="c-client" class="camp-eticheta">Partener (client)</label>
         <select class="camp-input" id="c-client" style="max-width:360px">
           <option value="">— alege clientul —</option>
           ${clienti.map((c) => `<option value="${c.id}">${esc(c.nume)}${c.cui ? " · " + esc(c.cui) : ""}</option>`).join("")}
@@ -4562,11 +4586,11 @@ async function ecranAccesClient(corp, nav, t) {
     nav.setInapoi(randeazaPrincipal);
     corp.innerHTML = `
       <div class="camp" style="margin-bottom:12px">
-        <label class="camp-eticheta">Email client</label>
+        <label for="ac-email" class="camp-eticheta">Email client</label>
         <input class="camp-input" id="ac-email" type="email" placeholder="client@firma.ro" autocomplete="off" autofocus>
       </div>
       <div class="camp" style="margin-bottom:14px">
-        <label class="camp-eticheta">Nume (optional)</label>
+        <label for="ac-nume" class="camp-eticheta">Nume (optional)</label>
         <input class="camp-input" id="ac-nume" placeholder="Numele persoanei">
       </div>
       <p class="ecran-nota" id="ac-msg" style="margin:0 0 10px"></p>

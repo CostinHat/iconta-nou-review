@@ -1273,3 +1273,22 @@ că încasările prin casa de marcat (Î1) nu se declară — se declară de ier
 spate, salariul de bază se citește numai din istoricul de salariu (valabil de la o dată). Coloana veche, care rămăsese
 neactualizată după schimbările de salariu din iulie, a fost ștearsă. Salariații care n-aveau istoric au primit unul de la data
 angajării, cu salariul pe care îl aveau.
+
+## 04.10.2026 — Salariul în timp: schimbarea salariului cu dată de la care se aplică; D112 A1 cu condiție scrisă
+
+**Ce se schimbă pentru contabil:**
+- **Statul de plată → „Salariu”:** zona arată istoricul salariului (de la ce dată, ce sumă). O dată care nu există, o dată
+  dinaintea angajării sau de după încetare și o dată la care există deja un salariu sunt refuzate lângă câmpul „de la”, cu
+  motivul. Ce ai tastat rămâne în casete. Pentru o dată deja ocupată apare butonul „Înlocuiește salariul de la …”. Până
+  acum, salariul de la aceeași dată se rescria fără nicio întrebare.
+- **Lunile închise:** o schimbare de salariu care ar atinge o lună închisă (declarată) e refuzată, și atunci când e datată
+  înaintea ei. Până acum, lunile închise se rescriau retroactiv.
+- **Mărirea în cursul lunii:** pe statul de plată și în D112 luna se împarte pe zile între salariul vechi și cel nou (probat:
+  4.400 → 5.000 de pe 15.09.2026 dă brut 4.727,27; D112 valid).
+- **D112 contract uniform A1:** rămâne „nu acum”. Se face la prima modificare reală a modulului D112, în același commit
+  (scris în fir și în capul modulului).
+- **Punctul 4 (03.10), încheiere:** migrarea producției a rulat după deploy (04.10, 05:02; 5/5 firme; backup
+  `~/backup_pre_2b_coloana_20261004_0502.sql.gz`). Cifrele statului de plată și ale D112 pe F1 sunt identice înainte și după.
+- **Accesibilitate (toată aplicația):** 54 de câmpuri de formular care, pentru un cititor de ecran, n-aveau nume (eticheta era
+  un text alăturat, nelegat de câmp) au acum eticheta legată. Asta include zonele din statul de plată, dialogurile, portalul
+  și emiterea.

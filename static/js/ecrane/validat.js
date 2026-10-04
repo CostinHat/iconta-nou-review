@@ -487,7 +487,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
 function dialogInput(nav, opt) {
   nav.deschide(opt.titlu, (corp) => {
     corp.innerHTML = `
-      <label class="dlg-eticheta">${opt.eticheta}</label>
+      <label for="dlg-input" class="dlg-eticheta">${opt.eticheta}</label>
       <input class="camp-input dlg-input" id="dlg-input" type="text" placeholder="${opt.placeholder || ""}" autocomplete="off">
       <div class="dlg-eroare" id="dlg-eroare"></div>
       <div class="dlg-actiuni">

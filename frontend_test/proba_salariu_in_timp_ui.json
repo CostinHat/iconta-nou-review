@@ -1,0 +1,56 @@
+{
+ "istoric_inainte": [
+  [
+   "2020-01-15",
+   5000.0
+  ],
+  [
+   "2026-08-01",
+   4325.0
+  ]
+ ],
+ "angajare": "2020-01-15",
+ "A_istoric_afisat": "Istoric: de la 15.01.2020 — 5.000,00 lei · de la 01.08.2026 — 4.325,00 lei",
+ "B_aria_invalid": "true",
+ "B_suma_pastrata": "5100",
+ "B_data_pastrata": "2019-01-01",
+ "C_aria_invalid": "true",
+ "C_buton_inlocuire": "Înlocuiește salariul de la 15.01.2020 (5.000,00 → 5.100,00 lei)",
+ "C_suma_pastrata": "5100",
+ "axe_refuz": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "D_zona_inchisa": true,
+ "D_istoric_dupa": [
+  [
+   "2020-01-15",
+   5000.0
+  ],
+  [
+   "2026-08-01",
+   4325.0
+  ],
+  [
+   "2026-10-15",
+   5100.0
+  ]
+ ],
+ "mobil_zona": {
+  "revarsare_x": false,
+  "tinte_sub_24": []
+ },
+ "axe_mobil": [
+  [],
+  {
+   "strict": [],
+   "glif": [],
+   "extra": []
+  }
+ ],
+ "istoric_restaurat": true
+}

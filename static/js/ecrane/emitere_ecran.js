@@ -8,7 +8,7 @@
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
-import { randeazaDateFirma } from "./date_firma.js?v=c4f9195844";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
+import { randeazaDateFirma } from "./date_firma.js?v=d8849f0fa1";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -74,11 +74,11 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
   corp.querySelector("#em-da").addEventListener("click", () => {
     zona.innerHTML = `
       <div class="em-config-camp">
-        <label>Seria ultimei facturi (dacă folosești, ex: KAI-)</label>
+        <label for="em-serie">Seria ultimei facturi (dacă folosești, ex: KAI-)</label>
         <input class="camp-input" id="em-serie" placeholder="ex: KAI-" autocomplete="off">
       </div>
       <div class="em-config-camp">
-        <label>Numărul ultimei facturi emise</label>
+        <label for="em-ultim">Numărul ultimei facturi emise</label>
         <input class="camp-input" id="em-ultim" type="number" placeholder="ex: 147">
       </div>
       <p class="em-hint">Vom continua de la numărul următor.</p>
@@ -98,7 +98,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
   corp.querySelector("#em-nu").addEventListener("click", () => {
     zona.innerHTML = `
       <div class="em-config-camp">
-        <label>Serie (opțional, ex: FCT-)</label>
+        <label for="em-serie2">Serie (opțional, ex: FCT-)</label>
         <input class="camp-input" id="em-serie2" placeholder="lasă gol dacă nu folosești serie" autocomplete="off">
       </div>
       <p class="em-hint">Prima factură va avea numărul 1.</p>
@@ -526,7 +526,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const zona = rez.querySelector("#em-curs-manual-zona");
       zona.innerHTML = `
         <div class="em-curs-manual">
-          <label>Curs ${det.moneda} → RON pentru ${dataRo(det.data)}</label>
+          <label for="em-curs-val">Curs ${det.moneda} → RON pentru ${dataRo(det.data)}</label>
           <input type="number" step="0.0001" id="em-curs-val" placeholder="ex. 5.2438" class="camp-input">
           <button class="buton-primar" id="em-curs-ok">Emite cu acest curs</button>
           <div class="em-curs-avertisment">Introdu cursul BNR valabil pentru data facturii. Răspunderea corectitudinii îți revine.</div>

@@ -1090,6 +1090,7 @@ class SalariatEdit(BaseModel):
     ore_zi: Optional[float] = None
     salariu_brut: Optional[float] = None
     valabil_din: Optional[str] = None  # [salariu_edit] data efectiva a schimbarii de salariu (implicit azi)
+    inlocuieste: Optional[bool] = None  # [salariul în timp] înlocuirea EXPLICITĂ a salariului de la o dată deja în istoric
     persoane_intretinere: Optional[int] = None
     judet_casa: Optional[str] = None
     activ: Optional[bool] = None

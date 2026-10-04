@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """D112 - generator VALIDAT DUKIntegrator (portat din monolit /opt/iconta 04.07.2026).
 Include CM: asiguratB3 + asiguratD + angajatorC2 (OUG 158/2005).
-pull() citeste salariati + concedii_medicale din schema tenantului."""
+pull() citeste salariati + concedii_medicale din schema tenantului.
+
+CONTRACT UNIFORM A1 (decizia Costin 04.10.2026): extragerea calcul_d112 / build_xml din genereaza (pasul D1 din firul
+„Contract uniform A1” din TESTE.md) se executa la PRIMA modificare reala a acestui fisier, in acelasi commit.
+Citeste firul inainte de a modifica modulul."""
 
 #: [07.09.2026] denumirea OFICIALA (cu diacritice) - se afiseaza pe ecranul public,
 #: derivata de scripts/genereaza_declaratii_lista.py. Corectura ORTOGRAFICA peste

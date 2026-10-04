@@ -5,7 +5,7 @@
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaEmitere } from "./emitere_ecran.js?v=ff9c255ea6";
+import { randeazaEmitere } from "./emitere_ecran.js?v=03bfbdfe5d";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -677,7 +677,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       const emailPre = (f.tert_email || "");
       zonaEmail.innerHTML = `
         <div class="fd-email-box">
-          <label class="fd-email-eticheta">Trimite factura ${esc(f.numar || "")} c\u0103tre:</label>
+          <label for="fd-email-input" class="fd-email-eticheta">Trimite factura ${esc(f.numar || "")} c\u0103tre:</label>
           <div class="fd-email-rand">
             <input type="email" id="fd-email-input" class="camp-input fd-email-input" placeholder="email@client.ro" value="${esc(emailPre)}">
             <button class="buton-primar fd-email-send" id="fd-email-send">Trimite</button>
@@ -1030,7 +1030,7 @@ export function formSablon(corp, nav, tenantId, opt) {
     <div class="em-sectiune">
       <div class="em-eticheta">Emitere</div>
       <input class="camp-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" aria-label="Ziua din lun\u0103 la care se emite" title="Ziua din lun\u0103 la care se emite">
-      <select class="camp-input" id="fr-moneda">
+      <select class="camp-input" id="fr-moneda" aria-label="Moneda">
         <option value="RON">RON</option>
         <option value="EUR">EUR</option>
         <option value="USD">USD</option>

@@ -455,7 +455,7 @@ async function randeazaClasificareD390(corp, nav) {
       ${auto.map((o) => `<div class="dec-recl-rand">
         <span class="dec-recl-desc">${o.directie === "emisa" ? "↗ emisă" : "↘ primită"} · ${esc(o.tara)}${esc(o.cod)} ${esc(o.den || "")}</span>
         <span class="dec-recl-suma">${bani(o.baza)} lei</span>
-        <select class="camp-input dec-recl" data-dir="${o.directie}" data-tara="${esc(o.tara)}" data-cod="${esc(o.cod)}">${optSel(o.directie, o.tip_curent)}</select>
+        <select class="camp-input dec-recl" aria-label="Tipul operațiunii" data-dir="${o.directie}" data-tara="${esc(o.tara)}" data-cod="${esc(o.cod)}">${optSel(o.directie, o.tip_curent)}</select>
       </div>`).join("")}` : `<div class="camp-eticheta dec-clasif-gol" style="margin:6px 0">Nicio operațiune din facturi în perioadă.</div>`}
     <div class="camp-eticheta" style="margin:10px 0 4px">Linii adăugate manual (fără factură în sistem):</div>
     ${manual.length ? manual.map((m) => `<div class="dec-man-rand">
@@ -698,15 +698,15 @@ function randeazaFormularD311(corp, nav) {
   const bazaT = _n(d.OB_11) + _n(d.OB_21) + _n(d.OB_41);
   const tvaT = _n(d.OB_12) + _n(d.OB_22) + _n(d.OB_42);
   const total = bazaT + tvaT;
-  const camp = (id, val) => `<input id="${id}" type="number" step="1" min="0" class="camp-input" value="${val === "" || val == null ? "" : esc(String(val))}">`;
+  const camp = (id, val, et) => `<input id="${id}" aria-label="${esc(et)}" type="number" step="1" min="0" class="camp-input" value="${val === "" || val == null ? "" : esc(String(val))}">`;
   // eticheta pe linie proprie, apoi Baza+TVA intr-un sub-rand care se IMPACHETEAZA (flex-wrap) ->
   // nu se revarsa orizontal pe telefon (proba Pixel 5: inainte inputul TVA iesea din ecran).
   const randuri = _D311_SITUATII.map((s, i) => `
     <div class="dec-man-rand" style="flex-direction:column;align-items:stretch;gap:6px">
       <span class="dec-recl-desc" style="flex:0 0 auto">${i + 1}. ${esc(s.et)}</span>
       <div style="display:flex;flex-wrap:wrap;gap:12px">
-        <label class="camp" style="flex:1 1 130px"><span class="camp-eticheta">Bază (lei)</span>${camp("d311-" + s.baza, d[s.baza])}</label>
-        <label class="camp" style="flex:1 1 130px"><span class="camp-eticheta">TVA (lei)</span>${camp("d311-" + s.tva, d[s.tva])}</label>
+        <label class="camp" style="flex:1 1 130px"><span class="camp-eticheta">Bază (lei)</span>${camp("d311-" + s.baza, d[s.baza], s.et + " — bază (lei)")}</label>
+        <label class="camp" style="flex:1 1 130px"><span class="camp-eticheta">TVA (lei)</span>${camp("d311-" + s.tva, d[s.tva], s.et + " — TVA (lei)")}</label>
       </div>
     </div>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Situația fiscală după anularea codului de TVA</summary>

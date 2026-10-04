@@ -76,6 +76,10 @@ PERECHI_ADAUGATE = {
     ("centre_cost_activ", "str(e)"): (
         "Lot 19 defectul 13 (03.10.2026): `activ` se citește prin `_uc_comun.bifa`; „false” trimis ca text nu mai "
         "activează centrul (bool(\"false\") era True) — o valoare care nu e da/nu e refuzată (422)."),
+    ("salariat_actualizeaza", "{'mesaj': str(e), 'erori_campuri': _ec, 'cod': e.cod, 'existent': e.existent}"): (
+        "Salariul în timp, decizia Costin (04.10.2026): schimbarea salariului la o dată deja în istoric e refuzată NUMIT "
+        "(422, cod SALARIU_DATA_OCUPATA + intrarea existentă), nu rescrisă tăcut prin UPSERT; ecranul oferă înlocuirea "
+        "explicită (`inlocuieste`)."),
     ("chitanta_emite", "_amef.detaliu(e)"): (
         "D394 Î2, deciziile Costin (03.10.2026): chitanța de VÂNZARE fără factură se emite doar la firma exceptată de la "
         "AMEF (OUG 28/1999 art.1 alin.(1) / art.2), cu cota obligatorie și permisă la data ei — refuz STRUCTURAT (400: "

@@ -140,7 +140,7 @@ function deschideModal(corp, nav) {
       </div>
       <div class="pacm-corp" id="pacm-corp">
         <div class="pacm-editor" id="pacm-editor">
-          <textarea id="pacm-text" class="pacm-text" placeholder="Scrie sau generează povestea pentru antreprenor…">${esc(S.text)}</textarea>
+          <textarea aria-label="Povestea pentru antreprenor" id="pacm-text" class="pacm-text" placeholder="Scrie sau generează povestea pentru antreprenor…">${esc(S.text)}</textarea>
         </div>
         <div class="pacm-preview" id="pacm-preview" style="display:none"></div>
       </div>

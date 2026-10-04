@@ -1,19 +1,23 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Comanda Costin 03.10 încheiată (punctele 1–4) + deciziile din 04.10** (04.10.2026)
+# PREDARE LANȚ — **Salariul în timp livrat; comanda 03.10 încheiată; D112 A1 cu condiție scrisă** (04.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-04**, în commitul **Punctul 4** (commitul care poartă această predare; hash-ul lui e în raport și în
   `git log`).
-- **pe commit**: `57724df6` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-04 =
-  procesul viu = 57724df6, jurnalul C&D publicat).
+- **pe commit**: `7c7a71ff` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-04 =
+  procesul viu = 7c7a71ff, punctul 4 publicat; producția migrată după deploy, 05:02).
 - **ÎN LUCRU ACUM:** nimic deschis. Comanda Costin din 03.10 e încheiată: lotul 19 (`2798f8ce`), D394 Î2 (`5de03649`), factura din
   bon în exporturi/D406/e-Factura (`4bc13607`), coloana `salariati.salariu_brut` retrasă (commitul acestei predări; producția migrată
   DUPĂ deploy — backup `~/backup_pre_2b_*`). Deciziile din 04.10: schemele de test din producție șterse; bifa C&D jurnalizată (`57724df6`).
-- **URMĂTORUL FRONT:** `core.agenda.urmatorul_pas()` — comanda Costin nu mai are puncte deschise; agenda alege din TESTE („În lucru acum”).
-  Rămase cunoscute, cu decizia lor: D112 contract uniform A1 — „nu acum; doar când D112 e atins oricum” (BLOCAT); firul „Modelarea
-  contractului în timp” — UI de schimbare a salariului cu `valabil_din`.
+- **URMĂTORUL FRONT:** `core.agenda.urmatorul_pas()` — nu mai e niciun punct deschis din comenzile lui Costin. Firul „SALARIUL ÎN TIMP”
+  e ÎNCHIS (commitul acestei predări). D112 contract uniform A1: „nu acum” — **se execută la prima modificare reală a `core/d112.py`, în
+  același commit** (condiția e în fir și în capul modulului; fără gard, decizia Costin 04.10).
+- **ATENȚIE (salariul în timp):** o schimbare de salariu la o dată deja în istoric e REFUZATĂ (`SALARIU_DATA_OCUPATA`); înlocuirea cere
+  `inlocuieste: true`. Testele/probele care rescriu salariul la aceeași dată trebuie să o ceară explicit.
+- **ATENȚIE (accesibilitate):** orice câmp nou de formular are nume accesibil (`for` pe etichetă sau `aria-label`) — gard
+  `core/test_etichete_campuri.py`.
 - **ATENȚIE (efect punctul 4):** salariul contractual trăiește NUMAI în `salariu_istoric`. Un test/seed care inserează un salariat pune
   salariul în istoric (valabil_din = data angajării); `salariati.salariu_brut` nu mai există (gard `core/test_2b_coloana.py`).
 - **ATENȚIE (efect D394 Î2):** la o firmă marcată exceptată, chitanța fără factură cere cota (o creanță fără factură în aplicație se
@@ -433,7 +437,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **898** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **899** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

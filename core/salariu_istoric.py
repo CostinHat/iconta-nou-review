@@ -35,6 +35,13 @@ def salariu_la(cur, schema, salariat_id, data):
     return r["salariu_brut"] if isinstance(r, dict) else r[0]   # accepta tuplu SAU RealDictRow
 
 
+def intrari(cur, schema, salariat_id):
+    """[salariul în timp, 04.10.2026] Istoricul salariului, cronologic: [(valabil_din, salariu_brut)]."""
+    cur.execute("SELECT valabil_din, salariu_brut FROM %s WHERE salariat_id=%%s ORDER BY valabil_din"
+                % _t(schema, "salariu_istoric"), (salariat_id,))
+    return [(r["valabil_din"], r["salariu_brut"]) if isinstance(r, dict) else (r[0], r[1]) for r in cur.fetchall()]
+
+
 def seteaza(cur, salariat_id, salariu_brut, valabil_din):
     """Scrie o intrare de salariu in ISTORIC (UPSERT pe salariat+data). SURSA UNICA a salariului
     contractual (PASUL 2b) - toate scrierile (creare/editare/import) trec pe aici. Context search_path pe schema
