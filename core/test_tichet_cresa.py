@@ -120,8 +120,7 @@ def conn_cr():
                 cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_CR)
                 cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_CR))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA_CR)
-                cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,salariu_brut,ore_zi,judet_casa) "
-                            "VALUES ('1900101410011','POP','ION','2024-01-01',5000,8,'B') RETURNING id")
+                cur.execute("WITH s AS (INSERT INTO salariati (cnp,nume,prenume,data_angajare,ore_zi,judet_casa) VALUES ('1900101410011','POP','ION','2024-01-01',8,'B') RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
                 sid = cur.fetchone()[0]
             yield c, sid
         finally:

@@ -158,16 +158,15 @@ def _muta_baza(conn, sid, an, luna):
     mișcat.
 
     Prima formă a acestui ajutor făcea `UPDATE salariu_istoric SET salariu_brut = salariu_brut + 1000`
-    și trecea. Tenantul are istoricul GOL — salariul vine din bridge-ul `salariati.salariu_brut` —
-    deci UPDATE-ul prindea ZERO rânduri, recalculul nu se clintea, iar două teste verificau o lume
+    și trecea. Tenantul avea atunci istoricul GOL — salariul venea din puntea `salariati.salariu_brut`, retrasă la
+    punctul 4 (04.10.2026) — deci UPDATE-ul prindea ZERO rânduri, recalculul nu se clintea, iar două teste verificau o lume
     nemișcată: unul „a rezistat" fiindcă nimic nu se schimbase. Aserțiunea de mai jos e ce le-a scos."""
     from datetime import date as _date
 
     from core import salariu_istoric as _si
     inainte = _amprenta_curenta(conn, sid, an, luna)
     with conn.cursor() as cur:
-        cur.execute("SELECT salariu_brut FROM salariati WHERE id=%s", (sid,))
-        baza = float(cur.fetchone()[0] or 0)
+        baza = float(_si.salariu_la(cur, _SCH, sid, _date(an, luna, 28)) or 0)   # [punctul 4] din istoric
         _si.seteaza(cur, sid, baza + 1000, _date(an, luna, 1))
     dupa = _amprenta_curenta(conn, sid, an, luna)
     assert dupa != inainte, (

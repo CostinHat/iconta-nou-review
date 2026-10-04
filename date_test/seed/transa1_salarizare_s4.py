@@ -142,10 +142,13 @@ def seed_payroll(conn, schema):
         idmap = {}
         for (k, nume, pren, sx, yy, mm, dd, seq, brut, orez, pt, dang, dinc) in SALARIATI:
             cnp = _cnp(sx, yy, mm, dd, seq)
-            c.execute(q + "salariati (nume,prenume,cnp,data_angajare,data_incetare,salariu_brut,ore_zi,part_time) "
-                      "VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
-                      (nume, pren, cnp, dang, dinc, brut, orez, pt))
+            c.execute(q + "salariati (nume,prenume,cnp,data_angajare,data_incetare,ore_zi,part_time) "
+                      "VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+                      (nume, pren, cnp, dang, dinc, orez, pt))
             idmap[k] = c.fetchone()[0]
+            if k not in ISTORIC:   # [punctul 4] fara punte: salariul de la angajare, in istoric (cine are trepte le primeste mai jos)
+                c.execute(q + "salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (%s,%s,%s)",
+                          (idmap[k], dang, brut))
         for k, trepte in ISTORIC.items():
             for (vd, br) in trepte:
                 c.execute(q + "salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (%s,%s,%s)",

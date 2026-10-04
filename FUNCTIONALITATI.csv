@@ -1115,7 +1115,7 @@ Registru de încasări și plăți; venitul net pentru D212.
 - Confuzia partidă simplă (PFA) cu partidă dublă (SRL).
 ## Reguli fiscale
 Codul fiscal (venituri din activități independente, sistem real); norme partidă simplă."
-Salariați (CRUD),"Salariații firmei: creare/editare/ștergere cu validare (CNP, normă, contract), alimentează statul de plată, D112 și REGES.",F078,firma,card Salariati,core/salariati_api.py,,LIVE,bug tip_norma reparat,,"## Ce face
+Salariați (CRUD),"Salariații firmei: creare/editare/ștergere cu validare (CNP, normă, contract), alimentează statul de plată, D112 și REGES. [04.10.2026] Salariul contractual are o singură sursă, istoricul (salariu_istoric, valabil de la o dată); coloana veche salariati.salariu_brut s-a retras.",F078,firma,card Salariati,core/salariati_api.py,,LIVE,bug tip_norma reparat,,"## Ce face
 Gestionează salariații firmei: creare, editare și ștergere, cu validare pe CNP, normă și contract. Datele introduse aici alimentează statul de plată, D112 și REGES.
 ## Când se folosește
 La angajare, la modificarea contractului sau la încetare, de către contabilul de salarizare.

@@ -49,9 +49,7 @@ def schema():
 
 
 def _seed_salariat(cur):
-    cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,"
-                "part_time) OVERRIDING SYSTEM VALUE VALUES "
-                "(1,'CM','Z','1900101410011','2026-01-01',6000,8,false)")
+    cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'CM','Z','1900101410011','2026-01-01',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 6000 FROM s) SELECT id FROM s")
 
 
 def _cm(cur, **col):

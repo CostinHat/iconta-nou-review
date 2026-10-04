@@ -31,9 +31,7 @@ def _setup(cur, salariati):
                 "declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'PROBA SRL','14399840','Str 1',"
                 "'Buc','B','6202',true,'L','Pop','Ion','administrator')")
     for s in salariati:
-        cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,salariu_brut,ore_zi,judet_casa,cor,"
-                    "data_nastere,copii_scolarizati,declaratie_copii,tip_asigurat) VALUES "
-                    "(%(cnp)s,%(nume)s,'X','2024-01-01',5000,8,'B','251401',%(dn)s,%(copii)s,%(decl)s,'1')", s)
+        cur.execute("WITH s AS (INSERT INTO salariati (cnp,nume,prenume,data_angajare,ore_zi,judet_casa,cor,data_nastere,copii_scolarizati,declaratie_copii,tip_asigurat) VALUES (%(cnp)s,%(nume)s,'X','2024-01-01',8,'B','251401',%(dn)s,%(copii)s,%(decl)s,'1') RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s", s)
 
 
 @pytest.fixture

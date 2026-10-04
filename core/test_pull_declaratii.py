@@ -118,9 +118,7 @@ def test_d112_pull_vede_salariatul(schema):
     from core import d112
     with schema.cursor() as cur:
         cur.execute(
-            "INSERT INTO salariati (nume, prenume, cnp, data_angajare, salariu_brut, "
-            "ore_zi, part_time) VALUES "
-            "('POPESCU','ION','1900101410011','2026-01-01',5000,8,false)")
+            "WITH s AS (INSERT INTO salariati (nume,prenume,cnp,data_angajare,ore_zi,part_time) VALUES ('POPESCU','ION','1900101410011','2026-01-01',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
     prof, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
     assert prof.get("cui") == "14399840"
     assert len(sal) == 1, "salariatul activ nu ajunge in pull"
@@ -133,9 +131,7 @@ def test_d112_pull_ignora_salariatul_plecat(schema):
     from core import d112
     with schema.cursor() as cur:
         cur.execute(
-            "INSERT INTO salariati (nume, prenume, cnp, data_angajare, data_incetare, salariu_brut, "
-            "ore_zi, part_time) VALUES "
-            "('DEMISIONAT','X','1900101410011','2026-01-01','2026-05-31',5000,8,false)")
+            "WITH s AS (INSERT INTO salariati (nume,prenume,cnp,data_angajare,data_incetare,ore_zi,part_time) VALUES ('DEMISIONAT','X','1900101410011','2026-01-01','2026-05-31',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
     _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
     assert sal == [], "salariatii cu contract incetat inainte de luna nu intra in D112"
 
@@ -157,9 +153,7 @@ def test_d301_pull_vede_operatiunea(schema):
 def _seamana_salariat(conn):
     with conn.cursor() as cur:
         cur.execute(
-            "INSERT INTO salariati (nume, prenume, cnp, data_angajare, salariu_brut, "
-            "ore_zi, part_time) VALUES "
-            "('POPESCU','ION','1900101410011','2026-01-01',5000,8,false)")
+            "WITH s AS (INSERT INTO salariati (nume,prenume,cnp,data_angajare,ore_zi,part_time) VALUES ('POPESCU','ION','1900101410011','2026-01-01',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
 
 
 def _seamana_d301(conn):
@@ -172,7 +166,8 @@ def _seamana_d301(conn):
 @pytest.mark.parametrize("modul,tabela,coloana,seamana", [
     ("d300", "facturi", "tva", _factura),
     ("d300", "firma_profil", "tip_decont", None),
-    ("d112", "salariati", "salariu_brut", _seamana_salariat),
+    # [punctul 4] `salariu_brut` s-a retras din salariati — garda se probează pe altă coloană pe care D112 o cere
+    ("d112", "salariati", "data_angajare", _seamana_salariat),
     ("d301", "d301_operatiuni", "curs", _seamana_d301),
 ])
 def test_pull_crapa_zgomotos_cand_coloana_lipseste(schema, modul, tabela, coloana, seamana):
@@ -230,9 +225,7 @@ def test_d112_pull_prorateaza_facilitatea_la_incetare(schema):
     from core import d112
     with schema.cursor() as cur:
         cur.execute(
-            "INSERT INTO salariati (nume, prenume, cnp, data_angajare, data_incetare, salariu_brut, "
-            "ore_zi, part_time) VALUES "
-            "('MIN','A','1900101410011','2026-01-01','2026-06-20',4050,8,false)")
+            "WITH s AS (INSERT INTO salariati (nume,prenume,cnp,data_angajare,data_incetare,ore_zi,part_time) VALUES ('MIN','A','1900101410011','2026-01-01','2026-06-20',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 4050 FROM s) SELECT id FROM s")
     _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
     assert len(sal) == 1
     assert float(sal[0]["facilitate"]) == 200.0, sal[0].get("facilitate")   # 300 x 14/21 (incetare 20 iun 2026), nu 300 intreg
@@ -244,9 +237,7 @@ def test_d112_facilitate_prorata_la_mentinere_partiala(schema):
     # Salariat la minim (4050) pana pe 15 iun, marit la 5000 din 16 -> facilitate pe zilele 1-15 (10/21).
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
-                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
-                    "(1,'MARIRE','A','1900101410011','2026-01-01',5000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'MARIRE','A','1900101410011','2026-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) "
                     "VALUES (1,'2026-01-01',4050),(1,'2026-06-16',5000)")
     _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
@@ -268,9 +259,7 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
     CM_ANG, CM_FNUASS = 1000, 3000        # indemnizatie 4000 (cm_base)
     cm_base = CM_ANG + CM_FNUASS
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
-                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
-                    "(1,'CM','B','1900101410011','2026-01-01',6000,8,false)")
+        cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'CM','B','1900101410011','2026-01-01',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 6000 FROM s) SELECT id FROM s")
         cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
                     "brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
@@ -296,8 +285,7 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def _seed_cod09(schema, cnp_ingrijit):
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'ING','A','2900101410011','2025-01-01',9000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'ING','A','2900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',9000)")
         cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere,"
@@ -347,8 +335,7 @@ def test_d112_impozit_multi_certificat_partitie_per_cert(schema):
     import re
     from core import d112, salarizare as _sz
     def _seed(cur):
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'M','A','2900101410011','2025-01-01',12600,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'M','A','2900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',12600)")
         cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere)"
@@ -401,8 +388,7 @@ def test_d112_impozit_exclude_indemnizatia_cm_neimpozabila_luna_mixta(schema):
     from core.salarizare import taxe_cm
     from datetime import date
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'MIXT','A','2900101410011','2025-01-01',12600,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'MIXT','A','2900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',12600)")
         cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
@@ -438,8 +424,7 @@ def test_d112_poarta_reconciliaza_valorile_emise_nu_pre_emisia(schema):
     from core import d112
     from core.d112_reconciliere import verifica_reconciliere, ReconciliereD112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'S','A','1900101410011','2025-01-01',6000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'S','A','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
     prof, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
     rez = d112._d112_genereaza(prof, sal, 2026, 6)   # scrie contributiile EMISE inapoi in sal
@@ -469,8 +454,7 @@ def test_d112_cm_baza_salariala_realizata_nu_brut_intreg(schema):
     import re
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'CM','R','1900101410011','2025-01-01',8400,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'CM','R','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',8400)")
         cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile_ang,zile_fnuass,brut_ang,brut_fnuass,"
                     "serie,numar,data_acordare,data_inceput,data_sfarsit) "
@@ -499,9 +483,7 @@ def test_d112_maternitate_cod08_c2_rd3(schema):
     # maternitatea e 100% FNUASS (D_20=0). Inainte d112 punea 08 in Rd.1 -> DUK respingea (C2_32 lipsa).
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
-                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
-                    "(1,'MAT','A','2900101410011','2026-01-01',6000,8,false)")
+        cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'MAT','A','2900101410011','2026-01-01',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 6000 FROM s) SELECT id FROM s")
         cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
                     "brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
@@ -520,9 +502,7 @@ def test_d112_urgenta_cod06_emite_d11(schema):
     # obligatoriu daca D_9=06). Inainte D_11 nu se emitea -> DUK: "Nu s-a completat codul de urgenta".
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
-                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
-                    "(1,'URG','C','1900101410011','2026-01-01',6000,8,false)")
+        cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'URG','C','1900101410011','2026-01-01',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 6000 FROM s) SELECT id FROM s")
         cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
                     "brut_fnuass, cass, impozit, cas, net, cod_urgenta, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
@@ -595,8 +575,7 @@ def test_d112_brut_si_baza_pe_salariul_lunii_nu_contractual_curent(schema):
     import re
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'MAJ','A','1900101410011','2026-01-01',5000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'MAJ','A','1900101410011','2026-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) "
                     "VALUES (1,'2026-01-01',4050),(1,'2026-07-01',5000)")
     xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 2)   # FEBRUARIE, inainte de majorarea de la 01.07
@@ -633,8 +612,7 @@ def test_d112_part_time_baza_minima_salariul_minim_integral(schema):
     import re
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'PT','A','1900101410011','2026-01-01',2000,4,true)")
+        cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'PT','A','1900101410011','2026-01-01',4,true) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 2000 FROM s) SELECT id FROM s")
     xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
     m = re.search(r'<asiguratB4\b([^>]*)/>', xml)
     at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
@@ -652,8 +630,7 @@ def test_d112_exclude_salariat_neangajat_inca_in_luna(schema):
     apare in ianuarie -> pica."""
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'NOU','A','1900101410011','2026-03-15',5000,8,false)")
+        cur.execute("WITH s AS (INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'NOU','A','1900101410011','2026-03-15',8,false) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
     _p, sal_ian = d112.pull(schema, SCHEMA_T, 2026, 1)   # inainte de angajare (15.03)
     assert len(sal_ian) == 0, "salariat angajat 15.03 NU trebuie inclus in D112 pe ianuarie (era %d)" % len(sal_ian)
     _p, sal_mar = d112.pull(schema, SCHEMA_T, 2026, 3)   # luna angajarii
@@ -667,8 +644,7 @@ def test_d112_cod15_D23_RM(schema):
     import re
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'RM','A','1900101410011','2025-01-01',6000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'RM','A','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
         cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
@@ -686,8 +662,7 @@ def test_d112_cod07_carantina_in_C2_prevenire(schema):
     import re
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'CAR','A','1900101410011','2025-01-01',5000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'CAR','A','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',5000)")
         cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
@@ -707,8 +682,7 @@ def test_d112_cod10_D13_aviz(schema):
     import re
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'RED','A','1900101410011','2025-01-01',5500,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'RED','A','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',5500)")
         cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
                     "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere,cod_urgenta) "
@@ -728,8 +702,7 @@ def test_d112_cm_suma_lipsa_din_stocare_recalc_din_media(schema):
     from core import d112
     import re
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'CM','S','1900101410011','2025-01-01',6000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'CM','S','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
         # certificat cod 01, 5 zile (3 ang + 2 FNUASS), baza 6000, DAR suma NECALCULATA (brut_ang=brut_fnuass=0)
         cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"

@@ -91,12 +91,9 @@ def _cote(la_data):
 
 
 def _brut_la(cur, schema, sid, data):
-    """Brut contractual valabil la `data` — SQL PROPRIU (mirror pe salariu_istoric.salariu_la,
-    fara a importa modulul). Fallback la salariati.salariu_brut, ca generatorul."""
+    """Brut contractual valabil la `data` — SQL PROPRIU (mirror pe salariu_istoric.salariu_la, fara a importa
+    modulul). Istoric gol = necunoscut (None), ca generatorul — [punctul 4] coloana salariati.salariu_brut s-a retras."""
     r = _repo.select(cur, schema, sid, data)
-    if r and r["salariu_brut"] is not None:
-        return Decimal(str(r["salariu_brut"]))
-    r = _repo.select_2(cur, schema, sid)
     return Decimal(str(r["salariu_brut"])) if (r and r["salariu_brut"] is not None) else None
 
 

@@ -1266,3 +1266,10 @@ că încasările prin casa de marcat (Î1) nu se declară — se declară de ier
   scrisă cu cine a făcut-o, când și din ce în ce (da/nu). Apăsarea pe aceeași valoare nu lasă urmă, fiindcă nu schimbă nimic.
 - **Baza de producție:** au fost șterse 8 scheme rămase de la teste mai vechi de 11.09 (cu backup). Nu erau firme; firmele
   reale (5) sunt neatinse.
+
+## 04.10.2026 — Punctul 4: salariul contractual are o singură sursă (coloana veche din fișa salariatului retrasă)
+
+**Ce se schimbă pentru contabil:** nimic vizibil. Statul de plată, fluturașul și D112 dau aceleași cifre (probat pe F1). În
+spate, salariul de bază se citește numai din istoricul de salariu (valabil de la o dată). Coloana veche, care rămăsese
+neactualizată după schimbările de salariu din iulie, a fost ștearsă. Salariații care n-aveau istoric au primit unul de la data
+angajării, cu salariul pe care îl aveau.

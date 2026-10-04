@@ -199,11 +199,14 @@ def seed_payroll(conn, schema):
             for (k, nume, pren, sx, yy, mm, dd, seq, brut, cor, orez, dang, dinc, copii, decl) in SALARIATI:
                 cnp = _cnp(sx, yy, mm, dd, seq)
                 dn = _data_nastere(sx, yy, mm, dd)   # [deducere suplimentara] derivata din CNP
-                c.execute(q + "salariati (nume,prenume,cnp,data_angajare,data_incetare,salariu_brut,cor,ore_zi,"
+                c.execute(q + "salariati (nume,prenume,cnp,data_angajare,data_incetare,cor,ore_zi,"
                           "data_nastere,copii_scolarizati,declaratie_copii) "
-                          "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
-                          (nume, pren, cnp, dang, dinc, brut, cor, orez, dn, copii, decl))
+                          "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+                          (nume, pren, cnp, dang, dinc, cor, orez, dn, copii, decl))
                 idmap[k] = c.fetchone()[0]
+                # [punctul 4] salariul contractual traieste in salariu_istoric (coloana salariati.salariu_brut s-a retras)
+                c.execute(q + "salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (%s,%s,%s)",
+                          (idmap[k], dang, brut))
             nr = 0
             for (k, an, lu, cod, zi, di, ds, serie, numar) in CM:
                 nr += 1

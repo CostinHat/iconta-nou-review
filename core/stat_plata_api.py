@@ -17,7 +17,7 @@ def stat_plata(conn, schema, an, luna):
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT id, nume, prenume, cnp, salariu_brut, persoane_intretinere, part_time, ore_zi,
+            SELECT id, nume, prenume, cnp, persoane_intretinere, part_time, ore_zi,
                    tichet_masa_valoare, iban, cor, data_angajare, data_incetare,
                    data_nastere, copii_scolarizati, declaratie_copii, functie_baza
             FROM {schema}.salariati
@@ -52,12 +52,12 @@ def stat_plata(conn, schema, an, luna):
     cadou_det = _ben.cadou_detalii_luna(conn, schema, an, luna)
     stat = []
     import calendar as _cal
-    from core import salariu_istoric as _si  # [tranzitie 29.07.2026] salariul contractual DATE-AWARE, nu salariati.salariu_brut
+    from core import salariu_istoric as _si  # salariul contractual DATE-AWARE (sursa unica: salariu_istoric)
     _ultima_luna = date(an, luna, _cal.monthrange(an, luna)[1])
     # [#1/#3] pontajul lunii confirmat? o singura interogare (nu per-salariat).
     _pontaj_confirmat = _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]
     _cs_sal = conn.cursor()
-    for (sid, nume, prenume, cnp, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
+    for (sid, nume, prenume, cnp, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
          data_nastere, copii_scolarizati, declaratie_copii, functie_baza) in randuri:
         brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
         # [lot 19 pct.4c] prezența în contract în lună: angajare/încetare, CFP/suspendare, schimbare de salariu.

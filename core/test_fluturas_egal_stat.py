@@ -166,8 +166,9 @@ def test_exemplarul_emis_bate_recalculul():
             sid = em[0]["salariat_id"]
             inainte = _sp.rand_fluturas(conn, schema, sid, 2026, 6)
             with conn.cursor() as cur:
-                cur.execute("SELECT salariu_brut FROM salariati WHERE id=%s", (sid,))
-                baza = float(cur.fetchone()[0] or 0)
+                from core import salariu_istoric as _si_b   # [punctul 4] baza din istoric (coloana s-a retras)
+                from datetime import date as _dd
+                baza = float(_si_b.salariu_la(cur, schema, sid, _dd(2026, 6, 30)) or 0)
                 from datetime import date as _d
 
                 from core import salariu_istoric as _si
@@ -207,8 +208,9 @@ def test_corectia_se_vede_pe_hartie():
             sid = em[0]["salariat_id"]
             pdf1 = _sp.fluturas_pdf(conn, schema, sid, 2026, 6, "probă")
             with conn.cursor() as cur:
-                cur.execute("SELECT salariu_brut FROM salariati WHERE id=%s", (sid,))
-                baza = float(cur.fetchone()[0] or 0)
+                from core import salariu_istoric as _si_b   # [punctul 4] baza din istoric (coloana s-a retras)
+                from datetime import date as _dd
+                baza = float(_si_b.salariu_la(cur, schema, sid, _dd(2026, 6, 30)) or 0)
                 from datetime import date as _d
 
                 from core import salariu_istoric as _si

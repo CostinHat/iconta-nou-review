@@ -16667,3 +16667,32 @@ schimbare se jurnalizează: utilizator, dată, valoare veche → nouă.”*
    `mijloace_fixe_jurnal`, scris în ACEEAȘI tranzacție cu schimbarea (nicio schimbare fără rândul ei).
 3. Se jurnalizează doar o schimbare reală (valoare veche ≠ nouă); valoarea de la crearea fișei nu e o „schimbare”.
 4. Utilizatorul se reține prin `user_id` (fără copie de nume/email — minimizare); data și ora, cu fus orar.
+
+## 04.10.2026 — Punctul 4: coloana `salariati.salariu_brut` retrasă (decizia Costin)
+
+**Decizia lui Costin (verbatim, 03.10):** *„2b-coloană: da. Ștergi salariati.salariu_brut după ce dovedești că nimic nu o mai
+citește, cu migrare pe toți tenanții (toate datele sunt de test) și backup înainte.”*
+
+**Dovada că nimic n-o mai citește (în trei straturi):**
+1. Inventar static (AST pe expresiile SQL, nu grep pe un rând): cititori rămași — puntea din `salariu_istoric.salariu_la`
+   (cădea pe coloană când istoricul era gol), rezerva din `d112_reconciliere._brut_la`, trei SELECT-uri a căror valoare era
+   oricum suprascrisă din istoric (`stat_plata_api`, `repo_d112_reconciliere.select_4`, `d112.py`), plus garda
+   `_COLOANE_SALARIAT` din D112 care o CEREA. Toate scoase. Scrierile trecuseră pe istoric în 2b-scrieri — coloana era o
+   copie ÎNVECHITĂ (5 salariați din producție o aveau diferită de ultimul istoric).
+2. Dovada mecanică: suita pe template-ul fără coloană — 97 de roșii, fiecare un fixture/test care scria sau citea coloana
+   (inclusiv prin punte); toate rescrise pe istoric (44 de locuri în 15 teste, 2 seed-uri), nu tolerate.
+3. Proba pe F1 (producție, tranzacție anulată): codul VECHI, după DROP, crapă în statul de plată (`column "salariu_brut" does
+   not exist`); codul NOU dă aceleași cifre înainte și după, D112 DUK valid.
+
+**Consecințe (executor):**
+- Backfill înainte de DROP: salariații FĂRĂ istoric primesc un rând `valabil_din = data angajării`, salariul = coloana — exact
+  ce le dădea puntea. Fără dată sau fără valoare: nu se inventează, se raportează (`necompletati`). Pe baza de test: 20
+  completați; producția: 0 (cei 3 erau în schemele de test șterse 04.10).
+- Ordinea pe producție: DEPLOY ÎNTÂI, apoi migrarea — codul vechi citește coloana (ar crăpa), cel nou merge cu sau fără ea,
+  iar producția nu are salariați fără istoric, deci noul cod e corect și cât coloana mai există. Backup înainte de migrare.
+- Câmpul `salariu_brut` al API-ului (ecranul Salariați, importul) rămâne: e salariul CURENT citit din istoric, nu coloana.
+- Docstring-ul istoric din `common.cere_coloane` (exemplul D112 din 27.07) rămâne neatins — e istoria gardului, nu o citire.
+
+**Limite.** Salariul dinaintea datei angajării nu mai e „cunoscut” (puntea îl dădea pentru orice dată): niciun calcul nu-l
+cere pe o lună fără contract — de aceea nu e o pierdere. UI-ul de schimbare a salariului cu dată de la care se aplică
+(`valabil_din`) e altă bucată a firului „Modelarea contractului în timp” (TESTE), nu acest punct.

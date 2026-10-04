@@ -1,23 +1,21 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Punctul 3 livrat (factura din bon în exporturi, D406, e-Factura); urmează coloana 2b (punctul 4)** (03.10.2026)
+# PREDARE LANȚ — **Comanda Costin 03.10 încheiată (punctele 1–4) + deciziile din 04.10** (04.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-03** (noaptea), în commitul **Punctul 3** (commitul care poartă această predare; hash-ul lui e în
-  raport și în `git log`).
-- **pe commit**: `5de03649` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-03 =
-  procesul viu = 5de03649, D394 Î2 publicat).
-- **ÎN LUCRU ACUM:** nimic deschis — firul **EXPORT SAGA/WinMentor — facturi din bon (punctul 3)** e ÎNCHIS în TESTE.md: ambele
-  formate au câmp, deci marca (SAGA `FacturaTip=f`, WinMentor `ClasificareSAFT=751` + InfoCM); generalizarea clasei a reparat și D406
-  (TaxCode 310327, nota ANAF din nomenclatorul Livrări), e-Factura (751 + „Factura încasată cu bon fiscal”, Ghidul MF v2.9) și starea de
-  încasare (factura din bon se naște încasată — fără notificare de scadență către client). Punctul 2 (D394 Î2) a intrat în `5de03649`.
-- **Deciziile Costin 04.10 (executate):** cele 8 scheme de test din producție șterse (backup `~/backup_scheme_test_prod_20261004_0048.sql.gz`);
-  bifa C&D — fără rol separat, fiecare schimbare jurnalizată în `mijloace_fixe_jurnal` (fir închis în TESTE).
-- **URMĂTORUL FRONT (comanda Costin 03.10, ordinea dată):** **punctul 4** — DROP `salariati.salariu_brut`, după dovada că nimic n-o
-  mai citește (grep pe tot codul + SQL), cu backup înainte și migrare pe toți tenanții (toate datele sunt de test); ZIP
-  `/home/costin/ghid_incoming/iconta_2b_coloana.zip`. Atenție: `core/test_intrare_date_garduri.py` are `("salariati", "salariu_brut")`
-  în NULLABLE_OK — intrarea pleacă odată cu coloana.
+- **ultima rescriere**: **2026-10-04**, în commitul **Punctul 4** (commitul care poartă această predare; hash-ul lui e în raport și în
+  `git log`).
+- **pe commit**: `57724df6` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-04 =
+  procesul viu = 57724df6, jurnalul C&D publicat).
+- **ÎN LUCRU ACUM:** nimic deschis. Comanda Costin din 03.10 e încheiată: lotul 19 (`2798f8ce`), D394 Î2 (`5de03649`), factura din
+  bon în exporturi/D406/e-Factura (`4bc13607`), coloana `salariati.salariu_brut` retrasă (commitul acestei predări; producția migrată
+  DUPĂ deploy — backup `~/backup_pre_2b_*`). Deciziile din 04.10: schemele de test din producție șterse; bifa C&D jurnalizată (`57724df6`).
+- **URMĂTORUL FRONT:** `core.agenda.urmatorul_pas()` — comanda Costin nu mai are puncte deschise; agenda alege din TESTE („În lucru acum”).
+  Rămase cunoscute, cu decizia lor: D112 contract uniform A1 — „nu acum; doar când D112 e atins oricum” (BLOCAT); firul „Modelarea
+  contractului în timp” — UI de schimbare a salariului cu `valabil_din`.
+- **ATENȚIE (efect punctul 4):** salariul contractual trăiește NUMAI în `salariu_istoric`. Un test/seed care inserează un salariat pune
+  salariul în istoric (valabil_din = data angajării); `salariati.salariu_brut` nu mai există (gard `core/test_2b_coloana.py`).
 - **ATENȚIE (efect D394 Î2):** la o firmă marcată exceptată, chitanța fără factură cere cota (o creanță fără factură în aplicație se
   încasează după ce factura e introdusă); la o firmă neexceptată, chitanța cu cotă e refuzată. Probele care emit chitanțe pe F1 marchează
   exceptarea ÎN TRANZACȚIA anulată (v. `frontend_test/proba_d394_i2.py`).
@@ -435,7 +433,7 @@ vorbă, e o consecință.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **896** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **898** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

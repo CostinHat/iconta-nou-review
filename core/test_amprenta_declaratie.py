@@ -27,8 +27,7 @@ def test_regenerare_prinde_editarea_retroactiva_MUTATIE(schema):
     schema NU previne editarea retroactiva, DUK nu vede istoria."""
     from core import d112
     with schema.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,'S','A','1900101410011','2025-01-01',6000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'S','A','1900101410011','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
     xml1, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
     a_depusa = amprenta(xml1)

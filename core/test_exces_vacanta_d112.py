@@ -31,8 +31,7 @@ def conn():
                             "regim_fiscal,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES "
                             "(1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','BCR','RO49RNCB0000000000000001',"
                             "'a@b.ro','0700000000','profit',true,'L','Pop','Ion','administrator')")
-                cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,salariu_brut,ore_zi,judet_casa,tichet_masa_valoare) "
-                            "VALUES ('1900101410011','POPESCU','ION','2024-01-01',5000,8,'B',40) RETURNING id")
+                cur.execute("WITH s AS (INSERT INTO salariati (cnp,nume,prenume,data_angajare,ore_zi,judet_casa,tichet_masa_valoare) VALUES ('1900101410011','POPESCU','ION','2024-01-01',8,'B',40) RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
                 sid = cur.fetchone()[0]
             _per.confirma(c, SCHEMA, 2026, 6, "pontaj", user_id=1)  # cap.23: pontaj confirmat
             yield c, sid

@@ -701,7 +701,8 @@ def _d112_genereaza(prof, salariati, an, luna):
 # Coloanele din `salariati` pe care D112 le CITESTE efectiv (vezi maparea de la finalul
 # lui pull). Lista e un CONTRACT cu schema: daca una dispare, generarea se opreste zgomotos
 # in loc sa declare zero.
-_COLOANE_SALARIAT = ("id", "nume", "prenume", "cnp", "data_angajare", "salariu_brut",
+# [punctul 4, 04.10.2026] fără `salariu_brut`: coloana s-a retras, salariul vine din salariu_istoric (salariu_la)
+_COLOANE_SALARIAT = ("id", "nume", "prenume", "cnp", "data_angajare",
                      "ore_zi", "judet_casa", "part_time", "persoane_intretinere",
                      "scutit_contrib_minim", "motiv_exceptare", "tichet_masa_valoare", "data_incetare",
                      "functie_baza")
@@ -755,7 +756,7 @@ def pull(conn, schema, an, luna):
         salariati.append({
             "id": s.get("id"),
             "nume": s.get("nume"), "prenume": s.get("prenume") or "-",
-            "cnp": s.get("cnp"), "brut": s.get("salariu_brut"),
+            "cnp": s.get("cnp"), "brut": None,   # [punctul 4] completat mai jos din salariu_istoric (brutul cuvenit)
             "data_angajare": str(s.get("data_angajare") or ""),
             "data_incetare": s.get("data_incetare"),
             "ore_zi": s.get("ore_zi") or 8,
@@ -807,7 +808,7 @@ def pull(conn, schema, an, luna):
     #  - norma_intreaga: facilitatea (HG 146/2026 o da doar la norma intreaga)
     #  - venit_brut_total: plafonul facilitatii se judeca pe brutul CONTRACTUAL
     #  - brut_lucrat: pe zilele de CM salariul nu se plateste de angajator
-    from core import salariu_istoric as _si  # [tranzitie 29.07.2026] salariul contractual DATE-AWARE, nu salariati.salariu_brut
+    from core import salariu_istoric as _si  # salariul contractual DATE-AWARE (sursa unica: salariu_istoric)
     _ultima_luna = _dt(an, luna, _cal.monthrange(an, luna)[1])
     _cs_sal = conn.cursor()
     for s in salariati:

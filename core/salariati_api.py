@@ -20,9 +20,8 @@ MODUL = "salariati_api"
 
 _CNP = re.compile(r"^\d{13}$")
 _NORME = ("intreaga", "partiala")
-# [tranzitie 29.07.2026] salariu_brut nu mai e citit de calculul fiscal (d112, stat_plata); acela
-# trece prin salariu_istoric.salariu_la(). salariu_brut se retrage complet din tabel in 2b.
-# NU adauga citiri fiscale noi pe salariati.salariu_brut.
+# [punctul 4, 04.10.2026] salariati.salariu_brut s-a retras: salariul contractual traieste numai in salariu_istoric
+# (salariu_la/seteaza). Campul `salariu_brut` al API-ului ramane — e salariul CURENT citit din istoric.
 _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi",
                 "persoane_intretinere", "judet_casa", "data_incetare",  # [2b] salariu_brut -> salariu_istoric
                 "data_nastere", "copii_scolarizati", "declaratie_copii",  # [deducere suplimentara]
@@ -223,7 +222,7 @@ def creeaza_salariat(conn, **date):  # [R164] traduce refuzul bazei in refuzul c
                 "— nu se creează un al doilea dosar pentru același om."
                 % (date.get("cnp") or ""))])
         sid = cur.fetchone()[0]
-        # [PASUL 2b] salariul de baza trece pe salariu_istoric (SURSA UNICA), nu pe salariati.salariu_brut
+        # [PASUL 2b] salariul de baza traieste pe salariu_istoric (SURSA UNICA)
         _sb = date.get("salariu_brut")
         if _sb is not None:
             _si.seteaza(cur, sid, _sb, date.get("data_angajare") or _dm.today().isoformat())

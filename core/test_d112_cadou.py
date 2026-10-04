@@ -45,8 +45,7 @@ def _setup(cur, cadouri=()):
                 "platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES "
                 "(1,'PROBA D112 SRL','14399840','Str 1','Buc','B','6202','BCR','RO49RNCB0000000000000001',"
                 "'profit',true,'L','Pop','Ion','administrator')")
-    cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,salariu_brut,ore_zi,judet_casa) "
-                "VALUES ('1900101410011','P','I','2024-01-01',5000,8,'B') RETURNING id")
+    cur.execute("WITH s AS (INSERT INTO salariati (cnp,nume,prenume,data_angajare,ore_zi,judet_casa) VALUES ('1900101410011','P','I','2024-01-01',8,'B') RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
     sid = cur.fetchone()[0]
     for ev, val in cadouri:
         cur.execute("INSERT INTO beneficii_lunare (salariat_id,an,luna,tip,valoare,eveniment) "

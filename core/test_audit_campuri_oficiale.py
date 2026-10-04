@@ -67,7 +67,7 @@ def conn_audit():
                     "regim_fiscal,platitor_tva,tip_decont,baza_contabila,declarant_nume,declarant_prenume,declarant_functie) VALUES "
                     "(1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','BCR','RO49RNCB0000000000000001',"
                     "'a@b.ro','0700000000','profit',true,'L','A','Pop','Ion','administrator') ON CONFLICT (id) DO UPDATE SET nume=EXCLUDED.nume")
-                cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,salariu_brut,ore_zi,judet_casa) VALUES ('1900101410011','P','I','2024-01-01',5000,8,'B')")
+                cur.execute("WITH s AS (INSERT INTO salariati (cnp,nume,prenume,data_angajare,ore_zi,judet_casa) VALUES ('1900101410011','P','I','2024-01-01',8,'B') RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
                 cur.execute("INSERT INTO asociati (nume,cnp,cota) VALUES ('A','1900101410011',100)")
                 cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere) VALUES ('2026-05-15','validata','t','V') RETURNING id"); i1 = cur.fetchone()[0]
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'4111','704',100000)", (i1,))

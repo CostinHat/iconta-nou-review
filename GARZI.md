@@ -8793,9 +8793,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**675 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**677 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 643
+### `core/` — 644
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8826,6 +8826,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/scan_valori_afisate.py` — Valori FISCALE scrise literal in TEXTUL AFISAT de ecrane.
 - `core/test_11_deducere_copii_gard.py` — GARD #11: deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) NU se acorda tacit — art.77 alin.(12)-(13)
 - `core/test_12_salariu_minim_luna.py` — GARD #12: CF art.77 alin.(3) teza finala — cand in aceeasi luna se aplica mai multe valori ale
+- `core/test_2b_coloana.py` — GARD — coloana `salariati.salariu_brut` s-a retras (punctul 4, decizia Costin 03.10.2026) și nu se poate întoarce.
 - `core/test_3c_functie_baza.py` — GARD [3c, CF art.77 alin.(1)]: deducerea personala se acorda NUMAI la functia de baza.
 - `core/test_3i_storno_cota.py` — GARD [3i, CF art. 282 alin. (9)]: storno-ul unei facturi cu cota 19% (emisa inainte de 01.08.2025)
 - `core/test_a10_efactura_baza_linie.py` — [A10, 18.09.2026] Import e-Factura: baza liniei = `LineExtensionAmount` (netul UBL după
@@ -9441,7 +9442,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 32
+### `scripts/` — 33
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -9469,6 +9470,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `scripts/scan_regimuri.py` — CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
 - `scripts/scan_rute_clasificate.py` — CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
 - `scripts/scan_rute_fara_proba.py` — Ce rută SCRIE fără ca vreo probă s-o numească.
+- `scripts/scan_salariu_coloana.py` — scripts/scan_salariu_coloana.py — instrumentul gardului `core/test_2b_coloana.py` (punctul 4, 04.10.2026).
 - `scripts/scan_scrieri_declaratii.py` — Care rute SCRIU în tabele din care se calculează cifre de declarație.
 - `scripts/scan_sonde_stare.py` — scripts/scan_sonde_stare.py — SONDELE CARE MĂSOARĂ FĂRĂ SĂ ȘTIE DACĂ CEREREA A REUȘIT.
 - `scripts/scan_stare_proces.py` — P6 — inventarul STARII care traieste in memoria procesului, intre cereri.
@@ -10060,3 +10062,14 @@ schimba fără urmă). Detaliul: DECIZII 04.10.2026 („Bifa «C&D»: fără rol
 |---|---|---|---|---|
 | jurnal doar pe schimbare reală, în ordine | core/test_mf_destinatie_cd.py::test_jurnalul_cd_doar_schimbarile_reale_in_ordine | schimbare fără rând de jurnal; rând fără schimbare | INSERT scos -> `[] ==` roșu; condiția `veche != noua` scoasă -> roșu | valoarea de la crearea fișei nu e „schimbare” (decis) |
 | utilizatorul real, prin HTTP | core/test_rute_stoc_pana_in_declaratie.py::test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets | jurnal fără utilizator (uid pierdut între rută și repo) | `None` în loc de `ctx["uid"]` -> roșu | — |
+
+## 04.10.2026 — Punctul 4: `salariati.salariu_brut` retrasă; salariul contractual are o singură sursă (decizia Costin)
+
+Categoria **1. Intrare date / sursă unică** (a doua sursă a salariului — o coloană învechită pe care o punte o citea tăcut).
+Detaliul: DECIZII 04.10.2026 („Punctul 4: coloana `salariati.salariu_brut` retrasă”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| niciun SQL pe coloana retrasă | core/test_2b_coloana.py::test_niciun_sql_nu_mai_numeste_coloana (scaner `scripts/scan_salariu_coloana.py`: expresia SQL întreagă, inclusiv tabela dată ca argument) + anti-vacuu | o citire/scriere nouă pe `salariati.salariu_brut`; puntea readusă | coloana readusă în SELECT-ul statului de plată -> roșu; puntea readusă în `salariu_la` -> roșu | prima formă citea doar constantele — f-string-urile și `% _t(...)` treceau (M1/M2 supraviețuiseră, reparat) |
+| template fără coloană | ::test_template_fara_coloana | coloana readusă pentru tenanții noi | coloana în CREATE TABLE -> roșu | — |
+| migrarea mută salariul înainte de DROP | ::test_migrarea_muta_salariul_in_istoric_apoi_scoate_coloana | DROP fără backfill (salariat fără istoric rămas fără salariu); dată inventată | backfill scos -> `[None, 7000, None]` roșu | — |

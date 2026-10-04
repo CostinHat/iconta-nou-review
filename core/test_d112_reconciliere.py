@@ -98,13 +98,10 @@ def conn_recon():
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) "
                             "VALUES (1,'PROBA SRL','14399840','Str 1','Buc','B','6202',true,'L','Popescu','Ion','ADMINISTRATOR')")
                 # 2 salariati SIMPLI (brut 6000 si 8000, peste minimul 2026 de 4050, luna intreaga)
-                cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                            "OVERRIDING SYSTEM VALUE VALUES (1,'SIMPLU','A','1900101410011','2025-01-01',6000,8,false)")
-                cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                            "OVERRIDING SYSTEM VALUE VALUES (2,'SIMPLU','B','1900101410028','2025-01-01',8000,8,false)")
+                cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (1,'SIMPLU','A','1900101410011','2025-01-01',8,false)")
+                cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (2,'SIMPLU','B','1900101410028','2025-01-01',8,false)")
                 # 1 salariat la MINIM (4050) -> facilitate -> CAZ NESIMPLU
-                cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                            "OVERRIDING SYSTEM VALUE VALUES (3,'MINIM','C','1900101410036','2025-01-01',4050,8,false)")
+                cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (3,'MINIM','C','1900101410036','2025-01-01',8,false)")
                 cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) "
                             "VALUES (1,'2025-01-01',6000),(2,'2025-01-01',8000),(3,'2025-01-01',4050)")
             yield conn
@@ -183,8 +180,7 @@ def test_facilitate_proratata_ramane_sarita(conn_recon):
     """Facilitatea PRORATATA (schimbare de salariu IN luna) ramane NEACOPERITA (sub-caz ulterior) -
     salariatul cade in sarite, nu se confrunta cu formula full-facilitate."""
     with conn_recon.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (6,'PRORATA','F','1900101410016','2025-01-01',4050,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (6,'PRORATA','F','1900101410016','2025-01-01',8,false)")
         # schimbare de salariu IN luna 6 (valabil_din 2026-06-16) -> facilitate proratata
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (6,'2025-01-01',4050),(6,'2026-06-16',4050)")
     _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
@@ -200,8 +196,7 @@ def test_skip_suspect_brut_lipsa_e_semnalat_nu_tacut(conn_recon):
     """Angajat EMIS dar cu brut LIPSA (fara istoric, salariu_brut NULL) -> generatorul emite pe 0.
     NU trebuie sarit tacut: e skip-SUSPECT, semnalat (null base = eroare pana la proba contrarie)."""
     with conn_recon.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (4,'FARABRUT','D','1900101410014','2025-01-01',NULL,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (4,'FARABRUT','D','1900101410014','2025-01-01',8,false)")
     sal = [{"id": 4, "cas": 0, "cass": 0}]   # generatorul l-a emis pe 0
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
     assert any(s["salariat"] == 4 for s in rap["suspecte"]), rap
@@ -215,8 +210,7 @@ def test_skip_suspect_brut_lipsa_e_semnalat_nu_tacut(conn_recon):
 def test_skip_suspect_brut_sub_minim_e_semnalat(conn_recon):
     """Angajat full-time luna intreaga cu brut SUB minimul legal -> date probabil corupte -> semnalat."""
     with conn_recon.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (5,'SUBMINIM','E','1900101410015','2025-01-01',3000,8,false)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (5,'SUBMINIM','E','1900101410015','2025-01-01',8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (5,'2025-01-01',3000)")
     sal = [{"id": 5, "cas": 750, "cass": 300}]   # 3000 x 25/10 - dar brutul e sub minim
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
@@ -237,8 +231,7 @@ def test_tichete_masa_cas_reconciliat_cass_ramane_afara(conn_recon):
     PROBA: (a) pe date corecte CAS reconciliat, fara alarma falsa; (b) MUTATIE pe cas PICA; (c) MUTATIE
     pe cass NU pica (limita CASS-afara e reala, nu o omisiune tacuta)."""
     with conn_recon.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time,tichet_masa_valoare) "
-                    "OVERRIDING SYSTEM VALUE VALUES (7,'TICHETE','G','1900101410017','2025-01-01',6000,8,false,40)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time,tichet_masa_valoare) OVERRIDING SYSTEM VALUE VALUES (7,'TICHETE','G','1900101410017','2025-01-01',8,false,40)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (7,'2025-01-01',6000)")
     # tichetele de masa cer pontaj CONFIRMAT (d112.py:472, HG 1045/2018 art.10(3)) - altfel pull ridica PerioadaNeconfirmata
     _per.confirma(conn_recon, _SCHEMA, 2026, 6, "pontaj", 1)
@@ -278,8 +271,7 @@ def test_tichete_masa_la_minim_ramane_sarit(conn_recon):
     """Combo facilitate(la minim)+tichete = sub-caz ulterior: angajatul la minim CU tichete de masa
     ramane SARIT (nu se confrunta nici pe CAS), pana la un sub-caz care il acopera explicit."""
     with conn_recon.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time,tichet_masa_valoare) "
-                    "OVERRIDING SYSTEM VALUE VALUES (8,'MINTICH','H','1900101410018','2025-01-01',4050,8,false,40)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time,tichet_masa_valoare) OVERRIDING SYSTEM VALUE VALUES (8,'MINTICH','H','1900101410018','2025-01-01',8,false,40)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (8,'2025-01-01',4050)")
     _per.confirma(conn_recon, _SCHEMA, 2026, 6, "pontaj", 1)
     _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
@@ -299,8 +291,7 @@ def test_part_time_sub_prag_reconciliat_pe_baza_ridicata(conn_recon):
     art.LXVI alin.(5) il REDEFINESTE; decizie inversata 20.08.2026 - vezi test_pull_declaratii).
     MUTATIE pe cas_min_pt PICA."""
     with conn_recon.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (10,'PTSUB','I','1900101410020','2025-01-01',2025,4,true)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (10,'PTSUB','I','1900101410020','2025-01-01',4,true)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (10,'2025-01-01',2025)")
     _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
     g = {s["id"]: s for s in sal}
@@ -322,8 +313,7 @@ def test_part_time_peste_prag_reconciliat_pe_brut(conn_recon):
     """Part-time cu brut PESTE nivelul minim: fara suprataxare (pt_aplica False), CAS/CASS pe brut (part-time
     n-are facilitate). max(brut, prag)=brut -> reconciliat pe brut x cota. MUTATIE pe cas PICA."""
     with conn_recon.cursor() as cur:
-        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                    "OVERRIDING SYSTEM VALUE VALUES (11,'PTPESTE','J','1900101410021','2025-01-01',8000,4,true)")
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,ore_zi,part_time) OVERRIDING SYSTEM VALUE VALUES (11,'PTPESTE','J','1900101410021','2025-01-01',4,true)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (11,'2025-01-01',8000)")
     _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
     g = {s["id"]: s for s in sal}

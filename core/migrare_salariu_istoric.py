@@ -2,8 +2,8 @@
 
 Sursa UNICA a DDL-ului (mirror in tenant_template.sql). Idempotent. Se aplica: tenanti NOI prin
 template; EXISTENTI prin `python3 -m core.migrare_salariu_istoric`. Zero tenanti azi -> zero migrare
-reala, dar exista pentru viitor. In 2a salariu_brut ramane in salariati (bridge); scrierile trec pe
-istoric in 2b."""
+reala, dar exista pentru viitor. [punctul 4, 04.10.2026] Coloana salariati.salariu_brut s-a retras
+(core/migrare_2b_coloana.py): istoricul e singura sursa."""
 from core import db
 
 DDL = """

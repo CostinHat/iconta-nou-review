@@ -1225,7 +1225,7 @@ CREATE TABLE TENANT_PLACEHOLDER.salariati (
     data_asigurat date,
     part_time boolean DEFAULT false,
     ore_zi numeric DEFAULT 8,
-    salariu_brut numeric DEFAULT 0,
+    -- [punctul 4, 04.10.2026] salariu_brut retras: salariul contractual traieste numai in salariu_istoric
     persoane_intretinere integer DEFAULT 0,
     functie_baza boolean NOT NULL DEFAULT true,        -- [3c] CF art.77(1): deducerea personala se acorda NUMAI la locul unde e functia de baza
     data_nastere date,                                 -- [deducere suplimentara] tineri <26 (CF art.77 alin.10a)

@@ -66,9 +66,11 @@ def conn():
                             "'profit',true,'L','Pop','Ion','administrator')")
                 ids = {}
                 for k, (cnp, da, di) in _S.items():
-                    cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,data_incetare,salariu_brut,ore_zi,"
-                                "judet_casa) VALUES (%s,%s,'I',%s,%s,6000,8,'B') RETURNING id", (cnp, k.upper(), da, di))
+                    cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,data_incetare,ore_zi,judet_casa) VALUES (%s,%s,'I',%s,%s,8,'B') RETURNING id", (cnp, k.upper(), da, di))
                     ids[k] = cur.fetchone()[0]
+                    if k != "marire_16":   # [punctul 4] salariul de 6000 din istoric, de la angajare (puntea s-a retras)
+                        cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) VALUES "
+                                    "(%s,%s,6000)", (ids[k], da))
                 cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) VALUES "
                             "(%s,'2024-01-01',6000),(%s,'2026-06-16',7000)", (ids["marire_16"], ids["marire_16"]))
                 cur.execute("INSERT INTO suspendari_contract (salariat_id, data_inceput, data_sfarsit, tip) "

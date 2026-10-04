@@ -18,11 +18,6 @@ def select(cur, schema, sid, data):
     return cur.fetchone()
 
 
-def select_2(cur, schema, sid):
-    cur.execute("SELECT salariu_brut FROM %s.salariati WHERE id=%%s" % schema, (sid,))
-    return cur.fetchone()
-
-
 def select_3(cur, schema, sid, luna_inc, luna_sf):
     cur.execute("SELECT COUNT(*) AS n FROM %s.salariu_istoric WHERE salariat_id=%%s "
                 "AND valabil_din > %%s AND valabil_din <= %%s" % schema, (sid, luna_inc, luna_sf))
@@ -30,7 +25,7 @@ def select_3(cur, schema, sid, luna_inc, luna_sf):
 
 
 def select_4(cur, schema, luna_inc):
-    cur.execute("SELECT id, salariu_brut, part_time, scutit_contrib_minim, tichet_masa_valoare, "
+    cur.execute("SELECT id, part_time, scutit_contrib_minim, tichet_masa_valoare, "
                 "data_angajare, data_incetare FROM %s.salariati "
                 "WHERE (data_incetare IS NULL OR data_incetare >= %%s) ORDER BY id" % schema, (luna_inc,))
     return cur.fetchall()

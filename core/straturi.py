@@ -501,7 +501,7 @@ REGISTRU = (
       "P7 · valul D4: SQL-ul lui `core/d112.py` — 3 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d112_reconciliere.py", REPOSITORY, None,
-      "P7 · valul D4: SQL-ul lui `core/d112_reconciliere.py` — 7 instructiuni SQL, zero `get_conn`, zero commit",
+      "P7 · valul D4: SQL-ul lui `core/d112_reconciliere.py` — 6 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d205.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/d205.py` — 5 instructiuni SQL, zero `get_conn`, zero commit",
