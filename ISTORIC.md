@@ -1292,3 +1292,20 @@ angajării, cu salariul pe care îl aveau.
 - **Accesibilitate (toată aplicația):** 54 de câmpuri de formular care, pentru un cititor de ecran, n-aveau nume (eticheta era
   un text alăturat, nelegat de câmp) au acum eticheta legată. Asta include zonele din statul de plată, dialogurile, portalul
   și emiterea.
+
+## 04.10.2026 — Ziua, pe scurt: ce s-a schimbat pentru contabil
+
+Intrările de mai sus, ale aceleiași zile, au detaliul. Pe scurt:
+
+- **Salarii — schimbarea salariului cu dată:** în statul de plată, la „Salariu”, se vede istoricul salariului. Mărirea se pune de la o
+  zi anume, iar luna se împarte pe zile între salariul vechi și cel nou, pe statul de plată și în D112. O dată greșită (care nu există,
+  dinaintea angajării, după încetare) sau una la care există deja un salariu e refuzată lângă câmp. Ce ai scris rămâne. Salariul de la
+  o dată existentă se înlocuiește doar dacă apeși „Înlocuiește …”. O schimbare care ar atinge o lună închisă e refuzată.
+- **Salarii — în spate, fără efect pe cifre:** salariul de bază are o singură sursă, istoricul. Coloana veche, neactualizată din iulie,
+  a fost ștearsă. Statul de plată și D112 dau aceleași cifre ca înainte (verificat pe F1).
+- **Mijloace fixe — bifa „C&D”:** o pune oricine poate modifica fișa. Fiecare schimbare rămâne scrisă (cine, când, din ce în ce).
+- **Accesibilitate:** 54 de câmpuri din formulare (salarii, dialoguri, portal, emitere) au acum eticheta legată pentru cititorul de
+  ecran. Vizual nu se schimbă nimic.
+- **Baza de producție:** au fost șterse 8 scheme rămase de la teste vechi (cu backup). Nu erau firme.
+- **Declarații:** nicio schimbare de formular. D112 contract uniform A1 rămâne „nu acum”, cu condiția scrisă: se face la prima
+  modificare reală a modulului D112.

@@ -1,294 +1,122 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **Salariul în timp livrat; comanda 03.10 încheiată; D112 A1 cu condiție scrisă** (04.10.2026)
+# PREDARE LANȚ — **nicio comandă deschisă; aplicația așteaptă folosirea** (04.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-04**, în commitul **Punctul 4** (commitul care poartă această predare; hash-ul lui e în raport și în
-  `git log`).
-- **pe commit**: `7c7a71ff` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-04 =
-  procesul viu = 7c7a71ff, punctul 4 publicat; producția migrată după deploy, 05:02).
-- **ÎN LUCRU ACUM:** nimic deschis. Comanda Costin din 03.10 e încheiată: lotul 19 (`2798f8ce`), D394 Î2 (`5de03649`), factura din
-  bon în exporturi/D406/e-Factura (`4bc13607`), coloana `salariati.salariu_brut` retrasă (commitul acestei predări; producția migrată
-  DUPĂ deploy — backup `~/backup_pre_2b_*`). Deciziile din 04.10: schemele de test din producție șterse; bifa C&D jurnalizată (`57724df6`).
-- **URMĂTORUL FRONT:** `core.agenda.urmatorul_pas()` — nu mai e niciun punct deschis din comenzile lui Costin. Firul „SALARIUL ÎN TIMP”
-  e ÎNCHIS (commitul acestei predări). D112 contract uniform A1: „nu acum” — **se execută la prima modificare reală a `core/d112.py`, în
-  același commit** (condiția e în fir și în capul modulului; fără gard, decizia Costin 04.10).
-- **ATENȚIE (salariul în timp):** o schimbare de salariu la o dată deja în istoric e REFUZATĂ (`SALARIU_DATA_OCUPATA`); înlocuirea cere
-  `inlocuieste: true`. Testele/probele care rescriu salariul la aceeași dată trebuie să o ceară explicit.
-- **ATENȚIE (accesibilitate):** orice câmp nou de formular are nume accesibil (`for` pe etichetă sau `aria-label`) — gard
-  `core/test_etichete_campuri.py`.
-- **ATENȚIE (efect punctul 4):** salariul contractual trăiește NUMAI în `salariu_istoric`. Un test/seed care inserează un salariat pune
-  salariul în istoric (valabil_din = data angajării); `salariati.salariu_brut` nu mai există (gard `core/test_2b_coloana.py`).
-- **ATENȚIE (efect D394 Î2):** la o firmă marcată exceptată, chitanța fără factură cere cota (o creanță fără factură în aplicație se
-  încasează după ce factura e introdusă); la o firmă neexceptată, chitanța cu cotă e refuzată. Probele care emit chitanțe pe F1 marchează
-  exceptarea ÎN TRANZACȚIA anulată (v. `frontend_test/proba_d394_i2.py`).
-- **ATENȚIE (efect al lotului 19, decizia 12):** o societate fără formă juridică / capital în Date firmă NU mai emite facturi (refuz numit,
-  trimitere la Date firmă). Probele care emit pe F1–F5 își completează profilul ÎN TRANZACȚIA anulată (v.
-  `frontend_test/proba_lot19_d12_capital_social.py`); testele noi care emit pe schemă efemeră pun `forma_juridica='SRL'`, `capital_subscris=200`.
-- **Decizii în vigoare (Costin 03.10):** D112 contract uniform A1 — „nu acum; doar când D112 e atins oricum” (fir BLOCAT în TESTE);
-  ghidurile — metoda arhitectului (Claude redactează și verifică, Costin aprobă titlurile, Code publică).
-- **[EXTERN] neschimbate:** F1 etapele 9–11 (depunere reală, SPV); D212 — validatorul ANAF pentru OPANAF 2736/2025 (agricol pe normă,
-  opțiunea CAS lit.B, CASS pe pensiile din străinătate, CASS 2.2 reținută peste datorată — datorii stricte în core/test_datorie.py).
-- **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09) — nu se comite, nu se șterge.
-- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **CE E RESCRIS ȘI CE E PĂSTRAT**: rescrise — titlul și antetul. Păstrate neatinse: „PRIMUL LUCRU DE ȘTIUT” și restul (rețeta scanului
-  vizual, F1–F3, capcanele, operaționalul).
+- **ultima rescriere**: **2026-10-04**, rescriere COMPLETĂ la cererea lui Costin (commitul care poartă această predare; hash-ul lui e
+  în raport și în `git log`). Versiunea de dinainte (1007 rânduri, cu istoria D212/F1–F3) e în istoria git — `git show a3210e08:PREDARE_LANT.md`.
+- **pe commit**: `a3210e08` — ultimul four-way închis înainte de rescriere (HEAD = origin/main = public/main = backup/lant-2026-10-04 =
+  procesul viu = a3210e08, firul „Salariul în timp”).
+- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
+  jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
----
-## PRIMUL LUCRU DE ȘTIUT: **D212 Etapa 3 închisă; lanțul e pe D212 Etapa 4 (impozit/CAS/CASS în `oblig_realizat`)**
+## ÎN CE STARE E PROIECTUL
 
-**STARE (02.10.2026, după commitul D212 Etapa 3):** pe 01–02.10 au intrat cinci lucruri:
-- **Pachet FiscalOS §1–§3** (`63df9bde`) · **Tichete de creșă** (`94c7b21a`) · **D212 Etapa 2** (`1cdba188`) — v. ISTORIC.
-- **Lot 19** (`78e85cda`): corpusul întreg (OPANAF 2594/878 readuse + 130 de documente de portal pentru 41 de acte; gard
-  `core/test_corpus_continut.py`); D216 0,9% pe 2026 (COTE); rapoartele Z în D300 (`rapoarte_z_cote`); brutul pe prezența în
-  contract (angajare/încetare/CFP/mărire; `suspendari_contract` + buton „Suspendare / CFP”); neplătitorul fără TVA pe factură;
-  D205 pe structura de la data distribuirii (`asociati_istoric`, data cesiunii la import). Detaliul: DECIZII 02.10 (8 intrări).
-- **D212 Etapa 3** (commitul care poartă predarea): `d212.cap12_norma` (rd.9 proratat la 365 de zile, rd.9.1 cu zilele
-  scutite, impozit 10% — CF art.69^2 alin.(1)), cap12 repetabil + bifa112, lista „Venit pe normă de venit” pe ecranul D212;
-  agricolul refuzat numit [EXTERN]. Gărzi de clasă: `core/test_manual_chei_consumate.py` (cheia trimisă de ecran trebuie citită
-  de generator) și `core/test_graf_importuri.py` (graful citește importurile din AST). Detaliul: DECIZII 02.10 (3 intrări).
+**Nu există nicio comandă deschisă.** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
+completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 
-**LECȚIA COMMITULUI DE PREDARE RESPINS (02.10 seara):** o gardă care citește data COMMITULUI (`test_agenda::
-test_bifele_nu_stau_pe_o_baza_schimbata`) a trecut verde la poarta lotului 19 și a devenit roșie abia pe commitul următor —
-aici pe trei bife D394 legate FALS de cota D216 (cititorul de importuri al grafului nu vedea `from core.X import (` pe mai
-multe rânduri). Nu se re-ancorează bife pe o dependență falsă: se verifică drumul (`graf_temei.apeluri_din`) întâi. A doua
-roșie: `test_predare_proaspata` cere `**ultima rescriere**: **AAAA-LL-ZZ**` — data singură între asteriscuri, ora în afara lor.
-A treia, la poarta Etapei 3: `test_fiscalos_s2` parametrizează pe `common.CONSTANTE_ANCORATE` (umplut la IMPORT) — un modul
-neimportat de test își scotea constantele din verificare când testul rula singur; acum modulele se derivă din cod. **O mutație
-care trece izolat, dar al cărei test pică în suită, e semnul unui registru umplut la import.**
-A patra, după poarta VERDE: `scripts/githooks/commit-msg` rulează DUPĂ cele ~45 de minute de pytest și respinge un commit cu
-`CONFORMITATE.md` (sau alt fișier normativ: PLAN_*, METODA_VERIFICARE, CLAUDE, MEMORY, ARHITECT) fără o linie
-`# diff-citit: <rezumatul diff-ului, min. 20 de caractere>` în mesaj. **Pune linia ÎNAINTE de primul `git commit`.**
-
-**LECȚIA PORȚII DIN LOTUL 19 (3 încercări, ~49 min fiecare):** o tabelă NOUĂ în `tenant_template` aprinde registre pe care
-nu le vezi din cod: `firma_rezumat._T_CONTROL_FISCAL` (dacă un calcul din controlul fiscal o citește) + **`migreaza_triggerele`
-și proiecția registrului `firma_aspect_sursa` pe baza de TEST** (se proiectează doar din `lifespan`/`aplica_ddl` — o ruleazi de
-mână înainte de poartă), `ISTORIC_TENANTI.md` (perimetrul firmelor de probă), `DEPENDENTE_P2.md` (`python -m scripts.scan_dependente
---doc`), `scripts/trasee_tabele.json` (`scan_trasee --tabele`) + adnotările din TRASEE_VERIFICARI. O cheie COTE nouă: eticheta din
-`expirare_cote`, pinurile de frecvență (`test_frecventa_document_care_raspunde`, `test_prag_per_articol`), `test_vigoare_articole_registru`
-(`scripts/vigoare_articol.py <cale> <art>`). Un modul nou fără apelant din core/: PIN în `test_module_nelegate`. O imagine nouă: garda
-anti-imagini (facsimilele din corpus sunt admise prin regulă).
-
-**CE E DE ȘTIUT ÎNAINTE DE ORICE COMMIT (măsurat pe 01–02.10, 4 respingeri la poartă, ~41 min fiecare):** rulează înainte
-gărzile care urmăresc ce ai atins, nu doar testele tale: `test_agenda` (o bifă se mută DUPĂ ce testele citate sunt în
-HEAD), `test_constante_nesursate` (orice literal fiscal nou în afara unui `Temei(...)`), `test_refuzuri` (un modul care
-primește un `Temei` intră în domeniul „citează legea"), `test_reverificare` (temeiuri noi mută distribuția),
-`test_diacritice_afisate`, `test_importuri_nefolosite`, `test_temeiuri` (regulă DUK citată fără „DUK regula"),
-`verificator_conformitate.py`, și — după miezul nopții — data din antetul CONFORMITATE.md.
-
-**CUM E FĂCUT (tiparul „proof-of-pattern", identic D200 și D212):** backend = scos din `_DOAR_API` (intră în selector) + bloc
-`valideaza_cerere` cu mesaj de contabil; frontend `static/js/ecrane/declaratii.js` = stare `S.d2xx` în memorie, `_d2xxManual()`
-(construiește `body.manual`), `randeazaFormularD2xx()`; gard structural `core/test_d2xx_formular.py` (ElementTree, nu „șir" in
-xml); probă F4 `frontend_test/proba_d2xx_f4.py`; rând FUNCTIONALITATI.csv → LIVE (regula 9: în selector ⇒ LIVE; flip-ul poate
-duce declarația în `login.js` GRUPE_FUNC → `genereaza_grupe_functii.py --scrie`, apoi versioneaza + re-scan).
-
-**D212 — CE E FĂCUT (Etapele 1–2):** formular identitate + „Trage fișa RIP" + bifa **„Include venitul din registrul RIP"**,
-pierderea reportată, CAEN. Cu bifa, `d212.genereaza(manual.din_rip)` → `cap11_din_rip` → `cap11_sistem_real` (rândurile
-1–9 din instrucțiunile OPANAF 2736/2025 pct.3.5.11; compensarea pierderii în limita a 70%, CF art.118 alin.(4)) + `bifa111=1`.
-Probat pe F4 (tenant_052, venit 2026 — singurul an cu operațiuni RIP): DUK valid. Gărzi `core/test_d212_cap11.py`; probe
-`frontend_test/proba_d212_etapa2.py` (backend, F4) și `frontend_test/proba_d212_formular_ui.py` (ecran, pe 8011).
-
-**D212 — CE S-A AFLAT LA SURSĂ PENTRU ETAPA 4 (02.10, citit integral):** `Oblig_realizat` (v9) n-are reguli încrucișate — doar
-intervale. Corespondența (Pdf_v8 = formularul validatorului): I.3.1 CAS `cas_total_ven`/`cas_baza`/`cas_datorat`/`cas_retinut_platitor`/
-`cas_dif_plus` (rd.1–5) + `bifa_cas_real`; I.3.2.1 CASS `cass_total_ven_ai`/`baza_cass_datorat_ai`/`cass_datorat_ai`/
-`cass_ret_plat_alin6_ai`/`cass_dif_plus_ai`/`cass_dif_minus6_ai`/`cass_ret_plat_alin7_ai`/`cass_dif_minus8_ai` + `bifa_cass_datorat_ai`
-(numerotarea 2024 diferă de 2025 — corespondență pe înțeles); I.4 `real_venit_net_recalculat_ai`/`real_cas_deduc_ai`/
-`real_cass_deductibil_ai`/`real_venit_net_impozabil_ai`/`real_venit_net_imp_redus_ai`/`real_impozit_datorat_ai`; I.4.1
-`real_cas_venit_net_ai`/`real_cas_total_ven_ai`/`real_cas_pondere_ai`/`real_cas_datorata_ai`/`real_cas_deductibila_ai`; I.4.2
-`real_cass_venit_net_ai`/`real_cass_total_ven_ai`/`real_cass_pondere_ai`/`real_cass_datorata_ai`/`real_cass_calculata_ai`/
-`real_cass_deductibila_ai`; I.7 `oblimpoz_real_total`/`oblimpoz_real_dif_deplata`, `oblcas_real_difPlus`, `oblcass_real_difPlus_ai`,
-`impozit_venit_plus`/`cas_plus`/`cass_plus`/`dif_de_plata`. Pondere = valoare reală (format de verificat pe DUK).
-
-**D212 — CE S-A AFLAT LA SURSĂ (nu se mai caută):** [02.10, pentru Etapa 3] `cap12` = Subsecțiunea a 2-a lit.A (activități independente pe normă), 15 atribute opționale (`norma_forma_org`, `norma_caen`, `norma_descriere_sediu_bun`, `norma_nr_doc_autoriz`, `norma_data_doc_autoriz`, `norma_data_incep`, `norma_data_sf`, `norma_data_susp` — DATĂ, deși formularul 2736 cere nr. de zile —, `norma_nr_zile_scutite`, `real_norma_venit` = rd.7, `real_ajustare` = rd.8, `real_venit_net_anual` = rd.9, `real_venit_impozit` = rd.9.1, `real_impozit` = 10%), repetabil, `validateCap12` goală, R8: bifa112=1 ⇒ cap12 există. Agricolul pe normă: fără loc în XML (v. antet). În pachetul de validare în vigoare (v9), `validateCap11` e goală;
-`categ_venit` ∈ {1016, 1003, 1015, 1006, 1009–1012, 1021–1024}; **semnificația codurilor e în `D212Pdf.jar` (Pdf_v8)**, nu în
-validator — 1016 = activități independente; `det_ven_net` 1 = sistem real; `forma_org` 1/2/3. **R4: pentru CNP,
-`totalPlata_A` = suma celor 13 cifre, MEREU.** Detaliul complet: `D212_PERIMETRU.md` §5.
-
-**D212 — CE E FĂCUT (Etapa 3):** lista „Venit pe normă de venit” → `manual.norma` → `cap12_norma` (o secțiune pe activitate,
-eroarea numește activitatea) + `bifa112=1`. Probat pe F4: cod vechi = 0 secțiuni, impozit pe normă 0 lei (DUK valid — lipsa nu
-se vede); cod nou = 2 secțiuni, 4078 lei, DUK valid. Gărzi `core/test_d212_cap12.py`; probe `frontend_test/proba_d212_etapa3.py`
-(F4, `<radacina_cod>`) și `frontend_test/proba_d212_norma_ui.py` (ecran, pe 8011). `D212_PERIMETRU.md` §6.
-
-**D212 — CE RĂMÂNE:** Etapa 4 (impozit/CAS/CASS în `oblig_realizat` — impozitul NU se scrie în cap11 la venit net, ci în
-secțiunea 4; impozitul pe normă din cap12 `real_impozit` intră în același total), Etapa 5 (formular manual pentru categoriile
-fără date), etapa finală (mesajul din `d221.py`, ghidurile; ajutorul F246 a fost corectat în Etapa 3, împreună cu alte 9
-declarații care spuneau fals „nu o produci din interfață”). Asocierile (§3.5.12),
-repartizarea normei pe asociați și cotele forfetare nu sunt încă tratate; agricolul pe normă = [EXTERN].
-
-**SCANUL VIZUAL — cum se rulează (REZOLVAT 23.09; contează la FIECARE editare de JS):** o editare de JS mută `ui_hash()`
-GLOBAL, deci pică **TREI** gărzi de prospețime, fiecare cu artefactul ei — `test_acoperire_vizuala`
-(`acoperire_vizuala.json`), `test_asistent_arbore` (`proba_r175_arbore_asistent.json`), `test_declaratii_50`
-(`proba_decl50.json`). Se re-rulează pe **8011/iconta_test** (NU 8010/prod: conturile de test patron/fir-intrare nu-s în
-prod; NU 8011 cu doar `test.env`: n-are `JWT_SECRET`). Rețeta, ca script cu trap: `set -a; . ~/.iconta/test.env;
-. ~/.iconta/api_keys.env; set +a; unset BREVO_API_KEY; export PYTHONPATH=$PWD PROBA_BAZA=http://127.0.0.1:8011` →
-`publica_static.py --din-arbore` (prod 8010 expus temporar) → pornește `uvicorn main:app --port 8011` (așteaptă 200) →
-`interactiune_scan.py` + `proba_r175_arbore_asistent.py` + `proba_decl50.py` → `curata_proba_ecrane.py` →
-`publica_static.py` (republică HEAD) → **kill 8011 pe PID** (nu `pkill -f` — își omoară shell-ul ssh). Cele trei artefacte
-se comit cu lucrul. *Poarta rulează pe iconta_test, deci scanul TREBUIE să vadă acolo conturile.* **Pentru `axe_scan.py` și `mobil_scan.py`,
-`PYTHONPATH` trebuie să conțină și `frontend_test` și `frontend_test/vizual`** (importă `w_auth`; fără, ies cu
-`ModuleNotFoundError` — măsurat 01.10). Rețeta completă cu trap, folosită pe 01–02.10: `export PYTHONPATH=$PWD:$PWD/frontend_test:$PWD/frontend_test/vizual`.
-
-O sesiune nouă citește: acest fișier → CLAUDE.md §2.2/§2.3 → ARHITECT.md „FORMA COMENZII". Ritual de început (§5): `pwd; hostname; git log --oneline -1` + `core.agenda`.
-
-**F3 — ÎNCHIS (etapele 1-8)** · istoric mecanism IC (SRL, **neplătitor TVA + art.317**, **micro 1%** [2026, NU 3% — OUG 89/2025 a abrogat 3%,
-decizie Costin 21.09]; tenant_051, Cabinet A). Testează UNIC **D301** (achiziții IC + servicii UE), **D390**, **taxare inversă**.
-- **Etapele 1-2 GATA** (07372bae): vector micro/neplătitor(platitor_tva=false)/IC(true)/art.317(true); sold Σ=5000; 0 salariați.
-  Probe: `proba_f3_etape12.py` + `asteptari_f3.md` + `solduri_f3.csv`.
-- **DE CONTINUAT — etapa 3 (MECANISM MAPAT):** documentele IC ale lui F3 se intră ca **operațiuni D301**, NU facturi
-  primite (F3 e neplătitor). Ecran: Declarații → D301 → grila de operațiuni (`randeazaOperatiuniD301`, declaratii.js).
-  Formular: `#d301-tip` (**1**=achiziții IC bunuri, **5**=achiziții servicii IC), `#d301-nrdoc`, `#d301-datadoc`,
-  `#d301-valuta`, `#d301-val`, `#d301-curs`, `#d301-cota`, `#d301-partener_tara` (ex. DE), `#d301-partener_cod`,
-  `#d301-partener_den` → `#d301-add`. **Completarea furnizorului UE (țară+cod) → apare AUTOMAT în D390** (bunuri
-  tip 1/3→cod A; servicii tip 5→cod S). O intrare = D301 + D390 (declaratii.js:436).
-- **Plan F3:** etapa 3 = 2 operațiuni D301 (1 achiziție IC bunuri tip 1 + 1 serviciu UE tip 5, cu furnizor UE);
-  4 N/A (0 salariați); 5 contabilizare (taxare inversă 4426=4427); 6 N/A (fără mijloace fixe); 7 control fiscal;
-  8 generează **D301/D390/D100/D406** + DUK. Scrie asteptari_f3_etapa3.md ÎNAINTE (regula bazei nule).
-- Model probe: `proba_f2_etapa*.py` (adaptate). CUI F3 RO404000013.
-
-**F2 (tenant_050) — COMPLET etapele 1-8** (SRL, TVA trimestrial, profit 16%, mijloc fix/amortizare, registru casă):
-- 1-2 migrare/config (vector profit/TVA-trimestrial; sold Σ=17000; MF-001 utilaj 12000/60l/rezidual 0). 3 documente
-  (factură serviciu 6050/TVA 1050; 2 op casă, sold 5311=500). 4 N/A (0 salariați). 5 contabilizare (3 note validate).
-  **6 amortizare (6811=2813 200/lună)**. 7 control fiscal. 8 declarații D300-T3(TVA plată 1050)/D394/D100-T3(cod 103
-  profit 768)/D406 — DUK-valid. Probe `frontend_test/proba_f2_etapa*.py`. D101 (profit anual) = la închiderea anului.
-- **Lecție F2:** câmpul „rezidual" (mijloace fixe import) = valoare reziduală FINALĂ (salvage), nu „neamortizat";
-  `d406_active.amortizare_luna` folosește amortizabil = valoare − rezidual (CF art.28). Pusesem rezidual=10000 → 33.33
-  în loc de 200; corectat rezidual=0. (Eticheta din import e ambiguă — de clarificat, calculul e corect.)
-
-**F1 (tenant_049) — ÎNCHIS (etapele 1-8), front 9-11 rămas deschis:**
-- **Etapele 1-8 ÎNCHISE** cap-coadă: migrare/config (1-2); documente primare (3: D1 emisă + D2 primită SPV +
-  D3 bancă → 4111/401 sold 0); salarizare (4); contabilizare (5: 6 note validate, balanță Σ=25106); sfârșit de
-  lună (6: sept închisă); verificări interne (7: reconciliere VERDE); **declarații-generare (8): D300/D394/D112/
-  D100/D406 toate DUK-valid.** Probe: `frontend_test/proba_f1_etapa[3-8]*.py`.
-- **FINDING SPV↔stoc REPARAT (21.09, decizie Costin opțiunea 1).** `factura_primita_valideaza` →
-  `stocuri_cv_api.intrare_din_factura`: recepția unei facturi de marfă (cont de stoc) creează ȘI cantitatea în
-  fișa de magazie (legată prin factura_id, cantitate-doar → fără dublă notă). Gard
-  `core/test_reconciliere_factura_stoc.py` (5 probe, mutație, probă end-to-end). Temei OMFP 1802/2014.
-  **F1 curățat (campania B):** articol 302→371/607, nota D1 601=302→607=371, cantitatea D2 (20/1000) →
-  **RECONCILIAT: GL 371 = fișă = 5500, 110 buc.** Reparat și bug LIVE NIR-GV (cotă R29 per-linie).
-- **F1 etapele 9-11 = FRONT DESCHIS** (decizie Costin: F1 1-8 suficient): 9 (depunere — reală [EXTERN], certificat
-  SPV mTLS; testabil local doar coada) → 10 (ieșiri externe: export SAGA/WinMentor) → 11 (transversal).
-- **Date de test corectate în tenant_049:** salarii ≥ minim 4325 (4500/5000/4400); COR (522102/331302/432101);
-  articol Marfa A pe 371/607.
-- R2/C5/GARZI cat.1/Faza 0 rămân închise (mai jos).
-
-**(secțiunea de mai jos, F1 detaliat, e păstrată ca istoric al frontului F1):**
-- **Etapele 1-8 ÎNCHISE** cap-coadă: migrare/config (1-2); documente primare (3: D1 emisă + D2 primită SPV +
-  D3 bancă → 4111/401 sold 0); salarizare (4); contabilizare (5: 6 note validate, balanță Σ=25106); sfârșit de
-  lună (6: sept închisă); verificări interne (7: reconciliere VERDE); **declarații-generare (8): D300/D394/D112/
-  D100/D406 toate DUK-valid.** Probe: `frontend_test/proba_f1_etapa[3-8]*.py`.
-- **FINDING SPV↔stoc REPARAT (21.09, decizie Costin opțiunea 1).** `factura_primita_valideaza` →
-  `stocuri_cv_api.intrare_din_factura`: recepția unei facturi de marfă (cont de stoc) creează ȘI cantitatea în
-  fișa de magazie (legată prin factura_id, cantitate-doar → fără dublă notă). Gard
-  `core/test_reconciliere_factura_stoc.py` (5 probe, mutație, probă end-to-end). Temei OMFP 1802/2014.
-  **F1 curățat (campania B):** articol 302→371/607, nota D1 601=302→607=371, cantitatea D2 (20/1000) →
-  **RECONCILIAT: GL 371 = fișă = 5500, 110 buc.** Reparat și bug LIVE NIR-GV (cotă R29 per-linie).
-- **URMĂTORUL FRONT: F1 etapa 9 (depunere)** → 10 (ieșiri externe) → 11 (transversal); apoi F2-F7.
-  Atenție: depunerea la ANAF/SPV pt firmă de test e probabil [EXTERN] — de investigat ce se probează local
-  (mecanismul de depunere/coadă, nu trimiterea reală).
-- **Date de test corectate în tenant_049:** salarii ≥ minim 4325 (4500/5000/4400); COR (522102/331302/432101);
-  articol Marfa A pe 371/607.
-- R2/C5/GARZI cat.1/Faza 0 rămân închise (mai jos).
-
-**Runda 2 a fost redeschisă țintit pe cele trei restanțe TVA rămase (A9/A11/A12). Toate sunt acum închise, four-way.**
-- **A11 — ÎNCHIS** (`eb3d6123`): D300 aplică exigibilitatea IC art.284 alin.(2) (ca D390),
-  sursă unică `d390.EXIG_IC`. Gard `test_A11_exigibilitate_IC_d300_aceeasi_luna_ca_d390` + mutație probată.
-- **A9 — ÎNCHIS** (`b27460e4` + `b2459f22`): D394 emite op tip **AI** pentru achiziții de la furnizori cu
-  TVA la încasare (`furnizor_tva_incasare` înghețat din ANAF `statusTvaIncasare` la ingestie, tiparul
-  `platitor_tva_freeze`); `tvaDedAI*` = TVA pe facturile AI **achitate** în perioadă, per cotă (art.297 alin.2).
-- **A12 — ÎNCHIS** (nucleu `c5e4b747` + UI `eee3c1fd`): pro-rata TVA doar pe achizițiile **MIXTE**
-  (art.300 alin.3/5/11), clasificate PER LINIE (`factura_linii.destinatie_tva`). A12b: contabilul alege
-  destinația (taxabil/scutit/mixt) per linie pe ecranul de validare SPV (`facturi_ecran.primitaDetaliu`),
-  default taxabil. DS cap.28 + gard verificator `CLASIF_SELECT`.
-
-**`core.agenda.urmator_cluster()` întoarce `[null, 0, 0]` — nu mai există cluster în agendă** (lucrările de
-azi vin din cereri țintite ale lui Costin, nu din lanțul autonom). **Niciun front deschis.** GARZI cat.1 e
-acoperit (sub-lot 1 = NOT NULL + 8 chei UNIQUE; sub-lot 2 = mijloace_fixe UNIQUE(cod)). Singura datorie
-rămasă din categorie: `produse` fără cheie naturală (fără câmp de cod, nici barcode) — în whitelist-ul
-gardului cu motiv, **decizie de schemă deschisă** (a adăuga o coloană `cod`). Dacă deschizi documentul fără
-comandă: lanțul e în AȘTEPTAREA unei direcții noi. Restul datoriei — mai jos, „Ce a rămas deschis".
-
-**Lanțul, întreg, cu commitul de închidere al fiecărei etape.** *Se scrie ca tabel fiindcă întrebarea
-„unde s-a oprit ce" a fost pusă de trei ori, iar răspunsul era împrăștiat prin patru rapoarte.*
-
-| etapa | ce a livrat | închisă pe |
+| ce | commit | ZIP |
 |---|---|---|
-| **P0** — feedback pe niveluri | N1/N2/N3/N4 derivate din graful de import; N1 pe `control_fiscal_api` = **27 s** | `8996f486` |
-| **P1** — supervizor | rezultat persistat, versionat; citire **p95 45 ms** pe 1000 de firme (era ~5 s) | `ced26440` |
-| **P2** — portofoliu / N+1 | `control-fiscal` la 1000 de firme: **278.882 interogări · 70,8 s → 1 · 17 ms** | `f3567121` |
-| **P3** — rutele care cresc cu portofoliul | toate cele 12 rute de portofoliu, constante de la N=5 la N=1000 | `3cd7aebe` |
-| **P4** — proprietatea tranzacției | 32 de căi peste prag, 7 critice, **6 reparații** (R179–R182) | `0742e177` |
-| **P5** — async / I/O blocant | `ACTION_REQUIRED` **19 → 0** | `f61df1b8` |
-| **P6** — stateless / scalare | starea în PostgreSQL; **două procese reale** în producție | `f260df2e` |
-| **P7** — stratul de aplicație | `main.py` **11714 → 6546** de linii; niciun SQL, nicio logică | `f5e6cffc` |
-| **E1…E6** — cele șase din auditul de ansamblu | ritm · model de citire · ce scrie se probează · reparația se vede rulând · universul declarat · motoarele lizibile | `0976154e` |
-| **etapa 1** — date invalide | 364 / 364 | 05.09.2026 |
-| **etapa 2** — date valide, până în declarație | toate cele nouă declarații; 29 de unități-nucleu, pe 31 de lanțuri | 06 și 16.09.2026 |
-| **cele patru lucrări numite** | R59 · R191 · cele 8 rute cu clichet · cele 8 citări DUK | `45503d84` |
-| **cele două cerințe ale lui Costin** | tăria `CERTA` cu limita în constatare (R115) · refuzul reevaluării (R192) | `fd7e40d4` |
-| **runda a doua — audit independent** (18.09) | A1 conversia în lei (tot lanțul + reconcilieri) · B1–B4 apartenența pe obiect · A2–A5 · A6 cotă dividend după distribuire · A7/A8-micro/A8-profit · C1–C3 · A10 import e-Factura · E-nota contare mixtă · **D1–D10 scanerele care mint, clichete de la cifra reală (SUBSET 0→10, NICAIERI 3→21)** + gardă-mutație D4 · §0 parțial | `0dc088db`…`5ff1b8ba` |
-| **R2 — cele trei restanțe TVA** (19–20.09) | **A11** D300 exigibilitate IC pe art.284 (sursă unică `d390.EXIG_IC`) · **A9** D394 op tip AI + `tvaDedAI` din facturi AI achitate (art.297 alin.2; freeze `furnizor_tva_incasare` din ANAF) · **A12** pro-rata TVA doar pe achiziții MIXTE, clasificate per linie (`factura_linii.destinatie_tva`, art.300 alin.5) + **A12b** selectul de clasificare per linie pe ecranul de validare SPV (DS cap.28) | `eb3d6123` · `b27460e4`+`b2459f22` · `c5e4b747`+`eee3c1fd` |
-| **C5 — import extras bancar idempotent** (20.09) | tabel `extras_import` (UNIQUE pe hash de fișier) + `repo_banca.inregistreaza_import` (ON CONFLICT DO NOTHING, race-safe); reimportul aceluiași extras nu mai dublează liniile → mesaj „extras deja importat: N linii". Varianta A (DECIZII 56) | `c1e9cc69` |
-| **GARZI cat.1 sub-lotul 1** (20.09) | NOT NULL pe 13 coloane de bani (cat. A+B; 3 excluse la poartă = legitim nullable) + UNIQUE natural pe 8 tabele de import curate (efactura_primite/id_mesaj_anaf, solduri_initiale/cont, solduri_parteneri/(cont,cui), asociați/cnp, clienți+furnizori/cui, state_plata, articole/barcode); gard-ratchet `test_intrare_date_garduri`. Corecții la sursă: produse exclus, articole=barcode, solduri_parteneri=(cont,cui). DECIZII 58 | `5e3c48e3` |
-| **GARZI cat.1 sub-lotul 2** (20.09) | mijloace_fixe UNIQUE(cod), după ștergerea a 8 rânduri de proba NEC-SOF din tenant_003 (reziduu E2-F, zero FK); scos din whitelist-ul ratchet. DECIZII 59 | acest commit |
+| lotul 19 — 433 de ghiduri + defectele 6–13 | `2798f8ce` | `iconta_lot19_publicat.zip` |
+| D394 Î2 — încasările din activități exceptate de la AMEF | `5de03649` | `iconta_d394_i2.zip` |
+| factura din bon marcată în SAGA/WinMentor, D406 (310327), e-Factura (751), încasată la emitere | `4bc13607` | `iconta_export_din_bon.zip` |
+| schemele de test șterse din producție + jurnalul bifei C&D | `57724df6` | — |
+| coloana `salariati.salariu_brut` retrasă (producția migrată DUPĂ deploy, 04.10 05:02) | `7c7a71ff` | `iconta_2b_coloana.zip` |
+| salariul în timp (dată validată, înlocuire explicită, poarta pe lunile atinse) + etichete accesibile în toată aplicația + condiția D112 A1 | `a3210e08` | `iconta_salariu_in_timp.zip` |
 
-**Ce a rămas deschis, și e scris ca datorie cu clichet, nu ca pas:** rutele care scriu fără probă în
-suită · modulele cu amestec OBSERVAT, toate ACTE, care au voie să-și dețină tranzacția · `logrotate`
-neinstalat (cere root) · `d301`, singura sărire din garda de limite, fiindcă cere o firmă
-NEplătitoare iar fixtura e plătitoare. **Cifrele lor se derivă, nu se citesc de aici.**
+**Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
+aplicației**, nu „în așteptarea unei teme”:
 
-**Ce trebuie știut înainte de a scrie cod, în patru rânduri** *(consecințele lui P7)*:
+| | |
+|---|---|
+| **ce NU se face** | nu se alege o temă din backlog; nu se ia la rând nicio restanță; nu se deschide o investigație fiindcă „pare următorul lucru rezonabil”. `core.agenda.urmatorul_pas()` arată ce e scris în TESTE, nu dă o comandă |
+| **ce declanșează lucru** | o comandă a lui Costin, sau ce iese din folosirea aplicației (un refuz care nu se înțelege, o cifră care nu se potrivește) |
+| **ce se întâmplă cu restanțele** | rămân scrise (`CONFORMITATE.md`, `core/test_datorie.py`) și se închid **doar când le atinge altă lucrare** |
+| **ce e permis fără să întrebi** | un **prag 1** găsit apăsând |
 
-- o rută **nu scrie SQL**. Scrie o funcție într-un `core/repo_*.py`, care primește `cur` și nu comite;
-- corpul rutei stă în `core/uc_<segment>.py`; ruta ține decoratorul, semnătura și docstringul;
-- use-case-ul **nu construiește `HTTPException`** — refuzurile se spun în vocabularul din
-  `core/erori.py`, iar traducerea e o singură hartă, `main._COD_EROARE`;
-- obiectele de protocol **nu trec granița**: `Response`/`UploadFile` se rezolvă în înveliș.
+## FRONTURI DESCHISE, cu blocajul fiecăruia
 
-*Gardat, nu promis:* `core/test_p7_v2_scrieri.py` (zece mutanți) · `core/test_p7_uc.py` (perechile
-`(cod, mesaj)` confruntate funcție cu funcție cu commitul de dinaintea valului).
+- **D112 contract uniform A1** (pasul D1 din firul „Contract uniform A1”, TESTE.md): „nu acum”. **Se execută la prima modificare reală a
+  `core/d112.py`, în același commit** — condiția e scrisă în fir și în docstring-ul modulului (decizia Costin 04.10; fără gard).
+- **F1 etapele 9–11** (depunere reală prin SPV, ieșiri externe): **[EXTERN]** — certificat/token ANAF, depunere efectivă.
+- **D212**: validatorul ANAF pentru OPANAF 2736/2025 (agricol pe normă, opțiunea CAS lit.B, CASS pe pensiile din străinătate) —
+  **[EXTERN]**, datorii stricte în `core/test_datorie.py`.
+- **R40**: nicio declarație depusă efectiv la ANAF prin aplicație — se închide prin folosire, nu prin cod. **R121**: P300/RO e-TVA fără
+  acces programatic — **[EXTERN]**.
+- **Restul restanțelor**: numărul se DERIVĂ (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici.
 
----
-## AL DOILEA: TREI LUCRURI DE MEDIU care nu se văd din cod
+## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)
 
-1. **Depozitul e PUBLIC** — `CostinHat/iconta-nou-review`; `origin` e cel privat
-   (`CostinHat/iconta-v2`). `post-commit` împinge **automat pe amândouă**, fast-forward, niciodată
-   `--force`. `public` **nu** intră în four-way, deliberat.
-   **REGULA DE RAPORT, născută dintr-o divergență reală (R176):** „publicat" înseamnă **amândouă** —
-   sau se spune explicit care a rămas în urmă și de ce.
-   **[17.09.2026] Pe oglinda publică există și o ramură care NU e cod:**
-   `audit/pachet-2026-09-17` — pachetul pentru un audit independent, cu istorie proprie (un singur
-   commit, fără strămoș comun), tocmai ca să nu poată ajunge într-un `merge` în `main`. Se
-   reconstruiește cu `bash audit/pachet.sh`.
-2. **Contul de asistent e ACTIV** (`asistent@prisma-cont.test`), cu `poate_pregati`/`poate_valida`.
-   Consecință: `patru_ochi_posibil` e **true** în cabinetul 1968 — mecanismul rămâne **neactivat**,
-   deci comportamentul nu se schimbă, dar afirmația din `TRASEE.md` că „nu se poate exercita un
-   traseu care cere doi oameni" **nu mai e adevărată**.
-3. **Modelul de citire are un lucrător, și lipsa lui a fost cea mai instructivă greșeală a lui P2.**
-   `*/5 * * * * python3 -m core.firma_rezumat`. P2 mutase calculul din cerere în recalculare și
-   **măsurase corect câștigul** — dar **nimic nu chema recalcularea**. La prima factură editată,
-   firma trecea pe `invalidat` și rămânea așa la nesfârșit. *Criteriul de acceptare al lui P2 era
-   îndeplinit, și totuși ce livrasem nu funcționa: **un criteriu de acceptare măsoară ce ai cerut, nu
-   ce ai livrat**.* Pragul lui e în `cron.RITMURI` (1 h), deci lipsa bătăii lui se vede la deadman.
+- **Ghidurile**: metoda arhitectului — Claude în chat redactează și verifică, Costin aprobă titlurile, Code publică.
+- **Bifa C&D**: fără rol separat (garda fișei, `cere_cabinet`); fiecare schimbare se jurnalizează în `mijloace_fixe_jurnal`.
+- **Factura din bon**: marcată în toate ieșirile (nu omisă, nu vânzare nouă); se naște încasată.
+- **Chitanța fără factură**: la firma exceptată de la AMEF = vânzare cu cotă (Î2); la cea neexceptată = încasare de creanță (5311=4111).
 
----
-## AL TREILEA: CIFRELE DESPRE DATE SUNT INTEROGATE, NU SCRISE
+## DACĂ CONTINUI DE AICI
 
-Blocul următor e **generat** din bază de `scripts/scan_predare_cifre.py`, iar
-`core/test_predare_cifre.py` îl compară cu interogarea **de la rulare**, caracter cu caracter. Dacă
-nu se potrivesc, **poarta cade**. Nu se editează cu mâna.
+1. **Ritualul de început** (CLAUDE.md §5): `pwd; hostname; git log --oneline -1; git rev-parse --is-inside-work-tree;
+   ./venv/bin/python -m core.agenda` — trebuie `/home/costin/iconta_nou`, `iconta-prod`, arbore git valid.
+2. **Fără o comandă a lui Costin nu se pornește nimic** (secțiunea de mai sus). Cu o comandă: firul se scrie întâi în TESTE.md
+   („În lucru acum”, cu pașii), decizia în DECIZII.md (verbatim), apoi codul.
+3. **Fiecare temă se încheie la fel**: gard + mutație (backup cu `cp`, niciodată `git checkout`; `__pycache__` curățat) + probă pe
+   portofoliu vechi→nou (output brut) + cele trei unelte vizuale dacă s-a atins un ecran + verificatorul ÎNAINTE de commit + registrele
+   (GARZI, DECIZII, TESTE, ISTORIC, PREDARE; FUNCTIONALITATI/TRASEE după caz) + commit pe nume (`git commit -F`) + four-way + ZIP + raportul
+   cu cele 11 secțiuni (CLAUDE.md §2.2).
+4. **Când poarta respinge, prima ipoteză e că are dreptate.** Pe 03–04.10 a respins fiecare temă cel puțin o dată și de fiecare dată a prins ceva
+   real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
-**De ce există:** pe 28.08 am scris aici *„0 din 18 firme au `nume_anaf`"*. Real: **1 din 18**. Cifra
-fusese **deja invalidată o dată**, iar corectura era în tabelul „cifre invalidate" **din aceeași
-predare**. *O regulă scrisă nu ține fără control mecanic.*
+## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
 
-**DESPRE CE BAZĂ VORBEȘTE BLOCUL — s-a schimbat sub mecanism, și nimic n-a spus-o.**
-Garda compară blocul cu interogarea **din mediul în care rulează poarta**. Din R68 (11.09) poarta
-rulează în `iconta_test`, deci blocul descrie **restaurarea de test**, nu producția. Mecanismul e
-intact — cifrele tot nu pot îmbătrâni —, dar **subiectul lor s-a mutat în tăcere**, iar cine le
-citește ca stare a producției greșește. *Aceeași clasă cu brațul four-way care întreba baza de test:
-izolarea și măsurarea producției trag în direcții opuse, iar unde se întâlnesc trebuie spus care e
-care.*
+- **Salariul contractual trăiește NUMAI în `salariu_istoric`** (coloana `salariati.salariu_brut` nu mai există — gard `core/test_2b_coloana.py`).
+  Un test/seed care inserează un salariat pune salariul în istoric (`valabil_din` = data angajării).
+- **Schimbarea salariului la o dată deja în istoric e REFUZATĂ** (`SALARIU_DATA_OCUPATA`); înlocuirea cere `inlocuieste: true`.
+  O schimbare care atinge o lună închisă e refuzată, chiar datată înaintea ei.
+- **O societate fără formă juridică / capital în Date firmă nu emite facturi** (lotul 19, decizia 12). Probele care emit pe F1–F5 își
+  completează profilul ÎN TRANZACȚIA anulată; testele pe schemă efemeră pun `forma_juridica='SRL'`, `capital_subscris=200`.
+- **La o firmă marcată exceptată de la AMEF, chitanța fără factură cere cota**; la una neexceptată, chitanța cu cotă e refuzată.
+- **Orice câmp nou de formular are nume accesibil** (`for` pe etichetă sau `aria-label`) — gard `core/test_etichete_campuri.py`.
+- **Baza de producție are 5 scheme = cei 5 tenanți** (tenant_049–053); reziduurile de test au fost șterse 04.10 (backup
+  `~/backup_scheme_test_prod_20261004_0048.sql.gz`). Baza de test (`iconta_test`) are 35 de scheme cu salariați, inclusiv `ztest_*`.
+- **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09) — nu se comite, nu se șterge.
+
+## STAREA LA PREDARE
+
+**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `a3210e08` (04.10.2026):
+
+```
+7101 passed, 9 skipped, 13 xfailed in 2921.58s (0:48:41)      -> COLLECTED 7123
+verificator: TOTAL: 0 candidate
+```
+
+**Poarta durează ~48 de minute** (pytest complet ~7120 de teste; măsurat pe ultimele 8 rulări din 03–04.10: 2877–2922 s). O tură cu o
+respingere costă deci ~1,5 ore numai în porți — de-aia gărzile care pică repetat se rulează ÎNAINTE de commit (lista de la „CE CERE
+POARTA”). `commit-msg` rulează DUPĂ pytest: `# diff-citit:` (fișiere normative) și `# multe-fisiere-ok:` (peste 8 fișiere noi) se pun
+în mesaj ÎNAINTE de primul `git commit`.
+
+**Four-way-ul se închide la `post-commit`**: publică pe `origin/main`, `public/main`, `backup/lant-<zi>`, publică statica din HEAD,
+restartează necondiționat și verifică brațele. Confirmarea independentă: `scripts/toate_poarta_head.py <SHA COMPLET>` (cu SHA scurt
+raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după data commitului, sentinelele `.git/PUSH_*_ESUAT` absente.
+
+**CLICHETELE VII — blocul de mai jos e GENERAT** (`scripts/scan_ramas.py --clichete-md`; nu se editează cu mâna).
+
+<!-- CLICHETE-VII:START (generat de scripts/scan_ramas.py --clichete-md) -->
+
+*Generat din COD. **Nu se scrie cu mâna** — `core/test_clichete_generate.py` recalculează și compară caracter cu caracter. Regenerare: `./venv/bin/python scripts/scan_ramas.py --clichete-md`.*
+
+| cod | acum | ce se numără | instrument |
+|---|---|---|---|
+| **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **899** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
+
+<!-- CLICHETE-VII:STOP -->
+
+## CIFRELE DESPRE DATE SUNT INTEROGATE, NU SCRISE
+
+Blocul următor e **generat** de `scripts/scan_predare_cifre.py`, iar `core/test_predare_cifre.py` îl compară cu interogarea de la
+rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu producția.**
 
 <!-- CIFRE-DATE:START (generat de scripts/scan_predare_cifre.py --md) -->
 
@@ -347,149 +175,33 @@ care.*
 
 <!-- CIFRE-DATE:STOP -->
 
----
-## AL PATRULEA: SUPERVIZORUL. **A fost apăsat de un om, prin ecran** — iar din 17.09 are și tărie
+## BUCLA DE LUCRU — citește înainte de prima probă
 
-**S-a trecut cap-coadă** *(03.09.2026, 07:43)*: Costin a trecut poarta confirmării **prin
-interfață**, pe elementul `8052` (`tenant_005`, D300 trim 3/2026) — pasul s-a deschis cu constatarea
-și temeiul, **motivul gol a fost refuzat**, iar cu motiv scris depunerea a trecut. Verificat în date,
-nu luat pe cuvânt: `declaratii_coada 8052 → depusa` · un rând în `supervizor_confirmari`, cu
-amprentă și motiv · `declaratii_depuse` cu `randuri` NENUL. **`depus_la` și `confirmat_la` sunt
-aceeași secundă** — confirmarea și depunerea sunt un singur act, nu două care se pot despărți.
+- **Se lucrează pe server**, `~/iconta_nou`, branch `main` (ritualul de început din CLAUDE.md §5). Python: `./venv/bin/python`.
+- **Mediul**: baza de producție `set -a; . ~/.iconta/db.env; set +a`; baza de test `~/.iconta/test.env`; pentru probe cu browser și
+  `api_keys.env` (fără `BREVO_API_KEY`). Pytest sursează singur `test.env` (`conftest.py`, R68) — suita nu poate atinge producția.
+- **Probele pe producție**: numai în tranzacție anulată (proxy cu `commit` neutralizat peste `db.get_conn`, `ROLLBACK` în `finally`),
+  `observare.alerteaza` neutralizat. Codul vechi se probează dintr-un `git worktree` temporar la HEAD, scos după.
+- **R118 — ce se servește NU e ce e în lucru.** `/static` vine din `../iconta_publicat/static`, scris din HEAD la `post-commit`. O
+  editare de JS nu e live: înainte de orice probă pe ecran, `scripts/publica_static.py --din-arbore`, iar la final republicarea HEAD.
+- **O schimbare de JS cere, în ordine**: `versioneaza_assets.py --scrie` (în rădăcina repo-ului) după ULTIMA editare · rescanarea vizuală
+  (artefactele `proba_r175_arbore_asistent.json`, `proba_decl50.json`, `acoperire_vizuala.json` se comit cu lucrul).
+- **Scanul vizual — rețeta, ca script cu `trap`** (exemplu: `scan_sal.sh` din scratchpad-ul turei, în ZIP-ul `iconta_salariu_in_timp.zip`):
+  `publica_static.py --din-arbore` → `uvicorn main:app --port 8011` pe `iconta_test` (așteaptă 200) → `proba_r175_arbore_asistent.py`,
+  proba UI a temei, `vizual/interactiune_scan.py`, `proba_decl50.py`, `vizual/axe_scan.py`, `vizual/mobil_scan.py` →
+  `vizual/curata_proba_ecrane.py` → oprește 8011 **pe PID** → `publica_static.py` (republică HEAD). Durată ~9 minute. **Nu se editează
+  arborele cât rulează** poarta sau scanarea.
+- **`pkill -f "<tipar>"` își omoară propriul shell** dacă tiparul apare în comandă — se oprește după PID.
+- **Pachetul de livrare** (cerut la capătul fiecărei teme): ZIP în `/home/costin/ghid_incoming/<nume cerut>.zip`, cu fișierele atinse la
+  căile lor (`git archive <commit> <fișiere>`), registrele, output-ul brut al probelor (vechi/nou), mutațiile, logurile porții și ale
+  scanului — făcut DUPĂ ce poarta a trecut și four-way-ul e închis.
 
-**Cele cinci comparații orizontale** au dat fiecare ROȘU cel puțin o dată, pe date construite prin
-lanțul aplicației, invalide întâi și valide după. Tabelul cu firma, perioada și cifrele fiecărui
-roșu e în `CONFORMITATE.md`, la R123/R125. **Cifrele vii se citesc rulând supervizorul, nu de aici.**
+## RESTANȚELE — unde se citesc
 
-**[17.09.2026] CE S-A SCHIMBAT, și e prima tărie atribuită vreodată unei constatări.**
-`D406_ASSETS_VS_CONT_28X` — nepotrivirea dintre amortizarea pe care o **declară** registrul de
-imobilizări și cea **înregistrată** în conturile 28xx — e **CERTA** și **cere confirmare înainte de
-depunere**. Decizia e a lui Costin, cu criteriul scris: *cele două cifre trebuie să coincidă prin
-**construcție**; divergența e certă chiar dacă originea nu e localizabilă.*
+**Numărul se derivă** (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici. Registre: `CONFORMITATE.md` (restanțele cu
+stare), `core/test_datorie.py` (datoria verificabilă, `xfail(strict=True)` — 13 la 04.10), `GARZI.md` (limitele declarate ale gărzilor).
+O restanță se închide **doar când o atinge altă lucrare**.
 
-**Și limita ei e în CHIAR textul constatării, nu doar în registru:** constatarea poate numi
-**CONTUL, nu activul**, fiindcă amortizarea se ține la nivel de cont (nota lunară scrie `6811 = 28xx`,
-fără id-ul mijlocului fix). *Cine o citește află de la prima frază ce are și ce n-are, în loc să
-caute un activ pe care constatarea nu-l poate numi.*
-
-**Ce e de știut înainte de a atinge zona:** aserțiunea din `core/test_supervizor.py` a rămas o
-**egalitate cu mulțimea vidă**, nu s-a relaxat la „ignoră tipurile noi". **Primul tip de constatare
-adăugat fără tărie face poarta roșie și redeschide R115** — așa s-a și redeschis, pe 16.09.
-*Închiderea nu dezarmează gardul care a redeschis-o.*
-
----
-## AL PATRULEA: BUCLA DE LUCRU — citește înainte de prima probă
-
-### R118 — ce se servește NU e ce e în lucru
-
-`/static` se montează din **`../iconta_publicat/static`**, scris de `scripts/publica_static.py` din
-**HEAD**, în `post-commit`, **înainte** de restart. Publicarea are poarta ei: **`node --check` pe
-fiecare `.js`**, și **refuză** dacă vreunul nu se parsează.
-
-> **CONSECINȚA, pe care o plătești la fiecare tură:** o editare de JS **NU e live**. Înainte de orice
-> probă pe ecran: `./venv/bin/python scripts/publica_static.py --din-arbore`.
-> Amprenta a ce se servește: `curl -s https://iconta.eu/static/.publicat.json`.
-
-### R129 — o filă deschisă de mult AFLĂ că s-a publicat
-
-`static/js/versiune.js` compară amprenta la 5 minute și la revenirea în filă; la diferență **anunță**
-— o pastilă în bara de stare. **Nu reîncarcă singură.** Limita: la rolul `client` bara de stare nu
-există, deci anunțul nu se vede acolo.
-
-### Regula 5 — ce rulează o tură
-
-O tură care **nu atinge niciun `.py`/`.js`** rulează doar **gărzile de registru**: `perimetru.py` le
-derivă — **25 de fișiere / 253 de teste / 396–575 s** (două cronometrări; mașina e partajată), față
-de ~22 de minute ale porții complete. Se stabilește din `git diff`, pe extensie, **nu prin judecată**. Dacă s-a atins măcar un
-executabil, poarta rămâne cea completă. **Înainte de publicare și înainte de `/clear`: poarta
-completă, fără excepție.**
-
-```
-./venv/bin/python scripts/perimetru.py            # ce s-a atins si ce perimetru iese
-./venv/bin/python scripts/perimetru.py --pytest   # doar argumentele, pentru pytest
-```
-
----
-## STAREA LA PREDARE
-
-**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** Ultima, pe `453af646`:
-
-```
-6542 passed, 7 skipped, 9 xfailed in 2188.60s (0:36:28)
-verificator:  TOTAL scanat 218 = ACCEPTAT 217 + GRI 0 + ROSU 0 + EXCLUS 1
-              TOTAL rute 421 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 32  (clichet GRI 7)
-TOTAL: 0 candidate
-```
-
-**Four-way-ul se închide la `post-commit`**, care publică pe `origin/main`, pe `public/main`, pe
-`backup/lant-<zi>`, publică statica din HEAD, restartează necondiționat și **verifică singur cele
-patru brațe** la capăt. Brațul cere și **CARDINALITATEA**: numărul așteptat de procese se citește din
-`Environment=` al unității systemd, iar „2 din 2" e o afirmație despre TOATE, nu despre cele găsite.
-*Un rând rămas de la un proces mort face brațul `PREA_MULTE`, deci „instanțe stătute = 0" nu e o
-vorbă, e o consecință.*
-
-**CLICHETELE VII — blocul de mai jos e GENERAT.**
-
-<!-- CLICHETE-VII:START (generat de scripts/scan_ramas.py --clichete-md) -->
-
-*Generat din COD. **Nu se scrie cu mâna** — `core/test_clichete_generate.py` recalculează și compară caracter cu caracter. Regenerare: `./venv/bin/python scripts/scan_ramas.py --clichete-md`.*
-
-| cod | acum | ce se numără | instrument |
-|---|---|---|---|
-| **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **899** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
-| **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
-
-<!-- CLICHETE-VII:STOP -->
-
-**POARTA DUREAZĂ ~35 DE MINUTE** — măsurat pe 16–17.09, pe **13 rulări**: **2099–2145 s**.
-*Șirul întreg se păstrează, fiindcă el arată că e conținut, nu încetinire: ~26 de minute
-(1.474–1.595 s, 06–08.09) → ~33 (1.898–1.991 s, 14–15.09) → **~35 acum**.* Se scrie ca **interval**,
-nu ca cifră unică: mașina e partajată, iar o singură cronometrare ar deveni încă un fapt fals.
-**Consecința practică, de planificat:** o tură cu trei respingeri la poartă costă aproape două ore
-numai în porți — de-aia regulile 6–8 din `PLAN_LUCRU.md` (fără rulare preventivă) contează mai mult
-acum decât când au fost scrise. *Și ele nu acoperă totul: pe 17.09 o poartă verde a fost pierdută la
-`commit-msg`, pentru un rând `# diff-citit:` lipsă — 35 de minute plătite fără ca vreun test să fi
-picat. **Hook-urile de mesaj se citesc înainte de a porni poarta, nu după.***
-
-**POARTA SCURTĂ EXISTĂ, și are patru trepte** (`scripts/poarta_scurta.py --nivel=`). Măsurat: N1 pe
-`control_fiscal_api` = **27 s**; N2 pe `d112` = 338 s; N3 = 349 s. **Refuză** — corect — când se
-atinge un `.md`, un `.js` sau `main.py` **alături de cod**; când se ating **numai** registre, închide
-perimetrul.
-
----
-## CE E ADEVĂRAT ACUM DESPRE RESTANȚE
-
-**Numărul se derivă** (`scripts/raport_b.py`), nu se scrie aici — a stat o săptămână greșit exact
-fiindcă fusese scris. Pe `d8034c54`: **53 deschise**, din care ale etapei E1 **24**; SURSĂ 7 ·
-VERIFICARE 26 · ARTEFACT 9 · ORDINE 7.
-
-| | |
-|---|---|
-| **prag 1** | **niciuna deschisă** |
-| **decizii care blochează** | **niciuna deschisă** |
-| **cele mai vechi** | R1, R3, R4 — peste 290 de commituri pe registru fiecare. *Vechimea NU e prioritate: e doar măsura cât de mult n-au fost atinse* |
-| **R40** | nicio declarație depusă efectiv la ANAF prin aplicație. Validatorul oficial rulează local și dă `valid`; recipisa nu s-a exercitat. **Se închide prin folosire, nu prin cod** |
-| **R121** | P300 / RO e-TVA n-are acces programatic. **EXTERNĂ** |
-| **R178 · R183** | capacitatea pool-ului la 10 cereri simultane, și tranzacția ținută deschisă peste apelul la ANAF. Neblocante, aceeași clasă, se închid împreună |
-| **R177** | clasa „model de citire cu dependențe scrise din memorie". Instanța e reparată; ce rămâne deschis e că **nimic nu spune câți alți purtători ai clasei are aplicația** |
-| **R176** | divergența `public` ↔ `origin`. Push-ul automat e **făcut**; ce rămâne e că **nicio gardă nu prinde divergența** — a prins-o un om uitându-se pe GitHub |
-| **R69** | declarațiile deja depuse să apară **contrazise** când se schimbă vectorul — **rămâne netratată**, amânată de trei ori de comenzi noi |
-| **restul** | `CONFORMITATE.md`, sau `scripts/scan_ramas.py` |
-
-**Regula care le guvernează pe toate, din 17.09:** o restanță se închide **doar când o atinge altă
-lucrare**. Nu sunt o coadă de sarcini și nu se iau la rând. V. **0Z**.
-
-**[18.09.2026 — runda a doua le-a atins pe multe.** Auditul independent a fost lucrarea care le-a
-atins. ÎNCHISE cu probă: A1–A8, A10, B1–B4, C1–C3, E-nota, D1–D10. DESCHISE cu motiv scris (în mesajele
-commiturilor `8bf059c2`/`5ff1b8ba`, nu aici): A9 (D394 tvai), A11 (exigibilitate D300/D390), A12 (pro-rata),
-C4 (cere ANAF), C5 (idempotență import extras — cere cheie pe import, nu index pe linie), C6-minore,
-plafonul micro 100.000 EUR, CAM pe indemnizația CM, `salarizare.cam` (atinge motorul de salarii), și
-§0-greu (căile `/home/costin` din 64 de fișiere + scriptul unic de construire a bazei). **Numărul total
-rămâne derivat cu `scripts/raport_b.py`**, nu scris aici.**
-
----
 ## CIFRE INVALIDATE — se păstrează, nu se șterg
 
 *O cifră ai cărei termeni nu se mai pot reconstitui se **INVALIDEAZĂ**, nu se corectează. Tabelul se
@@ -594,6 +306,129 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 - **`main.py` e cel mai atins fișier din repo**, și e numit de mai multe restanțe deschise.
 
 ---
+## AL DOILEA: TREI LUCRURI DE MEDIU care nu se văd din cod
+
+1. **Depozitul e PUBLIC** — `CostinHat/iconta-nou-review`; `origin` e cel privat
+   (`CostinHat/iconta-v2`). `post-commit` împinge **automat pe amândouă**, fast-forward, niciodată
+   `--force`. `public` **nu** intră în four-way, deliberat.
+   **REGULA DE RAPORT, născută dintr-o divergență reală (R176):** „publicat" înseamnă **amândouă** —
+   sau se spune explicit care a rămas în urmă și de ce.
+   **[17.09.2026] Pe oglinda publică există și o ramură care NU e cod:**
+   `audit/pachet-2026-09-17` — pachetul pentru un audit independent, cu istorie proprie (un singur
+   commit, fără strămoș comun), tocmai ca să nu poată ajunge într-un `merge` în `main`. Se
+   reconstruiește cu `bash audit/pachet.sh`.
+2. **Contul de asistent e ACTIV** (`asistent@prisma-cont.test`), cu `poate_pregati`/`poate_valida`.
+   Consecință: `patru_ochi_posibil` e **true** în cabinetul 1968 — mecanismul rămâne **neactivat**,
+   deci comportamentul nu se schimbă, dar afirmația din `TRASEE.md` că „nu se poate exercita un
+   traseu care cere doi oameni" **nu mai e adevărată**.
+3. **Modelul de citire are un lucrător, și lipsa lui a fost cea mai instructivă greșeală a lui P2.**
+   `*/5 * * * * python3 -m core.firma_rezumat`. P2 mutase calculul din cerere în recalculare și
+   **măsurase corect câștigul** — dar **nimic nu chema recalcularea**. La prima factură editată,
+   firma trecea pe `invalidat` și rămânea așa la nesfârșit. *Criteriul de acceptare al lui P2 era
+   îndeplinit, și totuși ce livrasem nu funcționa: **un criteriu de acceptare măsoară ce ai cerut, nu
+   ce ai livrat**.* Pragul lui e în `cron.RITMURI` (1 h), deci lipsa bătăii lui se vede la deadman.
+
+---
+## CE CERE POARTA CÂND ADAUGI CEVA NOU
+
+**Un lucru nou nu e gata când trec testele lui; e gata când trece gărzile care nu știau că vine.**
+
+| ce adaugi | ce cere poarta | gardul |
+|---|---|---|
+| **un fișier JS** | `versioneaza_assets.py --scrie` **după ULTIMA editare**, apoi `interactiune_scan.py` | `test_versionare_assets` · `test_acoperire_vizuala` |
+| **un ecran** | intrare în harta ecranelor **și** în `nav_ecrane.ECRANE`, plus cele trei unelte vizuale rulate pe el | `test_harta_ecrane` · `test_acoperire_vizuala` |
+| **o captură comisă** | numele ei, scris în `CONFORMITATE.md`, la restanța pe care o probează | `test_capturi_numite` |
+| **o rută** | apartenența la un traseu (sau la suprafața ne-documentară), antetele și blocul din `TRASEE.md` **regenerate** | `test_trasee` (patru gărzi) |
+| **o fixtură pe tabel partajat** | anul **2099**, sau markerul `# fixtura-sintetica-ok:` cu motivul | `test_fixturi_shared_period` |
+| **o constantă numerică** | un `Temei(...)`, sau un nume pe care `scan_constante.NOM` îl recunoaște ca nomenclator, **plus** de unde vine | `test_constante_nesursate` |
+| **o afirmație despre datele firmei** | să fie **obiect cu `fel`**, nu proză într-un dicționar | `test_afirmatii_tipate` |
+| **o aserțiune de gardă** | pe **structură**, nu pe text; și cu premisă anti-vacuu | `test_garzi_pe_text` (clichetele 50 și 19) |
+| **o restanță** | toate câmpurile; iar la `EXTERN`, cererea specifică (**ce trebuie · de la cine · ce blochează**) pe **PRIMA linie** a câmpului — se citește până la capătul rândului | `test_conformitate` |
+| **orice atingere de registru** | dacă ziua s-a schimbat între timp, **antetul cere data de azi** | `test_conformitate::test_antetul_nu_e_stale` |
+| **orice ratchet atins** | blocurile generate **regenerate ULTIMELE**, după toate celelalte schimbări | `test_clichete_generate` · `test_predare_cifre` |
+| **un fișier de gardă NOU** | clichetul de aserțiuni-pe-text îl pornește **de la zero**: orice `x in text` îl urcă. Se scrie pe **numărătoare** (`count`) sau pe mulțime (`>=`) | `test_garzi_pe_text` (clichetele 50 și 19) |
+| **o editare de JS** | pe lângă versionare și scan: **publicare din arbore**, altfel proba testează altceva decât ai scris | R118 — nimic nu pică, dar măsori altceva |
+| **SQL într-o rută** | nu trece: se scrie o funcție de repository care primește `cur`, sau una din `core/tranzactie.py` pentru control de tranzacție | `test_p7_v2_scrieri` (zece mutanți) |
+| **un modul nou sub HTTP** | o declarație de strat, exact una, în `core/straturi.py` | `test_p7_straturi` |
+| **o cifră scrisă în motivul unei declarații de strat** | se recalculează la fiecare rulare — «N instrucțiuni SQL» și «N rute montate in modul» se confruntă cu modulul | `test_p7_straturi::test_cifra_din_motiv_nu_imbatraneste_tacut` |
+
+| **o tabelă nouă în `tenant_template.sql`** | clasificarea ei în perimetrul firmelor de probă (`ISTORIC_TENANTI.md`, ca tabelele surori) + `scripts/trasee_tabele.json` regenerat (`scan_trasee.py --tabele`) | `test_perimetru_firma_declarat` · `test_trasee` |
+| **un refuz HTTP nou într-un use-case** | perechea în `PERECHI_ADAUGATE` (`core/test_p7_uc.py`), cu motivul | `test_p7_uc::test_perechile_cod_mesaj_sunt_NESCHIMBATE` |
+| **un apel nou către repository din `uc_tenants`** | cifra din `test_p7_v2_scrieri` urcată, cu apelurile numite | `test_p7_v2_scrieri` |
+| **un câmp de formular** | nume accesibil: `for` pe etichetă sau `aria-label` | `test_etichete_campuri` (04.10) |
+| **o citire de bifă din corp** | prin `_uc_comun.bifa`, nu `bool(corp…)` (`bool("false")` e True) | `test_formulare_operatiuni_campuri::test_bifele_se_citesc_doar_prin_bifa` |
+| **un fixture care scrie SQL fals într-un fișier temporar** | construit din jetoane — altfel `test_schema_coloane` îl citește drept SQL al aplicației | `test_schema_coloane` |
+| **o funcție de test citată în Inventarul A (TESTE) modificată** | bifa re-ancorată cu `bump: <motiv>` ÎNAINTE de commit — garda citește data commitului, deci devine roșie abia la commitul URMĂTOR | `test_agenda::test_verificarile_A_nu_sunt_in_urma_codului` |
+
+*Cel mai ieftin drum: rulează gărzile de registru **înainte** de commit (`perimetru.py`), nu după —
+o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
+
+---
+## OPERAȚIONAL — ce se rupe repetat
+
+- Serverul e `ssh iconta`; `psql` direct e **blocat** — script prin stdin, cu `db.init_pool()`.
+- **Repornirea o pot rula EU**: `sudo -n systemctl restart iconta-nou`. **`usermod` și `install` sunt
+  ținute AFARĂ, deliberat.**
+- **Un `ssh` scris după `&&` într-o comandă `ssh` rulează PE SERVER**, unde `iconta` nu se rezolvă.
+- **Env obligatoriu**: `set -a && . ~/.iconta/db.env && . ~/.iconta/api_keys.env && set +a`
+  (+ `PYTHONPATH=/home/costin/iconta_nou` pentru scripturile din `frontend_test/`).
+- **Mesajul de commit se trimite prin FIȘIER**, nu prin heredoc în argumentul ssh.
+- **Un patch rulează PE SERVER** — pe Windows, `io.open(..., "w")` trece fișierul la CRLF în tăcere.
+- **Ghilimelele românești rup șirul Python**; **backtick-urile dintr-un `<<EOF` neghilimetat sunt
+  executate de shell** — se folosește `<<'EOF'`.
+- **Scriptul de commit sursează `test.env`** — deci TOT ce rulează din `pre-commit` și
+  `post-commit` vede baza de TEST, nu producția. Orice unealtă chemată de-acolo care vrea să
+  vorbească despre producție trebuie să-și ia singură acreditarea.
+- **Aplicația rulează din ARBORELE DE LUCRU.** Cu `Restart=always`, o repornire oarecare ridică
+  cod NECOMIS. Pe 12.09 asta a produs un proces înregistrat cu codul valului 3 și commitul valului
+  2 — care arăta exact ca un proces rămas în urmă.
+- **[13.09] `A && B && C & sleep 5` BACKGROUNDEAZĂ TOT LANȚUL, nu doar ultima verigă.** Am trimis
+  prin ssh `cat > MESAJ.txt && git add … && git commit -F MESAJ.txt &` — iar `git commit` a pornit
+  înainte ca `cat` să fi terminat de scris fișierul. Poarta a rulat **29 de minute** și a trecut, iar
+  commitul a căzut la capăt cu *„Aborting commit due to empty commit message"*. *Scrierea fișierului
+  de mesaj e un pas separat, verificat cu `wc -c`, înainte de commit.*
+- **Stage pe nume, niciodată `git add -A`.** Escape declarat: `# multe-fisiere-ok:`.
+- **O probă care ține o tranzacție deschisă nu poate deschide o a doua conexiune pe același rând.**
+- **O probă care blochează o lună trebuie s-o deblocheze în `finally`.**
+- **În probe, `observare.alerteaza` se patch-uiește** — altfel se trimit alerte REALE prin Brevo.
+- **O schimbare de JS cere TREI lucruri, în ordine**: `versioneaza_assets.py --scrie` după **ULTIMA**
+  editare · **`publica_static.py --din-arbore`** · `interactiune_scan.py` (~7 min, artefactul se comite).
+- **O probă care publică din arbore trebuie să REPUBLICE în `finally`.**
+- **Uneltele vizuale se pot îndrepta către o instanță proaspătă**: `PROBA_BAZA=http://127.0.0.1:8011`
+  (`w_auth.BAZA`, din lotul 11). Până atunci adresa era scrisă în cod, deci regula „reprobarea NU se
+  face pe producție" era **imposibil** de respectat pentru orice probă cu browser.
+- **După fiecare rulare a sondei de ecran**: `frontend_test/vizual/curata_proba_ecrane.py`. Un `INSERT`
+  se desface; un `UPDATE` **nu** — acolo unealta refuză și numește tabelul.
+- **PATRU blocuri generate cer regenerare**, nu trei: `TRASEE_VERIFICARI.md` (antetele de
+  traseu, din `scan_trasee.antet_traseu`) · `GARZI.md` (`scan_garzi_inventar.py --md`) ·
+  `PREDARE_LANT.md` (`scan_predare_cifre.py --md` + `scan_ramas.py --clichete-md`) · și
+  **`CONFORMITATE.md`** — tabelul de probă al listei 3, din `scan_lista3.proba_md()`.
+  *Al patrulea lipsea din lista asta, și a picat poarta lotului 12: adăugarea unei firme a
+  mutat „2 din 19” în „2 din 20”. O listă de blocuri generate care se scrie de mână e ea
+  însăși un bloc care îmbătrânește tăcut.*
+
+**PRODUCȚIA SERVEȘTE DIN DOUĂ PROCESE** (`Environment=WEB_CONCURRENCY=2` în unitatea systemd,
+editată de Costin — pasul cere root; `sudo -n -l` dă doar `systemctl restart|status` și
+`journalctl`). *Se scrie aici, la operațional, fiindcă e ce trebuie verificat la fiecare repornire,
+nu o etapă încheiată.*
+
+- **ce se verifică la orice repornire**: `pgrep -f multiprocessing-fork` dă **DOUĂ** PID-uri
+  *(atenție: `pgrep -f "uvicorn main:app"` dă doar supervizorul — cu `--workers`, workerii poartă
+  linia de comandă a lui `multiprocessing.spawn`)* · registrul `instante` are două rânduri cu același
+  commit · `scripts/toate_poarta_head.py` închide brațul · zero `ERROR` în `uvicorn.log` la pornire ·
+  `iconta.eu` răspunde 200;
+- **cum se dă înapoi, dacă apare un incident**: se scoate linia `Environment=WEB_CONCURRENCY=2` din
+  `/etc/systemd/system/iconta-nou.service` (cere root), `daemon-reload`, `restart`. La un singur
+  worker totul se comportă ca înainte — pragul de conexiuni dă tot 20, blocajul de pornire e
+  necontestat, liderul e singurul candidat;
+- **ce a scos bascularea, și suita verde nu putea vedea**: blocajul de pornire se lua, dar
+  `migrare_api.asigura_tabel` comitea o linie mai jos și îl elibera, deci instalarea P2 rula
+  NESERIALIZAT și un worker murea la **fiecare** repornire (4 din 4). *Un blocaj legat de tranzacție
+  moare la primul `commit` din interiorul secțiunii pe care o apără — chiar dacă acel commit e
+  într-o funcție chemată.* De-aia `instante.confirma_blocaj` cere, la CAPĂTUL secțiunii, dovada că
+  blocajul mai e ținut.
+
+---
 ## CAPCANE DE PROCEDURĂ, ÎNVĂȚATE PE PIELEA MEA
 
 1. **Un `str.replace` fără aserțiune nu e o modificare, e o speranță.** `scripts/inlocuieste.py`;
@@ -662,98 +497,6 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
     condiție scrisă, nu dispare fiindcă s-a comandat altceva.** Instanța: cele trei reparații din
     audit (importul inversat, cele 8 coduri DUK, probele de rută) au stat netrecute printr-un E1 și
     un E6 comandate explicit, fiindcă le scrisesem într-un raport și le socotisem astfel programate.
-
----
-## OPERAȚIONAL — ce se rupe repetat
-
-- Serverul e `ssh iconta`; `psql` direct e **blocat** — script prin stdin, cu `db.init_pool()`.
-- **Repornirea o pot rula EU**: `sudo -n systemctl restart iconta-nou`. **`usermod` și `install` sunt
-  ținute AFARĂ, deliberat.**
-- **Un `ssh` scris după `&&` într-o comandă `ssh` rulează PE SERVER**, unde `iconta` nu se rezolvă.
-- **Env obligatoriu**: `set -a && . ~/.iconta/db.env && . ~/.iconta/api_keys.env && set +a`
-  (+ `PYTHONPATH=/home/costin/iconta_nou` pentru scripturile din `frontend_test/`).
-- **Mesajul de commit se trimite prin FIȘIER**, nu prin heredoc în argumentul ssh.
-- **Un patch rulează PE SERVER** — pe Windows, `io.open(..., "w")` trece fișierul la CRLF în tăcere.
-- **Ghilimelele românești rup șirul Python**; **backtick-urile dintr-un `<<EOF` neghilimetat sunt
-  executate de shell** — se folosește `<<'EOF'`.
-- **Scriptul de commit sursează `test.env`** — deci TOT ce rulează din `pre-commit` și
-  `post-commit` vede baza de TEST, nu producția. Orice unealtă chemată de-acolo care vrea să
-  vorbească despre producție trebuie să-și ia singură acreditarea.
-- **Aplicația rulează din ARBORELE DE LUCRU.** Cu `Restart=always`, o repornire oarecare ridică
-  cod NECOMIS. Pe 12.09 asta a produs un proces înregistrat cu codul valului 3 și commitul valului
-  2 — care arăta exact ca un proces rămas în urmă.
-- **[13.09] `A && B && C & sleep 5` BACKGROUNDEAZĂ TOT LANȚUL, nu doar ultima verigă.** Am trimis
-  prin ssh `cat > MESAJ.txt && git add … && git commit -F MESAJ.txt &` — iar `git commit` a pornit
-  înainte ca `cat` să fi terminat de scris fișierul. Poarta a rulat **29 de minute** și a trecut, iar
-  commitul a căzut la capăt cu *„Aborting commit due to empty commit message"*. *Scrierea fișierului
-  de mesaj e un pas separat, verificat cu `wc -c`, înainte de commit.*
-- **Stage pe nume, niciodată `git add -A`.** Escape declarat: `# multe-fisiere-ok:`.
-- **O probă care ține o tranzacție deschisă nu poate deschide o a doua conexiune pe același rând.**
-- **O probă care blochează o lună trebuie s-o deblocheze în `finally`.**
-- **În probe, `observare.alerteaza` se patch-uiește** — altfel se trimit alerte REALE prin Brevo.
-- **O schimbare de JS cere TREI lucruri, în ordine**: `versioneaza_assets.py --scrie` după **ULTIMA**
-  editare · **`publica_static.py --din-arbore`** · `interactiune_scan.py` (~7 min, artefactul se comite).
-- **O probă care publică din arbore trebuie să REPUBLICE în `finally`.**
-- **Uneltele vizuale se pot îndrepta către o instanță proaspătă**: `PROBA_BAZA=http://127.0.0.1:8011`
-  (`w_auth.BAZA`, din lotul 11). Până atunci adresa era scrisă în cod, deci regula „reprobarea NU se
-  face pe producție" era **imposibil** de respectat pentru orice probă cu browser.
-- **După fiecare rulare a sondei de ecran**: `frontend_test/vizual/curata_proba_ecrane.py`. Un `INSERT`
-  se desface; un `UPDATE` **nu** — acolo unealta refuză și numește tabelul.
-- **PATRU blocuri generate cer regenerare**, nu trei: `TRASEE_VERIFICARI.md` (antetele de
-  traseu, din `scan_trasee.antet_traseu`) · `GARZI.md` (`scan_garzi_inventar.py --md`) ·
-  `PREDARE_LANT.md` (`scan_predare_cifre.py --md` + `scan_ramas.py --clichete-md`) · și
-  **`CONFORMITATE.md`** — tabelul de probă al listei 3, din `scan_lista3.proba_md()`.
-  *Al patrulea lipsea din lista asta, și a picat poarta lotului 12: adăugarea unei firme a
-  mutat „2 din 19” în „2 din 20”. O listă de blocuri generate care se scrie de mână e ea
-  însăși un bloc care îmbătrânește tăcut.*
-
-**PRODUCȚIA SERVEȘTE DIN DOUĂ PROCESE** (`Environment=WEB_CONCURRENCY=2` în unitatea systemd,
-editată de Costin — pasul cere root; `sudo -n -l` dă doar `systemctl restart|status` și
-`journalctl`). *Se scrie aici, la operațional, fiindcă e ce trebuie verificat la fiecare repornire,
-nu o etapă încheiată.*
-
-- **ce se verifică la orice repornire**: `pgrep -f multiprocessing-fork` dă **DOUĂ** PID-uri
-  *(atenție: `pgrep -f "uvicorn main:app"` dă doar supervizorul — cu `--workers`, workerii poartă
-  linia de comandă a lui `multiprocessing.spawn`)* · registrul `instante` are două rânduri cu același
-  commit · `scripts/toate_poarta_head.py` închide brațul · zero `ERROR` în `uvicorn.log` la pornire ·
-  `iconta.eu` răspunde 200;
-- **cum se dă înapoi, dacă apare un incident**: se scoate linia `Environment=WEB_CONCURRENCY=2` din
-  `/etc/systemd/system/iconta-nou.service` (cere root), `daemon-reload`, `restart`. La un singur
-  worker totul se comportă ca înainte — pragul de conexiuni dă tot 20, blocajul de pornire e
-  necontestat, liderul e singurul candidat;
-- **ce a scos bascularea, și suita verde nu putea vedea**: blocajul de pornire se lua, dar
-  `migrare_api.asigura_tabel` comitea o linie mai jos și îl elibera, deci instalarea P2 rula
-  NESERIALIZAT și un worker murea la **fiecare** repornire (4 din 4). *Un blocaj legat de tranzacție
-  moare la primul `commit` din interiorul secțiunii pe care o apără — chiar dacă acel commit e
-  într-o funcție chemată.* De-aia `instante.confirma_blocaj` cere, la CAPĂTUL secțiunii, dovada că
-  blocajul mai e ținut.
-
----
-## CE CERE POARTA CÂND ADAUGI CEVA NOU
-
-**Un lucru nou nu e gata când trec testele lui; e gata când trece gărzile care nu știau că vine.**
-
-| ce adaugi | ce cere poarta | gardul |
-|---|---|---|
-| **un fișier JS** | `versioneaza_assets.py --scrie` **după ULTIMA editare**, apoi `interactiune_scan.py` | `test_versionare_assets` · `test_acoperire_vizuala` |
-| **un ecran** | intrare în harta ecranelor **și** în `nav_ecrane.ECRANE`, plus cele trei unelte vizuale rulate pe el | `test_harta_ecrane` · `test_acoperire_vizuala` |
-| **o captură comisă** | numele ei, scris în `CONFORMITATE.md`, la restanța pe care o probează | `test_capturi_numite` |
-| **o rută** | apartenența la un traseu (sau la suprafața ne-documentară), antetele și blocul din `TRASEE.md` **regenerate** | `test_trasee` (patru gărzi) |
-| **o fixtură pe tabel partajat** | anul **2099**, sau markerul `# fixtura-sintetica-ok:` cu motivul | `test_fixturi_shared_period` |
-| **o constantă numerică** | un `Temei(...)`, sau un nume pe care `scan_constante.NOM` îl recunoaște ca nomenclator, **plus** de unde vine | `test_constante_nesursate` |
-| **o afirmație despre datele firmei** | să fie **obiect cu `fel`**, nu proză într-un dicționar | `test_afirmatii_tipate` |
-| **o aserțiune de gardă** | pe **structură**, nu pe text; și cu premisă anti-vacuu | `test_garzi_pe_text` (clichetele 50 și 19) |
-| **o restanță** | toate câmpurile; iar la `EXTERN`, cererea specifică (**ce trebuie · de la cine · ce blochează**) pe **PRIMA linie** a câmpului — se citește până la capătul rândului | `test_conformitate` |
-| **orice atingere de registru** | dacă ziua s-a schimbat între timp, **antetul cere data de azi** | `test_conformitate::test_antetul_nu_e_stale` |
-| **orice ratchet atins** | blocurile generate **regenerate ULTIMELE**, după toate celelalte schimbări | `test_clichete_generate` · `test_predare_cifre` |
-| **un fișier de gardă NOU** | clichetul de aserțiuni-pe-text îl pornește **de la zero**: orice `x in text` îl urcă. Se scrie pe **numărătoare** (`count`) sau pe mulțime (`>=`) | `test_garzi_pe_text` (clichetele 50 și 19) |
-| **o editare de JS** | pe lângă versionare și scan: **publicare din arbore**, altfel proba testează altceva decât ai scris | R118 — nimic nu pică, dar măsori altceva |
-| **SQL într-o rută** | nu trece: se scrie o funcție de repository care primește `cur`, sau una din `core/tranzactie.py` pentru control de tranzacție | `test_p7_v2_scrieri` (zece mutanți) |
-| **un modul nou sub HTTP** | o declarație de strat, exact una, în `core/straturi.py` | `test_p7_straturi` |
-| **o cifră scrisă în motivul unei declarații de strat** | se recalculează la fiecare rulare — «N instrucțiuni SQL» și «N rute montate in modul» se confruntă cu modulul | `test_p7_straturi::test_cifra_din_motiv_nu_imbatraneste_tacut` |
-
-*Cel mai ieftin drum: rulează gărzile de registru **înainte** de commit (`perimetru.py`), nu după —
-o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
 
 ---
 ## CE AM ÎNVĂȚAT DESPRE GĂRZI ȘI DESPRE PROBE
@@ -900,108 +643,3 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
 
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
-
----
-## DACĂ CONTINUI DE AICI
-
-0Z. **[17.09.2026] STAREA E „ÎN AȘTEPTAREA FOLOSIRII APLICAȚIEI DE CĂTRE COSTIN".**
-
-   **Nu** „în așteptarea unei teme". *Costin, 17.09.2026, verbatim:* „**După asta nu urmează nicio
-   temă.** Backlogul A3, restanțele vechi și interdicțiile neîncepute rămân în registru și se închid
-   doar când le atinge altă lucrare."
-
-   **Dacă deschizi documentul ăsta fără nicio comandă în față, ăsta e singurul punct de citit:**
-
-   | | |
-   |---|---|
-   | **ce NU se face** | nu se alege o temă din backlog. Nu se ia la rând nicio restanță deschisă. Nu se deschide o investigație fiindcă „pare următorul lucru rezonabil". **Nici măcar A3** (Playwright/infra: reconciliator #5, matrice de stări #4, baseline determinist #8, keyboard-only #9, linter de consistență #10, global-first CSS, model-audit F2/F7) — e backlog, nu coadă |
-   | **ce declanșează lucru** | **folosirea aplicației**. Ce iese din ea — un refuz care nu se înțelege, o cifră care nu se potrivește, un ecran care nu poate spune ce trebuie — devine lucrarea următoare. Până atunci nu există una |
-   | **ce se întâmplă cu restanțele** | rămân **scrise**, cu starea lor, și se închid **doar când le atinge altă lucrare** |
-   | **ce e permis fără să întrebi** | un **prag 1** găsit apăsând |
-
-   **De ce diferența dintre cele două formulări contează.** „În așteptarea unei teme" descrie o pauză
-   între două lucrări ale mele, și invită la umplerea ei — la prima citire fără comandă, cineva ar
-   alege ceva din backlog fiindcă tăcerea pare un gol. „În așteptarea folosirii" descrie o **stare a
-   proiectului**: aplicația a ajuns unde poate fi apăsată, iar ce urmează se decide din **ce face ea
-   când e apăsată**, nu din ce a mai rămas nebifat într-o listă. *Un backlog nu e o comandă.*
-
-   *De ce stă scrisă aici și nu doar în registru: starea a venit ca o comandă, iar o comandă
-   trăiește într-un fir de conversație care se golește la primul `/clear`. Predarea e singurul loc
-   care supraviețuiește golirii — v. lecția pachetului de livrare, mai jos, care s-a pierdut exact
-   așa.*
-
-0Y. **CE E DE ȘTIUT DESPRE ULTIMELE REPARAȚII FISCALE, dacă apare o mirare.**
-
-   - **axa bunuri/servicii** a unei achiziții intracomunitare se înregistrează **pe document** —
-     coloană pe factură, **înghețată la introducere**. *Reclasificarea NU e sursa: cheia ei
-     partener-lună nu poate despărți două operațiuni din aceeași lună.* (R186)
-   - **vânzarea intracomunitară produce factură**, ca orice livrare. Fără rând în `facturi` nu ajunge
-     nici în D300 rd.1/rd.3, nici în D390. (R187)
-   - **o proformă nu mai intră în D300**: `nomenclator_status_factura.clauza_tip_document()` e
-     **singurul loc** unde scrie că un document fiscal e `tip = 'factura'`. Dacă mâine o proformă
-     „dispare" dintr-un raport, ăsta e motivul, și e deliberat. (R184)
-   - **partenerul din D394 se citește de pe factură**, cu fișa clientului ca rezervă — nu invers.
-     *Factura e autoritatea; istoria se corectează prin storno și reemitere, nu prin editarea fișei*
-     (`DECIZII.md` 47).
-   - **reevaluarea se REFUZĂ** când eliminarea depășește amortizarea **înregistrată**. Refuzul
-     numește divergența dintre registru și cont, cu **ambele cifre**, și spune ce e de făcut:
-     se înregistrează amortizarea lipsă, apoi reevaluarea trece. *Altfel ar scădea o amortizare
-     inexistentă și ar produce o cifră validă-dar-falsă — care se calculează, se afișează, pleacă în
-     declarație, și nimic n-o contrazice.* (R192)
-
-0X. **INSTRUMENTELE DE AUDIT, dacă cineva întreabă „de unde știți".**
-
-   Trei, în `audit/`, toate rulabile de oricine are depozitul:
-
-   - `deriva_cifrele.py` — pentru **fiecare clichet**, valoarea scrisă în cod și valoarea
-     recalculată **acum**, cu verdict și cu linia care o recalculează. *[18.09.2026] Exact acest
-     instrument a dovedit, în runda a doua, că trei clichete reproduceau GOL: scanerele erau oarbe
-     (un nivel de apeluri, citiri prin `%s`, nume dintr-un comentariu), iar `SUBSET_FISCAL=0`/
-     `NICAIERI=3` erau artefacte, nu cifre. Recalibrate (D1–D10), realul e 10 și 21, plus o gardă-
-     mutație nouă (`test_d4_mutatie_prinsa`). Anti-vacuumul pentru NECORELATE=0 (jar DUK absent) e
-     acum în instrument, nu doar în probă.*;
-   - `deriva_neverificatul.py` — ce **nu** e verificat: restanțele deschise cu condiția lor,
-     interdicțiile nemăsurate, `xfail`-urile cu motivul, orbirea **declarată** a fiecărui instrument,
-     rutele fără probă, acoperirea de browser;
-   - `scan_secrete.py` — înainte de orice publicare în afară. Se calibrează singur (`--autotest`) și
-     împarte ce scanează în „deja public" / „nou" după amprenta de obiect git (`--fata-de`).
-
-   *Regula care le-a produs: **o cifră pe care n-o poți recalcula nu e o măsurătoare, e o amintire**.*
-
-1. **Înainte de orice probă pe ecran:** `publica_static.py --din-arbore`.
-2. **Ce rulezi:** `scripts/perimetru.py` decide. **Poarta completă înainte de publicare și înainte de
-   `/clear`.**
-3. **Cifrele nu se scriu în predare.** Blocurile sunt generate; „unde suntem" se derivă cu
-   `scripts/raport_b.py`.
-4. **Cele CINCI reguli de conducere a lucrului** sunt în `PLAN_LUCRU.md`; **cum** se verifică e în
-   `METODA_VERIFICARE.md`; **forma raportului** e în `SABLON_RAPORT.md`. Niciunul nu se scrie din
-   memorie.
-5. **Când poarta respinge, prima ipoteză e că are dreptate.** În ultimele ture poarta a condus
-   designul de cinci ori și de fiecare dată a avut dreptate — ultima oară respingând o probă care
-   căuta cifrele unui refuz **în text**, ceea ce a mutat judecata în motorul pur, unde cifrele sunt
-   **date**.
-
----
-## PACHETUL DE LIVRARE — se face la CAPĂTUL fiecărei teme, și n-a fost scris nicăieri
-
-**De ce e aici, din 08.09.2026.** P0, P1 și P2 au produs fiecare câte un pachet
-(`~/iconta_P0_2026-09-07.zip`, `~/iconta_P1_2026-09-08.zip`, `~/iconta_P2_2026-09-08.zip`).
-Remedierea P2 **nu a produs unul**, iar Costin a trebuit să întrebe. Cauza nu e neglijență: convenția
-exista doar în firul conversației, iar firul fusese golit (`/clear`) înainte de remediere. *O regulă
-care trăiește numai într-o sesiune se pierde exact la prima sesiune nouă* — și de-aia se scrie aici,
-în documentul care supraviețuiește golirii.
-
-**Ce conține, după tiparul celor trei:**
-
-- `iconta_<TEMA>/` ca director rădăcină, iar arhiva `~/iconta_<TEMA>_<AAAA-LL-ZZ>.zip`;
-- `COMMIT_<TEMA>.txt` — hash, subiect, dată, `--stat`-ul commitului;
-- `MASURATORI_<TEMA>.txt` — cifrele brute, cu instrumentul și calibrarea lui numite;
-- `RAPORT_<TEMA>.md` — raportul, în forma din `SABLON_RAPORT.md`;
-- **fișierele atinse, la căile lor din repo** (`core/…`, `scripts/…`, `main.py`) — nu o listă de
-  fragmente: auditorul trebuie să poată pune arhiva peste o clonă și să vadă exact ce s-a schimbat;
-- **registrele atinse**, întregi;
-- **logurile brute**, dacă tema a produs măsurători.
-
-**Ce NU se face:** nu se împachetează `venv/`, `.git/` sau `efactura_zip/`. Și nu se împachetează o
-stare necomisă — pachetul se face **după** ce poarta a trecut și four-way-ul e închis, altfel
-descrie o lume care nu există pe niciun server.
