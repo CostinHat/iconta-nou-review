@@ -35,7 +35,12 @@ def _axe(pg):
     # Import LENEȘ: `axe_scan` importă `w_auth`, care la încărcare construiește sesiunea lui `patron@prisma-cont.test`
     # — inexistent în producție. Importat sus, proba n-ar mai porni pe producție (faza „înainte”, contul Anei), adică
     # exact ce promite antetul. Faza care rulează axe merge pe baza de test, unde contul există.
-    import axe_scan  # noqa: E402  (axe-core vandorizat; aceeași unealtă ca infrastructura vizuală)
+    # Pe producție nici importul leneș nu ajunge: fazele cu axe îl cer, iar `w_auth` tot cade la încărcare. Atunci axe se
+    # declară INDISPONIBIL în rezultat (nu se inventează un 0); axe se rulează pe 8011, pe baza de test.
+    try:
+        import axe_scan  # noqa: E402  (axe-core vandorizat; aceeași unealtă ca infrastructura vizuală)
+    except Exception as e:  # noqa: BLE001 — `w_auth.ContInactiv` pe o bază fără contul infrastructurii vizuale
+        return {"violari": None, "reguli": [], "indisponibil": "%s: %s" % (type(e).__name__, e)}
     viol, _t = axe_scan.scaneaza(pg)
     return {"violari": len(viol), "reguli": sorted({v.get("id") for v in viol})}
 

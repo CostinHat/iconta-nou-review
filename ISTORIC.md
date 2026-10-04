@@ -1358,5 +1358,10 @@ stil de eroare, 4 dintre ele ca HTML neescapat); (6) aceeași numărătoare gre�
 - **Asistentul fără drepturi** nu mai vede nici butoanele care deschid formulare de lucru („+ Notă nouă”, „+ NIR nou”,
   „+ Salariat nou” …): s-au văzut pe producție după prima publicare (contul Anei) și s-au reparat în commitul următor.
 
+**Proba pe producție, după publicare (contul Anei, fără bife, doar citire):** vede F1 și F2; nicio acțiune afișată (Adaugă /
+Import / Scoate / Firme scoase / „+ Notă nouă” / pașii de import / operațiunile); ecranele de import și de operațiuni spun că trebuie
+„Poate pregăti” și cine îl dă; cererea de adăugare a unei firme e refuzată (403) cu mesajul care numește administratorul; consola
+fără erori.
+
 **Atenție la contul Ana (producție):** în bază are toate trei bifele pe „nu” (invitația veche nu dădea „Poate pregăti”). Cu
 regula nouă vede firmele F1, F2, dar nu poate lucra pe ele până nu i se bifează „Poate pregăti” din Asistenți.

@@ -6,8 +6,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 - **ultima rescriere**: **2026-10-04**, rescriere COMPLETĂ la cererea lui Costin (commitul care poartă această predare; hash-ul lui e
   în raport și în `git log`). Versiunea de dinainte (1007 rânduri, cu istoria D212/F1–F3) e în istoria git — `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `63c04a95` — four-way închis (HEAD = origin/main = public/main = backup/lant-2026-10-04 = procesul viu), prima
-  parte a execuției „Testarea ca asistent”; a doua parte (butoanele de intrare în formular) e commitul care poartă predarea. Secțiunile atinse acum: ANTET, STAREA, FRONTURI, DECIZII ÎN VIGOARE, ATENȚIONĂRI,
+- **pe commit**: `f76ce94b` — four-way închis (HEAD = origin/main = public/main = backup/lant-2026-10-04 = procesul viu); execuția
+  „Testarea ca asistent” are trei commituri: `63c04a95` (drepturile + cele 7 puncte), `f76ce94b` (butoanele de intrare în formular),
+  iar commitul care poartă această linie corectează proba de producție (axe declarat indisponibil acolo, nu căzut). Secțiunile atinse acum: ANTET, STAREA, FRONTURI, DECIZII ÎN VIGOARE, ATENȚIONĂRI,
   CE CERE POARTA.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
@@ -25,7 +26,7 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | schemele de test șterse din producție + jurnalul bifei C&D | `57724df6` | — |
 | coloana `salariati.salariu_brut` retrasă (producția migrată DUPĂ deploy, 04.10 05:02) | `7c7a71ff` | `iconta_2b_coloana.zip` |
 | salariul în timp (dată validată, înlocuire explicită, poarta pe lunile atinse) + etichete accesibile în toată aplicația + condiția D112 A1 | `a3210e08` | `iconta_salariu_in_timp.zip` |
-| **testarea ca asistent**: drepturile pe rol și bifă (`cere_drept`, decizia „varianta 2”), interfața care urmează serverul (`data-actiune`), refuzul lângă buton, emailul clientului verificat înainte de creare, X + Esc pe ferestrele informative, ghidul pe rol, contorul Asistenți, fără „48 de ore” | `63c04a95` + commitul următor (butoanele de intrare în formular, proba pe producție) | `iconta_testare_asistent.zip` |
+| **testarea ca asistent**: drepturile pe rol și bifă (`cere_drept`, decizia „varianta 2”), interfața care urmează serverul (`data-actiune`), refuzul lângă buton, emailul clientului verificat înainte de creare, X + Esc pe ferestrele informative, ghidul pe rol, contorul Asistenți, fără „48 de ore” | `63c04a95` · `f76ce94b` · corectura probei | `iconta_testare_asistent.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
