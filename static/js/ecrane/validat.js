@@ -28,8 +28,8 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, dataRo, esc, eroareCamp } from "../api.js?v=1dccbc985b";
-import { randA as randConstatare } from "./control_verdict.js?v=da78be5bca";
+import { api, dataRo, esc, eroareCamp, arataMesaj } from "../api.js?v=91e1c0701a";
+import { randA as randConstatare } from "./control_verdict.js?v=45d828dd41";
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 function numeFirma(firme, tid) {
@@ -239,11 +239,11 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     } else if (euAmPregatit) {
       actiuni += `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
     } else {
-      actiuni += `<button class="buton-primar val-btn val-aproba" data-act="aproba">Aprobă</button>`;
+      actiuni += `<button class="buton-primar val-btn val-aproba" data-act="aproba" data-actiune="POST /coada/{coada_id}/aproba">Aprobă</button>`;
     }
     // Respinge — oricine cu drept de validare (și care n-a pregătit-o, când patru-ochi e activ)
     if (perm.poate_valida && !euAmPregatit) {
-      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge">Respinge</button>`;
+      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`;
     }
   } else {
     // depune -> "Confirmă depunerea". Cu patru-ochi OFF, un item la_senior se aprobă automat înainte de depunere.
@@ -252,18 +252,18 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     if (!potDepune) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de depunere</span>`;
     } else if (vi.gata) {
-      actiuni += `<button class="buton-primar val-btn val-depune" data-act="depune">Confirmă depunerea</button>`;
+      actiuni += `<button class="buton-primar val-btn val-depune" data-act="depune" data-actiune="POST /coada/{coada_id}/depune">Confirmă depunerea</button>`;
     } else {
       // [R41 partea II] Nu e gata: acțiunea principală devine cea care REPARĂ (deschide, ca
       // validatorul să ruleze și verdictul să se păstreze). Depunerea rămâne posibilă, dar
       // explicită și consemnată — nu ascunsă, fiindcă un blocaj fără cale de trecere pentru om
       // e interdicția 47.
       actiuni += `<button class="val-btn val-valideaza" data-act="vezi">Deschide ca să fie validat</button>`;
-      actiuni += `<button class="val-btn val-trece" data-act="trece">Depune totuși…</button>`;
+      actiuni += `<button class="val-btn val-trece" data-act="trece" data-actiune="POST /coada/{coada_id}/depune">Depune totuși…</button>`;
     }
     // Cu patru-ochi OFF, mono-utilizatorul poate renunța la un item încă neaprobat (respinge din la_senior)
     if (!patruOchi && needsAproba && perm.poate_valida) {
-      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge">Renunță</button>`;
+      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge" data-actiune="POST /coada/{coada_id}/respinge">Renunță</button>`;
     }
   }
 
@@ -354,7 +354,7 @@ async function actioneaza(c, act, firme, corp, nav) {
     await api.post(`/coada/${c.id}/aproba`, {});
     randeazaValidat(corp, nav);
   } catch (e) {
-    if (eroare) eroare.textContent = (e && e.mesaj) || "Eroare la aprobare.";
+    if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la aprobare.", "eroare");
   }
 }
 
@@ -439,7 +439,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
       <div class="dlg-eroare" id="val-conf-eroare"></div>
       <div class="dlg-actiuni">
         <button type="button" class="buton-secundar val-btn" id="val-conf-renunt">Renunță</button>
-        <button type="button" class="val-btn val-depune" id="val-conf-ok">Confirmă și depune</button>
+        <button type="button" class="val-btn val-depune" id="val-conf-ok" data-actiune="POST /coada/{coada_id}/depune">Confirmă și depune</button>
       </div>`;
     const er = fc.querySelector("#val-conf-eroare");
     const btn = fc.querySelector("#val-conf-ok");
@@ -470,7 +470,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
         await api.post(`/coada/${c.id}/depune`, Object.assign({}, corpBaza, { confirmari }));
       } catch (e) {
         btn.disabled = false;
-        er.textContent = (e && e.mesaj) || "Nu am putut depune. Încearcă din nou.";
+        arataMesaj(er, (e && e.mesaj) || "Nu am putut depune. Încearcă din nou.", "eroare");
         return;
       }
       // [DS cap.27 / E2] Aceeasi caseta ca pe drumul fara constatari — v. `casetaDepusa`.
@@ -514,7 +514,7 @@ function dialogInput(nav, opt) {
         await opt.onConfirm(val, corp);
       } catch (e) {
         btn.disabled = false;
-        er.textContent = (e && e.mesaj) || "Eroare. Încearcă din nou.";
+        arataMesaj(er, (e && e.mesaj) || "Eroare. Încearcă din nou.", "eroare");
       }
     };
     corp.querySelector("#dlg-ok").addEventListener("click", confirma);

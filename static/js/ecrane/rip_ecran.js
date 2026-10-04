@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor } from "../api.js?v=1dccbc985b";  /* investigatie_identitate_v1 */
+import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor } from "../api.js?v=91e1c0701a";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -35,8 +35,8 @@ export async function ecranRip(corp, nav, t) {
               ${o.status === "ciorna" ? '<span style="color:var(--galben);font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:var(--verde);font-weight:600"> \u00b7 VALIDATA</span>'}</div>
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>
-          ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}">Valideaz\u0103</button>
-          <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>` : ""}
+          ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}" data-actiune="PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza">Valideaz\u0103</button>
+          <button class="buton-secundar" data-del="${o.id}" data-actiune="DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}">\u0218terge</button>` : ""}
         </div>`).join("");
 
     corp.innerHTML = `
@@ -46,8 +46,8 @@ export async function ecranRip(corp, nav, t) {
         <button class="buton-secundar" id="r-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="r-next">luna \u2192</button></p>
       <p>
-        <button class="buton-secundar" id="r-imp-banca">Import din banc\u0103 (ciorne)</button>
-        <button class="buton-secundar" id="r-imp-casa">Import din cas\u0103 (ciorne)</button>
+        <button class="buton-secundar" id="r-imp-banca" data-actiune="POST /tenants/{tenant_id}/rip/import-banca">Import din banc\u0103 (ciorne)</button>
+        <button class="buton-secundar" id="r-imp-casa" data-actiune="POST /tenants/{tenant_id}/rip/import-casa">Import din cas\u0103 (ciorne)</button>
         <button class="buton-secundar" id="r-d212">Fi\u0219a D212</button>
         <button class="buton-secundar" id="r-inv">Registru-inventar</button>
       </p>
@@ -67,7 +67,7 @@ export async function ecranRip(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Explicație<span class="oblig">*</span></span><input type="text" id="r-expl" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Document nr.</span><input type="text" id="r-doc" class="camp-input"></label>
         </div>
-        <p style="margin-top:10px"><button class="buton-primar" id="r-adauga">Adaugă (ciornă)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="r-adauga" data-actiune="POST /tenants/{tenant_id}/rip/operatiuni">Adaugă (ciornă)</button></p>
       </div>
       <div class="pf-lista">${randuri}</div>`;
 

@@ -16741,3 +16741,65 @@ câmpul în interiorul unui `<label>` (`date_firma.campVector`, D311) au primit 
 să nu aibă excepții.
 **Gard:** `core/test_etichete_campuri.py` (static, cu anti-vacuu); limita: câmpurile create cu `document.createElement`.
 WCAG 2.1 1.3.1 / 4.1.2.
+
+## 04.10.2026 — Drepturile asistentului pe rol (testarea ca asistent, decizia Costin, varianta 2)
+
+**Context.** La testarea ca asistent (cabinet Sesiunea B, Ana, rol angajat, firme F1+F2), Costin a găsit acțiuni de
+administrator afișate asistentului și un refuz tăcut la „Adaugă firma”. Măsurat: serverul refuza asistentului nu doar
+administrarea firmelor, ci și ~50 de operații curente (emitere factură, chitanțe, importuri, validare notă, amortizare,
+blocare perioadă, pontaj, export SAGA, e-Transport) — `cere_rol("admin_firma")` pe 71 de rute de scriere.
+
+**Decizia lui Costin (verbatim):** *„Varianta 2, cu această împărțire (mereu doar pe firmele alocate asistentului):
+- „Poate pregăti” (orice asistent): munca curentă — emitere/storno facturi, chitanțe, importuri (extras, e-Factura, rapoarte Z,
+  Import date), note contabile în ciornă, pontaj, registrul de mijloace fixe și calculul amortizării, export SAGA/WinMentor,
+  e-Transport, pregătirea declarațiilor.
+- „Poate valida”: validarea notelor contabile și a declarațiilor, înregistrarea amortizării, blocarea perioadei (închiderea lunii).
+- „Poate depune”: depunerea la ANAF.
+- Doar administratorul cabinetului: adăugare/import/scoatere firme, asistenți și drepturile lor, chei API, GDPR, abonament,
+  datele cabinetului, deblocarea unei perioade închise.
+Interfața urmează serverul: orice acțiune refuzată rolului nu se afișează (derivat din gărzile rutelor, ca la varianta 1).”*
+
+**Alternativa respinsă (varianta 1):** interfața ascunde tot ce refuză serverul azi, fără schimbarea drepturilor — asistentul
+ar fi rămas fără munca curentă (nu putea emite o factură).
+
+**Consecințe (executor) — unde decizia nu transează literal, alegerea și motivul:**
+1. **Administratorul trece pe toate nivelurile, ca azi.** Bifele lui proprii rămân valabile acolo unde erau deja citite
+   (coada de declarații, patru ochi). Respins: să-i cerem și lui bifa pe operațiile care până azi îi erau rezervate — i-ar fi
+   luat validarea notelor fără ca cineva să fi cerut asta.
+2. **Bifa se citește LIVE** (`public.users`), nu din token: o bifă scoasă de administrator acționează la cererea următoare.
+3. **„Mereu doar pe firmele alocate”** se verifică în gardă, pentru asistent, cu refuz numit („firma nu îți e alocată”), nu
+   lăsat pe seama fiecărui use-case.
+4. **Încadrări de interpretare** (de reconfirmat dacă Costin vrea altfel): trimiterea e-Facturii în SPV = „pregătire” (e
+   parte din emitere, ca e-Transport din aceeași listă; „depunerea la ANAF” = declarațiile); confirmarea pontajului lunii =
+   „pregătire” (e pontaj); confirmarea „lunii închise pe facturi” = „validare” (închiderea lunii), redeschiderea ei manuală
+   = administrator (deblocare); validarea tehnică DUK a unei declarații și a bilanțului (S1003/S1005) = „pregătire”; accesul
+   la portal al clientului firmei (`client-acces`) rămâne la administrator, fiindcă face parte din adăugarea firmei; numele
+   ales al firmei în portofoliu = administrator (identitatea firmei în portofoliu); datele firmei (profil, vector fiscal,
+   model factură, regim TVA) = „pregătire” (sunt pasul 2 din Import date).
+5. **Esc pe ferestre** (întrebarea a rămas fără răspuns; varianta recomandată): ferestrele INFORMATIVE, fără câmpuri
+   (bun venit, anunț, lupa, ajutorul de dinainte de autentificare, paginile publice, previzualizarea din Recomandă) se închid
+   din X în antet ȘI cu Esc; ferestrele cu ce se tastează rămân doar cu X — cele de lucru, editorul „Povestea lunii” și
+   fereastra de intrare/înregistrare — un Esc apăsat din reflex nu aruncă un formular completat. Anunțul primește X; închiderea lui = „am
+   citit”, ca butonul (altfel X ar fi o ușă care nu duce nicăieri: anunțul ar reapărea).
+
+6. **Cum s-a citit decizia** (executor): lista „Doar administratorul cabinetului” e EXHAUSTIVĂ, iar „munca curentă” e regula
+   generală pentru restul rutelor de scriere pe o firmă (215 rute clasificate: 171 PREGATI, 7+ VALIDA, 1 DEPUNE, ADMIN restul de
+   cabinet). Deciziile mai vechi pe care decizia de azi NU le numește rămân în vigoare, traduse în drepturi:
+   - **R52** (25.08, date ale unui terț): fluturașul, PDF-ul chitanței și fotografiile bonurilor rămân la ADMINISTRATOR. Tensiune
+     ridicată la Costin: asistentul emite chitanța și certifică bonul, dar nu le poate deschide PDF-ul / fotografia.
+   - **R55** (evidență `validata` scrisă direct): aprobarea bonului din portal și raportul Z introdus manual = „Poate valida” (a
+     scrie o notă validată ESTE validarea ei). Importul Z din fișierul AMEF scrie ciornă -> „Poate pregăti” („importuri … rapoarte Z”).
+   - **R90** (dezlegarea notei de plată de factură): pe axa R55 -> „Poate valida”.
+   - **istoricul firmelor scoase** (`GET /firme-scoase`, o citire): ADMINISTRATOR — e al întregului cabinet, deci ar arăta
+     asistentului firme care nu i-au fost alocate („mereu doar pe firmele alocate”) și ține de „scoaterea firmelor”.
+   - **R56** (credențialele unui sistem extern): `reges-config`, `woocommerce/config`, `reges-poll`, `reges-trimite-salariat`
+     (ultimele două scriu `reges_chei`) -> ADMINISTRATOR. Consecință vizibilă: asistentul nu trimite în REGES.
+7. **PIVOT pe două decizii mai vechi, fiindcă decizia de azi le numește explicit („Import date”):**
+   - **R42 (c)** (25.08, „trecerea de regim cere admin_firma”) -> „Poate pregăti” pentru regimul de TVA: vectorul fiscal (pasul 2
+     din Import date) scrie același `platitor_tva`; două uși către același fapt cu gărzi diferite ar fi o gaură. Intermediar: am
+     clasificat întâi regimul ADMIN și vectorul PREGATI — inconsecvența s-a văzut citind `vector_fiscal_api.salveaza`.
+   - **R55** pentru planul de conturi („cine adaugă un cont poate anula orice refuz”) -> „Poate pregăti”: e pasul 9 din Import date.
+   Amândouă se reconfirmă de Costin (raportul de azi, §6); revenirea e o linie în `main.py` + pinul din `core/test_drepturi_rol.py`.
+
+**Norma** trăiește în cod: `core/drepturi.py` + `cere_drept` (main.py), gardată de `core/test_drepturi_rol.py` și
+`core/test_drepturi_ui.py`; regula de dialog și de acțiune refuzată în DESIGN_SYSTEM.md cap.9 (v2.64) + `verificator_conformitate.py`.

@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=1dccbc985b";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=91e1c0701a";
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 export async function randeazaSetari(corp, nav) {
@@ -59,7 +59,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="camp-eticheta">CUI</span>
           <input id="set-cab-cui" class="camp-input" type="text" value="${esc(cab && cab.cui)}">
         </label>
-        <button class="buton-primar" id="set-salveaza-cabinet">Salveaz\u0103 datele cabinetului</button>
+        <button class="buton-primar" id="set-salveaza-cabinet" data-actiune="POST /eu/cabinet">Salveaz\u0103 datele cabinetului</button>
         <div class="" id="set-msg-cabinet"></div>
       </div>`;
     legaInapoi();
@@ -94,7 +94,7 @@ export async function randeazaSetari(corp, nav) {
         <label class="set-bifa"><input type="checkbox" id="cmp-preg" ${b("poate_pregati")}> <span>Pot pregăti declarații</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-val" ${b("poate_valida")}> <span>Pot valida declarații</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-dep" ${b("poate_depune")}> <span>Pot depune declarații</span></label>
-        <button class="buton-primar" id="set-salveaza-compet">Salveaz\u0103 competen\u021bele</button>
+        <button class="buton-primar" id="set-salveaza-compet" data-actiune="POST /eu/competente">Salveaz\u0103 competen\u021bele</button>
         <div class="" id="set-msg-compet"></div>
       </div>`;
     legaInapoi();
@@ -122,10 +122,10 @@ export async function randeazaSetari(corp, nav) {
       <div class="panou">
         <div class="cap-titlu">Chei API ${semnAjutor("F005")}</div>
         <p class="mig-intro">Pentru conectarea altor aplicatii la datele cabinetului. Cheia se afiseaza o singura data.</p>
-        <div id="set-chei-lista"><p class="ecran-nota">Se încarcă...</p></div>
+        <div id="set-chei-lista" data-actiune="GET /cabinet/api-chei"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
         <input id="set-cheie-nume" class="camp-input" type="text" placeholder="ex: integrare CRM">
-        <button class="buton-primar" id="set-cheie-noua">Generează cheie nouă</button>
+        <button class="buton-primar" id="set-cheie-noua" data-actiune="POST /cabinet/api-chei">Generează cheie nouă</button>
         <div class="" id="set-msg-chei"></div>
       </div>`;
     legaInapoi();
@@ -186,7 +186,7 @@ export async function randeazaSetari(corp, nav) {
         <div class="cap-titlu">Export date cabinet ${semnAjutor("F199")}</div>
         <p class="ecran-nota">Descarci o arhivă ZIP cu toate datele cabinetului: firmele, utilizatorii, facturile, documentele contabile, jurnalul de audit și fișierele atașate (poze bonuri, e-Factură). Format: fișiere JSON per tabelă + fișierele originale. Îți exerciți dreptul la portabilitate (GDPR art. 20), oricând, fără intervenția noastră.</p>
         <div class="caseta-atentie"><div class="ca-mesaj">Arhiva conține date personale (ale clienților, salariaților și partenerilor). Păstreaz-o în siguranță și nu o distribui.</div></div>
-        <button class="buton-primar" id="gdpr-export">Descarcă arhiva cabinetului</button>
+        <button class="buton-primar" id="gdpr-export" data-actiune="GET /gdpr/export-cabinet">Descarcă arhiva cabinetului</button>
         <div class="" id="gdpr-export-msg"></div>
       </div>
 
@@ -206,7 +206,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="camp-eticheta">Pentru confirmare, retastează denumirea exactă a cabinetului: <b>${esc(numeCab)}</b></span>
           <input id="gdpr-confirm" class="camp-input" type="text" autocomplete="off" placeholder="Denumirea cabinetului">
         </label>
-        <button class="buton-sters" id="gdpr-cere" disabled>Trimite cererea de ștergere</button>
+        <button class="buton-sters" id="gdpr-cere" data-actiune="POST /gdpr/cerere-stergere" disabled>Trimite cererea de ștergere</button>
         <div class="" id="gdpr-cere-msg"></div>
       </div>`;
     legaInapoi();
@@ -328,7 +328,7 @@ async function _incarcaChei(corp) {
         <div class="pf-frand-nume">${esc(c.nume) || "—"} · <code>${c.prefix}…</code></div>
         <div class="pf-frand-sub">${c.activ ? "activa" : "revocata"}${c.ultima_folosire ? " · folosita: " + c.ultima_folosire.slice(0, 16) : ""}</div>
       </div>
-      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-id="${c.id}" style="color:var(--rosu)">Revoca</span>` : ""}
+      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}" style="color:var(--rosu)">Revoca</span>` : ""}
     </div>`).join("");
   zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
     confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicatiile care o folosesc nu vor mai avea acces.", async () => {
@@ -354,7 +354,7 @@ function _initChei(corp) {
       corp.querySelector("#set-cheie-nume").value = "";
       _incarcaChei(corp);
     } catch (e) {
-      msg.textContent = e.mesaj || e.message || "eroare";
+      arataMesaj(msg, e.mesaj || e.message || "eroare", "eroare");
     }
   });
 }

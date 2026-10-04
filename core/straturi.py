@@ -465,7 +465,7 @@ REGISTRU = (
       "P7 · V1: conturile și accesul clienților — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("main.py", HTTP, None,
-      "423 rute montate in modul si 0 instructiuni SQL — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`",
+      "424 rute montate in modul si 0 instructiuni SQL — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`",
       "PLAN_HARDENING.md:839 — stratul HTTP e acolo unde sunt rutele"),
     D("core/repo_beneficii_api.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/beneficii_api.py` — 6 instructiuni SQL, zero `get_conn`, zero commit",

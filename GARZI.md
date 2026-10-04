@@ -411,6 +411,10 @@ fundal pe tenantul greșit; **IDOR** (id tenant din URL neverificat contra useru
 - LIPSĂ: test de acces încrucișat (obiect din alt tenant → 404).
 - DESCHIS: gating admin inconsecvent (`cere_rol("superadmin")` vs `cere_cabinet` + gardă
   inline) — DE_FACUT poz. 7.
+- ACOPERIT (04.10.2026) pentru rutele de CABINET: rolul și bifa trec printr-un singur mecanism, `cere_drept(nivel)`
+  (`core/drepturi.py`), pe 215 rute; nicio rută de scriere pe o firmă fără drept (`core/test_drepturi_rol.py`). Detaliul
+  și limitele: secțiunea „04.10.2026 — Testarea ca asistent” de mai jos. `/admin/*` (superadmin) rămâne pe verificarea
+  din corp.
 
 ### 7. Integritate în timp
 **Eșec:** modificare retroactivă în lună închisă; declarație depusă regenerată altfel;
@@ -8793,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**680 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**684 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 646
+### `core/` — 649
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9141,6 +9145,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_dividende_interimare.py` — GARD — regularizarea dividendelor interimare (lot 19, defectul 9, 03.10.2026).
 - `core/test_document_fara_administrator.py` — GARD [R66 (c), 26.08.2026]: un document care tipărește numele administratorului nu se produce
 - `core/test_document_ref_necunoscut.py` — GARD — un `0` care nu poate fi altceva decât `0` nu susține nicio cauză afirmată.
+- `core/test_drepturi_rol.py` — GARD — drepturile pe rol și bifă (decizia Costin 04.10.2026, „varianta 2”; DECIZII 04.10.2026).
+- `core/test_drepturi_ui.py` — GARD — interfața urmează serverul (decizia Costin 04.10.2026: „orice acțiune refuzată rolului nu se afișează
 - `core/test_ds_verificator.py` — GARDĂ [R103, 30.08.2026]: legătura `DESIGN_SYSTEM.md` → `verificator_conformitate.py` nu mai
 - `core/test_duk.py` — Teste gardian pentru duk (partea pura, fara java).
 - `core/test_duk_severitate.py` — GARD A2: DUK distinge atentionare (A:, NU blocheaza depunerea) de eroare (E:, blocheaza). Fixturi REALE
@@ -9408,6 +9414,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_temeiuri.py` — Gardul temeiurilor (PASUL 4): impune forma canonica de citare a REGULILOR de validator din
 - `core/test_tenant_stergere.py` — GARD [R72, 27.08.2026]: calea de scoatere a unei firme nu poate rămâne în urma bazei.
 - `core/test_termene.py` — core/test_termene.py — plasa de regresie pentru scadentele viitoare (termene_api).
+- `core/test_testare_asistent.py` — GARD — constatările din testarea ca asistent (comanda Costin 04.10.2026), punctele 3 și 6 + invitația.
 - `core/test_teste_decuplate.py` — Garda PERMANENTA (29.07.2026): niciun test nu depinde de o firma PERSISTENTA din baza.
 - `core/test_tichet_2025.py` — GARD B1/tichet 2025: valorile nominale ale tichetului de masa in 2025, verificate VERBATIM la sursa.
 - `core/test_tichet_cresa.py` — Tichete de cresa (Legea 165/2018 art.19). Tratament fiscal IDENTIC cu tichetul cultural: impozit 10% pe
@@ -9444,7 +9451,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 34
+### `scripts/` — 35
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -9455,6 +9462,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `scripts/scan_coduri_validator.py` — Fiecare „DUK regula <cod>" se confruntă cu validatorul DECLARAȚIEI unde e scrisă.
 - `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
 - `scripts/scan_dependente.py` — scripts/scan_dependente.py — CE CITEȘTE, de fapt, fiecare aspect al modelului de citire.
+- `scripts/scan_drepturi_ui.py` — scripts/scan_drepturi_ui.py — ce apeluri din interfață lovesc o rută RESTRÂNSĂ și dacă fișierul își
 - `scripts/scan_ds_verificator.py` — RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026.
 - `scripts/scan_etichete_campuri.py` — scripts/scan_etichete_campuri.py — câmpuri de formular fără etichetă accesibilă (gardul `core/test_etichete_campuri.py`).
 - `scripts/scan_forme_punct.py` — scripts/scan_forme_punct.py — CÂT DE LARG prinde un tipar de punct, pe TOT corpusul.
@@ -10090,3 +10098,36 @@ Categoriile **1. Intrare date** (zi inexistentă, dată fără contract, rescrie
 | două fracțiuni în stat și D112 | ::test_marirea_pe_15_doua_fractiuni_in_stat_si_d112_duk_valid (+ DUK) | pierderea proratării (salariul de la sfârșitul lunii pe toată luna) | — (proratarea e a lotului 19; aici e proba cap-coadă) | — |
 | istoricul vizibil | ::test_detaliile_salariatului_arata_istoricul | ecran fără datele ocupate | `istoric_salariu` scos -> roșu | — |
 | câmpuri fără etichetă accesibilă (toată aplicația) | core/test_etichete_campuri.py (instrument `scripts/scan_etichete_campuri.py`) + anti-vacuu | un `<input>/<select>/<textarea>` cu eticheta într-un `<span>` sau într-un `<label>` vecin nelegat (cititorul de ecran nu-i spune numele) | `aria-label` scos de pe `#salariu-data` -> roșu | static, pe șabloane: un câmp construit dinamic cu `document.createElement` nu e văzut |
+
+## 04.10.2026 — Testarea ca asistent: drepturile pe rol + interfața care urmează serverul (decizia Costin, „varianta 2”)
+
+Categoriile **6. Acces** (rute de scriere pe firmă fără drept; clientul de portal pe rute de cabinet; asistent pe acțiuni de
+administrator) și **11. Interfață** (acțiune refuzată afișată; refuz nevăzut; fereastră fără X/Esc). Detaliul: DECIZII 04.10.2026
+(„Drepturile asistentului pe rol”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| nicio rută de scriere pe firmă fără drept | core/test_drepturi_rol.py::test_nicio_ruta_de_scriere_pe_firma_fara_drept (+ excepția cu motiv: API-ul public pe cheie) | `cere_cabinet`/`cere_context` pe o scriere `{tenant_id}` — clientul de portal scria pe 11 rute | facturi-recurente înapoi pe `cere_context` -> roșu (M4) | citește garda din decoratorul rutei; o verificare de rol mutată în corp nu se vede aici (o vede `scan_rol_pe_efect`) |
+| nivelul decis, pe nume | ::test_actiunea_sta_pe_nivelul_decis (28 de pini, cu fragmentul de decizie) | mutarea tăcută a unei acțiuni pe alt nivel | validarea notei pe PREGATI -> roșu (M2) | pinii acoperă 28 de acțiuni reprezentative, nu toate cele 215 |
+| asistentul nu trece pe ADMIN / fără bifă / pe firmă nealocată | ::test_asistentul_nu_adauga_firme…, ::test_pregatirea_trece_validarea_nu, ::test_firma_nealocata_se_refuza_ca_inexistenta | asistent care adaugă/scoate firme, validează fără „Poate valida”, lucrează pe firmă străină | ramura ADMIN cu `return None` -> roșu (M1) | prin TestClient, pe actori sintetici în ROLLBACK |
+| bifa citită live | ::test_bifa_se_citeste_live_nu_din_token | bifă retrasă valabilă până la reautentificare | bifa citită mereu `True` -> roșu (M3) | — |
+| derivarea pentru interfață = gărzile | ::test_eu_drepturi_derivat_si_live, ::test_derivarea_vie_coincide_cu_citirea_statica | o listă de ascuns care diverge de server | (M3 o înroșește și pe ea) | — |
+| apelul la o rută restrânsă are elementul declarat | core/test_drepturi_ui.py::test_orice_apel_la_o_ruta_restransa_are_elementul_declarat (instrument `scripts/scan_drepturi_ui.py`) | buton nou care cheamă o rută restrânsă, nemarcat — vizibil celui refuzat | (M5 pe treapta a doua) | treapta 1 leagă pe FIȘIER |
+| marcajul stă pe ELEMENTUL legat | ::test_marcajul_sta_pe_elementul_legat (+ calibrare) | marcajul pe alt buton din același fișier | `data-actiune` scos de pe „Adaugă firma” (rămas pe „+ Adaugă firmă”) -> roșu (M5) | 36 de apeluri nu se pot lega static de element (clichet) — pentru ele rămâne treapta pe fișier + proba din browser |
+| declarațiile sunt rute reale | ::test_declaratiile_sunt_rute_reale | o greșeală de tastare care n-ar ascunde nimic | — (anti-vacuu: 184 legate) | — |
+| apel pe o metodă pe care ruta n-o are | ::test_niciun_apel_pe_o_metoda_pe_care_ruta_n_o_are | clasa „Răspunsuri REGES” (GET pe rută POST, 405 permanent) | reges-poll înapoi pe GET -> roșu (M6) | doar pe căile pe care instrumentul le normalizează |
+| căile nelegabile, pinate | ::test_caile_nelegabile_sunt_pinate_cu_motiv | o cale dinamică nouă trecută neobservată | — (pin bidirecțional) | — |
+| poarta montată, înaintea desktopului | ::test_poarta_e_montata | drepturile luate după desktop (butonul interzis apare o clipă) | ordinea inversată -> roșu (M10) | — |
+| emailul clientului înainte de creare | core/test_testare_asistent.py::test_firma_nu_se_creeaza_cu_emailul_unui_cont_cu_alt_rol | firmă creată pe jumătate; refuz nenumit | verificarea scoasă -> roșu (M7) | — |
+| refuzul numit, o singură funcție | ::test_refuzul_numeste_situatia (7 cazuri), ::test_accesul_clientului…, ::test_invitatia_de_asistent_refuza_numit | „autentifică-te” spus celui care invită; trei formulări pentru aceeași stare | ramura „alt rol” scoasă -> roșu (M11) | — |
+| invitația dă „Poate pregăti”; cabinetul în coloana lui | ::test_invitatia_da_poate_pregati_implicit_si_pune_cabinetul_corect | asistent nou fără niciun drept; parametri inversați | implicit `False` -> roșu (M9) | — |
+| contorul separă administratorul | ::test_contorul_separa_administratorul | „2 asistenți” cu un singur asistent | administratorul numărat din nou -> roșu (M8) | — |
+| acțiune restrânsă nemarcată (DS cap.9) | `verificator_conformitate.py` ACTIUNE_REFUZATA_NEMARCATA (același instrument, ambele trepte) | regula DS fără gardian în verificator (CLAUDE.md: regula nouă intră în DS ȘI în verificator) | `data-actiune` scos de pe „Adaugă firma” -> TOTAL 2 (M13) | ca la `test_drepturi_ui` |
+| fereastra informativă: X + Esc | `verificator_conformitate.py` DIALOG_FARA_INCHIDERE | fereastră suprapusă fără `inchidereDialog` și fără marcajul „fereastra-de-lucru” | apelul scos din bun-venit -> TOTAL 1 (M12) | regex pe `.className = "...overlay..."`; o fereastră construită altfel nu e văzută |
+| R55/R56 după drepturi | core/scan_rol_pe_efect.py (`PESTE_PREGATIRE`, `DOAR_ADMIN`) + core/test_rol_pe_efect.py | evidență `validata` scrisă direct cu „Poate pregăti”; credențiale fără administrator | (prins la construcție: `reges-poll` și `reges-trimite-salariat` scriu `reges_chei` -> ADMIN) | — |
+
+**Limita, pe scurt:** gărzile statice dovedesc DECLARAȚIA; că butonul refuzat chiar dispare din pagina randată o probează
+`frontend_test/proba_asistent_drepturi.py` (faza „după”, cont de asistent), la fiecare campanie care atinge ecranele (CLAUDE.md §2.3
+pct.11). **Gaura de categorie 6 „gating admin inconsecvent”** din registrul de sus se închide pentru rutele de cabinet: un singur
+mecanism (`cere_drept`) pentru tot ce ține de rol și bifă; `/admin/*` (superadmin) rămâne pe verificarea din corp.
+

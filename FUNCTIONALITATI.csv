@@ -65,7 +65,8 @@ Gestionează actorii de cabinet (asistenții): lista cu roluri, permisiuni și f
 ## Unde apare / Cum se folosește
 O găsești în zona de administrare a cabinetului, unde adaugi asistenți, le dai acces la firme și le urmărești calitatea muncii.
 ## De reținut
-Modul patru-ochi impune verificarea unei a doua persoane; educația pe erori pornește de la greșelile reale ale fiecărui actor."
+Modul patru-ochi impune verificarea unei a doua persoane; educația pe erori pornește de la greșelile reale ale fiecărui actor.
+Drepturile, mereu doar pe firmele alocate asistentului: „Poate pregăti” = munca curentă (facturi, chitanțe, importuri, note în ciornă, pontaj, mijloace fixe, export SAGA/WinMentor, e-Transport, declarații de pregătit); „Poate valida” = validarea notelor și a declarațiilor, înregistrarea amortizării, închiderea lunii; „Poate depune” = depunerea la ANAF. Adăugarea și scoaterea firmelor, asistenții, cheile API, GDPR, datele cabinetului și deblocarea unei luni închise le face doar administratorul. Ce nu are voie un asistent nu i se afișează."
 Import asociați (migrare),"Citește .xlsx/.csv cu nume/CNP-CUI/cota %, mapare flexibilă, validare CNP, coerență cotelor (100%), import per firmă pentru D205. Data cesiunii (opțional, 02.10.2026): structura înlocuită se păstrează pentru dividendele distribuite înainte.",F007,firma,Migrare / Import date,core/asociati_import_api.py,Legea 31/1990 art.67 alin.(6),LIVE,,,"## Ce face
 Importă asociații dintr-un fișier .xlsx sau .csv (nume, CNP/CUI, cotă %), cu mapare flexibilă a coloanelor. Validează CNP-ul și verifică coerența cotelor (să însumeze 100%), pe fiecare firmă, pentru declarația D205.
 ## Unde apare / Cum se folosește

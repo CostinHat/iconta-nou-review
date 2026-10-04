@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=91e1c0701a";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -161,7 +161,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       <div id="dec-perioada">${randPerioada(per)}</div>
     </div>
     <div class="dec-bara">
-      <button class="buton-primar" id="dec-continua" disabled>Continuă →</button>
+      <button class="buton-primar" id="dec-continua" data-actiune="POST /declaratii/{tip}/valideaza" disabled>Continuă →</button>
     </div>
   `;
 
@@ -399,7 +399,7 @@ async function pas2(corp, nav) {
           <button class="buton-secundar" id="dec-gol-nu">Nu, mă întorc să verific</button>
         </div>
       </div>` : `<div class="dec-bara">
-      <button class="buton-primar" id="dec-trimite">Trimite în coadă →</button>
+      <button class="buton-primar" id="dec-trimite" data-actiune="POST /coada">Trimite în coadă →</button>
     </div>`}
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
@@ -455,20 +455,20 @@ async function randeazaClasificareD390(corp, nav) {
       ${auto.map((o) => `<div class="dec-recl-rand">
         <span class="dec-recl-desc">${o.directie === "emisa" ? "↗ emisă" : "↘ primită"} · ${esc(o.tara)}${esc(o.cod)} ${esc(o.den || "")}</span>
         <span class="dec-recl-suma">${bani(o.baza)} lei</span>
-        <select class="camp-input dec-recl" aria-label="Tipul operațiunii" data-dir="${o.directie}" data-tara="${esc(o.tara)}" data-cod="${esc(o.cod)}">${optSel(o.directie, o.tip_curent)}</select>
+        <select class="camp-input dec-recl" data-actiune-camp="PUT /tenants/{tenant_id}/d390-clasificare/reclasificare" aria-label="Tipul operațiunii" data-dir="${o.directie}" data-tara="${esc(o.tara)}" data-cod="${esc(o.cod)}">${optSel(o.directie, o.tip_curent)}</select>
       </div>`).join("")}` : `<div class="camp-eticheta dec-clasif-gol" style="margin:6px 0">Nicio operațiune din facturi în perioadă.</div>`}
     <div class="camp-eticheta" style="margin:10px 0 4px">Linii adăugate manual (fără factură în sistem):</div>
     ${manual.length ? manual.map((m) => `<div class="dec-man-rand">
         <span class="dec-recl-desc">${esc(m.tip)} · ${esc(m.tara)}${esc(m.cod)} ${esc(m.den || "")}</span>
         <span class="dec-recl-suma">${bani(m.baza)} lei</span>
-        <button class="btn-link dec-man-del" data-id="${m.id}">șterge</button></div>`).join("") : `<div class="camp-eticheta dec-clasif-gol">—</div>`}
+        <button class="btn-link dec-man-del" data-actiune="DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}" data-id="${m.id}">șterge</button></div>`).join("") : `<div class="camp-eticheta dec-clasif-gol">—</div>`}
     <div class="dec-man-form" style="margin-top:8px">
       <label class="camp" style="width:160px"><span class="camp-eticheta">Tip</span><select id="man-tip" class="camp-input"><option value="A">Achiziție bunuri IC fără cod furnizor — NOTA 1 (A)</option><option value="P">Servicii prestate (P)</option><option value="S">Servicii primite (S)</option><option value="T">Triangulație (T)</option><option value="R">Agricol special (R)</option></select></label>
       <label class="camp" style="width:100px"><span class="camp-eticheta">Țară</span><input id="man-tara" class="camp-input" placeholder="DE"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Cod partener</span><input id="man-cod" class="camp-input" placeholder="fără prefix țară"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Denumire</span><input id="man-den" class="camp-input"></label>
       <label class="camp" style="width:110px"><span class="camp-eticheta">Bază (lei)</span><input id="man-baza" type="number" class="camp-input"></label>
-      <button class="buton-secundar" id="man-add">+ adaugă</button>
+      <button class="buton-secundar" id="man-add" data-actiune="POST /tenants/{tenant_id}/d390-clasificare/manual">+ adaugă</button>
     </div>
     <p class="ecran-nota" style="margin-top:4px">Tip <b>A</b> (NOTA 1): achiziție intracomunitară de bunuri de la un furnizor UE care nu a comunicat un cod valid de TVA — completează Țara (statul membru din care s-au transportat bunurile) și lasă Codul gol.</p>
     <div id="dec-clasif-msg"></div>
@@ -528,7 +528,7 @@ async function randeazaOperatiuniD301(corp, nav) {
         return `<div class="dec-man-rand">
         <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(o.data_doc) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}${furnizor ? " · furnizor " + furnizor : ""}${d390}</span>
         <span class="dec-recl-suma">${bani(o.baza)} bază · ${bani(o.tva)} TVA (lei)</span>
-        <button class="btn-link dec-d301-del" data-id="${o.id}">șterge</button></div>`;
+        <button class="btn-link dec-d301-del" data-actiune="DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}" data-id="${o.id}">șterge</button></div>`;
       }).join("")
     : `<div class="stare-goala stare-goala--inline">Nicio operațiune pe ${etPerioada()}. D301 se depune doar cu achiziții intracomunitare / taxare inversă — introdu-le mai jos; fără ele, declarația e pe zero.</div>`;
   zona.innerHTML = `<details class="dec-xml" open><summary>Operațiuni D301 — introducere (${ops.length})</summary>
@@ -550,7 +550,7 @@ async function randeazaOperatiuniD301(corp, nav) {
       <label class="camp" style="width:90px"><span class="camp-eticheta">Țară furnizor</span><input id="d301-partener_tara" class="camp-input" placeholder="DE" maxlength="2" style="text-transform:uppercase"></label>
       <label class="camp" style="width:170px"><span class="camp-eticheta">Cod TVA furnizor</span><input id="d301-partener_cod" class="camp-input" placeholder="fără prefix țară"></label>
       <label class="camp" style="width:200px"><span class="camp-eticheta">Denumire furnizor</span><input id="d301-partener_den" class="camp-input"></label>
-      <button class="buton-secundar" id="d301-add">+ adaugă</button>
+      <button class="buton-secundar" id="d301-add" data-actiune="POST /tenants/{tenant_id}/d301-operatiuni">+ adaugă</button>
     </div>
     <p class="ecran-nota" style="margin-top:2px">Furnizorul UE (țară + cod TVA) e opțional pentru D301, dar dacă îl completezi, achiziția apare AUTOMAT în D390 (bunuri tip 1/3 → cod A; servicii tip 5 → cod S). Fără țară, operațiunea nu intră în D390.</p>
     <div class="camp-ajutor" id="d301-preview" style="margin-top:4px"></div>
@@ -3497,7 +3497,7 @@ async function randeazaManualD300(corp, nav) {
     ? randuri.map((o) => `<div class="dec-man-rand">
         <span class="dec-recl-desc" title="${esc(o.eticheta)}">${esc(o.rand)} · ${esc(o.eticheta)}</span>
         <span class="dec-recl-suma">${o.cu_baza === false ? "" : bani(o.baza) + " bază"}${o.cu_tva ? (o.cu_baza === false ? "" : " · ") + bani(o.tva) + " TVA" : ""} (lei)${o.descriere ? " · " + esc(o.descriere) : ""}</span>
-        <button class="btn-link dec-d300-del" data-id="${o.id}">șterge</button></div>`).join("")
+        <button class="btn-link dec-d300-del" data-actiune="DELETE /tenants/{tenant_id}/d300-manual/{rid}" data-id="${o.id}">șterge</button></div>`).join("")
     : `<div class="stare-goala stare-goala--inline">Niciun rând manual pe ${etPerioada()}. Rândurile pe care generatorul le derivă din facturi apar automat în decont; aici introduci doar ce nu se derivă (scutiri, regularizări, ajustări).</div>`;
   const optiuni = disp.map((r) => `<option value="${esc(r.cod)}" data-cutva="${r.cu_tva ? 1 : 0}" data-cubaza="${r.cu_baza === false ? 0 : 1}">${esc(r.cod)} — ${esc(r.eticheta)}</option>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Rânduri manuale D300 — introducere (${randuri.length})</summary>
@@ -3509,7 +3509,7 @@ async function randeazaManualD300(corp, nav) {
       <label class="camp" style="width:130px" id="d300-baza-wrap"><span class="camp-eticheta">Bază (lei) <span class="oblig">*</span></span><input id="d300-baza" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:130px" id="d300-tva-wrap"><span class="camp-eticheta">TVA (lei)</span><input id="d300-tva" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:220px"><span class="camp-eticheta">Descriere</span><input id="d300-descriere" class="camp-input"></label>
-      <button class="buton-secundar" id="d300-add">+ adaugă</button>
+      <button class="buton-secundar" id="d300-add" data-actiune="POST /tenants/{tenant_id}/d300-manual">+ adaugă</button>
     </div>` : `<p class="ecran-nota" style="margin-top:8px">Toate rândurile manual-acceptabile sunt fie deja introduse, fie derivate automat din facturile perioadei.</p>`}
     <div id="d300-msg"></div>
     <p style="margin-top:8px"><button class="buton-primar" id="d300-regen">Regenerează D300</button>

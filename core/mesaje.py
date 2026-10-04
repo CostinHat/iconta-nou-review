@@ -71,6 +71,14 @@ def mesaj_din_cod(cod, fallback=None):
 FARA_CABINET = "Nu ești asociat niciunui cabinet. Contactează administratorul cabinetului pentru acces."
 EMAIL_INVALID = "Adresă de email invalidă. Verifică formatul (exemplu: nume@exemplu.ro)."
 EMAIL_EXISTA = "Există deja un cont cu acest email. Autentifică-te sau folosește alt email."
+# [drepturi_rol 04.10.2026, comanda Costin pct.3] Când CINEVA INVITĂ o adresă care are deja cont, „autentifică-te”
+# e scris pentru altcineva (pentru proprietarul adresei, la înscriere). Refuzul numește situația, pentru cel care
+# invită: adresa e luată, de ce fel de cont, și ce are de făcut. Rolul exact al celuilalt cont NU se spune.
+EMAIL_ALT_ROL = ("Adresa %s aparține deja unui cont cu alt rol în iConta.eu. Un cont are un singur rol, "
+                 "deci pentru %s folosește altă adresă.")
+EMAIL_CLIENT_ACTIV = "Adresa %s are deja un cont de client activ. Folosește altă adresă pentru %s."
+EMAIL_ASISTENT_EXISTA = "Adresa %s are deja un cont de asistent în iConta.eu. Folosește altă adresă."
+EMAIL_OCUPAT = "Adresa %s e folosită deja de alt cont. Alege altă adresă."
 EMAIL_NICIUNUL_VALID = "Niciunul dintre emailuri nu e valid. Verifică lista de adrese."
 # [R154, 05.09.2026] „Nu e o adresă” și „n-am putut trimite” sunt două lucruri, iar
 # `_trimite_recomandari` le spunea pe amândouă cu al doilea: `«»@#$%` primea `stare: esuat`.

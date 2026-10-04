@@ -85,7 +85,9 @@ def _garzi(nod):
             if isinstance(arg, ast.Name):
                 g.append((arg.id, ()))
             elif isinstance(arg, ast.Call) and isinstance(arg.func, ast.Name):
-                g.append((arg.func.id, tuple(c.value for c in arg.args if isinstance(c, ast.Constant))))
+                # [drepturi_rol 04.10.2026] `cere_drept(_drepturi.NIVEL)`: argumentul e un atribut, nu o constantă
+                g.append((arg.func.id, tuple(c.value if isinstance(c, ast.Constant) else c.attr
+                                             for c in arg.args if isinstance(c, (ast.Constant, ast.Attribute)))))
     return g
 
 
@@ -112,6 +114,9 @@ def _tabele_citite(nod, cale="main.py"):
 _SCRIU_IN_INREGISTRARI = None
 
 
+_DREPT_CA_ROL = {"ADMIN": {"admin_firma"}, "VALIDA": {"poate_valida"}, "DEPUNE": {"poate_depune"}}
+
+
 def _roluri(nod):
     """SETUL rolurilor cerute de rută prin `cere_rol(...)`.
 
@@ -121,6 +126,12 @@ def _roluri(nod):
     for g, args in _garzi(nod):
         if g == "cere_rol":
             out.update(args)
+        # [drepturi_rol 04.10.2026, decizia Costin varianta 2] Rolul a devenit DREPT pe bifă. `ADMIN` e exact ce
+        # era `cere_rol("admin_firma")` (doar administratorul); `VALIDA`/`DEPUNE` sunt drepturile de control —
+        # „peste pregătire”; `PREGATI` îl are orice asistent, deci NU e un rol în sensul gărzilor de aici.
+        if g == "cere_drept":
+            for a in args:
+                out.update(_DREPT_CA_ROL.get(a, set()))
     return out
 
 
@@ -253,10 +264,6 @@ _ROL_PE_ALT_CRITERIU = {
         "evidență». Criteriul e «ce schimbă ce datorează firma», nu «e artefact predat» — deci nu "
         "contrazice R42, care spune doar că nota nu primește rol pentru că ar fi PREDATĂ. "
         "Crearea, editarea și ștergerea rămân fără rol: citite la sursă, ating doar ciorne",
-    "/tenants/{tenant_id}/plan-conturi":
-        "R55, aceeași decizie: «cine adaugă un cont poate anula orice refuz» — ruta extinde "
-        "nomenclatorul pe care stă refuzul din R54, deci schimbă ce poate înregistra firma. "
-        "Nu e nota însăși; e nomenclatorul din care se scrie nota",
     "/tenants/{tenant_id}/jurnal/{nota_id}/dezleaga":
         "R90, 29.08.2026: dezlegarea unei note de plată de factura ei face factura să REAPARĂ ca "
         "neîncasată — `reconciliere_api.facturi_deschise` calculează soldul chiar din notele legate "
@@ -294,8 +301,10 @@ def test_exceptiile_de_pe_alta_axa_sunt_reale_si_motivate():
     for cale, motiv in _ROL_PE_ALT_CRITERIU.items():
         assert len(motiv) > 80, "%s e în listă fără decizia care o justifică" % cale
         assert cale in cai, "%s nu mai e rută — scoate-o din listă" % cale
-        assert _roluri(cai[cale]) & {"admin_firma"}, (
-            "%s nu mai cere admin_firma — dacă rolul s-a scos, se scoate și excepția" % cale)
+        # [drepturi_rol 04.10.2026] axa R55 = validarea (decizia Costin: „Poate valida” = validarea notelor);
+        # deci excepția cere un drept PESTE pregătire — „Poate valida” sau administratorul.
+        assert _roluri(cai[cale]) & {"admin_firma", "poate_valida"}, (
+            "%s nu mai cere un drept peste pregătire — dacă s-a scos, se scoate și excepția" % cale)
 
 
 # ── (b) completarea manuală ──────────────────────────────────────────────────
@@ -340,8 +349,11 @@ def test_declaratie_generata_se_uita_SI_in_coada_SI_in_depuse():
 
 # ── (c) și (d) ───────────────────────────────────────────────────────────────
 
+# [PIVOT 04.10.2026, decizia Costin „varianta 2”] (c) NU mai e aici: regimul de TVA se scrie și prin vectorul
+# fiscal (`vector_fiscal_api.salveaza` scrie `platitor_tva`), iar vectorul e pasul 2 din „Import date” — pe care
+# decizia îl pune explicit la „Poate pregăti”. Două uși către același fapt cu gărzi diferite ar fi o gaură, deci
+# amândouă stau la „Poate pregăti” (DECIZII 04.10.2026). (d) rămâne: cheile canalului sunt credențiale (R56).
 _CER_ADMIN = {
-    "firma_profil_regim_tva": "(c) trecerea de regim: schimbă CE DATOREAZĂ firma",
     "wc_config": "(d) cheile canalului: cu ele pline canalul e pornit, golite îl oprește",
 }
 
@@ -362,7 +374,9 @@ def test_CALIBRARE_detectorul_de_garda_vede_si_nevede():
     _m, _c, n = r["firma_profil_model"]        # cunoscut FĂRĂ rol: font/culoare/logo
     assert not [1 for g, a in _garzi(n) if g == "cere_rol"], (
         "detectorul raportează un rol pe o rută care n-are")
-    _m, _c, n = r["vector_salveaza"]           # cunoscut CU admin_firma, dinainte de tura asta
+    # [drepturi_rol 04.10.2026] `vector_salveaza` a trecut la „Poate pregăti” (pasul 2 din Import date, decizia
+    # Costin); calibrarea pozitivă se mută pe adăugarea unei firme — administratorul, prin definiția deciziei.
+    _m, _c, n = r["tenant_creeaza"]            # cunoscut DOAR administratorul (decizia Costin 04.10.2026)
     assert _roluri(n) & {"admin_firma"}, "detectorul nu vede un rol care există"
 
 

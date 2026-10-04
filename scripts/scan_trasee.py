@@ -224,7 +224,7 @@ NEDOCUMENTARE = [
 ]
 
 METODE = {"get", "post", "put", "patch", "delete"}
-GARZI = {"cere_cabinet", "cere_context", "cere_rol", "cere_client", "cere_api_key"}
+GARZI = {"cere_cabinet", "cere_context", "cere_rol", "cere_client", "cere_api_key", "cere_drept"}
 ROLURI = ("superadmin", "admin_firma", "angajat", "client")
 
 RETEA = ("requests.", "urlopen")
@@ -458,6 +458,17 @@ def _garzi_si_rol(fn, dec, corp=None):
                     for arg in n.args:
                         if isinstance(arg, ast.Constant):
                             roluri.add(str(arg.value))
+                # [drepturi_rol 04.10.2026] `cere_drept(_drepturi.NIVEL)`: ADMIN = doar administratorul (rol),
+                # restul = dreptul FIN pe bifă — aceeași coloană ca `_are_permisiune(ctx, "poate_...")`.
+                if f == "cere_drept":
+                    garzi.add("cere_drept")
+                    for arg in n.args:
+                        if isinstance(arg, ast.Attribute):
+                            if arg.attr == "ADMIN":
+                                roluri.add("admin_firma")
+                            elif arg.attr in ("PREGATI", "VALIDA", "DEPUNE"):
+                                fine.add("poate_" + {"PREGATI": "pregati", "VALIDA": "valida",
+                                                     "DEPUNE": "depune"}[arg.attr])
     for n in ast.walk(corp):
         if isinstance(n, ast.Call):
             f = getattr(n.func, "id", None) or getattr(n.func, "attr", None)

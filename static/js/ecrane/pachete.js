@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc, arataMesaj } from "../api.js?v=1dccbc985b";
+import { api, dataRo, esc, arataMesaj } from "../api.js?v=91e1c0701a";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -128,7 +128,7 @@ function deschideModal(corp, nav) {
   const rz = S.rezumat || {};
   // overlay peste tot ecranul
   const ov = document.createElement("div");
-  ov.className = "pacm-overlay";
+  ov.className = "pacm-overlay";  /* fereastra-de-lucru: doar X — e un editor (povestea nesalvată), Esc n-o aruncă (DECIZII 04.10.2026) */
   ov.innerHTML = `
     <div class="pacm">
       <div class="pacm-cap">
@@ -136,7 +136,7 @@ function deschideModal(corp, nav) {
           <div class="pacm-titlu">Povestea lunii</div>
           <div class="pacm-sub">${esc(rz.nume_firma||"Firma")} · ${dataRo(`${S.an}-${String(S.luna).padStart(2,"0")}`, "luna_an")}</div>
         </div>
-        <button class="pacm-x" id="pacm-x" aria-label="Inchide">✕</button>
+        <button class="pacm-x" id="pacm-x" aria-label="\u00cenchide">✕</button>
       </div>
       <div class="pacm-corp" id="pacm-corp">
         <div class="pacm-editor" id="pacm-editor">
@@ -146,12 +146,12 @@ function deschideModal(corp, nav) {
       </div>
       <div class="pacm-stare" id="pacm-stare"></div>
       <div class="pacm-bara">
-        <button class="buton-primar pac-genereaza" id="pacm-gen">✨ Generează cu AI</button>
+        <button class="buton-primar pac-genereaza" id="pacm-gen" data-actiune="POST /pachete/{tenant_id}/genereaza">✨ Generează cu AI</button>
         <button class="buton-secundar" id="pacm-vezi">Vezi ca email</button>
         <span class="pacm-spatiu"></span>
-        <button class="buton-secundar" id="pacm-salveaza">Salvează ciornă</button>
-        <button class="buton-primar" id="pacm-aproba">Aprobă</button>
-        <button class="buton-primar" id="pacm-trimite">Trimite</button>
+        <button class="buton-secundar" id="pacm-salveaza" data-actiune="POST /pachete/{tenant_id}/poveste">Salvează ciornă</button>
+        <button class="buton-primar" id="pacm-aproba" data-actiune="POST /pachete/{tenant_id}/poveste">Aprobă</button>
+        <button class="buton-primar" id="pacm-trimite" data-actiune="POST /pachete/{tenant_id}/trimite">Trimite</button>
       </div>
     </div>
   `;

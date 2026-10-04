@@ -2,8 +2,9 @@
 // Trei sectiuni: 1) cabinet (cat e de facut vs ritm), 2) pe asistent
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
-import { api, esc } from "../api.js?v=1dccbc985b";
-import { randeazaAsistenti } from "./asistenti.js?v=161e568a78";
+import { api, esc } from "../api.js?v=91e1c0701a";
+import { randeazaAsistenti } from "./asistenti.js?v=b2f7f80c49";
+import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] */
 
 function celulaCifra(valoare, eticheta, accent) {
   const c = accent || "#1a1d21";
@@ -14,6 +15,9 @@ function celulaCifra(valoare, eticheta, accent) {
 }
 
 export async function randeazaCapacitate(corp, nav) {
+  // [drepturi_rol 04.10.2026] Panoul e al administratorului (cardul stă doar pe desktopul cabinetului); dacă
+  // s-ar deschide totuși, spune DE CE nu arată nimic, în loc de un „nu am putut încărca” fals.
+  if (!permis("GET /capacitate")) { corp.innerHTML = `<p class="ecran-nota">Capacitatea cabinetului o vede doar administratorul cabinetului.</p>`; return; }
   corp.innerHTML = `<p class="ecran-nota">Se încarcă capacitatea…</p>`;
   let d;
   try {
@@ -36,7 +40,7 @@ export async function randeazaCapacitate(corp, nav) {
         <div class="stare-goala">
           <p>Într-o echipă care crește, munca nu se împarte singură în mod egal.</p>
           <p>Unii duc trei firme, alții șapte — și afli abia când cineva cedează în perioada de declarații. Capacitate îți arată cine cât duce, unde e presiune și unde e loc, ca s-o echilibrezi din vreme, nu în criză.</p>
-          <p>Semnalul are sens de la 5 asistenți în sus. Momentan ai ${asistenti.length} — până atunci, îi vezi pe toți dintr-o privire.</p>
+          <p>Semnalul are sens de la 5 persoane care lucrează declarații în sus. Momentan sunt ${asistenti.length}, inclusiv administratorul dacă are competențe — până atunci, îi vezi pe toți dintr-o privire.</p>
           <p><button type="button" class="buton-secundar" id="cap-adauga-asistenti">Adaugă asistenți</button></p>
         </div>
       </div>`;

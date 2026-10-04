@@ -7,8 +7,8 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=1dccbc985b";
-import { randeazaDateFirma } from "./date_firma.js?v=d8849f0fa1";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=91e1c0701a";
+import { randeazaDateFirma } from "./date_firma.js?v=b7b794c09f";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -82,7 +82,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
         <input class="camp-input" id="em-ultim" type="number" placeholder="ex: 147">
       </div>
       <p class="em-hint">Vom continua de la numărul următor.</p>
-      <button class="buton-primar" id="em-salveaza-config">Continuă</button>`;
+      <button class="buton-primar" id="em-salveaza-config" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>`;
     zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie").value.trim() || null;
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numărul ultimei facturi se pune în câmpul următor."; return; }
@@ -102,7 +102,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
         <input class="camp-input" id="em-serie2" placeholder="lasă gol dacă nu folosești serie" autocomplete="off">
       </div>
       <p class="em-hint">Prima factură va avea numărul 1.</p>
-      <button class="buton-primar" id="em-salveaza-config2">Continuă</button>`;
+      <button class="buton-primar" id="em-salveaza-config2" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>`;
     zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie2").value.trim() || null;
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."; return; }
@@ -207,7 +207,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <option value="proforma">Proforma</option>
         <option value="aviz">Aviz insotire</option>
       </select>
-      <button class="buton-primar em-emite" id="em-emite">Emite factură</button>
+      <button class="buton-primar em-emite" id="em-emite" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite factură</button>
     </div>
     <div class="em-rezultat" id="em-rezultat"></div>`;
 
@@ -225,7 +225,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const cotaTxt = l.cota_tva == null ? "—" : (l.cota_tva === 0 ? "0%" : `${l.cota_tva}%`);
     const cotaCls = l.cota_tva == null ? "" : (l.cota_tva === 11 ? " cota-11" : l.cota_tva === 0 ? " cota-0" : " cota-21");
     const inputsHtml = `
-      <input class="camp-input em-l-den" id="em-l${i}-descriere" value="${_val(l.descriere)}" placeholder="Denumire (ex: pâine, consultanță)" aria-label="Denumire articol" autocomplete="off">
+      <input class="camp-input em-l-den" id="em-l${i}-descriere" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" value="${_val(l.descriere)}" placeholder="Denumire (ex: pâine, consultanță)" aria-label="Denumire articol" autocomplete="off">
       <input class="camp-input em-l-cant" id="em-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="camp-input em-l-pret" id="em-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
       <span class="em-l-cota${cotaCls}" id="em-l${i}-cota" title="Cota TVA">${cotaTxt}</span>

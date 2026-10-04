@@ -289,6 +289,45 @@ export function curataEroriCamp(root) {
 // [STANDARD_ATENTIONARE] confirmare in caseta standard, inlocuieste confirm() nativ.
 // Foloseste: confirmaCaseta(elementZona, "Mesaj...", () => { actiunea });
 // Injecteaza caseta + butoane sub/inaintea zonei date; Renunta o inchide.
+// ── [dialog_inchidere 04.10.2026] FERESTRELE INFORMATIVE se închid din X ȘI cu Esc (DS cap.9) ──────────────
+// Comanda Costin (testarea ca asistent, pct.4): bun-venitul se închidea doar de la butonul de la capătul listei.
+// Clasa: orice fereastră suprapusă din afara navigatorului. UN mecanism, nu câte unul pe ecran:
+//   - `antet`: dacă fereastra n-are deja un buton X (`[aria-label="Închide"]`), i se pune unul acolo;
+//   - Esc închide NUMAI fereastra de deasupra (o stivă) — un Esc nu închide două straturi deodată;
+//   - închiderea trece prin `inchide` al apelantului, deci X / Esc fac EXACT ce face butonul de la capăt
+//     (bun-venitul se marchează văzut, anunțul se confirmă), nu o a doua cale care uită pasul.
+// Ferestrele de LUCRU (navigator.js) NU trec pe aici: rămân doar cu X — un Esc din reflex nu aruncă un formular
+// completat (DECIZII 04.10.2026). Gard: `verificator_conformitate.py` (DIALOG_FARA_INCHIDERE).
+const _stivaDialog = [];
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  // o fereastră închisă pe altă cale (scoasă din pagină) nu mai are ce închide: se curăță, iar Esc merge la
+  // următoarea încă vie — altfel primul Esc după ea ar fi „mâncat”
+  while (_stivaDialog.length && (!_stivaDialog[_stivaDialog.length - 1].ov.isConnected || _stivaDialog[_stivaDialog.length - 1].ov.hidden)) _stivaDialog.pop();
+  if (!_stivaDialog.length) return;
+  e.preventDefault();
+  _stivaDialog[_stivaDialog.length - 1].inchide();
+});
+export function inchidereDialog(ov, inchide, antet) {
+  const scoate = () => { const i = _stivaDialog.indexOf(intrare); if (i >= 0) _stivaDialog.splice(i, 1); };
+  // Intrarea iese din stivă abia când fereastra chiar a plecat (scoasă SAU ascunsă): o închidere care eșuează
+  // (anunțul care nu s-a putut confirma rămâne deschis, cu motivul) trebuie să poată fi reîncercată tot cu Esc.
+  const intrare = { ov, inchide: () => Promise.resolve(inchide()).then(() => { if (!ov.isConnected || ov.hidden) scoate(); }) };
+  let x = ov.querySelector('[aria-label="\u00cenchide"]');
+  if (!x && antet) {
+    x = document.createElement("button");
+    x.type = "button";
+    x.className = "nav-x dialog-x";
+    x.setAttribute("aria-label", "\u00cenchide");
+    x.title = "\u00cenchide";
+    x.innerHTML = '<span aria-hidden="true">\u2715</span>';
+    antet.appendChild(x);
+  }
+  if (x) x.addEventListener("click", (e) => { e.stopPropagation(); intrare.inchide(); });
+  _stivaDialog.push(intrare);
+  return intrare.inchide;
+}
+
 export function confirmaCaseta(zona, mesaj, laConfirm, optiuni = {}) {
   const vechi = document.getElementById("caseta-atentie-activa");
   if (vechi) vechi.remove();
@@ -338,16 +377,14 @@ export function deschideLupa(u, rotInit) {  // bon_flux_e9_v1
   const inchide = () => {  // bon_flux_e9c_v1
     window.removeEventListener("mousemove", misca);
     window.removeEventListener("mouseup", lasa);
-    window.removeEventListener("keydown", peTasta);
     ov.remove();
   };
-  const peTasta = (e) => { if (e.key === "Escape") inchide(); };
-  window.addEventListener("keydown", peTasta);
-  ov.addEventListener("click", inchide);
   const bX = document.createElement("button");
   bX.className = "lupa-x"; bX.setAttribute("aria-label", "\u00cenchide"); bX.textContent = "\u2715";
-  bX.addEventListener("click", (e) => { e.stopPropagation(); inchide(); });
   ov.appendChild(bX);
+  // [dialog_inchidere 04.10.2026] X + Esc prin mecanismul unic (era un `keydown` propriu, al doilea mecanism)
+  const inchideD = inchidereDialog(ov, inchide);
+  ov.addEventListener("click", inchideD);
   ov.appendChild(img);
   document.body.appendChild(ov);
 }
@@ -495,12 +532,10 @@ function _ajutorOverlayLiber(titlu, corpHTML) {
       <h3 class="aj-titlu">${esc(titlu)}</h3>
       ${corpHTML}
     </div>`;
-  const inchide = () => { o.remove(); document.removeEventListener("keydown", peEsc); };
-  function peEsc(ev) { if (ev.key === "Escape") inchide(); }
-  o.addEventListener("click", (ev) => { if (ev.target === o) inchide(); });
-  o.querySelector(".acces-x").addEventListener("click", inchide);
-  document.addEventListener("keydown", peEsc);
   document.body.appendChild(o);
+  // [dialog_inchidere 04.10.2026] X + Esc prin mecanismul unic (era un `keydown` propriu)
+  const inchide = inchidereDialog(o, () => o.remove());
+  o.addEventListener("click", (ev) => { if (ev.target === o) inchide(); });
 }
 
 document.addEventListener("click", async (e) => {

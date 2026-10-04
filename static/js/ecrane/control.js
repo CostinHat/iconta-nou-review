@@ -3,8 +3,8 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic al verdictului (DS cap.20)
+import { api, esc } from "../api.js?v=91e1c0701a";  /* esc_nc27 */
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {

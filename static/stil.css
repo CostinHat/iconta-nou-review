@@ -2177,6 +2177,11 @@ input[type=file] { min-height: 24px; }  /* a11y tinta atingere >=24px (AA 2.5.8)
 }
 .caseta-atentie .ca-mesaj { font-size: var(--text-mic); color: #7a2020; line-height: 1.4; margin-bottom: 12px; }
 .caseta-atentie .ca-actiuni { display: flex; gap: 8px; }
+/* [drepturi_rol 04.10.2026] Acțiune refuzată rolului (drepturi.js, decizia Costin: „orice acțiune refuzată rolului
+   nu se afișează”). `!important` fiindcă trebuie să bată orice `display` pus de clasa butonului; elementul rămâne
+   în DOM (ecranul îl poate căuta), dar nu se vede, nu primește focus, nu e în arborele de accesibilitate. */
+.drept-refuzat { display: none !important; }
+
 /* [refuz_vazut_v1 27.08.2026] Plasa de sub toate ecranele: un refuz al serverului la o SCRIERE,
    pe care nu-l arata nimeni, apare aici. Aceeasi familie cromatica cu .caseta-atentie (rosu =
    ceva s-a oprit), dar fixat jos si trecator - nu e o stare a ecranului, e un lucru de citit. */
@@ -2526,7 +2531,8 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .ans-grupa { border: 1px solid #e6ebf1; border-radius: 9px; padding: 10px 12px; }
 .ans-grupa-titlu { font-size: 13.5px; font-weight: 700; color: #17324d; margin: 0 0 7px;
   display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.ans-grupa-nr { font-size: 11px; font-weight: 600; color: #8a97a6; background: #f1f5f9; border-radius: 10px; padding: 1px 7px; }
+/* [04.10.2026] `--gri` (text secundar), nu #8a97a6: pe #f1f5f9 acela dădea contrast sub 4,5:1 (axe color-contrast pe bun-venit) */
+.ans-grupa-nr { font-size: 11px; font-weight: 600; color: var(--gri); background: #f1f5f9; border-radius: 10px; padding: 1px 7px; }
 .ans-grupa-lista { list-style: none; margin: 0; padding: 0; }
 .ans-grupa-lista li { font-size: 12.5px; color: #4a5a6b; padding: 2px 0; line-height: 1.5; }
 .ans-inchidere { margin: 16px 0 0; font-size: 13px; color: #48586b; line-height: 1.7;
@@ -2541,7 +2547,12 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
   display: flex; align-items: flex-start; justify-content: center; padding: 34px 16px; overflow: auto; }
 .bun-venit-box { width: min(920px, 100%); background: #fff; border-radius: 14px;
   box-shadow: 0 18px 50px rgba(0,0,0,0.28); overflow: hidden; }
-.bun-venit-antet { background: #17324d; color: #fff; font-weight: 700; font-size: 15px; padding: 13px 20px; }
+.bun-venit-antet { background: #17324d; color: #fff; font-weight: 700; font-size: 15px; padding: 13px 12px 13px 20px;
+                   display: flex; align-items: center; gap: 8px; }
+/* [dialog_inchidere 04.10.2026] X-ul din antet (DS cap.9: fereastra informativă se închide din X și cu Esc).
+   Butonul e `.nav-x` global; aici doar culoarea pe fundalul închis al antetului (gri pe #17324d n-ar avea contrast). */
+.bun-venit-titlu { flex: 1; }
+.bun-venit-antet .nav-x { color: #fff; }
 .bun-venit-corp { padding: 20px 22px; max-height: calc(100dvh - 150px); overflow: auto; }
 /* ============================================================
    CAP. 22 — PAGINI PUBLICE DE GHID · forma Fluent

@@ -1,7 +1,7 @@
 // woo_ecran.js — ecranul WooCommerce (config + sincronizare), reutilizabil.  // wc_extras_v1
 // Extras din firme.js ca sa fie folosit si de cabinet (firme.js) si de contul gratuit
 // (facturi_ecran.js). O singura sursa (regula DS 0a). Semnatura pe tenantId, nu obiect firma.
-import { api } from "../api.js?v=1dccbc985b";
+import { api, arataMesaj } from "../api.js?v=91e1c0701a";
 
 export async function ecranMagazin(corp, nav, tenantId) {
   let mesajSucces = "";
@@ -15,7 +15,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "configurat pentru " + cfg.url : "neconfigurat"}</p>
-      ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" style="margin-bottom:12px">Sincronizează acum</button><br>' : ""}
+      ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" data-actiune="POST /tenants/{tenant_id}/woocommerce/sincronizeaza" style="margin-bottom:12px">Sincronizează acum</button><br>' : ""}
       <button class="buton-secundar" id="wc-btn-config">${cfg.configurat ? "Modifică configurarea" : "Configurează magazinul"}</button>
       <div class="em-rezultat" id="wc-rezultat"></div>
     `;
@@ -48,7 +48,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
         <label for="wc-cs" class="camp-eticheta">Consumer Secret</label>
         <input class="camp-input" id="wc-cs" placeholder="cs_..." type="password" autocomplete="off">
       </div>
-      <button class="buton-primar" id="wc-salveaza">Salvează</button>
+      <button class="buton-primar" id="wc-salveaza" data-actiune="PUT /tenants/{tenant_id}/woocommerce/config">Salvează</button>
       <button class="btn-link" id="wc-renunta" style="margin-left:10px">Renunță</button>
       <p class="ecran-nota" id="wc-msg" style="margin:10px 0 0"></p>
     `;
@@ -63,7 +63,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
         });
         mesajSucces = "Configurare salvata.";
         randeazaPrincipal();
-      } catch (e) { msg.innerHTML = '<span class="msg-eroare">' + (e.mesaj || "eroare") + '</span>'; }
+      } catch (e) { arataMesaj(msg, e.mesaj || "eroare", "eroare"); }
     });
   }
   randeazaPrincipal();

@@ -199,10 +199,16 @@ def jurnal(conn, cabinet_id, de=None, pana=None, limit=200):
 
 
 def sumar(conn, cabinet_id):
-    """Pentru nivelul 1 (card): total actori + câți activi."""
+    """Contorul ecranului Asistenți: ADMINISTRATORII separat de asistenți.
+
+    [comanda Costin 04.10.2026 pct.6] Forma de dinainte (`total`, `activi`) număra toți actorii, iar ecranul îi
+    scria „asistenți”: cu un singur asistent, cabinetul Sesiunea B vedea „2 asistenți · 2 activi”, fiindcă
+    administratorul intra în numărătoare. Câmpurile au acum numele a ceea ce numără."""
     actori = lista_actori(conn, cabinet_id)
-    activi = sum(1 for a in actori if a["activ"])
-    return {"total": len(actori), "activi": activi}
+    asist = [a for a in actori if a["rol"] == "angajat"]
+    return {"administratori": sum(1 for a in actori if a["rol"] == "admin_firma"),
+            "asistenti": len(asist),
+            "asistenti_activi": sum(1 for a in asist if a["activ"])}
 
 
 # ============================================================

@@ -2,7 +2,7 @@
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, confirmaCaseta, esc, bani } from "../api.js?v=1dccbc985b";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, bani } from "../api.js?v=91e1c0701a";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -72,7 +72,7 @@ function randeazaLista(corp, tenantId, lista, reincarca) {
       </div>
       <div class="pr-rand-drept">
         ${badgeCota(p.cota_tva, p.sursa)}
-        <button class="buton-sters pr-sterge" data-id="${p.id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>
+        <button class="buton-sters pr-sterge" data-id="${p.id}" data-actiune="DELETE /tenants/{tenant_id}/produse/{produs_id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>
       </div>
     </div>`).join("");
   zona.querySelectorAll(".pr-sterge").forEach((b) => {
@@ -94,7 +94,7 @@ function formularAdauga(corp, tenantId, reincarca) {
     <div class="pr-form">
       <div class="pr-form-rand">
         <label class="camp-eticheta" for="pr-den">Denumire produs sau serviciu<span class="oblig">*</span></label>
-        <input class="camp-input pr-den" id="pr-den" placeholder="ex: p\u00e2ine alb\u0103, consultan\u021b\u0103" autocomplete="off">
+        <input class="camp-input pr-den" id="pr-den" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" placeholder="ex: p\u00e2ine alb\u0103, consultan\u021b\u0103" autocomplete="off">
       </div>
       <div class="pr-cota-preview" id="pr-cota-preview"></div>
       <div class="camp-eticheta">Pre\u021b \u00b7 unitate de m\u0103sur\u0103 \u00b7 cot\u0103 TVA</div>
@@ -109,7 +109,7 @@ function formularAdauga(corp, tenantId, reincarca) {
         </select>
       </div>
       <div class="pr-form-actiuni">
-        <button class="buton-primar" id="pr-salveaza">Salveaz\u0103</button>
+        <button class="buton-primar" id="pr-salveaza" data-actiune="POST /tenants/{tenant_id}/produse">Salveaz\u0103</button>
         <button class="buton-secundar pr-anuleaza" id="pr-anuleaza">Renun\u021b\u0103</button>
       </div>
     </div>

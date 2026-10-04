@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj, confirmaCaseta, esc } from "../api.js?v=1dccbc985b";  /* audit_cab_lot2_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp } from "../api.js?v=91e1c0701a";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
@@ -30,12 +30,17 @@ export async function randeazaAsistenti(corp, nav) {
     return;
   }
   const actori = (date && date.actori) || [];
-  const sumar = (date && date.sumar) || { total: 0, activi: 0 };
+  const sumar = (date && date.sumar) || { administratori: 0, asistenti: 0, asistenti_activi: 0 };
+  // [comanda Costin 04.10.2026 pct.6] administratorul cabinetului NU e numărat printre asistenți
+  const _n = (k, unu, multi) => `${k} ${k === 1 ? unu : multi}`;
+  const textSumar = `${_n(sumar.administratori, "administrator", "administratori")} · ` +
+    `${_n(sumar.asistenti, "asistent", "asistenți")}` +
+    (sumar.asistenti ? ` (${_n(sumar.asistenti_activi, "activ", "activi")})` : "");
 
   corp.innerHTML = `
     <p class="mig-intro">Asistenții cabinetului: roluri, permisiuni și firmele pe care le lucrează.
       Tu decizi cine poate pregăti, valida și depune declarații.</p>
-    <div class="asi-sumar">${sumar.total} asistenț${sumar.total === 1 ? "ă" : "i"} · ${sumar.activi} activ${sumar.activi === 1 ? "" : "i"}</div>
+    <div class="asi-sumar">${textSumar}</div>
     <div id="asi-banner"></div>
     <button class="buton-primar" id="asi-adauga" style="margin:6px 0 14px">Adaug\u0103 asistent</button>
     <div id="asi-adauga-form" hidden style="margin-bottom:14px">
@@ -43,8 +48,9 @@ export async function randeazaAsistenti(corp, nav) {
         <input class="camp-input" id="asi-email" type="email" placeholder="asistent@cabinet.ro" autocomplete="off"></div>
       <div class="camp" style="margin-bottom:10px"><label for="asi-nume" class="camp-eticheta">Nume (op\u021bional)</label>
         <input class="camp-input" id="asi-nume" autocomplete="off"></div>
+      <label class="set-bifa" style="margin-bottom:6px"><input type="checkbox" id="asi-pregati" checked> <span>Poate pregăti (munca curentă pe firmele alocate)</span></label>
       <label class="set-bifa" style="margin-bottom:10px"><input type="checkbox" id="asi-valida"> <span>Poate valida (Nivel 2)</span></label>
-      <button class="buton-primar" id="asi-trimite">Trimite invita\u021bia</button>
+      <button class="buton-primar" id="asi-trimite" data-actiune="POST /asistenti">Trimite invita\u021bia</button>
       <p id="asi-adauga-msg" style="margin:8px 0 0"></p>
     </div>
     <div id="asi-lista"></div>
@@ -60,13 +66,23 @@ export async function randeazaAsistenti(corp, nav) {
   corp.querySelector("#asi-trimite").addEventListener("click", async () => {
     const msg = corp.querySelector("#asi-adauga-msg");
     const email = corp.querySelector("#asi-email").value.trim();
-    if (!email.includes("@")) { arataMesaj(msg, "Completeaz\u0103 un email valid.", "eroare"); return; }
+    curataEroriCamp(corp);
+    if (!email.includes("@")) { eroareCamp(corp, "asi-email", "Completeaz\u0103 un email valid."); return; }
     try {
+      // [drepturi_rol 04.10.2026] „Poate pregăti” e trimis explicit: până azi invitația nu-l dădea niciodată, iar
+      // asistentul nou ieșea fără niciun drept (ecranul îi spunea totuși „Nivel 1”)
       await api.post("/asistenti", { email, nume: corp.querySelector("#asi-nume").value.trim(),
+        poate_pregati: corp.querySelector("#asi-pregati").checked,
         poate_valida: corp.querySelector("#asi-valida").checked });
       arataMesaj(msg, "Invita\u021bie trimis\u0103 pe " + email + ".", "info");
       setTimeout(() => randeazaAsistenti(corp, nav), 900);
-    } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
+    } catch (e) {
+      // [comanda Costin 04.10.2026 pct.3] adresa cu alt rol: refuzul numit stă pe câmpul de email
+      let peCamp = false;
+      (e.erori_campuri || []).forEach((c) => { if (c.camp === "email" && eroareCamp(corp, "asi-email", c.mesaj)) peCamp = true; });
+      // motivul o singură dată: pe câmp; aici doar ce s-a întâmplat
+      arataMesaj(msg, peCamp ? "Invitația nu s-a trimis. Corectează adresa marcată." : (e.mesaj || e.message), "eroare");
+    }
   });
   const lista = corp.querySelector("#asi-lista");
   /* [patch8_lista_dez] */
@@ -142,7 +158,9 @@ async function deschideEditare(uid, corp, nav) {
   const a = d.actor;
   const firme = d.firme || [];
   const nume = [a.prenume, a.nume].filter(Boolean).join(" ") || a.email;
-  const calcNivel = () => a.poate_depune ? 3 : (a.poate_valida ? 2 : 1);
+  // [drepturi_rol 04.10.2026] fără nicio competență NU e „Nivel 1”: asistentul nu poate face nimic pe firme
+  const nivelText = (preg, val, dep) => dep ? "Nivel 3" : (val ? "Nivel 2" : (preg ? "Nivel 1" : "fără competențe"));
+  const calcNivel = () => nivelText(a.poate_pregati, a.poate_valida, a.poate_depune);
 
   nav.deschide(`Editeaza \u2014 ${nume}`, (box) => {
     const sectiuneFirme = a.atribuire_relevanta
@@ -160,7 +178,7 @@ async function deschideEditare(uid, corp, nav) {
 
     box.innerHTML = `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <span class="asi-nivel-badge" id="asi-nivel-badge">Nivel ${calcNivel()}</span>
+        <span class="asi-nivel-badge" id="asi-nivel-badge">${calcNivel()}</span>
         <span class="tip-desc">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
       </div>
       <div class="asi-sectiune-titlu">Alege competente</div>
@@ -174,11 +192,11 @@ async function deschideEditare(uid, corp, nav) {
       <div class="asi-info-patru">\u2139 \u201ePoate valida\u201d permite aprobarea, dar niciodată a ceea ce a pregătit el însuși (patru ochi).</div>
       ${sectiuneFirme}
       <div class="asi-editbtns">
-        <button class="buton-primar" id="asi-salveaza">Salveaz\u0103</button>
+        <button class="buton-primar" id="asi-salveaza" data-actiune="POST /asistenti/{uid}/permisiuni|POST /asistenti/{uid}/firme/{tid}|DELETE /asistenti/{uid}/firme/{tid}|POST /asistenti/{uid}/finalizeaza-firme">Salveaz\u0103</button>
         ${a.rol !== "admin_firma" && a.activ
-          ? `<button class="buton-secundar mig-buton-sec" id="asi-dezactiveaza">Dezactiveaza asistentul</button>` : ""}
+          ? `<button class="buton-secundar mig-buton-sec" id="asi-dezactiveaza" data-actiune="POST /asistenti/{uid}/dezactiveaza">Dezactiveaza asistentul</button>` : ""}
         ${!a.activ
-          ? `<button class="buton-secundar mig-buton-sec" id="asi-reactiveaza">Reactiveaza</button>` : ""}
+          ? `<button class="buton-secundar mig-buton-sec" id="asi-reactiveaza" data-actiune="POST /asistenti/{uid}/reactiveaza">Reactiveaza</button>` : ""}
       </div>
       <div class="mig-eroare" id="asi-edit-eroare"></div>
     `;
@@ -187,11 +205,11 @@ async function deschideEditare(uid, corp, nav) {
 
     box.querySelectorAll("[data-perm]").forEach((cb) => {
       cb.addEventListener("change", () => {
+        const preg = box.querySelector('[data-perm="poate_pregati"]')?.checked;
         const val = box.querySelector('[data-perm="poate_valida"]')?.checked;
         const dep = box.querySelector('[data-perm="poate_depune"]')?.checked;
-        const nv = dep ? 3 : (val ? 2 : 1);
         const bd = box.querySelector("#asi-nivel-badge");
-        if (bd) bd.textContent = "Nivel " + nv;
+        if (bd) bd.textContent = nivelText(preg, val, dep);
       });
     });
 
@@ -377,7 +395,9 @@ async function _asiBannerEchipa(corp, nav) {
   if (!host) return;
   const cnt = s.counts || {};
   const detalii = [];
-  if (cnt.rosu) detalii.push(`${cnt.rosu} asisten\u021b${cnt.rosu === 1 ? "" : "i"} cu gre\u0219eli repetate`);
+  // [pct.6, generalizat] semaforul numără TOȚI cei care lucrează declarații, inclusiv administratorul — deci
+  // „persoane din echipă”, nu „asistenți” (aceeași clasă cu contorul de sus)
+  if (cnt.rosu) detalii.push(`${cnt.rosu} ${cnt.rosu === 1 ? "persoană" : "persoane"} din echipă cu gre\u0219eli repetate`);
   if (cnt.galben) detalii.push(`${cnt.galben} de urm\u0103rit`);
   if (cnt.verde) detalii.push(`${cnt.verde} f\u0103r\u0103 probleme`);
   const text = detalii.length ? detalii.join(" \u00b7 ") : "nicio declara\u021bie lucrat\u0103 \u00een aceast\u0103 perioad\u0103"; /* semafor_text_explicit_v1 */

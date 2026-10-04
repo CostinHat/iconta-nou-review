@@ -35,6 +35,7 @@ from core.common import pastila_firma, stare_din_nivel  # noqa: F401
 from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, observare as _obs
 # [P7 · V1] Repository-urile de citire: SQL-ul rutelor a plecat acolo.
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
+from core import drepturi as _drepturi  # [drepturi_rol 04.10.2026] cine poate face ce (decizia Costin, varianta 2)
 from core import cronometru as _crono   # [P5] segmentele unei cereri; INERT fara ICONTA_CRONOMETRU
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (ROL_INSUFICIENT, DOAR_ADMIN_ICONTA)
@@ -502,6 +503,7 @@ def cere_rol(*roluri):
         if ctx["rol"] not in roluri and ctx["rol"] != "superadmin":
             raise HTTPException(403, ROL_INSUFICIENT)
         return ctx
+    _verifica.roluri = roluri   # citit de `/eu/drepturi` — garda se descrie singură, nu printr-o listă paralelă
     return _verifica
 
 
@@ -526,6 +528,29 @@ def cere_cabinet(ctx=Depends(cere_context)):
             if r and r[1] is not None and ctx.get("iat") is not None and ctx["iat"] < r[1]:
                 raise HTTPException(401, "Sesiune încheiată (parola a fost schimbată). Autentifică-te din nou.")
     return ctx
+
+def cere_drept(nivel):
+    """Factory: dependență care cere un DREPT de cabinet (`core/drepturi.py`, decizia Costin 04.10.2026).
+
+    Peste `cere_cabinet` (clientul refuzat, cabinetul suspendat, sesiunea veche invalidată): administratorul
+    trece; asistentul trece numai cu bifa nivelului — citită LIVE — și numai pe o firmă ALOCATĂ lui, când
+    ruta poartă `{tenant_id}`. Refuzul spune ce drept lipsește și cine îl dă.
+
+    Nivelul stă pe funcție (`nivel_drept`): `GET /eu/drepturi` îl citește de aici, deci interfața ascunde
+    exact ce refuză garda, fără o a doua listă."""
+    if nivel not in _drepturi.NIVELURI:
+        raise ValueError("nivel de drept necunoscut: %r" % (nivel,))
+
+    def _verifica(request: Request, ctx=Depends(cere_cabinet)):
+        try:
+            with db.get_conn() as conn:
+                _drepturi.verifica(conn, ctx, nivel, request.path_params.get("tenant_id"))
+        except _erori.EroareDeDomeniu as e:
+            raise _http_din(e)
+        return ctx
+    _verifica.nivel_drept = nivel
+    return _verifica
+
 
 # ICRD_AUDIT_LOG_V1 - activitate cabinete (portat din legacy /opt/iconta)
 _AUDIT_SKIP_PATHS = ("/static", "/notificari/contor", "/favicon.ico",
@@ -940,7 +965,7 @@ def gdpr_sterge_executa(cabinet_id: int, date: StergereCabinetIn, ctx=Depends(ce
 
 
 @app.get("/gdpr/export-cabinet")  # [F199] GDPR art.20 portabilitate — export complet cabinet
-def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("admin_firma"))):
+def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         _zip, cab = _uc_gdpr.gdpr_export_cabinet(cabinet_id, ctx)
         return Response(content=_zip, media_type="application/zip",
@@ -950,7 +975,7 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
 
 
 @app.post("/gdpr/cerere-stergere")  # [F200b] GDPR art.17 — cabinetul DEPUNE o cerere; superadmin executa. NU sterge nimic.
-def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_firma"))):
+def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_gdpr.gdpr_cerere_stergere(date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -958,14 +983,14 @@ def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_fir
 
 
 @app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)
-def capacitate_panou(ctx=Depends(cere_rol("admin_firma"))):
+def capacitate_panou(ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_capacitate.capacitate_panou(ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.get("/tipare")  # [p72_tipare] educatie pe tipare (doar patron)
-def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
+def tipare_panou(ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tipare.tipare_panou(ctx)
     except _erori.EroareDeDomeniu as e:
@@ -973,7 +998,7 @@ def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
 
 
 @app.get("/tipare/ai")  # [F120] analiza generativa AI peste tiparele de respingere (doar patron)
-def tipare_ai_panou(ctx=Depends(cere_rol("admin_firma"))):
+def tipare_ai_panou(ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tipare.tipare_ai_panou(ctx)
     except _erori.EroareDeDomeniu as e:
@@ -1012,6 +1037,9 @@ class TenantNou(BaseModel):
     nume: str
     cui: Optional[str] = None
     tip_firma: str = "srl"  # [tip_firma_v1] srl (partida dubla) / pfa (partida simpla)
+    # [comanda Costin 04.10.2026 pct.3] emailul clientului, VERIFICAT ÎNAINTE de crearea firmei: o adresă care
+    # aparține unui cont cu alt rol se refuză pe câmp, iar firma nu se creează pe jumătate
+    email_client: Optional[str] = None
 
 class TenantEdit(BaseModel):
     nume: Optional[str] = None
@@ -1342,7 +1370,7 @@ def tenants(inactive: bool = False, ctx=Depends(cere_cabinet)):
 
 
 @app.get("/firme-scoase")
-def firme_scoase(ctx=Depends(cere_cabinet)):
+def firme_scoase(ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """[R72] Urma firmelor scoase din portofoliu — CITITĂ, nu doar scrisă.
 
     Fără ruta asta, `public.firme_scoase` ar fi a doua instanță, în aceeași zi, a clasei
@@ -1379,7 +1407,7 @@ def _acces_pentru_activare(conn, rol, firm, tenant_id):
 
 
 @app.post("/tenants/{tenant_id}/activare")
-def tenant_activare(tenant_id: int, date: FirmaActivareIn, ctx=Depends(cere_rol("admin_firma"))):
+def tenant_activare(tenant_id: int, date: FirmaActivareIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """[R72] Dezactivează / reactivează firma. O firmă CU evidență nu se șterge — iese din listă
     pe calea asta, iar documentele ei rămân.
 
@@ -1402,7 +1430,7 @@ class NumeAlesIn(BaseModel):
 
 
 @app.post("/tenants/{tenant_id}/nume-ales")
-def tenant_nume_ales(tenant_id: int, date: NumeAlesIn, ctx=Depends(cere_rol("admin_firma"))):
+def tenant_nume_ales(tenant_id: int, date: NumeAlesIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """[R77] Alegerea între denumirea din aplicație și cea de la ANAF. **Amândouă** ramurile scriu:
     a păstra pe a ta e un act, nu absența unuia."""
     try:
@@ -1412,7 +1440,7 @@ def tenant_nume_ales(tenant_id: int, date: NumeAlesIn, ctx=Depends(cere_rol("adm
 
 
 @app.delete("/tenants/{tenant_id}")
-def tenant_scoate(tenant_id: int, confirmare: str = "", ctx=Depends(cere_rol("admin_firma"))):
+def tenant_scoate(tenant_id: int, confirmare: str = "", ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """[R72] Scoate din portofoliu o firmă FĂRĂ evidență. Confirmarea e CUI-ul, nu numele:
     instanța care a produs restanța sunt două firme cu ACELAȘI nume."""
     try:
@@ -1430,7 +1458,7 @@ def tenant_detalii(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants")
-def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
+def tenant_creeaza(date: TenantNou, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tenants.tenant_creeaza(date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -1452,7 +1480,7 @@ def client_acces_lista(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "anga
 
 @app.post("/tenants/{tenant_id}/client-acces")
 def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
-                         ctx=Depends(cere_rol("admin_firma"))):
+                         ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tenants.client_acces_creeaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -1632,7 +1660,7 @@ def activare_cont(date: ActivareIn):
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/client-acces/{user_id}")
-def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tenants.client_acces_revoca(tenant_id, user_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -1640,7 +1668,7 @@ def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_rol("admi
 
 
 @app.post("/tenants/{tenant_id}/acces-portal")  # [F-preview] previzualizare portal client din cabinet
-def acces_portal_preview(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def acces_portal_preview(tenant_id: int, ctx=Depends(cere_drept(_drepturi.CITIRE))):
     """Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei.
     Cabinetul vede exact ce vede clientul, fara sa poata scrie (guard pe backend, nu doar UI).
     Necesita un cont de client al firmei (rol=client in user_tenants); daca nu exista -> 400 cu indrumare."""
@@ -1651,7 +1679,7 @@ def acces_portal_preview(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "an
 
 
 @app.put("/tenants/{tenant_id}")
-def tenant_actualizeaza(tenant_id: int, date: TenantEdit,                         ctx=Depends(cere_rol("admin_firma"))):
+def tenant_actualizeaza(tenant_id: int, date: TenantEdit,                         ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tenants.tenant_actualizeaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -1662,7 +1690,7 @@ def tenant_actualizeaza(tenant_id: int, date: TenantEdit,                       
 #  MIGRARE CABINET — validare CUI la ANAF + import în masă
 # ============================================================
 @app.post("/migrare/valideaza")
-def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_cabinet)):
+def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status."""
     if not date.cui_uri:
         return {"rezultate": [], "ignorate": []}
@@ -1675,7 +1703,7 @@ def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/migrare/fisier")
-def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF."""
     continut = _octetii(fisier)
     try:
@@ -1696,7 +1724,7 @@ def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
 
 
 @app.post("/migrare/incarca")
-def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF."""
     continut = _octetii(fisier)
     try:
@@ -1717,7 +1745,7 @@ def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
 
 
 @app.post("/migrare/importa")
-def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))):
+def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """Creează câte un tenant pentru fiecare firmă selectată. Sare peste CUI-uri deja în portofoliu."""
     try:
         return _uc_migrare.migrare_importa(date, ctx)
@@ -1748,7 +1776,7 @@ def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet
 
 
 @app.post("/migrare/status")
-def migrare_status_seteaza(date: MigrareStatusIn, ctx=Depends(cere_rol("admin_firma"))):
+def migrare_status_seteaza(date: MigrareStatusIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru)."""
     try:
         return _uc_migrare.migrare_status_seteaza(date, ctx)
@@ -1821,7 +1849,7 @@ class PlanContIn(BaseModel):  # [p95_plan_conturi]
 # cont inexistent (R54) „nu apara nimic daca oricine poate adauga contul". Planul de conturi e
 # nomenclator de registru (PLAN_ARHITECTURA Partea III), iar a-l extinde e o decizie despre ce
 # poate inregistra firma — nu o completare de formular.
-def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,                                ctx=Depends(cere_rol("admin_firma"))):
+def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,                                ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.tenant_plan_conturi_adauga(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -1843,7 +1871,7 @@ def migrare_vector_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/solduri/incarca")
-def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Parsează o balanță și întoarce preview (nu salvează)."""
     _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
@@ -1874,7 +1902,7 @@ def solduri_rezumat(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/solduri")
-def solduri_salveaza(tenant_id: int, date: SolduriIn, ctx=Depends(cere_rol("admin_firma"))):
+def solduri_salveaza(tenant_id: int, date: SolduriIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Salvează soldurile inițiale ale unei firme (înlocuiește ce era)."""
     try:
         return _uc_tenants.solduri_salveaza(tenant_id, date, ctx)
@@ -1906,7 +1934,7 @@ def migrare_parteneri_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/parteneri/incarca")
-def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta."""
     try:
         return _uc_tenants.parteneri_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
@@ -1924,7 +1952,7 @@ def parteneri_rezumat(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/parteneri")
-def parteneri_salveaza(tenant_id: int, date: ParteneriIn, ctx=Depends(cere_rol("admin_firma"))):
+def parteneri_salveaza(tenant_id: int, date: ParteneriIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Salveaza soldurile partenerilor unei firme (inlocuieste ce era)."""
     try:
         return _uc_tenants.parteneri_salveaza(tenant_id, date, ctx)
@@ -1957,7 +1985,7 @@ def migrare_salariati_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/salariati-import/incarca")
-def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza)."""
     try:
         return _uc_tenants.salariati_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
@@ -1966,7 +1994,7 @@ def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx
 
 
 @app.post("/tenants/{tenant_id}/salariati-import")
-def salariati_import_salveaza(tenant_id: int, date: SalariatiImportIn, ctx=Depends(cere_rol("admin_firma"))):
+def salariati_import_salveaza(tenant_id: int, date: SalariatiImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Importa salariatii cu CNP valid (upsert pe CNP). Sare peste cei invalizi."""
     try:
         return _uc_tenants.salariati_import_salveaza(tenant_id, date, ctx)
@@ -1999,7 +2027,7 @@ def migrare_asociati_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/asociati-import/incarca")
-def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
     try:
@@ -2012,7 +2040,7 @@ def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
 
 
 @app.post("/tenants/{tenant_id}/asociati-import")
-def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends(cere_rol("admin_firma"))):
+def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.asociati_import_salveaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2024,13 +2052,13 @@ def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends
 class ReteteImportIn(BaseModel):
     retete: list[dict]
 @app.post("/tenants/{tenant_id}/retete-import/incarca")
-def retete_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def retete_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.retete_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 @app.post("/tenants/{tenant_id}/retete-import")
-def retete_import_salveaza(tenant_id: int, date: ReteteImportIn, ctx=Depends(cere_rol("admin_firma"))):
+def retete_import_salveaza(tenant_id: int, date: ReteteImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.retete_import_salveaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2049,7 +2077,7 @@ class ArticoleImportIn(BaseModel):
     randuri: list[ArticolImportIn]
     data_sold: Optional[str] = None
 @app.post("/tenants/{tenant_id}/articole-import/incarca")
-def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
     try:
@@ -2058,7 +2086,7 @@ def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
         raise HTTPException(400, str(e))
     return _raspuns({"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri)})
 @app.post("/tenants/{tenant_id}/articole-import")
-def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends(cere_rol("admin_firma"))):
+def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.articole_import_salveaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2087,7 +2115,7 @@ def migrare_mijloace_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import/incarca")
-def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
     try:
@@ -2103,7 +2131,7 @@ def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
 
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import")
-def mijloace_import_salveaza(tenant_id: int, date: MijloaceFixeImportIn, ctx=Depends(cere_rol("admin_firma"))):
+def mijloace_import_salveaza(tenant_id: int, date: MijloaceFixeImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.mijloace_import_salveaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2137,7 +2165,7 @@ def migrare_istoric_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import/incarca")
-def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
     try:
@@ -2150,7 +2178,7 @@ def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=D
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import")
-def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depends(cere_rol("admin_firma"))):
+def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.istoric_import_salveaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2163,7 +2191,7 @@ def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depen
 #  NU balanta de deschidere (partida simpla nu are sold-rand separat).
 # ============================================================
 @app.post("/tenants/{tenant_id}/rip-import/incarca")
-def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_rol("admin_firma"))):
+def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """
     Import registru incasari-plati la preluarea unui PFA. Parseaza fisierul, RAPORTEAZA
     randurile respinse (ambigue/incomplete) INAINTE de commit, apoi importa operatiunile
@@ -2287,7 +2315,7 @@ def supervizor_la_cerere(ctx=Depends(cere_cabinet)):
 @app.post("/control-fiscal/{tenant_id}/audit-preluare")
 # [R45] POST: auditul e declansat de un buton, deci e un ACT — iar verdictul lui se pastreaza.
 # Un GET n-are voie sa scrie (interdictia 6).
-def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior
     (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs istoric declaratii, RIP la
     PFA). Motor separat (core/audit_preluare), NU control_incrucisat: la preluare ambele surse sunt EXTERNE.
@@ -2367,7 +2395,7 @@ def produse_lista(tenant_id: int, ctx=Depends(cere_context)):
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/produse/potriveste")
-def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cere_context)):
+def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     # preview cota (AI), fara salvare - pentru UI la scrierea denumirii; statutul TVA din profilul firmei
     try:
         return _uc_tenants.produse_potriveste(tenant_id, date.denumire, ctx)
@@ -2375,21 +2403,21 @@ def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cer
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/produse")
-def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_cabinet)):
+def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.produse_creeaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/produse/{produs_id}")
-def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,                          ctx=Depends(cere_cabinet)):
+def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,                          ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.produse_actualizeaza(tenant_id, produs_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/produse/{produs_id}")
-def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_cabinet)):
+def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.produse_sterge(tenant_id, produs_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2413,7 +2441,7 @@ def facturi_numerotare_get(tenant_id: int, ctx=Depends(cere_context)):
 
 @app.put("/tenants/{tenant_id}/facturi/numerotare")
 # [R42] Seria documentelor emise: o schimbare aici lasa goluri intr-o numerotare (interdictia 35).
-def facturi_numerotare_set(tenant_id: int, date: NumerotareIn,                            ctx=Depends(cere_rol("admin_firma"))):
+def facturi_numerotare_set(tenant_id: int, date: NumerotareIn,                            ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.facturi_numerotare_set(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2432,7 +2460,7 @@ class OptInScadentarIn(BaseModel):
     activ: bool
 
 @app.put("/tenants/{tenant_id}/scadentar/opt-in")
-def scadentar_optin(tenant_id: int, date: OptInScadentarIn,                     ctx=Depends(cere_rol("admin_firma"))):
+def scadentar_optin(tenant_id: int, date: OptInScadentarIn,                     ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF)."""
     try:
         return _uc_tenants.scadentar_optin(tenant_id, date, ctx)
@@ -2444,7 +2472,7 @@ class SupapaScadentarIn(BaseModel):
     amanata_pana: Optional[str] = None
 
 @app.put("/tenants/{tenant_id}/facturi/{factura_id}/notificare")
-def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn,                      ctx=Depends(cere_rol("admin_firma"))):
+def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn,                      ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """F131: supapa per factura - nu notifica (stop) / amana pana la data X."""
     try:
         return _uc_tenants.scadentar_supapa(tenant_id, factura_id, date, ctx)
@@ -2496,7 +2524,10 @@ class RegimTvaIn(BaseModel):
 # Nu e o ieșire — nu pleacă nimic — dar `platitor_tva` decide dacă firma datorează D300/D394 și
 # pe ce perioade. O schimbare greșită nu produce o eroare vizibilă: produce declarații care nu se
 # mai depun, sau se depun greșit.
-def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_rol("admin_firma"))):
+def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    # [PIVOT 04.10.2026] Criteriul R42 (c) de deasupra („admin_firma”) e înlocuit — acum „Poate pregăti”: regimul se
+    # scrie și prin vectorul fiscal (pasul 2 din Import date, la „Poate pregăti” prin
+    # decizia Costin „varianta 2”); două uși către același fapt cu gărzi diferite ar fi o gaură (DECIZII 04.10.2026).
     try:
         return _uc_tenants.firma_profil_regim_tva(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2511,7 +2542,7 @@ def firma_profil_date(tenant_id: int, ctx=Depends(cere_context)):
 
 
 @app.post("/tenants/{tenant_id}/firma-profil/date")  # [date_firma_v1]
-def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),                                ctx=Depends(cere_cabinet)):
+def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),                                ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.firma_profil_date_salveaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2519,7 +2550,7 @@ def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),          
 
 
 @app.post("/tenants/{tenant_id}/firma-profil/model")
-def firma_profil_model(tenant_id: int, date: ModelFacturaIn, ctx=Depends(cere_context)):
+def firma_profil_model(tenant_id: int, date: ModelFacturaIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.firma_profil_model(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2541,7 +2572,7 @@ class EmailFacturaIn(BaseModel):
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/email")
 # [R42] Trimiterea către client: „iese către un om". Un email plecat nu se poate reface.
 def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn,
-                  ctx=Depends(cere_rol("admin_firma"))):
+                  ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.factura_email(tenant_id, factura_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2555,21 +2586,21 @@ def fr_lista(tenant_id: int, ctx=Depends(cere_context)):
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/facturi-recurente")
-def fr_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_context)):
+def fr_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.fr_adauga(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/facturi-recurente/{sid}")
-def fr_comuta(tenant_id: int, sid: int, activ: bool, ctx=Depends(cere_context)):
+def fr_comuta(tenant_id: int, sid: int, activ: bool, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.fr_comuta(tenant_id, sid, activ, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/facturi-recurente/{sid}")
-def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_context)):
+def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.fr_sterge(tenant_id, sid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2586,7 +2617,7 @@ def _preincalzeste_cursul(moneda, data_emitere):
 
 @app.post("/tenants/{tenant_id}/facturi/emite")
 # [R42] „emiterea unui document" — factura primește număr din serie și ajunge la un om.
-def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_firma"))):
+def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.facturi_emite(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2594,7 +2625,7 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_f
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/storno")
 # [R42] Stornarea nu corectează documentul emis — emite AL DOILEA document (P4).
-def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.facturi_storno(tenant_id, factura_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2631,7 +2662,7 @@ def vector_citeste(tenant_id: int, ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/vector")  # [p82_vector] scrie vectorul (doar admin_firma)
-def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_firma"))):
+def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.vector_salveaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2649,7 +2680,7 @@ def facturi_lista(tenant_id: int, an: Optional[int] = None,                   lu
 @app.post("/tenants/{tenant_id}/facturi")
 # [R42] A doua cale de creare a facturii (vezi R14: două funcții, stări implicite diferite).
 # Amândouă produc un document numerotat, deci amândouă intră la „emiterea unui document".
-def factura_creeaza(tenant_id: int, date: FacturaIn,                     ctx=Depends(cere_rol("admin_firma"))):
+def factura_creeaza(tenant_id: int, date: FacturaIn,                     ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.factura_creeaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2666,7 +2697,7 @@ def _moneda_facturii(schema, factura_id):
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/transforma")
-def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal)."""
     try:
         return _uc_tenants.proforma_transforma(tenant_id, factura_id, ctx)
@@ -2686,7 +2717,7 @@ def factura_detalii(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
 
 @app.delete("/tenants/{tenant_id}/facturi/{factura_id}")
 # [R42] „ștergerea a ceva emis" — o factură ștearsă lasă un gol în serie (interdicția 35).
-def factura_sterge(tenant_id: int, factura_id: int,                    ctx=Depends(cere_rol("admin_firma"))):
+def factura_sterge(tenant_id: int, factura_id: int,                    ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """[EEE2] Refuzul e EXPLICAT, nu o eroare de bază: `409`, cu numărul notei și cu ieșirea numită
     (storno). Fără el, cu note automate, ștergerea ar fi început să pice pe cheia străină
     `inregistrari_factura_id_fkey`, care n-are `ON DELETE`."""
@@ -2708,7 +2739,7 @@ def clienti_lista(tenant_id: int, status: Optional[str] = None,                 
 
 
 @app.post("/tenants/{tenant_id}/clienti")
-def client_creeaza(tenant_id: int, date: ClientIn,                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def client_creeaza(tenant_id: int, date: ClientIn,                    ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.client_creeaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2724,7 +2755,7 @@ def client_detalii(tenant_id: int, client_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.put("/tenants/{tenant_id}/clienti/{client_id}")
-def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,                         ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,                         ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.client_actualizeaza(tenant_id, client_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2732,7 +2763,7 @@ def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,       
 
 
 @app.delete("/tenants/{tenant_id}/clienti/{client_id}")
-def client_sterge(tenant_id: int, client_id: int,                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def client_sterge(tenant_id: int, client_id: int,                   ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.client_sterge(tenant_id, client_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2751,7 +2782,7 @@ def salariati_lista(tenant_id: int, activ: Optional[bool] = None,               
 
 
 @app.post("/tenants/{tenant_id}/salariati")
-def salariat_creeaza(tenant_id: int, date: SalariatIn,                      ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def salariat_creeaza(tenant_id: int, date: SalariatIn,                      ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.salariat_creeaza(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2767,7 +2798,7 @@ def salariat_detalii(tenant_id: int, salariat_id: int, ctx=Depends(cere_cabinet)
 
 
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}")
-def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,                           ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,                           ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.salariat_actualizeaza(tenant_id, salariat_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2785,7 +2816,7 @@ def cor_cauta(q: str = "", ctx=Depends(cere_context)):
 
 
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar")
-def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body(...),                              ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body(...),                              ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """[F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) - upsert; 0 = sterge."""
     try:
         return _uc_tenants.salariat_beneficiu_lunar(tenant_id, salariat_id, corp, ctx)
@@ -2794,7 +2825,7 @@ def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body
 
 
 @app.delete("/tenants/{tenant_id}/salariati/{salariat_id}")
-def salariat_sterge(tenant_id: int, salariat_id: int,                     ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def salariat_sterge(tenant_id: int, salariat_id: int,                     ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.salariat_sterge(tenant_id, salariat_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2810,7 +2841,7 @@ def cm_lista(tenant_id: int, salariat_id: int, an: int = None, ctx=Depends(cere_
 
 
 @app.post("/tenants/{tenant_id}/salariati/{salariat_id}/concedii")  # cm_salveaza_v1
-def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),                 ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),                 ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cm_salveaza(tenant_id, salariat_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2818,7 +2849,7 @@ def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),       
 
 
 @app.delete("/tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}")  # cm_sterge_v1
-def cm_sterge(tenant_id: int, salariat_id: int, cm_id: int,               ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def cm_sterge(tenant_id: int, salariat_id: int, cm_id: int,               ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cm_sterge(tenant_id, salariat_id, cm_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2854,7 +2885,7 @@ def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
         raise _http_din(e)
 
 @app.post("/coada")
-def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def coada_adauga(date: CoadaIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_coada.coada_adauga(date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2882,7 +2913,7 @@ def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
 
 @app.post("/coada/{coada_id}/aproba")
 def coada_aproba(coada_id: int, date: dict = Body(default={}),
-                 ctx=Depends(cere_rol("admin_firma", "angajat"))):
+                 ctx=Depends(cere_drept(_drepturi.VALIDA))):
     try:
         return _uc_coada.coada_aproba(coada_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2891,7 +2922,7 @@ def coada_aproba(coada_id: int, date: dict = Body(default={}),
 
 @app.post("/coada/{coada_id}/respinge")
 def coada_respinge(coada_id: int, date: RespingeIn,
-                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
+                   ctx=Depends(cere_drept(_drepturi.VALIDA))):
     try:
         return _uc_coada.coada_respinge(coada_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2902,7 +2933,7 @@ def coada_respinge(coada_id: int, date: RespingeIn,
 # [R42] „confirmarea depunerii" — declarația pleacă la autoritate și nu se mai poate reface.
 # Validarea (`aproba`/`respinge`) rămâne la asistent: aia se poate reface.
 def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
-                 ctx=Depends(cere_rol("admin_firma"))):
+                 ctx=Depends(cere_drept(_drepturi.DEPUNE))):
     try:
         return _uc_coada.coada_depune(coada_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2957,7 +2988,7 @@ def pachet_rezumat(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)
         raise _http_din(e)
 
 @app.post("/pachete/{tenant_id}/genereaza")
-def pachet_genereaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def pachet_genereaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_pachete.pachet_genereaza(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -2989,7 +3020,7 @@ def _nume_tenant(conn, tenant_id):
 
 @app.post("/pachete/{tenant_id}/poveste")
 # [R42] „iese către un om" — pe `status=aprobat` pleacă raportul lunar la client.
-def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,                        ctx=Depends(cere_rol("admin_firma"))):
+def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,                        ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_pachete.pachet_poveste_set(tenant_id, an, luna, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3004,7 +3035,7 @@ def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depen
 
 @app.post("/pachete/{tenant_id}/trimite")
 # [R42] „iese către un om" — pachetul lunar pleacă la clientul cabinetului.
-def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
+def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_pachete.pachet_trimite(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3030,7 +3061,7 @@ def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)
 
 
 @app.post("/declaratii/{tip}/valideaza")  # duk_valideaza_v1
-def declaratie_valideaza(tip: str, date: DeclaratieIn,                          ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def declaratie_valideaza(tip: str, date: DeclaratieIn,                          ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator).
     Intoarce TREI stari: valid / erori / gri (gri = nu am putut valida; un XML
     nevalidat NU se declara valid). Vezi core/duk.py."""
@@ -3041,7 +3072,7 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,                          
 
 
 @app.post("/declaratii/{tip}")
-def declaratie_genereaza(tip: str, date: DeclaratieIn,                          ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def declaratie_genereaza(tip: str, date: DeclaratieIn,                          ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_declaratii.declaratie_genereaza(tip, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3212,7 +3243,7 @@ class BonAproba(BaseModel):
 # in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
 # reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
 # direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
-def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,                ctx=Depends(cere_rol("admin_firma"))):
+def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,                ctx=Depends(cere_drept(_drepturi.VALIDA))):
     try:
         return _uc_tenants.bon_aproba(tenant_id, bon_id, b, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3227,7 +3258,7 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,                ctx=Dep
 #
 # POST desi nu scrie nimic - acelasi precedent ca `calcul-cm` si `prapastie-salariu`. Regula pe
 # care o respecta e cealalta: un GET n-are voie sa scrie (interdictia 6). Aici nu scrie nimeni.
-def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre."""
     try:
         return _uc_tenants.salarii_contare_propunere(tenant_id, an, luna, ctx)
@@ -3239,7 +3270,7 @@ def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(ce
 # [R33] Actul: scrie nota CIORNA a statului de plata. Semnaleaza, NU blocheaza - divergenta se
 # intoarce si dupa contare, ca sa nu se stinga prin ignorare (regula de la contradictiile pe
 # statul de plata). Ciorna, nu validata: patru-ochi ramane.
-def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Scrie nota ciorna a statului de plata. Idempotent pe `document_ref` (interdictia 8:
     schema nu lasa un al doilea exemplar)."""
     try:
@@ -3254,7 +3285,7 @@ def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
 # in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
 # reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
 # direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
-def tenant_amortizare(tenant_id: int, an: int, luna: int,                       ctx=Depends(cere_rol("admin_firma"))):
+def tenant_amortizare(tenant_id: int, an: int, luna: int,                       ctx=Depends(cere_drept(_drepturi.VALIDA))):
     """Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ."""
     try:
         return _uc_tenants.tenant_amortizare(tenant_id, an, luna, ctx)
@@ -3349,7 +3380,7 @@ def _ciorne_in_perioada(cur, schema, an, luna):
 #       poartă. NU se duplică: se cheamă exact `inchidere_luna.blocaj`.
 # Ce NU s-a adăugat, cu motivul lui: echilibrul și orfanii — cer o măsurătoare pe ce s-ar bloca
 # azi pe firme reale, iar aia se discută separat.
-def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
+def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.VALIDA))):
     try:
         return _uc_tenants.perioada_blocheaza(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3361,7 +3392,7 @@ def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol(
 # faptul că perioada fusese închisă. Urma trăiește acum în `perioade_inchideri` (append-only,
 # cu constrângerea de motiv în BAZĂ, nu doar aici — o urmă care se poate scrie fără motiv de pe
 # altă cale n-ar fi o urmă). Poarta rămâne neatinsă: `_cere_luna_deschisa` citește ca înainte.
-def perioada_deblocheaza(tenant_id: int, an: int, luna: int, motiv: str = "",                          ctx=Depends(cere_rol("admin_firma"))):
+def perioada_deblocheaza(tenant_id: int, an: int, luna: int, motiv: str = "",                          ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tenants.perioada_deblocheaza(tenant_id, an, luna, motiv, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3411,7 +3442,7 @@ def _cere_z_unic(cur, schema, numar):
 # unicitate a raportului Z, iar baza n-avea index care s-o înlocuiască. Acum îl are
 # (`core/raport_z.py`), pus pe firmele noi din template și pe cele existente la pornire, deci
 # serializarea buclei nu mai e nimănui necesară.
-def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA.
     Nota se genereaza pe cote reale din XML: 5311/5125=707 + 707=4427 per cota."""
     try:
@@ -3426,13 +3457,13 @@ def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depen
 # reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
 # direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
 def horeca_raport_z(tenant_id: int, rz: RaportZ,
-                    ctx=Depends(cere_rol("admin_firma"))):
+                    ctx=Depends(cere_drept(_drepturi.VALIDA))):
     try:
         return _uc_tenants.horeca_raport_z(tenant_id, rz, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 @app.post("/tenants/{tenant_id}/banca/parse-extras")  # [api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat
-def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.banca_parse_extras(tenant_id, _octetii(fisier), fisier.filename, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3446,7 +3477,7 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
 @app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
 # [R52] Poartă salariul unei PERSOANE — date despre cineva care nu e firma.
 def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int,
-                    ctx=Depends(cere_rol("admin_firma"))):
+                    ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         pdf = _uc_tenants.tenant_fluturas(tenant_id, salariat_id, an, luna, ctx)
         return Response(content=pdf, media_type="application/pdf",
@@ -3473,7 +3504,7 @@ def _cere_an_luna(corp):
 # [R42] „iese către un om" — statul se îngheață cu amprentă, exemplar numerotat (P4).
 # Dreptul fin `poate_valida` rămâne, verificat în corp: rolul e condiția, dreptul e a doua.
 def tenant_stat_emite(tenant_id: int, corp: dict = Body(...),
-                      ctx=Depends(cere_rol("admin_firma"))):
+                      ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {an, luna}. Idempotent: cine are deja exemplar nu primeste al doilea (ala e o corectie)."""
     try:
         return _uc_tenants.tenant_stat_emite(tenant_id, corp, ctx)
@@ -3491,7 +3522,7 @@ def tenant_stat_emis(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabine
 
 
 @app.post("/tenants/{tenant_id}/stat-plata/corectie")
-def tenant_stat_corectie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def tenant_stat_corectie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {salariat_id, an, luna}. Al doilea exemplar. Primul ramane - el a ajuns la om."""
     try:
         return _uc_tenants.tenant_stat_corectie(tenant_id, corp, ctx)
@@ -3500,7 +3531,7 @@ def tenant_stat_corectie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/stat-plata/motiv")
-def tenant_stat_motiv(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def tenant_stat_motiv(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {exemplar_id, motiv}. ASUMA divergenta, nu o sterge: ramane in lista, cu cine si cand."""
     try:
         return _uc_tenants.tenant_stat_motiv(tenant_id, corp, ctx)
@@ -3521,7 +3552,7 @@ def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends
 # [R45] POST, nu GET: producerea fișierului care pleacă la bancă e un ACT, iar un GET n-are
 # voie să scrie (interdicția 6, `core/test_get_fara_scriere.py`). Metoda contrazicea fapta.
 def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int,
-                                ctx=Depends(cere_rol("admin_firma"))):
+                                ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download).
     [R45] Se pastreaza: continut, moment, autor, amprenta, numar de exemplar."""
     try:
@@ -3552,7 +3583,7 @@ def d390_clasificare_stare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_
 
 
 @app.put("/tenants/{tenant_id}/d390-clasificare/reclasificare")
-def d390_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def d390_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}."""
     try:
         return _uc_tenants.d390_reclasificare(tenant_id, corp, ctx)
@@ -3561,7 +3592,7 @@ def d390_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
 
 
 @app.post("/tenants/{tenant_id}/d390-clasificare/manual")
-def d390_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def d390_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}."""
     try:
         return _uc_tenants.d390_manual_adauga(tenant_id, corp, ctx)
@@ -3570,7 +3601,7 @@ def d390_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
 
 
 @app.delete("/tenants/{tenant_id}/d390-clasificare/manual/{mid}")
-def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.d390_manual_sterge(tenant_id, mid, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3589,7 +3620,7 @@ def d301_operatiuni_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
 
 
 @app.post("/tenants/{tenant_id}/d301-operatiuni")
-def d301_operatiuni_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def d301_operatiuni_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}."""
     try:
         return _uc_tenants.d301_operatiuni_adauga(tenant_id, corp, ctx)
@@ -3598,7 +3629,7 @@ def d301_operatiuni_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
 
 
 @app.delete("/tenants/{tenant_id}/d301-operatiuni/{op_id}")
-def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.d301_operatiuni_sterge(tenant_id, op_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3621,7 +3652,7 @@ def d300_manual_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
 
 
 @app.post("/tenants/{tenant_id}/d300-manual")
-def d300_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def d300_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}."""
     try:
         return _uc_tenants.d300_manual_adauga(tenant_id, corp, ctx)
@@ -3630,7 +3661,7 @@ def d300_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
 
 
 @app.delete("/tenants/{tenant_id}/d300-manual/{rid}")
-def d300_manual_sterge(tenant_id: int, rid: int, ctx=Depends(cere_cabinet)):
+def d300_manual_sterge(tenant_id: int, rid: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.d300_manual_sterge(tenant_id, rid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3660,7 +3691,7 @@ class AdeverintaIn(BaseModel):  # F136
 @app.post("/tenants/{tenant_id}/salariati/{salariat_id}/adeverinta")
 # [R42] „iese către un om" — adeverința pleacă la salariat (art. 34(5) Codul muncii).
 def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn,
-                      ctx=Depends(cere_rol("admin_firma"))):
+                      ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """F136: adeverinta de salariat (art. 34(5) Codul muncii) -> PDF."""
     try:
         pdf = _uc_tenants.tenant_adeverinta(tenant_id, salariat_id, date, ctx)
@@ -3682,7 +3713,7 @@ class PontajIn(BaseModel):
     stare: Optional[str] = None
 
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}/pontaj")
-def tenant_pontaj_set(tenant_id: int, salariat_id: int, date: PontajIn, ctx=Depends(cere_context)):
+def tenant_pontaj_set(tenant_id: int, salariat_id: int, date: PontajIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia)."""
     try:
         return _uc_tenants.tenant_pontaj_set(tenant_id, salariat_id, date, ctx)
@@ -3706,9 +3737,10 @@ def tenant_facturi_perioada(tenant_id: int, an: int, luna: int, ctx=Depends(cere
 
 
 @app.post("/tenants/{tenant_id}/facturi/perioada/confirma")
-def tenant_facturi_perioada_confirma(tenant_id: int, date: ConfirmaPontajIn,                                      ctx=Depends(cere_rol("admin_firma"))):
+def tenant_facturi_perioada_confirma(tenant_id: int, date: ConfirmaPontajIn,                                      ctx=Depends(cere_drept(_drepturi.VALIDA))):
     """[cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate
-    sprijini pe ea cand spune ca o declaratie nu se datoreaza. Rol admin_firma, ca la pontaj.
+    sprijini pe ea cand spune ca o declaratie nu se datoreaza. „Poate valida”: închiderea lunii (decizia Costin
+    04.10.2026); redeschiderea manuală e a administratorului (deblocarea unei perioade închise).
     REFUZA motivat daca stim de e-Facturi primite si neinregistrate — nu lasam pe cineva sa declare
     complet ceva ce noi vedem deja ca nu e."""
     try:
@@ -3718,7 +3750,7 @@ def tenant_facturi_perioada_confirma(tenant_id: int, date: ConfirmaPontajIn,    
 
 
 @app.post("/tenants/{tenant_id}/facturi/perioada/redeschide")
-def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,                                        ctx=Depends(cere_rol("admin_firma"))):
+def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,                                        ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """[cap.23] Redeschide luna (o corectie de facturi cere redeschiderea). Simetric cu confirmarea;
     o modificare de facturi o face oricum AUTOMAT (facturi_api._redeschide_luna)."""
     try:
@@ -3728,9 +3760,9 @@ def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,  
 
 
 @app.post("/tenants/{tenant_id}/pontaj/confirma")
-def tenant_pontaj_confirma(tenant_id: int, date: ConfirmaPontajIn, ctx=Depends(cere_rol("admin_firma"))):
+def tenant_pontaj_confirma(tenant_id: int, date: ConfirmaPontajIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """[cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv
-    lucrate). Rol admin_firma. Idempotent (re-confirmarea reimprospateaza)."""
+    lucrate). „Poate pregăti” — pontajul e munca curentă (decizia Costin 04.10.2026). Idempotent."""
     try:
         return _uc_tenants.tenant_pontaj_confirma(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3814,7 +3846,7 @@ def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx
 @app.get("/tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}")
 # [R52] Fotografia unui bon: orice apare pe hârtia aia, inclusiv ce nu ține de firmă.
 def cabinet_bon_imagine(tenant_id: int, bon_id: int, n: int,
-                        ctx=Depends(cere_rol("admin_firma"))):
+                        ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         cale = _uc_tenants.cabinet_bon_imagine(tenant_id, bon_id, n, ctx)
         return FileResponse(cale)
@@ -3838,7 +3870,7 @@ class ChitantaStinge(BaseModel):
     factura_id: Optional[int] = None
 
 @app.post("/tenants/{tenant_id}/bonuri/{bon_id}/stinge")
-def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge,                     ctx=Depends(cere_rol("admin_firma"))):
+def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge,                     ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Chitanta certificata de contabil: plata furnizor prin Registrul de casa
     (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon).
     Optional leaga si marcheaza platita factura primita."""
@@ -3859,7 +3891,7 @@ class ChitantaEmite(BaseModel):
 
 @app.post("/tenants/{tenant_id}/chitante")
 # [R42] „iese către un om" — chitanța (14-4-1) e document cu regim de numerotare.
-def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_rol("admin_firma"))):
+def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar:
     numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api
     (5311=4111, nota ciorna, verificare plafon Legea 70/2015). Fara factura, cu `cota_tva`, la firma exceptata de la
@@ -3874,7 +3906,7 @@ class ChitantaCota(BaseModel):
 
 @app.put("/tenants/{tenant_id}/chitante/{chitanta_id}/cota")
 # [D394 Î2] scrie pe nota ciornă a chitanței (venit + 4427) — rol de firmă, ca emiterea.
-def chitanta_cota(tenant_id: int, chitanta_id: int, c: ChitantaCota, ctx=Depends(cere_rol("admin_firma"))):
+def chitanta_cota(tenant_id: int, chitanta_id: int, c: ChitantaCota, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Stabileste cota de TVA a unei chitante fara factura emise inainte ca firma sa fie marcata exceptata de la AMEF
     (OUG 28/1999 art.2): nota ciorna 5311=4111 devine 5311 = cont venit + 5311 = 4427, iar chitanta intra in D394 Î2."""
     try:
@@ -3891,7 +3923,7 @@ def chitante_lista(tenant_id: int, factura_id: Optional[int] = None, ctx=Depends
 
 @app.get("/tenants/{tenant_id}/chitante/{chitanta_id}/pdf")
 # [R52] Poartă numele și suma plătită de un terț.
-def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         pdf, r = _uc_tenants.chitanta_pdf(tenant_id, chitanta_id, ctx)
         return Response(content=pdf, media_type="application/pdf",
@@ -3937,7 +3969,7 @@ def registru_fiscal_citeste(tenant_id: int, an: int, varianta: str = "profit",  
 
 
 @app.post("/tenants/{tenant_id}/registru-evidenta-fiscala")
-def registru_fiscal_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def registru_fiscal_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Înscrie un rând în varianta PERSOANE FIZICE — singura care se completează.
 
     Varianta pe profit se derivă din D101 și n-are ce primi: un `POST` pe ea ar însemna o a doua
@@ -3977,7 +4009,7 @@ def registru_inventar_propunere(tenant_id: int, an: int, luna: int = 12,        
 
 
 @app.post("/tenants/{tenant_id}/registru-inventar")
-def registru_inventar_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def registru_inventar_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Inscrie un rand. Refuzul iese pe contractul comun `detail.erori_campuri`."""
     try:
         return _uc_tenants.registru_inventar_adauga(tenant_id, corp, ctx)
@@ -4011,7 +4043,7 @@ def registre_art321_citeste(tenant_id: int, fel: str, an: Optional[int] = None, 
 
 
 @app.post("/tenants/{tenant_id}/registre-art321/{fel}")
-def registre_art321_adauga(tenant_id: int, fel: str, corp: dict = Body(...),                            ctx=Depends(cere_cabinet)):
+def registre_art321_adauga(tenant_id: int, fel: str, corp: dict = Body(...),                            ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Inscrie un rand. Refuzul de completitudine iese ca 400 CU campul si temeiul, nu ca proza.
 
     Pe contractul care EXISTA deja — `detail.erori_campuri = [{camp, mesaj}]`, normalizat de
@@ -4064,7 +4096,7 @@ def _api_schema(actx, tenant_id):
 
 
 @app.post("/cabinet/api-chei")  # api_public_v1
-def api_cheie_creeaza(corp: dict = Body(default={}), ctx=Depends(cere_rol("admin_firma"))):
+def api_cheie_creeaza(corp: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_cabinet.api_cheie_creeaza(corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4072,7 +4104,7 @@ def api_cheie_creeaza(corp: dict = Body(default={}), ctx=Depends(cere_rol("admin
 
 
 @app.get("/cabinet/api-chei")  # api_public_v1
-def api_chei_lista(ctx=Depends(cere_rol("admin_firma"))):
+def api_chei_lista(ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_cabinet.api_chei_lista(ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4080,7 +4112,7 @@ def api_chei_lista(ctx=Depends(cere_rol("admin_firma"))):
 
 
 @app.delete("/cabinet/api-chei/{kid}")  # api_public_v1
-def api_cheie_revoca(kid: int, ctx=Depends(cere_rol("admin_firma"))):
+def api_cheie_revoca(kid: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_cabinet.api_cheie_revoca(kid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4146,7 +4178,7 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/woocommerce/sincronizeaza")  # wc_sinc_v1
-def wc_sinc(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def wc_sinc(tenant_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     from core import woocommerce as _wc
     schema = _schema_sau_404(ctx, tenant_id)
     # [P5 val 3] `sincronizeaza` isi deschide singura conexiunile: una pentru config, alta pentru
@@ -4168,7 +4200,7 @@ def wc_config_get(tenant_id: int, ctx=Depends(cere_context)):
 # [R42 (d)] Pornirea și oprirea unui canal cer `admin_firma`. Costin: *„nu e organizare internă —
 # e o decizie despre cum comunică firma cu autoritatea și cu clienții."* Ruta asta scrie chiar
 # cheile canalului: cu ele pline canalul e pornit, golite îl oprește.
-def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_rol("admin_firma"))):
+def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_tenants.wc_config(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4290,7 +4322,7 @@ def cabinet_solicitari_lista(tenant_id: int, ctx=Depends(cere_context)):
 
 @app.post("/tenants/{tenant_id}/solicitari")
 # [R42] „iese către un om" — răspunsul pleacă pe email la clientul firmei.
-def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,                                 ctx=Depends(cere_rol("admin_firma"))):
+def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,                                 ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cabinet_solicitari_raspunde(tenant_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4337,17 +4369,18 @@ def asistenti_detalii(uid: int, ctx=Depends(cere_cabinet)):
 class AsistentNouIn(BaseModel):
     email: str
     nume: str = ""
+    poate_pregati: bool = True    # [drepturi_rol 04.10.2026] „Poate pregăti” = munca curentă a oricărui asistent
     poate_valida: bool = False
 
 @app.post("/asistenti")
-def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
+def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_asistenti.asistent_creeaza(date, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.post("/asistenti/{uid}/permisiuni")
-def asistenti_permisiuni(uid: int, date: dict = Body(...), ctx=Depends(cere_cabinet)):
+def asistenti_permisiuni(uid: int, date: dict = Body(...), ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_asistenti.asistenti_permisiuni(uid, date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4355,7 +4388,7 @@ def asistenti_permisiuni(uid: int, date: dict = Body(...), ctx=Depends(cere_cabi
 
 
 @app.post("/asistenti/{uid}/firme/{tid}")
-def asistenti_atribuie(uid: int, tid: int, ctx=Depends(cere_cabinet)):
+def asistenti_atribuie(uid: int, tid: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_asistenti.asistenti_atribuie(uid, tid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4363,7 +4396,7 @@ def asistenti_atribuie(uid: int, tid: int, ctx=Depends(cere_cabinet)):
 
 
 @app.delete("/asistenti/{uid}/firme/{tid}")
-def asistenti_elimina(uid: int, tid: int, ctx=Depends(cere_cabinet)):
+def asistenti_elimina(uid: int, tid: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_asistenti.asistenti_elimina(uid, tid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4371,7 +4404,7 @@ def asistenti_elimina(uid: int, tid: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/asistenti/{uid}/dezactiveaza")
-def asistenti_dezactiveaza(uid: int, ctx=Depends(cere_cabinet)):
+def asistenti_dezactiveaza(uid: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_asistenti.asistenti_dezactiveaza(uid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4379,7 +4412,7 @@ def asistenti_dezactiveaza(uid: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/asistenti/{uid}/reactiveaza")
-def asistenti_reactiveaza(uid: int, ctx=Depends(cere_cabinet)):
+def asistenti_reactiveaza(uid: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_asistenti.asistenti_reactiveaza(uid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4389,7 +4422,7 @@ def asistenti_reactiveaza(uid: int, ctx=Depends(cere_cabinet)):
 
 # [patch7_finalizeaza_firme]
 @app.post("/asistenti/{uid}/finalizeaza-firme")
-def asistenti_finalizeaza_firme(uid: int, ctx=Depends(cere_cabinet)):
+def asistenti_finalizeaza_firme(uid: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_asistenti.asistenti_finalizeaza_firme(uid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4504,7 +4537,7 @@ def eu_patru_ochi_stare(ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 @app.post("/eu/patru-ochi")
-def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):
+def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_eu.eu_patru_ochi(date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4512,9 +4545,22 @@ def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/eu/educatie/patru-ochi/vazut")
-def eu_educatie_vazut(ctx=Depends(cere_cabinet)):
+def eu_educatie_vazut(ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_eu.eu_educatie_vazut(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/eu/drepturi")
+def eu_drepturi(ctx=Depends(cere_cabinet)):
+    """[drepturi_rol 04.10.2026] Acțiunile („METODĂ /cale”) pe care gărzile le refuză utilizatorului curent.
+
+    DERIVAT din gărzile rutelor (`core/drepturi.garzi_rute`), cu bifele citite acum — interfața scoate din
+    pagină elementele marcate cu aceste acțiuni. Nicio listă paralelă: o rută nouă cu `cere_drept` apare
+    aici singură."""
+    try:
+        return _uc_eu.eu_drepturi(ctx, _drepturi.garzi_rute(app))
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -4527,7 +4573,7 @@ def eu_competente_get(ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 @app.post("/eu/competente")
-def eu_competente_set(date: CompetenteIn, ctx=Depends(cere_cabinet)):
+def eu_competente_set(date: CompetenteIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_eu.eu_competente_set(date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4565,7 +4611,7 @@ def eu_cabinet_get(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/eu/cabinet")
-def eu_cabinet_set(date: CabinetIn, ctx=Depends(cere_cabinet)):
+def eu_cabinet_set(date: CabinetIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_eu.eu_cabinet_set(date, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4725,7 +4771,7 @@ def eu_permisiuni(ctx=Depends(cere_cabinet)):
 
 # --- reconciliere bancara ---
 @app.post("/tenants/{tenant_id}/banca/reconciliere/import")
-def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.banca_rec_import(tenant_id, _octetii(fisier), fisier.filename, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4739,7 +4785,7 @@ def banca_rec_lista(tenant_id: int, status: str = None, ctx=Depends(cere_cabinet
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza")
-def banca_rec_conteaza(tenant_id: int, linie_id: int, corp: dict = Body(default={}), ctx=Depends(cere_cabinet)):
+def banca_rec_conteaza(tenant_id: int, linie_id: int, corp: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.banca_rec_conteaza(tenant_id, linie_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4787,14 +4833,14 @@ def rapoarte_salvate_lista(tenant_id: int, tip_raport: str = "comercial", ctx=De
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rapoarte-salvate")
-def rapoarte_salvate_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def rapoarte_salvate_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.rapoarte_salvate_creeaza(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/rapoarte-salvate/{vid}")
-def rapoarte_salvate_sterge(tenant_id: int, vid: int, ctx=Depends(cere_cabinet)):
+def rapoarte_salvate_sterge(tenant_id: int, vid: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.rapoarte_salvate_sterge(tenant_id, vid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4810,7 +4856,7 @@ def registratura_lista(tenant_id: int, an: int = None, ctx=Depends(cere_cabinet)
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/registratura")
-def registratura_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def registratura_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.registratura_creeaza(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4834,14 +4880,14 @@ def contracte_sabloane_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/contracte/sabloane")
-def contracte_sabloane_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def contracte_sabloane_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.contracte_sabloane_salveaza(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/contracte/sabloane/{sid}")
-def contracte_sabloane_sterge(tenant_id: int, sid: int, ctx=Depends(cere_cabinet)):
+def contracte_sabloane_sterge(tenant_id: int, sid: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.contracte_sabloane_sterge(tenant_id, sid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4850,7 +4896,7 @@ def contracte_sabloane_sterge(tenant_id: int, sid: int, ctx=Depends(cere_cabinet
 @app.post("/tenants/{tenant_id}/contracte/genereaza")
 # [R42] „iese către un om" — contractul individual de muncă.
 def contracte_genereaza(tenant_id: int, corp: dict = Body(...),
-                        ctx=Depends(cere_rol("admin_firma"))):
+                        ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         pdf = _uc_tenants.contracte_genereaza(tenant_id, corp, ctx)
         return Response(content=pdf, media_type="application/pdf",
@@ -4872,7 +4918,7 @@ def export_saga_factura(tenant_id: int, factura_id: int, ctx=Depends(cere_contex
 @app.post("/tenants/{tenant_id}/facturi/export-saga")
 # [R45] POST: exportul e un act (ce s-a exportat și când e chiar întrebarea la o preluare
 # inversă), iar un GET n-are voie să scrie.
-def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
+def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         buf, nume_zip = _uc_tenants.export_saga_luna(tenant_id, an, luna, ctx)
         return Response(content=buf.getvalue(), media_type="application/zip",
@@ -4884,7 +4930,7 @@ def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("a
 @app.post("/tenants/{tenant_id}/facturi/export-winmentor")  # [F187]
 # [R45] POST: acelasi motiv ca la SAGA — exportul e un act, iar un GET n-are voie sa scrie.
 def export_winmentor_luna(tenant_id: int, an: int, luna: int,
-                          ctx=Depends(cere_rol("admin_firma"))):
+                          ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip.
     Facturile emise ale lunii (paritate cu SAGA, fara filtru status). Dependenta de config nomenclator WinMentor (vezi export_winmentor)."""
     try:
@@ -4905,20 +4951,20 @@ def _jurnal_rez(rez):
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/jurnal")
-def jurnal_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def jurnal_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.jurnal_creeaza(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 @app.put("/tenants/{tenant_id}/jurnal/{nota_id}")
-def jurnal_editeaza(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def jurnal_editeaza(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.jurnal_editeaza(tenant_id, nota_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/jurnal/{nota_id}")
-def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
+def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.jurnal_sterge(tenant_id, nota_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4934,7 +4980,7 @@ def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
 # sold. *Ruta de reactivare a unei linii de extras a rămas pe `cere_cabinet` fiindcă ea nu atinge
 # nicio notă legată; asta atinge.*
 def jurnal_dezleaga(tenant_id: int, nota_id: int, corp: dict = Body(default={}),
-                    ctx=Depends(cere_rol("admin_firma"))):
+                    ctx=Depends(cere_drept(_drepturi.VALIDA))):
     """RUPE legătura notă↔factură, cu URMĂ. Cerut de R90: până azi cheia străină
     `inregistrari_factura_id_fkey` (fără `ON DELETE`) bloca ștergerea facturii pentru ORICE notă
     legată, inclusiv o plată — iar dezlegarea nu exista ca act.
@@ -4967,7 +5013,11 @@ def _urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv):
 # criteriul „ce schimba ce datoreaza firma" (R42, extins). Crearea, editarea si stergerea raman
 # pe `cere_cabinet`: citite la sursa, `jurnal_api.editeaza` si `.sterge` refuza orice nota care
 # nu e `ciorna`, deci nu ating evidenta. E munca zilnica a asistentului.
-def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drepturi.VALIDA))):
+    # [drepturi_rol 04.10.2026] Validarea intra sub criteriul „ce schimba ce datoreaza firma" (R42, extins) — acum
+    # dreptul „Poate valida” (decizia Costin
+    # 04.10.2026). Crearea, editarea si stergerea stau pe „Poate pregăti”: `jurnal_api.editeaza` si `.sterge` refuza
+    # orice nota care nu e `ciorna`, deci nu ating evidenta. E munca zilnica a asistentului.
     try:
         return _uc_tenants.jurnal_valideaza(tenant_id, nota_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -4983,14 +5033,14 @@ def centre_cost_lista(tenant_id: int, doar_active: bool = False, ctx=Depends(cer
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/centre-cost")
-def centre_cost_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def centre_cost_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.centre_cost_adauga(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/centre-cost/{centru_id}")
-def centre_cost_activ(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def centre_cost_activ(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.centre_cost_activ(tenant_id, centru_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5013,7 +5063,7 @@ def centre_cost_varianta(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/centre-cost/{centru_id}/buget")
-def centre_cost_buget(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def centre_cost_buget(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an."""
     try:
         return _uc_tenants.centre_cost_buget(tenant_id, centru_id, corp, ctx)
@@ -5022,7 +5072,7 @@ def centre_cost_buget(tenant_id: int, centru_id: int, corp: dict = Body(...), ct
 
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora")
-def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
+def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.banca_rec_ignora(tenant_id, linie_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5046,35 +5096,35 @@ def rip_lista(tenant_id: int, an: int, luna: int = None, status: str = None, ctx
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rip/operatiuni")
-def rip_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def rip_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.rip_adauga(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.put("/tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza")
-def rip_valideaza(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
+def rip_valideaza(tenant_id: int, op_id: int, ctx=Depends(cere_drept(_drepturi.VALIDA))):
     try:
         return _uc_tenants.rip_valideaza(tenant_id, op_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/rip/operatiuni/{op_id}")
-def rip_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
+def rip_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.rip_sterge(tenant_id, op_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rip/import-banca")
-def rip_import_banca(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def rip_import_banca(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.rip_import_banca(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/rip/import-casa")
-def rip_import_casa(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def rip_import_casa(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.rip_import_casa(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5116,14 +5166,14 @@ def casa_registru(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/casa/operatiuni")
-def casa_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def casa_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.casa_adauga(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/casa/operatiuni/{op_id}")
-def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
+def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.casa_sterge(tenant_id, op_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5139,14 +5189,14 @@ def stocuri_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/nir")
-def stocuri_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def stocuri_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.stocuri_adauga(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/descarcare")
-def stocuri_descarcare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def stocuri_descarcare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.stocuri_descarcare(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5169,14 +5219,14 @@ def cv_fisa(tenant_id: int, articol_id: int, ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/intrare")
-def cv_intrare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def cv_intrare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cv_intrare(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/stocuri/iesire")
-def cv_iesire(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def cv_iesire(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cv_iesire(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5184,7 +5234,7 @@ def cv_iesire(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet))
 
 
 @app.post("/tenants/{tenant_id}/stocuri/inventar")
-def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cv_inventar(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5200,7 +5250,7 @@ def cv_locatii(tenant_id: int, articol_id: int = None, ctx=Depends(cere_cabinet)
 
 
 @app.post("/tenants/{tenant_id}/stocuri/transfer")
-def cv_transfer(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def cv_transfer(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cv_transfer(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5208,7 +5258,7 @@ def cv_transfer(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
 
 
 @app.post("/tenants/{tenant_id}/stocuri/reclasificare")
-def cv_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def cv_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cv_reclasificare(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5224,7 +5274,7 @@ def cv_analitica(tenant_id: int, zile_inert: int = 90, ctx=Depends(cere_cabinet)
 
 
 @app.post("/tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim")
-def cv_nivel_minim(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def cv_nivel_minim(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cv_nivel_minim(tenant_id, articol_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5240,7 +5290,7 @@ def cv_barcode_gaseste(tenant_id: int, cod: str, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode")
-def cv_barcode_set(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def cv_barcode_set(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.cv_barcode_set(tenant_id, articol_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5279,7 +5329,7 @@ def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
 # [R45] Artefactul care încheie exercițiul financiar se PĂSTREAZĂ: conținutul, momentul,
 # autorul, amprenta, numărul exemplarului — plus verdictul cu amprenta fișierului validat.
 # Se scrie aici, nu pe `-xml`: aia e o citire (GET), asta e actul.
-def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.s1005_valideaza(tenant_id, an, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5298,7 +5348,7 @@ def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
 # [R45] Artefactul care încheie exercițiul financiar se PĂSTREAZĂ: conținutul, momentul,
 # autorul, amprenta, numărul exemplarului — plus verdictul cu amprenta fișierului validat.
 # Se scrie aici, nu pe `-xml`: aia e o citire (GET), asta e actul.
-def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.s1003_valideaza(tenant_id, an, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5314,21 +5364,21 @@ def retete_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/retete")
-def retete_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def retete_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.retete_salveaza(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.delete("/tenants/{tenant_id}/retete/{reteta_id}")
-def retete_sterge(tenant_id: int, reteta_id: int, ctx=Depends(cere_cabinet)):
+def retete_sterge(tenant_id: int, reteta_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.retete_sterge(tenant_id, reteta_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/retete/descarca")
-def retete_descarca(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def retete_descarca(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.retete_descarca(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5347,7 +5397,7 @@ def verificare_stocuri(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 # --- e-Transport (v1: XML pt upload manual in SPV; API OAuth = etapa 2) ---
 @app.post("/tenants/{tenant_id}/etransport-xml")
-def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.etransport_xml(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5356,7 +5406,7 @@ def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
 
 @app.post("/tenants/{tenant_id}/etransport/trimite")
 # [R42] „iese către o autoritate" — declarația UIT ajunge la ANAF.
-def etransport_trimite(tenant_id: int, corp: dict = Body(...),                        ctx=Depends(cere_rol("admin_firma"))):
+def etransport_trimite(tenant_id: int, corp: dict = Body(...),                        ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp
     -> idempotency -> validare pe TEST -> upload). Poll-ul stare NU e sincron. Live pending drept e-Transport."""
     try:
@@ -5375,7 +5425,7 @@ def etransport_trimiteri_lista(tenant_id: int, ctx=Depends(cere_context)):
 
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza")
-def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
+def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.banca_rec_reactiveaza(tenant_id, linie_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5388,7 +5438,7 @@ def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabine
 # e chiar argumentul deciziei: la primita, faptul nu e sosirea documentului, ci recunoasterea
 # cheltuielii; la emisa venita din import, faptul nu e sosirea, ci recunoasterea emiterii facute in
 # alta parte.
-def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota.
 
     STRUCTURAL SIMETRIC cu `POST /facturi-primite/{id}/valideaza`, punct cu punct: patru-ochi (rolul
@@ -5403,6 +5453,8 @@ def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("ad
     CE NU FACE, declarat: nu editează factura. Dacă documentul importat e greșit, corecția fiscală e
     prin al doilea document (storno, P4), nu prin retușarea celui adus.
     """
+    # [drepturi_rol 04.10.2026] Dreptul: „Poate pregăti” (importurile e-Factura, decizia Costin) — același ca la
+    # validarea facturii primite, deci simetria R91 de deasupra rămâne; doar „admin_firma” de acolo nu mai e garda.
     try:
         return _uc_tenants.factura_recunoaste(tenant_id, factura_id, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5410,7 +5462,7 @@ def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("ad
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza")
-def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cabinet)):
+def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026,
     varianta (ii)+(iii) din AAA4).
 
@@ -5433,7 +5485,7 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
 
 
 @app.post("/tenants/{tenant_id}/vanzare-marja")
-def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?}. Nota ciorna
     regim marja (art. 312): 4111=707 cost + 4111=707 marja neta + 4111=4427 TVA marja."""
     try:
@@ -5443,7 +5495,7 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
 
 
 @app.post("/tenants/{tenant_id}/vanzare-marja-turism")
-def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, calitate_client PF|PJ, locuri [RO|UE|NONUE], optiune_normal?,
     intermediar?, cota?, descriere?} + per regim:
     special: incasat, cost_ue, cost_non_ue? | normal: componente [{descriere,baza,cota}]
@@ -5455,7 +5507,7 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/vanzare-aur-investitii")
-def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, tip lingou|plancheta|moneda, puritate, an_emisie?, pret_unitar?,
     valoare_aur?, suma, optiune_taxare?, calitate_client PF|PJ, client_identificare,
     descriere?}. Scutit (art. 313 al. 3) sau taxare inversa (art. 331 al. 2 lit. h).
@@ -5467,7 +5519,7 @@ def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
 
 
 @app.post("/tenants/{tenant_id}/achizitie-agricultor")
-def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru,
     agricultor?, descriere?}. Nota ciorna: % cont_chelt + 4426(compensatie 8%) = 401."""
     try:
@@ -5477,7 +5529,7 @@ def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/vanzare-agricultor")
-def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, pret (fara taxa), descriere?}. FIRMA E AGRICULTORUL in regim special si
     VINDE: factura fara TVA, mentiune regim + compensatie 8%. Nota: 4111 = 704 pret + 704
     compensatie — compensatia e VENITUL firmei, nu TVA (art. 315^1 alin. 1 lit. h si alin. 2).
@@ -5575,14 +5627,14 @@ class PrapastieIn(BaseModel):
 # [R49, varianta (c)] Cat pierde salariatul daca brutul trece peste salariul minim — cu cifre,
 # calculate cu TOATE elementele formularului, nu cu valori implicite (aia a invalidat R28).
 # NU scrie nimic: e un calcul peste ce s-a completat pe ecran.
-def tenant_prapastie_salariu(tenant_id: int, date: PrapastieIn, ctx=Depends(cere_cabinet)):
+def tenant_prapastie_salariu(tenant_id: int, date: PrapastieIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     from core import prapastie_salariu as _pr
     _schema_sau_404(ctx, tenant_id)
     return _pr.prapastie(date.salariu_brut, date.model_dump())
 
 
 @app.post("/tenants/{tenant_id}/calcul-cm")  # [api_intern_v1] calculator CM - fara UI inca, pastrat deliberat
-def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm,
     cod?, zile_episod?, prima_zi_din_episod?, spitalizare?, data_certificat?}.
     Media pe 6 luni anterioare lunii certificatului (sau cate exista, art. 10 al. 4 OUG 158/2005),
@@ -5596,7 +5648,7 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/trimite-spv")
 # [R42] „iese către o autoritate" — e-Factura ajunge la ANAF.
-def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Trimite o factura emisa in SPV (F126/F160). Porti in ordine fixa (efactura_trimitere.trimite):
     token viu -> validare/FACT1 -> idempotency -> upload pe tokenul PRINCIPALULUI (cabinet/gratuit).
     Poll-ul stareMesaj/descarcare ramane pe cron. Recipisa live = pending drept (ca F176)."""
@@ -5626,7 +5678,7 @@ def _factura_din_parsat(cur, schema, f):
 
 @app.post("/tenants/{tenant_id}/import-efactura")  # [api_intern_v1] upload manual XML/ZIP - fara buton in UI, pastrat deliberat. Verificat 27.08.2026 - niciun apelant in static/, in crontab sau in timerele systemd. (R70). CORECTAT 29.08.2026: forma veche scria ca `core/spv_receive` cheama direct `_factura_din_parsat` - E FALS. `spv_receive.importa_mesaj` scrie DOAR in `efactura_primite`, si numai mesaje al caror `cif_beneficiar` e chiar tenantul (gard anti-scurgere), deci numai PRIMITE. Consecinta, si e chiar perimetrul lui R91: singura cale prin care o factura EMISA intra prin import e ruta asta, incarcarea manuala de XML.
 def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
-                          ctx=Depends(cere_cabinet)):
+                          ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Upload XML/ZIP e-Factura. Parseaza UBL, directie auto (CUI firma vs furnizor),
     idempotent pe (numar, tert_cui, data_emitere)."""
     try:
@@ -5656,7 +5708,7 @@ def factura_primita_xml(tenant_id: int, primita_id: int, ctx=Depends(cere_contex
 
 @app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza")
 def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body(default={}),
-                              ctx=Depends(cere_rol("admin_firma"))):
+                              ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) +
     leaga factura_id + status=validata. Idempotent (FOR UPDATE + verifica status). cont sugerat,
     confirmat de om. Gard = acces la tenant + actiune umana explicita; NU identitate != importator."""
@@ -5667,7 +5719,7 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
 
 
 @app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/respinge")
-def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(default={}),                              ctx=Depends(cere_context)):
+def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(default={}),                              ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Respinge o factura primita: status=respinsa + motiv. NU sterge randul (ramane cu istoric)."""
     try:
         return _uc_tenants.factura_primita_respinge(tenant_id, primita_id, corp, ctx)
@@ -5680,7 +5732,7 @@ def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(
 # CREDENTIALE. Costin: *„admin_firma, nu drept fin. Un drept nou e un al doilea sistem de
 # autorizare de intretinut, iar cele trei rute nu justifica unul."* Acelasi criteriu ca la
 # R42 (d), pornirea/oprirea unui canal — deja aplicat pe `PUT /woocommerce/config`.
-def reges_config(tenant_id: int, corp: dict = Body(...),                  ctx=Depends(cere_rol("admin_firma"))):
+def reges_config(tenant_id: int, corp: dict = Body(...),                  ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """corp: {username, parola, mediu test|prod}. Chei API din aplicatia REGES Angajator."""
     try:
         return _uc_tenants.reges_config(tenant_id, corp, ctx)
@@ -5691,7 +5743,7 @@ def reges_config(tenant_id: int, corp: dict = Body(...),                  ctx=De
 @app.post("/tenants/{tenant_id}/reges-trimite-salariat")
 # [R42] „iese către o autoritate" — salariatul ajunge în registrul de evidență a muncii.
 def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
-                           ctx=Depends(cere_rol("admin_firma"))):
+                           ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?}.
     Trimite InregistrareSalariat (+ AdaugareContract daca vine si contract dupa referinta)."""
     try:
@@ -5705,7 +5757,7 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
 # CREDENTIALE. Costin: *„admin_firma, nu drept fin. Un drept nou e un al doilea sistem de
 # autorizare de intretinut, iar cele trei rute nu justifica unul."* Acelasi criteriu ca la
 # R42 (d), pornirea/oprirea unui canal — deja aplicat pe `PUT /woocommerce/config`.
-def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def reges_poll(tenant_id: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
     """Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje."""
     try:
         return _uc_tenants.reges_poll(tenant_id, ctx)
@@ -5714,7 +5766,7 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
 
 
 @app.post("/tenants/{tenant_id}/achizitie-taxare-inversa")
-def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),                              ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),                              ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?,
     furnizor_platitor_tva, descriere?}. Beneficiarul (firma) trebuie platitor TVA.
     Nota ciorna: cont_dest=401 valoare + 4426=4427 TVA (norme pct. 109)."""
@@ -5734,7 +5786,7 @@ def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_context)):
 
 
 @app.post("/tenants/{tenant_id}/achizitie-ic")
-def achizitie_ic(tenant_id: int, corp: dict = Body(...),                  ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_ic(tenant_id: int, corp: dict = Body(...),                  ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """AIC bunuri/servicii primite (art. 268 / 278(2), plata = beneficiar art. 308).
     corp: {data, valoare (RON), cont_destinatie, cota?, tip bunuri|servicii, descriere?}.
     Nota ciorna: cont_dest=401 + 4426=4427 (norme 109)."""
@@ -5745,7 +5797,7 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),                  ctx=De
 
 
 @app.post("/tenants/{tenant_id}/achizitie-neinregistrat")
-def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),                             ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),                             ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2).
     corp: {data, furnizor_nume (obligatoriu), valoare, cont_cheltuiala, numar?, categorie? (CODPR_N lit.D),
     descriere?}. Fara CUI furnizor -> tip N. categorie OPTIONALA: FARA ea N ramane EXCLUS din D394 cu avertisment
@@ -5757,7 +5809,7 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),             
 
 
 @app.post("/tenants/{tenant_id}/vanzare-ic")
-def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """LIC bunuri (art. 294(2)a) sau prestare servicii IC (art. 278(2)).
     corp: {data, valoare, cod_tva_client, tip bunuri|servicii, dovada_transport?,
     cont_venit?, descriere?}. Verifica VIES LIVE. Nota: 4111=70x fara TVA."""
@@ -5769,7 +5821,7 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
 
 
 @app.post("/tenants/{tenant_id}/import-extracomunitar")
-def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?,
     cota?, certificat_amanare?, cont_destinatie, descriere?}.
     Nota ciorna: marfa cont=401; taxe vamale cont=446; TVA dupa mod:
@@ -5781,7 +5833,7 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
 
 
 @app.post("/tenants/{tenant_id}/export-extracomunitar")
-def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?}.
     Scutit art. 294(1)a cu DVE. Nota: 4111=70x fara TVA."""
     try:
@@ -5802,7 +5854,7 @@ def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/nota-tva-incasare")
-def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?}.
     incasare: 4428=4427 devine exigibil TVA colectat (suta marita);
     plata: 4426=4428 devine deductibil TVA achitat furnizorului. Nota ciorna."""
@@ -5812,7 +5864,7 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         raise _http_din(e)
 
 @app.post("/tenants/{tenant_id}/decontare-valuta")
-def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765.
     corp: {data, valoare_valuta, moneda, curs_evidenta, tip creanta|datorie,
     cont_tert, cont_banca?, descriere?}. Cursul decontarii = BNR la data (auto)."""
@@ -5823,7 +5875,7 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
 
 
 @app.post("/tenants/{tenant_id}/reevaluare-valuta")
-def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Reevaluare lunara solduri valuta (OMFP 1802 pct. 316), curs BNR auto.
     corp: {data (ultima zi luna), solduri: [{cont, valoare_valuta, moneda,
     curs_evidenta, tip creanta|datorie|disponibil}]}. O nota cu toate liniile."""
@@ -5834,7 +5886,7 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
 
 
 @app.post("/tenants/{tenant_id}/nota-leasing")
-def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?,
     + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?};
     rata{capital, dobanda?, comision?}; reziduala{valoare_reziduala};
@@ -5846,7 +5898,7 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
 
 
 @app.post("/tenants/{tenant_id}/nota-credit")
-def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt,
     descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?,
     comision?, dobanda_angajata?}; restanta{suma}; garantie{suma, fel primita|acordata,
@@ -5858,7 +5910,7 @@ def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
 
 
 @app.post("/tenants/{tenant_id}/nota-avans")
-def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie avans_platit|regularizare_platit|avans_incasat|
     regularizare_incasat, suma (fara TVA), cota?, destinatie? (platit:
     stocuri|servicii|imobilizari|imobilizari_necorporale), descriere?}."""
@@ -5869,7 +5921,7 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
 
 
 @app.post("/tenants/{tenant_id}/achizitie-necorporala")
-def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),                           ctx=Depends(cere_rol("admin_firma"))):
+def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),                           ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet|
     dezvoltare|constituire, dnf_luni?, cota?, cod?}.
     Art. 28(9): software = 36 luni (fix); licenta/brevet = durata contract (dnf_luni
@@ -5882,7 +5934,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),               
 
 
 @app.post("/tenants/{tenant_id}/reevaluare-imobilizare")
-def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id,
     valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}}.
     Reevaluarea citeste valoarea+amortizarea cumulata din mijloace_fixe si
@@ -5894,7 +5946,7 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
 
 
 @app.post("/tenants/{tenant_id}/nota-provizion")
-def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, fel creanta|provizion|stoc, actiune constituire|reluare, suma,
     descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} |
     provizion{tip litigii|garantii|dezafectare|restructurare|impozite|altele} |
@@ -5906,7 +5958,7 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
 
 
 @app.post("/tenants/{tenant_id}/nota-productie")
-def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie obtinere|pic|vanzare, descriere?, +
     obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare};
     vanzare{pret_vanzare, cost_standard_iesit, cota?, coef_348?}}."""
@@ -5917,7 +5969,7 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
 
 
 @app.post("/tenants/{tenant_id}/nota-obiect-inventar")
-def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?,
     descriere?}. Achizitia verifica pragul MF (5000 din anul fiscal 2026, OUG 8/2026 art.10 alin.2)
     si refuza daca valoarea e peste prag (foloseste fluxul de mijloace fixe)."""
@@ -5928,7 +5980,7 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/nota-asociati")
-def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie dividend|regularizare|restituire_dividend|imprumut, descriere?, +
     dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar,
     dividend_anual, impozit_interimar (cerut cand interimar > anual)}; restituire_dividend{suma_restituita};
@@ -5940,7 +5992,7 @@ def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
 
 
 @app.post("/tenants/{tenant_id}/nota-sponsorizare")
-def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul
     credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro,
     beneficiar_in_registru}. Nota 6582 + info credit fiscal/D177."""
@@ -5951,7 +6003,7 @@ def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/nota-subventie")
-def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, fel exploatare|investitii|reluare, descriere?, +
     exploatare/investitii{suma, moment drept|incasare};
     reluare{valoare_activ, subventie, amortizare_lunara}}."""
@@ -5962,7 +6014,7 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
 
 
 @app.post("/tenants/{tenant_id}/nota-chirie")
-def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare,
     descriere?, cota?, + comodat{valoare, moment primire|restituire};
     chirie_platita{chirie, proprietar pj|pf}; chirie_incasata{chirie};
@@ -5975,7 +6027,7 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
 
 
 @app.post("/tenants/{tenant_id}/nota-decont-deplasare")
-def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, fel avans|decont|plafon, descriere?, sursa casa|banca, +
     avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?};
     plafon{diurna_pe_zi, zile, salariu_baza, zile_lucratoare, diurna_bugetara?,
@@ -5987,7 +6039,7 @@ def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
 
 
 @app.post("/tenants/{tenant_id}/nota-bacsis")
-def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, fel incasare|distribuire, suma, sursa card|numerar (incasare) /
     banca|casa (distribuire), descriere?}. Legea 376/2022: fara TVA, fara
     CAS/CASS, impozit 10% retinut la distribuire (D100, informativ D205)."""
@@ -5998,7 +6050,7 @@ def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
 
 
 @app.post("/tenants/{tenant_id}/nota-sgr")
-def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie achizitie|vanzare|restituire|autofactura|virare,
     descriere?, + nr_ambalaje|suma, sursa casa|banca, +
     autofactura{garantii_returnate, tarif_gestionare?, cota?}; virare{suma,
@@ -6010,7 +6062,7 @@ def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/nota-perisabilitati")
-def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, valoare_intrari, procent_limita (coef. grupa HG 831/2004),
     pierdere_constatata, cota?, cont_stoc?, degradare_dovedita_distrusa?,
     descriere?}. Nota 607 (split deductibil/nedeductibil) + ajustare TVA 635=4426
@@ -6022,7 +6074,7 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
 
 
 @app.post("/tenants/{tenant_id}/nota-contract-special")
-def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, fel zilier|cenzor|mandat, brut, sursa casa|banca, descriere?}.
     Zilieri: impozit 10%+CAS 25% fara CASS (L52/2011). Cenzor/mandat: CAS+CASS+
     impozit, fara CAM (art. 76(2)g/i)."""
@@ -6048,7 +6100,7 @@ def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.put("/tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd")
-def mijloc_fix_destinatie_cd(tenant_id: int, mijloc_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def mijloc_fix_destinatie_cd(tenant_id: int, mijloc_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {destinatie_cd: da/nu}. [lot 19 d11] Bifa «Destinat C&D» (CF art.20 alin.(1) lit.b)): permite
     amortizarea accelerata a aparaturii si echipamentelor de cercetare-dezvoltare din orice cont."""
     try:
@@ -6058,7 +6110,7 @@ def mijloc_fix_destinatie_cd(tenant_id: int, mijloc_id: int, corp: dict = Body(.
 
 
 @app.post("/tenants/{tenant_id}/nota-inventariere")
-def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie plus|plus_mf|minus|casare, descriere?, +
     plus{valoare, cont_stoc?}; plus_mf{valoare, cont_imobilizare?};
     minus{valoare, cont_stoc?, imputabil?, valoare_imputare?, vinovat
@@ -6072,7 +6124,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
 
 
 @app.post("/tenants/{tenant_id}/nota-lichidare")
-def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie vanzare_activ|partaj, descriere?, +
     vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?};
     partaj{capital_social, rezerve?, profituri?}}. OMFP 897/2015."""
@@ -6083,7 +6135,7 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
 
 
 @app.post("/tenants/{tenant_id}/nota-ong")
-def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie venit|scutire, descriere?, +
     venit{suma, fel cotizatie|contributie|donatie|sponsorizare|financiar|
     fonduri|ocazional|alte, sursa casa|banca};

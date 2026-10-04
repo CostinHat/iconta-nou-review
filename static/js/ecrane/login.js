@@ -1,7 +1,7 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor } from "../api.js?v=1dccbc985b";
+import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog } from "../api.js?v=91e1c0701a";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
@@ -118,7 +118,7 @@ export function ecranLogin(radacina) {
   radacina.appendChild(corp);
 
   const overlay = document.createElement("div");
-  overlay.className = "acces-overlay";
+  overlay.className = "acces-overlay";  /* fereastra-de-lucru: doar X — poartă formularele de intrare/înregistrare (DECIZII 04.10.2026) */
   overlay.hidden = true;
   overlay.innerHTML = `<div class="acces-modal" id="acces-modal"></div>`;
   radacina.appendChild(overlay);
@@ -585,10 +585,10 @@ function _funcOverlay(inner) {
   const o = document.createElement("div");
   o.className = "fereastra-overlay func-overlay";
   o.innerHTML = inner;
-  o.addEventListener("click", (e) => { if (e.target === o) o.remove(); });
-  const x = o.querySelector(".nav-x");
-  if (x) x.addEventListener("click", () => o.remove());
   document.body.appendChild(o);
+  // [dialog_inchidere 04.10.2026] X + Esc prin mecanismul unic (DS cap.9) — pagina informativă, fără câmpuri
+  const inchide = inchidereDialog(o, () => o.remove(), o.querySelector(".fereastra-antet"));
+  o.addEventListener("click", (e) => { if (e.target === o) inchide(); });
   return o;
 }
 

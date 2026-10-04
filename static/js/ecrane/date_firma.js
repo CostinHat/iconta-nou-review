@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=1dccbc985b";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=91e1c0701a";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -213,7 +213,7 @@ function _blocDenumire(t, profil) {
         <span class="camp-eticheta">Denumirea firmei<span class="oblig">*</span></span>
         <p class="camp-ajutor">Una singur\u0103, \u0219i se scrie \u00eentr-un singur loc: aceea\u0219i \u00een list\u0103, \u00een bara de sus \u0219i pe declara\u021bii (D100, D101, D205, D301, D390, D394, D406, bilan\u021b).</p>
         ${randAnaf}
-        <input type="text" class="camp-input" id="df-nume-portofoliu" value="${esc(nume)}">
+        <input type="text" class="camp-input" id="df-nume-portofoliu" data-actiune-camp="PUT /tenants/{tenant_id}" value="${esc(nume)}">
       </label>
     </div>`;
 }
@@ -277,7 +277,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     ${_blocAmef(d)}
     <div id="df-msg"></div>
     <div class="dec-bara">
-      <button class="buton-primar" id="df-salveaza">Salveaz\u0103</button>
+      <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector">Salveaz\u0103</button>
     </div>
   `;
 

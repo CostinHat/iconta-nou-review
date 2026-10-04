@@ -27,8 +27,7 @@ import psycopg2.extras as _E_audit
 import psycopg2.extras as _E_sol
 from core import erori as _erori
 from core import uc_comun as _uc_comun
-from core.mesaje import (EMAIL_INVALID, EMAIL_EXISTA,
-                         MESAJ_EMAIL_ACELASI,
+from core.mesaje import (EMAIL_INVALID, MESAJ_EMAIL_ACELASI,
                               MESAJ_DOAR_TITULARUL, MESAJ_EMAIL_DE_CONFIRMAT)
 from core import db, auth_api, facturi_api, portal_api, control_fiscal_api, observare as _obs, documente_api
 import os
@@ -290,8 +289,7 @@ def portal_adauga_acces(date, ctx):
                 raise _erori.FaraDrept(MESAJ_DOAR_TITULARUL)
             firm_id = repo_tenants.cabinetul_firmei(cur, t["id"])["accounting_firm_id"]
             ex = repo_utilizatori.contul_dupa_email_2(cur, email)
-            if ex and (ex["rol"] != "client" or ex["activ"]):
-                raise _erori.CerereGresita(EMAIL_EXISTA)
+            _uc_comun._refuza_email_ocupat(ex, "client", email, "persoana pe care o inviți", "email")
             _uc_comun._cere_acelasi_cabinet(ex, firm_id)   # [R62 (2)] izolarea intre cabinete, P12
             import secrets as _sec2
             if ex:

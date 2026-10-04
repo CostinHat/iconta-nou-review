@@ -6,7 +6,7 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=1dccbc985b";
+import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=91e1c0701a";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {
@@ -69,7 +69,7 @@ function randConst(c) {
   if (c.remediu) {
     const r = c.remediu;
     const buton = (r.fel === "executabil" && (r.facturi || []).length)
-      ? `<button class="buton-secundar cf-incr-btn" data-facturi="${esc((r.facturi || []).join(","))}" style="margin-top:8px">Contabilizează facturile</button>` : "";
+      ? `<button class="buton-secundar cf-incr-btn" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-facturi="${esc((r.facturi || []).join(","))}" style="margin-top:8px">Contabilizează facturile</button>` : "";
     extra = `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}${buton ? `<div>${buton}</div>` : ""}</div>`;
   }
   return `<div class="cf-incr-rand">
@@ -242,7 +242,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
     <div class="cf-grup-titlu" style="margin-top:20px">Audit de preluare</div>
     <div class="cf-decl" id="cf-audit-zona">
       <div class="cf-incr-temei">Coerența internă a pachetului preluat de la contabilul anterior: balanță, solduri parteneri, istoric declarații, registru PFA. Raport datat, repetabil pe măsură ce apar documentele.</div>
-      <button class="buton-secundar" id="cf-audit-run" style="margin-top:10px">Rulează auditul de preluare</button>
+      <button class="buton-secundar" id="cf-audit-run" data-actiune="POST /control-fiscal/{tenant_id}/audit-preluare" style="margin-top:10px">Rulează auditul de preluare</button>
     </div>`;
 
   // [P4, DS cap.25.4] „Ce nu poate spune verificarea asta" — despre CAPACITATE, nu despre date.
@@ -318,7 +318,7 @@ export function legaVerdict(corp, nav, firma) {
       ${grup("Divergent", "rosu", "cf-rosu")}
       ${grup("Neverificat", "gri", "")}
       ${a.limita ? `<div class="cf-incr-temei">${esc(a.limita)}</div>` : ""}
-      <button class="buton-secundar" id="cf-audit-run" style="margin-top:12px">Rerulează auditul</button>`;
+      <button class="buton-secundar" id="cf-audit-run" data-actiune="POST /control-fiscal/{tenant_id}/audit-preluare" style="margin-top:12px">Rerulează auditul</button>`;
     corp.querySelector("#cf-audit-run").addEventListener("click", ruleazaAudit);
   }
   const auditBtn = corp.querySelector("#cf-audit-run");

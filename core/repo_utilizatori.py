@@ -223,8 +223,15 @@ def dezactiveaza_contul_client(cur, id_):
     return cur.rowcount
 
 
-def creeaza_cont_de_client(cur, email, password_hash, nume, rol, accounting_firm_id):
-    cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ, poate_valida)
-                           VALUES (%s, %s, %s, 'angajat', %s, true, %s) RETURNING id""",
-                (email, password_hash, nume, rol, accounting_firm_id))
+def creeaza_cont_asistent(cur, email, password_hash, nume, accounting_firm_id, poate_pregati, poate_valida):
+    """Contul unui asistent (`angajat`) al cabinetului.
+
+    [drepturi_rol 04.10.2026] Fostul `creeaza_cont_de_client(cur, email, hash, nume, rol, accounting_firm_id)`:
+    numele spunea „client” și parametrii erau numiți greșit — `rol` primea cabinetul, `accounting_firm_id` primea
+    bifa de validare; INSERT-ul ieșea corect doar din poziție. Acum numele și parametrii spun ce se scrie, plus
+    „Poate pregăti” (decizia Costin: munca curentă o face orice asistent)."""
+    cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ,
+                                             poate_pregati, poate_valida)
+                   VALUES (%s, %s, %s, 'angajat', %s, true, %s, %s) RETURNING id""",
+                (email, password_hash, nume, accounting_firm_id, bool(poate_pregati), bool(poate_valida)))
     return cur.fetchone()

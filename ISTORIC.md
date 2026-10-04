@@ -1309,3 +1309,51 @@ Intrările de mai sus, ale aceleiași zile, au detaliul. Pe scurt:
 - **Baza de producție:** au fost șterse 8 scheme rămase de la teste vechi (cu backup). Nu erau firme.
 - **Declarații:** nicio schimbare de formular. D112 contract uniform A1 rămâne „nu acum”, cu condiția scrisă: se face la prima
   modificare reală a modulului D112.
+
+## 04.10.2026 — Testarea ca asistent: drepturile pe rol + cele 7 constatări (comanda Costin, decizia „varianta 2”)
+
+**Ce a găsit Costin, testând ca asistent** (cabinet Sesiunea B, Ana, „asistent junior”, F1+F2): „Adaugă firma” nu făcea nimic;
+asistentul vedea „+ Adaugă firmă”, „Import în masă” și „Scoate”; emailul superadminului trecea la „Email client”; bun-venitul se
+închidea doar de la capăt; ghidul era același pentru toate rolurile; contorul Asistenți număra administratorul; ghidul promitea
+„maximum 48 de ore”.
+
+**Ce s-a măsurat înainte** (proba în browser pe producție, contul Anei, fără scrieri): refuzul 403 cădea într-un rând gri la 333 px
+DEASUPRA butonului; serverul refuza asistentului nu doar firmele, ci ~50 de operații curente (factură, chitanță, importuri…).
+
+**Decizia Costin („varianta 2”)** — verbatim în DECIZII: „Poate pregăti” = munca curentă; „Poate valida” = validări, amortizare,
+închiderea lunii; „Poate depune” = depunerea; doar administratorul = firme, asistenți, chei API, GDPR, abonament, datele cabinetului,
+deblocarea perioadei; mereu pe firmele alocate; interfața urmează serverul.
+
+**Ce s-a făcut:** garda `cere_drept` pe 215 rute (nivelurile din `core/drepturi.py`, bifa citită live, firma alocată verificată în
+gardă); `GET /eu/drepturi` derivat din gărzi; în interfață, poarta `data-actiune` (184 de apeluri declarate, legate pe element unde se
+poate dovedi); refuzul lângă buton și pe câmp; emailul clientului verificat înainte de crearea firmei (aceeași regulă la accesul
+clientului, în portal, la invitația de asistent); X + Esc pe ferestrele informative (mecanism unic); ghidul pe rol; contorul cu
+administratorul separat; fraza cu 48 de ore scoasă.
+
+**Găsite pe drum și reparate (ciclul de neconformitate):** (1) 11 rute de scriere pe firmă stăteau pe `cere_context` — un CLIENT de
+portal le putea chema (facturi recurente, pontaj, model factură, respingerea unei facturi primite); (2) „Răspunsuri REGES” chema GET pe
+o rută POST — 405 la fiecare apăsare, din 05.07.2026; (3) invitația de asistent nu dădea „Poate pregăti” și ecranul scria „Nivel 1” la
+zero competențe; (4) funcția de creare a asistentului avea parametrii numiți greșit; (5) 35 de refuzuri scrise direct în text (fără
+stil de eroare, 4 dintre ele ca HTML neescapat); (6) aceeași numărătoare greșită (administratorul ca „asistent”) în semaforul echipei și
+în Capacitate; (7) contrast insuficient la numerele grupelor din ghid.
+
+**Ce se schimbă pentru contabil (pe scurt):**
+- **Asistentul** vede doar ce are voie să facă. Cu „Poate pregăti” lucrează pe firmele alocate: facturi, chitanțe, importuri,
+  note în ciornă, pontaj, mijloace fixe, export SAGA/WinMentor, e-Transport, declarații de pregătit. Validările (note, declarații,
+  amortizarea, închiderea lunii) cer „Poate valida”; depunerea cere „Poate depune”. Adăugarea, importul și scoaterea firmelor,
+  asistenții, cheile API, GDPR, datele cabinetului și deblocarea unei luni închise rămân la administrator. Butoanele interzise
+  nu mai apar; dacă o cerere e totuși refuzată, mesajul spune ce drept lipsește și cine îl dă.
+- **Invitația unui asistent** dă implicit „Poate pregăti”. Un asistent fără nicio bifă apare ca „fără competențe”, nu „Nivel 1”.
+- **Adaugă firmă:** refuzul apare sub buton, cu roșu, iar câmpul vinovat e marcat. O adresă de email care aparține unui cont cu
+  alt rol e refuzată numit, iar firma NU se mai creează.
+- **Bun venit:** se închide și din X (sus) și cu Esc. Asistentul vede doar pașii pe care îi poate face; fără firme, i se spune să
+  ceară administratorului. Din fraza despre Suport a ieșit termenul „se rezolvă în maximum 48 de ore” (fraza rămâne, fără termen).
+- **Firme scoase:** istoricul firmelor scoase din portofoliu îl vede doar administratorul (asistentul vedea și firme care
+  nu-i fuseseră niciodată alocate).
+- **Asistenți:** contorul arată administratorul separat („1 administrator · 1 asistent (1 activ)”).
+- **Răspunsuri REGES** (administratorul) nu mai primește eroarea de metodă de la fiecare apăsare (cerea GET pe o rută POST).
+  Răspunsul propriu-zis depinde de conexiunea REGES a firmei — neprobat aici, cere credențiale ITM reale.
+- **Anunțul** „Mesaj de la iConta.eu” are X; închiderea înseamnă „am citit”.
+
+**Atenție la contul Ana (producție):** în bază are toate trei bifele pe „nu” (invitația veche nu dădea „Poate pregăti”). Cu
+regula nouă vede firmele F1, F2, dar nu poate lucra pe ele până nu i se bifează „Poate pregăti” din Asistenți.

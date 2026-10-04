@@ -12,18 +12,18 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=1dccbc985b";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=91e1c0701a";
 import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=d0e6120b59";
-import { randeazaListaFirme } from "./firme.js?v=d0e8410685";
-import { randeazaRecomanda } from "./recomanda.js?v=16ee976c05"; // [p31_recomanda]
+import { randeazaValidat } from "./validat.js?v=151165bd7b";
+import { randeazaListaFirme } from "./firme.js?v=7183cc3172";
+import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=631da515ab"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=4153a7aef3"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=0048641b50"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=f4a7f55d61"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaPachete } from "./pachete.js?v=ea735524af"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=71cdb0acd1"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

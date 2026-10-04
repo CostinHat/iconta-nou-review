@@ -161,3 +161,14 @@ def eu_permisiuni(ctx):
         raise _erori.Inexistent("user inexistent")
     return {"poate_pregati": bool(r[0]), "poate_valida": bool(r[1]),
             "poate_depune": bool(r[2]), "rol": r[3]}
+
+
+def eu_drepturi(ctx, garzi):
+    """[drepturi_rol 04.10.2026] Corpul rutei `/eu/drepturi`: acțiunile refuzate utilizatorului curent, derivate din
+    `garzi` (gărzile rutelor, citite de stratul HTTP din aplicația vie) și din bifele lui citite ACUM."""
+    from core import drepturi as _dr
+    bife = {}
+    if ctx["rol"] == "angajat":
+        with db.get_conn() as conn:
+            bife = _dr.bife_live(conn, ctx["uid"])
+    return {"rol": ctx["rol"], "bife": bife, "interzise": _dr.interzise(ctx["rol"], bife, garzi)}

@@ -76,6 +76,12 @@ def roluri(fn):
     """Rolurile cerute de o rută: din `Depends(cere_rol(...))` SAU verificate în corp (E2)."""
     gasite = set()
     for n in ast.walk(fn):
+        # [drepturi_rol 04.10.2026] `cere_drept(_drepturi.NIVEL)` — dreptul pe bifă (decizia Costin, varianta 2).
+        # Se întoarce `drept:NIVEL`; CE nivel e destul pentru un efect decide `masoara`, nu cititorul.
+        if (isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "cere_drept"
+                and n.args):
+            a = n.args[0]
+            gasite.add("drept:" + a.attr if isinstance(a, ast.Attribute) else ROL_CALCULAT)
         if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "cere_rol":
             for arg in n.args:
                 if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
@@ -169,5 +175,14 @@ def masoara():
     return {"rute": r,
             "scriu_validata": sv,
             "cu_credentiale": cc,
-            "fara_rol_validata": {k for k in sv if not roluri(r[k])},
-            "fara_rol_credentiale": {k for k in cc if not roluri(r[k])}}
+            "fara_rol_validata": {k for k in sv if not (roluri(r[k]) & PESTE_PREGATIRE)},
+            "fara_rol_credentiale": {k for k in cc if not (roluri(r[k]) & DOAR_ADMIN)}}
+
+
+# [drepturi_rol 04.10.2026] CE înseamnă „are rol” după efect, acum că rolurile au devenit drepturi pe bifă.
+# Intenția gărzilor de dinainte rămâne: evidența scrisă direct (R55) cere mai mult decât munca curentă — o
+# notă `validata` scrisă de rută e o validare, deci „Poate valida” sau administratorul; credențialele unui
+# sistem extern (R56, Costin: „nu sunt date de firmă — sunt credențiale”) rămân la administrator. „Poate
+# pregăti” singur NU trece niciuna dintre ele: pe el îl are orice asistent.
+DOAR_ADMIN = {"admin_firma", "superadmin", ROL_DIN_CORP, ROL_CALCULAT, "drept:ADMIN"}
+PESTE_PREGATIRE = DOAR_ADMIN | {"drept:VALIDA", "drept:DEPUNE"}

@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp } from "../api.js?v=1dccbc985b";
+import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp } from "../api.js?v=91e1c0701a";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -159,8 +159,8 @@ export async function ecranEtransport(corp, nav, t) {
         ${blocLoc("f", "Loc de sosire")}
         <div id="et-fereastra" style="margin-top:12px"></div>
         <p style="margin-top:8px">
-          <button type="button" class="buton-primar" id="et-trimite">Trimite UIT în SPV</button>
-          <button type="button" class="buton-secundar" id="et-genereaza" style="margin-left:8px">Doar generează XML (manual)</button>
+          <button type="button" class="buton-primar" id="et-trimite" data-actiune="POST /tenants/{tenant_id}/etransport/trimite">Trimite UIT în SPV</button>
+          <button type="button" class="buton-secundar" id="et-genereaza" data-actiune="POST /tenants/{tenant_id}/etransport-xml" style="margin-left:8px">Doar generează XML (manual)</button>
         </p>
         <div id="et-mesaj"></div>
         <div class="pf-frand-nume" style="margin:18px 0 6px">UIT-uri trimise</div>

@@ -676,6 +676,48 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 - urmator: 2b-coloană — DROP salariati.salariu_brut din tabel + migrare, UI schimbare salariu (valabil_din), scoaterea bridge-ului salariu_la. NEÎNCEPUT.
 - urmator: 2b-coloană = BLOCAT pe decizie (03.10.2026) -> DEBLOCAT de decizia Costin 03.10 și LIVRAT 04.10.2026 (firul „2b-COLOANĂ — punctul 4”, ÎNCHIS). UI-ul de schimbare a salariului cu valabil_din -> firul „SALARIUL ÎN TIMP” (decizia Costin 04.10.2026). STARE = ÎNCHIS pe partea 2b
 
+- fir: **TESTAREA CA ASISTENT — drepturile pe rol + cele 7 constatări (comanda Costin 04.10.2026)** — cabinet Sesiunea B, asistent Ana (angajat, F1+F2). Decizia de drepturi (Costin, varianta 2, verbatim în DECIZII 04.10.2026): „Poate pregăti” = munca curentă; „Poate valida” = validarea notelor și declarațiilor, înregistrarea amortizării, blocarea perioadei; „Poate depune” = depunerea la ANAF; doar administratorul = firme, asistenți, chei API, GDPR, abonament, datele cabinetului, deblocarea perioadei; mereu doar pe firmele alocate; interfața urmează serverul (derivat din gărzile rutelor).
+  - ultim: proba „invalid” pe producție (HEAD 1ee713a3, contul Anei, fără scrieri): refuzul 403 la `POST /tenants` cade într-un `p.ecran-nota` gri la 333 px DEASUPRA butonului (bannerul global tace fiindcă textul e în pagină); Adaugă/Import/Scoate×2 vizibile; X în antetul bun-venitului 0, Esc nu închide; ghidul arată 9 pași (inclusiv „Firme”) + „48 de ore”; contorul „2 asistenți · 2 activi” (numără administratorul). Pe drum: 11 rute de scriere pe firmă stau pe `cere_context` — un CLIENT de portal le poate chema pe firma lui (facturi recurente, pontaj, model factură, respingere factură primită); invitația de asistent nu dă „Poate pregăti” și ecranul arată „Nivel 1” la zero competențe; `repo_utilizatori.creeaza_cont_de_client` are parametrii numiți greșit (merge din poziție).
+  - livrat: în commitul „Testarea ca asistent …” (hash în ISTORIC 04.10.2026) — pașii 1–10 + cei crescuți pe drum (mai jos, [+]).
+    Gărzi: `core/test_drepturi_rol.py` (55), `core/test_drepturi_ui.py` (11, instrument `scripts/scan_drepturi_ui.py`),
+    `core/test_testare_asistent.py` (12), verificator `DIALOG_FARA_INCHIDERE`; 13 mutații roșii. Proba în browser
+    `frontend_test/proba_asistent_drepturi.py`: „înainte” pe producție (contul Anei) / „după” pe 8011 (asistent doar „Poate
+    pregăti”, asistent fără firme, administrator) — toate cele 7 puncte verzi, axe 0 după reparația de contrast.
+  - urmator: — (fir închis). STARE = ÎNCHIS
+  - lista CRESCUTĂ pe drum (rescrisă aici după execuție — declarat în raport §7; regula cere rescrierea ÎNAINTE):
+    [+] 1b. gaura găsită la inventar: 11 rute de scriere pe firmă pe `cere_context` (clientul de portal le chema) -> `cere_drept`.
+    [+] 1c. deciziile vechi traduse în drepturi (R52 documente de terț = ADMIN; R55/R90 evidență directă = VALIDA; R56
+        credențiale, inclusiv `reges-poll`/`reges-trimite-salariat` = ADMIN) + pivotul R42(c)/R55 pe „Import date” (DECIZII).
+    [+] 1d. gărzile existente care citeau doar `cere_rol` învățate să citească `cere_drept`, cu intenția păstrată
+        (`scan_rol_pe_efect`, `test_r42_criteriu`, `scan_trasee` + blocul din TRASEE.md regenerat, `test_ruta_fara_apelant`:
+        declarațiile de drept nu sunt apelanți) + declarațiile P7 (`test_p7_uc`, `test_p7_v2_scrieri`, `core/straturi.py`).
+    [+] 2b. „Firme scoase (N)” se vedea asistentului: istoricul scoaterilor e al ÎNTREGULUI cabinet (nume, CUI de firme
+        nealocate lui) -> `GET /firme-scoase` la administrator, butonul marcat, cererea nu se mai face (găsit pe captura probei).
+    [+] 4c. refuzul apărea de două ori (pe câmp și sub buton) -> motivul o dată, pe câmp; sub buton doar ce s-a întâmplat.
+    [+] 3b. „Răspunsuri REGES” chema GET pe o rută POST (405 din 05.07.2026) -> POST + garda pe clasă (metodă greșită).
+    [+] 3c. a doua treaptă a gărzii UI: marcajul pe ELEMENTUL legat (a prins 2 butoane nemarcate: salariul, „Dezactivează
+        firma” al doilea).
+    [+] 4b. clasa „refuz fără stil de eroare”: 35 de refuzuri scrise direct în text, din care 4 ca HTML neescapat -> `arataMesaj`.
+    [+] 5b. aceeași stare („adresa are deja cont”) în 4 locuri, cu „Autentifică-te…” spus celui care invită -> o singură funcție.
+    [+] 8b. administratorul numărat ca „asistent” și în semaforul echipei și în Capacitate -> „persoane din echipă”.
+    [+] 10c. RESPINS de poartă (prima rulare, 7 roșii, toate reale): fraza despre Suport ștearsă întreagă (Costin ceruse
+        scos doar termenul — refăcută fără „48 de ore”); `/eu/drepturi` își deschidea singură conexiunea (-> `uc_eu.eu_drepturi`);
+        SQL în `core/drepturi.py` (-> `repo_utilizatori.permisiuni`, citirea existentă); regula DS fără ancoră pe primul rând și
+        fără gardian în verificator (-> ACTIUNE_REFUZATA_NEMARCATA); ancora `cere_rol("admin_firma")` rămasă doar în proză
+        (`test_inchidere_luna` -> garda citită pe structură); un pin pe calea pontajului făcea ruta să pară „probată” (scos).
+    [+] 10b. contrast insuficient la numerele grupelor din ghid (`.ans-grupa-nr`, axe color-contrast) -> `--gri`.
+  - pasi:
+    1. server: `core/drepturi.py` (nivelurile PREGATI/VALIDA/DEPUNE/ADMIN + mesajele în termenii contabilului) și `cere_drept(nivel)` în `main.py` — clientul refuzat; administratorul trece (ca azi); asistentul: bifa citită LIVE din `public.users` + firma ALOCATĂ (`user_tenants`), refuz 403 numit. Clasificarea tuturor rutelor de scriere (+ GET-urile rezervate) după decizie; gărzile vechi (`cere_rol("admin_firma")`, `cere_rol("admin_firma","angajat")`, `cere_cabinet`/`cere_context` pe rutele de firmă) înlocuite pe rutele clasificate.
+    2. `GET /eu/drepturi` — acțiunile („METODĂ /cale”) refuzate utilizatorului curent, DERIVATE din gărzile rutelor (`app.routes`), nu dintr-o listă scrisă.
+    3. front: drepturile încărcate la pornire (`sesiune`), poarta globală `data-actiune` (elementul refuzat iese din pagină), adnotarea fiecărui element care cheamă o rută restrânsă, fișier cu fișier (inclusiv nodurile/cardurile asistentului și pașii `STRATURI`).
+    4. pct.1: formularul „Adaugă firmă” — refuzul lângă buton, cu stil de eroare, și pe câmpul vinovat; generalizarea: refuzurile afișate în elemente fără stil de eroare / departe de acțiune.
+    5. pct.3: emailul clientului validat ÎNAINTE de crearea firmei (`email_client` în `POST /tenants`), refuz numit `EMAIL_ALT_ROL` pe câmp; aceeași regulă în `client-acces` și în invitația de asistent; `creeaza_cont_de_client` cu parametri corecți; invitația dă „Poate pregăti” (implicit bifat); „Nivel” fără competențe nu mai e „Nivel 1”.
+    6. pct.4: `inchidereDialog` (X în antet + Esc, numai fereastra de deasupra) pe ferestrele informative (bun venit, anunț, lupa, ajutor, acces, pagini publice, Povestea lunii, Recomandă); ferestrele de lucru rămân doar cu X; regulă în DESIGN_SYSTEM.md + `verificator_conformitate.py`.
+    7. pct.5: ghidul pe rol — pașii filtrați prin drepturi; asistent fără firme -> „nu ai firme asociate, cere administratorului cabinetului”; fără „Poate pregăti” -> ce poate face și cine dă dreptul.
+    8. pct.6: sumarul Asistenți separă administratorul (backend `sumar` + ecran), gramatica numărului.
+    9. pct.7: textul „se rezolvă în maximum 48 de ore” scos (singura promisiune de termen afișată — căutat în static/, core/, ghid/).
+    10. gărzi (server: nicio rută de scriere pe firmă fără drept; front: niciun apel la o rută restrânsă fără `data-actiune` declarat; dialoguri) + mutații + proba „valid” în browser (8011, cont de asistent de test) + după deploy pe 8010 contul Anei (citire) + cele trei unelte vizuale + registre + poartă + four-way + mirror + ZIP `/home/costin/ghid_incoming/iconta_testare_asistent.zip`.
+
 ---
 
 ## Implementarea modelului de temei (01.08)

@@ -1,7 +1,7 @@
 // recomanda.js — cardul Recomanda: invita un cabinet in iConta.
 // Trimite email(uri) de invitatie cu buton "Incearca iConta".
 // "Vezi ce trimite" = preview exact al emailului (acelasi HTML ca cel trimis).
-import { api, esc, arataMesaj } from "../api.js?v=1dccbc985b";
+import { api, esc, arataMesaj, inchidereDialog } from "../api.js?v=91e1c0701a";
 
 export function randeazaRecomanda(corp, nav) {
   corp.innerHTML = `
@@ -40,8 +40,8 @@ export function randeazaRecomanda(corp, nav) {
         <div class="rec-modal-bara"><button class="buton-primar" id="rec-modal-ok">Am înțeles</button></div>
       </div>`;
     document.body.appendChild(ov);
-    const inchide = () => ov.remove();
-    ov.querySelector("#rec-modal-x").addEventListener("click", inchide);
+    // [dialog_inchidere 04.10.2026] X + Esc prin mecanismul unic (DS cap.9) — previzualizare, fără câmpuri
+    const inchide = inchidereDialog(ov, () => ov.remove());
     ov.querySelector("#rec-modal-ok").addEventListener("click", inchide);
     ov.addEventListener("click", (e) => { if (e.target === ov) inchide(); });
   });

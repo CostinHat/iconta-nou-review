@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, esc, arataMesaj, confirmaCaseta, bani, dataRo } from "../api.js?v=1dccbc985b";
+import { api, esc, arataMesaj, confirmaCaseta, bani, dataRo } from "../api.js?v=91e1c0701a";
 
 export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
   const azi = new Date().toISOString().slice(0, 10);
@@ -36,10 +36,10 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td>${m.activ ? "activ" : "casat"}</td>
         <td>${m.activ ? `
           <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-            <button class="buton-secundar" data-caseaza="${m.id}">Casează</button>
+            <button class="buton-secundar" data-caseaza="${m.id}" data-actiune="POST /tenants/{tenant_id}/nota-inventariere">Casează</button>
             <input type="number" step="0.01" class="camp-input" style="max-width:130px" id="mf-reeval-${m.id}" placeholder="valoare justă" aria-label="Valoare justă ${esc(m.denumire || "")}">
-            <button class="buton-secundar" data-reeval="${m.id}">Reevaluează</button>
-            <button class="buton-secundar" data-cd="${m.id}" data-cd-val="${m.destinatie_cd ? 1 : 0}">C&amp;D: ${m.destinatie_cd ? "da" : "nu"}</button>
+            <button class="buton-secundar" data-reeval="${m.id}" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare">Reevaluează</button>
+            <button class="buton-secundar" data-cd="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd" data-cd-val="${m.destinatie_cd ? 1 : 0}">C&amp;D: ${m.destinatie_cd ? "da" : "nu"}</button>
           </div>` : "—"}</td>
       </tr>`).join("");
 

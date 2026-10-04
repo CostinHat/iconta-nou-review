@@ -1353,6 +1353,43 @@ try:
 except Exception as _e_tb:
     rap["tinta_bifa"].append(("verificator", 0, "EROARE", "gard tinta_bifa: " + str(_e_tb)))
 
+# --- DIALOG_FARA_INCHIDERE (DS cap.9 v2.64, comanda Costin 04.10.2026): orice fereastră suprapusă creată în JS se
+#     închide prin mecanismul unic `inchidereDialog` (X în antet + Esc), SAU poartă pe linia creării marcajul
+#     `fereastra-de-lucru: doar X` (fereastra cu câmpuri — Esc nu aruncă un formular). Instanța: bun-venitul se
+#     închidea numai de la butonul de la capătul listei. Mutația care o probează: scoate apelul `inchidereDialog`
+#     din `ecranBunVenit` (ansamblu.js) -> lista nevidă -> TOTAL > 0 -> poarta roșie.
+rap["dialog_fara_inchidere"] = []
+_re_ov = re.compile(r"""\.className\s*=\s*["'`]([^"'`]*overlay[^"'`]*)["'`]""")
+for _nume, _t in fisiere.items():
+    for _m in _re_ov.finditer(_t):
+        _ln = _t[:_m.start()].count("\n") + 1
+        _linie = _t[_t.rfind("\n", 0, _m.start()) + 1:_t.find("\n", _m.end())]
+        if "fereastra-de-lucru:" in _linie:
+            continue
+        if "inchidereDialog(" in _t[_m.end():_m.end() + 2500]:
+            continue
+        rap["dialog_fara_inchidere"].append((_nume, _ln, _m.group(1)[:14],
+            "fereastra suprapusa fara inchidereDialog (X + Esc) si fara marcaj fereastra-de-lucru (DS cap.9)"))
+
+# --- ACTIUNE_REFUZATA_NEMARCATA (DS cap.9 v2.64, decizia Costin 04.10.2026: „orice acțiune refuzată rolului nu se
+#     afișează”). Un apel JS la o rută restrânsă cere elementul marcat `data-actiune` (poarta din `drepturi.js` îl ascunde
+#     celui refuzat), iar unde handlerul se poate lega de element, marcajul stă pe ACEL element. Același instrument ca
+#     `core/test_drepturi_ui.py` (`scripts/scan_drepturi_ui.py`) — o singură implementare, două porți. Mutația care o
+#     probează: `data-actiune` scos de pe butonul „Adaugă firma” -> lista nevidă -> TOTAL > 0 -> poarta roșie.
+rap["actiune_refuzata_nemarcata"] = []
+try:
+    import sys as _sys_ar
+    _sys_ar.path.insert(0, os.path.join(BAZA_PY, "scripts"))
+    import scan_drepturi_ui as _sdu
+    for _rel, _ln, _act, _g in _sdu.masoara()["lipsa"]:
+        rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
+            "apel la %s fara data-actiune in fisier (drepturi.js nu-l poate ascunde)" % _act))
+    for _rel, _ln, _act, _tag in _sdu.masoara_pe_element()["gresite"]:
+        rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
+            "elementul legat de apelul %s nu poarta data-actiune: %s" % (_act, _tag[:60])))
+except Exception as _e_ar:
+    rap["actiune_refuzata_nemarcata"].append(("verificator", 0, "EROARE", "gard actiune_refuzata_nemarcata: " + str(_e_ar)))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

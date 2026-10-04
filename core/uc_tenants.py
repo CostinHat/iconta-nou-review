@@ -46,22 +46,19 @@ import psycopg2.extras as _E_sol
 from core import erori as _erori
 from core import uc_comun as _uc_comun
 from core import db, auth_api, tenant_provisioning, facturi_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
-from core.mesaje import (EMAIL_INVALID, EMAIL_EXISTA,
-                         CUI_FIRMA_LIPSA,
+from core.mesaje import (EMAIL_INVALID, CUI_FIRMA_LIPSA,
                          MESAJ_Z_FARA_CHEIE, MESAJ_Z_FARA_BONURI, MESAJ_AMEF_FARA_BONURI, MESAJ_FACTURA_BON_STOC,
                               FARA_DREPT_VALIDARE)
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
 import psycopg2 as _psycopg2
-from core.mesaje import (EMAIL_INVALID, EMAIL_EXISTA,
-                         CUI_FIRMA_LIPSA,
+from core.mesaje import (EMAIL_INVALID, CUI_FIRMA_LIPSA,
                          MESAJ_Z_FARA_CHEIE,
                               FARA_DREPT_VALIDARE)
 from core import db, auth_api, tenant_provisioning, facturi_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core import db, auth_api, tenant_provisioning, facturi_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core import cronometru as _crono
 from core import db, auth_api, tenant_provisioning, facturi_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, produse_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
-from core.mesaje import (EMAIL_INVALID, EMAIL_EXISTA,
-                         CUI_FIRMA_LIPSA,
+from core.mesaje import (EMAIL_INVALID, CUI_FIRMA_LIPSA,
                          MESAJ_Z_FARA_CHEIE,
                               FARA_DREPT_VALIDARE)
 
@@ -4509,8 +4506,7 @@ def client_acces_creeaza(tenant_id, date, ctx):
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             _ex = repo_utilizatori.contul_dupa_email(cur, email)
-            if _ex and (_ex["rol"] != "client" or _ex["activ"]):
-                raise _erori.CerereGresita(EMAIL_EXISTA)
+            _uc_comun._refuza_email_ocupat(_ex, "client", email, "clientul firmei", "email")
             # [R62 (2)] Aceeasi ramura de reactivare exista si aici. Gardul repara CLASA, nu
             # instanta: daca ar sta doar pe ruta clientului, calea prin cabinet ar ramane deschisa.
             _uc_comun._cere_acelasi_cabinet(_ex, ctx["firm"])
@@ -5708,6 +5704,17 @@ def tenant_creeaza(date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants`; docstringul ei a ramas in stratul HTTP."""
     if _uc_comun._TENANT_TEMPLATE is None:
         raise _erori.EsecIntern("template tenant indisponibil pe server")
+    # [comanda Costin 04.10.2026 pct.3] Emailul clientului se judecă ÎNAINTE de orice scriere. Până azi ecranul crea
+    # firma și abia apoi trimitea adresa la `client-acces`: o adresă refuzată lăsa în urmă o firmă creată fără
+    # portal, iar refuzul cădea într-un rând gri de sub CUI. Aceeași regulă ca la `client-acces` (o singură funcție).
+    _email_cl = (getattr(date, "email_client", None) or "").strip().lower()
+    if _email_cl:
+        if not _uc_comun._email_valid(_email_cl):
+            raise _erori.CerereGresita({"mesaj": EMAIL_INVALID,
+                                        "erori_campuri": [{"camp": "email_client", "mesaj": EMAIL_INVALID}]})
+        with db.get_conn() as _c, _c.cursor(cursor_factory=_E_audit.RealDictCursor) as _cur:
+            _uc_comun._refuza_email_ocupat(repo_utilizatori.contul_dupa_email(_cur, _email_cl), "client",
+                                           _email_cl, "clientul firmei", "email_client")
     # [P5 val 3] ANAF ÎNAINTE de conexiune — vezi nota de la `register`.
     try:
         _d_anaf = tenant_provisioning.date_din_anaf(date.cui)

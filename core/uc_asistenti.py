@@ -19,7 +19,7 @@ from core import db
 from core.mesaje import mesaj_din_cod
 from core import erori as _erori
 from core import uc_comun as _uc_comun
-from core.mesaje import (mesaj_din_cod, EMAIL_INVALID, EMAIL_EXISTA)
+from core.mesaje import (mesaj_din_cod, EMAIL_INVALID)
 from core import db, observare as _obs
 import os
 from core import repo_utilizatori
@@ -182,9 +182,11 @@ def asistent_creeaza(date, ctx):
         raise _erori.DateInvalide(EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            if repo_utilizatori.id_si_activ_dupa_email(cur, email):
-                raise _erori.DateInvalide(EMAIL_EXISTA)
-            uid = repo_utilizatori.creeaza_cont_de_client(cur, email, _nucleu.hash_parola(_sec.token_urlsafe(16)), date.nume or email.split("@")[0], ctx["firm"], date.poate_valida)["id"]
+            _uc_comun._refuza_email_ocupat(repo_utilizatori.contul_dupa_email(cur, email), "angajat", email,
+                                           "asistent", "email", _erori.DateInvalide)
+            uid = repo_utilizatori.creeaza_cont_asistent(cur, email, _nucleu.hash_parola(_sec.token_urlsafe(16)),
+                                                         date.nume or email.split("@")[0], ctx["firm"],
+                                                         date.poate_pregati, date.poate_valida)["id"]
         with conn.cursor() as cur:
             tok = _sec.token_urlsafe(32)
             _uc_comun._pune_token(cur, tok, uid, "48 hours")

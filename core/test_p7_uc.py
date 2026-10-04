@@ -32,8 +32,12 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BAZA = "43fd2197"
 METODE = ("get", "post", "put", "patch", "delete", "head", "options")
 
-#: singura abatere acceptata de la „mesaj neschimbat", cu motivul ei. Orice alta abatere pica.
+#: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    ("_adresa_e_libera", "EMAIL_EXISTA"): (
+        "Testarea ca asistent, comanda Costin 04.10.2026 pct.3 (aceeași clasă): „Există deja un cont cu acest email. "
+        "Autentifică-te…” i se spunea celui care își SCHIMBĂ adresa — e deja autentificat. Același cod (400), mesaj "
+        "numit (EMAIL_OCUPAT, cu adresa), pus pe câmpul `email`."),
     ("vanzare_aur_investitii", "suma invalida"): (
         "G5 (`core/test_g1_cod_mesaj.py`): un input-guard telegrafic primeste constrangerea in "
         "mesaj. Codul ramane 422. Cazul a intrat in domeniul lui G5 odata cu mutarea corpului "
@@ -87,6 +91,10 @@ PERECHI_ADAUGATE = {
     ("chitanta_emite", "'Data chitanței: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ.' % (c.data,)"): (
         "D394 Î2 (03.10.2026): cotele permise depind de data chitanței, deci data se citește înainte — o zi care nu "
         "există în calendar e refuz de contabil (400), cum o refuza deja `casa_api.adauga` mai târziu."),
+    ("tenant_creeaza", "{'mesaj': EMAIL_INVALID, 'erori_campuri': [{'camp': 'email_client', 'mesaj': EMAIL_INVALID}]}"): (
+        "Testarea ca asistent, comanda Costin 04.10.2026 pct.3: emailul clientului se judecă ÎNAINTE de crearea firmei — "
+        "o adresă fără formă de email se refuză pe câmpul `email_client` (400), ca la `client-acces`; firma nu se mai "
+        "creează pentru ca abia apoi invitația să cadă."),
     ("horeca_import_amef", "MESAJ_AMEF_FARA_BONURI"): (
         "D394 op2 Î1, decizia Costin B (02.10.2026): un fișier AMEF fără `nrB` nu poate scrie rândul `rapoarte_z_amef` "
         "(nr_bonuri > 0); refuz numit (422), nu un rând care ar opri D394 mai târziu."),
@@ -113,6 +121,30 @@ BIFA_INLOCUIRI = {
 }
 
 
+#: Refuzuri MUTATE într-un ajutor comun, cu motivul: aceeași stare, același cod HTTP, ridicate acum de ajutorul pe
+#: care funcția îl cheamă (o singură formulare pentru „adresa invitată are deja cont”, în loc de trei).
+_MOTIV_EMAIL_OCUPAT = (
+    "Testarea ca asistent, comanda Costin 04.10.2026 pct.3: „adresa aparține deja unui cont cu alt rol” — refuz NUMIT, "
+    "pe câmp, dintr-o singură funcție (`uc_comun._refuza_email_ocupat`). Până azi trei rute ridicau aceeași stare cu "
+    "„Autentifică-te…”, scris pentru proprietarul adresei, nu pentru cel care invită. Codul HTTP rămâne același.")
+PERECHI_MUTATE_IN_AJUTOR = {
+    ("asistent_creeaza", "EMAIL_EXISTA"): ("_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
+    ("client_acces_creeaza", "EMAIL_EXISTA"): ("_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
+    ("portal_adauga_acces", "EMAIL_EXISTA"): ("_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
+}
+
+
+def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
+    """Anti-vacuu: o mutare declarată fără apelul ajutorului ar scuza un refuz PIERDUT."""
+    import ast as _ast
+    from core import scan_sql_efectiv as _ef
+    for (fn_nume, _mesaj), (ajutor, motiv) in PERECHI_MUTATE_IN_AJUTOR.items():
+        assert len(motiv) > 80
+        _cale, _nod = _ef.functia(fn_nume)
+        chemate = {x.func.attr for x in _ast.walk(_nod) if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)}
+        assert ajutor in chemate, "%s: mutarea declarată în %s nu e în cod" % (fn_nume, ajutor)
+
+
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
@@ -123,6 +155,21 @@ APELURI_INLOCUITE = {
         "prin `factura_id`. Deci apelul n-a dispărut: a fost inlocuit cu unul care scrie tot ce "
         "scria cel vechi, PLUS legatura. Fara factura, operatiunea nu putea ajunge nici in D300 "
         "rd.1/rd.3, nici in D390."),
+    ("asistent_creeaza", "id_si_activ_dupa_email"): (
+        "contul_dupa_email",
+        "Testarea ca asistent (04.10.2026, pct.3): refuzul trebuie să știe ROLUL contului existent (alt rol vs. asistent "
+        "existent), deci citirea întoarce și rolul. Aceeași căutare după adresă, cu o coloană în plus."),
+    ("asistent_creeaza", "creeaza_cont_de_client"): (
+        "creeaza_cont_asistent",
+        "Testarea ca asistent (04.10.2026): funcția veche se numea „de client” și avea parametrii numiți greșit (`rol` "
+        "primea cabinetul, `accounting_firm_id` bifa) — INSERT-ul ieșea corect doar din poziție. Înlocuitorul scrie "
+        "aceleași coloane, cu numele lor, plus „Poate pregăti” (decizia Costin: munca curentă o face orice asistent)."),
+    ("asistent_creeaza", "HTTPException"): (
+        "_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
+    ("client_acces_creeaza", "HTTPException"): (
+        "_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
+    ("portal_adauga_acces", "HTTPException"): (
+        "_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
     ("portal_revoca_acces", "dezactiveaza_contul"): (
         "dezactiveaza_contul_client",
         "B3 (17.09.2026, audit A1): portalul dezactiva un cont NEscoped — un client titular stingea "
@@ -415,11 +462,19 @@ def _fara_abateri(nume, ramase_v, ramase_n):
     for (rut, mesaj), _motiv in ABATERI.items():
         if rut != nume:
             continue
-        tinta = ast.dump(ast.Constant(value=mesaj))
-        v = [p for p in ramase_v if p[1] == tinta]
+        # [04.10.2026] mesajul vechi poate fi și o CONSTANTĂ NUMITĂ (`EMAIL_EXISTA`), nu doar un literal
+        tinte = _forme_mesaj(mesaj)
+        v = [p for p in ramase_v if p[1] in tinte]
         if v and len(ramase_n) == len(v):
             ramase_v = [p for p in ramase_v if p not in v]
             ramase_n = [p for p in ramase_n if p[0] != v[0][0]]
+    # [04.10.2026] Refuzurile MUTATE într-un ajutor comun (aceeași stare, același cod, ridicate acum din ajutorul
+    # chemat de funcție): se scot din „înainte, fără pereche”. Anti-vacuu: `test_MUTARILE_in_ajutor_chiar_cheama_ajutorul`.
+    for (rut, mesaj), (_ajutor, _motiv) in PERECHI_MUTATE_IN_AJUTOR.items():
+        if rut != nume:
+            continue
+        forme = _forme_mesaj(mesaj)
+        ramase_v = [p for p in ramase_v if p[1] not in forme]
     # [B, 17.09.2026] Adaugarile DECLARATE (auth care nu exista in BAZA) se scot din „acum, fara
     # pereche": nu sunt drift al mutarii P7, ci functionalitate noua, fiecare cu motiv (v. sus).
     for (rut, msg_repr), _motiv in PERECHI_ADAUGATE.items():

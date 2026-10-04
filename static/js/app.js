@@ -44,14 +44,15 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=5d142951c9";
-import { api } from "./api.js?v=1dccbc985b";
-import { ecranBunVenit } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=3f4b6927f3";
-import { creeazaNavigator } from "./navigator.js?v=31ee34a3ed";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=34bff60158";
+import { api, arataMesaj } from "./api.js?v=91e1c0701a";
+import { ecranBunVenit } from "./ecrane/ansamblu.js?v=899abda4ce";  // [bun_venit_v1]
+import { ecranLogin } from "./ecrane/login.js?v=1dc4c0feb5";
+import { creeazaNavigator } from "./navigator.js?v=6ecf80445a";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=f95054452f";
 import { desktopAsistent } from "./ecrane/asistent.js?v=e40f303005";
-import { desktopPortal } from "./ecrane/portal.js?v=b97c2efba1";
+import { desktopPortal } from "./ecrane/portal.js?v=32e5e91d9c";
 import { desktopAdmin } from "./ecrane/admin.js?v=3c3242bb50"; // [p37_admin_desktop]
+import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=7e5d656ffe";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");
 
@@ -86,7 +87,7 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
       if (!r.ok) throw new Error(d.detail || "Eroare");
       location.hash = "";  /* activare_logout_v1: sesiunea veche nu ramane activa */
       try { sesiune.iesi(); } catch (_e) { sessionStorage.clear(); location.reload(); }
-    } catch (e) { msg.textContent = e.message; }
+    } catch (e) { arataMesaj(msg, e.message, "eroare"); }
   });
 }
 function ecranResetParola(tok) {  /* [reset_parola_v1] setare parola noua din linkul de resetare (oglinda ecranActivare) */
@@ -120,11 +121,11 @@ function ecranResetParola(tok) {  /* [reset_parola_v1] setare parola noua din li
       if (!r.ok) throw new Error(d.detail || "Eroare");
       location.hash = "";  /* parola schimbata -> login normal cu parola noua */
       try { sesiune.iesi(); } catch (_e) { sessionStorage.clear(); location.reload(); }
-    } catch (e) { msg.textContent = e.message; }
+    } catch (e) { arataMesaj(msg, e.message, "eroare"); }
   });
 }
 
-function randeaza() {
+async function randeaza() {
   const _act = (location.hash.match(/#activare=([\w-]+)/) || [])[1];  /* activare_fe_v1 */
   if (_act) { ecranActivare(_act); return; }
   const _rst = (location.hash.match(/#reset=([\w-]+)/) || [])[1];  /* [reset_parola_v1] */
@@ -176,6 +177,15 @@ function randeaza() {
     radacina.innerHTML = "";
     ecranLogin(radacina);
     return;
+  }
+
+  // [drepturi_rol 04.10.2026] Lista acțiunilor refuzate se ia ÎNAINTE de desktop: un buton interzis nu
+  // apare nici măcar o clipă (altfel ar putea fi apăsat până dispare). Poarta (`data-actiune`) rămâne
+  // pornită pe toată pagina — ferestrele deschise ulterior trec prin ea. Clientul și previzualizarea
+  // portalului au portalul lor, fără acțiuni de cabinet.
+  if (sesiune.rol() !== "client" && !(sesiune.estePreview && sesiune.estePreview())) {
+    await incarcaDrepturi();
+    pornestePoarta();
   }
 
   switch (sesiune.rol()) {

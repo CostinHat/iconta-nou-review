@@ -3,24 +3,24 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=91e1c0701a";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=d0e8410685";
-import { randeazaMigrare } from "./migrare.js?v=8572bda0d6";
+import { randeazaListaFirme } from "./firme.js?v=7183cc3172";
+import { randeazaMigrare } from "./migrare.js?v=4ceabfee02";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=70bc686f76"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=f4a7f55d61"; // [p28_setari]
-import { randeazaRecomanda } from "./recomanda.js?v=16ee976c05"; // [p31_recomanda]
+import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari]
+import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=631da515ab"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=4153a7aef3"; // [p63_pachete]
+import { randeazaPachete } from "./pachete.js?v=ea735524af"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=d0e6120b59";
+import { randeazaValidat } from "./validat.js?v=151165bd7b";
 import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=161e568a78";
-import { randeazaCapacitate } from "./capacitate.js?v=eb31833ad4"; // [p71_capacitate]
-import { randeazaTipare } from "./tipare.js?v=e88a7f5eba"; // [p72_tipare]
+import { randeazaAsistenti } from "./asistenti.js?v=b2f7f80c49";
+import { randeazaCapacitate } from "./capacitate.js?v=079f12d5d2"; // [p71_capacitate]
+import { randeazaTipare } from "./tipare.js?v=673e868a29"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
 function svg(nume, culoare) {
@@ -442,8 +442,6 @@ async function actualizeazaAsistenti(grila) {
   const zona = grila.querySelector('[data-cheie="asistenti"]');
   if (!zona) return;
   try {
-    const r = await api.get("/asistenti");
-    const n = (r && r.sumar && r.sumar.activi) || 0;
     /* [patch10_card_sem] */
     /* [verde_derivat 24.08.2026] Verdele de aici era SCRIS, nu derivat: `randuri || <pct-verde>`
        picta „Echipa activa" SI cand /asistenti/echipa/semafor ARUNCA (catch) sau intorcea !ok — adica
@@ -463,7 +461,6 @@ async function actualizeazaAsistenti(grila) {
       }
     } catch {}
     zona.innerHTML = randuri || (derivat ? `<span class="cab-stare"><span class="cab-pct pct-verde"></span>Echipă activă</span>` : "");  // [p76_comasare_font] [verde_derivat]
-    void n;
   } catch {}
 }
 
@@ -548,8 +545,8 @@ async function _educatiePatruOchi(continut) {  // [p55_decizie]
   el.id = "edu-4ochi";
   el.className = "subbara-edu";
   el.innerHTML = `Po\u021bi activa validarea \u00een doi (patru ochi): nimeni nu depune ce a preg\u0103tit singur.
-    <button class="btn-link" id="edu-activ">Activeaz\u0103</button> \u00b7
-    <button class="btn-link" id="edu-nu">Nu acum</button>`;
+    <button class="btn-link" id="edu-activ" data-actiune="POST /eu/patru-ochi">Activeaz\u0103</button> \u00b7
+    <button class="btn-link" id="edu-nu" data-actiune="POST /eu/educatie/patru-ochi/vazut">Nu acum</button>`;
   if (!_coaja.pune(_coaja.LOCURI.BARA_DE_STARE, "edu-4ochi", el)) return;
   el.querySelector("#edu-activ").addEventListener("click", async () => {
     try {

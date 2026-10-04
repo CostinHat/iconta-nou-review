@@ -22,7 +22,7 @@ from core import cronometru as _crono
 from core import db, auth_api, anaf_api, firma_profil_api as _fp
 from core import repo_main as _repo
 from core import stare_partajata as _stare_part
-from core.mesaje import EMAIL_EXISTA, PERIOADA_INCHISA, MESAJ_CLIENT_ALT_CABINET, DOAR_ADMIN_CABINET, FARA_ACCES_TENANT
+from core.mesaje import PERIOADA_INCHISA, MESAJ_CLIENT_ALT_CABINET, DOAR_ADMIN_CABINET, FARA_ACCES_TENANT
 from fastapi.encoders import jsonable_encoder as _jsonable_encoder
 
 _OBLIGATORIU = object()
@@ -55,8 +55,7 @@ from fastapi.responses import JSONResponse as _JSONResponse
 import core.notificari_api as _notif
 from core import erori as _erori
 from core import afirmatii as _af
-from core.mesaje import (EMAIL_EXISTA,
-                         EMAIL_NICIUNUL_VALID, EMAIL_INVALID_LISTA, MESAJ_Z_DUPLICAT)
+from core.mesaje import (EMAIL_NICIUNUL_VALID, EMAIL_INVALID_LISTA, MESAJ_Z_DUPLICAT)
 from core import db, auth_api, anaf_api, firma_profil_api as _fp, observare as _obs
 import json as _json_audit
 import logging as _logging
@@ -283,6 +282,32 @@ def _titular_client(cur, tenant_id):
     return r["id"] if isinstance(r, dict) else r[0]
 
 
+def _refuz_email_ocupat(ex, rol_dorit, email, pentru):
+    """[drepturi_rol 04.10.2026, comanda Costin pct.3] UN singur răspuns la „adresa invitată are deja cont”.
+
+    `ex` = rândul contului existent (sau None); `rol_dorit` = rolul contului care s-ar crea; `pentru` = cui îi
+    trebuie adresa, în cuvintele ecranului („clientul firmei”, „asistent”). Întoarce mesajul refuzului sau None.
+    Un client DEZACTIVAT nu e refuzat aici: ruta lui de reactivare există, iar izolarea între cabinete o păzește
+    `_cere_acelasi_cabinet` (R62)."""
+    from core.mesaje import EMAIL_ALT_ROL, EMAIL_CLIENT_ACTIV, EMAIL_ASISTENT_EXISTA
+    if not ex:
+        return None
+    rol = ex["rol"] if isinstance(ex, dict) else ex[1]
+    activ = ex["activ"] if isinstance(ex, dict) else ex[2]
+    if rol != rol_dorit:
+        return EMAIL_ALT_ROL % (email, pentru)
+    if rol_dorit == "client":
+        return EMAIL_CLIENT_ACTIV % (email, pentru) if activ else None
+    return EMAIL_ASISTENT_EXISTA % email
+
+
+def _refuza_email_ocupat(ex, rol_dorit, email, pentru, camp, clasa=None):
+    """Ca `_refuz_email_ocupat`, dar ridică refuzul — pe CÂMP (`erori_campuri`), ca ecranul să-l pună acolo."""
+    m = _refuz_email_ocupat(ex, rol_dorit, email, pentru)
+    if m:
+        raise (clasa or _erori.CerereGresita)({"mesaj": m, "erori_campuri": [{"camp": camp, "mesaj": m}]})
+
+
 def _adresa_e_libera(cur, email, exclude_user_id):
     """[R62] Adresa nu e a altcuiva. UN singur loc, chemat si la cerere, si la confirmare.
 
@@ -290,7 +315,9 @@ def _adresa_e_libera(cur, email, exclude_user_id):
     adresa luata intre timp ar fi aplicata peste, iar unicitatea s-ar sparge. Un loc, ca gardul
     sa poata asertea STRUCTURAL ca amandoua rutele il cheama."""
     if _repo.select_public_9(cur, email, exclude_user_id):
-        raise _erori.CerereGresita(EMAIL_EXISTA)
+        from core.mesaje import EMAIL_OCUPAT
+        # [drepturi_rol 04.10.2026] „autentifică-te” nu i se spune celui care își schimbă adresa: e deja autentificat
+        raise _erori.CerereGresita({"mesaj": EMAIL_OCUPAT % email, "erori_campuri": [{"camp": "email", "mesaj": EMAIL_OCUPAT % email}]})
 
 
 def _urma_portal(cur, tenant_id, actiune, detaliu, autor_id):

@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp } from "../api.js?v=1dccbc985b";
+import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp } from "../api.js?v=91e1c0701a";
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
 // nomenclator (`core/nomenclator_cm.py`), procentul din registru (`salarizare.procent_cm`,
@@ -48,7 +48,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
             <div class="pf-frand-nume">${esc(c.serie || "")}${esc(c.numar || "")} \u00b7 cod ${esc(c.cod || "")} \u00b7 ${c.zile || 0} zile</div>
             <div class="pf-frand-sub">${dataRo(c.data_inceput)} \u2192 ${dataRo(c.data_sfarsit)} \u00b7 indemniza\u021bie brut\u0103 ${bani(c.indemnizatie || 0)} lei \u00b7 net ${bani(c.net || 0)} lei</div>
           </div>
-          <button class="buton-sters buton-mic" data-sterge="${c.id}">\u0218terge</button>
+          <button class="buton-sters buton-mic" data-sterge="${c.id}" data-actiune="DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}">\u0218terge</button>
         </div>`).join("");
 
     corp.innerHTML = `
@@ -108,7 +108,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="set-bifa" style="margin-top:18px"><input type="checkbox" id="cm-program-national"> <span>Pacient inclus în program național de sănătate (D112 D_9a)</span></label>
         </div>
         <p style="margin-top:14px">
-          <button class="buton-primar" id="cm-calc">Calculeaz\u0103 \u0219i salveaz\u0103</button>
+          <button class="buton-primar" id="cm-calc" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii">Calculeaz\u0103 \u0219i salveaz\u0103</button>
           <button class="btn-link" id="cm-renunta" style="margin-left:10px">Renun\u021b\u0103</button>
         </p>
         <div id="cm-rezultat"></div>

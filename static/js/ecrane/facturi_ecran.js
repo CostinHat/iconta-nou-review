@@ -3,9 +3,9 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide } from "../api.js?v=91e1c0701a";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaEmitere } from "./emitere_ecran.js?v=03bfbdfe5d";
+import { randeazaEmitere } from "./emitere_ecran.js?v=25b0064aa1";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -134,7 +134,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
       <label class="camp"><span class="camp-eticheta">Țara furnizorului (ISO)</span><input class="camp-input" id="pr-tara" value="${esc(((p.cif_emitent || "").match(/^[A-Za-z]{2}/) || ["RO"])[0].toUpperCase())}" placeholder="RO" aria-label="Tara furnizorului"></label>
     </div>
     <div style="margin-top:14px">
-      <button class="buton-verde" id="pr-valideaza">Validează (creează cheltuiala)</button>
+      <button class="buton-verde" id="pr-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza">Validează (creează cheltuiala)</button>
       <button class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
       <span class="btn-link" id="pr-xml" style="margin-left:10px">Vezi XML brut</span>
     </div>
@@ -158,7 +158,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
   });
   corp.querySelector("#pr-respinge").addEventListener("click", () => {
     zona.innerHTML = `<label class="camp"><span class="camp-eticheta">Motiv respingere<span class="oblig">*</span></span><input class="camp-input" id="pr-motiv" aria-label="Motiv respingere"></label>
-      <button class="buton-secundar" id="pr-respinge-ok" style="margin-top:8px">Respinge factura</button>`;
+      <button class="buton-secundar" id="pr-respinge-ok" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge" style="margin-top:8px">Respinge factura</button>`;
     corp.querySelector("#pr-respinge-ok").addEventListener("click", async () => {
       const motiv = corp.querySelector("#pr-motiv").value.trim();
       if (!motiv) { arataMesaj(zona, "Scrie motivul respingerii.", "avert"); return; }
@@ -215,22 +215,22 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
             <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
-          ${(!opt.client && !f.contabilizata) ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
+          ${(!opt.client && !f.contabilizata) ? `<span class="btn-link fac-cont" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
         </button>`;
         }).join("");
     const dataInch = per && per.confirmat_la ? dataRo(String(per.confirmat_la).slice(0, 10)) : "";
     const blocInchidere = !per ? "" : (per.confirmat
-      ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Lun\u0103 \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 eviden\u021ba facturilor e complet\u0103; semaforul se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-secundar" id="fac-redeschide">Redeschide luna</button></p></div>`
+      ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Lun\u0103 \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 eviden\u021ba facturilor e complet\u0103; semaforul se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-secundar" id="fac-redeschide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/redeschide">Redeschide luna</button></p></div>`
       : (per.blocaj
         ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Luna nu se poate \u00eenchide \u00eenc\u0103: ${esc(per.blocaj)}${per.remediu ? " " + esc(per.remediu) : ""}</span></div>`
-        : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Lun\u0103 ne\u00eenchis\u0103 \u2014 eviden\u021ba facturilor e informativ\u0103; p\u00e2n\u0103 la \u00eenchidere semaforul nu se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-verde" id="fac-inchide">\u00cenchide luna</button></p></div>`));
+        : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Lun\u0103 ne\u00eenchis\u0103 \u2014 eviden\u021ba facturilor e informativ\u0103; p\u00e2n\u0103 la \u00eenchidere semaforul nu se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-verde" id="fac-inchide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/confirma">\u00cenchide luna</button></p></div>`));
     corp.innerHTML = `
       <h2 class="pf-titlu">Istoric facturi</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="fac-next">luna \u2192</button>
-        <button class="buton-secundar" id="fac-saga-luna" style="margin-left:12px">Export SAGA lun\u0103</button>
-        <button class="buton-secundar" id="fac-winmentor-luna">Export WinMentor lun\u0103</button>
+        <button class="buton-secundar" id="fac-saga-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-saga" style="margin-left:12px">Export SAGA lun\u0103</button>
+        <button class="buton-secundar" id="fac-winmentor-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-winmentor">Export WinMentor lun\u0103</button>
         ${maiSunt ? '<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px">Vezi \u0219i facturile mai vechi din aceast\u0103 lun\u0103</button>' : ""}</p>
       ${blocInchidere}
       <div id="fac-saga-zona"></div>
@@ -320,9 +320,9 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
       let valva = "";
       if (d.optin) {
         const amanat = l.notificare_amanata_pana && l.notificare_amanata_pana >= aziISO;
-        valva = l.notificare_stop ? ` · <b>notificări oprite</b> <span class="btn-link" data-reia="${l.id}">reia</span>`
-          : amanat ? ` · amânat până ${dataRo(l.notificare_amanata_pana)} <span class="btn-link" data-reia="${l.id}">reia</span>`
-          : ` · <span class="btn-link" data-stop="${l.id}">nu notifica</span> <span class="btn-link" data-amana="${l.id}">amână 30 zile</span>`;
+        valva = l.notificare_stop ? ` · <b>notificări oprite</b> <span class="btn-link" data-reia="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">reia</span>`
+          : amanat ? ` · amânat până ${dataRo(l.notificare_amanata_pana)} <span class="btn-link" data-reia="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">reia</span>`
+          : ` · <span class="btn-link" data-stop="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">nu notifica</span> <span class="btn-link" data-amana="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">amână 30 zile</span>`;
       }
       return `
       <div class="mig-frand" style="cursor:default">
@@ -361,7 +361,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
   const deseneaza = () => {
     corp.innerHTML = `
       <h2 class="pf-titlu">Scadențar</h2>
-      <label class="set-bifa" style="margin:0 0 10px"><input type="checkbox" id="sc-optin"${d.optin ? " checked" : ""}> <span>Trimite automat notificări de plată clienților, în numele firmei</span></label>
+      <label class="set-bifa" style="margin:0 0 10px"><input type="checkbox" id="sc-optin" data-actiune="PUT /tenants/{tenant_id}/scadentar/opt-in"${d.optin ? " checked" : ""}> <span>Trimite automat notificări de plată clienților, în numele firmei</span></label>
       <div id="sc-msg"></div>
       <div class="cf-sumar">
         <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.restanta.dot}"></span>${rez.restanta || 0} restante</span>
@@ -486,7 +486,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
-        ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
+        ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.platita_la ? '<span class="fd-stare fd-stare-verde">pl\u0103tit\u0103</span>' : ""}
         ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin SIMULARE</span>' : ""}
         <!-- [06.09.2026] Butonul «Link plata» a fost SCOS: calea de plata online e inchisa prin
@@ -495,7 +495,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
              vreuna ar purta-o vreodata, nu are voie sa treaca drept incasare obisnuita. -->
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura") ? '<button class="buton-secundar em-buton-sec" id="fd-saga">Export SAGA</button>' : ""}
-        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec" id="fd-spv">Trimite în SPV</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec" id="fd-spv" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv">Trimite în SPV</button>' : ""}
         ${f.transformat_in_id ? `<button class="btn-link" id="fd-vezi-transformata">transformat\u0103 \u00een ${esc(f.transformat_in_numar || "factur\u0103")}</button>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
@@ -597,7 +597,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     const incasat = chi.reduce((s, c) => s + (Number(c.suma) || 0), 0);
     zonaChit.innerHTML = (mesaj || "") + chi.map((c) => `
       <div class="fd-tot-rand"><span>Chitan\u021ba ${c.serie}-${c.numar} \u00b7 ${dataRo(c.data)} \u00b7 ${_bani(c.suma, "lei")}</span>
-      <span><button class="btn-link" data-chpdf="${c.id}">PDF chitan\u021b\u0103</button></span></div>`).join("");
+      <span><button class="btn-link" data-chpdf="${c.id}" data-actiune="GET /tenants/{tenant_id}/chitante/{chitanta_id}/pdf">PDF chitan\u021b\u0103</button></span></div>`).join("");
     zonaChit.querySelectorAll("[data-chpdf]").forEach((b) => b.addEventListener("click", async () => {
       try {
         await deschide(`/tenants/${tenantId}/chitante/${b.dataset.chpdf}/pdf`);
@@ -619,7 +619,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <div id="fd-chit-form" style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin:8px 0">
         <label class="camp"><span class="camp-eticheta">Data \u00eencas\u0103rii<span class="oblig">*</span></span><input class="camp-input" type="date" id="fd-chit-data" value="${new Date().toISOString().slice(0, 10)}"></label>
         <label class="camp"><span class="camp-eticheta">Suma \u00eencasat\u0103 (lei)<span class="oblig">*</span></span><input class="camp-input" type="number" step="0.01" id="fd-chit-suma" value="${rest || totalDeIncasat}"></label>
-        <button class="buton-primar" id="fd-chit-ok">Emite</button>
+        <button class="buton-primar" id="fd-chit-ok" data-actiune="POST /tenants/{tenant_id}/chitante">Emite</button>
         <button class="btn-link" id="fd-chit-nu">Renun\u021b\u0103</button>
         <span class="msg-eroare" id="fd-chit-msg"></span>
       </div>`);
@@ -640,7 +640,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         if (rest > 0 && suma >= rest - 0.005 && bChit) bChit.style.display = "none";
       } catch (e) {
         b.disabled = false; b.textContent = "Emite";
-        msg.textContent = e.mesaj || "Eroare la emitere.";
+        arataMesaj(msg, e.mesaj || "Eroare la emitere.", "eroare");
       }
     });
   });
@@ -680,7 +680,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           <label for="fd-email-input" class="fd-email-eticheta">Trimite factura ${esc(f.numar || "")} c\u0103tre:</label>
           <div class="fd-email-rand">
             <input type="email" id="fd-email-input" class="camp-input fd-email-input" placeholder="email@client.ro" value="${esc(emailPre)}">
-            <button class="buton-primar fd-email-send" id="fd-email-send">Trimite</button>
+            <button class="buton-primar fd-email-send" id="fd-email-send" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email">Trimite</button>
           </div>
           <div class="em-rezultat" id="fd-email-rez"></div>
         </div>`;
@@ -738,7 +738,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           <div class="fd-storno-avert" style="margin-bottom:0">Se creeaz\u0103 o factur\u0103 de stornare pentru <b>${esc(f.numar || "")}</b> (valori negative, document contabil). Ac\u021biunea nu poate fi anulat\u0103.</div>
         </div>
         <div class="fd-storno-actiuni" style="margin:10px 0 14px">
-          <button class="buton-primar" id="fd-storno-ok">Confirm stornarea</button>
+          <button class="buton-primar" id="fd-storno-ok" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno">Confirm stornarea</button>
           <button class="buton-secundar" id="fd-storno-nu">Renun\u021b\u0103</button>
         </div>
         <div class="em-rezultat" id="fd-storno-rez"></div>`;
@@ -755,7 +755,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           rez.className = "em-rezultat em-bun";
           setTimeout(() => istoricFacturi(corp, nav, tenantId, opt), 1200);
         } catch (e) {
-          rez.textContent = (e && e.mesaj) ? String(e.mesaj) : "Stornarea a e\u0219uat.";
+          arataMesaj(rez, (e && e.mesaj) ? String(e.mesaj) : "Stornarea a e\u0219uat.", "eroare");
           rez.className = "em-rezultat em-rau";
           ok.disabled = false; ok.textContent = "Confirm stornarea";
         }
@@ -825,7 +825,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
             ${MF_CULORI.map((c) => `<button class="mf-culoare-opt" data-culoare="${c}" style="background:${c}" title="${c}"></button>`).join("")}
           </div>
         </div>
-        <button class="buton-primar mf-salveaza" id="mf-salveaza">Salveaz\u0103</button>
+        <button class="buton-primar mf-salveaza" id="mf-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/model">Salveaz\u0103</button>
         <div class="em-rezultat" id="mf-rezultat"></div>
       </div>
       <div class="mf-preview-wrap">
@@ -970,8 +970,8 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
           <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ultima: ${dataRo(s.ultima_emitere) || "\u2014"} \u00b7 ${stare}</div>
         </div>
         <span class="pf-frand-suma">${sumaTxt}</span>
-        <span class="btn-link fr-toggle" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</span>
-        <span class="btn-link fr-sterge" data-id="${s.id}" style="margin-left:8px;color:var(--rosu)">\u0218terge</span>
+        <span class="btn-link fr-toggle" data-actiune="PUT /tenants/{tenant_id}/facturi-recurente/{sid}" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</span>
+        <span class="btn-link fr-sterge" data-actiune="DELETE /tenants/{tenant_id}/facturi-recurente/{sid}" data-id="${s.id}" style="margin-left:8px;color:var(--rosu)">\u0218terge</span>
       </div>`;
       }).join("");
 
@@ -1038,7 +1038,7 @@ export function formSablon(corp, nav, tenantId, opt) {
     </div>
 
     <div class="em-actiuni">
-      <button class="buton-primar" id="fr-salveaza">Salveaz\u0103 \u0219ablonul</button>
+      <button class="buton-primar" id="fr-salveaza" data-actiune="POST /tenants/{tenant_id}/facturi-recurente">Salveaz\u0103 \u0219ablonul</button>
     </div>
     <div class="em-rezultat" id="fr-rezultat"></div>`;
 
@@ -1053,7 +1053,7 @@ export function formSablon(corp, nav, tenantId, opt) {
     const l = linii[i];
     const cotaTxt = l.cota_tva == null ? "—" : (l.cota_tva === 0 ? "scutit" : `${l.cota_tva}%`);
     return `<div class="em-linie" data-idx="${i}">
-      <input class="camp-input em-l-den" id="fr-l${i}-descriere" value="${_val(l.descriere)}" placeholder="Denumire (ex: abonament mentenanță)" aria-label="Denumire articol" autocomplete="off">
+      <input class="camp-input em-l-den" id="fr-l${i}-descriere" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" value="${_val(l.descriere)}" placeholder="Denumire (ex: abonament mentenanță)" aria-label="Denumire articol" autocomplete="off">
       <input class="camp-input em-l-cant" id="fr-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="camp-input em-l-pret" id="fr-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
       <span class="em-l-cota" id="fr-l${i}-cota" title="Cota TVA">${cotaTxt}</span>

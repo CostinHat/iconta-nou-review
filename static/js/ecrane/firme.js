@@ -1,30 +1,31 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=1dccbc985b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=91e1c0701a";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=4fca5fc4b1";
-import { ecranRip } from "./rip_ecran.js?v=8d78a2aad3";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=324faeb983";
-import { ecranEtransport } from "./etransport_ecran.js?v=2062674928";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=8572bda0d6";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=0048641b50";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=da78be5bca";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=c56cb2e04b";  // [produse_firma_v1]
-import { ecranMagazin } from "./woo_ecran.js?v=cc37dd8df6";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=d8849f0fa1";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=fbcab83a27";  // [ecran_mf_v1]
+import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
+import { fluxConcediu } from "./flux_concediu.js?v=9abee2d1d1";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=9bfaf4bc1e";
+import { ecranRip } from "./rip_ecran.js?v=ef48a7a5ce";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=ec6930c33a";
+import { ecranEtransport } from "./etransport_ecran.js?v=58ee666db5";
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=4ceabfee02";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=71cdb0acd1";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
+import { randeazaProduse } from "./produse_ecran.js?v=a077931f55";  // [produse_firma_v1]
+import { ecranMagazin } from "./woo_ecran.js?v=95ea959e00";  // [wc_extras_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=b7b794c09f";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=c641579c0e";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
   container.innerHTML = `
     <div class="firme-cap">
       <span class="firme-spatiu"></span>
-      <button class="buton-secundar" id="firme-import-masa">Import în masă (CSV)</button>
-      <button class="buton-primar" id="firme-adauga">+ Adaugă firmă</button>
+      <button class="buton-secundar" id="firme-import-masa" data-actiune="POST /migrare/importa">Import în masă (CSV)</button>
+      <button class="buton-primar" id="firme-adauga" data-actiune="POST /tenants">+ Adaugă firmă</button>
     </div>
-    <p class="ecran-nota" style="margin:0 0 10px">Butonul <strong>Scoate</strong> de pe fiecare rând
+    <p class="ecran-nota" data-actiune="POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}" style="margin:0 0 10px">Butonul <strong>Scoate</strong> de pe fiecare rând
        deschide o previzualizare, nu șterge. Acolo se vede care act e care:
        <strong>dezactivarea</strong> e reversibilă (firma iese din listă, datele rămân),
        <strong>ștergerea</strong> nu e — și se poate doar dacă firma n-a produs niciun document.</p>
@@ -63,7 +64,8 @@ export function randeazaListaFirme(container, nav, inapoi) {
           <label for="fn-email" class="camp-eticheta">Email client (primește automat acces la portal)</label>
           <input class="camp-input" id="fn-email" type="email" placeholder="Opțional: emailul patronului — primește acces în portal" autocomplete="off">
         </div>
-        <button class="buton-primar" id="fn-salveaza" disabled>Adaugă firma</button>
+        <button class="buton-primar" id="fn-salveaza" data-actiune="POST /tenants|POST /tenants/{tenant_id}/client-acces" disabled>Adaugă firma</button>
+        <p id="fn-msg" role="alert" style="margin:8px 0 0"></p>
       `;
       const cui = corp.querySelector("#fn-cui"), nume = corp.querySelector("#fn-nume");
       const info = corp.querySelector("#fn-cui-info"), btn = corp.querySelector("#fn-salveaza");
@@ -92,10 +94,17 @@ export function randeazaListaFirme(container, nav, inapoi) {
       nume.addEventListener("input", () => { if (nume.value.trim().length > 2 && cui.value.replace(/\D/g,"").length >= 6) btn.disabled = false; });
       btn.addEventListener("click", async () => {
         const emailCl = corp.querySelector("#fn-email").value.trim();  /* firma_email_optional_v1 */
-        if (emailCl && !emailCl.includes("@")) { info.innerHTML = '<span class="msg-eroare">Emailul nu pare valid. Lasă gol dacă nu inviți pe nimeni acum.</span>'; return; }
+        // [comanda Costin 04.10.2026 pct.1] Refuzul se vede LÂNGĂ buton (#fn-msg, stil de eroare) și pe câmpul vinovat.
+        // Până azi cădea în rândul gri de sub CUI (`#fn-cui-info`), la 333 px deasupra butonului: „nu se întâmplă nimic”.
+        const msg = corp.querySelector("#fn-msg");
+        curataEroriCamp(corp); arataMesaj(msg, "", "info");
+        if (emailCl && !emailCl.includes("@")) { eroareCamp(corp, "fn-email", "Emailul nu pare valid. Lasă gol dacă nu inviți pe nimeni acum."); return; }
         btn.disabled = true; btn.textContent = "Se creează...";
+        let rT = null;
         try {
-          const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, ""), tip_firma: corp.querySelector("#fn-tip").value });  /* [tip_firma_v1] */
+          // [pct.3] emailul pleacă ÎMPREUNĂ cu firma: serverul îl judecă înainte de creare (adresă cu alt rol -> refuz pe câmp)
+          rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, ""), tip_firma: corp.querySelector("#fn-tip").value,  /* [tip_firma_v1] */
+                                            email_client: emailCl || null });
           if (emailCl) await api.post(`/tenants/${rT.tenant_id}/client-acces`, { email: emailCl, nume: "" });
           /* [26.08.2026] Crearea SE CONFIRMA. Pana azi formularul se inchidea in tacere, iar
              omul nu putea sti daca a mers — deci apasa din nou. A doua apasare era refuzata
@@ -106,7 +115,15 @@ export function randeazaListaFirme(container, nav, inapoi) {
           await incarcaFirme();   /* [27.08.2026] era `incarca()` — nedefinita in scopul asta */
           _bannerFirmaCreata(nume.value.trim());
         } catch (e) {
-          info.textContent = e.mesaj || e.message || "Eroare la creare.";
+          const CAMP = { email_client: "fn-email", email: "fn-email", cui: "fn-cui", nume: "fn-nume" };
+          let peCamp = 0;
+          (e.erori_campuri || []).forEach((c) => { if (CAMP[c.camp] && eroareCamp(corp, CAMP[c.camp], c.mesaj)) peCamp++; });
+          // Motivul stă O DATĂ: pe câmp, când refuzul are câmp vinovat; sub buton se spune doar ce s-a întâmplat (altfel
+          // aceeași frază apare de două ori). Firma creată + invitația refuzată: se spune EXACT asta — altfel omul apasă
+          // din nou și lovește CUI-ul duplicat.
+          const motiv = e.mesaj || e.message || "eroare";
+          arataMesaj(msg, rT ? "Firma a fost creată, dar accesul clientului n-a plecat: " + motiv + " Îl poți da din firmă › Acces client."
+                             : (peCamp ? "Firma nu s-a creat. Corectează câmpul marcat mai sus." : (e.mesaj || e.message || "Eroare la creare.")), "eroare");
           btn.disabled = false; btn.textContent = "Adaugă firma";
         }
       });
@@ -153,6 +170,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       deschide.addEventListener("click", () => deschideFirma(t, nav));
       const scoate = document.createElement("button");
       scoate.className = "buton-secundar firme-rand-scoate";
+      scoate.dataset.actiune = "POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}";  // [drepturi_rol] doar administratorul
       scoate.textContent = "Scoate";
       scoate.title = "Scoate firma din portofoliu — se deschide o previzualizare, nu se șterge de aici";
       // NU șterge de aici: un act ireversibil la un click de listă e prea aproape. Deschide
@@ -182,7 +200,8 @@ export function randeazaListaFirme(container, nav, inapoi) {
       lista.innerHTML = `<div class="firme-gol">Firmele nu au putut fi încărcate.</div>`;
       return;
     }
-    try { scoase = ((await api.get("/firme-scoase")) || {}).firme || []; } catch { scoase = []; }
+    // [drepturi_rol] istoricul scoaterilor e al întregului cabinet -> doar administratorul (nu se mai cere, ca să fie refuzat)
+    try { scoase = permis("GET /firme-scoase") ? (((await api.get("/firme-scoase")) || {}).firme || []) : []; } catch { scoase = []; }
     deseneaza(cautare.value);
     deseneazaDezactivate();
   }
@@ -194,7 +213,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       <div class="firme-cap" style="margin-top:18px">
         <span class="firme-spatiu"></span>
         ${dezactivate.length ? `<button class="buton-secundar" id="firme-vezi-dez">Firme dezactivate (${dezactivate.length})</button>` : ""}
-        ${scoase.length ? `<button class="buton-secundar" id="firme-vezi-scoase">Firme scoase (${scoase.length})</button>` : ""}
+        ${scoase.length ? `<button class="buton-secundar" id="firme-vezi-scoase" data-actiune="GET /firme-scoase">Firme scoase (${scoase.length})</button>` : ""}
       </div>`;
     // [27.08.2026] O urmă pe care n-o poate deschide nimeni fără `psql` nu e urmă pentru cabinet,
     // e urmă pentru administratorul serverului. (Costin) După o ștergere, asta e singura dovadă
@@ -328,8 +347,8 @@ function _randDivergentaNume(corp, nav, t) {
         <br>Alegerea se consemnează — dacă ANAF va spune altceva mai târziu, întrebarea se pune din
         nou.</div>
       <div class="ca-actiuni">
-        <button class="buton-secundar" id="dn-ia-anaf">Ia denumirea de la ANAF</button>
-        <button class="buton-secundar" id="dn-pastrez">Păstrez denumirea mea</button>
+        <button class="buton-secundar" id="dn-ia-anaf" data-actiune="POST /tenants/{tenant_id}/nume-ales">Ia denumirea de la ANAF</button>
+        <button class="buton-secundar" id="dn-pastrez" data-actiune="POST /tenants/{tenant_id}/nume-ales">Păstrez denumirea mea</button>
       </div>`;
   }
   corp.insertBefore(zona, corp.children[1] || null);
@@ -672,7 +691,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
       <textarea aria-label="Răspunsul tău" id="sol-input" placeholder="Scrie un răspuns..." rows="3"></textarea>
-      <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
+      <button class="buton-primar" id="sol-trimite-btn" data-actiune="POST /tenants/{tenant_id}/solicitari">Trimite</button>
     </div>
   `;
   const fir = corp.querySelector("#sol-fir");
@@ -817,7 +836,7 @@ function legaCorLookup(scope, prefix, codInitial, denInitial) {
       try { const r = await api.get(`/cor?q=${encodeURIComponent(q)}`); list = (r && r.rezultate) || []; }
       catch { rez.innerHTML = ""; return; }
       rez.innerHTML = list.length
-        ? list.map((o) => `<div class="cor-opt" data-cod="${o.cod}" data-den="${esc(o.denumire)}" style="padding:6px 8px;cursor:pointer;border-bottom:1px solid var(--linie)">${o.cod} — ${esc(o.denumire)}</div>`).join("")
+        ? list.map((o) => `<div class="cor-opt" data-cod="${o.cod}" data-actiune="POST /tenants/{tenant_id}/prapastie-salariu" data-den="${esc(o.denumire)}" style="padding:6px 8px;cursor:pointer;border-bottom:1px solid var(--linie)">${o.cod} — ${esc(o.denumire)}</div>`).join("")
         : `<div style="padding:6px 8px;color:var(--gri)">nicio ocupație găsită</div>`;
       rez.querySelectorAll("[data-cod]").forEach((el) => el.addEventListener("click", () => {
         hid.value = el.dataset.cod;
@@ -874,7 +893,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     </div>
     <div id="sn-prapastie"></div>
     <p style="margin-top:12px">
-      <button class="buton-primar" id="sn-salveaza">Salveaz\u0103</button>
+      <button class="buton-primar" id="sn-salveaza" data-actiune="POST /tenants/{tenant_id}/salariati">Salveaz\u0103</button>
       <button class="buton-secundar" id="sn-gata" style="margin-left:6px">Gata, \u00eenapoi la list\u0103</button></p>
     <div id="sn-mesaj"></div>`;
   legaCorLookup(corp, "sn");  // [F137] lookup ocupatie COR
@@ -1008,13 +1027,13 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
     const randuri = lucr.map((z) => {
       const zid = new Date(z.zi + "T00:00:00").getDay();
       const opts = STARI.map(([v, l]) => `<option value="${v}"${z.stare === v ? " selected" : ""}>${l}</option>`).join("");
-      return `<label class="camp"><span class="camp-eticheta">${String(z.zi_nr).padStart(2, "0")} ${ZI_SAPT[zid]}</span><select class="camp-input pj-sel" data-zi="${z.zi}">${opts}</select></label>`;
+      return `<label class="camp"><span class="camp-eticheta">${String(z.zi_nr).padStart(2, "0")} ${ZI_SAPT[zid]}</span><select class="camp-input pj-sel" data-actiune-camp="PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj" data-zi="${z.zi}">${opts}</select></label>`;
     }).join("");
     const pc = g.perioada_confirmata || {};
     const dataConf = pc.confirmat_la ? dataRo(String(pc.confirmat_la).slice(0, 10)) : "";
     const stareBloc = pc.confirmat
       ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Pontaj confirmat${dataConf ? " la " + dataConf : ""} \u2014 autoritativ pentru salarizare (tichete pe zile efectiv lucrate).</span></div>`
-      : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Pontaj neconfirmat \u2014 informativ; calculele din aval (tichete, statul de plat\u0103) se blocheaz\u0103 p\u00e2n\u0103 la confirmare.</span></div><p style="margin-top:8px"><button class="buton-verde" id="pj-confirma">Confirm\u0103 pontajul lunii</button></p>`;
+      : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Pontaj neconfirmat \u2014 informativ; calculele din aval (tichete, statul de plat\u0103) se blocheaz\u0103 p\u00e2n\u0103 la confirmare.</span></div><p style="margin-top:8px"><button class="buton-verde" id="pj-confirma" data-actiune="POST /tenants/{tenant_id}/pontaj/confirma">Confirm\u0103 pontajul lunii</button></p>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Pontaj</h2>
       <p class="pf-intro">${esc(nume || "")} · luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
@@ -1068,7 +1087,7 @@ function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
       <label class="camp"><span class="camp-eticheta">Data ieșirii</span><input type="date" id="ad-data" class="camp-input"></label>
     </div>
     <label class="camp" style="max-width:820px;margin-top:10px"><span class="camp-eticheta">Mențiuni (opțional)</span><textarea id="ad-mentiuni" class="camp-input" rows="2"></textarea></label>
-    <p style="margin-top:14px"><button class="buton-primar" id="ad-gen">Generează PDF</button> <button class="buton-secundar" id="ad-renunta" style="margin-left:8px">Renunță</button></p>
+    <p style="margin-top:14px"><button class="buton-primar" id="ad-gen" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta">Generează PDF</button> <button class="buton-secundar" id="ad-renunta" style="margin-left:8px">Renunță</button></p>
     <div id="ad-msg"></div>`;
   corp.querySelector("#ad-renunta").addEventListener("click", () => nav.inapoi && nav.inapoi());
   corp.querySelector("#ad-gen").addEventListener("click", async () => {
@@ -1141,7 +1160,7 @@ async function ecranSalariati(corp, nav, t) {
           </div>
           ${compozitieNet(s)}
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
-          <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
+          <button class="buton-primar" data-flut="${s.id}" data-actiune="GET /tenants/{tenant_id}/fluturas/{salariat_id}">Flutura\u0219</button>
           <button class="buton-secundar" data-reges="${s.id}">REGES</button>
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}">Concediu</button>
           <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}">Adeverință</button>
@@ -1150,7 +1169,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
           <button class="buton-secundar" data-cult="${s.id}" data-nume="${esc(s.nume)}">+ cultural</button>
           <button class="buton-secundar" data-cresa="${s.id}" data-nume="${esc(s.nume)}">+ creșă</button>
-          <button class="buton-secundar" data-salariu="${s.id}" data-val="${s.salariu_baza || 0}" data-nume="${esc(s.nume)}">Salariu</button>
+          <button class="buton-secundar" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" data-salariu="${s.id}" data-val="${s.salariu_baza || 0}" data-nume="${esc(s.nume)}">Salariu</button>
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
@@ -1164,10 +1183,10 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
-        <button class="buton-secundar" id="sp-reges-poll"${regesOk ? "" : " disabled"}>R\u0103spunsuri REGES</button>
+        <button class="buton-secundar" id="sp-reges-poll" data-actiune="POST /tenants/{tenant_id}/reges-poll"${regesOk ? "" : " disabled"}>R\u0103spunsuri REGES</button>
         <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button>
         <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : " disabled"}>Fișier plată card (SEPA)</button>
-        <button class="buton-secundar" id="sp-contare">Contabilizează statul</button></p>
+        <button class="buton-secundar" id="sp-contare" data-actiune="POST /tenants/{tenant_id}/salarii-contare/propunere">Contabilizează statul</button></p>
       <div id="sp-contare-zona"></div>
       <div id="sp-plata-zona"></div>
       <div id="sp-reges-zona"></div>
@@ -1222,7 +1241,7 @@ async function ecranSalariati(corp, nav, t) {
         </table>
         <p style="margin-top:10px">${p.deja_contata
           ? `<span class="tip-micut">Nota există deja în jurnal (ciornă #${p.nota_id}). Semnalul de mai sus se recalculează de fiecare dată, deci rămâne vizibil cât timp cifrele diferă.</span>`
-          : `<button class="buton-primar" id="sp-contare-scrie">Scrie nota ciornă</button>
+          : `<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare">Scrie nota ciornă</button>
              <span class="tip-micut" style="margin-left:8px">Ciornă, nu validată: validării îi rămâne al doilea om.</span>`}</p>
       </div>`;
       const b = corp.querySelector("#sp-contare-scrie");
@@ -1262,7 +1281,7 @@ async function ecranSalariati(corp, nav, t) {
         <div class="pf-frand-nume">Plată salarii pe card · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}</div>
         <div class="pf-frand-sub">${m.nr_plati} plată/plăți · total ${bani(m.total)} lei · format SEPA pain.001</div>
         ${avert}
-        <p style="margin-top:8px"><button class="buton-primar" id="plata-descarca">Descarcă fișierul</button>
+        <p style="margin-top:8px"><button class="buton-primar" id="plata-descarca" data-actiune="POST /tenants/{tenant_id}/plata-salarii-fisier">Descarcă fișierul</button>
           <button class="buton-secundar" id="plata-inchide" style="margin-left:6px">Închide</button></p></div>`;
       corp.querySelector("#plata-inchide").addEventListener("click", () => { zonaPlata.innerHTML = ""; });
       corp.querySelector("#plata-descarca").addEventListener("click", async () => {
@@ -1282,7 +1301,7 @@ async function ecranSalariati(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Parola</span><input type="password" id="rg-pass" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Mediu</span><select id="rg-mediu" class="camp-input"><option value="test">Test</option><option value="prod">Productie</option></select></label>
         </div>
-        <p style="margin-top:10px"><button class="buton-primar" id="rg-salveaza">Salveaz\u0103</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="rg-salveaza" data-actiune="POST /tenants/{tenant_id}/reges-config">Salveaz\u0103</button></p>
         <div id="rg-msg"></div></div>`;
       corp.querySelector("#rg-salveaza").addEventListener("click", async () => {
         const m = corp.querySelector("#rg-msg");
@@ -1297,7 +1316,7 @@ async function ecranSalariati(corp, nav, t) {
     });
     corp.querySelector("#sp-reges-poll").addEventListener("click", async () => {
       try {
-        const r = await api.get(`/tenants/${t.id}/reges-poll`);
+        const r = await api.post(`/tenants/${t.id}/reges-poll`, {});  /* [drepturi_rol 04.10.2026] ruta e POST (scrie tokenul REGES); GET primea 405 la fiecare apăsare */
         const msgs = (r && (r.mesaje || r.raspunsuri)) || [];
         zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
           <div class="pf-frand-nume">R\u0103spunsuri REGES</div>
@@ -1318,7 +1337,7 @@ async function ecranSalariati(corp, nav, t) {
       zonaVac.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Tichete vacanță · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
         <input type="number" step="0.01" min="0" id="vac-input" aria-label="Valoarea tichetelor de vacanță (lei)" class="camp-input" value="${b.dataset.val}" style="width:150px">
-        <button class="buton-primar" id="vac-save">Salvează</button>
+        <button class="buton-primar" id="vac-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar">Salvează</button>
         <button class="buton-secundar" id="vac-cancel">Renunță</button></div>
         <div id="vac-msg"></div>`;
       const inp = corp.querySelector("#vac-input"); inp.focus(); inp.select();
@@ -1341,7 +1360,7 @@ async function ecranSalariati(corp, nav, t) {
         <span class="camp-eticheta">Tichete cadou · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
         <select id="cadou-ev" aria-label="Evenimentul tichetelor cadou" class="camp-input" style="width:200px">${evenimente.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select>
         <input type="number" step="0.01" min="0" id="cadou-input" aria-label="Valoarea tichetelor cadou (lei)" class="camp-input" placeholder="valoare (lei)" style="width:150px">
-        <button class="buton-primar" id="cadou-save">Salvează</button>
+        <button class="buton-primar" id="cadou-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar">Salvează</button>
         <button class="buton-secundar" id="cadou-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Neimpozabil ≤ 300 lei/eveniment pentru evenimente legale; peste 300 sau alt eveniment = semnalat ca taxabil.</div>
         <div id="cadou-msg"></div>`;
@@ -1364,7 +1383,7 @@ async function ecranSalariati(corp, nav, t) {
         <span class="camp-eticheta">Tichete de creșă · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
         <input type="number" min="1" step="1" id="cresa-copii" class="camp-input" placeholder="1" style="width:120px" aria-label="Număr de copii la creșă (implicit 1)" title="nr. copii la creșă (implicit 1)">
         <input type="number" step="10" min="0" id="cresa-input" aria-label="Valoarea tichetelor de creșă (lei)" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
-        <button class="buton-primar" id="cresa-save">Salvează</button>
+        <button class="buton-primar" id="cresa-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar">Salvează</button>
         <button class="buton-secundar" id="cresa-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Plafon lunar pe copil: Legea 165/2018 art.19, indexat semestrial prin ordin (HG 1045/2018 art.33) — se verifică la salvare pe luna aleasă; valoare multiplu de 10.</div>
         <div id="cresa-msg"></div>`;
@@ -1388,7 +1407,7 @@ async function ecranSalariati(corp, nav, t) {
         <span class="camp-eticheta">Tichete culturale · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
         <select id="cult-tip" aria-label="Felul tichetelor culturale" class="camp-input" style="width:180px"><option value="">lunar</option><option value="ocazional">ocazional (eveniment)</option></select>
         <input type="number" step="10" min="0" id="cult-input" aria-label="Valoarea tichetelor culturale (lei)" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
-        <button class="buton-primar" id="cult-save">Salvează</button>
+        <button class="buton-primar" id="cult-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar">Salvează</button>
         <button class="buton-secundar" id="cult-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Valoare nominală multiplu de 10 lei (Legea 165/2018 art.22); plafon lunar/eveniment indexat semestrial. Lunile din fereastra neconfirmată la sursă (oct.2025–mar.2026) sunt blocate.</div>
         <div id="cult-msg"></div>`;
@@ -1410,7 +1429,7 @@ async function ecranSalariati(corp, nav, t) {
       zonaIban.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">IBAN salariu · ${esc(b.dataset.nume)}:</span>
         <input type="text" id="iban-input" aria-label="IBAN-ul contului de salariu" class="camp-input" value="${esc(b.dataset.val)}" placeholder="RO.. cont pe card" style="width:280px">
-        <button class="buton-primar" id="iban-save">Salvează</button>
+        <button class="buton-primar" id="iban-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
         <button class="buton-secundar" id="iban-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">IBAN românesc (RO + 22 caractere); gol = fără plată pe card.</div>
         <div id="iban-msg"></div>`;
@@ -1491,7 +1510,7 @@ async function ecranSalariati(corp, nav, t) {
       zonaIncet.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Data încetării contractului · ${esc(b.dataset.nume)}:</span>
         <input type="date" id="incet-input" aria-label="Data încetării contractului" class="camp-input" value="${esc(b.dataset.val)}" style="width:180px">
-        <button class="buton-primar" id="incet-save">Salvează</button>
+        <button class="buton-primar" id="incet-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
         <button class="buton-secundar" id="incet-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Gol = contract activ. La plecare NU se șterge salariatul — se completează data încetării (istoricul susține declarațiile depuse).</div>
         <div id="incet-msg"></div>`;
@@ -1532,7 +1551,7 @@ async function ecranSalariati(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Ore/zi</span><input type="number" min="1" max="8" step="0.5" id="ed-orezi" class="camp-input" value="${esc(b.dataset.dorezi)}"></label>
         </div>
         <div class="camp-eticheta" style="color:var(--gri);margin-top:6px">Corectarea acestor date NU modifică declarațiile deja depuse. CNP-ul se validează la salvare.</div>
-        <p style="margin-top:8px"><button class="buton-primar" id="ed-save">Salvează</button>
+        <p style="margin-top:8px"><button class="buton-primar" id="ed-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
           <button class="buton-secundar" id="ed-cancel" style="margin-left:6px">Renunță</button></p>
         <div id="ed-msg"></div></div>`;
       corp.querySelector("#ed-nume").focus();
@@ -1588,7 +1607,7 @@ async function ecranSalariati(corp, nav, t) {
           <span class="camp-ajutor">Concediul fără plată și suspendarea fără drepturi salariale scad brutul pe zilele lucrătoare din interval (Codul muncii art.49 alin.(2)) — în statul de plată și în D112. Perioada se ia din actul de suspendare / cererea aprobată.</span>
           <div id="susp-lista">${lista}</div>
           <p style="margin-top:8px"><button class="buton-secundar" id="susp-adauga">+ Adaugă</button>
-            <button class="buton-primar" id="susp-save" style="margin-left:6px">Salvează</button>
+            <button class="buton-primar" id="susp-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" style="margin-left:6px">Salvează</button>
             <button class="buton-secundar" id="susp-cancel" style="margin-left:6px">Renunță</button></p>
           <div id="susp-msg"></div></div>`;
         zonaSusp.querySelectorAll("[data-susp-sterge]").forEach((x) => x.addEventListener("click", () => {
@@ -1621,7 +1640,7 @@ async function ecranSalariati(corp, nav, t) {
       zonaCor.innerHTML = `<div style="margin:10px 0;max-width:520px">
         <div class="camp-eticheta" style="margin-bottom:6px">Ocupație COR · ${esc(b.dataset.nume)}:</div>
         ${campCorLookup("cor-edit")}
-        <p style="margin-top:8px"><button class="buton-primar" id="cor-save">Salvează</button>
+        <p style="margin-top:8px"><button class="buton-primar" id="cor-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
           <button class="buton-secundar" id="cor-cancel" style="margin-left:6px">Renunță</button></p>
         <div id="cor-msg"></div></div>`;
       legaCorLookup(zonaCor, "cor-edit", b.dataset.val);
@@ -1640,7 +1659,7 @@ async function ecranSalariati(corp, nav, t) {
         <div class="camp"><span class="camp-eticheta">Adresa salariatului<span class="oblig">*</span></span>
           <input type="text" id="rg-adresa" aria-label="Adresa salariatului" class="camp-input" placeholder="strada, nr, localitate, judet">
           <span class="camp-ajutor">Obligatorie pentru transmiterea in REGES.</span></div>
-        <p style="margin-top:10px"><button class="buton-primar" id="rg-trimite">Trimite \u00een REGES</button>
+        <p style="margin-top:10px"><button class="buton-primar" id="rg-trimite" data-actiune="POST /tenants/{tenant_id}/reges-trimite-salariat">Trimite \u00een REGES</button>
           <button class="btn-link" id="rg-renunta" style="margin-left:10px">Renun\u021b\u0103</button></p>
         <div id="rg-rez"></div></div>`;
       zonaReges.querySelector("#rg-renunta").addEventListener("click", () => { zonaReges.innerHTML = ""; });
@@ -1701,13 +1720,13 @@ export async function sectiuneaCV(corp, t, zonaM) {
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
         <input type="text" id="cv-bc" class="camp-input" placeholder="cod de bare (scaneaz\u0103/tasteaz\u0103)" aria-label="Cod de bare" style="width:220px">
         <button class="buton-secundar" id="cv-bc-cauta">Caut\u0103 articol dup\u0103 cod</button>
-        <button class="buton-secundar" id="cv-bc-set">Atribuie codul articolului selectat</button>
+        <button class="buton-secundar" id="cv-bc-set" data-actiune="POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode">Atribuie codul articolului selectat</button>
         <input type="number" step="0.001" id="cv-nm" class="camp-input" placeholder="nivel minim" aria-label="Nivel minim de stoc" style="width:120px">
-        <button class="buton-secundar" id="cv-nm-set">Salveaz\u0103 nivelul minim</button>
+        <button class="buton-secundar" id="cv-nm-set" data-actiune="POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim">Salveaz\u0103 nivelul minim</button>
       </div>
       <p>
-        <button class="buton-primar" id="cv-intrare">Intrare</button>
-        <button class="buton-primar" id="cv-iesire" style="margin-left:6px">Ie\u0219ire la CMP (nota ciorn\u0103)</button>
+        <button class="buton-primar" id="cv-intrare" data-actiune="POST /tenants/{tenant_id}/stocuri/intrare">Intrare</button>
+        <button class="buton-primar" id="cv-iesire" data-actiune="POST /tenants/{tenant_id}/stocuri/iesire" style="margin-left:6px">Ie\u0219ire la CMP (nota ciorn\u0103)</button>
         <button class="buton-secundar" id="cv-fisa" style="margin-left:6px">Vezi fi\u0219a</button>
       </p>
       <div style="margin-top:10px">
@@ -1728,7 +1747,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           <label class="camp"><span class="camp-eticheta">Denumire</span><input class="camp-input" id="rt-den" placeholder="ex. Meniu zilei"></label>
           <label class="camp"><span class="camp-eticheta">Pre\u021b f\u0103r\u0103 TVA</span><input class="camp-input" type="number" step="0.01" id="rt-pret" style="width:110px"></label>
           <button class="buton-secundar" id="rt-plus">+ ingredient</button>
-          <button class="buton-primar" id="rt-salveaza">Salveaz\u0103 re\u021beta</button>
+          <button class="buton-primar" id="rt-salveaza" data-actiune="POST /tenants/{tenant_id}/retete">Salveaz\u0103 re\u021beta</button>
         </div>
         <div id="rt-ingrediente"></div>
       </div>
@@ -1819,8 +1838,8 @@ export async function sectiuneaCV(corp, t, zonaM) {
               <div class="pf-frand-sub">cost/por\u021bie ${bani(fc.cost_portie)} \u00b7 food cost ${procent} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${l.cantitate}${esc(l.um || "")}`).join(", ")}</div>
             </div>
             <input class="camp-input rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
-            <button class="buton-primar rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
-            <button class="buton-sters rt-del" data-id="${r.id}">\u0218terge</button>
+            <button class="buton-primar rt-desc" data-actiune="POST /tenants/{tenant_id}/retete/descarca" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
+            <button class="buton-sters rt-del" data-actiune="DELETE /tenants/{tenant_id}/retete/{reteta_id}" data-id="${r.id}">\u0218terge</button>
           </div>`;
         }).join("");
     rtLista.querySelectorAll(".rt-desc").forEach((b) => b.addEventListener("click", async (e) => {
@@ -1864,7 +1883,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         <div class="pf-frand-nume">${esc(a.denumire)} \u00b7 scriptic ${a.stoc} ${esc(a.um)}</div>
       </div>
       <input type="number" step="0.001" class="camp-input cvi-faptic" id="cvi-a${a.id}-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
-      <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
+      <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
     z.querySelector("#cvi-salveaza").addEventListener("click", async () => {
       curataEroriCamp(z);
       // NU se filtreaza randuri (cap.24 regula 2): se trimit TOATE articolele; backendul e autoritatea (sare
@@ -1914,7 +1933,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           <input type="text" id="tr-in" class="camp-input" placeholder="în locație" aria-label="În locație" list="cv-loc-list" style="width:130px">
           <input type="number" step="0.001" id="tr-cant" class="camp-input" placeholder="cant." aria-label="Cantitate" style="width:90px">
           <input type="date" id="tr-data" aria-label="Data transferului" class="camp-input">
-          <button class="buton-primar" id="tr-ok">Transferă</button>
+          <button class="buton-primar" id="tr-ok" data-actiune="POST /tenants/{tenant_id}/stocuri/transfer">Transferă</button>
         </div>
       </div>`;
     locZona.querySelector("#tr-ok").addEventListener("click", async () => {
@@ -1937,7 +1956,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           <input type="text" id="rc-cont" class="camp-input" placeholder="cont stoc nou (ex. 371)" aria-label="Cont stoc nou" style="width:150px">
           <input type="text" id="rc-chelt" class="camp-input" placeholder="cont cheltuială nou (ex. 607)" aria-label="Cont cheltuială nou" style="width:170px">
           <input type="date" id="rc-data" aria-label="Data reclasificării" class="camp-input">
-          <button class="buton-primar" id="rc-ok">Reclasifică</button>
+          <button class="buton-primar" id="rc-ok" data-actiune="POST /tenants/{tenant_id}/stocuri/reclasificare">Reclasifică</button>
         </div>
         <div class="camp-eticheta" style="margin-top:4px">Emite notă ciornă de reclasificare a soldului (cont nou = cont vechi) la CMP curent. Cantitatea nu se modifică.</div>
       </div>`;
@@ -1975,7 +1994,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           </div>
           <div id="im-hint" class="camp-eticheta" style="margin-top:4px"></div>
           <div class="pf-lista" style="margin-top:8px">${randList() || '<div class="stare-goala">Nimic numărat încă.</div>'}</div>
-          <p style="margin-top:8px"><button class="buton-primar" id="im-fin">Finalizează inventarul (note ciorne)</button></p>
+          <p style="margin-top:8px"><button class="buton-primar" id="im-fin" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Finalizează inventarul (note ciorne)</button></p>
         </div>`;
       const scan = z.querySelector("#im-scan");
       scan.focus();
@@ -2291,7 +2310,7 @@ async function ecranRegistruFiscal(corp, nav, t) {
         <label class="camp" id="rf-ch-camp"><span class="camp-eticheta">Cheltuieli deductibile</span><input type="number" step="0.01" id="rf-cheltuieli_deductibile" class="camp-input"></label>
       </div>
       <p class="pf-intro" id="rf-nota-ch"></p>
-      <div style="margin-top:12px"><button class="buton-primar" id="rf-adauga">\u00censcrie \u00een registru</button></div>`;
+      <div style="margin-top:12px"><button class="buton-primar" id="rf-adauga" data-actiune="POST /tenants/{tenant_id}/registru-evidenta-fiscala">\u00censcrie \u00een registru</button></div>`;
 
   const legaSelector = () => {
     const v = corp.querySelector("#rf-var"), a = corp.querySelector("#rf-an");
@@ -2437,7 +2456,7 @@ async function ecranRegistruInventar(corp, nav, t) {
         <label class="camp"><span class="camp-eticheta">${esc(ETICHETE.document)}</span><input type="text" id="ri-document" class="camp-input"></label>
       </div>
       <p class="pf-intro" id="ri-dif">Diferen\u021ba se calculeaz\u0103 singur\u0103, dup\u0103 norm\u0103: valoarea contabil\u0103 minus valoarea de inventar.</p>
-      <div style="margin-top:12px"><button class="buton-primar" id="ri-adauga">\u00censcrie \u00een registru</button></div>`;
+      <div style="margin-top:12px"><button class="buton-primar" id="ri-adauga" data-actiune="POST /tenants/{tenant_id}/registru-inventar">\u00censcrie \u00een registru</button></div>`;
 
     corp.querySelector("#ri-an").addEventListener("change", (e) => { exercitiu = Number(e.target.value) || exercitiu; propunere = []; deseneaza(); });
     corp.querySelector("#ri-moment").addEventListener("change", (e) => { momentul = e.target.value; deseneaza(); });
@@ -2587,7 +2606,7 @@ async function ecranRegistre321(corp, nav, t) {
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
           ${RETUR.concat(["documente", "data_documente"]).map((c) => camp(c, tipul(c))).join("")}
         </div></details>
-      <div style="margin-top:12px"><button class="buton-primar" id="r3-adauga">\u00censcrie \u00een registru</button></div>`;
+      <div style="margin-top:12px"><button class="buton-primar" id="r3-adauga" data-actiune="POST /tenants/{tenant_id}/registre-art321/{fel}">\u00censcrie \u00een registru</button></div>`;
 
     corp.querySelector("#r3-fel").addEventListener("change", (e) => { fel = e.target.value; deseneaza(); });
     corp.querySelector("#r3-adauga").addEventListener("click", async () => {
@@ -2668,7 +2687,7 @@ async function ecranBilant(corp, nav, t) {
           <option value="s1005">S1005 \u00b7 microentit\u0103\u021bi</option>
           <option value="s1003">S1003 \u00b7 entit\u0103\u021bi mici</option>
         </select></label>
-        <button class="buton-primar" id="bl-val">Valideaz\u0103 (ANAF)</button>
+        <button class="buton-primar" id="bl-val" data-actiune="POST /tenants/{tenant_id}/s1003-valideaza|POST /tenants/{tenant_id}/s1005-valideaza">Valideaz\u0103 (ANAF)</button>
         <button class="buton-secundar" id="bl-xml">Descarc\u0103 XML</button>
       </div>
       <div id="bl-categorie"></div>
@@ -2757,7 +2776,7 @@ export async function ecranStocuri(corp, nav, t) {
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="s-next">luna \u2192</button>
-        <button class="buton-primar" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
+        <button class="buton-primar" id="s-desc" data-actiune="POST /tenants/{tenant_id}/stocuri/descarcare" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
       <div id="s-mesaj"></div>
       <p><button class="buton-secundar" id="sn-toggle">+ NIR nou</button></p>
       <div id="sn-zona" hidden style="display:block;margin-bottom:14px">
@@ -2779,7 +2798,7 @@ export async function ecranStocuri(corp, nav, t) {
           <input type="text" id="sn-cont-taxe" class="camp-input" value="446" aria-label="Cont credit taxe" style="width:120px">
         </div>
         <p><button class="buton-secundar" id="sn-plus">+ articol</button>
-           <button class="buton-primar" id="sn-salveaza" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
+           <button class="buton-primar" id="sn-salveaza" data-actiune="POST /tenants/{tenant_id}/stocuri/nir" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
       </div>
       <div id="cv-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
@@ -2901,8 +2920,8 @@ async function ecranCasa(corp, nav, t) {
             <div class="pf-frand-nume">${esc(o.data)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${bani(o.suma)} lei \u00b7 sold ${bani(o.sold)} lei</div>
             <div class="pf-frand-sub">${esc(o.partener || "")}${o.document ? " \u00b7 doc " + esc(o.document) : ""} \u00b7 ${esc(o.categorie)}</div>
           </div>
-          <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>
-          ${exceptata && o.chitanta_neclasificata ? `<select class="camp-input" id="c-cota-${o.chitanta_neclasificata}" aria-label="Cota TVA a chitan\u021bei" style="width:120px;margin-left:8px"><option value="">cota TVA</option>${[21, 11, 0].map((c) => `<option value="${c}">${c ? c + "%" : "0% (scutit)"}</option>`).join("")}</select><button class="buton-secundar" data-cota="${o.chitanta_neclasificata}" style="margin-left:6px">Stabile\u0219te cota</button>` : ""}
+          <button class="buton-secundar" data-del="${o.id}" data-actiune="DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}">\u0218terge</button>
+          ${exceptata && o.chitanta_neclasificata ? `<select class="camp-input" id="c-cota-${o.chitanta_neclasificata}" aria-label="Cota TVA a chitan\u021bei" style="width:120px;margin-left:8px"><option value="">cota TVA</option>${[21, 11, 0].map((c) => `<option value="${c}">${c ? c + "%" : "0% (scutit)"}</option>`).join("")}</select><button class="buton-secundar" data-cota="${o.chitanta_neclasificata}" data-actiune="PUT /tenants/{tenant_id}/chitante/{chitanta_id}/cota" style="margin-left:6px">Stabile\u0219te cota</button>` : ""}
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Cas\u0103 ${semnAjutor("F015")}</h2>
@@ -2921,7 +2940,7 @@ async function ecranCasa(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Client</span><input type="text" id="ch-client" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Reprezentând</span><input type="text" id="ch-repr" class="camp-input"></label>
         </div>
-        <p style="margin-top:10px"><button class="buton-primar" id="ch-emite">Emite chitanța</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="ch-emite" data-actiune="POST /tenants/{tenant_id}/chitante">Emite chitanța</button></p>
         <div id="ch-mesaj"></div>
       </div>` : ""}
       <div id="c-zona" hidden style="display:block;margin-bottom:14px">
@@ -2941,7 +2960,7 @@ async function ecranCasa(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
         <div class="em-cui-stare" id="c-cui-stare"></div>
-        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga">Adaugă (notă ciornă)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni">Adaugă (notă ciornă)</button></p>
         <div id="c-mesaj"></div>
       </div>
       <div class="pf-lista">${randuri}</div>`;
@@ -3076,7 +3095,7 @@ async function ecranBanca(corp, nav, t) {
   const zonaLista = corp.querySelector("#bk-lista");
 
   function badge(l) {
-    if (l.status === "ignorat") return `<span style="color:var(--gri)">Ignorată</span> <button class="btn-link bk-undo" data-id="${l.id}">readu</button>`;
+    if (l.status === "ignorat") return `<span style="color:var(--gri)">Ignorată</span> <button class="btn-link bk-undo" data-id="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza">readu</button>`;
     if (l.status === "contat") return `<span style="color:${CUL.gri};font-weight:600">Contat \u2713</span>`;
     const m = (l.alocari || {}).status_match;
     if (m === "verde") return `<span style="color:${CUL.verde};font-weight:600">\u25cf Match exact</span>`;
@@ -3110,8 +3129,8 @@ async function ecranBanca(corp, nav, t) {
           ${randAlocari(l)}
         </div>
         <div>
-          ${l.status === "potrivit" ? `<button class="buton-primar" data-cont="${l.id}">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="buton-primar" data-cont="${l.id}">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>${badgeIncredere(l)}` : ""}
-          ${l.status !== "contat" && l.status !== "ignorat" ? `<button class="buton-primar" data-alege="${l.id}" style="margin-left:6px">Alege facturile</button>` : ""}${l.status !== "contat" && l.status !== "ignorat" ? `<button class="buton-secundar" data-ign="${l.id}" style="margin-left:6px">Ignor\u0103</button>` : ""}
+          ${l.status === "potrivit" ? `<button class="buton-primar" data-cont="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="buton-primar" data-cont="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>${badgeIncredere(l)}` : ""}
+          ${l.status !== "contat" && l.status !== "ignorat" ? `<button class="buton-primar" data-alege="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza" style="margin-left:6px">Alege facturile</button>` : ""}${l.status !== "contat" && l.status !== "ignorat" ? `<button class="buton-secundar" data-ign="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora" style="margin-left:6px">Ignor\u0103</button>` : ""}
         </div>
       </div>`).join("")}</div>`;
     zonaLista.querySelectorAll("[data-cont]").forEach((b) =>
@@ -3276,12 +3295,12 @@ async function ecranScoateFirma(corp, nav, t) {
         <input class="camp-input" id="sf-cui" autocomplete="off" placeholder="${esc(String(p.cui || ""))}">
         <p class="camp-ajutor">Se cere CUI-ul, nu numele: două firme pot avea același nume.</p>
       </div>
-      <button class="buton-primar" id="sf-sterge" disabled>Scoate firma definitiv</button>
+      <button class="buton-primar" id="sf-sterge" data-actiune="DELETE /tenants/{tenant_id}" disabled>Scoate firma definitiv</button>
       <p class="ecran-nota" style="margin:16px 0 6px"><strong>Sau, dacă vrei doar s-o scoți din
          listă:</strong> dezactivarea e <strong>reversibilă</strong> — firma iese din portofoliul
          de lucru, datele rămân neatinse, iar de sub „Firme dezactivate" o poți aduce înapoi
          oricând. Ștergerea de mai sus <strong>nu se poate întoarce</strong>.</p>
-      <button class="buton-secundar" id="sf-dezactiveaza-2">Dezactivează firma (reversibil)</button>`;
+      <button class="buton-secundar" id="sf-dezactiveaza-2" data-actiune="POST /tenants/{tenant_id}/activare">Dezactivează firma (reversibil)</button>`;
     const bDez2 = zona.querySelector("#sf-dezactiveaza-2");
     bDez2.addEventListener("click", async () => {
       bDez2.disabled = true; bDez2.textContent = "Se dezactivează…";
@@ -3339,7 +3358,7 @@ async function ecranScoateFirma(corp, nav, t) {
     <p class="ecran-nota" style="margin:14px 0">O poți <strong>dezactiva</strong> — act
        <strong>reversibil</strong>: iese din portofoliul de lucru, documentele rămân neatinse, iar
        de sub „Firme dezactivate" o aduci înapoi oricând, în starea de dinainte.</p>
-    <button class="buton-primar" id="sf-dezactiveaza">Dezactivează firma (reversibil)</button>`;
+    <button class="buton-primar" id="sf-dezactiveaza" data-actiune="POST /tenants/{tenant_id}/activare">Dezactivează firma (reversibil)</button>`;
   zona.querySelector("#sf-dezactiveaza").addEventListener("click", async () => {
     const b = zona.querySelector("#sf-dezactiveaza");
     b.disabled = true; b.textContent = "Se dezactivează…";
@@ -3470,7 +3489,7 @@ async function ecranRaportZ(corp, nav, t) {
     <h2 class="pf-titlu">Raport Z</h2>
     <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori. Numărul de bonuri fiscale e tot pe raportul Z și intră în D394.</p>
     <p><label class="buton-secundar" style="cursor:pointer">Import fi\u0219ier AMEF (p7b/XML)
-      <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
+      <input type="file" id="z-amef" data-actiune="POST /tenants/{tenant_id}/horeca/import-amef" accept=".p7b,.xml" style="display:none"></label></p>
     <div id="z-amef-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
       <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="z-data" class="camp-input"></label>
@@ -3484,7 +3503,7 @@ async function ecranRaportZ(corp, nav, t) {
       <label class="camp"><span class="camp-eticheta">Nr. bonuri fiscale</span><input type="number" min="1" step="1" id="z-bonuri" class="camp-input" placeholder="0"></label>
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
-    <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza">Genereaz\u0103 not\u0103</button></p>`;
+    <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza" data-actiune="POST /tenants/{tenant_id}/horeca/raport-z">Genereaz\u0103 not\u0103</button></p>`;
   corp.querySelector("#z-amef").addEventListener("change", async (ev) => {
       const f = ev.target.files[0];
       const zona = corp.querySelector("#z-amef-msg");
@@ -3528,7 +3547,7 @@ async function ecranRaportZ(corp, nav, t) {
       const dz = new Date(corp.querySelector("#z-data").value || new Date());
       const anz = dz.getFullYear(), lz = dz.getMonth() + 1;
       const zb = document.createElement("p");
-      zb.innerHTML = `<button class="buton-secundar" id="z-desc-gv">Descarc\u0103 gestiunea GV ${dataRo(`${anz}-${String(lz).padStart(2, "0")}-01`, "luna_an_numeric")} (not\u0103 ciorn\u0103)</button>`;
+      zb.innerHTML = `<button class="buton-secundar" id="z-desc-gv" data-actiune="POST /tenants/{tenant_id}/stocuri/descarcare">Descarc\u0103 gestiunea GV ${dataRo(`${anz}-${String(lz).padStart(2, "0")}-01`, "luna_an_numeric")} (not\u0103 ciorn\u0103)</button>`;
       zona.appendChild(zb);
       zb.querySelector("#z-desc-gv").addEventListener("click", async () => {
         try {
@@ -3578,9 +3597,9 @@ async function ecranJurnal(corp, nav, t) {
     const rand = (n) => {
       if (inEditare === n.id) return editor(n);
       const butoane = n.status === "ciorna" ? `
-        <button class="buton-primar" data-val="${n.id}">Valideaz\u0103</button>
+        <button class="buton-primar" data-val="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Valideaz\u0103</button>
         <button class="buton-secundar" data-edit="${n.id}">Editeaz\u0103</button>
-        <button class="buton-secundar" data-del="${n.id}">\u0218terge</button>` : "";
+        <button class="buton-secundar" data-del="${n.id}" data-actiune="DELETE /tenants/{tenant_id}/jurnal/{nota_id}">\u0218terge</button>` : "";
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
@@ -3606,7 +3625,7 @@ async function ecranJurnal(corp, nav, t) {
           </div>`).join("")}</div>
         <p><button class="buton-secundar" id="je-plus">+ linie</button></p>
         <p style="margin-top:10px">
-          <button class="buton-primar" id="je-salveaza">Salveaz\u0103</button>
+          <button class="buton-primar" id="je-salveaza" data-actiune="POST /tenants/{tenant_id}/jurnal|PUT /tenants/{tenant_id}/jurnal/{nota_id}">Salveaz\u0103</button>
           <button class="buton-secundar" id="je-renunta" style="margin-left:6px">Renun\u021b\u0103</button>
         </p>
       </div>`;
@@ -3631,7 +3650,7 @@ async function ecranJurnal(corp, nav, t) {
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben);font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
-        <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
+        <button class="buton-primar" id="j-amort" data-actiune="POST /tenants/{tenant_id}/amortizare" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
         <button class="buton-secundar" id="j-nota-noua" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
         <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button>${semnAjutor("F118")}</p>
       <div id="j-mesaj"></div>
@@ -3644,6 +3663,9 @@ async function ecranJurnal(corp, nav, t) {
       lunaBlocata = (pb.blocate || []).some((p) => p.an === an && p.luna === luna);
     } catch {}
     bLock.textContent = lunaBlocata ? "Deblocheaz\u0103 luna" : "Blocheaz\u0103 luna";
+    // [drepturi_rol] blocarea lunii = «Poate valida»; deblocarea = doar administratorul (decizia Costin 04.10).
+    // Butonul există în pagină înainte să se știe starea lunii, deci se judecă aici, nu prin poarta globală.
+    if (!permis(lunaBlocata ? "DELETE /tenants/{tenant_id}/perioade-blocate" : "POST /tenants/{tenant_id}/perioade-blocate")) bLock.remove();
     bLock.addEventListener("click", async () => {
       try {
         if (lunaBlocata) await api.del(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`);
@@ -3735,14 +3757,14 @@ async function ecranCentreCost(corp, nav, t) {
           <div class="pf-frand-nume">${esc(c.nume)}</div>
           <div class="pf-frand-sub">${c.activ ? "activ" : "inactiv — nu se mai oferă la note noi"}</div>
         </div>
-        <button class="buton-secundar" data-toggle="${c.id}" data-activ="${c.activ ? 1 : 0}">${c.activ ? "Dezactivează" : "Reactivează"}</button>
+        <button class="buton-secundar" data-toggle="${c.id}" data-actiune="PUT /tenants/{tenant_id}/centre-cost/{centru_id}" data-activ="${c.activ ? 1 : 0}">${c.activ ? "Dezactivează" : "Reactivează"}</button>
       </div>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Centre de cost</h2>
       <p class="pf-intro">Dimensiune de management pe notele manuale (Registru jurnal). Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
       <div style="display:flex;gap:8px;max-width:520px;margin-bottom:12px">
         <input type="text" id="cc-nume" class="camp-input" placeholder="Nume centru (ex: Vânzări, Producție)" aria-label="Nume centru" style="flex:1">
-        <button class="buton-primar" id="cc-add">Adaugă</button>
+        <button class="buton-primar" id="cc-add" data-actiune="POST /tenants/{tenant_id}/centre-cost">Adaugă</button>
       </div>
       <div id="cc-mesaj"></div>
       <div class="pf-lista">${centre.length ? centre.map(rand).join("") : '<div class="stare-goala">Niciun centru încă. Adaugă primul.</div>'}</div>
@@ -3817,7 +3839,7 @@ async function ecranCentreCost(corp, nav, t) {
         <div style="display:flex;gap:6px;align-items:center">
           <input type="number" step="0.01" class="camp-input bg-ch" value="${c.buget_cheltuieli}" style="width:100px" aria-label="Buget cheltuieli">
           <input type="number" step="0.01" class="camp-input bg-ve" value="${c.buget_venituri}" style="width:100px" aria-label="Buget venituri">
-          <button class="buton-secundar bg-save" data-c="${c.id}">Salvează</button>
+          <button class="buton-secundar bg-save" data-actiune="PUT /tenants/{tenant_id}/centre-cost/{centru_id}/buget" data-c="${c.id}">Salvează</button>
         </div>
       </div>`;
     };
@@ -3925,7 +3947,7 @@ async function ecranBonuri(corp, nav, t) {
         randeazaLista();
       } catch (e) {
         bcBtn.disabled = false; bcBtn.textContent = "Adaugă document (pozează / încarcă)";
-        msg.textContent = e.mesaj || "Nu am putut citi documentul. Încearcă o poză mai clară.";
+        arataMesaj(msg, e.mesaj || "Nu am putut citi documentul. Încearcă o poză mai clară.", "eroare");
       }
     });
     corp.querySelectorAll("[data-doc]").forEach((el) =>
@@ -3966,7 +3988,7 @@ async function ecranBonuri(corp, nav, t) {
               <input class="camp-input" id="d-cont-${j}" value="${a.cont_propus || ""}" placeholder="cont" aria-label="Cont propus">
             </div>`).join("")}</div>`}
       <div style="margin-top:14px">
-        <button class="buton-verde" id="d-certifica">${eChitanta ? "Certifică plata (401 = 5311)" : "Certifică și contează"}</button>
+        <button class="buton-verde" id="d-certifica" data-actiune="${eChitanta ? "POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge" : "POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba"}">${eChitanta ? "Certifică plata (401 = 5311)" : "Certifică și contează"}</button>
         <button class="btn-link" id="d-renunta" style="margin-left:10px">Renunță</button>
         <span class="msg-eroare" id="d-msg" style="margin-left:10px"></span>
       </div>
@@ -3979,6 +4001,12 @@ async function ecranBonuri(corp, nav, t) {
     (async () => {
       const zona = corp.querySelector("#d-poze");
       zona.innerHTML = "";
+      // [R52 + drepturi_rol] Fotografia poartă datele unui terț: o deschide doar administratorul (decizia Costin
+      // 25.08.2026). Se spune DE CE lipsește, în loc de o imagine ruptă sau de un refuz tăcut.
+      if (!permis("GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}")) {
+        zona.innerHTML = '<p class="ecran-nota">Fotografia documentului o deschide doar administratorul cabinetului: poartă datele unui terț.</p>';
+        return;
+      }
       for (let n = 1; n <= (b.nr_imagini || 0); n++) {
         try {
           const u = await pozaUrl(b.id, n);
@@ -4063,7 +4091,7 @@ async function ecranBonuri(corp, nav, t) {
           nav.inapoiPas();
         } catch (e) {
           btn.disabled = false; btn.textContent = "Certifică plata (401 = 5311)";
-          msg.textContent = e.mesaj || "Eroare la înregistrare.";
+          arataMesaj(msg, e.mesaj || "Eroare la înregistrare.", "eroare");
         }
       } else {
         const grupe = {};
@@ -4088,7 +4116,7 @@ async function ecranBonuri(corp, nav, t) {
           nav.inapoiPas();
         } catch (e) {
           btn.disabled = false; btn.textContent = "Certifică și contează";
-          msg.textContent = e.mesaj || "Eroare la contare.";
+          arataMesaj(msg, e.mesaj || "Eroare la contare.", "eroare");
         }
       }
     });
@@ -4302,12 +4330,12 @@ async function ecranRapoarte(corp, nav, t) {
           </div>
           <div style="display:flex;gap:6px;align-items:center">
             <button class="buton-secundar" data-incarca="${vr.id}">Încarcă</button>
-            <button class="buton-secundar" data-sterge="${vr.id}">Șterge</button>
+            <button class="buton-secundar" data-sterge="${vr.id}" data-actiune="DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}">Șterge</button>
           </div>
         </div>`).join("")}</div>` : `<div class="stare-goala">Nicio variantă salvată încă.</div>`}
       <p style="margin-top:10px">
         <input class="camp-input" id="r-var-nume" aria-label="Nume variantă" placeholder="Nume variantă (ex. Anul curent, client X)" style="max-width:320px" maxlength="80" autocomplete="off">
-        <button class="buton-primar" id="r-var-salveaza" style="margin-left:6px">Salvează varianta curentă</button>
+        <button class="buton-primar" id="r-var-salveaza" data-actiune="POST /tenants/{tenant_id}/rapoarte-salvate" style="margin-left:6px">Salvează varianta curentă</button>
         <span class="msg-eroare" id="r-var-msg" style="margin-left:8px"></span>
       </p>
       <div id="r-var-zona"></div>`;
@@ -4324,7 +4352,7 @@ async function ecranRapoarte(corp, nav, t) {
       try {
         await api.post(`/tenants/${t.id}/rapoarte-salvate`, { tip_raport: "comercial", nume, filtru: { an, cui: fisaCui || null } });
         deseneaza();
-      } catch (e) { msg.textContent = (e && e.mesaj) || "eroare"; }
+      } catch (e) { arataMesaj(msg, (e && e.mesaj) || "eroare", "eroare"); }
     });
     // [rap145] incarca varianta: aplica filtrul; validarea partenerului se face in randeazaFisa
     corp.querySelectorAll("[data-incarca]").forEach((b) => b.addEventListener("click", () => {
@@ -4389,7 +4417,7 @@ async function ecranRegistratura(corp, nav, t) {
           <label for="rg-part" class="camp-eticheta">Partener</label>
           <input type="text" class="camp-input" id="rg-part" placeholder="opțional" autocomplete="off">
         </div>
-        <button class="buton-primar" id="rg-add">Înregistrează</button>
+        <button class="buton-primar" id="rg-add" data-actiune="POST /tenants/{tenant_id}/registratura">Înregistrează</button>
         <span class="msg-eroare" id="rg-msg" style="margin-left:8px"></span>
       </div>
       <div class="pf-lista">${(d.inregistrari || []).length
@@ -4410,7 +4438,7 @@ async function ecranRegistratura(corp, nav, t) {
         const r = await api.post(`/tenants/${t.id}/registratura`, corpReq);
         if (r.an !== an) an = r.an;  // data dintr-un alt an -> sari la anul respectiv
         deseneaza();
-      } catch (e) { msg.textContent = (e && e.mesaj) || "eroare"; }
+      } catch (e) { arataMesaj(msg, (e && e.mesaj) || "eroare", "eroare"); }
     });
   };
   deseneaza();
@@ -4433,7 +4461,7 @@ async function ecranContracte(corp, nav, t) {
         <div style="display:flex;gap:6px;align-items:center">
           <button class="buton-secundar" data-gen="${s.id}">Generează</button>
           <button class="buton-secundar" data-edit="${s.id}">Editează</button>
-          <button class="buton-secundar" data-del="${s.id}">Șterge</button>
+          <button class="buton-secundar" data-del="${s.id}" data-actiune="DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}">Șterge</button>
         </div>
       </div>`;
     corp.innerHTML = `
@@ -4478,7 +4506,7 @@ async function ecranContracte(corp, nav, t) {
         <label for="c-continut" class="camp-eticheta">Text contract <span class="oblig">*</span></label>
         <textarea class="camp-input" id="c-continut" rows="16" style="width:100%">${sablon ? esc(sablon.continut) : ""}</textarea>
       </div>
-      <button class="buton-primar" id="c-salveaza">Salvează</button>
+      <button class="buton-primar" id="c-salveaza" data-actiune="POST /tenants/{tenant_id}/contracte/sabloane">Salvează</button>
       <button class="btn-link" id="c-renunta" style="margin-left:10px">Renunță</button>
       <span class="msg-eroare" id="c-msg" style="margin-left:8px"></span>`;
     corp.querySelector("#c-renunta").addEventListener("click", randeazaPrincipal);
@@ -4491,7 +4519,7 @@ async function ecranContracte(corp, nav, t) {
           continut: corp.querySelector("#c-continut").value,
         });
         mesajSucces = "Șablon salvat."; randeazaPrincipal();
-      } catch (e) { msg.textContent = (e && e.mesaj) || "eroare"; }
+      } catch (e) { arataMesaj(msg, (e && e.mesaj) || "eroare", "eroare"); }
     });
   }
 
@@ -4512,7 +4540,7 @@ async function ecranContracte(corp, nav, t) {
         </select>
         <span class="camp-ajutor">Datele partenerului se iau din client; câmpurile lipsă rămân goale în contract.</span>
       </div>
-      <button class="buton-primar" id="c-gen">Descarcă PDF</button>
+      <button class="buton-primar" id="c-gen" data-actiune="POST /tenants/{tenant_id}/contracte/genereaza">Descarcă PDF</button>
       <button class="btn-link" id="c-inapoi" style="margin-left:10px">Înapoi</button>
       <span class="msg-eroare" id="c-genmsg" style="margin-left:8px"></span>`;
     corp.querySelector("#c-inapoi").addEventListener("click", randeazaPrincipal);
@@ -4522,7 +4550,7 @@ async function ecranContracte(corp, nav, t) {
         await descarca(`/tenants/${t.id}/contracte/genereaza`,
                        `contract_${sablon.nume.replace(/[^a-z0-9]+/gi, "_")}.pdf`,
                        { metoda: "POST", corp: { sablon_id: sablon.id, client_id: corp.querySelector("#c-client").value || null } });
-      } catch (e) { msg.textContent = e.mesaj || e.message || "eroare"; }
+      } catch (e) { arataMesaj(msg, e.mesaj || e.message || "eroare", "eroare"); }
     });
   }
 
@@ -4571,7 +4599,7 @@ async function ecranAccesClient(corp, nav, t) {
         zona.innerHTML = cl.map((c) => `
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">
             <div><b>${esc(c.email)}</b> · ${esc(c.nume || "")} ${c.activ ? "" : ' · <span style="color:var(--rosu)">dezactivat</span>'}</div>
-            ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoc\u0103</button>` : ""}
+            ${c.activ ? `<button class="buton-secundar" data-id="${c.id}" data-actiune="DELETE /tenants/{tenant_id}/client-acces/{user_id}">Revoc\u0103</button>` : ""}
           </div>`).join("");
         zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", () => {
           confirmaCaseta(b.parentElement, "Revoci accesul acestui client?", async () => {
@@ -4594,7 +4622,7 @@ async function ecranAccesClient(corp, nav, t) {
         <input class="camp-input" id="ac-nume" placeholder="Numele persoanei">
       </div>
       <p class="ecran-nota" id="ac-msg" style="margin:0 0 10px"></p>
-      <button class="buton-primar" id="ac-btn">Trimite invitatia</button>
+      <button class="buton-primar" id="ac-btn" data-actiune="POST /tenants/{tenant_id}/client-acces">Trimite invitatia</button>
       <button class="btn-link" id="ac-renunta" style="margin-left:10px">Renun\u021b\u0103</button>
     `;
     const msg = corp.querySelector("#ac-msg");
@@ -4607,7 +4635,7 @@ async function ecranAccesClient(corp, nav, t) {
         await api.post(`/tenants/${t.id}/client-acces`, { email, nume: corp.querySelector("#ac-nume").value.trim() });
         mesajSucces = "Invitatie trimisa pe " + email + ".";
         randeazaPrincipal();
-      } catch (e) { msg.innerHTML = '<span class="msg-eroare">' + (e.mesaj || e.message) + '</span>'; }
+      } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
     });
   }
   randeazaPrincipal();

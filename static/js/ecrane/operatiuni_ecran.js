@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, arataMesaj, semnAjutor } from "../api.js?v=1dccbc985b";
+import { api, esc, arataMesaj, semnAjutor } from "../api.js?v=91e1c0701a";
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
   credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",
@@ -343,6 +343,11 @@ const REGISTRU = [
 
 const CATEGORII = [...new Set(REGISTRU.map((o) => o.cat))];
 
+// [drepturi_rol 04.10.2026] Fiecare operațiune merge pe ruta ei (`POST /tenants/{tenant_id}/<ruta>`), deci acțiunea se
+// DERIVĂ din registru, nu se scrie a doua oară. Butonul o poartă ca `data-actiune` — poarta globală (drepturi.js)
+// îl scoate dacă serverul o refuză. `core/test_drepturi_ui.py` verifică: fiecare `ruta` din REGISTRU e o rută reală.
+export const actiuneOp = (o) => "POST /tenants/{tenant_id}/" + o.ruta;
+
 export async function ecranOperatiuni(corp, nav, t) {
   let opCurenta = null;
 
@@ -357,7 +362,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           <div class="pf-frand-nume" style="margin-bottom:8px">${esc(cat)}</div>
           <div style="display:flex;flex-wrap:wrap;gap:8px">
             ${REGISTRU.filter((o) => o.cat === cat).map((o) =>
-              `<button class="buton-secundar" data-op="${o.cheie}">${esc(o.titlu)}</button>`).join("")}
+              `<button class="buton-secundar" data-op="${o.cheie}" data-actiune="${actiuneOp(o)}">${esc(o.titlu)}</button>`).join("")}
           </div>
         </div>`).join("")}`;
     corp.querySelectorAll("[data-op]").forEach((b) => b.addEventListener("click", () => {

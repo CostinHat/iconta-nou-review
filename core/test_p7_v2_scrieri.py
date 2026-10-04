@@ -216,7 +216,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_firma_profil.amef_si_cont_venit ×2 (chitanta_emite, chitanta_cota) — bifa de exceptare AMEF + contul de venit;
     #   repo_casa.chitanta_de_clasificat + repo_casa.clasifica_vanzare (chitanta_cota) — ruta nouă PUT
     #   /chitante/{id}/cota: chitanța fără cotă devine vânzare (nota ciornă pe venit + 4427). Pași NOI, nu SQL mutat.
-    assert _apeluri_catre_repository() == 278
+    # [testarea ca asistent, comanda Costin 04.10.2026 pct.3] 278 -> 279, cu apelul numit:
+    #   repo_utilizatori.contul_dupa_email (tenant_creeaza) — emailul clientului se judecă ÎNAINTE de crearea firmei
+    #   (o adresă cu alt rol se refuză pe câmp, firma nu se mai creează pe jumătate). Pas NOU, citire, nu SQL mutat.
+    #   (În `asistent_creeaza`, `id_si_activ_dupa_email` -> `contul_dupa_email` și `creeaza_cont_de_client` ->
+    #   `creeaza_cont_asistent` sunt ÎNLOCUIRI unu-la-unu, nu apeluri în plus.)
+    assert _apeluri_catre_repository() == 279
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

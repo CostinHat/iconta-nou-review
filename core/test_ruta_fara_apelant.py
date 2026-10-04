@@ -42,6 +42,7 @@ MULȚIME**: un fals-pozitiv rămâne în baseline fără să mintă despre altce
 în evidență oricum.
 """
 import glob
+import re
 import io
 import importlib.util
 import os
@@ -116,11 +117,19 @@ def _scan():
     return m
 
 
+# [drepturi_rol 04.10.2026] O DECLARAȚIE de drept („METODĂ /cale” în `data-actiune`, `permis(...)`, `actiune:`) nu e
+# un APEL: spune ce acțiune poartă un buton, ca interfața s-o ascundă celui refuzat. Lăsată în text, ar număra ca
+# apelant pentru o rută moartă (R70 ar tăcea) și ar împinge segmentele comune peste pragul de orbire (R80: cele
+# ~180 de declarații au dus `/tenants` și `/facturi` peste 40 fără ca vreun apelant să se fi schimbat). Forma
+# „METODĂ /cale” nu apare în niciun apel real (`api.post("/…")` nu poartă metoda în șir), deci se scoate exact ea.
+_RE_DECLARATIE_DREPT = re.compile(r"\b(?:GET|POST|PUT|PATCH|DELETE) /[^\s\"'`|]*")
+
+
 def _static():
     t = []
     for f in (glob.glob(os.path.join(_RAD, "static", "**", "*.js"), recursive=True)
               + glob.glob(os.path.join(_RAD, "static", "*.html"))):
-        t.append(io.open(f, encoding="utf-8", errors="ignore").read())
+        t.append(_RE_DECLARATIE_DREPT.sub("", io.open(f, encoding="utf-8", errors="ignore").read()))
     return "\n".join(t)
 
 

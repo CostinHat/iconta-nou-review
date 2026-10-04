@@ -2598,7 +2598,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE/INSERT) · firma_profil (INSERT/UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (UPDATE) · user_tenants (DELETE/INSERT) · users (INSERT/UPDATE) — prin `casa_api`, `repo_utilizatori`, `tenant_provisioning`*
 
 **Ce trebuie să fie adevărat după:**
 

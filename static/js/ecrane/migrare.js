@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js?v=1dccbc985b";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js?v=91e1c0701a";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -18,32 +18,35 @@ function _consumaMigMesaj(corp) {
 }
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
+// [drepturi_rol 04.10.2026] `actiune` = ruta care FACE pasul (METODĂ /cale, ca în main.py). Ghidul de bun venit
+// arată numai pașii permiși utilizatorului (comanda Costin pct.5), iar rândurile meniurilor de import poartă
+// `data-actiune` — poarta din drepturi.js le ascunde pe cele refuzate. Pasul „Firme” e al administratorului.
 export const STRATURI = [
-  { cheie:"firme", nr:1, titlu:"Firme", desc:"Validare CUI la ANAF · identificare + status fiscal",
+  { cheie:"firme", actiune:"POST /tenants|POST /migrare/importa", nr:1, titlu:"Firme", desc:"Validare CUI la ANAF · identificare + status fiscal",
     ...CULORI_CARD.albastru, construit:true,
     icon:'<path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M19 21V11a2 2 0 0 0-2-2h-2"/><path d="M9 7h2M9 11h2M9 15h2"/>' },
-  { cheie:"vector_fiscal", nr:2, titlu:"Vector fiscal", desc:"Ce declarații datorează firma (TVA, regim, intracomunitar)",
+  { cheie:"vector_fiscal", actiune:"POST /tenants/{tenant_id}/vector", nr:2, titlu:"Vector fiscal", desc:"Ce declarații datorează firma (TVA, regim, intracomunitar)",
     ...CULORI_CARD.chihlimbar, obligatoriu:true, construit:true,
     icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>' },  // [p84_vector_front]
-  { cheie:"solduri", nr:3, titlu:"Solduri inițiale", desc:"Balanța de deschidere per firmă (aduce și planul analitic)",
+  { cheie:"solduri", actiune:"POST /tenants/{tenant_id}/solduri", nr:3, titlu:"Solduri inițiale", desc:"Balanța de deschidere per firmă (aduce și planul analitic)",
     ...CULORI_CARD.verde, obligatoriu:true, construit:true,
     icon:'<path d="M12 3v18"/><path d="M5 8h14"/><path d="M5 8l-2 5h4z"/><path d="M19 8l-2 5h4z"/>' },
-  { cheie:"solduri_parteneri", nr:4, titlu:"Solduri parteneri", desc:"4111/401 defalcat per client și furnizor",
+  { cheie:"solduri_parteneri", actiune:"POST /tenants/{tenant_id}/parteneri", nr:4, titlu:"Solduri parteneri", desc:"4111/401 defalcat per client și furnizor",
     ...CULORI_CARD.teal, construit:true,
     icon:'<path d="M7 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/><path d="M17 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/><path d="M8.5 7L16 17"/>' },
-  { cheie:"salariati", nr:5, titlu:"Salariați", desc:"Nume, CNP, salariu, date contract (payroll + D112)",
+  { cheie:"salariati", actiune:"POST /tenants/{tenant_id}/salariati-import", nr:5, titlu:"Salariați", desc:"Nume, CNP, salariu, date contract (payroll + D112)",
     ...CULORI_CARD.piersica, construit:true,
     icon:'<circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.5a3 3 0 0 1 0 7M21 21v-2a4 4 0 0 0-3-3.8"/>' },
-  { cheie:"asociati", nr:6, titlu:"Asociați", desc:"Nume, cotă % (pentru D205, dividende)",
+  { cheie:"asociati", actiune:"POST /tenants/{tenant_id}/asociati-import", nr:6, titlu:"Asociați", desc:"Nume, cotă % (pentru D205, dividende)",
     ...CULORI_CARD.violet, construit:true,
     icon:'<circle cx="12" cy="8" r="3.2"/><path d="M5 21v-1.5a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5V21"/>' },
-  { cheie:"mijloace_fixe", nr:7, titlu:"Mijloace fixe", desc:"Registru amortizare în curs (valoare · durată · cumulat)",
+  { cheie:"mijloace_fixe", actiune:"POST /tenants/{tenant_id}/mijloace-fixe-import", nr:7, titlu:"Mijloace fixe", desc:"Registru amortizare în curs (valoare · durată · cumulat)",
     ...CULORI_CARD.piersica, construit:true,
     icon:'<path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/>' },
-  { cheie:"istoric_declaratii", nr:8, titlu:"Istoric declarații", desc:"Ce s-a depus deja anul curent (ca să nu apară fals restanță)",
+  { cheie:"istoric_declaratii", actiune:"POST /tenants/{tenant_id}/istoric-declaratii-import", nr:8, titlu:"Istoric declarații", desc:"Ce s-a depus deja anul curent (ca să nu apară fals restanță)",
     ...CULORI_CARD.ardezie, construit:true,
     icon:'<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13l2 2 4-4"/>' },
-  { cheie:"plan_conturi", nr:9, titlu:"Plan de conturi", desc:"Extinde planul standard cu conturi analitice/nestandard, per firmă",
+  { cheie:"plan_conturi", actiune:"POST /tenants/{tenant_id}/plan-conturi", nr:9, titlu:"Plan de conturi", desc:"Extinde planul standard cu conturi analitice/nestandard, per firmă",
     ...CULORI_CARD.violet, construit:true,
     icon:'<path d="M4 6h16M4 12h16M4 18h7"/>' },
 ];
@@ -83,6 +86,7 @@ async function meniuMigrare(corp, nav) {
     const stare = status[st.cheie];               // {stare, nota} sau undefined
     const rand = document.createElement(st.construit ? "button" : "div");
     rand.className = "mig-op" + (st.construit ? "" : " mig-op-inactiv");
+    if (st.actiune) rand.dataset.actiune = st.actiune;  // [drepturi_rol] pasul refuzat rolului nu se arată
 
     // badge de stare (dreapta)
     let badge = "";
@@ -153,7 +157,7 @@ function pasInput(corp, nav) {
       <div class="mig-drop-desc">Excel sau CSV cu o coloană de CUI-uri</div>
     </label>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-valideaza">Validează la ANAF</button>
+    <button class="buton-primar mig-buton" id="mig-valideaza" data-actiune="POST /migrare/valideaza|POST /migrare/incarca">Validează la ANAF</button>
   `;
 
   const fileInput = corp.querySelector("#mig-file");
@@ -189,7 +193,7 @@ function pasInput(corp, nav) {
       }
       pasRezultate(corp, nav, rez, ignorate);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "A apărut o eroare la validare.";
+      arataMesaj(eroare, (e && e.mesaj) || "A apărut o eroare la validare.", "eroare");
       buton.disabled = false; buton.textContent = "Validează la ANAF";
     }
   });
@@ -220,7 +224,7 @@ function pasRezultate(corp, nav, rezultate, ignorate) {
     ${bannerIgnorate}
     <div class="mig-lista" id="mig-lista"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-importa">Importă firmele bifate</button>
+    <button class="buton-primar mig-buton" id="mig-importa" data-actiune="POST /migrare/importa">Importă firmele bifate</button>
   `;
   const lista = corp.querySelector("#mig-lista");
   rezultate.forEach((r, i) => {
@@ -262,7 +266,7 @@ function pasRezultate(corp, nav, rezultate, ignorate) {
       const raport = await api.post("/migrare/importa", { firme: selectate });
       pasFinal(corp, nav, raport);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "A apărut o eroare la import.";
+      arataMesaj(eroare, (e && e.mesaj) || "A apărut o eroare la import.", "eroare");
       buton.disabled = false; actButon();
     }
   });
@@ -306,7 +310,7 @@ function randeazaDecizie(corp, nav, strat, sumarHTML, intrebare) {
       <textarea aria-label="Notă despre preluare" id="mig-nota" class="mig-textarea" style="height:64px" placeholder="Ex: aștept balanțele de la 2 clienți"></textarea>
     </div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-salveaza" disabled>Salvează</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza" data-actiune="POST /migrare/status" disabled>Salvează</button>
   `;
   let ales = null;
   const zona = corp.querySelector("#mig-nota-zona");
@@ -333,7 +337,7 @@ function randeazaDecizie(corp, nav, strat, sumarHTML, intrebare) {
       await api.post("/migrare/status", { strat, stare: ales, nota });
       if (nav && nav.inapoiPas) nav.inapoiPas(); else meniuMigrare(corp, nav);  // pop pe traseu -> firul reflecta pozitia reala (nu acumuleaza straturi)
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       salv.disabled = false; salv.textContent = "Salvează";
     }
   });
@@ -416,7 +420,7 @@ async function wizardVector(corp, nav) {
     <p class="mig-intro">Spune sistemului ce declara\u021bii datoreaz\u0103 fiecare firm\u0103: dac\u0103 e pl\u0103titoare de TVA, ce regim are (micro/profit) \u0219i dac\u0103 face opera\u021biuni intracomunitare. F\u0103r\u0103 vectorul fiscal firma nu poate fi procesat\u0103.</p>
     <div class="mig-progres">${sumarStrat(firme, cu, "au vectorul completat")}</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizeaz\u0103 stratul Vector fiscal</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" data-actiune="POST /migrare/valideaza" style="margin-top:16px">Finalizeaz\u0103 stratul Vector fiscal</button>
   `;
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
@@ -531,7 +535,7 @@ async function formularVectorFirma(corp, nav, f) {
         </div>
       </div>
       <div class="mig-eroare" id="vf-eroare"></div>
-      <button class="buton-primar mig-buton" id="vf-salveaza" style="margin-top:8px">Salveaz\u0103 vectorul</button>
+      <button class="buton-primar mig-buton" id="vf-salveaza" data-actiune="POST /tenants/{tenant_id}/vector" style="margin-top:8px">Salveaz\u0103 vectorul</button>
     </div>
   `;
   // selectie exclusiva in fiecare grup
@@ -688,7 +692,7 @@ function importSolduriFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor). Debitul total trebuie să fie egal cu creditul total. Conturile din balanță care nu sunt încă în planul de conturi se adaugă automat (nu sunt respinse).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/solduri/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">Încarcă balanța</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -715,7 +719,7 @@ function importSolduriFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaSolduri(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea balanței.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea balanței.", "eroare");
     }
   });
 }
@@ -741,7 +745,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
       <span>Cont</span><span>Denumire</span><span>Debit</span><span>Credit</span>
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
-    <button class="buton-primar mig-buton" id="mig-salveaza-sold">Salvează soldurile</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-sold" data-actiune="POST /tenants/{tenant_id}/solduri">Salvează soldurile</button>
   `;
   nav.setInapoi(() => wizardSolduri(corp, nav));
 
@@ -777,7 +781,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
       await api.post(`/tenants/${firma.tenant_id}/solduri`, { randuri });
       _migMesaj = `${randuri.length} conturi salvate.`; nav.inapoiPas();
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       buton.disabled = false; buton.textContent = "Salvează soldurile";
     }
   });
@@ -835,7 +839,7 @@ function importParteneriFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/parteneri/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">Încarcă partenerii</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -862,7 +866,7 @@ function importParteneriFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaParteneri(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fișierului.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea fișierului.", "eroare");
     }
   });
 }
@@ -911,7 +915,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-salveaza-part">Salvează partenerii</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-part" data-actiune="POST /tenants/{tenant_id}/parteneri">Salvează partenerii</button>
   `;
   nav.setInapoi(() => wizardParteneri(corp, nav));
   gateazaPreview(corp, "mig-salveaza-part", date.erori);
@@ -935,7 +939,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
       await api.post(`/tenants/${firma.tenant_id}/parteneri`, { randuri });
       _migMesaj = `${randuri.length} parteneri salvați.`; nav.inapoiPas();
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       buton.disabled = false; buton.textContent = "Salvează partenerii";
     }
   });
@@ -993,7 +997,7 @@ function importSalariatiFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă exportul de salariați (nume · CNP · salariu · date contract).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/salariati-import/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#c2415f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">Încarcă salariații</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -1020,7 +1024,7 @@ function importSalariatiFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaSalariati(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fișierului.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea fișierului.", "eroare");
     }
   });
 }
@@ -1042,7 +1046,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-salveaza-sal">Salvează salariații</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-sal" data-actiune="POST /tenants/{tenant_id}/salariati-import">Salvează salariații</button>
   `;
   nav.setInapoi(() => wizardSalariati(corp, nav));
   gateazaPreview(corp, "mig-salveaza-sal", date.erori);
@@ -1075,7 +1079,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
       // nu există skip tăcut, deci nu raportăm "X săriți" (fost cod mort D1a). Aici toate rândurile-s valide.
       _migMesaj = `${randuri.length} salariați importați.`; nav.inapoiPas();
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       buton.disabled = false; buton.textContent = "Salvează salariații";
     }
   });
@@ -1133,7 +1137,7 @@ function importAsociatiFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă asociații (nume · CNP/CUI · cotă %).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/asociati-import/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#6d28d9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">Încarcă asociații</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -1160,7 +1164,7 @@ function importAsociatiFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaAsociati(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fișierului.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea fișierului.", "eroare");
     }
   });
 }
@@ -1186,7 +1190,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
       <input type="date" id="mig-asoc-cesiune" class="camp-input">
       <span class="camp-ajutor">Data transmiterii părților sociale (din actul de cesiune / înregistrarea la ONRC). Dividendele distribuite înainte rămân ale vechilor asociați (Legea 31/1990 art.67 alin.(6)). Gol = corectezi structura actuală.</span></label>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-salveaza-asoc">Salvează asociații</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-asoc" data-actiune="POST /tenants/{tenant_id}/asociati-import">Salvează asociații</button>
   `;
   nav.setInapoi(() => wizardAsociati(corp, nav));
   gateazaPreview(corp, "mig-salveaza-asoc", date.erori);
@@ -1217,7 +1221,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
       _migMesaj = `${randuri.length} asociați salvați.` + (rez && rez.arhivati ? ` Structura anterioară (${rez.arhivati} asociați) rămâne valabilă până la ${dataRo(data_cesiune)} exclusiv, pentru dividendele distribuite înainte.` : "");
       nav.inapoiPas();
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       buton.disabled = false; buton.textContent = "Salvează asociații";
     }
   });
@@ -1275,7 +1279,7 @@ function importMijloaceFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă registrul de mijloace fixe (cod · denumire · valoare · rezidual · durată · PIF · metodă · cont imobilizare · cont amortizare).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/mijloace-fixe-import/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#c0492b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">Încarcă mijloacele fixe</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -1302,7 +1306,7 @@ function importMijloaceFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaMijloace(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fișierului.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea fișierului.", "eroare");
     }
   });
 }
@@ -1326,7 +1330,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-salveaza-mf">Salvează mijloacele fixe</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-mf" data-actiune="POST /tenants/{tenant_id}/mijloace-fixe-import">Salvează mijloacele fixe</button>
   `;
   nav.setInapoi(() => wizardMijloace(corp, nav));
   gateazaPreview(corp, "mig-salveaza-mf", date.erori);
@@ -1356,7 +1360,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
       await api.post(`/tenants/${firma.tenant_id}/mijloace-fixe-import`, { randuri });
       _migMesaj = `${randuri.length} mijloace fixe importate.`; nav.inapoiPas();
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       buton.disabled = false; buton.textContent = "Salvează mijloacele fixe";
     }
   });
@@ -1414,7 +1418,7 @@ function importIstoricFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă declarațiile depuse (tip · an · lună · data depunerii).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/istoric-declaratii-import/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#45597f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13l2 2 4-4"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">Încarcă declarațiile</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -1441,7 +1445,7 @@ function importIstoricFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaIstoric(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fișierului.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea fișierului.", "eroare");
     }
   });
 }
@@ -1464,7 +1468,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="buton-primar mig-buton" id="mig-salveaza-ist">Salvează istoricul</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-ist" data-actiune="POST /tenants/{tenant_id}/istoric-declaratii-import">Salvează istoricul</button>
   `;
   nav.setInapoi(() => wizardIstoric(corp, nav));
   gateazaPreview(corp, "mig-salveaza-ist", date.erori);
@@ -1495,7 +1499,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
       await api.post(`/tenants/${firma.tenant_id}/istoric-declaratii-import`, { randuri });
       _migMesaj = `${randuri.length} declarații din istoric salvate.`; nav.inapoiPas();
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       buton.disabled = false; buton.textContent = "Salvează istoricul";
     }
   });
@@ -1554,7 +1558,7 @@ function importPlanConturiFirma(corp, nav, firma) {
       <input type="text" class="camp-input" id="pc-denumire" aria-label="Denumire cont" aria-required="true" placeholder="Denumire" style="flex:1">
     </div>
     <div class="mig-eroare" id="pc-eroare"></div>
-    <button class="buton-primar mig-buton" id="pc-adauga" style="margin-top:10px">Adaug\u0103 cont</button>
+    <button class="buton-primar mig-buton" id="pc-adauga" data-actiune="POST /tenants/{tenant_id}/plan-conturi" style="margin-top:10px">Adaug\u0103 cont</button>
   `;
   const rezZona = corp.querySelector("#pc-rezultate");
   const cautaInput = corp.querySelector("#pc-cauta");
@@ -1640,13 +1644,13 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Mijloace fixe", desc: "Registru amortizare", strat: "mijloace_fixe", fn: (c, n) => importMijloaceFirma(c, n, firma) },
     { titlu: "Istoric declara\u021bii", desc: "Ce s-a depus deja", strat: "istoric_declaratii", fn: (c, n) => importIstoricFirma(c, n, firma) },
     { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", strat: "plan_conturi", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
-    { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", fn: (c, n) => importArticoleFirma(c, n, firma) },
-    { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", fn: (c, n) => importReteteFirma(c, n, firma) },
+    { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", actiune: "POST /tenants/{tenant_id}/articole-import", fn: (c, n) => importArticoleFirma(c, n, firma) },
+    { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", actiune: "POST /tenants/{tenant_id}/retete-import", fn: (c, n) => importReteteFirma(c, n, firma) },
   ];
   // [p_pfa_rip 20.07] Pas DOAR pentru PFA (partida simpla): registru incasari-plati.
   // Gated explicit pe tip==='pfa' (robust chiar daca /migrare/straturi pica).
   if (tip === "pfa") {
-    PASI.push({ titlu: "Import RIP", desc: "Registru \u00eencas\u0103ri-pl\u0103\u021bi (istoric PFA, partid\u0103 simpl\u0103)", strat: "rip", fn: (c, n) => importRipFirma(c, n, firma) });
+    PASI.push({ titlu: "Import RIP", desc: "Registru \u00eencas\u0103ri-pl\u0103\u021bi (istoric PFA, partid\u0103 simpl\u0103)", strat: "rip", actiune: "POST /tenants/{tenant_id}/rip-import/incarca", fn: (c, n) => importRipFirma(c, n, firma) });
   }
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
   // non-null aici (altfel am iesit mai sus cu stare-goala) -> filtram mereu, fara "arata tot".
@@ -1659,6 +1663,10 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   pasiVizibili.forEach((p) => {
     const rand = document.createElement("button");
     rand.className = "mig-frand";
+    // [drepturi_rol 04.10.2026] pasul poartă ruta care îl face — din STRATURI (sursa unică) sau, pentru cele trei
+    // importuri fără strat, scrisă pe pas; poarta din drepturi.js ascunde pasul refuzat rolului
+    const _act = p.actiune || (STRATURI.find((s) => s.cheie === p.strat) || {}).actiune;
+    if (_act) rand.dataset.actiune = _act;
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${p.titlu}</div>
@@ -1677,7 +1685,7 @@ function importReteteFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 re\u021betarul: un r\u00e2nd per ingredient (re\u021bet\u0103 \u00b7 pre\u021b v\u00e2nzare \u00b7 ingredient \u00b7 cantitate/por\u021bie). Ingredientele se potrivesc pe articolele din stoc dup\u0103 denumire.</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/retete-import/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">\u00cencarc\u0103 re\u021betele</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -1724,7 +1732,7 @@ function previzualizeazaRetete(corp, nav, firma, date) {
         </div>`).join("")}
       ${retete.length > 50 ? `<div class="mig-eticheta">\u2026 \u0219i \u00eenc\u0103 ${retete.length - 50}</div>` : ""}
     </div>
-    <button class="buton-primar mig-buton" id="mig-importa">Import\u0103 ${rez.valide || 0} re\u021bete</button>
+    <button class="buton-primar mig-buton" id="mig-importa" data-actiune="POST /tenants/{tenant_id}/retete-import">Import\u0103 ${rez.valide || 0} re\u021bete</button>
   `;
   zona.querySelector("#mig-importa").addEventListener("click", async () => {
     const b = zona.querySelector("#mig-importa");
@@ -1745,7 +1753,7 @@ function importArticoleFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 nomenclatorul de articole cu stocul ini\u021bial (denumire \u00b7 UM \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 op\u021bional cont stoc \u00b7 cont cheltuial\u0103).</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/articole-import/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">\u00cencarc\u0103 articolele</div>
       <div class="mig-drop-desc">Excel sau CSV</div>
@@ -1792,7 +1800,7 @@ function previzualizeazaArticole(corp, nav, firma, date) {
         </div>`).join("")}
       ${randuri.length > 50 ? `<div class="mig-eticheta">\u2026 \u0219i \u00eenc\u0103 ${randuri.length - 50}</div>` : ""}
     </div>
-    <button class="buton-primar mig-buton" id="mig-importa">Import\u0103 ${rez.valide || 0} articole</button>
+    <button class="buton-primar mig-buton" id="mig-importa" data-actiune="POST /tenants/{tenant_id}/articole-import">Import\u0103 ${rez.valide || 0} articole</button>
   `;
   zona.querySelector("#mig-importa").addEventListener("click", async () => {
     const b = zona.querySelector("#mig-importa");
@@ -1815,7 +1823,7 @@ function importRipFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 registrul de \u00eencas\u0103ri-pl\u0103\u021bi (istoric cronologic: dat\u0103 \u00b7 tip \u00b7 explica\u021bie \u00b7 sum\u0103 \u00b7 categorie \u00b7 metod\u0103). Partida simpl\u0103 nu are balan\u021b\u0103 de deschidere \u2014 soldul rezult\u0103 din opera\u021biuni.</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/rip-import/incarca" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
       <div class="mig-drop-titlu" id="mig-drop-titlu">\u00cencarc\u0103 registrul</div>
       <div class="mig-drop-desc">Excel sau CSV</div>

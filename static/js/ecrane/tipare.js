@@ -2,7 +2,8 @@
 // Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
 // Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
 // Doar patron (regula 4).
-import { api, esc } from "../api.js?v=1dccbc985b";
+import { api, esc } from "../api.js?v=91e1c0701a";
+import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] */
 
 function bara(pct) {
   // bara de proportie pentru rata de respingere
@@ -11,6 +12,8 @@ function bara(pct) {
 }
 
 export async function randeazaTipare(corp, nav) {
+  // [drepturi_rol 04.10.2026] Tiparele echipei sunt ale administratorului (cardul stă doar pe desktopul cabinetului).
+  if (!permis("GET /tipare")) { corp.innerHTML = `<p class="ecran-nota">Tiparele de erori ale echipei le vede doar administratorul cabinetului.</p>`; return; }
   corp.innerHTML = `<p class="ecran-nota">Se încarcă tiparele…</p>`;
   let d;
   try {
@@ -117,7 +120,7 @@ export async function randeazaTipare(corp, nav) {
     <div class="tip-analiza" style="margin-top:16px">
       <h3 class="tip-titlu">Analiză AI</h3>
       <p class="cap-nota">Claude citește exact tiparele de mai sus și propune explicații și recomandări concrete.</p>
-      <p><button class="buton-primar" id="tip-ai">Generează analiză AI</button></p>
+      <p><button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai">Generează analiză AI</button></p>
       <div id="tip-ai-rez"></div>
     </div></div>`;
   corp.querySelector("#tip-ai").addEventListener("click", async () => {

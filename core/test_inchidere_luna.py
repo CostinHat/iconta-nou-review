@@ -236,7 +236,15 @@ def test_rutele_exista_si_cheama_modulul():
               "/tenants/{tenant_id}/facturi/perioada/confirma",
               "/tenants/{tenant_id}/facturi/perioada/redeschide"):
         assert r in src, "ruta lipsă: " + r
-    assert "_il.confirma(conn, schema" in src and "cere_rol(\"admin_firma\")" in src
+    assert "_il.confirma(conn, schema" in src
+    # [drepturi_rol 04.10.2026] Garda nu mai e `cere_rol("admin_firma")`: închiderea lunii = „Poate valida”, redeschiderea
+    # manuală = administratorul (decizia Costin „varianta 2”). Se citește garda rutei, nu un șir din sursă.
+    import sys as _sys
+    _sys.path.insert(0, os.path.join(rad, "scripts"))
+    import scan_drepturi_ui as _sd
+    g = _sd.garzi_din_main()
+    assert g[("POST", "/tenants/{tenant_id}/facturi/perioada/confirma")] == ("drept", "VALIDA")
+    assert g[("POST", "/tenants/{tenant_id}/facturi/perioada/redeschide")] == ("drept", "ADMIN")
 
 
 def test_semaforul_foloseste_poarta_completa():

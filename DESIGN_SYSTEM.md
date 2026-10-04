@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.63 · 19 septembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.64 · 4 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -125,6 +125,17 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Grile de câmpuri în ferestre: clasa `.grila-doc` (copiii primesc `min-width:0` ca să se strângă) — fără grile inline cu display:grid care lasă inputurile să împingă fereastra în scroll orizontal.
 - `.fer-larg` max-width 1000px doar pentru tabele.
 - Nicio fereastră nu iese din ecran.
+- **Închiderea (v2.64, `inchidereDialog` din `api.js`, comanda Costin 04.10.2026).** O fereastră INFORMATIVĂ — fără
+  câmpuri de tastat (bun venit, anunț, lupa, ajutorul de dinainte de autentificare, paginile publice, previzualizări) — se închide din **X în antet** și cu
+  **Esc**, prin mecanismul unic `inchidereDialog` din `api.js`: X-ul e `.nav-x` (pus de mecanism dacă lipsește), Esc
+  închide numai fereastra de deasupra, iar X / Esc fac **exact** ce face butonul de la capăt (marchează văzut,
+  confirmă) — nu o a doua cale. O fereastră cu ce se tastează (ferestrele de lucru din navigator, editoarele, fereastra
+  de intrare/înregistrare) rămâne **doar cu X**: un Esc apăsat din reflex nu aruncă un formular completat. Excepția se
+  declară pe linie: `/* fereastra-de-lucru: doar X — <motiv> */`. Gard: `DIALOG_FARA_INCHIDERE` în verificator.
+- **Acțiunea refuzată rolului nu se afișează (v2.64, `data-actiune` + `drepturi.js`, decizia Costin 04.10.2026).** Un element
+  care declanșează o scriere poartă `data-actiune="METODĂ /cale"` (șablonul rutei din `main.py`); `drepturi.js` îl ascunde (`.drept-refuzat`) dacă
+  serverul o refuză utilizatorului (`GET /eu/drepturi`). Un câmp care afișează și o valoare poartă `data-actiune-camp`
+  și se dezactivează în loc să dispară. Gard: `core/test_drepturi_ui.py`.
 
 ## 10. Escape și securitate
 
@@ -649,6 +660,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.64 (04.10.2026)** — **cap.9: închiderea ferestrelor informative (X în antet + Esc, mecanism unic `inchidereDialog`) și acțiunile refuzate rolului (`data-actiune` + `drepturi.js`).** Din testarea ca asistent (comanda Costin, pct.2 și pct.4): bun-venitul se închidea numai de la butonul de la capătul listei; asistentul vedea „+ Adaugă firmă”, „Import în masă” și „Scoate”. Inventar la intrare: din 9 ferestre suprapuse, 2 aveau X și Esc, una nici X nici Esc (bun-venitul), una fără X (anunțul), restul X fără Esc. Ferestrele cu câmpuri rămân deliberat doar cu X (DECIZII 04.10.2026). Gărzi: `DIALOG_FARA_INCHIDERE` (verificator) și `core/test_drepturi_ui.py`.
+
 **v2.63 (19.09.2026)** — **cap.28 nou: clasificare per-linie pe ecran de validare a documentelor importate.** A12b: pe `facturi_ecran.primitaDetaliu` (validarea unei facturi primite din SPV), fiecare linie importată read-only primește un `<select class="camp-input">` de destinație TVA (taxabilă implicit / scutită / mixtă), trimis ca `destinatii[]` în ordinea liniilor și aplicat de backend în aceeași ordine (`repo_facturi.actualizeaza_destinatii_linii`, ORDER BY id). Doar liniile MIXTE intră în pro-rata (art. 300 alin. (5)) — închide A12 pe calea SPV. Faptul importat rămâne needitabil; se CLASIFICĂ, nu se editează. Gard verificator: un `<select>` de destinație fără `.camp-input`.
 
 **v2.62 (28.08.2026)** — **R81 decisă: simetrie de scriere pe denumirea unei firme** (cap.27 §27.4). Orice act care redenumește o firmă scrie `public.tenants.nume` **și** `{schema}.firma_profil.nume`, în aceeași tranzacție, cu aceeași valoare; **nu se construiește alias**. Toate cele patru căi trec printr-o singură funcție, `tenant_provisioning.scrie_denumirea`, cu poarta de unicitate înăuntru. Gard: `core/scan_simetrie_denumire.py` + `core/test_simetrie_denumire.py` — o funcție care scrie într-un singur loc din două pică poarta, iar scanul prinde și `SET`-urile compuse la rulare. **Scanul a găsit a patra cale asimetrică**, nevăzută de măsurătoarea de mână: `precompleteaza_din_anaf(seteaza_nume=True)`. **Pe ecran:** textul casetei de alegere revine la formularea simplă („denumirea aplicată e cea de pe documente"), iar marcajul `data-e1` **rămâne ca gardă de regresie**, nu ca decor — un invariant e o afirmație despre codul de azi. Cele două casete de denumire din „Date firmă" se leagă: sub simetrie, salvarea trimitea două cereri care se puteau suprascrie tăcut una pe alta.
