@@ -723,6 +723,40 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
     9. pct.7: textul „se rezolvă în maximum 48 de ore” scos (singura promisiune de termen afișată — căutat în static/, core/, ghid/).
     10. gărzi (server: nicio rută de scriere pe firmă fără drept; front: niciun apel la o rută restrânsă fără `data-actiune` declarat; dialoguri) + mutații + proba „valid” în browser (8011, cont de asistent de test) + după deploy pe 8010 contul Anei (citire) + cele trei unelte vizuale + registre + poartă + four-way + mirror + ZIP `/home/costin/ghid_incoming/iconta_testare_asistent.zip`.
 
+
+- fir: **DREPTURI — CONFIRMĂRILE LUI COSTIN (04.10.2026)** — răspunsurile la cele 8 confirmări din raportul „Testarea ca asistent”
+  (verbatim în DECIZII 04.10.2026). De executat: (1) R52 răsturnat — PDF-ul chitanței, fotografia bonului, fluturașul la „Poate
+  pregăti” pe firmele alocate; (2) regimul de TVA la „Poate pregăti” CU jurnalul fiecărei schimbări (utilizator, dată, vechi → nou),
+  ca la C&D; (5) REGES: configurarea credențialelor la administrator, trimiterea și răspunsurile la „Poate depune”. Confirmate fără
+  cod: 3, 4, 6 (Ana — nu se ating datele), 7, 8.
+  - livrat: în commitul „Confirmările de drepturi …” (hash în ISTORIC 04.10.2026) — pașii 1–4, plus 3b și 3c crescuți pe drum.
+    Proba în browser (8011, iconta_test, asistent): înainte pe worktree HEAD / după pe arbore — fluturaș 0 -> 12 vizibile (PDF 200),
+    poza bonului „doar administratorul” -> afișată (imagine 200), PDF chitanță 403 -> 200 `%PDF-` (chitanță temporară, ștearsă),
+    regimul TVA Nu -> Da: jurnal [] -> [platitor_tva false -> true, asistent]; REGES cu „Poate pregăti”: „Chei REGES” 1 -> 0, „REGES”
+    pe rânduri 12 -> 0; cu „Poate depune”: „Răspunsuri REGES” 0 -> 1, „REGES” 12, „Chei REGES” 0.
+  - ultim: pașii 1–4 + 3b + 3c (commitul care poartă linia)
+  - urmator: — (fir închis). STARE = ÎNCHIS
+  - pasi:
+    1. R52: `GET /tenants/{id}/fluturas/{sid}`, `GET …/chitante/{cid}/pdf`, `GET …/bonuri/{bid}/imagine/{n}` -> `cere_drept(PREGATI)`;
+       pinii din `core/test_drepturi_rol.py`; CONFORMITATE R52 (pivot consemnat); interfața urmează singură (`data-actiune`, `permis`).
+    2. jurnalul regimului de TVA: tabel `firma_profil_jurnal` (camp, valoare_veche, valoare_noua, user_id, la) în schema firmei —
+       `core/migrare_firma_profil_jurnal.py` + mirror în `tenant_template.sql` + clasificarea în perimetru; o singură funcție în
+       `repo_firma_profil` (citește vechiul FOR UPDATE, scrie doar la schimbare reală, aceeași tranzacție), chemată de ambele căi
+       (`firma_profil_regim_tva`, `vector_fiscal_api.salveaza`) cu utilizatorul din token; câmpurile: platitor_tva, tip_decont,
+       inreg_art317. Migrare: baza de test, apoi producția (backup înainte).
+    3. REGES: `reges-trimite-salariat`, `reges-poll` -> `cere_drept(DEPUNE)`; `reges-config` rămâne ADMIN; pinii pe numele funcției
+       în `core/test_drepturi_rol.py`. Rescris pe drum: garda R56 (`core/scan_rol_pe_efect.atinge_credentiale`) le număra fals ca
+       scrieri de credențiale -> sonda reparată (scrierea numește credențiala; un nivel și în modulele `core.*`), calibrare +
+       mulțimea așteptată în `core/test_rol_pe_efect.py` — nu excepție.
+    3b. (găsit pe drum) mesajele de eroare de la server interpolate neescapat în HTML: 13 locuri (portal 7, firme 3, cabinet,
+       facturi, Woo) -> `esc()`; gard verificator `MESAJ_SERVER_NEESCAPAT` + DS cap.10 v2.65.
+    3c. (găsit pe drum) butoanele care DESCHID formularul unei acțiuni restrânse, nemarcate fiindcă eticheta nu e „+/Adaugă/Emite”
+       (inclusiv „Chei REGES”, „REGES”): 18 -> `data-actiune`; treapta structurală `scan_drepturi_ui.intrari_in_formular_nemarcate`
+       în `core/test_drepturi_ui.py` + verificator `ACTIUNE_REFUZATA_NEMARCATA`.
+    4. gărzi + mutații + proba în browser pe contul de asistent (pregătire: documentele de terț vizibile, schimbarea regimului
+       jurnalizată; depunere: REGES vizibil / fără: ascuns) + unelte vizuale + registre + poartă + four-way + ZIP
+       `/home/costin/ghid_incoming/iconta_drepturi_confirmari.zip`.
+
 ---
 
 ## Implementarea modelului de temei (01.08)

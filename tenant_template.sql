@@ -2716,6 +2716,17 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.asociati_istoric (
     CONSTRAINT asociati_istoric_uniq UNIQUE (valabil_pana_la, cnp)
 );
 
+-- [decizia Costin 04.10.2026] jurnalul schimbărilor regimului de TVA (platitor_tva, tip_decont, inreg_art317: utilizator,
+-- dată, veche -> nouă). Mirror core/migrare_firma_profil_jurnal.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.firma_profil_jurnal (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    camp character varying(40) NOT NULL,
+    valoare_veche text,
+    valoare_noua text,
+    user_id integer NOT NULL,
+    la timestamp with time zone NOT NULL DEFAULT now()
+);
+
 -- [decizia Costin 04.10.2026] jurnalul schimbărilor de pe fișa mijlocului fix (bifa C&D: utilizator, dată, veche -> nouă).
 -- Mirror core/migrare_mf_jurnal.py.
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.mijloace_fixe_jurnal (

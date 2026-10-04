@@ -16803,3 +16803,34 @@ ar fi rămas fără munca curentă (nu putea emite o factură).
 
 **Norma** trăiește în cod: `core/drepturi.py` + `cere_drept` (main.py), gardată de `core/test_drepturi_rol.py` și
 `core/test_drepturi_ui.py`; regula de dialog și de acțiune refuzată în DESIGN_SYSTEM.md cap.9 (v2.64) + `verificator_conformitate.py`.
+
+## 04.10.2026 — PIVOT pe drepturi: răspunsurile lui Costin la cele 8 confirmări (supersedează punctele 4–7 din intrarea „Drepturile asistentului pe rol”)
+
+**Decizia lui Costin (verbatim):** *„1. R52: NU rămâne așa. Asistentul cu „Poate pregăti” vede, pe firmele alocate, PDF-ul
+chitanței, fotografia bonului și fluturașul (salariile le vede oricum în statul de plată; nu poate emite/certifica ce nu vede).
+2. Regimul de TVA la „Poate pregăti”: confirmat, cu jurnalizarea fiecărei schimbări (utilizator, dată, vechi → nou), ca la bifa C&D.
+3. Planul de conturi la „Poate pregăti”: confirmat. 4. Aprobarea bonului din portal și raportul Z manual la „Poate valida”; importul
+Z din fișier la „Poate pregăti”: confirmat. 5. REGES: configurarea credențialelor doar la administrator; trimiterea și răspunsurile
+trec la „Poate depune” (depunere la o autoritate, ca la ANAF), pe firmele alocate. 6. Ana: îi bifează Costin „Poate pregăti” din
+Asistenți; nu schimba datele ei. 7. Esc doar pe ferestrele informative, X/Esc pe anunț = „am citit”: confirmat. 8. e-Factura în
+SPV = „Poate pregăti”, pontaj = „Poate pregăti”, „închide luna pe facturi” = „Poate valida”, redeschiderea = administrator,
+istoricul firmelor scoase = administrator: confirmat.”*
+
+**Ce supersedează, explicit:** în intrarea de mai sus („Drepturile asistentului pe rol”), consecința 6: R52 (documentele cu date de
+terț la administrator) — RĂSTURNAT; R56 pentru `reges-poll` / `reges-trimite-salariat` (administrator) — RĂSTURNAT pentru trimitere și
+răspunsuri (acum „Poate depune”), păstrat pentru configurare. Consecința 7 (regimul TVA, planul de conturi) — CONFIRMATĂ, cu jurnal.
+Punctele 4, 7, 8 — confirmate fără schimbare. R52 din CONFORMITATE.md (decizia din 25.08) e înlocuit de asta.
+
+**Consecințe (executor):**
+1. **Jurnalul regimului de TVA** = câmpurile care schimbă ce declarații de TVA datorează firma și cum: `platitor_tva`,
+   `tip_decont`, `inreg_art317` (art.317). Nu intră `regim_fiscal` (micro/profit — nu e TVA) și nici instantaneul ANAF
+   (`platitor_tva_anaf*`, o citire, nu o alegere). Precompletarea din ANAF de la CREAREA firmei e valoarea inițială, nu o
+   schimbare — nu se jurnalizează (nu există „vechi”); prima salvare a vectorului pe o firmă fără profil se jurnalizează cu vechi gol.
+2. **Tabelul stă în schema firmei** (`firma_profil_jurnal`), nu în `public.audit_log` (șters după 12 luni) — ca la C&D.
+3. **REGES**: trimiterea și citirea răspunsurilor CITESC cheile (ca să se autentifice la REGES) și scriu în `reges_mesaje`; nu
+   scriu credențiale. Garda R56 (`core/scan_rol_pe_efect.py`) le număra totuși ca „scriu credențiale” — sonda cerea doar „o
+   scriere oarecare + numele unei credențiale oriunde în corp” (fals pozitiv; potrivea și `api_cheie_revoca` după nume, și rata
+   SQL-ul real din `api_public`, deci crearea unei chei API scăpa). Sonda s-a reparat (scrierea trebuie să numească credențiala),
+   nu s-a pus o excepție: după reparație, rutele care scriu credențiale sunt exact patru (chei API creare/revocare, `reges-config`,
+   configurarea Woo), toate la administrator. Nivelul REGES („Poate depune”) e pinat pe numele funcției în `core/test_drepturi_rol.py`.
+

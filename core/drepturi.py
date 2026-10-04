@@ -46,8 +46,9 @@ MESAJ = {
     VALIDA: ("Validarea — notele contabile, declarațiile, înregistrarea amortizării, închiderea lunii — cere "
              "dreptul «Poate valida», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul "
              "Asistenți."),
-    DEPUNE: ("Depunerea la ANAF cere dreptul «Poate depune», pe care nu-l ai. Îl acordă administratorul "
-             "cabinetului, din ecranul Asistenți."),
+    # [PIVOT 04.10.2026] REGES (trimiterea și răspunsurile) e tot o depunere la o autoritate — decizia Costin
+    DEPUNE: ("Depunerea la ANAF și trimiterea în REGES cer dreptul «Poate depune», pe care nu-l ai. Îl acordă "
+             "administratorul cabinetului, din ecranul Asistenți."),
     ADMIN: ("Asta o face doar administratorul cabinetului: adăugarea, importul și scoaterea firmelor, asistenții "
             "și drepturile lor, cheile API, GDPR, abonamentul, datele cabinetului, deblocarea unei perioade "
             "închise. Cere-i lui."),

@@ -131,6 +131,34 @@ def test_CALIBRARE_sonda_de_credentiale_nu_prinde_o_simpla_CITIRE():
     assert scan.atinge_credentiale(f["b"]) is True
 
 
+def test_CALIBRARE_citirea_cheilor_ca_sa_te_autentifici_nu_e_scriere_a_lor():
+    """[04.10.2026] Cele trei moduri în care sonda veche greșea: (a) citește cheile REGES și scrie răspunsul în ALTĂ
+    tabelă — nu e o scriere de credențiale (`reges-poll`, `reges-trimite-salariat` trec la „Poate depune”, decizia
+    Costin); (b) numele funcției și decoratorul (`@app.delete`, `api_cheie_revoca`) nu sunt SQL; (c) SQL-ul real dintr-un
+    modul `core.*` importat în funcție (nu `repo_*`) trebuie văzut — altfel crearea unei chei API scăpa."""
+    f = _f('def a(x):\n    cur.execute("SELECT username FROM public.reges_chei WHERE t=%s")\n'
+           '    cur.execute("INSERT INTO public.reges_mesaje (r) VALUES (%s)")\n'
+           '@app.delete("/cabinet/api-chei/{kid}")\ndef api_cheie_revoca(kid):\n    return 1\n'
+           'def c(x):\n    from core import api_public as _ap\n    return _ap.revoca(conn, 1, x)\n')
+    assert scan.atinge_credentiale(f["a"]) is False, "citirea cheilor + scrierea în altă tabelă = scriere de credențiale"
+    assert scan.atinge_credentiale(f["api_cheie_revoca"]) is False, "numele funcției / decoratorul luate drept SQL"
+    assert scan.atinge_credentiale(f["c"]) is True, "SQL-ul din `api_public.revoca` (prin alias) nu se vede"
+
+
+# Mulțimea rutelor care scriu credențiale, așteptată (R56: toate la administrator). O rută intrată sau ieșită se scrie aici.
+ASTEPTAT_CREDENTIALE = {
+    ("POST", "/cabinet/api-chei"), ("DELETE", "/cabinet/api-chei/{kid}"),
+    ("POST", "/tenants/{tenant_id}/reges-config"), ("PUT", "/tenants/{tenant_id}/woocommerce/config"),
+}
+
+
+def test_multimea_celor_care_scriu_credentiale_nu_se_schimba_tacut(m):
+    gasit = set(m["cu_credentiale"])
+    assert gasit == ASTEPTAT_CREDENTIALE, (
+        "rutele care scriu credențiale s-au schimbat.\n  intrate: %s\n  ieșite : %s"
+        % (sorted(gasit - ASTEPTAT_CREDENTIALE) or "—", sorted(ASTEPTAT_CREDENTIALE - gasit) or "—"))
+
+
 def test_pinul_starii_din_parametru_e_real_si_motivat(m):
     """E6: cazul cunoscut e pinat, dar pinul nu poate deveni o listă de ignorat."""
     cai = {c for (_metoda, c) in m["rute"]}

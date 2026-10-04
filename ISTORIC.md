@@ -1365,3 +1365,28 @@ fără erori.
 
 **Atenție la contul Ana (producție):** în bază are toate trei bifele pe „nu” (invitația veche nu dădea „Poate pregăti”). Cu
 regula nouă vede firmele F1, F2, dar nu poate lucra pe ele până nu i se bifează „Poate pregăti” din Asistenți.
+
+## 04.10.2026 — Confirmările de drepturi (răspunsurile lui Costin la cele 8): documentele de terț la „Poate pregăti”, regimul de TVA jurnalizat, REGES la „Poate depune”
+
+**Ce a decis Costin** (verbatim în DECIZII, „PIVOT pe drepturi”): R52 răsturnat — asistentul cu „Poate pregăti” vede fluturașul,
+PDF-ul chitanței și fotografia bonului pe firmele alocate; regimul de TVA rămâne la „Poate pregăti”, cu fiecare schimbare jurnalizată
+(utilizator, dată, vechi → nou); REGES: cheile la administrator, trimiterea și răspunsurile la „Poate depune”. Ana: datele ei NU s-au
+atins (bifa i-o pune Costin).
+
+**Ce s-a măsurat înainte** (browser, cod HEAD, asistent doar cu „Poate pregăti”): fluturașul ascuns; fotografia bonului — „o deschide
+doar administratorul”; PDF-ul chitanței 403; regimul de TVA schimbat Nu → Da fără nicio urmă. Și, neprevăzut: „Chei REGES” și butonul
+„REGES” de pe fiecare salariat (12) erau vizibile asistentului, deși ruta din spatele lor îl refuza.
+
+**Ce s-a făcut:** cele trei documente pe `cere_drept(PREGATI)`; `reges-poll` / `reges-trimite-salariat` pe `DEPUNE`, `reges-config` rămâne
+la administrator; tabela `firma_profil_jurnal` în schema fiecărei firme (migrare + template; producția migrată, backup după); o singură
+funcție de jurnal (`repo_firma_profil.jurnalizeaza_regim_tva`) chemată de ambele căi care scriu regimul, cu utilizatorul din token.
+
+**Găsite pe drum și reparate (ciclul de neconformitate):** (1) garda R56 număra ca „scrie credențiale” rutele care doar CITESC cheile
+REGES și rata crearea unei chei API — sonda reparată, nu ocolită cu o excepție; (2) 18 butoane care deschid formularul unei acțiuni
+restrânse („Chei REGES”, „REGES”, „Stornează”, „Trimite pe email”, „Inventar”, editările salariatului…) rămâneau vizibile celui refuzat —
+treaptă structurală nouă în scanner; (3) 13 mesaje de eroare de la server puse neescapat în HTML — `esc()` + regulă în verificator
+(DS v2.65); (4) mesajul de refuz „Poate depune” vorbea doar de ANAF.
+
+**Proba după** (browser, același asistent): fluturașul se descarcă (12 butoane, PDF 200); fotografia bonului se afișează (imagine
+200); PDF-ul unei chitanțe se deschide (200, `%PDF-`); Nu → Da la TVA lasă rândul `platitor_tva false → true` cu numele asistentului;
+doar cu „Poate pregăti”, niciun buton REGES; cu „Poate depune”, „Răspunsuri REGES” și „REGES” pe salariați, dar nu „Chei REGES”.

@@ -7,7 +7,7 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arat
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=75997a1941";
+import { randeazaListaFirme } from "./firme.js?v=8e81ab26fc";
 import { randeazaMigrare } from "./migrare.js?v=c017b073d6";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=70bc686f76"; // [p17_activitate]
@@ -553,7 +553,7 @@ async function _educatiePatruOchi(continut) {  // [p55_decizie]
       await api.post("/eu/patru-ochi", { activ: true });
       el.innerHTML = `<span style="color:var(--verde);font-weight:600">Validarea \u00een doi este activ\u0103.</span>`;
       setTimeout(() => el.remove(), 6000);
-    } catch (e) { el.insertAdjacentHTML("beforeend", ` <span class="msg-eroare">${e.mesaj || e.message}</span>`); }
+    } catch (e) { el.insertAdjacentHTML("beforeend", ` <span class="msg-eroare">${esc(e.mesaj || e.message)}</span>`); }
   });
   el.querySelector("#edu-nu").addEventListener("click", async () => {
     try { await api.post("/eu/educatie/patru-ochi/vazut", {}); } catch {}

@@ -5,7 +5,7 @@
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide } from "../api.js?v=91e1c0701a";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaEmitere } from "./emitere_ecran.js?v=3124d2a07b";
+import { randeazaEmitere } from "./emitere_ecran.js?v=8cc7efbca2";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -135,7 +135,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
     </div>
     <div style="margin-top:14px">
       <button class="buton-verde" id="pr-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza">Validează (creează cheltuiala)</button>
-      <button class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
+      <button data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge" class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
       <span class="btn-link" id="pr-xml" style="margin-left:10px">Vezi XML brut</span>
     </div>
     <div id="pr-zona" style="margin-top:10px"></div>
@@ -280,7 +280,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
         b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
       } catch (e) {
-        b.outerHTML = `<span class="tip-desc" style="color:var(--galben);margin-left:8px">${(e.mesaj || "eroare")}</span>`;
+        b.outerHTML = `<span class="tip-desc" style="color:var(--galben);margin-left:8px">${esc((e.mesaj || "eroare"))}</span>`;
       }
     }));
     corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
@@ -484,8 +484,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <h2 class="pf-titlu">Factur\u0103 ${esc(f.numar || "\u2014")}</h2>
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
-        <button class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
-        ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
+        <button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email" class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
+        ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.platita_la ? '<span class="fd-stare fd-stare-verde">pl\u0103tit\u0103</span>' : ""}
         ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin SIMULARE</span>' : ""}

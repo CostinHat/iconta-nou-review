@@ -3477,7 +3477,10 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
 @app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
 # [R52] Poartă salariul unei PERSOANE — date despre cineva care nu e firma.
 def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int,
-                    ctx=Depends(cere_drept(_drepturi.ADMIN))):
+                    ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    # [PIVOT 04.10.2026, DECIZII] R52 răsturnat de Costin: „Asistentul cu «Poate pregăti» vede, pe firmele alocate,
+    # PDF-ul chitanței, fotografia bonului și fluturașul (salariile le vede oricum în statul de plată; nu poate
+    # emite/certifica ce nu vede).” Nota [R52] de deasupra rămâne ca istoric (decoratorul e înghețat).
     try:
         pdf = _uc_tenants.tenant_fluturas(tenant_id, salariat_id, an, luna, ctx)
         return Response(content=pdf, media_type="application/pdf",
@@ -3846,7 +3849,10 @@ def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx
 @app.get("/tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}")
 # [R52] Fotografia unui bon: orice apare pe hârtia aia, inclusiv ce nu ține de firmă.
 def cabinet_bon_imagine(tenant_id: int, bon_id: int, n: int,
-                        ctx=Depends(cere_drept(_drepturi.ADMIN))):
+                        ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    # [PIVOT 04.10.2026, DECIZII] R52 răsturnat de Costin: „Asistentul cu «Poate pregăti» vede, pe firmele alocate,
+    # PDF-ul chitanței, fotografia bonului și fluturașul (salariile le vede oricum în statul de plată; nu poate
+    # emite/certifica ce nu vede).” Nota [R52] de deasupra rămâne ca istoric (decoratorul e înghețat).
     try:
         cale = _uc_tenants.cabinet_bon_imagine(tenant_id, bon_id, n, ctx)
         return FileResponse(cale)
@@ -3923,7 +3929,10 @@ def chitante_lista(tenant_id: int, factura_id: Optional[int] = None, ctx=Depends
 
 @app.get("/tenants/{tenant_id}/chitante/{chitanta_id}/pdf")
 # [R52] Poartă numele și suma plătită de un terț.
-def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
+def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    # [PIVOT 04.10.2026, DECIZII] R52 răsturnat de Costin: „Asistentul cu «Poate pregăti» vede, pe firmele alocate,
+    # PDF-ul chitanței, fotografia bonului și fluturașul (salariile le vede oricum în statul de plată; nu poate
+    # emite/certifica ce nu vede).” Nota [R52] de deasupra rămâne ca istoric (decoratorul e înghețat).
     try:
         pdf, r = _uc_tenants.chitanta_pdf(tenant_id, chitanta_id, ctx)
         return Response(content=pdf, media_type="application/pdf",
@@ -5743,9 +5752,12 @@ def reges_config(tenant_id: int, corp: dict = Body(...),                  ctx=De
 @app.post("/tenants/{tenant_id}/reges-trimite-salariat")
 # [R42] „iese către o autoritate" — salariatul ajunge în registrul de evidență a muncii.
 def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
-                           ctx=Depends(cere_drept(_drepturi.ADMIN))):
+                           ctx=Depends(cere_drept(_drepturi.DEPUNE))):
     """corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?}.
     Trimite InregistrareSalariat (+ AdaugareContract daca vine si contract dupa referinta)."""
+    # [PIVOT 04.10.2026, DECIZII] Costin: „REGES: configurarea credențialelor doar la administrator; trimiterea și
+    # răspunsurile trec la «Poate depune» (depunere la o autoritate, ca la ANAF), pe firmele alocate.” Doar
+    # `reges-config` rămâne ADMIN; nota [R56] de deasupra rămâne ca istoric (decoratorul e înghețat).
     try:
         return _uc_tenants.reges_trimite_salariat(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -5757,8 +5769,11 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
 # CREDENTIALE. Costin: *„admin_firma, nu drept fin. Un drept nou e un al doilea sistem de
 # autorizare de intretinut, iar cele trei rute nu justifica unul."* Acelasi criteriu ca la
 # R42 (d), pornirea/oprirea unui canal — deja aplicat pe `PUT /woocommerce/config`.
-def reges_poll(tenant_id: int, ctx=Depends(cere_drept(_drepturi.ADMIN))):
+def reges_poll(tenant_id: int, ctx=Depends(cere_drept(_drepturi.DEPUNE))):
     """Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje."""
+    # [PIVOT 04.10.2026, DECIZII] Costin: „REGES: configurarea credențialelor doar la administrator; trimiterea și
+    # răspunsurile trec la «Poate depune» (depunere la o autoritate, ca la ANAF), pe firmele alocate.” Doar
+    # `reges-config` rămâne ADMIN; nota [R56] de deasupra rămâne ca istoric (decoratorul e înghețat).
     try:
         return _uc_tenants.reges_poll(tenant_id, ctx)
     except _erori.EroareDeDomeniu as e:

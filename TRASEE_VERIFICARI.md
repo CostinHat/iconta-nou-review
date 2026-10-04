@@ -750,7 +750,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Upload XML/ZIP e-Factura — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_firma_profil`, `repo_main`*
+*ce face: Upload XML/ZIP e-Factura — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_firma_profil`, `repo_main`*
 
 - [x] fiecare factură din fișier ajunge în `efactura_primite` ca **ciornă**, nu ca factură validată
 - valorile preluate poartă **sursa** (e-Factura) și **gradul de certitudine** — nimic nu devine fapt fără confirmare
@@ -1014,7 +1014,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in firma_profil*
 
-*ce face: scrie firma_profil (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) — prin `firma_profil_api`, `repo_firma_profil`, `repo_tenants`*
+*ce face: scrie firma_profil (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · firma_profil_jurnal (INSERT) — prin `firma_profil_api`, `repo_firma_profil`, `repo_tenants`*
 
 - [x] schimbarea regimului are **dată de la care se aplică**, nu se aplică retroactiv tăcut
 - perioadele închise sub regimul vechi rămân sub el — recalcularea lor produce contradicție, nu rescriere
@@ -1447,7 +1447,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in chitante, facturi*
 
-*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT/UPDATE) · factura_linii (UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `firma_profil_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
+*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT/UPDATE) · factura_linii (UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `firma_profil_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
 
 - [x] chitanța se păstrează cu numărul exemplarului, momentul, autorul, amprenta
 - **numerotarea nu are goluri și nu se reia** — o chitanță anulată își păstrează numărul
@@ -1458,7 +1458,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in casa_operatiuni, chitante, inregistrari_linii*
 
-*ce face: Stabileste cota de TVA a unei chitante fara factura emise inainte ca firma sa fie marcata exceptata de la AMEF (OUG 28/1999 art.2): nota ciorna 5311=4111 devine 5311 = co — scrie casa_operatiuni (UPDATE) · chitante (UPDATE) · inregistrari_linii (DELETE/INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · bonuri (DELETE/INSERT/UPDATE) · extras_linii (UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) — prin `firma_profil_api`, `jurnal_api`, `repo_casa`, `repo_firma_profil`*
+*ce face: Stabileste cota de TVA a unei chitante fara factura emise inainte ca firma sa fie marcata exceptata de la AMEF (OUG 28/1999 art.2): nota ciorna 5311=4111 devine 5311 = co — scrie casa_operatiuni (UPDATE) · chitante (UPDATE) · inregistrari_linii (DELETE/INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · bonuri (DELETE/INSERT/UPDATE) · extras_linii (UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · inregistrari (DELETE/INSERT/UPDATE) — prin `firma_profil_api`, `jurnal_api`, `repo_casa`, `repo_firma_profil`*
 
 - [x] doar chitanța fără factură, fără cotă, a firmei marcate exceptate de la AMEF — altfel refuz structurat (cod + temei)
 - [x] cota e una în vigoare la data chitanței și cu rubrică în op2 D394 (sau 0)
@@ -1787,7 +1787,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in firma_profil*
 
-*ce face: scrie firma_profil (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): pontaj (DELETE/INSERT) — prin `pontaj`, `repo_firma_profil`*
+*ce face: scrie firma_profil (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil_jurnal (INSERT) · pontaj (DELETE/INSERT) — prin `pontaj`, `repo_firma_profil`*
 
 - [x] cheile de acces nu se întorc în răspuns
 - schimbarea configurației nu atinge facturile deja sincronizate
@@ -1835,7 +1835,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) — prin `repo_firma_profil`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) · firma_profil_jurnal (INSERT) — prin `repo_firma_profil`*
 
 - [x] XML-ul generat conține toate câmpurile obligatorii; unul lipsă oprește generarea cu numele lui
 - codurile din nomenclatoare — scop, tip de operațiune, unități — vin din registru, nu din literali
@@ -1845,7 +1845,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> validare pe TEST -> upload) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): etransport_trimiteri (INSERT/UPDATE) · firma_profil (UPDATE) — prin `etransport_send`, `repo_firma_profil`*
+*ce face: Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> validare pe TEST -> upload) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): etransport_trimiteri (INSERT/UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) — prin `etransport_send`, `repo_firma_profil`*
 
 - [x] cele patru porți rulează **în ordine**: garda de timp → idempotență → validare pe TEST → încărcare. O poartă sărită e un defect, nu o optimizare
 - codul UIT primit se păstrează; fără el, starea e „nelămurită"
@@ -1862,7 +1862,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · d301_operatiuni (DELETE/INSERT) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_d301_operatiuni_api`, `repo_firma_profil`, `stocuri_cv_api`*
+*ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · d301_operatiuni (DELETE/INSERT) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_d301_operatiuni_api`, `repo_firma_profil`, `stocuri_cv_api`*
 
 - [x] taxarea inversă: TVA-ul se înregistrează simultan deductibil și colectat, iar cele două se anulează în decont
 - cursul e cel de la data exigibilității, cerut din registru — nu introdus liber
@@ -1988,7 +1988,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_firma_profil`, `stocuri_cv_api`*
+*ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_firma_profil`, `stocuri_cv_api`*
 
 - [x] bunul sau serviciul e din lista art. 331 — altfel taxarea inversă nu se aplică
 - pragul de 22.500 lei pentru telefoane, tablete, laptopuri, console e verificat pe factură, nu pe operațiune
@@ -2013,7 +2013,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinatie, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_firma_profil`, `stocuri_cv_api`*
+*ce face: corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinatie, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_firma_profil`, `stocuri_cv_api`*
 
 - [x] baza de TVA la import = valoarea vamală + taxa vamală + accize + accesorii până la primul loc de destinație. Verifică pe cifre, nu pe formulă
 - cu certificat de amânare, TVA-ul nu se plătește în vamă: se înregistrează simultan colectat și deductibil, iar cele două se anulează în decont

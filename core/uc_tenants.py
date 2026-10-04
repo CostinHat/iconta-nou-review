@@ -437,7 +437,7 @@ def firma_profil_regim_tva(tenant_id, date, ctx):
         except ValueError as e:
             raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
-            repo_firma_profil.seteaza_platitor_tva(cur, date.platitor_tva)
+            repo_firma_profil.seteaza_platitor_tva(cur, date.platitor_tva, ctx["uid"])
         if anaf_val is not None:                      # ANAF a raspuns -> reimprospateaza snapshot (+ data inceput TVA)
             _fp.seteaza_snapshot_tva(conn, anaf_val, tva_inceput)
         conn.commit()
@@ -551,7 +551,8 @@ def vector_salveaza(tenant_id, date, ctx):
         rez = vector_fiscal_api.salveaza(conn, date.regim_fiscal, date.platitor_tva,
                                          date.tip_decont, date.operatiuni_ic,
                                          nume=t_nume, cui=t_cui, inreg_art317=date.inreg_art317,
-                                         tva_data_inceput=date.tva_data_inceput)  # [tva_inceput] data manuala INTAI
+                                         tva_data_inceput=date.tva_data_inceput,  # [tva_inceput] data manuala INTAI
+                                         user_id=ctx["uid"])  # [PIVOT 04.10.2026] jurnalul regimului de TVA
         # [tva_inceput] ANAF autoritar CAND are data: seteaza_snapshot_tva o suprascrie. Cand ANAF nu raspunde
         # (anaf_val None, gasit=False) NU se cheama deloc -> data manuala ramane. Cand ANAF raspunde dar NU are
         # data (tva_inceput None), guard-ul din seteaza_snapshot_tva NU goleste coloana -> data manuala ramane.

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**684 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**685 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 649
+### `core/` — 650
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9242,6 +9242,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_izolare_structurala.py` — core/test_izolare_structurala.py — GARD STRUCTURAL de izolare (C-5 P1, clasele 5+6).
 - `core/test_joburi_supravegheate.py` — GARD [R74, 27.08.2026]: lista deadman-ului se compară cu SISTEMUL, nu cu o copie a ei.
 - `core/test_jurnal_refuz.py` — GARDĂ: calea jurnalului refuză cu TEMEI, și confruntă conturile cu planul firmei.
+- `core/test_jurnal_regim_tva.py` — GARD — jurnalul schimbărilor regimului de TVA (PIVOT DECIZII 04.10.2026, răspunsurile lui Costin la confirmări).
 - `core/test_kpi_client.py` — —
 - `core/test_limita_text_anaf.py` — Gard: niciun atribut de text din declaratii nu depaseste limita ANAF (75 caractere).
 - `core/test_limite_verificarii.py` — GARD (P4, 21.08.2026): „Ce nu poate spune verificarea asta" e PERMANENTĂ și se COMPUNE.
@@ -10132,3 +10133,20 @@ administrator) și **11. Interfață** (acțiune refuzată afișată; refuz nev�
 pct.11). **Gaura de categorie 6 „gating admin inconsecvent”** din registrul de sus se închide pentru rutele de cabinet: un singur
 mecanism (`cere_drept`) pentru tot ce ține de rol și bifă; `/admin/*` (superadmin) rămâne pe verificarea din corp.
 
+
+## 04.10.2026 — Confirmările de drepturi: R52 răsturnat, jurnalul regimului de TVA, REGES la „Poate depune” (+ două clase găsite pe drum)
+
+Categoriile **6. Acces** (nivelul unei acțiuni; sonda R56) și **11. Interfață** (acțiune refuzată afișată; HTML neescapat).
+Detaliul: DECIZII 04.10.2026 („PIVOT pe drepturi”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| R52 la „Poate pregăti”, pe nume | `core/test_drepturi_rol.py` `_PINI` (3 pini) + `::test_r52_rasturnat_pregatirea_vede_documentele_de_tert` | fluturașul / PDF-ul chitanței / poza bonului mutate tăcut înapoi la administrator, sau scoase de sub gardă | `chitanta_pdf` înapoi pe ADMIN -> 2 roșii (pinul + proba HTTP) | proba HTTP pe id-uri sintetice: dovedește GARDA, nu conținutul documentului (acela îl arată proba din browser) |
+| REGES pe „Poate depune”, configurarea la administrator | `core/test_drepturi_rol.py::test_reges_sta_pe_nivelul_decis` (pinat pe NUMELE funcției, nu pe cale — orbirea D3) + `::test_reges_trimiterea_si_raspunsurile_cer_poate_depune_configurarea_administratorul` | trimitere/răspunsuri înapoi la administrator sau coborâte la pregătire; configurarea cheilor deschisă asistentului | `reges_poll` pe ADMIN -> 2 roșii; `reges_trimite_salariat` pe PREGATI -> 2 roșii | — |
+| sonda R56 precisă | `core/scan_rol_pe_efect.atinge_credentiale` + `core/test_rol_pe_efect.py::test_CALIBRARE_citirea_cheilor…`, `::test_multimea_celor_care_scriu_credentiale_nu_se_schimba_tacut` | o rută care doar CITEȘTE cheile (ca să se autentifice) numărată ca scriere de credențiale; numele funcției luat drept SQL; crearea unei chei API (SQL în `api_public`) nevăzută | sonda veche repusă -> 3 roșii | un nivel de apel (rută -> use-case -> `repo_*` / `core.*` importat); `spv_token` se scrie mai adânc (`spv_conector`, fluxul OAuth) și nu se vede |
+| jurnalul regimului de TVA | `core/test_jurnal_regim_tva.py` (structural + 3 pe schemă efemeră) + `core/test_drepturi_rol.py::test_regimul_tva_schimbat_de_asistent_se_jurnalizeaza_cu_el` | o scriere nouă a `platitor_tva` / `tip_decont` / `inreg_art317` care ocolește jurnalul; rând pentru o salvare fără schimbare; rând fără utilizator sau cu alt utilizator; „T” -> „trimestrial” luat drept schimbare | INSERT-ul jurnalului scos -> 3 roșii; `v != n` scos -> 2; vectorul fără apel -> structural roșu; uid fix în rută -> roșu | SQL compus dinamic din liste de modul nu se vede; singurul scriitor dinamic al profilului e pinat (listele lui fără câmpurile de regim) |
+| mesajul de la server escapat în HTML | `verificator_conformitate.py` MESAJ_SERVER_NEESCAPAT (DS cap.10 v2.65) | `${e.mesaj}` / `${err.message}` / `${r.detail}` neescapat într-un șablon HTML (13 instanțe reparate) | `esc(` scos de pe `err.mesaj` în portal.js -> TOTAL 1 | `${…}` pe o singură linie, cu `<`/`innerHTML` înainte; concatenarea cu `+` în afara unui șablon nu e văzută |
+| intrarea într-un formular restrâns, după ce DESCHIDE | `scripts/scan_drepturi_ui.intrari_in_formular_nemarcate` + `core/test_drepturi_ui.py::test_intrarea_intr_un_formular_restrans…` (+ calibrare) + verificator ACTIUNE_REFUZATA_NEMARCATA | buton care deschide formularul unei acțiuni restrânse („Chei REGES”, „REGES”, „Stornează”, „Trimite pe email”, „Inventar”) vizibil celui refuzat, fiindcă eticheta nu e „+/Adaugă/Emite” (18 reparate) | `data-actiune` scos de pe „Chei REGES” -> test roșu + verificator TOTAL 1 | handlerul cu acolade, legat de element prin selector dovedibil; nelegabile: 0 (clichet gol) |
+
+**Limita, pe scurt:** gărzile statice dovedesc DECLARAȚIA; că asistentul chiar vede fluturașul / poza și nu vede „Chei REGES” o
+probează `frontend_test/proba_drepturi_confirmari.py` (înainte pe HEAD, după pe arbore), la fiecare campanie care atinge ecranele.

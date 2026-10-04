@@ -5,7 +5,7 @@ import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULOR
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=4205d3e8b0";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=e48f2dc100";
+import { randeazaFacturi } from "./facturi_ecran.js?v=e871a4dc54";
 import { ecranRip } from "./rip_ecran.js?v=e132d99126";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=661e54e70c";
 import { ecranEtransport } from "./etransport_ecran.js?v=b6e1aa3fc7";
@@ -13,7 +13,7 @@ import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=c017b073d6
 import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=0d0a622ecb";  // [produse_firma_v1]
-import { ecranMagazin } from "./woo_ecran.js?v=95ea959e00";  // [wc_extras_v1]
+import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b7b794c09f";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=c641579c0e";  // [ecran_mf_v1]
 
@@ -996,7 +996,7 @@ async function ecranControlFirma(corp, nav, t) {
   try {
     d = await api.get(`/control-fiscal/${t.id}`);
   } catch (e) {
-    corp.innerHTML = `<p class="msg-eroare">${(e && e.mesaj) || "Nu am putut evalua controlul fiscal."}</p>`;
+    corp.innerHTML = `<p class="msg-eroare">${esc((e && e.mesaj) || "Nu am putut evalua controlul fiscal.")}</p>`;
     return;
   }
   const cul = CULORI_VERDICT[d.stare] || CULORI_VERDICT.gri;
@@ -1161,7 +1161,7 @@ async function ecranSalariati(corp, nav, t) {
           ${compozitieNet(s)}
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
           <button class="buton-primar" data-flut="${s.id}" data-actiune="GET /tenants/{tenant_id}/fluturas/{salariat_id}">Flutura\u0219</button>
-          <button class="buton-secundar" data-reges="${s.id}">REGES</button>
+          <button data-actiune="POST /tenants/{tenant_id}/reges-trimite-salariat" class="buton-secundar" data-reges="${s.id}">REGES</button>
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}">Concediu</button>
           <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}">Adeverință</button>
           <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}">Pontaj</button>
@@ -1170,11 +1170,11 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-cult="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-nume="${esc(s.nume)}">+ cultural</button>
           <button class="buton-secundar" data-cresa="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-nume="${esc(s.nume)}">+ creșă</button>
           <button class="buton-secundar" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" data-salariu="${s.id}" data-val="${s.salariu_baza || 0}" data-nume="${esc(s.nume)}">Salariu</button>
-          <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
-          <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
-          <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
-          <button class="buton-secundar" data-date="${s.id}" data-dnume="${esc(s.nume_ed || "")}" data-dpren="${esc(s.prenume_ed || "")}" data-dcnp="${esc(s.cnp || "")}" data-dang="${esc(s.data_angajare || "")}" data-dnorma="${esc(s.tip_norma || "")}" data-dorezi="${esc(s.ore_zi == null ? "" : String(s.ore_zi))}">Corectează datele</button>
-          <button class="buton-secundar" data-susp="${s.id}" data-nume="${esc(s.nume)}">${(s.suspendari || []).length ? `Suspendări (${s.suspendari.length})` : "Suspendare / CFP"}</button>
+          <button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
+          <button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
+          <button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
+          <button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-date="${s.id}" data-dnume="${esc(s.nume_ed || "")}" data-dpren="${esc(s.prenume_ed || "")}" data-dcnp="${esc(s.cnp || "")}" data-dang="${esc(s.data_angajare || "")}" data-dnorma="${esc(s.tip_norma || "")}" data-dorezi="${esc(s.ore_zi == null ? "" : String(s.ore_zi))}">Corectează datele</button>
+          <button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-susp="${s.id}" data-nume="${esc(s.nume)}">${(s.suspendari || []).length ? `Suspendări (${s.suspendari.length})` : "Suspendare / CFP"}</button>
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -1182,10 +1182,10 @@ async function ecranSalariati(corp, nav, t) {
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
-        <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
+        <button data-actiune="POST /tenants/{tenant_id}/reges-config" class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
         <button class="buton-secundar" id="sp-reges-poll" data-actiune="POST /tenants/{tenant_id}/reges-poll"${regesOk ? "" : " disabled"}>R\u0103spunsuri REGES</button>
         <button class="buton-primar" id="sp-salariat-nou" data-actiune="POST /tenants/{tenant_id}/salariati" style="margin-left:12px">+ Salariat nou</button>
-        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : " disabled"}>Fișier plată card (SEPA)</button>
+        <button data-actiune="POST /tenants/{tenant_id}/plata-salarii-fisier" class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : " disabled"}>Fișier plată card (SEPA)</button>
         <button class="buton-secundar" id="sp-contare" data-actiune="POST /tenants/{tenant_id}/salarii-contare/propunere">Contabilizează statul</button></p>
       <div id="sp-contare-zona"></div>
       <div id="sp-plata-zona"></div>
@@ -1316,7 +1316,7 @@ async function ecranSalariati(corp, nav, t) {
     });
     corp.querySelector("#sp-reges-poll").addEventListener("click", async () => {
       try {
-        const r = await api.post(`/tenants/${t.id}/reges-poll`, {});  /* [drepturi_rol 04.10.2026] ruta e POST (scrie tokenul REGES); GET primea 405 la fiecare apăsare */
+        const r = await api.post(`/tenants/${t.id}/reges-poll`, {});  /* [drepturi_rol 04.10.2026] ruta e POST (consumă un mesaj din coada REGES și îi scrie răspunsul); GET primea 405 la fiecare apăsare */
         const msgs = (r && (r.mesaje || r.raspunsuri)) || [];
         zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
           <div class="pf-frand-nume">R\u0103spunsuri REGES</div>
@@ -1730,12 +1730,12 @@ export async function sectiuneaCV(corp, t, zonaM) {
         <button class="buton-secundar" id="cv-fisa" style="margin-left:6px">Vezi fi\u0219a</button>
       </p>
       <div style="margin-top:10px">
-        <button class="buton-secundar" id="cv-inv">Inventar (stoc faptic)</button>
+        <button data-actiune="POST /tenants/{tenant_id}/stocuri/inventar" class="buton-secundar" id="cv-inv">Inventar (stoc faptic)</button>
         <button class="buton-secundar" id="cv-loc-vezi" style="margin-left:6px">Stoc pe locații</button>
-        <button class="buton-secundar" id="cv-transfer-t" style="margin-left:6px">Transfer între locații</button>
-        <button class="buton-secundar" id="cv-recl-t" style="margin-left:6px">Reclasificare tip produs</button>
+        <button data-actiune="POST /tenants/{tenant_id}/stocuri/transfer" class="buton-secundar" id="cv-transfer-t" style="margin-left:6px">Transfer între locații</button>
+        <button data-actiune="POST /tenants/{tenant_id}/stocuri/reclasificare" class="buton-secundar" id="cv-recl-t" style="margin-left:6px">Reclasificare tip produs</button>
         <button class="buton-secundar" id="cv-ana" style="margin-left:6px">Analitică stoc</button>
-        <button class="buton-secundar" id="cv-inv-mobil" style="margin-left:6px">Inventar pe mobil</button>
+        <button data-actiune="POST /tenants/{tenant_id}/stocuri/inventar" class="buton-secundar" id="cv-inv-mobil" style="margin-left:6px">Inventar pe mobil</button>
         <div id="cv-inv-zona" style="margin-top:8px"></div>
         <div id="cv-loc-zona" style="margin-top:8px"></div>
       </div>
@@ -3908,7 +3908,7 @@ async function ecranBonuri(corp, nav, t) {
     } catch (e) { err = e; }
     if (err) {
       corp.innerHTML = `<h2 class="pf-titlu">Bonuri și chitanțe ${semnAjutor("F017")}</h2>
-        <p class="msg-eroare">${err.mesaj || "Nu am putut încărca documentele."}</p>`;
+        <p class="msg-eroare">${esc(err.mesaj || "Nu am putut încărca documentele.")}</p>`;
       return;
     }
     const itemi = !docs.length
@@ -4001,10 +4001,10 @@ async function ecranBonuri(corp, nav, t) {
     (async () => {
       const zona = corp.querySelector("#d-poze");
       zona.innerHTML = "";
-      // [R52 + drepturi_rol] Fotografia poartă datele unui terț: o deschide doar administratorul (decizia Costin
-      // 25.08.2026). Se spune DE CE lipsește, în loc de o imagine ruptă sau de un refuz tăcut.
+      // [PIVOT 04.10.2026, R52 răsturnat] Fotografia o vede oricine are «Poate pregăti» pe firma alocată (decizia Costin:
+      // „nu poate emite/certifica ce nu vede”). Fără drept se spune DE CE lipsește, nu o imagine ruptă sau un refuz tăcut.
       if (!permis("GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}")) {
-        zona.innerHTML = '<p class="ecran-nota">Fotografia documentului o deschide doar administratorul cabinetului: poartă datele unui terț.</p>';
+        zona.innerHTML = '<p class="ecran-nota">Fotografia documentului cere dreptul „Poate pregăti”, pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>';
         return;
       }
       for (let n = 1; n <= (b.nr_imagini || 0); n++) {
@@ -4608,7 +4608,7 @@ async function ecranAccesClient(corp, nav, t) {
           }, { textOk: "Revoc\u0103" });
         }));
       }
-    } catch (e) { zona.innerHTML = `<p class="ecran-nota">${e.mesaj || e.message}</p>`; }
+    } catch (e) { zona.innerHTML = `<p class="ecran-nota">${esc(e.mesaj || e.message)}</p>`; }
   }
   function randeazaFormular() {
     nav.setInapoi(randeazaPrincipal);

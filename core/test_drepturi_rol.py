@@ -125,7 +125,12 @@ _PINI = {
     ("POST", "/tenants/{tenant_id}/etransport/trimite"): ("PREGATI", "„e-Transport”"),
     ("POST", "/coada"): ("PREGATI", "„pregătirea declarațiilor”"),
     # decizii mai vechi care rămân în vigoare (DECIZII 04.10.2026, consecințele 4)
-    ("GET", "/tenants/{tenant_id}/fluturas/{salariat_id}"): ("ADMIN", "R52: poartă datele unui terț"),
+    # R52 RĂSTURNAT (PIVOT DECIZII 04.10.2026, Costin): „Asistentul cu «Poate pregăti» vede, pe firmele alocate, PDF-ul
+    # chitanței, fotografia bonului și fluturașul”. (REGES trimitere/răspunsuri -> DEPUNE: pinate în `scan_rol_pe_efect`,
+    # nu aici — o cale de scriere numită într-un test ar trece drept „probată”, orbirea D3.)
+    ("GET", "/tenants/{tenant_id}/fluturas/{salariat_id}"): ("PREGATI", "„vede … fluturașul” (R52 răsturnat)"),
+    ("GET", "/tenants/{tenant_id}/chitante/{chitanta_id}/pdf"): ("PREGATI", "„vede … PDF-ul chitanței” (R52 răsturnat)"),
+    ("GET", "/tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}"): ("PREGATI", "„vede … fotografia bonului” (R52 răsturnat)"),
     ("PUT", "/tenants/{tenant_id}/woocommerce/config"): ("ADMIN", "R56: credențiale ale unui sistem extern"),
     ("POST", "/tenants/{tenant_id}/horeca/raport-z"): ("VALIDA", "R55: scrie notă `validata` direct"),
 }
@@ -136,6 +141,26 @@ def test_actiunea_sta_pe_nivelul_decis(cheie):
     nivel, temei = _PINI[cheie]
     g = _garzi().get(cheie)
     assert g == ("drept", nivel), "%s %s stă pe %s, decizia cere %s — %s" % (cheie[0], cheie[1], g, nivel, temei)
+
+
+# REGES (PIVOT DECIZII 04.10.2026). Costin: „configurarea credențialelor doar la administrator; trimiterea și răspunsurile
+# trec la «Poate depune» (depunere la o autoritate, ca la ANAF), pe firmele alocate.” Pinat pe NUMELE funcției rutei, nu pe
+# cale: o cale de scriere numită într-un test ar trece drept „probată” (orbirea D3 din `core/test_rute_probate.py`).
+_PINI_PE_FUNCTIE = {
+    "reges_config": ("ADMIN", "„configurarea credențialelor doar la administrator”"),
+    "reges_trimite_salariat": ("DEPUNE", "„trimiterea … trec la «Poate depune»”"),
+    "reges_poll": ("DEPUNE", "„… și răspunsurile trec la «Poate depune»”"),
+}
+
+
+@pytest.mark.parametrize("functie", sorted(_PINI_PE_FUNCTIE))
+def test_reges_sta_pe_nivelul_decis(functie):
+    from core import scan_rol_pe_efect as _sre
+    chei = [k for k, fn in _sre.rute().items() if fn.name == functie]
+    assert len(chei) == 1, "ruta cu funcția %s: %s (trebuie exact una)" % (functie, chei)
+    nivel, temei = _PINI_PE_FUNCTIE[functie]
+    g = _garzi().get(chei[0])
+    assert g == ("drept", nivel), "%s stă pe %s, decizia cere %s — %s" % (functie, g, nivel, temei)
 
 
 # ── 3–5. proba pe aplicația vie (TestClient), cu actori sintetici, în ROLLBACK ────────────────────────
@@ -323,3 +348,58 @@ def test_verifica_firma_INAINTE_de_bifa():
     corp = ast.unparse(fn)
     assert corp.index("schema_tenant") < corp.index("bife_live")
     assert issubclass(_erori.Inexistent, _erori.EroareDeDomeniu)
+
+
+# ── PIVOT DECIZII 04.10.2026 (răspunsurile lui Costin la confirmări): căile se iau din NUMELE funcției rutei, nu se scriu ──
+def _cale(functie, **param):
+    import main
+    return main.app.url_path_for(functie, **{k: str(v) for k, v in param.items()})
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_r52_rasturnat_pregatirea_vede_documentele_de_tert(cabinet):
+    """Costin: „Asistentul cu «Poate pregăti» vede, pe firmele alocate, PDF-ul chitanței, fotografia bonului și fluturașul.”
+    Documentele cerute nu există (id-uri sintetice) — se probează GARDA: nu 401/403; fără bifă -> refuzul „Poate pregăti”."""
+    cl, t = _cl(), cabinet["tid"]
+    cai = [_cale("tenant_fluturas", tenant_id=t, salariat_id=999999), _cale("chitanta_pdf", tenant_id=t, chitanta_id=999999),
+           _cale("cabinet_bon_imagine", tenant_id=t, bon_id=999999, n=0)]
+    for c in cai:
+        r = cl.get(c, params={"an": 2099, "luna": 1}, headers=_H(cabinet["asist"]))
+        assert r.status_code not in (401, 403), "%s refuzat asistentului cu «Poate pregăti»: %s" % (c, r.text)
+    _seteaza_bife(cabinet, poate_pregati=False)
+    for c in cai:
+        r = cl.get(c, params={"an": 2099, "luna": 1}, headers=_H(cabinet["asist"]))
+        assert r.status_code == 403 and r.json()["detail"] == D.MESAJ[D.PREGATI], (c, r.text)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_reges_trimiterea_si_raspunsurile_cer_poate_depune_configurarea_administratorul(cabinet):
+    """Costin: „REGES: configurarea credențialelor doar la administrator; trimiterea și răspunsurile trec la «Poate depune»”."""
+    cl, t = _cl(), cabinet["tid"]
+    poll, trimite, cfg = (_cale("reges_poll", tenant_id=t), _cale("reges_trimite_salariat", tenant_id=t),
+                          _cale("reges_config", tenant_id=t))
+    for c in (poll, trimite):
+        r = cl.post(c, headers=_H(cabinet["asist"]), json={})
+        assert r.status_code == 403 and r.json()["detail"] == D.MESAJ[D.DEPUNE], (c, r.text)
+    _seteaza_bife(cabinet, poate_depune=True)
+    for c in (poll, trimite):
+        r = cl.post(c, headers=_H(cabinet["asist"]), json={})
+        assert r.status_code not in (401, 403), "%s refuzat asistentului cu «Poate depune»: %s" % (c, r.text)
+    r = cl.post(cfg, headers=_H(cabinet["asist"]), json={"username": "x", "parola": "y", "mediu": "test"})
+    assert r.status_code == 403 and r.json()["detail"] == D.MESAJ[D.ADMIN], r.text
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_regimul_tva_schimbat_de_asistent_se_jurnalizeaza_cu_el(cabinet, monkeypatch):
+    """Costin: „Regimul de TVA la «Poate pregăti»: confirmat, cu jurnalizarea fiecărei schimbări (utilizator, dată, vechi →
+    nou)”. Pe ruta vie: asistentul schimbă regimul -> un rând cu ID-ul LUI (din token), nu al altcuiva și nu gol."""
+    from core import uc_comun
+    monkeypatch.setattr(uc_comun, "_anaf_tva_check", lambda cui, v: (None, None, None))   # fără apel la ANAF din test
+    with cabinet["conn"].cursor() as c:
+        c.execute("INSERT INTO %s.firma_profil (id, nume, cui, platitor_tva) VALUES (1,'ZT','14399840',false)" % SCH)
+    r = _cl().post(_cale("firma_profil_regim_tva", tenant_id=cabinet["tid"]), headers=_H(cabinet["asist"]),
+                   json={"platitor_tva": True})
+    assert r.status_code == 200, r.text
+    with cabinet["conn"].cursor() as c:
+        c.execute("SELECT camp, valoare_veche, valoare_noua, user_id FROM %s.firma_profil_jurnal ORDER BY id" % SCH)
+        assert c.fetchall() == [("platitor_tva", "false", "true", cabinet["uid_asist"])]

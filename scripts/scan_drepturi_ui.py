@@ -299,6 +299,55 @@ def butoane_creare_nemarcate():
     return out
 
 
+
+# ── BUTOANELE DE INTRARE, recunoscute după CE DESCHID, nu după etichetă (04.10.2026) ──────────────────────────────────
+# Euristica de mai sus citește eticheta („+ …”, „Adaugă…”, „Emite…”) și n-a văzut „Chei REGES”, „REGES”, „Trimite pe
+# email”, „Stornează”, „Inventar”: butoane care deschid formularul unei acțiuni restrânse, rămase vizibile celui care n-o
+# poate face. Treapta asta e STRUCTURALĂ: un handler de clic care construiește un element cu `data-actiune` e intrarea în
+# formularul acelei acțiuni, deci elementul legat de handler poartă și el o acțiune (de regulă aceeași) sau
+# `data-fara-actiune="<motiv>"`. CE NU VEDE: handlerele a căror legare de element nu se poate dovedi static (aceeași
+# limită ca `element_al_apelului`; numărate în `nelegate`, cu clichet în `core/test_drepturi_ui.py`).
+def _corp_handler(txt, poz):
+    """(început, sfârșit) al corpului cu acolade al handlerului legat la `poz`; None pentru o funcție-săgeată fără acolade
+    sau o funcție dată prin nume (`addEventListener("click", incarca)`): acolada următoare ar fi a altui cod."""
+    mh = re.match(r"[^;]{0,300}?(?:=>|\))\s*\{", txt[poz:poz + 320])
+    if not mh:
+        return None
+    i = poz + mh.end() - 1
+    n = 0
+    for j in range(i, min(len(txt), i + 20000)):
+        if txt[j] == "{":
+            n += 1
+        elif txt[j] == "}":
+            n -= 1
+            if n == 0:
+                return i, j
+    return None
+
+
+def intrari_in_formular_nemarcate():
+    """{nemarcate: [(fișier, linie, acțiunea formularului, tag)], nelegate: [(fișier, linie)]}."""
+    nemarcate, nelegate, vazute = [], [], set()
+    for f in sorted(glob.glob(os.path.join(JS, "**", "*.js"), recursive=True)):
+        txt = io.open(f, encoding="utf-8").read()
+        rel = os.path.relpath(f, RAD)
+        for m in _LEGARE.finditer(txt):
+            c = _corp_handler(txt, m.end())
+            if not c:
+                continue
+            d = re.search(r'data-actiune="([^"]+)"', txt[c[0]:c[1]])
+            if not d:
+                continue
+            linie = txt.count("\n", 0, m.start()) + 1
+            tag = element_al_apelului(txt, c[0] + d.start())
+            if tag is None:
+                nelegate.append((rel, linie))
+            elif "data-actiune" not in tag and "data-fara-actiune" not in tag and (rel, tag) not in vazute:
+                vazute.add((rel, tag))
+                nemarcate.append((rel, linie, d.group(1), tag))
+    return {"nemarcate": nemarcate, "nelegate": nelegate}
+
+
 if __name__ == "__main__":
     r = masoara()
     print("legate (declarate):", len(r["legate"]))

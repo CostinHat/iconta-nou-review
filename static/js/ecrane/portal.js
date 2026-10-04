@@ -3,7 +3,7 @@
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=91e1c0701a";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaFacturi } from "./facturi_ecran.js?v=e48f2dc100";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=e871a4dc54";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -288,7 +288,7 @@ async function ecranDeclaratii(corp, nav) {
     lista = (r && r.declaratii) || [];
   } catch (e) { err = e; }
   let corpuri = err
-    ? `<p class="msg-eroare">${err.mesaj || "Nu am putut încărca declarațiile."}</p>`
+    ? `<p class="msg-eroare">${esc(err.mesaj || "Nu am putut încărca declarațiile.")}</p>`
     : !lista.length
     ? `<div class="stare-goala">Nicio declarație depusă încă.</div>`
     : lista.map((d) => `
@@ -369,7 +369,7 @@ async function ecranPovestea(corp, nav) {
     const r = await api.get("/portal/povesti");
     lista = (r && r.povesti) || [];
   } catch (e) { err = e; }
-  if (err) { corp.innerHTML = `<h2 class="pf-titlu">Povestea lunii</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca rapoartele."}</p>`; return; }
+  if (err) { corp.innerHTML = `<h2 class="pf-titlu">Povestea lunii</h2><p class="msg-eroare">${esc(err.mesaj || "Nu am putut încărca rapoartele.")}</p>`; return; }
   if (!lista.length) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Povestea lunii</h2>
@@ -481,7 +481,7 @@ async function ecranDocumente(corp, nav) {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let luni = [], err = null;
     try { const r = await api.get("/portal/documente/luni"); luni = (r && r.luni) || []; } catch (e) { err = e; }
-    if (err) { corp.innerHTML = `<h2 class="pf-titlu">Balanțe lunare</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca lista."}</p>`; return; }
+    if (err) { corp.innerHTML = `<h2 class="pf-titlu">Balanțe lunare</h2><p class="msg-eroare">${esc(err.mesaj || "Nu am putut încărca lista.")}</p>`; return; }
     const corpuri = !luni.length
       ? `<div class="stare-goala">Nicio lună cu date contabile încă.</div>`
       : luni.map((iso) => {
@@ -516,7 +516,7 @@ async function ecranDocumente(corp, nav) {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let decl = [], err = null;
     try { const r = await api.get("/portal/documente/luni"); decl = (r && r.declaratii) || []; } catch (e) { err = e; }
-    if (err) { corp.innerHTML = `<h2 class="pf-titlu">Declarații depuse</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca lista."}</p>`; return; }
+    if (err) { corp.innerHTML = `<h2 class="pf-titlu">Declarații depuse</h2><p class="msg-eroare">${esc(err.mesaj || "Nu am putut încărca lista.")}</p>`; return; }
     corp.innerHTML = `
       <h2 class="pf-titlu">Declarații depuse</h2>
       <div class="pf-lista zebra-lista">${!decl.length ? '<div class="stare-goala">Nicio declarație depusă încă.</div>' : decl.map((d) => `
@@ -581,7 +581,7 @@ async function ecranBon(corp, nav) {
       } catch (e) {
         corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = false; });
         ev.target.value = "";
-        zona.innerHTML = `<p class="msg-eroare">${e.mesaj || "Nu am putut citi documentul. Încearcă o poză mai clară."}</p>`;
+        zona.innerHTML = `<p class="msg-eroare">${esc(e.mesaj || "Nu am putut citi documentul. Încearcă o poză mai clară.")}</p>`;
       }
     };
     corp.querySelector("#bon-fisier").addEventListener("change", laSelectie);
@@ -652,7 +652,7 @@ async function ecranCifre(corp, nav) {
   try {
     d = await api.get("/portal/kpi");
   } catch (e) {
-    corp.innerHTML = `<p class="msg-eroare">${e.mesaj || e.message || "Nu am putut \u00eenc\u0103rca cifrele."}</p>`;
+    corp.innerHTML = `<p class="msg-eroare">${esc(e.mesaj || e.message || "Nu am putut \u00eenc\u0103rca cifrele.")}</p>`;
     return;
   }
   const k = d.kpi || {};
@@ -684,7 +684,7 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
   if (!zona) return;
   let d = null;
   try { d = await api.get("/portal/cashflow"); }
-  catch (e) { zona.innerHTML = `<p class="msg-eroare">${e.mesaj || "Previziunea este indisponibilă momentan."}</p>`; return; }
+  catch (e) { zona.innerHTML = `<p class="msg-eroare">${esc(e.mesaj || "Previziunea este indisponibilă momentan.")}</p>`; return; }
   const intro = corp.querySelector("#cf-intro");  // portal_cashflow_fe_v2
   if (intro && d.medie_cheltuieli > 0) {
     intro.textContent = "Estimare pe scaden\u021bele facturilor \u0219i obliga\u021biilor \u2014 presupun\u00e2nd c\u0103 cheltuielile lunare r\u0103m\u00e2n la ~" +

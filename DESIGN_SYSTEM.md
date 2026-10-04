@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.64 · 4 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.65 · 4 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -143,6 +143,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 - **`esc` din api.js (v2.0) = SINGURA funcție de escape.** Escapează `& < > " '` (5 caractere, inclusiv apostroful). Se **importă** din api.js, niciodată nu se **redefinește local**. INTERZISE: (a) variante locale cu alt nume (`_esc`/`escB`/`escV`/`escS`/`escC`/`escJ`) care omit apostroful; (b) **redefinirea locală a lui `esc`** (`function esc` / `const|let|var esc =`) într-un ecran — o copie locală poate fi mai slabă (ex. una care escapa doar `"` → XSS pe `<>` în conținut de element) și oricum e a doua sursă de adevăr pentru o primitivă de securitate; (c) **strip inline de caractere HTML** (`.replace(/[<>&]/g, "")` și variante) ca sanitizare ad-hoc — nu e XSS (scoate `<>`), dar e **data-lossy** (scoate `&` din nume: „A&B" → „AB") și tot o a doua sursă de sanitizare. Regula **ESC_LOCAL** în verificator prinde toate trei formele (apel de variantă + redefinire locală + strip inline `[…<>&…]`).
 - Orice dată user/import-controlled afișată în innerHTML se trece prin `esc()`.
+- **Mesajul de eroare venit de la server (v2.65, 04.10.2026)** — `e.mesaj` / `err.message` / `r.detail` interpolat într-un șablon HTML trece prin `esc()`: mesajul poate cita ce a tastat utilizatorul (nume, email), deci e dată controlată de utilizator. Folosit doar ca test de ternar (`e.mesaj ? … : …`) nu se afișează. Gard: `MESAJ_SERVER_NEESCAPAT` în verificator.
 
 ## 11. Procedură de lucru
 
@@ -662,6 +663,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.65 (04.10.2026)** — **cap.10: mesajul de eroare de la server se escapează în HTML.** Găsit la confirmările de drepturi (comanda Costin, pct.1/2/5): 13 interpolări `${e.mesaj}` / `${err.mesaj}` neescapate în șabloane HTML (portal 7, firme 3, cabinet, facturi, Woo) — un mesaj care citează un nume tastat cu `<` devenea marcaj. Reparate toate; gard `MESAJ_SERVER_NEESCAPAT` (verificator).
+
 **v2.64 (04.10.2026)** — **cap.9: închiderea ferestrelor informative (X în antet + Esc, mecanism unic `inchidereDialog`) și acțiunile refuzate rolului (`data-actiune` + `drepturi.js`).** Din testarea ca asistent (comanda Costin, pct.2 și pct.4): bun-venitul se închidea numai de la butonul de la capătul listei; asistentul vedea „+ Adaugă firmă”, „Import în masă” și „Scoate”. Inventar la intrare: din 9 ferestre suprapuse, 2 aveau X și Esc, una nici X nici Esc (bun-venitul), una fără X (anunțul), restul X fără Esc. Ferestrele cu câmpuri rămân deliberat doar cu X (DECIZII 04.10.2026). Gărzi: `DIALOG_FARA_INCHIDERE` (verificator) și `core/test_drepturi_ui.py`.
 
 **v2.63 (19.09.2026)** — **cap.28 nou: clasificare per-linie pe ecran de validare a documentelor importate.** A12b: pe `facturi_ecran.primitaDetaliu` (validarea unei facturi primite din SPV), fiecare linie importată read-only primește un `<select class="camp-input">` de destinație TVA (taxabilă implicit / scutită / mixtă), trimis ca `destinatii[]` în ordinea liniilor și aplicat de backend în aceeași ordine (`repo_facturi.actualizeaza_destinatii_linii`, ORDER BY id). Doar liniile MIXTE intră în pro-rata (art. 300 alin. (5)) — închide A12 pe calea SPV. Faptul importat rămâne needitabil; se CLASIFICĂ, nu se editează. Gard verificator: un `<select>` de destinație fără `.camp-input`.

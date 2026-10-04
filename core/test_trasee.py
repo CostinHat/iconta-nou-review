@@ -418,14 +418,20 @@ def test_clichet_documente_predate_fara_rol(st):
 def test_cele_TREI_documente_cu_date_de_tert_au_rol(st):
     """Cealalta directie: clichetul singur ar trece si daca cele trei si-ar pierde rolul, atata
     timp cat totalul nu creste (o alta ruta ar putea capata rol in schimb). Criteriul lui Costin
-    numeste exact trei, deci exact trei se asertaza pe nume."""
+    numeste exact trei, deci exact trei se asertaza pe nume.
+
+    [PIVOT DECIZII 04.10.2026] Nivelul s-a schimbat, garda nu: Costin a rasturnat „doar administratorul” — *„Asistentul cu
+    «Poate pregăti» vede, pe firmele alocate, PDF-ul chitanței, fotografia bonului și fluturașul”*. Cele trei raman pe
+    `cere_drept(PREGATI)`: bifa citita live + firma ALOCATA. Ce apara testul ramane adevarat: nu pleaca pe un GET liber.
+    Nivelul exact il pineaza `core/test_drepturi_rol.py::_PINI`."""
     dupa_cale = {c: are_rol for _m, c, are_rol in _rute_care_predau_document(st)}
     for c in ("/tenants/{tenant_id}/fluturas/{salariat_id}",
               "/tenants/{tenant_id}/chitante/{chitanta_id}/pdf",
               "/tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}"):
         assert c in dupa_cale, "ruta %s a disparut — reciteste decizia inainte s-o repari" % c
         assert dupa_cale[c], (
-            "%s poarta datele unui tert si nu mai cere rol — decizia lui Costin, 25.08.2026" % c)
+            "%s poarta datele unui tert si a ajuns pe un GET fara garda — decizia lui Costin 25.08.2026, nivel schimbat "
+            "04.10.2026 („Poate pregăti” pe firma alocata), nu scos" % c)
 
 
 def _db_pentru_tabele():

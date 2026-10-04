@@ -1,15 +1,14 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **nicio comandă deschisă; 6 confirmări cerute lui Costin (drepturi pe rol)** (04.10.2026)
+# PREDARE LANȚ — **nicio comandă deschisă; confirmările de drepturi livrate** (04.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-04**, rescriere COMPLETĂ la cererea lui Costin (commitul care poartă această predare; hash-ul lui e
   în raport și în `git log`). Versiunea de dinainte (1007 rânduri, cu istoria D212/F1–F3) e în istoria git — `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `f76ce94b` — four-way închis (HEAD = origin/main = public/main = backup/lant-2026-10-04 = procesul viu); execuția
-  „Testarea ca asistent” are trei commituri: `63c04a95` (drepturile + cele 7 puncte), `f76ce94b` (butoanele de intrare în formular),
-  iar commitul care poartă această linie corectează proba de producție (axe declarat indisponibil acolo, nu căzut). Secțiunile atinse acum: ANTET, STAREA, FRONTURI, DECIZII ÎN VIGOARE, ATENȚIONĂRI,
-  CE CERE POARTA.
+- **pe commit**: `728ce107` — four-way închis (HEAD = origin/main = public/main = backup/lant-2026-10-04 = procesul viu) la intrarea
+  turei; commitul care poartă această linie livrează **confirmările de drepturi** (R52 răsturnat, jurnalul regimului de TVA, REGES la
+  „Poate depune”). Secțiunile atinse acum: ANTET, STAREA, FRONTURI, DECIZII ÎN VIGOARE, ATENȚIONĂRI, STAREA LA PREDARE, CE CERE POARTA.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -26,7 +25,8 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | schemele de test șterse din producție + jurnalul bifei C&D | `57724df6` | — |
 | coloana `salariati.salariu_brut` retrasă (producția migrată DUPĂ deploy, 04.10 05:02) | `7c7a71ff` | `iconta_2b_coloana.zip` |
 | salariul în timp (dată validată, înlocuire explicită, poarta pe lunile atinse) + etichete accesibile în toată aplicația + condiția D112 A1 | `a3210e08` | `iconta_salariu_in_timp.zip` |
-| **testarea ca asistent**: drepturile pe rol și bifă (`cere_drept`, decizia „varianta 2”), interfața care urmează serverul (`data-actiune`), refuzul lângă buton, emailul clientului verificat înainte de creare, X + Esc pe ferestrele informative, ghidul pe rol, contorul Asistenți, fără „48 de ore” | `63c04a95` · `f76ce94b` · corectura probei | `iconta_testare_asistent.zip` |
+| **testarea ca asistent**: drepturile pe rol și bifă (`cere_drept`, decizia „varianta 2”), interfața care urmează serverul (`data-actiune`), refuzul lângă buton, emailul clientului verificat înainte de creare, X + Esc pe ferestrele informative, ghidul pe rol, contorul Asistenți, fără „48 de ore” | `63c04a95` · `f76ce94b` · `728ce107` | `iconta_testare_asistent.zip` |
+| **confirmările de drepturi**: fluturașul / PDF-ul chitanței / poza bonului la „Poate pregăti” (R52 răsturnat), regimul de TVA jurnalizat (`firma_profil_jurnal`), REGES la „Poate depune”; pe drum: sonda R56 precisă, 18 butoane de intrare marcate, 13 mesaje escapate | commitul care poartă linia | `iconta_drepturi_confirmari.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -47,13 +47,8 @@ aplicației**, nu „în așteptarea unei teme”:
   **[EXTERN]**, datorii stricte în `core/test_datorie.py`.
 - **R40**: nicio declarație depusă efectiv la ANAF prin aplicație — se închide prin folosire, nu prin cod. **R121**: P300/RO e-TVA fără
   acces programatic — **[EXTERN]**.
-- **Drepturile pe rol — 6 confirmări cerute lui Costin** (raportul 04.10, §6; DECIZII 04.10.2026, consecințele 4–7). Implementat varianta
-  scrisă, revenirea e o linie în `main.py` + pinul din `core/test_drepturi_rol.py`: (1) R52 — fluturașul/PDF-ul chitanței/fotografia
-  bonului rămân la administrator, deși asistentul emite chitanța și certifică bonul; (2) pivotul R42(c) — regimul de TVA la „Poate
-  pregăti” (vectorul îl scrie oricum); (3) pivotul R55 — planul de conturi la „Poate pregăti” (pasul 9 din Import date); (4) aprobarea
-  bonului din portal și raportul Z manual la „Poate valida” (scriu notă validată direct); (5) REGES (configurare, trimitere, răspunsuri)
-  la administrator (R56, credențiale); (6) contul Ana din producție are toate bifele pe „nu” — „Poate pregăti” i-l bifează
-  administratorul (nu s-a modificat nimic în datele ei).
+- **Contul Ana din producție**: toate bifele pe „nu”; „Poate pregăti” i-l bifează Costin din Asistenți (decizia 04.10, pct.6 — datele ei
+  nu se ating din cod).
 - **Restul restanțelor**: numărul se DERIVĂ (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici.
 
 ## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)
@@ -65,6 +60,9 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Drepturile pe rol (04.10, „varianta 2”)**: „Poate pregăti” = munca curentă; „Poate valida” = validări, înregistrarea amortizării,
   închiderea lunii; „Poate depune” = depunerea; administratorul = firme, asistenți, chei API, GDPR, abonament, datele cabinetului,
   deblocarea perioadei; mereu pe firmele alocate. Lista administratorului e exhaustivă; restul scrierilor pe firmă = „Poate pregăti”.
+- **Confirmările (04.10, PIVOT)**: fluturașul, PDF-ul chitanței, poza bonului = „Poate pregăti” (R52 răsturnat); regimul de TVA =
+  „Poate pregăti”, fiecare schimbare în `firma_profil_jurnal` (utilizator, dată, vechi → nou); REGES: cheile = administrator, trimiterea
+  și răspunsurile = „Poate depune”; planul de conturi = „Poate pregăti”; aprobarea bonului din portal și Z manual = „Poate valida”.
 - **Ferestrele**: cele informative se închid din X și cu Esc (`inchidereDialog`); cele cu câmpuri doar din X (DS cap.9 v2.64).
 
 ## DACĂ CONTINUI DE AICI
@@ -99,15 +97,21 @@ aplicației**, nu „în așteptarea unei teme”:
   handler face apelul (gard `core/test_drepturi_ui.py`, instrument `scripts/scan_drepturi_ui.py`). Un câmp care arată și o valoare
   poartă `data-actiune-camp` (se dezactivează). Declarațiile „METODĂ /cale” NU se numără ca apelanți (R70/R80, `_static()`).
 - **Un refuz din `catch` trece prin `arataMesaj(…, "eroare")` / `eroareCamp`**, nu prin `.textContent` / `.innerHTML` direct.
+- **Orice scriere a `platitor_tva` / `tip_decont` / `inreg_art317` după crearea firmei cheamă `repo_firma_profil.jurnalizeaza_regim_tva`**
+  cu utilizatorul (gard `core/test_jurnal_regim_tva.py`); `vector_fiscal_api.salveaza` fără `user_id` refuză scrierea. Un test care
+  salvează vectorul pe o schemă efemeră dă `user_id=`.
+- **Un mesaj de eroare de la server pus într-un șablon HTML trece prin `esc()`** (verificator `MESAJ_SERVER_NEESCAPAT`).
+- **Pozele bonurilor stau în `~/iconta_date/bonuri/<schemă>/<bon>/img_<n>.*`, director COMUN cu producția** (separat doar pe numele
+  schemei). O probă care pune o poză pe o schemă de test o scoate în `trap`.
 - **„adresa are deja cont”** are o singură formulare: `uc_comun._refuza_email_ocupat` (alt rol / client activ / asistent existent).
 - **Staging necomis, deliberat:** `import_fiscalos/` (urcat de Costin 21.09) — nu se comite, nu se șterge.
 
 ## STAREA LA PREDARE
 
-**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `a3210e08` (04.10.2026):
+**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `728ce107` (04.10.2026):
 
 ```
-7101 passed, 9 skipped, 13 xfailed in 2921.58s (0:48:41)      -> COLLECTED 7123
+7185 passed, 9 skipped, 13 xfailed in 2949.45s (0:49:09)      -> COLLECTED 7207
 verificator: TOTAL: 0 candidate
 ```
 
@@ -129,8 +133,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **899** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **901** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -380,6 +384,8 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **un câmp de formular** | nume accesibil: `for` pe etichetă sau `aria-label` | `test_etichete_campuri` (04.10) |
 | **o rută de scriere pe o firmă** | `cere_drept(_drepturi.NIVEL)` după decizia „varianta 2” (lista administratorului e exhaustivă) | `test_drepturi_rol` (04.10) |
 | **un buton care cheamă o rută restrânsă** | `data-actiune="METODĂ /cale"` pe ELEMENTUL legat de handler; o cale dinamică nouă se pinează cu motiv | `test_drepturi_ui` (04.10) |
+| **un buton care DESCHIDE un formular cu acțiune restrânsă** | aceeași `data-actiune` (sau `data-fara-actiune="<motiv>"`), oricare ar fi eticheta | `test_drepturi_ui::test_intrarea_intr_un_formular_restrans…` + verificator (04.10) |
+| **o scriere a regimului de TVA** | prin `repo_firma_profil.jurnalizeaza_regim_tva`, în aceeași funcție, cu utilizatorul | `test_jurnal_regim_tva` (04.10) |
 | **o fereastră suprapusă nouă** | `inchidereDialog` (X + Esc), sau marcajul `fereastra-de-lucru: doar X — <motiv>` dacă are câmpuri | verificator `DIALOG_FARA_INCHIDERE` (04.10) |
 | **o citire de bifă din corp** | prin `_uc_comun.bifa`, nu `bool(corp…)` (`bool("false")` e True) | `test_formulare_operatiuni_campuri::test_bifele_se_citesc_doar_prin_bifa` |
 | **un fixture care scrie SQL fals într-un fișier temporar** | construit din jetoane — altfel `test_schema_coloane` îl citește drept SQL al aplicației | `test_schema_coloane` |

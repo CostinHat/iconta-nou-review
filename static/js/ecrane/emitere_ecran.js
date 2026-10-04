@@ -56,8 +56,8 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
     <div class="em-config">
       <div class="em-intrebare">Ai mai emis facturi până acum (în alt program sau pe hârtie)?</div>
       <div class="em-optiuni">
-        <button class="buton-primar" id="em-da">Da, am mai emis</button>
-        <button class="buton-secundar em-buton-sec" id="em-nu">Nu, încep acum</button>
+        <button data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva" class="buton-primar" id="em-da">Da, am mai emis</button>
+        <button data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva" class="buton-secundar em-buton-sec" id="em-nu">Nu, încep acum</button>
       </div>
       <div class="em-config-form" id="em-config-form"></div>
     </div>`;
@@ -517,7 +517,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <div class="em-curs-titlu">⚠ Cursul BNR nu e disponibil momentan (${det.moneda}, ${dataRo(det.data)}).</div>
         <div class="em-curs-actiuni">
           <button class="buton-primar em-curs-retry" id="em-curs-retry">Reîncearcă</button>
-          <button class="buton-secundar em-buton-sec" id="em-curs-manual">Introdu manual</button>
+          <button data-actiune="POST /tenants/{tenant_id}/facturi/emite" class="buton-secundar em-buton-sec" id="em-curs-manual">Introdu manual</button>
         </div>
         <div id="em-curs-manual-zona"></div>
       </div>`;

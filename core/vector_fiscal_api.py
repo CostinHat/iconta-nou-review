@@ -14,6 +14,7 @@ Valori acceptate de motor (control_fiscal_api.declaratii_datorate):
 """
 
 from core.migrare_api import regim_contabil, tip_firma_nrm  # [regim] fapt UNIC + normalizare tip_firma (default 'srl')
+from core import repo_firma_profil as _repo_fp  # [PIVOT 04.10.2026] jurnalul regimului de TVA
 from core.common import tip_decont_lung  # [decont_lung] periodicitatea in forma lunga pt UI (seed legacy L/T)
 
 _REGIMURI = ("micro", "profit")
@@ -53,9 +54,11 @@ def citeste(conn_schema):
 
 
 def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
-             nume=None, cui=None, inreg_art317=False, tva_data_inceput=None):  # [p83_upsert] UPSERT
+             nume=None, cui=None, inreg_art317=False, tva_data_inceput=None, user_id=None):  # [p83_upsert] UPSERT
     """Scrie vectorul. Valideaza valorile. Daca nu e platitor TVA, decontul devine NULL.
-    Daca randul firma_profil (id=1) nu exista, il creeaza (nume+cui obligatorii la insert)."""
+    Daca randul firma_profil (id=1) nu exista, il creeaza (nume+cui obligatorii la insert).
+    [PIVOT DECIZII 04.10.2026] Schimbarea regimului de TVA (platitor_tva, tip_decont, inreg_art317) se jurnalizeaza cu
+    `user_id`, in aceeasi tranzactie (`repo_firma_profil.jurnalizeaza_regim_tva`); fara utilizator nu se scrie."""
     regim_in = (regim_fiscal or "").strip().lower()
 
     # platitor_tva OBLIGATORIU (ca operatiuni_ic) - decide obligatia D300/D394. Fara default tacit:
@@ -125,6 +128,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
                 _fpa.cere_perioade_deschise(conn_schema, "Vectorul fiscal")
             except ValueError as _e:
                 return {"ok": False, "cod": "PESTE_PERIOADA_INCHISA", "mesaj": str(_e)}
+            vechi = _repo_fp.regim_tva_pentru_schimbare(cur)
             cur.execute(
                 "UPDATE firma_profil "
                 "   SET regim_fiscal = %s, platitor_tva = %s, "
@@ -132,6 +136,8 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
                 "       platitor_tva_anaf_inceput = %s "
                 " WHERE id = 1",
                 (regim, tva, decont, ic, art317, tva_inceput))
+            _repo_fp.jurnalizeaza_regim_tva(cur, vechi, {"platitor_tva": tva, "tip_decont": decont,
+                                                         "inreg_art317": art317}, user_id)
         else:
             if not nume or not cui:
                 return {"ok": False, "cod": "FARA_IDENTITATE",
@@ -140,6 +146,9 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
                 "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317, platitor_tva_anaf_inceput) "
                 "VALUES (1, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (nume, cui, regim, tva, decont, ic, art317, tva_inceput))
+            # prima salvare a vectorului pe o firmă fără profil: jurnalizată cu vechiul gol (consecința 1 a pivotului)
+            _repo_fp.jurnalizeaza_regim_tva(cur, None, {"platitor_tva": tva, "tip_decont": decont,
+                                                        "inreg_art317": art317}, user_id)
     return {"ok": True, "regim_fiscal": regim, "platitor_tva": tva,
             "tip_decont": decont, "operatiuni_ic": ic, "inreg_art317": art317,
             "tva_data_inceput": tva_inceput}

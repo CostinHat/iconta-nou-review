@@ -1390,8 +1390,35 @@ try:
     for _rel, _ln, _et in _sdu.butoane_creare_nemarcate():
         rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
             "buton de intrare intr-un formular (%s) fara data-actiune / data-fara-actiune" % _et))
+    for _rel, _ln, _act, _tag in _sdu.intrari_in_formular_nemarcate()["nemarcate"]:
+        rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
+            "buton care deschide formularul %s fara data-actiune / data-fara-actiune" % _act[:60]))
 except Exception as _e_ar:
     rap["actiune_refuzata_nemarcata"].append(("verificator", 0, "EROARE", "gard actiune_refuzata_nemarcata: " + str(_e_ar)))
+
+# --- MESAJ_SERVER_NEESCAPAT (DS cap.10 v2.65, găsit 04.10.2026 la confirmările de drepturi): mesajul unei erori venite de
+#     la server (`e.mesaj` / `err.message` / `r.detail`) interpolat într-un șablon HTML trece prin `esc()`. Mesajul
+#     poate cita ce a tastat utilizatorul (un nume de firmă, un email) — fără escape, `<` din el devine marcaj. Instanța:
+#     13 interpolări neescapate (portal 7, firme 3, cabinet, facturi, Woo). O apariție folosită doar ca TEST de
+#     ternar (`e.mesaj ? … : …`) nu se afișează și nu se numără. Limita: vede `${…}` pe o singură linie, cu `<` sau
+#     `innerHTML` înaintea lui pe aceeași linie; un mesaj concatenat cu `+` în afara unui șablon nu e văzut.
+#     Mutația care o probează: `esc(` scos din jurul `err.mesaj` în portal.js -> lista nevidă -> TOTAL > 0.
+rap["mesaj_server_neescapat"] = []
+_re_ms = re.compile(r"\$\{([^{}]*\b(?:e|err|ex|er|eroare|error|r|res|raspuns)\b(?:\s*&&\s*\w+)?\.(?:mesaj|message|detail)\b[^{}]*)\}")
+for _nume, _t in fisiere.items():
+    for _ln, _l in enumerate(_t.split("\n"), 1):
+        for _m in _re_ms.finditer(_l):
+            _pre = _l[:_m.start()]
+            if "<" not in _pre and "innerHTML" not in _pre:
+                continue
+            _ex = _m.group(1)
+            for _p in re.finditer(r"\.(?:mesaj|message|detail)\b", _ex):
+                if re.match(r"\s*\?", _ex[_p.end():]):
+                    continue
+                if "esc(" not in _ex[:_p.start()]:
+                    rap["mesaj_server_neescapat"].append((_nume, _ln, "esc",
+                        "mesaj de eroare de la server interpolat in HTML fara esc(): " + _m.group(0)[:50]))
+                    break
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

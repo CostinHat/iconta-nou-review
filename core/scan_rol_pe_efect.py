@@ -159,12 +159,60 @@ def _surse_repository(fn):
     return out
 
 
+# [04.10.2026, confirmările de drepturi] Sonda veche cerea doar „o scriere oarecare” + „numele unei credențiale oriunde în
+# corp”: număra ca scriere de credențiale o rută care doar le CITEȘTE ca să se autentifice (`reges-poll`,
+# `reges-trimite-salariat`: SELECT pe `reges_chei`, INSERT în `reges_mesaje`), potrivea numele funcției
+# (`api_cheie_revoca` conține `api_chei`, `@app.delete` conține DELETE) și nu vedea SQL-ul real din modulele care nu sunt
+# `repo_*` (`api_public.creeaza` / `revoca`), deci crearea unei chei API (`POST /cabinet/api-chei`) scăpa. Acum: scrierea
+# trebuie să NUMEASCĂ credențiala în aceeași instrucțiune, iar apelurile se urmăresc un nivel și în modulele `core.*`
+# importate în funcție.
+_SCRIERE_SQL = re.compile(r"\b(?:INSERT\s+INTO|UPDATE|DELETE\s+FROM)\b")
+_CORE = {}
+
+
+def _surse_core_apelate(fn):
+    """Sursele funcțiilor din `core.<modul>` chemate de rută prin numele modulului sau prin aliasul unui
+    `from core import <modul> as <alias>` din corpul ei. Un nivel, ca `_surse_repository`."""
+    baza = os.path.join(RAD, "core")
+    alias = {}
+    for n in ast.walk(fn):
+        if isinstance(n, ast.ImportFrom) and n.module == "core":
+            for a in n.names:
+                alias[a.asname or a.name] = a.name
+    out = []
+    for c in ast.walk(fn):
+        if not (isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+                and isinstance(c.func.value, ast.Name)):
+            continue
+        mod = alias.get(c.func.value.id, c.func.value.id)
+        if mod not in _CORE:
+            cale = os.path.join(baza, mod + ".py")
+            _CORE[mod] = {}
+            if re.fullmatch(r"\w+", mod) and not mod.startswith("test_") and os.path.isfile(cale):
+                try:
+                    src = io.open(cale, encoding="utf-8").read()
+                    for f in ast.walk(ast.parse(src)):
+                        if isinstance(f, ast.FunctionDef):
+                            _CORE[mod][f.name] = ast.get_source_segment(src, f) or ""
+                except (OSError, SyntaxError):
+                    pass
+        s = _CORE[mod].get(c.func.attr)
+        if s:
+            out.append(s)
+    return out
+
+
 def atinge_credentiale(fn):
-    """Ruta SCRIE într-o tabelă/câmp de credențiale ale unui sistem extern?"""
-    corp = ast.unparse(fn) + "\n" + "\n".join(_surse_repository(fn))
-    if not re.search(r"\b(INSERT|UPDATE|DELETE)\b", corp, re.I):
-        return False
-    return any(s in corp for s in SEMNE_CREDENTIALE)
+    """Ruta SCRIE într-o tabelă/câmp de credențiale ale unui sistem extern?
+
+    Scrierea = o instrucțiune SQL de scriere care numește credențiala (tabela sau câmpul) ÎN EA, până la
+    capătul literalului. O citire a cheilor ca să te autentifici la sistemul extern nu e o scriere a lor."""
+    corp = "\n".join([ast.unparse(fn)] + _surse_repository(fn) + _surse_core_apelate(fn))
+    for w in _SCRIERE_SQL.finditer(corp):
+        instr = re.split(r"[\"']", corp[w.start():w.start() + 800])[0]
+        if any(re.search(r"\b%s\b" % s, instr) for s in SEMNE_CREDENTIALE):
+            return True
+    return False
 
 
 def masoara():
@@ -186,3 +234,4 @@ def masoara():
 # pregăti” singur NU trece niciuna dintre ele: pe el îl are orice asistent.
 DOAR_ADMIN = {"admin_firma", "superadmin", ROL_DIN_CORP, ROL_CALCULAT, "drept:ADMIN"}
 PESTE_PREGATIRE = DOAR_ADMIN | {"drept:VALIDA", "drept:DEPUNE"}
+

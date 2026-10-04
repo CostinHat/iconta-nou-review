@@ -191,3 +191,36 @@ def test_butoanele_de_intrare_in_formular_isi_declara_actiunea():
     marcate = sum(len(S._BUTON_CREARE.findall(io.open(f, encoding="utf-8").read()))
                   for f in glob.glob(os.path.join(RAD, "static", "js", "**", "*.js"), recursive=True))
     assert marcate >= 50, "instrumentul vede doar %d butoane de intrare — s-a stricat?" % marcate
+
+
+def test_intrarea_intr_un_formular_restrans_e_marcata_dupa_ce_deschide():
+    """Clasa găsită la confirmările de drepturi (04.10.2026): „Chei REGES”, „REGES”, „Trimite pe email”, „Stornează”,
+    „Inventar” — 18 butoane care DESCHID formularul unei acțiuni restrânse, nemarcate, fiindcă eticheta lor nu e „+ …” /
+    „Adaugă…” / „Emite…”. Treapta structurală: handlerul care construiește un element cu `data-actiune` e intrarea în
+    acel formular; elementul legat de el poartă o acțiune sau `data-fara-actiune`."""
+    r = S.intrari_in_formular_nemarcate()
+    assert not r["nemarcate"], "intrări în formulare restrânse fără data-actiune / data-fara-actiune (%d): %s" % (
+        len(r["nemarcate"]), [x[:3] for x in r["nemarcate"]])
+    assert not r["nelegate"], "handlere care construiesc un formular marcat, nelegabile de element: %s" % r["nelegate"]
+
+
+def test_CALIBRARE_intrarea_in_formular_se_vede_si_sageata_fara_acolade_nu():
+    import tempfile
+    d = tempfile.mkdtemp()
+    os.makedirs(os.path.join(d, "ecrane"))
+    io.open(os.path.join(d, "ecrane", "x.js"), "w", encoding="utf-8").write(
+        'corp.innerHTML = `<button id="a-cfg">Chei</button><button id="b-ok" data-actiune="POST /x">B</button>`;\n'
+        'corp.querySelector("#a-cfg").addEventListener("click", () => {\n'
+        '  zona.innerHTML = `<button id="a-salv" data-actiune="POST /tenants/{tenant_id}/reges-config">Salvează</button>`;\n'
+        '});\n'
+        'corp.querySelector("#b-ok").addEventListener("click", () => deschide(1));\n'
+        'function f() { return `<i data-actiune="POST /y"></i>`; }\n')
+    vechi = S.JS
+    try:
+        S.JS = d
+        r = S.intrari_in_formular_nemarcate()
+    finally:
+        S.JS = vechi
+    assert [x[2] for x in r["nemarcate"]] == ["POST /tenants/{tenant_id}/reges-config"], r
+    assert 'id="a-cfg"' in r["nemarcate"][0][3], r
+    assert not r["nelegate"], "o săgeată fără acolade a fost luată drept corp de handler: %s" % r["nelegate"]
