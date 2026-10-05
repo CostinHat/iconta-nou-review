@@ -813,8 +813,8 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 - fir: **TESTAREA FLUXULUI DE FACTURĂ PE F1 (comanda Costin 05.10.2026)** — vânzare -> stoc -> încasare, Ana pregătește, cabinetul
   validează; 13 puncte, în ordinea priorității date (verbatim în DECIZII 05.10.2026). Se livrează în 4 commituri (A–D), fiecare cu
   poartă, four-way, oglindă; ZIP la final: `/home/costin/ghid_incoming/iconta_testare_factura_F1.zip`.
-  - ultim: A1–A3 (commitul „Fluxul de factură pe F1 (A) …”)
-  - urmator: pasul B (pct.2–5). STARE = IN LUCRU
+  - ultim: B (commitul „Fluxul de factură pe F1 (B) …”); A1–A3 în f8e08e72
+  - urmator: pasul C (pct.6–9). STARE = IN LUCRU
   - pasi:
     A1. (pct.1a, cauza stabilită din `uvicorn.log` + `audit_log`) tokenul Anei expirase: logare 04.10 11:29:34, durată 86400 s, primul
         401 la ~11:30 (`POST /tenants/105779/produse/potriveste`), relogare 11:31:47; `api.js` la 401 făcea `sesiune.iesi()` ->

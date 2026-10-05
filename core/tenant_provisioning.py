@@ -297,6 +297,13 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
         if _r:
             scrie_denumirea(conn, _r[0], _den, verifica_unicitatea=False)
     seturi, par = [], []
+    # [comanda Costin 05.10.2026 pct.2] forma juridică precompletată la creare, numai dacă ANAF și denumirea ANAF o dau neechivoc;
+    # COALESCE: nu suprascrie o formă aleasă deja de contabil.
+    from core import capital_social as _cs
+    _forma, _sursa = _cs.forma_propusa(d.get("forma_juridica"), d.get("denumire"))
+    if _forma:
+        seturi.append("forma_juridica = COALESCE(forma_juridica, %s)")
+        par.append(_forma)
     seturi += [
         "caen = COALESCE(NULLIF(%s, ''), caen)",
         "adresa = COALESCE(NULLIF(%s, ''), adresa)",

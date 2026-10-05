@@ -62,6 +62,24 @@ def emise_pe_luni_pentru_intrastat(cur, schema, an):
 
 # ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
 
+def jurnalizeaza_cota_aleasa(cur, factura_id, linii, user_id):
+    """[comanda Costin 05.10.2026 pct.3] „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”.
+    Un rând pentru fiecare linie emisă cu altă cotă decât cea PROPUSĂ automat; o linie fără propunere sau cu propunerea păstrată nu
+    scrie nimic. Fără utilizator nu se scrie (jurnalul fără autor nu consemnează nimic). Întoarce câte rânduri a scris."""
+    from decimal import Decimal
+    if user_id is None:
+        raise ValueError("cota aleasă se consemnează cu utilizatorul care a ales-o — lipsește")
+    scrise = 0
+    for nr, l in enumerate(linii, 1):
+        p, a = l.get("cota_propusa"), l.get("cota_tva")
+        if p is None or a is None or Decimal(str(p)) == Decimal(str(a)):
+            continue
+        cur.execute("INSERT INTO factura_cota_jurnal (factura_id, linie_nr, descriere, cota_propusa, cota_aleasa, user_id) "
+                    "VALUES (%s, %s, %s, %s, %s, %s)", (factura_id, nr, l.get("descriere"), p, a, user_id))
+        scrise += 1
+    return scrise
+
+
 def leaga_proforma_de_factura(cur, transformat_in_id, id_):
     cur.execute("UPDATE facturi SET transformat_in_id=%s WHERE id=%s",
                 (transformat_in_id, id_))

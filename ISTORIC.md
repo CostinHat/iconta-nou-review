@@ -1444,3 +1444,27 @@ versiune nouă nu reîncarcă peste un formular început.
 **Proba (browser, asistent, baza de test):** înainte — la expirare ecranul de logare, factura goală; după Date firmă -> Înapoi,
 factura goală. După — fereastra de reautentificare peste factură, toate câmpurile intacte, cererea reluată (401 -> logare -> 200);
 după Date firmă -> Înapoi, toate câmpurile intacte; o sesiune trecută de jumătate s-a reînnoit singură.
+
+## 05.10.2026 — Fluxul de factură pe F1 (B): emiterea (comanda Costin, pct.2–5)
+
+**Ce s-a făcut:** la deschiderea „Emite factură” se spune ce lipsește din Date firmă (forma juridică, capitalul), cu „Deschide Date
+firmă”, iar „Emite” e inactiv cu motiv până se completează; forma juridică e propusă din ANAF și din denumire când nu se contrazic;
+cota TVA a fiecărei linii se alege dintr-o listă, iar schimbarea față de cea propusă se consemnează (propus -> ales, cine, când);
+formularul arată și lasă de setat data emiterii, scadența și seria; PDF-ul facturii are „Cod TVA: RO…”, „Seria X nr. N”, „Data
+emiterii”, „Data scadenței” și titlu de document (la fel toate PDF-urile aplicației).
+
+**Proba (browser, asistent, baza de test):** înainte (HEAD f8e08e72) — nicio notă la deschidere, „Emite” activ, fără dată/scadență/
+serie, cota fixă, 422 la emitere. După — nota „Forma propusă: SRL”, „Emite” inactiv; Date firmă cu SRL preselectat -> Salvează ->
+Înapoi: nota dispare, „Emite” activ, clientul păstrat; cota 11 -> 21, rând de jurnal [1, „Pâine albă feliată”, 11, 21, asistentul];
+factura cu data 05.10.2026, scadența 04.11.2026; PDF „Cod TVA: RO96653616” / „RO14399840”, „Data emiterii: 05.10.2026”.
+
+**Găsit pe drum:** Date firmă nu se putea salva deloc pe o firmă cu o lună închisă (refuz 500) — poarta perioadei închise se punea
+la prezența câmpurilor, nu la schimbarea lor; reparat în trei locuri (Date firmă, vector, regim TVA). Tabelul nou s-a migrat pe
+producție după backup verificat. Tot pe drum: tabelul nou fusese legat de factură fără regulă la ștergere, deci o factură
+necontată emisă cu altă cotă nu s-ar mai fi putut șterge — legătura e acum în cascadă (migrare refăcută pe producție, după backup
+complet); căutând clasa, ștergerea unei facturi legate de SPV ieșea tot cu eroare brută — acum refuzul e numit, cu ieșirea.
+
+**Respins de poartă, reparat în același pas:** lista de cote se citea „azi” când lipsea data — acum se citește la data facturii din
+formular și se reîncarcă la schimbarea ei. Căutând de unde vine data formularului: 21 de locuri din 10 ecrane produceau data în UTC
+(între 00:00 și 03:00 „azi” era ieri; intervalul „luna” din activitatea cabinetului și termenul UIT din e-Transport greșeau ziua
+oricând) — toate trec acum prin `dataIso`, cu gard în verificator.

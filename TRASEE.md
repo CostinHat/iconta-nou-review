@@ -1196,7 +1196,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T02 — Factura emisă — creare, contabilizare, ieșiri
 
-**Clasa:** MECANIC · **rute:** 20 (din care schimba date: 14) · **refuzuri explicite:** 85
+**Clasa:** MECANIC · **rute:** 20 (din care schimba date: 14) · **refuzuri explicite:** 88
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 1 din 14.**
 
@@ -1225,7 +1225,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `anaf_api`, `capital_social`, `contare_facturi`, `factura_pdf`, `facturi_api`, `facturi_recurente`, `firma_profil_api`, `observare`, `repo_facturi`, `repo_main`, `scadentar`, `stocuri_cv_api`, `uc_comun`, `uc_curs_bnr`
 
-**Scrie in:** `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `factura_linii` (INSERT/UPDATE) · `facturi` (DELETE/INSERT/UPDATE) · `facturi_recurente` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
+**Scrie in:** `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `factura_cota_jurnal` (INSERT) · `factura_linii` (INSERT/UPDATE) · `facturi` (DELETE/INSERT/UPDATE) · `facturi_recurente` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
 
 **Stari puse:** `ciorna`, `de_verificat`, `emisa`
 
@@ -1331,7 +1331,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T06 — Importul de e-Factura și transmiterea prin SPV
 
-**Clasa:** MANUAL · **rute:** 7 (din care schimba date: 4) · **refuzuri explicite:** 33
+**Clasa:** MANUAL · **rute:** 7 (din care schimba date: 4) · **refuzuri explicite:** 34
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 4.**
 
@@ -1347,7 +1347,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `afirmatii`, `contare_facturi`, `cronometru`, `efactura_import`, `efactura_send`, `efactura_trimitere`, `repo_efactura`, `repo_facturi`, `repo_firma_profil`, `repo_main`, `spv_rute`, `stocuri_cv_api`, `uc_comun`
 
-**Scrie in:** `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `efactura_primite` (UPDATE) · `efactura_trimiteri` (INSERT/UPDATE) · `factura_linii` (INSERT/UPDATE) · `facturi` (INSERT/UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
+**Scrie in:** `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `efactura_primite` (UPDATE) · `efactura_trimiteri` (INSERT/UPDATE) · `factura_cota_jurnal` (INSERT) · `factura_linii` (INSERT/UPDATE) · `facturi` (INSERT/UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
 
 **Stari puse:** `ciorna`, `de_verificat`, `emisa`, `respinsa`, `validata`
 
@@ -1486,7 +1486,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T13 — Trecerea de regim fiscal
 
-**Clasa:** MECANIC · **rute:** 8 (din care schimba date: 4) · **refuzuri explicite:** 18
+**Clasa:** MECANIC · **rute:** 8 (din care schimba date: 4) · **refuzuri explicite:** 47
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 4.**
 
@@ -1501,9 +1501,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/vector` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/vector` — garda `cere_drept` drept:poate_pregati
 
-**Module:** `anaf_api`, `firma_profil_api`, `migrare_api`, `repo_firma_profil`, `repo_tenants`, `uc_comun`, `vector_fiscal_api`
+**Module:** `anaf_api`, `facturi_api`, `firma_profil_api`, `migrare_api`, `repo_firma_profil`, `repo_tenants`, `uc_comun`, `vector_fiscal_api`
 
-**Scrie in:** `accounting_firms` (UPDATE) · `firma_profil` (INSERT/UPDATE) · `firma_profil_jurnal` (INSERT) · `migrare_status` (INSERT)
+**Scrie in:** `accounting_firms` (UPDATE) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (INSERT/UPDATE) · `firma_profil_jurnal` (INSERT) · `migrare_status` (INSERT)
 
 **Firme care il pot exercita azi: 17** — `tenant_001`, `tenant_002`, `tenant_003`, `tenant_004`, `tenant_005`, `tenant_006`, `tenant_007`, `tenant_008`, `tenant_009`, `tenant_010`, `tenant_011`, `tenant_012`, `tenant_013`, `tenant_014`, `tenant_015`, `tenant_016`, `tenant_017`
 
@@ -1630,7 +1630,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T18 — Chitanța și încasarea
 
-**Clasa:** MECANIC · **rute:** 4 (din care schimba date: 2) · **refuzuri explicite:** 16
+**Clasa:** MECANIC · **rute:** 4 (din care schimba date: 2) · **refuzuri explicite:** 17
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 2.**
 
@@ -1643,7 +1643,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `activitati_amef`, `casa_api`, `chitante`, `firma_profil_api`, `jurnal_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`, `repo_tenants`, `uc_comun`
 
-**Scrie in:** `accounting_firms` (UPDATE) · `ai_corectii` (INSERT) · `bonuri` (DELETE/INSERT/UPDATE) · `casa_operatiuni` (DELETE/INSERT/UPDATE) · `chitante` (INSERT/UPDATE) · `extras_linii` (UPDATE) · `factura_linii` (UPDATE) · `facturi` (UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT)
+**Scrie in:** `accounting_firms` (UPDATE) · `ai_corectii` (INSERT) · `bonuri` (DELETE/INSERT/UPDATE) · `casa_operatiuni` (DELETE/INSERT/UPDATE) · `chitante` (INSERT/UPDATE) · `extras_linii` (UPDATE) · `factura_cota_jurnal` (INSERT) · `factura_linii` (UPDATE) · `facturi` (UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT)
 
 **Stari puse:** `aprobat`, `contat`, `de_verificat`, `emisa`, `extras`, `potrivit`, `validata`
 
@@ -1744,7 +1744,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T23 — Bonul de la client — portalul și decontul
 
-**Clasa:** MECANIC · **rute:** 9 (din care schimba date: 5) · **refuzuri explicite:** 25
+**Clasa:** MECANIC · **rute:** 9 (din care schimba date: 5) · **refuzuri explicite:** 26
 
 **Cine:** drept fin: `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 3 din 5.**
 
@@ -1762,7 +1762,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `ai_client`, `casa_api`, `jurnal_api`, `repo_casa`, `repo_contabilitate`, `repo_facturi`, `uc_comun`
 
-**Scrie in:** `ai_corectii` (INSERT) · `bonuri` (DELETE/INSERT/UPDATE) · `casa_operatiuni` (DELETE/INSERT/UPDATE) · `chitante` (INSERT/UPDATE) · `extras_linii` (UPDATE) · `factura_linii` (UPDATE) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `bonuri` (DELETE/INSERT/UPDATE) · `casa_operatiuni` (DELETE/INSERT/UPDATE) · `chitante` (INSERT/UPDATE) · `extras_linii` (UPDATE) · `factura_cota_jurnal` (INSERT) · `factura_linii` (UPDATE) · `facturi` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT)
 
 **Stari puse:** `aprobat`, `contat`, `de_verificat`, `emisa`, `extras`, `potrivit`, `validata`
 
@@ -1846,7 +1846,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T28 — Operațiunile intracomunitare, VIES și Intrastat
 
-**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 6) · **refuzuri explicite:** 69
+**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 6) · **refuzuri explicite:** 71
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 6.**
 
@@ -1867,7 +1867,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `anaf_api`, `d390_clasificare_api`, `facturi_api`, `intracomunitar`, `intrastat`, `jurnal_api`, `registre_art321`, `repo_contabilitate`, `repo_d301_operatiuni_api`, `repo_facturi`, `repo_firma_profil`, `repo_main`, `scadente`, `stocuri_cv_api`, `tranzactie`, `uc_comun`
 
-**Scrie in:** `ai_corectii` (INSERT) · `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `casa_operatiuni` (DELETE) · `d301_operatiuni` (DELETE/INSERT) · `d390_manual` (DELETE/INSERT) · `d390_reclasificare` (DELETE/INSERT) · `extras_linii` (UPDATE) · `factura_linii` (INSERT/UPDATE) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `registre_art321` (INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `casa_operatiuni` (DELETE) · `d301_operatiuni` (DELETE/INSERT) · `d390_manual` (DELETE/INSERT) · `d390_reclasificare` (DELETE/INSERT) · `extras_linii` (UPDATE) · `factura_cota_jurnal` (INSERT) · `factura_linii` (INSERT/UPDATE) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `registre_art321` (INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
 
 **Stari puse:** `ciorna`, `contat`, `de_verificat`, `emisa`, `potrivit`, `validata`
 
@@ -1875,7 +1875,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T29 — Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă
 
-**Clasa:** MECANIC · **rute:** 11 (din care schimba date: 10) · **refuzuri explicite:** 93
+**Clasa:** MECANIC · **rute:** 11 (din care schimba date: 10) · **refuzuri explicite:** 94
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 10.**
 
@@ -2020,7 +2020,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T35 — Pachetul lunar către client și solicitările lui
 
-**Clasa:** MECANIC · **rute:** 39 (din care schimba date: 17) · **refuzuri explicite:** 71
+**Clasa:** MECANIC · **rute:** 39 (din care schimba date: 17) · **refuzuri explicite:** 73
 
 **Cine:** rol cerut: `admin_firma`, `angajat`, `verificat-în-corp` · drept fin: `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 5 din 17.**
 
@@ -2068,7 +2068,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `cashflow`, `clienti_api`, `control_fiscal_api`, `documente_api`, `facturi_api`, `kpi_client`, `notificari_api`, `observare`, `pachete_api`, `portal_api`, `repo_facturi`, `repo_firma_profil`, `repo_main`, `repo_portal`, `repo_tenants`, `repo_utilizatori`, `tenant_provisioning`, `uc_comun`
 
-**Scrie in:** `accounting_firms` (UPDATE) · `acord_termeni` (INSERT) · `audit_log` (INSERT) · `clienti` (DELETE/INSERT/UPDATE) · `factura_linii` (INSERT/UPDATE) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (INSERT/UPDATE) · `firma_profil_jurnal` (INSERT) · `metrici_sanatate` (INSERT) · `notificari` (INSERT/UPDATE) · `pachet_povestea` (INSERT) · `schimbari_email` (DELETE/INSERT/UPDATE) · `solicitari_client` (INSERT) · `tenants` (INSERT/UPDATE) · `tokene_activare` (DELETE/INSERT/UPDATE) · `urme_portal` (INSERT) · `user_tenants` (DELETE/INSERT) · `users` (INSERT/UPDATE)
+**Scrie in:** `accounting_firms` (UPDATE) · `acord_termeni` (INSERT) · `audit_log` (INSERT) · `clienti` (DELETE/INSERT/UPDATE) · `factura_cota_jurnal` (INSERT) · `factura_linii` (INSERT/UPDATE) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (INSERT/UPDATE) · `firma_profil_jurnal` (INSERT) · `metrici_sanatate` (INSERT) · `notificari` (INSERT/UPDATE) · `pachet_povestea` (INSERT) · `schimbari_email` (DELETE/INSERT/UPDATE) · `solicitari_client` (INSERT) · `tenants` (INSERT/UPDATE) · `tokene_activare` (DELETE/INSERT/UPDATE) · `urme_portal` (INSERT) · `user_tenants` (DELETE/INSERT) · `users` (INSERT/UPDATE)
 
 **Stari puse:** `aprobat`, `ciorna`, `de_verificat`, `emisa`, `validata`
 

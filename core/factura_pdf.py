@@ -66,6 +66,31 @@ MENTIUNE_NEPLATITOR = ("Scutit de TVA — regim special de scutire pentru între
                        "art. 310 din Codul fiscal (Legea nr. 227/2015).")
 
 
+# [comanda Costin 05.10.2026 pct.5] CF art.319 alin.(20) lit.d) și f): pe factură stă „codul de înregistrare în scopuri de TVA
+# sau, după caz, codul de identificare fiscală”; CF art.318 alin.(1): „Codul de înregistrare în scopuri de TVA, atribuit conform
+# art. 316 și 317, are prefixul RO”. Deci: plătitor -> „Cod TVA: RO…”; neplătitor -> „CIF: …”; stare necunoscută -> codul așa cum
+# a fost scris (nu se ghicește).
+def cod_fiscal_pe_factura(cui, platitor_tva):
+    """(eticheta, valoarea) pentru codul furnizorului / beneficiarului pe factură; (None, None) fără cod."""
+    brut = (cui or "").strip()
+    cifre = "".join(ch for ch in brut if ch.isdigit())
+    if not cifre:
+        return None, None
+    if platitor_tva is True:
+        return "Cod TVA", "RO" + cifre
+    if platitor_tva is False:
+        return "CIF", cifre
+    return ("Cod TVA", brut.upper()) if brut.upper().startswith("RO") else ("CUI", brut)
+
+
+def serie_si_numar(serie, numar):
+    """„Seria FCT nr. 12” (art.319 alin.(20) lit.a): `facturi.numar` conține deja seria (`{serie}{numar}`)."""
+    numar = str(numar or "-")
+    if serie and numar.startswith(serie):
+        return "Seria %s nr. %s" % (serie, numar[len(serie):])
+    return ("Seria %s nr. %s" % (serie, numar)) if serie else ("Nr. %s" % numar)
+
+
 def genereaza_pdf(profil, factura):
     """profil, factura = dict-uri. Intoarce bytes (PDF)."""
     _init_fonturi()
@@ -81,6 +106,9 @@ def genereaza_pdf(profil, factura):
         buf, pagesize=A4,
         leftMargin=18 * mm, rightMargin=18 * mm,
         topMargin=16 * mm, bottomMargin=16 * mm,
+        # [pct.5] fără titlu, reportlab scria „(anonymous)” — exact ce arăta vizualizatorul
+        title="Factura %s" % serie_si_numar(factura.get("serie"), factura.get("numar")).replace("Seria ", ""),
+        author=profil.get("nume") or "iConta",
     )
     stil = getSampleStyleSheet()
     st_nume = ParagraphStyle("nume", parent=stil["Normal"], fontName=font_b,
@@ -101,7 +129,8 @@ def genereaza_pdf(profil, factura):
     adr = ", ".join([x for x in (profil.get("adresa"), profil.get("oras"),
                                  profil.get("judet")) if x])
     firma_txt = [Paragraph(profil.get("nume") or "Firma mea SRL", st_nume)]
-    det = "CUI " + (profil.get("cui") or "-")
+    _et, _cod = cod_fiscal_pe_factura(profil.get("cui"), profil.get("platitor_tva"))
+    det = ("%s: %s" % (_et, _cod)) if _cod else "CIF: -"   # [pct.5] art.319 lit.d) + art.318 alin.(1)
     if profil.get("reg_com"):
         det += " · " + profil["reg_com"]
     firma_txt.append(Paragraph(det, st_mic))
@@ -135,7 +164,7 @@ def genereaza_pdf(profil, factura):
         ]))
 
     dreapta = [Paragraph("FACTUR\u0102", st_titlu),
-               Paragraph(factura.get("numar") or "-", st_nr)]
+               Paragraph(serie_si_numar(factura.get("serie"), factura.get("numar")), st_nr)]   # [pct.5] art.319 lit.a)
     dreapta_flow = Table([[dreapta[0]], [dreapta[1]]], colWidths=[70 * mm])
     dreapta_flow.setStyle(TableStyle([
         ("RIGHTPADDING", (0, 0), (-1, -1), 0),
@@ -155,14 +184,15 @@ def genereaza_pdf(profil, factura):
 
     # ---- META: data, scadenta, partener ----
     dir_txt = "Emis\u0103" if factura.get("directie") in ("emisa", "iesire") else "Primit\u0103"
-    meta_linii = [f"{dir_txt} - {_data_ro(factura.get('data_emitere'))}"]
+    # [pct.5] art.319 alin.(20) lit.b) „data emiterii facturii” — o dată, nu o stare („Emisă - …”)
+    meta_linii = ["Data emiterii: " + _data_ro(factura.get("data_emitere"))]
     if factura.get("data_scadenta"):
-        meta_linii.append("Scaden\u021b\u0103: " + _data_ro(factura.get("data_scadenta")))
+        meta_linii.append("Data scaden\u021bei: " + _data_ro(factura.get("data_scadenta")))
     part = factura.get("tert_nume")
     if part:
         etich = "C\u0103tre" if dir_txt.startswith("Emis") else "De la"
-        cui = factura.get("tert_cui")
-        meta_linii.append(f"{etich}: {part}" + (f" - CUI {cui}" if cui else ""))
+        _et_t, _cod_t = cod_fiscal_pe_factura(factura.get("tert_cui"), factura.get("tert_platitor_tva"))
+        meta_linii.append(f"{etich}: {part}" + (f" - {_et_t}: {_cod_t}" if _cod_t else ""))   # [pct.5] art.319 lit.f)
         adr_tert = (factura.get("tert_adresa") or "").strip()
         if adr_tert:
             meta_linii.append(adr_tert)

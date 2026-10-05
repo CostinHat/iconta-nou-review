@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**688 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**689 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 653
+### `core/` — 654
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9159,6 +9159,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_efactura_trimitere.py` — PROBA FUNCTIONALA a use-case-ului de trimitere — cele patru porti, pe DB reala, cu retea MOCK.
 - `core/test_email_html_doua_cai.py` — core/test_email_html_doua_cai.py — cele doua cai C5 ratate de masuratoarea lexicala.
 - `core/test_email_html_dupa_commit.py` — core/test_email_html_dupa_commit.py — `trimite_email_html` nu se mai executa sub o conexiune.
+- `core/test_emitere_factura_f1.py` — GARD — emiterea pe F1: Date firmă la deschidere, forma propusă, cota consemnată, data/scadența/seria, PDF-ul conform art.319
 - `core/test_emitere_randuri_dinamice.py` — GARD cap.24 batch 3b — randuri dinamice emitere factura, re-rulate IN POARTA prin chromium headless.
 - `core/test_esec_trimitere_email.py` — GARD [R73, 27.08.2026]: un eșec de trimitere a emailului nu se mai poate stinge tăcut.
 - `core/test_eticheta_conturi_ecran.py` — Eticheta din ECRAN și conturile din BACKEND nu pot diverge tăcut.
@@ -10196,3 +10197,20 @@ Categoria **11. Interfață** (pierdere de lucru). Cauzele, din jurnale: DECIZII
 | reînnoirea nu redesenează | `::test_reinnoirea_nu_redeseneaza_aplicatia` | `_anunta()` la schimbarea tokenului | `_anunta()` repus -> roșu | — |
 | navigatorul păstrează ecranul tastat | `::test_navigatorul_pastreaza…`, `::test_mesajul_care_promite_pastrarea…` + verificator `PASTRARE_FORMULAR` (DS cap.3 v2.67) | factura (orice formular) golită la revenirea din altă fereastră; un mesaj care promite păstrarea fără mecanism | `_dePastrat()` scos din `deschide` -> 2 roșii + TOTAL 1 | păstrarea ține cât trăiește tabul; o reîncărcare manuală a paginii nu e acoperită (butonul „versiune nouă” nu reîncarcă peste un formular început) |
 | versiunea nouă nu reîncarcă peste formular | `::test_versiunea_noua_nu_reincarca…` | reîncărcarea la un clic pe anunț cu formular început | reîncărcarea mutată înainte de verificare -> roșu | — |
+
+## 05.10.2026 — Emiterea pe F1 (B): Date firmă la deschidere, cota consemnată, data/scadența/seria, PDF pe art.319 (comanda Costin, pct.2–5)
+
+Categoria **2. Declarații / documente fiscale** (conținutul facturii) și **11. Interfață**. Temeiul și deciziile: DECIZII 05.10.2026, consecințele 3–6.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| forma propusă numai fără contradicție | `core/test_emitere_factura_f1.py::test_forma_din_denumire`, `::test_forma_propusa_cere_acord_intre_surse` | o formă propusă când ANAF și denumirea diferă | acordul cerut scos -> roșu | nomenclatura ANAF cunoscută = cele văzute (SRL, SA ș.a.); una nouă nu se propune |
+| lipsurile spuse la deschidere | `::test_pregatirea_emiterii_spune_lipsurile…`, `::test_mesajul_de_la_deschidere…` | „Emite” activ pe o firmă căreia îi lipsește forma/capitalul | `lipsuri_firma` golit -> roșu | — |
+| cota schimbată consemnată, în tranzacție | `::test_cota_schimbata_se_consemneaza_doar_cand_difera`, `::test_emiterea_consemneaza_cota_in_aceeasi_tranzactie` | o cotă schimbată fără urmă; o urmă fără factură | inserarea scoasă / mutată după commit -> roșu | cota neschimbată nu lasă rând (intenționat) |
+| scadența nu precede emiterea | `::test_scadenta_inaintea_emiterii_se_refuza` | o factură cu scadență înaintea emiterii | condiția scoasă -> roșu | — |
+| codul fiscal pe PDF (RO / CIF) | `::test_codul_fiscal_pe_factura`, `::test_pdf_facturii_are_ro_seria…`, `::test_platitorul_de_tva_al_beneficiarului_din_anaf` | „CUI …” fără prefix pe o factură a unui plătitor; „Emisă -” în loc de „Data emiterii” | prefixul scos -> roșu | statut beneficiar necunoscut (ANAF căzut) -> codul cum l-a scris contabilul |
+| niciun PDF fără titlu | `::test_niciun_pdf_fara_titlu` | un `SimpleDocTemplate` nou fără `title=` („(anonymous)”) | `title=` scos din factură -> roșu | structural, pe apelurile `SimpleDocTemplate` din `core/` |
+| ștergerea facturii fără erori brute de bază | `core/test_contare_automata.py::test_orice_cheie_spre_facturi_are_regula_sau_refuz_numit`, `::test_stergerea_refuza_numit_factura_legata_de_spv`, `core/test_emitere_factura_f1.py::test_factura_stearsa_ia_cu_ea_jurnalul_cotei…` | un tabel nou cu cheie spre `facturi` fără `ON DELETE` și fără refuz în `sterge_factura`; un 500 la ștergerea unei facturi legate de SPV | CASCADE scos din șablon -> roșu (`['factura_cota_jurnal']`); refuzul SPV dezactivat -> `ForeignKeyViolation` | recunoaște tratarea după numele tabelului în sursa `sterge_factura` |
+| cotele la data facturii | `core/test_emitere_factura_f1.py::test_cotele_permise_se_citesc_la_data_facturii_nu_azi` + `core/test_data_curenta.py` (clichet) | lista de cote „de azi” pentru o factură cu altă dată | „azi” în loc de `la_data` -> `[21, 11, 0] != [19, 9, 5, 0]` | ecranul reîncarcă lista la schimbarea datei; validarea de la emitere rămâne autoritatea |
+| o dată din interfață în ora locală | verificator `DATA_UTC` (DS cap.4 v2.68) | `toISOString().slice(0, 10)` / `.split("T")` pentru o zi (UTC: ieri între 00–03, o zi mai devreme la miezul nopții local) | forma veche repusă în `emitere_ecran.js` -> TOTAL 1 | nu vede o dată construită cu `getUTC*` manual |
+| poarta R46 la schimbare | `::test_date_firma_cu_luna_inchisa_se_salveaza…`, `::test_vectorul_cu_luna_inchisa…` | Date firmă blocat (500) pe o firmă cu lună închisă când nu se schimbă nimic decisiv | comparația scoasă -> roșu | — |

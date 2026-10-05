@@ -1182,6 +1182,7 @@ class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     cantitate: float = 1
     pret_unitar: float = 0
     cota_tva: Optional[float] = None  # None -> potrivire automata (nomenclator/AI)
+    cota_propusa: Optional[float] = None  # [05.10.2026 pct.3] cota propusă automat; diferită de cota_tva -> jurnal „propus → ales”
     articol_id: Optional[int] = None  # [punte_stoc_v1] F172: leaga linia de stoc (CV); None = serviciu
     cont_venit: Optional[str] = None  # [DECIZII 64] cont de venit explicit pe linie: escape cand clasificarea nu poate decide si emiterea s-ar bloca
 
@@ -2441,9 +2442,10 @@ def _platitor_tva_firma(conn):
         raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/facturi/numerotare")
-def facturi_numerotare_get(tenant_id: int, ctx=Depends(cere_context)):
+def facturi_numerotare_get(tenant_id: int, data: Optional[str] = None, ctx=Depends(cere_context)):
+    # `data` = data emiterii din formular: cotele permise se citesc la ea (emitere_ecran.js)
     try:
-        return _uc_tenants.facturi_numerotare_get(tenant_id, ctx)
+        return _uc_tenants.facturi_numerotare_get(tenant_id, ctx, data)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=19439de672";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=39585157c4";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -79,14 +79,20 @@ function _blocAmef(d) {
 function _blocCapital(d) {
   const p = d.profil || {};
   const forme = d.forme_juridice || [];
+  // [comanda Costin 05.10.2026 pct.2] forma necompletată, dar neechivocă (ANAF / denumire): preselectată, cu sursa spusă — se
+  // confirmă salvând. Nu se scrie tacit în profil: e o propunere, iar alegerea rămâne a contabilului.
+  const formaAleasa = p.forma_juridica || d.forma_juridica_propusa || "";
+  const notaPropusa = !p.forma_juridica && d.forma_juridica_propusa
+    ? `<span class="camp-ajutor" id="df-forma-propusa">Propusă din ${d.forma_juridica_sursa === "ANAF" ? "ANAF" : "denumirea firmei"}: ${esc(d.forma_juridica_propusa)} — verifică și salvează.</span>` : "";
   return `
     <h2 class="pf-titlu" style="margin-top:26px">Capital social</h2>
     <p class="pf-intro">Se tipărește pe facturi: la SRL capitalul social, la SA și SCA capitalul subscris și cel vărsat (Legea 31/1990 art. 74 alin. (3)). Fără el, factura unei societăți nu se emite.</p>
     <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Forma juridică<span class="oblig">*</span></span>
+        ${notaPropusa}
         <select class="camp-input" id="df-forma_juridica"><option value="">— alege —</option>${forme.map(([k, t]) =>
-          `<option value="${esc(k)}"${k === p.forma_juridica ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
+          `<option value="${esc(k)}"${k === formaAleasa ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
       </label>
       <label class="camp">
         <span class="camp-eticheta">Capital social subscris (lei)</span>

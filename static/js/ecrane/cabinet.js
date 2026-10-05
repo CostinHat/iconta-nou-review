@@ -3,14 +3,14 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=19439de672";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=39585157c4";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=8e81ab26fc";
+import { randeazaListaFirme } from "./firme.js?v=ec69de2ac4";
 import { randeazaMigrare } from "./migrare.js?v=b059f0d009";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
-import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=70bc686f76"; // [p17_activitate]
+import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=0f21ca6b8d"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
@@ -18,7 +18,7 @@ import { randeazaPachete } from "./pachete.js?v=4a47e92ff3"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=151165bd7b";
 import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=0d4174e7b1";
+import { randeazaAsistenti } from "./asistenti.js?v=b8e3412a1e";
 import { randeazaCapacitate } from "./capacitate.js?v=5393ea8719"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=673e868a29"; // [p72_tipare]
 
@@ -86,7 +86,7 @@ function deschideEcran(cheie, nav, continut) {
 
 // [p73_sinteza_azi] panou de intampinare: sinteza zilei, totul clickabil spre ecranele de detaliu
 async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca fereastra (nav.deschide)
-  const azi = new Date().toISOString().slice(0, 10);
+  const azi = dataIso();
   const sfx = "?de=" + azi + "&pana=" + azi;
   let cen = { totaluri: {}, pe_asistent: [] };
   let jur = { evenimente: [] };

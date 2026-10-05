@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp } from "../api.js?v=19439de672";
+import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso } from "../api.js?v=39585157c4";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -20,13 +20,13 @@ function _fereastraUit(dataTransport, intracom) {
   const ok = !preaDevreme && !expirat;
   let mesaj, semafor;
   if (preaDevreme) { mesaj = `Prea devreme: declari cu max 3 zile înainte (transport ${dataRo(dataTransport)}).`; semafor = "rosu"; }
-  else if (expirat) { mesaj = `Fereastră expirată: UIT ar fi fost valabil până la ${dataRo(valabilPana.toISOString().slice(0,10))}.`; semafor = "rosu"; }
-  else { mesaj = `În fereastră. UIT valabil ${zileVal} zile (până la ${dataRo(valabilPana.toISOString().slice(0,10))}).`; semafor = zileRamase <= 1 ? "galben" : "verde"; }
-  return { ok, mesaj, semafor, valabilPana: valabilPana.toISOString().slice(0,10), zileVal, zileRamase };
+  else if (expirat) { mesaj = `Fereastră expirată: UIT ar fi fost valabil până la ${dataRo(dataIso(valabilPana))}.`; semafor = "rosu"; }
+  else { mesaj = `În fereastră. UIT valabil ${zileVal} zile (până la ${dataRo(dataIso(valabilPana))}).`; semafor = zileRamase <= 1 ? "galben" : "verde"; }
+  return { ok, mesaj, semafor, valabilPana: dataIso(valabilPana), zileVal, zileRamase };
 }
 
 export async function ecranEtransport(corp, nav, t) {
-  const ziAzi = new Date().toISOString().slice(0, 10);
+  const ziAzi = dataIso();
   const COD_SCOP = [["101","Comercializare"],["201","Producție"],["301","Gratuități"],["401","Echipament comercial"],["501","Mijloace fixe"],["601","Uz propriu"],["703","Livrare cu instalare"],["704","Transfer între gestiuni"],["705","Bunuri puse la dispoziție"],["9901","Altele"]];
   const CAMPURI_BUN = ["cod_scop", "cod_tarifar", "denumire", "cantitate", "um", "greutate_neta", "greutate_bruta", "valoare_fara_tva"];
 

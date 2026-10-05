@@ -184,6 +184,8 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 # v9 real: campul e 'cod_CAEN' (underscore); 'codCAEN' = fallback compat
                 "cod_caen": (dg.get("cod_CAEN") or dg.get("codCAEN") or "").strip(),
                 "nr_reg_com": (dg.get("nrRegCom") or "").strip(),          # F188
+                # [comanda Costin 05.10.2026 pct.2] documentat în doc_WS_V9.txt (date_generale.forma_juridica), văzut pe răspuns real
+                "forma_juridica": (dg.get("forma_juridica") or "").strip(),
                 "gasit": True,
             })
         for c in dj.get("notFound", []):

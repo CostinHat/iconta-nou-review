@@ -1,19 +1,19 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **comandă DESCHISĂ: fluxul de factură pe F1 (13 puncte), A livrat, B–D de făcut** (05.10.2026)
+# PREDARE LANȚ — **comandă DESCHISĂ: fluxul de factură pe F1 (13 puncte), A și B livrate, C–D de făcut** (05.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-05**, parțială (secțiunile de mai jos). Rescrierea COMPLETĂ de dinainte: `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `2eead087` la intrarea turei; commitul care poartă această linie livrează **A** din comanda „fluxul de factură pe F1”
-  (pct.1: sesiune reînnoită, reautentificare peste ecran, navigatorul păstrează ecranul tastat). Secțiunile atinse acum: ANTET,
+- **pe commit**: `f8e08e72` (A); commitul care poartă această linie livrează **B** din comanda „fluxul de factură pe F1”
+  (pct.2–5: Date firmă la deschiderea emiterii, cota consemnată, data/scadența/seria, PDF pe CF art.319 alin.(20)). Secțiunile atinse acum: ANTET,
   STAREA, FRONTURI, ATENȚIONĂRI, CE CERE POARTA.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**Comandă deschisă: fluxul de factură pe F1 (Costin, 05.10.2026, 13 puncte) — firul și pașii B–D în TESTE.md („TESTAREA FLUXULUI DE FACTURĂ PE F1”), hărțile de cod în scratchpad-ul turei (harta_*.md, copiate în ZIP la final).** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
+**Comandă deschisă: fluxul de factură pe F1 (Costin, 05.10.2026, 13 puncte) — firul și pașii C–D în TESTE.md („TESTAREA FLUXULUI DE FACTURĂ PE F1”), hărțile de cod în scratchpad-ul turei (harta_*.md, copiate în ZIP la final).** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
 completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 
 | ce | commit | ZIP |
@@ -28,7 +28,8 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | **confirmările de drepturi**: fluturașul / PDF-ul chitanței / poza bonului la „Poate pregăti” (R52 răsturnat), regimul de TVA jurnalizat (`firma_profil_jurnal`), REGES la „Poate depune”; pe drum: sonda R56 precisă, 18 butoane de intrare marcate, 13 mesaje escapate | `5c086563` | `iconta_drepturi_confirmari.zip` |
 | **secretele scoase din git**: contabil.b resetat (citit din `fe_test.env`), seed-urile din `SEED_CABINET_PAROLA`, parola bazei de producție rotită, tabelul de conturi golit, gard + scanner reparat | `8c3cfe95` | — (fără ZIP: comanda nu l-a cerut) |
 | **testarea ca asistent (2)**: termenii poveștii verificați după generare, `POST /pachete/{id}/poveste/aproba` („Poate valida”), trimiterea la „Poate valida”, nota de motiv din poarta drepturilor, administratorul = toate drepturile (producția normalizată B3), iconițe, un `<select>` pentru firmă, cifrele în email | `2eead087` | — (comanda primită tăiată după „commit,”) |
-| **fluxul de factură F1 — A** (pct.1): sesiune reînnoită (`POST /auth/reinnoieste`), reautentificare peste ecran cu reluarea cererii, navigatorul păstrează ecranul tastat, „versiune nouă” nu reîncarcă peste formular | commitul care poartă linia | la final, `iconta_testare_factura_F1.zip` |
+| **fluxul de factură F1 — A** (pct.1): sesiune reînnoită (`POST /auth/reinnoieste`), reautentificare peste ecran cu reluarea cererii, navigatorul păstrează ecranul tastat, „versiune nouă” nu reîncarcă peste formular | `f8e08e72` | la final, `iconta_testare_factura_F1.zip` |
+| **fluxul de factură F1 — B** (pct.2–5): lipsurile din Date firmă la deschidere (forma propusă din ANAF/denumire), cota aleasă dintr-o listă și consemnată (`factura_cota_jurnal`, migrat pe producție după backup), data emiterii/scadența/seria pe formular, PDF cu „Cod TVA: RO…”, „Seria”, „Data emiterii”, titlu; poarta R46 la schimbare | commitul care poartă linia | la final |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -51,7 +52,7 @@ aplicației**, nu „în așteptarea unei teme”:
   acces programatic — **[EXTERN]**.
 - **Contul Ana din producție**: toate bifele pe „nu”; „Poate pregăti” i-l bifează Costin din Asistenți (decizia 04.10, pct.6 — datele ei
   nu se ating din cod).
-- **Fluxul de factură pe F1 — B, C, D** (pct.2–13): de făcut, în ordinea din TESTE.md. Defecte găsite de hărți și încă nereparate
+- **Fluxul de factură pe F1 — C, D** (pct.6–13): de făcut, în ordinea din TESTE.md. Defecte găsite de hărți și încă nereparate
   (intră în C): contarea unei linii de bancă pe nota propusă suprascrie legătura notei (`reconciliere_api.conteaza`), filtrul pe stare al
   extrasului nu întoarce nimic (`noua` vs `nou`), seria dublată în textul documentului justificativ și în bancă; în D: „Descarcă
   gestiunea lunii” nu are gardă la a doua rulare.
@@ -88,6 +89,10 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
 
+- **În teste, emiterea nu întreabă ANAF** de statutul de TVA al beneficiarului: fixtura autouse `_fara_anaf_la_emitere` din
+  `core/conftest.py` îl neutralizează (None); un modul care-l probează pune `ANAF_LA_EMITERE_REAL = True`.
+- **Cota schimbată la emitere lasă un rând în `factura_cota_jurnal`** (tabel nou, clasificat în ISTORIC_TENANTI pe 001 „poate primi”, pe 006
+  „gol”). O probă care emite cu altă cotă decât cea propusă și apoi șterge factura șterge întâi rândul de jurnal (FK).
 - **Salariul contractual trăiește NUMAI în `salariu_istoric`** (coloana `salariati.salariu_brut` nu mai există — gard `core/test_2b_coloana.py`).
   Un test/seed care inserează un salariat pune salariul în istoric (`valabil_din` = data angajării).
 - **Schimbarea salariului la o dată deja în istoric e REFUZATĂ** (`SALARIU_DATA_OCUPATA`); înlocuirea cere `inlocuieste: true`.
@@ -154,8 +159,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **902** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **906** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

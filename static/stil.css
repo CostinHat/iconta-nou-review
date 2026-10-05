@@ -1858,14 +1858,14 @@ html, body {
 .em-cui-rau { color:#dc2626; }
 .em-cui-atentie { color:#c2410c; }
 .em-linii { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
-.em-linie { display:grid; grid-template-columns: 1fr 80px 100px 54px 28px; gap:8px; align-items:center; }
+.em-linie { display:grid; grid-template-columns: 1fr 80px 100px 84px 28px; gap:8px; align-items:center; }
 .em-linie .camp-input { padding:0 10px; }
 /* [ui11] eroarea de camp: pinata pe randul 2 al grilei, latime plina. eroareCamp o insereaza
    la mijlocul liniei (dupa input); fixand-o pe grid-row 2, celulele urmatoare (pret/cota/sterge)
    se aseaza inapoi pe randul 1 -> butonul de sters NU mai sare pe rand nou. */
 .em-linie .msg-eroare { grid-column:1/-1; grid-row:2; align-self:start; }
 /* [ui13] antet de coloane pt liniile de factura, aliniat la grila .em-linie */
-.em-linie-antet { display:grid; grid-template-columns: 1fr 80px 100px 54px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#475569; margin-bottom:2px; }  /* [R143] contrast, ca la .em-eticheta */
+.em-linie-antet { display:grid; grid-template-columns: 1fr 80px 100px 84px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#475569; margin-bottom:2px; }  /* [R143] contrast, ca la .em-eticheta */
 .em-linie-antet span { padding:0 10px; }
 .em-linie-antet .ant-cant, .em-linie-antet .ant-pret, .em-linie-antet .ant-cota { text-align:center; padding:0; }
 .em-l-cota { text-align:center; font-weight:700; font-size: var(--text-mic); color:#64748b; }
@@ -1883,8 +1883,8 @@ html, body {
 .em-bun { color:#15803d; font-weight:600; }
 .em-rau { color:#dc2626; }
 @media (max-width:520px) {
-  .em-linie { grid-template-columns: 1fr 60px 80px 44px 24px; gap:5px; }
-  .em-linie-antet { grid-template-columns: 1fr 60px 80px 44px 24px; gap:5px; }
+  .em-linie { grid-template-columns: 1fr 56px 72px 70px 24px; gap:5px; }
+  .em-linie-antet { grid-template-columns: 1fr 56px 72px 70px 24px; gap:5px; }
 }
 
 /* [p108_fac_meniu_css] meniu facturi (2 optiuni) */
@@ -2847,3 +2847,11 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 .reaut-cap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .reaut-titlu { margin: 0; font-size: var(--text-sectiune); }
 .reaut-bara { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+
+/* [comanda Costin 05.10.2026 pct.2–4] emiterea: data emiterii, scadența, seria pe formular; cota TVA aleasă din listă */
+.em-date-rand { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 14px; }
+.em-date-rand .camp { min-width: 0; }
+.em-serie-nr { display: block; font-size: var(--text-mic); color: var(--ardezie); margin: 4px 0; }
+.em-pregatire:empty { display: none; }
+.em-pregatire { margin: 0 0 12px; }
+.em-l-cota-sel { width: 100%; min-width: 0; padding-left: 6px; padding-right: 6px; }

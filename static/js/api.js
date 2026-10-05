@@ -510,6 +510,15 @@ export function dataRo(d, stil) {
   return `${zz}.${ll}.${aa}`;
 }
 
+// dataIso — SINGURA producere a unei date calendaristice ISO (aaaa-ll-zz) în interfață: valoarea unui câmp de dată, „azi”, un
+// termen calculat. În ora LOCALĂ: `toISOString()` convertește în UTC, deci între 00:00 și 03:00 „azi” devenea ieri, iar o dată
+// construită la miezul nopții local (`new Date(an, luna, 1)`) ieșea cu o zi mai devreme (DS cap.4 v2.68, gard DATA_UTC).
+// Fără argument: azi.
+export function dataIso(d) {
+  const x = d instanceof Date ? d : new Date();
+  return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+}
+
 // pct(v) — singurul formator de procent: numar intreg + "%" (12%), o zecimala cand exista (12,5%)
 export function pct(v) {
   const n = Number(v) || 0;

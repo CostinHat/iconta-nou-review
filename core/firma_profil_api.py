@@ -386,9 +386,19 @@ def salveaza_date(conn, date, tenant_id=None):
         _val["activitate_amef"] = lit if exc else None
     # [R46] Doar câmpurile care DECID. Un telefon corectat pe o firmă cu ianuarie închis trebuie
     # să treacă mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
-    decid = sorted(set(curat) & set(CAMPURI_CARE_DECID))
+    # [05.10.2026, găsit la proba pct.2] poarta se aplică la SCHIMBAREA unui câmp care decide, nu la prezența lui: formularul
+    # trimite mereu CUI-ul, deci pe o firmă cu o lună închisă Date firmă nu se mai putea salva deloc — iar refuzul ieșea 500.
+    with conn.cursor() as _cur:
+        _cur.execute("SELECT %s FROM firma_profil WHERE id = 1" % ", ".join(CAMPURI_CARE_DECID))
+        _act = _cur.fetchone()
+    _act = dict(zip(CAMPURI_CARE_DECID, _act)) if _act else {}
+    decid = sorted(c for c in set(curat) & set(CAMPURI_CARE_DECID)
+                   if str(curat[c] or "").strip().upper() != str(_act.get(c) or "").strip().upper())
     if decid:
-        cere_perioade_deschise(conn, "CUI-ul firmei" if decid == ["cui"] else ", ".join(decid))
+        try:
+            cere_perioade_deschise(conn, "CUI-ul firmei" if decid == ["cui"] else ", ".join(decid))
+        except ValueError as e:
+            return {"ok": False, "camp": decid[0], "mesaj": str(e)}
     for camp, decl in OBLIGATORII.items():
         if camp in curat and not curat[camp]:
             return {"ok": False, "camp": camp,

@@ -13,7 +13,13 @@ Date firmă și citează art.74 alin.(3). PFA/II/IF nu intră sub regulă.
 Forma juridică e câmp propriu: `tip_firma` are doar „srl” (umbrelă pentru orice persoană juridică în partidă dublă:
 SRL, SA, ONG, SNC...) și „pfa”. Fără formă, regula nu se poate aplica corect — un ONG sau un SNC n-au obligația, un SA
 are două cifre de menționat. Forma necompletată la o persoană juridică = refuz cu cererea formei (nu se ghicește).
+
+[comanda Costin 05.10.2026 pct.2] „Forma juridică se precompletează din ANAF / denumire unde e neechivocă.” — `forma_propusa`:
+din câmpul `forma_juridica` al ANAF (numai valorile citite pe un răspuns REAL, 05.10.2026) sau din sufixul denumirii, numai
+când toate sursele indică ACEEAȘI formă. O propunere, nu o decizie: contabilul o confirmă în Date firmă; ce nu e neechivoc
+rămâne necompletat (tot nu se ghicește).
 """
+import re
 from decimal import Decimal, InvalidOperation
 
 TEMEI = ("Legea 31/1990 art.74 alin.(3)", "anaf_surse/legea_31_1990_societatile.txt",
@@ -43,6 +49,43 @@ def _suma(v):
     return d if d > 0 else None
 
 
+# Valori `date_generale.forma_juridica` din răspunsul REAL ANAF PlatitorTvaRest v9 (05.10.2026, CUI 40410000 și 14399840; câmpul e
+# documentat în doc_WS_V9.txt). Alte valori (SNC, SCS, SCA, ONG…) n-au fost văzute pe un răspuns real -> nu se mapează.
+_FORMA_ANAF = {"SOCIETATE COMERCIALA CU RASPUNDERE LIMITATA": "SRL", "SOCIETATE COMERCIALA PE ACTIUNI": "SA"}
+_SUFIXE = (("SRL", r"S\.?\s?R\.?\s?L\.?(?:\s?-\s?D\.?)?"), ("SA", r"S\.?\s?A\.?"), ("SNC", r"S\.?\s?N\.?\s?C\.?"),
+           ("SCS", r"S\.?\s?C\.?\s?S\.?"), ("SCA", r"S\.?\s?C\.?\s?A\.?"))
+
+
+def _fara_diacritice(t):
+    return (t or "").upper().translate(str.maketrans("ĂÂÎȘŞȚŢ", "AAISSTT")).strip()
+
+
+def forma_din_denumire(denumire):
+    """Forma din sufixul denumirii („… SRL”, „… S.R.L.”, „… SRL-D”, „… S.A.”), sau None."""
+    t = _fara_diacritice(denumire)
+    for forma, rx in _SUFIXE:
+        if re.search(r"(?:^|[\s,.])(?:%s)\s*$" % rx, t):
+            return forma
+    return None
+
+
+def forma_propusa(forma_anaf=None, *denumiri):
+    """(forma, sursa) când TOATE sursele disponibile spun același lucru; (None, None) altfel."""
+    gasite = {}
+    if forma_anaf:
+        f = _FORMA_ANAF.get(re.sub(r"\s+", " ", _fara_diacritice(forma_anaf)))
+        if f:
+            gasite.setdefault(f, "ANAF")
+    for d in denumiri:
+        f = forma_din_denumire(d)
+        if f:
+            gasite.setdefault(f, "denumire")
+    if len(gasite) == 1:
+        (f, sursa), = gasite.items()
+        return f, sursa
+    return None, None
+
+
 def lipsa(profil):
     """[ce lipsește, în termenii contabilului] pentru ca factura să poată fi emisă; [] = nimic. PFA/II/IF -> []."""
     if profil.get("tip_firma") == "pfa":   # coloana e NOT NULL (implicit „srl”); fără ea: societate -> se cere forma, nu se scutește
@@ -61,6 +104,20 @@ def lipsa(profil):
             out.append("capitalul social vărsat")
         return out
     return []
+
+
+def mesaj_la_deschidere(lipsuri, forma_propusa=None, sursa=None):
+    """[comanda Costin 05.10.2026 pct.2] Ce se spune la DESCHIDEREA emiterii, înainte ca omul să completeze ceva: ce lipsește din
+    Date firmă și de ce blochează emiterea; cu forma propusă, dacă se poate propune neechivoc."""
+    if not lipsuri:
+        return None
+    ce = ", ".join(lipsuri)
+    temei = "Legea 31/1990 art. 74 alin. (3): pe factura unei societăți se menționează capitalul social"
+    prop = ""
+    if forma_propusa:
+        prop = " Forma propusă: %s (din %s) — confirm-o în Date firmă." % (forma_propusa, "ANAF" if sursa == "ANAF" else "denumirea firmei")
+    return ("Înainte de a emite: în Date firmă lipsește %s, iar fără ea factura nu se poate emite (%s).%s "
+            "Poți completa factura acum — ce scrii rămâne pe ecran cât completezi Date firmă." % (ce, temei, prop))
 
 
 def mesaj_refuz(lipsuri):

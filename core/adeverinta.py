@@ -89,7 +89,8 @@ def pdf(conn, schema, salariat_id, campuri):
     fr, fb = font("sans")
     buf = BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm,
-                            topMargin=18 * mm, bottomMargin=18 * mm)
+                            topMargin=18 * mm, bottomMargin=18 * mm,
+                            title="Adeverință salariat %s" % salariat_id, author="iConta")   # [05.10.2026] fără titlu: „(anonymous)”
     S = getSampleStyleSheet()
     p = ParagraphStyle("p", parent=S["Normal"], fontName=fr, fontSize=11, leading=17)
     meta = ParagraphStyle("meta", parent=p, fontSize=10, textColor=colors.HexColor("#555555"))

@@ -133,7 +133,8 @@ def genereaza_pdf(conn, schema, sablon_id, corp):
     fr, fb = font("sans")
     buf = BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm,
-                            topMargin=18 * mm, bottomMargin=18 * mm)
+                            topMargin=18 * mm, bottomMargin=18 * mm,
+                            title=str(_nume or "Contract"), author="iConta")   # [05.10.2026] fără titlu: „(anonymous)”
     S = getSampleStyleSheet()
     p = ParagraphStyle("p", parent=S["Normal"], fontName=fr, fontSize=11, leading=17)
     from xml.sax.saxutils import escape as _esc

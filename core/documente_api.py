@@ -135,6 +135,7 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
         buf, pagesize=_A4,
         leftMargin=18 * _mm, rightMargin=18 * _mm,
         topMargin=16 * _mm, bottomMargin=16 * _mm,
+        title="Balanța de verificare %02d/%d%s" % (luna, an, (" — " + nume_firma) if nume_firma else ""), author="iConta",   # [05.10.2026]
     )
     stil = getSampleStyleSheet()
     st_titlu = ParagraphStyle("titlu", parent=stil["Normal"], fontName=fb, fontSize=13, textColor=ac, leading=16)

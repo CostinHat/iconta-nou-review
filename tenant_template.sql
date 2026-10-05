@@ -2716,6 +2716,19 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.asociati_istoric (
     CONSTRAINT asociati_istoric_uniq UNIQUE (valabil_pana_la, cnp)
 );
 
+-- [decizia Costin 05.10.2026] jurnalul cotei TVA alese pe linia facturii (propus -> ales, cine, când).
+-- Mirror core/migrare_factura_cota_jurnal.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.factura_cota_jurnal (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    factura_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.facturi(id) ON DELETE CASCADE,
+    linie_nr integer NOT NULL,
+    descriere text,
+    cota_propusa numeric(5,2) NOT NULL,
+    cota_aleasa numeric(5,2) NOT NULL,
+    user_id integer NOT NULL,
+    la timestamp with time zone NOT NULL DEFAULT now()
+);
+
 -- [decizia Costin 04.10.2026] jurnalul schimbărilor regimului de TVA (platitor_tva, tip_decont, inreg_art317: utilizator,
 -- dată, veche -> nouă). Mirror core/migrare_firma_profil_jurnal.py.
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.firma_profil_jurnal (

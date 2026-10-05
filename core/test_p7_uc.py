@@ -99,6 +99,9 @@ PERECHI_ADAUGATE = {
         "Testarea ca asistent, comanda Costin 04.10.2026 pct.3: emailul clientului se judecă ÎNAINTE de crearea firmei — "
         "o adresă fără formă de email se refuză pe câmpul `email_client` (400), ca la `client-acces`; firma nu se mai "
         "creează pentru ca abia apoi invitația să cadă."),
+    ("facturi_numerotare_get", "'Data emiterii nu e o dată calendaristică (aaaa-ll-zz): %r.' % la_data"): (
+        "Fluxul de factură pe F1, comanda Costin 05.10.2026 pct.3: cotele permise se citesc la DATA FACTURII din formular "
+        "(`?data=`), nu „azi” (interdicția 3); o zi care nu există în calendar e refuz de contabil (422), ca la chitanțe."),
     ("horeca_import_amef", "MESAJ_AMEF_FARA_BONURI"): (
         "D394 op2 Î1, decizia Costin B (02.10.2026): un fișier AMEF fără `nrB` nu poate scrie rândul `rapoarte_z_amef` "
         "(nr_bonuri > 0); refuz numit (422), nu un rând care ar opri D394 mai târziu."),

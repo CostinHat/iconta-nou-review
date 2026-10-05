@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, arataMesaj, semnAjutor } from "../api.js?v=19439de672";
+import { api, esc, arataMesaj, semnAjutor, dataIso } from "../api.js?v=39585157c4";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -379,7 +379,7 @@ export async function ecranOperatiuni(corp, nav, t) {
 
   const formular = (c) => {
     if (c) corp = c;
-    const ziAzi = new Date().toISOString().slice(0, 10);
+    const ziAzi = dataIso();
     const camp = (c) => {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${[].concat(c.cond.val).join("|")}"` : "";
       let input;

@@ -3,9 +3,9 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide } from "../api.js?v=19439de672";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso } from "../api.js?v=39585157c4";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=8cc7efbca2";
+import { randeazaEmitere } from "./emitere_ecran.js?v=248f8b67c0";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -307,7 +307,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
   const rez = d.rezumat || {};
   let vedere = "facturi";
 
-  const aziISO = new Date().toISOString().slice(0, 10);
+  const aziISO = dataIso();
   const randFacturi = () => {
     if (!(d.linii || []).length) return `<div class="stare-goala">Nicio factură emisă neîncasată.</div>`;
     return d.linii.map((l) => {
@@ -387,7 +387,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
     corp.querySelectorAll("[data-stop]").forEach((b) => b.addEventListener("click", () => supapa(b.dataset.stop, { stop: true })));
     corp.querySelectorAll("[data-reia]").forEach((b) => b.addEventListener("click", () => supapa(b.dataset.reia, { stop: false, amanata_pana: null })));
     corp.querySelectorAll("[data-amana]").forEach((b) => b.addEventListener("click", () => {
-      const pana = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
+      const pana = dataIso(new Date(Date.now() + 30 * 864e5));
       supapa(b.dataset.amana, { stop: false, amanata_pana: pana });
     }));
   };
@@ -617,7 +617,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     const rest = Math.max(0, Math.round((totalDeIncasat - incasat) * 100) / 100);
     zonaChit.insertAdjacentHTML("afterbegin", `
       <div id="fd-chit-form" style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin:8px 0">
-        <label class="camp"><span class="camp-eticheta">Data \u00eencas\u0103rii<span class="oblig">*</span></span><input class="camp-input" type="date" id="fd-chit-data" value="${new Date().toISOString().slice(0, 10)}"></label>
+        <label class="camp"><span class="camp-eticheta">Data \u00eencas\u0103rii<span class="oblig">*</span></span><input class="camp-input" type="date" id="fd-chit-data" value="${dataIso()}"></label>
         <label class="camp"><span class="camp-eticheta">Suma \u00eencasat\u0103 (lei)<span class="oblig">*</span></span><input class="camp-input" type="number" step="0.01" id="fd-chit-suma" value="${rest || totalDeIncasat}"></label>
         <button class="buton-primar" id="fd-chit-ok" data-actiune="POST /tenants/{tenant_id}/chitante">Emite</button>
         <button class="btn-link" id="fd-chit-nu">Renun\u021b\u0103</button>

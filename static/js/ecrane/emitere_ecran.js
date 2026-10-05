@@ -7,8 +7,8 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=19439de672";
-import { randeazaDateFirma } from "./date_firma.js?v=b7b794c09f";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso } from "../api.js?v=39585157c4";
+import { randeazaDateFirma } from "./date_firma.js?v=87157bdf69";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -16,7 +16,8 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
 
   // citesc numerotarea; daca nu e configurata (serie null si urmator 1 fara facturi) -> config
   let num = { serie: null, urmator_numar: 1, configurata: false };
-  try { num = await api.get(`/tenants/${tenantId}/facturi/numerotare`); } catch {}
+  // data emiterii implicită = azi (local); cotele permise se cer LA EA, nu la „azi” de pe server
+  try { num = await api.get(`/tenants/${tenantId}/facturi/numerotare?data=${dataIso()}`); } catch {}
   // [tva_din_profil_v1] platitor_tva e deja in profil (Date firma/ANAF) - il citim ca sa NU re-intrebam (#16)
   let tvaProfil = null;
   try { const _v = await api.get(`/tenants/${tenantId}/vector`); if (_v && typeof _v.platitor_tva === "boolean") tvaProfil = _v.platitor_tva; }
@@ -91,7 +92,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
       const start = ultim + 1;   // #10: cerut explicit, nu fabricat
       if (platitorTva === null) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Alege dacă firma e plătitoare de TVA."; return; }
       await salveazaConfig(tenantId, serie, start, tvaDinProfil ? null : platitorTva);
-      randeazaEmitere(corp, nav, tenantId, opt);
+      if (opt.dupaSalvare) opt.dupaSalvare(); else randeazaEmitere(corp, nav, tenantId, opt);   // [pct.4] din „Schimbă seria”: înapoi la factură
     });
   });
 
@@ -108,7 +109,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."; return; }
       if (platitorTva === null) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Alege dacă firma e plătitoare de TVA."; return; }
       await salveazaConfig(tenantId, serie, 1, tvaDinProfil ? null : platitorTva);
-      randeazaEmitere(corp, nav, tenantId, opt);
+      if (opt.dupaSalvare) opt.dupaSalvare(); else randeazaEmitere(corp, nav, tenantId, opt);   // [pct.4] din „Schimbă seria”: înapoi la factură
     });
   });
 }
@@ -146,7 +147,21 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="pr-cap">
       <h2 class="pf-titlu">Emite factură</h2>
-      <span class="em-numar">Număr: <b>${numarProxim}</b></span>
+      <span class="em-numar" id="em-numar">${num.serie ? `Seria <b>${esc(num.serie)}</b> · ` : ""}nr. <b>${esc(String(num.urmator_numar))}</b></span>
+    </div>
+    <div class="em-pregatire" id="em-pregatire" role="note"></div>
+    <div class="em-sectiune em-date-doc">
+      <div class="em-eticheta">Document (CF art. 319 alin. (20) lit. a–b)</div>
+      <div class="em-date-rand">
+        <label class="camp"><span class="camp-eticheta">Seria și numărul</span>
+          <span class="em-serie-nr" id="em-serie-nr">${num.serie ? esc(num.serie) + " · " : "fără serie · "}următorul număr: ${esc(String(num.urmator_numar))}</span>
+          <button type="button" class="btn-link" id="em-schimba-serie" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare">Schimbă seria / numerotarea</button></label>
+        <label class="camp"><span class="camp-eticheta">Data emiterii<span class="oblig">*</span></span>
+          <input class="camp-input" id="em-data" type="date" value="${dataIso()}"></label>
+        <label class="camp"><span class="camp-eticheta">Data scadenței</span>
+          <input class="camp-input" id="em-scadenta" type="date"></label>
+      </div>
+      <p class="camp-ajutor">Scadența intră în scadențar; o factură fără scadență nu are termen de plată urmărit.</p>
     </div>
 
     <div class="em-sectiune">
@@ -165,7 +180,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Produse și servicii</div>
-      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea; răspunderea corectitudinii cotei îți aparține)"}</span></div>
+      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea și schimb-o din listă dacă e altfel; răspunderea corectitudinii cotei îți aparține, iar schimbarea se consemnează)"}</span></div>
       <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaugă linie</button>
@@ -211,12 +226,54 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     </div>
     <div class="em-rezultat" id="em-rezultat"></div>`;
 
+  // [comanda Costin 05.10.2026 pct.2] „Datele firmei care blochează emiterea se verifică la deschiderea «Emite factură», nu după
+  // completarea întregului formular.” Lipsurile vin de la server (aceeași regulă ca refuzul emiterii, `capital_social.lipsa`).
+  // „Emite” rămâne inactiv cu motivul vizibil; la revenirea din Date firmă (`nav:revenire`) se reverifică.
+  const zonaPreg = corp.querySelector("#em-pregatire");
+  const btnEmite = corp.querySelector("#em-emite");
+  function aratăPregatirea(n) {
+    const lipsuri = (n && n.lipsuri_firma) || [];
+    if (!lipsuri.length) { zonaPreg.innerHTML = ""; btnEmite.disabled = false; btnEmite.title = ""; return; }
+    zonaPreg.innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj">${esc(n.mesaj_lipsuri || "")}</div></div>
+      <div class="ca-actiuni"><button type="button" class="buton-secundar" id="em-date-firma-sus" data-fara-actiune="navigare la Date firmă (salvarea lor e acolo)">Deschide Date firmă</button></div>`;
+    btnEmite.disabled = true;
+    btnEmite.title = "Completează întâi în Date firmă: " + lipsuri.join(", ");
+    zonaPreg.querySelector("#em-date-firma-sus").addEventListener("click", () =>
+      nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId)));
+  }
+  function aratăNumarul(n) {
+    const sn = corp.querySelector("#em-serie-nr"), nr = corp.querySelector("#em-numar");
+    if (sn) sn.textContent = (n.serie ? n.serie + " · " : "fără serie · ") + "următorul număr: " + n.urmator_numar;
+    if (nr) nr.innerHTML = (n.serie ? `Seria <b>${esc(n.serie)}</b> · ` : "") + `nr. <b>${esc(String(n.urmator_numar))}</b>`;
+  }
+  aratăPregatirea(num);
+  // reîncarcă ce depinde de Date firmă și de DATA facturii: lipsurile, numerotarea, cotele permise la data aleasă
+  async function reincarcaPregatirea() {
+    const data = (corp.querySelector("#em-data") || {}).value || dataIso();
+    try {
+      const n = await api.get(`/tenants/${tenantId}/facturi/numerotare?data=${encodeURIComponent(data)}`);
+      aratăPregatirea(n); aratăNumarul(n);
+      const cote = (n.cote_permise && n.cote_permise.length) ? n.cote_permise : [];
+      if (cote.join(",") !== COTE.join(",")) { COTE = cote; deseneazaLinii(); }   // altă perioadă de cote -> lista pe fiecare linie
+    } catch { /* rămâne starea de dinainte */ }
+  }
+  corp.addEventListener("nav:revenire", reincarcaPregatirea);
+  corp.querySelector("#em-data").addEventListener("change", reincarcaPregatirea);
+  // [comanda Costin 05.10.2026 pct.4] seria se vede și se poate stabili: configurarea numerotării, într-o fereastră PESTE factură
+  corp.querySelector("#em-schimba-serie").addEventListener("click", () =>
+    nav.deschide("Numerotare facturi", (c2) => configureazaNumerotare(c2, nav, tenantId,
+      Object.assign({}, opt, { dupaSalvare: () => nav.inapoi() }), opt.tvaProfil)));
+
   const zonaLinii = corp.querySelector("#em-linii");
   const linii = [];
   const articole = opt.articole || [];        // [punte_stoc_v1] F172: articole de stoc (gol la gratuit)
   let pleacaMarfaCurent = null;               // raspunsul la poarta "pleaca marfa acum?" pt emiterea curenta
 
-  const linieNoua = () => ({ descriere: "", cantitate: "", pret_unitar: "", cota_tva: null, articol_id: null });
+  const linieNoua = () => ({ descriere: "", cantitate: "", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null });
+  // [comanda Costin 05.10.2026 pct.3] „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”.
+  // Cotele oferite = cele permise la data facturii, de la server (aceeași sursă ca validarea emiterii).
+  let COTE = (num.cote_permise && num.cote_permise.length) ? num.cote_permise : [];   // se reîncarcă la schimbarea datei
+  const platitor = opt.tvaProfil !== false;
   const _val = (x) => (x === "" || x == null) ? "" : esc(String(x));
 
   // randeaza O linie DIN MODEL (id-uri pozitionale em-l{i}-*, ca backendul sa lege eroarea de camp). Stergere/rand.
@@ -228,7 +285,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <input class="camp-input em-l-den" id="em-l${i}-descriere" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" value="${_val(l.descriere)}" placeholder="Denumire (ex: pâine, consultanță)" aria-label="Denumire articol" autocomplete="off">
       <input class="camp-input em-l-cant" id="em-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="camp-input em-l-pret" id="em-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
-      <span class="em-l-cota${cotaCls}" id="em-l${i}-cota" title="Cota TVA">${cotaTxt}</span>
+      ${platitor
+        ? `<select class="camp-input em-l-cota-sel${cotaCls}" id="em-l${i}-cota" aria-label="Cota TVA" title="${l.cota_propusa == null ? "Cota TVA" : "Cota TVA — propusă: " + l.cota_propusa + "%"}">
+             <option value=""${l.cota_tva == null ? " selected" : ""}>—</option>
+             ${COTE.map((c) => `<option value="${c}"${l.cota_tva === c ? " selected" : ""}>${c}%</option>`).join("")}
+           </select>`
+        : `<span class="em-l-cota${cotaCls}" id="em-l${i}-cota" title="Cota TVA">${cotaTxt}</span>`}
       <button type="button" class="buton-sters em-l-sterge" data-idx="${i}" title="Șterge">×</button>`;
     if (articole.length) {
       const selArticol = `
@@ -247,8 +309,15 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     if (p < 0) return;
     const el = zonaLinii.querySelector("#em-l" + p + "-cota");
     if (!el) return;
+    const cls = (cota === 11 ? " cota-11" : cota === 0 ? " cota-0" : cota != null ? " cota-21" : "");
+    if (el.tagName === "SELECT") {   // plătitor: lista de cote, propunerea preselectată
+      el.value = cota == null ? "" : String(cota);
+      el.className = "camp-input em-l-cota-sel" + cls;
+      el.title = l.cota_propusa == null ? "Cota TVA" : "Cota TVA — propusă: " + l.cota_propusa + "%";
+      return;
+    }
     el.textContent = text;
-    el.className = "em-l-cota" + (cota === 11 ? " cota-11" : cota === 0 ? " cota-0" : cota != null ? " cota-21" : "");
+    el.className = "em-l-cota" + cls;
   }
 
   // inputurile scriu in MODEL (nu re-randeaza -> fara pierdere de focus la tastare). Fetch-ul cotei capteaza
@@ -273,10 +342,16 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       timer = setTimeout(async () => {
         try {
           const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d });
-          if (r && r.ok) { l.cota_tva = r.cota; setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota); }
+          if (r && r.ok) { l.cota_tva = r.cota; l.cota_propusa = r.cota; setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota); }
         } catch {}
         recalc();
       }, 550);
+    });
+    const selCota = zonaLinii.querySelector("select#em-l" + i + "-cota");
+    if (selCota) selCota.addEventListener("change", () => {   // [pct.3] contabilul alege; propunerea rămâne pentru jurnal
+      l.cota_tva = selCota.value === "" ? null : Number(selCota.value);
+      setCota(l, "", l.cota_tva);
+      recalc();
     });
     cant.addEventListener("input", () => { l.cantitate = parseFloat(cant.value) || 0; recalc(); });
     pret.addEventListener("input", () => { l.pret_unitar = parseFloat(pret.value) || 0; recalc(); });
@@ -446,6 +521,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       linii: linii.map((l) => ({
         descriere: l.descriere, cantitate: l.cantitate,
         pret_unitar: l.pret_unitar, cota_tva: l.cota_tva,
+        cota_propusa: l.cota_propusa,   // [pct.3] pentru jurnalul „propus → ales”
         articol_id: l.articol_id || null,  // [punte_stoc_v1] F172
       })),
       tert_nume: corp.querySelector("#em-nume").value.trim() || null,
@@ -457,6 +533,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       // [decizia A 02.10] factura emisă pe baza bonului fiscal (HG 1/2016 pct.97 alin.(1)); validarea e pe server
       bon_fiscal_nr: ((corp.querySelector("#em-bon-nr") || {}).value || "").trim() || null,
       bon_fiscal_data: (corp.querySelector("#em-bon-data") || {}).value || null,
+      // [comanda Costin 05.10.2026 pct.4] data emiterii și scadența, stabilite pe formular
+      data_emitere: (corp.querySelector("#em-data") || {}).value || null,
+      data_scadenta: (corp.querySelector("#em-scadenta") || {}).value || null,
     };
     if (cursManual != null) payload.curs_manual = cursManual;
     if (pleacaMarfaCurent !== null) payload.pleaca_marfa = pleacaMarfaCurent;  // [punte_stoc_v1] raspuns poarta

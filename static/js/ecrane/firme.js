@@ -1,21 +1,21 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=19439de672";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso } from "../api.js?v=39585157c4";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=4205d3e8b0";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=e871a4dc54";
-import { ecranRip } from "./rip_ecran.js?v=e132d99126";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=eaf05070a6";
-import { ecranEtransport } from "./etransport_ecran.js?v=b6e1aa3fc7";
+import { randeazaFacturi } from "./facturi_ecran.js?v=cd8811acf6";
+import { ecranRip } from "./rip_ecran.js?v=c5757130d2";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=83853552ea";
+import { ecranEtransport } from "./etransport_ecran.js?v=bd028dba50";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=b059f0d009";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=0d0a622ecb";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=b7b794c09f";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=c641579c0e";  // [ecran_mf_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=87157bdf69";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=40206e2ad2";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -1451,7 +1451,7 @@ async function ecranSalariati(corp, nav, t) {
     const zonaSalariu = corp.querySelector("#sp-salariu-zona");
     corp.querySelectorAll("[data-salariu]").forEach((b) => b.addEventListener("click", () => {
       const sid = b.dataset.salariu;
-      const azi = new Date().toISOString().slice(0, 10);
+      const azi = dataIso();
       zonaSalariu.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
         <span class="camp-eticheta">Salariu de bază · ${esc(b.dataset.nume)}:</span>
         <input type="number" min="0" step="0.01" id="salariu-input" aria-label="Salariul de bază brut lunar (lei)" class="camp-input" value="${esc(b.dataset.val)}" style="width:140px">
@@ -1847,7 +1847,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
       const p = rtLista.querySelector(`.rt-portii[data-id="${id}"]`).value;
       if (!p) { arataMesaj(zonaM, "Completeaz\u0103 num\u0103rul de por\u021bii.", "eroare"); return; }
       try {
-        const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: parseInt(id), portii: parseFloat(p), data: val("#cv-data") || new Date().toISOString().slice(0, 10) });
+        const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: parseInt(id), portii: parseFloat(p), data: val("#cv-data") || dataIso() });
         arataMesaj(zonaM, `Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${bani(r.cost_total)} lei.`, "ok");
         sectiuneaCV(corp, t, zonaM); rtIncarca();
       } catch (er) { arataMesaj(zonaM, er.mesaj || "Eroare la desc\u0103rcare.", "eroare"); }
@@ -2020,7 +2020,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         const linii = Object.entries(num).map(([id, x]) => ({ articol_id: parseInt(id), faptic: x.faptic }));
         if (!linii.length) { arataMesaj(zonaM, "Nimic de inventariat.", "eroare"); return; }
         try {
-          const r = await api.post(`/tenants/${t.id}/stocuri/inventar`, { data: val("#cv-data") || new Date().toISOString().slice(0, 10), linii });
+          const r = await api.post(`/tenants/${t.id}/stocuri/inventar`, { data: val("#cv-data") || dataIso(), linii });
           arataMesaj(zonaM, `Inventar finalizat · ${(r.rezultate || []).length} articole procesate (note ciorne pentru diferențe).`, "ok");
           sectiuneaCV(corp, t, zonaM);
         } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la finalizare.", "eroare"); }
@@ -2784,7 +2784,7 @@ export async function ecranStocuri(corp, nav, t) {
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <input type="text" id="sn-numar" class="camp-input" placeholder="număr NIR" aria-label="Num\u0103r NIR" style="width:120px">
-          <input type="date" id="sn-data" aria-label="Data intrare stoc" class="camp-input" value="${new Date().toISOString().slice(0, 10)}">
+          <input type="date" id="sn-data" aria-label="Data intrare stoc" class="camp-input" value="${dataIso()}">
           <input type="text" id="sn-furn" class="camp-input" placeholder="furnizor" aria-label="Furnizor" style="flex:1;min-width:160px">
           <input type="text" id="sn-cui" class="camp-input" placeholder="CUI" aria-label="CUI furnizor" style="width:120px">
         </div>
@@ -2907,7 +2907,7 @@ async function ecranCasa(corp, nav, t) {
     // [D394 Î2] chitanța de vânzare fără factură — doar la firma marcată exceptată de la casa de marcat (Date firmă)
     let exceptata = false;
     try { exceptata = !!((await api.get(`/tenants/${t.id}/firma-profil/date`)).profil || {}).activitate_exceptata_amef; } catch { exceptata = false; }
-    const ziAzi = new Date().toISOString().slice(0, 10);
+    const ziAzi = dataIso();
     const _avertLinii = (reg.avertismente || []).map((a) =>
       `<div class="ca-mesaj">${esc(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + esc(a.temei) : ""}</div>`).join("");
     // avertismentele registrului = atentionari -> o caseta canonica .caseta-atentie (cap.5), nu clasa ad-hoc mig-gol
@@ -3484,7 +3484,7 @@ function _bannerFirmaCreata(nume) {
 
 // [horeca] Raport Z zilnic
 async function ecranRaportZ(corp, nav, t) {
-  const azi = new Date().toISOString().slice(0, 10);
+  const azi = dataIso();
   corp.innerHTML = `
     <h2 class="pf-titlu">Raport Z</h2>
     <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori. Numărul de bonuri fiscale e tot pe raportul Z și intră în D394.</p>
@@ -4407,7 +4407,7 @@ async function ecranRegistratura(corp, nav, t) {
         </div>
         <div class="camp" style="margin-bottom:8px">
           <label class="camp-eticheta">Data</label>
-          <input type="date" class="camp-input" id="rg-data" aria-label="Data inregistrare" style="max-width:200px" value="${new Date().toISOString().slice(0, 10)}">
+          <input type="date" class="camp-input" id="rg-data" aria-label="Data inregistrare" style="max-width:200px" value="${dataIso()}">
         </div>
         <div class="camp" style="margin-bottom:8px">
           <label for="rg-desc" class="camp-eticheta">Descriere <span class="oblig">*</span></label>

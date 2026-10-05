@@ -637,6 +637,20 @@ def _constatare_esuata(eticheta, nume, e, an, luna):
         "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e, an, luna)
 
 
+def _platitor_tva_tert(cui, tara="RO"):
+    """[comanda Costin 05.10.2026 pct.5] Beneficiarul român e plătitor de TVA? Din ANAF (PlatitorTvaRest v9), ÎNAINTE de orice
+    tranzacție (apel extern, termen 20 s). True/False dacă ANAF îl găsește; None dacă nu se poate ști (ANAF jos, CUI negăsit,
+    beneficiar străin) — atunci factura poartă codul așa cum a fost scris, fără prefix ghicit (CF art.318 alin.(1))."""
+    if (tara or "RO").upper() != "RO" or not cui:
+        return None
+    try:
+        r = anaf_api.valideaza_cui([cui])
+    except Exception as e:   # noqa: BLE001 — ANAF indisponibil nu oprește emiterea
+        _obs.esec_secundar("platitor TVA beneficiar la emitere", e)
+        return None
+    return bool(r[0]["platitor_tva"]) if r and r[0].get("gasit") else None
+
+
 def _preincalzeste_cursul(moneda, data_emitere):
     """[P5 val 3, 11.09.2026] Aduce cursul BNR ÎNAINTE de orice tranzacție.
 

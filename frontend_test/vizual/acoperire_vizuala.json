@@ -1,5 +1,5 @@
 {
- "ui_hash": "98c38243935a626c",
+ "ui_hash": "884669cfaf812904",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -308,7 +308,7 @@
   "emitere": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 10,
+    "vazute": 11,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false

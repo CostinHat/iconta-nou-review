@@ -13,6 +13,8 @@ CE FACE IMPOSIBIL:
   * ca emiterea unei facturi să nu producă nota, sau s-o producă VALIDATĂ;
   * ca o proformă sau o factură primită să primească notă la creare;
   * ca ștergerea unei facturi contabilizate să pice cu o eroare brută de bază în loc de un refuz;
+  * ca ștergerea unei facturi legate de SPV — sau a uneia ținute de ORICE cheie străină fără `ON DELETE` — să pice
+    cu o eroare brută de bază (gardul de clasă, 05.10.2026);
   * ca a doua chemare a rutei manuale să scrie a doua notă, sau să răspundă cu eroare;
   * ca automatul să scrie peste o notă din jurnalul liber care contează deja factura (plasa DDD2);
   * ca o notă din jurnalul liber care contează evident o factură să rămână fără cheie (DDD3);
@@ -254,6 +256,41 @@ def test_stergerea_TRECE_cand_factura_n_are_nicio_nota(conn):
     assert not _note_ale(conn, r["factura_id"])
     assert _fa.sterge_factura(conn, r["factura_id"])["ok"] is True
 
+
+
+@pytest.mark.parametrize("tabel, rand", [
+    ("efactura_trimiteri", "(factura_id, mediu, stare, xml_sha256) VALUES (%s, 'prod', 'ok', 'x')"),
+    ("efactura_primite", "(factura_id, id_mesaj_anaf, cif_emitent, cif_beneficiar, xml_sha256) VALUES (%s, 'M-G9', '1', '2', 'x')"),
+])
+def test_stergerea_refuza_numit_factura_legata_de_spv(conn, tabel, rand):
+    """Aceeași clasă ca nota legată (EEE2), găsită 05.10.2026 la cheia nouă `factura_cota_jurnal`: cheile străine din
+    `efactura_trimiteri` / `efactura_primite` n-au `ON DELETE`, deci ștergerea unei facturi legate de SPV cădea cu o eroare brută
+    de bază (500). Comportamentul NU se schimbă — factura legată de SPV tot nu se șterge —, se schimbă refuzul: numit, cu ieșirea.
+    MUTAȚIE: verificarea SPV scoasă din `sterge_factura` -> ForeignKeyViolation în loc de RefuzContare -> pică."""
+    r = _factura(conn, "G-9", "2026-08-10", directie="primita" if tabel == "efactura_primite" else "emisa")
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM inregistrari WHERE factura_id = %s", (r["factura_id"],))
+        cur.execute("INSERT INTO " + tabel + " " + rand, (r["factura_id"],))
+    with pytest.raises(_cf.RefuzContare) as e:
+        _fa.sterge_factura(conn, r["factura_id"])
+    assert e.value.cod == "LEGATA_DE_SPV"
+    assert e.value.detalii["iesire"] == ("storno" if tabel == "efactura_trimiteri" else "fara_stergere")
+
+
+def test_orice_cheie_spre_facturi_are_regula_sau_refuz_numit(conn):
+    """GARD DE CLASĂ (05.10.2026): o cheie străină spre `facturi` fără `ON DELETE` (ex. tabelul nou al unei funcționalități)
+    face ca ștergerea facturii să cadă cu o eroare brută de bază. Fiecare astfel de tabel trebuie fie să aibă regulă
+    (CASCADE / SET NULL), fie să fie citit de `sterge_factura` ÎNAINTE de ștergere, ca refuz numit.
+    MUTAȚIE: `ON DELETE CASCADE` scos din `factura_cota_jurnal` în șablon -> tabelul apare aici -> pică."""
+    import inspect
+    sursa = inspect.getsource(_fa.sterge_factura)
+    with conn.cursor() as cur:
+        cur.execute("SELECT conrelid::regclass::text FROM pg_constraint WHERE contype = 'f' AND confdeltype = 'a' "
+                    "AND confrelid = %s::regclass", (_SCH + ".facturi",))
+        fara_regula = sorted(t.split(".")[-1] for (t,) in cur.fetchall())
+    assert fara_regula, "calibrare: măcar `inregistrari` n-are regulă (EEE2) — dacă lista e goală, interogarea nu mai vede nimic"
+    netratate = [t for t in fara_regula if t not in sursa and not (t == "inregistrari" and "note_cu_cheia" in sursa)]
+    assert not netratate, "cheie spre facturi fără ON DELETE și fără refuz în sterge_factura: %s" % netratate
 
 # ═══════════════════════════════════════════════ DDD2 — plasa
 def _plasa(conn, luna_nota, suma_tert):

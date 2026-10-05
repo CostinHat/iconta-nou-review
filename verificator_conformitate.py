@@ -1476,6 +1476,17 @@ for _fis, _cerinta, _rx, _n in (("navigator.js", "păstrarea la deschide și mer
     if len(re.findall(_rx, fisiere.get(_fis, ""))) < _n:
         rap["pastrare_formular"].append((_fis, 0, "PASTRARE_FORMULAR", "lipseste: %s (DS cap.3 v2.67)" % _cerinta))
 
+# --- DATA_UTC (DS cap.4 v2.68, 05.10.2026): o dată calendaristică produsă în interfață (valoarea unui câmp de dată, „azi”,
+#     un termen calculat) se scrie prin `dataIso(d)` din api.js, în ora LOCALĂ. `toISOString()` convertește în UTC: între 00:00
+#     și 03:00 (02:00 iarna) „azi” devine ieri, iar o dată construită la miezul nopții local iese cu o zi mai devreme. Găsit la
+#     data implicită a facturii (pct.4 al comenzii „fluxul de factură pe F1”); clasa avea 21 de apariții. Mutația care o
+#     probează: `new Date().toISOString().slice(0, 10)` repus în emitere_ecran.js -> TOTAL > 0.
+rap["data_utc"] = []
+for _fis, _txt in sorted(fisiere.items()):
+    for _i, _ln in enumerate(_txt.split("\n"), 1):
+        if re.search(r"toISOString\(\)\s*\.\s*(?:slice|substring|substr)\(\s*0\s*,\s*10\s*\)|toISOString\(\)\s*\.\s*split\(\s*[\"']T", _ln):
+            rap["data_utc"].append((_fis, _i, "DATA_UTC", _ln.strip()[:90]))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

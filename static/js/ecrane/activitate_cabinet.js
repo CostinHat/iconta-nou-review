@@ -3,12 +3,12 @@
 // Jurnal: evenimente cronologice (pregatit/aprobat/respins/depus), tabel scrollabil.
 // Regula design: fer-larg, antet fix, doar tabelul scrolleaza (un singur scrollbar).
 
-import { api } from "../api.js?v=19439de672";
+import { api, dataIso } from "../api.js?v=39585157c4";
 
 // perioade selectabile -> [de, pana] ISO (sau null pentru tot)
 function interval(cheie) {
   const azi = new Date();
-  const iso = (d) => d.toISOString().slice(0, 10);
+  const iso = (d) => dataIso(d);
   if (cheie === "azi") return [iso(azi), iso(azi)];
   if (cheie === "luna") {
     const p = new Date(azi.getFullYear(), azi.getMonth(), 1);

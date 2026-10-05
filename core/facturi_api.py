@@ -189,6 +189,10 @@ def cere_cod_partener(tert_cui, tert_pf=False, tert_nume=None):
         "cel care a emis-o (Cod fiscal art. 319 alin. 20)." % cine)
 
 
+MESAJ_SCADENTA_INAINTE_DE_EMITERE = ("Data scadenței e înaintea datei emiterii — factura nu poate fi scadentă înainte să "
+                                     "existe. Alege o scadență egală sau după data emiterii.")
+
+
 def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                     data_scadenta=None, moneda="RON", status="emisa",
@@ -225,7 +229,10 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     # un `500` pe o dată inexistentă în calendar, o factură cu cota de TVA 99% acceptată ȘI
     # contabilizată (4427 = 99 lei), și un al doilea document cu un număr deja folosit.
     _d_emitere = _data_ceruta("data emiterii", data_emitere)
-    _data_ceruta("data scadenței", data_scadenta)
+    _d_scadenta = _data_ceruta("data scadenței", data_scadenta)
+    # [comanda Costin 05.10.2026 pct.4] scadența se stabilește pe formular și alimentează scadențarul; înaintea emiterii n-are sens
+    if _d_scadenta is not None and _d_emitere is not None and _d_scadenta < _d_emitere:
+        raise ValueError(MESAJ_SCADENTA_INAINTE_DE_EMITERE)
     # [3i · CF art. 282 alin. (9)] la evenimentele art. 287 (storno, reducere de pret) taxa e
     # exigibila la data evenimentului (data_emitere = azi), dar COTELE APLICABILE sunt aceleasi
     # ca ale operatiunii de baza. cota_la_data muta DOAR verificarea cotei pe data operatiunii de
@@ -508,7 +515,7 @@ def detalii_factura(conn, factura_id):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT id, client_id, numar, data_emitere, data_scadenta, total, tva, "
+            "SELECT id, client_id, numar, serie, data_emitere, data_scadenta, total, tva, "   # [05.10.2026] seria pe PDF (art.319 lit.a)
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "tert_tara, tip_operatiune, furnizor_tva_incasare, "
             "taxare_inversa, categorie_331, axa_ic, tert_platitor_tva, data_faptului_generator, "  # [A4] clasificarea storno-ului
@@ -577,8 +584,27 @@ def sterge_factura(conn, factura_id):
     de validare pe care omul nu-l are în minte când apasă „șterge"."""
     from core import contare_facturi as _cf
     with _cf.cursor_dict(conn) as cur:
+        # [05.10.2026] Aceeași clasă ca nota legată: `efactura_trimiteri` / `efactura_primite` țin factura printr-o cheie
+        # fără `ON DELETE`, deci ștergerea cădea cu o eroare brută de bază. Factura legată de SPV tot nu se șterge — istoricul
+        # cu ANAF rămâne —, dar refuzul e numit și spune ieșirea.
+        cur.execute("SELECT id, stare FROM efactura_trimiteri WHERE factura_id = %s ORDER BY id DESC LIMIT 1", (factura_id,))
+        trim = cur.fetchone()
+        cur.execute("SELECT id_mesaj_anaf FROM efactura_primite WHERE factura_id = %s LIMIT 1", (factura_id,))
+        prim = cur.fetchone()
         n = _cf.contare_existenta(cur, "", factura_id)
         legate = _cf.note_cu_cheia(cur, "", factura_id)
+    if trim:
+        raise _cf.RefuzContare(
+            "LEGATA_DE_SPV",
+            "Factura are o trimitere în e-Factura (#%d, stare „%s”) și nu se mai șterge: istoricul trimiterii către ANAF se "
+            "păstrează. Corecția se face prin storno — un al doilea document." % (trim["id"], trim["stare"]),
+            detalii={"efactura_trimitere_id": trim["id"], "stare": trim["stare"], "iesire": "storno"})
+    if prim:
+        raise _cf.RefuzContare(
+            "LEGATA_DE_SPV",
+            "Factura a venit din SPV (mesajul ANAF %s) și nu se șterge: e documentul furnizorului, păstrat așa cum a fost "
+            "primit." % prim["id_mesaj_anaf"],
+            detalii={"id_mesaj_anaf": prim["id_mesaj_anaf"], "iesire": "fara_stergere"})
     if not n and legate:
         # GĂSIT DE PROPRIA GARDĂ, la prima rulare, și nu era în comandă: cheia străină blochează
         # ștergerea pentru ORICE notă legată, nu doar pentru o contare. O notă de PLATĂ n-ar trebui
@@ -631,6 +657,39 @@ def numerotare(conn):
     urmator = int(row[1]) if row and row[1] is not None else 1
     configurata = bool(row[2]) if row and len(row) > 2 and row[2] is not None else False
     return {"serie": serie, "urmator_numar": urmator, "configurata": configurata}  # numerotare_configurata_v1
+
+
+def forma_propusa_firma(conn, tenant_id):
+    """(forma, sursa) propusă pentru firma fără formă juridică: din denumirea de pe profil, cea din portofoliu și cea primită
+    de la ANAF (`public.tenants.nume_anaf`) — numai dacă toate spun același lucru."""
+    from core import capital_social as _cs
+    with conn.cursor() as cur:
+        cur.execute("SELECT nume FROM firma_profil WHERE id = 1")
+        p = cur.fetchone()
+        cur.execute("SELECT nume, nume_anaf FROM public.tenants WHERE id = %s", (tenant_id,))
+        t = cur.fetchone() or (None, None)
+    return _cs.forma_propusa(None, *(x for x in ((p or (None,))[0], t[0], t[1]) if x))
+
+
+def pregatire_emitere(conn, tenant_id, la_data):
+    """[comanda Costin 05.10.2026 pct.2–3] Ce trebuie știut LA DESCHIDEREA formularului de emitere:
+    `lipsuri_firma` (din Date firmă, aceeași regulă ca refuzul de la emitere: `capital_social.lipsa`), `forma_propusa` când forma
+    lipsește, și `cote_permise` (procente, cotele în vigoare la data facturii — aceeași sursă ca validarea de la emitere).
+    `la_data` e OBLIGATORIE: e data emiterii din formular; o cotă citită „azi” pentru o factură datată altfel ar fi o listă
+    validă și falsă (interdicția 3, `core/test_data_curenta.py`)."""
+    from core import capital_social as _cs
+    with conn.cursor() as cur:
+        cur.execute("SELECT tip_firma, forma_juridica, capital_subscris, capital_varsat FROM firma_profil WHERE id = 1")
+        r = cur.fetchone()
+    profil = dict(zip(("tip_firma", "forma_juridica", "capital_subscris", "capital_varsat"), r)) if r else {}
+    lipsuri = _cs.lipsa(profil) if profil else []
+    forma, sursa = (None, None)
+    if lipsuri and not profil.get("forma_juridica"):
+        forma, sursa = forma_propusa_firma(conn, tenant_id)
+    permise, _t = _cote_tva_in_vigoare(la_data)
+    return {"lipsuri_firma": lipsuri, "forma_propusa": forma, "forma_propusa_sursa": sursa,
+            "mesaj_lipsuri": _cs.mesaj_la_deschidere(lipsuri, forma, sursa),
+            "cote_permise": sorted({int(c) if int(c) == c else float(c) for c in permise}, reverse=True) if permise else None}
 
 
 def _rezerva_numar(conn, tip="factura"):
@@ -757,7 +816,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
                   tert_tara="RO", tip_operatiune="normal", tert_pf=False,
                   data_curs_manual=None, curs_manual_de=None, axa_ic=None,
-                  bon_fiscal_nr=None, bon_fiscal_data=None):
+                  bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -855,7 +914,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                     "moneda": moneda, "data": _d.isoformat(),
                     "mesaj": "Cursul BNR nu e disponibil momentan."}
 
-    r = creeaza_factura(conn, numar, data_emitere, "emisa", linii,
+    r = creeaza_factura(conn, numar, data_emitere, "emisa", linii, tert_platitor_tva=tert_platitor_tva,   # [05.10.2026 pct.5]
                         client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
                         data_scadenta=data_scadenta, moneda=moneda, status=status,
                         tert_tara=tert_tara, tip_operatiune=tip_operatiune, tip=tip,

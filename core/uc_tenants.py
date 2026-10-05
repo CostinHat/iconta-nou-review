@@ -364,11 +364,22 @@ def produse_sterge(tenant_id, produs_id, ctx):
     return r
 
 
-def facturi_numerotare_get(tenant_id, ctx):
+def facturi_numerotare_get(tenant_id, ctx, la_data=None):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/numerotare`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        return facturi_api.numerotare(conn)
+        r = facturi_api.numerotare(conn)
+        # [comanda Costin 05.10.2026 pct.2–3] la DESCHIDEREA emiterii: ce lipsește din Date firmă (blochează emiterea), forma
+        # propusă și cotele de TVA permise LA DATA FACTURII (din formular) — nu după completarea întregului formular. Fără
+        # dată (alt ecran care cere doar numerotarea) nu se răspunde cu cote „de azi”.
+        if la_data is not None:
+            import datetime as _dt
+            try:
+                _d = _dt.date.fromisoformat(str(la_data))
+            except ValueError:
+                raise _erori.DateInvalide("Data emiterii nu e o dată calendaristică (aaaa-ll-zz): %r." % la_data)
+            r.update(facturi_api.pregatire_emitere(conn, tenant_id, _d))
+        return r
 
 
 def facturi_numerotare_set(tenant_id, date, ctx):
@@ -431,11 +442,15 @@ def firma_profil_regim_tva(tenant_id, date, ctx):
             row = repo_tenants.cui_dupa_id(cur, tenant_id)
     anaf_val, avert, tva_inceput = _uc_comun._anaf_tva_check(row[0] if row else None, date.platitor_tva)
     with db.get_conn(schema) as conn:
-        # [R46] `platitor_tva` decide daca firma datoreaza D300/D394 si pe ce perioade.
-        try:
-            _fp.cere_perioade_deschise(conn, "Regimul de TVA")
-        except ValueError as e:
-            raise _erori.DateInvalide(str(e))
+        # [R46] `platitor_tva` decide daca firma datoreaza D300/D394 si pe ce perioade. [05.10.2026] Poarta e pentru o
+        # SCHIMBARE: aceeași valoare nu rescrie nimic și nu se refuză.
+        with conn.cursor() as cur:
+            _act = repo_firma_profil.regim_tva_pentru_schimbare(cur)
+        if _act is not None and bool(_act["platitor_tva"]) != bool(date.platitor_tva):
+            try:
+                _fp.cere_perioade_deschise(conn, "Regimul de TVA")
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
             repo_firma_profil.seteaza_platitor_tva(cur, date.platitor_tva, ctx["uid"])
         if anaf_val is not None:                      # ANAF a raspuns -> reimprospateaza snapshot (+ data inceput TVA)
@@ -451,7 +466,11 @@ def firma_profil_date(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/firma-profil/date`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        return _fp.citeste_date(conn)
+        r = _fp.citeste_date(conn)
+        # [comanda Costin 05.10.2026 pct.2] forma juridică necompletată -> propunerea neechivocă (ANAF / denumire), de confirmat
+        if not (r.get("profil") or {}).get("forma_juridica"):
+            r["forma_juridica_propusa"], r["forma_juridica_sursa"] = facturi_api.forma_propusa_firma(conn, tenant_id)
+        return r
 
 
 def firma_profil_date_salveaza(tenant_id, date, ctx):
@@ -4651,6 +4670,7 @@ def factura_pdf_ruta(tenant_id, factura_id, ctx):
 def facturi_emite(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/emite`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._preincalzeste_cursul(date.moneda, date.data_emitere)   # [P5 val 3] descărcarea BNR, înainte de tranzacție
+    _tert_pl = _uc_comun._platitor_tva_tert(date.tert_cui, date.tert_tara)   # [pct.5] „RO” pe factură, tot înainte de tranzacție
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
     if not (date.tert_nume or "").strip():
@@ -4675,6 +4695,7 @@ def facturi_emite(tenant_id, date, ctx):
                 tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
                 data_curs_manual=date.data_curs_manual,
                 bon_fiscal_nr=date.bon_fiscal_nr, bon_fiscal_data=date.bon_fiscal_data,
+                tert_platitor_tva=_tert_pl,
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])
@@ -4692,6 +4713,11 @@ def facturi_emite(tenant_id, date, ctx):
                 from core import capital_social as _cs
                 raise _erori.DateInvalide(_cs.detaliu(e))
             raise _erori.DateInvalide(str(e))
+        # [comanda Costin 05.10.2026 pct.3] cota schimbată față de propunere se consemnează (propus → ales, cine, când), în
+        # ACEEAȘI tranzacție cu factura: o factură emisă fără rândul ei de jurnal nu poate exista
+        if isinstance(r, dict) and r.get("factura_id"):
+            with conn.cursor() as cur:
+                repo_facturi.jurnalizeaza_cota_aleasa(cur, r["factura_id"], linii, ctx["uid"])
         # descarcare gestiune DOAR la poarta = DA, in ACEEASI tranzactie (atomic: emit + descarcare)
         if poarta_ceruta and date.pleaca_marfa is True and isinstance(r, dict) and r.get("factura_id"):
             from core import stocuri_cv_api as _cv

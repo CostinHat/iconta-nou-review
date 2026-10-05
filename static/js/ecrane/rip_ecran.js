@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor } from "../api.js?v=19439de672";  /* investigatie_identitate_v1 */
+import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso } from "../api.js?v=39585157c4";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -24,7 +24,7 @@ export async function ecranRip(corp, nav, t) {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let reg = { operatiuni: [], total_incasari: "0", total_plati: "0", sold: "0" };
     try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca registrul.</p>`; return; }
-    const ziAzi = new Date().toISOString().slice(0, 10);
+    const ziAzi = dataIso();
 
     const randuri = !(reg.operatiuni || []).length
       ? `<div class="stare-goala">Nicio opera\u021biune \u00een luna asta.</div>`

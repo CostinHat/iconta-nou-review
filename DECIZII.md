@@ -16935,3 +16935,45 @@ unei ferestre deschise peste. Mesajul de refuz promitea păstrarea fără ca vre
 2. Păstrarea e în navigator, nu în fiecare formular: orice fereastră în care s-a tastat ceva își păstrează starea când se deschide
    alta peste ea. Alternativa respinsă: ciorne scrise ecran cu ecran (ar rata formularele viitoare — exact ce cere „tuturor”).
 
+3. **(B, pct.2) Forma juridică — PIVOT față de „nu se ghicește” (DECIZII 04.10.2026, capitalul social):** forma se PROPUNE, nu
+   se scrie din oficiu, și numai când sursele nu se contrazic: ANAF v9 (`date_generale.forma_juridica`, ex. „SOCIETATE
+   COMERCIALĂ CU RĂSPUNDERE LIMITATĂ” -> SRL) și sufixul denumirii (`… SRL`, `… S.A.`) trebuie să dea aceeași formă; dacă
+   diferă sau lipsesc amândouă, nu se propune nimic. La crearea firmei din ANAF se completează numai câmpul gol (`COALESCE`).
+   În Date firmă forma propusă e preselectată, cu nota sursei — contabilul salvează. Intermediarul înlocuit: refuzul la emitere
+   cu „completează forma” fără nicio propunere. Final: lipsurile se spun la DESCHIDEREA emiterii (notă + „Deschide Date firmă”,
+   „Emite” inactiv cu motiv), nu după ce s-a scris factura. Alternativa respinsă: forma scrisă automat din ANAF — o
+   nomenclatură ANAF necunoscută ar fi mapat greșit fără să vadă nimeni.
+4. **(B, pct.3) Cota corectată se consemnează în tabel propriu `factura_cota_jurnal`** (factura, linie, descriere, cotă propusă,
+   cotă aleasă, cine, când), scris în aceeași tranzacție cu factura și NUMAI când cota aleasă diferă de cea propusă. Cota se
+   alege dintr-o listă cu cotele permise la data facturii. Alternativa respinsă: o coloană `cota_propusa` pe `factura_linii` —
+   ar fi amestecat pe linia fiscală o urmă de audit, citită de generatoarele de declarații. Migrare: test 35/35, producție 5/5,
+   după backup verificat.
+5. **(B, pct.4–5) PDF-ul facturii pe CF art.319 alin.(20) și CF art.318 alin.(1)** — text din `anaf_surse/cod_fiscal_227_2015_
+   consolidat.txt`: art.319 alin.(20) lit.a „numărul de ordine, în baza uneia sau a mai multor serii”, lit.b „data emiterii
+   facturii”, lit.d/f „codul de înregistrare în scopuri de TVA sau, după caz, codul de identificare fiscală” al furnizorului /
+   beneficiarului; art.318 alin.(1) „Codul de înregistrare în scopuri de TVA … are prefixul RO”. Deci: plătitor de TVA ->
+   „Cod TVA: RO…”, neplătitor -> „CIF: …”; „Seria X nr. N”; „Data emiterii”. Statutul beneficiarului se ia din ANAF la emitere
+   și se păstrează pe factură (`tert_platitor_tva`); dacă ANAF nu răspunde, codul rămâne cum l-a scris contabilul (nu se
+   ghicește prefixul). **Scadența NU e cerută de art.319** (lit.a–o citite) — e pe formular și pe PDF fiindcă o cere Costin și
+   alimentează scadențarul (`repo_scadentar` citește `facturi.data_scadenta`); o scadență înaintea emiterii se refuză numit.
+   Toate PDF-urile aplicației (factură, adeverință, contract, document, stat de plată, chitanță) primesc titlu — „(anonymous)” nu
+   mai apare. În teste, ANAF-ul la emitere e neutralizat de o fixtură `conftest` (fără rețea), cu excepția modulului care-l probează.
+6. **(B, găsit pe drum) Poarta perioadei închise (R46) se pune la SCHIMBARE, nu la prezență.** Date firmă, vectorul și regimul de
+   TVA trimit mereu câmpurile care decid; pe o firmă cu o lună închisă, Date firmă nu se mai putea salva deloc (deci nici forma
+   juridică cerută de emitere), iar refuzul ieșea 500. Acum se compară cu valoarea curentă; refuzul e numit, pe câmp. R46
+   rămâne: ce decide nu se schimbă peste o perioadă închisă (CONFORMITATE R46, corectura 05.10).
+7. **(B, găsit pe drum) Ștergerea facturii nu mai cade pe chei străine.** Tabelul nou `factura_cota_jurnal` fusese creat cu o cheie
+   fără `ON DELETE` — o factură necontată, emisă cu altă cotă, nu s-ar mai fi putut șterge (500). Legătura e acum CASCADE, ca la
+   `factura_linii` (rândurile cotei sunt atributul liniilor); migrarea reface legătura pe tabelele deja create (test 35/35,
+   producție 5/5, după backup complet verificat). Căutând clasa: `efactura_trimiteri` și `efactura_primite` țineau factura la fel,
+   iar ștergerea ieșea tot 500. Comportamentul NU se schimbă — o factură legată de SPV nu se șterge —, refuzul devine numit
+   (`LEGATA_DE_SPV`, ieșirea: storno pentru cea trimisă, niciuna pentru cea primită). Alternativa respinsă: CASCADE și pe tabelele
+   SPV — ar șterge istoricul trimiterilor către ANAF.
+8. **(B, respins de poartă și reparat) Cotele permise se citesc la DATA FACTURII, iar o dată din interfață se produce în ora
+   locală.** Poarta a prins `pregatire_emitere` căzând pe „azi” când nu primea data (interdicția 3, `test_data_curenta`): o
+   factură datată 31.07.2025 ar fi primit lista 21/11 în loc de 19/9/5. Acum data e obligatorie; ruta o primește din câmpul
+   „data emiterii”, iar la schimbarea datei lista de cote se reîncarcă. Căutând sursa datei din formular, s-a găsit clasa
+   `toISOString().slice(0, 10)` — data în UTC, nu în ora României: 21 de apariții în 10 ecrane. Între 00:00 și 03:00 „azi”
+   devenea ieri; două greșeau ziua oricând (intervalul „luna”/„an” din activitatea cabinetului începea cu o zi mai devreme;
+   „UIT valabil până la” din e-Transport arăta o zi mai devreme). Acum: `dataIso(d)` din api.js, unica producere a unei date
+   în interfață (DS cap.4 v2.68, gard `DATA_UTC`). Alternativa respinsă: reparat numai câmpul facturii — celelalte 20 rămâneau.

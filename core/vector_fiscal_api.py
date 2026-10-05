@@ -123,11 +123,19 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             # [R46, 26.08.2026] Vectorul DECIDE ce declaratii se datoreaza. Peste o perioada
             # inchisa nu se schimba: ar rescrie ce s-a datorat pentru luni deja depuse. Calea
             # ramane deschisa — redeschide perioada, schimba, inchide la loc.
-            from core import firma_profil_api as _fpa
-            try:
-                _fpa.cere_perioade_deschise(conn_schema, "Vectorul fiscal")
-            except ValueError as _e:
-                return {"ok": False, "cod": "PESTE_PERIOADA_INCHISA", "mesaj": str(_e)}
+            # [05.10.2026] Poarta e pentru o SCHIMBARE: o salvare cu aceleași valori (Date firmă trimite vectorul la fiecare
+            # salvare) nu rescrie nimic și nu se refuză.
+            cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317, "
+                        "platitor_tva_anaf_inceput FROM firma_profil WHERE id = 1")
+            _a = cur.fetchone()
+            _norm = lambda r: (r[0] or None, bool(r[1]), tip_decont_lung(r[2]) or (r[2] or None), bool(r[3]), bool(r[4]),
+                               str(r[5])[:10] if r[5] else None)
+            if _norm(_a) != _norm((regim, tva, decont, ic, art317, tva_inceput)):
+                from core import firma_profil_api as _fpa
+                try:
+                    _fpa.cere_perioade_deschise(conn_schema, "Vectorul fiscal")
+                except ValueError as _e:
+                    return {"ok": False, "cod": "PESTE_PERIOADA_INCHISA", "mesaj": str(_e)}
             vechi = _repo_fp.regim_tva_pentru_schimbare(cur)
             cur.execute(
                 "UPDATE firma_profil "
