@@ -171,4 +171,6 @@ def eu_drepturi(ctx, garzi):
     if ctx["rol"] == "angajat":
         with db.get_conn() as conn:
             bife = _dr.bife_live(conn, ctx["uid"])
-    return {"rol": ctx["rol"], "bife": bife, "interzise": _dr.interzise(ctx["rol"], bife, garzi)}
+    return {"rol": ctx["rol"], "bife": bife, "interzise": _dr.interzise(ctx["rol"], bife, garzi),
+            # [comanda Costin 05.10.2026 pct.3] de ce: nivelul fiecărei acțiuni refuzate + numele de pe ecranul Asistenți
+            "motive": _dr.motive(ctx["rol"], bife, garzi), "nume_niveluri": _dr.NUME_NIVEL}

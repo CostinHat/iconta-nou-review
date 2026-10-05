@@ -6,6 +6,8 @@ Flux: aduna datele lunii -> AI scrie un draft de poveste pe intelesul antrepreno
 Tabela (public): pachet_povestea(tenant_id, an, luna, text, status, updated_at).
 DB pe schema tenantului pt date (note, firma_profil); povestea pe public.
 """
+import re
+
 import psycopg2.extras as _E
 from decimal import Decimal
 
@@ -66,7 +68,9 @@ def rezumat_luna(conn_schema, conn_public, tenant_id, an, luna):
         "venituri": float(rez["venituri"]),
         "cheltuieli": float(rez["cheltuieli"]),
         "rezultat": float(rez["rezultat"]),
-        "tip": rez["tip"],
+        # [comanda Costin 05.10.2026 pct.1, text fix din aceeași clasă] un rezultat ZERO nu e „profit”: motorul pune
+        # `profit` pe `rez >= 0`, iar pachetul arăta „0,00 lei (profit)”.
+        "tip": "neutru" if float(rez["rezultat"]) == 0 else rez["tip"],
         "declaratii_depuse": depuse,
         "are_date": bool(note),
     }
@@ -91,25 +95,71 @@ def _restante_desc(lipsa):
     return ", ".join(parts) if parts else None
 
 
-def _prompt_poveste(rz, an, luna, restante_desc=None):
+# [comanda Costin 05.10.2026 pct.1] „Textul generat folosește exact termenii și cifrele din pachet (venituri, cheltuieli,
+# rezultat)”. Măsurat înainte: pachetul arăta „Venituri”, iar textul scria „încasări” și „a cheltuit mai mult decât a câștigat”.
+# Venituri ≠ încasări (banii intrați) ≠ câștig; un antreprenor le citește diferit. Promptul cere termenii și sumele pachetului,
+# iar `abateri_termeni` verifică textul DUPĂ generare (un model poate ignora o instrucțiune).
+TERMENI_PACHET = ("venituri", "cheltuieli", "rezultat")
+_SINONIME_INTERZISE = re.compile(r"(?i)\b(?:încas\w*|incas\w*|câștig\w*|castig\w*|bani\s+intra\w*|cifr[ăa]\s+de\s+afaceri|"
+                                 r"(?:a|au)\s+intrat\s+în\s+cont)")
+_SUMA_LEI = re.compile(r"(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d+(?:,\d{1,2})?)\s*(?:de\s+)?lei\b", re.I)
+
+
+def _lei(x):
+    from core.pdf_util import bani
+    return bani(x, "lei")
+
+
+def _suma_din_text(s):
+    return round(float(s.replace(".", "").replace(" ", "").replace("\u00a0", "").replace(",", ".")), 2)
+
+
+def abateri_termeni(text, rz):
+    """Ce scrie textul altfel decât pachetul: [„termen: încasări”, „sumă: 1.200 lei (nu e în pachet)”, …]. Gol = textul
+    folosește termenii și sumele pachetului."""
+    out = sorted({"termen: " + m.group(0).lower() for m in _SINONIME_INTERZISE.finditer(text or "")})
+    permise = {round(abs(float(rz.get(k) or 0)), 2) for k in TERMENI_PACHET}
+    for m in _SUMA_LEI.finditer(text or ""):
+        try:
+            v = _suma_din_text(m.group(1))
+        except ValueError:
+            continue
+        if v not in permise:
+            out.append("sumă: %s (nu e în pachet)" % m.group(0).strip())
+    if rz.get("tip") == "pierdere" and re.search(r"(?i)\bprofit", text or ""):
+        out.append("termen: profit (pachetul arată pierdere)")
+    if rz.get("tip") == "profit" and re.search(r"(?i)\bpierdere", text or ""):
+        out.append("termen: pierdere (pachetul arată profit)")
+    return out
+
+
+def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
     depuse = ", ".join(rz["declaratii_depuse"]) if rz["declaratii_depuse"] else "nicio declaratie"
     restante_linie = (("- Declaratii RESTANTE (nedepuse, termen depasit): %s\n" % restante_desc)
                       if restante_desc else "- Declaratii restante: niciuna\n")
+    calificativ = rz["tip"] or "neutru"   # exact cuvântul din pachet (profit / pierdere / neutru)
+    corectie_linie = (("\nATENTIE: varianta anterioara a scris %s. Rescrie folosind DOAR termenii si sumele de mai sus.\n"
+                       % "; ".join(corectie)) if corectie else "")
     return (
         "Esti contabilul firmei si scrii un scurt rezumat lunar pentru patronul firmei, "
         "in limba romana, pe intelesul unui om care NU e contabil. Ton cald, profesional, clar. "
-        "NU folosi jargon contabil. 2-3 paragrafe scurte. Fara titlu, fara semnatura.\n\n"
-        "Date despre %s, luna %s %d:\n"
-        "- Venituri: %.2f lei\n- Cheltuieli: %.2f lei\n- Rezultat: %.2f lei (%s)\n"
+        "2-3 paragrafe scurte. Fara titlu, fara semnatura.\n\n"
+        "Date despre %s, luna %s %d (exact cum apar in pachetul lunar pe care patronul il vede alaturi):\n"
+        "- Venituri: %s\n- Cheltuieli: %s\n- Rezultat: %s (%s)\n"
         "- Declaratii depuse la ANAF: %s\n"
         "%s\n"
+        "TERMENII SI CIFRELE (obligatoriu): foloseste EXACT cuvintele «venituri», «cheltuieli» si «rezultat», cu sumele "
+        "de mai sus, scrise la fel. Veniturile NU sunt «incasari» (banii intrati in cont sunt alt lucru) si NU sunt "
+        "«castig»; nu spune «a castigat», «a incasat», «bani intrati», «cifra de afaceri». Rezultatul il numesti "
+        "«rezultat»; daca il califici, spui doar «%s», ca in pachet. Nu inventa alte sume in lei.\n"
         "Scrie povestea lunii: cum a mers firma, ce inseamna rezultatul in termeni simpli. "
         "Daca rezultatul e pierdere, explica fara alarmism. "
         "NU afirma ca firma e la zi sau ca nu are restante decat daca lista de datorate/lipsa e goala; "
         "daca exista restante, mentioneaza-le concret, fara alarmism. "
-        "Daca nu sunt date, spune simplu ca luna a fost fara activitate inregistrata."
+        "Daca nu sunt date, spune simplu ca luna a fost fara activitate inregistrata.%s"
     ) % (rz["nume_firma"] or "firma", LUNI[luna] if 1 <= luna <= 12 else str(luna), an,
-         rz["venituri"], rz["cheltuieli"], rz["rezultat"], rz["tip"], depuse, restante_linie)
+         _lei(rz["venituri"]), _lei(rz["cheltuieli"]), _lei(rz["rezultat"]), calificativ, depuse, restante_linie,
+         calificativ, corectie_linie)
 
 
 def genereaza_poveste(conn_schema, conn_public, tenant_id, an, luna, schema):
@@ -121,11 +171,18 @@ def genereaza_poveste(conn_schema, conn_public, tenant_id, an, luna, schema):
     from core import control_fiscal_api as _cf
     ev = _cf.evalueaza_firma(conn_schema, conn_public, tenant_id, schema)
     restante_desc = _restante_desc(ev.get("lipsa"))
+    # o generare + o singură reîncercare, cu abaterile numite; dacă tot rămân, textul pleacă la editor CU ele (ecranul le
+    # arată) — aprobarea nu se blochează: textul aprobat e al contabilului (CLAUDE.md §8, DECIZII 05.10.2026)
+    abateri = None
     try:
-        text = ai_client.genereaza_text(_prompt_poveste(rz, an, luna, restante_desc), max_tokens=900)
+        for _incercare in range(2):
+            text = ai_client.genereaza_text(_prompt_poveste(rz, an, luna, restante_desc, corectie=abateri), max_tokens=900)
+            abateri = abateri_termeni(text, rz)
+            if not abateri:
+                break
     except Exception as e:
         return {"ok": False, "cod": "AI_EROARE", "mesaj": str(e), "rezumat": rz}
-    return {"ok": True, "text": text, "rezumat": rz, "restante": restante_desc}
+    return {"ok": True, "text": text, "rezumat": rz, "restante": restante_desc, "abateri": abateri}
 
 
 # ---------- CRUD poveste ----------
@@ -157,16 +214,30 @@ def salveaza_poveste(conn_public, tenant_id, an, luna, text, status="ciorna"):
 
 
 # ---------- trimitere ----------
-def _html(nume_firma, an, luna, poveste, semnatura):
+def _html(rz, an, luna, poveste, semnatura):
+    """Emailul raportului lunar. [comanda Costin 05.10.2026 pct.7] arată CIFRELE pachetului (venituri, cheltuieli, rezultat,
+    declarații depuse), cu aceiași termeni ca pachetul — previzualizarea e aceeași funcție, deci arată exact ce pleacă.
+    Până azi: povestea și semnătura, fără nicio cifră; cu povestea goală, o casetă goală."""
     def esc(s): return ("" if s is None else str(s)).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+    calificativ = rz.get("tip") or "neutru"   # exact cuvântul din pachet
+    depuse = ", ".join(rz.get("declaratii_depuse") or []) or "niciuna"
+    rand = ("<tr><td style='padding:4px 12px 4px 0;color:#555'>%s</td>"
+            "<td style='padding:4px 0;text-align:right;font-weight:600'>%s</td></tr>")
+    cifre = ("<table style='border-collapse:collapse;margin:0 0 16px'>%s%s%s%s</table>" % (
+        rand % ("Venituri", esc(_lei(rz.get("venituri") or 0))),
+        rand % ("Cheltuieli", esc(_lei(rz.get("cheltuieli") or 0))),
+        rand % ("Rezultat", esc("%s (%s)" % (_lei(rz.get("rezultat") or 0), calificativ))),
+        rand % ("Declarații depuse", esc(depuse))))
+    corp = esc(poveste) if (poveste or "").strip() else "<i style='color:#5b6573'>Povestea lunii nu e scrisă încă.</i>"
     return (
         "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:640px'>"
         "<h2 style='margin:0 0 4px'>Raport lunar &mdash; %s</h2>"
         "<p style='color:#555;margin:0 0 16px'>Luna %02d/%d</p>"
+        "%s"
         "<div style='background:#f6f8fa;padding:14px;border-radius:8px;white-space:pre-wrap'>%s</div>"
         "<p style='margin-top:14px;white-space:pre-wrap'>%s</p>"
-        "<p style='color:#888;font-size:13px;margin-top:20px'>Trimis prin iConta.</p></div>"
-    ) % (esc(nume_firma), luna, an, esc(poveste), esc(semnatura))
+        "<p style='color:#5b6573;font-size:13px;margin-top:20px'>Trimis prin iConta.</p></div>"
+    ) % (esc(rz.get("nume_firma")), luna, an, cifre, corp, esc(semnatura))
 
 
 def semnatura_cabinet(conn_public, uid, firm_id):
@@ -196,9 +267,9 @@ def preview_html(conn_schema, conn_public, tenant_id, an, luna, text, uid, firm)
     """HTML-ul emailului pentru un text dat (ciorna din editor, nu neaparat salvata),
     cu semnatura reala compusa din DB. Aceeasi functie _html ca trimite() -> preview
     identic cu emailul trimis. text vine din editor prin ruta, NU din pachet_povestea."""
-    prof = _profil(conn_schema)
+    rz = rezumat_luna(conn_schema, conn_public, tenant_id, an, luna)
     semnatura = semnatura_cabinet(conn_public, uid, firm)
-    return _html(prof.get("nume"), an, luna, text or "", semnatura)
+    return _html(rz, an, luna, text or "", semnatura)
 
 
 def pregateste(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
@@ -217,9 +288,11 @@ def pregateste(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
     pov = get_poveste(conn_public, tenant_id, an, luna)
     if not pov.get("exista") or pov.get("status") != "aprobat":
         return {"ok": False, "cod": "NEAPROBATA"}
+    if not (pov.get("text") or "").strip():
+        return {"ok": False, "cod": "POVESTE_GOALA"}
     return {"ok": True, "email": email,
             "subiect": "Raport lunar %02d/%d - %s" % (luna, an, rz["nume_firma"] or "firma"),
-            "html": _html(rz["nume_firma"], an, luna, pov["text"], semnatura)}
+            "html": _html(rz, an, luna, pov["text"], semnatura)}
 
 
 def trimite_pregatit(pregatit):

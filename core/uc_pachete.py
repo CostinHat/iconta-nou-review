@@ -43,14 +43,30 @@ def pachet_poveste_get(tenant_id, an, luna, ctx):
         return _pachete.get_poveste(cp, tenant_id, an, luna)
 
 
-def pachet_poveste_set(tenant_id, an, luna, date, ctx):
+# [comanda Costin 05.10.2026 pct.2] „generarea, editarea și ciorna rămân la «Poate pregăti»; «Aprobă» și «Trimite» cer
+# «Poate valida» (textul pleacă la client în numele cabinetului)”. Aprobarea are ruta ei (`/poveste/aproba`, VALIDA): pe aceeași
+# rută cu ciorna, garda n-ar fi deosebit-o și interfața n-ar fi putut ascunde doar „Aprobă” (DECIZII 05.10.2026).
+MESAJ_APROBARE_PE_RUTA_EI = ("Aprobarea poveștii are acțiunea ei și cere dreptul «Poate valida» — aici se salvează doar "
+                             "ciorna.")
+
+
+def pachet_poveste_aproba(tenant_id, an, luna, date, ctx):
+    """[comanda Costin 05.10.2026 pct.2] Corpul rutei `/pachete/{tenant_id}/poveste/aproba` („Poate valida”): același
+    corp ca ciorna, cu starea `aprobat` (garda de pe rută a decis deja că apelantul poate aproba)."""
+    return pachet_poveste_set(tenant_id, an, luna, date, ctx, _aprobare=True)
+
+
+def pachet_poveste_set(tenant_id, an, luna, date, ctx, _aprobare=False):
     """[P7 · use-case] Corpul rutei `/pachete/{tenant_id}/poveste`; docstringul ei a ramas in stratul HTTP."""
+    if not _aprobare and (getattr(date, "status", None) or "ciorna") != "ciorna":
+        raise _erori.CerereGresita(MESAJ_APROBARE_PE_RUTA_EI)
+    status = "aprobat" if _aprobare else "ciorna"
     _uc_comun._cere_perioada(an, luna)
     _uc_comun._pachet_schema(ctx, tenant_id)
     _de_trimis = None           # ce ramane de trimis DUPA ce blocul s-a inchis si a comis
     with db.get_conn() as cp:
-        r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
-        if (date.status or "") == "aprobat":
+        r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=status)
+        if status == "aprobat":
             email = _uc_comun._email_client_tenant(cp, tenant_id)
             if email:
                 nume = _uc_comun._nume_tenant(cp, tenant_id)
@@ -96,6 +112,7 @@ def pachet_trimite(tenant_id, an, luna, ctx):
         cod = r.get("cod")
         msg = {"FARA_EMAIL": "Firma nu are email setat in profil.",
                "NEAPROBATA": "Aproba povestea inainte de trimitere.",
+               "POVESTE_GOALA": "Povestea lunii e goală — scrie sau generează povestea, apoi aprob-o.",
                "EMAIL_ESUAT": "Emailul nu a putut fi trimis."}.get(cod, cod or "eroare")
         raise _erori.CerereGresita(msg)
     return r

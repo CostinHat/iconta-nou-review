@@ -403,3 +403,70 @@ def test_regimul_tva_schimbat_de_asistent_se_jurnalizeaza_cu_el(cabinet, monkeyp
     with cabinet["conn"].cursor() as c:
         c.execute("SELECT camp, valoare_veche, valoare_noua, user_id FROM %s.firma_profil_jurnal ORDER BY id" % SCH)
         assert c.fetchall() == [("platitor_tva", "false", "true", cabinet["uid_asist"])]
+
+
+# ── comanda Costin 05.10.2026 (testarea ca asistent, 2): povestea lunii, motivul acțiunilor ascunse, administratorul ─────────
+# Pct.2: „generarea, editarea și ciorna rămân la «Poate pregăti»; «Aprobă» și «Trimite» cer «Poate valida» (textul pleacă la
+# client în numele cabinetului)”. Pinat pe NUMELE funcției (căile de scriere numite într-un test ar trece drept „probate”, D3).
+_PINI_POVESTE = {
+    "pachet_genereaza": ("PREGATI", "„generarea … rămân la «Poate pregăti»”"),
+    "pachet_poveste_set": ("PREGATI", "„editarea și ciorna rămân la «Poate pregăti»”"),
+    "pachet_poveste_aproba": ("VALIDA", "„«Aprobă» … cer «Poate valida»”"),
+    "pachet_trimite": ("VALIDA", "„… și «Trimite» cer «Poate valida»”"),
+}
+
+
+@pytest.mark.parametrize("functie", sorted(_PINI_POVESTE))
+def test_povestea_sta_pe_nivelul_decis(functie):
+    from core import scan_rol_pe_efect as _sre
+    chei = [k for k, fn in _sre.rute().items() if fn.name == functie]
+    assert len(chei) == 1, "ruta cu funcția %s: %s" % (functie, chei)
+    nivel, temei = _PINI_POVESTE[functie]
+    assert _garzi().get(chei[0]) == ("drept", nivel), "%s stă pe %s, decizia cere %s — %s" % (
+        functie, _garzi().get(chei[0]), nivel, temei)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_aprobarea_si_trimiterea_povestii_cer_poate_valida(cabinet):
+    """Asistentul cu „Poate pregăti”: ciorna trece garda; `status=aprobat` pe ruta de ciornă -> refuz numit (altfel aprobarea
+    ar fi trecut pe pregătire); ruta de aprobare și trimiterea -> refuzul „Poate valida”. Cu „Poate valida” trec garda."""
+    from core import uc_pachete
+    cl, t, q = _cl(), cabinet["tid"], {"an": 2099, "luna": 1}
+    r = cl.post(_cale("pachet_poveste_set", tenant_id=t), params=q, headers=_H(cabinet["asist"]),
+                json={"text": "ZT", "status": "aprobat"})
+    assert r.status_code == 400 and r.json()["detail"] == uc_pachete.MESAJ_APROBARE_PE_RUTA_EI, r.text
+    for f in ("pachet_poveste_aproba", "pachet_trimite"):
+        r = cl.post(_cale(f, tenant_id=t), params=q, headers=_H(cabinet["asist"]), json={"text": "ZT"})
+        assert r.status_code == 403 and r.json()["detail"] == D.MESAJ[D.VALIDA], (f, r.text)
+    _seteaza_bife(cabinet, poate_valida=True)
+    r = cl.post(_cale("pachet_poveste_aproba", tenant_id=t), params=q, headers=_H(cabinet["asist"]), json={"text": "ZT"})
+    assert r.status_code not in (401, 403), r.text
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_eu_drepturi_spune_si_de_ce(cabinet):
+    """Pct.3: interfața arată motivul acțiunilor ascunse — nivelul vine de la server, cu numele de pe ecranul Asistenți."""
+    import main
+    d = _cl().get("/eu/drepturi", headers=_H(cabinet["asist"])).json()
+    cale = [r.path for r in main.app.routes if getattr(r, "name", "") == "pachet_poveste_aproba"][0]
+    assert d["motive"]["POST " + cale] == D.VALIDA
+    assert d["motive"]["POST /tenants"] == D.ADMIN
+    assert d["nume_niveluri"] == {D.PREGATI: "Poate pregăti", D.VALIDA: "Poate valida", D.DEPUNE: "Poate depune"}
+    assert set(d["motive"]) == set(d["interzise"]), "fiecare acțiune refuzată are motivul ei"
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_bifele_administratorului_nu_se_schimba(cabinet):
+    """Pct.4: administratorul are toate drepturile (B3). Pe producție, contabil.b ajunsese cu „Poate valida” scos prin ecran —
+    afișat fără drept, deși garda îl lasă, și nenumărat printre validatori."""
+    from core.mesaje import MESAJ_COD
+    with cabinet["conn"].cursor() as c:
+        c.execute("SET search_path TO public")
+        c.execute("SELECT id FROM public.users WHERE email='zt_dr_admin@invalid'")
+        uid_admin = c.fetchone()[0]
+    r = _cl().post(_cale("asistenti_permisiuni", uid=uid_admin), headers=_H(cabinet["admin"]),
+                   json={"poate_pregati": True, "poate_valida": False, "poate_depune": True})
+    assert r.status_code == 400 and r.json()["detail"] == MESAJ_COD["ADMIN_TOATE_DREPTURILE"], r.text
+    r = _cl().post(_cale("asistenti_permisiuni", uid=cabinet["uid_asist"]), headers=_H(cabinet["admin"]),
+                   json={"poate_pregati": True, "poate_valida": True, "poate_depune": False})
+    assert r.status_code == 200, "bifele unui asistent trebuie să se poată schimba în continuare: %s" % r.text

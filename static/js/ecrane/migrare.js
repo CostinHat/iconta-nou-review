@@ -17,7 +17,7 @@ function _consumaMigMesaj(corp) {
   _migMesaj = "";
 }
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] meniul de import fără niciun pas permis spune de ce */
+import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] meniul de import fără niciun pas permis spune de ce */
 
 // [drepturi_rol 04.10.2026] `actiune` = ruta care FACE pasul (METODĂ /cale, ca în main.py). Ghidul de bun venit
 // arată numai pașii permiși utilizatorului (comanda Costin pct.5), iar rândurile meniurilor de import poartă
@@ -1680,7 +1680,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   // [drepturi_rol 04.10.2026] Niciun pas permis (asistent fără „Poate pregăti”): ecranul spune DE CE e gol și cine dă
   // dreptul, în loc de „Alege ce vrei să aduci” deasupra unei liste goale.
   if (!pasiVizibili.some((p) => permis(p.actiune || (STRATURI.find((s) => s.cheie === p.strat) || {}).actiune))) {
-    lista.insertAdjacentHTML("afterend", `<p class="ecran-nota" id="mig-fara-drept">Importul datelor firmei cere dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>`);
+    lista.insertAdjacentHTML("afterend", `<p class="ecran-nota drept-motiv" id="mig-fara-drept">Importul datelor firmei cere dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>`);
   }
   _consumaMigMesaj(corp);
 }

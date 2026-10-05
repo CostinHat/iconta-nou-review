@@ -21,7 +21,7 @@ import { randeazaValidat } from "./validat.js?v=151165bd7b";
 import { randeazaListaFirme } from "./firme.js?v=8e81ab26fc";
 import { randeazaRecomanda } from "./recomanda.js?v=2329daf000"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=fbffc9a6ed"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js?v=ea735524af"; // [p63_pachete]
+import { randeazaPachete } from "./pachete.js?v=4a47e92ff3"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=387961b076"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
@@ -50,7 +50,7 @@ const NODURI = {
   pachete: { titlu: "Pachete lunare", icon: "mail", ...CULORI_CARD.violet,
     sinteza: "Trimite pachetul lunar către clienți",
     deschide: (nav) => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)) },
-  raport: { titlu: "Raportează", icon: "report", ...CULORI_CARD.ardezie,
+  raport: { titlu: "Raportează", icon: "suport", ...CULORI_CARD.ardezie,   // [05.10.2026] „report” nu mai e în ICOANE (v2.7) — desena gol
     sinteza: "Raportează o problemă către iConta.eu",
     deschide: (nav) => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav)) },
   recomanda: { titlu: "Recomandă", icon: "gift", ...CULORI_CARD.chihlimbar,

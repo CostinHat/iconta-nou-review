@@ -16860,3 +16860,31 @@ producție**, în `masuratori/p3/concurenta.json` (commit `3cd7aebe`, 09.09.2026
 4. **Gardul** (`core/test_fara_secrete_in_git.py`) rulează în poartă: o valoare reală din `~/.iconta` sau o parolă atribuită într-un
    fișier urmărit oprește commitul. Limita: valorile din `~/.iconta` se văd doar pe serverul care le are (acolo rulează poarta).
 
+## 05.10.2026 — Testarea ca asistent (2): povestea lunii, drepturile arătate, Asistenți, iconițe, Pachete (comanda Costin)
+
+**Comanda (verbatim, primită tăiată după „commit,”):** *„1. Povestea lunii generată de AI confundă termenii: pachetul arată „Venituri
+1.000 lei”, iar textul spune „încasări de 1.000 de lei” și „a cheltuit mai mult decât a câștigat”. Venituri, încasări și profit sunt
+lucruri diferite pentru antreprenor. Textul generat folosește exact termenii și cifrele din pachet (venituri, cheltuieli, rezultat);
+verifică promptul și orice text fix din șablon pe aceeași clasă. 2. Povestea lunii: generarea, editarea și ciorna rămân la „Poate
+pregăti”; „Aprobă” și „Trimite” cer „Poate valida” (textul pleacă la client în numele cabinetului). Interfața urmează serverul.
+3. Asistentul fără „Poate pregăti” vedea fereastra poveștii fără butoane și fără nicio explicație. Când acțiunile lipsesc din cauza
+drepturilor, afișează motivul („cere dreptul «…»; îl acordă administratorul din Asistenți”). Verifică aceeași clasă pe celelalte ecrane
+cu acțiuni ascunse. 4. Ecranul Asistenți: administratorul apare cu „Poate valida” nebifat, deși are toate drepturile. Afișează-i toate
+trei ca active (sau „toate drepturile”), fără bife editabile. 5. „Raportează” n-are iconiță, nici în meniul din stânga, nici pe card.
+6. Pachete lunare: alegerea firmei apare de două ori (căutare + listă derulantă). Un singur control. 7. „Vezi ca email” cu povestea goală
+arată o casetă goală și semnătura, fără cifrele lunii. Previzualizarea arată cifrele pachetului; cu povestea goală, „Trimite” rămâne
+inactiv cu motiv.”*
+
+**Consecințe (executor):**
+1. **Aprobarea are rută proprie** (`POST /pachete/{tenant_id}/poveste/aproba`, „Poate valida”): pe aceeași rută cu ciorna, garda nu
+   le putea deosebi și interfața n-ar fi putut ascunde doar „Aprobă” (ea urmează gărzile rutelor). Ruta de ciornă refuză numit
+   `status=aprobat`. Alternativa respinsă: verificarea nivelului în corpul rutei — invizibilă pentru `/eu/drepturi`.
+2. **Termenii poveștii se verifică după generare**, nu doar se cer în prompt: un model poate ignora instrucțiunea. Abaterile
+   (sinonim interzis, sumă care nu e în pachet) duc la o reîncercare, apoi la un avertisment pe ecran; textul editat de contabil e
+   responsabilitatea lui (CLAUDE.md §8), deci aprobarea NU se blochează pe abateri.
+3. **Emailul trimis arată cifrele pachetului**, nu doar povestea: previzualizarea și emailul sunt aceeași funcție, iar cerința e ca
+   previzualizarea să arate cifrele — deci le arată și emailul.
+4. **Motivul acțiunilor ascunse e un mecanism, nu mesaje pe ecran**: poarta din `drepturi.js` știe ce a ascuns și de ce (nivelul vine
+   de la server). Alternativa respinsă: un mesaj scris în fiecare ecran (ar rata ecranele viitoare).
+5. **Alegerea firmei = un singur `<select>`**, forma deja folosită la Declarații (pasul 1, același tipar `dec-form`).
+

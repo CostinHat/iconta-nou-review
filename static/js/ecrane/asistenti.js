@@ -126,7 +126,8 @@ function randActor(a, corp, nav) {
   div.className = "val-card" + (a.activ ? "" : " asi-inactiv");
   const nume = [a.prenume, a.nume].filter(Boolean).join(" ") || a.email;
   const rolText = a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent");
-  const perms = PERM.map(([k, t]) => pastilaPerm(a[k], t)).join(" ");
+  // [comanda Costin 05.10.2026 pct.4] administratorul are toate drepturile (B3): cele trei apar active, indiferent de bife
+  const perms = PERM.map(([k, t]) => pastilaPerm(a.rol === "admin_firma" || a[k], t)).join(" ");
   const inactivBadge = a.activ ? "" : `<span class="asi-badge-inactiv">dezactivat</span>`;
   div.innerHTML = `
     <div class="asi-rand-sus">
@@ -160,7 +161,8 @@ async function deschideEditare(uid, corp, nav) {
   const nume = [a.prenume, a.nume].filter(Boolean).join(" ") || a.email;
   // [drepturi_rol 04.10.2026] fără nicio competență NU e „Nivel 1”: asistentul nu poate face nimic pe firme
   const nivelText = (preg, val, dep) => dep ? "Nivel 3" : (val ? "Nivel 2" : (preg ? "Nivel 1" : "fără competențe"));
-  const calcNivel = () => nivelText(a.poate_pregati, a.poate_valida, a.poate_depune);
+  const esteAdmin = a.rol === "admin_firma";
+  const calcNivel = () => esteAdmin ? "toate drepturile" : nivelText(a.poate_pregati, a.poate_valida, a.poate_depune);
 
   nav.deschide(`Editeaza \u2014 ${nume}`, (box) => {
     const sectiuneFirme = a.atribuire_relevanta
@@ -181,9 +183,12 @@ async function deschideEditare(uid, corp, nav) {
         <span class="asi-nivel-badge" id="asi-nivel-badge">${calcNivel()}</span>
         <span class="tip-desc">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
       </div>
-      <div class="asi-sectiune-titlu">Alege competente</div>
+      <div class="asi-sectiune-titlu">${esteAdmin ? "Competențe" : "Alege competente"}</div>
       <div id="asi-perm-edit">
-        ${PERM.map(([k, t]) => `
+        ${esteAdmin
+          ? `<p class="asi-mic">Administratorul cabinetului are toate drepturile: ${PERM.map(([, t]) => t).join(", ")}. Nu se bifează.</p>
+             <div class="asi-perms">${PERM.map(([, t]) => pastilaPerm(true, t)).join(" ")}</div>`
+          : PERM.map(([k, t]) => `
           <label class="asi-firma-rand">
             <input type="checkbox" data-perm="${k}" ${a[k] ? "checked" : ""}>
             <span>${t}</span>
@@ -226,7 +231,8 @@ async function deschideEditare(uid, corp, nav) {
       try {
         const permVals = {};
         box.querySelectorAll("[data-perm]").forEach((cb) => { permVals[cb.dataset.perm] = cb.checked; });
-        const _rp = await api.post(`/asistenti/${uid}/permisiuni`, permVals);
+        // administratorul n-are bife de trimis (serverul le refuză: ADMIN_TOATE_DREPTURILE)
+        const _rp = esteAdmin ? null : await api.post(`/asistenti/${uid}/permisiuni`, permVals);
         if (a.atribuire_relevanta) {
           const initiale = {};
           firme.forEach((f) => (initiale[f.id] = f.atribuit));

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.65 · 4 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.66 · 5 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -88,6 +88,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 ## 6. Mesaje de stare, câmpuri obligatorii și ghidaj
 
+- **Alegerea firmei într-un formular = UN control (v2.66, comanda Costin 05.10.2026):** `<select>` cu „— alege firma —”, forma de la Declarații. Nu un câmp „Caută firma” plus o listă derulantă pentru aceeași alegere (instanța: Pachete lunare). Lista de bife a firmelor unui asistent (o alegere multiplă) nu e în regulă. Gard: verificator `ALEGERE_FIRMA_DUBLA`.
+
 - Succes: text verde #1d7a4d, weight 600, afișat pe ecranul principal DUPĂ revenirea din formular.
 - `arataMesaj(el, txt, tip)` — singura cale de afișare a mesajelor de stare. Tipuri canonice: `eroare` (roșu), `avert` (galben), `info` (gri), `ok` (verde, succes). INTERZIS mesaj de stare prin innerHTML cu clase ad-hoc (`mig-gol`, `pf-intro`, span inline).
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
@@ -138,6 +140,11 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   și se dezactivează în loc să dispară. Un buton care DESCHIDE formularul unei acțiuni („+ …”, „Adaugă…”, „Emite…”) poartă
   acțiunea formularului, sau `data-fara-actiune="<motiv>"` (rând în formular, navigare, portalul clientului). Gard:
   `core/test_drepturi_ui.py` + verificator `ACTIUNE_REFUZATA_NEMARCATA`.
+- **Motivul acțiunilor ascunse se arată (v2.66, comanda Costin 05.10.2026).** Când poarta ascunde acțiuni într-o fereastră
+  (`.fereastra-corp`, overlay-ul poveștii `.pacm`, sau o zonă `data-zona-drepturi`), pune o singură notă `.drept-motiv`:
+  „Unele acțiuni de aici nu se afișează: cer dreptul «…», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul
+  Asistenți.” (nivelul vine de la server, `GET /eu/drepturi` → `motive`). Un ecran care își scrie singur mesajul pentru aceeași
+  situație îi dă clasa `drept-motiv` și nota generică nu se mai pune. Gard: verificator `MOTIV_DREPT_ABSENT` + `core/test_drepturi_ui.py`.
 
 ## 10. Escape și securitate
 
@@ -169,6 +176,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Iconițele de card/UI folosesc EXCLUSIV dicționarul canonic unic `ICOANE` (api.js) — path-uri SVG interne, viewBox 24×24, stroke. NU se duplică dicționarul în ecrane (era copiat divergent în cabinet/admin/asistent).
 - Fiecare concept = o iconiță sugestivă distinctă. Triada card = culoare + denumire + iconiță, toate coerente. INTERZIS iconiță generică (`report`) folosită ca fallback pe concepte diferite.
 - Iconiță nouă → se adaugă în `ICOANE`, nu inline într-un ecran. Prins de regula ICOANE_LOCAL în verificator.
+- **Cheia folosită există în `ICOANE` (v2.66, 05.10.2026).** `svg(cheie)` desenează `ICOANE[cheie] || ""` — o cheie greșită dă o iconiță GOALĂ, fără eroare (instanța: „Raportează” și „Raportări” cereau `report`, scos în v2.7). Prins de regula `ICOANA_INEXISTENTA` în verificator.
 
 ## 14. Tipografie
 
@@ -663,6 +671,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.66 (05.10.2026)** — **cap.9 motivul acțiunilor ascunse; cap.13 cheia de iconiță existentă; cap.6 un singur control pentru alegerea firmei.** Din testarea ca asistent (2), comanda Costin pct.3, 5, 6: fereastra poveștii fără niciun buton și fără explicație; „Raportează” fără iconiță (cheia `report`, scoasă în v2.7); Pachete cu „Caută firma” + listă pentru aceeași alegere. Gărzi: `MOTIV_DREPT_ABSENT`, `ICOANA_INEXISTENTA`, `ALEGERE_FIRMA_DUBLA` (verificator).
+
 **v2.65 (04.10.2026)** — **cap.10: mesajul de eroare de la server se escapează în HTML.** Găsit la confirmările de drepturi (comanda Costin, pct.1/2/5): 13 interpolări `${e.mesaj}` / `${err.mesaj}` neescapate în șabloane HTML (portal 7, firme 3, cabinet, facturi, Woo) — un mesaj care citează un nume tastat cu `<` devenea marcaj. Reparate toate; gard `MESAJ_SERVER_NEESCAPAT` (verificator).
 
 **v2.64 (04.10.2026)** — **cap.9: închiderea ferestrelor informative (X în antet + Esc, mecanism unic `inchidereDialog`) și acțiunile refuzate rolului (`data-actiune` + `drepturi.js`).** Din testarea ca asistent (comanda Costin, pct.2 și pct.4): bun-venitul se închidea numai de la butonul de la capătul listei; asistentul vedea „+ Adaugă firmă”, „Import în masă” și „Scoate”. Inventar la intrare: din 9 ferestre suprapuse, 2 aveau X și Esc, una nici X nici Esc (bun-venitul), una fără X (anunțul), restul X fără Esc. Ferestrele cu câmpuri rămân deliberat doar cu X (DECIZII 04.10.2026). Gărzi: `DIALOG_FARA_INCHIDERE` (verificator) și `core/test_drepturi_ui.py`.

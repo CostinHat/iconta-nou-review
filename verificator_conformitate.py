@@ -1420,6 +1420,50 @@ for _nume, _t in fisiere.items():
                         "mesaj de eroare de la server interpolat in HTML fara esc(): " + _m.group(0)[:50]))
                     break
 
+# --- ICOANA_INEXISTENTA (DS cap.13 v2.66, comanda Costin 05.10.2026 pct.5): orice cheie de iconiță folosită într-un ecran
+#     (`icon: "x"`, `ICOANE["x"]`, `ICOANE.x`) există în dicționarul canonic `ICOANE` din api.js. `svg(cheie)` desena
+#     `ICOANE[cheie] || ""` — o cheie greșită dădea o iconiță GOALĂ, fără eroare („Raportează” și „Raportări” cereau `report`,
+#     scos în v2.7). Mutația care o probează: `icon: "suport"` -> `icon: "report"` în asistent.js -> TOTAL > 0.
+rap["icoana_inexistenta"] = []
+try:
+    _api_t = fisiere.get("api.js", "")
+    _ii = _api_t.index("export const ICOANE = {")
+    _chei_ic = set(re.findall(r"(?m)^\s*([a-z_]+):", _api_t[_ii:_api_t.index("};", _ii)]))
+    _re_ic = re.compile(r"""\bicon\s*:\s*["']([a-z_]+)["']|ICOANE\[\s*["']([a-z_]+)["']\s*\]|ICOANE\.([a-z_]+)""")
+    for _nume, _t in fisiere.items():
+        for _m in _re_ic.finditer(_t):
+            _k = _m.group(1) or _m.group(2) or _m.group(3)
+            if _k not in _chei_ic:
+                rap["icoana_inexistenta"].append((_nume, _t.count("\n", 0, _m.start()) + 1, _k,
+                    "cheie de iconita inexistenta in ICOANE (api.js): svg() deseneaza gol (DS cap.13)"))
+    if len(_chei_ic) < 15:
+        rap["icoana_inexistenta"].append(("api.js", 0, "ICOANE", "dictionarul ICOANE nu s-a putut citi (%d chei)" % len(_chei_ic)))
+except Exception as _e_ic:
+    rap["icoana_inexistenta"].append(("verificator", 0, "EROARE", "gard icoana_inexistenta: " + str(_e_ic)))
+
+# --- ALEGERE_FIRMA_DUBLA (DS cap.6 v2.66, comanda Costin 05.10.2026 pct.6): alegerea firmei într-un formular e UN control
+#     (`<select>` cu „— alege firma —”). Un câmp „Caută firma” în același fișier cu o listă „— alege firma —” = aceeași alegere
+#     de două ori (instanța: Pachete lunare). Lista de BIFE a firmelor (asistenți) nu are „— alege firma —”, deci nu intră.
+#     Mutația care o probează: câmpul `pac-cauta` repus în pachete.js -> TOTAL > 0.
+rap["alegere_firma_dubla"] = []
+for _nume, _t in fisiere.items():
+    if re.search(r"""placeholder=["']Caut[ăa] firma""", _t) and re.search(r"<option[^>]*>\s*(?:—|\\u2014)\s*alege firma", _t):
+        _ln = _t.count("\n", 0, re.search(r"""placeholder=["']Caut[ăa] firma""", _t).start()) + 1
+        rap["alegere_firma_dubla"].append((_nume, _ln, "firma", "camp de cautare + lista derulanta pentru aceeasi firma (DS cap.6)"))
+
+# --- MOTIV_DREPT_ABSENT (DS cap.9 v2.66, comanda Costin 05.10.2026 pct.3): poarta din drepturi.js, când ascunde acțiuni într-o
+#     zonă, pune nota `.drept-motiv` cu dreptul care lipsește și cine îl acordă. Gardianul cere ca mecanismul să existe și să
+#     acopere ferestrele din navigator și overlay-ul poveștii. Comportamentul îl probează `frontend_test/proba_asistent_poveste.py`.
+#     Mutația care o probează: `motivInZona` scos din bucla lui aplicaDrepturi -> TOTAL > 0.
+rap["motiv_drept_absent"] = []
+_dr_t = fisiere.get("drepturi.js", "")
+for _cerinta, _rx in (("zona include .fereastra-corp", r'ZONA_MOTIV\s*=\s*"[^"]*\.fereastra-corp'),
+                      ("zona include .pacm", r'ZONA_MOTIV\s*=\s*"[^"]*\.pacm\b'),
+                      ("aplicaDrepturi pune motivul", r"zone\.forEach\(motivInZona\)"),
+                      ("textul numește cine acordă dreptul", r"[ÎL][le] acordă administratorul cabinetului, din ecranul Asistenți")):
+    if not re.search(_rx, _dr_t):
+        rap["motiv_drept_absent"].append(("drepturi.js", 0, "drept-motiv", "lipseste: %s (DS cap.9 v2.66)" % _cerinta))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

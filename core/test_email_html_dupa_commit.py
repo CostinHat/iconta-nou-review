@@ -216,7 +216,7 @@ def test_commit_reusit_emailul_pleaca(m, monkeypatch):
     """DB_COMMIT_SUCCESS -> EMAIL_ALLOWED."""
     conn = _Conn()
     postas = _pregateste_poveste(m, monkeypatch, conn)
-    r = m.pachet_poveste_set(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
+    r = m.pachet_poveste_aproba(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
     assert r["ok"] is True
     assert conn.comis == 1, "tranzactia nu s-a comis"
     assert len(postas.trimise) == 1, "e-mailul n-a plecat dupa un commit reusit"
@@ -233,7 +233,7 @@ def test_commit_cazut_emailul_NU_pleaca(m, monkeypatch):
     conn = _Conn()
     postas = _pregateste_poveste(m, monkeypatch, conn, cade=True)
     with pytest.raises(RuntimeError):
-        m.pachet_poveste_set(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
+        m.pachet_poveste_aproba(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
     assert postas.trimise == [], (
         "a plecat un e-mail despre un raport care nu s-a salvat: %r" % (postas.trimise,))
 
@@ -243,7 +243,7 @@ def test_emailul_cazut_DUPA_commit_lasa_baza_comisa(m, monkeypatch):
     conn = _Conn()
     postas = _pregateste_poveste(m, monkeypatch, conn)
     postas.raspuns = False
-    r = m.pachet_poveste_set(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
+    r = m.pachet_poveste_aproba(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
     assert conn.comis == 1, "commitul s-a pierdut din cauza e-mailului"
     assert r["ok"] is True, "ruta a raportat esec pentru un act care a reusit"
     assert len(postas.trimise) == 1
@@ -263,7 +263,7 @@ def test_fara_email_de_client_nu_se_trimite(m, monkeypatch):
     conn = _Conn()
     postas = _pregateste_poveste(m, monkeypatch, conn)
     monkeypatch.setattr(_uc_comun, "_email_client_tenant", lambda c, tid: None)
-    m.pachet_poveste_set(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
+    m.pachet_poveste_aproba(1, 2026, 6, _Text(), ctx={"firm": 1, "uid": 1})
     assert postas.trimise == []
 
 

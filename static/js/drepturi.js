@@ -20,11 +20,15 @@
 import { api } from "./api.js?v=91e1c0701a";
 
 let _refuzate = new Set();
+let _motive = {};          // „METODĂ /cale” -> nivelul refuzat (poate_pregati / poate_valida / poate_depune / admin_cabinet / rol)
+let _numeNiveluri = {};    // nivel -> numele de pe ecranul Asistenți
 
 export async function incarcaDrepturi() {
   try {
     const r = await api.get("/eu/drepturi");
     _refuzate = new Set((r && r.interzise) || []);
+    _motive = (r && r.motive) || {};
+    _numeNiveluri = (r && r.nume_niveluri) || {};
   } catch (e) {
     // Fără listă nu se ascunde nimic: serverul rămâne garda, iar refuzul lui se vede (pct.1 al comenzii).
     _refuzate = new Set();
@@ -40,14 +44,67 @@ export function permis(actiune) {
 
 export function aplicaDrepturi(radacina) {
   if (!_refuzate.size || !radacina || !radacina.querySelectorAll) return;
+  // un mesaj al ecranului (`.drept-motiv` fără `-generic`) apărut DUPĂ notă o înlocuiește: un singur motiv pe zonă
+  const specifice = [...radacina.querySelectorAll(".drept-motiv:not(.drept-motiv-generic)")];
+  if (radacina.matches && radacina.matches(".drept-motiv:not(.drept-motiv-generic)")) specifice.push(radacina);
+  specifice.forEach((m) => {
+    const z = m.closest(ZONA_MOTIV);
+    if (z) z.querySelectorAll(".drept-motiv-generic").forEach((g) => g.remove());
+  });
   const elemente = [...radacina.querySelectorAll("[data-actiune]")];
   if (radacina.matches && radacina.matches("[data-actiune]")) elemente.push(radacina);
-  elemente.forEach((el) => { if (!permis(el.dataset.actiune)) refuza(el); });
+  const zone = new Set();
+  elemente.forEach((el) => {
+    if (permis(el.dataset.actiune)) return;
+    refuza(el);
+    const z = el.closest(ZONA_MOTIV);
+    if (z) zone.add(z);
+  });
+  zone.forEach(motivInZona);
   const campuri = [...radacina.querySelectorAll("[data-actiune-camp]")];
   if (radacina.matches && radacina.matches("[data-actiune-camp]")) campuri.push(radacina);
   campuri.forEach((el) => {
     if (!permis(el.dataset.actiuneCamp)) { el.disabled = true; el.setAttribute("aria-disabled", "true"); }
   });
+}
+
+// [comanda Costin 05.10.2026 pct.3] „Când acțiunile lipsesc din cauza drepturilor, afișează motivul («cere dreptul «…»; îl
+// acordă administratorul din Asistenți»)”. Instanța: asistentul fără „Poate pregăti” vedea fereastra poveștii fără niciun buton
+// și fără nicio explicație. Poarta ȘTIE ce a ascuns și de ce (nivelul vine de la server), deci motivul îl pune ea, o singură
+// dată pe zonă — nu fiecare ecran în parte (un ecran nou ar fi uitat). Zona: fereastra din navigator, overlay-ul poveștii sau
+// un element marcat `data-zona-drepturi`. Un mesaj scris de ecran pentru aceeași situație poartă clasa `drept-motiv` și o
+// înlocuiește pe asta (nu se dublează). DS cap.9; gard `core/test_drepturi_ui.py`.
+const ZONA_MOTIV = ".pacm, .fereastra-corp, [data-zona-drepturi]";
+
+export function textMotiv(niveluri, oriceVizibil) {
+  const drepturi = [...niveluri].filter((n) => _numeNiveluri[n]).map((n) => "«" + _numeNiveluri[n] + "»");
+  const doarAdmin = [...niveluri].some((n) => !_numeNiveluri[n]);
+  const inceput = oriceVizibil ? "Unele acțiuni de aici nu se afișează" : "Acțiunile de aici nu se afișează";
+  const parti = [];
+  if (drepturi.length) {
+    parti.push(inceput + ": " + (drepturi.length === 1
+      ? "cer dreptul " + drepturi[0] + ", pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți."
+      : "cer drepturile " + drepturi.join(" și ") + ", pe care nu le ai. Le acordă administratorul cabinetului, din ecranul Asistenți."));
+  }
+  if (doarAdmin) parti.push((drepturi.length ? "Altele" : inceput + ":") + " le face doar administratorul cabinetului.");
+  return parti.join(" ");
+}
+
+function motivInZona(zona) {
+  if (zona.querySelector(".drept-motiv")) return;   // generică deja pusă, sau mesajul ecranului pentru aceeași situație
+  const niveluri = new Set();
+  zona.querySelectorAll(".drept-refuzat[data-actiune]").forEach((el) => {
+    String(el.dataset.actiune).split("|").map((a) => a.trim()).filter((a) => _refuzate.has(a))
+      .forEach((a) => niveluri.add(_motive[a] || "rol"));
+  });
+  if (!niveluri.size) return;
+  const oriceVizibil = [...zona.querySelectorAll("[data-actiune]")].some((el) => !el.classList.contains("drept-refuzat"));
+  const p = document.createElement("p");
+  p.className = "ecran-nota drept-motiv drept-motiv-generic";
+  p.setAttribute("role", "note");
+  p.textContent = textMotiv(niveluri, oriceVizibil);
+  const bara = zona.querySelector(":scope .pacm-bara");
+  if (bara) bara.before(p); else zona.prepend(p);
 }
 
 function refuza(el) {

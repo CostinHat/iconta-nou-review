@@ -16,7 +16,7 @@ function svg(cheie, fg) {
 
 // cardurile panoului Admin iConta (extensibil)
 const DEF = [
-  { cheie:"raportari", titlu:"Raportări", icon:"report", ...CULORI_CARD.violet,
+  { cheie:"raportari", titlu:"Raportări", icon:"solicitari", ...CULORI_CARD.violet,   // [05.10.2026] „report” nu mai e în ICOANE — desena gol
     sinteza:"Răspunde la sesizările utilizatorilor",
     actiune:(nav) => nav.deschide("Raportări", (corp) => randeazaAdminRaportari(corp, nav)) },
   { cheie:"activitate", titlu:"Activitate cabinete", icon: "activitate", ...CULORI_CARD.verde,

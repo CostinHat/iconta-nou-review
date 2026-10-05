@@ -1409,3 +1409,23 @@ scannerul de secrete existent (orb la `CAB_PAROLA = …` și la `"parola": …`)
 
 **Proba:** parola din istoric -> 401, cea nouă -> 200, un token emis înainte -> 401; parola veche a bazei -> refuzată de Postgres,
 cea nouă -> conectat; aplicația 200 după repornire; cele 16 căi de logare ale uneltelor din `frontend_test` -> 200.
+
+## 05.10.2026 — Testarea ca asistent (2): povestea lunii pe termenii pachetului, aprobarea la „Poate valida”, motivul acțiunilor ascunse, Asistenți, iconițe, Pachete (comanda Costin)
+
+**Ce a găsit Costin:** povestea generată de AI scria „încasări” acolo unde pachetul spune „venituri”; „Aprobă” și „Trimite” erau
+la „Poate pregăti”; fără drept, fereastra poveștii rămânea fără butoane și fără explicație; administratorul apărea fără „Poate
+valida”; „Raportează” n-avea iconiță; alegerea firmei apărea de două ori în Pachete; previzualizarea cu povestea goală n-avea cifre.
+
+**Ce s-a măsurat înainte:** cu AI-ul real, pe ALFA MICRO SRL (venituri 3.000, cheltuieli 8.186, pierdere 5.186), promptul vechi a
+scris „firma a avut încasări de 3.000 de lei” la ambele generări; în browser, toate cele șapte situații reproduse pe contul de asistent.
+
+**Ce s-a făcut:** promptul cere termenii și sumele pachetului, iar textul se verifică după generare (o reîncercare, apoi avertisment
+pe ecran) — cu promptul nou, zero abateri la ambele generări; aprobarea poveștii are rută proprie pe „Poate valida”, trimiterea la
+fel; poarta drepturilor pune, în orice fereastră unde ascunde acțiuni, motivul („cer dreptul «…»… Îl acordă administratorul
+cabinetului, din ecranul Asistenți”) — se vede și pe alte ecrane (ex. Registrul jurnal); administratorul apare cu toate drepturile,
+fără bife, iar serverul nu-i mai schimbă bifele; iconițele „Raportează” / „Raportări” refăcute; un singur control pentru firmă;
+emailul (și previzualizarea) arată cifrele pachetului, iar „Trimite” spune de ce e inactiv.
+
+**Găsite pe drum:** un rezultat zero apărea „(profit)” în pachet; administratorul de pe producție avea „Poate valida” scos din ecran,
+deci nu era numărat printre validatori (repus, regula B3 din 06.08); contrast insuficient pe pastilele de drepturi și pe griurile din
+email.

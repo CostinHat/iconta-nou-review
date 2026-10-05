@@ -3026,6 +3026,18 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,  
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+class PachetAprobaIn(BaseModel):
+    text: str
+
+
+@app.post("/pachete/{tenant_id}/poveste/aproba")
+# [comanda Costin 05.10.2026 pct.2] „«Aprobă» și «Trimite» cer «Poate valida» (textul pleacă la client în numele cabinetului)”.
+def pachet_poveste_aproba(tenant_id: int, an: int, luna: int, date: PachetAprobaIn, ctx=Depends(cere_drept(_drepturi.VALIDA))):
+    try:
+        return _uc_pachete.pachet_poveste_aproba(tenant_id, an, luna, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
 @app.get("/pachete/{tenant_id}/preview")
 def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depends(cere_cabinet)):
     try:
@@ -3035,7 +3047,8 @@ def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depen
 
 @app.post("/pachete/{tenant_id}/trimite")
 # [R42] „iese către un om" — pachetul lunar pleacă la clientul cabinetului.
-def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.VALIDA))):
+    # [comanda Costin 05.10.2026 pct.2] Trimiterea la client cere «Poate valida» (era „Poate pregăti”).
     try:
         return _uc_pachete.pachet_trimite(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:

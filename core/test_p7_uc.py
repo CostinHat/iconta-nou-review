@@ -50,6 +50,10 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("pachet_poveste_set", "MESAJ_APROBARE_PE_RUTA_EI"): (
+        "Comanda Costin 05.10.2026 pct.2: aprobarea poveștii lunii cere «Poate valida» și are ruta ei "
+        "(`/pachete/{tenant_id}/poveste/aproba`); ruta de ciornă («Poate pregăti») refuză `status=aprobat` cu motivul numit "
+        "(400), altfel garda pe ciornă ar fi lăsat aprobarea să treacă pe pregătire."),
     ("coada_adauga", "FARA_DREPT_PREGATIRE"): (
         "B4 (17.09.2026, audit A1): a pune o declaratie in coada e actul de PREGATIRE — cere "
         "`poate_pregati`. In BAZA flagul aparea doar la setare, nu la folosire; orice angajat sub "

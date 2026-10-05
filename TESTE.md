@@ -781,6 +781,35 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
        coloana golită (niciuna nu mai deschidea un cont, măsurat), convenția marcată SUPERSEDATĂ; treapta 3 a gardului (tabel cu
        coloană „parolă” fără valori) + calibrare.
 
+- fir: **TESTAREA CA ASISTENT (2) — POVESTEA LUNII, DREPTURILE ARĂTATE, ASISTENȚI, ICONIȚE, PACHETE (comanda Costin 05.10.2026)** —
+  7 constatări (verbatim în DECIZII 05.10.2026). Comanda primită se termină la „verificare vizuală, commit,” (tăiată); restul
+  publicării urmează §2.3 pct.10 (poartă, four-way, oglindă).
+  - livrat: în commitul „Testarea ca asistent (2) …” (hash în ISTORIC 05.10.2026) — pașii 1–8; pe drum: rezultatul zero ca
+    „neutru”, administratorul de pe producție normalizat la B3 (`poate_valida` f -> t), contrastul pastilelor și al emailului.
+  - ultim: pașii 1–8 (commitul care poartă linia)
+  - urmator: — (fir închis). STARE = ÎNCHIS
+  - pasi:
+    1. termenii poveștii: `core/pachete_api._prompt_poveste` cere EXACT „venituri” / „cheltuieli” / „rezultat” și sumele pachetului
+       (rezultatul fără „profit” ca subiect; calificativul „profit”/„pierdere” numai cum îl arată pachetul); `abateri_termeni(text, rz)`
+       (sinonime interzise: încasări, câștig, bani intrați, cifră de afaceri; sumă în lei care nu e în pachet) — generarea reîncearcă
+       o dată cu abaterile numite, apoi întoarce textul cu `abateri` (ecranul le arată). Text fix din clasă: rezultat 0 era „(profit)”
+       -> „neutru” în `rezumat_luna`.
+    2. aprobarea: rută nouă `POST /pachete/{tenant_id}/poveste/aproba` pe `cere_drept(VALIDA)`; `POST /pachete/{tenant_id}/poveste`
+       (ciornă, PREGATI) refuză numit `status=aprobat`; `POST /pachete/{tenant_id}/trimite` -> VALIDA. „Aprobă” poartă acțiunea
+       nouă; pini pe numele funcției; perechea de refuz în `test_p7_uc`; traseu în TRASEE.
+    3. motivul acțiunilor ascunse: `GET /eu/drepturi` întoarce și `motive` {acțiune: nivel} + `nume_niveluri`; `drepturi.js` pune,
+       în primul `.fereastra-corp` / `.pacm` / `[data-zona-drepturi]` care conține acțiuni ascunse, o notă `.drept-motiv` („Unele
+       acțiuni de aici nu se afișează: cer dreptul «…», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul
+       Asistenți.”); mesajele specifice existente (import, operațiuni) poartă `.drept-motiv` ca să nu se dubleze. DS cap.9 + verificator.
+    4. Asistenți: administratorul -> „toate drepturile” (cele trei active) în listă și în editare, fără bife; serverul refuză numit
+       `POST /asistenti/{uid}/permisiuni` pe un administrator.
+    5. iconițe: „Raportează” (asistent) -> `suport`, „Raportări” (admin) -> `solicitari`; verificator `ICOANA_INEXISTENTA` (orice cheie
+       de iconiță folosită trebuie să existe în `ICOANE`; fallback-ul `|| ""` desena gol).
+    6. Pachete: alegerea firmei = un singur `<select>` (forma de la Declarații); DS + verificator `ALEGERE_FIRMA_DUBLA`.
+    7. „Vezi ca email”: `_html` arată cifrele pachetului (venituri, cheltuieli, rezultat, declarații) — previzualizarea = emailul trimis;
+       cu povestea goală „Trimite” inactiv cu motiv vizibil lângă butoane; `pregateste` refuză numit povestea goală.
+    8. gărzi + mutații + proba în browser pe contul de asistent (înainte/după) + unelte vizuale + registre + poartă + four-way + oglindă.
+
 ---
 
 ## Implementarea modelului de temei (01.08)

@@ -1,7 +1,7 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
 import { api, esc, arataMesaj, semnAjutor } from "../api.js?v=91e1c0701a";
-import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] */
+import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
   credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",
@@ -369,7 +369,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // [drepturi_rol 04.10.2026] Nicio operațiune permisă (asistent fără „Poate pregăti”): ecranul spune de ce e gol.
     if (!REGISTRU.some((o) => permis(actiuneOp(o)))) {
       corp.querySelectorAll("[data-op]").forEach((b) => { const cat = b.closest("div[style*='margin-bottom:12px']"); if (cat) cat.remove(); });
-      corp.insertAdjacentHTML("beforeend", `<p class="ecran-nota">Operațiunile speciale cer dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>`);
+      corp.insertAdjacentHTML("beforeend", `<p class="ecran-nota drept-motiv">Operațiunile speciale cer dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>`);
     }
     corp.querySelectorAll("[data-op]").forEach((b) => b.addEventListener("click", () => {
       opCurenta = REGISTRU.find((o) => o.cheie === b.dataset.op);

@@ -1,13 +1,14 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **nicio comandă deschisă; secretele scoase din git** (05.10.2026)
+# PREDARE LANȚ — **nicio comandă deschisă; testarea ca asistent (2) livrată** (05.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-05**, parțială (secțiunile de mai jos). Rescrierea COMPLETĂ de dinainte: `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `5c086563` — four-way închis la intrarea turei; commitul care poartă această linie scoate secretele din git (parola
-  contului de probă, parola bazei de producție — rotite) și pune gardul `core/test_fara_secrete_in_git.py`. Secțiunile atinse acum:
-  ANTET, STAREA, ATENȚIONĂRI, CE CERE POARTA.
+- **pe commit**: `8c3cfe95` — four-way închis la intrarea turei; commitul care poartă această linie livrează **testarea ca asistent (2)**
+  (povestea lunii pe termenii pachetului, aprobarea/trimiterea la „Poate valida”, motivul acțiunilor ascunse, administratorul cu toate
+  drepturile, iconițe, un singur control pentru firmă, cifrele în email). Secțiunile atinse acum: ANTET, STAREA, DECIZII ÎN VIGOARE,
+  ATENȚIONĂRI, CE CERE POARTA.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -26,7 +27,8 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | salariul în timp (dată validată, înlocuire explicită, poarta pe lunile atinse) + etichete accesibile în toată aplicația + condiția D112 A1 | `a3210e08` | `iconta_salariu_in_timp.zip` |
 | **testarea ca asistent**: drepturile pe rol și bifă (`cere_drept`, decizia „varianta 2”), interfața care urmează serverul (`data-actiune`), refuzul lângă buton, emailul clientului verificat înainte de creare, X + Esc pe ferestrele informative, ghidul pe rol, contorul Asistenți, fără „48 de ore” | `63c04a95` · `f76ce94b` · `728ce107` | `iconta_testare_asistent.zip` |
 | **confirmările de drepturi**: fluturașul / PDF-ul chitanței / poza bonului la „Poate pregăti” (R52 răsturnat), regimul de TVA jurnalizat (`firma_profil_jurnal`), REGES la „Poate depune”; pe drum: sonda R56 precisă, 18 butoane de intrare marcate, 13 mesaje escapate | `5c086563` | `iconta_drepturi_confirmari.zip` |
-| **secretele scoase din git**: contabil.b resetat (citit din `fe_test.env`), seed-urile din `SEED_CABINET_PAROLA`, parola bazei de producție rotită, tabelul de conturi golit, gard + scanner reparat | commitul care poartă linia | — (fără ZIP: comanda nu l-a cerut) |
+| **secretele scoase din git**: contabil.b resetat (citit din `fe_test.env`), seed-urile din `SEED_CABINET_PAROLA`, parola bazei de producție rotită, tabelul de conturi golit, gard + scanner reparat | `8c3cfe95` | — (fără ZIP: comanda nu l-a cerut) |
+| **testarea ca asistent (2)**: termenii poveștii verificați după generare, `POST /pachete/{id}/poveste/aproba` („Poate valida”), trimiterea la „Poate valida”, nota de motiv din poarta drepturilor, administratorul = toate drepturile (producția normalizată B3), iconițe, un `<select>` pentru firmă, cifrele în email | commitul care poartă linia | — (comanda primită tăiată după „commit,”) |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -63,6 +65,8 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Confirmările (04.10, PIVOT)**: fluturașul, PDF-ul chitanței, poza bonului = „Poate pregăti” (R52 răsturnat); regimul de TVA =
   „Poate pregăti”, fiecare schimbare în `firma_profil_jurnal` (utilizator, dată, vechi → nou); REGES: cheile = administrator, trimiterea
   și răspunsurile = „Poate depune”; planul de conturi = „Poate pregăti”; aprobarea bonului din portal și Z manual = „Poate valida”.
+- **Povestea lunii (05.10)**: generarea, editarea, ciorna = „Poate pregăti”; aprobarea (rută proprie) și trimiterea = „Poate valida”.
+  Textul generat folosește exact „venituri” / „cheltuieli” / „rezultat” și sumele pachetului (verificat după generare).
 - **Ferestrele**: cele informative se închid din X și cu Esc (`inchidereDialog`); cele cu câmpuri doar din X (DS cap.9 v2.64).
 
 ## DACĂ CONTINUI DE AICI
@@ -101,6 +105,9 @@ aplicației**, nu „în așteptarea unei teme”:
   cu utilizatorul (gard `core/test_jurnal_regim_tva.py`); `vector_fiscal_api.salveaza` fără `user_id` refuză scrierea. Un test care
   salvează vectorul pe o schemă efemeră dă `user_id=`.
 - **Un mesaj de eroare de la server pus într-un șablon HTML trece prin `esc()`** (verificator `MESAJ_SERVER_NEESCAPAT`).
+- **Poarta drepturilor pune singură motivul** (`.drept-motiv`) în fereastra unde ascunde acțiuni; un ecran care își scrie propriul mesaj
+  îi dă clasa `drept-motiv`. `GET /eu/drepturi` întoarce și `motive` + `nume_niveluri`.
+- **Bifele administratorului nu se mai editează** (`ADMIN_TOATE_DREPTURILE`); toate trei sunt adevărate (B3).
 - **Nicio parolă / cheie în fișiere urmărite** (gard `core/test_fara_secrete_in_git.py`, trei trepte). Contul de cabinet al uneltelor
   din `frontend_test` = `contabil.b@sesiuneab.test` pe PRODUCȚIE (8010), din `~/.iconta/fe_test.env`, citit prin
   `frontend_test/cont_test.py`. Seed-urile cer `SEED_CABINET_PAROLA` (`~/.iconta/test.env`). O configurație de bază care pleacă
@@ -114,10 +121,10 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
-**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `5c086563` (04.10.2026):
+**Cifrele de aici se copiază din IEȘIREA PORȚII**, nu din predarea de dinainte. Ultima, pe `8c3cfe95` (05.10.2026):
 
 ```
-7206 passed, 9 skipped, 13 xfailed in 2949.66s (0:49:09)      -> COLLECTED 7228
+7215 passed, 9 skipped, 13 xfailed in 2984.87s (0:49:44)      -> COLLECTED 7237
 verificator: TOTAL: 0 candidate
 ```
 
@@ -139,7 +146,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **109** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **901** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **902** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -392,6 +399,8 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **un buton care cheamă o rută restrânsă** | `data-actiune="METODĂ /cale"` pe ELEMENTUL legat de handler; o cale dinamică nouă se pinează cu motiv | `test_drepturi_ui` (04.10) |
 | **un buton care DESCHIDE un formular cu acțiune restrânsă** | aceeași `data-actiune` (sau `data-fara-actiune="<motiv>"`), oricare ar fi eticheta | `test_drepturi_ui::test_intrarea_intr_un_formular_restrans…` + verificator (04.10) |
 | **o scriere a regimului de TVA** | prin `repo_firma_profil.jurnalizeaza_regim_tva`, în aceeași funcție, cu utilizatorul | `test_jurnal_regim_tva` (04.10) |
+| **o iconiță pe un card / nod** | o cheie care există în `ICOANE` | verificator `ICOANA_INEXISTENTA` (05.10) |
+| **alegerea firmei într-un formular** | un singur `<select>` „— alege firma —” | verificator `ALEGERE_FIRMA_DUBLA` (05.10) |
 | **o credențială de probă** | în `~/.iconta/*.env`, citită din mediu (`frontend_test/cont_test.py`); o mostră sintetică nouă se declară în lista închisă, cu motiv | `test_fara_secrete_in_git` (05.10) |
 | **o fereastră suprapusă nouă** | `inchidereDialog` (X + Esc), sau marcajul `fereastra-de-lucru: doar X — <motiv>` dacă are câmpuri | verificator `DIALOG_FARA_INCHIDERE` (04.10) |
 | **o citire de bifă din corp** | prin `_uc_comun.bifa`, nu `bool(corp…)` (`bool("false")` e True) | `test_formulare_operatiuni_campuri::test_bifele_se_citesc_doar_prin_bifa` |

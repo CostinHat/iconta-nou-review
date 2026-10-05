@@ -2020,18 +2020,19 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T35 — Pachetul lunar către client și solicitările lui
 
-**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 16) · **refuzuri explicite:** 70
+**Clasa:** MECANIC · **rute:** 39 (din care schimba date: 17) · **refuzuri explicite:** 71
 
-**Cine:** rol cerut: `admin_firma`, `angajat`, `verificat-în-corp` · drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 5 din 16.**
+**Cine:** rol cerut: `admin_firma`, `angajat`, `verificat-în-corp` · drept fin: `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 5 din 17.**
 
 **Pasii, din cod:**
 
 - `POST /pachete/{tenant_id}/genereaza` — garda `cere_drept` drept:poate_pregati
 - `GET /pachete/{tenant_id}/poveste` — garda `cere_cabinet`
 - `POST /pachete/{tenant_id}/poveste` — garda `cere_drept` drept:poate_pregati
+- `POST /pachete/{tenant_id}/poveste/aproba` — garda `cere_drept` drept:poate_valida
 - `GET /pachete/{tenant_id}/preview` — garda `cere_cabinet`
 - `GET /pachete/{tenant_id}/rezumat` — garda `cere_cabinet`
-- `POST /pachete/{tenant_id}/trimite` — garda `cere_drept` drept:poate_pregati
+- `POST /pachete/{tenant_id}/trimite` — garda `cere_drept` drept:poate_valida
 - `GET /portal/acasa` — garda `cere_client`
 - `GET /portal/acces-cont` — garda `cere_client`
 - `POST /portal/acces-cont/acces` — garda `cere_client`

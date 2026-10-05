@@ -3,13 +3,13 @@
 
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=91e1c0701a";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { permis } from "../drepturi.js?v=7e5d656ffe";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
+import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=4205d3e8b0";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=e871a4dc54";
 import { ecranRip } from "./rip_ecran.js?v=e132d99126";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=661e54e70c";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=eaf05070a6";
 import { ecranEtransport } from "./etransport_ecran.js?v=b6e1aa3fc7";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=c017b073d6";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=b059f0d009";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=0d0a622ecb";  // [produse_firma_v1]

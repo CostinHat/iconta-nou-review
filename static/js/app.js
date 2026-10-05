@@ -49,10 +49,10 @@ import { ecranBunVenit } from "./ecrane/ansamblu.js?v=899abda4ce";  // [bun_veni
 import { ecranLogin } from "./ecrane/login.js?v=1dc4c0feb5";
 import { creeazaNavigator } from "./navigator.js?v=6ecf80445a";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=88fdd4f522";
-import { desktopAsistent } from "./ecrane/asistent.js?v=e40f303005";
+import { desktopAsistent } from "./ecrane/asistent.js?v=b92236496f";
 import { desktopPortal } from "./ecrane/portal.js?v=d11b618d0b";
-import { desktopAdmin } from "./ecrane/admin.js?v=3c3242bb50"; // [p37_admin_desktop]
-import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=7e5d656ffe";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
+import { desktopAdmin } from "./ecrane/admin.js?v=c05e59e032"; // [p37_admin_desktop]
+import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=df020d220f";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");
 

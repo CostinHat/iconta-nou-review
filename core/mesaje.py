@@ -11,6 +11,8 @@ traduce DOAR ce se afișează.
 _FALLBACK = "A apărut o eroare. Reîncearcă; dacă persistă, contactează cabinetul."
 
 MESAJ_COD = {
+    # Asistenți
+    "ADMIN_TOATE_DREPTURILE": "Administratorul cabinetului are toate drepturile — bifele lui nu se schimbă.",
     # AI / servicii externe
     "AI_EROARE": "Serviciul AI a întâmpinat o eroare. Reîncearcă sau completează manual.",
     "AI_INDISPONIBIL": "Serviciul AI e temporar indisponibil. Reîncearcă mai târziu sau completează manual.",

@@ -2332,7 +2332,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T35 — Pachetul lunar către client și solicitările lui
 
-*clasa MECANIC · 38 rute · 16 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 39 rute · 17 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/pachete/{tenant_id}/poveste`, `/pachete/{tenant_id}/preview`, `/pachete/{tenant_id}/rezumat`, `/portal/acasa`, `/portal/acces-cont`, `/portal/cashflow`, `/portal/declaratii`, `/portal/documente/balanta`, `/portal/documente/luni`, `/portal/facturi`, `/portal/firma`, `/portal/firme`, `/portal/kpi`, `/portal/povesti`, `/portal/recomanda/preview`, `/portal/solicitari`, `/portal/solicitari/contor`, `/tenants/{tenant_id}/client-acces`, `/tenants/{tenant_id}/clienti`, `/tenants/{tenant_id}/clienti/{client_id}`, `/tenants/{tenant_id}/solicitari`*
 
@@ -2356,6 +2356,16 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 - [x] textul scris de contabil se păstrează cu autorul și momentul
 - textul nu conține cifre calculate de el — sau, dacă le conține, ele nu se confruntă cu cele din pachet, iar aia e o divergență posibilă
 - modificarea poveștii după trimitere produce o a doua versiune; ce s-a trimis rămâne
+
+### `POST /pachete/{tenant_id}/poveste/aproba`
+
+*garda `cere_drept` · drept:poate_valida*
+
+*ce face: intoarce ce da `_uc_pachete.pachet_poveste_aproba()`*
+
+- aprobarea cere «Poate valida» (comanda Costin 05.10.2026 pct.2): textul pleacă la client în numele cabinetului
+- se aprobă textul din editor, nu cel salvat anterior; o aprobare pe ruta de ciornă e refuzată numit
+- aprobarea anunță clientul (portal) numai DUPĂ ce salvarea a fost comisă
 
 ### `POST /pachete/{tenant_id}/trimite`
 

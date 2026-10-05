@@ -356,8 +356,14 @@ def set_permisiuni(conn, cabinet_id, user_id, preg, val, dep):
     politica deja pornita). Trecerea granitei NU e tacuta: ecranul o anunta in punctul de actiune,
     peste indicatorul persistent din subbara. Vezi DECIZII 20.08.2026."""
     from core.coada_api import patru_ochi_stare as _po
-    if not _actor_din_cabinet(conn, cabinet_id, user_id):
+    actor = _actor_din_cabinet(conn, cabinet_id, user_id)
+    if not actor:
         return {"ok": False, "cod": "actor_inexistent"}
+    # [comanda Costin 05.10.2026 pct.4] administratorul cabinetului are TOATE drepturile (B3, 06.08.2026: le primește la
+    # creare, nimeni deasupra nu i le poate da). Bifele lui nu se editează: ecranul permitea scoaterea lui „Poate valida”,
+    # iar contul rămânea cu bifa scoasă — afișat fără drept, deși garda îl lasă, și nenumărat printre validatori.
+    if actor["rol"] == "admin_firma":
+        return {"ok": False, "cod": "ADMIN_TOATE_DREPTURILE"}
     inainte = _po(conn, cabinet_id)
     with conn.cursor() as cur:
         cur.execute(

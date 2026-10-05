@@ -38,7 +38,6 @@ function pasAlegere(corp, nav) {
     <div class="dec-form">
       <label class="camp">
         <span class="camp-eticheta">Firmă</span>
-        <input id="pac-cauta" class="camp-input" placeholder="Caută firma (nume sau CUI)..." style="margin-bottom:8px">
         <select id="pac-firma" class="camp-input">
           <option value="">— alege firma —</option>
           ${S.firme.map((fr)=>`<option value="${fr.id}" ${fr.id===S.tenant_id?"selected":""}>${esc(fr.nume||("Firma "+fr.id))}${fr.cui?" \u00b7 "+esc(fr.cui):""}</option>`).join("")}
@@ -64,15 +63,7 @@ function pasAlegere(corp, nav) {
     cont.disabled = !S.tenant_id;
   };
   selF.addEventListener("change", refresh);
-  const cauta = corp.querySelector("#pac-cauta");
-  cauta.addEventListener("input", () => {
-    const q = cauta.value.toLowerCase().trim();
-    const vizibile = S.firme.filter((fr) => !q || (fr.nume||"").toLowerCase().includes(q) || (fr.cui||"").toLowerCase().includes(q));
-    selF.innerHTML = '<option value="">\u2014 alege firma \u2014</option>' +
-      vizibile.map((fr)=>`<option value="${fr.id}">${esc(fr.nume||("Firma "+fr.id))}${fr.cui?" \u00b7 "+esc(fr.cui):""}</option>`).join("");
-    if (vizibile.length === 1) selF.value = String(vizibile[0].id);
-    selF.dispatchEvent(new Event("change"));
-  });
+  // [comanda Costin 05.10.2026 pct.6] alegerea firmei = UN control (forma de la Declarații); câmpul de căutare separat a ieșit
   corp.querySelector("#pac-an").addEventListener("change", refresh);
   corp.querySelector("#pac-luna").addEventListener("change", refresh);
   cont.addEventListener("click", () => nav.mergi("Pachetul lunii", (c) => pasLucru(c, nav)));  // faza_b2_traseu_v1
@@ -145,14 +136,16 @@ function deschideModal(corp, nav) {
         <div class="pacm-preview" id="pacm-preview" style="display:none"></div>
       </div>
       <div class="pacm-stare" id="pacm-stare"></div>
+      <div class="pacm-abateri" id="pacm-abateri" role="note"></div>
       <div class="pacm-bara">
         <button class="buton-primar pac-genereaza" id="pacm-gen" data-actiune="POST /pachete/{tenant_id}/genereaza">✨ Generează cu AI</button>
         <button class="buton-secundar" id="pacm-vezi">Vezi ca email</button>
         <span class="pacm-spatiu"></span>
         <button class="buton-secundar" id="pacm-salveaza" data-actiune="POST /pachete/{tenant_id}/poveste">Salvează ciornă</button>
-        <button class="buton-primar" id="pacm-aproba" data-actiune="POST /pachete/{tenant_id}/poveste">Aprobă</button>
+        <button class="buton-primar" id="pacm-aproba" data-actiune="POST /pachete/{tenant_id}/poveste/aproba">Aprobă</button>
         <button class="buton-primar" id="pacm-trimite" data-actiune="POST /pachete/{tenant_id}/trimite">Trimite</button>
       </div>
+      <p class="ecran-nota pacm-motiv-trimite" id="pacm-motiv-trimite"></p>
     </div>
   `;
   document.body.appendChild(ov);
@@ -164,14 +157,28 @@ function deschideModal(corp, nav) {
   const btnVezi = ov.querySelector("#pacm-vezi");
   const btnTrimite = ov.querySelector("#pacm-trimite");
 
+  const motivTrimite = ov.querySelector("#pacm-motiv-trimite");
+  const abateriEl = ov.querySelector("#pacm-abateri");
+  // [comanda Costin 05.10.2026 pct.7] „cu povestea goală, «Trimite» rămâne inactiv cu motiv” — motivul se VEDE lângă butoane,
+  // nu doar ca `title` (care nu apare pe telefon și nu se citește fără mouse). Se recalculează și la tastare: pleacă textul
+  // SALVAT și aprobat, iar un editor golit nu are ce aproba.
+  function motivInactiv() {
+    if (!(ta.value || "").trim()) return "„Trimite” e inactiv: povestea e goală. Scrie sau generează povestea, apoi aprob-o.";
+    if (S.status !== "aprobat") return "„Trimite” e inactiv: povestea nu e aprobată încă.";
+    if ((ta.value || "").trim() !== (S.text || "").trim()) return "„Trimite” e inactiv: textul s-a schimbat după aprobare — aprobă din nou.";
+    return "";
+  }
   function actualizeazaStare() {
     if (S.status === "aprobat") arataMesaj(stareEl, "Stare: aprobată ✓ — gata de trimis", "ok");
     else if (S.text) arataMesaj(stareEl, "Stare: ciornă", "info");
     else arataMesaj(stareEl, "", "info");
-    btnTrimite.disabled = (S.status !== "aprobat");
-    btnTrimite.title = (S.status === "aprobat") ? "" : "Aprobă întâi povestea";
+    const motiv = motivInactiv();
+    btnTrimite.disabled = !!motiv;
+    btnTrimite.title = motiv;
+    motivTrimite.textContent = motiv;
   }
   actualizeazaStare();
+  ta.addEventListener("input", actualizeazaStare);
 
   const inchide = () => ov.remove();
   ov.querySelector("#pacm-x").addEventListener("click", inchide);
@@ -183,7 +190,14 @@ function deschideModal(corp, nav) {
     btn.disabled = true; btn.textContent = "Se generează…";
     try {
       const r = await api.post(`/pachete/${S.tenant_id}/genereaza?an=${S.an}&luna=${S.luna}`, {});
-      if (r && r.ok) { ta.value = r.text || ""; S.text = ta.value; S.status = "ciorna"; actualizeazaStare(); arataMesaj(stareEl, "Generată de AI — citește, editează și aprobă.", "info"); }
+      if (r && r.ok) {
+        ta.value = r.text || ""; S.text = ta.value; S.status = "ciorna"; actualizeazaStare();
+        arataMesaj(stareEl, "Generată de AI — citește, editează și aprobă.", "info");
+        // [comanda Costin 05.10.2026 pct.1] ce a scris AI-ul altfel decât pachetul (termen sau sumă) — de corectat înainte de aprobare
+        arataMesaj(abateriEl, (r.abateri && r.abateri.length)
+          ? "Atenție — textul generat se abate de la pachet (" + r.abateri.join("; ") + "). Corectează înainte de aprobare: pachetul spune venituri, cheltuieli și rezultat."
+          : "", "avert");
+      }
       else if (r && r.cod === "AI_INDISPONIBIL") { arataMesaj(stareEl, "AI indisponibil (cheie lipsă). Scrie manual.", "eroare"); }
       else { arataMesaj(stareEl, "Nu am putut genera. " + ((r && r.mesaj) || ""), "eroare"); }
     } catch { arataMesaj(stareEl, "Eroare la generare.", "eroare"); }
@@ -211,12 +225,13 @@ function deschideModal(corp, nav) {
   });
 
   ov.querySelector("#pacm-salveaza").addEventListener("click", async () => {
-    if (!await _salveaza(ta.value, "ciorna", stareEl)) return;  // [R159] refuzul ramane pe ecran
+    if (!await _salveaza(ta.value, "ciorna", stareEl, (text) => api.post(`/pachete/${S.tenant_id}/poveste?an=${S.an}&luna=${S.luna}`, { text, status: "ciorna" }))) return;  // [R159] refuzul ramane pe ecran
     actualizeazaStare();
     arataMesaj(stareEl, "Ciornă salvată.", "info"); _reflectaStareEcran(corp);
   });
   ov.querySelector("#pacm-aproba").addEventListener("click", async () => {
-    if (!await _salveaza(ta.value, "aprobat", stareEl)) return;  // [R159]
+    // [comanda Costin 05.10.2026 pct.2] aprobarea are ruta ei („Poate valida”); apelul stă în handlerul butonului care o poartă
+    if (!await _salveaza(ta.value, "aprobat", stareEl, (text) => api.post(`/pachete/${S.tenant_id}/poveste/aproba?an=${S.an}&luna=${S.luna}`, { text }))) return;  // [R159]
     actualizeazaStare();
     arataMesaj(stareEl, "Aprobată ✓", "ok"); _reflectaStareEcran(corp);
   });
@@ -242,11 +257,11 @@ function _reflectaStareEcran(corp) {
 // Pana azi intorcea `undefined` pe toate cele trei cai — refuz, esec, reusita — iar cei doi
 // apelanti tipareau «Ciornă salvată.» / «Aprobată ✓» oricum. *Un mesaj de reusita care nu se
 // uita la rezultat nu e o confirmare, e o afirmatie falsa.* Si `r.ok === false` era inghitit.
-async function _salveaza(text, status, stareEl) {  // audit_cab_lot1_v1
+async function _salveaza(text, status, stareEl, cerere) {  // audit_cab_lot1_v1 — `cerere(text)` = apelul, din handlerul butonului
   text = (text||"").trim();
   if (!text) { if (stareEl) arataMesaj(stareEl, "Scrie povestea întâi.", "eroare"); return false; }
   try {
-    const r = await api.post(`/pachete/${S.tenant_id}/poveste?an=${S.an}&luna=${S.luna}`, { text, status });
+    const r = await cerere(text);
     if (r && r.ok) { S.status = status; S.text = text; return true; }
     if (stareEl) arataMesaj(stareEl, (r && r.mesaj) || "Nu am putut salva.", "eroare");
     return false;

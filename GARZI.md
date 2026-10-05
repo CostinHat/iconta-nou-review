@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**686 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**687 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 651
+### `core/` — 652
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9326,6 +9326,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
 - `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
 - `core/test_post_token_fara_conexiune.py` — core/test_post_token_fara_conexiune.py — rotatia tokenului nu mai tine o conexiune din pool.
+- `core/test_poveste_termeni.py` — GARD — povestea lunii folosește termenii și cifrele pachetului; emailul arată cifrele (comanda Costin 05.10.2026, pct.1 și 7).
 - `core/test_prag_mijloc_fix_unic.py` — GARD [01.09.2026, R108]: pragul de încadrare ca mijloc fix are o SINGURĂ sursă.
 - `core/test_prag_per_articol.py` — GARD [01.09.2026, R109]: pragul de reverificare e per articol, dar nicio cotă nu iese din pază.
 - `core/test_prapastie_salariu.py` — GARD [R49, varianta (c)]: prăpastia salariului minim se spune CU CIFRE, și cifrele sunt ale
@@ -10166,3 +10167,19 @@ Categoria **6. Acces** (credențiale). Detaliul: DECIZII 05.10.2026 („Secretel
 
 **Ce NU face gardul:** nu scoate secretele din ISTORIA git (nu se rescrie, `--force` interzis). Tratamentul pentru istorie e
 rotirea: parola lui contabil.b și parola rolului `iconta_user` (producție) nu mai funcționează (probat).
+
+## 05.10.2026 — Testarea ca asistent (2): povestea lunii, motivul acțiunilor ascunse, administratorul, iconițe, alegerea firmei
+
+Categoriile **6. Acces** (nivelul aprobării/trimiterii; bifele administratorului) și **11. Interfață** (acțiuni ascunse fără motiv;
+iconiță goală; control dublu) + **fiscal-narativ** (termenii poveștii lunii). Detaliul: DECIZII 05.10.2026.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| termenii și sumele pachetului în poveste | `core/test_poveste_termeni.py` (prompt, `abateri_termeni`, reîncercarea, abaterile ajunse la editor) | „încasări” / „câștig” / „bani intrați” în locul veniturilor; o sumă în lei care nu e în pachet; profit când pachetul spune pierdere | reîncercarea scoasă -> 2 roșii | modelul e simulat în test; AI-ul real e probat separat (HEAD: „încasări” 2/2, nou: 0/2) |
+| emailul arată cifrele pachetului; povestea goală nu pleacă | `::test_emailul_arata_cifrele…`, `::test_trimiterea_refuza_povestea_goala` | previzualizare/email fără cifre; trimiterea unei povești goale | tabelul de cifre scos -> roșu; refuzul `POVESTE_GOALA` scos -> roșu | — |
+| rezultatul zero nu e „profit” | `::test_rezultatul_zero_nu_e_profit` | „0,00 lei (profit)” în pachet | `neutru` scos -> roșu | — |
+| aprobarea și trimiterea la „Poate valida” | `core/test_drepturi_rol.py::test_povestea_sta_pe_nivelul_decis` (pe numele funcției) + `::test_aprobarea_si_trimiterea_povestii_cer_poate_valida` | aprobare/trimitere pe pregătire; aprobarea strecurată prin ruta de ciornă | aprobarea pe PREGATI -> 2 roșii; ciorna acceptă `aprobat` -> roșu; trimiterea pe PREGATI -> 2 roșii | — |
+| motivul acțiunilor ascunse | `core/test_drepturi_rol.py::test_eu_drepturi_spune_si_de_ce` + verificator `MOTIV_DREPT_ABSENT` | o acțiune refuzată fără nivel; poarta care ascunde fără să spună de ce | `motive` scos din `/eu/drepturi` -> roșu; `motivInZona` scos -> TOTAL 1 | verificatorul vede mecanismul, nu fiecare ecran; comportamentul îl probează `frontend_test/proba_asistent_poveste.py` |
+| bifele administratorului nu se schimbă | `::test_bifele_administratorului_nu_se_schimba` | administrator cu un drept scos (afișat fără el, nenumărat printre validatori) | refuzul `ADMIN_TOATE_DREPTURILE` scos -> roșu | datele deja derivate se normalizează cu `core/migrare_b3_drepturi_owner.py` (rulat pe producție 05.10) |
+| cheia de iconiță există | verificator `ICOANA_INEXISTENTA` (DS cap.13) | `svg(cheie)` care desenează gol | `icon: "report"` repus -> TOTAL 1 | cheile scrise literal; o cheie calculată nu se vede |
+| un singur control pentru firmă | verificator `ALEGERE_FIRMA_DUBLA` (DS cap.6) | „Caută firma” + „— alege firma —” în același ecran | câmpul de căutare repus -> TOTAL 1 | aceeași formulare a etichetelor |

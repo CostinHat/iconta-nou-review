@@ -154,6 +154,21 @@ def trece_garda(rol, bife, garda):
     return rol == "superadmin" or rol in val
 
 
+# [comanda Costin 05.10.2026 pct.3] numele de pe ecranul Asistenți, pentru motivul arătat lângă acțiunile ascunse
+NUME_NIVEL = {PREGATI: "Poate pregăti", VALIDA: "Poate valida", DEPUNE: "Poate depune"}
+
+
+def motive(rol, bife, garzi):
+    """{„METODĂ /cale”: nivel} pentru acțiunile refuzate: dreptul care lipsește (`poate_*`), `admin_cabinet` sau `rol`
+    (o gardă de rol, nu de bifă). Interfața spune DE CE lipsesc acțiunile, nu doar le ascunde."""
+    out = {}
+    for m, c, g in garzi:
+        k = "%s %s" % (m, c)
+        if k not in out and not trece_garda(rol, bife, g):
+            out[k] = g[1] if g[0] == "drept" else "rol"
+    return out
+
+
 def interzise(rol, bife, garzi):
     """Acțiunile („METODĂ /cale”, cu calea ca ȘABLON — exact cum stă în `main.py`) pe care garda le refuză
     utilizatorului. Interfața ascunde orice element al cărui `data-actiune` e în listă."""
