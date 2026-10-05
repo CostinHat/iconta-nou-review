@@ -151,7 +151,7 @@ for nume, t in fisiere.items():
         # BANI: ${expr} imediat urmat de RON/lei/EUR fara formator cunoscut in expresie
         for bm in re.finditer(r'\$\{([^}]*)\}\s*(RON|lei|EUR|\$\{[^}]*moneda)', lin):
             expr = bm.group(1)
-            if not re.search(r'_bani|toLocaleString|fmt|bani\(', expr):
+            if not re.search(r'_bani|toLocaleString|fmt|bani\(|pretUnitar\(', expr):   # pretUnitar = costul unitar canonic (DS cap.4 v2.69)
                 rap["bani_neformatati"].append((nume, i, expr[:22], lin.strip()[:60]))
         # SPATIERE: cuvant lipit direct de ${ (ex: Total${...})
         for sm in re.finditer(r'>([A-Za-z\u00c0-\u024f]{3,})\$\{', lin):
@@ -1486,6 +1486,45 @@ for _fis, _txt in sorted(fisiere.items()):
     for _i, _ln in enumerate(_txt.split("\n"), 1):
         if re.search(r"toISOString\(\)\s*\.\s*(?:slice|substring|substr)\(\s*0\s*,\s*10\s*\)|toISOString\(\)\s*\.\s*split\(\s*[\"']T", _ln):
             rap["data_utc"].append((_fis, _i, "DATA_UTC", _ln.strip()[:90]))
+
+# --- CANTITATE_BRUTA (DS cap.4 v2.69, 05.10.2026, comanda Costin pct.9): o cantitate sau un cost unitar afișat trece prin
+#     `cantitate(v, um)` / `pretUnitar(v)` din api.js. Prinde câmpurile de cantitate/CMP interpolate brut într-un șablon
+#     (`${a.stoc}`, `esc(l.cantitate)`, `" + a.cmp`). EXCEPTAT: `value="${…}"` (câmp numeric) și payload-ul. Mutația care o
+#     probează: `${a.stoc}` repus în opțiunea articolului din firme.js -> TOTAL > 0.
+_CAMPURI_CANT = r"(?:stoc|cantitate|cmp|sold_cantitate|faptic|scriptic|nivel_minim|necesar|cant|pret_unitar)"
+_RX_CANT = re.compile(r"(?<!value=\")(?:\$\{\s*|esc\(\s*|[\"'`]\s*\+\s*)[A-Za-z_]\w*\." + _CAMPURI_CANT + r"\s*(?:\}|\))")
+rap["cantitate_bruta"] = []
+for _fis, _txt in sorted(fisiere.items()):
+    if _fis == "api.js":
+        continue
+    for _i, _ln in enumerate(_txt.split("\n"), 1):
+        for _m in _RX_CANT.finditer(_ln):
+            rap["cantitate_bruta"].append((_fis, _i, "CANTITATE_BRUTA", _m.group(0)[:60]))
+
+# --- CULOARE_SEMAFOR_TEXT (DS cap.8 v2.70, 05.10.2026): culorile de SEMAFOR (`--galben` #c9961f, `--gri-semafor` #9aa3b2) sunt
+#     pentru buline, borduri și fundaluri, nu pentru text: pe alb dau ~2,6:1 și ~2,5:1, sub pragul WCAG 1.4.3 (4,5:1). Textul
+#     folosește `--galben-text` / `--gri`. Găsită de axe pe Registrul jurnal („● Ciornă”) și la Bancă („Parțial”, „Contat ✓”),
+#     la proba pasului C. Mutația care o probează: `color:var(--galben)` repus pe insigna „Ciornă” -> TOTAL > 0.
+_RX_SEMAFOR_TEXT = re.compile(r"(?<![-\w])color\s*:\s*(?:var\(--galben\)|var\(--gri-semafor\)|#c9961f|#9aa3b2|\$\{CUL\.(?:galben|gri)\})", re.I)
+rap["culoare_semafor_text"] = []
+_surse_css = dict(fisiere)
+with open(os.path.expanduser("~/iconta_nou/static/stil.css"), encoding="utf-8") as _h:
+    _surse_css["stil.css"] = _h.read()
+for _fis, _txt in sorted(_surse_css.items()):
+    for _i, _ln in enumerate(_txt.split("\n"), 1):
+        if _RX_SEMAFOR_TEXT.search(_ln):
+            rap["culoare_semafor_text"].append((_fis, _i, "CULOARE_SEMAFOR_TEXT", _ln.strip()[:70]))
+# forma INDIRECTĂ: un dicționar / o variabilă / o funcție cu culoare de semafor, folosită apoi ca `color:${…}`. LIMITĂ
+# declarată (GARZI 05.10.2026): culoarea transmisă prin PARAMETRU (ex. `cifra(…, "var(--galben)")` -> `color:${accent}`) nu se
+# vede — acolo s-a reparat la sursă, iar regula prinde numai forma directă și cele două de mai jos.
+_SEM = r'"var\(--(?:galben|gri-semafor|rosu-semafor)\)"'
+for _fis, _txt in sorted(fisiere.items()):
+    for _m in re.finditer(r"(?:const|let|var)\s+(\w+)\s*=[^;\n]*" + _SEM, _txt):
+        if re.search(r"color:\s*\$\{\s*" + _m.group(1) + r"\b", _txt):
+            rap["culoare_semafor_text"].append((_fis, _txt[:_m.start()].count("\n") + 1, "CULOARE_SEMAFOR_TEXT", "indirect: " + _m.group(1)))
+    for _m in re.finditer(r"function\s+(\w+)\s*\([^)]*\)\s*\{(?:(?!\nfunction)[\s\S]){0,400}?return\s+" + _SEM, _txt):
+        if re.search(r"color:\s*\$\{[^}]*\b" + _m.group(1) + r"\(", _txt):
+            rap["culoare_semafor_text"].append((_fis, _txt[:_m.start()].count("\n") + 1, "CULOARE_SEMAFOR_TEXT", "indirect: " + _m.group(1) + "()"))
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

@@ -83,6 +83,7 @@ def regula_cont(linie):
     banca = "5124" if linie.get("valuta") else "5121"
     tip = detecteaza_tip(linie.get("descriere"))
     cui = extrage_cui(linie.get("descriere"))
+    detectat = tip is not None   # [05.10.2026] fals = tipul e PRESUPUS din sens; istoricul învățat poate propune altceva
 
     if tip is None:
         tip = "client" if sens == "credit" else "furnizor"
@@ -101,7 +102,7 @@ def regula_cont(linie):
     else:
         raise ValueError(f"sens necunoscut: {sens!r}")
 
-    return {"nota": nota, "tip": tip, "cui": cui}
+    return {"nota": nota, "tip": tip, "cui": cui, "tip_detectat": detectat}
 
 
 def contabilizeaza_extras(linii):

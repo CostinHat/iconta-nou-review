@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso } from "../api.js?v=39585157c4";
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate } from "../api.js?v=4c8f1ff171";
 import { randeazaDateFirma } from "./date_firma.js?v=87157bdf69";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
@@ -181,7 +181,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-sectiune">
       <div class="em-eticheta">Produse și servicii</div>
       <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea și schimb-o din listă dacă e altfel; răspunderea corectitudinii cotei îți aparține, iar schimbarea se consemnează)"}</span></div>
-      <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
+      <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-um">UM</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaugă linie</button>
     </div>
@@ -269,7 +269,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   const articole = opt.articole || [];        // [punte_stoc_v1] F172: articole de stoc (gol la gratuit)
   let pleacaMarfaCurent = null;               // raspunsul la poarta "pleaca marfa acum?" pt emiterea curenta
 
-  const linieNoua = () => ({ descriere: "", cantitate: "", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null });
+  const linieNoua = () => ({ descriere: "", cantitate: "", um: "buc", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null });
   // [comanda Costin 05.10.2026 pct.3] „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”.
   // Cotele oferite = cele permise la data facturii, de la server (aceeași sursă ca validarea emiterii).
   let COTE = (num.cote_permise && num.cote_permise.length) ? num.cote_permise : [];   // se reîncarcă la schimbarea datei
@@ -284,6 +284,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const inputsHtml = `
       <input class="camp-input em-l-den" id="em-l${i}-descriere" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" value="${_val(l.descriere)}" placeholder="Denumire (ex: pâine, consultanță)" aria-label="Denumire articol" autocomplete="off">
       <input class="camp-input em-l-cant" id="em-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
+      <input class="camp-input em-l-um" id="em-l${i}-um" maxlength="10" value="${_val(l.um)}" aria-label="Unitate de măsură" title="Unitate de măsură">
       <input class="camp-input em-l-pret" id="em-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
       ${platitor
         ? `<select class="camp-input em-l-cota-sel${cotaCls}" id="em-l${i}-cota" aria-label="Cota TVA" title="${l.cota_propusa == null ? "Cota TVA" : "Cota TVA — propusă: " + l.cota_propusa + "%"}">
@@ -296,9 +297,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const selArticol = `
         <select class="camp-input em-l-articol" id="em-l${i}-articol" aria-label="Articol de stoc" style="margin-bottom:6px">
           <option value="">— fără articol (serviciu) —</option>
-          ${articole.map((a) => `<option value="${a.id}"${String(a.id) === String(l.articol_id) ? " selected" : ""} data-den="${esc(a.denumire)}">${esc(a.denumire)} · stoc ${esc(a.stoc)}</option>`).join("")}
+          ${articole.map((a) => `<option value="${a.id}"${String(a.id) === String(l.articol_id) ? " selected" : ""} data-den="${esc(a.denumire)}" data-um="${esc(a.um || "")}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("")}
         </select>`;
-      return `<div class="em-linie-wrap" data-idx="${i}">${selArticol}<div class="em-linie">${inputsHtml}</div></div>`;
+      // [05.10.2026, comanda Costin pct.9] pe o firmă cu stoc, linia fără articol spune că marfa nu se descarcă din gestiune
+      const faraArt = `<div class="caseta-atentie em-l-fara-articol" id="em-l${i}-fara-articol"${(l.descriere && !l.articol_id) ? "" : " hidden"}><div class="ca-mesaj">Linie fără articol de stoc: marfa de pe ea nu se descarcă din gestiune. Dacă e marfă, alege articolul; dacă e serviciu, lasă așa.</div></div>`;
+      return `<div class="em-linie-wrap" data-idx="${i}">${selArticol}<div class="em-linie">${inputsHtml}</div>${faraArt}</div>`;
     }
     return `<div class="em-linie" data-idx="${i}">${inputsHtml}</div>`;
   }
@@ -327,11 +330,15 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const den = zonaLinii.querySelector("#em-l" + i + "-descriere");
     const cant = zonaLinii.querySelector("#em-l" + i + "-cantitate");
     const pret = zonaLinii.querySelector("#em-l" + i + "-pret_unitar");
+    const um = zonaLinii.querySelector("#em-l" + i + "-um");
+    const faraArt = zonaLinii.querySelector("#em-l" + i + "-fara-articol");
     const selArt = zonaLinii.querySelector("#em-l" + i + "-articol");
+    const aratăFaraArticol = () => { if (faraArt) faraArt.hidden = !(l.descriere && !l.articol_id); };
     const del = zonaLinii.querySelector('.em-l-sterge[data-idx="' + i + '"]');
     let timer = null;
     den.addEventListener("input", () => {
       l.descriere = den.value.trim();
+      aratăFaraArticol();
       l.cota_tva = null;  // reset -> se repotriveste
       clearTimeout(timer);
       const d = l.descriere;
@@ -342,7 +349,13 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       timer = setTimeout(async () => {
         try {
           const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d });
-          if (r && r.ok) { l.cota_tva = r.cota; l.cota_propusa = r.cota; setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota); }
+          if (r && r.ok) {
+            l.cota_tva = r.cota; l.cota_propusa = r.cota; setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota);
+            // [05.10.2026, comanda Costin pct.9] din nomenclator: prețul și UM, numai unde omul n-a scris deja altceva
+            const p = linii.indexOf(l);
+            if (r.um && !l.umScris) { l.um = r.um; const e = zonaLinii.querySelector("#em-l" + p + "-um"); if (e) e.value = r.um; }
+            if (r.pret_unitar && !l.pret_unitar) { l.pret_unitar = r.pret_unitar; const e = zonaLinii.querySelector("#em-l" + p + "-pret_unitar"); if (e) e.value = r.pret_unitar; }
+          }
         } catch {}
         recalc();
       }, 550);
@@ -354,10 +367,13 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       recalc();
     });
     cant.addEventListener("input", () => { l.cantitate = parseFloat(cant.value) || 0; recalc(); });
+    um.addEventListener("input", () => { l.um = um.value.trim(); l.umScris = true; });
     pret.addEventListener("input", () => { l.pret_unitar = parseFloat(pret.value) || 0; recalc(); });
     if (selArt) selArt.addEventListener("change", () => {  // [punte_stoc_v1] F172
       l.articol_id = selArt.value ? parseInt(selArt.value, 10) : null;
       const o = selArt.selectedOptions[0];
+      if (l.articol_id && o && o.dataset.um) { l.um = o.dataset.um; l.umScris = true; um.value = o.dataset.um; }   // UM-ul articolului din stoc
+      aratăFaraArticol();
       if (l.articol_id && o && o.dataset.den) {
         l.descriere = o.dataset.den;
         den.value = o.dataset.den;
@@ -519,7 +535,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     // valideaza pe backend si se raporteaza langa campul lui, nu dispare tacit.
     const payload = {
       linii: linii.map((l) => ({
-        descriere: l.descriere, cantitate: l.cantitate,
+        descriere: l.descriere, cantitate: l.cantitate, um: l.um || "buc",
         pret_unitar: l.pret_unitar, cota_tva: l.cota_tva,
         cota_propusa: l.cota_propusa,   // [pct.3] pentru jurnalul „propus → ales”
         articol_id: l.articol_id || null,  // [punte_stoc_v1] F172

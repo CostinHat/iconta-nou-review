@@ -72,6 +72,8 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
               "data": _data_iso(t.get("data"))} for t in tranzactii]
     rezultate = _m.potriveste_extras(linii, facturi)
     out = []
+    # [05.10.2026, comanda Costin pct.8] mesajul spune ce s-a potrivit și ce nu („2 linii importate și potrivite” mințea)
+    rezumat = {"total": len(tranzactii), "potrivite": 0, "fara_potrivire": 0}
     with conn.cursor() as cur:
         if continut is not None:
             h = hashlib.sha256(continut if isinstance(continut, bytes)
@@ -87,8 +89,10 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
                         alocari=[{"factura_id": a["factura_id"], "suma": str(a["suma"])}
                                  for a in rez["alocari"]])
             aloc.pop("status", None)
-            # ai_sugestie_v1: linie fara facturi -> sugestie din istoricul invatat
-            if rez["status"] == "rosu" and not t.get("nota"):
+            # ai_sugestie_v1: linie fara facturi -> sugestie din istoricul invatat. [05.10.2026] Condiția veche cerea „fără
+            # notă”, dar `banca.regula_cont` pune mereu una (client/furnizor PRESUPUS din sens) -> ramura nu rula niciodată.
+            # Acum rulează când tipul NU s-a recunoscut din descriere; un tip recunoscut (comision, TVA…) rămâne al regulii.
+            if rez["status"] == "rosu" and not t.get("tip_detectat"):
                 try:
                     from core import ai_incredere as _ai
                     sug = _ai.sugestie(conn, schema, ln.get("descriere") or "")
@@ -100,9 +104,11 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
                             t["nota"] = {"debit": cont_banca, "credit": sug["cont"]}
                         aloc["incredere"] = sug["incredere"]
                         aloc["motiv"] = aloc["motiv"] + f"; sugestie invatata: {sug['cont']} ({sug['incredere']}, {sug['validari']} validari)"
-                except Exception:
-                    pass
+                except Exception as _e:
+                    from core import observare as _obs
+                    _obs.esec_secundar("sugestie invatata la importul extrasului", _e)   # înghițit, dar nu tăcut
             status = "potrivit" if rez["status"] in ("verde", "galben") else "nou"
+            rezumat["potrivite" if status == "potrivit" else "fara_potrivire"] += 1
             cur.execute(f"""
                 INSERT INTO {schema}.extras_linii
                   (data, descriere, suma, valuta, tip, cui_detectat, status,
@@ -114,17 +120,19 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
             out.append({"id": cur.fetchone()[0], "data": str(ln["data"]),
                         "descriere": ln["descriere"], "suma": str(ln["suma"]),
                         "tip": ln["tip"], "cui": ln["cui"], "status": status, **aloc})
-    return {"linii": out}
+    return {"linii": out, "rezumat": rezumat}
 
 
 def lista(conn, schema, status=None):
     """Liniile de extras cu detaliile facturilor alocate (pentru UI)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         q = f"SELECT * FROM {schema}.extras_linii"
+        # [05.10.2026, comanda Costin pct.8] liniile noi ale extrasului apar primele, nu sub cele vechi
+        ordine = " ORDER BY creat_la DESC, data DESC, id DESC"
         if status:
-            cur.execute(q + " WHERE status=%s ORDER BY data, id", (status,))
+            cur.execute(q + " WHERE status=%s" + ordine, (status,))
         else:
-            cur.execute(q + " ORDER BY data, id")
+            cur.execute(q + ordine)
         linii = cur.fetchall()
         ids = set()
         for l in linii:
@@ -161,14 +169,18 @@ def conteaza(conn, schema, linie_id, alocari=None):
         if l["status"] == "contat":
             return {"eroare": "linia e deja contata"}
         aloc = alocari or (l.get("alocari") or {}).get("alocari", [])
+        # [05.10.2026, comanda Costin pct.6] fiecare notă din extras poartă extrasul ca document justificativ
+        from core import pdf_util as _pu
+        doc = ("Extras bancar %s din %s" % (l["fisier_sursa"], _pu.data_ro(l["data"])) if l.get("fisier_sursa")
+               else "Extras bancar din %s" % _pu.data_ro(l["data"]))
         if not aloc:
             np = l.get("nota_propusa") or {}
             if not (np.get("debit") and np.get("credit")):
                 return {"eroare": "fără alocări și fără notă propusă; alege facturile"}
             cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                VALUES (%s,%s,'banca','ciorna') RETURNING id
-            """, (l["data"], (l["descriere"] or "")[:200] or "operatiune bancara"))
+                INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                VALUES (%s,%s,'banca','ciorna',%s) RETURNING id
+            """, (l["data"], (l["descriere"] or "")[:200] or "operatiune bancara", doc))
             iid = cur.fetchone()["id"]
             cur.execute(f"""
                 INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
@@ -176,15 +188,19 @@ def conteaza(conn, schema, linie_id, alocari=None):
             """, (iid, np["debit"], np["credit"], Decimal(str(np.get("suma") or l["suma"]))))
             cur.execute(f"UPDATE {schema}.extras_linii SET status='contat', alocari=%s WHERE id=%s",
                         (json.dumps({**(l.get("alocari") or {}), "inregistrari_ids": [iid]}), linie_id))
+            # [05.10.2026, comanda Costin pct.8] se OPREȘTE aici. Înainte cădea în ramura alocărilor: fără alocări nu
+            # scria nimic, rescria `inregistrari_ids` cu [] (legătura notei pierdută) și răspundea cu nota din tipul
+            # liniei („Nota 401=5121 — 0 înregistrări create”) deși se crease 627=5121.
+            return {"inregistrari": [iid], "nota": "%s=%s" % (np["debit"], np["credit"])}
         banca = _cont_banca(l["valuta"])
         debit, credit = (banca, CONT_CLIENTI) if l["tip"] == "incasare" else (CONT_FURNIZORI, banca)
         create = []
         for a in aloc:
             cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
-                VALUES (%s,%s,%s,'banca','ciorna') RETURNING id
+                INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status, document_ref)
+                VALUES (%s,%s,%s,'banca','ciorna',%s) RETURNING id
             """, (l["data"], a["factura_id"],
-                  (l["descriere"] or "")[:200] or "operatiune bancara"))
+                  (l["descriere"] or "")[:200] or "operatiune bancara", doc))
             iid = cur.fetchone()["id"]
             cur.execute(f"""
                 INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)

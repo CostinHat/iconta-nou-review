@@ -116,12 +116,12 @@ def adauga_cont_in_plan(cur, simbol, denumire, tip):
                 (simbol, denumire, tip))
 
 
-def nota_bon_validata(cur, schema, data_, numar, descriere):
+def nota_bon_validata(cur, schema, data_, numar, descriere, document_ref=None):
     cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                VALUES (%s, %s, %s, 'bon', 'validata') RETURNING id
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
+                VALUES (%s, %s, %s, 'bon', 'validata', %s) RETURNING id
             """,
-                (data_, numar, descriere))
+                (data_, numar, descriere, document_ref))
     return cur.fetchone()
 
 
@@ -135,10 +135,10 @@ def adauga_linie_tva_din_casa(cur, schema, inregistrare_id, cont_debit):
                 (inregistrare_id, cont_debit))
 
 
-def nota_cu_sursa_si_status(cur, data_, numar, descriere, sursa, status):
-    cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status) "
-                        "VALUES (%s,%s,%s,%s,%s) RETURNING id",
-                (data_, numar, descriere, sursa, status))
+def nota_cu_sursa_si_status(cur, data_, numar, descriere, sursa, status, document_ref=None):
+    cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status, document_ref) "
+                        "VALUES (%s,%s,%s,%s,%s,%s) RETURNING id",
+                (data_, numar, descriere, sursa, status, document_ref))
     return cur.fetchone()
 
 
@@ -176,10 +176,10 @@ def deblocheaza_perioada(cur, schema, an, luna):
                 (an, luna))
 
 
-def nota_amef_ciorna(cur, schema, data_, numar, descriere):
-    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                                VALUES (%s,%s,%s,'amef','ciorna') RETURNING id""",
-                (data_, numar, descriere))
+def nota_amef_ciorna(cur, schema, data_, numar, descriere, document_ref=None):
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
+                                VALUES (%s,%s,%s,'amef','ciorna',%s) RETURNING id""",
+                (data_, numar, descriere, document_ref))
     return cur.fetchone()
 
 
@@ -189,12 +189,12 @@ def adauga_linie_4(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
                 (inregistrare_id, cont_debit, cont_credit, suma))
 
 
-def nota_horeca_z_validata(cur, schema, data_, numar, descriere):
+def nota_horeca_z_validata(cur, schema, data_, numar, descriere, document_ref=None):
     cur.execute(f"""
-                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
-                VALUES (%s, %s, %s, 'horeca_z', 'validata') RETURNING id
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status, document_ref)
+                VALUES (%s, %s, %s, 'horeca_z', 'validata', %s) RETURNING id
             """,
-                (data_, numar, descriere))
+                (data_, numar, descriere, document_ref))
     return cur.fetchone()
 
 

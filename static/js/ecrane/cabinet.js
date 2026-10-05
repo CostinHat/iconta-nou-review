@@ -3,12 +3,12 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=39585157c4";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=4c8f1ff171";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=ec69de2ac4";
-import { randeazaMigrare } from "./migrare.js?v=b059f0d009";
+import { randeazaListaFirme } from "./firme.js?v=b6766dc615";
+import { randeazaMigrare } from "./migrare.js?v=27d84cdf37";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=0f21ca6b8d"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=6e9491883b"; // [p28_setari]
@@ -19,7 +19,7 @@ import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=151165bd7b";
 import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=b8e3412a1e";
-import { randeazaCapacitate } from "./capacitate.js?v=5393ea8719"; // [p71_capacitate]
+import { randeazaCapacitate } from "./capacitate.js?v=f4181caa58"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=673e868a29"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
@@ -110,10 +110,10 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   const cifre = [
     cifra(t.create || 0, "pregatite", "activitate"),
     cifra(t.aprobate || 0, "validate", "activitate", (t.aprobate ? "var(--verde)" : null)),
-    cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu-semafor)" : null)),
+    cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu)" : null)),
     cifra(t.depuse || 0, "depuse", "activitate", (t.depuse ? "var(--verde)" : null)),
-    cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "var(--galben)" : null)),
-    cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "var(--rosu-semafor)" : null)),
+    cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "var(--galben-text)" : null)),
+    cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "var(--rosu)" : null)),
   ].join("");
 
   let asist = "";

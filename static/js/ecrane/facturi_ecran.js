@@ -3,9 +3,9 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso } from "../api.js?v=39585157c4";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate } from "../api.js?v=4c8f1ff171";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=248f8b67c0";
+import { randeazaEmitere } from "./emitere_ecran.js?v=59de4dca40";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -118,7 +118,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
     <div style="margin-top:10px"><div class="camp-eticheta">Linii</div>
       <span class="camp-ajutor">Clasifică destinația TVA a fiecărei linii importate: <b>taxabilă</b> (deducere integrală, implicit), <b>scutită</b> (fără deducere), <b>mixtă</b> (intră în pro-rata, art. 300 alin. (5)). Faptul importat rămâne neschimbat — doar îl clasifici.</span>
       ${linii.map((l, i) => `<div class="pf-linie-clasif" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
-        <span class="pf-frand-sub" style="flex:1 1 200px">${esc(l.descriere)} · ${esc(l.cantitate)} × ${esc(l.pret)} · ${esc(l.cota)}%</span>
+        <span class="pf-frand-sub" style="flex:1 1 200px">${esc(l.descriere)} · ${esc(cantitate(l.cantitate))} × ${esc(bani(l.pret))} · ${esc(l.cota)}%</span>
         <select class="camp-input pr-dest" data-i="${i}" aria-label="Destinație TVA linie" style="flex:0 0 auto;width:auto">
           <option value="taxabil" selected>Taxabilă</option>
           <option value="scutit">Scutită</option>
@@ -215,15 +215,15 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
             <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
-          ${(!opt.client && !f.contabilizata) ? `<span class="btn-link fac-cont" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
+          ${(!opt.client && !f.nota_contare) ? `<span class="btn-link fac-cont" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
         </button>`;
         }).join("");
     const dataInch = per && per.confirmat_la ? dataRo(String(per.confirmat_la).slice(0, 10)) : "";
     const blocInchidere = !per ? "" : (per.confirmat
       ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Lun\u0103 \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 eviden\u021ba facturilor e complet\u0103; semaforul se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-secundar" id="fac-redeschide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/redeschide">Redeschide luna</button></p></div>`
       : (per.blocaj
-        ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Luna nu se poate \u00eenchide \u00eenc\u0103: ${esc(per.blocaj)}${per.remediu ? " " + esc(per.remediu) : ""}</span></div>`
-        : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Lun\u0103 ne\u00eenchis\u0103 \u2014 eviden\u021ba facturilor e informativ\u0103; p\u00e2n\u0103 la \u00eenchidere semaforul nu se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-verde" id="fac-inchide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/confirma">\u00cenchide luna</button></p></div>`));
+        ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri)">\u25cf</span> Luna nu se poate \u00eenchide \u00eenc\u0103: ${esc(per.blocaj)}${per.remediu ? " " + esc(per.remediu) : ""}</span></div>`
+        : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri)">\u25cf</span> Lun\u0103 ne\u00eenchis\u0103 \u2014 eviden\u021ba facturilor e informativ\u0103; p\u00e2n\u0103 la \u00eenchidere semaforul nu se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-verde" id="fac-inchide" data-actiune="POST /tenants/{tenant_id}/facturi/perioada/confirma">\u00cenchide luna</button></p></div>`));
     corp.innerHTML = `
       <h2 class="pf-titlu">Istoric facturi</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
@@ -280,7 +280,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
         b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
       } catch (e) {
-        b.outerHTML = `<span class="tip-desc" style="color:var(--galben);margin-left:8px">${esc((e.mesaj || "eroare"))}</span>`;
+        b.outerHTML = `<span class="tip-desc" style="color:var(--galben-text);margin-left:8px">${esc((e.mesaj || "eroare"))}</span>`;
       }
     }));
     corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
@@ -476,13 +476,18 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   // STATUS_ETICHETA - sincronizat 1:1 cu core/nomenclator_status_factura.ETICHETE (interdictia 31).
   // Garda core/test_eticheta_status_factura.py pica la orice divergenta (stare fara eticheta / eticheta fara stare).
   const STATUS_ETICHETA = { emisa: "emis\u0103", importata: "importat\u0103", de_recunoscut: "de recunoscut", de_preluat: "de preluat", ciorna: "ciorn\u0103", descarcata: "desc\u0103rcat\u0103", anulata: "anulat\u0103", stornata: "stornat\u0103" };
-  const statusTxt = f.storno_din_id ? "storno" : (f.contabilizata ? "contabilizat\u0103" : (STATUS_ETICHETA[f.status] || f.status || ""));
+  // [05.10.2026, comanda Costin pct.7] starea spune adevărul: „contabilizată” abia cu nota de contare VALIDATĂ; cât e ciornă,
+  // „notă propusă, de validat”. Din factură se ajunge la nota ei (Registrul jurnal, luna notei).
+  const nc = f.nota_contare;
+  const statusTxt = f.storno_din_id ? "storno" : (f.contabilizata ? "contabilizat\u0103"
+    : (nc ? "not\u0103 propus\u0103, de validat" : (STATUS_ETICHETA[f.status] || f.status || "")));
 
   corp.innerHTML = `
     <div class="fd-antet">
       <div class="fd-antet-sus">
         <h2 class="pf-titlu">Factur\u0103 ${esc(f.numar || "\u2014")}</h2>
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
+        ${(!opt.client && nc) ? `<button class="btn-link" id="fd-vezi-nota">nota #${esc(String(nc.id))}</button>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email" class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
@@ -538,8 +543,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   if (bSpv) {
     const zonaSpv = corp.querySelector("#fd-spv-zona");
     // semafor: gri = netrimisa/pending drept; galben = in prelucrare; verde = ok (recipisa); rosu = nok/eroare
-    const CUL = { ok: "var(--verde)", in_prelucrare: "var(--galben)", incarcat: "var(--galben)",
-                  investigatie: "var(--gri-semafor)", nok: "var(--rosu-semafor)", eroare_upload: "var(--rosu-semafor)" };
+    // culori de TEXT (eticheta stării SPV), nu de semafor: --galben/--gri-semafor/--rosu-semafor n-au contrast pe alb (DS cap.8 v2.70)
+    const CUL = { ok: "var(--verde)", in_prelucrare: "var(--galben-text)", incarcat: "var(--galben-text)",
+                  investigatie: "var(--gri)", nok: "var(--rosu)", eroare_upload: "var(--rosu)" };
     const ET = { ok: "trimisă (recipișă primită)", in_prelucrare: "în prelucrare la ANAF",
                  incarcat: "încărcată, în prelucrare la ANAF", investigatie: "blocată la ANAF — verifică în SPV",
                  nok: "respinsă de ANAF", eroare_upload: "eroare la trimitere" };
@@ -547,7 +553,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       let st = null;
       try { const m = await api.get(`/tenants/${tenantId}/trimiteri-spv`); st = m[String(facturaId)]; } catch {}
       if (!st || !st.stare) return;   // netrimisa -> butonul ramane gri, fara text
-      const cul = CUL[st.stare] || "var(--gri-semafor)";
+      const cul = CUL[st.stare] || "var(--gri)";
       bSpv.disabled = ["ok", "in_prelucrare", "incarcat", "investigatie"].includes(st.stare);  // send viu/blocat -> nu retrimite (idempotency)
       zonaSpv.innerHTML = `<span class="fd-stare" style="color:${cul}">SPV: ${ET[st.stare] || st.stare}</span>`
         + (st.error_message ? ` <span class="btn-link" id="fd-spv-det">vezi mesajul</span>` : "");
@@ -709,6 +715,12 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     });
   }
 
+  const btnVeziNota = corp.querySelector("#fd-vezi-nota");
+  if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
+    const { ecranJurnal } = await import("./firme.js?v=b6766dc615");   // dinamic: firme.js importă deja ecranul facturilor
+    const [an, luna] = String(nc.data).split("-").map(Number);
+    nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
+  });
   const btnVeziTransformata = corp.querySelector("#fd-vezi-transformata");
   if (btnVeziTransformata) btnVeziTransformata.addEventListener("click", () => detaliiFactura(corp, nav, tenantId, f.transformat_in_id, opt));
   const btnStorno = corp.querySelector("#fd-storno");

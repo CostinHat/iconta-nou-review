@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**689 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**691 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 654
+### `core/` — 656
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9192,6 +9192,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.
 - `core/test_fluturas_egal_stat.py` — GARDĂ: fluturașul TIPĂREȘTE statul, nu îl recalculează. (21.08.2026)
 - `core/test_fluturas_eticheta.py` — O eticheta de pe fluturas nu are voie sa numeasca un lucru si sa arate altul.
+- `core/test_flux_factura_f1_c.py` — GARDA pasului C din comanda Costin 05.10.2026 („fluxul de factură pe F1”, pct.6–9), pe schemă efemeră din `tenant_template.sql`.
 - `core/test_formulare_operatiuni_campuri.py` — GARD — nicio opțiune a unui formular din ecranul Operațiuni nu poate fi imposibil de trimis cu succes
 - `core/test_four_way_cardinalitate.py` — Bratul four-way nu se poate inchide pe o multime INCOMPLETA.
 - `core/test_frecventa_document_care_raspunde.py` — GARD [01.09.2026, R111]: frecvența nu se citește dintr-un document care nu poate răspunde.
@@ -9243,6 +9244,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_izolare_raportari.py` — core/test_izolare_raportari.py — GARD structural de izolare pe /raportari (apararea de DATE, nu doar ruta).
 - `core/test_izolare_structurala.py` — core/test_izolare_structurala.py — GARD STRUCTURAL de izolare (C-5 P1, clasele 5+6).
 - `core/test_joburi_supravegheate.py` — GARD [R74, 27.08.2026]: lista deadman-ului se compară cu SISTEMUL, nu cu o copie a ei.
+- `core/test_jurnal_fara_document.py` — GARD ÎN BROWSER — Registrul jurnal: o ciornă fără document justificativ se vede ÎNAINTE de validare, iar „Validează” pe ea
 - `core/test_jurnal_refuz.py` — GARDĂ: calea jurnalului refuză cu TEMEI, și confruntă conturile cu planul firmei.
 - `core/test_jurnal_regim_tva.py` — GARD — jurnalul schimbărilor regimului de TVA (PIVOT DECIZII 04.10.2026, răspunsurile lui Costin la confirmări).
 - `core/test_kpi_client.py` — —
@@ -10214,3 +10216,20 @@ Categoria **2. Declarații / documente fiscale** (conținutul facturii) și **11
 | cotele la data facturii | `core/test_emitere_factura_f1.py::test_cotele_permise_se_citesc_la_data_facturii_nu_azi` + `core/test_data_curenta.py` (clichet) | lista de cote „de azi” pentru o factură cu altă dată | „azi” în loc de `la_data` -> `[21, 11, 0] != [19, 9, 5, 0]` | ecranul reîncarcă lista la schimbarea datei; validarea de la emitere rămâne autoritatea |
 | o dată din interfață în ora locală | verificator `DATA_UTC` (DS cap.4 v2.68) | `toISOString().slice(0, 10)` / `.split("T")` pentru o zi (UTC: ieri între 00–03, o zi mai devreme la miezul nopții local) | forma veche repusă în `emitere_ecran.js` -> TOTAL 1 | nu vede o dată construită cu `getUTC*` manual |
 | poarta R46 la schimbare | `::test_date_firma_cu_luna_inchisa_se_salveaza…`, `::test_vectorul_cu_luna_inchisa…` | Date firmă blocat (500) pe o firmă cu lună închisă când nu se schimbă nimic decisiv | comparația scoasă -> roșu | — |
+
+## 05.10.2026 — Fluxul de factură pe F1 (C): documentul notelor, starea facturii, banca, linia facturii (comanda Costin, pct.6–9)
+
+Categoriile **3. Evidență contabilă** (documentul justificativ, starea contării), **11. Interfață** (mesaje, formatare, contrast).
+Deciziile: DECIZII 05.10.2026, consecințele 9–14.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| notele automate poartă documentul | `core/test_flux_factura_f1_c.py` (descărcare, ieșire manuală, casă, NIR, bon + stat de plată, bancă ×2) + `core/test_d300_rapoarte_z.py::test_notele_raportului_z…` | o notă scrisă din factură, extras, casă, NIR, bon, raport Z sau stat de plată fără documentul ei | documentul netransmis, pe fiecare din cele 9 drumuri -> roșu | amortizarea, descărcarea lunară, consumul pe rețetă, inventarul, operațiunile speciale n-au document extern: rămân marcate „fără document” (decizie cerută) |
+| seria nu se dublează | `::test_nicio_compunere_serie_plus_numar_in_afara_helperului`, `::test_e_factura…`, `::test_documentul_justificativ_nu_dubleaza…` | „serie + număr” compus în afara `pdf_util.numar_cu_serie` / `numarCuSerie` (ID e-Factura „FCTFCT12”) | compunerea veche în `efactura_send` -> 2 roșii | gardul caută formele `"%s%s" % (…serie…numar…)`, `(serie or "") +` și `${serie || ""}${…numar}`; altă formă de concatenare nu se vede |
+| validarea notei fără document se vede | `core/test_jurnal_fara_document.py` (Chromium, ecranul real) + `::test_documentul_justificativ_se_poate_scrie_pe_nota` | „Validează” pe o ciornă fără document fără confirmare; un mesaj care cere scrierea documentului fără câmp | confirmarea scoasă -> cererea pleacă -> roșu; `document_ref` scos din `editeaza` -> roșu | — |
+| „contabilizată” numai cu contare validată | `::test_contabilizata_numai_cu_nota_de_contare_validata` | ciorna sau încasarea afișate drept contabilizare | predicatul „orice notă” -> roșu | `repo_control_incrucisat` păstrează definiția proprie (validată + atinge TVA), pentru controlul D300 |
+| banca exactă | `::test_contarea_pe_nota_propusa…`, `::test_importul_numara…`, `::test_filtrul_pe_stare…`, `::test_sugestia_invatata…` | „0 înregistrări create” după o notă creată; „toate potrivite” când nu sunt; filtru mereu gol; sugestia moartă | `return` scos / rezumat scos / ordinea veche / condiția veche -> roșu | — |
+| propunerea pe linie din nomenclator | `::test_propunerea_pentru_linie…`, `::test_descrierea_notei_de_iesire…` | prețul/UM din nomenclator ignorate; „x2.000” în descriere | căutarea în nomenclator scoasă / cantitatea brută -> roșu | potrivirea e pe denumire exactă (fără diacritice/majuscule nu se normalizează altfel decât `lower`) |
+| cantități formatate | verificator `CANTITATE_BRUTA` (DS cap.4 v2.69) | `${a.stoc}`, `esc(l.cantitate)`, `" + a.cmp` brute într-un șablon | `${a.stoc}` repus -> TOTAL 1 | câmpurile cu alt nume decât lista (stoc, cantitate, cmp, sold_cantitate, faptic, scriptic, nivel_minim, necesar, cant, pret_unitar) nu se văd |
+| culorile de semafor nu colorează text | verificator `CULOARE_SEMAFOR_TEXT` (DS cap.8 v2.70) | `color:var(--galben)` / `--gri-semafor` / `CUL.galben` pe text; dicționar sau funcție cu culoare de semafor folosite în `color:${…}` | forma directă și ambele indirecte repuse -> TOTAL 1 / 2 | culoarea transmisă prin PARAMETRU (`cifra(…, "var(--galben)")` -> `color:${accent}`) nu se vede |
+

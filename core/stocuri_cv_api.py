@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Stocuri cantitativ-valorice — strat API. Motorul: core/stocuri_cv.py.
 Ieșirile la CMP generează notă ciornă (cont_cheltuiala = cont_stoc)."""
+from core import pdf_util as _pu
 from decimal import Decimal, InvalidOperation
 from psycopg2.extras import RealDictCursor
 from core import stocuri_cv as _m
@@ -129,9 +130,12 @@ def iesire(conn, schema, corp, factura_id=None):
             r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, corp["cantitate"])
         except ValueError as e:
             return {"eroare": str(e)}
-        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                        VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
-                    (corp["data"], f"Iesire stoc {a['denumire']} x{corp['cantitate']}"[:200]))
+        # [05.10.2026, comanda Costin pct.6] nota automată poartă documentul sursă (Registrul-jurnal, col.3). Fără
+        # `factura_id`: 607=371 nu e nici contarea facturii, nici o plată — legată, ar bloca ștergerea facturii.
+        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                        VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
+                    (corp["data"], f"Ieșire stoc {a['denumire']} × {_pu.cantitate(corp['cantitate'], a['um'])}"[:200],
+                     (str(corp.get("document") or "").strip() or None)))
         iid = cur.fetchone()["id"]
         cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                         (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
@@ -152,15 +156,20 @@ def descarca_factura(conn, schema, factura_id, data):
     paralel), leaga fiecare miscare de factura prin factura_id. Liniile fara articol (servicii) se
     ignora. O linie cu stoc insuficient NU rupe factura - se raporteaza in `erori` (patru-ochi:
     notele raman ciorna). Intoarce {descarcate, erori}."""
+    from core import jurnal_api as _j
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""SELECT id, descriere, cantitate, articol_id FROM {schema}.factura_linii
                         WHERE factura_id=%s AND articol_id IS NOT NULL ORDER BY id""", (factura_id,))
         linii = cur.fetchall()
+        cur.execute(f"SELECT tip, serie, numar, data_emitere FROM {schema}.facturi WHERE id=%s", (factura_id,))
+        f = cur.fetchone() or {}
+    document = (_j.eticheta_factura(f.get("tip"), f.get("serie"), f["numar"], f.get("data_emitere") or data)
+                if f.get("numar") else "Factura #%s" % factura_id)
     descarcate, erori = [], []
     for l in linii:
         rez = iesire(conn, schema,
                      {"articol_id": l["articol_id"], "data": data, "cantitate": l["cantitate"],
-                      "document": f"Factura #{factura_id}"},
+                      "document": document},
                      factura_id=factura_id)
         if rez is None:
             erori.append({"articol_id": l["articol_id"], "descriere": l["descriere"], "eroare": "articol inexistent"})

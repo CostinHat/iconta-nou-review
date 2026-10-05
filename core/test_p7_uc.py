@@ -38,6 +38,10 @@ ABATERI = {
         "Testarea ca asistent, comanda Costin 04.10.2026 pct.3 (aceeași clasă): „Există deja un cont cu acest email. "
         "Autentifică-te…” i se spunea celui care își SCHIMBĂ adresa — e deja autentificat. Același cod (400), mesaj "
         "numit (EMAIL_OCUPAT, cu adresa), pus pe câmpul `email`."),
+    ("banca_rec_lista", "'stare necunoscută: %r (stările reconcilierii: %s)' % (status, ', '.join(_STARI_REC))"): (
+        "Fluxul de factură pe F1, comanda Costin 05.10.2026 pct.8: lista stărilor din mesaj era „noua/potrivita/contata/"
+        "ignorata”, iar baza scrie „nou/potrivit/contat/ignorat” — orice filtru întorcea o listă goală. Același cod (422), "
+        "același text; lista vine acum din `STARI_EXTRAS` (stările reale), la nivel de modul."),
     ("vanzare_aur_investitii", "suma invalida"): (
         "G5 (`core/test_g1_cod_mesaj.py`): un input-guard telegrafic primeste constrangerea in "
         "mesaj. Codul ramane 422. Cazul a intrat in domeniul lui G5 odata cu mutarea corpului "
@@ -155,6 +159,10 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("produse_potriveste", "potriveste"): (
+        "propunere_pentru_linie",
+        "Fluxul de factură pe F1, comanda Costin 05.10.2026 pct.9: potrivirea pe linie caută întâi produsul în nomenclatorul "
+        "firmei (cota, UM, preț) și abia apoi cheamă `potriveste` (AI) — apelul vechi n-a dispărut, e în interiorul celui nou."),
     ("vanzare_ic", "nota_facturi_ciorna"): (
         "nota_facturi_cu_factura",
         "R187 (16.09.2026, decizia lui Costin): livrarea intracomunitara produce acum FACTURA, iar "

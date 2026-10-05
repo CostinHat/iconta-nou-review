@@ -1,15 +1,15 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso } from "../api.js?v=39585157c4";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar } from "../api.js?v=4c8f1ff171";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=4205d3e8b0";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=cd8811acf6";
-import { ecranRip } from "./rip_ecran.js?v=c5757130d2";
+import { fluxConcediu } from "./flux_concediu.js?v=4275ef442f";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=e5212140cc";
+import { ecranRip } from "./rip_ecran.js?v=1c0eed0ecd";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=83853552ea";
-import { ecranEtransport } from "./etransport_ecran.js?v=bd028dba50";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=b059f0d009";  // [p96_import_firma] + [Q4] import in masa
+import { ecranEtransport } from "./etransport_ecran.js?v=49b829a378";
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=27d84cdf37";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=0d0a622ecb";  // [produse_firma_v1]
@@ -1033,7 +1033,7 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
     const dataConf = pc.confirmat_la ? dataRo(String(pc.confirmat_la).slice(0, 10)) : "";
     const stareBloc = pc.confirmat
       ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Pontaj confirmat${dataConf ? " la " + dataConf : ""} \u2014 autoritativ pentru salarizare (tichete pe zile efectiv lucrate).</span></div>`
-      : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Pontaj neconfirmat \u2014 informativ; calculele din aval (tichete, statul de plat\u0103) se blocheaz\u0103 p\u00e2n\u0103 la confirmare.</span></div><p style="margin-top:8px"><button class="buton-verde" id="pj-confirma" data-actiune="POST /tenants/{tenant_id}/pontaj/confirma">Confirm\u0103 pontajul lunii</button></p>`;
+      : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri)">\u25cf</span> Pontaj neconfirmat \u2014 informativ; calculele din aval (tichete, statul de plat\u0103) se blocheaz\u0103 p\u00e2n\u0103 la confirmare.</span></div><p style="margin-top:8px"><button class="buton-verde" id="pj-confirma" data-actiune="POST /tenants/{tenant_id}/pontaj/confirma">Confirm\u0103 pontajul lunii</button></p>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Pontaj</h2>
       <p class="pf-intro">${esc(nume || "")} · luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
@@ -1202,7 +1202,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-susp-zona"></div>
       ${!areIban ? `<div class="caseta-info"><span class="ci-mesaj">Fișierul de plată pe card (SEPA) e indisponibil: niciun salariat nu are IBAN completat. Adaugă IBAN-ul cu butonul „IBAN ⚠" de pe salariat.</span></div>` : ""}
       ${!regesOk ? `<div class="caseta-info"><span class="ci-mesaj">„Răspunsuri REGES" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES".</span></div>` : ""}
-      ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
+      ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
@@ -1707,7 +1707,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <select id="cv-art" aria-label="Articol" class="camp-input" style="min-width:200px">
           <option value="">\u2014 articol nou \u2014</option>
-          ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${a.stoc} ${esc(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}${a.barcode ? " \u00b7 cod " + esc(a.barcode) : ""}</option>`).join("")}
+          ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${esc(cantitate(a.stoc, a.um))}${a.cmp ? " \u00b7 CMP " + pretUnitar(a.cmp) + " lei" : ""}${a.barcode ? " \u00b7 cod " + esc(a.barcode) : ""}</option>`).join("")}
         </select>
         <input type="text" id="cv-den" class="camp-input" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
         <input type="date" id="cv-data" aria-label="Data document" class="camp-input">
@@ -1777,7 +1777,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
     if (!val("#cv-art")) { arataMesaj(zonaM, "Alege întâi articolul din listă.", "eroare"); return; }
     try {
       const r = await api.post(`/tenants/${t.id}/stocuri/articole/${parseInt(val("#cv-art"))}/nivel-minim`, { nivel_minim: val("#cv-nm").trim() });
-      arataMesaj(zonaM, r.nivel_minim ? `Nivel minim ${r.nivel_minim} setat.` : "Nivel minim șters.", "ok");
+      arataMesaj(zonaM, r.nivel_minim ? `Nivel minim ${cantitate(r.nivel_minim)} setat.` : "Nivel minim șters.", "ok");
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la salvarea nivelului minim.", "eroare"); }
   });
@@ -1801,7 +1801,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         articol_id: parseInt(val("#cv-art")), data: val("#cv-data"),
         cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null,
         locatie: val("#cv-loc") || null });
-      zonaM.innerHTML = `<p class="pf-intro">Ieșire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 notă ${esc(r.nota)} (ciornă).</p>`;
+      zonaM.innerHTML = `<p class="pf-intro">Ieșire la CMP ${pretUnitar(r.cmp)} lei \u00b7 ${bani(r.valoare)} lei \u00b7 notă ${esc(r.nota)} (ciornă).</p>`;
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
   });
@@ -1817,7 +1817,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
     rtIng.innerHTML = rtLinii.map((l, i) => `
       <div class="em-linie" data-idx="${i}">
         <select class="camp-input rt-art" id="rt-l${i}-articol" data-i="${i}" aria-label="Articol ingredient">${arts.map((a) =>
-          `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${esc(a.denumire)} · CMP ${a.cmp}</option>`).join("")}</select>
+          `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${esc(a.denumire)}${a.cmp ? " · CMP " + pretUnitar(a.cmp) + " lei" : ""}</option>`).join("")}</select>
         <input class="camp-input rt-cant" id="rt-l${i}-cantitate" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./porție" aria-label="Cantitate pe porție" style="width:120px">
         <button type="button" class="buton-sters rt-scoate" data-i="${i}" title="Șterge">−</button>
       </div>`).join("");
@@ -1835,7 +1835,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
           return `<div class="pf-frand">
             <div class="pf-frand-text">
               <div class="pf-frand-nume">${esc(r.denumire)} \u00b7 ${bani(r.pret_fara_tva)} lei</div>
-              <div class="pf-frand-sub">cost/por\u021bie ${bani(fc.cost_portie)} \u00b7 food cost ${procent} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${l.cantitate}${esc(l.um || "")}`).join(", ")}</div>
+              <div class="pf-frand-sub">cost/por\u021bie ${bani(fc.cost_portie)} \u00b7 food cost ${procent} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${esc(cantitate(l.cantitate, l.um))}`).join(", ")}</div>
             </div>
             <input class="camp-input rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
             <button class="buton-primar rt-desc" data-actiune="POST /tenants/{tenant_id}/retete/descarca" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
@@ -1880,7 +1880,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
     const z = zona.querySelector("#cv-inv-zona");
     z.innerHTML = `<div class="pf-lista">${arts.map((a) => `
       <div class="pf-frand"><div class="pf-frand-text">
-        <div class="pf-frand-nume">${esc(a.denumire)} \u00b7 scriptic ${a.stoc} ${esc(a.um)}</div>
+        <div class="pf-frand-nume">${esc(a.denumire)} \u00b7 scriptic ${esc(cantitate(a.stoc, a.um))}</div>
       </div>
       <input type="number" step="0.001" class="camp-input cvi-faptic" id="cvi-a${a.id}-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
       <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
@@ -1902,13 +1902,13 @@ export async function sectiuneaCV(corp, t, zonaM) {
         zonaM.innerHTML = `<p class="pf-intro">${rest.map((x) =>
           x.eroare ? `${esc(x.denumire || x.articol_id)}: ${esc(x.eroare)}`
           : x.diferenta === "0" ? `${esc(x.denumire)}: fara diferenta`
-          : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} · ${bani(x.valoare)} lei · nota ${esc(x.nota)} (ciorna)`).join("<br>")}</p>`;
+          : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${cantitate(Math.abs(Number(x.diferenta)))} · ${bani(x.valoare)} lei · nota ${esc(x.nota)} (ciorna)`).join("<br>")}</p>`;
         if (!cuEroare.length) sectiuneaCV(corp, t, zonaM);   // refresh doar cand nu sunt erori de camp de aratat
       } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
     });
   });
   // [F138 Tier 1] Locatii descriptive + transfer (CMP global) + reclasificare tip produs
-  const optArts = (arts || []).map((a) => `<option value="${a.id}">${esc(a.denumire)} · stoc ${a.stoc} ${esc(a.um)}</option>`).join("");
+  const optArts = (arts || []).map((a) => `<option value="${a.id}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("");
   const locZona = zona.querySelector("#cv-loc-zona");
   zona.querySelector("#cv-loc-vezi").addEventListener("click", async () => {
     try {
@@ -1919,7 +1919,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
            <div class="pf-lista">${l.map((x) => `
              <div class="pf-frand"><div class="pf-frand-text">
                <div class="pf-frand-nume">${esc(x.denumire)} · ${esc(x.locatie)}</div>
-               <div class="pf-frand-sub">${x.cantitate} ${esc(x.um)}</div>
+               <div class="pf-frand-sub">${esc(cantitate(x.cantitate, x.um))}</div>
              </div></div>`).join("")}</div>`;
     } catch (e) { arataMesaj(locZona, e.mesaj || "eroare", "eroare"); }
   });
@@ -1942,7 +1942,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         const r = await api.post(`/tenants/${t.id}/stocuri/transfer`, {
           articol_id: parseInt(g("#tr-art")), din_locatie: g("#tr-din") || null,
           in_locatie: g("#tr-in") || null, cantitate: parseFloat(g("#tr-cant")) || 0, data: g("#tr-data") });
-        arataMesaj(zonaM, `Transfer ${r.cantitate} din „${esc(r.din_locatie)}” în „${esc(r.in_locatie)}” · ${bani(r.valoare)} lei la CMP ${r.cmp}.`, "ok");
+        arataMesaj(zonaM, `Transfer ${cantitate(r.cantitate)} din „${esc(r.din_locatie)}” în „${esc(r.in_locatie)}” · ${bani(r.valoare)} lei la CMP ${pretUnitar(r.cmp)} lei.`, "ok");
         sectiuneaCV(corp, t, zonaM);
       } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la transfer.", "eroare"); }
     });
@@ -1981,7 +1981,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
     const randList = () => Object.entries(num).map(([id, x]) =>
       `<div class="pf-frand"><div class="pf-frand-text">
          <div class="pf-frand-nume">${esc(x.denumire)}</div>
-         <div class="pf-frand-sub">numărat ${x.faptic} ${esc(x.um)}</div>
+         <div class="pf-frand-sub">numărat ${esc(cantitate(x.faptic, x.um))}</div>
        </div><button class="buton-sters im-scoate" data-id="${id}">−</button></div>`).join("");
     const deseneaza = () => {
       z.innerHTML = `
@@ -2039,12 +2039,12 @@ export async function sectiuneaCV(corp, t, zonaM) {
       const critic = (r.critic || []).map((x) => `
         <div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(x.denumire)}</div>
-          <div class="pf-frand-sub">stoc ${x.stoc} ${esc(x.um)} · nivel minim ${x.nivel_minim} · necesar ${x.necesar} ${esc(x.um)}</div>
+          <div class="pf-frand-sub">stoc ${esc(cantitate(x.stoc, x.um))} · nivel minim ${esc(cantitate(x.nivel_minim))} · necesar ${esc(cantitate(x.necesar, x.um))}</div>
         </div></div>`);
       const inert = (r.inert || []).map((x) => `
         <div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(x.denumire)}</div>
-          <div class="pf-frand-sub">stoc ${x.stoc} ${esc(x.um)} · ultima mișcare ${esc(x.ultima_miscare)} · ${x.zile} zile</div>
+          <div class="pf-frand-sub">stoc ${esc(cantitate(x.stoc, x.um))} · ultima mișcare ${esc(x.ultima_miscare)} · ${x.zile} zile</div>
         </div></div>`);
       const abc = (r.abc || []).map((x) => `
         <div class="pf-frand"><div class="pf-frand-text">
@@ -2073,8 +2073,8 @@ export async function sectiuneaCV(corp, t, zonaM) {
         <div class="pf-frand-nume" style="margin:8px 0">Fisa: ${esc(r.articol.denumire)}</div>
         <div class="pf-lista">${r.linii.map((l) => `
           <div class="pf-frand"><div class="pf-frand-text">
-            <div class="pf-frand-nume">${esc(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
-            <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + esc(l.document) : ""}</div>
+            <div class="pf-frand-nume">${dataRo(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${cantitate(l.cantitate)} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pre\u021b " + pretUnitar(l.pret_unitar) + " lei" : ""}</div>
+            <div class="pf-frand-sub">sold ${cantitate(l.sold_cantitate)} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + pretUnitar(l.cmp) + " lei" : ""}${l.document ? " \u00b7 " + esc(l.document) : ""}</div>
           </div></div>`).join("") || '<div class="stare-goala">Fără mișcări în fișă.</div>'}</div>`;
     } catch { arataMesaj(zona.querySelector("#cv-fisa-zona"), "Nu am putut încărca fisa.", "eroare"); }
   });
@@ -3084,7 +3084,7 @@ async function ecranCasa(corp, nav, t) {
 
 // [banca] Import extras + reconciliere pe facturi
 async function ecranBanca(corp, nav, t) {
-  const CUL = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu)", gri: "var(--gri-semafor)" };
+  const CUL = { verde: "var(--verde)", rosu: "var(--rosu)" };   // [05.10.2026] galben/gri de semafor nu mai colorează text (DS cap.8 v2.70)
   corp.innerHTML = `
     <h2 class="pf-titlu">Banc\u0103 ${semnAjutor("F011")}</h2>
     <p class="pf-intro">Încarcă extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
@@ -3096,10 +3096,10 @@ async function ecranBanca(corp, nav, t) {
 
   function badge(l) {
     if (l.status === "ignorat") return `<span style="color:var(--gri)">Ignorată</span> <button class="btn-link bk-undo" data-id="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza">readu</button>`;
-    if (l.status === "contat") return `<span style="color:${CUL.gri};font-weight:600">Contat \u2713</span>`;
+    if (l.status === "contat") return `<span style="color:var(--gri);font-weight:600">Contat \u2713</span>`;
     const m = (l.alocari || {}).status_match;
     if (m === "verde") return `<span style="color:${CUL.verde};font-weight:600">\u25cf Match exact</span>`;
-    if (m === "galben") return `<span style="color:${CUL.galben};font-weight:600">\u25cf Par\u021bial</span>`;
+    if (m === "galben") return `<span style="color:var(--galben-text);font-weight:600">\u25cf Par\u021bial</span>`;
     return `<span style="color:${CUL.rosu};font-weight:600">\u25cf F\u0103r\u0103 match</span>`;
   }
 
@@ -3108,14 +3108,14 @@ async function ecranBanca(corp, nav, t) {
     if (!inc) return "";
     if (inc === "sigur") return ` <span class="tip-micut" style="color:${CUL.verde}">\u25cf sigur</span>`;
     if (inc === "de_verificat") return ` <span class="tip-micut" style="color:${CUL.rosu}">\u25cf de verificat</span>`;
-    return ` <span class="tip-micut" style="color:${CUL.galben}">\u25cf probabil</span>`;
+    return ` <span class="tip-micut" style="color:var(--galben-text)">\u25cf probabil</span>`;
   }
   function randAlocari(l) {
     const al = ((l.alocari || {}).alocari || []);
     if (!al.length) return "";
     return `<div class="pf-frand-sub">${al.map((a) => {
       const f = a.factura || {};
-      return `${esc(f.serie || "")}${esc(f.numar || "#" + a.factura_id)} \u00b7 ${esc(f.tert || "")} \u00b7 ${bani(a.suma)} lei`;
+      return `${esc(f.numar ? numarCuSerie(f.serie, f.numar) : "#" + a.factura_id)} \u00b7 ${esc(f.tert || "")} \u00b7 ${bani(a.suma)} lei`;
     }).join("<br>")}</div>`;
   }
 
@@ -3160,7 +3160,11 @@ async function ecranBanca(corp, nav, t) {
     zonaMesaj.innerHTML = "";
     try {
       const r = await api.post(`/tenants/${t.id}/banca/reconciliere/${id}/conteaza`, alocari ? { alocari } : {});
-      arataMesaj(zonaMesaj, `Nota ${r.nota || ""} \u2014 ${(r.inregistrari || []).length} \u00eenregistr\u0103ri create.`, "ok");
+      // [05.10.2026, comanda Costin pct.8] mesajul spune exact ce s-a creat: nota, câte, în ce stare și unde se validează
+      const n = (r.inregistrari || []).length;
+      arataMesaj(zonaMesaj, n === 1
+        ? `Not\u0103 ${r.nota} creat\u0103 (ciorn\u0103 #${r.inregistrari[0]}) \u2014 se valideaz\u0103 din Registrul jurnal.`
+        : `${n} note ${r.nota} create (ciorne #${r.inregistrari.join(", #")}) \u2014 se valideaz\u0103 din Registrul jurnal.`, "ok");
       incarca();
     } catch (e) { arataMesaj(zonaMesaj, e.mesaj || "Eroare la contare", "eroare"); }
   }
@@ -3181,7 +3185,7 @@ async function ecranBanca(corp, nav, t) {
           <label class="pf-frand" style="cursor:pointer">
             <input type="checkbox" data-fid="${f.id}" data-sold="${f.sold}" style="margin-right:10px">
             <div class="pf-frand-text">
-              <div class="pf-frand-nume">${esc(f.serie || "")}${esc(f.numar)} \u00b7 ${esc(f.tert_nume || "")}</div>
+              <div class="pf-frand-nume">${esc(numarCuSerie(f.serie, f.numar))} \u00b7 ${esc(f.tert_nume || "")}</div>
               <div class="pf-frand-sub">${dataRo(f.data_emitere)} \u00b7 sold ${bani(f.sold)} lei \u00b7 CUI ${esc(f.tert_cui || "")}</div>
             </div>
           </label>`).join("")}</div>
@@ -3220,7 +3224,9 @@ async function ecranBanca(corp, nav, t) {
       if (r.deja_importat) {
         arataMesaj(zonaMesaj, `Extras deja importat: ${r.nr_linii} linii. Nu s-a adăugat nimic.`, "avert");
       } else {
-        zonaMesaj.innerHTML = `<p class="pf-intro"><b>${(r.linii || []).length}</b> linii importate și potrivite.</p>`;
+        // [05.10.2026, comanda Costin pct.8] „2 linii importate și potrivite” când una era fără potrivire — acum se numără
+        const z = r.rezumat || { total: (r.linii || []).length, potrivite: 0, fara_potrivire: 0 };
+        arataMesaj(zonaMesaj, `${z.total} ${z.total === 1 ? "linie importat\u0103" : "linii importate"}: ${z.potrivite} potrivit${z.potrivite === 1 ? "\u0103" : "e"} pe facturi, ${z.fara_potrivire} f\u0103r\u0103 potrivire (alege factura sau conteaz\u0103 pe nota propus\u0103). Liniile noi sunt primele.`, "ok");
       }
       incarca();
     } catch (e) { arataMesaj(zonaMesaj, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
@@ -3561,13 +3567,13 @@ async function ecranRaportZ(corp, nav, t) {
 
 
 // [jurnal] Registru jurnal lunar
-async function ecranJurnal(corp, nav, t) {
+export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda în browser + „nota #…” din detaliul facturii
   const azi = new Date();
-  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  let an = opt.an || azi.getFullYear(), luna = opt.luna || azi.getMonth() + 1;   // din factură: luna notei ei
   let inEditare = null; // id-ul notei deschise in editor
 
   const badge = (n) => n.status === "ciorna"
-    ? `<span style="color:var(--galben);font-weight:600">\u25cf Ciorn\u0103</span>`
+    ? `<span style="color:var(--galben-text);font-weight:600">\u25cf Ciorn\u0103</span>`
     : `<span style="color:var(--verde);font-weight:600">\u25cf Validat\u0103</span>`;
 
   // [14-1-1 col.3, lista 5, 30.08.2026] „Felul, numarul si data documentului justificativ care sta
@@ -3579,6 +3585,10 @@ async function ecranJurnal(corp, nav, t) {
     ? esc(n.document)
     : "nederivat \u2014 nota n-are referin\u021b\u0103 scris\u0103 \u0219i nu e legat\u0103 de o factur\u0103"}`;
 
+  // [05.10.2026, comanda Costin pct.6] „Validarea unei note fără document justificativ trece fără niciun avertisment —
+  // validatorul trebuie să vadă lipsa înainte să apese.” Lipsa se vede pe rând, iar „Validează” pe o astfel de ciornă cere
+  // confirmare care o numește. Validarea rămâne posibilă: documentul poate fi pe hârtie, dar alegerea e acum văzută.
+  const MESAJ_FARA_DOCUMENT = "Notă fără document justificativ: Registrul-jurnal cere felul, numărul și data documentului care stă la baza ei (col.3). Scrie referința în notă înainte de validare, dacă o ai.";
   let centre = [];  // [F143] centre active, pentru selectorul de pe linia de nota manuala
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
@@ -3605,6 +3615,7 @@ async function ecranJurnal(corp, nav, t) {
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${n.nr_curent != null ? `Nr. crt. ${n.nr_curent} \u00b7 ` : ""}${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
             <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}<br>${docJustificativ(n)}</div>
+            ${n.status === "ciorna" && !n.document ? `<div class="caseta-atentie jn-fara-doc"><div class="ca-mesaj">${MESAJ_FARA_DOCUMENT}</div></div>` : ""}
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
         </div>`;
@@ -3613,6 +3624,7 @@ async function ecranJurnal(corp, nav, t) {
       <div style="display:block;border:1px solid var(--galben)">
         <div class="pf-frand-nume" style="margin-bottom:8px">${n.id === "nou" || !n.id ? "Not\u0103 nou\u0103" : "Editare not\u0103 #" + n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="caseta-atentie" style="margin-bottom:8px"><div class="ca-mesaj">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div></div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${esc(n.descriere || "")}"></label>
+        <label class="camp"><span class="camp-eticheta">Document justificativ (fel, număr, dată)</span><input type="text" id="je-doc" class="camp-input" style="width:100%" placeholder="ex: Factură CH-9 din 01.10.2026" value="${esc(n.document_ref || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `
           <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">
@@ -3647,7 +3659,7 @@ async function ecranJurnal(corp, nav, t) {
       </div></div>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru jurnal ${semnAjutor("F061")}</h2>
-      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben);font-weight:600">${ciorne} de validat</span>` : ""}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben-text);font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
         <button class="buton-primar" id="j-amort" data-actiune="POST /tenants/{tenant_id}/amortizare" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
@@ -3688,9 +3700,18 @@ async function ecranJurnal(corp, nav, t) {
         }
       } catch (e) { eroare(e, "Eroare la generarea notei de amortizare."); }
     });
-    corp.querySelectorAll("[data-val]").forEach((b) => b.addEventListener("click", async () => {
-      try { await api.post(`/tenants/${t.id}/jurnal/${b.dataset.val}/valideaza`, {}); deseneaza(); }
-      catch (e) { eroare(e, "Eroare la validare"); }
+    corp.querySelectorAll("[data-val]").forEach((b) => b.addEventListener("click", () => {
+      const n = note.find((x) => String(x.id) === b.dataset.val);
+      const valideaza = async () => {
+        try { await api.post(`/tenants/${t.id}/jurnal/${b.dataset.val}/valideaza`, {}); deseneaza(); }
+        catch (e) { eroare(e, "Eroare la validare"); }
+      };
+      if (n && !n.document) {
+        confirmaCaseta(b.parentElement || b, "Nota #" + esc(String(n.id)) + " nu are document justificativ. Validezi totuși?",
+          valideaza, { textOk: "Validează fără document" });
+        return;
+      }
+      valideaza();
     }));
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, "Ștergi această ciornă?", async () => {  // audit_cab_lot2_v1
@@ -3728,10 +3749,10 @@ async function ecranJurnal(corp, nav, t) {
         try {
           if (inEditare === "nou") {
             await api.post(`/tenants/${t.id}/jurnal`,
-              { descriere: corp.querySelector("#je-desc").value, data: notaNoua.data, linii });
+              { descriere: corp.querySelector("#je-desc").value, data: notaNoua.data, linii, document_ref: corp.querySelector("#je-doc").value });
           } else {
             await api.put(`/tenants/${t.id}/jurnal/${inEditare}`,
-              { descriere: corp.querySelector("#je-desc").value, linii });
+              { descriere: corp.querySelector("#je-desc").value, linii, document_ref: corp.querySelector("#je-doc").value });
           }
           inEditare = null; deseneaza();
         } catch (e) { eroare(e, "Eroare la salvare"); }
@@ -4311,7 +4332,7 @@ async function ecranRapoarte(corp, nav, t) {
           <thead><tr><th>Articol</th><th class="fd-td-num">Cant.</th>
             <th class="fd-td-num">Venit</th><th class="fd-td-num">Cost</th><th class="fd-td-num">Profit</th></tr></thead>
           <tbody>${(d.profit_produs || []).map((p) => `
-            <tr><td>${esc(p.articol)}</td><td class="fd-td-num">${p.cant}</td>
+            <tr><td>${esc(p.articol)}</td><td class="fd-td-num">${cantitate(p.cant)}</td>
               <td class="fd-td-num">${bani(p.venit)}</td><td class="fd-td-num">${bani(p.cost)}</td>
               <td class="fd-td-num">${bani(p.profit)}</td></tr>`).join("")}</tbody>
         </table>` : `<div class="stare-goala">Niciun profit pe produs în perioadă. Disponibil doar la gestiune cantitativă (CV), pe articolele descărcate din stoc la emitere (poarta „pleacă marfa"). La global-valoric costul pe articol nu există.</div>`}

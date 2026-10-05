@@ -816,9 +816,9 @@ html, body {
 .term-item:hover { background: #f6f8fb; }
 .term-tip { font-weight: 700; color: #1f4e79; }
 .term-nr { color: #44516b; }
-.term-chev { color: var(--gri-semafor); }
+.term-chev { color: var(--gri); }
 /* [P4] eticheta text 10px a starii gri (cap.8: bulina + eticheta text) pentru D390 pe perioada deschisa */
-.term-posibil { font-size: 10px; color: var(--gri-semafor); margin-left: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+.term-posibil { font-size: 10px; color: var(--gri); margin-left: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
 
 
 /* ---------- DE VALIDAT ---------- */
@@ -1858,16 +1858,16 @@ html, body {
 .em-cui-rau { color:#dc2626; }
 .em-cui-atentie { color:#c2410c; }
 .em-linii { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
-.em-linie { display:grid; grid-template-columns: 1fr 80px 100px 84px 28px; gap:8px; align-items:center; }
+.em-linie { display:grid; grid-template-columns: 1fr 80px 64px 100px 84px 28px; gap:8px; align-items:center; }   /* [05.10.2026] + UM după cantitate */
 .em-linie .camp-input { padding:0 10px; }
 /* [ui11] eroarea de camp: pinata pe randul 2 al grilei, latime plina. eroareCamp o insereaza
    la mijlocul liniei (dupa input); fixand-o pe grid-row 2, celulele urmatoare (pret/cota/sterge)
    se aseaza inapoi pe randul 1 -> butonul de sters NU mai sare pe rand nou. */
 .em-linie .msg-eroare { grid-column:1/-1; grid-row:2; align-self:start; }
 /* [ui13] antet de coloane pt liniile de factura, aliniat la grila .em-linie */
-.em-linie-antet { display:grid; grid-template-columns: 1fr 80px 100px 84px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#475569; margin-bottom:2px; }  /* [R143] contrast, ca la .em-eticheta */
+.em-linie-antet { display:grid; grid-template-columns: 1fr 80px 64px 100px 84px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#475569; margin-bottom:2px; }  /* [R143] contrast, ca la .em-eticheta */
 .em-linie-antet span { padding:0 10px; }
-.em-linie-antet .ant-cant, .em-linie-antet .ant-pret, .em-linie-antet .ant-cota { text-align:center; padding:0; }
+.em-linie-antet .ant-cant, .em-linie-antet .ant-um, .em-linie-antet .ant-pret, .em-linie-antet .ant-cota { text-align:center; padding:0; }
 .em-l-cota { text-align:center; font-weight:700; font-size: var(--text-mic); color:#64748b; }
 .em-l-cota.cota-11 { color:#15803d; }
 .em-l-cota.cota-21 { color:#475569; }
@@ -1883,8 +1883,8 @@ html, body {
 .em-bun { color:#15803d; font-weight:600; }
 .em-rau { color:#dc2626; }
 @media (max-width:520px) {
-  .em-linie { grid-template-columns: 1fr 56px 72px 70px 24px; gap:5px; }
-  .em-linie-antet { grid-template-columns: 1fr 56px 72px 70px 24px; gap:5px; }
+  .em-linie { grid-template-columns: 1fr 52px 44px 64px 64px 24px; gap:4px; }
+  .em-linie-antet { grid-template-columns: 1fr 52px 44px 64px 64px 24px; gap:4px; }
 }
 
 /* [p108_fac_meniu_css] meniu facturi (2 optiuni) */
@@ -2399,7 +2399,7 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 /* [P4] „Ce nu poate spune verificarea asta": subsolul de onestitate al ecranului. Necolorat
    deliberat — nu e o problemă de rezolvat, e o declarație de acoperire. */
 .cf-limite summary { cursor: pointer; }
-.cf-limite summary::marker { color: var(--gri-semafor); }
+.cf-limite summary::marker { color: var(--gri); }
 .cf-limite > .cf-incr-temei { margin-left: 14px; }
 .cf-semnal { font-size: var(--text-mic); margin-top: 6px; padding: 8px 10px; border-radius: 8px;
   line-height: 1.45; }

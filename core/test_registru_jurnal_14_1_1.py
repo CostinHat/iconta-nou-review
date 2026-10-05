@@ -89,7 +89,9 @@ def _sql():
 def test_documentul_se_deriva_din_factura():
     """Norma cere FELUL, NUMARUL si DATA. Toate trei trebuie sa apara."""
     d = _j.document_justificativ(None, "factura", "ALFA-E-", "001", date(2026, 8, 10))
-    assert d == "Factură ALFA-E-001 din 2026-08-10", d
+    # [05.10.2026, comanda Costin pct.6] data în forma românească (DS cap.4, `pdf_util.data_ro`) — textul ajunge la contabil,
+    # nu e un câmp ISO de API. Felul, numărul și data rămân toate trei.
+    assert d == "Factură ALFA-E-001 din 10.08.2026", d
 
 
 def test_document_ref_scris_explicit_are_prioritate():

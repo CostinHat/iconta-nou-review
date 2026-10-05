@@ -22,6 +22,7 @@ from core import articole_import_api, retete_import_api
 from core import repo_banca
 from core import repo_casa
 from core import repo_contabilitate
+from core import jurnal_api as _jurnal_api
 from core import repo_declaratii
 from core import repo_efactura
 from core import repo_facturi
@@ -817,7 +818,8 @@ def produse_potriveste(tenant_id, denumire, ctx):
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         platitor = _uc_comun._platitor_tva_firma(conn)
-    return produse_api.potriveste(denumire, platitor_tva=platitor)
+        # [05.10.2026, comanda Costin pct.9] nomenclatorul firmei întâi (cota, UM, preț), potrivirea automată după
+        return produse_api.propunere_pentru_linie(conn, denumire, platitor_tva=platitor)
 
 
 def cm_lista(tenant_id, salariat_id, an, ctx):
@@ -905,7 +907,8 @@ def bon_aproba(tenant_id, bon_id, b, ctx):
         # valorile articolelor sunt cu TVA inclus; scad TVA proportional
         factor = (b.total - b.tva) / b.total if b.total else 1
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_bon_validata(cur, schema, b.data, f"BON-{bon_id}", f"Bon {b.comerciant}")[0]
+            iid = repo_contabilitate.nota_bon_validata(cur, schema, b.data, f"BON-{bon_id}", f"Bon {b.comerciant}",
+                                                       _jurnal_api.eticheta_document("Bon fiscal", None, b.data, b.comerciant))[0]
             for l in b.linii:
                 repo_contabilitate.adauga_linie_credit_casa(cur, schema, iid, l.cont, round(l.valoare * factor, 2))
             if b.tva:
@@ -1079,7 +1082,7 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
                 if iid not in note:
                     note[iid] = {"id": iid, "nr_curent": int(nrc), "data": data.isoformat(),
                                  "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
-                                 "factura_id": fid,
+                                 "factura_id": fid, "document_ref": dref,   # scris de om (editorul îl arată)
                                  "document": _j.document_justificativ(dref, f_tip, f_serie, f_nr, f_data),
                                  "linii": []}
                 note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma),
@@ -1744,12 +1747,16 @@ def cabinet_solicitari_raspunde(tenant_id, date, ctx):
     return {"ok": True}
 
 
+#: Stările unei linii de extras, așa cum le scrie `reconciliere_api` (05.10.2026: filtrul cerea „noua/potrivita/…”, baza
+#: scrie „nou/potrivit/…”, deci orice filtru întorcea o listă goală).
+STARI_EXTRAS = ("nou", "potrivit", "contat", "ignorat")
+
+
 def banca_rec_lista(tenant_id, status, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/banca/reconciliere`; docstringul ei a ramas in stratul HTTP."""
-    _STARI_REC = ("noua", "potrivita", "contata", "ignorata")
-    if status is not None and status not in _STARI_REC:
+    if status is not None and status not in STARI_EXTRAS:
         raise _erori.DateInvalide("stare necunoscută: %r (stările reconcilierii: %s)"
-                                     % (status, ", ".join(_STARI_REC)))
+                                     % (status, ", ".join(STARI_EXTRAS)))
     from core import reconciliere_api as _rec
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -4794,7 +4801,8 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx):
                          "cod": "DEJA_CONTATA"}
             # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
             # intra CIORNA (patru-ochi), nu cautand `'ciorna'` intr-un sir (METODA §23).
-            nota_id = repo_contabilitate.nota_cu_sursa_si_status(cur, ultima, p["document_ref"], "Stat de plata %02d/%d" % (luna, an), "salarii", _uc_comun.STARE_CIORNA)[0]
+            nota_id = repo_contabilitate.nota_cu_sursa_si_status(cur, ultima, p["document_ref"], "Stat de plata %02d/%d" % (luna, an), "salarii", _uc_comun.STARE_CIORNA,
+                                                                 "Stat de plată %02d/%d" % (luna, an))[0]   # [05.10.2026 pct.6] documentul notei
             for n in p["note"]:
                 repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
         conn.commit()
@@ -4837,7 +4845,8 @@ def horeca_import_amef(tenant_id, continut, ctx):
             try:
                 tranzactie.savepoint_z_insert(cur)
                 # id-ul se citește ÎNAINTE de `RELEASE`: orice `execute` următor golește cursorul
-                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit")[0]
+                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit",
+                                                          _jurnal_api.eticheta_document("Raport Z", rz["nr_raport"], rz["data"], "AMEF %s" % rz["nui"]))[0]
                 tranzactie.elibereaza_z_insert(cur)
             except _psycopg2.errors.UniqueViolation:
                 tranzactie.intoarce_la_z_insert(cur)
@@ -4901,7 +4910,8 @@ def horeca_raport_z(tenant_id, rz, ctx):
         baza21 = D(str(rz.total_21)) - tva21
         with conn.cursor() as cur:
             _uc_comun._cere_z_unic(cur, schema, numar)
-            iid = repo_contabilitate.nota_horeca_z_validata(cur, schema, rz.data, numar, "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport))[0]
+            iid = repo_contabilitate.nota_horeca_z_validata(cur, schema, rz.data, numar, "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport),
+                                                            _jurnal_api.eticheta_document("Raport Z", nr_raport, rz.data, "casa %s" % nui))[0]
             linii = []
             if rz.numerar: linii.append(("5311", "707", rz.numerar))
             if rz.card: linii.append(("5125", "707", rz.card))
@@ -5071,7 +5081,7 @@ def banca_rec_import(tenant_id, continut, nume_fisier, ctx):
     for t in tranzactii:
         r = _bk.regula_cont({"sens": "debit" if t["suma"] < 0 else "credit",
                              "suma": abs(t["suma"]), "descriere": t.get("detalii", "")})
-        t["cui"], t["tip"], t["nota"] = r.get("cui"), r.get("tip"), r.get("nota")
+        t["cui"], t["tip"], t["nota"], t["tip_detectat"] = r.get("cui"), r.get("tip"), r.get("nota"), r.get("tip_detectat")
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5182,7 +5192,8 @@ def jurnal_creeaza(tenant_id, corp, ctx):
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
-        return _uc_comun._jurnal_rez(_j.creeaza(conn, schema, corp.get("descriere"), corp.get("data"), corp.get("linii")))
+        return _uc_comun._jurnal_rez(_j.creeaza(conn, schema, corp.get("descriere"), corp.get("data"), corp.get("linii"),
+                                                corp.get("document_ref")))
 
 
 
@@ -5195,7 +5206,8 @@ def jurnal_editeaza(tenant_id, nota_id, corp, ctx):
             raise _erori.Inexistent("tenant inexistent sau fără acces")
         _uc_comun._cere_perioada_deschisa(conn, schema, nota_id)
         return _uc_comun._jurnal_rez(_j.editeaza(conn, schema, nota_id,
-                                       corp.get("descriere"), corp.get("data"), corp.get("linii")))
+                                       corp.get("descriere"), corp.get("data"), corp.get("linii"),
+                                       corp.get("document_ref")))
 
 
 

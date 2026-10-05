@@ -70,9 +70,11 @@ def adauga(conn, schema, op, linii=None):
     tip = "incasare" if cat in CATEGORII_INCASARE else "plata"
     linii = [(d, c, Decimal(str(v))) for d, c, v in linii if Decimal(str(v))] if linii else [CONTURI[cat] + (suma,)]
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                        VALUES (%s,%s,'casa','ciorna') RETURNING id""",
-                    (op["data"], (op.get("partener") or cat.replace("_", " "))[:200]))
+        # [05.10.2026, comanda Costin pct.6] documentul scris pe operațiune (chitanța/dispoziția) e și al notei
+        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                        VALUES (%s,%s,'casa','ciorna',%s) RETURNING id""",
+                    (op["data"], (op.get("partener") or cat.replace("_", " "))[:200],
+                     (str(op.get("document") or "").strip() or None)))
         iid = cur.fetchone()["id"]
         for debit, credit, v in linii:
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii

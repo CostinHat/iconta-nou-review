@@ -16977,3 +16977,30 @@ unei ferestre deschise peste. Mesajul de refuz promitea păstrarea fără ca vre
    devenea ieri; două greșeau ziua oricând (intervalul „luna”/„an” din activitatea cabinetului începea cu o zi mai devreme;
    „UIT valabil până la” din e-Transport arăta o zi mai devreme). Acum: `dataIso(d)` din api.js, unica producere a unei date
    în interfață (DS cap.4 v2.68, gard `DATA_UTC`). Alternativa respinsă: reparat numai câmpul facturii — celelalte 20 rămâneau.
+9. **(C, pct.6) Notele scrise de aplicație poartă documentul sursă, derivat — nu fabricat.** Nota 607=371 de la emitere poartă
+   „Factură <nr> din <zz.ll.aaaa>” (fără `factura_id`: n-o face plată sau contare, ar bloca ștergerea facturii); nota din extras
+   poartă „Extras bancar <fișier> din <data>”. Generalizat la clasa „notă automată care are documentul în mână și nu-l scrie”:
+   casa (documentul operațiunii), NIR, bonul aprobat, raportul Z (ambele rute), statul de plată. Rămân fără document — și deci
+   marcate ca atare în Registrul jurnal — notele pentru care aplicația n-are un document extern: amortizarea, descărcarea lunară
+   a gestiunii, consumul pe rețetă, inventarul, operațiunile speciale (decizie cerută lui Costin în raport). Seria nu se mai
+   dublează în textul documentului (numărul facturii emise o conține) — nici la bancă, nici în ID-ul e-Factura (BT-1), unde
+   ar fi ieșit „COERCOER-T3” (19 din 19 facturi emise cu serie din baza de test) — și data e românească.
+10. **(C, pct.6) Validarea unei note fără document se vede înainte.** Rândul ciornei poartă caseta „Notă fără document
+   justificativ”, iar „Validează” pe ea cere confirmare; editorul notei are câmpul „Document justificativ” (creare și
+   editare), ca mesajul să nu promită ce aplicația nu face. Validarea rămâne posibilă: documentul poate fi pe hârtie, dar
+   alegerea e văzută. Alternativa respinsă: refuz la validare — ar bloca notele de amortizare și operațiunile speciale, care
+   n-au document extern.
+11. **(C, pct.7) „Contabilizată” = nota de CONTARE validată.** Predicatul canonic `contare_facturi.e_nota_de_contare`, nu
+   „există orice notă cu cheia” (ciorna și încasarea treceau drept contabilizare). Cât e ciornă: „notă propusă, de validat”;
+   din detaliu, „nota #id” deschide Registrul jurnal pe luna notei. Butonul „Contează” din listă apare numai când nu există
+   nicio notă de contare (nici ciornă).
+12. **(C, pct.8) Banca spune exact ce a făcut.** Importul numără potrivite / fără potrivire; contarea pe nota propusă se
+   oprește după ea (înainte cădea în ramura alocărilor: răspundea „Nota 401=5121 — 0 înregistrări create” și rescria legătura
+   notei cu []); liniile noi apar primele; filtrul pe stare primește stările din bază. Sugestia învățată (istoricul validat)
+   rula niciodată — `regula_cont` punea mereu o notă presupusă; acum rulează pe liniile al căror tip nu se recunoaște.
+13. **(C, pct.9) Linia de factură.** Prețul și UM din nomenclatorul firmei se precompletează (nomenclatorul întâi, potrivirea
+   automată după); câmp UM pe linie (din articolul de stoc, implicit „buc”), trimis la emitere; pe o firmă cu stoc, linia fără
+   articol spune că marfa nu se descarcă. Cantitățile și costul unitar se afișează prin formatori unici — `cantitate(v, um)`,
+   `pretUnitar(v)` în interfață, `pdf_util.cantitate` în backend (DS cap.4 v2.69) — clasa avea 26 de apariții în 4 ecrane.
+14. **(C, găsit de axe la probă) Culorile de semafor nu colorează text** (DS cap.8 v2.70): `--galben`, `--gri-semafor`,
+   `--rosu-semafor` au sub 4,5:1 pe alb; textul folosește `--galben-text`, `--gri`, `--rosu`. 16 apariții directe + 6 indirecte.

@@ -519,6 +519,28 @@ export function dataIso(d) {
   return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
 }
 
+// numarCuSerie — numărul unui document cu seria în față, o singură dată (oglinda `pdf_util.numar_cu_serie`). Numărul unei
+// facturi emise conține deja seria; compus „serie + număr” ieșea „FCTFCT12”.
+export function numarCuSerie(serie, numar) {
+  const nr = numar == null ? "" : String(numar), s = serie ? String(serie) : "";
+  return !s || nr.startsWith(s) ? nr : s + nr;
+}
+
+// cantitate(v, um) — SINGURUL formator de cantitate (stoc, mișcare, linie): „2 buc”, „1,5 kg”, fără zecimalele de prisos ale
+// coloanei NUMERIC(12,3) („stoc 110.000”, „x2.000”). pretUnitar(v) — prețul/costul unitar (CMP, preț de intrare): 2–4 zecimale
+// („CMP 50.0000” -> „50,00”). Comanda Costin 05.10.2026 pct.9; gard CANTITATE_BRUTA (DS cap.4 v2.69).
+export function cantitate(v, um) {
+  const n = Number(v);
+  if (v === null || v === undefined || v === "" || !isFinite(n)) return v ?? "";
+  const opt = { maximumFractionDigits: 3 };
+  return um ? `${n.toLocaleString("ro-RO", opt)} ${um}` : n.toLocaleString("ro-RO", opt);
+}
+export function pretUnitar(v) {
+  const n = Number(v);
+  if (v === null || v === undefined || v === "" || !isFinite(n)) return v ?? "";
+  return n.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+}
+
 // pct(v) — singurul formator de procent: numar intreg + "%" (12%), o zecimala cand exista (12,5%)
 export function pct(v) {
   const n = Number(v) || 0;

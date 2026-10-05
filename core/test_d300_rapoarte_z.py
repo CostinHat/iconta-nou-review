@@ -172,3 +172,17 @@ def test_calcul_pur_cota_z_fara_rand_e_semnalata_si_zero_nu_e_colectat():
     assert res.R.get("R10_1") is None and res.R.get("R11_1") is None      # 5% nu are rând automat: nu se inventează unul
     # cota fără rând e SEMNALATĂ (un avertisment în plus față de același calcul fără ea), nu pierdută tăcut
     assert len(res.avertismente) == len(fara_5.avertismente) + 1
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_notele_raportului_z_poarta_raportul_ca_document(conn_z):
+    """[05.10.2026, comanda Costin pct.6] „Notele automate poartă documentul sursă.” Raportul Z e documentul notei lui, pe
+    ambele rute (Registrul-jurnal col.3: felul, numărul și data). MUTAȚIE: `document_ref` netransmis din `horeca_raport_z`
+    -> None -> pică."""
+    r1, r2 = _importa_ambele(conn_z)
+    with conn_z.cursor() as cur:
+        cur.execute("SELECT sursa, document_ref FROM inregistrari WHERE id IN (%s, %s) ORDER BY id", (r1["inregistrare_id"], r2["nota_id"]))
+        rez = cur.fetchall()
+    assert rez[1] == ("horeca_z", "Raport Z nr 0007 din 10.07.2026 (casa 8000000002)")
+    import re
+    assert rez[0][0] == "amef" and re.fullmatch(r"Raport Z nr \S+ din \d\d\.\d\d\.\d{4} \(AMEF \d+\)", rez[0][1]), rez[0]

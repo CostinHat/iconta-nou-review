@@ -90,12 +90,14 @@ def test_fratii_deja_corecti_raman_corecti():
     """Cele trei instanțe au trăit lângă forme CORECTE, scrise în aceeași zi. Dacă formele alea
     dispar, aserțiunile de mai sus măsoară alt fișier decât cel pe care au fost calibrate."""
     t = _citeste("cabinet.js")
-    assert 't.respinse ? "var(--rosu-semafor)" : null' in t, \
+    # [05.10.2026] DS cap.8 v2.70: o cifră e TEXT, deci tokenii de text (--rosu, --galben-text), nu cei de semafor (contrast
+    # sub 4,5:1). Forma CONDIȚIONATĂ — pe care o calibrează testul — e aceeași; s-a schimbat doar tokenul.
+    assert 't.respinse ? "var(--rosu)" : null' in t, \
         "cabinet.js: fratele conditionat `respinse` a disparut — calibrarea nu mai tine"
-    assert 't.in_asteptare ? "var(--galben)" : null' in t, \
+    assert 't.in_asteptare ? "var(--galben-text)" : null' in t, \
         "cabinet.js: fratele conditionat `in_asteptare` a disparut"
     c = _citeste("capacitate.js")
-    assert 'cab.de_validat ? "var(--galben)" : null' in c, \
+    assert 'cab.de_validat ? "var(--galben-text)" : null' in c, \
         "capacitate.js: fratele conditionat `de_validat` a disparut"
 
 

@@ -128,8 +128,9 @@ def _linii_valide(conn, schema, linii):
     return None
 
 
-def creeaza(conn, schema, descriere, data, linii):
-    """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie."""
+def creeaza(conn, schema, descriere, data, linii, document_ref=None):
+    """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie.
+    `document_ref` = documentul justificativ scris de om (Registrul-jurnal col.3); gol -> se derivă sau rămâne lipsă vizibilă."""
     data, rd = _data_valida(data)
     if rd:
         return rd
@@ -137,9 +138,9 @@ def creeaza(conn, schema, descriere, data, linii):
     if rl:
         return rl
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                        VALUES (%s,%s,'manual','ciorna') RETURNING id""",
-                    (data, (descriere or "")[:200]))
+        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                        VALUES (%s,%s,'manual','ciorna',%s) RETURNING id""",
+                    (data, (descriere or "")[:200], (str(document_ref or "").strip() or None)))
         nota_id = cur.fetchone()["id"]
         for l in linii:
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
@@ -161,8 +162,9 @@ def creeaza(conn, schema, descriere, data, linii):
         out["mesaj"] = ("nota a fost legată de factura #%d — o singură factură a lunii se "
                         "potrivește pe sumă" % legata)
     return out
-def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
-    """Editează o notă ciornă. linii = [{debit, credit, suma}] înlocuiește complet liniile."""
+def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, document_ref=None):
+    """Editează o notă ciornă. linii = [{debit, credit, suma}] înlocuiește complet liniile.
+    `document_ref`: None = neschimbat; șir gol = șters (nota rămâne fără document, iar validarea o va spune)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         n = _nota(cur, schema, nota_id)
         if not n:
@@ -207,6 +209,8 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
             seturi.append("descriere=%s"); valori.append(descriere)
         if data is not None:
             seturi.append("data=%s"); valori.append(data)
+        if document_ref is not None:
+            seturi.append("document_ref=%s"); valori.append(str(document_ref).strip() or None)
         if seturi:
             cur.execute(f"UPDATE {schema}.inregistrari SET {', '.join(seturi)} WHERE id=%s",
                         (*valori, nota_id))
@@ -277,6 +281,31 @@ def document_justificativ(document_ref, fel, serie, numar, data):
         return str(document_ref).strip() or None
     if numar is None:
         return None
-    nr = "%s%s" % (serie or "", numar)
+    return eticheta_factura(fel, serie, numar, data)
+
+
+def eticheta_document(fel, numar=None, data=None, detaliu=None):
+    """„<Fel> nr <număr> din <zz.ll.aaaa> (<detaliu>)” — documentul sursă al unei note scrise de aplicație (Registrul-jurnal
+    col.3: felul, numărul și data). Numai din ce există în date: un câmp lipsă nu se completează, se omite.
+    [05.10.2026, comanda Costin pct.6] Sursa UNICĂ pentru notele automate: bon, raport Z, stat de plată, NIR."""
+    from core import pdf_util
+    t = str(fel)
+    if numar not in (None, ""):
+        t += " nr %s" % numar
+    if data not in (None, ""):
+        t += " din %s" % pdf_util.data_ro(data)
+    if detaliu:
+        t += " (%s)" % detaliu
+    return t
+
+
+def eticheta_factura(fel, serie, numar, data):
+    """„Factură FCT12 din 05.10.2026” — felul, numărul și data, în forma în care le citește omul.
+
+    [05.10.2026, comanda Costin pct.6] Numărul unei facturi EMISE conține deja seria (`facturi_api`: număr = serie + număr),
+    deci seria se pune în față numai când lipsește din număr — înainte ieșea „FCTFCT12”. Data în forma românească
+    (`pdf_util.data_ro`), nu ISO. Sursa UNICĂ: o folosesc și Registrul-jurnal, și nota de descărcare a stocului."""
+    from core import pdf_util
+    nr = pdf_util.numar_cu_serie(serie, numar)
     et = "Factură" if (fel or "factura") == "factura" else str(fel).capitalize()
-    return "%s %s din %s" % (et, nr, data.isoformat() if hasattr(data, "isoformat") else data)
+    return "%s %s din %s" % (et, nr, pdf_util.data_ro(data))

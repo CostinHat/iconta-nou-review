@@ -500,11 +500,22 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, numar, data_emitere, directie, total, tva, status, "
-            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, "
-            "EXISTS(SELECT 1 FROM inregistrari i WHERE i.factura_id = facturi.id) AS contabilizata "
+            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id "
             "FROM facturi" + where +
             " ORDER BY data_emitere DESC, id DESC" + limitclause, val)
-        return [dict(r) for r in cur.fetchall()]
+        out = [dict(r) for r in cur.fetchall()]
+        _cu_stare_contare(cur, out)
+        return out
+
+
+def _cu_stare_contare(cur, facturi):
+    """[05.10.2026, comanda Costin pct.7] Starea spune adevărul: `nota_contare` (id, stare, dată) și `contabilizata` = nota de
+    contare VALIDATĂ — nu „există orice notă cu cheia” (ciorna și încasarea treceau drept contabilizare)."""
+    from core import contare_facturi as _cf
+    st = _cf.stare_contare(cur, "", [f["id"] for f in facturi])
+    for f in facturi:
+        f["nota_contare"] = st.get(f["id"])
+        f["contabilizata"] = bool(f["nota_contare"] and f["nota_contare"]["status"] == "validata")
 
 
 # ============================================================
@@ -522,8 +533,7 @@ def detalii_factura(conn, factura_id):
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
             "link_plata, platita_la, plata_confirmata_de, "  # [R43] marca de simulare
             "bon_fiscal_nr, bon_fiscal_data, "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
-            "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
-            "EXISTS(SELECT 1 FROM inregistrari i WHERE i.factura_id = facturi.id) AS contabilizata "
+            "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar "
             "FROM facturi WHERE id = %s",
             (factura_id,))
         f = cur.fetchone()
@@ -534,6 +544,7 @@ def detalii_factura(conn, factura_id):
             "SELECT id, descriere, um, cantitate, pret_unitar, cota_tva, cont_venit "
             "FROM factura_linii WHERE factura_id = %s ORDER BY id", (factura_id,))
         f["linii"] = [dict(r) for r in cur.fetchall()]
+        _cu_stare_contare(cur, [f])
     return f
 
 

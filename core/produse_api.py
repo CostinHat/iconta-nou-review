@@ -53,6 +53,20 @@ def cauta_dupa_denumire(conn, denumire):
     return out
 
 
+def propunere_pentru_linie(conn, denumire, platitor_tva=True):
+    """[comanda Costin 05.10.2026 pct.9] Ce se propune pe o linie de factură când se scrie denumirea: produsul din NOMENCLATORUL
+    firmei, dacă există (cota, UM, prețul), altfel cota din potrivirea automată. Înainte, linia întreba doar cota (AI), iar
+    prețul și UM din nomenclator nu se precompletau. Neplătitorul primește cota 0 (CF art.310 alin.(10) lit.b), iar prețul și
+    UM tot din nomenclator."""
+    p = cauta_dupa_denumire(conn, denumire)
+    if not p:
+        return potriveste(denumire, platitor_tva=platitor_tva)
+    cota = p["cota_tva"] if platitor_tva else 0
+    return {"ok": True, "cota": int(cota) if float(cota).is_integer() else cota, "categorie": p.get("categorie"),
+            "justificare": p.get("justificare"), "sursa": "nomenclator", "produs_id": p["id"],
+            "um": p.get("um"), "pret_unitar": p["pret_unitar"]}
+
+
 def potriveste(denumire, platitor_tva=True):
     """
     Propune cota pentru o denumire noua, FARA sa salveze (preview pentru UI).

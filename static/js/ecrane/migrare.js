@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js?v=39585157c4";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate } from "../api.js?v=4c8f1ff171";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -1802,7 +1802,7 @@ function previzualizeazaArticole(corp, nav, firma, date) {
       ${randuri.slice(0, 50).map((a) => `
         <div class="mig-rand${a.valid ? "" : " mig-rand-rosu"}">
           <span>${esc(a.denumire)} \u00b7 ${esc(a.um)}</span>
-          <span>${a.cantitate} \u00d7 ${bani(a.pret)} lei${a.valid ? "" : " \u00b7 " + esc(a.motiv)}</span>
+          <span>${cantitate(a.cantitate)} \u00d7 ${bani(a.pret)} lei${a.valid ? "" : " \u00b7 " + esc(a.motiv)}</span>
         </div>`).join("")}
       ${randuri.length > 50 ? `<div class="mig-eticheta">\u2026 \u0219i \u00eenc\u0103 ${randuri.length - 50}</div>` : ""}
     </div>

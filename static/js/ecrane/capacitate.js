@@ -2,7 +2,7 @@
 // Trei sectiuni: 1) cabinet (cat e de facut vs ritm), 2) pe asistent
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
-import { api, esc } from "../api.js?v=39585157c4";
+import { api, esc } from "../api.js?v=4c8f1ff171";
 import { randeazaAsistenti } from "./asistenti.js?v=b8e3412a1e";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
 
@@ -53,7 +53,7 @@ export async function randeazaCapacitate(corp, nav) {
   const sectCabinet = `
     <div class="cap-cifre">
       ${celulaCifra(cab.in_lucru ?? 0, "în lucru")}
-      ${celulaCifra(cab.de_validat ?? 0, "de validat", cab.de_validat ? "var(--galben)" : null)}
+      ${celulaCifra(cab.de_validat ?? 0, "de validat", cab.de_validat ? "var(--galben-text)" : null)}
       ${celulaCifra(cab.depuse_luna ?? 0, "depuse luna asta", (cab.depuse_luna ? "var(--verde)" : null))}
       ${celulaCifra((cab.ritm_pe_zi ?? 0), "ritm / zi lucrătoare")}
     </div>

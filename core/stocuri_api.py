@@ -12,15 +12,15 @@ from psycopg2.extras import RealDictCursor
 from core import stocuri as _m
 
 
-def _noteaza(cur, schema, data, descriere, note):
-    """Creează câte o înregistrare ciornă per notă propusă. Întoarce id-urile."""
+def _noteaza(cur, schema, data, descriere, note, document_ref=None):
+    """Creează câte o înregistrare ciornă per notă propusă. Întoarce id-urile. `document_ref` = documentul sursă (NIR)."""
     ids = []
     for n in note:
         if Decimal(str(n["suma"])) <= 0:
             continue
-        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                        VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
-                    (data, descriere[:200]))
+        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                        VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
+                    (data, descriere[:200], document_ref))
         iid = cur.fetchone()["id"]
         cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                         (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
@@ -77,7 +77,8 @@ def adauga_nir(conn, schema, nir):
         return {"eroare": str(e)}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         desc = f"NIR {nir['numar']} {nir.get('furnizor') or ''}".strip()
-        ids = _noteaza(cur, schema, nir["data"], desc, rez["note"])
+        from core import jurnal_api as _j   # [05.10.2026, comanda Costin pct.6] NIR-ul e documentul notelor lui
+        ids = _noteaza(cur, schema, nir["data"], desc, rez["note"], _j.eticheta_document("NIR", nir["numar"], nir["data"]))
         cur.execute(f"""INSERT INTO {schema}.nir
                         (numar, data, furnizor, cui, factura_ref, cost_total,
                          valoare_vanzare, adaos_total, tva_neexigibila, transport, taxe,

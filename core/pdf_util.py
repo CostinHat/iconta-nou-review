@@ -18,6 +18,26 @@ def bani(x, mon=""):
     return f"{s} {mon}".strip()
 
 
+def cantitate(x, um=""):
+    """Cantitate pentru om: „2 buc”, „1,5 kg”, „0,125 l” — fără zecimalele de prisos ale coloanei NUMERIC(12,3) („x2.000”).
+    Oglinda lui `cantitate()` din api.js (comanda Costin 05.10.2026 pct.9)."""
+    if x is None or x == "":
+        return ""
+    n = Decimal(str(x)).quantize(Decimal("0.001")).normalize()
+    s = f"{n:,f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return f"{s} {um or ''}".strip()
+
+
+def numar_cu_serie(serie, numar):
+    """Numărul unui document cu seria în față, o singură dată. Sursa UNICĂ (gard `core/test_flux_factura_f1_c.py`).
+
+    Numărul unei facturi emise conține deja seria (`facturi_api`: număr = serie + număr; măsurat 05.10.2026: 19 din 19 facturi
+    emise cu serie, în baza de test). Compus „serie + număr” peste el ieșea „FCTFCT12” — în Registrul-jurnal, la bancă și în
+    ID-ul e-Factura către ANAF. Seria se pune în față numai când numărul n-o poartă deja."""
+    nr, s = str(numar if numar is not None else ""), str(serie or "")
+    return nr if (not s or nr.startswith(s)) else s + nr
+
+
 def data_ro(d, stil="scurt"):
     """Format romanesc canonic pentru DATE afisate utilizatorului — oglinda dataRo din api.js
     (DS cap.4). Sursa UNICA in backend; NU se reimplementeaza strftime('%d.%m.%Y') local.

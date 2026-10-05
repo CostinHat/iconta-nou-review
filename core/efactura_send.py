@@ -182,7 +182,9 @@ def genereaza_xml(factura, linii, furnizor, client):
     if factura.get("taxare_inversa"):
         raise NotImplementedError("taxare inversa (categorie AE) - netratat in v1, se adauga dupa TEST")
     moneda = (factura.get("moneda") or "RON").strip() or "RON"
-    numar_complet = "%s%s" % (factura.get("serie") or "", factura.get("numar") or "")
+    # [05.10.2026] numărul facturii emise conține deja seria — compus „serie + număr” ieșea „FCTFCT12” (BT-1 ≠ PDF)
+    from core import pdf_util as _pu
+    numar_complet = _pu.numar_cu_serie(factura.get("serie"), factura.get("numar"))
 
     # --- calcule pe linii, grupate pe cota ---
     line_net = []

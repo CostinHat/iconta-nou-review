@@ -23,4 +23,6 @@ def test_banner_pontaj_neconfirmat_e_caseta_info_nu_ecran_nota_rosu():
         "banner-ul de luna 'pontaj neconfirmat' trebuie sa fie .caseta-info (DS cap.23)")
     assert 'pontajNeconf ? `<div class="ecran-nota"' not in FIRME, (
         "banner-ul de luna NU ecran-nota rosu (DS cap.23: stare informativa, nu atentionare)")
-    assert 'var(--gri-semafor)' in FIRME, "semaforul gri (DS cap.8) lipseste din stat"
+    # [05.10.2026] DS cap.8 v2.70: bulina „●” e un caracter (text) — gri de text `--gri`, nu `--gri-semafor` (2,5:1 pe alb).
+    # Starea rămâne GRI (informativă), cum a cerut decizia C1.
+    assert '<span style="color:var(--gri)">●</span> Pontajul lunii' in FIRME, "semaforul gri (DS cap.8) lipseste din stat"

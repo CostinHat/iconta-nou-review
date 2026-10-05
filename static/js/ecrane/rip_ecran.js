@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso } from "../api.js?v=39585157c4";  /* investigatie_identitate_v1 */
+import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso } from "../api.js?v=4c8f1ff171";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -32,7 +32,7 @@ export async function ecranRip(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${dataRo(o.data_operatiune)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${bani(o.suma)} ${esc(o.valuta)}
-              ${o.status === "ciorna" ? '<span style="color:var(--galben);font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:var(--verde);font-weight:600"> \u00b7 VALIDATA</span>'}</div>
+              ${o.status === "ciorna" ? '<span style="color:var(--galben-text);font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:var(--verde);font-weight:600"> \u00b7 VALIDATA</span>'}</div>
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>
           ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}" data-actiune="PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza">Valideaz\u0103</button>
@@ -149,9 +149,9 @@ export async function ecranRip(corp, nav, t) {
               CASS (10%): <b>${d.cass.cass}</b> lei \u00b7 baza ${d.cass.baza}${d.cass.diferenta_minim > 0 ? ` (din care ${bani(d.cass.diferenta_minim)} lei diferen\u021ba p\u00e2n\u0103 la baza minim\u0103 de 6 salarii minime \u2014 nu se datoreaz\u0103 dac\u0103 persoana are salarii, pensii sau alte venituri cu CASS de cel pu\u021bin 6 salarii minime; atunci CASS = ${bani(d.cass.cass_pe_venit)} lei)` : ""}<br>
               Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
               <b class="tip-total">Total datorat: ${bani(d.total_datorat)} lei</b>
-              ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:var(--galben)">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
+              ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:var(--galben-text)">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
               ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu)">${d.ciorne_nevalidate} ciorne nevalidate \u2014 neincluse \u00een calcul</span>` : ""}
-              ${d.avertisment ? `<br><span style="color:var(--galben)">${esc(d.avertisment)}</span>` : ""}
+              ${d.avertisment ? `<br><span style="color:var(--galben-text)">${esc(d.avertisment)}</span>` : ""}
             </div>
           </div>`;
       } catch (e) { arataMesaj(zonaMsg, e.mesaj || e.message || "eroare", "eroare"); }

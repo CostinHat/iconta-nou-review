@@ -156,23 +156,48 @@ def luna_blocata(cur, schema, data):
     return cur.fetchone() is not None
 
 
-def note_cu_cheia(cur, schema, factura_id):
-    """Toate notele care poartă `factura_id`, cu liniile lor și cu verdictul „e contare?"."""
-    cur.execute("SELECT i.id, i.status, i.sursa, l.cont_debit, l.cont_credit, l.suma "
+def note_pe_facturi(cur, schema, factura_ids):
+    """{factura_id: [note]} — toate notele care poartă una din chei, cu liniile lor și cu verdictul „e contare?". O singură
+    interogare pentru o listă întreagă de facturi (lista de facturi o folosește pe pagină)."""
+    ids = [int(x) for x in factura_ids]
+    if not ids:
+        return {}
+    cur.execute("SELECT i.factura_id, i.id, i.status, i.sursa, i.data, l.cont_debit, l.cont_credit, l.suma "
                 "FROM %sinregistrari i "
                 "LEFT JOIN %sinregistrari_linii l ON l.inregistrare_id = i.id "
-                "WHERE i.factura_id = %%s ORDER BY i.id"
-                % (_p(schema), _p(schema)), (factura_id,))
-    note = {}
+                "WHERE i.factura_id = ANY(%%s) ORDER BY i.id, l.id"
+                % (_p(schema), _p(schema)), (ids,))
+    pe, note = {}, {}
     for r in cur.fetchall():
-        nid, status, sursa, cd, cc, suma = (r["id"], r["status"], r["sursa"], r["cont_debit"],
-                                            r["cont_credit"], r["suma"]) if isinstance(r, dict) else r
-        n = note.setdefault(nid, {"id": nid, "status": status, "sursa": sursa, "linii": []})
+        fid, nid, status, sursa, data, cd, cc, suma = (
+            (r["factura_id"], r["id"], r["status"], r["sursa"], r["data"], r["cont_debit"], r["cont_credit"], r["suma"])
+            if isinstance(r, dict) else r)
+        n = note.get(nid)
+        if n is None:
+            n = note[nid] = {"id": nid, "status": status, "sursa": sursa, "data": data, "linii": []}
+            pe.setdefault(fid, []).append(n)
         if cd is not None:
             n["linii"].append((cd, cc, Decimal(str(suma or 0))))
     for n in note.values():
         n["e_contare"] = e_nota_de_contare(n["linii"])
-    return list(note.values())
+    return pe
+
+
+def note_cu_cheia(cur, schema, factura_id):
+    """Toate notele care poartă `factura_id`, cu liniile lor și cu verdictul „e contare?"."""
+    return note_pe_facturi(cur, schema, [factura_id]).get(int(factura_id), [])
+
+
+def stare_contare(cur, schema, factura_ids):
+    """[05.10.2026, comanda Costin pct.7] {factura_id: {"id", "status", "data"} | None} — nota de CONTARE a fiecărei facturi,
+    cu starea ei. „Contabilizată” = nota de contare VALIDATĂ; o ciornă e „notă propusă, de validat”; o încasare nu e contare
+    (înainte, `EXISTS(orice notă)` le punea pe toate trei sub „contabilizată”)."""
+    pe = note_pe_facturi(cur, schema, factura_ids)
+    out = {}
+    for fid in factura_ids:
+        n = next((x for x in pe.get(int(fid), []) if x["e_contare"]), None)
+        out[fid] = {"id": n["id"], "status": n["status"], "data": str(n["data"])} if n else None
+    return out
 
 
 def contare_existenta(cur, schema, factura_id):
@@ -427,7 +452,8 @@ def _descriere(f, data_nota=None, motiv_data=None):
     din ea *„Factură <serie><număr> din <data>"*. Mențiunea de aici e pentru omul care citește nota,
     nu pentru mașină."""
     serie, numar = f.get("serie"), f.get("numar") or f["id"]
-    nr = numar if (serie and str(numar).startswith(str(serie))) else "%s%s" % (serie or "", numar)
+    from core import pdf_util as _pu
+    nr = _pu.numar_cu_serie(serie, numar)
     baza = "Contare factura %s" % nr
     if data_nota is not None and str(data_nota)[:10] != str(f["data_emitere"])[:10]:
         baza += " din %s — inregistrata la %s" % (str(f["data_emitere"])[:10], str(data_nota)[:10])

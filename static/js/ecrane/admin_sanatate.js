@@ -1,6 +1,6 @@
 // admin_sanatate.js — Admin iConta: sanatate infrastructura (doar superadmin).
 // Server (CPU/RAM/disk), aplicatie (uptime), baza de date, erori recente (500+), grafice istoric.
-import { dataRo, api, arataMesaj, esc } from "../api.js?v=39585157c4";
+import { dataRo, api, arataMesaj, esc } from "../api.js?v=4c8f1ff171";
 
 
 function fmtOra(iso) {
@@ -19,10 +19,10 @@ function fmtUptime(sec) {
   return `${min}m`;
 }
 
-function culoareProcent(p) {
-  if (p == null) return "var(--gri-semafor)";
-  if (p >= 90) return "var(--rosu-semafor)";
-  if (p >= 70) return "var(--galben)";
+function culoareProcent(p) {   // culoare de TEXT (cifra procentului): tokenii de text, nu cei de semafor (DS cap.8 v2.70)
+  if (p == null) return "var(--gri)";
+  if (p >= 90) return "var(--rosu)";
+  if (p >= 70) return "var(--galben-text)";
   return "var(--verde)";
 }
 

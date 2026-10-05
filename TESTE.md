@@ -813,8 +813,8 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 - fir: **TESTAREA FLUXULUI DE FACTURĂ PE F1 (comanda Costin 05.10.2026)** — vânzare -> stoc -> încasare, Ana pregătește, cabinetul
   validează; 13 puncte, în ordinea priorității date (verbatim în DECIZII 05.10.2026). Se livrează în 4 commituri (A–D), fiecare cu
   poartă, four-way, oglindă; ZIP la final: `/home/costin/ghid_incoming/iconta_testare_factura_F1.zip`.
-  - ultim: B (commitul „Fluxul de factură pe F1 (B) …”); A1–A3 în f8e08e72
-  - urmator: pasul C (pct.6–9). STARE = IN LUCRU
+  - ultim: C1–C6 (commitul „Fluxul de factură pe F1 (C) …”); B în dadd5f86; A1–A3 în f8e08e72
+  - urmator: pasul D (pct.10–13). STARE = IN LUCRU
   - pasi:
     A1. (pct.1a, cauza stabilită din `uvicorn.log` + `audit_log`) tokenul Anei expirase: logare 04.10 11:29:34, durată 86400 s, primul
         401 la ~11:30 (`POST /tenants/105779/produse/potriveste`), relogare 11:31:47; `api.js` la 401 făcea `sesiune.iesi()` ->
@@ -833,6 +833,28 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
     C.  (pct.6–9) notele automate poartă documentul (607=371 <- factura, 627=5121 <- extrasul); validarea avertizează pe nota fără
         document; starea facturii spune adevărul + legătura la notă; mesajele de la bancă exacte, liniile noi primele; linia de
         factură: cantități/prețuri fără zecimale inutile, cu UM, prețul din nomenclator, semn pentru linia fără articol. Commit C.
+    C1. (pct.6) notele automate poartă documentul: `stocuri_cv_api.iesire` scrie `document_ref` (la descărcarea din factură:
+        „Factură <nr> din <zz.ll.aaaa>”, nu „Factura #id”; fără `factura_id` pe nota 607=371 — n-o face plată/contare);
+        `reconciliere_api.conteaza` scrie pe fiecare notă „Extras bancar <fișier> din <zz.ll.aaaa>”; `jurnal_api.
+        document_justificativ` — seria nu se mai dublează (numărul o conține), data în forma zz.ll.aaaa.
+    C2. (pct.6) Registrul jurnal: ciorna fără document justificativ e marcată pe rând (`caseta-atentie`), iar „Validează” pe ea
+        cere confirmare care numește lipsa; căutare pe clasă: alte locuri de unde se validează o notă.
+    C3. (pct.7) starea facturii spune adevărul: `contabilizata` = notă de CONTARE (predicatul `contare_facturi.
+        e_nota_de_contare`, nu „orice notă”), plus `nota_contare` {id, status, data}; detaliul arată „notă propusă, de
+        validat” cât e ciornă și „contabilizată” abia validată, cu buton spre nota din Registrul jurnal (luna ei).
+    C4. (pct.8) banca: mesajul de import numără ce s-a potrivit și ce nu; contarea pe nota propusă se oprește după ea (nu
+        mai cade în ramura alocărilor, nu mai suprascrie `inregistrari_ids` cu []), iar mesajul spune nota creată; filtrul pe
+        stare acceptă stările din bază (nou/potrivit/contat/ignorat); liniile noi ale extrasului apar primele; sugestia
+        învățată rulează pe liniile de tip necunoscut.
+    C5. (pct.9) linia de factură: cantitate/stoc/CMP fără zecimale de prisos, cu UM (formator unic `cantitate()` în api.js,
+        oglinda `pdf_util` în backend); câmp UM pe linie (din articol / nomenclator, implicit „buc”); prețul și UM din
+        nomenclatorul de produse precompletate la potrivire; o linie fără articol pe o firmă cu stoc arată că marfa nu se
+        descarcă. Gărzi + mutații + proba în browser + unelte vizuale + registre + commit C.
+    C6. (pct.6, generalizare — adăugat pe drum, înainte de execuție) clasa „notă automată care are documentul în mână”: casa
+        (`casa_api.adauga`), NIR (`stocuri_api._noteaza`), bonul (`bon_aproba`), raportul Z (AMEF + HoReCa), statul de plată
+        (`salarii_contare_scrie`); helper `jurnal_api.eticheta_document`. Fără document extern (amortizare, descărcare lunară,
+        consum rețetă, inventar, operațiuni speciale) -> rămân marcate, decizie cerută. Plus, găsite de axe la probă: culorile
+        de semafor ca text (DS cap.8 v2.70, `CULOARE_SEMAFOR_TEXT`).
     D.  (pct.10–13) Stocuri: situația stocului întâi, formularele la cerere, Rețete doar HoReCa, confirmarea „Descarcă gestiunea
         lunii” fără dublă descărcare; fereastra firmei grupată (o sursă, DS + verificator); răspuns la pct.12; ZIP. Commit D.
 

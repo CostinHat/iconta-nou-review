@@ -1468,3 +1468,28 @@ complet); căutând clasa, ștergerea unei facturi legate de SPV ieșea tot cu e
 formular și se reîncarcă la schimbarea ei. Căutând de unde vine data formularului: 21 de locuri din 10 ecrane produceau data în UTC
 (între 00:00 și 03:00 „azi” era ieri; intervalul „luna” din activitatea cabinetului și termenul UIT din e-Transport greșeau ziua
 oricând) — toate trec acum prin `dataIso`, cu gard în verificator.
+
+## 05.10.2026 — Fluxul de factură pe F1 (C): documentul notelor, starea facturii, banca, linia facturii (comanda Costin, pct.6–9)
+
+**Ce s-a făcut:** nota 607=371 de la emitere și notele din extras poartă documentul sursă (factura, extrasul), iar odată cu ele
+casa, NIR-ul, bonul, raportul Z și statul de plată; în Registrul jurnal, ciorna fără document e marcată și „Validează” cere
+confirmare, iar nota primește un câmp „Document justificativ”; factura spune „notă propusă, de validat” cât nota e ciornă și
+duce la notă; banca numără ce s-a potrivit, contarea comisionului spune nota creată (627=5121), liniile noi apar primele;
+pe linia facturii, prețul și UM vin din nomenclator, UM se vede și se trimite, linia fără articol spune că marfa nu se
+descarcă; cantitățile și CMP-ul se arată fără zecimale de prisos, în toată aplicația.
+
+**Proba (browser, asistent, baza de test):** înainte (HEAD dadd5f86) — „stoc 110.000”, preț gol, fără UM, fără semn; factura
+„contabilizată” cu nota ciornă; „Iesire stoc … x2.000”; validarea fără document trecea din primul clic; „2 linii importate și
+potrivite.”, „Nota 401=5121 — 0 înregistrări create.”. După — „stoc 110 buc”, preț 5 și „buc” din nomenclator, semnul liniei
+fără articol (dispare la alegerea articolului); „notă propusă, de validat” + „nota #17”; „Ieșire stoc … × 2 buc” cu
+„Factură 1 din 05.10.2026”; confirmarea „Nota #16 nu are document justificativ. Validezi totuși?” fără nicio cerere trimisă;
+„2 linii importate: 0 potrivite pe facturi, 2 fără potrivire…”, „Notă 627=5121 creată (ciornă #19)”.
+
+**Găsite pe drum:** ID-ul e-Factura ar fi dublat seria („COERCOER-T3”); sugestia învățată de la bancă nu rula niciodată;
+galbenul și griul de semafor erau folosite ca culoare de text în 10 ecrane (contrast sub prag, prins de axe pe jurnal și bancă).
+
+**Respins de poartă (C), reparat în același pas:** cinci roșii, toate efecte ale lui C: două calibrări vechi
+(`test_verde_derivat`, `test_c1_pontaj_neconfirmat_gri`) erau scrise pe tokenii de semafor pe care DS v2.70 îi scoate de pe
+text — forma condiționată și starea gri au rămas, s-a schimbat tokenul; validarea notei mutată într-o funcție separată nu
+mai era legabilă de butonul ei (clichetul drepturilor, 36 > 35) — cererea a revenit în ascultătorul butonului; blocul de
+clichete din PREDARE fusese regenerat cât exista o aserțiune pe text, deja înlocuită.

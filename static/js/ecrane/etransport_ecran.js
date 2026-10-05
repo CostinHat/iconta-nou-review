@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso } from "../api.js?v=39585157c4";
+import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso } from "../api.js?v=4c8f1ff171";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -179,7 +179,7 @@ export async function ecranEtransport(corp, nav, t) {
       const zf = corp.querySelector("#et-fereastra");
       const btn = corp.querySelector("#et-trimite");
       const f = _fereastraUit(v("t-data"), ["10", "60", "80"].includes(v("et-tip")));
-      const cul = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" }[f.semafor];
+      const cul = { verde: "var(--verde)", galben: "var(--galben-text)", rosu: "var(--rosu)", gri: "var(--gri)" }[f.semafor];
       zf.innerHTML = `<span class="fd-stare" style="color:${cul}">Fereastră UIT: ${esc(f.mesaj)}</span>`;
       btn.disabled = !f.ok;
       btn.title = f.ok ? "" : f.mesaj;
@@ -231,7 +231,7 @@ export async function ecranEtransport(corp, nav, t) {
     let lista = [];
     try { const r = await api.get(`/tenants/${t.id}/etransport/trimiteri`); lista = (r && r.trimiteri) || []; } catch { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca notificările e-Transport.</p>`; return; }
     if (!lista.length) { zona.innerHTML = `<div class="stare-goala stare-goala--inline">Nicio notificare trimisă încă. UIT-ul apare aici după transmitere.</div>`; return; }
-    const cul = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" };
+    const cul = { verde: "var(--verde)", galben: "var(--galben-text)", rosu: "var(--rosu)", gri: "var(--gri)" };
     const etTimp = { verde: "în valabilitate", galben: "expiră curând", rosu: "EXPIRAT", gri: "—" };
     const etTrim = { verde: "trimisă", rosu: "eroare", gri: "în lucru" };
     zona.innerHTML = `<div class="pf-lista zebra-lista">${lista.map((u) => `

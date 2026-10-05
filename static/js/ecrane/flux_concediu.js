@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp } from "../api.js?v=39585157c4";
+import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie } from "../api.js?v=4c8f1ff171";
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
 // nomenclator (`core/nomenclator_cm.py`), procentul din registru (`salarizare.procent_cm`,
@@ -45,7 +45,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       : lista.map((c) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${esc(c.serie || "")}${esc(c.numar || "")} \u00b7 cod ${esc(c.cod || "")} \u00b7 ${c.zile || 0} zile</div>
+            <div class="pf-frand-nume">${esc(numarCuSerie(c.serie, c.numar))} \u00b7 cod ${esc(c.cod || "")} \u00b7 ${c.zile || 0} zile</div>
             <div class="pf-frand-sub">${dataRo(c.data_inceput)} \u2192 ${dataRo(c.data_sfarsit)} \u00b7 indemniza\u021bie brut\u0103 ${bani(c.indemnizatie || 0)} lei \u00b7 net ${bani(c.net || 0)} lei</div>
           </div>
           <button class="buton-sters buton-mic" data-sterge="${c.id}" data-actiune="DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}">\u0218terge</button>
