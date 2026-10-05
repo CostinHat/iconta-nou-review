@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**685 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**686 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 650
+### `core/` — 651
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9179,6 +9179,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_facturi_recurente_randuri_dinamice.py` — GARD cap.24 — randuri dinamice facturi RECURENTE (sablon), re-rulate IN POARTA prin chromium headless.
 - `core/test_faptul_bate_vectorul.py` — GARD (21.08.2026): FAPTUL BATE VECTORUL în selectorul de declarații, iar „lună închisă" nu mai
 - `core/test_fara_probe_imagine.py` — GARDĂ (03.09.2026): **un fișier imagine nu mai intră în repo ca probă vizuală**, și **niciun cod
+- `core/test_fara_secrete_in_git.py` — GARD — niciun secret în fișierele urmărite de git (comanda Costin 05.10.2026).
 - `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
 - `core/test_fieldmark.py` — [Regula 13 + Regula 6] GARDA: marcajul vizual al campului cu eroare de validare (Regula 14 pct.4).
 - `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.
@@ -10150,3 +10151,18 @@ Detaliul: DECIZII 04.10.2026 („PIVOT pe drepturi”).
 
 **Limita, pe scurt:** gărzile statice dovedesc DECLARAȚIA; că asistentul chiar vede fluturașul / poza și nu vede „Chei REGES” o
 probează `frontend_test/proba_drepturi_confirmari.py` (înainte pe HEAD, după pe arbore), la fiecare campanie care atinge ecranele.
+
+## 05.10.2026 — Niciun secret în git (comanda Costin: parola lui contabil.b pe oglinda publică)
+
+Categoria **6. Acces** (credențiale). Detaliul: DECIZII 05.10.2026 („Secretele nu stau în git”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| valorile reale din `~/.iconta/*.env` nu apar în git | `core/test_fara_secrete_in_git.py::test_nicio_valoare_din_iconta_in_fisierele_urmarite` | o parolă / cheie / jeton / parola unui DSN, în ORICE formă (inclusiv un artefact care serializează configurația, ca `str(cfg)`) | parola vie din `fe_test.env` lipită sub un nume fără „parola” -> roșu | vede doar valorile serverului care rulează poarta (acolo trăiesc); sare dacă `~/.iconta` lipsește |
+| tiparele de secrete = exact lista închisă | `::test_tiparele_de_secrete_dau_exact_lista_inchisa` (+ `::test_fiecare_intrare_permisa_are_motiv`) | `PAROLA = "…"`, `CAB_PAROLA = "…"`, `"parola": "…"`, DSN cu parolă, chei/jetoane cunoscute — nedeclarate | parola din istoric repusă în `f1_helper.py` -> roșu; `CAB_PAROLA` literal în seed -> roșu; DSN cu parolă în script -> roșu | un secret fără nume lângă el și care nu e în `~/.iconta` |
+| tiparul scannerului vede formele găsite | `audit/scan_secrete.py` PAROLA_ATRIBUITA reparat + `::test_CALIBRARE_tiparul_de_parola…` | revenirea la `\bparola\b\s*[=:]`, orb la prefix și la cheie de dicționar | tiparul vechi repus -> roșu | — |
+| tabel cu coloană „parolă” fără valori | `::test_niciun_tabel_cu_coloana_parola_nu_are_valori` (+ calibrare) | o rețetă de conturi cu parolele în tabel (`date_test/C3_cabinete.md`, 6 rânduri) | tabelul vechi repus -> roșu | doar tabele Markdown cu antet „parolă”/„password” |
+| configurația bazei se arată fără parolă | `core/db.config_fara_parola` + `::test_configuratia_bazei_se_arata_fara_parola` | un instrument de măsurare care scrie `str(cfg)` | `str(cfg)` repus în `masoara_concurenta.py` -> roșu | doar producătorul cunoscut e pinat pe nume; restul îl prinde treapta 1 |
+
+**Ce NU face gardul:** nu scoate secretele din ISTORIA git (nu se rescrie, `--force` interzis). Tratamentul pentru istorie e
+rotirea: parola lui contabil.b și parola rolului `iconta_user` (producție) nu mai funcționează (probat).

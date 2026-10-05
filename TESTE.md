@@ -757,6 +757,30 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
        jurnalizată; depunere: REGES vizibil / fără: ascuns) + unelte vizuale + registre + poartă + four-way + ZIP
        `/home/costin/ghid_incoming/iconta_drepturi_confirmari.zip`.
 
+- fir: **SECRETE ÎN GIT (comanda Costin 05.10.2026)** — „Parola contului de cabinet contabil.b@sesiuneab.test e încă în git
+  (frontend_test/f1_helper.py:12), iar oglinda e publică” (comanda, verbatim în DECIZII 05.10.2026). Măsurat la intrare: 4 parole
+  distincte în arborele urmărit, una VIE (contabil.b, producție); în istorie, parola bazei de PRODUCȚIE (`masuratori/p3/concurenta.json`,
+  commit 3cd7aebe — `scripts/masoara_concurenta.py` a scris `str(cfg)`); niciuna din celelalte valori din `~/.iconta/*.env`.
+  - livrat: în commitul „Secretele scoase din git …” (hash în ISTORIC 05.10.2026) — pașii 1–4, plus 5 crescut pe drum.
+  - ultim: pașii 1–5 (commitul care poartă linia)
+  - urmator: — (fir închis). STARE = ÎNCHIS
+  - pasi:
+    1. contabil.b: parolă nouă pe producție, cu câmpurile lui `reset_parola` (`password_hash`, `parola_schimbata`,
+       `sesiuni_valide_de` — sesiunile vechi mor); `~/.iconta/fe_test.env` (600) -> contabil.b + parola nouă + 8010;
+       `frontend_test/f1_helper.py` și `proba_f1_etape12.py` citesc de acolo (fără valoare implicită). Proba: parola veche -> 401,
+       cea nouă -> 200, un token emis înainte -> 401; logarea API a celor 14 unelte cu `fe_test.env` + `f1_helper.login` în browser.
+    2. seed-urile `date_test/seed/{firma_grea_audit,transa1_salarizare_s4,transa2_coerenta_tva}.py`: `CAB_PAROLA` din mediu
+       (`SEED_CABINET_PAROLA`, `~/.iconta/test.env`), refuz numit dacă lipsește. Parola veche nu mai deschide niciun cont (măsurat).
+    3. parola bazei de producție: rotită (`ALTER ROLE iconta_user`), `~/.iconta/db.env` rescris atomic, `iconta-nou` repornit;
+       proba: vechea parolă refuzată de Postgres, aplicația 200, joburile cron citesc `db.env`. Artefactul `concurenta.json` redactat;
+       producătorul scrie configurația prin `db.config_fara_parola` (o singură funcție).
+    4. gard `core/test_fara_secrete_in_git.py`: (a) nicio valoare din `~/.iconta/*.env` în vreun fișier urmărit; (b) tiparele lui
+       `audit/scan_secrete.py` (reparate: `CAB_PAROLA = "…"`, `"parola": "…"`) pe fișierele urmărite, cu lista închisă a
+       valorilor sintetice și motivul fiecăreia. Mutații + registre + poartă + four-way + oglindă.
+    5. (găsit pe drum) `date_test/C3_cabinete.md`: tabelul cu 6 conturi de test și parolele lor (schema `<Cabinet>!<rol>2026`) —
+       coloana golită (niciuna nu mai deschidea un cont, măsurat), convenția marcată SUPERSEDATĂ; treapta 3 a gardului (tabel cu
+       coloană „parolă” fără valori) + calibrare.
+
 ---
 
 ## Implementarea modelului de temei (01.08)

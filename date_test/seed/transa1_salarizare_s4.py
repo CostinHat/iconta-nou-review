@@ -11,13 +11,15 @@ Idempotent: re-rulabil pe DB curată SAU deja populată (nu dublează).
 Parametri 2026 (C-1): salariu minim 4.050 (ian–iun) / 4.325 (iul–dec);
 facilitate min 300 (H1) / 200 (H2); floor part-time = sm − facilitate = 3.750 (H1).
 """
+import os
 import sys
 sys.path.insert(0, ".")
 from core import db, auth_api, tenant_provisioning as tp
 
 CAB_NUME = "Cabinet Contabil Prisma SRL"
 CAB_EMAIL = "patron@prisma-cont.test"
-CAB_PAROLA = "Prisma!patron2026"
+# [comanda Costin 05.10.2026] parola cabinetului de probă NU stă în cod (oglinda e publică): din mediu, `~/.iconta/test.env`
+CAB_PAROLA = os.environ.get("SEED_CABINET_PAROLA")
 S4_NUME = "Panificatie Salarii Speciale SRL"   # S4
 S4_CUI = "96653616"      # fictiv, verificat ANAF v9 05.08 (gasit=False)
 S4_CAEN = "1071"
@@ -114,6 +116,8 @@ def ensure_cabinet(conn):
             fid = r[0]
             c.execute("SELECT id FROM public.users WHERE accounting_firm_id=%s AND rol='admin_firma' ORDER BY id LIMIT 1", (fid,))
             return fid, c.fetchone()[0]
+    if not CAB_PAROLA:
+        raise SystemExit("SEED_CABINET_PAROLA lipsește din mediu (~/.iconta/test.env): parola cabinetului de probă nu stă în cod")
     res = auth_api.inregistreaza_cabinet(conn, CAB_EMAIL, CAB_PAROLA, CAB_NUME, "Dobrescu", "Elena")
     assert res.get("ok"), res
     return res["firm_id"], res["user_id"]

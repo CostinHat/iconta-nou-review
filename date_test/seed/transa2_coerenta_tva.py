@@ -13,13 +13,15 @@ Idempotent: re-rulabil (nu dublează firme, nu dublează facturi).
 Parametri 2026 (C-1): cotă TVA standard 21% (Legea 141/2025 art.291, valabil 01.08.2025).
 CUI-uri fictive verificate ANAF v9 05.08 (lot 95–96M, gasit=False) — C-2 secțiunea A.
 """
+import os
 import sys
 sys.path.insert(0, ".")
 from core import db, auth_api, tenant_provisioning as tp
 
 CAB_NUME = "Cabinet Contabil Prisma SRL"
 CAB_EMAIL = "patron@prisma-cont.test"
-CAB_PAROLA = "Prisma!patron2026"
+# [comanda Costin 05.10.2026] parola cabinetului de probă NU stă în cod (oglinda e publică): din mediu, `~/.iconta/test.env`
+CAB_PAROLA = os.environ.get("SEED_CABINET_PAROLA")
 
 # ---- FIRME (C-2 sect. B) : (cheie, nume, cui, caen, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic) ----
 # cui = 8 cifre fără prefix RO (DB stochează fără RO; RO e doar afișare pt plătitori). tip_decont: L=lunar T=trim.
@@ -75,6 +77,8 @@ def ensure_cabinet(conn):
             fid = r[0]
             c.execute("SELECT id FROM public.users WHERE accounting_firm_id=%s AND rol='admin_firma' ORDER BY id LIMIT 1", (fid,))
             return fid, c.fetchone()[0]
+    if not CAB_PAROLA:
+        raise SystemExit("SEED_CABINET_PAROLA lipsește din mediu (~/.iconta/test.env): parola cabinetului de probă nu stă în cod")
     res = auth_api.inregistreaza_cabinet(conn, CAB_EMAIL, CAB_PAROLA, CAB_NUME, "Dobrescu", "Elena")
     assert res.get("ok"), res
     return res["firm_id"], res["user_id"]

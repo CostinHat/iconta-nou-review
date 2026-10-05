@@ -52,12 +52,12 @@ nu ajunge într-o cutie reală** (fără gmail/yahoo). Nume = fictive, fără re
 
 | # | rol funcțional | nume persoană (fictiv) | email | parolă | `rol` DB | poate_pregati | poate_valida | poate_depune | firme atribuite | ce testează DISTINCT |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | **Patron cabinet 1 (Prisma)** | Elena Dobrescu | patron@prisma-cont.test | Prisma!patron2026 | admin_firma | (n/a — prin rol) | (n/a) | (n/a) | **toate 12** (prin rol) | vede TOT portofoliul Prisma; nu depinde de `user_tenants` |
-| 2 | **Asistent cu poate_valida** | Radu Anghel | validator@prisma-cont.test | Prisma!validator2026 | angajat | ✔ | **✔** | ✔ | **toate 12** (prin user_tenants) | a doua pereche de ochi — VALIDEAZĂ ce pregătesc alții (patru ochi); poate și pregăti/depune |
-| 3 | **Asistent fără poate_valida** | Ioana Vintilă | preparator@prisma-cont.test | Prisma!preparator2026 | angajat | ✔ | **✘** | ✘ | **6 firme** (M1,M2,P1,P2,N1,S3) | pregătește DAR nu poate valida/depune → blocaj „rol insuficient" la validare/depunere |
-| 4 | **Asistent cu firme atribuite PARȚIAL** | Mihai Șerban | partial@prisma-cont.test | Prisma!partial2026 | angajat | ✔ | ✔ | ✘ | **3 firme** (S4, M2, T1) | izolare per-firmă: accesul la o firmă NEatribuită (ex. P1) → 404 (schema_tenant pe user_tenants) |
-| 5 | **Client de portal** | Andrei Grigorescu | client@profit-import.test | Prisma!client2026 | client | — | — | — | **1 firmă** (P1), prin user_tenants | vedere de portal DOAR pe firma lui; nu vede alte firme; fără acțiuni de contabilitate |
-| 6 | **Patron cabinet 2 (Nexus)** | Carmen Dumitrache | patron@nexus-cont.test | Nexus!patron2026 | admin_firma | (n/a — prin rol) | (n/a) | (n/a) | **1 firmă (X1)** (prin rol, cabinet Nexus) | IZOLARE CROSS-CABINET: cere resurse ale Prisma → **403/404, niciodată 200** |
+| 1 | **Patron cabinet 1 (Prisma)** | Elena Dobrescu | patron@prisma-cont.test | — *(nu stă în depozit, v. DECIZII 05.10.2026)* | admin_firma | (n/a — prin rol) | (n/a) | (n/a) | **toate 12** (prin rol) | vede TOT portofoliul Prisma; nu depinde de `user_tenants` |
+| 2 | **Asistent cu poate_valida** | Radu Anghel | validator@prisma-cont.test | — *(nu stă în depozit, v. DECIZII 05.10.2026)* | angajat | ✔ | **✔** | ✔ | **toate 12** (prin user_tenants) | a doua pereche de ochi — VALIDEAZĂ ce pregătesc alții (patru ochi); poate și pregăti/depune |
+| 3 | **Asistent fără poate_valida** | Ioana Vintilă | preparator@prisma-cont.test | — *(nu stă în depozit, v. DECIZII 05.10.2026)* | angajat | ✔ | **✘** | ✘ | **6 firme** (M1,M2,P1,P2,N1,S3) | pregătește DAR nu poate valida/depune → blocaj „rol insuficient" la validare/depunere |
+| 4 | **Asistent cu firme atribuite PARȚIAL** | Mihai Șerban | partial@prisma-cont.test | — *(nu stă în depozit, v. DECIZII 05.10.2026)* | angajat | ✔ | ✔ | ✘ | **3 firme** (S4, M2, T1) | izolare per-firmă: accesul la o firmă NEatribuită (ex. P1) → 404 (schema_tenant pe user_tenants) |
+| 5 | **Client de portal** | Andrei Grigorescu | client@profit-import.test | — *(nu stă în depozit, v. DECIZII 05.10.2026)* | client | — | — | — | **1 firmă** (P1), prin user_tenants | vedere de portal DOAR pe firma lui; nu vede alte firme; fără acțiuni de contabilitate |
+| 6 | **Patron cabinet 2 (Nexus)** | Carmen Dumitrache | patron@nexus-cont.test | — *(nu stă în depozit, v. DECIZII 05.10.2026)* | admin_firma | (n/a — prin rol) | (n/a) | (n/a) | **1 firmă (X1)** (prin rol, cabinet Nexus) | IZOLARE CROSS-CABINET: cere resurse ale Prisma → **403/404, niciodată 200** |
 
 Note:
 - **#2 vs #3** izolează efectul lui `poate_valida` (același rol `angajat`, drepturi diferite) → testează calea patru-ochi
@@ -145,7 +145,7 @@ Fiecare celulă „✋" = cererea TREBUIE respinsă (403/404 / schema_tenant→N
 1. **Al 2-lea cabinet minimal (Nexus, 1 firmă X1, CUI RO96939899)** — DA, adăugat, cu propriul patron (#6, email+parolă
    cunoscute). În matricea de izolare: patron Nexus cere resurse Prisma → 403/404, niciodată 200.
 2. **Distribuția atribuirilor** (preparator 6, partial 3) — validat.
-3. **Convenția de parole** `<Cabinet>!<rol>2026` — validat. (Emailuri pe `.test`, nu rutează.)
+3. **Convenția de parole** `<Cabinet>!<rol>2026` — validat. **SUPERSEDAT 05.10.2026 (comanda Costin):** parolele conturilor de probă nu se scriu în depozit (oglinda e publică) și nu urmează o schemă ghicibilă; stau în `~/.iconta/*.env`. (Emailuri pe `.test`, nu rutează.)
 4. **Numele persoanelor** — fixate acum în C-3 (secțiunea B): fictive, fără rezonanță cu persoane reale; emailuri pe
    domenii `.test` (RFC 2606) care nu există/nu trimit → niciun email de test către cutii reale.
 

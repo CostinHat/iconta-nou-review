@@ -61,8 +61,12 @@ TIPARE = [
      "sir de conexiune cu parola in el"),
     ("SIR_CONEXIUNE", r"\b(?:postgres(?:ql)?|mysql|mongodb|amqp|redis)://",
      "sir de conexiune (chiar fara parola, spune unde e baza)"),
-    ("PAROLA_ATRIBUITA", r"(?i)\b(?:password|passwd|parola|pwd|secret|api_?key|token)\b\s*[=:]\s*"
-                         r"[\"'][^\"'\s]{6,}[\"']",
+    # [05.10.2026] `\bparola\b\s*[=:]` era ORB la două forme, amândouă găsite în depozit: numele cu prefix
+    # (`CAB_PAROLA = "…"` — `_` e caracter de cuvânt, deci nu există graniță) și cheia de dicționar (`"parola": "…"` —
+    # ghilimeaua stă între nume și `:`). O parolă vie a stat așa în git, pe oglinda publică. URL-urile nu sunt secrete
+    # (un URL cu acreditare îl prinde SIR_CONEXIUNE_CU_PAROLA).
+    ("PAROLA_ATRIBUITA", r"(?i)(?<![a-z0-9])(?:password|passwd|parola|pwd|secret|api_?key|token)[a-z0-9_]*[\"']?\s*[=:]\s*"
+                         r"[\"'](?!https?://)[^\"'\s]{6,}[\"']",
      "parola sau cheie scrisa langa numele ei"),
     ("PGPASSWORD", r"\bPGPASSWORD\s*=\s*\S+",
      "parola de PostgreSQL in mediu"),
@@ -169,7 +173,7 @@ def autotest():
         "JWT": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dBjftJeZ4CVPmB92K27u",
         "SIR_CONEXIUNE_CU_PAROLA": "postgresql://utilizator:parolasecreta@gazda/baza",
         "SIR_CONEXIUNE": "redis://gazda:6379/0",
-        "PAROLA_ATRIBUITA": "password = \"nuOparolaBuna\"",
+        "PAROLA_ATRIBUITA": "CAB_PAROLA = \"nuOparolaBuna\"",   # forma cu prefix, pe care tiparul vechi o rata
         "PGPASSWORD": "PGPASSWORD=ceva-secret",
         "AUTORIZARE_HTTP": "Authorization: Bearer abcdefghijklmnop",
         "IBAN": "RO49AAAA1B31007593840000",

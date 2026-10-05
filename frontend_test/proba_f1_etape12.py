@@ -16,12 +16,16 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _RAD)
 from playwright.sync_api import sync_playwright  # noqa: E402
 
-BAZA = os.environ.get("PROBA_BAZA", "http://127.0.0.1:8010")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import cont_test  # noqa: E402  [comanda Costin 05.10.2026] contul de probă din ~/.iconta/fe_test.env, nu din cod
+
+_CONT = cont_test.citeste()
+BAZA = os.environ.get("PROBA_BAZA", _CONT["FE_TEST_BAZA"])
 OUT = os.path.dirname(os.path.abspath(__file__))
 
 # Contabil "prima data" — cont NOU (nu exista in baza dupa Faza 0)
-EMAIL = "contabil.b@sesiuneab.test"
-PAROLA = "TestF1parola!2026"
+EMAIL = _CONT["FE_TEST_EMAIL"]
+PAROLA = _CONT["FE_TEST_PAROLA"]
 CABINET = "Cabinet Test Sesiunea B SRL"
 # F1 (asteptari_f1.md): SRL, CUI cu cifra de control valida
 F1_CUI = "401002001"          # RO401002001

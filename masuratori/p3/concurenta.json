@@ -2,7 +2,7 @@
   "commit": "0f0a135a0249e3b6e053641992be5025f2324c10",
   "N_FIRME": 1000,
   "POOL_MAX": 10,
-  "cfg": "{'url': 'postgresql://iconta_user:SapIEw4X3Hi8DXKobFGkMyDaT9d6RO66v7vScatD@local",
+  "cfg": "{'url': 'postgresql://iconta_user:***@local",
   "rute": {
     "/supervizor": {
       "val": "val A",

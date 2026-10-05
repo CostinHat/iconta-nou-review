@@ -1390,3 +1390,22 @@ treaptă structurală nouă în scanner; (3) 13 mesaje de eroare de la server pu
 **Proba după** (browser, același asistent): fluturașul se descarcă (12 butoane, PDF 200); fotografia bonului se afișează (imagine
 200); PDF-ul unei chitanțe se deschide (200, `%PDF-`); Nu → Da la TVA lasă rândul `platitor_tva false → true` cu numele asistentului;
 doar cu „Poate pregăti”, niciun buton REGES; cu „Poate depune”, „Răspunsuri REGES” și „REGES” pe salariați, dar nu „Chei REGES”.
+
+## 05.10.2026 — Secretele scoase din git: parola contului de probă, parola bazei de producție, rețeta conturilor de test (comanda Costin)
+
+**Ce a cerut Costin:** parola contului `contabil.b@sesiuneab.test` era în `frontend_test/f1_helper.py`, iar oglinda e publică —
+resetare, citire din `~/.iconta/fe_test.env`, aceeași căutare în tot arborele.
+
+**Ce s-a găsit căutând:** în arborele urmărit, parola VIE a lui contabil.b (de două ori) și parola seed-urilor de test (moartă, dar
+reactivabilă la o nouă rulare); un tabel cu 6 conturi de test și parolele lor (`date_test/C3_cabinete.md`); în ISTORIE, căutând
+invers fiecare valoare din `~/.iconta`, **parola bazei de producție**, scrisă pe 09.09.2026 de un instrument de măsurare într-un
+artefact comis. Restul cheilor (JWT, ANAF, Brevo, Anthropic, Fernet, Woo, baza de test) n-au fost niciodată în git.
+
+**Ce s-a făcut:** contabil.b — parolă nouă (sesiunile vechi invalidate), citită de probe din `fe_test.env` (care acum țintește acest
+cont; înainte ținea un cont al bazei de test, refuzat pe producție); seed-urile citesc `SEED_CABINET_PAROLA` din mediu; parolele din
+tabel scoase; **parola bazei de producție rotită** (baza ascultă doar local, deci nu era folosibilă din afară; `db.env` rescris,
+serviciul repornit, joburile cron citesc același fișier); artefactul redactat și instrumentul reparat; gard nou în poartă, iar
+scannerul de secrete existent (orb la `CAB_PAROLA = …` și la `"parola": …`) reparat.
+
+**Proba:** parola din istoric -> 401, cea nouă -> 200, un token emis înainte -> 401; parola veche a bazei -> refuzată de Postgres,
+cea nouă -> conectat; aplicația 200 după repornire; cele 16 căi de logare ale uneltelor din `frontend_test` -> 200.

@@ -274,7 +274,7 @@ def main():
         cwd=RAD, stdout=jurnal_srv, stderr=subprocess.STDOUT)
     out = {"commit": subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
                                     cwd=RAD).stdout.strip(),
-           "N_FIRME": N_FIRME, "POOL_MAX": maxconn, "cfg": str(cfg)[:80], "rute": {}}
+           "N_FIRME": N_FIRME, "POOL_MAX": maxconn, "cfg": str(_db.config_fara_parola(cfg))[:80], "rute": {}}  # [05.10.2026] fără parolă
     try:
         import httpx
         gata = False

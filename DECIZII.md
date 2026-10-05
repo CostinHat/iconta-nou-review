@@ -16834,3 +16834,29 @@ Punctele 4, 7, 8 — confirmate fără schimbare. R52 din CONFORMITATE.md (deciz
    nu s-a pus o excepție: după reparație, rutele care scriu credențiale sunt exact patru (chei API creare/revocare, `reges-config`,
    configurarea Woo), toate la administrator. Nivelul REGES („Poate depune”) e pinat pe numele funcției în `core/test_drepturi_rol.py`.
 
+## 05.10.2026 — Secretele nu stau în git: credențialele de probă din `~/.iconta`, nu din cod (comanda Costin)
+
+**Comanda (verbatim):** *„Parola contului de cabinet contabil.b@sesiuneab.test e încă în git (frontend_test/f1_helper.py:12), iar
+oglinda e publică: 1. Resetează parola contului; scoate-o din f1_helper.py și citește-o din ~/.iconta/fe_test.env (nu intră în git).
+Parola veche din istoric nu mai trebuie să funcționeze. 2. Repară ~/.iconta/fe_test.env să țintească contabil.b@sesiuneab.test;
+verifică logarea uneltelor din frontend_test și a probelor F1–F3. 3. Caută alte parole în clar în tot arborele (inclusiv date_test/,
+scripts/, frontend_test/); același tratament. 4. Parola nouă mi-o afișezi doar aici în terminal.”*
+
+**Ce s-a găsit căutând (pct.3):** în arborele urmărit, 4 parole distincte — una VIE (contabil.b pe producție), una moartă dar
+reactivabilă la o nouă rulare a seed-urilor (`patron@prisma-cont.test`), două sintetice în teste (o înregistrare făcută să eșueze; o
+parolă greșită intenționat). În ISTORIE, căutând invers (fiecare valoare din `~/.iconta/*.env` cu `git log -S`): **parola bazei de
+producție**, în `masuratori/p3/concurenta.json` (commit `3cd7aebe`, 09.09.2026), scrisă de `scripts/masoara_concurenta.py` prin
+`str(cfg)`. Restul valorilor (JWT, chei ANAF/Brevo/Anthropic, Fernet, parola bazei de test, Woo) — niciodată în git. Plus un tabel cu 6 conturi de test și parolele lor
+(`date_test/C3_cabinete.md`, schema `<Cabinet>!<rol>2026`) — niciuna nu mai deschidea un cont, dar e o rețetă de recreare; scoase.
+
+**Consecințe (executor, în tratamentul cerut):**
+1. **Istoria nu se rescrie** (`--force` interzis, oglinda e deja clonabilă). Tratamentul e ROTIREA: fiecare secret apărut în git nu mai
+   funcționează — parola lui contabil.b (plus `sesiuni_valide_de`, deci și sesiunile emise cu ea), parola rolului `iconta_user`.
+   Baza ascultă doar pe 127.0.0.1 (verificat: `listen_addresses=localhost`, `pg_hba` doar loopback), deci parola scăpată nu era
+   folosibilă din afară; se rotește oricum.
+2. **Credențialele de probă stau în `~/.iconta/*.env` (600, în afara git)**: `fe_test.env` pentru contul de cabinet al uneltelor din
+   `frontend_test`, `test.env` (`SEED_CABINET_PAROLA`) pentru seed-uri. Fără valoare implicită în cod: lipsa e refuz numit.
+3. **Valorile sintetice din teste rămân**, pe o listă ÎNCHISĂ cu motivul fiecăreia (nu deschid niciun cont — măsurat pe ambele baze).
+4. **Gardul** (`core/test_fara_secrete_in_git.py`) rulează în poartă: o valoare reală din `~/.iconta` sau o parolă atribuită într-un
+   fișier urmărit oprește commitul. Limita: valorile din `~/.iconta` se văd doar pe serverul care le are (acolo rulează poarta).
+

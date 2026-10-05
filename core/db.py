@@ -71,6 +71,24 @@ def dsn_din_config(cfg):
             "user=%(user)s password=%(password)s") % cfg
 
 
+def config_fara_parola(cfg):
+    """Configurația conexiunii, de ARĂTAT (jurnal, artefact de măsurare): parola înlocuită cu `***`, inclusiv cea din
+    `url`. Pură.
+
+    [comanda Costin 05.10.2026] `scripts/masoara_concurenta.py` a scris `str(cfg)` într-un artefact comis — parola bazei
+    de producție a ajuns în git și pe oglinda publică. Orice configurație care pleacă spre un fișier sau un ecran trece
+    pe aici; gard `core/test_fara_secrete_in_git.py`."""
+    if cfg is None:
+        return None
+    out = dict(cfg)
+    if out.get("password"):
+        out["password"] = "***"
+    if out.get("url"):
+        out["url"] = _re.sub(r"(://[^:/@]+:)[^@]*@", r"\1***@", out["url"])
+        out["url"] = _re.sub(r"(\bpassword=)\S+", r"\1***", out["url"])
+    return out
+
+
 # ============================================================
 #  POOL — init o dată la pornire
 # ============================================================
