@@ -1510,3 +1510,6 @@ global-valorică, nu se descarcă deloc; la HoReCa, rețetele și raportul Z pot
 Stocuri fără situație, cu formularele deschise și Rețete la o brutărie. După — Zilnic 11 · Registre 6 · Raportări și
 declarații 5 · Operațiuni speciale 3 · Firma 6 (31 de carduri, 0 în afara grupurilor, la fel pe telefon); Stocuri începe cu
 „Pâine albă feliată · buc · 110 · 2,00 · 220,00”, total 220,00; formularele închise; fără Rețete.
+
+**ZIP (pct.13):** `/home/costin/ghid_incoming/iconta_testare_factura_F1.zip` — patch-urile A–D, fișierele atinse, probele înainte/după
+(JSON + capturi + factura PDF), hărțile de cod, temeiul, jurnalele mutațiilor; scanat de parole înainte de arhivare.
