@@ -17004,3 +17004,30 @@ unei ferestre deschise peste. Mesajul de refuz promitea păstrarea fără ca vre
    `pretUnitar(v)` în interfață, `pdf_util.cantitate` în backend (DS cap.4 v2.69) — clasa avea 26 de apariții în 4 ecrane.
 14. **(C, găsit de axe la probă) Culorile de semafor nu colorează text** (DS cap.8 v2.70): `--galben`, `--gri-semafor`,
    `--rosu-semafor` au sub 4,5:1 pe alb; textul folosește `--galben-text`, `--gri`, `--rosu`. 16 apariții directe + 6 indirecte.
+15. **(D, pct.10) Ecranul Stocuri se deschide cu situația stocului** — tabel articol · UM · cantitate · CMP · valoare, cu totalul
+   valorii, din aceeași listă de articole ca formularele (se reîmprospătează odată cu ele). Formularele (NIR nou; mișcări,
+   fișe de magazie, coduri, nivel minim, inventar) stau dedesubt, închise, deschise la cerere. **Rețete numai la firma HoReCa**:
+   codul CAEN din Date firmă în lista din CF art.48 alin.(2^2) + art.54 alin.(4) (`core/horeca.py`, INTERPRETARE CU TEMEI: lista
+   prin care legea definește sectorul HoReCa), sau firma are deja rețete — datele existente nu se ascund.
+16. **(D, pct.10) „Descarcă gestiunea lunii” — confirmarea cerută, cu probă:** nu descarcă a doua oară marfa descărcată la
+   emiterea facturii. Vânzarea din factură (nota de contare, sursa `facturi`) nu intră în baza descărcării lunare; marfa ei
+   iese la emitere, pe articol (607=371). Proba: `core/test_flux_factura_f1_d.py::test_descarcarea_lunii_nu_include…` (cu numai
+   o factură în lună, descărcarea spune „fără vânzări de mărfuri”). **Găsite pe drum, reparate:** a doua apăsare pe aceeași lună
+   scria al doilea set de ciorne — acum se refuză numit (cheia `DESC-GV-AAAA-LL` pe notă + forma veche după descriere);
+   `descarca_factura` nu mai descarcă de două ori aceeași factură; sursa moartă `facturi_marfa` scoasă. **Limita, decizie
+   cerută:** o factură de marfă FĂRĂ articol (la o firmă care ține stocul global-valoric) nu se descarcă nici la emitere, nici
+   lunar; iar la HoReCa, rețetele (ieșire cantitativ-valorică) și raportul Z din descărcarea globală pot descărca de două ori.
+   Lipsește o alegere a metodei de stoc pe firmă (global-valoric sau cantitativ-valoric) — semnul „linie fără articol” din C
+   face primul caz vizibil, nu-l rezolvă.
+17. **(D, pct.11) Fereastra firmei, grupată dintr-o singură sursă** (DS cap.18 v2.71, gard `GRUP_FIRMA`): Zilnic (facturi,
+   bonuri, bancă, casă, raport Z, stocuri, salariați, încasări/plăți, e-Transport, magazin, solicitări, registratură) · Registre
+   (jurnal, cartea mare, balanță, registrul-inventar, registrul fiscal, mijloace fixe) · Raportări și declarații (declarații,
+   control fiscal, verificări, bilanț, rapoarte comerciale) · Operațiuni speciale (operațiuni, regim marjă, registre art.321) ·
+   Firma (date firmă, import, acces client, produse, contracte, centre de cost). Al cincilea titlu e alegerea executorului
+   („împărțirea o stabilești tu”): datele și setările firmei nu sunt nici zilnice, nici registre. Fără arbore; titlul fără card
+   vizibil nu apare. Pe drum: cardul Produse fără culoare; Solicitări deschis inline (DS cap.2a) -> fereastră.
+18. **(D, pct.12) Asistentul cu „Poate pregăti” modifică Date firmă — VOIT, prin încadrarea din 04.10 (consecința 4):** „datele
+   firmei (profil, vector fiscal, model factură, regim TVA) = «pregătire» (sunt pasul 2 din Import date)”. Ruta
+   `POST /firma-profil/date` cere `cere_drept(PREGATI)` (`main.py`). Încadrarea era marcată „de reconfirmat dacă Costin vrea
+   altfel”. Fapt de cântărit: forma juridică și capitalul apar pe factură (Legea 31/1990 art.74 alin.(3)), dar schimbarea lor
+   NU se jurnalizează (se jurnalizează doar regimul de TVA, în `firma_profil_jurnal`). Decizie cerută în raport.

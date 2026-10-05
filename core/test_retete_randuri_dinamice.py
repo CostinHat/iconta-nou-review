@@ -43,7 +43,8 @@ def _handler(posted):
     def h(route, request):
         url = request.url
         if url.endswith("/stocuri/articole"):
-            route.fulfill(status=200, content_type="application/json", body=json.dumps({"articole": ARTS}))
+            # [05.10.2026, comanda Costin pct.10] Rețetele se arată numai la firma HoReCa: serverul o spune (`retete_vizibile`)
+            route.fulfill(status=200, content_type="application/json", body=json.dumps({"articole": ARTS, "retete_vizibile": True}))
             return
         if url.endswith("/stocuri/locatii"):
             route.fulfill(status=200, content_type="application/json", body=json.dumps({"locatii": []}))

@@ -1526,6 +1526,24 @@ for _fis, _txt in sorted(fisiere.items()):
         if re.search(r"color:\s*\$\{[^}]*\b" + _m.group(1) + r"\(", _txt):
             rap["culoare_semafor_text"].append((_fis, _txt[:_m.start()].count("\n") + 1, "CULOARE_SEMAFOR_TEXT", "indirect: " + _m.group(1) + "()"))
 
+# --- GRUP_FIRMA (DS cap.18 v2.71, 05.10.2026, comanda Costin pct.11): cardurile ferestrei firmei stau sub titluri de grup dintr-o
+#     SINGURĂ sursă. Cere: (a) `GRUPURI_FIRMA` definit o singură dată în tot frontendul; (b) fiecare card din `meniuFirma`
+#     declară `grup` imediat după `regim`, cu o cheie din `GRUPURI_FIRMA`; (c) randarea trece prin `grupeazaCarduri`, nu
+#     printr-o grilă plată `vizibile.map`. Mutația care o probează: `grup` scos de pe cardul Facturi -> TOTAL > 0.
+rap["grup_firma"] = []
+_def_grup = [(f, t.count("const GRUPURI_FIRMA = [")) for f, t in fisiere.items() if "const GRUPURI_FIRMA = [" in t]
+if [n for _f, n in _def_grup] != [1]:
+    rap["grup_firma"].append(("firme.js", 0, "GRUP_FIRMA", "GRUPURI_FIRMA definit de %s ori (trebuie o dată)" % sum(n for _f, n in _def_grup)))
+_ff = fisiere.get("firme.js", "")
+_m_gr = re.search(r"const GRUPURI_FIRMA = \[(.*?)\];", _ff, re.S)
+_chei_gr = set(re.findall(r'\["([a-z]+)",', _m_gr.group(1))) if _m_gr else set()
+for _i, _ln in enumerate(_ff.split("\n"), 1):
+    _mc = re.search(r'\{\s*cheie:\s*"([a-z0-9]+)",\s*regim:\s*"[a-z]+",\s*(grup:\s*"([a-z]+)")?', _ln)
+    if _mc and (not _mc.group(2) or _mc.group(3) not in _chei_gr):
+        rap["grup_firma"].append(("firme.js", _i, "GRUP_FIRMA", "card %r fără grup din GRUPURI_FIRMA" % _mc.group(1)))
+if "grupeazaCarduri(vizibile)" not in _ff or "${vizibile.map((o) =>" in _ff:
+    rap["grup_firma"].append(("firme.js", 0, "GRUP_FIRMA", "meniuFirma nu randează prin GRUPURI_FIRMA"))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

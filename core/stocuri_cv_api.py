@@ -33,6 +33,19 @@ def articole(conn, schema):
         return out
 
 
+def retete_vizibile(conn, schema):
+    """[comanda Costin 05.10.2026 pct.10] „Rețete apare doar la firmele HoReCa”: CAEN-ul firmei în lista din CF (`core.horeca`),
+    sau firma are deja rețete (datele existente nu se ascund)."""
+    from core import horeca
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT caen FROM {schema}.firma_profil WHERE id = 1")
+        r = cur.fetchone()
+        if horeca.e_horeca(r[0] if r else None):
+            return True
+        cur.execute(f"SELECT 1 FROM {schema}.retete LIMIT 1")
+        return cur.fetchone() is not None
+
+
 def fisa(conn, schema, articol_id):
     """Fișa de magazie a unui articol."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -158,6 +171,10 @@ def descarca_factura(conn, schema, factura_id, data):
     notele raman ciorna). Intoarce {descarcate, erori}."""
     from core import jurnal_api as _j
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        # [05.10.2026] o factură se descarcă o singură dată: dacă are deja ieșiri de stoc, a doua chemare nu mai scrie nimic
+        cur.execute(f"SELECT 1 FROM {schema}.miscari_stoc WHERE factura_id = %s AND tip = 'iesire' LIMIT 1", (factura_id,))
+        if cur.fetchone():
+            return {"descarcate": [], "erori": [], "deja_descarcata": True}
         cur.execute(f"""SELECT id, descriere, cantitate, articol_id FROM {schema}.factura_linii
                         WHERE factura_id=%s AND articol_id IS NOT NULL ORDER BY id""", (factura_id,))
         linii = cur.fetchall()

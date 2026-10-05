@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**691 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**694 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 656
+### `core/` — 659
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9181,6 +9181,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_faptul_bate_vectorul.py` — GARD (21.08.2026): FAPTUL BATE VECTORUL în selectorul de declarații, iar „lună închisă" nu mai
 - `core/test_fara_probe_imagine.py` — GARDĂ (03.09.2026): **un fișier imagine nu mai intră în repo ca probă vizuală**, și **niciun cod
 - `core/test_fara_secrete_in_git.py` — GARD — niciun secret în fișierele urmărite de git (comanda Costin 05.10.2026).
+- `core/test_fereastra_firmei_grupuri.py` — GARD ÎN BROWSER — fereastra firmei, grupată (comanda Costin 05.10.2026 pct.11): „cele peste 20 de carduri se grupează sub câteva
 - `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
 - `core/test_fieldmark.py` — [Regula 13 + Regula 6] GARDA: marcajul vizual al campului cu eroare de validare (Regula 14 pct.4).
 - `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.
@@ -9193,6 +9194,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_fluturas_egal_stat.py` — GARDĂ: fluturașul TIPĂREȘTE statul, nu îl recalculează. (21.08.2026)
 - `core/test_fluturas_eticheta.py` — O eticheta de pe fluturas nu are voie sa numeasca un lucru si sa arate altul.
 - `core/test_flux_factura_f1_c.py` — GARDA pasului C din comanda Costin 05.10.2026 („fluxul de factură pe F1”, pct.6–9), pe schemă efemeră din `tenant_template.sql`.
+- `core/test_flux_factura_f1_d.py` — GARDA pasului D din comanda Costin 05.10.2026 („fluxul de factură pe F1”, pct.10–11), pe schemă efemeră.
 - `core/test_formulare_operatiuni_campuri.py` — GARD — nicio opțiune a unui formular din ecranul Operațiuni nu poate fi imposibil de trimis cu succes
 - `core/test_four_way_cardinalitate.py` — Bratul four-way nu se poate inchide pe o multime INCOMPLETA.
 - `core/test_frecventa_document_care_raspunde.py` — GARD [01.09.2026, R111]: frecvența nu se citește dintr-un document care nu poate răspunde.
@@ -9414,6 +9416,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_stergere_salariat_completa.py` — GARD (D5, 20.08.2026): stergerea unui salariat nu lasa jumatate din inregistrare in urma.
 - `core/test_stocuri.py` — —
 - `core/test_stocuri_cv.py` — —
+- `core/test_stocuri_situatie.py` — GARD ÎN BROWSER — ecranul Stocuri (comanda Costin 05.10.2026 pct.10): „ecranul se deschide cu situația stocului (articol, UM,
 - `core/test_supervizor.py` — GARD [01.09.2026]: supervizorul — cele două tării, și confirmarea care rămâne scrisă.
 - `core/test_supervizor_cache.py` — GARD P1 (08.09.2026) — rezultatul persistat al supervizorului nu poate minți.
 - `core/test_temei_structurat.py` — Temei fiscal STRUCTURAT (act/nr/an/art/alin/lit/data_in/data_out/url) + garda de EXPIRARE.
@@ -10232,4 +10235,17 @@ Deciziile: DECIZII 05.10.2026, consecințele 9–14.
 | propunerea pe linie din nomenclator | `::test_propunerea_pentru_linie…`, `::test_descrierea_notei_de_iesire…` | prețul/UM din nomenclator ignorate; „x2.000” în descriere | căutarea în nomenclator scoasă / cantitatea brută -> roșu | potrivirea e pe denumire exactă (fără diacritice/majuscule nu se normalizează altfel decât `lower`) |
 | cantități formatate | verificator `CANTITATE_BRUTA` (DS cap.4 v2.69) | `${a.stoc}`, `esc(l.cantitate)`, `" + a.cmp` brute într-un șablon | `${a.stoc}` repus -> TOTAL 1 | câmpurile cu alt nume decât lista (stoc, cantitate, cmp, sold_cantitate, faptic, scriptic, nivel_minim, necesar, cant, pret_unitar) nu se văd |
 | culorile de semafor nu colorează text | verificator `CULOARE_SEMAFOR_TEXT` (DS cap.8 v2.70) | `color:var(--galben)` / `--gri-semafor` / `CUL.galben` pe text; dicționar sau funcție cu culoare de semafor folosite în `color:${…}` | forma directă și ambele indirecte repuse -> TOTAL 1 / 2 | culoarea transmisă prin PARAMETRU (`cifra(…, "var(--galben)")` -> `color:${accent}`) nu se vede |
+
+## 05.10.2026 — Fluxul de factură pe F1 (D): Stocuri, descărcarea lunii, fereastra firmei (comanda Costin, pct.10–12)
+
+Categoriile **3. Evidență contabilă** (descărcarea gestiunii) și **11. Interfață**. Deciziile: DECIZII 05.10.2026, consecințele 15–18.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| marfa facturată nu se descarcă a doua oară lunar | `core/test_flux_factura_f1_d.py::test_descarcarea_lunii_nu_include_vanzarea_facturata` | sursa `facturi` intrată în baza descărcării lunare | `facturi` adăugat în sursele vânzărilor -> roșu | nu acoperă factura FĂRĂ articol pe o firmă global-valorică (nedescărcată deloc — decizie cerută) |
+| a doua descărcare a lunii refuzată | `::test_a_doua_descarcare_a_aceleiasi_luni_se_refuza` | al doilea set de ciorne 607/378/4428=371 pe aceeași lună | garda scoasă -> roșu | refacerea cere ștergerea ciornelor; o descărcare validată se corectează prin altă notă |
+| factura nu se descarcă de două ori | `::test_descarcarea_din_factura_nu_se_face_de_doua_ori` | două ieșiri de stoc pentru aceeași factură | garda scoasă -> roșu | — |
+| HoReCa după CAEN din CF | `::test_horeca_dupa_codul_caen_din_codul_fiscal`, `::test_situatia_stocului_spune_daca_retetele_se_arata` | Rețete la o firmă care nu e HoReCa și n-are rețete | un cod scos / vizibilitate constantă -> roșu | lista e cea din CF art.48 alin.(2^2) + art.54 alin.(4); o altă definiție a sectorului nu e acoperită |
+| Stocuri: situația întâi, formularele la cerere | `core/test_stocuri_situatie.py` (Chromium, ecranul real) | formularele deschise de la început; Rețete fără condiție; lipsa situației | `hidden` scos / condiția scoasă -> roșu | — |
+| fereastra firmei grupată, o sursă | verificator `GRUP_FIRMA` (DS cap.18 v2.71) + `core/test_fereastra_firmei_grupuri.py` (Chromium) | un card fără grup; a doua definiție a grupurilor; grilă plată; titlu de grup fără card | `grup` scos de pe Facturi -> TOTAL 1; filtrul grupurilor goale scos -> roșu | vizibilitatea pe drepturi: cardurile nu poartă azi `data-actiune`, deci nu se ascund pe drepturi; dacă vor purta, grupul trebuie recalculat după ascundere |
 

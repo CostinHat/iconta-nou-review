@@ -1493,3 +1493,20 @@ galbenul și griul de semafor erau folosite ca culoare de text în 10 ecrane (co
 text — forma condiționată și starea gri au rămas, s-a schimbat tokenul; validarea notei mutată într-o funcție separată nu
 mai era legabilă de butonul ei (clichetul drepturilor, 36 > 35) — cererea a revenit în ascultătorul butonului; blocul de
 clichete din PREDARE fusese regenerat cât exista o aserțiune pe text, deja înlocuită.
+
+## 05.10.2026 — Fluxul de factură pe F1 (D): Stocuri, descărcarea lunii, fereastra firmei (comanda Costin, pct.10–12)
+
+**Ce s-a făcut:** ecranul Stocuri se deschide cu situația stocului (articol, UM, cantitate, CMP, valoare, total), iar
+formularele stau dedesubt, la cerere; Rețete apare numai la firmele HoReCa (CAEN din lista Codului fiscal) sau la cele cu
+rețete; „Descarcă gestiunea lunii” nu mai poate scrie de două ori aceeași lună, iar descărcarea din factură nu se dublează;
+fereastra firmei grupează cele 32 de carduri sub cinci titluri (Zilnic · Registre · Raportări și declarații · Operațiuni
+speciale · Firma), dintr-o singură sursă; cardul Produse are culoare; Solicitări se deschide în fereastră.
+
+**Confirmarea cerută (pct.10):** descărcarea lunii nu descarcă a doua oară marfa descărcată la emitere — vânzarea din
+factură nu intră în baza ei (probată de test). Limita, ridicată ca decizie: factura de marfă fără articol, la o firmă
+global-valorică, nu se descarcă deloc; la HoReCa, rețetele și raportul Z pot descărca de două ori.
+
+**Proba (browser, asistent, baza de test):** înainte (HEAD d582e083) — 31 de carduri într-o grilă plată, fără titluri;
+Stocuri fără situație, cu formularele deschise și Rețete la o brutărie. După — Zilnic 11 · Registre 6 · Raportări și
+declarații 5 · Operațiuni speciale 3 · Firma 6 (31 de carduri, 0 în afara grupurilor, la fel pe telefon); Stocuri începe cu
+„Pâine albă feliată · buc · 110 · 2,00 · 220,00”, total 220,00; formularele închise; fără Rețete.

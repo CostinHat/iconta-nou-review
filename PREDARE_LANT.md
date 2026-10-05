@@ -1,19 +1,19 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **comandă DESCHISĂ: fluxul de factură pe F1 (13 puncte), A–C livrate, D de făcut** (05.10.2026)
+# PREDARE LANȚ — **comandă: fluxul de factură pe F1 (13 puncte), A–D livrate, ZIP + raport la final** (05.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-05**, parțială (secțiunile de mai jos). Rescrierea COMPLETĂ de dinainte: `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `dadd5f86` (B); commitul care poartă această linie livrează **C** din comanda „fluxul de factură pe F1”
-  (pct.6–9: documentul notelor automate, starea facturii, banca, linia facturii; plus culorile de semafor ca text). Secțiunile atinse acum: ANTET,
+- **pe commit**: `d582e083` (C); commitul care poartă această linie livrează **D** din comanda „fluxul de factură pe F1”
+  (pct.10–12: Stocuri cu situația întâi, descărcarea lunii fără dublare, fereastra firmei grupată, răspunsul la pct.12). Secțiunile atinse acum: ANTET,
   STAREA, FRONTURI, ATENȚIONĂRI, CE CERE POARTA.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**Comandă deschisă: fluxul de factură pe F1 (Costin, 05.10.2026, 13 puncte) — firul și pasul D în TESTE.md („TESTAREA FLUXULUI DE FACTURĂ PE F1”), hărțile de cod în scratchpad-ul turei (harta_*.md, copiate în ZIP la final).** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
+**Comandă deschisă: fluxul de factură pe F1 (Costin, 05.10.2026, 13 puncte) — firul în TESTE.md („TESTAREA FLUXULUI DE FACTURĂ PE F1”), hărțile de cod în scratchpad-ul turei (harta_*.md, copiate în ZIP la final).** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
 completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 
 | ce | commit | ZIP |
@@ -30,7 +30,8 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | **testarea ca asistent (2)**: termenii poveștii verificați după generare, `POST /pachete/{id}/poveste/aproba` („Poate valida”), trimiterea la „Poate valida”, nota de motiv din poarta drepturilor, administratorul = toate drepturile (producția normalizată B3), iconițe, un `<select>` pentru firmă, cifrele în email | `2eead087` | — (comanda primită tăiată după „commit,”) |
 | **fluxul de factură F1 — A** (pct.1): sesiune reînnoită (`POST /auth/reinnoieste`), reautentificare peste ecran cu reluarea cererii, navigatorul păstrează ecranul tastat, „versiune nouă” nu reîncarcă peste formular | `f8e08e72` | la final, `iconta_testare_factura_F1.zip` |
 | **fluxul de factură F1 — B** (pct.2–5): lipsurile din Date firmă la deschidere (forma propusă din ANAF/denumire), cota aleasă dintr-o listă și consemnată (`factura_cota_jurnal`, migrat pe producție după backup), data emiterii/scadența/seria pe formular, PDF cu „Cod TVA: RO…”, „Seria”, „Data emiterii”, titlu; poarta R46 la schimbare | `dadd5f86` | la final |
-| **fluxul de factură F1 — C** (pct.6–9): notele automate poartă documentul (factură, extras, casă, NIR, bon, raport Z, stat de plată), jurnalul marchează și cere confirmare la validarea fără document, „notă propusă, de validat” + „nota #”, banca exactă (import numărat, contarea pe nota propusă oprită, liniile noi primele), preț/UM din nomenclator, cantități formatate, seria nedublată (și în e-Factura), culorile de semafor nu mai colorează text | commitul care poartă linia | la final |
+| **fluxul de factură F1 — C** (pct.6–9): notele automate poartă documentul (factură, extras, casă, NIR, bon, raport Z, stat de plată), jurnalul marchează și cere confirmare la validarea fără document, „notă propusă, de validat” + „nota #”, banca exactă (import numărat, contarea pe nota propusă oprită, liniile noi primele), preț/UM din nomenclator, cantități formatate, seria nedublată (și în e-Factura), culorile de semafor nu mai colorează text | `d582e083` | la final |
+| **fluxul de factură F1 — D** (pct.10–12): Stocuri cu situația stocului întâi, formularele la cerere, Rețete numai HoReCa (CAEN din CF), a doua descărcare a lunii refuzată, descărcarea din factură nedublată, fereastra firmei pe cinci grupuri dintr-o sursă (`GRUPURI_FIRMA`), Solicitări în fereastră | commitul care poartă linia | `iconta_testare_factura_F1.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -53,11 +54,11 @@ aplicației**, nu „în așteptarea unei teme”:
   acces programatic — **[EXTERN]**.
 - **Contul Ana din producție**: toate bifele pe „nu”; „Poate pregăti” i-l bifează Costin din Asistenți (decizia 04.10, pct.6 — datele ei
   nu se ating din cod).
-- **Fluxul de factură pe F1 — D** (pct.10–13): de făcut (Stocuri, fereastra firmei, pct.12, ZIP). Defect găsit de hărți, intră în D:
-  „Descarcă gestiunea lunii” nu are gardă la a doua rulare.
-- **Decizii cerute lui Costin din B–C** (raportul comenzii): seria obligatorie la emitere (toate cele 5 firme din producție au seria
-  goală); documentul justificativ al notelor fără document extern (amortizare, descărcare lunară, consum rețetă, inventar,
-  operațiuni speciale).
+- **Decizii cerute lui Costin din comanda „fluxul de factură pe F1”** (raportul comenzii, §6): (1) seria obligatorie la emitere
+  (toate cele 5 firme din producție au seria goală); (2) documentul justificativ al notelor fără document extern (amortizare,
+  descărcare lunară, consum rețetă, inventar, operațiuni speciale); (3) metoda de stoc pe firmă (global-valoric vs
+  cantitativ-valoric) — factura de marfă fără articol nu se descarcă deloc la o firmă GV, iar la HoReCa rețetele + Z pot dubla;
+  (4) Date firmă la „Poate pregăti” (încadrarea din 04.10, „de reconfirmat”) și jurnalizarea formei/capitalului.
 - **Restul restanțelor**: numărul se DERIVĂ (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici.
 
 ## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)

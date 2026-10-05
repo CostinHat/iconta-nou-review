@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.70 · 5 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.71 · 5 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -215,6 +215,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Fiecare card din meniul unei firme (`meniuFirma`, `optiuni`) declară `regim: "ambele" | "simpla" | "dubla"` **OBLIGATORIU** (ca `activ`), fără default tacit. Vizibilitatea derivă prin `regim_contabil` (fapt UNIC, `migrare_api`): `optiuni.filter(o => o.regim === "ambele" || o.regim === t.regim_contabil)`. INTERZISE liste hardcodate paralele pe `tip_firma` (fostele `DOAR_SRL`/`DOAR_PFA` — a 4-a sursă la aceeași întrebare, eliminate 23.07). O regulă, ca `STRATURI_META` la straturile de migrare. Regula **CARD_REGIM** în verificator (card fără `regim` = eroare).
 - `t.regim_contabil` cu **contract STRICT**: expus de backend (`auth_api`); dacă lipsește pe obiectul-firmă, meniuFirma **eșuează vizibil** (throw), NU degradează tăcut la „doar ambele". Orice cale nouă către meniuFirma (ex. din Termene) trebuie să propage `regim_contabil`, ca `tip_firma`.
 - Regim per concept: partidă dublă (`dubla`) = jurnal, balanță, bilanț, operațiuni speciale, stocuri (371/607), centre de cost. Partidă simplă (`simpla`) = RIP. Restul = `ambele` (declarații — un PFA datorează D112/D300/…, excluderea fină D100/D101/D406 o face `neaplicabile_forma` în ecran, nu ascunderea cardului; Casă — plafon Legea 70/2015 se aplică PFA). Un card care e „ambele" dar conține operațiuni de un singur regim se filtrează FIN în interior, NU se ascunde (ex. Casă: contarea 5311 e partidă dublă, plafonul e pentru toți).
+
+- **Grupuri în fereastra firmei (v2.71, 05.10.2026, comanda Costin).** Gard `GRUP_FIRMA`. Cardurile stau sub titluri de grup care urmează munca contabilului — Zilnic · Registre · Raportări și declarații · Operațiuni speciale · Firma — dintr-o SINGURĂ sursă: `GRUPURI_FIRMA` (firme.js) dă cheile, titlurile și ordinea; fiecare card declară `grup` imediat după `regim`. Titlul grupului e `.pf-subtitlu` (h3), cardurile rămân în `.firme-optiuni`; `.firme-grup` e doar cârlig de structură. Un titlu fără niciun card vizibil (regim SRL/PFA) nu apare. Fără arbore în fereastra firmei: un singur nivel, titlu + carduri.
 
 ## 19. Consistența versiunii de modul la import — o singură instanță
 
@@ -679,6 +681,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.71 (05.10.2026)** — **cap.18: grupuri în fereastra firmei, dintr-o singură sursă.** Comanda Costin (pct.11): cele 32 de carduri sub cinci titluri (Zilnic · Registre · Raportări și declarații · Operațiuni speciale · Firma), fără arbore, titlul fără card vizibil nu apare. Pe drum: cardul Produse fără culoare (cap.12), cardul Solicitări deschis inline (cap.2a). Gard: `GRUP_FIRMA`.
+
 **v2.70 (05.10.2026)** — **cap.8: culorile de semafor nu colorează text.** Găsită de axe pe Registrul jurnal („● Ciornă”) și la Bancă („Parțial”, „Contat ✓”) la proba pasului C din comanda „fluxul de factură pe F1”. Clasa avea 16 apariții directe + 6 indirecte (e-Transport, cifrele din Capacitate și Cabinet, procentele din Sănătate, starea SPV a facturii). Gard: `CULOARE_SEMAFOR_TEXT`.
 
 **v2.69 (05.10.2026)** — **cap.4: cantitățile prin `cantitate(v, um)`, costul unitar prin `pretUnitar(v)`.** Din testarea fluxului de factură pe F1 (comanda Costin pct.9): „stoc 110.000”, „x2.000”, „CMP 50.0000”. Clasa avea 26 de apariții în 4 ecrane (stocuri, fișa de magazie, rețete, transfer, inventar, import, linia facturii) + descrierea notei de ieșire din stoc în backend. Gard: `CANTITATE_BRUTA` (verificator).

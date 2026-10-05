@@ -813,8 +813,8 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 - fir: **TESTAREA FLUXULUI DE FACTURĂ PE F1 (comanda Costin 05.10.2026)** — vânzare -> stoc -> încasare, Ana pregătește, cabinetul
   validează; 13 puncte, în ordinea priorității date (verbatim în DECIZII 05.10.2026). Se livrează în 4 commituri (A–D), fiecare cu
   poartă, four-way, oglindă; ZIP la final: `/home/costin/ghid_incoming/iconta_testare_factura_F1.zip`.
-  - ultim: C1–C6 (commitul „Fluxul de factură pe F1 (C) …”); B în dadd5f86; A1–A3 în f8e08e72
-  - urmator: pasul D (pct.10–13). STARE = IN LUCRU
+  - ultim: D1–D4 (commitul „Fluxul de factură pe F1 (D) …”); C1–C6 în d582e083; B în dadd5f86; A1–A3 în f8e08e72
+  - urmator: ZIP (pct.13) și raportul comenzii; deciziile cerute în raport. STARE = IN LUCRU
   - pasi:
     A1. (pct.1a, cauza stabilită din `uvicorn.log` + `audit_log`) tokenul Anei expirase: logare 04.10 11:29:34, durată 86400 s, primul
         401 la ~11:30 (`POST /tenants/105779/produse/potriveste`), relogare 11:31:47; `api.js` la 401 făcea `sesiune.iesi()` ->
@@ -855,6 +855,20 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
         (`salarii_contare_scrie`); helper `jurnal_api.eticheta_document`. Fără document extern (amortizare, descărcare lunară,
         consum rețetă, inventar, operațiuni speciale) -> rămân marcate, decizie cerută. Plus, găsite de axe la probă: culorile
         de semafor ca text (DS cap.8 v2.70, `CULOARE_SEMAFOR_TEXT`).
+    D1. (pct.10) ecranul Stocuri se deschide cu SITUAȚIA stocului (`fd-tabel`: articol · UM · cantitate · CMP · valoare, total
+        valoare), din `GET /stocuri/articole`; formularele (NIR nou, mișcări/fișe de magazie/coduri/nivel minim/inventar) stau
+        sub ea, închise, deschise la cerere; Rețete numai la firmele HoReCa — codul CAEN al firmei în lista din CF art.48
+        alin.(2^2) + art.54 alin.(4) (`core/horeca.py`) — sau la cele care au deja rețete; sumele brute din lista NIR prin `bani()`.
+    D2. (pct.10) „Descarcă gestiunea lunii”: probă (test) că nu descarcă a doua oară marfa descărcată la emiterea facturii
+        (vânzarea din factură are sursa `facturi`, în afara bazei descărcării); a doua rulare pe aceeași lună se refuză numit
+        (cheie `numar` pe nota descărcării, plus forma veche pe descriere); sursa moartă `facturi_marfa` scoasă;
+        `descarca_factura` nu descarcă de două ori aceeași factură.
+    D3. (pct.11) fereastra firmei: cardurile sub titluri de grup dintr-o singură sursă (`GRUPURI_FIRMA` + câmpul `grup` pe
+        fiecare card): Zilnic · Registre · Raportări și declarații · Operațiuni speciale · Firma; fără arbore; un titlu fără
+        card vizibil nu apare. DS (regulă nouă) + verificator. Pe drum (aceeași fereastră): cardul Produse fără culoare
+        (`CULORI_CARD`), cardul Solicitări deschis inline (DS cap.2a) -> fereastră.
+    D4. (pct.12) răspuns cu temei din DECIZII (04.10 consecința 4) + faptele din cod (rută, jurnal).
+    D5. gărzi + mutații + proba în browser (înainte/după) + unelte vizuale + registre + commit D; ZIP (pct.13).
     D.  (pct.10–13) Stocuri: situația stocului întâi, formularele la cerere, Rețete doar HoReCa, confirmarea „Descarcă gestiunea
         lunii” fără dublă descărcare; fereastra firmei grupată (o sursă, DS + verificator); răspuns la pct.12; ZIP. Commit D.
 

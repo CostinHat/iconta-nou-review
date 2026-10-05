@@ -2210,7 +2210,8 @@ def cv_articole(tenant_id, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("tenant inexistent sau fără acces")
-        return {"articole": _s.articole(conn, schema)}
+        # [05.10.2026, comanda Costin pct.10] ecranul Stocuri arată Rețete numai la firma HoReCa (sau care are rețete)
+        return {"articole": _s.articole(conn, schema), "retete_vizibile": _s.retete_vizibile(conn, schema)}
 
 
 def cv_fisa(tenant_id, articol_id, ctx):
