@@ -135,6 +135,9 @@ def iesire(conn, schema, corp, factura_id=None):
     iar depozitul nu comite niciodată. Cu `commit`-urile scoase, parametrul n-ar mai fi comandat
     nimic, iar un parametru care nu face nimic e o urmă de intenție, nu o decizie."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        # [06.10.2026, comanda Costin §6.3] ieșirea pe articol e a firmei CANTITATIV-VALORICE (o singură descărcare pe ieșire)
+        from core import metoda_stoc as _ms
+        _ms.cere(cur, schema, _ms.CV, "Ieșirea pe articol, la CMP")
         cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (corp["articol_id"],))
         a = cur.fetchone()
         if not a:
@@ -150,6 +153,10 @@ def iesire(conn, schema, corp, factura_id=None):
                     (corp["data"], f"Ieșire stoc {a['denumire']} × {_pu.cantitate(corp['cantitate'], a['um'])}"[:200],
                      (str(corp.get("document") or "").strip() or None)))
         iid = cur.fetchone()["id"]
+        if not (str(corp.get("document") or "").strip()):
+            # [06.10.2026 §6.2] ieșirea fără document scris de om: bonul de consum, generat odată cu nota
+            from core import documente_interne as _di
+            _di.genereaza(cur, schema, "bon_consum", corp["data"], [iid])
         cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                         (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
                     (iid, a["cont_cheltuiala"], a["cont_stoc"], r["valoare"]))
@@ -208,6 +215,7 @@ def inventar(conn, schema, corp):
         raise ValueError("Inventarul n-are niciun articol numărat. Un inventar fără linii nu e o "
                          "inventariere fără diferențe — e o inventariere care nu s-a făcut.")
     rez = []
+    note_inventar = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         for l in corp.get("linii", []):
             fv = l.get("faptic")
@@ -240,8 +248,9 @@ def inventar(conn, schema, corp):
                 debit, credit, tip = a["cont_cheltuiala"], a["cont_stoc"], "iesire"
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
-                        (corp["data"], f"Inventar {a['denumire']}: {'plus' if dif > 0 else 'minus'} {abs(dif)}"[:200]))
+                        (corp["data"], f"Inventar {a['denumire']}: {'plus' if dif > 0 else 'minus'} {_pu.cantitate(abs(dif), a['um'])}"[:200]))
             iid = cur.fetchone()["id"]
+            note_inventar.append(iid)
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                             (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
                         (iid, debit, credit, val))
@@ -253,6 +262,10 @@ def inventar(conn, schema, corp):
             rez.append({"articol_id": a["id"], "denumire": a["denumire"],
                         "diferenta": str(dif), "valoare": str(val),
                         "nota": f"{debit}={credit}", "inregistrare_id": iid})
+        if note_inventar:
+            # [06.10.2026 §6.2] UN inventar = O listă de inventariere, pe toate notele diferențelor lui
+            from core import documente_interne as _di
+            _di.genereaza(cur, schema, "lista_inventariere", corp["data"], note_inventar)
     return {"rezultate": rez}
 
 
@@ -460,6 +473,12 @@ def reclasificare(conn, schema, corp):
                         (corp["data"],
                          f"Reclasificare {a['denumire']}: {a['cont_stoc']}->{cont_nou}"[:200]))
             iid = cur.fetchone()["id"]
+            # [06.10.2026 §6.2] documentul scris de om, altfel nota de calcul a reclasificării
+            from core import documente_interne as _di
+            if str(corp.get("document") or "").strip():
+                cur.execute(f"UPDATE {schema}.inregistrari SET document_ref=%s WHERE id=%s", (str(corp["document"]).strip(), iid))
+            else:
+                _di.genereaza(cur, schema, "nota_calcul", corp["data"], [iid])
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                             (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
                         (iid, cont_nou, a["cont_stoc"], val))

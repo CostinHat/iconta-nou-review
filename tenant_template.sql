@@ -2751,3 +2751,19 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.mijloace_fixe_jurnal (
     user_id integer,
     la timestamp with time zone NOT NULL DEFAULT now()
 );
+
+--
+-- Contorul documentelor interne pe tip și an (comanda Costin 06.10.2026 §6.2) — mirror al core/migrare_documente_interne.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.documente_interne_contor (
+    tip text NOT NULL,
+    an integer NOT NULL,
+    ultim integer NOT NULL,
+    PRIMARY KEY (tip, an)
+);
+
+--
+-- Metoda de stoc, setare explicită pe firmă (comanda Costin 06.10.2026 §6.3) — mirror al core/migrare_metoda_stoc.py
+--
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS metoda_stoc text
+    CHECK (metoda_stoc IN ('global_valoric', 'cantitativ_valoric'));

@@ -78,6 +78,12 @@ PERECHI_ADAUGATE = {
     ("facturi_emite", "MESAJ_FACTURA_BON_STOC"): (
         "Decizia Costin A (02.10.2026): factura emisă pe baza bonului fiscal nu e o vânzare nouă — marfa a ieșit cu bonul "
         "(raportul Z), deci a doua descărcare de gestiune se refuză (422), cu ieșirea numită („NU — doar fiscal”)."),
+    ("facturi_emite", "_cs.detaliu_metoda_stoc(e)"): (
+        "Lotul 06.10.2026, comanda Costin §6.3: metoda de stoc explicită — factura cu marfă la metoda nedeclarată (sau ieșire pe "
+        "articol la global-valoric) se refuză STRUCTURAT (422 spre Date firmă), factura păstrată pe ecran."),
+    ("facturi_emite", "facturi_api.detaliu_serie_lipsa(e)"): (
+        "Lotul 06.10.2026, comanda Costin §6.1: seria obligatorie la emitere (CF art.319 alin.(20) lit.a). Refuz STRUCTURAT "
+        "(422: cod SERIE_LIPSA + temei + câmp), ca ecranul să seteze seria peste factură și emiterea să continue."),
     ("facturi_emite", "_cs.detaliu(e)"): (
         "Lot 19 defectul 12, decizia Costin (03.10.2026): factura unei societăți fără forma juridică / capitalul social "
         "din Date firmă se refuză la emitere (Legea 31/1990 art.74 alin.(3)), STRUCTURAT (422): ce lipsește, temeiul, "

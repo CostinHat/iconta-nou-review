@@ -5,7 +5,7 @@
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate } from "../api.js?v=4c8f1ff171";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=416ae1edca";
-import { randeazaEmitere } from "./emitere_ecran.js?v=59de4dca40";
+import { randeazaEmitere } from "./emitere_ecran.js?v=e1df22f30d";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");

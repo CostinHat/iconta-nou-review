@@ -169,6 +169,21 @@ CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
                    "cod_postal", "banca", "iban", "telefon", "email", "patron_nume",
                    "declarant_nume", "declarant_prenume", "declarant_functie")
 
+#: [06.10.2026, comanda Costin §6.4] „Orice modificare [a Date firmă] se jurnalizează (cine, când, valoare veche → nouă),
+#: inclusiv forma juridică și capitalul, iar jurnalul e vizibil cabinetului.” Toate câmpurile ecranului, din toate grupurile.
+CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + ("cont_venit_implicit", "metoda_stoc")
+
+
+def _instantaneu(conn):
+    """Câmpurile Date firmă ca text (forma în care se compară și se jurnalizează)."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT %s FROM firma_profil WHERE id = 1" % ", ".join(CAMPURI_JURNAL))
+        r = cur.fetchone()
+    if not r:
+        return {}
+    return {c: (None if v is None else (str(v).lower() if isinstance(v, bool) else str(v))) for c, v in zip(CAMPURI_JURNAL, r)}
+
+
 # camp -> declaratiile care il cer OBLIGATORIU (pentru mesajul din interfata)
 OBLIGATORII = {
     "nume": ("D100", "D101", "D205", "D301", "D390", "D394", "D406"),
@@ -328,6 +343,11 @@ def cere_administrator(conn, document):
         raise ValueError(MESAJ_FARA_ADMINISTRATOR % document)
 
 
+def _metode_stoc():
+    from core.metoda_stoc import ETICHETE
+    return ETICHETE
+
+
 def _activitati_amef():
     from core.activitati_amef import ACTIVITATI
     return ACTIVITATI
@@ -337,7 +357,7 @@ def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
     coloane = (list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]
-               + list(CAMPURI_AMEF))  # [F182]; [lot 19 d12]; [D394 Î2]
+               + list(CAMPURI_AMEF) + ["metoda_stoc"])  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
@@ -351,14 +371,21 @@ def citeste_date(conn):
     return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT,
             "forme_juridice": [[k, v[0]] for k, v in _cs.FORME.items()],
             "activitati_amef": [[k, v] for k, v in _activitati_amef().items()],
+            "metode_stoc": [[k, v] for k, v in _metode_stoc().items()],
             "blocaje": blocaje(conn, prof)}
 
 
-def salveaza_date(conn, date, tenant_id=None):
+def salveaza_date(conn, date, tenant_id=None, user_id=None):
     """Salveaza datele fiscale. Refuza daca un camp obligatoriu ramane gol:
     fara ele declaratiile nu se pot depune, iar utilizatorul ar afla abia cand
     ANAF le respinge, cu mesaj criptic (DS cap.6: validari preventive cu mesaj
-    explicativ, nu doar refuz)."""
+    explicativ, nu doar refuz).
+    [06.10.2026 §6.4] Orice câmp schimbat se jurnalizează (`firma_profil_jurnal`: cine, când, vechi -> nou) — de aceea
+    salvarea cere utilizatorul."""
+    if date and user_id is None:
+        return {"ok": False, "camp": None,
+                "mesaj": "Date firmă se salvează cu utilizatorul care le schimbă — orice schimbare rămâne în jurnal; lipsește."}
+    inainte = _instantaneu(conn)
     curat = {k: (str(date.get(k)).strip() if date.get(k) is not None else None)
              for k in CAMPURI_FISCALE if k in (date or {})}
     # [lot 19 d12] forma juridică + capitalul (L31/1990 art.74 alin.(3)): validate și scrise separat — numere, nu text
@@ -370,6 +397,19 @@ def salveaza_date(conn, date, tenant_id=None):
             return {"ok": False, "camp": _er[0][0], "mesaj": _er[0][1]}
     _val = {k: (None if cap[k] in (None, "") else
                 (str(cap[k]).strip().upper() if k == "forma_juridica" else _cs._suma(cap[k]))) for k in cap} if cap else {}
+    # [06.10.2026 §6.3] metoda de stoc: explicită, fără implicit; odată declarată nu se șterge, se schimbă (și rămâne în jurnal)
+    if "metoda_stoc" in (date or {}):
+        from core import metoda_stoc as _ms
+        _m = str(date.get("metoda_stoc") or "").strip() or None
+        if _m is None:
+            if inainte.get("metoda_stoc"):
+                return {"ok": False, "camp": "metoda_stoc",
+                        "mesaj": "Metoda de stoc nu se șterge după ce a fost declarată — se schimbă cu cealaltă, iar "
+                                 "schimbarea rămâne în jurnal."}
+        elif _m not in (_ms.GV, _ms.CV):
+            return {"ok": False, "camp": "metoda_stoc", "mesaj": "Metoda de stoc e global-valorică sau cantitativ-valorică."}
+        else:
+            _val["metoda_stoc"] = _m
     # [D394 Î2] bifa „activitate exceptată de la AMEF” + litera din OUG 28/1999 art.2 (cerută când bifa e da)
     if any(k in (date or {}) for k in CAMPURI_AMEF):
         from core.uc_comun import bifa as _bifa
@@ -456,12 +496,16 @@ def salveaza_date(conn, date, tenant_id=None):
         with conn.cursor() as _cur:
             _cur.execute("UPDATE firma_profil SET %s WHERE id = 1" % ", ".join("%s = %%s" % k for k in _val),
                          list(_val.values()))
-    if not curat:
-        return dict({"ok": True}, **citeste_date(conn))
-    seturi = ", ".join("%s = %%s" % k for k in curat)
+    if curat:
+        seturi = ", ".join("%s = %%s" % k for k in curat)
+        with conn.cursor() as cur:
+            cur.execute("UPDATE firma_profil SET " + seturi + " WHERE id = 1",
+                        tuple(curat.values()))
+    # [06.10.2026 §6.4] jurnalul: diferența dintre instantaneul de dinainte și cel de după, pe TOATE drumurile de scriere de mai
+    # sus (fiscale, capital, AMEF, metoda de stoc, CUI-ul și denumirea prin provisioning) — niciunul nu poate scăpa
+    from core import repo_firma_profil as _rfp
     with conn.cursor() as cur:
-        cur.execute("UPDATE firma_profil SET " + seturi + " WHERE id = 1",
-                    tuple(curat.values()))
+        _rfp.jurnalizeaza_campuri(cur, inainte, _instantaneu(conn), user_id)
     return dict({"ok": True}, **citeste_date(conn))
 
 

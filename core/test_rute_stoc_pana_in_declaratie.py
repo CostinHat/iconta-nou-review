@@ -185,6 +185,9 @@ def test_IESIREA_de_stoc_ajunge_in_rulajul_contului_de_cheltuiala(lume):
 
     Se citesc AMANDOUA conturile: numai `607` ar trece si daca stocul nu s-ar fi descarcat.
     """
+    with lume["conn"].cursor() as cur:   # [06.10.2026 §6.3] ieșirea pe articol e a firmei cantitativ-valorice (metoda explicită)
+        cur.execute('INSERT INTO "%s".firma_profil (id, nume, cui, metoda_stoc) VALUES (1, \'TENANT\', \'14399840\', \'cantitativ_valoric\') '
+                    "ON CONFLICT (id) DO UPDATE SET metoda_stoc = EXCLUDED.metoda_stoc" % SCH)
     cl = _client()
     r = cl.post("/tenants/%d/stocuri/iesire" % lume["tid"],
                 json={"articol_id": lume["aid"], "data": ZI, "cantitate": 3,

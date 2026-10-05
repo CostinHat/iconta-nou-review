@@ -872,6 +872,30 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
     D.  (pct.10–13) Stocuri: situația stocului întâi, formularele la cerere, Rețete doar HoReCa, confirmarea „Descarcă gestiunea
         lunii” fără dublă descărcare; fereastra firmei grupată (o sursă, DS + verificator); răspuns la pct.12; ZIP. Commit D.
 
+
+- fir: **LOTUL 06.10.2026 (comanda Costin, patru părți)** — §6 din raportul F1, /ghid pentru indexare, salarii F5 10/2026,
+  povestea lunii. Comandă verbatim în DECIZII 06.10.2026. Commit pe parte pe ramura `lucru/lot-06-10` (poarta scurtă,
+  regula din 03.09 — PLAN_LUCRU regula 4), o singură poartă completă la commitul de închidere de pe `main`, publicare
+  four-way, ZIP `~/ghid_incoming/iconta_lot_06_10.zip`.
+  - ultim: P1.1–P1.4 (commitul „Lot 06.10 partea 1 …” pe ramura de lucru)
+  - urmator: P2.5. STARE = IN LUCRU
+  - pasi:
+    P1.1 (§6.1) seria obligatorie la emitere: lipsă la deschidere + refuz numit la emitere; seria se setează din mesaj, emiterea
+         continuă (factura păstrată); facturile emise neatinse.
+    P1.2 (§6.2) document intern generat odată cu nota (număr + dată) pentru notele automate fără document extern: tablou de
+         amortizare, situația de descărcare a gestiunii, bon de consum, listă de inventariere, notă de calcul (operațiuni
+         speciale); temei Legea 82/1991 art.6 alin.(1); notele manuale rămân „fără document”; cele 8 note vechi neatinse.
+    P1.3 (§6.3) metoda de stoc pe firmă (GV/CV), fără implicit tăcut; o singură descărcare pe ieșire: factura fără articol la
+         GV intră în descărcarea lunii; la CV Z-ul HoReCa nu mai intră în descărcarea globală (rețetele descarcă).
+    P1.4 (§6.4) Date firmă: orice câmp schimbat se jurnalizează (cine, când, vechi -> nou), jurnal vizibil cabinetului.
+    P2.5 cele 17 URL 404 -> 301 (înlocuitor sau pagina temei).  P2.6 /ghid pe teme, /ghid = cuprins.
+    P2.7 linkuri înrudite + pagina temei pe fiecare ghid.  P2.8 calea de fișier -> numele actului + link oficial.
+    P2.9 jurnalele nginx /sitemap.xml 17.08 -> azi.  P2.10 titluri aprobate nepublicate (număr exact).
+    P3.11 netul/costul din fluturaș = aceleași sume ca D112 și nota; 421 soldat; toleranța nu acoperă o diferență pe 421.
+    P3.12 ciorna de salarii vizibilă cap-coadă (contor, stat, notificare, activitate, validare/respingere) pe mecanismul
+          existent.  P3.13 temeiul rotunjirii bazei de impozit; aliniere dacă lipsește.
+    P4.14 emailul poveștii fără „**”.  P4.15 eticheta „profit înainte de impozit”.  P4.16 restanțele declarațiilor nu apar
+          în povestea trimisă clientului.
 ---
 
 ## Implementarea modelului de temei (01.08)

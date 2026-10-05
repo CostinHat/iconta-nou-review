@@ -17031,3 +17031,83 @@ unei ferestre deschise peste. Mesajul de refuz promitea păstrarea fără ca vre
    `POST /firma-profil/date` cere `cere_drept(PREGATI)` (`main.py`). Încadrarea era marcată „de reconfirmat dacă Costin vrea
    altfel”. Fapt de cântărit: forma juridică și capitalul apar pe factură (Legea 31/1990 art.74 alin.(3)), dar schimbarea lor
    NU se jurnalizează (se jurnalizează doar regimul de TVA, în `firma_profil_jurnal`). Decizie cerută în raport.
+
+## 06.10.2026 — Lotul 06.10: §6 din raportul F1, /ghid pentru indexare, salarii F5, povestea lunii (comanda Costin)
+
+**Comanda (verbatim):** *„Comandă în patru părți, executate în ordine. Fiecare parte are commit propriu, FĂRĂ poartă completă
+între părți (regula din 03.09: poarta completă rulează la publicare). La final: o singură poartă completă, publicare (four-way),
+un singur ZIP.
+PARTEA 1 — Răspuns la §6 din raportul „Fluxul de factură pe F1”: 1. Seria devine obligatorie la emitere (CF art.319 alin.(20)
+lit.a). Refuzul nu blochează: seria se setează direct din mesajul de refuz și emiterea continuă. Facturile deja emise nu se
+modifică. 2. Notele generate de aplicație fără document extern poartă un document intern generat odată cu nota (număr + dată),
+potrivit naturii operațiunii: tabloul de amortizare, situația de descărcare a gestiunii, bonul de consum, lista de
+inventariere, nota de calcul pentru operațiunile speciale (Legea 82/1991 art.6 alin.(1)). „Fără document” rămâne doar pentru
+notele manuale. Cele 8 note vechi nu se ating. 3. Metoda de stoc e o setare explicită pe firmă (global-valoric /
+cantitativ-valoric), fără valoare implicită tăcută. Indiferent de metodă, fiecare ieșire de marfă se descarcă o singură dată:
+factura fără articol la global-valoric și dubla descărcare rețete + raport Z la HoReCa se închid. 4. Date firmă rămân la
+„Poate pregăti”. Orice modificare se jurnalizează (cine, când, valoare veche → nouă), inclusiv forma juridică și capitalul, iar
+jurnalul e vizibil cabinetului.
+PARTEA 2 — Ghiduri /ghid: structură pentru indexare. Context: sitemap.xml are 6.562 de ghiduri; Google nu l-a citit din 17.08
+(„Nu s-a putut prelua”), retrimis de Costin pe 05.10. Până la noi ordine NU se publică ghiduri noi (lotul 20 nu începe).
+5. 17 URL-uri raportate 404 în Search Console: ghiduri care au existat. Fiecare primește redirecționare permanentă (301) spre
+ghidul care l-a înlocuit; unde nu există înlocuitor, spre pagina-hub a temei. 6. Pagina /ghid are 2,3 MB și 6.559 de linkuri
+pe o singură pagină. Se împarte pe teme (salarii, TVA, declarații etc.), fiecare temă cu pagina ei; /ghid rămâne cuprinsul
+temelor. 7. Ghidurile au un singur link intern (/ghid). Fiecare ghid primește linkuri spre ghidurile înrudite și spre pagina
+temei lui. 8. În pagini apare calea internă de fișier („sursă: anaf_surse/cod_fiscal_227_2015_consolidat.txt”). Se înlocuiește
+cu numele actului normativ și link spre sursa oficială. 9. Verifică în jurnalele nginx ce a primit Googlebot pe /sitemap.xml de
+la 17.08 până azi (coduri de răspuns, timpi), ca să știm de ce nu s-a putut prelua. 10. Raportează numărul exact de titluri
+aprobate din registru încă nepublicate.
+PARTEA 3 — Test salarii F5 SRL Salariati, octombrie 2026 (Ana pregătește, cabinetul validează). Calculul trece: mărirea
+6.000 → 7.000 de la 15.10 e împărțită corect pe 10+12 zile lucrătoare, deducerea dispare corect. Rămân: 11. Netul de pe
+fluturaș nu se potrivește cu nota și cu D112. Fluturașii folosesc CAS/CASS/impozit nerotunjite (net total 6.810,24); nota și
+D112 folosesc sumele rotunjite la leu pe salariat (421 rămâne cu 6.809,45). Diferența de 0,79 lei lasă contul 421 nesoldat
+după plată; la fel CAM 259,77 pe cartele vs 260 în notă. Netul și costul angajatorului de pe fluturaș trebuie să iasă din
+aceleași sume care merg în D112. Mesajul „coincide în limita de toleranță” nu are voie să acopere o diferență care lasă 421
+nesoldat. 12. Ciorna de salarii pregătită de asistent e invizibilă de la un capăt la altul: la Ana contorul arată „0
+pregătite”, pe statul de plată nu apare că există ciornă, cabinetul nu primește notificare, Activitate cabinet arată 0
+evenimente pe lună, iar pe ecranul statului cabinetul vede ciorna #1 fără niciun buton de validare sau respingere. Cabinetul
+trebuie să afle că are ceva de validat și să poată valida sau respinge de acolo de unde lucrează. Dacă facturile pregătite de
+asistent au deja un mecanism de validare, salariile îl folosesc pe același, nu unul nou. 13. Întrebare, nu defect: impozitul se
+calculează după ce baza e rotunjită la leu întreg (Elena: baza 4.254,54 → 4.255 → impozit 425,50). Confirmă temeiul legal
+pentru rotunjirea bazei. Dacă nu există, aliniază la regula care are temei.
+PARTEA 4 — Povestea lunii (redeschisă după lotul 2): 14. În email apar marcaje „**” netransformate. Emailul se trimite fără
+marcaje brute. 15. Cifra numită „profit” e profitul înainte de impozit. Eticheta spune exact ce e cifra. 16. Decizia A
+(Costin): restanțele declarațiilor nu apar în povestea trimisă clientului.
+Înainte de execuție: listează operațiile pe care le vei rula, fără estimări de durată. În raportul final: durata măsurată a
+fiecărei operații executate, commitul fiecărei părți. La commitul de închidere: ZIP cu tot ce s-a schimbat în cele patru părți
+(cod, documente noi, artefacte de măsurare) în ~/ghid_incoming/iconta_lot_06_10.zip; raportează calea exactă.”*
+
+**Cum se face „commit pe parte fără poartă completă” (executor):** hook-ul `pre-commit` rulează suita întreagă la ORICE commit,
+iar `post-commit` publică orice commit pe `main`. Părțile se comit pe ramura locală `lucru/lot-06-10` (nepublicată), după
+poarta SCURTĂ derivată (`scripts/poarta_scurta.py`, PLAN_LUCRU regula 4) și după hook-ul `commit-msg` rulat explicit pe mesaj;
+`pre-commit` se sare (`--no-verify`) NUMAI pe ramura de lucru, iar fiecare commit spune asta în mesaj. La închidere: `main` se
+avansează fast-forward la ramură, iar commitul de închidere de pe `main` rulează poarta COMPLETĂ peste arborele care le conține
+pe toate și publică four-way. Alternativa respinsă: patru commituri pe `main` — fiecare ar rula poarta completă și ar publica
+(exact ce comanda interzice).
+
+**Consecințe (executor) — partea 1 (§6 din raportul F1):**
+1. **(§6.1) Seria obligatorie, refuz fără blocaj.** Temei: CF art.319 alin.(20) lit.a) — „numărul de ordine, în baza uneia sau a mai
+   multor serii, care identifică factura în mod unic”. Refuzul (`SERIE_LIPSA`, 422 structurat) vine ÎNAINTE de rezervarea numărului
+   (nu consumă un număr), la factură și la storno; proforma și avizul nu (au seriile lor). Pe ecran, refuzul are câmpul „Seria” și
+   „Stabilește seria și emite”: seria se salvează cu numărul următor neschimbat, iar emiterea continuă cu factura scrisă. Configurarea
+   numerotării cere și ea seria. Facturile emise deja nu se ating (proba: factura „3” fără serie rămâne, următoarea e „FCT4”).
+2. **(§6.2) Documentul intern, numerotat pe tip și an, în tranzacția notei** (`core/documente_interne.py`, contor
+   `documente_interne_contor`, migrat test 35/35). Temei: Legea 82/1991 art.6 alin.(1) — operațiunea „se consemnează în momentul
+   efectuării ei într-un document care stă la baza înregistrărilor în contabilitate”. Natura -> document: amortizarea -> tablou de
+   amortizare; descărcarea lunii -> situația de descărcare a gestiunii (UNA pe toate notele ei); consumul pe rețetă și ieșirea pe
+   articol fără document scris -> bon de consum; inventarul -> listă de inventariere (UNA pe act); reclasificarea și cele 30 de
+   operațiuni speciale -> notă de calcul (inventarierea din operațiuni -> listă de inventariere). Nota manuală rămâne „fără document”;
+   notele vechi nu se ating. Alternativa respinsă: un tabel-registru al documentelor interne — documentul trăiește deja pe notă
+   (`document_ref`), iar a doua sursă ar fi derivat.
+3. **(§6.3) Metoda de stoc explicită** (`firma_profil.metoda_stoc`, fără implicit; `core/metoda_stoc.py` = sursa unică a regulii;
+   migrat test 35/35). O ieșire = o descărcare: GLOBAL-VALORIC -> descărcarea lunară, din toate vânzările lunii (Z și facturi, cu sau
+   fără articol — se închide „factura fără articol”); ieșirile pe articol se refuză. CANTITATIV-VALORIC -> pe articol (factură cu
+   articol, ieșire manuală, rețetă); descărcarea lunară globală se refuză — deci Z-ul HoReCa nu se mai descarcă și prin rețete, și
+   global (se închide dubla descărcare); linia de marfă (707) fără articol se refuză pe câmp la emitere (excepție: „Nu, doar
+   factură”). NEDECLARATĂ -> refuz numit spre Date firmă la orice ieșire și la factura cu marfă. Metoda nu se șterge, se schimbă.
+   **PIVOT — supersedă consecința 16 din 05.10** („vânzarea din factură nu intră în baza descărcării lunare”): confirmarea „nu
+   descarcă a doua oară” ține acum prin metodă; forma de pe 05.10 lăsa factura fără articol nedescărcată.
+4. **(§6.4) Date firmă: orice câmp schimbat se jurnalizează** (`firma_profil_jurnal`: cine, când, vechi -> nou), din instantaneul de
+   dinainte și de după salvare — deci pe TOATE drumurile de scriere (fiscale, formă/capital, AMEF, metoda de stoc, CUI și denumire
+   prin provisioning). Salvarea fără autor se refuză. Jurnalul (inclusiv regimul de TVA, deja jurnalizat) se vede în Date firmă,
+   „Istoricul modificărilor”. Drepturile rămân: Date firmă la „Poate pregăti”.

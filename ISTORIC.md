@@ -1513,3 +1513,17 @@ declarații 5 · Operațiuni speciale 3 · Firma 6 (31 de carduri, 0 în afara g
 
 **ZIP (pct.13):** `/home/costin/ghid_incoming/iconta_testare_factura_F1.zip` — patch-urile A–D, fișierele atinse, probele înainte/după
 (JSON + capturi + factura PDF), hărțile de cod, temeiul, jurnalele mutațiilor; scanat de parole înainte de arhivare.
+
+## 06.10.2026 — Lotul 06.10, partea 1: răspunsul la §6 din raportul F1 (comanda Costin)
+
+**Ce s-a făcut:** seria facturii e obligatorie — refuzul o cere chiar în mesaj și emiterea continuă; notele generate de aplicație
+fără document extern primesc documentul intern numerotat (tablou de amortizare, situația de descărcare, bon de consum, listă de
+inventariere, notă de calcul); metoda de stoc e o setare explicită în Date firmă, iar fiecare ieșire se descarcă o singură dată
+(factura fără articol la global-valoric intră în descărcarea lunii; la cantitativ-valoric Z-ul HoReCa nu mai intră în descărcarea
+globală); orice schimbare din Date firmă se jurnalizează și se vede în „Istoricul modificărilor”.
+
+**Proba (browser, asistent, baza de test, firma cu numerotare fără serie, ca F1/F2 în producție):** înainte (HEAD 365ea19c) —
+factura „7” emisă fără serie; Date firmă fără metodă și fără istoric. După — refuz 422 `SERIE_LIPSA` cu câmpul seriei; „ZT” salvat
+din mesaj, factura „ZT7” emisă cu formularul păstrat; metoda „cantitativ-valoric” aleasă, iar istoricul arată cine a schimbat-o,
+cu valoarea veche și cea nouă.
+

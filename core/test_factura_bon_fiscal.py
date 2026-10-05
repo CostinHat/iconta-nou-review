@@ -77,7 +77,7 @@ def conn_b(monkeypatch):
                     "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare,declarant_nume,declarant_prenume,declarant_functie) "
                     "VALUES (1,'HORECA SRL','14399840','Str Test 1','Bucuresti','B','5610','0722000000','BCR',"
                     "'RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR')")
-                cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200 WHERE id = 1")  # L31/1990 art.74 alin.(3): fără capital, factura nu se emite (lot 19 d12)
+                cur.execute("UPDATE firma_profil SET forma_juridica = 'SRL', capital_subscris = 200, serie_factura = 'ZT', metoda_stoc = 'global_valoric' WHERE id = 1")  # L31/1990 art.74 alin.(3) (capital) + CF art.319 alin.(20) lit.a) (seria) + metoda de stoc explicită (06.10.2026)
             proxy = _FaraCommit(conn)
             from core import uc_tenants, auth_api, uc_comun as _uc
             monkeypatch.setattr(uc_tenants.db, "get_conn", lambda *a, **k: contextlib.nullcontext(proxy))

@@ -699,8 +699,69 @@ def pregatire_emitere(conn, tenant_id, la_data):
         forma, sursa = forma_propusa_firma(conn, tenant_id)
     permise, _t = _cote_tva_in_vigoare(la_data)
     return {"lipsuri_firma": lipsuri, "forma_propusa": forma, "forma_propusa_sursa": sursa,
+            "serie_lipsa": not serie_facturi(conn),   # [06.10.2026 §6.1] nu blochează: refuzul o cere și o setează pe loc
             "mesaj_lipsuri": _cs.mesaj_la_deschidere(lipsuri, forma, sursa),
             "cote_permise": sorted({int(c) if int(c) == c else float(c) for c in permise}, reverse=True) if permise else None}
+
+
+#: [06.10.2026, comanda Costin §6.1] CF art.319 alin.(20) lit.a): factura poartă „numărul de ordine, în baza uneia sau a mai
+#: multor serii, care identifică factura în mod unic”. Refuzul e STRUCTURAT (cod + temei + câmp): ecranul de emitere oferă
+#: setarea seriei pe loc și emiterea continuă cu factura păstrată. Facturile deja emise nu se ating.
+COD_SERIE_LIPSA = "SERIE_LIPSA"
+TEMEI_SERIE = "CF art.319 alin.(20) lit.a)"
+MESAJ_SERIE_LIPSA = ("Factura nu s-a emis: firma n-are serie de facturare. Legea cere ca numărul facturii să fie dat „în baza "
+                     "uneia sau a mai multor serii” (CF art.319 alin.(20) lit.a). Stabilește seria și emiterea continuă — "
+                     "factura rămâne așa cum ai scris-o; facturile emise deja nu se modifică.")
+
+
+def verifica_marfa_si_metoda(conn, linii, pleaca_marfa):
+    """[06.10.2026, comanda Costin §6.3] Marfa de pe factură (cont de venit 707 sau articol de stoc) se descarcă O SINGURĂ dată,
+    după metoda firmei (`core.metoda_stoc`): la cantitativ-valoric pe articol — deci linia de marfă fără articol se refuză pe
+    câmp; la global-valoric prin descărcarea lunară — deci ieșirea pe articol de pe factură se refuză; nedeclarată -> refuz
+    numit, cu trimitere la Date firmă. Factura din bon (marfa a ieșit cu bonul) și „Nu, doar factură” nu trec pe aici."""
+    from core import metoda_stoc as _ms
+    marfa = [i for i, l in enumerate(linii) if str(l.get("cont_venit") or "").startswith("707")]
+    pe_articol = [i for i, l in enumerate(linii) if l.get("articol_id")]
+    if not marfa and not pe_articol:
+        return
+    with conn.cursor() as cur:
+        m = _ms.citeste(cur)
+    if m is None:
+        raise _ms.refuz(_ms.COD_NEDECLARATA, "Factura nu s-a emis: are marfă, iar metoda de stoc a firmei nu e declarată. "
+                        "Declar-o în Date firmă (global-valoric sau cantitativ-valoric) — de ea depinde cum se descarcă "
+                        "marfa, o singură dată; factura rămâne așa cum ai scris-o.")
+    if m == _ms.CV:
+        lipsa = [i for i in marfa if not linii[i].get("articol_id")]
+        if lipsa:
+            raise LiniiIncomplete([{"camp": "em-l%d-articol" % i,
+                                    "eticheta": "Linia %d: alege articolul din stoc (marfă, firma ține stocul cantitativ-valoric)" % (i + 1)}
+                                   for i in lipsa])
+    elif pe_articol and pleaca_marfa is True:
+        raise _ms.refuz(_ms.COD_ALTA, "Factura nu s-a emis: firma ține stocul global-valoric — marfa se descarcă lunar, din "
+                        "toate vânzările, nu pe articol. Scoate articolul de pe linie (sau alege „Nu, doar factură”).")
+
+
+def serie_facturi(conn):
+    """Seria de facturare a firmei, sau „” dacă lipsește."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT serie_factura FROM firma_profil LIMIT 1")
+        r = cur.fetchone()
+    return str((r[0] if r else "") or "").strip()
+
+
+def cere_serie(conn):
+    """Refuzul §6.1, ÎNAINTE de rezervarea numărului (refuzul nu consumă un număr)."""
+    if not serie_facturi(conn):
+        e = ValueError(MESAJ_SERIE_LIPSA)
+        e.cod, e.temei, e.camp = COD_SERIE_LIPSA, TEMEI_SERIE, "serie"
+        raise e
+
+
+def detaliu_serie_lipsa(e):
+    """Corpul refuzului structurat (422): ecranul de emitere citește `cod` și deschide setarea seriei peste factură."""
+    from core import afirmatii as _af
+    return _af.afirmatie("neconformitate", "factura", str(e), unde="Numerotare facturi", regula=e.temei,
+                         cod=e.cod, mesaj=str(e), temei=e.temei, camp=e.camp, ecran="numerotare")
 
 
 def _rezerva_numar(conn, tip="factura"):
@@ -827,7 +888,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
                   tert_tara="RO", tip_operatiune="normal", tert_pf=False,
                   data_curs_manual=None, curs_manual_de=None, axa_ic=None,
-                  bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None):
+                  bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None, pleaca_marfa=None):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -849,8 +910,11 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     data_emitere = data_emitere or datetime.date.today().isoformat()
 
     linii = _potriveste_linii(conn, linii, platitor_tva=platitor_tva)
+    if tip == "factura" and not str(bon_fiscal_nr or "").strip() and pleaca_marfa is not False:
+        verifica_marfa_si_metoda(conn, linii, pleaca_marfa)   # [06.10.2026 §6.3] o singură descărcare pe ieșire
     # [C1] rezervare ATOMICĂ a numărului (UPDATE ... +1 RETURNING), nu citire-apoi-increment.
     if tip == "factura":
+        cere_serie(conn)   # [06.10.2026 §6.1] CF art.319 alin.(20) lit.a)
         serie, numar_int = _rezerva_numar(conn, "factura")
         numar = f"{serie}{numar_int}" if serie else str(numar_int)
     else:
@@ -984,6 +1048,7 @@ def storneaza(conn, factura_id):
             "pret_unitar": float(l.get("pret_unitar", 0)),
             "cota_tva": float(l["cota_tva"]),
         })
+    cere_serie(conn)   # [06.10.2026 §6.1] storno-ul e tot o factură (CF art.319 alin.(20) lit.a)
     serie, numar_int = _rezerva_numar(conn, "factura")   # [C1] rezervare atomica si la storno
     numar = f"{serie}{numar_int}" if serie else str(numar_int)
     import datetime

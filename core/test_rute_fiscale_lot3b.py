@@ -289,6 +289,9 @@ def test_CONSUMUL_DE_RETETA_ajunge_in_rulajul_cheltuielii(lume):
     Nota e cumulata pe pereche de conturi (`601 = 301`), iar stocul scade cu 5 kg. Se verifica
     AMANDOUA: o notă corecta peste un stoc neatins ar insemna ca ingredientul s-a cheltuit de doua ori.
     """
+    with lume["conn"].cursor() as cur:   # [06.10.2026 §6.3] ieșirea pe articol e a firmei cantitativ-valorice (metoda explicită)
+        cur.execute('INSERT INTO "%s".firma_profil (id, nume, cui, metoda_stoc) VALUES (1, \'TENANT\', \'14399840\', \'cantitativ_valoric\') '
+                    "ON CONFLICT (id) DO UPDATE SET metoda_stoc = EXCLUDED.metoda_stoc" % SCH)
     cl = _client()
     r = cl.post("/tenants/%d/retete/descarca" % lume["tid"],
                 json={"reteta_id": lume["rid"], "portii": 10, "data": ZI}, headers=_H(lume))

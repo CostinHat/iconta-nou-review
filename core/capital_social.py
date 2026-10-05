@@ -147,6 +147,14 @@ def detaliu(e):
                          cod=e.cod, mesaj=str(e), temei=e.temei, lipsa=e.lipsa, ecran="date_firma")
 
 
+def detaliu_metoda_stoc(e):
+    """[06.10.2026 §6.3] Același corp de refuz spre Date firmă, pentru metoda de stoc (`core.metoda_stoc`): ecranul de emitere
+    păstrează factura și oferă „Deschide Date firmă”, ca la capital."""
+    from core import afirmatii as _af
+    return _af.afirmatie("neconformitate", "factura", str(e), unde="Date firmă", regula="metoda de stoc (comanda Costin 06.10.2026)",
+                         cod=e.cod, mesaj=str(e), ecran="date_firma")
+
+
 def _lei(d):
     s = "{:,.2f}".format(d).replace(",", "X").replace(".", ",").replace("X", ".")
     return s + " lei"

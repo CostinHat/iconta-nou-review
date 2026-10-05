@@ -48,8 +48,8 @@ def conn():
             cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
             cur.execute(_tprov.parametrizeaza_template(io.open(os.path.join(RAD, "tenant_template.sql"), encoding="utf-8").read(), SCH))
             cur.execute("SET search_path TO %s, public" % SCH)
-            cur.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, forma_juridica, capital_subscris) "
-                        "VALUES (1, 'ZT Flux SRL', '14399840', true, 'SRL', 200)")
+            cur.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, forma_juridica, capital_subscris, metoda_stoc) "
+                        "VALUES (1, 'ZT Flux SRL', '14399840', true, 'SRL', 200, 'cantitativ_valoric')")   # [06.10.2026 §6.3]
         c.commit()
     with _db.get_conn(SCH) as c:
         yield c

@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**694 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**695 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 659
+### `core/` — 660
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9255,6 +9255,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_lista3.py` — GARDĂ: titlul listei 3 e GENERAT, nu scris — a doua aplicare a regulii, pe propria listă.
 - `core/test_live_accesibil.py` — [#6 plimbare 14.08.2026 / regula 9] Garda: o declaratie e LIVE DOAR daca e accesibila in selectorul UI
 - `core/test_login_proba_metoda.py` — GARD "gaura de metoda" (09.08.2026, cerut de Costin): a PROBA un cont = prin calea de autentificare
+- `core/test_lot0610_p1.py` — GARDA părții 1 din comanda Costin 06.10.2026 (răspunsul la §6 din raportul „Fluxul de factură pe F1”), pe schemă efemeră.
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
@@ -10248,4 +10249,16 @@ Categoriile **3. Evidență contabilă** (descărcarea gestiunii) și **11. Inte
 | HoReCa după CAEN din CF | `::test_horeca_dupa_codul_caen_din_codul_fiscal`, `::test_situatia_stocului_spune_daca_retetele_se_arata` | Rețete la o firmă care nu e HoReCa și n-are rețete | un cod scos / vizibilitate constantă -> roșu | lista e cea din CF art.48 alin.(2^2) + art.54 alin.(4); o altă definiție a sectorului nu e acoperită |
 | Stocuri: situația întâi, formularele la cerere | `core/test_stocuri_situatie.py` (Chromium, ecranul real) | formularele deschise de la început; Rețete fără condiție; lipsa situației | `hidden` scos / condiția scoasă -> roșu | — |
 | fereastra firmei grupată, o sursă | verificator `GRUP_FIRMA` (DS cap.18 v2.71) + `core/test_fereastra_firmei_grupuri.py` (Chromium) | un card fără grup; a doua definiție a grupurilor; grilă plată; titlu de grup fără card | `grup` scos de pe Facturi -> TOTAL 1; filtrul grupurilor goale scos -> roșu | vizibilitatea pe drepturi: cardurile nu poartă azi `data-actiune`, deci nu se ascund pe drepturi; dacă vor purta, grupul trebuie recalculat după ascundere |
+
+## 06.10.2026 — Lotul 06.10, partea 1: seria obligatorie, documentul intern, metoda de stoc, jurnalul Date firmă
+
+Categoriile **2. Documente fiscale** (seria facturii), **3. Evidență contabilă** (document justificativ, descărcarea stocului),
+**11. Interfață** (jurnal). Deciziile: DECIZII 06.10.2026, consecințele 1–4.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| seria la factură și storno | `core/test_lot0610_p1.py` (3 teste) | o factură / un storno fără serie; un refuz care consumă un număr | verificarea scoasă din emitere / storno -> roșu | proforma și avizul au seriile lor, nu se verifică aici |
+| documentul intern al notei | `::test_operatiunile_speciale…`, `::test_stocul_primeste_bon…`, `::test_descarcarea_lunii_are_o_singura_situatie…`, `::test_nota_manuala…` | o notă automată fără documentul operației; două documente pentru un act | documentul scos / lista pe notă în loc de act -> roșu | o sursă NOUĂ de notă automată trebuie să cheme `documente_interne.genereaza`; nu e un gard de structură peste toate INSERT-urile |
+| o ieșire = o descărcare | `::test_metoda_nedeclarata…`, `::test_global_valoric…`, `::test_cantitativ_valoric…`, `::test_factura_cu_marfa…`, `::test_retetele…`, `core/test_flux_factura_f1_d.py::test_marfa_facturata_se_descarca_o_singura_data…` | ieșire fără metodă declarată; descărcare globală la CV (Z de două ori); factura fără articol nedescărcată la GV; linie de marfă fără articol la CV | `cere` care trece pe NULL / `facturi` scos / verificarea scoasă / lista goală -> roșu | o factură de marfă clasificată greșit (cont de venit ≠ 707) scapă regulii |
+| jurnalul Date firmă | `::test_orice_camp_din_date_firma_se_jurnalizeaza…` | o schimbare fără rând de jurnal; o salvare fără autor | jurnalizarea scoasă -> roșu | doar câmpurile ecranului Date firmă (CAMPURI_JURNAL); numerotarea și modelul facturii au ecranele lor |
 

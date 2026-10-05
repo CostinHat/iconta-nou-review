@@ -93,21 +93,35 @@ def test_situatia_stocului_spune_daca_retetele_se_arata(conn):
 
 
 # ── „Descarcă gestiunea lunii” ────────────────────────────────────────────────────────────────────────────────────────────
-def test_descarcarea_lunii_nu_include_vanzarea_facturata(conn):
-    """Confirmarea cerută de Costin, ca probă: vânzarea din factură (nota de contare are sursa `facturi`; marfa ei s-a
-    descărcat la emitere, 607=371 pe articol) NU intră în baza descărcării lunare. Cu numai o factură în lună, descărcarea
-    spune „fără vânzări de mărfuri”. MUTAȚIE: `facturi` adăugat în sursele vânzărilor -> descarcă -> pică."""
-    from core import stocuri_api as sa
+def _metoda(conn, m):
+    with conn.cursor() as cur:
+        cur.execute("UPDATE firma_profil SET metoda_stoc = %s", (m,))
+
+
+def test_marfa_facturata_se_descarca_o_singura_data_dupa_metoda(conn):
+    """[PIVOT 06.10.2026, comanda Costin §6.3 — supersedă forma din 05.10] Confirmarea „nu descarcă a doua oară marfa descărcată
+    la emitere” ține acum prin METODĂ, nu prin excluderea facturilor: la cantitativ-valoric marfa iese la emitere, pe articol, iar
+    descărcarea lunară globală se REFUZĂ; la global-valoric descărcarea lunară cuprinde și facturile, iar ieșirea pe articol de la
+    emitere se REFUZĂ. Forma veche (factura exclusă din descărcarea lunară) lăsa factura fără articol nedescărcată deloc.
+    MUTAȚIE: verificarea metodei scoasă din `descarca_luna` -> la CV descarcă a doua oară -> pică."""
+    from core import stocuri_api as sa, stocuri_cv_api as cv
     _stoc_global_valoric(conn)
     _nota(conn, ZI, "facturi", [("4111", "707", 500), ("4111", "4427", 105)])
-    r = sa.descarca_luna(conn, SCH, 2026, 10)
-    assert r.get("note") == [] and r.get("k") is None, r
+    _metoda(conn, "cantitativ_valoric")
+    assert sa.descarca_luna(conn, SCH, 2026, 10)["cod"] == "METODA_STOC_ALTA"
+    _metoda(conn, "global_valoric")
+    a = cv.intrare(conn, SCH, {"denumire": "Pâine", "data": "2026-10-01", "cantitate": 10, "pret_unitar": 2})
+    with pytest.raises(ValueError) as e:
+        cv.iesire(conn, SCH, {"articol_id": a["articol_id"], "data": ZI, "cantitate": 1})
+    assert e.value.cod == "METODA_STOC_ALTA"
+    assert sa.descarca_luna(conn, SCH, 2026, 10).get("inregistrari")   # singura ei descărcare
 
 
 def test_a_doua_descarcare_a_aceleiasi_luni_se_refuza(conn):
     """Înainte, a doua apăsare scria al doilea set de ciorne 607/378/4428=371 (nicio gardă). MUTAȚIE: verificarea
     scoasă -> a doua rulare scrie din nou -> pică."""
     from core import stocuri_api as sa
+    _metoda(conn, "global_valoric")
     _stoc_global_valoric(conn)
     _nota(conn, ZI, "horeca_z", [("5311", "707", 500), ("5311", "4427", 105)])
     r1 = sa.descarca_luna(conn, SCH, 2026, 10)
@@ -122,6 +136,7 @@ def test_a_doua_descarcare_a_aceleiasi_luni_se_refuza(conn):
 def test_descarcarea_din_factura_nu_se_face_de_doua_ori(conn):
     """MUTAȚIE: verificarea mișcărilor existente scoasă -> a doua chemare descarcă din nou -> pică."""
     from core import stocuri_cv_api as cv
+    _metoda(conn, "cantitativ_valoric")
     art = cv.intrare(conn, SCH, {"denumire": "Pâine", "data": "2026-10-01", "cantitate": 10, "pret_unitar": 2})
     with conn.cursor() as cur:
         cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva) VALUES ('Z1', %s, 'emisa', 10, 0) RETURNING id", (ZI,))

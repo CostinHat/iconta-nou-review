@@ -8,7 +8,7 @@
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate } from "../api.js?v=4c8f1ff171";
-import { randeazaDateFirma } from "./date_firma.js?v=87157bdf69";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
+import { randeazaDateFirma } from "./date_firma.js?v=77c317b1d1";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -75,7 +75,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
   corp.querySelector("#em-da").addEventListener("click", () => {
     zona.innerHTML = `
       <div class="em-config-camp">
-        <label for="em-serie">Seria ultimei facturi (dacă folosești, ex: KAI-)</label>
+        <label for="em-serie">Seria facturilor (ex: KAI-)<span class="oblig">*</span></label>
         <input class="camp-input" id="em-serie" placeholder="ex: KAI-" autocomplete="off">
       </div>
       <div class="em-config-camp">
@@ -86,6 +86,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
       <button class="buton-primar" id="em-salveaza-config" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>`;
     zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie").value.trim() || null;
+      if (!serie) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a)."; return; }
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numărul ultimei facturi se pune în câmpul următor."; return; }
       const ultim = parseInt((zona.querySelector("#em-ultim").value || "").trim(), 10);
       if (!Number.isFinite(ultim) || ultim < 1) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Completează numărul ultimei facturi emise (nu putem presupune numărul 1)."; return; }
@@ -99,13 +100,14 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
   corp.querySelector("#em-nu").addEventListener("click", () => {
     zona.innerHTML = `
       <div class="em-config-camp">
-        <label for="em-serie2">Serie (opțional, ex: FCT-)</label>
-        <input class="camp-input" id="em-serie2" placeholder="lasă gol dacă nu folosești serie" autocomplete="off">
+        <label for="em-serie2">Seria facturilor (ex: FCT-)<span class="oblig">*</span></label>
+        <input class="camp-input" id="em-serie2" placeholder="ex: FCT-" autocomplete="off">
       </div>
       <p class="em-hint">Prima factură va avea numărul 1.</p>
       <button class="buton-primar" id="em-salveaza-config2" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>`;
     zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie2").value.trim() || null;
+      if (!serie) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a)."; return; }
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."; return; }
       if (platitorTva === null) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Alege dacă firma e plătitoare de TVA."; return; }
       await salveazaConfig(tenantId, serie, 1, tvaDinProfil ? null : platitorTva);
@@ -154,7 +156,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-eticheta">Document (CF art. 319 alin. (20) lit. a–b)</div>
       <div class="em-date-rand">
         <label class="camp"><span class="camp-eticheta">Seria și numărul</span>
-          <span class="em-serie-nr" id="em-serie-nr">${num.serie ? esc(num.serie) + " · " : "fără serie · "}următorul număr: ${esc(String(num.urmator_numar))}</span>
+          <span class="em-serie-nr" id="em-serie-nr">${num.serie ? esc(num.serie) + " · " : "fără serie (se cere la emitere) · "}următorul număr: ${esc(String(num.urmator_numar))}</span>
           <button type="button" class="btn-link" id="em-schimba-serie" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare">Schimbă seria / numerotarea</button></label>
         <label class="camp"><span class="camp-eticheta">Data emiterii<span class="oblig">*</span></span>
           <input class="camp-input" id="em-data" type="date" value="${dataIso()}"></label>
@@ -243,7 +245,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   }
   function aratăNumarul(n) {
     const sn = corp.querySelector("#em-serie-nr"), nr = corp.querySelector("#em-numar");
-    if (sn) sn.textContent = (n.serie ? n.serie + " · " : "fără serie · ") + "următorul număr: " + n.urmator_numar;
+    if (sn) sn.textContent = (n.serie ? n.serie + " · " : "fără serie (se cere la emitere) · ") + "următorul număr: " + n.urmator_numar;
     if (nr) nr.innerHTML = (n.serie ? `Seria <b>${esc(n.serie)}</b> · ` : "") + `nr. <b>${esc(String(n.urmator_numar))}</b>`;
   }
   aratăPregatirea(num);
@@ -576,8 +578,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const det = e && e.mesaj;
       const cursIndisp = e && e.cod === 409 && det && typeof det === "object" && det.cod === "CURS_INDISPONIBIL";
       const capLipsa = e && e.detaliu && e.detaliu.cod === "CAPITAL_SOCIAL_LIPSA";
+      const serieLipsa = e && e.detaliu && e.detaliu.cod === "SERIE_LIPSA";
       if (cursIndisp) {
         arataCursIndisponibil(det);
+      } else if (serieLipsa) {
+        arataSerieLipsa(e.detaliu);
       } else if (capLipsa) {
         arataCapitalLipsa(e.detaliu);
       } else {
@@ -601,6 +606,35 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       </div>`;
     rez.querySelector("#em-deschide-date-firma").addEventListener("click", () => {
       nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId));
+    });
+  }
+
+  // [06.10.2026, comanda Costin §6.1] Seria obligatorie (CF art.319 alin.(20) lit.a): refuzul NU blochează — seria se
+  // stabilește chiar aici, numărul următor rămâne același, iar emiterea continuă cu factura scrisă.
+  function arataSerieLipsa(det) {
+    const rez = corp.querySelector("#em-rezultat");
+    rez.className = "em-rezultat";
+    rez.innerHTML = `
+      <div class="em-curs-box">
+        <div class="em-curs-titlu">⚠ ${esc(det.mesaj || "")}</div>
+        <label class="camp"><span class="camp-eticheta">Seria facturilor (ex: FCT)<span class="oblig">*</span></span>
+          <input class="camp-input" id="em-serie-noua" autocomplete="off" maxlength="12"></label>
+        <div class="em-curs-actiuni">
+          <button class="buton-primar" id="em-serie-si-emite" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare">Stabilește seria și emite</button>
+        </div>
+      </div>`;
+    const inp = rez.querySelector("#em-serie-noua");
+    inp.focus();
+    rez.querySelector("#em-serie-si-emite").addEventListener("click", async () => {
+      curataEroriCamp(rez);
+      const serie = inp.value.trim();
+      if (!serie) { eroareCamp(rez, "em-serie-noua", "Completează seria (legea cere numărul facturii într-o serie)."); return; }
+      if (/^\d+$/.test(serie)) { eroareCamp(rez, "em-serie-noua", "Seria e un prefix cu litere (ex: FCT), nu un număr."); return; }
+      try {
+        await api.put(`/tenants/${tenantId}/facturi/numerotare`, { serie });   // numărul următor rămâne cel de acum
+      } catch (er) { eroareCamp(rez, "em-serie-noua", (er && er.mesaj) || "Seria nu s-a putut salva."); return; }
+      await reincarcaPregatirea();
+      porniEmitere();
     });
   }
 

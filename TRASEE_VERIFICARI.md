@@ -115,7 +115,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_api_key` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_main`, `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_main`, `stocuri_cv_api`*
 
 - [x] ruta cu cheie de API aplică **aceleași reguli** ca ruta din interfață: numerotare, cod fiscal obligatoriu, notă cu conturi valide
 - o cheie de API nu are rol, deci nu poate face ce cere admin_firma pe ruta echivalentă — verifică dacă asta e adevărat sau dacă cheia ocolește restricția
@@ -178,7 +178,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie factura_cota_jurnal (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT/UPDATE) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
+*ce face: scrie factura_cota_jurnal (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT/UPDATE) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
 
 - [x] factura primește **următorul număr din serie**, fără goluri; două emiteri simultane nu produc același număr
 - exemplarul se îngheață cu amprenta; o regenerare ulterioară produce alt exemplar, nu îl rescrie pe primul
@@ -729,7 +729,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
 
-*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie factura_linii (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · factura_cota_jurnal (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
+*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie factura_linii (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · factura_cota_jurnal (INSERT) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_efactura`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
 
 - [x] cine validează e consemnat, și e diferit de cine a importat dacă patru ochi e activ și posibil
 - factura creată poartă legătura către ciorna din care a ieșit — lanțul nu se rupe
@@ -886,7 +886,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] inventarul compară **stocul faptic** cu cel scriptic; diferența e plus sau minus, nu se ajustează tăcut
 - fiecare diferență produce o mișcare de stoc, iar suma mișcărilor = diferența totală
@@ -1503,7 +1503,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] un cod de bare duplicat în firmă se refuză — altfel scanarea devine ambiguă
 - modificarea nu atinge stocul și nu produce mișcare
@@ -1512,7 +1512,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] nivelul minim e o alertă, nu o restricție — verifică dacă blochează ieșirile sub el, ceea ce ar fi greșit
 - modificarea nu atinge stocul
@@ -1531,7 +1531,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] **nu pot scrie verificarea fără să știu ce o deosebește de `descarcare`.** De completat din cod
 - dacă sunt aceeași operațiune pe două rute, e interdicția 15
@@ -1543,7 +1543,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] intrarea se leagă de un document — NIR, producție, transfer
 - costul de intrare cuprinde ce trebuie: preț, transport, taxe nedeductibile. Verifică ce cuprinde efectiv
@@ -1553,7 +1553,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] reclasificarea schimbă categoria, nu cantitatea și nu valoarea
 - verifică dacă poate muta un articol între categorii cu tratamente fiscale diferite — marfă în materie primă schimbă contul, deci nota
@@ -1562,7 +1562,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] transferul între gestiuni nu schimbă valoarea totală a stocului — suma iese dintr-o gestiune și intră în alta, la același cost
 - transferul nu produce venit sau cheltuială

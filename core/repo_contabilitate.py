@@ -148,13 +148,21 @@ def adauga_linie_fara_schema(cur, inregistrare_id, cont_debit, cont_credit, suma
                 (inregistrare_id, cont_debit, cont_credit, suma))
 
 
+def _cu_document_intern(cur, schema, tip, data_, rand):
+    """[06.10.2026, comanda Costin §6.2] Nota scrisă de aplicație fără document extern primește documentul intern al operației
+    (Legea 82/1991 art.6 alin.(1)), numerotat în aceeași tranzacție. Întoarce rândul `RETURNING id` neschimbat."""
+    from core import documente_interne as _di
+    _di.genereaza(cur, schema, tip, data_, [rand[0] if not isinstance(rand, dict) else rand["id"]])
+    return rand
+
+
 def nota_amortizare_validata(cur, schema, data_, numar, descriere):
     cur.execute(f"""
                 INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
                 VALUES (%s, %s, %s, 'amortizare', 'validata') RETURNING id
             """,
                 (data_, numar, descriere))
-    return cur.fetchone()
+    return _cu_document_intern(cur, schema, "tablou_amortizare", data_, cur.fetchone())
 
 
 def adauga_linie_cheltuiala_amortizare(cur, schema, inregistrare_id, cont_debit, cont_credit):
@@ -218,11 +226,11 @@ def adauga_linie_3(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
                 (inregistrare_id, cont_debit, cont_credit, suma))
 
 
-def nota_facturi_ciorna(cur, schema, data_, descriere):
+def nota_facturi_ciorna(cur, schema, data_, descriere, tip_document="nota_calcul"):
     cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
                 (data_, descriere))
-    return cur.fetchone()
+    return _cu_document_intern(cur, schema, tip_document, data_, cur.fetchone())
 
 
 def adauga_linie_2(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
@@ -279,29 +287,29 @@ def adauga_linie_5(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
                 (inregistrare_id, cont_debit, cont_credit, suma))
 
 
-def nota_banca_ciorna(cur, schema, data_, descriere):
+def nota_banca_ciorna(cur, schema, data_, descriere, tip_document="nota_calcul"):
     cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'banca','ciorna') RETURNING id""",
                 (data_, descriere))
-    return cur.fetchone()
+    return _cu_document_intern(cur, schema, tip_document, data_, cur.fetchone())
 
 
-def nota_facturi_ciorna_2(cur, schema, data_, descriere):
+def nota_facturi_ciorna_2(cur, schema, data_, descriere, tip_document="nota_calcul"):
     cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                                 VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
                 (data_, descriere))
-    return cur.fetchone()
+    return _cu_document_intern(cur, schema, tip_document, data_, cur.fetchone())
 
 
-def nota_casa_ciorna(cur, schema, data_, descriere):
+def nota_casa_ciorna(cur, schema, data_, descriere, tip_document="nota_calcul"):
     cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'casa','ciorna') RETURNING id""",
                 (data_, descriere))
-    return cur.fetchone()
+    return _cu_document_intern(cur, schema, tip_document, data_, cur.fetchone())
 
 
-def nota_salarii_ciorna(cur, schema, data_, descriere):
+def nota_salarii_ciorna(cur, schema, data_, descriere, tip_document="nota_calcul"):
     cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'salarii','ciorna') RETURNING id""",
                 (data_, descriere))
-    return cur.fetchone()
+    return _cu_document_intern(cur, schema, tip_document, data_, cur.fetchone())

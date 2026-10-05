@@ -228,7 +228,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_facturi.jurnalizeaza_cota_aleasa (facturi_emite) — cota schimbată de contabil față de cea propusă se consemnează
     #   (propus -> ales, cine, când) în aceeași tranzacție cu factura; repo_firma_profil.regim_tva_pentru_schimbare
     #   (firma_profil_regim_tva) — poarta de perioadă închisă se pune numai la o SCHIMBARE reală a statutului. Pași NOI.
-    assert _apeluri_catre_repository() == 282
+    # [lotul 06.10.2026, comanda Costin §6.4] 282 -> 283, cu apelul numit:
+    #   repo_firma_profil.jurnal_firma (firma_profil_date) — jurnalul Date firmă, vizibil cabinetului. Pas NOU, citire.
+    assert _apeluri_catre_repository() == 283
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

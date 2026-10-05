@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=4c8f1ff171";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo } from "../api.js?v=4c8f1ff171";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -105,6 +105,39 @@ function _blocCapital(d) {
         <input type="number" step="0.01" min="0" class="camp-input" id="df-capital_varsat" value="${esc(p.capital_varsat || "")}">
       </label>
     </div>`;
+}
+
+// [06.10.2026, comanda Costin §6.3] Metoda de stoc: setare EXPLICITĂ, fără implicit — până se alege, „nedeclarată”, iar ieșirile
+// de marfă și facturile cu marfă se refuză numit (core/metoda_stoc.py). De ea depinde cum se descarcă marfa, o singură dată.
+function _blocStoc(d) {
+  const m = (d.profil || {}).metoda_stoc || "";
+  return `
+    <h2 class="pf-titlu" style="margin-top:26px">Stoc</h2>
+    <p class="pf-intro">Cum ține firma evidența mărfii. Global-valoric: marfa se descarcă lunar, din toate vânzările (371/378/4428). Cantitativ-valoric: pe fiecare articol, la CMP (fișe de magazie, rețete). Fiecare ieșire se descarcă o singură dată.</p>
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Metoda de stoc</span>
+        <select class="camp-input" id="df-metoda_stoc">${m ? "" : `<option value="" selected>— nedeclarată —</option>`}${(d.metode_stoc || []).map(([k, t]) =>
+          `<option value="${esc(k)}"${k === m ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
+      </label>
+    </div>`;
+}
+
+// [06.10.2026, comanda Costin §6.4] „Orice modificare se jurnalizează (cine, când, valoare veche → nouă), inclusiv forma juridică
+// și capitalul, iar jurnalul e vizibil cabinetului.”
+const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital subscris", capital_varsat: "Capital vărsat",
+  metoda_stoc: "Metoda de stoc", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
+  inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
+  cont_venit_implicit: "Cont venit implicit" };
+function _blocJurnal(d) {
+  const j = d.jurnal || [];
+  const val = (x) => (x == null || x === "" ? "\u2014" : esc(x));
+  return `
+    <h2 class="pf-titlu" style="margin-top:26px">Istoricul modificărilor</h2>
+    ${!j.length ? `<div class="stare-goala">Nicio modificare înregistrată încă.</div>` : `<table class="fd-tabel" id="df-jurnal">
+      <thead><tr><th>Când</th><th>Cine</th><th>Câmp</th><th>Valoare veche</th><th>Valoare nouă</th></tr></thead>
+      <tbody>${j.map((r) => `<tr><td>${dataRo(r.la, "cu_ora")}</td><td>${esc(r.cine || "")}</td><td>${esc(ETICHETE_JURNAL[r.camp] || eticheta(r.camp))}</td>
+        <td>${val(r.vechi)}</td><td>${val(r.nou)}</td></tr>`).join("")}</tbody></table>`}`;
 }
 
 function camp(c, val) {
@@ -281,10 +314,12 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     </div>
     ${d.profil.tip_firma === "pfa" ? "" : _blocCapital(d)}
     ${_blocAmef(d)}
+    ${_blocStoc(d)}
     <div id="df-msg"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector">Salveaz\u0103</button>
     </div>
+    ${_blocJurnal(d)}
   `;
 
   // [D394 Î2] activitatea apare DOAR cu bifa „Da”
@@ -313,6 +348,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     // [lot 19 d12] forma juridică + capitalul (Legea 31/1990 art. 74 alin. (3)); lipsesc la PFA/II/IF
     date.activitate_exceptata_amef = corp.querySelector("#df-activitate_exceptata_amef").value;   // [D394 Î2]
     date.activitate_amef = corp.querySelector("#df-activitate_amef").value || null;
+    date.metoda_stoc = corp.querySelector("#df-metoda_stoc").value || null;   // [06.10.2026 §6.3]
     if (corp.querySelector("#df-forma_juridica")) {
       date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;
       date.capital_subscris = (corp.querySelector("#df-capital_subscris").value || "").trim() || null;

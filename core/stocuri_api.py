@@ -143,6 +143,14 @@ def descarca_luna(conn, schema, an, luna):
     # [05.10.2026, comanda Costin pct.10] a doua rulare pe aceeași lună scria al doilea set de ciorne 607/378/4428=371.
     # Cheia actului e `numar`; notele de dinainte de cheie se recunosc după descriere (aceeași formă, aceeași sursă).
     cheie, descr = "DESC-GV-%d-%02d" % (an, luna), "Descarcare gestiune %02d/%d" % (luna, an)
+    # [06.10.2026, comanda Costin §6.3] descărcarea globală e a firmei GLOBAL-VALORICE; la cea cantitativ-valorică marfa iese
+    # pe articol (inclusiv Z-ul HoReCa, prin rețete) — o singură descărcare pe ieșire. Metoda nedeclarată se refuză numit.
+    from core import metoda_stoc as _ms
+    with conn.cursor() as cur:
+        try:
+            _ms.cere(cur, schema, _ms.GV, "Descărcarea lunară a gestiunii")
+        except ValueError as e:
+            return {"cod": e.cod, "eroare": str(e)}
     with conn.cursor() as cur:
         cur.execute(f"""SELECT id FROM {schema}.inregistrari
                         WHERE numar = %s OR (sursa = 'stocuri' AND descriere = %s) ORDER BY id""", (cheie, descr))
@@ -164,10 +172,10 @@ def descarca_luna(conn, schema, an, luna):
         rc_378 = _rulaj(cur, schema, "378", "credit", sfarsit, inceput_an)
         rc_4428 = _rulaj(cur, schema, "4428", "credit", sfarsit, inceput_an)
         # vanzari de marfuri DOAR pe luna
-        # [05.10.2026] Vânzările din FACTURI (sursa `facturi`) NU intră aici: marfa lor se descarcă la emitere, pe articol
-        # (`stocuri_cv_api.descarca_factura`, 607=371) — altfel s-ar descărca de două ori (probă: core/test_flux_factura_f1_d.py).
-        # `facturi_marfa` (sursă pe care n-o scrie nimeni) scoasă.
-        rc_707 = _rulaj(cur, schema, "707", "credit", sfarsit, inceput_luna, surse=("horeca_z", "stocuri"))
+        # [PIVOT 06.10.2026, comanda Costin §6.3 — supersedă nota din 05.10] Descărcarea globală rulează NUMAI la firma
+        # global-valorică, unde ieșirile pe articol se refuză; deci vânzările din FACTURI (sursa `facturi`, cu sau fără articol)
+        # intră aici — e singura lor descărcare. Înainte erau excluse, iar factura fără articol nu se descărca deloc.
+        rc_707 = _rulaj(cur, schema, "707", "credit", sfarsit, inceput_luna, surse=("horeca_z", "amef", "stocuri", "facturi"))
         # TVA aferenta vanzarilor de marfuri: proportional din 4427 e riscant;
         # folosim TVA neexigibila medie: tva = rc707 * (Si4428+Rc4428)/numitor-ul fara TVA
         # -> mai sigur: tva = rc707 * cota medie din stoc
@@ -190,6 +198,9 @@ def descarca_luna(conn, schema, an, luna):
         import calendar
         ultima_zi = date(an, luna, calendar.monthrange(an, luna)[1])
         ids = _noteaza(cur, schema, ultima_zi, descr, rez["note"], numar=cheie)
+        # [06.10.2026, comanda Costin §6.2] O descărcare = O situație de descărcare a gestiunii, pe toate notele ei
+        from core import documente_interne as _di
+        _di.genereaza(cur, schema, "situatie_descarcare", ultima_zi, ids)
     return {"k": str(rez["k"].quantize(Decimal('0.000001'))), "cmv": str(rez["cmv"]),
             "adaos": str(rez["adaos"]), "tva": str(rez["tva"]),
             "total_371": str(rez["total_371"]), "inregistrari": ids}

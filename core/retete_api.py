@@ -131,6 +131,10 @@ def descarca(conn, schema, corp):
     """corp: {reteta_id, portii, data}. Iesiri la CMP per ingredient + nota ciorna cumulata
     (per cont: cont_cheltuiala = cont_stoc al articolului)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        # [06.10.2026, comanda Costin §6.3] consumul pe rețetă e ieșire pe articol: numai la firma CANTITATIV-VALORICĂ. Acolo
+        # raportul Z nu mai intră în descărcarea globală (refuzată), deci vânzarea HoReCa se descarcă o singură dată.
+        from core import metoda_stoc as _ms
+        _ms.cere(cur, schema, _ms.CV, "Consumul pe rețetă")
         cur.execute(f"SELECT * FROM {schema}.retete WHERE id=%s", (corp["reteta_id"],))
         ret = cur.fetchone()
         if not ret:
@@ -174,5 +178,8 @@ def descarca(conn, schema, corp):
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                             (inregistrare_id, cont_debit, cont_credit, suma)
                             VALUES (%s,%s,%s,%s)""", (iid, deb, cred, suma))
+        # [06.10.2026, comanda Costin §6.2] consumul pe rețetă se justifică printr-un bon de consum (Legea 82/1991 art.6 alin.(1))
+        from core import documente_interne as _di
+        _di.genereaza(cur, schema, "bon_consum", d, [iid])
     return _fara_decimal({"inregistrare_id": iid, "cost_total": cons["cost_total"],
                           "linii": cons["linii"]})

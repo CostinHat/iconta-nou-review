@@ -104,6 +104,29 @@ def jurnalizeaza_regim_tva(cur, vechi, nou, user_id):
     return scrise
 
 
+def jurnalizeaza_campuri(cur, vechi, nou, user_id):
+    """[06.10.2026, comanda Costin §6.4] Un rând în `firma_profil_jurnal` pentru fiecare câmp care diferă între `vechi` și `nou`
+    (instantanee text ale Date firmă). Întoarce câte rânduri a scris."""
+    scrise = 0
+    for camp in nou:
+        v, n = (vechi or {}).get(camp), nou[camp]
+        if (v or None) != (n or None):
+            if user_id is None:
+                raise ValueError("schimbarea Date firmă se jurnalizează cu utilizatorul care o face — lipsește")
+            cur.execute("INSERT INTO firma_profil_jurnal (camp, valoare_veche, valoare_noua, user_id) "
+                        "VALUES (%s, %s, %s, %s)", (camp, v, n, user_id))
+            scrise += 1
+    return scrise
+
+
+def jurnal_firma(cur, limita=200):
+    """[06.10.2026 §6.4] Jurnalul Date firmă, cel mai nou primul, cu emailul celui care a schimbat (vizibil cabinetului)."""
+    cur.execute("SELECT j.camp, j.valoare_veche, j.valoare_noua, u.email, j.la FROM firma_profil_jurnal j "
+                "LEFT JOIN public.users u ON u.id = j.user_id ORDER BY j.la DESC, j.id DESC LIMIT %s", (limita,))
+    return [{"camp": r[0], "vechi": r[1], "nou": r[2], "cine": r[3], "la": r[4].isoformat() if r[4] else None}
+            for r in cur.fetchall()]
+
+
 def seteaza_platitor_tva(cur, platitor_tva, user_id):
     vechi = regim_tva_pentru_schimbare(cur)
     if vechi is None:

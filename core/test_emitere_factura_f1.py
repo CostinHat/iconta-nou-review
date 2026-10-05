@@ -244,9 +244,9 @@ def test_date_firma_cu_luna_inchisa_se_salveaza_daca_nu_schimba_ce_decide(conn):
         cur.execute("INSERT INTO public.tenants (schema_name, nume, cui, accounting_firm_id, activ) "
                     "VALUES (%s, 'ZT Comert Proba SRL', '14399840', %s, true) RETURNING id", (SCH, firm))
         tid = cur.fetchone()[0]
-    r = fpa.salveaza_date(conn, {"cui": "14399840", "telefon": "0712345678"}, tenant_id=tid)
+    r = fpa.salveaza_date(conn, {"cui": "14399840", "telefon": "0712345678"}, tenant_id=tid, user_id=1)
     assert r.get("ok") is True, r
-    r = fpa.salveaza_date(conn, {"cui": "40410000"}, tenant_id=tid)
+    r = fpa.salveaza_date(conn, {"cui": "40410000"}, tenant_id=tid, user_id=1)
     assert r.get("ok") is False and r.get("camp") == "cui" and re.search(r"perioade închise", r["mesaj"]), r
 
 

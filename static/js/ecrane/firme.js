@@ -14,7 +14,7 @@ import { declaratiiPerFirma } from "./declaratii.js?v=387961b076";  // [decl_fir
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=45d828dd41";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=0d0a622ecb";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=44e4b52e3f";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=87157bdf69";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=77c317b1d1";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=40206e2ad2";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri

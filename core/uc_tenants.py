@@ -471,6 +471,8 @@ def firma_profil_date(tenant_id, ctx):
         # [comanda Costin 05.10.2026 pct.2] forma juridică necompletată -> propunerea neechivocă (ANAF / denumire), de confirmat
         if not (r.get("profil") or {}).get("forma_juridica"):
             r["forma_juridica_propusa"], r["forma_juridica_sursa"] = facturi_api.forma_propusa_firma(conn, tenant_id)
+        with conn.cursor() as cur:   # [06.10.2026 §6.4] jurnalul Date firmă, vizibil cabinetului
+            r["jurnal"] = repo_firma_profil.jurnal_firma(cur)
         return r
 
 
@@ -478,7 +480,7 @@ def firma_profil_date_salveaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/firma-profil/date`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        r = _fp.salveaza_date(conn, date, tenant_id=tenant_id)
+        r = _fp.salveaza_date(conn, date, tenant_id=tenant_id, user_id=ctx["uid"])   # [06.10.2026 §6.4] jurnalul cere autorul
     if not r.get("ok"):
         raise _erori.DateInvalide(r.get("mesaj", "date invalide"))
     return r
@@ -4422,7 +4424,7 @@ def nota_inventariere(tenant_id, corp, ctx):
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 2861/2009"
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200], "lista_inventariere")[0]
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
             if mf_id:
@@ -4703,7 +4705,7 @@ def facturi_emite(tenant_id, date, ctx):
                 tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
                 data_curs_manual=date.data_curs_manual,
                 bon_fiscal_nr=date.bon_fiscal_nr, bon_fiscal_data=date.bon_fiscal_data,
-                tert_platitor_tva=_tert_pl,
+                tert_platitor_tva=_tert_pl, pleaca_marfa=date.pleaca_marfa,   # [06.10.2026 §6.3]
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])
@@ -4716,6 +4718,13 @@ def facturi_emite(tenant_id, date, ctx):
                     "%s — %s" % (x["eticheta"], x.get("mesaj") or "") for x in e.campuri),
                 "campuri": e.campuri})
         except ValueError as e:
+            if getattr(e, "cod", None) in ("METODA_STOC_NEDECLARATA", "METODA_STOC_ALTA"):
+                # [06.10.2026 §6.3] refuz STRUCTURAT spre Date firmă (metoda de stoc), factura păstrată pe ecran
+                from core import capital_social as _cs
+                raise _erori.DateInvalide(_cs.detaliu_metoda_stoc(e))
+            if getattr(e, "cod", None) == facturi_api.COD_SERIE_LIPSA:
+                # [06.10.2026 §6.1] refuz STRUCTURAT: ecranul setează seria peste factură și emiterea continuă
+                raise _erori.DateInvalide(facturi_api.detaliu_serie_lipsa(e))
             if getattr(e, "cod", None) == "CAPITAL_SOCIAL_LIPSA":
                 # [lot 19 d12] refuz STRUCTURAT: ecranul păstrează factura și oferă butonul spre Date firmă
                 from core import capital_social as _cs
