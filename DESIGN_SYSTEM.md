@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.66 · 5 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.67 · 5 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -67,6 +67,11 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Mecanismul: `nav.setInapoi(fn)` — obligatoriu apelat la începutul FIECĂRUI sub-ecran: rădăcina cu undefined/null, sub-ecranele cu funcția părinte.
 - X-ul închide fereastra de oriunde. Săgeata nu ține locul lui X.
 - Ecranele-poartă (configurare obligatorie) primesc `setInapoi(undefined)` ca să evite bucla.
+- **Ce s-a tastat nu se pierde (v2.67, comanda Costin 05.10.2026).** Gard `PASTRARE_FORMULAR`. O fereastră sau un pas în care omul a
+  tastat (`input`/`change`) își păstrează elementul `.fereastra-corp` când se deschide altceva peste el (`nav.deschide`, `nav.mergi`) și îl primește înapoi la
+  revenire, cu evenimentul `nav:revenire` (nu o redesenare). Sesiunea expirată se reautentifică PESTE ecran (`reautentificare.js`),
+  iar cererea refuzată se reia; anunțul „versiune nouă” nu reîncarcă peste un formular început. Un mesaj nu promite păstrarea
+  decât unde mecanismul o face. Gard: verificator `PASTRARE_FORMULAR` + `core/test_sesiune_fara_pierdere.py`.
 
 ## 4. Casete de date
 
@@ -671,6 +676,8 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.67 (05.10.2026)** — **cap.3: ce s-a tastat nu se pierde.** Din testarea fluxului de factură pe F1 (comanda Costin pct.1): tokenul expira la 24 h în mijlocul facturii, iar aplicația se redesena la logare; navigatorul redesena factura de la zero după Date firmă. Gard: `PASTRARE_FORMULAR` (verificator) + `core/test_sesiune_fara_pierdere.py`.
+
 **v2.66 (05.10.2026)** — **cap.9 motivul acțiunilor ascunse; cap.13 cheia de iconiță existentă; cap.6 un singur control pentru alegerea firmei.** Din testarea ca asistent (2), comanda Costin pct.3, 5, 6: fereastra poveștii fără niciun buton și fără explicație; „Raportează” fără iconiță (cheia `report`, scoasă în v2.7); Pachete cu „Caută firma” + listă pentru aceeași alegere. Gărzi: `MOTIV_DREPT_ABSENT`, `ICOANA_INEXISTENTA`, `ALEGERE_FIRMA_DUBLA` (verificator).
 
 **v2.65 (04.10.2026)** — **cap.10: mesajul de eroare de la server se escapează în HTML.** Găsit la confirmările de drepturi (comanda Costin, pct.1/2/5): 13 interpolări `${e.mesaj}` / `${err.mesaj}` neescapate în șabloane HTML (portal 7, firme 3, cabinet, facturi, Woo) — un mesaj care citează un nume tastat cu `<` devenea marcaj. Reparate toate; gard `MESAJ_SERVER_NEESCAPAT` (verificator).

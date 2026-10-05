@@ -1464,6 +1464,18 @@ for _cerinta, _rx in (("zona include .fereastra-corp", r'ZONA_MOTIV\s*=\s*"[^"]*
     if not re.search(_rx, _dr_t):
         rap["motiv_drept_absent"].append(("drepturi.js", 0, "drept-motiv", "lipseste: %s (DS cap.9 v2.66)" % _cerinta))
 
+# --- PASTRARE_FORMULAR (DS cap.3 v2.67, comanda Costin 05.10.2026 pct.1): „un contabil nu pierde niciodată ce a completat”.
+#     Gardianul cere mecanismele care fac asta: navigatorul păstrează ecranul în care s-a tastat (`_dePastrat` la deschide și
+#     mergi, `replaceWith(pastrat.corp)` la revenire); api.js reautentifică peste ecran (`ceraReautentificare`) în loc de
+#     `sesiune.iesi()` la 401. Comportamentul îl probează `frontend_test/proba_fara_pierdere.py`. Mutația care o probează:
+#     `_dePastrat()` scos din `deschide` -> TOTAL > 0.
+rap["pastrare_formular"] = []
+for _fis, _cerinta, _rx, _n in (("navigator.js", "păstrarea la deschide și mergi", r"_dePastrat\(\)", 3),
+                                ("navigator.js", "revenirea pune ecranul la loc", r"replaceWith\(pastrat\.corp\)", 1),
+                                ("api.js", "401 cu sesiune -> reautentificare peste ecran", r"await ceraReautentificare\(\)", 1)):
+    if len(re.findall(_rx, fisiere.get(_fis, ""))) < _n:
+        rap["pastrare_formular"].append((_fis, 0, "PASTRARE_FORMULAR", "lipseste: %s (DS cap.3 v2.67)" % _cerinta))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

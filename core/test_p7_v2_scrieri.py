@@ -221,7 +221,10 @@ def test_numarul_de_instructiuni_se_conserva():
     #   (o adresă cu alt rol se refuză pe câmp, firma nu se mai creează pe jumătate). Pas NOU, citire, nu SQL mutat.
     #   (În `asistent_creeaza`, `id_si_activ_dupa_email` -> `contul_dupa_email` și `creeaza_cont_de_client` ->
     #   `creeaza_cont_asistent` sunt ÎNLOCUIRI unu-la-unu, nu apeluri în plus.)
-    assert _apeluri_catre_repository() == 279
+    # [fluxul de factură F1, comanda Costin 05.10.2026 pct.1a] 279 -> 280, cu apelul numit:
+    #   repo_main.select_u (uc_auth.reinnoieste) — reînnoirea sesiunii verifică `sesiuni_valide_de` ca garda de cabinet
+    #   (o sesiune invalidată de schimbarea parolei nu primește token nou). Pas NOU, citire, nu SQL mutat.
+    assert _apeluri_catre_repository() == 280
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -1429,3 +1429,18 @@ emailul (și previzualizarea) arată cifrele pachetului, iar „Trimite” spune
 **Găsite pe drum:** un rezultat zero apărea „(profit)” în pachet; administratorul de pe producție avea „Poate valida” scos din ecran,
 deci nu era numărat printre validatori (repus, regula B3 din 06.08); contrast insuficient pe pastilele de drepturi și pe griurile din
 email.
+
+## 05.10.2026 — Fluxul de factură pe F1 (A): ce s-a completat nu se mai pierde (comanda Costin, pct.1)
+
+**Cauzele, din jurnale:** Ana s-a logat pe 04.10 la 11:29:34; tokenul ține 24 h și nu se reînnoia cât lucra, deci a expirat pe 05.10
+la 11:29:34; prima cerere de după (căutarea cotei pentru linia facturii) a primit 401, iar aplicația a trimis-o la logare, golind
+factura. Serverul nu repornise. A doua pierdere: după refuzul emiterii (lipsea forma juridică), „Deschide Date firmă” -> „Înapoi”
+redesena factura de la zero, deși mesajul promitea că rămâne.
+
+**Ce s-a făcut:** sesiunea se reînnoiește singură cât se lucrează; dacă totuși expiră, parola se cere într-o fereastră peste ecran,
+iar cererea refuzată se reia; navigatorul păstrează orice ecran în care s-a tastat ceva când se deschide altul peste el; anunțul de
+versiune nouă nu reîncarcă peste un formular început.
+
+**Proba (browser, asistent, baza de test):** înainte — la expirare ecranul de logare, factura goală; după Date firmă -> Înapoi,
+factura goală. După — fereastra de reautentificare peste factură, toate câmpurile intacte, cererea reluată (401 -> logare -> 200);
+după Date firmă -> Înapoi, toate câmpurile intacte; o sesiune trecută de jumătate s-a reînnoit singură.

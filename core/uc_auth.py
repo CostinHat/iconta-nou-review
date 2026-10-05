@@ -37,6 +37,28 @@ def login(date):
     return {"token": r["token"], "user": r["user"]}
 
 
+# [comanda Costin 05.10.2026 pct.1a] „un contabil nu pierde niciodată ce a completat — nici la expirarea sesiunii”. Măsurat:
+# tokenul Anei a expirat la 24 h după logare (ICONTA_TOKEN_DURATA_SEC), în mijlocul unei facturi. Sesiunea VIE se reînnoiește
+# cât se lucrează; una expirată, invalidată (parolă schimbată) sau suspendată NU (previzualizarea portalului o refuză deja
+# filtrul global al scrierilor în modul preview).
+MESAJ_REINNOIRE_INVALIDATA = "Sesiune încheiată (parola a fost schimbată). Autentifică-te din nou."
+
+
+def reinnoieste(ctx):
+    """Corpul rutei `/auth/reinnoieste`: un token nou, cu aceleași drepturi, pentru o sesiune încă validă."""
+    from core import repo_main
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            r = repo_main.select_u(cur, ctx)
+        if r and r[1] is not None and ctx.get("iat") is not None and ctx["iat"] < r[1]:
+            raise _erori.Neautentificat(MESAJ_REINNOIRE_INVALIDATA)
+        s = auth_api.sesiune_pentru_user(conn, ctx["uid"])
+        conn.rollback()
+    if not s.get("ok"):
+        raise _erori.Neautentificat(s.get("mesaj") or "sesiune invalidă")
+    return {"token": s["token"], "user": s["user"]}
+
+
 def register(date):
     """[P7 · use-case] Corpul rutei `/auth/register`; docstringul ei a ramas in stratul HTTP."""
     if not date.accept_termeni:  # [termeni_v1] fara bifa -> contul NU se creeaza (gard pe backend, nu doar JS)

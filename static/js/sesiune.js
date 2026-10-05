@@ -72,6 +72,14 @@ export const sesiune = {
     _anunta();
   },
 
+  // [comanda Costin 05.10.2026 pct.1a] token nou pentru ACEEAȘI sesiune (reînnoire sau reautentificare peste ecran): FĂRĂ
+  // `_anunta()` — un anunț ar redesena aplicația (`app.js: sesiune.laSchimbare(randeaza)`) și ar pierde exact ecranul pe care
+  // reînnoirea îl apără.
+  reinnoieste(token, user) {
+    sessionStorage.setItem(CHEIE_TOKEN, token);
+    if (user) sessionStorage.setItem(CHEIE_USER, JSON.stringify(Object.assign({}, _user() || {}, user)));
+  },
+
   // șterge sesiunea (logout sau token expirat)
   iesi() {
     if (sessionStorage.getItem(CHEIE_PV_TOKEN)) {  // [F-preview] logout in preview = curata cheile PV + inchide tab

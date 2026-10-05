@@ -3,9 +3,9 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=91e1c0701a";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=19439de672";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
-import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { sesiune } from "../sesiune.js?v=416ae1edca";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import { randeazaListaFirme } from "./firme.js?v=8e81ab26fc";
 import { randeazaMigrare } from "./migrare.js?v=b059f0d009";

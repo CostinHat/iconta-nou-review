@@ -1,8 +1,8 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=91e1c0701a";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
-import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=19439de672";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=4205d3e8b0";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=e871a4dc54";

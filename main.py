@@ -1340,6 +1340,14 @@ def _login_reset(email):
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+@app.post("/auth/reinnoieste")
+# [comanda Costin 05.10.2026 pct.1a] sesiunea vie se reînnoiește cât se lucrează (tokenul expira la 24 h, în mijlocul facturii).
+def auth_reinnoieste(ctx=Depends(cere_context)):
+    try:
+        return _uc_auth.reinnoieste(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
 @app.post("/auth/login")
 def login(date: LoginIn):
     try:

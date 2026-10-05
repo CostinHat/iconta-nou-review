@@ -810,6 +810,32 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
        cu povestea goală „Trimite” inactiv cu motiv vizibil lângă butoane; `pregateste` refuză numit povestea goală.
     8. gărzi + mutații + proba în browser pe contul de asistent (înainte/după) + unelte vizuale + registre + poartă + four-way + oglindă.
 
+- fir: **TESTAREA FLUXULUI DE FACTURĂ PE F1 (comanda Costin 05.10.2026)** — vânzare -> stoc -> încasare, Ana pregătește, cabinetul
+  validează; 13 puncte, în ordinea priorității date (verbatim în DECIZII 05.10.2026). Se livrează în 4 commituri (A–D), fiecare cu
+  poartă, four-way, oglindă; ZIP la final: `/home/costin/ghid_incoming/iconta_testare_factura_F1.zip`.
+  - ultim: A1–A3 (commitul „Fluxul de factură pe F1 (A) …”)
+  - urmator: pasul B (pct.2–5). STARE = IN LUCRU
+  - pasi:
+    A1. (pct.1a, cauza stabilită din `uvicorn.log` + `audit_log`) tokenul Anei expirase: logare 04.10 11:29:34, durată 86400 s, primul
+        401 la ~11:30 (`POST /tenants/105779/produse/potriveste`), relogare 11:31:47; `api.js` la 401 făcea `sesiune.iesi()` ->
+        ecranul pierdut. Reparație: `POST /auth/reinnoieste` (token nou pentru sesiunea vie; refuz pe token de previzualizare) +
+        reînnoire proactivă în `api.js` când tokenul trece de jumătatea duratei; la 401 cu sesiune, autentificarea se cere PESTE
+        ecran (același email), iar cererea se reia — ecranul rămâne.
+    A2. (pct.1b) navigatorul redesena fereastra de la zero la „Înapoi”: o fereastră/un pas cu ce s-a tastat (`input`/`change`) își
+        păstrează elementul `.fereastra-corp` cu tot cu stare când se merge în altă fereastră, și îl pune la loc la revenire
+        (eveniment `nav:revenire` pentru reîmprospătări). Anunțul „versiune nouă” nu reîncarcă peste un formular început.
+        Mesajul de la refuzul emiterii devine adevărat; căutare pe clasă: alte mesaje care promit păstrarea.
+    A3. gărzi (server: reînnoirea; static: navigatorul păstrează, `api.js` nu iese la 401 cu sesiune) + mutații + proba în browser
+        (token expirat în mijlocul unei facturi; Date firmă -> Salvează -> înapoi) + unelte vizuale + registre + commit A.
+    B.  (pct.2–5) emiterea: Date firmă verificate la deschidere + forma juridică din ANAF/denumire; cota TVA corectabilă, consemnată
+        (propus -> ales, cine, când); data emiterii, scadența (în scadențar) și seria pe formular; PDF conform CF art.319 alin.(20)
+        (RO la codul TVA, seria, „Data emiterii”, scadența, nume de fișier) — temeiul citat din textul legii. Commit B.
+    C.  (pct.6–9) notele automate poartă documentul (607=371 <- factura, 627=5121 <- extrasul); validarea avertizează pe nota fără
+        document; starea facturii spune adevărul + legătura la notă; mesajele de la bancă exacte, liniile noi primele; linia de
+        factură: cantități/prețuri fără zecimale inutile, cu UM, prețul din nomenclator, semn pentru linia fără articol. Commit C.
+    D.  (pct.10–13) Stocuri: situația stocului întâi, formularele la cerere, Rețete doar HoReCa, confirmarea „Descarcă gestiunea
+        lunii” fără dublă descărcare; fereastra firmei grupată (o sursă, DS + verificator); răspuns la pct.12; ZIP. Commit D.
+
 ---
 
 ## Implementarea modelului de temei (01.08)

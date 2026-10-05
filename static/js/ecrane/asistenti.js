@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp } from "../api.js?v=91e1c0701a";  /* audit_cab_lot2_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp } from "../api.js?v=19439de672";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina

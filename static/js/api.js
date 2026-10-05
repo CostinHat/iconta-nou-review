@@ -2,7 +2,8 @@
 // Atașează automat token-ul (Bearer), tratează erorile uniform.
 // Origin relativ: FastAPI servește și frontendul, și API-ul.
 
-import { sesiune } from "./sesiune.js?v=5d142951c9";
+import { sesiune } from "./sesiune.js?v=416ae1edca";
+import { ceraReautentificare } from "./reautentificare.js?v=d92049fa3e";  // [05.10.2026] 401 cu sesiune = parola peste ecran
 
 // [cap1_feedback_async_v1] Design System cap.1: butonul declansator se dezactiveaza
 // automat pe durata oricarei actiuni asincrone. Textul devine "Se lucreaza..." si se
@@ -67,24 +68,56 @@ function _mesajEroare(status, date) {
   if (status === 502 || status === 503 || status === 504) return "serverul e temporar indisponibil — reîncearcă în câteva momente";
   return "eroare " + status;
 }
+// [comanda Costin 05.10.2026 pct.1a] UN singur drum pentru orice cerere cu sesiune: (1) tokenul trecut de jumătatea duratei se
+// reînnoiește înainte (`POST /auth/reinnoieste`, o dată pentru toate cererile simultane); (2) la 401 cu sesiune, parola se cere
+// PESTE ecran (`reautentificare.js`) și cererea se reia o dată. `sesiune.iesi()` — care redesena aplicația și pierdea ecranul — se
+// face numai dacă omul alege „Ieși din cont”. Gard: `core/test_sesiune_fara_pierdere.py`.
+let _reinnoireInCurs = null;
+function _payloadToken(t) {
+  try {
+    const b = String(t).split(".")[0].replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(b + "===".slice((b.length + 3) % 4)));
+  } catch { return null; }
+}
+async function _reinnoiesteDacaTrebuie() {
+  const t = sesiune.token();
+  if (!t || sesiune.estePreview()) return;
+  const p = _payloadToken(t);
+  if (!p || !p.exp || !p.iat) return;
+  const acum = Date.now() / 1000;
+  if (acum < p.iat + (p.exp - p.iat) / 2 || acum >= p.exp) return;   // nu încă / deja expirat (îl prinde 401)
+  if (!_reinnoireInCurs) {
+    _reinnoireInCurs = fetch("/auth/reinnoieste", { method: "POST", headers: { Authorization: "Bearer " + t } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d && d.token) sesiune.reinnoieste(d.token, d.user); })
+      .catch(() => {})
+      .finally(() => { _reinnoireInCurs = null; });
+  }
+  await _reinnoireInCurs;
+}
+async function _cuSesiune(trimite) {   // trimite(token) -> Promise<Response>
+  await _reinnoiesteDacaTrebuie();
+  const token = sesiune.token();
+  const r = await trimite(token);
+  if (r.status !== 401 || !token) return r;
+  if (!sesiune.estePreview() && await ceraReautentificare()) return trimite(sesiune.token());
+  sesiune.iesi();
+  throw { cod: 401, mesaj: "sesiune expirată, autentifică-te din nou" };
+}
+
 async function _cere(metoda, cale, corp) {
   const optiuni = {
     method: metoda,
     headers: { "Content-Type": "application/json" },
   };
-  const token = sesiune.token();
-  if (token) optiuni.headers["Authorization"] = "Bearer " + token;
   if (corp !== undefined) optiuni.body = JSON.stringify(corp);
-
-  const r = await fetch(cale, optiuni);
-
-  // 401 = token invalid/expirat -> deconectare curată. DOAR daca aveam sesiune (token trimis):
-  // /auth/login intoarce legitim 401 la credentiale gresite, iar acolo NU e sesiune de expirat -
-  // iesi() ar re-randa ecranul si ar inghiti mesajul real ("email sau parola gresite"). [login_401_v1]
-  if (r.status === 401 && token) {
-    sesiune.iesi();
-    throw { cod: 401, mesaj: "sesiune expirată, autentifică-te din nou" };
-  }
+  // 401 DOAR cu sesiune (token trimis) e o sesiune expirată: /auth/login întoarce legitim 401 la credențiale greșite, iar
+  // acolo mesajul real („email sau parola greșite") trebuie să ajungă la om. [login_401_v1]
+  const r = await _cuSesiune((token) => {
+    const h = Object.assign({}, optiuni.headers);
+    if (token) h["Authorization"] = "Bearer " + token;
+    return fetch(cale, Object.assign({}, optiuni, { headers: h }));
+  });
 
   let date = null;
   try { date = await r.json(); } catch { date = null; }
@@ -173,16 +206,14 @@ function _refuzNevazut(eroare, metoda) {
 export async function cereBlob(cale, optiuni = {}) {
   const metoda = optiuni.metoda || "GET";
   const antete = {};
-  const token = sesiune.token();
-  if (token) antete["Authorization"] = "Bearer " + token;
   let corp;
   if (optiuni.formData !== undefined) corp = optiuni.formData;   // multipart: boundary automat
   else if (optiuni.corp !== undefined) { antete["Content-Type"] = "application/json"; corp = JSON.stringify(optiuni.corp); }
-  const r = await fetch(cale, { method: metoda, headers: antete, body: corp });
-  if (r.status === 401 && token) {   // acelasi tratament ca in `_cere`
-    sesiune.iesi();
-    throw { cod: 401, mesaj: "sesiune expirată, autentifică-te din nou" };
-  }
+  const r = await _cuSesiune((token) => {   // același drum ca `_cere`
+    const h = Object.assign({}, antete);
+    if (token) h["Authorization"] = "Bearer " + token;
+    return fetch(cale, { method: metoda, headers: h, body: corp });
+  });
   if (!r.ok) {
     let date = null;
     try { date = JSON.parse(await r.text()); } catch { date = null; }   // corpul e JSON chiar cand raspunsul „bun" ar fi fost binar
@@ -224,15 +255,9 @@ async function cereForm(cale, formData) {
   } finally { deblocheaza(); }
 }
 async function _cereForm(cale, formData) {
-  const optiuni = { method: "POST", headers: {} };  // NU setam Content-Type (boundary auto)
-  const token = sesiune.token();
-  if (token) optiuni.headers["Authorization"] = "Bearer " + token;
-  optiuni.body = formData;
-  const r = await fetch(cale, optiuni);
-  if (r.status === 401 && token) {  // [login_401_v1] doar cu sesiune (vezi _cere)
-    sesiune.iesi();
-    throw { cod: 401, mesaj: "sesiune expirată, autentifică-te din nou" };
-  }
+  // NU setam Content-Type (boundary auto); același drum cu sesiune ca `_cere` [login_401_v1]
+  const r = await _cuSesiune((token) => fetch(cale, { method: "POST", body: formData,
+                                                       headers: token ? { Authorization: "Bearer " + token } : {} }));
   let date = null;
   try { date = await r.json(); } catch { date = null; }
   if (!r.ok) {

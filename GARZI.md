@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**687 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**688 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 652
+### `core/` — 653
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9394,6 +9394,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_secrete_jwt.py` — Teste securitate JWT — default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile).
 - `core/test_selector_vector.py` — S1 + #2 (plimbare 14.08.2026): selectorul de declaratii respecta vectorul TVA si periodicitatea firmei.
 - `core/test_separa_cui.py` — [Regula 4 + Regula 14.4] GARD: intrarile care nu-s CUI NU dispar in tacere la validarea la ANAF.
+- `core/test_sesiune_fara_pierdere.py` — GARD — un contabil nu pierde ce a completat (comanda Costin 05.10.2026, pct.1).
 - `core/test_set_bifa_nu_se_striveste.py` — GARD: căsuța unei bife cu etichetă (`.set-bifa`, DS v2.11) nu se strivește sub dimensiunea ei (02.10.2026).
 - `core/test_simetrie_denumire.py` — GARD [R81, DECIS 28.08.2026]: denumirea unei firme se scrie în AMÂNDOUĂ locurile sau în niciunul.
 - `core/test_smoke_duk.py` — SMOKE-SWEEP DUK (01.08.2026) — gardul care lipsea: fiecare declaratie generata cu date
@@ -10183,3 +10184,15 @@ iconiță goală; control dublu) + **fiscal-narativ** (termenii poveștii lunii)
 | bifele administratorului nu se schimbă | `::test_bifele_administratorului_nu_se_schimba` | administrator cu un drept scos (afișat fără el, nenumărat printre validatori) | refuzul `ADMIN_TOATE_DREPTURILE` scos -> roșu | datele deja derivate se normalizează cu `core/migrare_b3_drepturi_owner.py` (rulat pe producție 05.10) |
 | cheia de iconiță există | verificator `ICOANA_INEXISTENTA` (DS cap.13) | `svg(cheie)` care desenează gol | `icon: "report"` repus -> TOTAL 1 | cheile scrise literal; o cheie calculată nu se vede |
 | un singur control pentru firmă | verificator `ALEGERE_FIRMA_DUBLA` (DS cap.6) | „Caută firma” + „— alege firma —” în același ecran | câmpul de căutare repus -> TOTAL 1 | aceeași formulare a etichetelor |
+
+## 05.10.2026 — Ce s-a completat nu se pierde: sesiune reînnoită, reautentificare peste ecran, navigatorul păstrează ecranul (comanda Costin, pct.1)
+
+Categoria **11. Interfață** (pierdere de lucru). Cauzele, din jurnale: DECIZII 05.10.2026 („Fluxul de factură pe F1”).
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| reînnoirea numai pentru sesiunea vie | `core/test_sesiune_fara_pierdere.py::test_sesiunea_vie_se_reinnoieste…`, `::test_sesiunea_expirata_invalidata…` | token nou pentru o sesiune expirată sau invalidată (parolă schimbată) | verificarea `sesiuni_valide_de` scoasă -> roșu | previzualizarea e refuzată de filtrul global al modului preview, nu de rută |
+| un singur drum pentru cererile cu sesiune | `::test_un_singur_drum_pentru_cererile_cu_sesiune` | o cale de cerere care iese din cont la 401 (aplicația redesenată, ecranul pierdut) | forma veche repusă în `cereBlob` -> roșu | structură, nu comportament — comportamentul: `frontend_test/proba_fara_pierdere.py` |
+| reînnoirea nu redesenează | `::test_reinnoirea_nu_redeseneaza_aplicatia` | `_anunta()` la schimbarea tokenului | `_anunta()` repus -> roșu | — |
+| navigatorul păstrează ecranul tastat | `::test_navigatorul_pastreaza…`, `::test_mesajul_care_promite_pastrarea…` + verificator `PASTRARE_FORMULAR` (DS cap.3 v2.67) | factura (orice formular) golită la revenirea din altă fereastră; un mesaj care promite păstrarea fără mecanism | `_dePastrat()` scos din `deschide` -> 2 roșii + TOTAL 1 | păstrarea ține cât trăiește tabul; o reîncărcare manuală a paginii nu e acoperită (butonul „versiune nouă” nu reîncarcă peste un formular început) |
+| versiunea nouă nu reîncarcă peste formular | `::test_versiunea_noua_nu_reincarca…` | reîncărcarea la un clic pe anunț cu formular început | reîncărcarea mutată înainte de verificare -> roșu | — |

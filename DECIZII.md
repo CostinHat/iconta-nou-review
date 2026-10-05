@@ -16888,3 +16888,50 @@ inactiv cu motiv.”*
    de la server). Alternativa respinsă: un mesaj scris în fiecare ecran (ar rata ecranele viitoare).
 5. **Alegerea firmei = un singur `<select>`**, forma deja folosită la Declarații (pasul 1, același tipar `dec-form`).
 
+## 05.10.2026 — Fluxul de factură pe F1: nimic completat nu se pierde; emiterea, PDF-ul, notele automate, banca, stocul, fereastra firmei (comanda Costin)
+
+**Comanda (verbatim):** *„1. Pierdere de lucru, de două ori: a) 11:30–11:33 Ana a fost scoasă la login în timp ce completa o factură;
+la revenire formularul era gol. Serverul nu a repornit atunci (RUNNING a pornit la 12:14:58), deci cauza e alta — stabilește-o din
+jurnale; b) 11:47 emiterea a fost refuzată (lipsă formă juridică), mesajul promitea „factura rămâne așa cum ai scris-o”, dar după
+Deschide Date firmă → Salvează → înapoi, formularul era gol. Decizia: un contabil nu pierde niciodată ce a completat — nici la
+expirarea sesiunii, nici la publicare, nici când e trimis să completeze altceva. Se aplică tuturor formularelor; un mesaj nu promite
+ce aplicația nu face. 2. Datele firmei care blochează emiterea (formă juridică, capital) se verifică la deschiderea „Emite factură”,
+nu după completarea întregului formular. Forma juridică se precompletează din ANAF / denumire unde e neechivocă. 3. Cota TVA pe
+linie: se propune corect, dar nu se poate schimba, deși ecranul spune că răspunderea e a contabilului. Decizia: contabilul poate
+corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când). 4. Formularul de factură nu arată data emiterii, scadența și
+seria (doar „Număr: 2”). Contabilul trebuie să le vadă și să le poată stabili; scadența alimentează scadențarul. 5. PDF-ul facturii
+față de CF art. 319 alin. (20): codul de TVA al beneficiarului (și al furnizorului, când e plătitor) apare ca „CUI 14399840”, fără RO
+(lit. d, f); lipsește seria (lit. a); data apare ca „Emisă - 05.10.2026”, ca o stare, nu ca „Data emiterii”; fără scadență; fișierul
+se deschide ca „(anonymous)”, fără nume. 6. Note generate automat fără document: descărcarea din stoc la emitere (607=371) și
+comisionul bancar din extras (627=5121) apar „Document justificativ: nederivat” și sunt numărate de aplicație ca note fără document,
+deși documentul există (factura, respectiv extrasul). Orice notă generată automat poartă documentul care a generat-o. În plus,
+validarea unei note fără document justificativ trece fără niciun avertisment — validatorul trebuie să vadă lipsa înainte să apese.
+7. Detaliul facturii afișează „contabilizată” cât timp nota e ciornă. Starea spune adevărul (ex. „notă propusă, de validat”), iar din
+factură se ajunge la nota ei. 8. Mesaje false la bancă: după import, „2 linii importate și potrivite” când una era fără match; după
+contare, „Nota 401=5121 — 0 înregistrări create” deși s-a creat 627=5121. Mesajul spune exact ce s-a întâmplat. Liniile noi ale
+extrasului apar primele, nu sub cele vechi. 9. Linia de factură și cantitățile: „stoc 110.000” / „x2.000” / „CMP 50.0000” — cantități
+și prețuri cu zecimale în exces și fără unitate; prețul din nomenclator nu se precompletează; unitatea de măsură lipsește de pe linia
+formularului (apare doar pe PDF); o linie „fără articol” pe o firmă cu stoc trece fără niciun semn că marfa nu se descarcă. 10. Ecranul
+Stocuri nu arată nicăieri situația stocului (soldul se vede doar în lista derulantă). Decizia: ecranul se deschide cu situația stocului
+(articol, UM, cantitate, CMP, valoare), formularele (NIR, mișcări, coduri, nivel minim) stau sub ea, la cerere; Rețete apare doar la
+firmele HoReCa. Confirmă în raport că „Descarcă gestiunea lunii” nu descarcă a doua oară marfa descărcată deja la emiterea facturii.
+11. Fereastra unei firme: cele peste 20 de carduri se grupează sub câteva titluri care urmează munca contabilului (orientativ: Zilnic ·
+Registre · Raportări și declarații · Operațiuni speciale; împărțirea o stabilești tu). Fără arbore în fereastra firmei. Un titlu fără
+niciun card vizibil (drepturi, regim SRL/PFA) nu apare. O singură sursă pentru grupuri; regula intră în Design System și în
+verificator. 12. Confirmă în raport dacă e voit ca un asistent cu „Poate pregăti” să modifice Date firmă (formă juridică, capital).
+13. La final: ZIP cu tot ce s-a schimbat, la /home/costin/ghid_incoming/iconta_testare_factura_F1.zip, cu calea în raport.”*
+
+**Cauza pct.1a (din jurnale, nu presupusă):** `uvicorn.log` — `POST /tenants/105779/produse/potriveste` 200, apoi la următoarea
+cerere 401, apoi `POST /auth/login` 200; `audit_log` — logarea anterioară a Anei: 04.10.2026 11:29:34, următoarea 05.10.2026
+11:31:47; `ICONTA_TOKEN_DURATA_SEC=86400`. Tokenul a expirat la 24 h de la logare, în timp ce lucra; `api.js` trata orice 401 cu
+sesiune prin `sesiune.iesi()`, care redesenează aplicația de la zero. Serverul nu repornise.
+**Cauza pct.1b:** navigatorul (`randeazaFerestre`) redesena fereastra de la zero la „Înapoi”; nimic din ce s-a tastat nu supraviețuia
+unei ferestre deschise peste. Mesajul de refuz promitea păstrarea fără ca vreun mecanism s-o facă.
+
+**Consecințe (executor) — completate pe măsură ce se livrează (A–D):**
+1. Sesiunea se reînnoiește cât se lucrează (`POST /auth/reinnoieste`); expirarea rămâne (un tab uitat expiră), dar nu mai scoate
+   omul din ecran: autentificarea se cere peste ecran, cu același email, și cererea se reia. Alternativa respinsă: o durată mai
+   lungă — mută problema, n-o rezolvă.
+2. Păstrarea e în navigator, nu în fiecare formular: orice fereastră în care s-a tastat ceva își păstrează starea când se deschide
+   alta peste ea. Alternativa respinsă: ciorne scrise ecran cu ecran (ar rata formularele viitoare — exact ce cere „tuturor”).
+

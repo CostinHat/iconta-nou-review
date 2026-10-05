@@ -1,20 +1,19 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **nicio comandă deschisă; testarea ca asistent (2) livrată** (05.10.2026)
+# PREDARE LANȚ — **comandă DESCHISĂ: fluxul de factură pe F1 (13 puncte), A livrat, B–D de făcut** (05.10.2026)
 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-05**, parțială (secțiunile de mai jos). Rescrierea COMPLETĂ de dinainte: `git show a3210e08:PREDARE_LANT.md`.
-- **pe commit**: `8c3cfe95` — four-way închis la intrarea turei; commitul care poartă această linie livrează **testarea ca asistent (2)**
-  (povestea lunii pe termenii pachetului, aprobarea/trimiterea la „Poate valida”, motivul acțiunilor ascunse, administratorul cu toate
-  drepturile, iconițe, un singur control pentru firmă, cifrele în email). Secțiunile atinse acum: ANTET, STAREA, DECIZII ÎN VIGOARE,
-  ATENȚIONĂRI, CE CERE POARTA.
+- **pe commit**: `2eead087` la intrarea turei; commitul care poartă această linie livrează **A** din comanda „fluxul de factură pe F1”
+  (pct.1: sesiune reînnoită, reautentificare peste ecran, navigatorul păstrează ecranul tastat). Secțiunile atinse acum: ANTET,
+  STAREA, FRONTURI, ATENȚIONĂRI, CE CERE POARTA.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**Nu există nicio comandă deschisă.** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
+**Comandă deschisă: fluxul de factură pe F1 (Costin, 05.10.2026, 13 puncte) — firul și pașii B–D în TESTE.md („TESTAREA FLUXULUI DE FACTURĂ PE F1”), hărțile de cod în scratchpad-ul turei (harta_*.md, copiate în ZIP la final).** Comanda Costin din 03.10 (patru puncte) și deciziile din 04.10 sunt livrate, fiecare cu poartă
 completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 
 | ce | commit | ZIP |
@@ -28,7 +27,8 @@ completă, four-way și ZIP în `/home/costin/ghid_incoming/`:
 | **testarea ca asistent**: drepturile pe rol și bifă (`cere_drept`, decizia „varianta 2”), interfața care urmează serverul (`data-actiune`), refuzul lângă buton, emailul clientului verificat înainte de creare, X + Esc pe ferestrele informative, ghidul pe rol, contorul Asistenți, fără „48 de ore” | `63c04a95` · `f76ce94b` · `728ce107` | `iconta_testare_asistent.zip` |
 | **confirmările de drepturi**: fluturașul / PDF-ul chitanței / poza bonului la „Poate pregăti” (R52 răsturnat), regimul de TVA jurnalizat (`firma_profil_jurnal`), REGES la „Poate depune”; pe drum: sonda R56 precisă, 18 butoane de intrare marcate, 13 mesaje escapate | `5c086563` | `iconta_drepturi_confirmari.zip` |
 | **secretele scoase din git**: contabil.b resetat (citit din `fe_test.env`), seed-urile din `SEED_CABINET_PAROLA`, parola bazei de producție rotită, tabelul de conturi golit, gard + scanner reparat | `8c3cfe95` | — (fără ZIP: comanda nu l-a cerut) |
-| **testarea ca asistent (2)**: termenii poveștii verificați după generare, `POST /pachete/{id}/poveste/aproba` („Poate valida”), trimiterea la „Poate valida”, nota de motiv din poarta drepturilor, administratorul = toate drepturile (producția normalizată B3), iconițe, un `<select>` pentru firmă, cifrele în email | commitul care poartă linia | — (comanda primită tăiată după „commit,”) |
+| **testarea ca asistent (2)**: termenii poveștii verificați după generare, `POST /pachete/{id}/poveste/aproba` („Poate valida”), trimiterea la „Poate valida”, nota de motiv din poarta drepturilor, administratorul = toate drepturile (producția normalizată B3), iconițe, un `<select>` pentru firmă, cifrele în email | `2eead087` | — (comanda primită tăiată după „commit,”) |
+| **fluxul de factură F1 — A** (pct.1): sesiune reînnoită (`POST /auth/reinnoieste`), reautentificare peste ecran cu reluarea cererii, navigatorul păstrează ecranul tastat, „versiune nouă” nu reîncarcă peste formular | commitul care poartă linia | la final, `iconta_testare_factura_F1.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
 aplicației**, nu „în așteptarea unei teme”:
@@ -51,6 +51,10 @@ aplicației**, nu „în așteptarea unei teme”:
   acces programatic — **[EXTERN]**.
 - **Contul Ana din producție**: toate bifele pe „nu”; „Poate pregăti” i-l bifează Costin din Asistenți (decizia 04.10, pct.6 — datele ei
   nu se ating din cod).
+- **Fluxul de factură pe F1 — B, C, D** (pct.2–13): de făcut, în ordinea din TESTE.md. Defecte găsite de hărți și încă nereparate
+  (intră în C): contarea unei linii de bancă pe nota propusă suprascrie legătura notei (`reconciliere_api.conteaza`), filtrul pe stare al
+  extrasului nu întoarce nimic (`noua` vs `nou`), seria dublată în textul documentului justificativ și în bancă; în D: „Descarcă
+  gestiunea lunii” nu are gardă la a doua rulare.
 - **Restul restanțelor**: numărul se DERIVĂ (`scripts/raport_b.py`, `scripts/scan_ramas.py`), nu se scrie aici.
 
 ## DECIZII ÎN VIGOARE care schimbă cum se lucrează (detaliul în DECIZII.md)
@@ -107,6 +111,10 @@ aplicației**, nu „în așteptarea unei teme”:
 - **Un mesaj de eroare de la server pus într-un șablon HTML trece prin `esc()`** (verificator `MESAJ_SERVER_NEESCAPAT`).
 - **Poarta drepturilor pune singură motivul** (`.drept-motiv`) în fereastra unde ascunde acțiuni; un ecran care își scrie propriul mesaj
   îi dă clasa `drept-motiv`. `GET /eu/drepturi` întoarce și `motive` + `nume_niveluri`.
+- **Un 401 cu sesiune NU mai iese din cont**: `api.js` cere parola peste ecran și reia cererea (`_cuSesiune`); o probă care vrea să vadă
+  ecranul de logare la token expirat trebuie să apese „Ieși din cont”. Tokenul trecut de jumătatea duratei se reînnoiește singur.
+- **Navigatorul păstrează ecranul tastat** (`.fereastra-corp` + `nav:revenire`): un ecran care trebuie să-și reîmprospăteze datele la
+  revenire ascultă `nav:revenire`, nu se bazează pe redesenare.
 - **Bifele administratorului nu se mai editează** (`ADMIN_TOATE_DREPTURILE`); toate trei sunt adevărate (B3).
 - **Nicio parolă / cheie în fișiere urmărite** (gard `core/test_fara_secrete_in_git.py`, trei trepte). Contul de cabinet al uneltelor
   din `frontend_test` = `contabil.b@sesiuneab.test` pe PRODUCȚIE (8010), din `~/.iconta/fe_test.env`, citit prin

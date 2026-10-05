@@ -2832,3 +2832,18 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
    (3.86 pe alb) fără subliniere, iar textul din jur #5b6573. */
 .pagina-subsol { color: #3a4250; }
 .pagina-subsol a { color: #2f6fa6; text-decoration: underline; }
+
+/* [comanda Costin 05.10.2026 pct.1a] reautentificarea PESTE ecran (static/js/reautentificare.js): deasupra oricărei ferestre de
+   lucru (z-index peste .fereastra-overlay), ca ecranul de dedesubt să rămână neatins. Același overlay ca DS cap.9. */
+.reaut-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(20, 30, 45, 0.55);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.reaut {
+  width: 100%; max-width: 420px; background: #fff; border-radius: var(--raza);
+  box-shadow: 0 12px 48px rgba(20, 30, 45, 0.25); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px;
+}
+.reaut-cap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.reaut-titlu { margin: 0; font-size: var(--text-sectiune); }
+.reaut-bara { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }

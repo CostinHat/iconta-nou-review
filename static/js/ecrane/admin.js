@@ -2,8 +2,8 @@
 // Spatiu separat de cabinet: doar functiile de administrare iConta.
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
-import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js?v=91e1c0701a";
+import { sesiune } from "../sesiune.js?v=416ae1edca";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js?v=19439de672";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=7231675652";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=db921cefb0";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=aa317fad50";

@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js?v=91e1c0701a";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js?v=19439de672";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -16,7 +16,7 @@ function _consumaMigMesaj(corp) {
   arataMesaj(z, _migMesaj, "ok");
   _migMesaj = "";
 }
-import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] meniul de import fără niciun pas permis spune de ce */
 
 // [drepturi_rol 04.10.2026] `actiune` = ruta care FACE pasul (METODĂ /cale, ca în main.py). Ghidul de bun venit

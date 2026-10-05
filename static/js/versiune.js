@@ -54,7 +54,15 @@ function nodAnunt() {
   b.setAttribute("aria-label", b.title);
   b.innerHTML = '<span class="versiune-noua-punct" aria-hidden="true"></span>'
     + '<span class="versiune-noua-text">Versiune nouă · reîncarcă</span>';
-  b.addEventListener("click", () => window.location.reload());
+  // [comanda Costin 05.10.2026 pct.1] „nici la publicare”: reîncărcarea ar arunca un formular început. Cât timp există unul
+  // (`window._navAreModificari`, din navigator), butonul nu reîncarcă — spune de ce, iar omul reîncarcă după ce termină.
+  const formularInceput = () => typeof window._navAreModificari === "function" && window._navAreModificari();
+  const spuneDeCe = () => {
+    b.querySelector(".versiune-noua-text").textContent = "Termină formularul deschis, apoi reîncarcă";
+    b.title = "Ai un formular început. Reîncărcarea l-ar goli — termină-l (sau închide-l), apoi apasă din nou.";
+    b.setAttribute("aria-label", b.title);
+  };
+  b.addEventListener("click", () => (formularInceput() ? spuneDeCe() : window.location.reload()));
   return b;
 }
 

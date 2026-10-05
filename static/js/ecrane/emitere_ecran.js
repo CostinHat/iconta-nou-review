@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=91e1c0701a";
+import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=19439de672";
 import { randeazaDateFirma } from "./date_firma.js?v=b7b794c09f";  // [lot 19 d12] refuzul capitalului trimite la Date firmă
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {

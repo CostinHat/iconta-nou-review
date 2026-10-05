@@ -141,7 +141,7 @@ def sesiune_pentru_user(conn, user_id, secret=None):
     token = emite_token(u, secret=secret)
     nume_tenant, tenant_are_cabinet = _tenant_client(conn, u)
     return {"ok": True, "token": token,
-            "user": {"id": u["id"], "rol": u["rol"],
+            "user": {"id": u["id"], "rol": u["rol"], "email": u.get("email"),  # [05.10.2026] reautentificarea peste ecran
                      "nume": u.get("nume"), "prenume": u.get("prenume"),
                      "firm": u["accounting_firm_id"],
                      "nume_firma": u.get("nume_firma"),
@@ -183,7 +183,7 @@ def login(conn, email, parola, secret=None):
     # [[p90_client_bara]] pentru client: numele firmei lui (tenant) + daca e gestionat de cabinet
     nume_tenant, tenant_are_cabinet = _tenant_client(conn, u)
     return {"ok": True, "token": token,
-            "user": {"id": u["id"], "rol": u["rol"],
+            "user": {"id": u["id"], "rol": u["rol"], "email": u.get("email"),  # [05.10.2026] reautentificarea peste ecran
                      "nume": u.get("nume"), "prenume": u.get("prenume"),
                      "firm": u["accounting_firm_id"],
                      "nume_firma": u.get("nume_firma"),

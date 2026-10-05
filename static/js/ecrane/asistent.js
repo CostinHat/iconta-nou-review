@@ -12,9 +12,9 @@
 // `core/test_asistent_arbore.py` cere egalitatea, pe structura.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=91e1c0701a";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=19439de672";
 import { semaforCard } from "./semafor.js?v=354d569e4a";  // [p87_asistent]
-import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { sesiune } from "../sesiune.js?v=416ae1edca";
 import { randeazaControl } from "./control.js?v=a7b7e8d52b";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=151165bd7b";
