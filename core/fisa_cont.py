@@ -27,7 +27,7 @@ CE NU FACE, declarat:
 """
 from dataclasses import asdict, dataclass
 from datetime import date as _date
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Optional
 
 from psycopg2.extras import RealDictCursor
@@ -66,7 +66,7 @@ class RandFisa:
 
 
 def _q(x):
-    return Decimal(str(x or 0)).quantize(Decimal("0.01"))
+    return Decimal(str(x or 0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None):

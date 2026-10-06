@@ -31,7 +31,8 @@ RAD = pathlib.Path(__file__).resolve().parent.parent
 from core import scan_sql_efectiv as _efectiv   # noqa: E402
 _MAIN = _efectiv.arbore_aplicatie()
 
-_CAMPURI = {"eticheta", "cont", "fel", "nota", "declaratie", "diferenta", "toleranta"}
+#: `fata_de` (lot 06.10 pct.11): cu ce s-a comparat nota — „D112” sau „netul fluturașilor” (contul 421)
+_CAMPURI = {"eticheta", "cont", "fel", "fata_de", "nota", "declaratie", "diferenta", "toleranta"}
 #: [R33/QQ] `fel` nu e decor: separa un dezacord fiscal real de un cablaj stricat
 _FELURI = {"regresie", "verificare"}
 

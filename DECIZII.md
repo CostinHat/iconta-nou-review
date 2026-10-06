@@ -17143,3 +17143,36 @@ pe toate și publică four-way. Alternativa respinsă: patru commituri pe `main`
 10. **(pct.10) Titluri aprobate nepublicate:** registrul nu are stare „aprobat”. Lotul 19 (441 aprobate): 433 publicate, 7
    „asemănătoare”, **1 aprobat nepublicat: GH-09299**. Lotul 18, lista „candidați blocați” (204): 133 publicate de atunci, 46 încă
    „candidat”, 25 „asemănătoare” — dacă lista aceea era aprobată nu e consemnat nicăieri în depozit.
+
+**Consecințe (executor) — partea 3 (salarii F5 SRL Salariati, octombrie 2026):**
+11. **(pct.11) Fluturașul, nota și D112 din aceleași sume.** Măsurat pe F5 10/2026 (producție, citire): fluturașul CAS
+   1.636,36 / CASS 654,55 / impozit 425,50 -> net 6.810,24; D112 și nota: 1.636 / 655 / 426 -> 421 rămânea cu 6.809,45; CAM
+   259,77 pe cartele vs 260 (cod 480). Acum `calcul_salariu` rotunjește CAS, CASS și impozitul pe salariat ARITMETIC, o singură
+   dată, pe valoarea nerotunjită (`numere.leu_aritmetic`; aceeași regulă ca `d112._d112int`, legate printr-un test de
+   echivalență — `core/d112.py` NU s-a atins, fiindcă orice modificare a lui declanșează pasul D1 din „Contract uniform A1”,
+   decizia Costin 04.10) — temei: structura D112,
+   „Contributiile se rotunjesc aritmetic” (nivel: procedură ANAF) + decizia Costin „aceleași sume care merg în D112”; netul =
+   brut − sumele declarate. Baza impozitului rămâne pe contribuțiile nerotunjite (pct.13). Suprataxarea part-time = ROUND(prag ×
+   cotă) − contribuția reținută (exact B4_8P − B4_8 din D112). **CAM:** pe baza CONTRIBUTIVĂ (OUG 89/2025 art.III alin.(1): „Prin
+   derogare de la … art. 220^4 alin. (1) … pentru suma de … 200 lei/lună … nu se datorează … contribuții sociale obligatorii”
+   — D112 o scădea deja, cartela nu); D112 îl declară pe TOTAL, deci cartela îl ÎMPARTE (resturile cele mai mari, în lei) ca
+   suma cartelelor = codul 480. INTERPRETARE CU TEMEI: legea nu împarte CAM-ul pe salariat; alternativa respinsă — CAM cu bani
+   + o linie de rotunjire — lasă cartelele diferite de D112. **Mesajul:** propunerea notei verifică acum soldul 421 față de
+   netul fluturașilor, LA BAN, fără toleranță (`salarii_contare.control_421`); verdele spune ce s-a verificat („Contul 421 se
+   soldează exact cu netul fluturașilor (X lei)”). Măsurat după: producție 20/20 de luni-firmă soldate; baza de test 41/52 —
+   cele 11 rămase au TOATE concediu medical: nota nu contabilizează indemnizația (423) deloc, dar debitează 421 cu reținerile
+   ei din D112 (vezi §6 din raport). Fluturașii emiși nu se ating (F1–F5 n-au niciun exemplar emis); un exemplar emis vechi
+   apare ca contradicție la `verifica()`, nu se rescrie.
+   **Generalizare (aceeași clasă: rotunjirea):** `quantize(...)` fără mod rotunjea BANCAR (contextul implicit, ROUND_HALF_EVEN)
+   — 65 de apeluri în 24 de fișiere, între ele `_taxe_cm_2018` (CAS pe indemnizația CM: 312,50 -> 312, iar D112 cere 313).
+   Toate au acum `rounding=ROUND_HALF_UP`; gard: `core/test_rotunjire_explicita.py` (niciun `quantize` fără mod).
+12. **(pct.12) STOP — premisa nu se regăsește în cod.** Comanda: „dacă facturile au deja un mecanism de validare, salariile îl
+   folosesc pe același”. Facturile NU au: contorul „pregătite”, Activitate cabinet, notificarea „de validat” și
+   Validează/Respinge citesc EXCLUSIV coada declarațiilor (`public.declaratii_coada`, legată de scadență și depunere); notele
+   (`inregistrari`) n-au autor, n-au respingere și n-au notificare. Decizie cerută (raport §6): extinderea cozii la note sau
+   un mecanism pe note. Nimic construit pe presupunere.
+13. **(pct.13) Temeiul rotunjirii bazei impozitului — CONFIRMAT, fără schimbare de cod.** HG 1/2016 Norme Titlul IV pct.4 (în
+   aplicarea CF art.64): „bazele de calcul al impozitului vor fi stabilite prin rotunjire la un leu, prin neglijarea
+   fracțiunilor de până la 50 de bani inclusiv sau prin majorarea la leu a fracțiunilor ce depășesc 50 de bani”. Elena:
+   4.254,54 -> 4.255 -> 425,50 (declarat 426, pct.11). Codul folosea deja ROUND_HALF_DOWN; gard nou pe cazul 0,50 exact.
+

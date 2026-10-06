@@ -22,7 +22,7 @@ def _suma(nr_ambalaje=None, suma=None):
     if suma is not None:
         s = _d(suma)
     elif nr_ambalaje:
-        s = (GARANTIE_UNITARA * int(nr_ambalaje)).quantize(B)
+        s = (GARANTIE_UNITARA * int(nr_ambalaje)).quantize(B, rounding=ROUND_HALF_UP)
     else:
         raise ValueError("nr_ambalaje sau suma obligatoriu")
     if s <= 0:

@@ -16,17 +16,17 @@ def consum_pe_portii(linii, portii):
     rez = []
     total = Decimal("0")
     for l in linii:
-        cant = (_d(l["cantitate"]) * p).quantize(Decimal("0.001"))
+        cant = (_d(l["cantitate"]) * p).quantize(Decimal("0.001"), rounding=ROUND_HALF_UP)
         val = (cant * _d(l.get("cmp"))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         total += val
         rez.append({"articol_id": l["articol_id"], "cantitate": cant, "valoare": val})
-    return {"linii": rez, "cost_total": total.quantize(Decimal("0.01"))}
+    return {"linii": rez, "cost_total": total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)}
 
 def food_cost(linii, pret_vanzare_fara_tva):
     """Food cost % pe O portie, la CMP curent. None daca pretul e 0."""
     cost = sum((_d(l["cantitate"]) * _d(l.get("cmp")) for l in linii), Decimal("0"))
     pret = _d(pret_vanzare_fara_tva)
     if pret <= 0:
-        return {"cost_portie": cost.quantize(Decimal("0.01")), "food_cost_pct": None}
+        return {"cost_portie": cost.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), "food_cost_pct": None}
     pct = (cost / pret * 100).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
-    return {"cost_portie": cost.quantize(Decimal("0.01")), "food_cost_pct": pct}
+    return {"cost_portie": cost.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), "food_cost_pct": pct}

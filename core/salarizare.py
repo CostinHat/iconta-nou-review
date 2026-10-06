@@ -8,11 +8,12 @@ Conturi salarii (OMFP 1802):
   646 = 436 (CAM angajator) ; 421 = 5121 (plata net)
 """
 from __future__ import annotations
-from decimal import Decimal, ROUND_HALF_DOWN
+from decimal import Decimal, ROUND_HALF_DOWN, ROUND_HALF_UP
 from math import ceil
 
 from core import common as c
 from core.common import _dec, _q
+from core.numere import leu_aritmetic
 
 REGULI = "2026.1"
 MODUL = "salarizare"
@@ -298,9 +299,25 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
 
     # impozitul returnat = TOTAL (salariu + tichete), ca sa fie corect pt net/monografie/D112
     impozit = baza_imp * cota_imp + impozit_tichete
+    # [lot 06.10 pct.11, comanda Costin] SUMELE RETINUTE SUNT CELE DECLARATE. D112 declara pe salariat CAS, CASS si
+    # impozitul in lei intregi, rotunjite aritmetic (structura D112: „Contributiile se rotunjesc aritmetic”), iar nota
+    # le crediteaza din D112 (salarii_contare, R34). Netul cu bani (6.810,24 pe F5 10/2026) lasa 421 nesoldat cu
+    # diferenta de rotunjire (6.809,45). Rotunjirea se face O SINGURA DATA, pe valoarea nerotunjita (nu dupa _q la bani:
+    # dubla rotunjire), si DUPA baza impozitului - aceea ramane pe contributiile nerotunjite, cu rotunjirea ei proprie
+    # (HG 1/2016 Norme Titlul IV pct.4: 4.254,54 -> 4.255 -> impozit 425,50 -> declarat 426).
+    cas = leu_aritmetic(cas)
+    cass = leu_aritmetic(cass)
+    cass_tichete = leu_aritmetic(cass_tichete)
+    impozit = leu_aritmetic(impozit)
+    impozit_tichete = leu_aritmetic(impozit_tichete)
     net = b - cas - cass - cass_tichete - impozit
 
-    cam = b_imp * cota_cam
+    # [lot 06.10 pct.11] CAM pe BAZA CONTRIBUTIVA, fara suma neimpozabila de la salariul minim: OUG 89/2025 art.III
+    # alin.(1) „Prin derogare de la prevederile art. 78, art. 139 alin. (1), art. 140, art. 157 alin. (1) și ale
+    # art. 220^4 alin. (1) din Legea nr. 227/2015 … pentru suma de 300 lei/lună … respectiv … 200 lei/lună … nu se
+    # datorează impozit pe venit și contribuții sociale obligatorii”. D112 (`sum_bazac`) o scadea deja; cartela nu.
+    # Ramane cu bani pe salariat: D112 rotunjeste CAM-ul pe TOTAL (cod 480), iar statul il imparte (stat_plata_api).
+    cam = baza_contrib * cota_cam
 
     # SUPRATAXARE SUB SALARIUL MINIM (art. 146 alin. (5^6) si art. 168 alin. (6^1)
     # Cod fiscal). Verificat la sursa 15.07.2026 (mfinante.gov.ro, text oficial):
@@ -331,9 +348,11 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     cas_suprataxa = Decimal(0)
     cass_suprataxa = Decimal(0)
     if (not exceptat_suprataxare) and baza_contrib < baza_podea:
-        diferenta = baza_podea - baza_contrib
-        cas_suprataxa = diferenta * cota_cas
-        cass_suprataxa = diferenta * cota_cass
+        # [lot 06.10 pct.11] ca D112 (pull: B4_8P = ROUND(prag x cota), topup = B4_8P - CAS-ul declarat): diferenta
+        # suportata de angajator e contributia minima rotunjita minus contributia retinuta rotunjita.
+        podea = leu_aritmetic(baza_podea)
+        cas_suprataxa = max(leu_aritmetic(podea * cota_cas) - cas, Decimal(0))
+        cass_suprataxa = max(leu_aritmetic(podea * cota_cass) - cass, Decimal(0))
 
     return {
         "brut": _q(b_imp),   # [D3] gross impozabil (cu exces vacanta) - declarat in D112
@@ -604,7 +623,7 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
         if not _exceptat_l64:
             diminuare = 1
     zile_platite = max(zile_lucratoare_cm - diminuare, 0)
-    brut = (mz * pct * zile_platite).quantize(Decimal("1"))  # rotunjit la leu
+    brut = (mz * pct * zile_platite).quantize(Decimal("1"), rounding=ROUND_HALF_UP)  # rotunjit la leu
     # split angajator/FNUASS (Norme OUG 158/2005): angajatorul suporta zilele 2-6 ale
     # concediului = primele 5 zile lucratoare din cele PLATITE (prima zi diminuata e
     # neplatita, nu reduce plafonul de 5 al angajatorului); FNUASS suporta din ziua 7.
@@ -613,7 +632,7 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     # certificat) -> pe certificatele de CONTINUARE (not prima_zi_din_episod) portia angajator = 0.
     zile_ang = 0 if (str(cod).zfill(2) in _CM_COD_FNUASS_INTEGRAL or not prima_zi_din_episod) else min(zile_platite, 5)
     zile_fnuass = zile_platite - zile_ang
-    brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"))
+    brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
     brut_fnuass = brut - brut_ang
     return {
         "baza": _q(venituri_6_luni),
@@ -702,11 +721,11 @@ def _taxe_cm_2018(brut, cod="01", la_data=None):
     cota_cas, _ = _c.cota("cas", la_data)
     cota_cass, _ = _c.cota("cass", la_data)
     cota_imp, _ = _c.cota("impozit_venit", la_data)
-    cas = (b * cota_cas).quantize(Decimal("1"))   # CAS 25% UNIFORM pe toate codurile (CF art.139(1)(o)+140)
-    cass = (b * cota_cass).quantize(Decimal("1")) if str(cod).zfill(2) in _CM_COD_CU_CASS else Decimal(0)
+    cas = (b * cota_cas).quantize(Decimal("1"), rounding=ROUND_HALF_UP)   # CAS 25% UNIFORM pe toate codurile (CF art.139(1)(o)+140)
+    cass = (b * cota_cass).quantize(Decimal("1"), rounding=ROUND_HALF_UP) if str(cod).zfill(2) in _CM_COD_CU_CASS else Decimal(0)
     # [CF art.62 lit.c] indemnizatiile de maternitate/ingrijire copil/risc maternal/oncologic = NEIMPOZABILE
     impozit = (Decimal(0) if str(cod).zfill(2) in _CM_COD_NEIMPOZABIL
-               else ((b - cas - cass) * cota_imp).quantize(Decimal("1")))
+               else ((b - cas - cass) * cota_imp).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
     net = b - cas - cass - impozit
     return {"cas": _q(cas), "cass": _q(cass), "impozit": _q(impozit), "net": _q(net)}
 

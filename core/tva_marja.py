@@ -17,12 +17,12 @@ def _vanzare_marja_2018(pret_vanzare, pret_cumparare, cota=None):
         raise ValueError("Prețurile introduse sunt invalide (trebuie numere pozitive).")
     marja = pv - pc
     if marja <= 0:
-        return {"marja_bruta": marja.quantize(Decimal("0.01")), "tva": Decimal("0.00"),
-                "marja_neta": marja.quantize(Decimal("0.01")),
+        return {"marja_bruta": marja.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), "tva": Decimal("0.00"),
+                "marja_neta": marja.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP),
                 "nota": "marja negativa/zero - fara TVA, FARA report (metoda pe fiecare livrare, norme pct.86)"}
     tva = (marja * c / (100 + c)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-    return {"marja_bruta": marja.quantize(Decimal("0.01")), "tva": tva,
-            "marja_neta": (marja - tva).quantize(Decimal("0.01")), "nota": None}
+    return {"marja_bruta": marja.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), "tva": tva,
+            "marja_neta": (marja - tva).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), "nota": None}
 
 
 _VARIANTE_VANZARE_MARJA = [

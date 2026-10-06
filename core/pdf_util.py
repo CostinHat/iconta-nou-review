@@ -2,7 +2,7 @@
 (PDF-uri + orice mesaj/temei/descriere construit in backend). SURSA UNICA pentru formatare
 numerica SI de data romaneasca — Design System cap.7 (sume) + cap.4 (date). Echivalentul
 Python al bani()/dataRo() din static/js/api.js: o singura regula, doua limbaje."""
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 import datetime as _dt
 
 _LUNI_RO = ["ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
@@ -13,7 +13,7 @@ def bani(x, mon=""):
     """Format romanesc: 1.234,56 (nu 1,234.56 american)."""
     if x is None:
         return ""
-    n = Decimal(str(x)).quantize(Decimal("0.01"))
+    n = Decimal(str(x)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     s = f"{n:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     return f"{s} {mon}".strip()
 
@@ -23,7 +23,7 @@ def cantitate(x, um=""):
     Oglinda lui `cantitate()` din api.js (comanda Costin 05.10.2026 pct.9)."""
     if x is None or x == "":
         return ""
-    n = Decimal(str(x)).quantize(Decimal("0.001")).normalize()
+    n = Decimal(str(x)).quantize(Decimal("0.001"), rounding=ROUND_HALF_UP).normalize()
     s = f"{n:,f}".replace(",", "X").replace(".", ",").replace("X", ".")
     return f"{s} {um or ''}".strip()
 

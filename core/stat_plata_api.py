@@ -168,9 +168,58 @@ def stat_plata(conn, schema, an, luna):
             # intrari. Acum le ia de aici: statul e sursa unica a cifrelor de pe fluturas.
             "facilitate": float(calc.get("facilitate", 0)),
             "cm_net": float(c_cm["net"]) if c_cm else 0.0,
+            # baza CAM a salariatului, exact ca D112 (`_d112_genereaza`: bazac = brut realizat + exces + cadou -
+            # facilitate, fiecare la leu) - cheie interna, consumata de `_imparte_cam` mai jos
+            "_bazac": max(int(_leu(brut_lucrat)) + int(_leu(calc.get("tichete_vacanta_exces", 0)))
+                          + int(_leu(calc.get("tichete_cadou", 0))) - int(_leu(calc.get("facilitate", 0))), 0),
         })
     _cs_sal.close()
+    _imparte_cam(stat, ref)
     return stat
+
+
+def _leu(x):
+    from decimal import Decimal as _D
+    from core.numere import leu_aritmetic
+    return leu_aritmetic(_D(str(x)))
+
+
+def _imparte_cam(stat, ref):
+    """CAM-ul de pe cartele = CAM-ul DECLARAT, impartit pe salariati (comanda Costin 06.10.2026 pct.11: „CAM 259,77 pe
+    cartele vs 260 în notă”; costul angajatorului de pe fluturas iese din aceleasi sume ca D112).
+
+    D112 nu are CAM pe salariat: il declara o data, pe TOTAL (cod 480 = ROUND(Σ bazac x 2,25%), aritmetic). Cartela il
+    arata pe salariat, deci il IMPARTE: fiecare primeste partea intreaga din bazac x cota, iar leii ramasi pana la total
+    merg, cate unul, la cele mai mari fractiuni (metoda resturilor celor mai mari; egalitate -> ordinea statului).
+    INTERPRETARE CU TEMEI (DECIZII 06.10.2026 pct.11): legea nu imparte CAM-ul pe salariat; alternativa respinsa - CAM cu
+    bani pe salariat si o linie de rotunjire separata - lasa suma cartelelor diferita de D112 si de nota."""
+    from decimal import Decimal as _D
+    from core.numere import leu_aritmetic
+    cota = _D(str(_common.cota("cam", ref)[0]))
+    brute = [_D(r["_bazac"]) * cota for r in stat]
+    total = int(leu_aritmetic(sum(brute, _D(0))))
+    parti = [int(x) for x in brute]   # partea intreaga (valori >= 0)
+    rest = total - sum(parti)
+    ordine = sorted(range(len(stat)), key=lambda i: (-(brute[i] - parti[i]), i))
+    for i in ordine[:max(rest, 0)]:
+        parti[i] += 1
+    for r, cam in zip(stat, parti):
+        r["cost"] = round(r["cost"] - r["cam"] + cam, 2)
+        r["cam"] = float(cam)
+        del r["_bazac"]
+
+def net_de_plata(conn, schema, an, luna):
+    """Σ netul care se plateste pe luna: al fluturasului fiecarui salariat (exemplarul emis, daca luna e emisa pentru el;
+    altfel randul statului de acum - aceeasi regula ca `rand_fluturas`). Contrapartida contului 421 dupa nota statului."""
+    from core import stat_plata_emis as _spe
+    from decimal import Decimal as _D
+    emise = _spe.citeste(conn, schema, an, luna)
+    total = _D(0)
+    for r in stat_plata(conn, schema, an, luna):
+        ex = _spe.ultimul(emise, int(r["id"]))
+        total += _D(str((ex["date"] if ex else r).get("net") or 0))
+    return total
+
 
 def exemplar_curent(conn, schema, salariat_id, an, luna):
     """Exemplarul EMIS cel mai recent al salariatului, sau None daca luna nu e emisa. Separat de

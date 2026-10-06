@@ -46,4 +46,4 @@ def reluare_lunara_investitii(valoare_activ, subventie, amortizare_lunara):
         raise ValueError("valori invalide (subventia nu poate depasi valoarea)")
     cota = (am * sb / va).quantize(B, rounding=ROUND_HALF_UP)
     return {"linii": [("4751", "7584", cota)], "reluare": cota,
-            "procent_subventionat": str((sb / va * 100).quantize(Decimal("0.01")))}
+            "procent_subventionat": str((sb / va * 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))}

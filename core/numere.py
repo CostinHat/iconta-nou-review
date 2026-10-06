@@ -54,6 +54,17 @@ def numar(v, strict=False):
 # ============================================================
 #  VALOARE FISCALA — conversie care NU inghite gunoiul
 # ============================================================
+def leu_aritmetic(x):
+    """Rotunjirea ARITMETICĂ la leu (partea zecimală >= 0,5 -> +1), rotunjirea din structura D112 pentru contribuții și câmpurile
+    calculate: structura D112 (`anaf_surse/structura_D112_0726_030826.txt`, „Rotunjirile : Contributiile se rotunjesc
+    aritmetic (daca partea zecimala >= 0.5, se adauga 1 la partea intreaga)”). Aceeași regulă ca `d112._d112int` (care nu se
+    atinge: orice modificare a lui `core/d112.py` declanșează pasul D1 din firul „Contract uniform A1”, decizia Costin
+    04.10.2026); echivalența celor două e gardată de `core/test_lot0610_p3.py`. Folosită de statul de plată / fluturaș (comanda Costin 06.10.2026 pct.11: „netul și costul angajatorului de pe fluturaș trebuie să
+    iasă din aceleași sume care merg în D112”). NU `round()` (bancar). Întoarce Decimal întreg."""
+    from decimal import Decimal, ROUND_HALF_UP
+    return (x if isinstance(x, Decimal) else Decimal(str(x))).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+
+
 def numar_fiscal(x, camp=""):
     """Converteste o valoare destinata unui calcul fiscal. Intoarce Decimal.
 

@@ -14,6 +14,7 @@ CE A RAMAS IN `main.py`: semnatura rutei (FastAPI valideaza pe ea), docstringul 
 cheama functia de aici prin adaptorul `_http`.
 """
 
+from decimal import ROUND_HALF_UP
 from core import afirmatii as _af
 from core import common as _common
 from core import cont_valid as _cv
@@ -2586,9 +2587,9 @@ def verificare_stocuri(tenant_id, ctx):
                 sold = Decimal(str(repo_contabilitate.sold_initial_pe_cont(cur, schema, cont)["si"]))
                 r = repo_contabilitate.rulaj_pe_cont_stoc(cur, schema, cont, cont)
                 sold += Decimal(str(r["d"])) - Decimal(str(r["c"]))
-                dif = (sold - vcv).quantize(Decimal("0.01"))
-                rez.append({"cont": cont, "sold_contabil": str(sold.quantize(Decimal("0.01"))),
-                            "valoare_fise_cv": str(vcv.quantize(Decimal("0.01"))),
+                dif = (sold - vcv).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+                rez.append({"cont": cont, "sold_contabil": str(sold.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
+                            "valoare_fise_cv": str(vcv.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
                             "diferenta": str(dif), "ok": abs(dif) <= Decimal("0.01")})
     return {"conturi": rez, "ok": all(x["ok"] for x in rez),
             "nota": "Diferentele pot veni din note ciorna nevalidate sau operatiuni in afara fiselor CV."}
@@ -3730,7 +3731,7 @@ def achizitie_necorporala(tenant_id, corp, ctx):
                 raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
                                  "decât zero.")
             cota = _common.cota_ceruta(corp)
-            tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"))
+            tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
             if not furnizor_cui:      # calculat înaintea blocului; validarea rămâne aici
                 raise ValueError("CUI furnizor obligatoriu (achizitia necorporala e factura de la furnizor)")
             numar = str(corp.get("numar") or "").strip()

@@ -39,17 +39,17 @@ def _marja_turism_special_2018(incasat, cost_ue, cost_non_ue=0, cota=None):
     cost_total = cue + cnon
     marja = inc - cost_total
     if marja <= 0:
-        return {"marja_bruta": marja.quantize(B), "marja_scutita": Decimal("0.00"),
+        return {"marja_bruta": marja.quantize(B, rounding=ROUND_HALF_UP), "marja_scutita": Decimal("0.00"),
                 "marja_taxabila": Decimal("0.00"), "tva": Decimal("0.00"),
-                "marja_neta": marja.quantize(B),
+                "marja_neta": marja.quantize(B, rounding=ROUND_HALF_UP),
                 "nota": "marja negativa/zero - fara TVA, se reporteaza in jurnalul special"}
     coef = (cnon / cost_total) if cost_total > 0 else Decimal("0")
     marja_scutita = (marja * coef).quantize(B, rounding=ROUND_HALF_UP)
     marja_taxabila = marja - marja_scutita
     tva = (marja_taxabila * c / (100 + c)).quantize(B, rounding=ROUND_HALF_UP)
-    return {"marja_bruta": marja.quantize(B), "marja_scutita": marja_scutita,
-            "marja_taxabila": marja_taxabila.quantize(B), "tva": tva,
-            "marja_neta": (marja - tva).quantize(B), "nota": None}
+    return {"marja_bruta": marja.quantize(B, rounding=ROUND_HALF_UP), "marja_scutita": marja_scutita,
+            "marja_taxabila": marja_taxabila.quantize(B, rounding=ROUND_HALF_UP), "tva": tva,
+            "marja_neta": (marja - tva).quantize(B, rounding=ROUND_HALF_UP), "nota": None}
 
 
 _VARIANTE_MARJA_TURISM = [
@@ -81,11 +81,11 @@ def marja_turism_normal(componente):
         if baza <= 0 or c < 0:
             raise ValueError("Componenta introdusă e invalidă. Verifică valorile.")
         tva = (baza * c / 100).quantize(B, rounding=ROUND_HALF_UP)
-        out.append({"descriere": comp.get("descriere", ""), "baza": baza.quantize(B),
+        out.append({"descriere": comp.get("descriere", ""), "baza": baza.quantize(B, rounding=ROUND_HALF_UP),
                     "cota": c, "tva": tva})
         tb += baza; tt += tva
-    return {"componente": out, "total_baza": tb.quantize(B), "total_tva": tt.quantize(B),
-            "total_factura": (tb + tt).quantize(B)}
+    return {"componente": out, "total_baza": tb.quantize(B, rounding=ROUND_HALF_UP), "total_tva": tt.quantize(B, rounding=ROUND_HALF_UP),
+            "total_factura": (tb + tt).quantize(B, rounding=ROUND_HALF_UP)}
 
 def comision_intermediar(comision, cota=None, tva_inclus=False):
     """Intermediar (alin. 9): baza = comisionul. Sumele colectate in numele tertilor
@@ -101,4 +101,4 @@ def comision_intermediar(comision, cota=None, tva_inclus=False):
     else:
         baza = com
         tva = (com * c / 100).quantize(B, rounding=ROUND_HALF_UP)
-    return {"baza": baza.quantize(B), "tva": tva, "total": (baza + tva).quantize(B)}
+    return {"baza": baza.quantize(B, rounding=ROUND_HALF_UP), "tva": tva, "total": (baza + tva).quantize(B, rounding=ROUND_HALF_UP)}

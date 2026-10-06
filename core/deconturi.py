@@ -34,8 +34,8 @@ def _plafon_diurna(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_lu
     p1 = (bug * Decimal("2.5") * Decimal(str(curs))).quantize(B, rounding=ROUND_HALF_UP)
     p2 = (sb * 3 / zl).quantize(B, rounding=ROUND_HALF_UP)
     plafon_zi = min(p1, p2)
-    total = (da * z).quantize(B)
-    neimp = (min(da, plafon_zi) * z).quantize(B)
+    total = (da * z).quantize(B, rounding=ROUND_HALF_UP)
+    neimp = (min(da, plafon_zi) * z).quantize(B, rounding=ROUND_HALF_UP)
     return {"plafon_zi": plafon_zi, "limita_2_5x": p1, "limita_3_salarii": p2,
             "total_acordat": total, "neimpozabil": neimp,
             "impozabil": total - neimp}

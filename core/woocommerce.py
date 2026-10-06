@@ -2,7 +2,7 @@
 """Conector WooCommerce: import comenzi -> facturi iConta.
 Config per tenant in firma_profil (wc_url, wc_ck, wc_cs). Idempotent pe numar comanda."""
 import requests
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 
 
@@ -23,7 +23,7 @@ def comanda_in_factura(c):
     for l in c.get("line_items", []):
         cant = Decimal(str(l.get("quantity") or 1))
         total = Decimal(str(l.get("total") or 0))
-        pret = (total / cant).quantize(Decimal("0.01")) if cant else Decimal("0")
+        pret = (total / cant).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) if cant else Decimal("0")
         linii.append({"descriere": l.get("name") or "produs",
                       "cantitate": float(cant), "pret_unitar": float(pret),
                       "cota_tva": None})

@@ -2,7 +2,7 @@
 """Stocuri cantitativ-valorice — strat API. Motorul: core/stocuri_cv.py.
 Ieșirile la CMP generează notă ciornă (cont_cheltuiala = cont_stoc)."""
 from core import pdf_util as _pu
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import stocuri_cv as _m
 
@@ -79,7 +79,7 @@ def intrare(conn, schema, corp, factura_id=None):
         pret = Decimal(str(corp["pret_unitar"]))
         if cant <= 0 or pret < 0:
             return {"eroare": "cantitate/preț invalide"}
-        val = (cant * pret).quantize(Decimal("0.01"))
+        val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                         (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie, factura_id)
                         VALUES (%s,%s,'intrare',%s,%s,%s,%s,%s,%s) RETURNING id""",
@@ -238,7 +238,7 @@ def inventar(conn, schema, corp):
             if dif == 0:
                 rez.append({"articol_id": a["id"], "denumire": a["denumire"], "diferenta": "0"})
                 continue
-            val = (abs(dif) * cmp).quantize(Decimal("0.01"))
+            val = (abs(dif) * cmp).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
             if dif > 0:
                 debit, credit, tip = a["cont_stoc"], a["cont_cheltuiala"], "intrare"
             else:

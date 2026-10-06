@@ -315,18 +315,18 @@ def calc_asset(mf, an):
         # chiar negativa. Ce se raporteaza e CHELTUIALA anului — suma ratelor lunare, adica exact
         # ce inregistreaza nota lunara de amortizare (6811 = 28xx). *Un singur motor pentru
         # amandoua; altfel declaratia si evidenta ar avea din nou doua surse.*
-        depr = sum((amortizare_luna(mf, an, l) for l in range(1, 13)), Decimal("0.00")).quantize(B)
+        depr = sum((amortizare_luna(mf, an, l) for l in range(1, 13)), Decimal("0.00")).quantize(B, rounding=ROUND_HALF_UP)
     else:
-        depr = (am_sfarsit - am_inceput).quantize(B)
+        depr = (am_sfarsit - am_inceput).quantize(B, rounding=ROUND_HALF_UP)
     return {
         "cost_begin": Decimal("0.00") if achizitie_in_an else val_inceput,
         "cost_end": val,
         "addition": val_inceput if achizitie_in_an else Decimal("0.00"),
-        "apreciere": apreciere.quantize(B),
-        "book_begin": (Decimal("0.00") if achizitie_in_an else val_inceput - am_inceput).quantize(B),
+        "apreciere": apreciere.quantize(B, rounding=ROUND_HALF_UP),
+        "book_begin": (Decimal("0.00") if achizitie_in_an else val_inceput - am_inceput).quantize(B, rounding=ROUND_HALF_UP),
         "depr_period": depr,
         "accum_depr": am_sfarsit,
-        "book_end": (val - am_sfarsit).quantize(B),
+        "book_end": (val - am_sfarsit).quantize(B, rounding=ROUND_HALF_UP),
         "procent_anual": (Decimal("100") * 12 / dnf).quantize(B, rounding=ROUND_HALF_UP),
     }
 
@@ -376,7 +376,7 @@ def amortizat_la_data(mf, la_data):
     _verifica_categorie(mf, metoda, _pif_real)   # ce legea nu permite pe categorie -> refuza (nu calcula gresit)
     amortizabil = val - rez
     if pif is None:
-        return {"amortizat": Decimal("0.00"), "ramas": val.quantize(B), "metoda": metoda}
+        return {"amortizat": Decimal("0.00"), "ramas": val.quantize(B, rounding=ROUND_HALF_UP), "metoda": metoda}
     luni_scurse = max(0, min(dnf, (la_data.year - pif.year) * 12 + (la_data.month - pif.month)))
     if metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR:
         rata = (amortizabil / dnf).quantize(B, rounding=ROUND_HALF_UP)
@@ -384,7 +384,7 @@ def amortizat_la_data(mf, la_data):
     else:
         luni = _amort_lunar_neliniar(metoda, amortizabil, dnf)
         amortizat = min(amortizabil, sum(luni[:luni_scurse], Decimal(0))).quantize(B, rounding=ROUND_HALF_UP)
-    ramas = (val - amortizat).quantize(B)
+    ramas = (val - amortizat).quantize(B, rounding=ROUND_HALF_UP)
     return {"amortizat": amortizat, "ramas": ramas, "metoda": metoda}
 
 def amortizare_luna(mf, an, luna):
@@ -415,12 +415,12 @@ def amortizare_luna(mf, an, luna):
     if metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR:
         rata = (amortizabil / dnf).quantize(B, rounding=ROUND_HALF_UP)
         if luni_trecute == dnf:                                 # ultima luna: rest, ca totalul = amortizabil
-            return (amortizabil - rata * (dnf - 1)).quantize(B)
+            return (amortizabil - rata * (dnf - 1)).quantize(B, rounding=ROUND_HALF_UP)
         return rata
     luni = _amort_lunar_neliniar(metoda, amortizabil, dnf)
     if luni_trecute == dnf:                                     # ultima luna: rest, ca totalul = amortizabil
         prev = sum((x.quantize(B, rounding=ROUND_HALF_UP) for x in luni[:dnf - 1]), Decimal(0))
-        return (amortizabil - prev).quantize(B)
+        return (amortizabil - prev).quantize(B, rounding=ROUND_HALF_UP)
     return luni[luni_trecute - 1].quantize(B, rounding=ROUND_HALF_UP)
 
 def xml_asset(mf, an, valuation_class="2"):

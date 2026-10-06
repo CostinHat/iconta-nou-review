@@ -28,7 +28,7 @@ LIMITA DECLARATA (GARZI cat.4):
 PRECONDITIE: conn pozitionat pe schema tenantului (contractul d406.pull).
 """
 
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from core import repo_d406_reconciliere as _repo
 
 
@@ -37,7 +37,7 @@ class ReconciliereD406(ValueError):
 
 
 def _q2(x):
-    return Decimal(x).quantize(Decimal("0.01"))
+    return Decimal(x).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 def _rulaje_independente(conn, schema, an, luna):

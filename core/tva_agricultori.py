@@ -18,7 +18,7 @@ def compensatie(pret_fara_taxa, procent=8):
         raise ValueError("Prețul achiziției și procentul de compensare trebuie să fie numere "
                          "pozitive — o achiziție consemnează o operațiune efectuată.")
     c = (p * pr / 100).quantize(B, rounding=ROUND_HALF_UP)
-    return {"pret": p.quantize(B), "compensatie": c, "total": (p + c).quantize(B)}
+    return {"pret": p.quantize(B, rounding=ROUND_HALF_UP), "compensatie": c, "total": (p + c).quantize(B, rounding=ROUND_HALF_UP)}
 
 def achizitie_de_la_agricultor(valoare, in_registru, procent=8):
     """Achizitie de la agricultor cu regim special. Compensatia e deductibila

@@ -10277,3 +10277,18 @@ consecințele 5–10.
 | ghiduri înrudite | `::test_ghidul_are_tema_si_ghiduri_inrudite` | un ghid fără temă / fără înrudite | `_ghid_legaturi` scos -> roșu | — |
 | căi interne | `::test_ghidurile_nu_arata_cai_interne_de_fisier` | `anaf_surse/`, `core/…`, `scripts/…`, căi de server pe o pagină publică | „(sursă: anaf_surse/og_2_2001.html)” repus -> roșu | vede numai `ghid/*.md` |
 | sursa oficială | `::test_sursa_citata_trimite_la_sursa_oficiala` | „sursă: [..](..)” spre alt domeniu decât cele oficiale | domeniu schimbat -> roșu | verifică domeniul, nu dacă adresa mai răspunde |
+
+## 06.10.2026 — Lotul 06.10, partea 3: salariile din aceleași sume ca D112; rotunjirea explicită
+
+Categoriile **3. Calcul fiscal** (rotunjirea, baza CAM) și **4. Ieșire către autorități** (fluturaș = D112 = notă). Deciziile:
+DECIZII 06.10.2026, consecințele 11–13.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| reținerile = sumele declarate | `core/test_lot0610_p3.py::test_retinerile_de_pe_fluturas_sunt_cele_declarate_in_d112`, `::test_fluturasul_nota_si_d112_dau_aceleasi_sume` | un net de fluturaș din CAS/CASS/impozit cu bani, alături de D112 în lei | rotunjirea scoasă din `calcul_salariu` -> roșu (2 teste) | luna cu concediu medical: indemnizația nu e în notă (§6) |
+| statul și D112 rotunjesc la fel | `::test_statul_si_d112_rotunjesc_cu_aceeasi_regula` | divergența dintre `numere.leu_aritmetic` și `d112._d112int` (două funcții; d112.py neatins, condiția D1) | `leu_aritmetic` cu HALF_EVEN -> 312 vs 313 -> roșu | probează 10 valori, inclusiv ,50 exact și negative |
+| CAM pe baza contributivă | `::test_cam_nu_se_datoreaza_pe_suma_neimpozabila_de_la_salariul_minim` | CAM pe suma neimpozabilă (OUG 89/2025 art.III) | `cam = b_imp x cota` -> roșu | — |
+| CAM-ul cartelelor = cod 480 | `::test_cam_declarat_se_imparte_pe_cartele_fara_rest` | Σ cartele ≠ CAM declarat | împărțirea restului scoasă -> roșu | împărțirea e INTERPRETARE (DECIZII 11) |
+| 421 la ban | `::test_421_se_compara_la_ban_fara_toleranta` | un verde peste un 421 nesoldat | toleranță de 1 leu -> roșu | — |
+| baza impozitului (HG 1/2016 tit.IV pct.4) | `::test_baza_impozitului_se_rotunjeste_la_leu_dupa_norme` | 0,50 exact rotunjit în sus | ROUND_HALF_UP pe bază -> roșu | — |
+| rotunjirea explicită | `core/test_rotunjire_explicita.py` (3 teste) | un `quantize` fără mod (= bancar implicit) oriunde în producție; CAS pe CM rotunjit bancar | `rounding=` scos din `_taxe_cm_2018` -> roșu (2 teste) | nu judecă CARE mod e corect, cere doar să fie scris |

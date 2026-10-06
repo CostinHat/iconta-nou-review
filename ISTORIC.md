@@ -1538,3 +1538,15 @@ legislatie.just.ro sau static.anaf.ro (129 din 132 de surse cu adresă verificat
 
 **Măsurat:** Google real n-a cerut `/sitemap.xml` în cele 14 zile de jurnal (505 cereri pe site, 0 pe sitemap); sitemap-ul
 răspunde 200, valid, 6.581 de adrese. Titluri aprobate nepublicate: GH-09299 (lotul 19).
+
+## 06.10.2026 — Lotul 06.10, partea 3: salariile F5 din aceleași sume ca D112 (comanda Costin)
+
+**Ce s-a făcut:** CAS, CASS și impozitul de pe stat și fluturaș sunt cele declarate în D112 (rotunjite aritmetic pe salariat),
+deci netul iese din aceleași sume ca nota: F5 10/2026 — net 6.809,45 (era 6.810,24), 421 soldat. CAM pe baza contributivă,
+împărțit pe cartele așa încât suma lor = codul 480 (260, era 259,77). Propunerea notei verifică 421 la ban și spune ce a
+verificat. Rotunjirea bancară implicită (`quantize` fără mod) scoasă din 65 de locuri, între ele CAS-ul pe concediul medical.
+Temeiul rotunjirii bazei impozitului (HG 1/2016 Norme tit.IV pct.4) confirmat, fără schimbare. Ciorna de salarii vizibilă
+cabinetului (pct.12): oprită — mecanismul de validare presupus pentru facturi nu există; decizie cerută.
+
+**Măsurat:** producție 20/20 de luni-firmă soldează 421 la ban și au CAM = 480; baza de test 41/52 — cele 11 rămase au toate
+concediu medical (indemnizația nu e contabilizată).

@@ -10,7 +10,7 @@ Temei — Legea 82/1991 art.6 alin.(1) (`anaf_surse/legea_82_1991_consolidat.txt
 efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate,
 dobândind astfel calitatea de document justificativ.”
 
-Numerotarea: pe TIP de document și pe AN, atomic (`INSERT … ON CONFLICT DO UPDATE … RETURNING`), în tranzacția notei — un
+Numerotarea: pe TIP de document și pe AN, atomic (un singur `INSERT … ON CONFLICT` care incrementează și întoarce numărul), în tranzacția notei — un
 rollback al notei anulează și numărul. Documentul se scrie în `inregistrari.document_ref` („Notă de calcul nr 12 din
 15.10.2026”), sursa unică pe care o citesc Registrul-jurnal și validarea (`jurnal_api.document_justificativ`).
 """
@@ -46,6 +46,7 @@ def genereaza(cur, schema, tip, data, nota_ids):
     if not ids:
         return None
     d = _data(data)
+    # upsert-ok: contor atomic pe (tip, an) - incrementarea E operatiunea, nu o suprascriere (numarul urmator al documentului)
     cur.execute("INSERT INTO %sdocumente_interne_contor (tip, an, ultim) VALUES (%%s, %%s, 1) "
                 "ON CONFLICT (tip, an) DO UPDATE SET ultim = %sdocumente_interne_contor.ultim + 1 RETURNING ultim"
                 % (_p(schema), _p(schema)), (tip, d.year))

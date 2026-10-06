@@ -5,7 +5,7 @@ flux). Obligatia de declarare incepe cu LUNA in care valoarea CUMULATA de la
 inceputul anului depaseste pragul, separat pe flux. Declaratia se depune lunar
 la INS (intrastat.ro) cu coduri NC8 - aici doar monitorizam pragurile."""
 from datetime import date
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 from core.common import AVERTISMENT, cota
 
@@ -49,7 +49,7 @@ def analiza_flux(valori_lunare, prag=None):
         cumulat += Decimal(str(valori_lunare[luna] or 0))
         if luna_dep is None and cumulat > prag:
             luna_dep = luna
-    procent = (cumulat / prag * 100).quantize(Decimal("0.1")) if prag else Decimal("0")
+    procent = (cumulat / prag * 100).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP) if prag else Decimal("0")
     if luna_dep:
         status = "depasit"
     elif cumulat >= prag * PRAG_ATENTIE:

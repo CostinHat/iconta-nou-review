@@ -32,9 +32,9 @@ def test_brut_6000_fara_dependenti_sem2():
 def test_minim_4325_are_facilitate_sem2():
     r = calcul_salariu(4325, la_data=SEM2)
     assert r["facilitate"] == Decimal("200.00")
-    assert r["cas"] == Decimal("1031.25")
-    assert r["cass"] == Decimal("412.50")
-    assert r["net"] == Decimal("2699.65")               # [1c] baza impozitului rotunjita la leu (CF art.64, HG tit.IV pct.4)
+    assert r["cas"] == Decimal("1031.00")               # 1031,25 -> 1031: structura D112 „Contributiile se rotunjesc aritmetic” (lot 06.10 pct.11)
+    assert r["cass"] == Decimal("413.00")               # 412,50 -> 413 (aritmetic, ca in D112)
+    assert r["net"] == Decimal("2699.00")               # 4325 - 1031 - 413 - 182: netul din sumele declarate (lot 06.10 pct.11)
 
 
 def test_peste_plafon_deducere_zero():
@@ -45,9 +45,9 @@ def test_part_time_2000_suprataxa_pe_angajator():
     r = calcul_salariu(2000, norma_intreaga=False, venit_brut_total=2000, la_data=SEM2)
     assert r["cas"] == Decimal("500.00")
     assert r["cass"] == Decimal("200.00")
-    assert r["cas_suprataxa"] == Decimal("531.25")
-    assert r["cass_suprataxa"] == Decimal("212.50")
-    assert r["cost_angajator"] == Decimal("2788.75")
+    assert r["cas_suprataxa"] == Decimal("531.00")      # D112: ROUND(4125 x 25%) = 1031 - 500 (CAS retinut) - art.146(5^6) CF
+    assert r["cass_suprataxa"] == Decimal("213.00")     # D112: ROUND(4125 x 10%) = 413 - 200
+    assert r["cost_angajator"] == Decimal("2789.00")
 
 
 def test_part_time_exceptat_fara_suprataxa():
@@ -169,17 +169,18 @@ def test_facilitate_pe_minim_cu_cm_ramane_intreaga():
     # baza contributiilor = brut_lucrat - facilitatea intreaga (nu brut_lucrat gol)
     cota_cas, _ = cota("cas", SEM1)
     baza_contrib = _dec(brut_lucrat) - r["facilitate"]
-    assert r["cas"] == _q(baza_contrib * cota_cas)
+    from core.numere import leu_aritmetic
+    assert r["cas"] == _q(leu_aritmetic(baza_contrib * cota_cas))   # suma declarata in D112, rotunjita aritmetic (lot 06.10 pct.11)
 
 
 def test_suprataxa_baza_pe_minimul_diminuat_ambele_semestre():
     # baza suprataxarii = (salariu_minim - facilitate - brut) x cota, pe MINIMUL DIMINUAT (OUG 89/2025)
     s1 = calcul_salariu(2000, norma_intreaga=False, venit_brut_total=2000, la_data=SEM1)
-    assert s1["cas_suprataxa"] == Decimal("437.50")    # S1 2026 (sm=4050, fac=300): (4050-300-2000)*25% CAS - art.146(5^6) CF
-    assert s1["cass_suprataxa"] == Decimal("175.00")   # S1: (4050-300-2000)*10% CASS - OUG 89/2025: baza = sm diminuat cu 300
+    assert s1["cas_suprataxa"] == Decimal("438.00")    # S1 2026 (sm=4050, fac=300): ROUND(3750x25%)=938 - 500 - art.146(5^6) CF; rotunjit ca in D112 (B4_8P)
+    assert s1["cass_suprataxa"] == Decimal("175.00")   # S1: 375 - 200 CASS - OUG 89/2025: baza = sm diminuat cu 300
     s2 = calcul_salariu(2000, norma_intreaga=False, venit_brut_total=2000, la_data=SEM2)
-    assert s2["cas_suprataxa"] == Decimal("531.25")    # S2 2026 (sm=4325, fac=200): (4325-200-2000)*25% CAS
-    assert s2["cass_suprataxa"] == Decimal("212.50")   # S2: (4325-200-2000)*10% CASS - OUG 89/2025: baza = sm diminuat cu 200
+    assert s2["cas_suprataxa"] == Decimal("531.00")    # S2 2026 (sm=4325, fac=200): ROUND(4125x25%)=1031 - 500 CAS
+    assert s2["cass_suprataxa"] == Decimal("213.00")   # S2: ROUND(4125x10%)=413 - 200 CASS - OUG 89/2025: baza = sm diminuat cu 200
 
 
 def test_suprataxa_prag_prorata_luna_angajare():
@@ -188,11 +189,11 @@ def test_suprataxa_prag_prorata_luna_angajare():
     from datetime import date
     r = calcul_salariu(1000, norma_intreaga=False, venit_brut_total=1000,
                        la_data=date(2026, 6, 1), data_angajare=date(2026, 6, 16))
-    assert r["cas_suprataxa"] == Decimal("241.07")    # prag=(4050-300)x11/21=1964.29; (1964.29-1000)x25% - OUG 156/2024 art.LXVI alin.(5) + OMF 1855/2022 pct.2 (interpretare B)
-    assert r["cass_suprataxa"] == Decimal("96.43")    # (1964.29-1000)x10% CASS - nivelul DIMINUAT (sm-facilitate) proratat pe zile lucrate
+    assert r["cas_suprataxa"] == Decimal("241.00")    # prag=(4050-300)x11/21=1964.29 -> 1964 (ca D112 prag_zile); ROUND(1964x25%)=491 - 250 - OUG 156/2024 art.LXVI alin.(5) + OMF 1855/2022 pct.2 (interpretare B)
+    assert r["cass_suprataxa"] == Decimal("96.00")    # ROUND(1964x10%)=196 - 100 CASS - nivelul DIMINUAT (sm-facilitate) proratat pe zile lucrate
     # contract activ toata luna (fara data_angajare) -> prag INTREG 3750, suprataxare mai mare: proratarea chiar reduce
     r_full = calcul_salariu(1000, norma_intreaga=False, venit_brut_total=1000, la_data=date(2026, 6, 1))
-    assert r_full["cas_suprataxa"] == Decimal("687.50")   # (3750-1000)x25% - fara proratare, pe pragul intreg
+    assert r_full["cas_suprataxa"] == Decimal("688.00")   # ROUND(3750x25%)=938 - 250 - fara proratare, pe pragul intreg
 
 
 def test_facilitate_prorata_luna_angajare():

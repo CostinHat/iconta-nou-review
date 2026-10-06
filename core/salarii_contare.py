@@ -35,7 +35,7 @@ DOAR daca totalul coincide ... refuzam sa scriem"*. Nimic nu se scria si nimic n
 niciodata nota contabila. Proza descria o garantie inexistenta, iar testele treceau, fiindca
 testele cheama functiile direct.
 """
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 MODUL = "salarii_contare"
 REGULI = "2026.1"
@@ -208,7 +208,32 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
 
 
 def _bani(x):
-    return float(_d(x).quantize(Decimal("0.01")))
+    return float(_d(x).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+
+
+def sold_421(note):
+    """Ce ramane de plata salariatilor dupa nota propusa: creditul 421 (brutul) minus debitele 421 (retinerile)."""
+    sold = Decimal("0")
+    for d, c, s in note:
+        if c == "421":
+            sold += s
+        if d == "421":
+            sold -= s
+    return sold
+
+
+def control_421(note, net_stat):
+    """[lot 06.10 pct.11, comanda Costin] „Mesajul «coincide în limita de toleranță» nu are voie să acopere o diferență
+    care lasă 421 nesoldat.” Pozitia pe care controlul vechi n-o vedea: soldul 421 dupa nota trebuie sa fie EXACT netul
+    fluturasilor - plata lor (421 = 5121/5311) il inchide. FARA TOLERANTA: amandoua sunt in bani, din aceleasi sume
+    (retinerile declarate in D112, rotunjite pe salariat); orice ban de diferenta ramane in 421 la inchiderea lunii.
+    Intoarce divergenta (dict, acelasi format ca `control_coerenta`) sau None."""
+    sold = sold_421(note)
+    net = _d(net_stat)
+    if sold == net:
+        return None
+    return {"eticheta": "Salarii nete de plată", "cont": "421", "fel": "verificare", "fata_de": "netul fluturașilor",
+            "nota": _bani(sold), "declaratie": _bani(net), "diferenta": _bani(net - sold), "toleranta": 0.0}
 
 
 def control_coerenta(note, conn, schema, an, luna, xml_d112=None):
@@ -254,7 +279,7 @@ def control_coerenta(note, conn, schema, an, luna, xml_d112=None):
     def _confrunta(eticheta, cont, decl, fel):
         prop = rulaj.get(cont, {}).get("credit", Decimal("0"))
         if abs(decl - prop) > tol:
-            div.append({"eticheta": eticheta, "cont": cont, "fel": fel,
+            div.append({"eticheta": eticheta, "cont": cont, "fel": fel, "fata_de": "D112",
                         "nota": _bani(prop), "declaratie": _bani(decl),
                         "diferenta": _bani(decl - prop), "toleranta": _bani(tol)})
 
@@ -279,9 +304,15 @@ def propunere(conn, schema, an, luna):
     n-au niciun INSERT/UPDATE/DELETE)."""
     from core import d112 as _d112
     xml, _av = _d112.genereaza(conn, schema, an, luna)   # [R34] o singura generare pe raspuns
+    from core import stat_plata_api as _sp
     note, nr = note_lunare(conn, schema, an, luna, xml_d112=xml)
     div = control_coerenta(note, conn, schema, an, luna, xml_d112=xml)
+    net = _sp.net_de_plata(conn, schema, an, luna)
+    d421 = control_421(note, net)
+    if d421:
+        div.append(d421)
     return {
+        "net_fluturasi": _bani(net),
         "an": an, "luna": luna,
         "document_ref": document_ref(an, luna),
         "nr_salariati": nr,

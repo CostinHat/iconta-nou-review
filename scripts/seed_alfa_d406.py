@@ -17,7 +17,7 @@ for ln in open(os.path.expanduser("~/.iconta/db.env")):
     ln = ln.strip()
     if "=" in ln and not ln.startswith("#"):
         k, v = ln.split("=", 1); os.environ.setdefault(k.strip(), v.strip())
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 from core import db
 db.init_pool()
@@ -116,12 +116,12 @@ with db.get_conn() as conn:
                        %(valoare)s,%(rezidual)s,%(dnf_luni)s,%(data_pif)s,%(metoda)s,true)""", a)
         rata = a["valoare"] / a["dnf_luni"]
         # achizitie: 2131 + 4426(21%) / 404 (platitor TVA)
-        tva = (a["valoare"] * Decimal("0.21")).quantize(Decimal("0.01"))
+        tva = (a["valoare"] * Decimal("0.21")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         nota(a["data_pif"], "achizitie " + a["cod"],
              [(a["cont_imobilizare"], "404", a["valoare"]), ("4426", "404", tva)])
         # amortizare cumulata pana in luna curenta (REALA, nu proiectata)
         luni = min(a["dnf_luni"], luni_amort(a["data_pif"], AN, LUNA))
-        amort = (rata * luni).quantize(Decimal("0.01"))
+        amort = (rata * luni).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         if amort > 0:
             nota(date(AN, LUNA, 28), "amortizare cumulata %s (%d luni)" % (a["cod"], luni),
                  [("6811", a["cont_amortizare"], amort)])

@@ -1236,21 +1236,24 @@ async function ecranSalariati(corp, nav, t) {
     // stinge prin ignorare.
     const zonaContare = corp.querySelector("#sp-contare-zona");
     const randDivergente = (p) => !p.divergente.length
-      ? `<div class="caseta-info"><span class="ci-mesaj">Nota propusă coincide cu D112 pe toate cele patru conturi, în limita de toleranță.</span></div>`
+      // [lot 06.10 pct.11] verdele spune CE s-a verificat: soldul 421 egal la ban cu netul fluturașilor (fără toleranță);
+      // reținerile și CAM vin din D112. Forma veche („coincide … în limita de toleranță”) acoperea un 421 nesoldat.
+      ? `<div class="caseta-info"><span class="ci-mesaj">Contul 421 se soldează exact cu netul fluturașilor (${bani(p.net_fluturasi)} lei). CAS, CASS, impozitul și CAM sunt cele declarate în D112.</span></div>`
       : `<div class="caseta-atentie">
-          <b>Nota propusă nu coincide cu D112 pe ${p.divergente.length} ${p.divergente.length === 1 ? "cont" : "conturi"}.</b>
-          <div class="tip-micut">Nu se blochează nimic: nu se poate ști din afară care dintre cele două greșește — poate declarația e veche, poate nota e corectă.</div>
+          <b>Nota propusă nu se potrivește pe ${p.divergente.length} ${p.divergente.length === 1 ? "cont" : "conturi"}.</b>
+          ${p.divergente.some((d) => d.fata_de === "D112") ? `<div class="tip-micut">Nu se blochează nimic: nu se poate ști din afară care dintre cele două greșește — poate declarația e veche, poate nota e corectă.</div>` : ""}
+          ${p.divergente.some((d) => d.cont === "421") ? `<div class="tip-micut">Pe 421: după plata netului de pe fluturași, contul ar rămâne cu diferența de mai sus — nota debitează rețineri pentru care nu are brutul corespunzător.</div>` : ""}
           <table class="fd-tabel" style="margin-top:8px">
-            <thead><tr><th>Ce</th><th>Cont</th><th>Nota ar scrie</th><th>D112 declară</th><th>Diferență</th></tr></thead>
+            <thead><tr><th>Ce</th><th>Cont</th><th>Nota ar scrie</th><th>Față de</th><th>Diferență</th></tr></thead>
             <tbody>${p.divergente.map((d) => `<tr>
               <td>${esc(d.eticheta)}</td>
               <td>${esc(d.cont)}</td>
               <td>${bani(d.nota)}</td>
-              <td>${bani(d.declaratie)}</td>
+              <td>${esc(d.fata_de)}: ${bani(d.declaratie)}</td>
               <td style="color:var(--rosu);font-weight:600">${bani(d.diferenta)}</td>
             </tr>`).join("")}</tbody>
           </table>
-          <div class="tip-micut">Toleranța aplicată: ${bani(p.divergente[0].toleranta)} lei (${p.nr_salariati} salariați).</div>
+          <div class="tip-micut">${p.divergente.some((d) => d.fata_de === "D112") ? `Toleranța față de D112: ${bani(p.divergente.find((d) => d.fata_de === "D112").toleranta)} lei (${p.nr_salariati} salariați). ` : ""}Contul 421 se compară fără toleranță.</div>
         </div>`;
     const arataPropunerea = (p) => {
       zonaContare.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">

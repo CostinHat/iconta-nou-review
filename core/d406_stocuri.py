@@ -30,8 +30,8 @@ def solduri(miscari, data_start, data_end):
     if cq < 0 or cv < 0:
         raise ValueError("stoc negativ la închidere - verifică mișcările")
     pret = (cv / cq).quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP) if cq > 0 else Decimal("0")
-    return {"open_q": oq.quantize(B3), "open_v": ov.quantize(B2),
-            "close_q": cq.quantize(B3), "close_v": cv.quantize(B2), "pret": pret}
+    return {"open_q": oq.quantize(B3, rounding=ROUND_HALF_UP), "open_v": ov.quantize(B2, rounding=ROUND_HALF_UP),
+            "close_q": cq.quantize(B3, rounding=ROUND_HALF_UP), "close_v": cv.quantize(B2, rounding=ROUND_HALF_UP), "pret": pret}
 
 def xml_entry(articol, s, owner_id, warehouse="1"):
     e = escape

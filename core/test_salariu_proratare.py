@@ -123,8 +123,9 @@ def test_statul_de_plata_declara_brutul_proratat(conn):
                   "marire_16": 6523.81, "luna_intreaga": 6000.0}
     # transparența pe rând: salariul din contract rămâne cel din contract
     assert stat[_S["angajat_16"][0]]["brut_contractual"] == 6000.0 and stat[_S["angajat_16"][0]]["zile_active"] == 11
-    # CAS 25% pe brutul realizat (CF art.138 lit.a)), nu pe salariul întreg: 3142,86 x 25% = 785,72 (785,7150)
-    assert stat[_S["angajat_16"][0]]["cas"] == pytest.approx(785.72, abs=0.01)
+    # CAS 25% pe brutul realizat (CF art.138 lit.a)), nu pe salariul întreg: 3142,86 x 25% = 785,7150 -> 786, suma declarată
+    # (structura D112: „Contributiile se rotunjesc aritmetic”; lot 06.10 pct.11)
+    assert stat[_S["angajat_16"][0]]["cas"] == 786.0
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

@@ -7,7 +7,7 @@ AI propune (note ciorne), contabilul validează în jurnal."""
 # deschide, nu comite.
 from core import afirmatii as _af  # [P8] absenta vanzarilor e un fapt
 import json
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import stocuri as _m
 
@@ -185,7 +185,7 @@ def descarca_luna(conn, schema, an, luna):
         return {"eroare": str(e)}
     baza_stoc = (si["371"] + rd_371) - (-si["4428"] + rc_4428)
     tva_stoc = -si["4428"] + rc_4428
-    tva_vanzari = (rc_707 * tva_stoc / baza_stoc).quantize(Decimal("0.01")) if baza_stoc else Decimal("0")
+    tva_vanzari = (rc_707 * tva_stoc / baza_stoc).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) if baza_stoc else Decimal("0")
     rez = _m.descarcare_gv(rc_707, tva_vanzari, -si["378"], rc_378,
                            si["371"], rd_371, -si["4428"], rc_4428)
     if not rez["note"]:
@@ -201,6 +201,6 @@ def descarca_luna(conn, schema, an, luna):
         # [06.10.2026, comanda Costin §6.2] O descărcare = O situație de descărcare a gestiunii, pe toate notele ei
         from core import documente_interne as _di
         _di.genereaza(cur, schema, "situatie_descarcare", ultima_zi, ids)
-    return {"k": str(rez["k"].quantize(Decimal('0.000001'))), "cmv": str(rez["cmv"]),
+    return {"k": str(rez["k"].quantize(Decimal('0.000001'), rounding=ROUND_HALF_UP)), "cmv": str(rez["cmv"]),
             "adaos": str(rez["adaos"]), "tva": str(rez["tva"]),
             "total_371": str(rez["total_371"]), "inregistrari": ids}

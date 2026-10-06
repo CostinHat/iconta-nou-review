@@ -123,9 +123,9 @@ def test_reconciliere_curata_si_genereaza_trece(conn_recon):
     assert rap["divergente"] == [], "alarma falsa: %s" % rap["divergente"]
     # sub-caz 1a: salariatul 3 (la minim 4050, toata luna, full-time) e acum RECONCILIAT cu facilitate, nu sarit
     assert set(rap["reconciliati"]) == {1, 2, 3}, rap["reconciliati"]
-    # generatorul tine cas la 2 zecimale (937.50); D112 il EMITE ca 938 (_d112int, half-up); calea 2 confrunta
-    # valoarea EMISA (rotunjita). baza=4050-300=3750, cas=3750x25%=937.50->938, cass=375
-    assert (float(g[3]["cas"]), float(g[3]["cass"])) == (937.5, 375.0), (g[3]["cas"], g[3]["cass"])
+    # [lot 06.10 pct.11] generatorul tine acum suma DECLARATA (rotunjita aritmetic, ca D112 - structura D112 „Contributiile
+    # se rotunjesc aritmetic”); inainte tinea 937,50 si doar emiterea o rotunjea. baza=4050-300=3750, cas=937,50->938, cass=375
+    assert (float(g[3]["cas"]), float(g[3]["cass"])) == (938.0, 375.0), (g[3]["cas"], g[3]["cass"])
     assert "<angajator" in xml
 
 
@@ -164,7 +164,7 @@ def test_facilitate_la_minim_reconciliata_si_mutatie_pica(conn_recon):
     (baza = sm - fac). Un cas gresit pe el PICA acum (inainte era sarit)."""
     _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
     g = {s["id"]: s for s in sal}
-    assert (float(g[3]["cas"]), float(g[3]["cass"])) == (937.5, 375.0)   # generator 2 zec; emis 938 (half-up)
+    assert (float(g[3]["cas"]), float(g[3]["cass"])) == (938.0, 375.0)   # suma declarata, rotunjita ca in D112 (lot 06.10 pct.11)
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
     assert 3 in rap["reconciliati"] and rap["divergente"] == []
     for s in sal:

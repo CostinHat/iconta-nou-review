@@ -58,7 +58,7 @@ def coeficient_348(sold_initial_348, rulaj_348, sold_initial_345, intrari_345):
             "Nu pot calcula coeficientul de diferențe de preț: baza de calcul — soldul inițial "
             "plus intrările de produse finite (contul 345) — e zero sau negativă. Verifică "
             "soldul și intrările contului 345 pe perioada aleasă.")
-    return (numarator / numitor).quantize(Decimal("0.000001"))
+    return (numarator / numitor).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
 
 def nota_vanzare(pret_vanzare, cost_standard_iesit, cota_tva=None, coef_348=None):
     """4111 = 701 + 4427; descarcare 711=345 standard + diferente aferente."""

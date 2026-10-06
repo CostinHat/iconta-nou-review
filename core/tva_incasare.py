@@ -26,7 +26,7 @@ def tva_exigibil_alocari(alocari):
         pe_cota[c] = pe_cota.get(c, Decimal("0")) + tva_din_incasare(a["suma"], c)
     linii = [{"cota": str(c), "tva": str(v)} for c, v in sorted(pe_cota.items())]
     total = sum(pe_cota.values(), Decimal("0"))
-    return {"linii": linii, "total": total.quantize(Decimal("0.01"))}
+    return {"linii": linii, "total": total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)}
 
 def plafon_la(data_iso):
     """Plafonul TVA la incasare valabil la o data, period-aware din common.COTE (fost petic 3-tier).
