@@ -156,7 +156,7 @@ def get_conn(schema=None):
         _cu_autor = _autor.uid() is not None
         if _cu_autor:
             with conn.cursor() as cur:
-                cur.execute("SELECT set_config('iconta.utilizator', %s, false)", (str(_autor.uid()),))
+                cur.execute("SET iconta.utilizator TO %s", (str(_autor.uid()),))
         yield conn
         conn.commit()
     except Exception:

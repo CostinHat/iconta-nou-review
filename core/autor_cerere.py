@@ -4,8 +4,8 @@ mecanism prin care cabinetul vede, validează sau respinge tot ce pregătește a
 
 DE CE. O notă contabilă se naște pe ~21 de drumuri de `INSERT` (facturi, bancă, casă, stocuri, salarii, jurnal…), niciunul
 cu autor. Ca „tot ce pregătește asistentul” să ajungă în coada de validare fără să se cârpească fiecare drum (și fără ca un
-drum nou să scape), autorul se ia din CERERE: middleware-ul HTTP îl pune aici, `db.get_conn` îl scrie pe tranzacție
-(`set_config('iconta.utilizator', …, true)`), iar coloana `inregistrari.creat_de_id` îl preia ca valoare implicită.
+drum nou să scape), autorul se ia din CERERE: middleware-ul HTTP îl pune aici, `db.get_conn` îl scrie pe SESIUNE cât ține
+împrumutul conexiunii (`SET iconta.utilizator TO …`, șters cu `RESET` înainte de întoarcerea în pool), iar coloana `inregistrari.creat_de_id` îl preia ca valoare implicită.
 
 ContextVar, nu thread-local (aceeași alegere ca `core/cronometru.py`): middleware-ul rulează pe buclă, ruta pe un fir din
 threadpool, iar `anyio` copiază contextul când mută apelul pe fir. În afara unei cereri (cron, scripturi) e None -> notele

@@ -1581,3 +1581,20 @@ reținerile declarate; 421 și 423 se soldează la ban (probat pe certificat de 
 pe 642, zilele angajatorului pe episod. Defectul D112 al zilei de diminuare: consemnat ca datorie, decizie cerută (D1).
 Titlurile aprobate nepublicate: 287 (112 candidat + 175 asemănător) + 3 fără corespondent în registru.
 
+**Închiderea (06.10.2026):** backup `iconta_v2_pre_validare_note_20261006_0831.dump` (2,4 MB, 358 de tabele cu date, verificat cu
+`pg_restore -l`), apoi migrarea `core.migrare_validare_note` pe producție: `declaratii_coada.fel` + autorul și triggerul pe
+tenant_049–053 (5/5). Commitul de lucru `11cd3150`, avansat pe main; poarta completă la commitul de închidere.
+
+**Poarta de închidere, prima rundă: RESPINSĂ (06.10.2026).** 15 picate / 7382 trecute / 9 sărite / 14 xfail, toate pe gărzi
+structurale, niciuna pe comportament. Reparate înainte de a doua rundă: ruta `retrimite` n-avea use-case cu numele ei
+(scanerul cădea pe atribuirea pe modul: 20 de tabele „scrise” → redenumit `uc_coada.jurnal_retrimite`, acum 1 tabel); rândul
+individual din `p4_clasificare` pentru retrimitere (două tranzacții: elementul, apoi anunțul); `db.get_conn` scrie autorul cu
+`SET iconta.utilizator TO …` (forma lui `SET search_path`), nu cu `SELECT set_config` — nu e SQL de date, deci `db.py` nu intră
+în universul E2a; butonul „Trimite din nou” își afișează refuzul cu `arataMesaj` direct (helperul local `eroare` e o limită
+declarată a scanerului de refuz tăcut); cheile `stari_note` → `stare_coada`/`motiv_respingere`; un singur apel `/aproba` în
+`validat.js`; retrimiterea verifică luna închisă (R42); blocul de clichete regenerat.
+
+**A doua rundă: RESPINSĂ (06.10.2026)** — 3 picate / 7394 trecute: efecte ale reparațiilor din prima rundă, pe care nu le
+rulasem țintit (blocul și adnotarea TRASEE ale retrimiterii, numărătoarea P7 286 → 287 pentru `nota_cu_linii` din
+`jurnal_retrimite`). Regenerate / ridicată cu motivul numit; setul țintit de 16 fișiere de gărzi: 438 trecute.
+

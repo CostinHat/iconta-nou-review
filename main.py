@@ -5094,7 +5094,7 @@ def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drept
 # act explicit al celui care a pregătit-o („Poate pregăti”), ca o respingere să nu se anuleze singură.
 def jurnal_retrimite(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
-        return _uc_coada.nota_retrimite(tenant_id, nota_id, ctx)
+        return _uc_coada.jurnal_retrimite(tenant_id, nota_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

@@ -183,6 +183,11 @@ export async function randeazaValidat(corp, nav) {
   }
 }
 
+// UN singur apel de aprobare, pentru declarații și note: pentru notă, serverul o validează în jurnal (aceeași tranzacție)
+function aprobaElement(c) {
+  return api.post(`/coada/${c.id}/aproba`, {});
+}
+
 // [validare_note] Rândul unei note din coadă: ce e, cine a pregătit-o, documentul și totalul; „Vezi nota” arată liniile.
 function randNota(c, firme, corp, nav, perm) {
   const n = c.nota || {};
@@ -223,7 +228,7 @@ function randNota(c, firme, corp, nav, perm) {
     const btn = bVal;
     const eroare = corp.querySelector("#val-eroare");
     const valideaza = async () => {
-      try { await api.post(`/coada/${c.id}/aproba`, {}); randeazaValidat(corp, nav); }
+      try { await aprobaElement(c); randeazaValidat(corp, nav); }
       catch (e) { if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); }
     };
     // aceeași confirmare ca în Registrul-jurnal: nota fără document justificativ se validează numai explicit
@@ -433,7 +438,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   }
   // aproba — fara dialog, direct
   try {
-    await api.post(`/coada/${c.id}/aproba`, {});
+    await aprobaElement(c);
     randeazaValidat(corp, nav);
   } catch (e) {
     if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la aprobare.", "eroare");

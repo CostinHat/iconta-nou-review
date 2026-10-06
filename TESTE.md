@@ -51,7 +51,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim: V1–V5 (cod + gărzi `core/test_validare_note.py`, 10 teste; datoria D112 în `core/test_datorie.py`)
     V6: proba de browser cap-coadă (`frontend_test/proba_validare_note.py`, înainte/după), uneltele vizuale (axe 0 pe ecranele
     atinse după reparația de contrast `.val-aproba` / `.ac-cap`), commitul pe ramură.
-  - urmator: închiderea (migrarea de producție după backup, poarta completă pe main, publicare, ZIP). STARE = IN LUCRU;
+    Închidere: migrarea `validare_note` pe producție (public + 5/5 tenanți) după backup verificat; commitul pe ramură `11cd3150`
+    avansat pe main; poarta completă și publicarea la commitul de închidere; ZIP `iconta_validare_note.zip`.
+  - urmator: — (livrat). STARE = ÎNCHIS;
     sub-pas BLOCAT: reparația D112 a zilei de diminuare (cere `core/d112.py` -> pasul D1, decizia Costin 04.10)
   - pasi:
     V1 citirea integrală a cozii (coada_api, asistenti_api.centralizator/jurnal, notificari_api, uc_coada, validat.js) și harta

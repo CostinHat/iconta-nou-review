@@ -126,7 +126,7 @@ def test_nota_asistentului_intra_o_data_si_aprobarea_o_valideaza(tx):
     assert c.aproba(conn, el[0]["id"], str(valid), valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]
     cur.execute("SELECT status FROM inregistrari WHERE id=%s", (nid,))
     assert cur.fetchone()[0] == "validata"
-    assert c.stari_note(conn, tid, [nid])[nid]["stare"] == "aprobata"
+    assert c.stari_note(conn, tid, [nid])[nid]["stare_coada"] == "aprobata"
 
 
 def test_respingerea_tine_pana_la_retrimitere(tx):
@@ -140,9 +140,9 @@ def test_respingerea_tine_pana_la_retrimitere(tx):
     assert c.respinge(conn, cid, str(valid), "lipsește factura", respins_de_id=valid, cabinet_id_apelant=cab)["ok"]
     assert c.pune_notele_in_coada(conn, cab, tid, asist) == []
     st = c.stari_note(conn, tid, [nid])[nid]
-    assert (st["stare"], st["motiv"]) == ("respinsa", "lipsește factura")
+    assert (st["stare_coada"], st["motiv_respingere"]) == ("respinsa", "lipsește factura")
     assert c.retrimite_nota(conn, cab, tid, nid, asist)["ok"]
-    assert c.stari_note(conn, tid, [nid])[nid]["stare"] == "la_senior"
+    assert c.stari_note(conn, tid, [nid])[nid]["stare_coada"] == "la_senior"
     assert c.retrimite_nota(conn, cab, tid, nid, asist)["cod"] == "DEJA_IN_COADA"
 
 

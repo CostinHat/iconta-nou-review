@@ -452,7 +452,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_drept(PREGATI)`*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `coada_api`, `jurnal_api`*
 
 - [x] se retrimite numai o notă CIORNĂ al cărei ultim element din coada de validare e RESPINS (altfel 409: e deja la validare sau validată) — `core/test_validare_note.py::test_respingerea_tine_pana_la_retrimitere`
 - elementul nou intră `la_senior`, iar validatorii primesc notificarea „de validat” (comanda Costin 06.10.2026, răspunsul la §6, pct.1)

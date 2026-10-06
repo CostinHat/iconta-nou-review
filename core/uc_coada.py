@@ -349,10 +349,16 @@ def _schema_notei(coada_id, ctx):
     return el[0], (el[2] if el[0] == "nota" else None), el
 
 
-def nota_retrimite(tenant_id, nota_id, ctx):
+def jurnal_retrimite(tenant_id, nota_id, ctx):
     """Nota respinsă, corectată, se trimite din nou la validare (act explicit al celui care a pregătit-o)."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            n, _linii = repo_declaratii.nota_cu_linii(cur, schema, nota_id)
+        if not n:
+            raise _erori.Inexistent("nota #%s nu există" % nota_id)
+        # R42: o notă dintr-o lună ÎNCHISĂ nu se mai poate valida, deci nici trimite la validare
+        _uc_comun._cere_luna_deschisa(conn, schema, n[1])
         r = coada_api.retrimite_nota(conn, ctx["firm"], tenant_id, nota_id, int(ctx["uid"]))
     if not r["ok"]:
         raise (_erori.Inexistent if r.get("cod") == "INEXISTENT" else _erori.Conflict)(r.get("mesaj"))

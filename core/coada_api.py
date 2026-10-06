@@ -256,7 +256,7 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid):
 
 
 def stari_note(conn, tenant_id, nota_ids):
-    """{nota_id: {stare, motiv, la}} — ultimul element din coadă al fiecărei note (jurnalul și statul de plată îl arată)."""
+    """{nota_id: {stare_coada, motiv_respingere, la}} — ultimul element din coadă al fiecărei note (jurnalul și statul de plată îl arată)."""
     ids = [int(i) for i in nota_ids or []]
     if not ids:
         return {}
@@ -265,7 +265,7 @@ def stari_note(conn, tenant_id, nota_ids):
                     "COALESCE(respins_la, aprobat_la, creat_la) FROM public.declaratii_coada "
                     "WHERE tenant_id = %s AND fel = 'nota' AND perioada = ANY(%s) ORDER BY perioada, id DESC",
                     (tenant_id, [perioada_nota(i) for i in ids]))
-        return {int(p.split("-", 1)[1]): {"stare": st, "motiv": m, "la": la.isoformat() if la else None}
+        return {int(p.split("-", 1)[1]): {"stare_coada": st, "motiv_respingere": m, "la": la.isoformat() if la else None}
                 for p, st, m, la in cur.fetchall()}
 
 

@@ -234,7 +234,10 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_declaratii.element_coada (fel + firma elementului, pentru aprobare / conținut), repo_declaratii.
     #   schema_firmei_cabinetului (intrarea notelor în coadă, numai pe firmele cabinetului), repo_declaratii.nota_cu_linii
     #   (conținutul notei pentru validator). Pași NOI.
-    assert _apeluri_catre_repository() == 286
+    # [validarea notelor, poarta de închidere 06.10.2026] 286 -> 287, cu apelul numit: repo_declaratii.nota_cu_linii
+    #   (jurnal_retrimite) — retrimiterea citește nota ca să-i verifice existența și luna (R42) înainte de a o pune în coadă.
+    #   Pas NOU, citire.
+    assert _apeluri_catre_repository() == 287
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -289,6 +289,16 @@ CLASIFICARE = {
             "identic cu `/aproba`: a doua tranzactie e anuntul, best-effort si logat, iar actul "
             "respingerii — cu motivul lui — e intreg intr-o singura tranzactie.",
     },
+    "POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite": {
+        "clasa": NECRITIC,
+        "efecte": "elementul nou din coada (public.declaratii_coada) <-> notificarea validatorilor",
+        "de_ce":
+            "[validare_note 06.10.2026] ca `/respinge`: actul — nota respinsa pusa din nou la "
+            "validare — e intreg intr-o singura tranzactie (verificarea notei si a lunii deschise, "
+            "apoi INSERT-ul elementului). A doua tranzactie e anuntul catre validatori, scris DUPA "
+            "commit; daca pica, elementul e totusi in coada si se vede in „De validat”. Nici "
+            "evidenta gresita, nici fundatura.",
+    },
     "POST /public/magic-link": {
         "clasa": NECRITIC,
         "efecte": "numararea ritmului (`cereri_ritm`) <-> tokenul de logare <-> e-mailul cu linkul",

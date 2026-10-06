@@ -1265,10 +1265,10 @@ async function ecranSalariati(corp, nav, t) {
           <tbody>${p.note.map((n) => `<tr><td>${esc(n.debit)}</td><td>${esc(n.credit)}</td><td>${bani(n.suma)}</td></tr>`).join("")}</tbody>
         </table>
         <p style="margin-top:10px">${p.deja_contata
-          ? (p.validare && p.validare.stare === "respinsa"
-            ? `<span class="caseta-atentie" style="display:block"><span class="ca-mesaj">Nota #${p.nota_id} a fost respinsă la validare: ${esc(p.validare.motiv || "fără motiv")}. Corecteaz-o în Registrul-jurnal și trimite-o din nou.</span></span>`
-            : `<span class="tip-micut">${p.validare && p.validare.stare === "la_senior" ? `Nota #${p.nota_id} e la validare în cabinet.`
-              : (p.validare && p.validare.stare === "aprobata" ? `Nota #${p.nota_id} e validată.` : `Nota există deja în jurnal (ciornă #${p.nota_id}).`)} Semnalul de mai sus se recalculează de fiecare dată, deci rămâne vizibil cât timp cifrele diferă.</span>`)
+          ? (p.validare && p.validare.stare_coada === "respinsa"
+            ? `<span class="caseta-atentie" style="display:block"><span class="ca-mesaj">Nota #${p.nota_id} a fost respinsă la validare: ${esc(p.validare.motiv_respingere || "fără motiv")}. Corecteaz-o în Registrul-jurnal și trimite-o din nou.</span></span>`
+            : `<span class="tip-micut">${p.validare && p.validare.stare_coada === "la_senior" ? `Nota #${p.nota_id} e la validare în cabinet.`
+              : (p.validare && p.validare.stare_coada === "aprobata" ? `Nota #${p.nota_id} e validată.` : `Nota există deja în jurnal (ciornă #${p.nota_id}).`)} Semnalul de mai sus se recalculează de fiecare dată, deci rămâne vizibil cât timp cifrele diferă.</span>`)
           : `<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Scrie nota ciornă</button>
              <span class="tip-micut" style="margin-left:8px">Ciornă, nu validată: validării îi rămâne al doilea om.</span>`}</p>
       </div>`;
@@ -3662,10 +3662,10 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       if (inEditare === n.id) return editor(n);
       // [validare_note 06.10.2026, comanda Costin pct.1] starea notei în coada de validare a cabinetului (din aceeași coadă)
       const v = n.validare;
-      const respinsa = n.status === "ciorna" && v && v.stare === "respinsa";
+      const respinsa = n.status === "ciorna" && v && v.stare_coada === "respinsa";
       const stareValidare = respinsa
-        ? `<div class="caseta-atentie jn-respinsa"><div class="ca-mesaj">Respinsă la validare: ${esc(v.motiv || "fără motiv")}. Corecteaz-o, apoi trimite-o din nou.</div></div>`
-        : (n.status === "ciorna" && v && v.stare === "la_senior" ? `<div class="pf-frand-sub">La validare în cabinet.</div>` : "");
+        ? `<div class="caseta-atentie jn-respinsa"><div class="ca-mesaj">Respinsă la validare: ${esc(v.motiv_respingere || "fără motiv")}. Corecteaz-o, apoi trimite-o din nou.</div></div>`
+        : (n.status === "ciorna" && v && v.stare_coada === "la_senior" ? `<div class="pf-frand-sub">La validare în cabinet.</div>` : "");
       const butoane = n.status === "ciorna" ? `
         <button class="buton-primar" data-val="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Valideaz\u0103</button>
         <button class="buton-secundar" data-edit="${n.id}">Editeaz\u0103</button>
@@ -3777,7 +3777,7 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
     }));
     corp.querySelectorAll("[data-retrimite]").forEach((b) => b.addEventListener("click", async () => {
       try { await api.post(`/tenants/${t.id}/jurnal/${b.dataset.retrimite}/retrimite`, {}); deseneaza(); }
-      catch (e) { eroare(e, "Nu am putut trimite nota din nou la validare"); }
+      catch (e) { arataMesaj(zonaMesaj, (e && e.mesaj) || "Nu am putut trimite nota din nou la validare.", "eroare"); }
     }));
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, "Ștergi această ciornă?", async () => {  // audit_cab_lot2_v1
