@@ -52,7 +52,10 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim: P1 comis `1749dde8` (ramura `lucru/lot-07-10`): D1 (calcul_d112 + build_xml, Perioada, 76 de apelanți, XML identic
     byte cu byte) + zilele certificatului (D112 = statul: 4.636,36 / 17 zile; DUK valid). P2 (pct.2–21) scris și probat pe
     server (`core/test_lot0710_p2.py` 12, `core/test_lot0710_ui.py` 6, trei reguli DS v2.74 în verificator; 17 mutații roșii).
-  - urmator: P2 — proba de browser înainte/după pe 8011 + cele trei unelte vizuale; apoi P3. STARE = IN LUCRU
+    P2 probat în browser înainte/după (`frontend_test/proba_lot0710.py`, 8011, worktree): fiecare punct vizibil schimbat; cele
+    trei unelte vizuale pe codul nou: axe 0 reguli / 0 noduri pe 24 de ecrane, mobil fără derulare orizontală. P2 comis `b8a5d0ce`.
+    P3 comis `f6807786`: 62 de titluri aprobate fără pagină; registrul sincronizat (81 + 1 rânduri) și păzit.
+  - urmator: — (livrat; închiderea pe `main`: registre, artefacte, blocuri generate, poarta completă, four-way, ZIP). STARE = ÎNCHIS
   - pasi:
     P1. `core/d112.py` — pasul D1 al contractului uniform A1 (decizia Costin 04.10, declanșat acum): `calcul_d112(prof, salariati,
         an, luna) -> CalculD112` + `build_xml(calc)` extrase din `_d112_genereaza` (rămâne compunerea lor), `pull` / `genereaza` /
@@ -708,7 +711,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Contract uniform A1 - conversia generatoarelor ramase la contractul {pull, erori_generare, calcul_dNNN, build_xml, genereaza(conn,schema,perioada,...)} (Sesiunea A - arhitectura). Baseline verificator CONTRACT 6, coboara cu 1 la fiecare modul convertit.
 - ultim: modul 7/10 d205 la contract (pull+genereaza(perioada); adaptor _d205; manual strict cheie_manual; DUK d205 valid; baseline 4->3). Convertite: d300,d301,d394,d710,d100,d101,d205. C (d100/d101/d205) GATA. DE DECIS (Costin): D101 build_xml respins de DUK (nu poate fi depusa) - campanie separata structura D101? Consemnat test_datorie_d101_build_xml_respins_de_duk. [citare-istorica: scos la reconstructia D101 03.08]
-- urmator: D1 - d112 (modul 8/10). RISC STRUCTURAL real (SCOPAT 31.07): d112 are DEJA pull+erori_generare; lipsesc calcul_d112+build_xml, ambele inghesuite in _d112_genereaza(prof,salariati,an,luna) ~250 linii unde calculul si XML-ul sunt IMPLETITE in aceeasi bucla per-salariat (fiecare <asigurat> emite XML imediat dupa ce-si calculeaza zecile de valori B1/B2/B3/B4/D/E1/E3 + part-time/CM/tichete; agregatele sum_imp/cas/cass/cam + C1/C2 se acumuleaza in bucla si intra in antet). Fara cusatura curata. Extragerea fidela cere Rezultat care poarta FIECARE valoare din XML (inclusiv randurile B3/D structurate) + proba golden-XML byte-identica pe fixturi ce ating toate ramurile. NEINCEPUT - cere greenlight (vezi DE DECIS). — AMÂNAT prin decizia lui Costin 03.10.2026 (DECIZII 03.10, punctul 3: „nu acum; se face doar când D112 e atins oricum”). STARE = BLOCAT: se face numai împreună cu o schimbare care atinge D112
+- urmator: D1 (d112) EXECUTAT 06.10.2026 în lotul 07.10, commit `1749dde8` (calcul_d112 + build_xml, Perioada, 76 de apelanți, XML identic byte cu byte; baseline 3 -> 2). Rămân D2 (d406) și d390 — fără declanșator (decizia 04.10 privea numai d112). STARE = D1 ÎNCHIS; D2 / d390 NEÎNCEPUTE (opționale)
 - pasi:
   C1. [d100] pull(conn,schema,perioada)->(prof,venituri); genereaza(conn,schema,perioada,manual=None): cota din manual (cheie_manual(manual,"cota")), an=perioada.an, luna=perioada.trim*3, guard trim 1-4; adaptor _d100 -> Perioada(an,trim=), manual={"cota":..}. RED contract + mutatie + proba efemera. Baseline 6->5.
   C2. [d101] pull(conn,schema,perioada)->(prof,r{venituri,cheltuieli}); genereaza(perioada,manual); adaptor _d101 -> Perioada(an). Baseline 5->4.
@@ -719,7 +722,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
   A2. except goale (7 codebase: d406=3 + tenant_provisioning/observare/gdpr_sterge/cron): tratat+documentat ori eliminat, niciunul gol; gard.
   A3. mutant zero sistematic: fiecare din 11 generatoare cu sursa->[] => suita PICA (test permanent, garzi cat.9).
   CONDIȚIE D1 (decizia Costin 04.10.2026): „D112 contract uniform A1 rămâne «nu acum»” — **se execută la prima modificare reală a core/d112.py, în același commit.** Comentariul din capul `core/d112.py` trimite aici. Fără gardă sau instrument (decizia Costin).
-  STARE = REFACTOR OPTIONAL, NEINCEPUT (D1 d112: extragere structurala calcul_d112/build_xml din genereaza = ARHITECTURA/contract uniform, NU blocaj fiscal - d112 e verificat + DUK-valid in clusterele bifate. Se ia doar daca se reia conversia la contractul uniform; nu blocheaza nimic fiscal.)
+  STARE = D1 ÎNCHIS (06.10.2026, `1749dde8`); D2 d406 / d390 = REFACTOR OPTIONAL, NEINCEPUT [citare-istorica: forma de dinainte — D1 d112: extragere structurala calcul_d112/build_xml din genereaza = ARHITECTURA/contract uniform, NU blocaj fiscal - d112 e verificat + DUK-valid in clusterele bifate. Se ia doar daca se reia conversia la contractul uniform; nu blocheaza nimic fiscal.)]
 
 - fir: Granite API — cota TVA lipsa = intrare incompleta -> eroare, nu default 21 (Sesiunea A · TVA, sub-fir temeiuri)
 - ultim: masurare livrata — 80 cote "fara temei" = 79 TVA reale (1 fals-poz), 3 valori (21/11/19), cluster TVA verificat, 0 de cercetat / ~20 granite de reparat, rest ACCEPTATE (etaloane/fixtures/parametri). Directie confirmata Costin: default ELIMINAT, nu inlocuit; nedeterminat != 21; scutit 0 pastrat.

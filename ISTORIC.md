@@ -1630,3 +1630,21 @@ Intrările de mai sus, ale aceleiași zile, au detaliul. Pe scurt:
 - **Baza de producție:** două migrări de structură (după backup verificat): metoda de stoc + contorul documentelor interne, apoi coada
   de validare a notelor (autorul notei + sincronizarea cu jurnalul). Nicio cifră existentă schimbată.
 
+
+## 06.10.2026 — Lotul 07.10: D112 ziua de diminuare, retestul F5/F1, titlurile aprobate nepublicate (comanda Costin)
+
+Trei părți, fiecare cu commitul ei pe ramura `lucru/lot-07-10` (fără poartă completă între ele), apoi închiderea pe `main` cu o
+singură poartă completă. Decizia, verbatim, și consecințele: DECIZII 06.10.2026 („Lotul 07.10”).
+
+- **P1 — D112 (`1749dde8`).** Pasul D1 al contractului uniform: `calcul_d112` + `build_xml` extrase din generator, `pull` /
+  `genereaza` / `obligatii` pe `Perioada`, 76 de apelanți rescriși; dovada = XML identic byte cu byte pe toate testele D112 (169 de
+  XML-uri, 29 de refuzuri). Apoi reparația: salariul realizat, zilele lucrate, tichetele și pragul part-time pe zilele
+  CERTIFICATULUI, ca statul de plată. Probă: certificat inițial de 5 zile (o zi de diminuare), salariu 6.000 — D112 declara 4.909,09
+  / 18 zile, acum 4.636,36 / 17 zile = statul; CAS 1.384 -> 1.316, CASS 554 -> 527; DUK valid.
+- **P2 — retestul (`b8a5d0ce`).** Cele 20 de puncte (2–21): factura păstrată pe orice drum, butonul spre Date firmă pe refuz,
+  mesajele aduse în vedere, coada pe document (o factură = o validare) și pe pregătire (retrimiterea nu e pregătire nouă), nota la
+  validare blocată la editare/ștergere, data notelor lunare = ultima zi, notificările cu firmă și cu destinație, cardul = fereastra,
+  scadența propusă (Legea 72/2013), istoricul Date firmă lizibil, formularele ascunse chiar ascunse. Pe drum: o probă oarbă (rețeta
+  peste stoc) și o gardă nouă oarbă (prinsă de mutație), reparate.
+- **P3 — titlurile (`f6807786`).** 62 de titluri aprobate fără pagină publicată (exact); registrul de titluri adus la zi (81 de
+  rânduri publicate, rămase „candidat”/„asemănător”, plus un titlu dublat) și păzit.

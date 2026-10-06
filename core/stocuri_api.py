@@ -150,7 +150,8 @@ def descarca_luna(conn, schema, an, luna):
         try:
             _ms.cere(cur, schema, _ms.GV, "Descărcarea lunară a gestiunii")
         except ValueError as e:
-            return {"cod": e.cod, "eroare": str(e), "ecran": getattr(e, "ecran", None)}   # [lotul 07.10 pct.2] ținta refuzului
+            return {"cod": e.cod, "eroare": str(e), "ecran": getattr(e, "ecran", None),   # [lotul 07.10 pct.2] ținta refuzului
+                    "regula": getattr(e, "regula", None)}
     with conn.cursor() as cur:
         cur.execute(f"""SELECT id FROM {schema}.inregistrari
                         WHERE numar = %s OR (sursa = 'stocuri' AND descriere = %s) ORDER BY id""", (cheie, descr))

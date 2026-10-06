@@ -31,6 +31,7 @@ def citeste(cur, schema=""):
 def refuz(cod, mesaj):
     e = ValueError(mesaj)
     e.cod, e.ecran = cod, "date_firma"
+    e.regula = "metoda de stoc a firmei (comanda Costin 06.10.2026, §6.3)"   # [lotul 07.10] regula afirmației tipate
     return e
 
 

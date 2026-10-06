@@ -2225,7 +2225,7 @@ def stocuri_descarcare(tenant_id, an, luna, ctx):
         rez = _s.descarca_luna(conn, schema, an, luna)
     if rez.get("eroare"):
         if rez.get("ecran"):   # [lotul 07.10 pct.2] refuzul care trimite în alt ecran rămâne structurat (butonul spre el)
-            raise _erori.CerereGresita({"cod": rez.get("cod"), "mesaj": rez["eroare"], "ecran": rez["ecran"]})
+            raise _erori.CerereGresita(_uc_comun.refuz_spre_ecran(rez["eroare"], rez.get("cod"), rez["ecran"], rez.get("regula")))
         raise _erori.CerereGresita(rez["eroare"])
     return rez
 
@@ -4818,7 +4818,6 @@ def proforma_transforma(tenant_id, factura_id, ctx):
 def salarii_contare_scrie(tenant_id, an, luna, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/salarii-contare`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an, luna)
-    from datetime import date as _date
     from core import salarii_contare as _sc
     schema = _uc_comun._schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:

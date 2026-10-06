@@ -54,7 +54,7 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
-    ("stocuri_descarcare", '{"cod": rez.get("cod"), "mesaj": rez["eroare"], "ecran": rez["ecran"]}'): (
+    ("stocuri_descarcare", 'refuz_spre_ecran(rez["eroare"], rez.get("cod"), rez["ecran"], rez.get("regula"))'): (
         "Lotul 07.10 pct.2 (comanda Costin 06.10.2026): „orice mesaj care trimite în alt ecran are buton direct spre el”. Refuzul "
         "metodei de stoc nedeclarate (Date firmă) rămâne același refuz (400, același mesaj), dar STRUCTURAT cu ținta `ecran`, ca "
         "ecranul să pună butonul spre Date firmă; un refuz fără țintă rămâne frază, ca înainte."),

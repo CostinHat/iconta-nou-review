@@ -1669,7 +1669,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare
 
-**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 7) · **refuzuri explicite:** 36
+**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 7) · **refuzuri explicite:** 37
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 7.**
 
@@ -1688,7 +1688,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/stocuri/reclasificare` — garda `cere_drept` drept:poate_pregati
 - `POST /tenants/{tenant_id}/stocuri/transfer` — garda `cere_drept` drept:poate_pregati
 
-**Module:** `repo_stocuri`, `stocuri_api`, `stocuri_cv_api`, `uc_comun`
+**Module:** `afirmatii`, `repo_stocuri`, `stocuri_api`, `stocuri_cv_api`, `uc_comun`
 
 **Scrie in:** `articole` (INSERT/UPDATE) · `inregistrari` (INSERT/UPDATE) · `inregistrari_linii` (INSERT) · `miscari_stoc` (INSERT) · `nir` (INSERT) · `nir_linii` (INSERT)
 

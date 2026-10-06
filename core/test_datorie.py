@@ -18,7 +18,6 @@ Un item intra aici DOAR daca e verificabil mecanic. Deciziile de produs, verific
 vizuale si sarcinile juridice raman in DE_FACUT/LANSARE - dar atunci stii ca acolo e doar
 ce NU se poate automatiza, nu un depozit.
 """
-from core.common import Perioada  # [D1, lotul 07.10] d112.pull/genereaza(conn, schema, perioada)
 import datetime
 import pathlib
 import re

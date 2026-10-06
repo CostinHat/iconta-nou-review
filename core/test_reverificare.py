@@ -126,7 +126,10 @@ DISTRIBUTIE = {
     # 24 -> 25 la 02.10.2026 (D212 Etapa 2): OPANAF 2736/2025 (instructiunile D212) - temei fara articol.
     # 25 -> 26 la 02.10.2026 (D212 Etapa 3): OPANAF 2736/2025 (instructiunile D212, rd.9 subsectiunea I.1.2) -
     # numitorul de 365 de zile al proratarii normei; anexa numeroteaza puncte, nu articole -> frecventa necitibila.
-    ("NECUNOSCUT", "NECUNOSCUT"): 26,
+    # 26 -> 27 la 06.10.2026 (lotul 07.10 pct.18): `facturi_api.SCADENTA_PROPUSA` — Legea 72/2013 art.3 alin.(3) lit.a (scadența
+    # propusă pe formularul facturii, 30 de zile). Masurat cu R.inventar: documentul adus (anaf_surse/legea_72_2013.html) nu
+    # consemneaza NICIO modificare, deci frecventa nu se poate citi; consecinta NECUNOSCUT (nu ajunge intr-o declaratie).
+    ("NECUNOSCUT", "NECUNOSCUT"): 27,
 }
 
 _AZI = datetime.date(2026, 8, 31)

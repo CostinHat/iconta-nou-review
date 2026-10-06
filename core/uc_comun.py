@@ -94,8 +94,20 @@ def _mesaj_intrare(e):
     # [lotul 07.10 pct.2] un refuz care trimite în ALT ecran (metoda de stoc -> Date firmă) își păstrează ținta: ecranul pune
     # butonul spre ea (`static/js/ecrane/ecran_destinatie.js`). Fără asta, `str(e)` turtea refuzul la o frază.
     if getattr(e, "ecran", None):
-        return {"cod": getattr(e, "cod", None), "mesaj": str(e), "ecran": e.ecran}
+        return refuz_spre_ecran(str(e), getattr(e, "cod", None), e.ecran, getattr(e, "regula", None))
     return str(e)
+
+
+#: ecranul-țintă al unui refuz, cu numele pe care îl vede omul (cheile = `ECRANE` din `ecran_destinatie.js`)
+_UNDE_ECRAN = {"date_firma": "Date firmă"}
+
+
+def refuz_spre_ecran(mesaj, cod, ecran, regula=None, tip="operatiune"):
+    """[lotul 07.10 pct.2] Corpul refuzului care trimite în alt ecran, ca AFIRMAȚIE TIPATĂ (`neconformitate`, decizia 21.08):
+    `cod`, `mesaj` și `ecran` (ținta butonului „Deschide …”). O singură formă pentru toate drumurile."""
+    from core import afirmatii as _af
+    return _af.afirmatie("neconformitate", tip, mesaj, unde=_UNDE_ECRAN.get(ecran, ecran),
+                         regula=regula or "refuz cu țintă de ecran", cod=cod, mesaj=mesaj, ecran=ecran)
 
 
 def _login_blocat(email):

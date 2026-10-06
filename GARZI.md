@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**700 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**704 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 665
+### `core/` — 669
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8989,6 +8989,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d112_mesaje_afisate.py` — GARD d112_mesaje_afisate: mesajele de business ridicate cu `raise ValueError(...)` din d112.py
 - `core/test_d112_nume_dataang.py` — [catalog D112 1.8/1.9] numeAsig gol + data_angajare NULL refuzate PRE-DUK.
 - `core/test_d112_reconciliere.py` — core/test_d112_reconciliere.py — gardul A DOUA CALE D112 (05.08.2026, campanie pas 3/6).
+- `core/test_d112_ziua_diminuare.py` — D112 — ziua de diminuare a certificatului inițial de concediu medical (lotul 07.10, decizia Costin „DA”, 06.10.2026).
 - `core/test_d114_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D114 gol NU produce declaratie; declarantul + cel putin un
 - `core/test_d177.py` — Teste D177 (redirectionare impozit pe profit catre entitati nonprofit).
 - `core/test_d177_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D177 gol NU produce declaratie.
@@ -9211,6 +9212,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_get_fara_scriere.py` — GARD (20.08.2026): o rută GET nu scrie în starea de business. GET trebuie să fie SAFE (RFC 9110 §9.2.1).
 - `core/test_ghid_d212_afirmatii.py` — GARD — afirmațiile RETRASE despre D212 nu mai pot apărea în ghiduri și în ajutorul F246.
 - `core/test_ghid_poarta.py` — GARD — poarta de verificare pre-publicare a ghidurilor (core/ghid_poarta.py).
+- `core/test_ghid_registru_sincron.py` — GARD — registrul de titluri (`index_titluri_ghid.csv`) nu spune „nepublicat” despre un ghid care e publicat.
 - `core/test_ghiduri_servite.py` — Gard: ghid/ e SURSA UNICA a paginilor publice de ghid.
 - `core/test_golden_xsd.py` — GARD completitudine golden-XSD: fiecare XSD de declaratie din corpus (anaf_surse/*.xsd +
 - `core/test_graf_clustere_proprietar.py` — GARD (R19): o funcție partajată între clustere NU e proprietatea niciunuia.
@@ -9259,6 +9261,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_lot0610_p2.py` — GARDA părții 2 din comanda Costin 06.10.2026 — ghidurile /ghid, structură pentru indexare.
 - `core/test_lot0610_p3.py` — GARDA părții 3 din comanda Costin 06.10.2026 — salarii F5 SRL Salariati, octombrie 2026.
 - `core/test_lot0610_p4.py` — GARDA părții 4 din comanda Costin 06.10.2026 — povestea lunii.
+- `core/test_lot0710_p2.py` — Lotul 07.10, partea 2 — retestul Costin din 06.10.2026 (F5 salarii nov. 2026, F1 factură): gărzile pe server.
+- `core/test_lot0710_ui.py` — Lotul 07.10, partea 2 — gărzile pe ecrane (JS), pe NUMĂRĂTOARE de structuri, nu pe apartenența unui șir.
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
