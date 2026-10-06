@@ -371,7 +371,7 @@ def test_datorie_coada_din_ecran_poarta_formularul():
     src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/declaratii.js").read_text(encoding="utf-8")
     pas3 = src[src.index("async function pas3("):]
     pas3 = pas3[:pas3.index('await api.post("/coada", body)')]
-    assert "manual" in pas3 and "obligatii" in pas3
+    assert re.search(r"body\.manual\s*=", pas3) and re.search(r"body\.obligatii\s*=", pas3)
 
 
 @pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g08, Chirii/comodat): `nota-chirie` întoarce {inregistrari: [id…]}, iar ecranul Operațiuni speciale caută `r.inregistrare_id` -> după ce nota ciornă #20 (8038=891, 1.000) s-a scris, contabilul citește «Calcul (nu s-a generat nicio notă): inregistrari: 20»")
@@ -379,7 +379,7 @@ def test_datorie_operatiuni_ecran_recunoaste_mai_multe_note():
     src = (pathlib.Path(__file__).resolve().parent.parent / "static/js/ecrane/operatiuni_ecran.js").read_text(encoding="utf-8")
     bloc = src[src.index("const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`"):]
     bloc = bloc[:bloc.index("} catch (e) {")]
-    assert "inregistrari" in bloc
+    assert re.search(r"\br\.inregistrari\b", bloc)
 
 
 @pytest.mark.xfail(strict=True, reason="DATORIE 06.10.2026 (parcurgerea g09, Agricultori): în registrul ecranului Operațiuni speciale două operațiuni au aceeași cheie `agricultor` («Vânzare către agricultor» și «Achiziție de la agricultor (compensare 8%)»); ecranul alege cu `REGISTRU.find(cheie)` -> butonul «Achiziție de la agricultor» deschide formularul de VÂNZARE (probat pe ecran: nota 4111=704)")

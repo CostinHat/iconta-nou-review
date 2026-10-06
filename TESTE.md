@@ -52,7 +52,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     (`emitere_ecran.js?v=e1df22f30d`, fără ciornă), publicarea a venit la 19:15:26, autentificarea la 19:46:51; urmărirea versiunii
     (`versiune.js`) își ia referința la PRIMA citire, care pornește abia la autentificare -> referința = amprenta nouă -> anunțul
     „Versiune nouă” nu apare niciodată. Pe HEAD, în probă, ciorna trece drumul exact și toate ieșirile (`frontend_test/proba_ciorna_factura.py`).
-  - urmator: închiderea pe `main` (poarta completă o dată, publicare four-way, ZIP-urile). STARE = IN LUCRU
+  - urmator: — (livrat; închiderea pe `main`: PREDARE rescrisă, poarta completă o dată, four-way, ZIP-urile). STARE = ÎNCHIS
   - livrat P1: commit `de36b2a1` pe `lucru/ciorna-parcurgere` (pasul 6).
   - livrat P2 (pasul 7): 67 de puncte parcurse pe `de36b2a1`; 15 constatări (C1–C15): 5 datorii noi xfail strict în
     `core/test_datorie.py`, restul în GARZI 06.10.2026; raportul în `iconta_parcurgere_g08_g09_g11.zip`.

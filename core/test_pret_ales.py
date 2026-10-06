@@ -15,25 +15,32 @@ from core import facturi_api, stocuri_cv_api
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def _campuri(linii, prefix="em-l"):
-    return {x["camp"] for x in facturi_api.linii_campuri_lipsa(linii, prefix=prefix)}
+def _pret(linii, prefix="em-l"):
+    """Câmpurile de PREȚ refuzate (structura răspunsului, nu un text căutat în el)."""
+    return sorted(x["camp"] for x in facturi_api.linii_campuri_lipsa(linii, prefix=prefix) if x["camp"].endswith("-pret_unitar"))
+
+
+_CARTE = {"descriere": "Carte – Ghid contabil 2026", "cantitate": 2}
 
 
 def test_linia_fara_pret_se_refuza_langa_camp():
     """MUTAȚIE: verificarea prețului scoasă din `linii_campuri_lipsa` -> pică."""
     # Temei: CF art.319 alin.(20) lit.i — factura cuprinde obligatoriu „prețul unitar, exclusiv taxa”.
-    for fara in ({}, {"pret_unitar": None}, {"pret_unitar": ""}, {"pret_unitar": "  "}):
-        assert "em-l0-pret_unitar" in _campuri([dict({"descriere": "Carte – Ghid contabil 2026", "cantitate": 2}, **fara)])
+    assert _pret([dict(_CARTE)]) == ["em-l0-pret_unitar"]                       # câmpul lipsă
+    assert _pret([dict(_CARTE, pret_unitar=None)]) == ["em-l0-pret_unitar"]     # null (ecranul trimite golul așa)
+    assert _pret([dict(_CARTE, pret_unitar="")]) == ["em-l0-pret_unitar"]       # șir gol
+    assert _pret([dict(_CARTE, pret_unitar="  ")]) == ["em-l0-pret_unitar"]     # spații
+    assert _pret([dict(_CARTE, pret_unitar=45), dict(_CARTE)]) == ["em-l1-pret_unitar"]   # numai linia fără preț
 
 
 def test_pretul_zero_scris_de_om_ramane_permis():
-    assert "em-l0-pret_unitar" not in _campuri([{"descriere": "Mostră", "cantitate": 1, "pret_unitar": 0}])
-    assert "em-l0-pret_unitar" not in _campuri([{"descriere": "Mostră", "cantitate": 1, "pret_unitar": "0"}])
+    assert _pret([{"descriere": "Mostră", "cantitate": 1, "pret_unitar": 0}]) == []
+    assert _pret([{"descriere": "Mostră", "cantitate": 1, "pret_unitar": "0"}]) == []
 
 
 def test_factura_recurenta_fara_pret_se_refuza_pe_campul_ei():
     """Același contract pe șablonul facturii recurente (prefixul `fr-l`)."""
-    assert "fr-l0-pret_unitar" in _campuri([{"descriere": "Abonament", "cantitate": 1}], prefix="fr-l")
+    assert _pret([{"descriere": "Abonament", "cantitate": 1}], prefix="fr-l") == ["fr-l0-pret_unitar"]
 
 
 def _implicit(clasa, camp):
@@ -55,6 +62,8 @@ def test_modelele_nu_pun_un_pret_implicit():
 def test_intrarea_in_stoc_fara_pret_se_refuza_inainte_de_a_crea_articolul():
     """`conn=None`: refuzul vine ÎNAINTE de orice interogare (înainte, articolul nou se crea și abia apoi se valida prețul,
     iar `Decimal(str(None))` ieșea 500). MUTAȚIE: verificarea scoasă -> `None.cursor` -> AttributeError -> pică."""
-    for fara in ({}, {"pret_unitar": None}, {"pret_unitar": ""}):
-        r = stocuri_cv_api.intrare(None, "tenant_x", dict({"denumire": "Articol nou", "cantitate": 1, "data": "2099-01-01"}, **fara))
-        assert "Prețul unitar al intrării lipsește" in r["eroare"]
+    corp = {"denumire": "Articol nou", "cantitate": 1, "data": "2099-01-01"}
+    refuz = "Prețul unitar al intrării lipsește. Scrie prețul de achiziție; nu se presupune niciunul."
+    assert stocuri_cv_api.intrare(None, "tenant_x", dict(corp)) == {"eroare": refuz}
+    assert stocuri_cv_api.intrare(None, "tenant_x", dict(corp, pret_unitar=None)) == {"eroare": refuz}
+    assert stocuri_cv_api.intrare(None, "tenant_x", dict(corp, pret_unitar="")) == {"eroare": refuz}

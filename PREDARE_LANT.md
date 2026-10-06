@@ -1,14 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **ziua 06.10.2026 închisă: lotul 07.10 publicat (D112 pasul D1 + ziua de diminuare, retestul F5/F1, titlurile); nicio decizie cerută**
+# PREDARE LANȚ — **ziua 06.10.2026 închisă: ciorna facturii (a patra pierdere = fila veche) + parcurgerea g11/g08/g09 publicate; trei decizii cerute**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-06** (lotul 07.10), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `f6807786` (ultimul commit de lucru al lotului 07.10; P1 `1749dde8` · P2 `b8a5d0ce` · P3 `f6807786`, ramura `lucru/lot-07-10`); `main` avansat
-  fast-forward la ea, iar commitul de închidere (registre + artefacte + blocuri generate) e cel care poartă această predare și rulează
-  poarta completă. Ziua de dinainte: `a7dcb741` / `3ae8d5b0`.
-- **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul lotului 07.10
+- **ultima rescriere**: **2026-10-06** (ciorna facturii + parcurgerea g11/g08/g09), COMPLETĂ pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `d116ec9f` (ultimul commit de lucru; P1 `de36b2a1` · P2 `d116ec9f`, ramura `lucru/ciorna-parcurgere`); `main` avansat
+  fast-forward la ea, iar commitul de închidere (această predare) e cel care rulează poarta completă. Ziua de dinainte: `2e69e77c`.
+- **four-way**: se închide la `post-commit`-ul commitului de închidere; SHA-ul, ora și cifrele porții sunt în raportul turei
   (un fișier nu poate purta hash-ul commitului care îl conține). Verificare: `scripts/toate_poarta_head.py <SHA complet>`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
@@ -36,6 +35,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 | **fluxul de factură F1 — D** (pct.10–12): Stocuri cu situația stocului întâi, formularele la cerere, Rețete numai HoReCa (CAEN din CF), a doua descărcare a lunii refuzată, descărcarea din factură nedublată, fereastra firmei pe cinci grupuri dintr-o sursă (`GRUPURI_FIRMA`), Solicitări în fereastră | `eafc7b8c` | `iconta_testare_factura_F1.zip` |
 | **lotul 06.10** (comanda Costin, patru părți): P1 seria obligatorie, documentul intern, metoda de stoc, jurnalul Date firmă; P2 /ghid pe teme, 301, înrudite, surse oficiale; P3 salariile din aceleași sume ca D112, 421 la ban, rotunjirea explicită; P4 povestea fără marcaje, „înainte de impozit”, fără restanțe | `14fc0cb6` `2f698e19` `27335044` `c961d8a0` | `iconta_lot_06_10.zip` |
 | **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate [cifră corectată în lotul 07.10: 62] | `11cd3150` `a7dcb741` | `iconta_validare_note.zip` |
+| **ciorna facturii, a patra pierdere + parcurgerea g11/g08/g09** (comanda Costin 06.10 seara): cauza = fila încărcată pe codul vechi, iar „Versiune nouă” își lua referința la autentificare (acum: la încărcare); prețul și articolul pe care nu le-a ales omul (emitere, recurentă, stoc, rețetă, transfer, reclasificare, fișa de magazie; prețul lipsă refuzat de server); 67 de puncte parcurse, 15 constatări (5 datorii xfail strict) | `de36b2a1` · `d116ec9f` | `iconta_ciorna_factura.zip` · `iconta_parcurgere_g08_g09_g11.zip` |
 | **lotul 07.10** (comanda Costin, trei părți): P1 D112 pasul D1 (calcul_d112 + build_xml, Perioada, XML identic) + zilele certificatului (ziua de diminuare); P2 retestul F5/F1 pct.2–21 (factura păstrată, butonul spre ecran, mesajele în vedere, coada pe document și pe pregătire, nota la validare blocată, ultima zi a lunii, notificări, scadența propusă, [hidden]); P3 titlurile: 62, registrul sincronizat | `1749dde8` `b8a5d0ce` `f6807786` + închiderea | `iconta_lot_07_10.zip` |
 
 **Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
@@ -49,6 +49,14 @@ aplicației**, nu „în așteptarea unei teme”:
 | **ce e permis fără să întrebi** | un **prag 1** găsit apăsând |
 
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
+
+- **Constatările parcurgerii g11/g08/g09 (06.10)** — raportul în `iconta_parcurgere_g08_g09_g11.zip`, registrul în GARZI 06.10.2026.
+  **Decizii cerute lui Costin** (raportul turei, §6): (1) pragul part-time D112 pe S2 2026 — aplicația 4.125 (4.325 − 200) față de
+  validatorul instalat 3.750 (4.050 − 300) — și dacă o atenționare DUK oprește coada (ecranul spune că nu, coada o oprește);
+  (2) „ID mijloc fix” → listă din registru; (3) bilanțul prin coadă (pregătit → validat → depus) sau nu. **Datorii xfail strict**
+  (se închid doar prin comandă): D390 nu intră în coadă (500), declarațiile cu formular manual nu ajung în coadă din ecran, „nicio
+  notă” când nota există, „Dovadă” text vs da/nu, cheia `agricultor` dublată. Deschise în GARZI: marja turism negativă, reevaluarea
+  cu cont lipsă, „nimic de amortizat” fără motiv, declarația față de balanța validată, F248 „fără ecran” (cardul există).
 
 - **Contract uniform A1**: pasul D1 (d112) EXECUTAT în lotul 07.10 (`CONTRACT_BASELINE` 3 -> 2). Rămân d406 (D2) și d390 — „nu acum”,
   fără declanșator scris (nu e o restanță care se ia la rând; vezi „Fără o comandă a lui Costin nu se pornește nimic”).
@@ -96,6 +104,18 @@ aplicației**, nu „în așteptarea unei teme”:
    real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
 ## ATENȚIONĂRI — efecte recente care schimbă ce se întâmplă în probe și teste
+
+- **(06.10 seara) Linia de factură fără preț se REFUZĂ** (`linii_campuri_lipsa`: `em-l{i}-pret_unitar` / `fr-l{i}-pret_unitar`;
+  `LinieEmitereIn.pret_unitar` fără 0 implicit) — o fixtură sau un integrator care trimite linii fără `pret_unitar` primește 422 cu
+  câmpul. 0 scris rămâne permis. La fel intrarea în stoc fără preț (refuz ÎNAINTE de a crea articolul).
+- **(06.10 seara) Ingredientul nou al rețetei, transferul și reclasificarea pornesc fără articol** (opțiunea goală); o probă care
+  apasă „+ ingredient” și salvează fără să aleagă articolul primește refuzul `rt-l{i}-articol`.
+- **(06.10 seara, plătit de DOUĂ ori în poartă) După `versioneaza_assets.py --scrie`, TOATE cele trei artefacte cu `ui_hash` se
+  regenerează pe codul final**: `frontend_test/vizual/interactiune_scan.py` (`acoperire_vizuala.json`),
+  `frontend_test/proba_r175_arbore_asistent.py`, `frontend_test/proba_decl50.py` — gărzile `test_acoperire_vizuala`,
+  `test_asistent_arbore`, `test_declaratii_50`. Scanarea rulată ÎNAINTEA versionării lasă amprenta veche și poarta respinge.
+- **(06.10 seara) „Versiune nouă” compară cu amprenta de la ÎNCĂRCAREA paginii** (`versiune.js`, `laIncarcare`): o probă care
+  schimbă `.publicat.json` după încărcare vede anunțul și înainte de autentificare.
 
 - **(lotul 07.10) `d112.pull` / `genereaza` / `obligatii` primesc `Perioada(an=, luna=)`**; calculul e `calcul_d112(prof, salariati, an,
   luna)` (întoarce `CalculD112`), XML-ul `build_xml(calc)`; `_d112_genereaza` rămâne compunerea lor. Un apelant nou cu `(an, luna)`

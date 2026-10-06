@@ -10418,3 +10418,8 @@ Comanda Costin 06.10.2026, partea 2. Raportul complet, punct cu punct (67), cu c
 | C12 declarația față de balanță nu e păzită (D100 59 fără 698/4418; D112 fără notă de salarii; D300 egal doar cu ciornele) | 3. Calcul fiscal | DESCHIS — limita afișată de aplicație („pentru asta e controlul încrucișat”) | cifrele în raport | o pereche de control încrucișat declarație ↔ balanță validată pentru D100/D112 |
 | C14 reevaluare pe MF fără cont de imobilizare → notă cu contul creditor GOL | 3. Calcul / 7. Integritate | DESCHIS | 655 = „” 119.000 | o probă pe schemă efemeră |
 | C15 F248 / ruta `jurnal-marja`: „fără ecran”, dar cardul există | registru | DESCHIS | captura `ecran_Marja_SH.png` | corectarea registrului (nu s-a făcut: comanda cere doar constatări) |
+| C16 achiziția intracomunitară acceptă un furnizor cu cod RO (RO14399840) și scrie operațiunea IC cu țara RO (factură + `d301_operatiuni`); livrarea IC refuză corect clientul RO | 3. Calcul fiscal | DESCHIS | Distributie Profit IC, factura 13 / operațiunea D301 #1 (șterse după probă) | o probă pe schemă efemeră (validarea stă în use-case) |
+
+Curățenia parcurgerii a scăpat inițial 4 rânduri scrise de operațiuni (2 facturi + 1 operațiune D301 pe `tenant_004`, 1 reevaluare pe
+`tenant_005`): le-a găsit garda `test_trasee` (antetul T31: 3 → 4 firme), apoi s-au șters după identificare (factura, D301, reevaluarea).
+Lecție: reperele unei probe care trece prin operațiuni speciale cuprind și `facturi`, `d301_operatiuni`, `reevaluari`, nu doar notele.
