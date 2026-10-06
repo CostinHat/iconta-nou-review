@@ -381,7 +381,7 @@ async function ecranPovestea(corp, nav) {
     if (typeof p.diferenta !== "number") return "";
     const semn = p.diferenta > 0 ? "+" : "";
     const culoare = p.diferenta > 0 ? "var(--verde)" : (p.diferenta < 0 ? "var(--rosu)" : "var(--gri)");
-    return `<span style="color:${culoare};font-weight:600">${semn}${bani(p.diferenta)} lei față de luna anterioară</span>`;
+    return `<span style="color:${culoare};font-weight:600">${semn}${bani(p.diferenta)} lei la rezultatul înainte de impozit, față de luna anterioară</span>`;
   };
   const corpuri = lista.map((p) => `
     <div class="pf-frand">

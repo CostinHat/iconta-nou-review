@@ -10292,3 +10292,19 @@ DECIZII 06.10.2026, consecințele 11–13.
 | 421 la ban | `::test_421_se_compara_la_ban_fara_toleranta` | un verde peste un 421 nesoldat | toleranță de 1 leu -> roșu | — |
 | baza impozitului (HG 1/2016 tit.IV pct.4) | `::test_baza_impozitului_se_rotunjeste_la_leu_dupa_norme` | 0,50 exact rotunjit în sus | ROUND_HALF_UP pe bază -> roșu | — |
 | rotunjirea explicită | `core/test_rotunjire_explicita.py` (3 teste) | un `quantize` fără mod (= bancar implicit) oriunde în producție; CAS pe CM rotunjit bancar | `rounding=` scos din `_taxe_cm_2018` -> roșu (2 teste) | nu judecă CARE mod e corect, cere doar să fie scris |
+
+## 06.10.2026 — Lotul 06.10, partea 4: povestea lunii fără marcaje, rezultatul înainte de impozit, fără restanțe
+
+Categoriile **4. Ieșire către client** (emailul, portalul) și **11. Interfață** (eticheta, textul AI afișat). Deciziile: DECIZII
+06.10.2026, consecințele 14–16.
+
+| gard | fișier | ce face imposibil | mutația care îl probează | limita declarată |
+|---|---|---|---|---|
+| fără marcaje în email | `core/test_lot0610_p4.py::test_emailul_pleaca_fara_marcaje_si_din_povestile_vechi` | „**”, „__”, „# ” în emailul trimis, inclusiv dintr-o poveste aprobată înainte | `text_simplu` scos din `_html` -> roșu | doar marcajele de formatare; un asterisc aritmetic rămâne |
+| fără marcaje la generare | `::test_marcajele_se_scot_la_generare_si_la_salvare` | textul AI ajunge în editor cu marcaje | scos de la generare -> roșu | — |
+| fără marcaje în portal | `::test_portalul_primeste_povestea_fara_marcaje` | clientul vede marcaje în portal | scos din `lista_povesti_aprobate` -> roșu | — |
+| celelalte texte AI | `::test_celelalte_texte_ai_afisate_ies_fara_marcaje` | analiza tiparelor / răspunsul AI la raportare cu marcaje brute | `text_simplu` scos din `tipare_api` sau `raportari_ai` -> roșu (amândouă probate) | modelul simulat; pe comportament, nu pe sursă |
+| rezultat înainte de impozit | `::test_rezultatul_e_inainte_de_impozit` | 691/698/79x în cifra „Rezultat înainte de impozit” | excluderea grupelor scoasă -> roșu | — |
+| eticheta | `::test_eticheta_spune_inainte_de_impozit_in_email_si_in_prompt` | „Rezultat” simplu în email (rândul tabelului) sau în prompt (linia rezultatului) | eticheta veche în email / în prompt -> roșu | pachetul și portalul (JS) le dovedește proba de browser, nu o gardă permanentă — o aserțiune pe sursa JS ar fi pe text (test_garzi_pe_text) |
+| restanțe în prompt | `::test_restantele_nu_intra_in_povestea_pentru_client` | restanțele trimise modelului pentru povestea clientului | linia restanțelor repusă -> roșu | — |
+| restanțe în text | `::test_un_text_care_pomeneste_restante_e_abatere` | un text care pomenește restanțe aprobat fără avertisment | verificarea scoasă din `abateri_termeni` -> roșu | avertizează, nu blochează (textul aprobat e al contabilului) |

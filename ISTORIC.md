@@ -1550,3 +1550,14 @@ cabinetului (pct.12): oprită — mecanismul de validare presupus pentru facturi
 
 **Măsurat:** producție 20/20 de luni-firmă soldează 421 la ban și au CAM = 480; baza de test 41/52 — cele 11 rămase au toate
 concediu medical (indemnizația nu e contabilizată).
+
+## 06.10.2026 — Lotul 06.10, partea 4: povestea lunii (comanda Costin)
+
+**Ce s-a făcut:** povestea pleacă fără marcaje (generare, salvare, email, portal — și poveștile aprobate înainte); aceeași
+curățare pe analiza tiparelor și pe răspunsul AI la raportări; „Rezultat înainte de impozit” pe pachet, email, prompt și portal,
+iar cifra exclude impozitul (691/698, 79x); restanțele nu mai intră în povestea pentru client, iar un text care le pomenește
+e semnalat în editor.
+
+**Proba (browser, asistent, baza de test):** înainte — emailul previzualizat cu „**Veniturile**”, „# Titlu”, „*pozitiv*” și
+„Rezultat 0,00 lei (neutru)”; după — „Veniturile lunii au fost bune. / Titlu / Rezultatul e pozitiv.” și „Rezultat înainte de
+impozit 0,00 lei (neutru)”.

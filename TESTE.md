@@ -882,7 +882,8 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
     înrudite, încadrare, plafonul temelor, căi interne, sursa oficială)
     P3.11 + P3.13 (commitul „Lot 06.10 partea 3 …”) — gărzi `core/test_lot0610_p3.py` (7) + `core/test_rotunjire_explicita.py` (3);
     P3.12 BLOCAT: premisa comenzii („dacă facturile au deja un mecanism de validare”) nu se regăsește — decizie cerută.
-  - urmator: P4.14. STARE = IN LUCRU
+    P4.14–P4.16 (commitul „Lot 06.10 partea 4 …”) — gărzi `core/test_lot0610_p4.py` (8).
+  - urmator: închiderea lotului (migrările de producție după backup, regenerări, poarta completă pe main, publicare, ZIP). STARE = IN LUCRU
   - pasi:
     P1.1 (§6.1) seria obligatorie la emitere: lipsă la deschidere + refuz numit la emitere; seria se setează din mesaj, emiterea
          continuă (factura păstrată); facturile emise neatinse.

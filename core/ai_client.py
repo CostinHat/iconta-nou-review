@@ -9,6 +9,23 @@ import os
 _MODEL = "claude-sonnet-4-6"  # echilibru calitate/cost pentru narativ
 
 
+import re as _re
+
+# [lot 06.10 pct.14, comanda Costin 06.10.2026] Textul generat de model ajunge pe ecrane și în emailuri ca TEXT SIMPLU (esc +
+# rânduri păstrate), nu ca markdown — deci marcajele lui de formatare (`**`, `__`, `*cuvânt*`, `# titlu`) apar brute.
+# `text_simplu` le scoate; e SURSA UNICĂ a regulii pentru orice text AI afișat (povestea lunii, analiza tiparelor, răspunsul
+# la o raportare). Un asterisc care nu e marcaj (`2 * 3`, `4*5`) rămâne.
+_MARCAJ_DUBLU = _re.compile(r"\*\*|__")
+_MARCAJ_SIMPLU = _re.compile(r"(?<![\w*])\*(?=\S)([^*\n]+?)(?<=\S)\*(?![\w*])")
+_TITLU_MD = _re.compile(r"^[ \t]{0,3}#{1,6}[ \t]+", _re.M)
+
+
+def text_simplu(text):
+    if not text:
+        return text
+    return _MARCAJ_DUBLU.sub("", _MARCAJ_SIMPLU.sub(r"\1", _TITLU_MD.sub("", text)))
+
+
 def disponibil():
     """True daca exista cheie configurata."""
     return bool(os.environ.get("ANTHROPIC_API_KEY"))

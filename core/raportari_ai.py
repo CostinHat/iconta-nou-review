@@ -56,7 +56,7 @@ def triaj(subiect, text):
                                         model="claude-haiku-4-5")  # triaj = sarcina de clasificare+ghidaj: modelul rapid
         d = json.loads(brut.replace("```json", "").replace("```", "").strip())
         if d.get("decizie") == "raspund" and (d.get("raspuns") or "").strip():
-            return {"decizie": "raspund", "raspuns": d["raspuns"].strip()}
+            return {"decizie": "raspund", "raspuns": ai_client.text_simplu(d["raspuns"].strip())}   # [lot 06.10 pct.14]
         return {"decizie": "escaladez", "motiv": (d.get("motiv") or "nespecificat")[:300]}
     except Exception as e:
         return {"decizie": "escaladez", "motiv": ("eroare AI: %s" % e)[:300]}

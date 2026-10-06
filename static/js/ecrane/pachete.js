@@ -101,7 +101,7 @@ function randeazaLucru(corp, nav) {
     <div class="panou pac-rezumat">
       <div class="pac-rez-rand"><span>Venituri</span><b>${bani(rz.venituri)}</b></div>
       <div class="pac-rez-rand"><span>Cheltuieli</span><b>${bani(rz.cheltuieli)}</b></div>
-      <div class="pac-rez-rand pac-rez-total"><span>Rezultat</span><b>${bani(rz.rezultat)} (${esc(rz.tip)})</b></div>
+      <div class="pac-rez-rand pac-rez-total"><span>Rezultat înainte de impozit</span><b>${bani(rz.rezultat)} (${esc(rz.tip)})</b></div>
       <div class="pac-rez-rand"><span>Declarații depuse</span><b>${esc(depuse)}</b></div>
       <div class="pac-rez-rand"><span>Email antreprenor</span><b>${esc(rz.email||"— nesetat —")}</b></div>
     </div>

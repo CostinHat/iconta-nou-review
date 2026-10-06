@@ -17176,3 +17176,14 @@ pe toate și publică four-way. Alternativa respinsă: patru commituri pe `main`
    fracțiunilor de până la 50 de bani inclusiv sau prin majorarea la leu a fracțiunilor ce depășesc 50 de bani”. Elena:
    4.254,54 -> 4.255 -> 425,50 (declarat 426, pct.11). Codul folosea deja ROUND_HALF_DOWN; gard nou pe cazul 0,50 exact.
 
+**Consecințe (executor) — partea 4 (povestea lunii):**
+14. **(pct.14) Fără marcaje brute.** Povestea e text simplu; `ai_client.text_simplu` (sursa unică) scoate `**`, `__`,
+   `*cuvânt*`, `# titlu` la generare, la salvare, în email și în portal (o poveste aprobată înainte de reparație nu pleacă cu
+   ele). Generalizare: analiza tiparelor (ecranul cabinetului) și răspunsul AI la o raportare se afișau la fel, brut — acum
+   trec prin aceeași funcție.
+15. **(pct.15) „Rezultat înainte de impozit”** pe pachet, în email, în prompt și în portal („… la rezultatul înainte de
+   impozit, față de luna anterioară”). Cifra însăși exclude acum grupa 69 (691/698) și grupa 79 (OMFP 1802/2014, funcțiunea
+   conturilor) — înainte, în luna în care cădea nota impozitului (trimestrial), aceeași etichetă însemna rezultat DUPĂ impozit.
+16. **(pct.16) Decizia A:** promptul nu mai primește restanțele (nici instrucțiunea de a le pomeni); un text care le pomenește
+   (restanț-, nedepus-, termen depășit, întârziere) e abatere afișată în editor înainte de aprobare. Restanțele rămân vizibile
+   contabilului (răspunsul generării), nu clientului.

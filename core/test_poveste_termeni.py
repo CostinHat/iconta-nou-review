@@ -80,7 +80,7 @@ def test_emailul_arata_cifrele_pachetului_si_cu_povestea_goala():
     """Pct.7. MUTAȚIE: tabelul de cifre scos din `_html` -> pică. Previzualizarea e aceeași funcție (`preview_html`)."""
     h = P._html(dict(RZ), 2026, 8, "", "Cu salutări,")
     text = re.sub(r"<[^>]+>", " ", h)
-    for eticheta, suma in (("Venituri", "1.000,00 lei"), ("Cheltuieli", "1.200,00 lei"), ("Rezultat", "-200,00 lei (pierdere)")):
+    for eticheta, suma in (("Venituri", "1.000,00 lei"), ("Cheltuieli", "1.200,00 lei"), ("Rezultat înainte de impozit", "-200,00 lei (pierdere)")):
         assert re.search(r"%s\s+%s" % (eticheta, re.escape(suma)), text), (eticheta, text)
     assert re.search(r"Povestea lunii nu e scrisă încă", text)
 

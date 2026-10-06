@@ -12,6 +12,7 @@ import psycopg2.extras as _E
 from decimal import Decimal
 
 from core import motor, ai_client, observare
+from core.ai_client import text_simplu
 
 
 # Tabela public.pachet_povestea (tenant_id, an, luna, text, status, updated_at) traieste in prod;
@@ -76,6 +77,12 @@ def rezumat_luna(conn_schema, conn_public, tenant_id, an, luna):
     }
 
 
+# [lot 06.10 pct.14, comanda Costin] „În email apar marcaje «**» netransformate. Emailul se trimite fără marcaje brute.”
+# Povestea e TEXT SIMPLU; regula e `ai_client.text_simplu` (sursa unică pentru orice text AI afișat), aplicată la generare,
+# la salvare și la orice afișare a unui text deja salvat (emailul, portalul) — o poveste aprobată înainte de reparație nu
+# pleacă cu marcaje.
+
+
 # ---------- narativ AI ----------
 LUNI = ["", "ianuarie","februarie","martie","aprilie","mai","iunie",
         "iulie","august","septembrie","octombrie","noiembrie","decembrie"]
@@ -102,6 +109,7 @@ def _restante_desc(lipsa):
 TERMENI_PACHET = ("venituri", "cheltuieli", "rezultat")
 _SINONIME_INTERZISE = re.compile(r"(?i)\b(?:încas\w*|incas\w*|câștig\w*|castig\w*|bani\s+intra\w*|cifr[ăa]\s+de\s+afaceri|"
                                  r"(?:a|au)\s+intrat\s+în\s+cont)")
+_RESTANTE = re.compile(r"(?i)\b(?:restan\w*|nedepus\w*|termen(?:ul|e|ele)?\s+dep[aă][sș]\w*|întârzier\w*|intarzier\w*)")
 _SUMA_LEI = re.compile(r"(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d+(?:,\d{1,2})?)\s*(?:de\s+)?lei\b", re.I)
 
 
@@ -130,13 +138,16 @@ def abateri_termeni(text, rz):
         out.append("termen: profit (pachetul arată pierdere)")
     if rz.get("tip") == "profit" and re.search(r"(?i)\bpierdere", text or ""):
         out.append("termen: pierdere (pachetul arată profit)")
+    if _RESTANTE.search(text or ""):   # [lot 06.10 pct.16, decizia A] nu în povestea pentru client
+        out.append("restanțe: povestea pentru client nu pomenește declarațiile restante (decizia A)")
     return out
 
 
 def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
     depuse = ", ".join(rz["declaratii_depuse"]) if rz["declaratii_depuse"] else "nicio declaratie"
-    restante_linie = (("- Declaratii RESTANTE (nedepuse, termen depasit): %s\n" % restante_desc)
-                      if restante_desc else "- Declaratii restante: niciuna\n")
+    # [lot 06.10 pct.16, decizia A a lui Costin] „Restanțele declarațiilor nu apar în povestea trimisă clientului.” Promptul
+    # nu le mai primește (parametrul rămâne pentru semnătură, nefolosit), iar `abateri_termeni` prinde un text care le pomenește.
+    del restante_desc
     calificativ = rz["tip"] or "neutru"   # exact cuvântul din pachet (profit / pierdere / neutru)
     corectie_linie = (("\nATENTIE: varianta anterioara a scris %s. Rescrie folosind DOAR termenii si sumele de mai sus.\n"
                        % "; ".join(corectie)) if corectie else "")
@@ -145,20 +156,20 @@ def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
         "in limba romana, pe intelesul unui om care NU e contabil. Ton cald, profesional, clar. "
         "2-3 paragrafe scurte. Fara titlu, fara semnatura.\n\n"
         "Date despre %s, luna %s %d (exact cum apar in pachetul lunar pe care patronul il vede alaturi):\n"
-        "- Venituri: %s\n- Cheltuieli: %s\n- Rezultat: %s (%s)\n"
-        "- Declaratii depuse la ANAF: %s\n"
-        "%s\n"
+        "- Venituri: %s\n- Cheltuieli: %s\n- Rezultat inainte de impozit: %s (%s)\n"
+        "- Declaratii depuse la ANAF: %s\n\n"
         "TERMENII SI CIFRELE (obligatoriu): foloseste EXACT cuvintele «venituri», «cheltuieli» si «rezultat», cu sumele "
         "de mai sus, scrise la fel. Veniturile NU sunt «incasari» (banii intrati in cont sunt alt lucru) si NU sunt "
         "«castig»; nu spune «a castigat», «a incasat», «bani intrati», «cifra de afaceri». Rezultatul il numesti "
-        "«rezultat»; daca il califici, spui doar «%s», ca in pachet. Nu inventa alte sume in lei.\n"
+        "«rezultat»; daca il califici, spui doar «%s», ca in pachet. Rezultatul e INAINTE de impozit: nu-l numi «profit net» "
+        "si nu scade din el niciun impozit. Nu inventa alte sume in lei.\n"
         "Scrie povestea lunii: cum a mers firma, ce inseamna rezultatul in termeni simpli. "
         "Daca rezultatul e pierdere, explica fara alarmism. "
-        "NU afirma ca firma e la zi sau ca nu are restante decat daca lista de datorate/lipsa e goala; "
-        "daca exista restante, mentioneaza-le concret, fara alarmism. "
+        "Nu vorbi despre declaratii restante, nedepuse sau termene depasite si nu afirma ca firma e «la zi»: "
+        "situatia declaratiilor o discuta contabilul separat. "
         "Daca nu sunt date, spune simplu ca luna a fost fara activitate inregistrata.%s"
     ) % (rz["nume_firma"] or "firma", LUNI[luna] if 1 <= luna <= 12 else str(luna), an,
-         _lei(rz["venituri"]), _lei(rz["cheltuieli"]), _lei(rz["rezultat"]), calificativ, depuse, restante_linie,
+         _lei(rz["venituri"]), _lei(rz["cheltuieli"]), _lei(rz["rezultat"]), calificativ, depuse,
          calificativ, corectie_linie)
 
 
@@ -176,7 +187,8 @@ def genereaza_poveste(conn_schema, conn_public, tenant_id, an, luna, schema):
     abateri = None
     try:
         for _incercare in range(2):
-            text = ai_client.genereaza_text(_prompt_poveste(rz, an, luna, restante_desc, corectie=abateri), max_tokens=900)
+            text = text_simplu(ai_client.genereaza_text(_prompt_poveste(rz, an, luna, restante_desc, corectie=abateri),
+                                                         max_tokens=900))
             abateri = abateri_termeni(text, rz)
             if not abateri:
                 break
@@ -198,7 +210,7 @@ def get_poveste(conn_public, tenant_id, an, luna):
 
 
 def salveaza_poveste(conn_public, tenant_id, an, luna, text, status="ciorna"):
-    text = (text or "").strip()
+    text = text_simplu((text or "").strip())
     if not text:
         return {"ok": False, "cod": "TEXT_GOL"}
     pass  # tabela creata manual (owner iconta_user)
@@ -226,9 +238,9 @@ def _html(rz, an, luna, poveste, semnatura):
     cifre = ("<table style='border-collapse:collapse;margin:0 0 16px'>%s%s%s%s</table>" % (
         rand % ("Venituri", esc(_lei(rz.get("venituri") or 0))),
         rand % ("Cheltuieli", esc(_lei(rz.get("cheltuieli") or 0))),
-        rand % ("Rezultat", esc("%s (%s)" % (_lei(rz.get("rezultat") or 0), calificativ))),
+        rand % ("Rezultat înainte de impozit", esc("%s (%s)" % (_lei(rz.get("rezultat") or 0), calificativ))),
         rand % ("Declarații depuse", esc(depuse))))
-    corp = esc(poveste) if (poveste or "").strip() else "<i style='color:#5b6573'>Povestea lunii nu e scrisă încă.</i>"
+    corp = esc(text_simplu(poveste)) if (poveste or "").strip() else "<i style='color:#5b6573'>Povestea lunii nu e scrisă încă.</i>"
     return (
         "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:640px'>"
         "<h2 style='margin:0 0 4px'>Raport lunar &mdash; %s</h2>"
@@ -311,4 +323,7 @@ def lista_povesti_aprobate(conn_public, tenant_id):
             "SELECT an, luna, text, updated_at FROM public.pachet_povestea "
             "WHERE tenant_id=%s AND status='aprobat' ORDER BY an DESC, luna DESC",
             (tenant_id,))
-        return cur.fetchall()
+        rows = cur.fetchall()
+    for r in rows:   # [lot 06.10 pct.14] o poveste aprobată înainte de reparație nu ajunge la client cu marcaje
+        r["text"] = text_simplu(r["text"])
+    return rows

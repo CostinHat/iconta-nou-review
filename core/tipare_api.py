@@ -108,4 +108,4 @@ def analiza_ai(conn, cabinet_id):
         text = ai_client.genereaza_text(prompt, sistem=sistem, max_tokens=1000, temperatura=0.4)
     except Exception as e:
         return {"disponibil": False, "motiv": "Nu am putut genera analiza acum (%s)." % type(e).__name__}
-    return {"disponibil": True, "analiza": text}
+    return {"disponibil": True, "analiza": ai_client.text_simplu(text)}   # [lot 06.10 pct.14] fără marcaje brute pe ecran

@@ -37,10 +37,22 @@ def carte_mare(note, solduri_initiale=None):
 # ============================================================
 #  REZULTAT (venituri − cheltuieli)
 # ============================================================
+#: grupele impozitului pe profit/venit: cheltuiala (69: 691, 694, 697, 698) și venitul din decontările grupului fiscal (79) —
+#: OMFP 1802/2014, funcțiunea conturilor (grupa 69 „Cheltuieli cu impozitul pe profit și alte impozite” — 691, 698; clasa 7,
+#: grupa 79 „Venituri din impozitul pe profit”; `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`). Rezultatul ÎNAINTE de impozit le lasă deoparte, ca rândul „Profitul sau pierderea brut(ă)” din contul
+#: de profit și pierdere (bilant.py citește aceeași grupă 69 pe rândul impozitului).
+GRUPE_IMPOZIT = ("69", "79")
+
+
 def rezultat(note):
+    """Venituri, cheltuieli și rezultatul ÎNAINTE de impozit (lot 06.10 pct.15, comanda Costin: „Cifra numită «profit» e
+    profitul înainte de impozit. Eticheta spune exact ce e cifra.”). Până azi suma includea și 691/698 când nota impozitului
+    cădea în lună (trimestrial), deci aceeași etichetă însemna două lucruri."""
     ag = agrega_conturi(note)
     ven = chel = Decimal(0)
     for ct, v in ag.items():
+        if ct.startswith(GRUPE_IMPOZIT):
+            continue
         if ct.startswith("7"):
             ven += v["credit"] - v["debit"]      # venit = sold creditor
         elif ct.startswith("6"):
